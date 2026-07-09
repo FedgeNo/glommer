@@ -1,0 +1,54 @@
+# Never serve dotfiles (.env especially - it holds credentials) or SQL dumps.
+<FilesMatch "^\.|\.sql$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Direct .php access is never allowed - everything goes through the routes below.
+    RewriteCond %{THE_REQUEST} \s/+[^?\s]*\.php[\s?] [NC]
+    RewriteRule ^ 404.php [L]
+
+    # JSON API endpoints: /api/{name} -> api/{name}.php
+    RewriteRule ^api/([a-zA-Z0-9-]+)/?$ api/$1.php [L,QSA]
+
+    # Pages
+    RewriteRule ^(login|logout|signup|notifications|check-inbox|verify-email|settings|forgot-password|reset-password|admin/reports|friends-feed|friends|messages|users)$ /$1/ [R=301,L]
+    RewriteRule ^$ index.php [L,QSA]
+    RewriteRule ^login/?$ login.php [L,QSA]
+    RewriteRule ^logout/?$ logout.php [L,QSA]
+    RewriteRule ^signup/?$ signup.php [L,QSA]
+    RewriteRule ^notifications/?$ notifications.php [L,QSA]
+    RewriteRule ^check-inbox/?$ check-inbox.php [L,QSA]
+    RewriteRule ^forgot-password/?$ forgot-password.php [L,QSA]
+    RewriteRule ^reset-password/?$ reset-password.php [L,QSA]
+    RewriteRule ^settings/?$ settings.php [L,QSA]
+    RewriteRule ^verify-email/?$ verify-email.php [L,QSA]
+    RewriteRule ^admin/reports/?$ admin-reports.php [L,QSA]
+    RewriteRule ^friends-feed/?$ friends-feed.php [L,QSA]
+    RewriteRule ^friends/?$ friends.php [L,QSA]
+    RewriteRule ^messages/?$ messages.php [L,QSA]
+    RewriteRule ^messages/([^/]+)/?$ messages.php?username=$1 [L,QSA]
+    RewriteRule ^users/?$ search.php [L,QSA]
+    RewriteRule ^users/([^/]+)/([0-9]+)/?$ post.php?username=$1&id=$2 [L,QSA]
+    RewriteRule ^users/([^/]+)/?$ user.php?username=$1 [L,QSA]
+
+    # Anything else that isn't a real file/directory and didn't match a route above.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ 404.php [L]
+</IfModule>

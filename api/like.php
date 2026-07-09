@@ -1,0 +1,71 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/../src/init.php';
+
+if (!Auth::check()) {
+    JSONResponse::error('Not logged in', 401) -> send();
+}
+
+$current_user = Auth::user();
+$mysqli = Database::connection();
+
+$payload = json_decode((string) file_get_contents('php://input'), true);
+$post_id = (int) ($payload['itemId'] ?? $_POST['itemId'] ?? 0);
+
+$owner_stmt = mysqli_prepare($mysqli, '
+SELECT `userId`
+    FROM `Posts`
+    WHERE `postId` = ?
+');
+mysqli_stmt_bind_param($owner_stmt, 'i', $post_id);
+mysqli_stmt_execute($owner_stmt);
+$owner_result = mysqli_stmt_get_result($owner_stmt);
+$owner_row = mysqli_fetch_assoc($owner_result);
+
+if ($owner_row === null) {
+    JSONResponse::error('Post not found', 404) -> send();
+}
+
+$check_stmt = mysqli_prepare($mysqli, '
+SELECT 1
+    FROM `Likes`
+    WHERE `postId` = ? AND `userId` = ?
+');
+mysqli_stmt_bind_param($check_stmt, 'ii', $post_id, $current_user -> userId);
+mysqli_stmt_execute($check_stmt);
+mysqli_stmt_store_result($check_stmt);
+
+if (mysqli_stmt_num_rows($check_stmt) > 0) {
+    $delete_stmt = mysqli_prepare($mysqli, '
+DELETE
+    FROM `Likes`
+    WHERE `postId` = ? AND `userId` = ?
+');
+    mysqli_stmt_bind_param($delete_stmt, 'ii', $post_id, $current_user -> userId);
+    mysqli_stmt_execute($delete_stmt);
+    $liked = false;
+} else {
+    $insert_stmt = mysqli_prepare($mysqli, '
+INSERT INTO `Likes` (`postId`, `userId`)
+    VALUES (?, ?)
+');
+    mysqli_stmt_bind_param($insert_stmt, 'ii', $post_id, $current_user -> userId);
+    mysqli_stmt_execute($insert_stmt);
+    $liked = true;
+
+    Notification::create((int) $owner_row['userId'], $current_user -> userId, 'like', $post_id);
+}
+
+$count_stmt = mysqli_prepare($mysqli, '
+SELECT COUNT(*) AS `likeCount`
+    FROM `Likes`
+    WHERE `postId` = ?
+');
+mysqli_stmt_bind_param($count_stmt, 'i', $post_id);
+mysqli_stmt_execute($count_stmt);
+$count_result = mysqli_stmt_get_result($count_stmt);
+$count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
+
+JSONResponse::success(['liked' => $liked, 'count' => $count]) -> send();

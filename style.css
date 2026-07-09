@@ -1,0 +1,1169 @@
+/* ============================================================
+   Glommer visual system
+   Palette: porcelain paper + green-gray ink + one jade accent.
+   Shapes: soft "glom" blobs - pill buttons, rounded cards, and
+   an asymmetric pulled corner on bubbles/menus (the signature).
+   Type: Bricolage Grotesque (display) over a native body stack.
+   ============================================================ */
+
+@font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('/fonts/bricolage-grotesque-latin-wght-normal.woff2') format('woff2-variations');
+    font-weight: 200 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --paper: #f2f3f0;
+    --surface: #ffffff;
+    --surface-2: #e9ece7;
+    --ink: #1f2421;
+    --muted: #68716b;
+    --hairline: #e0e4de;
+    --accent: #0b8f6b;
+    --accent-strong: #0a7d5e;
+    --accent-soft: #e2f4ec;
+    --accent-ink: #ffffff;
+    --danger: #d64545;
+    --danger-soft: #fbeaea;
+    --shadow-card: 0 1px 2px rgb(31 36 33 / 0.05), 0 6px 20px -8px rgb(31 36 33 / 0.10);
+    --shadow-pop: 0 4px 10px rgb(31 36 33 / 0.08), 0 16px 40px -12px rgb(31 36 33 / 0.22);
+    --glass: rgb(242 243 240 / 0.82);
+    --radius-card: 1.125rem;
+    --radius-ctl: 0.75rem;
+    --glom-corner: 0.25rem;
+    --display-font: 'Bricolage Grotesque', system-ui, sans-serif;
+    --nav-height: calc(3.25rem + 1px);
+    --page-title-height: calc(3.4rem + 1px);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --paper: #131715;
+        --surface: #1c211e;
+        --surface-2: #262d29;
+        --ink: #e8ece9;
+        --muted: #94a099;
+        --hairline: #2a322d;
+        --accent: #3dd9a4;
+        --accent-strong: #5ee3b5;
+        --accent-soft: rgb(61 217 164 / 0.12);
+        --accent-ink: #0b2a1f;
+        --danger: #f17b7b;
+        --danger-soft: rgb(241 123 123 / 0.12);
+        --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 8px 24px -10px rgb(0 0 0 / 0.5);
+        --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.4), 0 18px 44px -12px rgb(0 0 0 / 0.6);
+        --glass: rgb(19 23 21 / 0.82);
+    }
+}
+
+:root[data-theme='dark'] {
+    --paper: #131715;
+    --surface: #1c211e;
+    --surface-2: #262d29;
+    --ink: #e8ece9;
+    --muted: #94a099;
+    --hairline: #2a322d;
+    --accent: #3dd9a4;
+    --accent-strong: #5ee3b5;
+    --accent-soft: rgb(61 217 164 / 0.12);
+    --accent-ink: #0b2a1f;
+    --danger: #f17b7b;
+    --danger-soft: rgb(241 123 123 / 0.12);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 8px 24px -10px rgb(0 0 0 / 0.5);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.4), 0 18px 44px -12px rgb(0 0 0 / 0.6);
+    --glass: rgb(19 23 21 / 0.82);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 0.9375rem;
+    -webkit-font-smoothing: antialiased;
+}
+
+body:has(.MainNavigation) {
+    padding-top: calc(var(--nav-height) + var(--page-title-height) + 0.75rem);
+}
+
+.PageBody {
+    padding: 1rem;
+    padding-inline: max(1rem, calc((100% - 40rem) / 2));
+}
+
+.PageBody > * + * {
+    margin-top: 1rem;
+}
+
+::selection {
+    background-color: var(--accent-soft);
+    color: var(--ink);
+}
+
+/* ---------- Type ---------- */
+
+h1, h2, h3 {
+    font-family: var(--display-font);
+    font-weight: 640;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+}
+
+/* Small text-size utilities Bootstrap doesn't ship (it only scales headings via .fs-*). */
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+a:hover {
+    color: var(--accent);
+}
+
+.PostBody a,
+.LoginPrompt a,
+p a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    text-underline-offset: 2px;
+}
+
+.PostBody a:hover,
+.LoginPrompt a:hover,
+p a:hover {
+    color: var(--accent-strong);
+    text-decoration-color: currentColor;
+}
+
+.Muted {
+    color: var(--muted);
+}
+
+.Error {
+    color: var(--danger);
+}
+
+.ErrorList {
+    background-color: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+    border-radius: var(--radius-ctl);
+    padding: 0.75rem 1rem;
+    list-style: none;
+    margin: 0;
+}
+
+/* ---------- Focus & motion ---------- */
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* ---------- Fixed header: nav bar + page title ---------- */
+
+.MainNavigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 0.625rem 1rem;
+    padding-inline: max(1rem, calc((100% - 40rem) / 2));
+    z-index: 20;
+    align-items: center;
+}
+
+.NavBrand {
+    font-family: var(--display-font);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.3;
+    align-self: center;
+}
+
+.NavBrand::after {
+    content: '';
+    display: inline-block;
+    width: 0.42em;
+    height: 0.42em;
+    margin-left: 0.14em;
+    border-radius: 50% 50% 50% 18%;
+    background-color: var(--accent);
+    transition: background-color 0.15s ease;
+}
+
+.NavBrand:hover {
+    color: var(--ink);
+}
+
+.NavBrand:hover::after {
+    background-color: var(--accent-strong);
+}
+
+.MainNavigation a {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.MainNavigation > div {
+    align-items: center;
+}
+
+.MainNavigation > div > a,
+.MainNavigation a.NavDropdownTrigger,
+.NotificationsNavLink > a {
+    color: var(--muted);
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.MainNavigation > div > a:hover,
+.MainNavigation a.NavDropdownTrigger:hover,
+.NotificationsNavLink > a:hover {
+    color: var(--ink);
+    background-color: var(--surface-2);
+}
+
+.PageTitle {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    margin-top: 0;
+    background-color: var(--glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 0.7rem 1rem;
+    padding-inline: max(1rem, calc((100% - 40rem) / 2));
+    z-index: 10;
+}
+
+/* ---------- Dropdown menus (they "glom" onto their trigger:
+   every floating panel keeps one pulled-in corner) ---------- */
+
+.NavDropdown {
+    position: relative;
+}
+
+.NavDropdownTrigger {
+    cursor: pointer;
+}
+
+.NavDropdownMenu {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 11rem;
+    z-index: 20;
+    padding: 0.4rem;
+    border-radius: var(--radius-card);
+    border-top-left-radius: var(--glom-corner);
+    box-shadow: var(--shadow-pop);
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+    transform-origin: top left;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.NavDropdown:hover .NavDropdownMenu {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.NotificationsNavLink {
+    position: relative;
+}
+
+.NotificationDot {
+    display: none;
+    position: absolute;
+    top: 0.3rem;
+    right: -0.15rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--danger);
+    pointer-events: none;
+}
+
+.NotificationDot.Active {
+    display: block;
+}
+
+.NotificationDropdown {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 21rem;
+    max-width: calc(100vw - 2rem);
+    z-index: 20;
+    border-radius: var(--radius-card);
+    border-top-left-radius: var(--glom-corner);
+    box-shadow: var(--shadow-pop);
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+    transform-origin: top left;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.NotificationsNavLink:hover .NotificationDropdown {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.NavDropdownMenu a,
+.NotificationDropdown > a {
+    display: block;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.625rem;
+    color: var(--ink);
+    font-weight: 500;
+}
+
+.NotificationDropdown > a {
+    text-align: center;
+    color: var(--accent);
+}
+
+.NavDropdownMenu a:hover,
+.NotificationDropdown > a:hover {
+    background-color: var(--surface-2);
+    color: var(--ink);
+}
+
+/* ---------- Cards & surfaces ---------- */
+
+.Card {
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.Thread {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.Thread.Card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-pop);
+}
+
+/* ---------- Buttons ----------
+   Hierarchy: submit = filled jade; regular chips = quiet tonal;
+   destructive = red-tinted; liked state = filled. */
+
+.Btn {
+    background-color: var(--surface-2);
+    color: var(--ink) !important;
+    border: none;
+    border-radius: 999px;
+    padding: 0.42rem 0.95rem;
+    font-weight: 550;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+}
+
+.Btn:hover {
+    background-color: color-mix(in srgb, var(--surface-2) 80%, var(--ink) 8%);
+    color: var(--ink) !important;
+}
+
+.Btn:active {
+    transform: scale(0.97);
+}
+
+.Btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+}
+
+button[type='submit'].Btn {
+    background-color: var(--accent);
+    color: var(--accent-ink) !important;
+}
+
+button[type='submit'].Btn:hover {
+    background-color: var(--accent-strong);
+    color: var(--accent-ink) !important;
+}
+
+.DeleteButton,
+.BanButton,
+.BlockUserButton {
+    background-color: transparent;
+    color: var(--danger) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+.DeleteButton:hover,
+.BanButton:hover,
+.BlockUserButton:hover {
+    background-color: var(--danger-soft);
+    color: var(--danger) !important;
+}
+
+.LikeButton[data-liked='1'] {
+    background-color: var(--accent-soft);
+    color: var(--accent) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.LikeButton[data-liked='1']:hover {
+    background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
+}
+
+a.Btn {
+    display: inline-block;
+    text-align: center;
+}
+
+a.Btn:hover {
+    color: var(--ink) !important;
+}
+
+/* ---------- Emoji picker ---------- */
+
+.EmojiPickerButton {
+    position: relative;
+}
+
+.EmojiTriggerButton {
+    line-height: 1;
+}
+
+.EmojiPickerPanel {
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    z-index: 20;
+    margin-bottom: 0.4rem;
+    border-radius: var(--radius-card);
+    border-bottom-left-radius: var(--glom-corner);
+    box-shadow: var(--shadow-pop);
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+.EmojiPickerPanel.Active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+emoji-picker {
+    --background: var(--surface);
+    --border-color: var(--hairline);
+    --indicator-color: var(--accent);
+    --input-border-color: var(--hairline);
+    --input-font-color: var(--ink);
+    --outline-color: var(--accent);
+    --category-font-color: var(--ink);
+}
+
+/* ---------- Forms ---------- */
+
+fieldset {
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    padding: 10px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+legend {
+    font-family: var(--display-font);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+    padding: 0 0.45rem;
+    margin-left: -0.45rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+}
+
+label.visually-hidden {
+    margin-bottom: 0;
+}
+
+input,
+textarea,
+select {
+    background-color: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+    opacity: 1;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+    width: auto;
+    accent-color: var(--accent);
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2368716b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.25rem;
+}
+
+input[type='file'] {
+    max-width: calc(14rem + 3ch);
+    min-width: 0;
+    width: 100%;
+    border-style: dashed;
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+input[type='file']::file-selector-button {
+    background-color: var(--surface-2);
+    color: var(--ink);
+    border: none;
+    border-radius: 999px;
+    padding: 0.3rem 0.8rem;
+    margin-right: 0.6rem;
+    font-weight: 550;
+    font-size: 0.8125rem;
+    cursor: pointer;
+}
+
+.TextareaField textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+.PostComposerFields {
+    align-items: flex-end;
+}
+
+.PostComposerFields .InputField {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.MessageComposerFields .TextareaField {
+    flex: 1 1 auto;
+}
+
+.EditorRow {
+    align-items: flex-start;
+}
+
+.EditorColumn {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* display: none is set inline (LinkImagePreview.php) until main.js clears it
+   to reveal a fetched image - this flex declaration is what that inline
+   style falls back to once cleared. */
+.LinkImagePreview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.LinkImagePreviewThumb {
+    display: block;
+    max-width: 8rem;
+    max-height: 8rem;
+    border-radius: var(--radius-ctl);
+    object-fit: cover;
+}
+
+.ProgressBar {
+    display: none;
+    width: 100%;
+    height: 0.4rem;
+    border-radius: 999px;
+    overflow: hidden;
+    accent-color: var(--accent);
+}
+
+.ProgressBar.Active {
+    display: block;
+}
+
+/* ---------- Feed ---------- */
+
+.PostByline a {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.PostByline a:not(.PostTimestamp) {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.PostByline .PostTimestamp {
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.PostByline .PostTimestamp:hover {
+    color: var(--ink);
+}
+
+.Post > h3 {
+    margin-top: 0.5rem;
+}
+
+.FeedItem {
+    max-height: 50vh;
+    margin-top: 0.6rem;
+}
+
+.ImageItem,
+.VideoItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--surface-2);
+    border-radius: var(--radius-ctl);
+}
+
+.Thread .ImageItem,
+.Thread .VideoItem {
+    height: 50vh;
+}
+
+.Thread .PostBody {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.PostBody {
+    margin-top: 0.6rem;
+}
+
+.PostBody blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 0.5rem 0;
+    padding-left: 0.9rem;
+    color: var(--muted);
+}
+
+.PostBody pre {
+    background-color: var(--surface-2);
+    border-radius: var(--radius-ctl);
+    padding: 0.75rem 0.9rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+}
+
+.ImageItem img,
+.VideoItem video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-ctl);
+    display: block;
+}
+
+.VideoItem video {
+    min-width: 0;
+    min-height: 0;
+    max-height: 50vh;
+}
+
+.AudioItem audio {
+    max-width: 100%;
+    width: 100%;
+    display: block;
+}
+
+.PostActionBar {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--hairline);
+}
+
+.ParentPostLink {
+    font-size: 0.85rem;
+}
+
+.LoginPrompt {
+    text-align: center;
+}
+
+.ProcessingNotice {
+    color: var(--accent);
+}
+
+/* ---------- Avatars ---------- */
+
+.Avatar {
+    border-radius: 999px;
+    object-fit: cover;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+}
+
+.AvatarSm {
+    border-radius: 999px;
+    object-fit: cover;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+}
+
+.AvatarInitial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hsl(var(--avatar-hue), 55%, 42%);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.Avatar.AvatarInitial {
+    font-size: 1.25rem;
+}
+
+.AvatarSm.AvatarInitial {
+    font-size: 0.75rem;
+}
+
+/* ---------- People ---------- */
+
+.User {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.User h2 {
+    margin-bottom: 0.1rem;
+}
+
+.OtherUser .Avatar,
+.CurrentUser .Avatar {
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+.FriendRequest {
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.UserList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.UserSearchBox {
+    padding: 0.5rem;
+}
+
+.UserSearchInput {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+}
+
+.UserSearchInput:focus {
+    box-shadow: none;
+}
+
+.UserSearchResults {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* ---------- Messages (chat bubbles carry the glom corner) ---------- */
+
+.MessagesPage {
+    padding-bottom: 8rem;
+}
+
+.Message {
+    max-width: 78%;
+    border-radius: var(--radius-card);
+    border-bottom-left-radius: var(--glom-corner);
+    padding: 0.7rem 0.9rem;
+}
+
+.Message p {
+    overflow-wrap: anywhere;
+}
+
+.Message.Own {
+    margin-left: auto;
+    background-color: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+    border-bottom-left-radius: var(--radius-card);
+    border-bottom-right-radius: var(--glom-corner);
+}
+
+.MessageComposer {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    max-width: 40rem;
+    margin: 0 auto;
+    background-color: var(--glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-pop);
+}
+
+.Conversation {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+.Conversation:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-pop);
+    color: var(--ink);
+}
+
+.Conversation h2 {
+    margin-bottom: 0;
+}
+
+/* ---------- Notifications ---------- */
+
+.Notification {
+    padding: 0.6rem 0.65rem;
+    border-radius: var(--radius-ctl);
+    transition: background-color 0.15s ease;
+}
+
+.Notification:hover {
+    background-color: var(--surface-2);
+}
+
+.Notification a {
+    color: var(--ink);
+}
+
+.Notification a:hover {
+    color: var(--ink);
+}
+
+/* ---------- Carousel ---------- */
+
+.Carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-ctl);
+}
+
+.CarouselTrack {
+    display: flex;
+}
+
+.CarouselSlide {
+    display: none;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.CarouselSlide.Active {
+    display: block;
+}
+
+.CarouselPrev,
+.CarouselNext {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgb(15 18 16 / 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.CarouselPrev:hover,
+.CarouselNext:hover {
+    background-color: rgb(15 18 16 / 0.75);
+}
+
+.CarouselPrev {
+    left: 0.5rem;
+}
+
+.CarouselNext {
+    right: 0.5rem;
+}
+
+.CarouselCounter {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background-color: rgb(15 18 16 / 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.75rem;
+}
+
+/* ---------- Quill editor ---------- */
+
+.ql-toolbar.ql-snow {
+    background-color: var(--surface);
+    border-color: var(--hairline);
+    border-top-left-radius: var(--radius-ctl);
+    border-top-right-radius: var(--radius-ctl);
+}
+
+.ql-container.ql-snow {
+    border-color: var(--hairline);
+    border-bottom-left-radius: var(--radius-ctl);
+    border-bottom-right-radius: var(--radius-ctl);
+    font-size: 0.9375rem;
+}
+
+.ql-editor {
+    background-color: var(--surface);
+    color: var(--ink);
+    min-height: 4.5rem;
+    border-bottom-left-radius: var(--radius-ctl);
+    border-bottom-right-radius: var(--radius-ctl);
+}
+
+.ql-editor.ql-blank::before {
+    color: var(--muted);
+    opacity: 1;
+    font-style: normal;
+    font-size: 0.9375rem;
+}
+
+.ql-snow .ql-stroke {
+    stroke: var(--ink);
+}
+
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+    fill: var(--ink);
+}
+
+.ql-snow .ql-picker {
+    color: var(--ink);
+}
+
+.ql-snow .ql-picker-options {
+    background-color: var(--surface);
+    border-color: var(--hairline);
+}
+
+/* ---------- Loading spinner (infinite-scroll pagination) ---------- */
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.LoadingSpinner {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.LoadingSpinner::after {
+    content: '';
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid var(--hairline);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* ---------- Mount-in animation ---------- */
+
+@keyframes mount-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.MountIn {
+    animation: mount-in 0.25s ease;
+}
+
+/* ---------- Toasts ---------- */
+
+.ToastContainer {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: min(22rem, calc(100vw - 2rem));
+}
+
+.Toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    background-color: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-pop);
+    padding: 0.75rem 0.85rem;
+    color: var(--ink);
+    font-size: 0.875rem;
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.Toast.Active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ToastMessage {
+    flex: 1 1 auto;
+}
+
+.ToastCloseButton {
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.ToastCloseButton:hover {
+    color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .Toast {
+        transition: none;
+    }
+}

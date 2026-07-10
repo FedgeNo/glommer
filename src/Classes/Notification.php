@@ -32,10 +32,8 @@ class Notification extends HTMLObject
         $text -> contents[] = $this -> text();
         $info -> addContents($text);
 
-        $meta = new Time();
-        $meta -> class = 'Muted text-sm RelativeTime';
-        $meta -> datetime = date(DATE_ATOM, strtotime($this -> createdAt));
-        $meta -> contents[] = date('F j, Y g:i A', strtotime($this -> createdAt));
+        $meta = new RelativeTime($this -> createdAt);
+        $meta -> class = 'Muted text-sm ' . $meta -> class;
         $info -> addContents($meta);
 
         $link -> addContents($info);

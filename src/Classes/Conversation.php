@@ -41,11 +41,7 @@ class Conversation extends Anchor
             $meta -> class = 'Muted text-sm';
             $meta -> contents[] = 'Last message ';
 
-            $time = new Time();
-            $time -> class = 'RelativeTime';
-            $time -> datetime = date(DATE_ATOM, strtotime($this -> lastMessageAt));
-            $time -> contents[] = date('F j, Y g:i A', strtotime($this -> lastMessageAt));
-            $meta -> addContents($time);
+            $meta -> addContents(new RelativeTime($this -> lastMessageAt));
 
             $info -> addContents($meta);
         }

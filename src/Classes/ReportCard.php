@@ -30,27 +30,17 @@ class ReportCard extends HTMLObject
             $this -> contents[] = $reason_line;
         }
 
-        $meta = new Time();
-        $meta -> class = 'Muted text-sm RelativeTime';
-        $meta -> datetime = date(DATE_ATOM, strtotime((string) $this -> createdAt));
-        $meta -> contents[] = date('F j, Y g:i A', strtotime((string) $this -> createdAt));
+        $meta = new RelativeTime((string) $this -> createdAt);
+        $meta -> class = 'Muted text-sm ' . $meta -> class;
         $this -> contents[] = $meta;
 
         $actions = new Div();
         $actions -> class = 'd-flex gap-2';
 
-        $ban_reporter_button = new Button();
-        $ban_reporter_button -> class = 'Btn BanButton';
-        $ban_reporter_button -> attributes['data-user-id'] = (string) $this -> reporterId;
-        $ban_reporter_button -> contents[] = 'Ban Reporter (' . $this -> reporterUsername . ')';
-        $actions -> addContents($ban_reporter_button);
+        $actions -> addContents(new BanButton($this -> reporterId, 'Ban Reporter (' . $this -> reporterUsername . ')'));
 
         if ($this -> targetUserId !== null && $this -> targetUsername !== null && $this -> targetUserId !== $this -> reporterId) {
-            $ban_target_button = new Button();
-            $ban_target_button -> class = 'Btn BanButton';
-            $ban_target_button -> attributes['data-user-id'] = (string) $this -> targetUserId;
-            $ban_target_button -> contents[] = 'Ban Reported User (' . $this -> targetUsername . ')';
-            $actions -> addContents($ban_target_button);
+            $actions -> addContents(new BanButton($this -> targetUserId, 'Ban Reported User (' . $this -> targetUsername . ')'));
         }
 
         $this -> contents[] = $actions;

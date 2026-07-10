@@ -24,11 +24,7 @@ class ResetPasswordForm extends Form
         $fields -> addContents(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));
         $this -> contents[] = $fields;
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn align-self-start';
-        $submit -> contents[] = 'Reset Password';
-        $this -> contents[] = $submit;
+        $this -> contents[] = new SubmitButton('Reset Password');
 
         return parent::toDOM();
     }

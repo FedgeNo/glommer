@@ -28,19 +28,12 @@ class Message extends HTMLObject
         $body -> contents[] = $this -> body;
         $this -> contents[] = $body;
 
-        $meta = new Time();
-        $meta -> class = 'Muted text-sm RelativeTime';
-        $meta -> datetime = date(DATE_ATOM, strtotime($this -> createdAt));
-        $meta -> contents[] = date('F j, Y g:i A', strtotime($this -> createdAt));
+        $meta = new RelativeTime($this -> createdAt);
+        $meta -> class = 'Muted text-sm ' . $meta -> class;
         $this -> contents[] = $meta;
 
         if (Auth::check() && Auth::id() !== $this -> senderId) {
-            $report_button = new Button();
-            $report_button -> class = 'Btn ReportButton';
-            $report_button -> attributes['data-target-type'] = 'message';
-            $report_button -> attributes['data-target-id'] = (string) $this -> messageId;
-            $report_button -> contents[] = 'Report';
-            $this -> contents[] = $report_button;
+            $this -> contents[] = new ReportButton('message', $this -> messageId);
         }
 
         return parent::toDOM();

@@ -18,11 +18,7 @@ class SignupForm extends Form
         $fields -> addContents(new InputField('password', 'Password', 'password', 'At least 8 characters'));
         $this -> contents[] = $fields;
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn align-self-start';
-        $submit -> contents[] = 'Sign Up';
-        $this -> contents[] = $submit;
+        $this -> contents[] = new SubmitButton('Sign Up');
 
         return parent::toDOM();
     }

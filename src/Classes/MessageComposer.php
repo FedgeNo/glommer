@@ -30,11 +30,7 @@ class MessageComposer extends Form
         $row -> addContents(new TextareaField('body', 'Message', 'Write a message', 65535));
         $row -> addContents(new EmojiPickerButton());
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn';
-        $submit -> contents[] = 'Send';
-        $row -> addContents($submit);
+        $row -> addContents(new SubmitButton('Send'));
 
         $this -> contents[] = $row;
 

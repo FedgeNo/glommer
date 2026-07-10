@@ -26,11 +26,7 @@ class SetupForm extends Form
         $db_fields -> addContents(new InputField('adminPassword', 'Database admin password', 'password', 'Database admin password'));
         $this -> contents[] = $db_fields;
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn align-self-start';
-        $submit -> contents[] = 'Set Up';
-        $this -> contents[] = $submit;
+        $this -> contents[] = new SubmitButton('Set Up');
 
         return parent::toDOM();
     }

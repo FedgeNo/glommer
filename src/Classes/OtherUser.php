@@ -59,13 +59,7 @@ class OtherUser extends User
         $block_button -> contents[] = 'Block';
         $actions -> addContents($block_button);
 
-        $report_button = new Button();
-        $report_button -> type = 'button';
-        $report_button -> class = 'Btn ReportButton';
-        $report_button -> attributes['data-target-type'] = 'user';
-        $report_button -> attributes['data-target-id'] = (string) $this -> userId;
-        $report_button -> contents[] = 'Report';
-        $actions -> addContents($report_button);
+        $actions -> addContents(new ReportButton('user', $this -> userId));
 
         $element -> appendChild($actions -> toDOM());
 

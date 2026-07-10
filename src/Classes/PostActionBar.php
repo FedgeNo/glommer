@@ -117,12 +117,6 @@ SELECT 1
 
     protected function reportButton(): HTMLObject
     {
-        $button = new Button();
-        $button -> class = 'Btn ReportButton';
-        $button -> attributes['data-target-type'] = 'post';
-        $button -> attributes['data-target-id'] = (string) $this -> postId;
-        $button -> contents[] = 'Report';
-
-        return $button;
+        return new ReportButton('post', $this -> postId);
     }
 }

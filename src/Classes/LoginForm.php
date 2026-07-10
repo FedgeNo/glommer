@@ -16,11 +16,7 @@ class LoginForm extends Form
         $fields -> addContents(new InputField('password', 'Password', 'password', 'Password'));
         $this -> contents[] = $fields;
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn align-self-start';
-        $submit -> contents[] = 'Log In';
-        $this -> contents[] = $submit;
+        $this -> contents[] = new SubmitButton('Log In');
 
         return parent::toDOM();
     }

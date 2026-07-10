@@ -452,7 +452,8 @@ button[type='submit'].Btn:hover {
 
 .DeleteButton,
 .BanButton,
-.BlockUserButton {
+.BlockUserButton,
+.ReportButton {
     background-color: transparent;
     color: var(--danger) !important;
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent);
@@ -460,7 +461,8 @@ button[type='submit'].Btn:hover {
 
 .DeleteButton:hover,
 .BanButton:hover,
-.BlockUserButton:hover {
+.BlockUserButton:hover,
+.ReportButton:hover {
     background-color: var(--danger-soft);
     color: var(--danger) !important;
 }
@@ -705,13 +707,22 @@ input[type='file']::file-selector-button {
     color: var(--ink);
 }
 
-.Post > h3 {
+.Post > h3,
+.Post > a > h3 {
     margin-top: 0.5rem;
 }
 
 .FeedItem {
     max-height: 50vh;
     margin-top: 0.6rem;
+}
+
+.LinkItem > a {
+    display: block;
+}
+
+.LinkItem > a > h3 {
+    margin-top: 0.5rem;
 }
 
 .ImageItem,

@@ -17,11 +17,7 @@ class ChangePasswordForm extends Form
         $fields -> addContents(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));
         $this -> contents[] = $fields;
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn align-self-start';
-        $submit -> contents[] = 'Change Password';
-        $this -> contents[] = $submit;
+        $this -> contents[] = new SubmitButton('Change Password');
 
         return parent::toDOM();
     }

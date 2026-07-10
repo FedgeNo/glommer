@@ -61,10 +61,8 @@ abstract class Composer extends Form
         $cancel_file_button -> attributes['style'] = 'display: none';
         $cancel_file_button -> contents[] = 'Cancel';
 
-        $submit_button = new Button();
-        $submit_button -> type = 'submit';
+        $submit_button = new SubmitButton($this -> submitLabel());
         $submit_button -> class = 'Btn';
-        $submit_button -> contents[] = $this -> submitLabel();
 
         $actions = new Div();
         $actions -> class = 'd-flex align-items-center gap-2 ms-auto';

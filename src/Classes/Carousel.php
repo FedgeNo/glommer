@@ -25,19 +25,8 @@ class Carousel extends HTMLObject
         $this -> contents[] = $track;
 
         if (count($this -> items) > 1) {
-            $prev_button = new Button();
-            $prev_button -> type = 'button';
-            $prev_button -> class = 'CarouselPrev';
-            $prev_button -> attributes['aria-label'] = 'Previous';
-            $prev_button -> contents[] = '‹';
-            $this -> contents[] = $prev_button;
-
-            $next_button = new Button();
-            $next_button -> type = 'button';
-            $next_button -> class = 'CarouselNext';
-            $next_button -> attributes['aria-label'] = 'Next';
-            $next_button -> contents[] = '›';
-            $this -> contents[] = $next_button;
+            $this -> contents[] = new CarouselNavButton('prev');
+            $this -> contents[] = new CarouselNavButton('next');
 
             $counter = new Div();
             $counter -> class = 'CarouselCounter';

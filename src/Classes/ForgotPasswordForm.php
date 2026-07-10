@@ -15,11 +15,7 @@ class ForgotPasswordForm extends Form
         $fields -> addContents(new InputField('email', 'Email', 'email', 'you@example.com', 255));
         $this -> contents[] = $fields;
 
-        $submit = new Button();
-        $submit -> type = 'submit';
-        $submit -> class = 'Btn align-self-start';
-        $submit -> contents[] = 'Send Reset Link';
-        $this -> contents[] = $submit;
+        $this -> contents[] = new SubmitButton('Send Reset Link');
 
         return parent::toDOM();
     }

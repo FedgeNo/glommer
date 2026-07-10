@@ -68,16 +68,23 @@ class Post {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
 
+        const link = document.createElement('a');
+        link.href = this.linkURL;
+
+        if (this.title) {
+            const heading = document.createElement('h3');
+            heading.textContent = this.title;
+            link.appendChild(heading);
+        }
+
         if (this.description) {
             const body = document.createElement('div');
             body.className = 'PostBody';
             body.innerHTML = this.description;
-            wrapper.appendChild(body);
+            link.appendChild(body);
         }
 
-        const link = document.createElement('a');
-        link.href = this.linkURL;
-        link.textContent = this.linkURL;
+        link.appendChild(document.createTextNode(this.linkURL));
         wrapper.appendChild(link);
 
         return wrapper;
@@ -177,15 +184,23 @@ class Post {
             post.appendChild(this.authorBylineToElement());
         }
 
-        if (this.title) {
-            const heading = document.createElement('h3');
-            heading.textContent = this.title;
-            post.appendChild(heading);
-        }
-
         if (this.linkURL) {
             post.appendChild(this.linkItemToElement());
         } else {
+            if (this.title) {
+                const heading = document.createElement('h3');
+                heading.textContent = this.title;
+
+                if (this.postId !== null) {
+                    const title_link = document.createElement('a');
+                    title_link.href = window.siteURL + '/users/' + this.authorUsername + '/' + this.postId;
+                    title_link.appendChild(heading);
+                    post.appendChild(title_link);
+                } else {
+                    post.appendChild(heading);
+                }
+            }
+
             if (this.items.length > 1) {
                 post.appendChild(this.itemsToCarousel());
             } else if (this.items.length === 1) {

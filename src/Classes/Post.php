@@ -49,15 +49,22 @@ class Post extends HTMLObject
             $this -> contents[] = $this -> authorByline();
         }
 
-        if ($this -> title !== null) {
-            $heading = new Heading3();
-            $heading -> contents[] = $this -> title;
-            $this -> contents[] = $heading;
-        }
-
         if ($this -> linkURL !== null) {
-            $this -> contents[] = new LinkItem($this -> linkURL, $this -> description);
+            $this -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description);
         } else {
+            if ($this -> title !== null) {
+                $heading = new Heading3();
+                $heading -> contents[] = $this -> title;
+
+                if ($this -> postId !== null) {
+                    $title_link = new Anchor(URL::absolute('/users/' . $this -> author ?-> username . '/' . $this -> postId));
+                    $title_link -> addContents($heading);
+                    $this -> contents[] = $title_link;
+                } else {
+                    $this -> contents[] = $heading;
+                }
+            }
+
             foreach ($this -> items as $item) {
                 $item -> altText = $this -> imageAltText();
             }
@@ -183,11 +190,7 @@ class Post extends HTMLObject
             $timestamp_link = new Anchor(URL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
             $timestamp_link -> class = 'PostTimestamp Muted text-sm ms-auto';
 
-            $timestamp = new Time();
-            $timestamp -> class = 'RelativeTime';
-            $timestamp -> datetime = date(DATE_ATOM, strtotime($this -> createdAt));
-            $timestamp -> contents[] = date('M j, Y', strtotime($this -> createdAt));
-            $timestamp_link -> addContents($timestamp);
+            $timestamp_link -> addContents(new RelativeTime($this -> createdAt, 'M j, Y'));
 
             $byline -> addContents($timestamp_link);
         }

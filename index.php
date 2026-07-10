@@ -39,6 +39,8 @@ if ($has_more) {
 
 $page = Page::create('Home', needsEditor: $current_user !== null, needsMath: true, needsEmoji: $current_user !== null);
 
+$page -> addHeadContent(new RSSLink(URL::absolute('/feed.xml'), 'RSS Feed'));
+
 if ($current_user !== null) {
     $page -> addContents(new PostComposer());
 } else {

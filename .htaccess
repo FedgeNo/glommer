@@ -29,6 +29,7 @@
     # Pages
     RewriteRule ^(login|logout|signup|notifications|check-inbox|verify-email|settings|forgot-password|reset-password|admin/reports|friends-feed|friends|messages|users)$ /$1/ [R=301,L]
     RewriteRule ^$ index.php [L,QSA]
+    RewriteRule ^feed\.xml$ rss-feed.php [L,QSA]
     RewriteRule ^login/?$ login.php [L,QSA]
     RewriteRule ^logout/?$ logout.php [L,QSA]
     RewriteRule ^signup/?$ signup.php [L,QSA]
@@ -44,6 +45,7 @@
     RewriteRule ^messages/?$ messages.php [L,QSA]
     RewriteRule ^messages/([^/]+)/?$ messages.php?username=$1 [L,QSA]
     RewriteRule ^users/?$ search.php [L,QSA]
+    RewriteRule ^users/([^/]+)/feed\.xml$ user-rss-feed.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/([0-9]+)/?$ post.php?username=$1&id=$2 [L,QSA]
     RewriteRule ^users/([^/]+)/?$ user.php?username=$1 [L,QSA]
 

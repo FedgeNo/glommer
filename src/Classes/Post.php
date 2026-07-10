@@ -140,9 +140,10 @@ class Post extends HTMLObject
     /**
      * The stripped, truncated description shown alongside a post's image(s)
      * or video in the feed - also reused as those images' alt text (via
-     * imageAltText()) rather than duplicating the truncation logic.
+     * imageAltText()) and as an RSS item's fallback title (via RSSItem)
+     * rather than duplicating the truncation logic.
      */
-    protected function shortDescription(): string
+    public function shortDescription(): string
     {
         $text = $this -> plainTextDescription();
 

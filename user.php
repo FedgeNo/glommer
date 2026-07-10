@@ -45,7 +45,7 @@ if ($profile_user -> avatarURL() !== null) {
 
 $page = Page::create($name, 'Posts by ' . $name . ' on Glommer', $profile_user -> avatarURL(), $json_ld, needsMath: true);
 
-$page -> addHeadContent(new RSSLink(URL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
+$page -> addMetaContent(new RSSLink(URL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
 
 $page -> addContents($profile_user);
 

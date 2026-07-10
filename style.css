@@ -39,7 +39,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
+    :root:not([data-theme]) {
         --paper: #131715;
         --surface: #1c211e;
         --surface-2: #262d29;
@@ -74,6 +74,60 @@
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 8px 24px -10px rgb(0 0 0 / 0.5);
     --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.4), 0 18px 44px -12px rgb(0 0 0 / 0.6);
     --glass: rgb(19 23 21 / 0.82);
+}
+
+:root[data-theme='sepia'] {
+    --paper: #f4ecdc;
+    --surface: #fffaf0;
+    --surface-2: #ede0c8;
+    --ink: #3a2f22;
+    --muted: #8a7a63;
+    --hairline: #e3d5b8;
+    --accent: #b5651d;
+    --accent-strong: #9c5417;
+    --accent-soft: #f6e6d3;
+    --accent-ink: #ffffff;
+    --danger: #c1440e;
+    --danger-soft: #f7e0d3;
+    --shadow-card: 0 1px 2px rgb(58 47 34 / 0.08), 0 6px 20px -8px rgb(58 47 34 / 0.14);
+    --shadow-pop: 0 4px 10px rgb(58 47 34 / 0.10), 0 16px 40px -12px rgb(58 47 34 / 0.26);
+    --glass: rgb(244 236 220 / 0.85);
+}
+
+:root[data-theme='midnight'] {
+    --paper: #0d1021;
+    --surface: #161a33;
+    --surface-2: #1f2540;
+    --ink: #e6e8f5;
+    --muted: #9a9fc2;
+    --hairline: #2c3357;
+    --accent: #7c8cff;
+    --accent-strong: #97a4ff;
+    --accent-soft: rgb(124 140 255 / 0.14);
+    --accent-ink: #0d1021;
+    --danger: #ff7b9c;
+    --danger-soft: rgb(255 123 156 / 0.14);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -10px rgb(0 0 0 / 0.55);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.45), 0 18px 44px -12px rgb(0 0 0 / 0.65);
+    --glass: rgb(13 16 33 / 0.82);
+}
+
+:root[data-theme='sunset'] {
+    --paper: #fff1ea;
+    --surface: #ffffff;
+    --surface-2: #ffe3d4;
+    --ink: #35201c;
+    --muted: #8a6a60;
+    --hairline: #ffd9c2;
+    --accent: #ef5f56;
+    --accent-strong: #d94b42;
+    --accent-soft: #ffe1dc;
+    --accent-ink: #ffffff;
+    --danger: #c81e5f;
+    --danger-soft: #fbdce8;
+    --shadow-card: 0 1px 2px rgb(53 32 28 / 0.07), 0 6px 20px -8px rgb(53 32 28 / 0.14);
+    --shadow-pop: 0 4px 10px rgb(53 32 28 / 0.10), 0 16px 40px -12px rgb(53 32 28 / 0.26);
+    --glass: rgb(255 241 234 / 0.85);
 }
 
 * {
@@ -202,6 +256,25 @@ p a:hover {
     }
 }
 
+/* ---------- Cards & surfaces ---------- */
+
+.Card {
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.Thread {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.Thread.Card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-pop);
+}
+
 /* ---------- Fixed header: nav bar + page title ---------- */
 
 .MainNavigation {
@@ -260,17 +333,22 @@ p a:hover {
 .MainNavigation > div > a,
 .MainNavigation a.NavDropdownTrigger,
 .NotificationsNavLink > a {
+    position: relative;
+    z-index: 21;
     color: var(--muted);
     padding: 0.3rem 0.6rem;
-    border-radius: 999px;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 999px 999px 0 0;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .MainNavigation > div > a:hover,
 .MainNavigation a.NavDropdownTrigger:hover,
 .NotificationsNavLink > a:hover {
     color: var(--ink);
-    background-color: var(--surface-2);
+    background-color: var(--surface);
+    border-color: var(--hairline);
 }
 
 .PageTitle {
@@ -310,7 +388,7 @@ p a:hover {
     z-index: 20;
     padding: 0.4rem;
     border-radius: var(--radius-card);
-    border-top-left-radius: var(--glom-corner);
+    border-top-left-radius: 0;
     box-shadow: var(--shadow-pop);
     opacity: 0;
     transform: translateY(-0.25rem) scale(0.98);
@@ -354,7 +432,7 @@ p a:hover {
     max-width: calc(100vw - 2rem);
     z-index: 20;
     border-radius: var(--radius-card);
-    border-top-left-radius: var(--glom-corner);
+    border-top-left-radius: 0;
     box-shadow: var(--shadow-pop);
     opacity: 0;
     transform: translateY(-0.25rem) scale(0.98);
@@ -389,24 +467,6 @@ p a:hover {
     color: var(--ink);
 }
 
-/* ---------- Cards & surfaces ---------- */
-
-.Card {
-    background-color: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-card);
-    padding: 1rem;
-    box-shadow: var(--shadow-card);
-}
-
-.Thread {
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.Thread.Card:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-pop);
-}
 
 /* ---------- Buttons ----------
    Hierarchy: submit = filled jade; regular chips = quiet tonal;

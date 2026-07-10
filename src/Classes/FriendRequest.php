@@ -12,11 +12,14 @@ class FriendRequest extends OtherUser
             $this -> attributes['data-friendship-id'] = (string) $this -> friendshipId;
         }
 
-        $element = parent::toDOM();
+        return parent::toDOM();
+    }
 
-        $element -> appendChild((new FriendResponseButton('accept', (int) $this -> friendshipId)) -> toDOM());
-        $element -> appendChild((new FriendResponseButton('deny', (int) $this -> friendshipId)) -> toDOM());
-
-        return $element;
+    protected function beforeActions(): array
+    {
+        return [
+            new FriendResponseButton('accept', (int) $this -> friendshipId),
+            new FriendResponseButton('deny', (int) $this -> friendshipId),
+        ];
     }
 }

@@ -11,6 +11,9 @@ class ThemeSelector extends HTMLObject
         'system' => 'Match System',
         'light' => 'Light',
         'dark' => 'Dark',
+        'sepia' => 'Sepia',
+        'midnight' => 'Midnight',
+        'sunset' => 'Sunset',
     ];
 
     public function toDOM(): \DOMElement

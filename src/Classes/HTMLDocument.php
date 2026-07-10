@@ -15,9 +15,29 @@ class HTMLDocument extends HTMLObject
         $this -> body = new Body();
     }
 
+    /**
+     * Tracks how far into $head -> contents the metadata block (charset,
+     * viewport, title, description/OG/twitter meta tags, JSON-LD) reaches -
+     * set by Page::create() once it's built that block, so addMetaContent()
+     * knows where to insert.
+     */
+    public int $metaContentEndIndex = 0;
+
     public function addHeadContent(HTMLObject|string|\DOMNode $item): void
     {
         $this -> head -> addContents($item);
+    }
+
+    /**
+     * Inserts into the head immediately after the metadata block and before
+     * any stylesheet/script - for content that's metadata in spirit (e.g. an
+     * RSS <link rel="alternate">) but added by a page script after
+     * Page::create() has already built the rest of the head.
+     */
+    public function addMetaContent(HTMLObject|string|\DOMNode $item): void
+    {
+        array_splice($this -> head -> contents, $this -> metaContentEndIndex, 0, [$item]);
+        $this -> metaContentEndIndex++;
     }
 
     /**

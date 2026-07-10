@@ -64,6 +64,22 @@ class Post {
         return byline;
     }
 
+    /**
+     * True for null/empty, and content that only looks non-empty because of
+     * markup/whitespace - a Quill editor left "empty" typically still saves
+     * as something like "<p><br></p>" rather than an empty string.
+     */
+    static isBlankDescription(description) {
+        if (!description) {
+            return true;
+        }
+
+        const container = document.createElement('div');
+        container.innerHTML = description;
+
+        return container.textContent.replace(/\s+/g, '') === '';
+    }
+
     linkItemToElement() {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
@@ -77,7 +93,7 @@ class Post {
             link.appendChild(heading);
         }
 
-        if (this.description) {
+        if (!Post.isBlankDescription(this.description)) {
             const body = document.createElement('div');
             body.className = 'PostBody';
             body.innerHTML = this.description;

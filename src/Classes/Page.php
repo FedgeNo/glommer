@@ -32,6 +32,28 @@ class Page
         $viewport -> content = 'width=device-width, initial-scale=1';
         $page -> addHeadContent($viewport);
 
+        $title_element = new Title();
+        $title_element -> contents[] = $full_title;
+        $page -> addHeadContent($title_element);
+
+        foreach (self::metaTags($full_title, $description, $image, $url) as $meta) {
+            $page -> addHeadContent($meta);
+        }
+
+        $json_ld ??= [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => $site_title,
+            'url' => $url,
+        ];
+
+        $json_ld_script = new Script();
+        $json_ld_script -> attributes['type'] = 'application/ld+json';
+        $json_ld_script -> contents[] = self::safeJsonForScript($json_ld);
+        $page -> addHeadContent($json_ld_script);
+
+        $page -> metaContentEndIndex = count($page -> head -> contents);
+
         // Base layer - loaded before style.css so local rules win the cascade.
         $bootstrap = new Link();
         $bootstrap -> rel = 'stylesheet';
@@ -60,26 +82,6 @@ class Page
         if ($needsEmoji) {
             $page -> addHeadContent(EmojiPickerAssets::initScript());
         }
-
-        $title_element = new Title();
-        $title_element -> contents[] = $full_title;
-        $page -> addHeadContent($title_element);
-
-        foreach (self::metaTags($full_title, $description, $image, $url) as $meta) {
-            $page -> addHeadContent($meta);
-        }
-
-        $json_ld ??= [
-            '@context' => 'https://schema.org',
-            '@type' => 'WebSite',
-            'name' => $site_title,
-            'url' => $url,
-        ];
-
-        $json_ld_script = new Script();
-        $json_ld_script -> attributes['type'] = 'application/ld+json';
-        $json_ld_script -> contents[] = self::safeJsonForScript($json_ld);
-        $page -> addHeadContent($json_ld_script);
 
         $page -> body -> class = $body_class !== null ? 'PageBody ' . $body_class : 'PageBody';
         $page -> addContents(new MainNavigation());

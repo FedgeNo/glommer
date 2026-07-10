@@ -35,6 +35,10 @@ class OtherUser extends User
             && $friendship -> status === 'pending'
             && (int) $friendship -> requesterId === $viewer_id;
 
+        foreach ($this -> beforeActions() as $item) {
+            $element -> appendChild($item -> toDOM());
+        }
+
         $actions = new Div();
         $actions -> class = 'd-flex flex-column gap-2 ms-auto';
 
@@ -64,5 +68,15 @@ class OtherUser extends User
         $element -> appendChild($actions -> toDOM());
 
         return $element;
+    }
+
+    /**
+     * @return HTMLObject[] extra actions a subclass wants shown before the
+     *                       message/block/report trio, which always stays
+     *                       right-aligned via $actions's own ms-auto
+     */
+    protected function beforeActions(): array
+    {
+        return [];
     }
 }

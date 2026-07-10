@@ -14,7 +14,7 @@ $mysqli = Database::connection();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $theme = (string) ($payload['theme'] ?? '');
 
-$valid_themes = ['system', 'light', 'dark'];
+$valid_themes = ['system', 'light', 'dark', 'sepia', 'midnight', 'sunset'];
 
 if (!in_array($theme, $valid_themes, true)) {
     JSONResponse::error('Invalid theme', 422) -> send();

@@ -75,7 +75,8 @@ class Notification extends HTMLObject
     {
         return match ($this -> type) {
             'like', 'reply', 'postReady' => URL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
-            'friendRequest', 'friendAccepted' => URL::absolute('/users/' . $this -> actor -> username . '/'),
+            'friendRequest' => URL::absolute('/friends/'),
+            'friendAccepted' => URL::absolute('/users/' . $this -> actor -> username . '/'),
             'message' => URL::absolute('/messages/' . $this -> actor -> username),
             default => '#',
         };

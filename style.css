@@ -345,7 +345,9 @@ p a:hover {
 
 .MainNavigation > div > a:hover,
 .MainNavigation a.NavDropdownTrigger:hover,
-.NotificationsNavLink > a:hover {
+.NotificationsNavLink > a:hover,
+.NavDropdown:hover .NavDropdownTrigger,
+.NotificationsNavLink:hover > a {
     color: var(--ink);
     background-color: var(--surface);
     border-color: var(--hairline);
@@ -401,6 +403,19 @@ p a:hover {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
+}
+
+/* The account dropdown sits at the right end of the nav, so it lines its right
+   edge up with its trigger's and is never narrower than it - min-width: 100%
+   fills the trigger-width container. The pulled-in "glom" corner moves to the
+   top-right to match. */
+.NavAccount .NavDropdownMenu {
+    left: auto;
+    right: 0;
+    min-width: calc(100% + var(--radius-card));
+    border-top-left-radius: var(--radius-card);
+    border-top-right-radius: 0;
+    transform-origin: top right;
 }
 
 .NotificationsNavLink {

@@ -18,7 +18,7 @@ class MainNavigation extends HTMLObject
         $site_links -> class = 'd-flex gap-4';
 
         $account_links = new Div();
-        $account_links -> class = 'd-flex gap-4 ms-auto';
+        $account_links -> class = 'd-flex gap-4 ms-auto NavAccount';
 
         if (Auth::check()) {
             $current_user = Auth::user();

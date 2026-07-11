@@ -247,6 +247,53 @@ class EnvironmentChecker
             : null;
     }
 
+    /**
+     * Proves - rather than asks about - whether Apache's HTTPS redirect
+     * (.htaccess's `RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI}`) can
+     * be spoofed via a forged Host header, which is exactly what "ServerName
+     * <host>" + "UseCanonicalName On" exist to prevent. Connects to the
+     * site's real hostname on the plain-HTTP port (where that redirect rule
+     * lives - not 127.0.0.1, for the same VirtualHost-routing reason as
+     * httpsServing()) but sends a deliberately forged Host header, then
+     * checks whether the redirect's Location target reflects it.
+     *
+     * Returns true if the forged host leaks into the redirect (proven
+     * vulnerable), false if it doesn't (proven safe - ServerName/
+     * UseCanonicalName are genuinely working), and null if this can't be
+     * tested at all (no reachable response, or no redirect to inspect -
+     * e.g. HTTPS isn't enforced yet on this install) - callers fall back to
+     * asking when null, since inconclusive isn't the same as safe.
+     */
+    public static function hostHeaderSpoofable(string $host): ?bool
+    {
+        if (!function_exists('curl_init')) {
+            return null;
+        }
+
+        $spoofed_host = 'glommer-spoof-test-' . bin2hex(random_bytes(4)) . '.invalid';
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'http://' . $host . '/',
+            CURLOPT_HTTPHEADER => ['Host: ' . $spoofed_host],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => true,
+            CURLOPT_NOBODY => true,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_TIMEOUT => 5,
+        ]);
+
+        $headers = curl_exec($curl);
+        curl_close($curl);
+
+        if (!is_string($headers) || !preg_match('/^Location:\s*(\S+)/mi', $headers, $match)) {
+            return null;
+        }
+
+        return str_contains($match[1], $spoofed_host);
+    }
+
     /** @var array<string, mixed>|false|null null = not yet fetched, false = fetch failed */
     private static array|false|null $liveFactsCache = null;
 

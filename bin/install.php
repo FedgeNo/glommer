@@ -635,27 +635,41 @@ ok('.env present, SITE_URL and WS_SECRET configured (' . $config['siteURL'] . ')
 // client-supplied Host header for this purpose:
 //   ServerName <host>[:<port>]
 //   UseCanonicalName On
-// This can't be verified from PHP without an active request context (the CLI
-// has none, and even under the web SAPI, $_SERVER['SERVER_NAME'] is exactly
-// the value in question), so it's a manual confirmation, required like every
-// other prerequisite here. ($site_host/$site_port/$server_name_value were
-// already computed above for the HTTPS-serving check.)
-$server_name_question = 'Have you set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s '
-    . 'config (httpd.conf\'s top level if you\'re not using a <VirtualHost>, or inside the vhost if you are)?';
+// Rather than just ask whether ServerName/UseCanonicalName are set, prove it:
+// send a request to the real hostname with a deliberately forged Host header
+// and check whether the redirect reflects it. ($site_host/$server_name_value
+// were already computed above for the HTTPS-serving check.)
+$spoof_test = EnvironmentChecker::hostHeaderSpoofable($site_host);
 
-if (is_interactive()) {
-    if (!confirm($server_name_question)) {
-        fail('Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s config first - '
-            . 'required so the HTTPS redirect can\'t be spoofed via a forged Host header. See README.md\'s HTTPS section.');
-    }
-
-    ok('ServerName + UseCanonicalName confirmed');
-} elseif (Env::get('SERVERNAME_CONFIRMED', '') === '1') {
-    ok('ServerName + UseCanonicalName confirmed (SERVERNAME_CONFIRMED=1)');
+if ($spoof_test === true) {
+    fail('The HTTPS redirect can be spoofed via a forged Host header (confirmed live: a request with a fake Host '
+        . 'header got redirected to that same fake host) - anyone can 301 a victim to a domain of their choosing. '
+        . 'Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s config '
+        . '(httpd.conf\'s top level if you\'re not using a <VirtualHost>, or inside the vhost if you are), then '
+        . 're-run. See README.md\'s HTTPS section.');
+} elseif ($spoof_test === false) {
+    ok('ServerName + UseCanonicalName confirmed live (a forged Host header was not reflected in the redirect)');
 } else {
-    fail('Cannot confirm interactively (no terminal). Set "ServerName ' . $server_name_value . '" and '
-        . '"UseCanonicalName On" in Apache\'s config, then set SERVERNAME_CONFIRMED=1 to continue non-interactively. '
-        . 'See README.md\'s HTTPS section.');
+    // Couldn't prove it either way (no reachable response, or no redirect to
+    // inspect) - fall back to asking, same as before this check existed.
+    $server_name_question = 'Could not confirm this live. Have you set "ServerName ' . $server_name_value . '" and '
+        . '"UseCanonicalName On" in Apache\'s config (httpd.conf\'s top level if you\'re not using a <VirtualHost>, '
+        . 'or inside the vhost if you are)?';
+
+    if (is_interactive()) {
+        if (!confirm($server_name_question)) {
+            fail('Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s config first - '
+                . 'required so the HTTPS redirect can\'t be spoofed via a forged Host header. See README.md\'s HTTPS section.');
+        }
+
+        ok('ServerName + UseCanonicalName confirmed');
+    } elseif (Env::get('SERVERNAME_CONFIRMED', '') === '1') {
+        ok('ServerName + UseCanonicalName confirmed (SERVERNAME_CONFIRMED=1)');
+    } else {
+        fail('Cannot confirm interactively (no terminal), and could not verify it live. Set "ServerName ' . $server_name_value . '" and '
+            . '"UseCanonicalName On" in Apache\'s config, then set SERVERNAME_CONFIRMED=1 to continue non-interactively. '
+            . 'See README.md\'s HTTPS section.');
+    }
 }
 
 // ---------- WebSocket TLS ----------

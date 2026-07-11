@@ -39,6 +39,10 @@ SELECT *
         session_regenerate_id(true);
         $_SESSION['userId'] = $user -> userId;
         self::clearUserCache();
+
+        // Keep the friend-cap cache honest on every sign-in, in case a
+        // friendship changed through a path that didn't adjust it.
+        User::recomputeFriendCount((int) $user -> userId);
     }
 
     public static function logout(): void

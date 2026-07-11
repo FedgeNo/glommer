@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * The provisioning steps shared by the two install paths (the web setup
+ * wizard in src/setup.php and the interactive CLI in bin/install.php):
+ * creating the database, a least-privilege runtime account, the schema,
+ * and the .env contents that record all of it.
+ */
+class Installer
+{
+    /**
+     * Creates the database (if missing), a least-privilege runtime account
+     * with a freshly generated random password, grants it SELECT/INSERT/
+     * UPDATE/DELETE on that database only, and creates every table from
+     * schema.sql that doesn't already exist.
+     *
+     * @return array{username: string, password: string} the runtime account credentials
+     */
+    public static function provisionDatabase(\mysqli $admin_connection, string $db_database): array
+    {
+        $runtime_username = $db_database;
+        $runtime_password = bin2hex(random_bytes(24));
+
+        mysqli_query($admin_connection, '
+CREATE DATABASE IF NOT EXISTS `' . $db_database . '`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+');
+        mysqli_select_db($admin_connection, $db_database);
+
+        $escaped_password = mysqli_real_escape_string($admin_connection, $runtime_password);
+
+        // CREATE USER/GRANT can't go through mysqli_prepare - account-management
+        // statements aren't supported by the prepared-statement protocol on most
+        // server versions - so the (self-generated, never user-supplied) password
+        // is escaped and interpolated directly instead of bound as a placeholder.
+        // Scoped to host '%' rather than the connect host - that's the address the
+        // app connects to the server as, not necessarily what the server resolves
+        // the connecting client back to for grant-matching (e.g. a loopback TCP
+        // connection can resolve to 'localhost' regardless of the host string used
+        // to reach it).
+        mysqli_query($admin_connection, '
+CREATE USER IF NOT EXISTS \'' . $runtime_username . '\'@\'%\'
+    IDENTIFIED BY \'' . $escaped_password . '\'
+');
+        mysqli_query($admin_connection, '
+GRANT SELECT, INSERT, UPDATE, DELETE
+    ON `' . $db_database . '`.*
+    TO \'' . $runtime_username . '\'@\'%\'
+');
+
+        SchemaInstaller::createTables($admin_connection, SchemaInstaller::missingTables($admin_connection));
+        SchemaInstaller::runMaintenance($admin_connection);
+
+        return ['username' => $runtime_username, 'password' => $runtime_password];
+    }
+
+    /**
+     * @param array<string, string> $env ENV key => value, in the order they
+     *                                    should appear in the file
+     */
+    public static function envContents(array $env): string
+    {
+        $lines = [];
+
+        foreach ($env as $key => $value) {
+            $lines[] = $key . '=' . $value;
+        }
+
+        return implode("\n", $lines) . "\n";
+    }
+}

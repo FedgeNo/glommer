@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 class User extends HTMLObject
 {
+    /** Most friends we ever load/show for one person (the friends-list cap). */
+    public const MAX_FRIENDS = 5000;
+
     public string $tagName = 'div';
     public ?string $class = 'User Card';
 
@@ -20,6 +23,7 @@ class User extends HTMLObject
     public string $theme = 'system';
     public ?string $skinTone = null;
     public int $lastNotificationId = 0;
+    public int $friendCount = 0;
 
     public function toDOM(): \DOMElement
     {
@@ -29,12 +33,17 @@ class User extends HTMLObject
             $this -> attributes['data-username'] = $this -> username;
         }
 
-        $this -> contents[] = Avatar::forUser($this);
+        // The whole identity block - avatar, name, username, and joined date -
+        // is one link to the profile (same as header(), just the fuller card).
+        $link = new Anchor(URL::absolute('/users/' . $this -> username . '/'));
+        $link -> class = 'UserLink';
+
+        $link -> addContents(Avatar::forUser($this));
 
         $info = new Div();
 
         $name_heading = new Heading2();
-        $name_heading -> addContents(new Anchor(URL::absolute('/users/' . $this -> username . '/'), $name));
+        $name_heading -> contents[] = $name;
         $info -> addContents($name_heading);
 
         $username_line = new Div();
@@ -49,7 +58,9 @@ class User extends HTMLObject
             $info -> addContents($joined);
         }
 
-        $this -> contents[] = $info;
+        $link -> addContents($info);
+
+        $this -> contents[] = $link;
 
         return parent::toDOM();
     }
@@ -157,21 +168,41 @@ SELECT *
     }
 
     /**
-     * This user's accepted friends.
+     * This user's accepted friends, newest friendship first, excluding banned
+     * accounts. Paginate by passing the friendshipId of the last friend
+     * already seen as $before_friendship_id (the list is cursored on the
+     * Friendships row id).
      *
      * @return Friend[]
      */
-    public function getFriends(): array
+    public function getFriends(int $limit = self::MAX_FRIENDS, ?int $before_friendship_id = null): array
     {
         $accepted_status = 'accepted';
+        $not_banned = 0;
+        $mysqli = Database::connection();
 
-        $stmt = mysqli_prepare(Database::connection(), '
-SELECT `u`.*
+        if ($before_friendship_id !== null) {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = IF(`f`.`requesterId` = ?, `f`.`addresseeId`, `f`.`requesterId`)
-    WHERE `f`.`status` = ? AND (`f`.`requesterId` = ? OR `f`.`addresseeId` = ?)
+    WHERE `f`.`status` = ? AND (`f`.`requesterId` = ? OR `f`.`addresseeId` = ?) AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?
 ');
-        mysqli_stmt_bind_param($stmt, 'isii', $this -> userId, $accepted_status, $this -> userId, $this -> userId);
+            mysqli_stmt_bind_param($stmt, 'isiiiii', $this -> userId, $accepted_status, $this -> userId, $this -> userId, $not_banned, $before_friendship_id, $limit);
+        } else {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `f`.`friendshipId`, `u`.*
+    FROM `Friendships` `f`
+    JOIN `Users` `u` ON `u`.`userId` = IF(`f`.`requesterId` = ?, `f`.`addresseeId`, `f`.`requesterId`)
+    WHERE `f`.`status` = ? AND (`f`.`requesterId` = ? OR `f`.`addresseeId` = ?) AND `u`.`banned` = ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?
+');
+            mysqli_stmt_bind_param($stmt, 'isiiii', $this -> userId, $accepted_status, $this -> userId, $this -> userId, $not_banned, $limit);
+        }
+
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
@@ -185,21 +216,39 @@ SELECT `u`.*
     }
 
     /**
-     * Pending friend requests sent to this user, awaiting their response.
+     * Pending friend requests sent to this user, awaiting their response,
+     * newest first, excluding banned requesters. Cursored on friendshipId.
      *
      * @return FriendRequest[]
      */
-    public function getIncomingFriendRequests(): array
+    public function getIncomingFriendRequests(int $limit = self::MAX_FRIENDS, ?int $before_friendship_id = null): array
     {
         $pending_status = 'pending';
+        $not_banned = 0;
+        $mysqli = Database::connection();
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        if ($before_friendship_id !== null) {
+            $stmt = mysqli_prepare($mysqli, '
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
-    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ?
+    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?
 ');
-        mysqli_stmt_bind_param($stmt, 'is', $this -> userId, $pending_status);
+            mysqli_stmt_bind_param($stmt, 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+        } else {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `f`.`friendshipId`, `u`.*
+    FROM `Friendships` `f`
+    JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
+    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?
+');
+            mysqli_stmt_bind_param($stmt, 'isii', $this -> userId, $pending_status, $not_banned, $limit);
+        }
+
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
@@ -213,31 +262,124 @@ SELECT `f`.`friendshipId`, `u`.*
     }
 
     /**
-     * Pending friend requests this user sent, awaiting the other person's response.
+     * Pending friend requests this user sent, awaiting the other person's
+     * response, newest first, excluding banned addressees. Cursored on
+     * friendshipId.
      *
-     * @return OtherUser[]
+     * @return SentFriendRequest[]
      */
-    public function getOutgoingFriendRequests(): array
+    public function getOutgoingFriendRequests(int $limit = self::MAX_FRIENDS, ?int $before_friendship_id = null): array
     {
         $pending_status = 'pending';
+        $not_banned = 0;
+        $mysqli = Database::connection();
 
-        $stmt = mysqli_prepare(Database::connection(), '
-SELECT `u`.*
+        if ($before_friendship_id !== null) {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
-    WHERE `f`.`requesterId` = ? AND `f`.`status` = ?
+    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?
 ');
-        mysqli_stmt_bind_param($stmt, 'is', $this -> userId, $pending_status);
+            mysqli_stmt_bind_param($stmt, 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+        } else {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `f`.`friendshipId`, `u`.*
+    FROM `Friendships` `f`
+    JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
+    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?
+');
+            mysqli_stmt_bind_param($stmt, 'isii', $this -> userId, $pending_status, $not_banned, $limit);
+        }
+
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $requests = [];
 
         while ($row = mysqli_fetch_assoc($result)) {
-            $requests[] = OtherUser::fromRow($row);
+            $requests[] = SentFriendRequest::fromRow($row);
         }
 
         return $requests;
+    }
+
+    /**
+     * True if this user is already at the friend cap and so can't gain another
+     * friend - reads the maintained friendCount cache rather than counting
+     * Friendships every time. The cache is kept in step by
+     * increment/decrementFriendCounts on every add/remove and healed by
+     * recomputeFriendCount on sign-in.
+     */
+    public static function atFriendCap(int $user_id): bool
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `friendCount`
+    FROM `Users`
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+
+        return (int) ($row['friendCount'] ?? 0) >= self::MAX_FRIENDS;
+    }
+
+    /**
+     * Rewrites the friendCount cache from the actual accepted friendships (the
+     * source of truth). Called on sign-in so any drift - e.g. a friend deleted
+     * by a path that missed the decrement - is corrected.
+     */
+    public static function recomputeFriendCount(int $user_id): void
+    {
+        $accepted_status = 'accepted';
+
+        $stmt = mysqli_prepare(Database::connection(), '
+UPDATE `Users`
+    SET `friendCount` = (
+        SELECT COUNT(*)
+            FROM `Friendships`
+            WHERE `status` = ? AND (`requesterId` = ? OR `addresseeId` = ?)
+    )
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'siii', $accepted_status, $user_id, $user_id, $user_id);
+        mysqli_stmt_execute($stmt);
+    }
+
+    /**
+     * Bumps both users' friendCount cache by one - call right after a
+     * friendship becomes accepted.
+     */
+    public static function incrementFriendCounts(int $user_a, int $user_b): void
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+UPDATE `Users`
+    SET `friendCount` = `friendCount` + 1
+    WHERE `userId` = ? OR `userId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ii', $user_a, $user_b);
+        mysqli_stmt_execute($stmt);
+    }
+
+    /**
+     * Drops both users' friendCount cache by one (never below zero) - call
+     * right after an accepted friendship is removed.
+     */
+    public static function decrementFriendCounts(int $user_a, int $user_b): void
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+UPDATE `Users`
+    SET `friendCount` = `friendCount` - 1
+    WHERE (`userId` = ? OR `userId` = ?) AND `friendCount` > 0
+');
+        mysqli_stmt_bind_param($stmt, 'ii', $user_a, $user_b);
+        mysqli_stmt_execute($stmt);
     }
 
     /**

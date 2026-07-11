@@ -12,6 +12,7 @@ class Page
         bool $needsEditor = false,
         bool $needsMath = false,
         bool $needsEmoji = false,
+        bool $needsHelp = false,
         ?string $body_class = null
     ): HTMLDocument {
         $page = new HTMLDocument();
@@ -21,7 +22,7 @@ class Page
 
         $full_title = $title . ' - ' . $site_title;
         $description ??= $site_title . ' - a place to publish.';
-        $url = self::currentUrl();
+        $url = self::currentURL();
 
         $charset = new Meta();
         $charset -> charset = 'utf-8';
@@ -49,7 +50,7 @@ class Page
 
         $json_ld_script = new Script();
         $json_ld_script -> attributes['type'] = 'application/ld+json';
-        $json_ld_script -> contents[] = self::safeJsonForScript($json_ld);
+        $json_ld_script -> contents[] = self::safeJSONForScript($json_ld);
         $page -> addHeadContent($json_ld_script);
 
         $page -> metaContentEndIndex = count($page -> head -> contents);
@@ -61,7 +62,7 @@ class Page
         $page -> addHeadContent($bootstrap);
 
         if ($needsEditor) {
-            $page -> addHeadContent(QuillAssets::cssLink());
+            $page -> addHeadContent(QuillAssets::CSSLink());
         }
 
         $stylesheet = new Link();
@@ -70,12 +71,12 @@ class Page
         $page -> addHeadContent($stylesheet);
 
         if ($needsEditor) {
-            $page -> addHeadContent(QuillAssets::jsScript());
+            $page -> addHeadContent(QuillAssets::JSScript());
         }
 
         if ($needsMath) {
-            $page -> addHeadContent(KaTeXAssets::cssLink());
-            $page -> addHeadContent(KaTeXAssets::jsScript());
+            $page -> addHeadContent(KaTeXAssets::CSSLink());
+            $page -> addHeadContent(KaTeXAssets::JSScript());
             $page -> addHeadContent(KaTeXAssets::autoRenderScript());
         }
 
@@ -95,10 +96,10 @@ class Page
             'currentUserUsername' => $current_user ?-> username,
             'currentUserSkinTone' => $current_user ?-> skinTone,
             'currentUserCanModerate' => Auth::canModerate(),
-            'csrfToken' => CSRF::token(),
+            'CSRFToken' => CSRF::token(),
             'siteURL' => URL::absolute(''),
             'serverTime' => time() * 1000,
-            'wsPort' => $config['wsPort'],
+            'WSPort' => $config['WSPort'],
         ]));
 
         $post_script = new Script();
@@ -121,10 +122,16 @@ class Page
         $main_script -> src = URL::absolute('/main.js');
         $page -> addContents($main_script);
 
+        if ($needsHelp) {
+            $help_script = new Script();
+            $help_script -> src = URL::absolute('/help.js');
+            $page -> addContents($help_script);
+        }
+
         return $page;
     }
 
-    public static function safeJsonForScript(mixed $data): string
+    public static function safeJSONForScript(mixed $data): string
     {
         // DOMDocument HTML-escapes text node content (&, <, >) regardless of
         // the parent tag. Browsers don't decode entities inside <script>
@@ -137,7 +144,7 @@ class Page
         return str_replace(['&', '<', '>'], ['\\u0026', '\\u003C', '\\u003E'], $json);
     }
 
-    public static function currentUrl(): string
+    public static function currentURL(): string
     {
         return URL::absolute($_SERVER['REQUEST_URI'] ?? '/');
     }

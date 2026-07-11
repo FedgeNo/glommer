@@ -29,7 +29,7 @@ class Form extends HTMLObject
 
         if (strtoupper($this -> method) === 'POST') {
             $csrf_input = new HiddenInput();
-            $csrf_input -> name = 'csrfToken';
+            $csrf_input -> name = 'CSRFToken';
             $csrf_input -> value = CSRF::token();
             $this -> contents[] = $csrf_input;
         }

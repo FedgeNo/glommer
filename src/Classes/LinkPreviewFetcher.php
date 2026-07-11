@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Fetches Open Graph metadata for a post's link field so the composer can
  * offer to pre-fill the title/description/image - the user can still edit
  * or remove any of it before posting. The HTML fetch and the image fetch
- * both go through SafeHttpFetcher, since both URLs are user-submitted.
+ * both go through SafeHTTPFetcher, since both URLs are user-submitted.
  */
 class LinkPreviewFetcher
 {
@@ -99,7 +99,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         $fetched = null;
 
         for ($attempt = 0; $fetched === null && $attempt <= self::MAX_FETCH_RETRIES; $attempt++) {
-            $fetched = SafeHttpFetcher::get($url, self::MAX_HTML_BYTES);
+            $fetched = SafeHTTPFetcher::get($url, self::MAX_HTML_BYTES);
         }
 
         if ($fetched === null) {
@@ -116,9 +116,9 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         // image (thumbnailed the same as any other attached image); for other
         // non-HTML types (PDFs, etc.) there's just a title and no image.
         $metadata = str_starts_with($content_type, 'text/html')
-            ? self::parseHtml(self::toUtf8($fetched['body'], $content_type), $url)
+            ? self::parseHTML(self::toUtf8($fetched['body'], $content_type), $url)
             : [
-                'title' => self::filenameFromUrl($url),
+                'title' => self::filenameFromURL($url),
                 'description' => null,
                 'imageURL' => str_starts_with($content_type, 'image/') ? $url : null,
             ];
@@ -128,7 +128,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         return $metadata;
     }
 
-    private static function filenameFromUrl(string $url): ?string
+    private static function filenameFromURL(string $url): ?string
     {
         $path = parse_url($url, PHP_URL_PATH);
 
@@ -204,7 +204,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
      *
      * @return array{title: ?string, description: ?string, imageURL: ?string}|null
      */
-    private static function parseHtml(string $html, string $base_url): ?array
+    private static function parseHTML(string $html, string $base_url): ?array
     {
         $previous_setting = libxml_use_internal_errors(true);
         $document = new \DOMDocument();
@@ -212,7 +212,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         libxml_use_internal_errors($previous_setting);
 
         $xpath = new \DOMXPath($document);
-        $json_ld = self::extractJsonLd($xpath);
+        $json_ld = self::extractJSONLD($xpath);
 
         $title = $json_ld['title']
             ?? self::metaContent($xpath, 'og:title', 'property')
@@ -235,7 +235,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         return [
             'title' => $title !== null ? self::cleanText($title, 255) : null,
             'description' => $description !== null ? self::cleanText($description, 1000) : null,
-            'imageURL' => $image_url !== null ? self::resolveUrl(trim($image_url), $base_url) : null,
+            'imageURL' => $image_url !== null ? self::resolveURL(trim($image_url), $base_url) : null,
         ];
     }
 
@@ -271,7 +271,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
      *
      * @return array{title: ?string, description: ?string, image: ?string}
      */
-    private static function extractJsonLd(\DOMXPath $xpath): array
+    private static function extractJSONLD(\DOMXPath $xpath): array
     {
         $scripts = $xpath -> query('//script[@type="application/ld+json"]');
         $nodes = [];
@@ -281,19 +281,19 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
                 $decoded = json_decode((string) $script -> textContent, true);
 
                 if (is_array($decoded)) {
-                    $nodes = array_merge($nodes, self::flattenJsonLd($decoded));
+                    $nodes = array_merge($nodes, self::flattenJSONLD($decoded));
                 }
             }
         }
 
-        usort($nodes, fn (array $a, array $b) => self::isJsonLdContentNode($b) <=> self::isJsonLdContentNode($a));
+        usort($nodes, fn (array $a, array $b) => self::isJSONLDContentNode($b) <=> self::isJSONLDContentNode($a));
 
         $title = null;
         $description = null;
         $image = null;
 
         foreach ($nodes as $node) {
-            $fields = self::jsonLdFields($node);
+            $fields = self::JSONLDFields($node);
             $title ??= $fields['title'];
             $description ??= $fields['description'];
             $image ??= $fields['image'];
@@ -309,7 +309,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
     /**
      * @param array<string, mixed> $node
      */
-    private static function isJsonLdContentNode(array $node): bool
+    private static function isJSONLDContentNode(array $node): bool
     {
         $type = $node['@type'] ?? null;
 
@@ -325,14 +325,14 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
     /**
      * @return array<int, array<string, mixed>>
      */
-    private static function flattenJsonLd(array $decoded): array
+    private static function flattenJSONLD(array $decoded): array
     {
         if (array_is_list($decoded)) {
             $nodes = [];
 
             foreach ($decoded as $item) {
                 if (is_array($item)) {
-                    $nodes = array_merge($nodes, self::flattenJsonLd($item));
+                    $nodes = array_merge($nodes, self::flattenJSONLD($item));
                 }
             }
 
@@ -342,7 +342,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         $nodes = [$decoded];
 
         if (isset($decoded['@graph']) && is_array($decoded['@graph'])) {
-            $nodes = array_merge($nodes, self::flattenJsonLd($decoded['@graph']));
+            $nodes = array_merge($nodes, self::flattenJSONLD($decoded['@graph']));
         }
 
         return $nodes;
@@ -352,7 +352,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
      * @param array<string, mixed> $node
      * @return array{title: ?string, description: ?string, image: ?string}
      */
-    private static function jsonLdFields(array $node): array
+    private static function JSONLDFields(array $node): array
     {
         $title = $node['headline'] ?? $node['name'] ?? null;
         $description = $node['description'] ?? null;
@@ -360,7 +360,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         return [
             'title' => is_string($title) ? $title : null,
             'description' => is_string($description) ? $description : null,
-            'image' => self::jsonLdImage($node['image'] ?? null),
+            'image' => self::JSONLDImage($node['image'] ?? null),
         ];
     }
 
@@ -368,7 +368,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
      * schema.org's "image" property can be a plain URL string, an ImageObject
      * (an associative array with a "url" key), or an array of either.
      */
-    private static function jsonLdImage(mixed $image): ?string
+    private static function JSONLDImage(mixed $image): ?string
     {
         if (is_string($image)) {
             return $image;
@@ -383,7 +383,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         }
 
         foreach ($image as $item) {
-            $resolved = self::jsonLdImage($item);
+            $resolved = self::JSONLDImage($item);
 
             if ($resolved !== null) {
                 return $resolved;
@@ -393,7 +393,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         return null;
     }
 
-    private static function resolveUrl(string $url, string $base_url): ?string
+    private static function resolveURL(string $url, string $base_url): ?string
     {
         if (preg_match('/^https?:\/\//i', $url)) {
             return strlen($url) <= 2048 ? $url : null;
@@ -456,7 +456,7 @@ DELETE
      */
     private static function stageImage(string $image_url): ?array
     {
-        $fetched = SafeHttpFetcher::get($image_url, self::MAX_IMAGE_BYTES);
+        $fetched = SafeHTTPFetcher::get($image_url, self::MAX_IMAGE_BYTES);
 
         if ($fetched === null) {
             return null;

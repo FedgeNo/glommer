@@ -9,11 +9,11 @@ declare(strict_types=1);
  * bidirectional connections open across requests) - it never touches the
  * database. Two listeners multiplexed in one stream_select() loop:
  *
- *   - the public WebSocket port browsers connect to (wsPort), authenticated
+ *   - the public WebSocket port browsers connect to (WSPort), authenticated
  *     via a short-lived WSToken passed as a query string parameter (the
  *     standard approach for browser WebSocket auth, since the browser
  *     WebSocket API can't set custom headers on the handshake)
- *   - a loopback-only "push" port (wsPushPort) that api/*.php scripts
+ *   - a loopback-only "push" port (WSPushPort) that api/*.php scripts
  *     (running in a normal Apache/PHP-FPM request) connect to briefly to
  *     say "deliver this JSON payload to this userId's open connection(s)"
  *
@@ -41,19 +41,19 @@ function log_line(string $message): void
 
 $config = require __DIR__ . '/../src/config.php';
 
-$use_tls = $config['wsTlsCert'] !== null && $config['wsTlsKey'] !== null;
+$use_tls = $config['WSTLSCert'] !== null && $config['WSTLSKey'] !== null;
 
 $context = stream_context_create();
 
 if ($use_tls) {
-    stream_context_set_option($context, 'ssl', 'local_cert', $config['wsTlsCert']);
-    stream_context_set_option($context, 'ssl', 'local_pk', $config['wsTlsKey']);
+    stream_context_set_option($context, 'ssl', 'local_cert', $config['WSTLSCert']);
+    stream_context_set_option($context, 'ssl', 'local_pk', $config['WSTLSKey']);
     stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
     stream_context_set_option($context, 'ssl', 'verify_peer', false);
 }
 
 $public_listener = stream_socket_server(
-    'tcp://' . $config['wsHost'] . ':' . $config['wsPort'],
+    'tcp://' . $config['WSHost'] . ':' . $config['WSPort'],
     $error_code,
     $error_message,
     STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
@@ -61,28 +61,28 @@ $public_listener = stream_socket_server(
 );
 
 if ($public_listener === false) {
-    log_line('Could not bind public WebSocket listener on ' . $config['wsHost'] . ':' . $config['wsPort'] . ' - ' . $error_message);
+    log_line('Could not bind public WebSocket listener on ' . $config['WSHost'] . ':' . $config['WSPort'] . ' - ' . $error_message);
     exit(1);
 }
 
 // Loopback only - this port is never meant to be reachable from outside the
 // machine, api/*.php scripts are its only legitimate callers.
 $push_listener = stream_socket_server(
-    'tcp://127.0.0.1:' . $config['wsPushPort'],
+    'tcp://127.0.0.1:' . $config['WSPushPort'],
     $error_code,
     $error_message,
     STREAM_SERVER_BIND | STREAM_SERVER_LISTEN
 );
 
 if ($push_listener === false) {
-    log_line('Could not bind internal push listener on 127.0.0.1:' . $config['wsPushPort'] . ' - ' . $error_message);
+    log_line('Could not bind internal push listener on 127.0.0.1:' . $config['WSPushPort'] . ' - ' . $error_message);
     exit(1);
 }
 
 stream_set_blocking($public_listener, false);
 stream_set_blocking($push_listener, false);
 
-log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $config['wsHost'] . ':' . $config['wsPort'] . ', internal push 127.0.0.1:' . $config['wsPushPort']);
+log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $config['WSHost'] . ':' . $config['WSPort'] . ', internal push 127.0.0.1:' . $config['WSPushPort']);
 
 /**
  * One entry per connected socket, keyed by (int) $socket (PHP resource IDs
@@ -340,7 +340,7 @@ function try_complete_handshake(int $id): bool
     parse_str($query_string, $query_params);
 
     $token = $query_params['token'] ?? '';
-    $user_id = $token !== '' ? WSToken::verify($token, $config['wsSecret']) : null;
+    $user_id = $token !== '' ? WSToken::verify($token, $config['WSSecret']) : null;
 
     if ($path !== '/' || $user_id === null) {
         $connections[$id]['sendBuffer'] .= "HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n";
@@ -386,7 +386,7 @@ function handle_push_request(int $id): void
         is_array($request)
         && isset($request['secret'], $request['userId'], $request['payload'])
         && is_string($request['secret'])
-        && hash_equals($config['wsSecret'], $request['secret'])
+        && hash_equals($config['WSSecret'], $request['secret'])
     ) {
         $target_user_id = (int) $request['userId'];
         $frame = ws_encode_text_frame(json_encode($request['payload']));

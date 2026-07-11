@@ -21,29 +21,38 @@ class LinkItem extends FeedItem
 
     public function toDOM(): \DOMElement
     {
+        $link = new Anchor($this -> linkURL);
+        // Opens in a new tab; rel=noopener keeps the opened (user-submitted)
+        // page from reaching back through window.opener.
+        $link -> attributes['target'] = '_blank';
+        $link -> attributes['rel'] = 'noopener';
+
         if ($this -> image !== null) {
             $image = new Image();
             $image -> class = 'LinkItemImage';
             $image -> src = $this -> image -> imageURL();
             $image -> alt = 'Link preview image';
-            $this -> contents[] = $image;
+            $link -> addContents($image);
         }
 
-        $link = new Anchor($this -> linkURL);
+        $text = new Div();
+        $text -> class = 'LinkItemText';
 
         if ($this -> title !== null) {
             $heading = new Heading3();
             $heading -> contents[] = $this -> title;
-            $link -> addContents($heading);
+            $text -> addContents($heading);
         }
 
         if (!self::isBlankDescription($this -> description)) {
             $body = new PostBody();
             $body -> addContents($this -> description);
-            $link -> addContents($body);
+            $text -> addContents($body);
         }
 
-        $link -> addContents($this -> linkURL);
+        $text -> addContents($this -> linkURL);
+
+        $link -> addContents($text);
 
         $this -> contents[] = $link;
 

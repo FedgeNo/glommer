@@ -36,7 +36,7 @@ $json_ld = [
     '@context' => 'https://schema.org',
     '@type' => 'Person',
     'name' => $name,
-    'url' => Page::currentUrl(),
+    'url' => Page::currentURL(),
 ];
 
 if ($profile_user -> avatarURL() !== null) {
@@ -48,8 +48,6 @@ $page = Page::create($name, 'Posts by ' . $name . ' on Glommer', $profile_user -
 $page -> addMetaContent(new RSSLink(URL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
 
 $page -> addContents($profile_user);
-
-$page -> addContents(new Heading2('Posts'));
 
 $feed_stmt = mysqli_prepare($mysqli, '
 SELECT *
@@ -65,6 +63,10 @@ $feed_rows = [];
 
 while ($row = mysqli_fetch_assoc($feed_result)) {
     $feed_rows[] = $row;
+}
+
+if ($feed_rows !== []) {
+    $page -> addContents(new Heading2('Posts'));
 }
 
 foreach (Thread::fromRows($feed_rows) as $thread) {

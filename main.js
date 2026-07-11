@@ -1,5 +1,5 @@
 function csrf_headers(extra) {
-    return Object.assign({ 'X-CSRF-Token': window.csrfToken }, extra || {});
+    return Object.assign({ 'X-CSRF-Token': window.CSRFToken }, extra || {});
 }
 
 /**
@@ -715,10 +715,24 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const request = button.closest('.FriendRequest');
+    // They're a friend now - swap the Accept/Deny pair for the Remove Friend
+    // button an accepted friendship's card carries, right below Message.
+    const card = button.closest('.OtherUser');
 
-    if (request) {
-        request.remove();
+    if (card) {
+        const user_id = card.querySelector('.BlockUserButton')?.dataset.userId;
+        const message_link = card.querySelector('a.Btn[href*="/messages/"]');
+
+        card.querySelectorAll('.AcceptFriendButton, .DenyFriendButton').forEach((response_button) => response_button.remove());
+
+        if (user_id && message_link) {
+            const remove_friend_button = document.createElement('button');
+            remove_friend_button.type = 'button';
+            remove_friend_button.className = 'Btn RemoveFriendButton';
+            remove_friend_button.dataset.userId = user_id;
+            remove_friend_button.textContent = 'Remove Friend';
+            message_link.after(remove_friend_button);
+        }
     }
 });
 
@@ -740,7 +754,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const request = button.closest('.FriendRequest');
+    const request = button.closest('.OtherUser');
 
     if (request) {
         request.remove();
@@ -801,6 +815,56 @@ document.addEventListener('click', async (event) => {
 });
 
 document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.DismissReportButton');
+
+    if (!button) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const result = await api_post('/api/dismiss-report', { reportId: button.dataset.reportId });
+
+    if (result === null) {
+        button.disabled = false;
+        return;
+    }
+
+    const card = button.closest('.ReportCard');
+
+    if (card) {
+        card.remove();
+    }
+});
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.DeleteReportedContentButton');
+
+    if (!button) {
+        return;
+    }
+
+    if (!await show_confirm('Delete this content permanently? Deleting a post also removes all its replies.')) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const result = await api_post('/api/delete-reported-content', { reportId: button.dataset.reportId });
+
+    if (result === null) {
+        button.disabled = false;
+        return;
+    }
+
+    const card = button.closest('.ReportCard');
+
+    if (card) {
+        card.remove();
+    }
+});
+
+document.addEventListener('click', async (event) => {
     const button = event.target.closest('.ResendVerificationButton');
 
     if (!button) {
@@ -819,18 +883,13 @@ document.addEventListener('click', async (event) => {
     button.textContent = 'Sent!';
 });
 
-document.addEventListener('click', (event) => {
-    const button = event.target.closest('.CarouselPrev, .CarouselNext');
+// Running slideshows, keyed by their carousel element (interval id per carousel).
+const carousel_slideshows = new WeakMap();
+const CAROUSEL_SLIDESHOW_INTERVAL = 3500;
 
-    if (!button) {
-        return;
-    }
-
-    const carousel = button.closest('.Carousel');
+function carousel_advance(carousel, direction) {
     const slides = Array.from(carousel.querySelectorAll('.CarouselSlide'));
     const current_index = slides.findIndex((slide) => slide.classList.contains('Active'));
-
-    const direction = button.classList.contains('CarouselNext') ? 1 : -1;
     const next_index = (current_index + direction + slides.length) % slides.length;
 
     slides[current_index].classList.remove('Active');
@@ -841,7 +900,90 @@ document.addEventListener('click', (event) => {
     if (counter) {
         counter.textContent = (next_index + 1) + ' / ' + slides.length;
     }
+}
+
+function start_carousel_slideshow(carousel) {
+    if (carousel_slideshows.has(carousel)) {
+        return;
+    }
+
+    const interval_id = setInterval(() => carousel_advance(carousel, 1), CAROUSEL_SLIDESHOW_INTERVAL);
+    carousel_slideshows.set(carousel, interval_id);
+
+    const toggle = carousel.querySelector('.CarouselSlideshow');
+
+    if (toggle) {
+        toggle.textContent = 'Stop Slideshow';
+    }
+}
+
+function stop_carousel_slideshow(carousel) {
+    if (!carousel_slideshows.has(carousel)) {
+        return;
+    }
+
+    clearInterval(carousel_slideshows.get(carousel));
+    carousel_slideshows.delete(carousel);
+
+    const toggle = carousel.querySelector('.CarouselSlideshow');
+
+    if (toggle) {
+        toggle.textContent = 'Slideshow';
+    }
+}
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('.CarouselPrev, .CarouselNext');
+
+    if (!button) {
+        return;
+    }
+
+    const carousel = button.closest('.Carousel');
+
+    // Stepping through by hand stops the slideshow.
+    stop_carousel_slideshow(carousel);
+    carousel_advance(carousel, button.classList.contains('CarouselNext') ? 1 : -1);
 });
+
+document.addEventListener('click', (event) => {
+    const toggle = event.target.closest('.CarouselSlideshow');
+
+    if (!toggle) {
+        return;
+    }
+
+    const carousel = toggle.closest('.Carousel');
+
+    if (carousel_slideshows.has(carousel)) {
+        stop_carousel_slideshow(carousel);
+    } else {
+        start_carousel_slideshow(carousel);
+    }
+});
+
+// Clicking an image in the carousel stops the slideshow.
+document.addEventListener('click', (event) => {
+    const image = event.target.closest('.Carousel .ImageItem img');
+
+    if (!image) {
+        return;
+    }
+
+    stop_carousel_slideshow(image.closest('.Carousel'));
+});
+
+// Playing a video in the carousel stops the slideshow. The play event doesn't
+// bubble, so this listens in the capture phase to catch it via delegation.
+document.addEventListener('play', (event) => {
+    const video = event.target.closest('.Carousel video');
+
+    if (!video) {
+        return;
+    }
+
+    stop_carousel_slideshow(video.closest('.Carousel'));
+}, true);
 
 document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.AvatarUploader');
@@ -1180,7 +1322,7 @@ async function connect_websocket() {
     }
 
     const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const socket = new WebSocket(`${scheme}://${window.location.hostname}:${window.wsPort}/?token=${encodeURIComponent(token)}`);
+    const socket = new WebSocket(`${scheme}://${window.location.hostname}:${window.WSPort}/?token=${encodeURIComponent(token)}`);
     let reconnecting = false;
 
     const reconnect = () => {
@@ -1283,6 +1425,82 @@ window.addEventListener('scroll', async () => {
     } finally {
         spinner.remove();
         loading_older_feed_items = false;
+    }
+});
+
+// Friend-page sections (friends, incoming requests, sent requests) are each
+// their own infinite scroll, stacked vertically. A single handler advances
+// only the topmost section the reader has actually scrolled to the end of, so
+// two never load at once - and never loads a section whose end is already
+// scrolled off above the viewport (which would grow content off-screen and
+// jump the scroll position).
+const FRIENDS_DISPLAY_CAP = 5000;
+let loading_user_section = false;
+
+window.addEventListener('scroll', async () => {
+    if (loading_user_section) {
+        return;
+    }
+
+    const threshold = 300;
+
+    const target = Array.from(document.querySelectorAll('.PaginatedUserList')).find((list) => {
+        if (list.dataset.hasMore !== '1') {
+            return false;
+        }
+
+        const rect = list.getBoundingClientRect();
+
+        return rect.bottom > 0 && rect.bottom <= window.innerHeight + threshold;
+    });
+
+    if (!target) {
+        return;
+    }
+
+    // The friends list is capped for display; requests aren't.
+    if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {
+        target.dataset.hasMore = '0';
+        return;
+    }
+
+    loading_user_section = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    target.appendChild(spinner);
+
+    try {
+        const list_type = target.dataset.listType;
+        const user_id = target.dataset.userId;
+        const before = target.dataset.oldestFriendshipId;
+
+        const response = await fetch(`${window.siteURL}/api/friend-list-history?listType=${list_type}&userId=${user_id}&beforeFriendshipId=${before}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        const { items, hasMore: has_more, oldestFriendshipId: oldest_friendship_id } = data.response;
+
+        target.dataset.hasMore = has_more ? '1' : '0';
+
+        if (oldest_friendship_id !== null) {
+            target.dataset.oldestFriendshipId = oldest_friendship_id;
+        }
+
+        items.forEach((item) => {
+            const card = (list_type === 'incoming' ? FriendRequest : OtherUser).fromData(item);
+            target.insertBefore(card.toElement(), spinner);
+        });
+
+        if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {
+            target.dataset.hasMore = '0';
+        }
+    } finally {
+        spinner.remove();
+        loading_user_section = false;
     }
 });
 
@@ -1454,7 +1672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         xhr.open('POST', form.action);
-        xhr.setRequestHeader('X-CSRF-Token', window.csrfToken);
+        xhr.setRequestHeader('X-CSRF-Token', window.CSRFToken);
         xhr.send(new FormData(form));
     });
 });

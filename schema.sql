@@ -25,6 +25,7 @@ CREATE TABLE `Users` (
   `theme` varchar(10) NOT NULL DEFAULT 'system',
   `skinTone` varchar(16) DEFAULT NULL,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
+  `friendCount` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
@@ -153,7 +154,8 @@ CREATE TABLE `RateLimitAttempts` (
   `rateKey` varchar(255) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`attemptId`),
-  KEY `rateKey` (`rateKey`,`createdAt`)
+  KEY `rateKey` (`rateKey`,`createdAt`),
+  KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Timelines` (
@@ -172,5 +174,18 @@ CREATE TABLE `LinkPreviews` (
   `imageURL` varchar(2048) DEFAULT NULL,
   `succeeded` tinyint(1) NOT NULL DEFAULT 0,
   `fetchedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`url`)
+  PRIMARY KEY (`url`),
+  KEY `fetchedAt` (`fetchedAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
+-- from the actual accepted friendships. Runs after every install and upgrade -
+-- a no-op on a fresh database, and on an upgrade it corrects existing rows the
+-- moment the column is added rather than waiting for each user's next sign-in.
+-- The installer runs every non-CREATE-TABLE statement in this file here.
+UPDATE `Users` `u`
+    SET `u`.`friendCount` = (
+        SELECT COUNT(*)
+            FROM `Friendships` `f`
+            WHERE `f`.`status` = 'accepted' AND (`f`.`requesterId` = `u`.`userId` OR `f`.`addresseeId` = `u`.`userId`)
+    );

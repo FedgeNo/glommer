@@ -77,6 +77,13 @@ class Post {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
 
+        const link = document.createElement('a');
+        link.href = this.linkURL;
+        // Opens in a new tab; rel=noopener keeps the opened (user-submitted)
+        // page from reaching back through window.opener.
+        link.target = '_blank';
+        link.rel = 'noopener';
+
         const link_image = this.items.find((item) => item.itemType === 'ImageItem');
 
         if (link_image) {
@@ -84,26 +91,27 @@ class Post {
             image.className = 'LinkItemImage';
             image.src = link_image.image;
             image.alt = 'Link preview image';
-            wrapper.appendChild(image);
+            link.appendChild(image);
         }
 
-        const link = document.createElement('a');
-        link.href = this.linkURL;
+        const text = document.createElement('div');
+        text.className = 'LinkItemText';
 
         if (this.title) {
             const heading = document.createElement('h3');
             heading.textContent = this.title;
-            link.appendChild(heading);
+            text.appendChild(heading);
         }
 
         if (!Post.isBlankDescription(this.description)) {
             const body = document.createElement('div');
             body.className = 'PostBody';
             body.innerHTML = this.description;
-            link.appendChild(body);
+            text.appendChild(body);
         }
 
-        link.appendChild(document.createTextNode(this.linkURL));
+        text.appendChild(document.createTextNode(this.linkURL));
+        link.appendChild(text);
         wrapper.appendChild(link);
 
         return wrapper;
@@ -173,6 +181,12 @@ class Post {
             counter.className = 'CarouselCounter';
             counter.textContent = '1 / ' + this.items.length;
             carousel.appendChild(counter);
+
+            const slideshow_button = document.createElement('button');
+            slideshow_button.type = 'button';
+            slideshow_button.className = 'CarouselSlideshow';
+            slideshow_button.textContent = 'Slideshow';
+            carousel.appendChild(slideshow_button);
         }
 
         return carousel;
@@ -272,7 +286,9 @@ class Post {
                 delete_button.dataset.itemId = this.postId;
                 delete_button.textContent = 'Delete';
                 actions.appendChild(delete_button);
-            } else {
+            } else if (Number(this.userId) !== 1) {
+                // The admin's posts can't be reported (the API rejects it -
+                // nobody could act on the report anyway).
                 const report_button = document.createElement('button');
                 report_button.type = 'button';
                 report_button.className = 'Btn ReportButton';

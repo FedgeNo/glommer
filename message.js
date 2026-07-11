@@ -32,19 +32,28 @@ class Message {
             div.appendChild(this.senderHeader(sender, this.senderId));
         }
 
+        // Body and (for other people's messages) the report button share one
+        // row - text left, button hugging the right - so they never overlap.
+        const line = document.createElement('div');
+        line.className = 'MessageLine';
+
         const body = document.createElement('p');
         body.textContent = this.body;
-        div.appendChild(body);
+        line.appendChild(body);
 
-        if (window.currentUserId !== null && Number(this.senderId) !== Number(window.currentUserId)) {
+        // No report button on the admin's messages - the API rejects reports
+        // about the admin, since nobody could act on one anyway.
+        if (window.currentUserId !== null && Number(this.senderId) !== Number(window.currentUserId) && Number(this.senderId) !== 1) {
             const report_button = document.createElement('button');
             report_button.type = 'button';
             report_button.className = 'Btn ReportButton';
             report_button.dataset.targetType = 'message';
             report_button.dataset.targetId = this.messageId;
             report_button.textContent = 'Report';
-            div.appendChild(report_button);
+            line.appendChild(report_button);
         }
+
+        div.appendChild(line);
 
         this.element = div;
 

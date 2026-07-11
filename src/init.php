@@ -101,7 +101,7 @@ if (Auth::check()) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrfToken'] ?? null;
+    $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['CSRFToken'] ?? null;
 
     if (!CSRF::verify(is_string($csrf_token) ? $csrf_token : null)) {
         if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {

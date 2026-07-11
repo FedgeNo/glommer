@@ -31,6 +31,34 @@ SELECT *
         return $row === null ? null : self::fromRow($row);
     }
 
+    /**
+     * Removes an accepted friendship between two users (either direction) and,
+     * if one was actually removed, drops both their friendCount caches. The
+     * single place unfriending happens - used both by the Remove Friend action
+     * and by blocking (which severs a friendship as a side effect). Returns
+     * whether they were in fact friends.
+     */
+    public static function removeAccepted(int $user_a, int $user_b): bool
+    {
+        $accepted_status = 'accepted';
+
+        $stmt = mysqli_prepare(Database::connection(), '
+DELETE
+    FROM `Friendships`
+    WHERE `status` = ? AND ((`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?))
+');
+        mysqli_stmt_bind_param($stmt, 'siiii', $accepted_status, $user_a, $user_b, $user_b, $user_a);
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_affected_rows($stmt) === 0) {
+            return false;
+        }
+
+        User::decrementFriendCounts($user_a, $user_b);
+
+        return true;
+    }
+
     public static function fromRow(array $row): self
     {
         $friendship = new self();

@@ -4,23 +4,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
+// The friends page now lives per-user at /users/{username}/friends (public,
+// with your request sections shown only on your own). /friends/ stays as the
+// "my friends" shortcut - it just sends you to your own page there.
 Auth::requireLogin();
 
-$current_user = Auth::user();
-
-$incoming = $current_user -> getIncomingFriendRequests();
-$outgoing = $current_user -> getOutgoingFriendRequests();
-
-$page = Page::create('Friends');
-
-if ($incoming !== []) {
-    $page -> addContents(PendingFriendRequestList::withItems($incoming));
-}
-
-$page -> addContents(FriendList::withItems($current_user -> getFriends()));
-
-if ($outgoing !== []) {
-    $page -> addContents(OutgoingFriendRequestList::withItems($outgoing));
-}
-
-$page -> send();
+header('Location: ' . URL::absolute('/users/' . Auth::user() -> username . '/friends'));
+exit;

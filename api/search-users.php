@@ -41,23 +41,7 @@ SELECT *
 $users = [];
 
 foreach ($candidates as $candidate) {
-    $user_id = (int) $candidate -> userId;
-    $blocked_by_viewer = Block::blockedBy($current_user -> userId, $user_id);
-    $blocked_by_other = Block::blockedBy($user_id, $current_user -> userId);
-    $friendship = ($blocked_by_viewer || $blocked_by_other) ? null : Friendship::statusBetween($current_user -> userId, $user_id);
-
-    $users[] = [
-        'userId' => $user_id,
-        'username' => $candidate -> username,
-        'displayName' => $candidate -> displayName,
-        'image' => $candidate -> avatarURL(),
-        'createdAt' => $candidate -> createdAt,
-        'blockedByViewer' => $blocked_by_viewer,
-        'blockedByOther' => $blocked_by_other,
-        'friendshipStatus' => $friendship ?-> status,
-        'friendshipSentByViewer' => $friendship !== null ? ((int) $friendship -> requesterId === $current_user -> userId) : null,
-        'isMod' => (bool) $candidate -> isMod,
-    ];
+    $users[] = OtherUser::payloadFor($candidate, $current_user);
 }
 
 JSONResponse::success(['users' => $users]) -> send();

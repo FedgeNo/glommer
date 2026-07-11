@@ -26,8 +26,9 @@ class MainNavigation extends HTMLObject
             $this -> addContents(new NavDropdown($brand, [
                 new Anchor(URL::absolute('/friends-feed/'), 'Friends Feed'),
                 new Anchor(URL::absolute('/friends/'), 'Friends'),
-                new Anchor(URL::absolute('/users/'), 'Search'),
+                new Anchor(URL::absolute('/users/'), 'Users'),
                 new Anchor(URL::absolute('/messages/'), 'Messages'),
+                new Anchor(URL::absolute('/help/'), 'Help'),
             ]));
             $recent_notifications = Notification::rowsForUser((int) $current_user -> userId, 5);
             $site_links -> addContents(new NotificationsNavLink($recent_notifications['rows'], $current_user -> lastNotificationId));
@@ -46,7 +47,11 @@ class MainNavigation extends HTMLObject
                 $account_menu_links
             ));
         } else {
-            $this -> addContents($brand);
+            // Logged-out visitors get the same main menu, but with only the
+            // Help item - everything else in it needs an account.
+            $this -> addContents(new NavDropdown($brand, [
+                new Anchor(URL::absolute('/help/'), 'Help'),
+            ]));
             $account_links -> addContents(new Anchor(URL::absolute('/login/'), 'Log in'));
             $account_links -> addContents(new Anchor(URL::absolute('/signup/'), 'Sign up'));
         }

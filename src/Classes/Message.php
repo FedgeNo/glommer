@@ -28,13 +28,23 @@ class Message extends HTMLObject
             $this -> contents[] = $this -> senderHeader();
         }
 
+        // Body and (for other people's messages) the report button sit on one
+        // row - text on the left, button hugging the right - so the button
+        // never overlaps the text.
+        $line = new Div();
+        $line -> class = 'MessageLine';
+
         $body = new Paragraph();
         $body -> contents[] = $this -> body;
-        $this -> contents[] = $body;
+        $line -> addContents($body);
 
-        if (Auth::check() && Auth::id() !== $this -> senderId) {
-            $this -> contents[] = new ReportButton('message', $this -> messageId);
+        // No report button on the admin's messages - api/report.php rejects
+        // reports about the admin, since nobody could act on one anyway.
+        if (Auth::check() && Auth::id() !== $this -> senderId && $this -> senderId !== 1) {
+            $line -> addContents(new ReportButton('message', $this -> messageId));
         }
+
+        $this -> contents[] = $line;
 
         return parent::toDOM();
     }
@@ -47,6 +57,22 @@ class Message extends HTMLObject
     public static function fromRow(array $row): self
     {
         return self::fromRowWithSender($row, User::load((int) $row['senderId']));
+    }
+
+    /**
+     * Deletes a single message. Messages have no child rows or media, so this
+     * is a plain one-row delete. Caller is responsible for authorization
+     * (used by a moderator removing reported content).
+     */
+    public static function delete(int $message_id): void
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+DELETE
+    FROM `Messages`
+    WHERE `messageId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $message_id);
+        mysqli_stmt_execute($stmt);
     }
 
     /**

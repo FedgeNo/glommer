@@ -9,7 +9,7 @@ class Meta extends HTMLVoidElement
     public ?string $name = null;
     public ?string $property = null;
     public ?string $content = null;
-    public ?string $httpEquiv = null;
+    public ?string $HTTPEquiv = null;
 
     public function toDOM(): \DOMElement
     {
@@ -29,8 +29,8 @@ class Meta extends HTMLVoidElement
             $this -> attributes['content'] = $this -> content;
         }
 
-        if ($this -> httpEquiv !== null) {
-            $this -> attributes['http-equiv'] = $this -> httpEquiv;
+        if ($this -> HTTPEquiv !== null) {
+            $this -> attributes['http-equiv'] = $this -> HTTPEquiv;
         }
 
         return parent::toDOM();

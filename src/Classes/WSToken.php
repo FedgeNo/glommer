@@ -20,7 +20,7 @@ class WSToken
         $config = require __DIR__ . '/../config.php';
         $expires_at = time() + self::TTL_SECONDS;
         $payload = $user_id . '.' . $expires_at;
-        $signature = hash_hmac('sha256', $payload, $config['wsSecret']);
+        $signature = hash_hmac('sha256', $payload, $config['WSSecret']);
 
         return $payload . '.' . $signature;
     }

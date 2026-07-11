@@ -25,6 +25,14 @@ if (strlen($reason) > 65535) {
     JSONResponse::error('Reason is too long', 422) -> send();
 }
 
+// Reports about the admin - their account, their posts, their messages -
+// are dead letters: only the admin and mods see reports, and the admin
+// can't be banned, so nobody could ever act on one. Rejected here (not
+// just hidden in the UI) so a hand-crafted request can't file one either.
+if (Report::resolveTargetUserId($target_type, $target_id) === 1) {
+    JSONResponse::error('This content can\'t be reported.', 422) -> send();
+}
+
 $rate_key = 'report:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {

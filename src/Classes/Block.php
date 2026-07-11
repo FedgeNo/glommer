@@ -45,13 +45,19 @@ SELECT 1
     {
         $mysqli = Database::connection();
 
-        $delete_friendship = mysqli_prepare($mysqli, '
+        // Reuse the one unfriend path so blocking a friend adjusts both
+        // friendCounts exactly the way Remove Friend does.
+        Friendship::removeAccepted($blocker_id, $blocked_id);
+
+        // Blocking also cancels any still-pending request either way (which
+        // removeAccepted leaves alone - it only touches accepted friendships).
+        $delete_pending = mysqli_prepare($mysqli, '
 DELETE
     FROM `Friendships`
     WHERE (`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?)
 ');
-        mysqli_stmt_bind_param($delete_friendship, 'iiii', $blocker_id, $blocked_id, $blocked_id, $blocker_id);
-        mysqli_stmt_execute($delete_friendship);
+        mysqli_stmt_bind_param($delete_pending, 'iiii', $blocker_id, $blocked_id, $blocked_id, $blocker_id);
+        mysqli_stmt_execute($delete_pending);
 
         Timeline::removeCrossEntries($blocker_id, $blocked_id);
 

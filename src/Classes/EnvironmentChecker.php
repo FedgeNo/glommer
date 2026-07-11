@@ -156,7 +156,7 @@ class EnvironmentChecker
      */
     private static function checkOutboundNetwork(): array
     {
-        if (SafeHttpFetcher::get('https://example.com/', 65536) === null) {
+        if (SafeHTTPFetcher::get('https://example.com/', 65536) === null) {
             return ['ok' => false, 'message' => 'An outbound HTTPS request failed - link previews need internet access. Common causes: a firewall blocking egress, no DNS resolution for the PHP process, or a container with no network.'];
         }
 
@@ -176,10 +176,10 @@ class EnvironmentChecker
     {
         $config = require __DIR__ . '/../config.php';
 
-        $socket = @stream_socket_client('tcp://127.0.0.1:' . $config['wsPort'], $error_code, $error_message, 3);
+        $socket = @stream_socket_client('tcp://127.0.0.1:' . $config['WSPort'], $error_code, $error_message, 3);
 
         if ($socket === false) {
-            return ['ok' => false, 'message' => 'Could not connect to the WebSocket server on 127.0.0.1:' . $config['wsPort'] . ' (' . $error_message . '). Start it first: systemctl --user start glommer-websocket (see README.md for the unit file).'];
+            return ['ok' => false, 'message' => 'Could not connect to the WebSocket server on 127.0.0.1:' . $config['WSPort'] . ' (' . $error_message . '). Start it first: systemctl --user start glommer-websocket (see README.md for the unit file).'];
         }
 
         stream_set_timeout($socket, 3);
@@ -195,7 +195,7 @@ class EnvironmentChecker
         if ($response === false || !str_contains($response, '101 Switching Protocols') || !str_contains($response, $expected_accept)) {
             fclose($socket);
 
-            return ['ok' => false, 'message' => 'The service on 127.0.0.1:' . $config['wsPort'] . ' did not complete a valid WebSocket handshake - something other than bin/websocket-server.php may be listening on that port.'];
+            return ['ok' => false, 'message' => 'The service on 127.0.0.1:' . $config['WSPort'] . ' did not complete a valid WebSocket handshake - something other than bin/websocket-server.php may be listening on that port.'];
         }
 
         $mask_key = random_bytes(4);
@@ -216,6 +216,6 @@ class EnvironmentChecker
             return ['ok' => false, 'message' => 'The WebSocket server accepted the handshake but did not respond to a ping - it may be stuck or misbehaving. Check its logs.'];
         }
 
-        return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $config['wsPort']];
+        return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $config['WSPort']];
     }
 }

@@ -18,10 +18,10 @@ return [
     // process from Apache/PHP-FPM - these let both sides agree on where it
     // lives and share a secret for signing/verifying connection tokens and
     // authenticating the internal push channel between them.
-    'wsHost' => Env::get('WS_HOST', '0.0.0.0'),
-    'wsPort' => (int) Env::get('WS_PORT', '8090'),
-    'wsPushPort' => (int) Env::get('WS_PUSH_PORT', '8091'),
-    'wsSecret' => Env::get('WS_SECRET', 'change-me'),
-    'wsTlsCert' => Env::get('WS_TLS_CERT', '') ?: null,
-    'wsTlsKey' => Env::get('WS_TLS_KEY', '') ?: null,
+    'WSHost' => Env::get('WS_HOST', '0.0.0.0'),
+    'WSPort' => (int) Env::get('WS_PORT', '8090'),
+    'WSPushPort' => (int) Env::get('WS_PUSH_PORT', '8091'),
+    'WSSecret' => Env::get('WS_SECRET', 'change-me'),
+    'WSTLSCert' => Env::get('WS_TLS_CERT', '') ?: null,
+    'WSTLSKey' => Env::get('WS_TLS_KEY', '') ?: null,
 ];

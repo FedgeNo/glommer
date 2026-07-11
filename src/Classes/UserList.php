@@ -13,17 +13,6 @@ abstract class UserList extends HTMLObject
     /** @var User[] */
     public array $items = [];
 
-    /**
-     * @param User[] $items
-     */
-    public static function withItems(array $items): static
-    {
-        $list = new static();
-        $list -> items = $items;
-
-        return $list;
-    }
-
     public function toDOM(): \DOMElement
     {
         $heading = new Heading2();

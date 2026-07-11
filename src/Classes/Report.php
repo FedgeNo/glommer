@@ -37,6 +37,56 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
         return $rows;
     }
 
+    /**
+     * @return array{targetType: string, targetId: int}|null
+     */
+    public static function find(int $report_id): ?array
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `targetType`, `targetId`
+    FROM `Reports`
+    WHERE `reportId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $report_id);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        if ($row === null) {
+            return null;
+        }
+
+        return ['targetType' => (string) $row['targetType'], 'targetId' => (int) $row['targetId']];
+    }
+
+    public static function delete(int $report_id): void
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+DELETE
+    FROM `Reports`
+    WHERE `reportId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $report_id);
+        mysqli_stmt_execute($stmt);
+    }
+
+    /**
+     * The body of a reported message, or null if it's since been deleted. Lets
+     * a moderator read the private message they're being asked to judge.
+     */
+    public static function messageBody(int $message_id): ?string
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `body`
+    FROM `Messages`
+    WHERE `messageId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $message_id);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        return $row !== null ? (string) $row['body'] : null;
+    }
+
     public static function resolveTargetUserId(string $target_type, int $target_id): ?int
     {
         return match ($target_type) {

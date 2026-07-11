@@ -29,7 +29,9 @@ class PostActionBar extends HTMLObject
 
             if ($this -> postUserId === Auth::id()) {
                 $actions -> addContents($this -> deleteButton());
-            } else {
+            } elseif ($this -> postUserId !== 1) {
+                // The admin's posts can't be reported (api/report.php rejects
+                // it - nobody could act on the report anyway).
                 $actions -> addContents($this -> reportButton());
             }
         }

@@ -4,18 +4,20 @@ Glommer is a self-hosted social publishing platform - posts, replies, friends, m
 
 ## Features
 
-- **Posts** - text, a title, an optional link (with an automatically-fetched title/description/image preview pulled in at compose time), or attached images/video/audio, posted through a rich-text (Quill) editor with math support (KaTeX) and an emoji picker
+- **Posts** - text, a title, an optional link (with an automatically-fetched title/description/image preview pulled in at compose time), or attached images/video/audio, posted through a rich-text (Quill) editor with math support (KaTeX) and an emoji picker. Multiple attachments become a swipeable carousel with a Slideshow mode. Links to localhost or private/reserved addresses are rejected.
 - **Replies** - threaded replies to any post, shown as a full conversation thread
 - **Likes**
-- **Friends** - friend requests (send/accept/deny), a friends list, and a friends-only feed
-- **Messaging** - direct conversations between friends
-- **Notifications** - live-updating over a WebSocket connection (toast pop-ups, unseen-count dot) for likes, replies, friend requests, and messages
+- **Friends** - friend requests (send/accept/deny/cancel), remove-friend, and a friends-only feed. Everyone's friends are public at `/users/{username}/friends` (with pending/sent request sections shown only to the owner); a 5000-friend cap is enforced (a maintained `friendCount` column). Each section infinite-scrolls 20 at a time.
+- **Users** - find people by username/display name, plus friend-of-friend suggestions ranked by mutual friends
+- **Messaging** - direct conversations with other users
+- **Notifications** - live-updating over a WebSocket connection (toast pop-ups, unseen-count dot) for likes, replies, friend requests/acceptances, messages, and finished media processing
 - **Live messaging** - a conversation you have open updates in real time when the other person replies, over the same WebSocket connection
-- **Search** - find other users by username/display name
-- **Moderation** - blocking other users, reporting posts, an admin reports queue, and banning
-- **Accounts** - signup with email verification, login/logout, forgot/reset password, avatar upload (with an initial-letter fallback avatar when none is set), light/dark/system theme, and a preferred emoji skin tone
+- **Help** - a public, searchable help section at `/help/` (articles authored in-code, searched in-PHP)
+- **Moderation** - blocking users; reporting a specific post, message, or user; and an admin/mod reports queue that shows the reported content itself (a reported message's body in a blockquote, a post rendered inline, a user's card) with per-report Dismiss, Delete Content, and Ban Reporter/Reported User actions. Moderators are appointed by the primary admin; reports about the admin are rejected outright.
+- **Accounts** - signup with email verification, login/logout, forgot/reset password, avatar upload (with an initial-letter fallback avatar when none is set), a choice of themes (system/light/dark/sepia/midnight/sunset), and a preferred emoji skin tone
+- **RSS** - a site-wide feed at `/feed.xml` and a per-user feed at `/users/{username}/feed.xml`, auto-discoverable from the relevant pages
 - **Relative timestamps** ("3m ago") that stay correct against server time, falling back to an absolute date after 7 days
-- **Infinite scroll** for feeds, notifications, and message history
+- **Infinite scroll** for feeds, notifications, message history, and the friends/requests lists
 - Everything on the site updates via AJAX/JSON - almost nothing triggers a full page reload
 
 ## Requirements
@@ -58,20 +60,38 @@ Before `.env` exists yet (a fresh install), it runs with `config.php`'s defaults
 
 ## Installation
 
-### Automatic (recommended)
+There are two equivalent guided installers - a web setup wizard and an interactive CLI - plus a fully manual path. All three end in the same place: a provisioned database, a least-privilege runtime database account, and a written `.env`.
+
+### Web setup wizard
 
 1. Clone/copy the project to your web server's document root.
-2. Make sure the web server user can write to the project root (e.g. `chmod 777 <project root>` - see step 5).
+2. Make sure the web server user can write to the project root (e.g. `chmod 777 <project root>` - the success page reminds you to restore this).
 3. Start the WebSocket server (see above) - it can run with no `.env` in place yet.
 4. Visit the site in a browser. Since there's no `.env` yet, you'll land on a setup page instead of the normal site.
-   - If any environment prerequisite is missing (PHP version, extensions, `ffmpeg`, writable directories, outbound network, the WebSocket server, etc.), it's reported here - fix it and reload.
-   - Otherwise you'll see a setup form asking for:
+   - If any environment prerequisite is missing (PHP version, extensions, `ffmpeg`, writable directories, outbound network, the WebSocket server, etc.), it's reported here - fix it and reload to re-check.
+   - Otherwise you'll see a setup form, pre-filled with sensible defaults (the site URL you're visiting by, standard local-MySQL settings), asking for:
      - **Site** - site URL, site title, and the "from" address/name used for outgoing email
      - **Database** - host, port, database name, and credentials for a MySQL account with `CREATE`/`ALTER`/`DROP`/`CREATE USER`/`GRANT OPTION` privileges (e.g. `root`, or any admin account with those rights)
 5. Submit the form. It creates the database (if it doesn't already exist), generates a random password for a new least-privilege runtime database account, creates the schema, generates a fresh `WS_SECRET`, and writes `.env` with all of this - none of the admin credentials you entered are ever stored.
-6. Restart the WebSocket server (`systemctl --user restart glommer-websocket`) so it picks up the fresh `WS_SECRET` the previous step just generated.
-7. Run `chmod 755 <project root>` to restore normal permissions (the setup page shows this exact command).
-8. Reload the site and sign up - the first account created becomes the site's administrator.
+6. Follow the numbered checklist on the success page: restore the project root's permissions (`chmod 755 <project root>`), restart the WebSocket server (`systemctl --user restart glommer-websocket`) so it picks up the fresh `WS_SECRET`, then reload and sign up - the first account created becomes the site's administrator.
+
+The setup page only ever appears while `.env` doesn't exist. Once it does, a failing database connection shows a maintenance page instead - deliberately, so a database outage on an established site can't be used by a visitor to reconfigure it.
+
+### Interactive CLI
+
+Everything the web wizard does, from a terminal:
+
+```
+php bin/install.php
+```
+
+- Runs every environment check and reports all of them at once (colored, when the terminal supports it).
+- If the WebSocket server is the only thing missing, offers to write the user-level systemd unit itself (correct paths filled in), enable it, start it, and re-check - no manual unit-file editing.
+- With no `.env` present, walks through the same questions as the web form (with the same defaults), provisions the database/runtime account/schema, and writes `.env`.
+- With `.env` present, verifies it, creates any missing tables, and **detects schema drift** - columns, indexes, or foreign keys that `schema.sql` defines but the live tables lack (the situation after upgrading to a newer version) - and offers to apply the exact `ALTER` statements needed.
+- Admin credentials are prompted for only when there's actual schema work to do; set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` as environment variables to run non-interactively (e.g. from a deploy script - prompts are skipped automatically when stdin isn't a terminal, and the script exits non-zero on anything unresolved).
+
+Re-running it on a healthy install is always safe - it changes nothing unless something is missing, and it's the recommended first step after every upgrade.
 
 ### Manual
 
@@ -84,9 +104,5 @@ Before `.env` exists yet (a fresh install), it runs with `config.php`'s defaults
    Then create the runtime account and grant it `SELECT, INSERT, UPDATE, DELETE` on that database only - it deliberately doesn't get `CREATE`/`ALTER`/`DROP`.
 3. Make sure `uploads/` (and its subdirectories) are writable by the web server user - `bin/install.php` (below) creates them for you if missing.
 4. Start the WebSocket server (see above) with this `.env` already in place.
-5. Optionally verify everything's in place before going live:
-   ```
-   php bin/install.php
-   ```
-   This checks PHP version/extensions, `ffmpeg`, writable directories, outbound network access, that the WebSocket server is actually reachable, and that `.env`/the database/schema are all correctly set up - and can also create any missing tables itself if you set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` (an account with `CREATE` privileges) as environment variables first.
+5. Verify everything with `php bin/install.php` (see "Interactive CLI" above - on an already-configured install it acts as a pure checker/repairer).
 6. Visit the site and sign up - the first account created becomes the site's administrator.

@@ -49,6 +49,15 @@ DELETE
         JSONResponse::error('Unable to send friend request.', 403) -> send();
     }
 
+    // A user at the friend cap can neither send requests nor receive them.
+    if (User::atFriendCap($current_user -> userId)) {
+        JSONResponse::error('You\'ve reached the maximum of ' . User::MAX_FRIENDS . ' friends.', 422) -> send();
+    }
+
+    if (User::atFriendCap($target_user_id)) {
+        JSONResponse::error('That user has reached their friend limit.', 422) -> send();
+    }
+
     try {
         $insert_stmt = mysqli_prepare($mysqli, '
 INSERT INTO `Friendships` (`requesterId`, `addresseeId`)

@@ -20,7 +20,7 @@ declare(strict_types=1);
  *     through the exact same validate-then-pin process, so a redirect to an
  *     internal address is caught exactly like a direct request would be.
  */
-class SafeHttpFetcher
+class SafeHTTPFetcher
 {
     private const MAX_REDIRECTS = 3;
     private const CONNECT_TIMEOUT_SECONDS = 3;

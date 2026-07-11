@@ -515,6 +515,7 @@ button[type='submit'].Btn:hover {
 .BlockUserButton,
 .ReportButton,
 .RemoveFriendButton,
+.DeleteReportedContentButton,
 .ModButton[data-is-mod='1'] {
     background-color: transparent;
     color: var(--danger) !important;
@@ -526,6 +527,7 @@ button[type='submit'].Btn:hover {
 .BlockUserButton:hover,
 .ReportButton:hover,
 .RemoveFriendButton:hover,
+.DeleteReportedContentButton:hover,
 .ModButton[data-is-mod='1']:hover {
     background-color: var(--danger-soft);
     color: var(--danger) !important;
@@ -768,19 +770,18 @@ input[type='file']::file-selector-button {
     margin-top: 0.6rem;
 }
 
-.LinkItem {
+.LinkItem > a {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
 }
 
-.LinkItem > a {
-    display: block;
+.LinkItemText {
     flex: 1 1 auto;
     min-width: 0;
 }
 
-.LinkItem > a > h3 {
+.LinkItemText > h3 {
     margin-top: 0.5rem;
 }
 
@@ -804,7 +805,9 @@ input[type='file']::file-selector-button {
 }
 
 .Thread .ImageItem,
-.Thread .VideoItem {
+.Thread .VideoItem,
+.PostPage .ImageItem,
+.PostPage .VideoItem {
     height: 50vh;
 }
 
@@ -916,6 +919,12 @@ input[type='file']::file-selector-button {
     gap: 0.85rem;
 }
 
+.UserLink {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
 .User h2 {
     margin-bottom: 0.1rem;
 }
@@ -958,6 +967,88 @@ input[type='file']::file-selector-button {
     margin-top: 0.75rem;
 }
 
+/* ---------- Help ---------- */
+
+.HelpSearchBox {
+    padding: 0.5rem;
+}
+
+.HelpSearchInput {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+}
+
+.HelpSearchInput:focus {
+    box-shadow: none;
+}
+
+.HelpSearchResults {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.HelpCategory h2 {
+    margin-bottom: 0.75rem;
+}
+
+.HelpArticleList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.75rem;
+}
+
+.HelpArticleSummary {
+    display: block;
+}
+
+.HelpArticleSummary:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+}
+
+.HelpArticleSummary h3 {
+    margin-bottom: 0.35rem;
+    color: var(--accent);
+}
+
+.HelpArticleSummary p {
+    margin: 0;
+}
+
+.HelpArticleCategory {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.HelpArticleBody {
+    line-height: 1.6;
+}
+
+.HelpArticleBody h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.HelpArticleBody p,
+.HelpArticleBody ul,
+.HelpArticleBody ol {
+    margin-bottom: 1rem;
+}
+
+.HelpArticleBody li {
+    margin-bottom: 0.35rem;
+}
+
+.HelpBackLink {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--accent);
+}
+
 /* ---------- Messages (chat bubbles carry the glom corner) ---------- */
 
 .MessagesPage {
@@ -981,10 +1072,20 @@ input[type='file']::file-selector-button {
     margin-left: 0.5rem;
 }
 
-.Message > .ReportButton {
-    position: absolute;
-    bottom: 0.7rem;
-    right: 0.9rem;
+.MessageLine {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    clear: both;
+}
+
+.MessageLine > p {
+    flex: 1;
+    margin: 0;
+}
+
+.MessageLine > .ReportButton {
+    flex-shrink: 0;
 }
 
 .Message.Own {
@@ -1099,7 +1200,7 @@ input[type='file']::file-selector-button {
 .CarouselCounter {
     position: absolute;
     bottom: 0.5rem;
-    right: 0.5rem;
+    left: 0.5rem;
     background-color: rgb(15 18 16 / 0.55);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -1107,6 +1208,26 @@ input[type='file']::file-selector-button {
     border-radius: 999px;
     padding: 0.1rem 0.6rem;
     font-size: 0.75rem;
+}
+
+.CarouselSlideshow {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background-color: rgb(15 18 16 / 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.1rem 0.7rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.CarouselSlideshow:hover {
+    background-color: rgb(15 18 16 / 0.75);
 }
 
 /* ---------- Quill editor ---------- */
@@ -1256,6 +1377,27 @@ input[type='file']::file-selector-button {
     .Toast {
         transition: none;
     }
+}
+
+/* ---------- Reports ---------- */
+
+.ReportDetails {
+    flex: 1;
+    min-width: 0;
+}
+
+.ReportActions {
+    flex-shrink: 0;
+}
+
+.ReportedContent {
+    border-left: 3px solid var(--accent);
+    background-color: var(--surface-2);
+    border-radius: var(--radius-ctl);
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 /* ---------- Confirm dialog ---------- */

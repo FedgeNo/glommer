@@ -38,6 +38,10 @@ if ($link_url !== '') {
     if (strlen($link_url) > 255) {
         JSONResponse::error('Link URL is too long', 422) -> send();
     }
+
+    if (!URL::isPublicHTTP($link_url)) {
+        JSONResponse::error('That link points to a local or private address and can\'t be posted.', 422) -> send();
+    }
 }
 
 $uploaded_files = $_FILES['files'] ?? null;

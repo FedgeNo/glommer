@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class QuillAssets
 {
-    public static function cssLink(): Link
+    public static function CSSLink(): Link
     {
         $css = new Link();
         $css -> rel = 'stylesheet';
@@ -13,7 +13,7 @@ class QuillAssets
         return $css;
     }
 
-    public static function jsScript(): Script
+    public static function JSScript(): Script
     {
         $js = new Script();
         $js -> src = 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js';

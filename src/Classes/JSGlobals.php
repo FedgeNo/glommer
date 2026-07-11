@@ -6,7 +6,7 @@ declare(strict_types=1);
  * A nonce'd inline script that publishes server-side values as window
  * globals for the client-side JS to read (window.currentUserId,
  * window.conversationUsers, ...). Values are encoded via
- * Page::safeJsonForScript(), which keeps them safe to embed in a raw-text
+ * Page::safeJSONForScript(), which keeps them safe to embed in a raw-text
  * <script> element.
  */
 class JSGlobals extends Script
@@ -28,7 +28,7 @@ class JSGlobals extends Script
         $statements = '';
 
         foreach ($this -> globals as $name => $value) {
-            $statements .= 'window.' . $name . ' = ' . Page::safeJsonForScript($value) . ';';
+            $statements .= 'window.' . $name . ' = ' . Page::safeJSONForScript($value) . ';';
         }
 
         $this -> contents[] = $statements;

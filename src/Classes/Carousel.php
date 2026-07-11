@@ -32,6 +32,8 @@ class Carousel extends HTMLObject
             $counter -> class = 'CarouselCounter';
             $counter -> contents[] = '1 / ' . count($this -> items);
             $this -> contents[] = $counter;
+
+            $this -> contents[] = new CarouselSlideshowButton();
         }
 
         return parent::toDOM();

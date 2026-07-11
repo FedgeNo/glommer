@@ -56,6 +56,14 @@ class OtherUser extends User
         $message_link -> class = 'Btn';
         $actions -> addContents($message_link);
 
+        $friends_link = new Anchor(URL::absolute('/users/' . $this -> username . '/friends'), 'Friends');
+        $friends_link -> class = 'Btn';
+        $actions -> addContents($friends_link);
+
+        if ($friendship !== null && $friendship -> status === 'accepted') {
+            $actions -> addContents(new RemoveFriendButton($this -> userId));
+        }
+
         foreach ($this -> afterMessageActions() as $item) {
             $actions -> addContents($item);
         }
@@ -73,9 +81,14 @@ class OtherUser extends User
         $block_button -> contents[] = 'Block';
         $actions -> addContents($block_button);
 
-        $actions -> addContents(
-            Auth::canModerate() ? new BanButton($this -> userId, 'Ban') : new ReportButton('user', $this -> userId)
-        );
+        // The admin (userId 1) can be neither banned (api/ban.php rejects it)
+        // nor reported (api/report.php rejects it - nobody could act on the
+        // report anyway), so their card gets neither button.
+        if ($this -> userId !== 1) {
+            $actions -> addContents(
+                Auth::canModerate() ? new BanButton($this -> userId, 'Ban') : new ReportButton('user', $this -> userId)
+            );
+        }
 
         $element -> appendChild($actions -> toDOM());
 
@@ -102,5 +115,44 @@ class OtherUser extends User
     protected function afterMessageActions(): array
     {
         return [];
+    }
+
+    /**
+     * The viewer-relative JSON an OtherUser card is built from client-side
+     * (other-user.js OtherUser.fromData). Everything that decides which action
+     * buttons show - the block state each way and the friendship status - is
+     * computed against $viewer, so the same person renders differently
+     * depending on who's looking. $viewer is null for a logged-out visitor
+     * (public friends pages), in which case there's no relationship to report.
+     *
+     * @return array{userId: int, username: ?string, displayName: ?string, image: ?string, createdAt: ?string, blockedByViewer: bool, blockedByOther: bool, friendshipStatus: ?string, friendshipSentByViewer: ?bool, isMod: bool}
+     */
+    public static function payloadFor(User $user, ?User $viewer): array
+    {
+        $user_id = (int) $user -> userId;
+
+        if ($viewer === null) {
+            $blocked_by_viewer = false;
+            $blocked_by_other = false;
+            $friendship = null;
+        } else {
+            $viewer_id = (int) $viewer -> userId;
+            $blocked_by_viewer = Block::blockedBy($viewer_id, $user_id);
+            $blocked_by_other = Block::blockedBy($user_id, $viewer_id);
+            $friendship = ($blocked_by_viewer || $blocked_by_other) ? null : Friendship::statusBetween($viewer_id, $user_id);
+        }
+
+        return [
+            'userId' => $user_id,
+            'username' => $user -> username,
+            'displayName' => $user -> displayName,
+            'image' => $user -> avatarURL(),
+            'createdAt' => $user -> createdAt,
+            'blockedByViewer' => $blocked_by_viewer,
+            'blockedByOther' => $blocked_by_other,
+            'friendshipStatus' => $friendship ?-> status,
+            'friendshipSentByViewer' => $friendship !== null ? ((int) $friendship -> requesterId === (int) $viewer -> userId) : null,
+            'isMod' => (bool) $user -> isMod,
+        ];
     }
 }

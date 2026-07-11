@@ -6,7 +6,7 @@ class KaTeXAssets
 {
     private const VERSION = '0.16.11';
 
-    public static function cssLink(): Link
+    public static function CSSLink(): Link
     {
         $css = new Link();
         $css -> rel = 'stylesheet';
@@ -15,7 +15,7 @@ class KaTeXAssets
         return $css;
     }
 
-    public static function jsScript(): Script
+    public static function JSScript(): Script
     {
         $js = new Script();
         $js -> src = 'https://cdn.jsdelivr.net/npm/katex@' . self::VERSION . '/dist/katex.min.js';
@@ -25,7 +25,7 @@ class KaTeXAssets
 
     /**
      * The auto-render extension that scans an element for delimited LaTeX
-     * source and replaces it with rendered math. Must load after jsScript()
+     * source and replaces it with rendered math. Must load after JSScript()
      * (it references the global KaTeX object at call time, not load time, but
      * keeping load order consistent avoids any ambiguity).
      */

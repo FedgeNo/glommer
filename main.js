@@ -1652,6 +1652,11 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reset();
             quill.setText('');
 
+            // reset() empties the fields but fires no input/change event, so
+            // re-sync the link/file mutual hiding by hand - after a post both
+            // controls show again until one is used again.
+            sync_post_composer_fields(form);
+
             const submitted_link_image_preview = form.querySelector('.LinkImagePreview');
 
             if (submitted_link_image_preview) {

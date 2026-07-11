@@ -159,7 +159,6 @@ function offer_websocket_service(): bool
         return false;
     }
 
-    $project_root = dirname(__DIR__);
     $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
 
     echo "\nThe WebSocket server isn't running. It can be installed as a user-level\n";
@@ -168,6 +167,31 @@ function offer_websocket_service(): bool
     if (!confirm('Create and start it now?')) {
         return false;
     }
+
+    return write_and_enable_websocket_service();
+}
+
+/**
+ * Writes (if missing) and enables the user-level systemd service that runs
+ * bin/websocket-server.php, plus the lingering it needs to survive logout
+ * and reboot. Shared by offer_websocket_service() (the daemon isn't even
+ * reachable) and offer_enable_websocket_service() (the daemon works right
+ * now - e.g. started manually - but isn't enabled/lingering isn't set, so it
+ * won't survive a restart). Idempotent: re-writing identical unit contents
+ * and re-enabling an already-enabled service are both no-ops.
+ */
+function write_and_enable_websocket_service(): bool
+{
+    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
+
+    if (!$systemctl_available) {
+        warn('systemctl not found - run bin/websocket-server.php under your own process manager. See README.md.');
+
+        return false;
+    }
+
+    $project_root = dirname(__DIR__);
+    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
 
     $unit_contents = implode("\n", [
         '[Unit]',
@@ -234,6 +258,24 @@ function offer_websocket_service(): bool
     }
 
     return true;
+}
+
+/**
+ * When the WebSocket service persistence check is what failed - the daemon
+ * is reachable right now (satisfying the separate reachability check) but
+ * isn't enabled/lingering isn't set, e.g. it was started manually - offer to
+ * fix it directly.
+ */
+function offer_enable_websocket_service(): bool
+{
+    echo "\nThe WebSocket daemon is reachable right now, but glommer-websocket.service isn't\n";
+    echo "enabled (or lingering isn't) - it won't survive a restart or reboot as-is.\n";
+
+    if (!confirm('Set it up now?')) {
+        return false;
+    }
+
+    return write_and_enable_websocket_service();
 }
 
 /**
@@ -485,14 +527,43 @@ $run_environment_checks = function (): array {
 
 $environment_failures = $run_environment_checks();
 
-// A missing WebSocket server is the one environment failure this script can
-// fix itself - offer to, then re-run just that check.
-if (isset($environment_failures['WebSocket server']) && is_interactive() && offer_websocket_service()) {
+// Same explicit, named non-interactive opt-in pattern as
+// SERVERNAME_CONFIRMED/BACKUP_TIMER_CONFIRMED - these two WebSocket offers
+// are purely mechanical (write a unit file, enable it, set lingering; both
+// idempotent) with nothing to blindly trust, unlike ServerName, so a named
+// opt-in unlocking them without a TTY is safe the same way it is for backups.
+$websocket_non_interactive_ok = Env::get('WEBSOCKET_SERVICE_CONFIRMED', '') === '1';
+
+// A missing WebSocket server is one environment failure this script can fix
+// itself - offer to, then re-run just that check.
+if (isset($environment_failures['WebSocket server']) && (is_interactive() || $websocket_non_interactive_ok) && offer_websocket_service()) {
     $recheck = EnvironmentChecker::checks()['WebSocket server'];
 
     if ($recheck['ok']) {
         ok($recheck['message']);
         unset($environment_failures['WebSocket server']);
+    } else {
+        fail_line($recheck['message']);
+    }
+
+    // offer_websocket_service() may have set persistence up too as part of
+    // the same flow - re-check it alongside so one "y" answer clears both.
+    $persistence_recheck = EnvironmentChecker::checks()['WebSocket service persistence'];
+
+    if ($persistence_recheck['ok']) {
+        unset($environment_failures['WebSocket service persistence']);
+    }
+}
+
+// Separately: the daemon can be reachable right now (satisfying the check
+// above) without being enabled to survive a restart or reboot - e.g. it was
+// started manually. Offer to fix that specifically too.
+if (isset($environment_failures['WebSocket service persistence']) && (is_interactive() || $websocket_non_interactive_ok) && offer_enable_websocket_service()) {
+    $recheck = EnvironmentChecker::checks()['WebSocket service persistence'];
+
+    if ($recheck['ok']) {
+        ok($recheck['message']);
+        unset($environment_failures['WebSocket service persistence']);
     } else {
         fail_line($recheck['message']);
     }

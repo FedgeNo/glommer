@@ -37,6 +37,7 @@ class EnvironmentChecker
             'SELinux' => self::checkSELinux(),
             'Outbound network' => self::checkOutboundNetwork(),
             'WebSocket server' => self::checkWebSocketServer(),
+            'WebSocket service persistence' => self::checkWebSocketServicePersistence(),
             'Backups' => self::checkBackups(),
             'Backup timer persistence' => self::checkBackupTimerPersistence(),
         ];
@@ -745,5 +746,42 @@ class EnvironmentChecker
         }
 
         return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $config['WSPort']];
+    }
+
+    /**
+     * A separate concern from checkWebSocketServer(): that check proves the
+     * daemon *works right now* - it says nothing about whether it'll still be
+     * running after a restart or reboot. Someone could start it manually
+     * (`php bin/websocket-server.php &`) and satisfy that check while nothing
+     * guarantees it comes back. Same idea as checkBackupTimerPersistence().
+     * CLI-only for the same reason - systemd --user is tied to the Unix user
+     * running this script, not a PHP SAPI concept.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkWebSocketServicePersistence(): array
+    {
+        if (PHP_SAPI !== 'cli') {
+            return ['ok' => true, 'message' => 'not applicable under the web SAPI'];
+        }
+
+        if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+            return ['ok' => true, 'message' => 'systemctl not found - assuming a non-systemd process manager is set up separately'];
+        }
+
+        $service_status = trim((string) shell_exec('systemctl --user is-enabled glommer-websocket.service 2>/dev/null'));
+
+        if ($service_status !== 'enabled') {
+            return ['ok' => false, 'message' => 'glommer-websocket.service is not enabled - the daemon may be reachable right now, but nothing guarantees it survives a restart or reboot. See README.md\'s "Running the WebSocket server" section.'];
+        }
+
+        $user = trim((string) shell_exec('id -un 2>/dev/null')) ?: (get_current_user() ?: (string) getenv('USER'));
+        $linger_status = strtolower(trim((string) shell_exec('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')));
+
+        if (!str_contains($linger_status, 'yes')) {
+            return ['ok' => false, 'message' => 'glommer-websocket.service is enabled, but lingering is not enabled for ' . $user . ' - the daemon stops as soon as this user logs out, and won\'t survive a reboot. Run: sudo loginctl enable-linger ' . $user];
+        }
+
+        return ['ok' => true, 'message' => 'glommer-websocket.service is enabled, lingering is on for ' . $user];
     }
 }

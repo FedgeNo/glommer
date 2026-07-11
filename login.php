@@ -65,8 +65,8 @@ if ($errors !== []) {
 
 $page -> addContents(new LoginForm());
 
-$page -> addContents(new Anchor(URL::absolute('/forgot-password/'), 'Forgot password?'));
+$page -> addContents(new Anchor(URL::absolute('/forgot-password'), 'Forgot password?'));
 
-$page -> addContents(new Anchor(URL::absolute('/signup/'), 'Need an account? Sign up'));
+$page -> addContents(new Anchor(URL::absolute('/signup'), 'Need an account? Sign up'));
 
 $page -> send();

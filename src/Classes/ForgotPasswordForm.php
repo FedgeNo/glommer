@@ -8,7 +8,7 @@ class ForgotPasswordForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/forgot-password/');
+        $this -> action = URL::absolute('/forgot-password');
         $this -> method = 'POST';
 
         $fields = new Fieldset('Reset your password');

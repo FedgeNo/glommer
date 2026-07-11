@@ -14,7 +14,7 @@ class AdminSettingsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/admin/settings/');
+        $this -> action = URL::absolute('/admin/settings');
         $this -> method = 'POST';
 
         $fields = new Fieldset('Cloudflare Turnstile');

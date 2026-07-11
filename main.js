@@ -2135,5 +2135,5 @@ document.addEventListener('submit', async (event) => {
 
     // The account is back behind the verification gate until the new address
     // confirms - land on the page that says exactly that.
-    window.location = window.siteURL + '/check-inbox/';
+    window.location = window.siteURL + '/check-inbox';
 });

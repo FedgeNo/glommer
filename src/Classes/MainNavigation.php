@@ -24,8 +24,8 @@ class MainNavigation extends HTMLObject
             $current_user = Auth::user();
 
             $this -> addContents(new NavDropdown($brand, [
-                new Anchor(URL::absolute('/friends-feed/'), 'Friends Feed'),
-                new Anchor(URL::absolute('/friends/'), 'Friends'),
+                new Anchor(URL::absolute('/friends-feed'), 'Friends Feed'),
+                new Anchor(URL::absolute('/users/' . $current_user -> username . '/friends'), 'Friends'),
                 new Anchor(URL::absolute('/users/'), 'Users'),
                 new Anchor(URL::absolute('/messages/'), 'Messages'),
                 new Anchor(URL::absolute('/help/'), 'Help'),
@@ -34,19 +34,19 @@ class MainNavigation extends HTMLObject
             $site_links -> addContents(new NotificationsNavLink($recent_notifications['rows'], $current_user -> lastNotificationId));
 
             $account_menu_links = [
-                new Anchor(URL::absolute('/settings/'), 'Settings'),
-                new Anchor(URL::absolute('/logout/'), 'Log out'),
+                new Anchor(URL::absolute('/settings'), 'Settings'),
+                new Anchor(URL::absolute('/logout'), 'Log out'),
             ];
 
             if (Auth::canModerate()) {
-                $account_menu_links[] = new Anchor(URL::absolute('/admin/reports/'), 'Reports');
-                $account_menu_links[] = new Anchor(URL::absolute('/admin/banned/'), 'Banned Users');
+                $account_menu_links[] = new Anchor(URL::absolute('/admin/reports'), 'Reports');
+                $account_menu_links[] = new Anchor(URL::absolute('/admin/banned'), 'Banned Users');
             }
 
             // Site-wide settings (e.g. the Turnstile keys) are the primary
             // admin's alone, not general moderators'.
             if (Auth::id() === 1) {
-                $account_menu_links[] = new Anchor(URL::absolute('/admin/settings/'), 'Site Settings');
+                $account_menu_links[] = new Anchor(URL::absolute('/admin/settings'), 'Site Settings');
             }
 
             $account_links -> addContents(new NavDropdown(
@@ -59,8 +59,8 @@ class MainNavigation extends HTMLObject
             $this -> addContents(new NavDropdown($brand, [
                 new Anchor(URL::absolute('/help/'), 'Help'),
             ]));
-            $account_links -> addContents(new Anchor(URL::absolute('/login/'), 'Log in'));
-            $account_links -> addContents(new Anchor(URL::absolute('/signup/'), 'Sign up'));
+            $account_links -> addContents(new Anchor(URL::absolute('/login'), 'Log in'));
+            $account_links -> addContents(new Anchor(URL::absolute('/signup'), 'Sign up'));
         }
 
         $this -> addContents($site_links);

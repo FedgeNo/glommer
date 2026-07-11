@@ -8,7 +8,7 @@ class LoginForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/login/');
+        $this -> action = URL::absolute('/login');
         $this -> method = 'POST';
 
         $fields = new Fieldset('Log in');

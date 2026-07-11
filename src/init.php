@@ -8,7 +8,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.0';
+const GLOMMER_VERSION = '0.9.1';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/Classes/' . $class . '.php';
@@ -138,7 +138,7 @@ SELECT COUNT(*) AS `count`
 ');
 
     if ((int) mysqli_fetch_assoc($user_count_result)['count'] === 0) {
-        header('Location: ' . URL::absolute('/signup/'));
+        header('Location: ' . URL::absolute('/signup'));
         exit;
     }
 }
@@ -162,14 +162,14 @@ if (Auth::check()) {
         exit;
     }
 
-    $exempt_scripts = ['check-inbox.php', 'logout.php', 'verify-email.php', 'resend-verification.php'];
+    $exempt_scripts = ['check-inbox.php', 'logout.php', 'verify-email.php', 'resend-verification.php', 'revert-email.php'];
 
     if (!$current_user -> verified && !in_array(basename($_SERVER['SCRIPT_FILENAME']), $exempt_scripts, true)) {
         if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
             JSONResponse::error('Email verification required', 403) -> send();
         }
 
-        header('Location: ' . URL::absolute('/check-inbox/'));
+        header('Location: ' . URL::absolute('/check-inbox'));
         exit;
     }
 }

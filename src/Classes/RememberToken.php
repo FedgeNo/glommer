@@ -18,17 +18,37 @@ class RememberToken
 
     public static function issue(int $user_id): void
     {
-        $selector = bin2hex(random_bytes(12));
         $validator = bin2hex(random_bytes(32));
         $validator_hash = hash('sha256', $validator);
         $ttl_days = self::TTL_DAYS;
+        $mysqli = Database::connection();
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        // The selector is 96 random bits, so a collision is astronomically
+        // unlikely - but it's a one-line retry to not let a freak collision
+        // surface as a login failure instead of just trying again.
+        $max_attempts = 3;
+        $selector = '';
+
+        for ($attempt = 1; $attempt <= $max_attempts; $attempt++) {
+            $selector = bin2hex(random_bytes(12));
+
+            try {
+                $stmt = mysqli_prepare($mysqli, '
 INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`)
     VALUES (?, ?, ?, NOW() + INTERVAL ? DAY)
 ');
-        mysqli_stmt_bind_param($stmt, 'issi', $user_id, $selector, $validator_hash, $ttl_days);
-        mysqli_stmt_execute($stmt);
+                mysqli_stmt_bind_param($stmt, 'issi', $user_id, $selector, $validator_hash, $ttl_days);
+                mysqli_stmt_execute($stmt);
+
+                break;
+            } catch (\mysqli_sql_exception $exception) {
+                // 1062 = duplicate key (the selector collided) - anything else
+                // is a real problem and should surface normally.
+                if ($exception -> getCode() !== 1062 || $attempt === $max_attempts) {
+                    throw $exception;
+                }
+            }
+        }
 
         // Occasionally sweep out expired rows (same lottery approach as
         // RateLimiter) so the table doesn't grow forever.

@@ -37,7 +37,26 @@ class EnvironmentChecker
             'SELinux' => self::checkSELinux(),
             'Outbound network' => self::checkOutboundNetwork(),
             'WebSocket server' => self::checkWebSocketServer(),
+            'Backups' => self::checkBackups(),
         ];
+    }
+
+    /**
+     * A functional check, like the WebSocket one above: not "is BACKUP_DIR
+     * set" but "has a backup actually completed" - proof the mechanism really
+     * works, not just that it's configured. An install with no working backup
+     * is not production-ready, so this blocks the same as every other
+     * environment prerequisite.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkBackups(): array
+    {
+        if (Backup::hasCompletedRun()) {
+            return ['ok' => true, 'message' => 'a completed backup exists in ' . Backup::rootDir()];
+        }
+
+        return ['ok' => false, 'message' => 'No completed backup found in ' . Backup::rootDir() . '. Run "php bin/backup.php" once to create one and prove the mechanism works, then set up recurring backups (a systemd timer - see README.md\'s Backups section) so this keeps being true.'];
     }
 
     /**

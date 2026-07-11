@@ -94,7 +94,7 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
 
         EmailVerification::sendFor($user);
 
-        header('Location: ' . URL::absolute('/check-inbox/'));
+        header('Location: ' . URL::absolute('/check-inbox'));
         exit;
     }
 }

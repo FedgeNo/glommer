@@ -236,6 +236,25 @@ function offer_websocket_service(): bool
     return true;
 }
 
+/**
+ * When the Backups check is what failed, the fix is usually "run it once" -
+ * so offer to do exactly that.
+ */
+function offer_first_backup(): bool
+{
+    echo "\nNo backup has ever completed. Run php bin/backup.php now to create one and\n";
+    echo "prove the mechanism actually works (see README.md's Backups section for\n";
+    echo "setting up a recurring systemd timer afterward).\n";
+
+    if (!confirm('Run it now?')) {
+        return false;
+    }
+
+    passthru(PHP_BINARY . ' ' . escapeshellarg(__DIR__ . '/backup.php'), $exit_code);
+
+    return $exit_code === 0;
+}
+
 // ---------- 1. Environment ----------
 
 heading('Environment');
@@ -265,6 +284,19 @@ if (isset($environment_failures['WebSocket server']) && is_interactive() && offe
     if ($recheck['ok']) {
         ok($recheck['message']);
         unset($environment_failures['WebSocket server']);
+    } else {
+        fail_line($recheck['message']);
+    }
+}
+
+// Likewise the one environment failure this script can fix itself by running
+// a real backup on the spot.
+if (isset($environment_failures['Backups']) && is_interactive() && offer_first_backup()) {
+    $recheck = EnvironmentChecker::checks()['Backups'];
+
+    if ($recheck['ok']) {
+        ok($recheck['message']);
+        unset($environment_failures['Backups']);
     } else {
         fail_line($recheck['message']);
     }
@@ -389,6 +421,43 @@ if ($config['WSSecret'] === 'change-me') {
 }
 
 ok('.env present, SITE_URL and WS_SECRET configured (' . $config['siteURL'] . ')');
+
+// ---------- HTTPS host-spoofing guard ----------
+
+// By default, Apache builds SERVER_NAME (and mod_rewrite's %{SERVER_NAME}) -
+// and hence the target of the HTTPS redirect in .htaccess - from whatever
+// Host header the request arrived with, not from a fixed configured name.
+// That means anyone can forge a Host header and get 301-redirected to a
+// domain of their choosing instead of this site - a phishing/cache-poisoning
+// primitive. The fix is two Apache directives that make Apache ignore the
+// client-supplied Host header for this purpose:
+//   ServerName <host>[:<port>]
+//   UseCanonicalName On
+// This can't be verified from PHP without an active request context (the CLI
+// has none, and even under the web SAPI, $_SERVER['SERVER_NAME'] is exactly
+// the value in question), so it's a manual confirmation, required like every
+// other prerequisite here.
+$site_host = (string) (parse_url($config['siteURL'], PHP_URL_HOST) ?: 'your-domain');
+$site_port = parse_url($config['siteURL'], PHP_URL_PORT);
+$server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
+
+$server_name_question = 'Have you set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s '
+    . 'config (httpd.conf\'s top level if you\'re not using a <VirtualHost>, or inside the vhost if you are)?';
+
+if (is_interactive()) {
+    if (!confirm($server_name_question)) {
+        fail('Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s config first - '
+            . 'required so the HTTPS redirect can\'t be spoofed via a forged Host header. See README.md\'s HTTPS section.');
+    }
+
+    ok('ServerName + UseCanonicalName confirmed');
+} elseif (Env::get('SERVERNAME_CONFIRMED', '') === '1') {
+    ok('ServerName + UseCanonicalName confirmed (SERVERNAME_CONFIRMED=1)');
+} else {
+    fail('Cannot confirm interactively (no terminal). Set "ServerName ' . $server_name_value . '" and '
+        . '"UseCanonicalName On" in Apache\'s config, then set SERVERNAME_CONFIRMED=1 to continue non-interactively. '
+        . 'See README.md\'s HTTPS section.');
+}
 
 // ---------- 3. Database connection ----------
 

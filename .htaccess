@@ -27,48 +27,79 @@
     # everything 301s to its https URL. Before .env exists the setup wizard
     # must stay reachable over whatever protocol works, since TLS may not be
     # configured yet. X-Forwarded-Proto covers a TLS-terminating proxy.
+    #
+    # %{SERVER_NAME}, not %{HTTP_HOST}: HTTP_HOST is literally the client-
+    # supplied Host header, so building the redirect target from it lets
+    # anyone forge that header and get 301'd to a domain of their choosing.
+    # SERVER_NAME only reflects the real configured name instead - which
+    # requires "ServerName <host>" and "UseCanonicalName On" to be set in
+    # Apache's config (bin/install.php and the web setup wizard both require
+    # this be confirmed before install finishes; see README.md's HTTPS
+    # section). Without those two directives, SERVER_NAME falls back to the
+    # Host header too and this protection does nothing.
     RewriteCond %{HTTPS} off
     RewriteCond %{HTTP:X-Forwarded-Proto} !=https
     RewriteCond %{DOCUMENT_ROOT}/.env -f
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 
     # Direct .php access is never allowed - everything goes through the routes below.
     RewriteCond %{THE_REQUEST} \s/+[^?\s]*\.php[\s?] [NC]
     RewriteRule ^ 404.php [L]
 
-    # JSON API endpoints: /api/{name} -> api/{name}.php
-    RewriteRule ^api/([a-zA-Z0-9-]+)/?$ api/$1.php [L,QSA]
+    # JSON API endpoints: /api/{name} -> api/{name}.php. api/ contains many
+    # endpoints (a real directory), but each one is itself a flat leaf - no
+    # trailing slash, exact match, same as every other endpoint below.
+    RewriteRule ^api/([a-zA-Z0-9-]+)$ api/$1.php [L,QSA]
 
-    # Pages
-    RewriteRule ^(login|logout|signup|notifications|check-inbox|verify-email|settings|forgot-password|reset-password|admin/reports|admin/settings|admin/banned|friends-feed|friends|messages|users|help|terms|privacy)$ /$1/ [R=301,L]
+    # Genuine collections (they have children nested under them as further
+    # path segments) only ever serve at their trailing-slash form - the bare
+    # form always redirects to it, enforced, never silently accepted as an
+    # alternative the way a real directory's slash-less URL redirects too.
+    RewriteRule ^(messages|users|help)$ /$1/ [R=301,L]
+    RewriteRule ^users/([^/]+)$ /users/$1/ [R=301,L]
+
     RewriteRule ^$ index.php [L,QSA]
     RewriteRule ^feed\.xml$ rss-feed.php [L,QSA]
-    RewriteRule ^health/?$ health.php [L,QSA]
-    RewriteRule ^login/?$ login.php [L,QSA]
-    RewriteRule ^logout/?$ logout.php [L,QSA]
-    RewriteRule ^signup/?$ signup.php [L,QSA]
-    RewriteRule ^notifications/?$ notifications.php [L,QSA]
-    RewriteRule ^check-inbox/?$ check-inbox.php [L,QSA]
-    RewriteRule ^forgot-password/?$ forgot-password.php [L,QSA]
-    RewriteRule ^reset-password/?$ reset-password.php [L,QSA]
-    RewriteRule ^settings/?$ settings.php [L,QSA]
-    RewriteRule ^verify-email/?$ verify-email.php [L,QSA]
-    RewriteRule ^admin/reports/?$ admin-reports.php [L,QSA]
-    RewriteRule ^admin/settings/?$ admin-settings.php [L,QSA]
-    RewriteRule ^admin/banned/?$ admin-banned.php [L,QSA]
-    RewriteRule ^terms/?$ terms.php [L,QSA]
-    RewriteRule ^privacy/?$ privacy.php [L,QSA]
-    RewriteRule ^friends-feed/?$ friends-feed.php [L,QSA]
-    RewriteRule ^friends/?$ friends.php [L,QSA]
-    RewriteRule ^messages/?$ messages.php [L,QSA]
-    RewriteRule ^messages/([^/]+)/?$ messages.php?username=$1 [L,QSA]
-    RewriteRule ^help/?$ help.php [L,QSA]
-    RewriteRule ^help/([a-z0-9-]+)/?$ help-article.php?slug=$1 [L,QSA]
-    RewriteRule ^users/?$ search.php [L,QSA]
+    RewriteRule ^health$ health.php [L,QSA]
+
+    # Fixed single endpoints, not collections - treated exactly like a real
+    # file would be: no trailing slash, and no redirect either direction. The
+    # trailing-slash form simply isn't a route (falls through to the 404
+    # catch-all below), same as requesting a directory that doesn't exist.
+    RewriteRule ^login$ login.php [L,QSA]
+    RewriteRule ^logout$ logout.php [L,QSA]
+    RewriteRule ^signup$ signup.php [L,QSA]
+    RewriteRule ^notifications$ notifications.php [L,QSA]
+    RewriteRule ^check-inbox$ check-inbox.php [L,QSA]
+    RewriteRule ^forgot-password$ forgot-password.php [L,QSA]
+    RewriteRule ^reset-password$ reset-password.php [L,QSA]
+    RewriteRule ^settings$ settings.php [L,QSA]
+    RewriteRule ^verify-email$ verify-email.php [L,QSA]
+    RewriteRule ^revert-email$ revert-email.php [L,QSA]
+    RewriteRule ^admin/reports$ admin-reports.php [L,QSA]
+    RewriteRule ^admin/settings$ admin-settings.php [L,QSA]
+    RewriteRule ^admin/banned$ admin-banned.php [L,QSA]
+    RewriteRule ^terms$ terms.php [L,QSA]
+    RewriteRule ^privacy$ privacy.php [L,QSA]
+    RewriteRule ^friends-feed$ friends-feed.php [L,QSA]
+
+    # messages, help, and users are real collections - only their canonical
+    # trailing-slash form is served (the bare form redirects to it, above).
+    # Within a user's profile, "friends" and a specific post are leaf
+    # endpoints (nothing nests under either) - no trailing slash at all, same
+    # treatment as the fixed endpoints above; the profile root itself is a
+    # collection too (friends/feed.xml/a post all nest under it), so it gets
+    # the enforced-redirect treatment (the redirect for it is above, next to
+    # the other collection redirects).
+    RewriteRule ^messages/$ messages.php [L,QSA]
+    RewriteRule ^messages/([^/]+)$ messages.php?username=$1 [L,QSA]
+    RewriteRule ^help/$ help.php [L,QSA]
+    RewriteRule ^help/([a-z0-9-]+)$ help-article.php?slug=$1 [L,QSA]
+    RewriteRule ^users/$ search.php [L,QSA]
     RewriteRule ^users/([^/]+)/feed\.xml$ user-rss-feed.php?username=$1 [L,QSA]
-    RewriteRule ^users/([^/]+)/friends/?$ user-friends.php?username=$1 [L,QSA]
-    RewriteRule ^users/([^/]+)/([0-9]+)/?$ post.php?username=$1&id=$2 [L,QSA]
-    RewriteRule ^users/([^/]+)/?$ user.php?username=$1 [L,QSA]
+    RewriteRule ^users/([^/]+)/friends$ user-friends.php?username=$1 [L,QSA]
+    RewriteRule ^users/([^/]+)/([0-9]+)$ post.php?username=$1&id=$2 [L,QSA]
+    RewriteRule ^users/([^/]+)/$ user.php?username=$1 [L,QSA]
 
     # Anything else that isn't a real file/directory and didn't match a route above.
     RewriteCond %{REQUEST_FILENAME} !-f

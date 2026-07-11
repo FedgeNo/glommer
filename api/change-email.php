@@ -50,6 +50,11 @@ if (mysqli_stmt_num_rows($taken_stmt) > 0) {
 
 RateLimiter::recordAttempt($rate_key);
 
+// Captured before the overwrite - EmailChangeRevert needs it to know what to
+// revert back to, and it's the one place a "wasn't you?" notice can reach the
+// real owner if the new address belongs to whoever just hijacked the account.
+$previous_email = (string) $current_user -> email;
+
 // The new address is unverified until its owner proves it - the account drops
 // back behind the verification gate until then.
 $unverified = 0;
@@ -69,5 +74,10 @@ $updated_user = Auth::user();
 // verifies the user directly and notifies the admin instead (sendFor's own
 // failure handling), so nobody gets stranded behind a gate no email can clear.
 EmailVerification::sendFor($updated_user);
+
+// Sends a "wasn't you?" notice to the OLD address with a revert link - the
+// real owner may know nothing about this change if the new address is one an
+// attacker (who already has the password) controls.
+EmailChangeRevert::sendFor($updated_user, $previous_email);
 
 JSONResponse::success(['changed' => true]) -> send();

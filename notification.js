@@ -59,7 +59,7 @@ class Notification {
             case 'postReady':
                 return window.siteURL + '/users/' + window.currentUserUsername + '/' + this.postId;
             case 'friendRequest':
-                return window.siteURL + '/friends/';
+                return window.siteURL + '/users/' + window.currentUserUsername + '/friends';
             case 'friendAccepted':
                 return window.siteURL + '/users/' + this.actorUsername + '/';
             case 'message':

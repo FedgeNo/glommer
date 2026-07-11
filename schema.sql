@@ -151,6 +151,18 @@ CREATE TABLE `PasswordResets` (
   KEY `expiresAt` (`expiresAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `EmailChangeReverts` (
+  `revertId` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `previousEmail` varchar(255) NOT NULL,
+  `tokenHash` varchar(64) NOT NULL,
+  `expiresAt` datetime NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`revertId`),
+  KEY `tokenHash` (`tokenHash`),
+  KEY `expiresAt` (`expiresAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `RateLimitAttempts` (
   `attemptId` int(11) NOT NULL AUTO_INCREMENT,
   `rateKey` varchar(255) NOT NULL,

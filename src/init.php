@@ -18,16 +18,21 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
-// An https SITE_URL declares the site is meant to be reached over TLS -
-// permanently redirect any plain-HTTP request to the canonical https URL
-// before anything else happens (no session cookie should ever travel over
-// plain HTTP there). Local development installs use an http SITE_URL and are
-// unaffected. X-Forwarded-Proto covers a TLS-terminating reverse proxy,
-// where PHP itself sees plain HTTP on every request.
+// HTTPS is required on an installed site - nothing is served over plain HTTP
+// except the redirect pointing at the https URL (the .htaccess enforces the
+// same for static files Apache serves without PHP). Only a fresh,
+// not-yet-installed site (no .env) is exempt: the setup wizard has to stay
+// reachable before TLS is necessarily configured, and with no .env the
+// config's SITE_URL is just the placeholder default anyway. X-Forwarded-Proto
+// covers a TLS-terminating reverse proxy, where PHP sees plain HTTP on every
+// request. An installed site whose SITE_URL is still http:// is refused
+// further down (after the error handlers are in place) rather than served.
 $init_config = require __DIR__ . '/config.php';
+$site_is_installed = is_file(__DIR__ . '/../.env');
 
 if (
-    str_starts_with((string) $init_config['siteURL'], 'https://')
+    $site_is_installed
+    && str_starts_with((string) $init_config['siteURL'], 'https://')
     && ($_SERVER['HTTPS'] ?? '') === ''
     && strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) !== 'https'
 ) {
@@ -82,6 +87,20 @@ register_shutdown_function(function () use ($send_server_error): void {
     error_log($error['message'] . ' in ' . $error['file'] . ':' . $error['line']);
     $send_server_error();
 });
+
+// HTTPS is a requirement, not a preference: an installed site whose SITE_URL
+// is still http:// gets a configuration-error page instead of being served -
+// both installers refuse an http URL, so this only catches a hand-edited
+// .env. (Placed here, after the error handlers, where ErrorDocument can
+// safely render.)
+if ($site_is_installed && !str_starts_with((string) $init_config['siteURL'], 'https://')) {
+    if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+        JSONResponse::error('This site requires HTTPS and is misconfigured. The administrator must set SITE_URL to an https:// URL.', 503) -> send();
+    }
+
+    ErrorDocument::send(503, 'HTTPS Required', 'This site requires HTTPS, but its SITE_URL is configured as plain http. The administrator must set SITE_URL in .env to an https:// URL - see the README\'s HTTPS section for how to get a certificate (including for localhost).');
+    exit;
+}
 
 // Version gate: the code and the database must have been installed/upgraded
 // together. After a code update, the database stays at the old version until

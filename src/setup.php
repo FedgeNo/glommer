@@ -57,6 +57,11 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($site_url === '' || filter_var($site_url, FILTER_VALIDATE_URL) === false) {
             $errors[] = 'A valid site URL is required.';
+        } elseif (!str_starts_with($site_url, 'https://')) {
+            // HTTPS is a requirement, not a preference - the site refuses to
+            // serve over plain HTTP, so an http URL would produce an install
+            // that doesn't work. Make the admin sort TLS out now, not later.
+            $errors[] = 'The site URL must be an https:// URL - Glommer requires HTTPS and will not serve over plain HTTP. For a real domain use Let\'s Encrypt (certbot); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default. See README.md\'s HTTPS section, then enter the https:// URL here.';
         }
 
         if ($site_title === '') {

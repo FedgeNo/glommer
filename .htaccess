@@ -22,6 +22,16 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Once installed (.env exists), nothing is served over plain HTTP - not
+    # even static files (uploads, CSS, JS), which Apache serves without PHP:
+    # everything 301s to its https URL. Before .env exists the setup wizard
+    # must stay reachable over whatever protocol works, since TLS may not be
+    # configured yet. X-Forwarded-Proto covers a TLS-terminating proxy.
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteCond %{DOCUMENT_ROOT}/.env -f
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
     # Direct .php access is never allowed - everything goes through the routes below.
     RewriteCond %{THE_REQUEST} \s/+[^?\s]*\.php[\s?] [NC]
     RewriteRule ^ 404.php [L]

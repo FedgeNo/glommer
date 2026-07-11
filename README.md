@@ -169,16 +169,30 @@ Out of the box, mail goes through PHP's `mail()` - the local sendmail. On a typi
 
 Test with a signup to a mailbox you control before launch. If sending fails outright, Glommer degrades deliberately: a signup whose verification email can't be sent is **verified automatically** (nobody gets stranded behind a gate no email can clear), a password reset is *not* issued without email, and in both cases the **admin gets a "mailer failed" notification** so the outage is visible immediately.
 
-## HTTPS
+## HTTPS (required)
 
-Set `SITE_URL` to an `https://` URL and Glommer enforces it: every plain-HTTP request is 301-redirected to the canonical https URL (X-Forwarded-Proto is honored behind a TLS-terminating proxy) and HSTS is sent. The certificate itself comes from your web server, not from Glommer - on Apache the usual path is Let's Encrypt via certbot:
+Glommer requires HTTPS - it will not serve over plain HTTP. Both installers refuse an `http://` site URL, and on an installed site (once `.env` exists) **every** plain-HTTP request - pages, API calls, and static files alike - is 301-redirected to its https URL (X-Forwarded-Proto is honored behind a TLS-terminating proxy), with HSTS sent on the https side. If `.env` is hand-edited to an `http://` `SITE_URL`, the site refuses to serve and shows a configuration-error page instead. The only thing ever reachable over plain HTTP is the pre-install setup wizard, since TLS may not be configured yet at that point.
 
-```
-sudo dnf install certbot python3-certbot-apache   # or apt equivalent
-sudo certbot --apache -d your.domain
-```
+So getting a certificate is part of installing. The certificate itself lives in your web server, not in Glommer:
 
-Local development installs keep an `http://` `SITE_URL` (e.g. `http://localhost`) and none of this applies - browsers don't require, and Let's Encrypt can't issue, certificates for localhost.
+- **A real domain**: Let's Encrypt via certbot is the usual path:
+
+  ```
+  sudo dnf install certbot python3-certbot-apache   # or apt equivalent
+  sudo certbot --apache -d your.domain
+  ```
+
+- **localhost / development**: public CAs can't issue for localhost, so use a locally-trusted certificate. `mkcert` is the smoothest (no browser warnings, and WebSocket-over-TLS works without fuss):
+
+  ```
+  sudo dnf install mkcert nss-tools
+  mkcert -install
+  mkcert localhost
+  ```
+
+  Point Apache's `SSLCertificateFile`/`SSLCertificateKeyFile` at the generated pair. (Fedora alternative: `dnf install mod_ssl` auto-generates a self-signed certificate - functional, but the browser warns, and browsers reject `wss://` to untrusted certificates silently, so prefer mkcert.)
+
+Since pages are https, browsers connect to the WebSocket daemon with `wss://` - give the daemon the same certificate via `WS_TLS_CERT`/`WS_TLS_KEY` in `.env` and restart it.
 
 ## Monitoring
 

@@ -376,6 +376,14 @@ if ($config['siteURL'] === 'https://example.com') {
     fail('SITE_URL is not set in .env - every generated link would point at the https://example.com placeholder.');
 }
 
+// HTTPS is a requirement, not a preference: an http:// SITE_URL is a
+// dealbreaker. The site itself refuses to serve over plain HTTP (everything
+// 301s to https, and an http SITE_URL gets a config-error page), so an
+// install without TLS simply doesn't work - get the certificate first.
+if (!str_starts_with((string) $config['siteURL'], 'https://')) {
+    fail('SITE_URL is ' . $config['siteURL'] . ' - Glommer requires HTTPS and will not serve over plain HTTP. Set up TLS first, then set SITE_URL to the https:// URL. For a real domain use Let\'s Encrypt (certbot --apache -d your.domain); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default (Fedora: dnf install mod_ssl). See README.md\'s HTTPS section.');
+}
+
 if ($config['WSSecret'] === 'change-me') {
     fail('WS_SECRET is still the .env.example placeholder - anyone who reads that public default can forge WebSocket auth tokens for any user. Set it to a real random value, e.g.: php -r \'echo bin2hex(random_bytes(32));\'');
 }

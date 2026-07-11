@@ -15,7 +15,11 @@ class SetupForm extends Form
         // page is being visited right now, the database fields from the
         // standard local-MySQL defaults. All of it stays editable - these
         // are starting points the installing admin reviews, not decisions.
-        $current_url = (($_SERVER['HTTPS'] ?? '') !== '' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'example.com');
+        // The URL is always prefilled as https:// regardless of how the setup
+        // page itself was reached - an http URL is rejected on submit (HTTPS
+        // is required), so prefilling the reached-by protocol would just bake
+        // in an error.
+        $current_url = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'example.com');
 
         $site_url = new InputField('siteURL', 'Site URL', 'text', 'https://example.com', 255);
         $site_url -> value = $current_url;

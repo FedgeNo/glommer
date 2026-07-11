@@ -41,7 +41,7 @@ SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
         $link = new self();
         $link -> parentId = $parent_id;
         $link -> parentUsername = $row['username'];
-        $link -> parentLabel = $row['title'] ?? ($description !== '' ? substr($description, 0, 60) : 'this post');
+        $link -> parentLabel = $row['title'] ?? ($description !== '' ? mb_substr($description, 0, 60) : 'this post');
 
         return $link;
     }

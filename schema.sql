@@ -20,6 +20,7 @@ CREATE TABLE `Users` (
   `hasAvatar` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `banned` tinyint(1) NOT NULL DEFAULT 0,
+  `isMod` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `verified` tinyint(1) NOT NULL DEFAULT 1,
   `theme` varchar(10) NOT NULL DEFAULT 'system',
   `skinTone` varchar(16) DEFAULT NULL,

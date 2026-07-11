@@ -178,43 +178,32 @@ SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisp
             return;
         }
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $mysqli = Database::connection();
+
+        $stmt = mysqli_prepare($mysqli, '
 INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
     VALUES (?, ?, ?, ?)
 ');
         mysqli_stmt_bind_param($stmt, 'iisi', $user_id, $actor_id, $type, $post_id);
         mysqli_stmt_execute($stmt);
-    }
 
-    /**
-     * Notifications created after $since_id, oldest first - so a poller can
-     * both show them as toasts and prepend them to the dropdown in the
-     * right order (each prepend pushes the previous one down, so feeding
-     * them in oldest-first ends with the newest actually on top).
-     *
-     * @return array[]
-     */
-    public static function rowsSince(int $user_id, int $since_id, int $limit = 20): array
-    {
-        $stmt = mysqli_prepare(Database::connection(), '
-SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
-    FROM `Notifications` `n`
-    JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
-    WHERE `n`.`userId` = ? AND `n`.`notificationId` > ?
-    ORDER BY `n`.`notificationId` ASC
-    LIMIT ?
-');
-        mysqli_stmt_bind_param($stmt, 'iii', $user_id, $since_id, $limit);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        $notification_id = (int) mysqli_insert_id($mysqli);
+        $actor = User::load($actor_id);
 
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
-        }
-
-        return $rows;
+        WebSocketPusher::push($user_id, [
+            'event' => 'notification',
+            'notification' => [
+                'notificationId' => $notification_id,
+                'userId' => $user_id,
+                'actorId' => $actor_id,
+                'type' => $type,
+                'postId' => $post_id,
+                'createdAt' => date('Y-m-d H:i:s'),
+                'actorUsername' => $actor ?-> username,
+                'actorDisplayName' => $actor ?-> displayName,
+                'actorImage' => $actor !== null && $actor -> hasAvatar ? URL::absolute(User::avatarPath($actor_id)) : null,
+            ],
+        ]);
     }
 
     /**

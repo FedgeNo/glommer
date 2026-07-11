@@ -14,4 +14,14 @@ return [
     'mailFromName' => Env::get('MAIL_FROM_NAME', 'Glommer'),
     'siteURL' => Env::get('SITE_URL', 'https://example.com'),
     'siteTitle' => Env::get('SITE_TITLE', 'Glommer'),
+    // The WebSocket daemon (bin/websocket-server.php) is a separate long-running
+    // process from Apache/PHP-FPM - these let both sides agree on where it
+    // lives and share a secret for signing/verifying connection tokens and
+    // authenticating the internal push channel between them.
+    'wsHost' => Env::get('WS_HOST', '0.0.0.0'),
+    'wsPort' => (int) Env::get('WS_PORT', '8090'),
+    'wsPushPort' => (int) Env::get('WS_PUSH_PORT', '8091'),
+    'wsSecret' => Env::get('WS_SECRET', 'change-me'),
+    'wsTlsCert' => Env::get('WS_TLS_CERT', '') ?: null,
+    'wsTlsKey' => Env::get('WS_TLS_KEY', '') ?: null,
 ];

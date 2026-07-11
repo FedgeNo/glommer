@@ -4,7 +4,25 @@ declare(strict_types=1);
 
 class Mailer
 {
+    private const MAX_ATTEMPTS = 3;
+    private const RETRY_DELAY_MICROSECONDS = 250000;
+
     public static function send(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
+    {
+        for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
+            if (self::attempt($to_address, $to_name, $subject, $text_body, $html_body)) {
+                return true;
+            }
+
+            if ($attempt < self::MAX_ATTEMPTS) {
+                usleep(self::RETRY_DELAY_MICROSECONDS);
+            }
+        }
+
+        return false;
+    }
+
+    private static function attempt(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
     {
         $config = require __DIR__ . '/../config.php';
         $from_address = $config['mailFromAddress'];

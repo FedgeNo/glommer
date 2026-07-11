@@ -35,12 +35,12 @@ class OtherUser extends User
             && $friendship -> status === 'pending'
             && (int) $friendship -> requesterId === $viewer_id;
 
-        foreach ($this -> beforeActions() as $item) {
-            $element -> appendChild($item -> toDOM());
-        }
-
         $actions = new Div();
         $actions -> class = 'd-flex flex-column gap-2 ms-auto';
+
+        foreach ($this -> beforeActions() as $item) {
+            $actions -> addContents($item);
+        }
 
         if ($friendship === null || $sent_by_viewer) {
             $friend_button = new Button();
@@ -56,6 +56,16 @@ class OtherUser extends User
         $message_link -> class = 'Btn';
         $actions -> addContents($message_link);
 
+        foreach ($this -> afterMessageActions() as $item) {
+            $actions -> addContents($item);
+        }
+
+        // Only the primary admin can promote/demote moderators - not mods
+        // themselves, to avoid a mod-promotes-mod escalation chain.
+        if ($viewer_id === 1) {
+            $actions -> addContents(new ModButton($this -> userId, (bool) $this -> isMod));
+        }
+
         $block_button = new Button();
         $block_button -> type = 'button';
         $block_button -> class = 'Btn BlockUserButton';
@@ -63,7 +73,9 @@ class OtherUser extends User
         $block_button -> contents[] = 'Block';
         $actions -> addContents($block_button);
 
-        $actions -> addContents(new ReportButton('user', $this -> userId));
+        $actions -> addContents(
+            Auth::canModerate() ? new BanButton($this -> userId, 'Ban') : new ReportButton('user', $this -> userId)
+        );
 
         $element -> appendChild($actions -> toDOM());
 
@@ -71,11 +83,23 @@ class OtherUser extends User
     }
 
     /**
-     * @return HTMLObject[] extra actions a subclass wants shown before the
-     *                       message/block/report trio, which always stays
-     *                       right-aligned via $actions's own ms-auto
+     * @return HTMLObject[] extra actions a subclass wants shown grouped in
+     *                       with the message/block/report trio (before it,
+     *                       in the same right-aligned $actions column) -
+     *                       not as separate items in the row alongside the
+     *                       user header, which is where they'd otherwise
+     *                       land as flex siblings of $actions
      */
     protected function beforeActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return HTMLObject[] extra actions a subclass wants shown grouped in
+     *                       with the block/report trio, right after Message
+     */
+    protected function afterMessageActions(): array
     {
         return [];
     }

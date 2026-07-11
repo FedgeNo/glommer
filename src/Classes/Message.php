@@ -20,6 +20,10 @@ class Message extends HTMLObject
             $this -> class .= ' Own';
         }
 
+        $meta = new RelativeTime($this -> createdAt);
+        $meta -> class = 'Muted text-sm ' . $meta -> class;
+        $this -> contents[] = $meta;
+
         if ($this -> sender !== null) {
             $this -> contents[] = $this -> senderHeader();
         }
@@ -27,10 +31,6 @@ class Message extends HTMLObject
         $body = new Paragraph();
         $body -> contents[] = $this -> body;
         $this -> contents[] = $body;
-
-        $meta = new RelativeTime($this -> createdAt);
-        $meta -> class = 'Muted text-sm ' . $meta -> class;
-        $this -> contents[] = $meta;
 
         if (Auth::check() && Auth::id() !== $this -> senderId) {
             $this -> contents[] = new ReportButton('message', $this -> messageId);
@@ -41,28 +41,7 @@ class Message extends HTMLObject
 
     protected function senderHeader(): HTMLObject
     {
-        $name = $this -> sender -> displayName ?? $this -> sender -> username;
-
-        $header = new Div();
-        $header -> class = 'd-flex align-items-center gap-3';
-
-        $header -> addContents(Avatar::forUser($this -> sender));
-
-        $info = new Div();
-
-        $name_line = new Div();
-        $name_line -> class = 'fw-semibold';
-        $name_line -> contents[] = $name;
-        $info -> addContents($name_line);
-
-        $username_line = new Div();
-        $username_line -> class = 'Muted text-sm';
-        $username_line -> contents[] = '@' . $this -> sender -> username;
-        $info -> addContents($username_line);
-
-        $header -> addContents($info);
-
-        return $header;
+        return $this -> sender -> header();
     }
 
     public static function fromRow(array $row): self

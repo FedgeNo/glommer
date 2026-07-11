@@ -38,11 +38,34 @@ class Env
 
             [$key, $value] = explode('=', $line, 2);
             $key = trim($key);
-            $value = trim($value);
+            $value = self::stripQuotes(trim($value));
 
             if (getenv($key) === false) {
                 putenv($key . '=' . $value);
             }
         }
+    }
+
+    /**
+     * A hand-edited .env is easy to write as KEY="value" or KEY='value' out
+     * of habit from other tools - strip one matching pair of surrounding
+     * quotes so the literal quote characters don't end up part of the value
+     * itself (e.g. a wrapped WS_SECRET would otherwise never match what the
+     * WebSocket daemon reads from the same file).
+     */
+    private static function stripQuotes(string $value): string
+    {
+        if (strlen($value) < 2) {
+            return $value;
+        }
+
+        $first = $value[0];
+        $last = $value[strlen($value) - 1];
+
+        if (($first === '"' && $last === '"') || ($first === '\'' && $last === '\'')) {
+            return substr($value, 1, -1);
+        }
+
+        return $value;
     }
 }

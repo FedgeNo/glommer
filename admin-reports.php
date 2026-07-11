@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-if (Auth::id() !== 1) {
+if (!Auth::canModerate()) {
     require __DIR__ . '/404.php';
     exit;
 }

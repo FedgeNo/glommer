@@ -19,6 +19,7 @@ class SecurityHeaders
     {
         $is_https = ($_SERVER['HTTPS'] ?? '') !== '';
         $nonce = self::nonce();
+        $config = require __DIR__ . '/../config.php';
 
         $csp = implode('; ', [
             'default-src \'self\'',
@@ -27,7 +28,12 @@ class SecurityHeaders
             'img-src \'self\' data:',
             'font-src \'self\' https://cdn.jsdelivr.net',
             'media-src \'self\'',
-            'connect-src \'self\' https://cdn.jsdelivr.net',
+            // The WebSocket connection is a different origin from the page
+            // (same host, different port) - 'self' doesn't cover it, and the
+            // actual hostname varies with however the site is reached, so
+            // this allows the configured port on any host rather than one
+            // hardcoded hostname.
+            'connect-src \'self\' https://cdn.jsdelivr.net ws://*:' . $config['wsPort'] . ' wss://*:' . $config['wsPort'],
             'object-src \'none\'',
             'base-uri \'self\'',
             'form-action \'self\'',

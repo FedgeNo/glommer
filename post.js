@@ -38,14 +38,7 @@ class Post {
         const byline = document.createElement('div');
         byline.className = 'PostByline d-flex align-items-center gap-2';
 
-        const name = this.authorDisplayName || this.authorUsername;
-
-        byline.appendChild(avatar_element(Boolean(this.authorImage), this.authorImage, name, this.userId, true));
-
-        const link = document.createElement('a');
-        link.href = window.siteURL + '/users/' + this.authorUsername + '/';
-        link.textContent = name;
-        byline.appendChild(link);
+        byline.appendChild(user_header_element(this.authorUsername, this.authorDisplayName, Boolean(this.authorImage), this.authorImage, this.userId, false));
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
@@ -83,6 +76,16 @@ class Post {
     linkItemToElement() {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
+
+        const link_image = this.items.find((item) => item.itemType === 'ImageItem');
+
+        if (link_image) {
+            const image = document.createElement('img');
+            image.className = 'LinkItemImage';
+            image.src = link_image.image;
+            image.alt = 'Link preview image';
+            wrapper.appendChild(image);
+        }
 
         const link = document.createElement('a');
         link.href = this.linkURL;

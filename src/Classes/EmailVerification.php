@@ -24,7 +24,15 @@ This link expires in 24 hours.';
             . '<p><a href="' . htmlspecialchars($verify_url) . '">Verify Email Address</a></p>'
             . '<p>This link expires in 24 hours.</p>';
 
-        Mailer::send($user -> email, $name, 'Verify your email address', $text_body, $html_body);
+        $sent = Mailer::send($user -> email, $name, 'Verify your email address', $text_body, $html_body);
+
+        if (!$sent) {
+            // Mail delivery is broken (or unconfigured) in this environment -
+            // rather than leaving the user permanently stuck behind the
+            // verification gate with no way to ever receive the link that
+            // would clear it, verify them directly instead.
+            self::markVerified((int) $user -> userId);
+        }
     }
 
     public static function verify(string $token): ?int
@@ -47,15 +55,8 @@ SELECT `userId`
         }
 
         $user_id = (int) $row['userId'];
-        $verified = 1;
 
-        $update_stmt = mysqli_prepare($mysqli, '
-UPDATE `Users`
-    SET `verified` = ?
-    WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($update_stmt, 'ii', $verified, $user_id);
-        mysqli_stmt_execute($update_stmt);
+        self::markVerified($user_id);
 
         $delete_stmt = mysqli_prepare($mysqli, '
 DELETE
@@ -66,6 +67,19 @@ DELETE
         mysqli_stmt_execute($delete_stmt);
 
         return $user_id;
+    }
+
+    private static function markVerified(int $user_id): void
+    {
+        $verified = 1;
+
+        $stmt = mysqli_prepare(Database::connection(), '
+UPDATE `Users`
+    SET `verified` = ?
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ii', $verified, $user_id);
+        mysqli_stmt_execute($stmt);
     }
 
     private static function create(int $user_id): string

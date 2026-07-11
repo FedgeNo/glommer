@@ -94,9 +94,11 @@ class Page
             'currentUserId' => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> username,
             'currentUserSkinTone' => $current_user ?-> skinTone,
+            'currentUserCanModerate' => Auth::canModerate(),
             'csrfToken' => CSRF::token(),
             'siteURL' => URL::absolute(''),
             'serverTime' => time() * 1000,
+            'wsPort' => $config['wsPort'],
         ]));
 
         $post_script = new Script();

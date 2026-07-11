@@ -20,6 +20,12 @@ class Message {
             div.className += ' Own';
         }
 
+        const meta = document.createElement('time');
+        meta.className = 'Muted text-sm RelativeTime';
+        meta.dateTime = parse_server_date(this.createdAt).toISOString();
+        meta.textContent = format_relative_time(this.createdAt);
+        div.appendChild(meta);
+
         const sender = (window.conversationUsers || {})[this.senderId];
 
         if (sender) {
@@ -29,12 +35,6 @@ class Message {
         const body = document.createElement('p');
         body.textContent = this.body;
         div.appendChild(body);
-
-        const meta = document.createElement('time');
-        meta.className = 'Muted text-sm RelativeTime';
-        meta.dateTime = parse_server_date(this.createdAt).toISOString();
-        meta.textContent = format_relative_time(this.createdAt);
-        div.appendChild(meta);
 
         if (window.currentUserId !== null && Number(this.senderId) !== Number(window.currentUserId)) {
             const report_button = document.createElement('button');
@@ -52,27 +52,35 @@ class Message {
     }
 
     senderHeader(sender, sender_id) {
-        const header = document.createElement('div');
-        header.className = 'd-flex align-items-center gap-3';
-
-        const name = sender.displayName || sender.username;
-
-        header.appendChild(avatar_element(Boolean(sender.image), sender.image, name, sender_id, false));
-
-        const info = document.createElement('div');
-
-        const name_line = document.createElement('div');
-        name_line.className = 'fw-semibold';
-        name_line.textContent = name;
-        info.appendChild(name_line);
-
-        const username_line = document.createElement('div');
-        username_line.className = 'Muted text-sm';
-        username_line.textContent = '@' + sender.username;
-        info.appendChild(username_line);
-
-        header.appendChild(info);
-
-        return header;
+        return user_header_element(sender.username, sender.displayName, Boolean(sender.image), sender.image, sender_id, false);
     }
 }
+
+/**
+ * Live-appends a message pushed over the WebSocket connection (see main.js's
+ * connect_websocket()) - but only if the conversation it belongs to is the
+ * one currently open, since a page has no DOM to append into for any other
+ * conversation. Messages for a conversation that isn't open still surface
+ * via the normal 'message' notification toast.
+ */
+document.addEventListener('ws:message', (event) => {
+    const data = event.detail;
+    const list = document.querySelector('.MessageList');
+
+    if (!list || Number(list.dataset.otherUserId) !== Number(data.senderId)) {
+        return;
+    }
+
+    const placeholder = list.querySelector(':scope > .Muted');
+
+    if (placeholder) {
+        placeholder.remove();
+    }
+
+    const message = Message.fromData(data);
+    const element = message.toElement();
+    list.appendChild(element);
+    render_math(element);
+
+    window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
+});

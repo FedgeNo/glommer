@@ -6,6 +6,15 @@ class UserSearch extends HTMLObject
 {
     public ?string $class = 'UserSearch';
 
+    /**
+     * @param OtherUser[] $suggestions shown in the results area before the
+     *                                 user has typed anything
+     */
+    public function __construct(private readonly array $suggestions = [])
+    {
+        parent::__construct();
+    }
+
     public function toDOM(): \DOMElement
     {
         $input_card = new Div();
@@ -22,6 +31,11 @@ class UserSearch extends HTMLObject
 
         $results = new Div();
         $results -> class = 'UserSearchResults';
+
+        foreach ($this -> suggestions as $suggestion) {
+            $results -> addContents($suggestion);
+        }
+
         $this -> contents[] = $results;
 
         return parent::toDOM();

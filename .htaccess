@@ -9,10 +9,13 @@
 </FilesMatch>
 
 <IfModule mod_headers.c>
-    <FilesMatch "\.(js|css)$">
-        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
+    # Apache already sends ETag/Last-Modified on every static file - this
+    # just tells the browser to actually use them: keep a cached copy, but
+    # always revalidate with the server (a cheap conditional request,
+    # answered 304 Not Modified if unchanged) before serving it, rather than
+    # either never caching at all or trusting a stale copy.
+    <FilesMatch "\.(js|css|jpe?g|mp4|mp3)$">
+        Header set Cache-Control "no-cache"
     </FilesMatch>
 </IfModule>
 

@@ -23,7 +23,7 @@ class HTMLDocument extends HTMLObject
      */
     public int $metaContentEndIndex = 0;
 
-    public function addHeadContent(HTMLObject|string|\DOMNode $item): void
+    public function addHeadContent(HTMLObject|CData|string|\DOMNode $item): void
     {
         $this -> head -> addContents($item);
     }
@@ -34,7 +34,7 @@ class HTMLDocument extends HTMLObject
      * RSS <link rel="alternate">) but added by a page script after
      * Page::create() has already built the rest of the head.
      */
-    public function addMetaContent(HTMLObject|string|\DOMNode $item): void
+    public function addMetaContent(HTMLObject|CData|string|\DOMNode $item): void
     {
         array_splice($this -> head -> contents, $this -> metaContentEndIndex, 0, [$item]);
         $this -> metaContentEndIndex++;
@@ -45,7 +45,7 @@ class HTMLDocument extends HTMLObject
      * has are <head> and <body>, so the inherited append-to-own-contents
      * behavior could only ever produce invalid markup here.
      */
-    public function addContents(HTMLObject|string|\DOMNode $item): void
+    public function addContents(HTMLObject|CData|string|\DOMNode $item): void
     {
         $this -> body -> addContents($item);
     }

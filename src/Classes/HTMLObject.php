@@ -6,6 +6,11 @@ class HTMLObject
 {
     protected static \DOMDocument $document;
 
+    public static function currentDocument(): \DOMDocument
+    {
+        return self::$document;
+    }
+
     private const VOID_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
     public string $tagName = 'div';
@@ -38,7 +43,7 @@ class HTMLObject
         $this -> class = trim($base_value . ' ' . implode(' ', array_reverse($names)));
     }
 
-    public function addContents(HTMLObject|string|\DOMNode $item): void
+    public function addContents(HTMLObject|CData|string|\DOMNode $item): void
     {
         $this -> contents[] = $item;
     }
@@ -73,6 +78,8 @@ class HTMLObject
     {
         if ($item instanceof HTMLObject) {
             return $item -> toDOM();
+        } elseif ($item instanceof CData) {
+            return $item -> toNode();
         } elseif (is_string($item)) {
             return self::$document -> createTextNode($item);
         } elseif ($item instanceof \DOMNode) {
@@ -86,13 +93,13 @@ class HTMLObject
      * Render a standalone object (not part of a full HTMLDocument) to an HTML string.
      * Used for AJAX responses that inject a fragment into an existing page.
      */
-    public static function render(self $object): string
+    public function render(): string
     {
         $implementation = new \DOMImplementation();
         self::$document = $implementation -> createDocument();
         self::$document -> formatOutput = true;
 
-        $element = $object -> toDOM();
+        $element = $this -> toDOM();
         self::$document -> appendChild($element);
 
         self::fillEmptyNonVoidTags($element);
@@ -130,13 +137,13 @@ class HTMLObject
      * Used for JSON API responses that carry a pre-sanitized rich-text field
      * (e.g. PostBody output) for a JS class to drop into its own element via innerHTML.
      */
-    public static function renderInner(self $object): string
+    public function renderInner(): string
     {
         $implementation = new \DOMImplementation();
         self::$document = $implementation -> createDocument();
         self::$document -> formatOutput = true;
 
-        $element = $object -> toDOM();
+        $element = $this -> toDOM();
         self::$document -> appendChild($element);
 
         self::fillEmptyNonVoidTags($element);

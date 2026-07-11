@@ -85,4 +85,19 @@ SELECT *
             exit;
         }
     }
+
+    /**
+     * True for the primary admin (userId 1) or anyone promoted to moderator -
+     * both can access the reports queue and ban users. Only the primary
+     * admin can promote/demote moderators themselves (checked separately,
+     * directly against id() === 1, same as every other admin-only action).
+     */
+    public static function canModerate(): bool
+    {
+        if (self::id() === 1) {
+            return true;
+        }
+
+        return (bool) (self::user() ?-> isMod ?? false);
+    }
 }

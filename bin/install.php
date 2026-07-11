@@ -56,7 +56,11 @@ if ($config['siteURL'] === 'https://example.com') {
     fail('SITE_URL is not set in .env - every generated link would point at the https://example.com placeholder.');
 }
 
-ok('.env present, SITE_URL configured (' . $config['siteURL'] . ')');
+if ($config['wsSecret'] === 'change-me') {
+    fail('WS_SECRET is still the .env.example placeholder - anyone who reads that public default can forge WebSocket auth tokens for any user. Set it to a real random value, e.g.: php -r \'echo bin2hex(random_bytes(32));\'');
+}
+
+ok('.env present, SITE_URL and WS_SECRET configured (' . $config['siteURL'] . ')');
 
 // ---------- Database connection ----------
 

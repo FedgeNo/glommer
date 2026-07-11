@@ -114,6 +114,17 @@ if ($has_files) {
 $needs_async = count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0;
 
 if ($needs_async) {
+    // Each of these spawns its own detached ffmpeg transcode - without a cap,
+    // one user firing off many video/audio posts in a burst could exhaust
+    // CPU/memory with unbounded concurrent worker processes.
+    $async_upload_rate_key = 'async-upload:' . $current_user -> userId;
+
+    if (RateLimiter::tooManyAttempts($async_upload_rate_key, 5, 600)) {
+        JSONResponse::error('Too many video/audio uploads in a short time. Please wait a bit and try again.', 429) -> send();
+    }
+
+    RateLimiter::recordAttempt($async_upload_rate_key);
+
     $batch_id = UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $link_url_value, $valid_files);
 
     $worker = escapeshellarg(__DIR__ . '/../bin/process-upload.php');

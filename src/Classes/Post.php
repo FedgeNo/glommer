@@ -50,7 +50,16 @@ class Post extends HTMLObject
         }
 
         if ($this -> linkURL !== null) {
-            $this -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description);
+            $link_image = null;
+
+            foreach ($this -> items as $item) {
+                if ($item instanceof ImageItem) {
+                    $link_image = $item;
+                    break;
+                }
+            }
+
+            $this -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description, $link_image);
         } else {
             if ($this -> title !== null) {
                 $heading = new Heading3();
@@ -178,14 +187,10 @@ class Post extends HTMLObject
 
     protected function authorByline(): HTMLObject
     {
-        $name = $this -> author -> displayName ?? $this -> author -> username;
-
         $byline = new Div();
         $byline -> class = 'PostByline d-flex align-items-center gap-2';
 
-        $byline -> addContents(Avatar::forUser($this -> author, small: true));
-
-        $byline -> addContents(new Anchor(URL::absolute('/users/' . $this -> author -> username . '/'), $name));
+        $byline -> addContents($this -> author -> header());
 
         if ($this -> createdAt !== null && $this -> postId !== null) {
             $timestamp_link = new Anchor(URL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
@@ -354,7 +359,7 @@ SELECT `postId`
         if ($this -> description !== null) {
             $body = new PostBody();
             $body -> addContents($this -> description);
-            $sanitized_description = HTMLObject::renderInner($body);
+            $sanitized_description = $body -> renderInner();
         }
 
         $items = [];

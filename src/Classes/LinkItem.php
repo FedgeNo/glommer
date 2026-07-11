@@ -7,18 +7,28 @@ class LinkItem extends FeedItem
     public ?string $linkURL = null;
     public ?string $title = null;
     public ?string $description = null;
+    public ?ImageItem $image = null;
 
-    public function __construct(string $link_url, ?string $title = null, ?string $description = null)
+    public function __construct(string $link_url, ?string $title = null, ?string $description = null, ?ImageItem $image = null)
     {
         parent::__construct();
 
         $this -> linkURL = $link_url;
         $this -> title = $title;
         $this -> description = $description;
+        $this -> image = $image;
     }
 
     public function toDOM(): \DOMElement
     {
+        if ($this -> image !== null) {
+            $image = new Image();
+            $image -> class = 'LinkItemImage';
+            $image -> src = $this -> image -> imageURL();
+            $image -> alt = 'Link preview image';
+            $this -> contents[] = $image;
+        }
+
         $link = new Anchor($this -> linkURL);
 
         if ($this -> title !== null) {

@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 class RSSItem
 {
+    /**
+     * Set once by RSSFeed::toXML() before building any items - RSS's own
+     * equivalent of HTMLObject::$document, so an item doesn't need the
+     * document threaded through every call to build its element.
+     */
+    public static \DOMDocument $document;
+
     public string $title;
     public string $link;
     public string $description;
@@ -17,8 +24,10 @@ class RSSItem
         $this -> pubDate = date(DATE_RSS, strtotime($created_at));
     }
 
-    public function toElement(\DOMDocument $document): \DOMElement
+    public function toElement(): \DOMElement
     {
+        $document = self::$document;
+
         $item = $document -> createElement('item');
         $item -> appendChild($document -> createElement('title', $this -> title));
         $item -> appendChild($document -> createElement('link', $this -> link));
@@ -52,7 +61,7 @@ class RSSItem
             $body -> addContents($post -> description);
         }
 
-        $description = HTMLObject::renderInner($body);
+        $description = $body -> renderInner();
         $title = $post -> title ?? ($post -> description !== null ? $post -> shortDescription() : 'Untitled');
 
         return new self($title, $link, $description, (string) $post -> createdAt);

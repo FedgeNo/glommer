@@ -27,6 +27,7 @@ class RSSFeed
     {
         $document = new \DOMDocument('1.0', 'UTF-8');
         $document -> formatOutput = true;
+        RSSItem::$document = $document;
 
         $rss = $document -> createElement('rss');
         $rss -> setAttribute('version', '2.0');
@@ -40,7 +41,7 @@ class RSSFeed
         $channel -> appendChild($document -> createElement('description', $this -> description));
 
         foreach ($this -> items as $item) {
-            $channel -> appendChild($item -> toElement($document));
+            $channel -> appendChild($item -> toElement());
         }
 
         return $document -> saveXML();

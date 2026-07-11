@@ -22,12 +22,9 @@ class NotificationsNavLink extends Div
     public function toDOM(): \DOMElement
     {
         // The newest of the (already newest-first) recent rows, if any -
-        // main.js polls for anything created after this, and it's also all
-        // that's needed to know whether there's something unseen right now.
+        // all that's needed to know whether there's something unseen right now.
         $newest_id = $this -> rows !== [] ? (int) $this -> rows[0]['notificationId'] : 0;
         $has_unseen = $newest_id > $this -> lastNotificationId;
-
-        $this -> attributes['data-newest-notification-id'] = (string) $newest_id;
 
         $this -> addContents(new Anchor(URL::absolute('/notifications/'), 'Notifications'));
 

@@ -33,6 +33,37 @@ function avatar_element(has_image, image_url, name, user_id, small) {
 }
 
 /**
+ * Mirrors User::header(): the avatar + display name + username block used
+ * wherever a message, post, or similar item needs to show who it's from -
+ * one clickable link to their profile.
+ */
+function user_header_element(username, display_name, has_image, image_url, user_id, small) {
+    const name = display_name || username;
+
+    const header = document.createElement('a');
+    header.href = window.siteURL + '/users/' + username + '/';
+    header.className = 'd-flex align-items-center gap-3';
+
+    header.appendChild(avatar_element(has_image, image_url, name, user_id, small));
+
+    const info = document.createElement('div');
+
+    const name_line = document.createElement('div');
+    name_line.className = 'fw-semibold';
+    name_line.textContent = name;
+    info.appendChild(name_line);
+
+    const username_line = document.createElement('div');
+    username_line.className = 'Muted text-sm';
+    username_line.textContent = '@' + username;
+    info.appendChild(username_line);
+
+    header.appendChild(info);
+
+    return header;
+}
+
+/**
  * The viewer's own clock can't be trusted to be in sync with the server
  * (especially once this runs on machines we don't control), so relative
  * timestamps are computed against the server's clock, corrected for
@@ -251,6 +282,74 @@ document.addEventListener('click', (event) => {
 });
 
 /**
+ * Shows a confirmation dialog we control, in place of window.confirm() -
+ * browsers let a user tick "prevent this page from creating additional
+ * dialogs" on the native one, which would silently disable it (and every
+ * confirmation gating a destructive action) for the rest of the page's
+ * lifetime with no way for us to detect or recover from it. Resolves true if
+ * the user confirms, false if they cancel (including via the overlay,
+ * Escape, or navigating away).
+ */
+function show_confirm(message) {
+    document.querySelector('.ConfirmDialogOverlay') ?.remove();
+
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'ConfirmDialogOverlay';
+
+        const card = document.createElement('div');
+        card.className = 'ConfirmDialogCard Card';
+
+        const text = document.createElement('div');
+        text.className = 'ConfirmDialogMessage';
+        text.textContent = message;
+        card.appendChild(text);
+
+        const actions = document.createElement('div');
+        actions.className = 'ConfirmDialogActions d-flex gap-2';
+
+        const cancel_button = document.createElement('button');
+        cancel_button.type = 'button';
+        cancel_button.className = 'Btn ConfirmDialogCancelButton';
+        cancel_button.textContent = 'Cancel';
+
+        const confirm_button = document.createElement('button');
+        confirm_button.type = 'button';
+        confirm_button.className = 'Btn ConfirmDialogConfirmButton';
+        confirm_button.textContent = 'OK';
+
+        actions.appendChild(cancel_button);
+        actions.appendChild(confirm_button);
+        card.appendChild(actions);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+
+        const finish = (confirmed) => {
+            document.removeEventListener('keydown', on_keydown);
+            overlay.remove();
+            resolve(confirmed);
+        };
+
+        const on_keydown = (event) => {
+            if (event.key === 'Escape') {
+                finish(false);
+            }
+        };
+
+        cancel_button.addEventListener('click', () => finish(false));
+        confirm_button.addEventListener('click', () => finish(true));
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) {
+                finish(false);
+            }
+        });
+        document.addEventListener('keydown', on_keydown);
+
+        cancel_button.focus();
+    });
+}
+
+/**
  * POSTs JSON to an API endpoint and returns the parsed response value, or null
  * on any failure (after telling the user what went wrong). Callers only need
  * to handle the success path.
@@ -362,10 +461,6 @@ document.addEventListener('input', (event) => {
 
         results.innerHTML = '';
 
-        if (query === '') {
-            return;
-        }
-
         const response = await fetch(window.siteURL + '/api/search-users?q=' + encodeURIComponent(query));
         const data = await response.json();
 
@@ -414,7 +509,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    if (!window.confirm('Block this user? This will remove any existing friendship.')) {
+    if (!await show_confirm('Block this user? This will remove any existing friendship.')) {
         return;
     }
 
@@ -434,6 +529,64 @@ document.addEventListener('click', async (event) => {
         if (user) {
             user.remove();
         }
+    } finally {
+        button.disabled = false;
+    }
+});
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.RemoveFriendButton');
+
+    if (!button) {
+        return;
+    }
+
+    if (!await show_confirm('Remove this friend?')) {
+        return;
+    }
+
+    const user_id = button.dataset.userId;
+
+    button.disabled = true;
+
+    try {
+        const result = await api_post('/api/remove-friend', { userId: user_id });
+
+        if (result === null) {
+            return;
+        }
+
+        const user = button.closest('.OtherUser');
+
+        if (user) {
+            user.remove();
+        }
+    } finally {
+        button.disabled = false;
+    }
+});
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.ModButton');
+
+    if (!button) {
+        return;
+    }
+
+    const user_id = button.dataset.userId;
+    const is_mod = button.dataset.isMod === '1';
+
+    button.disabled = true;
+
+    try {
+        const result = await api_post('/api/set-mod', { userId: user_id, isMod: !is_mod });
+
+        if (result === null) {
+            return;
+        }
+
+        button.dataset.isMod = result.isMod ? '1' : '0';
+        button.textContent = result.isMod ? 'Remove Mod' : 'Make Mod';
     } finally {
         button.disabled = false;
     }
@@ -517,7 +670,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    if (!window.confirm('Delete this post?')) {
+    if (!await show_confirm('Delete this post?')) {
         return;
     }
 
@@ -629,7 +782,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    if (!window.confirm('Ban this user? This hides all their content and blocks their login.')) {
+    if (!await show_confirm('Ban this user? This hides all their content and blocks their login.')) {
         return;
     }
 
@@ -726,6 +879,12 @@ document.addEventListener('submit', async (event) => {
         }
 
         avatar.src = data.response.image + '?t=' + Date.now();
+
+        const fallback = form.parentElement.querySelector('.AvatarInitial');
+
+        if (fallback) {
+            fallback.remove();
+        }
     } finally {
         submit_button.disabled = false;
     }
@@ -815,6 +974,8 @@ window.addEventListener('load', () => {
 
     window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
     message_history_ready = true;
+
+    document.querySelector('.MessageComposer textarea') ?.focus();
 });
 
 let loading_older_messages = false;
@@ -939,64 +1100,116 @@ window.addEventListener('scroll', async () => {
     }
 });
 
-const NOTIFICATION_POLL_INTERVAL_MS = 20000;
+const WS_RECONNECT_DELAY_MS = 3000;
 
 /**
- * Polls for notifications created after the last one already known about,
- * toasting each one and prepending it to the nav dropdown's list (each
- * prepend pushes the previous one down, so feeding them in the oldest-first
- * order the endpoint returns them in ends with the newest on top - matching
- * the list's normal newest-first order). Lights up every .NotificationDot
+ * Handles one freshly-pushed notification: toasts it, prepends it to the
+ * nav dropdown's list (the dropdown only ever shows 5 - drop the bottom one
+ * before prepending so a burst of new notifications can't grow it), and -
+ * if the full /notifications/ page itself is open - prepends it there too,
+ * uncapped, same as the dropdown and the full page both exist in the DOM
+ * simultaneously while viewing that page. Lights up every .NotificationDot
  * on the page (normally just the one in the nav) so the user still has a
- * way to notice if they miss the toasts (tab not focused, etc).
+ * way to notice if they miss the toast (tab not focused, etc).
  */
-function poll_for_notifications(nav_link) {
-    setInterval(async () => {
-        const since_id = nav_link.dataset.newestNotificationId;
-        const response = await fetch(`${window.siteURL}/api/notification-poll?sinceId=${since_id}`);
+function handle_incoming_notification(notification_data) {
+    const notification = Notification.fromData(notification_data);
 
-        if (!response.ok) {
-            return;
-        }
+    show_toast('<a href="' + escape_attribute(notification.targetURL()) + '">' + escape_html(notification.text()) + '</a>');
 
-        const data = await response.json();
-        const { notifications } = data.response;
+    const dropdown_list = document.querySelector('.NotificationDropdown .NotificationList');
 
-        if (notifications.length === 0) {
-            return;
-        }
-
-        nav_link.dataset.newestNotificationId = notifications[notifications.length - 1].notificationId;
-
-        const dropdown_list = document.querySelector('.NotificationDropdown .NotificationList');
-        const placeholder = dropdown_list ? dropdown_list.querySelector(':scope > .Muted') : null;
+    if (dropdown_list) {
+        const placeholder = dropdown_list.querySelector(':scope > .Muted');
 
         if (placeholder) {
             placeholder.remove();
         }
 
-        notifications.forEach((notification_data) => {
-            const notification = Notification.fromData(notification_data);
+        const existing = dropdown_list.querySelectorAll(':scope > .Notification');
 
-            show_toast('<a href="' + escape_attribute(notification.targetURL()) + '">' + escape_html(notification.text()) + '</a>');
+        if (existing.length >= 5) {
+            existing[existing.length - 1].remove();
+        }
 
-            if (dropdown_list) {
-                // The dropdown only ever shows 5 - drop the bottom one before
-                // prepending so a burst of new notifications can't grow it.
-                const existing = dropdown_list.querySelectorAll(':scope > .Notification');
+        dropdown_list.insertBefore(notification.toElement(), dropdown_list.firstChild);
+    }
 
-                if (existing.length >= 5) {
-                    existing[existing.length - 1].remove();
-                }
+    const page_list = Array.from(document.querySelectorAll('.NotificationList')).find((list) => !list.closest('.NotificationDropdown'));
 
-                dropdown_list.insertBefore(notification.toElement(), dropdown_list.firstChild);
-            }
-        });
+    if (page_list) {
+        const page_placeholder = page_list.querySelector(':scope > .Muted');
 
-        document.querySelectorAll('.NotificationDot').forEach((dot) => {
-            dot.classList.add('Active');
-        });
-    }, NOTIFICATION_POLL_INTERVAL_MS);
+        if (page_placeholder) {
+            page_placeholder.remove();
+        }
+
+        page_list.insertBefore(notification.toElement(), page_list.firstChild);
+    }
+
+    document.querySelectorAll('.NotificationDot').forEach((dot) => {
+        dot.classList.add('Active');
+    });
+}
+
+/**
+ * Opens the persistent WebSocket connection to bin/websocket-server.php
+ * that live notifications and (via a 'ws:message' CustomEvent picked up by
+ * message.js) live conversation messages both ride on - a separate
+ * long-running process from Apache/PHP-FPM, since a normal request can't
+ * hold a connection open across requests. Authenticated with a short-lived
+ * token fetched fresh on every (re)connect attempt, since the token expires
+ * quickly and the daemon doesn't share PHP's session handling. Reconnects
+ * on any drop (server restart, network blip) rather than leaving the user
+ * silently back on no live updates at all.
+ */
+async function connect_websocket() {
+    let token;
+
+    try {
+        const response = await fetch(`${window.siteURL}/api/ws-token`);
+
+        if (!response.ok) {
+            throw new Error('token fetch failed');
+        }
+
+        ({ token } = (await response.json()).response);
+    } catch (error) {
+        setTimeout(connect_websocket, WS_RECONNECT_DELAY_MS);
+        return;
+    }
+
+    const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const socket = new WebSocket(`${scheme}://${window.location.hostname}:${window.wsPort}/?token=${encodeURIComponent(token)}`);
+    let reconnecting = false;
+
+    const reconnect = () => {
+        if (reconnecting) {
+            return;
+        }
+
+        reconnecting = true;
+        setTimeout(connect_websocket, WS_RECONNECT_DELAY_MS);
+    };
+
+    socket.addEventListener('message', (event) => {
+        let data;
+
+        try {
+            data = JSON.parse(event.data);
+        } catch (error) {
+            return;
+        }
+
+        if (data.event === 'notification') {
+            handle_incoming_notification(data.notification);
+        } else if (data.event === 'message') {
+            document.dispatchEvent(new CustomEvent('ws:message', { detail: data.message }));
+        }
+    });
+
+    socket.addEventListener('close', reconnect);
+    socket.addEventListener('error', () => socket.close());
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1017,7 +1230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await api_post('/api/mark-notifications-seen');
     });
 
-    poll_for_notifications(nav_link);
+    connect_websocket();
 });
 
 let loading_older_feed_items = false;

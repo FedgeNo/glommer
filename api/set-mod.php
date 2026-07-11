@@ -4,26 +4,33 @@ declare(strict_types=1);
 
 require __DIR__ . '/../src/init.php';
 
-if (!Auth::check() || !Auth::canModerate()) {
+// Only the primary admin can promote/demote moderators - not mods
+// themselves, to avoid a mod-promotes-mod escalation chain.
+if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
 $mysqli = Database::connection();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $user_id = (int) ($payload['userId'] ?? 0);
+$is_mod = (bool) ($payload['isMod'] ?? false);
 
 if ($user_id === 0 || $user_id === 1) {
     JSONResponse::error('Invalid target', 422) -> send();
 }
 
-$banned = 1;
+if (User::load($user_id) === null) {
+    JSONResponse::error('User not found', 404) -> send();
+}
+
+$is_mod_value = $is_mod ? 1 : 0;
 
 $stmt = mysqli_prepare($mysqli, '
 UPDATE `Users`
-    SET `banned` = ?
+    SET `isMod` = ?
     WHERE `userId` = ?
 ');
-mysqli_stmt_bind_param($stmt, 'ii', $banned, $user_id);
+mysqli_stmt_bind_param($stmt, 'ii', $is_mod_value, $user_id);
 mysqli_stmt_execute($stmt);
 
-JSONResponse::success(['banned' => true]) -> send();
+JSONResponse::success(['isMod' => $is_mod]) -> send();

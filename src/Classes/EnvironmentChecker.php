@@ -23,6 +23,7 @@ class EnvironmentChecker
             'Upload directories' => self::checkUploadDirectories(),
             'SELinux' => self::checkSELinux(),
             'Outbound network' => self::checkOutboundNetwork(),
+            'WebSocket server' => self::checkWebSocketServer(),
         ];
     }
 
@@ -160,5 +161,61 @@ class EnvironmentChecker
         }
 
         return ['ok' => true, 'message' => 'outbound HTTPS requests work'];
+    }
+
+    /**
+     * Live notifications and messages are a primary feature, not an optional
+     * extra - this performs a real HTTP-upgrade handshake and a ping/pong
+     * frame round trip against bin/websocket-server.php (a separate,
+     * long-running process from Apache/PHP-FPM that must already be started
+     * - see the systemd unit under README.md), not just a port-open check.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkWebSocketServer(): array
+    {
+        $config = require __DIR__ . '/../config.php';
+
+        $socket = @stream_socket_client('tcp://127.0.0.1:' . $config['wsPort'], $error_code, $error_message, 3);
+
+        if ($socket === false) {
+            return ['ok' => false, 'message' => 'Could not connect to the WebSocket server on 127.0.0.1:' . $config['wsPort'] . ' (' . $error_message . '). Start it first: systemctl --user start glommer-websocket (see README.md for the unit file).'];
+        }
+
+        stream_set_timeout($socket, 3);
+
+        $token = WSToken::issue(0);
+        $key = base64_encode(random_bytes(16));
+
+        fwrite($socket, "GET /?token=" . $token . " HTTP/1.1\r\nHost: 127.0.0.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " . $key . "\r\nSec-WebSocket-Version: 13\r\n\r\n");
+
+        $response = fread($socket, 1024);
+        $expected_accept = base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));
+
+        if ($response === false || !str_contains($response, '101 Switching Protocols') || !str_contains($response, $expected_accept)) {
+            fclose($socket);
+
+            return ['ok' => false, 'message' => 'The service on 127.0.0.1:' . $config['wsPort'] . ' did not complete a valid WebSocket handshake - something other than bin/websocket-server.php may be listening on that port.'];
+        }
+
+        $mask_key = random_bytes(4);
+        $ping_payload = 'ping';
+        $masked_ping = '';
+
+        for ($i = 0; $i < strlen($ping_payload); $i++) {
+            $masked_ping .= $ping_payload[$i] ^ $mask_key[$i % 4];
+        }
+
+        fwrite($socket, chr(0x89) . chr(0x80 | strlen($ping_payload)) . $mask_key . $masked_ping);
+        $frame_header = fread($socket, 2);
+        $is_pong = strlen($frame_header) === 2 && (ord($frame_header[0]) & 0x0F) === 0xA;
+
+        fclose($socket);
+
+        if (!$is_pong) {
+            return ['ok' => false, 'message' => 'The WebSocket server accepted the handshake but did not respond to a ping - it may be stuck or misbehaving. Check its logs.'];
+        }
+
+        return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $config['wsPort']];
     }
 }

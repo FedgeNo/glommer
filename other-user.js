@@ -8,6 +8,7 @@ class OtherUser {
     blockedByOther = false;
     friendshipStatus = null;
     friendshipSentByViewer = null;
+    isMod = false;
     element = null;
 
     static fromData(data) {
@@ -84,16 +85,40 @@ class OtherUser {
             block_button.dataset.userId = this.userId;
             block_button.textContent = 'Block';
 
-            const report_button = document.createElement('button');
-            report_button.type = 'button';
-            report_button.className = 'Btn ReportButton';
-            report_button.dataset.targetType = 'user';
-            report_button.dataset.targetId = this.userId;
-            report_button.textContent = 'Report';
+            let report_or_ban_button;
+
+            if (window.currentUserCanModerate) {
+                report_or_ban_button = document.createElement('button');
+                report_or_ban_button.type = 'button';
+                report_or_ban_button.className = 'Btn BanButton';
+                report_or_ban_button.dataset.userId = this.userId;
+                report_or_ban_button.textContent = 'Ban';
+            } else {
+                report_or_ban_button = document.createElement('button');
+                report_or_ban_button.type = 'button';
+                report_or_ban_button.className = 'Btn ReportButton';
+                report_or_ban_button.dataset.targetType = 'user';
+                report_or_ban_button.dataset.targetId = this.userId;
+                report_or_ban_button.textContent = 'Report';
+            }
 
             actions.appendChild(message_link);
+
+            // Only the primary admin can promote/demote moderators - not
+            // mods themselves, to avoid a mod-promotes-mod escalation chain.
+            if (Number(window.currentUserId) === 1) {
+                const mod_button = document.createElement('button');
+                mod_button.type = 'button';
+                mod_button.className = 'Btn ModButton';
+                mod_button.dataset.userId = this.userId;
+                mod_button.dataset.isMod = this.isMod ? '1' : '0';
+                mod_button.textContent = this.isMod ? 'Remove Mod' : 'Make Mod';
+                actions.appendChild(mod_button);
+            }
+
             actions.appendChild(block_button);
-            actions.appendChild(report_button);
+            actions.appendChild(report_or_ban_button);
+
             div.appendChild(actions);
         }
 

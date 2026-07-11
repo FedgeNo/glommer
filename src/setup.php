@@ -114,6 +114,17 @@ GRANT SELECT, INSERT, UPDATE, DELETE
         }
 
         if ($errors === []) {
+            // The WebSocket daemon is already running by this point (the
+            // environment check above requires it) using whatever host/port
+            // currently resolve from config.php - carried forward unchanged
+            // so the already-running process doesn't need to change how
+            // it's listening. Its secret is regenerated fresh here exactly
+            // like the DB password, which does mean the daemon needs
+            // restarting once (see the success page) to pick up this new
+            // value - it can't already know a secret that didn't exist yet.
+            $existing_config = require __DIR__ . '/config.php';
+            $ws_secret = bin2hex(random_bytes(32));
+
             $env_contents = implode("\n", [
                 'DB_HOST=' . $db_host,
                 'DB_PORT=' . $db_port,
@@ -124,6 +135,10 @@ GRANT SELECT, INSERT, UPDATE, DELETE
                 'MAIL_FROM_NAME=' . $mail_from_name,
                 'SITE_URL=' . $site_url,
                 'SITE_TITLE=' . $site_title,
+                'WS_HOST=' . $existing_config['wsHost'],
+                'WS_PORT=' . $existing_config['wsPort'],
+                'WS_PUSH_PORT=' . $existing_config['wsPushPort'],
+                'WS_SECRET=' . $ws_secret,
             ]) . "\n";
 
             if (file_put_contents(__DIR__ . '/../.env', $env_contents) === false) {
@@ -139,6 +154,7 @@ if ($success) {
     $page = Page::create('Setup Complete');
 
     $page -> addContents(new Notice('Setup finished. The project root was made web-server-writable so this step could write .env - now that it\'s done, run `chmod 755 ' . realpath(__DIR__ . '/..') . '` on the server to restore its normal permissions.'));
+    $page -> addContents(new Notice('.env now has a freshly generated WebSocket secret, which the already-running WebSocket server doesn\'t know yet - restart it: `systemctl --user restart glommer-websocket` (or however you\'re running bin/websocket-server.php).'));
     $page -> addContents(new Notice('Then reload this page and sign up to create the administrator account.'));
 } elseif ($environment_errors !== []) {
     $page = Page::create('Set Up');

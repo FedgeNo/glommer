@@ -28,6 +28,10 @@ if ($owner_row === null) {
     JSONResponse::error('Post not found', 404) -> send();
 }
 
+if (Block::exists($current_user -> userId, (int) $owner_row['userId'])) {
+    JSONResponse::error('Unable to like this post', 403) -> send();
+}
+
 $check_stmt = mysqli_prepare($mysqli, '
 SELECT 1
     FROM `Likes`

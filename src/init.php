@@ -28,14 +28,37 @@ try {
     exit;
 }
 
-if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
-    // API responses must always be JSON - never let an uncaught exception
-    // surface as an HTML error page (or leak a stack trace) to a fetch() caller.
-    set_exception_handler(function (\Throwable $exception): void {
-        error_log((string) $exception);
+// A mid-request failure shouldn't leak a raw stack trace (or a blank
+// white-screen 500) to whoever's looking - /api/ callers always need JSON,
+// everyone else gets the same friendly error page every other failure mode
+// here (CSRF, 404, ...) already uses. Covers both an uncaught Throwable and
+// (via the shutdown function) the rarer fatal that isn't one, like hitting
+// memory_limit - anything already mid-way through streaming a real response
+// is left alone rather than being clobbered.
+$send_server_error = function (): void {
+    if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
         JSONResponse::error('Server error', 500) -> send();
-    });
-}
+    } else {
+        ErrorDocument::send(500, 'Something Went Wrong', 'An unexpected error occurred. Please try again, and let us know if it keeps happening.');
+    }
+};
+
+set_exception_handler(function (\Throwable $exception) use ($send_server_error): void {
+    error_log((string) $exception);
+    $send_server_error();
+});
+
+register_shutdown_function(function () use ($send_server_error): void {
+    $error = error_get_last();
+    $fatal_error_types = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR];
+
+    if ($error === null || !in_array($error['type'], $fatal_error_types, true) || headers_sent()) {
+        return;
+    }
+
+    error_log($error['message'] . ' in ' . $error['file'] . ':' . $error['line']);
+    $send_server_error();
+});
 
 if (!Auth::check() && basename($_SERVER['SCRIPT_FILENAME']) !== 'signup.php') {
     $user_count_result = mysqli_query(Database::connection(), '

@@ -47,10 +47,17 @@ $message_id = (int) mysqli_insert_id($mysqli);
 
 Notification::create($recipient_id, $current_user -> userId, 'message');
 
-JSONResponse::success([
+$message_payload = [
     'messageId' => $message_id,
     'senderId' => $current_user -> userId,
     'recipientId' => $recipient_id,
     'body' => $body,
     'createdAt' => date('Y-m-d H:i:s'),
-]) -> send();
+];
+
+WebSocketPusher::push($recipient_id, [
+    'event' => 'message',
+    'message' => $message_payload,
+]);
+
+JSONResponse::success($message_payload) -> send();

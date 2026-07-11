@@ -37,7 +37,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(URL::absolute('/logout/'), 'Log out'),
             ];
 
-            if ($current_user -> userId === 1) {
+            if (Auth::canModerate()) {
                 $account_menu_links[] = new Anchor(URL::absolute('/admin/reports/'), 'Reports');
             }
 

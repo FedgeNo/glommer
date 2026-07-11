@@ -46,7 +46,8 @@ SELECT 1
         $mysqli = Database::connection();
 
         // Reuse the one unfriend path so blocking a friend adjusts both
-        // friendCounts exactly the way Remove Friend does.
+        // friendCounts and clears their timeline cross-entries exactly the way
+        // Remove Friend does.
         Friendship::removeAccepted($blocker_id, $blocked_id);
 
         // Blocking also cancels any still-pending request either way (which
@@ -58,8 +59,6 @@ DELETE
 ');
         mysqli_stmt_bind_param($delete_pending, 'iiii', $blocker_id, $blocked_id, $blocked_id, $blocker_id);
         mysqli_stmt_execute($delete_pending);
-
-        Timeline::removeCrossEntries($blocker_id, $blocked_id);
 
         $insert = mysqli_prepare($mysqli, '
 INSERT IGNORE INTO `Blocks` (`blockerId`, `blockedId`)

@@ -253,6 +253,17 @@ function ws_decode_frames(string $buffer): array
             $offset += 8;
         }
 
+        // PHP has no unsigned 64-bit int, so a 'J' length with the high bit set
+        // decodes to a NEGATIVE int - and no legitimate client frame exceeds
+        // our per-connection buffer cap anyway. Either is a protocol violation.
+        // Without this, a negative length makes the completeness check below
+        // pass and `substr($buffer, $offset + $length)` rewind to the same
+        // bytes, spinning this while(true) forever and hanging the whole
+        // single-process daemon. Flag it so the caller drops the connection.
+        if ($length < 0 || $length > MAX_CLIENT_BUFFER_BYTES) {
+            return ['frames' => $frames, 'buffer' => '', 'error' => true];
+        }
+
         $mask_key = '';
 
         if ($masked) {
@@ -420,6 +431,14 @@ function handle_client_frames(int $id): void
     global $connections;
 
     $result = ws_decode_frames($connections[$id]['recvBuffer']);
+
+    // A malformed/oversized frame length is a protocol violation - drop it.
+    if (!empty($result['error'])) {
+        drop_connection($id);
+
+        return;
+    }
+
     $connections[$id]['recvBuffer'] = $result['buffer'];
 
     foreach ($result['frames'] as $frame) {
@@ -430,7 +449,19 @@ function handle_client_frames(int $id): void
                 return;
 
             case 0x9: // ping
-                $connections[$id]['sendBuffer'] .= ws_encode_pong_frame($frame['payload']);
+                // Guard the reply path with the same send-buffer cap the push
+                // path uses: a client that floods pings while never draining
+                // its socket would otherwise pile up un-flushable pongs until
+                // the daemon runs out of memory.
+                $pong = ws_encode_pong_frame($frame['payload']);
+
+                if (strlen($connections[$id]['sendBuffer']) + strlen($pong) > MAX_SEND_BUFFER_BYTES) {
+                    drop_connection($id);
+
+                    return;
+                }
+
+                $connections[$id]['sendBuffer'] .= $pong;
                 break;
 
             case 0xA: // pong

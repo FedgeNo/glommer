@@ -108,6 +108,19 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Prove the runtime account actually works before writing .env and
+        // declaring success - a reinstall where the account pre-existed, a
+        // grant that didn't apply, etc. would otherwise leave the site unable
+        // to connect while the wizard reports "Setup Complete".
+        if ($errors === [] && $runtime_account !== null) {
+            try {
+                $runtime_check = mysqli_connect($db_host, $runtime_account['username'], $runtime_account['password'], $db_database, (int) $db_port);
+                mysqli_close($runtime_check);
+            } catch (\mysqli_sql_exception $exception) {
+                $errors[] = 'The runtime database account was created but a test connection with it failed: ' . $exception -> getMessage();
+            }
+        }
+
         if ($errors === []) {
             // The WebSocket daemon is already running by this point (the
             // environment check above requires it) using whatever host/port
@@ -139,6 +152,11 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (file_put_contents(__DIR__ . '/../.env', $env_contents) === false) {
                 $errors[] = 'Could not write .env - check that the web server user can write to the project root.';
             } else {
+                // Lock down .env - it holds DB_PASSWORD and WS_SECRET (the key
+                // used to mint per-user WebSocket auth tokens). It's written by
+                // the web-server user here, so 0600 keeps it readable by the app
+                // while denying group/other any read or write.
+                @chmod(__DIR__ . '/../.env', 0600);
                 $success = true;
             }
         }

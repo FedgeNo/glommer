@@ -10,15 +10,28 @@ declare(strict_types=1);
  */
 class EnvironmentChecker
 {
+    // Audio and video uploads routinely exceed PHP's stock 2M upload cap, and
+    // camera-roll dumps of many files exceed the stock 8M request cap and the
+    // 20-file count cap. The shipped .user.ini raises the first two; these are
+    // the floors the checks enforce, so a host that overrides .user.ini (or has
+    // it disabled) is flagged rather than silently rejecting or truncating
+    // uploads. MIN_FILE_UPLOADS is checked separately because max_file_uploads
+    // is PHP_INI_SYSTEM and can only be raised in php.ini, not .user.ini.
+    private const MIN_UPLOAD_BYTES = 256 * 1024 * 1024;
+    private const MIN_UPLOAD_LABEL = '256M';
+    private const MIN_FILE_UPLOADS = 100;
+
     /**
      * @return array<string, array{ok: bool, message: string}>
      */
     public static function checks(): array
     {
         return [
-            'PHP version' => self::checkPhpVersion(),
+            'PHP version' => self::checkPHPVersion(),
             'PHP extensions' => self::checkExtensions(),
             'Shell execution & media binaries' => self::checkShellAndFfmpeg(),
+            'Upload size limits' => self::checkUploadLimits(),
+            'Upload file count' => self::checkMaxFileUploads(),
             'Temp directory' => self::checkTempDirectory(),
             'Upload directories' => self::checkUploadDirectories(),
             'SELinux' => self::checkSELinux(),
@@ -30,7 +43,77 @@ class EnvironmentChecker
     /**
      * @return array{ok: bool, message: string}
      */
-    private static function checkPhpVersion(): array
+    private static function checkUploadLimits(): array
+    {
+        $upload_max = self::iniBytes((string) ini_get('upload_max_filesize'));
+        $post_max = self::iniBytes((string) ini_get('post_max_size'));
+
+        $problems = [];
+
+        if ($upload_max < self::MIN_UPLOAD_BYTES) {
+            $problems[] = 'upload_max_filesize is ' . ini_get('upload_max_filesize') . ' - audio and video files routinely exceed that and would be rejected before any code runs. Raise it to at least ' . self::MIN_UPLOAD_LABEL . '.';
+        }
+
+        // post_max_size caps the entire request, so it must be at least as large
+        // as a single upload (0 means unlimited, which is fine).
+        if ($post_max !== 0 && ($post_max < $upload_max || $post_max < self::MIN_UPLOAD_BYTES)) {
+            $problems[] = 'post_max_size (' . ini_get('post_max_size') . ') must be at least upload_max_filesize and ' . self::MIN_UPLOAD_LABEL . ' or larger.';
+        }
+
+        if ($problems !== []) {
+            return ['ok' => false, 'message' => implode(' ', $problems) . ' Set these in .user.ini (shipped with the app) or php.ini, then reload PHP-FPM.'];
+        }
+
+        return ['ok' => true, 'message' => 'upload_max_filesize=' . ini_get('upload_max_filesize') . ', post_max_size=' . ini_get('post_max_size')];
+    }
+
+    /**
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkMaxFileUploads(): array
+    {
+        $max = (int) ini_get('max_file_uploads');
+
+        // max_file_uploads is PHP_INI_SYSTEM, so the shipped .user.ini can't
+        // raise it - it has to be set in php.ini or the PHP-FPM pool. A
+        // camera-roll dump of mixed photos and video easily passes the stock
+        // limit of 20, and every file over the limit is silently dropped from
+        // the request. 0 means unlimited, which is fine.
+        if ($max !== 0 && $max < self::MIN_FILE_UPLOADS) {
+            return ['ok' => false, 'message' => 'max_file_uploads is ' . $max . ' - a large multi-file post (a camera-roll dump) would be silently truncated to that many files. Raise it to at least ' . self::MIN_FILE_UPLOADS . ' in php.ini or the PHP-FPM pool (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM.'];
+        }
+
+        return ['ok' => true, 'message' => 'max_file_uploads = ' . ($max === 0 ? 'unlimited' : (string) $max)];
+    }
+
+    /**
+     * Converts a PHP ini shorthand size (e.g. "64M", "80M", "1G", "512K") to a
+     * byte count. An empty/zero value returns 0 (meaning "unlimited" for
+     * post_max_size).
+     */
+    private static function iniBytes(string $value): int
+    {
+        $value = trim($value);
+
+        if ($value === '') {
+            return 0;
+        }
+
+        $number = (int) $value;
+        $unit = strtolower($value[strlen($value) - 1]);
+
+        return match ($unit) {
+            'g' => $number * 1024 * 1024 * 1024,
+            'm' => $number * 1024 * 1024,
+            'k' => $number * 1024,
+            default => $number,
+        };
+    }
+
+    /**
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkPHPVersion(): array
     {
         if (PHP_VERSION_ID < 80100) {
             return ['ok' => false, 'message' => 'PHP 8.1 or newer is required - this is PHP ' . PHP_VERSION . '.'];

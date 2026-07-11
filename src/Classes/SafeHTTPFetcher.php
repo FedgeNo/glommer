@@ -85,6 +85,10 @@ class SafeHTTPFetcher
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RESOLVE => [$parts['host'] . ':' . $port . ':' . $ip],
+            // We only ever validate and pin IPv4 addresses; force curl to IPv4
+            // so it can never open an IPv6 socket even if the resolve map above
+            // is somehow bypassed.
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
             CURLOPT_HEADER => false,
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
@@ -145,19 +149,23 @@ class SafeHTTPFetcher
     private static function resolveAndValidate(string $host): ?string
     {
         if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
-            return self::isSafeIp($host) ? $host : null;
+            return self::isSafeIP($host) ? $host : null;
         }
 
-        $records = @dns_get_record($host, DNS_A | DNS_AAAA);
+        // A (IPv4) records only - we don't fetch over IPv6 at all. Beyond the
+        // simplicity, this closes the IPv6 transition-range trick (NAT64/6to4/
+        // Teredo/IPv4-mapped addresses that embed an internal IPv4 the private/
+        // reserved filter doesn't decode). No IPv6, no bypass.
+        $records = @dns_get_record($host, DNS_A);
 
         if ($records === false || $records === []) {
             return null;
         }
 
         foreach ($records as $record) {
-            $ip = $record['type'] === 'AAAA' ? ($record['ipv6'] ?? null) : ($record['ip'] ?? null);
+            $ip = $record['ip'] ?? null;
 
-            if ($ip !== null && self::isSafeIp($ip)) {
+            if ($ip !== null && self::isSafeIP($ip)) {
                 return $ip;
             }
         }
@@ -165,8 +173,9 @@ class SafeHTTPFetcher
         return null;
     }
 
-    private static function isSafeIp(string $ip): bool
+    private static function isSafeIP(string $ip): bool
     {
-        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+        // IPv4 only - an IPv6 address (literal or resolved) never validates here.
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
     }
 }

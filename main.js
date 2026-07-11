@@ -7,19 +7,17 @@ function csrf_headers(extra) {
  * CSS/text fallback circle in a color derived from their userId, showing
  * the first letter of their name.
  */
-function avatar_element(has_image, image_url, name, user_id, small) {
-    const size_class = small ? 'AvatarSm' : 'Avatar';
-
+function avatar_element(has_image, image_url, name, user_id) {
     if (has_image && image_url) {
         const image = document.createElement('img');
-        image.className = size_class;
+        image.className = 'Avatar';
         image.src = image_url;
         image.alt = (name || '') + '\'s avatar';
         return image;
     }
 
     const fallback = document.createElement('div');
-    fallback.className = size_class + ' AvatarInitial';
+    fallback.className = 'Avatar AvatarInitial';
     fallback.setAttribute('aria-hidden', 'true');
     fallback.style.setProperty('--avatar-hue', ((Number(user_id) * 137) % 360) + 'deg');
 
@@ -37,14 +35,14 @@ function avatar_element(has_image, image_url, name, user_id, small) {
  * wherever a message, post, or similar item needs to show who it's from -
  * one clickable link to their profile.
  */
-function user_header_element(username, display_name, has_image, image_url, user_id, small) {
+function user_header_element(username, display_name, has_image, image_url, user_id) {
     const name = display_name || username;
 
     const header = document.createElement('a');
     header.href = window.siteURL + '/users/' + username + '/';
     header.className = 'd-flex align-items-center gap-3';
 
-    header.appendChild(avatar_element(has_image, image_url, name, user_id, small));
+    header.appendChild(avatar_element(has_image, image_url, name, user_id));
 
     const info = document.createElement('div');
 
@@ -887,6 +885,24 @@ document.addEventListener('click', async (event) => {
 const carousel_slideshows = new WeakMap();
 const CAROUSEL_SLIDESHOW_INTERVAL = 3500;
 
+// Promotes a slide's deferred media (data-src/data-poster left by the server or
+// post.js) to real src/poster so the browser fetches it. A no-op once loaded.
+function carousel_load_slide(slide) {
+    if (!slide) {
+        return;
+    }
+
+    slide.querySelectorAll('[data-src]').forEach((media) => {
+        if (media.dataset.poster) {
+            media.poster = media.dataset.poster;
+            delete media.dataset.poster;
+        }
+
+        media.src = media.dataset.src;
+        delete media.dataset.src;
+    });
+}
+
 function carousel_advance(carousel, direction) {
     const slides = Array.from(carousel.querySelectorAll('.CarouselSlide'));
     const current_index = slides.findIndex((slide) => slide.classList.contains('Active'));
@@ -894,6 +910,24 @@ function carousel_advance(carousel, direction) {
 
     slides[current_index].classList.remove('Active');
     slides[next_index].classList.add('Active');
+
+    // A video playing on the slide we just left would keep going (and stay
+    // audible) while hidden - pause every video in the carousel so nothing
+    // plays off-screen once the displayed item changes.
+    carousel.querySelectorAll('video').forEach((video) => video.pause());
+
+    // Load the slide now on screen (covers a backward wrap onto one we hadn't
+    // reached yet), and on each forward step pull in one more slide beyond the
+    // ones already loaded, so a big gallery loads gradually instead of at once.
+    carousel_load_slide(slides[next_index]);
+
+    if (direction > 0) {
+        const next_deferred = carousel.querySelector('.CarouselSlide [data-src]');
+
+        if (next_deferred) {
+            carousel_load_slide(next_deferred.closest('.CarouselSlide'));
+        }
+    }
 
     const counter = carousel.querySelector('.CarouselCounter');
 
@@ -1094,12 +1128,7 @@ let message_history_ready = false;
 // KaTeX from a CDN) doesn't block DOMContentLoaded, only 'load', so
 // measuring scrollHeight at DOMContentLoaded can catch the page still
 // unstyled/short, landing short of the true bottom once that CSS finishes
-// applying and the page grows. Confirmed live with an instrumented trace:
-// there used to be a second, earlier scrollHeight-based scroll-to-bottom
-// bound to DOMContentLoaded (in the composer-padding setup above, for the
-// same reason - padding changes need a re-scroll to still land at the
-// bottom) racing against this one and landing short for the same reason;
-// removed that one so this is the single source of truth.
+// applying and the page grows.
 //
 // behavior: 'instant' matters here beyond just avoiding an unwanted
 // animation on every page load - html has scroll-behavior: smooth in
@@ -1857,59 +1886,69 @@ document.addEventListener('click', (event) => {
     discard_staged_link_image(button.closest('.Composer'));
 });
 
-document.addEventListener('change', async (event) => {
+document.addEventListener('input', (event) => {
     const input = event.target.closest('.Composer [name=\'linkURL\']');
 
     if (!input) {
         return;
     }
 
-    const form = input.closest('.Composer');
-    const url = input.value.trim();
+    // Fetched on input so the link previews as it's entered (people paste a link
+    // and submit straight away). A paste is a complete URL, so fetch it
+    // immediately; typing is debounced so a burst of keystrokes coalesces into a
+    // single request.
+    clearTimeout(input.dataset.debounceId);
 
-    if (url === input.dataset.lastFetchedUrl) {
-        return;
-    }
+    const delay = event.inputType === 'insertFromPaste' ? 0 : 500;
 
-    input.dataset.lastFetchedUrl = url;
+    input.dataset.debounceId = setTimeout(async () => {
+        const form = input.closest('.Composer');
+        const url = input.value.trim();
 
-    await discard_staged_link_image(form);
-
-    if (!url) {
-        return;
-    }
-
-    const preview = await api_post('/api/link-preview', { url });
-
-    if (!preview) {
-        return;
-    }
-
-    // Only overwrite a field that's still exactly what the previous fetch put
-    // there (or empty) - once the user edits an autofilled value by hand,
-    // later link changes shouldn't clobber it.
-    const title_input = form.querySelector('[name=\'title\']');
-
-    if (preview.title && title_input) {
-        const current_title = title_input.value.trim();
-
-        if (current_title === '' || current_title === (title_input.dataset.autofilled ?? '')) {
-            title_input.value = preview.title;
-            title_input.dataset.autofilled = preview.title;
+        if (url === input.dataset.lastFetchedUrl) {
+            return;
         }
-    }
 
-    if (preview.description && active_quill) {
-        const current_description = active_quill.getText().trim();
-        const autofilled_description = form.dataset.autofilledDescription ?? '';
+        input.dataset.lastFetchedUrl = url;
 
-        if (current_description === '' || current_description === autofilled_description) {
-            active_quill.setText(preview.description);
-            form.dataset.autofilledDescription = preview.description.trim();
+        await discard_staged_link_image(form);
+
+        if (!url) {
+            return;
         }
-    }
 
-    if (preview.image) {
-        show_link_image_preview(form, preview.image);
-    }
+        const preview = await api_post('/api/link-preview', { url });
+
+        if (!preview) {
+            return;
+        }
+
+        // Only overwrite a field that's still exactly what the previous fetch put
+        // there (or empty) - once the user edits an autofilled value by hand,
+        // later link changes shouldn't clobber it.
+        const title_input = form.querySelector('[name=\'title\']');
+
+        if (preview.title && title_input) {
+            const current_title = title_input.value.trim();
+
+            if (current_title === '' || current_title === (title_input.dataset.autofilled ?? '')) {
+                title_input.value = preview.title;
+                title_input.dataset.autofilled = preview.title;
+            }
+        }
+
+        if (preview.description && active_quill) {
+            const current_description = active_quill.getText().trim();
+            const autofilled_description = form.dataset.autofilledDescription ?? '';
+
+            if (current_description === '' || current_description === autofilled_description) {
+                active_quill.setText(preview.description);
+                form.dataset.autofilledDescription = preview.description.trim();
+            }
+        }
+
+        if (preview.image) {
+            show_link_image_preview(form, preview.image);
+        }
+    }, delay);
 });

@@ -13,13 +13,18 @@ $mysqli = Database::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $friendship_id = (int) ($payload['friendshipId'] ?? $_POST['friendshipId'] ?? 0);
+$pending_status = 'pending';
 
+// Only a still-pending request can be denied. Without the status guard a real
+// accepted friendshipId (exposed to the client) could delete a friendship here
+// without going through removeAccepted, leaving both friendCounts inflated and
+// timeline entries orphaned.
 $stmt = mysqli_prepare($mysqli, '
 DELETE
     FROM `Friendships`
-    WHERE `friendshipId` = ? AND `addresseeId` = ?
+    WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
 ');
-mysqli_stmt_bind_param($stmt, 'ii', $friendship_id, $current_user -> userId);
+mysqli_stmt_bind_param($stmt, 'iis', $friendship_id, $current_user -> userId, $pending_status);
 mysqli_stmt_execute($stmt);
 
 if (mysqli_stmt_affected_rows($stmt) === 0) {

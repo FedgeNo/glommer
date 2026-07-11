@@ -9,8 +9,13 @@ class ImageItem extends FeedItem
     public function toDOM(): \DOMElement
     {
         $image = new Image();
-        $image -> src = $this -> srcURL();
         $image -> alt = $this -> altText ?? 'Image';
+
+        if ($this -> deferred) {
+            $image -> attributes['data-src'] = $this -> srcURL();
+        } else {
+            $image -> src = $this -> srcURL();
+        }
 
         $this -> contents[] = $image;
 

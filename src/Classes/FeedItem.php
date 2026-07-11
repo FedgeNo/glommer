@@ -13,6 +13,11 @@ class FeedItem extends HTMLObject
     public ?string $createdAt = null;
     public ?string $altText = null;
 
+    // When true, the real media URL is emitted as data-src (data-poster for a
+    // video's thumbnail) instead of src, so the browser doesn't fetch it until
+    // the carousel promotes it. Carousel sets this on items past the first few.
+    public bool $deferred = false;
+
     public function srcURL(): string
     {
         return URL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> itemType));

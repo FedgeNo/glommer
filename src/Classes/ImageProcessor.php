@@ -7,11 +7,27 @@ class ImageProcessor
     public const DISPLAY_MAX_DIMENSION = 1600;
     public const THUMBNAIL_MAX_DIMENSION = 300;
 
+    /**
+     * Upper bound on source pixels before decoding. GD allocates ~width*height*4
+     * bytes for the full raster before any resize, so a tiny file that declares
+     * huge dimensions (a "decompression bomb") can exhaust memory. 50 MP clears
+     * any real photo while rejecting the absurd (e.g. a 30000x30000 = 900 MP PNG).
+     */
+    public const MAX_SOURCE_PIXELS = 50_000_000;
+
     public static function load(string $path): \GdImage|false
     {
         $mime_type = self::detectMimeType($path);
 
         if (!str_starts_with($mime_type, 'image/')) {
+            return false;
+        }
+
+        // Check declared dimensions from the header (cheap) before handing the
+        // file to GD's full decode.
+        $size = @getimagesize($path);
+
+        if ($size === false || ($size[0] * $size[1]) > self::MAX_SOURCE_PIXELS) {
             return false;
         }
 

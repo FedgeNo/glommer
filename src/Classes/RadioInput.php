@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class RadioInput extends Input
+class RadioInput extends ValueInput
 {
     public function __construct()
     {

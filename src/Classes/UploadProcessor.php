@@ -230,6 +230,17 @@ class UploadProcessor
         return null;
     }
 
+    private static function probeDuration(string $path): float
+    {
+        $output = (string) shell_exec(
+            'ffprobe -v error -show_entries format=duration -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
+        );
+
+        // A failed probe or non-numeric output casts to 0.0, which makes the
+        // caller seek to the very first frame - a safe fallback, never past EOF.
+        return max(0.0, (float) trim($output));
+    }
+
     private static function processVideo(string $tmp_path, int|string $id, string $original_filename): ?array
     {
         $extension = self::safeExtension($original_filename);
@@ -265,9 +276,17 @@ class UploadProcessor
             return null;
         }
 
+        // Poster frame: seek in a little to skip a possibly-black opening frame,
+        // but never past the clip itself - a sub-two-second video has no 1s mark,
+        // so a fixed -ss 00:00:01 seeks past EOF and yields no frame, which used
+        // to get the whole (valid) short video rejected. Clamp the seek to the
+        // midpoint (min(1s, duration/2)) so short clips still produce a frame.
+        $poster_seek = min(1.0, self::probeDuration($paths['display']) / 2.0);
+
         exec(sprintf(
-            'ffmpeg -y -i %s -ss 00:00:01 -vframes 1 %s 2>&1',
+            'ffmpeg -y -i %s -ss %s -vframes 1 %s 2>&1',
             escapeshellarg($paths['display']),
+            sprintf('%.3f', $poster_seek),
             escapeshellarg($raw_frame_path)
         ), $frame_output_lines, $frame_exit_code);
 

@@ -38,7 +38,7 @@ class Post {
         const byline = document.createElement('div');
         byline.className = 'PostByline d-flex align-items-center gap-2';
 
-        byline.appendChild(user_header_element(this.authorUsername, this.authorDisplayName, Boolean(this.authorImage), this.authorImage, this.userId, false));
+        byline.appendChild(user_header_element(this.authorUsername, this.authorDisplayName, Boolean(this.authorImage), this.authorImage, this.userId));
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
@@ -117,17 +117,28 @@ class Post {
         return wrapper;
     }
 
-    itemToElement(item) {
+    itemToElement(item, deferred = false) {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem ' + item.itemType;
 
         if (item.itemType === 'VideoItem') {
             const video = document.createElement('video');
-            video.src = item.src;
             video.controls = true;
 
-            if (item.image) {
-                video.poster = item.image;
+            // Deferred: stash the real URLs in data-* so the browser doesn't
+            // fetch until the carousel promotes this slide (see main.js).
+            if (deferred) {
+                video.dataset.src = item.src;
+
+                if (item.image) {
+                    video.dataset.poster = item.image;
+                }
+            } else {
+                video.src = item.src;
+
+                if (item.image) {
+                    video.poster = item.image;
+                }
             }
 
             wrapper.appendChild(video);
@@ -138,8 +149,14 @@ class Post {
             wrapper.appendChild(audio);
         } else {
             const img = document.createElement('img');
-            img.src = item.src;
             img.alt = this.imageAltText || 'Image';
+
+            if (deferred) {
+                img.dataset.src = item.src;
+            } else {
+                img.src = item.src;
+            }
+
             wrapper.appendChild(img);
         }
 
@@ -153,10 +170,14 @@ class Post {
         const track = document.createElement('div');
         track.className = 'CarouselTrack';
 
+        // Mirrors Carousel::INITIAL_EAGER_ITEMS server-side: the first few items
+        // load up front, the rest defer until the carousel advances onto them.
+        const initial_eager_items = 5;
+
         this.items.forEach((item, index) => {
             const slide = document.createElement('div');
             slide.className = 'CarouselSlide' + (index === 0 ? ' Active' : '');
-            slide.appendChild(this.itemToElement(item));
+            slide.appendChild(this.itemToElement(item, index >= initial_eager_items));
             track.appendChild(slide);
         });
 

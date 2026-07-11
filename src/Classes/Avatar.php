@@ -3,64 +3,45 @@
 declare(strict_types=1);
 
 /**
- * Renders a user's avatar image, or - when they haven't uploaded one - a
- * pure CSS/text fallback: a circle in a color derived from their userId,
- * containing the first letter of their name. No image request, no canvas,
- * just markup.
+ * A user's avatar, in one of two concrete forms chosen by whether they've
+ * uploaded an image: AvatarImage (an <img>) or the CSS/text fallback
+ * AvatarInitial (a hue-from-userId circle holding the first letter of their
+ * name, with no image request). Size is not the avatar's concern - it's the
+ * same class everywhere, and CSS sizes it by container (e.g. a bigger avatar on
+ * a profile, a smaller one in a notification). Build with Avatar::forUser() or,
+ * from raw fields, Avatar::create().
  */
-class Avatar extends HTMLObject
+abstract class Avatar extends HTMLObject
 {
-    public string $tagName = 'img';
-
-    public bool $hasImage = false;
-    public ?string $imageURL = null;
     public ?string $name = null;
     public int $userId = 0;
-    public bool $small = false;
 
-    public function toDOM(): \DOMElement
+    public static function create(bool $has_image, ?string $image_url, ?string $name, int $user_id): self
     {
-        $size_class = $this -> small ? 'AvatarSm' : 'Avatar';
-
-        if ($this -> hasImage && $this -> imageURL !== null) {
-            $this -> tagName = 'img';
-            $this -> class = $size_class;
-            $this -> attributes['src'] = $this -> imageURL;
-            $this -> attributes['alt'] = $this -> name . '\'s avatar';
-
-            return parent::toDOM();
+        if ($has_image && $image_url !== null) {
+            $avatar = new AvatarImage();
+            $avatar -> imageURL = $image_url;
+        } else {
+            $avatar = new AvatarInitial();
         }
 
-        $this -> tagName = 'div';
-        $this -> class = $size_class . ' AvatarInitial';
-        $this -> attributes['aria-hidden'] = 'true';
-        $this -> attributes['style'] = '--avatar-hue: ' . ($this -> userId * 137 % 360) . 'deg';
-        $this -> contents[] = $this -> initial();
-
-        return parent::toDOM();
-    }
-
-    protected function initial(): string
-    {
-        $first_char = mb_substr((string) $this -> name, 0, 1);
-
-        return $first_char !== '' ? mb_strtoupper($first_char) : '?';
-    }
-
-    public static function forUser(?User $user, bool $small = false): self
-    {
-        $avatar = new self();
-
-        if ($user === null) {
-            return $avatar;
-        }
-
-        $avatar -> hasImage = (bool) $user -> hasAvatar;
-        $avatar -> imageURL = $user -> avatarURL();
-        $avatar -> name = $user -> displayName ?? $user -> username;
-        $avatar -> userId = (int) $user -> userId;
-        $avatar -> small = $small;
+        $avatar -> name = $name;
+        $avatar -> userId = $user_id;
 
         return $avatar;
+    }
+
+    public static function forUser(?User $user): self
+    {
+        if ($user === null) {
+            return self::create(false, null, null, 0);
+        }
+
+        return self::create(
+            (bool) $user -> hasAvatar,
+            $user -> avatarURL(),
+            $user -> displayName ?? $user -> username,
+            (int) $user -> userId
+        );
     }
 }

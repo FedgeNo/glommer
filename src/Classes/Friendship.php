@@ -56,6 +56,11 @@ DELETE
 
         User::decrementFriendCounts($user_a, $user_b);
 
+        // Un-fan each other's posts from the other's friends feed, so an
+        // ex-friend's posts stop appearing immediately (the friends feed is
+        // materialized, so a read won't drop them on its own).
+        Timeline::removeCrossEntries($user_a, $user_b);
+
         return true;
     }
 

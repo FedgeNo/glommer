@@ -76,7 +76,7 @@ class Notification {
         link.className = 'd-flex align-items-center gap-3';
         link.href = this.targetURL();
 
-        link.appendChild(avatar_element(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId, true));
+        link.appendChild(avatar_element(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId));
 
         const info = document.createElement('div');
 

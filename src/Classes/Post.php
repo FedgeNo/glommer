@@ -18,6 +18,11 @@ class Post extends HTMLObject
     public ?string $linkURL = null;
     public ?string $createdAt = null;
 
+    // Whether a media post's description is truncated (with a "See More" link)
+    // rather than shown in full. True in the feed, where a post is a preview;
+    // PostPage flips it off so the permalink page shows the whole description.
+    public bool $truncateDescription = true;
+
     /** @var FeedItem[] */
     public array $items = [];
 
@@ -87,7 +92,7 @@ class Post extends HTMLObject
             }
 
             if ($this -> description !== null) {
-                $this -> contents[] = $this -> hasVisualMedia()
+                $this -> contents[] = $this -> hasVisualMedia() && $this -> truncateDescription
                     ? $this -> summarizedDescription()
                     : $this -> fullDescription();
             }
@@ -415,10 +420,15 @@ SELECT `postId`
     {
         $sanitized_description = null;
 
+        // toPayload only ever feeds the client-side feed (create-post and
+        // feed-history), never the permalink page, so it truncates media-post
+        // descriptions exactly like the server-rendered feed does - the client
+        // injects this HTML verbatim, "See More" link included.
         if ($this -> description !== null) {
-            $body = new PostBody();
-            $body -> addContents($this -> description);
-            $sanitized_description = $body -> renderInner();
+            $description_body = $this -> hasVisualMedia()
+                ? $this -> summarizedDescription()
+                : $this -> fullDescription();
+            $sanitized_description = $description_body -> renderInner();
         }
 
         $items = [];

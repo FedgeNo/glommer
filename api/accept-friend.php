@@ -16,51 +16,85 @@ $friendship_id = (int) ($payload['friendshipId'] ?? $_POST['friendshipId'] ?? 0)
 
 $accepted_status = 'accepted';
 $pending_status = 'pending';
+$max_friends = User::MAX_FRIENDS;
+$current_user_id = (int) $current_user -> userId;
 
-// Look the request up first: we need the requester both to enforce the friend
-// cap on them and to notify them, and doing it up front lets us reject a
-// capped acceptance before changing anything.
+// The cap check and the two friendCount increments must be atomic, or two
+// requests accepted at the same moment could both read "under cap" and push a
+// user to 5001. Do it all in one transaction, locking the request row and both
+// user rows so concurrent accepts serialize.
+mysqli_begin_transaction($mysqli);
+
 $lookup_stmt = mysqli_prepare($mysqli, '
 SELECT `requesterId`
     FROM `Friendships`
     WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
+    FOR UPDATE
 ');
-mysqli_stmt_bind_param($lookup_stmt, 'iis', $friendship_id, $current_user -> userId, $pending_status);
+mysqli_stmt_bind_param($lookup_stmt, 'iis', $friendship_id, $current_user_id, $pending_status);
 mysqli_stmt_execute($lookup_stmt);
 $requester_row = mysqli_fetch_assoc(mysqli_stmt_get_result($lookup_stmt));
 
 if ($requester_row === null) {
+    mysqli_rollback($mysqli);
     JSONResponse::error('Not your request', 403) -> send();
 }
 
 $requester_id = (int) $requester_row['requesterId'];
 
-// Accepting makes both people a friend of the other, so both must be under
-// the cap - the requester may have filled up since sending this.
-if (User::atFriendCap($current_user -> userId)) {
-    JSONResponse::error('You\'ve reached the maximum of ' . User::MAX_FRIENDS . ' friends.', 422) -> send();
+// Lock both users' rows and read their counts under the lock - no TOCTOU.
+$counts_stmt = mysqli_prepare($mysqli, '
+SELECT `userId`, `friendCount`
+    FROM `Users`
+    WHERE `userId` = ? OR `userId` = ?
+    FOR UPDATE
+');
+mysqli_stmt_bind_param($counts_stmt, 'ii', $current_user_id, $requester_id);
+mysqli_stmt_execute($counts_stmt);
+$counts_result = mysqli_stmt_get_result($counts_stmt);
+
+$friend_counts = [];
+
+while ($count_row = mysqli_fetch_assoc($counts_result)) {
+    $friend_counts[(int) $count_row['userId']] = (int) $count_row['friendCount'];
 }
 
-if (User::atFriendCap($requester_id)) {
+if (($friend_counts[$current_user_id] ?? 0) >= $max_friends) {
+    mysqli_rollback($mysqli);
+    JSONResponse::error('You\'ve reached the maximum of ' . $max_friends . ' friends.', 422) -> send();
+}
+
+if (($friend_counts[$requester_id] ?? 0) >= $max_friends) {
+    mysqli_rollback($mysqli);
     JSONResponse::error('That user has reached their friend limit, so this request can\'t be accepted.', 422) -> send();
 }
 
-$stmt = mysqli_prepare($mysqli, '
+$accept_stmt = mysqli_prepare($mysqli, '
 UPDATE `Friendships`
     SET `status` = ?
     WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
 ');
-mysqli_stmt_bind_param($stmt, 'siis', $accepted_status, $friendship_id, $current_user -> userId, $pending_status);
-mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_param($accept_stmt, 'siis', $accepted_status, $friendship_id, $current_user_id, $pending_status);
+mysqli_stmt_execute($accept_stmt);
 
-if (mysqli_stmt_affected_rows($stmt) === 0) {
+if (mysqli_stmt_affected_rows($accept_stmt) === 0) {
+    mysqli_rollback($mysqli);
     JSONResponse::error('Not your request', 403) -> send();
 }
 
-User::incrementFriendCounts($requester_id, (int) $current_user -> userId);
+$increment_stmt = mysqli_prepare($mysqli, '
+UPDATE `Users`
+    SET `friendCount` = `friendCount` + 1
+    WHERE `userId` = ? OR `userId` = ?
+');
+mysqli_stmt_bind_param($increment_stmt, 'ii', $current_user_id, $requester_id);
+mysqli_stmt_execute($increment_stmt);
 
-Timeline::backfillFriendship($requester_id, $current_user -> userId);
+mysqli_commit($mysqli);
 
-Notification::create($requester_id, $current_user -> userId, 'friendAccepted');
+// Side effects that don't need to be in the transaction.
+Timeline::backfillFriendship($requester_id, $current_user_id);
+
+Notification::create($requester_id, $current_user_id, 'friendAccepted');
 
 JSONResponse::success(['accepted' => true]) -> send();

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class TextInput extends Input
+class TextInput extends ValueInput
 {
     public function __construct()
     {

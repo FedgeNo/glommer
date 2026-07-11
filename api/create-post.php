@@ -11,6 +11,13 @@ if (!Auth::check()) {
 $current_user = Auth::user();
 $mysqli = Database::connection();
 
+// If the whole request body exceeded post_max_size, PHP has already thrown away
+// $_POST and $_FILES before this script ran. Catch that here so an oversized
+// upload gets a clear "too large" error instead of a misleading "no content" one.
+if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0 && $_POST === [] && $_FILES === []) {
+    JSONResponse::error('Your upload is too large. The maximum total upload size is ' . ini_get('post_max_size') . 'B.', 413) -> send();
+}
+
 $title = mb_substr(trim((string) ($_POST['title'] ?? '')), 0, 255);
 $description = (string) ($_POST['description'] ?? '');
 $link_url = trim((string) ($_POST['linkURL'] ?? ''));
@@ -45,6 +52,24 @@ if ($link_url !== '') {
 }
 
 $uploaded_files = $_FILES['files'] ?? null;
+
+// Surface upload failures (most commonly a single file over upload_max_filesize)
+// rather than silently skipping the file - otherwise a too-large media upload
+// with accompanying text quietly becomes a text-only post the user didn't intend.
+// UPLOAD_ERR_NO_FILE is the exception: an empty slot in the files[] array just
+// means nothing was attached there, which is fine.
+if ($uploaded_files !== null) {
+    foreach ($uploaded_files['error'] as $error) {
+        if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
+            JSONResponse::error('One of your files is larger than the ' . ini_get('upload_max_filesize') . 'B upload limit.', 413) -> send();
+        }
+
+        if ($error !== UPLOAD_ERR_OK && $error !== UPLOAD_ERR_NO_FILE) {
+            JSONResponse::error('One of your files failed to upload. Please try again.', 400) -> send();
+        }
+    }
+}
+
 $has_files = $uploaded_files !== null && count(array_filter($uploaded_files['error'], fn ($error) => $error === UPLOAD_ERR_OK)) > 0;
 $has_text = trim(strip_tags($description)) !== '' || $link_url !== '';
 
@@ -113,6 +138,14 @@ if ($has_files) {
             'type' => $type,
         ];
     }
+}
+
+// The earlier guard keyed off the raw upload count; re-check now that files
+// have been classified, so an upload that produced no valid media (e.g. a
+// plain-text file that classify() rejected) can't slip through as a
+// completely contentless post.
+if (!$has_text && $valid_files === []) {
+    JSONResponse::error('Post has no content', 422) -> send();
 }
 
 $needs_async = count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0;

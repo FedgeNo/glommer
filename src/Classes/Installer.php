@@ -20,6 +20,15 @@ class Installer
      */
     public static function provisionDatabase(\mysqli $admin_connection, string $db_database): array
     {
+        // CREATE DATABASE / CREATE USER / GRANT can't be prepared (MySQL's
+        // prepared-statement protocol doesn't cover those statement types), so
+        // the database name is interpolated below. Both callers already
+        // validate it, but enforce it here too so the interpolation is safe no
+        // matter who calls this.
+        if (!preg_match('/^[A-Za-z0-9_]{1,64}$/', $db_database)) {
+            throw new \RuntimeException('Invalid database name - only letters, numbers, and underscores are allowed.');
+        }
+
         $runtime_username = $db_database;
         $runtime_password = bin2hex(random_bytes(24));
 
@@ -29,12 +38,13 @@ CREATE DATABASE IF NOT EXISTS `' . $db_database . '`
 ');
         mysqli_select_db($admin_connection, $db_database);
 
-        $escaped_password = mysqli_real_escape_string($admin_connection, $runtime_password);
-
         // CREATE USER/GRANT can't go through mysqli_prepare - account-management
         // statements aren't supported by the prepared-statement protocol on most
         // server versions - so the (self-generated, never user-supplied) password
         // is escaped and interpolated directly instead of bound as a placeholder.
+        // The password stays raw in $runtime_password; it's escaped inline at each
+        // query (the last possible step) rather than into a variable, so nobody
+        // later reuses a pre-escaped value or feeds the raw one straight in.
         // Scoped to host '%' rather than the connect host - that's the address the
         // app connects to the server as, not necessarily what the server resolves
         // the connecting client back to for grant-matching (e.g. a loopback TCP
@@ -42,7 +52,16 @@ CREATE DATABASE IF NOT EXISTS `' . $db_database . '`
         // to reach it).
         mysqli_query($admin_connection, '
 CREATE USER IF NOT EXISTS \'' . $runtime_username . '\'@\'%\'
-    IDENTIFIED BY \'' . $escaped_password . '\'
+    IDENTIFIED BY \'' . mysqli_real_escape_string($admin_connection, $runtime_password) . '\'
+');
+
+        // CREATE USER IF NOT EXISTS is a no-op when the account already exists
+        // (a reinstall), so its password would silently stay the old one while
+        // a fresh one gets written to .env - leaving the site unable to connect.
+        // ALTER USER forces the password to match what we're about to store.
+        mysqli_query($admin_connection, '
+ALTER USER \'' . $runtime_username . '\'@\'%\'
+    IDENTIFIED BY \'' . mysqli_real_escape_string($admin_connection, $runtime_password) . '\'
 ');
         mysqli_query($admin_connection, '
 GRANT SELECT, INSERT, UPDATE, DELETE

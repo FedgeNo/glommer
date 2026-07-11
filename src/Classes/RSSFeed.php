@@ -36,9 +36,9 @@ class RSSFeed
         $channel = $document -> createElement('channel');
         $rss -> appendChild($channel);
 
-        $channel -> appendChild($document -> createElement('title', $this -> title));
-        $channel -> appendChild($document -> createElement('link', $this -> link));
-        $channel -> appendChild($document -> createElement('description', $this -> description));
+        $channel -> appendChild(RSSItem::textElement('title', $this -> title));
+        $channel -> appendChild(RSSItem::textElement('link', $this -> link));
+        $channel -> appendChild(RSSItem::textElement('description', $this -> description));
 
         foreach ($this -> items as $item) {
             $channel -> appendChild($item -> toElement());

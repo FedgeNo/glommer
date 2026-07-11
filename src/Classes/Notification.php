@@ -24,7 +24,7 @@ class Notification extends HTMLObject
         $link = new Anchor($this -> targetURL());
         $link -> class = 'd-flex align-items-center gap-3';
 
-        $link -> addContents(Avatar::forUser($this -> actor, small: true));
+        $link -> addContents(Avatar::forUser($this -> actor));
 
         $info = new Div();
 

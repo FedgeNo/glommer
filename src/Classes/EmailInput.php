@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class EmailInput extends Input
+class EmailInput extends ValueInput
 {
     public function __construct()
     {

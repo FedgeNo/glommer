@@ -37,7 +37,8 @@ class URL
         }
 
         // parse_url keeps the brackets on an IPv6 literal host ([::1]); strip
-        // them so the IP checks below see a bare address.
+        // them so the IP check below sees a bare address (and rejects it -
+        // isPublicIP only accepts IPv4).
         $host = trim($parts['host'], '[]');
 
         if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
@@ -51,17 +52,20 @@ class URL
         }
 
         // A hostname that resolves to a private/reserved address is just a
-        // dressed-up internal link - block it. A name that doesn't resolve is
-        // left to pass (a transient DNS miss shouldn't reject a real link, and
-        // the preview fetch re-checks the resolved IP anyway).
-        $records = @dns_get_record($host, DNS_A | DNS_AAAA);
+        // dressed-up internal link - block it. Only A (IPv4) records are
+        // considered: we don't fetch over IPv6 at all (see SafeHTTPFetcher),
+        // which sidesteps the IPv6 transition-range address tricks that slip an
+        // internal IPv4 past the private/reserved filter. A name that doesn't
+        // resolve to any IPv4 is left to pass (a transient DNS miss shouldn't
+        // reject a real link, and the preview fetch re-checks the resolved IP).
+        $records = @dns_get_record($host, DNS_A);
 
         if ($records === false || $records === []) {
             return true;
         }
 
         foreach ($records as $record) {
-            $ip = ($record['type'] ?? '') === 'AAAA' ? ($record['ipv6'] ?? null) : ($record['ip'] ?? null);
+            $ip = $record['ip'] ?? null;
 
             if ($ip !== null && !self::isPublicIP($ip)) {
                 return false;
@@ -73,6 +77,7 @@ class URL
 
     private static function isPublicIP(string $ip): bool
     {
-        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+        // IPv4 only - an IPv6 address (literal or resolved) never validates here.
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
     }
 }

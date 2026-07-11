@@ -18,12 +18,12 @@ class Conversation extends Anchor
 
         $name = $this -> displayName ?? $this -> username;
 
-        $avatar = new Avatar();
-        $avatar -> hasImage = (bool) $this -> hasAvatar;
-        $avatar -> imageURL = $this -> hasAvatar ? URL::absolute(User::avatarPath((int) $this -> userId)) : null;
-        $avatar -> name = $name;
-        $avatar -> userId = (int) $this -> userId;
-        $this -> contents[] = $avatar;
+        $this -> contents[] = Avatar::create(
+            (bool) $this -> hasAvatar,
+            $this -> hasAvatar ? URL::absolute(User::avatarPath((int) $this -> userId)) : null,
+            $name,
+            (int) $this -> userId
+        );
 
         $info = new Div();
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PasswordInput extends Input
+class PasswordInput extends ValueInput
 {
     public function __construct()
     {

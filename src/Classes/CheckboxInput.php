@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class CheckboxInput extends Input
+class CheckboxInput extends ValueInput
 {
     public function __construct()
     {

@@ -70,14 +70,14 @@ class User extends HTMLObject
      * post, or similar item needs to show who it's from - one clickable
      * link to their profile.
      */
-    public function header(bool $small = false): HTMLObject
+    public function header(): HTMLObject
     {
         $name = $this -> displayName ?? $this -> username;
 
         $header = new Anchor(URL::absolute('/users/' . $this -> username . '/'));
         $header -> class = 'd-flex align-items-center gap-3';
 
-        $header -> addContents(Avatar::forUser($this, $small));
+        $header -> addContents(Avatar::forUser($this));
 
         $info = new Div();
 

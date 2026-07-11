@@ -54,7 +54,10 @@ WantedBy=default.target
 ```
 systemctl --user daemon-reload
 systemctl --user enable --now glommer-websocket.service
+loginctl enable-linger "$USER"   # keep it running after logout and start it on boot
 ```
+
+The `enable-linger` step is essential on a headless server: a user-level service otherwise only runs while that user has an active login session, so without lingering the daemon stops the moment you log out and doesn't come back on reboot. (`bin/install.php` sets this up - unit, enable, and linger - for you when it offers to install the service; you only need to do it by hand for a manual install or if you'd rather run it as a root/system service instead.)
 
 Before `.env` exists yet (a fresh install), it runs with `config.php`'s defaults (`WS_PORT=8090`, `WS_SECRET=change-me`) - that's fine for the install-time connectivity check, since both the daemon and the web process resolve the same defaults with no `.env` in place. Once setup writes a real `.env` (see below), it generates a fresh `WS_SECRET` the already-running daemon doesn't know yet - **restart the service once** after setup completes to pick it up. `bin/install.php` (and the web setup wizard) both perform a real handshake + ping/pong round trip against it, not just a port-open check, and refuse to finish if it isn't reachable.
 
@@ -73,7 +76,7 @@ There are two equivalent guided installers - a web setup wizard and an interacti
      - **Site** - site URL, site title, and the "from" address/name used for outgoing email
      - **Database** - host, port, database name, and credentials for a MySQL account with `CREATE`/`ALTER`/`DROP`/`CREATE USER`/`GRANT OPTION` privileges (e.g. `root`, or any admin account with those rights)
 5. Submit the form. It creates the database (if it doesn't already exist), generates a random password for a new least-privilege runtime database account, creates the schema, generates a fresh `WS_SECRET`, and writes `.env` with all of this - none of the admin credentials you entered are ever stored.
-6. Follow the numbered checklist on the success page: restore the project root's permissions (`chmod 755 <project root>`), restart the WebSocket server (`systemctl --user restart glommer-websocket`) so it picks up the fresh `WS_SECRET`, then reload and sign up - the first account created becomes the site's administrator.
+6. Follow the numbered checklist on the success page: restore the project root's permissions (`chmod 755 <project root>`), restart the WebSocket server (`systemctl --user restart glommer-websocket`) so it picks up the fresh `WS_SECRET`, verify Apache's `LimitRequestBody` isn't set below the upload limits (it defaults to unlimited and can't be checked from PHP, so it's not in the automated checks), then reload and sign up - the first account created becomes the site's administrator.
 
 The setup page only ever appears while `.env` doesn't exist. Once it does, a failing database connection shows a maintenance page instead - deliberately, so a database outage on an established site can't be used by a visitor to reconfigure it.
 

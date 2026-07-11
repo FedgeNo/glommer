@@ -47,13 +47,17 @@ class ReportCard extends HTMLObject
 
         $this -> contents[] = $details;
 
-        // Right: the moderation actions, stacked. (A report about the admin
-        // can't exist - api/report.php rejects it - so there's no admin case
-        // to special-case here.)
+        // Right: the moderation actions, stacked. The admin (userId 1) can't
+        // be banned, so never offer a Ban Reporter button when the admin is
+        // the one who filed the report. (The reported user is never the admin -
+        // api/report.php rejects reports about admin content - so that side
+        // needs no such guard.)
         $actions = new Div();
         $actions -> class = 'ReportActions d-flex flex-column gap-2 ms-auto';
 
-        $actions -> addContents(new BanButton($this -> reporterId, 'Ban Reporter (' . $this -> reporterUsername . ')'));
+        if ($this -> reporterId !== 1) {
+            $actions -> addContents(new BanButton($this -> reporterId, 'Ban Reporter (' . $this -> reporterUsername . ')'));
+        }
 
         if ($this -> targetUserId !== null && $this -> targetUsername !== null && $this -> targetUserId !== $this -> reporterId) {
             $actions -> addContents(new BanButton($this -> targetUserId, 'Ban Reported User (' . $this -> targetUsername . ')'));

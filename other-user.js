@@ -44,7 +44,7 @@ class OtherUser {
         link.className = 'UserLink';
         link.href = window.siteURL + '/users/' + this.username + '/';
 
-        link.appendChild(avatar_element(Boolean(this.image), this.image, this.displayName || this.username, this.userId, false));
+        link.appendChild(avatar_element(Boolean(this.image), this.image, this.displayName || this.username, this.userId));
 
         const info = document.createElement('div');
 

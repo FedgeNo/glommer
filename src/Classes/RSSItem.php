@@ -29,20 +29,35 @@ class RSSItem
         $document = self::$document;
 
         $item = $document -> createElement('item');
-        $item -> appendChild($document -> createElement('title', $this -> title));
-        $item -> appendChild($document -> createElement('link', $this -> link));
+        $item -> appendChild(self::textElement('title', $this -> title));
+        $item -> appendChild(self::textElement('link', $this -> link));
 
         $description = $document -> createElement('description');
         $description -> appendChild($document -> createCDATASection($this -> description));
         $item -> appendChild($description);
 
-        $item -> appendChild($document -> createElement('pubDate', $this -> pubDate));
+        $item -> appendChild(self::textElement('pubDate', $this -> pubDate));
 
-        $guid = $document -> createElement('guid', $this -> link);
+        $guid = self::textElement('guid', $this -> link);
         $guid -> setAttribute('isPermaLink', 'true');
         $item -> appendChild($guid);
 
         return $item;
+    }
+
+    /**
+     * Builds an element whose value is treated as literal text. DOMDocument's
+     * createElement($name, $value) entity-PARSES the value instead, so a raw
+     * '&' (e.g. a display name "AT&T" or a title "Tom & Jerry") emits a warning
+     * and yields an empty element, corrupting the feed. A DOMText node is a
+     * literal-text sink and escapes correctly.
+     */
+    public static function textElement(string $name, string $value): \DOMElement
+    {
+        $element = self::$document -> createElement($name);
+        $element -> appendChild(self::$document -> createTextNode($value));
+
+        return $element;
     }
 
     /**

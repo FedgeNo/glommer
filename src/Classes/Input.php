@@ -2,11 +2,15 @@
 
 declare(strict_types=1);
 
+/**
+ * The base <input>: everything an input has regardless of type (a name). It
+ * deliberately has no value - a file input can't carry one, so value lives on
+ * ValueInput, which every value-bearing input type descends from instead.
+ */
 class Input extends HTMLVoidElement
 {
     public string $tagName = 'input';
     public ?string $name = null;
-    public string $value = '';
 
     public function toDOM(): \DOMElement
     {
@@ -17,8 +21,6 @@ class Input extends HTMLVoidElement
         if ($this -> name !== null) {
             $this -> attributes['name'] = $this -> name;
         }
-
-        $this -> attributes['value'] = $this -> value;
 
         return parent::toDOM();
     }

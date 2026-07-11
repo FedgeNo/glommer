@@ -24,54 +24,56 @@ if ($target_user === null || $target_user -> banned) {
     JSONResponse::error('User not found', 404) -> send();
 }
 
-$pending_status = 'pending';
+// Look at the relationship in BOTH directions - the Friendships unique key is
+// on the ordered (requesterId, addresseeId) pair, so it can't stop a duplicate
+// reverse-direction row on its own. statusBetween is the guard against creating
+// a second row for a relationship that already exists.
+$existing = Friendship::statusBetween((int) $current_user -> userId, $target_user_id);
 
-$check_stmt = mysqli_prepare($mysqli, '
-SELECT 1
-    FROM `Friendships`
-    WHERE `requesterId` = ? AND `addresseeId` = ? AND `status` = ?
-');
-mysqli_stmt_bind_param($check_stmt, 'iis', $current_user -> userId, $target_user_id, $pending_status);
-mysqli_stmt_execute($check_stmt);
-mysqli_stmt_store_result($check_stmt);
+if ($existing !== null) {
+    $sent_by_me = (int) $existing -> requesterId === (int) $current_user -> userId;
 
-if (mysqli_stmt_num_rows($check_stmt) > 0) {
-    $delete_stmt = mysqli_prepare($mysqli, '
+    // The request I already sent, tapped again -> cancel it.
+    if ($existing -> status === 'pending' && $sent_by_me) {
+        $delete_stmt = mysqli_prepare($mysqli, '
 DELETE
     FROM `Friendships`
-    WHERE `requesterId` = ? AND `addresseeId` = ? AND `status` = ?
+    WHERE `friendshipId` = ?
 ');
-    mysqli_stmt_bind_param($delete_stmt, 'iis', $current_user -> userId, $target_user_id, $pending_status);
-    mysqli_stmt_execute($delete_stmt);
-    $sent = false;
-} else {
-    if (Block::exists($current_user -> userId, $target_user_id)) {
-        JSONResponse::error('Unable to send friend request.', 403) -> send();
+        mysqli_stmt_bind_param($delete_stmt, 'i', $existing -> friendshipId);
+        mysqli_stmt_execute($delete_stmt);
+
+        JSONResponse::success(['sent' => false]) -> send();
     }
 
-    // A user at the friend cap can neither send requests nor receive them.
-    if (User::atFriendCap($current_user -> userId)) {
-        JSONResponse::error('You\'ve reached the maximum of ' . User::MAX_FRIENDS . ' friends.', 422) -> send();
+    if ($existing -> status === 'accepted') {
+        JSONResponse::error('You\'re already friends with that user.', 422) -> send();
     }
 
-    if (User::atFriendCap($target_user_id)) {
-        JSONResponse::error('That user has reached their friend limit.', 422) -> send();
-    }
+    // A pending request the other way round - they asked first.
+    JSONResponse::error('That user has already sent you a friend request - accept it instead.', 422) -> send();
+}
 
-    try {
-        $insert_stmt = mysqli_prepare($mysqli, '
+if (Block::exists($current_user -> userId, $target_user_id)) {
+    JSONResponse::error('Unable to send friend request.', 403) -> send();
+}
+
+// A user at the friend cap can neither send requests nor receive them.
+if (User::atFriendCap($current_user -> userId)) {
+    JSONResponse::error('You\'ve reached the maximum of ' . User::MAX_FRIENDS . ' friends.', 422) -> send();
+}
+
+if (User::atFriendCap($target_user_id)) {
+    JSONResponse::error('That user has reached their friend limit.', 422) -> send();
+}
+
+$insert_stmt = mysqli_prepare($mysqli, '
 INSERT INTO `Friendships` (`requesterId`, `addresseeId`)
     VALUES (?, ?)
 ');
-        mysqli_stmt_bind_param($insert_stmt, 'ii', $current_user -> userId, $target_user_id);
-        mysqli_stmt_execute($insert_stmt);
-    } catch (\mysqli_sql_exception $e) {
-        JSONResponse::error('A friend request already exists between you and that user.', 422) -> send();
-    }
+mysqli_stmt_bind_param($insert_stmt, 'ii', $current_user -> userId, $target_user_id);
+mysqli_stmt_execute($insert_stmt);
 
-    $sent = true;
+Notification::create($target_user_id, $current_user -> userId, 'friendRequest');
 
-    Notification::create($target_user_id, $current_user -> userId, 'friendRequest');
-}
-
-JSONResponse::success(['sent' => $sent]) -> send();
+JSONResponse::success(['sent' => true]) -> send();

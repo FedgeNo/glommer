@@ -17,6 +17,10 @@ class PostPage extends HTMLObject
         $action_bar -> postUsername = $this -> post -> author ?-> username;
         $action_bar -> standalone = true;
 
+        // The permalink page shows the focused post in full - no "See More"
+        // truncation of its description the way the feed does.
+        $this -> post -> truncateDescription = false;
+
         $this -> contents[] = $this -> post;
         $this -> contents[] = $action_bar;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class HiddenInput extends Input
+class HiddenInput extends ValueInput
 {
     public function __construct()
     {

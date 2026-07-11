@@ -211,8 +211,27 @@ function offer_websocket_service(): bool
     }
 
     ok('WebSocket service installed and started (' . $unit_path . ')');
-    echo 'Note: user services stop at logout unless lingering is enabled - if this account is not' . "\n";
-    echo 'always logged in, run: loginctl enable-linger ' . (get_current_user() ?: '<user>') . "\n";
+
+    // A user-level service only keeps running after the admin logs out (and
+    // only starts on boot) if that user has "lingering" enabled - otherwise
+    // the daemon dies the moment whoever ran the installer disconnects, which
+    // is exactly the headless-server case. Enable it now (allowed for your own
+    // user without root on most systems) so the daemon truly runs unattended.
+    $user = trim((string) shell_exec('id -un 2>/dev/null'));
+
+    if ($user === '') {
+        $user = get_current_user() ?: (string) getenv('USER');
+    }
+
+    shell_exec('loginctl enable-linger ' . escapeshellarg($user) . ' 2>&1');
+    $linger_output = strtolower(trim((string) shell_exec('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')));
+
+    if (str_contains($linger_output, 'yes')) {
+        ok('Lingering enabled for ' . $user . ' - the daemon keeps running after logout and starts on boot.');
+    } else {
+        warn('Could not enable lingering for ' . $user . ' automatically. The daemon will stop when this user');
+        echo '       logs out (and won\'t start on boot) until you run: sudo loginctl enable-linger ' . $user . "\n";
+    }
 
     return true;
 }
@@ -337,6 +356,9 @@ if (!is_file(__DIR__ . '/../.env')) {
     if (file_put_contents(__DIR__ . '/../.env', Installer::envContents($env_values)) === false) {
         fail('Could not write .env - check that ' . realpath(__DIR__ . '/..') . ' is writable by this user.');
     }
+
+    // .env holds DB_PASSWORD and WS_SECRET - keep it readable only by its owner.
+    @chmod(__DIR__ . '/../.env', 0600);
 
     ok('.env written');
 

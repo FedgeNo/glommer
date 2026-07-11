@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 class Carousel extends HTMLObject
 {
+    // How many items load their media up front. The rest defer until the
+    // carousel advances onto them, so a large gallery doesn't fetch everything
+    // at once. Mirrored client-side in post.js (itemsToCarousel).
+    public const INITIAL_EAGER_ITEMS = 5;
+
     public string $tagName = 'div';
     public ?string $class = 'Carousel';
 
@@ -16,6 +21,10 @@ class Carousel extends HTMLObject
         $track -> class = 'CarouselTrack';
 
         foreach ($this -> items as $index => $item) {
+            if ($item instanceof FeedItem) {
+                $item -> deferred = $index >= self::INITIAL_EAGER_ITEMS;
+            }
+
             $slide = new Div();
             $slide -> class = 'CarouselSlide' . ($index === 0 ? ' Active' : '');
             $slide -> addContents($item);

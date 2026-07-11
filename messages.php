@@ -13,15 +13,17 @@ $mysqli = Database::connection();
 if ($username === '') {
     $page = Page::create('Messages');
 
+    $not_banned = 0;
+
     $conversations_stmt = mysqli_prepare($mysqli, '
 SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`.`createdAt`) AS `lastMessageAt`
     FROM `Messages` `m`
     JOIN `Users` `u` ON `u`.`userId` = IF(`m`.`senderId` = ?, `m`.`recipientId`, `m`.`senderId`)
-    WHERE `m`.`senderId` = ? OR `m`.`recipientId` = ?
+    WHERE (`m`.`senderId` = ? OR `m`.`recipientId` = ?) AND `u`.`banned` = ?
     GROUP BY `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`
     ORDER BY `lastMessageAt` DESC
 ');
-    mysqli_stmt_bind_param($conversations_stmt, 'iii', $current_user -> userId, $current_user -> userId, $current_user -> userId);
+    mysqli_stmt_bind_param($conversations_stmt, 'iiii', $current_user -> userId, $current_user -> userId, $current_user -> userId, $not_banned);
     mysqli_stmt_execute($conversations_stmt);
     $conversations_result = mysqli_stmt_get_result($conversations_stmt);
 
@@ -42,7 +44,9 @@ SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`
 
 $other_user = User::loadByUsername($username);
 
-if ($other_user === null) {
+// A banned user is treated as nonexistent here (same as a bad username) - no
+// thread view, no way to message them.
+if ($other_user === null || $other_user -> banned !== 0) {
     require __DIR__ . '/404.php';
     exit;
 }

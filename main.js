@@ -1654,8 +1654,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // reset() empties the fields but fires no input/change event, so
             // re-sync the link/file mutual hiding by hand - after a post both
-            // controls show again until one is used again.
+            // controls show again until one is used again. The file picker's
+            // Cancel button tracks the picker by the same change event, so it
+            // gets the same hand-reset (no files selected anymore).
             sync_post_composer_fields(form);
+
+            const submitted_cancel_button = form.querySelector('.CancelFileButton');
+
+            if (submitted_cancel_button) {
+                submitted_cancel_button.style.display = 'none';
+            }
 
             const submitted_link_image_preview = form.querySelector('.LinkImagePreview');
 

@@ -598,6 +598,26 @@ if (!str_starts_with((string) $config['siteURL'], 'https://')) {
     fail('SITE_URL is ' . $config['siteURL'] . ' - Glommer requires HTTPS and will not serve over plain HTTP. Set up TLS first, then set SITE_URL to the https:// URL. For a real domain use Let\'s Encrypt (certbot --apache -d your.domain); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default (Fedora: dnf install mod_ssl). See README.md\'s HTTPS section.');
 }
 
+// The check above only proves SITE_URL *says* https:// - it's just a string,
+// not proof anything is actually listening with a working certificate. Test
+// for real: connect to the site's own hostname over HTTPS and see what
+// happens. Not 127.0.0.1 - a VirtualHost setup routes by the Host header
+// (SNI for TLS), so the loopback address may not reach this site at all;
+// the real hostname is what actually has to work.
+$site_host = (string) (parse_url($config['siteURL'], PHP_URL_HOST) ?: 'your-domain');
+$site_port = parse_url($config['siteURL'], PHP_URL_PORT);
+$server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
+
+$https_serving = EnvironmentChecker::httpsServing($server_name_value);
+
+if ($https_serving === false) {
+    fail('SITE_URL is https://... but a real HTTPS connection to ' . $server_name_value . ' failed at the TLS handshake itself - something is listening on the port without actually serving TLS. Check that Apache\'s SSLCertificateFile/SSLCertificateKeyFile are set and mod_ssl is loaded, then re-run.');
+} elseif ($https_serving === true) {
+    ok('HTTPS confirmed live (a real connection to ' . $server_name_value . ' over TLS succeeded)');
+} else {
+    warn('Could not confirm HTTPS live by connecting to ' . $server_name_value . ' - inconclusive (DNS may not point here yet, a firewall, or the web server isn\'t up yet). Verify by visiting ' . $config['siteURL'] . ' in a browser.');
+}
+
 if ($config['WSSecret'] === 'change-me') {
     fail('WS_SECRET is still the .env.example placeholder - anyone who reads that public default can forge WebSocket auth tokens for any user. Set it to a real random value, e.g.: php -r \'echo bin2hex(random_bytes(32));\'');
 }
@@ -618,11 +638,8 @@ ok('.env present, SITE_URL and WS_SECRET configured (' . $config['siteURL'] . ')
 // This can't be verified from PHP without an active request context (the CLI
 // has none, and even under the web SAPI, $_SERVER['SERVER_NAME'] is exactly
 // the value in question), so it's a manual confirmation, required like every
-// other prerequisite here.
-$site_host = (string) (parse_url($config['siteURL'], PHP_URL_HOST) ?: 'your-domain');
-$site_port = parse_url($config['siteURL'], PHP_URL_PORT);
-$server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
-
+// other prerequisite here. ($site_host/$site_port/$server_name_value were
+// already computed above for the HTTPS-serving check.)
 $server_name_question = 'Have you set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s '
     . 'config (httpd.conf\'s top level if you\'re not using a <VirtualHost>, or inside the vhost if you are)?';
 

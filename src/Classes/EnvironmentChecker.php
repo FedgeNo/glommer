@@ -191,6 +191,62 @@ class EnvironmentChecker
         return ['ok' => true, 'message' => 'max_file_uploads = ' . $label . ($live ? ' (confirmed live via the web server)' : '')];
     }
 
+    /**
+     * Whether a real HTTPS connection to the site's actual configured
+     * hostname (not 127.0.0.1 - a named-vhost setup may not route the
+     * loopback address to this site at all, and testing the real hostname is
+     * what actually matters for "does https:// on this domain really work")
+     * succeeds. Proves SITE_URL's https:// prefix isn't just a string nobody's
+     * backed with a working certificate/vhost, the way the naive check (does
+     * the string start with "https://"?) never could. SSL verification is
+     * off: this confirms *something* answers with TLS at all, not that the
+     * certificate is CA-trusted (a self-signed/mkcert dev cert is fine here) -
+     * same reasoning as the WebSocket TLS check and fetchLiveFacts() above.
+     *
+     * Returns true if an HTTPS response comes back, false if a connection
+     * happens but TLS itself demonstrably fails (a real, provable problem -
+     * something's listening on the port but isn't actually serving TLS), and
+     * null if nothing could be reached there at all (inconclusive - DNS not
+     * pointed here yet, a firewall, or the web server simply isn't up yet
+     * during install).
+     */
+    public static function httpsServing(string $host): ?bool
+    {
+        if (!function_exists('curl_init')) {
+            return null;
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://' . $host . '/',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_TIMEOUT => 5,
+        ]);
+
+        $body = curl_exec($curl);
+        $errno = curl_errno($curl);
+        curl_close($curl);
+
+        if ($body !== false) {
+            return true;
+        }
+
+        // CURLE_SSL_CONNECT_ERROR (35) and friends mean a TCP connection was
+        // established but the TLS handshake itself failed - real proof
+        // something's listening on the port without actually serving TLS.
+        // CURLE_COULDNT_CONNECT (7), CURLE_COULDNT_RESOLVE_HOST (6), and
+        // timeouts mean nothing answered at all, which is inconclusive (DNS,
+        // a firewall, or the web server just isn't up yet), not a
+        // demonstrated failure.
+        return in_array($errno, [CURLE_SSL_CONNECT_ERROR, CURLE_SSL_CERTPROBLEM, CURLE_SSL_CIPHER, CURLE_SSL_PEER_CERTIFICATE], true)
+            ? false
+            : null;
+    }
+
     /** @var array<string, mixed>|false|null null = not yet fetched, false = fetch failed */
     private static array|false|null $liveFactsCache = null;
 

@@ -90,10 +90,13 @@ php bin/install.php
 ```
 
 - Runs every environment check and reports all of them at once (colored, when the terminal supports it).
-- If the WebSocket server is the only thing missing, offers to write the user-level systemd unit itself (correct paths filled in), enable it, start it, and re-check - no manual unit-file editing.
+- If the WebSocket server is the only thing missing, offers to write the user-level systemd unit itself (correct paths filled in), enable it, start it, and re-check - no manual unit-file editing. If the daemon is reachable but just isn't set up to survive a restart or reboot (not enabled, or lingering isn't set - e.g. it was started manually), offers to fix that specifically too.
+- If no backup has ever completed, offers to run one now (proving the mechanism works) and, once it succeeds, set up a nightly systemd timer for it - same idea as the WebSocket unit above. If a backup exists but the timer isn't enabled/lingering isn't set, offers to fix that specifically too.
+- Proves HTTPS is actually being served (a real TLS connection to your configured hostname) and that Apache's `ServerName`/`UseCanonicalName` genuinely block Host-header spoofing (a live forged-header test), rather than trusting either from a config string or a blind confirmation - see "HTTPS (required)" below.
 - With no `.env` present, walks through the same questions as the web form (with the same defaults), provisions the database/runtime account/schema, and writes `.env`.
 - With `.env` present, verifies it, creates any missing tables, and **detects schema drift** - columns, indexes, or foreign keys that `schema.sql` defines but the live tables lack (the situation after upgrading to a newer version) - and offers to apply the exact `ALTER` statements needed.
 - Admin credentials are prompted for only when there's actual schema work to do; set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` as environment variables to run non-interactively (e.g. from a deploy script - prompts are skipped automatically when stdin isn't a terminal, and the script exits non-zero on anything unresolved).
+- Every self-repair offer above has a matching non-interactive opt-in, for the same kind of scripted/CI runs: `SERVERNAME_CONFIRMED=1`, `BACKUP_TIMER_CONFIRMED=1`, and `WEBSOCKET_SERVICE_CONFIRMED=1`. Each is deliberately named for the one specific thing it attests to rather than being a blanket bypass.
 
 Re-running it on a healthy install is always safe - it changes nothing unless something is missing, and it's the recommended first step after every upgrade.
 
@@ -129,6 +132,8 @@ BACKUP_DIR=/mnt/backups/glommer BACKUP_KEEP_DAYS=14 php bin/backup.php
 ```
 
 The backup root must be **outside the project root** (the script refuses otherwise - a web-servable database dump would be a full data breach). Run it nightly with a systemd user timer:
+
+(`bin/install.php` offers to run the first backup and set up this timer - service, timer, enable, and linger - for you, the same way it does for the WebSocket service above; the steps below are for a manual setup or if you'd rather use cron or another scheduler.)
 
 ```ini
 # ~/.config/systemd/user/glommer-backup.service
@@ -172,6 +177,10 @@ Test with a signup to a mailbox you control before launch. If sending fails outr
 ## HTTPS (required)
 
 Glommer requires HTTPS - it will not serve over plain HTTP. Both installers refuse an `http://` site URL, and on an installed site (once `.env` exists) **every** plain-HTTP request - pages, API calls, and static files alike - is 301-redirected to its https URL (X-Forwarded-Proto is honored behind a TLS-terminating proxy), with HSTS sent on the https side. If `.env` is hand-edited to an `http://` `SITE_URL`, the site refuses to serve and shows a configuration-error page instead. The only thing ever reachable over plain HTTP is the pre-install setup wizard, since TLS may not be configured yet at that point.
+
+The CLI installer doesn't just trust `SITE_URL`'s `https://` prefix - it opens a real TLS connection to your configured hostname (never `127.0.0.1`, since VirtualHost/SNI routing means loopback may not reach the intended site) and only passes if that handshake actually succeeds.
+
+Apache also needs `ServerName <your-host>[:<port>]` and `UseCanonicalName On` set (at `httpd.conf`'s top level if you're not using a `<VirtualHost>`, or inside the relevant `<VirtualHost>` block if you are). Without them, the plain-HTTP-to-HTTPS redirect above can reflect a forged `Host:` header, sending a visitor to an attacker-controlled host instead of your own. The CLI installer proves this live too - it sends a request with a deliberately forged Host header and checks that it isn't reflected back, rather than just asking you to confirm it's set. If that live check is inconclusive (e.g. run from a machine that can't reach the site's own hostname), it falls back to asking you to confirm directly, or accepts `SERVERNAME_CONFIRMED=1` to skip the prompt once you've verified it yourself.
 
 So getting a certificate is part of installing. The certificate itself lives in your web server, not in Glommer:
 

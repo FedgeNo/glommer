@@ -11,6 +11,7 @@ class TextareaField extends HTMLObject
     public string $label;
     public ?string $placeholder = null;
     public ?int $maxLength = null;
+    public string $value = '';
 
     public function __construct(string $name, string $label, ?string $placeholder = null, ?int $max_length = null)
     {
@@ -37,6 +38,10 @@ class TextareaField extends HTMLObject
 
         if ($this -> maxLength !== null) {
             $textarea -> attributes['maxlength'] = (string) $this -> maxLength;
+        }
+
+        if ($this -> value !== '') {
+            $textarea -> contents[] = $this -> value;
         }
 
         $this -> contents[] = $textarea;

@@ -1,6 +1,6 @@
 /.env
-/uploads/**/*
-!/uploads/**/.gitkeep
+/uploads/**
+!/uploads/.htaccess
 /claude/
 /.claude/
 /CLAUDE.md

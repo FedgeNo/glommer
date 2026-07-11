@@ -15,6 +15,16 @@ if ($report_id === 0) {
     JSONResponse::error('Invalid report', 422) -> send();
 }
 
+// Load the report before deleting it so the audit log records what was
+// dismissed, not just an id that no longer resolves to anything.
+$report = Report::find($report_id);
+
+if ($report === null) {
+    JSONResponse::error('Report not found', 404) -> send();
+}
+
 Report::delete($report_id);
+
+ModerationAction::log('dismissReport', null, $report['targetType'], (int) $report['targetId'], $report_id);
 
 JSONResponse::success(['dismissed' => true]) -> send();

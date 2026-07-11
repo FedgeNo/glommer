@@ -35,4 +35,6 @@ if ($report['targetType'] === 'post') {
 // Removing the content resolves the report, so clear it from the queue too.
 Report::delete($report_id);
 
+ModerationAction::log('deleteReportedContent', null, $report['targetType'], (int) $report['targetId'], $report_id);
+
 JSONResponse::success(['deleted' => true]) -> send();

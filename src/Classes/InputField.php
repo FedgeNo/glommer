@@ -13,6 +13,7 @@ class InputField extends HTMLObject
     public ?string $placeholder = null;
     public string $value = '';
     public ?int $maxLength = null;
+    public ?string $autocomplete = null;
 
     public function __construct(string $name, string $label, string $type = 'text', ?string $placeholder = null, ?int $max_length = null)
     {
@@ -41,6 +42,10 @@ class InputField extends HTMLObject
 
         if ($this -> maxLength !== null) {
             $input -> attributes['maxlength'] = (string) $this -> maxLength;
+        }
+
+        if ($this -> autocomplete !== null) {
+            $input -> attributes['autocomplete'] = $this -> autocomplete;
         }
 
         $this -> contents[] = $input;

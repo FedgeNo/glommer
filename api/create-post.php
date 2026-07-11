@@ -70,6 +70,13 @@ if ($uploaded_files !== null) {
     }
 }
 
+// Refuse uploads outright when the disk is nearly full - the database (on the
+// same host) needs the remaining headroom far more than the feed needs
+// another upload.
+if ($uploaded_files !== null && !UploadProcessor::hasFreeDiskSpace((int) array_sum($uploaded_files['size']))) {
+    JSONResponse::error('Uploads are temporarily unavailable - the server is low on storage. Please try again later.', 507) -> send();
+}
+
 $has_files = $uploaded_files !== null && count(array_filter($uploaded_files['error'], fn ($error) => $error === UPLOAD_ERR_OK)) > 0;
 $has_text = trim(strip_tags($description)) !== '' || $link_url !== '';
 

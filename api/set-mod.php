@@ -33,4 +33,6 @@ UPDATE `Users`
 mysqli_stmt_bind_param($stmt, 'ii', $is_mod_value, $user_id);
 mysqli_stmt_execute($stmt);
 
+ModerationAction::log($is_mod ? 'setMod' : 'unsetMod', $user_id);
+
 JSONResponse::success(['isMod' => $is_mod]) -> send();

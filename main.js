@@ -1952,3 +1952,175 @@ document.addEventListener('input', (event) => {
         }
     }, delay);
 });
+
+/* ----- Admin Banned Users page: unban, infinite scroll, and search ----- */
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.UnbanButton');
+
+    if (!button) {
+        return;
+    }
+
+    if (!await show_confirm('Unban this user? Their content and login work again.')) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const result = await api_post('/api/unban', { userId: button.dataset.userId });
+
+    if (result === null) {
+        button.disabled = false;
+        return;
+    }
+
+    button.closest('.BannedUser').remove();
+});
+
+let loading_banned_users = false;
+
+window.addEventListener('scroll', async () => {
+    const list = document.querySelector('.BannedUserList');
+
+    if (!list || list.dataset.hasMore !== '1' || loading_banned_users) {
+        return;
+    }
+
+    const threshold = 300;
+    const rect = list.getBoundingClientRect();
+
+    if (!(rect.bottom > 0 && rect.bottom <= window.innerHeight + threshold)) {
+        return;
+    }
+
+    loading_banned_users = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    list.appendChild(spinner);
+
+    try {
+        const response = await fetch(`${window.siteURL}/api/banned-history?beforeUserId=${list.dataset.oldestUserId}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        const { items, hasMore: has_more, oldestUserId: oldest_user_id } = data.response;
+
+        list.dataset.hasMore = has_more ? '1' : '0';
+
+        if (oldest_user_id !== null) {
+            list.dataset.oldestUserId = oldest_user_id;
+        }
+
+        items.forEach((item) => {
+            list.insertBefore(BannedUser.fromData(item).toElement(), spinner);
+        });
+    } finally {
+        spinner.remove();
+        loading_banned_users = false;
+    }
+});
+
+document.addEventListener('input', (event) => {
+    const input = event.target.closest('.BannedUserSearchInput');
+
+    if (!input) {
+        return;
+    }
+
+    clearTimeout(input.dataset.debounceId);
+
+    const debounce_id = setTimeout(async () => {
+        const query = input.value.trim();
+        const list = document.querySelector('.BannedUserList');
+
+        if (!list) {
+            return;
+        }
+
+        // An empty box goes back to the paginated full list (first page,
+        // cursor reset); a query shows its matches with pagination off.
+        const url = query === ''
+            ? `${window.siteURL}/api/banned-history`
+            : `${window.siteURL}/api/search-banned-users?q=${encodeURIComponent(query)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        list.innerHTML = '';
+
+        const { items, hasMore: has_more, oldestUserId: oldest_user_id } = data.response;
+
+        list.dataset.hasMore = has_more ? '1' : '0';
+
+        if (oldest_user_id !== null && oldest_user_id !== undefined) {
+            list.dataset.oldestUserId = oldest_user_id;
+        }
+
+        if (items.length === 0) {
+            const notice = document.createElement('p');
+            notice.className = 'Muted Notice';
+            notice.textContent = query === '' ? 'No banned users.' : 'No banned users match that search.';
+            list.appendChild(notice);
+            return;
+        }
+
+        items.forEach((item) => {
+            list.appendChild(BannedUser.fromData(item).toElement());
+        });
+    }, 300);
+
+    input.dataset.debounceId = debounce_id;
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.ChangeEmailForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const existing_error = form.querySelector('.Error');
+
+    if (existing_error) {
+        existing_error.remove();
+    }
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const response = await fetch(window.siteURL + '/api/change-email', {
+        method: 'POST',
+        headers: csrf_headers({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+            newEmail: form.querySelector('[name=\'newEmail\']').value,
+            currentPassword: form.querySelector('[name=\'currentPassword\']').value,
+        }),
+    });
+
+    const data = await response.json();
+
+    submit_button.disabled = false;
+
+    if (!response.ok) {
+        const error = document.createElement('p');
+        error.className = 'Error';
+        error.textContent = data.error;
+        form.insertBefore(error, submit_button);
+        return;
+    }
+
+    // The account is back behind the verification gate until the new address
+    // confirms - land on the page that says exactly that.
+    window.location = window.siteURL + '/check-inbox/';
+});

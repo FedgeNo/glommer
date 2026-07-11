@@ -21,13 +21,19 @@ class SecurityHeaders
         $nonce = self::nonce();
         $config = require __DIR__ . '/../config.php';
 
+        // https://challenges.cloudflare.com is allowed for the optional Turnstile
+        // CAPTCHA - its script (script-src) and the widget's iframe (frame-src).
+        // Always permitted, not just when Turnstile is on: this runs before the
+        // database is available (so we can't check whether it's configured), and
+        // it's a single specific trusted host that's inert when unused.
         $csp = implode('; ', [
             'default-src \'self\'',
-            'script-src \'self\' \'nonce-' . $nonce . '\' https://cdn.jsdelivr.net',
+            'script-src \'self\' \'nonce-' . $nonce . '\' https://cdn.jsdelivr.net https://challenges.cloudflare.com',
             'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net',
             'img-src \'self\' data:',
             'font-src \'self\' https://cdn.jsdelivr.net',
             'media-src \'self\'',
+            'frame-src https://challenges.cloudflare.com',
             // The WebSocket connection is a different origin from the page
             // (same host, different port) - 'self' doesn't cover it, and the
             // actual hostname varies with however the site is reached, so

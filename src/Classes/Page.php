@@ -37,6 +37,11 @@ class Page
         $title_element -> contents[] = $full_title;
         $page -> addHeadContent($title_element);
 
+        $favicon = new Link();
+        $favicon -> rel = 'icon';
+        $favicon -> href = Favicon::URL();
+        $page -> addHeadContent($favicon);
+
         foreach (self::metaTags($full_title, $description, $image, $url) as $meta) {
             $page -> addHeadContent($meta);
         }
@@ -117,6 +122,10 @@ class Page
         $notification_script = new Script();
         $notification_script -> src = URL::absolute('/notification.js');
         $page -> addContents($notification_script);
+
+        $banned_user_script = new Script();
+        $banned_user_script -> src = URL::absolute('/banned-user.js');
+        $page -> addContents($banned_user_script);
 
         $main_script = new Script();
         $main_script -> src = URL::absolute('/main.js');

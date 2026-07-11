@@ -69,6 +69,61 @@ class ImageProcessor
         $written = imagejpeg($resized, $destination, 85);
         imagedestroy($resized);
 
-        return $written && is_file($destination);
+        if (!$written || !is_file($destination)) {
+            return false;
+        }
+
+        // The pixel re-encode already dropped the source's EXIF/metadata, but
+        // GD's imagejpeg stamps its own "CREATOR: gd-jpeg ..." comment into the
+        // file. Strip every comment/metadata marker so the saved image carries
+        // no metadata whatsoever.
+        self::stripJPEGMetadata($destination);
+
+        return true;
+    }
+
+    /**
+     * Removes all JPEG comment (COM) and APPn metadata segments from the file in
+     * place, keeping only the baseline JFIF (APP0) header and the image data, so
+     * the saved JPEG holds no metadata. Only ever runs on GD's own well-formed
+     * output.
+     */
+    private static function stripJPEGMetadata(string $path): void
+    {
+        $data = (string) file_get_contents($path);
+
+        if (strncmp($data, "\xFF\xD8", 2) !== 0) {
+            return; // not a JPEG - leave it alone
+        }
+
+        $out = "\xFF\xD8";
+        $offset = 2;
+        $length = strlen($data);
+
+        while ($offset + 3 < $length) {
+            // A byte that isn't a marker start, or Start of Scan (0xDA, after
+            // which the compressed image data runs to the end): stop parsing
+            // segments and copy everything remaining verbatim.
+            if ($data[$offset] !== "\xFF" || $data[$offset + 1] === "\xDA") {
+                break;
+            }
+
+            $marker = $data[$offset + 1];
+            $marker_ord = ord($marker);
+            $segment_length = (ord($data[$offset + 2]) << 8) | ord($data[$offset + 3]);
+
+            // Drop COM (0xFE) and APP1-APP15 (0xE1-0xEF) metadata segments; keep
+            // APP0 (0xE0, the JFIF header) so the file stays a valid baseline JPEG.
+            $is_metadata = $marker === "\xFE" || ($marker_ord >= 0xE1 && $marker_ord <= 0xEF);
+
+            if (!$is_metadata) {
+                $out .= substr($data, $offset, 2 + $segment_length);
+            }
+
+            $offset += 2 + $segment_length;
+        }
+
+        $out .= substr($data, $offset);
+        file_put_contents($path, $out);
     }
 }

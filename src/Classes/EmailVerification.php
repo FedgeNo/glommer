@@ -32,6 +32,10 @@ This link expires in 24 hours.';
             // verification gate with no way to ever receive the link that
             // would clear it, verify them directly instead.
             self::markVerified((int) $user -> userId);
+
+            // Let the admin know the mailer is down so they can fix it
+            // (throttled, so a flood of failures doesn't pile up).
+            Notification::warnAdminMailerFailed((int) $user -> userId);
         }
     }
 

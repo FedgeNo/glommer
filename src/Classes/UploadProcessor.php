@@ -18,6 +18,32 @@ class UploadProcessor
         'AudioItem' => 'mp3',
     ];
 
+    /**
+     * Uploads are refused while the uploads volume has less than this much
+     * free space left - the database (typically on the same disk) needs
+     * headroom far more than the site needs one more video. 10 GiB.
+     */
+    private const MIN_FREE_DISK_BYTES = 10 * 1024 * 1024 * 1024;
+
+    /**
+     * Whether the uploads volume has room for $incoming_bytes of new upload
+     * while keeping MIN_FREE_DISK_BYTES free. The incoming size is doubled to
+     * cover processing copies (the preserved original plus the transcoded
+     * display file can briefly both exist alongside the tmp upload).
+     */
+    public static function hasFreeDiskSpace(int $incoming_bytes = 0): bool
+    {
+        $free = disk_free_space(self::UPLOAD_DIR);
+
+        if ($free === false) {
+            // Can't measure - don't turn a stat failure into a site-wide
+            // upload outage.
+            return true;
+        }
+
+        return ($free - $incoming_bytes * 2) >= self::MIN_FREE_DISK_BYTES;
+    }
+
     public static function srcPath(int|string $item_id, string $item_type): string
     {
         return self::UPLOAD_URL_PREFIX . $item_id . '.' . self::DISPLAY_EXTENSIONS[$item_type];
@@ -214,16 +240,41 @@ class UploadProcessor
 
     private static function probeMedia(string $path): ?string
     {
+        // Include each stream's attached_pic disposition. A "video" stream that
+        // is an attached picture is embedded cover art (common in music MP3s),
+        // not real video - such a file is audio. Only a non-attached-picture
+        // video stream makes it a video, so a cover-art MP3 isn't misrouted to
+        // the video transcoder, which fails on it.
         $output = (string) shell_exec(
-            'ffprobe -v error -show_entries stream=codec_type -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
+            'ffprobe -v error -show_entries stream=codec_type:stream_disposition=attached_pic -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
         );
-        $types = array_filter(array_map('trim', explode(chr(10), $output)));
 
-        if (in_array('video', $types, true)) {
+        $has_real_video = false;
+        $has_audio = false;
+
+        foreach (explode(chr(10), $output) as $line) {
+            $parts = explode(',', trim($line));
+
+            if (count($parts) < 2) {
+                continue;
+            }
+
+            [$codec_type, $attached_pic] = $parts;
+
+            if ($codec_type === 'video' && $attached_pic !== '1') {
+                $has_real_video = true;
+            }
+
+            if ($codec_type === 'audio') {
+                $has_audio = true;
+            }
+        }
+
+        if ($has_real_video) {
             return 'video';
         }
 
-        if (in_array('audio', $types, true)) {
+        if ($has_audio) {
             return 'audio';
         }
 
@@ -261,7 +312,7 @@ class UploadProcessor
         );
 
         exec(sprintf(
-            'ffmpeg -y -i %s -vf %s -r %d -map_metadata -1 -map_chapters -1 -c:v libx264 -preset veryfast -crf 23 -c:a aac -movflags +faststart %s 2>&1',
+            'ffmpeg -y -i %s -vf %s -r %d -map_metadata -1 -map_chapters -1 -fflags +bitexact -flags:v +bitexact -flags:a +bitexact -c:v libx264 -preset veryfast -crf 23 -c:a aac -movflags +faststart %s 2>&1',
             escapeshellarg($tmp_path),
             escapeshellarg($scale_filter),
             self::VIDEO_MAX_FRAMERATE,
@@ -324,8 +375,10 @@ class UploadProcessor
             copy($tmp_path, $paths['original']);
         }
 
+        // -vn drops any embedded cover art (an attached-picture video stream);
+        // we only want the audio, and leaving it in can make the mp3 muxing fail.
         exec(sprintf(
-            'ffmpeg -y -i %s -map_metadata -1 -id3v2_version 0 -c:a libmp3lame -b:a 320k %s 2>&1',
+            'ffmpeg -y -i %s -vn -map_metadata -1 -id3v2_version 0 -c:a libmp3lame -b:a 320k %s 2>&1',
             escapeshellarg($tmp_path),
             escapeshellarg($paths['display'])
         ), $output_lines, $exit_code);

@@ -43,4 +43,11 @@ UPDATE `Users`
 mysqli_stmt_bind_param($stmt, 'si', $hash, $current_user -> userId);
 mysqli_stmt_execute($stmt);
 
+// The old password's sessions and remember-me tokens die with it - any other
+// browser (or thief) holding one gets logged out. This session proved the
+// current password, so it adopts the new version and stays.
+$_SESSION['sessionVersion'] = User::bumpSessionVersion((int) $current_user -> userId);
+RememberToken::purgeForUser((int) $current_user -> userId);
+Auth::clearUserCache();
+
 JSONResponse::success(['changed' => true]) -> send();

@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim((string) ($_POST['email'] ?? ''));
     $password = (string) ($_POST['password'] ?? '');
     $display_name = mb_substr(trim((string) ($_POST['displayName'] ?? '')), 0, 100);
+    $captcha_token = is_string($_POST['cf-turnstile-response'] ?? null) ? $_POST['cf-turnstile-response'] : null;
 
     if ($username === '') {
         $errors[] = 'Username is required.';
@@ -37,6 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($errors === [] && RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
         $errors[] = 'Too many signups from your network. Please try again later.';
+    }
+
+    // Verify the CAPTCHA server-side (after the cheap rate-limit check, so a
+    // flood doesn't make us hammer Cloudflare) - a no-op when it isn't
+    // configured. Fail closed: if Cloudflare can't be reached, reject rather
+    // than open a bot window on sign-up.
+    if ($errors === [] && !Turnstile::verify($captcha_token, $_SERVER['REMOTE_ADDR'] ?? null)) {
+        $errors[] = 'Captcha verification failed. Please try again.';
     }
 
     if ($errors === []) {
@@ -78,6 +87,10 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
         $user -> verified = $unverified;
 
         Auth::login($user);
+
+        if (($_POST['rememberMe'] ?? '') === '1') {
+            RememberToken::issue($new_user_id);
+        }
 
         EmailVerification::sendFor($user);
 

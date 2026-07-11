@@ -26,4 +26,6 @@ UPDATE `Users`
 mysqli_stmt_bind_param($stmt, 'ii', $banned, $user_id);
 mysqli_stmt_execute($stmt);
 
+ModerationAction::log('ban', $user_id);
+
 JSONResponse::success(['banned' => true]) -> send();

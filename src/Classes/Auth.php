@@ -38,6 +38,12 @@ SELECT *
     {
         session_regenerate_id(true);
         $_SESSION['userId'] = $user -> userId;
+
+        // Record the sessionVersion this session was created under - a
+        // password change bumps the user's version, and init.php logs out any
+        // session whose recorded version no longer matches.
+        $_SESSION['sessionVersion'] = $user -> sessionVersion;
+
         self::clearUserCache();
 
         // Keep the friend-cap cache honest on every sign-in, in case a

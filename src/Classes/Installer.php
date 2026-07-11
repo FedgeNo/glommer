@@ -16,9 +16,11 @@ class Installer
      * UPDATE/DELETE on that database only, and creates every table from
      * schema.sql that doesn't already exist.
      *
+     * @param array<string, string> $initial_settings name => value rows to seed
+     *                                                 into the Settings table
      * @return array{username: string, password: string} the runtime account credentials
      */
-    public static function provisionDatabase(\mysqli $admin_connection, string $db_database): array
+    public static function provisionDatabase(\mysqli $admin_connection, string $db_database, array $initial_settings = []): array
     {
         // CREATE DATABASE / CREATE USER / GRANT can't be prepared (MySQL's
         // prepared-statement protocol doesn't cover those statement types), so
@@ -72,7 +74,46 @@ GRANT SELECT, INSERT, UPDATE, DELETE
         SchemaInstaller::createTables($admin_connection, SchemaInstaller::missingTables($admin_connection));
         SchemaInstaller::runMaintenance($admin_connection);
 
+        // Record the code version this database now matches - init.php refuses
+        // to serve a mismatched pair, so a fresh install must start in agreement.
+        $initial_settings['appVersion'] = self::codeVersion();
+
+        // Seed any initial settings (e.g. Turnstile keys entered in setup) now
+        // that the Settings table exists. The admin connection runs this - the
+        // runtime account and the Database::connection() singleton aren't set up
+        // yet at install time.
+        foreach ($initial_settings as $setting_name => $setting_value) {
+            $stmt = mysqli_prepare($admin_connection, '
+INSERT INTO `Settings` (`name`, `value`)
+    VALUES (?, ?)
+    ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
+');
+            mysqli_stmt_bind_param($stmt, 'ss', $setting_name, $setting_value);
+            mysqli_stmt_execute($stmt);
+        }
+
         return ['username' => $runtime_username, 'password' => $runtime_password];
+    }
+
+    /**
+     * The codebase's version, hard-coded in src/init.php (the single source of
+     * truth). Web requests have init.php loaded so the constant exists; the CLI
+     * installer doesn't load init.php (it can't - init.php starts a session and
+     * sends headers), so fall back to reading the constant out of the source.
+     */
+    public static function codeVersion(): string
+    {
+        if (defined('GLOMMER_VERSION')) {
+            return GLOMMER_VERSION;
+        }
+
+        $init_source = (string) file_get_contents(__DIR__ . '/../init.php');
+
+        if (!preg_match('/const GLOMMER_VERSION = \'([^\']+)\';/', $init_source, $match)) {
+            throw new \RuntimeException('Could not find GLOMMER_VERSION in src/init.php.');
+        }
+
+        return $match[1];
     }
 
     /**

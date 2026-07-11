@@ -26,9 +26,11 @@ CREATE TABLE `Users` (
   `skinTone` varchar(16) DEFAULT NULL,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
   `friendCount` int(10) unsigned NOT NULL DEFAULT 0,
+  `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  KEY `banned_userId` (`banned`,`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Posts` (
@@ -176,6 +178,40 @@ CREATE TABLE `LinkPreviews` (
   `fetchedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`url`),
   KEY `fetchedAt` (`fetchedAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `Settings` (
+  `name` varchar(64) NOT NULL,
+  `value` text DEFAULT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `RememberTokens` (
+  `tokenId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `selector` varchar(32) NOT NULL,
+  `validatorHash` varchar(64) NOT NULL,
+  `expiresAt` datetime NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`tokenId`),
+  UNIQUE KEY `selector` (`selector`),
+  KEY `userId` (`userId`),
+  KEY `expiresAt` (`expiresAt`),
+  CONSTRAINT `RememberTokens_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `ModerationActions` (
+  `actionId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `moderatorId` int(10) unsigned NOT NULL,
+  `action` varchar(32) NOT NULL,
+  `targetUserId` int(10) unsigned DEFAULT NULL,
+  `targetType` varchar(16) DEFAULT NULL,
+  `targetId` int(10) unsigned DEFAULT NULL,
+  `reportId` int(10) unsigned DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`actionId`),
+  KEY `moderatorId_actionId` (`moderatorId`,`actionId`),
+  KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Index migrations (safe to re-run): bring an existing install's indexes up to

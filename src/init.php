@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 ob_start();
 
+// The version of this codebase. The database records the version it was last
+// installed/upgraded to (the appVersion setting, written by bin/install.php and
+// the web setup wizard); a mismatch means "run the upgrade" and locks the site
+// to a maintenance page below until the two agree.
+const GLOMMER_VERSION = '0.9.0';
+
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/Classes/' . $class . '.php';
 
@@ -11,6 +17,23 @@ spl_autoload_register(function (string $class): void {
         require $file;
     }
 });
+
+// An https SITE_URL declares the site is meant to be reached over TLS -
+// permanently redirect any plain-HTTP request to the canonical https URL
+// before anything else happens (no session cookie should ever travel over
+// plain HTTP there). Local development installs use an http SITE_URL and are
+// unaffected. X-Forwarded-Proto covers a TLS-terminating reverse proxy,
+// where PHP itself sees plain HTTP on every request.
+$init_config = require __DIR__ . '/config.php';
+
+if (
+    str_starts_with((string) $init_config['siteURL'], 'https://')
+    && ($_SERVER['HTTPS'] ?? '') === ''
+    && strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) !== 'https'
+) {
+    header('Location: ' . URL::absolute($_SERVER['REQUEST_URI'] ?? '/'), true, 301);
+    exit;
+}
 
 session_set_cookie_params([
     'httponly' => true,
@@ -60,6 +83,35 @@ register_shutdown_function(function () use ($send_server_error): void {
     $send_server_error();
 });
 
+// Version gate: the code and the database must have been installed/upgraded
+// together. After a code update, the database stays at the old version until
+// `php bin/install.php` applies the migrations and records the new version -
+// running mismatched risks subtle breakage (queries against columns that don't
+// exist yet), so lock everyone out with a maintenance page instead. The admin
+// (userId 1) gets the specific mismatch and the fix; everyone else gets a
+// generic "upgrading" message.
+$db_app_version = Settings::get('appVersion');
+
+if ($db_app_version !== GLOMMER_VERSION) {
+    if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+        JSONResponse::error('The site is being upgraded. Please try again in a few minutes.', 503) -> send();
+    }
+
+    $maintenance_message = Auth::id() === 1
+        ? 'The code is version ' . GLOMMER_VERSION . ' but the database is at ' . ($db_app_version ?? 'an unknown version') . '. Run "php bin/install.php" to bring the database up to date.'
+        : 'The site is being upgraded and will be back shortly.';
+
+    ErrorDocument::send(503, 'Upgrade In Progress', $maintenance_message);
+    exit;
+}
+
+// Persistent "Remember me" login: a request arriving without a session but
+// with a valid remember-me cookie gets its session re-established (and the
+// used token rotated) before anything below asks who's logged in.
+if (!Auth::check()) {
+    RememberToken::loginFromCookie();
+}
+
 if (!Auth::check() && basename($_SERVER['SCRIPT_FILENAME']) !== 'signup.php') {
     $user_count_result = mysqli_query(Database::connection(), '
 SELECT COUNT(*) AS `count`
@@ -75,9 +127,12 @@ SELECT COUNT(*) AS `count`
 if (Auth::check()) {
     $current_user = Auth::user();
 
-    // A session can outlive its account (user deleted or banned since login).
-    // Treat it as logged out instead of letting every page trip over a null user.
-    if ($current_user === null || $current_user -> banned) {
+    // A session can outlive its account (user deleted or banned since login)
+    // or its credentials (password changed since login bumps sessionVersion,
+    // and this session recorded the old one). Treat it as logged out instead
+    // of letting every page trip over a null user - or letting a stolen
+    // session survive a password change.
+    if ($current_user === null || $current_user -> banned || ($_SESSION['sessionVersion'] ?? 0) !== $current_user -> sessionVersion) {
         Auth::logout();
 
         if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {

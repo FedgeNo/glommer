@@ -537,6 +537,20 @@ if ($drift === []) {
 SchemaInstaller::runMaintenance($mysqli);
 ok('schema.sql maintenance applied (denormalized counts recomputed)');
 
+// Record the code version the database now matches - init.php locks the site
+// to a maintenance page while the two disagree, so this is what unlocks it
+// after an upgrade. The runtime connection can write it (plain INSERT/UPDATE).
+$version_name = 'appVersion';
+$code_version = Installer::codeVersion();
+$version_stmt = mysqli_prepare($mysqli, '
+INSERT INTO `Settings` (`name`, `value`)
+    VALUES (?, ?)
+    ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
+');
+mysqli_stmt_bind_param($version_stmt, 'ss', $version_name, $code_version);
+mysqli_stmt_execute($version_stmt);
+ok('database marked as version ' . $code_version);
+
 // ---------- Done ----------
 
 echo "\n" . color('All checks passed.', '1;32') . "\n\n";

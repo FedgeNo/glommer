@@ -53,6 +53,7 @@ class Notification extends HTMLObject
         return match ($this -> type) {
             'postReady' => 'Your media has finished processing and is now live',
             'uploadFailed' => 'One of your uploads failed to process and was not posted',
+            'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
             default => $this -> actorText(),
         };
     }
@@ -204,6 +205,51 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
                 'actorImage' => $actor !== null && $actor -> hasAvatar ? URL::absolute(User::avatarPath($actor_id)) : null,
             ],
         ]);
+    }
+
+    /**
+     * Notifies the primary admin (userId 1) that email delivery is failing, so
+     * they can fix the mailer. Throttled: skipped when any of the admin's last
+     * five notifications is already a mailer-failure alert, so a burst of
+     * failures can't flood them. $actor_id is the user whose mail failed - who
+     * they are doesn't matter for this type, it just needs to be a real user so
+     * the notification renders; allow_self covers that user being the admin.
+     */
+    public static function warnAdminMailerFailed(int $actor_id): void
+    {
+        $admin_id = 1;
+
+        if (self::hasRecentOfType($admin_id, 'mailerFailed', 5)) {
+            return;
+        }
+
+        self::create($admin_id, $actor_id, 'mailerFailed', null, true);
+    }
+
+    /**
+     * Whether any of $user_id's most recent $within notifications is of $type.
+     * Used to throttle repeat system alerts so duplicates don't pile up.
+     */
+    public static function hasRecentOfType(int $user_id, string $type, int $within): bool
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `type`
+    FROM `Notifications`
+    WHERE `userId` = ?
+    ORDER BY `notificationId` DESC
+    LIMIT ?
+');
+        mysqli_stmt_bind_param($stmt, 'ii', $user_id, $within);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($row['type'] === $type) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -26,6 +26,8 @@ class Notification {
                 return 'Your media has finished processing and is now live';
             case 'uploadFailed':
                 return 'One of your uploads failed to process and was not posted';
+            case 'mailerFailed':
+                return 'Email delivery failed - the mailer may be down. Please check your mail configuration.';
             default:
                 return this.actorText();
         }

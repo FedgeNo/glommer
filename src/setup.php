@@ -52,6 +52,8 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $db_database = trim((string) ($_POST['DBDatabase'] ?? ''));
         $admin_username = (string) ($_POST['adminUsername'] ?? '');
         $admin_password = (string) ($_POST['adminPassword'] ?? '');
+        $turnstile_site_key = trim((string) ($_POST['turnstileSiteKey'] ?? ''));
+        $turnstile_secret_key = trim((string) ($_POST['turnstileSecretKey'] ?? ''));
 
         if ($site_url === '' || filter_var($site_url, FILTER_VALIDATE_URL) === false) {
             $errors[] = 'A valid site URL is required.';
@@ -99,7 +101,17 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($errors === []) {
             try {
-                $runtime_account = Installer::provisionDatabase($admin_connection, $db_database);
+                $initial_settings = [];
+
+                if ($turnstile_site_key !== '') {
+                    $initial_settings[Turnstile::SITE_KEY_SETTING] = $turnstile_site_key;
+                }
+
+                if ($turnstile_secret_key !== '') {
+                    $initial_settings[Turnstile::SECRET_KEY_SETTING] = $turnstile_secret_key;
+                }
+
+                $runtime_account = Installer::provisionDatabase($admin_connection, $db_database, $initial_settings);
                 mysqli_close($admin_connection);
             } catch (\mysqli_sql_exception $exception) {
                 $errors[] = 'Database setup failed: ' . $exception -> getMessage();

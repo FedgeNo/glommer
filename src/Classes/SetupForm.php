@@ -56,6 +56,21 @@ class SetupForm extends Form
         $db_fields -> addContents(new InputField('adminPassword', 'Database admin password', 'password', 'Database admin password'));
         $this -> contents[] = $db_fields;
 
+        // Optional: Cloudflare Turnstile ("I am not a robot") on sign-up and
+        // sign-in. Leave blank to skip - it can be set later in Site Settings.
+        // Both keys are needed for it to take effect.
+        $turnstile_fields = new Fieldset('Bot protection (optional)');
+
+        $turnstile_site_key = new InputField('turnstileSiteKey', 'Cloudflare Turnstile site key', 'text', 'Leave blank to skip', 255);
+        $turnstile_site_key -> autocomplete = 'off';
+        $turnstile_fields -> addContents($turnstile_site_key);
+
+        $turnstile_secret_key = new InputField('turnstileSecretKey', 'Cloudflare Turnstile secret key', 'text', 'Leave blank to skip', 255);
+        $turnstile_secret_key -> autocomplete = 'off';
+        $turnstile_fields -> addContents($turnstile_secret_key);
+
+        $this -> contents[] = $turnstile_fields;
+
         $this -> contents[] = new SubmitButton('Set Up');
 
         return parent::toDOM();

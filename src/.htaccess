@@ -1,0 +1,8 @@
+# Application source - nothing in here is a web endpoint. Everything reaches
+# the browser through the root-level scripts and their routes.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>

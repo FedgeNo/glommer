@@ -40,6 +40,13 @@ class MainNavigation extends HTMLObject
 
             if (Auth::canModerate()) {
                 $account_menu_links[] = new Anchor(URL::absolute('/admin/reports/'), 'Reports');
+                $account_menu_links[] = new Anchor(URL::absolute('/admin/banned/'), 'Banned Users');
+            }
+
+            // Site-wide settings (e.g. the Turnstile keys) are the primary
+            // admin's alone, not general moderators'.
+            if (Auth::id() === 1) {
+                $account_menu_links[] = new Anchor(URL::absolute('/admin/settings/'), 'Site Settings');
             }
 
             $account_links -> addContents(new NavDropdown(

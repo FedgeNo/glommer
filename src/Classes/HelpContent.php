@@ -201,7 +201,7 @@ class HelpContent
                 'category' => 'Posting',
                 'summary' => 'Attach one or more images, a video, or audio to a post.',
                 'body' => '
-<p>Use the attach control in the composer to add <strong>images, video, or audio</strong> to a post. You can attach more than one file - several images become a swipeable gallery on the finished post.</p>
+<p>Use the attach control in the composer to add <strong>images, video, or audio</strong> to a post. You can attach more than one file - several images become a swipeable gallery on the finished post. You can attach up to ' . (int) ini_get('max_file_uploads') . ' files to a single post.</p>
 <p>Larger video and audio files are processed after you post, so there may be a short wait before they\'re playable. You\'ll get a notification once your media has finished processing and is live.</p>
 <p>If you change your mind before posting, use the cancel control next to the file picker to drop the attachment. Remember that a post with media can\'t also carry a link - pick whichever fits what you\'re sharing.</p>
 ',

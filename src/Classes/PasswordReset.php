@@ -24,7 +24,15 @@ This link expires in 1 hour. If you did not request this, you can ignore this em
             . '<p><a href="' . htmlspecialchars($reset_url) . '">Reset Password</a></p>'
             . '<p>This link expires in 1 hour. If you did not request this, you can ignore this email.</p>';
 
-        Mailer::send($user -> email, $name, 'Reset your password', $text_body, $html_body);
+        $sent = Mailer::send($user -> email, $name, 'Reset your password', $text_body, $html_body);
+
+        if (!$sent) {
+            // Unlike sign-up, a failed reset can't just proceed - without the
+            // emailed link there's nothing to let the user through with. Still
+            // tell the admin the mailer is down so they can fix it (throttled,
+            // so a flood of failures doesn't pile up).
+            Notification::warnAdminMailerFailed((int) $user -> userId);
+        }
     }
 
     public static function verify(string $token): ?int
@@ -62,6 +70,11 @@ UPDATE `Users`
 ');
         mysqli_stmt_bind_param($update_stmt, 'si', $hash, $user_id);
         mysqli_stmt_execute($update_stmt);
+
+        // The old password's sessions and remember-me tokens die with it -
+        // whoever prompted the reset may not be the only one logged in.
+        User::bumpSessionVersion($user_id);
+        RememberToken::purgeForUser($user_id);
 
         $token_hash = hash('sha256', $token);
         $delete_stmt = mysqli_prepare($mysqli, '

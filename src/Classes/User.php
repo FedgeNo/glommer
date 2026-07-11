@@ -24,6 +24,7 @@ class User extends HTMLObject
     public ?string $skinTone = null;
     public int $lastNotificationId = 0;
     public int $friendCount = 0;
+    public int $sessionVersion = 0;
 
     public function toDOM(): \DOMElement
     {
@@ -350,6 +351,38 @@ UPDATE `Users`
 ');
         mysqli_stmt_bind_param($stmt, 'siii', $accepted_status, $user_id, $user_id, $user_id);
         mysqli_stmt_execute($stmt);
+    }
+
+    /**
+     * Invalidates every existing session for the user by bumping their
+     * sessionVersion - a session records the version it was created under and
+     * init.php logs out any session whose recorded version no longer matches.
+     * Called on password change/reset so a stolen or forgotten-open session
+     * doesn't outlive the credentials that created it. Returns the new
+     * version so the calling session can adopt it and stay logged in.
+     */
+    public static function bumpSessionVersion(int $user_id): int
+    {
+        $mysqli = Database::connection();
+
+        $stmt = mysqli_prepare($mysqli, '
+UPDATE `Users`
+    SET `sessionVersion` = `sessionVersion` + 1
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $user_id);
+        mysqli_stmt_execute($stmt);
+
+        $select_stmt = mysqli_prepare($mysqli, '
+SELECT `sessionVersion`
+    FROM `Users`
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($select_stmt, 'i', $user_id);
+        mysqli_stmt_execute($select_stmt);
+        $result = mysqli_stmt_get_result($select_stmt);
+
+        return (int) (mysqli_fetch_assoc($result)['sessionVersion'] ?? 0);
     }
 
     /**

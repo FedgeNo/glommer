@@ -17,6 +17,12 @@ if ($uploaded_file === null || $uploaded_file['error'] !== UPLOAD_ERR_OK) {
     JSONResponse::error('No file uploaded', 422) -> send();
 }
 
+// Refuse uploads outright when the disk is nearly full - the database (on the
+// same host) needs the remaining headroom far more than a new avatar does.
+if (!UploadProcessor::hasFreeDiskSpace((int) $uploaded_file['size'])) {
+    JSONResponse::error('Uploads are temporarily unavailable - the server is low on storage. Please try again later.', 507) -> send();
+}
+
 $avatar_dir = dirname(__DIR__) . '/uploads/avatars';
 
 if (!is_dir($avatar_dir)) {

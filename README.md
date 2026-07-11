@@ -13,8 +13,9 @@ Glommer is a self-hosted social publishing platform - posts, replies, friends, m
 - **Notifications** - live-updating over a WebSocket connection (toast pop-ups, unseen-count dot) for likes, replies, friend requests/acceptances, messages, and finished media processing
 - **Live messaging** - a conversation you have open updates in real time when the other person replies, over the same WebSocket connection
 - **Help** - a public, searchable help section at `/help/` (articles authored in-code, searched in-PHP)
-- **Moderation** - blocking users; reporting a specific post, message, or user; and an admin/mod reports queue that shows the reported content itself (a reported message's body in a blockquote, a post rendered inline, a user's card) with per-report Dismiss, Delete Content, and Ban Reporter/Reported User actions. Moderators are appointed by the primary admin; reports about the admin are rejected outright.
-- **Accounts** - signup with email verification, login/logout, forgot/reset password, avatar upload (with an initial-letter fallback avatar when none is set), a choice of themes (system/light/dark/sepia/midnight/sunset), and a preferred emoji skin tone
+- **Moderation** - blocking users; reporting a specific post, message, or user; an admin/mod reports queue that shows the reported content itself (a reported message's body in a blockquote, a post rendered inline, a user's card) with per-report Dismiss, Delete Content, and Ban Reporter/Reported User actions; a searchable Banned Users page with per-profile Unban; and a database audit log of every moderation action. Moderators are appointed by the primary admin; reports about the admin are rejected outright.
+- **Site settings** - an admin panel for the optional Cloudflare Turnstile CAPTCHA (sign-up/sign-in bot protection), a custom favicon, and the editable Terms of Service (`/terms/`) and Privacy Policy (`/privacy/`) pages
+- **Accounts** - signup with email verification, login/logout with "Remember me" persistent sessions, forgot/reset password (a password change logs out every other session and device), email change with re-verification, avatar upload (with an initial-letter fallback avatar when none is set), a choice of themes (system/light/dark/sepia/midnight/sunset), and a preferred emoji skin tone
 - **RSS** - a site-wide feed at `/feed.xml` and a per-user feed at `/users/{username}/feed.xml`, auto-discoverable from the relevant pages
 - **Relative timestamps** ("3m ago") that stay correct against server time, falling back to an absolute date after 7 days
 - **Infinite scroll** for feeds, notifications, message history, and the friends/requests lists
@@ -109,3 +110,81 @@ Re-running it on a healthy install is always safe - it changes nothing unless so
 4. Start the WebSocket server (see above) with this `.env` already in place.
 5. Verify everything with `php bin/install.php` (see "Interactive CLI" above - on an already-configured install it acts as a pure checker/repairer).
 6. Visit the site and sign up - the first account created becomes the site's administrator.
+
+## Administration model
+
+The **first account created on a fresh install is the site's administrator** - this is how the software operates, not a convention: the admin is always `userId` 1, and admin-only actions (appointing moderators, site settings) check exactly that. The admin can promote any user to **moderator** from their profile; moderators get the reports queue, the Banned Users page, and ban/unban powers, but not site settings or mod appointment. The admin can't be reported or banned.
+
+## Upgrading
+
+The codebase carries a version (`GLOMMER_VERSION` in `src/init.php`) and the database records the version it was last installed or upgraded to. After pulling new code, **run `php bin/install.php`** - it creates any missing tables, applies schema drift, and stamps the new version. Until it runs, a mismatched site locks itself to a maintenance page (a plain "being upgraded" notice for visitors; the admin sees the actual versions and the command to run) rather than serving requests against a schema the code wasn't written for.
+
+## Backups
+
+`bin/backup.php` backs up everything a restore needs that git doesn't hold: a gzipped `mysqldump` of the database and a tarball of `uploads/` (originals included). Each run writes a timestamped directory and prunes runs older than the retention window.
+
+```
+php bin/backup.php                 # defaults: ../glommer-backups, keep 7 days
+BACKUP_DIR=/mnt/backups/glommer BACKUP_KEEP_DAYS=14 php bin/backup.php
+```
+
+The backup root must be **outside the project root** (the script refuses otherwise - a web-servable database dump would be a full data breach). Run it nightly with a systemd user timer:
+
+```ini
+# ~/.config/systemd/user/glommer-backup.service
+[Unit]
+Description=Glommer backup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/php /path/to/glommer/bin/backup.php
+```
+
+```ini
+# ~/.config/systemd/user/glommer-backup.timer
+[Unit]
+Description=Nightly Glommer backup
+
+[Timer]
+OnCalendar=*-*-* 04:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+```
+systemctl --user daemon-reload
+systemctl --user enable --now glommer-backup.timer
+```
+
+(`loginctl enable-linger "$USER"` if you haven't already - same as the WebSocket service.) To restore: create the database, `gunzip -c database.sql.gz | mysql glommer`, untar `uploads.tar.gz` into the project root, and run `php bin/install.php` to verify.
+
+## Email deliverability
+
+Out of the box, mail goes through PHP's `mail()` - the local sendmail. On a typical VPS that mail has no sending reputation and lands in spam folders (or nowhere). For real deliverability, do both of these:
+
+1. **Use an SMTP relay** - set the `SMTP_*` keys in `.env` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_ENCRYPTION=tls|ssl|none`) and Glommer speaks SMTP to it directly (STARTTLS/implicit TLS and AUTH LOGIN supported, no dependencies). Any transactional provider or your own mail server works.
+2. **Publish SPF/DKIM/DMARC DNS records** for the domain in `MAIL_FROM_ADDRESS`, matching what your relay documents. Without them, receiving servers have no reason to trust the mail.
+
+Test with a signup to a mailbox you control before launch. If sending fails outright, Glommer degrades deliberately: a signup whose verification email can't be sent is **verified automatically** (nobody gets stranded behind a gate no email can clear), a password reset is *not* issued without email, and in both cases the **admin gets a "mailer failed" notification** so the outage is visible immediately.
+
+## HTTPS
+
+Set `SITE_URL` to an `https://` URL and Glommer enforces it: every plain-HTTP request is 301-redirected to the canonical https URL (X-Forwarded-Proto is honored behind a TLS-terminating proxy) and HSTS is sent. The certificate itself comes from your web server, not from Glommer - on Apache the usual path is Let's Encrypt via certbot:
+
+```
+sudo dnf install certbot python3-certbot-apache   # or apt equivalent
+sudo certbot --apache -d your.domain
+```
+
+Local development installs keep an `http://` `SITE_URL` (e.g. `http://localhost`) and none of this applies - browsers don't require, and Let's Encrypt can't issue, certificates for localhost.
+
+## Monitoring
+
+`/health` returns `{"ok": true}` (HTTP 200) only when PHP is serving and a real database query succeeds, and an error with HTTP 503 otherwise - point your uptime monitor at it. It deliberately bypasses the normal maintenance/setup pages so a dead database can't masquerade as healthy.
+
+## Design notes
+
+- **Foreign keys**: the content tables (`Posts`, `FeedItems`, `Likes`, `Friendships`, `Blocks`, `Messages`, `Timelines`, `RememberTokens`) carry real foreign keys with `ON DELETE CASCADE`. The system/log tables (`Notifications`, `Reports`, `EmailVerifications`, `PasswordResets`, `RateLimitAttempts`, `ModerationActions`, `Settings`, `LinkPreviews`) deliberately don't - audit history must survive its subjects, and token/attempt rows expire on their own.
+- **Static assets revalidate on every load** (`Cache-Control: no-cache` = cache but revalidate). This is intentional: avatars and the custom favicon are overwritten in place under stable URLs, so a browser trusting a stale copy would show the old image indefinitely. The conditional requests are answered 304 and cost almost nothing.

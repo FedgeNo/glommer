@@ -14,7 +14,16 @@ class LoginForm extends Form
         $fields = new Fieldset('Log in');
         $fields -> addContents(new InputField('identifier', 'Username or email', 'text', 'Username or email', 255));
         $fields -> addContents(new InputField('password', 'Password', 'password', 'Password'));
+
+        $remember_me = new CheckboxField('rememberMe', 'Remember me');
+        $remember_me -> checked = true;
+        $fields -> addContents($remember_me);
+
         $this -> contents[] = $fields;
+
+        if (Turnstile::isEnabled()) {
+            $this -> contents[] = new TurnstileWidget();
+        }
 
         $this -> contents[] = new SubmitButton('Log In');
 

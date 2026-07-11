@@ -14,7 +14,7 @@
     # always revalidate with the server (a cheap conditional request,
     # answered 304 Not Modified if unchanged) before serving it, rather than
     # either never caching at all or trusting a stale copy.
-    <FilesMatch "\.(js|css|jpe?g|mp4|mp3)$">
+    <FilesMatch "\.(js|css|jpe?g|mp4|mp3|png|ico)$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
 </IfModule>
@@ -30,9 +30,10 @@
     RewriteRule ^api/([a-zA-Z0-9-]+)/?$ api/$1.php [L,QSA]
 
     # Pages
-    RewriteRule ^(login|logout|signup|notifications|check-inbox|verify-email|settings|forgot-password|reset-password|admin/reports|friends-feed|friends|messages|users|help)$ /$1/ [R=301,L]
+    RewriteRule ^(login|logout|signup|notifications|check-inbox|verify-email|settings|forgot-password|reset-password|admin/reports|admin/settings|admin/banned|friends-feed|friends|messages|users|help|terms|privacy)$ /$1/ [R=301,L]
     RewriteRule ^$ index.php [L,QSA]
     RewriteRule ^feed\.xml$ rss-feed.php [L,QSA]
+    RewriteRule ^health/?$ health.php [L,QSA]
     RewriteRule ^login/?$ login.php [L,QSA]
     RewriteRule ^logout/?$ logout.php [L,QSA]
     RewriteRule ^signup/?$ signup.php [L,QSA]
@@ -43,6 +44,10 @@
     RewriteRule ^settings/?$ settings.php [L,QSA]
     RewriteRule ^verify-email/?$ verify-email.php [L,QSA]
     RewriteRule ^admin/reports/?$ admin-reports.php [L,QSA]
+    RewriteRule ^admin/settings/?$ admin-settings.php [L,QSA]
+    RewriteRule ^admin/banned/?$ admin-banned.php [L,QSA]
+    RewriteRule ^terms/?$ terms.php [L,QSA]
+    RewriteRule ^privacy/?$ privacy.php [L,QSA]
     RewriteRule ^friends-feed/?$ friends-feed.php [L,QSA]
     RewriteRule ^friends/?$ friends.php [L,QSA]
     RewriteRule ^messages/?$ messages.php [L,QSA]

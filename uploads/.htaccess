@@ -1,0 +1,13 @@
+# Uploaded files are static media, never code. Even though every stored file
+# is renamed and re-encoded by UploadProcessor (no user-supplied name or bytes
+# survive), refuse to execute anything script-like from here outright - this
+# holds even if mod_rewrite (whose root rules also block direct .php requests)
+# is off or the tree is served by a differently-configured server.
+<FilesMatch "\.(?i:php|phar|phtml)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>

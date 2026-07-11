@@ -12,6 +12,10 @@ $page -> addContents(new Heading2('Change Password'));
 
 $page -> addContents(new ChangePasswordForm());
 
+$page -> addContents(new Heading2('Change Email'));
+
+$page -> addContents(new ChangeEmailForm());
+
 $page -> addContents(new Heading2('Theme'));
 
 $page -> addContents(new ThemeSelector());

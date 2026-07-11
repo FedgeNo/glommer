@@ -12,9 +12,7 @@ class SitePolicy
     public const TERMS_SETTING = 'termsText';
     public const PRIVACY_SETTING = 'privacyText';
 
-    private const DEFAULT_TERMS = 'This site runs Glommer, open-source software released under the MIT License. The software is provided "as is", without warranty of any kind, express or implied.
-
-You are responsible for what you post. Do not post content that is illegal in the site\'s or your own jurisdiction. The site administrator may remove content or accounts at their discretion.
+    private const DEFAULT_TERMS = 'You are responsible for what you post. Do not use this site to commit crimes or to post content that is illegal in the site\'s or your own jurisdiction. The site administrator may remove content or accounts at their discretion.
 
 The site administrator has not yet customized these terms of service.';
 

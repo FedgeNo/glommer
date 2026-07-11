@@ -85,7 +85,7 @@ class EnvironmentChecker
         // ini_get() under CLI reports unrelated values that have nothing to
         // do with what the web server will actually enforce. Parse the real
         // file on disk (the same one the web server reads) to check its
-        // declared values, then confirm live (see liveIniValues()) that the
+        // declared values, then confirm live (see liveFacts()) that the
         // web server is actually applying them - the file being correct
         // doesn't prove .user.ini support is even enabled for the pool.
         $user_ini_path = __DIR__ . '/../../.user.ini';
@@ -113,17 +113,20 @@ class EnvironmentChecker
             return ['ok' => false, 'message' => implode(' ', $problems) . ' Set these in .user.ini at the project root. (Checked by parsing .user.ini directly, since the CLI SAPI never applies it itself.)'];
         }
 
-        $live = self::liveIniValues();
+        $live = self::liveFacts();
 
-        if ($live === null) {
+        if ($live === null || !isset($live['uploadMaxFilesize'], $live['postMaxSize'])) {
             return ['ok' => true, 'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max . ' (could not reach http://127.0.0.1/ to confirm the web server is actually applying it - re-run once the web server is up, or check via the web setup wizard directly)'];
         }
 
-        if (self::iniBytes($live['uploadMaxFilesize']) !== self::iniBytes($declared_upload_max) || self::iniBytes($live['postMaxSize']) !== self::iniBytes($declared_post_max)) {
-            return ['ok' => false, 'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max . ' but the web server is actually applying upload_max_filesize=' . $live['uploadMaxFilesize'] . ', post_max_size=' . $live['postMaxSize'] . ' - .user.ini isn\'t being honored (check user_ini.filename/user_ini.cache_ttl in the web SAPI\'s own php.ini - these are PHP_INI_SYSTEM settings the FPM pool can set independently of the CLI - or that PHP-FPM has had time to pick up the file).'];
+        $live_upload_max = (string) $live['uploadMaxFilesize'];
+        $live_post_max = (string) $live['postMaxSize'];
+
+        if (self::iniBytes($live_upload_max) !== self::iniBytes($declared_upload_max) || self::iniBytes($live_post_max) !== self::iniBytes($declared_post_max)) {
+            return ['ok' => false, 'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max . ' but the web server is actually applying upload_max_filesize=' . $live_upload_max . ', post_max_size=' . $live_post_max . ' - .user.ini isn\'t being honored (check user_ini.filename/user_ini.cache_ttl in the web SAPI\'s own php.ini - these are PHP_INI_SYSTEM settings the FPM pool can set independently of the CLI - or that PHP-FPM has had time to pick up the file).'];
         }
 
-        return ['ok' => true, 'message' => 'upload_max_filesize=' . $live['uploadMaxFilesize'] . ', post_max_size=' . $live['postMaxSize'] . ' (confirmed live via the web server, matches .user.ini)'];
+        return ['ok' => true, 'message' => 'upload_max_filesize=' . $live_upload_max . ', post_max_size=' . $live_post_max . ' (confirmed live via the web server, matches .user.ini)'];
     }
 
     /**
@@ -161,15 +164,16 @@ class EnvironmentChecker
         // post_max_size there's no project-shipped file to parse (it can't go
         // in .user.ini at all), so there's nothing to check from the CLI
         // except a live request to the web server itself.
-        $live = self::liveIniValues();
+        $live = self::liveFacts();
 
-        if ($live === null) {
+        if ($live === null || !isset($live['maxFileUploads'])) {
             return ['ok' => true, 'message' => 'max_file_uploads - could not reach http://127.0.0.1/ to check it live. Set it for the web server yourself: max_file_uploads = 100 or higher in php.ini or the PHP-FPM pool config (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM. Re-run once the web server is up, or check via the web setup wizard directly.'];
         }
 
-        $max = $live['maxFileUploads'] === '0' ? 0 : (int) $live['maxFileUploads'];
+        $live_max_label = (string) $live['maxFileUploads'];
+        $max = $live_max_label === '0' ? 0 : (int) $live_max_label;
 
-        return self::maxFileUploadsResult($live['maxFileUploads'] === '0' ? 'unlimited' : $live['maxFileUploads'], $max, live: true);
+        return self::maxFileUploadsResult($live_max_label === '0' ? 'unlimited' : $live_max_label, $max, live: true);
     }
 
     /**
@@ -187,19 +191,38 @@ class EnvironmentChecker
         return ['ok' => true, 'message' => 'max_file_uploads = ' . $label . ($live ? ' (confirmed live via the web server)' : '')];
     }
 
+    /** @var array<string, mixed>|false|null null = not yet fetched, false = fetch failed */
+    private static array|false|null $liveFactsCache = null;
+
     /**
-     * Fetches the web SAPI's actual, resolved ini values via a real HTTP
+     * Fetches every fact the web SAPI actually resolves - via a real HTTP
      * request to the site's own environment-check endpoint (127.0.0.1, plain
      * HTTP - before install this may be all that's reachable, since TLS/vhost
      * setup may not exist yet; deliberately not SafeHTTPFetcher, which
      * refuses loopback addresses by design - this is an intentional loopback
-     * probe, not a fetch of untrusted user input). Returns null if the site
-     * isn't reachable this way (e.g. the web server isn't running yet), which
-     * callers treat as inconclusive, not a failure.
+     * probe, not a fetch of untrusted user input). Cached per-process so the
+     * several CLI checks that each need this share one HTTP round trip
+     * instead of one apiece. Returns null if the site isn't reachable this
+     * way (e.g. the web server isn't running yet), which callers treat as
+     * inconclusive, not a failure.
      *
-     * @return array{uploadMaxFilesize: string, postMaxSize: string, maxFileUploads: string}|null
+     * @return array<string, mixed>|null
      */
-    private static function liveIniValues(): ?array
+    private static function liveFacts(): ?array
+    {
+        if (self::$liveFactsCache !== null) {
+            return self::$liveFactsCache === false ? null : self::$liveFactsCache;
+        }
+
+        self::$liveFactsCache = self::fetchLiveFacts() ?? false;
+
+        return self::$liveFactsCache === false ? null : self::$liveFactsCache;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private static function fetchLiveFacts(): ?array
     {
         if (!function_exists('curl_init')) {
             return null;
@@ -226,18 +249,11 @@ class EnvironmentChecker
 
         $data = json_decode($body, true);
 
-        if (
-            !is_array($data)
-            || !isset($data['response']['uploadMaxFilesize'], $data['response']['postMaxSize'], $data['response']['maxFileUploads'])
-        ) {
+        if (!is_array($data) || !is_array($data['response'] ?? null)) {
             return null;
         }
 
-        return [
-            'uploadMaxFilesize' => (string) $data['response']['uploadMaxFilesize'],
-            'postMaxSize' => (string) $data['response']['postMaxSize'],
-            'maxFileUploads' => (string) $data['response']['maxFileUploads'],
-        ];
+        return $data['response'];
     }
 
     /**
@@ -273,7 +289,27 @@ class EnvironmentChecker
             return ['ok' => false, 'message' => 'PHP 8.1 or newer is required - this is PHP ' . PHP_VERSION . '.'];
         }
 
-        return ['ok' => true, 'message' => 'PHP ' . PHP_VERSION];
+        if (PHP_SAPI !== 'cli') {
+            return ['ok' => true, 'message' => 'PHP ' . PHP_VERSION];
+        }
+
+        // CLI: on a host with multiple PHP versions installed, the "php"
+        // command on PATH isn't guaranteed to be the same binary the web
+        // server's SAPI runs. Confirm live where possible; this one is purely
+        // informational either way (the CLI's own version already passed
+        // above), never a failure - a real mismatch would show up as its own
+        // extension/behavior failures elsewhere in this list.
+        $live = self::liveFacts();
+
+        if ($live === null || !isset($live['phpVersion'])) {
+            return ['ok' => true, 'message' => 'PHP ' . PHP_VERSION . ' (CLI) - could not confirm the web server\'s version live'];
+        }
+
+        if (version_compare((string) $live['phpVersion'], '8.1.0', '<')) {
+            return ['ok' => false, 'message' => 'The web server is running PHP ' . $live['phpVersion'] . ' (confirmed live), which is older than the required 8.1 - even though the CLI\'s PHP (' . PHP_VERSION . ') is fine. Upgrade the web server\'s PHP.'];
+        }
+
+        return ['ok' => true, 'message' => 'PHP ' . PHP_VERSION . ' (CLI), ' . $live['phpVersion'] . ' (confirmed live via the web server)'];
     }
 
     /**
@@ -291,19 +327,44 @@ class EnvironmentChecker
             'mbstring' => 'multibyte-safe text handling',
         ];
 
+        if (PHP_SAPI !== 'cli') {
+            $missing = [];
+
+            foreach ($required_extensions as $extension => $used_for) {
+                if (!extension_loaded($extension)) {
+                    $missing[] = $extension . ' (' . $used_for . ')';
+                }
+            }
+
+            if ($missing !== []) {
+                return ['ok' => false, 'message' => 'Missing PHP extension(s): ' . implode(', ', $missing) . '. Install them (e.g. php-<name>) and restart PHP.'];
+            }
+
+            return ['ok' => true, 'message' => 'all required PHP extensions loaded (' . implode(', ', array_keys($required_extensions)) . ')'];
+        }
+
+        // CLI: extension_loaded() reflects the CLI's own php.ini, which a
+        // split-package distro (separate php-cli/php-fpm packages, each with
+        // their own conf.d) can load independently. Confirm live.
+        $live = self::liveFacts();
+
+        if ($live === null || !is_array($live['extensions'] ?? null)) {
+            return ['ok' => true, 'message' => 'all required PHP extensions loaded on the CLI, but could not confirm the web server live - check via the web setup wizard directly.'];
+        }
+
         $missing = [];
 
         foreach ($required_extensions as $extension => $used_for) {
-            if (!extension_loaded($extension)) {
+            if (empty($live['extensions'][$extension])) {
                 $missing[] = $extension . ' (' . $used_for . ')';
             }
         }
 
         if ($missing !== []) {
-            return ['ok' => false, 'message' => 'Missing PHP extension(s): ' . implode(', ', $missing) . '. Install them (e.g. php-<name>) and restart PHP.'];
+            return ['ok' => false, 'message' => 'The web server is missing PHP extension(s) (confirmed live): ' . implode(', ', $missing) . ' - even though the CLI has them all. Install them for the web SAPI (e.g. php-fpm-<name>) and reload PHP-FPM.'];
         }
 
-        return ['ok' => true, 'message' => 'all required PHP extensions loaded (' . implode(', ', array_keys($required_extensions)) . ')'];
+        return ['ok' => true, 'message' => 'all required PHP extensions loaded (confirmed live via the web server)'];
     }
 
     /**
@@ -311,21 +372,54 @@ class EnvironmentChecker
      */
     private static function checkShellAndFfmpeg(): array
     {
-        $disabled_functions = array_map('trim', explode(',', (string) ini_get('disable_functions')));
+        if (PHP_SAPI !== 'cli') {
+            $disabled_functions = array_map('trim', explode(',', (string) ini_get('disable_functions')));
 
-        foreach (['exec', 'shell_exec'] as $function) {
-            if (!function_exists($function) || in_array($function, $disabled_functions, true)) {
-                return ['ok' => false, 'message' => $function . '() is disabled in this PHP configuration - video/audio processing runs ffmpeg through it. Remove it from disable_functions.'];
+            foreach (['exec', 'shell_exec'] as $function) {
+                if (!function_exists($function) || in_array($function, $disabled_functions, true)) {
+                    return ['ok' => false, 'message' => $function . '() is disabled in this PHP configuration - video/audio processing runs ffmpeg through it. Remove it from disable_functions.'];
+                }
             }
+
+            foreach (['ffmpeg', 'ffprobe'] as $binary) {
+                if (trim((string) shell_exec('command -v ' . $binary . ' 2>/dev/null')) === '') {
+                    return ['ok' => false, 'message' => $binary . ' was not found on PATH - video and audio uploads cannot be processed without it. Install ffmpeg.'];
+                }
+            }
+
+            return ['ok' => true, 'message' => 'exec()/shell_exec() available, ffmpeg and ffprobe found'];
         }
 
-        foreach (['ffmpeg', 'ffprobe'] as $binary) {
-            if (trim((string) shell_exec('command -v ' . $binary . ' 2>/dev/null')) === '') {
-                return ['ok' => false, 'message' => $binary . ' was not found on PATH - video and audio uploads cannot be processed without it. Install ffmpeg.'];
-            }
+        // CLI: disable_functions is PHP_INI_SYSTEM and very commonly set
+        // DIFFERENTLY between CLI and a hardened FPM pool - exec()/shell_exec()
+        // are often disabled specifically for the attacker-reachable web
+        // process while staying open for trusted CLI scripts, which is exactly
+        // backwards from what matters: api/create-post.php spawns ffmpeg via
+        // exec() under the web SAPI, not CLI. PATH is frequently narrower
+        // under FPM too. Confirm live rather than assume they match.
+        $live = self::liveFacts();
+
+        if ($live === null) {
+            return ['ok' => true, 'message' => 'exec()/shell_exec()/ffmpeg OK on the CLI, but could not confirm the web server live - check via the web setup wizard directly, since a hardened FPM pool commonly disables exec()/shell_exec() (or narrows PATH) separately from the CLI.'];
         }
 
-        return ['ok' => true, 'message' => 'exec()/shell_exec() available, ffmpeg and ffprobe found'];
+        if (empty($live['execFunctionExists']) || !empty($live['execDisabled'])) {
+            return ['ok' => false, 'message' => 'exec() is disabled for the web server (confirmed live) - video/audio processing runs ffmpeg through it. Remove it from disable_functions for the web SAPI/FPM pool, not just the CLI.'];
+        }
+
+        if (empty($live['shellExecFunctionExists']) || !empty($live['shellExecDisabled'])) {
+            return ['ok' => false, 'message' => 'shell_exec() is disabled for the web server (confirmed live) - remove it from disable_functions for the web SAPI/FPM pool, not just the CLI.'];
+        }
+
+        if (empty($live['ffmpegFound'])) {
+            return ['ok' => false, 'message' => 'ffmpeg was not found on the web server\'s PATH (confirmed live), even if it\'s on the CLI\'s PATH - FPM pools often set their own, narrower PATH. Add ffmpeg\'s directory to the FPM pool\'s env[PATH].'];
+        }
+
+        if (empty($live['ffprobeFound'])) {
+            return ['ok' => false, 'message' => 'ffprobe was not found on the web server\'s PATH (confirmed live), even if it\'s on the CLI\'s PATH - FPM pools often set their own, narrower PATH. Add ffprobe\'s directory to the FPM pool\'s env[PATH].'];
+        }
+
+        return ['ok' => true, 'message' => 'exec()/shell_exec() available, ffmpeg and ffprobe found (confirmed live via the web server)'];
     }
 
     /**
@@ -333,11 +427,27 @@ class EnvironmentChecker
      */
     private static function checkTempDirectory(): array
     {
-        if (!is_writable(sys_get_temp_dir())) {
-            return ['ok' => false, 'message' => 'The system temp directory (' . sys_get_temp_dir() . ') is not writable - file uploads and link preview images stage through it.'];
+        if (PHP_SAPI !== 'cli') {
+            if (!is_writable(sys_get_temp_dir())) {
+                return ['ok' => false, 'message' => 'The system temp directory (' . sys_get_temp_dir() . ') is not writable - file uploads and link preview images stage through it.'];
+            }
+
+            return ['ok' => true, 'message' => 'temp directory writable (' . sys_get_temp_dir() . ')'];
         }
 
-        return ['ok' => true, 'message' => 'temp directory writable (' . sys_get_temp_dir() . ')'];
+        // CLI: TMPDIR/sys_get_temp_dir() can resolve differently per FPM pool
+        // env config. Confirm live.
+        $live = self::liveFacts();
+
+        if ($live === null || !isset($live['tempDir'])) {
+            return ['ok' => true, 'message' => 'CLI temp directory (' . sys_get_temp_dir() . ') writable, but could not confirm the web server\'s live - check via the web setup wizard directly.'];
+        }
+
+        if (empty($live['tempDirWritable'])) {
+            return ['ok' => false, 'message' => 'The web server\'s temp directory (' . $live['tempDir'] . ', confirmed live) is not writable, even though the CLI\'s (' . sys_get_temp_dir() . ') is fine - file uploads and link preview images stage through it.'];
+        }
+
+        return ['ok' => true, 'message' => 'temp directory writable (' . $live['tempDir'] . ', confirmed live via the web server)'];
     }
 
     /**
@@ -359,11 +469,37 @@ class EnvironmentChecker
             }
 
             if (!is_writable($dir)) {
-                return ['ok' => false, 'message' => realpath($dir) . ' is not writable by this user. It (and everything under it) must be writable by the web server user too - uploads are processed and stored there.'];
+                return ['ok' => false, 'message' => realpath($dir) . ' is not writable by this user (' . get_current_user() . '). It (and everything under it) must be writable by the web server user too - uploads are processed and stored there.'];
             }
         }
 
-        return ['ok' => true, 'message' => 'upload directories exist and are writable'];
+        if (PHP_SAPI !== 'cli') {
+            return ['ok' => true, 'message' => 'upload directories exist and are writable'];
+        }
+
+        // CLI: writable by the CLI user doesn't prove the web server's own
+        // user can write there too - they're very commonly different Unix
+        // accounts (whoever ran this script vs. "apache"/"www-data"/etc.).
+        // Confirm live.
+        $live = self::liveFacts();
+
+        if ($live === null || !is_array($live['uploadDirsWritable'] ?? null)) {
+            return ['ok' => true, 'message' => 'upload directories exist and are writable by the CLI user (' . get_current_user() . '), but could not confirm the web server\'s own user live - check via the web setup wizard directly, since it commonly runs as a different Unix user.'];
+        }
+
+        $not_writable = [];
+
+        foreach ($live['uploadDirsWritable'] as $relative_path => $writable) {
+            if (!$writable) {
+                $not_writable[] = $relative_path;
+            }
+        }
+
+        if ($not_writable !== []) {
+            return ['ok' => false, 'message' => implode(', ', $not_writable) . ' (confirmed live) - not writable by the web server\'s own user, even though the CLI user (' . get_current_user() . ') can write there. They\'re commonly different accounts - make the whole uploads/ tree writable by the web server\'s user.'];
+        }
+
+        return ['ok' => true, 'message' => 'upload directories exist and are writable (confirmed live via the web server)'];
     }
 
     /**

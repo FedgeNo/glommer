@@ -182,27 +182,49 @@ SELECT *
         $not_banned = 0;
         $mysqli = Database::connection();
 
-        if ($before_friendship_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
-SELECT `f`.`friendshipId`, `u`.*
+        // No cursor means "from the newest" - a sentinel above any real
+        // friendshipId keeps it one query instead of a cursorless duplicate.
+        $cursor = $before_friendship_id ?? PHP_INT_MAX;
+
+        // The two directions run as separate UNION ALL halves rather than one
+        // OR: each half walks its (requesterId|addresseeId, status,
+        // friendshipId) index backward and stops at the limit, so only the
+        // merged 2x-limit rows ever get sorted - an OR index_merge forces
+        // collecting and filesorting every accepted friendship first. The
+        // banned filter stays inside each half so pagination semantics match
+        // the old query exactly.
+        $stmt = mysqli_prepare($mysqli, '
+(SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = IF(`f`.`requesterId` = ?, `f`.`addresseeId`, `f`.`requesterId`)
-    WHERE `f`.`status` = ? AND (`f`.`requesterId` = ? OR `f`.`addresseeId` = ?) AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
+    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
     ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?)
+UNION ALL
+(SELECT `f`.`friendshipId`, `u`.*
+    FROM `Friendships` `f`
+    JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
+    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    ORDER BY `f`.`friendshipId` DESC
+    LIMIT ?)
+    ORDER BY `friendshipId` DESC
     LIMIT ?
 ');
-            mysqli_stmt_bind_param($stmt, 'isiiiii', $this -> userId, $accepted_status, $this -> userId, $this -> userId, $not_banned, $before_friendship_id, $limit);
-        } else {
-            $stmt = mysqli_prepare($mysqli, '
-SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = IF(`f`.`requesterId` = ?, `f`.`addresseeId`, `f`.`requesterId`)
-    WHERE `f`.`status` = ? AND (`f`.`requesterId` = ? OR `f`.`addresseeId` = ?) AND `u`.`banned` = ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'isiiii', $this -> userId, $accepted_status, $this -> userId, $this -> userId, $not_banned, $limit);
-        }
+        mysqli_stmt_bind_param(
+            $stmt,
+            'isiiiisiiii',
+            $this -> userId,
+            $accepted_status,
+            $not_banned,
+            $cursor,
+            $limit,
+            $this -> userId,
+            $accepted_status,
+            $not_banned,
+            $cursor,
+            $limit,
+            $limit
+        );
 
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);

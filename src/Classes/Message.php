@@ -104,26 +104,43 @@ DELETE
         $mysqli = Database::connection();
         $fetch_limit = $limit + 1;
 
-        if ($before_message_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
-SELECT *
+        // No cursor means "from the newest" - a sentinel above any real
+        // messageId keeps it one query instead of a cursorless duplicate.
+        $cursor = $before_message_id ?? PHP_INT_MAX;
+
+        // The two directions run as separate UNION ALL halves rather than one
+        // OR: each half walks its (senderId, recipientId, messageId) index
+        // backward and stops at the limit, so only the merged 2x-limit rows
+        // ever get sorted - an OR forces collecting and filesorting the whole
+        // conversation before the LIMIT can apply.
+        $stmt = mysqli_prepare($mysqli, '
+(SELECT *
     FROM `Messages`
-    WHERE ((`senderId` = ? AND `recipientId` = ?) OR (`senderId` = ? AND `recipientId` = ?))
-        AND `messageId` < ?
+    WHERE `senderId` = ? AND `recipientId` = ? AND `messageId` < ?
+    ORDER BY `messageId` DESC
+    LIMIT ?)
+UNION ALL
+(SELECT *
+    FROM `Messages`
+    WHERE `senderId` = ? AND `recipientId` = ? AND `messageId` < ?
+    ORDER BY `messageId` DESC
+    LIMIT ?)
     ORDER BY `messageId` DESC
     LIMIT ?
 ');
-            mysqli_stmt_bind_param($stmt, 'iiiiii', $user_a, $user_b, $user_b, $user_a, $before_message_id, $fetch_limit);
-        } else {
-            $stmt = mysqli_prepare($mysqli, '
-SELECT *
-    FROM `Messages`
-    WHERE (`senderId` = ? AND `recipientId` = ?) OR (`senderId` = ? AND `recipientId` = ?)
-    ORDER BY `messageId` DESC
-    LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iiiii', $user_a, $user_b, $user_b, $user_a, $fetch_limit);
-        }
+        mysqli_stmt_bind_param(
+            $stmt,
+            'iiiiiiiii',
+            $user_a,
+            $user_b,
+            $cursor,
+            $fetch_limit,
+            $user_b,
+            $user_a,
+            $cursor,
+            $fetch_limit,
+            $fetch_limit
+        );
 
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);

@@ -56,16 +56,91 @@ SELECT `TABLE_NAME`
     }
 
     /**
-     * The non-CREATE-TABLE statements in schema.sql - idempotent maintenance
-     * the installer runs after tables are ensured, on every install and
-     * upgrade (currently just the Users.friendCount recompute). Kept in
-     * schema.sql so the whole schema, data-maintenance included, has one
-     * source of truth. Same one-statement-per-`;` assumption as the CREATE
-     * TABLE parsing (no semicolons inside a statement).
+     * The non-CREATE-TABLE, non-ALTER-TABLE statements in schema.sql -
+     * idempotent DML maintenance the installer runs after tables are ensured,
+     * on every install and upgrade (currently just the Users.friendCount
+     * recompute). Kept in schema.sql so the whole schema, data-maintenance
+     * included, has one source of truth. Same one-statement-per-`;`
+     * assumption as the CREATE TABLE parsing (no semicolons inside a
+     * statement). ALTER TABLE statements are excluded here - they're DDL
+     * (see indexMigrationStatements()) and need admin privileges the runtime
+     * account this runs on deliberately doesn't have.
      *
      * @return string[]
      */
     public static function maintenanceStatements(): array
+    {
+        return array_values(array_filter(
+            self::nonTableStatements(),
+            static fn (string $statement): bool => !str_starts_with($statement, 'ALTER TABLE')
+        ));
+    }
+
+    public static function runMaintenance(\mysqli $connection): void
+    {
+        foreach (self::maintenanceStatements() as $statement) {
+            mysqli_query($connection, $statement);
+        }
+    }
+
+    /**
+     * The idempotent index migrations in schema.sql (ALTER TABLE ... ADD/DROP
+     * INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike maintenanceStatements()
+     * these need admin privileges. Returns only the ones actually still
+     * needed against $connection (an ADD whose index already exists, or a
+     * DROP whose index is already gone, is left out), so callers only have to
+     * reach for admin credentials when there's genuinely DDL work pending -
+     * the same "admin creds only when there's real work" principle
+     * missingDefinitions() already follows for column/index/FK drift.
+     *
+     * @return string[]
+     */
+    public static function neededIndexMigrations(\mysqli $connection): array
+    {
+        $needed = [];
+        $existing_by_table = [];
+
+        foreach (self::indexMigrationStatements() as $statement) {
+            if (!preg_match('/^ALTER TABLE `(\w+)` (ADD|DROP) INDEX IF (?:NOT )?EXISTS `(\w+)`/', $statement, $match)) {
+                continue;
+            }
+
+            [, $table, $action, $index] = $match;
+
+            if (!isset($existing_by_table[$table])) {
+                $existing_by_table[$table] = self::existingIndexes($connection, $table);
+            }
+
+            $index_exists = in_array($index, $existing_by_table[$table], true);
+
+            if (($action === 'ADD' && !$index_exists) || ($action === 'DROP' && $index_exists)) {
+                $needed[] = $statement;
+            }
+        }
+
+        return $needed;
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function indexMigrationStatements(): array
+    {
+        return array_values(array_filter(
+            self::nonTableStatements(),
+            static fn (string $statement): bool => str_starts_with($statement, 'ALTER TABLE')
+        ));
+    }
+
+    /**
+     * Every statement in schema.sql outside the CREATE TABLE blocks - the
+     * shared parse behind maintenanceStatements() (DML) and
+     * indexMigrationStatements() (DDL), split apart by their differing
+     * privilege requirements.
+     *
+     * @return string[]
+     */
+    private static function nonTableStatements(): array
     {
         $schema_path = __DIR__ . '/../../schema.sql';
 
@@ -100,13 +175,6 @@ SELECT `TABLE_NAME`
         }
 
         return $statements;
-    }
-
-    public static function runMaintenance(\mysqli $connection): void
-    {
-        foreach (self::maintenanceStatements() as $statement) {
-            mysqli_query($connection, $statement);
-        }
     }
 
     /**

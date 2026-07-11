@@ -237,22 +237,197 @@ function offer_websocket_service(): bool
 }
 
 /**
- * When the Backups check is what failed, the fix is usually "run it once" -
- * so offer to do exactly that.
+ * When the Backups check is what failed, fix it completely: run one backup
+ * now (proving the mechanism actually works), then install a recurring
+ * user-level systemd timer (no root needed) so it keeps being true -
+ * mirroring offer_websocket_service() above, not just a one-off run.
  */
 function offer_first_backup(): bool
 {
-    echo "\nNo backup has ever completed. Run php bin/backup.php now to create one and\n";
-    echo "prove the mechanism actually works (see README.md's Backups section for\n";
-    echo "setting up a recurring systemd timer afterward).\n";
+    echo "\nNo backup has ever completed.\n";
 
-    if (!confirm('Run it now?')) {
+    if (!confirm('Run php bin/backup.php now to create one and prove the mechanism works?')) {
         return false;
     }
 
     passthru(PHP_BINARY . ' ' . escapeshellarg(__DIR__ . '/backup.php'), $exit_code);
 
-    return $exit_code === 0;
+    if ($exit_code !== 0) {
+        return false;
+    }
+
+    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
+
+    if (!$systemctl_available) {
+        warn('systemctl not found - set up a recurring backup yourself (cron or otherwise). See README.md\'s Backups section.');
+
+        return true;
+    }
+
+    $home = ($_SERVER['HOME'] ?? getenv('HOME'));
+    $service_path = $home . '/.config/systemd/user/glommer-backup.service';
+    $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
+
+    echo "\nIt can also run automatically every night via a user-level systemd timer\n";
+    echo "(no root needed) at " . $timer_path . "\n";
+
+    if (!confirm('Set that up now too?')) {
+        warn('Not scheduled - run php bin/backup.php manually on some schedule of your own. See README.md\'s Backups section.');
+
+        return true;
+    }
+
+    $service_contents = implode("\n", [
+        '[Unit]',
+        'Description=Glommer backup',
+        '',
+        '[Service]',
+        'Type=oneshot',
+        'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/backup.php',
+    ]) . "\n";
+
+    $timer_contents = implode("\n", [
+        '[Unit]',
+        'Description=Nightly Glommer backup',
+        '',
+        '[Timer]',
+        'OnCalendar=*-*-* 04:00:00',
+        'Persistent=true',
+        '',
+        '[Install]',
+        'WantedBy=timers.target',
+    ]) . "\n";
+
+    if (!is_dir(dirname($service_path)) && !@mkdir(dirname($service_path), 0755, true)) {
+        fail_line('Could not create ' . dirname($service_path) . ' - create the units manually (see README.md).');
+
+        return true; // the one-off backup above still satisfies the check itself
+    }
+
+    if (file_put_contents($service_path, $service_contents) === false || file_put_contents($timer_path, $timer_contents) === false) {
+        fail_line('Could not write the systemd units - create them manually (see README.md).');
+
+        return true;
+    }
+
+    shell_exec('systemctl --user daemon-reload 2>&1');
+    $enable_output = (string) shell_exec('systemctl --user enable --now glommer-backup.timer 2>&1');
+
+    $status = trim((string) shell_exec('systemctl --user is-enabled glommer-backup.timer 2>/dev/null'));
+
+    if ($status !== 'enabled') {
+        fail_line('The timer was written but is not enabled (' . trim($enable_output) . '). Check: systemctl --user status glommer-backup.timer');
+
+        return true;
+    }
+
+    ok('Nightly backup timer installed and enabled (' . $timer_path . ')');
+
+    // Same lingering requirement as the WebSocket service - a user-level timer
+    // only survives logout/reboot with it enabled.
+    $user = trim((string) shell_exec('id -un 2>/dev/null'));
+
+    if ($user === '') {
+        $user = get_current_user() ?: (string) getenv('USER');
+    }
+
+    shell_exec('loginctl enable-linger ' . escapeshellarg($user) . ' 2>&1');
+    $linger_output = strtolower(trim((string) shell_exec('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')));
+
+    if (str_contains($linger_output, 'yes')) {
+        ok('Lingering enabled for ' . $user . ' - the timer keeps firing after logout and across reboots.');
+    } else {
+        warn('Could not enable lingering for ' . $user . ' automatically. The timer won\'t fire after logout');
+        echo '       (or survive a reboot) until you run: sudo loginctl enable-linger ' . $user . "\n";
+    }
+
+    return true;
+}
+
+/**
+ * When SITE_URL is https (required) but the WebSocket daemon has no TLS
+ * configured, a browser on the site's own https pages silently refuses to
+ * open a plain ws:// connection at all (mixed active content - no visible
+ * error, live notifications/messaging just stop working). Offer to generate
+ * a certificate with mkcert (if available) and wire it in.
+ */
+function offer_websocket_tls(string $host): bool
+{
+    $mkcert_available = trim((string) shell_exec('command -v mkcert 2>/dev/null')) !== '';
+
+    if (!$mkcert_available) {
+        return false;
+    }
+
+    $cert_dir = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.local/share/glommer-certs';
+    $cert_path = $cert_dir . '/' . $host . '.pem';
+    $key_path = $cert_dir . '/' . $host . '-key.pem';
+
+    echo "\nThe WebSocket daemon has no TLS certificate configured. mkcert is available -\n";
+    echo "it can generate one for " . $host . " at " . $cert_dir . "\n";
+    echo "(Browsers only trust it without a warning if \"mkcert -install\" has been run\n";
+    echo "on this machine - a one-time step, needs sudo the first time, separate from this.)\n";
+
+    if (!confirm('Generate a certificate now and configure it?')) {
+        return false;
+    }
+
+    if (!is_dir($cert_dir) && !@mkdir($cert_dir, 0700, true)) {
+        fail_line('Could not create ' . $cert_dir . ' - create it manually and set WS_TLS_CERT/WS_TLS_KEY in .env.');
+
+        return false;
+    }
+
+    exec('mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1', $mkcert_output, $mkcert_exit);
+
+    if ($mkcert_exit !== 0 || !is_file($cert_path) || !is_file($key_path)) {
+        fail_line('mkcert failed: ' . implode(' ', $mkcert_output));
+
+        return false;
+    }
+
+    $env_path = __DIR__ . '/../.env';
+    $env_contents = (string) file_get_contents($env_path);
+    $env_contents = preg_replace('/^WS_TLS_CERT=.*$/m', 'WS_TLS_CERT=' . $cert_path, $env_contents, -1, $cert_replaced);
+    $env_contents = preg_replace('/^WS_TLS_KEY=.*$/m', 'WS_TLS_KEY=' . $key_path, $env_contents, -1, $key_replaced);
+
+    if ($cert_replaced !== 1 || $key_replaced !== 1) {
+        fail_line('.env has no WS_TLS_CERT/WS_TLS_KEY lines to update - add these manually:');
+        echo '       WS_TLS_CERT=' . $cert_path . "\n";
+        echo '       WS_TLS_KEY=' . $key_path . "\n";
+
+        return false;
+    }
+
+    if (file_put_contents($env_path, $env_contents) === false) {
+        fail_line('Could not write .env.');
+
+        return false;
+    }
+
+    putenv('WS_TLS_CERT=' . $cert_path);
+    putenv('WS_TLS_KEY=' . $key_path);
+
+    ok('.env updated with WS_TLS_CERT/WS_TLS_KEY');
+
+    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
+
+    if ($systemctl_available) {
+        shell_exec('systemctl --user restart glommer-websocket.service 2>&1');
+        sleep(1);
+
+        $status = trim((string) shell_exec('systemctl --user is-active glommer-websocket.service 2>/dev/null'));
+
+        if ($status === 'active') {
+            ok('WebSocket daemon restarted with the new certificate');
+        } else {
+            warn('Could not confirm the daemon restarted - check: systemctl --user status glommer-websocket');
+        }
+    } else {
+        warn('Restart the WebSocket daemon manually to pick up the new certificate.');
+    }
+
+    return true;
 }
 
 // ---------- 1. Environment ----------
@@ -290,8 +465,15 @@ if (isset($environment_failures['WebSocket server']) && is_interactive() && offe
 }
 
 // Likewise the one environment failure this script can fix itself by running
-// a real backup on the spot.
-if (isset($environment_failures['Backups']) && is_interactive() && offer_first_backup()) {
+// a real backup on the spot. BACKUP_TIMER_CONFIRMED=1 is the same explicit,
+// named non-interactive opt-in as SERVERNAME_CONFIRMED below - it unlocks
+// offer_first_backup() without a TTY, but its confirm() calls still read real
+// answers off stdin (a pipe works fine for that; only stream_isatty() cares
+// whether it's a real terminal), so this isn't a blind bypass - an actual "y"
+// still has to arrive for each step.
+$backups_non_interactive_ok = Env::get('BACKUP_TIMER_CONFIRMED', '') === '1';
+
+if (isset($environment_failures['Backups']) && (is_interactive() || $backups_non_interactive_ok) && offer_first_backup()) {
     $recheck = EnvironmentChecker::checks()['Backups'];
 
     if ($recheck['ok']) {
@@ -459,6 +641,31 @@ if (is_interactive()) {
         . 'See README.md\'s HTTPS section.');
 }
 
+// ---------- WebSocket TLS ----------
+
+// HTTPS is required site-wide (confirmed above), and a browser on an https
+// page silently refuses to open a plain ws:// connection at all (mixed
+// active content - no console warning most people would notice, live
+// notifications/messaging just stop working). So the WebSocket daemon must
+// be configured for TLS too, or the install isn't actually functional.
+if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
+    if (!is_interactive() || !offer_websocket_tls($site_host)) {
+        fail('WS_TLS_CERT/WS_TLS_KEY are not set in .env, but SITE_URL is https - browsers silently refuse a plain '
+            . 'ws:// connection from an https page, so live notifications and messaging would be dead with no '
+            . 'visible error. Generate a certificate for ' . $site_host . ' (mkcert is easiest for localhost/dev: '
+            . 'mkcert -install && mkcert ' . $site_host . '; for a real domain you can reuse the certificate Apache '
+            . 'uses) and set WS_TLS_CERT/WS_TLS_KEY in .env, then restart the WebSocket daemon. See README.md\'s '
+            . 'HTTPS section.');
+    }
+
+    // Plain require (not require_once), same as every other config reload in
+    // this script - re-executes and picks up the WS_TLS_CERT/WS_TLS_KEY
+    // offer_websocket_tls() just putenv()'d.
+    $config = require __DIR__ . '/../src/config.php';
+}
+
+ok('WebSocket TLS configured (' . $config['WSTLSCert'] . ')');
+
 // ---------- 3. Database connection ----------
 
 heading('Database');
@@ -608,11 +815,44 @@ if ($drift === []) {
 
 // ---------- 6. Maintenance ----------
 
-// Idempotent data upkeep defined alongside the DDL in schema.sql (currently
+// Idempotent DML upkeep defined alongside the DDL in schema.sql (currently
 // the friendCount recompute) - run on the runtime connection, which has the
 // UPDATE it needs, now that the tables are known-good.
 SchemaInstaller::runMaintenance($mysqli);
 ok('schema.sql maintenance applied (denormalized counts recomputed)');
+
+// schema.sql also carries a handful of idempotent index migrations (ALTER
+// TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
+// UPDATE above these need admin privileges the runtime account deliberately
+// doesn't have. Only reach for admin credentials when one is actually still
+// needed (an already-applied migration is a no-op and shouldn't force a
+// prompt on every healthy re-run - same principle as the schema drift step).
+$needed_index_migrations = SchemaInstaller::neededIndexMigrations($mysqli);
+
+if ($needed_index_migrations === []) {
+    ok('index migrations up to date (nothing to apply)');
+} else {
+    $index_admin_mysqli = admin_connection($config, 'apply ' . count($needed_index_migrations) . ' pending index migration(s) from schema.sql');
+
+    if ($index_admin_mysqli === null) {
+        fail(
+            count($needed_index_migrations) . ' index migration(s) from schema.sql are still pending: '
+            . implode('; ', $needed_index_migrations) . '. '
+            . 'Apply them as a MySQL admin, or set DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD and re-run.'
+        );
+    }
+
+    foreach ($needed_index_migrations as $statement) {
+        try {
+            mysqli_query($index_admin_mysqli, $statement);
+            ok('applied: ' . $statement);
+        } catch (\mysqli_sql_exception $exception) {
+            fail('Failed to apply index migration (' . $statement . '): ' . $exception -> getMessage());
+        }
+    }
+
+    mysqli_close($index_admin_mysqli);
+}
 
 // Record the code version the database now matches - init.php locks the site
 // to a maintenance page while the two disagree, so this is what unlocks it

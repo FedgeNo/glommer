@@ -38,6 +38,7 @@ class EnvironmentChecker
             'Outbound network' => self::checkOutboundNetwork(),
             'WebSocket server' => self::checkWebSocketServer(),
             'Backups' => self::checkBackups(),
+            'Backup timer persistence' => self::checkBackupTimerPersistence(),
         ];
     }
 
@@ -57,6 +58,43 @@ class EnvironmentChecker
         }
 
         return ['ok' => false, 'message' => 'No completed backup found in ' . Backup::rootDir() . '. Run "php bin/backup.php" once to create one and prove the mechanism works, then set up recurring backups (a systemd timer - see README.md\'s Backups section) so this keeps being true.'];
+    }
+
+    /**
+     * A separate concern from checkBackups(): that check proves a backup
+     * mechanism *works*, not that anything will run it *again*. Someone could
+     * run `php bin/backup.php` by hand once (satisfying checkBackups()) and
+     * never actually schedule a recurring one - this catches that. Only
+     * meaningful in a CLI context (systemd --user is tied to the Unix user
+     * running this script, not to a PHP SAPI - there's nothing to check here
+     * under the web SAPI).
+     *
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkBackupTimerPersistence(): array
+    {
+        if (PHP_SAPI !== 'cli') {
+            return ['ok' => true, 'message' => 'not applicable under the web SAPI'];
+        }
+
+        if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+            return ['ok' => true, 'message' => 'systemctl not found - assuming a non-systemd scheduler (cron or otherwise) is set up separately'];
+        }
+
+        $timer_status = trim((string) shell_exec('systemctl --user is-enabled glommer-backup.timer 2>/dev/null'));
+
+        if ($timer_status !== 'enabled') {
+            return ['ok' => false, 'message' => 'glommer-backup.timer is not enabled - a backup may have run once, but nothing is scheduled to run one again. Run "php bin/backup.php" then set up the recurring timer (see README.md\'s Backups section).'];
+        }
+
+        $user = trim((string) shell_exec('id -un 2>/dev/null')) ?: (get_current_user() ?: (string) getenv('USER'));
+        $linger_status = strtolower(trim((string) shell_exec('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')));
+
+        if (!str_contains($linger_status, 'yes')) {
+            return ['ok' => false, 'message' => 'glommer-backup.timer is enabled, but lingering is not enabled for ' . $user . ' - the timer stops firing as soon as this user logs out, and won\'t survive a reboot. Run: sudo loginctl enable-linger ' . $user];
+        }
+
+        return ['ok' => true, 'message' => 'glommer-backup.timer is enabled, lingering is on for ' . $user];
     }
 
     /**

@@ -256,26 +256,41 @@ function offer_first_backup(): bool
         return false;
     }
 
-    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
-
-    if (!$systemctl_available) {
-        warn('systemctl not found - set up a recurring backup yourself (cron or otherwise). See README.md\'s Backups section.');
-
-        return true;
-    }
-
-    $home = ($_SERVER['HOME'] ?? getenv('HOME'));
-    $service_path = $home . '/.config/systemd/user/glommer-backup.service';
-    $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
-
-    echo "\nIt can also run automatically every night via a user-level systemd timer\n";
-    echo "(no root needed) at " . $timer_path . "\n";
+    echo "\nIt can also run automatically every night via a user-level systemd timer (no root needed).\n";
 
     if (!confirm('Set that up now too?')) {
         warn('Not scheduled - run php bin/backup.php manually on some schedule of your own. See README.md\'s Backups section.');
 
         return true;
     }
+
+    write_and_enable_backup_timer();
+
+    return true;
+}
+
+/**
+ * Writes (if missing) and enables the user-level systemd timer that runs
+ * php bin/backup.php nightly, plus the lingering it needs to survive logout
+ * and reboot. Shared by offer_first_backup() (right after proving a manual
+ * backup works) and offer_enable_backup_timer() (the timer's own persistence
+ * check can fail independently - e.g. someone ran bin/backup.php by hand
+ * once, satisfying the "a backup exists" check, without ever scheduling
+ * anything).
+ */
+function write_and_enable_backup_timer(): void
+{
+    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
+
+    if (!$systemctl_available) {
+        warn('systemctl not found - set up a recurring backup yourself (cron or otherwise). See README.md\'s Backups section.');
+
+        return;
+    }
+
+    $home = ($_SERVER['HOME'] ?? getenv('HOME'));
+    $service_path = $home . '/.config/systemd/user/glommer-backup.service';
+    $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
 
     $service_contents = implode("\n", [
         '[Unit]',
@@ -301,13 +316,13 @@ function offer_first_backup(): bool
     if (!is_dir(dirname($service_path)) && !@mkdir(dirname($service_path), 0755, true)) {
         fail_line('Could not create ' . dirname($service_path) . ' - create the units manually (see README.md).');
 
-        return true; // the one-off backup above still satisfies the check itself
+        return;
     }
 
     if (file_put_contents($service_path, $service_contents) === false || file_put_contents($timer_path, $timer_contents) === false) {
         fail_line('Could not write the systemd units - create them manually (see README.md).');
 
-        return true;
+        return;
     }
 
     shell_exec('systemctl --user daemon-reload 2>&1');
@@ -318,13 +333,12 @@ function offer_first_backup(): bool
     if ($status !== 'enabled') {
         fail_line('The timer was written but is not enabled (' . trim($enable_output) . '). Check: systemctl --user status glommer-backup.timer');
 
-        return true;
+        return;
     }
 
     ok('Nightly backup timer installed and enabled (' . $timer_path . ')');
 
-    // Same lingering requirement as the WebSocket service - a user-level timer
-    // only survives logout/reboot with it enabled.
+    // A user-level timer only survives logout/reboot with lingering enabled.
     $user = trim((string) shell_exec('id -un 2>/dev/null'));
 
     if ($user === '') {
@@ -340,6 +354,26 @@ function offer_first_backup(): bool
         warn('Could not enable lingering for ' . $user . ' automatically. The timer won\'t fire after logout');
         echo '       (or survive a reboot) until you run: sudo loginctl enable-linger ' . $user . "\n";
     }
+}
+
+/**
+ * When the Backup timer persistence check is what failed - a backup exists
+ * (satisfying the separate Backups check) but nothing's scheduled to run one
+ * again, or the timer/lingering fell out of enabled state some other way -
+ * offer to fix it directly. write_and_enable_backup_timer() is itself
+ * idempotent (re-writing identical unit files and re-enabling an
+ * already-enabled timer are both no-ops), so this is safe to run whether or
+ * not the units already exist.
+ */
+function offer_enable_backup_timer(): bool
+{
+    echo "\nThe nightly backup timer isn't enabled (or lingering isn't, so it wouldn't survive logout/reboot even if it were).\n";
+
+    if (!confirm('Set it up now?')) {
+        return false;
+    }
+
+    write_and_enable_backup_timer();
 
     return true;
 }
@@ -479,6 +513,29 @@ if (isset($environment_failures['Backups']) && (is_interactive() || $backups_non
     if ($recheck['ok']) {
         ok($recheck['message']);
         unset($environment_failures['Backups']);
+    } else {
+        fail_line($recheck['message']);
+    }
+
+    // offer_first_backup() may have set the timer up too as part of the same
+    // flow - re-check this one alongside it so a single "y" answer there
+    // clears both failures instead of needing a second pass.
+    $timer_recheck = EnvironmentChecker::checks()['Backup timer persistence'];
+
+    if ($timer_recheck['ok']) {
+        unset($environment_failures['Backup timer persistence']);
+    }
+}
+
+// Separately: the backup mechanism can work (satisfying the check above)
+// without anything actually being scheduled to run it again - e.g. someone
+// ran bin/backup.php by hand once. Offer to fix that specifically too.
+if (isset($environment_failures['Backup timer persistence']) && (is_interactive() || $backups_non_interactive_ok) && offer_enable_backup_timer()) {
+    $recheck = EnvironmentChecker::checks()['Backup timer persistence'];
+
+    if ($recheck['ok']) {
+        ok($recheck['message']);
+        unset($environment_failures['Backup timer persistence']);
     } else {
         fail_line($recheck['message']);
     }

@@ -68,7 +68,7 @@ class FeedItem extends HTMLObject
 SELECT *
     FROM `FeedItems`
     WHERE `postId` IN (' . $placeholders . ')
-    ORDER BY `itemId` ASC
+    ORDER BY `postId` ASC, `itemId` ASC
 ');
         mysqli_stmt_bind_param($stmt, str_repeat('i', count($post_ids)), ...$post_ids);
         mysqli_stmt_execute($stmt);

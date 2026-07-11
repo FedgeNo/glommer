@@ -157,14 +157,14 @@ class HelpContent
                 'body' => '
 <p>The bar across the top is how you get everywhere:</p>
 <ul>
-<li><strong>The site name</strong> on the left always takes you home to the main feed.</li>
+<li><strong>The site name</strong> on the left always takes you home to the main feed - and its menu is where you\'ll find <strong>Help</strong> (these articles), whether or not you\'re logged in.</li>
 <li><strong>Friends Feed</strong> shows posts from just the people you\'re friends with.</li>
 <li><strong>Friends</strong> is where you accept requests and manage who you\'re connected to.</li>
 <li><strong>Users</strong> lets you search for people and see suggestions of who to connect with.</li>
 <li><strong>Messages</strong> holds your private conversations.</li>
 <li><strong>Notifications</strong> lights up when someone interacts with you.</li>
 </ul>
-<p>Your own name sits at the top-right - open it for your <strong>Settings</strong> and to <strong>log out</strong>. The <strong>Help</strong> link is always there too, whether or not you\'re logged in.</p>
+<p>Your own name sits at the top-right - open it for your <strong>Settings</strong> and to <strong>log out</strong>.</p>
 ',
             ],
             [

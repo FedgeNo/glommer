@@ -75,7 +75,8 @@ CREATE TABLE `Friendships` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`friendshipId`),
   UNIQUE KEY `uniq_pair` (`requesterId`,`addresseeId`),
-  KEY `addresseeId` (`addresseeId`),
+  KEY `requesterId_status_friendshipId` (`requesterId`,`status`,`friendshipId`),
+  KEY `addresseeId_status_friendshipId` (`addresseeId`,`status`,`friendshipId`),
   CONSTRAINT `Friendships_ibfk_1` FOREIGN KEY (`requesterId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `Friendships_ibfk_2` FOREIGN KEY (`addresseeId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -123,8 +124,7 @@ CREATE TABLE `Reports` (
   `targetId` int(11) NOT NULL,
   `reason` text DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`reportId`),
-  KEY `targetType` (`targetType`,`targetId`)
+  PRIMARY KEY (`reportId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailVerifications` (
@@ -177,6 +177,19 @@ CREATE TABLE `LinkPreviews` (
   PRIMARY KEY (`url`),
   KEY `fetchedAt` (`fetchedAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Index migrations (safe to re-run): bring an existing install's indexes up to
+-- date. Fresh installs already get these from the CREATE TABLE blocks above -
+-- these idempotent ALTERs apply the same changes to a database built from an
+-- older schema. Friendships: a composite index per direction
+-- (requesterId/addresseeId, status, friendshipId) serves the status-filtered,
+-- friendshipId-ordered friends and friend-request lists without a filesort, and
+-- supersedes the bare addresseeId index. Reports: the (targetType, targetId)
+-- index was not used by any query.
+ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `requesterId_status_friendshipId` (`requesterId`, `status`, `friendshipId`);
+ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `addresseeId_status_friendshipId` (`addresseeId`, `status`, `friendshipId`);
+ALTER TABLE `Friendships` DROP INDEX IF EXISTS `addresseeId`;
+ALTER TABLE `Reports` DROP INDEX IF EXISTS `targetType`;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

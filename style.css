@@ -353,6 +353,14 @@ p a:hover {
     border-color: var(--hairline);
 }
 
+/* Log in / Sign up (shown to logged-out visitors) are plain links, not dropdown
+   triggers, so they're pills - a full border and radius all the way round -
+   rather than the top-rounded tab shape the triggers use to meet their menu. */
+.MainNavigation .NavAccount > a {
+    border-bottom: 1px solid transparent;
+    border-radius: 999px;
+}
+
 .PageTitle {
     position: fixed;
     top: var(--nav-height);

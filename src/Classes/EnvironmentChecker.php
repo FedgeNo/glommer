@@ -64,26 +64,86 @@ class EnvironmentChecker
      */
     private static function checkUploadLimits(): array
     {
-        $upload_max = self::iniBytes((string) ini_get('upload_max_filesize'));
-        $post_max = self::iniBytes((string) ini_get('post_max_size'));
+        if (PHP_SAPI !== 'cli') {
+            // Web SAPI: .user.ini has actually been applied, so ini_get() reflects reality directly.
+            $problems = self::uploadLimitProblems(
+                self::iniBytes((string) ini_get('upload_max_filesize')),
+                self::iniBytes((string) ini_get('post_max_size')),
+                (string) ini_get('upload_max_filesize'),
+                (string) ini_get('post_max_size')
+            );
 
+            if ($problems !== []) {
+                return ['ok' => false, 'message' => implode(' ', $problems) . ' Set these in .user.ini (shipped with the app) or php.ini, then reload PHP-FPM.'];
+            }
+
+            return ['ok' => true, 'message' => 'upload_max_filesize=' . ini_get('upload_max_filesize') . ', post_max_size=' . ini_get('post_max_size')];
+        }
+
+        // .user.ini (the file this project ships these values in) is only
+        // applied by the FPM/CGI web SAPI - the CLI SAPI never reads it, so
+        // ini_get() under CLI reports unrelated values that have nothing to
+        // do with what the web server will actually enforce. Parse the real
+        // file on disk (the same one the web server reads) to check its
+        // declared values, then confirm live (see liveIniValues()) that the
+        // web server is actually applying them - the file being correct
+        // doesn't prove .user.ini support is even enabled for the pool.
+        $user_ini_path = __DIR__ . '/../../.user.ini';
+
+        if (!is_file($user_ini_path)) {
+            return ['ok' => false, 'message' => '.user.ini not found at ' . $user_ini_path . ' - the web server would have no upload_max_filesize/post_max_size override. Restore the shipped .user.ini (upload_max_filesize = 2G, post_max_size = 8G).'];
+        }
+
+        $directives = @parse_ini_file($user_ini_path);
+
+        if ($directives === false) {
+            return ['ok' => false, 'message' => 'Could not parse ' . $user_ini_path . ' - check it for syntax errors.'];
+        }
+
+        $declared_upload_max = (string) ($directives['upload_max_filesize'] ?? '(not set)');
+        $declared_post_max = (string) ($directives['post_max_size'] ?? '(not set)');
+        $problems = self::uploadLimitProblems(
+            self::iniBytes($declared_upload_max),
+            self::iniBytes($declared_post_max),
+            $declared_upload_max,
+            $declared_post_max
+        );
+
+        if ($problems !== []) {
+            return ['ok' => false, 'message' => implode(' ', $problems) . ' Set these in .user.ini at the project root. (Checked by parsing .user.ini directly, since the CLI SAPI never applies it itself.)'];
+        }
+
+        $live = self::liveIniValues();
+
+        if ($live === null) {
+            return ['ok' => true, 'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max . ' (could not reach http://127.0.0.1/ to confirm the web server is actually applying it - re-run once the web server is up, or check via the web setup wizard directly)'];
+        }
+
+        if (self::iniBytes($live['uploadMaxFilesize']) !== self::iniBytes($declared_upload_max) || self::iniBytes($live['postMaxSize']) !== self::iniBytes($declared_post_max)) {
+            return ['ok' => false, 'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max . ' but the web server is actually applying upload_max_filesize=' . $live['uploadMaxFilesize'] . ', post_max_size=' . $live['postMaxSize'] . ' - .user.ini isn\'t being honored (check user_ini.filename/user_ini.cache_ttl in the web SAPI\'s own php.ini - these are PHP_INI_SYSTEM settings the FPM pool can set independently of the CLI - or that PHP-FPM has had time to pick up the file).'];
+        }
+
+        return ['ok' => true, 'message' => 'upload_max_filesize=' . $live['uploadMaxFilesize'] . ', post_max_size=' . $live['postMaxSize'] . ' (confirmed live via the web server, matches .user.ini)'];
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function uploadLimitProblems(int $upload_max, int $post_max, string $upload_max_label, string $post_max_label): array
+    {
         $problems = [];
 
         if ($upload_max < self::MIN_UPLOAD_BYTES) {
-            $problems[] = 'upload_max_filesize is ' . ini_get('upload_max_filesize') . ' - audio and video files routinely exceed that and would be rejected before any code runs. Raise it to at least ' . self::MIN_UPLOAD_LABEL . '.';
+            $problems[] = 'upload_max_filesize is ' . $upload_max_label . ' - audio and video files routinely exceed that and would be rejected before any code runs. Raise it to at least ' . self::MIN_UPLOAD_LABEL . '.';
         }
 
         // post_max_size caps the entire request, so it must be at least as large
         // as a single upload (0 means unlimited, which is fine).
         if ($post_max !== 0 && ($post_max < $upload_max || $post_max < self::MIN_UPLOAD_BYTES)) {
-            $problems[] = 'post_max_size (' . ini_get('post_max_size') . ') must be at least upload_max_filesize and ' . self::MIN_UPLOAD_LABEL . ' or larger.';
+            $problems[] = 'post_max_size (' . $post_max_label . ') must be at least upload_max_filesize and ' . self::MIN_UPLOAD_LABEL . ' or larger.';
         }
 
-        if ($problems !== []) {
-            return ['ok' => false, 'message' => implode(' ', $problems) . ' Set these in .user.ini (shipped with the app) or php.ini, then reload PHP-FPM.'];
-        }
-
-        return ['ok' => true, 'message' => 'upload_max_filesize=' . ini_get('upload_max_filesize') . ', post_max_size=' . ini_get('post_max_size')];
+        return $problems;
     }
 
     /**
@@ -91,18 +151,93 @@ class EnvironmentChecker
      */
     private static function checkMaxFileUploads(): array
     {
-        $max = (int) ini_get('max_file_uploads');
+        if (PHP_SAPI !== 'cli') {
+            $max = (int) ini_get('max_file_uploads');
 
-        // max_file_uploads is PHP_INI_SYSTEM, so the shipped .user.ini can't
-        // raise it - it has to be set in php.ini or the PHP-FPM pool. A
-        // camera-roll dump of mixed photos and video easily passes the stock
-        // limit of 20, and every file over the limit is silently dropped from
-        // the request. 0 means unlimited, which is fine.
-        if ($max !== 0 && $max < self::MIN_FILE_UPLOADS) {
-            return ['ok' => false, 'message' => 'max_file_uploads is ' . $max . ' - a large multi-file post (a camera-roll dump) would be silently truncated to that many files. Raise it to at least ' . self::MIN_FILE_UPLOADS . ' in php.ini or the PHP-FPM pool (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM.'];
+            return self::maxFileUploadsResult($max === 0 ? 'unlimited' : (string) $max, $max);
         }
 
-        return ['ok' => true, 'message' => 'max_file_uploads = ' . ($max === 0 ? 'unlimited' : (string) $max)];
+        // max_file_uploads is PHP_INI_SYSTEM - unlike upload_max_filesize/
+        // post_max_size there's no project-shipped file to parse (it can't go
+        // in .user.ini at all), so there's nothing to check from the CLI
+        // except a live request to the web server itself.
+        $live = self::liveIniValues();
+
+        if ($live === null) {
+            return ['ok' => true, 'message' => 'max_file_uploads - could not reach http://127.0.0.1/ to check it live. Set it for the web server yourself: max_file_uploads = 100 or higher in php.ini or the PHP-FPM pool config (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM. Re-run once the web server is up, or check via the web setup wizard directly.'];
+        }
+
+        $max = $live['maxFileUploads'] === '0' ? 0 : (int) $live['maxFileUploads'];
+
+        return self::maxFileUploadsResult($live['maxFileUploads'] === '0' ? 'unlimited' : $live['maxFileUploads'], $max, live: true);
+    }
+
+    /**
+     * @return array{ok: bool, message: string}
+     */
+    private static function maxFileUploadsResult(string $label, int $max, bool $live = false): array
+    {
+        // A camera-roll dump of mixed photos and video easily passes the
+        // stock limit of 20, and every file over the limit is silently
+        // dropped from the request. 0 means unlimited, which is fine.
+        if ($max !== 0 && $max < self::MIN_FILE_UPLOADS) {
+            return ['ok' => false, 'message' => 'max_file_uploads is ' . $label . ($live ? ' (confirmed live via the web server)' : '') . ' - a large multi-file post (a camera-roll dump) would be silently truncated to that many files. Raise it to at least ' . self::MIN_FILE_UPLOADS . ' in php.ini or the PHP-FPM pool (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM.'];
+        }
+
+        return ['ok' => true, 'message' => 'max_file_uploads = ' . $label . ($live ? ' (confirmed live via the web server)' : '')];
+    }
+
+    /**
+     * Fetches the web SAPI's actual, resolved ini values via a real HTTP
+     * request to the site's own environment-check endpoint (127.0.0.1, plain
+     * HTTP - before install this may be all that's reachable, since TLS/vhost
+     * setup may not exist yet; deliberately not SafeHTTPFetcher, which
+     * refuses loopback addresses by design - this is an intentional loopback
+     * probe, not a fetch of untrusted user input). Returns null if the site
+     * isn't reachable this way (e.g. the web server isn't running yet), which
+     * callers treat as inconclusive, not a failure.
+     *
+     * @return array{uploadMaxFilesize: string, postMaxSize: string, maxFileUploads: string}|null
+     */
+    private static function liveIniValues(): ?array
+    {
+        if (!function_exists('curl_init')) {
+            return null;
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'http://127.0.0.1/environment-check',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_TIMEOUT => 5,
+        ]);
+
+        $body = curl_exec($curl);
+        $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        if ($body === false || $status !== 200) {
+            return null;
+        }
+
+        $data = json_decode($body, true);
+
+        if (
+            !is_array($data)
+            || !isset($data['response']['uploadMaxFilesize'], $data['response']['postMaxSize'], $data['response']['maxFileUploads'])
+        ) {
+            return null;
+        }
+
+        return [
+            'uploadMaxFilesize' => (string) $data['response']['uploadMaxFilesize'],
+            'postMaxSize' => (string) $data['response']['postMaxSize'],
+            'maxFileUploads' => (string) $data['response']['maxFileUploads'],
+        ];
     }
 
     /**

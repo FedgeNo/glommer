@@ -61,6 +61,7 @@
     RewriteRule ^$ index.php [L,QSA]
     RewriteRule ^feed\.xml$ rss-feed.php [L,QSA]
     RewriteRule ^health$ health.php [L,QSA]
+    RewriteRule ^environment-check$ environment-check.php [L,QSA]
 
     # Fixed single endpoints, not collections - treated exactly like a real
     # file would be: no trailing slash, and no redirect either direction. The

@@ -137,7 +137,8 @@ CREATE TABLE `EmailVerifications` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`verificationId`),
   KEY `tokenHash` (`tokenHash`),
-  KEY `expiresAt` (`expiresAt`)
+  KEY `expiresAt` (`expiresAt`),
+  KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `PasswordResets` (
@@ -160,7 +161,8 @@ CREATE TABLE `EmailChangeReverts` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`revertId`),
   KEY `tokenHash` (`tokenHash`),
-  KEY `expiresAt` (`expiresAt`)
+  KEY `expiresAt` (`expiresAt`),
+  KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `RateLimitAttempts` (

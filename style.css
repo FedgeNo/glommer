@@ -222,7 +222,8 @@ p a:hover {
 
 .SeeMore {
     display: block;
-    text-align: right;
+    width: fit-content;
+    margin-left: auto;
 }
 
 .Muted {

@@ -17,41 +17,30 @@ class ImageProcessor
 
     public static function load(string $path): \GdImage|false
     {
-        $mime_type = self::detectMimeType($path);
+        $data = @file_get_contents($path);
 
-        if (!str_starts_with($mime_type, 'image/')) {
+        if ($data === false) {
             return false;
         }
 
-        // Check declared dimensions from the header (cheap) before handing the
-        // file to GD's full decode.
-        $size = @getimagesize($path);
+        // Header-only dimension check before the full decode: GD allocates
+        // ~width*height*4 bytes for the raster, so a tiny file declaring huge
+        // dimensions (a decompression bomb) is rejected before the bytes ever
+        // reach imagecreatefromstring. Only enforced when the dimensions are
+        // actually readable - a format getimagesizefromstring can't measure
+        // but GD's decoder can still handle isn't rejected on that basis; the
+        // decoder below is the arbiter.
+        $size = @getimagesizefromstring($data);
 
-        if ($size === false || ($size[0] * $size[1]) > self::MAX_SOURCE_PIXELS) {
+        if ($size !== false && ($size[0] * $size[1]) > self::MAX_SOURCE_PIXELS) {
             return false;
         }
 
-        return self::loadWithGd($path, $mime_type);
-    }
-
-    private static function detectMimeType(string $path): string
-    {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $path);
-        finfo_close($finfo);
-
-        return $mime !== false ? $mime : 'application/octet-stream';
-    }
-
-    private static function loadWithGd(string $path, string $mime_type): \GdImage|false
-    {
-        return match ($mime_type) {
-            'image/jpeg' => @imagecreatefromjpeg($path),
-            'image/png' => @imagecreatefrompng($path),
-            'image/gif' => @imagecreatefromgif($path),
-            'image/webp' => @imagecreatefromwebp($path),
-            default => false,
-        };
+        // GD's own decoder is the arbiter of what's a valid image:
+        // imagecreatefromstring auto-detects the format and decodes whatever
+        // this GD build supports (JPEG/PNG/GIF/WebP/BMP/...), returning false
+        // for anything it can't - if it fails, it isn't an image we can use.
+        return @imagecreatefromstring($data);
     }
 
     public static function resizeAndSave(\GdImage $source, string $destination, int $max_dimension): bool

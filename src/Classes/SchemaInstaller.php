@@ -101,8 +101,12 @@ SELECT `TABLE_NAME`
     {
         $needed = [];
         $existing_by_table = [];
+        $statements = self::indexMigrationStatements();
+        $count = count($statements);
 
-        foreach (self::indexMigrationStatements() as $statement) {
+        for ($i = 0; $i < $count; $i++) {
+            $statement = $statements[$i];
+
             if (preg_match('/^ALTER TABLE `(\w+)` MODIFY COLUMN `(\w+)` (\S+(?: unsigned)?)/', $statement, $column_match)) {
                 [, $table, $column, $target_type] = $column_match;
                 $current_type = self::columnType($connection, $table, $column);
@@ -110,6 +114,34 @@ SELECT `TABLE_NAME`
                 if ($current_type !== null && strcasecmp($current_type, $target_type) !== 0) {
                     $needed[] = $statement;
                 }
+
+                continue;
+            }
+
+            // An FK rule change: a DROP FOREIGN KEY immediately followed by
+            // an ADD CONSTRAINT of the same name - two separate statements,
+            // not one combined DROP+ADD (MariaDB errors re-adding the same
+            // constraint name within the ALTER TABLE it was just dropped
+            // in). Detected and applied as a pair.
+            if (
+                preg_match('/^ALTER TABLE `(\w+)` DROP FOREIGN KEY `(\w+)`$/', $statement, $drop_match)
+                && isset($statements[$i + 1])
+                && preg_match(
+                    '/^ALTER TABLE `' . preg_quote($drop_match[1], '/') . '` ADD CONSTRAINT `' . preg_quote($drop_match[2], '/') . '` FOREIGN KEY .+ ON DELETE (\w+)$/',
+                    $statements[$i + 1],
+                    $add_match
+                )
+            ) {
+                [, $table, $constraint] = $drop_match;
+                $target_rule = $add_match[1];
+                $current_rule = self::foreignKeyDeleteRule($connection, $table, $constraint);
+
+                if ($current_rule !== null && strcasecmp($current_rule, $target_rule) !== 0) {
+                    $needed[] = $statement;
+                    $needed[] = $statements[$i + 1];
+                }
+
+                $i++; // the paired ADD statement is already accounted for
 
                 continue;
             }
@@ -146,6 +178,20 @@ SELECT `COLUMN_TYPE`
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
         return $row !== null ? (string) $row['COLUMN_TYPE'] : null;
+    }
+
+    private static function foreignKeyDeleteRule(\mysqli $connection, string $table, string $constraint): ?string
+    {
+        $stmt = mysqli_prepare($connection, '
+SELECT `DELETE_RULE`
+    FROM `information_schema`.`REFERENTIAL_CONSTRAINTS`
+    WHERE `CONSTRAINT_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `CONSTRAINT_NAME` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ss', $table, $constraint);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        return $row !== null ? (string) $row['DELETE_RULE'] : null;
     }
 
     /**

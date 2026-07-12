@@ -47,7 +47,7 @@ CREATE TABLE `Posts` (
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
   FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),
   CONSTRAINT `Posts_ibfk_1` FOREIGN KEY (`parentId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
-  CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`)
+  CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `FeedItems` (
@@ -273,6 +273,19 @@ ALTER TABLE `PasswordResets` MODIFY COLUMN `userId` int(10) unsigned NOT NULL;
 ALTER TABLE `EmailChangeReverts` MODIFY COLUMN `revertId` int(10) unsigned NOT NULL AUTO_INCREMENT;
 ALTER TABLE `EmailChangeReverts` MODIFY COLUMN `userId` int(10) unsigned NOT NULL;
 ALTER TABLE `RateLimitAttempts` MODIFY COLUMN `attemptId` int(10) unsigned NOT NULL AUTO_INCREMENT;
+
+-- Foreign-key rule migration (safe to re-run): Posts_ibfk_2 was RESTRICT
+-- (the implicit default - it never named an ON DELETE rule), unlike every
+-- other Users-referencing FK in this schema, which blocked deleting a user
+-- who had ever posted. Account deletion (User::delete()) needs this to
+-- actually cascade, same as everything else tied to a user.
+-- Two separate statements, not one combined DROP+ADD - MariaDB errors
+-- ("Duplicate key on write or update") re-adding the same constraint name
+-- in the same ALTER TABLE it was just dropped in.
+-- neededIndexMigrations() only includes this when the live constraint's
+-- DELETE_RULE isn't already CASCADE, so this is a no-op on a healthy re-run.
+ALTER TABLE `Posts` DROP FOREIGN KEY `Posts_ibfk_2`;
+ALTER TABLE `Posts` ADD CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

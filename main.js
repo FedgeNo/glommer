@@ -2462,3 +2462,53 @@ document.addEventListener('submit', async (event) => {
         submit_button.disabled = false;
     }
 });
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.DeleteAccountForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    if (!await show_confirm('Delete your account? Your posts, replies, and messages are gone permanently - this can\'t be undone.')) {
+        return;
+    }
+
+    const existing_error = form.querySelector('.Error');
+
+    if (existing_error) {
+        existing_error.remove();
+    }
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    try {
+        const response = await fetch(window.siteURL + '/api/delete-account', {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                currentPassword: form.querySelector('[name=\'currentPassword\']').value,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const error = document.createElement('p');
+            error.className = 'Error';
+            error.textContent = data.error;
+            form.insertBefore(error, submit_button);
+            return;
+        }
+
+        // The account (and this session) is gone - nowhere left to land but home.
+        window.location = window.siteURL + '/';
+    } catch (error) {
+        show_toast('Network error. Please check your connection and try again.');
+    } finally {
+        submit_button.disabled = false;
+    }
+});

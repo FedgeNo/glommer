@@ -607,4 +607,110 @@ SELECT `u`.*
 
         return $users;
     }
+
+    /**
+     * Permanently deletes an account and everything tied to it. Likes,
+     * friendships, blocks, messages, notifications, timeline entries, and
+     * remember-me tokens all cascade via their own FK (ON DELETE CASCADE).
+     * Posts cascade too (Posts.userId, same as every other Users-referencing
+     * FK) - which, via Posts' own parentId cascade, takes every reply nested
+     * under them with it, regardless of who wrote the reply, same as a
+     * single Post::delete() already does. The row cascade can't touch the
+     * filesystem, so this collects every doomed post's media items (and the
+     * account's own avatar) before deleting the row, and removes the actual
+     * files only once the rows are confirmed gone.
+     *
+     * EmailVerifications/PasswordResets/EmailChangeReverts carry no FK
+     * (they're short-lived tokens, not content) so they're pruned
+     * explicitly rather than left to expire into irrelevance.
+     *
+     * Caller is responsible for the authorization check (see
+     * api/delete-account.php) - this performs no checks of its own, same as
+     * Post::delete().
+     */
+    public static function delete(int $user_id): void
+    {
+        $mysqli = Database::connection();
+
+        // Every post this user authored, plus (via the parentId cascade)
+        // every reply nested under them - the same graph-walk Post::delete()
+        // uses, just seeded from every post this user owns instead of one.
+        $own_posts_stmt = mysqli_prepare($mysqli, '
+SELECT `postId`
+    FROM `Posts`
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($own_posts_stmt, 'i', $user_id);
+        mysqli_stmt_execute($own_posts_stmt);
+        $own_posts_result = mysqli_stmt_get_result($own_posts_stmt);
+
+        $all_post_ids = [];
+        $frontier = [];
+
+        while ($row = mysqli_fetch_assoc($own_posts_result)) {
+            $all_post_ids[] = (int) $row['postId'];
+            $frontier[] = (int) $row['postId'];
+        }
+
+        while ($frontier !== []) {
+            $placeholders = implode(', ', array_fill(0, count($frontier), '?'));
+
+            $children_stmt = mysqli_prepare($mysqli, '
+SELECT `postId`
+    FROM `Posts`
+    WHERE `parentId` IN (' . $placeholders . ')
+');
+            mysqli_stmt_bind_param($children_stmt, str_repeat('i', count($frontier)), ...$frontier);
+            mysqli_stmt_execute($children_stmt);
+            $children_result = mysqli_stmt_get_result($children_stmt);
+
+            $frontier = [];
+
+            while ($row = mysqli_fetch_assoc($children_result)) {
+                $all_post_ids[] = (int) $row['postId'];
+                $frontier[] = (int) $row['postId'];
+            }
+        }
+
+        $doomed_items = [];
+
+        foreach (FeedItem::itemsForPosts($all_post_ids) as $post_items) {
+            foreach ($post_items as $item) {
+                $doomed_items[] = $item;
+            }
+        }
+
+        foreach (['EmailVerifications', 'PasswordResets', 'EmailChangeReverts'] as $table) {
+            $prune_stmt = mysqli_prepare($mysqli, '
+DELETE
+    FROM `' . $table . '`
+    WHERE `userId` = ?
+');
+            mysqli_stmt_bind_param($prune_stmt, 'i', $user_id);
+            mysqli_stmt_execute($prune_stmt);
+        }
+
+        $delete_stmt = mysqli_prepare($mysqli, '
+DELETE
+    FROM `Users`
+    WHERE `userId` = ?
+');
+        mysqli_stmt_bind_param($delete_stmt, 'i', $user_id);
+        mysqli_stmt_execute($delete_stmt);
+
+        // Only remove files once the rows are actually gone.
+        foreach ($doomed_items as $item) {
+            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> itemType);
+        }
+
+        $avatar_dir = __DIR__ . '/../../uploads/avatars';
+
+        foreach ([$user_id . '.jpg', $user_id . '-thumb.jpg'] as $filename) {
+            $path = $avatar_dir . '/' . $filename;
+
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
 }

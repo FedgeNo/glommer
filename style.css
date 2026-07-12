@@ -545,6 +545,7 @@ button[type='submit'].Btn:hover {
 .ReportButton,
 .RemoveFriendButton,
 .DeleteReportedContentButton,
+.DeleteAccountButton,
 .ModButton[data-is-mod='1'] {
     background-color: transparent;
     color: var(--danger) !important;
@@ -557,6 +558,7 @@ button[type='submit'].Btn:hover {
 .ReportButton:hover,
 .RemoveFriendButton:hover,
 .DeleteReportedContentButton:hover,
+.DeleteAccountButton:hover,
 .ModButton[data-is-mod='1']:hover {
     background-color: var(--danger-soft);
     color: var(--danger) !important;

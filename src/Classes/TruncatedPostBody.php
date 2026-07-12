@@ -67,10 +67,11 @@ class TruncatedPostBody extends PostBody
         $this -> truncateChildren($element);
 
         if ($this -> didTruncate && $this -> seeMoreURL !== null) {
-            // A space so the link isn't glued to the last kept word, then the
-            // link itself - a trailing child of the body, after all content.
-            $element -> appendChild(self::currentDocument() -> createTextNode(' '));
-            $element -> appendChild((new Anchor($this -> seeMoreURL, 'See More...')) -> toDOM());
+            // A trailing child of the body, after all content - the SeeMore
+            // class right-aligns it (see style.css).
+            $anchor = new Anchor($this -> seeMoreURL, 'See More...');
+            $anchor -> class = 'SeeMore';
+            $element -> appendChild($anchor -> toDOM());
         }
 
         return $element;

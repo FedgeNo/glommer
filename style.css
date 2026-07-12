@@ -220,6 +220,11 @@ p a:hover {
     text-decoration-color: currentColor;
 }
 
+.SeeMore {
+    display: block;
+    text-align: right;
+}
+
 .Muted {
     color: var(--muted);
 }

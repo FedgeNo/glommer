@@ -92,7 +92,7 @@ class Post extends HTMLObject
             }
 
             if ($this -> description !== null) {
-                $this -> contents[] = $this -> hasVisualMedia() && $this -> truncateDescription
+                $this -> contents[] = $this -> truncateDescription
                     ? $this -> summarizedDescription()
                     : $this -> fullDescription();
             }
@@ -122,20 +122,12 @@ class Post extends HTMLObject
 
     protected function summarizedDescription(): HTMLObject
     {
-        $full_text = $this -> plainTextDescription();
-        $short_text = $this -> shortDescription();
+        $see_more_url = $this -> postId !== null && $this -> author !== null
+            ? URL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId)
+            : null;
 
-        $body = new Paragraph();
-        $body -> class = 'PostBody';
-
-        if ($short_text === $full_text) {
-            $body -> contents[] = $full_text;
-
-            return $body;
-        }
-
-        $body -> contents[] = $short_text . ' ';
-        $body -> addContents(new Anchor(URL::absolute('/users/' . $this -> author ?-> username . '/' . $this -> postId), 'See More...'));
+        $body = new TruncatedPostBody($see_more_url);
+        $body -> addContents((string) $this -> description);
 
         return $body;
     }
@@ -421,14 +413,11 @@ SELECT `postId`
         $sanitized_description = null;
 
         // toPayload only ever feeds the client-side feed (create-post and
-        // feed-history), never the permalink page, so it truncates media-post
-        // descriptions exactly like the server-rendered feed does - the client
+        // feed-history), never the permalink page, so it truncates the
+        // description exactly like the server-rendered feed does - the client
         // injects this HTML verbatim, "See More" link included.
         if ($this -> description !== null) {
-            $description_body = $this -> hasVisualMedia()
-                ? $this -> summarizedDescription()
-                : $this -> fullDescription();
-            $sanitized_description = $description_body -> renderInner();
+            $sanitized_description = $this -> summarizedDescription() -> renderInner();
         }
 
         $items = [];

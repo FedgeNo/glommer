@@ -14,13 +14,13 @@ class Conversation extends Anchor
 
     public function toDOM(): \DOMElement
     {
-        $this -> href = URL::absolute('/messages/' . $this -> username);
+        $this -> href = ServerURL::absolute('/messages/' . $this -> username);
 
         $name = $this -> displayName ?? $this -> username;
 
         $this -> contents[] = Avatar::create(
             (bool) $this -> hasAvatar,
-            $this -> hasAvatar ? URL::absolute(User::avatarPath((int) $this -> userId)) : null,
+            $this -> hasAvatar ? ServerURL::absolute(User::avatarPath((int) $this -> userId)) : null,
             $name,
             (int) $this -> userId
         );

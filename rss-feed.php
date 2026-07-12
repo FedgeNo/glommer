@@ -28,7 +28,7 @@ while ($row = mysqli_fetch_assoc($feed_result)) {
 
 $config = require __DIR__ . '/src/config.php';
 
-$feed = new RSSFeed($config['siteTitle'], URL::absolute('/'), $config['siteTitle'] . ' - a place to publish.');
+$feed = new RSSFeed($config['siteTitle'], ServerURL::absolute('/'), $config['siteTitle'] . ' - a place to publish.');
 
 foreach (Thread::fromRows($feed_rows) as $thread) {
     $feed -> addItem(RSSItem::fromPost($thread -> post));

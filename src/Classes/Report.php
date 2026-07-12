@@ -70,27 +70,14 @@ DELETE
     }
 
     /**
-     * The body of a reported message, or null if it's since been deleted. Lets
-     * a moderator read the private message they're being asked to judge.
+     * The userId a report target resolves to, or null if $target_type is
+     * unrecognized or $target_id doesn't actually exist - api/report.php
+     * relies on that null to reject reports filed against nonexistent ids.
      */
-    public static function messageBody(int $message_id): ?string
-    {
-        $stmt = mysqli_prepare(Database::connection(), '
-SELECT `body`
-    FROM `Messages`
-    WHERE `messageId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $message_id);
-        mysqli_stmt_execute($stmt);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-
-        return $row !== null ? (string) $row['body'] : null;
-    }
-
     public static function resolveTargetUserId(string $target_type, int $target_id): ?int
     {
         return match ($target_type) {
-            'user' => $target_id,
+            'user' => User::load($target_id) !== null ? $target_id : null,
             'post' => self::postAuthorId($target_id),
             'message' => self::messageAuthorId($target_id),
             default => null,

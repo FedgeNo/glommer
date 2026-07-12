@@ -27,7 +27,7 @@ class EmojiPickerAssets
     {
         $script = new Script();
         $script -> attributes['type'] = 'module';
-        $script -> src = URL::absolute('/emoji-picker-init.js');
+        $script -> src = ServerURL::absolute('/emoji-picker-init.js');
 
         return $script;
     }

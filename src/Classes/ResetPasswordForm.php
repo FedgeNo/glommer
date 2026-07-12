@@ -16,7 +16,7 @@ class ResetPasswordForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/reset-password?token=' . urlencode($this -> token));
+        $this -> action = ServerURL::absolute('/reset-password?token=' . urlencode($this -> token));
         $this -> method = 'POST';
 
         $fields = new Fieldset('Choose a new password');

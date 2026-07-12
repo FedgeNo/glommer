@@ -24,12 +24,12 @@ class HelpArticle extends HTMLObject
 
     public function url(): string
     {
-        return URL::absolute('/help/' . $this -> slug);
+        return ServerURL::absolute('/help/' . $this -> slug);
     }
 
     public function toDOM(): \DOMElement
     {
-        $category_link = new Anchor(URL::absolute('/help/'), $this -> category);
+        $category_link = new Anchor(ServerURL::absolute('/help/'), $this -> category);
         $category_link -> class = 'HelpArticleCategory Muted text-sm';
         $this -> contents[] = $category_link;
 
@@ -37,7 +37,7 @@ class HelpArticle extends HTMLObject
         $body -> contents[] = $this -> body;
         $this -> contents[] = $body;
 
-        $back = new Anchor(URL::absolute('/help/'), 'Back to all help');
+        $back = new Anchor(ServerURL::absolute('/help/'), 'Back to all help');
         $back -> class = 'HelpBackLink';
         $this -> contents[] = $back;
 

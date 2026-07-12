@@ -36,8 +36,14 @@ if (!is_dir($backup_root) && !@mkdir($backup_root, 0700, true)) {
 
 // Refuse a backup root inside the project - backups must not be web-reachable
 // (a database dump served over HTTP would be a full data breach), and backing
-// the backups into themselves compounds forever.
-if (str_starts_with((string) realpath($backup_root), (string) realpath($project_root))) {
+// the backups into themselves compounds forever. A directory-boundary check,
+// not a bare string prefix - a sibling directory that merely starts with the
+// same characters (e.g. "glommer-backups" next to a project root named
+// "glommer") is not actually inside it.
+$real_backup_root = (string) realpath($backup_root);
+$real_project_root = (string) realpath($project_root);
+
+if ($real_backup_root === $real_project_root || str_starts_with($real_backup_root, $real_project_root . DIRECTORY_SEPARATOR)) {
     fwrite(STDERR, 'BACKUP_DIR must be outside the project root (' . $project_root . ") - backups must never be web-servable.\n");
     exit(1);
 }

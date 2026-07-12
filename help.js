@@ -80,7 +80,21 @@ document.addEventListener('input', (event) => {
         const query = input.value.trim();
         const results = input.closest('.HelpSearch').querySelector('.HelpSearchResults');
 
-        const response = await fetch(window.siteURL + '/api/help-search?q=' + encodeURIComponent(query));
+        // Abort whatever this input's previous search is still waiting on -
+        // without this, a slower earlier response can resolve after a faster
+        // later one and overwrite fresher results with stale ones.
+        input.searchAbortController?.abort();
+        const controller = new AbortController();
+        input.searchAbortController = controller;
+
+        let response;
+
+        try {
+            response = await fetch(window.siteURL + '/api/help-search?q=' + encodeURIComponent(query), { signal: controller.signal });
+        } catch (error) {
+            return; // aborted by a newer search, or a network failure either way
+        }
+
         const data = await response.json();
 
         if (!response.ok) {

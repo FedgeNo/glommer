@@ -8,7 +8,7 @@ class ChangePasswordForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/api/change-password');
+        $this -> action = ServerURL::absolute('/api/change-password');
         $this -> method = 'POST';
 
         $fields = new Fieldset('Change your password');

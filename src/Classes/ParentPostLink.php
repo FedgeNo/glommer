@@ -14,7 +14,7 @@ class ParentPostLink extends HTMLObject
     public function toDOM(): \DOMElement
     {
         $this -> contents[] = 'In response to ';
-        $this -> addContents(new Anchor(URL::absolute('/users/' . $this -> parentUsername . '/' . $this -> parentId), $this -> parentLabel));
+        $this -> addContents(new Anchor(ServerURL::absolute('/users/' . $this -> parentUsername . '/' . $this -> parentId), $this -> parentLabel));
 
         return parent::toDOM();
     }

@@ -12,22 +12,48 @@ $current_user = Auth::user();
 $mysqli = Database::connection();
 
 $query = trim((string) ($_GET['q'] ?? ''));
+$before_user_id = (int) ($_GET['beforeUserId'] ?? 0);
+$has_more = false;
+$oldest_user_id = null;
 
 if ($query === '') {
+    // The empty-query suggestion list isn't cursor-paginated - it's a fixed,
+    // ranked set (mutual-friend count, falling back to random), not a simple
+    // newest-first query a keyset cursor could walk.
     $candidates = $current_user -> getSuggestedUsers();
 } else {
     // Escape LIKE wildcards so a literal % or _ in the query doesn't match everything.
     $like = '%' . addcslashes($query, '\\%_') . '%';
     $not_banned = 0;
-    $limit = 25;
+    $limit = 20;
+    $fetch_limit = $limit + 1;
 
     $stmt = mysqli_prepare($mysqli, '
 SELECT *
     FROM `Users`
     WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `userId` != ? AND `banned` = ?
+        AND (? = 0 OR `userId` < ?)
+        AND NOT EXISTS (
+            SELECT 1
+                FROM `Blocks` `b`
+                WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `Users`.`userId`) OR (`b`.`blockerId` = `Users`.`userId` AND `b`.`blockedId` = ?)
+        )
+    ORDER BY `userId` DESC
     LIMIT ?
 ');
-    mysqli_stmt_bind_param($stmt, 'ssiii', $like, $like, $current_user -> userId, $not_banned, $limit);
+    mysqli_stmt_bind_param(
+        $stmt,
+        'ssiiiiiii',
+        $like,
+        $like,
+        $current_user -> userId,
+        $not_banned,
+        $before_user_id,
+        $before_user_id,
+        $current_user -> userId,
+        $current_user -> userId,
+        $fetch_limit
+    );
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
@@ -35,6 +61,16 @@ SELECT *
 
     while ($row = mysqli_fetch_assoc($result)) {
         $candidates[] = User::fromRow($row);
+    }
+
+    $has_more = count($candidates) > $limit;
+
+    if ($has_more) {
+        array_pop($candidates);
+    }
+
+    if ($candidates !== []) {
+        $oldest_user_id = (int) $candidates[count($candidates) - 1] -> userId;
     }
 }
 
@@ -44,4 +80,8 @@ foreach ($candidates as $candidate) {
     $users[] = OtherUser::payloadFor($candidate, $current_user);
 }
 
-JSONResponse::success(['users' => $users]) -> send();
+JSONResponse::success([
+    'users' => $users,
+    'hasMore' => $has_more,
+    'oldestUserId' => $oldest_user_id,
+]) -> send();

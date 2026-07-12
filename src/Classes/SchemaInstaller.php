@@ -85,13 +85,15 @@ SELECT `TABLE_NAME`
 
     /**
      * The idempotent index migrations in schema.sql (ALTER TABLE ... ADD/DROP
-     * INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike maintenanceStatements()
-     * these need admin privileges. Returns only the ones actually still
-     * needed against $connection (an ADD whose index already exists, or a
-     * DROP whose index is already gone, is left out), so callers only have to
-     * reach for admin credentials when there's genuinely DDL work pending -
-     * the same "admin creds only when there's real work" principle
-     * missingDefinitions() already follows for column/index/FK drift.
+     * INDEX IF NOT EXISTS/IF EXISTS, and MODIFY COLUMN column-type fixes) -
+     * DDL, so unlike maintenanceStatements() these need admin privileges.
+     * Returns only the ones actually still needed against $connection (an ADD
+     * whose index already exists, a DROP whose index is already gone, or a
+     * MODIFY whose column already has the target type, is left out), so
+     * callers only have to reach for admin credentials when there's genuinely
+     * DDL work pending - the same "admin creds only when there's real work"
+     * principle missingDefinitions() already follows for column/index/FK
+     * drift.
      *
      * @return string[]
      */
@@ -101,6 +103,17 @@ SELECT `TABLE_NAME`
         $existing_by_table = [];
 
         foreach (self::indexMigrationStatements() as $statement) {
+            if (preg_match('/^ALTER TABLE `(\w+)` MODIFY COLUMN `(\w+)` (\S+(?: unsigned)?)/', $statement, $column_match)) {
+                [, $table, $column, $target_type] = $column_match;
+                $current_type = self::columnType($connection, $table, $column);
+
+                if ($current_type !== null && strcasecmp($current_type, $target_type) !== 0) {
+                    $needed[] = $statement;
+                }
+
+                continue;
+            }
+
             if (!preg_match('/^ALTER TABLE `(\w+)` (ADD|DROP) INDEX IF (?:NOT )?EXISTS `(\w+)`/', $statement, $match)) {
                 continue;
             }
@@ -119,6 +132,20 @@ SELECT `TABLE_NAME`
         }
 
         return $needed;
+    }
+
+    private static function columnType(\mysqli $connection, string $table, string $column): ?string
+    {
+        $stmt = mysqli_prepare($connection, '
+SELECT `COLUMN_TYPE`
+    FROM `information_schema`.`COLUMNS`
+    WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `COLUMN_NAME` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ss', $table, $column);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        return $row !== null ? (string) $row['COLUMN_TYPE'] : null;
     }
 
     /**
@@ -209,7 +236,7 @@ SELECT `TABLE_NAME`
                     }
 
                     $previous_column = $column_match[1];
-                } elseif (preg_match('/^(UNIQUE KEY|KEY) `(\w+)`/', $line, $index_match)) {
+                } elseif (preg_match('/^(UNIQUE KEY|FULLTEXT KEY|KEY) `(\w+)`/', $line, $index_match)) {
                     if (!in_array($index_match[2], $existing_indexes, true)) {
                         $missing[$table]['index ' . $index_match[2]] = 'ALTER TABLE `' . $table . '` ADD ' . $line;
                     }

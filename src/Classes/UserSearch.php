@@ -31,6 +31,10 @@ class UserSearch extends HTMLObject
 
         $results = new Div();
         $results -> class = 'UserSearchResults';
+        // The suggestion list is a fixed, ranked set, not cursor-paginated
+        // (see api/search-users.php) - infinite scroll only ever kicks in
+        // once a typed query gets a paginated result set of its own.
+        $results -> attributes['data-has-more'] = '0';
 
         foreach ($this -> suggestions as $suggestion) {
             $results -> addContents($suggestion);

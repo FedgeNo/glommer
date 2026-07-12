@@ -8,7 +8,7 @@ class SetupForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/');
+        $this -> action = ServerURL::absolute('/');
         $this -> method = 'POST';
 
         // Everything guessable is pre-filled: the site URL from how this

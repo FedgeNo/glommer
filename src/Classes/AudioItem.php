@@ -9,8 +9,13 @@ class AudioItem extends FeedItem
     public function toDOM(): \DOMElement
     {
         $audio = new Audio();
-        $audio -> src = $this -> srcURL();
         $audio -> attributes['controls'] = 'controls';
+
+        if ($this -> deferred) {
+            $audio -> attributes['data-src'] = $this -> srcURL();
+        } else {
+            $audio -> src = $this -> srcURL();
+        }
 
         $this -> contents[] = $audio;
 

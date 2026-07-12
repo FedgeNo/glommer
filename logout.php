@@ -7,5 +7,5 @@ require __DIR__ . '/src/init.php';
 RememberToken::forget();
 Auth::logout();
 
-header('Location: ' . URL::absolute('/'));
+header('Location: ' . ServerURL::absolute('/'));
 exit;

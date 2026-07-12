@@ -233,8 +233,19 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         }
 
         return [
-            'title' => $title !== null ? self::cleanText($title, 255) : null,
-            'description' => $description !== null ? self::cleanText($description, 1000) : null,
+            // Decoded here as a defensive measure against JSON-LD specifically:
+            // a <script> tag is raw text per the HTML spec, so libxml never
+            // entity-decodes its contents (same as a real browser) - if a
+            // site's structured-data generator HTML-escaped a title before
+            // embedding it in the JSON (a real, fairly common bug in SEO
+            // plugins/themes), that literal "&amp;" survives json_decode()
+            // untouched and would otherwise get re-escaped by our own
+            // rendering, showing up as literal "&amp;" text on the page. A
+            // no-op for og/twitter/<title>, which DOMDocument already decodes
+            // while parsing (verified: querying a normal tag's content never
+            // needs this).
+            'title' => $title !== null ? self::cleanText(html_entity_decode($title, ENT_QUOTES, 'UTF-8'), 255) : null,
+            'description' => $description !== null ? self::cleanText(html_entity_decode($description, ENT_QUOTES, 'UTF-8'), 1000) : null,
             'imageURL' => $image_url !== null ? self::resolveURL(trim($image_url), $base_url) : null,
         ];
     }
@@ -481,7 +492,7 @@ DELETE
 
         return [
             'seed' => $seed,
-            'thumbnailURL' => URL::absolute(UploadProcessor::thumbnailPath($seed, 'ImageItem')),
+            'thumbnailURL' => ServerURL::absolute(UploadProcessor::thumbnailPath($seed, 'ImageItem')),
         ];
     }
 }

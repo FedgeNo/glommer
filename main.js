@@ -352,7 +352,7 @@ function show_confirm(message) {
  * on any failure (after telling the user what went wrong). Callers only need
  * to handle the success path.
  */
-async function api_post(path, payload) {
+async function api_post(path, payload, { signal } = {}) {
     let response;
 
     try {
@@ -360,9 +360,16 @@ async function api_post(path, payload) {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
             body: payload === undefined ? undefined : JSON.stringify(payload),
+            signal,
         });
     } catch (error) {
-        show_toast('Network error. Please check your connection and try again.');
+        // An intentional abort (a newer call superseding this one) isn't a
+        // network failure - nothing went wrong, something else just made
+        // this call moot. Only a real failure gets the toast.
+        if (error.name !== 'AbortError') {
+            show_toast('Network error. Please check your connection and try again.');
+        }
+
         return null;
     }
 
@@ -457,13 +464,38 @@ document.addEventListener('input', (event) => {
         const query = input.value.trim();
         const results = input.closest('.UserSearch').querySelector('.UserSearchResults');
 
-        results.innerHTML = '';
+        // Abort whatever this input's previous search is still waiting on -
+        // without this, a slower earlier response can resolve after a faster
+        // later one and overwrite fresher results with stale ones.
+        input.searchAbortController?.abort();
+        const controller = new AbortController();
+        input.searchAbortController = controller;
 
-        const response = await fetch(window.siteURL + '/api/search-users?q=' + encodeURIComponent(query));
+        let response;
+
+        try {
+            response = await fetch(window.siteURL + '/api/search-users?q=' + encodeURIComponent(query), { signal: controller.signal });
+        } catch (error) {
+            return; // aborted by a newer search, or a network failure either way
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
             return;
+        }
+
+        results.innerHTML = '';
+
+        // Remembered so the scroll handler below knows what query to keep
+        // paginating, and where to resume from.
+        results.dataset.query = query;
+        results.dataset.hasMore = data.response.hasMore ? '1' : '0';
+
+        if (data.response.oldestUserId !== null) {
+            results.dataset.oldestUserId = data.response.oldestUserId;
+        } else {
+            delete results.dataset.oldestUserId;
         }
 
         data.response.users.forEach((user_data) => {
@@ -473,6 +505,162 @@ document.addEventListener('input', (event) => {
     }, 300);
 
     input.dataset.debounceId = debounce_id;
+});
+
+let loading_older_user_results = false;
+
+window.addEventListener('scroll', async () => {
+    const results = document.querySelector('.UserSearchResults');
+
+    if (!results || results.dataset.hasMore !== '1' || loading_older_user_results) {
+        return;
+    }
+
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
+    if (!near_bottom) {
+        return;
+    }
+
+    loading_older_user_results = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    results.appendChild(spinner);
+
+    try {
+        const query = results.dataset.query ?? '';
+        const before_user_id = results.dataset.oldestUserId;
+
+        const response = await fetch(`${window.siteURL}/api/search-users?q=${encodeURIComponent(query)}&beforeUserId=${before_user_id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        results.dataset.hasMore = data.response.hasMore ? '1' : '0';
+
+        if (data.response.oldestUserId !== null) {
+            results.dataset.oldestUserId = data.response.oldestUserId;
+        }
+
+        data.response.users.forEach((user_data) => {
+            const user = OtherUser.fromData(user_data);
+            results.insertBefore(user.toElement(), spinner);
+        });
+    } finally {
+        spinner.remove();
+        loading_older_user_results = false;
+    }
+});
+
+document.addEventListener('input', (event) => {
+    const input = event.target.closest('.PostSearchInput');
+
+    if (!input) {
+        return;
+    }
+
+    clearTimeout(input.dataset.debounceId);
+
+    const debounce_id = setTimeout(async () => {
+        const query = input.value.trim();
+        const results = input.closest('.PostSearch').querySelector('.PostSearchResults');
+
+        // Abort whatever this input's previous search is still waiting on -
+        // without this, a slower earlier response can resolve after a faster
+        // later one and overwrite fresher results with stale ones.
+        input.searchAbortController?.abort();
+        const controller = new AbortController();
+        input.searchAbortController = controller;
+
+        let response;
+
+        try {
+            response = await fetch(window.siteURL + '/api/search-posts?q=' + encodeURIComponent(query), { signal: controller.signal });
+        } catch (error) {
+            return; // aborted by a newer search, or a network failure either way
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        results.innerHTML = '';
+
+        // Remembered so the scroll handler below knows what query to keep
+        // paginating, and where to resume from.
+        results.dataset.query = query;
+        results.dataset.hasMore = data.response.hasMore ? '1' : '0';
+
+        if (data.response.posts.length > 0) {
+            results.dataset.oldestPostId = data.response.posts[data.response.posts.length - 1].postId;
+        } else {
+            delete results.dataset.oldestPostId;
+        }
+
+        data.response.posts.forEach((post_data) => {
+            const element = Post.fromData(post_data).toElement();
+            results.appendChild(element);
+            render_math(element);
+        });
+    }, 300);
+
+    input.dataset.debounceId = debounce_id;
+});
+
+let loading_older_post_results = false;
+
+window.addEventListener('scroll', async () => {
+    const results = document.querySelector('.PostSearchResults');
+
+    if (!results || results.dataset.hasMore !== '1' || loading_older_post_results) {
+        return;
+    }
+
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
+    if (!near_bottom) {
+        return;
+    }
+
+    loading_older_post_results = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    results.appendChild(spinner);
+
+    try {
+        const query = results.dataset.query ?? '';
+        const before_post_id = results.dataset.oldestPostId;
+
+        const response = await fetch(`${window.siteURL}/api/search-posts?q=${encodeURIComponent(query)}&beforePostId=${before_post_id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        results.dataset.hasMore = data.response.hasMore ? '1' : '0';
+
+        if (data.response.posts.length === 0) {
+            return;
+        }
+
+        data.response.posts.forEach((post_data) => {
+            const element = Post.fromData(post_data).toElement();
+            results.insertBefore(element, spinner);
+            render_math(element);
+        });
+
+        results.dataset.oldestPostId = data.response.posts[data.response.posts.length - 1].postId;
+    } finally {
+        spinner.remove();
+        loading_older_post_results = false;
+    }
 });
 
 document.addEventListener('click', async (event) => {
@@ -598,7 +786,7 @@ document.addEventListener('click', async (event) => {
     }
 
     const user_id = button.dataset.userId;
-    const username = button.closest('.OtherUser').dataset.username;
+    const card = button.closest('.OtherUser');
 
     button.disabled = true;
 
@@ -609,31 +797,11 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const friend_button = document.createElement('button');
-    friend_button.type = 'button';
-    friend_button.className = 'Btn FriendRequestButton';
-    friend_button.dataset.userId = user_id;
-    friend_button.dataset.sent = '0';
-    friend_button.textContent = 'Add Friend';
-
-    const message_link = document.createElement('a');
-    message_link.className = 'Btn';
-    message_link.href = window.siteURL + '/messages/' + username;
-    message_link.textContent = 'Message';
-
-    const block_button = document.createElement('button');
-    block_button.type = 'button';
-    block_button.className = 'Btn BlockUserButton';
-    block_button.dataset.userId = user_id;
-    block_button.textContent = 'Block';
-
-    const actions = document.createElement('div');
-    actions.className = 'd-flex flex-column gap-2 ms-auto';
-    actions.appendChild(friend_button);
-    actions.appendChild(message_link);
-    actions.appendChild(block_button);
-
-    button.replaceWith(actions);
+    // Rebuilt from the same OtherUser class the page uses everywhere else,
+    // rather than hand-assembled here, so it gets every action button a
+    // fresh page load would show (Friends link, Report/Ban, mod controls,
+    // ...) instead of a partial, hand-picked subset.
+    card.replaceWith(OtherUser.fromData(result).toElement());
 });
 
 document.addEventListener('click', async (event) => {
@@ -881,9 +1049,13 @@ document.addEventListener('click', async (event) => {
     button.textContent = 'Sent!';
 });
 
-// Running slideshows, keyed by their carousel element (interval id per carousel).
-const carousel_slideshows = new WeakMap();
-const CAROUSEL_SLIDESHOW_INTERVAL = 3500;
+// Running autoplays, keyed by their carousel element. Each entry is whatever
+// we're currently waiting on to advance: a setTimeout id for an image slide
+// (a fixed pause), or null for a video/audio slide (advancing there is
+// driven by that media's own "ended" event instead - see
+// schedule_carousel_autoplay_advance()).
+const carousel_autoplays = new WeakMap();
+const CAROUSEL_AUTOPLAY_IMAGE_DELAY = 3000;
 
 // Promotes a slide's deferred media (data-src/data-poster left by the server or
 // post.js) to real src/poster so the browser fetches it. A no-op once loaded.
@@ -911,10 +1083,10 @@ function carousel_advance(carousel, direction) {
     slides[current_index].classList.remove('Active');
     slides[next_index].classList.add('Active');
 
-    // A video playing on the slide we just left would keep going (and stay
-    // audible) while hidden - pause every video in the carousel so nothing
-    // plays off-screen once the displayed item changes.
-    carousel.querySelectorAll('video').forEach((video) => video.pause());
+    // A video/audio playing on the slide we just left would keep going (and
+    // stay audible) while hidden - pause every one in the carousel so
+    // nothing plays off-screen once the displayed item changes.
+    carousel.querySelectorAll('video, audio').forEach((media) => media.pause());
 
     // Load the slide now on screen (covers a backward wrap onto one we hadn't
     // reached yet), and on each forward step pull in one more slide beyond the
@@ -936,33 +1108,73 @@ function carousel_advance(carousel, direction) {
     }
 }
 
-function start_carousel_slideshow(carousel) {
-    if (carousel_slideshows.has(carousel)) {
+// Waits on whatever the now-active slide actually is: an image holds for
+// CAROUSEL_AUTOPLAY_IMAGE_DELAY then advances on a timer, a video/audio
+// plays through and advances when it fires "ended" (see the delegated
+// listener below) - a fixed timer would either cut playing media off early
+// or leave dead air waiting out a short clip.
+function schedule_carousel_autoplay_advance(carousel) {
+    if (!carousel_autoplays.has(carousel)) {
         return;
     }
 
-    const interval_id = setInterval(() => carousel_advance(carousel, 1), CAROUSEL_SLIDESHOW_INTERVAL);
-    carousel_slideshows.set(carousel, interval_id);
+    const media = carousel.querySelector('.CarouselSlide.Active video, .CarouselSlide.Active audio');
 
-    const toggle = carousel.querySelector('.CarouselSlideshow');
+    if (media) {
+        carousel_autoplays.set(carousel, null);
+        // Marked so the "manual play stops autoplay" listener below can tell
+        // this play() call apart from the viewer actually clicking play
+        // themselves - autoplay starting its own media shouldn't stop autoplay.
+        carousel.dataset.autoplayStartedPlay = '1';
+        media.play().catch(() => {
+            // Blocked (e.g. the browser's autoplay policy) - nothing further
+            // advances this slide automatically; the viewer can still step
+            // through manually.
+        });
+
+        return;
+    }
+
+    const timeout_id = setTimeout(() => {
+        carousel_advance(carousel, 1);
+        schedule_carousel_autoplay_advance(carousel);
+    }, CAROUSEL_AUTOPLAY_IMAGE_DELAY);
+
+    carousel_autoplays.set(carousel, timeout_id);
+}
+
+function start_carousel_autoplay(carousel) {
+    if (carousel_autoplays.has(carousel)) {
+        return;
+    }
+
+    carousel_autoplays.set(carousel, null);
+    schedule_carousel_autoplay_advance(carousel);
+
+    const toggle = carousel.querySelector('.CarouselAutoplay');
 
     if (toggle) {
-        toggle.textContent = 'Stop Slideshow';
+        toggle.textContent = 'Stop Autoplay';
     }
 }
 
-function stop_carousel_slideshow(carousel) {
-    if (!carousel_slideshows.has(carousel)) {
+function stop_carousel_autoplay(carousel) {
+    if (!carousel_autoplays.has(carousel)) {
         return;
     }
 
-    clearInterval(carousel_slideshows.get(carousel));
-    carousel_slideshows.delete(carousel);
+    const pending_timeout = carousel_autoplays.get(carousel);
 
-    const toggle = carousel.querySelector('.CarouselSlideshow');
+    if (pending_timeout) {
+        clearTimeout(pending_timeout);
+    }
+
+    carousel_autoplays.delete(carousel);
+
+    const toggle = carousel.querySelector('.CarouselAutoplay');
 
     if (toggle) {
-        toggle.textContent = 'Slideshow';
+        toggle.textContent = 'Autoplay';
     }
 }
 
@@ -975,13 +1187,13 @@ document.addEventListener('click', (event) => {
 
     const carousel = button.closest('.Carousel');
 
-    // Stepping through by hand stops the slideshow.
-    stop_carousel_slideshow(carousel);
+    // Stepping through by hand stops autoplay.
+    stop_carousel_autoplay(carousel);
     carousel_advance(carousel, button.classList.contains('CarouselNext') ? 1 : -1);
 });
 
 document.addEventListener('click', (event) => {
-    const toggle = event.target.closest('.CarouselSlideshow');
+    const toggle = event.target.closest('.CarouselAutoplay');
 
     if (!toggle) {
         return;
@@ -989,14 +1201,14 @@ document.addEventListener('click', (event) => {
 
     const carousel = toggle.closest('.Carousel');
 
-    if (carousel_slideshows.has(carousel)) {
-        stop_carousel_slideshow(carousel);
+    if (carousel_autoplays.has(carousel)) {
+        stop_carousel_autoplay(carousel);
     } else {
-        start_carousel_slideshow(carousel);
+        start_carousel_autoplay(carousel);
     }
 });
 
-// Clicking an image in the carousel stops the slideshow.
+// Clicking an image in the carousel stops autoplay.
 document.addEventListener('click', (event) => {
     const image = event.target.closest('.Carousel .ImageItem img');
 
@@ -1004,19 +1216,47 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    stop_carousel_slideshow(image.closest('.Carousel'));
+    stop_carousel_autoplay(image.closest('.Carousel'));
 });
 
-// Playing a video in the carousel stops the slideshow. The play event doesn't
-// bubble, so this listens in the capture phase to catch it via delegation.
+// The viewer manually (re-)playing a video/audio in the carousel stops
+// autoplay - unless autoplay itself just started this exact play. The play
+// event doesn't bubble, so this listens in the capture phase to catch it via
+// delegation.
 document.addEventListener('play', (event) => {
-    const video = event.target.closest('.Carousel video');
+    const media = event.target.closest('.Carousel video, .Carousel audio');
 
-    if (!video) {
+    if (!media) {
         return;
     }
 
-    stop_carousel_slideshow(video.closest('.Carousel'));
+    const carousel = media.closest('.Carousel');
+
+    if (carousel.dataset.autoplayStartedPlay === '1') {
+        delete carousel.dataset.autoplayStartedPlay;
+        return;
+    }
+
+    stop_carousel_autoplay(carousel);
+}, true);
+
+// Advances past a video/audio slide once it finishes playing - the "ended"
+// event doesn't bubble either, same delegation approach as "play" above.
+document.addEventListener('ended', (event) => {
+    const media = event.target.closest('.Carousel video, .Carousel audio');
+
+    if (!media) {
+        return;
+    }
+
+    const carousel = media.closest('.Carousel');
+
+    if (!carousel_autoplays.has(carousel)) {
+        return;
+    }
+
+    carousel_advance(carousel, 1);
+    schedule_carousel_autoplay_advance(carousel);
 }, true);
 
 document.addEventListener('submit', async (event) => {
@@ -1428,8 +1668,9 @@ window.addEventListener('scroll', async () => {
     try {
         const feed_type = list.dataset.feedType;
         const before_post_id = list.dataset.oldestPostId;
+        const user_id_param = feed_type === 'user' ? `&userId=${list.dataset.userId}` : '';
 
-        const response = await fetch(`${window.siteURL}/api/feed-history?feedType=${feed_type}&beforePostId=${before_post_id}`);
+        const response = await fetch(`${window.siteURL}/api/feed-history?feedType=${feed_type}&beforePostId=${before_post_id}${user_id_param}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -1454,6 +1695,59 @@ window.addEventListener('scroll', async () => {
     } finally {
         spinner.remove();
         loading_older_feed_items = false;
+    }
+});
+
+let loading_older_replies = false;
+
+window.addEventListener('scroll', async () => {
+    const list = document.querySelector('.ReplyList');
+
+    if (!list || list.dataset.hasMore !== '1' || loading_older_replies) {
+        return;
+    }
+
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
+    if (!near_bottom) {
+        return;
+    }
+
+    loading_older_replies = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    list.appendChild(spinner);
+
+    try {
+        const parent_id = list.dataset.parentId;
+        const before_post_id = list.dataset.oldestPostId;
+
+        const response = await fetch(`${window.siteURL}/api/reply-history?parentId=${parent_id}&beforePostId=${before_post_id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        const { posts, hasMore: has_more } = data.response;
+
+        list.dataset.hasMore = has_more ? '1' : '0';
+
+        if (posts.length === 0) {
+            return;
+        }
+
+        posts.forEach((post_data) => {
+            const element = Post.fromData(post_data).toElement();
+            list.insertBefore(element, spinner);
+            render_math(element);
+        });
+
+        list.dataset.oldestPostId = posts[posts.length - 1].postId;
+    } finally {
+        spinner.remove();
+        loading_older_replies = false;
     }
 });
 
@@ -1737,30 +2031,34 @@ document.addEventListener('submit', async (event) => {
     const submit_button = form.querySelector('button[type=\'submit\']');
     submit_button.disabled = true;
 
-    const response = await fetch(window.siteURL + '/api/change-password', {
-        method: 'POST',
-        headers: csrf_headers({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({
-            currentPassword: form.querySelector('[name=\'currentPassword\']').value,
-            newPassword: form.querySelector('[name=\'newPassword\']').value,
-            confirmPassword: form.querySelector('[name=\'confirmPassword\']').value,
-        }),
-    });
+    try {
+        const response = await fetch(window.siteURL + '/api/change-password', {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                currentPassword: form.querySelector('[name=\'currentPassword\']').value,
+                newPassword: form.querySelector('[name=\'newPassword\']').value,
+                confirmPassword: form.querySelector('[name=\'confirmPassword\']').value,
+            }),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    submit_button.disabled = false;
+        if (!response.ok) {
+            const error = document.createElement('p');
+            error.className = 'Error';
+            error.textContent = data.error;
+            form.insertBefore(error, submit_button);
+            return;
+        }
 
-    if (!response.ok) {
-        const error = document.createElement('p');
-        error.className = 'Error';
-        error.textContent = data.error;
-        form.insertBefore(error, submit_button);
-        return;
+        form.reset();
+        submit_button.textContent = 'Changed!';
+    } catch (error) {
+        show_toast('Network error. Please check your connection and try again.');
+    } finally {
+        submit_button.disabled = false;
     }
-
-    form.reset();
-    submit_button.textContent = 'Changed!';
 });
 
 document.addEventListener('change', (event) => {
@@ -1930,7 +2228,15 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        const preview = await api_post('/api/link-preview', { url });
+        // Abort whatever this input's previous preview fetch is still
+        // waiting on - without this, a slower earlier response can resolve
+        // after a faster later one and overwrite the freshly-typed URL's
+        // preview with a stale one for the URL typed before it.
+        input.previewAbortController?.abort();
+        const controller = new AbortController();
+        input.previewAbortController = controller;
+
+        const preview = await api_post('/api/link-preview', { url }, { signal: controller.signal });
 
         if (!preview) {
             return;
@@ -2061,7 +2367,22 @@ document.addEventListener('input', (event) => {
             ? `${window.siteURL}/api/banned-history`
             : `${window.siteURL}/api/search-banned-users?q=${encodeURIComponent(query)}`;
 
-        const response = await fetch(url);
+        // Abort whatever this input's previous search/page-reset is still
+        // waiting on - without this, a slower earlier response can resolve
+        // after a faster later one and overwrite fresher results with stale
+        // ones.
+        input.searchAbortController?.abort();
+        const controller = new AbortController();
+        input.searchAbortController = controller;
+
+        let response;
+
+        try {
+            response = await fetch(url, { signal: controller.signal });
+        } catch (error) {
+            return; // aborted by a newer search, or a network failure either way
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -2112,28 +2433,32 @@ document.addEventListener('submit', async (event) => {
     const submit_button = form.querySelector('button[type=\'submit\']');
     submit_button.disabled = true;
 
-    const response = await fetch(window.siteURL + '/api/change-email', {
-        method: 'POST',
-        headers: csrf_headers({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({
-            newEmail: form.querySelector('[name=\'newEmail\']').value,
-            currentPassword: form.querySelector('[name=\'currentPassword\']').value,
-        }),
-    });
+    try {
+        const response = await fetch(window.siteURL + '/api/change-email', {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                newEmail: form.querySelector('[name=\'newEmail\']').value,
+                currentPassword: form.querySelector('[name=\'currentPassword\']').value,
+            }),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    submit_button.disabled = false;
+        if (!response.ok) {
+            const error = document.createElement('p');
+            error.className = 'Error';
+            error.textContent = data.error;
+            form.insertBefore(error, submit_button);
+            return;
+        }
 
-    if (!response.ok) {
-        const error = document.createElement('p');
-        error.className = 'Error';
-        error.textContent = data.error;
-        form.insertBefore(error, submit_button);
-        return;
+        // The account is back behind the verification gate until the new
+        // address confirms - land on the page that says exactly that.
+        window.location = window.siteURL + '/check-inbox';
+    } catch (error) {
+        show_toast('Network error. Please check your connection and try again.');
+    } finally {
+        submit_button.disabled = false;
     }
-
-    // The account is back behind the verification gate until the new address
-    // confirms - land on the page that says exactly that.
-    window.location = window.siteURL + '/check-inbox';
 });

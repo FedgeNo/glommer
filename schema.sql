@@ -45,6 +45,7 @@ CREATE TABLE `Posts` (
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
+  FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),
   CONSTRAINT `Posts_ibfk_1` FOREIGN KEY (`parentId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
   CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -75,8 +76,11 @@ CREATE TABLE `Friendships` (
   `addresseeId` int(10) unsigned NOT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'pending',
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `pairLow` int(10) unsigned GENERATED ALWAYS AS (LEAST(`requesterId`,`addresseeId`)) STORED,
+  `pairHigh` int(10) unsigned GENERATED ALWAYS AS (GREATEST(`requesterId`,`addresseeId`)) STORED,
   PRIMARY KEY (`friendshipId`),
   UNIQUE KEY `uniq_pair` (`requesterId`,`addresseeId`),
+  UNIQUE KEY `uniq_unordered_pair` (`pairLow`,`pairHigh`),
   KEY `requesterId_status_friendshipId` (`requesterId`,`status`,`friendshipId`),
   KEY `addresseeId_status_friendshipId` (`addresseeId`,`status`,`friendshipId`),
   CONSTRAINT `Friendships_ibfk_1` FOREIGN KEY (`requesterId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
@@ -109,29 +113,31 @@ CREATE TABLE `Messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Notifications` (
-  `notificationId` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
-  `actorId` int(11) NOT NULL,
+  `notificationId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `actorId` int(10) unsigned NOT NULL,
   `type` varchar(32) NOT NULL,
-  `postId` int(11) DEFAULT NULL,
+  `postId` int(10) unsigned DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`notificationId`),
-  KEY `userId` (`userId`,`notificationId`)
+  KEY `userId` (`userId`,`notificationId`),
+  CONSTRAINT `Notifications_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `Notifications_ibfk_2` FOREIGN KEY (`actorId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Reports` (
-  `reportId` int(11) NOT NULL AUTO_INCREMENT,
-  `reporterId` int(11) NOT NULL,
+  `reportId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `reporterId` int(10) unsigned NOT NULL,
   `targetType` varchar(16) NOT NULL,
-  `targetId` int(11) NOT NULL,
+  `targetId` int(10) unsigned NOT NULL,
   `reason` text DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`reportId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailVerifications` (
-  `verificationId` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
+  `verificationId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
   `tokenHash` varchar(64) NOT NULL,
   `expiresAt` datetime NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
@@ -142,8 +148,8 @@ CREATE TABLE `EmailVerifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `PasswordResets` (
-  `resetId` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
+  `resetId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
   `tokenHash` varchar(64) NOT NULL,
   `expiresAt` datetime NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
@@ -153,8 +159,8 @@ CREATE TABLE `PasswordResets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailChangeReverts` (
-  `revertId` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
+  `revertId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
   `previousEmail` varchar(255) NOT NULL,
   `tokenHash` varchar(64) NOT NULL,
   `expiresAt` datetime NOT NULL,
@@ -166,7 +172,7 @@ CREATE TABLE `EmailChangeReverts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `RateLimitAttempts` (
-  `attemptId` int(11) NOT NULL AUTO_INCREMENT,
+  `attemptId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `rateKey` varchar(255) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`attemptId`),
@@ -240,6 +246,33 @@ ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `requesterId_status_friendship
 ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `addresseeId_status_friendshipId` (`addresseeId`, `status`, `friendshipId`);
 ALTER TABLE `Friendships` DROP INDEX IF EXISTS `addresseeId`;
 ALTER TABLE `Reports` DROP INDEX IF EXISTS `targetType`;
+
+-- Column-type migrations (safe to re-run): these six tables were originally
+-- created with signed int(11) id/userId columns, unlike every other table's
+-- int(10) unsigned - a plain INT is 4 bytes either way regardless of the
+-- display-width number in parens, so unsigned simply has roughly double the
+-- usable positive range (~4.29 billion vs ~2.15 billion) for a column that's
+-- never negative, and it matches everything else in this schema. Also what
+-- makes Notifications.userId/actorId eligible for the FOREIGN KEY added to
+-- that CREATE TABLE block above (Users.userId is int(10) unsigned - MySQL/
+-- MariaDB require a FK's column to match the referenced column's type).
+-- Each statement mirrors its column's definition in the CREATE TABLE block
+-- above exactly. neededIndexMigrations() only includes one of these when the
+-- live column doesn't already match, so this is a no-op on a healthy re-run.
+ALTER TABLE `Notifications` MODIFY COLUMN `notificationId` int(10) unsigned NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Notifications` MODIFY COLUMN `userId` int(10) unsigned NOT NULL;
+ALTER TABLE `Notifications` MODIFY COLUMN `actorId` int(10) unsigned NOT NULL;
+ALTER TABLE `Notifications` MODIFY COLUMN `postId` int(10) unsigned DEFAULT NULL;
+ALTER TABLE `Reports` MODIFY COLUMN `reportId` int(10) unsigned NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Reports` MODIFY COLUMN `reporterId` int(10) unsigned NOT NULL;
+ALTER TABLE `Reports` MODIFY COLUMN `targetId` int(10) unsigned NOT NULL;
+ALTER TABLE `EmailVerifications` MODIFY COLUMN `verificationId` int(10) unsigned NOT NULL AUTO_INCREMENT;
+ALTER TABLE `EmailVerifications` MODIFY COLUMN `userId` int(10) unsigned NOT NULL;
+ALTER TABLE `PasswordResets` MODIFY COLUMN `resetId` int(10) unsigned NOT NULL AUTO_INCREMENT;
+ALTER TABLE `PasswordResets` MODIFY COLUMN `userId` int(10) unsigned NOT NULL;
+ALTER TABLE `EmailChangeReverts` MODIFY COLUMN `revertId` int(10) unsigned NOT NULL AUTO_INCREMENT;
+ALTER TABLE `EmailChangeReverts` MODIFY COLUMN `userId` int(10) unsigned NOT NULL;
+ALTER TABLE `RateLimitAttempts` MODIFY COLUMN `attemptId` int(10) unsigned NOT NULL AUTO_INCREMENT;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

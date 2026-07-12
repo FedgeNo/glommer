@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/src/init.php';
 
 if (Auth::check()) {
-    header('Location: ' . URL::absolute('/'));
+    header('Location: ' . ServerURL::absolute('/'));
     exit;
 }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $mysqli = Database::connection();
-    $rate_key = 'signup:' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+    $rate_key = 'signup:' . (ServerURL::clientIP() ?? 'unknown');
 
     if ($errors === [] && RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
         $errors[] = 'Too many signups from your network. Please try again later.';
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // flood doesn't make us hammer Cloudflare) - a no-op when it isn't
     // configured. Fail closed: if Cloudflare can't be reached, reject rather
     // than open a bot window on sign-up.
-    if ($errors === [] && !Turnstile::verify($captcha_token, $_SERVER['REMOTE_ADDR'] ?? null)) {
+    if ($errors === [] && !Turnstile::verify($captcha_token, ServerURL::clientIP())) {
         $errors[] = 'Captcha verification failed. Please try again.';
     }
 
@@ -58,7 +58,7 @@ SELECT `userId`
         mysqli_stmt_execute($stmt);
         mysqli_stmt_store_result($stmt);
 
-        if (mysqli_stmt_num_rows($stmt) > 0) {
+        if (mysqli_stmt_num_rows($stmt) > 0 || EmailChangeRevert::isReserved($email)) {
             $errors[] = 'That username or email is already taken.';
         }
     }
@@ -94,7 +94,7 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
 
         EmailVerification::sendFor($user);
 
-        header('Location: ' . URL::absolute('/check-inbox'));
+        header('Location: ' . ServerURL::absolute('/check-inbox'));
         exit;
     }
 }

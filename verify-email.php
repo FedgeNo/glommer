@@ -14,6 +14,6 @@ $page -> addContents(new Paragraph($user_id !== null
     ? 'Your email has been verified. You can now use Glommer.'
     : 'That verification link is invalid or has expired.'));
 
-$page -> addContents(new Anchor(URL::absolute('/'), 'Continue'));
+$page -> addContents(new Anchor(ServerURL::absolute('/'), 'Continue'));
 
 $page -> send();

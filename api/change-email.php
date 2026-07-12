@@ -44,7 +44,7 @@ mysqli_stmt_bind_param($taken_stmt, 'si', $new_email, $current_user -> userId);
 mysqli_stmt_execute($taken_stmt);
 mysqli_stmt_store_result($taken_stmt);
 
-if (mysqli_stmt_num_rows($taken_stmt) > 0) {
+if (mysqli_stmt_num_rows($taken_stmt) > 0 || EmailChangeRevert::isReserved($new_email)) {
     JSONResponse::error('That email address is already in use', 422) -> send();
 }
 

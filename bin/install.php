@@ -470,8 +470,13 @@ function offer_websocket_tls(string $host): bool
 
     $env_path = __DIR__ . '/../.env';
     $env_contents = (string) file_get_contents($env_path);
-    $env_contents = preg_replace('/^WS_TLS_CERT=.*$/m', 'WS_TLS_CERT=' . $cert_path, $env_contents, -1, $cert_replaced);
-    $env_contents = preg_replace('/^WS_TLS_KEY=.*$/m', 'WS_TLS_KEY=' . $key_path, $env_contents, -1, $key_replaced);
+    // preg_replace_callback, not preg_replace: the callback's return value is
+    // inserted literally, with no $1/\1-style backreference interpretation of
+    // the replacement text - a plain preg_replace() would mangle a cert/key
+    // path containing a literal "$" followed by digits (e.g. an un-expanded
+    // "$HOME" left in the path).
+    $env_contents = preg_replace_callback('/^WS_TLS_CERT=.*$/m', fn () => 'WS_TLS_CERT=' . $cert_path, $env_contents, -1, $cert_replaced);
+    $env_contents = preg_replace_callback('/^WS_TLS_KEY=.*$/m', fn () => 'WS_TLS_KEY=' . $key_path, $env_contents, -1, $key_replaced);
 
     if ($cert_replaced !== 1 || $key_replaced !== 1) {
         fail_line('.env has no WS_TLS_CERT/WS_TLS_KEY lines to update - add these manually:');

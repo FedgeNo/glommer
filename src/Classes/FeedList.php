@@ -7,6 +7,7 @@ class FeedList extends Div
     public ?string $class = 'FeedList d-flex flex-column gap-4';
 
     public ?string $feedType = null;
+    public ?int $userId = null;
     public ?int $oldestPostId = null;
     public bool $hasMore = false;
 
@@ -14,6 +15,10 @@ class FeedList extends Div
     {
         if ($this -> feedType !== null) {
             $this -> attributes['data-feed-type'] = $this -> feedType;
+        }
+
+        if ($this -> userId !== null) {
+            $this -> attributes['data-user-id'] = (string) $this -> userId;
         }
 
         if ($this -> oldestPostId !== null) {
@@ -28,10 +33,11 @@ class FeedList extends Div
     /**
      * @param array[] $rows Post rows, newest first.
      */
-    public static function fromRows(string $feed_type, array $rows, bool $has_more): self
+    public static function fromRows(string $feed_type, array $rows, bool $has_more, ?int $user_id = null): self
     {
         $list = new self();
         $list -> feedType = $feed_type;
+        $list -> userId = $user_id;
 
         if ($rows === []) {
             return $list;

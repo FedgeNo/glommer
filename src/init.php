@@ -33,17 +33,16 @@ $site_is_installed = is_file(__DIR__ . '/../.env');
 if (
     $site_is_installed
     && str_starts_with((string) $init_config['siteURL'], 'https://')
-    && ($_SERVER['HTTPS'] ?? '') === ''
-    && strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) !== 'https'
+    && !ServerURL::isHTTPS()
 ) {
-    header('Location: ' . URL::absolute($_SERVER['REQUEST_URI'] ?? '/'), true, 301);
+    header('Location: ' . ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/'), true, 301);
     exit;
 }
 
 session_set_cookie_params([
     'httponly' => true,
     'samesite' => 'Lax',
-    'secure' => ($_SERVER['HTTPS'] ?? '') !== '',
+    'secure' => ServerURL::isHTTPS(),
 ]);
 session_start();
 
@@ -73,6 +72,15 @@ $send_server_error = function (): void {
 
 set_exception_handler(function (\Throwable $exception) use ($send_server_error): void {
     error_log((string) $exception);
+
+    // Same guard the shutdown handler below already applies - a Throwable
+    // thrown after output has already started (mid-way through streaming a
+    // real response) should be logged, not answered with a second, corrupting
+    // "response" appended onto whatever's already been sent.
+    if (headers_sent()) {
+        return;
+    }
+
     $send_server_error();
 });
 
@@ -138,7 +146,7 @@ SELECT COUNT(*) AS `count`
 ');
 
     if ((int) mysqli_fetch_assoc($user_count_result)['count'] === 0) {
-        header('Location: ' . URL::absolute('/signup'));
+        header('Location: ' . ServerURL::absolute('/signup'));
         exit;
     }
 }
@@ -158,7 +166,7 @@ if (Auth::check()) {
             JSONResponse::error('Not logged in', 401) -> send();
         }
 
-        header('Location: ' . URL::absolute('/'));
+        header('Location: ' . ServerURL::absolute('/'));
         exit;
     }
 
@@ -169,7 +177,7 @@ if (Auth::check()) {
             JSONResponse::error('Email verification required', 403) -> send();
         }
 
-        header('Location: ' . URL::absolute('/check-inbox'));
+        header('Location: ' . ServerURL::absolute('/check-inbox'));
         exit;
     }
 }

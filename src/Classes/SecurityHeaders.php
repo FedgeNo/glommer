@@ -17,7 +17,7 @@ class SecurityHeaders
 
     public static function send(): void
     {
-        $is_https = ($_SERVER['HTTPS'] ?? '') !== '';
+        $is_https = ServerURL::isHTTPS();
         $nonce = self::nonce();
         $config = require __DIR__ . '/../config.php';
 

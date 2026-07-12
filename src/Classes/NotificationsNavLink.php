@@ -26,7 +26,7 @@ class NotificationsNavLink extends Div
         $newest_id = $this -> rows !== [] ? (int) $this -> rows[0]['notificationId'] : 0;
         $has_unseen = $newest_id > $this -> lastNotificationId;
 
-        $this -> addContents(new Anchor(URL::absolute('/notifications'), 'Notifications'));
+        $this -> addContents(new Anchor(ServerURL::absolute('/notifications'), 'Notifications'));
 
         $dot = new Span();
         $dot -> class = 'NotificationDot' . ($has_unseen ? ' Active' : '');

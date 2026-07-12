@@ -45,6 +45,12 @@ class TruncatedPostBody extends PostBody
     private bool $didTruncate;
     // The closing delimiter we're waiting on while inside a formula, or null.
     private ?string $mathCloser;
+    // Where the currently-open formula started - overwritten on every new
+    // open, so if the walk ends still inside one, this is the one that never
+    // found its closer. Used to remove it (see toDOM()) rather than leave the
+    // rest of the post stuck in "never truncate" mode forever.
+    private ?\DOMText $mathOpenNode;
+    private int $mathOpenOffset;
 
     public function __construct(?string $see_more_url = null, int $max_length = self::DEFAULT_MAX_LENGTH)
     {
@@ -63,8 +69,22 @@ class TruncatedPostBody extends PostBody
         $this -> remaining = $this -> maxLength;
         $this -> didTruncate = false;
         $this -> mathCloser = null;
+        $this -> mathOpenNode = null;
+        $this -> mathOpenOffset = 0;
 
         $this -> truncateChildren($element);
+
+        // A formula that opened but never found its closer anywhere in the
+        // rest of the post is malformed input, not truncatable content - the
+        // walk above never cuts mid-formula (a half formula is worse than
+        // none), so left alone this would leave the entire remainder of the
+        // post untruncated. Remove the broken formula and everything after it
+        // instead of rendering (or silently keeping) something malformed.
+        if ($this -> mathCloser !== null && $this -> mathOpenNode !== null) {
+            $this -> mathOpenNode -> nodeValue = mb_substr((string) $this -> mathOpenNode -> nodeValue, 0, $this -> mathOpenOffset);
+            $this -> removeEverythingAfter($this -> mathOpenNode, $element);
+            $this -> didTruncate = true;
+        }
 
         if ($this -> didTruncate && $this -> seeMoreURL !== null) {
             // A trailing child of the body, after all content.
@@ -72,6 +92,24 @@ class TruncatedPostBody extends PostBody
         }
 
         return $element;
+    }
+
+    /**
+     * Removes every node that comes after $node in document order, up to
+     * (not including) $root - $node's later siblings, then its parent's later
+     * siblings, and so on up the tree.
+     */
+    private function removeEverythingAfter(\DOMNode $node, \DOMNode $root): void
+    {
+        $current = $node;
+
+        while ($current !== null && $current !== $root) {
+            while ($current -> nextSibling !== null) {
+                $current -> parentNode -> removeChild($current -> nextSibling);
+            }
+
+            $current = $current -> parentNode;
+        }
     }
 
     private function truncateChildren(\DOMNode $parent): void
@@ -165,6 +203,8 @@ class TruncatedPostBody extends PostBody
                 }
 
                 $this -> mathCloser = self::MATH_DELIMITERS[$pair];
+                $this -> mathOpenNode = $node;
+                $this -> mathOpenOffset = $kept_length;
                 $kept .= $pair;
                 $kept_length += 2;
                 $this -> remaining -= 2;

@@ -173,9 +173,41 @@ class SafeHTTPFetcher
         return null;
     }
 
+    // FILTER_FLAG_NO_PRIV_RANGE/NO_RES_RANGE don't cover these - all three are
+    // routable-looking enough that hosting providers and carriers use them for
+    // internal infrastructure, so an SSRF that lands here still reaches
+    // something private. Blocked explicitly since PHP's filter won't.
+    private const EXTRA_BLOCKED_RANGES = [
+        '100.64.0.0/10', // CGNAT (RFC 6598)
+        '192.0.0.0/24', // IETF Protocol Assignments (RFC 6890)
+        '198.18.0.0/15', // benchmarking (RFC 2544)
+        '192.88.99.0/24', // 6to4 relay anycast (RFC 3068)
+    ];
+
     private static function isSafeIP(string $ip): bool
     {
         // IPv4 only - an IPv6 address (literal or resolved) never validates here.
-        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            return false;
+        }
+
+        foreach (self::EXTRA_BLOCKED_RANGES as $range) {
+            if (self::ipInRange($ip, $range)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static function ipInRange(string $ip, string $cidr): bool
+    {
+        [$subnet, $prefix_length] = explode('/', $cidr);
+
+        $ip_long = ip2long($ip);
+        $subnet_long = ip2long($subnet);
+        $mask = -1 << (32 - (int) $prefix_length);
+
+        return ($ip_long & $mask) === ($subnet_long & $mask);
     }
 }

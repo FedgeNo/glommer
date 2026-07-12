@@ -39,7 +39,7 @@ if ($has_more) {
 
 $page = Page::create('Home', needsEditor: $current_user !== null, needsMath: true, needsEmoji: $current_user !== null);
 
-$page -> addMetaContent(new RSSLink(URL::absolute('/feed.xml'), 'RSS Feed'));
+$page -> addMetaContent(new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed'));
 
 if ($current_user !== null) {
     $page -> addContents(new PostComposer());

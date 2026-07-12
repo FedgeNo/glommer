@@ -98,6 +98,9 @@ log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $config['WSHos
  *     userId: ?int,
  *     fragOpcode: ?int,
  *     fragBuffer: string,
+ *     connectedAt: float,
+ *     lastActivityAt: float,
+ *     pingSentAt: ?float,
  * }>
  */
 $connections = [];
@@ -116,12 +119,28 @@ const MAX_CLIENT_BUFFER_BYTES = 65536;
 const MAX_PUSH_BUFFER_BYTES = 262144;
 const MAX_SEND_BUFFER_BYTES = 1048576;
 
+// A client that never finishes its WebSocket handshake (or a TCP connection
+// that never sends anything at all) would otherwise hold its fd and
+// connection slot forever - a trivial DoS via a modest number of held-open
+// sockets. A real browser completes the handshake almost immediately.
+const HANDSHAKE_TIMEOUT_SECONDS = 10;
+
+// This channel is push-only (server -> client) once handshaked, so a
+// legitimate client can sit silent indefinitely - "idle" alone can't mean
+// "dead". These instead detect a genuinely dead peer (frozen tab, dropped NAT
+// mapping) the same way any long-lived TCP connection has to: ping it, and
+// drop it if nothing - not even the pong - comes back in time.
+const CLIENT_PING_INTERVAL_SECONDS = 30;
+const CLIENT_PONG_GRACE_SECONDS = 60;
+
 function register_connection($socket, string $kind): int
 {
     global $connections;
 
     stream_set_blocking($socket, false);
     $id = (int) $socket;
+
+    $now = microtime(true);
 
     $connections[$id] = [
         'socket' => $socket,
@@ -133,9 +152,54 @@ function register_connection($socket, string $kind): int
         'userId' => null,
         'fragOpcode' => null,
         'fragBuffer' => '',
+        'connectedAt' => $now,
+        'lastActivityAt' => $now,
+        'pingSentAt' => null,
     ];
 
     return $id;
+}
+
+/**
+ * Drops any client connection stuck without a completed handshake past
+ * HANDSHAKE_TIMEOUT_SECONDS, pings any handshake-complete client that's gone
+ * quiet for CLIENT_PING_INTERVAL_SECONDS, and drops one that still hasn't
+ * made a peep (pong or otherwise) CLIENT_PONG_GRACE_SECONDS after that ping.
+ * Push connections aren't touched - they're short-lived by construction
+ * (handle_push_request() always sets closeAfterFlush).
+ */
+function reap_stale_connections(): void
+{
+    global $connections;
+
+    $now = microtime(true);
+
+    foreach ($connections as $id => $connection) {
+        if ($connection['kind'] !== 'client') {
+            continue;
+        }
+
+        if (!$connection['handshakeDone']) {
+            if ($now - $connection['connectedAt'] > HANDSHAKE_TIMEOUT_SECONDS) {
+                drop_connection($id);
+            }
+
+            continue;
+        }
+
+        if ($connection['pingSentAt'] !== null) {
+            if ($now - $connection['pingSentAt'] > CLIENT_PONG_GRACE_SECONDS) {
+                drop_connection($id);
+            }
+
+            continue;
+        }
+
+        if ($now - $connection['lastActivityAt'] > CLIENT_PING_INTERVAL_SECONDS) {
+            $connections[$id]['sendBuffer'] .= ws_encode_ping_frame();
+            $connections[$id]['pingSentAt'] = $now;
+        }
+    }
 }
 
 function ws_uses_tls(): bool
@@ -210,6 +274,11 @@ function ws_encode_close_frame(int $code = 1000): string
 function ws_encode_pong_frame(string $payload = ''): string
 {
     return chr(0x80 | 0xA) . chr(strlen($payload)) . $payload;
+}
+
+function ws_encode_ping_frame(string $payload = ''): string
+{
+    return chr(0x80 | 0x9) . chr(strlen($payload)) . $payload;
 }
 
 /**
@@ -521,6 +590,8 @@ while (true) {
         continue;
     }
 
+    reap_stale_connections();
+
     foreach ($read as $socket) {
         if ($socket === $public_listener) {
             $client = @stream_socket_accept($public_listener, 0);
@@ -568,6 +639,8 @@ while (true) {
         }
 
         $connections[$id]['recvBuffer'] .= $chunk;
+        $connections[$id]['lastActivityAt'] = microtime(true);
+        $connections[$id]['pingSentAt'] = null;
 
         $recv_cap = $connections[$id]['kind'] === 'push' ? MAX_PUSH_BUFFER_BYTES : MAX_CLIENT_BUFFER_BYTES;
 

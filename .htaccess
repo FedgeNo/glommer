@@ -83,6 +83,7 @@
     RewriteRule ^terms$ terms.php [L,QSA]
     RewriteRule ^privacy$ privacy.php [L,QSA]
     RewriteRule ^friends-feed$ friends-feed.php [L,QSA]
+    RewriteRule ^search$ search.php [L,QSA]
 
     # messages, help, and users are real collections - only their canonical
     # trailing-slash form is served (the bare form redirects to it, above).
@@ -96,7 +97,7 @@
     RewriteRule ^messages/([^/]+)$ messages.php?username=$1 [L,QSA]
     RewriteRule ^help/$ help.php [L,QSA]
     RewriteRule ^help/([a-z0-9-]+)$ help-article.php?slug=$1 [L,QSA]
-    RewriteRule ^users/$ search.php [L,QSA]
+    RewriteRule ^users/$ users.php [L,QSA]
     RewriteRule ^users/([^/]+)/feed\.xml$ user-rss-feed.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/friends$ user-friends.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/([0-9]+)$ post.php?username=$1&id=$2 [L,QSA]

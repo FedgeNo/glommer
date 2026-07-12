@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/src/init.php';
 
 if (Auth::check()) {
-    header('Location: ' . URL::absolute('/'));
+    header('Location: ' . ServerURL::absolute('/'));
     exit;
 }
 
@@ -44,7 +44,7 @@ $page = Page::create('Reset Password');
 
 if ($done) {
     $page -> addContents(new Paragraph('Your password has been reset. You can now log in.'));
-    $page -> addContents(new Anchor(URL::absolute('/login'), 'Log In'));
+    $page -> addContents(new Anchor(ServerURL::absolute('/login'), 'Log In'));
 } else {
     if ($errors !== []) {
         $page -> addContents(new ErrorList($errors));

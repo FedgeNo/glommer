@@ -72,7 +72,23 @@ INSERT INTO `Friendships` (`requesterId`, `addresseeId`)
     VALUES (?, ?)
 ');
 mysqli_stmt_bind_param($insert_stmt, 'ii', $current_user -> userId, $target_user_id);
-mysqli_stmt_execute($insert_stmt);
+
+try {
+    mysqli_stmt_execute($insert_stmt);
+} catch (\mysqli_sql_exception $exception) {
+    // The statusBetween() check above has a TOCTOU gap: two simultaneous
+    // reverse-direction requests (this one, and the same target sending one
+    // back) can both pass it, since neither row exists yet at the moment
+    // either checks. uniq_unordered_pair (on the pair sorted low/high,
+    // unlike uniq_pair which is ordered and can't catch this) is the actual
+    // guard - only one of the two INSERTs can win. 1062 is MySQL's duplicate-
+    // key error; anything else is a real failure, not a race.
+    if ($exception -> getCode() !== 1062) {
+        throw $exception;
+    }
+
+    JSONResponse::error('A friend request or friendship already exists with that user.', 422) -> send();
+}
 
 Notification::create($target_user_id, $current_user -> userId, 'friendRequest');
 

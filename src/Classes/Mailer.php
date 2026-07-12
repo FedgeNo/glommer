@@ -7,6 +7,14 @@ class Mailer
     private const MAX_ATTEMPTS = 3;
     private const RETRY_DELAY_MICROSECONDS = 250000;
 
+    // Set by the last attempt() call: true only when the destination server
+    // actively refused this specific recipient (RCPT TO rejected), as opposed
+    // to our own mail transport being unreachable or misconfigured. Lets
+    // EmailVerification::sendFor() tell "mail is down" (safe to auto-verify)
+    // apart from "this address doesn't accept mail" (an attacker could
+    // engineer this on purpose, so it must not bypass verification).
+    private static bool $recipientRejected = false;
+
     public static function send(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
     {
         for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
@@ -22,8 +30,15 @@ class Mailer
         return false;
     }
 
+    public static function recipientWasRejected(): bool
+    {
+        return self::$recipientRejected;
+    }
+
     private static function attempt(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
     {
+        self::$recipientRejected = false;
+
         $config = require __DIR__ . '/../config.php';
         $from_address = $config['mailFromAddress'];
         $from_name = $config['mailFromName'];
@@ -184,6 +199,8 @@ class Mailer
             $say('RCPT TO:<' . $to_address . '>');
 
             if (!$expect('25')) {
+                self::$recipientRejected = true;
+
                 return false;
             }
 

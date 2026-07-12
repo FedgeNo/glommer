@@ -21,10 +21,10 @@ class Favicon
     public static function URL(): string
     {
         if ((string) Settings::get(self::CUSTOM_SETTING, '') === '1' && is_file(self::CUSTOM_PATH)) {
-            return URL::absolute(self::CUSTOM_URL_PATH);
+            return ServerURL::absolute(self::CUSTOM_URL_PATH);
         }
 
-        return URL::absolute('/favicon.ico');
+        return ServerURL::absolute('/favicon.ico');
     }
 
     /**

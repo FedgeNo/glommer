@@ -91,7 +91,7 @@ SELECT 1
 
     protected function replyButton(): HTMLObject
     {
-        $link = new Anchor(URL::absolute('/users/' . $this -> postUsername . '/' . $this -> postId), self::replyLabel($this -> replyCount));
+        $link = new Anchor(ServerURL::absolute('/users/' . $this -> postUsername . '/' . $this -> postId), self::replyLabel($this -> replyCount));
         $link -> class = 'Btn';
 
         return $link;

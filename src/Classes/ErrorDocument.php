@@ -16,7 +16,7 @@ class ErrorDocument
 
         $page -> addContents(new Paragraph($message));
 
-        $page -> addContents(new Anchor(URL::absolute('/'), 'Back to Home'));
+        $page -> addContents(new Anchor(ServerURL::absolute('/'), 'Back to Home'));
 
         $page -> send();
     }

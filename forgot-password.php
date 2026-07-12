@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/src/init.php';
 
 if (Auth::check()) {
-    header('Location: ' . URL::absolute('/'));
+    header('Location: ' . ServerURL::absolute('/'));
     exit;
 }
 
@@ -15,7 +15,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim((string) ($_POST['email'] ?? ''));
     $mysqli = Database::connection();
-    $rate_key = 'forgot-password:' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+    $rate_key = 'forgot-password:' . (ServerURL::clientIP() ?? 'unknown');
 
     if (RateLimiter::tooManyAttempts($rate_key, 5, 900)) {
         $errors[] = 'Too many password reset requests. Please try again later.';

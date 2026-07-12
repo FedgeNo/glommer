@@ -12,7 +12,12 @@ $current_user = Auth::user();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $target_user_id = (int) ($payload['userId'] ?? $_POST['userId'] ?? 0);
+$target_user = User::load($target_user_id);
+
+if ($target_user === null) {
+    JSONResponse::error('User not found', 404) -> send();
+}
 
 Block::remove($current_user -> userId, $target_user_id);
 
-JSONResponse::success(['blocked' => false]) -> send();
+JSONResponse::success(OtherUser::payloadFor($target_user, $current_user)) -> send();

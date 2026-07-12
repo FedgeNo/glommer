@@ -8,7 +8,7 @@ class EmailVerification
     {
         $token = self::create((int) $user -> userId);
 
-        $verify_url = URL::absolute('/verify-email?token=' . $token);
+        $verify_url = ServerURL::absolute('/verify-email?token=' . $token);
 
         $name = $user -> displayName ?? $user -> username;
 
@@ -26,9 +26,13 @@ This link expires in 24 hours.';
 
         $sent = Mailer::send($user -> email, $name, 'Verify your email address', $text_body, $html_body);
 
-        if (!$sent) {
-            // Mail delivery is broken (or unconfigured) in this environment -
-            // rather than leaving the user permanently stuck behind the
+        // Only auto-verify when mail delivery itself is broken/unconfigured -
+        // not when this specific address was rejected (Mailer::attempt()
+        // reached the destination server fine, and it refused the recipient).
+        // Otherwise anyone could bypass verification by signing up with an
+        // address engineered to bounce.
+        if (!$sent && !Mailer::recipientWasRejected()) {
+            // Rather than leaving the user permanently stuck behind the
             // verification gate with no way to ever receive the link that
             // would clear it, verify them directly instead.
             self::markVerified((int) $user -> userId);

@@ -8,7 +8,7 @@ abstract class Composer extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/api/create-post');
+        $this -> action = ServerURL::absolute('/api/create-post');
         $this -> method = 'POST';
         $this -> enctype = 'multipart/form-data';
 

@@ -16,7 +16,7 @@ class MessageComposer extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/api/send-message');
+        $this -> action = ServerURL::absolute('/api/send-message');
         $this -> method = 'POST';
 
         $recipient_hidden = new HiddenInput();

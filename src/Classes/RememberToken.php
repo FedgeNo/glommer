@@ -178,7 +178,7 @@ DELETE
             'path' => '/',
             'httponly' => true,
             'samesite' => 'Lax',
-            'secure' => ($_SERVER['HTTPS'] ?? '') !== '',
+            'secure' => ServerURL::isHTTPS(),
         ]);
 
         // Keep this request's view of the cookie consistent with what the
@@ -193,7 +193,7 @@ DELETE
             'path' => '/',
             'httponly' => true,
             'samesite' => 'Lax',
-            'secure' => ($_SERVER['HTTPS'] ?? '') !== '',
+            'secure' => ServerURL::isHTTPS(),
         ]);
 
         unset($_COOKIE[self::COOKIE_NAME]);

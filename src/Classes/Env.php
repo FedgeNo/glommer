@@ -51,9 +51,12 @@ class Env
      * of habit from other tools - strip one matching pair of surrounding
      * quotes so the literal quote characters don't end up part of the value
      * itself (e.g. a wrapped WS_SECRET would otherwise never match what the
-     * WebSocket daemon reads from the same file).
+     * WebSocket daemon reads from the same file). Public so
+     * Installer::envContents() can strip any pre-existing surrounding quotes
+     * from a value before adding its own - same rule, both directions, so the
+     * round trip is stable instead of guessing.
      */
-    private static function stripQuotes(string $value): string
+    public static function stripQuotes(string $value): string
     {
         if (strlen($value) < 2) {
             return $value;

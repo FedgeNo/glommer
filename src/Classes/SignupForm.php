@@ -8,7 +8,7 @@ class SignupForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/signup');
+        $this -> action = ServerURL::absolute('/signup');
         $this -> method = 'POST';
 
         $fields = new Fieldset('Create an account');

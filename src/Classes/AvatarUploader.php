@@ -8,7 +8,7 @@ class AvatarUploader extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/api/upload-avatar');
+        $this -> action = ServerURL::absolute('/api/upload-avatar');
         $this -> method = 'POST';
         $this -> enctype = 'multipart/form-data';
 

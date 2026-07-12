@@ -91,7 +91,7 @@ SELECT *
     public static function requireLogin(): void
     {
         if (!self::check()) {
-            header('Location: ' . URL::absolute('/login'));
+            header('Location: ' . ServerURL::absolute('/login'));
             exit;
         }
     }

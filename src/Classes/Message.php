@@ -54,11 +54,6 @@ class Message extends HTMLObject
         return $this -> sender -> header();
     }
 
-    public static function fromRow(array $row): self
-    {
-        return self::fromRowWithSender($row, User::load((int) $row['senderId']));
-    }
-
     /**
      * Deletes a single message. Messages have no child rows or media, so this
      * is a plain one-row delete. Caller is responsible for authorization

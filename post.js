@@ -23,17 +23,6 @@ class Post {
         return post;
     }
 
-    static fromElement(element) {
-        const post = new Post();
-        post.element = element;
-        post.postId = Number(element.dataset.postId);
-        post.userId = Number(element.dataset.authorId);
-        post.parentId = element.dataset.parentId ? Number(element.dataset.parentId) : null;
-        post.keywords = element.dataset.keywords ?? null;
-        post.createdAt = element.dataset.createdAt ?? null;
-        return post;
-    }
-
     authorBylineToElement() {
         const byline = document.createElement('div');
         byline.className = 'PostByline d-flex align-items-center gap-2';
@@ -144,8 +133,14 @@ class Post {
             wrapper.appendChild(video);
         } else if (item.itemType === 'AudioItem') {
             const audio = document.createElement('audio');
-            audio.src = item.src;
             audio.controls = true;
+
+            if (deferred) {
+                audio.dataset.src = item.src;
+            } else {
+                audio.src = item.src;
+            }
+
             wrapper.appendChild(audio);
         } else {
             const img = document.createElement('img');
@@ -203,11 +198,11 @@ class Post {
             counter.textContent = '1 / ' + this.items.length;
             carousel.appendChild(counter);
 
-            const slideshow_button = document.createElement('button');
-            slideshow_button.type = 'button';
-            slideshow_button.className = 'CarouselSlideshow';
-            slideshow_button.textContent = 'Slideshow';
-            carousel.appendChild(slideshow_button);
+            const autoplay_button = document.createElement('button');
+            autoplay_button.type = 'button';
+            autoplay_button.className = 'CarouselAutoplay';
+            autoplay_button.textContent = 'Autoplay';
+            carousel.appendChild(autoplay_button);
         }
 
         return carousel;

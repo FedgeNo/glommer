@@ -28,7 +28,7 @@ class ReportCard extends HTMLObject
 
         $summary = new Div();
         $summary -> contents[] = ucfirst((string) $this -> targetType) . ' #' . $this -> targetId . ' reported by ';
-        $summary -> addContents(new Anchor(URL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
+        $summary -> addContents(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
         $details -> addContents($summary);
 
         if ($this -> targetContent !== null) {
@@ -85,62 +85,70 @@ class ReportCard extends HTMLObject
         $card -> reason = $row['reason'];
         $card -> createdAt = $row['createdAt'];
 
-        $target_user_id = Report::resolveTargetUserId($card -> targetType, $card -> targetId);
-        $card -> targetUserId = $target_user_id;
+        ['userId' => $card -> targetUserId, 'content' => $card -> targetContent] = self::resolveTarget($card -> targetType, $card -> targetId);
 
-        if ($target_user_id !== null) {
-            $target_user = User::load($target_user_id);
-            $card -> targetUsername = $target_user ?-> username;
+        if ($card -> targetUserId !== null) {
+            $card -> targetUsername = ($card -> targetContent instanceof User ? $card -> targetContent : User::load($card -> targetUserId)) ?-> username;
         }
-
-        $card -> targetContent = self::buildTargetContent($card -> targetType, $card -> targetId);
 
         return $card;
     }
 
     /**
-     * Renders the reported item so a moderator can judge it: a message's body
-     * in a blockquote (it's private and can't be viewed any other way), a post
-     * as the post itself (byline + text + media, no action bar), a user as
-     * their profile card. A deleted target becomes a plain notice.
+     * Resolves the reported item in one query against its own table (rather
+     * than a separate query just to find its owning userId, then a second one
+     * to load the row itself) and renders it so a moderator can judge it: a
+     * message's body in a blockquote (it's private and can't be viewed any
+     * other way), a post as the post itself (byline + text + media, no action
+     * bar), a user as their profile card. A deleted target becomes a plain
+     * notice.
+     *
+     * @return array{userId: ?int, content: HTMLObject}
      */
-    private static function buildTargetContent(string $target_type, int $target_id): HTMLObject
+    private static function resolveTarget(string $target_type, int $target_id): array
     {
         if ($target_type === 'message') {
-            $body = Report::messageBody($target_id);
+            $row = self::loadRow('Messages', 'messageId', $target_id);
 
-            if ($body === null) {
-                return new Notice('This message no longer exists.');
+            if ($row === null) {
+                return ['userId' => null, 'content' => new Notice('This message no longer exists.')];
             }
 
-            $quote = new Blockquote($body);
+            $quote = new Blockquote((string) $row['body']);
             $quote -> class = 'ReportedContent';
 
-            return $quote;
+            return ['userId' => (int) $row['senderId'], 'content' => $quote];
         }
 
         if ($target_type === 'post') {
-            return self::loadPost($target_id) ?? new Notice('This post no longer exists.');
+            $row = self::loadRow('Posts', 'postId', $target_id);
+
+            if ($row === null) {
+                return ['userId' => null, 'content' => new Notice('This post no longer exists.')];
+            }
+
+            return ['userId' => (int) $row['userId'], 'content' => Post::fromRowWithItems($row)];
         }
 
         if ($target_type === 'user') {
-            return User::load($target_id) ?? new Notice('This user no longer exists.');
+            $user = User::load($target_id);
+
+            return ['userId' => $target_id, 'content' => $user ?? new Notice('This user no longer exists.')];
         }
 
-        return new Notice('Unknown content type.');
+        return ['userId' => null, 'content' => new Notice('Unknown content type.')];
     }
 
-    private static function loadPost(int $post_id): ?Post
+    private static function loadRow(string $table, string $id_column, int $id): ?array
     {
         $stmt = mysqli_prepare(Database::connection(), '
 SELECT *
-    FROM `Posts`
-    WHERE `postId` = ?
+    FROM `' . $table . '`
+    WHERE `' . $id_column . '` = ?
 ');
-        mysqli_stmt_bind_param($stmt, 'i', $post_id);
+        mysqli_stmt_bind_param($stmt, 'i', $id);
         mysqli_stmt_execute($stmt);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-        return $row === null ? null : Post::fromRowWithItems($row);
+        return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
     }
 }

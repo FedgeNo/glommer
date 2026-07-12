@@ -75,10 +75,10 @@ class Notification extends HTMLObject
     protected function targetURL(): string
     {
         return match ($this -> type) {
-            'like', 'reply', 'postReady' => URL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
-            'friendRequest' => URL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
-            'friendAccepted' => URL::absolute('/users/' . $this -> actor -> username . '/'),
-            'message' => URL::absolute('/messages/' . $this -> actor -> username),
+            'like', 'reply', 'postReady' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
+            'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
+            'friendAccepted' => ServerURL::absolute('/users/' . $this -> actor -> username . '/'),
+            'message' => ServerURL::absolute('/messages/' . $this -> actor -> username),
             default => '#',
         };
     }
@@ -115,7 +115,7 @@ class Notification extends HTMLObject
     {
         foreach ($rows as &$row) {
             $row['actorImage'] = (int) $row['actorHasAvatar']
-                ? URL::absolute(User::avatarPath((int) $row['actorId']))
+                ? ServerURL::absolute(User::avatarPath((int) $row['actorId']))
                 : null;
         }
 
@@ -202,7 +202,7 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
                 'createdAt' => date('Y-m-d H:i:s'),
                 'actorUsername' => $actor ?-> username,
                 'actorDisplayName' => $actor ?-> displayName,
-                'actorImage' => $actor !== null && $actor -> hasAvatar ? URL::absolute(User::avatarPath($actor_id)) : null,
+                'actorImage' => $actor !== null && $actor -> hasAvatar ? ServerURL::absolute(User::avatarPath($actor_id)) : null,
             ],
         ]);
     }

@@ -15,8 +15,8 @@ $page = Page::create('Revert Email Change');
 if ($reverted) {
     $page -> addContents(new Paragraph('Your email address has been reverted and every device has been signed out of your account.'));
     $page -> addContents(new Paragraph('If you\'re not sure how this happened, change your password as soon as you log back in.'));
-    $page -> addContents(new Anchor(URL::absolute('/login'), 'Log In'));
-    $page -> addContents(new Anchor(URL::absolute('/forgot-password'), 'Forgot password?'));
+    $page -> addContents(new Anchor(ServerURL::absolute('/login'), 'Log In'));
+    $page -> addContents(new Anchor(ServerURL::absolute('/forgot-password'), 'Forgot password?'));
 } else {
     $page -> addContents(new Paragraph('That revert link is invalid or has expired.'));
 }

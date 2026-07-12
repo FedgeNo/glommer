@@ -23,6 +23,27 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+// Every legitimate caller (EnvironmentChecker::liveFacts()) reaches this over
+// loopback, by design - it's how bin/install.php and the setup wizard probe
+// the web SAPI's own view of the environment. Nothing here is secret, but
+// there's no reason for it to answer a request that didn't come from this
+// machine either.
+//
+// REMOTE_ADDR alone can't tell that apart: this app runs behind a
+// TLS-terminating reverse proxy (see ServerURL::isHTTPS()), which forwards
+// every request - including from real external visitors - to Apache over
+// loopback. So REMOTE_ADDR is 127.0.0.1 for EVERYONE, not just a direct
+// probe. The proxy adds X-Forwarded-For to whatever it forwards; a genuine
+// direct loopback call (curl straight to http://127.0.0.1/environment-check,
+// bypassing the proxy entirely) never has that header at all. Requiring both
+// is what actually restricts this to a direct local call.
+if (
+    !in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
+    || isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+) {
+    JSONResponse::error('Not found', 404) -> send();
+}
+
 $disabled_functions = array_map('trim', explode(',', (string) ini_get('disable_functions')));
 $exec_disabled = in_array('exec', $disabled_functions, true);
 $shell_exec_disabled = in_array('shell_exec', $disabled_functions, true);

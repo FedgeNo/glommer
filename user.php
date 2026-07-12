@@ -45,17 +45,21 @@ if ($profile_user -> avatarURL() !== null) {
 
 $page = Page::create($name, 'Posts by ' . $name . ' on Glommer', $profile_user -> avatarURL(), $json_ld, needsMath: true);
 
-$page -> addMetaContent(new RSSLink(URL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
+$page -> addMetaContent(new RSSLink(ServerURL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
 
 $page -> addContents($profile_user);
+
+$limit = 20;
+$fetch_limit = $limit + 1;
 
 $feed_stmt = mysqli_prepare($mysqli, '
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?
     ORDER BY `postId` DESC
+    LIMIT ?
 ');
-mysqli_stmt_bind_param($feed_stmt, 'i', $user_id);
+mysqli_stmt_bind_param($feed_stmt, 'ii', $user_id, $fetch_limit);
 mysqli_stmt_execute($feed_stmt);
 $feed_result = mysqli_stmt_get_result($feed_stmt);
 
@@ -65,12 +69,15 @@ while ($row = mysqli_fetch_assoc($feed_result)) {
     $feed_rows[] = $row;
 }
 
-if ($feed_rows !== []) {
-    $page -> addContents(new Heading2('Posts'));
+$has_more = count($feed_rows) > $limit;
+
+if ($has_more) {
+    array_pop($feed_rows);
 }
 
-foreach (Thread::fromRows($feed_rows) as $thread) {
-    $page -> addContents($thread);
+if ($feed_rows !== []) {
+    $page -> addContents(new Heading2('Posts'));
+    $page -> addContents(FeedList::fromRows('user', $feed_rows, $has_more, $user_id));
 }
 
 $page -> send();

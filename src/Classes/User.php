@@ -36,7 +36,7 @@ class User extends HTMLObject
 
         // The whole identity block - avatar, name, username, and joined date -
         // is one link to the profile (same as header(), just the fuller card).
-        $link = new Anchor(URL::absolute('/users/' . $this -> username . '/'));
+        $link = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/'));
         $link -> class = 'UserLink';
 
         $link -> addContents(Avatar::forUser($this));
@@ -75,7 +75,7 @@ class User extends HTMLObject
     {
         $name = $this -> displayName ?? $this -> username;
 
-        $header = new Anchor(URL::absolute('/users/' . $this -> username . '/'));
+        $header = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/'));
         $header -> class = 'd-flex align-items-center gap-3';
 
         $header -> addContents(Avatar::forUser($this));
@@ -104,7 +104,7 @@ class User extends HTMLObject
 
     public function avatarURL(): ?string
     {
-        return $this -> hasAvatar ? URL::absolute(self::avatarPath((int) $this -> userId)) : null;
+        return $this -> hasAvatar ? ServerURL::absolute(self::avatarPath((int) $this -> userId)) : null;
     }
 
     public static function fromRow(array $row): static
@@ -451,31 +451,12 @@ UPDATE `Users`
     {
         $friend_ids = array_map(fn ($friend) => (int) $friend -> userId, $this -> getFriends());
 
-        $mutual_counts = [];
-
-        foreach ($friend_ids as $friend_id) {
-            $friend = self::load($friend_id);
-
-            if ($friend === null) {
-                continue;
-            }
-
-            foreach ($friend -> getFriends() as $candidate) {
-                $candidate_id = (int) $candidate -> userId;
-
-                if ($candidate_id === (int) $this -> userId || in_array($candidate_id, $friend_ids, true)) {
-                    continue;
-                }
-
-                $mutual_counts[$candidate_id] = ($mutual_counts[$candidate_id] ?? 0) + 1;
-            }
-        }
+        $mutual_counts = self::mutualFriendCounts($friend_ids, (int) $this -> userId);
 
         if ($mutual_counts === []) {
             return $this -> getRandomUsers($limit);
         }
 
-        arsort($mutual_counts);
         $eligible = self::eligibleSuggestions(array_keys($mutual_counts), (int) $this -> userId);
 
         $suggestions = [];
@@ -491,6 +472,69 @@ UPDATE `Users`
         }
 
         return $suggestions !== [] ? $suggestions : $this -> getRandomUsers($limit);
+    }
+
+    /**
+     * Friends-of-friends, ranked by how many of $friend_ids they're accepted-
+     * friends with - one query in each direction rather than a load()+
+     * getFriends() round trip per friend, so cost no longer scales with how
+     * many friends $viewer_id has.
+     *
+     * @param int[] $friend_ids
+     * @return array<int, int> candidate userId => mutual friend count, ordered highest first
+     */
+    private static function mutualFriendCounts(array $friend_ids, int $viewer_id): array
+    {
+        if ($friend_ids === []) {
+            return [];
+        }
+
+        $accepted_status = 'accepted';
+        $not_banned = 0;
+        $excluded_ids = array_merge($friend_ids, [$viewer_id]);
+
+        $friend_placeholders = implode(', ', array_fill(0, count($friend_ids), '?'));
+        $excluded_placeholders = implode(', ', array_fill(0, count($excluded_ids), '?'));
+
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `candidateId`, COUNT(*) AS `mutualCount`
+    FROM (
+        SELECT `f`.`addresseeId` AS `candidateId`
+            FROM `Friendships` `f`
+            JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
+            WHERE `f`.`status` = ? AND `u`.`banned` = ?
+                AND `f`.`requesterId` IN (' . $friend_placeholders . ') AND `f`.`addresseeId` NOT IN (' . $excluded_placeholders . ')
+        UNION ALL
+        SELECT `f`.`requesterId` AS `candidateId`
+            FROM `Friendships` `f`
+            JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
+            WHERE `f`.`status` = ? AND `u`.`banned` = ?
+                AND `f`.`addresseeId` IN (' . $friend_placeholders . ') AND `f`.`requesterId` NOT IN (' . $excluded_placeholders . ')
+    ) `candidates`
+    GROUP BY `candidateId`
+    ORDER BY `mutualCount` DESC
+');
+        $params = array_merge(
+            [$accepted_status, $not_banned],
+            $friend_ids,
+            $excluded_ids,
+            [$accepted_status, $not_banned],
+            $friend_ids,
+            $excluded_ids
+        );
+        $types = 'si' . str_repeat('i', count($friend_ids)) . str_repeat('i', count($excluded_ids))
+            . 'si' . str_repeat('i', count($friend_ids)) . str_repeat('i', count($excluded_ids));
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $mutual_counts = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $mutual_counts[(int) $row['candidateId']] = (int) $row['mutualCount'];
+        }
+
+        return $mutual_counts;
     }
 
     /**

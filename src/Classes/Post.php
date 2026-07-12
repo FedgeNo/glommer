@@ -71,7 +71,7 @@ class Post extends HTMLObject
                 $heading -> contents[] = $this -> title;
 
                 if ($this -> postId !== null) {
-                    $title_link = new Anchor(URL::absolute('/users/' . $this -> author ?-> username . '/' . $this -> postId));
+                    $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author ?-> username . '/' . $this -> postId));
                     $title_link -> addContents($heading);
                     $this -> contents[] = $title_link;
                 } else {
@@ -123,7 +123,7 @@ class Post extends HTMLObject
     protected function summarizedDescription(): HTMLObject
     {
         $see_more_url = $this -> postId !== null && $this -> author !== null
-            ? URL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId)
+            ? ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId)
             : null;
 
         $body = new TruncatedPostBody($see_more_url);
@@ -190,7 +190,7 @@ class Post extends HTMLObject
         $byline -> addContents($this -> author -> header());
 
         if ($this -> createdAt !== null && $this -> postId !== null) {
-            $timestamp_link = new Anchor(URL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
+            $timestamp_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
             $timestamp_link -> class = 'PostTimestamp Muted text-sm ms-auto';
 
             $timestamp_link -> addContents(new RelativeTime($this -> createdAt, 'M j, Y'));

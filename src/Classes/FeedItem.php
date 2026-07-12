@@ -20,14 +20,14 @@ class FeedItem extends HTMLObject
 
     public function srcURL(): string
     {
-        return URL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> itemType));
+        return ServerURL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> itemType));
     }
 
     public function imageURL(): ?string
     {
         $path = UploadProcessor::thumbnailPath((int) $this -> itemId, (string) $this -> itemType);
 
-        return $path !== null ? URL::absolute($path) : null;
+        return $path !== null ? ServerURL::absolute($path) : null;
     }
 
     public static function fromRow(array $row): self

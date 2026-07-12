@@ -32,6 +32,8 @@ if ($post -> author === null || $post -> author -> username !== $username || $po
 }
 
 $not_banned = 0;
+$limit = 20;
+$fetch_limit = $limit + 1;
 
 $reply_stmt = mysqli_prepare($mysqli, '
 SELECT `Posts`.*
@@ -39,8 +41,9 @@ SELECT `Posts`.*
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
 ');
-mysqli_stmt_bind_param($reply_stmt, 'ii', $post_id, $not_banned);
+mysqli_stmt_bind_param($reply_stmt, 'iii', $post_id, $not_banned, $fetch_limit);
 mysqli_stmt_execute($reply_stmt);
 $reply_result = mysqli_stmt_get_result($reply_stmt);
 
@@ -99,10 +102,16 @@ while ($reply_row = mysqli_fetch_assoc($reply_result)) {
     $reply_rows[] = $reply_row;
 }
 
+$has_more_replies = count($reply_rows) > $limit;
+
+if ($has_more_replies) {
+    array_pop($reply_rows);
+}
+
 if ($reply_rows !== []) {
     $page -> addContents(new RepliesHeading());
 }
 
-$page -> addContents(ReplyList::fromRows($reply_rows));
+$page -> addContents(ReplyList::fromRows($post_id, $reply_rows, $has_more_replies));
 
 $page -> send();

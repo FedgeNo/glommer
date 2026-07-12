@@ -72,7 +72,7 @@ class Page
 
         $stylesheet = new Link();
         $stylesheet -> rel = 'stylesheet';
-        $stylesheet -> href = URL::absolute('/style.css');
+        $stylesheet -> href = ServerURL::absolute('/style.css');
         $page -> addHeadContent($stylesheet);
 
         if ($needsEditor) {
@@ -102,38 +102,38 @@ class Page
             'currentUserSkinTone' => $current_user ?-> skinTone,
             'currentUserCanModerate' => Auth::canModerate(),
             'CSRFToken' => CSRF::token(),
-            'siteURL' => URL::absolute(''),
+            'siteURL' => ServerURL::absolute(''),
             'serverTime' => time() * 1000,
             'WSPort' => $config['WSPort'],
         ]));
 
         $post_script = new Script();
-        $post_script -> src = URL::absolute('/post.js');
+        $post_script -> src = ServerURL::absolute('/post.js');
         $page -> addContents($post_script);
 
         $message_script = new Script();
-        $message_script -> src = URL::absolute('/message.js');
+        $message_script -> src = ServerURL::absolute('/message.js');
         $page -> addContents($message_script);
 
         $other_user_script = new Script();
-        $other_user_script -> src = URL::absolute('/other-user.js');
+        $other_user_script -> src = ServerURL::absolute('/other-user.js');
         $page -> addContents($other_user_script);
 
         $notification_script = new Script();
-        $notification_script -> src = URL::absolute('/notification.js');
+        $notification_script -> src = ServerURL::absolute('/notification.js');
         $page -> addContents($notification_script);
 
         $banned_user_script = new Script();
-        $banned_user_script -> src = URL::absolute('/banned-user.js');
+        $banned_user_script -> src = ServerURL::absolute('/banned-user.js');
         $page -> addContents($banned_user_script);
 
         $main_script = new Script();
-        $main_script -> src = URL::absolute('/main.js');
+        $main_script -> src = ServerURL::absolute('/main.js');
         $page -> addContents($main_script);
 
         if ($needsHelp) {
             $help_script = new Script();
-            $help_script -> src = URL::absolute('/help.js');
+            $help_script -> src = ServerURL::absolute('/help.js');
             $page -> addContents($help_script);
         }
 
@@ -155,7 +155,7 @@ class Page
 
     public static function currentURL(): string
     {
-        return URL::absolute($_SERVER['REQUEST_URI'] ?? '/');
+        return ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/');
     }
 
     protected static function metaTags(string $title, string $description, ?string $image, string $url): array

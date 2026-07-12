@@ -17,7 +17,7 @@ class EmailChangeRevert
     {
         $token = self::create((int) $user -> userId, $previous_email);
 
-        $revert_url = URL::absolute('/revert-email?token=' . $token);
+        $revert_url = ServerURL::absolute('/revert-email?token=' . $token);
 
         $name = $user -> displayName ?? $user -> username;
 
@@ -48,6 +48,26 @@ This link expires in 30 days.';
             // failures doesn't pile up).
             Notification::warnAdminMailerFailed((int) $user -> userId);
         }
+    }
+
+    /**
+     * Whether $email is the previous address of some outstanding (unexpired,
+     * unconsumed) revert - reserved for its rightful owner to reclaim, so
+     * nobody else (a new signup, or another account's email change) can be
+     * handed it in the meantime.
+     */
+    public static function isReserved(string $email): bool
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT 1
+    FROM `EmailChangeReverts`
+    WHERE `previousEmail` = ? AND `expiresAt` > NOW()
+');
+        mysqli_stmt_bind_param($stmt, 's', $email);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        return mysqli_stmt_num_rows($stmt) > 0;
     }
 
     /**
@@ -91,7 +111,14 @@ UPDATE `Users`
     WHERE `userId` = ?
 ');
         mysqli_stmt_bind_param($update_stmt, 'sii', $previous_email, $verified, $user_id);
-        mysqli_stmt_execute($update_stmt);
+
+        // `email` is UNIQUE. This should never actually fire - signup and
+        // change-email both refuse to hand out an address that's reserved by
+        // an outstanding revert (see EmailChangeRevert::isReserved()) - but
+        // the restore must not report success if it somehow does.
+        if (!mysqli_stmt_execute($update_stmt)) {
+            return false;
+        }
 
         // Every session and remember-me token dies with the change - the
         // change that triggered this was either unauthorized or at minimum

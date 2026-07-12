@@ -239,7 +239,12 @@ INSERT INTO `Settings` (`name`, `value`)
         $lines = [];
 
         foreach ($env as $key => $value) {
-            $lines[] = $key . '=' . $value;
+            // Always quoted, and any quote characters the value already
+            // started/ended with are stripped first (Env::stripQuotes() - the
+            // same rule Env::load() applies on read) - so re-writing a value
+            // that already looks quoted never doubles up, and the write/read
+            // round trip is stable instead of ambiguous.
+            $lines[] = $key . '="' . Env::stripQuotes($value) . '"';
         }
 
         return implode("\n", $lines) . "\n";

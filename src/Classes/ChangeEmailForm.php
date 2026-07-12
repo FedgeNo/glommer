@@ -8,7 +8,7 @@ class ChangeEmailForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = URL::absolute('/api/change-email');
+        $this -> action = ServerURL::absolute('/api/change-email');
         $this -> method = 'POST';
 
         $fields = new Fieldset('Change your email address');

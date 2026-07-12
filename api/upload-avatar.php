@@ -57,4 +57,4 @@ UPDATE `Users`
 mysqli_stmt_bind_param($stmt, 'ii', $has_avatar, $current_user -> userId);
 mysqli_stmt_execute($stmt);
 
-JSONResponse::success(['image' => URL::absolute(User::avatarPath($current_user -> userId))]) -> send();
+JSONResponse::success(['image' => ServerURL::absolute(User::avatarPath($current_user -> userId))]) -> send();

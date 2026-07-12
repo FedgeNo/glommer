@@ -52,11 +52,11 @@ class OtherUser extends User
             $actions -> addContents($friend_button);
         }
 
-        $message_link = new Anchor(URL::absolute('/messages/' . $this -> username), 'Message');
+        $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> username), 'Message');
         $message_link -> class = 'Btn';
         $actions -> addContents($message_link);
 
-        $friends_link = new Anchor(URL::absolute('/users/' . $this -> username . '/friends'), 'Friends');
+        $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/friends'), 'Friends');
         $friends_link -> class = 'Btn';
         $actions -> addContents($friends_link);
 

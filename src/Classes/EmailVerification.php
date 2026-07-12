@@ -8,7 +8,7 @@ class EmailVerification
     {
         $token = self::create((int) $user -> userId);
 
-        $verify_url = URL::absolute('/verify-email/?token=' . $token);
+        $verify_url = URL::absolute('/verify-email?token=' . $token);
 
         $name = $user -> displayName ?? $user -> username;
 

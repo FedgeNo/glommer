@@ -8,7 +8,7 @@ class PasswordReset
     {
         $token = self::create((int) $user -> userId);
 
-        $reset_url = URL::absolute('/reset-password/?token=' . $token);
+        $reset_url = URL::absolute('/reset-password?token=' . $token);
 
         $name = $user -> displayName ?? $user -> username;
 

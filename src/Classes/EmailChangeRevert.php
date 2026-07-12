@@ -17,7 +17,7 @@ class EmailChangeRevert
     {
         $token = self::create((int) $user -> userId, $previous_email);
 
-        $revert_url = URL::absolute('/revert-email/?token=' . $token);
+        $revert_url = URL::absolute('/revert-email?token=' . $token);
 
         $name = $user -> displayName ?? $user -> username;
 

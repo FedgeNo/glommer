@@ -117,6 +117,84 @@ INSERT INTO `Settings` (`name`, `value`)
     }
 
     /**
+     * Called from init.php's version gate on every request while the database
+     * is behind GLOMMER_VERSION - a separate concern from the fresh-install
+     * wizard in src/setup.php, not a step of it. Applies whatever's pending
+     * (missing tables, schema drift, index migrations, DML maintenance) and
+     * stamps the new version, silently, with no page of its own - the request
+     * just keeps going once it returns true. DDL needs privileges the runtime
+     * account deliberately doesn't have, so that part only runs when
+     * DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD are set in the environment (the same
+     * non-interactive credential bin/install.php already reads for a scripted
+     * upgrade) - without them, a request with genuine DDL pending returns
+     * false and init.php falls back to its existing maintenance page. Every
+     * statement involved (CREATE TABLE IF NOT EXISTS, ADD/DROP INDEX IF
+     * (NOT) EXISTS, INSERT ... ON DUPLICATE KEY) is idempotent, so this is
+     * safe to run from multiple concurrent requests with no coordination.
+     *
+     * Runs with ignore_user_abort() forced on for its duration: this can be
+     * triggered by any visitor's ordinary page load, and a migration that's
+     * slower than their patience shouldn't get torn down mid-ALTER just
+     * because they navigated away or closed the tab - it needs to reach the
+     * version stamp at the end (or fail cleanly) regardless of whether
+     * anyone is still there to receive the response.
+     */
+    public static function attemptSilentUpgrade(): bool
+    {
+        $previous_ignore_user_abort = ignore_user_abort(true);
+
+        try {
+            try {
+                $missing_tables = SchemaInstaller::missingTables(Database::connection());
+                $drift = SchemaInstaller::missingDefinitions(Database::connection());
+                $needed_index_migrations = SchemaInstaller::neededIndexMigrations(Database::connection());
+            } catch (\mysqli_sql_exception | \RuntimeException $exception) {
+                return false;
+            }
+
+            if ($missing_tables !== [] || $drift !== [] || $needed_index_migrations !== []) {
+                $admin_username = Env::get('DB_ADMIN_USERNAME');
+                $admin_password = Env::get('DB_ADMIN_PASSWORD');
+
+                if ($admin_username === null || $admin_password === null) {
+                    return false;
+                }
+
+                $config = require __DIR__ . '/../config.php';
+
+                try {
+                    $admin_connection = mysqli_connect($config['host'], $admin_username, $admin_password, $config['database'], $config['port']);
+
+                    SchemaInstaller::createTables($admin_connection, $missing_tables);
+
+                    foreach ($drift as $alters) {
+                        foreach ($alters as $alter) {
+                            mysqli_query($admin_connection, $alter);
+                        }
+                    }
+
+                    foreach ($needed_index_migrations as $statement) {
+                        mysqli_query($admin_connection, $statement);
+                    }
+                } catch (\mysqli_sql_exception $exception) {
+                    return false;
+                } finally {
+                    if (isset($admin_connection)) {
+                        mysqli_close($admin_connection);
+                    }
+                }
+            }
+
+            SchemaInstaller::runMaintenance(Database::connection());
+            Settings::set('appVersion', self::codeVersion());
+
+            return true;
+        } finally {
+            ignore_user_abort($previous_ignore_user_abort === 1);
+        }
+    }
+
+    /**
      * Tries to generate a WebSocket TLS certificate for $host via mkcert -
      * the same tool bin/install.php offers interactively - without asking,
      * since the web setup wizard has no terminal to ask through. A returned

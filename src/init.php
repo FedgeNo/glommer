@@ -111,7 +111,7 @@ if ($site_is_installed && !str_starts_with((string) $init_config['siteURL'], 'ht
 // generic "upgrading" message.
 $db_app_version = Settings::get('appVersion');
 
-if ($db_app_version !== GLOMMER_VERSION) {
+if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
     if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
         JSONResponse::error('The site is being upgraded. Please try again in a few minutes.', 503) -> send();
     }

@@ -38,8 +38,11 @@ class SecurityHeaders
             // (same host, different port) - 'self' doesn't cover it, and the
             // actual hostname varies with however the site is reached, so
             // this allows the configured port on any host rather than one
-            // hardcoded hostname.
-            'connect-src \'self\' https://cdn.jsdelivr.net ws://*:' . $config['WSPort'] . ' wss://*:' . $config['WSPort'],
+            // hardcoded hostname. Only wss:// (TLS): the site is https-only,
+            // and browsers block a plain ws:// connection from an https page
+            // as mixed content anyway, so allowing ws:// here would buy
+            // nothing but a looser policy.
+            'connect-src \'self\' https://cdn.jsdelivr.net wss://*:' . $config['WSPort'],
             'object-src \'none\'',
             'base-uri \'self\'',
             'form-action \'self\'',

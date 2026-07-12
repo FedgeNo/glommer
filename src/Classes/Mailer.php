@@ -205,6 +205,12 @@ class Mailer
 
             $say('QUIT');
 
+            // The message is already accepted (the 250 above) so a missing or
+            // odd QUIT reply doesn't change the outcome - but read the 221 the
+            // server sends before we close, so the conversation ends cleanly
+            // rather than dropping the socket mid-reply.
+            $expect('221');
+
             return true;
         };
 

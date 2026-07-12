@@ -67,11 +67,8 @@ class TruncatedPostBody extends PostBody
         $this -> truncateChildren($element);
 
         if ($this -> didTruncate && $this -> seeMoreURL !== null) {
-            // A trailing child of the body, after all content - the SeeMore
-            // class right-aligns it (see style.css).
-            $anchor = new Anchor($this -> seeMoreURL, 'See More...');
-            $anchor -> class = 'SeeMore';
-            $element -> appendChild($anchor -> toDOM());
+            // A trailing child of the body, after all content.
+            $element -> appendChild((new SeeMore($this -> seeMoreURL)) -> toDOM());
         }
 
         return $element;

@@ -54,6 +54,13 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin_password = (string) ($_POST['adminPassword'] ?? '');
         $turnstile_site_key = trim((string) ($_POST['turnstileSiteKey'] ?? ''));
         $turnstile_secret_key = trim((string) ($_POST['turnstileSecretKey'] ?? ''));
+        $server_name_confirmed = ($_POST['serverNameConfirmed'] ?? '') === '1';
+        $ws_tls_cert_input = trim((string) ($_POST['wsTLSCert'] ?? ''));
+        $ws_tls_key_input = trim((string) ($_POST['wsTLSKey'] ?? ''));
+
+        $site_host = '';
+        $ws_tls_cert = null;
+        $ws_tls_key = null;
 
         if ($site_url === '' || filter_var($site_url, FILTER_VALIDATE_URL) === false) {
             $errors[] = 'A valid site URL is required.';
@@ -62,6 +69,61 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
             // serve over plain HTTP, so an http URL would produce an install
             // that doesn't work. Make the admin sort TLS out now, not later.
             $errors[] = 'The site URL must be an https:// URL - Glommer requires HTTPS and will not serve over plain HTTP. For a real domain use Let\'s Encrypt (certbot); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default. See README.md\'s HTTPS section, then enter the https:// URL here.';
+        } else {
+            // The string prefix check above only proves the URL *says*
+            // https:// - test for real: connect to the site's own hostname
+            // (never 127.0.0.1 - a VirtualHost setup routes by the Host
+            // header/SNI, so loopback may not reach this site at all) and
+            // see what actually happens. Same live proofs bin/install.php
+            // runs, just triggered by the form instead of a terminal prompt.
+            $site_host = (string) (parse_url($site_url, PHP_URL_HOST) ?: '');
+            $site_port = parse_url($site_url, PHP_URL_PORT);
+            $server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
+
+            $https_serving = EnvironmentChecker::httpsServing($server_name_value);
+
+            if ($https_serving === false) {
+                $errors[] = 'The site URL is https://, but a real HTTPS connection to ' . $server_name_value . ' failed at the TLS handshake itself - something is listening on the port without actually serving TLS. Check that your web server\'s SSL certificate/key are configured and mod_ssl (or equivalent) is loaded, then resubmit.';
+            }
+
+            // By default a web server builds its HTTPS-redirect target from
+            // whatever Host header the request arrived with, not a fixed
+            // configured name - anyone can forge one and get redirected
+            // somewhere of their choosing. "ServerName <host>" +
+            // "UseCanonicalName On" fix that; prove it live with a forged
+            // Host header rather than just asking, falling back to the
+            // confirmation checkbox only when that live test is inconclusive.
+            $spoof_test = EnvironmentChecker::hostHeaderSpoofable($site_host);
+
+            if ($spoof_test === true) {
+                $errors[] = 'The HTTPS redirect can be spoofed via a forged Host header (confirmed live: a request with a fake Host header got redirected to that same fake host) - anyone can 301 a victim to a domain of their choosing. Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in your web server\'s config (httpd.conf\'s top level if you\'re not using a <VirtualHost>, or inside the vhost if you are), then resubmit. See README.md\'s HTTPS section.';
+            } elseif ($spoof_test === null && !$server_name_confirmed) {
+                $errors[] = 'Could not confirm live that "ServerName ' . $server_name_value . '" and "UseCanonicalName On" are set in your web server\'s config (inconclusive - DNS may not point here yet, or the web server isn\'t reachable this way). Check the confirmation box above once you\'ve set them, then resubmit. See README.md\'s HTTPS section.';
+            }
+
+            // HTTPS is required site-wide, and a browser on an https page
+            // silently refuses a plain ws:// connection (no console warning
+            // most people would notice - live notifications/messaging just
+            // stop working) - so the WebSocket daemon needs its own TLS
+            // certificate too, or the install isn't actually functional.
+            if ($ws_tls_cert_input !== '' xor $ws_tls_key_input !== '') {
+                $errors[] = 'Provide both the WebSocket TLS certificate and key paths, or leave both blank to generate one automatically.';
+            } elseif ($ws_tls_cert_input !== '' && $ws_tls_key_input !== '') {
+                if (!EnvironmentChecker::webSocketCertificateAndKeyMatch($ws_tls_cert_input, $ws_tls_key_input)) {
+                    $errors[] = 'The WebSocket TLS certificate/key at those paths couldn\'t be read, or don\'t match each other. Check the paths (must be readable by the web server user) and that they\'re a genuine matching pair, or leave both fields blank to generate one automatically.';
+                } else {
+                    $ws_tls_cert = $ws_tls_cert_input;
+                    $ws_tls_key = $ws_tls_key_input;
+                }
+            } else {
+                $generated = Installer::generateWebSocketCertificate($site_host);
+
+                if ($generated === null) {
+                    $errors[] = 'Could not generate a WebSocket TLS certificate automatically (mkcert isn\'t installed on this server, or generation failed) - since the site is served over https, browsers will silently refuse the WebSocket connection without one. Install mkcert and resubmit, or generate a certificate manually (see README.md\'s HTTPS section) and enter its paths in the WebSocket TLS fields above.';
+                } else {
+                    [$ws_tls_cert, $ws_tls_key] = $generated;
+                }
+            }
         }
 
         if ($site_title === '') {
@@ -164,6 +226,8 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 'WS_PORT' => (string) $existing_config['WSPort'],
                 'WS_PUSH_PORT' => (string) $existing_config['WSPushPort'],
                 'WS_SECRET' => $ws_secret,
+                'WS_TLS_CERT' => (string) $ws_tls_cert,
+                'WS_TLS_KEY' => (string) $ws_tls_key,
             ]);
 
             if (file_put_contents(__DIR__ . '/../.env', $env_contents) === false) {

@@ -38,6 +38,16 @@ class SetupForm extends Form
         $site_fields -> addContents($site_title);
         $site_fields -> addContents($mail_from_address);
         $site_fields -> addContents($mail_from_name);
+
+        // ServerName/UseCanonicalName are proven live (a forged-Host-header
+        // request against the entered site URL) wherever possible - this
+        // checkbox is only consulted as a fallback when that live test comes
+        // back inconclusive, mirroring bin/install.php's SERVERNAME_CONFIRMED
+        // override for the same case.
+        $current_host = (string) (parse_url($current_url, PHP_URL_HOST) ?: 'your-domain');
+        $server_name_confirmed = new CheckboxField('serverNameConfirmed', 'I\'ve set "ServerName ' . $current_host . '" and "UseCanonicalName On" in my web server\'s config (only checked if the automated live test can\'t complete - see README.md\'s HTTPS section)');
+        $site_fields -> addContents($server_name_confirmed);
+
         $this -> contents[] = $site_fields;
 
         $db_host = new InputField('DBHost', 'Database host', 'text', '127.0.0.1', 255);
@@ -59,6 +69,16 @@ class SetupForm extends Form
         $db_fields -> addContents($admin_username);
         $db_fields -> addContents(new InputField('adminPassword', 'Database admin password', 'password', 'Database admin password'));
         $this -> contents[] = $db_fields;
+
+        // Optional: since the site is required to be https, browsers refuse a
+        // plain ws:// connection to the WebSocket daemon - it needs its own
+        // TLS certificate. Setup tries to generate one automatically via
+        // mkcert first; these fields are only needed as a fallback if that
+        // isn't possible (mkcert missing, or generation fails).
+        $ws_tls_fields = new Fieldset('WebSocket TLS (optional)');
+        $ws_tls_fields -> addContents(new InputField('wsTLSCert', 'Certificate path', 'text', 'Leave blank to generate automatically via mkcert', 500));
+        $ws_tls_fields -> addContents(new InputField('wsTLSKey', 'Key path', 'text', 'Leave blank to generate automatically via mkcert', 500));
+        $this -> contents[] = $ws_tls_fields;
 
         // Optional: Cloudflare Turnstile ("I am not a robot") on sign-up and
         // sign-in. Leave blank to skip - it can be set later in Site Settings.

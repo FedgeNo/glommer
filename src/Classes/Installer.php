@@ -117,6 +117,42 @@ INSERT INTO `Settings` (`name`, `value`)
     }
 
     /**
+     * Tries to generate a WebSocket TLS certificate for $host via mkcert -
+     * the same tool bin/install.php offers interactively - without asking,
+     * since the web setup wizard has no terminal to ask through. A returned
+     * pair is proven usable via EnvironmentChecker::webSocketCertificateAndKeyMatch()
+     * before it's handed back, so a null result always means the admin
+     * genuinely needs to handle this by hand (mkcert missing, or generation
+     * didn't produce a usable pair) - never a false "it worked".
+     *
+     * @return array{0: string, 1: string}|null [certPath, keyPath]
+     */
+    public static function generateWebSocketCertificate(string $host): ?array
+    {
+        if (trim((string) @shell_exec('command -v mkcert 2>/dev/null')) === '') {
+            return null;
+        }
+
+        $home = $_SERVER['HOME'] ?? getenv('HOME');
+        $cert_dir = (is_string($home) && $home !== '' ? $home : sys_get_temp_dir()) . '/.local/share/glommer-certs';
+
+        if (!is_dir($cert_dir) && !@mkdir($cert_dir, 0700, true)) {
+            return null;
+        }
+
+        $cert_path = $cert_dir . '/' . $host . '.pem';
+        $key_path = $cert_dir . '/' . $host . '-key.pem';
+
+        @exec('mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1', $output, $exit_code);
+
+        if ($exit_code !== 0 || !EnvironmentChecker::webSocketCertificateAndKeyMatch($cert_path, $key_path)) {
+            return null;
+        }
+
+        return [$cert_path, $key_path];
+    }
+
+    /**
      * @param array<string, string> $env ENV key => value, in the order they
      *                                    should appear in the file
      */

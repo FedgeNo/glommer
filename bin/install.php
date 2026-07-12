@@ -462,6 +462,12 @@ function offer_websocket_tls(string $host): bool
         return false;
     }
 
+    if (!EnvironmentChecker::webSocketCertificateAndKeyMatch($cert_path, $key_path)) {
+        fail_line('mkcert reported success, but the generated certificate and key don\'t actually match - not using them. Generate a certificate manually (see README.md\'s HTTPS section) and set WS_TLS_CERT/WS_TLS_KEY in .env.');
+
+        return false;
+    }
+
     $env_path = __DIR__ . '/../.env';
     $env_contents = (string) file_get_contents($env_path);
     $env_contents = preg_replace('/^WS_TLS_CERT=.*$/m', 'WS_TLS_CERT=' . $cert_path, $env_contents, -1, $cert_replaced);

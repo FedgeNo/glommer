@@ -333,6 +333,39 @@ class EnvironmentChecker
         return str_contains($match[1], $spoofed_host);
     }
 
+    /**
+     * Proves a candidate WS_TLS_CERT/WS_TLS_KEY pair actually works, rather
+     * than trusting that a cert-generation command exited 0 or that a
+     * manually-entered path exists. Checks the certificate and private key
+     * are readable, well-formed, and genuinely match each other - the same
+     * pairing bin/websocket-server.php loads via 'local_cert'/'local_pk' when
+     * it starts. A mismatched, corrupted, or otherwise unusable pair would
+     * otherwise only surface once the daemon is restarted and every browser
+     * silently fails to open its wss:// connection.
+     */
+    public static function webSocketCertificateAndKeyMatch(string $cert_path, string $key_path): bool
+    {
+        if (!is_file($cert_path) || !is_readable($cert_path) || !is_file($key_path) || !is_readable($key_path)) {
+            return false;
+        }
+
+        $certificate = @file_get_contents($cert_path);
+        $private_key = @file_get_contents($key_path);
+
+        if ($certificate === false || $private_key === false) {
+            return false;
+        }
+
+        $x509 = @openssl_x509_read($certificate);
+        $pkey = @openssl_pkey_get_private($private_key);
+
+        if ($x509 === false || $pkey === false) {
+            return false;
+        }
+
+        return openssl_x509_check_private_key($x509, $pkey);
+    }
+
     /** @var array<string, mixed>|false|null null = not yet fetched, false = fetch failed */
     private static array|false|null $liveFactsCache = null;
 

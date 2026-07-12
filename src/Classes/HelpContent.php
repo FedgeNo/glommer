@@ -90,7 +90,13 @@ class HelpContent
      */
     public static function search(string $query): array
     {
-        $terms = array_values(array_filter(preg_split('/\s+/', strtolower(trim($query)))));
+        // array_filter's default callback drops "0" as falsy - explicit
+        // check so searching for exactly "0" doesn't silently fall through
+        // to "no terms" (which returns every article instead).
+        $terms = array_values(array_filter(
+            preg_split('/\s+/', strtolower(trim($query))),
+            static fn (string $term): bool => $term !== ''
+        ));
 
         if ($terms === []) {
             return self::all();

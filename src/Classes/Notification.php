@@ -119,6 +119,8 @@ class Notification extends HTMLObject
                 : null;
         }
 
+        unset($row);
+
         return $rows;
     }
 

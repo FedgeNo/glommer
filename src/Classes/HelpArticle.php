@@ -33,6 +33,8 @@ class HelpArticle extends HTMLObject
         $category_link -> class = 'HelpArticleCategory Muted text-sm';
         $this -> contents[] = $category_link;
 
+        $this -> contents[] = new Heading3($this -> title);
+
         $body = new HelpArticleBody();
         $body -> contents[] = $this -> body;
         $this -> contents[] = $body;

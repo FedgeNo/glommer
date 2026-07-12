@@ -262,6 +262,21 @@ SELECT `postId`
             }
         }
 
+        // Notifications.postId carries no FK (it's a loose, per-type
+        // reference - not every notification type even uses it - not a
+        // strict single-table FK candidate), so nothing cascades these on
+        // its own. Without this, a reply/like/postReady notification for a
+        // deleted post would point at a 404'ing permalink forever.
+        $post_id_placeholders = implode(', ', array_fill(0, count($all_post_ids), '?'));
+
+        $prune_notifications_stmt = mysqli_prepare($mysqli, '
+DELETE
+    FROM `Notifications`
+    WHERE `postId` IN (' . $post_id_placeholders . ')
+');
+        mysqli_stmt_bind_param($prune_notifications_stmt, str_repeat('i', count($all_post_ids)), ...$all_post_ids);
+        mysqli_stmt_execute($prune_notifications_stmt);
+
         $delete_stmt = mysqli_prepare($mysqli, '
 DELETE
     FROM `Posts`
@@ -274,6 +289,66 @@ DELETE
         foreach ($doomed_items as $item) {
             UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> itemType);
         }
+    }
+
+    /**
+     * The public global feed: every top-level post (parentId IS NULL) by a
+     * non-banned author, newest first. The site's default feed, not gated by
+     * friendship (that's Timeline::rowsForUser, whose shape this mirrors).
+     * The single source of truth for what the global feed shows - index.php,
+     * rss-feed.php, and api/feed-history.php all go through here so a change
+     * to feed visibility is made once, not hand-copied across each.
+     * Cursor-paginate by passing the postId of the last post already seen as
+     * $before_post_id; omit it for the first page. Returns $limit rows plus a
+     * hasMore flag (fetches one extra to detect a next page without a second
+     * count query).
+     *
+     * @return array{rows: array[], hasMore: bool}
+     */
+    public static function globalFeedRows(int $limit, ?int $before_post_id = null): array
+    {
+        $mysqli = Database::connection();
+        $fetch_limit = $limit + 1;
+        $not_banned = 0;
+
+        if ($before_post_id !== null) {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+');
+            mysqli_stmt_bind_param($stmt, 'iii', $not_banned, $before_post_id, $fetch_limit);
+        } else {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+');
+            mysqli_stmt_bind_param($stmt, 'ii', $not_banned, $fetch_limit);
+        }
+
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $rows = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rows[] = $row;
+        }
+
+        $has_more = count($rows) > $limit;
+
+        if ($has_more) {
+            array_pop($rows);
+        }
+
+        return ['rows' => $rows, 'hasMore' => $has_more];
     }
 
     /**

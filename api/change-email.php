@@ -65,7 +65,21 @@ UPDATE `Users`
     WHERE `userId` = ?
 ');
 mysqli_stmt_bind_param($stmt, 'sii', $new_email, $unverified, $current_user -> userId);
-mysqli_stmt_execute($stmt);
+
+try {
+    mysqli_stmt_execute($stmt);
+} catch (\mysqli_sql_exception $exception) {
+    // The uniqueness check above has a TOCTOU gap: another account (or
+    // another request from this same account) can claim this exact email
+    // between the check and this UPDATE. `email` is UNIQUE - 1062 is
+    // MySQL's duplicate-key error; anything else is a real failure, not a
+    // race.
+    if ($exception -> getCode() !== 1062) {
+        throw $exception;
+    }
+
+    JSONResponse::error('That email address is already in use', 422) -> send();
+}
 
 Auth::clearUserCache();
 $updated_user = Auth::user();

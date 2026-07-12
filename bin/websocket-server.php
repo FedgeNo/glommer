@@ -133,6 +133,14 @@ const HANDSHAKE_TIMEOUT_SECONDS = 10;
 const CLIENT_PING_INTERVAL_SECONDS = 30;
 const CLIENT_PONG_GRACE_SECONDS = 60;
 
+// A push caller (api/*.php scripts, always on this same machine) sends its
+// one complete line almost instantly and gets closeAfterFlush set right
+// after handle_push_request() processes it - so anything still open this
+// long after connecting never sent a complete line (or never really
+// intended to), and would otherwise leak its fd/connection slot forever the
+// same way an unfinished client handshake would.
+const PUSH_CONNECTION_TIMEOUT_SECONDS = 10;
+
 function register_connection($socket, string $kind): int
 {
     global $connections;
@@ -165,8 +173,13 @@ function register_connection($socket, string $kind): int
  * HANDSHAKE_TIMEOUT_SECONDS, pings any handshake-complete client that's gone
  * quiet for CLIENT_PING_INTERVAL_SECONDS, and drops one that still hasn't
  * made a peep (pong or otherwise) CLIENT_PONG_GRACE_SECONDS after that ping.
- * Push connections aren't touched - they're short-lived by construction
- * (handle_push_request() always sets closeAfterFlush).
+ * Also drops a push connection that's sat open past
+ * PUSH_CONNECTION_TIMEOUT_SECONDS without ever completing its line (a
+ * well-behaved push caller never gets anywhere near this - it's already
+ * gone via closeAfterFlush) - push connections are short-lived by
+ * construction, but only once handle_push_request() actually got a complete
+ * line to process, so a stalled one needs the same kind of timeout a client
+ * stuck mid-handshake does.
  */
 function reap_stale_connections(): void
 {
@@ -175,7 +188,11 @@ function reap_stale_connections(): void
     $now = microtime(true);
 
     foreach ($connections as $id => $connection) {
-        if ($connection['kind'] !== 'client') {
+        if ($connection['kind'] === 'push') {
+            if ($now - $connection['connectedAt'] > PUSH_CONNECTION_TIMEOUT_SECONDS) {
+                drop_connection($id);
+            }
+
             continue;
         }
 
@@ -469,7 +486,17 @@ function handle_push_request(int $id): void
         && hash_equals($config['WSSecret'], $request['secret'])
     ) {
         $target_user_id = (int) $request['userId'];
-        $frame = ws_encode_text_frame(json_encode($request['payload']));
+        $encoded_payload = json_encode($request['payload']);
+    } else {
+        $encoded_payload = false;
+    }
+
+    // json_encode() can return false (e.g. a value that only serializes to
+    // INF/NAN) - ws_encode_text_frame() takes a strictly-typed string, so
+    // passing false straight through would throw and take the whole
+    // single-process daemon down with it. Just deliver nothing instead.
+    if ($encoded_payload !== false) {
+        $frame = ws_encode_text_frame($encoded_payload);
 
         foreach ($connectionsByUser[$target_user_id] ?? [] as $client_id) {
             if (($connections[$client_id]['kind'] ?? null) !== 'client') {

@@ -35,15 +35,17 @@ if ($image === false) {
     JSONResponse::error('Not a valid image', 422) -> send();
 }
 
-$display_path = $avatar_dir . '/' . $current_user -> userId . '.jpg';
 $thumbnail_path = $avatar_dir . '/' . $current_user -> userId . '-thumb.jpg';
 
-$display_ok = ImageProcessor::resizeAndSave($image, $display_path, ImageProcessor::DISPLAY_MAX_DIMENSION);
+// Only the thumbnail is ever actually served - User::avatarPath() (the one
+// place an avatar URL is built anywhere in the app) always points at
+// -thumb.jpg, so a full-size copy would just be wasted CPU/disk on every
+// upload.
 $thumbnail_ok = ImageProcessor::resizeAndSave($image, $thumbnail_path, ImageProcessor::THUMBNAIL_MAX_DIMENSION);
 
 imagedestroy($image);
 
-if (!$display_ok || !$thumbnail_ok) {
+if (!$thumbnail_ok) {
     JSONResponse::error('Could not process image', 422) -> send();
 }
 

@@ -13,6 +13,16 @@ class UploadBatch
 
     public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $link_url, array $files): string
     {
+        // Same lottery sweep as UploadProcessor::sweepStagedLinkImages().
+        // Triggered here (the web path that stages a batch), not from the
+        // worker - the failure this cleans up after is precisely "the worker
+        // never ran", so a worker-side sweep couldn't help. A batch is only
+        // ever created here too, so sweep frequency tracks batch-creation
+        // frequency.
+        if (mt_rand(1, 100) === 1) {
+            self::sweepOrphanedBatches();
+        }
+
         if (!is_dir(self::PENDING_DIR)) {
             mkdir(self::PENDING_DIR, 0755, true);
         }
@@ -129,6 +139,29 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
         Notification::create((int) $metadata['userId'], (int) $metadata['userId'], 'postReady', $post_id, true);
 
         self::cleanupDir($batch_dir);
+    }
+
+    /**
+     * Removes pending batch directories left behind by an async upload whose
+     * worker never ran or died mid-transcode - process() only cleans up a
+     * batch it actually finishes, so without this a stalled one leaks its
+     * directory and copied source files forever. A batch older than the
+     * cutoff is an orphan by definition: no real transcode runs anywhere near
+     * a day, and a healthy batch has already been cleaned up by process(). A
+     * batch dir's mtime is its stage time (nothing modifies the dir while the
+     * worker reads from it), so it's the right clock to age against.
+     */
+    public static function sweepOrphanedBatches(): void
+    {
+        $cutoff = time() - 86400;
+
+        foreach (glob(self::PENDING_DIR . '/*', GLOB_ONLYDIR) ?: [] as $batch_dir) {
+            $modified_at = filemtime($batch_dir);
+
+            if ($modified_at !== false && $modified_at < $cutoff) {
+                self::cleanupDir($batch_dir);
+            }
+        }
     }
 
     private static function cleanupDir(string $dir): void

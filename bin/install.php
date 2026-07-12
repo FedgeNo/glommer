@@ -1035,7 +1035,13 @@ INSERT INTO `Settings` (`name`, `value`)
     ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
 ');
 mysqli_stmt_bind_param($version_stmt, 'ss', $version_name, $code_version);
-mysqli_stmt_execute($version_stmt);
+
+try {
+    mysqli_stmt_execute($version_stmt);
+} catch (\mysqli_sql_exception $exception) {
+    fail('Could not record the database version: ' . $exception -> getMessage());
+}
+
 ok('database marked as version ' . $code_version);
 
 // ---------- Done ----------

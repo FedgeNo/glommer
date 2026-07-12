@@ -539,6 +539,14 @@ window.addEventListener('scroll', async () => {
             return;
         }
 
+        // A new search (typed while this fetch was in flight) already reset
+        // results.innerHTML, detaching our spinner - these are results for a
+        // now-stale query, and inserting relative to a detached spinner
+        // would throw. Just drop them.
+        if (!results.contains(spinner)) {
+            return;
+        }
+
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
 
         if (data.response.oldestUserId !== null) {
@@ -641,6 +649,14 @@ window.addEventListener('scroll', async () => {
         const data = await response.json();
 
         if (!response.ok) {
+            return;
+        }
+
+        // A new search (typed while this fetch was in flight) already reset
+        // results.innerHTML, detaching our spinner - these are results for a
+        // now-stale query, and inserting relative to a detached spinner
+        // would throw. Just drop them.
+        if (!results.contains(spinner)) {
             return;
         }
 
@@ -1127,9 +1143,12 @@ function schedule_carousel_autoplay_advance(carousel) {
         // themselves - autoplay starting its own media shouldn't stop autoplay.
         carousel.dataset.autoplayStartedPlay = '1';
         media.play().catch(() => {
-            // Blocked (e.g. the browser's autoplay policy) - nothing further
-            // advances this slide automatically; the viewer can still step
-            // through manually.
+            // Blocked (e.g. the browser's autoplay policy) - the play event
+            // never fires in that case, so the flag above would otherwise
+            // stay stuck and misread the viewer's next manual play as
+            // autoplay's own. Nothing further advances this slide
+            // automatically; the viewer can still step through manually.
+            delete carousel.dataset.autoplayStartedPlay;
         });
 
         return;
@@ -1294,13 +1313,18 @@ document.addEventListener('submit', async (event) => {
             form.parentElement.insertBefore(avatar, form.parentElement.firstChild);
         }
 
-        avatar.src = data.response.image + '?t=' + Date.now();
+        // Already carries its own cache-busting ?v=<mtime> (User::avatarPath()) -
+        // appending another query param here would have produced a malformed
+        // "...?v=123?t=456" URL.
+        avatar.src = data.response.image;
 
         const fallback = form.parentElement.querySelector('.AvatarInitial');
 
         if (fallback) {
             fallback.remove();
         }
+    } catch (error) {
+        show_toast('Network error. Please check your connection and try again.');
     } finally {
         submit_button.disabled = false;
     }
@@ -2324,6 +2348,14 @@ window.addEventListener('scroll', async () => {
         const data = await response.json();
 
         if (!response.ok) {
+            return;
+        }
+
+        // A new search (typed while this fetch was in flight) already reset
+        // list.innerHTML, detaching our spinner - these are results for a
+        // now-stale query, and inserting relative to a detached spinner
+        // would throw. Just drop them.
+        if (!list.contains(spinner)) {
             return;
         }
 

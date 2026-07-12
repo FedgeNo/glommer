@@ -110,7 +110,7 @@ class Mailer
 
         stream_set_timeout($socket, $timeout_seconds);
 
-        $expect = function (string $expected_prefix) use ($socket): bool {
+        $expect = function (string $expected_prefix, ?string &$reply_code = null) use ($socket): bool {
             // Replies can span lines ("250-..." continuations); the final line
             // has a space after the code.
             do {
@@ -118,10 +118,13 @@ class Mailer
 
                 if ($line === false) {
                     error_log('SMTP connection dropped mid-reply');
+                    $reply_code = null;
 
                     return false;
                 }
             } while (isset($line[3]) && $line[3] === '-');
+
+            $reply_code = substr($line, 0, 3);
 
             if (!str_starts_with($line, $expected_prefix)) {
                 error_log('SMTP expected ' . $expected_prefix . ' but got: ' . trim($line));
@@ -198,8 +201,16 @@ class Mailer
 
             $say('RCPT TO:<' . $to_address . '>');
 
-            if (!$expect('25')) {
-                self::$recipientRejected = true;
+            if (!$expect('25', $rcpt_reply_code)) {
+                // A 4xx reply is transient (greylisting, "try again later",
+                // a temporary local problem on the destination server) - the
+                // address itself isn't necessarily bad, so this must not be
+                // treated as a permanent rejection of the recipient. Only a
+                // 5xx (or anything else unexpected) means the destination
+                // server is actually refusing this address.
+                if ($rcpt_reply_code === null || !str_starts_with($rcpt_reply_code, '4')) {
+                    self::$recipientRejected = true;
+                }
 
                 return false;
             }

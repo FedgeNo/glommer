@@ -107,11 +107,28 @@ SELECT `TABLE_NAME`
         for ($i = 0; $i < $count; $i++) {
             $statement = $statements[$i];
 
-            if (preg_match('/^ALTER TABLE `(\w+)` MODIFY COLUMN `(\w+)` (\S+(?: unsigned)?)/', $statement, $column_match)) {
+            if (preg_match('/^ALTER TABLE `(\w+)` MODIFY COLUMN `(\w+)` (\S+(?: unsigned)?)(?: NOT NULL)?(?: DEFAULT (\S+))?/', $statement, $column_match)) {
                 [, $table, $column, $target_type] = $column_match;
+                // Only present for a statement that names one (e.g. a bare
+                // type change like the int(11)->unsigned migrations above
+                // doesn't) - some column changes are a default-value fix
+                // with the type unchanged (e.g. Users.verified), which the
+                // type-only comparison alone would never flag as needed.
+                $target_default = $column_match[4] ?? null;
                 $current_type = self::columnType($connection, $table, $column);
 
-                if ($current_type !== null && strcasecmp($current_type, $target_type) !== 0) {
+                if ($current_type === null) {
+                    continue;
+                }
+
+                $needs_migration = strcasecmp($current_type, $target_type) !== 0;
+
+                if (!$needs_migration && $target_default !== null) {
+                    $current_default = self::columnDefault($connection, $table, $column);
+                    $needs_migration = $current_default === null || strcasecmp(trim($current_default, "'"), trim($target_default, "'")) !== 0;
+                }
+
+                if ($needs_migration) {
                     $needed[] = $statement;
                 }
 
@@ -178,6 +195,20 @@ SELECT `COLUMN_TYPE`
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
         return $row !== null ? (string) $row['COLUMN_TYPE'] : null;
+    }
+
+    private static function columnDefault(\mysqli $connection, string $table, string $column): ?string
+    {
+        $stmt = mysqli_prepare($connection, '
+SELECT `COLUMN_DEFAULT`
+    FROM `information_schema`.`COLUMNS`
+    WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `COLUMN_NAME` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ss', $table, $column);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        return $row !== null && $row['COLUMN_DEFAULT'] !== null ? (string) $row['COLUMN_DEFAULT'] : null;
     }
 
     private static function foreignKeyDeleteRule(\mysqli $connection, string $table, string $constraint): ?string

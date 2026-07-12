@@ -80,6 +80,10 @@ document.addEventListener('ws:message', (event) => {
         return;
     }
 
+    // Only follow along if the reader was already at the bottom - otherwise
+    // a new message would yank them away from history they've scrolled up to read.
+    const was_near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
     const placeholder = list.querySelector(':scope > .Muted');
 
     if (placeholder) {
@@ -91,5 +95,7 @@ document.addEventListener('ws:message', (event) => {
     list.appendChild(element);
     render_math(element);
 
-    window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
+    if (was_near_bottom) {
+        window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
+    }
 });

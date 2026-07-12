@@ -21,7 +21,7 @@ CREATE TABLE `Users` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `banned` tinyint(1) NOT NULL DEFAULT 0,
   `isMod` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `verified` tinyint(1) NOT NULL DEFAULT 1,
+  `verified` tinyint(1) NOT NULL DEFAULT 0,
   `theme` varchar(10) NOT NULL DEFAULT 'system',
   `skinTone` varchar(16) DEFAULT NULL,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
@@ -121,6 +121,7 @@ CREATE TABLE `Notifications` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`notificationId`),
   KEY `userId` (`userId`,`notificationId`),
+  KEY `postId` (`postId`),
   CONSTRAINT `Notifications_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `Notifications_ibfk_2` FOREIGN KEY (`actorId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -155,7 +156,8 @@ CREATE TABLE `PasswordResets` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`resetId`),
   KEY `tokenHash` (`tokenHash`),
-  KEY `expiresAt` (`expiresAt`)
+  KEY `expiresAt` (`expiresAt`),
+  KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailChangeReverts` (
@@ -286,6 +288,15 @@ ALTER TABLE `RateLimitAttempts` MODIFY COLUMN `attemptId` int(10) unsigned NOT N
 -- DELETE_RULE isn't already CASCADE, so this is a no-op on a healthy re-run.
 ALTER TABLE `Posts` DROP FOREIGN KEY `Posts_ibfk_2`;
 ALTER TABLE `Posts` ADD CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE;
+
+-- Column-default migration (safe to re-run): Users.verified defaulted to 1
+-- (already verified) rather than the fail-safe 0 - it's a security gate
+-- (unverified users are blocked from the site), and it only stayed safe
+-- because signup.php explicitly binds verified=0 on every insert; any
+-- future insert path that omitted the column would have silently created an
+-- already-verified account. neededIndexMigrations() compares COLUMN_DEFAULT,
+-- not just the type (which isn't changing here), so this is a no-op once applied.
+ALTER TABLE `Users` MODIFY COLUMN `verified` tinyint(1) NOT NULL DEFAULT 0;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

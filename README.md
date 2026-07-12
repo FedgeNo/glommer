@@ -173,9 +173,25 @@ systemctl --user enable --now glommer-backup.timer
 Out of the box, mail goes through PHP's `mail()` - the local sendmail. On a typical VPS that mail has no sending reputation and lands in spam folders (or nowhere). For real deliverability, do both of these:
 
 1. **Use an SMTP relay** - set the `SMTP_*` keys in `.env` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_ENCRYPTION=tls|ssl|none`) and Glommer speaks SMTP to it directly (STARTTLS/implicit TLS and AUTH LOGIN supported, no dependencies). Any transactional provider or your own mail server works.
-2. **Publish SPF/DKIM/DMARC DNS records** for the domain in `MAIL_FROM_ADDRESS`, matching what your relay documents. Without them, receiving servers have no reason to trust the mail.
+2. **Publish SPF/DKIM/DMARC DNS records** for the domain in `MAIL_FROM_ADDRESS`, matching what your relay documents (they hand you the exact records to add). Without them, receiving servers have no reason to trust the mail. (If you skip the relay and keep native `mail()`, you own all of this yourself - see below.)
 
 Test with a signup to a mailbox you control before launch. If sending fails outright, Glommer degrades deliberately: a signup whose verification email can't be sent is **verified automatically** (nobody gets stranded behind a gate no email can clear), a password reset is *not* issued without email, and in both cases the **admin gets a "mailer failed" notification** so the outage is visible immediately.
+
+### If you keep the native `mail()` path
+
+Using PHP's `mail()` (no `SMTP_HOST` set) means *your own server* is the sending mail server, so you have to earn its reputation yourself with DNS - a relay normally does all of this for you. Getting to a non-spam inbox from a self-hosted setup means, at minimum, all four of these for the domain in `MAIL_FROM_ADDRESS`:
+
+1. **A working local MTA.** `mail()` just hands off to the local sendmail binary - something has to actually accept and relay that outbound. Install and configure Postfix (or the distro's `sendmail`) to send directly, or to relay through a smarthost. Confirm it works at the shell (`echo test | mail -s test you@elsewhere.com`) before blaming Glommer.
+2. **SPF** - a TXT record on the sending domain authorizing your server's public IP, e.g. `v=spf1 ip4:YOUR.SERVER.IP -all`. Without it, receivers can't tell your server is allowed to send for the domain.
+3. **DKIM** - a signing key the receiver checks against a published public key. `mail()` does *not* sign anything itself; you need a milter like **OpenDKIM** wired into Postfix to sign outbound mail, plus the matching `..._domainkey` TXT record. This is the step people skip, and it's the one most receivers now require.
+4. **DMARC** - a `_dmarc` TXT record (e.g. `v=DMARC1; p=quarantine; rua=mailto:you@yourdomain`) tying SPF/DKIM together and telling receivers what to do with mail that fails both.
+
+Two more that aren't DNS records you publish but matter just as much for a self-hosted sender:
+
+- **PTR / reverse DNS** - the PTR record for your server's IP must resolve back to a hostname on your domain (and forward-confirm). You usually set this at your **hosting/IP provider**, not your DNS host. Many mail servers reject outright on a missing or generic PTR (the default `ec2-…`/`ip-…` style names). A relay owns a warmed IP with correct rDNS already; a fresh VPS does not.
+- **Port 25 egress** - many providers block outbound port 25 by default on new accounts; direct-to-MX `mail()` sending is dead in the water until you get it unblocked or relay through a smarthost.
+
+None of this is enforced or checked by Glommer - it's DNS/MTA setup on your infrastructure, outside the app. If that list reads as a lot of moving parts to get right, that's exactly why the **SMTP relay above is the recommended path**: a transactional provider hands you a warmed IP with SPF/DKIM/DMARC/PTR already in place, and you only publish the few records they document.
 
 ## HTTPS (required)
 

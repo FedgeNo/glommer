@@ -139,7 +139,7 @@ class GoogleAuth
         if (($payload['aud'] ?? null) !== self::clientId()
             || !in_array((string) ($payload['iss'] ?? ''), self::ISSUERS, true)
             || (int) ($payload['exp'] ?? 0) < time()
-            || !is_string($payload['nonce'] ?? null) || !hash_equals($expected_nonce, (string) $payload['nonce'])
+            || $expected_nonce === '' || !is_string($payload['nonce'] ?? null) || !hash_equals($expected_nonce, (string) $payload['nonce'])
             || !$email_verified
             || !is_string($email) || $email === ''
         ) {

@@ -224,6 +224,86 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     }
 
     /**
+     * The data for the /tags/ force-directed graph: the top $limit tags by
+     * occurrence as nodes (each with its post count, which drives node size),
+     * plus the co-occurrence edges between them (how many posts each pair shares,
+     * from the PostHashtags relationship - the more shared, the tighter the
+     * spring). Edge endpoints are indices into the returned nodes array.
+     *
+     * The edge self-join is bounded to the node set on both ends, so it stays
+     * cheap at this scale; a much larger site would precompute co-occurrence
+     * rather than self-join PostHashtags live.
+     *
+     * @return array{nodes: array<int, array{tag: string, postCount: int}>, edges: array<int, array{a: int, b: int, weight: int}>}
+     */
+    public static function graphData(int $limit): array
+    {
+        $mysqli = Database::connection();
+        $not_banned = 0;
+
+        $node_stmt = mysqli_prepare($mysqli, '
+SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
+    FROM `PostHashtags`
+    JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
+    JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+    GROUP BY `Hashtags`.`hashtagId`
+    ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
+    LIMIT ?
+');
+        mysqli_stmt_bind_param($node_stmt, 'ii', $not_banned, $limit);
+        mysqli_stmt_execute($node_stmt);
+        $node_result = mysqli_stmt_get_result($node_stmt);
+
+        $nodes = [];
+        $index_of = [];
+
+        while ($row = mysqli_fetch_assoc($node_result)) {
+            $index_of[(int) $row['hashtagId']] = count($nodes);
+            $nodes[] = ['tag' => (string) $row['tag'], 'postCount' => (int) $row['postCount']];
+        }
+
+        $edges = [];
+
+        if (count($nodes) > 1) {
+            $ids = array_keys($index_of);
+            $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+
+            $edge_stmt = mysqli_prepare($mysqli, '
+SELECT `a`.`hashtagId` AS `aId`, `b`.`hashtagId` AS `bId`, COUNT(*) AS `weight`
+    FROM `PostHashtags` `a`
+    JOIN `PostHashtags` `b` ON `b`.`postId` = `a`.`postId` AND `a`.`hashtagId` < `b`.`hashtagId`
+    WHERE `a`.`hashtagId` IN (' . $placeholders . ') AND `b`.`hashtagId` IN (' . $placeholders . ')
+    GROUP BY `a`.`hashtagId`, `b`.`hashtagId`
+');
+
+            // Both IN lists bind the same node ids; bind_param needs references.
+            $bound = array_merge($ids, $ids);
+            $params = [$edge_stmt, str_repeat('i', count($bound))];
+
+            foreach ($bound as $key => $value) {
+                $params[] = &$bound[$key];
+            }
+
+            call_user_func_array('mysqli_stmt_bind_param', $params);
+            mysqli_stmt_execute($edge_stmt);
+            $edge_result = mysqli_stmt_get_result($edge_stmt);
+
+            while ($row = mysqli_fetch_assoc($edge_result)) {
+                $a = $index_of[(int) $row['aId']] ?? null;
+                $b = $index_of[(int) $row['bId']] ?? null;
+
+                if ($a !== null && $b !== null) {
+                    $edges[] = ['a' => $a, 'b' => $b, 'weight' => (int) $row['weight']];
+                }
+            }
+        }
+
+        return ['nodes' => $nodes, 'edges' => $edges];
+    }
+
+    /**
      * @return array<int, array{tag: string, postCount: int}>
      */
     private static function countRows(\mysqli_stmt $stmt): array

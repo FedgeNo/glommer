@@ -13,6 +13,7 @@ class Page
         bool $needsMath = false,
         bool $needsEmoji = false,
         bool $needsHelp = false,
+        bool $needsTagGraph = false,
         ?string $body_class = null
     ): HTMLDocument {
         $page = new HTMLDocument();
@@ -149,6 +150,12 @@ class Page
         $report_script = new Script();
         $report_script -> src = ServerURL::absolute('/report.js');
         $page -> addContent($report_script);
+
+        if ($needsTagGraph) {
+            $tag_graph_script = new Script();
+            $tag_graph_script -> src = ServerURL::absolute('/tag-graph.js');
+            $page -> addContent($tag_graph_script);
+        }
 
         $main_script = new Script();
         $main_script -> src = ServerURL::absolute('/main.js');

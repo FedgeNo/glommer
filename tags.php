@@ -8,20 +8,20 @@ $tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
 
 // /tags/ - the public hashtag directory: trending and most-popular tags.
 if ($tag === '') {
+    $graph = Hashtag::graphData(40);
     $trending = Hashtag::trending(20);
-    $popular = Hashtag::popular(50);
 
-    $page = Page::create('Tags', 'Browse trending and popular hashtags on Glommer.');
+    $page = Page::create('Tags', 'Browse trending and popular hashtags on Glommer.', needsTagGraph: true);
 
-    if ($trending === [] && $popular === []) {
+    if ($graph['nodes'] === [] && $trending === []) {
         $page -> addContent(new Notice('No hashtags yet.'));
     } else {
-        if ($trending !== []) {
-            $page -> addContent(new HashtagCloud('Trending', $trending));
+        if ($graph['nodes'] !== []) {
+            $page -> addContent(new HashtagGraph($graph));
         }
 
-        if ($popular !== []) {
-            $page -> addContent(new HashtagCloud('Popular', $popular));
+        if ($trending !== []) {
+            $page -> addContent(new HashtagCloud('Trending', $trending));
         }
     }
 

@@ -5,9 +5,13 @@
  * out in 3D MODEL space (repulsion between all nodes, attraction along the
  * co-occurrence edges - tighter the more posts two tags share, gravity to keep
  * it centred), and a separate view QUATERNION rotates that settled structure as
- * a rigid body for drawing. Dragging spins the quaternion in any direction with
- * inertia; the physics never fights the drag because its forces only depend on
- * distances, which rotation leaves unchanged.
+ * a rigid body for drawing. The physics never fights a drag because its forces
+ * only depend on distances, which rotation leaves unchanged.
+ *
+ * The layout is settled once, synchronously, on load - so the graph appears
+ * already laid out and completely still. It moves ONLY while being dragged
+ * (no auto-spin, no inertia), so there's no animation loop at all: each
+ * pointermove rotates the quaternion and repaints once.
  *
  * Nodes are the server-rendered HashtagNode links (still clickable); edges are
  * drawn on a <canvas> underlay (a rendering surface, not app "things", so no
@@ -53,15 +57,12 @@ function quat_to_matrix(q) {
 class HashtagGraph {
     // Layout / physics tuning.
     static MAX_ITERATIONS = 320;
-    static GRAVITY = 0.022;
+    static GRAVITY = 0.03;
     static COOL = 0.986;
 
     // Interaction.
     static RADIANS_PER_PIXEL = 0.006;
     static DRAG_THRESHOLD = 5;
-    static INERTIA_DECAY = 0.94;
-    static INERTIA_EPSILON = 0.06;
-    static AUTO_SPIN = 0.12;
 
     constructor(element) {
         this.element = element;
@@ -76,19 +77,10 @@ class HashtagGraph {
             edges = [];
         }
 
-        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        // View rotation, its inertia, and the current drag.
+        // View rotation and the current drag.
         this.orientation = [0, 0, 0, 1];
-        this.spinX = 0;
-        this.spinY = 0;
         this.dragging = false;
         this.suppressClick = false;
-
-        this.iterations = 0;
-        this.raf = 0;
-        this.onScreen = true;
-        this.needsRender = true;
 
         this.sizeNodes();
         element.classList.add('Active');
@@ -102,20 +94,13 @@ class HashtagGraph {
         this.buildEdges(edges);
         this.measure();
         this.seed();
+        // Settle the whole layout up front (a few hundred cheap iterations), so
+        // it appears already laid out and dead still - it only ever moves when
+        // dragged, never on its own.
+        this.settle();
+        this.render();
 
         window.addEventListener('resize', () => this.onResize());
-
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                this.onScreen = entries[0].isIntersecting;
-                this.updateRunning();
-            });
-            observer.observe(element);
-        }
-
-        document.addEventListener('visibilitychange', () => this.updateRunning());
-
-        this.updateRunning();
     }
 
     // Font-size (and so node size) scales with the log of the post count, so one
@@ -146,7 +131,7 @@ class HashtagGraph {
                 return {
                     a: edge.a,
                     b: edge.b,
-                    // More shared posts -> stronger pull and a shorter rest gap.
+                    // More shared posts -> stronger pull.
                     attraction: 1 + strength * 3,
                     lineWidth: 0.6 + strength * 2.2,
                 };
@@ -158,7 +143,7 @@ class HashtagGraph {
         this.width = rect.width;
         this.height = rect.height;
         this.radius = Math.max(60, Math.min(this.width, this.height) * 0.34);
-        this.ideal = 1.8 * this.radius / Math.cbrt(Math.max(2, this.count));
+        this.ideal = 1.1 * this.radius / Math.cbrt(Math.max(2, this.count));
 
         // Node collision radius from its rendered box.
         this.nodeRadius = this.nodeElements.map((node) => Math.max(node.offsetWidth, node.offsetHeight) / 2 + 2);
@@ -170,6 +155,11 @@ class HashtagGraph {
 
         const edgeColor = getComputedStyle(this.element).getPropertyValue('--HashtagEdge').trim();
         this.edgeColor = edgeColor || 'rgba(120, 130, 125, 0.5)';
+
+        // Keep the settled layout fitted to the (possibly resized) box.
+        if (this.maxExtent) {
+            this.computeFit();
+        }
     }
 
     // Even, deterministic starting spread on a sphere (a Fibonacci lattice) -
@@ -179,7 +169,7 @@ class HashtagGraph {
         this.position = new Float64Array(count * 3);
         this.displacement = new Float64Array(count * 3);
         const golden = Math.PI * (3 - Math.sqrt(5));
-        const start = this.radius * 0.6;
+        const start = this.radius * 0.5;
 
         for (let i = 0; i < count; i++) {
             const y = count === 1 ? 0 : 1 - (i / (count - 1)) * 2;
@@ -191,7 +181,36 @@ class HashtagGraph {
         }
 
         this.temperature = this.radius * 0.16;
-        this.iterations = 0;
+    }
+
+    // Run the whole simulation to rest right now (cheap at these sizes), then
+    // work out how much to scale it so it fits the viewport.
+    settle() {
+        for (let i = 0; i < HashtagGraph.MAX_ITERATIONS; i++) {
+            this.stepPhysics();
+        }
+
+        this.computeFit();
+    }
+
+    // The furthest node from the centre sets a scale that keeps the whole graph
+    // inside the box, whatever the physics settled to.
+    computeFit() {
+        let maxSquared = 1;
+
+        for (let i = 0; i < this.count; i++) {
+            const x = this.position[i * 3];
+            const y = this.position[i * 3 + 1];
+            const z = this.position[i * 3 + 2];
+            const squared = x * x + y * y + z * z;
+
+            if (squared > maxSquared) {
+                maxSquared = squared;
+            }
+        }
+
+        this.maxExtent = Math.sqrt(maxSquared);
+        this.fitScale = Math.min(2.5, (this.radius * 0.85) / this.maxExtent);
     }
 
     // One Fruchterman-Reingold-style step: repel every pair, attract along edges,
@@ -206,10 +225,10 @@ class HashtagGraph {
 
         for (let i = 0; i < count; i++) {
             for (let j = i + 1; j < count; j++) {
-                let dx = position[i * 3] - position[j * 3];
-                let dy = position[i * 3 + 1] - position[j * 3 + 1];
-                let dz = position[i * 3 + 2] - position[j * 3 + 2];
-                let distance = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.01;
+                const dx = position[i * 3] - position[j * 3];
+                const dy = position[i * 3 + 1] - position[j * 3 + 1];
+                const dz = position[i * 3 + 2] - position[j * 3 + 2];
+                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.01;
 
                 let force = (k * k) / distance;
 
@@ -234,10 +253,10 @@ class HashtagGraph {
 
         for (const edge of this.edges) {
             const a = edge.a, b = edge.b;
-            let dx = position[a * 3] - position[b * 3];
-            let dy = position[a * 3 + 1] - position[b * 3 + 1];
-            let dz = position[a * 3 + 2] - position[b * 3 + 2];
-            let distance = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.01;
+            const dx = position[a * 3] - position[b * 3];
+            const dy = position[a * 3 + 1] - position[b * 3 + 1];
+            const dz = position[a * 3 + 2] - position[b * 3 + 2];
+            const distance = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.01;
 
             const force = ((distance * distance) / k) * edge.attraction;
             const fx = (dx / distance) * force;
@@ -287,8 +306,6 @@ class HashtagGraph {
         }
 
         this.temperature = Math.max(this.radius * 0.006, temperature * HashtagGraph.COOL);
-        this.iterations++;
-        this.needsRender = true;
     }
 
     // Turn a screen-space drag delta into an incremental rotation and premultiply
@@ -305,24 +322,24 @@ class HashtagGraph {
         const delta = [-dy * scale, dx * scale, 0, Math.cos(angle / 2)];
 
         this.orientation = quat_normalize(quat_multiply(delta, this.orientation));
-        this.needsRender = true;
     }
 
     render() {
         const matrix = quat_to_matrix(this.orientation);
         const centerX = this.width / 2;
         const centerY = this.height / 2;
-        const radius = this.radius;
+        const extent = this.maxExtent || 1;
+        const fit = this.fitScale || 1;
         const position = this.position;
         const projected = [];
 
         for (let i = 0; i < this.count; i++) {
             const x = position[i * 3], y = position[i * 3 + 1], z = position[i * 3 + 2];
-            const rx = matrix[0] * x + matrix[1] * y + matrix[2] * z;
-            const ry = matrix[3] * x + matrix[4] * y + matrix[5] * z;
+            const rx = (matrix[0] * x + matrix[1] * y + matrix[2] * z) * fit;
+            const ry = (matrix[3] * x + matrix[4] * y + matrix[5] * z) * fit;
             const rz = matrix[6] * x + matrix[7] * y + matrix[8] * z;
 
-            const depth = Math.max(0, Math.min(1, (rz + radius) / (2 * radius)));
+            const depth = Math.max(0, Math.min(1, (rz + extent) / (2 * extent)));
             const scale = 0.62 + depth * 0.58;
 
             projected.push({ x: centerX + rx, y: centerY + ry, depth });
@@ -358,55 +375,9 @@ class HashtagGraph {
         context.globalAlpha = 1;
     }
 
-    animating() {
-        return this.iterations < HashtagGraph.MAX_ITERATIONS
-            || this.dragging
-            || Math.hypot(this.spinX, this.spinY) > HashtagGraph.INERTIA_EPSILON
-            || !this.reducedMotion;
-    }
-
-    updateRunning() {
-        const shouldRun = this.onScreen && !document.hidden;
-
-        if (shouldRun && !this.raf) {
-            this.tick();
-        } else if (!shouldRun && this.raf) {
-            cancelAnimationFrame(this.raf);
-            this.raf = 0;
-        }
-    }
-
-    tick() {
-        this.raf = 0;
-
-        if (this.iterations < HashtagGraph.MAX_ITERATIONS) {
-            this.stepPhysics();
-        }
-
-        if (this.dragging) {
-            // The pointer handler already applied this frame's rotation.
-        } else if (Math.hypot(this.spinX, this.spinY) > HashtagGraph.INERTIA_EPSILON) {
-            this.applyScreenDelta(this.spinX, this.spinY);
-            this.spinX *= HashtagGraph.INERTIA_DECAY;
-            this.spinY *= HashtagGraph.INERTIA_DECAY;
-        } else if (!this.reducedMotion) {
-            this.applyScreenDelta(HashtagGraph.AUTO_SPIN, 0);
-        }
-
-        if (this.needsRender) {
-            this.render();
-            this.needsRender = false;
-        }
-
-        if ((this.onScreen && !document.hidden) && this.animating()) {
-            this.raf = requestAnimationFrame(() => this.tick());
-        }
-    }
-
     onResize() {
         this.measure();
-        this.needsRender = true;
-        this.updateRunning();
+        this.render();
     }
 
     // --- drag handling (driven by the delegated document listeners) ---------
@@ -414,8 +385,6 @@ class HashtagGraph {
     onDown(event) {
         this.dragging = true;
         this.suppressClick = false;
-        this.spinX = 0;
-        this.spinY = 0;
         this.startX = event.clientX;
         this.startY = event.clientY;
         this.lastX = event.clientX;
@@ -429,8 +398,6 @@ class HashtagGraph {
                 // A stale pointer id just means no capture; dragging still works.
             }
         }
-
-        this.updateRunning();
     }
 
     onMove(event) {
@@ -450,21 +417,12 @@ class HashtagGraph {
         if (this.moved) {
             this.suppressClick = true;
             this.applyScreenDelta(dx, dy);
-            // Recent-weighted velocity for the release flick.
-            this.spinX = this.spinX * 0.7 + dx * 0.3;
-            this.spinY = this.spinY * 0.7 + dy * 0.3;
+            this.render();
         }
     }
 
     onUp() {
         this.dragging = false;
-
-        if (this.reducedMotion || !this.moved) {
-            this.spinX = 0;
-            this.spinY = 0;
-        }
-
-        this.updateRunning();
     }
 }
 

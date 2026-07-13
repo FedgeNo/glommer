@@ -1285,6 +1285,46 @@ document.addEventListener('ended', (event) => {
     schedule_carousel_autoplay_advance(carousel);
 }, true);
 
+// Pause any video/audio once it's scrolled well clear of the viewport (~50vh
+// past the edge - about a post away), so a player you've scrolled past doesn't
+// keep going. Pause-only by design: no auto-resume when it scrolls back, which
+// would fight the browser's autoplay policy and feel janky. The positive
+// rootMargin is what holds off the pause until it's a half-viewport out rather
+// than the instant it leaves.
+const media_offscreen_observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (!entry.isIntersecting && !entry.target.paused) {
+            entry.target.pause();
+        }
+    });
+}, { rootMargin: '50% 0px' });
+
+function observe_offscreen_media(root) {
+    if (root.matches?.('video, audio')) {
+        media_offscreen_observer.observe(root);
+    }
+
+    root.querySelectorAll?.('video, audio').forEach((media) => media_offscreen_observer.observe(media));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    observe_offscreen_media(document.body);
+
+    // Media inserted later (infinite scroll, client-rendered carousels) gets
+    // observed too - same "dynamically added content is handled automatically"
+    // spirit as the delegated event handlers. observe() is a no-op on an
+    // already-observed element, so overlapping mutations don't double up.
+    new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    observe_offscreen_media(node);
+                }
+            });
+        });
+    }).observe(document.body, { childList: true, subtree: true });
+});
+
 document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.AvatarUploader');
 

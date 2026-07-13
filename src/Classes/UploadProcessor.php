@@ -195,6 +195,33 @@ class UploadProcessor
     }
 
     /**
+     * Deletes every on-disk file named after a staging seed (display, thumbnail,
+     * and preserved original, whatever the extension). Unlike delete(), it needs
+     * no itemType/extension - it globs - so it can clean up the partial output a
+     * worker killed mid-transcode leaves behind (where the final type isn't
+     * known). A seed already renamed onto a real itemId matches nothing here.
+     */
+    public static function purgeStaged(string $seed): void
+    {
+        $globs = [
+            self::UPLOAD_DIR . '/' . $seed . '.*',
+            self::UPLOAD_DIR . '/' . $seed . '-thumb.*',
+            // The video poster-frame temp (processVideo), in case a crash between
+            // writing and unlinking it leaves it behind.
+            self::UPLOAD_DIR . '/' . $seed . '-raw-frame.*',
+            self::ORIGINALS_DIR . '/' . $seed . '-original.*',
+        ];
+
+        foreach ($globs as $pattern) {
+            foreach (glob($pattern) ?: [] as $path) {
+                if (is_file($path)) {
+                    unlink($path);
+                }
+            }
+        }
+    }
+
+    /**
      * Deletes staged link-preview images (lp-* seeds) that were never finalized onto a
      * post or explicitly discarded - a user who fetches a preview and then just closes
      * the tab leaves its files behind, so anything older than a day is an orphan by

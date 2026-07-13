@@ -347,6 +347,158 @@ function offer_enable_websocket_service(): bool
 }
 
 /**
+ * The contents of the upload-worker service's systemd unit file - the single
+ * source used both when first installing the service and when reconciling an
+ * existing one to the current template (so the two can never drift apart).
+ */
+function upload_worker_unit_contents(): string
+{
+    $project_root = dirname(__DIR__);
+
+    return implode("\n", [
+        '[Unit]',
+        'Description=Glommer media upload worker',
+        'After=network.target',
+        '',
+        '[Service]',
+        // Quote the binary and script path - systemd splits ExecStart on
+        // whitespace (see the WebSocket unit).
+        'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/upload-worker.php"',
+        'Restart=always',
+        'RestartSec=2',
+        // Watchdog: the supervisor pings WATCHDOG=1 every ~15s (half this); if
+        // its loop hangs and the pings stop, systemd restarts it. Unlike the WS
+        // daemon there's no RuntimeMaxSec periodic restart - the supervisor holds
+        // no long-lived state, and a timed restart would needlessly interrupt an
+        // in-flight transcode that the graceful stop then has to re-queue.
+        'WatchdogSec=30',
+        'WorkingDirectory=' . $project_root,
+        '',
+        '[Install]',
+        'WantedBy=default.target',
+    ]) . "\n";
+}
+
+/**
+ * Brings an already-installed upload-worker unit up to the current template on
+ * every install run (a no-op when it already matches). Mirrors
+ * reconcile_websocket_service_unit().
+ */
+function reconcile_upload_worker_service_unit(): void
+{
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        return;
+    }
+
+    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-upload-worker.service';
+
+    if (!is_file($unit_path)) {
+        return;
+    }
+
+    $desired = upload_worker_unit_contents();
+
+    if ((string) @file_get_contents($unit_path) === $desired) {
+        ok('Upload worker service unit already matches the current template');
+
+        return;
+    }
+
+    if (file_put_contents($unit_path, $desired) === false) {
+        warn('Could not update ' . $unit_path . ' - update it by hand, then: systemctl --user daemon-reload && systemctl --user restart glommer-upload-worker');
+
+        return;
+    }
+
+    shell_exec('systemctl --user daemon-reload 2>&1');
+
+    $was_active = trim((string) shell_exec('systemctl --user is-active glommer-upload-worker.service 2>/dev/null')) === 'active';
+
+    if ($was_active) {
+        shell_exec('systemctl --user restart glommer-upload-worker.service 2>&1');
+    }
+
+    ok('Upload worker service unit updated to the current template' . ($was_active ? ' and the service restarted' : ''));
+}
+
+/**
+ * Writes the upload-worker service's unit file, enables it to start now and on
+ * boot, and sets up lingering. Mirrors write_and_enable_websocket_service().
+ */
+function write_and_enable_upload_worker_service(): bool
+{
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        warn('systemctl not found - run bin/upload-worker.php under your own process manager. See README.md.');
+
+        return false;
+    }
+
+    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-upload-worker.service';
+    $unit_contents = upload_worker_unit_contents();
+
+    if (!is_dir(dirname($unit_path)) && !@mkdir(dirname($unit_path), 0755, true)) {
+        fail_line('Could not create ' . dirname($unit_path) . ' - create the unit manually (see README.md).');
+
+        return false;
+    }
+
+    if (file_put_contents($unit_path, $unit_contents) === false) {
+        fail_line('Could not write ' . $unit_path . ' - create the unit manually (see README.md).');
+
+        return false;
+    }
+
+    shell_exec('systemctl --user daemon-reload 2>&1');
+    $enable_output = (string) shell_exec('systemctl --user enable --now glommer-upload-worker.service 2>&1');
+
+    sleep(1);
+
+    $status = trim((string) shell_exec('systemctl --user is-active glommer-upload-worker.service 2>/dev/null'));
+
+    if ($status !== 'active') {
+        fail_line('The service was written but did not start (' . trim($enable_output) . '). Check: systemctl --user status glommer-upload-worker');
+
+        return false;
+    }
+
+    ok('Upload worker service installed and started (' . $unit_path . ')');
+
+    $user = trim((string) shell_exec('id -un 2>/dev/null'));
+
+    if ($user === '') {
+        $user = get_current_user() ?: (string) getenv('USER');
+    }
+
+    shell_exec('loginctl enable-linger ' . escapeshellarg($user) . ' 2>&1');
+    $linger_output = strtolower(trim((string) shell_exec('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')));
+
+    if (str_contains($linger_output, 'yes')) {
+        ok('Lingering enabled for ' . $user . ' - the worker keeps running after logout and starts on boot.');
+    } else {
+        warn('Could not enable lingering for ' . $user . ' automatically. The worker will stop when this user');
+        echo '       logs out (and won\'t start on boot) until you run: sudo loginctl enable-linger ' . $user . "\n";
+    }
+
+    return true;
+}
+
+/**
+ * When the upload-worker persistence check failed - the service isn't enabled
+ * (staged uploads would queue forever) - offer to install and enable it.
+ */
+function offer_enable_upload_worker_service(): bool
+{
+    echo "\nThe media upload-worker service (glommer-upload-worker.service) isn't enabled -\n";
+    echo "without it, staged video/audio uploads are never transcoded (they queue forever).\n";
+
+    if (!confirm('Set it up now?')) {
+        return false;
+    }
+
+    return write_and_enable_upload_worker_service();
+}
+
+/**
  * When the Backups check is what failed, fix it completely: run one backup
  * now (proving the mechanism actually works), then install a recurring
  * user-level systemd timer (no root needed) so it keeps being true -
@@ -720,6 +872,22 @@ if (isset($environment_failures['WebSocket service persistence']) && (is_interac
 // no-op when it already matches), so a unit change is applied even when nothing
 // looks broken.
 reconcile_websocket_service_unit();
+
+// The media upload-worker service (drains the async transcode queue). Offer to
+// enable it if it isn't, then reconcile an already-installed unit to the current
+// template - both mirroring the WebSocket service above.
+if (isset($environment_failures['Upload worker service persistence']) && (is_interactive() || $websocket_non_interactive_ok) && offer_enable_upload_worker_service()) {
+    $recheck = EnvironmentChecker::checks()['Upload worker service persistence'];
+
+    if ($recheck['ok']) {
+        ok($recheck['message']);
+        unset($environment_failures['Upload worker service persistence']);
+    } else {
+        fail_line($recheck['message']);
+    }
+}
+
+reconcile_upload_worker_service_unit();
 
 // Likewise the one environment failure this script can fix itself by running
 // a real backup on the spot. BACKUP_TIMER_CONFIRMED=1 is the same explicit,

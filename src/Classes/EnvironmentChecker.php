@@ -38,6 +38,7 @@ class EnvironmentChecker
             'Outbound network' => self::checkOutboundNetwork(),
             'WebSocket server' => self::checkWebSocketServer(),
             'WebSocket service persistence' => self::checkWebSocketServicePersistence(),
+            'Upload worker service persistence' => self::checkUploadWorkerServicePersistence(),
             'Backups' => self::checkBackups(),
             'Backup timer persistence' => self::checkBackupTimerPersistence(),
         ];
@@ -643,7 +644,9 @@ class EnvironmentChecker
             __DIR__ . '/../../uploads/avatars',
             __DIR__ . '/../../uploads/private',
             __DIR__ . '/../../uploads/private/originals',
+            __DIR__ . '/../../uploads/private/staging',
             __DIR__ . '/../../uploads/private/pending',
+            __DIR__ . '/../../uploads/private/processing',
         ];
 
         foreach ($upload_dirs as $dir) {
@@ -824,5 +827,31 @@ class EnvironmentChecker
         }
 
         return ['ok' => true, 'message' => 'glommer-websocket.service is enabled, lingering is on for ' . $user];
+    }
+
+    private static function checkUploadWorkerServicePersistence(): array
+    {
+        if (PHP_SAPI !== 'cli') {
+            return ['ok' => true, 'message' => 'not applicable under the web SAPI'];
+        }
+
+        if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+            return ['ok' => true, 'message' => 'systemctl not found - assuming a non-systemd process manager is set up separately'];
+        }
+
+        $service_status = trim((string) shell_exec('systemctl --user is-enabled glommer-upload-worker.service 2>/dev/null'));
+
+        if ($service_status !== 'enabled') {
+            return ['ok' => false, 'message' => 'glommer-upload-worker.service is not enabled - without it, staged video/audio uploads are never transcoded (they queue on disk forever). It also survives no restart or reboot until enabled.'];
+        }
+
+        $user = trim((string) shell_exec('id -un 2>/dev/null')) ?: (get_current_user() ?: (string) getenv('USER'));
+        $linger_status = strtolower(trim((string) shell_exec('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')));
+
+        if (!str_contains($linger_status, 'yes')) {
+            return ['ok' => false, 'message' => 'glommer-upload-worker.service is enabled, but lingering is not enabled for ' . $user . ' - the worker stops as soon as this user logs out, and won\'t survive a reboot. Run: sudo loginctl enable-linger ' . $user];
+        }
+
+        return ['ok' => true, 'message' => 'glommer-upload-worker.service is enabled, lingering is on for ' . $user];
     }
 }

@@ -52,6 +52,7 @@ class Notification extends HTMLObject
     {
         return match ($this -> type) {
             'postReady' => 'Your media has finished processing and is now live',
+            'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
             'uploadFailed' => 'One of your uploads failed to process and was not posted',
             'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
             default => $this -> actorText(),
@@ -75,7 +76,7 @@ class Notification extends HTMLObject
     protected function targetURL(): string
     {
         return match ($this -> type) {
-            'like', 'reply', 'postReady' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
+            'like', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
             'friendAccepted' => ServerURL::absolute('/users/' . $this -> actor -> username . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actor -> username),

@@ -71,7 +71,9 @@ $upload_dirs = [
     'uploads/avatars' => __DIR__ . '/uploads/avatars',
     'uploads/private' => __DIR__ . '/uploads/private',
     'uploads/private/originals' => __DIR__ . '/uploads/private/originals',
+    'uploads/private/staging' => __DIR__ . '/uploads/private/staging',
     'uploads/private/pending' => __DIR__ . '/uploads/private/pending',
+    'uploads/private/processing' => __DIR__ . '/uploads/private/processing',
 ];
 
 $upload_dirs_writable = [];

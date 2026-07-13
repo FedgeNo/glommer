@@ -195,10 +195,13 @@ if ($needs_async) {
 
     RateLimiter::recordAttempt($async_upload_rate_key);
 
-    $batch_id = UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files);
-
-    $worker = escapeshellarg(__DIR__ . '/../bin/process-upload.php');
-    exec('setsid php ' . $worker . ' ' . escapeshellarg($batch_id) . ' > /dev/null 2>&1 &');
+    // Stage the batch and return immediately. The upload-worker service
+    // (bin/upload-worker.php) drains the queue at a bounded concurrency - no
+    // per-upload worker is spawned here any more, which is exactly what let a
+    // burst of uploads run unlimited concurrent transcodes and overwhelm the
+    // host. Completion is signalled by the postReady/uploadPartlyFailed/
+    // uploadFailed notification the worker creates when it finishes.
+    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files);
 
     JSONResponse::success(['processing' => true]) -> send();
 }

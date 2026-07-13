@@ -24,6 +24,8 @@ class Notification {
         switch (this.type) {
             case 'postReady':
                 return 'Your media has finished processing and is now live';
+            case 'uploadPartlyFailed':
+                return 'Your post is live, but one or more of its files couldn\'t be processed';
             case 'uploadFailed':
                 return 'One of your uploads failed to process and was not posted';
             case 'mailerFailed':
@@ -57,6 +59,7 @@ class Notification {
             case 'like':
             case 'reply':
             case 'postReady':
+            case 'uploadPartlyFailed':
                 return window.siteURL + '/users/' + window.currentUserUsername + '/' + this.postId;
             case 'friendRequest':
                 return window.siteURL + '/users/' + window.currentUserUsername + '/friends';

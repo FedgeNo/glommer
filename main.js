@@ -2191,6 +2191,46 @@ document.addEventListener('click', (event) => {
 
 let active_quill = null;
 
+/**
+ * Adds a native `title` (hover tooltip) to each Quill toolbar button - the snow
+ * theme provides none. Plain-format buttons map by their ql-* class; the header
+ * and list buttons carry their level/kind in a `value` attribute.
+ */
+function add_toolbar_tooltips(quill) {
+    const toolbar = quill.getModule('toolbar').container;
+
+    const titles = {
+        'ql-bold': 'Bold',
+        'ql-italic': 'Italic',
+        'ql-underline': 'Underline',
+        'ql-strike': 'Strikethrough',
+        'ql-blockquote': 'Blockquote',
+        'ql-code-block': 'Code block',
+        'ql-code': 'Inline code',
+        'ql-link': 'Link',
+        'ql-formula': 'Formula',
+        'ql-clean': 'Clear formatting',
+    };
+
+    Object.entries(titles).forEach(([class_name, title]) => {
+        const button = toolbar.querySelector('button.' + class_name);
+
+        if (button) {
+            button.title = title;
+        }
+    });
+
+    toolbar.querySelectorAll('button.ql-header[value]').forEach((button) => {
+        button.title = 'Heading ' + button.getAttribute('value');
+    });
+
+    const list_titles = { ordered: 'Numbered list', bullet: 'Bullet list' };
+
+    toolbar.querySelectorAll('button.ql-list[value]').forEach((button) => {
+        button.title = list_titles[button.getAttribute('value')] || 'List';
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const editor_container = document.querySelector('#editor');
 
@@ -2217,6 +2257,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     active_quill = quill;
+
+    // Quill's snow toolbar ships no button tooltips - add native title hints so
+    // hovering a toolbar button explains what it does.
+    add_toolbar_tooltips(quill);
 
     document.addEventListener('submit', (event) => {
         const form = event.target.closest('.Composer');

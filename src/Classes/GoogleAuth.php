@@ -200,6 +200,10 @@ UPDATE `Users`
                 $existing -> verified = $verified;
                 $existing -> sessionVersion = User::bumpSessionVersion($existing_id);
                 RememberToken::purgeForUser($existing_id);
+
+                // Tell them their old password is gone (the account is its own
+                // actor - a system notification with no other user involved).
+                Notification::create($existing_id, $existing_id, 'passwordRemovedGoogle', null, true);
             }
 
             return $existing;

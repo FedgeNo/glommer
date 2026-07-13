@@ -55,6 +55,7 @@ class Notification extends HTMLObject
             'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
             'uploadFailed' => 'One of your uploads failed to process and was not posted',
             'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
+            'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
             default => $this -> actorText(),
         };
     }
@@ -80,6 +81,7 @@ class Notification extends HTMLObject
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
             'friendAccepted' => ServerURL::absolute('/users/' . $this -> actor -> username . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actor -> username),
+            'passwordRemovedGoogle' => ServerURL::absolute('/forgot-password'),
             default => '#',
         };
     }

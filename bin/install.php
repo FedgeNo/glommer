@@ -172,28 +172,15 @@ function offer_websocket_service(): bool
 }
 
 /**
- * Writes (if missing) and enables the user-level systemd service that runs
- * bin/websocket-server.php, plus the lingering it needs to survive logout
- * and reboot. Shared by offer_websocket_service() (the daemon isn't even
- * reachable) and offer_enable_websocket_service() (the daemon works right
- * now - e.g. started manually - but isn't enabled/lingering isn't set, so it
- * won't survive a restart). Idempotent: re-writing identical unit contents
- * and re-enabling an already-enabled service are both no-ops.
+ * The contents of the WebSocket service's systemd unit file - the single source
+ * used both when first installing the service and when reconciling an existing
+ * one to the current template (so the two can never drift apart).
  */
-function write_and_enable_websocket_service(): bool
+function websocket_unit_contents(): string
 {
-    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
-
-    if (!$systemctl_available) {
-        warn('systemctl not found - run bin/websocket-server.php under your own process manager. See README.md.');
-
-        return false;
-    }
-
     $project_root = dirname(__DIR__);
-    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
 
-    $unit_contents = implode("\n", [
+    return implode("\n", [
         '[Unit]',
         'Description=Glommer WebSocket server',
         'After=network.target',
@@ -218,6 +205,76 @@ function write_and_enable_websocket_service(): bool
         '[Install]',
         'WantedBy=default.target',
     ]) . "\n";
+}
+
+/**
+ * Brings an already-installed WebSocket service's unit file up to the current
+ * template on every install run, so changes to the unit (a new WatchdogSec/
+ * RuntimeMaxSec, an updated ExecStart, ...) are picked up even when nothing looks
+ * broken. Fully idempotent: a no-op when the on-disk contents already match; when
+ * they differ it rewrites, daemon-reloads, and - because settings like
+ * WatchdogSec only take effect at start - restarts the service if it's running.
+ */
+function reconcile_websocket_service_unit(): void
+{
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        return;
+    }
+
+    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
+
+    // Only reconcile a unit that's already installed.
+    if (!is_file($unit_path)) {
+        return;
+    }
+
+    $desired = websocket_unit_contents();
+
+    if ((string) @file_get_contents($unit_path) === $desired) {
+        ok('WebSocket service unit already matches the current template');
+
+        return;
+    }
+
+    if (file_put_contents($unit_path, $desired) === false) {
+        warn('Could not update ' . $unit_path . ' - update it by hand, then: systemctl --user daemon-reload && systemctl --user restart glommer-websocket');
+
+        return;
+    }
+
+    shell_exec('systemctl --user daemon-reload 2>&1');
+
+    $was_active = trim((string) shell_exec('systemctl --user is-active glommer-websocket.service 2>/dev/null')) === 'active';
+
+    if ($was_active) {
+        shell_exec('systemctl --user restart glommer-websocket.service 2>&1');
+    }
+
+    ok('WebSocket service unit updated to the current template' . ($was_active ? ' and the service restarted' : ''));
+}
+
+/**
+ * Writes the WebSocket service's unit file (websocket_unit_contents), enables it
+ * to start now and on boot, and sets up the lingering it needs to survive logout
+ * and reboot. Used when the service isn't installed/enabled yet: by
+ * offer_websocket_service() (the daemon isn't even reachable) and
+ * offer_enable_websocket_service() (the daemon works right now - e.g. started
+ * manually - but isn't enabled/lingering isn't set, so it won't survive a
+ * restart). Idempotent: re-writing identical contents and re-enabling an
+ * already-enabled service are both no-ops.
+ */
+function write_and_enable_websocket_service(): bool
+{
+    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
+
+    if (!$systemctl_available) {
+        warn('systemctl not found - run bin/websocket-server.php under your own process manager. See README.md.');
+
+        return false;
+    }
+
+    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
+    $unit_contents = websocket_unit_contents();
 
     if (!is_dir(dirname($unit_path)) && !@mkdir(dirname($unit_path), 0755, true)) {
         fail_line('Could not create ' . dirname($unit_path) . ' - create the unit manually (see README.md).');
@@ -331,6 +388,92 @@ function offer_first_backup(): bool
  * once, satisfying the "a backup exists" check, without ever scheduling
  * anything).
  */
+/**
+ * The systemd unit contents for the nightly backup - the single source used when
+ * first installing the units and when reconciling existing ones to the current
+ * template, so the two can't drift apart.
+ */
+function backup_service_contents(): string
+{
+    return implode("\n", [
+        '[Unit]',
+        'Description=Glommer backup',
+        '',
+        '[Service]',
+        'Type=oneshot',
+        'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/backup.php',
+    ]) . "\n";
+}
+
+function backup_timer_contents(): string
+{
+    return implode("\n", [
+        '[Unit]',
+        'Description=Nightly Glommer backup',
+        '',
+        '[Timer]',
+        'OnCalendar=*-*-* 04:00:00',
+        'Persistent=true',
+        '',
+        '[Install]',
+        'WantedBy=timers.target',
+    ]) . "\n";
+}
+
+/**
+ * Brings the already-installed backup service + timer units up to the current
+ * template on every install run, so a changed schedule or ExecStart is picked up
+ * even when nothing looks broken. Fully idempotent: a no-op when both files
+ * already match; when either differs it rewrites the differing one and does a
+ * daemon-reload (the timer fires the oneshot service on its schedule, so there's
+ * nothing to restart).
+ */
+function reconcile_backup_timer_units(): void
+{
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        return;
+    }
+
+    $home = ($_SERVER['HOME'] ?? getenv('HOME'));
+    $service_path = $home . '/.config/systemd/user/glommer-backup.service';
+    $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
+
+    // Only reconcile units that are already installed.
+    if (!is_file($service_path) || !is_file($timer_path)) {
+        return;
+    }
+
+    $desired_service = backup_service_contents();
+    $desired_timer = backup_timer_contents();
+    $service_matches = (string) @file_get_contents($service_path) === $desired_service;
+    $timer_matches = (string) @file_get_contents($timer_path) === $desired_timer;
+
+    if ($service_matches && $timer_matches) {
+        ok('Backup timer units already match the current template');
+
+        return;
+    }
+
+    $written = true;
+
+    if (!$service_matches) {
+        $written = file_put_contents($service_path, $desired_service) !== false && $written;
+    }
+
+    if (!$timer_matches) {
+        $written = file_put_contents($timer_path, $desired_timer) !== false && $written;
+    }
+
+    if (!$written) {
+        warn('Could not update the backup units - update them by hand, then: systemctl --user daemon-reload');
+
+        return;
+    }
+
+    shell_exec('systemctl --user daemon-reload 2>&1');
+    ok('Backup timer units updated to the current template');
+}
+
 function write_and_enable_backup_timer(): void
 {
     $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
@@ -345,26 +488,8 @@ function write_and_enable_backup_timer(): void
     $service_path = $home . '/.config/systemd/user/glommer-backup.service';
     $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
 
-    $service_contents = implode("\n", [
-        '[Unit]',
-        'Description=Glommer backup',
-        '',
-        '[Service]',
-        'Type=oneshot',
-        'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/backup.php',
-    ]) . "\n";
-
-    $timer_contents = implode("\n", [
-        '[Unit]',
-        'Description=Nightly Glommer backup',
-        '',
-        '[Timer]',
-        'OnCalendar=*-*-* 04:00:00',
-        'Persistent=true',
-        '',
-        '[Install]',
-        'WantedBy=timers.target',
-    ]) . "\n";
+    $service_contents = backup_service_contents();
+    $timer_contents = backup_timer_contents();
 
     if (!is_dir(dirname($service_path)) && !@mkdir(dirname($service_path), 0755, true)) {
         fail_line('Could not create ' . dirname($service_path) . ' - create the units manually (see README.md).');
@@ -591,6 +716,11 @@ if (isset($environment_failures['WebSocket service persistence']) && (is_interac
     }
 }
 
+// Bring an already-installed unit up to the current template on every run (a
+// no-op when it already matches), so a unit change is applied even when nothing
+// looks broken.
+reconcile_websocket_service_unit();
+
 // Likewise the one environment failure this script can fix itself by running
 // a real backup on the spot. BACKUP_TIMER_CONFIRMED=1 is the same explicit,
 // named non-interactive opt-in as SERVERNAME_CONFIRMED below - it unlocks
@@ -633,6 +763,10 @@ if (isset($environment_failures['Backup timer persistence']) && (is_interactive(
         fail_line($recheck['message']);
     }
 }
+
+// Bring already-installed backup units up to the current template on every run
+// (a no-op when they already match).
+reconcile_backup_timer_units();
 
 if ($environment_failures !== []) {
     echo "\n" . count($environment_failures) . ' environment problem(s) listed above - fix them and re-run this script.' . "\n";

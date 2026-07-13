@@ -50,6 +50,8 @@ $shell_exec_disabled = in_array('shell_exec', $disabled_functions, true);
 
 $ffmpeg_found = false;
 $ffprobe_found = false;
+$timeout_found = false;
+$bash_found = false;
 
 // Only actually call shell_exec() if it's genuinely available - calling a
 // disabled function still just emits a warning rather than fataling, but
@@ -57,6 +59,11 @@ $ffprobe_found = false;
 if (function_exists('shell_exec') && !$shell_exec_disabled) {
     $ffmpeg_found = trim((string) @shell_exec('command -v ffmpeg 2>/dev/null')) !== '';
     $ffprobe_found = trim((string) @shell_exec('command -v ffprobe 2>/dev/null')) !== '';
+    // timeout(1) (coreutils) and bash wrap every transcode with wall-clock /
+    // CPU / memory limits (UploadProcessor::guardedCommand), so they're as
+    // load-bearing for the media pipeline as ffmpeg itself.
+    $timeout_found = trim((string) @shell_exec('command -v timeout 2>/dev/null')) !== '';
+    $bash_found = trim((string) @shell_exec('command -v bash 2>/dev/null')) !== '';
 }
 
 $upload_dirs = [
@@ -84,6 +91,8 @@ JSONResponse::success([
     'shellExecDisabled' => $shell_exec_disabled,
     'ffmpegFound' => $ffmpeg_found,
     'ffprobeFound' => $ffprobe_found,
+    'timeoutFound' => $timeout_found,
+    'bashFound' => $bash_found,
     'extensions' => [
         'mysqli' => extension_loaded('mysqli'),
         'gd' => extension_loaded('gd'),

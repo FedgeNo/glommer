@@ -556,13 +556,13 @@ class EnvironmentChecker
                 }
             }
 
-            foreach (['ffmpeg', 'ffprobe'] as $binary) {
+            foreach (['ffmpeg', 'ffprobe', 'timeout', 'bash'] as $binary) {
                 if (trim((string) shell_exec('command -v ' . $binary . ' 2>/dev/null')) === '') {
-                    return ['ok' => false, 'message' => $binary . ' was not found on PATH - video and audio uploads cannot be processed without it. Install ffmpeg.'];
+                    return ['ok' => false, 'message' => $binary . ' was not found on PATH - the media-upload pipeline needs ffmpeg/ffprobe to transcode, plus timeout(1) (coreutils) and bash to run each transcode under wall-clock/CPU/memory limits. Install the missing one.'];
                 }
             }
 
-            return ['ok' => true, 'message' => 'exec()/shell_exec() available, ffmpeg and ffprobe found'];
+            return ['ok' => true, 'message' => 'exec()/shell_exec() available; ffmpeg, ffprobe, timeout and bash found'];
         }
 
         // CLI: disable_functions is PHP_INI_SYSTEM and very commonly set
@@ -594,7 +594,15 @@ class EnvironmentChecker
             return ['ok' => false, 'message' => 'ffprobe was not found on the web server\'s PATH (confirmed live), even if it\'s on the CLI\'s PATH - FPM pools often set their own, narrower PATH. Add ffprobe\'s directory to the FPM pool\'s env[PATH].'];
         }
 
-        return ['ok' => true, 'message' => 'exec()/shell_exec() available, ffmpeg and ffprobe found (confirmed live via the web server)'];
+        if (empty($live['timeoutFound'])) {
+            return ['ok' => false, 'message' => 'timeout(1) was not found on the web server\'s PATH (confirmed live) - every ffmpeg/ffprobe run is wrapped in it to enforce a wall-clock limit on untrusted media. It ships with coreutils; add its directory to the FPM pool\'s env[PATH].'];
+        }
+
+        if (empty($live['bashFound'])) {
+            return ['ok' => false, 'message' => 'bash was not found on the web server\'s PATH (confirmed live) - each transcode runs under a bash ulimit preamble for CPU/memory caps. Add bash\'s directory to the FPM pool\'s env[PATH].'];
+        }
+
+        return ['ok' => true, 'message' => 'exec()/shell_exec() available; ffmpeg, ffprobe, timeout and bash found (confirmed live via the web server)'];
     }
 
     /**

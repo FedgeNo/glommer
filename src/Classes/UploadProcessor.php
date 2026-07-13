@@ -12,10 +12,50 @@ class UploadProcessor
     private const VIDEO_MAX_HEIGHT = 720;
     private const VIDEO_MAX_FRAMERATE = 30;
 
+    // A source frame larger than this (~4K in any orientation) is rejected
+    // before decode. ffmpeg buffers frames at the SOURCE resolution before the
+    // scale filter runs, so a tiny file declaring an enormous resolution is a
+    // decode bomb; we downscale to 720p regardless, so nothing this big is
+    // worth decoding. Keeps the worst case under the address-space ulimit
+    // instead of relying on it to interrupt a multi-gigabyte allocation.
+    private const VIDEO_MAX_SOURCE_PIXELS = 4096 * 2304;
+
     private const DISPLAY_EXTENSIONS = [
         'ImageItem' => 'jpg',
         'VideoItem' => 'mp4',
         'AudioItem' => 'mp3',
+    ];
+
+    // --- Hardening for every ffmpeg/ffprobe run against an untrusted upload ---
+    // A PHP memory_limit does NOT bound these child processes (see
+    // bin/process-upload.php), and ffmpeg's real attack surface is its
+    // demuxers/protocols - not the output text - so each invocation is locked
+    // down: only the local `file` protocol (no http/tcp/rtp/... => no SSRF), a
+    // container-format allowlist (no concat/hls/image2 local-file-read
+    // demuxers), bounded format probing, and wall-clock / CPU-time /
+    // address-space / thread caps applied at the OS level. Requires timeout(1)
+    // (coreutils) and bash on the host (checked by EnvironmentChecker).
+    private const FF_PROTOCOL_WHITELIST = 'file';
+    private const FF_PROBE_SIZE = 15000000;
+    private const FF_ANALYZE_DURATION = 15000000;
+    private const FF_PROBE_TIMEOUT = 30;
+    private const FF_WALL_TIMEOUT = 300;
+    private const FF_CPU_TIMELIMIT = 300;
+    private const FF_MAX_ADDRESS_SPACE_KB = 2097152;
+    private const FF_THREADS = 2;
+
+    // ffprobe's format_name is a comma-joined list of the demuxers that claim
+    // the file; a file is accepted if ANY token is a known media container
+    // here, and rejected otherwise - crucially the local-file-reading / network
+    // demuxers (concat, hls/applehttp, image2, sdp, rtp/rtsp, dash, ...) that
+    // are the real ffmpeg upload-attack vector are absent, so they fail closed.
+    private const SAFE_CONTAINER_FORMATS = [
+        // audio
+        'mp3', 'wav', 'w64', 'flac', 'ogg', 'aac', 'aiff', 'aif', 'ac3',
+        'amr', 'caf', 'au', 'mp2', 'wv', 'ape', 'tta', 'mpc',
+        // video / mixed containers
+        'mov', 'mp4', 'm4a', 'm4v', '3gp', '3g2', 'mj2', 'matroska', 'webm',
+        'avi', 'flv', 'asf', 'mpeg', 'mpegts', 'mpegvideo',
     ];
 
     /**
@@ -294,15 +334,59 @@ class UploadProcessor
         return ['itemType' => 'ImageItem'];
     }
 
+    /**
+     * The locked-down ffprobe prefix shared by every probe: quiet, time-limited,
+     * restricted to the local file protocol, and bounded in how much it reads to
+     * detect the format. Callers append their own `-show_entries`/`-of` and the
+     * (escapeshellarg'd) path plus `2>&1`.
+     */
+    private static function ffprobePrefix(): string
+    {
+        return sprintf(
+            'timeout %d ffprobe -v error -protocol_whitelist %s -analyzeduration %d -probesize %d',
+            self::FF_PROBE_TIMEOUT,
+            self::FF_PROTOCOL_WHITELIST,
+            self::FF_ANALYZE_DURATION,
+            self::FF_PROBE_SIZE
+        );
+    }
+
+    /**
+     * Whether the file's container is one we accept (see SAFE_CONTAINER_FORMATS).
+     * ffprobe reports format_name as a comma-joined list of the demuxers that
+     * claim the file; the file passes if any token is allowlisted. Fails closed:
+     * an unreadable, errored, or unrecognised container returns false, so the
+     * dangerous local-file-reading / network demuxers never reach a transcode.
+     */
+    private static function containerAllowed(string $path): bool
+    {
+        $output = (string) shell_exec(
+            self::ffprobePrefix() . ' -show_entries format=format_name -of default=noprint_wrappers=1:nokey=1 ' . escapeshellarg($path) . ' 2>&1'
+        );
+
+        foreach (explode(',', trim($output)) as $format_name) {
+            if (in_array($format_name, self::SAFE_CONTAINER_FORMATS, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static function probeMedia(string $path): ?string
     {
+        // Reject unrecognised / dangerous containers before anything decodes.
+        if (!self::containerAllowed($path)) {
+            return null;
+        }
+
         // Include each stream's attached_pic disposition. A "video" stream that
         // is an attached picture is embedded cover art (common in music MP3s),
         // not real video - such a file is audio. Only a non-attached-picture
         // video stream makes it a video, so a cover-art MP3 isn't misrouted to
         // the video transcoder, which fails on it.
         $output = (string) shell_exec(
-            'ffprobe -v error -show_entries stream=codec_type:stream_disposition=attached_pic -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
+            self::ffprobePrefix() . ' -show_entries stream=codec_type:stream_disposition=attached_pic -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
         );
 
         $has_real_video = false;
@@ -340,7 +424,7 @@ class UploadProcessor
     private static function probeDuration(string $path): float
     {
         $output = (string) shell_exec(
-            'ffprobe -v error -show_entries format=duration -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
+            self::ffprobePrefix() . ' -show_entries format=duration -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
         );
 
         // A failed probe or non-numeric output casts to 0.0, which makes the
@@ -348,8 +432,64 @@ class UploadProcessor
         return max(0.0, (float) trim($output));
     }
 
+    /**
+     * The locked-down ffmpeg input flags placed before every `-i`: no stdin, no
+     * banner, the local `file` protocol only (no SSRF), and bounded format
+     * probing. Shared by the transcodes and the poster-frame grab.
+     */
+    private static function ffmpegInputFlags(): string
+    {
+        return sprintf(
+            '-nostdin -hide_banner -protocol_whitelist %s -analyzeduration %d -probesize %d',
+            self::FF_PROTOCOL_WHITELIST,
+            self::FF_ANALYZE_DURATION,
+            self::FF_PROBE_SIZE
+        );
+    }
+
+    /**
+     * Wraps an ffmpeg command with the OS-level resource limits a PHP
+     * memory_limit can't provide: a wall-clock cap via timeout(1), plus CPU-time
+     * and address-space caps via a bash `ulimit` preamble. `exec` replaces the
+     * shell with ffmpeg so timeout supervises ffmpeg directly and no wrapper
+     * process lingers. A timed-out / over-limit run is SIGKILLed and its
+     * nonzero exit makes the caller treat the transcode as failed.
+     */
+    private static function guardedCommand(string $ffmpeg_command): string
+    {
+        $preamble = 'ulimit -v ' . self::FF_MAX_ADDRESS_SPACE_KB . ' -t ' . self::FF_CPU_TIMELIMIT . '; exec ' . $ffmpeg_command;
+
+        return sprintf('timeout -k 10 %d bash -c %s', self::FF_WALL_TIMEOUT, escapeshellarg($preamble));
+    }
+
+    /**
+     * Whether the first video stream's frame exceeds VIDEO_MAX_SOURCE_PIXELS -
+     * checked before any decode so a decode bomb is rejected up front rather
+     * than left to the address-space ulimit. Unreadable dimensions fall through
+     * (return false); the ulimit still backstops that case.
+     */
+    private static function sourceVideoTooLarge(string $path): bool
+    {
+        $output = (string) shell_exec(
+            self::ffprobePrefix() . ' -select_streams v:0 -show_entries stream=width,height -of csv=p=0 ' . escapeshellarg($path) . ' 2>&1'
+        );
+
+        $parts = explode(',', trim($output));
+
+        if (count($parts) < 2) {
+            return false;
+        }
+
+        return ((int) $parts[0]) * ((int) $parts[1]) > self::VIDEO_MAX_SOURCE_PIXELS;
+    }
+
     private static function processVideo(string $tmp_path, int|string $id, string $original_filename): ?array
     {
+        // Reject an oversized source frame before decoding anything (decode bomb).
+        if (self::sourceVideoTooLarge($tmp_path)) {
+            return null;
+        }
+
         $extension = self::safeExtension($original_filename);
         $paths = self::outputPaths($id, 'VideoItem', $extension);
 
@@ -367,15 +507,26 @@ class UploadProcessor
             self::VIDEO_MAX_HEIGHT
         );
 
-        exec(sprintf(
-            'ffmpeg -y -i %s -vf %s -r %d -map_metadata -1 -map_chapters -1 -fflags +bitexact -flags:v +bitexact -flags:a +bitexact -c:v libx264 -preset veryfast -crf 23 -c:a aac -movflags +faststart %s 2>&1',
+        // -map 0:v:0 -map 0:a:0? -sn -dn: take only the first video and (if
+        // present) first audio stream, dropping subtitle/data streams (subtitle
+        // demuxers can reference external files, and extra streams are surface
+        // we don't render). -threads bounds CPU.
+        exec(self::guardedCommand(sprintf(
+            'ffmpeg %s -y -i %s -map 0:v:0 -map %s -sn -dn -vf %s -r %d -threads %d -map_metadata -1 -map_chapters -1 -fflags +bitexact -flags:v +bitexact -flags:a +bitexact -c:v libx264 -preset veryfast -crf 23 -c:a aac -movflags +faststart %s 2>&1',
+            self::ffmpegInputFlags(),
             escapeshellarg($tmp_path),
+            escapeshellarg('0:a:0?'),
             escapeshellarg($scale_filter),
             self::VIDEO_MAX_FRAMERATE,
+            self::FF_THREADS,
             escapeshellarg($paths['display'])
-        ), $output_lines, $exit_code);
+        )), $output_lines, $exit_code);
 
         if ($exit_code !== 0 || !is_file($paths['display'])) {
+            // A timed-out / killed run can leave a partial display file; clear it
+            // so failures don't accumulate on disk.
+            @unlink($paths['display']);
+
             if ($paths['original'] !== null) {
                 unlink($paths['original']);
             }
@@ -390,12 +541,14 @@ class UploadProcessor
         // midpoint (min(1s, duration/2)) so short clips still produce a frame.
         $poster_seek = min(1.0, self::probeDuration($paths['display']) / 2.0);
 
-        exec(sprintf(
-            'ffmpeg -y -i %s -ss %s -vframes 1 %s 2>&1',
-            escapeshellarg($paths['display']),
+        exec(self::guardedCommand(sprintf(
+            'ffmpeg %s -y -ss %s -i %s -frames:v 1 -threads %d %s 2>&1',
+            self::ffmpegInputFlags(),
             sprintf('%.3f', $poster_seek),
+            escapeshellarg($paths['display']),
+            self::FF_THREADS,
             escapeshellarg($raw_frame_path)
-        ), $frame_output_lines, $frame_exit_code);
+        )), $frame_output_lines, $frame_exit_code);
 
         $thumbnail_ok = false;
 
@@ -431,15 +584,23 @@ class UploadProcessor
             copy($tmp_path, $paths['original']);
         }
 
-        // -vn drops any embedded cover art (an attached-picture video stream);
-        // we only want the audio, and leaving it in can make the mp3 muxing fail.
-        exec(sprintf(
-            'ffmpeg -y -i %s -vn -map_metadata -1 -id3v2_version 0 -c:a libmp3lame -b:a 320k %s 2>&1',
+        // -map 0:a:0 -vn -sn -dn: take only the first audio stream and drop
+        // everything else - embedded cover art (an attached-picture video
+        // stream, common in music MP3s; leaving it in can make the mp3 muxing
+        // fail), subtitles, and data streams. -threads bounds CPU.
+        exec(self::guardedCommand(sprintf(
+            'ffmpeg %s -y -i %s -map 0:a:0 -vn -sn -dn -threads %d -map_metadata -1 -id3v2_version 0 -c:a libmp3lame -b:a 320k %s 2>&1',
+            self::ffmpegInputFlags(),
             escapeshellarg($tmp_path),
+            self::FF_THREADS,
             escapeshellarg($paths['display'])
-        ), $output_lines, $exit_code);
+        )), $output_lines, $exit_code);
 
         if ($exit_code !== 0 || !is_file($paths['display'])) {
+            // A timed-out / killed run can leave a partial display file; clear it
+            // so failures don't accumulate on disk.
+            @unlink($paths['display']);
+
             if ($paths['original'] !== null) {
                 unlink($paths['original']);
             }

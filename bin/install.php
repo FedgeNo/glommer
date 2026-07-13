@@ -1247,6 +1247,193 @@ function set_up_system_services(array &$environment_failures): void
     fix_upload_ownership($service_user, $web);
 }
 
+/**
+ * Whether $host is a real public domain a public CA (Let's Encrypt) could issue
+ * for - i.e. not localhost, an IP, or a private/reserved/single-label name.
+ * Automatic certbot only makes sense for these; localhost/dev needs mkcert.
+ */
+function host_is_public_domain(string $host): bool
+{
+    $host = strtolower($host);
+
+    if ($host === '' || $host === 'localhost' || filter_var($host, FILTER_VALIDATE_IP) !== false) {
+        return false;
+    }
+
+    if (!str_contains($host, '.')) {
+        return false;
+    }
+
+    foreach (['.local', '.localhost', '.internal', '.test', '.example', '.invalid', '.home', '.lan'] as $suffix) {
+        if (str_ends_with($host, $suffix)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * A best-effort package-install command prefix for this box's package manager
+ * (dnf/apt/yum/zypper/pacman), or null if none is found - nothing is assumed to
+ * be present. Non-interactive.
+ */
+function package_install_command(): ?string
+{
+    $managers = [
+        'dnf' => 'dnf install -y',
+        'apt-get' => 'apt-get install -y',
+        'yum' => 'yum install -y',
+        'zypper' => 'zypper --non-interactive install',
+        'pacman' => 'pacman -S --noconfirm',
+    ];
+
+    foreach ($managers as $binary => $command) {
+        if (trim((string) shell_exec('command -v ' . escapeshellarg($binary) . ' 2>/dev/null')) !== '') {
+            return $command;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * The web server actually running, so we use the right certbot plugin - NOT an
+ * assumption that it's Apache. nginx is checked first because in the reverse-
+ * proxy deployments this app supports, nginx out front is what terminates TLS
+ * (so the cert belongs there), with Apache behind it on loopback. Returns
+ * 'nginx', 'apache', or null (unknown - don't guess, leave it manual).
+ */
+function running_web_server(): ?string
+{
+    if (trim((string) shell_exec('command -v pgrep 2>/dev/null')) === '') {
+        return null;
+    }
+
+    if (trim((string) shell_exec('pgrep -x nginx 2>/dev/null')) !== '') {
+        return 'nginx';
+    }
+
+    if (trim((string) shell_exec('pgrep -x httpd 2>/dev/null')) !== '' || trim((string) shell_exec('pgrep -x apache2 2>/dev/null')) !== '') {
+        return 'apache';
+    }
+
+    return null;
+}
+
+/**
+ * Installs certbot and the given plugin package via the box's package manager if
+ * certbot isn't already present. Returns whether certbot is now available.
+ */
+function install_certbot(string $plugin_package): bool
+{
+    if (trim((string) shell_exec('command -v certbot 2>/dev/null')) !== '') {
+        return true;
+    }
+
+    $install = package_install_command();
+
+    if ($install === null) {
+        return false;
+    }
+
+    echo "\nInstalling certbot (" . $install . ' certbot ' . $plugin_package . ")...\n";
+    shell_exec($install . ' certbot ' . escapeshellarg($plugin_package) . ' 2>&1');
+
+    return trim((string) shell_exec('command -v certbot 2>/dev/null')) !== '';
+}
+
+/**
+ * Whether a plain HTTP request to http://$host comes back - the readiness signal
+ * for a Let's Encrypt HTTP-01 challenge (DNS points here, port 80 open, Apache
+ * serving this host). Any HTTP response counts; a connect failure doesn't.
+ */
+function http_reachable(string $host): bool
+{
+    if (!function_exists('curl_init')) {
+        return false;
+    }
+
+    $curl = curl_init();
+    curl_setopt_array($curl, [
+        CURLOPT_URL => 'http://' . $host . '/',
+        CURLOPT_NOBODY => true,
+        CURLOPT_TIMEOUT => 8,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_FOLLOWLOCATION => false,
+    ]);
+    curl_exec($curl);
+    $errno = curl_errno($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    curl_close($curl);
+
+    return $errno === 0 && $status > 0;
+}
+
+/**
+ * Under a root install, tries to obtain the web-server TLS certificate
+ * automatically: installs certbot (with the plugin for whichever web server is
+ * actually running - Apache or nginx, never assumed) and runs it for the site's
+ * hostname, so HTTPS gets set up without the manual step. Only for a real public
+ * domain (Let's Encrypt can't issue for localhost) and only once the host is
+ * reachable over HTTP (so a not-ready domain doesn't burn Let's Encrypt rate
+ * limits). --no-redirect: the app does its own canonical, host-spoof-safe
+ * http->https redirect (.htaccess + UseCanonicalName), which certbot's
+ * Host-header-based redirect would undermine. --keep-until-expiring makes a
+ * re-run reuse an existing cert. When the web server can't be identified we
+ * install certbot but leave running it to the admin (we won't guess the plugin).
+ * Returns whether a certificate was obtained.
+ */
+function attempt_web_certificate(string $host, string $email): bool
+{
+    if (!host_is_public_domain($host)) {
+        warn('Automatic certificates need a real public domain - Let\'s Encrypt can\'t issue for ' . $host . '. For localhost/dev use mkcert (see README\'s HTTPS section).');
+
+        return false;
+    }
+
+    $server = running_web_server();
+
+    if ($server === null) {
+        warn('Couldn\'t identify the web server (not nginx or Apache, or it isn\'t running yet) - not guessing a certbot plugin. If TLS terminates here, install certbot with the plugin for your server and run it manually; if a reverse proxy terminates TLS, the certificate belongs on the proxy (see README).');
+
+        return false;
+    }
+
+    $plugin_package = $server === 'nginx' ? 'python3-certbot-nginx' : 'python3-certbot-apache';
+
+    if (!install_certbot($plugin_package)) {
+        warn('certbot isn\'t installed and couldn\'t be installed automatically (no known package manager found). Install it by hand - e.g. dnf install certbot ' . $plugin_package . ' - and re-run, or get a certificate manually (see README).');
+
+        return false;
+    }
+
+    if (!http_reachable($host)) {
+        warn('Not requesting a certificate yet: http://' . $host . ' isn\'t reachable, so a Let\'s Encrypt challenge would fail (DNS not pointing here, port 80 firewalled, or the web server not serving this host). Point DNS + open port 80, then re-run.');
+
+        return false;
+    }
+
+    echo "\nObtaining a Let's Encrypt certificate for " . $host . ' (certbot --' . $server . ")...\n";
+
+    $email_args = ($email !== '' && $email !== 'noreply@example.com' && filter_var($email, FILTER_VALIDATE_EMAIL) !== false)
+        ? '-m ' . escapeshellarg($email)
+        : '--register-unsafely-without-email';
+
+    exec('certbot --' . $server . ' --non-interactive --agree-tos --keep-until-expiring --no-redirect '
+        . $email_args . ' -d ' . escapeshellarg($host) . ' 2>&1', $output, $exit_code);
+
+    if ($exit_code !== 0) {
+        warn('certbot did not complete (' . trim(implode(' | ', array_slice($output, -4))) . '). Fix the cause and re-run, or get a certificate manually (see README).');
+
+        return false;
+    }
+
+    ok('Certificate obtained and ' . $server . ' configured for HTTPS on ' . $host);
+
+    return true;
+}
+
 // ---------- 1. Environment ----------
 
 heading('Environment');
@@ -1540,6 +1727,16 @@ $site_port = parse_url($config['siteURL'], PHP_URL_PORT);
 $server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
 
 $https_serving = EnvironmentChecker::httpsServing($server_name_value);
+
+// Under a root install, if HTTPS isn't live yet, try to obtain the web
+// certificate automatically now that the hostname is set - install and run
+// certbot for whichever web server is running - then re-check. Best-effort: it
+// only ever warns on failure, never hard-fails here.
+if ($is_root && $https_serving !== true) {
+    if (attempt_web_certificate($site_host, (string) $config['mailFromAddress'])) {
+        $https_serving = EnvironmentChecker::httpsServing($server_name_value);
+    }
+}
 
 if ($https_serving === false) {
     fail('SITE_URL is https://... but a real HTTPS connection to ' . $server_name_value . ' failed at the TLS handshake itself - something is listening on the port without actually serving TLS. Check that Apache\'s SSLCertificateFile/SSLCertificateKeyFile are set and mod_ssl is loaded, then re-run.');

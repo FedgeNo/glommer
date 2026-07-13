@@ -73,6 +73,15 @@ class SafeHTTPFetcher
         $scheme = strtolower($parts['scheme']);
         $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
 
+        // Only the standard web ports. A link preview never legitimately
+        // targets anything else, and allowing an arbitrary port lets a
+        // submitted URL reach internal services (Redis 6379, Memcached 11211,
+        // ...) on an otherwise-public host that the IP validation alone
+        // wouldn't catch.
+        if (!in_array($port, [80, 443], true)) {
+            return null;
+        }
+
         // CURLOPT_RANGE is only a hint - plenty of servers/CDNs ignore a Range
         // header entirely and send the full body regardless (confirmed live
         // against Wikipedia while testing this). A write callback that aborts

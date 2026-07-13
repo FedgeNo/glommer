@@ -105,6 +105,10 @@ class Page
             'siteURL' => ServerURL::absolute(''),
             'serverTime' => time() * 1000,
             'WSPort' => $config['WSPort'],
+            // Single source of truth for how many carousel items load eagerly -
+            // post.js reads this rather than hardcoding its own copy, so the
+            // client- and server-rendered carousels can't drift apart.
+            'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,
         ]));
 
         $post_script = new Script();

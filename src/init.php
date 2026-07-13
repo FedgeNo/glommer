@@ -63,7 +63,7 @@ try {
 // memory_limit - anything already mid-way through streaming a real response
 // is left alone rather than being clobbered.
 $send_server_error = function (): void {
-    if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+    if (defined('IS_API_REQUEST')) {
         JSONResponse::error('Server error', 500) -> send();
     } else {
         ErrorDocument::send(500, 'Something Went Wrong', 'An unexpected error occurred. Please try again, and let us know if it keeps happening.');
@@ -102,7 +102,7 @@ register_shutdown_function(function () use ($send_server_error): void {
 // .env. (Placed here, after the error handlers, where ErrorDocument can
 // safely render.)
 if ($site_is_installed && !str_starts_with((string) $init_config['siteURL'], 'https://')) {
-    if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+    if (defined('IS_API_REQUEST')) {
         JSONResponse::error('This site requires HTTPS and is misconfigured. The administrator must set SITE_URL to an https:// URL.', 503) -> send();
     }
 
@@ -120,7 +120,7 @@ if ($site_is_installed && !str_starts_with((string) $init_config['siteURL'], 'ht
 $db_app_version = Settings::get('appVersion');
 
 if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
-    if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+    if (defined('IS_API_REQUEST')) {
         JSONResponse::error('The site is being upgraded. Please try again in a few minutes.', 503) -> send();
     }
 
@@ -162,7 +162,7 @@ if (Auth::check()) {
     if ($current_user === null || $current_user -> banned || ($_SESSION['sessionVersion'] ?? 0) !== $current_user -> sessionVersion) {
         Auth::logout();
 
-        if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+        if (defined('IS_API_REQUEST')) {
             JSONResponse::error('Not logged in', 401) -> send();
         }
 
@@ -173,7 +173,7 @@ if (Auth::check()) {
     $exempt_scripts = ['check-inbox.php', 'logout.php', 'verify-email.php', 'resend-verification.php', 'revert-email.php'];
 
     if (!$current_user -> verified && !in_array(basename($_SERVER['SCRIPT_FILENAME']), $exempt_scripts, true)) {
-        if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+        if (defined('IS_API_REQUEST')) {
             JSONResponse::error('Email verification required', 403) -> send();
         }
 
@@ -186,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['CSRFToken'] ?? null;
 
     if (!CSRF::verify(is_string($csrf_token) ? $csrf_token : null)) {
-        if (str_contains($_SERVER['SCRIPT_FILENAME'], '/api/')) {
+        if (defined('IS_API_REQUEST')) {
             JSONResponse::error('Invalid CSRF token', 403) -> send();
         }
 

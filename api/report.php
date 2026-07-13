@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
@@ -39,6 +39,12 @@ if ($target_user_id === 1) {
     JSONResponse::error('This content can\'t be reported.', 422) -> send();
 }
 
+// A moderator already reviewed and dismissed a report on this content - it
+// can't be reported again (posts/messages only; a user carries no such flag).
+if (Report::isContentDismissed($target_type, $target_id)) {
+    JSONResponse::error('This content has already been reviewed by a moderator.', 422) -> send();
+}
+
 $rate_key = 'report:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
@@ -47,6 +53,8 @@ if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
 
 RateLimiter::recordAttempt($rate_key);
 
-Report::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null);
+if (!Report::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null)) {
+    JSONResponse::error('You\'ve already reported this.', 422) -> send();
+}
 
 JSONResponse::success(['reported' => true]) -> send();

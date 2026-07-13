@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 class Carousel extends HTMLObject
 {
-    // How many items load their media up front. The rest defer until the
-    // carousel advances onto them, so a large gallery doesn't fetch everything
-    // at once. Mirrored client-side in post.js (itemsToCarousel).
+    // How many items ahead of the current one keep their media loaded - so the
+    // viewer always stays this many slides ahead of the loading. The first
+    // slide plus this many load up front; the rest defer until the carousel
+    // advances toward them (main.js keeps the same buffer filled as it moves),
+    // so a large gallery doesn't fetch everything at once. Mirrored client-side
+    // in post.js (itemsToCarousel) and main.js's advance buffer, which read it
+    // as window.carouselEagerItems (see Page::create).
     public const INITIAL_EAGER_ITEMS = 5;
 
     public string $tagName = 'div';
@@ -22,7 +26,9 @@ class Carousel extends HTMLObject
 
         foreach ($this -> items as $index => $item) {
             if ($item instanceof FeedItem) {
-                $item -> deferred = $index >= self::INITIAL_EAGER_ITEMS;
+                // Current slide (index 0) plus INITIAL_EAGER_ITEMS ahead load
+                // eagerly, hence > rather than >=.
+                $item -> deferred = $index > self::INITIAL_EAGER_ITEMS;
             }
 
             $slide = new Div();

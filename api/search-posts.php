@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
@@ -20,16 +20,23 @@ $limit = 20;
 $fetch_limit = $limit + 1;
 $not_banned = 0;
 
+$viewer_id = (int) Auth::id();
+
 $stmt = mysqli_prepare($mysqli, '
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
         AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND (? = 0 OR `Posts`.`postId` < ?)
+        AND NOT EXISTS (
+            SELECT 1
+                FROM `Blocks` `b`
+                WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `Posts`.`userId`) OR (`b`.`blockerId` = `Posts`.`userId` AND `b`.`blockedId` = ?)
+        )
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
 ');
-mysqli_stmt_bind_param($stmt, 'siiii', $query, $not_banned, $before_post_id, $before_post_id, $fetch_limit);
+mysqli_stmt_bind_param($stmt, 'siiiiii', $query, $not_banned, $before_post_id, $before_post_id, $viewer_id, $viewer_id, $fetch_limit);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
@@ -44,8 +51,6 @@ $has_more = count($feed_rows) > $limit;
 if ($has_more) {
     array_pop($feed_rows);
 }
-
-$viewer_id = Auth::id();
 
 $posts = Post::fromRowsWithItems($feed_rows);
 $post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);

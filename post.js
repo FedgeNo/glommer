@@ -165,14 +165,17 @@ class Post {
         const track = document.createElement('div');
         track.className = 'CarouselTrack';
 
-        // Mirrors Carousel::INITIAL_EAGER_ITEMS server-side: the first few items
-        // load up front, the rest defer until the carousel advances onto them.
-        const initial_eager_items = 5;
+        // Carousel::INITIAL_EAGER_ITEMS, published as a page global (see
+        // Page::create) so this isn't a second hand-kept copy of the number:
+        // the first slide plus this many ahead load up front (hence > below,
+        // matching Carousel.php), the rest defer until the carousel advances
+        // toward them and main.js keeps the buffer filled.
+        const initial_eager_items = window.carouselEagerItems;
 
         this.items.forEach((item, index) => {
             const slide = document.createElement('div');
             slide.className = 'CarouselSlide' + (index === 0 ? ' Active' : '');
-            slide.appendChild(this.itemToElement(item, index >= initial_eager_items));
+            slide.appendChild(this.itemToElement(item, index > initial_eager_items));
             track.appendChild(slide);
         });
 

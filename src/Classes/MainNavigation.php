@@ -36,7 +36,7 @@ class MainNavigation extends HTMLObject
 
             $account_menu_links = [
                 new Anchor(ServerURL::absolute('/settings'), 'Settings'),
-                new Anchor(ServerURL::absolute('/logout'), 'Log out'),
+                new LogoutForm(),
             ];
 
             if (Auth::canModerate()) {

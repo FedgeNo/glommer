@@ -8,7 +8,7 @@ class NavDropdown extends Div
 
     public HTMLObject|string $trigger;
 
-    /** @var Anchor[] */
+    /** @var HTMLObject[] menu items - anchors, plus the LogoutForm */
     public array $links;
 
     public function __construct(HTMLObject|string $trigger, array $links)

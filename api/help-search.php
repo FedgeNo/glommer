@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 // Public, like the rest of the Help section - no login required.
 $query = trim((string) ($_GET['q'] ?? ''));

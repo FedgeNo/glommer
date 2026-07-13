@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
@@ -22,6 +22,10 @@ $report = Report::find($report_id);
 if ($report === null) {
     JSONResponse::error('Report not found', 404) -> send();
 }
+
+// Flag the content so it can't just be reported again the moment the report
+// leaves the queue (posts/messages only - a user has no such flag).
+Report::markContentDismissed($report['targetType'], (int) $report['targetId']);
 
 Report::delete($report_id);
 

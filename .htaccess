@@ -22,6 +22,14 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Block any request into a dotfile OR a dot-directory (.git, .env, .svn,
+    # .htaccess, ...). The <FilesMatch> above only ever sees the request
+    # basename, so it stops /.env but NOT a file nested under a dot-directory
+    # like /.git/config - which would otherwise hand out the whole repo
+    # (source + history). This matches a leading-dot segment anywhere in the
+    # path and 403s it outright, before any other rule runs.
+    RewriteRule (^|/)\. - [F]
+
     # Once installed (.env exists), nothing is served over plain HTTP - not
     # even static files (uploads, CSS, JS), which Apache serves without PHP:
     # everything 301s to its https URL. Before .env exists the setup wizard

@@ -36,8 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mysqli = Database::connection();
     $rate_key = 'signup:' . (ServerURL::clientIP() ?? 'unknown');
 
-    if ($errors === [] && RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
-        $errors[] = 'Too many signups from your network. Please try again later.';
+    if ($errors === []) {
+        if (RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
+            $errors[] = 'Too many signups from your network. Please try again later.';
+        } else {
+            // Count every well-formed attempt, not just a successful signup -
+            // otherwise a probe for which emails already exist (via the
+            // "already taken" response) never counts toward the limit and
+            // account enumeration is unthrottled.
+            RateLimiter::recordAttempt($rate_key);
+        }
     }
 
     // Verify the CAPTCHA server-side (after the cheap rate-limit check, so a
@@ -76,8 +84,6 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
         mysqli_stmt_bind_param($stmt, 'ssssi', $username, $email, $hash, $display_name_value, $unverified);
         mysqli_stmt_execute($stmt);
         $new_user_id = (int) mysqli_insert_id($mysqli);
-
-        RateLimiter::recordAttempt($rate_key);
 
         $user = new User();
         $user -> userId = $new_user_id;

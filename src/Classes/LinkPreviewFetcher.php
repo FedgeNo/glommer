@@ -103,7 +103,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         }
 
         if ($fetched === null) {
-            self::storeCache($url, null);
+            self::storeCache($url, null, false);
 
             return null;
         }
@@ -123,7 +123,11 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
                 'imageURL' => str_starts_with($content_type, 'image/') ? $url : null,
             ];
 
-        self::storeCache($url, $metadata);
+        // A successful fetch that yielded no usable metadata (a page with no
+        // OG/meta tags → parseHTML returns null) is still a SUCCESS - there's
+        // genuinely nothing to show, so cache it under the long success TTL
+        // rather than re-fetching the same empty page every 2 minutes forever.
+        self::storeCache($url, $metadata, true);
 
         return $metadata;
     }
@@ -416,17 +420,43 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
             return null;
         }
 
+        // Protocol-relative ("//cdn.example.com/pic.jpg") - keep the URL's own
+        // host, inherit only the base's scheme. Must be handled before the
+        // root-relative branch below, since it also starts with "/" and would
+        // otherwise get the origin glued on to produce a broken
+        // "https://base//cdn.example.com/..." and the wrong host.
+        if (str_starts_with($url, '//')) {
+            $resolved = $base_parts['scheme'] . ':' . $url;
+
+            return strlen($resolved) <= 2048 ? $resolved : null;
+        }
+
         $origin = $base_parts['scheme'] . '://' . $base_parts['host'] . (isset($base_parts['port']) ? ':' . $base_parts['port'] : '');
-        $resolved = str_starts_with($url, '/') ? $origin . $url : $origin . '/' . $url;
+
+        if (str_starts_with($url, '/')) {
+            $resolved = $origin . $url;
+        } else {
+            // Path-relative ("pic.jpg", "../pic.jpg") resolves against the
+            // base's directory, not the origin root - dropping the base path
+            // would point at the wrong location.
+            $base_path = $base_parts['path'] ?? '/';
+            $last_slash = strrpos($base_path, '/');
+            $base_dir = $last_slash !== false ? substr($base_path, 0, $last_slash + 1) : '/';
+            $resolved = $origin . $base_dir . $url;
+        }
 
         return strlen($resolved) <= 2048 ? $resolved : null;
     }
 
-    private static function storeCache(string $url, ?array $metadata): void
+    private static function storeCache(string $url, ?array $metadata, bool $fetch_succeeded): void
     {
         $mysqli = Database::connection();
 
-        $succeeded = $metadata !== null ? 1 : 0;
+        // "succeeded" tracks whether the FETCH worked, not whether it found
+        // metadata - a successful fetch of a page with no metadata still
+        // caches long (nothing to retry), only a genuine fetch failure caches
+        // briefly for a soon retry (see the two cache TTLs).
+        $succeeded = $fetch_succeeded ? 1 : 0;
         $title = $metadata['title'] ?? null;
         $description = $metadata['description'] ?? null;
         $image_url = $metadata['imageURL'] ?? null;

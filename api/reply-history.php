@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 $parent_id = (int) ($_GET['parentId'] ?? 0);
 $before_post_id = (int) ($_GET['beforePostId'] ?? 0);

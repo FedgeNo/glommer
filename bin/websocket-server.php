@@ -483,6 +483,9 @@ function handle_push_request(int $id): void
         is_array($request)
         && isset($request['secret'], $request['userId'], $request['payload'])
         && is_string($request['secret'])
+        // No secret configured (null) - reject every push rather than let
+        // hash_equals be called with a null expected value.
+        && is_string($config['WSSecret']) && $config['WSSecret'] !== ''
         && hash_equals($config['WSSecret'], $request['secret'])
     ) {
         $target_user_id = (int) $request['userId'];

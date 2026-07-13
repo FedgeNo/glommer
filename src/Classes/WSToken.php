@@ -18,6 +18,13 @@ class WSToken
     public static function issue(int $user_id): string
     {
         $config = require __DIR__ . '/../config.php';
+
+        // No secret configured - hand out no usable token rather than sign
+        // with an absent key. WS auth is off until WS_SECRET is set.
+        if (!is_string($config['WSSecret']) || $config['WSSecret'] === '') {
+            return '';
+        }
+
         $expires_at = time() + self::TTL_SECONDS;
         $payload = $user_id . '.' . $expires_at;
         $signature = hash_hmac('sha256', $payload, $config['WSSecret']);
@@ -26,12 +33,18 @@ class WSToken
     }
 
     /**
-     * @param string $secret the daemon reads WS_SECRET itself rather than
+     * @param ?string $secret the daemon reads WS_SECRET itself rather than
      *                        loading config.php's whole array, so this takes
      *                        the secret directly rather than via config()
      */
-    public static function verify(string $token, string $secret): ?int
+    public static function verify(string $token, ?string $secret): ?int
     {
+        // No secret configured - reject every token (fail closed) rather than
+        // let hash_hmac run on a null/empty key.
+        if ($secret === null || $secret === '') {
+            return null;
+        }
+
         $parts = explode('.', $token);
 
         if (count($parts) !== 3) {

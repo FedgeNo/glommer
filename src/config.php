@@ -31,7 +31,11 @@ return [
     'WSHost' => Env::get('WS_HOST', '0.0.0.0'),
     'WSPort' => (int) Env::get('WS_PORT', '8090'),
     'WSPushPort' => (int) Env::get('WS_PUSH_PORT', '8091'),
-    'WSSecret' => Env::get('WS_SECRET', 'change-me'),
+    // No usable default: an unset OR still-placeholder ('change-me') secret
+    // resolves to null, so WS auth fails closed (WSToken and the push channel
+    // reject a null secret) instead of running on a value anyone can read from
+    // .env.example or this file. A real install always has a random one.
+    'WSSecret' => in_array($ws = Env::get('WS_SECRET', ''), ['', 'change-me'], true) ? null : $ws,
     'WSTLSCert' => Env::get('WS_TLS_CERT', '') ?: null,
     'WSTLSKey' => Env::get('WS_TLS_KEY', '') ?: null,
 ];

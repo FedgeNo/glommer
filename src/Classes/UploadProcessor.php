@@ -228,6 +228,15 @@ class UploadProcessor
         imagedestroy($image);
 
         if (!$display_ok || !$thumbnail_ok) {
+            // A partial write (e.g. display saved but thumbnail failed) would
+            // leave an orphaned file no sweeper removes - clean up whatever
+            // landed, same as processVideo/processAudio do on their failure path.
+            foreach (['display', 'thumbnail'] as $key) {
+                if ($paths[$key] !== null && is_file($paths[$key])) {
+                    unlink($paths[$key]);
+                }
+            }
+
             return null;
         }
 

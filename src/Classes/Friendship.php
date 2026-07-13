@@ -13,6 +13,12 @@ class Friendship extends HTMLObject
     public ?string $status = null;
     public ?string $createdAt = null;
 
+    // Generated columns (LEAST/GREATEST of the pair, backing uniq_unordered_pair).
+    // Declared so a SELECT * row's fromRow() doesn't set them as deprecated
+    // dynamic properties; the app never reads them.
+    public ?int $pairLow = null;
+    public ?int $pairHigh = null;
+
     /**
      * Returns the Friendship row between two users (in either direction), or null if none exists.
      */

@@ -12,6 +12,9 @@ class Message extends HTMLObject
     public ?int $recipientId = null;
     public ?string $body = null;
     public ?string $createdAt = null;
+    // Set once a moderator dismisses a report on this message - blocks it from
+    // being reported again (see api/report.php).
+    public ?int $reportsDismissed = null;
     public ?User $sender = null;
 
     public function toDOM(): \DOMElement

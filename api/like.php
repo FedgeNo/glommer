@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
@@ -56,10 +56,22 @@ INSERT INTO `Likes` (`postId`, `userId`)
     VALUES (?, ?)
 ');
     mysqli_stmt_bind_param($insert_stmt, 'ii', $post_id, $current_user -> userId);
-    mysqli_stmt_execute($insert_stmt);
     $liked = true;
 
-    Notification::create((int) $owner_row['userId'], $current_user -> userId, 'like', $post_id);
+    try {
+        mysqli_stmt_execute($insert_stmt);
+
+        Notification::create((int) $owner_row['userId'], $current_user -> userId, 'like', $post_id);
+    } catch (\mysqli_sql_exception $exception) {
+        // Check-then-insert race (a double-submit or two concurrent requests
+        // both passing the existence check): the Likes PK (userId, postId)
+        // rejects the second INSERT. 1062 means the like already exists -
+        // treat it as the already-liked state (no duplicate notification),
+        // not a 500. Anything else is a real failure.
+        if ($exception -> getCode() !== 1062) {
+            throw $exception;
+        }
+    }
 }
 
 $count_stmt = mysqli_prepare($mysqli, '

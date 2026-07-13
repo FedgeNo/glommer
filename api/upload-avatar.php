@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
@@ -10,6 +10,17 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 $mysqli = Database::connection();
+
+// Each upload decodes and resizes an attacker-controlled image (real CPU/
+// memory work) - cap it so the endpoint can't be used for resource
+// exhaustion, same as the other resource-intensive endpoints.
+$rate_key = 'upload-avatar:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($rate_key, 15, 3600)) {
+    JSONResponse::error('Too many avatar changes in a short time. Please try again later.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
 
 $uploaded_file = $_FILES['avatar'] ?? null;
 

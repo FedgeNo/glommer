@@ -42,6 +42,7 @@ CREATE TABLE `Posts` (
   `keywords` varchar(255) DEFAULT NULL,
   `linkURL` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
@@ -105,6 +106,7 @@ CREATE TABLE `Messages` (
   `recipientId` int(10) unsigned NOT NULL,
   `body` text NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`messageId`),
   KEY `senderId_recipientId_messageId` (`senderId`,`recipientId`,`messageId`),
   KEY `recipientId_senderId_messageId` (`recipientId`,`senderId`,`messageId`),
@@ -133,7 +135,8 @@ CREATE TABLE `Reports` (
   `targetId` int(10) unsigned NOT NULL,
   `reason` text DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`reportId`)
+  PRIMARY KEY (`reportId`),
+  UNIQUE KEY `reporter_target` (`reporterId`,`targetType`,`targetId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailVerifications` (

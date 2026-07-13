@@ -4,13 +4,92 @@ declare(strict_types=1);
 
 class Report
 {
-    public static function create(int $reporter_id, string $target_type, int $target_id, ?string $reason): void
+    /**
+     * Files a report. Returns false if this reporter already has a report on
+     * this exact target (the reporter_target unique key rejects the duplicate)
+     * so the caller can report that back rather than 500.
+     */
+    public static function create(int $reporter_id, string $target_type, int $target_id, ?string $reason): bool
     {
         $stmt = mysqli_prepare(Database::connection(), '
 INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`)
     VALUES (?, ?, ?, ?)
 ');
         mysqli_stmt_bind_param($stmt, 'isis', $reporter_id, $target_type, $target_id, $reason);
+
+        try {
+            mysqli_stmt_execute($stmt);
+        } catch (\mysqli_sql_exception $exception) {
+            // 1062 = the reporter_target unique key rejected a duplicate report
+            // from the same reporter for the same target. Anything else is a
+            // real failure.
+            if ($exception -> getCode() === 1062) {
+                return false;
+            }
+
+            throw $exception;
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether this content has already had a report dismissed by a moderator,
+     * in which case it can't be reported again. Only posts and messages carry
+     * the flag (a user isn't a single piece of reviewable content); anything
+     * else is never "dismissed" this way.
+     */
+    public static function isContentDismissed(string $target_type, int $target_id): bool
+    {
+        $table = match ($target_type) {
+            'post' => 'Posts',
+            'message' => 'Messages',
+            default => null,
+        };
+
+        if ($table === null) {
+            return false;
+        }
+
+        $id_column = $target_type === 'post' ? 'postId' : 'messageId';
+
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `reportsDismissed`
+    FROM `' . $table . '`
+    WHERE `' . $id_column . '` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $target_id);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        return $row !== null && (int) $row['reportsDismissed'] === 1;
+    }
+
+    /**
+     * Marks a post/message as reviewed-and-dismissed so it can't be reported
+     * again. A no-op for a user target (no flag column).
+     */
+    public static function markContentDismissed(string $target_type, int $target_id): void
+    {
+        $table = match ($target_type) {
+            'post' => 'Posts',
+            'message' => 'Messages',
+            default => null,
+        };
+
+        if ($table === null) {
+            return;
+        }
+
+        $id_column = $target_type === 'post' ? 'postId' : 'messageId';
+        $dismissed = 1;
+
+        $stmt = mysqli_prepare(Database::connection(), '
+UPDATE `' . $table . '`
+    SET `reportsDismissed` = ?
+    WHERE `' . $id_column . '` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ii', $dismissed, $target_id);
         mysqli_stmt_execute($stmt);
     }
 

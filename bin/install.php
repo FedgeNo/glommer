@@ -199,7 +199,10 @@ function write_and_enable_websocket_service(): bool
         'After=network.target',
         '',
         '[Service]',
-        'ExecStart=' . PHP_BINARY . ' ' . $project_root . '/bin/websocket-server.php',
+        // Quote the binary and script path - systemd splits ExecStart on
+        // whitespace, so an install path or PHP binary path containing a
+        // space would otherwise break the command into the wrong arguments.
+        'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/websocket-server.php"',
         'Restart=always',
         'RestartSec=2',
         'WorkingDirectory=' . $project_root,
@@ -706,12 +709,25 @@ if (!is_file(__DIR__ . '/../.env')) {
         'WS_SECRET' => $ws_secret,
     ];
 
-    if (file_put_contents(__DIR__ . '/../.env', Installer::envContents($env_values)) === false) {
+    // .env holds DB_PASSWORD and WS_SECRET. Create it 0600 from the start
+    // (umask 0077 → new file mode 0600) so there's no window where it lands
+    // group/world-readable before a later chmod - file_put_contents would
+    // otherwise create it at the default umask first.
+    $env_path = __DIR__ . '/../.env';
+    $previous_umask = umask(0077);
+    $env_written = file_put_contents($env_path, Installer::envContents($env_values));
+    umask($previous_umask);
+
+    if ($env_written === false) {
         fail('Could not write .env - check that ' . realpath(__DIR__ . '/..') . ' is writable by this user.');
     }
 
-    // .env holds DB_PASSWORD and WS_SECRET - keep it readable only by its owner.
-    @chmod(__DIR__ . '/../.env', 0600);
+    // Belt-and-suspenders for the re-run case (umask doesn't tighten an
+    // already-existing file) - and a failure here is fatal, not swallowed,
+    // since a world-readable .env leaks the DB password and WS secret.
+    if (!chmod($env_path, 0600)) {
+        fail('Wrote .env but could not restrict it to 0600 - it holds DB_PASSWORD and WS_SECRET. Fix manually: chmod 600 ' . realpath($env_path));
+    }
 
     ok('.env written');
 
@@ -757,8 +773,8 @@ if ($https_serving === false) {
     warn('Could not confirm HTTPS live by connecting to ' . $server_name_value . ' - inconclusive (DNS may not point here yet, a firewall, or the web server isn\'t up yet). Verify by visiting ' . $config['siteURL'] . ' in a browser.');
 }
 
-if ($config['WSSecret'] === 'change-me') {
-    fail('WS_SECRET is still the .env.example placeholder - anyone who reads that public default can forge WebSocket auth tokens for any user. Set it to a real random value, e.g.: php -r \'echo bin2hex(random_bytes(32));\'');
+if ($config['WSSecret'] === null) {
+    fail('WS_SECRET is missing or still the .env.example placeholder - a WebSocket secret anyone can read (or an absent one) lets connection tokens be forged for any user. Set it to a real random value, e.g.: php -r \'echo bin2hex(random_bytes(32));\'');
 }
 
 ok('.env present, SITE_URL and WS_SECRET configured (' . $config['siteURL'] . ')');

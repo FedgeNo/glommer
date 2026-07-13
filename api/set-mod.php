@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 // Only the primary admin can promote/demote moderators - not mods
 // themselves, to avoid a mod-promotes-mod escalation chain.

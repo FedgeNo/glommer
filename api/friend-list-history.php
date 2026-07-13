@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 // Serves the next page for any of the three friend sections. The friends list
 // is public (anyone can browse a profile's friends); the incoming/outgoing

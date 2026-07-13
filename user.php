@@ -7,27 +7,17 @@ require __DIR__ . '/src/init.php';
 $username = (string) ($_GET['username'] ?? '');
 $mysqli = Database::connection();
 
-$stmt = mysqli_prepare($mysqli, '
-SELECT *
-    FROM `Users`
-    WHERE `username` = ?
-');
-mysqli_stmt_bind_param($stmt, 's', $username);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$row = mysqli_fetch_assoc($result);
+$profile_user = User::byUsername($username);
 
-if ($row === null || (int) $row['banned'] === 1) {
+if ($profile_user === null) {
     require __DIR__ . '/404.php';
     exit;
 }
 
-$user_id = (int) $row['userId'];
+$user_id = (int) $profile_user -> userId;
 
 if ($user_id === Auth::id()) {
     $profile_user = new CurrentUser();
-} else {
-    $profile_user = OtherUser::fromRow($row);
 }
 
 $name = $profile_user -> displayName ?? $profile_user -> username;

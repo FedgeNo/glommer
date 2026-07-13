@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/api-init.php';
 
 if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
@@ -14,6 +14,16 @@ $user_id = (int) ($payload['userId'] ?? 0);
 
 if ($user_id === 0 || $user_id === 1) {
     JSONResponse::error('Invalid target', 422) -> send();
+}
+
+$target = User::load($user_id);
+
+if ($target === null) {
+    JSONResponse::error('User not found', 404) -> send();
+}
+
+if ($target -> banned) {
+    JSONResponse::error('That user is already banned', 422) -> send();
 }
 
 $banned = 1;

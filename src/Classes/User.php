@@ -178,6 +178,31 @@ SELECT *
     }
 
     /**
+     * A user looked up by username for public profile display, as an
+     * OtherUser - or null if there's no such user or they're banned (a banned
+     * profile is a 404 to everyone). The single shared "load + banned gate"
+     * behind the profile page, its friends page, and its RSS feed, so that
+     * visibility rule lives in one place instead of being hand-copied.
+     */
+    public static function byUsername(string $username): ?OtherUser
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT *
+    FROM `Users`
+    WHERE `username` = ?
+');
+        mysqli_stmt_bind_param($stmt, 's', $username);
+        mysqli_stmt_execute($stmt);
+        $user = mysqli_fetch_object(mysqli_stmt_get_result($stmt), OtherUser::class);
+
+        if (!$user instanceof OtherUser || $user -> banned) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
      * This user's accepted friends, newest friendship first, excluding banned
      * accounts. Paginate by passing the friendshipId of the last friend
      * already seen as $before_friendship_id (the list is cursored on the

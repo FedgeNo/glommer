@@ -17,6 +17,9 @@ class Post extends HTMLObject
     public ?string $keywords = null;
     public ?string $linkURL = null;
     public ?string $createdAt = null;
+    // Set once a moderator dismisses a report on this post - blocks it from
+    // being reported again (see api/report.php).
+    public ?int $reportsDismissed = null;
 
     // Whether a media post's description is truncated (with a "See More" link)
     // rather than shown in full. True in the feed, where a post is a preview;

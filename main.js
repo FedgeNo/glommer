@@ -288,8 +288,13 @@ document.addEventListener('click', (event) => {
  * the user confirms, false if they cancel (including via the overlay,
  * Escape, or navigating away).
  */
+let active_confirm_cancel = null;
+
 function show_confirm(message) {
-    document.querySelector('.ConfirmDialogOverlay') ?.remove();
+    // Cleanly cancel any dialog already open - resolve its promise as false
+    // and drop its keydown listener - rather than orphaning that caller's
+    // await forever and leaking the listener by just yanking the DOM.
+    active_confirm_cancel?.();
 
     return new Promise((resolve) => {
         const overlay = document.createElement('div');
@@ -323,10 +328,13 @@ function show_confirm(message) {
         document.body.appendChild(overlay);
 
         const finish = (confirmed) => {
+            active_confirm_cancel = null;
             document.removeEventListener('keydown', on_keydown);
             overlay.remove();
             resolve(confirmed);
         };
+
+        active_confirm_cancel = () => finish(false);
 
         const on_keydown = (event) => {
             if (event.key === 'Escape') {
@@ -1105,16 +1113,15 @@ function carousel_advance(carousel, direction) {
     carousel.querySelectorAll('video, audio').forEach((media) => media.pause());
 
     // Load the slide now on screen (covers a backward wrap onto one we hadn't
-    // reached yet), and on each forward step pull in one more slide beyond the
-    // ones already loaded, so a big gallery loads gradually instead of at once.
+    // reached yet), plus a buffer of the next several slides ahead of it, so
+    // the loading stays ahead of the viewer and advancing never waits on a
+    // fetch - rather than trickling one slide in per step and effectively
+    // loading just-in-time. window.carouselEagerItems
+    // (Carousel::INITIAL_EAGER_ITEMS) is how many to keep loaded ahead.
     carousel_load_slide(slides[next_index]);
 
-    if (direction > 0) {
-        const next_deferred = carousel.querySelector('.CarouselSlide [data-src]');
-
-        if (next_deferred) {
-            carousel_load_slide(next_deferred.closest('.CarouselSlide'));
-        }
+    for (let i = next_index + 1; i <= next_index + window.carouselEagerItems && i < slides.length; i++) {
+        carousel_load_slide(slides[i]);
     }
 
     const counter = carousel.querySelector('.CarouselCounter');
@@ -1662,7 +1669,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         dot.classList.remove('Active');
-        await api_post('/api/mark-notifications-seen');
+
+        // Restore the dot if the server never actually recorded them as seen -
+        // otherwise the UI claims they're read while the server still has them
+        // unseen.
+        if (await api_post('/api/mark-notifications-seen') === null) {
+            dot.classList.add('Active');
+        }
     });
 
     connect_websocket();

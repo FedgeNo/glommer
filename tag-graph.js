@@ -63,6 +63,13 @@ class HashtagGraph {
     // Interaction.
     static RADIANS_PER_PIXEL = 0.006;
     static DRAG_THRESHOLD = 5;
+    // Default layout spread, as a multiple of the viewport half-size - >1 so the
+    // graph is bigger than the viewport (nodes spaced out, not a cramped blob);
+    // the wheel zooms from there.
+    static SPREAD = 1.5;
+    static MIN_ZOOM = 0.2;
+    static MAX_ZOOM = 6;
+    static WHEEL_STEP = 1.12;
 
     constructor(element) {
         this.element = element;
@@ -77,8 +84,9 @@ class HashtagGraph {
             edges = [];
         }
 
-        // View rotation and the current drag.
+        // View rotation, zoom, and the current drag.
         this.orientation = [0, 0, 0, 1];
+        this.zoom = 1;
         this.dragging = false;
         this.suppressClick = false;
 
@@ -156,9 +164,9 @@ class HashtagGraph {
         const edgeColor = getComputedStyle(this.element).getPropertyValue('--HashtagEdge').trim();
         this.edgeColor = edgeColor || 'rgba(120, 130, 125, 0.5)';
 
-        // Keep the settled layout fitted to the (possibly resized) box.
+        // Keep the layout scaled to the (possibly resized) box.
         if (this.maxExtent) {
-            this.computeFit();
+            this.computeScale();
         }
     }
 
@@ -184,18 +192,20 @@ class HashtagGraph {
     }
 
     // Run the whole simulation to rest right now (cheap at these sizes), then
-    // work out how much to scale it so it fits the viewport.
+    // work out the base scale.
     settle() {
         for (let i = 0; i < HashtagGraph.MAX_ITERATIONS; i++) {
             this.stepPhysics();
         }
 
-        this.computeFit();
+        this.computeScale();
     }
 
-    // The furthest node from the centre sets a scale that keeps the whole graph
-    // inside the box, whatever the physics settled to.
-    computeFit() {
+    // Scale the settled layout by its furthest node so, at zoom 1, the graph
+    // spans SPREAD times the viewport half-size - i.e. spills beyond the viewport
+    // so the nodes are spaced out rather than piled together. The wheel scales
+    // this.zoom on top.
+    computeScale() {
         let maxSquared = 1;
 
         for (let i = 0; i < this.count; i++) {
@@ -210,7 +220,13 @@ class HashtagGraph {
         }
 
         this.maxExtent = Math.sqrt(maxSquared);
-        this.fitScale = Math.min(2.5, (this.radius * 0.85) / this.maxExtent);
+        this.baseScale = (Math.min(this.width, this.height) * 0.5 * HashtagGraph.SPREAD) / this.maxExtent;
+    }
+
+    onWheel(deltaY) {
+        const step = deltaY < 0 ? HashtagGraph.WHEEL_STEP : 1 / HashtagGraph.WHEEL_STEP;
+        this.zoom = Math.max(HashtagGraph.MIN_ZOOM, Math.min(HashtagGraph.MAX_ZOOM, this.zoom * step));
+        this.render();
     }
 
     // One Fruchterman-Reingold-style step: repel every pair, attract along edges,
@@ -329,7 +345,7 @@ class HashtagGraph {
         const centerX = this.width / 2;
         const centerY = this.height / 2;
         const extent = this.maxExtent || 1;
-        const fit = this.fitScale || 1;
+        const fit = (this.baseScale || 1) * this.zoom;
         const position = this.position;
         const projected = [];
 
@@ -390,14 +406,6 @@ class HashtagGraph {
         this.lastX = event.clientX;
         this.lastY = event.clientY;
         this.moved = false;
-
-        if (this.element.setPointerCapture) {
-            try {
-                this.element.setPointerCapture(event.pointerId);
-            } catch (error) {
-                // A stale pointer id just means no capture; dragging still works.
-            }
-        }
     }
 
     onMove(event) {
@@ -441,11 +449,23 @@ document.addEventListener('pointerdown', (event) => {
         return;
     }
 
-    // Stop the browser's own text-selection / link-image drag from hijacking it.
-    event.preventDefault();
+    // Text selection and link-image drag are already blocked in CSS, so we don't
+    // preventDefault here - doing so (or capturing the pointer) would stop a
+    // plain tag click from navigating to its /tags/ page.
     active_graph = graph;
     graph.onDown(event);
 });
+
+// Wheel zooms the graph (and only the graph - the page mustn't scroll).
+document.addEventListener('wheel', (event) => {
+    const graph = graph_for(event.target);
+    if (!graph) {
+        return;
+    }
+
+    event.preventDefault();
+    graph.onWheel(event.deltaY);
+}, { passive: false });
 
 document.addEventListener('pointermove', (event) => {
     if (active_graph) {

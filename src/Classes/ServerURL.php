@@ -5,6 +5,7 @@ declare(strict_types=1);
 class ServerURL
 {
     private static ?string $siteURL = null;
+    private static ?string $host = null;
 
     public static function absolute(string $path): string
     {
@@ -14,6 +15,25 @@ class ServerURL
         }
 
         return self::$siteURL . $path;
+    }
+
+    /**
+     * The configured site's lowercased hostname - the source of truth for
+     * whether a link in a post is internal (same host, opens in place) or
+     * external (opens in a new tab). Taken from the config siteURL, never the
+     * request's Host header (which a client controls). Port is deliberately
+     * ignored: matching the host is the security-relevant part, and ignoring
+     * the port sidesteps default-port normalization differences between PHP's
+     * parse_url and JS's URL that would otherwise diverge the two renderers.
+     */
+    public static function host(): string
+    {
+        if (self::$host === null) {
+            $config = require __DIR__ . '/../config.php';
+            self::$host = strtolower((string) (parse_url($config['siteURL'], PHP_URL_HOST) ?? ''));
+        }
+
+        return self::$host;
     }
 
     /**

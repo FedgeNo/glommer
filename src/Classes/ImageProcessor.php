@@ -26,13 +26,16 @@ class ImageProcessor
         // Header-only dimension check before the full decode: GD allocates
         // ~width*height*4 bytes for the raster, so a tiny file declaring huge
         // dimensions (a decompression bomb) is rejected before the bytes ever
-        // reach imagecreatefromstring. Only enforced when the dimensions are
-        // actually readable - a format getimagesizefromstring can't measure
-        // but GD's decoder can still handle isn't rejected on that basis; the
-        // decoder below is the arbiter.
+        // reach imagecreatefromstring. Fail closed when the dimensions can't be
+        // measured at all: GD's own .gd/.gd2 formats aren't readable by
+        // getimagesizefromstring but ARE decoded by imagecreatefromstring (and
+        // .gd2 is zlib-compressed - a genuine bomb: a tiny file expands to a
+        // multi-gigabyte raster), so an unmeasurable header must be rejected
+        // rather than allowed to skip the cap. Every real web image format
+        // (JPEG/PNG/GIF/WebP/BMP) measures fine here, so nothing legitimate is lost.
         $size = @getimagesizefromstring($data);
 
-        if ($size !== false && ($size[0] * $size[1]) > self::MAX_SOURCE_PIXELS) {
+        if ($size === false || ($size[0] * $size[1]) > self::MAX_SOURCE_PIXELS) {
             return false;
         }
 

@@ -101,7 +101,7 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        results.innerHTML = '';
+        results.replaceChildren();
 
         if (data.response.articles.length === 0) {
             const empty = document.createElement('p');

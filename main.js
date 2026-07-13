@@ -181,25 +181,172 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => refresh_relative_times(), 60000);
 });
 
+// Subtrees KaTeX auto-render won't read: rendered math, and code where a
+// delimiter is literal source. A run may never be coalesced across one, so
+// these contribute a barrier character to the logical text (see below).
+const MATH_COALESCE_SKIP = 'pre, code, .PostFormula, .katex';
+
 /**
- * Merges any <p>/<br> block breaks that fall inside a $$...$$ or \[...\] run
- * back into plain text. Quill turns Enter into a new <p> element (and
- * Shift+Enter into a <br>) rather than a plain "\n" character, which splits
- * a multi-line formula's source across separate DOM text nodes - auto-render
- * only matches a delimiter pair within a single text node, so a matrix or
- * \begin{align} block typed across multiple lines would otherwise silently
- * fail to render. This restores the source to what it would look like coming
- * from a plain-text input, without touching line breaks outside a formula.
+ * Repairs display-math runs ($$...$$ / \[...\]) that Quill's Enter/Shift+Enter
+ * split across <p> blocks or <br>s, so each run's full source ends up in a
+ * single DOM text node - the only shape KaTeX's auto-render can match. Quill
+ * turns Enter into a new <p> and Shift+Enter into a <br> rather than a plain
+ * "\n", so a matrix or \begin{align} block typed across lines would otherwise
+ * silently fail to render.
+ *
+ * Surgical: only the nodes a run actually covers are touched (the break
+ * elements inside it are removed and its source is merged into one text node);
+ * all other structure is left intact. A run already sitting in one text node
+ * is a no-op, so this is safe to run repeatedly over the same DOM.
  */
-function unwrap_math_line_breaks(html) {
-    const flattened = html.replace(/<\/p>\s*<p>/gi, '<br>');
+function coalesce_display_math(post_body) {
+    display_math_block_groups(post_body).forEach((group) => {
+        const segments = math_text_segments(group);
+        let logical = '';
 
-    const strip_breaks = (full_match, open_delim, inner, close_delim) =>
-        open_delim + inner.replace(/<br\s*\/?>/gi, '') + close_delim;
+        segments.forEach((segment) => {
+            segment.start = logical.length;
+            logical += segment.text;
+        });
 
-    return flattened
-        .replace(/(\$\$)([\s\S]*?)(\$\$)/g, strip_breaks)
-        .replace(/(\\\[)([\s\S]*?)(\\\])/g, strip_breaks);
+        // U+0000 marks content auto-render won't read; [^\u0000] stops a
+        // delimiter pair matching across it. One alternation, first-wins
+        // left-to-right, mirroring auto-render's own scan order.
+        const matches = [...logical.matchAll(/\$\$[^\u0000]*?\$\$|\\\[[^\u0000]*?\\\]/g)];
+
+        // Right-to-left: splitText keeps the leading half in the original
+        // node, so offsets held by matches still to be processed stay valid.
+        for (let i = matches.length - 1; i >= 0; i--) {
+            coalesce_run(segments, logical, matches[i].index, matches[i].index + matches[i][0].length);
+        }
+    });
+}
+
+/**
+ * The block groups a run could span: consecutive sibling <p>s merge (an Enter
+ * split only ever produces those), every other block stands alone (its own
+ * runs can still be <br>-split), each <li> is its own group, and <pre> is
+ * dropped since auto-render ignores it anyway.
+ */
+function display_math_block_groups(post_body) {
+    const groups = [];
+    let open_p_group = null;
+
+    Array.from(post_body.children).forEach((child) => {
+        if (child.tagName === 'P') {
+            if (open_p_group === null) {
+                open_p_group = [];
+                groups.push(open_p_group);
+            }
+            open_p_group.push(child);
+            return;
+        }
+
+        open_p_group = null;
+
+        if (child.tagName === 'PRE') {
+            return;
+        }
+
+        if (child.tagName === 'OL' || child.tagName === 'UL') {
+            Array.from(child.children).forEach((li) => groups.push([li]));
+            return;
+        }
+
+        groups.push([child]);
+    });
+
+    return groups;
+}
+
+/**
+ * A group's logical text as segments: text nodes carry their data, <br>s and
+ * block boundaries carry "\n" (whitespace KaTeX ignores, matching what a
+ * plain-text input would have held), and skipped subtrees carry the barrier.
+ */
+function math_text_segments(blocks) {
+    const segments = [];
+
+    blocks.forEach((block, index) => {
+        if (index > 0) {
+            segments.push({ text: '\n' });
+        }
+
+        collect_math_segments(block, block, segments);
+    });
+
+    return segments;
+}
+
+function collect_math_segments(node, block, segments) {
+    node.childNodes.forEach((child) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+            segments.push({ text: child.data, node: child, block: block });
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+            if (child.tagName === 'BR') {
+                segments.push({ text: '\n', node: child, block: block });
+            } else if (child.matches(MATH_COALESCE_SKIP)) {
+                segments.push({ text: '\u0000' });
+            } else {
+                collect_math_segments(child, block, segments);
+            }
+        }
+    });
+}
+
+/**
+ * Collapses one matched run (logical [start, end)) into a single text node,
+ * removing the break elements and consumed blocks it spanned. A run already
+ * living in one text node is left untouched.
+ */
+function coalesce_run(segments, logical, start, end) {
+    const covered = segments.filter((segment) =>
+        segment.node !== undefined
+        && segment.start < end
+        && segment.start + segment.text.length > start
+    );
+    const first = covered[0];
+    const last = covered[covered.length - 1];
+
+    // A run opens and closes with delimiter characters, so first/last are
+    // always text segments. One segment = already a single text node: done.
+    // (This is also what makes the whole pass idempotent.)
+    if (first === last) {
+        return;
+    }
+
+    // Trim the boundary text nodes to exactly the run's ends.
+    let start_node = first.node;
+
+    if (start > first.start) {
+        start_node = start_node.splitText(start - first.start);
+    }
+
+    if (end - last.start < last.node.data.length) {
+        last.node.splitText(end - last.start);
+    }
+
+    // The whole source as one text node, placed where the run began.
+    start_node.parentNode.insertBefore(document.createTextNode(logical.slice(start, end)), start_node);
+
+    // start_node, not first.node: when the start was mid-node, first.node is
+    // the surviving pre-run head and must stay.
+    start_node.remove();
+    covered.slice(1).forEach((segment) => segment.node.remove());
+
+    // Blocks the run spanned: intermediates are fully consumed; the last one
+    // survives only if the split left content after the closing delimiter.
+    let block = first.block.nextElementSibling;
+
+    while (block !== null && block !== last.block) {
+        const next = block.nextElementSibling;
+        block.remove();
+        block = next;
+    }
+
+    if (last.block !== first.block && !last.block.hasChildNodes()) {
+        last.block.remove();
+    }
 }
 
 /**
@@ -222,8 +369,10 @@ function render_math(element) {
     }
 
     element.querySelectorAll('.PostBody').forEach((post_body) => {
-        if (post_body.innerHTML.includes('$$') || post_body.innerHTML.includes('\\[')) {
-            post_body.innerHTML = unwrap_math_line_breaks(post_body.innerHTML);
+        const text = post_body.textContent;
+
+        if (text.includes('$$') || text.includes('\\[')) {
+            coalesce_display_math(post_body);
         }
     });
 
@@ -661,7 +810,7 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        results.innerHTML = '';
+        results.replaceChildren();
 
         // Remembered so the scroll handler below knows what query to keep
         // paginating, and where to resume from.
@@ -773,7 +922,7 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        results.innerHTML = '';
+        results.replaceChildren();
 
         // Remembered so the scroll handler below knows what query to keep
         // paginating, and where to resume from.
@@ -2767,7 +2916,7 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        list.innerHTML = '';
+        list.replaceChildren();
 
         const { items, hasMore: has_more, oldestUserId: oldest_user_id } = data.response;
 

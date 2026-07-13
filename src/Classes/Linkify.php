@@ -44,12 +44,47 @@ class Linkify
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.
     private const LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
 
+    // Extracts a URL's authority (userinfo@host:port). Shared with delta.js so
+    // internal-vs-external is decided identically without PHP parse_url / JS URL
+    // differences (default-port, scheme-relative, userinfo all handled here).
+    private const AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
+
     /**
      * Whether text reads as containing a URL (pass 1's anti-phishing gate).
      */
     public static function textLooksURL(string $text): bool
     {
         return preg_match('{' . self::LOOKS_URL . '}', $text) === 1;
+    }
+
+    /**
+     * The lowercased host of a URL, or null when it has no `//authority` (a
+     * relative URL or a mailto: - both "internal", same-window). Control chars
+     * are stripped first, matching how a browser parses a URL (and isSafeLink).
+     * userinfo and port are dropped so `user@host` and `host:443` compare by host.
+     */
+    public static function linkHost(string $url): ?string
+    {
+        $stripped = preg_replace('/[\x00-\x20]+/', '', $url);
+
+        if (preg_match('{' . self::AUTHORITY . '}', $stripped, $match) !== 1) {
+            return null;
+        }
+
+        $authority = $match[1];
+        $at = strrpos($authority, '@');
+
+        if ($at !== false) {
+            $authority = substr($authority, $at + 1);
+        }
+
+        $colon = strpos($authority, ':');
+
+        if ($colon !== false) {
+            $authority = substr($authority, 0, $colon);
+        }
+
+        return strtolower($authority);
     }
 
     /**

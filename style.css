@@ -683,6 +683,24 @@ label.visually-hidden {
     margin-bottom: 0;
 }
 
+/* A checkbox sits inline with its label, not stacked - overriding the global
+   block label and full-width input rules for this field only. */
+.CheckboxField {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.CheckboxField input {
+    width: auto;
+    margin: 0;
+}
+
+.CheckboxField label {
+    display: inline;
+    margin-bottom: 0;
+}
+
 input,
 textarea,
 select {

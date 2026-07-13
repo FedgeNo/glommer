@@ -16,11 +16,11 @@ class SignupForm extends Form
         // Autocomplete hints mark this as a registration form: 'new-password'
         // tells the browser this isn't a login, so it stops autofilling saved
         // credentials over the placeholders (and offers to save the new ones).
-        $username = new InputField('username', 'Username', 'text', 'Lowercase letters, numbers, and _', 32);
+        $username = new InputField('username', 'Username', 'text', 'Username: Lowercase letters, numbers, and _', 32);
         $username -> autocomplete = 'username';
         $fields -> addContents($username);
 
-        $email = new InputField('email', 'Email', 'email', 'you@example.com', 255);
+        $email = new InputField('email', 'Email', 'email', 'Valid email address', 255);
         $email -> autocomplete = 'email';
         $fields -> addContents($email);
 
@@ -28,7 +28,7 @@ class SignupForm extends Form
         $display_name -> autocomplete = 'nickname';
         $fields -> addContents($display_name);
 
-        $password = new InputField('password', 'Password', 'password', 'At least 8 characters');
+        $password = new InputField('password', 'Password', 'password', 'Password: At least 8 characters');
         $password -> autocomplete = 'new-password';
         $fields -> addContents($password);
 

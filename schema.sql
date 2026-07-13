@@ -20,6 +20,7 @@ CREATE TABLE `Users` (
   `hasAvatar` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `banned` tinyint(1) NOT NULL DEFAULT 0,
+  `banReason` text DEFAULT NULL,
   `isMod` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `verified` tinyint(1) NOT NULL DEFAULT 0,
   `theme` varchar(10) NOT NULL DEFAULT 'system',
@@ -135,6 +136,7 @@ CREATE TABLE `Reports` (
   `targetType` varchar(16) NOT NULL,
   `targetId` int(10) unsigned NOT NULL,
   `reason` text DEFAULT NULL,
+  `snapshot` longtext DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`reportId`),
   UNIQUE KEY `reporter_target` (`reporterId`,`targetType`,`targetId`)

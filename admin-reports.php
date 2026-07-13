@@ -11,10 +11,6 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-// A report whose post/message was deleted has nothing to show or act on -
-// clear those out before rendering the queue.
-Report::purgeOrphaned();
-
 ['rows' => $reports, 'hasMore' => $has_more] = Report::rowsForAdmin(20);
 
 // needsMath so KaTeX loads: a reported post can contain math, and main.js runs

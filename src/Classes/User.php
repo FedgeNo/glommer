@@ -18,6 +18,7 @@ class User extends HTMLObject
     public int $hasAvatar = 0;
     public ?string $createdAt = null;
     public int $banned = 0;
+    public ?string $banReason = null;
     public int $isMod = 0;
     public int $verified = 0;
     public string $theme = 'system';

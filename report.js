@@ -17,6 +17,7 @@ class ReportCard {
     createdAt = null;
     targetUserId = null;
     targetUsername = null;
+    targetLive = false;
     target = null;
     element = null;
 
@@ -31,7 +32,18 @@ class ReportCard {
         const target = this.target || { kind: 'missing' };
 
         if (target.kind === 'post' && target.post) {
-            return Post.fromData(target.post).postElement();
+            const post = Post.fromData(target.post).postElement();
+
+            // A deleted post's reported media, streamed from the kept originals
+            // via the mod-only passthrough (mediaType already resolved server-side).
+            if (Array.isArray(target.attachments) && target.attachments.length > 0) {
+                const media = document.createElement('div');
+                media.className = 'ReportedAttachments d-flex flex-column gap-2';
+                target.attachments.forEach((attachment) => media.appendChild(forensic_attachment_element(attachment)));
+                post.appendChild(media);
+            }
+
+            return post;
         }
 
         if (target.kind === 'message') {
@@ -102,17 +114,14 @@ class ReportCard {
             actions.appendChild(this.banButton(this.targetUserId, 'Ban Reported User'));
         }
 
-        // Gate on the resolved kind, not the declared targetType: a target
-        // deleted after the queue was fetched resolves to 'missing', and there's
-        // nothing left to delete.
-        const kind = (this.target && this.target.kind) || 'missing';
-
-        if (kind === 'post' || kind === 'message') {
+        // Only offer Delete when the live post/message still exists (a snapshot
+        // of already-deleted content still shows, but has nothing to delete).
+        if (this.targetLive && (this.targetType === 'post' || this.targetType === 'message')) {
             const delete_button = document.createElement('button');
             delete_button.type = 'button';
             delete_button.className = 'Btn DeleteReportedContentButton';
             delete_button.dataset.reportId = this.reportId;
-            delete_button.textContent = 'Delete ' + capitalize(kind);
+            delete_button.textContent = 'Delete ' + capitalize(this.targetType);
             actions.appendChild(delete_button);
         }
 
@@ -146,4 +155,48 @@ function capitalize(text) {
     const value = text || '';
 
     return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+/**
+ * One reported attachment of a deleted post (mirrors ReportCard::forensicAttachmentElement):
+ * an img/video/audio pointed at the mod-only passthrough, a notice when the
+ * original is gone, or a link for any other type. mediaType is resolved server-side.
+ */
+function forensic_attachment_element(attachment) {
+    if (attachment.mediaType === 'image') {
+        const image = document.createElement('img');
+        image.className = 'ReportedMedia';
+        image.src = attachment.url;
+        image.alt = 'Reported image';
+        return image;
+    }
+
+    if (attachment.mediaType === 'video') {
+        const video = document.createElement('video');
+        video.className = 'ReportedMedia';
+        video.controls = true;
+        video.src = attachment.url;
+        return video;
+    }
+
+    if (attachment.mediaType === 'audio') {
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = attachment.url;
+        return audio;
+    }
+
+    if (attachment.mediaType === null || attachment.mediaType === undefined) {
+        const notice = document.createElement('p');
+        notice.className = 'Muted Notice';
+        notice.textContent = 'A reported attachment is no longer available.';
+        return notice;
+    }
+
+    const link = document.createElement('a');
+    link.href = attachment.url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'View reported attachment';
+    return link;
 }

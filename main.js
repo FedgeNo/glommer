@@ -434,6 +434,96 @@ function show_confirm(message) {
 }
 
 /**
+ * Like show_confirm, but requires the user to type something first: resolves to
+ * the trimmed text on confirm, or null on cancel/escape/outside-click. The
+ * confirm button stays disabled until the field is non-empty. This is our own
+ * dialog, never window.prompt (which a user can suppress) - so an action gated
+ * on it, like a ban's required reason, can't be bypassed by disabling dialogs.
+ */
+function show_prompt(message, options = {}) {
+    active_confirm_cancel?.();
+
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'ConfirmDialogOverlay';
+
+        const card = document.createElement('div');
+        card.className = 'ConfirmDialogCard Card';
+
+        const text = document.createElement('div');
+        text.className = 'ConfirmDialogMessage';
+        text.textContent = message;
+        card.appendChild(text);
+
+        const input = document.createElement('textarea');
+        input.className = 'ConfirmDialogInput';
+        input.rows = 3;
+
+        if (options.placeholder) {
+            input.placeholder = options.placeholder;
+        }
+
+        card.appendChild(input);
+
+        const actions = document.createElement('div');
+        actions.className = 'ConfirmDialogActions d-flex gap-2';
+
+        const cancel_button = document.createElement('button');
+        cancel_button.type = 'button';
+        cancel_button.className = 'Btn ConfirmDialogCancelButton';
+        cancel_button.textContent = 'Cancel';
+
+        const confirm_button = document.createElement('button');
+        confirm_button.type = 'button';
+        confirm_button.className = 'Btn ConfirmDialogConfirmButton';
+        confirm_button.textContent = options.confirmLabel || 'OK';
+        confirm_button.disabled = true;
+
+        actions.appendChild(cancel_button);
+        actions.appendChild(confirm_button);
+        card.appendChild(actions);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+
+        const finish = (value) => {
+            active_confirm_cancel = null;
+            document.removeEventListener('keydown', on_keydown);
+            overlay.remove();
+            resolve(value);
+        };
+
+        active_confirm_cancel = () => finish(null);
+
+        const on_keydown = (event) => {
+            if (event.key === 'Escape') {
+                finish(null);
+            }
+        };
+
+        input.addEventListener('input', () => {
+            confirm_button.disabled = input.value.trim() === '';
+        });
+
+        cancel_button.addEventListener('click', () => finish(null));
+        confirm_button.addEventListener('click', () => {
+            const value = input.value.trim();
+
+            if (value !== '') {
+                finish(value);
+            }
+        });
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) {
+                finish(null);
+            }
+        });
+        document.addEventListener('keydown', on_keydown);
+
+        input.focus();
+    });
+}
+
+/**
  * POSTs JSON to an API endpoint and returns the parsed response value, or null
  * on any failure (after telling the user what went wrong). Callers only need
  * to handle the success path.
@@ -1064,7 +1154,12 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    if (!await show_confirm('Ban this user? This hides all their content and blocks their login.')) {
+    const reason = await show_prompt(
+        'Ban this user? This hides all their content and blocks their login. They\'ll see this reason on the login form.',
+        { confirmLabel: 'Ban', placeholder: 'Reason for ban (required)' }
+    );
+
+    if (reason === null) {
         return;
     }
 
@@ -1072,7 +1167,7 @@ document.addEventListener('click', async (event) => {
 
     button.disabled = true;
 
-    const result = await api_post('/api/ban', { userId: user_id });
+    const result = await api_post('/api/ban', { userId: user_id, reason });
 
     if (result === null) {
         button.disabled = false;

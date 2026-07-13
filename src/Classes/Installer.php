@@ -191,6 +191,9 @@ INSERT INTO `Settings` (`name`, `value`)
             // request retries, converting whatever rows remain.
             try {
                 PostDeltaBackfill::run(Database::connection());
+                // Backfill report snapshots now that the column exists (same
+                // race-safe/idempotent guarantees).
+                Report::backfillSnapshots();
             } catch (\mysqli_sql_exception $exception) {
                 return false;
             }

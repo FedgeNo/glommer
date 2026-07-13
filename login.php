@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // they can already prove with a password (which is rate-limited too).
             $errors[] = 'Captcha verification failed. Please try again.';
         } else {
-            $user = Auth::attempt($identifier, $password);
+            $user = Auth::verifyCredentials($identifier, $password);
 
             if ($user === null) {
                 // Only failed attempts count toward the limits, so legitimate
@@ -45,7 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 RateLimiter::recordAttempt($account_rate_key);
 
                 $errors[] = 'Incorrect username/email or password.';
+            } elseif ($user -> banned) {
+                // Correct password but banned: show the reason a moderator gave,
+                // rather than logging them in.
+                $errors[] = $user -> banReason !== null && $user -> banReason !== ''
+                    ? 'Your account has been banned. Reason: ' . $user -> banReason
+                    : 'Your account has been banned.';
             } else {
+                Auth::login($user);
+
                 if (($_POST['rememberMe'] ?? '') === '1') {
                     RememberToken::issue((int) $user -> userId);
                 }

@@ -11,11 +11,17 @@ class Report
      */
     public static function create(int $reporter_id, string $target_type, int $target_id, ?string $reason): bool
     {
+        // Snapshot the reported content at report time so the moderator judges
+        // what was actually reported, not whatever it's since been edited to (or
+        // deleted). See buildSnapshot.
+        $snapshot = self::buildSnapshot($target_type, $target_id);
+        $snapshot_json = $snapshot !== null ? json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
+
         $stmt = mysqli_prepare(Database::connection(), '
-INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`)
-    VALUES (?, ?, ?, ?)
+INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapshot`)
+    VALUES (?, ?, ?, ?, ?)
 ');
-        mysqli_stmt_bind_param($stmt, 'isis', $reporter_id, $target_type, $target_id, $reason);
+        mysqli_stmt_bind_param($stmt, 'isiss', $reporter_id, $target_type, $target_id, $reason, $snapshot_json);
 
         try {
             mysqli_stmt_execute($stmt);
@@ -94,25 +100,168 @@ UPDATE `' . $table . '`
     }
 
     /**
-     * Deletes reports whose reported post or message no longer exists - a post
-     * or message a user deleted on their own leaves its report behind (the
-     * Reports target is polymorphic, so there's no FK to cascade it). Run before
-     * showing the moderation queue so a deleted target's report never appears
-     * (there'd be nothing to view or act on). User targets are left alone.
+     * The forensic snapshot of a report's target at report time. A post or
+     * message is captured as its whole row plus, for a post, an array of its
+     * attachment (FeedItem) ids - enough to recover the originals later from
+     * uploads/private/originals, which are kept rather than deleted for exactly
+     * this. A user is captured from an explicit allowlist, never the whole row
+     * (that carries passwordHash and email). Null when the target's already gone.
+     *
+     * @return array<string, mixed>|null
      */
-    public static function purgeOrphaned(): void
+    private static function buildSnapshot(string $target_type, int $target_id): ?array
     {
-        $post = 'post';
-        $message = 'message';
+        if ($target_type === 'post') {
+            $row = self::snapshotRow('Posts', 'postId', $target_id);
+
+            if ($row === null) {
+                return null;
+            }
+
+            $row['attachmentIds'] = self::attachmentIds($target_id);
+
+            return $row;
+        }
+
+        if ($target_type === 'message') {
+            return self::snapshotRow('Messages', 'messageId', $target_id);
+        }
+
+        if ($target_type === 'user') {
+            $user = User::load($target_id);
+
+            if ($user === null) {
+                return null;
+            }
+
+            return [
+                'userId' => (int) $user -> userId,
+                'username' => $user -> username,
+                'displayName' => $user -> displayName,
+                'hasAvatar' => (int) $user -> hasAvatar,
+                'createdAt' => $user -> createdAt,
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * The whole row of $table by primary key. Fetched via a native-typed result
+     * (mysqlnd) so ints stay ints through json_encode/json_decode and rebuild
+     * cleanly into typed model properties.
+     *
+     * @return array<string, mixed>|null
+     */
+    private static function snapshotRow(string $table, string $id_column, int $id): ?array
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT *
+    FROM `' . $table . '`
+    WHERE `' . $id_column . '` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
+    }
+
+    /**
+     * @return int[] the FeedItem ids attached to a post, in id order
+     */
+    private static function attachmentIds(int $post_id): array
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `itemId`
+    FROM `FeedItems`
+    WHERE `postId` = ?
+    ORDER BY `itemId`
+');
+        mysqli_stmt_bind_param($stmt, 'i', $post_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $ids = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $ids[] = (int) $row['itemId'];
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Fills the snapshot for any report created before snapshots existed, from
+     * whatever content is still around (best-effort - a target already deleted
+     * stays snapshotless and renders as unavailable). Race-safe and idempotent
+     * via the snapshot IS NULL guard on both the select and the update.
+     */
+    public static function backfillSnapshots(): void
+    {
+        $mysqli = Database::connection();
+
+        $select = mysqli_prepare($mysqli, '
+SELECT `reportId`, `targetType`, `targetId`
+    FROM `Reports`
+    WHERE `snapshot` IS NULL
+');
+        mysqli_stmt_execute($select);
+        $result = mysqli_stmt_get_result($select);
+
+        $pending = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $pending[] = $row;
+        }
+
+        foreach ($pending as $row) {
+            $snapshot = self::buildSnapshot((string) $row['targetType'], (int) $row['targetId']);
+
+            if ($snapshot === null) {
+                continue;
+            }
+
+            $snapshot_json = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $report_id = (int) $row['reportId'];
+
+            $update = mysqli_prepare($mysqli, '
+UPDATE `Reports`
+    SET `snapshot` = ?
+    WHERE `reportId` = ? AND `snapshot` IS NULL
+');
+            mysqli_stmt_bind_param($update, 'si', $snapshot_json, $report_id);
+            mysqli_stmt_execute($update);
+        }
+    }
+
+    /**
+     * Whether the live post or message a report targets still exists - a
+     * deleted one still shows (from its snapshot) but has nothing left to delete,
+     * so its card drops the Delete button. Only posts and messages are deletable.
+     */
+    public static function contentExists(string $target_type, int $target_id): bool
+    {
+        $table = match ($target_type) {
+            'post' => 'Posts',
+            'message' => 'Messages',
+            default => null,
+        };
+
+        if ($table === null) {
+            return false;
+        }
+
+        $id_column = $target_type === 'post' ? 'postId' : 'messageId';
 
         $stmt = mysqli_prepare(Database::connection(), '
-DELETE
-    FROM `Reports`
-    WHERE (`targetType` = ? AND `targetId` NOT IN (SELECT `postId` FROM `Posts`))
-        OR (`targetType` = ? AND `targetId` NOT IN (SELECT `messageId` FROM `Messages`))
+SELECT 1
+    FROM `' . $table . '`
+    WHERE `' . $id_column . '` = ?
 ');
-        mysqli_stmt_bind_param($stmt, 'ss', $post, $message);
+        mysqli_stmt_bind_param($stmt, 'i', $target_id);
         mysqli_stmt_execute($stmt);
+
+        return mysqli_fetch_row(mysqli_stmt_get_result($stmt)) !== null;
     }
 
     /**

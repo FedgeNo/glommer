@@ -9,27 +9,37 @@ class Auth
 
     public static function attempt(string $identifier, string $password): ?User
     {
-        $mysqli = Database::connection();
+        $user = self::verifyCredentials($identifier, $password);
 
-        $stmt = mysqli_prepare($mysqli, '
+        if ($user === null || $user -> banned) {
+            return null;
+        }
+
+        self::login($user);
+
+        return $user;
+    }
+
+    /**
+     * Returns the user whose credentials match (banned or not), or null if the
+     * identifier/password is wrong. Unlike attempt() this neither gates on the
+     * ban nor logs anyone in - login.php uses it to tell a banned sign-in
+     * (correct password, show the ban reason) apart from a wrong one.
+     */
+    public static function verifyCredentials(string $identifier, string $password): ?User
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
 SELECT *
     FROM `Users`
     WHERE `username` = ? OR `email` = ?
 ');
         mysqli_stmt_bind_param($stmt, 'ss', $identifier, $identifier);
         mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $user = mysqli_fetch_object($result, User::class);
+        $user = mysqli_fetch_object(mysqli_stmt_get_result($stmt), User::class);
 
         if ($user === null || $user -> passwordHash === null || !password_verify($password, $user -> passwordHash)) {
             return null;
         }
-
-        if ($user -> banned) {
-            return null;
-        }
-
-        self::login($user);
 
         return $user;
     }

@@ -24,6 +24,16 @@ class ReportCard extends HTMLObject
     public ?string $targetKind = null;
     public User|Post|string|null $targetData = null;
 
+    // Whether the live post/message still exists - a deleted one still shows
+    // from its snapshot, but its card drops the (now pointless) Delete button.
+    public bool $targetLive = false;
+
+    // For a deleted post, the reported attachment (FeedItem) ids, whose kept
+    // originals are streamed by the mod-only api/report-attachment.php - the live
+    // display copies are gone, so this is the only way to see the media.
+    /** @var int[] */
+    public array $forensicAttachmentIds = [];
+
     public function toDOM(): \DOMElement
     {
         // Left: who reported what, the content in question, the reason, and when.
@@ -36,6 +46,10 @@ class ReportCard extends HTMLObject
         $details -> addContent($summary);
 
         $details -> addContent($this -> targetContentElement());
+
+        if ($this -> forensicAttachmentIds !== []) {
+            $details -> addContent($this -> forensicAttachmentsElement());
+        }
 
         if ($this -> reason !== null) {
             $reason_line = new Paragraph();
@@ -65,11 +79,10 @@ class ReportCard extends HTMLObject
             $actions -> addContent(new BanButton($this -> targetUserId, 'Ban Reported User'));
         }
 
-        // Gate on the resolved kind, not the declared targetType: a target
-        // deleted after the queue was fetched resolves to 'missing', and there's
-        // nothing left to delete.
-        if ($this -> targetKind === 'post' || $this -> targetKind === 'message') {
-            $actions -> addContent(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> targetKind)));
+        // Only offer Delete when the live post/message still exists (a snapshot
+        // of already-deleted content still shows, but has nothing to delete).
+        if ($this -> targetLive && ($this -> targetType === 'post' || $this -> targetType === 'message')) {
+            $actions -> addContent(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> targetType)));
         }
 
         $actions -> addContent(new DismissReportButton((int) $this -> reportId));
@@ -90,10 +103,22 @@ class ReportCard extends HTMLObject
         $card -> reason = $row['reason'];
         $card -> createdAt = $row['createdAt'];
 
-        ['userId' => $card -> targetUserId, 'kind' => $card -> targetKind, 'data' => $card -> targetData] = self::resolveTarget($card -> targetType, $card -> targetId);
+        $snapshot = isset($row['snapshot']) && $row['snapshot'] !== null ? json_decode((string) $row['snapshot'], true) : null;
+        $snapshot = is_array($snapshot) ? $snapshot : null;
 
+        // A live existence check, not the snapshot: only live post/message content
+        // is deletable, and a deleted post renders its reported media forensically.
+        $card -> targetLive = Report::contentExists($card -> targetType, $card -> targetId);
+
+        ['userId' => $card -> targetUserId, 'kind' => $card -> targetKind, 'data' => $card -> targetData] = self::resolveFromSnapshot($card -> targetType, $snapshot, $card -> targetLive);
+
+        if ($card -> targetKind === 'post' && !$card -> targetLive && $snapshot !== null) {
+            $card -> forensicAttachmentIds = array_map('intval', $snapshot['attachmentIds'] ?? []);
+        }
+
+        // The target user must still exist to be bannable.
         if ($card -> targetUserId !== null) {
-            $card -> targetUsername = ($card -> targetData instanceof User ? $card -> targetData : User::load($card -> targetUserId)) ?-> username;
+            $card -> targetUsername = User::load($card -> targetUserId) ?-> username;
         }
 
         return $card;
@@ -118,6 +143,7 @@ class ReportCard extends HTMLObject
             'createdAt' => $this -> createdAt,
             'targetUserId' => $this -> targetUserId,
             'targetUsername' => $this -> targetUsername,
+            'targetLive' => $this -> targetLive,
             'target' => $this -> targetPayload(),
         ];
     }
@@ -135,6 +161,64 @@ class ReportCard extends HTMLObject
         }
 
         return $payloads;
+    }
+
+    /** The reported media of a deleted post, streamed from the kept originals. */
+    private function forensicAttachmentsElement(): HTMLObject
+    {
+        $wrap = new Div();
+        $wrap -> class = 'ReportedAttachments d-flex flex-column gap-2';
+
+        foreach ($this -> forensicAttachmentIds as $item_id) {
+            $wrap -> addContent(self::forensicAttachmentElement($item_id));
+        }
+
+        return $wrap;
+    }
+
+    private static function forensicAttachmentElement(int $item_id): HTMLObject
+    {
+        $url = ServerURL::absolute('/api/report-attachment?itemId=' . $item_id);
+        $original = UploadProcessor::originalForItem($item_id);
+        $media_type = $original['mediaType'] ?? null;
+
+        if ($media_type === 'image') {
+            $image = new Image();
+            $image -> class = 'ReportedMedia';
+            $image -> src = $url;
+            $image -> alt = 'Reported image';
+
+            return $image;
+        }
+
+        if ($media_type === 'video') {
+            $video = new Video();
+            $video -> class = 'ReportedMedia';
+            $video -> attributes['controls'] = 'controls';
+            $video -> src = $url;
+
+            return $video;
+        }
+
+        if ($media_type === 'audio') {
+            $audio = new Audio();
+            $audio -> attributes['controls'] = 'controls';
+            $audio -> src = $url;
+
+            return $audio;
+        }
+
+        // No original on disk (deleted before originals were kept), or an
+        // unrecognised type - a plain note, and a link if the file is there.
+        if ($media_type === null) {
+            return new Notice('A reported attachment is no longer available.');
+        }
+
+        $link = new Anchor($url, 'View reported attachment');
+        $link -> attributes['target'] = '_blank';
+        $link -> attributes['rel'] = 'noopener';
+
+        return $link;
     }
 
     /** The reported item rendered so a moderator can assess it (see resolveTarget). */
@@ -166,7 +250,19 @@ class ReportCard extends HTMLObject
         if ($this -> targetKind === 'post' && $this -> targetData instanceof Post) {
             // A bare post on the client (no action bar) - the 0/0/false counts
             // its payload carries go unused there.
-            return ['kind' => 'post', 'post' => $this -> targetData -> toPayload(0, 0, false)];
+            $payload = ['kind' => 'post', 'post' => $this -> targetData -> toPayload(0, 0, false)];
+
+            if ($this -> forensicAttachmentIds !== []) {
+                // Media type is resolved here (one lookup) so the client just
+                // builds the element and points it at the passthrough.
+                $payload['attachments'] = array_map(fn ($item_id) => [
+                    'itemId' => $item_id,
+                    'mediaType' => UploadProcessor::originalForItem($item_id)['mediaType'] ?? null,
+                    'url' => ServerURL::absolute('/api/report-attachment?itemId=' . $item_id),
+                ], $this -> forensicAttachmentIds);
+            }
+
+            return $payload;
         }
 
         if ($this -> targetKind === 'user' && $this -> targetData instanceof User) {
@@ -187,59 +283,54 @@ class ReportCard extends HTMLObject
     }
 
     /**
-     * Resolves the reported item in one query against its own table, returning
-     * its kind and raw data so toDOM() and toPayload() build from one
-     * resolution: a message's body, a post as the post itself (byline + text +
-     * media, no action bar), a user as their profile card. A deleted target
-     * resolves to a 'missing' notice.
+     * Builds the reported item from its report-time snapshot (Report::buildSnapshot)
+     * so a moderator sees what was reported, not what it's since become: a
+     * message's body, a post as the post itself (byline + text + media, no action
+     * bar - the post's own text/Delta comes from the snapshot, its author and any
+     * surviving media are resolved live), a user as their profile card. A report
+     * with no snapshot (created before snapshots, target already gone) resolves to
+     * a 'missing' notice.
      *
+     * @param array<string, mixed>|null $snapshot
      * @return array{userId: ?int, kind: string, data: User|Post|string}
      */
-    private static function resolveTarget(string $target_type, int $target_id): array
+    private static function resolveFromSnapshot(string $target_type, ?array $snapshot, bool $live): array
     {
+        if ($snapshot === null) {
+            return ['userId' => null, 'kind' => 'missing', 'data' => 'The reported content is no longer available.'];
+        }
+
         if ($target_type === 'message') {
-            $row = self::loadRow('Messages', 'messageId', $target_id);
+            $sender_id = isset($snapshot['senderId']) ? (int) $snapshot['senderId'] : null;
 
-            if ($row === null) {
-                return ['userId' => null, 'kind' => 'missing', 'data' => 'This message no longer exists.'];
-            }
-
-            return ['userId' => (int) $row['senderId'], 'kind' => 'message', 'data' => (string) $row['body']];
+            return ['userId' => $sender_id, 'kind' => 'message', 'data' => (string) ($snapshot['body'] ?? '')];
         }
 
         if ($target_type === 'post') {
-            $row = self::loadRow('Posts', 'postId', $target_id);
+            $user_id = isset($snapshot['userId']) ? (int) $snapshot['userId'] : null;
 
-            if ($row === null) {
-                return ['userId' => null, 'kind' => 'missing', 'data' => 'This post no longer exists.'];
+            // attachmentIds is snapshot metadata, not a Post property.
+            unset($snapshot['attachmentIds']);
+
+            if ($live) {
+                // The post still exists: show its current media (live items).
+                return ['userId' => $user_id, 'kind' => 'post', 'data' => Post::fromRowWithItems($snapshot)];
             }
 
-            return ['userId' => (int) $row['userId'], 'kind' => 'post', 'data' => Post::fromRowWithItems($row)];
+            // Deleted: text/byline from the snapshot, media rendered forensically
+            // from the kept originals (see forensicAttachmentsElement).
+            $post = Post::fromRow($snapshot);
+            $post -> author = $user_id !== null ? User::load($user_id) : null;
+
+            return ['userId' => $user_id, 'kind' => 'post', 'data' => $post];
         }
 
         if ($target_type === 'user') {
-            $user = User::load($target_id);
+            $user_id = isset($snapshot['userId']) ? (int) $snapshot['userId'] : null;
 
-            if ($user === null) {
-                return ['userId' => null, 'kind' => 'missing', 'data' => 'This user no longer exists.'];
-            }
-
-            return ['userId' => $target_id, 'kind' => 'user', 'data' => $user];
+            return ['userId' => $user_id, 'kind' => 'user', 'data' => User::fromRow($snapshot)];
         }
 
         return ['userId' => null, 'kind' => 'missing', 'data' => 'Unknown content type.'];
-    }
-
-    private static function loadRow(string $table, string $id_column, int $id): ?array
-    {
-        $stmt = mysqli_prepare(Database::connection(), '
-SELECT *
-    FROM `' . $table . '`
-    WHERE `' . $id_column . '` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $id);
-        mysqli_stmt_execute($stmt);
-
-        return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
     }
 }

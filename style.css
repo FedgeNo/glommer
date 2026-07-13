@@ -837,6 +837,9 @@ input[type='file']::file-selector-button {
 .Post > h3,
 .Post > a > h3 {
     margin-top: 0.5rem;
+    /* Break an unbroken run-on (no spaces) rather than letting it overflow;
+       normal text still wraps at word boundaries. */
+    overflow-wrap: anywhere;
 }
 
 .FeedItem {
@@ -853,6 +856,7 @@ input[type='file']::file-selector-button {
 .LinkItemText {
     flex: 1 1 auto;
     min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .LinkItemText > h3 {
@@ -895,6 +899,12 @@ input[type='file']::file-selector-button {
 
 .PostBody {
     margin-top: 0.6rem;
+    /* Force-break run-on strings (a long unspaced blob a user pastes/types)
+       so they can't blow out the post width; overflow-wrap is inherited, so
+       this covers the body's paragraphs, list items, and inline code too.
+       Normal prose still wraps only at spaces. Block <pre> is exempt - it
+       scrolls horizontally instead (see .PostBody pre). */
+    overflow-wrap: anywhere;
 }
 
 .PostBody blockquote {
@@ -1493,6 +1503,12 @@ input[type='file']::file-selector-button {
     overflow-wrap: anywhere;
 }
 
+.ReportedMedia {
+    max-width: 100%;
+    max-height: 24rem;
+    border-radius: var(--radius-ctl);
+}
+
 /* ---------- Confirm dialog ---------- */
 
 .ConfirmDialogOverlay {
@@ -1516,6 +1532,10 @@ input[type='file']::file-selector-button {
 
 .ConfirmDialogMessage {
     color: var(--ink);
+}
+
+.ConfirmDialogInput {
+    resize: vertical;
 }
 
 .ConfirmDialogActions {

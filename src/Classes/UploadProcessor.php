@@ -174,9 +174,9 @@ class UploadProcessor
     }
 
     /**
-     * Deletes every file belonging to an existing FeedItem, discovering the preserved
-     * original by glob since its extension isn't stored anywhere. Used when a post is
-     * deleted, so its media doesn't linger on disk after the rows cascade away.
+     * Removes the web-served copies (display + thumbnail) of an existing FeedItem
+     * when its post is deleted, ending public access to the media. The private
+     * original is deliberately kept as the forensic record (see below).
      */
     public static function deleteForItem(int $item_id, string $item_type): void
     {
@@ -188,9 +188,56 @@ class UploadProcessor
             }
         }
 
-        foreach (glob(self::ORIGINALS_DIR . '/' . $item_id . '-original.*') ?: [] as $original_path) {
-            unlink($original_path);
+        // The web-served copies (display/thumbnail) go, ending public access,
+        // but the private original under uploads/private/originals is kept: a
+        // report's snapshot records the attachment ids, and the originals are
+        // the forensic record a moderator recovers deleted media from.
+    }
+
+    /**
+     * Locates a FeedItem's preserved original by globbing the originals dir (its
+     * extension is stored nowhere else) and classifies it by MIME. This is the
+     * one lookup shared by the report card (which uses mediaType to pick the
+     * element) and the mod-only passthrough api/report-attachment.php (which
+     * streams path with mimeType) - so "what type is attachment N" is answered
+     * in exactly one place. Null when no original is on disk.
+     *
+     * @return array{path: string, mimeType: string, mediaType: string}|null
+     *         mediaType is one of 'image', 'video', 'audio', 'file'
+     */
+    public static function originalForItem(int $item_id): ?array
+    {
+        $matches = glob(self::ORIGINALS_DIR . '/' . $item_id . '-original.*') ?: [];
+
+        if ($matches === []) {
+            return null;
         }
+
+        $path = $matches[0];
+        $mime = self::mimeType($path);
+
+        $media_type = match (true) {
+            str_starts_with($mime, 'image/') => 'image',
+            str_starts_with($mime, 'video/') => 'video',
+            str_starts_with($mime, 'audio/') => 'audio',
+            default => 'file',
+        };
+
+        return ['path' => $path, 'mimeType' => $mime, 'mediaType' => $media_type];
+    }
+
+    private static function mimeType(string $path): string
+    {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+        if ($finfo === false) {
+            return 'application/octet-stream';
+        }
+
+        $mime = finfo_file($finfo, $path);
+        finfo_close($finfo);
+
+        return $mime !== false ? $mime : 'application/octet-stream';
     }
 
     private static function outputPaths(int|string $id, string $item_type, ?string $original_extension): array

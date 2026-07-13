@@ -1017,6 +1017,13 @@ $pending = $backfilled_before ? (int) mysqli_fetch_assoc($backfilled_before)['n'
 PostDeltaBackfill::run($mysqli);
 ok('post rich-text backfilled to Delta where needed (' . $pending . ' post(s) had legacy HTML)');
 
+// Backfill forensic snapshots for any report created before snapshots existed,
+// from whatever content is still around. Idempotent (snapshot IS NULL guard).
+$reports_pending = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Reports` WHERE `snapshot` IS NULL');
+$reports_to_snapshot = $reports_pending ? (int) mysqli_fetch_assoc($reports_pending)['n'] : 0;
+Report::backfillSnapshots();
+ok('report snapshots backfilled where needed (' . $reports_to_snapshot . ' report(s) had none)');
+
 // schema.sql also carries a handful of idempotent index migrations (ALTER
 // TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
 // UPDATE above these need admin privileges the runtime account deliberately

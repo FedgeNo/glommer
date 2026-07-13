@@ -650,9 +650,18 @@ class EnvironmentChecker
         ];
 
         foreach ($upload_dirs as $dir) {
-            if (!is_dir($dir) && !@mkdir($dir, 0755, true)) {
+            if (!is_dir($dir) && !@mkdir($dir, 0777, true)) {
                 return ['ok' => false, 'message' => 'Could not create ' . dirname($dir) . '/' . basename($dir) . ' - create it manually and make it writable.'];
             }
+
+            // Make the dir world-writable so the web-server user AND the worker-
+            // service user (commonly different accounts) can both write here
+            // without root - the same model the rest of the uploads/ tree uses,
+            // with the private/ subtree blocked from web reads by its .htaccess.
+            // Best-effort and idempotent: only the tree's owner can chmod, which
+            // the CLI installer is - so a re-run repairs a dir left too tight
+            // (e.g. one mkdir'd 0755 by a stray process).
+            @chmod($dir, 0777);
 
             if (!is_writable($dir)) {
                 return ['ok' => false, 'message' => realpath($dir) . ' is not writable by this user (' . get_current_user() . '). It (and everything under it) must be writable by the web server user too - uploads are processed and stored there.'];

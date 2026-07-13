@@ -491,7 +491,15 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
     private static function ensureDir(string $dir): void
     {
         if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
+            // 0777 so the dir is writable by BOTH the web-server user (which
+            // stages batches) and the worker-service user (which claims and
+            // renames them) - commonly different Unix accounts, and neither can
+            // chmod a dir the other created, so it must be world-writable from
+            // creation (mkdir's mode is umask-masked, hence the explicit chmod).
+            // The private/ tree is already blocked from web reads by its
+            // .htaccess; this matches the rest of the uploads/ tree.
+            mkdir($dir, 0777, true);
+            @chmod($dir, 0777);
         }
     }
 

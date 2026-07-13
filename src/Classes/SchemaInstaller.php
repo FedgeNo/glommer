@@ -46,6 +46,32 @@ SELECT `TABLE_NAME`
     }
 
     /**
+     * Whether the database has NONE of the app's tables yet - a genuinely fresh
+     * install, which should get the current schema created directly rather than
+     * run through the incremental upgrade steps (drift/type migrations/backfills).
+     * An empty-but-installed database (its tables exist, just no rows) is NOT
+     * fresh and takes the normal upgrade path - the code updates daily, so an
+     * install created yesterday can need upgrading today even with no data.
+     */
+    public static function isFreshInstall(\mysqli $connection): bool
+    {
+        $existing_result = mysqli_query($connection, '
+SELECT `TABLE_NAME`
+    FROM `information_schema`.`TABLES`
+    WHERE `TABLE_SCHEMA` = DATABASE()
+');
+        $existing = array_column(mysqli_fetch_all($existing_result, MYSQLI_ASSOC), 'TABLE_NAME');
+
+        foreach (array_keys(self::schemaTableBodies()) as $table) {
+            if (in_array($table, $existing, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param array<string, string> $statements table name => its CREATE TABLE statement
      */
     public static function createTables(\mysqli $admin_connection, array $statements): void

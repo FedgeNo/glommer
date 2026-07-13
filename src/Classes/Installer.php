@@ -145,9 +145,14 @@ INSERT INTO `Settings` (`name`, `value`)
 
         try {
             try {
+                // A fresh database (none of the app's tables yet) gets the
+                // current schema created directly - the incremental drift/type
+                // migrations and data backfills only make sense against an
+                // already-installed database, so they're skipped here.
+                $fresh = SchemaInstaller::isFreshInstall(Database::connection());
                 $missing_tables = SchemaInstaller::missingTables(Database::connection());
-                $drift = SchemaInstaller::missingDefinitions(Database::connection());
-                $needed_index_migrations = SchemaInstaller::neededIndexMigrations(Database::connection());
+                $drift = $fresh ? [] : SchemaInstaller::missingDefinitions(Database::connection());
+                $needed_index_migrations = $fresh ? [] : SchemaInstaller::neededIndexMigrations(Database::connection());
             } catch (\mysqli_sql_exception | \RuntimeException $exception) {
                 return false;
             }
@@ -167,14 +172,30 @@ INSERT INTO `Settings` (`name`, `value`)
 
                     SchemaInstaller::createTables($admin_connection, $missing_tables);
 
+                    // Apply the drift in the right order for an old database:
+                    // columns and indexes first, THEN the index/type migrations
+                    // (which unsign old signed-int id columns), THEN the foreign
+                    // keys. A new FK from a column an old DB still has as signed
+                    // int(11) to an unsigned key fails to create (errno 150), so
+                    // the unsigning MODIFYs must run before those FK adds.
                     foreach ($drift as $alters) {
-                        foreach ($alters as $alter) {
-                            mysqli_query($admin_connection, $alter);
+                        foreach ($alters as $label => $alter) {
+                            if (!str_starts_with($label, 'foreign key ')) {
+                                mysqli_query($admin_connection, $alter);
+                            }
                         }
                     }
 
                     foreach ($needed_index_migrations as $statement) {
                         mysqli_query($admin_connection, $statement);
+                    }
+
+                    foreach ($drift as $alters) {
+                        foreach ($alters as $label => $alter) {
+                            if (str_starts_with($label, 'foreign key ')) {
+                                mysqli_query($admin_connection, $alter);
+                            }
+                        }
                     }
                 } catch (\mysqli_sql_exception $exception) {
                     return false;
@@ -185,20 +206,23 @@ INSERT INTO `Settings` (`name`, `value`)
                 }
             }
 
-            // Backfill descriptionDelta for pre-Delta posts now that the column
-            // exists. Race-safe and idempotent (see PostDeltaBackfill); on
-            // failure, return false so the version isn't bumped and the next
-            // request retries, converting whatever rows remain.
-            try {
-                PostDeltaBackfill::run(Database::connection());
-                // Backfill report snapshots now that the column exists (same
-                // race-safe/idempotent guarantees).
-                Report::backfillSnapshots();
-                // Backfill hashtags for existing posts now the tables exist
-                // (idempotent - attach uses INSERT IGNORE / upsert).
-                Hashtag::backfill();
-            } catch (\mysqli_sql_exception $exception) {
-                return false;
+            // Data backfills only for an already-installed database - a fresh
+            // one has no legacy rows to convert. Backfill descriptionDelta for
+            // pre-Delta posts now that the column exists. Race-safe and
+            // idempotent (see PostDeltaBackfill); on failure, return false so the
+            // version isn't bumped and the next request retries the rest.
+            if (!$fresh) {
+                try {
+                    PostDeltaBackfill::run(Database::connection());
+                    // Backfill report snapshots now that the column exists (same
+                    // race-safe/idempotent guarantees).
+                    Report::backfillSnapshots();
+                    // Backfill hashtags for existing posts now the tables exist
+                    // (idempotent - attach uses INSERT IGNORE / upsert).
+                    Hashtag::backfill();
+                } catch (\mysqli_sql_exception $exception) {
+                    return false;
+                }
             }
 
             SchemaInstaller::runMaintenance(Database::connection());

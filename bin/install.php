@@ -903,6 +903,13 @@ function admin_connection(array $config, string $needed_for): ?\mysqli
     }
 }
 
+// A fresh database (none of the app's tables yet) gets the current schema
+// created directly and skips the incremental upgrade steps (drift, type
+// migrations, data backfills) below - those only apply to an already-installed
+// database. Computed before any table is created. An empty-but-installed DB
+// (tables present, no rows) is NOT fresh and takes the full upgrade path.
+$fresh_install = SchemaInstaller::isFreshInstall($mysqli);
+
 try {
     $missing_statements = SchemaInstaller::missingTables($mysqli);
 } catch (\RuntimeException $exception) {
@@ -936,9 +943,17 @@ if ($missing_statements === []) {
 
 // ---------- 5. Schema drift ----------
 
-$drift = SchemaInstaller::missingDefinitions($mysqli);
+// Foreign keys are pulled out of the drift here and applied in section 7, after
+// the index/type migrations. On an old database a column a new FK references may
+// still be a signed int(11) while the key it points at is unsigned; creating the
+// FK then fails (errno 150). The type migrations in section 7 unsign those
+// columns, so the FKs must wait until after them.
+$deferred_foreign_keys = [];
+$drift = $fresh_install ? [] : SchemaInstaller::missingDefinitions($mysqli);
 
-if ($drift === []) {
+if ($fresh_install) {
+    ok('fresh install - current schema created directly, no drift to reconcile');
+} elseif ($drift === []) {
     ok('existing tables match schema.sql (no missing columns, indexes, or foreign keys)');
 } else {
     $labels = [];
@@ -970,6 +985,13 @@ if ($drift === []) {
 
         foreach ($drift as $table => $alters) {
             foreach ($alters as $label => $alter) {
+                // Defer foreign keys to section 7 (after the type migrations).
+                if (str_starts_with($label, 'foreign key ')) {
+                    $deferred_foreign_keys[$table . ': ' . $label] = $alter;
+
+                    continue;
+                }
+
                 try {
                     mysqli_query($admin_mysqli, $alter);
                     ok('applied ' . $table . ': ' . $label);
@@ -1007,27 +1029,33 @@ if ($drift === []) {
 SchemaInstaller::runMaintenance($mysqli);
 ok('schema.sql maintenance applied (denormalized counts recomputed)');
 
-// Backfill descriptionDelta for any post stored before the Delta migration
-// (HTML in `description`, NULL descriptionDelta), now that the column exists.
-// Idempotent and race-safe (guarded by descriptionDelta IS NULL); runs on the
-// runtime connection, which has the UPDATE it needs. A no-op once all posts are
-// converted - the same step Installer::attemptSilentUpgrade() runs on the web path.
-$backfilled_before = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Posts` WHERE `descriptionDelta` IS NULL AND `description` IS NOT NULL');
-$pending = $backfilled_before ? (int) mysqli_fetch_assoc($backfilled_before)['n'] : 0;
-PostDeltaBackfill::run($mysqli);
-ok('post rich-text backfilled to Delta where needed (' . $pending . ' post(s) had legacy HTML)');
+// Data backfills only for an already-installed database - a fresh one has no
+// legacy rows to convert.
+if ($fresh_install) {
+    ok('fresh install - no data backfills needed');
+} else {
+    // Backfill descriptionDelta for any post stored before the Delta migration
+    // (HTML in `description`, NULL descriptionDelta), now that the column exists.
+    // Idempotent and race-safe (guarded by descriptionDelta IS NULL); runs on the
+    // runtime connection, which has the UPDATE it needs. A no-op once all posts are
+    // converted - the same step Installer::attemptSilentUpgrade() runs on the web path.
+    $backfilled_before = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Posts` WHERE `descriptionDelta` IS NULL AND `description` IS NOT NULL');
+    $pending = $backfilled_before ? (int) mysqli_fetch_assoc($backfilled_before)['n'] : 0;
+    PostDeltaBackfill::run($mysqli);
+    ok('post rich-text backfilled to Delta where needed (' . $pending . ' post(s) had legacy HTML)');
 
-// Backfill forensic snapshots for any report created before snapshots existed,
-// from whatever content is still around. Idempotent (snapshot IS NULL guard).
-$reports_pending = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Reports` WHERE `snapshot` IS NULL');
-$reports_to_snapshot = $reports_pending ? (int) mysqli_fetch_assoc($reports_pending)['n'] : 0;
-Report::backfillSnapshots();
-ok('report snapshots backfilled where needed (' . $reports_to_snapshot . ' report(s) had none)');
+    // Backfill forensic snapshots for any report created before snapshots existed,
+    // from whatever content is still around. Idempotent (snapshot IS NULL guard).
+    $reports_pending = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Reports` WHERE `snapshot` IS NULL');
+    $reports_to_snapshot = $reports_pending ? (int) mysqli_fetch_assoc($reports_pending)['n'] : 0;
+    Report::backfillSnapshots();
+    ok('report snapshots backfilled where needed (' . $reports_to_snapshot . ' report(s) had none)');
 
-// Extract hashtags from existing posts into the Hashtags/PostHashtags tables and
-// the keywords column. Idempotent (attach uses INSERT IGNORE / upsert).
-Hashtag::backfill();
-ok('hashtags backfilled from existing posts');
+    // Extract hashtags from existing posts into the Hashtags/PostHashtags tables and
+    // the keywords column. Idempotent (attach uses INSERT IGNORE / upsert).
+    Hashtag::backfill();
+    ok('hashtags backfilled from existing posts');
+}
 
 // schema.sql also carries a handful of idempotent index migrations (ALTER
 // TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
@@ -1035,27 +1063,42 @@ ok('hashtags backfilled from existing posts');
 // doesn't have. Only reach for admin credentials when one is actually still
 // needed (an already-applied migration is a no-op and shouldn't force a
 // prompt on every healthy re-run - same principle as the schema drift step).
-$needed_index_migrations = SchemaInstaller::neededIndexMigrations($mysqli);
+$needed_index_migrations = $fresh_install ? [] : SchemaInstaller::neededIndexMigrations($mysqli);
 
-if ($needed_index_migrations === []) {
+if ($fresh_install) {
+    ok('fresh install - no index/type migrations to apply');
+} elseif ($needed_index_migrations === [] && $deferred_foreign_keys === []) {
     ok('index migrations up to date (nothing to apply)');
 } else {
-    $index_admin_mysqli = admin_connection($config, 'apply ' . count($needed_index_migrations) . ' pending index migration(s) from schema.sql');
+    $pending_count = count($needed_index_migrations) + count($deferred_foreign_keys);
+    $index_admin_mysqli = admin_connection($config, 'apply ' . $pending_count . ' pending migration(s) from schema.sql');
 
     if ($index_admin_mysqli === null) {
         fail(
-            count($needed_index_migrations) . ' index migration(s) from schema.sql are still pending: '
-            . implode('; ', $needed_index_migrations) . '. '
+            $pending_count . ' migration(s) from schema.sql are still pending: '
+            . implode('; ', array_merge($needed_index_migrations, array_values($deferred_foreign_keys))) . '. '
             . 'Apply them as a MySQL admin, or set DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD and re-run.'
         );
     }
 
+    // Index/type migrations first - these unsign the old signed-int id columns.
     foreach ($needed_index_migrations as $statement) {
         try {
             mysqli_query($index_admin_mysqli, $statement);
             ok('applied: ' . $statement);
         } catch (\mysqli_sql_exception $exception) {
             fail('Failed to apply index migration (' . $statement . '): ' . $exception -> getMessage());
+        }
+    }
+
+    // Then the foreign keys deferred from section 5, now that the columns they
+    // reference are unsigned and the FK can actually be created.
+    foreach ($deferred_foreign_keys as $label => $alter) {
+        try {
+            mysqli_query($index_admin_mysqli, $alter);
+            ok('applied ' . $label);
+        } catch (\mysqli_sql_exception $exception) {
+            fail('Failed to apply foreign key (' . $label . '): ' . $exception -> getMessage());
         }
     }
 

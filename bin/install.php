@@ -175,36 +175,43 @@ function offer_websocket_service(): bool
  * The contents of the WebSocket service's systemd unit file - the single source
  * used both when first installing the service and when reconciling an existing
  * one to the current template (so the two can never drift apart).
+ *
+ * $run_as null produces a user-level unit (`systemctl --user`, WantedBy
+ * default.target - the no-root default). A username produces a system-level unit
+ * that runs as that user (WantedBy multi-user.target, started on boot with no
+ * lingering) - what the root/sudo path installs.
  */
-function websocket_unit_contents(): string
+function websocket_unit_contents(?string $run_as = null): string
 {
     $project_root = dirname(__DIR__);
 
-    return implode("\n", [
-        '[Unit]',
-        'Description=Glommer WebSocket server',
-        'After=network.target',
-        '',
-        '[Service]',
-        // Quote the binary and script path - systemd splits ExecStart on
-        // whitespace, so an install path or PHP binary path containing a
-        // space would otherwise break the command into the wrong arguments.
-        'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/websocket-server.php"',
-        'Restart=always',
-        'RestartSec=2',
-        // Watchdog: the daemon pings WATCHDOG=1 every ~15s (half this); if its
-        // event loop hangs and the pings stop, systemd kills and restarts it -
-        // catching a wedged process that a plain crash-restart never would.
-        'WatchdogSec=30',
-        // Periodic restart: recycle the long-running process daily so any slow
-        // resource growth can't accumulate indefinitely. Clients reconnect
-        // automatically (main.js), so the brief blip is invisible.
-        'RuntimeMaxSec=1d',
-        'WorkingDirectory=' . $project_root,
-        '',
-        '[Install]',
-        'WantedBy=default.target',
-    ]) . "\n";
+    $service = ['[Service]'];
+
+    if ($run_as !== null) {
+        $service[] = 'User=' . $run_as;
+    }
+
+    // Quote the binary and script path - systemd splits ExecStart on whitespace,
+    // so an install path or PHP binary path containing a space would otherwise
+    // break the command into the wrong arguments.
+    $service[] = 'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/websocket-server.php"';
+    $service[] = 'Restart=always';
+    $service[] = 'RestartSec=2';
+    // Watchdog: the daemon pings WATCHDOG=1 every ~15s (half this); if its event
+    // loop hangs and the pings stop, systemd kills and restarts it - catching a
+    // wedged process that a plain crash-restart never would.
+    $service[] = 'WatchdogSec=30';
+    // Periodic restart: recycle the long-running process daily so any slow
+    // resource growth can't accumulate indefinitely. Clients reconnect
+    // automatically (main.js), so the brief blip is invisible.
+    $service[] = 'RuntimeMaxSec=1d';
+    $service[] = 'WorkingDirectory=' . $project_root;
+
+    return implode("\n", array_merge(
+        ['[Unit]', 'Description=Glommer WebSocket server', 'After=network.target', ''],
+        $service,
+        ['', '[Install]', 'WantedBy=' . ($run_as !== null ? 'multi-user.target' : 'default.target')]
+    )) . "\n";
 }
 
 /**
@@ -351,32 +358,34 @@ function offer_enable_websocket_service(): bool
  * source used both when first installing the service and when reconciling an
  * existing one to the current template (so the two can never drift apart).
  */
-function upload_worker_unit_contents(): string
+function upload_worker_unit_contents(?string $run_as = null): string
 {
     $project_root = dirname(__DIR__);
 
-    return implode("\n", [
-        '[Unit]',
-        'Description=Glommer media upload worker',
-        'After=network.target',
-        '',
-        '[Service]',
-        // Quote the binary and script path - systemd splits ExecStart on
-        // whitespace (see the WebSocket unit).
-        'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/upload-worker.php"',
-        'Restart=always',
-        'RestartSec=2',
-        // Watchdog: the supervisor pings WATCHDOG=1 every ~15s (half this); if
-        // its loop hangs and the pings stop, systemd restarts it. Unlike the WS
-        // daemon there's no RuntimeMaxSec periodic restart - the supervisor holds
-        // no long-lived state, and a timed restart would needlessly interrupt an
-        // in-flight transcode that the graceful stop then has to re-queue.
-        'WatchdogSec=30',
-        'WorkingDirectory=' . $project_root,
-        '',
-        '[Install]',
-        'WantedBy=default.target',
-    ]) . "\n";
+    $service = ['[Service]'];
+
+    if ($run_as !== null) {
+        $service[] = 'User=' . $run_as;
+    }
+
+    // Quote the binary and script path - systemd splits ExecStart on whitespace
+    // (see the WebSocket unit).
+    $service[] = 'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/upload-worker.php"';
+    $service[] = 'Restart=always';
+    $service[] = 'RestartSec=2';
+    // Watchdog: the supervisor pings WATCHDOG=1 every ~15s (half this); if its
+    // loop hangs and the pings stop, systemd restarts it. Unlike the WS daemon
+    // there's no RuntimeMaxSec periodic restart - the supervisor holds no
+    // long-lived state, and a timed restart would needlessly interrupt an
+    // in-flight transcode that the graceful stop then has to re-queue.
+    $service[] = 'WatchdogSec=30';
+    $service[] = 'WorkingDirectory=' . $project_root;
+
+    return implode("\n", array_merge(
+        ['[Unit]', 'Description=Glommer media upload worker', 'After=network.target', ''],
+        $service,
+        ['', '[Install]', 'WantedBy=' . ($run_as !== null ? 'multi-user.target' : 'default.target')]
+    )) . "\n";
 }
 
 /**
@@ -545,16 +554,20 @@ function offer_first_backup(): bool
  * first installing the units and when reconciling existing ones to the current
  * template, so the two can't drift apart.
  */
-function backup_service_contents(): string
+function backup_service_contents(?string $run_as = null): string
 {
-    return implode("\n", [
-        '[Unit]',
-        'Description=Glommer backup',
-        '',
-        '[Service]',
-        'Type=oneshot',
-        'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/backup.php',
-    ]) . "\n";
+    $service = ['[Service]', 'Type=oneshot'];
+
+    if ($run_as !== null) {
+        $service[] = 'User=' . $run_as;
+    }
+
+    $service[] = 'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/backup.php';
+
+    return implode("\n", array_merge(
+        ['[Unit]', 'Description=Glommer backup', ''],
+        $service
+    )) . "\n";
 }
 
 function backup_timer_contents(): string
@@ -805,6 +818,435 @@ function offer_websocket_tls(string $host): bool
     return true;
 }
 
+/**
+ * Whether this run has root privileges (a `sudo php bin/install.php`). Only then
+ * can the installer replace the user-level systemd services with SYSTEM units
+ * (run as the app's unprivileged user, started on boot with no lingering) and
+ * tighten uploads/ ownership. Uses `id -u` since ext-posix isn't guaranteed.
+ */
+function running_as_root(): bool
+{
+    return trim((string) shell_exec('id -u 2>/dev/null')) === '0';
+}
+
+/**
+ * Maps a numeric uid to a username via getent, then /etc/passwd. Null if neither
+ * is available or the uid isn't found (nothing here is assumed present).
+ */
+function uid_to_username(int $uid): ?string
+{
+    $line = trim((string) shell_exec('getent passwd ' . escapeshellarg((string) $uid) . ' 2>/dev/null'));
+
+    if ($line !== '') {
+        $name = explode(':', $line)[0];
+
+        return $name !== '' ? $name : null;
+    }
+
+    foreach (@file('/etc/passwd', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $entry) {
+        $fields = explode(':', $entry);
+
+        if (isset($fields[2]) && (int) $fields[2] === $uid) {
+            return $fields[0];
+        }
+    }
+
+    return null;
+}
+
+/**
+ * The unprivileged account the app's system services should run as under the
+ * root path: whoever invoked sudo ($SUDO_USER), else the owner of the project
+ * files. Never root. Null if it can't be resolved (we won't guess).
+ */
+function app_service_user(): ?string
+{
+    $sudo_user = getenv('SUDO_USER');
+
+    if (is_string($sudo_user) && $sudo_user !== '' && $sudo_user !== 'root') {
+        return $sudo_user;
+    }
+
+    $owner = @fileowner(dirname(__DIR__));
+
+    if ($owner !== false && $owner !== 0) {
+        $name = uid_to_username($owner);
+
+        if ($name !== null && $name !== 'root') {
+            return $name;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * The web server's Unix account (user + primary group) from the live web-SAPI
+ * facts, so uploads/ can be group-shared with it. Null when the web server
+ * can't be reached or its uid can't be mapped - the caller then leaves uploads/
+ * world-writable (0777), exactly as the unprivileged installer does.
+ *
+ * @return array{user: string, group: ?string}|null
+ */
+function web_server_account(): ?array
+{
+    $uid = EnvironmentChecker::webServerUid();
+
+    if ($uid === null) {
+        return null;
+    }
+
+    $user = uid_to_username($uid);
+
+    if ($user === null) {
+        return null;
+    }
+
+    $gid = trim((string) shell_exec('id -g ' . escapeshellarg($user) . ' 2>/dev/null'));
+    $group = null;
+
+    if ($gid !== '' && ctype_digit($gid)) {
+        $group_line = trim((string) shell_exec('getent group ' . escapeshellarg($gid) . ' 2>/dev/null'));
+        $group = $group_line !== '' ? (explode(':', $group_line)[0] ?: null) : null;
+    }
+
+    return ['user' => $user, 'group' => $group];
+}
+
+/**
+ * Runs a `systemctl --user` command inside $user's own systemd instance from
+ * this root context - needed to stop and disable the user-level services a prior
+ * unprivileged install left running, before system units replace them. Requires
+ * sudo and the user's runtime dir; returns '' if either is missing.
+ */
+function user_systemctl(string $user, string $args): string
+{
+    if (trim((string) shell_exec('command -v sudo 2>/dev/null')) === '') {
+        return '';
+    }
+
+    $uid = trim((string) shell_exec('id -u ' . escapeshellarg($user) . ' 2>/dev/null'));
+
+    if ($uid === '' || !ctype_digit($uid)) {
+        return '';
+    }
+
+    return (string) shell_exec(
+        'sudo -u ' . escapeshellarg($user)
+        . ' XDG_RUNTIME_DIR=/run/user/' . $uid
+        . ' systemctl --user ' . $args . ' 2>&1'
+    );
+}
+
+/**
+ * Stops, disables and removes a user-level unit a prior unprivileged install set
+ * up for $user, so it can't keep running (holding a port or a flock) alongside
+ * the system unit replacing it. `--now` on disable kills the live process, not
+ * just the file. Best-effort.
+ */
+function remove_user_service(string $user, string $unit): void
+{
+    user_systemctl($user, 'disable --now ' . escapeshellarg($unit));
+    user_systemctl($user, 'daemon-reload');
+
+    $passwd = trim((string) shell_exec('getent passwd ' . escapeshellarg($user) . ' 2>/dev/null'));
+    $home = $passwd !== '' ? (explode(':', $passwd)[5] ?? '') : '';
+
+    if ($home !== '') {
+        $path = $home . '/.config/systemd/user/' . $unit;
+
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+}
+
+/**
+ * Migrates one long-running service (WebSocket, upload worker) to a system unit
+ * running as $service_user. Stops the old user-level instance FIRST so its port/
+ * flock is free, writes and (re)starts the system unit, and removes the old user
+ * unit only once the system one is confirmed active. If the system unit won't
+ * start and there was no prior system unit, the old user unit is restarted so
+ * the site isn't left without the service. Returns whether it's active.
+ */
+function migrate_service_to_system(string $unit, string $contents, string $service_user): bool
+{
+    $system_path = '/etc/systemd/system/' . $unit;
+    $existing = is_file($system_path) ? (string) @file_get_contents($system_path) : null;
+    $active = trim((string) shell_exec('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')) === 'active';
+
+    // Already installed as a current system unit - just retire any lingering
+    // user-level copy and move on.
+    if ($existing === $contents && $active) {
+        remove_user_service($service_user, $unit);
+        ok($unit . ' already installed as a system service (runs as ' . $service_user . ')');
+
+        return true;
+    }
+
+    // Free the port/flock the user-level daemon holds before (re)starting.
+    user_systemctl($service_user, 'stop ' . escapeshellarg($unit));
+
+    if (file_put_contents($system_path, $contents) === false) {
+        fail_line('Could not write ' . $system_path . ' - ' . $unit . ' left as-is.');
+
+        if ($existing !== null) {
+            @file_put_contents($system_path, $existing);
+        }
+
+        return false;
+    }
+
+    shell_exec('systemctl daemon-reload 2>&1');
+    shell_exec('systemctl enable ' . escapeshellarg($unit) . ' 2>&1');
+    shell_exec('systemctl restart ' . escapeshellarg($unit) . ' 2>&1');
+
+    if (!system_unit_healthy($unit)) {
+        fail_line('System unit ' . $unit . ' did not come up cleanly - check: systemctl status ' . $unit);
+
+        // Restore whatever was working before rather than leave the site with a
+        // dead service. A prior (good) system unit is written back and
+        // restarted; otherwise fall back to the user-level service. Only remove
+        // the user-level unit once the system unit is confirmed healthy (below),
+        // so the fallback always still exists here.
+        if ($existing !== null) {
+            @file_put_contents($system_path, $existing);
+            shell_exec('systemctl daemon-reload 2>&1');
+            shell_exec('systemctl restart ' . escapeshellarg($unit) . ' 2>&1');
+            warn('Reverted ' . $unit . ' to its previous system unit.');
+        } else {
+            @unlink($system_path);
+            shell_exec('systemctl daemon-reload 2>&1');
+            user_systemctl($service_user, 'start ' . escapeshellarg($unit));
+            warn('Reverted ' . $unit . ' to the user-level service.');
+        }
+
+        return false;
+    }
+
+    remove_user_service($service_user, $unit);
+    ok($unit . ' installed as a system service (runs as ' . $service_user . ')');
+
+    return true;
+}
+
+/**
+ * Whether a just-(re)started unit is genuinely up, not just momentarily active
+ * between crash-loop restarts: it must be active AND have logged no automatic
+ * restarts a few seconds in (Restart=always would otherwise mask a service that
+ * starts then immediately dies - e.g. a system-context config it can't read).
+ */
+function system_unit_healthy(string $unit): bool
+{
+    sleep(3);
+
+    $active = trim((string) shell_exec('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')) === 'active';
+    $restarts = (int) trim((string) shell_exec('systemctl show -p NRestarts --value ' . escapeshellarg($unit) . ' 2>/dev/null'));
+
+    return $active && $restarts === 0;
+}
+
+/**
+ * Migrates the backup service+timer to system units running as $service_user
+ * (the timer runs the oneshot service on schedule; only the timer is enabled),
+ * and fires one backup now so the functional Backups check passes. Returns
+ * whether the system timer ended up enabled.
+ */
+function migrate_backup_to_system(string $service_user, bool $run_first_backup): bool
+{
+    if (file_put_contents('/etc/systemd/system/glommer-backup.service', backup_service_contents($service_user)) === false
+        || file_put_contents('/etc/systemd/system/glommer-backup.timer', backup_timer_contents()) === false) {
+        fail_line('Could not write the system backup units.');
+
+        return false;
+    }
+
+    shell_exec('systemctl daemon-reload 2>&1');
+    shell_exec('systemctl enable --now glommer-backup.timer 2>&1');
+
+    if (trim((string) shell_exec('systemctl is-enabled glommer-backup.timer 2>/dev/null')) !== 'enabled') {
+        fail_line('System backup timer did not enable - check: systemctl status glommer-backup.timer');
+
+        return false;
+    }
+
+    remove_user_service($service_user, 'glommer-backup.timer');
+    remove_user_service($service_user, 'glommer-backup.service');
+
+    // The backup now runs as $service_user, so make its output directory
+    // owned by that account (best-effort, top level only - enough to create and
+    // prune backup subdirectories in it).
+    $backup_dir = Env::get('BACKUP_DIR', '') ?: (dirname(dirname(__DIR__)) . '/glommer-backups');
+
+    if (is_dir($backup_dir) && !is_link($backup_dir)) {
+        @chown($backup_dir, $service_user);
+    }
+
+    // Fire one backup now (synchronous oneshot) ONLY if none has completed yet,
+    // so the functional Backups check passes - without re-running a full backup
+    // on every idempotent re-invocation of this installer.
+    if ($run_first_backup) {
+        shell_exec('systemctl start glommer-backup.service 2>&1');
+    }
+
+    ok('glommer-backup.timer installed as a system timer (runs backups as ' . $service_user . ')');
+
+    return true;
+}
+
+/**
+ * Recursively applies owner/group/mode across a tree using PHP's own chown/chgrp/
+ * chmod (so it needs no external chown/find/chmod binary). Directories get
+ * $dir_mode, files $file_mode. Best-effort per entry.
+ */
+function chown_tree(string $root, string $owner, string $group, int $dir_mode, int $file_mode): void
+{
+    if (!is_dir($root) || is_link($root)) {
+        return;
+    }
+
+    $apply = static function (string $path, bool $is_dir) use ($owner, $group, $dir_mode, $file_mode): void {
+        @chown($path, $owner);
+        @chgrp($path, $group);
+        @chmod($path, $is_dir ? $dir_mode : $file_mode);
+    };
+
+    $apply($root, true);
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        // NEVER follow a symlink: chown/chgrp/chmod dereference them, so a
+        // symlink planted in the web-writable uploads/ tree (uploads/x ->
+        // /root/.ssh) would otherwise let us chown/chmod an attacker-chosen path
+        // as root - a privilege-escalation primitive. Skip links entirely.
+        if ($item -> isLink()) {
+            continue;
+        }
+
+        $apply($item -> getPathname(), $item -> isDir());
+    }
+}
+
+/**
+ * Makes every directory under $root world-writable (0777) - the fallback when
+ * the web server's account can't be detected, so it can still create files
+ * there (what the unprivileged installer relies on). Files are left alone. Pure
+ * PHP, no external tool.
+ */
+function make_dirs_world_writable(string $root): void
+{
+    if (!is_dir($root) || is_link($root)) {
+        return;
+    }
+
+    @chmod($root, 0777);
+
+    // SELF_FIRST so real directories are actually yielded (the default
+    // LEAVES_ONLY mode yields only files/leaves); skip symlinks (see chown_tree).
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        if (!$item -> isLink() && $item -> isDir()) {
+            @chmod($item -> getPathname(), 0777);
+        }
+    }
+}
+
+/**
+ * Sets uploads/ ownership and permissions for the root path. With the web
+ * server's account known, uploads/ is owned by the service user, group-shared
+ * with the web server's group (setgid + group-write on directories) so both can
+ * manage files without world-writable, and .env is locked to 0640. Without it,
+ * uploads/ stays world-writable and a warning explains why.
+ */
+function fix_upload_ownership(string $service_user, ?array $web): void
+{
+    $uploads = dirname(__DIR__) . '/uploads';
+    $env_file = dirname(__DIR__) . '/.env';
+
+    if ($web === null) {
+        warn('Could not detect the web server\'s user (its live facts were unreachable - e.g. a non-default VirtualHost on 127.0.0.1). Leaving uploads/ world-writable (0777), as the unprivileged installer does, so the web server can still write there; re-run with the web server reachable to tighten this.');
+        make_dirs_world_writable($uploads);
+
+        return;
+    }
+
+    // The daemons now run AS the web-server user (see set_up_system_services), so
+    // a single account owns and writes everything under uploads/ - the web
+    // requests that stage uploads AND the worker that transcodes them are the
+    // same user. So it can simply be owned by that user with ordinary perms: no
+    // world-writable, and none of the cross-account group juggling that doesn't
+    // actually work when the web and worker are different users.
+    chown_tree($uploads, $service_user, $web['group'] ?? $service_user, 0755, 0644);
+
+    if (is_file($env_file)) {
+        @chown($env_file, $service_user);
+        @chgrp($env_file, $web['group'] ?? $service_user);
+        @chmod($env_file, 0640);
+    }
+
+    ok('uploads/ owned by ' . $service_user . ' (the web-server user) with ordinary perms - no longer world-writable; the daemons run as the same account.');
+}
+
+/**
+ * The root/sudo path: replace the user-level services with system units, retire
+ * the old user-level units, and fix uploads/ ownership. The services run AS the
+ * web-server user when it's detectable (so one account owns and writes uploads/
+ * with no world-writable), falling back to the sudo invoker (uploads/ left
+ * 0777) when it isn't. Clears the environment failures it resolves. A
+ * no-op-with-warning when its prerequisites aren't met - the user-level setup
+ * then stays intact.
+ */
+function set_up_system_services(array &$environment_failures): void
+{
+    heading('System services (running as root)');
+
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        warn('systemctl not found - cannot install system services. Set up this box\'s process manager by hand (see README.md).');
+
+        return;
+    }
+
+    $web = web_server_account();
+
+    // Run the services AS the web-server user when we can detect it - then the
+    // web server and the daemons are one account that owns uploads/ outright.
+    // Otherwise run as the sudo invoker (SUDO_USER / project owner) and leave
+    // uploads/ world-writable (fix_upload_ownership warns).
+    $service_user = $web !== null ? $web['user'] : app_service_user();
+
+    if ($service_user === null) {
+        warn('Could not determine a user to run the services as - the web-server user is undetectable and SUDO_USER is unset (invoke via `sudo`). Skipping system-service setup.');
+
+        return;
+    }
+
+    if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($service_user), $service_user)) {
+        unset($environment_failures['WebSocket server'], $environment_failures['WebSocket service persistence']);
+    }
+
+    if (migrate_service_to_system('glommer-upload-worker.service', upload_worker_unit_contents($service_user), $service_user)) {
+        unset($environment_failures['Upload worker service persistence']);
+    }
+
+    if (migrate_backup_to_system($service_user, isset($environment_failures['Backups']))) {
+        unset($environment_failures['Backup timer persistence']);
+
+        if (EnvironmentChecker::checks()['Backups']['ok']) {
+            unset($environment_failures['Backups']);
+        }
+    }
+
+    fix_upload_ownership($service_user, $web);
+}
+
 // ---------- 1. Environment ----------
 
 heading('Environment');
@@ -826,6 +1268,17 @@ $run_environment_checks = function (): array {
 
 $environment_failures = $run_environment_checks();
 
+// Root/sudo: upgrade any user-level services to system units (run as the app's
+// unprivileged user, started on boot with no lingering), retire the old user
+// units, and tighten uploads/ ownership. This clears the persistence failures
+// it resolves, so the user-level offers below - which would otherwise install
+// services for root - are skipped.
+$is_root = running_as_root();
+
+if ($is_root) {
+    set_up_system_services($environment_failures);
+}
+
 // Same explicit, named non-interactive opt-in pattern as
 // SERVERNAME_CONFIRMED/BACKUP_TIMER_CONFIRMED - these two WebSocket offers
 // are purely mechanical (write a unit file, enable it, set lingering; both
@@ -835,7 +1288,7 @@ $websocket_non_interactive_ok = Env::get('WEBSOCKET_SERVICE_CONFIRMED', '') === 
 
 // A missing WebSocket server is one environment failure this script can fix
 // itself - offer to, then re-run just that check.
-if (isset($environment_failures['WebSocket server']) && (is_interactive() || $websocket_non_interactive_ok) && offer_websocket_service()) {
+if (isset($environment_failures['WebSocket server']) && (is_interactive() || $websocket_non_interactive_ok) && !$is_root && offer_websocket_service()) {
     $recheck = EnvironmentChecker::checks()['WebSocket server'];
 
     if ($recheck['ok']) {
@@ -857,7 +1310,7 @@ if (isset($environment_failures['WebSocket server']) && (is_interactive() || $we
 // Separately: the daemon can be reachable right now (satisfying the check
 // above) without being enabled to survive a restart or reboot - e.g. it was
 // started manually. Offer to fix that specifically too.
-if (isset($environment_failures['WebSocket service persistence']) && (is_interactive() || $websocket_non_interactive_ok) && offer_enable_websocket_service()) {
+if (isset($environment_failures['WebSocket service persistence']) && (is_interactive() || $websocket_non_interactive_ok) && !$is_root && offer_enable_websocket_service()) {
     $recheck = EnvironmentChecker::checks()['WebSocket service persistence'];
 
     if ($recheck['ok']) {
@@ -876,7 +1329,7 @@ reconcile_websocket_service_unit();
 // The media upload-worker service (drains the async transcode queue). Offer to
 // enable it if it isn't, then reconcile an already-installed unit to the current
 // template - both mirroring the WebSocket service above.
-if (isset($environment_failures['Upload worker service persistence']) && (is_interactive() || $websocket_non_interactive_ok) && offer_enable_upload_worker_service()) {
+if (isset($environment_failures['Upload worker service persistence']) && (is_interactive() || $websocket_non_interactive_ok) && !$is_root && offer_enable_upload_worker_service()) {
     $recheck = EnvironmentChecker::checks()['Upload worker service persistence'];
 
     if ($recheck['ok']) {
@@ -898,7 +1351,7 @@ reconcile_upload_worker_service_unit();
 // still has to arrive for each step.
 $backups_non_interactive_ok = Env::get('BACKUP_TIMER_CONFIRMED', '') === '1';
 
-if (isset($environment_failures['Backups']) && (is_interactive() || $backups_non_interactive_ok) && offer_first_backup()) {
+if (isset($environment_failures['Backups']) && (is_interactive() || $backups_non_interactive_ok) && !$is_root && offer_first_backup()) {
     $recheck = EnvironmentChecker::checks()['Backups'];
 
     if ($recheck['ok']) {
@@ -921,7 +1374,7 @@ if (isset($environment_failures['Backups']) && (is_interactive() || $backups_non
 // Separately: the backup mechanism can work (satisfying the check above)
 // without anything actually being scheduled to run it again - e.g. someone
 // ran bin/backup.php by hand once. Offer to fix that specifically too.
-if (isset($environment_failures['Backup timer persistence']) && (is_interactive() || $backups_non_interactive_ok) && offer_enable_backup_timer()) {
+if (isset($environment_failures['Backup timer persistence']) && (is_interactive() || $backups_non_interactive_ok) && !$is_root && offer_enable_backup_timer()) {
     $recheck = EnvironmentChecker::checks()['Backup timer persistence'];
 
     if ($recheck['ok']) {
@@ -1037,6 +1490,19 @@ if (!is_file(__DIR__ . '/../.env')) {
     // since a world-readable .env leaks the DB password and WS secret.
     if (!chmod($env_path, 0600)) {
         fail('Wrote .env but could not restrict it to 0600 - it holds DB_PASSWORD and WS_SECRET. Fix manually: chmod 600 ' . realpath($env_path));
+    }
+
+    // Under a root/sudo install .env was just created owned by root, but the web
+    // server and daemons run as the (unprivileged) web-server user - hand the
+    // file to that account so they can read it, keeping it 0600 (owner-only, so
+    // the DB password / WS secret stay unreadable to anyone else).
+    if ($is_root) {
+        $env_web = web_server_account();
+        $env_owner = $env_web !== null ? $env_web['user'] : app_service_user();
+
+        if ($env_owner !== null) {
+            @chown($env_path, $env_owner);
+        }
     }
 
     ok('.env written');

@@ -45,6 +45,22 @@ class EnvironmentChecker
     }
 
     /**
+     * The Unix uid the web server actually runs as, from the live web-SAPI probe
+     * (environment-check.php derives it from a file the web process creates,
+     * since get_current_user() reports the script's owner, not the process
+     * user). Null when the web server can't be reached (e.g. a non-default
+     * VirtualHost on 127.0.0.1) or it reports no uid. Used by the root/sudo
+     * installer to chown uploads/ to the right account instead of using 0777.
+     */
+    public static function webServerUid(): ?int
+    {
+        $live = self::liveFacts();
+        $uid = $live['webServerUid'] ?? null;
+
+        return is_int($uid) ? $uid : null;
+    }
+
+    /**
      * A functional check, like the WebSocket one above: not "is BACKUP_DIR
      * set" but "has a backup actually completed" - proof the mechanism really
      * works, not just that it's configured. An install with no working backup
@@ -81,6 +97,12 @@ class EnvironmentChecker
 
         if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
             return ['ok' => true, 'message' => 'systemctl not found - assuming a non-systemd scheduler (cron or otherwise) is set up separately'];
+        }
+
+        // A system-level timer (what a root/sudo install sets up) just needs to
+        // be enabled - it starts on boot, no lingering involved.
+        if (trim((string) shell_exec('systemctl is-enabled glommer-backup.timer 2>/dev/null')) === 'enabled') {
+            return ['ok' => true, 'message' => 'glommer-backup.timer is enabled as a system timer (starts on boot)'];
         }
 
         $timer_status = trim((string) shell_exec('systemctl --user is-enabled glommer-backup.timer 2>/dev/null'));
@@ -654,14 +676,15 @@ class EnvironmentChecker
                 return ['ok' => false, 'message' => 'Could not create ' . dirname($dir) . '/' . basename($dir) . ' - create it manually and make it writable.'];
             }
 
-            // Make the dir world-writable so the web-server user AND the worker-
-            // service user (commonly different accounts) can both write here
-            // without root - the same model the rest of the uploads/ tree uses,
-            // with the private/ subtree blocked from web reads by its .htaccess.
-            // Best-effort and idempotent: only the tree's owner can chmod, which
-            // the CLI installer is - so a re-run repairs a dir left too tight
-            // (e.g. one mkdir'd 0755 by a stray process).
-            @chmod($dir, 0777);
+            // Open the dir up (0777) so the web server can write here - the model
+            // the unprivileged install relies on - but ONLY when it isn't already
+            // writable. Not unconditionally: a root/sudo install tightens these
+            // to the web-server user with ordinary perms, and re-chmod'ing 0777
+            // every run would undo that. So this repairs a too-tight dir without
+            // clobbering a deliberately-tightened, still-writable one.
+            if (!is_writable($dir)) {
+                @chmod($dir, 0777);
+            }
 
             if (!is_writable($dir)) {
                 return ['ok' => false, 'message' => realpath($dir) . ' is not writable by this user (' . get_current_user() . '). It (and everything under it) must be writable by the web server user too - uploads are processed and stored there.'];
@@ -822,6 +845,12 @@ class EnvironmentChecker
             return ['ok' => true, 'message' => 'systemctl not found - assuming a non-systemd process manager is set up separately'];
         }
 
+        // A system-level unit (what a root/sudo install sets up) just needs to
+        // be enabled - it starts on boot, no lingering involved.
+        if (trim((string) shell_exec('systemctl is-enabled glommer-websocket.service 2>/dev/null')) === 'enabled') {
+            return ['ok' => true, 'message' => 'glommer-websocket.service is enabled as a system service (starts on boot)'];
+        }
+
         $service_status = trim((string) shell_exec('systemctl --user is-enabled glommer-websocket.service 2>/dev/null'));
 
         if ($service_status !== 'enabled') {
@@ -846,6 +875,12 @@ class EnvironmentChecker
 
         if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
             return ['ok' => true, 'message' => 'systemctl not found - assuming a non-systemd process manager is set up separately'];
+        }
+
+        // A system-level unit (what a root/sudo install sets up) just needs to
+        // be enabled - it starts on boot, no lingering involved.
+        if (trim((string) shell_exec('systemctl is-enabled glommer-upload-worker.service 2>/dev/null')) === 'enabled') {
+            return ['ok' => true, 'message' => 'glommer-upload-worker.service is enabled as a system service (starts on boot)'];
         }
 
         $service_status = trim((string) shell_exec('systemctl --user is-enabled glommer-upload-worker.service 2>/dev/null'));

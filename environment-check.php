@@ -66,6 +66,24 @@ if (function_exists('shell_exec') && !$shell_exec_disabled) {
     $bash_found = trim((string) @shell_exec('command -v bash 2>/dev/null')) !== '';
 }
 
+// The Unix uid the web server actually runs as. get_current_user() returns the
+// SCRIPT's owner, not the process user, so instead create a file and read its
+// owner - a file is owned by the effective uid of the process that made it, so
+// this is the real web-server uid. The CLI installer (running as root under
+// sudo) maps it to a name to chown uploads/ correctly.
+$web_server_uid = null;
+$uid_probe = sys_get_temp_dir() . '/glommer-uid-probe-' . bin2hex(random_bytes(6));
+
+if (@file_put_contents($uid_probe, '') !== false) {
+    $probe_owner = @fileowner($uid_probe);
+
+    if ($probe_owner !== false) {
+        $web_server_uid = $probe_owner;
+    }
+
+    @unlink($uid_probe);
+}
+
 $upload_dirs = [
     'uploads' => __DIR__ . '/uploads',
     'uploads/avatars' => __DIR__ . '/uploads/avatars',
@@ -95,6 +113,7 @@ JSONResponse::success([
     'ffprobeFound' => $ffprobe_found,
     'timeoutFound' => $timeout_found,
     'bashFound' => $bash_found,
+    'webServerUid' => $web_server_uid,
     'extensions' => [
         'mysqli' => extension_loaded('mysqli'),
         'gd' => extension_loaded('gd'),

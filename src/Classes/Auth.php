@@ -41,7 +41,44 @@ SELECT *
             return null;
         }
 
+        // Now that we (briefly) hold the plaintext and know it's correct,
+        // transparently upgrade a hash made with an older algorithm/cost to the
+        // current PASSWORD_DEFAULT. A no-op today (still bcrypt); the standard
+        // migration hook for whenever PHP's default moves on or the cost is
+        // raised. Covers both callers - login and the banned-vs-wrong check.
+        self::rehashIfNeeded($user, $password);
+
         return $user;
+    }
+
+    /**
+     * Re-hashes a user's password to the current PASSWORD_DEFAULT and stores it
+     * when their existing hash was made with a different algorithm or cost.
+     * Called only on a successful credential check (the sole moment the
+     * plaintext is available). Best-effort: a rehash/update failure is swallowed
+     * so it can never block an otherwise-valid sign-in - the old hash still
+     * verifies, and the next login just tries again.
+     */
+    private static function rehashIfNeeded(User $user, string $password): void
+    {
+        if (!password_needs_rehash($user -> passwordHash, PASSWORD_DEFAULT)) {
+            return;
+        }
+
+        $new_hash = password_hash($password, PASSWORD_DEFAULT);
+
+        try {
+            $stmt = mysqli_prepare(Database::connection(), '
+UPDATE `Users`
+    SET `passwordHash` = ?
+    WHERE `userId` = ?
+');
+            mysqli_stmt_bind_param($stmt, 'si', $new_hash, $user -> userId);
+            mysqli_stmt_execute($stmt);
+            $user -> passwordHash = $new_hash;
+        } catch (\mysqli_sql_exception $exception) {
+            // Old hash still verifies; leave it and retry on the next sign-in.
+        }
     }
 
     public static function login(User $user): void

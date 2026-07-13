@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/src/init.php';
+
+$tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
+
+// /tags/ - the public hashtag directory: trending and most-popular tags.
+if ($tag === '') {
+    $trending = Hashtag::trending(20);
+    $popular = Hashtag::popular(50);
+
+    $page = Page::create('Tags', 'Browse trending and popular hashtags on Glommer.');
+
+    if ($trending === [] && $popular === []) {
+        $page -> addContent(new Notice('No hashtags yet.'));
+    } else {
+        if ($trending !== []) {
+            $page -> addContent(new HashtagCloud('Trending', $trending));
+        }
+
+        if ($popular !== []) {
+            $page -> addContent(new HashtagCloud('Popular', $popular));
+        }
+    }
+
+    $page -> send();
+    exit;
+}
+
+// /tags/{tag} - the posts carrying one tag. A tag with no posts is a 404
+// (nothing to show, and it keeps empty/thin pages out of search).
+if (!preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
+    require __DIR__ . '/404.php';
+    exit;
+}
+
+['rows' => $rows, 'hasMore' => $has_more] = Hashtag::postRows($tag, 20);
+
+if ($rows === []) {
+    require __DIR__ . '/404.php';
+    exit;
+}
+
+$page = Page::create('#' . $tag, 'Posts tagged #' . $tag . ' on Glommer.', needsMath: true);
+
+$list = FeedList::fromRows('tag', $rows, $has_more);
+$list -> tag = $tag;
+$page -> addContent($list);
+
+$page -> send();

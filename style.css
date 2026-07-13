@@ -1509,6 +1509,27 @@ input[type='file']::file-selector-button {
     border-radius: var(--radius-ctl);
 }
 
+.HashtagChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background-color: var(--surface-2);
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9375rem;
+}
+
+.HashtagChip:hover {
+    background-color: var(--accent-soft);
+}
+
+.HashtagChipCount {
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
 /* ---------- Confirm dialog ---------- */
 
 .ConfirmDialogOverlay {

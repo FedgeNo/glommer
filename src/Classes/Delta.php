@@ -182,4 +182,41 @@ class Delta
     {
         return self::plainText($ops) === '';
     }
+
+    /**
+     * The distinct #hashtags in a post's body (lowercased, first-seen order).
+     * Uses the same rule the renderer linkifies with (Linkify), and - matching
+     * the renderer - skips runs that aren't linkified: inline code and text
+     * already inside a link. Uncapped; Hashtag::indexPost applies the spam
+     * policy (index all, or - if there are too many - index none and flag it).
+     *
+     * @param array[] $ops
+     * @return string[]
+     */
+    public static function hashtags(array $ops): array
+    {
+        $tags = [];
+
+        foreach ($ops as $op) {
+            $insert = $op['insert'] ?? null;
+
+            if (!is_string($insert)) {
+                continue;
+            }
+
+            $attributes = $op['attributes'] ?? [];
+
+            if (!empty($attributes['code']) || isset($attributes['link'])) {
+                continue;
+            }
+
+            foreach (Linkify::tokenize($insert) as $segment) {
+                if ($segment['type'] === 'hashtag') {
+                    $tags[$segment['tag']] = true;
+                }
+            }
+        }
+
+        return array_keys($tags);
+    }
 }

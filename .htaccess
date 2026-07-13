@@ -63,7 +63,7 @@
     # path segments) only ever serve at their trailing-slash form - the bare
     # form always redirects to it, enforced, never silently accepted as an
     # alternative the way a real directory's slash-less URL redirects too.
-    RewriteRule ^(messages|users|help)$ /$1/ [R=301,L]
+    RewriteRule ^(messages|users|help|tags)$ /$1/ [R=301,L]
     RewriteRule ^users/([^/]+)$ /users/$1/ [R=301,L]
 
     RewriteRule ^$ index.php [L,QSA]
@@ -105,6 +105,8 @@
     RewriteRule ^messages/([^/]+)$ messages.php?username=$1 [L,QSA]
     RewriteRule ^help/$ help.php [L,QSA]
     RewriteRule ^help/([a-z0-9-]+)$ help-article.php?slug=$1 [L,QSA]
+    RewriteRule ^tags/$ tags.php [L,QSA]
+    RewriteRule ^tags/([A-Za-z0-9_]+)$ tags.php?tag=$1 [L,QSA]
     RewriteRule ^users/$ users.php [L,QSA]
     RewriteRule ^users/([^/]+)/feed\.xml$ user-rss-feed.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/friends$ user-friends.php?username=$1 [L,QSA]

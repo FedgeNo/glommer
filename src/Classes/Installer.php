@@ -194,6 +194,9 @@ INSERT INTO `Settings` (`name`, `value`)
                 // Backfill report snapshots now that the column exists (same
                 // race-safe/idempotent guarantees).
                 Report::backfillSnapshots();
+                // Backfill hashtags for existing posts now the tables exist
+                // (idempotent - attach uses INSERT IGNORE / upsert).
+                Hashtag::backfill();
             } catch (\mysqli_sql_exception $exception) {
                 return false;
             }

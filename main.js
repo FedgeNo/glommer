@@ -1979,8 +1979,9 @@ window.addEventListener('scroll', async () => {
         const feed_type = list.dataset.feedType;
         const before_post_id = list.dataset.oldestPostId;
         const user_id_param = feed_type === 'user' ? `&userId=${list.dataset.userId}` : '';
+        const tag_param = feed_type === 'tag' ? `&tag=${encodeURIComponent(list.dataset.tag)}` : '';
 
-        const response = await fetch(`${window.siteURL}/api/feed-history?feedType=${feed_type}&beforePostId=${before_post_id}${user_id_param}`);
+        const response = await fetch(`${window.siteURL}/api/feed-history?feedType=${feed_type}&beforePostId=${before_post_id}${user_id_param}${tag_param}`);
         const data = await response.json();
 
         if (!response.ok) {

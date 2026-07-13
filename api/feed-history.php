@@ -7,8 +7,9 @@ require __DIR__ . '/api-init.php';
 $feed_type = (string) ($_GET['feedType'] ?? 'global');
 $before_post_id = (int) ($_GET['beforePostId'] ?? 0);
 $profile_user_id = (int) ($_GET['userId'] ?? 0);
+$tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
 
-if ($before_post_id === 0 || !in_array($feed_type, ['global', 'friends', 'user'], true)) {
+if ($before_post_id === 0 || !in_array($feed_type, ['global', 'friends', 'user', 'tag'], true)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
@@ -17,6 +18,10 @@ if ($feed_type === 'friends' && !Auth::check()) {
 }
 
 if ($feed_type === 'user' && $profile_user_id === 0) {
+    JSONResponse::error('Invalid request', 422) -> send();
+}
+
+if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
@@ -57,6 +62,8 @@ SELECT `Posts`.*
     if ($has_more) {
         array_pop($feed_rows);
     }
+} elseif ($feed_type === 'tag') {
+    ['rows' => $feed_rows, 'hasMore' => $has_more] = Hashtag::postRows($tag, $limit, $before_post_id);
 } else {
     ['rows' => $feed_rows, 'hasMore' => $has_more] = Post::globalFeedRows($limit, $before_post_id);
 }

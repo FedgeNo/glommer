@@ -124,6 +124,11 @@ INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionD
         mysqli_stmt_execute($post_stmt);
         $post_id = (int) mysqli_insert_id($mysqli);
 
+        // From the final delta value (after the legacy HTML->Delta branch above).
+        if ($description_delta_value !== null) {
+            Hashtag::indexPost($post_id, Delta::decode($description_delta_value));
+        }
+
         if ($parent_id !== null) {
             $parent_stmt = mysqli_prepare($mysqli, '
 SELECT `userId`

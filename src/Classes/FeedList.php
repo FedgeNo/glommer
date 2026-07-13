@@ -8,6 +8,7 @@ class FeedList extends Div
 
     public ?string $feedType = null;
     public ?int $userId = null;
+    public ?string $tag = null;
     public ?int $oldestPostId = null;
     public bool $hasMore = false;
 
@@ -19,6 +20,10 @@ class FeedList extends Div
 
         if ($this -> userId !== null) {
             $this -> attributes['data-user-id'] = (string) $this -> userId;
+        }
+
+        if ($this -> tag !== null) {
+            $this -> attributes['data-tag'] = $this -> tag;
         }
 
         if ($this -> oldestPostId !== null) {

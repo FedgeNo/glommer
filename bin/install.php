@@ -1024,6 +1024,11 @@ $reports_to_snapshot = $reports_pending ? (int) mysqli_fetch_assoc($reports_pend
 Report::backfillSnapshots();
 ok('report snapshots backfilled where needed (' . $reports_to_snapshot . ' report(s) had none)');
 
+// Extract hashtags from existing posts into the Hashtags/PostHashtags tables and
+// the keywords column. Idempotent (attach uses INSERT IGNORE / upsert).
+Hashtag::backfill();
+ok('hashtags backfilled from existing posts');
+
 // schema.sql also carries a handful of idempotent index migrations (ALTER
 // TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
 // UPDATE above these need admin privileges the runtime account deliberately

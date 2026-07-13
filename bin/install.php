@@ -1198,18 +1198,96 @@ function fix_upload_ownership(string $service_user, ?array $web): void
         @chmod($env_file, 0640);
     }
 
-    // The WebSocket daemon runs as the web-server user now, so it must be able to
-    // read the WS TLS cert/key (wss://). Hand it any user-managed cert files -
-    // but never ones under /etc (certbot/system certs), which are managed there
-    // and readable by the web server another way.
-    foreach ([Env::get('WS_TLS_CERT'), Env::get('WS_TLS_KEY')] as $cert_path) {
-        if (is_string($cert_path) && $cert_path !== '' && is_file($cert_path) && !str_starts_with($cert_path, '/etc/')) {
-            @chown($cert_path, $service_user);
-            @chgrp($cert_path, $web['group'] ?? $service_user);
-        }
+    ok('uploads/ owned by ' . $service_user . ' (the web-server user) with ordinary perms - no longer world-writable; the daemons run as the same account.');
+}
+
+/**
+ * Whether $user can actually read $path (traversal included, not just the file's
+ * own mode). Tested by trying to read it AS that user via sudo. Assumes yes when
+ * it can't test (no sudo), so it never needlessly relocates a fine cert.
+ */
+function web_user_can_read(string $user, string $path): bool
+{
+    if (trim((string) shell_exec('command -v sudo 2>/dev/null')) === '') {
+        return true;
     }
 
-    ok('uploads/ owned by ' . $service_user . ' (the web-server user) with ordinary perms - no longer world-writable; the daemons run as the same account.');
+    exec('sudo -u ' . escapeshellarg($user) . ' test -r ' . escapeshellarg($path) . ' 2>/dev/null', $output, $exit_code);
+
+    return $exit_code === 0;
+}
+
+/**
+ * Makes sure the WebSocket daemon - which now runs as the web-server user - can
+ * read its TLS cert/key for wss://. Chowning the files isn't enough when they
+ * sit in a 0700 home dir (a mkcert cert's usual home): the web user can't even
+ * traverse to them. So when the web user can't read them, the cert+key are
+ * copied to a shared, readable location (/etc/glommer) and .env is repointed
+ * there. A cert already readable by the web user (e.g. a Let's Encrypt cert
+ * under /etc) is left untouched. Runs before the WS service is (re)started, so
+ * it comes up with the reachable path.
+ */
+function ensure_ws_cert_readable(string $service_user, ?array $web): void
+{
+    $cert = Env::get('WS_TLS_CERT');
+    $key = Env::get('WS_TLS_KEY');
+
+    if (!is_string($cert) || $cert === '' || !is_string($key) || $key === '' || !is_file($cert) || !is_file($key)) {
+        return;
+    }
+
+    if (web_user_can_read($service_user, $cert) && web_user_can_read($service_user, $key)) {
+        return;
+    }
+
+    $group = $web !== null ? ($web['group'] ?? $service_user) : $service_user;
+    $dest_dir = '/etc/glommer';
+
+    if (!is_dir($dest_dir) && !@mkdir($dest_dir, 0755, true)) {
+        warn('The WebSocket cert (' . $cert . ') isn\'t readable by ' . $service_user . ' and ' . $dest_dir . ' couldn\'t be created - wss:// will fail. Move the cert somewhere ' . $service_user . ' can read and set WS_TLS_CERT/WS_TLS_KEY to it.');
+
+        return;
+    }
+
+    @chmod($dest_dir, 0755);
+
+    $dest_cert = $dest_dir . '/ws-cert.pem';
+    $dest_key = $dest_dir . '/ws-key.pem';
+
+    if (!@copy($cert, $dest_cert) || !@copy($key, $dest_key)) {
+        warn('The WebSocket cert isn\'t readable by ' . $service_user . ' and couldn\'t be copied to ' . $dest_dir . ' - wss:// will fail. Move it there manually and repoint WS_TLS_CERT/WS_TLS_KEY.');
+
+        return;
+    }
+
+    // Cert is public (0644); key is group-readable to the web-server group only.
+    @chgrp($dest_cert, $group);
+    @chmod($dest_cert, 0644);
+    @chgrp($dest_key, $group);
+    @chmod($dest_key, 0640);
+
+    $env_path = dirname(__DIR__) . '/.env';
+    $env_contents = (string) @file_get_contents($env_path);
+    $env_contents = preg_replace('/^WS_TLS_CERT=.*$/m', 'WS_TLS_CERT="' . $dest_cert . '"', $env_contents, -1, $cert_replaced);
+    $env_contents = preg_replace('/^WS_TLS_KEY=.*$/m', 'WS_TLS_KEY="' . $dest_key . '"', $env_contents, -1, $key_replaced);
+
+    if ($cert_replaced && $key_replaced && @file_put_contents($env_path, $env_contents) !== false) {
+        putenv('WS_TLS_CERT=' . $dest_cert);
+        putenv('WS_TLS_KEY=' . $dest_key);
+
+        // The cert path lives in .env, not the unit file, so an already-installed
+        // WS system service (its unit unchanged) wouldn't restart on its own to
+        // pick up the new path. Restart it here if it's running, so it reloads
+        // .env now; a not-yet-migrated (user) service is handled by the migration
+        // that follows.
+        if (trim((string) shell_exec('systemctl is-active glommer-websocket.service 2>/dev/null')) === 'active') {
+            shell_exec('systemctl restart glommer-websocket.service 2>&1');
+        }
+
+        ok('WebSocket cert relocated to ' . $dest_dir . ' (it was unreadable by ' . $service_user . ' in a home dir) and .env repointed.');
+    } else {
+        warn('Copied the WebSocket cert to ' . $dest_dir . ' but couldn\'t update .env - set WS_TLS_CERT="' . $dest_cert . '" and WS_TLS_KEY="' . $dest_key . '" manually.');
+    }
 }
 
 /**
@@ -1255,6 +1333,11 @@ function set_up_system_services(array &$environment_failures): void
     // must already belong to that account the moment they come up - otherwise
     // they fail on a permission-denied at startup.
     fix_upload_ownership($service_user, $web);
+
+    // And make sure the WS daemon (now the web-server user) can actually reach
+    // its TLS cert - relocating it out of an unreadable home dir if need be -
+    // before it's (re)started below.
+    ensure_ws_cert_readable($service_user, $web);
 
     if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($service_user), $service_user, $prior_user)) {
         unset($environment_failures['WebSocket server'], $environment_failures['WebSocket service persistence']);

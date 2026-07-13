@@ -39,6 +39,7 @@ class EnvironmentChecker
             'WebSocket server' => self::checkWebSocketServer(),
             'WebSocket service persistence' => self::checkWebSocketServicePersistence(),
             'Upload worker service persistence' => self::checkUploadWorkerServicePersistence(),
+            'Database backup tool' => self::checkMysqldump(),
             'Backups' => self::checkBackups(),
             'Backup timer persistence' => self::checkBackupTimerPersistence(),
         ];
@@ -76,6 +77,33 @@ class EnvironmentChecker
         }
 
         return ['ok' => false, 'message' => 'No completed backup found in ' . Backup::rootDir() . '. Run "php bin/backup.php" once to create one and prove the mechanism works, then set up recurring backups (a systemd timer - see README.md\'s Backups section) so this keeps being true.'];
+    }
+
+    /**
+     * bin/backup.php shells out to the `mysqldump` binary to dump the database,
+     * so a backup can't succeed without it on PATH - and a missing client is
+     * silent until the first backup fails with "mysqldump: command not found".
+     * CLI-only: backups never run under the web server. Also catches the MariaDB
+     * case where the binary was renamed to mariadb-dump and the mysqldump
+     * compatibility symlink is absent.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    private static function checkMysqldump(): array
+    {
+        if (PHP_SAPI !== 'cli') {
+            return ['ok' => true, 'message' => 'not applicable under the web SAPI - backups run from the CLI (bin/backup.php)'];
+        }
+
+        if (trim((string) shell_exec('command -v mysqldump 2>/dev/null')) !== '') {
+            return ['ok' => true, 'message' => 'mysqldump found on PATH'];
+        }
+
+        if (trim((string) shell_exec('command -v mariadb-dump 2>/dev/null')) !== '') {
+            return ['ok' => false, 'message' => 'mysqldump was not found on PATH, but mariadb-dump is - bin/backup.php calls mysqldump specifically. Install the client\'s mysqldump compatibility symlink (the mariadb/mysql client package normally provides it), or symlink mariadb-dump to mysqldump on PATH.'];
+        }
+
+        return ['ok' => false, 'message' => 'mysqldump was not found on PATH - bin/backup.php uses it to dump the database. Install the database client tools (Fedora/RHEL: "dnf install mariadb" for MariaDB, or "dnf install mysql" for MySQL; Debian/Ubuntu: "apt install mariadb-client" or "mysql-client"), then re-run.'];
     }
 
     /**

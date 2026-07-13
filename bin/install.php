@@ -2211,7 +2211,10 @@ ok('database marked as version ' . $code_version);
 
 echo "\n" . color('All checks passed.', '1;32') . "\n\n";
 echo "Next steps:\n";
+// A sudo run manages the daemons as SYSTEM units; an unprivileged run as
+// user-level units - so the restart command differs.
+$ws_restart_command = $is_root ? 'sudo systemctl restart glommer-websocket' : 'systemctl --user restart glommer-websocket';
 echo "  1. If .env was just created, restart the WebSocket server so it picks up the fresh\n";
-echo "     WS_SECRET: systemctl --user restart glommer-websocket\n";
+echo "     WS_SECRET: " . $ws_restart_command . "\n";
 echo "  2. Visit " . $config['siteURL'] . " and sign up - the first account created becomes\n";
 echo "     the site's administrator.\n";

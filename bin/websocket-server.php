@@ -39,6 +39,36 @@ function log_line(string $message): void
     fwrite(STDERR, '[' . date('Y-m-d H:i:s') . '] ' . $message . "\n");
 }
 
+/**
+ * Sends a systemd service notification (e.g. WATCHDOG=1) to $NOTIFY_SOCKET.
+ * A no-op when not run under systemd (the socket env var is unset), so running
+ * the daemon by hand still works. Best-effort - any failure is swallowed rather
+ * than risk taking the daemon down over a status notification.
+ */
+function sd_notify(string $state): void
+{
+    $socket_path = getenv('NOTIFY_SOCKET');
+
+    if ($socket_path === false || $socket_path === '') {
+        return;
+    }
+
+    // An '@'-prefixed path names an abstract-namespace socket, where the '@'
+    // stands in for a leading NUL byte.
+    if ($socket_path[0] === '@') {
+        $socket_path = "\0" . substr($socket_path, 1);
+    }
+
+    $socket = @socket_create(AF_UNIX, SOCK_DGRAM, 0);
+
+    if ($socket === false) {
+        return;
+    }
+
+    @socket_sendto($socket, $state, strlen($state), 0, $socket_path);
+    socket_close($socket);
+}
+
 $config = require __DIR__ . '/../src/config.php';
 
 $use_tls = $config['WSTLSCert'] !== null && $config['WSTLSKey'] !== null;
@@ -83,6 +113,19 @@ stream_set_blocking($public_listener, false);
 stream_set_blocking($push_listener, false);
 
 log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $config['WSHost'] . ':' . $config['WSPort'] . ', internal push 127.0.0.1:' . $config['WSPushPort']);
+
+// systemd watchdog. WATCHDOG_USEC is set only when the unit configures
+// WatchdogSec; ping at half that interval (systemd's recommendation) so a hung
+// event loop - one that stops reaching stream_select() - is noticed and the
+// service restarted. Disabled (interval 0) when run by hand or without a
+// watchdog configured. An immediate first ping arms it right after startup.
+$watchdog_usec = (int) (getenv('WATCHDOG_USEC') ?: 0);
+$watchdog_interval = $watchdog_usec > 0 ? $watchdog_usec / 2000000 : 0.0;
+$last_watchdog_ping = microtime(true);
+
+if ($watchdog_interval > 0) {
+    sd_notify('WATCHDOG=1');
+}
 
 /**
  * One entry per connected socket, keyed by (int) $socket (PHP resource IDs
@@ -602,6 +645,13 @@ function handle_client_frames(int $id): void
 // ---------- Event loop ----------
 
 while (true) {
+    // Reassure the systemd watchdog each pass; if the loop ever hangs and stops
+    // reaching this point, the ping stops and systemd restarts the service.
+    if ($watchdog_interval > 0 && microtime(true) - $last_watchdog_ping >= $watchdog_interval) {
+        sd_notify('WATCHDOG=1');
+        $last_watchdog_ping = microtime(true);
+    }
+
     $read = [$public_listener, $push_listener];
     $write = [];
 

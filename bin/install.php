@@ -205,6 +205,14 @@ function write_and_enable_websocket_service(): bool
         'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/websocket-server.php"',
         'Restart=always',
         'RestartSec=2',
+        // Watchdog: the daemon pings WATCHDOG=1 every ~15s (half this); if its
+        // event loop hangs and the pings stop, systemd kills and restarts it -
+        // catching a wedged process that a plain crash-restart never would.
+        'WatchdogSec=30',
+        // Periodic restart: recycle the long-running process daily so any slow
+        // resource growth can't accumulate indefinitely. Clients reconnect
+        // automatically (main.js), so the brief blip is invisible.
+        'RuntimeMaxSec=1d',
         'WorkingDirectory=' . $project_root,
         '',
         '[Install]',

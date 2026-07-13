@@ -608,6 +608,67 @@ a.Btn:hover {
     color: var(--ink) !important;
 }
 
+/* ---------- Third-party sign-in ----------
+   The "Continue with Google" button and the "or" divider that separate it from
+   the email/password form on the sign-in and sign-up pages. */
+
+.GoogleSignInButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.62rem 1rem;
+    background-color: var(--surface);
+    color: var(--ink) !important;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    font-weight: 550;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-card);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+/* Google's four-colour "G" mark as a data-URI (CSP-safe: img-src allows data:),
+   so the button stays a plain anchor and the mark reads on any theme. */
+.GoogleSignInButton::before {
+    content: '';
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZmlsbD0iI0VBNDMzNSIgZD0iTTI0IDkuNWMzLjU0IDAgNi43MSAxLjIyIDkuMjEgMy42bDYuODUtNi44NUMzNS45IDIuMzggMzAuNDcgMCAyNCAwIDE0LjYyIDAgNi41MSA1LjM4IDIuNTYgMTMuMjJsNy45OCA2LjE5QzEyLjQzIDEzLjcyIDE3Ljc0IDkuNSAyNCA5LjV6Ii8+PHBhdGggZmlsbD0iIzQyODVGNCIgZD0iTTQ2Ljk4IDI0LjU1YzAtMS41Ny0uMTUtMy4wOS0uMzgtNC41NUgyNHY5LjAyaDEyLjk0Yy0uNTggMi45Ni0yLjI2IDUuNDgtNC43OCA3LjE4bDcuNzMgNmM0LjUxLTQuMTggNy4wOS0xMC4zNiA3LjA5LTE3LjY1eiIvPjxwYXRoIGZpbGw9IiNGQkJDMDUiIGQ9Ik0xMC41MyAyOC41OWMtLjQ4LTEuNDUtLjc2LTIuOTktLjc2LTQuNTlzLjI3LTMuMTQuNzYtNC41OWwtNy45OC02LjE5Qy45MiAxNi40NiAwIDIwLjEyIDAgMjRjMCAzLjg4LjkyIDcuNTQgMi41NiAxMC43OGw3Ljk3LTYuMTl6Ii8+PHBhdGggZmlsbD0iIzM0QTg1MyIgZD0iTTI0IDQ4YzYuNDggMCAxMS45My0yLjEzIDE1Ljg5LTUuODFsLTcuNzMtNmMtMi4xNSAxLjQ1LTQuOTIgMi4zLTguMTYgMi4zLTYuMjYgMC0xMS41Ny00LjIyLTEzLjQ3LTkuOTFsLTcuOTggNi4xOUM2LjUxIDQyLjYyIDE0LjYyIDQ4IDI0IDQ4eiIvPjwvc3ZnPg==');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.GoogleSignInButton:hover {
+    background-color: var(--surface-2);
+    color: var(--ink) !important;
+    box-shadow: var(--shadow-pop);
+}
+
+.GoogleSignInButton:active {
+    transform: scale(0.99);
+}
+
+.AuthDivider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.AuthDivider::before,
+.AuthDivider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--hairline);
+}
+
 /* ---------- Emoji picker ---------- */
 
 .EmojiPickerButton {

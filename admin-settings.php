@@ -33,6 +33,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $saved = true;
+    } elseif (isset($_POST['googleAuthClientId']) || isset($_POST['googleAuthSecret'])) {
+        $client_id = trim((string) ($_POST['googleAuthClientId'] ?? ''));
+        $secret = trim((string) ($_POST['googleAuthSecret'] ?? ''));
+
+        Settings::set(GoogleAuth::CLIENT_ID_SETTING, $client_id);
+
+        // Write-only, same as the Turnstile secret: a blank field keeps the
+        // stored secret rather than clearing it.
+        if ($secret !== '') {
+            Settings::set(GoogleAuth::CLIENT_SECRET_SETTING, $secret);
+        }
+
+        $saved = true;
     } elseif (isset($_FILES['favicon'])) {
         if ($_FILES['favicon']['error'] !== UPLOAD_ERR_OK) {
             $errors[] = 'The favicon upload failed. Please try again.';
@@ -62,6 +75,9 @@ if ($errors !== []) {
 
 $page -> addContent(new Heading2('Bot protection'));
 $page -> addContent(new AdminSettingsForm());
+
+$page -> addContent(new Heading2('Google Sign-In'));
+$page -> addContent(new GoogleAuthSettingsForm());
 
 $page -> addContent(new Heading2('Favicon'));
 $page -> addContent(new FaviconSettingsForm());

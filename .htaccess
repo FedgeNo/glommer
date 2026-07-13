@@ -78,6 +78,8 @@
     RewriteRule ^login$ login.php [L,QSA]
     RewriteRule ^logout$ logout.php [L,QSA]
     RewriteRule ^signup$ signup.php [L,QSA]
+    RewriteRule ^auth-google$ auth-google.php [L,QSA]
+    RewriteRule ^auth-google-callback$ auth-google-callback.php [L,QSA]
     RewriteRule ^notifications$ notifications.php [L,QSA]
     RewriteRule ^check-inbox$ check-inbox.php [L,QSA]
     RewriteRule ^forgot-password$ forgot-password.php [L,QSA]

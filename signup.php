@@ -111,6 +111,11 @@ if ($errors !== []) {
     $page -> addContent(new ErrorList($errors));
 }
 
+if (GoogleAuth::isEnabled()) {
+    $page -> addContent(new GoogleSignInButton());
+    $page -> addContent(new AuthDivider());
+}
+
 $page -> addContent(new SignupForm());
 
 $page -> send();

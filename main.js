@@ -899,7 +899,21 @@ document.addEventListener('input', (event) => {
 
     const debounce_id = setTimeout(async () => {
         const query = input.value.trim();
-        const results = input.closest('.PostSearch').querySelector('.PostSearchResults');
+        const post_search = input.closest('.PostSearch');
+        const results = post_search.querySelector('.PostSearchResults');
+
+        // On a profile page PostSearch carries the author's id (data-user-id),
+        // so the search is restricted to their posts and the default feed is
+        // hidden while a query is active (the results take its place); clearing
+        // the box brings the feed back. Global /search has no author / no feed.
+        const author_id = post_search.dataset.userId || '';
+        const author_param = author_id ? '&userId=' + author_id : '';
+
+        const profile_feed = document.querySelector('.ProfileFeed');
+
+        if (profile_feed) {
+            profile_feed.style.display = query === '' ? '' : 'none';
+        }
 
         // Abort whatever this input's previous search is still waiting on -
         // without this, a slower earlier response can resolve after a faster
@@ -911,7 +925,7 @@ document.addEventListener('input', (event) => {
         let response;
 
         try {
-            response = await fetch(window.siteURL + '/api/search-posts?q=' + encodeURIComponent(query), { signal: controller.signal });
+            response = await fetch(window.siteURL + '/api/search-posts?q=' + encodeURIComponent(query) + author_param, { signal: controller.signal });
         } catch (error) {
             return; // aborted by a newer search, or a network failure either way
         }
@@ -924,9 +938,10 @@ document.addEventListener('input', (event) => {
 
         results.replaceChildren();
 
-        // Remembered so the scroll handler below knows what query to keep
-        // paginating, and where to resume from.
+        // Remembered so the scroll handler below knows what query (and author)
+        // to keep paginating, and where to resume from.
         results.dataset.query = query;
+        results.dataset.userId = author_id;
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
 
         if (data.response.posts.length > 0) {
@@ -969,8 +984,9 @@ window.addEventListener('scroll', async () => {
     try {
         const query = results.dataset.query ?? '';
         const before_post_id = results.dataset.oldestPostId;
+        const author_param = results.dataset.userId ? `&userId=${results.dataset.userId}` : '';
 
-        const response = await fetch(`${window.siteURL}/api/search-posts?q=${encodeURIComponent(query)}&beforePostId=${before_post_id}`);
+        const response = await fetch(`${window.siteURL}/api/search-posts?q=${encodeURIComponent(query)}&beforePostId=${before_post_id}${author_param}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -2108,7 +2124,9 @@ let loading_older_feed_items = false;
 window.addEventListener('scroll', async () => {
     const list = document.querySelector('.FeedList');
 
-    if (!list || list.dataset.hasMore !== '1' || loading_older_feed_items) {
+    // A hidden feed (e.g. the profile feed while a per-user post search is
+    // active) must not paginate - offsetParent is null when it's display:none.
+    if (!list || list.offsetParent === null || list.dataset.hasMore !== '1' || loading_older_feed_items) {
         return;
     }
 

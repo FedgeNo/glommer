@@ -66,8 +66,17 @@ if ($has_more) {
 }
 
 if ($feed_rows !== []) {
-    $page -> addContent(new Heading2('Posts'));
-    $page -> addContent(FeedList::fromRows('user', $feed_rows, $has_more, $user_id));
+    // Search this user's own posts (scoped to their userId). While a query is
+    // active the default feed below is hidden and the results take its place
+    // (see main.js); clearing the box brings the feed back.
+    $page -> addContent(new PostSearch($user_id, 'Search ' . $name . '\'s posts...'));
+
+    $feed_section = new Div();
+    $feed_section -> class = 'ProfileFeed';
+    $feed_section -> addContent(new Heading2('Posts'));
+    $feed_section -> addContent(FeedList::fromRows('user', $feed_rows, $has_more, $user_id));
+
+    $page -> addContent($feed_section);
 }
 
 $page -> send();

@@ -10,6 +10,9 @@ if (!Auth::check()) {
 
 $query = trim((string) ($_GET['q'] ?? ''));
 $before_post_id = (int) ($_GET['beforePostId'] ?? 0);
+// Optional: restrict the search to one author's posts (the per-user search on a
+// profile page). 0 means "everyone" - the global /search behaviour.
+$author_id = (int) ($_GET['userId'] ?? 0);
 
 if ($query === '') {
     JSONResponse::success(['posts' => [], 'hasMore' => false]) -> send();
@@ -27,7 +30,9 @@ SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
-        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND (? = 0 OR `Posts`.`postId` < ?)
+        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+        AND (? = 0 OR `Posts`.`userId` = ?)
+        AND (? = 0 OR `Posts`.`postId` < ?)
         AND NOT EXISTS (
             SELECT 1
                 FROM `Blocks` `b`
@@ -36,7 +41,7 @@ SELECT `Posts`.*
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
 ');
-mysqli_stmt_bind_param($stmt, 'siiiiii', $query, $not_banned, $before_post_id, $before_post_id, $viewer_id, $viewer_id, $fetch_limit);
+mysqli_stmt_bind_param($stmt, 'siiiiiiii', $query, $not_banned, $author_id, $author_id, $before_post_id, $before_post_id, $viewer_id, $viewer_id, $fetch_limit);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 

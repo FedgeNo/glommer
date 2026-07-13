@@ -1340,7 +1340,23 @@ function set_up_system_services(array &$environment_failures): void
     ensure_ws_cert_readable($service_user, $web);
 
     if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($service_user), $service_user, $prior_user)) {
-        unset($environment_failures['WebSocket server'], $environment_failures['WebSocket service persistence']);
+        // The service being active is enough to clear PERSISTENCE (it's an
+        // enabled system unit now)...
+        unset($environment_failures['WebSocket service persistence']);
+
+        // ...but reachability means the daemon actually serves TLS, which a
+        // bound-but-can't-read-its-cert daemon doesn't. Re-verify the real
+        // handshake now that it runs as the web user with the (possibly
+        // relocated) cert, and only clear the failure if it genuinely connects -
+        // so a still-unreadable cert can't slip through as "all checks passed".
+        sleep(1);
+        $ws_recheck = EnvironmentChecker::checks()['WebSocket server'];
+
+        if ($ws_recheck['ok']) {
+            unset($environment_failures['WebSocket server']);
+        } else {
+            $environment_failures['WebSocket server'] = $ws_recheck['message'];
+        }
     }
 
     if (migrate_service_to_system('glommer-upload-worker.service', upload_worker_unit_contents($service_user), $service_user, $prior_user)) {

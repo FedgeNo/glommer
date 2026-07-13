@@ -969,7 +969,7 @@ function remove_user_service(string $user, string $unit): void
  * start and there was no prior system unit, the old user unit is restarted so
  * the site isn't left without the service. Returns whether it's active.
  */
-function migrate_service_to_system(string $unit, string $contents, string $service_user): bool
+function migrate_service_to_system(string $unit, string $contents, string $service_user, string $prior_user): bool
 {
     $system_path = '/etc/systemd/system/' . $unit;
     $existing = is_file($system_path) ? (string) @file_get_contents($system_path) : null;
@@ -978,14 +978,18 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
     // Already installed as a current system unit - just retire any lingering
     // user-level copy and move on.
     if ($existing === $contents && $active) {
-        remove_user_service($service_user, $unit);
+        remove_user_service($prior_user, $unit);
         ok($unit . ' already installed as a system service (runs as ' . $service_user . ')');
 
         return true;
     }
 
-    // Free the port/flock the user-level daemon holds before (re)starting.
-    user_systemctl($service_user, 'stop ' . escapeshellarg($unit));
+    // Free the port/flock the OLD user-level daemon holds before (re)starting.
+    // That daemon belongs to $prior_user (the admin who set it up), which is NOT
+    // necessarily $service_user (the account the new system unit runs as) - so
+    // stopping the wrong user's manager here is exactly what left the old daemon
+    // holding the WS port / worker flock so the system unit couldn't bind.
+    user_systemctl($prior_user, 'stop ' . escapeshellarg($unit));
 
     if (file_put_contents($system_path, $contents) === false) {
         fail_line('Could not write ' . $system_path . ' - ' . $unit . ' left as-is.');
@@ -993,6 +997,8 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
         if ($existing !== null) {
             @file_put_contents($system_path, $existing);
         }
+
+        user_systemctl($prior_user, 'start ' . escapeshellarg($unit));
 
         return false;
     }
@@ -1006,9 +1012,9 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
 
         // Restore whatever was working before rather than leave the site with a
         // dead service. A prior (good) system unit is written back and
-        // restarted; otherwise fall back to the user-level service. Only remove
-        // the user-level unit once the system unit is confirmed healthy (below),
-        // so the fallback always still exists here.
+        // restarted; otherwise fall back to the user-level service. The
+        // user-level unit is only removed once the system unit is confirmed
+        // healthy (below), so the fallback always still exists here.
         if ($existing !== null) {
             @file_put_contents($system_path, $existing);
             shell_exec('systemctl daemon-reload 2>&1');
@@ -1017,14 +1023,14 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
         } else {
             @unlink($system_path);
             shell_exec('systemctl daemon-reload 2>&1');
-            user_systemctl($service_user, 'start ' . escapeshellarg($unit));
+            user_systemctl($prior_user, 'start ' . escapeshellarg($unit));
             warn('Reverted ' . $unit . ' to the user-level service.');
         }
 
         return false;
     }
 
-    remove_user_service($service_user, $unit);
+    remove_user_service($prior_user, $unit);
     ok($unit . ' installed as a system service (runs as ' . $service_user . ')');
 
     return true;
@@ -1052,7 +1058,7 @@ function system_unit_healthy(string $unit): bool
  * and fires one backup now so the functional Backups check passes. Returns
  * whether the system timer ended up enabled.
  */
-function migrate_backup_to_system(string $service_user, bool $run_first_backup): bool
+function migrate_backup_to_system(string $service_user, string $prior_user, bool $run_first_backup): bool
 {
     if (file_put_contents('/etc/systemd/system/glommer-backup.service', backup_service_contents($service_user)) === false
         || file_put_contents('/etc/systemd/system/glommer-backup.timer', backup_timer_contents()) === false) {
@@ -1070,8 +1076,8 @@ function migrate_backup_to_system(string $service_user, bool $run_first_backup):
         return false;
     }
 
-    remove_user_service($service_user, 'glommer-backup.timer');
-    remove_user_service($service_user, 'glommer-backup.service');
+    remove_user_service($prior_user, 'glommer-backup.timer');
+    remove_user_service($prior_user, 'glommer-backup.service');
 
     // The backup now runs as $service_user, so make its output directory
     // owned by that account (best-effort, top level only - enough to create and
@@ -1192,6 +1198,17 @@ function fix_upload_ownership(string $service_user, ?array $web): void
         @chmod($env_file, 0640);
     }
 
+    // The WebSocket daemon runs as the web-server user now, so it must be able to
+    // read the WS TLS cert/key (wss://). Hand it any user-managed cert files -
+    // but never ones under /etc (certbot/system certs), which are managed there
+    // and readable by the web server another way.
+    foreach ([Env::get('WS_TLS_CERT'), Env::get('WS_TLS_KEY')] as $cert_path) {
+        if (is_string($cert_path) && $cert_path !== '' && is_file($cert_path) && !str_starts_with($cert_path, '/etc/')) {
+            @chown($cert_path, $service_user);
+            @chgrp($cert_path, $web['group'] ?? $service_user);
+        }
+    }
+
     ok('uploads/ owned by ' . $service_user . ' (the web-server user) with ordinary perms - no longer world-writable; the daemons run as the same account.');
 }
 
@@ -1228,23 +1245,32 @@ function set_up_system_services(array &$environment_failures): void
         return;
     }
 
-    if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($service_user), $service_user)) {
+    // Whose EXISTING user-level services to retire: the admin who set them up
+    // (the sudo invoker / project owner), which is NOT necessarily the account
+    // the new system services run as ($service_user, the web-server user).
+    $prior_user = app_service_user() ?? $service_user;
+
+    // Fix ownership FIRST, before starting the system services: they run as the
+    // web-server user, so .env and uploads/ (including the worker's lock file)
+    // must already belong to that account the moment they come up - otherwise
+    // they fail on a permission-denied at startup.
+    fix_upload_ownership($service_user, $web);
+
+    if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($service_user), $service_user, $prior_user)) {
         unset($environment_failures['WebSocket server'], $environment_failures['WebSocket service persistence']);
     }
 
-    if (migrate_service_to_system('glommer-upload-worker.service', upload_worker_unit_contents($service_user), $service_user)) {
+    if (migrate_service_to_system('glommer-upload-worker.service', upload_worker_unit_contents($service_user), $service_user, $prior_user)) {
         unset($environment_failures['Upload worker service persistence']);
     }
 
-    if (migrate_backup_to_system($service_user, isset($environment_failures['Backups']))) {
+    if (migrate_backup_to_system($service_user, $prior_user, isset($environment_failures['Backups']))) {
         unset($environment_failures['Backup timer persistence']);
 
         if (EnvironmentChecker::checks()['Backups']['ok']) {
             unset($environment_failures['Backups']);
         }
     }
-
-    fix_upload_ownership($service_user, $web);
 }
 
 /**

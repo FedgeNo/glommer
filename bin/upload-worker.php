@@ -93,7 +93,14 @@ pcntl_signal(SIGINT, $request_shutdown);
 $lock_path = __DIR__ . '/../uploads/private/upload-worker.lock';
 $lock_handle = fopen($lock_path, 'c');
 
-if ($lock_handle === false || !flock($lock_handle, LOCK_EX | LOCK_NB)) {
+if ($lock_handle === false) {
+    // A real error (e.g. the lock file isn't writable by this user) - not a
+    // second instance. Exit nonzero so the supervisor doesn't look healthy.
+    log_line('Could not open the lock file ' . $lock_path . ' (check its permissions) - exiting');
+    exit(1);
+}
+
+if (!flock($lock_handle, LOCK_EX | LOCK_NB)) {
     log_line('Another upload worker already holds the lock - exiting');
     exit(0);
 }

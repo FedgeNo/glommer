@@ -14,7 +14,7 @@ class ParentPostLink extends HTMLObject
     public function toDOM(): \DOMElement
     {
         $this -> contents[] = 'In response to ';
-        $this -> addContents(new Anchor(ServerURL::absolute('/users/' . $this -> parentUsername . '/' . $this -> parentId), $this -> parentLabel));
+        $this -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> parentUsername . '/' . $this -> parentId), $this -> parentLabel));
 
         return parent::toDOM();
     }
@@ -36,7 +36,10 @@ SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
             return null;
         }
 
-        $description = $row['description'] !== null ? trim(strip_tags($row['description'])) : '';
+        // description is already plaintext (Delta::plainText derives it), so
+        // there's no markup to strip - and stripping would eat any literal
+        // '<'/'>' the text legitimately contains.
+        $description = $row['description'] !== null ? trim($row['description']) : '';
 
         $link = new self();
         $link -> parentId = $parent_id;

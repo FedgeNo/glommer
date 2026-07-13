@@ -3,7 +3,13 @@ class Post {
     userId = null;
     parentId = null;
     title = null;
+    // Plaintext summary, used only by the link-preview card. A post body renders
+    // from descriptionDelta (the Delta ops), truncated in the feed with a
+    // "See More" link when descriptionTruncated is set.
     description = null;
+    descriptionDelta = null;
+    descriptionTruncated = false;
+    seeMoreURL = null;
     keywords = null;
     linkURL = null;
     createdAt = null;
@@ -46,22 +52,6 @@ class Post {
         return byline;
     }
 
-    /**
-     * True for null/empty, and content that only looks non-empty because of
-     * markup/whitespace - a Quill editor left "empty" typically still saves
-     * as something like "<p><br></p>" rather than an empty string.
-     */
-    static isBlankDescription(description) {
-        if (!description) {
-            return true;
-        }
-
-        const container = document.createElement('div');
-        container.innerHTML = description;
-
-        return container.textContent.replace(/\s+/g, '') === '';
-    }
-
     linkItemToElement() {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
@@ -92,10 +82,12 @@ class Post {
             text.appendChild(heading);
         }
 
-        if (!Post.isBlankDescription(this.description)) {
+        // The link card's description is plaintext (a flat summary), so it's a
+        // text node - never rich, never a Delta. Mirrors the server LinkItem.
+        if (this.description) {
             const body = document.createElement('div');
             body.className = 'PostBody';
-            body.innerHTML = this.description;
+            body.textContent = this.description;
             text.appendChild(body);
         }
 
@@ -211,10 +203,10 @@ class Post {
         return carousel;
     }
 
-    toElement() {
-        const thread = document.createElement('div');
-        thread.className = 'Thread Card MountIn';
-
+    // The bare .Post element (byline + title/media/body, no action bar),
+    // mirroring the server-side Post::toDOM. toElement() wraps this in a Thread
+    // with the action bar; a ReportCard embeds it on its own.
+    postElement() {
         const post = document.createElement('div');
         post.className = 'Post';
         post.dataset.postId = this.postId;
@@ -259,16 +251,28 @@ class Post {
                 post.appendChild(this.itemToElement(this.items[0]));
             }
 
-            if (this.description) {
-                const body = document.createElement('div');
-                body.className = 'PostBody';
-                // Pre-sanitized server-side (same PostBody/HTMLCleaner pass used for page loads).
-                body.innerHTML = this.description;
+            if (this.descriptionDelta) {
+                // Built from the Delta ops - same shape the server renders. The
+                // feed ships already-truncated ops; append "See More" to the
+                // full post when the server flagged the body as cut.
+                const body = render_delta(this.descriptionDelta);
+
+                if (this.descriptionTruncated && this.seeMoreURL) {
+                    body.appendChild(see_more_element(this.seeMoreURL));
+                }
+
                 post.appendChild(body);
             }
         }
 
-        thread.appendChild(post);
+        return post;
+    }
+
+    toElement() {
+        const thread = document.createElement('div');
+        thread.className = 'Thread Card MountIn';
+
+        thread.appendChild(this.postElement());
 
         // Mirrors the server-side PostActionBar: reply link when it's useful,
         // like button when logged in, and delete only on your own posts

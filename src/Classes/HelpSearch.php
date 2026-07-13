@@ -22,7 +22,7 @@ class HelpSearch extends HTMLObject
         $input -> class = 'HelpSearchInput';
         $input -> attributes['placeholder'] = 'Search help...';
         $input -> attributes['autocomplete'] = 'off';
-        $input_card -> addContents($input);
+        $input_card -> addContent($input);
 
         $this -> contents[] = $input_card;
 
@@ -30,7 +30,7 @@ class HelpSearch extends HTMLObject
         $results -> class = 'HelpSearchResults';
 
         foreach (HelpContent::groupedByCategory() as $name => $articles) {
-            $results -> addContents(new HelpCategory($name, $articles));
+            $results -> addContent(new HelpCategory($name, $articles));
         }
 
         $this -> contents[] = $results;

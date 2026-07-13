@@ -28,7 +28,7 @@ class HelpCategory extends HTMLObject
         $list -> class = 'HelpArticleList';
 
         foreach ($this -> articles as $article) {
-            $list -> addContents(new HelpArticleSummary($article));
+            $list -> addContent(new HelpArticleSummary($article));
         }
 
         $this -> contents[] = $list;

@@ -23,12 +23,12 @@ class FaviconSettingsForm extends Form
         $current -> src = Favicon::URL();
         $current -> alt = 'Current favicon';
         $current -> class = 'FaviconPreview';
-        $fields -> addContents($current);
+        $fields -> addContent($current);
 
         $file_input = new FileInput();
         $file_input -> name = 'favicon';
         $file_input -> attributes['accept'] = 'image/*';
-        $fields -> addContents($file_input);
+        $fields -> addContent($file_input);
 
         $this -> contents[] = $fields;
 

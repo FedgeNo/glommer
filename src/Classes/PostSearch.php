@@ -16,7 +16,7 @@ class PostSearch extends HTMLObject
         $input -> class = 'PostSearchInput';
         $input -> attributes['placeholder'] = 'Search posts...';
         $input -> attributes['autocomplete'] = 'off';
-        $input_card -> addContents($input);
+        $input_card -> addContent($input);
 
         $this -> contents[] = $input_card;
 

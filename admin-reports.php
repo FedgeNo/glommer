@@ -11,16 +11,16 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-$reports = Report::rowsForAdmin();
+// A report whose post/message was deleted has nothing to show or act on -
+// clear those out before rendering the queue.
+Report::purgeOrphaned();
 
-$page = Page::create('Reports');
+['rows' => $reports, 'hasMore' => $has_more] = Report::rowsForAdmin(20);
 
-if ($reports === []) {
-    $page -> addContents(new Notice('No reports.'));
-} else {
-    foreach ($reports as $report) {
-        $page -> addContents(ReportCard::fromRow($report));
-    }
-}
+// needsMath so KaTeX loads: a reported post can contain math, and main.js runs
+// render_math over each card (server-rendered here, and appended on scroll).
+$page = Page::create('Reports', needsMath: true);
+
+$page -> addContent(ReportList::fromRows($reports, $has_more));
 
 $page -> send();

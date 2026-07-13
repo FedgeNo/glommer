@@ -39,7 +39,7 @@ class OtherUser extends User
         $actions -> class = 'd-flex flex-column gap-2 ms-auto';
 
         foreach ($this -> beforeActions() as $item) {
-            $actions -> addContents($item);
+            $actions -> addContent($item);
         }
 
         if ($friendship === null || $sent_by_viewer) {
@@ -49,29 +49,29 @@ class OtherUser extends User
             $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
             $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
             $friend_button -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
-            $actions -> addContents($friend_button);
+            $actions -> addContent($friend_button);
         }
 
         $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> username), 'Message');
         $message_link -> class = 'Btn';
-        $actions -> addContents($message_link);
+        $actions -> addContent($message_link);
 
         $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/friends'), 'Friends');
         $friends_link -> class = 'Btn';
-        $actions -> addContents($friends_link);
+        $actions -> addContent($friends_link);
 
         if ($friendship !== null && $friendship -> status === 'accepted') {
-            $actions -> addContents(new RemoveFriendButton($this -> userId));
+            $actions -> addContent(new RemoveFriendButton($this -> userId));
         }
 
         foreach ($this -> afterMessageActions() as $item) {
-            $actions -> addContents($item);
+            $actions -> addContent($item);
         }
 
         // Only the primary admin can promote/demote moderators - not mods
         // themselves, to avoid a mod-promotes-mod escalation chain.
         if ($viewer_id === 1) {
-            $actions -> addContents(new ModButton($this -> userId, (bool) $this -> isMod));
+            $actions -> addContent(new ModButton($this -> userId, (bool) $this -> isMod));
         }
 
         $block_button = new Button();
@@ -79,13 +79,13 @@ class OtherUser extends User
         $block_button -> class = 'Btn BlockUserButton';
         $block_button -> attributes['data-user-id'] = (string) $this -> userId;
         $block_button -> contents[] = 'Block';
-        $actions -> addContents($block_button);
+        $actions -> addContent($block_button);
 
         // The admin (userId 1) can be neither banned (api/ban.php rejects it)
         // nor reported (api/report.php rejects it - nobody could act on the
         // report anyway), so their card gets neither button.
         if ($this -> userId !== 1) {
-            $actions -> addContents(
+            $actions -> addContent(
                 Auth::canModerate() ? new BanButton($this -> userId, 'Ban') : new ReportButton('user', $this -> userId)
             );
         }

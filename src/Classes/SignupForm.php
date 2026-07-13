@@ -18,23 +18,23 @@ class SignupForm extends Form
         // credentials over the placeholders (and offers to save the new ones).
         $username = new InputField('username', 'Username', 'text', 'Username: Lowercase letters, numbers, and _', 32);
         $username -> autocomplete = 'username';
-        $fields -> addContents($username);
+        $fields -> addContent($username);
 
         $email = new InputField('email', 'Email', 'email', 'Valid email address', 255);
         $email -> autocomplete = 'email';
-        $fields -> addContents($email);
+        $fields -> addContent($email);
 
         $display_name = new InputField('displayName', 'Display name (optional)', 'text', 'Display name (optional)', 100);
         $display_name -> autocomplete = 'nickname';
-        $fields -> addContents($display_name);
+        $fields -> addContent($display_name);
 
         $password = new InputField('password', 'Password', 'password', 'Password: At least 8 characters');
         $password -> autocomplete = 'new-password';
-        $fields -> addContents($password);
+        $fields -> addContent($password);
 
         $remember_me = new CheckboxField('rememberMe', 'Remember me');
         $remember_me -> checked = true;
-        $fields -> addContents($remember_me);
+        $fields -> addContent($remember_me);
 
         $this -> contents[] = $fields;
 

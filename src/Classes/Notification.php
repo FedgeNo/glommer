@@ -24,19 +24,19 @@ class Notification extends HTMLObject
         $link = new Anchor($this -> targetURL());
         $link -> class = 'd-flex align-items-center gap-3';
 
-        $link -> addContents(Avatar::forUser($this -> actor));
+        $link -> addContent(Avatar::forUser($this -> actor));
 
         $info = new Div();
 
         $text = new Div();
         $text -> contents[] = $this -> text();
-        $info -> addContents($text);
+        $info -> addContent($text);
 
         $meta = new RelativeTime($this -> createdAt);
         $meta -> class = 'Muted text-sm ' . $meta -> class;
-        $info -> addContents($meta);
+        $info -> addContent($meta);
 
-        $link -> addContents($info);
+        $link -> addContent($info);
 
         $this -> contents[] = $link;
 

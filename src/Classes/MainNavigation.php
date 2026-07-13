@@ -23,7 +23,7 @@ class MainNavigation extends HTMLObject
         if (Auth::check()) {
             $current_user = Auth::user();
 
-            $this -> addContents(new NavDropdown($brand, [
+            $this -> addContent(new NavDropdown($brand, [
                 new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
                 new Anchor(ServerURL::absolute('/users/' . $current_user -> username . '/friends'), 'Friends'),
                 new Anchor(ServerURL::absolute('/users/'), 'Users'),
@@ -32,7 +32,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
             ]));
             $recent_notifications = Notification::rowsForUser((int) $current_user -> userId, 5);
-            $site_links -> addContents(new NotificationsNavLink($recent_notifications['rows'], $current_user -> lastNotificationId));
+            $site_links -> addContent(new NotificationsNavLink($recent_notifications['rows'], $current_user -> lastNotificationId));
 
             $account_menu_links = [
                 new Anchor(ServerURL::absolute('/settings'), 'Settings'),
@@ -50,22 +50,22 @@ class MainNavigation extends HTMLObject
                 $account_menu_links[] = new Anchor(ServerURL::absolute('/admin/settings'), 'Site Settings');
             }
 
-            $account_links -> addContents(new NavDropdown(
+            $account_links -> addContent(new NavDropdown(
                 new Anchor(ServerURL::absolute('/users/' . $current_user -> username . '/'), 'Logged In As ' . ($current_user -> displayName ?? $current_user -> username)),
                 $account_menu_links
             ));
         } else {
             // Logged-out visitors get the same main menu, but with only the
             // Help item - everything else in it needs an account.
-            $this -> addContents(new NavDropdown($brand, [
+            $this -> addContent(new NavDropdown($brand, [
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
             ]));
-            $account_links -> addContents(new Anchor(ServerURL::absolute('/login'), 'Log in'));
-            $account_links -> addContents(new Anchor(ServerURL::absolute('/signup'), 'Sign up'));
+            $account_links -> addContent(new Anchor(ServerURL::absolute('/login'), 'Log in'));
+            $account_links -> addContent(new Anchor(ServerURL::absolute('/signup'), 'Sign up'));
         }
 
-        $this -> addContents($site_links);
-        $this -> addContents($account_links);
+        $this -> addContent($site_links);
+        $this -> addContent($account_links);
 
         return parent::toDOM();
     }

@@ -17,6 +17,6 @@ Auth::clearUserCache();
 
 $page = Page::create('Notifications');
 
-$page -> addContents(NotificationList::fromRows($rows, $has_more));
+$page -> addContent(NotificationList::fromRows($rows, $has_more));
 
 $page -> send();

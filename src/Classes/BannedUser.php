@@ -16,11 +16,11 @@ class BannedUser extends User
         $row = new Div();
         $row -> class = 'd-flex align-items-center gap-3';
 
-        $row -> addContents($this -> header());
+        $row -> addContent($this -> header());
 
         $unban = new UnbanButton((int) $this -> userId);
         $unban -> class = 'ms-auto ' . $unban -> class;
-        $row -> addContents($unban);
+        $row -> addContent($unban);
 
         $this -> contents[] = $row;
 

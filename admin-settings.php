@@ -53,23 +53,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page = Page::create('Site Settings');
 
 if ($saved) {
-    $page -> addContents(new Notice('Settings saved.'));
+    $page -> addContent(new Notice('Settings saved.'));
 }
 
 if ($errors !== []) {
-    $page -> addContents(new ErrorList($errors));
+    $page -> addContent(new ErrorList($errors));
 }
 
-$page -> addContents(new Heading2('Bot protection'));
-$page -> addContents(new AdminSettingsForm());
+$page -> addContent(new Heading2('Bot protection'));
+$page -> addContent(new AdminSettingsForm());
 
-$page -> addContents(new Heading2('Favicon'));
-$page -> addContents(new FaviconSettingsForm());
+$page -> addContent(new Heading2('Favicon'));
+$page -> addContent(new FaviconSettingsForm());
 
-$page -> addContents(new Heading2('Terms of Service'));
-$page -> addContents(new TermsSettingsForm());
+$page -> addContent(new Heading2('Terms of Service'));
+$page -> addContent(new TermsSettingsForm());
 
-$page -> addContents(new Heading2('Privacy Policy'));
-$page -> addContents(new PrivacySettingsForm());
+$page -> addContent(new Heading2('Privacy Policy'));
+$page -> addContent(new PrivacySettingsForm());
 
 $page -> send();

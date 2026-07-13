@@ -13,7 +13,11 @@ class Post extends HTMLObject
     public ?int $userId = null;
     public ?int $parentId = null;
     public ?string $title = null;
+    // The derived plaintext form (the "document": <meta>/OG description, RSS
+    // summary, FULLTEXT search). The rich content lives in descriptionDelta.
     public ?string $description = null;
+    // The complete Quill Delta (JSON), the source both renderers build from.
+    public ?string $descriptionDelta = null;
     public ?string $keywords = null;
     public ?string $linkURL = null;
     public ?string $createdAt = null;
@@ -75,7 +79,7 @@ class Post extends HTMLObject
 
                 if ($this -> postId !== null) {
                     $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author ?-> username . '/' . $this -> postId));
-                    $title_link -> addContents($heading);
+                    $title_link -> addContent($heading);
                     $this -> contents[] = $title_link;
                 } else {
                     $this -> contents[] = $heading;
@@ -94,7 +98,7 @@ class Post extends HTMLObject
                 $this -> contents[] = $this -> items[0];
             }
 
-            if ($this -> description !== null) {
+            if ($this -> descriptionDelta !== null) {
                 $this -> contents[] = $this -> truncateDescription
                     ? $this -> summarizedDescription()
                     : $this -> fullDescription();
@@ -115,35 +119,39 @@ class Post extends HTMLObject
         return false;
     }
 
+    /** @return array[] the stored Delta's ops (empty if there's no rich content) */
+    protected function descriptionOps(): array
+    {
+        return Delta::decode($this -> descriptionDelta);
+    }
+
+    /** The permalink to this post, used as the "See More" target and RSS/link. */
+    protected function seeMoreURL(): ?string
+    {
+        return $this -> postId !== null && $this -> author !== null
+            ? ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId)
+            : null;
+    }
+
     protected function fullDescription(): HTMLObject
     {
-        $body = new PostBody();
-        $body -> addContents($this -> description);
-
-        return $body;
+        return new DeltaRenderer($this -> descriptionOps());
     }
 
     protected function summarizedDescription(): HTMLObject
     {
-        $see_more_url = $this -> postId !== null && $this -> author !== null
-            ? ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId)
-            : null;
-
-        $body = new TruncatedPostBody($see_more_url);
-        $body -> addContents((string) $this -> description);
-
-        return $body;
+        return new TruncatedDeltaRenderer($this -> descriptionOps(), $this -> seeMoreURL());
     }
 
     /**
-     * Strips markup and collapses whitespace (including newlines - \s matches
-     * both) from the description, untruncated.
+     * Collapses whitespace in the description, untruncated. The column is
+     * already plaintext (Delta::plainText derives it), so - unlike before the
+     * Delta migration - there's no markup to strip; doing so would eat literal
+     * '<'/'>' a user legitimately typed (or LaTeX like "$x < y$").
      */
     protected function plainTextDescription(): string
     {
-        $spaced = preg_replace('/<[^>]+>/', ' ', (string) $this -> description);
-
-        return trim(preg_replace('/\s+/', ' ', strip_tags($spaced)));
+        return trim(preg_replace('/\s+/', ' ', (string) $this -> description));
     }
 
     /**
@@ -190,15 +198,15 @@ class Post extends HTMLObject
         $byline = new Div();
         $byline -> class = 'PostByline d-flex align-items-center gap-2';
 
-        $byline -> addContents($this -> author -> header());
+        $byline -> addContent($this -> author -> header());
 
         if ($this -> createdAt !== null && $this -> postId !== null) {
             $timestamp_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
             $timestamp_link -> class = 'PostTimestamp Muted text-sm ms-auto';
 
-            $timestamp_link -> addContents(new RelativeTime($this -> createdAt, 'M j, Y'));
+            $timestamp_link -> addContent(new RelativeTime($this -> createdAt, 'M j, Y'));
 
-            $byline -> addContents($timestamp_link);
+            $byline -> addContent($timestamp_link);
         }
 
         return $byline;
@@ -482,20 +490,23 @@ SELECT `postId`
 
     /**
      * The JSON representation used by AJAX endpoints (create-post, feed-history)
-     * that feed the client-side Post class. The description is sanitized
-     * through the same PostBody pass used for server-rendered pages, since the
-     * client drops it into innerHTML.
+     * that feed the client-side Post class, which rebuilds the body from the
+     * Delta ops via render_delta() - no HTML crosses the wire.
      */
     public function toPayload(int $reply_count, int $like_count, bool $liked): array
     {
-        $sanitized_description = null;
+        $description_delta = null;
+        $description_truncated = false;
 
-        // toPayload only ever feeds the client-side feed (create-post and
-        // feed-history), never the permalink page, so it truncates the
-        // description exactly like the server-rendered feed does - the client
-        // injects this HTML verbatim, "See More" link included.
-        if ($this -> description !== null) {
-            $sanitized_description = $this -> summarizedDescription() -> renderInner();
+        // toPayload only ever feeds the client-side feed, never the permalink
+        // page, so it truncates the ops exactly like the server-rendered feed
+        // does - and ships the very same truncated ops (one truncate pass, so
+        // the '…' and the truncated flag can't drift). The client renders them
+        // and appends its own "See More" when descriptionTruncated is set.
+        if ($this -> descriptionDelta !== null) {
+            $renderer = new TruncatedDeltaRenderer($this -> descriptionOps(), $this -> seeMoreURL());
+            $description_delta = $renderer -> ops();
+            $description_truncated = $renderer -> wasTruncated();
         }
 
         $items = [];
@@ -513,7 +524,13 @@ SELECT `postId`
             'userId' => (int) $this -> userId,
             'parentId' => $this -> parentId !== null ? (int) $this -> parentId : null,
             'title' => $this -> title,
-            'description' => $sanitized_description,
+            // Plaintext, used only by the client's link-preview card (its
+            // description is shown as flat text, never rich). A regular post
+            // body renders from descriptionDelta instead.
+            'description' => $this -> description,
+            'descriptionDelta' => $description_delta,
+            'descriptionTruncated' => $description_truncated,
+            'seeMoreURL' => $this -> seeMoreURL(),
             'linkURL' => $this -> linkURL,
             'createdAt' => $this -> createdAt,
             'items' => $items,

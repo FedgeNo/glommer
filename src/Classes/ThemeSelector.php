@@ -42,10 +42,10 @@ class ThemeSelector extends HTMLObject
                 $option -> attributes['selected'] = 'selected';
             }
 
-            $select -> addContents($option);
+            $select -> addContent($option);
         }
 
-        $this -> addContents($select);
+        $this -> addContent($select);
 
         return parent::toDOM();
     }

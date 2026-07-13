@@ -39,27 +39,27 @@ class User extends HTMLObject
         $link = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/'));
         $link -> class = 'UserLink';
 
-        $link -> addContents(Avatar::forUser($this));
+        $link -> addContent(Avatar::forUser($this));
 
         $info = new Div();
 
         $name_heading = new Heading2();
         $name_heading -> contents[] = $name;
-        $info -> addContents($name_heading);
+        $info -> addContent($name_heading);
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
         $username_line -> contents[] = '@' . $this -> username;
-        $info -> addContents($username_line);
+        $info -> addContent($username_line);
 
         if ($this -> createdAt !== null) {
             $joined = new Div();
             $joined -> class = 'Muted text-sm';
             $joined -> contents[] = 'Joined ' . date('F j, Y', strtotime($this -> createdAt));
-            $info -> addContents($joined);
+            $info -> addContent($joined);
         }
 
-        $link -> addContents($info);
+        $link -> addContent($info);
 
         $this -> contents[] = $link;
 
@@ -78,21 +78,21 @@ class User extends HTMLObject
         $header = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/'));
         $header -> class = 'd-flex align-items-center gap-3';
 
-        $header -> addContents(Avatar::forUser($this));
+        $header -> addContent(Avatar::forUser($this));
 
         $info = new Div();
 
         $name_line = new Div();
         $name_line -> class = 'fw-semibold';
         $name_line -> contents[] = $name;
-        $info -> addContents($name_line);
+        $info -> addContent($name_line);
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
         $username_line -> contents[] = '@' . $this -> username;
-        $info -> addContents($username_line);
+        $info -> addContent($username_line);
 
-        $header -> addContents($info);
+        $header -> addContent($info);
 
         return $header;
     }

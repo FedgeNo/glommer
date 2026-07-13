@@ -39,6 +39,7 @@ CREATE TABLE `Posts` (
   `parentId` int(10) unsigned DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `description` text DEFAULT NULL,
+  `descriptionDelta` mediumtext DEFAULT NULL,
   `keywords` varchar(255) DEFAULT NULL,
   `linkURL` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),

@@ -12,8 +12,8 @@ class DeleteAccountForm extends Form
         $this -> method = 'POST';
 
         $fields = new Fieldset('Delete your account');
-        $fields -> addContents(new Paragraph('This permanently deletes your account, posts, and messages. This can\'t be undone.'));
-        $fields -> addContents(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
+        $fields -> addContent(new Paragraph('This permanently deletes your account, posts, and messages. This can\'t be undone.'));
+        $fields -> addContent(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
         $this -> contents[] = $fields;
 
         $submit = new SubmitButton('Delete Account');

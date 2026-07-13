@@ -45,7 +45,7 @@ class ReplyList extends Div
         $list -> hasMore = $has_more;
 
         foreach (Thread::fromRows($rows) as $thread) {
-            $list -> addContents($thread);
+            $list -> addContent($thread);
         }
 
         return $list;

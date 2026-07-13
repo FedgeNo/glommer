@@ -26,23 +26,23 @@ $name = $profile_user -> displayName ?? $profile_user -> username;
 
 $page = Page::create($name . '\'s Friends', 'Friends of ' . $name . ' on Glommer', $profile_user -> avatarURL());
 
-$page -> addContents($profile_user);
+$page -> addContent($profile_user);
 
 if ($is_own) {
     $incoming = PendingFriendRequestList::forUser($profile_user);
 
     if ($incoming -> items !== []) {
-        $page -> addContents($incoming);
+        $page -> addContent($incoming);
     }
 }
 
-$page -> addContents(FriendList::forUser($profile_user));
+$page -> addContent(FriendList::forUser($profile_user));
 
 if ($is_own) {
     $outgoing = OutgoingFriendRequestList::forUser($profile_user);
 
     if ($outgoing -> items !== []) {
-        $page -> addContents($outgoing);
+        $page -> addContent($outgoing);
     }
 }
 

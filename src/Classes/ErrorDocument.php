@@ -14,9 +14,9 @@ class ErrorDocument
 
         $page = Page::create($title);
 
-        $page -> addContents(new Paragraph($message));
+        $page -> addContent(new Paragraph($message));
 
-        $page -> addContents(new Anchor(ServerURL::absolute('/'), 'Back to Home'));
+        $page -> addContent(new Anchor(ServerURL::absolute('/'), 'Back to Home'));
 
         $page -> send();
     }

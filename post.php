@@ -84,16 +84,16 @@ if ($post -> parentId !== null) {
     $parent_link = ParentPostLink::fromParentId($post -> parentId);
 
     if ($parent_link !== null) {
-        $page -> addContents($parent_link);
+        $page -> addContent($parent_link);
     }
 }
 
-$page -> addContents(PostPage::fromPost($post));
+$page -> addContent(PostPage::fromPost($post));
 
 if ($current_user !== null) {
-    $page -> addContents(new ReplyComposer($post_id));
+    $page -> addContent(new ReplyComposer($post_id));
 } else {
-    $page -> addContents(new LoginPrompt('reply'));
+    $page -> addContent(new LoginPrompt('reply'));
 }
 
 $reply_rows = [];
@@ -109,9 +109,9 @@ if ($has_more_replies) {
 }
 
 if ($reply_rows !== []) {
-    $page -> addContents(new RepliesHeading());
+    $page -> addContent(new RepliesHeading());
 }
 
-$page -> addContents(ReplyList::fromRows($post_id, $reply_rows, $has_more_replies));
+$page -> addContent(ReplyList::fromRows($post_id, $reply_rows, $has_more_replies));
 
 $page -> send();

@@ -30,46 +30,15 @@ class OtherUser {
     }
 
     toElement() {
-        const div = document.createElement('div');
-        div.className = 'User Card OtherUser MountIn';
-        div.dataset.username = this.username;
+        // The identity card (avatar + name + @username + joined) is shared with
+        // the report card's user target via user_card_element; OtherUser layers
+        // the action buttons on top.
+        const div = user_card_element(this);
+        div.classList.add('OtherUser', 'MountIn');
 
         if (this.friendshipId) {
             div.dataset.friendshipId = this.friendshipId;
         }
-
-        // The whole identity block - avatar, name, username, joined - is one
-        // link to the profile (mirrors User::toDOM).
-        const link = document.createElement('a');
-        link.className = 'UserLink';
-        link.href = window.siteURL + '/users/' + this.username + '/';
-
-        link.appendChild(avatar_element(Boolean(this.image), this.image, this.displayName || this.username, this.userId));
-
-        const info = document.createElement('div');
-
-        const name_heading = document.createElement('h2');
-        name_heading.textContent = this.displayName || this.username;
-        info.appendChild(name_heading);
-
-        const username_line = document.createElement('div');
-        username_line.className = 'Muted text-sm';
-        username_line.textContent = '@' + this.username;
-        info.appendChild(username_line);
-
-        if (this.createdAt) {
-            const joined = document.createElement('div');
-            joined.className = 'Muted text-sm';
-            joined.textContent = 'Joined ' + parse_server_date(this.createdAt).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-            });
-            info.appendChild(joined);
-        }
-
-        link.appendChild(info);
-        div.appendChild(link);
 
         // Mirror OtherUser::toDOM: no action buttons for a logged-out visitor
         // (public friends pages) or on the viewer's own card - which can turn

@@ -185,6 +185,16 @@ INSERT INTO `Settings` (`name`, `value`)
                 }
             }
 
+            // Backfill descriptionDelta for pre-Delta posts now that the column
+            // exists. Race-safe and idempotent (see PostDeltaBackfill); on
+            // failure, return false so the version isn't bumped and the next
+            // request retries, converting whatever rows remain.
+            try {
+                PostDeltaBackfill::run(Database::connection());
+            } catch (\mysqli_sql_exception $exception) {
+                return false;
+            }
+
             SchemaInstaller::runMaintenance(Database::connection());
             Settings::set('appVersion', self::codeVersion());
 

@@ -32,7 +32,7 @@ class LinkItem extends FeedItem
             $image -> class = 'LinkItemImage';
             $image -> src = $this -> image -> imageURL();
             $image -> alt = 'Link preview image';
-            $link -> addContents($image);
+            $link -> addContent($image);
         }
 
         $text = new Div();
@@ -41,37 +41,27 @@ class LinkItem extends FeedItem
         if ($this -> title !== null) {
             $heading = new Heading3();
             $heading -> contents[] = $this -> title;
-            $text -> addContents($heading);
+            $text -> addContent($heading);
         }
 
-        if (!self::isBlankDescription($this -> description)) {
-            $body = new PostBody();
-            $body -> addContents($this -> description);
-            $text -> addContents($body);
+        // The description is plaintext (Posts.description) - a link card shows a
+        // flat summary, never rich text, so it's a text node in a .PostBody div
+        // (mirroring the client's linkItemToElement). It's already null or
+        // non-empty (Delta::plainText trims and blanks empties), so no HTML
+        // blank-check is needed.
+        if ($this -> description !== null && $this -> description !== '') {
+            $body = new Div();
+            $body -> class = 'PostBody';
+            $body -> addContent($this -> description);
+            $text -> addContent($body);
         }
 
-        $text -> addContents($this -> linkURL);
+        $text -> addContent($this -> linkURL);
 
-        $link -> addContents($text);
+        $link -> addContent($text);
 
         $this -> contents[] = $link;
 
         return parent::toDOM();
-    }
-
-    /**
-     * True for null, empty, and content that only looks non-empty because
-     * of markup/whitespace - a Quill editor left "empty" typically still
-     * saves as something like "<p><br></p>" rather than an empty string.
-     */
-    private static function isBlankDescription(?string $description): bool
-    {
-        if ($description === null) {
-            return true;
-        }
-
-        $text = html_entity_decode(strip_tags($description), ENT_QUOTES);
-
-        return preg_replace('/[\s\x{00A0}]+/u', '', $text) === '';
     }
 }

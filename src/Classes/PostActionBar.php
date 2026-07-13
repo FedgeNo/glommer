@@ -21,18 +21,18 @@ class PostActionBar extends HTMLObject
         $actions -> class = 'd-flex align-items-center gap-2 ms-auto';
 
         if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0)) {
-            $actions -> addContents($this -> replyButton());
+            $actions -> addContent($this -> replyButton());
         }
 
         if (Auth::check()) {
-            $actions -> addContents($this -> likeButton());
+            $actions -> addContent($this -> likeButton());
 
             if ($this -> postUserId === Auth::id()) {
-                $actions -> addContents($this -> deleteButton());
+                $actions -> addContent($this -> deleteButton());
             } elseif ($this -> postUserId !== 1) {
                 // The admin's posts can't be reported (api/report.php rejects
                 // it - nobody could act on the report anyway).
-                $actions -> addContents($this -> reportButton());
+                $actions -> addContent($this -> reportButton());
             }
         }
 

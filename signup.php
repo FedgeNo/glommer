@@ -108,9 +108,9 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
 $page = Page::create('Sign Up');
 
 if ($errors !== []) {
-    $page -> addContents(new ErrorList($errors));
+    $page -> addContent(new ErrorList($errors));
 }
 
-$page -> addContents(new SignupForm());
+$page -> addContent(new SignupForm());
 
 $page -> send();

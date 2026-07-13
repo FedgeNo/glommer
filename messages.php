@@ -31,11 +31,11 @@ SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`
 
     while ($row = mysqli_fetch_assoc($conversations_result)) {
         $has_conversations = true;
-        $page -> addContents(Conversation::fromRow($row));
+        $page -> addContent(Conversation::fromRow($row));
     }
 
     if (!$has_conversations) {
-        $page -> addContents(new Notice('You don\'t have any conversations yet.'));
+        $page -> addContent(new Notice('You don\'t have any conversations yet.'));
     }
 
     $page -> send();
@@ -57,7 +57,7 @@ $name = $other_user -> displayName ?? $other_user -> username;
 $page = Page::create('Messages with ' . $name, needsMath: true, needsEmoji: true, body_class: 'MessagesPage');
 
 if (Block::exists($current_user -> userId, $other_user_id)) {
-    $page -> addContents(new Notice('You can\'t message this user.'));
+    $page -> addContent(new Notice('You can\'t message this user.'));
     $page -> send();
     exit;
 }
@@ -75,12 +75,12 @@ $conversation_users = [
     ],
 ];
 
-$page -> addContents(new JSGlobals(['conversationUsers' => $conversation_users]));
+$page -> addContent(new JSGlobals(['conversationUsers' => $conversation_users]));
 
 ['rows' => $history_rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20);
 
-$page -> addContents(MessageList::fromRows($other_user_id, $history_rows, $has_more));
+$page -> addContent(MessageList::fromRows($other_user_id, $history_rows, $has_more));
 
-$page -> addContents(new MessageComposer($other_user_id));
+$page -> addContent(new MessageComposer($other_user_id));
 
 $page -> send();

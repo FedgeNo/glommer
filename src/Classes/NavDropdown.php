@@ -30,16 +30,16 @@ class NavDropdown extends Div
             $trigger -> class = trim(($trigger -> class ?? '') . ' NavDropdownTrigger');
         }
 
-        $this -> addContents($trigger);
+        $this -> addContent($trigger);
 
         $menu = new Div();
         $menu -> class = 'NavDropdownMenu Card';
 
         foreach ($this -> links as $link) {
-            $menu -> addContents($link);
+            $menu -> addContent($link);
         }
 
-        $this -> addContents($menu);
+        $this -> addContent($menu);
 
         return parent::toDOM();
     }

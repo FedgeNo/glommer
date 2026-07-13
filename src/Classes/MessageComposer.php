@@ -36,10 +36,10 @@ class MessageComposer extends Form
         // floor(65535 / 3) guarantees the byte cap is never exceeded
         // regardless of content, so a message the browser lets through never
         // gets rejected server-side as "too long".
-        $row -> addContents(new TextareaField('body', 'Message', 'Write a message', 21845));
-        $row -> addContents(new EmojiPickerButton());
+        $row -> addContent(new TextareaField('body', 'Message', 'Write a message', 21845));
+        $row -> addContent(new EmojiPickerButton());
 
-        $row -> addContents(new SubmitButton('Send'));
+        $row -> addContent(new SubmitButton('Send'));
 
         $this -> contents[] = $row;
 

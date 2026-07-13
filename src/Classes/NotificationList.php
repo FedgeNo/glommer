@@ -28,7 +28,7 @@ class NotificationList extends Div
         $list = new self();
 
         if ($rows === []) {
-            $list -> addContents(new Notice('No notifications yet.'));
+            $list -> addContent(new Notice('No notifications yet.'));
 
             return $list;
         }
@@ -37,7 +37,7 @@ class NotificationList extends Div
         $list -> hasMore = $has_more;
 
         foreach ($rows as $row) {
-            $list -> addContents(Notification::fromRow($row));
+            $list -> addContent(Notification::fromRow($row));
         }
 
         return $list;

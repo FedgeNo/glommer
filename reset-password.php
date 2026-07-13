@@ -14,7 +14,7 @@ $token = (string) ($_GET['token'] ?? $_POST['token'] ?? '');
 if ($token === '' || PasswordReset::verify($token) === null) {
     $page = Page::create('Reset Password');
 
-    $page -> addContents(new Paragraph('That password reset link is invalid or has expired.'));
+    $page -> addContent(new Paragraph('That password reset link is invalid or has expired.'));
 
     $page -> send();
     exit;
@@ -43,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page = Page::create('Reset Password');
 
 if ($done) {
-    $page -> addContents(new Paragraph('Your password has been reset. You can now log in.'));
-    $page -> addContents(new Anchor(ServerURL::absolute('/login'), 'Log In'));
+    $page -> addContent(new Paragraph('Your password has been reset. You can now log in.'));
+    $page -> addContent(new Anchor(ServerURL::absolute('/login'), 'Log In'));
 } else {
     if ($errors !== []) {
-        $page -> addContents(new ErrorList($errors));
+        $page -> addContent(new ErrorList($errors));
     }
 
-    $page -> addContents(new ResetPasswordForm($token));
+    $page -> addContent(new ResetPasswordForm($token));
 }
 
 $page -> send();

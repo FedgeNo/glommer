@@ -20,8 +20,8 @@ class ResetPasswordForm extends Form
         $this -> method = 'POST';
 
         $fields = new Fieldset('Choose a new password');
-        $fields -> addContents(new InputField('newPassword', 'New password', 'password', 'At least 8 characters'));
-        $fields -> addContents(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));
+        $fields -> addContent(new InputField('newPassword', 'New password', 'password', 'At least 8 characters'));
+        $fields -> addContent(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));
         $this -> contents[] = $fields;
 
         $this -> contents[] = new SubmitButton('Reset Password');

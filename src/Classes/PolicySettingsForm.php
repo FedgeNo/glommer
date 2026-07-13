@@ -27,7 +27,7 @@ abstract class PolicySettingsForm extends Form
 
         $textarea = new TextareaField($this -> settingName, $this -> legend, null, 65535);
         $textarea -> value = $this -> currentText();
-        $fields -> addContents($textarea);
+        $fields -> addContent($textarea);
 
         $this -> contents[] = $fields;
 

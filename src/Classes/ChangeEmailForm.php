@@ -15,9 +15,9 @@ class ChangeEmailForm extends Form
 
         $new_email = new InputField('newEmail', 'New email address', 'email', 'you@example.com', 255);
         $new_email -> autocomplete = 'email';
-        $fields -> addContents($new_email);
+        $fields -> addContent($new_email);
 
-        $fields -> addContents(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
+        $fields -> addContent(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
 
         $this -> contents[] = $fields;
 

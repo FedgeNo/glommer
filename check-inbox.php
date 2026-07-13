@@ -8,6 +8,6 @@ Auth::requireLogin();
 
 $page = Page::create('Check Your Inbox');
 
-$page -> addContents(new VerificationNotice());
+$page -> addContent(new VerificationNotice());
 
 $page -> send();

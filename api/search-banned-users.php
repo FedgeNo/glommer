@@ -18,7 +18,7 @@ if ($query === '') {
 // Escape LIKE wildcards so a literal % or _ in the query doesn't match everything.
 $like = '%' . addcslashes($query, '\\%_') . '%';
 $banned = 1;
-$limit = 25;
+$limit = 20;
 
 $stmt = mysqli_prepare($mysqli, '
 SELECT *

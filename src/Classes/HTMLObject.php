@@ -43,7 +43,7 @@ class HTMLObject
         $this -> class = trim($base_value . ' ' . implode(' ', array_reverse($names)));
     }
 
-    public function addContents(HTMLObject|CData|string|\DOMNode $item): void
+    public function addContent(HTMLObject|CData|string|\DOMNode $item): void
     {
         $this -> contents[] = $item;
     }
@@ -130,30 +130,5 @@ class HTMLObject
     protected static function stripSelfClosingSlash(string $xml): string
     {
         return str_replace('/>', '>', $xml);
-    }
-
-    /**
-     * Render just the inner contents of an object (no wrapper tag) to an HTML string.
-     * Used for JSON API responses that carry a pre-sanitized rich-text field
-     * (e.g. PostBody output) for a JS class to drop into its own element via innerHTML.
-     */
-    public function renderInner(): string
-    {
-        $implementation = new \DOMImplementation();
-        self::$document = $implementation -> createDocument();
-        self::$document -> formatOutput = true;
-
-        $element = $this -> toDOM();
-        self::$document -> appendChild($element);
-
-        self::fillEmptyNonVoidTags($element);
-
-        $html = '';
-
-        foreach ($element -> childNodes as $child) {
-            $html .= self::$document -> saveXML($child);
-        }
-
-        return self::stripSelfClosingSlash($html);
     }
 }

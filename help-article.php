@@ -15,6 +15,6 @@ if ($article === null) {
 
 $page = Page::create($article -> title, $article -> summary);
 
-$page -> addContents($article);
+$page -> addContent($article);
 
 $page -> send();

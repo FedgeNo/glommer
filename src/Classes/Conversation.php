@@ -29,21 +29,21 @@ class Conversation extends Anchor
 
         $name_heading = new Heading2();
         $name_heading -> contents[] = $name;
-        $info -> addContents($name_heading);
+        $info -> addContent($name_heading);
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
         $username_line -> contents[] = '@' . $this -> username;
-        $info -> addContents($username_line);
+        $info -> addContent($username_line);
 
         if ($this -> lastMessageAt !== null) {
             $meta = new Div();
             $meta -> class = 'Muted text-sm';
             $meta -> contents[] = 'Last message ';
 
-            $meta -> addContents(new RelativeTime($this -> lastMessageAt));
+            $meta -> addContent(new RelativeTime($this -> lastMessageAt));
 
-            $info -> addContents($meta);
+            $info -> addContent($meta);
         }
 
         $this -> contents[] = $info;

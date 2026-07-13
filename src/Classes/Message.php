@@ -39,12 +39,12 @@ class Message extends HTMLObject
 
         $body = new Paragraph();
         $body -> contents[] = $this -> body;
-        $line -> addContents($body);
+        $line -> addContent($body);
 
         // No report button on the admin's messages - api/report.php rejects
         // reports about the admin, since nobody could act on one anyway.
         if (Auth::check() && Auth::id() !== $this -> senderId && $this -> senderId !== 1) {
-            $line -> addContents(new ReportButton('message', $this -> messageId));
+            $line -> addContent(new ReportButton('message', $this -> messageId));
         }
 
         $this -> contents[] = $line;

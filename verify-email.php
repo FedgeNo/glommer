@@ -10,10 +10,10 @@ $user_id = $token !== '' ? EmailVerification::verify($token) : null;
 
 $page = Page::create('Verify Email');
 
-$page -> addContents(new Paragraph($user_id !== null
+$page -> addContent(new Paragraph($user_id !== null
     ? 'Your email has been verified. You can now use Glommer.'
     : 'That verification link is invalid or has expired.'));
 
-$page -> addContents(new Anchor(ServerURL::absolute('/'), 'Continue'));
+$page -> addContent(new Anchor(ServerURL::absolute('/'), 'Continue'));
 
 $page -> send();

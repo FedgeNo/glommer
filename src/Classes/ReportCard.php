@@ -17,8 +17,12 @@ class ReportCard extends HTMLObject
     public ?int $targetUserId = null;
     public ?string $targetUsername = null;
 
-    /** The reported content itself, rendered so a moderator can assess it. */
-    public ?HTMLObject $targetContent = null;
+    // The reported item, resolved once (resolveTarget) into a kind plus its raw
+    // data, so the server render (toDOM) and the AJAX payload (toPayload) build
+    // from one source and can't diverge. kind is 'message'|'post'|'user'|
+    // 'missing'; data is the message body, a Post, a User, or the notice text.
+    public ?string $targetKind = null;
+    public User|Post|string|null $targetData = null;
 
     public function toDOM(): \DOMElement
     {
@@ -28,22 +32,20 @@ class ReportCard extends HTMLObject
 
         $summary = new Div();
         $summary -> contents[] = ucfirst((string) $this -> targetType) . ' #' . $this -> targetId . ' reported by ';
-        $summary -> addContents(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
-        $details -> addContents($summary);
+        $summary -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
+        $details -> addContent($summary);
 
-        if ($this -> targetContent !== null) {
-            $details -> addContents($this -> targetContent);
-        }
+        $details -> addContent($this -> targetContentElement());
 
         if ($this -> reason !== null) {
             $reason_line = new Paragraph();
             $reason_line -> contents[] = 'Reason: ' . $this -> reason;
-            $details -> addContents($reason_line);
+            $details -> addContent($reason_line);
         }
 
         $meta = new RelativeTime((string) $this -> createdAt);
         $meta -> class = 'Muted text-sm ' . $meta -> class;
-        $details -> addContents($meta);
+        $details -> addContent($meta);
 
         $this -> contents[] = $details;
 
@@ -56,18 +58,21 @@ class ReportCard extends HTMLObject
         $actions -> class = 'ReportActions d-flex flex-column gap-2 ms-auto';
 
         if ($this -> reporterId !== 1) {
-            $actions -> addContents(new BanButton($this -> reporterId, 'Ban Reporter (' . $this -> reporterUsername . ')'));
+            $actions -> addContent(new BanButton($this -> reporterId, 'Ban Reporter'));
         }
 
         if ($this -> targetUserId !== null && $this -> targetUsername !== null && $this -> targetUserId !== $this -> reporterId) {
-            $actions -> addContents(new BanButton($this -> targetUserId, 'Ban Reported User (' . $this -> targetUsername . ')'));
+            $actions -> addContent(new BanButton($this -> targetUserId, 'Ban Reported User'));
         }
 
-        if ($this -> targetType === 'post' || $this -> targetType === 'message') {
-            $actions -> addContents(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst((string) $this -> targetType)));
+        // Gate on the resolved kind, not the declared targetType: a target
+        // deleted after the queue was fetched resolves to 'missing', and there's
+        // nothing left to delete.
+        if ($this -> targetKind === 'post' || $this -> targetKind === 'message') {
+            $actions -> addContent(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> targetKind)));
         }
 
-        $actions -> addContents(new DismissReportButton((int) $this -> reportId));
+        $actions -> addContent(new DismissReportButton((int) $this -> reportId));
 
         $this -> contents[] = $actions;
 
@@ -85,25 +90,110 @@ class ReportCard extends HTMLObject
         $card -> reason = $row['reason'];
         $card -> createdAt = $row['createdAt'];
 
-        ['userId' => $card -> targetUserId, 'content' => $card -> targetContent] = self::resolveTarget($card -> targetType, $card -> targetId);
+        ['userId' => $card -> targetUserId, 'kind' => $card -> targetKind, 'data' => $card -> targetData] = self::resolveTarget($card -> targetType, $card -> targetId);
 
         if ($card -> targetUserId !== null) {
-            $card -> targetUsername = ($card -> targetContent instanceof User ? $card -> targetContent : User::load($card -> targetUserId)) ?-> username;
+            $card -> targetUsername = ($card -> targetData instanceof User ? $card -> targetData : User::load($card -> targetUserId)) ?-> username;
         }
 
         return $card;
     }
 
     /**
-     * Resolves the reported item in one query against its own table (rather
-     * than a separate query just to find its owning userId, then a second one
-     * to load the row itself) and renders it so a moderator can judge it: a
-     * message's body in a blockquote (it's private and can't be viewed any
-     * other way), a post as the post itself (byline + text + media, no action
-     * bar), a user as their profile card. A deleted target becomes a plain
-     * notice.
+     * The JSON payload for one report, used by api/report-history.php to feed
+     * the client-side ReportCard on scroll. Mirrors the fields toDOM() renders;
+     * the reported item rides under `target` as a small kind-tagged union the
+     * client rebuilds (a bare Post payload, a message body, an allowlisted user
+     * card, or a missing-notice message) - never rendered HTML.
+     */
+    public function toPayload(): array
+    {
+        return [
+            'reportId' => $this -> reportId,
+            'reporterId' => $this -> reporterId,
+            'reporterUsername' => $this -> reporterUsername,
+            'targetType' => $this -> targetType,
+            'targetId' => $this -> targetId,
+            'reason' => $this -> reason,
+            'createdAt' => $this -> createdAt,
+            'targetUserId' => $this -> targetUserId,
+            'targetUsername' => $this -> targetUsername,
+            'target' => $this -> targetPayload(),
+        ];
+    }
+
+    /**
+     * @param array[] $rows
+     * @return array[]
+     */
+    public static function rowsToPayload(array $rows): array
+    {
+        $payloads = [];
+
+        foreach ($rows as $row) {
+            $payloads[] = self::fromRow($row) -> toPayload();
+        }
+
+        return $payloads;
+    }
+
+    /** The reported item rendered so a moderator can assess it (see resolveTarget). */
+    private function targetContentElement(): HTMLObject
+    {
+        if ($this -> targetKind === 'message') {
+            $quote = new Blockquote((string) $this -> targetData);
+            $quote -> class = 'ReportedContent';
+
+            return $quote;
+        }
+
+        if ($this -> targetData instanceof HTMLObject) {
+            return $this -> targetData;
+        }
+
+        return new Notice((string) $this -> targetData);
+    }
+
+    /**
+     * @return array<string, mixed> the kind-tagged target union for toPayload()
+     */
+    private function targetPayload(): array
+    {
+        if ($this -> targetKind === 'message') {
+            return ['kind' => 'message', 'body' => (string) $this -> targetData];
+        }
+
+        if ($this -> targetKind === 'post' && $this -> targetData instanceof Post) {
+            // A bare post on the client (no action bar) - the 0/0/false counts
+            // its payload carries go unused there.
+            return ['kind' => 'post', 'post' => $this -> targetData -> toPayload(0, 0, false)];
+        }
+
+        if ($this -> targetKind === 'user' && $this -> targetData instanceof User) {
+            $user = $this -> targetData;
+
+            // Explicit allowlist - a User object also carries email and
+            // passwordHash, which must never reach a moderator's console.
+            return ['kind' => 'user', 'user' => [
+                'userId' => (int) $user -> userId,
+                'username' => $user -> username,
+                'displayName' => $user -> displayName,
+                'image' => $user -> avatarURL(),
+                'createdAt' => $user -> createdAt,
+            ]];
+        }
+
+        return ['kind' => 'missing', 'message' => (string) $this -> targetData];
+    }
+
+    /**
+     * Resolves the reported item in one query against its own table, returning
+     * its kind and raw data so toDOM() and toPayload() build from one
+     * resolution: a message's body, a post as the post itself (byline + text +
+     * media, no action bar), a user as their profile card. A deleted target
+     * resolves to a 'missing' notice.
      *
-     * @return array{userId: ?int, content: HTMLObject}
+     * @return array{userId: ?int, kind: string, data: User|Post|string}
      */
     private static function resolveTarget(string $target_type, int $target_id): array
     {
@@ -111,32 +201,33 @@ class ReportCard extends HTMLObject
             $row = self::loadRow('Messages', 'messageId', $target_id);
 
             if ($row === null) {
-                return ['userId' => null, 'content' => new Notice('This message no longer exists.')];
+                return ['userId' => null, 'kind' => 'missing', 'data' => 'This message no longer exists.'];
             }
 
-            $quote = new Blockquote((string) $row['body']);
-            $quote -> class = 'ReportedContent';
-
-            return ['userId' => (int) $row['senderId'], 'content' => $quote];
+            return ['userId' => (int) $row['senderId'], 'kind' => 'message', 'data' => (string) $row['body']];
         }
 
         if ($target_type === 'post') {
             $row = self::loadRow('Posts', 'postId', $target_id);
 
             if ($row === null) {
-                return ['userId' => null, 'content' => new Notice('This post no longer exists.')];
+                return ['userId' => null, 'kind' => 'missing', 'data' => 'This post no longer exists.'];
             }
 
-            return ['userId' => (int) $row['userId'], 'content' => Post::fromRowWithItems($row)];
+            return ['userId' => (int) $row['userId'], 'kind' => 'post', 'data' => Post::fromRowWithItems($row)];
         }
 
         if ($target_type === 'user') {
             $user = User::load($target_id);
 
-            return ['userId' => $target_id, 'content' => $user ?? new Notice('This user no longer exists.')];
+            if ($user === null) {
+                return ['userId' => null, 'kind' => 'missing', 'data' => 'This user no longer exists.'];
+            }
+
+            return ['userId' => $target_id, 'kind' => 'user', 'data' => $user];
         }
 
-        return ['userId' => null, 'content' => new Notice('Unknown content type.')];
+        return ['userId' => null, 'kind' => 'missing', 'data' => 'Unknown content type.'];
     }
 
     private static function loadRow(string $table, string $id_column, int $id): ?array

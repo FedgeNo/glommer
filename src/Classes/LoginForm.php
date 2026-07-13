@@ -12,12 +12,12 @@ class LoginForm extends Form
         $this -> method = 'POST';
 
         $fields = new Fieldset('Log in');
-        $fields -> addContents(new InputField('identifier', 'Username or email', 'text', 'Username or email', 255));
-        $fields -> addContents(new InputField('password', 'Password', 'password', 'Password'));
+        $fields -> addContent(new InputField('identifier', 'Username or email', 'text', 'Username or email', 255));
+        $fields -> addContent(new InputField('password', 'Password', 'password', 'Password'));
 
         $remember_me = new CheckboxField('rememberMe', 'Remember me');
         $remember_me -> checked = true;
-        $fields -> addContents($remember_me);
+        $fields -> addContent($remember_me);
 
         $this -> contents[] = $fields;
 

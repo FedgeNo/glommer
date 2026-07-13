@@ -16,11 +16,11 @@ $page = Page::create('Home', needsEditor: $current_user !== null, needsMath: tru
 $page -> addMetaContent(new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed'));
 
 if ($current_user !== null) {
-    $page -> addContents(new PostComposer());
+    $page -> addContent(new PostComposer());
 } else {
-    $page -> addContents(new LoginPrompt('post'));
+    $page -> addContent(new LoginPrompt('post'));
 }
 
-$page -> addContents(FeedList::fromRows('global', $feed_rows, $has_more));
+$page -> addContent(FeedList::fromRows('global', $feed_rows, $has_more));
 
 $page -> send();

@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page = Page::create('Log In');
 
 if ($errors !== []) {
-    $page -> addContents(new ErrorList($errors));
+    $page -> addContent(new ErrorList($errors));
 }
 
-$page -> addContents(new LoginForm());
+$page -> addContent(new LoginForm());
 
-$page -> addContents(new Anchor(ServerURL::absolute('/forgot-password'), 'Forgot password?'));
+$page -> addContent(new Anchor(ServerURL::absolute('/forgot-password'), 'Forgot password?'));
 
-$page -> addContents(new Anchor(ServerURL::absolute('/signup'), 'Need an account? Sign up'));
+$page -> addContent(new Anchor(ServerURL::absolute('/signup'), 'Need an account? Sign up'));
 
 $page -> send();

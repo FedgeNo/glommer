@@ -25,7 +25,7 @@ class UserSearch extends HTMLObject
         $input -> class = 'UserSearchInput';
         $input -> attributes['placeholder'] = 'Search for a user...';
         $input -> attributes['autocomplete'] = 'off';
-        $input_card -> addContents($input);
+        $input_card -> addContent($input);
 
         $this -> contents[] = $input_card;
 
@@ -37,7 +37,7 @@ class UserSearch extends HTMLObject
         $results -> attributes['data-has-more'] = '0';
 
         foreach ($this -> suggestions as $suggestion) {
-            $results -> addContents($suggestion);
+            $results -> addContent($suggestion);
         }
 
         $this -> contents[] = $results;

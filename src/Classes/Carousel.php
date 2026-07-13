@@ -33,8 +33,8 @@ class Carousel extends HTMLObject
 
             $slide = new Div();
             $slide -> class = 'CarouselSlide' . ($index === 0 ? ' Active' : '');
-            $slide -> addContents($item);
-            $track -> addContents($slide);
+            $slide -> addContent($item);
+            $track -> addContent($slide);
         }
 
         $this -> contents[] = $track;

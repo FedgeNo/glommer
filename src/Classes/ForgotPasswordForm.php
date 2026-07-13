@@ -12,7 +12,7 @@ class ForgotPasswordForm extends Form
         $this -> method = 'POST';
 
         $fields = new Fieldset('Reset your password');
-        $fields -> addContents(new InputField('email', 'Email', 'email', 'you@example.com', 255));
+        $fields -> addContent(new InputField('email', 'Email', 'email', 'you@example.com', 255));
         $this -> contents[] = $fields;
 
         $this -> contents[] = new SubmitButton('Send Reset Link');

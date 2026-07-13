@@ -34,7 +34,7 @@ class MessageList extends Div
         $list -> otherUserId = $other_user_id;
 
         if ($rows === []) {
-            $list -> addContents(new Notice('No messages yet.'));
+            $list -> addContent(new Notice('No messages yet.'));
 
             return $list;
         }
@@ -47,7 +47,7 @@ class MessageList extends Div
 
         foreach ($rows as $row) {
             $message = Message::fromRowWithSender($row, $senders[(int) $row['senderId']] ?? null);
-            $list -> addContents($message);
+            $list -> addContent($message);
         }
 
         return $list;

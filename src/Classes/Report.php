@@ -94,16 +94,64 @@ UPDATE `' . $table . '`
     }
 
     /**
-     * @return array[]
+     * Deletes reports whose reported post or message no longer exists - a post
+     * or message a user deleted on their own leaves its report behind (the
+     * Reports target is polymorphic, so there's no FK to cascade it). Run before
+     * showing the moderation queue so a deleted target's report never appears
+     * (there'd be nothing to view or act on). User targets are left alone.
      */
-    public static function rowsForAdmin(): array
+    public static function purgeOrphaned(): void
     {
+        $post = 'post';
+        $message = 'message';
+
         $stmt = mysqli_prepare(Database::connection(), '
+DELETE
+    FROM `Reports`
+    WHERE (`targetType` = ? AND `targetId` NOT IN (SELECT `postId` FROM `Posts`))
+        OR (`targetType` = ? AND `targetId` NOT IN (SELECT `messageId` FROM `Messages`))
+');
+        mysqli_stmt_bind_param($stmt, 'ss', $post, $message);
+        mysqli_stmt_execute($stmt);
+    }
+
+    /**
+     * The moderation queue, newest first. Cursor-paginate by passing the
+     * reportId of the last report already seen as $before_report_id; omit it
+     * for the first page. Returns $limit rows plus a hasMore flag (fetches one
+     * extra to detect a next page without a second count query), the same shape
+     * as Post::globalFeedRows / Notification::rowsForUser. The reportId cursor
+     * stays correct even as reports are dismissed out of the queue underneath
+     * the moderator - a page may just return fewer rows.
+     *
+     * @return array{rows: array[], hasMore: bool}
+     */
+    public static function rowsForAdmin(int $limit, ?int $before_report_id = null): array
+    {
+        $mysqli = Database::connection();
+        $fetch_limit = $limit + 1;
+
+        if ($before_report_id !== null) {
+            $stmt = mysqli_prepare($mysqli, '
+SELECT `r`.*, `u`.`username` AS `reporterUsername`
+    FROM `Reports` `r`
+    JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
+    WHERE `r`.`reportId` < ?
+    ORDER BY `r`.`reportId` DESC
+    LIMIT ?
+');
+            mysqli_stmt_bind_param($stmt, 'ii', $before_report_id, $fetch_limit);
+        } else {
+            $stmt = mysqli_prepare($mysqli, '
 SELECT `r`.*, `u`.`username` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
+    LIMIT ?
 ');
+            mysqli_stmt_bind_param($stmt, 'i', $fetch_limit);
+        }
+
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
@@ -113,7 +161,13 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
             $rows[] = $row;
         }
 
-        return $rows;
+        $has_more = count($rows) > $limit;
+
+        if ($has_more) {
+            array_pop($rows);
+        }
+
+        return ['rows' => $rows, 'hasMore' => $has_more];
     }
 
     /**

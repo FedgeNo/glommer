@@ -12,6 +12,6 @@ $current_user = Auth::user();
 
 $page = Page::create('Friends Feed', needsMath: true);
 
-$page -> addContents(FeedList::fromRows('friends', $feed_rows, $has_more));
+$page -> addContent(FeedList::fromRows('friends', $feed_rows, $has_more));
 
 $page -> send();

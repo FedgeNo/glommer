@@ -75,13 +75,22 @@ class Page
         $stylesheet -> href = ServerURL::absolute('/style.css');
         $page -> addHeadContent($stylesheet);
 
+        // KaTeX's CSS and core JS load before Quill's JS: Quill's formula
+        // module reads window.katex at construction, so the editor's formula
+        // button needs KaTeX present even on a page that isn't otherwise
+        // rendering math. The auto-render pass (typed/pasted delimiters) is
+        // only needed where posted math is actually shown, so it stays gated
+        // on needsMath alone.
+        if ($needsMath || $needsEditor) {
+            $page -> addHeadContent(KaTeXAssets::CSSLink());
+            $page -> addHeadContent(KaTeXAssets::JSScript());
+        }
+
         if ($needsEditor) {
             $page -> addHeadContent(QuillAssets::JSScript());
         }
 
         if ($needsMath) {
-            $page -> addHeadContent(KaTeXAssets::CSSLink());
-            $page -> addHeadContent(KaTeXAssets::JSScript());
             $page -> addHeadContent(KaTeXAssets::autoRenderScript());
         }
 
@@ -90,13 +99,13 @@ class Page
         }
 
         $page -> body -> class = $body_class !== null ? 'PageBody ' . $body_class : 'PageBody';
-        $page -> addContents(new MainNavigation());
+        $page -> addContent(new MainNavigation());
 
-        $page -> addContents(new PageTitle($title));
+        $page -> addContent(new PageTitle($title));
 
         $current_user = Auth::user();
 
-        $page -> addContents(new JSGlobals([
+        $page -> addContent(new JSGlobals([
             'currentUserId' => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> username,
             'currentUserSkinTone' => $current_user ?-> skinTone,
@@ -111,34 +120,44 @@ class Page
             'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,
         ]));
 
+        // Loaded before post.js and main.js, which both call render_delta() to
+        // build a post's body from its Delta ops.
+        $delta_script = new Script();
+        $delta_script -> src = ServerURL::absolute('/delta.js');
+        $page -> addContent($delta_script);
+
         $post_script = new Script();
         $post_script -> src = ServerURL::absolute('/post.js');
-        $page -> addContents($post_script);
+        $page -> addContent($post_script);
 
         $message_script = new Script();
         $message_script -> src = ServerURL::absolute('/message.js');
-        $page -> addContents($message_script);
+        $page -> addContent($message_script);
 
         $other_user_script = new Script();
         $other_user_script -> src = ServerURL::absolute('/other-user.js');
-        $page -> addContents($other_user_script);
+        $page -> addContent($other_user_script);
 
         $notification_script = new Script();
         $notification_script -> src = ServerURL::absolute('/notification.js');
-        $page -> addContents($notification_script);
+        $page -> addContent($notification_script);
 
         $banned_user_script = new Script();
         $banned_user_script -> src = ServerURL::absolute('/banned-user.js');
-        $page -> addContents($banned_user_script);
+        $page -> addContent($banned_user_script);
+
+        $report_script = new Script();
+        $report_script -> src = ServerURL::absolute('/report.js');
+        $page -> addContent($report_script);
 
         $main_script = new Script();
         $main_script -> src = ServerURL::absolute('/main.js');
-        $page -> addContents($main_script);
+        $page -> addContent($main_script);
 
         if ($needsHelp) {
             $help_script = new Script();
             $help_script -> src = ServerURL::absolute('/help.js');
-            $page -> addContents($help_script);
+            $page -> addContent($help_script);
         }
 
         return $page;

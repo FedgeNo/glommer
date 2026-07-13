@@ -61,22 +61,17 @@ class RSSItem
     }
 
     /**
-     * A post's RSS description is put through the same PostBody/HTMLCleaner
-     * sanitizing pass as a page load - same reasoning as Post::toPayload():
-     * the raw stored description isn't guaranteed whitelist-safe on its own.
+     * A post's RSS description is its plaintext form (Posts.description, the
+     * "document" the Delta migration made this column) - the summary a feed
+     * reader wants, not rich markup. It rides in a CDATA section (see
+     * toElement()), so its literal text is what's published.
      */
     public static function fromPost(Post $post): self
     {
         $author_username = $post -> author ?-> username ?? '';
         $link = ServerURL::absolute('/users/' . $author_username . '/' . $post -> postId);
 
-        $body = new PostBody();
-
-        if ($post -> description !== null) {
-            $body -> addContents($post -> description);
-        }
-
-        $description = $body -> renderInner();
+        $description = $post -> description ?? '';
         $title = $post -> title ?? ($post -> description !== null ? $post -> shortDescription() : 'Untitled');
 
         return new self($title, $link, $description, (string) $post -> createdAt);

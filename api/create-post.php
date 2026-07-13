@@ -19,7 +19,7 @@ if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0 && $_POST === [] && $_FILES === 
 }
 
 $title = mb_substr(trim((string) ($_POST['title'] ?? '')), 0, 255);
-$description = (string) ($_POST['description'] ?? '');
+$description_raw = (string) ($_POST['description'] ?? '');
 $link_url = trim((string) ($_POST['linkURL'] ?? ''));
 $parent_id = isset($_POST['parentId']) && $_POST['parentId'] !== '' ? (int) $_POST['parentId'] : null;
 
@@ -29,8 +29,35 @@ if (!preg_match('/^lp-[a-f0-9]{32}$/', $link_image_seed) || !UploadProcessor::ex
     $link_image_seed = '';
 }
 
-if (strlen($description) > 65535) {
-    JSONResponse::error('Post text is too long', 422) -> send();
+// The composer submits the Quill Delta as JSON. Cap the raw input first (bounds
+// the decode work), reject a stale client that still POSTs rendered HTML, then
+// reduce to the ops we render and derive the plaintext the `description` column
+// (and search/meta/RSS) uses. $description_value / $description_delta_value stay
+// null for a blank body, so both columns agree there's no rich content.
+$description_value = null;
+$description_delta_value = null;
+$description_ops = [];
+
+if ($description_raw !== '') {
+    if (strlen($description_raw) > 262144) {
+        JSONResponse::error('Post text is too long', 422) -> send();
+    }
+
+    if (!is_array(json_decode($description_raw, true))) {
+        JSONResponse::error('Your editor is out of date. Please refresh the page and try again.', 426) -> send();
+    }
+
+    $description_ops = Delta::sanitize(Delta::decode($description_raw));
+    $description_plaintext = Delta::plainText($description_ops);
+
+    if (strlen($description_plaintext) > 65535) {
+        JSONResponse::error('Post text is too long', 422) -> send();
+    }
+
+    if ($description_plaintext !== '') {
+        $description_value = $description_plaintext;
+        $description_delta_value = json_encode(['ops' => $description_ops], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
 }
 
 if ($link_url !== '') {
@@ -78,7 +105,7 @@ if ($uploaded_files !== null && !UploadProcessor::hasFreeDiskSpace((int) array_s
 }
 
 $has_files = $uploaded_files !== null && count(array_filter($uploaded_files['error'], fn ($error) => $error === UPLOAD_ERR_OK)) > 0;
-$has_text = trim(strip_tags($description)) !== '' || $link_url !== '';
+$has_text = $description_value !== null || $link_url !== '';
 
 // A post is either a media post or a link post, never both. The composer
 // enforces this in the UI (each field hides when the other is used), but the
@@ -120,7 +147,6 @@ SELECT `userId`
 }
 
 $title_value = $title !== '' ? $title : null;
-$description_value = $description !== '' ? $description : null;
 $link_url_value = $link_url !== '' ? $link_url : null;
 
 $valid_files = [];
@@ -169,7 +195,7 @@ if ($needs_async) {
 
     RateLimiter::recordAttempt($async_upload_rate_key);
 
-    $batch_id = UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $link_url_value, $valid_files);
+    $batch_id = UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files);
 
     $worker = escapeshellarg(__DIR__ . '/../bin/process-upload.php');
     exec('setsid php ' . $worker . ' ' . escapeshellarg($batch_id) . ' > /dev/null 2>&1 &');
@@ -178,10 +204,10 @@ if ($needs_async) {
 }
 
 $stmt = mysqli_prepare($mysqli, '
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `linkURL`)
-    VALUES (?, ?, ?, ?, ?)
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
+    VALUES (?, ?, ?, ?, ?, ?)
 ');
-mysqli_stmt_bind_param($stmt, 'iisss', $current_user -> userId, $parent_id, $title_value, $description_value, $link_url_value);
+mysqli_stmt_bind_param($stmt, 'iissss', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
 mysqli_stmt_execute($stmt);
 $post_id = (int) mysqli_insert_id($mysqli);
 
@@ -250,6 +276,7 @@ $post -> userId = (int) $current_user -> userId;
 $post -> parentId = $parent_id;
 $post -> title = $title_value;
 $post -> description = $description_value;
+$post -> descriptionDelta = $description_delta_value;
 $post -> linkURL = $link_url_value;
 $post -> createdAt = date('Y-m-d H:i:s');
 $post -> items = $items;

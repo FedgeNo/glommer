@@ -1,0 +1,149 @@
+/**
+ * Client-side mirror of the PHP ReportCard (src/Classes/ReportCard.php) - the
+ * moderation card the admin reports page appends on scroll from the data
+ * api/report-history.php returns. Left column: who reported what, the reported
+ * content itself (a bare post, a message body, a user's profile card, or a
+ * "no longer exists" notice), the reason, and when. Right column: the same ban
+ * / delete / dismiss buttons the server renders, whose delegated handlers live
+ * in main.js.
+ */
+class ReportCard {
+    reportId = null;
+    reporterId = null;
+    reporterUsername = null;
+    targetType = null;
+    targetId = null;
+    reason = null;
+    createdAt = null;
+    targetUserId = null;
+    targetUsername = null;
+    target = null;
+    element = null;
+
+    static fromData(data) {
+        const card = new ReportCard();
+        Object.assign(card, data);
+        return card;
+    }
+
+    /** Mirrors ReportCard::targetContentElement - the reported item itself. */
+    targetContentElement() {
+        const target = this.target || { kind: 'missing' };
+
+        if (target.kind === 'post' && target.post) {
+            return Post.fromData(target.post).postElement();
+        }
+
+        if (target.kind === 'message') {
+            const quote = document.createElement('blockquote');
+            quote.className = 'ReportedContent';
+            quote.textContent = target.body || '';
+            return quote;
+        }
+
+        if (target.kind === 'user' && target.user) {
+            return user_card_element(target.user);
+        }
+
+        // missing / unknown - a muted notice (mirrors the PHP Notice element).
+        const notice = document.createElement('p');
+        notice.className = 'Muted Notice';
+        notice.textContent = target.message || 'Unknown content type.';
+        return notice;
+    }
+
+    toElement() {
+        const card = document.createElement('div');
+        card.className = 'Card ReportCard d-flex gap-3 align-items-start';
+
+        const details = document.createElement('div');
+        details.className = 'ReportDetails d-flex flex-column gap-2';
+
+        const summary = document.createElement('div');
+        summary.appendChild(document.createTextNode(capitalize(this.targetType) + ' #' + this.targetId + ' reported by '));
+
+        const reporter_link = document.createElement('a');
+        reporter_link.href = window.siteURL + '/users/' + this.reporterUsername + '/';
+        reporter_link.textContent = this.reporterUsername;
+        summary.appendChild(reporter_link);
+        details.appendChild(summary);
+
+        details.appendChild(this.targetContentElement());
+
+        if (this.reason !== null && this.reason !== undefined) {
+            const reason_line = document.createElement('p');
+            reason_line.textContent = 'Reason: ' + this.reason;
+            details.appendChild(reason_line);
+        }
+
+        if (this.createdAt) {
+            const meta = document.createElement('time');
+            meta.className = 'Muted text-sm RelativeTime';
+            meta.dateTime = parse_server_date(this.createdAt).toISOString();
+            meta.textContent = format_relative_time(this.createdAt);
+            details.appendChild(meta);
+        }
+
+        card.appendChild(details);
+
+        const actions = document.createElement('div');
+        actions.className = 'ReportActions d-flex flex-column gap-2 ms-auto';
+
+        // The admin (userId 1) can't be banned, so no Ban Reporter when the
+        // admin filed the report. (The reported user is never the admin - the
+        // report API rejects reports about admin content.)
+        if (Number(this.reporterId) !== 1) {
+            actions.appendChild(this.banButton(this.reporterId, 'Ban Reporter'));
+        }
+
+        if (this.targetUserId !== null && this.targetUserId !== undefined
+            && this.targetUsername !== null && this.targetUsername !== undefined
+            && Number(this.targetUserId) !== Number(this.reporterId)) {
+            actions.appendChild(this.banButton(this.targetUserId, 'Ban Reported User'));
+        }
+
+        // Gate on the resolved kind, not the declared targetType: a target
+        // deleted after the queue was fetched resolves to 'missing', and there's
+        // nothing left to delete.
+        const kind = (this.target && this.target.kind) || 'missing';
+
+        if (kind === 'post' || kind === 'message') {
+            const delete_button = document.createElement('button');
+            delete_button.type = 'button';
+            delete_button.className = 'Btn DeleteReportedContentButton';
+            delete_button.dataset.reportId = this.reportId;
+            delete_button.textContent = 'Delete ' + capitalize(kind);
+            actions.appendChild(delete_button);
+        }
+
+        const dismiss_button = document.createElement('button');
+        dismiss_button.type = 'button';
+        dismiss_button.className = 'Btn DismissReportButton';
+        dismiss_button.dataset.reportId = this.reportId;
+        dismiss_button.textContent = 'Dismiss';
+        actions.appendChild(dismiss_button);
+
+        card.appendChild(actions);
+
+        this.element = card;
+
+        return card;
+    }
+
+    banButton(user_id, label) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'Btn BanButton';
+        button.dataset.userId = user_id;
+        button.textContent = label;
+
+        return button;
+    }
+}
+
+/** Uppercases the first character - the JS side of PHP's ucfirst(). */
+function capitalize(text) {
+    const value = text || '';
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}

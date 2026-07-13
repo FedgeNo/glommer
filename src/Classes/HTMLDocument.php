@@ -25,7 +25,7 @@ class HTMLDocument extends HTMLObject
 
     public function addHeadContent(HTMLObject|CData|string|\DOMNode $item): void
     {
-        $this -> head -> addContents($item);
+        $this -> head -> addContent($item);
     }
 
     /**
@@ -45,9 +45,9 @@ class HTMLDocument extends HTMLObject
      * has are <head> and <body>, so the inherited append-to-own-contents
      * behavior could only ever produce invalid markup here.
      */
-    public function addContents(HTMLObject|CData|string|\DOMNode $item): void
+    public function addContent(HTMLObject|CData|string|\DOMNode $item): void
     {
-        $this -> body -> addContents($item);
+        $this -> body -> addContent($item);
     }
 
     public function toDOM(): \DOMElement

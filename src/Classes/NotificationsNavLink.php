@@ -26,13 +26,13 @@ class NotificationsNavLink extends Div
         $newest_id = $this -> rows !== [] ? (int) $this -> rows[0]['notificationId'] : 0;
         $has_unseen = $newest_id > $this -> lastNotificationId;
 
-        $this -> addContents(new Anchor(ServerURL::absolute('/notifications'), 'Notifications'));
+        $this -> addContent(new Anchor(ServerURL::absolute('/notifications'), 'Notifications'));
 
         $dot = new Span();
         $dot -> class = 'NotificationDot' . ($has_unseen ? ' Active' : '');
-        $this -> addContents($dot);
+        $this -> addContent($dot);
 
-        $this -> addContents(new NotificationDropdown($this -> rows));
+        $this -> addContent(new NotificationDropdown($this -> rows));
 
         return parent::toDOM();
     }

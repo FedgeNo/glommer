@@ -62,6 +62,55 @@ function user_header_element(username, display_name, has_image, image_url, user_
 }
 
 /**
+ * Mirrors User::toDOM(): the full identity card - avatar, name, @username, and
+ * joined date, all one link to the profile - wrapped in a .User.Card. Shared by
+ * OtherUser (which adds action buttons) and the report card's user target
+ * (which shows it plain). Expects {username, displayName, image, userId,
+ * createdAt}.
+ */
+function user_card_element(user) {
+    const div = document.createElement('div');
+    div.className = 'User Card';
+
+    if (user.username) {
+        div.dataset.username = user.username;
+    }
+
+    const link = document.createElement('a');
+    link.className = 'UserLink';
+    link.href = window.siteURL + '/users/' + user.username + '/';
+
+    link.appendChild(avatar_element(Boolean(user.image), user.image, user.displayName || user.username, user.userId));
+
+    const info = document.createElement('div');
+
+    const name_heading = document.createElement('h2');
+    name_heading.textContent = user.displayName || user.username;
+    info.appendChild(name_heading);
+
+    const username_line = document.createElement('div');
+    username_line.className = 'Muted text-sm';
+    username_line.textContent = '@' + user.username;
+    info.appendChild(username_line);
+
+    if (user.createdAt) {
+        const joined = document.createElement('div');
+        joined.className = 'Muted text-sm';
+        joined.textContent = 'Joined ' + parse_server_date(user.createdAt).toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        });
+        info.appendChild(joined);
+    }
+
+    link.appendChild(info);
+    div.appendChild(link);
+
+    return div;
+}
+
+/**
  * The viewer's own clock can't be trusted to be in sync with the server
  * (especially once this runs on machines we don't control), so relative
  * timestamps are computed against the server's clock, corrected for
@@ -156,12 +205,18 @@ function unwrap_math_line_breaks(html) {
 /**
  * Renders LaTeX source found within an element via KaTeX's auto-render
  * extension, if it's loaded on this page (only pages that show post content
- * load it - see Page::create()'s needsMath flag). Display math must use
- * $$...$$ or \[...\]; inline math must use \(...\) - bare single $...$ is
- * deliberately not treated as math, since it's too likely to collide with a
- * literal dollar amount in ordinary post text.
+ * load it - see Page::create()'s needsMath flag). Every delimiter form is
+ * supported so pasted math from other tools just works: $$...$$ and \[...\]
+ * for display, \(...\) and single $...$ for inline. Single $...$ can collide
+ * with a literal dollar amount ("$5 ... $3"), but that's an accepted tradeoff
+ * for recognising the math people actually paste. ($$ is listed before $ so a
+ * display pair isn't mis-read as two empty inline ones.)
  */
 function render_math(element) {
+    // Formula embeds first (independent of the auto-render extension), so a post
+    // body's .PostFormula spans render even where typed-delimiter math wouldn't.
+    render_formulas(element);
+
     if (typeof renderMathInElement !== 'function') {
         return;
     }
@@ -177,8 +232,31 @@ function render_math(element) {
             { left: '$$', right: '$$', display: true },
             { left: '\\[', right: '\\]', display: true },
             { left: '\\(', right: '\\)', display: false },
+            { left: '$', right: '$', display: false },
         ],
         throwOnError: false,
+    });
+}
+
+/**
+ * Renders the formula embeds a Delta carries. Each .PostFormula span holds its
+ * LaTeX source in data-formula - emitted server-side by DeltaRenderer, or built
+ * by render_delta() from a {formula} embed op - with the raw source as fallback
+ * text. KaTeX replaces that with the rendered math. This is the embed path;
+ * render_math() is the separate pass for typed/pasted delimiters in plain text.
+ */
+function render_formulas(element) {
+    if (typeof katex === 'undefined' || typeof katex.render !== 'function') {
+        return;
+    }
+
+    element.querySelectorAll('.PostFormula[data-formula]').forEach((span) => {
+        if (span.dataset.rendered === '1') {
+            return;
+        }
+
+        katex.render(span.dataset.formula, span, { throwOnError: false });
+        span.dataset.rendered = '1';
     });
 }
 
@@ -1535,7 +1613,11 @@ window.addEventListener('scroll', async () => {
 let loading_older_notifications = false;
 
 window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.NotificationList');
+    // The nav dropdown also renders a .NotificationList (and earlier in the
+    // DOM), so target the page's list specifically - querySelector would grab
+    // the dropdown's, which is capped and always has-more=0, and the page list
+    // would never scroll.
+    const list = Array.from(document.querySelectorAll('.NotificationList')).find((candidate) => !candidate.closest('.NotificationDropdown'));
 
     if (!list || list.dataset.hasMore !== '1' || loading_older_notifications) {
         return;
@@ -1579,6 +1661,62 @@ window.addEventListener('scroll', async () => {
     } finally {
         spinner.remove();
         loading_older_notifications = false;
+    }
+});
+
+let loading_older_reports = false;
+
+window.addEventListener('scroll', async () => {
+    // There's only ever one .ReportList (the admin moderation queue), so a
+    // plain querySelector is right - no dropdown-dodging like notifications.
+    const list = document.querySelector('.ReportList');
+
+    if (!list || list.dataset.hasMore !== '1' || loading_older_reports) {
+        return;
+    }
+
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
+    if (!near_bottom) {
+        return;
+    }
+
+    loading_older_reports = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    list.appendChild(spinner);
+
+    try {
+        const before_report_id = list.dataset.oldestReportId;
+
+        const response = await fetch(`${window.siteURL}/api/report-history?beforeReportId=${before_report_id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        const { reports, hasMore: has_more } = data.response;
+
+        list.dataset.hasMore = has_more ? '1' : '0';
+
+        if (reports.length === 0) {
+            return;
+        }
+
+        reports.forEach((report_data) => {
+            const card = ReportCard.fromData(report_data).toElement();
+            list.insertBefore(card, spinner);
+            // A reported post/message can contain math - render it (formula
+            // embeds and typed delimiters) the same as the feed does.
+            render_math(card);
+        });
+
+        list.dataset.oldestReportId = reports[reports.length - 1].reportId;
+    } finally {
+        spinner.remove();
+        loading_older_reports = false;
     }
 });
 
@@ -1968,6 +2106,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const quill = new Quill('#editor', {
         theme: 'snow',
         placeholder: editor_container.dataset.placeholder,
+        modules: {
+            // Only the formats DeltaRenderer / render_delta actually render.
+            // 'formula' opens Quill's KaTeX-backed formula input (KaTeX is
+            // loaded before Quill so window.katex is present at construction).
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ header: 1 }, { header: 2 }, { header: 3 }],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote', 'code-block', 'code'],
+                ['link', 'formula'],
+                ['clean'],
+            ],
+        },
     });
 
     active_quill = quill;
@@ -1981,8 +2132,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         event.preventDefault();
 
+        // Submit the Delta (Quill's own document model), not rendered HTML -
+        // the server sanitizes and stores it, and both renderers build from it.
         const description_input = form.querySelector('#description-input');
-        description_input.value = quill.root.innerHTML;
+        description_input.value = JSON.stringify(quill.getContents());
 
         const submit_button = form.querySelector('button[type=\'submit\']');
         const progress_bar = form.querySelector('.ProgressBar');

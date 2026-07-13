@@ -1007,6 +1007,16 @@ if ($drift === []) {
 SchemaInstaller::runMaintenance($mysqli);
 ok('schema.sql maintenance applied (denormalized counts recomputed)');
 
+// Backfill descriptionDelta for any post stored before the Delta migration
+// (HTML in `description`, NULL descriptionDelta), now that the column exists.
+// Idempotent and race-safe (guarded by descriptionDelta IS NULL); runs on the
+// runtime connection, which has the UPDATE it needs. A no-op once all posts are
+// converted - the same step Installer::attemptSilentUpgrade() runs on the web path.
+$backfilled_before = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Posts` WHERE `descriptionDelta` IS NULL AND `description` IS NOT NULL');
+$pending = $backfilled_before ? (int) mysqli_fetch_assoc($backfilled_before)['n'] : 0;
+PostDeltaBackfill::run($mysqli);
+ok('post rich-text backfilled to Delta where needed (' . $pending . ' post(s) had legacy HTML)');
+
 // schema.sql also carries a handful of idempotent index migrations (ALTER
 // TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
 // UPDATE above these need admin privileges the runtime account deliberately

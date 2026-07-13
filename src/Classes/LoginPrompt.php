@@ -10,7 +10,7 @@ class LoginPrompt extends Paragraph
     {
         parent::__construct();
 
-        $this -> addContents(new Anchor(ServerURL::absolute('/login'), 'Log in'));
+        $this -> addContent(new Anchor(ServerURL::absolute('/login'), 'Log in'));
         $this -> contents[] = ' to ' . $action . '.';
     }
 }

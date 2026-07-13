@@ -11,7 +11,7 @@ class UploadBatch
 {
     private const PENDING_DIR = __DIR__ . '/../../uploads/private/pending';
 
-    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $link_url, array $files): string
+    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files): string
     {
         // Same lottery sweep as UploadProcessor::sweepStagedLinkImages().
         // Triggered here (the web path that stages a batch), not from the
@@ -43,6 +43,7 @@ class UploadBatch
             'parentId' => $parent_id,
             'title' => $title,
             'description' => $description,
+            'descriptionDelta' => $description_delta,
             'linkURL' => $link_url,
             'files' => $staged_files,
         ]));
@@ -97,11 +98,29 @@ class UploadBatch
         $link_url_value = $metadata['linkURL'] !== null && $metadata['linkURL'] !== '' ? $metadata['linkURL'] : null;
         $parent_id = $metadata['parentId'];
 
+        // A batch staged after the Delta migration carries the Delta JSON (and
+        // its description is already the derived plaintext). One staged before
+        // it has no descriptionDelta key and an old-style HTML description -
+        // convert that here so a mid-deploy batch still finishes as a rendered
+        // post rather than a permanently bodyless one.
+        $description_delta_value = $metadata['descriptionDelta'] ?? null;
+
+        if ($description_delta_value === null && $description_value !== null) {
+            $ops = Delta::sanitize(HTMLToDelta::convert($description_value));
+
+            if (Delta::isBlank($ops)) {
+                $description_value = null;
+            } else {
+                $description_value = Delta::plainText($ops);
+                $description_delta_value = json_encode(['ops' => $ops], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
+
         $post_stmt = mysqli_prepare($mysqli, '
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `linkURL`)
-    VALUES (?, ?, ?, ?, ?)
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
+    VALUES (?, ?, ?, ?, ?, ?)
 ');
-        mysqli_stmt_bind_param($post_stmt, 'iisss', $metadata['userId'], $parent_id, $title_value, $description_value, $link_url_value);
+        mysqli_stmt_bind_param($post_stmt, 'iissss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
         mysqli_stmt_execute($post_stmt);
         $post_id = (int) mysqli_insert_id($mysqli);
 

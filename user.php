@@ -37,7 +37,7 @@ $page = Page::create($name, 'Posts by ' . $name . ' on Glommer', $profile_user -
 
 $page -> addMetaContent(new RSSLink(ServerURL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
 
-$page -> addContents($profile_user);
+$page -> addContent($profile_user);
 
 $limit = 20;
 $fetch_limit = $limit + 1;
@@ -66,8 +66,8 @@ if ($has_more) {
 }
 
 if ($feed_rows !== []) {
-    $page -> addContents(new Heading2('Posts'));
-    $page -> addContents(FeedList::fromRows('user', $feed_rows, $has_more, $user_id));
+    $page -> addContent(new Heading2('Posts'));
+    $page -> addContent(FeedList::fromRows('user', $feed_rows, $has_more, $user_id));
 }
 
 $page -> send();

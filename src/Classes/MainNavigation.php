@@ -27,6 +27,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
                 new Anchor(ServerURL::absolute('/users/' . $current_user -> username . '/friends'), 'Friends'),
                 new Anchor(ServerURL::absolute('/users/'), 'Users'),
+                new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
                 new Anchor(ServerURL::absolute('/search'), 'Search'),
                 new Anchor(ServerURL::absolute('/messages/'), 'Messages'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
@@ -55,9 +56,10 @@ class MainNavigation extends HTMLObject
                 $account_menu_links
             ));
         } else {
-            // Logged-out visitors get the same main menu, but with only the
-            // Help item - everything else in it needs an account.
+            // Logged-out visitors get the same main menu, but only the items
+            // that don't need an account: the public Tags directory and Help.
             $this -> addContent(new NavDropdown($brand, [
+                new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
             ]));
             $account_links -> addContent(new Anchor(ServerURL::absolute('/login'), 'Log in'));

@@ -13,7 +13,7 @@ Glommer is a self-hosted social publishing platform - posts, replies, friends, m
 - **Users** - find people by username/display name, plus friend-of-friend suggestions ranked by mutual friends
 - **Messaging** - direct conversations with other users
 - **Live messaging** - conversations update in real time over a WebSocket connection when the other person replies
-- **Notifications** - live-updating via WebSocket (toast pop-ups, unseen-count dot) for likes, replies, friend requests/acceptances, messages, and finished media processing
+- **Notifications** - live-updating via WebSocket (toast pop-ups, unseen-count dot) for likes, replies, friend requests/acceptances, messages, and media-processing results (a post going live, or files that couldn't be processed)
 - **Help** - a public, searchable help section at `/help/` (articles authored in-code, searched in-PHP)
 - **Moderation** - blocking users; reporting a specific post, message, or user; an admin/mod reports queue with content snapshots (showing the reported post/message state at report time, not what it's since been edited to)
 - **Site settings** - an admin panel for the optional Cloudflare Turnstile CAPTCHA (sign-up/sign-in bot protection), a custom favicon, and the editable Terms of Service (`/terms/`) and Privacy Policy
@@ -25,12 +25,14 @@ Glommer is a self-hosted social publishing platform - posts, replies, friends, m
 
 ## Requirements
 
-- PHP 8.1+ with the `mysqli`, `gd`, `curl`, `dom`, `libxml`, `fileinfo`, and `mbstring` extensions
+- PHP 8.1+ with the `mysqli`, `gd`, `curl`, `dom`, `libxml`, `fileinfo`, and `mbstring` extensions (the WebSocket and upload-worker daemons also use `pcntl` and `sockets`)
 - MySQL or MariaDB
-- `ffmpeg`/`ffprobe` on `PATH` (for video/audio uploads), with `exec()`/`shell_exec()` enabled
+- For video/audio uploads: `ffmpeg`, `ffprobe`, `timeout` (coreutils), and `bash` on `PATH`, with `exec()`/`shell_exec()` enabled - each transcode runs sandboxed under wall-clock, CPU, and memory limits
 - Outbound HTTPS access (for link preview fetching)
 - A web server (e.g. Apache with `mod_rewrite`) pointed at the project root, running the included `.htaccess`
-- `bin/websocket-server.php` running as a **separate, long-running process** - live notifications and messaging are a primary feature, and both `bin/install.php` and the web setup wizard verify it's reachable before installation completes
+- Two long-running background processes, both **separate from the web server** and both set up for you by `bin/install.php`:
+  - `bin/websocket-server.php` - powers live notifications and messaging (the installers verify it's reachable before completing)
+  - `bin/upload-worker.php` - transcodes queued video/audio uploads at a bounded concurrency
 
 ## Running the WebSocket server
 
@@ -68,6 +70,39 @@ The `WatchdogSec=30` line enables systemd watchdog monitoring - if the daemon's 
 
 Before `.env` exists yet (a fresh install), it runs with `config.php`'s defaults (`WS_PORT=8090`, `WS_SECRET=change-me`) - that's fine for the install-time connectivity check, since both the daemon and the installer start fresh.
 
+## Running the upload worker
+
+`bin/upload-worker.php` turns queued video/audio uploads into finished posts. When someone uploads media, the web request stages the files to disk and returns immediately; this worker drains that queue in the background - transcoding each file with ffmpeg, publishing the post when it's ready, and notifying the author over the WebSocket. Uploads that need no transcoding (images) are handled inline in the request and don't touch this queue.
+
+It processes at a bounded concurrency - `UPLOAD_WORKER_CONCURRENCY` in `.env` (default 2) - so a burst of uploads can't spawn unlimited concurrent ffmpeg processes and overwhelm the host; raise it on a box with spare cores. A file whose transcode repeatedly kills the worker is dropped and the post goes live with whatever succeeded; if nothing does, the author is told the upload failed. Without this service running, staged uploads simply queue on disk until it starts.
+
+Recommended: a user-level systemd service, exactly like the WebSocket one:
+
+```ini
+# ~/.config/systemd/user/glommer-upload-worker.service
+[Unit]
+Description=Glommer media upload worker
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/php /path/to/glommer/bin/upload-worker.php
+Restart=always
+RestartSec=2
+WatchdogSec=30
+WorkingDirectory=/path/to/glommer
+
+[Install]
+WantedBy=default.target
+```
+
+```
+systemctl --user daemon-reload
+systemctl --user enable --now glommer-upload-worker.service
+loginctl enable-linger "$USER"   # same as the WebSocket service
+```
+
+`bin/install.php` offers to set this up automatically, the same way it does the WebSocket service.
+
 ## Installation
 
 There are two equivalent guided installers - a web setup wizard and an interactive CLI - plus a fully manual path. All three end in the same place: a provisioned database, a least-privilege runtime account, and a populated schema.
@@ -98,6 +133,7 @@ php bin/install.php
 
 - Runs every environment check and reports all of them at once (colored, when the terminal supports it).
 - If the WebSocket server is the only thing missing, offers to write the user-level systemd unit itself (correct paths filled in), enable it, start it, and re-check - no manual unit-file editing.
+- Sets up the media upload-worker service (`glommer-upload-worker.service`) the same way when it isn't enabled, and keeps every service's unit file in sync with the current template on each run.
 - If no backup has ever completed, offers to run one now (proving the mechanism works) and, once it succeeds, set up a nightly systemd timer for it - same idea as the WebSocket unit above.
 - Proves HTTPS is actually being served (a real TLS connection to your configured hostname) and that Apache's `ServerName`/`UseCanonicalName` genuinely block Host-header spoofing (a live forged-Host-header request gets refused, not redirected).
 - With no `.env` present, walks through the same questions as the web form (with the same defaults), provisions the database/runtime account/schema, and writes `.env`.
@@ -117,7 +153,7 @@ Re-running it on a healthy install is always safe - it changes nothing unless so
    ```
    Then create the runtime account and grant it `SELECT, INSERT, UPDATE, DELETE` on that database only - it deliberately doesn't get `CREATE`/`ALTER`/`DROP`.
 3. Make sure `uploads/` (and its subdirectories) are writable by the web server user - `bin/install.php` (below) creates them for you if missing.
-4. Start the WebSocket server (see above) with this `.env` already in place.
+4. Start the WebSocket server and the upload worker (see above) with this `.env` already in place.
 5. Verify everything with `php bin/install.php` (see "Interactive CLI" above - on an already-configured install it acts as a pure checker/repairer).
 6. Visit the site and sign up - the first account created becomes the site's administrator.
 
@@ -236,3 +272,5 @@ Since pages are https, browsers connect to the WebSocket daemon with `wss://` (W
 
 - **Foreign keys**: the content tables (`Posts`, `FeedItems`, `Likes`, `Friendships`, `Blocks`, `Messages`, `Timelines`, `RememberTokens`) carry real foreign keys with `ON DELETE CASCADE`. The system relies on these to enforce data consistency - a user deletion cascades to their posts, which cascade to replies nested under them, which cascade to likes on those replies, etc. all in one atomic transaction.
 - **Static assets revalidate on every load** (`Cache-Control: no-cache` = cache but revalidate). This is intentional: avatars and the custom favicon are overwritten in place under stable URLs, so every request checks the server for a fresher version rather than trusting an old cached copy.
+- **Media uploads** are transcoded out-of-band by the upload-worker service draining a disk-backed queue at a bounded concurrency, so an upload burst can't overwhelm the host. Each ffmpeg run is sandboxed - restricted to the local-file protocol (no SSRF), gated by a container-format allowlist, and capped on wall-clock, CPU, and memory - and source metadata is stripped from the output. A post is assembled from whatever files transcode successfully.
+- **Passwords** are hashed with bcrypt (PHP's `password_hash`), each with its own random salt stored inside the hash; on login, a hash made with an older algorithm or cost is transparently re-hashed to the current default.

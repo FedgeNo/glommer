@@ -569,9 +569,25 @@ class EnvironmentChecker
             return ['ok' => true, 'message' => 'all required PHP extensions loaded (' . implode(', ', array_keys($required_extensions)) . ')'];
         }
 
-        // CLI: extension_loaded() reflects the CLI's own php.ini, which a
-        // split-package distro (separate php-cli/php-fpm packages, each with
-        // their own conf.d) can load independently. Confirm live.
+        // CLI: check the CLI's own extensions first - the installer and the
+        // background scripts (bin/*.php) run on the CLI and need them, so a
+        // missing one here is a hard failure regardless of the web server (and
+        // must be caught as a clean check, not a fatal deep in provisioning).
+        $cli_missing = [];
+
+        foreach ($required_extensions as $extension => $used_for) {
+            if (!extension_loaded($extension)) {
+                $cli_missing[] = $extension . ' (' . $used_for . ')';
+            }
+        }
+
+        if ($cli_missing !== []) {
+            return ['ok' => false, 'message' => 'The CLI is missing PHP extension(s): ' . implode(', ', $cli_missing) . ' - the installer and background scripts need them. Install them (e.g. php-<name>, or php-mysqlnd for mysqli) and re-run.'];
+        }
+
+        // Then confirm the WEB SAPI's extensions live, which a split-package
+        // distro (separate php-cli/php-fpm packages, each with their own conf.d)
+        // can load independently of the CLI's.
         $live = self::liveFacts();
 
         if ($live === null || !is_array($live['extensions'] ?? null)) {

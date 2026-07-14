@@ -1399,13 +1399,31 @@ function host_is_public_domain(string $host): bool
 }
 
 /**
+ * The binary name of this box's package manager ('dnf'|'apt-get'|'yum'|
+ * 'zypper'|'pacman'), or null if none is found - nothing is assumed to be
+ * present. dnf is preferred over yum where both exist. Shared by
+ * package_install_command() and the prerequisite installer so neither
+ * reinvents detection.
+ */
+function detected_package_manager(): ?string
+{
+    foreach (['dnf', 'apt-get', 'yum', 'zypper', 'pacman'] as $binary) {
+        if (trim((string) shell_exec('command -v ' . escapeshellarg($binary) . ' 2>/dev/null')) !== '') {
+            return $binary;
+        }
+    }
+
+    return null;
+}
+
+/**
  * A best-effort package-install command prefix for this box's package manager
  * (dnf/apt/yum/zypper/pacman), or null if none is found - nothing is assumed to
  * be present. Non-interactive.
  */
 function package_install_command(): ?string
 {
-    $managers = [
+    $commands = [
         'dnf' => 'dnf install -y',
         'apt-get' => 'apt-get install -y',
         'yum' => 'yum install -y',
@@ -1413,13 +1431,231 @@ function package_install_command(): ?string
         'pacman' => 'pacman -S --noconfirm',
     ];
 
-    foreach ($managers as $binary => $command) {
-        if (trim((string) shell_exec('command -v ' . escapeshellarg($binary) . ' 2>/dev/null')) !== '') {
-            return $command;
+    $manager = detected_package_manager();
+
+    return $manager === null ? null : $commands[$manager];
+}
+
+/**
+ * Before anything else runs, make sure the box actually HAS what the installer
+ * needs to reach provisioning: the required PHP CLI extensions, a MariaDB
+ * server, and the mysqldump client. Auto-installs the missing pieces when run
+ * as root on a distribution whose package names we know (RHEL/Debian families);
+ * otherwise prints the exact packages to install by hand and exits.
+ *
+ * Called as the very first step of top-level execution - before any check,
+ * before mysqli is touched - because a missing mysqli extension or absent DB
+ * server would otherwise surface as a fatal deep inside provisioning.
+ */
+function ensure_system_prerequisites(): void
+{
+    // ---- 1. Detect what's missing ----
+
+    // Mirrors EnvironmentChecker::checkExtensions' required list.
+    $required_extensions = ['mysqli', 'gd', 'curl', 'dom', 'libxml', 'fileinfo', 'mbstring'];
+    $missing_extensions = [];
+
+    foreach ($required_extensions as $extension) {
+        if (!extension_loaded($extension)) {
+            $missing_extensions[] = $extension;
         }
     }
 
-    return null;
+    // No DB server at all: neither a server binary on PATH nor a systemd unit
+    // for one (the "Unit mariadb.service could not be found" case).
+    $has_db_binary = trim((string) shell_exec('command -v mariadbd 2>/dev/null')) !== ''
+        || trim((string) shell_exec('command -v mysqld 2>/dev/null')) !== '';
+    $has_db_unit = false;
+
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '') {
+        foreach (['mariadb.service', 'mysqld.service', 'mysql.service'] as $unit) {
+            if (str_contains((string) shell_exec('systemctl list-unit-files ' . escapeshellarg($unit) . ' 2>/dev/null'), $unit)) {
+                $has_db_unit = true;
+
+                break;
+            }
+        }
+    }
+
+    $need_mariadb_server = !$has_db_binary && !$has_db_unit;
+
+    // mysqldump specifically (bin/backup.php calls it by that name); the
+    // client package also provides mariadb-dump, so either satisfies "present".
+    $need_mysqldump = trim((string) shell_exec('command -v mysqldump 2>/dev/null')) === ''
+        && trim((string) shell_exec('command -v mariadb-dump 2>/dev/null')) === '';
+
+    if ($missing_extensions === [] && !$need_mariadb_server && !$need_mysqldump) {
+        return;
+    }
+
+    // ---- 2. Human-readable list + package mapping ----
+
+    $missing_labels = [];
+
+    foreach ($missing_extensions as $extension) {
+        $missing_labels[] = 'PHP extension: ' . $extension;
+    }
+
+    if ($need_mariadb_server) {
+        $missing_labels[] = 'MariaDB server (no database server installed)';
+    }
+
+    if ($need_mysqldump) {
+        $missing_labels[] = 'mysqldump (database backup client)';
+    }
+
+    $manager = detected_package_manager();
+
+    $family_maps = [
+        'rhel' => [
+            'mysqli' => 'php-mysqlnd',
+            'gd' => 'php-gd',
+            'curl' => 'php-curl',
+            'dom' => 'php-xml',
+            'libxml' => 'php-xml',
+            'fileinfo' => 'php-common',
+            'mbstring' => 'php-mbstring',
+            'mariadb-server' => 'mariadb-server',
+            'mysqldump' => 'mariadb',
+        ],
+        'debian' => [
+            'mysqli' => 'php-mysql',
+            'gd' => 'php-gd',
+            'curl' => 'php-curl',
+            'dom' => 'php-xml',
+            'libxml' => 'php-xml',
+            'fileinfo' => 'php-common',
+            'mbstring' => 'php-mbstring',
+            'mariadb-server' => 'mariadb-server',
+            'mysqldump' => 'mariadb-client',
+        ],
+    ];
+
+    if ($manager === 'dnf' || $manager === 'yum') {
+        $map = $family_maps['rhel'];
+    } elseif ($manager === 'apt-get') {
+        $map = $family_maps['debian'];
+    } else {
+        // zypper/pacman/unknown: we don't map names confidently - fall through
+        // to the instructions-and-exit path.
+        $map = null;
+    }
+
+    $packages = [];
+
+    if ($map !== null) {
+        foreach ($missing_extensions as $extension) {
+            $packages[$map[$extension]] = true;
+        }
+
+        if ($need_mariadb_server) {
+            $packages[$map['mariadb-server']] = true;
+        }
+
+        if ($need_mysqldump) {
+            $packages[$map['mysqldump']] = true;
+        }
+    }
+
+    $packages = array_keys($packages);
+    $install_command = package_install_command();
+
+    // ---- 3. Can't (or shouldn't) auto-install: tell the user what to run ----
+
+    if (!running_as_root() || $install_command === null || $map === null) {
+        heading('System prerequisites');
+        echo "The installer needs these before it can continue, and they're missing:\n";
+
+        foreach ($missing_labels as $label) {
+            echo "  - " . $label . "\n";
+        }
+
+        echo "\n";
+
+        if ($map !== null && $install_command !== null) {
+            echo "Install them (as root), then re-run this script:\n";
+            echo "  sudo " . $install_command . ' ' . implode(' ', array_map('escapeshellarg', $packages)) . "\n";
+        } else {
+            echo "Install the equivalents for your distribution - a MariaDB/MySQL server, the mysqldump\n";
+            echo "client, and the missing php-* extensions - then re-run this script.\n";
+        }
+
+        exit(1);
+    }
+
+    // ---- 4. Auto-install (root + known package names) ----
+
+    heading('System prerequisites');
+    echo "Installing missing prerequisite package(s): " . implode(', ', $packages) . "\n\n";
+
+    passthru($install_command . ' ' . implode(' ', array_map('escapeshellarg', $packages)), $install_code);
+
+    if ($install_code !== 0) {
+        fail('Package installation failed (exit code ' . $install_code . '). Install the package(s) above by hand, then re-run.');
+    }
+
+    ok('Installed: ' . implode(', ', $packages));
+
+    // A freshly installed DB server isn't running yet - start and enable it so
+    // the provisioning step right after this can actually connect. (This
+    // enable/start goes slightly beyond a literal "install", but the DB is
+    // unusable without it.)
+    if ($need_mariadb_server) {
+        $started = false;
+
+        foreach (['mariadb.service', 'mysqld.service', 'mysql.service'] as $unit) {
+            shell_exec('systemctl enable --now ' . escapeshellarg($unit) . ' 2>&1');
+
+            if (trim((string) shell_exec('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')) === 'active') {
+                ok('Database server started and enabled on boot (' . $unit . ')');
+                $started = true;
+
+                break;
+            }
+        }
+
+        if (!$started) {
+            warn('Installed the database server but could not start it automatically - start it by hand (e.g. sudo systemctl enable --now mariadb), then re-run.');
+        }
+    }
+
+    // ---- 5. A newly installed PHP extension isn't loaded in THIS process ----
+
+    if ($missing_extensions !== []) {
+        $still_missing = [];
+
+        foreach ($missing_extensions as $extension) {
+            if (!extension_loaded($extension)) {
+                $still_missing[] = $extension;
+            }
+        }
+
+        // We've already re-exec'd once and an extension STILL won't load:
+        // the package is installed but its module isn't enabled for this PHP
+        // (disabled/absent .ini, or built for a different PHP). Don't loop -
+        // explain the manual fix and stop.
+        if (getenv('GLOMMER_PREREQS_INSTALLED') === '1') {
+            if ($still_missing !== []) {
+                fail('Installed the PHP extension package(s), but ' . implode(', ', $still_missing) . ' still won\'t load - the module is likely disabled (a missing or commented-out .ini in ' . (PHP_CONFIG_FILE_SCAN_DIR ?: 'PHP\'s conf.d') . ') or built for a different PHP than this CLI. Enable it (add "extension=<name>" to a .ini there), then re-run.');
+            }
+
+            return;
+        }
+
+        // First install: re-exec a fresh PHP so the new extension(s) load, with
+        // an env-var guard so a persistently-unloadable extension can't loop.
+        putenv('GLOMMER_PREREQS_INSTALLED=1');
+
+        $arg_string = '';
+
+        foreach (array_slice($_SERVER['argv'] ?? [], 1) as $arg) {
+            $arg_string .= ' ' . escapeshellarg($arg);
+        }
+
+        ok('Re-launching the installer so the newly installed PHP extension(s) load...');
+        passthru(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__FILE__) . $arg_string, $reexec_code);
+        exit($reexec_code);
+    }
 }
 
 /**
@@ -1558,6 +1794,14 @@ function attempt_web_certificate(string $host, string $email): bool
 
     return true;
 }
+
+// ---------- 0. System prerequisites ----------
+
+// Auto-install (or, when we can't, spell out) anything the installer needs
+// before it reaches provisioning: the required PHP extensions, a DB server,
+// and the mysqldump client. Runs first so a missing mysqli/DB server can't
+// surface as a fatal deep inside the steps below.
+ensure_system_prerequisites();
 
 // ---------- 1. Environment ----------
 

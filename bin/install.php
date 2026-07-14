@@ -1363,7 +1363,7 @@ function set_up_system_services(array &$environment_failures): void
         unset($environment_failures['Upload worker service persistence']);
     }
 
-    if (migrate_backup_to_system($service_user, $prior_user, isset($environment_failures['Backups']))) {
+    if (migrate_backup_to_system($service_user, $prior_user, isset($environment_failures['Backups']) && is_file(__DIR__ . '/../.env'))) {
         unset($environment_failures['Backup timer persistence']);
 
         if (EnvironmentChecker::checks()['Backups']['ok']) {
@@ -1563,6 +1563,12 @@ function attempt_web_certificate(string $host, string $email): bool
 
 heading('Environment');
 
+// Whether the site is already configured (.env present). On a fresh box it
+// isn't, so the checks that depend on a provisioned database or a configured
+// site (backups, the WebSocket/upload-worker daemons) can't yet pass - those
+// are deferred rather than blocking, so provisioning below can actually run.
+$is_configured = is_file(__DIR__ . '/../.env');
+
 $run_environment_checks = function (): array {
     $failures = [];
 
@@ -1663,7 +1669,7 @@ reconcile_upload_worker_service_unit();
 // still has to arrive for each step.
 $backups_non_interactive_ok = Env::get('BACKUP_TIMER_CONFIRMED', '') === '1';
 
-if (isset($environment_failures['Backups']) && (is_interactive() || $backups_non_interactive_ok) && !$is_root && offer_first_backup()) {
+if (isset($environment_failures['Backups']) && is_file(__DIR__ . '/../.env') && (is_interactive() || $backups_non_interactive_ok) && !$is_root && offer_first_backup()) {
     $recheck = EnvironmentChecker::checks()['Backups'];
 
     if ($recheck['ok']) {
@@ -1700,6 +1706,28 @@ if (isset($environment_failures['Backup timer persistence']) && (is_interactive(
 // Bring already-installed backup units up to the current template on every run
 // (a no-op when they already match).
 reconcile_backup_timer_units();
+
+// Checks that can't pass until the site is configured (DB provisioned / .env
+// written): a backup needs a database to dump, and the daemons/timers are set
+// up as part of a completed install. On a fresh box these are deferred past the
+// gate so provisioning can run; everything else still blocks. Once configured,
+// they block like any other failure.
+$deferred_check_names = ['Backups', 'WebSocket server', 'WebSocket service persistence', 'Upload worker service persistence', 'Backup timer persistence'];
+
+$deferred_failures = [];
+
+if (!$is_configured) {
+    foreach ($deferred_check_names as $name) {
+        if (isset($environment_failures[$name])) {
+            $deferred_failures[$name] = $environment_failures[$name];
+            unset($environment_failures[$name]);
+        }
+    }
+
+    foreach ($deferred_failures as $name => $message) {
+        warn($name . ': deferred until configuration; will be re-checked after install completes.');
+    }
+}
 
 if ($environment_failures !== []) {
     echo "\n" . count($environment_failures) . ' environment problem(s) listed above - fix them and re-run this script.' . "\n";
@@ -1741,6 +1769,31 @@ if (!is_file(__DIR__ . '/../.env')) {
 
     $admin_connection = null;
 
+    // On a fresh MariaDB/MySQL the root account usually authenticates through the
+    // local unix socket with no password rather than over TCP - so when this runs
+    // under sudo (the OS-root process maps to the DB root), connect that way
+    // automatically instead of failing on a password. The runtime account is
+    // created for host '%' regardless (see Installer::provisionDatabase), so
+    // provisioning over the socket rather than $db_host makes no difference.
+    if ($is_root) {
+        try {
+            $admin_connection = mysqli_connect('localhost', 'root', '');
+            ok('Connected to the database as root through the local socket (no admin password needed).');
+        } catch (\mysqli_sql_exception $exception) {
+            // root has a password set, or a non-standard socket - fall back to asking.
+        }
+    }
+
+    if ($admin_connection === null) {
+        echo "\nOne-time database admin credentials are needed to create the '" . $db_database . "' database\n";
+        echo "and its runtime account (used once, never stored).\n";
+        echo "On a fresh MariaDB/MySQL, root has no password and authenticates only over the local\n";
+        echo "socket: re-run this under sudo to use it automatically, or create a password admin\n";
+        echo "account first -\n\n";
+        echo "  sudo mariadb -e \"CREATE USER 'glommer_admin'@'" . $db_host . "' IDENTIFIED BY 'a-strong-password'; GRANT ALL PRIVILEGES ON *.* TO 'glommer_admin'@'" . $db_host . "' WITH GRANT OPTION;\"\n\n";
+        echo "- then enter that account below (or root and its password, if you have set one).\n\n";
+    }
+
     while ($admin_connection === null) {
         $admin_username = prompt('Database admin username', 'root');
         $admin_password = prompt_hidden('Database admin password');
@@ -1748,7 +1801,9 @@ if (!is_file(__DIR__ . '/../.env')) {
         try {
             $admin_connection = mysqli_connect($db_host, $admin_username, $admin_password, null, (int) $db_port);
         } catch (\mysqli_sql_exception $exception) {
-            fail_line('Could not connect: ' . $exception -> getMessage() . ' - try again.');
+            fail_line('Could not connect: ' . $exception -> getMessage());
+            echo "       On a fresh MariaDB/MySQL, root only authenticates over the local socket - re-run\n";
+            echo "       under sudo, or use a password admin account (see above). Try again.\n";
         }
     }
 
@@ -2234,3 +2289,16 @@ echo "  1. If .env was just created, restart the WebSocket server so it picks up
 echo "     WS_SECRET: " . $ws_restart_command . "\n";
 echo "  2. Visit " . $config['siteURL'] . " and sign up - the first account created becomes\n";
 echo "     the site's administrator.\n";
+
+// Anything deferred at the environment gate (a fresh install couldn't back up a
+// database that didn't exist yet, nor stand up its daemons) was skipped, not
+// resolved - the site is now configured, so a second pass can actually check
+// and fix them. Surface them so they don't silently stay unmet.
+if ($deferred_failures !== []) {
+    echo "\n";
+    warn(count($deferred_failures) . ' check(s) were deferred because the site was not yet configured - now that it is, re-run "php bin/install.php" to verify and set them up:');
+
+    foreach ($deferred_failures as $name => $message) {
+        echo "     - " . $name . "\n";
+    }
+}

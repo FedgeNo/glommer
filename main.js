@@ -1256,6 +1256,31 @@ document.addEventListener('click', async (event) => {
             remove_friend_button.textContent = 'Remove Friend';
             message_link.after(remove_friend_button);
         }
+
+        // On the friends page, the card sits in the pending-requests section -
+        // move it into the friends section instead of leaving it there, so the
+        // live DOM matches what a reload would show (a reload only ever puts
+        // an accepted friendship in FriendList, never PendingFriendRequestList).
+        const pending_list = card.closest('.PaginatedUserList[data-list-type="incoming"]');
+
+        if (pending_list) {
+            card.classList.remove('FriendRequest');
+
+            const friends_list = document.querySelector('.PaginatedUserList[data-list-type="friends"]');
+
+            if (friends_list) {
+                friends_list.querySelector('.Notice')?.remove();
+                friends_list.querySelector('h2').after(card);
+            } else {
+                card.remove();
+            }
+
+            // user-friends.php only renders the pending-requests section at
+            // all when it's non-empty - mirror that once the last card leaves.
+            if (pending_list.querySelectorAll('.OtherUser').length === 0) {
+                pending_list.remove();
+            }
+        }
     }
 });
 
@@ -2339,13 +2364,13 @@ document.addEventListener('change', (event) => {
         return;
     }
 
-    const cancel_button = file_input.closest('.Composer').querySelector('.CancelFileButton');
+    const remove_files_button = file_input.closest('.Composer').querySelector('.RemoveFilesButton');
 
-    cancel_button.style.display = file_input.files.length === 0 ? 'none' : '';
+    remove_files_button.style.display = file_input.files.length === 0 ? 'none' : '';
 });
 
 document.addEventListener('click', (event) => {
-    const button = event.target.closest('.CancelFileButton');
+    const button = event.target.closest('.RemoveFilesButton');
 
     if (!button) {
         return;
@@ -2486,27 +2511,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // reset() empties the fields but fires no input/change event, so
             // re-sync the link/file mutual hiding by hand - after a post both
             // controls show again until one is used again. The file picker's
-            // Cancel button tracks the picker by the same change event, so it
-            // gets the same hand-reset (no files selected anymore).
+            // Remove Files button tracks the picker by the same change event,
+            // so it gets the same hand-reset (no files selected anymore).
             sync_post_composer_fields(form);
 
-            const submitted_cancel_button = form.querySelector('.CancelFileButton');
+            const remove_files_button = form.querySelector('.RemoveFilesButton');
 
-            if (submitted_cancel_button) {
-                submitted_cancel_button.style.display = 'none';
+            if (remove_files_button) {
+                remove_files_button.style.display = 'none';
             }
 
-            const submitted_link_image_preview = form.querySelector('.LinkImagePreview');
+            const link_image_preview = form.querySelector('.LinkImagePreview');
 
-            if (submitted_link_image_preview) {
-                submitted_link_image_preview.style.display = 'none';
-                submitted_link_image_preview.querySelector('.LinkImagePreviewThumb').src = '';
+            if (link_image_preview) {
+                link_image_preview.style.display = 'none';
+                link_image_preview.querySelector('.LinkImagePreviewThumb').src = '';
             }
 
-            const submitted_link_url_input = form.querySelector('[name=\'linkURL\']');
+            const link_url_input = form.querySelector('[name=\'linkURL\']');
 
-            if (submitted_link_url_input) {
-                delete submitted_link_url_input.dataset.lastFetchedUrl;
+            if (link_url_input) {
+                delete link_url_input.dataset.lastFetchedUrl;
             }
 
             if (data.response.processing) {

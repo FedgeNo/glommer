@@ -55,18 +55,12 @@ abstract class Composer extends Form
         $file_input -> attributes['accept'] = 'image/*,video/*,audio/*';
         $file_input -> attributes['aria-label'] = 'Attach images, video, or audio';
 
-        $cancel_file_button = new Button();
-        $cancel_file_button -> type = 'button';
-        $cancel_file_button -> class = 'Btn CancelFileButton';
-        $cancel_file_button -> attributes['style'] = 'display: none';
-        $cancel_file_button -> contents[] = 'Cancel';
-
         $submit_button = new SubmitButton($this -> submitLabel());
         $submit_button -> class = 'Btn';
 
         $actions = new Div();
         $actions -> class = 'd-flex align-items-center gap-2 ms-auto';
-        $actions -> addContent($cancel_file_button);
+        $actions -> addContent(new RemoveFilesButton());
         $actions -> addContent($file_input);
         $actions -> addContent(new EmojiPickerButton());
         $actions -> addContent($submit_button);

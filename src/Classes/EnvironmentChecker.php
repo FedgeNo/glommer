@@ -454,8 +454,10 @@ class EnvironmentChecker
             return null;
         }
 
-        $curl = curl_init();
-        curl_setopt_array($curl, [
+        $config = require __DIR__ . '/../config.php';
+        $host = strtolower((string) (parse_url((string) ($config['siteURL'] ?? ''), PHP_URL_HOST) ?? ''));
+
+        $options = [
             CURLOPT_URL => 'http://127.0.0.1/environment-check',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
@@ -463,7 +465,21 @@ class EnvironmentChecker
             CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_CONNECTTIMEOUT => 3,
             CURLOPT_TIMEOUT => 5,
-        ]);
+        ];
+
+        // Once installed, plain http 301s to the canonical https URL - a real
+        // hostname, never 127.0.0.1. Follow that redirect (so this probe keeps
+        // working with HTTPS enforcement on), but pin the hostname back to the
+        // loopback interface so it doesn't depend on the box reaching its own
+        // public IP (hairpin NAT often can't). The request still carries the
+        // right Host/SNI for the vhost, and the self-signed-cert case is covered
+        // by VERIFYPEER being off above.
+        if ($host !== '' && $host !== '127.0.0.1' && $host !== 'localhost') {
+            $options[CURLOPT_RESOLVE] = [$host . ':443:127.0.0.1', $host . ':80:127.0.0.1'];
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, $options);
 
         $body = curl_exec($curl);
         $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);

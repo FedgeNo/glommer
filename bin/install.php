@@ -881,6 +881,32 @@ function app_service_user(): ?string
 }
 
 /**
+ * The account that owns the existing .env, or null when there's no .env (or it's
+ * root-owned - a broken state we don't want to propagate). The web server has to
+ * be able to read .env, so its owner IS the web-server user - which makes it the
+ * stable choice for the service account when the live web-user probe comes back
+ * empty, instead of flip-flopping the services to the sudo invoker.
+ */
+function env_file_owner(): ?string
+{
+    $env_path = dirname(__DIR__) . '/.env';
+
+    if (!is_file($env_path)) {
+        return null;
+    }
+
+    $owner = @fileowner($env_path);
+
+    if ($owner === false) {
+        return null;
+    }
+
+    $name = uid_to_username($owner);
+
+    return $name !== null && $name !== 'root' ? $name : null;
+}
+
+/**
  * The web server's Unix account (user + primary group) from the live web-SAPI
  * facts, so uploads/ can be group-shared with it. Null when the web server
  * can't be reached or its uid can't be mapped - the caller then leaves uploads/
@@ -1313,9 +1339,15 @@ function set_up_system_services(array &$environment_failures): void
 
     // Run the services AS the web-server user when we can detect it - then the
     // web server and the daemons are one account that owns uploads/ outright.
-    // Otherwise run as the sudo invoker (SUDO_USER / project owner) and leave
-    // uploads/ world-writable (fix_upload_ownership warns).
-    $service_user = $web !== null ? $web['user'] : app_service_user();
+    // When the live probe can't detect it (e.g. the HTTPS-enforcement redirect
+    // makes the loopback http check unreachable), fall back to whoever already
+    // owns .env rather than the sudo invoker: the web server has to be able to
+    // read .env, so its owner IS the web-server user, and keying off it keeps
+    // every service on one stable account instead of flip-flopping the daemons
+    // (and re-chowning .env/uploads) to a different user than the app actually
+    // runs as on each run. Only a brand-new install with no .env falls through
+    // to the invoker.
+    $service_user = $web !== null ? $web['user'] : (env_file_owner() ?? app_service_user());
 
     if ($service_user === null) {
         warn('Could not determine a user to run the services as - the web-server user is undetectable and SUDO_USER is unset (invoke via `sudo`). Skipping system-service setup.');

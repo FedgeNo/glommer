@@ -97,6 +97,10 @@ class Turnstile
             return $fail_open_on_error;
         }
 
+        if ($data['success'] !== true) {
+            error_log('Turnstile siteverify rejected a token: ' . json_encode($data['error-codes'] ?? $data));
+        }
+
         return $data['success'] === true;
     }
 }

@@ -304,7 +304,7 @@ function is_safe_link(url, allowed_schemes) {
 }
 
 /*
- * Linkify mirror of src/Classes/Linkify.php - the constants and logic are pinned
+ * Linkify mirror of src/classes/Linkify.php - the constants and logic are pinned
  * byte-for-byte to the PHP so both renderers produce identical DOM. ASCII-only
  * classes, no \s/\w/\b, no unicode flag, one URL-first left-to-right scan, fresh
  * RegExp per call (so the g-flag's lastIndex never leaks between calls).

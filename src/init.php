@@ -11,7 +11,7 @@ ob_start();
 const GLOMMER_VERSION = '0.9.6';
 
 spl_autoload_register(function (string $class): void {
-    $file = __DIR__ . '/Classes/' . $class . '.php';
+    $file = __DIR__ . '/classes/' . $class . '.php';
 
     if (is_file($file)) {
         require $file;

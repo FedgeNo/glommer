@@ -1,5 +1,5 @@
 /**
- * Client-side mirror of the PHP ReportCard (src/Classes/ReportCard.php) - the
+ * Client-side mirror of the PHP ReportCard (src/classes/ReportCard.php) - the
  * moderation card the admin reports page appends on scroll from the data
  * api/report-history.php returns. Left column: who reported what, the reported
  * content itself (a bare post, a message body, a user's profile card, or a

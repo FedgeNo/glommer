@@ -27,7 +27,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 spl_autoload_register(function (string $class): void {
-    $file = __DIR__ . '/../src/Classes/' . $class . '.php';
+    $file = __DIR__ . '/../src/classes/' . $class . '.php';
 
     if (is_file($file)) {
         require $file;

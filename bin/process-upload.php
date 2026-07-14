@@ -16,7 +16,7 @@ if (PHP_SAPI !== 'cli') {
 ini_set('memory_limit', '512M');
 
 spl_autoload_register(function (string $class): void {
-    $file = __DIR__ . '/../src/Classes/' . $class . '.php';
+    $file = __DIR__ . '/../src/classes/' . $class . '.php';
 
     if (is_file($file)) {
         require $file;

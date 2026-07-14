@@ -39,6 +39,22 @@ if (
     exit;
 }
 
+// Canonical-domain redirect: DNS pointed at this server under a hostname
+// other than the configured siteURL (a stale/leftover domain, someone else's
+// DNS misconfigured to this IP, ...) still gets served unless caught here -
+// Apache/.htaccess have no idea what the "right" domain is, only PHP does
+// (via config's siteURL). Compares against ServerURL::host(), so this is
+// glommer.org in production and localhost on a dev install, automatically.
+// The Host header is only ever compared, never used to build the redirect
+// target (that comes from the configured siteURL) - a forged Host header
+// can't redirect anywhere the config doesn't already say.
+$request_host = strtolower(explode(':', (string) ($_SERVER['HTTP_HOST'] ?? ''), 2)[0]);
+
+if ($site_is_installed && $request_host !== '' && $request_host !== ServerURL::host()) {
+    header('Location: ' . ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/'), true, 301);
+    exit;
+}
+
 session_set_cookie_params([
     'httponly' => true,
     'samesite' => 'Lax',

@@ -777,14 +777,17 @@ function offer_websocket_tls(string $host): bool
     // path containing a literal "$" followed by digits (e.g. an un-expanded
     // "$HOME" left in the path).
     $env_contents = preg_replace_callback('/^WS_TLS_CERT=.*$/m', fn () => 'WS_TLS_CERT=' . $cert_path, $env_contents, -1, $cert_replaced);
+
+    // Older .env files predate these keys - append when there's no line to
+    // replace rather than making the admin add it by hand.
+    if ($cert_replaced === 0) {
+        $env_contents = rtrim($env_contents, "\n") . "\nWS_TLS_CERT=" . $cert_path . "\n";
+    }
+
     $env_contents = preg_replace_callback('/^WS_TLS_KEY=.*$/m', fn () => 'WS_TLS_KEY=' . $key_path, $env_contents, -1, $key_replaced);
 
-    if ($cert_replaced !== 1 || $key_replaced !== 1) {
-        fail_line('.env has no WS_TLS_CERT/WS_TLS_KEY lines to update - add these manually:');
-        echo '       WS_TLS_CERT=' . $cert_path . "\n";
-        echo '       WS_TLS_KEY=' . $key_path . "\n";
-
-        return false;
+    if ($key_replaced === 0) {
+        $env_contents = rtrim($env_contents, "\n") . "\nWS_TLS_KEY=" . $key_path . "\n";
     }
 
     if (file_put_contents($env_path, $env_contents) === false) {
@@ -889,14 +892,17 @@ function configure_websocket_tls_from_web_server(string $host): bool
     // literal "$1"-style sequence isn't treated as a backreference - same
     // reasoning as offer_websocket_tls().
     $env_contents = preg_replace_callback('/^WS_TLS_CERT=.*$/m', fn () => 'WS_TLS_CERT=' . $cert, $env_contents, -1, $cert_replaced);
+
+    // Older .env files predate these keys, so there may be no line to replace -
+    // append it rather than making the admin add it by hand.
+    if ($cert_replaced === 0) {
+        $env_contents = rtrim($env_contents, "\n") . "\nWS_TLS_CERT=" . $cert . "\n";
+    }
+
     $env_contents = preg_replace_callback('/^WS_TLS_KEY=.*$/m', fn () => 'WS_TLS_KEY=' . $key, $env_contents, -1, $key_replaced);
 
-    if ($cert_replaced !== 1 || $key_replaced !== 1) {
-        fail_line('.env has no WS_TLS_CERT/WS_TLS_KEY lines to update - add these manually:');
-        echo '       WS_TLS_CERT=' . $cert . "\n";
-        echo '       WS_TLS_KEY=' . $key . "\n";
-
-        return false;
+    if ($key_replaced === 0) {
+        $env_contents = rtrim($env_contents, "\n") . "\nWS_TLS_KEY=" . $key . "\n";
     }
 
     if (file_put_contents($env_path, $env_contents) === false) {

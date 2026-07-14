@@ -22,6 +22,13 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Let's Encrypt / ACME HTTP-01 challenge files live under /.well-known/ (a
+    # dot-directory) and are fetched over plain HTTP by the CA - serve them
+    # directly, ahead of the dotfile 403 and the https redirect below, or cert
+    # issuance AND automatic renewal would be blocked by our own rules. The
+    # tokens are opaque, public, and short-lived - no secret is exposed.
+    RewriteRule ^\.well-known/acme-challenge/ - [L]
+
     # Block any request into a dotfile OR a dot-directory (.git, .env, .svn,
     # .htaccess, ...). The <FilesMatch> above only ever sees the request
     # basename, so it stops /.env but NOT a file nested under a dot-directory

@@ -819,6 +819,128 @@ function offer_websocket_tls(string $host): bool
 }
 
 /**
+ * Zero-touch WebSocket TLS for a root install: reuse whatever certificate the
+ * web server already serves (self-signed or real - doesn't matter, the point is
+ * the wss:// blocker clears itself with no manual steps). Discovers the live
+ * cert/key from the running web server's config, points WS_TLS_CERT/WS_TLS_KEY
+ * at them, makes them readable by the daemon's user, and restarts the daemon.
+ * Returns false (so the caller falls back to the interactive offer / fail) when
+ * it isn't root, the web server or its cert can't be found, or the cert and key
+ * don't match.
+ */
+function configure_websocket_tls_from_web_server(string $host): bool
+{
+    if (!running_as_root()) {
+        return false;
+    }
+
+    $server = running_web_server();
+    $cert = null;
+    $key = null;
+
+    if ($server === 'apache') {
+        // Apache is last-wins, so scan every SSLCertificateFile/KeyFile across
+        // the config tree and keep the last of each. The anchored grep matches
+        // only lines whose first non-whitespace token IS the directive, so a
+        // commented '#SSLCertificateFile ...' line never matches - no separate
+        // comment stripping needed.
+        $lines = explode("\n", (string) shell_exec('grep -rEhi "^[[:space:]]*SSLCertificate(File|KeyFile)[[:space:]]" /etc/httpd /etc/apache2 2>/dev/null'));
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // KeyFile before File - "SSLCertificateFile" is a prefix of
+            // "SSLCertificateKeyFile", so test the longer name first.
+            if (preg_match('/^SSLCertificateKeyFile\s+(.+)$/i', $line, $matches) === 1) {
+                $key = trim($matches[1], " \t\"'");
+            } elseif (preg_match('/^SSLCertificateFile\s+(.+)$/i', $line, $matches) === 1) {
+                $cert = trim($matches[1], " \t\"'");
+            }
+        }
+    } elseif ($server === 'nginx') {
+        $lines = explode("\n", (string) shell_exec('grep -rEhi "^[[:space:]]*ssl_certificate(_key)?[[:space:]]" /etc/nginx 2>/dev/null'));
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            if (preg_match('/^ssl_certificate_key\s+([^;]+);/i', $line, $matches) === 1) {
+                $key = trim($matches[1], " \t\"'");
+            } elseif (preg_match('/^ssl_certificate\s+([^;]+);/i', $line, $matches) === 1) {
+                $cert = trim($matches[1], " \t\"'");
+            }
+        }
+    } else {
+        return false;
+    }
+
+    if (!is_string($cert) || $cert === '' || !is_string($key) || $key === '' || !is_file($cert) || !is_file($key)) {
+        return false;
+    }
+
+    if (!EnvironmentChecker::webSocketCertificateAndKeyMatch($cert, $key)) {
+        return false;
+    }
+
+    heading('WebSocket TLS');
+
+    $env_path = __DIR__ . '/../.env';
+    $env_contents = (string) file_get_contents($env_path);
+    // preg_replace_callback (not preg_replace) so a cert path containing a
+    // literal "$1"-style sequence isn't treated as a backreference - same
+    // reasoning as offer_websocket_tls().
+    $env_contents = preg_replace_callback('/^WS_TLS_CERT=.*$/m', fn () => 'WS_TLS_CERT=' . $cert, $env_contents, -1, $cert_replaced);
+    $env_contents = preg_replace_callback('/^WS_TLS_KEY=.*$/m', fn () => 'WS_TLS_KEY=' . $key, $env_contents, -1, $key_replaced);
+
+    if ($cert_replaced !== 1 || $key_replaced !== 1) {
+        fail_line('.env has no WS_TLS_CERT/WS_TLS_KEY lines to update - add these manually:');
+        echo '       WS_TLS_CERT=' . $cert . "\n";
+        echo '       WS_TLS_KEY=' . $key . "\n";
+
+        return false;
+    }
+
+    if (file_put_contents($env_path, $env_contents) === false) {
+        fail_line('Could not write .env.');
+
+        return false;
+    }
+
+    putenv('WS_TLS_CERT=' . $cert);
+    putenv('WS_TLS_KEY=' . $key);
+
+    ok('Configured WebSocket TLS to reuse the web server certificate (' . $cert . ')');
+
+    // The daemon runs as the web-server user (the same account
+    // set_up_system_services picks). mod_ssl / Let's Encrypt keys are typically
+    // root-only, so make sure that user can read the cert - ensure_ws_cert_readable
+    // relocates them to /etc/glommer, fixes perms, repoints .env, and restarts the
+    // daemon when it has to.
+    $web = web_server_account();
+    $service_user = $web !== null ? $web['user'] : (env_file_owner() ?? app_service_user());
+
+    if ($service_user === null) {
+        warn('Could not determine which user the WebSocket daemon runs as - .env now points at the web server\'s certificate, but the daemon may not be able to read it (mod_ssl/Let\'s Encrypt keys are often root-only). If wss:// fails, relocate the cert somewhere that user can read and repoint WS_TLS_CERT/WS_TLS_KEY.');
+
+        return true;
+    }
+
+    ensure_ws_cert_readable($service_user, $web);
+
+    // ensure_ws_cert_readable only restarts the daemon when it had to relocate an
+    // unreadable cert (it repoints WS_TLS_CERT to /etc/glommer then). If it no-op'd
+    // (cert already readable), WS_TLS_CERT is still the path we just set, and the
+    // daemon is running on the old .env - restart it here so it picks up the new
+    // WS_TLS_*.
+    if (getenv('WS_TLS_CERT') === $cert
+        && trim((string) shell_exec('systemctl is-active glommer-websocket.service 2>/dev/null')) === 'active') {
+        shell_exec('systemctl restart glommer-websocket.service 2>&1');
+        ok('WebSocket daemon restarted to pick up the new TLS certificate');
+    }
+
+    return true;
+}
+
+/**
  * Whether this run has root privileges (a `sudo php bin/install.php`). Only then
  * can the installer replace the user-level systemd services with SYSTEM units
  * (run as the app's unprivileged user, started on boot with no lingering) and
@@ -1764,18 +1886,22 @@ function http_reachable(string $host): bool
 }
 
 /**
- * Under a root install, tries to obtain the web-server TLS certificate
- * automatically: installs certbot (with the plugin for whichever web server is
- * actually running - Apache or nginx, never assumed) and runs it for the site's
- * hostname, so HTTPS gets set up without the manual step. Only for a real public
- * domain (Let's Encrypt can't issue for localhost) and only once the host is
- * reachable over HTTP (so a not-ready domain doesn't burn Let's Encrypt rate
- * limits). --no-redirect: the app does its own canonical, host-spoof-safe
- * http->https redirect (.htaccess + UseCanonicalName), which certbot's
- * Host-header-based redirect would undermine. --keep-until-expiring makes a
- * re-run reuse an existing cert. When the web server can't be identified we
- * install certbot but leave running it to the admin (we won't guess the plugin).
- * Returns whether a certificate was obtained.
+ * Under a root install, obtains AND installs the web-server TLS certificate
+ * automatically, with zero manual steps even on a plain main-server Apache with
+ * no <VirtualHost> (where `certbot --apache` fails "no vhost on port 80"). It
+ * installs certbot (with the plugin for whichever web server is running - Apache
+ * or nginx, never assumed) and runs the WEBROOT challenge against the project
+ * docroot (the app's .htaccess serves /.well-known/acme-challenge/ over http),
+ * then repoints the running server's certificate directives at the fresh Let's
+ * Encrypt cert. Only for a real public domain (Let's Encrypt can't
+ * issue for localhost) and only once the host is reachable over HTTP (so a
+ * not-ready domain doesn't burn rate limits). --keep-until-expiring makes a
+ * re-run reuse an existing valid cert (so this is safe to call even when a
+ * self-signed cert already "serves"). The config repoint is revert-on-failure:
+ * a bad edit that fails configtest is rolled back and never reloaded, so it
+ * can't strand the running site. Returns true once a certificate was obtained
+ * (even if wiring it in needs manual attention - it warns), false only if
+ * certbot itself failed.
  */
 function attempt_web_certificate(string $host, string $email): bool
 {
@@ -1807,13 +1933,19 @@ function attempt_web_certificate(string $host, string $email): bool
         return false;
     }
 
-    echo "\nObtaining a Let's Encrypt certificate for " . $host . ' (certbot --' . $server . ")...\n";
+    // Obtain with the WEBROOT challenge, not --apache/--nginx: it needs no :80
+    // <VirtualHost> to exist - certbot just drops the token under the docroot and
+    // the app's .htaccess serves it. certonly obtains without touching config;
+    // installing into the server is done ourselves below (revert-on-failure).
+    $docroot = dirname(__DIR__);
+
+    echo "\nObtaining a Let's Encrypt certificate for " . $host . " (certbot certonly --webroot -w " . $docroot . ")...\n";
 
     $email_args = ($email !== '' && $email !== 'noreply@example.com' && filter_var($email, FILTER_VALIDATE_EMAIL) !== false)
         ? '-m ' . escapeshellarg($email)
         : '--register-unsafely-without-email';
 
-    exec('certbot --' . $server . ' --non-interactive --agree-tos --keep-until-expiring --no-redirect '
+    exec('certbot certonly --webroot -w ' . escapeshellarg($docroot) . ' --non-interactive --agree-tos --keep-until-expiring '
         . $email_args . ' -d ' . escapeshellarg($host) . ' 2>&1', $output, $exit_code);
 
     if ($exit_code !== 0) {
@@ -1822,9 +1954,187 @@ function attempt_web_certificate(string $host, string $email): bool
         return false;
     }
 
-    ok('Certificate obtained and ' . $server . ' configured for HTTPS on ' . $host);
+    $live_cert = '/etc/letsencrypt/live/' . $host . '/fullchain.pem';
+    $live_key = '/etc/letsencrypt/live/' . $host . '/privkey.pem';
+
+    if (!is_file($live_cert) || !is_file($live_key)) {
+        warn('certbot reported success but ' . $live_cert . ' is not present - point ' . $server . '\'s certificate directives at the obtained cert by hand, then reload.');
+
+        return true;
+    }
+
+    if ($server === 'nginx') {
+        install_certificate_into_nginx($host, $live_cert, $live_key);
+    } else {
+        install_certificate_into_apache($host, $live_cert, $live_key);
+    }
 
     return true;
+}
+
+/**
+ * Repoints Apache's active SSLCertificateFile/SSLCertificateKeyFile at the given
+ * (Let's Encrypt) cert/key and reloads - safely. It edits every config file
+ * under /etc/httpd or /etc/apache2 that sets those directives, but ALWAYS backs
+ * each up first and runs `apachectl configtest` before reloading: on any
+ * configtest failure it restores every backup and reloads nothing, so a bad edit
+ * can never strand the running site. Idempotent: a no-op when the directives
+ * already point at $cert/$key. Warns (never throws) on anything it can't finish.
+ */
+function install_certificate_into_apache(string $host, string $cert, string $key): void
+{
+    $files = array_filter(explode("\n", trim((string) shell_exec('grep -rEli "^[[:space:]]*SSLCertificate(File|KeyFile)[[:space:]]" /etc/httpd /etc/apache2 2>/dev/null'))));
+
+    if ($files === []) {
+        warn('Obtained a Let\'s Encrypt certificate, but found no SSLCertificateFile/SSLCertificateKeyFile directive under /etc/httpd or /etc/apache2 to repoint - set them to ' . $cert . ' and ' . $key . ' in Apache\'s config, then reload.');
+
+        return;
+    }
+
+    // Already serving the LE cert? Nothing to do.
+    $current = (string) shell_exec('grep -rhEi "^[[:space:]]*SSLCertificate(File|KeyFile)[[:space:]]" ' . implode(' ', array_map('escapeshellarg', $files)) . ' 2>/dev/null');
+
+    if (str_contains($current, $cert) && str_contains($current, $key)) {
+        ok('Apache already serves the Let\'s Encrypt certificate for ' . $host);
+
+        return;
+    }
+
+    // Back up every file BEFORE editing any - roll back the copies already made
+    // and bail (touching nothing) if a backup can't be written.
+    $backups = [];
+
+    foreach ($files as $file) {
+        $backup = $file . '.glommer.bak';
+
+        if (!@copy($file, $backup)) {
+            foreach ($backups as $made) {
+                @unlink($made);
+            }
+
+            warn('Could not back up ' . $file . ' before editing - left Apache\'s config untouched. Set SSLCertificateFile/SSLCertificateKeyFile to ' . $cert . ' / ' . $key . ' by hand, then reload.');
+
+            return;
+        }
+
+        $backups[$file] = $backup;
+    }
+
+    // Replace only the directive VALUE (${1} keeps the directive + leading
+    // whitespace); the LE paths contain no "$"-digit sequence, so a plain
+    // preg_replace is safe here.
+    foreach ($files as $file) {
+        $contents = (string) file_get_contents($file);
+        $contents = preg_replace('/^(\s*SSLCertificateFile\s+).*$/mi', '${1}' . $cert, $contents);
+        $contents = preg_replace('/^(\s*SSLCertificateKeyFile\s+).*$/mi', '${1}' . $key, $contents);
+        @file_put_contents($file, $contents);
+    }
+
+    // NEVER reload a config that doesn't pass configtest.
+    exec('apachectl configtest 2>&1', $test_out, $test_code);
+
+    if ($test_code === 127) {
+        $test_out = [];
+        exec('httpd -t 2>&1', $test_out, $test_code);
+    }
+
+    if ($test_code !== 0) {
+        foreach ($backups as $file => $backup) {
+            @copy($backup, $file);
+            @unlink($backup);
+        }
+
+        warn('Reverted the Apache config change - a Let\'s Encrypt cert was obtained (' . $cert . ') but repointing SSLCertificateFile/SSLCertificateKeyFile failed configtest (' . trim(implode(' | ', array_slice($test_out, -3))) . '). Set them by hand and reload.');
+
+        return;
+    }
+
+    exec('systemctl reload httpd 2>&1', $reload_out, $reload_code);
+
+    if ($reload_code !== 0) {
+        exec('apachectl graceful 2>&1', $reload_out, $reload_code);
+    }
+
+    foreach ($backups as $backup) {
+        @unlink($backup);
+    }
+
+    ok('Obtained and installed Let\'s Encrypt cert for ' . $host);
+}
+
+/**
+ * The nginx analogue of install_certificate_into_apache(): repoints
+ * ssl_certificate/ssl_certificate_key at the LE cert/key, validated with
+ * `nginx -t` and revert-on-failure, then reloads. Best-effort - warns and leaves
+ * the admin to finish if it can't find or safely edit the config.
+ */
+function install_certificate_into_nginx(string $host, string $cert, string $key): void
+{
+    $files = array_filter(explode("\n", trim((string) shell_exec('grep -rEli "^[[:space:]]*ssl_certificate(_key)?[[:space:]]" /etc/nginx 2>/dev/null'))));
+
+    if ($files === []) {
+        warn('Obtained a Let\'s Encrypt certificate, but found no ssl_certificate/ssl_certificate_key directive under /etc/nginx to repoint - set them to ' . $cert . ' and ' . $key . ' by hand, then reload nginx.');
+
+        return;
+    }
+
+    $current = (string) shell_exec('grep -rhEi "^[[:space:]]*ssl_certificate(_key)?[[:space:]]" ' . implode(' ', array_map('escapeshellarg', $files)) . ' 2>/dev/null');
+
+    if (str_contains($current, $cert) && str_contains($current, $key)) {
+        ok('nginx already serves the Let\'s Encrypt certificate for ' . $host);
+
+        return;
+    }
+
+    $backups = [];
+
+    foreach ($files as $file) {
+        $backup = $file . '.glommer.bak';
+
+        if (!@copy($file, $backup)) {
+            foreach ($backups as $made) {
+                @unlink($made);
+            }
+
+            warn('Could not back up ' . $file . ' before editing - left nginx\'s config untouched. Set ssl_certificate/ssl_certificate_key to ' . $cert . ' / ' . $key . ' by hand, then reload.');
+
+            return;
+        }
+
+        $backups[$file] = $backup;
+    }
+
+    foreach ($files as $file) {
+        $contents = (string) file_get_contents($file);
+        $contents = preg_replace('/^(\s*ssl_certificate_key\s+)[^;]*;/mi', '${1}' . $key . ';', $contents);
+        $contents = preg_replace('/^(\s*ssl_certificate\s+)[^;]*;/mi', '${1}' . $cert . ';', $contents);
+        @file_put_contents($file, $contents);
+    }
+
+    exec('nginx -t 2>&1', $test_out, $test_code);
+
+    if ($test_code !== 0) {
+        foreach ($backups as $file => $backup) {
+            @copy($backup, $file);
+            @unlink($backup);
+        }
+
+        warn('Reverted the nginx config change - a Let\'s Encrypt cert was obtained (' . $cert . ') but repointing ssl_certificate/ssl_certificate_key failed nginx -t (' . trim(implode(' | ', array_slice($test_out, -3))) . '). Set them by hand and reload.');
+
+        return;
+    }
+
+    exec('systemctl reload nginx 2>&1', $reload_out, $reload_code);
+
+    if ($reload_code !== 0) {
+        exec('nginx -s reload 2>&1', $reload_out, $reload_code);
+    }
+
+    foreach ($backups as $backup) {
+        @unlink($backup);
+    }
+
+    ok('Obtained and installed Let\'s Encrypt cert for ' . $host);
 }
 
 // ---------- 0. System prerequisites ----------
@@ -2205,11 +2515,13 @@ $server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
 
 $https_serving = EnvironmentChecker::httpsServing($server_name_value);
 
-// Under a root install, if HTTPS isn't live yet, try to obtain the web
-// certificate automatically now that the hostname is set - install and run
-// certbot for whichever web server is running - then re-check. Best-effort: it
-// only ever warns on failure, never hard-fails here.
-if ($is_root && $https_serving !== true) {
+// Under a root install on a real public domain, obtain + install the web
+// certificate automatically now that the hostname is set, then re-check. This
+// runs even when a (self-signed) cert already "serves" - certbot
+// --keep-until-expiring no-ops once a valid Let's Encrypt cert exists, so this
+// also upgrades a self-signed cert to a trusted one. Best-effort: it only ever
+// warns on failure, never hard-fails here.
+if ($is_root && host_is_public_domain($site_host)) {
     if (attempt_web_certificate($site_host, (string) $config['mailFromAddress'])) {
         $https_serving = EnvironmentChecker::httpsServing($server_name_value);
     }
@@ -2285,7 +2597,12 @@ if ($spoof_test === true) {
 // notifications/messaging just stop working). So the WebSocket daemon must
 // be configured for TLS too, or the install isn't actually functional.
 if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
-    if (!is_interactive() || !offer_websocket_tls($site_host)) {
+    // Auto-reuse the web server's own certificate first (root, no prompt), then
+    // fall back to the interactive mkcert offer, then the manual-steps fail().
+    $configured = configure_websocket_tls_from_web_server($site_host)
+        || (is_interactive() && offer_websocket_tls($site_host));
+
+    if (!$configured) {
         fail('WS_TLS_CERT/WS_TLS_KEY are not set in .env, but SITE_URL is https - browsers silently refuse a plain '
             . 'ws:// connection from an https page, so live notifications and messaging would be dead with no '
             . 'visible error. Generate a certificate for ' . $site_host . ' (mkcert is easiest for localhost/dev: '

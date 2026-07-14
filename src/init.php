@@ -86,8 +86,22 @@ $send_server_error = function (): void {
     }
 };
 
-set_exception_handler(function (\Throwable $exception) use ($send_server_error): void {
+// Both handlers below notify the admin in-app on top of logging - wrapped in
+// its own try/catch since Notification::warnAdminSystemError() does a real DB
+// write and a WebSocket push, either of which can itself throw (e.g. the
+// fatal *was* the DB going down); a failure to notify must never take out the
+// error handler itself and skip $send_server_error().
+$warn_admin = function (): void {
+    try {
+        Notification::warnAdminSystemError();
+    } catch (\Throwable $notify_exception) {
+        error_log('Also failed to notify the admin of the above: ' . $notify_exception);
+    }
+};
+
+set_exception_handler(function (\Throwable $exception) use ($send_server_error, $warn_admin): void {
     error_log((string) $exception);
+    $warn_admin();
 
     // Same guard the shutdown handler below already applies - a Throwable
     // thrown after output has already started (mid-way through streaming a
@@ -100,7 +114,7 @@ set_exception_handler(function (\Throwable $exception) use ($send_server_error):
     $send_server_error();
 });
 
-register_shutdown_function(function () use ($send_server_error): void {
+register_shutdown_function(function () use ($send_server_error, $warn_admin): void {
     $error = error_get_last();
     $fatal_error_types = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR];
 
@@ -109,6 +123,7 @@ register_shutdown_function(function () use ($send_server_error): void {
     }
 
     error_log($error['message'] . ' in ' . $error['file'] . ':' . $error['line']);
+    $warn_admin();
     $send_server_error();
 });
 

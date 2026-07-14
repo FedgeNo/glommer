@@ -30,6 +30,8 @@ class Notification {
                 return 'One of your uploads failed to process and was not posted';
             case 'mailerFailed':
                 return 'Email delivery failed - the mailer may be down. Please check your mail configuration.';
+            case 'systemError':
+                return 'A server error occurred. Check the error log for details.';
             default:
                 return this.actorText();
         }

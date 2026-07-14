@@ -55,6 +55,7 @@ class Notification extends HTMLObject
             'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
             'uploadFailed' => 'One of your uploads failed to process and was not posted',
             'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
+            'systemError' => 'A server error occurred. Check the error log for details.',
             'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
             default => $this -> actorText(),
         };
@@ -229,6 +230,28 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
         }
 
         self::create($admin_id, $actor_id, 'mailerFailed', null, true);
+    }
+
+    /**
+     * Notifies the primary admin (userId 1) that an uncaught exception or
+     * fatal error occurred, straight from init.php's error handlers. The
+     * message/stack trace itself stays in error_log (this only flags that
+     * something broke, not what) - the point is the admin finds out right
+     * away instead of only by stumbling onto the log. Throttled the same way
+     * warnAdminMailerFailed() is, so a fatal that repeats on every request
+     * can't flood them with duplicates. $admin_id is both the notified user
+     * and the actor (allow_self) since there's no real actor for a system
+     * error - it just needs to be a valid user for the notification to render.
+     */
+    public static function warnAdminSystemError(): void
+    {
+        $admin_id = 1;
+
+        if (self::hasRecentOfType($admin_id, 'systemError', 5)) {
+            return;
+        }
+
+        self::create($admin_id, $admin_id, 'systemError', null, true);
     }
 
     /**

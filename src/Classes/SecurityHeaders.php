@@ -22,7 +22,11 @@ class SecurityHeaders
         $config = require __DIR__ . '/../config.php';
 
         // https://challenges.cloudflare.com is allowed for the optional Turnstile
-        // CAPTCHA - its script (script-src) and the widget's iframe (frame-src).
+        // CAPTCHA - its script (script-src), the widget's iframe (frame-src), and
+        // the XHR/fetch the widget makes back to Cloudflare during a real
+        // challenge (connect-src). Without connect-src the widget fails with
+        // "Unable to connect to website" on a live domain, even though it passes
+        // on localhost (where Turnstile usually issues no real challenge).
         // Always permitted, not just when Turnstile is on: this runs before the
         // database is available (so we can't check whether it's configured), and
         // it's a single specific trusted host that's inert when unused.
@@ -42,7 +46,7 @@ class SecurityHeaders
             // and browsers block a plain ws:// connection from an https page
             // as mixed content anyway, so allowing ws:// here would buy
             // nothing but a looser policy.
-            'connect-src \'self\' https://cdn.jsdelivr.net wss://*:' . $config['WSPort'],
+            'connect-src \'self\' https://cdn.jsdelivr.net https://challenges.cloudflare.com wss://*:' . $config['WSPort'],
             'object-src \'none\'',
             'base-uri \'self\'',
             'form-action \'self\'',

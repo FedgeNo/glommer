@@ -66,10 +66,12 @@ if ($has_more) {
 }
 
 if ($feed_rows !== []) {
-    // Search this user's own posts (scoped to their userId). While a query is
-    // active the default feed below is hidden and the results take its place
-    // (see main.js); clearing the box brings the feed back.
-    $page -> addContent(new PostSearch($user_id, 'Search ' . $name . '\'s posts...'));
+    if (Auth::check()) {
+        // Search this user's own posts (scoped to their userId). While a query is
+        // active the default feed below is hidden and the results take its place
+        // (see main.js); clearing the box brings the feed back.
+        $page -> addContent(new PostSearch($user_id, 'Search ' . $name . '\'s posts...'));
+    }
 
     $feed_section = new Div();
     $feed_section -> class = 'ProfileFeed';

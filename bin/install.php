@@ -2118,6 +2118,27 @@ if (!is_file(__DIR__ . '/../.env')) {
 
     ok('.env written');
 
+    // The WebSocket daemon was (almost certainly) started before .env existed,
+    // so it's running on config.php's default WS_SECRET - which makes it reject
+    // every client whose token is signed with the real secret just written here,
+    // and fails the WebSocket environment check until it's restarted. Restart it
+    // now if we have the privilege to (a root install manages the system unit;
+    // a non-root install manages its own --user unit, which needs no sudo);
+    // otherwise tell the user the exact command to run.
+    $ws_manual = $is_root ? 'sudo systemctl restart glommer-websocket' : 'systemctl --user restart glommer-websocket';
+
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        warn('Restart the WebSocket server so it loads the new WS_SECRET (no systemctl found - use your process manager).');
+    } else {
+        exec('systemctl ' . ($is_root ? '' : '--user ') . 'restart glommer-websocket.service 2>&1', $ws_output, $ws_exit);
+
+        if ($ws_exit === 0) {
+            ok('Restarted the WebSocket server so it picks up the new WS_SECRET.');
+        } else {
+            warn('Could not restart the WebSocket server automatically (' . trim(implode(' ', $ws_output)) . ') - restart it yourself so it loads the new WS_SECRET: ' . $ws_manual);
+        }
+    }
+
     // Env caches on first read and getenv() keeps serving stale values, so
     // push the values just written into the running process directly - the
     // config.php require below then resolves them without a restart.

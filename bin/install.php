@@ -3359,9 +3359,9 @@ if ($spoof_test === true) {
 } else {
     // Couldn't prove it either way (no reachable response, or no redirect to
     // inspect) - fall back to asking, same as before this check existed.
-    $server_name_question = 'Could not confirm this live. Have you set "ServerName ' . $server_name_value . '" and '
+    $server_name_question = wrap('Could not confirm this live. Have you set "ServerName ' . $server_name_value . '" and '
         . '"UseCanonicalName On" in Apache\'s config (httpd.conf\'s top level if you\'re not using a <VirtualHost>, '
-        . 'or inside the vhost if you are)?';
+        . 'or inside the vhost if you are)?');
 
     if (is_interactive()) {
         if (!confirm($server_name_question)) {

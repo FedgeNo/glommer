@@ -1439,9 +1439,64 @@ function ensure_ws_cert_readable(string $service_user, ?array $web): void
         }
 
         ok('WebSocket cert relocated to ' . $dest_dir . ' (it was unreadable by ' . $service_user . ' in a home dir) and .env repointed.');
+
+        // A Let's Encrypt cert renews every ~60-90 days - certbot overwrites the
+        // archive/ files and repoints the live/ symlinks, but nothing re-copies
+        // the fresh cert to $dest_dir afterward, so this relocation would
+        // silently go stale (eventually expired) without a hook to redo it on
+        // every renewal.
+        if (str_starts_with($cert, '/etc/letsencrypt/live/')) {
+            install_ws_cert_renewal_hook($cert, $key, $dest_cert, $dest_key, $group);
+        }
     } else {
         warn('Copied the WebSocket cert to ' . $dest_dir . ' but couldn\'t update .env - set WS_TLS_CERT="' . $dest_cert . '" and WS_TLS_KEY="' . $dest_key . '" manually.');
     }
+}
+
+/**
+ * Keeps the $dest_cert/$dest_key copy ensure_ws_cert_readable() just made in
+ * sync with future Let's Encrypt renewals. certbot writes the renewed
+ * cert/key into archive/ under new filenames and repoints the live/ symlinks
+ * to them, but nothing else re-copies them to $dest_dir - without this hook,
+ * the daemon would keep serving an aging copy that eventually expires. Reads
+ * from $live_cert/$live_key (the live/ symlink paths, which always resolve
+ * to the newest archive/ files after a renewal), so the hook itself needs no
+ * per-renewal updates. Idempotent - overwrites its own hook script every
+ * install run, safe to call whether or not one already exists.
+ */
+function install_ws_cert_renewal_hook(string $live_cert, string $live_key, string $dest_cert, string $dest_key, string $group): void
+{
+    $hook_dir = '/etc/letsencrypt/renewal-hooks/deploy';
+
+    if (!is_dir($hook_dir) && !@mkdir($hook_dir, 0755, true)) {
+        warn('Could not create ' . $hook_dir . ' - the WebSocket cert copy at ' . $dest_cert . ' won\'t be refreshed on renewal. Recopy it by hand after each Let\'s Encrypt renewal, or create the hook manually (see README).');
+
+        return;
+    }
+
+    $script = "#!/bin/bash\n"
+        . "# Re-copies the renewed Let's Encrypt cert/key to where glommer-websocket.service\n"
+        . "# (running as an unprivileged user, unlike Apache, which reads its cert before\n"
+        . "# dropping privileges) can read them, then restarts it to pick up the renewal.\n"
+        . "# Written by bin/install.php's install_ws_cert_renewal_hook() - re-run the\n"
+        . "# installer to regenerate this file rather than editing it by hand.\n"
+        . "set -euo pipefail\n\n"
+        . 'cp ' . escapeshellarg($live_cert) . ' ' . escapeshellarg($dest_cert) . "\n"
+        . 'cp ' . escapeshellarg($live_key) . ' ' . escapeshellarg($dest_key) . "\n"
+        . 'chgrp ' . escapeshellarg($group) . ' ' . escapeshellarg($dest_cert) . ' ' . escapeshellarg($dest_key) . "\n"
+        . 'chmod 0644 ' . escapeshellarg($dest_cert) . "\n"
+        . 'chmod 0640 ' . escapeshellarg($dest_key) . "\n"
+        . "systemctl restart glommer-websocket.service\n";
+
+    $hook_path = $hook_dir . '/glommer-websocket-cert.sh';
+
+    if (@file_put_contents($hook_path, $script) === false || !@chmod($hook_path, 0755)) {
+        warn('Could not write ' . $hook_path . ' - the WebSocket cert copy at ' . $dest_cert . ' won\'t be refreshed on renewal. Recopy it by hand after each Let\'s Encrypt renewal.');
+
+        return;
+    }
+
+    ok('WebSocket cert renewal hook installed (' . $hook_path . ') - future Let\'s Encrypt renewals will keep ' . $dest_cert . ' in sync automatically.');
 }
 
 /**

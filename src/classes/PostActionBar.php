@@ -28,6 +28,7 @@ class PostActionBar extends HTMLObject
             $actions -> addContent($this -> likeButton());
 
             if ($this -> postUserId === Auth::id()) {
+                $actions -> addContent($this -> editButton());
                 $actions -> addContent($this -> deleteButton());
             } elseif ($this -> postUserId !== 1) {
                 // The admin's posts can't be reported (api/report.php rejects
@@ -100,6 +101,16 @@ SELECT 1
     public static function replyLabel(int $reply_count): string
     {
         return $reply_count === 0 ? 'Reply' : 'Replies (' . $reply_count . ')';
+    }
+
+    protected function editButton(): HTMLObject
+    {
+        $button = new Button();
+        $button -> class = 'Btn EditButton';
+        $button -> attributes['data-item-id'] = (string) $this -> postId;
+        $button -> contents[] = 'Edit';
+
+        return $button;
     }
 
     protected function deleteButton(): HTMLObject

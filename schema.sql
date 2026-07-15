@@ -44,6 +44,7 @@ CREATE TABLE `Posts` (
   `keywords` varchar(255) DEFAULT NULL,
   `linkURL` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `editedAt` datetime DEFAULT NULL,
   `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),

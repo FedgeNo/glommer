@@ -44,6 +44,56 @@ class Hashtag
     }
 
     /**
+     * Like indexPost(), but for an EDITED post whose tags may have changed -
+     * including removed entirely. attach()'s INSERT IGNORE is built for
+     * one-shot creation, where nothing to remove exists yet, so it only ever
+     * adds; a tag an edit dropped would stay linked forever without this
+     * clearing every existing PostHashtags row for $post_id first. Also
+     * handles the all-tags-removed case (attach() no-ops on an empty tag
+     * list, which would leave a stale keywords value behind).
+     *
+     * @param array[] $ops the post's edited Delta ops
+     */
+    public static function reindexPost(int $post_id, array $ops, bool $auto_report = true): void
+    {
+        $tags = Delta::hashtags($ops);
+
+        if (count($tags) > self::MAX_HASHTAGS) {
+            if ($auto_report) {
+                Report::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive hashtags (' . count($tags) . ' tags)');
+            }
+
+            return;
+        }
+
+        $mysqli = Database::connection();
+
+        $clear_stmt = mysqli_prepare($mysqli, '
+DELETE
+    FROM `PostHashtags`
+    WHERE `postId` = ?
+');
+        mysqli_stmt_bind_param($clear_stmt, 'i', $post_id);
+        mysqli_stmt_execute($clear_stmt);
+
+        if ($tags === []) {
+            $empty_keywords = null;
+
+            $keywords_stmt = mysqli_prepare($mysqli, '
+UPDATE `Posts`
+    SET `keywords` = ?
+    WHERE `postId` = ?
+');
+            mysqli_stmt_bind_param($keywords_stmt, 'si', $empty_keywords, $post_id);
+            mysqli_stmt_execute($keywords_stmt);
+
+            return;
+        }
+
+        self::attach($post_id, $tags);
+    }
+
+    /**
      * Records a post's tags: upserts each into Hashtags, links them via
      * PostHashtags, and sets the post's flat keywords copy. Idempotent - safe to
      * re-run (INSERT IGNORE on the join, upsert on the tag), which the backfill

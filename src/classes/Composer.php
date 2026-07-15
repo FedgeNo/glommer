@@ -22,15 +22,19 @@ abstract class Composer extends Form
         $title_link_row -> addContent(new InputField('linkURL', 'Link (optional)', 'text', 'Link (optional)', 255));
         $fields -> addContent($title_link_row);
 
+        // A class, not an id: this composer's editor coexists with an inline
+        // post-edit form's own Quill instance elsewhere on the same page
+        // (see main.js's create_quill_editor) - two elements can't share one
+        // id, and only one page-wide Quill made that impossible before.
         $editor_container = new Div();
-        $editor_container -> id = 'editor';
+        $editor_container -> class = 'QuillEditor';
         $editor_container -> attributes['data-placeholder'] = $this -> editorPlaceholder();
 
-        // Quill turns #editor itself into the toolbar's ql-container sibling
-        // in place, so this inner wrapper (rather than #editor directly) is
-        // what has to be the flex item that narrows - Quill's toolbar ends
-        // up stacked above the editor inside it either way, both narrowing
-        // together alongside the image.
+        // Quill turns .QuillEditor itself into the toolbar's ql-container
+        // sibling in place, so this inner wrapper (rather than .QuillEditor
+        // directly) is what has to be the flex item that narrows - Quill's
+        // toolbar ends up stacked above the editor inside it either way,
+        // both narrowing together alongside the image.
         $editor_column = new Div();
         $editor_column -> class = 'EditorColumn';
         $editor_column -> addContent($editor_container);
@@ -43,7 +47,7 @@ abstract class Composer extends Form
 
         $desc_input = new HiddenInput();
         $desc_input -> name = 'description';
-        $desc_input -> id = 'description-input';
+        $desc_input -> class = 'DescriptionInput';
         $fields -> addContent($desc_input);
 
         $this -> contents[] = $fields;

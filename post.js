@@ -13,6 +13,10 @@ class Post {
     keywords = null;
     linkURL = null;
     createdAt = null;
+    editedAt = null;
+    // Owner-only, same reasoning as the server's data-description-delta -
+    // the untruncated Delta an edit needs to repopulate Quill.
+    rawDescriptionDelta = null;
     items = [];
     imageAltText = null;
     replyCount = 0;
@@ -47,6 +51,20 @@ class Post {
             timestamp_link.appendChild(timestamp);
 
             byline.appendChild(timestamp_link);
+        }
+
+        if (this.editedAt) {
+            const edited_marker = document.createElement('span');
+            edited_marker.className = 'Muted text-sm PostEditedMarker';
+            edited_marker.title = parse_server_date(this.editedAt).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+            });
+            edited_marker.textContent = '(edited)';
+            byline.appendChild(edited_marker);
         }
 
         return byline;
@@ -224,6 +242,15 @@ class Post {
             post.dataset.createdAt = this.createdAt;
         }
 
+        // Owner-only (rawDescriptionDelta is null for anyone else's post, per
+        // Post::toPayload()) - what the edit form needs to repopulate Quill,
+        // without a round trip for a post already on the page.
+        if (Number(this.userId) === Number(window.currentUserId) && this.rawDescriptionDelta !== null) {
+            post.dataset.descriptionDelta = this.rawDescriptionDelta;
+            post.dataset.editTitle = this.title || '';
+            post.dataset.editLinkUrl = this.linkURL || '';
+        }
+
         if (this.authorUsername) {
             post.appendChild(this.authorBylineToElement());
         }
@@ -303,6 +330,13 @@ class Post {
             actions.appendChild(like_button);
 
             if (Number(this.userId) === Number(window.currentUserId)) {
+                const edit_button = document.createElement('button');
+                edit_button.type = 'button';
+                edit_button.className = 'Btn EditButton';
+                edit_button.dataset.itemId = this.postId;
+                edit_button.textContent = 'Edit';
+                actions.appendChild(edit_button);
+
                 const delete_button = document.createElement('button');
                 delete_button.type = 'button';
                 delete_button.className = 'Btn DeleteButton';

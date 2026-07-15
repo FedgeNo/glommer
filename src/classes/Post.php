@@ -21,6 +21,10 @@ class Post extends HTMLObject
     public ?string $keywords = null;
     public ?string $linkURL = null;
     public ?string $createdAt = null;
+    // Set the first time the author edits this post (api/edit-post.php) -
+    // null for a never-edited post. Shown as a small "(edited)" marker next
+    // to the timestamp; there's no edit history, just this one flag.
+    public ?string $editedAt = null;
     // Set once a moderator dismisses a report on this post - blocks it from
     // being reported again (see api/report.php).
     public ?int $reportsDismissed = null;
@@ -55,6 +59,19 @@ class Post extends HTMLObject
 
         if ($this -> createdAt !== null) {
             $this -> attributes['data-created-at'] = $this -> createdAt;
+        }
+
+        // The raw, untruncated Delta an edit needs to repopulate Quill -
+        // toPayload()'s descriptionDelta is truncated for feed display, so
+        // editing needs this separately. Only present for the viewer's own
+        // post: nobody else can ever open the edit form, and everyone else's
+        // feed shouldn't ship data they'll never use. Data, not markup - the
+        // client reads it and feeds it straight to Quill.setContents(), no
+        // HTML crosses the wire.
+        if ($this -> userId !== null && Auth::id() === $this -> userId) {
+            $this -> attributes['data-description-delta'] = $this -> descriptionDelta ?? '';
+            $this -> attributes['data-edit-title'] = $this -> title ?? '';
+            $this -> attributes['data-edit-link-url'] = $this -> linkURL ?? '';
         }
 
         if ($this -> author !== null) {
@@ -207,6 +224,15 @@ class Post extends HTMLObject
             $timestamp_link -> addContent(new RelativeTime($this -> createdAt, 'M j, Y'));
 
             $byline -> addContent($timestamp_link);
+        }
+
+        if ($this -> editedAt !== null) {
+            $edited_marker = new Span();
+            $edited_marker -> class = 'Muted text-sm PostEditedMarker';
+            $edited_marker -> attributes['title'] = date('F j, Y g:i A', strtotime($this -> editedAt));
+            $edited_marker -> contents[] = '(edited)';
+
+            $byline -> addContent($edited_marker);
         }
 
         return $byline;
@@ -519,6 +545,8 @@ SELECT `postId`
             ];
         }
 
+        $is_own_post = $this -> userId !== null && Auth::id() === $this -> userId;
+
         return [
             'postId' => (int) $this -> postId,
             'userId' => (int) $this -> userId,
@@ -530,9 +558,13 @@ SELECT `postId`
             'description' => $this -> description,
             'descriptionDelta' => $description_delta,
             'descriptionTruncated' => $description_truncated,
+            // The raw, untruncated Delta an edit needs to repopulate Quill -
+            // owner-only, same reasoning as toDOM()'s data-description-delta.
+            'rawDescriptionDelta' => $is_own_post ? $this -> descriptionDelta : null,
             'seeMoreURL' => $this -> seeMoreURL(),
             'linkURL' => $this -> linkURL,
             'createdAt' => $this -> createdAt,
+            'editedAt' => $this -> editedAt,
             'items' => $items,
             'imageAltText' => $this -> imageAltText(),
             'replyCount' => $reply_count,

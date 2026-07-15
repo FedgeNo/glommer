@@ -1220,6 +1220,170 @@ document.addEventListener('click', async (event) => {
     }
 });
 
+/**
+ * Post editing is entirely client-built (no PHP EditPostForm/SSR counterpart
+ * needed - it never appears except through this interaction, same as
+ * show_confirm()'s dialog). Clicking Edit hides the .Post content in place
+ * and inserts a small form with its own .QuillEditor, pre-populated from the
+ * data-description-delta/data-edit-title/data-edit-link-url attributes
+ * Post::toDOM()/toPayload() only ever include for the viewer's own posts.
+ * Saving replaces just the .Post element with a freshly built one (post.js's
+ * postElement(), same as post creation) - the surrounding .Thread/.PostPage
+ * wrapper and its PostActionBar (reply/like counts, unaffected by an edit)
+ * are left alone.
+ */
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('.EditButton');
+
+    if (!button) {
+        return;
+    }
+
+    const wrapper = button.closest('.Thread, .PostPage');
+    const post_element = wrapper ? wrapper.querySelector('.Post') : null;
+
+    if (!post_element || post_element.dataset.descriptionDelta === undefined) {
+        return;
+    }
+
+    // Already editing this post - a second click on Edit shouldn't stack a
+    // second form.
+    if (wrapper.querySelector('.PostEditForm')) {
+        return;
+    }
+
+    post_element.style.display = 'none';
+
+    const form = document.createElement('form');
+    form.className = 'PostEditForm Card d-flex flex-column gap-2';
+    form.dataset.postId = post_element.dataset.postId;
+
+    const fields = document.createElement('fieldset');
+
+    const title_row = document.createElement('div');
+    title_row.className = 'PostComposerFields d-flex gap-2';
+
+    const title_input = document.createElement('input');
+    title_input.type = 'text';
+    title_input.name = 'title';
+    title_input.placeholder = 'Title (optional)';
+    title_input.maxLength = 255;
+    title_input.value = post_element.dataset.editTitle || '';
+    title_input.setAttribute('aria-label', 'Title (optional)');
+    title_row.appendChild(title_input);
+
+    const link_input = document.createElement('input');
+    link_input.type = 'text';
+    link_input.name = 'linkURL';
+    link_input.placeholder = 'Link (optional)';
+    link_input.maxLength = 255;
+    link_input.value = post_element.dataset.editLinkUrl || '';
+    link_input.setAttribute('aria-label', 'Link (optional)');
+    title_row.appendChild(link_input);
+
+    fields.appendChild(title_row);
+
+    const editor_container = document.createElement('div');
+    editor_container.className = 'QuillEditor';
+    editor_container.dataset.placeholder = 'Edit your post...';
+    fields.appendChild(editor_container);
+
+    const description_input = document.createElement('input');
+    description_input.type = 'hidden';
+    description_input.className = 'DescriptionInput';
+    description_input.name = 'description';
+    fields.appendChild(description_input);
+
+    form.appendChild(fields);
+
+    const actions = document.createElement('div');
+    actions.className = 'd-flex align-items-center gap-2 ms-auto';
+
+    const cancel_button = document.createElement('button');
+    cancel_button.type = 'button';
+    cancel_button.className = 'Btn EditFormCancelButton';
+    cancel_button.textContent = 'Cancel';
+    actions.appendChild(cancel_button);
+
+    const save_button = document.createElement('button');
+    save_button.type = 'submit';
+    save_button.className = 'Btn';
+    save_button.textContent = 'Save';
+    actions.appendChild(save_button);
+
+    form.appendChild(actions);
+
+    post_element.insertAdjacentElement('afterend', form);
+
+    const quill = create_quill_editor(editor_container);
+
+    try {
+        const raw_delta = post_element.dataset.descriptionDelta;
+        quill.setContents(raw_delta ? JSON.parse(raw_delta) : { ops: [] });
+    } catch (error) {
+        // Malformed/empty stored Delta - start from an empty editor rather
+        // than leaving the form broken.
+    }
+});
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('.EditFormCancelButton');
+
+    if (!button) {
+        return;
+    }
+
+    const form = button.closest('.PostEditForm');
+    const post_element = form.previousElementSibling;
+
+    form.remove();
+
+    if (post_element && post_element.classList.contains('Post')) {
+        post_element.style.display = '';
+    }
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.PostEditForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const quill = form.querySelector('.QuillEditor').__quill;
+    form.querySelector('.DescriptionInput').value = JSON.stringify(quill.getContents());
+
+    const save_button = form.querySelector('button[type=\'submit\']');
+    save_button.disabled = true;
+
+    const post_id = form.dataset.postId;
+    const post_element = form.previousElementSibling;
+
+    const result = await api_post('/api/edit-post', {
+        postId: post_id,
+        title: form.querySelector('[name=\'title\']').value,
+        linkURL: form.querySelector('[name=\'linkURL\']').value,
+        description: form.querySelector('.DescriptionInput').value,
+    });
+
+    if (result === null) {
+        save_button.disabled = false;
+        return;
+    }
+
+    const updated_post = Post.fromData(result);
+    const new_post_element = updated_post.postElement();
+
+    if (post_element && post_element.classList.contains('Post')) {
+        post_element.replaceWith(new_post_element);
+    }
+
+    form.remove();
+    render_math(new_post_element);
+});
+
 document.addEventListener('click', async (event) => {
     const button = event.target.closest('.AcceptFriendButton');
 
@@ -2382,8 +2546,6 @@ document.addEventListener('click', (event) => {
     file_input.dispatchEvent(new Event('change', { bubbles: true }));
 });
 
-let active_quill = null;
-
 /**
  * Adds a native `title` (hover tooltip) to each Quill toolbar button - the snow
  * theme provides none. Plain-format buttons map by their ql-* class; the header
@@ -2424,14 +2586,16 @@ function add_toolbar_tooltips(quill) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const editor_container = document.querySelector('#editor');
-
-    if (!editor_container) {
-        return;
-    }
-
-    const quill = new Quill('#editor', {
+/**
+ * Creates a Quill editor inside $editor_container (a .QuillEditor div) and
+ * stores the instance directly on that element (.__quill) rather than in a
+ * single shared variable - more than one can be mounted on a page at once
+ * (the page's own composer plus an inline post-edit form, say), so each
+ * caller looks up "this form's Quill" from its own .QuillEditor rather than
+ * a page-wide global.
+ */
+function create_quill_editor(editor_container) {
+    const quill = new Quill(editor_container, {
         theme: 'snow',
         placeholder: editor_container.dataset.placeholder,
         modules: {
@@ -2449,24 +2613,37 @@ document.addEventListener('DOMContentLoaded', () => {
         },
     });
 
-    active_quill = quill;
+    editor_container.__quill = quill;
 
     // Quill's snow toolbar ships no button tooltips - add native title hints so
     // hovering a toolbar button explains what it does.
     add_toolbar_tooltips(quill);
 
+    return quill;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const editor_container = document.querySelector('.QuillEditor');
+
+    if (editor_container) {
+        create_quill_editor(editor_container);
+    }
+
     document.addEventListener('submit', (event) => {
         const form = event.target.closest('.Composer');
+        const form_editor_container = form ? form.querySelector('.QuillEditor') : null;
 
-        if (!form || !form.contains(editor_container)) {
+        if (!form || !form_editor_container || !form_editor_container.__quill) {
             return;
         }
 
         event.preventDefault();
 
+        const quill = form_editor_container.__quill;
+
         // Submit the Delta (Quill's own document model), not rendered HTML -
         // the server sanitizes and stores it, and both renderers build from it.
-        const description_input = form.querySelector('#description-input');
+        const description_input = form.querySelector('.DescriptionInput');
         description_input.value = JSON.stringify(quill.getContents());
 
         const submit_button = form.querySelector('button[type=\'submit\']');
@@ -2687,11 +2864,12 @@ document.addEventListener('emoji-click', (event) => {
 
     const emoji = event.detail.unicode;
     const form = panel.closest('form');
+    const quill = form.querySelector('.QuillEditor')?.__quill;
 
-    if (form.querySelector('#editor') && active_quill) {
-        const selection = active_quill.getSelection(true);
-        active_quill.insertText(selection.index, emoji, 'user');
-        active_quill.setSelection(selection.index + emoji.length, 0, 'user');
+    if (quill) {
+        const selection = quill.getSelection(true);
+        quill.insertText(selection.index, emoji, 'user');
+        quill.setSelection(selection.index + emoji.length, 0, 'user');
         return;
     }
 
@@ -2818,12 +2996,14 @@ document.addEventListener('input', (event) => {
             }
         }
 
-        if (preview.description && active_quill) {
-            const current_description = active_quill.getText().trim();
+        const quill = form.querySelector('.QuillEditor')?.__quill;
+
+        if (preview.description && quill) {
+            const current_description = quill.getText().trim();
             const autofilled_description = form.dataset.autofilledDescription ?? '';
 
             if (current_description === '' || current_description === autofilled_description) {
-                active_quill.setText(preview.description);
+                quill.setText(preview.description);
                 form.dataset.autofilledDescription = preview.description.trim();
             }
         }

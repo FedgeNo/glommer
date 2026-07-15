@@ -3336,6 +3336,12 @@ document.addEventListener('submit', async (event) => {
         return;
     }
 
+    if (!data.reset) {
+        submit_button.disabled = false;
+        show_toast('That\'s already your password - nothing was changed.');
+        return;
+    }
+
     // Swap the form out for the same "you're done" message the old
     // server-rendered page showed, rather than a redirect - there's nowhere
     // more useful to send someone who just reset their password than back

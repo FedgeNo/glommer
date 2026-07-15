@@ -11,7 +11,9 @@ $token = (string) ($payload['token'] ?? '');
 $new_password = (string) ($payload['newPassword'] ?? '');
 $confirm_password = (string) ($payload['confirmPassword'] ?? '');
 
-if ($token === '' || PasswordReset::verify($token) === null) {
+$user_id = $token !== '' ? PasswordReset::verify($token) : null;
+
+if ($user_id === null) {
     JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
 }
 
@@ -26,6 +28,15 @@ if (strlen($new_password) > 72) {
 
 if ($new_password !== $confirm_password) {
     JSONResponse::error('Passwords do not match.', 422) -> send();
+}
+
+$user = User::load($user_id);
+
+// A no-op, same treatment as resubmitting your current email in
+// change-email.php: nothing to do, and the token stays valid so a follow-up
+// attempt with an actually-different password still works.
+if ($user -> passwordHash !== null && password_verify($new_password, $user -> passwordHash)) {
+    JSONResponse::success(['reset' => false]) -> send();
 }
 
 PasswordReset::consume($token, $new_password);

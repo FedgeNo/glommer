@@ -834,7 +834,13 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
         return false;
     }
 
-    exec('mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1', $mkcert_output, $mkcert_exit);
+    // env -u SUDO_ASKPASS, same reasoning as web_user_can_read()/
+    // user_systemctl(): mkcert can shell out to sudo itself (e.g. checking/
+    // installing the CA into a system or NSS trust store), and exec()'s child
+    // has no tty on stdin, so an inherited SUDO_ASKPASS would make any of
+    // that prefer a graphical prompt over the real terminal - a no-go over
+    // SSH.
+    exec('env -u SUDO_ASKPASS mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1', $mkcert_output, $mkcert_exit);
 
     if ($mkcert_exit !== 0 || !is_file($cert_path) || !is_file($key_path)) {
         fail_line('mkcert failed: ' . implode(' ', $mkcert_output));

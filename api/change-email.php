@@ -24,7 +24,7 @@ if ($new_email === '' || filter_var($new_email, FILTER_VALIDATE_EMAIL) === false
 }
 
 if (strcasecmp($new_email, (string) $current_user -> email) === 0) {
-    JSONResponse::error('That is already your email address', 422) -> send();
+    JSONResponse::success(['changed' => false]) -> send();
 }
 
 // Each change sends a verification email - cap it so the endpoint can't be

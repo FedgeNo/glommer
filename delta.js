@@ -407,7 +407,12 @@ function linkify_classify(matched) {
             return null;
         }
 
-        return { segment: { type: 'mention', text: matched, username }, trailing: '' };
+        // Lowercased for both display and the link - unlike a hashtag, a
+        // username is always stored lowercase, so there's no legitimate
+        // original casing to keep. Mirrors Linkify::classify() exactly.
+        const lowercased = username.toLowerCase();
+
+        return { segment: { type: 'mention', text: '@' + lowercased, username: lowercased }, trailing: '' };
     }
 
     let end = matched.length;

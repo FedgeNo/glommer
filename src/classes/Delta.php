@@ -221,9 +221,9 @@ class Delta
     }
 
     /**
-     * The distinct @mentioned usernames in a post's body (original casing,
-     * first-seen order, de-duplicated case-insensitively since usernames are
-     * case-insensitive - schema.sql's utf8mb4_unicode_ci). Same skip rules as
+     * The distinct @mentioned usernames in a post's body (lowercased -
+     * Linkify::tokenize() already lowercases them, same as usernames
+     * themselves always are - first-seen order. Same skip rules as
      * hashtags() (inline code, already-linked text). Uncapped; Mention::indexPost
      * applies the spam policy and resolves which usernames are real users.
      *
@@ -249,11 +249,11 @@ class Delta
 
             foreach (Linkify::tokenize($insert) as $segment) {
                 if ($segment['type'] === 'mention') {
-                    $usernames[strtolower($segment['username'])] = $segment['username'];
+                    $usernames[$segment['username']] = true;
                 }
             }
         }
 
-        return array_values($usernames);
+        return array_keys($usernames);
     }
 }

@@ -100,7 +100,7 @@ class Linkify
      * Splits text into ordered segments for the renderer to build nodes from.
      * Each is ['type' => 'text'|'url'|'hashtag'|'mention', 'text' => shown text,
      * and for a hashtag 'tag' => the lowercased tag, or for a mention
-     * 'username' => the original-cased username]. Adjacent text segments are
+     * 'username' => the lowercased username]. Adjacent text segments are
      * merged so a run's formatting wraps one node per contiguous stretch
      * (matching today's output for URL/hashtag/mention-free text exactly).
      *
@@ -164,10 +164,13 @@ class Linkify
                 return null;
             }
 
-            // Original casing kept (not lowercased) - the eventual /users/
-            // lookup is case-insensitive (utf8mb4_unicode_ci), so there's
-            // nothing to canonicalize here, unlike a hashtag's storage key.
-            return ['segment' => ['type' => 'mention', 'text' => $matched, 'username' => $username], 'trailing' => ''];
+            // Lowercased for both display and the link - unlike a hashtag
+            // (an arbitrary, casing-optional user-chosen tag), a username is
+            // always stored lowercase (signup.php/main.js's signup form both
+            // enforce it), so there's no legitimate original casing to keep.
+            $lowercased = strtolower($username);
+
+            return ['segment' => ['type' => 'mention', 'text' => '@' . $lowercased, 'username' => $lowercased], 'trailing' => ''];
         }
 
         $url = rtrim($matched, self::URL_TRAILING_TRIM);

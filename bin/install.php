@@ -2002,6 +2002,133 @@ function ensure_httpd_can_query_systemd_status(): void
     ok('SELinux policy module installed - the web server can now read systemd unit status (Site Settings\' status lines will reflect reality).');
 }
 
+// The venv the trending-entities pipeline's (future) NER extractor shells out
+// to, the same way ffmpeg/ffprobe already are - a dedicated Python
+// environment, not anything installed into system Python, kept off to the
+// side under /opt so it's unambiguously separate from both the app and the
+// OS. World-readable (not writable) is enough: the web server only ever
+// execs into it, nothing writes there at runtime.
+const NER_VENV_DIR = '/opt/glommer-ner';
+
+/**
+ * Installs spaCy + its small English model into a dedicated venv at
+ * NER_VENV_DIR, world-readable so the web server (whatever user PHP-FPM/
+ * Apache runs as, which is also who'll exec() into this - same as the
+ * ffmpeg/ffprobe pattern) can use it without needing to be root or share an
+ * account with it. Idempotent: skips straight to the SELinux-context step
+ * (still safe to re-run) if the venv already has both spaCy and the model.
+ * RHEL/Fedora-only package names for now (this box's actual distro) - falls
+ * through to manual instructions elsewhere, matching how
+ * ensure_system_prerequisites() already treats an unmapped distro family.
+ */
+function ensure_ner_environment(): void
+{
+    heading('NER environment (running as root)');
+
+    $venv_python = NER_VENV_DIR . '/bin/python';
+
+    $already_set_up = is_file($venv_python)
+        && run(':python -c "import spacy; spacy.load(\'en_core_web_sm\')" 2>/dev/null', ['python' => $venv_python])['exitCode'] === 0;
+
+    if ($already_set_up) {
+        ok('spaCy + en_core_web_sm already installed at ' . NER_VENV_DIR);
+    } else {
+        $manager = detected_package_manager();
+
+        if ($manager !== 'dnf' && $manager !== 'yum') {
+            warn('No known package names for this distribution\'s package manager (' . ($manager ?? 'none detected') . ') - install Python 3 (with pip, venv, and development headers) and a C++ compiler by hand, then re-run. See README.md.');
+
+            return;
+        }
+
+        $packages = ['python3', 'python3-pip', 'python3-devel', 'gcc-c++'];
+        $install_command = package_install_command();
+
+        echo "Installing prerequisite package(s) for the NER environment: " . implode(', ', $packages) . "\n\n";
+        passthru($install_command . ' ' . implode(' ', array_map('escapeshellarg', $packages)), $install_code);
+
+        if ($install_code !== 0) {
+            warn('Package installation failed (exit code ' . $install_code . ') - install ' . implode(', ', $packages) . ' by hand, then re-run.');
+
+            return;
+        }
+
+        if (!is_dir(NER_VENV_DIR)) {
+            $venv_result = run('python3 -m venv :dir 2>&1', ['dir' => NER_VENV_DIR]);
+
+            if ($venv_result['exitCode'] !== 0) {
+                warn('Could not create the venv at ' . NER_VENV_DIR . ' - create it by hand (python3 -m venv ' . NER_VENV_DIR . '), then re-run.', $venv_result);
+
+                return;
+            }
+        }
+
+        $venv_pip = NER_VENV_DIR . '/bin/pip';
+
+        echo "Installing spaCy (this can take a few minutes)...\n";
+
+        // spaCy's CLI imports click directly (spacy/cli/_util.py), but typer -
+        // spaCy's own declared dependency for that CLI - stopped pulling click
+        // in transitively as of typer 0.27.0, so it has to be installed
+        // alongside spacy explicitly or `spacy download` below fails with
+        // ModuleNotFoundError: No module named 'click'.
+        $pip_result = run(':pip install -U pip wheel spacy click 2>&1', ['pip' => $venv_pip]);
+
+        if ($pip_result['exitCode'] !== 0) {
+            warn('Failed to install spaCy into ' . NER_VENV_DIR . ' - install it by hand (' . NER_VENV_DIR . '/bin/pip install spacy), then re-run.', $pip_result);
+
+            return;
+        }
+
+        echo "Downloading the en_core_web_sm model...\n";
+        $model_result = run(':python -m spacy download en_core_web_sm 2>&1', ['python' => $venv_python]);
+
+        if ($model_result['exitCode'] !== 0) {
+            warn('Failed to download en_core_web_sm - download it by hand (' . NER_VENV_DIR . '/bin/python -m spacy download en_core_web_sm), then re-run.', $model_result);
+
+            return;
+        }
+
+        ok('spaCy + en_core_web_sm installed at ' . NER_VENV_DIR);
+    }
+
+    // World-readable so the web server can read/exec every file regardless of
+    // which account it runs as; never writable (nothing writes here at
+    // runtime, and it doesn't need to survive being wrong the way uploads/
+    // does - a bad permission here just means the NER call fails, not data
+    // loss). find-based, no chown binary assumed, same approach
+    // make_dirs_world_writable() uses elsewhere in this file.
+    run('find :dir -type d -exec chmod 755 {} \; -o -type f -exec chmod 644 {} \;', ['dir' => NER_VENV_DIR]);
+    run('find :dir -type f \( -path "*/bin/*" -o -name "*.so" -o -name "*.so.*" \) -exec chmod 755 {} \;', ['dir' => NER_VENV_DIR]);
+
+    // /opt gets none of /var/www's built-in SELinux path equivalence - on an
+    // Enforcing host, httpd_t is denied generic content there by default
+    // policy regardless of how correct these Unix permissions are (the same
+    // reasoning ensure_ws_cert_readable() already applies to /etc/glommer).
+    ensure_selinux_context(NER_VENV_DIR, 'httpd_sys_content_t');
+
+    // numpy/blis/thinc's compiled .so files need text relocation to load -
+    // httpd_t denies execmod on plain httpd_sys_content_t (confirmed live:
+    // spacy's import chain fails with "failed to map segment from shared
+    // object" without this), so every .so under the venv needs the more
+    // specific textrel_shlib_t type instead - the same type Fedora's own
+    // policy already uses for /opt/*/jre*/*.so and other relocatable
+    // third-party libraries under /opt. This has to be a second, narrower
+    // fcontext rule layered on top of the directory-wide one above (matched
+    // by specificity, not application order), not a replacement for it -
+    // everything that ISN'T a .so still needs plain httpd_sys_content_t.
+    if (run('command -v getenforce 2>/dev/null')['output'] !== ''
+        && in_array(run('getenforce 2>/dev/null')['output'], ['Enforcing', 'Permissive'], true)
+        && run('command -v semanage 2>/dev/null')['output'] !== ''
+        && run('command -v restorecon 2>/dev/null')['output'] !== '') {
+        $so_pattern = NER_VENV_DIR . '(/.*)?\.so(\.[^/]*)*';
+        run('semanage fcontext -a -t textrel_shlib_t :pattern 2>/dev/null || semanage fcontext -m -t textrel_shlib_t :pattern 2>/dev/null', ['pattern' => $so_pattern]);
+        run('restorecon -R :dir 2>&1', ['dir' => NER_VENV_DIR]);
+
+        ok('SELinux context set for ' . NER_VENV_DIR . '\'s .so files (textrel_shlib_t, persists across relabels)');
+    }
+}
+
 /**
  * Makes every directory under $root world-writable (0777) - the fallback when
  * the web server's account can't be detected, so it can still create files
@@ -2298,6 +2425,12 @@ function set_up_system_services(array &$environment_failures): void
     // is about the web server (PHP-FPM/Apache) being able to read their status,
     // not about the services themselves.
     ensure_httpd_can_query_systemd_status();
+
+    // Also independent of the service-user detection below - the NER venv is
+    // execed into directly by whatever user PHP-FPM (or a non-FPM SAPI, under
+    // whichever web server fronts it) already runs as, not a separate daemon
+    // account.
+    ensure_ner_environment();
 
     $web = web_server_account();
 
@@ -3532,6 +3665,7 @@ if ($spoof_test === true) {
                 . 'required so the HTTPS redirect can\'t be spoofed via a forged Host header. See README.md\'s HTTPS section.');
         }
 
+        echo "\n";
         ok('ServerName + UseCanonicalName confirmed');
     } elseif (Env::get('SERVERNAME_CONFIRMED', '') === '1') {
         ok('ServerName + UseCanonicalName confirmed (SERVERNAME_CONFIRMED=1)');

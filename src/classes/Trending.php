@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Trending entities: which hashtags (today; any EntityExtractor-produced
- * entity type in general) are hot right now, scored by how many DISTINCT
- * people are talking about them - not how much any one person is - within a
- * fixed-size window of the newest top-level posts.
+ * Trending entities: which hashtags and named entities (people,
+ * organizations, places, products, ...) are hot right now, scored by how
+ * many DISTINCT people are talking about them - not how much any one person
+ * is - within a fixed-size window of the newest top-level posts.
  *
  * The window is a POST COUNT, not a time window - the newest WINDOW_SIZE
  * top-level posts, full stop. No time in the query at all (no WHERE, no
@@ -130,11 +130,16 @@ SELECT MAX(`computedAt`) AS `newest`
         $rows = Post::globalFeedRows(self::WINDOW_SIZE)['rows'];
         $banned = self::bannedKeys();
 
+        $entities_by_row = EntityExtractor::extractBatch(array_map(
+            static fn (array $row): ?string => $row['descriptionDelta'] ?? null,
+            $rows
+        ));
+
         $now = time();
         $stats = [];
 
-        foreach ($rows as $row) {
-            $entities = EntityExtractor::extract($row['descriptionDelta'] ?? null);
+        foreach ($rows as $i => $row) {
+            $entities = $entities_by_row[$i];
 
             if ($entities === []) {
                 continue;

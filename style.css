@@ -1021,6 +1021,14 @@ input[type='file']::file-selector-button {
     border-top: 1px solid var(--hairline);
 }
 
+/* While the inline edit form is open (inserted directly after .Post, ahead of
+   .PostActionBar in the DOM - see main.js's .EditButton handler), a second
+   click on Edit is already a harmless no-op - hide it so it doesn't sit there
+   doing nothing. */
+.PostEditForm ~ .PostActionBar .EditButton {
+    display: none;
+}
+
 .ParentPostLink {
     font-size: 0.85rem;
 }

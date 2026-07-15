@@ -2901,6 +2901,21 @@ function install_certificate_into_nginx(string $host, string $cert, string $key)
 // packages, and cert relocation for the steps that follow.
 offer_root_reexec();
 
+// A root/sudo install writes .env 0600, owned by the web server's own account
+// (see Installer::envContents()'s call site below) - so a LATER run by some
+// other unprivileged user (declining the sudo offer above, or non-interactive)
+// can see the file exists but can't read a byte of it. Left unchecked, that
+// doesn't fail cleanly: Env::get() silently returns defaults for everything
+// in it (DB creds, WS_SECRET, ports), which then surfaces as a pile of
+// misleading check failures - most confusingly, the WebSocket/upload-worker
+// checks would offer to install a REDUNDANT user-level service right on top
+// of the system one that's actually running fine. Fail loudly here instead.
+$env_path = __DIR__ . '/../.env';
+
+if (is_file($env_path) && !is_readable($env_path)) {
+    fail('.env exists but is not readable by this user (' . run('id -un 2>/dev/null')['output'] . ') - a previous root install locked it to the web server\'s own account. Re-run this installer with sudo.');
+}
+
 // ---------- 0. System prerequisites ----------
 
 // Auto-install (or, when we can't, spell out) anything the installer needs

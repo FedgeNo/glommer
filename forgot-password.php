@@ -46,7 +46,7 @@ SELECT *
 $page = Page::create('Forgot Password');
 
 if ($sent) {
-    $page -> addContent(new Paragraph('If that email address is on file, a password reset link has been sent.'));
+    $page -> addContent(new Paragraph('If that email address is on file, a password reset link has been sent. If you don\'t see it, check your junk/spam folder.'));
 } else {
     if ($errors !== []) {
         $page -> addContent(new ErrorList($errors));

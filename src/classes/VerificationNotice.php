@@ -13,7 +13,7 @@ class VerificationNotice extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
-        $this -> contents[] = new Paragraph('Please check your inbox and click the verification link we sent to confirm your email address.');
+        $this -> contents[] = new Paragraph('Please check your inbox and click the verification link we sent to confirm your email address. If you don\'t see it, check your junk/spam folder.');
 
         $actions = new Div();
         $actions -> class = 'd-flex gap-2';

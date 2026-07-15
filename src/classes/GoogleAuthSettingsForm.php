@@ -23,6 +23,7 @@ class GoogleAuthSettingsForm extends Form
         $client_id = new InputField('googleAuthClientId', 'Client ID', 'text', 'Google OAuth client ID', 255);
         $client_id -> value = GoogleAuth::clientId();
         $client_id -> autocomplete = 'off';
+        $client_id -> labelVisible = true;
         $fields -> addContent($client_id);
 
         $secret_is_set = (string) Settings::get(GoogleAuth::CLIENT_SECRET_SETTING, '') !== '';
@@ -31,6 +32,7 @@ class GoogleAuthSettingsForm extends Form
             : 'Google OAuth client secret';
         $secret = new InputField('googleAuthSecret', 'Client secret', 'text', $secret_placeholder, 255);
         $secret -> autocomplete = 'off';
+        $secret -> labelVisible = true;
         $fields -> addContent($secret);
 
         $this -> contents[] = $fields;

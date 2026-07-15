@@ -15,9 +15,12 @@ class ChangeEmailForm extends Form
 
         $new_email = new InputField('newEmail', 'New email address', 'email', 'New email address', 255);
         $new_email -> autocomplete = 'email';
+        $new_email -> labelVisible = true;
         $fields -> addContent($new_email);
 
-        $fields -> addContent(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
+        $current_password = new InputField('currentPassword', 'Current password', 'password', 'Current password');
+        $current_password -> labelVisible = true;
+        $fields -> addContent($current_password);
 
         $this -> contents[] = $fields;
 

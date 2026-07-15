@@ -26,6 +26,7 @@ class AdminSettingsForm extends Form
         $site_key = new InputField('turnstileSiteKey', 'Site key', 'text', 'Cloudflare Turnstile site key', 255);
         $site_key -> value = Turnstile::siteKey();
         $site_key -> autocomplete = 'off';
+        $site_key -> labelVisible = true;
         $fields -> addContent($site_key);
 
         $secret_is_set = (string) Settings::get(Turnstile::SECRET_KEY_SETTING, '') !== '';
@@ -34,6 +35,7 @@ class AdminSettingsForm extends Form
             : 'Cloudflare Turnstile secret key';
         $secret_key = new InputField('turnstileSecretKey', 'Secret key', 'text', $secret_placeholder, 255);
         $secret_key -> autocomplete = 'off';
+        $secret_key -> labelVisible = true;
         $fields -> addContent($secret_key);
 
         $this -> contents[] = $fields;

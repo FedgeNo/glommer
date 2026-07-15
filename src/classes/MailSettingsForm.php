@@ -23,16 +23,19 @@ class MailSettingsForm extends Form
         $host = new InputField('smtpHost', 'SMTP host', 'text', 'SMTP host', 255);
         $host -> value = (string) Settings::get(Mailer::SMTP_HOST_SETTING, '');
         $host -> autocomplete = 'off';
+        $host -> labelVisible = true;
         $fields -> addContent($host);
 
         $port = new InputField('smtpPort', 'SMTP port', 'text', 'SMTP port', 5);
         $port -> value = (string) Settings::get(Mailer::SMTP_PORT_SETTING, '587');
         $port -> autocomplete = 'off';
+        $port -> labelVisible = true;
         $fields -> addContent($port);
 
         $username = new InputField('smtpUsername', 'SMTP username', 'text', 'SMTP username', 255);
         $username -> value = (string) Settings::get(Mailer::SMTP_USERNAME_SETTING, '');
         $username -> autocomplete = 'off';
+        $username -> labelVisible = true;
         $fields -> addContent($username);
 
         $password_is_set = (string) Settings::get(Mailer::SMTP_PASSWORD_SETTING, '') !== '';
@@ -41,6 +44,7 @@ class MailSettingsForm extends Form
             : 'SMTP password';
         $password = new InputField('smtpPassword', 'SMTP password', 'text', $password_placeholder, 255);
         $password -> autocomplete = 'off';
+        $password -> labelVisible = true;
         $fields -> addContent($password);
 
         $encryption = Settings::get(Mailer::SMTP_ENCRYPTION_SETTING, 'tls');

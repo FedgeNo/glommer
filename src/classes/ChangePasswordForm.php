@@ -12,9 +12,19 @@ class ChangePasswordForm extends Form
         $this -> method = 'POST';
 
         $fields = new Fieldset('Change your password');
-        $fields -> addContent(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
-        $fields -> addContent(new InputField('newPassword', 'New password', 'password', 'At least 8 characters'));
-        $fields -> addContent(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));
+
+        $current_password = new InputField('currentPassword', 'Current password', 'password', 'Current password');
+        $current_password -> labelVisible = true;
+        $fields -> addContent($current_password);
+
+        $new_password = new InputField('newPassword', 'New password', 'password', 'At least 8 characters');
+        $new_password -> labelVisible = true;
+        $fields -> addContent($new_password);
+
+        $confirm_password = new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password');
+        $confirm_password -> labelVisible = true;
+        $fields -> addContent($confirm_password);
+
         $this -> contents[] = $fields;
 
         $this -> contents[] = new SubmitButton('Change Password');

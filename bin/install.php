@@ -1362,8 +1362,15 @@ function user_systemctl(string $user, string $args): string
         return '';
     }
 
+    // env -u SUDO_ASKPASS, not just relying on sudo's own defaults: some
+    // desktop sessions have SUDO_ASKPASS pointed at a GUI helper, which sudo
+    // prefers over the controlling terminal whenever stdin isn't a tty (true
+    // here - PHP's exec()/shell_exec() run through a pipe, not the invoking
+    // shell's stdin). A graphical prompt is useless (and just hangs) over a
+    // plain SSH session, so this forces sudo back onto /dev/tty, where a
+    // real terminal - including an SSH one - can actually answer it.
     return (string) shell_exec(
-        'sudo -u ' . escapeshellarg($user)
+        'env -u SUDO_ASKPASS sudo -u ' . escapeshellarg($user)
         . ' XDG_RUNTIME_DIR=/run/user/' . $uid
         . ' systemctl --user ' . $args . ' 2>&1'
     );
@@ -1709,7 +1716,12 @@ function web_user_can_read(string $user, string $path): bool
         return true;
     }
 
-    exec('sudo -u ' . escapeshellarg($user) . ' test -r ' . escapeshellarg($path) . ' 2>/dev/null', $output, $exit_code);
+    // env -u SUDO_ASKPASS, same reasoning as user_systemctl() - stdin isn't a
+    // tty here (exec() pipes it), so sudo would otherwise prefer a graphical
+    // askpass helper if the environment has one configured, which is useless
+    // (and hangs) over SSH. Forcing it off makes sudo fall back to the real
+    // controlling terminal instead.
+    exec('env -u SUDO_ASKPASS sudo -u ' . escapeshellarg($user) . ' test -r ' . escapeshellarg($path) . ' 2>/dev/null', $output, $exit_code);
 
     return $exit_code === 0;
 }

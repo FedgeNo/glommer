@@ -2395,12 +2395,12 @@ window.addEventListener('scroll', async () => {
     }
 });
 
-let loading_older_saved_posts = false;
+let loading_older_bookmarks = false;
 
 window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.SavedPostsList');
+    const list = document.querySelector('.BookmarkList');
 
-    if (!list || list.offsetParent === null || list.dataset.hasMore !== '1' || loading_older_saved_posts) {
+    if (!list || list.offsetParent === null || list.dataset.hasMore !== '1' || loading_older_bookmarks) {
         return;
     }
 
@@ -2410,7 +2410,7 @@ window.addEventListener('scroll', async () => {
         return;
     }
 
-    loading_older_saved_posts = true;
+    loading_older_bookmarks = true;
 
     const spinner = document.createElement('div');
     spinner.className = 'LoadingSpinner';
@@ -2420,7 +2420,7 @@ window.addEventListener('scroll', async () => {
         const before_created_at = encodeURIComponent(list.dataset.oldestBookmarkCreatedAt);
         const before_post_id = list.dataset.oldestBookmarkPostId;
 
-        const response = await fetch(`${window.siteURL}/api/saved-posts-history?beforeCreatedAt=${before_created_at}&beforePostId=${before_post_id}`);
+        const response = await fetch(`${window.siteURL}/api/bookmark-history?beforeCreatedAt=${before_created_at}&beforePostId=${before_post_id}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -2445,7 +2445,7 @@ window.addEventListener('scroll', async () => {
         list.dataset.oldestBookmarkPostId = oldest_post_id;
     } finally {
         spinner.remove();
-        loading_older_saved_posts = false;
+        loading_older_bookmarks = false;
     }
 });
 

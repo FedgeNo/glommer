@@ -100,7 +100,7 @@
     RewriteRule ^terms$ terms.php [L,QSA]
     RewriteRule ^privacy$ privacy.php [L,QSA]
     RewriteRule ^friends-feed$ friends-feed.php [L,QSA]
-    RewriteRule ^saved$ saved-posts.php [L,QSA]
+    RewriteRule ^bookmarks$ bookmarks.php [L,QSA]
     RewriteRule ^search$ search.php [L,QSA]
 
     # messages, help, and users are real collections - only their canonical

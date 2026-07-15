@@ -3,14 +3,15 @@
 declare(strict_types=1);
 
 /**
- * The /saved page's list of the viewer's bookmarked posts. Mirrors FeedList,
- * but cursors on (createdAt, postId) - when each post was bookmarked - rather
- * than a bare oldestPostId, since "most recently saved first" and "most
- * recently posted first" are genuinely different orderings here.
+ * The /bookmarks page's list of the viewer's bookmarked posts. Mirrors
+ * FeedList, but cursors on (createdAt, postId) - when each post was
+ * bookmarked - rather than a bare oldestPostId, since "most recently
+ * bookmarked first" and "most recently posted first" are genuinely different
+ * orderings here.
  */
-class SavedPostsList extends Div
+class BookmarkList extends Div
 {
-    public ?string $class = 'SavedPostsList d-flex flex-column gap-4';
+    public ?string $class = 'BookmarkList d-flex flex-column gap-4';
 
     public ?string $oldestBookmarkCreatedAt = null;
     public ?int $oldestBookmarkPostId = null;

@@ -21,9 +21,9 @@ if ($before_created_at === null || $before_post_id === null) {
 
 $limit = 20;
 
-$saved = Bookmark::rowsForUser((int) $current_user -> userId, $limit, $before_created_at, $before_post_id);
+$bookmarks = Bookmark::rowsForUser((int) $current_user -> userId, $limit, $before_created_at, $before_post_id);
 
-$posts = Post::fromRowsWithItems($saved['rows']);
+$posts = Post::fromRowsWithItems($bookmarks['rows']);
 $post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
 
 $reply_counts = Post::replyCountsForPosts($post_ids);
@@ -39,14 +39,14 @@ foreach ($posts as $post) {
         $reply_counts[$post_id] ?? 0,
         $like_counts[$post_id] ?? 0,
         $liked[$post_id] ?? false,
-        // Every post here is by definition bookmarked - this is the saved list.
+        // Every post here is by definition bookmarked - this is the bookmarks list.
         true
     );
 }
 
 JSONResponse::success([
     'posts' => $post_payloads,
-    'hasMore' => $saved['hasMore'],
-    'oldestBookmarkCreatedAt' => $saved['oldestCreatedAt'],
-    'oldestBookmarkPostId' => $saved['oldestPostId'],
+    'hasMore' => $bookmarks['hasMore'],
+    'oldestBookmarkCreatedAt' => $bookmarks['oldestCreatedAt'],
+    'oldestBookmarkPostId' => $bookmarks['oldestPostId'],
 ]) -> send();

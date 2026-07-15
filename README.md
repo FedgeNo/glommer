@@ -214,14 +214,14 @@ systemctl --user enable --now glommer-backup.timer
 
 Out of the box, mail goes through PHP's `mail()` - the local sendmail. On a typical VPS that mail has no sending reputation and lands in spam folders (or nowhere). For real deliverability, do one of the following:
 
-1. **Use an SMTP relay** - set the `SMTP_*` keys in `.env` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_ENCRYPTION=tls|ssl|none`) and Glommer speaks SMTP to it directly (Stateless, no queue - a failed send is reported immediately).
+1. **Use an SMTP relay** - set the host/port/username/password/encryption from the admin Site Settings page's Mail section (live, no restart needed) and Glommer speaks SMTP to it directly (Stateless, no queue - a failed send is reported immediately).
 2. **Publish SPF/DKIM/DMARC DNS records** for the domain in `MAIL_FROM_ADDRESS`, matching what your relay documents (they hand you the exact records to add). Without them, receiving servers have no reason to trust your mail, and many are configured to reject it outright.
 
 Test with a signup to a mailbox you control before launch. If sending fails outright, Glommer degrades deliberately: a signup whose verification email can't be sent is **verified automatically** instead of leaving the account stuck unverifiable.
 
 ### If you keep the native `mail()` path
 
-Using PHP's `mail()` (no `SMTP_HOST` set) means *your own server* is the sending mail server, so you have to earn its reputation yourself with DNS - a relay normally does all of this for you. Getting it right takes work:
+Using PHP's `mail()` (no SMTP relay host set) means *your own server* is the sending mail server, so you have to earn its reputation yourself with DNS - a relay normally does all of this for you. Getting it right takes work:
 
 1. **A working local MTA.** `mail()` just hands off to the local sendmail binary - something has to actually accept and relay that outbound. Install and configure Postfix (or the distro's `sendmail` / `exim` / `ssmtp` equivalent) to relay outbound.
 2. **SPF** - a TXT record on the sending domain authorizing your server's public IP, e.g. `v=spf1 ip4:YOUR.SERVER.IP -all`. Without it, receivers can't tell your server is allowed to send for the domain.

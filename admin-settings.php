@@ -54,6 +54,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $saved = true;
         }
+    } elseif (isset($_POST['smtpHost']) || isset($_POST['smtpPort']) || isset($_POST['smtpUsername']) || isset($_POST['smtpPassword']) || isset($_POST['smtpEncryption'])) {
+        $smtp_host = trim((string) ($_POST['smtpHost'] ?? ''));
+        $smtp_port = trim((string) ($_POST['smtpPort'] ?? ''));
+        $smtp_username = trim((string) ($_POST['smtpUsername'] ?? ''));
+        $smtp_password = (string) ($_POST['smtpPassword'] ?? '');
+        $smtp_encryption = (string) ($_POST['smtpEncryption'] ?? 'tls');
+
+        Settings::set(Mailer::SMTP_HOST_SETTING, $smtp_host);
+        Settings::set(Mailer::SMTP_PORT_SETTING, $smtp_port);
+        Settings::set(Mailer::SMTP_USERNAME_SETTING, $smtp_username);
+        Settings::set(Mailer::SMTP_ENCRYPTION_SETTING, $smtp_encryption);
+
+        // Write-only, same as the Turnstile/Google Auth secrets: a blank
+        // field keeps the stored password rather than clearing it.
+        if ($smtp_password !== '') {
+            Settings::set(Mailer::SMTP_PASSWORD_SETTING, $smtp_password);
+        }
+
+        $saved = true;
     } elseif (isset($_POST[SitePolicy::TERMS_SETTING])) {
         Settings::set(SitePolicy::TERMS_SETTING, trim((string) $_POST[SitePolicy::TERMS_SETTING]));
         $saved = true;
@@ -81,6 +100,9 @@ $page -> addContent(new AdminSettingsForm());
 
 $page -> addContent(new Heading2('Google Sign-In'));
 $page -> addContent(new GoogleAuthSettingsForm());
+
+$page -> addContent(new Heading2('Mail'));
+$page -> addContent(new MailSettingsForm());
 
 $page -> addContent(new Heading2('Favicon'));
 $page -> addContent(new FaviconSettingsForm());

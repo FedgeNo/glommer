@@ -2927,6 +2927,21 @@ if ($env_just_created) {
 
 $config = require __DIR__ . '/../src/config.php';
 
+// The SMTP relay settings moved from .env to the Settings DB table (edit them
+// from the admin Site Settings page now) - config.php no longer reads these
+// keys at all, so check .env directly rather than $config.
+$legacy_smtp_env_keys = array_filter([
+    'SMTP_HOST' => Env::get('SMTP_HOST', ''),
+    'SMTP_PORT' => Env::get('SMTP_PORT', ''),
+    'SMTP_USERNAME' => Env::get('SMTP_USERNAME', ''),
+    'SMTP_PASSWORD' => Env::get('SMTP_PASSWORD', ''),
+    'SMTP_ENCRYPTION' => Env::get('SMTP_ENCRYPTION', ''),
+], static fn (string $value): bool => $value !== '');
+
+if ($legacy_smtp_env_keys !== []) {
+    warn('.env still has ' . implode(', ', array_keys($legacy_smtp_env_keys)) . ' set, but the SMTP relay is no longer configured from .env - these values are ignored. Set the relay from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
+}
+
 if ($config['siteURL'] === 'https://example.com') {
     fail('SITE_URL is not set in .env - every generated link would point at the https://example.com placeholder.');
 }

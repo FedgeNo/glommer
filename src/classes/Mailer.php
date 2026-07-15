@@ -2,8 +2,25 @@
 
 declare(strict_types=1);
 
+/**
+ * The SMTP relay settings (host/port/username/password/encryption) live in
+ * the Settings DB table, editable from the admin Site Settings page - live,
+ * no restart, same as Turnstile/Google Auth. They used to be .env-only
+ * (SMTP_HOST etc.); bin/install.php warns if it finds those still set,
+ * since they're no longer read from there. mailFromAddress/mailFromName
+ * stay in .env/config.php - those double as the Let's Encrypt registration
+ * email during automated cert setup (see bin/install.php's
+ * attempt_web_certificate()), so they're install-time config, not a
+ * toggleable relay setting.
+ */
 class Mailer
 {
+    public const SMTP_HOST_SETTING = 'smtpHost';
+    public const SMTP_PORT_SETTING = 'smtpPort';
+    public const SMTP_USERNAME_SETTING = 'smtpUsername';
+    public const SMTP_PASSWORD_SETTING = 'smtpPassword';
+    public const SMTP_ENCRYPTION_SETTING = 'smtpEncryption';
+
     private const MAX_ATTEMPTS = 3;
     private const RETRY_DELAY_MICROSECONDS = 250000;
 
@@ -43,6 +60,8 @@ class Mailer
         $from_address = $config['mailFromAddress'];
         $from_name = $config['mailFromName'];
 
+        $smtp_host = (string) Settings::get(self::SMTP_HOST_SETTING, '');
+
         $eol = chr(13) . chr(10);
         $boundary = 'boundary-' . bin2hex(random_bytes(16));
 
@@ -70,13 +89,22 @@ class Mailer
         // A configured SMTP relay takes precedence over PHP's mail() (the
         // local sendmail handoff, which on a typical VPS has no reputation and
         // lands in spam - see README's deliverability section).
-        if ($config['SMTPHost'] !== '') {
+        if ($smtp_host !== '') {
             $message = 'To: ' . $to . $eol
                 . 'Subject: ' . $encoded_subject . $eol
                 . implode($eol, $headers) . $eol . $eol
                 . $body;
 
-            return self::sendViaSMTP($config, $from_address, $to_address, $message);
+            return self::sendViaSMTP(
+                $smtp_host,
+                (int) Settings::get(self::SMTP_PORT_SETTING, '587'),
+                (string) Settings::get(self::SMTP_USERNAME_SETTING, ''),
+                (string) Settings::get(self::SMTP_PASSWORD_SETTING, ''),
+                (string) Settings::get(self::SMTP_ENCRYPTION_SETTING, 'tls'),
+                $from_address,
+                $to_address,
+                $message
+            );
         }
 
         return mail($to, $encoded_subject, $body, implode($eol, $headers));
@@ -89,21 +117,29 @@ class Mailer
      * server's complaint) on any unexpected reply, letting send()'s retry
      * loop and the callers' failure handling take over.
      */
-    private static function sendViaSMTP(array $config, string $from_address, string $to_address, string $message): bool
-    {
+    private static function sendViaSMTP(
+        string $smtp_host,
+        int $smtp_port,
+        string $smtp_username,
+        string $smtp_password,
+        string $smtp_encryption,
+        string $from_address,
+        string $to_address,
+        string $message
+    ): bool {
         $eol = chr(13) . chr(10);
         $timeout_seconds = 10;
 
-        $transport = $config['SMTPEncryption'] === 'ssl' ? 'ssl://' : 'tcp://';
+        $transport = $smtp_encryption === 'ssl' ? 'ssl://' : 'tcp://';
         $socket = @stream_socket_client(
-            $transport . $config['SMTPHost'] . ':' . $config['SMTPPort'],
+            $transport . $smtp_host . ':' . $smtp_port,
             $error_code,
             $error_message,
             $timeout_seconds
         );
 
         if ($socket === false) {
-            error_log('SMTP connection to ' . $config['SMTPHost'] . ':' . $config['SMTPPort'] . ' failed: ' . $error_message);
+            error_log('SMTP connection to ' . $smtp_host . ':' . $smtp_port . ' failed: ' . $error_message);
 
             return false;
         }
@@ -141,7 +177,7 @@ class Mailer
 
         $hello_name = self::domainFromAddress($from_address);
 
-        $conversation = function () use ($config, $from_address, $to_address, $message, $expect, $say, $socket, $eol, $hello_name): bool {
+        $conversation = function () use ($smtp_encryption, $smtp_username, $smtp_password, $from_address, $to_address, $message, $expect, $say, $socket, $eol, $hello_name): bool {
             if (!$expect('220')) {
                 return false;
             }
@@ -152,7 +188,7 @@ class Mailer
                 return false;
             }
 
-            if ($config['SMTPEncryption'] === 'tls') {
+            if ($smtp_encryption === 'tls') {
                 $say('STARTTLS');
 
                 if (!$expect('220')) {
@@ -173,20 +209,20 @@ class Mailer
                 }
             }
 
-            if ($config['SMTPUsername'] !== '') {
+            if ($smtp_username !== '') {
                 $say('AUTH LOGIN');
 
                 if (!$expect('334')) {
                     return false;
                 }
 
-                $say(base64_encode($config['SMTPUsername']));
+                $say(base64_encode($smtp_username));
 
                 if (!$expect('334')) {
                     return false;
                 }
 
-                $say(base64_encode($config['SMTPPassword']));
+                $say(base64_encode($smtp_password));
 
                 if (!$expect('235')) {
                     return false;

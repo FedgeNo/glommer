@@ -12,16 +12,12 @@ return [
     // this address's domain having matching SPF/DKIM/DMARC DNS records.
     'mailFromAddress' => Env::get('MAIL_FROM_ADDRESS', 'noreply@example.com'),
     'mailFromName' => Env::get('MAIL_FROM_NAME', 'Glommer'),
-    // Optional SMTP relay. With SMTP_HOST set, Mailer speaks SMTP to it
-    // (recommended - PHP's mail() hands off to the local sendmail, which on a
-    // typical VPS lands straight in spam folders); left empty, mail() is used.
-    // SMTP_ENCRYPTION: 'tls' (STARTTLS, usual on port 587), 'ssl' (implicit
-    // TLS, usual on port 465), or 'none'.
-    'SMTPHost' => Env::get('SMTP_HOST', ''),
-    'SMTPPort' => (int) Env::get('SMTP_PORT', '587'),
-    'SMTPUsername' => Env::get('SMTP_USERNAME', ''),
-    'SMTPPassword' => Env::get('SMTP_PASSWORD', ''),
-    'SMTPEncryption' => Env::get('SMTP_ENCRYPTION', 'tls'),
+    // The SMTP relay (host/port/username/password/encryption) used to live
+    // here as SMTP_HOST etc. - it's now a Settings DB table setting, editable
+    // live from the admin Site Settings page (see Mailer's SMTP_*_SETTING
+    // constants) instead of requiring a .env edit + no live-reload. Left
+    // empty, Mailer falls back to PHP's mail() (the local sendmail handoff,
+    // which on a typical VPS lands straight in spam folders).
     'siteURL' => Env::get('SITE_URL', 'https://example.com'),
     'siteTitle' => Env::get('SITE_TITLE', 'Glommer'),
     // How many media transcodes the upload-worker service (bin/upload-worker.php)

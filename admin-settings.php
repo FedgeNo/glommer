@@ -18,6 +18,9 @@ $page = Page::create('Site Settings');
 $page -> addContent(new Heading2('Upload worker'));
 $page -> addContent(new UploadWorkerStatus());
 
+$page -> addContent(new Heading2('WebSocket server'));
+$page -> addContent(new WebSocketStatus());
+
 $page -> addContent(new Heading2('Bot protection'));
 $page -> addContent(new AdminSettingsForm());
 

@@ -904,7 +904,7 @@ class EnvironmentChecker
      *
      * @return array{ok: bool, message: string}
      */
-    private static function checkWebSocketServer(): array
+    public static function checkWebSocketServer(): array
     {
         $config = require __DIR__ . '/../config.php';
 

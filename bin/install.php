@@ -797,7 +797,7 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
         return false;
     }
 
-    $home = resolve_home_dir();
+    $home = resolve_mkcert_home_dir();
 
     if ($home === null) {
         warn('Could not resolve a home directory for the current user - cannot place a mkcert certificate. See README.md.');
@@ -808,6 +808,7 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
     $cert_dir = $home . '/.local/share/glommer-certs';
     $cert_path = $cert_dir . '/' . $host . '.pem';
     $key_path = $cert_dir . '/' . $host . '-key.pem';
+    $mkcert_caroot = $home . '/.local/share/mkcert';
 
     // A $refresh pass runs every time (see the call site) precisely because an
     // already-configured WS_TLS_CERT doesn't mean it's still correct - SITE_URL
@@ -828,7 +829,9 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
         }
     }
 
-    if (!is_dir($cert_dir) && !@mkdir($cert_dir, 0700, true)) {
+    $cert_dir_created = !is_dir($cert_dir);
+
+    if ($cert_dir_created && !@mkdir($cert_dir, 0700, true)) {
         fail_line('Could not create ' . $cert_dir . ' - create it manually and set WS_TLS_CERT/WS_TLS_KEY in .env.');
 
         return false;
@@ -839,8 +842,16 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
     // installing the CA into a system or NSS trust store), and exec()'s child
     // has no tty on stdin, so an inherited SUDO_ASKPASS would make any of
     // that prefer a graphical prompt over the real terminal - a no-go over
-    // SSH.
-    exec('env -u SUDO_ASKPASS mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1', $mkcert_output, $mkcert_exit);
+    // SSH. CAROOT is set explicitly to $home's mkcert CA (see
+    // resolve_mkcert_home_dir()'s docblock) rather than trusting mkcert's own
+    // default resolution, which goes by the process's actual HOME/euid - root
+    // under sudo, not the human whose browser needs to trust the result.
+    exec(
+        'env -u SUDO_ASKPASS CAROOT=' . escapeshellarg($mkcert_caroot)
+        . ' mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1',
+        $mkcert_output,
+        $mkcert_exit
+    );
 
     if ($mkcert_exit !== 0 || !is_file($cert_path) || !is_file($key_path)) {
         fail_line('mkcert failed: ' . implode(' ', $mkcert_output));
@@ -852,6 +863,26 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
         fail_line('mkcert reported success, but the generated certificate and key don\'t actually match - not using them. Generate a certificate manually (see README.md\'s HTTPS section) and set WS_TLS_CERT/WS_TLS_KEY in .env.');
 
         return false;
+    }
+
+    // Running as root wrote these as root, into what's otherwise the sudo
+    // invoker's own home dir (resolve_mkcert_home_dir()) - hand them back so
+    // an unprivileged run later doesn't trip over root-owned files it can't
+    // touch in its own home directory.
+    if (running_as_root()) {
+        $owner = app_service_user();
+
+        if ($owner !== null) {
+            if ($cert_dir_created) {
+                @chown($cert_dir, $owner);
+                @chgrp($cert_dir, $owner);
+            }
+
+            @chown($cert_path, $owner);
+            @chgrp($cert_path, $owner);
+            @chown($key_path, $owner);
+            @chgrp($key_path, $owner);
+        }
     }
 
     $env_path = __DIR__ . '/../.env';
@@ -1126,6 +1157,43 @@ function restart_already_running_daemons(): void
     // Give both a moment to finish binding their ports/claiming lock files
     // before the checks below probe them.
     usleep(500000);
+}
+
+/**
+ * The home directory whose mkcert CA should be used for a cert mkcert
+ * generates on this install's behalf - NOT necessarily resolve_home_dir()'s
+ * answer. Under `sudo php bin/install.php`, resolve_home_dir() correctly
+ * resolves to root's own home (its whole point is being honest about the
+ * CURRENT process's identity) - but mkcert auto-creates a fresh, separate CA
+ * per CAROOT the first time it's used, and root's CA was never the one
+ * "mkcert -install" (or a prior unprivileged run of this installer) added to
+ * anyone's browser trust store. A cert signed by it is signed by a CA
+ * nothing trusts, no matter how correct its hostname is (a "tlsv1 alert
+ * unknown ca" from the browser, not a hostname mismatch). So this resolves
+ * to the sudo invoker's home when running as root instead - the actual human
+ * whose browser needs to trust the result - falling back to
+ * resolve_home_dir() when that can't be determined (e.g. a genuine root
+ * install with no SUDO_USER).
+ */
+function resolve_mkcert_home_dir(): ?string
+{
+    if (running_as_root()) {
+        $owner = app_service_user();
+
+        if ($owner !== null) {
+            $line = trim((string) shell_exec('getent passwd ' . escapeshellarg($owner) . ' 2>/dev/null'));
+
+            if ($line !== '') {
+                $home = explode(':', $line)[5] ?? '';
+
+                if ($home !== '') {
+                    return $home;
+                }
+            }
+        }
+    }
+
+    return resolve_home_dir();
 }
 
 /**

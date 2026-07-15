@@ -36,7 +36,7 @@ declare(strict_types=1);
 class Trending
 {
     // The window: newest N top-level posts, not a time span - see class docblock.
-    private const WINDOW_SIZE = 500;
+    private const WINDOW_SIZE = 5000;
 
     // Recency-within-the-window decay, applied to each user's one vote. A
     // vote this many hours old (their most recent qualifying post) counts for

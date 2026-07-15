@@ -3166,6 +3166,28 @@ document.addEventListener('input', (event) => {
 });
 
 document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.LogoutForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    // A plain POST-and-redirect leaves the POST in browser history, so
+    // hitting Back afterward triggers the "confirm form resubmission"
+    // prompt. Logging out via fetch (no navigation) and redirecting via JS
+    // avoids that entirely - Back just lands on whatever GET page preceded
+    // this one.
+    await api_post('/api/logout');
+
+    window.location = window.siteURL + '/';
+});
+
+document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.LoginForm');
 
     if (!form) {

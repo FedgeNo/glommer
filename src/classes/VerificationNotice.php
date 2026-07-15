@@ -24,7 +24,7 @@ class VerificationNotice extends HTMLObject
         $resend_button -> contents[] = 'Resend verification email';
         $actions -> addContent($resend_button);
 
-        $actions -> addContent(new Anchor(ServerURL::absolute('/logout'), 'Log out'));
+        $actions -> addContent(new LogoutForm());
 
         $this -> contents[] = $actions;
 

@@ -271,8 +271,12 @@ INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionD
         mysqli_stmt_execute($post_stmt);
         $post_id = (int) mysqli_insert_id($mysqli);
 
+        $mentioned_user_ids = [];
+
         if ($description_delta_value !== null) {
-            Hashtag::indexPost($post_id, Delta::decode($description_delta_value));
+            $description_ops = Delta::decode($description_delta_value);
+            Hashtag::indexPost($post_id, $description_ops);
+            $mentioned_user_ids = Mention::indexPost($post_id, $description_ops);
         }
 
         $parent_user_id = null;
@@ -313,6 +317,8 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
         if ($parent_user_id !== null) {
             Notification::create($parent_user_id, $user_id, 'reply', $parent_id);
         }
+
+        Mention::notify($mentioned_user_ids, $user_id, $post_id);
 
         Notification::create($user_id, $user_id, 'postReady', $post_id, true);
 

@@ -210,6 +210,8 @@ class DeltaRenderer extends HTMLObject
                 $nodes[] = self::linkedNode($doc, $segment['text'], $inner);
             } elseif ($segment['type'] === 'hashtag') {
                 $nodes[] = self::hashtagNode($doc, $segment['tag'], $inner);
+            } elseif ($segment['type'] === 'mention') {
+                $nodes[] = self::mentionNode($doc, $segment['username'], $inner);
             } else {
                 $nodes[] = $inner;
             }
@@ -271,6 +273,16 @@ class DeltaRenderer extends HTMLObject
     {
         $anchor = $doc -> createElement('a');
         $anchor -> setAttribute('href', ServerURL::absolute('/tags/' . $tag));
+        $anchor -> appendChild($inner);
+
+        return $anchor;
+    }
+
+    /** An internal (same-window) anchor to a mentioned user's profile. */
+    private static function mentionNode(\DOMDocument $doc, string $username, \DOMNode $inner): \DOMElement
+    {
+        $anchor = $doc -> createElement('a');
+        $anchor -> setAttribute('href', ServerURL::absolute('/users/' . $username . '/'));
         $anchor -> appendChild($inner);
 
         return $anchor;

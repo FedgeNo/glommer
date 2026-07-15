@@ -51,6 +51,8 @@ class Notification {
                 return name + ' accepted your friend request';
             case 'message':
                 return name + ' sent you a message';
+            case 'mention':
+                return name + ' mentioned you in a post';
             default:
                 return name + ' did something';
         }
@@ -69,6 +71,12 @@ class Notification {
                 return window.siteURL + '/users/' + this.actorUsername + '/';
             case 'message':
                 return window.siteURL + '/messages/' + this.actorUsername;
+            // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
+            // post belongs to the ACTOR (whoever wrote the post that mentions
+            // you) - same reasoning as 'friendAccepted'/'message' above using
+            // actorUsername, not currentUserUsername.
+            case 'mention':
+                return window.siteURL + '/users/' + this.actorUsername + '/' + this.postId;
             default:
                 return '#';
         }

@@ -70,6 +70,15 @@ CREATE TABLE `PostHashtags` (
   CONSTRAINT `PostHashtags_ibfk_2` FOREIGN KEY (`hashtagId`) REFERENCES `Hashtags` (`hashtagId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `PostMentions` (
+  `postId` int(10) unsigned NOT NULL,
+  `userId` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`postId`,`userId`),
+  KEY `userId_postId` (`userId`,`postId`),
+  CONSTRAINT `PostMentions_ibfk_1` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
+  CONSTRAINT `PostMentions_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `FeedItems` (
   `itemId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `postId` int(10) unsigned NOT NULL,

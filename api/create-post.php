@@ -215,6 +215,7 @@ mysqli_stmt_execute($stmt);
 $post_id = (int) mysqli_insert_id($mysqli);
 
 Hashtag::indexPost($post_id, $description_ops);
+Mention::notify(Mention::indexPost($post_id, $description_ops), $current_user -> userId, $post_id);
 
 if ($parent_id !== null) {
     Notification::create((int) $parent_row['userId'], $current_user -> userId, 'reply', $parent_id);

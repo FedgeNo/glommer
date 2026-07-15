@@ -71,6 +71,7 @@ class Notification extends HTMLObject
             'friendRequest' => $name . ' sent you a friend request',
             'friendAccepted' => $name . ' accepted your friend request',
             'message' => $name . ' sent you a message',
+            'mention' => $name . ' mentioned you in a post',
             default => $name . ' did something',
         };
     }
@@ -82,6 +83,11 @@ class Notification extends HTMLObject
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
             'friendAccepted' => ServerURL::absolute('/users/' . $this -> actor -> username . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actor -> username),
+            // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
+            // post belongs to the ACTOR (whoever wrote the post that mentions
+            // you) - same reasoning as 'friendAccepted'/'message' below using
+            // the actor's identity, not the recipient's.
+            'mention' => ServerURL::absolute('/users/' . $this -> actor -> username . '/' . $this -> postId),
             'passwordRemovedGoogle' => ServerURL::absolute('/forgot-password'),
             default => '#',
         };

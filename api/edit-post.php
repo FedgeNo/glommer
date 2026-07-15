@@ -130,6 +130,7 @@ mysqli_stmt_bind_param($update_stmt, 'sssssi', $title_value, $description_value,
 mysqli_stmt_execute($update_stmt);
 
 Hashtag::reindexPost($post_id, $description_ops);
+Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user -> userId, $post_id);
 
 // Re-fetch rather than hand-assemble the row: createdAt, parentId, and
 // keywords (just rewritten by reindexPost()) all need to reflect the true

@@ -194,6 +194,9 @@ function inline_nodes(text, attributes) {
         if (segment.type === 'hashtag') {
             return hashtag_node(segment.tag, inner);
         }
+        if (segment.type === 'mention') {
+            return mention_node(segment.username, inner);
+        }
         return inner;
     });
 }
@@ -257,6 +260,14 @@ function hashtag_node(tag, inner) {
     return anchor;
 }
 
+/** An internal (same-window) anchor to a mentioned user's profile. */
+function mention_node(username, inner) {
+    const anchor = document.createElement('a');
+    anchor.setAttribute('href', window.siteURL + '/users/' + username + '/');
+    anchor.appendChild(inner);
+    return anchor;
+}
+
 function opens_in_new_tab(href) {
     const host = linkify_link_host(href);
 
@@ -310,8 +321,9 @@ function is_safe_link(url, allowed_schemes) {
  * RegExp per call (so the g-flag's lastIndex never leaks between calls).
  */
 const LINKIFY_MAX_TAG_LENGTH = 50;
+const LINKIFY_MAX_MENTION_LENGTH = 50;
 const LINKIFY_URL_TRAILING_TRIM = ".,!?;:)";
-const LINKIFY_SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+";
+const LINKIFY_SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+";
 const LINKIFY_LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
 const LINKIFY_AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
 
@@ -386,6 +398,16 @@ function linkify_classify(matched) {
         }
 
         return { segment: { type: 'hashtag', text: matched, tag: tag.toLowerCase() }, trailing: '' };
+    }
+
+    if (matched[0] === '@') {
+        const username = matched.slice(1);
+
+        if (username === '' || username.length > LINKIFY_MAX_MENTION_LENGTH) {
+            return null;
+        }
+
+        return { segment: { type: 'mention', text: matched, username }, trailing: '' };
     }
 
     let end = matched.length;

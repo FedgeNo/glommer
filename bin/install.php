@@ -1057,6 +1057,62 @@ function user_systemd_available(): bool
 }
 
 /**
+ * Restarts the WebSocket and upload-worker daemons - whichever are already
+ * running, as a system unit or a leftover not-yet-migrated user-level one -
+ * before the environment checks below test them, not after. A long-running
+ * daemon keeps executing whatever code/config was current when it started,
+ * not what's on disk now: this bit us for real once (the upload worker ran
+ * for almost a day on a stale autoloader path after a directory rename,
+ * silently failing every claim attempt while `systemctl is-active` said
+ * active the whole time). Testing without restarting first only confirms a
+ * daemon is alive, never that it's running what's actually on disk. Every
+ * write path that changes something a daemon depends on (.env, its unit
+ * file, its TLS cert) already restarts it afterward on its own - this
+ * covers the other direction: a daemon that's been running since well
+ * before this invocation, on code that changed since. Best-effort and
+ * silent about anything not installed/running yet - offer_websocket_
+ * service() etc. bring those up for the first time; this only refreshes
+ * ones already going.
+ */
+function restart_already_running_daemons(): void
+{
+    $is_root = running_as_root();
+    $units = ['glommer-websocket.service', 'glommer-upload-worker.service'];
+
+    if ($is_root) {
+        foreach ($units as $unit) {
+            if (trim((string) shell_exec('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')) === 'active') {
+                shell_exec('systemctl restart ' . escapeshellarg($unit) . ' 2>&1');
+            }
+        }
+
+        // A root run hasn't reached set_up_system_services() yet at this
+        // point (it runs after these checks) - if this box was previously
+        // set up unprivileged, what's actually live right now is still a
+        // user-level unit under the likely service account, not a system one.
+        $candidate = app_service_user();
+
+        if ($candidate !== null) {
+            foreach ($units as $unit) {
+                if (trim(user_systemctl($candidate, 'is-active ' . escapeshellarg($unit))) === 'active') {
+                    user_systemctl($candidate, 'restart ' . escapeshellarg($unit));
+                }
+            }
+        }
+    } elseif (user_systemd_available()) {
+        foreach ($units as $unit) {
+            if (trim((string) shell_exec('systemctl --user is-active ' . escapeshellarg($unit) . ' 2>/dev/null')) === 'active') {
+                shell_exec('systemctl --user restart ' . escapeshellarg($unit) . ' 2>&1');
+            }
+        }
+    }
+
+    // Give both a moment to finish binding their ports/claiming lock files
+    // before the checks below probe them.
+    usleep(500000);
+}
+
+/**
  * The current process's real home directory, resolved authoritatively from
  * /etc/passwd (via posix_getpwuid, then getent as a fallback) rather than
  * trusted from $_SERVER['HOME']/getenv('HOME'). Those environment variables
@@ -2451,6 +2507,10 @@ $run_environment_checks = function (): array {
     return $failures;
 };
 
+// Restart whatever's already running before testing it - see
+// restart_already_running_daemons()'s docblock for why this isn't optional.
+restart_already_running_daemons();
+
 $environment_failures = $run_environment_checks();
 
 // Root/sudo: upgrade any user-level services to system units (run as the app's
@@ -2607,7 +2667,9 @@ heading('Configuration');
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-if (!is_file(__DIR__ . '/../.env')) {
+$env_just_created = !is_file(__DIR__ . '/../.env');
+
+if ($env_just_created) {
     if (!is_interactive()) {
         fail('No .env file found in the project root. Run this script in a terminal to be walked through creating one, use the web setup wizard (visit the site in a browser), or create it by hand (copy .env.example; see src/config.php for every key and its default).');
     }
@@ -3180,12 +3242,12 @@ ok('database marked as version ' . $code_version);
 
 echo "\n" . color('All checks passed.', '1;32') . "\n\n";
 echo "Next steps:\n";
-// A sudo run manages the daemons as SYSTEM units; an unprivileged run as
-// user-level units - so the restart command differs.
-$ws_restart_command = $is_root ? 'sudo systemctl restart glommer-websocket' : 'systemctl --user restart glommer-websocket';
-echo "  1. If .env was just created, restart the WebSocket server so it picks up the fresh\n";
-echo "     WS_SECRET: " . $ws_restart_command . "\n";
-echo "  2. Visit " . $config['siteURL'] . " and sign up - the first account created becomes\n";
+// A freshly-created .env already had the WebSocket server restarted for it
+// above (with an explicit ok()/warn() shown at the time) - nothing left to
+// tell the admin to do here for that case, and an .env that already existed
+// never touched WS_SECRET in this run either. Restating "restart it" as a
+// blanket next step was always stale by the time anyone reached this point.
+echo "  1. Visit " . $config['siteURL'] . " and sign up - the first account created becomes\n";
 echo "     the site's administrator.\n";
 
 // Anything deferred at the environment gate (a fresh install couldn't back up a

@@ -3,15 +3,12 @@
 declare(strict_types=1);
 
 /**
- * The SMTP relay settings (host/port/username/password/encryption) live in
- * the Settings DB table, editable from the admin Site Settings page - live,
- * no restart, same as Turnstile/Google Auth. They used to be .env-only
- * (SMTP_HOST etc.); bin/install.php warns if it finds those still set,
- * since they're no longer read from there. mailFromAddress/mailFromName
- * stay in .env/config.php - those double as the Let's Encrypt registration
- * email during automated cert setup (see bin/install.php's
- * attempt_web_certificate()), so they're install-time config, not a
- * toggleable relay setting.
+ * The SMTP relay settings (host/port/username/password/encryption), plus the
+ * mail "from" address/name, all live in the Settings DB table, editable from
+ * the admin Site Settings page - live, no restart. They used to be
+ * .env-only (SMTP_HOST etc., MAIL_FROM_ADDRESS/MAIL_FROM_NAME);
+ * bin/install.php warns if it finds those still set, since they're no
+ * longer read from there.
  */
 class Mailer
 {
@@ -20,6 +17,8 @@ class Mailer
     public const SMTP_USERNAME_SETTING = 'smtpUsername';
     public const SMTP_PASSWORD_SETTING = 'smtpPassword';
     public const SMTP_ENCRYPTION_SETTING = 'smtpEncryption';
+    public const FROM_ADDRESS_SETTING = 'mailFromAddress';
+    public const FROM_NAME_SETTING = 'mailFromName';
 
     private const MAX_ATTEMPTS = 3;
     private const RETRY_DELAY_MICROSECONDS = 250000;
@@ -34,6 +33,23 @@ class Mailer
 
     public static function send(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
     {
+        // Reset up front (not just in attempt(), which the early return below
+        // skips entirely) - a previous call's stale true would otherwise leak
+        // into recipientWasRejected() after a from-not-configured short-circuit,
+        // which is clearly not a rejection.
+        self::$recipientRejected = false;
+
+        // No placeholder fallback (unlike mailFromName, a missing address
+        // isn't cosmetic - there's nothing to send with). Rather than
+        // silently mailing from an unset/broken address, tell the admin and
+        // don't attempt at all - they'll see this the moment they sign up
+        // themselves, since that's the first email the site ever sends.
+        if ((string) Settings::get(self::FROM_ADDRESS_SETTING, '') === '') {
+            Notification::warnAdminMailFromNotConfigured();
+
+            return false;
+        }
+
         for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
             if (self::attempt($to_address, $to_name, $subject, $text_body, $html_body)) {
                 return true;
@@ -57,8 +73,11 @@ class Mailer
         self::$recipientRejected = false;
 
         $config = require __DIR__ . '/../config.php';
-        $from_address = $config['mailFromAddress'];
-        $from_name = $config['mailFromName'];
+        $from_address = (string) Settings::get(self::FROM_ADDRESS_SETTING, '');
+        // Unlike the address, a missing name is cosmetic (the From header
+        // still works, just with no display name) - a friendly fallback is
+        // fine here, no need to block sending over it.
+        $from_name = (string) Settings::get(self::FROM_NAME_SETTING, $config['mailFromName']);
 
         $smtp_host = (string) Settings::get(self::SMTP_HOST_SETTING, '');
 

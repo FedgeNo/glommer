@@ -3,11 +3,15 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for the outgoing SMTP relay. The password is
- * write-only, never rendered back, and a blank submit leaves it unchanged -
- * the same treatment as the Turnstile/Google Auth secrets. Host/port/
- * username/encryption ARE shown (nothing sensitive about them), matching the
- * Turnstile site key/Google client ID being shown too.
+ * The admin Site Settings form for outgoing mail: the "from" address/name,
+ * plus the SMTP relay. The SMTP password is write-only, never rendered back,
+ * and a blank submit leaves it unchanged - the same treatment as the
+ * Turnstile/Google Auth secrets. Everything else IS shown (nothing sensitive
+ * about it), matching the Turnstile site key/Google client ID being shown
+ * too. A blank "from" address submit also leaves the stored value unchanged
+ * (not write-only for the same reason as the password - it's just that a
+ * blank address would break every subsequent email, unlike a blank host,
+ * which is a valid state that falls back to PHP's mail()).
  */
 class MailSettingsForm extends Form
 {
@@ -18,7 +22,19 @@ class MailSettingsForm extends Form
         $this -> action = ServerURL::absolute('/admin/settings');
         $this -> method = 'POST';
 
-        $fields = new Fieldset('Outgoing mail (SMTP relay)');
+        $fields = new Fieldset('Outgoing mail');
+
+        $from_address = new InputField('mailFromAddress', 'From address', 'email', 'No email can be sent until this is set', 255);
+        $from_address -> value = (string) Settings::get(Mailer::FROM_ADDRESS_SETTING, '');
+        $from_address -> autocomplete = 'off';
+        $from_address -> labelVisible = true;
+        $fields -> addContent($from_address);
+
+        $from_name = new InputField('mailFromName', 'From name', 'text', 'From name', 100);
+        $from_name -> value = (string) Settings::get(Mailer::FROM_NAME_SETTING, '');
+        $from_name -> autocomplete = 'off';
+        $from_name -> labelVisible = true;
+        $fields -> addContent($from_name);
 
         $host = new InputField('smtpHost', 'SMTP host', 'text', 'SMTP host', 255);
         $host -> value = (string) Settings::get(Mailer::SMTP_HOST_SETTING, '');
@@ -74,7 +90,7 @@ class MailSettingsForm extends Form
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Paragraph('Leave the host blank to send via PHP\'s mail() instead (not recommended - see README\'s deliverability section). The "From" address is set in .env, not here (it doubles as the Let\'s Encrypt registration email during setup).');
+        $this -> contents[] = new Paragraph('Leave the SMTP host blank to send via PHP\'s mail() instead (not recommended - see README\'s deliverability section). No email can be sent at all until a "from" address is set.');
 
         $this -> contents[] = new SubmitButton('Save');
 

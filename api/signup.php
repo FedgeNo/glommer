@@ -98,6 +98,6 @@ if (($payload['rememberMe'] ?? false) === true) {
     RememberToken::issue($new_user_id);
 }
 
-EmailVerification::sendFor($user);
+$auto_verified = EmailVerification::sendFor($user);
 
-JSONResponse::success(['signedUp' => true]) -> send();
+JSONResponse::success(['signedUp' => true, 'verified' => $auto_verified]) -> send();

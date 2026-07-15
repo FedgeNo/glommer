@@ -30,6 +30,8 @@ class Notification {
                 return 'One of your uploads failed to process and was not posted';
             case 'mailerFailed':
                 return 'Email delivery failed - the mailer may be down. Please check your mail configuration.';
+            case 'mailFromNotConfigured':
+                return 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.';
             case 'systemError':
                 return 'A server error occurred. Check the error log for details.';
             default:

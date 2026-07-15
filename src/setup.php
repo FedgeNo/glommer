@@ -46,7 +46,6 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $site_url = trim((string) ($_POST['siteURL'] ?? ''));
         $site_title = trim((string) ($_POST['siteTitle'] ?? ''));
         $mail_from_address = trim((string) ($_POST['mailFromAddress'] ?? ''));
-        $mail_from_name = trim((string) ($_POST['mailFromName'] ?? ''));
         $db_host = trim((string) ($_POST['DBHost'] ?? ''));
         $db_port = trim((string) ($_POST['DBPort'] ?? ''));
         $db_database = trim((string) ($_POST['DBDatabase'] ?? ''));
@@ -134,10 +133,6 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'A valid mail from address is required.';
         }
 
-        if ($mail_from_name === '') {
-            $errors[] = 'A mail from name is required.';
-        }
-
         if (!preg_match('/^[A-Za-z0-9_.:-]+$/', $db_host)) {
             $errors[] = 'Database host contains invalid characters.';
         }
@@ -168,7 +163,9 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($errors === []) {
             try {
-                $initial_settings = [];
+                $initial_settings = [
+                    Mailer::FROM_ADDRESS_SETTING => $mail_from_address,
+                ];
 
                 if ($turnstile_site_key !== '') {
                     $initial_settings[Turnstile::SITE_KEY_SETTING] = $turnstile_site_key;
@@ -218,8 +215,6 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 'DB_DATABASE' => $db_database,
                 'DB_USERNAME' => $runtime_account['username'],
                 'DB_PASSWORD' => $runtime_account['password'],
-                'MAIL_FROM_ADDRESS' => $mail_from_address,
-                'MAIL_FROM_NAME' => $mail_from_name,
                 'SITE_URL' => $site_url,
                 'SITE_TITLE' => $site_title,
                 'WS_HOST' => $existing_config['WSHost'],

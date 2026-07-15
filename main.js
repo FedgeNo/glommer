@@ -3478,7 +3478,11 @@ document.addEventListener('submit', async (event) => {
         return;
     }
 
-    window.location = window.siteURL + '/check-inbox';
+    // Auto-verified (mail delivery itself is broken/unconfigured, not this
+    // address specifically) - there's nothing to check, so don't tell them
+    // to. Just let them straight into the site, same as any other verified
+    // sign-up would land.
+    window.location = window.siteURL + (data.verified ? '/' : '/check-inbox');
 });
 
 document.addEventListener('submit', async (event) => {

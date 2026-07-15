@@ -55,6 +55,7 @@ class Notification extends HTMLObject
             'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
             'uploadFailed' => 'One of your uploads failed to process and was not posted',
             'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
+            'mailFromNotConfigured' => 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.',
             'systemError' => 'A server error occurred. Check the error log for details.',
             'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
             default => $this -> actorText(),
@@ -258,6 +259,25 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
         }
 
         self::create($admin_id, $admin_id, 'systemError', null, true);
+    }
+
+    /**
+     * Notifies the primary admin (userId 1) that no mail "from" address is
+     * configured, so Mailer::send() refused to attempt sending at all rather
+     * than mail from a blank/broken address. $admin_id is both the notified
+     * user and the actor (allow_self), same as warnAdminSystemError() -
+     * Mailer::send() has no real actor of its own to attribute this to.
+     * Throttled the same way.
+     */
+    public static function warnAdminMailFromNotConfigured(): void
+    {
+        $admin_id = 1;
+
+        if (self::hasRecentOfType($admin_id, 'mailFromNotConfigured', 5)) {
+            return;
+        }
+
+        self::create($admin_id, $admin_id, 'mailFromNotConfigured', null, true);
     }
 
     /**

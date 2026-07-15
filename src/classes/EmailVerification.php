@@ -4,7 +4,16 @@ declare(strict_types=1);
 
 class EmailVerification
 {
-    public static function sendFor(User $user): void
+    /**
+     * @return bool whether $user ended up verified as a direct result of this
+     *   call (i.e. auto-verified because mail delivery itself is broken) -
+     *   false when the verification email actually went out (still needs to
+     *   be checked) or when this specific address was rejected (still
+     *   unverified). Lets a caller like api/signup.php tell a genuinely
+     *   "check your inbox" outcome apart from "there's nothing to check,
+     *   you're already good to go".
+     */
+    public static function sendFor(User $user): bool
     {
         $token = self::create((int) $user -> userId);
 
@@ -38,9 +47,17 @@ This link expires in 24 hours.';
             self::markVerified((int) $user -> userId);
 
             // Let the admin know the mailer is down so they can fix it
-            // (throttled, so a flood of failures doesn't pile up).
+            // (throttled, so a flood of failures doesn't pile up). A
+            // from-address-not-configured failure already got its own more
+            // specific notification straight from Mailer::send() - this is
+            // deliberately still sent too (a different, broader signal: mail
+            // delivery in general isn't working, whatever the exact cause).
             Notification::warnAdminMailerFailed((int) $user -> userId);
+
+            return true;
         }
+
+        return false;
     }
 
     public static function verify(string $token): ?int

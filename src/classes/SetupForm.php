@@ -30,14 +30,10 @@ class SetupForm extends Form
         $mail_from_address = new InputField('mailFromAddress', 'Mail from address', 'email', 'Mail from address', 255);
         $mail_from_address -> value = 'noreply@' . (parse_url($current_url, PHP_URL_HOST) ?: 'example.com');
 
-        $mail_from_name = new InputField('mailFromName', 'Mail from name', 'text', 'Mail from name', 100);
-        $mail_from_name -> value = 'Glommer';
-
         $site_fields = new Fieldset('Site');
         $site_fields -> addContent($site_url);
         $site_fields -> addContent($site_title);
         $site_fields -> addContent($mail_from_address);
-        $site_fields -> addContent($mail_from_name);
 
         // ServerName/UseCanonicalName are proven live (a forged-Host-header
         // request against the entered site URL) wherever possible - this

@@ -8,16 +8,18 @@ return [
     'database' => Env::get('DB_DATABASE', 'glommer'),
     'username' => Env::get('DB_USERNAME', 'glommer'),
     'password' => Env::get('DB_PASSWORD', 'change-me'),
-    // Update these once a real domain is in place - deliverability depends on
-    // this address's domain having matching SPF/DKIM/DMARC DNS records.
-    'mailFromAddress' => Env::get('MAIL_FROM_ADDRESS', 'noreply@example.com'),
+    // Both the mail "from" address/name and the SMTP relay (host/port/
+    // username/password/encryption) used to live here (MAIL_FROM_ADDRESS etc.,
+    // SMTP_HOST etc.) - they're now Settings DB table settings, editable live
+    // from the admin Site Settings page (see Mailer's *_SETTING constants)
+    // instead of requiring a .env edit + no live-reload. mailFromName keeps a
+    // friendly hardcoded fallback here (a missing display name is cosmetic);
+    // mailFromAddress has none - a missing "from" address isn't safe to
+    // silently paper over with a fake one (see Mailer::send()), so there's no
+    // config.php key for it at all anymore. Left empty, Mailer's SMTP relay
+    // falls back to PHP's mail() (the local sendmail handoff, which on a
+    // typical VPS lands straight in spam folders).
     'mailFromName' => Env::get('MAIL_FROM_NAME', 'Glommer'),
-    // The SMTP relay (host/port/username/password/encryption) used to live
-    // here as SMTP_HOST etc. - it's now a Settings DB table setting, editable
-    // live from the admin Site Settings page (see Mailer's SMTP_*_SETTING
-    // constants) instead of requiring a .env edit + no live-reload. Left
-    // empty, Mailer falls back to PHP's mail() (the local sendmail handoff,
-    // which on a typical VPS lands straight in spam folders).
     'siteURL' => Env::get('SITE_URL', 'https://example.com'),
     'siteTitle' => Env::get('SITE_TITLE', 'Glommer'),
     // How many media transcodes the upload-worker service (bin/upload-worker.php)

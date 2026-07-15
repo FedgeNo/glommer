@@ -3238,7 +3238,6 @@ if ($env_just_created) {
     $mail_from_address = prompt('Mail "from" address', null, function (string $value): ?string {
         return filter_var($value, FILTER_VALIDATE_EMAIL) === false ? 'That is not a valid email address.' : null;
     });
-    $mail_from_name = prompt('Mail "from" name', $site_title);
     $db_host = prompt('Database host', '127.0.0.1', function (string $value): ?string {
         return preg_match('/^[A-Za-z0-9_.:-]+$/', $value) !== 1 ? 'The host contains invalid characters.' : null;
     });
@@ -3290,7 +3289,9 @@ if ($env_just_created) {
     }
 
     try {
-        $runtime_account = Installer::provisionDatabase($admin_connection, $db_database);
+        $runtime_account = Installer::provisionDatabase($admin_connection, $db_database, [
+            Mailer::FROM_ADDRESS_SETTING => $mail_from_address,
+        ]);
     } catch (\mysqli_sql_exception $exception) {
         fail('Database setup failed: ' . $exception -> getMessage());
     }
@@ -3311,8 +3312,6 @@ if ($env_just_created) {
         'DB_DATABASE' => $db_database,
         'DB_USERNAME' => $runtime_account['username'],
         'DB_PASSWORD' => $runtime_account['password'],
-        'MAIL_FROM_ADDRESS' => $mail_from_address,
-        'MAIL_FROM_NAME' => $mail_from_name,
         'SITE_URL' => $site_url,
         'SITE_TITLE' => $site_title,
         'WS_HOST' => $existing_config['WSHost'],
@@ -3405,6 +3404,43 @@ if ($legacy_smtp_env_keys !== []) {
     warn('.env still has ' . implode(', ', array_keys($legacy_smtp_env_keys)) . ' set, but the SMTP relay is no longer configured from .env - these values are ignored. Set the relay from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
 }
 
+// mailFromAddress/mailFromName moved from .env to Settings too. Unlike the
+// SMTP relay (blank host just falls back to PHP's mail()), a genuinely
+// missing "from" address stops Mailer::send() from even attempting to send -
+// so an existing .env value is backfilled into Settings here rather than
+// just warned about, or upgrading this box would silently break every
+// outgoing email until an admin happened to visit Site Settings.
+$legacy_mail_from_address = Env::get('MAIL_FROM_ADDRESS', '');
+$legacy_mail_from_name = Env::get('MAIL_FROM_NAME', '');
+
+if ($legacy_mail_from_address !== '' && (string) Settings::get(Mailer::FROM_ADDRESS_SETTING, '') === '') {
+    Settings::set(Mailer::FROM_ADDRESS_SETTING, $legacy_mail_from_address);
+}
+
+if ($legacy_mail_from_name !== '' && (string) Settings::get(Mailer::FROM_NAME_SETTING, '') === '') {
+    Settings::set(Mailer::FROM_NAME_SETTING, $legacy_mail_from_name);
+}
+
+if ($legacy_mail_from_address !== '' || $legacy_mail_from_name !== '') {
+    warn('.env still has ' . implode(', ', array_keys(array_filter([
+        'MAIL_FROM_ADDRESS' => $legacy_mail_from_address,
+        'MAIL_FROM_NAME' => $legacy_mail_from_name,
+    ], static fn (string $value): bool => $value !== ''))) . ' set, but the mail "from" address/name are no longer configured from .env (copied into Settings just now if not already set there) - these .env values are ignored from here on. Edit them from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
+}
+
+// No usable value anywhere yet (a fresh install skips this - the wizard
+// above already collected and stored one). Store in Settings when possible;
+// otherwise - no TTY to ask in - this just keeps prompting on every future
+// interactive run until an admin actually answers it, rather than silently
+// leaving mail broken forever.
+if ((string) Settings::get(Mailer::FROM_ADDRESS_SETTING, '') === '' && is_interactive()) {
+    $new_mail_from_address = prompt('Mail "from" address (no email can be sent until this is set)', null, function (string $value): ?string {
+        return filter_var($value, FILTER_VALIDATE_EMAIL) === false ? 'That is not a valid email address.' : null;
+    });
+    Settings::set(Mailer::FROM_ADDRESS_SETTING, $new_mail_from_address);
+    ok('mail "from" address saved');
+}
+
 if ($config['siteURL'] === 'https://example.com') {
     fail('SITE_URL is not set in .env - every generated link would point at the https://example.com placeholder.');
 }
@@ -3436,7 +3472,7 @@ $https_serving = EnvironmentChecker::httpsServing($server_name_value);
 // also upgrades a self-signed cert to a trusted one. Best-effort: it only ever
 // warns on failure, never hard-fails here.
 if ($is_root && host_is_public_domain($site_host)) {
-    if (attempt_web_certificate($site_host, (string) $config['mailFromAddress'])) {
+    if (attempt_web_certificate($site_host, (string) Settings::get(Mailer::FROM_ADDRESS_SETTING, ''))) {
         $https_serving = EnvironmentChecker::httpsServing($server_name_value);
     }
 }

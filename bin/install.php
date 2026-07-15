@@ -134,6 +134,16 @@ if (!function_exists('shell_exec') || !function_exists('exec') || !function_exis
  * what used to be a raw shell_exec() string; doing it once here means call
  * sites don't have to.
  *
+ * $args, when given, is a name => value map: every ':name' token in
+ * $command is replaced with escapeshellarg($value) before running it - e.g.
+ * run('systemctl restart :unit 2>&1', ['unit' => $unit]) instead of
+ * building the string by hand with escapeshellarg() calls threaded through
+ * concatenation. Shell syntax (redirects, `||`, `env VAR=...`) stays as
+ * plain text in $command exactly as before; only the dynamic values go
+ * through $args. A value that's itself an array (e.g. a variable-length
+ * list of file paths) is escaped element-by-element and joined with spaces,
+ * for the handful of commands that take a variadic list of arguments.
+ *
  * Callers decide what a given command's result means - a non-zero exit is
  * the normal, silently-handled outcome for plenty of these (an existence
  * check that just falls back to something else), not automatically a
@@ -142,8 +152,21 @@ if (!function_exists('shell_exec') || !function_exists('exec') || !function_exis
  * fail_line()/fail() so the exact command and what it printed show up as
  * part of that message.
  */
-function run(string $command): array
+function run(string $command, array $args = []): array
 {
+    foreach ($args as $name => $value) {
+        $escaped = is_array($value)
+            ? implode(' ', array_map('escapeshellarg', $value))
+            : escapeshellarg((string) $value);
+
+        // preg_replace_callback, not preg_replace: the replacement is
+        // inserted literally, with no $1/\1-style backreference
+        // interpretation - a plain preg_replace() would mangle a value
+        // containing a literal "$" followed by digits (e.g. a path with
+        // "$1" in it).
+        $command = preg_replace_callback('/:' . preg_quote((string) $name, '/') . '\b/', fn () => $escaped, $command);
+    }
+
     exec($command, $output_lines, $exit_code);
 
     // rtrim() per line - not trim() - so a stray trailing \r or trailing
@@ -425,8 +448,8 @@ function write_and_enable_websocket_service(): bool
         $user = get_current_user() ?: (string) getenv('USER');
     }
 
-    $linger_enable_result = run('loginctl enable-linger ' . escapeshellarg($user) . ' 2>&1');
-    $linger_output = strtolower(run('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')['output']);
+    $linger_enable_result = run('loginctl enable-linger :user 2>&1', ['user' => $user]);
+    $linger_output = strtolower(run('loginctl show-user :user --property=Linger 2>/dev/null', ['user' => $user])['output']);
 
     if (str_contains($linger_output, 'yes')) {
         ok('Lingering enabled for ' . $user . ' - the daemon keeps running after logout and starts on boot.');
@@ -595,8 +618,8 @@ function write_and_enable_upload_worker_service(): bool
         $user = get_current_user() ?: (string) getenv('USER');
     }
 
-    $linger_enable_result = run('loginctl enable-linger ' . escapeshellarg($user) . ' 2>&1');
-    $linger_output = strtolower(run('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')['output']);
+    $linger_enable_result = run('loginctl enable-linger :user 2>&1', ['user' => $user]);
+    $linger_output = strtolower(run('loginctl show-user :user --property=Linger 2>/dev/null', ['user' => $user])['output']);
 
     if (str_contains($linger_output, 'yes')) {
         ok('Lingering enabled for ' . $user . ' - the worker keeps running after logout and starts on boot.');
@@ -815,8 +838,8 @@ function write_and_enable_backup_timer(): void
         $user = get_current_user() ?: (string) getenv('USER');
     }
 
-    $linger_enable_result = run('loginctl enable-linger ' . escapeshellarg($user) . ' 2>&1');
-    $linger_output = strtolower(run('loginctl show-user ' . escapeshellarg($user) . ' --property=Linger 2>/dev/null')['output']);
+    $linger_enable_result = run('loginctl enable-linger :user 2>&1', ['user' => $user]);
+    $linger_output = strtolower(run('loginctl show-user :user --property=Linger 2>/dev/null', ['user' => $user])['output']);
 
     if (str_contains($linger_output, 'yes')) {
         ok('Lingering enabled for ' . $user . ' - the timer keeps firing after logout and across reboots.');
@@ -913,8 +936,8 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
     // default resolution, which goes by the process's actual HOME/euid - root
     // under sudo, not the human whose browser needs to trust the result.
     $mkcert_result = run(
-        'env -u SUDO_ASKPASS CAROOT=' . escapeshellarg($mkcert_caroot)
-        . ' mkcert -cert-file ' . escapeshellarg($cert_path) . ' -key-file ' . escapeshellarg($key_path) . ' ' . escapeshellarg($host) . ' 2>&1'
+        'env -u SUDO_ASKPASS CAROOT=:caroot mkcert -cert-file :cert -key-file :key :host 2>&1',
+        ['caroot' => $mkcert_caroot, 'cert' => $cert_path, 'key' => $key_path, 'host' => $host]
     );
 
     if ($mkcert_result['exitCode'] !== 0 || !is_file($cert_path) || !is_file($key_path)) {
@@ -1192,8 +1215,8 @@ function restart_already_running_daemons(): void
 
     if ($is_root) {
         foreach ($units as $unit) {
-            if (run('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')['output'] === 'active') {
-                run('systemctl restart ' . escapeshellarg($unit) . ' 2>&1');
+            if (run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active') {
+                run('systemctl restart :unit 2>&1', ['unit' => $unit]);
             }
         }
 
@@ -1205,15 +1228,15 @@ function restart_already_running_daemons(): void
 
         if ($candidate !== null) {
             foreach ($units as $unit) {
-                if (user_systemctl($candidate, 'is-active ' . escapeshellarg($unit)) === 'active') {
-                    user_systemctl($candidate, 'restart ' . escapeshellarg($unit));
+                if (user_systemctl($candidate, 'is-active :unit', ['unit' => $unit]) === 'active') {
+                    user_systemctl($candidate, 'restart :unit', ['unit' => $unit]);
                 }
             }
         }
     } elseif (user_systemd_available()) {
         foreach ($units as $unit) {
-            if (run('systemctl --user is-active ' . escapeshellarg($unit) . ' 2>/dev/null')['output'] === 'active') {
-                run('systemctl --user restart ' . escapeshellarg($unit) . ' 2>&1');
+            if (run('systemctl --user is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active') {
+                run('systemctl --user restart :unit 2>&1', ['unit' => $unit]);
             }
         }
     }
@@ -1245,7 +1268,7 @@ function resolve_mkcert_home_dir(): ?string
         $owner = app_service_user();
 
         if ($owner !== null) {
-            $line = run('getent passwd ' . escapeshellarg($owner) . ' 2>/dev/null')['output'];
+            $line = run('getent passwd :owner 2>/dev/null', ['owner' => $owner])['output'];
 
             if ($line !== '') {
                 $home = explode(':', $line)[5] ?? '';
@@ -1287,7 +1310,7 @@ function resolve_home_dir(): ?string
     $uid = run('id -u 2>/dev/null')['output'];
 
     if (ctype_digit($uid)) {
-        $line = run('getent passwd ' . escapeshellarg($uid) . ' 2>/dev/null')['output'];
+        $line = run('getent passwd :uid 2>/dev/null', ['uid' => $uid])['output'];
 
         if ($line !== '') {
             $fields = explode(':', $line);
@@ -1309,7 +1332,7 @@ function resolve_home_dir(): ?string
  */
 function uid_to_username(int $uid): ?string
 {
-    $line = run('getent passwd ' . escapeshellarg((string) $uid) . ' 2>/dev/null')['output'];
+    $line = run('getent passwd :uid 2>/dev/null', ['uid' => (string) $uid])['output'];
 
     if ($line !== '') {
         $name = explode(':', $line)[0];
@@ -1373,7 +1396,7 @@ function ensure_ws_dedicated_user(): ?string
 {
     $username = 'glommer-ws';
 
-    if (run('id -u ' . escapeshellarg($username) . ' 2>/dev/null')['output'] !== '') {
+    if (run('id -u :username 2>/dev/null', ['username' => $username])['output'] !== '') {
         return $username;
     }
 
@@ -1385,7 +1408,7 @@ function ensure_ws_dedicated_user(): ?string
         return null;
     }
 
-    $useradd_result = run($useradd . ' --system --no-create-home --shell /sbin/nologin ' . escapeshellarg($username) . ' 2>&1');
+    $useradd_result = run($useradd . ' --system --no-create-home --shell /sbin/nologin :username 2>&1', ['username' => $username]);
 
     if ($useradd_result['exitCode'] !== 0) {
         warn('Could not create the dedicated ' . $username . ' system account - the WebSocket daemon will run as the web-server user instead.', $useradd_result);
@@ -1416,7 +1439,7 @@ function grant_group_membership(string $username, string $group): void
         return;
     }
 
-    $usermod_result = run($usermod . ' -aG ' . escapeshellarg($group) . ' ' . escapeshellarg($username) . ' 2>&1');
+    $usermod_result = run($usermod . ' -aG :group :username 2>&1', ['group' => $group, 'username' => $username]);
 
     if ($usermod_result['exitCode'] !== 0) {
         warn('Could not add ' . $username . ' to the ' . $group . ' group - it won\'t be able to read .env.', $usermod_result);
@@ -1471,11 +1494,11 @@ function web_server_account(): ?array
         return null;
     }
 
-    $gid = run('id -g ' . escapeshellarg($user) . ' 2>/dev/null')['output'];
+    $gid = run('id -g :user 2>/dev/null', ['user' => $user])['output'];
     $group = null;
 
     if ($gid !== '' && ctype_digit($gid)) {
-        $group_line = run('getent group ' . escapeshellarg($gid) . ' 2>/dev/null')['output'];
+        $group_line = run('getent group :gid 2>/dev/null', ['gid' => $gid])['output'];
         $group = $group_line !== '' ? (explode(':', $group_line)[0] ?: null) : null;
     }
 
@@ -1487,14 +1510,19 @@ function web_server_account(): ?array
  * this root context - needed to stop and disable the user-level services a prior
  * unprivileged install left running, before system units replace them. Requires
  * sudo and the user's runtime dir; returns '' if either is missing.
+ *
+ * $systemctl_args is the sub-command after `systemctl --user` (e.g. 'stop
+ * :unit') with its own ':name' placeholders, filled from $values the same
+ * way run() fills $command's - callers don't escapeshellarg() the unit name
+ * themselves.
  */
-function user_systemctl(string $user, string $args): string
+function user_systemctl(string $user, string $systemctl_args, array $values = []): string
 {
     if (run('command -v sudo 2>/dev/null')['output'] === '') {
         return '';
     }
 
-    $uid = run('id -u ' . escapeshellarg($user) . ' 2>/dev/null')['output'];
+    $uid = run('id -u :user 2>/dev/null', ['user' => $user])['output'];
 
     if ($uid === '' || !ctype_digit($uid)) {
         return '';
@@ -1508,9 +1536,10 @@ function user_systemctl(string $user, string $args): string
     // plain SSH session, so this forces sudo back onto /dev/tty, where a
     // real terminal - including an SSH one - can actually answer it.
     return run(
-        'env -u SUDO_ASKPASS sudo -u ' . escapeshellarg($user)
+        'env -u SUDO_ASKPASS sudo -u :user'
         . ' XDG_RUNTIME_DIR=/run/user/' . $uid
-        . ' systemctl --user ' . $args . ' 2>&1'
+        . ' systemctl --user ' . $systemctl_args . ' 2>&1',
+        ['user' => $user] + $values
     )['output'];
 }
 
@@ -1522,10 +1551,10 @@ function user_systemctl(string $user, string $args): string
  */
 function remove_user_service(string $user, string $unit): void
 {
-    user_systemctl($user, 'disable --now ' . escapeshellarg($unit));
+    user_systemctl($user, 'disable --now :unit', ['unit' => $unit]);
     user_systemctl($user, 'daemon-reload');
 
-    $passwd = run('getent passwd ' . escapeshellarg($user) . ' 2>/dev/null')['output'];
+    $passwd = run('getent passwd :user 2>/dev/null', ['user' => $user])['output'];
     $home = $passwd !== '' ? (explode(':', $passwd)[5] ?? '') : '';
 
     if ($home !== '') {
@@ -1549,7 +1578,7 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
 {
     $system_path = '/etc/systemd/system/' . $unit;
     $existing = is_file($system_path) ? (string) @file_get_contents($system_path) : null;
-    $active = run('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')['output'] === 'active';
+    $active = run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active';
 
     // Already installed as a current system unit - just retire any lingering
     // user-level copy and move on.
@@ -1565,7 +1594,7 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
     // necessarily $service_user (the account the new system unit runs as) - so
     // stopping the wrong user's manager here is exactly what left the old daemon
     // holding the WS port / worker flock so the system unit couldn't bind.
-    user_systemctl($prior_user, 'stop ' . escapeshellarg($unit));
+    user_systemctl($prior_user, 'stop :unit', ['unit' => $unit]);
 
     if (file_put_contents($system_path, $contents) === false) {
         fail_line('Could not write ' . $system_path . ' - ' . $unit . ' left as-is.');
@@ -1574,14 +1603,14 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
             @file_put_contents($system_path, $existing);
         }
 
-        user_systemctl($prior_user, 'start ' . escapeshellarg($unit));
+        user_systemctl($prior_user, 'start :unit', ['unit' => $unit]);
 
         return false;
     }
 
     run('systemctl daemon-reload 2>&1');
-    run('systemctl enable ' . escapeshellarg($unit) . ' 2>&1');
-    run('systemctl restart ' . escapeshellarg($unit) . ' 2>&1');
+    run('systemctl enable :unit 2>&1', ['unit' => $unit]);
+    run('systemctl restart :unit 2>&1', ['unit' => $unit]);
 
     if (!system_unit_healthy($unit)) {
         fail_line('System unit ' . $unit . ' did not come up cleanly - check: systemctl status ' . $unit);
@@ -1594,12 +1623,12 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
         if ($existing !== null) {
             @file_put_contents($system_path, $existing);
             run('systemctl daemon-reload 2>&1');
-            run('systemctl restart ' . escapeshellarg($unit) . ' 2>&1');
+            run('systemctl restart :unit 2>&1', ['unit' => $unit]);
             warn('Reverted ' . $unit . ' to its previous system unit.');
         } else {
             @unlink($system_path);
             run('systemctl daemon-reload 2>&1');
-            user_systemctl($prior_user, 'start ' . escapeshellarg($unit));
+            user_systemctl($prior_user, 'start :unit', ['unit' => $unit]);
             warn('Reverted ' . $unit . ' to the user-level service.');
         }
 
@@ -1622,8 +1651,8 @@ function system_unit_healthy(string $unit): bool
 {
     sleep(3);
 
-    $active = run('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')['output'] === 'active';
-    $restarts = (int) run('systemctl show -p NRestarts --value ' . escapeshellarg($unit) . ' 2>/dev/null')['output'];
+    $active = run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active';
+    $restarts = (int) run('systemctl show -p NRestarts --value :unit 2>/dev/null', ['unit' => $unit])['output'];
 
     return $active && $restarts === 0;
 }
@@ -1740,16 +1769,15 @@ function ensure_selinux_context(string $path, string $type = 'httpd_sys_content_
         return;
     }
 
-    $pattern = escapeshellarg($path . '(/.*)?');
+    $pattern = $path . '(/.*)?';
 
     if (run('command -v semanage 2>/dev/null')['output'] !== ''
         && run('command -v restorecon 2>/dev/null')['output'] !== '') {
         // -a (add a new rule) first; if one already covers this exact
         // pattern from a prior run, that fails, so fall back to -m (modify
         // it) - either way $type ends up correct.
-        run('semanage fcontext -a -t ' . escapeshellarg($type) . ' ' . $pattern . ' 2>/dev/null'
-            . ' || semanage fcontext -m -t ' . escapeshellarg($type) . ' ' . $pattern . ' 2>/dev/null');
-        run('restorecon -R ' . escapeshellarg($path) . ' 2>&1');
+        run('semanage fcontext -a -t :type :pattern 2>/dev/null || semanage fcontext -m -t :type :pattern 2>/dev/null', ['type' => $type, 'pattern' => $pattern]);
+        run('restorecon -R :path 2>&1', ['path' => $path]);
 
         ok('SELinux context set for ' . $path . ' (' . $type . ', persists across relabels)');
 
@@ -1757,7 +1785,7 @@ function ensure_selinux_context(string $path, string $type = 'httpd_sys_content_
     }
 
     if (run('command -v chcon 2>/dev/null')['output'] !== '') {
-        run('chcon -R -t ' . escapeshellarg($type) . ' ' . escapeshellarg($path) . ' 2>&1');
+        run('chcon -R -t :type :path 2>&1', ['type' => $type, 'path' => $path]);
 
         warn('SELinux is ' . $mode . ' but semanage/restorecon aren\'t available - applied a same-boot-only chcon label to ' . $path . ' instead (' . $type . '). Install policycoreutils-python-utils for a label that survives a relabel or reboot.');
 
@@ -1859,7 +1887,7 @@ function web_user_can_read(string $user, string $path): bool
     // askpass helper if the environment has one configured, which is useless
     // (and hangs) over SSH. Forcing it off makes sudo fall back to the real
     // controlling terminal instead.
-    return run('env -u SUDO_ASKPASS sudo -u ' . escapeshellarg($user) . ' test -r ' . escapeshellarg($path) . ' 2>/dev/null')['exitCode'] === 0;
+    return run('env -u SUDO_ASKPASS sudo -u :user test -r :path 2>/dev/null', ['user' => $user, 'path' => $path])['exitCode'] === 0;
 }
 
 /**
@@ -1920,7 +1948,7 @@ function ensure_ws_cert_readable(string $service_user, ?array $web): void
     // would also cover the upload-worker and web server themselves. Falls
     // back to the web-server's group when $service_user IS that account
     // (ensure_ws_dedicated_user() failed, or $web is unknown).
-    $own_group = run('id -gn ' . escapeshellarg($service_user) . ' 2>/dev/null')['output'];
+    $own_group = run('id -gn :user 2>/dev/null', ['user' => $service_user])['output'];
     $is_dedicated_account = $web === null || $service_user !== $web['user'];
     $group = ($is_dedicated_account && $own_group !== '') ? $own_group : ($web['group'] ?? $service_user);
     $dest_dir = '/etc/glommer';
@@ -2176,7 +2204,7 @@ function host_is_public_domain(string $host): bool
 function detected_package_manager(): ?string
 {
     foreach (['dnf', 'apt-get', 'yum', 'zypper', 'pacman'] as $binary) {
-        if (run('command -v ' . escapeshellarg($binary) . ' 2>/dev/null')['output'] !== '') {
+        if (run('command -v :binary 2>/dev/null', ['binary' => $binary])['output'] !== '') {
             return $binary;
         }
     }
@@ -2237,7 +2265,7 @@ function ensure_system_prerequisites(): void
 
     if (run('command -v systemctl 2>/dev/null')['output'] !== '') {
         foreach (['mariadb.service', 'mysqld.service', 'mysql.service'] as $unit) {
-            if (str_contains(run('systemctl list-unit-files ' . escapeshellarg($unit) . ' 2>/dev/null')['output'], $unit)) {
+            if (str_contains(run('systemctl list-unit-files :unit 2>/dev/null', ['unit' => $unit])['output'], $unit)) {
                 $has_db_unit = true;
 
                 break;
@@ -2372,9 +2400,9 @@ function ensure_system_prerequisites(): void
         $started = false;
 
         foreach (['mariadb.service', 'mysqld.service', 'mysql.service'] as $unit) {
-            run('systemctl enable --now ' . escapeshellarg($unit) . ' 2>&1');
+            run('systemctl enable --now :unit 2>&1', ['unit' => $unit]);
 
-            if (run('systemctl is-active ' . escapeshellarg($unit) . ' 2>/dev/null')['output'] === 'active') {
+            if (run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active') {
                 ok('Database server started and enabled on boot (' . $unit . ')');
                 $started = true;
 
@@ -2467,7 +2495,7 @@ function install_certbot(string $plugin_package): bool
     }
 
     echo "\nInstalling certbot (" . $install . ' certbot ' . $plugin_package . ")...\n";
-    run($install . ' certbot ' . escapeshellarg($plugin_package) . ' 2>&1');
+    run($install . ' certbot :plugin 2>&1', ['plugin' => $plugin_package]);
 
     return run('command -v certbot 2>/dev/null')['output'] !== '';
 }
@@ -2556,11 +2584,11 @@ function attempt_web_certificate(string $host, string $email): bool
     echo "\nObtaining a Let's Encrypt certificate for " . $host . " (certbot certonly --webroot -w " . $docroot . ")...\n";
 
     $email_args = ($email !== '' && $email !== 'noreply@example.com' && filter_var($email, FILTER_VALIDATE_EMAIL) !== false)
-        ? '-m ' . escapeshellarg($email)
+        ? '-m :email'
         : '--register-unsafely-without-email';
 
-    $certbot_result = run('certbot certonly --webroot -w ' . escapeshellarg($docroot) . ' --non-interactive --agree-tos --keep-until-expiring '
-        . $email_args . ' -d ' . escapeshellarg($host) . ' 2>&1');
+    $certbot_result = run('certbot certonly --webroot -w :docroot --non-interactive --agree-tos --keep-until-expiring '
+        . $email_args . ' -d :host 2>&1', ['docroot' => $docroot, 'host' => $host, 'email' => $email]);
 
     if ($certbot_result['exitCode'] !== 0) {
         warn('certbot did not complete. Fix the cause and re-run, or get a certificate manually (see README).', $certbot_result);
@@ -2606,7 +2634,7 @@ function install_certificate_into_apache(string $host, string $cert, string $key
     }
 
     // Already serving the LE cert? Nothing to do.
-    $current = run('grep -rhEi "^[[:space:]]*SSLCertificate(File|KeyFile)[[:space:]]" ' . implode(' ', array_map('escapeshellarg', $files)) . ' 2>/dev/null')['output'];
+    $current = run('grep -rhEi "^[[:space:]]*SSLCertificate(File|KeyFile)[[:space:]]" :files 2>/dev/null', ['files' => $files])['output'];
 
     if (str_contains($current, $cert) && str_contains($current, $key)) {
         ok('Apache already serves the Let\'s Encrypt certificate for ' . $host);
@@ -2691,7 +2719,7 @@ function install_certificate_into_nginx(string $host, string $cert, string $key)
         return;
     }
 
-    $current = run('grep -rhEi "^[[:space:]]*ssl_certificate(_key)?[[:space:]]" ' . implode(' ', array_map('escapeshellarg', $files)) . ' 2>/dev/null')['output'];
+    $current = run('grep -rhEi "^[[:space:]]*ssl_certificate(_key)?[[:space:]]" :files 2>/dev/null', ['files' => $files])['output'];
 
     if (str_contains($current, $cert) && str_contains($current, $key)) {
         ok('nginx already serves the Let\'s Encrypt certificate for ' . $host);

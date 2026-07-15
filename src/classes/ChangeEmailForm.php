@@ -13,7 +13,7 @@ class ChangeEmailForm extends Form
 
         $fields = new Fieldset('Change your email address');
 
-        $new_email = new InputField('newEmail', 'New email address', 'email', 'you@example.com', 255);
+        $new_email = new InputField('newEmail', 'New email address', 'email', 'New email address', 255);
         $new_email -> autocomplete = 'email';
         $fields -> addContent($new_email);
 

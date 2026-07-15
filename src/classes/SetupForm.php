@@ -21,13 +21,13 @@ class SetupForm extends Form
         // in an error.
         $current_url = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'example.com');
 
-        $site_url = new InputField('siteURL', 'Site URL', 'text', 'https://example.com', 255);
+        $site_url = new InputField('siteURL', 'Site URL', 'text', 'Site URL', 255);
         $site_url -> value = $current_url;
 
         $site_title = new InputField('siteTitle', 'Site title', 'text', 'Site title', 100);
         $site_title -> value = 'Glommer';
 
-        $mail_from_address = new InputField('mailFromAddress', 'Mail from address', 'email', 'noreply@example.com', 255);
+        $mail_from_address = new InputField('mailFromAddress', 'Mail from address', 'email', 'Mail from address', 255);
         $mail_from_address -> value = 'noreply@' . (parse_url($current_url, PHP_URL_HOST) ?: 'example.com');
 
         $mail_from_name = new InputField('mailFromName', 'Mail from name', 'text', 'Mail from name', 100);
@@ -50,13 +50,13 @@ class SetupForm extends Form
 
         $this -> contents[] = $site_fields;
 
-        $db_host = new InputField('DBHost', 'Database host', 'text', '127.0.0.1', 255);
+        $db_host = new InputField('DBHost', 'Database host', 'text', 'Database host', 255);
         $db_host -> value = '127.0.0.1';
 
-        $db_port = new InputField('DBPort', 'Database port', 'text', '3306', 5);
+        $db_port = new InputField('DBPort', 'Database port', 'text', 'Database port', 5);
         $db_port -> value = '3306';
 
-        $db_database = new InputField('DBDatabase', 'Database name', 'text', 'glommer', 64);
+        $db_database = new InputField('DBDatabase', 'Database name', 'text', 'Database name', 64);
         $db_database -> value = 'glommer';
 
         $admin_username = new InputField('adminUsername', 'Database admin username', 'text', 'Database admin username', 255);

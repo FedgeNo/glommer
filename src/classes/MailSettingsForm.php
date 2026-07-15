@@ -20,12 +20,12 @@ class MailSettingsForm extends Form
 
         $fields = new Fieldset('Outgoing mail (SMTP relay)');
 
-        $host = new InputField('smtpHost', 'SMTP host', 'text', 'e.g. smtp-relay.brevo.com', 255);
+        $host = new InputField('smtpHost', 'SMTP host', 'text', 'SMTP host', 255);
         $host -> value = (string) Settings::get(Mailer::SMTP_HOST_SETTING, '');
         $host -> autocomplete = 'off';
         $fields -> addContent($host);
 
-        $port = new InputField('smtpPort', 'SMTP port', 'text', '587', 5);
+        $port = new InputField('smtpPort', 'SMTP port', 'text', 'SMTP port', 5);
         $port -> value = (string) Settings::get(Mailer::SMTP_PORT_SETTING, '587');
         $port -> autocomplete = 'off';
         $fields -> addContent($port);

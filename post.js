@@ -249,6 +249,7 @@ class Post {
             post.dataset.descriptionDelta = this.rawDescriptionDelta;
             post.dataset.editTitle = this.title || '';
             post.dataset.editLinkUrl = this.linkURL || '';
+            post.dataset.hasMedia = this.items.length > 0 ? '1' : '';
         }
 
         if (this.authorUsername) {

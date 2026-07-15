@@ -1272,14 +1272,18 @@ document.addEventListener('click', (event) => {
     title_input.setAttribute('aria-label', 'Title (optional)');
     title_row.appendChild(title_input);
 
-    const link_input = document.createElement('input');
-    link_input.type = 'text';
-    link_input.name = 'linkURL';
-    link_input.placeholder = 'Link (optional)';
-    link_input.maxLength = 255;
-    link_input.value = post_element.dataset.editLinkUrl || '';
-    link_input.setAttribute('aria-label', 'Link (optional)');
-    title_row.appendChild(link_input);
+    // A media post never had a link to begin with (create-post.php enforces
+    // the same XOR api/edit-post.php does), so there's nothing here to edit.
+    if (!post_element.dataset.hasMedia) {
+        const link_input = document.createElement('input');
+        link_input.type = 'text';
+        link_input.name = 'linkURL';
+        link_input.placeholder = 'Link (optional)';
+        link_input.maxLength = 255;
+        link_input.value = post_element.dataset.editLinkUrl || '';
+        link_input.setAttribute('aria-label', 'Link (optional)');
+        title_row.appendChild(link_input);
+    }
 
     fields.appendChild(title_row);
 
@@ -1360,11 +1364,12 @@ document.addEventListener('submit', async (event) => {
 
     const post_id = form.dataset.postId;
     const post_element = form.previousElementSibling;
+    const link_input = form.querySelector('[name=\'linkURL\']');
 
     const result = await api_post('/api/edit-post', {
         postId: post_id,
         title: form.querySelector('[name=\'title\']').value,
-        linkURL: form.querySelector('[name=\'linkURL\']').value,
+        linkURL: link_input ? link_input.value : '',
         description: form.querySelector('.DescriptionInput').value,
     });
 

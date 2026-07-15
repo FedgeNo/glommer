@@ -72,6 +72,12 @@ class Post extends HTMLObject
             $this -> attributes['data-description-delta'] = $this -> descriptionDelta ?? '';
             $this -> attributes['data-edit-title'] = $this -> title ?? '';
             $this -> attributes['data-edit-link-url'] = $this -> linkURL ?? '';
+
+            // The edit form hides the Link field for a media post: attached
+            // media and a link are mutually exclusive (api/edit-post.php
+            // enforces the same XOR create-post.php always has), and a media
+            // post never had a link to begin with, so there's nothing to edit.
+            $this -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
         }
 
         if ($this -> author !== null) {

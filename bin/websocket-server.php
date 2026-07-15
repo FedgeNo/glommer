@@ -700,11 +700,13 @@ while (true) {
         }
 
         if ($use_tls && $connections[$id]['kind'] === 'client' && !$connections[$id]['tlsReady']) {
-            $enabled = @stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_SERVER);
+            $enabled = stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_SERVER);
 
             if ($enabled === true) {
                 $connections[$id]['tlsReady'] = true;
             } elseif ($enabled === false) {
+                $ssl_error = error_get_last();
+                log_line('TLS handshake failed for connection ' . $id . ': ' . ($ssl_error['message'] ?? 'unknown error'));
                 drop_connection($id);
             }
 

@@ -566,6 +566,7 @@ button[type='submit'].Btn:hover {
 
 .DeleteButton,
 .BanButton,
+.BanTrendingEntityButton,
 .BlockUserButton,
 .ReportButton,
 .RemoveFriendButton,
@@ -579,6 +580,7 @@ button[type='submit'].Btn:hover {
 
 .DeleteButton:hover,
 .BanButton:hover,
+.BanTrendingEntityButton:hover,
 .BlockUserButton:hover,
 .ReportButton:hover,
 .RemoveFriendButton:hover,

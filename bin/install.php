@@ -766,6 +766,44 @@ function backup_timer_contents(): string
 }
 
 /**
+ * The systemd unit contents for the trending recompute (bin/compute-trending.php)
+ * - same single-source-of-truth reasoning as backup_service_contents().
+ */
+function trending_service_contents(?string $run_as = null): string
+{
+    $service = ['[Service]', 'Type=oneshot'];
+
+    if ($run_as !== null) {
+        $service[] = 'User=' . $run_as;
+    }
+
+    $service[] = 'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/compute-trending.php';
+
+    return implode("\n", array_merge(
+        ['[Unit]', 'Description=Glommer trending recompute', ''],
+        $service
+    )) . "\n";
+}
+
+function trending_timer_contents(): string
+{
+    return implode("\n", [
+        '[Unit]',
+        'Description=Periodic Glommer trending recompute',
+        '',
+        '[Timer]',
+        // Matches Trending.php's own docblock (~10-15 min) - Trending::current()'s
+        // lottery self-heal still covers the case where this timer isn't installed.
+        'OnBootSec=5min',
+        'OnUnitActiveSec=15min',
+        'Persistent=true',
+        '',
+        '[Install]',
+        'WantedBy=timers.target',
+    ]) . "\n";
+}
+
+/**
  * Brings the already-installed backup service + timer units up to the current
  * template on every install run, so a changed schedule or ExecStart is picked up
  * even when nothing looks broken. Fully idempotent: a no-op when both files
@@ -1525,6 +1563,45 @@ function ensure_ws_dedicated_user(): ?string
 }
 
 /**
+ * Creates (if missing) a dedicated, unprivileged system account for the
+ * trending-recompute timer - same reasoning as ensure_ws_dedicated_user():
+ * bin/compute-trending.php only ever needs to read .env (for DB creds) and
+ * query the database, so it gets its own account rather than running as
+ * $service_user (which owns uploads/ and the daemons). No login shell, no
+ * home directory. Idempotent: a no-op if the account already exists.
+ * Returns the username, or null if creation failed (the caller then falls
+ * back to running the timer as $service_user).
+ */
+function ensure_trending_dedicated_user(): ?string
+{
+    $username = 'glommer-trending';
+
+    if (run('id -u :username 2>/dev/null', ['username' => $username])['output'] !== '') {
+        return $username;
+    }
+
+    $useradd = run('command -v useradd 2>/dev/null')['output'];
+
+    if ($useradd === '') {
+        warn('No useradd found - cannot create a dedicated system account for the trending timer. It will run as the web-server user instead.');
+
+        return null;
+    }
+
+    $useradd_result = run($useradd . ' --system --no-create-home --shell /sbin/nologin :username 2>&1', ['username' => $username]);
+
+    if ($useradd_result['exitCode'] !== 0) {
+        warn('Could not create the dedicated ' . $username . ' system account - the trending timer will run as the web-server user instead.', $useradd_result);
+
+        return null;
+    }
+
+    ok('Created dedicated system account ' . $username . ' for the trending-recompute timer.');
+
+    return $username;
+}
+
+/**
  * Adds $username as a supplementary member of $group - read-only in
  * practice, since .env and uploads/ are only ever group-readable (0640/0644
  * files, 0755 dirs), never group-writable (see fix_upload_ownership()).
@@ -1804,6 +1881,51 @@ function migrate_backup_to_system(string $service_user, string $prior_user, bool
     }
 
     ok('glommer-backup.timer installed as a system timer (runs backups as ' . $service_user . ')');
+
+    return true;
+}
+
+/**
+ * Writes/enables the trending-recompute system timer, running as
+ * $trending_user (its own dedicated account - see
+ * ensure_trending_dedicated_user()'s docblock). Unlike the backup/websocket/
+ * upload-worker units, there's no pre-existing user-level version to migrate
+ * away from (this timer is new), so this just writes the current template
+ * and enables it - idempotent, a no-op when the units already match.
+ */
+function write_and_enable_trending_timer(string $trending_user): bool
+{
+    $service_path = '/etc/systemd/system/glommer-trending.service';
+    $timer_path = '/etc/systemd/system/glommer-trending.timer';
+
+    $desired_service = trending_service_contents($trending_user);
+    $desired_timer = trending_timer_contents();
+
+    if ((string) @file_get_contents($service_path) === $desired_service
+        && (string) @file_get_contents($timer_path) === $desired_timer
+        && run('systemctl is-enabled glommer-trending.timer 2>/dev/null')['output'] === 'enabled') {
+        ok('glommer-trending.timer already installed as a system timer (runs as ' . $trending_user . ')');
+
+        return true;
+    }
+
+    if (file_put_contents($service_path, $desired_service) === false
+        || file_put_contents($timer_path, $desired_timer) === false) {
+        fail_line('Could not write the system trending-recompute units.');
+
+        return false;
+    }
+
+    run('systemctl daemon-reload 2>&1');
+    run('systemctl enable --now glommer-trending.timer 2>&1');
+
+    if (run('systemctl is-enabled glommer-trending.timer 2>/dev/null')['output'] !== 'enabled') {
+        fail_line('System trending timer did not enable - check: systemctl status glommer-trending.timer');
+
+        return false;
+    }
+
+    ok('glommer-trending.timer installed as a system timer (runs as ' . $trending_user . ')');
 
     return true;
 }
@@ -2512,6 +2634,18 @@ function set_up_system_services(array &$environment_failures): void
             unset($environment_failures['Backups']);
         }
     }
+
+    // Own dedicated account, same reasoning as the WS daemon's - only needs
+    // .env read access (DB creds), not uploads/ or anything else
+    // $service_user owns. Falls back to $service_user if account creation
+    // isn't possible on this box.
+    $trending_user = ensure_trending_dedicated_user() ?? $service_user;
+
+    if ($trending_user !== $service_user) {
+        grant_group_membership($trending_user, $web['group'] ?? $service_user);
+    }
+
+    write_and_enable_trending_timer($trending_user);
 }
 
 /**

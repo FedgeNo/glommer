@@ -36,8 +36,25 @@ spl_autoload_register(function (string $class): void {
 
 // ---------- Output helpers ----------
 
+/**
+ * Whether to colorize output. Checks GLOMMER_INSTALLER_COLOR first - set by
+ * offer_root_reexec() right before it passthru()'s into `sudo` - because
+ * stream_isatty(STDOUT) can't be trusted to survive that re-exec: sudo
+ * commonly allocates its own pty for the command (Fedora/RHEL's default
+ * sudoers has "Defaults use_pty"), and isatty() checks on the far side of
+ * that don't reliably agree with what this same process saw a moment ago.
+ * Propagating the parent's own already-correct decision sidesteps the
+ * question entirely instead of re-deriving it (possibly wrongly) after
+ * re-exec.
+ */
 function supports_color(): bool
 {
+    $forced = getenv('GLOMMER_INSTALLER_COLOR');
+
+    if ($forced !== false) {
+        return $forced === '1';
+    }
+
     return function_exists('stream_isatty') && stream_isatty(STDOUT);
 }
 
@@ -1229,7 +1246,16 @@ function offer_root_reexec(): void
         $arg_string .= ' ' . escapeshellarg($arg);
     }
 
-    passthru('sudo ' . escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__FILE__) . $arg_string, $reexec_code);
+    // See supports_color()'s docblock - this process's own color decision is
+    // already correct; hand it to the re-exec'd one via `env` (not putenv()
+    // + relying on sudo to preserve it - sudo's default env_reset strips
+    // most inherited variables, `env NAME=value cmd` sets one unconditionally
+    // for its own child regardless of that policy, same trick user_systemctl()
+    // already relies on) rather than letting it re-derive (possibly wrongly)
+    // an answer sudo's pty handling can disturb.
+    $color_env = 'GLOMMER_INSTALLER_COLOR=' . (supports_color() ? '1' : '0');
+
+    passthru('sudo env ' . escapeshellarg($color_env) . ' ' . escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__FILE__) . $arg_string, $reexec_code);
     exit($reexec_code);
 }
 

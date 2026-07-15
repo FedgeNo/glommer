@@ -1733,6 +1733,35 @@ function web_user_can_read(string $user, string $path): bool
 }
 
 /**
+ * Re-runs ensure_ws_cert_readable() for whatever account the WS daemon's
+ * system service actually runs as, resolved the same way
+ * set_up_system_services() resolves it. That earlier call only ever sees
+ * WS_TLS_CERT as it stood at that point in the script - a cert that gets
+ * (re)generated afterward (a first-ever mkcert cert, or a refreshed one for
+ * a changed SITE_URL host) needs this re-check, or .env is left pointing at
+ * a path the service account can't read until a separate later run happens
+ * to notice. A no-op when not root (matches the rest of the system-service
+ * machinery, which is root-only) or when the account can't be determined.
+ */
+function relocate_ws_cert_if_root(): void
+{
+    if (!running_as_root()) {
+        return;
+    }
+
+    $web = web_server_account();
+    $service_user = $web !== null ? $web['user'] : (env_file_owner() ?? app_service_user());
+
+    if ($service_user === null) {
+        return;
+    }
+
+    $ws_user = ensure_ws_dedicated_user() ?? $service_user;
+
+    ensure_ws_cert_readable($ws_user, $web);
+}
+
+/**
  * Makes sure the WebSocket daemon - which now runs as the web-server user - can
  * read its TLS cert/key for wss://. Chowning the files isn't enough when they
  * sit in a 0700 home dir (a mkcert cert's usual home): the web user can't even
@@ -3090,6 +3119,14 @@ if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
             . 'HTTPS section.');
     }
 
+    // set_up_system_services() already ran earlier in this same install pass
+    // (and with it, its own ensure_ws_cert_readable() call) - it saw whatever
+    // WS_TLS_CERT was set BEFORE this block ran, which on a first-ever mkcert
+    // install is nothing yet. Without this, a freshly generated cert sits in
+    // a mkcert home dir the WS service account can't read until a second,
+    // separate install run happens to relocate it.
+    relocate_ws_cert_if_root();
+
     $config = require __DIR__ . '/../src/config.php';
 } elseif (is_interactive()) {
     // A WS_TLS_CERT already being set doesn't mean it's still right - SITE_URL
@@ -3104,6 +3141,12 @@ if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
     // every single install (even when nothing changed) would do for no
     // reason - it's only meant to fire once, the first time TLS gets wired up.
     offer_websocket_tls($site_host, refresh: true);
+
+    // Same reasoning as the branch above: a regenerated cert lands in a
+    // mkcert home dir again, which set_up_system_services() already checked
+    // (and found fine, or wouldn't be here) earlier in this same pass - redo
+    // that check now that the cert just changed underneath it.
+    relocate_ws_cert_if_root();
 
     // Plain require (not require_once), same as every other config reload in
     // this script - re-executes and picks up the WS_TLS_CERT/WS_TLS_KEY

@@ -26,6 +26,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(ServerURL::absolute('/users/' . $current_user -> username . '/friends'), 'Friends'),
                 new Anchor(ServerURL::absolute('/users/'), 'Users'),
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
+                new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
                 new Anchor(ServerURL::absolute('/search'), 'Search'),
                 new Anchor(ServerURL::absolute('/messages/'), 'Messages'),
                 new Anchor(ServerURL::absolute('/bookmarks'), 'Bookmarks'),
@@ -59,6 +60,7 @@ class MainNavigation extends HTMLObject
             // that don't need an account: the public Tags directory and Help.
             $this -> addContent(new NavDropdown($brand, [
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
+                new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
             ]));
             $account_links -> addContent(new Anchor(ServerURL::absolute('/login'), 'Log in'));

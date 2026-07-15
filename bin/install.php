@@ -789,7 +789,7 @@ function offer_enable_backup_timer(): bool
  * error, live notifications/messaging just stop working). Offer to generate
  * a certificate with mkcert (if available) and wire it in.
  */
-function offer_websocket_tls(string $host): bool
+function offer_websocket_tls(string $host, bool $refresh = false): bool
 {
     $mkcert_available = trim((string) shell_exec('command -v mkcert 2>/dev/null')) !== '';
 
@@ -809,13 +809,23 @@ function offer_websocket_tls(string $host): bool
     $cert_path = $cert_dir . '/' . $host . '.pem';
     $key_path = $cert_dir . '/' . $host . '-key.pem';
 
-    echo "\nThe WebSocket daemon has no TLS certificate configured. mkcert is available -\n";
-    echo "it can generate one for " . $host . " at " . $cert_dir . "\n";
-    echo "(Browsers only trust it without a warning if \"mkcert -install\" has been run\n";
-    echo "on this machine - a one-time step, needs sudo the first time, separate from this.)\n";
+    // A $refresh pass runs every time (see the call site) precisely because an
+    // already-configured WS_TLS_CERT doesn't mean it's still correct - SITE_URL
+    // can change hostname without that check ever noticing the old cert no
+    // longer matches. So this skips the "no cert configured yet" framing and
+    // the confirm() prompt: regenerating for the current host is cheap and
+    // idempotent, and asking every single run would just be friction.
+    if ($refresh) {
+        echo "\nRe-checking the WebSocket daemon's mkcert certificate covers " . $host . "...\n";
+    } else {
+        echo "\nThe WebSocket daemon has no TLS certificate configured. mkcert is available -\n";
+        echo "it can generate one for " . $host . " at " . $cert_dir . "\n";
+        echo "(Browsers only trust it without a warning if \"mkcert -install\" has been run\n";
+        echo "on this machine - a one-time step, needs sudo the first time, separate from this.)\n";
 
-    if (!confirm('Generate a certificate now and configure it?')) {
-        return false;
+        if (!confirm('Generate a certificate now and configure it?')) {
+            return false;
+        }
     }
 
     if (!is_dir($cert_dir) && !@mkdir($cert_dir, 0700, true)) {
@@ -3061,6 +3071,21 @@ if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
             . 'uses) and set WS_TLS_CERT/WS_TLS_KEY in .env, then restart the WebSocket daemon. See README.md\'s '
             . 'HTTPS section.');
     }
+
+    $config = require __DIR__ . '/../src/config.php';
+} elseif (is_interactive()) {
+    // A WS_TLS_CERT already being set doesn't mean it's still right - SITE_URL
+    // can change hostname (e.g. localhost -> a new dev domain) with nothing
+    // above ever noticing the existing mkcert certificate no longer covers it.
+    // Re-run mkcert for the current host every time rather than trusting a
+    // cert that merely "looks" configured (offer_websocket_tls is a no-op if
+    // mkcert isn't installed, and it's the same command mkcert always runs -
+    // regenerating for an already-covered host is harmless). Deliberately
+    // NOT re-running configure_websocket_tls_from_web_server() here too: that
+    // path unconditionally restarts the WebSocket daemon, which running it on
+    // every single install (even when nothing changed) would do for no
+    // reason - it's only meant to fire once, the first time TLS gets wired up.
+    offer_websocket_tls($site_host, refresh: true);
 
     // Plain require (not require_once), same as every other config reload in
     // this script - re-executes and picks up the WS_TLS_CERT/WS_TLS_KEY

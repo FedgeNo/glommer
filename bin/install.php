@@ -1897,6 +1897,110 @@ function ensure_selinux_context(string $path, string $type = 'httpd_sys_content_
 }
 
 /**
+ * The admin Site Settings page has the web server itself (PHP-FPM/Apache,
+ * running under SELinux's httpd_t domain on an Enforcing host) run `systemctl
+ * is-active glommer-upload-worker.service` to report worker health - a
+ * read-only status query, not a privileged control action. SELinux's
+ * systemd-aware policy gates that query separately from start/stop/reload via
+ * its own `service` object class, and denies it to httpd_t by default -
+ * confirmed live via `journalctl -g avc`: `denied { status } ...
+ * scontext=httpd_t tcontext=systemd_unit_file_t tclass=service`. No built-in
+ * boolean covers this, so the web server silently misreports a genuinely
+ * healthy worker as "Not running" on every Enforcing host, with nothing in
+ * the Unix permissions to explain why.
+ *
+ * Fixes it by loading a small custom policy module (compiled on the fly)
+ * granting httpd_t ONLY the `status` permission on systemd_unit_file_t - not
+ * `start`/`stop`/`reload`, which the same `service` class also gates - so the
+ * web server still can't control any unit, only observe whether one is up.
+ * systemd_unit_file_t is the generic type every unit file gets unless
+ * specifically relabeled (all of glommer-upload-worker/glommer-websocket/
+ * glommer-backup included), so this one rule covers every status line the
+ * Site Settings page shows, not just the upload worker's.
+ */
+function ensure_httpd_can_query_systemd_status(): void
+{
+    if (run('command -v getenforce 2>/dev/null')['output'] === '') {
+        return;
+    }
+
+    $mode = run('getenforce 2>/dev/null')['output'];
+
+    if ($mode !== 'Enforcing' && $mode !== 'Permissive') {
+        return;
+    }
+
+    foreach (['checkmodule', 'semodule_package', 'semodule'] as $binary) {
+        if (run('command -v :binary 2>/dev/null', ['binary' => $binary])['output'] === '') {
+            warn('SELinux is ' . $mode . ' but ' . $binary . ' isn\'t available - the web server won\'t be able to read service status (Site Settings will show services as "Not running" even when they are). Install policycoreutils-devel (or selinux-policy-devel) and re-run - this doesn\'t affect the services themselves, only that one status line.');
+
+            return;
+        }
+    }
+
+    $module_name = 'glommer_systemd_status';
+
+    // Idempotent: `semodule -l` lists installed module names, one per line
+    // (older versions print "name version" - the name is always the first
+    // token either way).
+    $installed = array_map(
+        fn (string $line) => explode(' ', trim($line))[0],
+        explode("\n", run('semodule -l 2>/dev/null')['output'])
+    );
+
+    if (in_array($module_name, $installed, true)) {
+        ok('SELinux already lets the web server read systemd unit status (' . $module_name . ' module present)');
+
+        return;
+    }
+
+    $tmp_dir = sys_get_temp_dir() . '/' . $module_name . '-' . bin2hex(random_bytes(4));
+
+    if (!mkdir($tmp_dir, 0700, true)) {
+        warn('Could not create a temp directory to build the SELinux policy module - skipping. The web server will keep misreporting service status under SELinux.');
+
+        return;
+    }
+
+    $te_path = $tmp_dir . '/' . $module_name . '.te';
+    $mod_path = $tmp_dir . '/' . $module_name . '.mod';
+    $pp_path = $tmp_dir . '/' . $module_name . '.pp';
+
+    file_put_contents($te_path, "module $module_name 1.0;\n\nrequire {\n    type httpd_t;\n    type systemd_unit_file_t;\n    class service status;\n}\n\n# Read-only: lets the Site Settings worker/WebSocket status lines report\n# reality instead of always \"Not running\" under Enforcing SELinux.\nallow httpd_t systemd_unit_file_t:service status;\n");
+
+    $compile = run('checkmodule -M -m -o :mod :te 2>&1', ['mod' => $mod_path, 'te' => $te_path]);
+
+    if ($compile['exitCode'] !== 0) {
+        warn('Failed to compile the SELinux policy module for systemd status queries - skipping.', $compile);
+        run('rm -rf :dir', ['dir' => $tmp_dir]);
+
+        return;
+    }
+
+    $package = run('semodule_package -o :pp -m :mod 2>&1', ['pp' => $pp_path, 'mod' => $mod_path]);
+
+    if ($package['exitCode'] !== 0) {
+        warn('Failed to package the SELinux policy module for systemd status queries - skipping.', $package);
+        run('rm -rf :dir', ['dir' => $tmp_dir]);
+
+        return;
+    }
+
+    $install = run('semodule -i :pp 2>&1', ['pp' => $pp_path]);
+
+    // Best-effort cleanup of the temp build directory either way.
+    run('rm -rf :dir', ['dir' => $tmp_dir]);
+
+    if ($install['exitCode'] !== 0) {
+        warn('Failed to install the SELinux policy module for systemd status queries - the web server will keep misreporting service status under SELinux.', $install);
+
+        return;
+    }
+
+    ok('SELinux policy module installed - the web server can now read systemd unit status (Site Settings\' status lines will reflect reality).');
+}
+
+/**
  * Makes every directory under $root world-writable (0777) - the fallback when
  * the web server's account can't be detected, so it can still create files
  * there (what the unprivileged installer relies on). Files are left alone. Pure
@@ -2186,6 +2290,11 @@ function set_up_system_services(array &$environment_failures): void
 
         return;
     }
+
+    // Independent of which account the services below end up running as - this
+    // is about the web server (PHP-FPM/Apache) being able to read their status,
+    // not about the services themselves.
+    ensure_httpd_can_query_systemd_status();
 
     $web = web_server_account();
 

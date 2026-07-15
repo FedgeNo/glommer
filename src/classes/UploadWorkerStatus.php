@@ -19,7 +19,7 @@ class UploadWorkerStatus extends Div
         $status_text = match ($is_active) {
             true => 'Running',
             false => 'Not running - staged uploads will never be transcoded until it is restarted',
-            null => 'Unknown - systemctl isn\'t available on this host',
+            null => 'Unknown - either systemctl isn\'t available on this host, or SELinux is denying the web server\'s own status query (run bin/install.php as root to fix that)',
         };
 
         $status_line = new Paragraph('Worker service: ' . $status_text);

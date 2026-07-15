@@ -482,11 +482,16 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
      * Whether the upload-worker systemd service is currently running - a
      * `systemctl is-active` shell-out, checked as both a system-level unit (a
      * root/sudo install) and a user-level one (see EnvironmentChecker's
-     * install-time persistence check for why both exist), first match wins.
-     * Read-only service-status queries need no special privilege, so this
-     * works from the web SAPI's own user. Best-effort: on a non-systemd host
-     * (or if systemctl itself is missing) this can't tell either way, so it
-     * returns null rather than a false "dead".
+     * install-time persistence check for why both exist), first definitive
+     * match wins. Read-only service-status queries need no special Unix
+     * privilege, but on an Enforcing SELinux host they can still be denied by
+     * policy to the web server's own domain (confirmed live: `systemctl
+     * is-active` from PHP-FPM returned nothing but "Access denied" on stderr,
+     * which - discarded via 2>/dev/null - used to read back as an empty
+     * string and get folded into a false "dead"). bin/install.php's
+     * ensure_httpd_can_query_systemd_status() fixes that at the source; this
+     * only tells the two apart so a host that hasn't run it yet reports
+     * "don't know" instead of confidently lying that a healthy worker is down.
      */
     public static function workerIsActive(): ?bool
     {
@@ -494,15 +499,35 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
             return null;
         }
 
-        if (trim((string) shell_exec('systemctl is-active glommer-upload-worker.service 2>/dev/null')) === 'active') {
+        $system = self::systemdUnitActiveState('systemctl is-active glommer-upload-worker.service 2>/dev/null');
+        $user = self::systemdUnitActiveState('systemctl is-active --user glommer-upload-worker.service 2>/dev/null');
+
+        if ($system === true || $user === true) {
             return true;
         }
 
-        if (trim((string) shell_exec('systemctl is-active --user glommer-upload-worker.service 2>/dev/null')) === 'active') {
-            return true;
+        if ($system === false || $user === false) {
+            return false;
         }
 
-        return false;
+        return null;
+    }
+
+    /**
+     * Maps a `systemctl is-active` result to a definitive true/false, or null
+     * when the output isn't one of systemd's own terminal ActiveState values -
+     * e.g. blank (a permission-denied error suppressed by 2>/dev/null) or
+     * 'unknown'. Trusting only the states systemd itself defines, rather than
+     * just checking for 'active', is what lets a denied/indeterminate query
+     * be told apart from a genuinely stopped unit.
+     */
+    private static function systemdUnitActiveState(string $command): ?bool
+    {
+        return match (trim((string) shell_exec($command))) {
+            'active', 'activating', 'reloading' => true,
+            'inactive', 'failed', 'deactivating' => false,
+            default => null,
+        };
     }
 
     public static function sweepOrphanedBatches(): void

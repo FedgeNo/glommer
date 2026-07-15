@@ -21,7 +21,12 @@ class LogoutForm extends Form
         $button -> type = 'submit';
         $button -> class = 'LogoutButton';
         $button -> contents[] = 'Log out';
-        $this -> contents[] = $button;
+        // Overwrite, not append - toDOM() can run more than once on the same
+        // instance now (MainNavigation reuses it for both the desktop
+        // account dropdown and the mobile nav panel), and contents[] is
+        // instance state that would otherwise accumulate a duplicate button
+        // on every additional call.
+        $this -> contents = [$button];
 
         return parent::toDOM();
     }

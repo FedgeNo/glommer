@@ -521,6 +521,143 @@ p a:hover {
     color: var(--ink);
 }
 
+/* ---------- Mobile navigation: hamburger + combined flyout list ----------
+   Below the breakpoint, the two hover flyouts above (brand's main menu, the
+   account menu) are replaced entirely - hover doesn't suit touch, and a
+   position:absolute flyout can't scroll independently of the page. Their
+   trigger anchors (brand, "Logged In As ...") stay visible and still work as
+   plain links; only their .NavDropdownMenu popouts are hidden. The
+   hamburger opens one panel holding every link from both flyouts, scrolling
+   on its own if it's taller than the viewport. */
+
+.NavHamburgerButton {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.NavHamburgerBar {
+    width: 1.35rem;
+    height: 2px;
+    border-radius: 999px;
+    background-color: var(--ink);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.NavHamburgerButton.Active .NavHamburgerBar:nth-child(1) {
+    transform: translateY(0.4rem) rotate(45deg);
+}
+
+.NavHamburgerButton.Active .NavHamburgerBar:nth-child(2) {
+    opacity: 0;
+}
+
+.NavHamburgerButton.Active .NavHamburgerBar:nth-child(3) {
+    transform: translateY(-0.4rem) rotate(-45deg);
+}
+
+.MobileNavMenu {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    /* Not bottom: 0 - .MainNavigation's backdrop-filter makes it the
+       containing block for this fixed-position child (same as
+       transform/filter would), so a percentage-of-viewport bottom would
+       resolve against .MainNavigation's own (nav-bar-sized) box instead of
+       the real viewport. top/height are set inline in main.js in vh/dvh
+       units instead, which stay viewport-relative regardless of containing
+       block. */
+    flex-direction: column;
+    gap: 0.125rem;
+    overflow-y: auto;
+    padding: 0.75rem;
+    background-color: var(--surface);
+    border-top: 1px solid var(--hairline);
+    z-index: 19;
+}
+
+.MobileNavMenu.Open {
+    display: flex;
+}
+
+/* .MainNavigation .MobileNavMenu (not just .MobileNavMenu) - needs to
+   out-specificity ".MainNavigation > div > a", which would otherwise win
+   the shared color/padding/border-radius properties and leave these links
+   styled like the desktop nav pills instead of full-width mobile rows. */
+.MainNavigation .MobileNavMenu a,
+.MainNavigation .MobileNavMenu .LogoutButton {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 0.85rem;
+    border-radius: 0.625rem;
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.MainNavigation .MobileNavMenu .LogoutButton {
+    width: 100%;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.MainNavigation .MobileNavMenu a:hover,
+.MainNavigation .MobileNavMenu .LogoutButton:hover {
+    background-color: var(--surface-2);
+    color: var(--ink);
+}
+
+.MobileNavMenu .LogoutForm {
+    width: 100%;
+    margin: 0;
+}
+
+@media (max-width: 48rem) {
+    .NavHamburgerButton {
+        display: flex;
+    }
+
+    .NavDropdownMenu {
+        display: none !important;
+    }
+
+    /* The brand/account trigger anchors stay visible (see MainNavigation.php's
+       docblock), but their hover styling is desktop-flavored - a tap leaves it
+       looking "stuck" on until something else is tapped, since touch has no
+       real hover state. Reset back to their non-hover look. */
+    .MainNavigation > div > a:hover,
+    .MainNavigation a.NavDropdownTrigger:hover,
+    .NotificationsNavLink > a:hover,
+    .NavDropdown:hover .NavDropdownTrigger,
+    .NotificationsNavLink:hover > a {
+        color: var(--muted);
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    /* The hover-only notification preview doesn't suit touch either - the
+       bell + unread dot stay (real link to /notifications), just not the
+       dropdown preview. */
+    .NotificationDropdown,
+    .NotificationsNavLink:hover .NotificationDropdown {
+        display: none !important;
+    }
+}
 
 /* ---------- Buttons ----------
    Hierarchy: submit = filled jade; regular chips = quiet tonal;

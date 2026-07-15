@@ -717,6 +717,7 @@ async function api_post(path, payload, { signal } = {}) {
 document.addEventListener('DOMContentLoaded', () => {
     const nav = document.querySelector('.MainNavigation');
     const page_title = document.querySelector('.PageTitle');
+    const mobile_menu = document.querySelector('.MobileNavMenu');
 
     if (nav) {
         const update_layout = () => {
@@ -724,6 +725,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (page_title) {
                 page_title.style.top = nav_height + 'px';
+            }
+
+            if (mobile_menu) {
+                mobile_menu.style.top = nav_height + 'px';
+                // Not bottom: 0 in CSS - .MainNavigation's backdrop-filter makes
+                // it the containing block for this fixed-position child, so a
+                // plain bottom: 0 there resolves against .MainNavigation's own
+                // (nav-bar-sized) box instead of the real viewport. dvh stays
+                // viewport-relative regardless of containing block.
+                mobile_menu.style.height = `calc(100dvh - ${nav_height}px)`;
             }
 
             const title_height = page_title ? page_title.offsetHeight : 0;
@@ -736,6 +747,48 @@ document.addEventListener('DOMContentLoaded', () => {
         if (page_title) {
             new ResizeObserver(update_layout).observe(page_title);
         }
+    }
+});
+
+/**
+ * Toggles MobileNavMenu open/closed - the hamburger's only job. Closes on
+ * Escape or a click outside the panel, same "outside/Escape dismisses"
+ * convention the confirm/prompt dialogs use elsewhere in this file.
+ */
+document.addEventListener('click', (event) => {
+    const hamburger = document.querySelector('.NavHamburgerButton');
+    const mobile_menu = document.querySelector('.MobileNavMenu');
+
+    if (!hamburger || !mobile_menu) {
+        return;
+    }
+
+    if (event.target.closest('.NavHamburgerButton')) {
+        const open = mobile_menu.classList.toggle('Open');
+        hamburger.classList.toggle('Active', open);
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        return;
+    }
+
+    if (mobile_menu.classList.contains('Open') && !event.target.closest('.MobileNavMenu')) {
+        mobile_menu.classList.remove('Open');
+        hamburger.classList.remove('Active');
+        hamburger.setAttribute('aria-expanded', 'false');
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
+        return;
+    }
+
+    const mobile_menu = document.querySelector('.MobileNavMenu');
+    const hamburger = document.querySelector('.NavHamburgerButton');
+
+    if (mobile_menu && mobile_menu.classList.contains('Open')) {
+        mobile_menu.classList.remove('Open');
+        hamburger?.classList.remove('Active');
+        hamburger?.setAttribute('aria-expanded', 'false');
     }
 });
 

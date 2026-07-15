@@ -72,6 +72,25 @@ function heading(string $text): void
     echo "\n" . color($text, '1') . "\n";
 }
 
+// ---------- Shell execution availability ----------
+
+// Checked before anything else: certbot, systemctl, mysqldump, package
+// managers, mkcert, ffmpeg detection - essentially this whole installer -
+// all shell out. Some hardened php.ini profiles (shared hosting especially)
+// disable exec/shell_exec/proc_open via disable_functions; without this
+// check that shows up as a long tail of individually confusing failures
+// (a "command not found"-shaped error for every single downstream check)
+// instead of one clear diagnosis up front.
+if (!function_exists('shell_exec') || !function_exists('exec') || !function_exists('proc_open')) {
+    $disabled = array_filter(array_map('trim', explode(',', (string) ini_get('disable_functions'))));
+
+    fail('This installer needs shell execution (exec/shell_exec/proc_open), which PHP has disabled here'
+        . ($disabled !== [] ? ' (disable_functions = ' . implode(', ', $disabled) . ')' : '')
+        . '. It shells out to systemctl, certbot, mysqldump, package managers, and more throughout - '
+        . 'nothing here works without it. Re-enable those three functions in php.ini (remove them from '
+        . 'disable_functions) and re-run, or provision this server by hand (see README.md).');
+}
+
 // ---------- Prompt helpers ----------
 
 function is_interactive(): bool
@@ -153,13 +172,19 @@ function confirm(string $question): bool
  */
 function offer_websocket_service(): bool
 {
-    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
-
-    if (!$systemctl_available) {
+    if (!user_systemd_available()) {
         return false;
     }
 
-    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+
+        return false;
+    }
+
+    $unit_path = $home . '/.config/systemd/user/glommer-websocket.service';
 
     echo "\nThe WebSocket server isn't running. It can be installed as a user-level\n";
     echo "systemd service (no root needed) at " . $unit_path . "\n";
@@ -224,11 +249,17 @@ function websocket_unit_contents(?string $run_as = null): string
  */
 function reconcile_websocket_service_unit(): void
 {
-    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+    if (!user_systemd_available()) {
         return;
     }
 
-    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        return;
+    }
+
+    $unit_path = $home . '/.config/systemd/user/glommer-websocket.service';
 
     // Only reconcile a unit that's already installed.
     if (!is_file($unit_path)) {
@@ -272,15 +303,21 @@ function reconcile_websocket_service_unit(): void
  */
 function write_and_enable_websocket_service(): bool
 {
-    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
-
-    if (!$systemctl_available) {
-        warn('systemctl not found - run bin/websocket-server.php under your own process manager. See README.md.');
+    if (!user_systemd_available()) {
+        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - run bin/websocket-server.php under your own process manager, or set this up from a real login session. See README.md.');
 
         return false;
     }
 
-    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-websocket.service';
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+
+        return false;
+    }
+
+    $unit_path = $home . '/.config/systemd/user/glommer-websocket.service';
     $unit_contents = websocket_unit_contents();
 
     if (!is_dir(dirname($unit_path)) && !@mkdir(dirname($unit_path), 0755, true)) {
@@ -395,11 +432,17 @@ function upload_worker_unit_contents(?string $run_as = null): string
  */
 function reconcile_upload_worker_service_unit(): void
 {
-    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+    if (!user_systemd_available()) {
         return;
     }
 
-    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-upload-worker.service';
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        return;
+    }
+
+    $unit_path = $home . '/.config/systemd/user/glommer-upload-worker.service';
 
     if (!is_file($unit_path)) {
         return;
@@ -436,13 +479,21 @@ function reconcile_upload_worker_service_unit(): void
  */
 function write_and_enable_upload_worker_service(): bool
 {
-    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
-        warn('systemctl not found - run bin/upload-worker.php under your own process manager. See README.md.');
+    if (!user_systemd_available()) {
+        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - run bin/upload-worker.php under your own process manager, or set this up from a real login session. See README.md.');
 
         return false;
     }
 
-    $unit_path = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.config/systemd/user/glommer-upload-worker.service';
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+
+        return false;
+    }
+
+    $unit_path = $home . '/.config/systemd/user/glommer-upload-worker.service';
     $unit_contents = upload_worker_unit_contents();
 
     if (!is_dir(dirname($unit_path)) && !@mkdir(dirname($unit_path), 0755, true)) {
@@ -595,11 +646,16 @@ function backup_timer_contents(): string
  */
 function reconcile_backup_timer_units(): void
 {
-    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+    if (!user_systemd_available()) {
         return;
     }
 
-    $home = ($_SERVER['HOME'] ?? getenv('HOME'));
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        return;
+    }
+
     $service_path = $home . '/.config/systemd/user/glommer-backup.service';
     $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
 
@@ -641,15 +697,20 @@ function reconcile_backup_timer_units(): void
 
 function write_and_enable_backup_timer(): void
 {
-    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
-
-    if (!$systemctl_available) {
-        warn('systemctl not found - set up a recurring backup yourself (cron or otherwise). See README.md\'s Backups section.');
+    if (!user_systemd_available()) {
+        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - set up a recurring backup yourself (cron or otherwise), or run this from a real login session. See README.md\'s Backups section.');
 
         return;
     }
 
-    $home = ($_SERVER['HOME'] ?? getenv('HOME'));
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+
+        return;
+    }
+
     $service_path = $home . '/.config/systemd/user/glommer-backup.service';
     $timer_path = $home . '/.config/systemd/user/glommer-backup.timer';
 
@@ -736,7 +797,15 @@ function offer_websocket_tls(string $host): bool
         return false;
     }
 
-    $cert_dir = ($_SERVER['HOME'] ?? getenv('HOME')) . '/.local/share/glommer-certs';
+    $home = resolve_home_dir();
+
+    if ($home === null) {
+        warn('Could not resolve a home directory for the current user - cannot place a mkcert certificate. See README.md.');
+
+        return false;
+    }
+
+    $cert_dir = $home . '/.local/share/glommer-certs';
     $cert_path = $cert_dir . '/' . $host . '.pem';
     $key_path = $cert_dir . '/' . $host . '-key.pem';
 
@@ -801,9 +870,7 @@ function offer_websocket_tls(string $host): bool
 
     ok('.env updated with WS_TLS_CERT/WS_TLS_KEY');
 
-    $systemctl_available = trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== '';
-
-    if ($systemctl_available) {
+    if (user_systemd_available()) {
         shell_exec('systemctl --user restart glommer-websocket.service 2>&1');
         sleep(1);
 
@@ -815,7 +882,7 @@ function offer_websocket_tls(string $host): bool
             warn('Could not confirm the daemon restarted - check: systemctl --user status glommer-websocket');
         }
     } else {
-        warn('Restart the WebSocket daemon manually to pick up the new certificate.');
+        warn('Restart the WebSocket daemon manually to pick up the new certificate (no user systemd session reachable right now - run "systemctl --user restart glommer-websocket" from a real login session).');
     }
 
     return true;
@@ -955,6 +1022,81 @@ function configure_websocket_tls_from_web_server(string $host): bool
 function running_as_root(): bool
 {
     return trim((string) shell_exec('id -u 2>/dev/null')) === '0';
+}
+
+/**
+ * Whether `systemctl --user` can actually reach a user systemd instance right
+ * now. It needs a per-user D-Bus session bus, normally reached via
+ * XDG_RUNTIME_DIR/systemd/private from a real login session - which a
+ * non-interactive SSH command, a `sudo -u someuser ...` invocation, or cron
+ * frequently doesn't have. Every write-and-enable/reconcile function for the
+ * user-level services (websocket, upload-worker, backup timer) shells out
+ * to `systemctl --user` assuming this works; without checking first, a
+ * missing session bus previously surfaced as a generic "the service was
+ * written but did not start" - true, but pointing at the wrong cause
+ * entirely (the unit is fine; there's just nothing to talk to).
+ */
+function user_systemd_available(): bool
+{
+    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        return false;
+    }
+
+    $runtime_dir = getenv('XDG_RUNTIME_DIR');
+
+    if (is_string($runtime_dir) && $runtime_dir !== '' && file_exists($runtime_dir . '/systemd/private')) {
+        return true;
+    }
+
+    // XDG_RUNTIME_DIR not visible to this process (a different su/sudo path
+    // can lose it even when a real session exists) - fall back to a live
+    // probe rather than trusting the environment variable alone.
+    $probe = (string) shell_exec('systemctl --user is-system-running 2>&1');
+
+    return !str_contains($probe, 'Failed to connect to bus');
+}
+
+/**
+ * The current process's real home directory, resolved authoritatively from
+ * /etc/passwd (via posix_getpwuid, then getent as a fallback) rather than
+ * trusted from $_SERVER['HOME']/getenv('HOME'). Those environment variables
+ * are only as correct as whatever sudoers policy (env_reset,
+ * always_set_home) or su/sudo invocation set them - `sudo -u someuser php
+ * bin/install.php` doesn't reliably reset HOME to someuser's home across
+ * every distro's default config, and every user-level systemd unit path
+ * (websocket/upload-worker/backup timer, mkcert cert dir) is built from this
+ * value. Getting it wrong doesn't error - it silently writes the unit file
+ * into the WRONG user's ~/.config/systemd/user/, where that user's own
+ * `systemctl --user` will never find it, so this only ever fell back to the
+ * environment as a last resort.
+ */
+function resolve_home_dir(): ?string
+{
+    if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+        $info = posix_getpwuid(posix_geteuid());
+
+        if (is_array($info) && isset($info['dir']) && $info['dir'] !== '') {
+            return $info['dir'];
+        }
+    }
+
+    $uid = trim((string) shell_exec('id -u 2>/dev/null'));
+
+    if (ctype_digit($uid)) {
+        $line = trim((string) shell_exec('getent passwd ' . escapeshellarg($uid) . ' 2>/dev/null'));
+
+        if ($line !== '') {
+            $fields = explode(':', $line);
+
+            if (isset($fields[5]) && $fields[5] !== '') {
+                return $fields[5];
+            }
+        }
+    }
+
+    $env_home = $_SERVER['HOME'] ?? getenv('HOME');
+
+    return is_string($env_home) && $env_home !== '' ? $env_home : null;
 }
 
 /**
@@ -1292,6 +1434,60 @@ function chown_tree(string $root, string $owner, string $group, int $dir_mode, i
 }
 
 /**
+ * On an SELinux-enforcing (or Permissive) host, plain chown/chmod never
+ * applies an SELinux label - a confined httpd_t process can be denied
+ * access to a file with entirely correct Unix permissions if its context
+ * doesn't match what policy allows. /var/www gets httpd_sys_content_t for
+ * free via a built-in path equivalence rule, which is WHY this has gone
+ * unnoticed there - but a path outside it (an install in a home directory,
+ * /srv, /opt, or /etc/glommer specifically, where ensure_ws_cert_readable()
+ * relocates an unreadable TLS cert) defaults to a generic type httpd_t
+ * isn't allowed to touch at all, and nothing here would have said so.
+ * Persists the label via semanage fcontext (survives a future relabel or
+ * reboot) when available, falls back to a same-boot-only chcon otherwise,
+ * and is a silent no-op when SELinux isn't active (getenforce missing or
+ * Disabled - nothing to fix).
+ */
+function ensure_selinux_context(string $path, string $type = 'httpd_sys_content_t'): void
+{
+    if (trim((string) shell_exec('command -v getenforce 2>/dev/null')) === '') {
+        return;
+    }
+
+    $mode = trim((string) shell_exec('getenforce 2>/dev/null'));
+
+    if ($mode !== 'Enforcing' && $mode !== 'Permissive') {
+        return;
+    }
+
+    $pattern = escapeshellarg($path . '(/.*)?');
+
+    if (trim((string) shell_exec('command -v semanage 2>/dev/null')) !== ''
+        && trim((string) shell_exec('command -v restorecon 2>/dev/null')) !== '') {
+        // -a (add a new rule) first; if one already covers this exact
+        // pattern from a prior run, that fails, so fall back to -m (modify
+        // it) - either way $type ends up correct.
+        shell_exec('semanage fcontext -a -t ' . escapeshellarg($type) . ' ' . $pattern . ' 2>/dev/null'
+            . ' || semanage fcontext -m -t ' . escapeshellarg($type) . ' ' . $pattern . ' 2>/dev/null');
+        shell_exec('restorecon -R ' . escapeshellarg($path) . ' 2>&1');
+
+        ok('SELinux context set for ' . $path . ' (' . $type . ', persists across relabels)');
+
+        return;
+    }
+
+    if (trim((string) shell_exec('command -v chcon 2>/dev/null')) !== '') {
+        shell_exec('chcon -R -t ' . escapeshellarg($type) . ' ' . escapeshellarg($path) . ' 2>&1');
+
+        warn('SELinux is ' . $mode . ' but semanage/restorecon aren\'t available - applied a same-boot-only chcon label to ' . $path . ' instead (' . $type . '). Install policycoreutils-python-utils for a label that survives a relabel or reboot.');
+
+        return;
+    }
+
+    warn('SELinux is ' . $mode . ' but neither semanage nor chcon is available - ' . $path . ' may be denied access by policy even though Unix permissions are correct. Install policycoreutils(-python-utils) and re-run, or label it by hand: chcon -R -t ' . $type . ' ' . $path);
+}
+
+/**
  * Makes every directory under $root world-writable (0777) - the fallback when
  * the web server's account can't be detected, so it can still create files
  * there (what the unprivileged installer relies on). Files are left alone. Pure
@@ -1328,8 +1524,20 @@ function make_dirs_world_writable(string $root): void
  */
 function fix_upload_ownership(string $service_user, ?array $web): void
 {
-    $uploads = dirname(__DIR__) . '/uploads';
-    $env_file = dirname(__DIR__) . '/.env';
+    $project_root = dirname(__DIR__);
+    $uploads = $project_root . '/uploads';
+    $env_file = $project_root . '/.env';
+
+    // /var/www gets httpd_sys_content_t for free via SELinux's built-in path
+    // equivalence rule - an install anywhere else (a home directory, /srv,
+    // /opt) doesn't, and Unix permissions alone won't get Apache/PHP-FPM
+    // past policy on an Enforcing host. uploads/ specifically needs the
+    // writable variant; the project root just needs to be readable.
+    if (!str_starts_with($project_root, '/var/www')) {
+        ensure_selinux_context($project_root, 'httpd_sys_content_t');
+    }
+
+    ensure_selinux_context($uploads, 'httpd_sys_rw_content_t');
 
     if ($web === null) {
         warn('Could not detect the web server\'s user (its live facts were unreachable - e.g. a non-default VirtualHost on 127.0.0.1). Leaving uploads/ world-writable (0777), as the unprivileged installer does, so the web server can still write there; re-run with the web server reachable to tighten this.');
@@ -1420,6 +1628,11 @@ function ensure_ws_cert_readable(string $service_user, ?array $web): void
     @chgrp($dest_key, $group);
     @chmod($dest_key, 0640);
 
+    // /etc/glommer gets none of /var/www's built-in SELinux path equivalence -
+    // on an Enforcing host, httpd_t is denied generic etc_t content by
+    // default policy regardless of how correct these Unix permissions are.
+    ensure_selinux_context($dest_dir, 'httpd_sys_content_t');
+
     $env_path = dirname(__DIR__) . '/.env';
     $env_contents = (string) @file_get_contents($env_path);
     $env_contents = preg_replace('/^WS_TLS_CERT=.*$/m', 'WS_TLS_CERT="' . $dest_cert . '"', $env_contents, -1, $cert_replaced);
@@ -1474,6 +1687,8 @@ function install_ws_cert_renewal_hook(string $live_cert, string $live_key, strin
         return;
     }
 
+    $dest_dir = escapeshellarg(dirname($dest_cert));
+
     $script = "#!/bin/bash\n"
         . "# Re-copies the renewed Let's Encrypt cert/key to where glommer-websocket.service\n"
         . "# (running as an unprivileged user, unlike Apache, which reads its cert before\n"
@@ -1486,6 +1701,11 @@ function install_ws_cert_renewal_hook(string $live_cert, string $live_key, strin
         . 'chgrp ' . escapeshellarg($group) . ' ' . escapeshellarg($dest_cert) . ' ' . escapeshellarg($dest_key) . "\n"
         . 'chmod 0644 ' . escapeshellarg($dest_cert) . "\n"
         . 'chmod 0640 ' . escapeshellarg($dest_key) . "\n"
+        // A freshly cp'd file normally inherits its parent's SELinux context
+        // automatically on an Enforcing host, but this restorecon is cheap,
+        // idempotent, and a no-op where SELinux isn't active - defense in
+        // depth against whatever created $dest_dir not being fully labeled.
+        . 'command -v restorecon >/dev/null 2>&1 && restorecon -R ' . $dest_dir . " || true\n"
         . "systemctl restart glommer-websocket.service\n";
 
     $hook_path = $hook_dir . '/glommer-websocket-cert.sh';
@@ -2529,9 +2749,12 @@ if (!is_file(__DIR__ . '/../.env')) {
     // a non-root install manages its own --user unit, which needs no sudo);
     // otherwise tell the user the exact command to run.
     $ws_manual = $is_root ? 'sudo systemctl restart glommer-websocket' : 'systemctl --user restart glommer-websocket';
+    $systemctl_usable = $is_root
+        ? trim((string) shell_exec('command -v systemctl 2>/dev/null')) !== ''
+        : user_systemd_available();
 
-    if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
-        warn('Restart the WebSocket server so it loads the new WS_SECRET (no systemctl found - use your process manager).');
+    if (!$systemctl_usable) {
+        warn('Restart the WebSocket server so it loads the new WS_SECRET: ' . $ws_manual . ' (no systemctl found, or - for a non-root install - no user systemd session reachable right now; use your process manager or run that command from a real login session).');
     } else {
         exec('systemctl ' . ($is_root ? '' : '--user ') . 'restart glommer-websocket.service 2>&1', $ws_output, $ws_exit);
 

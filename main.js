@@ -3166,6 +3166,35 @@ document.addEventListener('input', (event) => {
 });
 
 document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.LoginForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const captcha_input = form.querySelector('[name=\'cf-turnstile-response\']');
+
+    const data = await api_post('/api/login', {
+        identifier: form.querySelector('[name=\'identifier\']').value,
+        password: form.querySelector('[name=\'password\']').value,
+        rememberMe: form.querySelector('[name=\'rememberMe\']').checked,
+        captchaToken: captcha_input ? captcha_input.value : null,
+    });
+
+    if (!data) {
+        submit_button.disabled = false;
+        return;
+    }
+
+    window.location = window.siteURL + '/';
+});
+
+document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.ForgotPasswordForm');
 
     if (!form) {

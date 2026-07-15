@@ -73,6 +73,9 @@ if ($errors !== []) {
     $page -> addContent(new ErrorList($errors));
 }
 
+$page -> addContent(new Heading2('Upload worker'));
+$page -> addContent(new UploadWorkerStatus());
+
 $page -> addContent(new Heading2('Bot protection'));
 $page -> addContent(new AdminSettingsForm());
 

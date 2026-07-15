@@ -461,6 +461,50 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
      * mtime so a live one is never aged out; anything older than the cutoff is a
      * genuine orphan (no real transcode runs anywhere near a day).
      */
+    /**
+     * How many batches are sitting in each stage of the queue right now - a
+     * cheap directory count (the queue itself is directory-based, see the
+     * class docblock), not a DB query. Lets the admin Site Settings page tell
+     * "dead" from "alive but backlogged" instead of SSHing in to check.
+     *
+     * @return array{staging: int, pending: int, processing: int}
+     */
+    public static function queueDepth(): array
+    {
+        return [
+            'staging' => count(glob(self::STAGING_DIR . '/*', GLOB_ONLYDIR) ?: []),
+            'pending' => count(glob(self::PENDING_DIR . '/*', GLOB_ONLYDIR) ?: []),
+            'processing' => count(glob(self::PROCESSING_DIR . '/*', GLOB_ONLYDIR) ?: []),
+        ];
+    }
+
+    /**
+     * Whether the upload-worker systemd service is currently running - a
+     * `systemctl is-active` shell-out, checked as both a system-level unit (a
+     * root/sudo install) and a user-level one (see EnvironmentChecker's
+     * install-time persistence check for why both exist), first match wins.
+     * Read-only service-status queries need no special privilege, so this
+     * works from the web SAPI's own user. Best-effort: on a non-systemd host
+     * (or if systemctl itself is missing) this can't tell either way, so it
+     * returns null rather than a false "dead".
+     */
+    public static function workerIsActive(): ?bool
+    {
+        if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+            return null;
+        }
+
+        if (trim((string) shell_exec('systemctl is-active glommer-upload-worker.service 2>/dev/null')) === 'active') {
+            return true;
+        }
+
+        if (trim((string) shell_exec('systemctl is-active --user glommer-upload-worker.service 2>/dev/null')) === 'active') {
+            return true;
+        }
+
+        return false;
+    }
+
     public static function sweepOrphanedBatches(): void
     {
         $cutoff = time() - 86400;

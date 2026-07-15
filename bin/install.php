@@ -1004,19 +1004,27 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
 
     ok('.env updated with WS_TLS_CERT/WS_TLS_KEY');
 
-    if (user_systemd_available()) {
-        $restart_result = run('systemctl --user restart glommer-websocket.service 2>&1');
-        sleep(1);
+    // A root install's daemon is a SYSTEM unit, never a --user one - trying
+    // `systemctl --user restart` here would always be a guaranteed no-op
+    // ("Unit ... not found"), not a real attempt. relocate_ws_cert_if_root()
+    // (called right after this by both of this function's callers) does the
+    // real, correctly-scoped restart in that case, so this whole block is
+    // skipped rather than reporting a failure that was never a real attempt.
+    if (!running_as_root()) {
+        if (user_systemd_available()) {
+            $restart_result = run('systemctl --user restart glommer-websocket.service 2>&1');
+            sleep(1);
 
-        $status = run('systemctl --user is-active glommer-websocket.service 2>/dev/null')['output'];
+            $status = run('systemctl --user is-active glommer-websocket.service 2>/dev/null')['output'];
 
-        if ($status === 'active') {
-            ok('WebSocket daemon restarted with the new certificate');
+            if ($status === 'active') {
+                ok('WebSocket daemon restarted with the new certificate');
+            } else {
+                warn('Could not confirm the daemon restarted - check: systemctl --user status glommer-websocket', $restart_result);
+            }
         } else {
-            warn('Could not confirm the daemon restarted - check: systemctl --user status glommer-websocket', $restart_result);
+            warn('Restart the WebSocket daemon manually to pick up the new certificate (no user systemd session reachable right now - run "systemctl --user restart glommer-websocket" from a real login session).');
         }
-    } else {
-        warn('Restart the WebSocket daemon manually to pick up the new certificate (no user systemd session reachable right now - run "systemctl --user restart glommer-websocket" from a real login session).');
     }
 
     return true;
@@ -1156,6 +1164,51 @@ function configure_websocket_tls_from_web_server(string $host): bool
 function running_as_root(): bool
 {
     return run('id -u 2>/dev/null')['output'] === '0';
+}
+
+/**
+ * Offers to re-exec this same script under sudo when it isn't running as
+ * root yet and a real terminal can answer the prompt. Root unlocks real
+ * system units (survive logout/reboot with no lingering workaround needed),
+ * auto-installing missing prerequisite packages, and relocating TLS certs
+ * to a location every relevant account can read - substantial enough to be
+ * worth asking for, but never required: every one of those has an
+ * unprivileged fallback already (user-level systemd units, printed manual
+ * install commands, a cert left wherever mkcert put it) - declining, or a
+ * non-interactive run, just continues as the current user exactly as before
+ * this existed. `sudo` inherits this process's real terminal via passthru()
+ * (not exec()/shell_exec(), which don't), so its password prompt appears
+ * normally and re-exec picks up right where this process left off.
+ */
+function offer_root_reexec(): void
+{
+    if (running_as_root() || !is_interactive()) {
+        return;
+    }
+
+    if (run('command -v sudo 2>/dev/null')['output'] === '') {
+        return;
+    }
+
+    echo "\nThis installer works best run as root (via sudo): it can install real\n";
+    echo "system services (no lingering workaround needed to survive logout or\n";
+    echo "reboot), auto-install missing prerequisite packages, and relocate TLS\n";
+    echo "certs to a location every relevant account can read. It still works\n";
+    echo "without root - user-level systemd services, printed manual install\n";
+    echo "commands - just with more manual follow-up.\n";
+
+    if (!confirm('Re-run with sudo now?')) {
+        return;
+    }
+
+    $arg_string = '';
+
+    foreach (array_slice($_SERVER['argv'] ?? [], 1) as $arg) {
+        $arg_string .= ' ' . escapeshellarg($arg);
+    }
+
+    passthru('sudo ' . escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__FILE__) . $arg_string, $reexec_code);
+    exit($reexec_code);
 }
 
 /**
@@ -2777,6 +2830,12 @@ function install_certificate_into_nginx(string $host, string $cert, string $key)
 
     ok('Obtained and installed Let\'s Encrypt cert for ' . $host);
 }
+
+// ---------- -1. Offer to re-exec under sudo ----------
+
+// Before anything else - root unlocks real system services, auto-installed
+// packages, and cert relocation for the steps that follow.
+offer_root_reexec();
 
 // ---------- 0. System prerequisites ----------
 

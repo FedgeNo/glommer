@@ -3584,6 +3584,27 @@ ok('database connection works (' . $config['username'] . '@' . $config['host'] .
  */
 function admin_connection(array $config, string $needed_for): ?\mysqli
 {
+    // Running as root: MariaDB's unix_socket auth plugin authenticates the
+    // OS root user as the DB root user with no password at all, but only over
+    // the local socket - not over TCP, which is what $config['host'] (e.g.
+    // 127.0.0.1, the app's own runtime connection) would use. Passing
+    // 'localhost' literally (not $config['host']) is what makes mysqli use
+    // the socket instead of TCP. Tried first so a root install - the only
+    // caller of this function that runs unattended, via set_up_system_
+    // services()'s schema-creation step - never needs DB_ADMIN_USERNAME/
+    // DB_ADMIN_PASSWORD or an interactive prompt at all. Confirmed live:
+    // `sudo mysql` connects with zero credentials the exact same way.
+    if (running_as_root()) {
+        try {
+            return mysqli_connect('localhost', 'root', '', $config['database']);
+        } catch (\mysqli_sql_exception $exception) {
+            // Not every root box has unix_socket auth configured for the DB
+            // root account (or even a DB root account by that name) - fall
+            // through to the credential-based paths below rather than fail
+            // outright.
+        }
+    }
+
     $admin_username = Env::get('DB_ADMIN_USERNAME');
     $admin_password = Env::get('DB_ADMIN_PASSWORD');
 

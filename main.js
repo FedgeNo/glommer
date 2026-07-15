@@ -2884,6 +2884,16 @@ document.addEventListener('submit', async (event) => {
     }
 });
 
+document.addEventListener('input', (event) => {
+    const username_input = event.target.closest('.SignupForm [name=\'username\']');
+
+    if (!username_input) {
+        return;
+    }
+
+    username_input.value = username_input.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 32);
+});
+
 document.addEventListener('change', (event) => {
     const username_input = event.target.closest('.SignupForm [name=\'username\']');
 

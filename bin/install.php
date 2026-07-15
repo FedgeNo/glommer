@@ -1207,6 +1207,75 @@ function app_service_user(): ?string
 }
 
 /**
+ * Creates (if missing) a dedicated, unprivileged system account for the
+ * WebSocket daemon specifically - kept separate from the web-server account
+ * the upload-worker legitimately shares (see fix_upload_ownership()'s
+ * docblock: that sharing is about uploads/ ownership, which the WS daemon
+ * has no part in). The WS daemon is a hand-rolled WebSocket frame parser
+ * directly exposed to untrusted network input - running it as the same
+ * account that owns uploads/ and can read .env gives a bug or compromise in
+ * it write access to things it has no functional reason to touch. No login
+ * shell, no home directory - it only ever needs to read its own TLS cert
+ * copy and .env (both granted read-only via group membership). Idempotent:
+ * a no-op if the account already exists. Returns the username, or null if
+ * creation failed (the caller then falls back to sharing the web-server
+ * account, same as before this existed).
+ */
+function ensure_ws_dedicated_user(): ?string
+{
+    $username = 'glommer-ws';
+
+    if (trim((string) shell_exec('id -u ' . escapeshellarg($username) . ' 2>/dev/null')) !== '') {
+        return $username;
+    }
+
+    $useradd = trim((string) shell_exec('command -v useradd 2>/dev/null'));
+
+    if ($useradd === '') {
+        warn('No useradd found - cannot create a dedicated system account for the WebSocket daemon. It will run as the web-server user instead.');
+
+        return null;
+    }
+
+    exec($useradd . ' --system --no-create-home --shell /sbin/nologin ' . escapeshellarg($username) . ' 2>&1', $output, $exit_code);
+
+    if ($exit_code !== 0) {
+        warn('Could not create the dedicated ' . $username . ' system account (' . trim(implode(' ', $output)) . ') - the WebSocket daemon will run as the web-server user instead.');
+
+        return null;
+    }
+
+    ok('Created dedicated system account ' . $username . ' for the WebSocket daemon, separate from the web-server user the upload-worker shares.');
+
+    return $username;
+}
+
+/**
+ * Adds $username as a supplementary member of $group - read-only in
+ * practice, since .env and uploads/ are only ever group-readable (0640/0644
+ * files, 0755 dirs), never group-writable (see fix_upload_ownership()).
+ * Used to give the dedicated WS account read access to .env (for
+ * WS_SECRET/WS_PORT/etc.) without granting it any of the web-server
+ * account's actual write access to uploads/ or .env itself.
+ */
+function grant_group_membership(string $username, string $group): void
+{
+    $usermod = trim((string) shell_exec('command -v usermod 2>/dev/null'));
+
+    if ($usermod === '') {
+        warn('No usermod found - cannot add ' . $username . ' to the ' . $group . ' group. It won\'t be able to read .env; the WebSocket daemon will fail to start until this is done manually.');
+
+        return;
+    }
+
+    exec($usermod . ' -aG ' . escapeshellarg($group) . ' ' . escapeshellarg($username) . ' 2>&1', $output, $exit_code);
+
+    if ($exit_code !== 0) {
+        warn('Could not add ' . $username . ' to the ' . $group . ' group (' . trim(implode(' ', $output)) . ') - it won\'t be able to read .env.');
+    }
+}
+
+/**
  * The account that owns the existing .env, or null when there's no .env (or it's
  * root-owned - a broken state we don't want to propagate). The web server has to
  * be able to read .env, so its owner IS the web-server user - which makes it the
@@ -1658,7 +1727,15 @@ function ensure_ws_cert_readable(string $service_user, ?array $web): void
         return;
     }
 
-    $group = $web !== null ? ($web['group'] ?? $service_user) : $service_user;
+    // When $service_user is the dedicated WS account (not literally the
+    // web-server user), its own primary group scopes the cert copy to just
+    // that account - tighter than sharing the web-server's group, which
+    // would also cover the upload-worker and web server themselves. Falls
+    // back to the web-server's group when $service_user IS that account
+    // (ensure_ws_dedicated_user() failed, or $web is unknown).
+    $own_group = trim((string) shell_exec('id -gn ' . escapeshellarg($service_user) . ' 2>/dev/null'));
+    $is_dedicated_account = $web === null || $service_user !== $web['user'];
+    $group = ($is_dedicated_account && $own_group !== '') ? $own_group : ($web['group'] ?? $service_user);
     $dest_dir = '/etc/glommer';
 
     if (!is_dir($dest_dir) && !@mkdir($dest_dir, 0755, true)) {
@@ -1825,12 +1902,25 @@ function set_up_system_services(array &$environment_failures): void
     // they fail on a permission-denied at startup.
     fix_upload_ownership($service_user, $web);
 
-    // And make sure the WS daemon (now the web-server user) can actually reach
-    // its TLS cert - relocating it out of an unreadable home dir if need be -
-    // before it's (re)started below.
-    ensure_ws_cert_readable($service_user, $web);
+    // The WS daemon gets its own dedicated account, separate from
+    // $service_user (the web-server account the upload-worker shares) - see
+    // ensure_ws_dedicated_user()'s docblock for why. Falls back to
+    // $service_user if account creation isn't possible on this box, same as
+    // before this existed. Either way it needs .env read access (WS_SECRET,
+    // WS_PORT, ...), granted read-only via group membership rather than
+    // making it the file's owner.
+    $ws_user = ensure_ws_dedicated_user() ?? $service_user;
 
-    if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($service_user), $service_user, $prior_user)) {
+    if ($ws_user !== $service_user) {
+        grant_group_membership($ws_user, $web['group'] ?? $service_user);
+    }
+
+    // And make sure the WS daemon can actually reach its TLS cert -
+    // relocating it out of an unreadable home dir if need be - before it's
+    // (re)started below.
+    ensure_ws_cert_readable($ws_user, $web);
+
+    if (migrate_service_to_system('glommer-websocket.service', websocket_unit_contents($ws_user), $ws_user, $prior_user)) {
         // The service being active is enough to clear PERSISTENCE (it's an
         // enabled system unit now)...
         unset($environment_failures['WebSocket service persistence']);

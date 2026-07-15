@@ -19,6 +19,11 @@ class ResetPasswordForm extends Form
         $this -> action = ServerURL::absolute('/reset-password?token=' . urlencode($this -> token));
         $this -> method = 'POST';
 
+        $token_input = new HiddenInput();
+        $token_input -> name = 'token';
+        $token_input -> value = $this -> token;
+        $this -> contents[] = $token_input;
+
         $fields = new Fieldset('Choose a new password');
         $fields -> addContent(new InputField('newPassword', 'New password', 'password', 'At least 8 characters'));
         $fields -> addContent(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));

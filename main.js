@@ -3166,6 +3166,222 @@ document.addEventListener('input', (event) => {
 });
 
 document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.AdminSettingsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/turnstile-settings', {
+        turnstileSiteKey: form.querySelector('[name=\'turnstileSiteKey\']').value,
+        turnstileSecretKey: form.querySelector('[name=\'turnstileSecretKey\']').value,
+    });
+
+    submit_button.disabled = false;
+
+    if (data) {
+        show_toast('Settings saved.');
+    }
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.GoogleAuthSettingsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/google-auth-settings', {
+        googleAuthClientId: form.querySelector('[name=\'googleAuthClientId\']').value,
+        googleAuthSecret: form.querySelector('[name=\'googleAuthSecret\']').value,
+    });
+
+    submit_button.disabled = false;
+
+    if (data) {
+        show_toast('Settings saved.');
+    }
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.MailSettingsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/mail-settings', {
+        smtpHost: form.querySelector('[name=\'smtpHost\']').value,
+        smtpPort: form.querySelector('[name=\'smtpPort\']').value,
+        smtpUsername: form.querySelector('[name=\'smtpUsername\']').value,
+        smtpPassword: form.querySelector('[name=\'smtpPassword\']').value,
+        smtpEncryption: form.querySelector('[name=\'smtpEncryption\']').value,
+    });
+
+    submit_button.disabled = false;
+
+    if (data) {
+        show_toast('Settings saved.');
+    }
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.PolicySettingsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const terms_field = form.querySelector('[name=\'termsText\']');
+    const path = terms_field ? '/api/terms-settings' : '/api/privacy-settings';
+    const field_name = terms_field ? 'termsText' : 'privacyText';
+    const field = terms_field || form.querySelector('[name=\'privacyText\']');
+
+    const data = await api_post(path, {
+        [field_name]: field.value,
+    });
+
+    submit_button.disabled = false;
+
+    if (data) {
+        show_toast('Settings saved.');
+    }
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.FaviconSettingsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const file_input = form.querySelector('input[type=\'file\'][name=\'favicon\']');
+
+    if (!file_input.files.length) {
+        show_toast('Choose a file first.');
+        return;
+    }
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const body = new FormData();
+    body.append('favicon', file_input.files[0]);
+
+    try {
+        const response = await fetch(window.siteURL + '/api/favicon-settings', {
+            method: 'POST',
+            headers: csrf_headers(),
+            body,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            show_toast(data.error || 'Something went wrong. Please try again.');
+            return;
+        }
+
+        show_toast('Settings saved.');
+        form.querySelector('.FaviconPreview').src = window.siteURL + '/uploads/site/favicon.png?' + Date.now();
+    } catch (error) {
+        show_toast('Network error. Please check your connection and try again.');
+    } finally {
+        submit_button.disabled = false;
+    }
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.ResetPasswordForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/reset-password', {
+        token: form.querySelector('[name=\'token\']').value,
+        newPassword: form.querySelector('[name=\'newPassword\']').value,
+        confirmPassword: form.querySelector('[name=\'confirmPassword\']').value,
+    });
+
+    if (!data) {
+        submit_button.disabled = false;
+        return;
+    }
+
+    // Swap the form out for the same "you're done" message the old
+    // server-rendered page showed, rather than a redirect - there's nowhere
+    // more useful to send someone who just reset their password than back
+    // here with confirmation.
+    const notice = document.createElement('p');
+    notice.textContent = 'Your password has been reset. You can now log in.';
+
+    const login_link = document.createElement('a');
+    login_link.href = window.siteURL + '/login';
+    login_link.textContent = 'Log In';
+
+    form.replaceWith(notice, login_link);
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.SignupForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const captcha_input = form.querySelector('[name=\'cf-turnstile-response\']');
+
+    const data = await api_post('/api/signup', {
+        username: form.querySelector('[name=\'username\']').value,
+        email: form.querySelector('[name=\'email\']').value,
+        displayName: form.querySelector('[name=\'displayName\']').value,
+        password: form.querySelector('[name=\'password\']').value,
+        rememberMe: form.querySelector('[name=\'rememberMe\']').checked,
+        captchaToken: captcha_input ? captcha_input.value : null,
+    });
+
+    if (!data) {
+        submit_button.disabled = false;
+        return;
+    }
+
+    window.location = window.siteURL + '/check-inbox';
+});
+
+document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.LogoutForm');
 
     if (!form) {

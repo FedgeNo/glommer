@@ -46,9 +46,32 @@ function color(string $text, string $code): string
     return supports_color() ? "\033[" . $code . 'm' . $text . "\033[0m" : $text;
 }
 
+/**
+ * Word-wraps authored prose to 80 columns for terminal output, indenting
+ * every continuation line by $indent so it lines up under the first line's
+ * text (past a status prefix like "[WARN] "). Any whitespace already in
+ * $text - including plain newlines from writing it as a free-flowing
+ * multi-line string literal in the source, rather than threading `.`
+ * concatenation through manual line breaks - collapses to single spaces
+ * first, so the source can be formatted however reads best and this always
+ * re-wraps it correctly regardless. wordwrap()'s cut=false means a single
+ * unbreakable token longer than the remaining width (a URL, a path, a
+ * command) is left on its own line rather than mangled. Content that
+ * legitimately comes from somewhere else - a run() command/output/exit
+ * code, a raw path - is never passed through this; command_context() prints
+ * those verbatim.
+ */
+function wrap(string $text, int $indent = 0): string
+{
+    $width = max(20, 80 - $indent);
+    $collapsed = preg_replace('/\s+/', ' ', trim($text));
+
+    return str_replace("\n", "\n" . str_repeat(' ', $indent), wordwrap($collapsed, $width, "\n", false));
+}
+
 function ok(string $message): void
 {
-    echo color('[ OK ]', '32') . ' ' . $message . "\n";
+    echo color('[ OK ]', '32') . ' ' . wrap($message, 7) . "\n";
 }
 
 /**
@@ -63,13 +86,13 @@ function ok(string $message): void
  */
 function warn(string $message, ?array $result = null): void
 {
-    echo color('[WARN]', '33') . ' ' . $message . "\n";
+    echo color('[WARN]', '33') . ' ' . wrap($message, 7) . "\n";
     echo command_context($result);
 }
 
 function fail_line(string $message, ?array $result = null): void
 {
-    echo color('[FAIL]', '31') . ' ' . $message . "\n";
+    echo color('[FAIL]', '31') . ' ' . wrap($message, 7) . "\n";
     echo command_context($result);
 }
 
@@ -275,8 +298,8 @@ function offer_websocket_service(): bool
 
     $unit_path = $home . '/.config/systemd/user/glommer-websocket.service';
 
-    echo "\nThe WebSocket server isn't running. It can be installed as a user-level\n";
-    echo "systemd service (no root needed) at " . $unit_path . "\n";
+    echo "\n" . wrap("The WebSocket server isn't running. It can be installed as a user-level
+    systemd service (no root needed) at $unit_path", 0) . "\n";
 
     if (!confirm('Create and start it now?')) {
         return false;
@@ -469,8 +492,8 @@ function write_and_enable_websocket_service(): bool
  */
 function offer_enable_websocket_service(): bool
 {
-    echo "\nThe WebSocket daemon is reachable right now, but glommer-websocket.service isn't\n";
-    echo "enabled (or lingering isn't) - it won't survive a restart or reboot as-is.\n";
+    echo "\n" . wrap("The WebSocket daemon is reachable right now, but glommer-websocket.service
+    isn't enabled (or lingering isn't) - it won't survive a restart or reboot as-is.", 0) . "\n";
 
     if (!confirm('Set it up now?')) {
         return false;
@@ -637,8 +660,8 @@ function write_and_enable_upload_worker_service(): bool
  */
 function offer_enable_upload_worker_service(): bool
 {
-    echo "\nThe media upload-worker service (glommer-upload-worker.service) isn't enabled -\n";
-    echo "without it, staged video/audio uploads are never transcoded (they queue forever).\n";
+    echo "\n" . wrap("The media upload-worker service (glommer-upload-worker.service) isn't enabled -
+    without it, staged video/audio uploads are never transcoded (they queue forever).", 0) . "\n";
 
     if (!confirm('Set it up now?')) {
         return false;
@@ -667,7 +690,7 @@ function offer_first_backup(): bool
         return false;
     }
 
-    echo "\nIt can also run automatically every night via a user-level systemd timer (no root needed).\n";
+    echo "\n" . wrap('It can also run automatically every night via a user-level systemd timer (no root needed).') . "\n";
 
     if (!confirm('Set that up now too?')) {
         warn('Not scheduled - run php bin/backup.php manually on some schedule of your own. See README.md\'s Backups section.');
@@ -860,7 +883,7 @@ function write_and_enable_backup_timer(): void
  */
 function offer_enable_backup_timer(): bool
 {
-    echo "\nThe nightly backup timer isn't enabled (or lingering isn't, so it wouldn't survive logout/reboot even if it were).\n";
+    echo "\n" . wrap('The nightly backup timer isn\'t enabled (or lingering isn\'t, so it wouldn\'t survive logout/reboot even if it were).') . "\n";
 
     if (!confirm('Set it up now?')) {
         return false;
@@ -906,12 +929,12 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
     // the confirm() prompt: regenerating for the current host is cheap and
     // idempotent, and asking every single run would just be friction.
     if ($refresh) {
-        echo "\nRe-checking the WebSocket daemon's mkcert certificate covers " . $host . "...\n";
+        echo "\n" . wrap('Re-checking the WebSocket daemon\'s mkcert certificate covers ' . $host . '...') . "\n";
     } else {
-        echo "\nThe WebSocket daemon has no TLS certificate configured. mkcert is available -\n";
-        echo "it can generate one for " . $host . " at " . $cert_dir . "\n";
-        echo "(Browsers only trust it without a warning if \"mkcert -install\" has been run\n";
-        echo "on this machine - a one-time step, needs sudo the first time, separate from this.)\n";
+        echo "\n" . wrap("The WebSocket daemon has no TLS certificate configured. mkcert is available -
+        it can generate one for $host at $cert_dir (Browsers only trust it without a warning
+        if \"mkcert -install\" has been run on this machine - a one-time step, needs sudo
+        the first time, separate from this.)") . "\n";
 
         if (!confirm('Generate a certificate now and configure it?')) {
             return false;
@@ -1190,12 +1213,11 @@ function offer_root_reexec(): void
         return;
     }
 
-    echo "\nThis installer works best run as root (via sudo): it can install real\n";
-    echo "system services (no lingering workaround needed to survive logout or\n";
-    echo "reboot), auto-install missing prerequisite packages, and relocate TLS\n";
-    echo "certs to a location every relevant account can read. It still works\n";
-    echo "without root - user-level systemd services, printed manual install\n";
-    echo "commands - just with more manual follow-up.\n";
+    echo "\n" . wrap("This installer works best run as root (via sudo): it can install real system
+    services (no lingering workaround needed to survive logout or reboot), auto-install
+    missing prerequisite packages, and relocate TLS certs to a location every relevant
+    account can read. It still works without root - user-level systemd services, printed
+    manual install commands - just with more manual follow-up.") . "\n";
 
     if (!confirm('Re-run with sudo now?')) {
         return;
@@ -2425,8 +2447,8 @@ function ensure_system_prerequisites(): void
             echo "Install them (as root), then re-run this script:\n";
             echo "  sudo " . $install_command . ' ' . implode(' ', array_map('escapeshellarg', $packages)) . "\n";
         } else {
-            echo "Install the equivalents for your distribution - a MariaDB/MySQL server, the mysqldump\n";
-            echo "client, and the missing php-* extensions - then re-run this script.\n";
+            echo wrap("Install the equivalents for your distribution - a MariaDB/MySQL server, the
+            mysqldump client, and the missing php-* extensions - then re-run this script.") . "\n";
         }
 
         exit(1);
@@ -3037,9 +3059,9 @@ if ($env_just_created) {
         fail('No .env file found in the project root. Run this script in a terminal to be walked through creating one, use the web setup wizard (visit the site in a browser), or create it by hand (copy .env.example; see src/config.php for every key and its default).');
     }
 
-    echo "No .env found - let's create one. You'll need MySQL admin credentials (an account\n";
-    echo "with CREATE/CREATE USER/GRANT privileges, e.g. root); they're used once to provision\n";
-    echo "the database and are never stored.\n\n";
+    echo wrap("No .env found - let's create one. You'll need MySQL admin credentials (an account
+    with CREATE/CREATE USER/GRANT privileges, e.g. root); they're used once to provision
+    the database and are never stored.") . "\n\n";
 
     $site_url = prompt('Site URL (e.g. https://example.com)', null, function (string $value): ?string {
         return filter_var($value, FILTER_VALIDATE_URL) === false ? 'That is not a valid URL.' : null;
@@ -3077,13 +3099,13 @@ if ($env_just_created) {
     }
 
     if ($admin_connection === null) {
-        echo "\nOne-time database admin credentials are needed to create the '" . $db_database . "' database\n";
-        echo "and its runtime account (used once, never stored).\n";
-        echo "On a fresh MariaDB/MySQL, root has no password and authenticates only over the local\n";
-        echo "socket: re-run this under sudo to use it automatically, or create a password admin\n";
-        echo "account first -\n\n";
+        echo "\n" . wrap("One-time database admin credentials are needed to create the '$db_database'
+        database and its runtime account (used once, never stored). On a fresh
+        MariaDB/MySQL, root has no password and authenticates only over the local socket:
+        re-run this under sudo to use it automatically, or create a password admin account
+        first -") . "\n\n";
         echo "  sudo mariadb -e \"CREATE USER 'glommer_admin'@'" . $db_host . "' IDENTIFIED BY 'a-strong-password'; GRANT ALL PRIVILEGES ON *.* TO 'glommer_admin'@'" . $db_host . "' WITH GRANT OPTION;\"\n\n";
-        echo "- then enter that account below (or root and its password, if you have set one).\n\n";
+        echo wrap('- then enter that account below (or root and its password, if you have set one).') . "\n\n";
     }
 
     while ($admin_connection === null) {
@@ -3094,8 +3116,8 @@ if ($env_just_created) {
             $admin_connection = mysqli_connect($db_host, $admin_username, $admin_password, null, (int) $db_port);
         } catch (\mysqli_sql_exception $exception) {
             fail_line('Could not connect: ' . $exception -> getMessage());
-            echo "       On a fresh MariaDB/MySQL, root only authenticates over the local socket - re-run\n";
-            echo "       under sudo, or use a password admin account (see above). Try again.\n";
+            echo '       ' . wrap("On a fresh MariaDB/MySQL, root only authenticates over the local socket -
+            re-run under sudo, or use a password admin account (see above). Try again.", 7) . "\n";
         }
     }
 
@@ -3536,7 +3558,8 @@ if ($fresh_install) {
             }
         }
 
-        echo "\nApply them as a MySQL admin (or re-run this script interactively / with DB_ADMIN_USERNAME and DB_ADMIN_PASSWORD set) and re-run.\n";
+        echo "\n" . wrap('Apply them as a MySQL admin (or re-run this script interactively / with
+        DB_ADMIN_USERNAME and DB_ADMIN_PASSWORD set) and re-run.') . "\n";
         exit(1);
     }
 }
@@ -3654,8 +3677,8 @@ echo "Next steps:\n";
 // tell the admin to do here for that case, and an .env that already existed
 // never touched WS_SECRET in this run either. Restating "restart it" as a
 // blanket next step was always stale by the time anyone reached this point.
-echo "  1. Visit " . $config['siteURL'] . " and sign up - the first account created becomes\n";
-echo "     the site's administrator.\n";
+echo '  1. ' . wrap("Visit {$config['siteURL']} and sign up - the first account created becomes
+the site's administrator.", 5) . "\n";
 
 // Anything deferred at the environment gate (a fresh install couldn't back up a
 // database that didn't exist yet, nor stand up its daemons) was skipped, not

@@ -36,9 +36,9 @@ while ($row = mysqli_fetch_assoc($feed_result)) {
     $feed_rows[] = $row;
 }
 
-$config = require __DIR__ . '/src/config.php';
+$site_title = Config::get('siteTitle');
 
-$feed = new RSSFeed('Posts by ' . $name . ' on ' . $config['siteTitle'], ServerURL::absolute('/users/' . $profile_user -> username . '/'), 'Posts by ' . $name . ' on ' . $config['siteTitle']);
+$feed = new RSSFeed('Posts by ' . $name . ' on ' . $site_title, ServerURL::absolute('/users/' . $profile_user -> username . '/'), 'Posts by ' . $name . ' on ' . $site_title);
 
 foreach (Thread::fromRows($feed_rows) as $thread) {
     $feed -> addItem(RSSItem::fromPost($thread -> post));

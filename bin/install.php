@@ -1041,6 +1041,7 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
 
     putenv('WS_TLS_CERT=' . $cert_path);
     putenv('WS_TLS_KEY=' . $key_path);
+    Config::reload();
 
     ok('.env updated with WS_TLS_CERT/WS_TLS_KEY');
 
@@ -1162,6 +1163,7 @@ function configure_websocket_tls_from_web_server(string $host): bool
 
     putenv('WS_TLS_CERT=' . $cert);
     putenv('WS_TLS_KEY=' . $key);
+    Config::reload();
 
     ok('Configured WebSocket TLS to reuse the web server certificate (' . $cert . ')');
 
@@ -2194,6 +2196,7 @@ function ensure_ws_cert_readable(string $service_user, ?array $web): void
     if ($cert_replaced && $key_replaced && @file_put_contents($env_path, $env_contents) !== false) {
         putenv('WS_TLS_CERT=' . $dest_cert);
         putenv('WS_TLS_KEY=' . $dest_key);
+        Config::reload();
 
         // The cert path lives in .env, not the unit file, so an already-installed
         // WS system service (its unit unchanged) wouldn't restart on its own to
@@ -3301,11 +3304,6 @@ if ($env_just_created) {
 
     $ws_secret = bin2hex(random_bytes(32));
 
-    // config.php's WS defaults are what the (already-running, per the
-    // environment check above) daemon is currently using - carry them
-    // forward so the values recorded in .env match reality.
-    $existing_config = require __DIR__ . '/../src/config.php';
-
     $env_values = [
         'DB_HOST' => $db_host,
         'DB_PORT' => $db_port,
@@ -3314,9 +3312,12 @@ if ($env_just_created) {
         'DB_PASSWORD' => $runtime_account['password'],
         'SITE_URL' => $site_url,
         'SITE_TITLE' => $site_title,
-        'WS_HOST' => $existing_config['WSHost'],
-        'WS_PORT' => (string) $existing_config['WSPort'],
-        'WS_PUSH_PORT' => (string) $existing_config['WSPushPort'],
+        // config.php's WS defaults are what the (already-running, per the
+        // environment check above) daemon is currently using - carry them
+        // forward so the values recorded in .env match reality.
+        'WS_HOST' => Config::get('WSHost'),
+        'WS_PORT' => (string) Config::get('WSPort'),
+        'WS_PUSH_PORT' => (string) Config::get('WSPushPort'),
         'WS_SECRET' => $ws_secret,
     ];
 
@@ -3379,19 +3380,21 @@ if ($env_just_created) {
         }
     }
 
-    // Env caches on first read and getenv() keeps serving stale values, so
-    // push the values just written into the running process directly - the
-    // config.php require below then resolves them without a restart.
+    // getenv() itself always reads live, but config.php's computed array
+    // (type casts, WSSecret's fail-closed handling, ...) is only recomputed
+    // when it's required again - push the values just written into the
+    // running process directly, then force Config to recompute from them
+    // rather than keep serving whatever it cached before this install ran.
     foreach ($env_values as $key => $value) {
         putenv($key . '=' . $value);
     }
-}
 
-$config = require __DIR__ . '/../src/config.php';
+    Config::reload();
+}
 
 // The SMTP relay settings moved from .env to the Settings DB table (edit them
 // from the admin Site Settings page now) - config.php no longer reads these
-// keys at all, so check .env directly rather than $config.
+// keys at all, so check .env directly rather than through Config.
 $legacy_smtp_env_keys = array_filter([
     'SMTP_HOST' => Env::get('SMTP_HOST', ''),
     'SMTP_PORT' => Env::get('SMTP_PORT', ''),
@@ -3441,7 +3444,7 @@ if ((string) Settings::get(Mailer::FROM_ADDRESS_SETTING, '') === '' && is_intera
     ok('mail "from" address saved');
 }
 
-if ($config['siteURL'] === 'https://example.com') {
+if (Config::get('siteURL') === 'https://example.com') {
     fail('SITE_URL is not set in .env - every generated link would point at the https://example.com placeholder.');
 }
 
@@ -3449,8 +3452,8 @@ if ($config['siteURL'] === 'https://example.com') {
 // dealbreaker. The site itself refuses to serve over plain HTTP (everything
 // 301s to https, and an http SITE_URL gets a config-error page), so an
 // install without TLS simply doesn't work - get the certificate first.
-if (!str_starts_with((string) $config['siteURL'], 'https://')) {
-    fail('SITE_URL is ' . $config['siteURL'] . ' - Glommer requires HTTPS and will not serve over plain HTTP. Set up TLS first, then set SITE_URL to the https:// URL. For a real domain use Let\'s Encrypt (certbot --apache -d your.domain); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default (Fedora: dnf install mod_ssl). See README.md\'s HTTPS section.');
+if (!str_starts_with((string) Config::get('siteURL'), 'https://')) {
+    fail('SITE_URL is ' . Config::get('siteURL') . ' - Glommer requires HTTPS and will not serve over plain HTTP. Set up TLS first, then set SITE_URL to the https:// URL. For a real domain use Let\'s Encrypt (certbot --apache -d your.domain); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default (Fedora: dnf install mod_ssl). See README.md\'s HTTPS section.');
 }
 
 // The check above only proves SITE_URL *says* https:// - it's just a string,
@@ -3459,8 +3462,8 @@ if (!str_starts_with((string) $config['siteURL'], 'https://')) {
 // happens. Not 127.0.0.1 - a VirtualHost setup routes by the Host header
 // (SNI for TLS), so the loopback address may not reach this site at all;
 // the real hostname is what actually has to work.
-$site_host = (string) (parse_url($config['siteURL'], PHP_URL_HOST) ?: 'your-domain');
-$site_port = parse_url($config['siteURL'], PHP_URL_PORT);
+$site_host = (string) (parse_url(Config::get('siteURL'), PHP_URL_HOST) ?: 'your-domain');
+$site_port = parse_url(Config::get('siteURL'), PHP_URL_PORT);
 $server_name_value = $site_host . ($site_port !== null ? ':' . $site_port : '');
 
 $https_serving = EnvironmentChecker::httpsServing($server_name_value);
@@ -3482,14 +3485,14 @@ if ($https_serving === false) {
 } elseif ($https_serving === true) {
     ok('HTTPS confirmed live (a real connection to ' . $server_name_value . ' over TLS succeeded)');
 } else {
-    warn('Could not confirm HTTPS live by connecting to ' . $server_name_value . ' - inconclusive (DNS may not point here yet, a firewall, or the web server isn\'t up yet). Verify by visiting ' . $config['siteURL'] . ' in a browser.');
+    warn('Could not confirm HTTPS live by connecting to ' . $server_name_value . ' - inconclusive (DNS may not point here yet, a firewall, or the web server isn\'t up yet). Verify by visiting ' . Config::get('siteURL') . ' in a browser.');
 }
 
-if ($config['WSSecret'] === null) {
+if (Config::get('WSSecret') === null) {
     fail('WS_SECRET is missing or still the .env.example placeholder - a WebSocket secret anyone can read (or an absent one) lets connection tokens be forged for any user. Set it to a real random value, e.g.: php -r \'echo bin2hex(random_bytes(32));\'');
 }
 
-ok('.env present, SITE_URL and WS_SECRET configured (' . $config['siteURL'] . ')');
+ok('.env present, SITE_URL and WS_SECRET configured (' . Config::get('siteURL') . ')');
 
 // ---------- HTTPS host-spoofing guard ----------
 
@@ -3546,7 +3549,7 @@ if ($spoof_test === true) {
 // active content - no console warning most people would notice, live
 // notifications/messaging just stop working). So the WebSocket daemon must
 // be configured for TLS too, or the install isn't actually functional.
-if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
+if (Config::get('WSTLSCert') === null || Config::get('WSTLSKey') === null) {
     // Auto-reuse the web server's own certificate first (root, no prompt), then
     // fall back to the interactive mkcert offer, then the manual-steps fail().
     $configured = configure_websocket_tls_from_web_server($site_host)
@@ -3568,8 +3571,6 @@ if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
     // a mkcert home dir the WS service account can't read until a second,
     // separate install run happens to relocate it.
     relocate_ws_cert_if_root();
-
-    $config = require __DIR__ . '/../src/config.php';
 } elseif (is_interactive()) {
     // A WS_TLS_CERT already being set doesn't mean it's still right - SITE_URL
     // can change hostname (e.g. localhost -> a new dev domain) with nothing
@@ -3589,26 +3590,21 @@ if ($config['WSTLSCert'] === null || $config['WSTLSKey'] === null) {
     // (and found fine, or wouldn't be here) earlier in this same pass - redo
     // that check now that the cert just changed underneath it.
     relocate_ws_cert_if_root();
-
-    // Plain require (not require_once), same as every other config reload in
-    // this script - re-executes and picks up the WS_TLS_CERT/WS_TLS_KEY
-    // offer_websocket_tls() just putenv()'d.
-    $config = require __DIR__ . '/../src/config.php';
 }
 
-ok('WebSocket TLS configured (' . $config['WSTLSCert'] . ')');
+ok('WebSocket TLS configured (' . Config::get('WSTLSCert') . ')');
 
 // ---------- 3. Database connection ----------
 
 heading('Database');
 
 try {
-    $mysqli = mysqli_connect($config['host'], $config['username'], $config['password'], $config['database'], $config['port']);
+    $mysqli = mysqli_connect(Config::get('host'), Config::get('username'), Config::get('password'), Config::get('database'), Config::get('port'));
 } catch (\mysqli_sql_exception $exception) {
     fail('Could not connect to the database with the credentials in .env: ' . $exception -> getMessage());
 }
 
-ok('database connection works (' . $config['username'] . '@' . $config['host'] . ':' . $config['port'] . '/' . $config['database'] . ')');
+ok('database connection works (' . Config::get('username') . '@' . Config::get('host') . ':' . Config::get('port') . '/' . Config::get('database') . ')');
 
 // ---------- 4. Schema ----------
 
@@ -3618,13 +3614,13 @@ ok('database connection works (' . $config['username'] . '@' . $config['host'] .
  * - from DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD when set, otherwise prompted
  * for interactively. Only requested when there's actual schema work to do.
  */
-function admin_connection(array $config, string $needed_for): ?\mysqli
+function admin_connection(string $needed_for): ?\mysqli
 {
     // Running as root: MariaDB's unix_socket auth plugin authenticates the
     // OS root user as the DB root user with no password at all, but only over
-    // the local socket - not over TCP, which is what $config['host'] (e.g.
+    // the local socket - not over TCP, which is what Config::get('host') (e.g.
     // 127.0.0.1, the app's own runtime connection) would use. Passing
-    // 'localhost' literally (not $config['host']) is what makes mysqli use
+    // 'localhost' literally (not Config::get('host')) is what makes mysqli use
     // the socket instead of TCP. Tried first so a root install - the only
     // caller of this function that runs unattended, via set_up_system_
     // services()'s schema-creation step - never needs DB_ADMIN_USERNAME/
@@ -3632,7 +3628,7 @@ function admin_connection(array $config, string $needed_for): ?\mysqli
     // `sudo mysql` connects with zero credentials the exact same way.
     if (running_as_root()) {
         try {
-            return mysqli_connect('localhost', 'root', '', $config['database']);
+            return mysqli_connect('localhost', 'root', '', Config::get('database'));
         } catch (\mysqli_sql_exception $exception) {
             // Not every root box has unix_socket auth configured for the DB
             // root account (or even a DB root account by that name) - fall
@@ -3646,7 +3642,7 @@ function admin_connection(array $config, string $needed_for): ?\mysqli
 
     if ($admin_username !== null && $admin_password !== null) {
         try {
-            return mysqli_connect($config['host'], $admin_username, $admin_password, $config['database'], $config['port']);
+            return mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
         } catch (\mysqli_sql_exception $exception) {
             fail('Could not connect with the DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD credentials: ' . $exception -> getMessage());
         }
@@ -3663,7 +3659,7 @@ function admin_connection(array $config, string $needed_for): ?\mysqli
         $admin_password = prompt_hidden('Database admin password');
 
         try {
-            return mysqli_connect($config['host'], $admin_username, $admin_password, $config['database'], $config['port']);
+            return mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
         } catch (\mysqli_sql_exception $exception) {
             fail_line('Could not connect: ' . $exception -> getMessage() . ' - try again.');
         }
@@ -3686,13 +3682,13 @@ try {
 if ($missing_statements === []) {
     ok('all tables already exist');
 } else {
-    $admin_mysqli = admin_connection($config, 'create ' . count($missing_statements) . ' missing table(s): ' . implode(', ', array_keys($missing_statements)));
+    $admin_mysqli = admin_connection('create ' . count($missing_statements) . ' missing table(s): ' . implode(', ', array_keys($missing_statements)));
 
     if ($admin_mysqli === null) {
         fail(
             count($missing_statements) . ' table(s) are missing ('
             . implode(', ', array_keys($missing_statements)) . '). '
-            . 'Create them either by running `mysql -u <admin> -p ' . $config['database'] . ' < schema.sql` yourself, '
+            . 'Create them either by running `mysql -u <admin> -p ' . Config::get('database') . ' < schema.sql` yourself, '
             . 'or by setting DB_ADMIN_USERNAME and DB_ADMIN_PASSWORD (an account with CREATE privileges) before re-running this script.'
         );
     }
@@ -3742,7 +3738,7 @@ if ($fresh_install) {
 
     if (is_interactive() || (Env::get('DB_ADMIN_USERNAME') !== null && Env::get('DB_ADMIN_PASSWORD') !== null)) {
         if (!is_interactive() || confirm('Apply the ALTER statements to bring them up to date?')) {
-            $admin_mysqli = admin_connection($config, 'apply the missing definitions');
+            $admin_mysqli = admin_connection('apply the missing definitions');
             $apply = $admin_mysqli !== null;
         }
     }
@@ -3839,7 +3835,7 @@ if ($fresh_install) {
     ok('index migrations up to date (nothing to apply)');
 } else {
     $pending_count = count($needed_index_migrations) + count($deferred_foreign_keys);
-    $index_admin_mysqli = admin_connection($config, 'apply ' . $pending_count . ' pending migration(s) from schema.sql');
+    $index_admin_mysqli = admin_connection('apply ' . $pending_count . ' pending migration(s) from schema.sql');
 
     if ($index_admin_mysqli === null) {
         fail(
@@ -3902,8 +3898,8 @@ echo "Next steps:\n";
 // tell the admin to do here for that case, and an .env that already existed
 // never touched WS_SECRET in this run either. Restating "restart it" as a
 // blanket next step was always stale by the time anyone reached this point.
-echo '  1. ' . wrap("Visit {$config['siteURL']} and sign up - the first account created becomes
-the site's administrator.", 5) . "\n";
+echo '  1. ' . wrap('Visit ' . Config::get('siteURL') . ' and sign up - the first account created becomes
+the site\'s administrator.', 5) . "\n";
 
 // Anything deferred at the environment gate (a fresh install couldn't back up a
 // database that didn't exist yet, nor stand up its daemons) was skipped, not

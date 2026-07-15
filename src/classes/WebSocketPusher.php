@@ -14,10 +14,8 @@ class WebSocketPusher
 {
     public static function push(int $user_id, array $payload): void
     {
-        $config = require __DIR__ . '/../config.php';
-
         $socket = @stream_socket_client(
-            'tcp://127.0.0.1:' . $config['WSPushPort'],
+            'tcp://127.0.0.1:' . Config::get('WSPushPort'),
             $error_code,
             $error_message,
             0.2
@@ -30,7 +28,7 @@ class WebSocketPusher
         stream_set_timeout($socket, 1);
 
         @fwrite($socket, json_encode([
-            'secret' => $config['WSSecret'],
+            'secret' => Config::get('WSSecret'),
             'userId' => $user_id,
             'payload' => $payload,
         ]) . "\n");

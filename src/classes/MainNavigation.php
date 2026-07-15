@@ -9,9 +9,7 @@ class MainNavigation extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
-        $config = require __DIR__ . '/../config.php';
-
-        $brand = new Anchor(ServerURL::absolute('/'), $config['siteTitle']);
+        $brand = new Anchor(ServerURL::absolute('/'), Config::get('siteTitle'));
         $brand -> class = 'NavBrand';
 
         $site_links = new Div();

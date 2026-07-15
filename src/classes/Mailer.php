@@ -72,12 +72,11 @@ class Mailer
     {
         self::$recipientRejected = false;
 
-        $config = require __DIR__ . '/../config.php';
         $from_address = (string) Settings::get(self::FROM_ADDRESS_SETTING, '');
         // Unlike the address, a missing name is cosmetic (the From header
         // still works, just with no display name) - a friendly fallback is
         // fine here, no need to block sending over it.
-        $from_name = (string) Settings::get(self::FROM_NAME_SETTING, $config['mailFromName']);
+        $from_name = (string) Settings::get(self::FROM_NAME_SETTING, Config::get('mailFromName'));
 
         $smtp_host = (string) Settings::get(self::SMTP_HOST_SETTING, '');
 

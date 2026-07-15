@@ -206,7 +206,6 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
             // like the DB password, which does mean the daemon needs
             // restarting once (see the success page) to pick up this new
             // value - it can't already know a secret that didn't exist yet.
-            $existing_config = require __DIR__ . '/config.php';
             $ws_secret = bin2hex(random_bytes(32));
 
             $env_contents = Installer::envContents([
@@ -217,9 +216,9 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 'DB_PASSWORD' => $runtime_account['password'],
                 'SITE_URL' => $site_url,
                 'SITE_TITLE' => $site_title,
-                'WS_HOST' => $existing_config['WSHost'],
-                'WS_PORT' => (string) $existing_config['WSPort'],
-                'WS_PUSH_PORT' => (string) $existing_config['WSPushPort'],
+                'WS_HOST' => Config::get('WSHost'),
+                'WS_PORT' => (string) Config::get('WSPort'),
+                'WS_PUSH_PORT' => (string) Config::get('WSPushPort'),
                 'WS_SECRET' => $ws_secret,
                 'WS_TLS_CERT' => (string) $ws_tls_cert,
                 'WS_TLS_KEY' => (string) $ws_tls_key,

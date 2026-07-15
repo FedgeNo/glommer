@@ -8,9 +8,9 @@ $limit = 50;
 
 ['rows' => $feed_rows] = Post::globalFeedRows($limit);
 
-$config = require __DIR__ . '/src/config.php';
+$site_title = Config::get('siteTitle');
 
-$feed = new RSSFeed($config['siteTitle'], ServerURL::absolute('/'), $config['siteTitle'] . ' - a place to publish.');
+$feed = new RSSFeed($site_title, ServerURL::absolute('/'), $site_title . ' - a place to publish.');
 
 foreach (Thread::fromRows($feed_rows) as $thread) {
     $feed -> addItem(RSSItem::fromPost($thread -> post));

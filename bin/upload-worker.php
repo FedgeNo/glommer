@@ -67,8 +67,7 @@ function sd_notify(string $state): void
     socket_close($socket);
 }
 
-$config = require __DIR__ . '/../src/config.php';
-$concurrency = max(1, (int) $config['uploadWorkerConcurrency']);
+$concurrency = max(1, (int) Config::get('uploadWorkerConcurrency'));
 
 // Graceful shutdown on systemd stop / Ctrl-C: stop claiming, cleanly release
 // in-flight batches (no fault, so a shutdown mid-transcode doesn't count as a

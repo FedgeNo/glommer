@@ -520,8 +520,7 @@ class EnvironmentChecker
             return null;
         }
 
-        $config = require __DIR__ . '/../config.php';
-        $site_url = (string) ($config['siteURL'] ?? '');
+        $site_url = (string) Config::get('siteURL', '');
         $host = strtolower((string) (parse_url($site_url, PHP_URL_HOST) ?? ''));
         $is_https = str_starts_with($site_url, 'https://');
 
@@ -906,14 +905,14 @@ class EnvironmentChecker
      */
     public static function checkWebSocketServer(): array
     {
-        $config = require __DIR__ . '/../config.php';
+        $ws_port = Config::get('WSPort');
 
         // With WS_TLS_CERT/WS_TLS_KEY configured the daemon listens over TLS
         // (browsers on an https page require wss://), so this check has to
         // speak TLS too. Verification is off: this is a loopback reachability
         // check, not a trust decision, and the certificate's name is the
         // public hostname, not 127.0.0.1.
-        $daemon_uses_tls = ($config['WSTLSCert'] ?? null) !== null && ($config['WSTLSKey'] ?? null) !== null;
+        $daemon_uses_tls = Config::get('WSTLSCert') !== null && Config::get('WSTLSKey') !== null;
 
         $context = stream_context_create($daemon_uses_tls ? ['ssl' => [
             'verify_peer' => false,
@@ -922,10 +921,10 @@ class EnvironmentChecker
         ]] : []);
 
         $transport = $daemon_uses_tls ? 'ssl://' : 'tcp://';
-        $socket = @stream_socket_client($transport . '127.0.0.1:' . $config['WSPort'], $error_code, $error_message, 3, STREAM_CLIENT_CONNECT, $context);
+        $socket = @stream_socket_client($transport . '127.0.0.1:' . $ws_port, $error_code, $error_message, 3, STREAM_CLIENT_CONNECT, $context);
 
         if ($socket === false) {
-            return ['ok' => false, 'message' => 'Could not connect to the WebSocket server on 127.0.0.1:' . $config['WSPort'] . ($daemon_uses_tls ? ' over TLS' : '') . ' (' . $error_message . '). Start it first: systemctl --user start glommer-websocket (see README.md for the unit file). If it just gained or lost WS_TLS_CERT/WS_TLS_KEY, restart it so it matches .env.'];
+            return ['ok' => false, 'message' => 'Could not connect to the WebSocket server on 127.0.0.1:' . $ws_port . ($daemon_uses_tls ? ' over TLS' : '') . ' (' . $error_message . '). Start it first: systemctl --user start glommer-websocket (see README.md for the unit file). If it just gained or lost WS_TLS_CERT/WS_TLS_KEY, restart it so it matches .env.'];
         }
 
         stream_set_timeout($socket, 3);
@@ -941,7 +940,7 @@ class EnvironmentChecker
         if ($response === false || !str_contains($response, '101 Switching Protocols') || !str_contains($response, $expected_accept)) {
             fclose($socket);
 
-            return ['ok' => false, 'message' => 'The service on 127.0.0.1:' . $config['WSPort'] . ' did not complete a valid WebSocket handshake - something other than bin/websocket-server.php may be listening on that port.'];
+            return ['ok' => false, 'message' => 'The service on 127.0.0.1:' . $ws_port . ' did not complete a valid WebSocket handshake - something other than bin/websocket-server.php may be listening on that port.'];
         }
 
         $mask_key = random_bytes(4);
@@ -962,7 +961,7 @@ class EnvironmentChecker
             return ['ok' => false, 'message' => 'The WebSocket server accepted the handshake but did not respond to a ping - it may be stuck or misbehaving. Check its logs.'];
         }
 
-        return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $config['WSPort']];
+        return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $ws_port];
     }
 
     /**

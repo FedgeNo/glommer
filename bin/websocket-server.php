@@ -69,21 +69,26 @@ function sd_notify(string $state): void
     socket_close($socket);
 }
 
-$config = require __DIR__ . '/../src/config.php';
+$ws_tls_cert = Config::get('WSTLSCert');
+$ws_tls_key = Config::get('WSTLSKey');
+$ws_host = Config::get('WSHost');
+$ws_port = Config::get('WSPort');
+$ws_push_port = Config::get('WSPushPort');
+$ws_secret = Config::get('WSSecret');
 
-$use_tls = $config['WSTLSCert'] !== null && $config['WSTLSKey'] !== null;
+$use_tls = $ws_tls_cert !== null && $ws_tls_key !== null;
 
 $context = stream_context_create();
 
 if ($use_tls) {
-    stream_context_set_option($context, 'ssl', 'local_cert', $config['WSTLSCert']);
-    stream_context_set_option($context, 'ssl', 'local_pk', $config['WSTLSKey']);
+    stream_context_set_option($context, 'ssl', 'local_cert', $ws_tls_cert);
+    stream_context_set_option($context, 'ssl', 'local_pk', $ws_tls_key);
     stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
     stream_context_set_option($context, 'ssl', 'verify_peer', false);
 }
 
 $public_listener = stream_socket_server(
-    'tcp://' . $config['WSHost'] . ':' . $config['WSPort'],
+    'tcp://' . $ws_host . ':' . $ws_port,
     $error_code,
     $error_message,
     STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
@@ -91,28 +96,28 @@ $public_listener = stream_socket_server(
 );
 
 if ($public_listener === false) {
-    log_line('Could not bind public WebSocket listener on ' . $config['WSHost'] . ':' . $config['WSPort'] . ' - ' . $error_message);
+    log_line('Could not bind public WebSocket listener on ' . $ws_host . ':' . $ws_port . ' - ' . $error_message);
     exit(1);
 }
 
 // Loopback only - this port is never meant to be reachable from outside the
 // machine, api/*.php scripts are its only legitimate callers.
 $push_listener = stream_socket_server(
-    'tcp://127.0.0.1:' . $config['WSPushPort'],
+    'tcp://127.0.0.1:' . $ws_push_port,
     $error_code,
     $error_message,
     STREAM_SERVER_BIND | STREAM_SERVER_LISTEN
 );
 
 if ($push_listener === false) {
-    log_line('Could not bind internal push listener on 127.0.0.1:' . $config['WSPushPort'] . ' - ' . $error_message);
+    log_line('Could not bind internal push listener on 127.0.0.1:' . $ws_push_port . ' - ' . $error_message);
     exit(1);
 }
 
 stream_set_blocking($public_listener, false);
 stream_set_blocking($push_listener, false);
 
-log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $config['WSHost'] . ':' . $config['WSPort'] . ', internal push 127.0.0.1:' . $config['WSPushPort']);
+log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $ws_host . ':' . $ws_port . ', internal push 127.0.0.1:' . $ws_push_port);
 
 // systemd watchdog. WATCHDOG_USEC is set only when the unit configures
 // WatchdogSec; ping at half that interval (systemd's recommendation) so a hung
@@ -431,7 +436,7 @@ function ws_decode_frames(string $buffer): array
 
 function try_complete_handshake(int $id): bool
 {
-    global $connections, $config, $connectionsByUser;
+    global $connections, $ws_secret, $connectionsByUser;
 
     $header_end = strpos($connections[$id]['recvBuffer'], "\r\n\r\n");
 
@@ -480,7 +485,7 @@ function try_complete_handshake(int $id): bool
     parse_str($query_string, $query_params);
 
     $token = $query_params['token'] ?? '';
-    $user_id = $token !== '' ? WSToken::verify($token, $config['WSSecret']) : null;
+    $user_id = $token !== '' ? WSToken::verify($token, $ws_secret) : null;
 
     if ($path !== '/' || $user_id === null) {
         $connections[$id]['sendBuffer'] .= "HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n";
@@ -509,7 +514,7 @@ function try_complete_handshake(int $id): bool
 
 function handle_push_request(int $id): void
 {
-    global $connections, $connectionsByUser, $config;
+    global $connections, $connectionsByUser, $ws_secret;
 
     $newline_pos = strpos($connections[$id]['recvBuffer'], "\n");
 
@@ -528,8 +533,8 @@ function handle_push_request(int $id): void
         && is_string($request['secret'])
         // No secret configured (null) - reject every push rather than let
         // hash_equals be called with a null expected value.
-        && is_string($config['WSSecret']) && $config['WSSecret'] !== ''
-        && hash_equals($config['WSSecret'], $request['secret'])
+        && is_string($ws_secret) && $ws_secret !== ''
+        && hash_equals($ws_secret, $request['secret'])
     ) {
         $target_user_id = (int) $request['userId'];
         $encoded_payload = json_encode($request['payload']);

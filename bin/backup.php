@@ -23,8 +23,6 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
-$config = require __DIR__ . '/../src/config.php';
-
 $project_root = dirname(__DIR__);
 $backup_root = Backup::rootDir();
 $keep_days = max(1, (int) (Env::get('BACKUP_KEEP_DAYS', '') ?: 7));
@@ -73,11 +71,11 @@ $dump_stderr_path = $run_dir . '/mysqldump.stderr';
 // LOCK TABLES privilege the least-privilege runtime account doesn't have.
 $dump_command = sprintf(
     'MYSQL_PWD=%s mysqldump --single-transaction --skip-lock-tables --host=%s --port=%d --user=%s %s > %s 2>%s',
-    escapeshellarg($config['password']),
-    escapeshellarg($config['host']),
-    $config['port'],
-    escapeshellarg($config['username']),
-    escapeshellarg($config['database']),
+    escapeshellarg((string) Config::get('password')),
+    escapeshellarg((string) Config::get('host')),
+    Config::get('port'),
+    escapeshellarg((string) Config::get('username')),
+    escapeshellarg((string) Config::get('database')),
     escapeshellarg($dump_raw_path),
     escapeshellarg($dump_stderr_path)
 );

@@ -10,8 +10,7 @@ class ServerURL
     public static function absolute(string $path): string
     {
         if (self::$siteURL === null) {
-            $config = require __DIR__ . '/../config.php';
-            self::$siteURL = rtrim($config['siteURL'], '/');
+            self::$siteURL = rtrim((string) Config::get('siteURL'), '/');
         }
 
         return self::$siteURL . $path;
@@ -29,8 +28,7 @@ class ServerURL
     public static function host(): string
     {
         if (self::$host === null) {
-            $config = require __DIR__ . '/../config.php';
-            self::$host = strtolower((string) (parse_url($config['siteURL'], PHP_URL_HOST) ?? ''));
+            self::$host = strtolower((string) (parse_url((string) Config::get('siteURL'), PHP_URL_HOST) ?? ''));
         }
 
         return self::$host;

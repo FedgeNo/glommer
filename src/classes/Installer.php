@@ -165,10 +165,8 @@ INSERT INTO `Settings` (`name`, `value`)
                     return false;
                 }
 
-                $config = require __DIR__ . '/../config.php';
-
                 try {
-                    $admin_connection = mysqli_connect($config['host'], $admin_username, $admin_password, $config['database'], $config['port']);
+                    $admin_connection = mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
 
                     SchemaInstaller::createTables($admin_connection, $missing_tables);
 

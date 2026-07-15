@@ -27,12 +27,11 @@ spl_autoload_register(function (string $class): void {
 // covers a TLS-terminating reverse proxy, where PHP sees plain HTTP on every
 // request. An installed site whose SITE_URL is still http:// is refused
 // further down (after the error handlers are in place) rather than served.
-$init_config = require __DIR__ . '/config.php';
 $site_is_installed = is_file(__DIR__ . '/../.env');
 
 if (
     $site_is_installed
-    && str_starts_with((string) $init_config['siteURL'], 'https://')
+    && str_starts_with((string) Config::get('siteURL'), 'https://')
     && !ServerURL::isHTTPS()
 ) {
     header('Location: ' . ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/'), true, 301);
@@ -132,7 +131,7 @@ register_shutdown_function(function () use ($send_server_error, $warn_admin): vo
 // both installers refuse an http URL, so this only catches a hand-edited
 // .env. (Placed here, after the error handlers, where ErrorDocument can
 // safely render.)
-if ($site_is_installed && !str_starts_with((string) $init_config['siteURL'], 'https://')) {
+if ($site_is_installed && !str_starts_with((string) Config::get('siteURL'), 'https://')) {
     if (defined('IS_API_REQUEST')) {
         JSONResponse::error('This site requires HTTPS and is misconfigured. The administrator must set SITE_URL to an https:// URL.', 503) -> send();
     }

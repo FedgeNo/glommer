@@ -18,8 +18,7 @@ class Page
     ): HTMLDocument {
         $page = new HTMLDocument();
 
-        $config = require __DIR__ . '/../config.php';
-        $site_title = $config['siteTitle'];
+        $site_title = Config::get('siteTitle');
 
         $full_title = $title . ' - ' . $site_title;
         $description ??= $site_title . ' - a place to publish.';
@@ -114,7 +113,7 @@ class Page
             'CSRFToken' => CSRF::token(),
             'siteURL' => ServerURL::absolute(''),
             'serverTime' => time() * 1000,
-            'WSPort' => $config['WSPort'],
+            'WSPort' => Config::get('WSPort'),
             // Single source of truth for how many carousel items load eagerly -
             // post.js reads this rather than hardcoding its own copy, so the
             // client- and server-rendered carousels can't drift apart.

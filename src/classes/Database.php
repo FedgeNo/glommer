@@ -9,14 +9,12 @@ class Database
     public static function connection(): \mysqli
     {
         if (self::$connection === null) {
-            $config = require __DIR__ . '/../config.php';
-
             self::$connection = mysqli_connect(
-                $config['host'],
-                $config['username'],
-                $config['password'],
-                $config['database'],
-                $config['port']
+                Config::get('host'),
+                Config::get('username'),
+                Config::get('password'),
+                Config::get('database'),
+                Config::get('port')
             );
 
             mysqli_set_charset(self::$connection, 'utf8mb4');

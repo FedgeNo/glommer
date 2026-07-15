@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * A titled section of HashtagChips - one "cloud" on the /tags/ directory (e.g.
- * "Trending" or "Popular"). Built from Hashtag::popular()/trending() rows.
+ * A titled section of HashtagChips - one "cloud" on the /tags/ directory (the
+ * "Popular" section). Built from Hashtag::popular() rows.
  */
 class HashtagCloud extends Div
 {

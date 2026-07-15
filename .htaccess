@@ -102,6 +102,7 @@
     RewriteRule ^friends-feed$ friends-feed.php [L,QSA]
     RewriteRule ^bookmarks$ bookmarks.php [L,QSA]
     RewriteRule ^search$ search.php [L,QSA]
+    RewriteRule ^trending-topics$ trending-topics.php [L,QSA]
 
     # messages, help, and users are real collections - only their canonical
     # trailing-slash form is served (the bare form redirects to it, above).

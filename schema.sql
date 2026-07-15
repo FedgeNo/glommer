@@ -279,6 +279,40 @@ CREATE TABLE `ModerationActions` (
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Materialized, recomputed on a timer by bin/compute-trending.php (or lazily,
+-- lottery-triggered, from Trending::current() if that timer isn't installed) -
+-- never computed at read time. See Trending.php for the scoring/window/abuse-
+-- guard design. entityId is a real surrogate key (not just entityType+
+-- entityValue, unlike this app's pure join tables) so moderation tooling has
+-- a stable single id to act on a trending row by.
+CREATE TABLE `TrendingEntities` (
+  `entityId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `entityType` varchar(16) NOT NULL,
+  `entityValue` varchar(255) NOT NULL,
+  `score` double NOT NULL,
+  `postCount` int(10) unsigned NOT NULL,
+  `userCount` int(10) unsigned NOT NULL,
+  `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`entityId`),
+  UNIQUE KEY `entityType_entityValue` (`entityType`,`entityValue`),
+  KEY `score` (`score`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- A standing moderation rule, not a recomputed row - survives TrendingEntities
+-- being fully replaced every run (a banned entity is excluded from scoring
+-- entirely, not just hidden after the fact) and survives falling out of the
+-- trending window too (still banned if it becomes active again later).
+CREATE TABLE `BannedTrendingEntities` (
+  `entityType` varchar(16) NOT NULL,
+  `entityValue` varchar(255) NOT NULL,
+  `bannedBy` int(10) unsigned NOT NULL,
+  `reason` text DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`entityType`,`entityValue`),
+  KEY `bannedBy` (`bannedBy`),
+  CONSTRAINT `BannedTrendingEntities_ibfk_1` FOREIGN KEY (`bannedBy`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Index migrations (safe to re-run): bring an existing install's indexes up to
 -- date. Fresh installs already get these from the CREATE TABLE blocks above -
 -- these idempotent ALTERs apply the same changes to a database built from an

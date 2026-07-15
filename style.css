@@ -1609,6 +1609,27 @@ input[type='file']::file-selector-button {
     font-size: 0.8125rem;
 }
 
+.TrendingEntityLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background-color: var(--surface-2);
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9375rem;
+}
+
+.TrendingEntityLink:hover {
+    background-color: var(--accent-soft);
+}
+
+.TrendingEntityCount {
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
 /* ---------- 3D force-directed tag graph ----------
    Before the script takes over (.Active), it's a plain readable wrap of tag
    links - a no-JS fallback. Once Active, the container becomes a fixed-size 3D

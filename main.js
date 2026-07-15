@@ -888,6 +888,21 @@ window.addEventListener('scroll', async () => {
     }
 });
 
+// A trending-entity link (TrendingEntityChip) points here with ?q=<value> -
+// prefill the box and fire the same debounced search the user typing would,
+// rather than landing on an empty, unpopulated search page.
+document.addEventListener('DOMContentLoaded', () => {
+    const query = new URLSearchParams(window.location.search).get('q');
+    const input = document.querySelector('.PostSearchInput');
+
+    if (query === null || !input) {
+        return;
+    }
+
+    input.value = query;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+});
+
 document.addEventListener('input', (event) => {
     const input = event.target.closest('.PostSearchInput');
 
@@ -1559,6 +1574,37 @@ document.addEventListener('click', async (event) => {
     }
 
     button.textContent = 'Banned';
+});
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.BanTrendingEntityButton');
+
+    if (!button) {
+        return;
+    }
+
+    const entity_type = button.dataset.entityType;
+    const entity_value = button.dataset.entityValue;
+
+    const reason = await show_prompt(
+        `Ban "${entity_value}" from trending? It won't be able to trend again until unbanned.`,
+        { confirmLabel: 'Ban', placeholder: 'Reason for ban (required)' }
+    );
+
+    if (reason === null) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const result = await api_post('/api/ban-trending-entity', { entityType: entity_type, entityValue: entity_value, reason });
+
+    if (result === null) {
+        button.disabled = false;
+        return;
+    }
+
+    button.closest('.TrendingEntityChip')?.remove();
 });
 
 document.addEventListener('click', async (event) => {

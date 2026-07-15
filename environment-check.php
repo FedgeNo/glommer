@@ -114,6 +114,12 @@ JSONResponse::success([
     'timeoutFound' => $timeout_found,
     'bashFound' => $bash_found,
     'webServerUid' => $web_server_uid,
+    // Apache sets this itself; nginx (fronting PHP-FPM) passes it through via
+    // fastcgi_params. A genuine live signal of what's actually serving this
+    // request - stronger evidence than a process-name check (pgrep just
+    // shows something with that name is running, not that it's the one
+    // handling traffic, and says nothing when a reverse proxy fronts it).
+    'serverSoftware' => $_SERVER['SERVER_SOFTWARE'] ?? null,
     'extensions' => [
         'mysqli' => extension_loaded('mysqli'),
         'gd' => extension_loaded('gd'),

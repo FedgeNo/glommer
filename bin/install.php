@@ -2556,27 +2556,22 @@ function ensure_system_prerequisites(): void
 }
 
 /**
- * The web server actually running, so we use the right certbot plugin - NOT an
- * assumption that it's Apache. nginx is checked first because in the reverse-
- * proxy deployments this app supports, nginx out front is what terminates TLS
- * (so the cert belongs there), with Apache behind it on loopback. Returns
- * 'nginx', 'apache', or null (unknown - don't guess, leave it manual).
+ * The web server actually confirmed live (via EnvironmentChecker::
+ * webServerSoftware() - the SERVER_SOFTWARE the web SAPI itself reports),
+ * so the right certbot plugin gets picked and the right config gets edited -
+ * NEVER a guess. A process-name check (pgrep for httpd/apache2/nginx) isn't
+ * good enough evidence to take Apache/nginx-specific action on: it only
+ * shows something with that name is running, not that it's the one actually
+ * serving this site, and it says nothing at all when a reverse proxy fronts
+ * the real server. Returns 'nginx', 'apache', or null - callers needing to
+ * take server-specific action on a null result must ask the person running
+ * the installer directly (when interactive) rather than guess; this
+ * function itself never prompts, so it's still safe to call from a
+ * zero-touch/non-interactive path that should just skip on null.
  */
 function running_web_server(): ?string
 {
-    if (run('command -v pgrep 2>/dev/null')['output'] === '') {
-        return null;
-    }
-
-    if (run('pgrep -x nginx 2>/dev/null')['output'] !== '') {
-        return 'nginx';
-    }
-
-    if (run('pgrep -x httpd 2>/dev/null')['output'] !== '' || run('pgrep -x apache2 2>/dev/null')['output'] !== '') {
-        return 'apache';
-    }
-
-    return null;
+    return EnvironmentChecker::webServerSoftware();
 }
 
 /**
@@ -2656,8 +2651,28 @@ function attempt_web_certificate(string $host, string $email): bool
 
     $server = running_web_server();
 
+    // Not confirmed live (the site may not be up yet, or a reverse proxy
+    // fronts the real server) - ask directly rather than guess from a
+    // process-name check. Only when interactive; a non-interactive run
+    // falls straight to the warn() below and does nothing server-specific.
+    if ($server === null && is_interactive()) {
+        echo "\n" . wrap('Couldn\'t confirm live which web server is running here - needed to pick
+        the right certbot plugin and know whose config to repoint at the obtained
+        certificate.') . "\n";
+
+        $answer = strtolower(prompt(
+            'Is this server Apache or nginx? (enter "skip" to do this manually instead)',
+            'skip',
+            fn (string $value): ?string => in_array(strtolower(trim($value)), ['apache', 'nginx', 'skip'], true)
+                ? null
+                : 'Enter "apache", "nginx", or "skip".'
+        ));
+
+        $server = $answer === 'skip' ? null : $answer;
+    }
+
     if ($server === null) {
-        warn('Couldn\'t identify the web server (not nginx or Apache, or it isn\'t running yet) - not guessing a certbot plugin. If TLS terminates here, install certbot with the plugin for your server and run it manually; if a reverse proxy terminates TLS, the certificate belongs on the proxy (see README).');
+        warn('Couldn\'t identify the web server (not confirmed live, and not nginx or Apache by prompt) - not guessing a certbot plugin. If TLS terminates here, install certbot with the plugin for your server and run it manually; if a reverse proxy terminates TLS, the certificate belongs on the proxy (see README).');
 
         return false;
     }
@@ -2907,11 +2922,13 @@ $run_environment_checks = function (): array {
     $failures = [];
 
     foreach (EnvironmentChecker::checks() as $name => $result) {
-        if ($result['ok']) {
-            ok($result['message']);
-        } else {
+        if (!$result['ok']) {
             fail_line($result['message']);
             $failures[$name] = $result['message'];
+        } elseif ($result['warn'] ?? false) {
+            warn($result['message']);
+        } else {
+            ok($result['message']);
         }
     }
 

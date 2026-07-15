@@ -22,7 +22,7 @@ class EnvironmentChecker
     private const MIN_FILE_UPLOADS = 100;
 
     /**
-     * @return array<string, array{ok: bool, message: string}>
+     * @return array<string, array{ok: bool, message: string, warn?: bool}>
      */
     public static function checks(): array
     {
@@ -59,6 +59,39 @@ class EnvironmentChecker
         $uid = $live['webServerUid'] ?? null;
 
         return is_int($uid) ? $uid : null;
+    }
+
+    /**
+     * Which web server is actually serving this site, confirmed live via the
+     * SERVER_SOFTWARE the web SAPI itself reports (Apache sets it directly;
+     * nginx passes it through to PHP-FPM via fastcgi_params) - never guessed
+     * from a process-name check, which only shows something with that name
+     * is running, not that it's the one handling this site's traffic (and
+     * says nothing at all when a reverse proxy fronts the actual server).
+     * Returns 'apache', 'nginx', or null when the probe didn't reach the
+     * site or the string didn't recognizably say either - callers must not
+     * take Apache/nginx-specific action (editing its config, restarting it,
+     * picking a certbot plugin for it) on anything less than this or an
+     * explicit prompt to the person running the installer.
+     */
+    public static function webServerSoftware(): ?string
+    {
+        $live = self::liveFacts();
+        $software = strtolower((string) ($live['serverSoftware'] ?? ''));
+
+        if ($software === '') {
+            return null;
+        }
+
+        if (str_contains($software, 'nginx')) {
+            return 'nginx';
+        }
+
+        if (str_contains($software, 'apache')) {
+            return 'apache';
+        }
+
+        return null;
     }
 
     /**
@@ -206,7 +239,16 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null || !isset($live['uploadMaxFilesize'], $live['postMaxSize'])) {
-            return ['ok' => true, 'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max . ' (could not reach http://127.0.0.1/ to confirm the web server is actually applying it - re-run once the web server is up, or check via the web setup wizard directly)'];
+            $installed = self::siteIsInstalled();
+
+            return [
+                'ok' => true,
+                'warn' => $installed,
+                'message' => '.user.ini declares upload_max_filesize=' . $declared_upload_max . ', post_max_size=' . $declared_post_max
+                    . ($installed
+                        ? ' - could not confirm the web server is actually applying it. Check via the web setup wizard directly.'
+                        : ' (could not reach the web server yet to confirm it\'s actually applying it - re-run once it\'s up, or check via the web setup wizard directly)'),
+            ];
         }
 
         $live_upload_max = (string) $live['uploadMaxFilesize'];
@@ -257,7 +299,15 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null || !isset($live['maxFileUploads'])) {
-            return ['ok' => true, 'message' => 'max_file_uploads - could not reach http://127.0.0.1/ to check it live. Set it for the web server yourself: max_file_uploads = 100 or higher in php.ini or the PHP-FPM pool config (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM. Re-run once the web server is up, or check via the web setup wizard directly.'];
+            $installed = self::siteIsInstalled();
+
+            return [
+                'ok' => true,
+                'warn' => $installed,
+                'message' => 'max_file_uploads - ' . ($installed ? 'could not confirm it live' : 'could not reach the web server yet to check it live')
+                    . '. Set it for the web server yourself: max_file_uploads = 100 or higher in php.ini or the PHP-FPM pool config (it is PHP_INI_SYSTEM and cannot be set in .user.ini), then reload PHP-FPM.'
+                    . ($installed ? ' Check via the web setup wizard directly.' : ' Re-run once the web server is up, or check via the web setup wizard directly.'),
+            ];
         }
 
         $live_max_label = (string) $live['maxFileUploads'];
@@ -429,8 +479,10 @@ class EnvironmentChecker
      * probe, not a fetch of untrusted user input). Cached per-process so the
      * several CLI checks that each need this share one HTTP round trip
      * instead of one apiece. Returns null if the site isn't reachable this
-     * way (e.g. the web server isn't running yet), which callers treat as
-     * inconclusive, not a failure.
+     * way (e.g. the web server isn't running yet) - callers treat that as
+     * inconclusive (not a failure) only while the site isn't installed yet
+     * (see siteIsInstalled()); once it's installed, a live-info failure
+     * means something that should work doesn't, and is reported as one.
      *
      * @return array<string, mixed>|null
      */
@@ -446,6 +498,20 @@ class EnvironmentChecker
     }
 
     /**
+     * Whether .env exists - i.e. whether the site has actually been
+     * installed and is expected to be reachable at all. Before that, a
+     * live-info fetch failing is completely normal (there may be no web
+     * server, vhost, or TLS set up yet) and every one of these checks stays
+     * informational (ok=true) rather than flagging a problem that isn't one
+     * yet. Once installed, the same failure means something that should
+     * work doesn't - each check reports that as ok=false instead.
+     */
+    private static function siteIsInstalled(): bool
+    {
+        return is_file(__DIR__ . '/../../.env');
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     private static function fetchLiveFacts(): ?array
@@ -455,10 +521,27 @@ class EnvironmentChecker
         }
 
         $config = require __DIR__ . '/../config.php';
-        $host = strtolower((string) (parse_url((string) ($config['siteURL'] ?? ''), PHP_URL_HOST) ?? ''));
+        $site_url = (string) ($config['siteURL'] ?? '');
+        $host = strtolower((string) (parse_url($site_url, PHP_URL_HOST) ?? ''));
+        $is_https = str_starts_with($site_url, 'https://');
+
+        // Request the CONFIGURED host directly, with its real scheme - not a
+        // bare "http://127.0.0.1/..." URL. A request whose Host header is
+        // literally "127.0.0.1" doesn't match this site's own vhost
+        // (ServerName glommer.local, say); on a box with more than one vhost
+        // that falls through to Apache's default vhost (whichever is first
+        // alphabetically) - a COMPLETELY different site - and this probe
+        // silently gets nothing useful back, forever, on that box. Once
+        // installed the site also enforces https - a plain http:// request
+        // still redirects, but only after first suffering the wrong-vhost
+        // problem above, so going straight to https:// when that's what's
+        // configured avoids the extra hop entirely.
+        $url = $host !== ''
+            ? ($is_https ? 'https://' : 'http://') . $host . '/environment-check'
+            : 'http://127.0.0.1/environment-check';
 
         $options = [
-            CURLOPT_URL => 'http://127.0.0.1/environment-check',
+            CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYPEER => false,
@@ -467,13 +550,11 @@ class EnvironmentChecker
             CURLOPT_TIMEOUT => 5,
         ];
 
-        // Once installed, plain http 301s to the canonical https URL - a real
-        // hostname, never 127.0.0.1. Follow that redirect (so this probe keeps
-        // working with HTTPS enforcement on), but pin the hostname back to the
-        // loopback interface so it doesn't depend on the box reaching its own
-        // public IP (hairpin NAT often can't). The request still carries the
-        // right Host/SNI for the vhost, and the self-signed-cert case is covered
-        // by VERIFYPEER being off above.
+        // Pin the hostname back to the loopback interface so this doesn't
+        // depend on the box reaching its own public IP (hairpin NAT often
+        // can't) - the request still carries the right Host/SNI for the
+        // vhost, and the self-signed-cert case is covered by VERIFYPEER
+        // being off above.
         if ($host !== '' && $host !== '127.0.0.1' && $host !== 'localhost') {
             $options[CURLOPT_RESOLVE] = [$host . ':443:127.0.0.1', $host . ':80:127.0.0.1'];
         }
@@ -544,7 +625,7 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null || !isset($live['phpVersion'])) {
-            return ['ok' => true, 'message' => 'PHP ' . PHP_VERSION . ' (CLI) - could not confirm the web server\'s version live'];
+            return ['ok' => true, 'warn' => self::siteIsInstalled(), 'message' => 'PHP ' . PHP_VERSION . ' (CLI) - could not confirm the web server\'s version live'];
         }
 
         if (version_compare((string) $live['phpVersion'], '8.1.0', '<')) {
@@ -607,7 +688,7 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null || !is_array($live['extensions'] ?? null)) {
-            return ['ok' => true, 'message' => 'all required PHP extensions loaded on the CLI, but could not confirm the web server live - check via the web setup wizard directly.'];
+            return ['ok' => true, 'warn' => self::siteIsInstalled(), 'message' => 'all required PHP extensions loaded on the CLI, but could not confirm the web server live - check via the web setup wizard directly.'];
         }
 
         $missing = [];
@@ -658,7 +739,7 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null) {
-            return ['ok' => true, 'message' => 'exec()/shell_exec()/ffmpeg OK on the CLI, but could not confirm the web server live - check via the web setup wizard directly, since a hardened FPM pool commonly disables exec()/shell_exec() (or narrows PATH) separately from the CLI.'];
+            return ['ok' => true, 'warn' => self::siteIsInstalled(), 'message' => 'exec()/shell_exec()/ffmpeg OK on the CLI, but could not confirm the web server live - check via the web setup wizard directly, since a hardened FPM pool commonly disables exec()/shell_exec() (or narrows PATH) separately from the CLI.'];
         }
 
         if (empty($live['execFunctionExists']) || !empty($live['execDisabled'])) {
@@ -706,7 +787,7 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null || !isset($live['tempDir'])) {
-            return ['ok' => true, 'message' => 'CLI temp directory (' . sys_get_temp_dir() . ') writable, but could not confirm the web server\'s live - check via the web setup wizard directly.'];
+            return ['ok' => true, 'warn' => self::siteIsInstalled(), 'message' => 'CLI temp directory (' . sys_get_temp_dir() . ') writable, but could not confirm the web server\'s live - check via the web setup wizard directly.'];
         }
 
         if (empty($live['tempDirWritable'])) {
@@ -762,7 +843,7 @@ class EnvironmentChecker
         $live = self::liveFacts();
 
         if ($live === null || !is_array($live['uploadDirsWritable'] ?? null)) {
-            return ['ok' => true, 'message' => 'upload directories exist and are writable by the CLI user (' . get_current_user() . '), but could not confirm the web server\'s own user live - check via the web setup wizard directly, since it commonly runs as a different Unix user.'];
+            return ['ok' => true, 'warn' => self::siteIsInstalled(), 'message' => 'upload directories exist and are writable by the CLI user (' . get_current_user() . '), but could not confirm the web server\'s own user live - check via the web setup wizard directly, since it commonly runs as a different Unix user.'];
         }
 
         $not_writable = [];

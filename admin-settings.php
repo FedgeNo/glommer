@@ -21,6 +21,9 @@ $page -> addContent(new UploadWorkerStatus());
 $page -> addContent(new Heading2('WebSocket server'));
 $page -> addContent(new WebSocketStatus());
 
+$page -> addContent(new Heading2('Trending timer'));
+$page -> addContent(new TrendingTimerStatus());
+
 $page -> addContent(new Heading2('Bot protection'));
 $page -> addContent(new AdminSettingsForm());
 

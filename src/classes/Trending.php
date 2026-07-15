@@ -300,4 +300,43 @@ SELECT `entityType`, `entityValue`
 
         return $keys;
     }
+
+    /**
+     * Whether glommer-trending.timer is confirmed armed and waiting for its
+     * next run - mirrors UploadBatch::workerIsActive()'s three-way logic:
+     * true/false only when systemd can be asked and gives a real answer,
+     * null when it can't be determined at all (no systemctl, or SELinux
+     * denying the web server's own status query). recompute() not running on
+     * a schedule isn't fatal (current()'s lottery self-heal still covers it),
+     * so a confirmed "not running" here is surfaced as a warning to admins,
+     * not treated as a health-check failure.
+     */
+    public static function timerIsActive(): ?bool
+    {
+        if (trim((string) shell_exec('command -v systemctl 2>/dev/null')) === '') {
+            return null;
+        }
+
+        $system = self::systemdUnitActiveState('systemctl is-active glommer-trending.timer 2>/dev/null');
+        $user = self::systemdUnitActiveState('systemctl is-active --user glommer-trending.timer 2>/dev/null');
+
+        if ($system === true || $user === true) {
+            return true;
+        }
+
+        if ($system === false || $user === false) {
+            return false;
+        }
+
+        return null;
+    }
+
+    private static function systemdUnitActiveState(string $command): ?bool
+    {
+        return match (trim((string) shell_exec($command))) {
+            'active', 'activating', 'reloading' => true,
+            'inactive', 'failed', 'deactivating' => false,
+            default => null,
+        };
+    }
 }

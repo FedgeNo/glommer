@@ -2656,12 +2656,13 @@ function attempt_web_certificate(string $host, string $email): bool
     // process-name check. Only when interactive; a non-interactive run
     // falls straight to the warn() below and does nothing server-specific.
     if ($server === null && is_interactive()) {
-        echo "\n" . wrap('Couldn\'t confirm live which web server is running here - needed to pick
-        the right certbot plugin and know whose config to repoint at the obtained
-        certificate.') . "\n";
+        echo "\n";
 
         $answer = strtolower(prompt(
-            'Is this server Apache or nginx? (enter "skip" to do this manually instead)',
+            wrap('Couldn\'t confirm live which web server is running here - needed to pick
+            the right certbot plugin and know whose config to repoint at the obtained
+            certificate. Is this server Apache or nginx? (enter "skip" to do this
+            manually instead)'),
             'skip',
             fn (string $value): ?string => in_array(strtolower(trim($value)), ['apache', 'nginx', 'skip'], true)
                 ? null

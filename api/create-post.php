@@ -287,4 +287,4 @@ $post -> createdAt = date('Y-m-d H:i:s');
 $post -> items = $items;
 $post -> author = $current_user;
 
-JSONResponse::success($post -> toPayload(0, 0, false)) -> send();
+JSONResponse::success($post -> toPayload(0, 0, false, false)) -> send();

@@ -173,4 +173,14 @@ mysqli_stmt_execute($liked_stmt);
 mysqli_stmt_store_result($liked_stmt);
 $liked = mysqli_stmt_num_rows($liked_stmt) > 0;
 
-JSONResponse::success($post -> toPayload($reply_count, $like_count, $liked)) -> send();
+$bookmarked_stmt = mysqli_prepare($mysqli, '
+SELECT 1
+    FROM `Bookmarks`
+    WHERE `postId` = ? AND `userId` = ?
+');
+mysqli_stmt_bind_param($bookmarked_stmt, 'ii', $post_id, $current_user -> userId);
+mysqli_stmt_execute($bookmarked_stmt);
+mysqli_stmt_store_result($bookmarked_stmt);
+$bookmarked = mysqli_stmt_num_rows($bookmarked_stmt) > 0;
+
+JSONResponse::success($post -> toPayload($reply_count, $like_count, $liked, $bookmarked)) -> send();

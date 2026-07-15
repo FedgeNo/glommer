@@ -90,6 +90,17 @@ CREATE TABLE `Likes` (
   CONSTRAINT `fk_likes_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `Bookmarks` (
+  `userId` int(10) unsigned NOT NULL,
+  `postId` int(10) unsigned NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`userId`,`postId`),
+  KEY `fk_bookmarks_post` (`postId`),
+  KEY `idx_bookmarks_user_created` (`userId`,`createdAt`,`postId`),
+  CONSTRAINT `Bookmarks_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_bookmarks_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Friendships` (
   `friendshipId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `requesterId` int(10) unsigned NOT NULL,

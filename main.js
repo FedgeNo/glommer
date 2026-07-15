@@ -1187,6 +1187,31 @@ document.addEventListener('click', async (event) => {
 });
 
 document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.BookmarkButton');
+
+    if (!button) {
+        return;
+    }
+
+    const item_id = button.dataset.itemId;
+
+    button.disabled = true;
+
+    try {
+        const result = await api_post('/api/bookmark', { itemId: item_id });
+
+        if (result === null) {
+            return;
+        }
+
+        button.dataset.bookmarked = result.bookmarked ? '1' : '0';
+        button.textContent = result.bookmarked ? 'Bookmarked' : 'Bookmark';
+    } finally {
+        button.disabled = false;
+    }
+});
+
+document.addEventListener('click', async (event) => {
     const button = event.target.closest('.DeleteButton');
 
     if (!button) {
@@ -2367,6 +2392,60 @@ window.addEventListener('scroll', async () => {
     } finally {
         spinner.remove();
         loading_older_feed_items = false;
+    }
+});
+
+let loading_older_saved_posts = false;
+
+window.addEventListener('scroll', async () => {
+    const list = document.querySelector('.SavedPostsList');
+
+    if (!list || list.offsetParent === null || list.dataset.hasMore !== '1' || loading_older_saved_posts) {
+        return;
+    }
+
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
+    if (!near_bottom) {
+        return;
+    }
+
+    loading_older_saved_posts = true;
+
+    const spinner = document.createElement('div');
+    spinner.className = 'LoadingSpinner';
+    list.appendChild(spinner);
+
+    try {
+        const before_created_at = encodeURIComponent(list.dataset.oldestBookmarkCreatedAt);
+        const before_post_id = list.dataset.oldestBookmarkPostId;
+
+        const response = await fetch(`${window.siteURL}/api/saved-posts-history?beforeCreatedAt=${before_created_at}&beforePostId=${before_post_id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        const { posts, hasMore: has_more, oldestBookmarkCreatedAt: oldest_created_at, oldestBookmarkPostId: oldest_post_id } = data.response;
+
+        list.dataset.hasMore = has_more ? '1' : '0';
+
+        if (posts.length === 0) {
+            return;
+        }
+
+        posts.forEach((post_data) => {
+            const element = Post.fromData(post_data).toElement();
+            list.insertBefore(element, spinner);
+            render_math(element);
+        });
+
+        list.dataset.oldestBookmarkCreatedAt = oldest_created_at;
+        list.dataset.oldestBookmarkPostId = oldest_post_id;
+    } finally {
+        spinner.remove();
+        loading_older_saved_posts = false;
     }
 });
 

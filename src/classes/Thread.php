@@ -11,6 +11,7 @@ class Thread extends HTMLObject
     public ?int $replyCount = null;
     public ?int $likeCount = null;
     public ?bool $liked = null;
+    public ?bool $bookmarked = null;
 
     public function toDOM(): \DOMElement
     {
@@ -21,6 +22,7 @@ class Thread extends HTMLObject
         $action_bar -> replyCount = $this -> replyCount;
         $action_bar -> likeCount = $this -> likeCount;
         $action_bar -> liked = $this -> liked;
+        $action_bar -> bookmarked = $this -> bookmarked;
 
         $this -> contents[] = $this -> post;
         $this -> contents[] = $action_bar;
@@ -54,6 +56,7 @@ class Thread extends HTMLObject
         $reply_counts = Post::replyCountsForPosts($post_ids);
         $like_counts = Post::likeCountsForPosts($post_ids);
         $liked = Auth::check() ? Post::likedByUserForPosts($post_ids, (int) Auth::id()) : [];
+        $bookmarked = Auth::check() ? Bookmark::bookmarkedByUserForPosts($post_ids, (int) Auth::id()) : [];
 
         $threads = [];
 
@@ -65,6 +68,7 @@ class Thread extends HTMLObject
             $thread -> replyCount = $reply_counts[$post_id] ?? 0;
             $thread -> likeCount = $like_counts[$post_id] ?? 0;
             $thread -> liked = $liked[$post_id] ?? false;
+            $thread -> bookmarked = $bookmarked[$post_id] ?? false;
 
             $threads[] = $thread;
         }

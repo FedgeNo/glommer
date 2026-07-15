@@ -248,9 +248,9 @@ class ReportCard extends HTMLObject
         }
 
         if ($this -> targetKind === 'post' && $this -> targetData instanceof Post) {
-            // A bare post on the client (no action bar) - the 0/0/false counts
-            // its payload carries go unused there.
-            $payload = ['kind' => 'post', 'post' => $this -> targetData -> toPayload(0, 0, false)];
+            // A bare post on the client (no action bar) - the 0/0/false/false
+            // counts its payload carries go unused there.
+            $payload = ['kind' => 'post', 'post' => $this -> targetData -> toPayload(0, 0, false, false)];
 
             if ($this -> forensicAttachmentIds !== []) {
                 // Media type is resolved here (one lookup) so the client just

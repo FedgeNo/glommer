@@ -14,6 +14,7 @@ class PostActionBar extends HTMLObject
     public ?int $replyCount = null;
     public ?int $likeCount = null;
     public ?bool $liked = null;
+    public ?bool $bookmarked = null;
 
     public function toDOM(): \DOMElement
     {
@@ -26,6 +27,7 @@ class PostActionBar extends HTMLObject
 
         if (Auth::check()) {
             $actions -> addContent($this -> likeButton());
+            $actions -> addContent($this -> bookmarkButton());
 
             if ($this -> postUserId === Auth::id()) {
                 $actions -> addContent($this -> editButton());
@@ -88,6 +90,31 @@ SELECT 1
     public static function likeLabel(bool $liked, int $count): string
     {
         return ($liked ? 'Unlike' : 'Like') . ' (' . $count . ')';
+    }
+
+    protected function bookmarkButton(): HTMLObject
+    {
+        // Batched callers (Thread::fromRows) provide this up front; fall back
+        // to a live per-post query for one-off use (a standalone PostPage).
+        if ($this -> bookmarked !== null) {
+            $already_bookmarked = $this -> bookmarked;
+        } else {
+            $current_user_id = Auth::id();
+            $already_bookmarked = isset(Bookmark::bookmarkedByUserForPosts([$this -> postId], (int) $current_user_id)[$this -> postId]);
+        }
+
+        $button = new Button();
+        $button -> class = 'Btn BookmarkButton';
+        $button -> attributes['data-item-id'] = (string) $this -> postId;
+        $button -> attributes['data-bookmarked'] = $already_bookmarked ? '1' : '0';
+        $button -> contents[] = self::bookmarkLabel($already_bookmarked);
+
+        return $button;
+    }
+
+    public static function bookmarkLabel(bool $bookmarked): string
+    {
+        return $bookmarked ? 'Bookmarked' : 'Bookmark';
     }
 
     protected function replyButton(): HTMLObject

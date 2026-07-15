@@ -525,7 +525,7 @@ SELECT `postId`
      * that feed the client-side Post class, which rebuilds the body from the
      * Delta ops via render_delta() - no HTML crosses the wire.
      */
-    public function toPayload(int $reply_count, int $like_count, bool $liked): array
+    public function toPayload(int $reply_count, int $like_count, bool $liked, bool $bookmarked): array
     {
         $description_delta = null;
         $description_truncated = false;
@@ -576,6 +576,7 @@ SELECT `postId`
             'replyCount' => $reply_count,
             'likeCount' => $like_count,
             'liked' => $liked,
+            'bookmarked' => $bookmarked,
             'authorUsername' => $this -> author ?-> username,
             'authorDisplayName' => $this -> author ?-> displayName,
             'authorImage' => $this -> author ?-> avatarURL(),

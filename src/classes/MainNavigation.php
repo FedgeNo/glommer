@@ -30,6 +30,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
                 new Anchor(ServerURL::absolute('/search'), 'Search'),
                 new Anchor(ServerURL::absolute('/messages/'), 'Messages'),
+                new Anchor(ServerURL::absolute('/saved'), 'Saved'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
             ]));
             $recent_notifications = Notification::rowsForUser((int) $current_user -> userId, 5);

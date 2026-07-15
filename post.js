@@ -22,6 +22,7 @@ class Post {
     replyCount = 0;
     likeCount = 0;
     liked = false;
+    bookmarked = false;
     authorUsername = null;
     authorDisplayName = null;
     authorImage = null;
@@ -329,6 +330,14 @@ class Post {
             like_button.dataset.liked = this.liked ? '1' : '0';
             like_button.textContent = (this.liked ? 'Unlike' : 'Like') + ' (' + this.likeCount + ')';
             actions.appendChild(like_button);
+
+            const bookmark_button = document.createElement('button');
+            bookmark_button.type = 'button';
+            bookmark_button.className = 'Btn BookmarkButton';
+            bookmark_button.dataset.itemId = this.postId;
+            bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
+            bookmark_button.textContent = this.bookmarked ? 'Bookmarked' : 'Bookmark';
+            actions.appendChild(bookmark_button);
 
             if (Number(this.userId) === Number(window.currentUserId)) {
                 const edit_button = document.createElement('button');

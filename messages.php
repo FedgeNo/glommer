@@ -14,14 +14,32 @@ if ($username === '') {
 
     $not_banned = 0;
 
+    // Each direction is its own indexed half (senderId=me walks
+    // senderId_recipientId_messageId, recipientId=me walks
+    // recipientId_senderId_messageId), so the scan is bounded to this user's
+    // own messages rather than the whole table - a single OR across the two
+    // columns can't use either index and degrades to a full scan for a
+    // heavy-sending account. The halves collapse to one row per partner
+    // (their latest message) before the join to Users for display.
     $conversations = DB::rows('
-SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`.`createdAt`) AS `lastMessageAt`
-    FROM `Messages` `m`
-    JOIN `Users` `u` ON `u`.`userId` = IF(`m`.`senderId` = ?, `m`.`recipientId`, `m`.`senderId`)
-    WHERE (`m`.`senderId` = ? OR `m`.`recipientId` = ?) AND `u`.`banned` = ?
-    GROUP BY `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`
-    ORDER BY `lastMessageAt` DESC
-', 'Conversation', 'iiii', $current_user -> userId, $current_user -> userId, $current_user -> userId, $not_banned);
+SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, `partners`.`lastMessageAt`
+    FROM (
+        SELECT `partnerId`, MAX(`createdAt`) AS `lastMessageAt`
+            FROM (
+                SELECT `recipientId` AS `partnerId`, `createdAt`
+                    FROM `Messages`
+                    WHERE `senderId` = ?
+                UNION ALL
+                SELECT `senderId` AS `partnerId`, `createdAt`
+                    FROM `Messages`
+                    WHERE `recipientId` = ?
+            ) AS `mine`
+            GROUP BY `partnerId`
+    ) AS `partners`
+    JOIN `Users` `u` ON `u`.`userId` = `partners`.`partnerId`
+    WHERE `u`.`banned` = ?
+    ORDER BY `partners`.`lastMessageAt` DESC
+', 'Conversation', 'iii', $current_user -> userId, $current_user -> userId, $not_banned);
 
     $has_conversations = $conversations !== [];
 

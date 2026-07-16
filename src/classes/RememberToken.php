@@ -16,12 +16,23 @@ class RememberToken
     private const COOKIE_NAME = 'rememberToken';
     private const TTL_DAYS = 30;
 
-    public static function issue(int $user_id): void
+    /**
+     * $carried_created_at is only passed by loginFromCookie()'s rotation - it
+     * carries the ORIGINAL token's createdAt forward to the replacement row,
+     * so a device's "first seen" date on the sessions list stays stable
+     * across every auto-login rotation instead of resetting to "now" every
+     * time. A fresh login (password form, OAuth, signup) leaves it null and
+     * gets NOW(), same as before this existed.
+     */
+    public static function issue(int $user_id, ?string $carried_created_at = null): void
     {
         $validator = bin2hex(random_bytes(32));
         $validator_hash = hash('sha256', $validator);
         $ttl_days = self::TTL_DAYS;
         $mysqli = Database::connection();
+        $user_agent = substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null;
+        $ip_address = ServerURL::clientIP();
+        $created_at = $carried_created_at ?? date('Y-m-d H:i:s');
 
         // The selector is 96 random bits, so a collision is astronomically
         // unlikely - but it's a one-line retry to not let a freak collision
@@ -34,10 +45,10 @@ class RememberToken
 
             try {
                 $stmt = mysqli_prepare($mysqli, '
-INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`)
-    VALUES (?, ?, ?, NOW() + INTERVAL ? DAY)
+INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`)
+    VALUES (?, ?, ?, NOW() + INTERVAL ? DAY, ?, NOW(), ?, ?)
 ');
-                mysqli_stmt_bind_param($stmt, 'issi', $user_id, $selector, $validator_hash, $ttl_days);
+                mysqli_stmt_bind_param($stmt, 'ississs', $user_id, $selector, $validator_hash, $ttl_days, $created_at, $user_agent, $ip_address);
                 mysqli_stmt_execute($stmt);
 
                 break;
@@ -80,7 +91,7 @@ DELETE
         [$selector, $validator] = explode(':', $cookie, 2);
 
         $stmt = mysqli_prepare(Database::connection(), '
-SELECT `tokenId`, `userId`, `validatorHash`
+SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
     FROM `RememberTokens`
     WHERE `selector` = ? AND `expiresAt` > NOW()
 ');
@@ -118,7 +129,7 @@ SELECT `tokenId`, `userId`, `validatorHash`
 
         self::deleteToken((int) $row['tokenId']);
         Auth::login($user);
-        self::issue((int) $user -> userId);
+        self::issue((int) $user -> userId, (string) $row['createdAt']);
     }
 
     /**
@@ -158,6 +169,77 @@ DELETE
 ');
         mysqli_stmt_bind_param($stmt, 'i', $user_id);
         mysqli_stmt_execute($stmt);
+    }
+
+    /**
+     * A user's own remembered devices for the Settings page - every
+     * non-expired token, newest-used first. Never exposes the validator (or
+     * its hash); the selector is only used to match against the current
+     * browser's cookie, not shown to the user.
+     *
+     * @return array<int, array{tokenId: int, selector: string, createdAt: string, lastUsedAt: string, userAgent: ?string, ipAddress: ?string}>
+     */
+    public static function rowsForUser(int $user_id): array
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
+    FROM `RememberTokens`
+    WHERE `userId` = ? AND `expiresAt` > NOW()
+    ORDER BY `lastUsedAt` DESC
+');
+        mysqli_stmt_bind_param($stmt, 'i', $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $rows = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rows[] = [
+                'tokenId' => (int) $row['tokenId'],
+                'selector' => (string) $row['selector'],
+                'createdAt' => (string) $row['createdAt'],
+                'lastUsedAt' => (string) $row['lastUsedAt'],
+                'userAgent' => $row['userAgent'],
+                'ipAddress' => $row['ipAddress'],
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * The current browser's token selector, if its cookie is present - used
+     * to mark "this device" in the Settings list. Never the validator.
+     */
+    public static function currentSelector(): ?string
+    {
+        $cookie = $_COOKIE[self::COOKIE_NAME] ?? null;
+
+        if (!is_string($cookie) || !str_contains($cookie, ':')) {
+            return null;
+        }
+
+        [$selector] = explode(':', $cookie, 2);
+
+        return $selector;
+    }
+
+    /**
+     * Revokes one specific device, scoped to $user_id so a user can only ever
+     * revoke their own tokens (not just any tokenId they guess). Returns
+     * whether a row actually matched and was deleted.
+     */
+    public static function revoke(int $token_id, int $user_id): bool
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+DELETE
+    FROM `RememberTokens`
+    WHERE `tokenId` = ? AND `userId` = ?
+');
+        mysqli_stmt_bind_param($stmt, 'ii', $token_id, $user_id);
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_affected_rows($stmt) > 0;
     }
 
     private static function deleteToken(int $token_id): void

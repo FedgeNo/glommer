@@ -20,6 +20,10 @@ $page -> addContent(new Heading2('Theme'));
 
 $page -> addContent(new ThemeSelector());
 
+$page -> addContent(new Heading2('Remembered Devices'));
+
+$page -> addContent(new RememberedDevicesList((int) Auth::user() -> userId));
+
 // The site needs at least one admin account to function - api/delete-account.php
 // rejects userId 1 too, but there's no reason to show the form at all here.
 if ((int) Auth::user() -> userId !== 1) {

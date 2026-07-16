@@ -3232,6 +3232,31 @@ document.addEventListener('click', async (event) => {
     button.closest('.BannedUser').remove();
 });
 
+/* ----- Settings: revoke a remembered device ----- */
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.RevokeSessionButton');
+
+    if (!button) {
+        return;
+    }
+
+    if (!await show_confirm('Revoke this device? It will be signed out and have to log in again.')) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const result = await api_post('/api/revoke-session', { tokenId: button.dataset.tokenId });
+
+    if (result === null) {
+        button.disabled = false;
+        return;
+    }
+
+    button.closest('.RememberedDevice').remove();
+});
+
 let loading_banned_users = false;
 
 window.addEventListener('scroll', async () => {

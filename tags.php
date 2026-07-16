@@ -37,17 +37,17 @@ if (!preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     exit;
 }
 
-['rows' => $rows, 'hasMore' => $has_more] = Hashtag::postRows($tag, 20);
+$feed = new FeedList(['feedType' => 'tag', 'tag' => $tag]);
 
-if ($rows === []) {
+// A tag with no posts is a 404 (nothing to show, and it keeps empty/thin
+// pages out of search).
+if (!$feed -> hasItems()) {
     require __DIR__ . '/404.php';
     exit;
 }
 
 $page = Page::create('#' . $tag, 'Posts tagged #' . $tag . ' on Glommer.', needsMath: true);
 
-$list = FeedList::fromRows('tag', $rows, $has_more);
-$list -> tag = $tag;
-$page -> addContent($list);
+$page -> addContent($feed);
 
 $page -> send();

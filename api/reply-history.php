@@ -20,24 +20,7 @@ if ($parent_id === 0 || $before_post_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$limit = 20;
-$fetch_limit = $limit + 1;
-$not_banned = 0;
-
-$reply_rows = DB::rows('
-SELECT `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iiii', $parent_id, $not_banned, $before_post_id, $fetch_limit);
-
-$has_more = count($reply_rows) > $limit;
-
-if ($has_more) {
-    array_pop($reply_rows);
-}
+['rows' => $reply_rows, 'hasMore' => $has_more] = Post::replyRows($parent_id, 20, $before_post_id);
 
 $viewer_id = Auth::id();
 

@@ -437,6 +437,90 @@ SELECT `Posts`.*
     }
 
     /**
+     * One profile's own top-level posts, newest first, same cursor shape as
+     * globalFeedRows. The single source of truth for a user's feed - the
+     * profile page and api/feed-history both go through here. The banned gate
+     * is a no-op on the profile page (it 404s a banned profile first) but
+     * stops the endpoint from serving a banned user's posts on its own.
+     *
+     * @return array{rows: self[], hasMore: bool}
+     */
+    public static function userFeedRows(int $user_id, int $limit, ?int $before_post_id = null): array
+    {
+        $fetch_limit = $limit + 1;
+        $not_banned = 0;
+
+        if ($before_post_id !== null) {
+            $rows = DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', self::class, 'iiii', $user_id, $not_banned, $before_post_id, $fetch_limit);
+        } else {
+            $rows = DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', self::class, 'iii', $user_id, $not_banned, $fetch_limit);
+        }
+
+        $has_more = count($rows) > $limit;
+
+        if ($has_more) {
+            array_pop($rows);
+        }
+
+        return ['rows' => $rows, 'hasMore' => $has_more];
+    }
+
+    /**
+     * The direct replies to a post, newest first, same cursor shape as the
+     * feeds. The single source of truth for a post's replies - the permalink
+     * page and api/reply-history both go through here.
+     *
+     * @return array{rows: self[], hasMore: bool}
+     */
+    public static function replyRows(int $post_id, int $limit, ?int $before_post_id = null): array
+    {
+        $fetch_limit = $limit + 1;
+        $not_banned = 0;
+
+        if ($before_post_id !== null) {
+            $rows = DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', self::class, 'iiii', $post_id, $not_banned, $before_post_id, $fetch_limit);
+        } else {
+            $rows = DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', self::class, 'iii', $post_id, $not_banned, $fetch_limit);
+        }
+
+        $has_more = count($rows) > $limit;
+
+        if ($has_more) {
+            array_pop($rows);
+        }
+
+        return ['rows' => $rows, 'hasMore' => $has_more];
+    }
+
+    /**
      * Attaches items and authors (batched, one query each rather than a pair
      * per post) to a whole page of already-built Posts at once.
      *

@@ -41,26 +41,7 @@ if ($feed_type === 'friends') {
 
     ['rows' => $feed_rows, 'hasMore' => $has_more] = Timeline::rowsForUser((int) $current_user -> userId, $limit, $before_post_id);
 } elseif ($feed_type === 'user') {
-    $fetch_limit = $limit + 1;
-    $not_banned = 0;
-
-    // Same banned gate user.php itself 404s on - a banned profile's older
-    // posts shouldn't be fetchable via this endpoint just because the page
-    // that would normally show them isn't reachable.
-    $feed_rows = DB::rows('
-SELECT `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iiii', $profile_user_id, $not_banned, $before_post_id, $fetch_limit);
-
-    $has_more = count($feed_rows) > $limit;
-
-    if ($has_more) {
-        array_pop($feed_rows);
-    }
+    ['rows' => $feed_rows, 'hasMore' => $has_more] = Post::userFeedRows($profile_user_id, $limit, $before_post_id);
 } elseif ($feed_type === 'tag') {
     ['rows' => $feed_rows, 'hasMore' => $has_more] = Hashtag::postRows($tag, $limit, $before_post_id);
 } else {

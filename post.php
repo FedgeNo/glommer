@@ -26,19 +26,6 @@ if ($post -> author === null || $post -> author -> username !== $username || $po
     exit;
 }
 
-$not_banned = 0;
-$limit = 20;
-$fetch_limit = $limit + 1;
-
-$reply_rows = DB::rows('
-SELECT `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ?
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iii', $post_id, $not_banned, $fetch_limit);
-
 $json_ld = [
     '@context' => 'https://schema.org',
     '@type' => 'SocialMediaPosting',
@@ -95,16 +82,12 @@ if ($current_user !== null) {
     $page -> addContent(new LoginPrompt('reply'));
 }
 
-$has_more_replies = count($reply_rows) > $limit;
+$replies = new ReplyList(['parentId' => $post_id]);
 
-if ($has_more_replies) {
-    array_pop($reply_rows);
-}
-
-if ($reply_rows !== []) {
+if ($replies -> hasItems()) {
     $page -> addContent(new RepliesHeading());
 }
 
-$page -> addContent(ReplyList::fromRows($post_id, $reply_rows, $has_more_replies));
+$page -> addContent($replies);
 
 $page -> send();

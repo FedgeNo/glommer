@@ -38,24 +38,9 @@ $page -> addMetaContent(new RSSLink(ServerURL::absolute('/users/' . $profile_use
 
 $page -> addContent($profile_user);
 
-$limit = 20;
-$fetch_limit = $limit + 1;
+$feed = new FeedList(['feedType' => 'user', 'userId' => $user_id]);
 
-$feed_rows = DB::rows('
-SELECT *
-    FROM `Posts`
-    WHERE `parentId` IS NULL AND `userId` = ?
-    ORDER BY `postId` DESC
-    LIMIT ?
-', 'Post', 'ii', $user_id, $fetch_limit);
-
-$has_more = count($feed_rows) > $limit;
-
-if ($has_more) {
-    array_pop($feed_rows);
-}
-
-if ($feed_rows !== []) {
+if ($feed -> hasItems()) {
     if (Auth::check()) {
         // Search this user's own posts (scoped to their userId). While a query is
         // active the default feed below is hidden and the results take its place
@@ -66,7 +51,7 @@ if ($feed_rows !== []) {
     $feed_section = new Div();
     $feed_section -> class = 'ProfileFeed';
     $feed_section -> addContent(new Heading2('Posts'));
-    $feed_section -> addContent(FeedList::fromRows('user', $feed_rows, $has_more, $user_id));
+    $feed_section -> addContent($feed);
 
     $page -> addContent($feed_section);
 }

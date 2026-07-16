@@ -24,13 +24,11 @@ if (RateLimiter::tooManyAttempts($rate_key, 5, 900)) {
 if ($email !== '') {
     RateLimiter::recordAttempt($rate_key);
 
-    $stmt = DB::run('
+    $user = DB::row('
 SELECT *
     FROM `Users`
     WHERE `email` = ?
-', 's', $email);
-    $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_object($result, User::class);
+', 'User', 's', $email);
 
     if ($user !== null) {
         PasswordReset::sendFor($user);

@@ -165,12 +165,11 @@ class GoogleAuth
     {
         $mysqli = DB::connection();
 
-        $stmt = DB::run('
+        $existing = DB::row('
 SELECT *
     FROM `Users`
     WHERE `email` = ?
-', 's', $email);
-        $existing = mysqli_fetch_object(mysqli_stmt_get_result($stmt), User::class);
+', 'User', 's', $email);
 
         if ($existing instanceof User) {
             // A verified account is the address's rightful owner, so just link.

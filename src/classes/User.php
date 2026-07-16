@@ -146,16 +146,15 @@ class User extends HTMLObject
 
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
 
-        $stmt = DB::run('
+        $rows = DB::rows('
 SELECT *
     FROM `Users`
     WHERE `userId` IN (' . $placeholders . ')
-', str_repeat('i', count($user_ids)), ...$user_ids);
-        $result = mysqli_stmt_get_result($stmt);
+', 'User', str_repeat('i', count($user_ids)), ...$user_ids);
 
         $users = [];
 
-        while (($user = mysqli_fetch_object($result, self::class)) !== null && $user !== false) {
+        foreach ($rows as $user) {
             $users[(int) $user -> userId] = $user;
         }
 
@@ -164,15 +163,11 @@ SELECT *
 
     public static function loadByUsername(string $username): ?self
     {
-        $stmt = DB::run('
+        return DB::row('
 SELECT *
     FROM `Users`
     WHERE `username` = ?
-', 's', $username);
-        $result = mysqli_stmt_get_result($stmt);
-        $user = mysqli_fetch_object($result, User::class);
-
-        return $user === false ? null : $user;
+', 'User', 's', $username);
     }
 
     /**
@@ -184,12 +179,11 @@ SELECT *
      */
     public static function byUsername(string $username): ?OtherUser
     {
-        $stmt = DB::run('
+        $user = DB::row('
 SELECT *
     FROM `Users`
     WHERE `username` = ?
-', 's', $username);
-        $user = mysqli_fetch_object(mysqli_stmt_get_result($stmt), OtherUser::class);
+', 'OtherUser', 's', $username);
 
         if (!$user instanceof OtherUser || $user -> banned) {
             return null;

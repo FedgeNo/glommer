@@ -63,4 +63,24 @@ SET `time_zone` = ?
 
         return $stmt;
     }
+
+    public static function row(string $sql, string $class, ?string $types = null, mixed ...$params): ?object
+    {
+        $result = mysqli_stmt_get_result(self::run($sql, $types, ...$params));
+        $row = mysqli_fetch_object($result, $class);
+
+        return $row === false ? null : $row;
+    }
+
+    public static function rows(string $sql, string $class, ?string $types = null, mixed ...$params): array
+    {
+        $result = mysqli_stmt_get_result(self::run($sql, $types, ...$params));
+        $rows = [];
+
+        while (($row = mysqli_fetch_object($result, $class)) !== null && $row !== false) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
 }

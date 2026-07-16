@@ -28,12 +28,11 @@ class Auth
      */
     public static function verifyCredentials(string $identifier, string $password): ?User
     {
-        $stmt = DB::run('
+        $user = DB::row('
 SELECT *
     FROM `Users`
     WHERE `username` = ? OR `email` = ?
-', 'ss', $identifier, $identifier);
-        $user = mysqli_fetch_object(mysqli_stmt_get_result($stmt), User::class);
+', 'User', 'ss', $identifier, $identifier);
 
         if ($user === null || $user -> passwordHash === null || !password_verify($password, $user -> passwordHash)) {
             return null;

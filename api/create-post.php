@@ -133,19 +133,17 @@ if (!$has_text && !$has_files) {
 }
 
 if ($parent_id !== null) {
-    $parent_stmt = DB::run('
+    $parent_post = DB::row('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $parent_id);
-    $parent_result = mysqli_stmt_get_result($parent_stmt);
-    $parent_row = mysqli_fetch_assoc($parent_result);
+', 'Post', 'i', $parent_id);
 
-    if ($parent_row === null) {
+    if ($parent_post === null) {
         JSONResponse::error('Post not found', 404) -> send();
     }
 
-    if (Block::exists($current_user -> userId, (int) $parent_row['userId'])) {
+    if (Block::exists($current_user -> userId, (int) $parent_post -> userId)) {
         JSONResponse::error('Unable to reply to this post', 403) -> send();
     }
 }
@@ -220,7 +218,7 @@ Hashtag::indexPost($post_id, $description_ops);
 Mention::notify(Mention::indexPost($post_id, $description_ops), $current_user -> userId, $post_id);
 
 if ($parent_id !== null) {
-    Notification::create((int) $parent_row['userId'], $current_user -> userId, 'reply', $parent_id);
+    Notification::create((int) $parent_post -> userId, $current_user -> userId, 'reply', $parent_id);
 } else {
     Timeline::fanOutPost($current_user -> userId, $post_id);
 }
@@ -254,7 +252,12 @@ UPDATE `FeedItems`
     WHERE `itemId` = ?
 ', 'si', $result['itemType'], $item_id);
 
-    $items[] = FeedItem::fromRow(['itemId' => $item_id, 'postId' => $post_id, 'itemType' => $result['itemType']]);
+    $placeholder_row = new FeedItemData();
+    $placeholder_row -> itemId = $item_id;
+    $placeholder_row -> postId = $post_id;
+    $placeholder_row -> itemType = $result['itemType'];
+
+    $items[] = FeedItem::fromRow($placeholder_row);
 }
 
 if ($link_image_seed !== '') {
@@ -267,7 +270,12 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
 
     UploadProcessor::rename($link_image_seed, $link_image_item_id, 'ImageItem', null);
 
-    $items[] = FeedItem::fromRow(['itemId' => $link_image_item_id, 'postId' => $post_id, 'itemType' => 'ImageItem']);
+    $link_image_row = new FeedItemData();
+    $link_image_row -> itemId = $link_image_item_id;
+    $link_image_row -> postId = $post_id;
+    $link_image_row -> itemType = 'ImageItem';
+
+    $items[] = FeedItem::fromRow($link_image_row);
 }
 
 $post = new Post();

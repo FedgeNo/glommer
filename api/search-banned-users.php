@@ -28,19 +28,18 @@ $like = '%' . addcslashes($query, '\\%_') . '%';
 $banned = 1;
 $limit = 20;
 
-$stmt = DB::run('
+$users = DB::rows('
 SELECT *
     FROM `Users`
     WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `banned` = ?
     ORDER BY `userId` DESC
     LIMIT ?
-', 'ssii', $like, $like, $banned, $limit);
-$result = mysqli_stmt_get_result($stmt);
+', 'User', 'ssii', $like, $like, $banned, $limit);
 
 $payloads = [];
 
-while ($row = mysqli_fetch_assoc($result)) {
-    $payloads[] = BannedUser::payloadFor(User::fromRow($row));
+foreach ($users as $user) {
+    $payloads[] = BannedUser::payloadFor($user);
 }
 
 JSONResponse::success(['items' => $payloads]) -> send();

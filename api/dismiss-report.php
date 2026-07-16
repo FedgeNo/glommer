@@ -32,10 +32,10 @@ if ($report === null) {
 
 // Flag the content so it can't just be reported again the moment the report
 // leaves the queue (posts/messages only - a user has no such flag).
-Report::markContentDismissed($report['targetType'], (int) $report['targetId']);
+Report::markContentDismissed((string) $report -> targetType, (int) $report -> targetId);
 
 Report::delete($report_id);
 
-ModerationAction::log('dismissReport', null, $report['targetType'], (int) $report['targetId'], $report_id);
+ModerationAction::log('dismissReport', null, $report -> targetType, (int) $report -> targetId, $report_id);
 
 JSONResponse::success(['dismissed' => true]) -> send();

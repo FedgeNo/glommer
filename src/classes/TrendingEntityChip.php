@@ -12,29 +12,38 @@ declare(strict_types=1);
  * specific page, since not every entity type will have one of those the way
  * hashtags have /tags/{tag}. A moderator viewing it also gets a Ban control
  * alongside.
+ *
+ * Fetched directly off TrendingEntities via Trending::current() -> DB::rows().
  */
 class TrendingEntityChip extends Div
 {
     public ?string $class = 'TrendingEntityChip d-flex align-items-center gap-1';
 
-    public function __construct(string $entity_type, string $entity_value, ?int $count = null)
-    {
-        parent::__construct();
+    public ?int $entityId = null;
+    public ?string $entityType = null;
+    public ?string $entityValue = null;
+    public float $score = 0.0;
+    public ?int $postCount = null;
+    public int $userCount = 0;
 
-        $link = new Anchor(ServerURL::absolute('/search?q=' . urlencode($entity_value)), $entity_value);
+    public function toDOM(): \DOMElement
+    {
+        $link = new Anchor(ServerURL::absolute('/search?q=' . urlencode((string) $this -> entityValue)), $this -> entityValue);
         $link -> class = 'TrendingEntityLink';
 
-        if ($count !== null) {
+        if ($this -> postCount !== null) {
             $count_span = new Span();
             $count_span -> class = 'TrendingEntityCount';
-            $count_span -> addContent((string) $count);
+            $count_span -> addContent((string) $this -> postCount);
             $link -> addContent($count_span);
         }
 
         $this -> addContent($link);
 
         if (Auth::canModerate()) {
-            $this -> addContent(new BanTrendingEntityButton($entity_type, $entity_value));
+            $this -> addContent(new BanTrendingEntityButton((string) $this -> entityType, (string) $this -> entityValue));
         }
+
+        return parent::toDOM();
     }
 }

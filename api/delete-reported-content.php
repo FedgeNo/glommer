@@ -31,10 +31,10 @@ if ($report === null) {
     JSONResponse::error('Report not found', 404) -> send();
 }
 
-if ($report['targetType'] === 'post') {
-    Post::delete($report['targetId']);
-} elseif ($report['targetType'] === 'message') {
-    Message::delete($report['targetId']);
+if ($report -> targetType === 'post') {
+    Post::delete((int) $report -> targetId);
+} elseif ($report -> targetType === 'message') {
+    Message::delete((int) $report -> targetId);
 } else {
     JSONResponse::error('That report has no deletable content.', 422) -> send();
 }
@@ -42,6 +42,6 @@ if ($report['targetType'] === 'post') {
 // Removing the content resolves the report, so clear it from the queue too.
 Report::delete($report_id);
 
-ModerationAction::log('deleteReportedContent', null, $report['targetType'], (int) $report['targetId'], $report_id);
+ModerationAction::log('deleteReportedContent', null, $report -> targetType, (int) $report -> targetId, $report_id);
 
 JSONResponse::success(['deleted' => true]) -> send();

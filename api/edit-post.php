@@ -23,15 +23,13 @@ $payload = is_array($payload) ? $payload : [];
 
 $post_id = (int) ($payload['postId'] ?? 0);
 
-$owner_stmt = DB::run('
+$owner = DB::row('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-$owner_result = mysqli_stmt_get_result($owner_stmt);
-$owner_row = mysqli_fetch_assoc($owner_result);
+', 'Post', 'i', $post_id);
 
-if ($owner_row === null || (int) $owner_row['userId'] !== $current_user -> userId) {
+if ($owner === null || (int) $owner -> userId !== $current_user -> userId) {
     JSONResponse::error('Not your post', 403) -> send();
 }
 
@@ -135,12 +133,12 @@ Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user 
 // keywords (just rewritten by reindexPost()) all need to reflect the true
 // current DB state, not values this script would otherwise have to
 // duplicate/guess at.
-$updated_stmt = DB::run('
+$updated_post = DB::row('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-$post = Post::fromRowWithItems(mysqli_fetch_assoc(mysqli_stmt_get_result($updated_stmt)));
+', 'Post', 'i', $post_id);
+$post = Post::fromRowWithItems($updated_post);
 $post -> author = $current_user;
 
 $reply_count_stmt = DB::run('

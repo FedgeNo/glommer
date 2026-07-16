@@ -36,7 +36,7 @@ class RememberedDevicesList extends Div
         }
 
         foreach ($rows as $row) {
-            $this -> addContent(new RememberedDevice($row, $row['selector'] === $current_selector));
+            $this -> addContent(new RememberedDevice($row, $row -> selector === $current_selector));
         }
 
         return parent::toDOM();

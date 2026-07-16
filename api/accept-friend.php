@@ -32,34 +32,32 @@ $current_user_id = (int) $current_user -> userId;
 // user rows so concurrent accepts serialize.
 mysqli_begin_transaction($mysqli);
 
-$lookup_stmt = DB::run('
+$friendship = DB::row('
 SELECT `requesterId`
     FROM `Friendships`
     WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
     FOR UPDATE
-', 'iis', $friendship_id, $current_user_id, $pending_status);
-$requester_row = mysqli_fetch_assoc(mysqli_stmt_get_result($lookup_stmt));
+', 'Friendship', 'iis', $friendship_id, $current_user_id, $pending_status);
 
-if ($requester_row === null) {
+if ($friendship === null) {
     mysqli_rollback($mysqli);
     JSONResponse::error('Not your request', 403) -> send();
 }
 
-$requester_id = (int) $requester_row['requesterId'];
+$requester_id = (int) $friendship -> requesterId;
 
 // Lock both users' rows and read their counts under the lock - no TOCTOU.
-$counts_stmt = DB::run('
+$counted_users = DB::rows('
 SELECT `userId`, `friendCount`
     FROM `Users`
     WHERE `userId` = ? OR `userId` = ?
     FOR UPDATE
-', 'ii', $current_user_id, $requester_id);
-$counts_result = mysqli_stmt_get_result($counts_stmt);
+', 'User', 'ii', $current_user_id, $requester_id);
 
 $friend_counts = [];
 
-while ($count_row = mysqli_fetch_assoc($counts_result)) {
-    $friend_counts[(int) $count_row['userId']] = (int) $count_row['friendCount'];
+foreach ($counted_users as $counted_user) {
+    $friend_counts[(int) $counted_user -> userId] = (int) $counted_user -> friendCount;
 }
 
 if (($friend_counts[$current_user_id] ?? 0) >= $max_friends) {

@@ -36,7 +36,7 @@ class FeedList extends Div
     }
 
     /**
-     * @param array[] $rows Post rows, newest first.
+     * @param Post[] $rows newest first.
      */
     public static function fromRows(string $feed_type, array $rows, bool $has_more, ?int $user_id = null): self
     {
@@ -48,7 +48,7 @@ class FeedList extends Div
             return $list;
         }
 
-        $list -> oldestPostId = (int) $rows[count($rows) - 1]['postId'];
+        $list -> oldestPostId = (int) $rows[count($rows) - 1] -> postId;
         $list -> hasMore = $has_more;
 
         foreach (Thread::fromRows($rows) as $thread) {

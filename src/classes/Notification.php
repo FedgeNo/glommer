@@ -94,21 +94,21 @@ class Notification extends HTMLObject
         };
     }
 
-    public static function fromRow(array $row): self
+    public static function fromRow(NotificationData $row): self
     {
         $notification = new self();
-        $notification -> notificationId = (int) $row['notificationId'];
-        $notification -> userId = (int) $row['userId'];
-        $notification -> actorId = (int) $row['actorId'];
-        $notification -> type = $row['type'];
-        $notification -> postId = $row['postId'] !== null ? (int) $row['postId'] : null;
-        $notification -> createdAt = $row['createdAt'];
+        $notification -> notificationId = (int) $row -> notificationId;
+        $notification -> userId = (int) $row -> userId;
+        $notification -> actorId = (int) $row -> actorId;
+        $notification -> type = $row -> type;
+        $notification -> postId = $row -> postId !== null ? (int) $row -> postId : null;
+        $notification -> createdAt = $row -> createdAt;
 
         $actor = new User();
-        $actor -> userId = (int) $row['actorId'];
-        $actor -> username = $row['actorUsername'];
-        $actor -> displayName = $row['actorDisplayName'];
-        $actor -> hasAvatar = (int) $row['actorHasAvatar'];
+        $actor -> userId = (int) $row -> actorId;
+        $actor -> username = $row -> actorUsername;
+        $actor -> displayName = $row -> actorDisplayName;
+        $actor -> hasAvatar = $row -> actorHasAvatar;
         $notification -> actor = $actor;
 
         return $notification;
@@ -117,61 +117,59 @@ class Notification extends HTMLObject
     /**
      * The JSON representation used by the notification-history endpoint that
      * feeds the client-side Notification class, which expects a ready-made
-     * actorImage URL rather than the raw actorHasAvatar flag.
+     * actorImage URL rather than the raw hasAvatar flag.
      *
-     * @param array[] $rows
+     * @param self[] $notifications
      * @return array[]
      */
-    public static function rowsToPayload(array $rows): array
+    public static function rowsToPayload(array $notifications): array
     {
-        foreach ($rows as &$row) {
-            $row['actorImage'] = (int) $row['actorHasAvatar']
-                ? ServerURL::absolute(User::avatarPath((int) $row['actorId']))
-                : null;
-        }
-
-        unset($row);
-
-        return $rows;
+        return array_map(static fn (self $notification): array => [
+            'notificationId' => (int) $notification -> notificationId,
+            'userId' => (int) $notification -> userId,
+            'actorId' => (int) $notification -> actorId,
+            'type' => $notification -> type,
+            'postId' => $notification -> postId,
+            'createdAt' => $notification -> createdAt,
+            'actorUsername' => $notification -> actor ?-> username,
+            'actorDisplayName' => $notification -> actor ?-> displayName,
+            'actorImage' => $notification -> actor !== null && $notification -> actor -> hasAvatar
+                ? ServerURL::absolute(User::avatarPath((int) $notification -> actorId))
+                : null,
+        ], $notifications);
     }
 
     /**
      * Fetches $limit + 1 rows so an extra leftover row (if present) signals more
      * history without a separate count query.
      *
-     * @return array{rows: array[], hasMore: bool}
+     * @return array{rows: self[], hasMore: bool}
      */
     public static function rowsForUser(int $user_id, int $limit, ?int $before_id = null): array
     {
         $fetch_limit = $limit + 1;
 
         if ($before_id !== null) {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
     WHERE `n`.`userId` = ? AND `n`.`notificationId` < ?
     ORDER BY `n`.`notificationId` DESC
     LIMIT ?
-', 'iii', $user_id, $before_id, $fetch_limit);
+', 'NotificationData', 'iii', $user_id, $before_id, $fetch_limit);
         } else {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
     WHERE `n`.`userId` = ?
     ORDER BY `n`.`notificationId` DESC
     LIMIT ?
-', 'ii', $user_id, $fetch_limit);
+', 'NotificationData', 'ii', $user_id, $fetch_limit);
         }
 
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
-        }
+        $rows = array_map(self::fromRow(...), $rows);
 
         $has_more = count($rows) > $limit;
 
@@ -280,17 +278,16 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
      */
     public static function hasRecentOfType(int $user_id, string $type, int $within): bool
     {
-        $stmt = DB::run('
+        $recent = DB::rows('
 SELECT `type`
     FROM `Notifications`
     WHERE `userId` = ?
     ORDER BY `notificationId` DESC
     LIMIT ?
-', 'ii', $user_id, $within);
-        $result = mysqli_stmt_get_result($stmt);
+', 'Notification', 'ii', $user_id, $within);
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            if ($row['type'] === $type) {
+        foreach ($recent as $notification) {
+            if ($notification -> type === $type) {
                 return true;
             }
         }

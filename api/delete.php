@@ -20,15 +20,13 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['itemId'] ?? $_POST['itemId'] ?? 0);
 
-$owner_stmt = DB::run('
+$owner = DB::row('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-$owner_result = mysqli_stmt_get_result($owner_stmt);
-$owner = mysqli_fetch_assoc($owner_result);
+', 'Post', 'i', $post_id);
 
-if ($owner === null || (int) $owner['userId'] !== $current_user -> userId) {
+if ($owner === null || (int) $owner -> userId !== $current_user -> userId) {
     JSONResponse::error('Not your post', 403) -> send();
 }
 

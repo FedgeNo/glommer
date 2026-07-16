@@ -63,7 +63,7 @@ class LinkPreviewFetcher
         $success_cache_seconds = self::SUCCESS_CACHE_SECONDS;
         $failure_cache_seconds = self::FAILURE_CACHE_SECONDS;
 
-        $stmt = DB::run('
+        $preview = DB::row('
 SELECT `title`, `description`, `imageURL`, `succeeded`
     FROM `LinkPreviews`
     WHERE `url` = ?
@@ -71,18 +71,17 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
             (`succeeded` = ? AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
             OR (`succeeded` = ? AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
         )
-', 'siiii', $url, $succeeded_flag, $success_cache_seconds, $failed_flag, $failure_cache_seconds);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+', 'LinkPreviewData', 'siiii', $url, $succeeded_flag, $success_cache_seconds, $failed_flag, $failure_cache_seconds);
 
-        if ($row === null) {
+        if ($preview === null) {
             return null;
         }
 
-        if (!$row['succeeded']) {
+        if (!$preview -> succeeded) {
             return ['title' => null, 'description' => null, 'imageURL' => null];
         }
 
-        return ['title' => $row['title'], 'description' => $row['description'], 'imageURL' => $row['imageURL']];
+        return ['title' => $preview -> title, 'description' => $preview -> description, 'imageURL' => $preview -> imageURL];
     }
 
     // The first attempt plus up to this many retries - a blip (a timeout

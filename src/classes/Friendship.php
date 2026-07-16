@@ -11,8 +11,8 @@ class Friendship
     public ?string $createdAt = null;
 
     // Generated columns (LEAST/GREATEST of the pair, backing uniq_unordered_pair).
-    // Declared so a SELECT * row's fromRow() doesn't set them as deprecated
-    // dynamic properties; the app never reads them.
+    // Declared so a SELECT * row fetched via DB::row()/DB::rows() doesn't set
+    // them as deprecated dynamic properties; the app never reads them.
     public ?int $pairLow = null;
     public ?int $pairHigh = null;
 
@@ -21,15 +21,11 @@ class Friendship
      */
     public static function statusBetween(int $user_a, int $user_b): ?self
     {
-        $stmt = DB::run('
+        return DB::row('
 SELECT *
     FROM `Friendships`
     WHERE (`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?)
-', 'iiii', $user_a, $user_b, $user_b, $user_a);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
-
-        return $row === null ? null : self::fromRow($row);
+', 'Friendship', 'iiii', $user_a, $user_b, $user_b, $user_a);
     }
 
     /**
@@ -61,16 +57,5 @@ DELETE
         Timeline::removeCrossEntries($user_a, $user_b);
 
         return true;
-    }
-
-    public static function fromRow(array $row): self
-    {
-        $friendship = new self();
-
-        foreach ($row as $key => $value) {
-            $friendship -> $key = $value;
-        }
-
-        return $friendship;
     }
 }

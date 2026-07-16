@@ -55,15 +55,15 @@ INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapsh
         }
 
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
+        $class = $target_type === 'post' ? 'Post' : 'Message';
 
-        $stmt = DB::run('
+        $content = DB::row('
 SELECT `reportsDismissed`
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
-', 'i', $target_id);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+', $class, 'i', $target_id);
 
-        return $row !== null && (int) $row['reportsDismissed'] === 1;
+        return $content !== null && $content -> reportsDismissed === 1;
     }
 
     /**
@@ -187,28 +187,21 @@ SELECT `itemId`
      */
     public static function backfillSnapshots(): void
     {
-        $select = DB::run('
+        $pending = DB::rows('
 SELECT `reportId`, `targetType`, `targetId`
     FROM `Reports`
     WHERE `snapshot` IS NULL
-');
-        $result = mysqli_stmt_get_result($select);
-
-        $pending = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $pending[] = $row;
-        }
+', 'ReportData');
 
         foreach ($pending as $row) {
-            $snapshot = self::buildSnapshot((string) $row['targetType'], (int) $row['targetId']);
+            $snapshot = self::buildSnapshot((string) $row -> targetType, (int) $row -> targetId);
 
             if ($snapshot === null) {
                 continue;
             }
 
             $snapshot_json = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $report_id = (int) $row['reportId'];
+            $report_id = (int) $row -> reportId;
 
             DB::run('
 UPDATE `Reports`
@@ -255,37 +248,29 @@ SELECT 1
      * stays correct even as reports are dismissed out of the queue underneath
      * the moderator - a page may just return fewer rows.
      *
-     * @return array{rows: array[], hasMore: bool}
+     * @return array{rows: ReportData[], hasMore: bool}
      */
     public static function rowsForAdmin(int $limit, ?int $before_report_id = null): array
     {
         $fetch_limit = $limit + 1;
 
         if ($before_report_id !== null) {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `r`.*, `u`.`username` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     WHERE `r`.`reportId` < ?
     ORDER BY `r`.`reportId` DESC
     LIMIT ?
-', 'ii', $before_report_id, $fetch_limit);
+', 'ReportData', 'ii', $before_report_id, $fetch_limit);
         } else {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `r`.*, `u`.`username` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
     LIMIT ?
-', 'i', $fetch_limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
+', 'ReportData', 'i', $fetch_limit);
         }
 
         $has_more = count($rows) > $limit;
@@ -297,23 +282,13 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
         return ['rows' => $rows, 'hasMore' => $has_more];
     }
 
-    /**
-     * @return array{targetType: string, targetId: int}|null
-     */
-    public static function find(int $report_id): ?array
+    public static function find(int $report_id): ?ReportData
     {
-        $stmt = DB::run('
+        return DB::row('
 SELECT `targetType`, `targetId`
     FROM `Reports`
     WHERE `reportId` = ?
-', 'i', $report_id);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-
-        if ($row === null) {
-            return null;
-        }
-
-        return ['targetType' => (string) $row['targetType'], 'targetId' => (int) $row['targetId']];
+', 'ReportData', 'i', $report_id);
     }
 
     public static function delete(int $report_id): void
@@ -342,27 +317,23 @@ DELETE
 
     protected static function postAuthorId(int $post_id): ?int
     {
-        $stmt = DB::run('
+        $post = DB::row('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'Post', 'i', $post_id);
 
-        return $row !== null ? (int) $row['userId'] : null;
+        return $post !== null ? (int) $post -> userId : null;
     }
 
     protected static function messageAuthorId(int $message_id): ?int
     {
-        $stmt = DB::run('
+        $message = DB::row('
 SELECT `senderId`
     FROM `Messages`
     WHERE `messageId` = ?
-', 'i', $message_id);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'Message', 'i', $message_id);
 
-        return $row !== null ? (int) $row['senderId'] : null;
+        return $message !== null ? (int) $message -> senderId : null;
     }
 }

@@ -21,28 +21,26 @@ class ParentPostLink extends HTMLObject
 
     public static function fromParentId(int $parent_id): ?self
     {
-        $stmt = DB::run('
+        $parent = DB::row('
 SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`postId` = ?
-', 'i', $parent_id);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'ParentPostLinkData', 'i', $parent_id);
 
-        if ($row === null) {
+        if ($parent === null) {
             return null;
         }
 
         // description is already plaintext (Delta::plainText derives it), so
         // there's no markup to strip - and stripping would eat any literal
         // '<'/'>' the text legitimately contains.
-        $description = $row['description'] !== null ? trim($row['description']) : '';
+        $description = $parent -> description !== null ? trim($parent -> description) : '';
 
         $link = new self();
         $link -> parentId = $parent_id;
-        $link -> parentUsername = $row['username'];
-        $link -> parentLabel = $row['title'] ?? ($description !== '' ? mb_substr($description, 0, 60) : 'this post');
+        $link -> parentUsername = $parent -> username;
+        $link -> parentLabel = $parent -> title ?? ($description !== '' ? mb_substr($description, 0, 60) : 'this post');
 
         return $link;
     }

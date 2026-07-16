@@ -21,7 +21,7 @@ class NotificationList extends Div
     }
 
     /**
-     * @param array[] $rows Notification rows, newest first.
+     * @param Notification[] $rows newest first.
      */
     public static function fromRows(array $rows, bool $has_more): self
     {
@@ -33,11 +33,11 @@ class NotificationList extends Div
             return $list;
         }
 
-        $list -> oldestNotificationId = (int) $rows[count($rows) - 1]['notificationId'];
+        $list -> oldestNotificationId = (int) $rows[count($rows) - 1] -> notificationId;
         $list -> hasMore = $has_more;
 
-        foreach ($rows as $row) {
-            $list -> addContent(Notification::fromRow($row));
+        foreach ($rows as $notification) {
+            $list -> addContent($notification);
         }
 
         return $list;

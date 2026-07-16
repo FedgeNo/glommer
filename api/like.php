@@ -20,19 +20,17 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['itemId'] ?? $_POST['itemId'] ?? 0);
 
-$owner_stmt = DB::run('
+$owner = DB::row('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-$owner_result = mysqli_stmt_get_result($owner_stmt);
-$owner_row = mysqli_fetch_assoc($owner_result);
+', 'Post', 'i', $post_id);
 
-if ($owner_row === null) {
+if ($owner === null) {
     JSONResponse::error('Post not found', 404) -> send();
 }
 
-if (Block::exists($current_user -> userId, (int) $owner_row['userId'])) {
+if (Block::exists($current_user -> userId, (int) $owner -> userId)) {
     JSONResponse::error('Unable to like this post', 403) -> send();
 }
 
@@ -61,7 +59,7 @@ INSERT INTO `Likes` (`postId`, `userId`)
     try {
         mysqli_stmt_execute($insert_stmt);
 
-        Notification::create((int) $owner_row['userId'], $current_user -> userId, 'like', $post_id);
+        Notification::create((int) $owner -> userId, $current_user -> userId, 'like', $post_id);
     } catch (\mysqli_sql_exception $exception) {
         // Check-then-insert race (a double-submit or two concurrent requests
         // both passing the existence check): the Likes PK (userId, postId)

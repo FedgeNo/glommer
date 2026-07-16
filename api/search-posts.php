@@ -33,7 +33,7 @@ $not_banned = 0;
 
 $viewer_id = (int) Auth::id();
 
-$stmt = DB::run('
+$feed_rows = DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
@@ -48,14 +48,7 @@ SELECT `Posts`.*
         )
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'siiiiiiii', $query, $not_banned, $author_id, $author_id, $before_post_id, $before_post_id, $viewer_id, $viewer_id, $fetch_limit);
-$result = mysqli_stmt_get_result($stmt);
-
-$feed_rows = [];
-
-while ($row = mysqli_fetch_assoc($result)) {
-    $feed_rows[] = $row;
-}
+', 'Post', 'siiiiiiii', $query, $not_banned, $author_id, $author_id, $before_post_id, $before_post_id, $viewer_id, $viewer_id, $fetch_limit);
 
 $has_more = count($feed_rows) > $limit;
 

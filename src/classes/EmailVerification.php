@@ -64,19 +64,17 @@ This link expires in 24 hours.';
     {
         $token_hash = hash('sha256', $token);
 
-        $stmt = DB::run('
+        $verification = DB::row('
 SELECT `userId`
     FROM `EmailVerifications`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
-', 's', $token_hash);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'EmailVerificationData', 's', $token_hash);
 
-        if ($row === null) {
+        if ($verification === null) {
             return null;
         }
 
-        $user_id = (int) $row['userId'];
+        $user_id = (int) $verification -> userId;
 
         self::markVerified($user_id);
 

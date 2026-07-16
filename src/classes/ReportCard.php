@@ -92,18 +92,18 @@ class ReportCard extends HTMLObject
         return parent::toDOM();
     }
 
-    public static function fromRow(array $row): self
+    public static function fromRow(ReportData $row): self
     {
         $card = new self();
-        $card -> reportId = (int) $row['reportId'];
-        $card -> reporterId = (int) $row['reporterId'];
-        $card -> reporterUsername = $row['reporterUsername'];
-        $card -> targetType = $row['targetType'];
-        $card -> targetId = (int) $row['targetId'];
-        $card -> reason = $row['reason'];
-        $card -> createdAt = $row['createdAt'];
+        $card -> reportId = (int) $row -> reportId;
+        $card -> reporterId = (int) $row -> reporterId;
+        $card -> reporterUsername = $row -> reporterUsername;
+        $card -> targetType = $row -> targetType;
+        $card -> targetId = (int) $row -> targetId;
+        $card -> reason = $row -> reason;
+        $card -> createdAt = $row -> createdAt;
 
-        $snapshot = isset($row['snapshot']) && $row['snapshot'] !== null ? json_decode((string) $row['snapshot'], true) : null;
+        $snapshot = $row -> snapshot !== null ? json_decode($row -> snapshot, true) : null;
         $snapshot = is_array($snapshot) ? $snapshot : null;
 
         // A live existence check, not the snapshot: only live post/message content
@@ -314,7 +314,7 @@ class ReportCard extends HTMLObject
 
             if ($live) {
                 // The post still exists: show its current media (live items).
-                return ['userId' => $user_id, 'kind' => 'post', 'data' => Post::fromRowWithItems($snapshot)];
+                return ['userId' => $user_id, 'kind' => 'post', 'data' => Post::fromRowWithItems(Post::fromRow($snapshot))];
             }
 
             // Deleted: text/byline from the snapshot, media rendered forensically

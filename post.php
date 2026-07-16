@@ -8,20 +8,18 @@ $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 $post_id = (int) ($_GET['id'] ?? 0);
 
-$stmt = DB::run('
+$post = DB::row('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-$result = mysqli_stmt_get_result($stmt);
-$row = mysqli_fetch_assoc($result);
+', 'Post', 'i', $post_id);
 
-if ($row === null) {
+if ($post === null) {
     require __DIR__ . '/404.php';
     exit;
 }
 
-$post = Post::fromRowWithItems($row);
+$post = Post::fromRowWithItems($post);
 
 if ($post -> author === null || $post -> author -> username !== $username || $post -> author -> banned) {
     require __DIR__ . '/404.php';
@@ -32,15 +30,14 @@ $not_banned = 0;
 $limit = 20;
 $fetch_limit = $limit + 1;
 
-$reply_stmt = DB::run('
+$reply_rows = DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'iii', $post_id, $not_banned, $fetch_limit);
-$reply_result = mysqli_stmt_get_result($reply_stmt);
+', 'Post', 'iii', $post_id, $not_banned, $fetch_limit);
 
 $json_ld = [
     '@context' => 'https://schema.org',
@@ -91,12 +88,6 @@ if ($current_user !== null) {
     $page -> addContent(new ReplyComposer($post_id));
 } else {
     $page -> addContent(new LoginPrompt('reply'));
-}
-
-$reply_rows = [];
-
-while ($reply_row = mysqli_fetch_assoc($reply_result)) {
-    $reply_rows[] = $reply_row;
 }
 
 $has_more_replies = count($reply_rows) > $limit;

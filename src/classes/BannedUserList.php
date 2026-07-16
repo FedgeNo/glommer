@@ -51,32 +51,22 @@ class BannedUserList extends HTMLObject
         $banned = 1;
 
         if ($before_user_id !== null) {
-            $stmt = DB::run('
+            return DB::rows('
 SELECT *
     FROM `Users`
     WHERE `banned` = ? AND `userId` < ?
     ORDER BY `userId` DESC
     LIMIT ?
-', 'iii', $banned, $before_user_id, $limit);
-        } else {
-            $stmt = DB::run('
+', 'BannedUser', 'iii', $banned, $before_user_id, $limit);
+        }
+
+        return DB::rows('
 SELECT *
     FROM `Users`
     WHERE `banned` = ?
     ORDER BY `userId` DESC
     LIMIT ?
-', 'ii', $banned, $limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $items = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $items[] = BannedUser::fromRow($row);
-        }
-
-        return $items;
+', 'BannedUser', 'ii', $banned, $limit);
     }
 
     public function toDOM(): \DOMElement

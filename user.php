@@ -41,20 +41,13 @@ $page -> addContent($profile_user);
 $limit = 20;
 $fetch_limit = $limit + 1;
 
-$feed_stmt = DB::run('
+$feed_rows = DB::rows('
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?
     ORDER BY `postId` DESC
     LIMIT ?
-', 'ii', $user_id, $fetch_limit);
-$feed_result = mysqli_stmt_get_result($feed_stmt);
-
-$feed_rows = [];
-
-while ($row = mysqli_fetch_assoc($feed_result)) {
-    $feed_rows[] = $row;
-}
+', 'Post', 'ii', $user_id, $fetch_limit);
 
 $has_more = count($feed_rows) > $limit;
 

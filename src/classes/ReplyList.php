@@ -30,7 +30,7 @@ class ReplyList extends Div
     }
 
     /**
-     * @param array[] $rows reply Posts rows (newest first), each becoming a Thread
+     * @param Post[] $rows reply Posts (newest first), each becoming a Thread
      */
     public static function fromRows(int $parent_id, array $rows, bool $has_more): self
     {
@@ -41,7 +41,7 @@ class ReplyList extends Div
             return $list;
         }
 
-        $list -> oldestPostId = (int) $rows[count($rows) - 1]['postId'];
+        $list -> oldestPostId = (int) $rows[count($rows) - 1] -> postId;
         $list -> hasMore = $has_more;
 
         foreach (Thread::fromRows($rows) as $thread) {

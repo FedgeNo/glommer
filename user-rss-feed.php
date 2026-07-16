@@ -18,20 +18,13 @@ $name = $profile_user -> displayName ?? $profile_user -> username;
 
 $limit = 50;
 
-$feed_stmt = DB::run('
+$feed_rows = DB::rows('
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?
     ORDER BY `postId` DESC
     LIMIT ?
-', 'ii', $user_id, $limit);
-$feed_result = mysqli_stmt_get_result($feed_stmt);
-
-$feed_rows = [];
-
-while ($row = mysqli_fetch_assoc($feed_result)) {
-    $feed_rows[] = $row;
-}
+', 'Post', 'ii', $user_id, $limit);
 
 $site_title = Config::get('siteTitle');
 

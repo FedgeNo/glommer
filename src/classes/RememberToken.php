@@ -86,44 +86,42 @@ DELETE
 
         [$selector, $validator] = explode(':', $cookie, 2);
 
-        $stmt = DB::run('
+        $token = DB::row('
 SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
     FROM `RememberTokens`
     WHERE `selector` = ? AND `expiresAt` > NOW()
-', 's', $selector);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'RememberTokenData', 's', $selector);
 
-        if ($row === null) {
+        if ($token === null) {
             self::clearCookie();
 
             return;
         }
 
-        if (!hash_equals($row['validatorHash'], hash('sha256', $validator))) {
+        if (!hash_equals((string) $token -> validatorHash, hash('sha256', $validator))) {
             // The selector matched but the secret didn't - this cookie is a
             // stale copy of a token that was already rotated, which is what a
             // theft looks like (the thief's copy logged in and rotated it, or
             // this is the thief holding the stale copy). Revoke everything
             // rather than guess which side is legitimate.
-            self::purgeForUser((int) $row['userId']);
+            self::purgeForUser((int) $token -> userId);
             self::clearCookie();
 
             return;
         }
 
-        $user = User::load((int) $row['userId']);
+        $user = User::load((int) $token -> userId);
 
         if ($user === null || $user -> banned) {
-            self::deleteToken((int) $row['tokenId']);
+            self::deleteToken((int) $token -> tokenId);
             self::clearCookie();
 
             return;
         }
 
-        self::deleteToken((int) $row['tokenId']);
+        self::deleteToken((int) $token -> tokenId);
         Auth::login($user);
-        self::issue((int) $user -> userId, (string) $row['createdAt']);
+        self::issue((int) $user -> userId, (string) $token -> createdAt);
     }
 
     /**
@@ -167,32 +165,16 @@ DELETE
      * its hash); the selector is only used to match against the current
      * browser's cookie, not shown to the user.
      *
-     * @return array<int, array{tokenId: int, selector: string, createdAt: string, lastUsedAt: string, userAgent: ?string, ipAddress: ?string}>
+     * @return RememberTokenData[]
      */
     public static function rowsForUser(int $user_id): array
     {
-        $stmt = DB::run('
+        return DB::rows('
 SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
     FROM `RememberTokens`
     WHERE `userId` = ? AND `expiresAt` > NOW()
     ORDER BY `lastUsedAt` DESC
-', 'i', $user_id);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = [
-                'tokenId' => (int) $row['tokenId'],
-                'selector' => (string) $row['selector'],
-                'createdAt' => (string) $row['createdAt'],
-                'lastUsedAt' => (string) $row['lastUsedAt'],
-                'userAgent' => $row['userAgent'],
-                'ipAddress' => $row['ipAddress'],
-            ];
-        }
-
-        return $rows;
+', 'RememberTokenData', 'i', $user_id);
     }
 
     /**

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 class CurrentUser extends User
 {
-    private static ?array $cachedRow = null;
+    // Fetched as a plain User, not self - mysqli_fetch_object() would call
+    // this very constructor (after hydrating properties) if fetched directly
+    // as CurrentUser, recursing right back into this method.
+    private static ?User $cachedUser = null;
 
     public function __construct()
     {
@@ -14,24 +17,16 @@ class CurrentUser extends User
             return;
         }
 
-        if (self::$cachedRow === null) {
-            $user_id = Auth::id();
-
-            $stmt = DB::run('
+        if (self::$cachedUser === null) {
+            self::$cachedUser = DB::row('
 SELECT *
     FROM `Users`
     WHERE `userId` = ?
-', 'i', $user_id);
-            $result = mysqli_stmt_get_result($stmt);
-            $row = mysqli_fetch_assoc($result);
-
-            if ($row !== null) {
-                self::$cachedRow = $row;
-            }
+', 'User', 'i', Auth::id());
         }
 
-        if (self::$cachedRow !== null) {
-            foreach (self::$cachedRow as $key => $value) {
+        if (self::$cachedUser !== null) {
+            foreach (self::$cachedUser as $key => $value) {
                 $this -> $key = $value;
             }
         }

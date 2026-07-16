@@ -93,29 +93,28 @@ It expires in ' . self::CODE_TTL_MINUTES . ' minutes. If you didn\'t just try to
      */
     public static function verifyCode(int $user_id, string $code): bool
     {
-        $stmt = DB::run('
+        $stored_code = DB::row('
 SELECT `codeId`, `codeHash`, `attempts`
     FROM `TwoFactorCodes`
     WHERE `userId` = ? AND `expiresAt` > NOW()
-', 'i', $user_id);
-        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+', 'TwoFactorCodeData', 'i', $user_id);
 
-        if ($row === null) {
+        if ($stored_code === null) {
             return false;
         }
 
-        if ((int) $row['attempts'] >= self::MAX_ATTEMPTS) {
+        if ($stored_code -> attempts >= self::MAX_ATTEMPTS) {
             self::clear($user_id);
 
             return false;
         }
 
-        if (!hash_equals((string) $row['codeHash'], hash('sha256', $code))) {
+        if (!hash_equals((string) $stored_code -> codeHash, hash('sha256', $code))) {
             DB::run('
 UPDATE `TwoFactorCodes`
     SET `attempts` = `attempts` + 1
     WHERE `codeId` = ?
-', 'i', $row['codeId']);
+', 'i', $stored_code -> codeId);
 
             return false;
         }

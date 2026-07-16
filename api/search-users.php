@@ -36,7 +36,7 @@ if ($query === '') {
     $limit = 20;
     $fetch_limit = $limit + 1;
 
-    $stmt = DB::run('
+    $candidates = DB::rows('
 SELECT *
     FROM `Users`
     WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `userId` != ? AND `banned` = ?
@@ -48,14 +48,7 @@ SELECT *
         )
     ORDER BY `userId` DESC
     LIMIT ?
-', 'ssiiiiiii', $like, $like, $current_user -> userId, $not_banned, $before_user_id, $before_user_id, $current_user -> userId, $current_user -> userId, $fetch_limit);
-    $result = mysqli_stmt_get_result($stmt);
-
-    $candidates = [];
-
-    while ($row = mysqli_fetch_assoc($result)) {
-        $candidates[] = User::fromRow($row);
-    }
+', 'User', 'ssiiiiiii', $like, $like, $current_user -> userId, $not_banned, $before_user_id, $before_user_id, $current_user -> userId, $current_user -> userId, $fetch_limit);
 
     $has_more = count($candidates) > $limit;
 

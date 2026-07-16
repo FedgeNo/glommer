@@ -20,15 +20,15 @@ class RememberedDevice extends Div
     public string $lastUsedAt;
     public bool $isCurrent;
 
-    public function __construct(array $row, bool $is_current)
+    public function __construct(RememberTokenData $row, bool $is_current)
     {
         parent::__construct();
 
-        $this -> tokenId = $row['tokenId'];
-        $this -> userAgent = $row['userAgent'];
-        $this -> ipAddress = $row['ipAddress'];
-        $this -> createdAt = $row['createdAt'];
-        $this -> lastUsedAt = $row['lastUsedAt'];
+        $this -> tokenId = (int) $row -> tokenId;
+        $this -> userAgent = $row -> userAgent;
+        $this -> ipAddress = $row -> ipAddress;
+        $this -> createdAt = (string) $row -> createdAt;
+        $this -> lastUsedAt = (string) $row -> lastUsedAt;
         $this -> isCurrent = $is_current;
     }
 

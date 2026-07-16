@@ -6,7 +6,7 @@ class NotificationDropdown extends Div
 {
     public ?string $class = 'NotificationDropdown Card';
 
-    /** @var array[] */
+    /** @var Notification[] */
     public array $rows;
 
     public function __construct(array $rows)

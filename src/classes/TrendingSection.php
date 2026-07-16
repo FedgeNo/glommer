@@ -16,7 +16,7 @@ class TrendingSection extends Div
     public ?string $class = 'TrendingSection d-flex flex-column gap-2';
 
     /**
-     * @param array<int, array{entityId: int, entityType: string, entityValue: string, score: float, postCount: int, userCount: int}> $entities
+     * @param TrendingEntityChip[] $entities
      */
     public function __construct(array $entities)
     {
@@ -30,7 +30,7 @@ class TrendingSection extends Div
         $list -> class = 'TrendingEntities d-flex flex-wrap gap-2';
 
         foreach ($entities as $entity) {
-            $list -> addContent(new TrendingEntityChip($entity['entityType'], $entity['entityValue'], $entity['postCount']));
+            $list -> addContent($entity);
         }
 
         $this -> addContent($list);

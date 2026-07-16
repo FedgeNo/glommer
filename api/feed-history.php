@@ -47,21 +47,14 @@ if ($feed_type === 'friends') {
     // Same banned gate user.php itself 404s on - a banned profile's older
     // posts shouldn't be fetchable via this endpoint just because the page
     // that would normally show them isn't reachable.
-    $feed_stmt = DB::run('
+    $feed_rows = DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'iiii', $profile_user_id, $not_banned, $before_post_id, $fetch_limit);
-    $feed_result = mysqli_stmt_get_result($feed_stmt);
-
-    $feed_rows = [];
-
-    while ($row = mysqli_fetch_assoc($feed_result)) {
-        $feed_rows[] = $row;
-    }
+', 'Post', 'iiii', $profile_user_id, $not_banned, $before_post_id, $fetch_limit);
 
     $has_more = count($feed_rows) > $limit;
 

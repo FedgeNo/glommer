@@ -14,21 +14,19 @@ if ($username === '') {
 
     $not_banned = 0;
 
-    $conversations_stmt = DB::run('
+    $conversations = DB::rows('
 SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`.`createdAt`) AS `lastMessageAt`
     FROM `Messages` `m`
     JOIN `Users` `u` ON `u`.`userId` = IF(`m`.`senderId` = ?, `m`.`recipientId`, `m`.`senderId`)
     WHERE (`m`.`senderId` = ? OR `m`.`recipientId` = ?) AND `u`.`banned` = ?
     GROUP BY `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`
     ORDER BY `lastMessageAt` DESC
-', 'iiii', $current_user -> userId, $current_user -> userId, $current_user -> userId, $not_banned);
-    $conversations_result = mysqli_stmt_get_result($conversations_stmt);
+', 'Conversation', 'iiii', $current_user -> userId, $current_user -> userId, $current_user -> userId, $not_banned);
 
-    $has_conversations = false;
+    $has_conversations = $conversations !== [];
 
-    while ($row = mysqli_fetch_assoc($conversations_result)) {
-        $has_conversations = true;
-        $page -> addContent(Conversation::fromRow($row));
+    foreach ($conversations as $conversation) {
+        $page -> addContent($conversation);
     }
 
     if (!$has_conversations) {

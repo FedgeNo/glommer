@@ -26,7 +26,7 @@ class MessageList extends Div
     }
 
     /**
-     * @param array[] $rows Message rows, oldest first.
+     * @param Message[] $rows oldest first.
      */
     public static function fromRows(int $other_user_id, array $rows, bool $has_more): self
     {
@@ -39,14 +39,14 @@ class MessageList extends Div
             return $list;
         }
 
-        $list -> oldestMessageId = (int) $rows[0]['messageId'];
+        $list -> oldestMessageId = (int) $rows[0] -> messageId;
         $list -> hasMore = $has_more;
 
-        $sender_ids = array_values(array_unique(array_map(fn ($row) => (int) $row['senderId'], $rows)));
+        $sender_ids = array_values(array_unique(array_map(fn ($message) => (int) $message -> senderId, $rows)));
         $senders = User::loadMany($sender_ids);
 
-        foreach ($rows as $row) {
-            $message = Message::fromRowWithSender($row, $senders[(int) $row['senderId']] ?? null);
+        foreach ($rows as $message) {
+            $message -> sender = $senders[(int) $message -> senderId] ?? null;
             $list -> addContent($message);
         }
 

@@ -30,7 +30,7 @@ if (Block::exists($current_user -> userId, $other_user_id)) {
     JSONResponse::error('You can\'t message this user.', 403) -> send();
 }
 
-['rows' => $rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20, $before_message_id);
+['rows' => $rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20, $before_message_id, MessageData::class);
 
 JSONResponse::success([
     'messages' => $rows,

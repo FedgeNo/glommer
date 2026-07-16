@@ -134,7 +134,7 @@ UPDATE `Posts`
      * Post::globalFeedRows (limit+1/hasMore, banned authors excluded). Same
      * shape so the tag page reuses the feed rendering.
      *
-     * @return array{rows: array[], hasMore: bool}
+     * @return array{rows: Post[], hasMore: bool}
      */
     public static function postRows(string $tag, int $limit, ?int $before_post_id = null): array
     {
@@ -142,7 +142,7 @@ UPDATE `Posts`
         $not_banned = 0;
 
         if ($before_post_id !== null) {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -151,9 +151,9 @@ SELECT `Posts`.*
     WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'siii', $tag, $not_banned, $before_post_id, $fetch_limit);
+', 'Post', 'siii', $tag, $not_banned, $before_post_id, $fetch_limit);
         } else {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -162,15 +162,7 @@ SELECT `Posts`.*
     WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'sii', $tag, $not_banned, $fetch_limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
+', 'Post', 'sii', $tag, $not_banned, $fetch_limit);
         }
 
         $has_more = count($rows) > $limit;

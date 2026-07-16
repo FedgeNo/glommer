@@ -80,20 +80,18 @@ SELECT 1
     {
         $token_hash = hash('sha256', $token);
 
-        $stmt = DB::run('
+        $revert = DB::row('
 SELECT `userId`, `previousEmail`
     FROM `EmailChangeReverts`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
-', 's', $token_hash);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'EmailChangeRevertData', 's', $token_hash);
 
-        if ($row === null) {
+        if ($revert === null) {
             return false;
         }
 
-        $user_id = (int) $row['userId'];
-        $previous_email = $row['previousEmail'];
+        $user_id = (int) $revert -> userId;
+        $previous_email = $revert -> previousEmail;
 
         // The previous address was already verified before the change
         // happened, so restoring it restores that verified state too - no

@@ -24,21 +24,14 @@ $limit = 20;
 $fetch_limit = $limit + 1;
 $not_banned = 0;
 
-$reply_stmt = DB::run('
+$reply_rows = DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'iiii', $parent_id, $not_banned, $before_post_id, $fetch_limit);
-$reply_result = mysqli_stmt_get_result($reply_stmt);
-
-$reply_rows = [];
-
-while ($row = mysqli_fetch_assoc($reply_result)) {
-    $reply_rows[] = $row;
-}
+', 'Post', 'iiii', $parent_id, $not_banned, $before_post_id, $fetch_limit);
 
 $has_more = count($reply_rows) > $limit;
 

@@ -87,7 +87,7 @@ SELECT `postId`
      * "load more" request, forming a keyset cursor over (createdAt, postId) so
      * bookmarks made in the same second don't skip or repeat across pages.
      *
-     * @return array{rows: array[], hasMore: bool, oldestCreatedAt: ?string, oldestPostId: ?int}
+     * @return array{rows: Post[], hasMore: bool, oldestCreatedAt: ?string, oldestPostId: ?int}
      */
     public static function rowsForUser(int $user_id, int $limit, ?string $before_created_at = null, ?int $before_post_id = null): array
     {
@@ -95,7 +95,7 @@ SELECT `postId`
         $not_banned = 0;
 
         if ($before_created_at !== null && $before_post_id !== null) {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     FROM `Bookmarks`
     JOIN `Posts` ON `Posts`.`postId` = `Bookmarks`.`postId`
@@ -103,9 +103,9 @@ SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     WHERE `Bookmarks`.`userId` = ? AND `Users`.`banned` = ? AND (`Bookmarks`.`createdAt` < ? OR (`Bookmarks`.`createdAt` = ? AND `Bookmarks`.`postId` < ?))
     ORDER BY `Bookmarks`.`createdAt` DESC, `Bookmarks`.`postId` DESC
     LIMIT ?
-', 'iissii', $user_id, $not_banned, $before_created_at, $before_created_at, $before_post_id, $fetch_limit);
+', 'Post', 'iissii', $user_id, $not_banned, $before_created_at, $before_created_at, $before_post_id, $fetch_limit);
         } else {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     FROM `Bookmarks`
     JOIN `Posts` ON `Posts`.`postId` = `Bookmarks`.`postId`
@@ -113,36 +113,18 @@ SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     WHERE `Bookmarks`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Bookmarks`.`createdAt` DESC, `Bookmarks`.`postId` DESC
     LIMIT ?
-', 'iii', $user_id, $not_banned, $fetch_limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-        $bookmarked_ats = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            // Stripped back off before the row reaches Post::fromRow(), which
-            // blind-assigns every row key as a property - an un-stripped
-            // extra column would land on the Post object itself. Tracked in
-            // a parallel array (not just the last row seen) since the
-            // lookahead row - and its createdAt - may get popped off below.
-            $bookmarked_ats[] = (string) $row['bookmarkedAt'];
-            unset($row['bookmarkedAt']);
-
-            $rows[] = $row;
+', 'Post', 'iii', $user_id, $not_banned, $fetch_limit);
         }
 
         $has_more = count($rows) > $limit;
 
         if ($has_more) {
             array_pop($rows);
-            array_pop($bookmarked_ats);
         }
 
         $last_index = count($rows) - 1;
-        $oldest_created_at = $last_index >= 0 ? $bookmarked_ats[$last_index] : null;
-        $oldest_post_id = $last_index >= 0 ? (int) $rows[$last_index]['postId'] : null;
+        $oldest_created_at = $last_index >= 0 ? $rows[$last_index] -> bookmarkedAt : null;
+        $oldest_post_id = $last_index >= 0 ? (int) $rows[$last_index] -> postId : null;
 
         return [
             'rows' => $rows,

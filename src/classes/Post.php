@@ -39,6 +39,11 @@ class Post extends HTMLObject
 
     public ?User $author = null;
 
+    // Set only by Bookmark::rowsForUser()'s query (a JOIN column, not a Posts
+    // column) - when this user bookmarked the post, for that list's cursor
+    // and sort order. Null everywhere else.
+    public ?string $bookmarkedAt = null;
+
     public function toDOM(): \DOMElement
     {
         if ($this -> postId !== null) {
@@ -255,9 +260,9 @@ class Post extends HTMLObject
         return $post;
     }
 
-    public static function fromRowWithItems(array $row): self
+    public static function fromRowWithItems(self $post): self
     {
-        return self::fromRowsWithItems([$row])[0];
+        return self::fromRowsWithItems([$post])[0];
     }
 
     /**
@@ -338,7 +343,7 @@ DELETE
      * hasMore flag (fetches one extra to detect a next page without a second
      * count query).
      *
-     * @return array{rows: array[], hasMore: bool}
+     * @return array{rows: self[], hasMore: bool}
      */
     public static function globalFeedRows(int $limit, ?int $before_post_id = null): array
     {
@@ -346,31 +351,23 @@ DELETE
         $not_banned = 0;
 
         if ($before_post_id !== null) {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'iii', $not_banned, $before_post_id, $fetch_limit);
+', self::class, 'iii', $not_banned, $before_post_id, $fetch_limit);
         } else {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'ii', $not_banned, $fetch_limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
+', self::class, 'ii', $not_banned, $fetch_limit);
         }
 
         $has_more = count($rows) > $limit;
@@ -383,21 +380,14 @@ SELECT `Posts`.*
     }
 
     /**
-     * Builds Posts (with items and authors attached) for a whole page of
-     * rows at once, so a feed load costs a fixed number of queries instead of
-     * a few per post.
+     * Attaches items and authors (batched, one query each rather than a pair
+     * per post) to a whole page of already-built Posts at once.
      *
-     * @param array[] $rows
+     * @param self[] $posts
      * @return self[]
      */
-    public static function fromRowsWithItems(array $rows): array
+    public static function fromRowsWithItems(array $posts): array
     {
-        $posts = [];
-
-        foreach ($rows as $row) {
-            $posts[] = self::fromRow($row);
-        }
-
         if ($posts === []) {
             return [];
         }

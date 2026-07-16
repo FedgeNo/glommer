@@ -29,7 +29,7 @@ class ReportList extends Div
     }
 
     /**
-     * @param array[] $rows Report rows, newest first.
+     * @param ReportData[] $rows newest first.
      */
     public static function fromRows(array $rows, bool $has_more): self
     {
@@ -41,7 +41,7 @@ class ReportList extends Div
             return $list;
         }
 
-        $list -> oldestReportId = (int) $rows[count($rows) - 1]['reportId'];
+        $list -> oldestReportId = (int) $rows[count($rows) - 1] -> reportId;
         $list -> hasMore = $has_more;
 
         foreach ($rows as $row) {

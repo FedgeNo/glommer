@@ -72,7 +72,7 @@ class Trending
     /**
      * The current top trending entities, freshest-first by score.
      *
-     * @return array<int, array{entityId: int, entityType: string, entityValue: string, score: float, postCount: int, userCount: int}>
+     * @return TrendingEntityChip[]
      */
     public static function current(int $limit): array
     {
@@ -80,28 +80,12 @@ class Trending
             self::recompute();
         }
 
-        $stmt = DB::run('
+        return DB::rows('
 SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount`
     FROM `TrendingEntities`
     ORDER BY `score` DESC
     LIMIT ?
-', 'i', $limit);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $entities = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $entities[] = [
-                'entityId' => (int) $row['entityId'],
-                'entityType' => (string) $row['entityType'],
-                'entityValue' => (string) $row['entityValue'],
-                'score' => (float) $row['score'],
-                'postCount' => (int) $row['postCount'],
-                'userCount' => (int) $row['userCount'],
-            ];
-        }
-
-        return $entities;
+', 'TrendingEntityChip', 'i', $limit);
     }
 
     private static function isStale(): bool
@@ -131,7 +115,7 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
         $banned = self::bannedKeys();
 
         $entities_by_row = EntityExtractor::extractBatch(array_map(
-            static fn (array $row): ?string => $row['descriptionDelta'] ?? null,
+            static fn (Post $row): ?string => $row -> descriptionDelta,
             $rows
         ));
 
@@ -145,10 +129,10 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
                 continue;
             }
 
-            $created_at = strtotime((string) $row['createdAt']);
+            $created_at = strtotime((string) $row -> createdAt);
             $age_hours = $created_at !== false ? max(0, ($now - $created_at) / 3600) : 0;
             $weight = 0.5 ** ($age_hours / self::HALF_LIFE_HOURS);
-            $user_id = (int) $row['userId'];
+            $user_id = (int) $row -> userId;
 
             foreach ($entities as $entity) {
                 // Keyed on a case-folded value so "COVID" and "Covid" are one

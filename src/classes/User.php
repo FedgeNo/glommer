@@ -216,7 +216,7 @@ SELECT *
         // collecting and filesorting every accepted friendship first. The
         // banned filter stays inside each half so pagination semantics match
         // the old query exactly.
-        $stmt = DB::run('
+        return DB::rows('
 (SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
@@ -232,16 +232,7 @@ UNION ALL
     LIMIT ?)
     ORDER BY `friendshipId` DESC
     LIMIT ?
-', 'isiiiisiiii', $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $limit);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $friends = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $friends[] = Friend::fromRow($row);
-        }
-
-        return $friends;
+', 'Friend', 'isiiiisiiii', $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $limit);
     }
 
     /**
@@ -256,34 +247,24 @@ UNION ALL
         $not_banned = 0;
 
         if ($before_friendship_id !== null) {
-            $stmt = DB::run('
+            return DB::rows('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
     WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
-        } else {
-            $stmt = DB::run('
+', 'FriendRequest', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+        }
+
+        return DB::rows('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
     WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $requests = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $requests[] = FriendRequest::fromRow($row);
-        }
-
-        return $requests;
+', 'FriendRequest', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
     }
 
     /**
@@ -299,34 +280,24 @@ SELECT `f`.`friendshipId`, `u`.*
         $not_banned = 0;
 
         if ($before_friendship_id !== null) {
-            $stmt = DB::run('
+            return DB::rows('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
     WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
-        } else {
-            $stmt = DB::run('
+', 'SentFriendRequest', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+        }
+
+        return DB::rows('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
     WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $requests = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $requests[] = SentFriendRequest::fromRow($row);
-        }
-
-        return $requests;
+', 'SentFriendRequest', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
     }
 
     /**
@@ -338,15 +309,13 @@ SELECT `f`.`friendshipId`, `u`.*
      */
     public static function atFriendCap(int $user_id): bool
     {
-        $stmt = DB::run('
+        $user = DB::row('
 SELECT `friendCount`
     FROM `Users`
     WHERE `userId` = ?
-', 'i', $user_id);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'User', 'i', $user_id);
 
-        return (int) ($row['friendCount'] ?? 0) >= self::MAX_FRIENDS;
+        return ($user ?-> friendCount ?? 0) >= self::MAX_FRIENDS;
     }
 
     /**
@@ -385,14 +354,13 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'i', $user_id);
 
-        $select_stmt = DB::run('
+        $user = DB::row('
 SELECT `sessionVersion`
     FROM `Users`
     WHERE `userId` = ?
-', 'i', $user_id);
-        $result = mysqli_stmt_get_result($select_stmt);
+', 'User', 'i', $user_id);
 
-        return (int) (mysqli_fetch_assoc($result)['sessionVersion'] ?? 0);
+        return $user ?-> sessionVersion ?? 0;
     }
 
     /**
@@ -547,7 +515,7 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
 
         $params = array_merge($user_ids, [$not_banned, $viewer_id, $viewer_id]);
 
-        $stmt = DB::run('
+        $rows = DB::rows('
 SELECT `u`.*
     FROM `Users` `u`
     WHERE `u`.`userId` IN (' . $placeholders . ') AND `u`.`banned` = ?
@@ -556,13 +524,12 @@ SELECT `u`.*
                 FROM `Blocks` `b`
                 WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `u`.`userId`) OR (`b`.`blockerId` = `u`.`userId` AND `b`.`blockedId` = ?)
         )
-', str_repeat('i', count($user_ids)) . 'iii', ...$params);
-        $result = mysqli_stmt_get_result($stmt);
+', 'OtherUser', str_repeat('i', count($user_ids)) . 'iii', ...$params);
 
         $users = [];
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            $users[(int) $row['userId']] = OtherUser::fromRow($row);
+        foreach ($rows as $user) {
+            $users[(int) $user -> userId] = $user;
         }
 
         return $users;
@@ -575,7 +542,7 @@ SELECT `u`.*
     {
         $not_banned = 0;
 
-        $stmt = DB::run('
+        return DB::rows('
 SELECT `u`.*
     FROM `Users` `u`
     WHERE `u`.`userId` != ? AND `u`.`banned` = ?
@@ -586,16 +553,7 @@ SELECT `u`.*
         )
     ORDER BY RAND()
     LIMIT ?
-', 'iiiii', $this -> userId, $not_banned, $this -> userId, $this -> userId, $limit);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $users = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $users[] = OtherUser::fromRow($row);
-        }
-
-        return $users;
+', 'OtherUser', 'iiiii', $this -> userId, $not_banned, $this -> userId, $this -> userId, $limit);
     }
 
     /**

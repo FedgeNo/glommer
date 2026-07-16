@@ -50,15 +50,4 @@ class Conversation extends Anchor
 
         return parent::toDOM();
     }
-
-    public static function fromRow(array $row): self
-    {
-        $conversation = new self();
-
-        foreach ($row as $key => $value) {
-            $conversation -> $key = $value;
-        }
-
-        return $conversation;
-    }
 }

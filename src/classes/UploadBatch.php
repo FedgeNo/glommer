@@ -280,14 +280,12 @@ INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionD
         $parent_user_id = null;
 
         if ($parent_id !== null) {
-            $parent_stmt = DB::run('
+            $parent_post = DB::row('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-', 'i', $parent_id);
-            $parent_result = mysqli_stmt_get_result($parent_stmt);
-            $parent_row = mysqli_fetch_assoc($parent_result);
-            $parent_user_id = $parent_row !== null ? (int) $parent_row['userId'] : null;
+', 'Post', 'i', $parent_id);
+            $parent_user_id = $parent_post !== null ? (int) $parent_post -> userId : null;
         } else {
             Timeline::fanOutPost($user_id, $post_id);
         }

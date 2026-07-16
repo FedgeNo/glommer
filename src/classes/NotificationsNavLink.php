@@ -6,7 +6,7 @@ class NotificationsNavLink extends Div
 {
     public ?string $class = 'NotificationsNavLink';
 
-    /** @var array[] */
+    /** @var Notification[] */
     public array $rows;
 
     public int $lastNotificationId;
@@ -23,7 +23,7 @@ class NotificationsNavLink extends Div
     {
         // The newest of the (already newest-first) recent rows, if any -
         // all that's needed to know whether there's something unseen right now.
-        $newest_id = $this -> rows !== [] ? (int) $this -> rows[0]['notificationId'] : 0;
+        $newest_id = $this -> rows !== [] ? (int) $this -> rows[0] -> notificationId : 0;
         $has_unseen = $newest_id > $this -> lastNotificationId;
 
         $this -> addContent(new Anchor(ServerURL::absolute('/notifications'), 'Notifications'));

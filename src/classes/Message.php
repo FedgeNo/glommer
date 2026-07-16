@@ -72,30 +72,16 @@ DELETE
     }
 
     /**
-     * Builds a Message from a row when the sender User is already loaded, so
-     * list callers can batch-load senders instead of querying per message.
-     */
-    public static function fromRowWithSender(array $row, ?User $sender): self
-    {
-        $message = new self();
-
-        foreach ($row as $key => $value) {
-            $message -> $key = $value;
-        }
-
-        $message -> sender = $sender;
-
-        return $message;
-    }
-
-    /**
      * Fetches messages between two users, newest-first internally, trimmed and
      * reordered to oldest-first for display. Fetches $limit + 1 rows so an
      * extra leftover row (if present) signals more history without a separate count query.
      *
-     * @return array{rows: array[], hasMore: bool}
+     * $class lets a caller that only needs the data - not a renderable
+     * Message - fetch straight into MessageData instead.
+     *
+     * @return array{rows: self[]|MessageData[], hasMore: bool}
      */
-    public static function rowsBetween(int $user_a, int $user_b, int $limit, ?int $before_message_id = null): array
+    public static function rowsBetween(int $user_a, int $user_b, int $limit, ?int $before_message_id = null, string $class = self::class): array
     {
         $fetch_limit = $limit + 1;
 
@@ -108,7 +94,7 @@ DELETE
         // backward and stops at the limit, so only the merged 2x-limit rows
         // ever get sorted - an OR forces collecting and filesorting the whole
         // conversation before the LIMIT can apply.
-        $stmt = DB::run('
+        $rows = DB::rows('
 (SELECT *
     FROM `Messages`
     WHERE `senderId` = ? AND `recipientId` = ? AND `messageId` < ?
@@ -122,14 +108,7 @@ UNION ALL
     LIMIT ?)
     ORDER BY `messageId` DESC
     LIMIT ?
-', 'iiiiiiiii', $user_a, $user_b, $cursor, $fetch_limit, $user_b, $user_a, $cursor, $fetch_limit, $fetch_limit);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
-        }
+', $class, 'iiiiiiiii', $user_a, $user_b, $cursor, $fetch_limit, $user_b, $user_a, $cursor, $fetch_limit, $fetch_limit);
 
         $has_more = count($rows) > $limit;
 

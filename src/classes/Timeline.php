@@ -79,7 +79,7 @@ DELETE `Timelines`
      * shape as a direct Posts query, so callers can hand them straight to
      * Post::fromRowsWithItems()/Thread::fromRows().
      *
-     * @return array{rows: array[], hasMore: bool}
+     * @return array{rows: Post[], hasMore: bool}
      */
     public static function rowsForUser(int $user_id, int $limit, ?int $before_post_id = null): array
     {
@@ -87,7 +87,7 @@ DELETE `Timelines`
         $not_banned = 0;
 
         if ($before_post_id !== null) {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*
     FROM `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
@@ -95,9 +95,9 @@ SELECT `Posts`.*
     WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ? AND `Timelines`.`postId` < ?
     ORDER BY `Timelines`.`postId` DESC
     LIMIT ?
-', 'iiii', $user_id, $not_banned, $before_post_id, $fetch_limit);
+', 'Post', 'iiii', $user_id, $not_banned, $before_post_id, $fetch_limit);
         } else {
-            $stmt = DB::run('
+            $rows = DB::rows('
 SELECT `Posts`.*
     FROM `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
@@ -105,15 +105,7 @@ SELECT `Posts`.*
     WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Timelines`.`postId` DESC
     LIMIT ?
-', 'iii', $user_id, $not_banned, $fetch_limit);
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
+', 'Post', 'iii', $user_id, $not_banned, $fetch_limit);
         }
 
         $has_more = count($rows) > $limit;

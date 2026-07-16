@@ -39,15 +39,13 @@ This link expires in 1 hour. If you did not request this, you can ignore this em
     {
         $token_hash = hash('sha256', $token);
 
-        $stmt = DB::run('
+        $reset = DB::row('
 SELECT `userId`
     FROM `PasswordResets`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
-', 's', $token_hash);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
+', 'PasswordResetData', 's', $token_hash);
 
-        return $row !== null ? (int) $row['userId'] : null;
+        return $reset !== null ? (int) $reset -> userId : null;
     }
 
     public static function consume(string $token, string $new_password): bool

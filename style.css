@@ -1803,6 +1803,12 @@ input[type='file']::file-selector-button {
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
+    /* Contains its .HashtagNode children's inline z-index (tag-graph.js sets
+       it per-node from 3D depth, easily into the hundreds) to this element's
+       own stacking context - without this, those values escape all the way
+       to the root stacking context and can out-rank z-index:20 fixed page
+       chrome like .MainNavigation/.MobileNavMenu. */
+    isolation: isolate;
 }
 
 .HashtagGraph.Active:active {

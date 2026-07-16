@@ -16,31 +16,29 @@ class BannedUserList extends HTMLObject
     public string $tagName = 'div';
     public ?string $class = 'BannedUserList';
 
-    /** @var BannedUser[] */
-    public array $items = [];
-    public ?int $oldestUserId = null;
-    public bool $hasMore = false;
-
-    public static function page(?int $before_user_id = null): self
+    public function toDOM(): \DOMElement
     {
-        $list = new self();
+        // Pull one extra row so a leftover signals another page without a
+        // separate count query (same trick the feed uses); it's dropped back
+        // off once it has told us there's more.
+        $this -> addContents(self::fetch(self::PAGE_SIZE + 1));
 
-        // One extra row tells us whether there's another page without a
-        // separate count query (same trick the feed uses).
-        $items = self::fetch(self::PAGE_SIZE + 1, $before_user_id);
-        $list -> hasMore = count($items) > self::PAGE_SIZE;
+        $has_more = count($this -> contents) > self::PAGE_SIZE;
+        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
 
-        if ($list -> hasMore) {
-            array_pop($items);
+        if ($has_more) {
+            array_pop($this -> contents);
         }
 
-        $list -> items = $items;
+        if ($this -> contents === []) {
+            $this -> addContent(new Notice('No banned users.'));
 
-        if ($items !== []) {
-            $list -> oldestUserId = (int) end($items) -> userId;
+            return parent::toDOM();
         }
 
-        return $list;
+        $this -> attributes['data-oldest-user-id'] = (string) $this -> contents[count($this -> contents) - 1] -> userId;
+
+        return parent::toDOM();
     }
 
     /**
@@ -67,22 +65,5 @@ SELECT *
     ORDER BY `userId` DESC
     LIMIT ?
 ', 'BannedUser', 'ii', $banned, $limit);
-    }
-
-    public function toDOM(): \DOMElement
-    {
-        $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
-
-        if ($this -> oldestUserId !== null) {
-            $this -> attributes['data-oldest-user-id'] = (string) $this -> oldestUserId;
-        }
-
-        if ($this -> items === []) {
-            $this -> contents[] = new Notice('No banned users.');
-        } else {
-            $this -> addContents($this -> items);
-        }
-
-        return parent::toDOM();
     }
 }

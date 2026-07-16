@@ -6,9 +6,11 @@ declare(strict_types=1);
  * A page of feed posts, fetched straight into its own contents at construction
  * and grown by infinite scroll (main.js) off the data-* attributes toDOM sets.
  * Which feed is chosen by feedType: 'global' (the default), 'friends' (the
- * viewer's timeline), 'user' (one profile's posts, needs userId), or 'tag'
- * (posts under a #tag, needs tag). Build with the properties for the feed you
- * want, e.g. new FeedList(['feedType' => 'user', 'userId' => 42]).
+ * viewer's timeline, needs userId), 'user' (one profile's posts, needs userId),
+ * or 'tag' (posts under a #tag, needs tag). Cursored on postId with a sentinel
+ * above any real id, so page one and a load-more page are one query. Build with
+ * the properties for the feed you want, e.g.
+ * new FeedList(['feedType' => 'user', 'userId' => 42]).
  */
 class FeedList extends Div
 {
@@ -19,26 +21,63 @@ class FeedList extends Div
     public ?string $feedType = null;
     public ?int $userId = null;
     public ?string $tag = null;
-    public bool $hasMore = false;
+    public ?int $before = null;
 
     public function __construct(array|object|null $properties = null)
     {
         parent::__construct($properties);
 
-        ['rows' => $rows, 'hasMore' => $this -> hasMore] = $this -> fetchRows();
-        $this -> contents = Post::withItemsAndCounts($rows);
+        $this -> contents = Post::withItemsAndCounts($this -> fetchRows());
     }
 
     /**
-     * @return array{rows: Post[], hasMore: bool}
+     * @return Post[]
      */
     private function fetchRows(): array
     {
+        $not_banned = 0;
+        $cursor = $this -> before ?? PHP_INT_MAX;
+        $limit = self::PAGE_SIZE + 1;
+
         return match ($this -> feedType) {
-            'friends' => Timeline::rowsForUser((int) $this -> userId, self::PAGE_SIZE),
-            'user' => Post::userFeedRows((int) $this -> userId, self::PAGE_SIZE),
-            'tag' => Hashtag::postRows((string) $this -> tag, self::PAGE_SIZE),
-            default => Post::globalFeedRows(self::PAGE_SIZE),
+            'friends' => DB::rows('
+SELECT `Posts`.*
+    FROM `Timelines`
+    JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ? AND `Timelines`.`postId` < ?
+    ORDER BY `Timelines`.`postId` DESC
+    LIMIT ?
+', 'Post', 'iiii', (int) $this -> userId, $not_banned, $cursor, $limit),
+
+            'user' => DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', 'Post', 'iiii', (int) $this -> userId, $not_banned, $cursor, $limit),
+
+            'tag' => DB::rows('
+SELECT `Posts`.*
+    FROM `PostHashtags`
+    JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
+    JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', 'Post', 'siii', (string) $this -> tag, $not_banned, $cursor, $limit),
+
+            default => DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', 'Post', 'iii', $not_banned, $cursor, $limit),
         };
     }
 
@@ -54,6 +93,12 @@ class FeedList extends Div
 
     public function toDOM(): \DOMElement
     {
+        $has_more = count($this -> contents) > self::PAGE_SIZE;
+
+        if ($has_more) {
+            array_pop($this -> contents);
+        }
+
         if ($this -> feedType !== null) {
             $this -> attributes['data-feed-type'] = $this -> feedType;
         }
@@ -70,7 +115,7 @@ class FeedList extends Div
             $this -> attributes['data-oldest-post-id'] = (string) $this -> contents[count($this -> contents) - 1] -> postId;
         }
 
-        $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
+        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
 
         return parent::toDOM();
     }

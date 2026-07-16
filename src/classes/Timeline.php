@@ -74,50 +74,6 @@ DELETE `Timelines`
     }
 
     /**
-     * Fetches $limit + 1 rows so an extra leftover row (if present) signals more
-     * history without a separate count query. Returns raw Posts rows, same
-     * shape as a direct Posts query, so callers can hand them straight to
-     * Post::withItemsAndCounts().
-     *
-     * @return array{rows: Post[], hasMore: bool}
-     */
-    public static function rowsForUser(int $user_id, int $limit, ?int $before_post_id = null): array
-    {
-        $fetch_limit = $limit + 1;
-        $not_banned = 0;
-
-        if ($before_post_id !== null) {
-            $rows = DB::rows('
-SELECT `Posts`.*
-    FROM `Timelines`
-    JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ? AND `Timelines`.`postId` < ?
-    ORDER BY `Timelines`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iiii', $user_id, $not_banned, $before_post_id, $fetch_limit);
-        } else {
-            $rows = DB::rows('
-SELECT `Posts`.*
-    FROM `Timelines`
-    JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
-    ORDER BY `Timelines`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iii', $user_id, $not_banned, $fetch_limit);
-        }
-
-        $has_more = count($rows) > $limit;
-
-        if ($has_more) {
-            array_pop($rows);
-        }
-
-        return ['rows' => $rows, 'hasMore' => $has_more];
-    }
-
-    /**
      * @return int[]
      */
     private static function friendIds(int $user_id): array

@@ -34,40 +34,32 @@ if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$limit = 20;
+// FeedList owns the query; the friends feed reads the viewer's own timeline,
+// the others the profile/tag/global posts. It fetches PAGE_SIZE + 1 hydrated
+// (items, author, the viewer's like/bookmark counts) into its contents.
+$feed_user_id = $feed_type === 'friends' ? (int) Auth::user() -> userId : $profile_user_id;
 
-if ($feed_type === 'friends') {
-    $current_user = Auth::user();
+$posts = (new FeedList([
+    'feedType' => $feed_type,
+    'userId' => $feed_user_id,
+    'tag' => $tag,
+    'before' => $before_post_id,
+])) -> contents;
 
-    ['rows' => $feed_rows, 'hasMore' => $has_more] = Timeline::rowsForUser((int) $current_user -> userId, $limit, $before_post_id);
-} elseif ($feed_type === 'user') {
-    ['rows' => $feed_rows, 'hasMore' => $has_more] = Post::userFeedRows($profile_user_id, $limit, $before_post_id);
-} elseif ($feed_type === 'tag') {
-    ['rows' => $feed_rows, 'hasMore' => $has_more] = Hashtag::postRows($tag, $limit, $before_post_id);
-} else {
-    ['rows' => $feed_rows, 'hasMore' => $has_more] = Post::globalFeedRows($limit, $before_post_id);
+$has_more = count($posts) > FeedList::PAGE_SIZE;
+
+if ($has_more) {
+    array_pop($posts);
 }
-
-$viewer_id = Auth::id();
-
-$posts = Post::fromRowsWithItems($feed_rows);
-$post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
-
-$reply_counts = Post::replyCountsForPosts($post_ids);
-$like_counts = Post::likeCountsForPosts($post_ids);
-$liked = $viewer_id !== null ? Post::likedByUserForPosts($post_ids, (int) $viewer_id) : [];
-$bookmarked = $viewer_id !== null ? Bookmark::bookmarkedByUserForPosts($post_ids, (int) $viewer_id) : [];
 
 $post_payloads = [];
 
 foreach ($posts as $post) {
-    $post_id = (int) $post -> postId;
-
     $post_payloads[] = $post -> toPayload(
-        $reply_counts[$post_id] ?? 0,
-        $like_counts[$post_id] ?? 0,
-        $liked[$post_id] ?? false,
-        $bookmarked[$post_id] ?? false
+        (int) $post -> replyCount,
+        (int) $post -> likeCount,
+        (bool) $post -> liked,
+        (bool) $post -> bookmarked
     );
 }
 

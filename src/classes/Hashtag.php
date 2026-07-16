@@ -130,51 +130,6 @@ UPDATE `Posts`
     }
 
     /**
-     * Top-level posts carrying $tag, newest first, cursor-paginated exactly like
-     * Post::globalFeedRows (limit+1/hasMore, banned authors excluded). Same
-     * shape so the tag page reuses the feed rendering.
-     *
-     * @return array{rows: Post[], hasMore: bool}
-     */
-    public static function postRows(string $tag, int $limit, ?int $before_post_id = null): array
-    {
-        $fetch_limit = $limit + 1;
-        $not_banned = 0;
-
-        if ($before_post_id !== null) {
-            $rows = DB::rows('
-SELECT `Posts`.*
-    FROM `PostHashtags`
-    JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
-    JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'siii', $tag, $not_banned, $before_post_id, $fetch_limit);
-        } else {
-            $rows = DB::rows('
-SELECT `Posts`.*
-    FROM `PostHashtags`
-    JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
-    JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'sii', $tag, $not_banned, $fetch_limit);
-        }
-
-        $has_more = count($rows) > $limit;
-
-        if ($has_more) {
-            array_pop($rows);
-        }
-
-        return ['rows' => $rows, 'hasMore' => $has_more];
-    }
-
-    /**
      * The most-used tags all-time (by count of the top-level, non-banned posts
      * that carry them - matching what a tag page shows), for the /tags/ index.
      *

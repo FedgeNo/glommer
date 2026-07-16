@@ -111,7 +111,20 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
      */
     public static function recompute(): void
     {
-        $rows = Post::globalFeedRows(self::WINDOW_SIZE)['rows'];
+        $not_banned = 0;
+
+        // The recent window of top-level posts by non-banned authors, scored
+        // for trending entities. Not a display feed - just the deltas and
+        // authors the extractor and per-user counting need.
+        $rows = DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ?
+', 'Post', 'ii', $not_banned, self::WINDOW_SIZE);
+
         $banned = self::bannedKeys();
 
         $entities_by_row = EntityExtractor::extractBatch(array_map(

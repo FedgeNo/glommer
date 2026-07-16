@@ -28,26 +28,30 @@ if ($before_created_at === null || $before_post_id === null) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$limit = 20;
+// BookmarkList owns the query; it fetches PAGE_SIZE + 1 hydrated posts (items,
+// author, the viewer's like counts) into its contents, cursored on when each
+// was bookmarked.
+$posts = (new BookmarkList([
+    'userId' => (int) $current_user -> userId,
+    'beforeCreatedAt' => $before_created_at,
+    'beforePostId' => $before_post_id,
+])) -> contents;
 
-$bookmarks = Bookmark::rowsForUser((int) $current_user -> userId, $limit, $before_created_at, $before_post_id);
+$has_more = count($posts) > BookmarkList::PAGE_SIZE;
 
-$posts = Post::fromRowsWithItems($bookmarks['rows']);
-$post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
+if ($has_more) {
+    array_pop($posts);
+}
 
-$reply_counts = Post::replyCountsForPosts($post_ids);
-$like_counts = Post::likeCountsForPosts($post_ids);
-$liked = Post::likedByUserForPosts($post_ids, (int) $current_user -> userId);
+$oldest = $posts !== [] ? $posts[count($posts) - 1] : null;
 
 $post_payloads = [];
 
 foreach ($posts as $post) {
-    $post_id = (int) $post -> postId;
-
     $post_payloads[] = $post -> toPayload(
-        $reply_counts[$post_id] ?? 0,
-        $like_counts[$post_id] ?? 0,
-        $liked[$post_id] ?? false,
+        (int) $post -> replyCount,
+        (int) $post -> likeCount,
+        (bool) $post -> liked,
         // Every post here is by definition bookmarked - this is the bookmarks list.
         true
     );
@@ -55,7 +59,7 @@ foreach ($posts as $post) {
 
 JSONResponse::success([
     'posts' => $post_payloads,
-    'hasMore' => $bookmarks['hasMore'],
-    'oldestBookmarkCreatedAt' => $bookmarks['oldestCreatedAt'],
-    'oldestBookmarkPostId' => $bookmarks['oldestPostId'],
+    'hasMore' => $has_more,
+    'oldestBookmarkCreatedAt' => $oldest ?-> bookmarkedAt,
+    'oldestBookmarkPostId' => $oldest !== null ? (int) $oldest -> postId : null,
 ]) -> send();

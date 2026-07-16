@@ -20,28 +20,24 @@ if ($parent_id === 0 || $before_post_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-['rows' => $reply_rows, 'hasMore' => $has_more] = Post::replyRows($parent_id, 20, $before_post_id);
+// ReplyList owns the query; it fetches PAGE_SIZE + 1 hydrated replies (items,
+// author, the viewer's like/bookmark counts) into its contents.
+$posts = (new ReplyList(['parentId' => $parent_id, 'before' => $before_post_id])) -> contents;
 
-$viewer_id = Auth::id();
+$has_more = count($posts) > ReplyList::PAGE_SIZE;
 
-$posts = Post::fromRowsWithItems($reply_rows);
-$post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
-
-$reply_counts = Post::replyCountsForPosts($post_ids);
-$like_counts = Post::likeCountsForPosts($post_ids);
-$liked = $viewer_id !== null ? Post::likedByUserForPosts($post_ids, (int) $viewer_id) : [];
-$bookmarked = $viewer_id !== null ? Bookmark::bookmarkedByUserForPosts($post_ids, (int) $viewer_id) : [];
+if ($has_more) {
+    array_pop($posts);
+}
 
 $post_payloads = [];
 
 foreach ($posts as $post) {
-    $post_id = (int) $post -> postId;
-
     $post_payloads[] = $post -> toPayload(
-        $reply_counts[$post_id] ?? 0,
-        $like_counts[$post_id] ?? 0,
-        $liked[$post_id] ?? false,
-        $bookmarked[$post_id] ?? false
+        (int) $post -> replyCount,
+        (int) $post -> likeCount,
+        (bool) $post -> liked,
+        (bool) $post -> bookmarked
     );
 }
 

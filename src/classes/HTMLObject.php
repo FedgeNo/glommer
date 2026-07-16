@@ -48,6 +48,16 @@ class HTMLObject
         $this -> contents[] = $item;
     }
 
+    /**
+     * @param array<HTMLObject|CData|string|\DOMNode> $items
+     */
+    public function addContents(array $items): void
+    {
+        foreach ($items as $item) {
+            $this -> addContent($item);
+        }
+    }
+
     public function toDOM(): \DOMElement
     {
         $element = self::$document -> createElement($this -> tagName);

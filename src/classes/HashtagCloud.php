@@ -11,7 +11,7 @@ class HashtagCloud extends Div
     public ?string $class = 'HashtagCloud d-flex flex-column gap-2';
 
     /**
-     * @param array<int, array{tag: string, postCount: int}> $tags
+     * @param HashtagChip[] $tags
      */
     public function __construct(string $heading, array $tags)
     {
@@ -23,10 +23,7 @@ class HashtagCloud extends Div
 
         $chips = new Div();
         $chips -> class = 'HashtagChips d-flex flex-wrap gap-2';
-
-        foreach ($tags as $tag) {
-            $chips -> addContent(new HashtagChip($tag['tag'], $tag['postCount']));
-        }
+        $chips -> addContents($tags);
 
         $this -> contents[] = $chips;
     }

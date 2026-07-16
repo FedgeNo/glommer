@@ -7,17 +7,24 @@ declare(strict_types=1);
  * link to the tag's page, carrying its post count as a data attribute so the
  * client sizes and weights the node by how often the tag is used. The server
  * renders it as a plain link (a readable, crawlable list with no JS); the
- * graph script positions it in 3D once it takes over.
+ * graph script positions it in 3D once it takes over. Fetched directly off
+ * Hashtag::graphData() -> DB::rows(); hashtagId is carried only so
+ * graphData() can index the co-occurrence edges against node position.
  */
 class HashtagNode extends Anchor
 {
     public ?string $class = 'HashtagNode';
 
-    public function __construct(string $tag, int $post_count)
-    {
-        parent::__construct(ServerURL::absolute('/tags/' . $tag));
+    public ?int $hashtagId = null;
+    public ?string $tag = null;
+    public int $postCount = 0;
 
-        $this -> contents[] = '#' . $tag;
-        $this -> attributes['data-count'] = (string) $post_count;
+    public function toDOM(): \DOMElement
+    {
+        $this -> href = ServerURL::absolute('/tags/' . $this -> tag);
+        $this -> contents[] = '#' . $this -> tag;
+        $this -> attributes['data-count'] = (string) $this -> postCount;
+
+        return parent::toDOM();
     }
 }

@@ -19,15 +19,13 @@ class HashtagGraph extends Div
     public ?string $class = 'HashtagGraph';
 
     /**
-     * @param array{nodes: array<int, array{tag: string, postCount: int}>, edges: array<int, array{a: int, b: int, weight: int}>} $data
+     * @param array{nodes: HashtagNode[], edges: array<int, array{a: int, b: int, weight: int}>} $data
      */
     public function __construct(array $data)
     {
         parent::__construct();
 
-        foreach ($data['nodes'] as $node) {
-            $this -> addContent(new HashtagNode($node['tag'], $node['postCount']));
-        }
+        $this -> addContents($data['nodes']);
 
         // Index pairs + co-occurrence weight, referencing the node order above.
         $this -> attributes['data-edges'] = json_encode($data['edges']);

@@ -13,7 +13,9 @@ class Notification extends HTMLObject
     public ?string $type = null;
     public ?int $postId = null;
     public ?string $createdAt = null;
-    public ?User $actor = null;
+    public ?string $actorUsername = null;
+    public ?string $actorDisplayName = null;
+    public ?int $actorHasAvatar = null;
 
     public function toDOM(): \DOMElement
     {
@@ -24,7 +26,11 @@ class Notification extends HTMLObject
         $link = new Anchor($this -> targetURL());
         $link -> class = 'd-flex align-items-center gap-3';
 
-        $link -> addContent(Avatar::forUser($this -> actor));
+        $avatar_url = $this -> actorHasAvatar
+            ? ServerURL::absolute(User::avatarPath((int) $this -> actorId))
+            : null;
+
+        $link -> addContent(Avatar::create((bool) $this -> actorHasAvatar, $avatar_url, $this -> actorName(), (int) $this -> actorId));
 
         $info = new Div();
 
@@ -45,7 +51,7 @@ class Notification extends HTMLObject
 
     protected function actorName(): string
     {
-        return $this -> actor -> displayName ?? $this -> actor -> username;
+        return $this -> actorDisplayName ?? $this -> actorUsername;
     }
 
     protected function text(): string
@@ -82,36 +88,16 @@ class Notification extends HTMLObject
         return match ($this -> type) {
             'like', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
-            'friendAccepted' => ServerURL::absolute('/users/' . $this -> actor -> username . '/'),
-            'message' => ServerURL::absolute('/messages/' . $this -> actor -> username),
+            'friendAccepted' => ServerURL::absolute('/users/' . $this -> actorUsername . '/'),
+            'message' => ServerURL::absolute('/messages/' . $this -> actorUsername),
             // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
             // post belongs to the ACTOR (whoever wrote the post that mentions
             // you) - same reasoning as 'friendAccepted'/'message' below using
             // the actor's identity, not the recipient's.
-            'mention' => ServerURL::absolute('/users/' . $this -> actor -> username . '/' . $this -> postId),
+            'mention' => ServerURL::absolute('/users/' . $this -> actorUsername . '/' . $this -> postId),
             'passwordRemovedGoogle' => ServerURL::absolute('/forgot-password'),
             default => '#',
         };
-    }
-
-    public static function fromRow(NotificationData $row): self
-    {
-        $notification = new self();
-        $notification -> notificationId = (int) $row -> notificationId;
-        $notification -> userId = (int) $row -> userId;
-        $notification -> actorId = (int) $row -> actorId;
-        $notification -> type = $row -> type;
-        $notification -> postId = $row -> postId !== null ? (int) $row -> postId : null;
-        $notification -> createdAt = $row -> createdAt;
-
-        $actor = new User();
-        $actor -> userId = (int) $row -> actorId;
-        $actor -> username = $row -> actorUsername;
-        $actor -> displayName = $row -> actorDisplayName;
-        $actor -> hasAvatar = $row -> actorHasAvatar;
-        $notification -> actor = $actor;
-
-        return $notification;
     }
 
     /**
@@ -131,9 +117,9 @@ class Notification extends HTMLObject
             'type' => $notification -> type,
             'postId' => $notification -> postId,
             'createdAt' => $notification -> createdAt,
-            'actorUsername' => $notification -> actor ?-> username,
-            'actorDisplayName' => $notification -> actor ?-> displayName,
-            'actorImage' => $notification -> actor !== null && $notification -> actor -> hasAvatar
+            'actorUsername' => $notification -> actorUsername,
+            'actorDisplayName' => $notification -> actorDisplayName,
+            'actorImage' => $notification -> actorHasAvatar
                 ? ServerURL::absolute(User::avatarPath((int) $notification -> actorId))
                 : null,
         ], $notifications);
@@ -157,7 +143,7 @@ SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisp
     WHERE `n`.`userId` = ? AND `n`.`notificationId` < ?
     ORDER BY `n`.`notificationId` DESC
     LIMIT ?
-', 'NotificationData', 'iii', $user_id, $before_id, $fetch_limit);
+', 'Notification', 'iii', $user_id, $before_id, $fetch_limit);
         } else {
             $rows = DB::rows('
 SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
@@ -166,10 +152,8 @@ SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisp
     WHERE `n`.`userId` = ?
     ORDER BY `n`.`notificationId` DESC
     LIMIT ?
-', 'NotificationData', 'ii', $user_id, $fetch_limit);
+', 'Notification', 'ii', $user_id, $fetch_limit);
         }
-
-        $rows = array_map(self::fromRow(...), $rows);
 
         $has_more = count($rows) > $limit;
 

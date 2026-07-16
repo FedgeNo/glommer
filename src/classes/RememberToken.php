@@ -165,7 +165,7 @@ DELETE
      * its hash); the selector is only used to match against the current
      * browser's cookie, not shown to the user.
      *
-     * @return RememberTokenData[]
+     * @return RememberedDevice[]
      */
     public static function rowsForUser(int $user_id): array
     {
@@ -174,7 +174,7 @@ SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress
     FROM `RememberTokens`
     WHERE `userId` = ? AND `expiresAt` > NOW()
     ORDER BY `lastUsedAt` DESC
-', 'RememberTokenData', 'i', $user_id);
+', 'RememberedDevice', 'i', $user_id);
     }
 
     /**

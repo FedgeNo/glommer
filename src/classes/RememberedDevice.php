@@ -6,34 +6,26 @@ declare(strict_types=1);
  * One row on the Settings "Remembered devices" list: a loosely-parsed
  * browser/OS label from the token's stored user-agent, its IP, when it was
  * first seen and last used, and a Revoke button - everything RememberToken
- * tracks per token except the selector/validator themselves, which never
- * leave the server.
+ * tracks per token except the validator itself, which never leaves the
+ * server. Fetched directly off RememberToken::rowsForUser() -> DB::rows();
+ * the selector is carried only to compare against the current browser's
+ * cookie, never shown to the user.
  */
 class RememberedDevice extends Div
 {
     public ?string $class = 'Card d-flex align-items-center gap-3 RememberedDevice';
 
-    public int $tokenId;
-    public ?string $userAgent;
-    public ?string $ipAddress;
-    public string $createdAt;
-    public string $lastUsedAt;
-    public bool $isCurrent;
-
-    public function __construct(RememberTokenData $row, bool $is_current)
-    {
-        parent::__construct();
-
-        $this -> tokenId = (int) $row -> tokenId;
-        $this -> userAgent = $row -> userAgent;
-        $this -> ipAddress = $row -> ipAddress;
-        $this -> createdAt = (string) $row -> createdAt;
-        $this -> lastUsedAt = (string) $row -> lastUsedAt;
-        $this -> isCurrent = $is_current;
-    }
+    public ?int $tokenId = null;
+    public ?string $selector = null;
+    public ?string $userAgent = null;
+    public ?string $ipAddress = null;
+    public ?string $createdAt = null;
+    public ?string $lastUsedAt = null;
 
     public function toDOM(): \DOMElement
     {
+        $is_current = $this -> selector === RememberToken::currentSelector();
+
         $this -> attributes['data-token-id'] = (string) $this -> tokenId;
 
         $info = new Div();
@@ -41,7 +33,7 @@ class RememberedDevice extends Div
 
         $label = self::describe($this -> userAgent);
 
-        if ($this -> isCurrent) {
+        if ($is_current) {
             $label .= ' (this device)';
         }
 
@@ -58,7 +50,7 @@ class RememberedDevice extends Div
         // The current device isn't revocable from its own row - revoking it
         // would log this very session's persistent cookie out from under the
         // user mid-visit; logout is the right tool for "forget this browser".
-        if (!$this -> isCurrent) {
+        if (!$is_current) {
             $revoke = new Button();
             $revoke -> type = 'button';
             $revoke -> class = 'Btn ms-auto RevokeSessionButton';

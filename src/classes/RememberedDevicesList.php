@@ -26,18 +26,15 @@ class RememberedDevicesList extends Div
 
     public function toDOM(): \DOMElement
     {
-        $rows = RememberToken::rowsForUser($this -> userId);
-        $current_selector = RememberToken::currentSelector();
+        $devices = RememberToken::rowsForUser($this -> userId);
 
-        if ($rows === []) {
+        if ($devices === []) {
             $this -> addContent(new Notice('No remembered devices. Devices where you check "Remember me" at login appear here.'));
 
             return parent::toDOM();
         }
 
-        foreach ($rows as $row) {
-            $this -> addContent(new RememberedDevice($row, $row -> selector === $current_selector));
-        }
+        $this -> addContents($devices);
 
         return parent::toDOM();
     }

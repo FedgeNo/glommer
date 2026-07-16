@@ -178,13 +178,13 @@ SELECT `Posts`.*
      * The most-used tags all-time (by count of the top-level, non-banned posts
      * that carry them - matching what a tag page shows), for the /tags/ index.
      *
-     * @return array<int, array{tag: string, postCount: int}>
+     * @return HashtagChip[]
      */
     public static function popular(int $limit): array
     {
         $not_banned = 0;
 
-        $stmt = DB::prepare('
+        return DB::rows('
 SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -194,10 +194,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     GROUP BY `Hashtags`.`hashtagId`
     ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
     LIMIT ?
-');
-        DB::bind($stmt, 'ii', $not_banned, $limit);
-
-        return self::countRows($stmt);
+', 'HashtagChip', 'ii', $not_banned, $limit);
     }
 
     /**
@@ -205,14 +202,14 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
      * simple recent-window "trending" (the timer-recomputed trending-entities
      * engine will supersede this later). Empty when nothing's been posted lately.
      *
-     * @return array<int, array{tag: string, postCount: int}>
+     * @return HashtagChip[]
      */
     public static function trending(int $limit): array
     {
         $not_banned = 0;
         $days = 7;
 
-        $stmt = DB::prepare('
+        return DB::rows('
 SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -222,10 +219,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     GROUP BY `Hashtags`.`hashtagId`
     ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
     LIMIT ?
-');
-        DB::bind($stmt, 'iii', $not_banned, $days, $limit);
-
-        return self::countRows($stmt);
+', 'HashtagChip', 'iii', $not_banned, $days, $limit);
     }
 
     /**
@@ -239,13 +233,13 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
      * cheap at this scale; a much larger site would precompute co-occurrence
      * rather than self-join PostHashtags live.
      *
-     * @return array{nodes: array<int, array{tag: string, postCount: int}>, edges: array<int, array{a: int, b: int, weight: int}>}
+     * @return array{nodes: HashtagNode[], edges: array<int, array{a: int, b: int, weight: int}>}
      */
     public static function graphData(int $limit): array
     {
         $not_banned = 0;
 
-        $node_stmt = DB::run('
+        $nodes = DB::rows('
 SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -255,15 +249,12 @@ SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
     GROUP BY `Hashtags`.`hashtagId`
     ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
     LIMIT ?
-', 'ii', $not_banned, $limit);
-        $node_result = mysqli_stmt_get_result($node_stmt);
+', 'HashtagNode', 'ii', $not_banned, $limit);
 
-        $nodes = [];
         $index_of = [];
 
-        while ($row = mysqli_fetch_assoc($node_result)) {
-            $index_of[(int) $row['hashtagId']] = count($nodes);
-            $nodes[] = ['tag' => (string) $row['tag'], 'postCount' => (int) $row['postCount']];
+        foreach ($nodes as $i => $node) {
+            $index_of[(int) $node -> hashtagId] = $i;
         }
 
         $edges = [];
@@ -295,23 +286,6 @@ SELECT `a`.`hashtagId` AS `aId`, `b`.`hashtagId` AS `bId`, COUNT(*) AS `weight`
         }
 
         return ['nodes' => $nodes, 'edges' => $edges];
-    }
-
-    /**
-     * @return array<int, array{tag: string, postCount: int}>
-     */
-    private static function countRows(\mysqli_stmt $stmt): array
-    {
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $tags = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $tags[] = ['tag' => (string) $row['tag'], 'postCount' => (int) $row['postCount']];
-        }
-
-        return $tags;
     }
 
     /**

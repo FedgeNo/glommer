@@ -66,6 +66,7 @@ $remember_me = ($_SESSION['pending2FARememberMe'] ?? false) === true;
 unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe']);
 
 Auth::login($user);
+LoginFingerprint::record((int) $user -> userId);
 
 if ($remember_me) {
     RememberToken::issue((int) $user -> userId);

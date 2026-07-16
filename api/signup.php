@@ -95,6 +95,7 @@ $user -> displayName = $display_name_value;
 $user -> verified = $unverified;
 
 Auth::login($user);
+LoginFingerprint::record($new_user_id);
 
 if (($payload['rememberMe'] ?? false) === true) {
     RememberToken::issue($new_user_id);

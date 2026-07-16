@@ -55,6 +55,7 @@ if (!GoogleAuth::isEnabled()) {
                     : 'Your account has been banned.';
             } else {
                 Auth::login($user);
+                LoginFingerprint::record((int) $user -> userId);
                 // A Google sign-in implies "keep me signed in".
                 RememberToken::issue((int) $user -> userId);
 

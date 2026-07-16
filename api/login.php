@@ -90,6 +90,7 @@ if (TwoFactor::isEnabled($user)) {
 }
 
 Auth::login($user);
+LoginFingerprint::record((int) $user -> userId);
 
 if ($remember_me) {
     RememberToken::issue((int) $user -> userId);

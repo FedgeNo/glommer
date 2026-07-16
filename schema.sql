@@ -286,6 +286,31 @@ CREATE TABLE `RememberTokens` (
   CONSTRAINT `RememberTokens_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `LoginFingerprints` (
+  `fingerprintId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `ipAddress` varchar(45) DEFAULT NULL,
+  `userAgent` varchar(255) DEFAULT NULL,
+  `acceptLanguage` varchar(255) DEFAULT NULL,
+  `acceptEncoding` varchar(255) DEFAULT NULL,
+  `referer` varchar(255) DEFAULT NULL,
+  `secChUa` varchar(255) DEFAULT NULL,
+  `secChUaMobile` varchar(8) DEFAULT NULL,
+  `secChUaPlatform` varchar(64) DEFAULT NULL,
+  `secFetchSite` varchar(32) DEFAULT NULL,
+  `secFetchMode` varchar(32) DEFAULT NULL,
+  `secFetchDest` varchar(32) DEFAULT NULL,
+  `secFetchUser` varchar(16) DEFAULT NULL,
+  `dnt` varchar(8) DEFAULT NULL,
+  `httpProtocol` varchar(16) DEFAULT NULL,
+  `tlsCipher` varchar(64) DEFAULT NULL,
+  `tlsProtocol` varchar(16) DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`fingerprintId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `LoginFingerprints_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `ModerationActions` (
   `actionId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `moderatorId` int(10) unsigned NOT NULL,

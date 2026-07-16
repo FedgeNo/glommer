@@ -121,6 +121,7 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
 
         self::deleteToken((int) $token -> tokenId);
         Auth::login($user);
+        LoginFingerprint::record((int) $user -> userId);
         self::issue((int) $user -> userId, (string) $token -> createdAt);
     }
 

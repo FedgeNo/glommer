@@ -16,6 +16,10 @@ $page -> addContent(new Heading2('Change Email'));
 
 $page -> addContent(new ChangeEmailForm());
 
+$page -> addContent(new Heading2('Two-Factor Authentication'));
+
+$page -> addContent(new TwoFactorSettingsForm(TwoFactor::isEnabled(Auth::user())));
+
 $page -> addContent(new Heading2('Theme'));
 
 $page -> addContent(new ThemeSelector());

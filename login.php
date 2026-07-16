@@ -9,6 +9,28 @@ if (Auth::check()) {
     exit;
 }
 
+// "Start over" from the code step abandons the in-progress 2FA login and
+// returns to the password form. Clearing a pending (not-yet-completed) login
+// state is harmless - worst case it just forces a fresh login - so a plain
+// GET is fine here; there's no logged-in state to protect.
+if (isset($_GET['restart'])) {
+    unset($_SESSION['pending2faUserId'], $_SESSION['pending2faRememberMe']);
+
+    header('Location: ' . ServerURL::absolute('/login'));
+    exit;
+}
+
+// Mid-2FA (password already verified by api/login.php, code emailed): show the
+// code-entry step instead of the password form, so a refresh here doesn't drop
+// the user back to re-entering their password.
+if (isset($_SESSION['pending2faUserId'])) {
+    $page = Page::create('Verification Code');
+    $page -> addContent(new TwoFactorForm());
+    $page -> addContent(new Anchor(ServerURL::absolute('/login?restart=1'), 'Start over'));
+    $page -> send();
+    exit;
+}
+
 $page = Page::create('Log In');
 
 if (GoogleAuth::isEnabled()) {

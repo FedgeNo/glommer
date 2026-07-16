@@ -2983,6 +2983,62 @@ document.addEventListener('submit', async (event) => {
     }
 });
 
+/* ----- Settings: toggle opt-in email 2FA ----- */
+
+const TWO_FACTOR_ON_EXPLANATION = 'When you log in, we\'ll email a verification code you have to enter to finish signing in.';
+const TWO_FACTOR_OFF_EXPLANATION = 'Add a second step at login: we\'ll email a verification code you have to enter, so your password alone isn\'t enough to get in.';
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.TwoFactorSettingsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const existing_error = form.querySelector('.Error');
+
+    if (existing_error) {
+        existing_error.remove();
+    }
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    const password_input = form.querySelector('[name=\'currentPassword\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/two-factor', {
+        action: submit_button.dataset.action,
+        currentPassword: password_input.value,
+    });
+
+    if (!data) {
+        submit_button.disabled = false;
+        return;
+    }
+
+    // Flip the form in place to the new state (no reload) - same strings the
+    // server renders in TwoFactorSettingsForm, kept in parity here.
+    const now_enabled = data.enabled;
+    form.dataset.enabled = now_enabled ? '1' : '0';
+    form.querySelector('legend').textContent = now_enabled
+        ? 'Two-factor authentication is on'
+        : 'Two-factor authentication is off';
+    form.querySelector('fieldset p').textContent = now_enabled
+        ? TWO_FACTOR_ON_EXPLANATION
+        : TWO_FACTOR_OFF_EXPLANATION;
+    submit_button.textContent = now_enabled
+        ? 'Turn off two-factor authentication'
+        : 'Turn on two-factor authentication';
+    submit_button.dataset.action = now_enabled ? 'disable' : 'enable';
+    password_input.value = '';
+    submit_button.disabled = false;
+
+    show_toast(now_enabled
+        ? 'Two-factor authentication is now on.'
+        : 'Two-factor authentication is now off.');
+});
+
 document.addEventListener('input', (event) => {
     const username_input = event.target.closest('.SignupForm [name=\'username\']');
 
@@ -3650,6 +3706,38 @@ document.addEventListener('submit', async (event) => {
         password: form.querySelector('[name=\'password\']').value,
         rememberMe: form.querySelector('[name=\'rememberMe\']').checked,
         captchaToken: captcha_input ? captcha_input.value : null,
+    });
+
+    if (!data) {
+        submit_button.disabled = false;
+        return;
+    }
+
+    // 2FA is on for this account: the password checked out but login isn't
+    // complete. Reload /login, which now shows the code-entry step (the
+    // pending state lives server-side in the session) rather than logging in.
+    if (data.twoFactorRequired) {
+        window.location = window.siteURL + '/login';
+        return;
+    }
+
+    window.location = window.siteURL + '/';
+});
+
+document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.TwoFactorForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/verify-2fa', {
+        code: form.querySelector('[name=\'code\']').value,
     });
 
     if (!data) {

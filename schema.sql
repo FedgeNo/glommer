@@ -23,6 +23,7 @@ CREATE TABLE `Users` (
   `banReason` text DEFAULT NULL,
   `isMod` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `verified` tinyint(1) NOT NULL DEFAULT 0,
+  `twoFactorEnabled` tinyint(1) NOT NULL DEFAULT 0,
   `theme` varchar(10) NOT NULL DEFAULT 'system',
   `skinTone` varchar(16) DEFAULT NULL,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
@@ -201,6 +202,23 @@ CREATE TABLE `PasswordResets` (
   KEY `tokenHash` (`tokenHash`),
   KEY `expiresAt` (`expiresAt`),
   KEY `userId` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- One active opt-in email 2FA code per user (the UNIQUE key on userId means a
+-- new code replaces the old rather than piling up). Only the SHA-256 hash of
+-- the code is stored, never the code itself, and attempts is capped so a code
+-- can't be brute-forced within its short lifetime.
+CREATE TABLE `TwoFactorCodes` (
+  `codeId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `codeHash` varchar(64) NOT NULL,
+  `expiresAt` datetime NOT NULL,
+  `attempts` int(10) unsigned NOT NULL DEFAULT 0,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`codeId`),
+  UNIQUE KEY `userId` (`userId`),
+  KEY `expiresAt` (`expiresAt`),
+  CONSTRAINT `TwoFactorCodes_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailChangeReverts` (

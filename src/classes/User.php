@@ -21,6 +21,7 @@ class User extends HTMLObject
     public ?string $banReason = null;
     public int $isMod = 0;
     public int $verified = 0;
+    public int $twoFactorEnabled = 0;
     public string $theme = 'system';
     public ?string $skinTone = null;
     public int $lastNotificationId = 0;

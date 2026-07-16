@@ -65,6 +65,12 @@ class Post extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
+        // The permalink shows one post in full - its body isn't height-capped
+        // the way a feed card's is (see .Post:not(.PostStandalone) .PostBody).
+        if ($this -> standalone) {
+            $this -> class .= ' PostStandalone';
+        }
+
         $this -> contents[] = $this -> contentElement();
 
         // A report snapshot embeds the content alone; every feed/permalink post

@@ -1102,7 +1102,7 @@ input[type='file']::file-selector-button {
     height: 50vh;
 }
 
-.Post .PostBody {
+.Post:not(.PostStandalone) .PostBody {
     max-height: 50vh;
     overflow-y: auto;
 }

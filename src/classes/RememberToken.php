@@ -29,7 +29,6 @@ class RememberToken
         $validator = bin2hex(random_bytes(32));
         $validator_hash = hash('sha256', $validator);
         $ttl_days = self::TTL_DAYS;
-        $mysqli = DB::connection();
         $user_agent = substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null;
         $ip_address = ServerURL::clientIP();
         $created_at = $carried_created_at ?? date('Y-m-d H:i:s');
@@ -44,12 +43,10 @@ class RememberToken
             $selector = bin2hex(random_bytes(12));
 
             try {
-                $stmt = mysqli_prepare($mysqli, '
+                DB::run('
 INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`)
     VALUES (?, ?, ?, NOW() + INTERVAL ? DAY, ?, NOW(), ?, ?)
-');
-                mysqli_stmt_bind_param($stmt, 'ississs', $user_id, $selector, $validator_hash, $ttl_days, $created_at, $user_agent, $ip_address);
-                mysqli_stmt_execute($stmt);
+', 'ississs', $user_id, $selector, $validator_hash, $ttl_days, $created_at, $user_agent, $ip_address);
 
                 break;
             } catch (\mysqli_sql_exception $exception) {
@@ -64,12 +61,11 @@ INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`
         // Occasionally sweep out expired rows (same lottery approach as
         // RateLimiter) so the table doesn't grow forever.
         if (mt_rand(1, 100) === 1) {
-            $prune_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `expiresAt` <= NOW()
 ');
-            mysqli_stmt_execute($prune_stmt);
         }
 
         self::setCookie($selector . ':' . $validator, time() + $ttl_days * 86400);
@@ -90,13 +86,11 @@ DELETE
 
         [$selector, $validator] = explode(':', $cookie, 2);
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
     FROM `RememberTokens`
     WHERE `selector` = ? AND `expiresAt` > NOW()
-');
-        mysqli_stmt_bind_param($stmt, 's', $selector);
-        mysqli_stmt_execute($stmt);
+', 's', $selector);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -143,13 +137,11 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
         if (is_string($cookie) && str_contains($cookie, ':')) {
             [$selector] = explode(':', $cookie, 2);
 
-            $stmt = mysqli_prepare(DB::connection(), '
+            DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `selector` = ?
-');
-            mysqli_stmt_bind_param($stmt, 's', $selector);
-            mysqli_stmt_execute($stmt);
+', 's', $selector);
         }
 
         self::clearCookie();
@@ -162,13 +154,11 @@ DELETE
      */
     public static function purgeForUser(int $user_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $user_id);
     }
 
     /**
@@ -181,14 +171,12 @@ DELETE
      */
     public static function rowsForUser(int $user_id): array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
     FROM `RememberTokens`
     WHERE `userId` = ? AND `expiresAt` > NOW()
     ORDER BY `lastUsedAt` DESC
-');
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $user_id);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -231,26 +219,22 @@ SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress
      */
     public static function revoke(int $token_id, int $user_id): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `tokenId` = ? AND `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $token_id, $user_id);
-        mysqli_stmt_execute($stmt);
+', 'ii', $token_id, $user_id);
 
         return mysqli_stmt_affected_rows($stmt) > 0;
     }
 
     private static function deleteToken(int $token_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `tokenId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $token_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $token_id);
     }
 
     private static function setCookie(string $value, int $expires): void

@@ -18,15 +18,13 @@ $name = $profile_user -> displayName ?? $profile_user -> username;
 
 $limit = 50;
 
-$feed_stmt = mysqli_prepare(DB::connection(), '
+$feed_stmt = DB::run('
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?
     ORDER BY `postId` DESC
     LIMIT ?
-');
-mysqli_stmt_bind_param($feed_stmt, 'ii', $user_id, $limit);
-mysqli_stmt_execute($feed_stmt);
+', 'ii', $user_id, $limit);
 $feed_result = mysqli_stmt_get_result($feed_stmt);
 
 $feed_rows = [];

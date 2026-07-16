@@ -39,13 +39,11 @@ This link expires in 1 hour. If you did not request this, you can ignore this em
     {
         $token_hash = hash('sha256', $token);
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `userId`
     FROM `PasswordResets`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
-');
-        mysqli_stmt_bind_param($stmt, 's', $token_hash);
-        mysqli_stmt_execute($stmt);
+', 's', $token_hash);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -60,16 +58,13 @@ SELECT `userId`
             return false;
         }
 
-        $mysqli = DB::connection();
         $hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-        $update_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 UPDATE `Users`
     SET `passwordHash` = ?
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($update_stmt, 'si', $hash, $user_id);
-        mysqli_stmt_execute($update_stmt);
+', 'si', $hash, $user_id);
 
         // The old password's sessions and remember-me tokens die with it -
         // whoever prompted the reset may not be the only one logged in.
@@ -77,37 +72,32 @@ UPDATE `Users`
         RememberToken::purgeForUser($user_id);
 
         $token_hash = hash('sha256', $token);
-        $delete_stmt = mysqli_prepare($mysqli, '
+
+        DB::run('
 DELETE
     FROM `PasswordResets`
     WHERE `tokenHash` = ?
-');
-        mysqli_stmt_bind_param($delete_stmt, 's', $token_hash);
-        mysqli_stmt_execute($delete_stmt);
+', 's', $token_hash);
 
         return true;
     }
 
     private static function create(int $user_id): string
     {
-        $mysqli = DB::connection();
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
         $expiry_hours = 1;
 
-        $prune_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `PasswordResets`
     WHERE `expiresAt` <= NOW()
 ');
-        mysqli_stmt_execute($prune_stmt);
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `PasswordResets` (`userId`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, NOW() + INTERVAL ? HOUR)
-');
-        mysqli_stmt_bind_param($stmt, 'isi', $user_id, $token_hash, $expiry_hours);
-        mysqli_stmt_execute($stmt);
+', 'isi', $user_id, $token_hash, $expiry_hours);
 
         return $token;
     }

@@ -24,14 +24,11 @@ if (RateLimiter::tooManyAttempts($rate_key, 5, 900)) {
 if ($email !== '') {
     RateLimiter::recordAttempt($rate_key);
 
-    $mysqli = DB::connection();
-    $stmt = mysqli_prepare($mysqli, '
+    $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `email` = ?
-');
-    mysqli_stmt_bind_param($stmt, 's', $email);
-    mysqli_stmt_execute($stmt);
+', 's', $email);
     $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_object($result, User::class);
 

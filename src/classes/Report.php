@@ -17,14 +17,11 @@ class Report
         $snapshot = self::buildSnapshot($target_type, $target_id);
         $snapshot_json = $snapshot !== null ? json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        try {
+            DB::run('
 INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapshot`)
     VALUES (?, ?, ?, ?, ?)
-');
-        mysqli_stmt_bind_param($stmt, 'isiss', $reporter_id, $target_type, $target_id, $reason, $snapshot_json);
-
-        try {
-            mysqli_stmt_execute($stmt);
+', 'isiss', $reporter_id, $target_type, $target_id, $reason, $snapshot_json);
         } catch (\mysqli_sql_exception $exception) {
             // 1062 = the reporter_target unique key rejected a duplicate report
             // from the same reporter for the same target. Anything else is a
@@ -59,13 +56,11 @@ INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapsh
 
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `reportsDismissed`
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $target_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $target_id);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
         return $row !== null && (int) $row['reportsDismissed'] === 1;
@@ -90,13 +85,11 @@ SELECT `reportsDismissed`
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
         $dismissed = 1;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `' . $table . '`
     SET `reportsDismissed` = ?
     WHERE `' . $id_column . '` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $dismissed, $target_id);
-        mysqli_stmt_execute($stmt);
+', 'ii', $dismissed, $target_id);
     }
 
     /**
@@ -155,13 +148,11 @@ UPDATE `' . $table . '`
      */
     private static function snapshotRow(string $table, string $id_column, int $id): ?array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $id);
-        mysqli_stmt_execute($stmt);
+', 'i', $id);
 
         return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
     }
@@ -171,14 +162,12 @@ SELECT *
      */
     private static function attachmentIds(int $post_id): array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `itemId`
     FROM `FeedItems`
     WHERE `postId` = ?
     ORDER BY `itemId`
-');
-        mysqli_stmt_bind_param($stmt, 'i', $post_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $post_id);
         $result = mysqli_stmt_get_result($stmt);
 
         $ids = [];
@@ -198,14 +187,11 @@ SELECT `itemId`
      */
     public static function backfillSnapshots(): void
     {
-        $mysqli = DB::connection();
-
-        $select = mysqli_prepare($mysqli, '
+        $select = DB::run('
 SELECT `reportId`, `targetType`, `targetId`
     FROM `Reports`
     WHERE `snapshot` IS NULL
 ');
-        mysqli_stmt_execute($select);
         $result = mysqli_stmt_get_result($select);
 
         $pending = [];
@@ -224,13 +210,11 @@ SELECT `reportId`, `targetType`, `targetId`
             $snapshot_json = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $report_id = (int) $row['reportId'];
 
-            $update = mysqli_prepare($mysqli, '
+            DB::run('
 UPDATE `Reports`
     SET `snapshot` = ?
     WHERE `reportId` = ? AND `snapshot` IS NULL
-');
-            mysqli_stmt_bind_param($update, 'si', $snapshot_json, $report_id);
-            mysqli_stmt_execute($update);
+', 'si', $snapshot_json, $report_id);
         }
     }
 
@@ -253,13 +237,11 @@ UPDATE `Reports`
 
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT 1
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $target_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $target_id);
 
         return mysqli_fetch_row(mysqli_stmt_get_result($stmt)) !== null;
     }
@@ -277,31 +259,27 @@ SELECT 1
      */
     public static function rowsForAdmin(int $limit, ?int $before_report_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
 
         if ($before_report_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `r`.*, `u`.`username` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     WHERE `r`.`reportId` < ?
     ORDER BY `r`.`reportId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'ii', $before_report_id, $fetch_limit);
+', 'ii', $before_report_id, $fetch_limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `r`.*, `u`.`username` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'i', $fetch_limit);
+', 'i', $fetch_limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -324,13 +302,11 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
      */
     public static function find(int $report_id): ?array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `targetType`, `targetId`
     FROM `Reports`
     WHERE `reportId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $report_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $report_id);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
         if ($row === null) {
@@ -342,13 +318,11 @@ SELECT `targetType`, `targetId`
 
     public static function delete(int $report_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `Reports`
     WHERE `reportId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $report_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $report_id);
     }
 
     /**
@@ -368,13 +342,11 @@ DELETE
 
     protected static function postAuthorId(int $post_id): ?int
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $post_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $post_id);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -383,13 +355,11 @@ SELECT `userId`
 
     protected static function messageAuthorId(int $message_id): ?int
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `senderId`
     FROM `Messages`
     WHERE `messageId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $message_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $message_id);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 

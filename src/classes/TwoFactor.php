@@ -32,13 +32,11 @@ class TwoFactor
     {
         $flag = $enabled ? 1 : 0;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `Users`
     SET `twoFactorEnabled` = ?
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $flag, $user_id);
-        mysqli_stmt_execute($stmt);
+', 'ii', $flag, $user_id);
 
         // Turning it off leaves no reason to keep a pending code around.
         if (!$enabled) {
@@ -64,13 +62,11 @@ UPDATE `Users`
 
         // One active code per user: ON DUPLICATE KEY UPDATE overwrites the
         // previous code, resets its attempt counter, and restarts the clock.
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 INSERT INTO `TwoFactorCodes` (`userId`, `codeHash`, `expiresAt`, `attempts`)
     VALUES (?, ?, NOW() + INTERVAL ? MINUTE, ?)
     ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `expiresAt` = VALUES(`expiresAt`), `attempts` = ?, `createdAt` = NOW()
-');
-        mysqli_stmt_bind_param($stmt, 'isiii', $user_id, $code_hash, $ttl_minutes, $initial_attempts, $reset_attempts);
-        mysqli_stmt_execute($stmt);
+', 'isiii', $user_id, $code_hash, $ttl_minutes, $initial_attempts, $reset_attempts);
 
         $name = $user -> displayName ?? $user -> username;
 
@@ -97,15 +93,11 @@ It expires in ' . self::CODE_TTL_MINUTES . ' minutes. If you didn\'t just try to
      */
     public static function verifyCode(int $user_id, string $code): bool
     {
-        $mysqli = DB::connection();
-
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 SELECT `codeId`, `codeHash`, `attempts`
     FROM `TwoFactorCodes`
     WHERE `userId` = ? AND `expiresAt` > NOW()
-');
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $user_id);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
         if ($row === null) {
@@ -119,13 +111,11 @@ SELECT `codeId`, `codeHash`, `attempts`
         }
 
         if (!hash_equals((string) $row['codeHash'], hash('sha256', $code))) {
-            $increment_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 UPDATE `TwoFactorCodes`
     SET `attempts` = `attempts` + 1
     WHERE `codeId` = ?
-');
-            mysqli_stmt_bind_param($increment_stmt, 'i', $row['codeId']);
-            mysqli_stmt_execute($increment_stmt);
+', 'i', $row['codeId']);
 
             return false;
         }
@@ -137,13 +127,11 @@ UPDATE `TwoFactorCodes`
 
     private static function clear(int $user_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `TwoFactorCodes`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $user_id);
     }
 
     /**

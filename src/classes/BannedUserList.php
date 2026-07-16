@@ -48,30 +48,26 @@ class BannedUserList extends HTMLObject
      */
     public static function fetch(int $limit, ?int $before_user_id = null): array
     {
-        $mysqli = DB::connection();
         $banned = 1;
 
         if ($before_user_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `banned` = ? AND `userId` < ?
     ORDER BY `userId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iii', $banned, $before_user_id, $limit);
+', 'iii', $banned, $before_user_id, $limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `banned` = ?
     ORDER BY `userId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'ii', $banned, $limit);
+', 'ii', $banned, $limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $items = [];

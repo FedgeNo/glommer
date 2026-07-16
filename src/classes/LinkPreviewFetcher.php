@@ -58,7 +58,12 @@ class LinkPreviewFetcher
      */
     private static function cachedMetadata(string $url): ?array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $succeeded_flag = 1;
+        $failed_flag = 0;
+        $success_cache_seconds = self::SUCCESS_CACHE_SECONDS;
+        $failure_cache_seconds = self::FAILURE_CACHE_SECONDS;
+
+        $stmt = DB::run('
 SELECT `title`, `description`, `imageURL`, `succeeded`
     FROM `LinkPreviews`
     WHERE `url` = ?
@@ -66,13 +71,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
             (`succeeded` = ? AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
             OR (`succeeded` = ? AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
         )
-');
-        $succeeded_flag = 1;
-        $failed_flag = 0;
-        $success_cache_seconds = self::SUCCESS_CACHE_SECONDS;
-        $failure_cache_seconds = self::FAILURE_CACHE_SECONDS;
-        mysqli_stmt_bind_param($stmt, 'siiii', $url, $succeeded_flag, $success_cache_seconds, $failed_flag, $failure_cache_seconds);
-        mysqli_stmt_execute($stmt);
+', 'siiii', $url, $succeeded_flag, $success_cache_seconds, $failed_flag, $failure_cache_seconds);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
         if ($row === null) {
@@ -452,8 +451,6 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
 
     private static function storeCache(string $url, ?array $metadata, bool $fetch_succeeded): void
     {
-        $mysqli = DB::connection();
-
         // "succeeded" tracks whether the FETCH worked, not whether it found
         // metadata - a successful fetch of a page with no metadata still
         // caches long (nothing to retry), only a genuine fetch failure caches
@@ -463,13 +460,11 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
         $description = $metadata['description'] ?? null;
         $image_url = $metadata['imageURL'] ?? null;
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `LinkPreviews` (`url`, `title`, `description`, `imageURL`, `succeeded`)
     VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `description` = VALUES(`description`), `imageURL` = VALUES(`imageURL`), `succeeded` = VALUES(`succeeded`), `fetchedAt` = CURRENT_TIMESTAMP
-');
-        mysqli_stmt_bind_param($stmt, 'ssssi', $url, $title, $description, $image_url, $succeeded);
-        mysqli_stmt_execute($stmt);
+', 'ssssi', $url, $title, $description, $image_url, $succeeded);
 
         // Rows older than a day are already treated as cache misses by
         // cachedMetadata() - this just reclaims the dead space they'd
@@ -477,13 +472,12 @@ INSERT INTO `LinkPreviews` (`url`, `title`, `description`, `imageURL`, `succeede
         // its own pruning, so it's not doing a DELETE scan on every write.
         if (mt_rand(1, 100) === 1) {
             $prune_days = 1;
-            $prune_stmt = mysqli_prepare($mysqli, '
+
+            DB::run('
 DELETE
     FROM `LinkPreviews`
     WHERE `fetchedAt` < NOW() - INTERVAL ? DAY
-');
-            mysqli_stmt_bind_param($prune_stmt, 'i', $prune_days);
-            mysqli_stmt_execute($prune_stmt);
+', 'i', $prune_days);
         }
     }
 

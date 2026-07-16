@@ -7,15 +7,12 @@ require __DIR__ . '/src/init.php';
 $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 $post_id = (int) ($_GET['id'] ?? 0);
-$mysqli = DB::connection();
 
-$stmt = mysqli_prepare($mysqli, '
+$stmt = DB::run('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'i', $post_id);
-mysqli_stmt_execute($stmt);
+', 'i', $post_id);
 $result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_assoc($result);
 
@@ -35,16 +32,14 @@ $not_banned = 0;
 $limit = 20;
 $fetch_limit = $limit + 1;
 
-$reply_stmt = mysqli_prepare($mysqli, '
+$reply_stmt = DB::run('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-mysqli_stmt_bind_param($reply_stmt, 'iii', $post_id, $not_banned, $fetch_limit);
-mysqli_stmt_execute($reply_stmt);
+', 'iii', $post_id, $not_banned, $fetch_limit);
 $reply_result = mysqli_stmt_get_result($reply_stmt);
 
 $json_ld = [

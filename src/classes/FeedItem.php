@@ -64,14 +64,12 @@ class FeedItem extends HTMLObject
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `FeedItems`
     WHERE `postId` IN (' . $placeholders . ')
     ORDER BY `postId` ASC, `itemId` ASC
-');
-        mysqli_stmt_bind_param($stmt, str_repeat('i', count($post_ids)), ...$post_ids);
-        mysqli_stmt_execute($stmt);
+', str_repeat('i', count($post_ids)), ...$post_ids);
         $result = mysqli_stmt_get_result($stmt);
 
         $items_by_post = [];

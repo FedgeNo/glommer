@@ -21,13 +21,11 @@ class Friendship
      */
     public static function statusBetween(int $user_a, int $user_b): ?self
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `Friendships`
     WHERE (`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?)
-');
-        mysqli_stmt_bind_param($stmt, 'iiii', $user_a, $user_b, $user_b, $user_a);
-        mysqli_stmt_execute($stmt);
+', 'iiii', $user_a, $user_b, $user_b, $user_a);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -45,13 +43,11 @@ SELECT *
     {
         $accepted_status = 'accepted';
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 DELETE
     FROM `Friendships`
     WHERE `status` = ? AND ((`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?))
-');
-        mysqli_stmt_bind_param($stmt, 'siiii', $accepted_status, $user_a, $user_b, $user_b, $user_a);
-        mysqli_stmt_execute($stmt);
+', 'siiii', $accepted_status, $user_a, $user_b, $user_b, $user_a);
 
         if (mysqli_stmt_affected_rows($stmt) === 0) {
             return false;

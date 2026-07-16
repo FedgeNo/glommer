@@ -28,13 +28,39 @@ class DB
             // account for a possible mismatch.
             $time_zone = '+00:00';
 
-            $stmt = mysqli_prepare(self::$connection, '
+            self::run('
 SET `time_zone` = ?
-');
-            mysqli_stmt_bind_param($stmt, 's', $time_zone);
-            mysqli_stmt_execute($stmt);
+', 's', $time_zone);
         }
 
         return self::$connection;
+    }
+
+    public static function prepare(string $sql): \mysqli_stmt
+    {
+        return mysqli_prepare(self::connection(), $sql);
+    }
+
+    public static function bind(\mysqli_stmt $stmt, string $types, mixed ...$params): void
+    {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+
+    public static function execute(\mysqli_stmt $stmt): void
+    {
+        mysqli_stmt_execute($stmt);
+    }
+
+    public static function run(string $sql, ?string $types = null, mixed ...$params): \mysqli_stmt
+    {
+        $stmt = self::prepare($sql);
+
+        if ($types !== null) {
+            self::bind($stmt, $types, ...$params);
+        }
+
+        self::execute($stmt);
+
+        return $stmt;
     }
 }

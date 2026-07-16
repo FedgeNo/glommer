@@ -133,13 +133,11 @@ if (!$has_text && !$has_files) {
 }
 
 if ($parent_id !== null) {
-    $parent_stmt = mysqli_prepare($mysqli, '
+    $parent_stmt = DB::run('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-');
-    mysqli_stmt_bind_param($parent_stmt, 'i', $parent_id);
-    mysqli_stmt_execute($parent_stmt);
+', 'i', $parent_id);
     $parent_result = mysqli_stmt_get_result($parent_stmt);
     $parent_row = mysqli_fetch_assoc($parent_result);
 
@@ -212,12 +210,10 @@ if ($needs_async) {
     JSONResponse::success(['processing' => true]) -> send();
 }
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
     VALUES (?, ?, ?, ?, ?, ?)
-');
-mysqli_stmt_bind_param($stmt, 'iissss', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
-mysqli_stmt_execute($stmt);
+', 'iissss', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
 $post_id = (int) mysqli_insert_id($mysqli);
 
 Hashtag::indexPost($post_id, $description_ops);
@@ -235,46 +231,38 @@ foreach ($valid_files as $file) {
     // Insert a placeholder row first so we have a real, numbered itemId to
     // name the processed files after (no user-controlled filenames survive).
     $placeholder_item_type = 'ImageItem';
-    $placeholder_stmt = mysqli_prepare($mysqli, '
+    DB::run('
 INSERT INTO `FeedItems` (`postId`, `itemType`)
     VALUES (?, ?)
-');
-    mysqli_stmt_bind_param($placeholder_stmt, 'is', $post_id, $placeholder_item_type);
-    mysqli_stmt_execute($placeholder_stmt);
+', 'is', $post_id, $placeholder_item_type);
     $item_id = (int) mysqli_insert_id($mysqli);
 
     $result = UploadProcessor::process($file['tmpPath'], $item_id, $file['originalFilename']);
 
     if ($result === null) {
-        $delete_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `FeedItems`
     WHERE `itemId` = ?
-');
-        mysqli_stmt_bind_param($delete_stmt, 'i', $item_id);
-        mysqli_stmt_execute($delete_stmt);
+', 'i', $item_id);
         continue;
     }
 
-    $update_stmt = mysqli_prepare($mysqli, '
+    DB::run('
 UPDATE `FeedItems`
     SET `itemType` = ?
     WHERE `itemId` = ?
-');
-    mysqli_stmt_bind_param($update_stmt, 'si', $result['itemType'], $item_id);
-    mysqli_stmt_execute($update_stmt);
+', 'si', $result['itemType'], $item_id);
 
     $items[] = FeedItem::fromRow(['itemId' => $item_id, 'postId' => $post_id, 'itemType' => $result['itemType']]);
 }
 
 if ($link_image_seed !== '') {
     $link_image_item_type = 'ImageItem';
-    $link_image_placeholder_stmt = mysqli_prepare($mysqli, '
+    DB::run('
 INSERT INTO `FeedItems` (`postId`, `itemType`)
     VALUES (?, ?)
-');
-    mysqli_stmt_bind_param($link_image_placeholder_stmt, 'is', $post_id, $link_image_item_type);
-    mysqli_stmt_execute($link_image_placeholder_stmt);
+', 'is', $post_id, $link_image_item_type);
     $link_image_item_id = (int) mysqli_insert_id($mysqli);
 
     UploadProcessor::rename($link_image_seed, $link_image_item_id, 'ImageItem', null);

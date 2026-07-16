@@ -64,13 +64,11 @@ class Message extends HTMLObject
      */
     public static function delete(int $message_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `Messages`
     WHERE `messageId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $message_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $message_id);
     }
 
     /**
@@ -99,7 +97,6 @@ DELETE
      */
     public static function rowsBetween(int $user_a, int $user_b, int $limit, ?int $before_message_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
 
         // No cursor means "from the newest" - a sentinel above any real
@@ -111,7 +108,7 @@ DELETE
         // backward and stops at the limit, so only the merged 2x-limit rows
         // ever get sorted - an OR forces collecting and filesorting the whole
         // conversation before the LIMIT can apply.
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 (SELECT *
     FROM `Messages`
     WHERE `senderId` = ? AND `recipientId` = ? AND `messageId` < ?
@@ -125,22 +122,7 @@ UNION ALL
     LIMIT ?)
     ORDER BY `messageId` DESC
     LIMIT ?
-');
-        mysqli_stmt_bind_param(
-            $stmt,
-            'iiiiiiiii',
-            $user_a,
-            $user_b,
-            $cursor,
-            $fetch_limit,
-            $user_b,
-            $user_a,
-            $cursor,
-            $fetch_limit,
-            $fetch_limit
-        );
-
-        mysqli_stmt_execute($stmt);
+', 'iiiiiiiii', $user_a, $user_b, $cursor, $fetch_limit, $user_b, $user_a, $cursor, $fetch_limit, $fetch_limit);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];

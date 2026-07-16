@@ -146,13 +146,11 @@ class User extends HTMLObject
 
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `userId` IN (' . $placeholders . ')
-');
-        mysqli_stmt_bind_param($stmt, str_repeat('i', count($user_ids)), ...$user_ids);
-        mysqli_stmt_execute($stmt);
+', str_repeat('i', count($user_ids)), ...$user_ids);
         $result = mysqli_stmt_get_result($stmt);
 
         $users = [];
@@ -166,13 +164,11 @@ SELECT *
 
     public static function loadByUsername(string $username): ?self
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `username` = ?
-');
-        mysqli_stmt_bind_param($stmt, 's', $username);
-        mysqli_stmt_execute($stmt);
+', 's', $username);
         $result = mysqli_stmt_get_result($stmt);
         $user = mysqli_fetch_object($result, User::class);
 
@@ -188,13 +184,11 @@ SELECT *
      */
     public static function byUsername(string $username): ?OtherUser
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `username` = ?
-');
-        mysqli_stmt_bind_param($stmt, 's', $username);
-        mysqli_stmt_execute($stmt);
+', 's', $username);
         $user = mysqli_fetch_object(mysqli_stmt_get_result($stmt), OtherUser::class);
 
         if (!$user instanceof OtherUser || $user -> banned) {
@@ -216,7 +210,6 @@ SELECT *
     {
         $accepted_status = 'accepted';
         $not_banned = 0;
-        $mysqli = DB::connection();
 
         // No cursor means "from the newest" - a sentinel above any real
         // friendshipId keeps it one query instead of a cursorless duplicate.
@@ -229,7 +222,7 @@ SELECT *
         // collecting and filesorting every accepted friendship first. The
         // banned filter stays inside each half so pagination semantics match
         // the old query exactly.
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 (SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
@@ -245,24 +238,7 @@ UNION ALL
     LIMIT ?)
     ORDER BY `friendshipId` DESC
     LIMIT ?
-');
-        mysqli_stmt_bind_param(
-            $stmt,
-            'isiiiisiiii',
-            $this -> userId,
-            $accepted_status,
-            $not_banned,
-            $cursor,
-            $limit,
-            $this -> userId,
-            $accepted_status,
-            $not_banned,
-            $cursor,
-            $limit,
-            $limit
-        );
-
-        mysqli_stmt_execute($stmt);
+', 'isiiiisiiii', $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $limit);
         $result = mysqli_stmt_get_result($stmt);
 
         $friends = [];
@@ -284,31 +260,27 @@ UNION ALL
     {
         $pending_status = 'pending';
         $not_banned = 0;
-        $mysqli = DB::connection();
 
         if ($before_friendship_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
     WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
     WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'isii', $this -> userId, $pending_status, $not_banned, $limit);
+', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $requests = [];
@@ -331,31 +303,27 @@ SELECT `f`.`friendshipId`, `u`.*
     {
         $pending_status = 'pending';
         $not_banned = 0;
-        $mysqli = DB::connection();
 
         if ($before_friendship_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
     WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
     WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'isii', $this -> userId, $pending_status, $not_banned, $limit);
+', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $requests = [];
@@ -376,13 +344,11 @@ SELECT `f`.`friendshipId`, `u`.*
      */
     public static function atFriendCap(int $user_id): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `friendCount`
     FROM `Users`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $user_id);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -398,7 +364,7 @@ SELECT `friendCount`
     {
         $accepted_status = 'accepted';
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `Users`
     SET `friendCount` = (
         SELECT COUNT(*)
@@ -406,9 +372,7 @@ UPDATE `Users`
             WHERE `status` = ? AND (`requesterId` = ? OR `addresseeId` = ?)
     )
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'siii', $accepted_status, $user_id, $user_id, $user_id);
-        mysqli_stmt_execute($stmt);
+', 'siii', $accepted_status, $user_id, $user_id, $user_id);
     }
 
     /**
@@ -421,23 +385,17 @@ UPDATE `Users`
      */
     public static function bumpSessionVersion(int $user_id): int
     {
-        $mysqli = DB::connection();
-
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 UPDATE `Users`
     SET `sessionVersion` = `sessionVersion` + 1
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $user_id);
 
-        $select_stmt = mysqli_prepare($mysqli, '
+        $select_stmt = DB::run('
 SELECT `sessionVersion`
     FROM `Users`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($select_stmt, 'i', $user_id);
-        mysqli_stmt_execute($select_stmt);
+', 'i', $user_id);
         $result = mysqli_stmt_get_result($select_stmt);
 
         return (int) (mysqli_fetch_assoc($result)['sessionVersion'] ?? 0);
@@ -449,13 +407,11 @@ SELECT `sessionVersion`
      */
     public static function incrementFriendCounts(int $user_a, int $user_b): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `Users`
     SET `friendCount` = `friendCount` + 1
     WHERE `userId` = ? OR `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $user_a, $user_b);
-        mysqli_stmt_execute($stmt);
+', 'ii', $user_a, $user_b);
     }
 
     /**
@@ -464,13 +420,11 @@ UPDATE `Users`
      */
     public static function decrementFriendCounts(int $user_a, int $user_b): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `Users`
     SET `friendCount` = `friendCount` - 1
     WHERE (`userId` = ? OR `userId` = ?) AND `friendCount` > 0
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $user_a, $user_b);
-        mysqli_stmt_execute($stmt);
+', 'ii', $user_a, $user_b);
     }
 
     /**
@@ -540,7 +494,19 @@ UPDATE `Users`
         $friend_placeholders = implode(', ', array_fill(0, count($friend_ids), '?'));
         $excluded_placeholders = implode(', ', array_fill(0, count($excluded_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $params = array_merge(
+            [$accepted_status, $not_banned],
+            $friend_ids,
+            $excluded_ids,
+            [$accepted_status, $not_banned],
+            $friend_ids,
+            $excluded_ids,
+            [$candidate_limit]
+        );
+        $types = 'si' . str_repeat('i', count($friend_ids)) . str_repeat('i', count($excluded_ids))
+            . 'si' . str_repeat('i', count($friend_ids)) . str_repeat('i', count($excluded_ids)) . 'i';
+
+        $stmt = DB::run('
 SELECT `candidateId`, COUNT(*) AS `mutualCount`
     FROM (
         SELECT `f`.`addresseeId` AS `candidateId`
@@ -558,20 +524,7 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
     GROUP BY `candidateId`
     ORDER BY `mutualCount` DESC
     LIMIT ?
-');
-        $params = array_merge(
-            [$accepted_status, $not_banned],
-            $friend_ids,
-            $excluded_ids,
-            [$accepted_status, $not_banned],
-            $friend_ids,
-            $excluded_ids,
-            [$candidate_limit]
-        );
-        $types = 'si' . str_repeat('i', count($friend_ids)) . str_repeat('i', count($excluded_ids))
-            . 'si' . str_repeat('i', count($friend_ids)) . str_repeat('i', count($excluded_ids)) . 'i';
-        mysqli_stmt_bind_param($stmt, $types, ...$params);
-        mysqli_stmt_execute($stmt);
+', $types, ...$params);
         $result = mysqli_stmt_get_result($stmt);
 
         $mutual_counts = [];
@@ -598,7 +551,9 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
         $not_banned = 0;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $params = array_merge($user_ids, [$not_banned, $viewer_id, $viewer_id]);
+
+        $stmt = DB::run('
 SELECT `u`.*
     FROM `Users` `u`
     WHERE `u`.`userId` IN (' . $placeholders . ') AND `u`.`banned` = ?
@@ -607,10 +562,7 @@ SELECT `u`.*
                 FROM `Blocks` `b`
                 WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `u`.`userId`) OR (`b`.`blockerId` = `u`.`userId` AND `b`.`blockedId` = ?)
         )
-');
-        $params = array_merge($user_ids, [$not_banned, $viewer_id, $viewer_id]);
-        mysqli_stmt_bind_param($stmt, str_repeat('i', count($user_ids)) . 'iii', ...$params);
-        mysqli_stmt_execute($stmt);
+', str_repeat('i', count($user_ids)) . 'iii', ...$params);
         $result = mysqli_stmt_get_result($stmt);
 
         $users = [];
@@ -629,7 +581,7 @@ SELECT `u`.*
     {
         $not_banned = 0;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `u`.*
     FROM `Users` `u`
     WHERE `u`.`userId` != ? AND `u`.`banned` = ?
@@ -640,9 +592,7 @@ SELECT `u`.*
         )
     ORDER BY RAND()
     LIMIT ?
-');
-        mysqli_stmt_bind_param($stmt, 'iiiii', $this -> userId, $not_banned, $this -> userId, $this -> userId, $limit);
-        mysqli_stmt_execute($stmt);
+', 'iiiii', $this -> userId, $not_banned, $this -> userId, $this -> userId, $limit);
         $result = mysqli_stmt_get_result($stmt);
 
         $users = [];
@@ -676,18 +626,14 @@ SELECT `u`.*
      */
     public static function delete(int $user_id): void
     {
-        $mysqli = DB::connection();
-
         // Every post this user authored, plus (via the parentId cascade)
         // every reply nested under them - the same graph-walk Post::delete()
         // uses, just seeded from every post this user owns instead of one.
-        $own_posts_stmt = mysqli_prepare($mysqli, '
+        $own_posts_stmt = DB::run('
 SELECT `postId`
     FROM `Posts`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($own_posts_stmt, 'i', $user_id);
-        mysqli_stmt_execute($own_posts_stmt);
+', 'i', $user_id);
         $own_posts_result = mysqli_stmt_get_result($own_posts_stmt);
 
         $all_post_ids = [];
@@ -701,13 +647,11 @@ SELECT `postId`
         while ($frontier !== []) {
             $placeholders = implode(', ', array_fill(0, count($frontier), '?'));
 
-            $children_stmt = mysqli_prepare($mysqli, '
+            $children_stmt = DB::run('
 SELECT `postId`
     FROM `Posts`
     WHERE `parentId` IN (' . $placeholders . ')
-');
-            mysqli_stmt_bind_param($children_stmt, str_repeat('i', count($frontier)), ...$frontier);
-            mysqli_stmt_execute($children_stmt);
+', str_repeat('i', count($frontier)), ...$frontier);
             $children_result = mysqli_stmt_get_result($children_stmt);
 
             $frontier = [];
@@ -727,13 +671,11 @@ SELECT `postId`
         }
 
         foreach (['EmailVerifications', 'PasswordResets', 'EmailChangeReverts'] as $table) {
-            $prune_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 DELETE
     FROM `' . $table . '`
     WHERE `userId` = ?
-');
-            mysqli_stmt_bind_param($prune_stmt, 'i', $user_id);
-            mysqli_stmt_execute($prune_stmt);
+', 'i', $user_id);
         }
 
         // Notifications.postId carries no FK (same reasoning as
@@ -745,22 +687,18 @@ DELETE
         if ($all_post_ids !== []) {
             $post_id_placeholders = implode(', ', array_fill(0, count($all_post_ids), '?'));
 
-            $prune_notifications_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 DELETE
     FROM `Notifications`
     WHERE `postId` IN (' . $post_id_placeholders . ')
-');
-            mysqli_stmt_bind_param($prune_notifications_stmt, str_repeat('i', count($all_post_ids)), ...$all_post_ids);
-            mysqli_stmt_execute($prune_notifications_stmt);
+', str_repeat('i', count($all_post_ids)), ...$all_post_ids);
         }
 
-        $delete_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `Users`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($delete_stmt, 'i', $user_id);
-        mysqli_stmt_execute($delete_stmt);
+', 'i', $user_id);
 
         // Only remove files once the rows are actually gone.
         foreach ($doomed_items as $item) {

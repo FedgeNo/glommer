@@ -32,14 +32,12 @@ $current_user_id = (int) $current_user -> userId;
 // user rows so concurrent accepts serialize.
 mysqli_begin_transaction($mysqli);
 
-$lookup_stmt = mysqli_prepare($mysqli, '
+$lookup_stmt = DB::run('
 SELECT `requesterId`
     FROM `Friendships`
     WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
     FOR UPDATE
-');
-mysqli_stmt_bind_param($lookup_stmt, 'iis', $friendship_id, $current_user_id, $pending_status);
-mysqli_stmt_execute($lookup_stmt);
+', 'iis', $friendship_id, $current_user_id, $pending_status);
 $requester_row = mysqli_fetch_assoc(mysqli_stmt_get_result($lookup_stmt));
 
 if ($requester_row === null) {
@@ -50,14 +48,12 @@ if ($requester_row === null) {
 $requester_id = (int) $requester_row['requesterId'];
 
 // Lock both users' rows and read their counts under the lock - no TOCTOU.
-$counts_stmt = mysqli_prepare($mysqli, '
+$counts_stmt = DB::run('
 SELECT `userId`, `friendCount`
     FROM `Users`
     WHERE `userId` = ? OR `userId` = ?
     FOR UPDATE
-');
-mysqli_stmt_bind_param($counts_stmt, 'ii', $current_user_id, $requester_id);
-mysqli_stmt_execute($counts_stmt);
+', 'ii', $current_user_id, $requester_id);
 $counts_result = mysqli_stmt_get_result($counts_stmt);
 
 $friend_counts = [];
@@ -76,26 +72,22 @@ if (($friend_counts[$requester_id] ?? 0) >= $max_friends) {
     JSONResponse::error('That user has reached their friend limit, so this request can\'t be accepted.', 422) -> send();
 }
 
-$accept_stmt = mysqli_prepare($mysqli, '
+$accept_stmt = DB::run('
 UPDATE `Friendships`
     SET `status` = ?
     WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
-');
-mysqli_stmt_bind_param($accept_stmt, 'siis', $accepted_status, $friendship_id, $current_user_id, $pending_status);
-mysqli_stmt_execute($accept_stmt);
+', 'siis', $accepted_status, $friendship_id, $current_user_id, $pending_status);
 
 if (mysqli_stmt_affected_rows($accept_stmt) === 0) {
     mysqli_rollback($mysqli);
     JSONResponse::error('Not your request', 403) -> send();
 }
 
-$increment_stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `friendCount` = `friendCount` + 1
     WHERE `userId` = ? OR `userId` = ?
-');
-mysqli_stmt_bind_param($increment_stmt, 'ii', $current_user_id, $requester_id);
-mysqli_stmt_execute($increment_stmt);
+', 'ii', $current_user_id, $requester_id);
 
 mysqli_commit($mysqli);
 

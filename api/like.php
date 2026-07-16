@@ -15,19 +15,16 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['itemId'] ?? $_POST['itemId'] ?? 0);
 
-$owner_stmt = mysqli_prepare($mysqli, '
+$owner_stmt = DB::run('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($owner_stmt, 'i', $post_id);
-mysqli_stmt_execute($owner_stmt);
+', 'i', $post_id);
 $owner_result = mysqli_stmt_get_result($owner_stmt);
 $owner_row = mysqli_fetch_assoc($owner_result);
 
@@ -39,30 +36,26 @@ if (Block::exists($current_user -> userId, (int) $owner_row['userId'])) {
     JSONResponse::error('Unable to like this post', 403) -> send();
 }
 
-$check_stmt = mysqli_prepare($mysqli, '
+$check_stmt = DB::run('
 SELECT 1
     FROM `Likes`
     WHERE `postId` = ? AND `userId` = ?
-');
-mysqli_stmt_bind_param($check_stmt, 'ii', $post_id, $current_user -> userId);
-mysqli_stmt_execute($check_stmt);
+', 'ii', $post_id, $current_user -> userId);
 mysqli_stmt_store_result($check_stmt);
 
 if (mysqli_stmt_num_rows($check_stmt) > 0) {
-    $delete_stmt = mysqli_prepare($mysqli, '
+    DB::run('
 DELETE
     FROM `Likes`
     WHERE `postId` = ? AND `userId` = ?
-');
-    mysqli_stmt_bind_param($delete_stmt, 'ii', $post_id, $current_user -> userId);
-    mysqli_stmt_execute($delete_stmt);
+', 'ii', $post_id, $current_user -> userId);
     $liked = false;
 } else {
-    $insert_stmt = mysqli_prepare($mysqli, '
+    $insert_stmt = DB::prepare('
 INSERT INTO `Likes` (`postId`, `userId`)
     VALUES (?, ?)
 ');
-    mysqli_stmt_bind_param($insert_stmt, 'ii', $post_id, $current_user -> userId);
+    DB::bind($insert_stmt, 'ii', $post_id, $current_user -> userId);
     $liked = true;
 
     try {
@@ -81,13 +74,11 @@ INSERT INTO `Likes` (`postId`, `userId`)
     }
 }
 
-$count_stmt = mysqli_prepare($mysqli, '
+$count_stmt = DB::run('
 SELECT COUNT(*) AS `likeCount`
     FROM `Likes`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($count_stmt, 'i', $post_id);
-mysqli_stmt_execute($count_stmt);
+', 'i', $post_id);
 $count_result = mysqli_stmt_get_result($count_stmt);
 $count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
 

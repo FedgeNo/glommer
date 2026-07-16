@@ -51,13 +51,11 @@ class PostActionBar extends HTMLObject
         if ($this -> likeCount !== null) {
             $count = $this -> likeCount;
         } else {
-            $count_stmt = mysqli_prepare(DB::connection(), '
+            $count_stmt = DB::run('
 SELECT COUNT(*) AS `likeCount`
     FROM `Likes`
     WHERE `postId` = ?
-');
-            mysqli_stmt_bind_param($count_stmt, 'i', $this -> postId);
-            mysqli_stmt_execute($count_stmt);
+', 'i', $this -> postId);
             $count_result = mysqli_stmt_get_result($count_stmt);
             $count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
         }
@@ -67,13 +65,11 @@ SELECT COUNT(*) AS `likeCount`
         } else {
             $current_user_id = Auth::id();
 
-            $liked_stmt = mysqli_prepare(DB::connection(), '
+            $liked_stmt = DB::run('
 SELECT 1
     FROM `Likes`
     WHERE `postId` = ? AND `userId` = ?
-');
-            mysqli_stmt_bind_param($liked_stmt, 'ii', $this -> postId, $current_user_id);
-            mysqli_stmt_execute($liked_stmt);
+', 'ii', $this -> postId, $current_user_id);
             mysqli_stmt_store_result($liked_stmt);
             $already_liked = mysqli_stmt_num_rows($liked_stmt) > 0;
         }

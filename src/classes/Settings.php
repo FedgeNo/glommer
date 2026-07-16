@@ -17,13 +17,11 @@ class Settings
     {
         if (!array_key_exists($name, self::$cache)) {
             try {
-                $stmt = mysqli_prepare(DB::connection(), '
+                $stmt = DB::run('
 SELECT `value`
     FROM `Settings`
     WHERE `name` = ?
-');
-                mysqli_stmt_bind_param($stmt, 's', $name);
-                mysqli_stmt_execute($stmt);
+', 's', $name);
                 $result = mysqli_stmt_get_result($stmt);
                 $row = mysqli_fetch_assoc($result);
 
@@ -43,13 +41,11 @@ SELECT `value`
 
     public static function set(string $name, string $value): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 INSERT INTO `Settings` (`name`, `value`)
     VALUES (?, ?)
     ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
-');
-        mysqli_stmt_bind_param($stmt, 'ss', $name, $value);
-        mysqli_stmt_execute($stmt);
+', 'ss', $name, $value);
 
         self::$cache[$name] = $value;
     }

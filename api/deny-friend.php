@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -26,13 +25,11 @@ $pending_status = 'pending';
 // accepted friendshipId (exposed to the client) could delete a friendship here
 // without going through removeAccepted, leaving both friendCounts inflated and
 // timeline entries orphaned.
-$stmt = mysqli_prepare($mysqli, '
+$stmt = DB::run('
 DELETE
     FROM `Friendships`
     WHERE `friendshipId` = ? AND `addresseeId` = ? AND `status` = ?
-');
-mysqli_stmt_bind_param($stmt, 'iis', $friendship_id, $current_user -> userId, $pending_status);
-mysqli_stmt_execute($stmt);
+', 'iis', $friendship_id, $current_user -> userId, $pending_status);
 
 if (mysqli_stmt_affected_rows($stmt) === 0) {
     JSONResponse::error('Not your request', 403) -> send();

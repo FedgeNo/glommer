@@ -263,12 +263,10 @@ class UploadBatch
         // commit, so a rolled-back assembly signals nothing.
         mysqli_begin_transaction($mysqli);
 
-        $post_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
     VALUES (?, ?, ?, ?, ?, ?)
-');
-        mysqli_stmt_bind_param($post_stmt, 'iissss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
-        mysqli_stmt_execute($post_stmt);
+', 'iissss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
         $post_id = (int) mysqli_insert_id($mysqli);
 
         $mentioned_user_ids = [];
@@ -282,13 +280,11 @@ INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionD
         $parent_user_id = null;
 
         if ($parent_id !== null) {
-            $parent_stmt = mysqli_prepare($mysqli, '
+            $parent_stmt = DB::run('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-');
-            mysqli_stmt_bind_param($parent_stmt, 'i', $parent_id);
-            mysqli_stmt_execute($parent_stmt);
+', 'i', $parent_id);
             $parent_result = mysqli_stmt_get_result($parent_stmt);
             $parent_row = mysqli_fetch_assoc($parent_result);
             $parent_user_id = $parent_row !== null ? (int) $parent_row['userId'] : null;
@@ -298,12 +294,10 @@ SELECT `userId`
 
         foreach ($survivors as $file) {
             $item_type = $file['itemType'];
-            $placeholder_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 INSERT INTO `FeedItems` (`postId`, `itemType`)
     VALUES (?, ?)
-');
-            mysqli_stmt_bind_param($placeholder_stmt, 'is', $post_id, $item_type);
-            mysqli_stmt_execute($placeholder_stmt);
+', 'is', $post_id, $item_type);
             $item_id = (int) mysqli_insert_id($mysqli);
 
             UploadProcessor::rename($file['seed'], $item_id, $file['itemType'], $file['ext']);

@@ -15,16 +15,13 @@ class CurrentUser extends User
         }
 
         if (self::$cachedRow === null) {
-            $mysqli = DB::connection();
             $user_id = Auth::id();
 
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `userId` = ?
-');
-            mysqli_stmt_bind_param($stmt, 'i', $user_id);
-            mysqli_stmt_execute($stmt);
+', 'i', $user_id);
             $result = mysqli_stmt_get_result($stmt);
             $row = mysqli_fetch_assoc($result);
 

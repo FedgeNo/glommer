@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -54,13 +53,11 @@ if (RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
     JSONResponse::error('Too many email changes in a short time. Please try again later.', 429) -> send();
 }
 
-$taken_stmt = mysqli_prepare($mysqli, '
+$taken_stmt = DB::run('
 SELECT `userId`
     FROM `Users`
     WHERE `email` = ? AND `userId` != ?
-');
-mysqli_stmt_bind_param($taken_stmt, 'si', $new_email, $current_user -> userId);
-mysqli_stmt_execute($taken_stmt);
+', 'si', $new_email, $current_user -> userId);
 mysqli_stmt_store_result($taken_stmt);
 
 if (mysqli_stmt_num_rows($taken_stmt) > 0 || EmailChangeRevert::isReserved($new_email)) {
@@ -78,15 +75,12 @@ $previous_email = (string) $current_user -> email;
 // back behind the verification gate until then.
 $unverified = 0;
 
-$stmt = mysqli_prepare($mysqli, '
+try {
+    DB::run('
 UPDATE `Users`
     SET `email` = ?, `verified` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'sii', $new_email, $unverified, $current_user -> userId);
-
-try {
-    mysqli_stmt_execute($stmt);
+', 'sii', $new_email, $unverified, $current_user -> userId);
 } catch (\mysqli_sql_exception $exception) {
     // The uniqueness check above has a TOCTOU gap: another account (or
     // another request from this same account) can claim this exact email

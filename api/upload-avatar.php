@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 // Each upload decodes and resizes an attacker-controlled image (real CPU/
 // memory work) - cap it so the endpoint can't be used for resource
@@ -68,12 +67,10 @@ if (!$thumbnail_ok) {
 
 $has_avatar = 1;
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `hasAvatar` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'ii', $has_avatar, $current_user -> userId);
-mysqli_stmt_execute($stmt);
+', 'ii', $has_avatar, $current_user -> userId);
 
 JSONResponse::success(['image' => ServerURL::absolute(User::avatarPath($current_user -> userId))]) -> send();

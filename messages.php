@@ -14,16 +14,14 @@ if ($username === '') {
 
     $not_banned = 0;
 
-    $conversations_stmt = mysqli_prepare(DB::connection(), '
+    $conversations_stmt = DB::run('
 SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`.`createdAt`) AS `lastMessageAt`
     FROM `Messages` `m`
     JOIN `Users` `u` ON `u`.`userId` = IF(`m`.`senderId` = ?, `m`.`recipientId`, `m`.`senderId`)
     WHERE (`m`.`senderId` = ? OR `m`.`recipientId` = ?) AND `u`.`banned` = ?
     GROUP BY `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`
     ORDER BY `lastMessageAt` DESC
-');
-    mysqli_stmt_bind_param($conversations_stmt, 'iiii', $current_user -> userId, $current_user -> userId, $current_user -> userId, $not_banned);
-    mysqli_stmt_execute($conversations_stmt);
+', 'iiii', $current_user -> userId, $current_user -> userId, $current_user -> userId, $not_banned);
     $conversations_result = mysqli_stmt_get_result($conversations_stmt);
 
     $has_conversations = false;

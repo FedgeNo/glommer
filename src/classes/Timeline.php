@@ -19,8 +19,6 @@ class Timeline
      */
     public static function fanOutPost(int $author_id, int $post_id): void
     {
-        $mysqli = DB::connection();
-
         $recipient_ids = [$author_id, ...self::friendIds($author_id)];
 
         $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?)'));
@@ -32,12 +30,10 @@ class Timeline
             $params[] = $post_id;
         }
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
     VALUES ' . $placeholders . '
-');
-        mysqli_stmt_bind_param($stmt, str_repeat('ii', count($recipient_ids)), ...$params);
-        mysqli_stmt_execute($stmt);
+', str_repeat('ii', count($recipient_ids)), ...$params);
     }
 
     /**
@@ -48,19 +44,17 @@ INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
      */
     public static function backfillFriendship(int $user_a, int $user_b): void
     {
-        $mysqli = DB::connection();
-
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::prepare('
 INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
     SELECT ?, `postId`
         FROM `Posts`
         WHERE `userId` = ? AND `parentId` IS NULL
 ');
-        mysqli_stmt_bind_param($stmt, 'ii', $user_b, $user_a);
-        mysqli_stmt_execute($stmt);
+        DB::bind($stmt, 'ii', $user_b, $user_a);
+        DB::execute($stmt);
 
-        mysqli_stmt_bind_param($stmt, 'ii', $user_a, $user_b);
-        mysqli_stmt_execute($stmt);
+        DB::bind($stmt, 'ii', $user_a, $user_b);
+        DB::execute($stmt);
     }
 
     /**
@@ -70,17 +64,13 @@ INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
      */
     public static function removeCrossEntries(int $user_a, int $user_b): void
     {
-        $mysqli = DB::connection();
-
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE `Timelines`
     FROM `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
     WHERE (`Timelines`.`userId` = ? AND `Posts`.`userId` = ?)
         OR (`Timelines`.`userId` = ? AND `Posts`.`userId` = ?)
-');
-        mysqli_stmt_bind_param($stmt, 'iiii', $user_a, $user_b, $user_b, $user_a);
-        mysqli_stmt_execute($stmt);
+', 'iiii', $user_a, $user_b, $user_b, $user_a);
     }
 
     /**
@@ -93,12 +83,11 @@ DELETE `Timelines`
      */
     public static function rowsForUser(int $user_id, int $limit, ?int $before_post_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
         if ($before_post_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*
     FROM `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
@@ -106,10 +95,9 @@ SELECT `Posts`.*
     WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ? AND `Timelines`.`postId` < ?
     ORDER BY `Timelines`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iiii', $user_id, $not_banned, $before_post_id, $fetch_limit);
+', 'iiii', $user_id, $not_banned, $before_post_id, $fetch_limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*
     FROM `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
@@ -117,11 +105,9 @@ SELECT `Posts`.*
     WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Timelines`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iii', $user_id, $not_banned, $fetch_limit);
+', 'iii', $user_id, $not_banned, $fetch_limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -144,16 +130,13 @@ SELECT `Posts`.*
      */
     private static function friendIds(int $user_id): array
     {
-        $mysqli = DB::connection();
         $accepted_status = 'accepted';
 
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 SELECT `requesterId`, `addresseeId`
     FROM `Friendships`
     WHERE `status` = ? AND (`requesterId` = ? OR `addresseeId` = ?)
-');
-        mysqli_stmt_bind_param($stmt, 'sii', $accepted_status, $user_id, $user_id);
-        mysqli_stmt_execute($stmt);
+', 'sii', $accepted_status, $user_id, $user_id);
         $result = mysqli_stmt_get_result($stmt);
 
         $friend_ids = [];

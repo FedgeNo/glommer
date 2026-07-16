@@ -9,13 +9,11 @@ class Block
      */
     public static function exists(int $user_a, int $user_b): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT 1
     FROM `Blocks`
     WHERE (`blockerId` = ? AND `blockedId` = ?) OR (`blockerId` = ? AND `blockedId` = ?)
-');
-        mysqli_stmt_bind_param($stmt, 'iiii', $user_a, $user_b, $user_b, $user_a);
-        mysqli_stmt_execute($stmt);
+', 'iiii', $user_a, $user_b, $user_b, $user_a);
         mysqli_stmt_store_result($stmt);
 
         return mysqli_stmt_num_rows($stmt) > 0;
@@ -26,13 +24,11 @@ SELECT 1
      */
     public static function blockedBy(int $blocker_id, int $blocked_id): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT 1
     FROM `Blocks`
     WHERE `blockerId` = ? AND `blockedId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $blocker_id, $blocked_id);
-        mysqli_stmt_execute($stmt);
+', 'ii', $blocker_id, $blocked_id);
         mysqli_stmt_store_result($stmt);
 
         return mysqli_stmt_num_rows($stmt) > 0;
@@ -43,8 +39,6 @@ SELECT 1
      */
     public static function create(int $blocker_id, int $blocked_id): void
     {
-        $mysqli = DB::connection();
-
         // Reuse the one unfriend path so blocking a friend adjusts both
         // friendCounts and clears their timeline cross-entries exactly the way
         // Remove Friend does.
@@ -52,20 +46,16 @@ SELECT 1
 
         // Blocking also cancels any still-pending request either way (which
         // removeAccepted leaves alone - it only touches accepted friendships).
-        $delete_pending = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `Friendships`
     WHERE (`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?)
-');
-        mysqli_stmt_bind_param($delete_pending, 'iiii', $blocker_id, $blocked_id, $blocked_id, $blocker_id);
-        mysqli_stmt_execute($delete_pending);
+', 'iiii', $blocker_id, $blocked_id, $blocked_id, $blocker_id);
 
-        $insert = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT IGNORE INTO `Blocks` (`blockerId`, `blockedId`)
     VALUES (?, ?)
-');
-        mysqli_stmt_bind_param($insert, 'ii', $blocker_id, $blocked_id);
-        mysqli_stmt_execute($insert);
+', 'ii', $blocker_id, $blocked_id);
     }
 
     /**
@@ -73,12 +63,10 @@ INSERT IGNORE INTO `Blocks` (`blockerId`, `blockedId`)
      */
     public static function remove(int $blocker_id, int $blocked_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `Blocks`
     WHERE `blockerId` = ? AND `blockedId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $blocker_id, $blocked_id);
-        mysqli_stmt_execute($stmt);
+', 'ii', $blocker_id, $blocked_id);
     }
 }

@@ -21,14 +21,12 @@ class ParentPostLink extends HTMLObject
 
     public static function fromParentId(int $parent_id): ?self
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`postId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $parent_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $parent_id);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 

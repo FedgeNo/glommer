@@ -269,8 +269,6 @@ class Post extends HTMLObject
      */
     public static function delete(int $post_id): void
     {
-        $mysqli = DB::connection();
-
         // Collect the post plus all descendant replies, since the row DELETE
         // cascades through them and their media files would otherwise be
         // orphaned on disk.
@@ -280,13 +278,11 @@ class Post extends HTMLObject
         while ($frontier !== []) {
             $placeholders = implode(', ', array_fill(0, count($frontier), '?'));
 
-            $children_stmt = mysqli_prepare($mysqli, '
+            $children_stmt = DB::run('
 SELECT `postId`
     FROM `Posts`
     WHERE `parentId` IN (' . $placeholders . ')
-');
-            mysqli_stmt_bind_param($children_stmt, str_repeat('i', count($frontier)), ...$frontier);
-            mysqli_stmt_execute($children_stmt);
+', str_repeat('i', count($frontier)), ...$frontier);
             $children_result = mysqli_stmt_get_result($children_stmt);
 
             $frontier = [];
@@ -312,21 +308,17 @@ SELECT `postId`
         // deleted post would point at a 404'ing permalink forever.
         $post_id_placeholders = implode(', ', array_fill(0, count($all_post_ids), '?'));
 
-        $prune_notifications_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `Notifications`
     WHERE `postId` IN (' . $post_id_placeholders . ')
-');
-        mysqli_stmt_bind_param($prune_notifications_stmt, str_repeat('i', count($all_post_ids)), ...$all_post_ids);
-        mysqli_stmt_execute($prune_notifications_stmt);
+', str_repeat('i', count($all_post_ids)), ...$all_post_ids);
 
-        $delete_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `Posts`
     WHERE `postId` = ?
-');
-        mysqli_stmt_bind_param($delete_stmt, 'i', $post_id);
-        mysqli_stmt_execute($delete_stmt);
+', 'i', $post_id);
 
         // Only remove files once the rows are actually gone.
         foreach ($doomed_items as $item) {
@@ -350,33 +342,29 @@ DELETE
      */
     public static function globalFeedRows(int $limit, ?int $before_post_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
         if ($before_post_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iii', $not_banned, $before_post_id, $fetch_limit);
+', 'iii', $not_banned, $before_post_id, $fetch_limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'ii', $not_banned, $fetch_limit);
+', 'ii', $not_banned, $fetch_limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -440,14 +428,12 @@ SELECT `Posts`.*
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `parentId`, COUNT(*) AS `replyCount`
     FROM `Posts`
     WHERE `parentId` IN (' . $placeholders . ')
     GROUP BY `parentId`
-');
-        mysqli_stmt_bind_param($stmt, str_repeat('i', count($post_ids)), ...$post_ids);
-        mysqli_stmt_execute($stmt);
+', str_repeat('i', count($post_ids)), ...$post_ids);
         $result = mysqli_stmt_get_result($stmt);
 
         $counts = [];
@@ -471,14 +457,12 @@ SELECT `parentId`, COUNT(*) AS `replyCount`
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `postId`, COUNT(*) AS `likeCount`
     FROM `Likes`
     WHERE `postId` IN (' . $placeholders . ')
     GROUP BY `postId`
-');
-        mysqli_stmt_bind_param($stmt, str_repeat('i', count($post_ids)), ...$post_ids);
-        mysqli_stmt_execute($stmt);
+', str_repeat('i', count($post_ids)), ...$post_ids);
         $result = mysqli_stmt_get_result($stmt);
 
         $counts = [];
@@ -502,13 +486,11 @@ SELECT `postId`, COUNT(*) AS `likeCount`
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `postId`
     FROM `Likes`
     WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')
-');
-        mysqli_stmt_bind_param($stmt, 'i' . str_repeat('i', count($post_ids)), $user_id, ...$post_ids);
-        mysqli_stmt_execute($stmt);
+', 'i' . str_repeat('i', count($post_ids)), $user_id, ...$post_ids);
         $result = mysqli_stmt_get_result($stmt);
 
         $liked = [];

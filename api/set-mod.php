@@ -16,7 +16,6 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
-$mysqli = DB::connection();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $user_id = (int) ($payload['userId'] ?? 0);
@@ -32,13 +31,11 @@ if (User::load($user_id) === null) {
 
 $is_mod_value = $is_mod ? 1 : 0;
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `isMod` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'ii', $is_mod_value, $user_id);
-mysqli_stmt_execute($stmt);
+', 'ii', $is_mod_value, $user_id);
 
 ModerationAction::log($is_mod ? 'setMod' : 'unsetMod', $user_id);
 

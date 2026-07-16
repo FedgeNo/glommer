@@ -60,13 +60,11 @@ if ($errors === [] && !Turnstile::verify($captcha_token, ServerURL::clientIP()))
 }
 
 if ($errors === []) {
-    $stmt = mysqli_prepare($mysqli, '
+    $stmt = DB::run('
 SELECT `userId`
     FROM `Users`
     WHERE `username` = ? OR `email` = ?
-');
-    mysqli_stmt_bind_param($stmt, 'ss', $username, $email);
-    mysqli_stmt_execute($stmt);
+', 'ss', $username, $email);
     mysqli_stmt_store_result($stmt);
 
     if (mysqli_stmt_num_rows($stmt) > 0 || EmailChangeRevert::isReserved($email)) {
@@ -83,12 +81,10 @@ $display_name_value = $display_name !== '' ? $display_name : null;
 
 $unverified = 0;
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verified`)
     VALUES (?, ?, ?, ?, ?)
-');
-mysqli_stmt_bind_param($stmt, 'ssssi', $username, $email, $hash, $display_name_value, $unverified);
-mysqli_stmt_execute($stmt);
+', 'ssssi', $username, $email, $hash, $display_name_value, $unverified);
 $new_user_id = (int) mysqli_insert_id($mysqli);
 
 $user = new User();

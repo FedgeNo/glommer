@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -42,13 +41,11 @@ if ($existing !== null) {
 
     // The request I already sent, tapped again -> cancel it.
     if ($existing -> status === 'pending' && $sent_by_me) {
-        $delete_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `Friendships`
     WHERE `friendshipId` = ?
-');
-        mysqli_stmt_bind_param($delete_stmt, 'i', $existing -> friendshipId);
-        mysqli_stmt_execute($delete_stmt);
+', 'i', $existing -> friendshipId);
 
         JSONResponse::success(['sent' => false]) -> send();
     }
@@ -74,14 +71,11 @@ if (User::atFriendCap($target_user_id)) {
     JSONResponse::error('That user has reached their friend limit.', 422) -> send();
 }
 
-$insert_stmt = mysqli_prepare($mysqli, '
+try {
+    DB::run('
 INSERT INTO `Friendships` (`requesterId`, `addresseeId`)
     VALUES (?, ?)
-');
-mysqli_stmt_bind_param($insert_stmt, 'ii', $current_user -> userId, $target_user_id);
-
-try {
-    mysqli_stmt_execute($insert_stmt);
+', 'ii', $current_user -> userId, $target_user_id);
 } catch (\mysqli_sql_exception $exception) {
     // The statusBetween() check above has a TOCTOU gap: two simultaneous
     // reverse-direction requests (this one, and the same target sending one

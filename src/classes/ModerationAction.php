@@ -15,11 +15,9 @@ class ModerationAction
     {
         $moderator_id = (int) Auth::id();
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 INSERT INTO `ModerationActions` (`moderatorId`, `action`, `targetUserId`, `targetType`, `targetId`, `reportId`)
     VALUES (?, ?, ?, ?, ?, ?)
-');
-        mysqli_stmt_bind_param($stmt, 'isisii', $moderator_id, $action, $target_user_id, $target_type, $target_id, $report_id);
-        mysqli_stmt_execute($stmt);
+', 'isisii', $moderator_id, $action, $target_user_id, $target_type, $target_id, $report_id);
     }
 }

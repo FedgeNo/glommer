@@ -44,12 +44,10 @@ if (Block::exists($current_user -> userId, $recipient_id)) {
     JSONResponse::error('Unable to send message.', 403) -> send();
 }
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 INSERT INTO `Messages` (`senderId`, `recipientId`, `body`)
     VALUES (?, ?, ?)
-');
-mysqli_stmt_bind_param($stmt, 'iis', $current_user -> userId, $recipient_id, $body);
-mysqli_stmt_execute($stmt);
+', 'iis', $current_user -> userId, $recipient_id, $body);
 $message_id = (int) mysqli_insert_id($mysqli);
 
 Notification::create($recipient_id, $current_user -> userId, 'message');

@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -28,12 +27,10 @@ if (!preg_match('/^[0-5]$/', $skin_tone)) {
     JSONResponse::error('Invalid skin tone', 422) -> send();
 }
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `skinTone` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'si', $skin_tone, $current_user -> userId);
-mysqli_stmt_execute($stmt);
+', 'si', $skin_tone, $current_user -> userId);
 
 JSONResponse::success(['skinTone' => $skin_tone]) -> send();

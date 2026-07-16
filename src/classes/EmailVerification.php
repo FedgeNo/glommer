@@ -62,16 +62,13 @@ This link expires in 24 hours.';
 
     public static function verify(string $token): ?int
     {
-        $mysqli = DB::connection();
         $token_hash = hash('sha256', $token);
 
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 SELECT `userId`
     FROM `EmailVerifications`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
-');
-        mysqli_stmt_bind_param($stmt, 's', $token_hash);
-        mysqli_stmt_execute($stmt);
+', 's', $token_hash);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -83,13 +80,11 @@ SELECT `userId`
 
         self::markVerified($user_id);
 
-        $delete_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `EmailVerifications`
     WHERE `tokenHash` = ?
-');
-        mysqli_stmt_bind_param($delete_stmt, 's', $token_hash);
-        mysqli_stmt_execute($delete_stmt);
+', 's', $token_hash);
 
         return $user_id;
     }
@@ -98,35 +93,29 @@ DELETE
     {
         $verified = 1;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `Users`
     SET `verified` = ?
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $verified, $user_id);
-        mysqli_stmt_execute($stmt);
+', 'ii', $verified, $user_id);
     }
 
     private static function create(int $user_id): string
     {
-        $mysqli = DB::connection();
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
         $expiry_hours = 24;
 
-        $prune_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `EmailVerifications`
     WHERE `expiresAt` <= NOW()
 ');
-        mysqli_stmt_execute($prune_stmt);
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `EmailVerifications` (`userId`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, NOW() + INTERVAL ? HOUR)
-');
-        mysqli_stmt_bind_param($stmt, 'isi', $user_id, $token_hash, $expiry_hours);
-        mysqli_stmt_execute($stmt);
+', 'isi', $user_id, $token_hash, $expiry_hours);
 
         return $token;
     }

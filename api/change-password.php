@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -55,13 +54,11 @@ if ($new_password !== $confirm_password) {
 
 $hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `passwordHash` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'si', $hash, $current_user -> userId);
-mysqli_stmt_execute($stmt);
+', 'si', $hash, $current_user -> userId);
 
 // The old password's sessions and remember-me tokens die with it - any other
 // browser (or thief) holding one gets logged out. This session proved the

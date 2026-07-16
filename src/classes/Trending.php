@@ -80,14 +80,12 @@ class Trending
             self::recompute();
         }
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount`
     FROM `TrendingEntities`
     ORDER BY `score` DESC
     LIMIT ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $limit);
-        mysqli_stmt_execute($stmt);
+', 'i', $limit);
         $result = mysqli_stmt_get_result($stmt);
 
         $entities = [];
@@ -180,7 +178,6 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
             }
         }
 
-        $mysqli = DB::connection();
         $computed_at = date('Y-m-d H:i:s', $now);
 
         foreach ($stats as $entity) {
@@ -192,31 +189,18 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
 
             $entity['score'] = array_sum($entity['userWeights']);
 
-            $stmt = mysqli_prepare($mysqli, '
+            DB::run('
 INSERT INTO `TrendingEntities` (`entityType`, `entityValue`, `score`, `postCount`, `userCount`, `computedAt`)
     VALUES (?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `computedAt` = VALUES(`computedAt`)
-');
-            mysqli_stmt_bind_param(
-                $stmt,
-                'ssdiis',
-                $entity['type'],
-                $entity['value'],
-                $entity['score'],
-                $entity['postCount'],
-                $user_count,
-                $computed_at
-            );
-            mysqli_stmt_execute($stmt);
+', 'ssdiis', $entity['type'], $entity['value'], $entity['score'], $entity['postCount'], $user_count, $computed_at);
         }
 
-        $cleanup_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `TrendingEntities`
     WHERE `computedAt` < ?
-');
-        mysqli_stmt_bind_param($cleanup_stmt, 's', $computed_at);
-        mysqli_stmt_execute($cleanup_stmt);
+', 's', $computed_at);
 
         // Stamped unconditionally, even when nothing qualified this run - see
         // LAST_RUN_SETTING's docblock.
@@ -232,23 +216,17 @@ DELETE
      */
     public static function ban(string $entity_type, string $entity_value, int $moderator_id, ?string $reason): void
     {
-        $mysqli = DB::connection();
-
-        $ban_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `BannedTrendingEntities` (`entityType`, `entityValue`, `bannedBy`, `reason`)
     VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `bannedBy` = VALUES(`bannedBy`), `reason` = VALUES(`reason`), `createdAt` = NOW()
-');
-        mysqli_stmt_bind_param($ban_stmt, 'ssis', $entity_type, $entity_value, $moderator_id, $reason);
-        mysqli_stmt_execute($ban_stmt);
+', 'ssis', $entity_type, $entity_value, $moderator_id, $reason);
 
-        $remove_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `TrendingEntities`
     WHERE `entityType` = ? AND `entityValue` = ?
-');
-        mysqli_stmt_bind_param($remove_stmt, 'ss', $entity_type, $entity_value);
-        mysqli_stmt_execute($remove_stmt);
+', 'ss', $entity_type, $entity_value);
 
         // The durable, queryable record of who banned this entity (and the
         // reason) is the BannedTrendingEntities row itself - bannedBy plus
@@ -261,26 +239,22 @@ DELETE
 
     public static function unban(string $entity_type, string $entity_value): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `BannedTrendingEntities`
     WHERE `entityType` = ? AND `entityValue` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ss', $entity_type, $entity_value);
-        mysqli_stmt_execute($stmt);
+', 'ss', $entity_type, $entity_value);
 
         ModerationAction::log('unbanTrendingEntity', null, $entity_type, null);
     }
 
     public static function isBanned(string $entity_type, string $entity_value): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT 1
     FROM `BannedTrendingEntities`
     WHERE `entityType` = ? AND `entityValue` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ss', $entity_type, $entity_value);
-        mysqli_stmt_execute($stmt);
+', 'ss', $entity_type, $entity_value);
         mysqli_stmt_store_result($stmt);
 
         return mysqli_stmt_num_rows($stmt) > 0;
@@ -295,13 +269,12 @@ SELECT 1
      */
     public static function bannedEntities(): array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityValue`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`username` AS `bannedByUsername`
     FROM `BannedTrendingEntities`
     JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
     ORDER BY `BannedTrendingEntities`.`createdAt` DESC
 ');
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -325,11 +298,10 @@ SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityVa
      */
     private static function bannedKeys(): array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `entityType`, `entityValue`
     FROM `BannedTrendingEntities`
 ');
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $keys = [];

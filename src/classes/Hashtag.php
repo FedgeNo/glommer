@@ -45,26 +45,20 @@ class Hashtag
     {
         $tags = array_slice(Delta::hashtags($ops), 0, self::MAX_HASHTAGS);
 
-        $mysqli = DB::connection();
-
-        $clear_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `PostHashtags`
     WHERE `postId` = ?
-');
-        mysqli_stmt_bind_param($clear_stmt, 'i', $post_id);
-        mysqli_stmt_execute($clear_stmt);
+', 'i', $post_id);
 
         if ($tags === []) {
             $empty_keywords = null;
 
-            $keywords_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 UPDATE `Posts`
     SET `keywords` = ?
     WHERE `postId` = ?
-');
-            mysqli_stmt_bind_param($keywords_stmt, 'si', $empty_keywords, $post_id);
-            mysqli_stmt_execute($keywords_stmt);
+', 'si', $empty_keywords, $post_id);
 
             return;
         }
@@ -89,32 +83,26 @@ UPDATE `Posts`
         $mysqli = DB::connection();
 
         foreach ($tags as $tag) {
-            $tag_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 INSERT INTO `Hashtags` (`tag`)
     VALUES (?)
     ON DUPLICATE KEY UPDATE `hashtagId` = LAST_INSERT_ID(`hashtagId`)
-');
-            mysqli_stmt_bind_param($tag_stmt, 's', $tag);
-            mysqli_stmt_execute($tag_stmt);
+', 's', $tag);
             $hashtag_id = (int) mysqli_insert_id($mysqli);
 
-            $link_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 INSERT IGNORE INTO `PostHashtags` (`postId`, `hashtagId`)
     VALUES (?, ?)
-');
-            mysqli_stmt_bind_param($link_stmt, 'ii', $post_id, $hashtag_id);
-            mysqli_stmt_execute($link_stmt);
+', 'ii', $post_id, $hashtag_id);
         }
 
         $keywords = self::packKeywords($tags);
 
-        $keywords_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 UPDATE `Posts`
     SET `keywords` = ?
     WHERE `postId` = ?
-');
-        mysqli_stmt_bind_param($keywords_stmt, 'si', $keywords, $post_id);
-        mysqli_stmt_execute($keywords_stmt);
+', 'si', $keywords, $post_id);
     }
 
     /**
@@ -150,12 +138,11 @@ UPDATE `Posts`
      */
     public static function postRows(string $tag, int $limit, ?int $before_post_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
         if ($before_post_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -164,10 +151,9 @@ SELECT `Posts`.*
     WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'siii', $tag, $not_banned, $before_post_id, $fetch_limit);
+', 'siii', $tag, $not_banned, $before_post_id, $fetch_limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -176,11 +162,9 @@ SELECT `Posts`.*
     WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'sii', $tag, $not_banned, $fetch_limit);
+', 'sii', $tag, $not_banned, $fetch_limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -208,7 +192,7 @@ SELECT `Posts`.*
     {
         $not_banned = 0;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::prepare('
 SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -219,7 +203,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
     LIMIT ?
 ');
-        mysqli_stmt_bind_param($stmt, 'ii', $not_banned, $limit);
+        DB::bind($stmt, 'ii', $not_banned, $limit);
 
         return self::countRows($stmt);
     }
@@ -236,7 +220,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
         $not_banned = 0;
         $days = 7;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::prepare('
 SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -247,7 +231,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
     LIMIT ?
 ');
-        mysqli_stmt_bind_param($stmt, 'iii', $not_banned, $days, $limit);
+        DB::bind($stmt, 'iii', $not_banned, $days, $limit);
 
         return self::countRows($stmt);
     }
@@ -267,10 +251,9 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
      */
     public static function graphData(int $limit): array
     {
-        $mysqli = DB::connection();
         $not_banned = 0;
 
-        $node_stmt = mysqli_prepare($mysqli, '
+        $node_stmt = DB::run('
 SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -280,9 +263,7 @@ SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
     GROUP BY `Hashtags`.`hashtagId`
     ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
     LIMIT ?
-');
-        mysqli_stmt_bind_param($node_stmt, 'ii', $not_banned, $limit);
-        mysqli_stmt_execute($node_stmt);
+', 'ii', $not_banned, $limit);
         $node_result = mysqli_stmt_get_result($node_stmt);
 
         $nodes = [];
@@ -299,24 +280,16 @@ SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
             $ids = array_keys($index_of);
             $placeholders = implode(', ', array_fill(0, count($ids), '?'));
 
-            $edge_stmt = mysqli_prepare($mysqli, '
+            // Both IN lists bind the same node ids.
+            $bound = array_merge($ids, $ids);
+
+            $edge_stmt = DB::run('
 SELECT `a`.`hashtagId` AS `aId`, `b`.`hashtagId` AS `bId`, COUNT(*) AS `weight`
     FROM `PostHashtags` `a`
     JOIN `PostHashtags` `b` ON `b`.`postId` = `a`.`postId` AND `a`.`hashtagId` < `b`.`hashtagId`
     WHERE `a`.`hashtagId` IN (' . $placeholders . ') AND `b`.`hashtagId` IN (' . $placeholders . ')
     GROUP BY `a`.`hashtagId`, `b`.`hashtagId`
-');
-
-            // Both IN lists bind the same node ids; bind_param needs references.
-            $bound = array_merge($ids, $ids);
-            $params = [$edge_stmt, str_repeat('i', count($bound))];
-
-            foreach ($bound as $key => $value) {
-                $params[] = &$bound[$key];
-            }
-
-            call_user_func_array('mysqli_stmt_bind_param', $params);
-            mysqli_stmt_execute($edge_stmt);
+', str_repeat('i', count($bound)), ...$bound);
             $edge_result = mysqli_stmt_get_result($edge_stmt);
 
             while ($row = mysqli_fetch_assoc($edge_result)) {

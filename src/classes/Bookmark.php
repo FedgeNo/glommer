@@ -14,34 +14,28 @@ class Bookmark
      */
     public static function toggle(int $user_id, int $post_id): bool
     {
-        $mysqli = DB::connection();
-
-        $check_stmt = mysqli_prepare($mysqli, '
+        $check_stmt = DB::run('
 SELECT 1
     FROM `Bookmarks`
     WHERE `postId` = ? AND `userId` = ?
-');
-        mysqli_stmt_bind_param($check_stmt, 'ii', $post_id, $user_id);
-        mysqli_stmt_execute($check_stmt);
+', 'ii', $post_id, $user_id);
         mysqli_stmt_store_result($check_stmt);
 
         if (mysqli_stmt_num_rows($check_stmt) > 0) {
-            $delete_stmt = mysqli_prepare($mysqli, '
+            DB::run('
 DELETE
     FROM `Bookmarks`
     WHERE `postId` = ? AND `userId` = ?
-');
-            mysqli_stmt_bind_param($delete_stmt, 'ii', $post_id, $user_id);
-            mysqli_stmt_execute($delete_stmt);
+', 'ii', $post_id, $user_id);
 
             return false;
         }
 
-        $insert_stmt = mysqli_prepare($mysqli, '
+        $insert_stmt = DB::prepare('
 INSERT INTO `Bookmarks` (`postId`, `userId`)
     VALUES (?, ?)
 ');
-        mysqli_stmt_bind_param($insert_stmt, 'ii', $post_id, $user_id);
+        DB::bind($insert_stmt, 'ii', $post_id, $user_id);
 
         try {
             mysqli_stmt_execute($insert_stmt);
@@ -69,13 +63,11 @@ INSERT INTO `Bookmarks` (`postId`, `userId`)
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `postId`
     FROM `Bookmarks`
     WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')
-');
-        mysqli_stmt_bind_param($stmt, 'i' . str_repeat('i', count($post_ids)), $user_id, ...$post_ids);
-        mysqli_stmt_execute($stmt);
+', 'i' . str_repeat('i', count($post_ids)), $user_id, ...$post_ids);
         $result = mysqli_stmt_get_result($stmt);
 
         $bookmarked = [];
@@ -99,12 +91,11 @@ SELECT `postId`
      */
     public static function rowsForUser(int $user_id, int $limit, ?string $before_created_at = null, ?int $before_post_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
         if ($before_created_at !== null && $before_post_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     FROM `Bookmarks`
     JOIN `Posts` ON `Posts`.`postId` = `Bookmarks`.`postId`
@@ -112,10 +103,9 @@ SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     WHERE `Bookmarks`.`userId` = ? AND `Users`.`banned` = ? AND (`Bookmarks`.`createdAt` < ? OR (`Bookmarks`.`createdAt` = ? AND `Bookmarks`.`postId` < ?))
     ORDER BY `Bookmarks`.`createdAt` DESC, `Bookmarks`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iissii', $user_id, $not_banned, $before_created_at, $before_created_at, $before_post_id, $fetch_limit);
+', 'iissii', $user_id, $not_banned, $before_created_at, $before_created_at, $before_post_id, $fetch_limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     FROM `Bookmarks`
     JOIN `Posts` ON `Posts`.`postId` = `Bookmarks`.`postId`
@@ -123,11 +113,9 @@ SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     WHERE `Bookmarks`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Bookmarks`.`createdAt` DESC, `Bookmarks`.`postId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iii', $user_id, $not_banned, $fetch_limit);
+', 'iii', $user_id, $not_banned, $fetch_limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];

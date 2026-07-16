@@ -41,15 +41,13 @@ $page -> addContent($profile_user);
 $limit = 20;
 $fetch_limit = $limit + 1;
 
-$feed_stmt = mysqli_prepare(DB::connection(), '
+$feed_stmt = DB::run('
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?
     ORDER BY `postId` DESC
     LIMIT ?
-');
-mysqli_stmt_bind_param($feed_stmt, 'ii', $user_id, $fetch_limit);
-mysqli_stmt_execute($feed_stmt);
+', 'ii', $user_id, $fetch_limit);
 $feed_result = mysqli_stmt_get_result($feed_stmt);
 
 $feed_rows = [];

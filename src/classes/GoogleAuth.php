@@ -165,13 +165,11 @@ class GoogleAuth
     {
         $mysqli = DB::connection();
 
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `email` = ?
-');
-        mysqli_stmt_bind_param($stmt, 's', $email);
-        mysqli_stmt_execute($stmt);
+', 's', $email);
         $existing = mysqli_fetch_object(mysqli_stmt_get_result($stmt), User::class);
 
         if ($existing instanceof User) {
@@ -188,13 +186,11 @@ SELECT *
                 $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
                 $verified = 1;
 
-                $update_stmt = mysqli_prepare($mysqli, '
+                DB::run('
 UPDATE `Users`
     SET `passwordHash` = ?, `verified` = ?
     WHERE `userId` = ?
-');
-                mysqli_stmt_bind_param($update_stmt, 'sii', $unusable_hash, $verified, $existing_id);
-                mysqli_stmt_execute($update_stmt);
+', 'sii', $unusable_hash, $verified, $existing_id);
 
                 $existing -> passwordHash = $unusable_hash;
                 $existing -> verified = $verified;
@@ -223,12 +219,10 @@ UPDATE `Users`
         $display_name = $name !== null && trim($name) !== '' ? mb_substr(trim($name), 0, 100) : null;
         $verified = 1;
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verified`)
     VALUES (?, ?, ?, ?, ?)
-');
-        mysqli_stmt_bind_param($stmt, 'ssssi', $username, $email, $hash, $display_name, $verified);
-        mysqli_stmt_execute($stmt);
+', 'ssssi', $username, $email, $hash, $display_name, $verified);
 
         $user = new User();
         $user -> userId = (int) mysqli_insert_id($mysqli);
@@ -260,17 +254,14 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
         }
 
         $base = substr($base, 0, 24);
-        $mysqli = DB::connection();
         $candidate = $base;
 
         for ($attempt = 0; $attempt < 50; $attempt++) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT 1
     FROM `Users`
     WHERE `username` = ?
-');
-            mysqli_stmt_bind_param($stmt, 's', $candidate);
-            mysqli_stmt_execute($stmt);
+', 's', $candidate);
             mysqli_stmt_store_result($stmt);
 
             if (mysqli_stmt_num_rows($stmt) === 0) {

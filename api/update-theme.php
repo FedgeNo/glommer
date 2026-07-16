@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -27,12 +26,10 @@ if (!in_array($theme, $valid_themes, true)) {
     JSONResponse::error('Invalid theme', 422) -> send();
 }
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `theme` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'si', $theme, $current_user -> userId);
-mysqli_stmt_execute($stmt);
+', 'si', $theme, $current_user -> userId);
 
 JSONResponse::success(['theme' => $theme]) -> send();

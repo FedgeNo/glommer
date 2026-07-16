@@ -14,7 +14,6 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
-$mysqli = DB::connection();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $user_id = (int) ($payload['userId'] ?? 0);
@@ -35,13 +34,11 @@ if (!$target -> banned) {
 
 $not_banned = 0;
 
-$stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Users`
     SET `banned` = ?
     WHERE `userId` = ?
-');
-mysqli_stmt_bind_param($stmt, 'ii', $not_banned, $user_id);
-mysqli_stmt_execute($stmt);
+', 'ii', $not_banned, $user_id);
 
 ModerationAction::log('unban', $user_id);
 

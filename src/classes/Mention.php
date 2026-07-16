@@ -115,13 +115,11 @@ class Mention
      */
     private static function mentionedUserIds(int $post_id): array
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `userId`
     FROM `PostMentions`
     WHERE `postId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $post_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $post_id);
         $result = mysqli_stmt_get_result($stmt);
 
         $user_ids = [];
@@ -135,13 +133,11 @@ SELECT `userId`
 
     private static function clear(int $post_id): void
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 DELETE
     FROM `PostMentions`
     WHERE `postId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'i', $post_id);
-        mysqli_stmt_execute($stmt);
+', 'i', $post_id);
     }
 
     /**
@@ -153,15 +149,11 @@ DELETE
             return;
         }
 
-        $mysqli = DB::connection();
-
         foreach ($user_ids as $user_id) {
-            $stmt = mysqli_prepare($mysqli, '
+            DB::run('
 INSERT IGNORE INTO `PostMentions` (`postId`, `userId`)
     VALUES (?, ?)
-');
-            mysqli_stmt_bind_param($stmt, 'ii', $post_id, $user_id);
-            mysqli_stmt_execute($stmt);
+', 'ii', $post_id, $user_id);
         }
     }
 
@@ -181,13 +173,11 @@ INSERT IGNORE INTO `PostMentions` (`postId`, `userId`)
 
         $placeholders = implode(', ', array_fill(0, count($usernames), '?'));
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `userId`
     FROM `Users`
     WHERE `username` IN (' . $placeholders . ')
-');
-        mysqli_stmt_bind_param($stmt, str_repeat('s', count($usernames)), ...$usernames);
-        mysqli_stmt_execute($stmt);
+', str_repeat('s', count($usernames)), ...$usernames);
         $result = mysqli_stmt_get_result($stmt);
 
         $user_ids = [];

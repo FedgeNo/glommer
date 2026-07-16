@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 // api_post() (main.js) sends a JSON body, not form-encoded - $_POST is
 // empty for this request, same as api/delete.php.
@@ -24,13 +23,11 @@ $payload = is_array($payload) ? $payload : [];
 
 $post_id = (int) ($payload['postId'] ?? 0);
 
-$owner_stmt = mysqli_prepare($mysqli, '
+$owner_stmt = DB::run('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($owner_stmt, 'i', $post_id);
-mysqli_stmt_execute($owner_stmt);
+', 'i', $post_id);
 $owner_result = mysqli_stmt_get_result($owner_stmt);
 $owner_row = mysqli_fetch_assoc($owner_result);
 
@@ -100,13 +97,11 @@ if ($link_url !== '') {
 $title_value = $title !== '' ? $title : null;
 $link_url_value = $link_url !== '' ? $link_url : null;
 
-$media_count_stmt = mysqli_prepare($mysqli, '
+$media_count_stmt = DB::run('
 SELECT COUNT(*) AS `count`
     FROM `FeedItems`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($media_count_stmt, 'i', $post_id);
-mysqli_stmt_execute($media_count_stmt);
+', 'i', $post_id);
 $media_count = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($media_count_stmt))['count'];
 
 // A post that had attached media keeps it regardless of the text edit (media
@@ -127,13 +122,11 @@ if ($link_url_value !== null && $media_count > 0) {
 
 $edited_at = date('Y-m-d H:i:s');
 
-$update_stmt = mysqli_prepare($mysqli, '
+DB::run('
 UPDATE `Posts`
     SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `editedAt` = ?
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($update_stmt, 'sssssi', $title_value, $description_value, $description_delta_value, $link_url_value, $edited_at, $post_id);
-mysqli_stmt_execute($update_stmt);
+', 'sssssi', $title_value, $description_value, $description_delta_value, $link_url_value, $edited_at, $post_id);
 
 Hashtag::reindexPost($post_id, $description_ops);
 Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user -> userId, $post_id);
@@ -142,51 +135,41 @@ Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user 
 // keywords (just rewritten by reindexPost()) all need to reflect the true
 // current DB state, not values this script would otherwise have to
 // duplicate/guess at.
-$updated_stmt = mysqli_prepare($mysqli, '
+$updated_stmt = DB::run('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($updated_stmt, 'i', $post_id);
-mysqli_stmt_execute($updated_stmt);
+', 'i', $post_id);
 $post = Post::fromRowWithItems(mysqli_fetch_assoc(mysqli_stmt_get_result($updated_stmt)));
 $post -> author = $current_user;
 
-$reply_count_stmt = mysqli_prepare($mysqli, '
+$reply_count_stmt = DB::run('
 SELECT COUNT(*) AS `count`
     FROM `Posts`
     WHERE `parentId` = ?
-');
-mysqli_stmt_bind_param($reply_count_stmt, 'i', $post_id);
-mysqli_stmt_execute($reply_count_stmt);
+', 'i', $post_id);
 $reply_count = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($reply_count_stmt))['count'];
 
-$like_count_stmt = mysqli_prepare($mysqli, '
+$like_count_stmt = DB::run('
 SELECT COUNT(*) AS `count`
     FROM `Likes`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($like_count_stmt, 'i', $post_id);
-mysqli_stmt_execute($like_count_stmt);
+', 'i', $post_id);
 $like_count = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($like_count_stmt))['count'];
 
-$liked_stmt = mysqli_prepare($mysqli, '
+$liked_stmt = DB::run('
 SELECT 1
     FROM `Likes`
     WHERE `postId` = ? AND `userId` = ?
-');
-mysqli_stmt_bind_param($liked_stmt, 'ii', $post_id, $current_user -> userId);
-mysqli_stmt_execute($liked_stmt);
+', 'ii', $post_id, $current_user -> userId);
 mysqli_stmt_store_result($liked_stmt);
 $liked = mysqli_stmt_num_rows($liked_stmt) > 0;
 
-$bookmarked_stmt = mysqli_prepare($mysqli, '
+$bookmarked_stmt = DB::run('
 SELECT 1
     FROM `Bookmarks`
     WHERE `postId` = ? AND `userId` = ?
-');
-mysqli_stmt_bind_param($bookmarked_stmt, 'ii', $post_id, $current_user -> userId);
-mysqli_stmt_execute($bookmarked_stmt);
+', 'ii', $post_id, $current_user -> userId);
 mysqli_stmt_store_result($bookmarked_stmt);
 $bookmarked = mysqli_stmt_num_rows($bookmarked_stmt) > 0;
 

@@ -15,19 +15,16 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['itemId'] ?? $_POST['itemId'] ?? 0);
 
-$owner_stmt = mysqli_prepare($mysqli, '
+$owner_stmt = DB::run('
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
-');
-mysqli_stmt_bind_param($owner_stmt, 'i', $post_id);
-mysqli_stmt_execute($owner_stmt);
+', 'i', $post_id);
 $owner_result = mysqli_stmt_get_result($owner_stmt);
 $owner = mysqli_fetch_assoc($owner_result);
 

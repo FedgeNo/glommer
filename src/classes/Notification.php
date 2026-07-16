@@ -143,32 +143,28 @@ class Notification extends HTMLObject
      */
     public static function rowsForUser(int $user_id, int $limit, ?int $before_id = null): array
     {
-        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
 
         if ($before_id !== null) {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
     WHERE `n`.`userId` = ? AND `n`.`notificationId` < ?
     ORDER BY `n`.`notificationId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'iii', $user_id, $before_id, $fetch_limit);
+', 'iii', $user_id, $before_id, $fetch_limit);
         } else {
-            $stmt = mysqli_prepare($mysqli, '
+            $stmt = DB::run('
 SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
     WHERE `n`.`userId` = ?
     ORDER BY `n`.`notificationId` DESC
     LIMIT ?
-');
-            mysqli_stmt_bind_param($stmt, 'ii', $user_id, $fetch_limit);
+', 'ii', $user_id, $fetch_limit);
         }
 
-        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         $rows = [];
@@ -194,12 +190,10 @@ SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisp
 
         $mysqli = DB::connection();
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
     VALUES (?, ?, ?, ?)
-');
-        mysqli_stmt_bind_param($stmt, 'iisi', $user_id, $actor_id, $type, $post_id);
-        mysqli_stmt_execute($stmt);
+', 'iisi', $user_id, $actor_id, $type, $post_id);
 
         $notification_id = (int) mysqli_insert_id($mysqli);
         $actor = User::load($actor_id);
@@ -286,15 +280,13 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
      */
     public static function hasRecentOfType(int $user_id, string $type, int $within): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT `type`
     FROM `Notifications`
     WHERE `userId` = ?
     ORDER BY `notificationId` DESC
     LIMIT ?
-');
-        mysqli_stmt_bind_param($stmt, 'ii', $user_id, $within);
-        mysqli_stmt_execute($stmt);
+', 'ii', $user_id, $within);
         $result = mysqli_stmt_get_result($stmt);
 
         while ($row = mysqli_fetch_assoc($result)) {
@@ -315,7 +307,7 @@ SELECT `type`
     {
         $no_notifications_fallback = 0;
 
-        $stmt = mysqli_prepare(DB::connection(), '
+        DB::run('
 UPDATE `Users`
     SET `lastNotificationId` = (
         SELECT COALESCE(MAX(`notificationId`), ?)
@@ -323,8 +315,6 @@ UPDATE `Users`
             WHERE `userId` = ?
     )
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'iii', $no_notifications_fallback, $user_id, $user_id);
-        mysqli_stmt_execute($stmt);
+', 'iii', $no_notifications_fallback, $user_id, $user_id);
     }
 }

@@ -18,7 +18,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $query = trim((string) ($payload['q'] ?? ''));
 $before_user_id = (int) ($payload['beforeUserId'] ?? 0);
@@ -37,7 +36,7 @@ if ($query === '') {
     $limit = 20;
     $fetch_limit = $limit + 1;
 
-    $stmt = mysqli_prepare($mysqli, '
+    $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `userId` != ? AND `banned` = ?
@@ -49,21 +48,7 @@ SELECT *
         )
     ORDER BY `userId` DESC
     LIMIT ?
-');
-    mysqli_stmt_bind_param(
-        $stmt,
-        'ssiiiiiii',
-        $like,
-        $like,
-        $current_user -> userId,
-        $not_banned,
-        $before_user_id,
-        $before_user_id,
-        $current_user -> userId,
-        $current_user -> userId,
-        $fetch_limit
-    );
-    mysqli_stmt_execute($stmt);
+', 'ssiiiiiii', $like, $like, $current_user -> userId, $not_banned, $before_user_id, $before_user_id, $current_user -> userId, $current_user -> userId, $fetch_limit);
     $result = mysqli_stmt_get_result($stmt);
 
     $candidates = [];

@@ -34,7 +34,6 @@ if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$mysqli = DB::connection();
 $limit = 20;
 
 if ($feed_type === 'friends') {
@@ -48,16 +47,14 @@ if ($feed_type === 'friends') {
     // Same banned gate user.php itself 404s on - a banned profile's older
     // posts shouldn't be fetchable via this endpoint just because the page
     // that would normally show them isn't reachable.
-    $feed_stmt = mysqli_prepare($mysqli, '
+    $feed_stmt = DB::run('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-    mysqli_stmt_bind_param($feed_stmt, 'iiii', $profile_user_id, $not_banned, $before_post_id, $fetch_limit);
-    mysqli_stmt_execute($feed_stmt);
+', 'iiii', $profile_user_id, $not_banned, $before_post_id, $fetch_limit);
     $feed_result = mysqli_stmt_get_result($feed_stmt);
 
     $feed_rows = [];

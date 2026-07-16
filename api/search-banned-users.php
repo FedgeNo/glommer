@@ -17,7 +17,6 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
-$mysqli = DB::connection();
 $query = trim((string) ($payload['q'] ?? ''));
 
 if ($query === '') {
@@ -29,15 +28,13 @@ $like = '%' . addcslashes($query, '\\%_') . '%';
 $banned = 1;
 $limit = 20;
 
-$stmt = mysqli_prepare($mysqli, '
+$stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `banned` = ?
     ORDER BY `userId` DESC
     LIMIT ?
-');
-mysqli_stmt_bind_param($stmt, 'ssii', $like, $like, $banned, $limit);
-mysqli_stmt_execute($stmt);
+', 'ssii', $like, $like, $banned, $limit);
 $result = mysqli_stmt_get_result($stmt);
 
 $payloads = [];

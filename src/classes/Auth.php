@@ -28,13 +28,11 @@ class Auth
      */
     public static function verifyCredentials(string $identifier, string $password): ?User
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT *
     FROM `Users`
     WHERE `username` = ? OR `email` = ?
-');
-        mysqli_stmt_bind_param($stmt, 'ss', $identifier, $identifier);
-        mysqli_stmt_execute($stmt);
+', 'ss', $identifier, $identifier);
         $user = mysqli_fetch_object(mysqli_stmt_get_result($stmt), User::class);
 
         if ($user === null || $user -> passwordHash === null || !password_verify($password, $user -> passwordHash)) {
@@ -68,13 +66,11 @@ SELECT *
         $new_hash = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            $stmt = mysqli_prepare(DB::connection(), '
+            DB::run('
 UPDATE `Users`
     SET `passwordHash` = ?
     WHERE `userId` = ?
-');
-            mysqli_stmt_bind_param($stmt, 'si', $new_hash, $user -> userId);
-            mysqli_stmt_execute($stmt);
+', 'si', $new_hash, $user -> userId);
             $user -> passwordHash = $new_hash;
         } catch (\mysqli_sql_exception $exception) {
             // Old hash still verifies; leave it and retry on the next sign-in.

@@ -58,13 +58,11 @@ This link expires in 30 days.';
      */
     public static function isReserved(string $email): bool
     {
-        $stmt = mysqli_prepare(DB::connection(), '
+        $stmt = DB::run('
 SELECT 1
     FROM `EmailChangeReverts`
     WHERE `previousEmail` = ? AND `expiresAt` > NOW()
-');
-        mysqli_stmt_bind_param($stmt, 's', $email);
-        mysqli_stmt_execute($stmt);
+', 's', $email);
         mysqli_stmt_store_result($stmt);
 
         return mysqli_stmt_num_rows($stmt) > 0;
@@ -80,16 +78,13 @@ SELECT 1
      */
     public static function consume(string $token): bool
     {
-        $mysqli = DB::connection();
         $token_hash = hash('sha256', $token);
 
-        $stmt = mysqli_prepare($mysqli, '
+        $stmt = DB::run('
 SELECT `userId`, `previousEmail`
     FROM `EmailChangeReverts`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
-');
-        mysqli_stmt_bind_param($stmt, 's', $token_hash);
-        mysqli_stmt_execute($stmt);
+', 's', $token_hash);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
 
@@ -105,12 +100,12 @@ SELECT `userId`, `previousEmail`
         // fresh verification round trip needed.
         $verified = 1;
 
-        $update_stmt = mysqli_prepare($mysqli, '
+        $update_stmt = DB::prepare('
 UPDATE `Users`
     SET `email` = ?, `verified` = ?
     WHERE `userId` = ?
 ');
-        mysqli_stmt_bind_param($update_stmt, 'sii', $previous_email, $verified, $user_id);
+        DB::bind($update_stmt, 'sii', $previous_email, $verified, $user_id);
 
         // `email` is UNIQUE. This should never actually fire - signup and
         // change-email both refuse to hand out an address that's reserved by
@@ -133,28 +128,23 @@ UPDATE `Users`
         // Any pending verification for the abandoned new address is moot -
         // and any other pending revert token for this user (e.g. from a rapid
         // second change) is moot too, since this one already reverted things.
-        $prune_verifications_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `EmailVerifications`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($prune_verifications_stmt, 'i', $user_id);
-        mysqli_stmt_execute($prune_verifications_stmt);
+', 'i', $user_id);
 
-        $prune_reverts_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `EmailChangeReverts`
     WHERE `userId` = ?
-');
-        mysqli_stmt_bind_param($prune_reverts_stmt, 'i', $user_id);
-        mysqli_stmt_execute($prune_reverts_stmt);
+', 'i', $user_id);
 
         return true;
     }
 
     private static function create(int $user_id, string $previous_email): string
     {
-        $mysqli = DB::connection();
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
         // Unlike a password reset or email verification link (both expected
@@ -164,19 +154,16 @@ DELETE
         // window matters more here than the usual short-lived-token hygiene.
         $expiry_days = 30;
 
-        $prune_stmt = mysqli_prepare($mysqli, '
+        DB::run('
 DELETE
     FROM `EmailChangeReverts`
     WHERE `expiresAt` <= NOW()
 ');
-        mysqli_stmt_execute($prune_stmt);
 
-        $stmt = mysqli_prepare($mysqli, '
+        DB::run('
 INSERT INTO `EmailChangeReverts` (`userId`, `previousEmail`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, ?, NOW() + INTERVAL ? DAY)
-');
-        mysqli_stmt_bind_param($stmt, 'issi', $user_id, $previous_email, $token_hash, $expiry_days);
-        mysqli_stmt_execute($stmt);
+', 'issi', $user_id, $previous_email, $token_hash, $expiry_days);
 
         return $token;
     }

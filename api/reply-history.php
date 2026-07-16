@@ -20,21 +20,18 @@ if ($parent_id === 0 || $before_post_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$mysqli = DB::connection();
 $limit = 20;
 $fetch_limit = $limit + 1;
 $not_banned = 0;
 
-$reply_stmt = mysqli_prepare($mysqli, '
+$reply_stmt = DB::run('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-');
-mysqli_stmt_bind_param($reply_stmt, 'iiii', $parent_id, $not_banned, $before_post_id, $fetch_limit);
-mysqli_stmt_execute($reply_stmt);
+', 'iiii', $parent_id, $not_banned, $before_post_id, $fetch_limit);
 $reply_result = mysqli_stmt_get_result($reply_stmt);
 
 $reply_rows = [];

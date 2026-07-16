@@ -19,7 +19,35 @@ class HTMLObject
     public array $contents = [];
     public array $attributes = [];
 
-    public function __construct()
+    /**
+     * $properties (optional) seeds the object from a plain array or another
+     * object: every key that names a property this class actually declares is
+     * copied onto it, e.g. new ExampleList(['limit' => 20]). Only declared
+     * properties are ever assigned - a stray key is ignored rather than
+     * creating a PHP 8.2+ dynamic property - so it's safe to hand it a wider
+     * data carrier and let it pick out what it understands.
+     */
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> deriveClassName();
+
+        if ($properties !== null) {
+            foreach (is_array($properties) ? $properties : get_object_vars($properties) as $name => $value) {
+                if (property_exists($this, $name)) {
+                    $this -> $name = $value;
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets the element's CSS class from the class hierarchy: an app concept's
+     * element carries its PHP class name(s) (e.g. ImageItem -> "FeedItem
+     * ImageItem"), built from whichever ancestor first declared $class down to
+     * static::class. A generic HTML-primitive wrapper (Div, Button, ...) that
+     * never overrode $class keeps null - it isn't an app concept.
+     */
+    private function deriveClassName(): void
     {
         $declaring_class = (new \ReflectionProperty(static::class, 'class')) -> getDeclaringClass() -> getName();
 

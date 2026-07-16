@@ -15,6 +15,26 @@ class ImageProcessor
      */
     public const MAX_SOURCE_PIXELS = 50_000_000;
 
+    // GD decodes raw sensor-order pixels and ignores the EXIF Orientation tag
+    // entirely, so a portrait phone photo comes out sideways unless this is
+    // applied manually. Angles are in imagerotate()'s counter-clockwise
+    // convention; the rotation is applied before the flip, per the EXIF
+    // spec's definition of each orientation value.
+    private const ORIENTATION_FLIPS = [
+        2 => IMG_FLIP_HORIZONTAL,
+        4 => IMG_FLIP_VERTICAL,
+        5 => IMG_FLIP_HORIZONTAL,
+        7 => IMG_FLIP_HORIZONTAL,
+    ];
+
+    private const ORIENTATION_ROTATIONS = [
+        3 => 180,
+        5 => -90,
+        6 => -90,
+        7 => 90,
+        8 => 90,
+    ];
+
     public static function load(string $path): \GdImage|false
     {
         $data = @file_get_contents($path);
@@ -43,7 +63,34 @@ class ImageProcessor
         // imagecreatefromstring auto-detects the format and decodes whatever
         // this GD build supports (JPEG/PNG/GIF/WebP/BMP/...), returning false
         // for anything it can't - if it fails, it isn't an image we can use.
-        return @imagecreatefromstring($data);
+        $image = @imagecreatefromstring($data);
+
+        if ($image === false) {
+            return false;
+        }
+
+        return self::applyOrientation($image, $path);
+    }
+
+    private static function applyOrientation(\GdImage $image, string $path): \GdImage
+    {
+        $exif = @exif_read_data($path);
+        $orientation = is_array($exif) ? (int) ($exif['Orientation'] ?? 1) : 1;
+
+        if (isset(self::ORIENTATION_ROTATIONS[$orientation])) {
+            $rotated = imagerotate($image, self::ORIENTATION_ROTATIONS[$orientation], 0);
+
+            if ($rotated !== false) {
+                imagedestroy($image);
+                $image = $rotated;
+            }
+        }
+
+        if (isset(self::ORIENTATION_FLIPS[$orientation])) {
+            imageflip($image, self::ORIENTATION_FLIPS[$orientation]);
+        }
+
+        return $image;
     }
 
     public static function resizeAndSave(\GdImage $source, string $destination, int $max_dimension): bool

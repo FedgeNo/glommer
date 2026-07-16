@@ -3144,10 +3144,44 @@ function attempt_web_certificate(string $host, string $email): bool
  * Whether an Apache <VirtualHost> block serves $host, i.e. names it in a
  * ServerName or ServerAlias directive (whole token, case-insensitive).
  */
-function apache_vhost_serves_host(string $block, string $host): bool
+function apache_vhost_serves_host(string $block, string $host, bool $global_servername_matches): bool
 {
+    $has_servername = preg_match('/^\s*ServerName\s+\S/mi', $block) === 1;
+
     foreach (['ServerName', 'ServerAlias'] as $directive) {
         if (preg_match_all('/^\s*' . $directive . '\s+(.+)$/mi', $block, $matches) === 0) {
+            continue;
+        }
+
+        foreach ($matches[1] as $value) {
+            foreach (preg_split('/\s+/', trim($value)) as $token) {
+                if (strcasecmp(trim($token), $host) === 0) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    // A vhost with no ServerName of its own (e.g. Fedora's default
+    // <VirtualHost _default_:443>) inherits the top-level ServerName - the
+    // common single-site layout, where the cert lives in that default vhost
+    // and the host is declared globally in httpd.conf rather than per-vhost.
+    return $global_servername_matches && !$has_servername;
+}
+
+/**
+ * Whether a top-level ServerName directive (outside any <VirtualHost>, so the
+ * server-wide default) names $host - the signal that an otherwise-unnamed
+ * vhost is this host's.
+ */
+function apache_global_servername_matches(string $host): bool
+{
+    $files = array_filter(explode("\n", run('grep -rEli "^[[:space:]]*ServerName[[:space:]]" /etc/httpd /etc/apache2 2>/dev/null')['output']));
+
+    foreach ($files as $file) {
+        $outside = preg_replace('/<VirtualHost\b[^>]*>.*?<\/VirtualHost>/is', '', (string) @file_get_contents($file));
+
+        if (preg_match_all('/^\s*ServerName\s+(.+)$/mi', (string) $outside, $matches) === 0) {
             continue;
         }
 
@@ -3166,14 +3200,14 @@ function apache_vhost_serves_host(string $block, string $host): bool
 /**
  * Whether any <VirtualHost> block in $contents serves $host.
  */
-function apache_config_serves_host(string $contents, string $host): bool
+function apache_config_serves_host(string $contents, string $host, bool $global_servername_matches): bool
 {
     if (preg_match_all('/<VirtualHost\b[^>]*>.*?<\/VirtualHost>/is', $contents, $matches) === 0) {
         return false;
     }
 
     foreach ($matches[0] as $block) {
-        if (apache_vhost_serves_host($block, $host)) {
+        if (apache_vhost_serves_host($block, $host, $global_servername_matches)) {
             return true;
         }
     }
@@ -3187,14 +3221,14 @@ function apache_config_serves_host(string $contents, string $host): bool
  * directives are returned untouched, so a multi-site server's sibling sites
  * keep their own certificates.
  */
-function apache_repoint_host_vhosts(string $contents, string $host, string $cert, string $key): string
+function apache_repoint_host_vhosts(string $contents, string $host, string $cert, string $key, bool $global_servername_matches): string
 {
     return (string) preg_replace_callback(
         '/<VirtualHost\b[^>]*>.*?<\/VirtualHost>/is',
-        static function (array $match) use ($host, $cert, $key): string {
+        static function (array $match) use ($host, $cert, $key, $global_servername_matches): string {
             $block = $match[0];
 
-            if (!apache_vhost_serves_host($block, $host)) {
+            if (!apache_vhost_serves_host($block, $host, $global_servername_matches)) {
                 return $block;
             }
 
@@ -3230,6 +3264,11 @@ function install_certificate_into_apache(string $host, string $cert, string $key
         return;
     }
 
+    // A vhost serves $host if it names it explicitly, or - the single-site
+    // case - it has no ServerName of its own and the top-level ServerName is
+    // $host. Computed once here and threaded through the matching below.
+    $global_servername_matches = apache_global_servername_matches($host);
+
     // Rewrite only the vhost(s) serving $host, and only the files that actually
     // change - the rest of every config (including other sites' vhosts) is left
     // byte-for-byte as it was.
@@ -3237,7 +3276,7 @@ function install_certificate_into_apache(string $host, string $cert, string $key
 
     foreach ($files as $file) {
         $original = (string) file_get_contents($file);
-        $rewritten = apache_repoint_host_vhosts($original, $host, $cert, $key);
+        $rewritten = apache_repoint_host_vhosts($original, $host, $cert, $key, $global_servername_matches);
 
         if ($rewritten !== $original) {
             $rewrites[$file] = $rewritten;
@@ -3245,13 +3284,13 @@ function install_certificate_into_apache(string $host, string $cert, string $key
     }
 
     if ($rewrites === []) {
-        // Either the host's vhost is already on the LE cert, or no vhost names
+        // Either the host's vhost is already on the LE cert, or no vhost serves
         // this host at all - tell the two apart so a genuinely missing vhost
         // isn't silently read as "all good".
         $serves = false;
 
         foreach ($files as $file) {
-            if (apache_config_serves_host((string) file_get_contents($file), $host)) {
+            if (apache_config_serves_host((string) file_get_contents($file), $host, $global_servername_matches)) {
                 $serves = true;
 
                 break;
@@ -3261,7 +3300,7 @@ function install_certificate_into_apache(string $host, string $cert, string $key
         if ($serves) {
             ok('Apache already serves the Let\'s Encrypt certificate for ' . $host);
         } else {
-            warn('Obtained a Let\'s Encrypt certificate, but found no Apache <VirtualHost> naming ' . $host . ' (ServerName/ServerAlias) to repoint - set SSLCertificateFile/SSLCertificateKeyFile to ' . $cert . ' and ' . $key . ' in that vhost by hand, then reload.');
+            warn('Obtained a Let\'s Encrypt certificate, but found no Apache vhost serving ' . $host . ' (no <VirtualHost> names it and no top-level ServerName matches) to repoint - set SSLCertificateFile/SSLCertificateKeyFile to ' . $cert . ' and ' . $key . ' by hand, then reload.');
         }
 
         return;
@@ -4259,11 +4298,15 @@ if ($fresh_install) {
     $apply = false;
     $admin_mysqli = null;
 
-    if (is_interactive() || (Env::get('DB_ADMIN_USERNAME') !== null && Env::get('DB_ADMIN_PASSWORD') !== null)) {
-        if (!is_interactive() || confirm('Apply the ALTER statements to bring them up to date?')) {
-            $admin_mysqli = admin_connection('apply the missing definitions');
-            $apply = $admin_mysqli !== null;
-        }
+    // A non-interactive root run applies the drift straight away - admin_connection()
+    // authenticates over the unix socket with no credentials, the same way it
+    // creates missing tables above; an interactive run confirms first. Letting
+    // admin_connection() decide (it returns null when it genuinely can't get
+    // admin access) is what keeps a scripted root deploy from silently skipping
+    // the drift, which a pre-gate on is_interactive()/DB_ADMIN would do.
+    if (!is_interactive() || confirm('Apply the ALTER statements to bring them up to date?')) {
+        $admin_mysqli = admin_connection('apply the missing definitions');
+        $apply = $admin_mysqli !== null;
     }
 
     if ($apply) {
@@ -4419,6 +4462,15 @@ try {
 }
 
 ok('database marked as version ' . $code_version);
+
+// Restart the long-running daemons, at the end, once code and schema are both
+// settled - they load code into memory at start, so a pull (or a src/classes
+// change they autoload) leaves them running stale until restarted. Done every
+// run, not just on a schema change: re-running the installer is the natural
+// "make what's running match what's deployed" step, and an unconditional
+// restart doubles as a troubleshooting reset for a wedged daemon.
+restart_already_running_daemons();
+ok('background daemons restarted');
 
 // ---------- Done ----------
 

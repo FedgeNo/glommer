@@ -193,111 +193,30 @@ SELECT *
     }
 
     /**
-     * This user's accepted friends, newest friendship first, excluding banned
-     * accounts. Paginate by passing the friendshipId of the last friend
-     * already seen as $before_friendship_id (the list is cursored on the
-     * Friendships row id).
+     * The user ids of this user's accepted friends - just the ids, for the
+     * suggestion engine's mutual-friend counting. The friends themselves, for
+     * display, are FriendList's concern; each friendship stores one direction,
+     * so the id wanted is whichever end of the pair isn't this user.
      *
-     * @return Friend[]
+     * @return int[]
      */
-    public function getFriends(int $limit = self::MAX_FRIENDS, ?int $before_friendship_id = null): array
+    public function friendIds(): array
     {
         $accepted_status = 'accepted';
-        $not_banned = 0;
 
-        // No cursor means "from the newest" - a sentinel above any real
-        // friendshipId keeps it one query instead of a cursorless duplicate.
-        $cursor = $before_friendship_id ?? PHP_INT_MAX;
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT IF(`requesterId` = ?, `addresseeId`, `requesterId`) AS `friendId`
+    FROM `Friendships`
+    WHERE `status` = ? AND (`requesterId` = ? OR `addresseeId` = ?)
+', 'isii', $this -> userId, $accepted_status, $this -> userId, $this -> userId));
 
-        // The two directions run as separate UNION ALL halves rather than one
-        // OR: each half walks its (requesterId|addresseeId, status,
-        // friendshipId) index backward and stops at the limit, so only the
-        // merged 2x-limit rows ever get sorted - an OR index_merge forces
-        // collecting and filesorting every accepted friendship first. The
-        // banned filter stays inside each half so pagination semantics match
-        // the old query exactly.
-        return DB::rows('
-(SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
-    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?)
-UNION ALL
-(SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
-    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?)
-    ORDER BY `friendshipId` DESC
-    LIMIT ?
-', 'Friend', 'isiiiisiiii', $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $this -> userId, $accepted_status, $not_banned, $cursor, $limit, $limit);
-    }
+        $ids = [];
 
-    /**
-     * Pending friend requests sent to this user, awaiting their response,
-     * newest first, excluding banned requesters. Cursored on friendshipId.
-     *
-     * @return FriendRequest[]
-     */
-    public function getIncomingFriendRequests(int $limit = self::MAX_FRIENDS, ?int $before_friendship_id = null): array
-    {
-        $pending_status = 'pending';
-        $not_banned = 0;
-
-        if ($before_friendship_id !== null) {
-            return DB::rows('
-SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
-    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-', 'FriendRequest', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
+        while ($row = mysqli_fetch_assoc($result)) {
+            $ids[] = (int) $row['friendId'];
         }
 
-        return DB::rows('
-SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
-    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-', 'FriendRequest', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
-    }
-
-    /**
-     * Pending friend requests this user sent, awaiting the other person's
-     * response, newest first, excluding banned addressees. Cursored on
-     * friendshipId.
-     *
-     * @return SentFriendRequest[]
-     */
-    public function getOutgoingFriendRequests(int $limit = self::MAX_FRIENDS, ?int $before_friendship_id = null): array
-    {
-        $pending_status = 'pending';
-        $not_banned = 0;
-
-        if ($before_friendship_id !== null) {
-            return DB::rows('
-SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
-    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-', 'SentFriendRequest', 'isiii', $this -> userId, $pending_status, $not_banned, $before_friendship_id, $limit);
-        }
-
-        return DB::rows('
-SELECT `f`.`friendshipId`, `u`.*
-    FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
-    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
-    ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-', 'SentFriendRequest', 'isii', $this -> userId, $pending_status, $not_banned, $limit);
+        return $ids;
     }
 
     /**
@@ -401,7 +320,7 @@ UPDATE `Users`
      */
     public function getSuggestedUsers(int $limit = 20): array
     {
-        $friend_ids = array_map(fn ($friend) => (int) $friend -> userId, $this -> getFriends());
+        $friend_ids = $this -> friendIds();
 
         $mutual_counts = self::mutualFriendCounts($friend_ids, (int) $this -> userId);
 
@@ -429,7 +348,7 @@ UPDATE `Users`
     /**
      * Friends-of-friends, ranked by how many of $friend_ids they're accepted-
      * friends with - one query in each direction rather than a load()+
-     * getFriends() round trip per friend, so cost no longer scales with how
+     * friendIds() round trip per friend, so cost no longer scales with how
      * many friends $viewer_id has.
      *
      * @param int[] $friend_ids

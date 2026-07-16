@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * The Banned Users page's results area: 20 banned accounts at a time,
  * cursored on userId (newest accounts first) and grown by infinite scroll in
- * main.js off the data-* attributes here - the same shape PaginatedUserList
- * uses for friends, with a userId cursor instead of a friendshipId one. The
+ * main.js off the data-* attributes here - the same shape UserList uses for
+ * friends, with a userId cursor instead of a friendshipId one. The
  * search box (BannedUserSearch) repopulates this same container with matches.
  */
 class BannedUserList extends HTMLObject

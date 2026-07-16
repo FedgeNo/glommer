@@ -36,16 +36,17 @@ if ($profile_user === null || $profile_user -> banned) {
 }
 
 $viewer = Auth::user();
-$limit = 20;
-$fetch_limit = $limit + 1;
 
-$items = match ($list_type) {
-    'incoming' => $profile_user -> getIncomingFriendRequests($fetch_limit, $before_friendship_id),
-    'outgoing' => $profile_user -> getOutgoingFriendRequests($fetch_limit, $before_friendship_id),
-    default => $profile_user -> getFriends($fetch_limit, $before_friendship_id),
+// The three lists own their queries; the endpoint just constructs the right
+// one for the next page and serializes what it fetched.
+$list = match ($list_type) {
+    'incoming' => new PendingFriendRequestList(['user' => $profile_user, 'before' => $before_friendship_id]),
+    'outgoing' => new OutgoingFriendRequestList(['user' => $profile_user, 'before' => $before_friendship_id]),
+    default => new FriendList(['user' => $profile_user, 'before' => $before_friendship_id]),
 };
 
-$has_more = count($items) > $limit;
+$items = $list -> items;
+$has_more = count($items) > UserList::PAGE_SIZE;
 
 if ($has_more) {
     array_pop($items);

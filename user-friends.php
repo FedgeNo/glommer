@@ -29,19 +29,19 @@ $page = Page::create($name . '\'s Friends', 'Friends of ' . $name . ' on Glommer
 $page -> addContent($profile_user);
 
 if ($is_own) {
-    $incoming = PendingFriendRequestList::forUser($profile_user);
+    $incoming = new PendingFriendRequestList(['user' => $profile_user]);
 
-    if ($incoming -> items !== []) {
+    if ($incoming -> hasItems()) {
         $page -> addContent($incoming);
     }
 }
 
-$page -> addContent(FriendList::forUser($profile_user));
+$page -> addContent(new FriendList(['user' => $profile_user]));
 
 if ($is_own) {
-    $outgoing = OutgoingFriendRequestList::forUser($profile_user);
+    $outgoing = new OutgoingFriendRequestList(['user' => $profile_user]);
 
-    if ($outgoing -> items !== []) {
+    if ($outgoing -> hasItems()) {
         $page -> addContent($outgoing);
     }
 }

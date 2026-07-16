@@ -4,10 +4,19 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
-$feed_type = (string) ($_GET['feedType'] ?? 'global');
-$before_post_id = (int) ($_GET['beforePostId'] ?? 0);
-$profile_user_id = (int) ($_GET['userId'] ?? 0);
-$tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
+$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
+
+$feed_type = (string) ($payload['feedType'] ?? 'global');
+$before_post_id = (int) ($payload['beforePostId'] ?? 0);
+$profile_user_id = (int) ($payload['userId'] ?? 0);
+$tag = strtolower(trim((string) ($payload['tag'] ?? '')));
 
 if ($before_post_id === 0 || !in_array($feed_type, ['global', 'friends', 'user', 'tag'], true)) {
     JSONResponse::error('Invalid request', 422) -> send();

@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
 }
@@ -12,10 +18,23 @@ $current_user = Auth::user();
 $mysqli = Database::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
 $new_email = trim((string) ($payload['newEmail'] ?? ''));
 $current_password = (string) ($payload['currentPassword'] ?? '');
 
+// Throttle current-password guessing here too - see change-password.php.
+// Separate from (and evaluated before) the change-email send limit below,
+// which caps verification emails rather than password guesses; this shares the
+// per-user password-verify key with the other password-confirming endpoints.
+$password_rate_key = 'password-verify:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
+    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+}
+
 if ($current_user -> passwordHash === null || !password_verify($current_password, $current_user -> passwordHash)) {
+    RateLimiter::recordAttempt($password_rate_key);
+
     JSONResponse::error('Current password is incorrect', 422) -> send();
 }
 

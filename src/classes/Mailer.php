@@ -23,12 +23,16 @@ class Mailer
     private const MAX_ATTEMPTS = 3;
     private const RETRY_DELAY_MICROSECONDS = 250000;
 
-    // Set by the last attempt() call: true only when the destination server
-    // actively refused this specific recipient (RCPT TO rejected), as opposed
-    // to our own mail transport being unreachable or misconfigured. Lets
-    // EmailVerification::sendFor() tell "mail is down" (safe to auto-verify)
-    // apart from "this address doesn't accept mail" (an attacker could
-    // engineer this on purpose, so it must not bypass verification).
+    // Sticky across every attempt() a single send() makes: true once ANY
+    // attempt sees the destination server actively refuse this specific
+    // recipient (RCPT TO rejected with a permanent reply), as opposed to our
+    // own mail transport being unreachable or misconfigured. A later retry
+    // that merely fails to connect must not erase an earlier attempt's
+    // confirmed rejection - only send() resets this, between different
+    // messages. Lets EmailVerification::sendFor() tell "mail is down" (safe
+    // to auto-verify) apart from "this address doesn't accept mail" (an
+    // attacker could engineer this on purpose, so it must not bypass
+    // verification).
     private static bool $recipientRejected = false;
 
     public static function send(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
@@ -70,8 +74,6 @@ class Mailer
 
     private static function attempt(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
     {
-        self::$recipientRejected = false;
-
         $from_address = (string) Settings::get(self::FROM_ADDRESS_SETTING, '');
         // Unlike the address, a missing name is cosmetic (the From header
         // still works, just with no display name) - a friendly fallback is
@@ -259,10 +261,13 @@ class Mailer
                 // A 4xx reply is transient (greylisting, "try again later",
                 // a temporary local problem on the destination server) - the
                 // address itself isn't necessarily bad, so this must not be
-                // treated as a permanent rejection of the recipient. Only a
-                // 5xx (or anything else unexpected) means the destination
-                // server is actually refusing this address.
-                if ($rcpt_reply_code === null || !str_starts_with($rcpt_reply_code, '4')) {
+                // treated as a permanent rejection of the recipient. A null
+                // reply code means no reply was read at all (a dropped
+                // connection - a transport failure, not the server refusing
+                // this recipient), so that must not set it either. Only an
+                // actually-read 5xx (or other non-4xx) reply means the
+                // destination server is genuinely refusing this address.
+                if ($rcpt_reply_code !== null && !str_starts_with($rcpt_reply_code, '4')) {
                     self::$recipientRejected = true;
                 }
 

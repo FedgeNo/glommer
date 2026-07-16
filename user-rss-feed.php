@@ -5,7 +5,6 @@ declare(strict_types=1);
 require __DIR__ . '/src/init.php';
 
 $username = (string) ($_GET['username'] ?? '');
-$mysqli = Database::connection();
 
 $profile_user = User::byUsername($username);
 
@@ -19,7 +18,7 @@ $name = $profile_user -> displayName ?? $profile_user -> username;
 
 $limit = 50;
 
-$feed_stmt = mysqli_prepare($mysqli, '
+$feed_stmt = mysqli_prepare(Database::connection(), '
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?

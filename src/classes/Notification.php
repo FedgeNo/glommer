@@ -313,16 +313,18 @@ SELECT `type`
      */
     public static function markSeen(int $user_id): void
     {
+        $no_notifications_fallback = 0;
+
         $stmt = mysqli_prepare(Database::connection(), '
 UPDATE `Users`
     SET `lastNotificationId` = (
-        SELECT COALESCE(MAX(`notificationId`), 0)
+        SELECT COALESCE(MAX(`notificationId`), ?)
             FROM `Notifications`
             WHERE `userId` = ?
     )
     WHERE `userId` = ?
 ');
-        mysqli_stmt_bind_param($stmt, 'ii', $user_id, $user_id);
+        mysqli_stmt_bind_param($stmt, 'iii', $no_notifications_fallback, $user_id, $user_id);
         mysqli_stmt_execute($stmt);
     }
 }

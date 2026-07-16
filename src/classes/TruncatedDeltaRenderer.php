@@ -127,7 +127,19 @@ class TruncatedDeltaRenderer extends DeltaRenderer
         $last_space = mb_strrpos($cut, ' ');
 
         if ($last_space !== false && $last_space > 0) {
-            $cut = mb_substr($cut, 0, $last_space);
+            $word_trimmed = mb_substr($cut, 0, $last_space);
+
+            // Only take the word-boundary trim when it doesn't slice into a
+            // formula that was fully closed within $cut. If the last space
+            // falls inside a complete formula, trimming there re-opens its
+            // delimiter - and backing that off would throw away a whole
+            // formula that fit the budget. In that case keep $cut as is: it
+            // already ends cleanly on the closed formula (the word trim only
+            // exists to avoid ending mid-word in plain text, never to discard
+            // a formula that fit).
+            if (self::backOffFromOpenMath($word_trimmed) === $word_trimmed) {
+                $cut = $word_trimmed;
+            }
         }
 
         return rtrim($cut);

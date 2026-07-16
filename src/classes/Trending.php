@@ -55,6 +55,14 @@ class Trending
     // tolerance the class docblock describes.
     private const STALE_MINUTES = 30;
 
+    // Settings key recompute() stamps on every run, whether or not any
+    // entity actually qualified - isStale() reads this instead of
+    // MAX(TrendingEntities.computedAt) so a quiet window that clears every
+    // entity (nothing meets MIN_DISTINCT_AUTHORS) still counts as "just ran"
+    // rather than looking like it never ran and re-triggering a synchronous
+    // recompute on every near-future request.
+    private const LAST_RUN_SETTING = 'trendingLastRecomputedAt';
+
     // Recompute is real work (pulls + scores the whole window) - a low-odds
     // lottery on a stale read avoids every concurrent stale request
     // recomputing at once, while still self-healing reasonably quickly under
@@ -100,13 +108,7 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
 
     private static function isStale(): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
-SELECT MAX(`computedAt`) AS `newest`
-    FROM `TrendingEntities`
-');
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $newest = mysqli_fetch_assoc($result)['newest'] ?? null;
+        $newest = Settings::get(self::LAST_RUN_SETTING);
 
         if ($newest === null) {
             return true;
@@ -114,7 +116,7 @@ SELECT MAX(`computedAt`) AS `newest`
 
         $stale_seconds = self::STALE_MINUTES * 60;
 
-        return (time() - strtotime((string) $newest)) > $stale_seconds;
+        return (time() - strtotime($newest)) > $stale_seconds;
     }
 
     /**
@@ -151,7 +153,12 @@ SELECT MAX(`computedAt`) AS `newest`
             $user_id = (int) $row['userId'];
 
             foreach ($entities as $entity) {
-                $key = $entity['type'] . "\0" . $entity['value'];
+                // Keyed on a case-folded value so "COVID" and "Covid" are one
+                // entity (one vote pool, one ban match) instead of splitting
+                // across two dictionary entries that only collide later at
+                // the database's collation-insensitive unique key - the
+                // first-seen casing is kept as the display value below.
+                $key = $entity['type'] . "\0" . mb_strtolower($entity['value']);
 
                 if (isset($banned[$key])) {
                     continue;
@@ -210,6 +217,10 @@ DELETE
 ');
         mysqli_stmt_bind_param($cleanup_stmt, 's', $computed_at);
         mysqli_stmt_execute($cleanup_stmt);
+
+        // Stamped unconditionally, even when nothing qualified this run - see
+        // LAST_RUN_SETTING's docblock.
+        Settings::set(self::LAST_RUN_SETTING, $computed_at);
     }
 
     /**
@@ -222,16 +233,6 @@ DELETE
     public static function ban(string $entity_type, string $entity_value, int $moderator_id, ?string $reason): void
     {
         $mysqli = Database::connection();
-
-        $existing_id_stmt = mysqli_prepare($mysqli, '
-SELECT `entityId`
-    FROM `TrendingEntities`
-    WHERE `entityType` = ? AND `entityValue` = ?
-');
-        mysqli_stmt_bind_param($existing_id_stmt, 'ss', $entity_type, $entity_value);
-        mysqli_stmt_execute($existing_id_stmt);
-        $existing_row = mysqli_fetch_assoc(mysqli_stmt_get_result($existing_id_stmt));
-        $entity_id = $existing_row !== null ? (int) $existing_row['entityId'] : null;
 
         $ban_stmt = mysqli_prepare($mysqli, '
 INSERT INTO `BannedTrendingEntities` (`entityType`, `entityValue`, `bannedBy`, `reason`)
@@ -249,10 +250,16 @@ DELETE
         mysqli_stmt_bind_param($remove_stmt, 'ss', $entity_type, $entity_value);
         mysqli_stmt_execute($remove_stmt);
 
-        ModerationAction::log('banTrendingEntity', null, $entity_type, $entity_id);
+        // The durable, queryable record of who banned this entity (and the
+        // reason) is the BannedTrendingEntities row itself - bannedBy plus
+        // createdAt. The ModerationActions entry carries no targetId: a
+        // trending entity is identified by a type+value string pair, not a
+        // stable row id (TrendingEntities ids are regenerated every recompute,
+        // so any id stored here would dangle within minutes).
+        ModerationAction::log('banTrendingEntity', null, $entity_type, null);
     }
 
-    public static function unban(string $entity_type, string $entity_value, int $moderator_id): void
+    public static function unban(string $entity_type, string $entity_value): void
     {
         $stmt = mysqli_prepare(Database::connection(), '
 DELETE
@@ -280,8 +287,41 @@ SELECT 1
     }
 
     /**
-     * @return array<string, true> "$type\0$value" => true, same key shape
-     *   recompute()'s $stats array uses.
+     * Every standing entity ban, newest first, for the moderation view that
+     * lists and lifts them - joined to the banning moderator's username so the
+     * "who" is shown, not just a bannedBy id.
+     *
+     * @return array<int, array{entityType: string, entityValue: string, reason: ?string, bannedByUsername: string, createdAt: string}>
+     */
+    public static function bannedEntities(): array
+    {
+        $stmt = mysqli_prepare(Database::connection(), '
+SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityValue`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`username` AS `bannedByUsername`
+    FROM `BannedTrendingEntities`
+    JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
+    ORDER BY `BannedTrendingEntities`.`createdAt` DESC
+');
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $rows = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rows[] = [
+                'entityType' => (string) $row['entityType'],
+                'entityValue' => (string) $row['entityValue'],
+                'reason' => $row['reason'],
+                'bannedByUsername' => (string) $row['bannedByUsername'],
+                'createdAt' => (string) $row['createdAt'],
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @return array<string, true> "$type\0$value" => true, same case-folded
+     *   key shape recompute()'s $stats array uses.
      */
     private static function bannedKeys(): array
     {
@@ -295,7 +335,7 @@ SELECT `entityType`, `entityValue`
         $keys = [];
 
         while ($row = mysqli_fetch_assoc($result)) {
-            $keys[$row['entityType'] . "\0" . $row['entityValue']] = true;
+            $keys[$row['entityType'] . "\0" . mb_strtolower($row['entityValue'])] = true;
         }
 
         return $keys;

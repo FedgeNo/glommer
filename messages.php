@@ -8,14 +8,13 @@ Auth::requireLogin();
 
 $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
-$mysqli = Database::connection();
 
 if ($username === '') {
     $page = Page::create('Messages');
 
     $not_banned = 0;
 
-    $conversations_stmt = mysqli_prepare($mysqli, '
+    $conversations_stmt = mysqli_prepare(Database::connection(), '
 SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`.`createdAt`) AS `lastMessageAt`
     FROM `Messages` `m`
     JOIN `Users` `u` ON `u`.`userId` = IF(`m`.`senderId` = ?, `m`.`recipientId`, `m`.`senderId`)

@@ -158,7 +158,7 @@ if (!function_exists('shell_exec') || !function_exists('exec') || !function_exis
         . ($disabled !== [] ? ' (disable_functions = ' . implode(', ', $disabled) . ')' : '')
         . '. It shells out to systemctl, certbot, mysqldump, package managers, and more throughout - '
         . 'nothing here works without it. Re-enable those three functions in php.ini (remove them from '
-        . 'disable_functions) and re-run, or provision this server by hand (see README.md).');
+        . 'disable_functions) and re-run, or provision this server by hand (see README.md §4).');
 }
 
 /**
@@ -308,7 +308,7 @@ function offer_websocket_service(): bool
     $home = resolve_home_dir();
 
     if ($home === null) {
-        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md §7 (Background services).');
 
         return false;
     }
@@ -433,7 +433,7 @@ function reconcile_websocket_service_unit(): void
 function write_and_enable_websocket_service(): bool
 {
     if (!user_systemd_available()) {
-        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - run bin/websocket-server.php under your own process manager, or set this up from a real login session. See README.md.');
+        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - run bin/websocket-server.php under your own process manager, or set this up from a real login session. See README.md §7 (Background services).');
 
         return false;
     }
@@ -441,7 +441,7 @@ function write_and_enable_websocket_service(): bool
     $home = resolve_home_dir();
 
     if ($home === null) {
-        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md §7 (Background services).');
 
         return false;
     }
@@ -450,13 +450,13 @@ function write_and_enable_websocket_service(): bool
     $unit_contents = websocket_unit_contents();
 
     if (!is_dir(dirname($unit_path)) && !@mkdir(dirname($unit_path), 0755, true)) {
-        fail_line('Could not create ' . dirname($unit_path) . ' - create the unit manually (see README.md).');
+        fail_line('Could not create ' . dirname($unit_path) . ' - create the unit manually (see README.md §7).');
 
         return false;
     }
 
     if (file_put_contents($unit_path, $unit_contents) === false) {
-        fail_line('Could not write ' . $unit_path . ' - create the unit manually (see README.md).');
+        fail_line('Could not write ' . $unit_path . ' - create the unit manually (see README.md §7).');
 
         return false;
     }
@@ -485,7 +485,15 @@ function write_and_enable_websocket_service(): bool
     $user = run('id -un 2>/dev/null')['output'];
 
     if ($user === '') {
-        $user = get_current_user() ?: (string) getenv('USER');
+        // posix_geteuid() is the account actually running this process; this
+        // is a user-level (non-root) service path, so that's the user whose
+        // `systemd --user` instance runs the unit and needs lingering.
+        // get_current_user() would instead report the owner of the script
+        // file, which need not be the person who invoked the installer.
+        $euid_user = function_exists('posix_getpwuid') && function_exists('posix_geteuid')
+            ? (posix_getpwuid(posix_geteuid())['name'] ?? '')
+            : '';
+        $user = $euid_user !== '' ? $euid_user : (string) getenv('USER');
     }
 
     $linger_enable_result = run('loginctl enable-linger :user 2>&1', ['user' => $user]);
@@ -609,7 +617,7 @@ function reconcile_upload_worker_service_unit(): void
 function write_and_enable_upload_worker_service(): bool
 {
     if (!user_systemd_available()) {
-        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - run bin/upload-worker.php under your own process manager, or set this up from a real login session. See README.md.');
+        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - run bin/upload-worker.php under your own process manager, or set this up from a real login session. See README.md §7 (Background services).');
 
         return false;
     }
@@ -617,7 +625,7 @@ function write_and_enable_upload_worker_service(): bool
     $home = resolve_home_dir();
 
     if ($home === null) {
-        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md §7 (Background services).');
 
         return false;
     }
@@ -626,13 +634,13 @@ function write_and_enable_upload_worker_service(): bool
     $unit_contents = upload_worker_unit_contents();
 
     if (!is_dir(dirname($unit_path)) && !@mkdir(dirname($unit_path), 0755, true)) {
-        fail_line('Could not create ' . dirname($unit_path) . ' - create the unit manually (see README.md).');
+        fail_line('Could not create ' . dirname($unit_path) . ' - create the unit manually (see README.md §7).');
 
         return false;
     }
 
     if (file_put_contents($unit_path, $unit_contents) === false) {
-        fail_line('Could not write ' . $unit_path . ' - create the unit manually (see README.md).');
+        fail_line('Could not write ' . $unit_path . ' - create the unit manually (see README.md §7).');
 
         return false;
     }
@@ -655,7 +663,15 @@ function write_and_enable_upload_worker_service(): bool
     $user = run('id -un 2>/dev/null')['output'];
 
     if ($user === '') {
-        $user = get_current_user() ?: (string) getenv('USER');
+        // posix_geteuid() is the account actually running this process; this
+        // is a user-level (non-root) service path, so that's the user whose
+        // `systemd --user` instance runs the unit and needs lingering.
+        // get_current_user() would instead report the owner of the script
+        // file, which need not be the person who invoked the installer.
+        $euid_user = function_exists('posix_getpwuid') && function_exists('posix_geteuid')
+            ? (posix_getpwuid(posix_geteuid())['name'] ?? '')
+            : '';
+        $user = $euid_user !== '' ? $euid_user : (string) getenv('USER');
     }
 
     $linger_enable_result = run('loginctl enable-linger :user 2>&1', ['user' => $user]);
@@ -710,7 +726,7 @@ function offer_first_backup(): bool
     echo "\n" . wrap('It can also run automatically every night via a user-level systemd timer (no root needed).') . "\n";
 
     if (!confirm('Set that up now too?')) {
-        warn('Not scheduled - run php bin/backup.php manually on some schedule of your own. See README.md\'s Backups section.');
+        warn('Not scheduled - run php bin/backup.php manually on some schedule of your own. See README.md §9 (Backups).');
 
         return true;
     }
@@ -742,7 +758,10 @@ function backup_service_contents(?string $run_as = null): string
         $service[] = 'User=' . $run_as;
     }
 
-    $service[] = 'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/backup.php';
+    // Quote the binary and script path - systemd splits ExecStart on whitespace,
+    // so an install path or PHP binary path containing a space would otherwise
+    // break the command into the wrong arguments.
+    $service[] = 'ExecStart="' . PHP_BINARY . '" "' . __DIR__ . '/backup.php"';
 
     return implode("\n", array_merge(
         ['[Unit]', 'Description=Glommer backup', ''],
@@ -777,7 +796,10 @@ function trending_service_contents(?string $run_as = null): string
         $service[] = 'User=' . $run_as;
     }
 
-    $service[] = 'ExecStart=' . PHP_BINARY . ' ' . __DIR__ . '/compute-trending.php';
+    // Quote the binary and script path - systemd splits ExecStart on whitespace,
+    // so an install path or PHP binary path containing a space would otherwise
+    // break the command into the wrong arguments.
+    $service[] = 'ExecStart="' . PHP_BINARY . '" "' . __DIR__ . '/compute-trending.php"';
 
     return implode("\n", array_merge(
         ['[Unit]', 'Description=Glommer trending recompute', ''],
@@ -865,7 +887,7 @@ function reconcile_backup_timer_units(): void
 function write_and_enable_backup_timer(): void
 {
     if (!user_systemd_available()) {
-        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - set up a recurring backup yourself (cron or otherwise), or run this from a real login session. See README.md\'s Backups section.');
+        warn('No usable systemctl --user session (missing systemctl, or no user D-Bus session reachable from this context - e.g. a non-interactive SSH command or `sudo -u` invocation) - set up a recurring backup yourself (cron or otherwise), or run this from a real login session. See README.md §9 (Backups).');
 
         return;
     }
@@ -873,7 +895,7 @@ function write_and_enable_backup_timer(): void
     $home = resolve_home_dir();
 
     if ($home === null) {
-        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md.');
+        warn('Could not resolve a home directory for the current user - cannot place a user-level systemd unit. See README.md §9 (Backups).');
 
         return;
     }
@@ -885,13 +907,13 @@ function write_and_enable_backup_timer(): void
     $timer_contents = backup_timer_contents();
 
     if (!is_dir(dirname($service_path)) && !@mkdir(dirname($service_path), 0755, true)) {
-        fail_line('Could not create ' . dirname($service_path) . ' - create the units manually (see README.md).');
+        fail_line('Could not create ' . dirname($service_path) . ' - create the units manually (see README.md §9).');
 
         return;
     }
 
     if (file_put_contents($service_path, $service_contents) === false || file_put_contents($timer_path, $timer_contents) === false) {
-        fail_line('Could not write the systemd units - create them manually (see README.md).');
+        fail_line('Could not write the systemd units - create them manually (see README.md §9).');
 
         return;
     }
@@ -913,7 +935,15 @@ function write_and_enable_backup_timer(): void
     $user = run('id -un 2>/dev/null')['output'];
 
     if ($user === '') {
-        $user = get_current_user() ?: (string) getenv('USER');
+        // posix_geteuid() is the account actually running this process; this
+        // is a user-level (non-root) service path, so that's the user whose
+        // `systemd --user` instance runs the unit and needs lingering.
+        // get_current_user() would instead report the owner of the script
+        // file, which need not be the person who invoked the installer.
+        $euid_user = function_exists('posix_getpwuid') && function_exists('posix_geteuid')
+            ? (posix_getpwuid(posix_geteuid())['name'] ?? '')
+            : '';
+        $user = $euid_user !== '' ? $euid_user : (string) getenv('USER');
     }
 
     $linger_enable_result = run('loginctl enable-linger :user 2>&1', ['user' => $user]);
@@ -967,7 +997,7 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
     $home = resolve_mkcert_home_dir();
 
     if ($home === null) {
-        warn('Could not resolve a home directory for the current user - cannot place a mkcert certificate. See README.md.');
+        warn('Could not resolve a home directory for the current user - cannot place a mkcert certificate. See README.md §6 (HTTPS).');
 
         return false;
     }
@@ -1025,7 +1055,7 @@ function offer_websocket_tls(string $host, bool $refresh = false): bool
     }
 
     if (!EnvironmentChecker::webSocketCertificateAndKeyMatch($cert_path, $key_path)) {
-        fail_line('mkcert reported success, but the generated certificate and key don\'t actually match - not using them. Generate a certificate manually (see README.md\'s HTTPS section) and set WS_TLS_CERT/WS_TLS_KEY in .env.');
+        fail_line('mkcert reported success, but the generated certificate and key don\'t actually match - not using them. Generate a certificate manually (see README.md §6) and set WS_TLS_CERT/WS_TLS_KEY in .env.');
 
         return false;
     }
@@ -2158,7 +2188,7 @@ function ensure_ner_environment(): void
         $manager = detected_package_manager();
 
         if ($manager !== 'dnf' && $manager !== 'yum') {
-            warn('No known package names for this distribution\'s package manager (' . ($manager ?? 'none detected') . ') - install Python 3 (with pip, venv, and development headers) and a C++ compiler by hand, then re-run. See README.md.');
+            warn('No known package names for this distribution\'s package manager (' . ($manager ?? 'none detected') . ') - install Python 3 (with pip, venv, and development headers) and a C++ compiler by hand, then re-run. See README.md §8 (the trending NER environment).');
 
             return;
         }
@@ -2487,7 +2517,7 @@ function install_ws_cert_renewal_hook(string $live_cert, string $live_key, strin
     $hook_dir = '/etc/letsencrypt/renewal-hooks/deploy';
 
     if (!is_dir($hook_dir) && !@mkdir($hook_dir, 0755, true)) {
-        warn('Could not create ' . $hook_dir . ' - the WebSocket cert copy at ' . $dest_cert . ' won\'t be refreshed on renewal. Recopy it by hand after each Let\'s Encrypt renewal, or create the hook manually (see README).');
+        warn('Could not create ' . $hook_dir . ' - the WebSocket cert copy at ' . $dest_cert . ' won\'t be refreshed on renewal. Recopy it by hand after each Let\'s Encrypt renewal, or create the hook manually (see README.md §6).');
 
         return;
     }
@@ -2538,7 +2568,7 @@ function set_up_system_services(array &$environment_failures): void
     heading('System services (running as root)');
 
     if (run('command -v systemctl 2>/dev/null')['output'] === '') {
-        warn('systemctl not found - cannot install system services. Set up this box\'s process manager by hand (see README.md).');
+        warn('systemctl not found - cannot install system services. Set up this box\'s process manager by hand (see README.md §7).');
 
         return;
     }
@@ -3023,7 +3053,7 @@ function http_reachable(string $host): bool
 function attempt_web_certificate(string $host, string $email): bool
 {
     if (!host_is_public_domain($host)) {
-        warn('Automatic certificates need a real public domain - Let\'s Encrypt can\'t issue for ' . $host . '. For localhost/dev use mkcert (see README\'s HTTPS section).');
+        warn('Automatic certificates need a real public domain - Let\'s Encrypt can\'t issue for ' . $host . '. For localhost/dev use mkcert (see README.md §6).');
 
         return false;
     }
@@ -3052,7 +3082,7 @@ function attempt_web_certificate(string $host, string $email): bool
     }
 
     if ($server === null) {
-        warn('Couldn\'t identify the web server (not confirmed live, and not nginx or Apache by prompt) - not guessing a certbot plugin. If TLS terminates here, install certbot with the plugin for your server and run it manually; if a reverse proxy terminates TLS, the certificate belongs on the proxy (see README).');
+        warn('Couldn\'t identify the web server (not confirmed live, and not nginx or Apache by prompt) - not guessing a certbot plugin. If TLS terminates here, install certbot with the plugin for your server and run it manually; if a reverse proxy terminates TLS, the certificate belongs on the proxy (see README.md §6).');
 
         return false;
     }
@@ -3060,7 +3090,7 @@ function attempt_web_certificate(string $host, string $email): bool
     $plugin_package = $server === 'nginx' ? 'python3-certbot-nginx' : 'python3-certbot-apache';
 
     if (!install_certbot($plugin_package)) {
-        warn('certbot isn\'t installed and couldn\'t be installed automatically (no known package manager found). Install it by hand - e.g. dnf install certbot ' . $plugin_package . ' - and re-run, or get a certificate manually (see README).');
+        warn('certbot isn\'t installed and couldn\'t be installed automatically (no known package manager found). Install it by hand - e.g. dnf install certbot ' . $plugin_package . ' - and re-run, or get a certificate manually (see README.md §6).');
 
         return false;
     }
@@ -3087,7 +3117,7 @@ function attempt_web_certificate(string $host, string $email): bool
         . $email_args . ' -d :host 2>&1', ['docroot' => $docroot, 'host' => $host, 'email' => $email]);
 
     if ($certbot_result['exitCode'] !== 0) {
-        warn('certbot did not complete. Fix the cause and re-run, or get a certificate manually (see README).', $certbot_result);
+        warn('certbot did not complete. Fix the cause and re-run, or get a certificate manually (see README.md §6).', $certbot_result);
 
         return false;
     }
@@ -3111,13 +3141,84 @@ function attempt_web_certificate(string $host, string $email): bool
 }
 
 /**
- * Repoints Apache's active SSLCertificateFile/SSLCertificateKeyFile at the given
- * (Let's Encrypt) cert/key and reloads - safely. It edits every config file
- * under /etc/httpd or /etc/apache2 that sets those directives, but ALWAYS backs
- * each up first and runs `apachectl configtest` before reloading: on any
- * configtest failure it restores every backup and reloads nothing, so a bad edit
- * can never strand the running site. Idempotent: a no-op when the directives
- * already point at $cert/$key. Warns (never throws) on anything it can't finish.
+ * Whether an Apache <VirtualHost> block serves $host, i.e. names it in a
+ * ServerName or ServerAlias directive (whole token, case-insensitive).
+ */
+function apache_vhost_serves_host(string $block, string $host): bool
+{
+    foreach (['ServerName', 'ServerAlias'] as $directive) {
+        if (preg_match_all('/^\s*' . $directive . '\s+(.+)$/mi', $block, $matches) === 0) {
+            continue;
+        }
+
+        foreach ($matches[1] as $value) {
+            foreach (preg_split('/\s+/', trim($value)) as $token) {
+                if (strcasecmp(trim($token), $host) === 0) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Whether any <VirtualHost> block in $contents serves $host.
+ */
+function apache_config_serves_host(string $contents, string $host): bool
+{
+    if (preg_match_all('/<VirtualHost\b[^>]*>.*?<\/VirtualHost>/is', $contents, $matches) === 0) {
+        return false;
+    }
+
+    foreach ($matches[0] as $block) {
+        if (apache_vhost_serves_host($block, $host)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Returns $contents with SSLCertificateFile/KeyFile repointed at $cert/$key
+ * ONLY inside <VirtualHost> blocks that serve $host - every other vhost's
+ * directives are returned untouched, so a multi-site server's sibling sites
+ * keep their own certificates.
+ */
+function apache_repoint_host_vhosts(string $contents, string $host, string $cert, string $key): string
+{
+    return (string) preg_replace_callback(
+        '/<VirtualHost\b[^>]*>.*?<\/VirtualHost>/is',
+        static function (array $match) use ($host, $cert, $key): string {
+            $block = $match[0];
+
+            if (!apache_vhost_serves_host($block, $host)) {
+                return $block;
+            }
+
+            // ${1} keeps the directive + leading whitespace; the LE paths
+            // contain no "$"-digit sequence, so a plain replace is safe.
+            $block = preg_replace('/^(\s*SSLCertificateFile\s+).*$/mi', '${1}' . $cert, $block);
+            $block = preg_replace('/^(\s*SSLCertificateKeyFile\s+).*$/mi', '${1}' . $key, $block);
+
+            return $block;
+        },
+        $contents
+    );
+}
+
+/**
+ * Repoints the SSLCertificateFile/SSLCertificateKeyFile of the vhost that
+ * serves $host at the given (Let's Encrypt) cert/key and reloads - safely,
+ * and ONLY that vhost: on a multi-site server every other site's cert is left
+ * exactly as it is (scoped per-<VirtualHost> by ServerName/ServerAlias). It
+ * ALWAYS backs each edited file up first and runs `apachectl configtest`
+ * before reloading; on any configtest failure it restores every backup and
+ * reloads nothing, so a bad edit can never strand the running site.
+ * Idempotent: a no-op when the host's vhost already points at $cert/$key.
+ * Warns (never throws) on anything it can't finish.
  */
 function install_certificate_into_apache(string $host, string $cert, string $key): void
 {
@@ -3129,20 +3230,49 @@ function install_certificate_into_apache(string $host, string $cert, string $key
         return;
     }
 
-    // Already serving the LE cert? Nothing to do.
-    $current = run('grep -rhEi "^[[:space:]]*SSLCertificate(File|KeyFile)[[:space:]]" :files 2>/dev/null', ['files' => $files])['output'];
+    // Rewrite only the vhost(s) serving $host, and only the files that actually
+    // change - the rest of every config (including other sites' vhosts) is left
+    // byte-for-byte as it was.
+    $rewrites = [];
 
-    if (str_contains($current, $cert) && str_contains($current, $key)) {
-        ok('Apache already serves the Let\'s Encrypt certificate for ' . $host);
+    foreach ($files as $file) {
+        $original = (string) file_get_contents($file);
+        $rewritten = apache_repoint_host_vhosts($original, $host, $cert, $key);
+
+        if ($rewritten !== $original) {
+            $rewrites[$file] = $rewritten;
+        }
+    }
+
+    if ($rewrites === []) {
+        // Either the host's vhost is already on the LE cert, or no vhost names
+        // this host at all - tell the two apart so a genuinely missing vhost
+        // isn't silently read as "all good".
+        $serves = false;
+
+        foreach ($files as $file) {
+            if (apache_config_serves_host((string) file_get_contents($file), $host)) {
+                $serves = true;
+
+                break;
+            }
+        }
+
+        if ($serves) {
+            ok('Apache already serves the Let\'s Encrypt certificate for ' . $host);
+        } else {
+            warn('Obtained a Let\'s Encrypt certificate, but found no Apache <VirtualHost> naming ' . $host . ' (ServerName/ServerAlias) to repoint - set SSLCertificateFile/SSLCertificateKeyFile to ' . $cert . ' and ' . $key . ' in that vhost by hand, then reload.');
+        }
 
         return;
     }
 
-    // Back up every file BEFORE editing any - roll back the copies already made
-    // and bail (touching nothing) if a backup can't be written.
+    // Back up every file we're about to edit BEFORE editing any - roll back the
+    // copies already made and bail (touching nothing) if a backup can't be
+    // written.
     $backups = [];
 
-    foreach ($files as $file) {
+    foreach (array_keys($rewrites) as $file) {
         $backup = $file . '.glommer.bak';
 
         if (!@copy($file, $backup)) {
@@ -3158,13 +3288,7 @@ function install_certificate_into_apache(string $host, string $cert, string $key
         $backups[$file] = $backup;
     }
 
-    // Replace only the directive VALUE (${1} keeps the directive + leading
-    // whitespace); the LE paths contain no "$"-digit sequence, so a plain
-    // preg_replace is safe here.
-    foreach ($files as $file) {
-        $contents = (string) file_get_contents($file);
-        $contents = preg_replace('/^(\s*SSLCertificateFile\s+).*$/mi', '${1}' . $cert, $contents);
-        $contents = preg_replace('/^(\s*SSLCertificateKeyFile\s+).*$/mi', '${1}' . $key, $contents);
+    foreach ($rewrites as $file => $contents) {
         @file_put_contents($file, $contents);
     }
 
@@ -3200,10 +3324,111 @@ function install_certificate_into_apache(string $host, string $cert, string $key
 }
 
 /**
- * The nginx analogue of install_certificate_into_apache(): repoints
- * ssl_certificate/ssl_certificate_key at the LE cert/key, validated with
- * `nginx -t` and revert-on-failure, then reloads. Best-effort - warns and leaves
- * the admin to finish if it can't find or safely edit the config.
+ * Whether an nginx `server { ... }` block serves $host, i.e. lists it in a
+ * server_name directive (whole token, case-insensitive).
+ */
+function nginx_server_serves_host(string $block, string $host): bool
+{
+    if (preg_match_all('/^\s*server_name\s+([^;]+);/mi', $block, $matches) === 0) {
+        return false;
+    }
+
+    foreach ($matches[1] as $value) {
+        foreach (preg_split('/\s+/', trim($value)) as $token) {
+            if (strcasecmp(trim($token), $host) === 0) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
+ * The byte range [start, end] of every `server { ... }` block in $contents,
+ * found by brace matching so a nested location {} block is spanned rather than
+ * mistaken for the block's end.
+ *
+ * @return array<int, array{start: int, end: int}>
+ */
+function nginx_server_blocks(string $contents): array
+{
+    $blocks = [];
+
+    if (preg_match_all('/\bserver\b\s*\{/', $contents, $matches, PREG_OFFSET_CAPTURE) === 0) {
+        return $blocks;
+    }
+
+    $length = strlen($contents);
+
+    foreach ($matches[0] as $match) {
+        $start = $match[1];
+        $depth = 0;
+
+        for ($i = strpos($contents, '{', $start); $i < $length; $i++) {
+            if ($contents[$i] === '{') {
+                $depth++;
+            } elseif ($contents[$i] === '}') {
+                $depth--;
+
+                if ($depth === 0) {
+                    $blocks[] = ['start' => $start, 'end' => $i];
+
+                    break;
+                }
+            }
+        }
+    }
+
+    return $blocks;
+}
+
+/**
+ * Whether any server block in $contents serves $host.
+ */
+function nginx_config_serves_host(string $contents, string $host): bool
+{
+    foreach (nginx_server_blocks($contents) as $block) {
+        $text = substr($contents, $block['start'], $block['end'] - $block['start'] + 1);
+
+        if (nginx_server_serves_host($text, $host)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Returns $contents with ssl_certificate/ssl_certificate_key repointed at
+ * $cert/$key ONLY inside server blocks that serve $host - every other site's
+ * server block is left untouched. Blocks are rewritten back-to-front so an
+ * earlier block's byte offsets stay valid after a later one is spliced.
+ */
+function nginx_repoint_host_servers(string $contents, string $host, string $cert, string $key): string
+{
+    foreach (array_reverse(nginx_server_blocks($contents)) as $block) {
+        $text = substr($contents, $block['start'], $block['end'] - $block['start'] + 1);
+
+        if (!nginx_server_serves_host($text, $host)) {
+            continue;
+        }
+
+        $text = preg_replace('/^(\s*ssl_certificate_key\s+)[^;]*;/mi', '${1}' . $key . ';', $text);
+        $text = preg_replace('/^(\s*ssl_certificate\s+)[^;]*;/mi', '${1}' . $cert . ';', $text);
+
+        $contents = substr($contents, 0, $block['start']) . $text . substr($contents, $block['end'] + 1);
+    }
+
+    return $contents;
+}
+
+/**
+ * The nginx analogue of install_certificate_into_apache(): repoints the
+ * ssl_certificate/ssl_certificate_key of the server block(s) serving $host -
+ * and only those, leaving every other site's cert intact - validated with
+ * `nginx -t` and revert-on-failure, then reloads. Best-effort - warns and
+ * leaves the admin to finish if it can't find or safely edit the config.
  */
 function install_certificate_into_nginx(string $host, string $cert, string $key): void
 {
@@ -3215,17 +3440,40 @@ function install_certificate_into_nginx(string $host, string $cert, string $key)
         return;
     }
 
-    $current = run('grep -rhEi "^[[:space:]]*ssl_certificate(_key)?[[:space:]]" :files 2>/dev/null', ['files' => $files])['output'];
+    $rewrites = [];
 
-    if (str_contains($current, $cert) && str_contains($current, $key)) {
-        ok('nginx already serves the Let\'s Encrypt certificate for ' . $host);
+    foreach ($files as $file) {
+        $original = (string) file_get_contents($file);
+        $rewritten = nginx_repoint_host_servers($original, $host, $cert, $key);
+
+        if ($rewritten !== $original) {
+            $rewrites[$file] = $rewritten;
+        }
+    }
+
+    if ($rewrites === []) {
+        $serves = false;
+
+        foreach ($files as $file) {
+            if (nginx_config_serves_host((string) file_get_contents($file), $host)) {
+                $serves = true;
+
+                break;
+            }
+        }
+
+        if ($serves) {
+            ok('nginx already serves the Let\'s Encrypt certificate for ' . $host);
+        } else {
+            warn('Obtained a Let\'s Encrypt certificate, but found no nginx server block naming ' . $host . ' (server_name) to repoint - set ssl_certificate/ssl_certificate_key to ' . $cert . ' and ' . $key . ' in that block by hand, then reload nginx.');
+        }
 
         return;
     }
 
     $backups = [];
 
-    foreach ($files as $file) {
+    foreach (array_keys($rewrites) as $file) {
         $backup = $file . '.glommer.bak';
 
         if (!@copy($file, $backup)) {
@@ -3241,10 +3489,7 @@ function install_certificate_into_nginx(string $host, string $cert, string $key)
         $backups[$file] = $backup;
     }
 
-    foreach ($files as $file) {
-        $contents = (string) file_get_contents($file);
-        $contents = preg_replace('/^(\s*ssl_certificate_key\s+)[^;]*;/mi', '${1}' . $key . ';', $contents);
-        $contents = preg_replace('/^(\s*ssl_certificate\s+)[^;]*;/mi', '${1}' . $cert . ';', $contents);
+    foreach ($rewrites as $file => $contents) {
         @file_put_contents($file, $contents);
     }
 
@@ -3674,6 +3919,16 @@ if ($legacy_smtp_env_keys !== []) {
     warn('.env still has ' . implode(', ', array_keys($legacy_smtp_env_keys)) . ' set, but the SMTP relay is no longer configured from .env - these values are ignored. Set the relay from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
 }
 
+// The mail-from backfill just below (and the HTTPS/WS-TLS checks after it)
+// reach the database through Settings. Prove the runtime connection works
+// first so bad .env credentials surface as this friendly message, rather than
+// an uncaught mysqli_sql_exception thrown from deep inside a Settings::set().
+try {
+    Database::connection();
+} catch (\mysqli_sql_exception $exception) {
+    fail('Could not connect to the database with the credentials in .env: ' . $exception -> getMessage());
+}
+
 // mailFromAddress/mailFromName moved from .env to Settings too. Unlike the
 // SMTP relay (blank host just falls back to PHP's mail()), a genuinely
 // missing "from" address stops Mailer::send() from even attempting to send -
@@ -3720,7 +3975,7 @@ if (Config::get('siteURL') === 'https://example.com') {
 // 301s to https, and an http SITE_URL gets a config-error page), so an
 // install without TLS simply doesn't work - get the certificate first.
 if (!str_starts_with((string) Config::get('siteURL'), 'https://')) {
-    fail('SITE_URL is ' . Config::get('siteURL') . ' - Glommer requires HTTPS and will not serve over plain HTTP. Set up TLS first, then set SITE_URL to the https:// URL. For a real domain use Let\'s Encrypt (certbot --apache -d your.domain); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default (Fedora: dnf install mod_ssl). See README.md\'s HTTPS section.');
+    fail('SITE_URL is ' . Config::get('siteURL') . ' - Glommer requires HTTPS and will not serve over plain HTTP. Set up TLS first, then set SITE_URL to the https:// URL. For a real domain use Let\'s Encrypt (certbot --apache -d your.domain); for localhost use a locally-trusted certificate (mkcert) or your distribution\'s self-signed default (Fedora: dnf install mod_ssl). See README.md §6 (HTTPS).');
 }
 
 // The check above only proves SITE_URL *says* https:// - it's just a string,
@@ -3783,7 +4038,7 @@ if ($spoof_test === true) {
         . 'header got redirected to that same fake host) - anyone can 301 a victim to a domain of their choosing. '
         . 'Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s config '
         . '(httpd.conf\'s top level if you\'re not using a <VirtualHost>, or inside the vhost if you are), then '
-        . 're-run. See README.md\'s HTTPS section.');
+        . 're-run. See README.md §6 (HTTPS).');
 } elseif ($spoof_test === false) {
     ok('ServerName + UseCanonicalName confirmed live (a forged Host header was not reflected in the redirect)');
 } else {
@@ -3796,7 +4051,7 @@ if ($spoof_test === true) {
     if (is_interactive()) {
         if (!confirm($server_name_question)) {
             fail('Set "ServerName ' . $server_name_value . '" and "UseCanonicalName On" in Apache\'s config first - '
-                . 'required so the HTTPS redirect can\'t be spoofed via a forged Host header. See README.md\'s HTTPS section.');
+                . 'required so the HTTPS redirect can\'t be spoofed via a forged Host header. See README.md §6 (HTTPS).');
         }
 
         echo "\n";
@@ -3806,7 +4061,7 @@ if ($spoof_test === true) {
     } else {
         fail('Cannot confirm interactively (no terminal), and could not verify it live. Set "ServerName ' . $server_name_value . '" and '
             . '"UseCanonicalName On" in Apache\'s config, then set SERVERNAME_CONFIRMED=1 to continue non-interactively. '
-            . 'See README.md\'s HTTPS section.');
+            . 'See README.md §6 (HTTPS).');
     }
 }
 
@@ -3828,8 +4083,8 @@ if (Config::get('WSTLSCert') === null || Config::get('WSTLSKey') === null) {
             . 'ws:// connection from an https page, so live notifications and messaging would be dead with no '
             . 'visible error. Generate a certificate for ' . $site_host . ' (mkcert is easiest for localhost/dev: '
             . 'mkcert -install && mkcert ' . $site_host . '; for a real domain you can reuse the certificate Apache '
-            . 'uses) and set WS_TLS_CERT/WS_TLS_KEY in .env, then restart the WebSocket daemon. See README.md\'s '
-            . 'HTTPS section.');
+            . 'uses) and set WS_TLS_CERT/WS_TLS_KEY in .env, then restart the WebSocket daemon. See README.md §6 '
+            . '(HTTPS).');
     }
 
     // set_up_system_services() already ran earlier in this same install pass
@@ -4071,14 +4326,22 @@ if ($fresh_install) {
     // Idempotent and race-safe (guarded by descriptionDelta IS NULL); runs on the
     // runtime connection, which has the UPDATE it needs. A no-op once all posts are
     // converted - the same step Installer::attemptSilentUpgrade() runs on the web path.
-    $backfilled_before = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Posts` WHERE `descriptionDelta` IS NULL AND `description` IS NOT NULL');
+    $backfilled_before = mysqli_query($mysqli, '
+SELECT COUNT(*) AS `n`
+    FROM `Posts`
+    WHERE `descriptionDelta` IS NULL AND `description` IS NOT NULL
+');
     $pending = $backfilled_before ? (int) mysqli_fetch_assoc($backfilled_before)['n'] : 0;
     PostDeltaBackfill::run($mysqli);
     ok('post rich-text backfilled to Delta where needed (' . $pending . ' post(s) had legacy HTML)');
 
     // Backfill forensic snapshots for any report created before snapshots existed,
     // from whatever content is still around. Idempotent (snapshot IS NULL guard).
-    $reports_pending = mysqli_query($mysqli, 'SELECT COUNT(*) AS `n` FROM `Reports` WHERE `snapshot` IS NULL');
+    $reports_pending = mysqli_query($mysqli, '
+SELECT COUNT(*) AS `n`
+    FROM `Reports`
+    WHERE `snapshot` IS NULL
+');
     $reports_to_snapshot = $reports_pending ? (int) mysqli_fetch_assoc($reports_pending)['n'] : 0;
     Report::backfillSnapshots();
     ok('report snapshots backfilled where needed (' . $reports_to_snapshot . ' report(s) had none)');

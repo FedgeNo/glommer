@@ -953,7 +953,7 @@ class EnvironmentChecker
 
         fwrite($socket, chr(0x89) . chr(0x80 | strlen($ping_payload)) . $mask_key . $masked_ping);
         $frame_header = fread($socket, 2);
-        $is_pong = strlen($frame_header) === 2 && (ord($frame_header[0]) & 0x0F) === 0xA;
+        $is_pong = is_string($frame_header) && strlen($frame_header) === 2 && (ord($frame_header[0]) & 0x0F) === 0xA;
 
         fclose($socket);
 

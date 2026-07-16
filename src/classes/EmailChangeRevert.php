@@ -115,8 +115,12 @@ UPDATE `Users`
         // `email` is UNIQUE. This should never actually fire - signup and
         // change-email both refuse to hand out an address that's reserved by
         // an outstanding revert (see EmailChangeRevert::isReserved()) - but
-        // the restore must not report success if it somehow does.
-        if (!mysqli_stmt_execute($update_stmt)) {
+        // the restore must not report success if it somehow does. Under
+        // mysqli's exception mode a duplicate-key throws rather than returning
+        // false, so catch it and report the same graceful failure.
+        try {
+            mysqli_stmt_execute($update_stmt);
+        } catch (\mysqli_sql_exception $exception) {
             return false;
         }
 

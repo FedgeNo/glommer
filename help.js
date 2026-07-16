@@ -87,18 +87,23 @@ document.addEventListener('input', (event) => {
         const controller = new AbortController();
         input.searchAbortController = controller;
 
-        let response;
+        let data;
 
         try {
-            response = await fetch(window.siteURL + '/api/help-search?q=' + encodeURIComponent(query), { signal: controller.signal });
+            const response = await fetch(window.siteURL + '/api/help-search', {
+                method: 'POST',
+                headers: csrf_headers({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ q: query }),
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            data = await response.json();
         } catch (error) {
-            return; // aborted by a newer search, or a network failure either way
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return;
+            return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
         results.replaceChildren();

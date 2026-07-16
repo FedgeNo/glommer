@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
 }
@@ -12,6 +18,7 @@ $current_user = Auth::user();
 $mysqli = Database::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
 $friendship_id = (int) ($payload['friendshipId'] ?? $_POST['friendshipId'] ?? 0);
 
 $accepted_status = 'accepted';
@@ -97,4 +104,14 @@ Timeline::backfillFriendship($requester_id, $current_user_id);
 
 Notification::create($requester_id, $current_user_id, 'friendAccepted');
 
-JSONResponse::success(['accepted' => true]) -> send();
+// Return the requester's refreshed OtherUser payload (as seen by the accepter)
+// so the client rebuilds the card from the same class the page renders
+// everywhere else - it now carries friendshipStatus 'accepted', hence a Remove
+// Friend action - rather than hand-assembling a partial card.
+$requester = User::load($requester_id);
+
+if ($requester === null) {
+    JSONResponse::success(['accepted' => true]) -> send();
+}
+
+JSONResponse::success(OtherUser::payloadFor($requester, $current_user)) -> send();

@@ -414,40 +414,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * HTML-escapes text for safe interpolation into a show_toast() call - needed
- * for anything containing user-controlled content (a notification's actor
- * name, for instance), since show_toast() renders its argument as markup.
- */
-function escape_html(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-/**
- * Like escape_html(), but also safe inside a double-quoted HTML attribute
- * value - the textContent/innerHTML round-trip escapes &, <, > but not ",
- * confirmed empirically (a real browser's innerHTML leaves a literal " in
- * place), so escape_html() alone isn't enough for a href="..." string.
- */
-function escape_attribute(text) {
-    return escape_html(text).replace(/"/g, '&quot;');
-}
-
-/**
- * Shows a transient, non-blocking error notification in the bottom-right
- * corner, in place of window.alert() - which is jarring and blocks the whole
- * page. Auto-dismisses after a few seconds, or immediately via its close
- * button (handled by the delegated .ToastCloseButton click listener below).
+ * Shows a transient, non-blocking notification in the bottom-right corner, in
+ * place of window.alert() - which is jarring and blocks the whole page.
+ * Auto-dismisses after a few seconds, or immediately via its close button
+ * (handled by the delegated .ToastCloseButton click listener below).
  *
- * `html` is rendered as markup, not escaped text - every current caller only
- * ever passes a static string written by our own server code (JSONResponse
- * error messages, none of which interpolate user input), never raw user
- * input, so this is safe. A future caller that wants to show user-controlled
- * text would need to escape it itself before calling this (see escape_html
- * above).
+ * `message` is either a plain string - rendered as text, never as markup, so
+ * it's always safe even for server messages that interpolate user-controlled
+ * content (a moderator's ban reason, an actor name, ...) - or a prebuilt DOM
+ * node (e.g. a link), appended as-is. A string is never assigned as innerHTML.
  */
-function show_toast(html) {
+function show_toast(message) {
     let container = document.querySelector('.ToastContainer');
 
     if (!container) {
@@ -462,7 +439,13 @@ function show_toast(html) {
 
     const text = document.createElement('div');
     text.className = 'ToastMessage';
-    text.innerHTML = html;
+
+    if (message instanceof Node) {
+        text.appendChild(message);
+    } else {
+        text.textContent = message;
+    }
+
     toast.appendChild(text);
 
     const close_button = document.createElement('button');
@@ -849,18 +832,23 @@ document.addEventListener('input', (event) => {
         const controller = new AbortController();
         input.searchAbortController = controller;
 
-        let response;
+        let data;
 
         try {
-            response = await fetch(window.siteURL + '/api/search-users?q=' + encodeURIComponent(query), { signal: controller.signal });
+            const response = await fetch(window.siteURL + '/api/search-users', {
+                method: 'POST',
+                headers: csrf_headers({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ q: query }),
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            data = await response.json();
         } catch (error) {
-            return; // aborted by a newer search, or a network failure either way
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return;
+            return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
         results.replaceChildren();
@@ -910,12 +898,17 @@ window.addEventListener('scroll', async () => {
         const query = results.dataset.query ?? '';
         const before_user_id = results.dataset.oldestUserId;
 
-        const response = await fetch(`${window.siteURL}/api/search-users?q=${encodeURIComponent(query)}&beforeUserId=${before_user_id}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/search-users`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ q: query, beforeUserId: before_user_id }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         // A new search (typed while this fetch was in flight) already reset
         // results.innerHTML, detaching our spinner - these are results for a
@@ -935,6 +928,9 @@ window.addEventListener('scroll', async () => {
             const user = OtherUser.fromData(user_data);
             results.insertBefore(user.toElement(), spinner);
         });
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_user_results = false;
@@ -975,7 +971,6 @@ document.addEventListener('input', (event) => {
         // hidden while a query is active (the results take its place); clearing
         // the box brings the feed back. Global /search has no author / no feed.
         const author_id = post_search.dataset.userId || '';
-        const author_param = author_id ? '&userId=' + author_id : '';
 
         const profile_feed = document.querySelector('.ProfileFeed');
 
@@ -990,18 +985,23 @@ document.addEventListener('input', (event) => {
         const controller = new AbortController();
         input.searchAbortController = controller;
 
-        let response;
+        let data;
 
         try {
-            response = await fetch(window.siteURL + '/api/search-posts?q=' + encodeURIComponent(query) + author_param, { signal: controller.signal });
+            const response = await fetch(window.siteURL + '/api/search-posts', {
+                method: 'POST',
+                headers: csrf_headers({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ q: query, userId: author_id }),
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            data = await response.json();
         } catch (error) {
-            return; // aborted by a newer search, or a network failure either way
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return;
+            return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
         results.replaceChildren();
@@ -1052,14 +1052,17 @@ window.addEventListener('scroll', async () => {
     try {
         const query = results.dataset.query ?? '';
         const before_post_id = results.dataset.oldestPostId;
-        const author_param = results.dataset.userId ? `&userId=${results.dataset.userId}` : '';
-
-        const response = await fetch(`${window.siteURL}/api/search-posts?q=${encodeURIComponent(query)}&beforePostId=${before_post_id}${author_param}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/search-posts`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ q: query, beforePostId: before_post_id, userId: results.dataset.userId || '' }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         // A new search (typed while this fetch was in flight) already reset
         // results.innerHTML, detaching our spinner - these are results for a
@@ -1082,6 +1085,9 @@ window.addEventListener('scroll', async () => {
         });
 
         results.dataset.oldestPostId = data.response.posts[data.response.posts.length - 1].postId;
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_post_results = false;
@@ -1500,48 +1506,38 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    // They're a friend now - swap the Accept/Deny pair for the Remove Friend
-    // button an accepted friendship's card carries, right below Message.
+    // They're a friend now. Rebuild the card from the same OtherUser class the
+    // page uses everywhere else (the payload now carries friendshipStatus
+    // 'accepted', so it renders Remove Friend + every other action a fresh load
+    // would) rather than hand-picking buttons here.
     const card = button.closest('.OtherUser');
 
-    if (card) {
-        const user_id = card.querySelector('.BlockUserButton')?.dataset.userId;
-        const message_link = card.querySelector('a.Btn[href*="/messages/"]');
+    if (card && result.userId) {
+        const new_card = OtherUser.fromData(result).toElement();
 
-        card.querySelectorAll('.AcceptFriendButton, .DenyFriendButton').forEach((response_button) => response_button.remove());
-
-        if (user_id && message_link) {
-            const remove_friend_button = document.createElement('button');
-            remove_friend_button.type = 'button';
-            remove_friend_button.className = 'Btn RemoveFriendButton';
-            remove_friend_button.dataset.userId = user_id;
-            remove_friend_button.textContent = 'Remove Friend';
-            message_link.after(remove_friend_button);
-        }
-
-        // On the friends page, the card sits in the pending-requests section -
-        // move it into the friends section instead of leaving it there, so the
-        // live DOM matches what a reload would show (a reload only ever puts
-        // an accepted friendship in FriendList, never PendingFriendRequestList).
+        // On the friends page the card sits in the pending-requests section;
+        // move the rebuilt card into the friends section instead, so the live
+        // DOM matches what a reload shows (an accepted friendship only ever
+        // appears in FriendList, never PendingFriendRequestList).
         const pending_list = card.closest('.PaginatedUserList[data-list-type="incoming"]');
 
         if (pending_list) {
-            card.classList.remove('FriendRequest');
-
             const friends_list = document.querySelector('.PaginatedUserList[data-list-type="friends"]');
 
             if (friends_list) {
                 friends_list.querySelector('.Notice')?.remove();
-                friends_list.querySelector('h2').after(card);
-            } else {
-                card.remove();
+                friends_list.querySelector('h2').after(new_card);
             }
 
-            // user-friends.php only renders the pending-requests section at
-            // all when it's non-empty - mirror that once the last card leaves.
+            card.remove();
+
+            // user-friends.php only renders the pending-requests section at all
+            // when it's non-empty - mirror that once the last card leaves.
             if (pending_list.querySelectorAll('.OtherUser').length === 0) {
                 pending_list.remove();
             }
+        } else {
+            card.replaceWith(new_card);
         }
     }
 });
@@ -1578,7 +1574,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const reason = window.prompt('Why are you reporting this?');
+    const reason = await show_prompt('Why are you reporting this?', { confirmLabel: 'Report' });
 
     if (reason === null) {
         return;
@@ -1658,6 +1654,32 @@ document.addEventListener('click', async (event) => {
     }
 
     button.closest('.TrendingEntityChip')?.remove();
+});
+
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.UnbanTrendingEntityButton');
+
+    if (!button) {
+        return;
+    }
+
+    const entity_type = button.dataset.entityType;
+    const entity_value = button.dataset.entityValue;
+
+    if (!await show_confirm(`Unban "${entity_value}"? It will be able to trend again.`)) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const result = await api_post('/api/unban-trending-entity', { entityType: entity_type, entityValue: entity_value });
+
+    if (result === null) {
+        button.disabled = false;
+        return;
+    }
+
+    button.closest('.BannedTrendingEntity')?.remove();
 });
 
 document.addEventListener('click', async (event) => {
@@ -2152,14 +2174,17 @@ window.addEventListener('scroll', async () => {
         const other_user_id = list.dataset.otherUserId;
         const before_message_id = list.dataset.oldestMessageId;
 
-        const response = await fetch(
-            `${window.siteURL}/api/message-history?otherUserId=${other_user_id}&beforeMessageId=${before_message_id}`
-        );
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/message-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ otherUserId: other_user_id, beforeMessageId: before_message_id }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { messages, hasMore: has_more } = data.response;
 
@@ -2180,6 +2205,9 @@ window.addEventListener('scroll', async () => {
         list.dataset.oldestMessageId = messages[0].messageId;
 
         window.scrollTo(0, window.scrollY + (document.body.scrollHeight - previous_scroll_height));
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         const height_before_cleanup = document.body.scrollHeight;
         spinner.remove();
@@ -2216,12 +2244,17 @@ window.addEventListener('scroll', async () => {
     try {
         const before_notification_id = list.dataset.oldestNotificationId;
 
-        const response = await fetch(`${window.siteURL}/api/notification-history?beforeNotificationId=${before_notification_id}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/notification-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ beforeNotificationId: before_notification_id }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { notifications, hasMore: has_more } = data.response;
 
@@ -2236,6 +2269,9 @@ window.addEventListener('scroll', async () => {
         });
 
         list.dataset.oldestNotificationId = notifications[notifications.length - 1].notificationId;
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_notifications = false;
@@ -2268,12 +2304,17 @@ window.addEventListener('scroll', async () => {
     try {
         const before_report_id = list.dataset.oldestReportId;
 
-        const response = await fetch(`${window.siteURL}/api/report-history?beforeReportId=${before_report_id}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/report-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ beforeReportId: before_report_id }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { reports, hasMore: has_more } = data.response;
 
@@ -2292,13 +2333,33 @@ window.addEventListener('scroll', async () => {
         });
 
         list.dataset.oldestReportId = reports[reports.length - 1].reportId;
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_reports = false;
     }
 });
 
-const WS_RECONNECT_DELAY_MS = 3000;
+const WS_RECONNECT_DELAY_MS = 10000;
+const WS_MAX_RECONNECT_ATTEMPTS = 3;
+let ws_reconnect_attempts = 0;
+
+// Schedules a reconnect after a failed (re)connect or a dropped socket, but
+// gives up after a few tries rather than polling forever - a genuinely-gone
+// server or an expired session would otherwise retry indefinitely. A
+// successful connection resets the counter (see the socket 'open' handler),
+// so an established session still rides out the occasional blip.
+function schedule_ws_reconnect() {
+    if (ws_reconnect_attempts >= WS_MAX_RECONNECT_ATTEMPTS) {
+        show_toast('Something went wrong. Try reloading the page.');
+        return;
+    }
+
+    ws_reconnect_attempts += 1;
+    setTimeout(connect_websocket, WS_RECONNECT_DELAY_MS);
+}
 
 /**
  * Handles one freshly-pushed notification: toasts it, prepends it to the
@@ -2313,7 +2374,10 @@ const WS_RECONNECT_DELAY_MS = 3000;
 function handle_incoming_notification(notification_data) {
     const notification = Notification.fromData(notification_data);
 
-    show_toast('<a href="' + escape_attribute(notification.targetURL()) + '">' + escape_html(notification.text()) + '</a>');
+    const toast_link = document.createElement('a');
+    toast_link.href = notification.targetURL();
+    toast_link.textContent = notification.text();
+    show_toast(toast_link);
 
     const dropdown_list = document.querySelector('.NotificationDropdown .NotificationList');
 
@@ -2365,7 +2429,10 @@ async function connect_websocket() {
     let token;
 
     try {
-        const response = await fetch(`${window.siteURL}/api/ws-token`);
+        const response = await fetch(`${window.siteURL}/api/ws-token`, {
+            method: 'POST',
+            headers: csrf_headers(),
+        });
 
         if (!response.ok) {
             throw new Error('token fetch failed');
@@ -2373,7 +2440,7 @@ async function connect_websocket() {
 
         ({ token } = (await response.json()).response);
     } catch (error) {
-        setTimeout(connect_websocket, WS_RECONNECT_DELAY_MS);
+        schedule_ws_reconnect();
         return;
     }
 
@@ -2387,7 +2454,7 @@ async function connect_websocket() {
         }
 
         reconnecting = true;
-        setTimeout(connect_websocket, WS_RECONNECT_DELAY_MS);
+        schedule_ws_reconnect();
     };
 
     socket.addEventListener('message', (event) => {
@@ -2404,6 +2471,10 @@ async function connect_websocket() {
         } else if (data.event === 'message') {
             document.dispatchEvent(new CustomEvent('ws:message', { detail: data.message }));
         }
+    });
+
+    socket.addEventListener('open', () => {
+        ws_reconnect_attempts = 0;
     });
 
     socket.addEventListener('close', reconnect);
@@ -2463,15 +2534,25 @@ window.addEventListener('scroll', async () => {
     try {
         const feed_type = list.dataset.feedType;
         const before_post_id = list.dataset.oldestPostId;
-        const user_id_param = feed_type === 'user' ? `&userId=${list.dataset.userId}` : '';
-        const tag_param = feed_type === 'tag' ? `&tag=${encodeURIComponent(list.dataset.tag)}` : '';
+        const request = { feedType: feed_type, beforePostId: before_post_id };
 
-        const response = await fetch(`${window.siteURL}/api/feed-history?feedType=${feed_type}&beforePostId=${before_post_id}${user_id_param}${tag_param}`);
-        const data = await response.json();
+        if (feed_type === 'user') {
+            request.userId = list.dataset.userId;
+        } else if (feed_type === 'tag') {
+            request.tag = list.dataset.tag;
+        }
+
+        const response = await fetch(`${window.siteURL}/api/feed-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify(request),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { posts, hasMore: has_more } = data.response;
 
@@ -2488,6 +2569,9 @@ window.addEventListener('scroll', async () => {
         });
 
         list.dataset.oldestPostId = posts[posts.length - 1].postId;
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_feed_items = false;
@@ -2519,12 +2603,17 @@ window.addEventListener('scroll', async () => {
         const before_created_at = encodeURIComponent(list.dataset.oldestBookmarkCreatedAt);
         const before_post_id = list.dataset.oldestBookmarkPostId;
 
-        const response = await fetch(`${window.siteURL}/api/bookmark-history?beforeCreatedAt=${before_created_at}&beforePostId=${before_post_id}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/bookmark-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ beforeCreatedAt: before_created_at, beforePostId: before_post_id }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { posts, hasMore: has_more, oldestBookmarkCreatedAt: oldest_created_at, oldestBookmarkPostId: oldest_post_id } = data.response;
 
@@ -2542,6 +2631,9 @@ window.addEventListener('scroll', async () => {
 
         list.dataset.oldestBookmarkCreatedAt = oldest_created_at;
         list.dataset.oldestBookmarkPostId = oldest_post_id;
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_bookmarks = false;
@@ -2573,12 +2665,17 @@ window.addEventListener('scroll', async () => {
         const parent_id = list.dataset.parentId;
         const before_post_id = list.dataset.oldestPostId;
 
-        const response = await fetch(`${window.siteURL}/api/reply-history?parentId=${parent_id}&beforePostId=${before_post_id}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/reply-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ parentId: parent_id, beforePostId: before_post_id }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { posts, hasMore: has_more } = data.response;
 
@@ -2595,6 +2692,9 @@ window.addEventListener('scroll', async () => {
         });
 
         list.dataset.oldestPostId = posts[posts.length - 1].postId;
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_older_replies = false;
@@ -2648,12 +2748,17 @@ window.addEventListener('scroll', async () => {
         const user_id = target.dataset.userId;
         const before = target.dataset.oldestFriendshipId;
 
-        const response = await fetch(`${window.siteURL}/api/friend-list-history?listType=${list_type}&userId=${user_id}&beforeFriendshipId=${before}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/friend-list-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ listType: list_type, userId: user_id, beforeFriendshipId: before }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         const { items, hasMore: has_more, oldestFriendshipId: oldest_friendship_id } = data.response;
 
@@ -2671,6 +2776,9 @@ window.addEventListener('scroll', async () => {
         if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {
             target.dataset.hasMore = '0';
         }
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_user_section = false;
@@ -3067,14 +3175,25 @@ document.addEventListener('change', async (event) => {
     }
 
     const theme = select.value;
+    const previous_theme = document.documentElement.dataset.theme || 'system';
 
-    if (theme === 'system') {
-        delete document.documentElement.dataset.theme;
-    } else {
-        document.documentElement.dataset.theme = theme;
+    const apply = (value) => {
+        if (value === 'system') {
+            delete document.documentElement.dataset.theme;
+        } else {
+            document.documentElement.dataset.theme = value;
+        }
+    };
+
+    apply(theme);
+
+    // On a failed save, put the page back to the theme the server still holds
+    // rather than showing one that didn't persist (which would silently snap
+    // back on the next load). api_post already surfaced the error to the user.
+    if (await api_post('/api/update-theme', { theme }) === null) {
+        apply(previous_theme);
+        select.value = previous_theme;
     }
-
-    await api_post('/api/update-theme', { theme });
 });
 
 document.addEventListener('click', (event) => {
@@ -3209,27 +3328,34 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        input.dataset.lastFetchedUrl = url;
-
-        await discard_staged_link_image(form);
-
-        if (!url) {
-            return;
-        }
-
-        // Abort whatever this input's previous preview fetch is still
-        // waiting on - without this, a slower earlier response can resolve
-        // after a faster later one and overwrite the freshly-typed URL's
-        // preview with a stale one for the URL typed before it.
+        // Abort whatever this input's previous preview fetch is still waiting
+        // on, and register this run's controller, synchronously, before any
+        // await below - two overlapping callbacks (a fast keystroke burst)
+        // must never race on which one gets to be "current", which they
+        // could if this happened after an awaited step.
         input.previewAbortController?.abort();
         const controller = new AbortController();
         input.previewAbortController = controller;
 
-        const preview = await api_post('/api/link-preview', { url }, { signal: controller.signal });
+        await discard_staged_link_image(form);
 
-        if (!preview) {
+        if (!url) {
+            input.dataset.lastFetchedUrl = url;
+
             return;
         }
+
+        const preview = await api_post('/api/link-preview', { url }, { signal: controller.signal });
+
+        // A null preview covers both a failed fetch and an aborted one -
+        // don't mark the url as fetched on failure, so retyping the same url
+        // later retries instead of permanently no-op'ing. Also bail if the
+        // input has moved on to a different value since this fetch started.
+        if (!preview || input.value.trim() !== url) {
+            return;
+        }
+
+        input.dataset.lastFetchedUrl = url;
 
         // Only overwrite a field that's still exactly what the previous fetch put
         // there (or empty) - once the user edits an autofilled value by hand,
@@ -3336,12 +3462,17 @@ window.addEventListener('scroll', async () => {
     list.appendChild(spinner);
 
     try {
-        const response = await fetch(`${window.siteURL}/api/banned-history?beforeUserId=${list.dataset.oldestUserId}`);
-        const data = await response.json();
+        const response = await fetch(`${window.siteURL}/api/banned-history`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ beforeUserId: list.dataset.oldestUserId }),
+        });
 
         if (!response.ok) {
             return;
         }
+
+        const data = await response.json();
 
         // A new search (typed while this fetch was in flight) already reset
         // list.innerHTML, detaching our spinner - these are results for a
@@ -3362,6 +3493,9 @@ window.addEventListener('scroll', async () => {
         items.forEach((item) => {
             list.insertBefore(BannedUser.fromData(item).toElement(), spinner);
         });
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
     } finally {
         spinner.remove();
         loading_banned_users = false;
@@ -3389,7 +3523,8 @@ document.addEventListener('input', (event) => {
         // cursor reset); a query shows its matches with pagination off.
         const url = query === ''
             ? `${window.siteURL}/api/banned-history`
-            : `${window.siteURL}/api/search-banned-users?q=${encodeURIComponent(query)}`;
+            : `${window.siteURL}/api/search-banned-users`;
+        const request_body = query === '' ? {} : { q: query };
 
         // Abort whatever this input's previous search/page-reset is still
         // waiting on - without this, a slower earlier response can resolve
@@ -3399,18 +3534,23 @@ document.addEventListener('input', (event) => {
         const controller = new AbortController();
         input.searchAbortController = controller;
 
-        let response;
+        let data;
 
         try {
-            response = await fetch(url, { signal: controller.signal });
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: csrf_headers({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify(request_body),
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            data = await response.json();
         } catch (error) {
-            return; // aborted by a newer search, or a network failure either way
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return;
+            return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
         list.replaceChildren();
@@ -3816,7 +3956,7 @@ document.addEventListener('submit', async (event) => {
             return;
         }
 
-        if (!data.changed) {
+        if (!data.response.changed) {
             show_toast('That is already your email address.');
             return;
         }

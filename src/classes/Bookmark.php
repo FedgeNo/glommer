@@ -101,27 +101,30 @@ SELECT `postId`
     {
         $mysqli = Database::connection();
         $fetch_limit = $limit + 1;
+        $not_banned = 0;
 
         if ($before_created_at !== null && $before_post_id !== null) {
             $stmt = mysqli_prepare($mysqli, '
 SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     FROM `Bookmarks`
     JOIN `Posts` ON `Posts`.`postId` = `Bookmarks`.`postId`
-    WHERE `Bookmarks`.`userId` = ? AND (`Bookmarks`.`createdAt` < ? OR (`Bookmarks`.`createdAt` = ? AND `Bookmarks`.`postId` < ?))
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Bookmarks`.`userId` = ? AND `Users`.`banned` = ? AND (`Bookmarks`.`createdAt` < ? OR (`Bookmarks`.`createdAt` = ? AND `Bookmarks`.`postId` < ?))
     ORDER BY `Bookmarks`.`createdAt` DESC, `Bookmarks`.`postId` DESC
     LIMIT ?
 ');
-            mysqli_stmt_bind_param($stmt, 'issii', $user_id, $before_created_at, $before_created_at, $before_post_id, $fetch_limit);
+            mysqli_stmt_bind_param($stmt, 'iissii', $user_id, $not_banned, $before_created_at, $before_created_at, $before_post_id, $fetch_limit);
         } else {
             $stmt = mysqli_prepare($mysqli, '
 SELECT `Posts`.*, `Bookmarks`.`createdAt` AS `bookmarkedAt`
     FROM `Bookmarks`
     JOIN `Posts` ON `Posts`.`postId` = `Bookmarks`.`postId`
-    WHERE `Bookmarks`.`userId` = ?
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Bookmarks`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Bookmarks`.`createdAt` DESC, `Bookmarks`.`postId` DESC
     LIMIT ?
 ');
-            mysqli_stmt_bind_param($stmt, 'ii', $user_id, $fetch_limit);
+            mysqli_stmt_bind_param($stmt, 'iii', $user_id, $not_banned, $fetch_limit);
         }
 
         mysqli_stmt_execute($stmt);

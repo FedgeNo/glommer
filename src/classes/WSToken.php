@@ -17,17 +17,17 @@ class WSToken
 
     public static function issue(int $user_id): string
     {
-        $config = require __DIR__ . '/../config.php';
+        $secret = Config::get('WSSecret');
 
         // No secret configured - hand out no usable token rather than sign
         // with an absent key. WS auth is off until WS_SECRET is set.
-        if (!is_string($config['WSSecret']) || $config['WSSecret'] === '') {
+        if (!is_string($secret) || $secret === '') {
             return '';
         }
 
         $expires_at = time() + self::TTL_SECONDS;
         $payload = $user_id . '.' . $expires_at;
-        $signature = hash_hmac('sha256', $payload, $config['WSSecret']);
+        $signature = hash_hmac('sha256', $payload, $secret);
 
         return $payload . '.' . $signature;
     }

@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-class Friendship extends HTMLObject
+class Friendship
 {
-    public string $tagName = 'div';
-    public ?string $class = 'Friendship';
-
     public ?int $friendshipId = null;
     public ?int $requesterId = null;
     public ?int $addresseeId = null;

@@ -585,10 +585,6 @@ p a:hover {
     z-index: 19;
 }
 
-.MobileNavMenu.Open {
-    display: flex;
-}
-
 /* .MainNavigation .MobileNavMenu (not just .MobileNavMenu) - needs to
    out-specificity ".MainNavigation > div > a", which would otherwise win
    the shared color/padding/border-radius properties and leave these links
@@ -629,6 +625,13 @@ p a:hover {
 
 @media (max-width: 48rem) {
     .NavHamburgerButton {
+        display: flex;
+    }
+
+    /* Scoped to the mobile breakpoint so widening the viewport past it while
+       the menu is open leaves the panel hidden again, rather than stranding
+       an open .Open panel over the desktop layout. */
+    .MobileNavMenu.Open {
         display: flex;
     }
 

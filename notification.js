@@ -34,6 +34,8 @@ class Notification {
                 return 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.';
             case 'systemError':
                 return 'A server error occurred. Check the error log for details.';
+            case 'passwordRemovedGoogle':
+                return 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.';
             default:
                 return this.actorText();
         }
@@ -79,6 +81,8 @@ class Notification {
             // actorUsername, not currentUserUsername.
             case 'mention':
                 return window.siteURL + '/users/' + this.actorUsername + '/' + this.postId;
+            case 'passwordRemovedGoogle':
+                return window.siteURL + '/forgot-password';
             default:
                 return '#';
         }

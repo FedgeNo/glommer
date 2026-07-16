@@ -720,8 +720,18 @@ while (true) {
 
         $chunk = @fread($socket, 65536);
 
-        if ($chunk === false || $chunk === '') {
+        if ($chunk === false || ($chunk === '' && feof($socket))) {
             drop_connection($id);
+            continue;
+        }
+
+        if ($chunk === '') {
+            // Selected as readable but no application bytes came up. On a TLS
+            // socket that's routine - a renegotiation or a partial TLS record
+            // makes the socket readable at the transport layer while handing
+            // nothing to the application - and feof() above confirmed it isn't
+            // a real close, so wait for the next read instead of dropping the
+            // connection (which would churn a reconnect for nothing).
             continue;
         }
 

@@ -58,7 +58,7 @@ class MailSettingsForm extends Form
         $password_placeholder = $password_is_set
             ? 'Password is set - leave blank to keep it'
             : 'SMTP password';
-        $password = new InputField('smtpPassword', 'SMTP password', 'text', $password_placeholder, 255);
+        $password = new InputField('smtpPassword', 'SMTP password', 'password', $password_placeholder, 255);
         $password -> autocomplete = 'off';
         $password -> labelVisible = true;
         $fields -> addContent($password);

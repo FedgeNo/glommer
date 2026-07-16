@@ -26,7 +26,13 @@ class Database
             // session here makes MySQL's clock the same clock PHP uses
             // everywhere else, rather than needing every table/query to
             // account for a possible mismatch.
-            mysqli_query(self::$connection, "SET time_zone = '+00:00'");
+            $time_zone = '+00:00';
+
+            $stmt = mysqli_prepare(self::$connection, '
+SET `time_zone` = ?
+');
+            mysqli_stmt_bind_param($stmt, 's', $time_zone);
+            mysqli_stmt_execute($stmt);
         }
 
         return self::$connection;

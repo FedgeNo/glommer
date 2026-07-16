@@ -100,8 +100,8 @@ class Post extends HTMLObject
                 $heading = new Heading3();
                 $heading -> contents[] = $this -> title;
 
-                if ($this -> postId !== null) {
-                    $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author ?-> username . '/' . $this -> postId));
+                if ($this -> postId !== null && $this -> author !== null) {
+                    $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
                     $title_link -> addContent($heading);
                     $this -> contents[] = $title_link;
                 } else {

@@ -13,7 +13,11 @@ if (!Auth::canModerate()) {
 
 $page = Page::create('Banned Users');
 
+$page -> addContent(new Heading2('Banned Users'));
 $page -> addContent(new BannedUserSearch());
 $page -> addContent(BannedUserList::page());
+
+$page -> addContent(new Heading2('Banned Trending Entities'));
+$page -> addContent(new BannedTrendingEntitiesList());
 
 $page -> send();

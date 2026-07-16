@@ -45,8 +45,8 @@ function render_delta(ops) {
         return span;
     };
 
-    const flush_line = (blockAttributes) => {
-        const attrs = blockAttributes || {};
+    const flush_line = (block_attributes) => {
+        const attrs = block_attributes || {};
 
         // List items group consecutive same-kind lines under one <ol>/<ul>.
         if (attrs.list === 'ordered' || attrs.list === 'bullet') {

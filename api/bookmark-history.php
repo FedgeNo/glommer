@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
+$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
+
 // Private list - unlike feed-history.php (which serves public feeds and only
 // gates the 'friends' feedType), every request here is the viewer's own data.
 if (!Auth::check()) {
@@ -12,8 +21,8 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$before_created_at = isset($_GET['beforeCreatedAt']) && $_GET['beforeCreatedAt'] !== '' ? (string) $_GET['beforeCreatedAt'] : null;
-$before_post_id = isset($_GET['beforePostId']) && $_GET['beforePostId'] !== '' ? (int) $_GET['beforePostId'] : null;
+$before_created_at = isset($payload['beforeCreatedAt']) && $payload['beforeCreatedAt'] !== '' ? (string) $payload['beforeCreatedAt'] : null;
+$before_post_id = isset($payload['beforePostId']) && $payload['beforePostId'] !== '' ? (int) $payload['beforePostId'] : null;
 
 if ($before_created_at === null || $before_post_id === null) {
     JSONResponse::error('Invalid request', 422) -> send();

@@ -187,8 +187,8 @@ class Delta
      * The distinct #hashtags in a post's body (lowercased, first-seen order).
      * Uses the same rule the renderer linkifies with (Linkify), and - matching
      * the renderer - skips runs that aren't linkified: inline code and text
-     * already inside a link. Uncapped; Hashtag::indexPost applies the spam
-     * policy (index all, or - if there are too many - index none and flag it).
+     * already inside a link. Uncapped here; Hashtag::indexPost stores only a
+     * post's first MAX_HASHTAGS of them.
      *
      * @param array[] $ops
      * @return string[]

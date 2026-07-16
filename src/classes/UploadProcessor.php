@@ -592,6 +592,14 @@ class UploadProcessor
         if (!$thumbnail_ok) {
             unlink($paths['display']);
 
+            // resizeAndSave() can fail after imagejpeg() already created a
+            // partial thumbnail file (e.g. disk full) - clean that up too, or
+            // it's left orphaned with no sweeper to remove it (same reasoning
+            // processImage's failure path spells out).
+            if ($paths['thumbnail'] !== null && is_file($paths['thumbnail'])) {
+                unlink($paths['thumbnail']);
+            }
+
             if ($paths['original'] !== null) {
                 unlink($paths['original']);
             }

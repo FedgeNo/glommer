@@ -4,8 +4,17 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
-$parent_id = (int) ($_GET['parentId'] ?? 0);
-$before_post_id = (int) ($_GET['beforePostId'] ?? 0);
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
+$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
+
+$parent_id = (int) ($payload['parentId'] ?? 0);
+$before_post_id = (int) ($payload['beforePostId'] ?? 0);
 
 if ($parent_id === 0 || $before_post_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();

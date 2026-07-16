@@ -15,11 +15,14 @@ declare(strict_types=1);
  */
 class Mention
 {
-    // A post with more than this many distinct mentions indexes/notifies NONE
-    // of them (and is auto-reported) - the body still renders every @mention
-    // as a link regardless, this only governs indexing/notifying. Mirrors
-    // Hashtag::MAX_HASHTAGS exactly (same spam-stuffing concern).
-    public const MAX_MENTIONS = 30;
+    // A post mentioning more than this many distinct people notifies NONE of
+    // them (and is auto-reported) - the body still renders every @mention as a
+    // link regardless, this only governs indexing/notifying. Kept low because
+    // @mentioning someone doesn't require being friends with them: a high cap
+    // would let a single post blast tag-notifications at a crowd of strangers,
+    // which is the spam vector this guards against. (Hashtags cap differently -
+    // they store only the first N, with no notification and no penalty.)
+    public const MAX_MENTIONS = 10;
 
     // The auto-report's reporter: the primary admin (system) account.
     private const SYSTEM_REPORTER_ID = 1;

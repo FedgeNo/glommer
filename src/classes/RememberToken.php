@@ -64,7 +64,7 @@ INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`
         // Occasionally sweep out expired rows (same lottery approach as
         // RateLimiter) so the table doesn't grow forever.
         if (mt_rand(1, 100) === 1) {
-            $prune_stmt = mysqli_prepare(Database::connection(), '
+            $prune_stmt = mysqli_prepare($mysqli, '
 DELETE
     FROM `RememberTokens`
     WHERE `expiresAt` <= NOW()

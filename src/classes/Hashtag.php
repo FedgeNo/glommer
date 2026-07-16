@@ -10,37 +10,24 @@ declare(strict_types=1);
  */
 class Hashtag
 {
-    // A post with more than this many distinct hashtags indexes NONE of them
-    // (and is auto-reported) - the body still renders every #tag as a link, so
-    // real creative use stays unrestricted, but a spammer can't stuff a post
-    // with tags to game tag pages/trending. 30 matches the usual creative max.
-    public const MAX_HASHTAGS = 30;
-
-    // The auto-report's reporter: the primary admin (system) account.
-    private const SYSTEM_REPORTER_ID = 1;
+    // At most this many of a post's distinct hashtags are stored (in Hashtags/
+    // PostHashtags and the flat keywords copy) and so count toward tag pages
+    // and trending. A post may contain any number of #tags - they all still
+    // render as links in the body - but only its first MAX_HASHTAGS get
+    // indexed, so tag-stuffing can't pollute the index or game trending.
+    public const MAX_HASHTAGS = 10;
 
     /**
-     * Applies the hashtag policy to a freshly-created post: extracts its tags
-     * and, if there are a sane number, indexes them; if there are too many
-     * (spam), indexes none and auto-reports the post for moderation. The post
-     * body still linkifies every tag regardless - this only governs indexing.
-     * Backfill passes $auto_report = false (no flood of reports over old posts).
+     * Indexes a freshly-created post's hashtags: the first MAX_HASHTAGS of
+     * them (see the constant) are stored; any beyond that are left unindexed.
+     * The post body still linkifies every tag regardless - this only governs
+     * indexing.
      *
      * @param array[] $ops the post's Delta ops
      */
-    public static function indexPost(int $post_id, array $ops, bool $auto_report = true): void
+    public static function indexPost(int $post_id, array $ops): void
     {
-        $tags = Delta::hashtags($ops);
-
-        if (count($tags) > self::MAX_HASHTAGS) {
-            if ($auto_report) {
-                Report::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive hashtags (' . count($tags) . ' tags)');
-            }
-
-            return;
-        }
-
-        self::attach($post_id, $tags);
+        self::attach($post_id, array_slice(Delta::hashtags($ops), 0, self::MAX_HASHTAGS));
     }
 
     /**
@@ -54,17 +41,9 @@ class Hashtag
      *
      * @param array[] $ops the post's edited Delta ops
      */
-    public static function reindexPost(int $post_id, array $ops, bool $auto_report = true): void
+    public static function reindexPost(int $post_id, array $ops): void
     {
-        $tags = Delta::hashtags($ops);
-
-        if (count($tags) > self::MAX_HASHTAGS) {
-            if ($auto_report) {
-                Report::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive hashtags (' . count($tags) . ' tags)');
-            }
-
-            return;
-        }
+        $tags = array_slice(Delta::hashtags($ops), 0, self::MAX_HASHTAGS);
 
         $mysqli = Database::connection();
 
@@ -393,7 +372,7 @@ SELECT `postId`, `descriptionDelta`
         }
 
         foreach ($posts as $row) {
-            self::indexPost((int) $row['postId'], Delta::decode((string) $row['descriptionDelta']), false);
+            self::indexPost((int) $row['postId'], Delta::decode((string) $row['descriptionDelta']));
         }
     }
 }

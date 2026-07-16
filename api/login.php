@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
@@ -72,8 +78,8 @@ if (TwoFactor::isEnabled($user)) {
     $code_sent = TwoFactor::sendCode($user);
 
     if ($code_sent || Mailer::recipientWasRejected()) {
-        $_SESSION['pending2faUserId'] = (int) $user -> userId;
-        $_SESSION['pending2faRememberMe'] = $remember_me;
+        $_SESSION['pending2FAUserId'] = (int) $user -> userId;
+        $_SESSION['pending2FARememberMe'] = $remember_me;
 
         JSONResponse::success(['twoFactorRequired' => true]) -> send();
     }

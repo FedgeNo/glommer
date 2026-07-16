@@ -37,7 +37,7 @@ class Linkify
     // Trailing chars trimmed off a matched URL back into following text, so a
     // sentence's "...at https://x.com." doesn't swallow the period (or a wrapping
     // ")"). A URL that legitimately ends in one of these loses it - accepted.
-    private const URL_TRAILING_TRIM = ".,!?;:)";
+    private const URL_TRAILING_TRIM = '.,!?;:)';
 
     // The pass-2 scanner: an http(s) URL, OR a #hashtag preceded by a boundary
     // (not a word char or another #, so a#b and ##b don't tag), OR an @mention
@@ -51,12 +51,12 @@ class Linkify
 
     // Pass-1 detector: an http(s) URL, a www.-prefixed host, or a bare
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.
-    private const LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
+    private const LOOKS_URL = 'https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/';
 
     // Extracts a URL's authority (userinfo@host:port). Shared with delta.js so
     // internal-vs-external is decided identically without PHP parse_url / JS URL
     // differences (default-port, scheme-relative, userinfo all handled here).
-    private const AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
+    private const AUTHORITY = '^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)';
 
     /**
      * Whether text reads as containing a URL (pass 1's anti-phishing gate).

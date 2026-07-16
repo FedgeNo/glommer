@@ -67,11 +67,16 @@ $dump_raw_path = $run_dir . '/database.sql';
 $dump_stderr_path = $run_dir . '/mysqldump.stderr';
 
 // The password travels via MYSQL_PWD so it never appears in the process list.
+// Set it in this process's environment (inherited by the child, and NOT shown
+// in ps/proc cmdline) rather than inline in the command text - an inline
+// `MYSQL_PWD=... mysqldump` is still visible in the wrapping `/bin/sh -c`
+// process's own cmdline for the brief moment before it execs mysqldump.
 // --single-transaction gives a consistent InnoDB snapshot without needing the
 // LOCK TABLES privilege the least-privilege runtime account doesn't have.
+putenv('MYSQL_PWD=' . (string) Config::get('password'));
+
 $dump_command = sprintf(
-    'MYSQL_PWD=%s mysqldump --single-transaction --skip-lock-tables --host=%s --port=%d --user=%s %s > %s 2>%s',
-    escapeshellarg((string) Config::get('password')),
+    'mysqldump --single-transaction --skip-lock-tables --host=%s --port=%d --user=%s %s > %s 2>%s',
     escapeshellarg((string) Config::get('host')),
     Config::get('port'),
     escapeshellarg((string) Config::get('username')),
@@ -81,6 +86,10 @@ $dump_command = sprintf(
 );
 
 exec($dump_command, $dump_output, $dump_exit);
+
+// Drop the password from the environment now the dump is done - nothing else
+// in this process needs it.
+putenv('MYSQL_PWD');
 
 $dump_stderr = is_file($dump_stderr_path) ? (string) file_get_contents($dump_stderr_path) : '';
 $dump_ok = $dump_exit === 0 && is_file($dump_raw_path) && filesize($dump_raw_path) > 0;
@@ -141,12 +150,21 @@ foreach (glob($backup_root . '/*', GLOB_ONLYDIR) as $old_dir) {
     $run_time = \DateTime::createFromFormat('Y-m-d_His', basename($old_dir));
 
     if ($run_time !== false && $run_time -> getTimestamp() < $cutoff) {
-        foreach (glob($old_dir . '/*') as $old_file) {
-            unlink($old_file);
+        // {,.}* so a dotfile in the run dir is cleared too - otherwise rmdir
+        // below fails on a non-empty directory. is_file() skips . and .. (and
+        // any stray subdirectory), so only real files are removed.
+        foreach (glob($old_dir . '/{,.}*', GLOB_BRACE) as $old_file) {
+            if (is_file($old_file)) {
+                unlink($old_file);
+            }
         }
 
-        rmdir($old_dir);
-        $pruned++;
+        // Only count a run as pruned if the directory actually went away -
+        // a failed rmdir (something still inside, a permission problem)
+        // mustn't be reported as a successful prune.
+        if (rmdir($old_dir)) {
+            $pruned++;
+        }
     }
 }
 

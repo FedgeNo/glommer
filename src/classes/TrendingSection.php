@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The "Trending" section on the /tags/ directory: extracted entities, not
+ * The "Trending" section on the /trending-topics page: extracted entities, not
  * hashtags - EntityExtractor only produces 'hashtag'-type entities today,
  * but this component (and everything under it - TrendingEntityChip,
  * Trending.php itself) has no hashtag-specific naming, styling, or behavior

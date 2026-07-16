@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
+// Every /api/ endpoint requires POST - init.php's centralized CSRF check only
+// covers POST requests, so a GET-reachable endpoint would bypass it.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
+$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
+
 // Serves the next page for any of the three friend sections. The friends list
 // is public (anyone can browse a profile's friends); the incoming/outgoing
 // request lists are private to their owner, so those require you to be the
 // person whose page it is.
-$list_type = (string) ($_GET['listType'] ?? '');
-$user_id = (int) ($_GET['userId'] ?? 0);
-$before_friendship_id = (int) ($_GET['beforeFriendshipId'] ?? 0);
+$list_type = (string) ($payload['listType'] ?? '');
+$user_id = (int) ($payload['userId'] ?? 0);
+$before_friendship_id = (int) ($payload['beforeFriendshipId'] ?? 0);
 
 if (!in_array($list_type, ['friends', 'incoming', 'outgoing'], true) || $user_id === 0 || $before_friendship_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
@@ -47,15 +56,15 @@ $oldest_friendship_id = $items !== [] ? (int) end($items) -> friendshipId : null
 $payloads = [];
 
 foreach ($items as $item) {
-    $payload = OtherUser::payloadFor($item, $viewer);
+    $item_payload = OtherUser::payloadFor($item, $viewer);
 
     // Incoming requests carry the friendshipId so the client can render the
     // Accept/Deny buttons, which act on that Friendships row.
     if ($list_type === 'incoming') {
-        $payload['friendshipId'] = (int) $item -> friendshipId;
+        $item_payload['friendshipId'] = (int) $item -> friendshipId;
     }
 
-    $payloads[] = $payload;
+    $payloads[] = $item_payload;
 }
 
 JSONResponse::success([

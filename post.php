@@ -63,13 +63,15 @@ $json_ld = [
 $first_image = null;
 
 foreach ($post -> items as $item) {
-    if ($item -> imageURL() !== null) {
-        $first_image = $item -> imageURL();
+    // An image post advertises its full-size render; a video its thumbnail
+    // (there's no still frame to link otherwise). Audio has no image at all.
+    if ($item instanceof ImageItem) {
+        $first_image = $item -> srcURL();
         break;
     }
 
-    if ($item instanceof ImageItem) {
-        $first_image = $item -> srcURL();
+    if ($item -> imageURL() !== null) {
+        $first_image = $item -> imageURL();
         break;
     }
 }

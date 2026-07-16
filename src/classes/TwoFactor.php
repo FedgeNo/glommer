@@ -59,15 +59,17 @@ UPDATE `Users`
         $code_hash = hash('sha256', $code);
         $ttl_minutes = self::CODE_TTL_MINUTES;
         $user_id = (int) $user -> userId;
+        $initial_attempts = 0;
+        $reset_attempts = 0;
 
         // One active code per user: ON DUPLICATE KEY UPDATE overwrites the
         // previous code, resets its attempt counter, and restarts the clock.
         $stmt = mysqli_prepare(Database::connection(), '
 INSERT INTO `TwoFactorCodes` (`userId`, `codeHash`, `expiresAt`, `attempts`)
-    VALUES (?, ?, NOW() + INTERVAL ? MINUTE, 0)
-    ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `expiresAt` = VALUES(`expiresAt`), `attempts` = 0, `createdAt` = NOW()
+    VALUES (?, ?, NOW() + INTERVAL ? MINUTE, ?)
+    ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `expiresAt` = VALUES(`expiresAt`), `attempts` = ?, `createdAt` = NOW()
 ');
-        mysqli_stmt_bind_param($stmt, 'isi', $user_id, $code_hash, $ttl_minutes);
+        mysqli_stmt_bind_param($stmt, 'isiii', $user_id, $code_hash, $ttl_minutes, $initial_attempts, $reset_attempts);
         mysqli_stmt_execute($stmt);
 
         $name = $user -> displayName ?? $user -> username;

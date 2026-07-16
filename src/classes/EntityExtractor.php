@@ -23,6 +23,16 @@ declare(strict_types=1);
  */
 class EntityExtractor
 {
+    // Every entityType value the pipeline can produce: 'hashtag' (from
+    // Delta::hashtags()) plus each spaCy NER label ner-extract.py emits,
+    // lowercased to match its output. A ban target's type is validated
+    // against this set so a bogus/over-length type is rejected up front
+    // rather than blowing up on the varchar(16) column.
+    public const ENTITY_TYPES = [
+        'hashtag', 'person', 'org', 'gpe', 'loc', 'fac', 'product',
+        'event', 'work_of_art', 'law', 'language', 'norp',
+    ];
+
     // Matches bin/install.php's NER_VENV_DIR.
     private const NER_PYTHON = '/opt/glommer-ner/bin/python';
     private const NER_SCRIPT = __DIR__ . '/../../bin/ner-extract.py';
@@ -100,10 +110,45 @@ class EntityExtractor
         fwrite($pipes[0], json_encode($plain_texts));
         fclose($pipes[0]);
 
-        $output = stream_get_contents($pipes[1]);
-        $error_output = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
+        // Drain stdout and stderr concurrently. Reading one to EOF before
+        // touching the other can deadlock: if the Python side fills the
+        // (~64 KB) stderr pipe buffer with spaCy warnings before it finishes
+        // writing stdout, it blocks on the stderr write while this side is
+        // blocked reading stdout, and neither progresses until `timeout`
+        // kills it and the whole batch is discarded.
+        stream_set_blocking($pipes[1], false);
+        stream_set_blocking($pipes[2], false);
+
+        $output = '';
+        $error_output = '';
+        $open = [1 => $pipes[1], 2 => $pipes[2]];
+
+        while ($open !== []) {
+            $read = array_values($open);
+            $write = null;
+            $except = null;
+
+            if (@stream_select($read, $write, $except, null) === false) {
+                break;
+            }
+
+            foreach ($read as $stream) {
+                $chunk = fread($stream, 65536);
+
+                if ($chunk !== false && $chunk !== '') {
+                    if ($stream === $pipes[1]) {
+                        $output .= $chunk;
+                    } else {
+                        $error_output .= $chunk;
+                    }
+                }
+
+                if (feof($stream)) {
+                    fclose($stream);
+                    unset($open[array_search($stream, $open, true)]);
+                }
+            }
+        }
 
         $exit_code = proc_close($process);
 

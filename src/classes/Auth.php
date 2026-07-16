@@ -84,6 +84,14 @@ UPDATE `Users`
     public static function login(User $user): void
     {
         session_regenerate_id(true);
+
+        // Any half-finished 2FA login is now moot - drop its pending state so
+        // it can't outlive an unrelated completed login in the same session
+        // (session data survives session_regenerate_id, so an abandoned
+        // password-step login left behind pending2FAUserId that a later,
+        // different login here would otherwise inherit).
+        unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe']);
+
         $_SESSION['userId'] = $user -> userId;
 
         // Record the sessionVersion this session was created under - a

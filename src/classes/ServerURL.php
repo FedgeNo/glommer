@@ -42,7 +42,26 @@ class ServerURL
      */
     public static function isHTTPS(): bool
     {
-        return ($_SERVER['HTTPS'] ?? '') !== '' || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
+        // Some stacks explicitly set HTTPS to the string 'off' on a plain-HTTP
+        // request (nginx `fastcgi_param HTTPS off;`, some Apache SetEnv setups)
+        // rather than leaving it empty, so a bare non-empty check would wrongly
+        // read that as HTTPS - hence the canonical `!== 'off'` guard.
+        $https = strtolower((string) ($_SERVER['HTTPS'] ?? ''));
+
+        if ($https !== '' && $https !== 'off') {
+            return true;
+        }
+
+        // X-Forwarded-Proto is only trusted from the reverse proxy, evidenced
+        // by a loopback REMOTE_ADDR - the exact gate clientIP() applies to
+        // X-Forwarded-For, and for the same reason: a directly-connected
+        // client could otherwise send `X-Forwarded-Proto: https` on a plain
+        // HTTP request to skip the HTTPS-enforcement redirect and get secure
+        // cookies / HSTS set over plain HTTP. (A TLS-terminating Apache sets
+        // HTTPS=on directly, handled above, so it never relies on this.)
+        $behind_local_proxy = in_array($_SERVER['REMOTE_ADDR'] ?? null, ['127.0.0.1', '::1'], true);
+
+        return $behind_local_proxy && strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
     }
 
     /**

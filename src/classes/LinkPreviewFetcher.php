@@ -63,13 +63,15 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
     FROM `LinkPreviews`
     WHERE `url` = ?
         AND (
-            (`succeeded` = 1 AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
-            OR (`succeeded` = 0 AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
+            (`succeeded` = ? AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
+            OR (`succeeded` = ? AND `fetchedAt` > NOW() - INTERVAL ? SECOND)
         )
 ');
+        $succeeded_flag = 1;
+        $failed_flag = 0;
         $success_cache_seconds = self::SUCCESS_CACHE_SECONDS;
         $failure_cache_seconds = self::FAILURE_CACHE_SECONDS;
-        mysqli_stmt_bind_param($stmt, 'sii', $url, $success_cache_seconds, $failure_cache_seconds);
+        mysqli_stmt_bind_param($stmt, 'siiii', $url, $succeeded_flag, $success_cache_seconds, $failed_flag, $failure_cache_seconds);
         mysqli_stmt_execute($stmt);
         $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
@@ -474,11 +476,13 @@ INSERT INTO `LinkPreviews` (`url`, `title`, `description`, `imageURL`, `succeede
         // otherwise leave behind. Same lottery approach RateLimiter uses for
         // its own pruning, so it's not doing a DELETE scan on every write.
         if (mt_rand(1, 100) === 1) {
+            $prune_days = 1;
             $prune_stmt = mysqli_prepare($mysqli, '
 DELETE
     FROM `LinkPreviews`
-    WHERE `fetchedAt` < NOW() - INTERVAL 1 DAY
+    WHERE `fetchedAt` < NOW() - INTERVAL ? DAY
 ');
+            mysqli_stmt_bind_param($prune_stmt, 'i', $prune_days);
             mysqli_stmt_execute($prune_stmt);
         }
     }

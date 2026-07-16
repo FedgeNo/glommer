@@ -129,12 +129,12 @@ class HashtagGraph {
 
     buildEdges(edges) {
         const weights = edges.map((edge) => edge.weight);
-        const maxLog = Math.log(1 + Math.max(1, ...weights));
+        const max_log = Math.log(1 + Math.max(1, ...weights));
 
         this.edges = edges
             .filter((edge) => edge.a < this.count && edge.b < this.count)
             .map((edge) => {
-                const strength = Math.log(1 + edge.weight) / (maxLog || 1);
+                const strength = Math.log(1 + edge.weight) / (max_log || 1);
 
                 return {
                     a: edge.a,
@@ -161,8 +161,8 @@ class HashtagGraph {
         this.canvas.height = Math.round(this.height * ratio);
         this.context.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-        const edgeColor = getComputedStyle(this.element).getPropertyValue('--HashtagEdge').trim();
-        this.edgeColor = edgeColor || 'rgba(120, 130, 125, 0.5)';
+        const edge_color = getComputedStyle(this.element).getPropertyValue('--HashtagEdge').trim();
+        this.edgeColor = edge_color || 'rgba(120, 130, 125, 0.5)';
 
         // Keep the layout scaled to the (possibly resized) box.
         if (this.maxExtent) {
@@ -206,7 +206,7 @@ class HashtagGraph {
     // so the nodes are spaced out rather than piled together. The wheel scales
     // this.zoom on top.
     computeScale() {
-        let maxSquared = 1;
+        let max_squared = 1;
 
         for (let i = 0; i < this.count; i++) {
             const x = this.position[i * 3];
@@ -214,12 +214,12 @@ class HashtagGraph {
             const z = this.position[i * 3 + 2];
             const squared = x * x + y * y + z * z;
 
-            if (squared > maxSquared) {
-                maxSquared = squared;
+            if (squared > max_squared) {
+                max_squared = squared;
             }
         }
 
-        this.maxExtent = Math.sqrt(maxSquared);
+        this.maxExtent = Math.sqrt(max_squared);
         this.baseScale = (Math.min(this.width, this.height) * 0.5 * HashtagGraph.SPREAD) / this.maxExtent;
     }
 
@@ -288,7 +288,7 @@ class HashtagGraph {
         }
 
         const temperature = this.temperature;
-        let centerX = 0, centerY = 0, centerZ = 0;
+        let center_x = 0, center_y = 0, center_z = 0;
 
         for (let i = 0; i < count; i++) {
             displacement[i * 3] -= position[i * 3] * HashtagGraph.GRAVITY;
@@ -305,20 +305,20 @@ class HashtagGraph {
             position[i * 3 + 1] += dy * limited;
             position[i * 3 + 2] += dz * limited;
 
-            centerX += position[i * 3];
-            centerY += position[i * 3 + 1];
-            centerZ += position[i * 3 + 2];
+            center_x += position[i * 3];
+            center_y += position[i * 3 + 1];
+            center_z += position[i * 3 + 2];
         }
 
         // Pin the centroid at the origin so the ball spins in place, not orbits.
-        centerX /= count;
-        centerY /= count;
-        centerZ /= count;
+        center_x /= count;
+        center_y /= count;
+        center_z /= count;
 
         for (let i = 0; i < count; i++) {
-            position[i * 3] -= centerX;
-            position[i * 3 + 1] -= centerY;
-            position[i * 3 + 2] -= centerZ;
+            position[i * 3] -= center_x;
+            position[i * 3 + 1] -= center_y;
+            position[i * 3 + 2] -= center_z;
         }
 
         this.temperature = Math.max(this.radius * 0.006, temperature * HashtagGraph.COOL);
@@ -342,8 +342,8 @@ class HashtagGraph {
 
     render() {
         const matrix = quat_to_matrix(this.orientation);
-        const centerX = this.width / 2;
-        const centerY = this.height / 2;
+        const center_x = this.width / 2;
+        const center_y = this.height / 2;
         const extent = this.maxExtent || 1;
         const fit = (this.baseScale || 1) * this.zoom;
         const position = this.position;
@@ -358,11 +358,11 @@ class HashtagGraph {
             const depth = Math.max(0, Math.min(1, (rz + extent) / (2 * extent)));
             const scale = 0.62 + depth * 0.58;
 
-            projected.push({ x: centerX + rx, y: centerY + ry, depth });
+            projected.push({ x: center_x + rx, y: center_y + ry, depth });
 
             const node = this.nodeElements[i];
             node.style.transform =
-                'translate(-50%, -50%) translate3d(' + (centerX + rx).toFixed(1) + 'px, ' + (centerY + ry).toFixed(1) + 'px, 0) scale(' + scale.toFixed(3) + ')';
+                'translate(-50%, -50%) translate3d(' + (center_x + rx).toFixed(1) + 'px, ' + (center_y + ry).toFixed(1) + 'px, 0) scale(' + scale.toFixed(3) + ')';
             node.style.opacity = (0.4 + depth * 0.6).toFixed(3);
             node.style.zIndex = String(Math.round(depth * 100));
         }

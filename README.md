@@ -1,51 +1,285 @@
 # Glommer
 
-Glommer is a self-hosted social publishing platform - posts, replies, friends, messaging, and notifications, built as a plain PHP + MySQL app with no frontend framework.
+Glommer is a self-hosted social publishing platform - posts, replies, friends,
+messaging, live notifications, hashtags, trending topics, and moderation -
+built as a plain PHP 8 + MySQL application with **no frontend framework and no
+Composer dependencies**. Everything, down to the SMTP client, the WebSocket
+daemon, and the HTML renderer, is hand-rolled.
 
-## Features
+This README is organized into numbered sections. Several messages in the
+installer (`bin/install.php`) point here by section number when a step needs
+manual follow-up - §6 for TLS, §7 for the background services, §8 for the
+trending NER environment, §9 for backups.
 
-- **Posts** - text, a title, an optional link (with an automatically-fetched title/description/image preview pulled in at compose time), or attached images/video/audio, posted through a rich-text editor with support for hashtags and math formulas
-- **Hashtags** - extract #hashtags from posts, browse public tag pages, and explore trending tags
-- **Search** - full-text search of posts at `/search`, plus user search at `/users`
-- **Replies** - threaded replies to any post, shown as a full conversation thread
-- **Likes**
-- **Friends** - friend requests (send/accept/deny/cancel), remove-friend, and a friends-only feed. Everyone's friends are public at `/users/{username}/friends` (with pending/sent request sections)
-- **Users** - find people by username/display name, plus friend-of-friend suggestions ranked by mutual friends
-- **Messaging** - direct conversations with other users
-- **Live messaging** - conversations update in real time over a WebSocket connection when the other person replies
-- **Notifications** - live-updating via WebSocket (toast pop-ups, unseen-count dot) for likes, replies, friend requests/acceptances, messages, and media-processing results (a post going live, or files that couldn't be processed)
-- **Help** - a public, searchable help section at `/help/` (articles authored in-code, searched in-PHP)
-- **Moderation** - blocking users; reporting a specific post, message, or user; an admin/mod reports queue with content snapshots (showing the reported post/message state at report time, not what it's since been edited to)
-- **Site settings** - an admin panel for the optional Cloudflare Turnstile CAPTCHA (sign-up/sign-in bot protection), a custom favicon, and the editable Terms of Service (`/terms/`) and Privacy Policy
-- **Accounts** - signup with email verification, login/logout with "Remember me" persistent sessions, forgot/reset password (a password change logs out every other session and device), email change with verification, and account deletion
-- **RSS** - a site-wide feed at `/feed.xml` and a per-user feed at `/users/{username}/feed.xml`, auto-discoverable from the relevant pages
-- **Relative timestamps** ("3m ago") that stay correct against server time, falling back to an absolute date after 7 days
-- **Infinite scroll** for feeds, notifications, message history, and the friends/requests lists
-- **Everything AJAX** - all site updates via AJAX/JSON with minimal full-page reloads
+**Contents**
 
-## Requirements
+1. [What Glommer is](#1-what-glommer-is)
+2. [What it does](#2-what-it-does)
+3. [Architecture](#3-architecture)
+4. [Requirements](#4-requirements)
+5. [Installation](#5-installation)
+6. [HTTPS & TLS certificates](#6-https--tls-certificates)
+7. [Background services](#7-background-services)
+8. [The trending NER environment](#8-the-trending-ner-environment)
+9. [Backups](#9-backups)
+10. [Email deliverability](#10-email-deliverability)
+11. [Administration](#11-administration)
+12. [Upgrading](#12-upgrading)
+13. [Monitoring](#13-monitoring)
 
-- PHP 8.1+ with the `mysqli`, `gd`, `curl`, `dom`, `libxml`, `fileinfo`, and `mbstring` extensions (the WebSocket and upload-worker daemons also use `pcntl` and `sockets`)
-- MySQL or MariaDB
-- For video/audio uploads: `ffmpeg`, `ffprobe`, `timeout` (coreutils), and `bash` on `PATH`, with `exec()`/`shell_exec()` enabled - each transcode runs sandboxed under wall-clock, CPU, and memory limits
-- Outbound HTTPS access (for link preview fetching)
-- A web server (e.g. Apache with `mod_rewrite`) pointed at the project root, running the included `.htaccess`
-- Two long-running background processes, both **separate from the web server** and both set up for you by `bin/install.php`:
-  - `bin/websocket-server.php` - powers live notifications and messaging (the installers verify it's reachable before completing)
-  - `bin/upload-worker.php` - transcodes queued video/audio uploads at a bounded concurrency
+---
 
-## Running the WebSocket server
+## 1. What Glommer is
 
-`bin/websocket-server.php` is a stand-alone daemon (no Composer, no external libraries - hand-rolled RFC 6455 handshake/framing over plain PHP streams) that must already be running before either installer is used.
+A small, single-server social network you run yourself. One instance is one
+community: the first person to sign up becomes its administrator (§11), and
+everyone else joins from there. There is no multi-tenancy, no cloud service,
+and no external runtime dependencies to install with a package manager beyond
+PHP, a database, `ffmpeg` (for media), and - optionally - Python/spaCy for the
+trending topic extractor (§8).
 
-Recommended: a user-level systemd service (no root needed):
+It is deliberately a "boring stack, built carefully" project: procedural PHP
+page scripts, a thin class hierarchy that renders HTML through DOM (never
+string concatenation), prepared statements for every query, and two small
+long-running PHP daemons for the things a per-request model can't do (holding
+a WebSocket open, transcoding video out of band).
+
+## 2. What it does
+
+- **Posts** - a title, body, an optional link (with an auto-fetched
+  title/description/image preview), or attached images/video/audio, all
+  composed in a rich-text editor (Quill) with **hashtags**, **@mentions**, and
+  math formulas (KaTeX).
+- **Replies** - threaded conversations under any post.
+- **Likes** and **bookmarks** (bookmarks are private, and never notify).
+- **Friends** - requests (send/accept/deny/cancel), a friends-only feed, and
+  friend-of-friend suggestions ranked by mutual friends. Friend lists are
+  public at `/users/{username}/friends`.
+- **@mentions** - tag someone in a post and they're notified. Capped: a post
+  mentioning more than 10 distinct people notifies none of them and is
+  auto-flagged, since you don't have to be friends to mention someone.
+- **Hashtags** - `#tags` are extracted from posts (the first 10 per post are
+  indexed), with public tag pages at `/tags/` and a tag graph.
+- **Trending topics** - a materialized, decay-scored ranking of what people
+  are talking about, at `/trending-topics`. Entities are extracted both from
+  hashtags and, when the NER environment (§8) is installed, from post text via
+  a spaCy model (people, orgs, places, ...). Moderators can ban an entity from
+  trending.
+- **Search** - full-text post search and user search.
+- **Messaging** - direct conversations, updating **live over WebSocket** when
+  the other person replies.
+- **Notifications** - live via WebSocket (toast + unseen dot) for likes,
+  replies, mentions, friend activity, messages, and media-processing results.
+- **Accounts** - signup with email verification; login with "Remember me";
+  forgot/reset password; email change (with a revert link mailed to the old
+  address); account deletion; a **"Remembered devices"** view in Settings that
+  lists each persistent login and lets you revoke one.
+- **Two-factor authentication** - opt-in, email-based: when enabled, login
+  emails a short-lived code that must be entered to finish signing in.
+- **Google Sign-In** - optional OAuth, admin-configured.
+- **Moderation** - block users; report a post/message/user; an admin/mod
+  reports queue with content snapshots taken at report time.
+- **Site settings** (admin) - Cloudflare Turnstile CAPTCHA, SMTP relay, mail
+  "from" address, custom favicon, editable Terms of Service and Privacy Policy,
+  Google Sign-In credentials, and live status for the background services.
+- **Themes** - light, dark, sepia, midnight, and sunset, plus a mobile
+  hamburger navigation.
+- **RSS** - a site feed at `/feed.xml` and per-user feeds.
+- **Everything AJAX** - all updates go over JSON endpoints and update the DOM
+  in place; full-page reloads are rare. Every `/api/` endpoint is POST-only and
+  CSRF-protected (the one exception is the moderator media-preview stream,
+  which must be a GET resource).
+
+## 3. Architecture
+
+- **Web tier** - procedural PHP page scripts at the project root (`index.php`,
+  `login.php`, ...) and JSON endpoints under `api/`, routed by `.htaccess`.
+  Every "thing" on the site (a post, a report, a banned device) is an
+  `HTMLObject` subclass that builds its own DOM via `toDOM()`; the client
+  mirrors each one in JavaScript and rebuilds it from the JSON payload, so the
+  server never ships HTML fragments over AJAX.
+- **Database** - MySQL/MariaDB via `mysqli`, prepared statements only. The app
+  runs as a least-privilege account (`SELECT/INSERT/UPDATE/DELETE` only);
+  schema changes are done by a separate admin account, only when needed.
+- **WebSocket daemon** (`bin/websocket-server.php`) - a hand-rolled RFC 6455
+  server (no libraries) that powers live notifications and messaging. Holds no
+  database connection.
+- **Upload worker** (`bin/upload-worker.php`) - drains a disk-backed queue of
+  staged video/audio uploads, transcoding each with `ffmpeg` in an OS-sandboxed
+  subprocess, then publishing the post and notifying the author.
+- **Trending recompute** (`bin/compute-trending.php`) - periodically rescores
+  the trending table; runs on a systemd timer (§7) with a read-path self-heal
+  as a fallback.
+- **NER extractor** (`bin/ner-extract.py`) - an optional spaCy process the
+  trending pipeline shells into for named-entity extraction (§8).
+- **Installer** (`bin/install.php`) - see §5.
+
+**Key design choices**
+
+- **Foreign keys** with `ON DELETE CASCADE` enforce consistency: deleting a
+  user cascades to their posts, replies, likes, tokens, etc. in one atomic step.
+- **Prepared statements everywhere**, with every literal value bound - even
+  hardcoded ones - for defense in depth.
+- **No HTML over AJAX, no `innerHTML`**: the server renders through DOM and
+  endpoints return JSON; the client rebuilds each object with real DOM methods.
+- **Media** is transcoded out of band at bounded concurrency; each `ffmpeg` run
+  is restricted to the local-file protocol (no SSRF), format-allowlisted, and
+  capped on wall-clock/CPU/memory, with source metadata stripped.
+- **Passwords** use bcrypt (`password_hash`), transparently re-hashed to the
+  current cost on login.
+- **Static assets revalidate every load** (`Cache-Control: no-cache`) since
+  avatars/favicon are overwritten in place under stable URLs.
+
+## 4. Requirements
+
+- **PHP 8.1+** with `mysqli`, `gd`, `curl`, `dom`, `libxml`, `fileinfo`, and
+  `mbstring`. The daemons also use `pcntl` and `sockets`, and the installer's
+  lingering fallback uses `posix`.
+- **MySQL or MariaDB.**
+- **A web server** (Apache with `mod_rewrite` is the tested path) pointed at
+  the project root, serving the included `.htaccess`, over **HTTPS** (§6).
+- **For video/audio uploads**: `ffmpeg`, `ffprobe`, `timeout` (coreutils), and
+  `bash` on `PATH`, with `exec()`/`shell_exec()` enabled. Each transcode runs
+  sandboxed under wall-clock, CPU, and memory limits. If `exec()`/`shell_exec()`
+  are disabled for the web SAPI, either re-enable them (remove them from the
+  pool's `disable_functions`) or provision media handling by hand.
+- **Outbound HTTPS** (for link-preview fetching).
+- **Optional, for smarter trending**: Python 3 (with `pip`/`venv`/dev headers)
+  and a C++ compiler, so the installer can build the spaCy environment (§8).
+- **Two background daemons plus a timer**, all separate from the web server and
+  all set up for you by the installer (§7).
+
+## 5. Installation
+
+There are two equivalent guided installers - a web setup wizard and an
+interactive CLI - plus a fully manual path. All three end in the same place: a
+provisioned database, a least-privilege runtime account, and a populated
+schema.
+
+**Run the installer as root (via `sudo`) when you can.** As root it installs
+real *system* systemd services (no lingering needed), auto-installs missing
+prerequisite packages, builds the trending NER environment (§8), and relocates
+TLS certs to a readable location. Without root it falls back to user-level
+services and prints manual steps.
+
+### Web setup wizard
+
+1. Copy the project to your web root and make it writable by the web-server
+   user (the success page reminds you to restore permissions afterward).
+2. Start the WebSocket server (§7) - it runs fine with no `.env` yet.
+3. Visit the site. With no `.env`, you get a setup page: it reports any missing
+   prerequisite (fix and reload), then a form for the site URL/title/mail-from,
+   database admin credentials, and optional WebSocket TLS paths.
+4. Submit. It proves HTTPS is live, that `ServerName`/`UseCanonicalName` block
+   Host-header spoofing, generates a WebSocket TLS cert with mkcert if needed,
+   and provisions the database.
+5. Follow the success checklist: restore permissions, restart the WebSocket
+   server, and sign up - the first account becomes the administrator (§11).
+
+The setup page only appears while `.env` is absent; afterward a DB outage shows
+a maintenance page instead, so it never invites re-installation.
+
+### Interactive CLI
+
+```
+sudo php bin/install.php
+```
+
+Runs every environment check at once; offers to set up each background service
+and the backup timer when they're missing; proves HTTPS and the anti-spoofing
+config live; on a fresh box walks the same questions as the web form and writes
+`.env`; on an existing box verifies it, creates missing tables, and detects
+**schema drift** (columns/indexes/foreign keys `schema.sql` defines that the
+live tables lack). Admin DB credentials are only prompted when there's actual
+schema work; set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` to run
+non-interactively. Re-running on a healthy install changes nothing, and is the
+recommended first step after every upgrade (§12).
+
+### Manual
+
+1. Copy `.env.example` to `.env` and fill in `SITE_URL`, `SITE_TITLE`,
+   `MAIL_FROM_ADDRESS`, and the least-privilege `DB_*` credentials.
+2. As a DB admin account, create the database (`utf8mb4`/`utf8mb4_unicode_ci`),
+   load `schema.sql`, then create the runtime account with only
+   `SELECT, INSERT, UPDATE, DELETE` on it.
+3. Ensure `uploads/` is writable by the web-server user.
+4. Start the WebSocket server and upload worker (§7).
+5. `php bin/install.php` to verify/repair, then sign up.
+
+## 6. HTTPS & TLS certificates
+
+**Glommer requires HTTPS and will not serve over plain HTTP.** Both installers
+refuse an `http://` site URL, and on an installed site every plain-HTTP request
+is 301-redirected to `https://`. The CLI proves this with a real TLS connection
+to your configured hostname (never `127.0.0.1` - VirtualHost/SNI routing means
+loopback may not reach this site).
+
+**Apache anti-spoofing config (required).** Set `ServerName <your-host>[:port]`
+and `UseCanonicalName On` - at `httpd.conf`'s top level if you aren't using a
+`<VirtualHost>`, or inside the relevant `<VirtualHost>` if you are. Without
+both, the HTTPS redirect can be pointed at an attacker's host via a forged
+`Host` header. The installer sends a forged-Host request and refuses to
+continue until this is genuinely in place (set `SERVERNAME_CONFIRMED=1` to
+assert it in a non-interactive run).
+
+**Getting a certificate.** The cert lives in your web server, not in Glommer.
+
+- **Real domain** - Let's Encrypt via certbot:
+  ```
+  sudo dnf install certbot python3-certbot-apache   # or the apt equivalent
+  sudo certbot --apache -d your.domain
+  ```
+  When run as root and it can identify Apache/nginx, the installer will obtain
+  and install a cert for you - **scoped to the `<VirtualHost>`/`server` block
+  whose `ServerName`/`server_name` matches your host**, so other sites on a
+  multi-site box are never touched.
+- **localhost / development** - public CAs can't issue for localhost; use a
+  locally-trusted cert. `mkcert` is smoothest:
+  ```
+  sudo dnf install mkcert nss-tools
+  mkcert -install
+  mkcert localhost
+  ```
+  Point Apache's `SSLCertificateFile`/`SSLCertificateKeyFile` at the pair.
+  (Fedora alternative: `dnf install mod_ssl` for a self-signed cert - works,
+  but the browser warns.)
+
+**WebSocket over TLS.** Because pages are HTTPS, browsers open the daemon with
+`wss://`. Give it a cert via `WS_TLS_CERT`/`WS_TLS_KEY` in `.env` and restart
+it. Reuse your public-CA cert for a real domain; for mkcert, point both at the
+locally-trusted pair. As root the installer relocates the cert to
+`/etc/glommer` (readable by the daemon's own account) and, on a real domain,
+installs a renewal hook that re-copies the cert and restarts the daemon after
+each certbot renewal. If that hook can't be written, recopy the cert by hand
+after each renewal.
+
+## 7. Background services
+
+Glommer needs three scheduled/long-running jobs, all **separate from the web
+server**. As root, `bin/install.php` installs them as **system** systemd units
+(started on boot, run as the web-server/daemon accounts). Without root it
+installs **user-level** units and enables lingering so they survive logout.
+
+| Service | What it does | Unit |
+| --- | --- | --- |
+| WebSocket server | live notifications & messaging (§3) | `glommer-websocket.service` |
+| Upload worker | transcodes queued media (§3) | `glommer-upload-worker.service` |
+| Trending recompute | rescores trending every ~15 min | `glommer-trending.timer` |
+
+The installer offers to create, enable, and health-check each one, and keeps
+every unit in sync with its current template on each run. If it reports **"no
+usable `systemctl --user` session"** (e.g. under a bare `sudo -u` or a
+non-interactive SSH command), either re-run from a real login session, run the
+daemon under your own process manager, or run as root for system units.
+
+**Manual user-level setup** (if you're not using the installer). For each
+daemon, create `~/.config/systemd/user/<unit>` and enable it:
 
 ```ini
 # ~/.config/systemd/user/glommer-websocket.service
 [Unit]
 Description=Glommer WebSocket server
 After=network.target
-
 [Service]
 ExecStart=/usr/bin/php /path/to/glommer/bin/websocket-server.php
 Restart=always
@@ -53,7 +287,6 @@ RestartSec=2
 WatchdogSec=30
 RuntimeMaxSec=1d
 WorkingDirectory=/path/to/glommer
-
 [Install]
 WantedBy=default.target
 ```
@@ -61,216 +294,128 @@ WantedBy=default.target
 ```
 systemctl --user daemon-reload
 systemctl --user enable --now glommer-websocket.service
-loginctl enable-linger "$USER"   # keep it running after logout and start it on boot
+loginctl enable-linger "$USER"   # survive logout / start on boot
 ```
 
-The `enable-linger` step is essential on a headless server: a user-level service otherwise only runs while that user has an active login session, so without lingering the daemon stops the moment you disconnect.
+The upload worker is identical (swap the ExecStart to `bin/upload-worker.php`,
+drop `RuntimeMaxSec`). `enable-linger` is **essential on a headless server** -
+a user service otherwise stops the moment you disconnect. `WatchdogSec` lets
+systemd restart a hung event loop; `RuntimeMaxSec=1d` recycles the WS daemon
+daily. Note: the daemons load code into memory at start, so after pulling new
+code that touches a daemon (or a class it autoloads) you must
+`systemctl restart` it - a code pull alone does not reload them.
 
-The `WatchdogSec=30` line enables systemd watchdog monitoring - if the daemon's event loop hangs, systemd automatically restarts it (something a plain `Restart=always` crash restart can't catch). The `RuntimeMaxSec=1d` line causes the daemon to recycle daily, preventing slow resource growth from accumulating. The `bin/install.php` script offers to set both up automatically; if you're using a different process manager, these are optional (the daemon works fine without them).
+## 8. The trending NER environment
 
-Before `.env` exists yet (a fresh install), it runs with `config.php`'s defaults (`WS_PORT=8090`, `WS_SECRET=change-me`) - that's fine for the install-time connectivity check, since both the daemon and the installer start fresh.
+Trending (§2) always works from hashtags. For richer topics (people, orgs,
+places, ...) extracted from post text, Glommer shells into a
+[spaCy](https://spacy.io) model. This is optional: without it, trending simply
+uses hashtags, and `EntityExtractor` fails closed to that.
 
-## Running the upload worker
+Run as root, the installer builds an isolated virtualenv at
+**`/opt/glommer-ner`** - installing `python3`/`pip`/`venv`/dev-headers and a
+C++ compiler, then `spacy` + `click` + the `en_core_web_sm` model - and labels
+it for SELinux where applicable. The web-server user execs into it directly.
 
-`bin/upload-worker.php` turns queued video/audio uploads into finished posts. When someone uploads media, the web request stages the files to disk and returns immediately; this worker drains that queue in the background - transcoding each file with ffmpeg, publishing the post when it's ready, and notifying the author over the WebSocket. Uploads that need no transcoding (images) are handled inline in the request and don't touch this queue.
-
-It processes at a bounded concurrency - `UPLOAD_WORKER_CONCURRENCY` in `.env` (default 2) - so a burst of uploads can't spawn unlimited concurrent ffmpeg processes and overwhelm the host; raise it on a box with spare cores. A file whose transcode repeatedly kills the worker is dropped and the post goes live with whatever succeeded; if nothing does, the author is told the upload failed. Without this service running, staged uploads simply queue on disk until it starts.
-
-Recommended: a user-level systemd service, exactly like the WebSocket one:
-
-```ini
-# ~/.config/systemd/user/glommer-upload-worker.service
-[Unit]
-Description=Glommer media upload worker
-After=network.target
-
-[Service]
-ExecStart=/usr/bin/php /path/to/glommer/bin/upload-worker.php
-Restart=always
-RestartSec=2
-WatchdogSec=30
-WorkingDirectory=/path/to/glommer
-
-[Install]
-WantedBy=default.target
-```
+If the installer can't do it automatically (**unknown package manager**), set
+it up by hand:
 
 ```
-systemctl --user daemon-reload
-systemctl --user enable --now glommer-upload-worker.service
-loginctl enable-linger "$USER"   # same as the WebSocket service
+sudo dnf install python3 python3-pip python3-devel gcc-c++   # or your equivalent
+sudo python3 -m venv /opt/glommer-ner
+sudo /opt/glommer-ner/bin/pip install -U pip wheel spacy click
+sudo /opt/glommer-ner/bin/python -m spacy download en_core_web_sm
+# make it world-readable/executable so the web-server user can exec it:
+sudo chmod -R a+rX /opt/glommer-ner
 ```
 
-`bin/install.php` offers to set this up automatically, the same way it does the WebSocket service.
+`en_core_web_sm` and spaCy are MIT-licensed. On an SELinux-enforcing host the
+venv needs `httpd_sys_content_t`, and its compiled `.so` files need
+`textrel_shlib_t` (they use text relocation) - the installer applies both.
 
-## Installation
+## 9. Backups
 
-There are two equivalent guided installers - a web setup wizard and an interactive CLI - plus a fully manual path. All three end in the same place: a provisioned database, a least-privilege runtime account, and a populated schema.
-
-### Web setup wizard
-
-1. Clone/copy the project to your web server's document root.
-2. Make sure the web server user can write to the project root (e.g. `chmod 777 <project root>` - the success page reminds you to restore this).
-3. Start the WebSocket server (see above) - it can run with no `.env` in place yet.
-4. Visit the site in a browser. Since there's no `.env` yet, you'll land on a setup page instead of the normal site.
-   - If any environment prerequisite is missing (PHP version, extensions, `ffmpeg`, writable directories, outbound network, the WebSocket server, etc.), it's reported here - fix it and reload to retry.
-   - Otherwise you'll see a setup form, pre-filled with sensible defaults (the site URL you're visiting by, standard local-MySQL settings), asking for:
-     - **Site** - site URL, site title, and the "from" address/name used for outgoing email
-     - **Database** - host, port, database name, and credentials for a MySQL account with `CREATE`/`ALTER`/`DROP`/`CREATE USER`/`GRANT OPTION` privileges (e.g. `root`, or any admin account with those roles)
-     - **WebSocket TLS (optional)** - certificate/key paths, only needed if automatic generation fails (see step 5)
-5. Submit the form. It proves HTTPS is actually being served, that `ServerName`/`UseCanonicalName` genuinely block Host-header spoofing (the same live checks as the CLI), tries to generate a WebSocket TLS certificate with mkcert if needed, and provisions the database.
-6. Follow the numbered checklist on the success page: restore the project root's permissions (`chmod 755 <project root>`), restart the WebSocket server (`systemctl --user restart glommer-websocket`), visit the site, and create the first account (which becomes the administrator).
-
-The setup page only ever appears while `.env` doesn't exist. Once it does, a failing database connection shows a maintenance page instead - deliberately, so a database outage on an established site doesn't invite visitors to re-run the installer.
-
-### Interactive CLI
-
-Everything the web wizard does, from a terminal:
-
-```
-php bin/install.php
-```
-
-- Runs every environment check and reports all of them at once (colored, when the terminal supports it).
-- If the WebSocket server is the only thing missing, offers to write the user-level systemd unit itself (correct paths filled in), enable it, start it, and re-check - no manual unit-file editing.
-- Sets up the media upload-worker service (`glommer-upload-worker.service`) the same way when it isn't enabled, and keeps every service's unit file in sync with the current template on each run.
-- If no backup has ever completed, offers to run one now (proving the mechanism works) and, once it succeeds, set up a nightly systemd timer for it - same idea as the WebSocket unit above.
-- Proves HTTPS is actually being served (a real TLS connection to your configured hostname) and that Apache's `ServerName`/`UseCanonicalName` genuinely block Host-header spoofing (a live forged-Host-header request gets refused, not redirected).
-- With no `.env` present, walks through the same questions as the web form (with the same defaults), provisions the database/runtime account/schema, and writes `.env`.
-- With `.env` present, verifies it, creates any missing tables, and **detects schema drift** - columns, indexes, or foreign keys that `schema.sql` defines but the live tables lack (the situation after upgrading, or if an earlier installer didn't complete fully).
-- Admin credentials are prompted for only when there's actual schema work to do; set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` as environment variables to run non-interactively (e.g. from a deploy script).
-- Every self-repair offer above has a matching non-interactive opt-in, for the same kind of scripted/CI runs: `SERVERNAME_CONFIRMED=1`, `BACKUP_TIMER_CONFIRMED=1`, and `WEBSOCKET_SERVICE_CONFIRMED=1`.
-
-Re-running it on a healthy install is always safe - it changes nothing unless something is missing, and it's the recommended first step after every upgrade.
-
-### Manual
-
-1. Copy `.env.example` to `.env` and fill in `SITE_URL`, `SITE_TITLE`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`, `DB_HOST`/`DB_PORT`/`DB_DATABASE`/`DB_USERNAME`/`DB_PASSWORD` for a least-privilege database account (one with `SELECT`, `INSERT`, `UPDATE`, `DELETE` only).
-2. Create the database and load the schema as a MySQL admin account:
-   ```
-   mysql -u root -p -e "CREATE DATABASE glommer CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-   mysql -u root -p glommer < schema.sql
-   ```
-   Then create the runtime account and grant it `SELECT, INSERT, UPDATE, DELETE` on that database only - it deliberately doesn't get `CREATE`/`ALTER`/`DROP`.
-3. Make sure `uploads/` (and its subdirectories) are writable by the web server user - `bin/install.php` (below) creates them for you if missing.
-4. Start the WebSocket server and the upload worker (see above) with this `.env` already in place.
-5. Verify everything with `php bin/install.php` (see "Interactive CLI" above - on an already-configured install it acts as a pure checker/repairer).
-6. Visit the site and sign up - the first account created becomes the site's administrator.
-
-## Administration model
-
-The **first account created on a fresh install is the site's administrator** - this is how the software operates, not a convention: the admin is always `userId` 1, and admin-only actions (appointing/revoking mod status, viewing the reports queue, editing site settings) are restricted to them.
-
-## Upgrading
-
-The codebase carries a version (`GLOMMER_VERSION` in `src/init.php`) and the database records the version it was last installed or upgraded to. After pulling new code, **run `php bin/install.php`** to apply any schema changes and record the new version.
-
-If the only thing pending is DML maintenance (no missing tables, schema drift, or index migrations - the common case for most releases), the site upgrades itself silently on the first request after a deploy. Visitors see no maintenance page, and the upgrade is applied in the background with `ignore_user_abort()` in effect so a dropped connection can't interrupt it mid-migration.
-
-## Backups
-
-`bin/backup.php` backs up everything a restore needs that git doesn't hold: a gzipped `mysqldump` of the database and a tarball of `uploads/` (originals included). Each run writes a timestamped directory and can prune older backups automatically.
+`bin/backup.php` writes what a restore needs that git doesn't hold: a gzipped
+`mysqldump` and a tarball of `uploads/`, into a timestamped directory, pruning
+older runs.
 
 ```
 php bin/backup.php                 # defaults: ../glommer-backups, keep 7 days
 BACKUP_DIR=/mnt/backups/glommer BACKUP_KEEP_DAYS=14 php bin/backup.php
 ```
 
-The backup root must be **outside the project root** (the script refuses otherwise - a web-servable database dump would be a full data breach). Run it nightly with a systemd user timer:
-
-(`bin/install.php` offers to run the first backup and set up this timer - service, timer, enable, and linger - for you, the same way it does for the WebSocket service above; the steps below are for manual setup.)
+The backup root **must be outside the project root** (the script refuses
+otherwise - a web-servable DB dump is a full breach). The installer offers to
+run the first backup and schedule a nightly timer (`glommer-backup.timer`); if
+it can't (**no `systemctl --user` session**, or you declined), schedule
+`php bin/backup.php` yourself with cron or a manual systemd timer:
 
 ```ini
 # ~/.config/systemd/user/glommer-backup.service
 [Unit]
 Description=Glommer backup
-
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/php /path/to/glommer/bin/backup.php
 ```
-
 ```ini
 # ~/.config/systemd/user/glommer-backup.timer
 [Unit]
 Description=Nightly Glommer backup
-
 [Timer]
 OnCalendar=*-*-* 04:00:00
 Persistent=true
-
 [Install]
 WantedBy=timers.target
 ```
-
 ```
 systemctl --user daemon-reload
 systemctl --user enable --now glommer-backup.timer
+loginctl enable-linger "$USER"
 ```
 
-(`loginctl enable-linger "$USER"` if you haven't already - same as the WebSocket service.) To restore: create the database, `gunzip -c database.sql.gz | mysql glommer`, untar `uploads.tar.gz` into the project root, and visit the site.
+**Restore**: create the database, `gunzip -c database.sql.gz | mysql glommer`,
+untar `uploads.tar.gz` into the project root, visit the site.
 
-## Email deliverability
+## 10. Email deliverability
 
-Out of the box, mail goes through PHP's `mail()` - the local sendmail. On a typical VPS that mail has no sending reputation and lands in spam folders (or nowhere). For real deliverability, do one of the following:
+Out of the box mail goes through PHP's `mail()`, which on a typical VPS has no
+sending reputation and lands in spam. For real deliverability:
 
-1. **Use an SMTP relay** - set the host/port/username/password/encryption from the admin Site Settings page's Mail section (live, no restart needed) and Glommer speaks SMTP to it directly (Stateless, no queue - a failed send is reported immediately).
-2. **Publish SPF/DKIM/DMARC DNS records** for the domain in `MAIL_FROM_ADDRESS`, matching what your relay documents (they hand you the exact records to add). Without them, receiving servers have no reason to trust your mail, and many are configured to reject it outright.
+1. **Use an SMTP relay** - set host/port/username/password/encryption in the
+   admin Site Settings → Mail section (live, no restart). Glommer speaks SMTP
+   directly; a failed send is reported immediately.
+2. **Publish SPF/DKIM/DMARC** for the `MAIL_FROM_ADDRESS` domain, matching what
+   your relay documents.
 
-Test with a signup to a mailbox you control before launch. If sending fails outright, Glommer degrades deliberately: a signup whose verification email can't be sent is **verified automatically** instead of leaving the account stuck unverifiable.
+If sending fails outright, Glommer degrades deliberately: a signup whose
+verification email can't be sent is verified automatically rather than being
+stranded, and the admin is notified the mailer is down. If you insist on the
+native `mail()` path, you own the full self-hosted-sender checklist (a working
+local MTA, SPF, DKIM via OpenDKIM, DMARC, PTR/reverse DNS, and port-25 egress) -
+which is exactly why the relay approach is recommended.
 
-### If you keep the native `mail()` path
+## 11. Administration
 
-Using PHP's `mail()` (no SMTP relay host set) means *your own server* is the sending mail server, so you have to earn its reputation yourself with DNS - a relay normally does all of this for you. Getting it right takes work:
+The **first account created on a fresh install is the administrator** - this is
+structural, not a convention: the admin is always `userId` 1. Admin-only
+actions (appointing/revoking moderators, editing site settings, Google/Turnstile
+config) are theirs alone; general moderators can work the reports queue, ban
+users, and ban trending entities.
 
-1. **A working local MTA.** `mail()` just hands off to the local sendmail binary - something has to actually accept and relay that outbound. Install and configure Postfix (or the distro's `sendmail` / `exim` / `ssmtp` equivalent) to relay outbound.
-2. **SPF** - a TXT record on the sending domain authorizing your server's public IP, e.g. `v=spf1 ip4:YOUR.SERVER.IP -all`. Without it, receivers can't tell your server is allowed to send for the domain.
-3. **DKIM** - a signing key the receiver checks against a published public key. `mail()` does *not* sign anything itself; you need a milter like **OpenDKIM** wired into Postfix to sign outbound mail.
-4. **DMARC** - a `_dmarc` TXT record (e.g. `v=DMARC1; p=quarantine; rua=mailto:you@yourdomain`) tying SPF/DKIM together and telling receivers what to do with mail that fails both.
+## 12. Upgrading
 
-Two more that aren't DNS records you publish but matter just as much for a self-hosted sender:
+The codebase carries `GLOMMER_VERSION` (in `src/init.php`) and the database
+records the version it was last installed/upgraded to. After pulling new code,
+**run `php bin/install.php`** to apply schema changes and record the version.
+If the only pending work is DML maintenance (the common case), the site
+upgrades itself silently on the first request, protected by `ignore_user_abort()`.
+Remember to `systemctl restart` the daemons after any pull that touches their
+code (§7).
 
-- **PTR / reverse DNS** - the PTR record for your server's IP must resolve back to a hostname on your domain (and forward-confirm). You usually set this at your **hosting/IP provider**, not your domain registrar.
-- **Port 25 egress** - many providers block outbound port 25 by default on new accounts; direct-to-MX `mail()` sending is dead in the water until you get it unblocked or relay through a smarthost on an allowed port.
+## 13. Monitoring
 
-None of this is enforced or checked by Glommer - it's DNS/MTA setup on your infrastructure, outside the app. If that list reads as a lot of moving parts to get right, that's exactly why the **SMTP relay approach is recommended** - a relay provider handles all of it for you.
-
-## HTTPS (required)
-
-Glommer requires HTTPS - it will not serve over plain HTTP. Both installers refuse an `http://` site URL, and on an installed site (once `.env` exists) **every** plain-HTTP request - pages, API calls, everything - gets a 301 redirect to the `https://` version of the URL.
-
-The CLI installer doesn't just trust `SITE_URL`'s `https://` prefix - it opens a real TLS connection to your configured hostname (never `127.0.0.1`, since VirtualHost/SNI routing means loopback may not reach this site at all), verifies the certificate handshake succeeds, and uses the same test to verify Apache's `ServerName`/`UseCanonicalName` setup blocks Host-header spoofing.
-
-Apache also needs `ServerName <your-host>[:<port>]` and `UseCanonicalName On` set (at `httpd.conf`'s top level if you're not using a `<VirtualHost>`, or inside the relevant `<VirtualHost>` block if you are). Without both, the HTTPS redirect can be spoofed via a forged Host header, redirecting victims to a domain attacker controls.
-
-So getting a certificate is part of installing. The certificate itself lives in your web server, not in Glommer:
-
-- **A real domain**: Let's Encrypt via certbot is the usual path:
-
-  ```
-  sudo dnf install certbot python3-certbot-apache   # or apt equivalent
-  sudo certbot --apache -d your.domain
-  ```
-
-- **localhost / development**: public CAs can't issue for localhost, so use a locally-trusted certificate. `mkcert` is the smoothest (no browser warnings, and WebSocket-over-TLS works without fuss):
-
-  ```
-  sudo dnf install mkcert nss-tools
-  mkcert -install
-  mkcert localhost
-  ```
-
-  Point Apache's `SSLCertificateFile`/`SSLCertificateKeyFile` at the generated pair. (Fedora alternative: `dnf install mod_ssl` auto-generates a self-signed certificate - functional, but the browser shows a warning.)
-
-Since pages are https, browsers connect to the WebSocket daemon with `wss://` (WebSocket-Secure). Give the daemon the same certificate via `WS_TLS_CERT`/`WS_TLS_KEY` in `.env` and restart it. If you're using a real domain with a certificate from a public CA, you can reuse that certificate for both web and WebSocket. For localhost development with mkcert, point both at the locally-trusted pair mkcert generated.
-
-## Monitoring
-
-`/health` returns `{"ok": true}` (HTTP 200) only when PHP is serving and a real database query succeeds, and an error with HTTP 503 otherwise - point your uptime monitor at it. It deliberately bypasses the version gate, so it works even during an upgrade.
-
-## Design notes
-
-- **Foreign keys**: the content tables (`Posts`, `FeedItems`, `Likes`, `Friendships`, `Blocks`, `Messages`, `Timelines`, `RememberTokens`) carry real foreign keys with `ON DELETE CASCADE`. The system relies on these to enforce data consistency - a user deletion cascades to their posts, which cascade to replies nested under them, which cascade to likes on those replies, etc. all in one atomic transaction.
-- **Static assets revalidate on every load** (`Cache-Control: no-cache` = cache but revalidate). This is intentional: avatars and the custom favicon are overwritten in place under stable URLs, so every request checks the server for a fresher version rather than trusting an old cached copy.
-- **Media uploads** are transcoded out-of-band by the upload-worker service draining a disk-backed queue at a bounded concurrency, so an upload burst can't overwhelm the host. Each ffmpeg run is sandboxed - restricted to the local-file protocol (no SSRF), gated by a container-format allowlist, and capped on wall-clock, CPU, and memory - and source metadata is stripped from the output. A post is assembled from whatever files transcode successfully.
-- **Passwords** are hashed with bcrypt (PHP's `password_hash`), each with its own random salt stored inside the hash; on login, a hash made with an older algorithm or cost is transparently re-hashed to the current default.
+`/health` returns `{"ok": true}` (200) only when PHP is serving, a real DB
+query succeeds, and the WebSocket server and upload worker are not confirmed
+down; it returns 503 otherwise. It bypasses the version gate, so it works even
+mid-upgrade. Point an uptime monitor at it.

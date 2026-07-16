@@ -243,11 +243,14 @@ class Post {
             post.dataset.createdAt = this.createdAt;
         }
 
-        // Owner-only (rawDescriptionDelta is null for anyone else's post, per
-        // Post::toPayload()) - what the edit form needs to repopulate Quill,
-        // without a round trip for a post already on the page.
-        if (Number(this.userId) === Number(window.currentUserId) && this.rawDescriptionDelta !== null) {
-            post.dataset.descriptionDelta = this.rawDescriptionDelta;
+        // Owner-only - what the edit form needs to repopulate Quill, without a
+        // round trip for a post already on the page. Gate on ownership alone
+        // and mirror the server's `?? ''` (Post::toDOM): rawDescriptionDelta is
+        // null both for someone else's post AND for the owner's own bodyless
+        // post (a link post with no text), and that second case must still set
+        // the attribute or its Edit button goes permanently dead.
+        if (Number(this.userId) === Number(window.currentUserId)) {
+            post.dataset.descriptionDelta = this.rawDescriptionDelta || '';
             post.dataset.editTitle = this.title || '';
             post.dataset.editLinkUrl = this.linkURL || '';
             post.dataset.hasMedia = this.items.length > 0 ? '1' : '';

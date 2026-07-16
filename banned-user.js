@@ -49,6 +49,7 @@ class BannedUser {
         row.appendChild(header);
 
         const unban = document.createElement('button');
+        unban.type = 'button';
         unban.className = 'ms-auto Btn UnbanButton';
         unban.dataset.userId = this.userId;
         unban.textContent = 'Unban';

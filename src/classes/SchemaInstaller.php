@@ -151,7 +151,7 @@ SELECT `TABLE_NAME`
 
                 if (!$needs_migration && $target_default !== null) {
                     $current_default = self::columnDefault($connection, $table, $column);
-                    $needs_migration = $current_default === null || strcasecmp(trim($current_default, "'"), trim($target_default, "'")) !== 0;
+                    $needs_migration = $current_default === null || strcasecmp(trim($current_default, '\''), trim($target_default, '\'')) !== 0;
                 }
 
                 if ($needs_migration) {

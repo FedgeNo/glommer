@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * WSToken::issue() reads WS_SECRET via config.php/Env rather than taking it
- * as a parameter, so these tests putenv() a known secret first - Env::get()
- * calls getenv() directly on every call (not just once, cached), so this
- * works regardless of whether .env itself is readable in this environment.
+ * WSToken::issue() reads WS_SECRET via Config::get('WSSecret') rather than
+ * taking it as a parameter, so these tests putenv() a known secret and then
+ * Config::reload() to force config.php to be re-evaluated against the new
+ * environment (Config caches its values per process otherwise). This works
+ * regardless of whether .env itself is readable in this environment.
  * putenv() is process-global, so it deliberately leaves WS_SECRET set for
  * the rest of this test run - harmless today since no other suite reads it,
  * but worth knowing if that changes.
@@ -18,6 +19,7 @@ class WSTokenTest extends TestCase
     public function testIssueThenVerifyRoundTripsTheUserId(): void
     {
         putenv('WS_SECRET=' . self::TEST_SECRET);
+        Config::reload();
 
         $token = WSToken::issue(42);
         $user_id = WSToken::verify($token, self::TEST_SECRET);
@@ -70,10 +72,12 @@ class WSTokenTest extends TestCase
     public function testIssueReturnsEmptyStringWhenSecretUnset(): void
     {
         putenv('WS_SECRET'); // unset
+        Config::reload();
 
         $this -> assertSame('', WSToken::issue(42));
 
         // Restore for any test that happens to run after this one.
         putenv('WS_SECRET=' . self::TEST_SECRET);
+        Config::reload();
     }
 }

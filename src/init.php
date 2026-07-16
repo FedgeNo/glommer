@@ -170,14 +170,22 @@ if (!Auth::check()) {
 }
 
 if (!Auth::check() && basename($_SERVER['SCRIPT_FILENAME']) !== 'signup.php') {
-    $user_count_result = mysqli_query(Database::connection(), '
+    // Once the site has any account it always will (userId 1 is the admin and
+    // can't be deleted), so this is a one-time gate, not a per-request truth.
+    // Cache it in Settings after the first account exists and skip the
+    // COUNT(*) that would otherwise run on every logged-out request forever.
+    if (Settings::get('hasUsers') !== '1') {
+        $user_count_result = mysqli_query(Database::connection(), '
 SELECT COUNT(*) AS `count`
     FROM `Users`
 ');
 
-    if ((int) mysqli_fetch_assoc($user_count_result)['count'] === 0) {
-        header('Location: ' . ServerURL::absolute('/signup'));
-        exit;
+        if ((int) mysqli_fetch_assoc($user_count_result)['count'] === 0) {
+            header('Location: ' . ServerURL::absolute('/signup'));
+            exit;
+        }
+
+        Settings::set('hasUsers', '1');
     }
 }
 

@@ -45,6 +45,7 @@ class MainNavigation extends HTMLObject
             if (Auth::canModerate()) {
                 $account_menu_links[] = new Anchor(ServerURL::absolute('/admin/reports'), 'Reports');
                 $account_menu_links[] = new Anchor(ServerURL::absolute('/admin/banned'), 'Banned Users');
+                $account_menu_links[] = new Anchor(ServerURL::absolute('/admin/banned-entities'), 'Banned Entities');
             }
 
             // Site-wide settings (e.g. the Turnstile keys) are the primary

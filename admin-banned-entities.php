@@ -13,7 +13,6 @@ if (!Auth::canModerate()) {
 
 $page = Page::create('Banned Trending Entities');
 
-$page -> addContent(new Anchor(ServerURL::absolute('/admin/banned'), 'Banned users'));
 $page -> addContent(new BannedTrendingEntitiesList());
 
 $page -> send();

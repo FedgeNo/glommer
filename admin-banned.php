@@ -13,9 +13,6 @@ if (!Auth::canModerate()) {
 
 $page = Page::create('Banned Users');
 
-// Linked at the top, above the infinite-scroll list, so the trending-entities
-// view stays reachable without scrolling to the end of the banned users.
-$page -> addContent(new Anchor(ServerURL::absolute('/admin/banned-entities'), 'Banned trending entities'));
 $page -> addContent(new BannedUserSearch());
 $page -> addContent(BannedUserList::page());
 

@@ -53,7 +53,7 @@ $healthy = true;
 // src/init.php - init's connection-failure path renders the maintenance page
 // with a 200, which would read as healthy.
 try {
-    mysqli_query(Database::connection(), '
+    mysqli_query(DB::connection(), '
 SELECT 1
 ');
 } catch (\Throwable $exception) {

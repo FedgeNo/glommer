@@ -17,7 +17,7 @@ class Report
         $snapshot = self::buildSnapshot($target_type, $target_id);
         $snapshot_json = $snapshot !== null ? json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapshot`)
     VALUES (?, ?, ?, ?, ?)
 ');
@@ -59,7 +59,7 @@ INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapsh
 
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `reportsDismissed`
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
@@ -90,7 +90,7 @@ SELECT `reportsDismissed`
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
         $dismissed = 1;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `' . $table . '`
     SET `reportsDismissed` = ?
     WHERE `' . $id_column . '` = ?
@@ -155,7 +155,7 @@ UPDATE `' . $table . '`
      */
     private static function snapshotRow(string $table, string $id_column, int $id): ?array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
@@ -171,7 +171,7 @@ SELECT *
      */
     private static function attachmentIds(int $post_id): array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `itemId`
     FROM `FeedItems`
     WHERE `postId` = ?
@@ -198,7 +198,7 @@ SELECT `itemId`
      */
     public static function backfillSnapshots(): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $select = mysqli_prepare($mysqli, '
 SELECT `reportId`, `targetType`, `targetId`
@@ -253,7 +253,7 @@ UPDATE `Reports`
 
         $id_column = $target_type === 'post' ? 'postId' : 'messageId';
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT 1
     FROM `' . $table . '`
     WHERE `' . $id_column . '` = ?
@@ -277,7 +277,7 @@ SELECT 1
      */
     public static function rowsForAdmin(int $limit, ?int $before_report_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
 
         if ($before_report_id !== null) {
@@ -324,7 +324,7 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
      */
     public static function find(int $report_id): ?array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `targetType`, `targetId`
     FROM `Reports`
     WHERE `reportId` = ?
@@ -342,7 +342,7 @@ SELECT `targetType`, `targetId`
 
     public static function delete(int $report_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `Reports`
     WHERE `reportId` = ?
@@ -368,7 +368,7 @@ DELETE
 
     protected static function postAuthorId(int $post_id): ?int
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `userId`
     FROM `Posts`
     WHERE `postId` = ?
@@ -383,7 +383,7 @@ SELECT `userId`
 
     protected static function messageAuthorId(int $message_id): ?int
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `senderId`
     FROM `Messages`
     WHERE `messageId` = ?

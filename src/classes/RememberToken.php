@@ -29,7 +29,7 @@ class RememberToken
         $validator = bin2hex(random_bytes(32));
         $validator_hash = hash('sha256', $validator);
         $ttl_days = self::TTL_DAYS;
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $user_agent = substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null;
         $ip_address = ServerURL::clientIP();
         $created_at = $carried_created_at ?? date('Y-m-d H:i:s');
@@ -90,7 +90,7 @@ DELETE
 
         [$selector, $validator] = explode(':', $cookie, 2);
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
     FROM `RememberTokens`
     WHERE `selector` = ? AND `expiresAt` > NOW()
@@ -143,7 +143,7 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
         if (is_string($cookie) && str_contains($cookie, ':')) {
             [$selector] = explode(':', $cookie, 2);
 
-            $stmt = mysqli_prepare(Database::connection(), '
+            $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `RememberTokens`
     WHERE `selector` = ?
@@ -162,7 +162,7 @@ DELETE
      */
     public static function purgeForUser(int $user_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `RememberTokens`
     WHERE `userId` = ?
@@ -181,7 +181,7 @@ DELETE
      */
     public static function rowsForUser(int $user_id): array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
     FROM `RememberTokens`
     WHERE `userId` = ? AND `expiresAt` > NOW()
@@ -231,7 +231,7 @@ SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress
      */
     public static function revoke(int $token_id, int $user_id): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `RememberTokens`
     WHERE `tokenId` = ? AND `userId` = ?
@@ -244,7 +244,7 @@ DELETE
 
     private static function deleteToken(int $token_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `RememberTokens`
     WHERE `tokenId` = ?

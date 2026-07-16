@@ -269,7 +269,7 @@ class Post extends HTMLObject
      */
     public static function delete(int $post_id): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         // Collect the post plus all descendant replies, since the row DELETE
         // cascades through them and their media files would otherwise be
@@ -350,7 +350,7 @@ DELETE
      */
     public static function globalFeedRows(int $limit, ?int $before_post_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
@@ -440,7 +440,7 @@ SELECT `Posts`.*
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `parentId`, COUNT(*) AS `replyCount`
     FROM `Posts`
     WHERE `parentId` IN (' . $placeholders . ')
@@ -471,7 +471,7 @@ SELECT `parentId`, COUNT(*) AS `replyCount`
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `postId`, COUNT(*) AS `likeCount`
     FROM `Likes`
     WHERE `postId` IN (' . $placeholders . ')
@@ -502,7 +502,7 @@ SELECT `postId`, COUNT(*) AS `likeCount`
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `postId`
     FROM `Likes`
     WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')

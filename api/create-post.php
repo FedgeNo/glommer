@@ -15,7 +15,7 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 
 // If the whole request body exceeded post_max_size, PHP has already thrown away
 // $_POST and $_FILES before this script ran. Catch that here so an oversized

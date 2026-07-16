@@ -32,7 +32,7 @@ class TwoFactor
     {
         $flag = $enabled ? 1 : 0;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `twoFactorEnabled` = ?
     WHERE `userId` = ?
@@ -64,7 +64,7 @@ UPDATE `Users`
 
         // One active code per user: ON DUPLICATE KEY UPDATE overwrites the
         // previous code, resets its attempt counter, and restarts the clock.
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 INSERT INTO `TwoFactorCodes` (`userId`, `codeHash`, `expiresAt`, `attempts`)
     VALUES (?, ?, NOW() + INTERVAL ? MINUTE, ?)
     ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `expiresAt` = VALUES(`expiresAt`), `attempts` = ?, `createdAt` = NOW()
@@ -97,7 +97,7 @@ It expires in ' . self::CODE_TTL_MINUTES . ' minutes. If you didn\'t just try to
      */
     public static function verifyCode(int $user_id, string $code): bool
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 SELECT `codeId`, `codeHash`, `attempts`
@@ -137,7 +137,7 @@ UPDATE `TwoFactorCodes`
 
     private static function clear(int $user_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `TwoFactorCodes`
     WHERE `userId` = ?

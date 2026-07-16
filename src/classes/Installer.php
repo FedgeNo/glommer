@@ -80,7 +80,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 
         // Seed any initial settings (e.g. Turnstile keys entered in setup) now
         // that the Settings table exists. The admin connection runs this - the
-        // runtime account and the Database::connection() singleton aren't set up
+        // runtime account and the DB::connection() singleton aren't set up
         // yet at install time.
         foreach ($initial_settings as $setting_name => $setting_value) {
             $stmt = mysqli_prepare($admin_connection, '
@@ -149,10 +149,10 @@ INSERT INTO `Settings` (`name`, `value`)
                 // current schema created directly - the incremental drift/type
                 // migrations and data backfills only make sense against an
                 // already-installed database, so they're skipped here.
-                $fresh = SchemaInstaller::isFreshInstall(Database::connection());
-                $missing_tables = SchemaInstaller::missingTables(Database::connection());
-                $drift = $fresh ? [] : SchemaInstaller::missingDefinitions(Database::connection());
-                $needed_index_migrations = $fresh ? [] : SchemaInstaller::neededIndexMigrations(Database::connection());
+                $fresh = SchemaInstaller::isFreshInstall(DB::connection());
+                $missing_tables = SchemaInstaller::missingTables(DB::connection());
+                $drift = $fresh ? [] : SchemaInstaller::missingDefinitions(DB::connection());
+                $needed_index_migrations = $fresh ? [] : SchemaInstaller::neededIndexMigrations(DB::connection());
             } catch (\mysqli_sql_exception | \RuntimeException $exception) {
                 return false;
             }
@@ -211,7 +211,7 @@ INSERT INTO `Settings` (`name`, `value`)
             // version isn't bumped and the next request retries the rest.
             if (!$fresh) {
                 try {
-                    PostDeltaBackfill::run(Database::connection());
+                    PostDeltaBackfill::run(DB::connection());
                     // Backfill report snapshots now that the column exists (same
                     // race-safe/idempotent guarantees).
                     Report::backfillSnapshots();
@@ -223,7 +223,7 @@ INSERT INTO `Settings` (`name`, `value`)
                 }
             }
 
-            SchemaInstaller::runMaintenance(Database::connection());
+            SchemaInstaller::runMaintenance(DB::connection());
             Settings::set('appVersion', self::codeVersion());
 
             return true;

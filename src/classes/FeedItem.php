@@ -64,7 +64,7 @@ class FeedItem extends HTMLObject
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `FeedItems`
     WHERE `postId` IN (' . $placeholders . ')

@@ -15,7 +15,7 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];

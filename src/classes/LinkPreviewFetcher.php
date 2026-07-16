@@ -58,7 +58,7 @@ class LinkPreviewFetcher
      */
     private static function cachedMetadata(string $url): ?array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `title`, `description`, `imageURL`, `succeeded`
     FROM `LinkPreviews`
     WHERE `url` = ?
@@ -452,7 +452,7 @@ SELECT `title`, `description`, `imageURL`, `succeeded`
 
     private static function storeCache(string $url, ?array $metadata, bool $fetch_succeeded): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         // "succeeded" tracks whether the FETCH worked, not whether it found
         // metadata - a successful fetch of a page with no metadata still

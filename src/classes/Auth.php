@@ -28,7 +28,7 @@ class Auth
      */
     public static function verifyCredentials(string $identifier, string $password): ?User
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `Users`
     WHERE `username` = ? OR `email` = ?
@@ -68,7 +68,7 @@ SELECT *
         $new_hash = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            $stmt = mysqli_prepare(Database::connection(), '
+            $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `passwordHash` = ?
     WHERE `userId` = ?

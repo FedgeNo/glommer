@@ -45,7 +45,7 @@ class Hashtag
     {
         $tags = array_slice(Delta::hashtags($ops), 0, self::MAX_HASHTAGS);
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $clear_stmt = mysqli_prepare($mysqli, '
 DELETE
@@ -86,7 +86,7 @@ UPDATE `Posts`
             return;
         }
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         foreach ($tags as $tag) {
             $tag_stmt = mysqli_prepare($mysqli, '
@@ -150,7 +150,7 @@ UPDATE `Posts`
      */
     public static function postRows(string $tag, int $limit, ?int $before_post_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
@@ -208,7 +208,7 @@ SELECT `Posts`.*
     {
         $not_banned = 0;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -236,7 +236,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
         $not_banned = 0;
         $days = 7;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
@@ -267,7 +267,7 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
      */
     public static function graphData(int $limit): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $not_banned = 0;
 
         $node_stmt = mysqli_prepare($mysqli, '
@@ -357,7 +357,7 @@ SELECT `a`.`hashtagId` AS `aId`, `b`.`hashtagId` AS `bId`, COUNT(*) AS `weight`
      */
     public static function backfill(): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $result = mysqli_query($mysqli, '
 SELECT `postId`, `descriptionDelta`

@@ -36,7 +36,7 @@ if (strlen($password) < 8) {
     $errors[] = 'Password must be at most 72 characters.';
 }
 
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 $rate_key = 'signup:' . (ServerURL::clientIP() ?? 'unknown');
 
 if ($errors === []) {

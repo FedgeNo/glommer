@@ -17,7 +17,7 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 $query = trim((string) ($payload['q'] ?? ''));
 
 if ($query === '') {

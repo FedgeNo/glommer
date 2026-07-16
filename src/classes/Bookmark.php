@@ -14,7 +14,7 @@ class Bookmark
      */
     public static function toggle(int $user_id, int $post_id): bool
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $check_stmt = mysqli_prepare($mysqli, '
 SELECT 1
@@ -69,7 +69,7 @@ INSERT INTO `Bookmarks` (`postId`, `userId`)
 
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `postId`
     FROM `Bookmarks`
     WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')
@@ -99,7 +99,7 @@ SELECT `postId`
      */
     public static function rowsForUser(int $user_id, int $limit, ?string $before_created_at = null, ?int $before_post_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 

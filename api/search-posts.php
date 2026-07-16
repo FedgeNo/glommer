@@ -27,7 +27,7 @@ if ($query === '') {
     JSONResponse::success(['posts' => [], 'hasMore' => false]) -> send();
 }
 
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 $limit = 20;
 $fetch_limit = $limit + 1;
 $not_banned = 0;

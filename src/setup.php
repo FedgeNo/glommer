@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-// This script is reached whenever Database::connection() fails. If .env
+// This script is reached whenever DB::connection() fails. If .env
 // already exists, that means an ESTABLISHED install whose database is down
 // or misconfigured - not a fresh one. Never show the setup wizard in that
 // state: it writes .env, so exposing it during an outage would let any

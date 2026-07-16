@@ -15,7 +15,7 @@ class CurrentUser extends User
         }
 
         if (self::$cachedRow === null) {
-            $mysqli = Database::connection();
+            $mysqli = DB::connection();
             $user_id = Auth::id();
 
             $stmt = mysqli_prepare($mysqli, '

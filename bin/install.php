@@ -3963,7 +3963,7 @@ if ($legacy_smtp_env_keys !== []) {
 // first so bad .env credentials surface as this friendly message, rather than
 // an uncaught mysqli_sql_exception thrown from deep inside a Settings::set().
 try {
-    Database::connection();
+    DB::connection();
 } catch (\mysqli_sql_exception $exception) {
     fail('Could not connect to the database with the credentials in .env: ' . $exception -> getMessage());
 }

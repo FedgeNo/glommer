@@ -115,7 +115,7 @@ class Mention
      */
     private static function mentionedUserIds(int $post_id): array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `userId`
     FROM `PostMentions`
     WHERE `postId` = ?
@@ -135,7 +135,7 @@ SELECT `userId`
 
     private static function clear(int $post_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `PostMentions`
     WHERE `postId` = ?
@@ -153,7 +153,7 @@ DELETE
             return;
         }
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         foreach ($user_ids as $user_id) {
             $stmt = mysqli_prepare($mysqli, '
@@ -181,7 +181,7 @@ INSERT IGNORE INTO `PostMentions` (`postId`, `userId`)
 
         $placeholders = implode(', ', array_fill(0, count($usernames), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `userId`
     FROM `Users`
     WHERE `username` IN (' . $placeholders . ')

@@ -39,7 +39,7 @@ This link expires in 1 hour. If you did not request this, you can ignore this em
     {
         $token_hash = hash('sha256', $token);
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `userId`
     FROM `PasswordResets`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
@@ -60,7 +60,7 @@ SELECT `userId`
             return false;
         }
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $hash = password_hash($new_password, PASSWORD_DEFAULT);
 
         $update_stmt = mysqli_prepare($mysqli, '
@@ -90,7 +90,7 @@ DELETE
 
     private static function create(int $user_id): string
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
         $expiry_hours = 1;

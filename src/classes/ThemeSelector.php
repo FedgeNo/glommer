@@ -20,7 +20,7 @@ class ThemeSelector extends HTMLObject
     {
         // Always the current user's preference - fetched here rather than
         // handed in, the same way anything needing the DB connection calls
-        // Database::connection() itself.
+        // DB::connection() itself.
         $selected = Auth::user() ?-> theme ?? 'system';
 
         $label = new Label();

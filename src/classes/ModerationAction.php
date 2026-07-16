@@ -15,7 +15,7 @@ class ModerationAction
     {
         $moderator_id = (int) Auth::id();
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 INSERT INTO `ModerationActions` (`moderatorId`, `action`, `targetUserId`, `targetType`, `targetId`, `reportId`)
     VALUES (?, ?, ?, ?, ?, ?)
 ');

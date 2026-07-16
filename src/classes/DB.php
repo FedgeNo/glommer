@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Database
+class DB
 {
     private static ?\mysqli $connection = null;
 

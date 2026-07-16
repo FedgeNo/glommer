@@ -163,7 +163,7 @@ class GoogleAuth
      */
     public static function resolveUser(string $email, ?string $name): ?User
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 SELECT *
@@ -260,7 +260,7 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
         }
 
         $base = substr($base, 0, 24);
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $candidate = $base;
 
         for ($attempt = 0; $attempt < 50; $attempt++) {

@@ -64,7 +64,7 @@ class Message extends HTMLObject
      */
     public static function delete(int $message_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `Messages`
     WHERE `messageId` = ?
@@ -99,7 +99,7 @@ DELETE
      */
     public static function rowsBetween(int $user_a, int $user_b, int $limit, ?int $before_message_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
 
         // No cursor means "from the newest" - a sentinel above any real

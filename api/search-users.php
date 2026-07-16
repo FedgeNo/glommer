@@ -18,7 +18,7 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 
 $query = trim((string) ($payload['q'] ?? ''));
 $before_user_id = (int) ($payload['beforeUserId'] ?? 0);

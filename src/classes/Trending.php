@@ -80,7 +80,7 @@ class Trending
             self::recompute();
         }
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount`
     FROM `TrendingEntities`
     ORDER BY `score` DESC
@@ -180,7 +180,7 @@ SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount
             }
         }
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $computed_at = date('Y-m-d H:i:s', $now);
 
         foreach ($stats as $entity) {
@@ -232,7 +232,7 @@ DELETE
      */
     public static function ban(string $entity_type, string $entity_value, int $moderator_id, ?string $reason): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $ban_stmt = mysqli_prepare($mysqli, '
 INSERT INTO `BannedTrendingEntities` (`entityType`, `entityValue`, `bannedBy`, `reason`)
@@ -261,7 +261,7 @@ DELETE
 
     public static function unban(string $entity_type, string $entity_value): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `BannedTrendingEntities`
     WHERE `entityType` = ? AND `entityValue` = ?
@@ -274,7 +274,7 @@ DELETE
 
     public static function isBanned(string $entity_type, string $entity_value): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT 1
     FROM `BannedTrendingEntities`
     WHERE `entityType` = ? AND `entityValue` = ?
@@ -295,7 +295,7 @@ SELECT 1
      */
     public static function bannedEntities(): array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityValue`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`username` AS `bannedByUsername`
     FROM `BannedTrendingEntities`
     JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
@@ -325,7 +325,7 @@ SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityVa
      */
     private static function bannedKeys(): array
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `entityType`, `entityValue`
     FROM `BannedTrendingEntities`
 ');

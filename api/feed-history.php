@@ -34,7 +34,7 @@ if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 $limit = 20;
 
 if ($feed_type === 'friends') {

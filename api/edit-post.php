@@ -15,7 +15,7 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 
 // api_post() (main.js) sends a JSON body, not form-encoded - $_POST is
 // empty for this request, same as api/delete.php.

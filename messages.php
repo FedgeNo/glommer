@@ -14,7 +14,7 @@ if ($username === '') {
 
     $not_banned = 0;
 
-    $conversations_stmt = mysqli_prepare(Database::connection(), '
+    $conversations_stmt = mysqli_prepare(DB::connection(), '
 SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, MAX(`m`.`createdAt`) AS `lastMessageAt`
     FROM `Messages` `m`
     JOIN `Users` `u` ON `u`.`userId` = IF(`m`.`senderId` = ?, `m`.`recipientId`, `m`.`senderId`)

@@ -229,7 +229,7 @@ class UploadBatch
             return;
         }
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $title_value = $metadata['title'] !== null && $metadata['title'] !== '' ? $metadata['title'] : null;
         $description_value = $metadata['description'] !== null && $metadata['description'] !== '' ? $metadata['description'] : null;

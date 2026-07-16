@@ -143,7 +143,7 @@ class Notification extends HTMLObject
      */
     public static function rowsForUser(int $user_id, int $limit, ?int $before_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
 
         if ($before_id !== null) {
@@ -192,7 +192,7 @@ SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisp
             return;
         }
 
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
@@ -286,7 +286,7 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
      */
     public static function hasRecentOfType(int $user_id, string $type, int $within): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `type`
     FROM `Notifications`
     WHERE `userId` = ?
@@ -315,7 +315,7 @@ SELECT `type`
     {
         $no_notifications_fallback = 0;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `lastNotificationId` = (
         SELECT COALESCE(MAX(`notificationId`), ?)

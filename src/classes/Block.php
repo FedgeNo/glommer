@@ -9,7 +9,7 @@ class Block
      */
     public static function exists(int $user_a, int $user_b): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT 1
     FROM `Blocks`
     WHERE (`blockerId` = ? AND `blockedId` = ?) OR (`blockerId` = ? AND `blockedId` = ?)
@@ -26,7 +26,7 @@ SELECT 1
      */
     public static function blockedBy(int $blocker_id, int $blocked_id): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT 1
     FROM `Blocks`
     WHERE `blockerId` = ? AND `blockedId` = ?
@@ -43,7 +43,7 @@ SELECT 1
      */
     public static function create(int $blocker_id, int $blocked_id): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         // Reuse the one unfriend path so blocking a friend adjusts both
         // friendCounts and clears their timeline cross-entries exactly the way
@@ -73,7 +73,7 @@ INSERT IGNORE INTO `Blocks` (`blockerId`, `blockedId`)
      */
     public static function remove(int $blocker_id, int $blocked_id): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `Blocks`
     WHERE `blockerId` = ? AND `blockedId` = ?

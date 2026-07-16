@@ -6,7 +6,7 @@ class RateLimiter
 {
     public static function tooManyAttempts(string $rate_key, int $max_attempts, int $window_seconds): bool
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         // Serialize the check-then-record window per key. Without this, two
         // concurrent requests can both read a count below the limit before
@@ -37,7 +37,7 @@ SELECT COUNT(*) AS `count`
 
     public static function recordAttempt(string $rate_key): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 INSERT INTO `RateLimitAttempts` (`rateKey`)

@@ -24,7 +24,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 5, 900)) {
 if ($email !== '') {
     RateLimiter::recordAttempt($rate_key);
 
-    $mysqli = Database::connection();
+    $mysqli = DB::connection();
     $stmt = mysqli_prepare($mysqli, '
 SELECT *
     FROM `Users`

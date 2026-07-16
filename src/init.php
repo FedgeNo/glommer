@@ -64,7 +64,7 @@ session_start();
 SecurityHeaders::send();
 
 try {
-    Database::connection();
+    DB::connection();
 } catch (\mysqli_sql_exception $exception) {
     require __DIR__ . '/setup.php';
     exit;
@@ -175,7 +175,7 @@ if (!Auth::check() && basename($_SERVER['SCRIPT_FILENAME']) !== 'signup.php') {
     // Cache it in Settings after the first account exists and skip the
     // COUNT(*) that would otherwise run on every logged-out request forever.
     if (Settings::get('hasUsers') !== '1') {
-        $user_count_result = mysqli_query(Database::connection(), '
+        $user_count_result = mysqli_query(DB::connection(), '
 SELECT COUNT(*) AS `count`
     FROM `Users`
 ');

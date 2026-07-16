@@ -21,7 +21,7 @@ class Friendship
      */
     public static function statusBetween(int $user_a, int $user_b): ?self
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `Friendships`
     WHERE (`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?)
@@ -45,7 +45,7 @@ SELECT *
     {
         $accepted_status = 'accepted';
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 DELETE
     FROM `Friendships`
     WHERE `status` = ? AND ((`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?))

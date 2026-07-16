@@ -41,7 +41,7 @@ $page -> addContent($profile_user);
 $limit = 20;
 $fetch_limit = $limit + 1;
 
-$feed_stmt = mysqli_prepare(Database::connection(), '
+$feed_stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `Posts`
     WHERE `parentId` IS NULL AND `userId` = ?

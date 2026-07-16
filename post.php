@@ -7,7 +7,7 @@ require __DIR__ . '/src/init.php';
 $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 $post_id = (int) ($_GET['id'] ?? 0);
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 
 $stmt = mysqli_prepare($mysqli, '
 SELECT *

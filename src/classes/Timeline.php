@@ -19,7 +19,7 @@ class Timeline
      */
     public static function fanOutPost(int $author_id, int $post_id): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $recipient_ids = [$author_id, ...self::friendIds($author_id)];
 
@@ -48,7 +48,7 @@ INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
      */
     public static function backfillFriendship(int $user_a, int $user_b): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
@@ -70,7 +70,7 @@ INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
      */
     public static function removeCrossEntries(int $user_a, int $user_b): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 DELETE `Timelines`
@@ -93,7 +93,7 @@ DELETE `Timelines`
      */
     public static function rowsForUser(int $user_id, int $limit, ?int $before_post_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $fetch_limit = $limit + 1;
         $not_banned = 0;
 
@@ -144,7 +144,7 @@ SELECT `Posts`.*
      */
     private static function friendIds(int $user_id): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $accepted_status = 'accepted';
 
         $stmt = mysqli_prepare($mysqli, '

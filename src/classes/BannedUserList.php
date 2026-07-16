@@ -48,7 +48,7 @@ class BannedUserList extends HTMLObject
      */
     public static function fetch(int $limit, ?int $before_user_id = null): array
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $banned = 1;
 
         if ($before_user_id !== null) {

@@ -20,7 +20,7 @@ if ($parent_id === 0 || $before_post_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 $limit = 20;
 $fetch_limit = $limit + 1;
 $not_banned = 0;

@@ -146,7 +146,7 @@ class User extends HTMLObject
 
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `Users`
     WHERE `userId` IN (' . $placeholders . ')
@@ -166,7 +166,7 @@ SELECT *
 
     public static function loadByUsername(string $username): ?self
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `Users`
     WHERE `username` = ?
@@ -188,7 +188,7 @@ SELECT *
      */
     public static function byUsername(string $username): ?OtherUser
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT *
     FROM `Users`
     WHERE `username` = ?
@@ -216,7 +216,7 @@ SELECT *
     {
         $accepted_status = 'accepted';
         $not_banned = 0;
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         // No cursor means "from the newest" - a sentinel above any real
         // friendshipId keeps it one query instead of a cursorless duplicate.
@@ -284,7 +284,7 @@ UNION ALL
     {
         $pending_status = 'pending';
         $not_banned = 0;
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         if ($before_friendship_id !== null) {
             $stmt = mysqli_prepare($mysqli, '
@@ -331,7 +331,7 @@ SELECT `f`.`friendshipId`, `u`.*
     {
         $pending_status = 'pending';
         $not_banned = 0;
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         if ($before_friendship_id !== null) {
             $stmt = mysqli_prepare($mysqli, '
@@ -376,7 +376,7 @@ SELECT `f`.`friendshipId`, `u`.*
      */
     public static function atFriendCap(int $user_id): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `friendCount`
     FROM `Users`
     WHERE `userId` = ?
@@ -398,7 +398,7 @@ SELECT `friendCount`
     {
         $accepted_status = 'accepted';
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `friendCount` = (
         SELECT COUNT(*)
@@ -421,7 +421,7 @@ UPDATE `Users`
      */
     public static function bumpSessionVersion(int $user_id): int
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         $stmt = mysqli_prepare($mysqli, '
 UPDATE `Users`
@@ -449,7 +449,7 @@ SELECT `sessionVersion`
      */
     public static function incrementFriendCounts(int $user_a, int $user_b): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `friendCount` = `friendCount` + 1
     WHERE `userId` = ? OR `userId` = ?
@@ -464,7 +464,7 @@ UPDATE `Users`
      */
     public static function decrementFriendCounts(int $user_a, int $user_b): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `friendCount` = `friendCount` - 1
     WHERE (`userId` = ? OR `userId` = ?) AND `friendCount` > 0
@@ -540,7 +540,7 @@ UPDATE `Users`
         $friend_placeholders = implode(', ', array_fill(0, count($friend_ids), '?'));
         $excluded_placeholders = implode(', ', array_fill(0, count($excluded_ids), '?'));
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `candidateId`, COUNT(*) AS `mutualCount`
     FROM (
         SELECT `f`.`addresseeId` AS `candidateId`
@@ -598,7 +598,7 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
         $not_banned = 0;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `u`.*
     FROM `Users` `u`
     WHERE `u`.`userId` IN (' . $placeholders . ') AND `u`.`banned` = ?
@@ -629,7 +629,7 @@ SELECT `u`.*
     {
         $not_banned = 0;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `u`.*
     FROM `Users` `u`
     WHERE `u`.`userId` != ? AND `u`.`banned` = ?
@@ -676,7 +676,7 @@ SELECT `u`.*
      */
     public static function delete(int $user_id): void
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
 
         // Every post this user authored, plus (via the parentId cascade)
         // every reply nested under them - the same graph-walk Post::delete()

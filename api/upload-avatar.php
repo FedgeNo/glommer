@@ -15,7 +15,7 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 
 // Each upload decodes and resizes an attacker-controlled image (real CPU/
 // memory work) - cap it so the endpoint can't be used for resource

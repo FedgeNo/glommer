@@ -17,7 +17,7 @@ class Settings
     {
         if (!array_key_exists($name, self::$cache)) {
             try {
-                $stmt = mysqli_prepare(Database::connection(), '
+                $stmt = mysqli_prepare(DB::connection(), '
 SELECT `value`
     FROM `Settings`
     WHERE `name` = ?
@@ -43,7 +43,7 @@ SELECT `value`
 
     public static function set(string $name, string $value): void
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 INSERT INTO `Settings` (`name`, `value`)
     VALUES (?, ?)
     ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)

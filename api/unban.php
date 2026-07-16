@@ -14,7 +14,7 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
-$mysqli = Database::connection();
+$mysqli = DB::connection();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $user_id = (int) ($payload['userId'] ?? 0);

@@ -62,7 +62,7 @@ This link expires in 24 hours.';
 
     public static function verify(string $token): ?int
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $token_hash = hash('sha256', $token);
 
         $stmt = mysqli_prepare($mysqli, '
@@ -98,7 +98,7 @@ DELETE
     {
         $verified = 1;
 
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 UPDATE `Users`
     SET `verified` = ?
     WHERE `userId` = ?
@@ -109,7 +109,7 @@ UPDATE `Users`
 
     private static function create(int $user_id): string
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
         $expiry_hours = 24;

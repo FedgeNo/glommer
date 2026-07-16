@@ -58,7 +58,7 @@ This link expires in 30 days.';
      */
     public static function isReserved(string $email): bool
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT 1
     FROM `EmailChangeReverts`
     WHERE `previousEmail` = ? AND `expiresAt` > NOW()
@@ -80,7 +80,7 @@ SELECT 1
      */
     public static function consume(string $token): bool
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $token_hash = hash('sha256', $token);
 
         $stmt = mysqli_prepare($mysqli, '
@@ -154,7 +154,7 @@ DELETE
 
     private static function create(int $user_id, string $previous_email): string
     {
-        $mysqli = Database::connection();
+        $mysqli = DB::connection();
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
         // Unlike a password reset or email verification link (both expected

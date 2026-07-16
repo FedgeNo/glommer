@@ -21,7 +21,7 @@ class ParentPostLink extends HTMLObject
 
     public static function fromParentId(int $parent_id): ?self
     {
-        $stmt = mysqli_prepare(Database::connection(), '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`

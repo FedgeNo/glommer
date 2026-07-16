@@ -6,25 +6,24 @@ class NotificationsNavLink extends Div
 {
     public ?string $class = 'NotificationsNavLink';
 
-    /** @var Notification[] */
-    public array $rows;
-
+    public int $userId;
     public int $lastNotificationId;
 
-    public function __construct(array $rows, int $last_notification_id)
+    public function __construct(int $user_id, int $last_notification_id)
     {
         parent::__construct();
 
-        $this -> rows = $rows;
+        $this -> userId = $user_id;
         $this -> lastNotificationId = $last_notification_id;
     }
 
     public function toDOM(): \DOMElement
     {
-        // The newest of the (already newest-first) recent rows, if any -
-        // all that's needed to know whether there's something unseen right now.
-        $newest_id = $this -> rows !== [] ? (int) $this -> rows[0] -> notificationId : 0;
-        $has_unseen = $newest_id > $this -> lastNotificationId;
+        $dropdown = new NotificationDropdown(['userId' => $this -> userId]);
+
+        // Its newest notification is all that's needed to know whether there's
+        // something unseen right now.
+        $has_unseen = $dropdown -> newestId() > $this -> lastNotificationId;
 
         $this -> addContent(new Anchor(ServerURL::absolute('/notifications'), 'Notifications'));
 
@@ -32,7 +31,7 @@ class NotificationsNavLink extends Div
         $dot -> class = 'NotificationDot' . ($has_unseen ? ' Active' : '');
         $this -> addContent($dot);
 
-        $this -> addContent(new NotificationDropdown($this -> rows));
+        $this -> addContent($dropdown);
 
         return parent::toDOM();
     }

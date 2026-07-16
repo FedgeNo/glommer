@@ -6,19 +6,26 @@ class NotificationDropdown extends Div
 {
     public ?string $class = 'NotificationDropdown Card';
 
-    /** @var Notification[] */
-    public array $rows;
+    public ?int $userId = null;
 
-    public function __construct(array $rows)
+    private RecentNotificationList $list;
+
+    public function __construct(array|object|null $properties = null)
     {
-        parent::__construct();
+        parent::__construct($properties);
 
-        $this -> rows = $rows;
+        $this -> list = new RecentNotificationList(['userId' => $this -> userId]);
+    }
+
+    /** The newest notification's id, for the nav's unseen dot. */
+    public function newestId(): int
+    {
+        return $this -> list -> newestId();
     }
 
     public function toDOM(): \DOMElement
     {
-        $this -> contents[] = NotificationList::fromRows($this -> rows, false);
+        $this -> contents[] = $this -> list;
         $this -> contents[] = new Anchor(ServerURL::absolute('/notifications'), 'Show All');
 
         return parent::toDOM();

@@ -2,42 +2,61 @@
 
 declare(strict_types=1);
 
+/**
+ * A user's notifications, fetched straight into its contents at construction
+ * (new NotificationList(['userId' => 5])) and paginated by infinite scroll off
+ * the data-* attributes toDOM sets. The nav's smaller, non-paginated variant is
+ * RecentNotificationList, which just fixes a lower count.
+ */
 class NotificationList extends Div
 {
+    public const PAGE_SIZE = 20;
+
     public ?string $class = 'NotificationList d-flex flex-column gap-1';
 
-    public ?int $oldestNotificationId = null;
-    public bool $hasMore = false;
+    public ?int $userId = null;
 
-    public function toDOM(): \DOMElement
+    public function __construct(array|object|null $properties = null)
     {
-        if ($this -> oldestNotificationId !== null) {
-            $this -> attributes['data-oldest-notification-id'] = (string) $this -> oldestNotificationId;
-        }
+        parent::__construct($properties);
 
-        $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
-
-        return parent::toDOM();
+        $this -> contents = DB::rows('
+SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
+    FROM `Notifications` `n`
+    JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
+    WHERE `n`.`userId` = ?
+    ORDER BY `n`.`notificationId` DESC
+    LIMIT ?
+', 'Notification', 'ii', (int) $this -> userId, static::PAGE_SIZE + 1);
     }
 
     /**
-     * @param Notification[] $rows newest first.
+     * The newest notification's id, or 0 if there are none - the nav's unseen
+     * dot compares this against the user's lastNotificationId.
      */
-    public static function fromRows(array $rows, bool $has_more): self
+    public function newestId(): int
     {
-        $list = new self();
+        return $this -> contents !== [] ? (int) $this -> contents[0] -> notificationId : 0;
+    }
 
-        if ($rows === []) {
-            $list -> addContent(new Notice('No notifications yet.'));
+    public function toDOM(): \DOMElement
+    {
+        // One extra was fetched so a leftover signals another page; drop it back
+        // off once it's told us there's more.
+        $has_more = count($this -> contents) > static::PAGE_SIZE;
 
-            return $list;
+        if ($has_more) {
+            array_pop($this -> contents);
         }
 
-        $list -> oldestNotificationId = (int) $rows[count($rows) - 1] -> notificationId;
-        $list -> hasMore = $has_more;
+        if ($this -> contents === []) {
+            $this -> addContent(new Notice('No notifications yet.'));
+        } else {
+            $this -> attributes['data-oldest-notification-id'] = (string) $this -> contents[count($this -> contents) - 1] -> notificationId;
+        }
 
-        $list -> addContents($rows);
+        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
 
-        return $list;
+        return parent::toDOM();
     }
 }

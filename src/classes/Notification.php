@@ -125,45 +125,6 @@ class Notification extends HTMLObject
         ], $notifications);
     }
 
-    /**
-     * Fetches $limit + 1 rows so an extra leftover row (if present) signals more
-     * history without a separate count query.
-     *
-     * @return array{rows: self[], hasMore: bool}
-     */
-    public static function rowsForUser(int $user_id, int $limit, ?int $before_id = null): array
-    {
-        $fetch_limit = $limit + 1;
-
-        if ($before_id !== null) {
-            $rows = DB::rows('
-SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
-    FROM `Notifications` `n`
-    JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
-    WHERE `n`.`userId` = ? AND `n`.`notificationId` < ?
-    ORDER BY `n`.`notificationId` DESC
-    LIMIT ?
-', 'Notification', 'iii', $user_id, $before_id, $fetch_limit);
-        } else {
-            $rows = DB::rows('
-SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
-    FROM `Notifications` `n`
-    JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
-    WHERE `n`.`userId` = ?
-    ORDER BY `n`.`notificationId` DESC
-    LIMIT ?
-', 'Notification', 'ii', $user_id, $fetch_limit);
-        }
-
-        $has_more = count($rows) > $limit;
-
-        if ($has_more) {
-            array_pop($rows);
-        }
-
-        return ['rows' => $rows, 'hasMore' => $has_more];
-    }
-
     public static function create(int $user_id, int $actor_id, string $type, ?int $post_id = null, bool $allow_self = false): void
     {
         if ($user_id === $actor_id && !$allow_self) {

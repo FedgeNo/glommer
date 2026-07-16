@@ -34,8 +34,7 @@ class MainNavigation extends HTMLObject
             ];
 
             $this -> addContent(new NavDropdown($brand, $main_menu_links));
-            $recent_notifications = Notification::rowsForUser((int) $current_user -> userId, 5);
-            $site_links -> addContent(new NotificationsNavLink($recent_notifications['rows'], $current_user -> lastNotificationId));
+            $site_links -> addContent(new NotificationsNavLink((int) $current_user -> userId, (int) $current_user -> lastNotificationId));
 
             $account_menu_links = [
                 new Anchor(ServerURL::absolute('/settings'), 'Settings'),

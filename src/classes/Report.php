@@ -244,7 +244,7 @@ SELECT 1
      * reportId of the last report already seen as $before_report_id; omit it
      * for the first page. Returns $limit rows plus a hasMore flag (fetches one
      * extra to detect a next page without a second count query), the same shape
-     * as Post::globalFeedRows / Notification::rowsForUser. The reportId cursor
+     * as Post::globalFeedRows. The reportId cursor
      * stays correct even as reports are dismissed out of the queue underneath
      * the moderator - a page may just return fewer rows.
      *

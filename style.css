@@ -272,11 +272,11 @@ p a:hover {
     box-shadow: var(--shadow-card);
 }
 
-.Thread {
+.Post {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.Thread.Card:hover {
+.Post.Card:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-pop);
 }
@@ -1047,8 +1047,8 @@ input[type='file']::file-selector-button {
     color: var(--ink);
 }
 
-.Post > h3,
-.Post > a > h3 {
+.PostContent > h3,
+.PostContent > a > h3 {
     margin-top: 0.5rem;
     /* Break an unbroken run-on (no spaces) rather than letting it overflow;
        normal text still wraps at word boundaries. */
@@ -1096,16 +1096,13 @@ input[type='file']::file-selector-button {
     border-radius: var(--radius-ctl);
 }
 
-.Thread .ImageItem,
-.Thread .VideoItem,
-.Thread .AudioItem,
-.PostPage .ImageItem,
-.PostPage .VideoItem,
-.PostPage .AudioItem {
+.Post .ImageItem,
+.Post .VideoItem,
+.Post .AudioItem {
     height: 50vh;
 }
 
-.Thread .PostBody {
+.Post .PostBody {
     max-height: 50vh;
     overflow-y: auto;
 }
@@ -1163,8 +1160,8 @@ input[type='file']::file-selector-button {
     border-top: 1px solid var(--hairline);
 }
 
-/* While the inline edit form is open (inserted directly after .Post, ahead of
-   .PostActionBar in the DOM - see main.js's .EditButton handler), a second
+/* While the inline edit form is open (inserted directly after .PostContent,
+   ahead of .PostActionBar in the DOM - see main.js's .EditButton handler), a second
    click on Edit is already a harmless no-op - hide it so it doesn't sit there
    doing nothing. */
 .PostEditForm ~ .PostActionBar .EditButton {

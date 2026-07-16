@@ -77,7 +77,7 @@ DELETE `Timelines`
      * Fetches $limit + 1 rows so an extra leftover row (if present) signals more
      * history without a separate count query. Returns raw Posts rows, same
      * shape as a direct Posts query, so callers can hand them straight to
-     * Post::fromRowsWithItems()/Thread::fromRows().
+     * Post::withItemsAndCounts().
      *
      * @return array{rows: Post[], hasMore: bool}
      */

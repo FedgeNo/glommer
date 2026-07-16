@@ -82,7 +82,12 @@ if ($post -> parentId !== null) {
     }
 }
 
-$page -> addContent(PostPage::fromPost($post));
+// The permalink shows this one post in full: description untruncated, and its
+// action bar's Delete redirects home rather than removing a card in place.
+$post -> standalone = true;
+$post -> truncateDescription = false;
+
+$page -> addContent($post);
 
 if ($current_user !== null) {
     $page -> addContent(new ReplyComposer($post_id));

@@ -12,8 +12,8 @@ $site_title = Config::get('siteTitle');
 
 $feed = new RSSFeed($site_title, ServerURL::absolute('/'), $site_title . ' - a place to publish.');
 
-foreach (Thread::fromRows($feed_rows) as $thread) {
-    $feed -> addItem(RSSItem::fromPost($thread -> post));
+foreach (Post::fromRowsWithItems($feed_rows) as $post) {
+    $feed -> addItem(RSSItem::fromPost($post));
 }
 
 $feed -> send();

@@ -51,7 +51,7 @@ class FeedList extends Div
         $list -> oldestPostId = (int) $rows[count($rows) - 1] -> postId;
         $list -> hasMore = $has_more;
 
-        $list -> addContents(Thread::fromRows($rows));
+        $list -> addContents(Post::withItemsAndCounts($rows));
 
         return $list;
     }

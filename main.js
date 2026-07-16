@@ -1312,23 +1312,23 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const thread = button.closest('.Thread');
+    const card = button.closest('.Post');
 
-    if (thread) {
-        thread.remove();
+    if (card) {
+        card.remove();
     }
 });
 
 /**
  * Post editing is entirely client-built (no PHP EditPostForm/SSR counterpart
  * needed - it never appears except through this interaction, same as
- * show_confirm()'s dialog). Clicking Edit hides the .Post content in place
+ * show_confirm()'s dialog). Clicking Edit hides the .PostContent in place
  * and inserts a small form with its own .QuillEditor, pre-populated from the
  * data-description-delta/data-edit-title/data-edit-link-url attributes
- * Post::toDOM()/toPayload() only ever include for the viewer's own posts.
- * Saving replaces just the .Post element with a freshly built one (post.js's
- * postElement(), same as post creation) - the surrounding .Thread/.PostPage
- * wrapper and its PostActionBar (reply/like counts, unaffected by an edit)
+ * Post::contentElement()/toPayload() only ever include for the viewer's own
+ * posts. Saving replaces just the .PostContent element with a freshly built
+ * one (post.js's postElement(), same as post creation) - the surrounding
+ * .Post card and its PostActionBar (reply/like counts, unaffected by an edit)
  * are left alone.
  */
 document.addEventListener('click', (event) => {
@@ -1338,8 +1338,8 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    const wrapper = button.closest('.Thread, .PostPage');
-    const post_element = wrapper ? wrapper.querySelector('.Post') : null;
+    const wrapper = button.closest('.Post');
+    const post_element = wrapper ? wrapper.querySelector('.PostContent') : null;
 
     if (!post_element || post_element.dataset.descriptionDelta === undefined) {
         return;
@@ -1441,7 +1441,7 @@ document.addEventListener('click', (event) => {
 
     form.remove();
 
-    if (post_element && post_element.classList.contains('Post')) {
+    if (post_element && post_element.classList.contains('PostContent')) {
         post_element.style.display = '';
     }
 });
@@ -1480,7 +1480,7 @@ document.addEventListener('submit', async (event) => {
     const updated_post = Post.fromData(result);
     const new_post_element = updated_post.postElement();
 
-    if (post_element && post_element.classList.contains('Post')) {
+    if (post_element && post_element.classList.contains('PostContent')) {
         post_element.replaceWith(new_post_element);
     }
 

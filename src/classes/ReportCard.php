@@ -231,6 +231,13 @@ class ReportCard extends HTMLObject
             return $quote;
         }
 
+        // A reported post is embedded as its bare content (no card, no action
+        // bar) - a moderator reviews it, they don't like/reply/bookmark from
+        // the report queue.
+        if ($this -> targetData instanceof Post) {
+            return $this -> targetData -> contentElement();
+        }
+
         if ($this -> targetData instanceof HTMLObject) {
             return $this -> targetData;
         }

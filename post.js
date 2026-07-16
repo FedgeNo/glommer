@@ -223,11 +223,11 @@ class Post {
     }
 
     // The bare .Post element (byline + title/media/body, no action bar),
-    // mirroring the server-side Post::toDOM. toElement() wraps this in a Thread
-    // with the action bar; a ReportCard embeds it on its own.
+    // mirroring the server-side Post::contentElement(). toElement() wraps this
+    // in the .Post card with the action bar; a ReportCard embeds it on its own.
     postElement() {
         const post = document.createElement('div');
-        post.className = 'Post';
+        post.className = 'PostContent';
         post.dataset.postId = this.postId;
         post.dataset.authorId = this.userId;
 
@@ -301,10 +301,10 @@ class Post {
     }
 
     toElement() {
-        const thread = document.createElement('div');
-        thread.className = 'Thread Card MountIn';
+        const card = document.createElement('div');
+        card.className = 'Post Card MountIn';
 
-        thread.appendChild(this.postElement());
+        card.appendChild(this.postElement());
 
         // Mirrors the server-side PostActionBar: reply link when it's useful,
         // like button when logged in, and delete only on your own posts
@@ -371,10 +371,10 @@ class Post {
 
         meta.appendChild(actions);
 
-        thread.appendChild(meta);
+        card.appendChild(meta);
 
-        this.element = thread;
+        this.element = card;
 
-        return thread;
+        return card;
     }
 }

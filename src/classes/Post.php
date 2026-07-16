@@ -7,7 +7,7 @@ class Post extends HTMLObject
     protected const DESCRIPTION_SUMMARY_MAX_LENGTH = 160;
 
     public string $tagName = 'div';
-    public ?string $class = 'Post';
+    public ?string $class = 'Post Card';
 
     public ?int $postId = null;
     public ?int $userId = null;
@@ -44,26 +44,77 @@ class Post extends HTMLObject
     // and sort order. Null everywhere else.
     public ?string $bookmarkedAt = null;
 
+    // The engagement counts the action bar shows, batch-attached for a whole
+    // page at once by withItemsAndCounts(). Null on a bare Post (e.g. a report
+    // snapshot) rendered with showActions off, where the bar - and these - are
+    // never used; the action bar falls back to its own per-post lookups when a
+    // count is null but a bar is still shown (a one-off standalone post).
+    public ?int $replyCount = null;
+    public ?int $likeCount = null;
+    public ?bool $liked = null;
+    public ?bool $bookmarked = null;
+
+    // The permalink shows one focused post: its Delete redirects home rather
+    // than removing a card in place (PostActionBar reads this). standalone
+    // pages also render the description untruncated (truncateDescription off).
+    public bool $standalone = false;
+
+    // A report snapshot embeds only the post's content, no action bar; every
+    // feed/permalink render leaves this on so the bar appears.
+    public bool $showActions = true;
+
     public function toDOM(): \DOMElement
     {
+        $this -> contents[] = $this -> contentElement();
+
+        // A report snapshot embeds the content alone; every feed/permalink post
+        // carries its action bar (like/reply/bookmark/edit/delete/report).
+        if ($this -> showActions) {
+            $action_bar = new PostActionBar();
+            $action_bar -> postId = (int) $this -> postId;
+            $action_bar -> postUserId = (int) $this -> userId;
+            $action_bar -> postUsername = $this -> author ?-> username;
+            $action_bar -> replyCount = $this -> replyCount;
+            $action_bar -> likeCount = $this -> likeCount;
+            $action_bar -> liked = $this -> liked;
+            $action_bar -> bookmarked = $this -> bookmarked;
+            $action_bar -> standalone = $this -> standalone;
+
+            $this -> contents[] = $action_bar;
+        }
+
+        return parent::toDOM();
+    }
+
+    /**
+     * The post's content on its own - byline, media/link, title, body - as a
+     * .PostContent element, without the surrounding card or action bar. The
+     * feed/permalink card (toDOM) wraps this plus an action bar; a report
+     * snapshot and the client-side edit swap render just this piece.
+     */
+    public function contentElement(): HTMLObject
+    {
+        $content = new Div();
+        $content -> class = 'PostContent';
+
         if ($this -> postId !== null) {
-            $this -> attributes['data-post-id'] = (string) $this -> postId;
+            $content -> attributes['data-post-id'] = (string) $this -> postId;
         }
 
         if ($this -> parentId !== null) {
-            $this -> attributes['data-parent-id'] = (string) $this -> parentId;
+            $content -> attributes['data-parent-id'] = (string) $this -> parentId;
         }
 
         if ($this -> userId !== null) {
-            $this -> attributes['data-author-id'] = (string) $this -> userId;
+            $content -> attributes['data-author-id'] = (string) $this -> userId;
         }
 
         if ($this -> keywords !== null) {
-            $this -> attributes['data-keywords'] = $this -> keywords;
+            $content -> attributes['data-keywords'] = $this -> keywords;
         }
 
         if ($this -> createdAt !== null) {
-            $this -> attributes['data-created-at'] = $this -> createdAt;
+            $content -> attributes['data-created-at'] = $this -> createdAt;
         }
 
         // The raw, untruncated Delta an edit needs to repopulate Quill -
@@ -74,19 +125,19 @@ class Post extends HTMLObject
         // client reads it and feeds it straight to Quill.setContents(), no
         // HTML crosses the wire.
         if ($this -> userId !== null && Auth::id() === $this -> userId) {
-            $this -> attributes['data-description-delta'] = $this -> descriptionDelta ?? '';
-            $this -> attributes['data-edit-title'] = $this -> title ?? '';
-            $this -> attributes['data-edit-link-url'] = $this -> linkURL ?? '';
+            $content -> attributes['data-description-delta'] = $this -> descriptionDelta ?? '';
+            $content -> attributes['data-edit-title'] = $this -> title ?? '';
+            $content -> attributes['data-edit-link-url'] = $this -> linkURL ?? '';
 
             // The edit form hides the Link field for a media post: attached
             // media and a link are mutually exclusive (api/edit-post.php
             // enforces the same XOR create-post.php always has), and a media
             // post never had a link to begin with, so there's nothing to edit.
-            $this -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
+            $content -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
         }
 
         if ($this -> author !== null) {
-            $this -> contents[] = $this -> authorByline();
+            $content -> contents[] = $this -> authorByline();
         }
 
         if ($this -> linkURL !== null) {
@@ -99,7 +150,7 @@ class Post extends HTMLObject
                 }
             }
 
-            $this -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description, $link_image);
+            $content -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description, $link_image);
         } else {
             if ($this -> title !== null) {
                 $heading = new Heading3();
@@ -108,9 +159,9 @@ class Post extends HTMLObject
                 if ($this -> postId !== null && $this -> author !== null) {
                     $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
                     $title_link -> addContent($heading);
-                    $this -> contents[] = $title_link;
+                    $content -> contents[] = $title_link;
                 } else {
-                    $this -> contents[] = $heading;
+                    $content -> contents[] = $heading;
                 }
             }
 
@@ -121,19 +172,19 @@ class Post extends HTMLObject
             if (count($this -> items) > 1) {
                 $carousel = new Carousel();
                 $carousel -> items = $this -> items;
-                $this -> contents[] = $carousel;
+                $content -> contents[] = $carousel;
             } elseif (count($this -> items) === 1) {
-                $this -> contents[] = $this -> items[0];
+                $content -> contents[] = $this -> items[0];
             }
 
             if ($this -> descriptionDelta !== null) {
-                $this -> contents[] = $this -> truncateDescription
+                $content -> contents[] = $this -> truncateDescription
                     ? $this -> summarizedDescription()
                     : $this -> fullDescription();
             }
         }
 
-        return parent::toDOM();
+        return $content;
     }
 
     protected function hasVisualMedia(): bool
@@ -401,6 +452,42 @@ SELECT `Posts`.*
         foreach ($posts as $post) {
             $post -> items = $items_by_post[(int) $post -> postId] ?? [];
             $post -> author = $authors[(int) $post -> userId] ?? null;
+        }
+
+        return $posts;
+    }
+
+    /**
+     * A whole page of feed-ready Posts: items and authors (fromRowsWithItems)
+     * plus the engagement counts the action bar shows, every lookup batched
+     * into one query rather than a handful per post. This is what a feed list
+     * fetches straight into its contents.
+     *
+     * @param self[] $posts
+     * @return self[]
+     */
+    public static function withItemsAndCounts(array $posts): array
+    {
+        $posts = self::fromRowsWithItems($posts);
+
+        if ($posts === []) {
+            return [];
+        }
+
+        $post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
+
+        $reply_counts = self::replyCountsForPosts($post_ids);
+        $like_counts = self::likeCountsForPosts($post_ids);
+        $liked = Auth::check() ? self::likedByUserForPosts($post_ids, (int) Auth::id()) : [];
+        $bookmarked = Auth::check() ? Bookmark::bookmarkedByUserForPosts($post_ids, (int) Auth::id()) : [];
+
+        foreach ($posts as $post) {
+            $post_id = (int) $post -> postId;
+
+            $post -> replyCount = $reply_counts[$post_id] ?? 0;
+            $post -> likeCount = $like_counts[$post_id] ?? 0;
+            $post -> liked = $liked[$post_id] ?? false;
+            $post -> bookmarked = $bookmarked[$post_id] ?? false;
         }
 
         return $posts;

@@ -245,38 +245,6 @@ SELECT 1
     }
 
     /**
-     * Every standing entity ban, newest first, for the moderation view that
-     * lists and lifts them - joined to the banning moderator's username so the
-     * "who" is shown, not just a bannedBy id.
-     *
-     * @return array<int, array{entityType: string, entityValue: string, reason: ?string, bannedByUsername: string, createdAt: string}>
-     */
-    public static function bannedEntities(): array
-    {
-        $stmt = DB::run('
-SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityValue`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`username` AS `bannedByUsername`
-    FROM `BannedTrendingEntities`
-    JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
-    ORDER BY `BannedTrendingEntities`.`createdAt` DESC
-');
-        $result = mysqli_stmt_get_result($stmt);
-
-        $rows = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = [
-                'entityType' => (string) $row['entityType'],
-                'entityValue' => (string) $row['entityValue'],
-                'reason' => $row['reason'],
-                'bannedByUsername' => (string) $row['bannedByUsername'],
-                'createdAt' => (string) $row['createdAt'],
-            ];
-        }
-
-        return $rows;
-    }
-
-    /**
      * @return array<string, true> "$type\0$value" => true, same case-folded
      *   key shape recompute()'s $stats array uses.
      */

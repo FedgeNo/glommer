@@ -29,9 +29,7 @@ class TrendingSection extends Div
         $list = new Div();
         $list -> class = 'TrendingEntities d-flex flex-wrap gap-2';
 
-        foreach ($entities as $entity) {
-            $list -> addContent($entity);
-        }
+        $list -> addContents($entities);
 
         $this -> addContent($list);
     }

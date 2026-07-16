@@ -36,9 +36,7 @@ class NotificationList extends Div
         $list -> oldestNotificationId = (int) $rows[count($rows) - 1] -> notificationId;
         $list -> hasMore = $has_more;
 
-        foreach ($rows as $notification) {
-            $list -> addContent($notification);
-        }
+        $list -> addContents($rows);
 
         return $list;
     }

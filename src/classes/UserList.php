@@ -22,9 +22,7 @@ abstract class UserList extends HTMLObject
         if ($this -> items === []) {
             $this -> contents[] = new Notice($this -> emptyMessage);
         } else {
-            foreach ($this -> items as $item) {
-                $this -> contents[] = $item;
-            }
+            $this -> addContents($this -> items);
         }
 
         return parent::toDOM();

@@ -42,9 +42,7 @@ class BookmarkList extends Div
         $list -> oldestBookmarkCreatedAt = $oldest_bookmark_created_at;
         $list -> oldestBookmarkPostId = $oldest_bookmark_post_id;
 
-        foreach (Thread::fromRows($rows) as $thread) {
-            $list -> addContent($thread);
-        }
+        $list -> addContents(Thread::fromRows($rows));
 
         return $list;
     }

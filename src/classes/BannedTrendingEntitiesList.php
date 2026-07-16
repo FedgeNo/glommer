@@ -13,16 +13,15 @@ class BannedTrendingEntitiesList extends Div
 
     public function toDOM(): \DOMElement
     {
-        $rows = Trending::bannedEntities();
+        $this -> addContents(DB::rows('
+SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityValue`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`username` AS `bannedByUsername`
+    FROM `BannedTrendingEntities`
+    JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
+    ORDER BY `BannedTrendingEntities`.`createdAt` DESC
+', 'BannedTrendingEntity'));
 
-        if ($rows === []) {
+        if ($this -> contents === []) {
             $this -> addContent(new Notice('No banned trending entities.'));
-
-            return parent::toDOM();
-        }
-
-        foreach ($rows as $row) {
-            $this -> addContent(new BannedTrendingEntity($row));
         }
 
         return parent::toDOM();

@@ -36,9 +36,7 @@ class UserSearch extends HTMLObject
         // once a typed query gets a paginated result set of its own.
         $results -> attributes['data-has-more'] = '0';
 
-        foreach ($this -> suggestions as $suggestion) {
-            $results -> addContent($suggestion);
-        }
+        $results -> addContents($this -> suggestions);
 
         $this -> contents[] = $results;
 

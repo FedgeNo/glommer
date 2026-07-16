@@ -80,9 +80,7 @@ SELECT *
         if ($this -> items === []) {
             $this -> contents[] = new Notice('No banned users.');
         } else {
-            foreach ($this -> items as $item) {
-                $this -> contents[] = $item;
-            }
+            $this -> addContents($this -> items);
         }
 
         return parent::toDOM();

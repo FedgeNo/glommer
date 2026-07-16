@@ -33,6 +33,14 @@ class HTMLObject
 
         if ($properties !== null) {
             foreach (is_array($properties) ? $properties : get_object_vars($properties) as $name => $value) {
+                // Never copy in the CSS class (each object derives its own from
+                // its type) or the contents (each builds its own children) -
+                // handing a wider source, e.g. a whole page, must not clobber
+                // either of those on the object being seeded.
+                if ($name === 'class' || $name === 'contents') {
+                    continue;
+                }
+
                 if (property_exists($this, $name)) {
                     $this -> $name = $value;
                 }

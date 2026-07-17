@@ -147,7 +147,7 @@ body {
 }
 
 body:has(.MainNavigation) {
-    padding-top: calc(var(--nav-height) + var(--page-title-height) + 1.5rem);
+    padding-top: calc(var(--nav-height) + var(--page-title-height));
 }
 
 .PageBody {
@@ -249,7 +249,7 @@ p a:hover {
 .ReplyList,
 .BookmarkList,
 .NotificationList,
-.UserList,
+.UserItems,
 .BannedUserList,
 .BannedTrendingEntitiesList,
 .RememberedDevicesList,
@@ -258,6 +258,12 @@ p a:hover {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+/* The inner user <ul>; its cards space themselves via the .Card margin. */
+.UserItems {
+    display: flex;
+    flex-direction: column;
 }
 
 /* ---------- Focus & motion ---------- */
@@ -1241,7 +1247,6 @@ input[type='file']::file-selector-button {
 .User {
     display: flex;
     align-items: flex-start;
-    gap: 0.85rem;
 }
 
 .UserMain {
@@ -1249,7 +1254,6 @@ input[type='file']::file-selector-button {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
 .UserBio {
@@ -1322,13 +1326,11 @@ input[type='file']::file-selector-button {
     height: 4.5rem;
 }
 
-.FriendRequest {
-    gap: 0.5rem;
-}
-
 .UserList {
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .UserSearchBox,
@@ -1361,7 +1363,6 @@ input[type='file']::file-selector-button {
 .BannedUserList {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
     margin-top: 0.75rem;
 }
 
@@ -1389,8 +1390,6 @@ input[type='file']::file-selector-button {
 .HelpSearchResults {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 1rem;
 }
 
 .HelpCategory h2 {
@@ -1400,7 +1399,6 @@ input[type='file']::file-selector-button {
 .HelpArticleList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    gap: 0.75rem;
 }
 
 .HelpArticleSummary {

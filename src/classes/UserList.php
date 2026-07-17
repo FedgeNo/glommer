@@ -12,7 +12,7 @@ declare(strict_types=1);
  * and the scroll handler in main.js drives all three generically off the data-*
  * attributes and the shared .UserList marker.
  */
-abstract class UserList extends ItemList
+abstract class UserList extends Section
 {
     public const PAGE_SIZE = 20;
 
@@ -57,15 +57,21 @@ abstract class UserList extends ItemList
             $this -> attributes['data-oldest-friendship-id'] = (string) $this -> items[count($this -> items) - 1] -> friendshipId;
         }
 
+        // A titled section: the H2 heading, then the users as their own <ul>.
         $heading = new Heading2();
         $heading -> contents[] = $this -> heading;
         $this -> contents[] = $heading;
 
+        $items = new ItemList();
+        $items -> class = 'UserItems';
+
         if ($this -> items === []) {
-            $this -> contents[] = new Notice($this -> emptyMessage);
+            $items -> contents[] = new Notice($this -> emptyMessage);
         } else {
-            $this -> addContents($this -> items);
+            $items -> addContents($this -> items);
         }
+
+        $this -> contents[] = $items;
 
         return parent::toDOM();
     }

@@ -721,7 +721,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const title_height = page_title ? page_title.offsetHeight : 0;
-            document.body.style.paddingTop = (nav_height + title_height) + 'px';
         };
 
         update_layout();
@@ -1517,8 +1516,9 @@ document.addEventListener('click', async (event) => {
             const friends_list = document.querySelector('.UserList[data-list-type="friends"]');
 
             if (friends_list) {
-                friends_list.querySelector('.Notice')?.remove();
-                friends_list.querySelector('h2').after(new_card);
+                const friends_items = friends_list.querySelector('.UserItems');
+                friends_items.querySelector('.Notice')?.closest('li')?.remove();
+                friends_items.prepend(list_item(new_card));
             }
 
             card.remove();
@@ -2078,7 +2078,7 @@ document.addEventListener('submit', async (event) => {
 
         const message = Message.fromData(result);
         const element = message.toElement();
-        list.appendChild(element);
+        list.appendChild(list_item(element));
         render_math(element);
 
         body_input.value = '';
@@ -2156,7 +2156,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_messages = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     const height_before_spinner = document.body.scrollHeight;
     list.insertBefore(spinner, list.firstChild);
@@ -2190,7 +2190,7 @@ window.addEventListener('scroll', async () => {
 
         for (const message_data of messages) {
             const element = Message.fromData(message_data).toElement();
-            list.insertBefore(element, spinner);
+            list.insertBefore(list_item(element), spinner);
             render_math(element);
         }
 
@@ -2229,7 +2229,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_notifications = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     list.appendChild(spinner);
 
@@ -2257,7 +2257,7 @@ window.addEventListener('scroll', async () => {
         }
 
         notifications.forEach((notification_data) => {
-            list.insertBefore(Notification.fromData(notification_data).toElement(), spinner);
+            list.insertBefore(list_item(Notification.fromData(notification_data).toElement()), spinner);
         });
 
         list.dataset.oldestNotificationId = notifications[notifications.length - 1].notificationId;
@@ -2289,7 +2289,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_reports = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     list.appendChild(spinner);
 
@@ -2318,7 +2318,7 @@ window.addEventListener('scroll', async () => {
 
         reports.forEach((report_data) => {
             const card = ReportCard.fromData(report_data).toElement();
-            list.insertBefore(card, spinner);
+            list.insertBefore(list_item(card), spinner);
             // A reported post/message can contain math - render it (formula
             // embeds and typed delimiters) the same as the feed does.
             render_math(card);
@@ -2386,7 +2386,7 @@ function handle_incoming_notification(notification_data) {
             existing[existing.length - 1].remove();
         }
 
-        dropdown_list.insertBefore(notification.toElement(), dropdown_list.firstChild);
+        dropdown_list.insertBefore(list_item(notification.toElement()), dropdown_list.firstChild);
     }
 
     const page_list = Array.from(document.querySelectorAll('.NotificationList')).find((list) => !list.closest('.NotificationDropdown'));
@@ -2398,7 +2398,7 @@ function handle_incoming_notification(notification_data) {
             page_placeholder.remove();
         }
 
-        page_list.insertBefore(notification.toElement(), page_list.firstChild);
+        page_list.insertBefore(list_item(notification.toElement()), page_list.firstChild);
     }
 
     document.querySelectorAll('.NotificationDot').forEach((dot) => {
@@ -2500,6 +2500,15 @@ document.addEventListener('DOMContentLoaded', () => {
     connect_websocket();
 });
 
+// The item lists are <ul>, so a card inserted client-side (infinite scroll, a
+// live notification, a just-posted reply) is wrapped in an <li> to match the
+// server's markup - mirrors ItemList on the PHP side.
+function list_item(child) {
+    const item = document.createElement('li');
+    item.appendChild(child);
+    return item;
+}
+
 let loading_older_feed_items = false;
 
 window.addEventListener('scroll', async () => {
@@ -2519,7 +2528,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_feed_items = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     list.appendChild(spinner);
 
@@ -2556,7 +2565,7 @@ window.addEventListener('scroll', async () => {
 
         posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
-            list.insertBefore(element, spinner);
+            list.insertBefore(list_item(element), spinner);
             render_math(element);
         });
 
@@ -2587,7 +2596,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_bookmarks = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     list.appendChild(spinner);
 
@@ -2617,7 +2626,7 @@ window.addEventListener('scroll', async () => {
 
         posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
-            list.insertBefore(element, spinner);
+            list.insertBefore(list_item(element), spinner);
             render_math(element);
         });
 
@@ -2649,7 +2658,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_replies = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     list.appendChild(spinner);
 
@@ -2679,7 +2688,7 @@ window.addEventListener('scroll', async () => {
 
         posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
-            list.insertBefore(element, spinner);
+            list.insertBefore(list_item(element), spinner);
             render_math(element);
         });
 
@@ -2731,9 +2740,10 @@ window.addEventListener('scroll', async () => {
 
     loading_user_section = true;
 
-    const spinner = document.createElement('div');
+    const item_list = target.querySelector('.UserItems');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
-    target.appendChild(spinner);
+    item_list.appendChild(spinner);
 
     try {
         const list_type = target.dataset.listType;
@@ -2762,7 +2772,7 @@ window.addEventListener('scroll', async () => {
 
         items.forEach((item) => {
             const card = (list_type === 'incoming' ? FriendRequest : OtherUser).fromData(item);
-            target.insertBefore(card.toElement(), spinner);
+            item_list.insertBefore(list_item(card.toElement()), spinner);
         });
 
         if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {
@@ -3021,7 +3031,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     reply_list.insertAdjacentElement('beforebegin', heading);
                 }
 
-                reply_list.insertBefore(element, reply_list.firstChild);
+                reply_list.insertBefore(list_item(element), reply_list.firstChild);
             } else {
                 form.insertAdjacentElement('afterend', element);
             }
@@ -3449,7 +3459,7 @@ window.addEventListener('scroll', async () => {
 
     loading_banned_users = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     list.appendChild(spinner);
 
@@ -3483,7 +3493,7 @@ window.addEventListener('scroll', async () => {
         }
 
         items.forEach((item) => {
-            list.insertBefore(BannedUser.fromData(item).toElement(), spinner);
+            list.insertBefore(list_item(BannedUser.fromData(item).toElement()), spinner);
         });
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
@@ -3559,12 +3569,12 @@ document.addEventListener('input', (event) => {
             const notice = document.createElement('p');
             notice.className = 'Muted Notice';
             notice.textContent = query === '' ? 'No banned users.' : 'No banned users match that search.';
-            list.appendChild(notice);
+            list.appendChild(list_item(notice));
             return;
         }
 
         items.forEach((item) => {
-            list.appendChild(BannedUser.fromData(item).toElement());
+            list.appendChild(list_item(BannedUser.fromData(item).toElement()));
         });
     }, 300);
 

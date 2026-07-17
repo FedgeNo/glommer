@@ -1857,6 +1857,16 @@ const media_offscreen_observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (!entry.isIntersecting && !entry.target.paused) {
             entry.target.pause();
+
+            // If that media was an autoplaying carousel's active slide, the
+            // autoplay is waiting on its "ended" event - which a paused player
+            // never fires - so stop the autoplay outright rather than leave it
+            // stuck (and its toggle reading "Stop Autoplay") off-screen.
+            const carousel = entry.target.closest('.Carousel');
+
+            if (carousel) {
+                stop_carousel_autoplay(carousel);
+            }
         }
     });
 }, { rootMargin: '50% 0px' });

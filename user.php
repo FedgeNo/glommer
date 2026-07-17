@@ -19,17 +19,13 @@ if ($user_id === Auth::id()) {
     $profile_user = new CurrentUser($profile_user);
 }
 
-$name = $profile_user -> title ?? $profile_user -> slug;
-
 $page = new Page($profile_user);
 $page -> bodyClass = 'ProfilePage';
-$page -> title = $name;
-$page -> description = 'Posts by ' . $name . ' on Glommer';
 $page -> image = $profile_user -> avatarURL();
 $page -> jsonLd = [
     '@context' => 'https://schema.org',
     '@type' => 'Person',
-    'name' => $name,
+    'name' => $profile_user -> title,
     'url' => Page::currentURL(),
 ];
 
@@ -38,7 +34,8 @@ if ($profile_user -> avatarURL() !== null) {
 }
 
 $page -> needsMath = true;
-$page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> slug . '/feed.xml'), $name . ' - RSS Feed');
+
+$page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> slug . '/feed.xml'), $profile_user -> title);
 
 $page -> addContent($profile_user);
 

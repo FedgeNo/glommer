@@ -860,7 +860,7 @@ document.addEventListener('input', (event) => {
 
         data.response.users.forEach((user_data) => {
             const user = OtherUser.fromData(user_data);
-            results.appendChild(user.toElement());
+            results.appendChild(list_item(user.toElement()));
         });
     }, 300);
 
@@ -884,7 +884,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_user_results = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     results.appendChild(spinner);
 
@@ -917,7 +917,7 @@ window.addEventListener('scroll', async () => {
 
         data.response.users.forEach((user_data) => {
             const user = OtherUser.fromData(user_data);
-            results.insertBefore(user.toElement(), spinner);
+            results.insertBefore(list_item(user.toElement()), spinner);
         });
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
@@ -1011,7 +1011,7 @@ document.addEventListener('input', (event) => {
 
         data.response.posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
-            results.appendChild(element);
+            results.appendChild(list_item(element));
             render_math(element);
         });
     }, 300);
@@ -1036,7 +1036,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_post_results = true;
 
-    const spinner = document.createElement('div');
+    const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     results.appendChild(spinner);
 
@@ -1071,7 +1071,7 @@ window.addEventListener('scroll', async () => {
 
         data.response.posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
-            results.insertBefore(element, spinner);
+            results.insertBefore(list_item(element), spinner);
             render_math(element);
         });
 

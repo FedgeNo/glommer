@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 class Page extends HTMLDocument
 {
+    // The description meta (and its og/twitter twins) is capped near the length
+    // search engines actually display, on a word boundary so it never ends
+    // mid-word.
+    public const META_DESCRIPTION_MAX_LENGTH = 160;
+
     public ?string $title = null;
     public ?string $description = null;
     public ?string $image = null;
@@ -43,7 +48,10 @@ class Page extends HTMLDocument
     {
         $site_title = Config::get('siteTitle');
         $full_title = $this -> title . ' - ' . $site_title;
-        $description = $this -> description ?? $site_title . ' - a place to publish.';
+        $description = self::truncateAtWordBoundary(
+            $this -> description ?? $site_title . ' - a place to publish.',
+            self::META_DESCRIPTION_MAX_LENGTH
+        );
         $url = self::currentURL();
 
         $charset = new Meta();
@@ -192,6 +200,27 @@ class Page extends HTMLDocument
     public static function currentURL(): string
     {
         return ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/');
+    }
+
+    /**
+     * Caps text to a maximum length without splitting a word: cut at the limit,
+     * back up to the last space so the result ends on a whole word, and mark the
+     * trim with an ellipsis. Text already within the limit is returned as-is.
+     */
+    private static function truncateAtWordBoundary(string $text, int $max_length): string
+    {
+        if (mb_strlen($text) <= $max_length) {
+            return $text;
+        }
+
+        $cut = mb_substr($text, 0, $max_length);
+        $last_space = mb_strrpos($cut, ' ');
+
+        if ($last_space !== false) {
+            $cut = mb_substr($cut, 0, $last_space);
+        }
+
+        return rtrim($cut) . '…';
     }
 
     protected static function metaTags(string $title, string $description, ?string $image, string $url): array

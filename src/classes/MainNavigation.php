@@ -54,10 +54,14 @@ class MainNavigation extends HTMLObject
                 $account_menu_links[] = new Anchor(ServerURL::absolute('/admin/settings'), 'Site Settings');
             }
 
-            $account_links -> addContent(new NavDropdown(
-                new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/'), 'Logged In As ' . ($current_user -> title ?? $current_user -> slug)),
-                $account_menu_links
-            ));
+            $account_label = new Span();
+            $account_label -> class = 'NavAccountLabel';
+            $account_label -> addContent('Logged In As ' . ($current_user -> title ?? $current_user -> slug));
+
+            $account_trigger = new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/'));
+            $account_trigger -> addContent($account_label);
+
+            $account_links -> addContent(new NavDropdown($account_trigger, $account_menu_links));
         } else {
             // Logged-out visitors get the same main menu, but only the items
             // that don't need an account: the public Tags directory and Help.

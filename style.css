@@ -254,7 +254,9 @@ p a:hover {
 .BannedTrendingEntitiesList,
 .RememberedDevicesList,
 .ReportList,
-.MessageList {
+.MessageList,
+.UserSearchResults,
+.PostSearchResults {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -415,6 +417,19 @@ p a:hover {
 
 .NavDropdownTrigger {
     cursor: pointer;
+}
+
+/* A very long display name can't be allowed to blow out the nav bar. The cap
+   lives on an inner label span, not the trigger <a>: an inline <a> reports its
+   short line-box height (which the menu gloms onto and the nav is sized to),
+   whereas making the <a> itself inline-block would grow both. */
+.NavAccountLabel {
+    display: inline-block;
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
 }
 
 .NavDropdownMenu {
@@ -1359,7 +1374,11 @@ input[type='file']::file-selector-button {
     height: 32px;
 }
 
-.UserSearchResults,
+.UserSearchResults {
+    display: flex;
+    flex-direction: column;
+}
+
 .BannedUserList {
     display: flex;
     flex-direction: column;
@@ -1367,7 +1386,8 @@ input[type='file']::file-selector-button {
 }
 
 .PostSearchResults {
-    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ---------- Help ---------- */

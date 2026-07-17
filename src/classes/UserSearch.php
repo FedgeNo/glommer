@@ -29,16 +29,7 @@ class UserSearch extends HTMLObject
 
         $this -> contents[] = $input_card;
 
-        $results = new Div();
-        $results -> class = 'UserSearchResults';
-        // The suggestion list is a fixed, ranked set, not cursor-paginated
-        // (see api/search-users.php) - infinite scroll only ever kicks in
-        // once a typed query gets a paginated result set of its own.
-        $results -> attributes['data-has-more'] = '0';
-
-        $results -> addContents($this -> suggestions);
-
-        $this -> contents[] = $results;
+        $this -> contents[] = new UserSearchResults($this -> suggestions);
 
         return parent::toDOM();
     }

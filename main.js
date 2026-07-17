@@ -3788,6 +3788,21 @@ document.addEventListener('click', (event) => {
     }
 });
 
+// Enter in the single-line display-name input saves the whole card (name + bio),
+// like hitting Save. Not bound to the bio textarea, where Enter is a newline.
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') {
+        return;
+    }
+
+    const name_input = event.target.closest('.DisplayNameInput');
+
+    if (name_input) {
+        event.preventDefault();
+        profile_save(name_input.closest('.User.CurrentUser'));
+    }
+});
+
 document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.FaviconSettingsForm');
 

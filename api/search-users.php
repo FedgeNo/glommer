@@ -20,44 +20,50 @@ if (!Auth::check()) {
 $current_user = Auth::user();
 
 $query = trim((string) ($payload['q'] ?? ''));
-$before_user_id = (int) ($payload['beforeUserId'] ?? 0);
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 $has_more = false;
-$oldest_user_id = null;
 
 if ($query === '') {
-    // The empty-query suggestion list isn't cursor-paginated - it's a fixed,
-    // ranked set (mutual-friend count, falling back to random), not a simple
-    // newest-first query a keyset cursor could walk.
+    // The empty-query suggestion list isn't paginated - it's a fixed, ranked
+    // set (mutual-friend count, falling back to random), not the query the
+    // offset below walks.
     $candidates = $current_user -> getSuggestedUsers();
 } else {
     // Escape LIKE wildcards so a literal % or _ in the query doesn't match everything.
     $like = '%' . addcslashes($query, '\\%_') . '%';
+
+    // The bio is searched full-text (whole-word / prefix), the username and
+    // display name by substring as before. Each query word must prefix-match a
+    // bio word (+word*); a query that's only punctuation leaves this empty, so
+    // just the name LIKEs run.
+    $ft_tokens = array_filter(preg_split('/[^A-Za-z0-9_]+/', $query));
+    $ft_query = implode(' ', array_map(static fn (string $token): string => '+' . $token . '*', $ft_tokens));
+
     $not_banned = 0;
     $limit = 20;
     $fetch_limit = $limit + 1;
 
+    // nameMatch (a hit on the username or display name) orders every name match
+    // ahead of a bio-only (full-text) match. The ordering is stable for a given
+    // query, so infinite scroll just re-runs the same query at a growing offset.
     $candidates = DB::rows('
-SELECT *
+SELECT *, (`slug` LIKE ? OR `title` LIKE ?) AS `nameMatch`
     FROM `Users`
-    WHERE (`slug` LIKE ? OR `title` LIKE ?) AND `userId` != ? AND `banned` = ?
-        AND (? = 0 OR `userId` < ?)
+    WHERE (`slug` LIKE ? OR `title` LIKE ? OR MATCH(`description`) AGAINST(? IN BOOLEAN MODE))
+        AND `userId` != ? AND `banned` = ?
         AND NOT EXISTS (
             SELECT 1
                 FROM `Blocks` `b`
                 WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `Users`.`userId`) OR (`b`.`blockerId` = `Users`.`userId` AND `b`.`blockedId` = ?)
         )
-    ORDER BY `userId` DESC
-    LIMIT ?
-', 'User', 'ssiiiiiii', $like, $like, $current_user -> userId, $not_banned, $before_user_id, $before_user_id, $current_user -> userId, $current_user -> userId, $fetch_limit);
+    ORDER BY `nameMatch` DESC
+    LIMIT ? OFFSET ?
+', 'User', 'sssssiiiiii', $like, $like, $like, $like, $ft_query, $current_user -> userId, $not_banned, $current_user -> userId, $current_user -> userId, $fetch_limit, $offset);
 
     $has_more = count($candidates) > $limit;
 
     if ($has_more) {
         array_pop($candidates);
-    }
-
-    if ($candidates !== []) {
-        $oldest_user_id = (int) $candidates[count($candidates) - 1] -> userId;
     }
 }
 
@@ -70,5 +76,4 @@ foreach ($candidates as $candidate) {
 JSONResponse::success([
     'users' => $users,
     'hasMore' => $has_more,
-    'oldestUserId' => $oldest_user_id,
 ]) -> send();

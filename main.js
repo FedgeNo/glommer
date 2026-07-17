@@ -857,12 +857,7 @@ document.addEventListener('input', (event) => {
         // paginating, and where to resume from.
         results.dataset.query = query;
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
-
-        if (data.response.oldestUserId !== null) {
-            results.dataset.oldestUserId = data.response.oldestUserId;
-        } else {
-            delete results.dataset.oldestUserId;
-        }
+        results.dataset.offset = String(data.response.users.length);
 
         data.response.users.forEach((user_data) => {
             const user = OtherUser.fromData(user_data);
@@ -896,12 +891,12 @@ window.addEventListener('scroll', async () => {
 
     try {
         const query = results.dataset.query ?? '';
-        const before_user_id = results.dataset.oldestUserId;
+        const offset = results.dataset.offset ?? '0';
 
         const response = await fetch(`${window.siteURL}/api/search-users`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ q: query, beforeUserId: before_user_id }),
+            body: JSON.stringify({ q: query, offset: offset }),
         });
 
         if (!response.ok) {
@@ -919,10 +914,7 @@ window.addEventListener('scroll', async () => {
         }
 
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
-
-        if (data.response.oldestUserId !== null) {
-            results.dataset.oldestUserId = data.response.oldestUserId;
-        }
+        results.dataset.offset = String(Number(results.dataset.offset) + data.response.users.length);
 
         data.response.users.forEach((user_data) => {
             const user = OtherUser.fromData(user_data);

@@ -33,7 +33,8 @@ CREATE TABLE `Users` (
   PRIMARY KEY (`userId`),
   UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `email` (`email`),
-  KEY `banned_userId` (`banned`,`userId`)
+  KEY `banned_userId` (`banned`,`userId`),
+  FULLTEXT KEY `description` (`description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Posts` (

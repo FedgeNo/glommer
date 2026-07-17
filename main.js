@@ -1861,21 +1861,18 @@ const offscreen_playback_observer = new IntersectionObserver((entries) => {
             return;
         }
 
-        if (entry.target.matches('video, audio')) {
-            if (!entry.target.paused) {
-                entry.target.pause();
-            }
+        if (entry.target.matches('video, audio') && !entry.target.paused) {
+            entry.target.pause();
+        }
 
-            // A tall carousel can still be in view when its player isn't -
-            // stop its autoplay here too rather than leave it waiting on the
-            // paused player's "ended".
-            const carousel = entry.target.closest('.Carousel');
+        // closest() matches the element itself, so this is the carousel entry
+        // itself or a media entry's enclosing carousel (a tall carousel can
+        // still be in view when its player isn't - its autoplay must not be
+        // left waiting on the paused player's "ended").
+        const carousel = entry.target.closest('.Carousel');
 
-            if (carousel) {
-                stop_carousel_autoplay(carousel);
-            }
-        } else {
-            stop_carousel_autoplay(entry.target);
+        if (carousel) {
+            stop_carousel_autoplay(carousel);
         }
     });
 }, { rootMargin: '50% 0px' });

@@ -66,6 +66,9 @@ class HashtagGraph {
 
     // Idle auto-spin: a full turn takes ~80s. Very slow on purpose.
     static SPIN_RADIANS_PER_SECOND = 0.08;
+
+    // The body font size (rem); node sizes are expressed as multiples of it.
+    static BASE_FONT_REM = 0.9375;
     // Default layout spread, as a multiple of the viewport half-size - >1 so the
     // graph is bigger than the viewport (nodes spaced out, not a cramped blob);
     // the wheel zooms from there.
@@ -140,7 +143,8 @@ class HashtagGraph {
     }
 
     // Font-size (and so node size) scales with the log of the post count, so one
-    // runaway tag can't dwarf the rest.
+    // runaway tag can't dwarf the rest - spread from half the base body font
+    // (the least-used tag) up to 3.75x it (the most-used).
     sizeNodes() {
         const logs = this.nodeElements.map((node) => Math.log(1 + Number(node.dataset.count || 1)));
         const min = Math.min(...logs);
@@ -149,7 +153,7 @@ class HashtagGraph {
 
         this.nodeElements.forEach((node, index) => {
             const normalized = (logs[index] - min) / span;
-            node.style.fontSize = (0.82 + normalized * 1.15).toFixed(3) + 'rem';
+            node.style.fontSize = (HashtagGraph.BASE_FONT_REM * (0.5 + normalized * 3.25)).toFixed(3) + 'rem';
             node.draggable = false;
             node.style.position = 'absolute';
         });

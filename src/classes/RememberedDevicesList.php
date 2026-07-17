@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 class RememberedDevicesList extends ItemList
 {
-    public ?string $class = 'd-flex flex-column gap-2 RememberedDevicesList';
+    public ?string $class = 'd-flex flex-column RememberedDevicesList';
 
     public int $userId;
 

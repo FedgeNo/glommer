@@ -147,16 +147,12 @@ body {
 }
 
 body:has(.MainNavigation) {
-    padding-top: calc(var(--nav-height) + var(--page-title-height) + 0.75rem);
+    padding-top: calc(var(--nav-height) + var(--page-title-height) + 1.5rem);
 }
 
 .PageBody {
     padding: 1rem;
     padding-inline: max(1rem, calc((100% - 40rem) / 2));
-}
-
-.PageBody > * + * {
-    margin-top: 1rem;
 }
 
 ::selection {
@@ -291,6 +287,7 @@ p a:hover {
     border-radius: var(--radius-card);
     padding: 1rem;
     box-shadow: var(--shadow-card);
+    margin-bottom: 1.5rem;
 }
 
 .Post {
@@ -1309,19 +1306,6 @@ input[type='file']::file-selector-button {
     align-self: flex-end;
 }
 
-.ProfilePage .User {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-/* Friend/request cards live inside a UserList and are spaced by its flex gap,
-   so they keep no margin of their own - only the standalone profile-header card
-   above the list gets the spacing. */
-.ProfilePage .UserList .User {
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
 .UserLink {
     display: flex;
     align-items: flex-start;
@@ -1345,7 +1329,6 @@ input[type='file']::file-selector-button {
 .UserList {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
 }
 
 .UserSearchBox,

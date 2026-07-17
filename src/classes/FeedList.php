@@ -16,7 +16,7 @@ class FeedList extends ItemList
 {
     public const PAGE_SIZE = 20;
 
-    public ?string $class = 'FeedList d-flex flex-column gap-4';
+    public ?string $class = 'FeedList d-flex flex-column';
 
     public ?string $feedType = null;
     public ?int $userId = null;

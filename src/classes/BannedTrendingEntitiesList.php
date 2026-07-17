@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 class BannedTrendingEntitiesList extends ItemList
 {
-    public ?string $class = 'd-flex flex-column gap-2 BannedTrendingEntitiesList';
+    public ?string $class = 'd-flex flex-column BannedTrendingEntitiesList';
 
     public function toDOM(): \DOMElement
     {

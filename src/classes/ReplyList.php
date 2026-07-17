@@ -14,7 +14,7 @@ class ReplyList extends ItemList
 {
     public const PAGE_SIZE = 20;
 
-    public ?string $class = 'ReplyList d-flex flex-column gap-4';
+    public ?string $class = 'ReplyList d-flex flex-column';
 
     public ?int $parentId = null;
     public ?int $before = null;

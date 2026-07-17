@@ -10,9 +10,7 @@ declare(strict_types=1);
  */
 class ReportList extends ItemList
 {
-    // gap-3 (1rem) keeps the exact inter-card spacing the cards had as direct
-    // PageBody children (.PageBody > * + * { margin-top: 1rem }).
-    public ?string $class = 'ReportList d-flex flex-column gap-3';
+    public ?string $class = 'ReportList d-flex flex-column';
 
     public ?int $oldestReportId = null;
     public bool $hasMore = false;

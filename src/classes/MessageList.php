@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class MessageList extends ItemList
 {
-    public ?string $class = 'MessageList d-flex flex-column gap-4';
+    public ?string $class = 'MessageList d-flex flex-column';
 
     public ?int $otherUserId = null;
     public ?int $oldestMessageId = null;

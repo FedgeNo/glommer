@@ -14,7 +14,7 @@ class BookmarkList extends ItemList
 {
     public const PAGE_SIZE = 20;
 
-    public ?string $class = 'BookmarkList d-flex flex-column gap-4';
+    public ?string $class = 'BookmarkList d-flex flex-column';
 
     public ?int $userId = null;
     public ?string $beforeCreatedAt = null;

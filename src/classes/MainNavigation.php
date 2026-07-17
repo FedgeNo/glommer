@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class MainNavigation extends HTMLObject
 {
-    public string $tagName = 'div';
+    public string $tagName = 'nav';
     public ?string $class = 'MainNavigation d-flex gap-4';
 
     public function toDOM(): \DOMElement

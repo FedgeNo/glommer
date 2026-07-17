@@ -8,7 +8,7 @@ declare(strict_types=1);
  * a has-more flag as data-* attributes so main.js can fetch the next page from
  * api/report-history.php and append more cards on scroll.
  */
-class ReportList extends Div
+class ReportList extends ItemList
 {
     // gap-3 (1rem) keeps the exact inter-card spacing the cards had as direct
     // PageBody children (.PageBody > * + * { margin-top: 1rem }).

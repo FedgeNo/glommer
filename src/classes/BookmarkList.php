@@ -10,7 +10,7 @@ declare(strict_types=1);
  * here; the cursor defaults to a far-future sentinel so page one and a
  * load-more page are one query. Build with new BookmarkList(['userId' => 5]).
  */
-class BookmarkList extends Div
+class BookmarkList extends ItemList
 {
     public const PAGE_SIZE = 20;
 

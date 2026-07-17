@@ -52,7 +52,7 @@ if ($feed -> hasItems()) {
         $page -> addContent(new PostSearch($user_id, 'Search ' . $name . '\'s posts...'));
     }
 
-    $feed_section = new Div();
+    $feed_section = new Section();
     $feed_section -> class = 'ProfileFeed';
     $feed_section -> addContent(new Heading2('Posts'));
     $feed_section -> addContent($feed);

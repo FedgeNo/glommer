@@ -12,7 +12,7 @@ declare(strict_types=1);
  * the properties for the feed you want, e.g.
  * new FeedList(['feedType' => 'user', 'userId' => 42]).
  */
-class FeedList extends Div
+class FeedList extends ItemList
 {
     public const PAGE_SIZE = 20;
 

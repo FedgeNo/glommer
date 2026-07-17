@@ -9,11 +9,10 @@ declare(strict_types=1);
  * friends, with a userId cursor instead of a friendshipId one. The
  * search box (BannedUserSearch) repopulates this same container with matches.
  */
-class BannedUserList extends HTMLObject
+class BannedUserList extends ItemList
 {
     public const PAGE_SIZE = 20;
 
-    public string $tagName = 'div';
     public ?string $class = 'BannedUserList';
 
     public function toDOM(): \DOMElement

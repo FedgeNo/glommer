@@ -12,11 +12,10 @@ declare(strict_types=1);
  * and the scroll handler in main.js drives all three generically off the data-*
  * attributes and the shared .UserList marker.
  */
-abstract class UserList extends HTMLObject
+abstract class UserList extends ItemList
 {
     public const PAGE_SIZE = 20;
 
-    public string $tagName = 'div';
     public ?string $class = 'UserList';
 
     /** One of 'friends' | 'incoming' | 'outgoing' - which history this pages. */

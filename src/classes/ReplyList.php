@@ -10,7 +10,7 @@ declare(strict_types=1);
  * load-more page are one query. Build with the post whose replies these are:
  * new ReplyList(['parentId' => 5]).
  */
-class ReplyList extends Div
+class ReplyList extends ItemList
 {
     public const PAGE_SIZE = 20;
 

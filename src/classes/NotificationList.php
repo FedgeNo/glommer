@@ -8,7 +8,7 @@ declare(strict_types=1);
  * the data-* attributes toDOM sets. The nav's smaller, non-paginated variant is
  * RecentNotificationList, which just fixes a lower count.
  */
-class NotificationList extends Div
+class NotificationList extends ItemList
 {
     public const PAGE_SIZE = 20;
 

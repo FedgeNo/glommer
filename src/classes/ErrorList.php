@@ -2,29 +2,18 @@
 
 declare(strict_types=1);
 
-class ErrorList extends UnorderedList
+class ErrorList extends ItemList
 {
     public ?string $class = 'ErrorList d-flex flex-column gap-1';
 
-    /** @var string[] */
-    public array $errors;
-
+    /**
+     * @param string[] $errors
+     */
     public function __construct(array $errors)
     {
         parent::__construct();
 
-        $this -> errors = $errors;
-    }
-
-    public function toDOM(): \DOMElement
-    {
-        foreach ($this -> errors as $error) {
-            $item = new ListItem();
-            $item -> class = 'Error';
-            $item -> contents[] = $error;
-            $this -> contents[] = $item;
-        }
-
-        return parent::toDOM();
+        // Each error string becomes an <li> - ItemList does the wrapping.
+        $this -> contents = $errors;
     }
 }

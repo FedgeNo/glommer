@@ -11,7 +11,7 @@ declare(strict_types=1);
  * remembered token (if any) is marked and left un-revokable here (see
  * RememberedDevice).
  */
-class RememberedDevicesList extends Div
+class RememberedDevicesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column gap-2 RememberedDevicesList';
 

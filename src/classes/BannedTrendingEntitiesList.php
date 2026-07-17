@@ -7,7 +7,7 @@ declare(strict_types=1);
  * Unban control. Not paginated: standing entity bans are a small, curated set
  * (a moderator action per row), unlike the banned-users list.
  */
-class BannedTrendingEntitiesList extends Div
+class BannedTrendingEntitiesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column gap-2 BannedTrendingEntitiesList';
 

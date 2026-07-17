@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class MessageList extends Div
+class MessageList extends ItemList
 {
     public ?string $class = 'MessageList d-flex flex-column gap-4';
 

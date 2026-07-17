@@ -11,7 +11,7 @@ declare(strict_types=1);
  * "Popular" section, which genuinely IS hashtag-only and unrelated to the
  * trending engine) rather than sharing a component with it.
  */
-class TrendingSection extends Div
+class TrendingSection extends Section
 {
     public ?string $class = 'TrendingSection d-flex flex-column gap-2';
 

@@ -59,7 +59,12 @@ if ($first_image !== null) {
     $json_ld['image'] = $first_image;
 }
 
-$page = new Page(['title' => $post -> title ?? 'Post', 'description' => $post -> description, 'image' => $first_image, 'jsonLd' => $json_ld, 'needsEditor' => $current_user !== null, 'needsMath' => true, 'needsEmoji' => $current_user !== null]);
+$page = new Page($post);
+$page -> image = $first_image;
+$page -> jsonLD = $json_ld;
+$page -> needsEditor = $current_user !== null;
+$page -> needsMath = true;
+$page -> needsEmoji = $current_user !== null;
 
 if ($post -> parentId !== null) {
     $parent_link = ParentPostLink::fromParentId($post -> parentId);

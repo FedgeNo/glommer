@@ -77,13 +77,13 @@ if (Block::exists($current_user -> userId, $other_user_id)) {
 
 $conversation_users = [
     $current_user -> userId => [
-        'username' => $current_user -> slug,
-        'displayName' => $current_user -> title,
+        'slug' => $current_user -> slug,
+        'title' => $current_user -> title,
         'image' => $current_user -> avatarURL(),
     ],
     $other_user -> userId => [
-        'username' => $other_user -> slug,
-        'displayName' => $other_user -> title,
+        'slug' => $other_user -> slug,
+        'title' => $other_user -> title,
         'image' => $other_user -> avatarURL(),
     ],
 ];

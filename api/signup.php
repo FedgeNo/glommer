@@ -78,7 +78,6 @@ if ($errors !== []) {
 }
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
-$display_name_value = $display_name !== '' ? $display_name : null;
 $description_value = $description !== '' ? $description : null;
 
 $unverified = 0;
@@ -86,14 +85,14 @@ $unverified = 0;
 DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `verified`)
     VALUES (?, ?, ?, ?, ?, ?)
-', 'sssssi', $username, $email, $hash, $display_name_value, $description_value, $unverified);
+', 'sssssi', $username, $email, $hash, $display_name, $description_value, $unverified);
 $new_user_id = (int) mysqli_insert_id($mysqli);
 
 $user = new User();
 $user -> userId = $new_user_id;
 $user -> slug = $username;
 $user -> email = $email;
-$user -> title = $display_name_value;
+$user -> title = $display_name;
 $user -> description = $description_value;
 $user -> verified = $unverified;
 

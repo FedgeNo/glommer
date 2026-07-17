@@ -38,7 +38,12 @@ class Post {
         const byline = document.createElement('div');
         byline.className = 'PostByline d-flex align-items-center gap-2';
 
-        byline.appendChild(user_header_element(this.authorUsername, this.authorDisplayName, Boolean(this.authorImage), this.authorImage, this.userId));
+        byline.appendChild(User.fromData({
+            userId: this.userId,
+            slug: this.authorUsername,
+            title: this.authorDisplayName,
+            image: this.authorImage,
+        }).header());
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');

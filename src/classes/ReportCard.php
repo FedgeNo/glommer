@@ -279,8 +279,8 @@ class ReportCard extends HTMLObject
             // passwordHash, which must never reach a moderator's console.
             return ['kind' => 'user', 'user' => [
                 'userId' => (int) $user -> userId,
-                'username' => $user -> slug,
-                'displayName' => $user -> title,
+                'slug' => $user -> slug,
+                'title' => $user -> title,
                 'image' => $user -> avatarURL(),
                 'createdAt' => $user -> createdAt,
             ]];

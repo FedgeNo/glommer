@@ -61,7 +61,7 @@ class Message {
     }
 
     senderHeader(sender, sender_id) {
-        return user_header_element(sender.username, sender.displayName, Boolean(sender.image), sender.image, sender_id);
+        return User.fromData({ userId: sender_id, ...sender }).header();
     }
 }
 

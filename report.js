@@ -54,7 +54,7 @@ class ReportCard {
         }
 
         if (target.kind === 'user' && target.user) {
-            return user_card_element(target.user);
+            return User.fromData(target.user).toElement();
         }
 
         // missing / unknown - a muted notice (mirrors the PHP Notice element).

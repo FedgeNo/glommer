@@ -102,7 +102,7 @@ class Notification {
             container.href = target;
         }
 
-        container.appendChild(avatar_element(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId));
+        container.appendChild(Avatar.create(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId));
 
         const info = document.createElement('div');
 

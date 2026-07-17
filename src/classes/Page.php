@@ -12,7 +12,7 @@ class Page extends HTMLDocument
     public ?string $title = null;
     public ?string $description = null;
     public ?string $image = null;
-    public ?array $jsonLd = null;
+    public ?array $jsonLD = null;
 
     // Metadata-in-spirit link (an RSS <link rel="alternate">) - a property like
     // any other page metadata, emitted in the head right after the meta block.
@@ -47,7 +47,10 @@ class Page extends HTMLDocument
     private function assembleHead(): void
     {
         $site_title = Config::get('siteTitle');
-        $full_title = $this -> title . ' - ' . $site_title;
+        if (!$this -> title) {
+            $this -> title = $site_title;
+        }
+        $full_title = $this -> title === $site_title ? $site_title : $this -> title . ' - ' . $site_title;
         $description = self::truncateAtWordBoundary(
             $this -> description ?? $site_title . ' - a place to publish.',
             self::META_DESCRIPTION_MAX_LENGTH
@@ -76,7 +79,7 @@ class Page extends HTMLDocument
             $this -> head -> addContent($meta);
         }
 
-        $json_ld = $this -> jsonLd ?? [
+        $json_ld = $this -> jsonLD ?? [
             '@context' => 'https://schema.org',
             '@type' => 'WebSite',
             'name' => $site_title,
@@ -163,7 +166,7 @@ class Page extends HTMLDocument
 
         // delta.js loads before post.js and main.js, which both call
         // render_delta() to build a post's body from its Delta ops.
-        $script_sources = ['delta.js', 'post.js', 'message.js', 'other-user.js', 'notification.js', 'banned-user.js', 'report.js'];
+        $script_sources = ['delta.js', 'user.js', 'post.js', 'message.js', 'other-user.js', 'notification.js', 'banned-user.js', 'report.js'];
 
         if ($this -> needsTagGraph) {
             $script_sources[] = 'tag-graph.js';

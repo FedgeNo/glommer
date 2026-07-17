@@ -3,114 +3,6 @@ function csrf_headers(extra) {
 }
 
 /**
- * Mirrors Avatar.php: an <img> when the user has one, otherwise a pure
- * CSS/text fallback circle in a color derived from their userId, showing
- * the first letter of their name.
- */
-function avatar_element(has_image, image_url, name, user_id) {
-    if (has_image && image_url) {
-        const image = document.createElement('img');
-        image.className = 'Avatar';
-        image.src = image_url;
-        image.alt = (name || '') + '\'s avatar';
-        return image;
-    }
-
-    const fallback = document.createElement('div');
-    fallback.className = 'Avatar AvatarInitial';
-    fallback.setAttribute('aria-hidden', 'true');
-    fallback.style.setProperty('--avatar-hue', ((Number(user_id) * 137) % 360) + 'deg');
-
-    // Array.from splits on code points, not UTF-16 units - .charAt(0) on a
-    // name starting with an emoji or other astral character would produce a
-    // lone surrogate half instead of the character.
-    const first_char = Array.from(name || '')[0];
-    fallback.textContent = first_char ? first_char.toUpperCase() : '?';
-
-    return fallback;
-}
-
-/**
- * Mirrors User::header(): the avatar + display name + username block used
- * wherever a message, post, or similar item needs to show who it's from -
- * one clickable link to their profile.
- */
-function user_header_element(username, display_name, has_image, image_url, user_id) {
-    const name = display_name || username;
-
-    const header = document.createElement('a');
-    header.href = window.siteURL + '/users/' + username + '/';
-    header.className = 'd-flex align-items-center gap-3';
-
-    header.appendChild(avatar_element(has_image, image_url, name, user_id));
-
-    const info = document.createElement('div');
-
-    const name_line = document.createElement('div');
-    name_line.className = 'fw-semibold';
-    name_line.textContent = name;
-    info.appendChild(name_line);
-
-    const username_line = document.createElement('div');
-    username_line.className = 'Muted text-sm';
-    username_line.textContent = '@' + username;
-    info.appendChild(username_line);
-
-    header.appendChild(info);
-
-    return header;
-}
-
-/**
- * Mirrors User::toDOM(): the full identity card - avatar, name, @username, and
- * joined date, all one link to the profile - wrapped in a .User.Card. Shared by
- * OtherUser (which adds action buttons) and the report card's user target
- * (which shows it plain). Expects {username, displayName, image, userId,
- * createdAt}.
- */
-function user_card_element(user) {
-    const div = document.createElement('div');
-    div.className = 'User Card';
-
-    if (user.username) {
-        div.dataset.username = user.username;
-    }
-
-    const link = document.createElement('a');
-    link.className = 'UserLink';
-    link.href = window.siteURL + '/users/' + user.username + '/';
-
-    link.appendChild(avatar_element(Boolean(user.image), user.image, user.displayName || user.username, user.userId));
-
-    const info = document.createElement('div');
-
-    const name_heading = document.createElement('h2');
-    name_heading.textContent = user.displayName || user.username;
-    info.appendChild(name_heading);
-
-    const username_line = document.createElement('div');
-    username_line.className = 'Muted text-sm';
-    username_line.textContent = '@' + user.username;
-    info.appendChild(username_line);
-
-    if (user.createdAt) {
-        const joined = document.createElement('div');
-        joined.className = 'Muted text-sm';
-        joined.textContent = 'Joined ' + parse_server_date(user.createdAt).toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-        });
-        info.appendChild(joined);
-    }
-
-    link.appendChild(info);
-    div.appendChild(link);
-
-    return div;
-}
-
-/**
  * The viewer's own clock can't be trusted to be in sync with the server
  * (especially once this runs on machines we don't control), so relative
  * timestamps are computed against the server's clock, corrected for
@@ -3692,29 +3584,6 @@ document.addEventListener('submit', async (event) => {
 
 // --- Your own profile card: edit the display name + bio in place ---
 
-// A .UserBio built from plain text, linkified the same way the server renders
-// it (delta.js's shared linkifier), so a saved bio round-trips identically.
-function profile_render_bio(text) {
-    const bio = document.createElement('div');
-    bio.className = 'UserBio';
-
-    for (const segment of linkify_tokenize(text)) {
-        const inner = document.createTextNode(segment.text);
-
-        if (segment.type === 'url') {
-            bio.appendChild(linked_node(segment.text, inner));
-        } else if (segment.type === 'hashtag') {
-            bio.appendChild(hashtag_node(segment.tag, inner));
-        } else if (segment.type === 'mention') {
-            bio.appendChild(mention_node(segment.username, inner));
-        } else {
-            bio.appendChild(inner);
-        }
-    }
-
-    return bio;
-}
-
 // Swap the name heading for an input and the bio for a textarea (prefilled from
 // the raw values on the card), and add one Save button. The pencil is hidden by
 // the .Editing CSS rule.
@@ -3776,7 +3645,7 @@ async function profile_save(card) {
     heading.textContent = data.title || card.dataset.username;
     name_input.replaceWith(heading);
 
-    bio_input.replaceWith(profile_render_bio(data.description || ''));
+    bio_input.replaceWith(new UserBio(data.description || '').toElement());
 
     save.remove();
     card.classList.remove('Editing');

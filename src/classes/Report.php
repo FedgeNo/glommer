@@ -127,10 +127,15 @@ UPDATE `' . $table . '`
                 return null;
             }
 
+            // Row-named keys (slug/title, not username/displayName) so the
+            // snapshot round-trips straight back through User::fromRow when the
+            // card renders a since-deleted account. Explicit allowlist - a
+            // Users row also carries email and passwordHash, which must never
+            // be copied into a snapshot.
             return [
                 'userId' => (int) $user -> userId,
-                'username' => $user -> slug,
-                'displayName' => $user -> title,
+                'slug' => $user -> slug,
+                'title' => $user -> title,
                 'hasAvatar' => (int) $user -> hasAvatar,
                 'createdAt' => $user -> createdAt,
             ];

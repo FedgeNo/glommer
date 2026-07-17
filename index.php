@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 $current_user = Auth::user();
 
-$page = new Page(['title' => 'Home', 'needsEditor' => $current_user !== null, 'needsMath' => true, 'needsEmoji' => $current_user !== null]);
+$page = new Page(['needsEditor' => $current_user !== null, 'needsMath' => true, 'needsEmoji' => $current_user !== null]);
 
 $page -> rssLink = new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed');
 

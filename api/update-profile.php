@@ -30,15 +30,15 @@ if (mb_strlen($description) > 500) {
     JSONResponse::error('Bio must be 500 characters or fewer.', 422) -> send();
 }
 
-// A cleared field is stored NULL: an empty display name falls back to the
-// @slug on the card, an empty bio simply shows nothing.
-$title_value = $title !== '' ? $title : null;
+// The display name is stored as typed, empty string included - "no display
+// name" is just an empty string, and the card/byline fall back to the @slug for
+// it. A cleared bio is stored NULL and simply shows nothing.
 $description_value = $description !== '' ? $description : null;
 
 DB::run('
 UPDATE `Users`
     SET `title` = ?, `description` = ?
     WHERE `userId` = ?
-', 'ssi', $title_value, $description_value, $current_user -> userId);
+', 'ssi', $title, $description_value, $current_user -> userId);
 
-JSONResponse::success(['title' => $title_value, 'description' => $description_value]) -> send();
+JSONResponse::success(['title' => $title, 'description' => $description_value]) -> send();

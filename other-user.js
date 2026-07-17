@@ -1,7 +1,8 @@
-class OtherUser {
+class OtherUser extends User {
     userId = null;
-    username = null;
-    displayName = null;
+    slug = null;
+    title = null;
+    description = null;
     image = null;
     createdAt = null;
     blockedByViewer = false;
@@ -11,14 +12,6 @@ class OtherUser {
     isMod = false;
     friendshipId = null;
     element = null;
-
-    static fromData(data) {
-        // `new this()` (not `new OtherUser()`) so subclasses like FriendRequest
-        // get an instance of themselves.
-        const user = new this();
-        Object.assign(user, data);
-        return user;
-    }
 
     /**
      * Extra action buttons a subclass wants at the top of the action column
@@ -30,10 +23,9 @@ class OtherUser {
     }
 
     toElement() {
-        // The identity card (avatar + name + @username + joined) is shared with
-        // the report card's user target via user_card_element; OtherUser layers
-        // the action buttons on top.
-        const div = user_card_element(this);
+        // The identity card (avatar + name + @username + joined + bio) comes
+        // from User; OtherUser layers the action buttons on top.
+        const div = super.toElement();
         div.classList.add('OtherUser', 'MountIn');
 
         if (this.friendshipId) {
@@ -77,7 +69,7 @@ class OtherUser {
 
             const message_link = document.createElement('a');
             message_link.className = 'Btn';
-            message_link.href = window.siteURL + '/messages/' + this.username;
+            message_link.href = window.siteURL + '/messages/' + this.slug;
             message_link.textContent = 'Message';
 
             const block_button = document.createElement('button');
@@ -112,7 +104,7 @@ class OtherUser {
 
             const friends_link = document.createElement('a');
             friends_link.className = 'Btn';
-            friends_link.href = window.siteURL + '/users/' + this.username + '/friends';
+            friends_link.href = window.siteURL + '/users/' + this.slug + '/friends';
             friends_link.textContent = 'Friends';
             actions.appendChild(friends_link);
 

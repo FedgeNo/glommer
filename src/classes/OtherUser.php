@@ -144,8 +144,9 @@ class OtherUser extends User
 
         return [
             'userId' => $user_id,
-            'username' => $user -> slug,
-            'displayName' => $user -> title,
+            'slug' => $user -> slug,
+            'title' => $user -> title,
+            'description' => $user -> description,
             'image' => $user -> avatarURL(),
             'createdAt' => $user -> createdAt,
             'blockedByViewer' => $blocked_by_viewer,

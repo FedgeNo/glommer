@@ -34,8 +34,8 @@ class BannedUser extends User
     {
         return [
             'userId' => (int) $user -> userId,
-            'username' => $user -> slug,
-            'displayName' => $user -> title,
+            'slug' => $user -> slug,
+            'title' => $user -> title,
             'image' => $user -> avatarURL(),
         ];
     }

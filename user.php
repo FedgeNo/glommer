@@ -13,6 +13,10 @@ if ($profile_user === null) {
     exit;
 }
 
+if (!$profile_user -> title) {
+    $profile_user -> title = $profile_user -> slug;
+}
+
 $user_id = (int) $profile_user -> userId;
 
 if ($user_id === Auth::id()) {
@@ -22,7 +26,7 @@ if ($user_id === Auth::id()) {
 $page = new Page($profile_user);
 $page -> bodyClass = 'ProfilePage';
 $page -> image = $profile_user -> avatarURL();
-$page -> jsonLd = [
+$page -> jsonLD = [
     '@context' => 'https://schema.org',
     '@type' => 'Person',
     'name' => $profile_user -> title,
@@ -30,7 +34,7 @@ $page -> jsonLd = [
 ];
 
 if ($profile_user -> avatarURL() !== null) {
-    $page -> jsonLd['image'] = $profile_user -> avatarURL();
+    $page -> jsonLD['image'] = $profile_user -> avatarURL();
 }
 
 $page -> needsMath = true;
@@ -46,7 +50,7 @@ if ($feed -> hasItems()) {
         // Search this user's own posts (scoped to their userId). While a query is
         // active the default feed below is hidden and the results take its place
         // (see main.js); clearing the box brings the feed back.
-        $page -> addContent(new PostSearch($user_id, 'Search ' . $name . '\'s posts...'));
+        $page -> addContent(new PostSearch($user_id, 'Search ' . $profile_user -> title . '\'s posts...'));
     }
 
     $feed_section = new Section();

@@ -3,21 +3,11 @@
  * Banned Users page (identity plus an Unban button), used when entries arrive
  * as JSON via infinite scroll or the banned-user search.
  */
-class BannedUser {
+class BannedUser extends User {
     userId = null;
-    username = null;
-    displayName = null;
+    slug = null;
+    title = null;
     image = null;
-
-    static fromData(data) {
-        const banned_user = new BannedUser();
-        Object.assign(banned_user, data);
-        return banned_user;
-    }
-
-    name() {
-        return this.displayName || this.username;
-    }
 
     toElement() {
         const div = document.createElement('div');
@@ -27,26 +17,7 @@ class BannedUser {
         const row = document.createElement('div');
         row.className = 'd-flex align-items-center gap-3';
 
-        const header = document.createElement('a');
-        header.className = 'd-flex align-items-center gap-3';
-        header.href = window.siteURL + '/users/' + this.username + '/';
-
-        header.appendChild(avatar_element(Boolean(this.image), this.image, this.name(), this.userId));
-
-        const info = document.createElement('div');
-
-        const name_line = document.createElement('div');
-        name_line.className = 'fw-semibold';
-        name_line.textContent = this.name();
-        info.appendChild(name_line);
-
-        const username_line = document.createElement('div');
-        username_line.className = 'Muted text-sm';
-        username_line.textContent = '@' + this.username;
-        info.appendChild(username_line);
-
-        header.appendChild(info);
-        row.appendChild(header);
+        row.appendChild(this.header());
 
         const unban = document.createElement('button');
         unban.type = 'button';

@@ -589,48 +589,6 @@ async function api_post(path, payload, { signal } = {}) {
     return data.response;
 }
 
-/**
- * Toggles MobileNavMenu open/closed - the hamburger's only job. Closes on
- * Escape or a click outside the panel, same "outside/Escape dismisses"
- * convention the confirm/prompt dialogs use elsewhere in this file.
- */
-document.addEventListener('click', (event) => {
-    const hamburger = document.querySelector('.NavHamburgerButton');
-    const mobile_menu = document.querySelector('.MobileNavMenu');
-
-    if (!hamburger || !mobile_menu) {
-        return;
-    }
-
-    if (event.target.closest('.NavHamburgerButton')) {
-        const open = mobile_menu.classList.toggle('Open');
-        hamburger.classList.toggle('Active', open);
-        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
-        return;
-    }
-
-    if (mobile_menu.classList.contains('Open') && !event.target.closest('.MobileNavMenu')) {
-        mobile_menu.classList.remove('Open');
-        hamburger.classList.remove('Active');
-        hamburger.setAttribute('aria-expanded', 'false');
-    }
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') {
-        return;
-    }
-
-    const mobile_menu = document.querySelector('.MobileNavMenu');
-    const hamburger = document.querySelector('.NavHamburgerButton');
-
-    if (mobile_menu && mobile_menu.classList.contains('Open')) {
-        mobile_menu.classList.remove('Open');
-        hamburger?.classList.remove('Active');
-        hamburger?.setAttribute('aria-expanded', 'false');
-    }
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     const composer = document.querySelector('.MessageComposer');
     const messages_page = document.querySelector('.MessagesPage');

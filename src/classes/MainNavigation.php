@@ -9,6 +9,28 @@ class MainNavigation extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
+        // Checkbox-hack toggle: the hamburger <label> flips this hidden checkbox,
+        // and the CSS below the nav breakpoint reveals the stacked menu while
+        // it's checked - so mobile navigation is pure CSS, no JS. Above the
+        // breakpoint both are hidden and the desktop hover-flyouts take over.
+        $toggle = new CheckboxInput();
+        $toggle -> id = 'NavToggle';
+        $toggle -> class = 'NavToggle';
+        $this -> addContent($toggle);
+
+        $hamburger = new Label();
+        $hamburger -> for = 'NavToggle';
+        $hamburger -> class = 'NavHamburger';
+        $hamburger -> attributes['aria-label'] = 'Menu';
+
+        for ($i = 0; $i < 3; $i++) {
+            $bar = new Div();
+            $bar -> class = 'NavHamburgerBar';
+            $hamburger -> addContent($bar);
+        }
+
+        $this -> addContent($hamburger);
+
         $brand = new Anchor(ServerURL::absolute('/'), Config::get('siteTitle'));
         $brand -> class = 'NavBrand';
 
@@ -18,9 +40,9 @@ class MainNavigation extends HTMLObject
         $account_links = new Div();
         $account_links -> class = 'd-flex gap-4 ms-auto NavAccount';
 
-        // The desktop hover-flyouts get one set of link instances; the mobile
-        // menu below gets its own fresh set - the same instance can't render
-        // into two places, since a rendered HTMLObject is one-shot.
+        // Desktop: a hover-flyout of the main menu hangs off the brand. Mobile:
+        // the same links render inline inside the toggled menu - one set of link
+        // instances, no duplicate mobile list.
         $this -> addContent(new NavDropdown($brand, $this -> mainMenuLinks()));
 
         if (Auth::check()) {
@@ -37,33 +59,19 @@ class MainNavigation extends HTMLObject
 
             $account_links -> addContent(new NavDropdown($account_trigger, $this -> accountMenuLinks()));
         } else {
-            // Logged-out visitors get Log in / Sign up as plain links, not a
-            // dropdown trigger.
+            // Logged-out visitors get Log in / Sign up as plain links.
             $account_links -> addContents($this -> accountMenuLinks());
         }
 
         $this -> addContent($site_links);
         $this -> addContent($account_links);
 
-        // Mobile: the two hover-flyouts above are hidden by CSS below the nav
-        // breakpoint (hover doesn't work well on touch, and a position:absolute
-        // flyout can't scroll independently of the page). This hamburger + panel
-        // is the mobile replacement: one tap-toggled, independently-scrollable
-        // list holding every link from BOTH flyouts, built fresh here.
-        $this -> addContent(new NavHamburgerButton());
-
-        $mobile_menu = new Div();
-        $mobile_menu -> class = 'MobileNavMenu';
-        $mobile_menu -> addContents(array_merge($this -> mainMenuLinks(), $this -> accountMenuLinks()));
-
-        $this -> addContent($mobile_menu);
-
         return parent::toDOM();
     }
 
     /**
-     * The brand/main-menu links, a fresh set of instances each call. Logged-out
-     * visitors get only the items that don't need an account.
+     * The brand/main-menu links. Logged-out visitors get only the items that
+     * don't need an account.
      *
      * @return Anchor[]
      */
@@ -95,7 +103,7 @@ class MainNavigation extends HTMLObject
     }
 
     /**
-     * The account-menu links, a fresh set of instances each call.
+     * The account-menu links.
      *
      * @return HTMLObject[]
      */

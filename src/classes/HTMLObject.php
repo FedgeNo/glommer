@@ -40,12 +40,14 @@ class HTMLObject
 
         if ($properties !== null) {
             foreach (is_array($properties) ? $properties : get_object_vars($properties) as $name => $value) {
-                // Never copy in the element's own presentation - its CSS class
-                // (each object derives its own from its type), its contents
-                // (each builds its own children), or its attributes - so handing
-                // it a wider source, e.g. a whole page, only ever transfers data
-                // properties, never clobbers what the object is or how it renders.
-                if ($name === 'class' || $name === 'contents' || $name === 'attributes') {
+                // Never copy in the element's own identity or presentation - its
+                // tag name (a Page is <html>, a User is <div>; a seed's tag must
+                // never clobber it), its CSS class (each object derives its own
+                // from its type), its contents (each builds its own children), or
+                // its attributes - so handing it a wider source, e.g. a whole
+                // page, only ever transfers data properties, never changes what
+                // the object is or how it renders.
+                if ($name === 'tagName' || $name === 'class' || $name === 'contents' || $name === 'attributes') {
                     continue;
                 }
 

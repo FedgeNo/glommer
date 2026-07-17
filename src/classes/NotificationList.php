@@ -21,7 +21,7 @@ class NotificationList extends Div
         parent::__construct($properties);
 
         $this -> contents = DB::rows('
-SELECT `n`.*, `u`.`username` AS `actorUsername`, `u`.`displayName` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
+SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
     WHERE `n`.`userId` = ?

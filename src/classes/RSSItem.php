@@ -68,7 +68,7 @@ class RSSItem
      */
     public static function fromPost(Post $post): self
     {
-        $author_username = $post -> author ?-> username ?? '';
+        $author_username = $post -> author ?-> slug ?? '';
         $link = ServerURL::absolute('/users/' . $author_username . '/' . $post -> postId);
 
         $description = $post -> description ?? '';

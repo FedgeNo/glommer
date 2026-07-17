@@ -4266,6 +4266,43 @@ if ($missing_statements === []) {
     ok('created ' . count($missing_statements) . ' missing table(s): ' . implode(', ', array_keys($missing_statements)));
 }
 
+// ---------- 4.5. Column renames (0.9.7 shared-vocabulary schema) ----------
+
+// The renames (username -> slug, displayName -> title, the hashtag/entity/type
+// columns) can't be expressed as drift - drift only ever adds or modifies a
+// column, never renames one - so they run as an explicit step, gated on the
+// database still being at a pre-0.9.7 version. It runs AFTER the missing tables
+// above (a very old database gets the table created at the new schema, and the
+// guarded rename then finds no old column to touch) and BEFORE the drift
+// section below (which would otherwise read the new names as missing columns
+// and add them empty, unique index and all). Every statement is individually
+// guarded (IF EXISTS / IF NOT EXISTS), so a re-run after a partial failure is
+// harmless.
+if ($fresh_install) {
+    ok('fresh install - no column renames to apply');
+} elseif (version_compare((string) Settings::get('appVersion'), '0.9.7', '<')) {
+    $rename_mysqli = admin_connection('rename columns to the 0.9.7 shared-vocabulary schema (slug/title/type)');
+
+    if ($rename_mysqli === null) {
+        fail(
+            'The database predates the 0.9.7 column renames and needs an admin account to apply them. '
+            . 'Set DB_ADMIN_USERNAME and DB_ADMIN_PASSWORD (an account with ALTER privileges) before re-running this script.'
+        );
+    }
+
+    try {
+        SchemaInstaller::applyRenameMigrations($rename_mysqli);
+    } catch (\mysqli_sql_exception $exception) {
+        fail('Failed to apply the 0.9.7 column renames: ' . $exception -> getMessage());
+    }
+
+    mysqli_close($rename_mysqli);
+
+    ok('applied the 0.9.7 column renames (slug/title/type shared vocabulary)');
+} else {
+    ok('column renames already applied (database at ' . Settings::get('appVersion') . ')');
+}
+
 // ---------- 5. Schema drift ----------
 
 // Foreign keys are pulled out of the drift here and applied in section 7, after

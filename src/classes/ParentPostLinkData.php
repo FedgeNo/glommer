@@ -9,5 +9,5 @@ class ParentPostLinkData
 {
     public ?string $title = null;
     public ?string $description = null;
-    public ?string $username = null;
+    public ?string $slug = null;
 }

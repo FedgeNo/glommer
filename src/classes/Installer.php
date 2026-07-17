@@ -143,33 +143,86 @@ INSERT INTO `Settings` (`name`, `value`)
     {
         $previous_ignore_user_abort = ignore_user_abort(true);
 
+        // One admin connection, opened lazily the first time a DDL step needs
+        // it and reused by every step after, then closed once in the finally.
+        $admin_connection = null;
+
+        $open_admin = function () use (&$admin_connection): bool {
+            if ($admin_connection !== null) {
+                return true;
+            }
+
+            $admin_username = Env::get('DB_ADMIN_USERNAME');
+            $admin_password = Env::get('DB_ADMIN_PASSWORD');
+
+            if ($admin_username === null || $admin_password === null) {
+                return false;
+            }
+
+            try {
+                $admin_connection = mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
+            } catch (\mysqli_sql_exception $exception) {
+                return false;
+            }
+
+            return true;
+        };
+
         try {
             try {
                 // A fresh database (none of the app's tables yet) gets the
                 // current schema created directly - the incremental drift/type
-                // migrations and data backfills only make sense against an
-                // already-installed database, so they're skipped here.
+                // migrations, column renames, and data backfills only make sense
+                // against an already-installed database, so they're skipped here.
                 $fresh = SchemaInstaller::isFreshInstall(DB::connection());
                 $missing_tables = SchemaInstaller::missingTables(DB::connection());
+            } catch (\mysqli_sql_exception | \RuntimeException $exception) {
+                return false;
+            }
+
+            // The column renames that landed in 0.9.7 (username -> slug, ...)
+            // can't be expressed as drift (which only ever adds or modifies,
+            // never renames), so they run as an explicit, version-gated step.
+            // They must run AFTER any missing table is created (a very old
+            // database might not have the table at all - createTables makes it
+            // at the new schema, and the guarded rename then finds no old column
+            // to rename) and BEFORE drift detection (which would otherwise see
+            // the new names as missing columns and try to add them empty, unique
+            // index and all). Every statement is individually guarded, so a
+            // retry after a partial failure is harmless.
+            $renames_pending = !$fresh && version_compare((string) Settings::get('appVersion'), '0.9.7', '<');
+
+            if ($missing_tables !== [] || $renames_pending) {
+                if (!$open_admin()) {
+                    return false;
+                }
+
+                try {
+                    SchemaInstaller::createTables($admin_connection, $missing_tables);
+
+                    if ($renames_pending) {
+                        SchemaInstaller::applyRenameMigrations($admin_connection);
+                    }
+                } catch (\mysqli_sql_exception $exception) {
+                    return false;
+                }
+            }
+
+            // Drift is computed only now, after any renames, so the renamed
+            // columns read as present rather than missing.
+            try {
                 $drift = $fresh ? [] : SchemaInstaller::missingDefinitions(DB::connection());
                 $needed_index_migrations = $fresh ? [] : SchemaInstaller::neededIndexMigrations(DB::connection());
             } catch (\mysqli_sql_exception | \RuntimeException $exception) {
                 return false;
             }
 
-            if ($missing_tables !== [] || $drift !== [] || $needed_index_migrations !== []) {
-                $admin_username = Env::get('DB_ADMIN_USERNAME');
-                $admin_password = Env::get('DB_ADMIN_PASSWORD');
-
-                if ($admin_username === null || $admin_password === null) {
+            if ($drift !== [] || $needed_index_migrations !== []) {
+                if (!$open_admin()) {
                     return false;
                 }
 
                 try {
-                    $admin_connection = mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
-
-                    SchemaInstaller::createTables($admin_connection, $missing_tables);
-
                     // Apply the drift in the right order for an old database:
                     // columns and indexes first, THEN the index/type migrations
                     // (which unsign old signed-int id columns), THEN the foreign
@@ -197,10 +250,6 @@ INSERT INTO `Settings` (`name`, `value`)
                     }
                 } catch (\mysqli_sql_exception $exception) {
                     return false;
-                } finally {
-                    if (isset($admin_connection)) {
-                        mysqli_close($admin_connection);
-                    }
                 }
             }
 
@@ -228,6 +277,10 @@ INSERT INTO `Settings` (`name`, `value`)
 
             return true;
         } finally {
+            if ($admin_connection !== null) {
+                mysqli_close($admin_connection);
+            }
+
             ignore_user_abort($previous_ignore_user_abort === 1);
         }
     }

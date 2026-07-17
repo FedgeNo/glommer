@@ -63,7 +63,7 @@ if ($errors === []) {
     $stmt = DB::run('
 SELECT `userId`
     FROM `Users`
-    WHERE `username` = ? OR `email` = ?
+    WHERE `slug` = ? OR `email` = ?
 ', 'ss', $username, $email);
     mysqli_stmt_store_result($stmt);
 
@@ -82,16 +82,16 @@ $display_name_value = $display_name !== '' ? $display_name : null;
 $unverified = 0;
 
 DB::run('
-INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verified`)
+INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `verified`)
     VALUES (?, ?, ?, ?, ?)
 ', 'ssssi', $username, $email, $hash, $display_name_value, $unverified);
 $new_user_id = (int) mysqli_insert_id($mysqli);
 
 $user = new User();
 $user -> userId = $new_user_id;
-$user -> username = $username;
+$user -> slug = $username;
 $user -> email = $email;
-$user -> displayName = $display_name_value;
+$user -> title = $display_name_value;
 $user -> verified = $unverified;
 
 Auth::login($user);

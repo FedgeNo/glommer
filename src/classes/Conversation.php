@@ -7,16 +7,16 @@ class Conversation extends Anchor
     public ?string $class = 'Card d-flex align-items-center gap-3 Conversation';
 
     public ?int $userId = null;
-    public ?string $username = null;
-    public ?string $displayName = null;
+    public ?string $slug = null;
+    public ?string $title = null;
     public int $hasAvatar = 0;
     public ?string $lastMessageAt = null;
 
     public function toDOM(): \DOMElement
     {
-        $this -> href = ServerURL::absolute('/messages/' . $this -> username);
+        $this -> href = ServerURL::absolute('/messages/' . $this -> slug);
 
-        $name = $this -> displayName ?? $this -> username;
+        $name = $this -> title ?? $this -> slug;
 
         $this -> contents[] = Avatar::create(
             (bool) $this -> hasAvatar,
@@ -33,7 +33,7 @@ class Conversation extends Anchor
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
-        $username_line -> contents[] = '@' . $this -> username;
+        $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> lastMessageAt !== null) {

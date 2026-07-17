@@ -14,20 +14,20 @@ class BannedTrendingEntity extends Div
 {
     public ?string $class = 'Card d-flex align-items-center gap-3 BannedTrendingEntity';
 
-    public ?string $entityType = null;
-    public ?string $entityValue = null;
+    public ?string $type = null;
+    public ?string $title = null;
     public ?string $reason = null;
     public ?string $bannedByUsername = null;
     public ?string $createdAt = null;
 
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['data-entity-type'] = (string) $this -> entityType;
-        $this -> attributes['data-entity-value'] = (string) $this -> entityValue;
+        $this -> attributes['data-entity-type'] = (string) $this -> type;
+        $this -> attributes['data-entity-value'] = (string) $this -> title;
 
         $info = new Div();
         $info -> class = 'd-flex flex-column gap-1';
-        $info -> addContent(new Paragraph($this -> entityValue . ' (' . $this -> entityType . ')'));
+        $info -> addContent(new Paragraph($this -> title . ' (' . $this -> type . ')'));
 
         $detail = new Paragraph();
         $detail -> class = 'Muted';
@@ -41,7 +41,7 @@ class BannedTrendingEntity extends Div
         $info -> addContent($detail);
         $this -> addContent($info);
 
-        $unban = new UnbanTrendingEntityButton((string) $this -> entityType, (string) $this -> entityValue);
+        $unban = new UnbanTrendingEntityButton((string) $this -> type, (string) $this -> title);
         $unban -> class = 'ms-auto ' . $unban -> class;
         $this -> addContent($unban);
 

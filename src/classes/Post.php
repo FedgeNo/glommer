@@ -79,7 +79,7 @@ class Post extends HTMLObject
             $action_bar = new PostActionBar();
             $action_bar -> postId = (int) $this -> postId;
             $action_bar -> postUserId = (int) $this -> userId;
-            $action_bar -> postUsername = $this -> author ?-> username;
+            $action_bar -> postUsername = $this -> author ?-> slug;
             $action_bar -> replyCount = $this -> replyCount;
             $action_bar -> likeCount = $this -> likeCount;
             $action_bar -> liked = $this -> liked;
@@ -163,7 +163,7 @@ class Post extends HTMLObject
                 $heading -> contents[] = $this -> title;
 
                 if ($this -> postId !== null && $this -> author !== null) {
-                    $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
+                    $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> slug . '/' . $this -> postId));
                     $title_link -> addContent($heading);
                     $content -> contents[] = $title_link;
                 } else {
@@ -214,7 +214,7 @@ class Post extends HTMLObject
     protected function seeMoreURL(): ?string
     {
         return $this -> postId !== null && $this -> author !== null
-            ? ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId)
+            ? ServerURL::absolute('/users/' . $this -> author -> slug . '/' . $this -> postId)
             : null;
     }
 
@@ -273,7 +273,7 @@ class Post extends HTMLObject
             return $text;
         }
 
-        $name = $this -> author !== null ? ($this -> author -> displayName ?? $this -> author -> username) : null;
+        $name = $this -> author !== null ? ($this -> author -> title ?? $this -> author -> slug) : null;
 
         return $name !== null ? 'Photo posted by ' . $name : 'Photo';
     }
@@ -286,7 +286,7 @@ class Post extends HTMLObject
         $byline -> addContent($this -> author -> header());
 
         if ($this -> createdAt !== null && $this -> postId !== null) {
-            $timestamp_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> username . '/' . $this -> postId));
+            $timestamp_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> slug . '/' . $this -> postId));
             $timestamp_link -> class = 'PostTimestamp Muted text-sm ms-auto';
 
             $timestamp_link -> addContent(new RelativeTime($this -> createdAt, 'M j, Y'));
@@ -384,7 +384,7 @@ DELETE
 
         // Only remove files once the rows are actually gone.
         foreach ($doomed_items as $item) {
-            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> itemType);
+            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
         }
     }
 
@@ -562,7 +562,7 @@ SELECT `postId`
 
         foreach ($this -> items as $item) {
             $items[] = [
-                'itemType' => $item -> itemType,
+                'itemType' => $item -> type,
                 'src' => $item -> srcURL(),
                 'image' => $item -> imageURL(),
             ];
@@ -594,8 +594,8 @@ SELECT `postId`
             'likeCount' => $like_count,
             'liked' => $liked,
             'bookmarked' => $bookmarked,
-            'authorUsername' => $this -> author ?-> username,
-            'authorDisplayName' => $this -> author ?-> displayName,
+            'authorUsername' => $this -> author ?-> slug,
+            'authorDisplayName' => $this -> author ?-> title,
             'authorImage' => $this -> author ?-> avatarURL(),
         ];
     }

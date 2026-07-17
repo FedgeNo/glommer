@@ -14,7 +14,7 @@ if ($profile_user === null) {
 }
 
 $user_id = (int) $profile_user -> userId;
-$name = $profile_user -> displayName ?? $profile_user -> username;
+$name = $profile_user -> title ?? $profile_user -> slug;
 
 $limit = 50;
 
@@ -28,7 +28,7 @@ SELECT *
 
 $site_title = Config::get('siteTitle');
 
-$feed = new RSSFeed('Posts by ' . $name . ' on ' . $site_title, ServerURL::absolute('/users/' . $profile_user -> username . '/'), 'Posts by ' . $name . ' on ' . $site_title);
+$feed = new RSSFeed('Posts by ' . $name . ' on ' . $site_title, ServerURL::absolute('/users/' . $profile_user -> slug . '/'), 'Posts by ' . $name . ' on ' . $site_title);
 
 foreach (Post::fromRowsWithItems($feed_rows) as $post) {
     $feed -> addItem(RSSItem::fromPost($post));

@@ -9,7 +9,7 @@ class FeedItem extends HTMLObject
 
     public ?int $itemId = null;
     public ?int $postId = null;
-    public ?string $itemType = self::class;
+    public ?string $type = self::class;
     public ?string $createdAt = null;
     public ?string $altText = null;
 
@@ -20,22 +20,22 @@ class FeedItem extends HTMLObject
 
     public function srcURL(): string
     {
-        return ServerURL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> itemType));
+        return ServerURL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> type));
     }
 
     public function imageURL(): ?string
     {
-        $path = UploadProcessor::thumbnailPath((int) $this -> itemId, (string) $this -> itemType);
+        $path = UploadProcessor::thumbnailPath((int) $this -> itemId, (string) $this -> type);
 
         return $path !== null ? ServerURL::absolute($path) : null;
     }
 
     public static function fromRow(FeedItemData $row): self
     {
-        $class = $row -> itemType ?? static::class;
+        $class = $row -> type ?? static::class;
 
         if (!is_string($class) || !class_exists($class) || !is_a($class, self::class, true)) {
-            throw new Exception('Unknown feed item type: ' . var_export($row -> itemType, true));
+            throw new Exception('Unknown feed item type: ' . var_export($row -> type, true));
         }
 
         // Set explicitly, one field at a time - a blind property-copy loop
@@ -45,7 +45,7 @@ class FeedItem extends HTMLObject
         $item = new $class();
         $item -> itemId = $row -> itemId;
         $item -> postId = $row -> postId;
-        $item -> itemType = $row -> itemType;
+        $item -> type = $row -> type;
         $item -> createdAt = $row -> createdAt;
 
         return $item;

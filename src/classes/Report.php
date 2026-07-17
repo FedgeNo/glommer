@@ -19,7 +19,7 @@ class Report
 
         try {
             DB::run('
-INSERT INTO `Reports` (`reporterId`, `targetType`, `targetId`, `reason`, `snapshot`)
+INSERT INTO `Reports` (`reporterId`, `type`, `targetId`, `reason`, `snapshot`)
     VALUES (?, ?, ?, ?, ?)
 ', 'isiss', $reporter_id, $target_type, $target_id, $reason, $snapshot_json);
         } catch (\mysqli_sql_exception $exception) {
@@ -129,8 +129,8 @@ UPDATE `' . $table . '`
 
             return [
                 'userId' => (int) $user -> userId,
-                'username' => $user -> username,
-                'displayName' => $user -> displayName,
+                'username' => $user -> slug,
+                'displayName' => $user -> title,
                 'hasAvatar' => (int) $user -> hasAvatar,
                 'createdAt' => $user -> createdAt,
             ];
@@ -188,13 +188,13 @@ SELECT `itemId`
     public static function backfillSnapshots(): void
     {
         $pending = DB::rows('
-SELECT `reportId`, `targetType`, `targetId`
+SELECT `reportId`, `type`, `targetId`
     FROM `Reports`
     WHERE `snapshot` IS NULL
 ', 'ReportData');
 
         foreach ($pending as $row) {
-            $snapshot = self::buildSnapshot((string) $row -> targetType, (int) $row -> targetId);
+            $snapshot = self::buildSnapshot((string) $row -> type, (int) $row -> targetId);
 
             if ($snapshot === null) {
                 continue;
@@ -255,7 +255,7 @@ SELECT 1
 
         if ($before_report_id !== null) {
             $rows = DB::rows('
-SELECT `r`.*, `u`.`username` AS `reporterUsername`
+SELECT `r`.*, `u`.`slug` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     WHERE `r`.`reportId` < ?
@@ -264,7 +264,7 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
 ', 'ReportData', 'ii', $before_report_id, $fetch_limit);
         } else {
             $rows = DB::rows('
-SELECT `r`.*, `u`.`username` AS `reporterUsername`
+SELECT `r`.*, `u`.`slug` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
@@ -284,7 +284,7 @@ SELECT `r`.*, `u`.`username` AS `reporterUsername`
     public static function find(int $report_id): ?ReportData
     {
         return DB::row('
-SELECT `targetType`, `targetId`
+SELECT `type`, `targetId`
     FROM `Reports`
     WHERE `reportId` = ?
 ', 'ReportData', 'i', $report_id);

@@ -39,7 +39,7 @@ if ($query === '') {
     $candidates = DB::rows('
 SELECT *
     FROM `Users`
-    WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `userId` != ? AND `banned` = ?
+    WHERE (`slug` LIKE ? OR `title` LIKE ?) AND `userId` != ? AND `banned` = ?
         AND (? = 0 OR `userId` < ?)
         AND NOT EXISTS (
             SELECT 1

@@ -230,7 +230,7 @@ foreach ($valid_files as $file) {
     // name the processed files after (no user-controlled filenames survive).
     $placeholder_item_type = 'ImageItem';
     DB::run('
-INSERT INTO `FeedItems` (`postId`, `itemType`)
+INSERT INTO `FeedItems` (`postId`, `type`)
     VALUES (?, ?)
 ', 'is', $post_id, $placeholder_item_type);
     $item_id = (int) mysqli_insert_id($mysqli);
@@ -248,14 +248,14 @@ DELETE
 
     DB::run('
 UPDATE `FeedItems`
-    SET `itemType` = ?
+    SET `type` = ?
     WHERE `itemId` = ?
 ', 'si', $result['itemType'], $item_id);
 
     $placeholder_row = new FeedItemData();
     $placeholder_row -> itemId = $item_id;
     $placeholder_row -> postId = $post_id;
-    $placeholder_row -> itemType = $result['itemType'];
+    $placeholder_row -> type = $result['itemType'];
 
     $items[] = FeedItem::fromRow($placeholder_row);
 }
@@ -263,7 +263,7 @@ UPDATE `FeedItems`
 if ($link_image_seed !== '') {
     $link_image_item_type = 'ImageItem';
     DB::run('
-INSERT INTO `FeedItems` (`postId`, `itemType`)
+INSERT INTO `FeedItems` (`postId`, `type`)
     VALUES (?, ?)
 ', 'is', $post_id, $link_image_item_type);
     $link_image_item_id = (int) mysqli_insert_id($mysqli);
@@ -273,7 +273,7 @@ INSERT INTO `FeedItems` (`postId`, `itemType`)
     $link_image_row = new FeedItemData();
     $link_image_row -> itemId = $link_image_item_id;
     $link_image_row -> postId = $post_id;
-    $link_image_row -> itemType = 'ImageItem';
+    $link_image_row -> type = 'ImageItem';
 
     $items[] = FeedItem::fromRow($link_image_row);
 }

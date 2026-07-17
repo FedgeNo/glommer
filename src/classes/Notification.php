@@ -86,8 +86,8 @@ class Notification extends HTMLObject
     protected function targetURL(): string
     {
         return match ($this -> type) {
-            'like', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/' . $this -> postId),
-            'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> username . '/friends'),
+            'like', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
+            'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/friends'),
             'friendAccepted' => ServerURL::absolute('/users/' . $this -> actorUsername . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actorUsername),
             // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
@@ -150,8 +150,8 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
                 'type' => $type,
                 'postId' => $post_id,
                 'createdAt' => date('Y-m-d H:i:s'),
-                'actorUsername' => $actor ?-> username,
-                'actorDisplayName' => $actor ?-> displayName,
+                'actorUsername' => $actor ?-> slug,
+                'actorDisplayName' => $actor ?-> title,
                 'actorImage' => $actor !== null && $actor -> hasAvatar ? ServerURL::absolute(User::avatarPath($actor_id)) : null,
             ],
         ]);

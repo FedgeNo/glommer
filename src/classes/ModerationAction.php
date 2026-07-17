@@ -16,7 +16,7 @@ class ModerationAction
         $moderator_id = (int) Auth::id();
 
         DB::run('
-INSERT INTO `ModerationActions` (`moderatorId`, `action`, `targetUserId`, `targetType`, `targetId`, `reportId`)
+INSERT INTO `ModerationActions` (`moderatorId`, `action`, `targetUserId`, `type`, `targetId`, `reportId`)
     VALUES (?, ?, ?, ?, ?, ?)
 ', 'isisii', $moderator_id, $action, $target_user_id, $target_type, $target_id, $report_id);
     }

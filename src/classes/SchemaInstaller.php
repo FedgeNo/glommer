@@ -110,6 +110,75 @@ SELECT `TABLE_NAME`
     }
 
     /**
+     * The one-time column renames that brought in the shared-vocabulary schema
+     * (username -> slug, displayName -> title plus a new description bio; the
+     * hashtag tag -> slug + new title; the entity/type columns). These can't go
+     * through the drift/index-migration machinery - that only ever ADDs or
+     * MODIFYs, never CHANGEs a column's name, so it would see the new names as
+     * missing columns and add them empty alongside the untouched old ones.
+     *
+     * Every statement is individually guarded (IF EXISTS / IF NOT EXISTS), so
+     * it's safe against a very old database missing some of these tables/columns
+     * entirely (createTables will have just created any missing table at the
+     * NEW schema, whose old column names then simply aren't there to rename) and
+     * safe to re-run after a partial failure. Ordered so each new column is
+     * backfilled before a unique key is put on it (an empty slug across every
+     * row would collide). Run gated on the app version, after createTables and
+     * before drift detection.
+     *
+     * @return string[]
+     */
+    public static function renameMigrationStatements(): array
+    {
+        return [
+            'ALTER TABLE `Users` CHANGE COLUMN IF EXISTS `username` `slug` varchar(50) NOT NULL',
+            'ALTER TABLE `Users` RENAME INDEX IF EXISTS `username` TO `slug`',
+            'ALTER TABLE `Users` CHANGE COLUMN IF EXISTS `displayName` `title` varchar(100) DEFAULT NULL',
+            'ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `description` text DEFAULT NULL AFTER `title`',
+            'ALTER TABLE `Hashtags` CHANGE COLUMN IF EXISTS `tag` `slug` varchar(64) NOT NULL',
+            'ALTER TABLE `Hashtags` RENAME INDEX IF EXISTS `tag` TO `slug`',
+            'ALTER TABLE `Hashtags` ADD COLUMN IF NOT EXISTS `title` varchar(64) NOT NULL DEFAULT \'\' AFTER `slug`',
+            'UPDATE `Hashtags` SET `title` = `slug` WHERE `title` = \'\'',
+            'ALTER TABLE `FeedItems` CHANGE COLUMN IF EXISTS `itemType` `type` varchar(50) NOT NULL',
+            'ALTER TABLE `Reports` CHANGE COLUMN IF EXISTS `targetType` `type` varchar(16) NOT NULL',
+            'ALTER TABLE `TrendingEntities` CHANGE COLUMN IF EXISTS `entityType` `type` varchar(16) NOT NULL',
+            'ALTER TABLE `TrendingEntities` CHANGE COLUMN IF EXISTS `entityValue` `title` varchar(255) NOT NULL',
+            'ALTER TABLE `TrendingEntities` ADD COLUMN IF NOT EXISTS `slug` varchar(255) NOT NULL DEFAULT \'\' AFTER `type`',
+            'UPDATE `TrendingEntities` SET `slug` = LOWER(`title`) WHERE `slug` = \'\'',
+            'ALTER TABLE `TrendingEntities` DROP INDEX IF EXISTS `entityType_entityValue`',
+            'ALTER TABLE `TrendingEntities` ADD UNIQUE INDEX IF NOT EXISTS `type_slug` (`type`, `slug`)',
+            'ALTER TABLE `BannedTrendingEntities` CHANGE COLUMN IF EXISTS `entityType` `type` varchar(16) NOT NULL',
+            'ALTER TABLE `BannedTrendingEntities` CHANGE COLUMN IF EXISTS `entityValue` `title` varchar(255) NOT NULL',
+            'ALTER TABLE `BannedTrendingEntities` ADD COLUMN IF NOT EXISTS `slug` varchar(255) NOT NULL DEFAULT \'\' AFTER `type`',
+            'UPDATE `BannedTrendingEntities` SET `slug` = LOWER(`title`) WHERE `slug` = \'\'',
+            'ALTER TABLE `BannedTrendingEntities` DROP PRIMARY KEY, ADD PRIMARY KEY (`type`, `slug`)',
+            'ALTER TABLE `ModerationActions` CHANGE COLUMN IF EXISTS `targetType` `type` varchar(16) DEFAULT NULL',
+            // The three columns added above needed a DEFAULT '' so existing rows
+            // had a value before being backfilled; drop it now they're filled, so
+            // an upgraded database matches a fresh one (whose schema.sql CREATE
+            // declares these plainly NOT NULL). Drift detection compares column
+            // existence, not defaults, so it wouldn't reconcile this otherwise.
+            'ALTER TABLE `Hashtags` MODIFY COLUMN IF EXISTS `title` varchar(64) NOT NULL',
+            'ALTER TABLE `TrendingEntities` MODIFY COLUMN IF EXISTS `slug` varchar(255) NOT NULL',
+            'ALTER TABLE `BannedTrendingEntities` MODIFY COLUMN IF EXISTS `slug` varchar(255) NOT NULL',
+        ];
+    }
+
+    /**
+     * Runs renameMigrationStatements(). The caller gates this on the app
+     * version (so it only runs while upgrading through the rename), but every
+     * statement is also individually idempotent, so a re-run after a partial
+     * failure is harmless. Must run BEFORE any drift check (missingDefinitions),
+     * or the new names look like missing columns.
+     */
+    public static function applyRenameMigrations(\mysqli $admin_connection): void
+    {
+        foreach (self::renameMigrationStatements() as $statement) {
+            mysqli_query($admin_connection, $statement);
+        }
+    }
+
+    /**
      * The idempotent index migrations in schema.sql (ALTER TABLE ... ADD/DROP
      * INDEX IF NOT EXISTS/IF EXISTS, and MODIFY COLUMN column-type fixes) -
      * DDL, so unlike maintenanceStatements() these need admin privileges.

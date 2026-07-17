@@ -65,7 +65,7 @@ SELECT `Posts`.*
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`tag` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
 ', 'Post', 'siii', (string) $this -> tag, $not_banned, $cursor, $limit),

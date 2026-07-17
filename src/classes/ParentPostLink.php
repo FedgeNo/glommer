@@ -22,7 +22,7 @@ class ParentPostLink extends HTMLObject
     public static function fromParentId(int $parent_id): ?self
     {
         $parent = DB::row('
-SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
+SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`slug`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`postId` = ?
@@ -39,7 +39,7 @@ SELECT `Posts`.`title`, `Posts`.`description`, `Users`.`username`
 
         $link = new self();
         $link -> parentId = $parent_id;
-        $link -> parentUsername = $parent -> username;
+        $link -> parentUsername = $parent -> slug;
         $link -> parentLabel = $parent -> title ?? ($description !== '' ? mb_substr($description, 0, 60) : 'this post');
 
         return $link;

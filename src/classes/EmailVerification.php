@@ -19,7 +19,7 @@ class EmailVerification
 
         $verify_url = ServerURL::absolute('/verify-email?token=' . $token);
 
-        $name = $user -> displayName ?? $user -> username;
+        $name = $user -> title ?? $user -> slug;
 
         $text_body = 'Hi ' . $name . ',
 

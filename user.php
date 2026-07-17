@@ -19,7 +19,7 @@ if ($user_id === Auth::id()) {
     $profile_user = new CurrentUser();
 }
 
-$name = $profile_user -> displayName ?? $profile_user -> username;
+$name = $profile_user -> title ?? $profile_user -> slug;
 
 $json_ld = [
     '@context' => 'https://schema.org',
@@ -34,7 +34,7 @@ if ($profile_user -> avatarURL() !== null) {
 
 $page = Page::create($name, 'Posts by ' . $name . ' on Glommer', $profile_user -> avatarURL(), $json_ld, needsMath: true);
 
-$page -> addMetaContent(new RSSLink(ServerURL::absolute('/users/' . $profile_user -> username . '/feed.xml'), $name . ' - RSS Feed'));
+$page -> addMetaContent(new RSSLink(ServerURL::absolute('/users/' . $profile_user -> slug . '/feed.xml'), $name . ' - RSS Feed'));
 
 $page -> addContent($profile_user);
 

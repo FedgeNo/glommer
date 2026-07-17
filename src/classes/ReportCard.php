@@ -10,7 +10,7 @@ class ReportCard extends HTMLObject
     public ?int $reportId = null;
     public ?int $reporterId = null;
     public ?string $reporterUsername = null;
-    public ?string $targetType = null;
+    public ?string $type = null;
     public ?int $targetId = null;
     public ?string $reason = null;
     public ?string $createdAt = null;
@@ -41,7 +41,7 @@ class ReportCard extends HTMLObject
         $details -> class = 'ReportDetails d-flex flex-column gap-2';
 
         $summary = new Div();
-        $summary -> contents[] = ucfirst((string) $this -> targetType) . ' #' . $this -> targetId . ' reported by ';
+        $summary -> contents[] = ucfirst((string) $this -> type) . ' #' . $this -> targetId . ' reported by ';
         $summary -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
         $details -> addContent($summary);
 
@@ -81,8 +81,8 @@ class ReportCard extends HTMLObject
 
         // Only offer Delete when the live post/message still exists (a snapshot
         // of already-deleted content still shows, but has nothing to delete).
-        if ($this -> targetLive && ($this -> targetType === 'post' || $this -> targetType === 'message')) {
-            $actions -> addContent(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> targetType)));
+        if ($this -> targetLive && ($this -> type === 'post' || $this -> type === 'message')) {
+            $actions -> addContent(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> type)));
         }
 
         $actions -> addContent(new DismissReportButton((int) $this -> reportId));
@@ -98,7 +98,7 @@ class ReportCard extends HTMLObject
         $card -> reportId = (int) $row -> reportId;
         $card -> reporterId = (int) $row -> reporterId;
         $card -> reporterUsername = $row -> reporterUsername;
-        $card -> targetType = $row -> targetType;
+        $card -> type = $row -> type;
         $card -> targetId = (int) $row -> targetId;
         $card -> reason = $row -> reason;
         $card -> createdAt = $row -> createdAt;
@@ -108,9 +108,9 @@ class ReportCard extends HTMLObject
 
         // A live existence check, not the snapshot: only live post/message content
         // is deletable, and a deleted post renders its reported media forensically.
-        $card -> targetLive = Report::contentExists($card -> targetType, $card -> targetId);
+        $card -> targetLive = Report::contentExists($card -> type, $card -> targetId);
 
-        ['userId' => $card -> targetUserId, 'kind' => $card -> targetKind, 'data' => $card -> targetData] = self::resolveFromSnapshot($card -> targetType, $snapshot, $card -> targetLive);
+        ['userId' => $card -> targetUserId, 'kind' => $card -> targetKind, 'data' => $card -> targetData] = self::resolveFromSnapshot($card -> type, $snapshot, $card -> targetLive);
 
         if ($card -> targetKind === 'post' && !$card -> targetLive && $snapshot !== null) {
             $card -> forensicAttachmentIds = array_map('intval', $snapshot['attachmentIds'] ?? []);
@@ -118,7 +118,7 @@ class ReportCard extends HTMLObject
 
         // The target user must still exist to be bannable.
         if ($card -> targetUserId !== null) {
-            $card -> targetUsername = User::load($card -> targetUserId) ?-> username;
+            $card -> targetUsername = User::load($card -> targetUserId) ?-> slug;
         }
 
         return $card;
@@ -137,7 +137,7 @@ class ReportCard extends HTMLObject
             'reportId' => $this -> reportId,
             'reporterId' => $this -> reporterId,
             'reporterUsername' => $this -> reporterUsername,
-            'targetType' => $this -> targetType,
+            'targetType' => $this -> type,
             'targetId' => $this -> targetId,
             'reason' => $this -> reason,
             'createdAt' => $this -> createdAt,
@@ -279,8 +279,8 @@ class ReportCard extends HTMLObject
             // passwordHash, which must never reach a moderator's console.
             return ['kind' => 'user', 'user' => [
                 'userId' => (int) $user -> userId,
-                'username' => $user -> username,
-                'displayName' => $user -> displayName,
+                'username' => $user -> slug,
+                'displayName' => $user -> title,
                 'image' => $user -> avatarURL(),
                 'createdAt' => $user -> createdAt,
             ]];

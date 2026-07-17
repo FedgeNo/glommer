@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class VideoItem extends FeedItem
 {
-    public ?string $itemType = self::class;
+    public ?string $type = self::class;
 
     public function toDOM(): \DOMElement
     {

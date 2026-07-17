@@ -68,7 +68,7 @@ INSERT INTO `TwoFactorCodes` (`userId`, `codeHash`, `expiresAt`, `attempts`)
     ON DUPLICATE KEY UPDATE `codeHash` = VALUES(`codeHash`), `expiresAt` = VALUES(`expiresAt`), `attempts` = ?, `createdAt` = NOW()
 ', 'isiii', $user_id, $code_hash, $ttl_minutes, $initial_attempts, $reset_attempts);
 
-        $name = $user -> displayName ?? $user -> username;
+        $name = $user -> title ?? $user -> slug;
 
         $text_body = 'Hi ' . $name . ',
 

@@ -22,7 +22,7 @@ $is_own = Auth::id() === (int) $profile_user -> userId;
 if ($is_own) {
     $profile_user = new CurrentUser();
 }
-$name = $profile_user -> displayName ?? $profile_user -> username;
+$name = $profile_user -> title ?? $profile_user -> slug;
 
 $page = Page::create($name . '\'s Friends', 'Friends of ' . $name . ' on Glommer', $profile_user -> avatarURL());
 

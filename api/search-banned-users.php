@@ -31,7 +31,7 @@ $limit = 20;
 $users = DB::rows('
 SELECT *
     FROM `Users`
-    WHERE (`username` LIKE ? OR `displayName` LIKE ?) AND `banned` = ?
+    WHERE (`slug` LIKE ? OR `title` LIKE ?) AND `banned` = ?
     ORDER BY `userId` DESC
     LIMIT ?
 ', 'User', 'ssii', $like, $like, $banned, $limit);

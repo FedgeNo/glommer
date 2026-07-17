@@ -21,7 +21,7 @@ if ($post === null) {
 
 $post = Post::fromRowWithItems($post);
 
-if ($post -> author === null || $post -> author -> username !== $username || $post -> author -> banned) {
+if ($post -> author === null || $post -> author -> slug !== $username || $post -> author -> banned) {
     require __DIR__ . '/404.php';
     exit;
 }
@@ -35,7 +35,7 @@ $json_ld = [
     'url' => Page::currentURL(),
     'author' => [
         '@type' => 'Person',
-        'name' => $post -> author !== null ? ($post -> author -> displayName ?? $post -> author -> username) : null,
+        'name' => $post -> author !== null ? ($post -> author -> title ?? $post -> author -> slug) : null,
     ],
 ];
 

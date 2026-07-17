@@ -13,10 +13,11 @@
 
 CREATE TABLE `Users` (
   `userId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
+  `slug` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `passwordHash` varchar(255) NOT NULL,
-  `displayName` varchar(100) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `hasAvatar` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `banned` tinyint(1) NOT NULL DEFAULT 0,
@@ -30,7 +31,7 @@ CREATE TABLE `Users` (
   `friendCount` int(10) unsigned NOT NULL DEFAULT 0,
   `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`userId`),
-  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `email` (`email`),
   KEY `banned_userId` (`banned`,`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -57,9 +58,10 @@ CREATE TABLE `Posts` (
 
 CREATE TABLE `Hashtags` (
   `hashtagId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tag` varchar(64) NOT NULL,
+  `slug` varchar(64) NOT NULL,
+  `title` varchar(64) NOT NULL,
   PRIMARY KEY (`hashtagId`),
-  UNIQUE KEY `tag` (`tag`)
+  UNIQUE KEY `slug` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `PostHashtags` (
@@ -83,7 +85,7 @@ CREATE TABLE `PostMentions` (
 CREATE TABLE `FeedItems` (
   `itemId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `postId` int(10) unsigned NOT NULL,
-  `itemType` varchar(50) NOT NULL,
+  `type` varchar(50) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`itemId`),
   KEY `fk_feeditems_post` (`postId`),
@@ -171,13 +173,13 @@ CREATE TABLE `Notifications` (
 CREATE TABLE `Reports` (
   `reportId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `reporterId` int(10) unsigned NOT NULL,
-  `targetType` varchar(16) NOT NULL,
+  `type` varchar(16) NOT NULL,
   `targetId` int(10) unsigned NOT NULL,
   `reason` text DEFAULT NULL,
   `snapshot` longtext DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`reportId`),
-  UNIQUE KEY `reporter_target` (`reporterId`,`targetType`,`targetId`)
+  UNIQUE KEY `reporter_target` (`reporterId`,`type`,`targetId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailVerifications` (
@@ -316,7 +318,7 @@ CREATE TABLE `ModerationActions` (
   `moderatorId` int(10) unsigned NOT NULL,
   `action` varchar(32) NOT NULL,
   `targetUserId` int(10) unsigned DEFAULT NULL,
-  `targetType` varchar(16) DEFAULT NULL,
+  `type` varchar(16) DEFAULT NULL,
   `targetId` int(10) unsigned DEFAULT NULL,
   `reportId` int(10) unsigned DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
@@ -333,14 +335,15 @@ CREATE TABLE `ModerationActions` (
 -- a stable single id to act on a trending row by.
 CREATE TABLE `TrendingEntities` (
   `entityId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `entityType` varchar(16) NOT NULL,
-  `entityValue` varchar(255) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `score` double NOT NULL,
   `postCount` int(10) unsigned NOT NULL,
   `userCount` int(10) unsigned NOT NULL,
   `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`entityId`),
-  UNIQUE KEY `entityType_entityValue` (`entityType`,`entityValue`),
+  UNIQUE KEY `type_slug` (`type`,`slug`),
   KEY `score` (`score`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -349,12 +352,13 @@ CREATE TABLE `TrendingEntities` (
 -- entirely, not just hidden after the fact) and survives falling out of the
 -- trending window too (still banned if it becomes active again later).
 CREATE TABLE `BannedTrendingEntities` (
-  `entityType` varchar(16) NOT NULL,
-  `entityValue` varchar(255) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `bannedBy` int(10) unsigned NOT NULL,
   `reason` text DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`entityType`,`entityValue`),
+  PRIMARY KEY (`type`,`slug`),
   KEY `bannedBy` (`bannedBy`),
   CONSTRAINT `BannedTrendingEntities_ibfk_1` FOREIGN KEY (`bannedBy`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

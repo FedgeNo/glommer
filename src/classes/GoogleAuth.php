@@ -219,15 +219,15 @@ UPDATE `Users`
         $verified = 1;
 
         DB::run('
-INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verified`)
+INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `verified`)
     VALUES (?, ?, ?, ?, ?)
 ', 'ssssi', $username, $email, $hash, $display_name, $verified);
 
         $user = new User();
         $user -> userId = (int) mysqli_insert_id($mysqli);
-        $user -> username = $username;
+        $user -> slug = $username;
         $user -> email = $email;
-        $user -> displayName = $display_name;
+        $user -> title = $display_name;
         $user -> verified = $verified;
 
         return $user;
@@ -259,7 +259,7 @@ INSERT INTO `Users` (`username`, `email`, `passwordHash`, `displayName`, `verifi
             $stmt = DB::run('
 SELECT 1
     FROM `Users`
-    WHERE `username` = ?
+    WHERE `slug` = ?
 ', 's', $candidate);
             mysqli_stmt_store_result($stmt);
 

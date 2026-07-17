@@ -107,7 +107,7 @@ class Page
 
         $page -> addContent(new JSGlobals([
             'currentUserId' => $current_user ?-> userId,
-            'currentUserUsername' => $current_user ?-> username,
+            'currentUserUsername' => $current_user ?-> slug,
             'currentUserSkinTone' => $current_user ?-> skinTone,
             'currentUserCanModerate' => Auth::canModerate(),
             'CSRFToken' => CSRF::token(),

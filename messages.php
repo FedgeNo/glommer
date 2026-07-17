@@ -22,7 +22,7 @@ if ($username === '') {
     // heavy-sending account. The halves collapse to one row per partner
     // (their latest message) before the join to Users for display.
     $conversations = DB::rows('
-SELECT `u`.`userId`, `u`.`username`, `u`.`displayName`, `u`.`hasAvatar`, `partners`.`lastMessageAt`
+SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `partners`.`lastMessageAt`
     FROM (
         SELECT `partnerId`, MAX(`createdAt`) AS `lastMessageAt`
             FROM (
@@ -65,7 +65,7 @@ if ($other_user === null || $other_user -> banned !== 0) {
 }
 
 $other_user_id = $other_user -> userId;
-$name = $other_user -> displayName ?? $other_user -> username;
+$name = $other_user -> title ?? $other_user -> slug;
 
 $page = Page::create('Messages with ' . $name, needsMath: true, needsEmoji: true, body_class: 'MessagesPage');
 
@@ -77,13 +77,13 @@ if (Block::exists($current_user -> userId, $other_user_id)) {
 
 $conversation_users = [
     $current_user -> userId => [
-        'username' => $current_user -> username,
-        'displayName' => $current_user -> displayName,
+        'username' => $current_user -> slug,
+        'displayName' => $current_user -> title,
         'image' => $current_user -> avatarURL(),
     ],
     $other_user -> userId => [
-        'username' => $other_user -> username,
-        'displayName' => $other_user -> displayName,
+        'username' => $other_user -> slug,
+        'displayName' => $other_user -> title,
         'image' => $other_user -> avatarURL(),
     ],
 ];

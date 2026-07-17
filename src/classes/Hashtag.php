@@ -84,10 +84,10 @@ UPDATE `Posts`
 
         foreach ($tags as $tag) {
             DB::run('
-INSERT INTO `Hashtags` (`tag`)
-    VALUES (?)
+INSERT INTO `Hashtags` (`slug`, `title`)
+    VALUES (?, ?)
     ON DUPLICATE KEY UPDATE `hashtagId` = LAST_INSERT_ID(`hashtagId`)
-', 's', $tag);
+', 'ss', $tag, $tag);
             $hashtag_id = (int) mysqli_insert_id($mysqli);
 
             DB::run('
@@ -140,14 +140,14 @@ UPDATE `Posts`
         $not_banned = 0;
 
         return DB::rows('
-SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
+SELECT `Hashtags`.`slug`, `Hashtags`.`title`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     GROUP BY `Hashtags`.`hashtagId`
-    ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
+    ORDER BY `postCount` DESC, `Hashtags`.`slug` ASC
     LIMIT ?
 ', 'HashtagChip', 'ii', $not_banned, $limit);
     }
@@ -165,14 +165,14 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
         $days = 7;
 
         return DB::rows('
-SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
+SELECT `Hashtags`.`slug`, `Hashtags`.`title`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`createdAt` >= NOW() - INTERVAL ? DAY
     GROUP BY `Hashtags`.`hashtagId`
-    ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
+    ORDER BY `postCount` DESC, `Hashtags`.`slug` ASC
     LIMIT ?
 ', 'HashtagChip', 'iii', $not_banned, $days, $limit);
     }
@@ -195,14 +195,14 @@ SELECT `Hashtags`.`tag`, COUNT(*) AS `postCount`
         $not_banned = 0;
 
         $nodes = DB::rows('
-SELECT `Hashtags`.`hashtagId`, `Hashtags`.`tag`, COUNT(*) AS `postCount`
+SELECT `Hashtags`.`hashtagId`, `Hashtags`.`slug`, `Hashtags`.`title`, COUNT(*) AS `postCount`
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     GROUP BY `Hashtags`.`hashtagId`
-    ORDER BY `postCount` DESC, `Hashtags`.`tag` ASC
+    ORDER BY `postCount` DESC, `Hashtags`.`slug` ASC
     LIMIT ?
 ', 'HashtagNode', 'ii', $not_banned, $limit);
 

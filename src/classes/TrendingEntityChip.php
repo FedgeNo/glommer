@@ -20,15 +20,15 @@ class TrendingEntityChip extends Div
     public ?string $class = 'TrendingEntityChip d-flex align-items-center gap-1';
 
     public ?int $entityId = null;
-    public ?string $entityType = null;
-    public ?string $entityValue = null;
+    public ?string $type = null;
+    public ?string $title = null;
     public float $score = 0.0;
     public ?int $postCount = null;
     public int $userCount = 0;
 
     public function toDOM(): \DOMElement
     {
-        $link = new Anchor(ServerURL::absolute('/search?q=' . urlencode((string) $this -> entityValue)), $this -> entityValue);
+        $link = new Anchor(ServerURL::absolute('/search?q=' . urlencode((string) $this -> title)), $this -> title);
         $link -> class = 'TrendingEntityLink';
 
         if ($this -> postCount !== null) {
@@ -41,7 +41,7 @@ class TrendingEntityChip extends Div
         $this -> addContent($link);
 
         if (Auth::canModerate()) {
-            $this -> addContent(new BanTrendingEntityButton((string) $this -> entityType, (string) $this -> entityValue));
+            $this -> addContent(new BanTrendingEntityButton((string) $this -> type, (string) $this -> title));
         }
 
         return parent::toDOM();

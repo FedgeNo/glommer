@@ -11,13 +11,14 @@ class HashtagChip extends Anchor
 {
     public ?string $class = 'HashtagChip';
 
-    public ?string $tag = null;
+    public ?string $slug = null;
+    public ?string $title = null;
     public ?int $postCount = null;
 
     public function toDOM(): \DOMElement
     {
-        $this -> href = ServerURL::absolute('/tags/' . $this -> tag);
-        $this -> contents[] = '#' . $this -> tag;
+        $this -> href = ServerURL::absolute('/tags/' . $this -> slug);
+        $this -> contents[] = '#' . $this -> title;
 
         if ($this -> postCount !== null) {
             $count_span = new Span();

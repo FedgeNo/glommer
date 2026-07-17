@@ -16,13 +16,14 @@ class HashtagNode extends Anchor
     public ?string $class = 'HashtagNode';
 
     public ?int $hashtagId = null;
-    public ?string $tag = null;
+    public ?string $slug = null;
+    public ?string $title = null;
     public int $postCount = 0;
 
     public function toDOM(): \DOMElement
     {
-        $this -> href = ServerURL::absolute('/tags/' . $this -> tag);
-        $this -> contents[] = '#' . $this -> tag;
+        $this -> href = ServerURL::absolute('/tags/' . $this -> slug);
+        $this -> contents[] = '#' . $this -> title;
         $this -> attributes['data-count'] = (string) $this -> postCount;
 
         return parent::toDOM();

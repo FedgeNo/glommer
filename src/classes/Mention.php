@@ -176,7 +176,7 @@ INSERT IGNORE INTO `PostMentions` (`postId`, `userId`)
         $stmt = DB::run('
 SELECT `userId`
     FROM `Users`
-    WHERE `username` IN (' . $placeholders . ')
+    WHERE `slug` IN (' . $placeholders . ')
 ', str_repeat('s', count($usernames)), ...$usernames);
         $result = mysqli_stmt_get_result($stmt);
 

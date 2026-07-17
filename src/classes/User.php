@@ -11,10 +11,11 @@ class User extends HTMLObject
     public ?string $class = 'User Card';
 
     public ?int $userId = null;
-    public ?string $username = null;
+    public ?string $slug = null;
     public ?string $email = null;
     public ?string $passwordHash = null;
-    public ?string $displayName = null;
+    public ?string $title = null;
+    public ?string $description = null;
     public int $hasAvatar = 0;
     public ?string $createdAt = null;
     public int $banned = 0;
@@ -30,15 +31,15 @@ class User extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
-        $name = $this -> displayName ?? $this -> username;
+        $name = $this -> title ?? $this -> slug;
 
-        if ($this -> username !== null) {
-            $this -> attributes['data-username'] = $this -> username;
+        if ($this -> slug !== null) {
+            $this -> attributes['data-username'] = $this -> slug;
         }
 
         // The whole identity block - avatar, name, username, and joined date -
         // is one link to the profile (same as header(), just the fuller card).
-        $link = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/'));
+        $link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
         $link -> class = 'UserLink';
 
         $link -> addContent(Avatar::forUser($this));
@@ -51,7 +52,7 @@ class User extends HTMLObject
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
-        $username_line -> contents[] = '@' . $this -> username;
+        $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> createdAt !== null) {
@@ -75,9 +76,9 @@ class User extends HTMLObject
      */
     public function header(): HTMLObject
     {
-        $name = $this -> displayName ?? $this -> username;
+        $name = $this -> title ?? $this -> slug;
 
-        $header = new Anchor(ServerURL::absolute('/users/' . $this -> username . '/'));
+        $header = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
         $header -> class = 'd-flex align-items-center gap-3';
 
         $header -> addContent(Avatar::forUser($this));
@@ -91,7 +92,7 @@ class User extends HTMLObject
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
-        $username_line -> contents[] = '@' . $this -> username;
+        $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         $header -> addContent($info);
@@ -166,7 +167,7 @@ SELECT *
         return DB::row('
 SELECT *
     FROM `Users`
-    WHERE `username` = ?
+    WHERE `slug` = ?
 ', 'User', 's', $username);
     }
 
@@ -182,7 +183,7 @@ SELECT *
         $user = DB::row('
 SELECT *
     FROM `Users`
-    WHERE `username` = ?
+    WHERE `slug` = ?
 ', 'OtherUser', 's', $username);
 
         if (!$user instanceof OtherUser || $user -> banned) {
@@ -573,7 +574,7 @@ DELETE
 
         // Only remove files once the rows are actually gone.
         foreach ($doomed_items as $item) {
-            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> itemType);
+            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
         }
 
         $avatar_dir = __DIR__ . '/../../uploads/avatars';

@@ -45,7 +45,7 @@ UNION ALL
         // The default message is first-person, for your own friends page; a
         // third party's empty friends list names them instead.
         if (Auth::id() !== $user_id) {
-            $this -> emptyMessage = ($this -> user -> displayName ?? $this -> user -> username) . ' hasn\'t got any friends yet.';
+            $this -> emptyMessage = ($this -> user -> title ?? $this -> user -> slug) . ' hasn\'t got any friends yet.';
         }
     }
 }

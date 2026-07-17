@@ -293,7 +293,7 @@ SELECT `userId`
         foreach ($survivors as $file) {
             $item_type = $file['itemType'];
             DB::run('
-INSERT INTO `FeedItems` (`postId`, `itemType`)
+INSERT INTO `FeedItems` (`postId`, `type`)
     VALUES (?, ?)
 ', 'is', $post_id, $item_type);
             $item_id = (int) mysqli_insert_id($mysqli);

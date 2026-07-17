@@ -11,7 +11,7 @@ class ReportData
 {
     public ?int $reportId = null;
     public ?int $reporterId = null;
-    public ?string $targetType = null;
+    public ?string $type = null;
     public ?int $targetId = null;
     public ?string $reason = null;
     public ?string $snapshot = null;

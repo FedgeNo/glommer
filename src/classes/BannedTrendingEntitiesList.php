@@ -14,7 +14,7 @@ class BannedTrendingEntitiesList extends Div
     public function toDOM(): \DOMElement
     {
         $this -> addContents(DB::rows('
-SELECT `BannedTrendingEntities`.`entityType`, `BannedTrendingEntities`.`entityValue`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`username` AS `bannedByUsername`
+SELECT `BannedTrendingEntities`.`type`, `BannedTrendingEntities`.`title`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`slug` AS `bannedByUsername`
     FROM `BannedTrendingEntities`
     JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
     ORDER BY `BannedTrendingEntities`.`createdAt` DESC

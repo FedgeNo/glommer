@@ -81,7 +81,7 @@ class Trending
         }
 
         return DB::rows('
-SELECT `entityId`, `entityType`, `entityValue`, `score`, `postCount`, `userCount`
+SELECT `entityId`, `type`, `title`, `score`, `postCount`, `userCount`
     FROM `TrendingEntities`
     ORDER BY `score` DESC
     LIMIT ?
@@ -187,10 +187,10 @@ SELECT `Posts`.*
             $entity['score'] = array_sum($entity['userWeights']);
 
             DB::run('
-INSERT INTO `TrendingEntities` (`entityType`, `entityValue`, `score`, `postCount`, `userCount`, `computedAt`)
-    VALUES (?, ?, ?, ?, ?, ?)
+INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `computedAt`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `computedAt` = VALUES(`computedAt`)
-', 'ssdiis', $entity['type'], $entity['value'], $entity['score'], $entity['postCount'], $user_count, $computed_at);
+', 'sssdiis', $entity['type'], mb_strtolower($entity['value']), $entity['value'], $entity['score'], $entity['postCount'], $user_count, $computed_at);
         }
 
         DB::run('
@@ -213,17 +213,19 @@ DELETE
      */
     public static function ban(string $entity_type, string $entity_value, int $moderator_id, ?string $reason): void
     {
+        $slug = mb_strtolower($entity_value);
+
         DB::run('
-INSERT INTO `BannedTrendingEntities` (`entityType`, `entityValue`, `bannedBy`, `reason`)
-    VALUES (?, ?, ?, ?)
+INSERT INTO `BannedTrendingEntities` (`type`, `slug`, `title`, `bannedBy`, `reason`)
+    VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `bannedBy` = VALUES(`bannedBy`), `reason` = VALUES(`reason`), `createdAt` = NOW()
-', 'ssis', $entity_type, $entity_value, $moderator_id, $reason);
+', 'sssis', $entity_type, $slug, $entity_value, $moderator_id, $reason);
 
         DB::run('
 DELETE
     FROM `TrendingEntities`
-    WHERE `entityType` = ? AND `entityValue` = ?
-', 'ss', $entity_type, $entity_value);
+    WHERE `type` = ? AND `slug` = ?
+', 'ss', $entity_type, $slug);
 
         // The durable, queryable record of who banned this entity (and the
         // reason) is the BannedTrendingEntities row itself - bannedBy plus
@@ -236,35 +238,39 @@ DELETE
 
     public static function unban(string $entity_type, string $entity_value): void
     {
+        $slug = mb_strtolower($entity_value);
+
         DB::run('
 DELETE
     FROM `BannedTrendingEntities`
-    WHERE `entityType` = ? AND `entityValue` = ?
-', 'ss', $entity_type, $entity_value);
+    WHERE `type` = ? AND `slug` = ?
+', 'ss', $entity_type, $slug);
 
         ModerationAction::log('unbanTrendingEntity', null, $entity_type, null);
     }
 
     public static function isBanned(string $entity_type, string $entity_value): bool
     {
+        $slug = mb_strtolower($entity_value);
+
         $stmt = DB::run('
 SELECT 1
     FROM `BannedTrendingEntities`
-    WHERE `entityType` = ? AND `entityValue` = ?
-', 'ss', $entity_type, $entity_value);
+    WHERE `type` = ? AND `slug` = ?
+', 'ss', $entity_type, $slug);
         mysqli_stmt_store_result($stmt);
 
         return mysqli_stmt_num_rows($stmt) > 0;
     }
 
     /**
-     * @return array<string, true> "$type\0$value" => true, same case-folded
-     *   key shape recompute()'s $stats array uses.
+     * @return array<string, true> "$type\0$slug" => true, the same case-folded
+     *   key shape recompute()'s $stats array uses (slug is stored folded).
      */
     private static function bannedKeys(): array
     {
         $stmt = DB::run('
-SELECT `entityType`, `entityValue`
+SELECT `type`, `slug`
     FROM `BannedTrendingEntities`
 ');
         $result = mysqli_stmt_get_result($stmt);
@@ -272,7 +278,7 @@ SELECT `entityType`, `entityValue`
         $keys = [];
 
         while ($row = mysqli_fetch_assoc($result)) {
-            $keys[$row['entityType'] . "\0" . mb_strtolower($row['entityValue'])] = true;
+            $keys[$row['type'] . "\0" . $row['slug']] = true;
         }
 
         return $keys;

@@ -23,7 +23,7 @@ class MainNavigation extends HTMLObject
 
             $main_menu_links = [
                 new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
-                new Anchor(ServerURL::absolute('/users/' . $current_user -> username . '/friends'), 'Friends'),
+                new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/friends'), 'Friends'),
                 new Anchor(ServerURL::absolute('/users/'), 'Users'),
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
                 new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
@@ -54,7 +54,7 @@ class MainNavigation extends HTMLObject
             }
 
             $account_links -> addContent(new NavDropdown(
-                new Anchor(ServerURL::absolute('/users/' . $current_user -> username . '/'), 'Logged In As ' . ($current_user -> displayName ?? $current_user -> username)),
+                new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/'), 'Logged In As ' . ($current_user -> title ?? $current_user -> slug)),
                 $account_menu_links
             ));
         } else {

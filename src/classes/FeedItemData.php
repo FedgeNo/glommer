@@ -12,6 +12,6 @@ class FeedItemData
 {
     public ?int $itemId = null;
     public ?int $postId = null;
-    public ?string $itemType = null;
+    public ?string $type = null;
     public ?string $createdAt = null;
 }

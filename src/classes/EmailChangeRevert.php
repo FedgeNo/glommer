@@ -19,7 +19,7 @@ class EmailChangeRevert
 
         $revert_url = ServerURL::absolute('/revert-email?token=' . $token);
 
-        $name = $user -> displayName ?? $user -> username;
+        $name = $user -> title ?? $user -> slug;
 
         $text_body = 'Hi ' . $name . ',
 

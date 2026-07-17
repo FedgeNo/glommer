@@ -31,7 +31,7 @@ class Auth
         $user = DB::row('
 SELECT *
     FROM `Users`
-    WHERE `username` = ? OR `email` = ?
+    WHERE `slug` = ? OR `email` = ?
 ', 'User', 'ss', $identifier, $identifier);
 
         if ($user === null || $user -> passwordHash === null || !password_verify($password, $user -> passwordHash)) {

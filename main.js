@@ -1943,25 +1943,17 @@ document.addEventListener('submit', async (event) => {
             return;
         }
 
-        let avatar = form.parentElement.querySelector('img.Avatar');
-
-        if (!avatar) {
-            avatar = document.createElement('img');
-            avatar.className = 'Avatar';
-            avatar.alt = 'Your avatar';
-            form.parentElement.insertBefore(avatar, form.parentElement.firstChild);
-        }
-
+        // Replace the card's identity avatar in place - whether it's currently a
+        // real image or the text/initial fallback circle - with the uploaded one.
+        const avatar = document.createElement('img');
+        avatar.className = 'Avatar';
+        avatar.alt = 'Your avatar';
         // Already carries its own cache-busting ?v=<mtime> (User::avatarPath()) -
         // appending another query param here would have produced a malformed
         // "...?v=123?t=456" URL.
         avatar.src = data.response.image;
 
-        const fallback = form.parentElement.querySelector('.AvatarInitial');
-
-        if (fallback) {
-            fallback.remove();
-        }
+        form.closest('.User').querySelector('.UserLink .Avatar').replaceWith(avatar);
     } catch (error) {
         show_toast('Network error. Please check your connection and try again.');
     } finally {

@@ -41,8 +41,16 @@ SELECT *
         $element = parent::toDOM();
 
         if (Auth::check() && Auth::id() === $this -> userId) {
-            $uploader = new AvatarUploader();
-            $element -> appendChild($uploader -> toDOM());
+            $actions = new Div();
+            $actions -> class = 'd-flex flex-column align-items-end gap-2 ms-auto';
+
+            $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), 'Friends');
+            $friends_link -> class = 'Btn';
+            $actions -> addContent($friends_link);
+
+            $actions -> addContent(new AvatarUploader());
+
+            $element -> appendChild($actions -> toDOM());
         }
 
         return $element;

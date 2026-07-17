@@ -264,6 +264,9 @@ INSERT INTO `Settings` (`name`, `value`)
                     // Backfill report snapshots now that the column exists (same
                     // race-safe/idempotent guarantees).
                     Report::backfillSnapshots();
+                    // Rewrite user snapshots still on the old username/displayName
+                    // keys to the row-named slug/title User::fromRow reads.
+                    Report::backfillSnapshotUserKeys();
                     // Backfill hashtags for existing posts now the tables exist
                     // (idempotent - attach uses INSERT IGNORE / upsert).
                     Hashtag::backfill();

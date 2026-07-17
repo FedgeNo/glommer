@@ -217,6 +217,51 @@ UPDATE `Reports`
     }
 
     /**
+     * Rewrites user-target snapshots still carrying the earlier username/
+     * displayName keys to the row-named slug/title that User::fromRow reads, so
+     * a report of a since-deleted account created before the rename still
+     * renders its identity. Idempotent - a snapshot already on the new keys has
+     * neither old key and is skipped.
+     */
+    public static function backfillSnapshotUserKeys(): void
+    {
+        $target_user = 'user';
+
+        $rows = DB::rows('
+SELECT `reportId`, `snapshot`
+    FROM `Reports`
+    WHERE `type` = ? AND `snapshot` IS NOT NULL
+', 'ReportData', 's', $target_user);
+
+        foreach ($rows as $row) {
+            $snapshot = json_decode((string) $row -> snapshot, true);
+
+            if (!is_array($snapshot) || (!array_key_exists('username', $snapshot) && !array_key_exists('displayName', $snapshot))) {
+                continue;
+            }
+
+            if (array_key_exists('username', $snapshot)) {
+                $snapshot['slug'] = $snapshot['username'];
+                unset($snapshot['username']);
+            }
+
+            if (array_key_exists('displayName', $snapshot)) {
+                $snapshot['title'] = $snapshot['displayName'];
+                unset($snapshot['displayName']);
+            }
+
+            $snapshot_json = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $report_id = (int) $row -> reportId;
+
+            DB::run('
+UPDATE `Reports`
+    SET `snapshot` = ?
+    WHERE `reportId` = ?
+', 'si', $snapshot_json, $report_id);
+        }
+    }
+
+    /**
      * Whether the live post or message a report targets still exists - a
      * deleted one still shows (from its snapshot) but has nothing left to delete,
      * so its card drops the Delete button. Only posts and messages are deletable.

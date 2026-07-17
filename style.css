@@ -579,12 +579,13 @@ p a:hover {
 
 /* The mobile-nav toggle: a visually-hidden checkbox the hamburger label flips.
    Both hide above the nav breakpoint, where the desktop hover-flyouts run. */
+/* Visually hidden but still operable - NOT pointer-events: none, which would
+   stop the hamburger <label> from toggling it. */
 .NavToggle {
     position: absolute;
     width: 1px;
     height: 1px;
     opacity: 0;
-    pointer-events: none;
 }
 
 .NavHamburger {

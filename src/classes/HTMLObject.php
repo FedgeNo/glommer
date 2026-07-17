@@ -26,6 +26,12 @@ class HTMLObject
     public array $contents = [];
     public array $attributes = [];
 
+    // Set the first time this object renders; a second toDOM() throws. Rendering
+    // is one-shot because most objects build their children into $this->contents
+    // in toDOM(), so a second call would duplicate them - and plenty of toDOM()s
+    // do non-idempotent work besides. Reuse means building a fresh instance.
+    private bool $rendered = false;
+
     /**
      * $properties (optional) seeds the object from a plain array or another
      * object: every key that names a property this class actually declares is
@@ -47,7 +53,7 @@ class HTMLObject
                 // its attributes - so handing it a wider source, e.g. a whole
                 // page, only ever transfers data properties, never changes what
                 // the object is or how it renders.
-                if (in_array($name, ['tagName', 'class', 'contents', 'attributes'], true)) {
+                if (in_array($name, ['tagName', 'class', 'contents', 'attributes', 'rendered'], true)) {
                     continue;
                 }
 
@@ -106,6 +112,12 @@ class HTMLObject
 
     public function toDOM(): \DOMElement
     {
+        if ($this -> rendered) {
+            throw new \LogicException(static::class . '::toDOM() called twice - build a fresh instance per render; a rendered HTMLObject is not reusable.');
+        }
+
+        $this -> rendered = true;
+
         $element = self::$document -> createElement($this -> tagName);
 
         if ($this -> id !== null) {

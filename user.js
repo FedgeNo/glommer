@@ -45,8 +45,8 @@ class Avatar {
  * server renders it (delta.js's shared linkifier), so a saved bio round-trips
  * identically. Newlines are preserved by the .UserBio white-space rule. */
 class UserBio {
-    constructor(description) {
-        this.description = description;
+    constructor(user) {
+        this.description = user.description || '';
     }
 
     toElement() {
@@ -170,7 +170,7 @@ class User {
         main.appendChild(link);
 
         if (this.description && this.description.trim() !== '') {
-            main.appendChild(new UserBio(this.description).toElement());
+            main.appendChild(new UserBio(this).toElement());
         }
 
         div.appendChild(main);

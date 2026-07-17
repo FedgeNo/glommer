@@ -3675,7 +3675,7 @@ async function profile_save(card) {
     heading.textContent = data.title || card.dataset.username;
     name_input.replaceWith(heading);
 
-    bio_input.replaceWith(new UserBio(data.description || '').toElement());
+    bio_input.replaceWith(new UserBio(data).toElement());
 
     save.remove();
     card.classList.remove('Editing');

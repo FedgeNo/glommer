@@ -8,6 +8,12 @@ require __DIR__ . '/api-init.php';
 // (uploads/private/originals) - which isn't web-served - so a moderator can view
 // media whose post was deleted. Works from the attachment (FeedItem) id alone;
 // UploadProcessor::originalForItem finds the file and its type on disk.
+//
+// The one GET endpoint under /api/, and the one that answers with raw bytes
+// rather than JSONResponse: a report card points an <img>/<video>/<audio> src
+// straight at it, and a browser can only GET a media src (and expects the media
+// itself back, not a JSON envelope). So the POST + JSONResponse convention every
+// other /api/ script follows doesn't apply here.
 if (!Auth::check() || !Auth::canModerate()) {
     http_response_code(403);
     exit;

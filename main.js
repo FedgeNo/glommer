@@ -1871,12 +1871,30 @@ const media_offscreen_observer = new IntersectionObserver((entries) => {
     });
 }, { rootMargin: '50% 0px' });
 
+// A carousel scrolled well clear of the viewport stops its autoplay outright -
+// otherwise the image-slide timer keeps cycling (and loading) slides nobody can
+// see. Same margin as the media pause above; stop_carousel_autoplay is a no-op
+// on a carousel that isn't autoplaying.
+const carousel_offscreen_observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+            stop_carousel_autoplay(entry.target);
+        }
+    });
+}, { rootMargin: '50% 0px' });
+
 function observe_offscreen_media(root) {
     if (root.matches?.('video, audio')) {
         media_offscreen_observer.observe(root);
     }
 
     root.querySelectorAll?.('video, audio').forEach((media) => media_offscreen_observer.observe(media));
+
+    if (root.matches?.('.Carousel')) {
+        carousel_offscreen_observer.observe(root);
+    }
+
+    root.querySelectorAll?.('.Carousel').forEach((carousel) => carousel_offscreen_observer.observe(carousel));
 }
 
 document.addEventListener('DOMContentLoaded', () => {

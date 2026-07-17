@@ -16,7 +16,8 @@ $payload = is_array($payload) ? $payload : [];
 $username = substr(preg_replace('/[^a-z0-9_]/', '', strtolower(trim((string) ($payload['username'] ?? '')))), 0, 32);
 $email = trim((string) ($payload['email'] ?? ''));
 $password = (string) ($payload['password'] ?? '');
-$display_name = mb_substr(trim((string) ($payload['displayName'] ?? '')), 0, 100);
+$display_name = mb_substr(trim((string) ($payload['displayName'] ?? '')), 0, 50);
+$description = mb_substr(trim((string) ($payload['description'] ?? '')), 0, 500);
 $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captchaToken'] : null;
 
 $errors = [];
@@ -78,13 +79,14 @@ if ($errors !== []) {
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 $display_name_value = $display_name !== '' ? $display_name : null;
+$description_value = $description !== '' ? $description : null;
 
 $unverified = 0;
 
 DB::run('
-INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `verified`)
-    VALUES (?, ?, ?, ?, ?)
-', 'ssssi', $username, $email, $hash, $display_name_value, $unverified);
+INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `verified`)
+    VALUES (?, ?, ?, ?, ?, ?)
+', 'sssssi', $username, $email, $hash, $display_name_value, $description_value, $unverified);
 $new_user_id = (int) mysqli_insert_id($mysqli);
 
 $user = new User();
@@ -92,6 +94,7 @@ $user -> userId = $new_user_id;
 $user -> slug = $username;
 $user -> email = $email;
 $user -> title = $display_name_value;
+$user -> description = $description_value;
 $user -> verified = $unverified;
 
 Auth::login($user);

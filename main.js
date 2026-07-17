@@ -3683,6 +3683,119 @@ document.addEventListener('submit', async (event) => {
     }
 });
 
+// --- Your own profile card: edit the display name + bio in place ---
+
+// A .UserBio built from plain text, linkified the same way the server renders
+// it (delta.js's shared linkifier), so a saved bio round-trips identically.
+function profile_render_bio(text) {
+    const bio = document.createElement('div');
+    bio.className = 'UserBio';
+
+    for (const segment of linkify_tokenize(text)) {
+        const inner = document.createTextNode(segment.text);
+
+        if (segment.type === 'url') {
+            bio.appendChild(linked_node(segment.text, inner));
+        } else if (segment.type === 'hashtag') {
+            bio.appendChild(hashtag_node(segment.tag, inner));
+        } else if (segment.type === 'mention') {
+            bio.appendChild(mention_node(segment.username, inner));
+        } else {
+            bio.appendChild(inner);
+        }
+    }
+
+    return bio;
+}
+
+// Swap the name heading for an input and the bio for a textarea (prefilled from
+// the raw values on the card), and add one Save button. The pencil is hidden by
+// the .Editing CSS rule.
+function profile_enter_edit(card) {
+    if (card.classList.contains('Editing')) {
+        return;
+    }
+
+    card.classList.add('Editing');
+
+    const name_input = document.createElement('input');
+    name_input.type = 'text';
+    name_input.className = 'DisplayNameInput';
+    name_input.maxLength = 50;
+    name_input.value = card.dataset.title;
+    name_input.placeholder = 'Display name';
+    card.querySelector('.DisplayName').replaceWith(name_input);
+
+    const bio_input = document.createElement('textarea');
+    bio_input.className = 'UserBioInput';
+    bio_input.maxLength = 500;
+    bio_input.value = card.dataset.description;
+    bio_input.placeholder = 'Add a bio…';
+    const bio = card.querySelector('.UserBio');
+    bio.replaceWith(bio_input);
+
+    const save = document.createElement('button');
+    save.type = 'button';
+    save.className = 'Btn ProfileSaveButton';
+    save.textContent = 'Save';
+    bio_input.after(save);
+
+    name_input.focus();
+}
+
+// Save, then rebuild view mode from the values the server stored (a cleared
+// name falls back to the @handle's slug, exactly as the server renders it).
+async function profile_save(card) {
+    const name_input = card.querySelector('.DisplayNameInput');
+    const bio_input = card.querySelector('.UserBioInput');
+    const save = card.querySelector('.ProfileSaveButton');
+    save.disabled = true;
+
+    const data = await api_post('/api/update-profile', {
+        title: name_input.value,
+        description: bio_input.value,
+    });
+
+    if (!data) {
+        save.disabled = false;
+        return;
+    }
+
+    card.dataset.title = data.title || '';
+    card.dataset.description = data.description || '';
+
+    const heading = document.createElement('h2');
+    heading.className = 'DisplayName';
+    heading.textContent = data.title || card.dataset.username;
+    name_input.replaceWith(heading);
+
+    bio_input.replaceWith(profile_render_bio(data.description || ''));
+
+    save.remove();
+    card.classList.remove('Editing');
+    show_toast('Profile saved.');
+}
+
+document.addEventListener('click', (event) => {
+    const card = event.target.closest('.User.CurrentUser');
+
+    if (!card || card.classList.contains('Editing') || event.target.closest('a')) {
+        return;
+    }
+
+    if (event.target.closest('.DisplayName, .UserBio, .EditProfileButton')) {
+        profile_enter_edit(card);
+    }
+});
+
+document.addEventListener('click', (event) => {
+    const save = event.target.closest('.ProfileSaveButton');
+
+    if (save) {
+        profile_save(save.closest('.User.CurrentUser'));
+    }
+});
+
 document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.FaviconSettingsForm');
 
@@ -3789,6 +3902,7 @@ document.addEventListener('submit', async (event) => {
         username: form.querySelector('[name=\'username\']').value,
         email: form.querySelector('[name=\'email\']').value,
         displayName: form.querySelector('[name=\'displayName\']').value,
+        description: form.querySelector('[name=\'description\']').value,
         password: form.querySelector('[name=\'password\']').value,
         rememberMe: form.querySelector('[name=\'rememberMe\']').checked,
         captchaToken: captcha_input ? captcha_input.value : null,

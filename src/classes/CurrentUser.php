@@ -38,6 +38,12 @@ SELECT *
 
     public function toDOM(): \DOMElement
     {
+        // The raw values the in-place editor prefills its input/textarea from -
+        // the linkified bio and (possibly slug-fallback) name can't be read back
+        // out of the rendered DOM.
+        $this -> attributes['data-title'] = (string) ($this -> title ?? '');
+        $this -> attributes['data-description'] = (string) ($this -> description ?? '');
+
         $element = parent::toDOM();
 
         if (Auth::check() && Auth::id() === $this -> userId) {
@@ -54,5 +60,50 @@ SELECT *
         }
 
         return $element;
+    }
+
+    /**
+     * Your own card: the name is editable in place, so the identity can't be one
+     * big profile link. Only the avatar links out; the name/username/joined
+     * column carries the edit pencil.
+     */
+    protected function identityElement(): HTMLObject
+    {
+        $block = new Div();
+        $block -> class = 'UserLink';
+
+        $avatar_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
+        $avatar_link -> addContent(Avatar::forUser($this));
+        $block -> addContent($avatar_link);
+
+        $block -> addContent($this -> identityInfo());
+
+        return $block;
+    }
+
+    /** The display name paired with the edit pencil. */
+    protected function nameElement(): HTMLObject
+    {
+        $row = new Div();
+        $row -> class = 'DisplayNameRow d-flex align-items-center gap-2';
+
+        $heading = new Heading2();
+        $heading -> class = 'DisplayName';
+        $heading -> contents[] = $this -> title ?? $this -> slug;
+        $row -> addContent($heading);
+
+        $row -> addContent(new EditProfileButton());
+
+        return $row;
+    }
+
+    /**
+     * Always present on your own card, even when empty, so there's a bio to
+     * click into and the editor has a target (an empty one shows a prompt - see
+     * the .CurrentUser .UserBio:empty rule).
+     */
+    protected function bioElement(): ?HTMLObject
+    {
+        return new UserBio($this);
     }
 }

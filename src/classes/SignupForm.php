@@ -24,9 +24,12 @@ class SignupForm extends Form
         $email -> autocomplete = 'email';
         $fields -> addContent($email);
 
-        $display_name = new InputField('displayName', 'Display name (optional)', 'text', 'Display name (optional)', 100);
+        $display_name = new InputField('displayName', 'Display name (optional)', 'text', 'Display name (optional)', 50);
         $display_name -> autocomplete = 'nickname';
         $fields -> addContent($display_name);
+
+        $bio = new TextareaField('description', 'Bio (optional)', 'A short bio - #hashtags, @mentions, and links become clickable', 500);
+        $fields -> addContent($bio);
 
         $password = new InputField('password', 'Password', 'password', 'Password: At least 8 characters');
         $password -> autocomplete = 'new-password';

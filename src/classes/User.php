@@ -31,24 +31,53 @@ class User extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
-        $name = $this -> title ?? $this -> slug;
-
         if ($this -> slug !== null) {
             $this -> attributes['data-username'] = $this -> slug;
         }
 
-        // The whole identity block - avatar, name, username, and joined date -
-        // is one link to the profile (same as header(), just the fuller card).
+        // The identity block and the bio stack in a growing left column, so the
+        // bio runs the full width beneath the avatar/name up to whatever sits on
+        // the card's right (the action buttons).
+        $main = new Div();
+        $main -> class = 'UserMain';
+        $main -> addContent($this -> identityElement());
+
+        $bio = $this -> bioElement();
+
+        if ($bio !== null) {
+            $main -> addContent($bio);
+        }
+
+        $this -> contents[] = $main;
+
+        return parent::toDOM();
+    }
+
+    /**
+     * The identity block - avatar, name, @username, joined date - as one link to
+     * the profile (same shape as header(), just the fuller card). CurrentUser
+     * overrides this so the name can be edited in place rather than link out.
+     */
+    protected function identityElement(): HTMLObject
+    {
         $link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
         $link -> class = 'UserLink';
 
         $link -> addContent(Avatar::forUser($this));
+        $link -> addContent($this -> identityInfo());
 
+        return $link;
+    }
+
+    /**
+     * The name/username/joined column beside the avatar. Shared with CurrentUser
+     * (which only differs in the name element), so those three lines build once.
+     */
+    protected function identityInfo(): HTMLObject
+    {
         $info = new Div();
 
-        $name_heading = new Heading2();
-        $name_heading -> contents[] = $name;
-        $info -> addContent($name_heading);
+        $info -> addContent($this -> nameElement());
 
         $username_line = new Div();
         $username_line -> class = 'Muted text-sm';
@@ -62,11 +91,27 @@ class User extends HTMLObject
             $info -> addContent($joined);
         }
 
-        $link -> addContent($info);
+        return $info;
+    }
 
-        $this -> contents[] = $link;
+    /** The display-name heading. CurrentUser pairs it with the edit pencil. */
+    protected function nameElement(): HTMLObject
+    {
+        $name_heading = new Heading2();
+        $name_heading -> class = 'DisplayName';
+        $name_heading -> contents[] = $this -> title ?? $this -> slug;
 
-        return parent::toDOM();
+        return $name_heading;
+    }
+
+    /** The bio beneath the identity, or null when there's none to show. */
+    protected function bioElement(): ?HTMLObject
+    {
+        if ($this -> description === null || trim($this -> description) === '') {
+            return null;
+        }
+
+        return new UserBio($this);
     }
 
     /**

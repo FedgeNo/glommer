@@ -181,6 +181,20 @@ class DeltaRenderer extends HTMLObject
     }
 
     /**
+     * The inline nodes for a standalone plain-text string (a user bio): the
+     * same pass-2 URL/hashtag/mention linkifying a post gets, with no Delta
+     * block or inline-format attributes. Lets a non-Delta text field share the
+     * one linkifier (and its PHP/JS parity via Linkify) rather than growing its
+     * own. Newlines stay as text - the caller preserves them with CSS.
+     *
+     * @return \DOMNode[]
+     */
+    public static function linkifyPlainText(\DOMDocument $doc, string $text): array
+    {
+        return self::inlineNodes($doc, $text, []);
+    }
+
+    /**
      * Pass 2: the inline node(s) for one text run. A run with a link that
      * survived pass 1 is a URL-free label -> one honest anchor. Inline code is
      * never linkified. Otherwise the text is tokenized: URLs become self-links,

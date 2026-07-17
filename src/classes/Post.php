@@ -277,7 +277,7 @@ class Post extends HTMLObject
             return $text;
         }
 
-        $name = $this -> author !== null ? ($this -> author -> title ?? $this -> author -> slug) : null;
+        $name = $this -> author !== null ? ($this -> author -> title ?: $this -> author -> slug) : null;
 
         return $name !== null ? 'Photo posted by ' . $name : 'Photo';
     }

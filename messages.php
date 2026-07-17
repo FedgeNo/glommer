@@ -65,7 +65,7 @@ if ($other_user === null || $other_user -> banned !== 0) {
 }
 
 $other_user_id = $other_user -> userId;
-$name = $other_user -> title ?? $other_user -> slug;
+$name = $other_user -> title ?: $other_user -> slug;
 
 $page = new Page(['title' => 'Messages with ' . $name, 'needsMath' => true, 'needsEmoji' => true, 'bodyClass' => 'MessagesPage']);
 

@@ -14,7 +14,7 @@ if ($profile_user === null) {
 }
 
 $user_id = (int) $profile_user -> userId;
-$name = $profile_user -> title ?? $profile_user -> slug;
+$name = $profile_user -> title ?: $profile_user -> slug;
 
 $limit = 50;
 

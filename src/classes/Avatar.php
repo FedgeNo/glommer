@@ -40,7 +40,7 @@ abstract class Avatar extends HTMLObject
         return self::create(
             (bool) $user -> hasAvatar,
             $user -> avatarURL(),
-            $user -> title ?? $user -> slug,
+            $user -> title ?: $user -> slug,
             (int) $user -> userId
         );
     }

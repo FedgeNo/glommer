@@ -56,7 +56,7 @@ class MainNavigation extends HTMLObject
 
             $account_label = new Span();
             $account_label -> class = 'NavAccountLabel';
-            $account_label -> addContent('Logged In As ' . ($current_user -> title ?? $current_user -> slug));
+            $account_label -> addContent('Logged In As ' . ($current_user -> title ?: $current_user -> slug));
 
             $account_trigger = new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/'));
             $account_trigger -> addContent($account_label);

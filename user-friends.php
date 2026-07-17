@@ -22,7 +22,7 @@ $is_own = Auth::id() === (int) $profile_user -> userId;
 if ($is_own) {
     $profile_user = new CurrentUser($profile_user);
 }
-$name = $profile_user -> title ?? $profile_user -> slug;
+$name = $profile_user -> title ?: $profile_user -> slug;
 
 $page = new Page($profile_user);
 $page -> bodyClass = 'ProfilePage';

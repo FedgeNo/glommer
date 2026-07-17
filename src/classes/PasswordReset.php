@@ -10,7 +10,7 @@ class PasswordReset
 
         $reset_url = ServerURL::absolute('/reset-password?token=' . $token);
 
-        $name = $user -> title ?? $user -> slug;
+        $name = $user -> title ?: $user -> slug;
 
         $text_body = 'Hi ' . $name . ',
 

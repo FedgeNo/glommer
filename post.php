@@ -35,7 +35,7 @@ $json_ld = [
     'url' => Page::currentURL(),
     'author' => [
         '@type' => 'Person',
-        'name' => $post -> author !== null ? ($post -> author -> title ?? $post -> author -> slug) : null,
+        'name' => $post -> author !== null ? ($post -> author -> title ?: $post -> author -> slug) : null,
     ],
 ];
 

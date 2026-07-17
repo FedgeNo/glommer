@@ -89,7 +89,7 @@ SELECT *
 
         $heading = new Heading2();
         $heading -> class = 'DisplayName';
-        $heading -> contents[] = $this -> title ?? $this -> slug;
+        $heading -> contents[] = $this -> title ?: $this -> slug;
         $row -> addContent($heading);
 
         $row -> addContent(new EditProfileButton());

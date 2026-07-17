@@ -100,7 +100,7 @@ class User extends HTMLObject
     {
         $name_heading = new Heading2();
         $name_heading -> class = 'DisplayName';
-        $name_heading -> contents[] = $this -> title ?? $this -> slug;
+        $name_heading -> contents[] = $this -> title ?: $this -> slug;
 
         return $name_heading;
     }
@@ -122,7 +122,7 @@ class User extends HTMLObject
      */
     public function header(): HTMLObject
     {
-        $name = $this -> title ?? $this -> slug;
+        $name = $this -> title ?: $this -> slug;
 
         $header = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
         $header -> class = 'UserHeader d-flex align-items-center gap-3';

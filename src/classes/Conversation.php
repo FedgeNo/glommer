@@ -16,7 +16,7 @@ class Conversation extends Anchor
     {
         $this -> href = ServerURL::absolute('/messages/' . $this -> slug);
 
-        $name = $this -> title ?? $this -> slug;
+        $name = $this -> title ?: $this -> slug;
 
         $this -> contents[] = Avatar::create(
             (bool) $this -> hasAvatar,

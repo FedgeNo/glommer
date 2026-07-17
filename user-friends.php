@@ -24,7 +24,10 @@ if ($is_own) {
 }
 $name = $profile_user -> title ?? $profile_user -> slug;
 
-$page = Page::create($name . '\'s Friends', 'Friends of ' . $name . ' on Glommer', $profile_user -> avatarURL());
+$page = new Page($profile_user);
+$page -> title = $name . '\'s Friends';
+$page -> description = 'Friends of ' . $name . ' on Glommer';
+$page -> image = $profile_user -> avatarURL();
 
 $page -> addContent($profile_user);
 

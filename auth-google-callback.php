@@ -66,7 +66,7 @@ if (!GoogleAuth::isEnabled()) {
     }
 }
 
-$page = Page::create('Log In');
+$page = new Page(['title' => 'Log In']);
 $page -> addContent(new ErrorList([$error]));
 $page -> addContent(new Anchor(ServerURL::absolute('/login'), 'Back to sign in'));
 $page -> send();

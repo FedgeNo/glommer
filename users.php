@@ -6,6 +6,6 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-$page = Page::create('Users');
+$page = new Page(['title' => 'Users']);
 $page -> addContent(new UserSearch(Auth::user() -> getSuggestedUsers()));
 $page -> send();

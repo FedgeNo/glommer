@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+// Every app concept is an HTMLObject, and most are hydrated straight off a
+// query (mysqli_fetch_object sets a property per column before the constructor
+// runs). Allowing dynamic properties means a class needn't pre-declare every
+// column any query might select just to avoid the 8.2 dynamic-property
+// deprecation - it declares the properties it actually uses, and incidental
+// columns ride along harmlessly.
+#[\AllowDynamicProperties]
 class HTMLObject
 {
     protected static \DOMDocument $document;

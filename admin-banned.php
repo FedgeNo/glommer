@@ -11,7 +11,7 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-$page = Page::create('Banned Users');
+$page = new Page(['title' => 'Banned Users']);
 
 $page -> addContent(new BannedUserSearch());
 $page -> addContent(new BannedUserList());

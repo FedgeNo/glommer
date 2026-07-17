@@ -13,7 +13,7 @@ $current_user = Auth::user();
 Notification::markSeen($current_user -> userId);
 Auth::clearUserCache();
 
-$page = Page::create('Notifications');
+$page = new Page(['title' => 'Notifications']);
 
 $page -> addContent(new NotificationList(['userId' => (int) $current_user -> userId]));
 

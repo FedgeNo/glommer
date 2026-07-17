@@ -8,7 +8,7 @@ Auth::requireLogin();
 
 $current_user = Auth::user();
 
-$page = Page::create('Bookmarks', needsMath: true);
+$page = new Page(['title' => 'Bookmarks', 'needsMath' => true]);
 
 $page -> addContent(new BookmarkList(['userId' => (int) $current_user -> userId]));
 

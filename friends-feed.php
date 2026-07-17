@@ -8,7 +8,7 @@ Auth::requireLogin();
 
 $current_user = Auth::user();
 
-$page = Page::create('Friends Feed', needsMath: true);
+$page = new Page(['title' => 'Friends Feed', 'needsMath' => true]);
 
 $page -> addContent(new FeedList(['feedType' => 'friends', 'userId' => (int) $current_user -> userId]));
 

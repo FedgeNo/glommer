@@ -60,6 +60,7 @@ CREATE TABLE `Hashtags` (
   `hashtagId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `slug` varchar(64) NOT NULL,
   `title` varchar(64) NOT NULL,
+  `description` text DEFAULT NULL,
   PRIMARY KEY (`hashtagId`),
   UNIQUE KEY `slug` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -338,6 +339,7 @@ CREATE TABLE `TrendingEntities` (
   `type` varchar(16) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
   `score` double NOT NULL,
   `postCount` int(10) unsigned NOT NULL,
   `userCount` int(10) unsigned NOT NULL,

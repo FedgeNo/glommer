@@ -13,7 +13,7 @@ if ($article === null) {
     exit;
 }
 
-$page = Page::create($article -> title, $article -> summary);
+$page = new Page(['title' => $article -> title, 'description' => $article -> summary]);
 
 $page -> addContent($article);
 

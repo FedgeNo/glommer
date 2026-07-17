@@ -6,9 +6,9 @@ require __DIR__ . '/src/init.php';
 
 $current_user = Auth::user();
 
-$page = Page::create('Home', needsEditor: $current_user !== null, needsMath: true, needsEmoji: $current_user !== null);
+$page = new Page(['title' => 'Home', 'needsEditor' => $current_user !== null, 'needsMath' => true, 'needsEmoji' => $current_user !== null]);
 
-$page -> addMetaContent(new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed'));
+$page -> rssLink = new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed');
 
 if ($current_user !== null) {
     $page -> addContent(new PostComposer());

@@ -11,7 +11,7 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-$page = Page::create('Banned Trending Entities');
+$page = new Page(['title' => 'Banned Trending Entities']);
 
 $page -> addContent(new BannedTrendingEntitiesList());
 

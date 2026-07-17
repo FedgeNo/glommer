@@ -11,7 +11,7 @@ if ($tag === '') {
     $graph = Hashtag::graphData(40);
     $trending = Hashtag::trending(20);
 
-    $page = Page::create('Tags', 'Browse trending and popular hashtags on Glommer.', needsTagGraph: true);
+    $page = new Page(['title' => 'Tags', 'description' => 'Browse trending and popular hashtags on Glommer.', 'needsTagGraph' => true]);
 
     if ($graph['nodes'] === [] && $trending === []) {
         $page -> addContent(new Notice('No hashtags yet.'));
@@ -46,7 +46,7 @@ if (!$feed -> hasItems()) {
     exit;
 }
 
-$page = Page::create('#' . $tag, 'Posts tagged #' . $tag . ' on Glommer.', needsMath: true);
+$page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on Glommer.', 'needsMath' => true]);
 
 $page -> addContent($feed);
 

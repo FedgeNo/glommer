@@ -21,7 +21,11 @@ if ($user_id === Auth::id()) {
 
 $name = $profile_user -> title ?? $profile_user -> slug;
 
-$json_ld = [
+$page = new Page($profile_user);
+$page -> title = $name;
+$page -> description = 'Posts by ' . $name . ' on Glommer';
+$page -> image = $profile_user -> avatarURL();
+$page -> jsonLd = [
     '@context' => 'https://schema.org',
     '@type' => 'Person',
     'name' => $name,
@@ -29,12 +33,11 @@ $json_ld = [
 ];
 
 if ($profile_user -> avatarURL() !== null) {
-    $json_ld['image'] = $profile_user -> avatarURL();
+    $page -> jsonLd['image'] = $profile_user -> avatarURL();
 }
 
-$page = Page::create($name, 'Posts by ' . $name . ' on Glommer', $profile_user -> avatarURL(), $json_ld, needsMath: true);
-
-$page -> addMetaContent(new RSSLink(ServerURL::absolute('/users/' . $profile_user -> slug . '/feed.xml'), $name . ' - RSS Feed'));
+$page -> needsMath = true;
+$page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> slug . '/feed.xml'), $name . ' - RSS Feed');
 
 $page -> addContent($profile_user);
 

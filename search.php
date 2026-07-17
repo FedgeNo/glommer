@@ -6,6 +6,6 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-$page = Page::create('Search');
+$page = new Page(['title' => 'Search']);
 $page -> addContent(new PostSearch());
 $page -> send();

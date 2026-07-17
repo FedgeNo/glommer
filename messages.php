@@ -10,7 +10,7 @@ $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 
 if ($username === '') {
-    $page = Page::create('Messages');
+    $page = new Page(['title' => 'Messages']);
 
     $not_banned = 0;
 
@@ -67,7 +67,7 @@ if ($other_user === null || $other_user -> banned !== 0) {
 $other_user_id = $other_user -> userId;
 $name = $other_user -> title ?? $other_user -> slug;
 
-$page = Page::create('Messages with ' . $name, needsMath: true, needsEmoji: true, body_class: 'MessagesPage');
+$page = new Page(['title' => 'Messages with ' . $name, 'needsMath' => true, 'needsEmoji' => true, 'bodyClass' => 'MessagesPage']);
 
 if (Block::exists($current_user -> userId, $other_user_id)) {
     $page -> addContent(new Notice('You can\'t message this user.'));

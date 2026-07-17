@@ -9,7 +9,7 @@ require __DIR__ . '/src/init.php';
 // current email may belong to whoever changed it.
 $token = (string) ($_POST['token'] ?? $_GET['token'] ?? '');
 
-$page = Page::create('Revert Email Change');
+$page = new Page(['title' => 'Revert Email Change']);
 
 // Only a deliberate POST (carrying the CSRF token init.php verifies) reverts.
 // A GET renders a confirmation button instead: the revert link is mailed to

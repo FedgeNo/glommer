@@ -2,51 +2,73 @@
 
 declare(strict_types=1);
 
-class Page
+class Page extends HTMLDocument
 {
-    public static function create(
-        string $title,
-        ?string $description = null,
-        ?string $image = null,
-        ?array $json_ld = null,
-        bool $needsEditor = false,
-        bool $needsMath = false,
-        bool $needsEmoji = false,
-        bool $needsHelp = false,
-        bool $needsTagGraph = false,
-        ?string $body_class = null
-    ): HTMLDocument {
-        $page = new HTMLDocument();
+    public ?string $title = null;
+    public ?string $description = null;
+    public ?string $image = null;
+    public ?array $jsonLd = null;
 
+    // Metadata-in-spirit link (an RSS <link rel="alternate">) - a property like
+    // any other page metadata, emitted in the head right after the meta block.
+    public ?RSSLink $rssLink = null;
+
+    public bool $needsEditor = false;
+    public bool $needsMath = false;
+    public bool $needsEmoji = false;
+    public bool $needsHelp = false;
+    public bool $needsTagGraph = false;
+
+    public ?string $bodyClass = null;
+
+    // The head and body are assembled from the properties above the first time
+    // the page renders, not at construction - so a caller can seed a Page from
+    // an object (new Page($profileUser)) and adjust properties afterwards, and
+    // the final values are the ones that get built. Guarded so a second render
+    // (e.g. toDOM() then __toString()) doesn't append everything twice.
+    private bool $assembled = false;
+
+    public function toDOM(): \DOMElement
+    {
+        if (!$this -> assembled) {
+            $this -> assembled = true;
+            $this -> assembleHead();
+            $this -> assembleBody();
+        }
+
+        return parent::toDOM();
+    }
+
+    private function assembleHead(): void
+    {
         $site_title = Config::get('siteTitle');
-
-        $full_title = $title . ' - ' . $site_title;
-        $description ??= $site_title . ' - a place to publish.';
+        $full_title = $this -> title . ' - ' . $site_title;
+        $description = $this -> description ?? $site_title . ' - a place to publish.';
         $url = self::currentURL();
 
         $charset = new Meta();
         $charset -> charset = 'utf-8';
-        $page -> addHeadContent($charset);
+        $this -> head -> addContent($charset);
 
         $viewport = new Meta();
         $viewport -> name = 'viewport';
         $viewport -> content = 'width=device-width, initial-scale=1';
-        $page -> addHeadContent($viewport);
+        $this -> head -> addContent($viewport);
 
         $title_element = new Title();
         $title_element -> contents[] = $full_title;
-        $page -> addHeadContent($title_element);
+        $this -> head -> addContent($title_element);
 
         $favicon = new Link();
         $favicon -> rel = 'icon';
         $favicon -> href = Favicon::URL();
-        $page -> addHeadContent($favicon);
+        $this -> head -> addContent($favicon);
 
-        foreach (self::metaTags($full_title, $description, $image, $url) as $meta) {
-            $page -> addHeadContent($meta);
+        foreach (self::metaTags($full_title, $description, $this -> image, $url) as $meta) {
+            $this -> head -> addContent($meta);
         }
 
-        $json_ld ??= [
+        $json_ld = $this -> jsonLd ?? [
             '@context' => 'https://schema.org',
             '@type' => 'WebSite',
             'name' => $site_title,
@@ -56,56 +78,67 @@ class Page
         $json_ld_script = new Script();
         $json_ld_script -> attributes['type'] = 'application/ld+json';
         $json_ld_script -> contents[] = self::safeJSONForScript($json_ld);
-        $page -> addHeadContent($json_ld_script);
+        $this -> head -> addContent($json_ld_script);
 
-        $page -> metaContentEndIndex = count($page -> head -> contents);
+        // Metadata in spirit (an RSS alternate link), added by a page that has a
+        // feed - sits right after the metadata block and before any stylesheet.
+        if ($this -> rssLink !== null) {
+            $this -> head -> addContent($this -> rssLink);
+        }
 
         // Base layer - loaded before style.css so local rules win the cascade.
         $bootstrap = new Link();
         $bootstrap -> rel = 'stylesheet';
         $bootstrap -> href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
-        $page -> addHeadContent($bootstrap);
+        $this -> head -> addContent($bootstrap);
 
-        if ($needsEditor) {
-            $page -> addHeadContent(QuillAssets::CSSLink());
+        if ($this -> needsEditor) {
+            $this -> head -> addContent(QuillAssets::CSSLink());
         }
 
         $stylesheet = new Link();
         $stylesheet -> rel = 'stylesheet';
         $stylesheet -> href = ServerURL::absolute('/style.css');
-        $page -> addHeadContent($stylesheet);
+        $this -> head -> addContent($stylesheet);
 
-        // KaTeX's CSS and core JS load before Quill's JS: Quill's formula
-        // module reads window.katex at construction, so the editor's formula
-        // button needs KaTeX present even on a page that isn't otherwise
-        // rendering math. The auto-render pass (typed/pasted delimiters) is
-        // only needed where posted math is actually shown, so it stays gated
-        // on needsMath alone.
-        if ($needsMath || $needsEditor) {
-            $page -> addHeadContent(KaTeXAssets::CSSLink());
-            $page -> addHeadContent(KaTeXAssets::JSScript());
+        // KaTeX's CSS and core JS load before Quill's JS: Quill's formula module
+        // reads window.katex at construction, so the editor's formula button
+        // needs KaTeX present even on a page that isn't otherwise rendering math.
+        // The auto-render pass (typed/pasted delimiters) is only needed where
+        // posted math is actually shown, so it stays gated on needsMath alone.
+        if ($this -> needsMath || $this -> needsEditor) {
+            $this -> head -> addContent(KaTeXAssets::CSSLink());
+            $this -> head -> addContent(KaTeXAssets::JSScript());
         }
 
-        if ($needsEditor) {
-            $page -> addHeadContent(QuillAssets::JSScript());
+        if ($this -> needsEditor) {
+            $this -> head -> addContent(QuillAssets::JSScript());
         }
 
-        if ($needsMath) {
-            $page -> addHeadContent(KaTeXAssets::autoRenderScript());
+        if ($this -> needsMath) {
+            $this -> head -> addContent(KaTeXAssets::autoRenderScript());
         }
 
-        if ($needsEmoji) {
-            $page -> addHeadContent(EmojiPickerAssets::initScript());
+        if ($this -> needsEmoji) {
+            $this -> head -> addContent(EmojiPickerAssets::initScript());
         }
+    }
 
-        $page -> body -> class = $body_class !== null ? 'PageBody ' . $body_class : 'PageBody';
-        $page -> addContent(new MainNavigation());
+    private function assembleBody(): void
+    {
+        $this -> body -> class = $this -> bodyClass !== null ? 'PageBody ' . $this -> bodyClass : 'PageBody';
 
-        $page -> addContent(new PageTitle($title));
+        // The page-specific content has already been added to the body (via
+        // addContent during the page script); the chrome below belongs in front
+        // of it, so it's spliced in at the start rather than appended.
+        $chrome = [];
+
+        $chrome[] = new MainNavigation();
+        $chrome[] = new PageTitle((string) $this -> title);
 
         $current_user = Auth::user();
 
-        $page -> addContent(new JSGlobals([
+        $chrome[] = new JSGlobals([
             'currentUserId' => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> slug,
             'currentUserSkinTone' => $current_user ?-> skinTone,
@@ -118,55 +151,29 @@ class Page
             // post.js reads this rather than hardcoding its own copy, so the
             // client- and server-rendered carousels can't drift apart.
             'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,
-        ]));
+        ]);
 
-        // Loaded before post.js and main.js, which both call render_delta() to
-        // build a post's body from its Delta ops.
-        $delta_script = new Script();
-        $delta_script -> src = ServerURL::absolute('/delta.js');
-        $page -> addContent($delta_script);
+        // delta.js loads before post.js and main.js, which both call
+        // render_delta() to build a post's body from its Delta ops.
+        $script_sources = ['delta.js', 'post.js', 'message.js', 'other-user.js', 'notification.js', 'banned-user.js', 'report.js'];
 
-        $post_script = new Script();
-        $post_script -> src = ServerURL::absolute('/post.js');
-        $page -> addContent($post_script);
-
-        $message_script = new Script();
-        $message_script -> src = ServerURL::absolute('/message.js');
-        $page -> addContent($message_script);
-
-        $other_user_script = new Script();
-        $other_user_script -> src = ServerURL::absolute('/other-user.js');
-        $page -> addContent($other_user_script);
-
-        $notification_script = new Script();
-        $notification_script -> src = ServerURL::absolute('/notification.js');
-        $page -> addContent($notification_script);
-
-        $banned_user_script = new Script();
-        $banned_user_script -> src = ServerURL::absolute('/banned-user.js');
-        $page -> addContent($banned_user_script);
-
-        $report_script = new Script();
-        $report_script -> src = ServerURL::absolute('/report.js');
-        $page -> addContent($report_script);
-
-        if ($needsTagGraph) {
-            $tag_graph_script = new Script();
-            $tag_graph_script -> src = ServerURL::absolute('/tag-graph.js');
-            $page -> addContent($tag_graph_script);
+        if ($this -> needsTagGraph) {
+            $script_sources[] = 'tag-graph.js';
         }
 
-        $main_script = new Script();
-        $main_script -> src = ServerURL::absolute('/main.js');
-        $page -> addContent($main_script);
+        $script_sources[] = 'main.js';
 
-        if ($needsHelp) {
-            $help_script = new Script();
-            $help_script -> src = ServerURL::absolute('/help.js');
-            $page -> addContent($help_script);
+        if ($this -> needsHelp) {
+            $script_sources[] = 'help.js';
         }
 
-        return $page;
+        foreach ($script_sources as $source) {
+            $script = new Script();
+            $script -> src = ServerURL::absolute('/' . $source);
+            $chrome[] = $script;
+        }
+
+        array_splice($this -> body -> contents, 0, 0, $chrome);
     }
 
     public static function safeJSONForScript(mixed $data): string

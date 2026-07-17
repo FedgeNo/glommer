@@ -13,7 +13,7 @@ if (Auth::id() !== 1) {
     exit;
 }
 
-$page = Page::create('Site Settings');
+$page = new Page(['title' => 'Site Settings']);
 
 $page -> addContent(new Heading2('Upload worker'));
 $page -> addContent(new UploadWorkerStatus());

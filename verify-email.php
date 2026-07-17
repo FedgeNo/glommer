@@ -8,7 +8,7 @@ $token = (string) ($_GET['token'] ?? '');
 
 $user_id = $token !== '' ? EmailVerification::verify($token) : null;
 
-$page = Page::create('Verify Email');
+$page = new Page(['title' => 'Verify Email']);
 
 $page -> addContent(new Paragraph($user_id !== null
     ? 'Your email has been verified. You can now use Glommer.'

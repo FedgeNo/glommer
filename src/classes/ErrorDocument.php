@@ -12,7 +12,7 @@ class ErrorDocument
 
         http_response_code($status_code);
 
-        $page = Page::create($title);
+        $page = new Page(['title' => $title]);
 
         $page -> addContent(new Paragraph($message));
 

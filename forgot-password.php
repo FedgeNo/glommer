@@ -9,6 +9,6 @@ if (Auth::check()) {
     exit;
 }
 
-$page = Page::create('Forgot Password');
+$page = new Page(['title' => 'Forgot Password']);
 $page -> addContent(new ForgotPasswordForm());
 $page -> send();

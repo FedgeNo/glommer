@@ -76,6 +76,7 @@ class User extends HTMLObject
     protected function identityInfo(): HTMLObject
     {
         $info = new Div();
+        $info -> class = 'UserIdentity';
 
         $info -> addContent($this -> nameElement());
 

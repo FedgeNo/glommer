@@ -406,6 +406,9 @@ p a:hover {
     padding: 0.7rem 1rem;
     padding-inline: max(1rem, calc((100% - 40rem) / 2));
     z-index: 10;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ---------- Dropdown menus (they "glom" onto their trigger:
@@ -1333,6 +1336,21 @@ input[type='file']::file-selector-button {
 
 .User h2 {
     margin-bottom: 0.1rem;
+}
+
+/* A very long display name is ellipsized rather than run off the card. The
+   identity column must be allowed to shrink (min-width: 0) for the name's own
+   overflow to take effect - and in CurrentUser the name is itself a flex item
+   beside the edit pencil, which the min-width covers too. */
+.UserIdentity {
+    min-width: 0;
+}
+
+.DisplayName {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .OtherUser .Avatar,

@@ -7,6 +7,6 @@ require __DIR__ . '/src/init.php';
 // Public - visitors deciding whether to sign up need to read this.
 $page = new Page(['title' => 'Privacy Policy']);
 
-$page -> addContent(new PolicyText(SitePolicy::privacy()));
+$page -> addContent(new InfoText(SiteInfo::privacy()));
 
 $page -> send();

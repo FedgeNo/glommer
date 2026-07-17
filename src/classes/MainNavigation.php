@@ -31,6 +31,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(ServerURL::absolute('/messages/'), 'Messages'),
                 new Anchor(ServerURL::absolute('/bookmarks'), 'Bookmarks'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
+                new Anchor(ServerURL::absolute('/about'), 'About'),
             ];
 
             $this -> addContent(new NavDropdown($brand, $main_menu_links));
@@ -64,6 +65,7 @@ class MainNavigation extends HTMLObject
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
                 new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
+                new Anchor(ServerURL::absolute('/about'), 'About'),
             ];
 
             $this -> addContent(new NavDropdown($brand, $main_menu_links));

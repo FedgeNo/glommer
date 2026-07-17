@@ -17,6 +17,6 @@ if (!Auth::check() || Auth::id() !== 1) {
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
-Settings::set(SiteInfo::PRIVACY_SETTING, trim((string) ($payload[SiteInfo::PRIVACY_SETTING] ?? '')));
+Settings::set(SiteInfo::ABOUT_SETTING, trim((string) ($payload[SiteInfo::ABOUT_SETTING] ?? '')));
 
 JSONResponse::success(['saved' => true]) -> send();

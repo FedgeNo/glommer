@@ -36,6 +36,9 @@ $page -> addContent(new MailSettingsForm());
 $page -> addContent(new Heading2('Favicon'));
 $page -> addContent(new FaviconSettingsForm());
 
+$page -> addContent(new Heading2('About'));
+$page -> addContent(new AboutSettingsForm());
+
 $page -> addContent(new Heading2('Terms of Service'));
 $page -> addContent(new TermsSettingsForm());
 

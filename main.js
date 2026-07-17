@@ -3655,7 +3655,7 @@ document.addEventListener('submit', async (event) => {
 });
 
 document.addEventListener('submit', async (event) => {
-    const form = event.target.closest('.PolicySettingsForm');
+    const form = event.target.closest('.InfoSettingsForm');
 
     if (!form) {
         return;
@@ -3666,10 +3666,11 @@ document.addEventListener('submit', async (event) => {
     const submit_button = form.querySelector('button[type=\'submit\']');
     submit_button.disabled = true;
 
-    const terms_field = form.querySelector('[name=\'termsText\']');
-    const path = terms_field ? '/api/terms-settings' : '/api/privacy-settings';
-    const field_name = terms_field ? 'termsText' : 'privacyText';
-    const field = terms_field || form.querySelector('[name=\'privacyText\']');
+    // Each info form holds one textarea whose name is the Settings key
+    // (aboutText/termsText/privacyText); the endpoint is /api/<key-without-Text>-settings.
+    const field = form.querySelector('textarea');
+    const field_name = field.name;
+    const path = '/api/' + field_name.replace(/Text$/, '') + '-settings';
 
     const data = await api_post(path, {
         [field_name]: field.value,

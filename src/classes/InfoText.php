@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Renders an admin-authored plain-text policy (terms/privacy) as paragraphs:
+ * Renders an admin-authored plain-text site-info page (about/terms/privacy) as paragraphs:
  * blank-line-separated chunks become <p> elements, everything entity-escaped
  * by the normal text-node handling - the admin writes plain text, not HTML.
  */
-class PolicyText extends HTMLObject
+class InfoText extends HTMLObject
 {
     public string $tagName = 'div';
-    public ?string $class = 'PolicyText';
+    public ?string $class = 'InfoText';
 
     public function __construct(public readonly string $text)
     {

@@ -1828,6 +1828,22 @@ document.addEventListener('play', (event) => {
     stop_carousel_autoplay(carousel);
 }, true);
 
+// A pausing player stops its carousel's autoplay - whether the viewer paused
+// it or the off-screen observer below did, autoplay would otherwise hang
+// waiting on an "ended" a paused player never fires. An ended player is
+// exempt: carousel_advance pauses the just-ended slide as autoplay moves past
+// it, and that cleanup must not stop the autoplay it's part of. The pause
+// event doesn't bubble either - same capture-phase delegation as "play".
+document.addEventListener('pause', (event) => {
+    const media = event.target.closest?.('.Carousel video, .Carousel audio');
+
+    if (!media || media.ended) {
+        return;
+    }
+
+    stop_carousel_autoplay(media.closest('.Carousel'));
+}, true);
+
 // Advances past a video/audio slide once it finishes playing - the "ended"
 // event doesn't bubble either, same delegation approach as "play" above.
 document.addEventListener('ended', (event) => {
@@ -1861,18 +1877,16 @@ const offscreen_playback_observer = new IntersectionObserver((entries) => {
             return;
         }
 
-        if (entry.target.matches('video, audio') && !entry.target.paused) {
-            entry.target.pause();
-        }
-
-        // closest() matches the element itself, so this is the carousel entry
-        // itself or a media entry's enclosing carousel (a tall carousel can
-        // still be in view when its player isn't - its autoplay must not be
-        // left waiting on the paused player's "ended").
-        const carousel = entry.target.closest('.Carousel');
-
-        if (carousel) {
-            stop_carousel_autoplay(carousel);
+        if (entry.target.matches('video, audio')) {
+            if (!entry.target.paused) {
+                // Its pause event (the delegated listener above) stops any
+                // autoplay along with it.
+                entry.target.pause();
+            }
+        } else {
+            // A carousel sitting on an image slide has no player to pause -
+            // stop the autoplay (and its loading) directly.
+            stop_carousel_autoplay(entry.target);
         }
     });
 }, { rootMargin: '50% 0px' });

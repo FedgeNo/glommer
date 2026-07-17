@@ -84,7 +84,7 @@ class Notification {
             case 'passwordRemovedGoogle':
                 return window.siteURL + '/forgot-password';
             default:
-                return '#';
+                return null;
         }
     }
 
@@ -93,11 +93,16 @@ class Notification {
         div.className = 'Notification MountIn';
         div.dataset.notificationId = this.notificationId;
 
-        const link = document.createElement('a');
-        link.className = 'd-flex align-items-center gap-3';
-        link.href = this.targetURL();
+        // A notification links to its subject when it has one; a targetless one
+        // (a system error, say) is a plain block, never a link to nowhere.
+        const target = this.targetURL();
+        const container = document.createElement(target === null ? 'div' : 'a');
+        container.className = 'd-flex align-items-center gap-3';
+        if (target !== null) {
+            container.href = target;
+        }
 
-        link.appendChild(avatar_element(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId));
+        container.appendChild(avatar_element(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId));
 
         const info = document.createElement('div');
 
@@ -113,8 +118,8 @@ class Notification {
         meta.textContent = format_relative_time(created_at.toISOString());
         info.appendChild(meta);
 
-        link.appendChild(info);
-        div.appendChild(link);
+        container.appendChild(info);
+        div.appendChild(container);
 
         this.element = div;
 

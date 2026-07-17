@@ -23,14 +23,18 @@ class Notification extends HTMLObject
             $this -> attributes['data-notification-id'] = (string) $this -> notificationId;
         }
 
-        $link = new Anchor($this -> targetURL());
-        $link -> class = 'd-flex align-items-center gap-3';
+        $target = $this -> targetURL();
+
+        // A notification links to its subject when it has one; a targetless one
+        // (a system error, say) is a plain block, never a link to nowhere.
+        $container = $target !== null ? new Anchor($target) : new Div();
+        $container -> class = 'd-flex align-items-center gap-3';
 
         $avatar_url = $this -> actorHasAvatar
             ? ServerURL::absolute(User::avatarPath((int) $this -> actorId))
             : null;
 
-        $link -> addContent(Avatar::create((bool) $this -> actorHasAvatar, $avatar_url, $this -> actorName(), (int) $this -> actorId));
+        $container -> addContent(Avatar::create((bool) $this -> actorHasAvatar, $avatar_url, $this -> actorName(), (int) $this -> actorId));
 
         $info = new Div();
 
@@ -42,9 +46,9 @@ class Notification extends HTMLObject
         $meta -> class = 'Muted text-sm ' . $meta -> class;
         $info -> addContent($meta);
 
-        $link -> addContent($info);
+        $container -> addContent($info);
 
-        $this -> contents[] = $link;
+        $this -> contents[] = $container;
 
         return parent::toDOM();
     }
@@ -83,7 +87,7 @@ class Notification extends HTMLObject
         };
     }
 
-    protected function targetURL(): string
+    protected function targetURL(): ?string
     {
         return match ($this -> type) {
             'like', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
@@ -96,7 +100,7 @@ class Notification extends HTMLObject
             // the actor's identity, not the recipient's.
             'mention' => ServerURL::absolute('/users/' . $this -> actorUsername . '/' . $this -> postId),
             'passwordRemovedGoogle' => ServerURL::absolute('/forgot-password'),
-            default => '#',
+            default => null,
         };
     }
 

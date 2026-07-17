@@ -2366,10 +2366,15 @@ function schedule_ws_reconnect() {
 function handle_incoming_notification(notification_data) {
     const notification = Notification.fromData(notification_data);
 
-    const toast_link = document.createElement('a');
-    toast_link.href = notification.targetURL();
-    toast_link.textContent = notification.text();
-    show_toast(toast_link);
+    // Links to the notification's subject when it has one; otherwise plain text
+    // in the toast, never a link to nowhere.
+    const toast_target = notification.targetURL();
+    const toast_content = document.createElement(toast_target === null ? 'span' : 'a');
+    if (toast_target !== null) {
+        toast_content.href = toast_target;
+    }
+    toast_content.textContent = notification.text();
+    show_toast(toast_content);
 
     const dropdown_list = document.querySelector('.NotificationDropdown .NotificationList');
 

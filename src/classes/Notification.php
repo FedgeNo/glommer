@@ -117,15 +117,19 @@ class Notification extends HTMLObject
         return array_map(static fn (self $notification): array => [
             'notificationId' => (int) $notification -> notificationId,
             'userId' => (int) $notification -> userId,
-            'actorId' => (int) $notification -> actorId,
             'type' => $notification -> type,
             'postId' => $notification -> postId,
             'createdAt' => $notification -> createdAt,
-            'actorUsername' => $notification -> actorUsername,
-            'actorDisplayName' => $notification -> actorDisplayName,
-            'actorImage' => $notification -> actorHasAvatar
-                ? ServerURL::absolute(User::avatarPath((int) $notification -> actorId))
-                : null,
+            // A nested user object with row-named keys so notification.js reads
+            // the actor straight through (Avatar.forUser, actor.slug/title).
+            'actor' => [
+                'userId' => (int) $notification -> actorId,
+                'slug' => $notification -> actorUsername,
+                'title' => $notification -> actorDisplayName,
+                'image' => $notification -> actorHasAvatar
+                    ? ServerURL::absolute(User::avatarPath((int) $notification -> actorId))
+                    : null,
+            ],
         ], $notifications);
     }
 
@@ -150,13 +154,15 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
             'notification' => [
                 'notificationId' => $notification_id,
                 'userId' => $user_id,
-                'actorId' => $actor_id,
                 'type' => $type,
                 'postId' => $post_id,
                 'createdAt' => date('Y-m-d H:i:s'),
-                'actorUsername' => $actor ?-> slug,
-                'actorDisplayName' => $actor ?-> title,
-                'actorImage' => $actor !== null && $actor -> hasAvatar ? ServerURL::absolute(User::avatarPath($actor_id)) : null,
+                'actor' => [
+                    'userId' => $actor_id,
+                    'slug' => $actor ?-> slug,
+                    'title' => $actor ?-> title,
+                    'image' => $actor !== null && $actor -> hasAvatar ? ServerURL::absolute(User::avatarPath($actor_id)) : null,
+                ],
             ],
         ]);
     }

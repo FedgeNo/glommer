@@ -1,13 +1,10 @@
 class Notification {
     notificationId = null;
     userId = null;
-    actorId = null;
     type = null;
     postId = null;
     createdAt = null;
-    actorUsername = null;
-    actorDisplayName = null;
-    actorImage = null;
+    actor = null;
     element = null;
 
     static fromData(data) {
@@ -17,7 +14,7 @@ class Notification {
     }
 
     actorName() {
-        return this.actorDisplayName || this.actorUsername;
+        return this.actor.title || this.actor.slug;
     }
 
     text() {
@@ -72,15 +69,15 @@ class Notification {
             case 'friendRequest':
                 return window.siteURL + '/users/' + window.currentUserUsername + '/friends';
             case 'friendAccepted':
-                return window.siteURL + '/users/' + this.actorUsername + '/';
+                return window.siteURL + '/users/' + this.actor.slug + '/';
             case 'message':
-                return window.siteURL + '/messages/' + this.actorUsername;
+                return window.siteURL + '/messages/' + this.actor.slug;
             // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
             // post belongs to the ACTOR (whoever wrote the post that mentions
             // you) - same reasoning as 'friendAccepted'/'message' above using
-            // actorUsername, not currentUserUsername.
+            // actor.slug, not currentUserUsername.
             case 'mention':
-                return window.siteURL + '/users/' + this.actorUsername + '/' + this.postId;
+                return window.siteURL + '/users/' + this.actor.slug + '/' + this.postId;
             case 'passwordRemovedGoogle':
                 return window.siteURL + '/forgot-password';
             default:
@@ -102,7 +99,7 @@ class Notification {
             container.href = target;
         }
 
-        container.appendChild(Avatar.create(Boolean(this.actorImage), this.actorImage, this.actorName(), this.actorId));
+        container.appendChild(Avatar.forUser(this.actor));
 
         const info = document.createElement('div');
 

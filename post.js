@@ -23,9 +23,7 @@ class Post {
     likeCount = 0;
     liked = false;
     bookmarked = false;
-    authorUsername = null;
-    authorDisplayName = null;
-    authorImage = null;
+    author = null;
     element = null;
 
     static fromData(data) {
@@ -38,17 +36,12 @@ class Post {
         const byline = document.createElement('div');
         byline.className = 'PostByline d-flex align-items-center gap-2';
 
-        byline.appendChild(User.fromData({
-            userId: this.userId,
-            slug: this.authorUsername,
-            title: this.authorDisplayName,
-            image: this.authorImage,
-        }).header());
+        byline.appendChild(User.fromData(this.author).header());
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
             timestamp_link.className = 'PostTimestamp Muted text-sm ms-auto';
-            timestamp_link.href = window.siteURL + '/users/' + this.authorUsername + '/' + this.postId;
+            timestamp_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
 
             const timestamp = document.createElement('time');
             timestamp.className = 'RelativeTime';
@@ -261,7 +254,7 @@ class Post {
             post.dataset.hasMedia = this.items.length > 0 ? '1' : '';
         }
 
-        if (this.authorUsername) {
+        if (this.author) {
             post.appendChild(this.authorBylineToElement());
         }
 
@@ -274,7 +267,7 @@ class Post {
 
                 if (this.postId !== null) {
                     const title_link = document.createElement('a');
-                    title_link.href = window.siteURL + '/users/' + this.authorUsername + '/' + this.postId;
+                    title_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
                     title_link.appendChild(heading);
                     post.appendChild(title_link);
                 } else {
@@ -325,7 +318,7 @@ class Post {
         if (logged_in || this.replyCount > 0) {
             const replies_link = document.createElement('a');
             replies_link.className = 'Btn';
-            replies_link.href = window.siteURL + '/users/' + this.authorUsername + '/' + this.postId;
+            replies_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
             replies_link.textContent = this.replyCount === 0 ? 'Reply' : 'Replies (' + this.replyCount + ')';
             actions.appendChild(replies_link);
         }

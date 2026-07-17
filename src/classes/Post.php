@@ -598,9 +598,14 @@ SELECT `postId`
             'likeCount' => $like_count,
             'liked' => $liked,
             'bookmarked' => $bookmarked,
-            'authorUsername' => $this -> author ?-> slug,
-            'authorDisplayName' => $this -> author ?-> title,
-            'authorImage' => $this -> author ?-> avatarURL(),
+            // A nested user object with row-named keys so post.js builds the
+            // byline straight through User.fromData, no field-by-field transcode.
+            'author' => $this -> author !== null ? [
+                'userId' => (int) $this -> author -> userId,
+                'slug' => $this -> author -> slug,
+                'title' => $this -> author -> title,
+                'image' => $this -> author -> avatarURL(),
+            ] : null,
         ];
     }
 }

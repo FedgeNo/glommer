@@ -1083,12 +1083,17 @@ input[type='file']::file-selector-button {
 
 /* ---------- Feed ---------- */
 
-.PostByline .PostTimestamp {
-    font-weight: 500;
+/* The meta column (timestamp + edited note) never shrinks - the header does, so
+   a long display name ellipsizes instead of pushing the timestamp off the row. */
+.PostMeta {
     flex-shrink: 0;
 }
 
-.PostByline .PostTimestamp:hover {
+.PostByline .TimestampLink {
+    font-weight: 500;
+}
+
+.PostByline .TimestampLink:hover {
     color: var(--ink);
 }
 
@@ -1961,6 +1966,9 @@ input[type='file']::file-selector-button {
     font-weight: 550;
     line-height: 1;
     white-space: nowrap;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background-color: var(--surface-2);
 }
 
 .HashtagGraph.Active .HashtagNode {
@@ -1970,11 +1978,6 @@ input[type='file']::file-selector-button {
     /* Nodes are absolutely positioned by the script; -webkit-user-drag stops the
        browser trying to drag the link itself mid-spin. */
     -webkit-user-drag: none;
-}
-
-.HashtagGraph.Active .HashtagNode:hover {
-    color: var(--accent-strong);
-    text-decoration: underline;
 }
 
 @media (prefers-reduced-motion: reduce) {

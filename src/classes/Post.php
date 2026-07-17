@@ -285,27 +285,10 @@ class Post extends HTMLObject
     protected function authorByline(): HTMLObject
     {
         $byline = new Div();
-        $byline -> class = 'PostByline d-flex align-items-center gap-2';
+        $byline -> class = 'PostByline d-flex align-items-start gap-2';
 
         $byline -> addContent($this -> author -> header());
-
-        if ($this -> createdAt !== null && $this -> postId !== null) {
-            $timestamp_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> slug . '/' . $this -> postId));
-            $timestamp_link -> class = 'PostTimestamp Muted text-sm ms-auto';
-
-            $timestamp_link -> addContent(new RelativeTime($this -> createdAt, 'M j, Y'));
-
-            $byline -> addContent($timestamp_link);
-        }
-
-        if ($this -> editedAt !== null) {
-            $edited_marker = new Span();
-            $edited_marker -> class = 'Muted text-sm PostEditedMarker';
-            $edited_marker -> attributes['title'] = date('F j, Y g:i A', strtotime($this -> editedAt));
-            $edited_marker -> contents[] = '(edited)';
-
-            $byline -> addContent($edited_marker);
-        }
+        $byline -> addContent(new PostMeta($this));
 
         return $byline;
     }

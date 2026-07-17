@@ -34,13 +34,18 @@ class Post {
 
     authorBylineToElement() {
         const byline = document.createElement('div');
-        byline.className = 'PostByline d-flex align-items-center gap-2';
+        byline.className = 'PostByline d-flex align-items-start gap-2';
 
         byline.appendChild(User.fromData(this.author).header());
 
+        // The timestamp sits at the top of the byline, level with the display
+        // name, with the "(edited)" note stacked beneath it.
+        const meta = document.createElement('div');
+        meta.className = 'PostMeta d-flex flex-column align-items-end ms-auto';
+
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
-            timestamp_link.className = 'PostTimestamp Muted text-sm ms-auto';
+            timestamp_link.className = 'TimestampLink Muted text-sm';
             timestamp_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
 
             const timestamp = document.createElement('time');
@@ -49,7 +54,7 @@ class Post {
             timestamp.textContent = format_relative_time(this.createdAt);
             timestamp_link.appendChild(timestamp);
 
-            byline.appendChild(timestamp_link);
+            meta.appendChild(timestamp_link);
         }
 
         if (this.editedAt) {
@@ -63,8 +68,10 @@ class Post {
                 minute: '2-digit',
             });
             edited_marker.textContent = '(edited)';
-            byline.appendChild(edited_marker);
+            meta.appendChild(edited_marker);
         }
+
+        byline.appendChild(meta);
 
         return byline;
     }

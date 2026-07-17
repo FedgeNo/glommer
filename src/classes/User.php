@@ -125,14 +125,15 @@ class User extends HTMLObject
         $name = $this -> title ?? $this -> slug;
 
         $header = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
-        $header -> class = 'd-flex align-items-center gap-3';
+        $header -> class = 'UserHeader d-flex align-items-center gap-3';
 
         $header -> addContent(Avatar::forUser($this));
 
         $info = new Div();
+        $info -> class = 'UserHeaderInfo';
 
         $name_line = new Div();
-        $name_line -> class = 'fw-semibold';
+        $name_line -> class = 'fw-semibold UserHeaderName';
         $name_line -> contents[] = $name;
         $info -> addContent($name_line);
 

@@ -1091,6 +1091,20 @@ input[type='file']::file-selector-button {
     color: var(--ink);
 }
 
+/* A long display name in the byline clips to an ellipsis rather than shoving the
+   timestamp off the row - the header and its info column must be free to shrink
+   (min-width: 0) for the name's own overflow to take effect. */
+.PostByline .UserHeader,
+.PostByline .UserHeaderInfo {
+    min-width: 0;
+}
+
+.PostByline .UserHeaderName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .PostContent > h3,
 .PostContent > a > h3 {
     margin-top: 0.5rem;

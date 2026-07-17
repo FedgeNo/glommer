@@ -8,10 +8,10 @@
  * a rigid body for drawing. The physics never fights a drag because its forces
  * only depend on distances, which rotation leaves unchanged.
  *
- * The layout is settled once, synchronously, on load - so the graph appears
- * already laid out and completely still. It moves ONLY while being dragged
- * (no auto-spin, no inertia), so there's no animation loop at all: each
- * pointermove rotates the quaternion and repaints once.
+ * The layout is settled once, synchronously, on load, then the settled
+ * structure drifts in a slow constant auto-spin about the vertical screen axis.
+ * A drag rotates it directly and pauses the spin, which resumes when released -
+ * no inertia, no fling, just the steady drift and the direct drag.
  *
  * Nodes are the server-rendered HashtagNode links (still clickable); edges are
  * drawn on a <canvas> underlay (a rendering surface, not app "things", so no
@@ -63,6 +63,9 @@ class HashtagGraph {
     // Interaction.
     static RADIANS_PER_PIXEL = 0.006;
     static DRAG_THRESHOLD = 5;
+
+    // Idle auto-spin: a full turn takes ~80s. Very slow on purpose.
+    static SPIN_RADIANS_PER_SECOND = 0.08;
     // Default layout spread, as a multiple of the viewport half-size - >1 so the
     // graph is bigger than the viewport (nodes spaced out, not a cramped blob);
     // the wheel zooms from there.
@@ -107,8 +110,33 @@ class HashtagGraph {
         // dragged, never on its own.
         this.settle();
         this.render();
+        this.startSpin();
 
         window.addEventListener('resize', () => this.onResize());
+    }
+
+    // The idle drift: a constant angular velocity about the vertical screen axis
+    // (a Y-axis delta applied in view space, same side as a drag's), rendered
+    // per animation frame. Paused while dragging - the elapsed time still
+    // advances, so releasing resumes the drift without a jump. Frame-rate
+    // independent (scaled by the real elapsed time), and no inertia: the
+    // velocity is fixed, never accumulated from the drag.
+    startSpin() {
+        let last = null;
+
+        const frame = (now) => {
+            if (last !== null && !this.dragging) {
+                const angle = (now - last) / 1000 * HashtagGraph.SPIN_RADIANS_PER_SECOND;
+                const spin = [0, Math.sin(angle / 2), 0, Math.cos(angle / 2)];
+                this.orientation = quat_normalize(quat_multiply(spin, this.orientation));
+                this.render();
+            }
+
+            last = now;
+            requestAnimationFrame(frame);
+        };
+
+        requestAnimationFrame(frame);
     }
 
     // Font-size (and so node size) scales with the log of the post count, so one

@@ -1847,58 +1847,49 @@ document.addEventListener('ended', (event) => {
     schedule_carousel_autoplay_advance(carousel);
 }, true);
 
-// Pause any video/audio once it's scrolled well clear of the viewport (~50vh
-// past the edge - about a post away), so a player you've scrolled past doesn't
-// keep going. Pause-only by design: no auto-resume when it scrolls back, which
-// would fight the browser's autoplay policy and feel janky. The positive
-// rootMargin is what holds off the pause until it's a half-viewport out rather
-// than the instant it leaves.
-const media_offscreen_observer = new IntersectionObserver((entries) => {
+// Stops a post's playback once it's scrolled well clear of the viewport (~50vh
+// past the edge - about a post away): a playing video/audio is paused, and a
+// carousel's autoplay is stopped outright - otherwise its image-slide timer
+// keeps cycling (and loading) slides nobody can see, and a paused media slide
+// would hang autoplay waiting on an "ended" that never fires. Stop-only by
+// design: no auto-resume when it scrolls back, which would fight the browser's
+// autoplay policy and feel janky. The positive rootMargin is what holds off
+// the stop until it's a half-viewport out rather than the instant it leaves.
+const offscreen_playback_observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-        if (!entry.isIntersecting && !entry.target.paused) {
-            entry.target.pause();
+        if (entry.isIntersecting) {
+            return;
+        }
 
-            // If that media was an autoplaying carousel's active slide, the
-            // autoplay is waiting on its "ended" event - which a paused player
-            // never fires - so stop the autoplay outright rather than leave it
-            // stuck (and its toggle reading "Stop Autoplay") off-screen.
+        if (entry.target.matches('video, audio')) {
+            if (!entry.target.paused) {
+                entry.target.pause();
+            }
+
+            // A tall carousel can still be in view when its player isn't -
+            // stop its autoplay here too rather than leave it waiting on the
+            // paused player's "ended".
             const carousel = entry.target.closest('.Carousel');
 
             if (carousel) {
                 stop_carousel_autoplay(carousel);
             }
-        }
-    });
-}, { rootMargin: '50% 0px' });
-
-// A carousel scrolled well clear of the viewport stops its autoplay outright -
-// otherwise the image-slide timer keeps cycling (and loading) slides nobody can
-// see. Same margin as the media pause above; stop_carousel_autoplay is a no-op
-// on a carousel that isn't autoplaying.
-const carousel_offscreen_observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
+        } else {
             stop_carousel_autoplay(entry.target);
         }
     });
 }, { rootMargin: '50% 0px' });
 
-function observe_offscreen_media(root) {
-    if (root.matches?.('video, audio')) {
-        media_offscreen_observer.observe(root);
+function observe_offscreen_playback(root) {
+    if (root.matches?.('video, audio, .Carousel')) {
+        offscreen_playback_observer.observe(root);
     }
 
-    root.querySelectorAll?.('video, audio').forEach((media) => media_offscreen_observer.observe(media));
-
-    if (root.matches?.('.Carousel')) {
-        carousel_offscreen_observer.observe(root);
-    }
-
-    root.querySelectorAll?.('.Carousel').forEach((carousel) => carousel_offscreen_observer.observe(carousel));
+    root.querySelectorAll?.('video, audio, .Carousel').forEach((element) => offscreen_playback_observer.observe(element));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    observe_offscreen_media(document.body);
+    observe_offscreen_playback(document.body);
 
     // Media inserted later (infinite scroll, client-rendered carousels) gets
     // observed too - same "dynamically added content is handled automatically"
@@ -1908,7 +1899,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === 1) {
-                    observe_offscreen_media(node);
+                    observe_offscreen_playback(node);
                 }
             });
         });

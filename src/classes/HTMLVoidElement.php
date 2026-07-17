@@ -8,4 +8,9 @@ class HTMLVoidElement extends HTMLObject
     {
         throw new Exception('<' . $this -> tagName . '> is a void element and cannot contain content');
     }
+
+    public function addContents(array $items): void
+    {
+        throw new Exception('<' . $this -> tagName . '> is a void element and cannot contain content');
+    }
 }

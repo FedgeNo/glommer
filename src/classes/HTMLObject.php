@@ -100,7 +100,7 @@ class HTMLObject
     public function addContents(array $items): void
     {
         foreach ($items as $item) {
-            $this -> addContent($item);
+            $this -> contents[] = $item;
         }
     }
 

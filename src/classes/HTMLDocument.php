@@ -13,6 +13,7 @@ class HTMLDocument extends HTMLObject
         parent::__construct($properties);
         $this -> head = new Head();
         $this -> body = new Body();
+        parent::addContents([$this -> head, $this -> body]);
     }
 
     public function addHeadContent(HTMLObject|CData|string|\DOMNode $item): void
@@ -28,6 +29,11 @@ class HTMLDocument extends HTMLObject
     public function addContent(HTMLObject|CData|string|\DOMNode $item): void
     {
         $this -> body -> addContent($item);
+    }
+    
+    public function addContents(Array $items): void
+    {
+        $this -> body -> addContents($items);
     }
 
     public function toDOM(): \DOMElement
@@ -47,24 +53,22 @@ class HTMLDocument extends HTMLObject
             }
         }
 
-        $html = parent::toDOM();
-        $html -> appendChild($this -> head -> toDOM());
-        $html -> appendChild($this -> body -> toDOM());
-
-        self::$document -> appendChild($html);
-
-        return $html;
+        return parent::toDOM();
     }
 
     public function __toString(): string
     {
         $html = $this -> toDOM();
 
+        // Attach the root to the document so fillEmptyNonVoidTags's
+        // document-wide XPath can reach it (the same order render() uses),
+        // then serialize just that element.
+        self::$document -> appendChild($html);
         self::fillEmptyNonVoidTags($html);
 
         return '<!DOCTYPE html>
 '
-            . self::stripSelfClosingSlash(self::$document -> saveXML(self::$document -> documentElement));
+            . self::stripSelfClosingSlash(self::$document -> saveXML($html));
     }
 
     public function send(): void

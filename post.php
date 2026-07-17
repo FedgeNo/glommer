@@ -65,7 +65,7 @@ $page -> jsonLD = $json_ld;
 $page -> needsEditor = $current_user !== null;
 $page -> needsMath = true;
 $page -> needsEmoji = $current_user !== null;
-
+$page -> title = $page -> title ? $page -> title : $page -> description;
 if ($post -> parentId !== null) {
     $parent_link = ParentPostLink::fromParentId($post -> parentId);
 

@@ -22,6 +22,7 @@ if ($user_id === Auth::id()) {
 $name = $profile_user -> title ?? $profile_user -> slug;
 
 $page = new Page($profile_user);
+$page -> bodyClass = 'ProfilePage';
 $page -> title = $name;
 $page -> description = 'Posts by ' . $name . ' on Glommer';
 $page -> image = $profile_user -> avatarURL();

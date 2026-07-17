@@ -25,6 +25,7 @@ if ($is_own) {
 $name = $profile_user -> title ?? $profile_user -> slug;
 
 $page = new Page($profile_user);
+$page -> bodyClass = 'ProfilePage';
 $page -> title = $name . '\'s Friends';
 $page -> description = 'Friends of ' . $name . ' on Glommer';
 $page -> image = $profile_user -> avatarURL();

@@ -147,7 +147,7 @@ body {
 }
 
 body:has(.MainNavigation) {
-    padding-top: calc(var(--nav-height) + var(--page-title-height));
+    padding-top: calc(var(--nav-height) + var(--page-title-height) + 1rem + 2px);
 }
 
 .PageBody {
@@ -315,6 +315,10 @@ p a:hover {
     top: 0;
     left: 0;
     right: 0;
+    /* A fixed height (its single row of controls centred within) so --nav-height
+       is exactly the bar's height - the PageTitle and mobile menu position off
+       it in pure CSS, no measure-and-set on load. */
+    height: var(--nav-height);
     background-color: var(--glass);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
@@ -612,13 +616,14 @@ p a:hover {
     position: fixed;
     left: 0;
     right: 0;
-    /* Not bottom: 0 - .MainNavigation's backdrop-filter makes it the
-       containing block for this fixed-position child (same as
-       transform/filter would), so a percentage-of-viewport bottom would
-       resolve against .MainNavigation's own (nav-bar-sized) box instead of
-       the real viewport. top/height are set inline in main.js in vh/dvh
-       units instead, which stay viewport-relative regardless of containing
-       block. */
+    /* Sits directly below the fixed-height bar and fills the rest of the
+       viewport. Not bottom: 0 - .MainNavigation's backdrop-filter makes it the
+       containing block for this fixed-position child (same as transform/filter
+       would), so a percentage-of-viewport bottom would resolve against
+       .MainNavigation's own box. A rem top and a dvh height stay
+       viewport-relative regardless. */
+    top: var(--nav-height);
+    height: calc(100dvh - var(--nav-height));
     flex-direction: column;
     gap: 0.125rem;
     overflow-y: auto;
@@ -1346,6 +1351,8 @@ input[type='file']::file-selector-button {
 
 .ProfileSaveButton {
     align-self: flex-end;
+    /* Matches the gap between a user card's action buttons (gap-2). */
+    margin-top: 0.5rem;
 }
 
 .UserLink {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /**
  * The /messages inbox: one Conversation per person the viewer has exchanged
- * messages with, most-recent first, fetched into its contents at construction.
- * Build with new ConversationList(['userId' => 5]).
+ * messages with, most-recent first, fetched at render time. Build with
+ * new ConversationList(['userId' => 5]).
  */
 class ConversationList extends ItemList
 {
@@ -13,10 +13,8 @@ class ConversationList extends ItemList
 
     public ?int $userId = null;
 
-    public function __construct(array|object|null $properties = null)
+    public function toDOM(): \DOMElement
     {
-        parent::__construct($properties);
-
         $not_banned = 0;
 
         // Each direction is its own indexed half (senderId=me walks
@@ -45,10 +43,7 @@ SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `partners`.`lastM
     WHERE `u`.`banned` = ?
     ORDER BY `partners`.`lastMessageAt` DESC
 ', 'Conversation', 'iii', (int) $this -> userId, (int) $this -> userId, $not_banned);
-    }
 
-    public function toDOM(): \DOMElement
-    {
         if ($this -> contents === []) {
             $this -> contents[] = new Notice('You don\'t have any conversations yet.');
         }

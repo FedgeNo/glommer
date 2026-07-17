@@ -11,6 +11,9 @@ class UserSearchResults extends ItemList
 {
     public ?string $class = 'UserSearchResults';
 
+    /** @var OtherUser[] */
+    public array $suggestions = [];
+
     /**
      * @param OtherUser[] $suggestions
      */
@@ -18,10 +21,17 @@ class UserSearchResults extends ItemList
     {
         parent::__construct();
 
+        $this -> suggestions = $suggestions;
+    }
+
+    public function toDOM(): \DOMElement
+    {
         // The suggestion list is a fixed, ranked set, not cursor-paginated
         // (see api/search-users.php) - infinite scroll only ever kicks in once a
         // typed query gets a paginated result set of its own.
         $this -> attributes['data-has-more'] = '0';
-        $this -> addContents($suggestions);
+        $this -> addContents($this -> suggestions);
+
+        return parent::toDOM();
     }
 }

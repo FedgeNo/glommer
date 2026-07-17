@@ -11,10 +11,10 @@ class PostSearchResults extends ItemList
 {
     public ?string $class = 'PostSearchResults';
 
-    public function __construct()
+    public function toDOM(): \DOMElement
     {
-        parent::__construct();
-
         $this -> attributes['data-has-more'] = '0';
+
+        return parent::toDOM();
     }
 }

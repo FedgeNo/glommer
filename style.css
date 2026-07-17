@@ -630,14 +630,17 @@ p a:hover {
         z-index: 30;
     }
 
-    /* Collapsed, the bar is exactly the brand row (--nav-height, the fixed
-       heading sits off it). Expanded, the nav grows into a scrollable panel
-       capped at the viewport, its brand row still the top bar. */
+    /* The nav flattens into one vertical list: every container passes through
+       (display: contents) and every link/button becomes a full-width block row,
+       in DOM order - the main menu, then notifications, then the account links.
+       Collapsed it clips to the brand row (--nav-height); the toggle grows it
+       into a scrollable panel. Laid out as a plain block (not the d-flex row) so
+       the rows just stack. */
     .MainNavigation {
-        flex-wrap: wrap;
+        display: block !important;
         height: var(--nav-height);
-        align-items: center;
-        row-gap: 0.125rem;
+        overflow: hidden;
+        padding-block: 0;
     }
 
     .MainNavigation:has(.NavToggle:checked) {
@@ -647,103 +650,50 @@ p a:hover {
         padding-bottom: 0.4rem;
     }
 
-    .MainNavigation > .NavDropdown {
-        min-height: var(--nav-height);
-        display: flex;
-        align-items: center;
+    /* Containers pass their links straight through - !important because .d-flex
+       is a Bootstrap !important utility. */
+    .MainNavigation .NavDropdown,
+    .MainNavigation .NavDropdownMenu,
+    .MainNavigation .NavAccount,
+    .MainNavigation .NotificationsNavLink,
+    .MainNavigation .LogoutForm,
+    .MainNavigation > .d-flex {
+        display: contents !important;
     }
 
-    /* Collapsed: only the brand trigger + hamburger. Main-menu flyout,
-       notifications, and account all hide until the toggle is checked. */
-    .MainNavigation .NavDropdownMenu {
-        display: none;
-    }
-
-    /* .d-flex is a Bootstrap !important utility, so hiding/showing these
-       containers has to answer in kind. */
-    .MainNavigation > .d-flex:not(.NavAccount),
-    .MainNavigation > .NavAccount {
-        display: none !important;
-    }
-
-    /* Expanded: the brand block goes full-width and its flyout - along with the
-       notifications and account blocks - stacks inline beneath, one link per
-       full-width row. No absolute pop-outs, no duplicate list. */
-    .NavToggle:checked ~ .NavDropdown {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-        min-height: 0;
-    }
-
-    /* The brand trigger stays a left-aligned nav-height row - the top bar - with
-       the main menu stacked beneath it. */
-    .NavToggle:checked ~ .NavDropdown .NavBrand {
-        align-self: flex-start;
-        min-height: var(--nav-height);
-        display: flex;
-        align-items: center;
-    }
-
-    .NavToggle:checked ~ .NavDropdown .NavDropdownMenu,
-    .NavToggle:checked ~ .d-flex:not(.NavAccount),
-    .NavToggle:checked ~ .NavAccount {
-        display: flex !important;
-        flex-direction: column;
-        width: 100%;
-        gap: 0.125rem;
-    }
-
-    .NavToggle:checked ~ .NavDropdown .NavDropdownMenu {
-        position: static;
-        opacity: 1;
-        transform: none;
-        pointer-events: auto;
-        box-shadow: none;
-        min-width: 0;
-        padding: 0;
-        background: none;
-        border: none;
-        border-radius: 0;
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
-    }
-
-    /* Every stacked item - flyout links, the logout button, and the "Logged In
-       As X" trigger (just another link now) - is a full-width row, not a
-       desktop pill. */
-    .MainNavigation .NavDropdownMenu a,
-    .MainNavigation .NavDropdownMenu .LogoutButton,
-    .MainNavigation .NavAccount .NavDropdownTrigger,
-    .MainNavigation .NavAccount > a {
+    /* Every link and button is a full-width, borderless, fully-rounded block
+       row - overriding the desktop nav-pill styling. */
+    .MainNavigation a,
+    .MainNavigation .LogoutButton {
         display: block;
         width: 100%;
         box-sizing: border-box;
-        padding: 0.75rem 0.85rem;
-        border: none;
-        border-radius: 0.625rem;
-        color: var(--ink);
+        margin: 0;
+        padding: 0.75rem 0.85rem !important;
+        border: none !important;
+        border-radius: 0.625rem !important;
+        background: none !important;
+        opacity: 1 !important;
+        color: var(--ink) !important;
         font-weight: 500;
         font-size: 1rem;
         text-align: left;
     }
 
-    .MainNavigation .NavDropdownMenu a:hover,
-    .MainNavigation .NavDropdownMenu .LogoutButton:hover,
-    .MainNavigation .NavAccount .NavDropdownTrigger:hover,
-    .MainNavigation .NavAccount > a:hover {
-        background-color: var(--surface-2);
-        color: var(--ink);
+    .MainNavigation a:hover,
+    .MainNavigation .LogoutButton:hover {
+        background-color: var(--surface-2) !important;
     }
 
-    .NavAccount .LogoutForm {
-        width: 100%;
-        margin: 0;
+    /* The brand is the top bar row, its text vertically centred at --nav-height. */
+    .MainNavigation .NavBrand {
+        display: flex;
+        align-items: center;
+        min-height: var(--nav-height);
     }
 
-    /* The hover-only notification preview doesn't suit touch. */
-    .NotificationDropdown,
-    .NotificationsNavLink:hover .NotificationDropdown {
+    /* The hover-only notification preview isn't a list row. */
+    .NotificationDropdown {
         display: none !important;
     }
 }

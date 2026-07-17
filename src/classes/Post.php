@@ -6,7 +6,11 @@ class Post extends HTMLObject
 {
     protected const DESCRIPTION_SUMMARY_MAX_LENGTH = 160;
 
-    public string $tagName = 'div';
+    // A post (and a reply, which is just a post with a parentId) is a
+    // self-contained, independently distributable item of content - the textbook
+    // <article>. The .Post/.Card styling is class-based, so the tag is free to
+    // carry the right semantics.
+    public string $tagName = 'article';
     public ?string $class = 'Post Card';
 
     public ?int $postId = null;

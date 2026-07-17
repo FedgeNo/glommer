@@ -20,7 +20,7 @@ $is_own = Auth::id() === (int) $profile_user -> userId;
 // Same profile card user.php renders (CurrentUser for your own page, OtherUser
 // otherwise) - shown at the top so there's a way back to the profile.
 if ($is_own) {
-    $profile_user = new CurrentUser();
+    $profile_user = new CurrentUser($profile_user);
 }
 $name = $profile_user -> title ?? $profile_user -> slug;
 

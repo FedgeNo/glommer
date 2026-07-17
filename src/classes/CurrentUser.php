@@ -9,11 +9,15 @@ class CurrentUser extends User
     // as CurrentUser, recursing right back into this method.
     private static ?User $cachedUser = null;
 
-    public function __construct()
+    public function __construct(array|object|null $properties = null)
     {
-        parent::__construct();
+        parent::__construct($properties);
 
-        if (!Auth::check()) {
+        // Seeded from a row the caller already fetched (the profile page hands
+        // over the user it loaded, so viewing your own profile is one Users
+        // query, not two). With nothing passed, this IS the logged-in user,
+        // loaded from the session id.
+        if ($properties !== null || !Auth::check()) {
             return;
         }
 

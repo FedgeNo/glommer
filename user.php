@@ -43,9 +43,9 @@ $page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> 
 
 $page -> addContent($profile_user);
 
-$feed = new FeedList(['feedType' => 'user', 'userId' => $user_id]);
+$profile_feed = new ProfileFeed(['userId' => $user_id]);
 
-if ($feed -> hasItems()) {
+if ($profile_feed -> hasItems()) {
     if (Auth::check()) {
         // Search this user's own posts (scoped to their userId). While a query is
         // active the default feed below is hidden and the results take its place
@@ -53,12 +53,7 @@ if ($feed -> hasItems()) {
         $page -> addContent(new PostSearch($user_id, 'Search ' . $profile_user -> title . '\'s posts...'));
     }
 
-    $feed_section = new Section();
-    $feed_section -> class = 'ProfileFeed';
-    $feed_section -> addContent(new Heading2('Posts'));
-    $feed_section -> addContent($feed);
-
-    $page -> addContent($feed_section);
+    $page -> addContent($profile_feed);
 }
 
 $page -> send();

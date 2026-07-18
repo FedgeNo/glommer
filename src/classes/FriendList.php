@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-class FriendList extends UserList
+class FriendList extends UserListSection
 {
     protected string $listType = 'friends';
     protected string $heading = 'Friends';
-    protected string $emptyMessage = 'You haven\'t got any friends yet.';
 
     public function __construct(array|object|null $properties = null)
     {
@@ -41,11 +40,5 @@ UNION ALL
     ORDER BY `friendshipId` DESC
     LIMIT ?
 ', 'Friend', 'isiiiisiiii', $user_id, $accepted, $not_banned, $cursor, $limit, $user_id, $accepted, $not_banned, $cursor, $limit, $limit);
-
-        // The default message is first-person, for your own friends page; a
-        // third party's empty friends list names them instead.
-        if (Auth::id() !== $user_id) {
-            $this -> emptyMessage = ($this -> user -> title ?: $this -> user -> slug) . ' hasn\'t got any friends yet.';
-        }
     }
 }

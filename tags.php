@@ -22,7 +22,7 @@ if ($tag === '') {
         }
 
         if ($trending !== []) {
-            $page -> addContent(new HashtagCloud('Trending', $trending));
+            $page -> addContent(new TagListSection('Trending', $trending));
         }
     }
 

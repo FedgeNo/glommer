@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-class OutgoingFriendRequestList extends UserList
+class OutgoingFriendRequestList extends UserListSection
 {
     protected string $listType = 'outgoing';
     protected string $heading = 'Sent requests (awaiting response)';
-    protected string $emptyMessage = 'No outgoing requests.';
 
     public function __construct(array|object|null $properties = null)
     {

@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 /**
  * The "Trending" section on the /trending-topics page: extracted entities, not
- * hashtags - EntityExtractor only produces 'hashtag'-type entities today,
- * but this component (and everything under it - TrendingEntityChip,
- * Trending.php itself) has no hashtag-specific naming, styling, or behavior
- * anywhere. Deliberately separate from HashtagCloud/HashtagChip (the
- * "Popular" section, which genuinely IS hashtag-only and unrelated to the
- * trending engine) rather than sharing a component with it.
+ * hashtags - EntityExtractor only produces 'hashtag'-type entities today, but
+ * this component (and everything under it - TrendingEntityChip, Trending.php
+ * itself) has no hashtag-specific naming, styling, or behavior anywhere.
+ * Deliberately separate from TagListSection/HashtagChip (the tag clouds, which
+ * genuinely ARE hashtag-only and unrelated to the trending engine) rather than
+ * sharing a component with them.
  */
-class TrendingSection extends Section
+class TrendingSection extends ListSection
 {
     public ?string $class = 'TrendingSection d-flex flex-column gap-2';
+
+    protected string $heading = 'Trending';
+
+    protected string $itemsClass = 'TrendingEntities d-flex flex-wrap gap-2';
 
     /**
      * @param TrendingEntityChip[] $entities
@@ -22,15 +26,6 @@ class TrendingSection extends Section
     {
         parent::__construct();
 
-        $title = new Heading2();
-        $title -> addContent('Trending');
-        $this -> addContent($title);
-
-        $list = new Div();
-        $list -> class = 'TrendingEntities d-flex flex-wrap gap-2';
-
-        $list -> addContents($entities);
-
-        $this -> addContent($list);
+        $this -> items = $entities;
     }
 }

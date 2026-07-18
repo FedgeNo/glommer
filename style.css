@@ -250,6 +250,8 @@ p a:hover {
 .BookmarkList,
 .NotificationList,
 .UserItems,
+.TagItems,
+.TrendingEntities,
 .BannedUserList,
 .BannedTrendingEntitiesList,
 .RememberedDevicesList,
@@ -1375,7 +1377,7 @@ input[type='file']::file-selector-button {
     height: 4.5rem;
 }
 
-.UserList {
+.UserListSection {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

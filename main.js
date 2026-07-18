@@ -1325,14 +1325,13 @@ document.addEventListener('click', async (event) => {
         // move the rebuilt card into the friends section instead, so the live
         // DOM matches what a reload shows (an accepted friendship only ever
         // appears in FriendList, never PendingFriendRequestList).
-        const pending_list = card.closest('.UserList[data-list-type="incoming"]');
+        const pending_list = card.closest('.UserListSection[data-list-type="incoming"]');
 
         if (pending_list) {
-            const friends_list = document.querySelector('.UserList[data-list-type="friends"]');
+            const friends_list = document.querySelector('.UserListSection[data-list-type="friends"]');
 
             if (friends_list) {
                 const friends_items = friends_list.querySelector('.UserItems');
-                friends_items.querySelector('.Notice')?.closest('li')?.remove();
                 friends_items.prepend(list_item(new_card));
             }
 
@@ -2560,7 +2559,7 @@ window.addEventListener('scroll', async () => {
 
     const threshold = 300;
 
-    const target = Array.from(document.querySelectorAll('.UserList')).find((list) => {
+    const target = Array.from(document.querySelectorAll('.UserListSection')).find((list) => {
         if (list.dataset.hasMore !== '1') {
             return false;
         }

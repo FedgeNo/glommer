@@ -177,6 +177,58 @@ h2 {
     font-size: 1.2rem;
 }
 
+.SettingsSection {
+    border-top: 1px solid var(--hairline);
+}
+
+.SettingsSection:last-of-type {
+    border-bottom: 1px solid var(--hairline);
+}
+
+/* The summary reads as the section's h2, with a chevron that flips on open. */
+.SettingsSection > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding-block: 0.9rem;
+    list-style: none;
+    font-family: var(--display-font);
+    font-weight: 640;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.SettingsSection > summary::-webkit-details-marker {
+    display: none;
+}
+
+.SettingsSection > summary:hover {
+    color: var(--accent);
+}
+
+.SettingsSection > summary::after {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.SettingsSection[open] > summary::after {
+    transform: rotate(-135deg);
+}
+
+/* Breathing room under the open body before the next disclosure's hairline. */
+.SettingsSection[open] > :last-child {
+    margin-bottom: 1.25rem;
+}
+
 h3 {
     font-size: 1.05rem;
 }

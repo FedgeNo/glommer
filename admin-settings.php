@@ -15,34 +15,20 @@ if (Auth::id() !== 1) {
 
 $page = new Page(['title' => 'Site Settings']);
 
-$page -> addContent(new Heading2('Upload worker'));
-$page -> addContent(new UploadWorkerStatus());
+$page -> addContent(new SettingsSection('Services', new ServicesStatus()));
 
-$page -> addContent(new Heading2('WebSocket server'));
-$page -> addContent(new WebSocketStatus());
+$page -> addContent(new SettingsSection('Bot protection', new AdminSettingsForm()));
 
-$page -> addContent(new Heading2('Trending timer'));
-$page -> addContent(new TrendingTimerStatus());
+$page -> addContent(new SettingsSection('Google Sign-In', new GoogleAuthSettingsForm()));
 
-$page -> addContent(new Heading2('Bot protection'));
-$page -> addContent(new AdminSettingsForm());
+$page -> addContent(new SettingsSection('Mail', new MailSettingsForm()));
 
-$page -> addContent(new Heading2('Google Sign-In'));
-$page -> addContent(new GoogleAuthSettingsForm());
+$page -> addContent(new SettingsSection('Favicon', new FaviconSettingsForm()));
 
-$page -> addContent(new Heading2('Mail'));
-$page -> addContent(new MailSettingsForm());
+$page -> addContent(new SettingsSection('About', new AboutSettingsForm()));
 
-$page -> addContent(new Heading2('Favicon'));
-$page -> addContent(new FaviconSettingsForm());
+$page -> addContent(new SettingsSection('Terms of Service', new TermsSettingsForm()));
 
-$page -> addContent(new Heading2('About'));
-$page -> addContent(new AboutSettingsForm());
-
-$page -> addContent(new Heading2('Terms of Service'));
-$page -> addContent(new TermsSettingsForm());
-
-$page -> addContent(new Heading2('Privacy Policy'));
-$page -> addContent(new PrivacySettingsForm());
+$page -> addContent(new SettingsSection('Privacy Policy', new PrivacySettingsForm()));
 
 $page -> send();

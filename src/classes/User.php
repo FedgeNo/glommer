@@ -155,7 +155,7 @@ class User extends HTMLObject
      */
     public static function avatarPath(int $user_id): string
     {
-        $path = '/uploads/avatars/' . $user_id . '-thumb.jpg';
+        $path = '/uploads/avatars/' . UploadProcessor::shard($user_id) . '/' . $user_id . '-thumb.jpg';
         $mtime = @filemtime(__DIR__ . '/../..' . $path);
 
         return $mtime !== false ? $path . '?v=' . $mtime : $path;
@@ -624,7 +624,7 @@ DELETE
             UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
         }
 
-        $avatar_dir = __DIR__ . '/../../uploads/avatars';
+        $avatar_dir = __DIR__ . '/../../uploads/avatars/' . UploadProcessor::shard($user_id);
 
         foreach ([$user_id . '.jpg', $user_id . '-thumb.jpg'] as $filename) {
             $path = $avatar_dir . '/' . $filename;

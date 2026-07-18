@@ -2310,6 +2310,74 @@ function make_dirs_world_writable(string $root): void
 }
 
 /**
+ * Moves any upload file sitting flat in uploads/, uploads/avatars/, or
+ * uploads/private/originals/ into its two-hex-character shard bucket
+ * (UploadProcessor::shard) - every path builder reads and writes only the
+ * sharded location, so a flat file is unreachable until moved. Idempotent
+ * and cheap: only flat files match, so a fully sharded tree is a no-op.
+ * Runs on every install pass, same as the other reconcilers.
+ */
+function shard_uploads_tree(): void
+{
+    $project_root = dirname(__DIR__);
+
+    $moved = 0;
+    $failed = 0;
+
+    // Each tree's filenames start with the id the shard derives from: an
+    // lp-<hex> link-preview seed, a <hex>-<n> batch seed, or a numeric
+    // itemId/userId. Anything else (site/favicon.png, the worker lock file)
+    // is not an id-named upload and stays put.
+    $trees = [
+        $project_root . '/uploads' => '/^(lp-[0-9a-f]{32}|[0-9a-f]{16}-\d+|\d+)[.-]/',
+        $project_root . '/uploads/avatars' => '/^(\d+)[.-]/',
+        $project_root . '/uploads/private/originals' => '/^(lp-[0-9a-f]{32}|[0-9a-f]{16}-\d+|\d+)-original\./',
+    ];
+
+    foreach ($trees as $dir => $id_pattern) {
+        foreach (glob($dir . '/*') ?: [] as $path) {
+            if (!is_file($path)) {
+                continue; // shard buckets and the avatars/private/site subtrees
+            }
+
+            $name = basename($path);
+
+            if (preg_match($id_pattern, $name, $match) !== 1) {
+                continue;
+            }
+
+            $id = ctype_digit($match[1]) ? (int) $match[1] : $match[1];
+            $bucket = $dir . '/' . UploadProcessor::shard($id);
+
+            // 0777 like every other on-demand upload dir (see
+            // UploadProcessor::ensureDir); a root install tightens the whole
+            // tree right after via fix_upload_ownership.
+            if (!is_dir($bucket) && !@mkdir($bucket, 0777, true)) {
+                $failed++;
+
+                continue;
+            }
+
+            @chmod($bucket, 0777);
+
+            if (@rename($path, $bucket . '/' . $name)) {
+                $moved++;
+            } else {
+                $failed++;
+            }
+        }
+    }
+
+    if ($failed > 0) {
+        warn($failed . ' upload file(s) could not be moved into their shard bucket (permissions?) - each is unreachable by the site until moved. Re-run this installer as root, or move them by hand.');
+    } elseif ($moved > 0) {
+        ok('uploads tree sharded (' . $moved . ' file(s) moved into their two-hex buckets)');
+    } else {
+        ok('uploads tree already sharded');
+    }
+}
+
+/**
  * Sets uploads/ ownership and permissions for the root path. With the web
  * server's account known, uploads/ is owned by the service user, group-shared
  * with the web server's group (setgid + group-write on directories) so both can
@@ -4499,6 +4567,14 @@ try {
 }
 
 ok('database marked as version ' . $code_version);
+
+// ---------- Uploads sharding ----------
+
+// Every upload path is sharded into a two-hex-character bucket so no
+// directory's entry count grows with the site - move any flat legacy file
+// into its bucket. Before the daemon restart below, so the workers come up
+// against the fully sharded tree.
+shard_uploads_tree();
 
 // Restart the long-running daemons, at the end, once code and schema are both
 // settled - they load code into memory at start, so a pull (or a src/classes

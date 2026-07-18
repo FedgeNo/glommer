@@ -39,10 +39,15 @@ if (!UploadProcessor::hasFreeDiskSpace((int) $uploaded_file['size'])) {
     JSONResponse::error('Uploads are temporarily unavailable - the server is low on storage. Please try again later.', 507) -> send();
 }
 
-$avatar_dir = dirname(__DIR__) . '/uploads/avatars';
+// The shard bucket this user's avatar lives in - same 256-way sharding as
+// every other upload path, so avatars/ never accumulates one entry per user
+// in a single directory. 0777 like every other on-demand upload dir (see
+// UploadProcessor::ensureDir); a root install tightens the tree afterward.
+$avatar_dir = dirname(__DIR__) . '/uploads/avatars/' . UploadProcessor::shard((int) $current_user -> userId);
 
 if (!is_dir($avatar_dir)) {
-    mkdir($avatar_dir, 0755, true);
+    mkdir($avatar_dir, 0777, true);
+    @chmod($avatar_dir, 0777);
 }
 
 $image = ImageProcessor::load($uploaded_file['tmp_name']);

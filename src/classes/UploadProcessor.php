@@ -84,14 +84,31 @@ class UploadProcessor
         return ($free - $incoming_bytes * 2) >= self::MIN_FREE_DISK_BYTES;
     }
 
+    /**
+     * The shard directory an id's files live under - two hex characters (256
+     * buckets), so no upload directory's entry count grows with the site. A
+     * numeric itemId hashes by modulus; a staging seed (lp-<hex>, <hex>-<n>)
+     * uses its own first two hex characters, which are already uniformly
+     * random. Deterministic from the id alone, so every path builder and
+     * cleanup glob lands on the same bucket.
+     */
+    public static function shard(int|string $id): string
+    {
+        if (is_int($id)) {
+            return sprintf('%02x', $id % 256);
+        }
+
+        return substr(preg_replace('/[^0-9a-f]/', '', strtolower($id)) . '00', 0, 2);
+    }
+
     public static function srcPath(int|string $item_id, string $item_type): string
     {
-        return self::UPLOAD_URL_PREFIX . $item_id . '.' . self::DISPLAY_EXTENSIONS[$item_type];
+        return self::UPLOAD_URL_PREFIX . self::shard($item_id) . '/' . $item_id . '.' . self::DISPLAY_EXTENSIONS[$item_type];
     }
 
     public static function thumbnailPath(int|string $item_id, string $item_type): ?string
     {
-        return $item_type === 'AudioItem' ? null : self::UPLOAD_URL_PREFIX . $item_id . '-thumb.jpg';
+        return $item_type === 'AudioItem' ? null : self::UPLOAD_URL_PREFIX . self::shard($item_id) . '/' . $item_id . '-thumb.jpg';
     }
 
     /**
@@ -127,13 +144,8 @@ class UploadProcessor
      */
     public static function process(string $tmp_path, int|string $id, string $original_filename = ''): ?array
     {
-        if (!is_dir(self::UPLOAD_DIR)) {
-            mkdir(self::UPLOAD_DIR, 0755, true);
-        }
-
-        if (!is_dir(self::ORIGINALS_DIR)) {
-            mkdir(self::ORIGINALS_DIR, 0755, true);
-        }
+        self::ensureDir(self::UPLOAD_DIR . '/' . self::shard($id));
+        self::ensureDir(self::ORIGINALS_DIR . '/' . self::shard($id));
 
         $image = ImageProcessor::load($tmp_path);
 
@@ -172,10 +184,30 @@ class UploadProcessor
         $old_paths = self::outputPaths($old_id, $item_type, $original_extension);
         $new_paths = self::outputPaths($new_id, $item_type, $original_extension);
 
+        // The new id shards into its own bucket, which may not exist yet.
+        self::ensureDir(self::UPLOAD_DIR . '/' . self::shard($new_id));
+        self::ensureDir(self::ORIGINALS_DIR . '/' . self::shard($new_id));
+
         foreach (['display', 'thumbnail', 'original'] as $key) {
             if ($old_paths[$key] !== null && is_file($old_paths[$key])) {
                 rename($old_paths[$key], $new_paths[$key]);
             }
+        }
+    }
+
+    /**
+     * Creates a shard directory writable by BOTH the web-server user and the
+     * worker-service user - commonly different Unix accounts, and neither can
+     * chmod a dir the other created, so it must be world-writable from
+     * creation (mkdir's mode is umask-masked, hence the explicit chmod). A
+     * root install tightens the whole tree to one owning account afterward
+     * (bin/install.php's fix_upload_ownership), same as the rest of uploads/.
+     */
+    private static function ensureDir(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+            @chmod($dir, 0777);
         }
     }
 
@@ -203,13 +235,15 @@ class UploadProcessor
      */
     public static function purgeStaged(string $seed): void
     {
+        $shard = self::shard($seed);
+
         $globs = [
-            self::UPLOAD_DIR . '/' . $seed . '.*',
-            self::UPLOAD_DIR . '/' . $seed . '-thumb.*',
+            self::UPLOAD_DIR . '/' . $shard . '/' . $seed . '.*',
+            self::UPLOAD_DIR . '/' . $shard . '/' . $seed . '-thumb.*',
             // The video poster-frame temp (processVideo), in case a crash between
             // writing and unlinking it leaves it behind.
-            self::UPLOAD_DIR . '/' . $seed . '-raw-frame.*',
-            self::ORIGINALS_DIR . '/' . $seed . '-original.*',
+            self::UPLOAD_DIR . '/' . $shard . '/' . $seed . '-raw-frame.*',
+            self::ORIGINALS_DIR . '/' . $shard . '/' . $seed . '-original.*',
         ];
 
         foreach ($globs as $pattern) {
@@ -231,7 +265,7 @@ class UploadProcessor
     {
         $cutoff = time() - 86400;
 
-        foreach (glob(self::UPLOAD_DIR . '/lp-*') ?: [] as $path) {
+        foreach (glob(self::UPLOAD_DIR . '/[0-9a-f][0-9a-f]/lp-*') ?: [] as $path) {
             $modified_at = filemtime($path);
 
             if ($modified_at !== false && $modified_at < $cutoff) {
@@ -274,7 +308,7 @@ class UploadProcessor
      */
     public static function originalForItem(int $item_id): ?array
     {
-        $matches = glob(self::ORIGINALS_DIR . '/' . $item_id . '-original.*') ?: [];
+        $matches = glob(self::ORIGINALS_DIR . '/' . self::shard($item_id) . '/' . $item_id . '-original.*') ?: [];
 
         if ($matches === []) {
             return null;
@@ -309,23 +343,25 @@ class UploadProcessor
 
     private static function outputPaths(int|string $id, string $item_type, ?string $original_extension): array
     {
+        $display_dir = self::UPLOAD_DIR . '/' . self::shard($id);
+
         $original = $original_extension !== null && $original_extension !== ''
-            ? self::ORIGINALS_DIR . '/' . $id . '-original.' . $original_extension
+            ? self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-original.' . $original_extension
             : null;
 
         return match ($item_type) {
             'ImageItem' => [
-                'display' => self::UPLOAD_DIR . '/' . $id . '.jpg',
-                'thumbnail' => self::UPLOAD_DIR . '/' . $id . '-thumb.jpg',
+                'display' => $display_dir . '/' . $id . '.jpg',
+                'thumbnail' => $display_dir . '/' . $id . '-thumb.jpg',
                 'original' => $original,
             ],
             'VideoItem' => [
-                'display' => self::UPLOAD_DIR . '/' . $id . '.mp4',
-                'thumbnail' => self::UPLOAD_DIR . '/' . $id . '-thumb.jpg',
+                'display' => $display_dir . '/' . $id . '.mp4',
+                'thumbnail' => $display_dir . '/' . $id . '-thumb.jpg',
                 'original' => $original,
             ],
             'AudioItem' => [
-                'display' => self::UPLOAD_DIR . '/' . $id . '.mp3',
+                'display' => $display_dir . '/' . $id . '.mp3',
                 'thumbnail' => null,
                 'original' => $original,
             ],
@@ -524,7 +560,7 @@ class UploadProcessor
             copy($tmp_path, $paths['original']);
         }
 
-        $raw_frame_path = self::UPLOAD_DIR . '/' . $id . '-raw-frame.jpg';
+        $raw_frame_path = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-raw-frame.jpg';
 
         // Cap resolution/framerate - we're not streaming ultra HD, and bandwidth matters.
         // scale filter only ever downscales (never upscales smaller sources).

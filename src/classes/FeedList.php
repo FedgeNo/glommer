@@ -69,8 +69,14 @@ SELECT `Posts`.*
     LIMIT ? OFFSET ?
 ', 'Post', 'siii', (string) $this -> tag, $not_banned, $limit, $this -> offset),
 
+            // STRAIGHT_JOIN pins the join order to Posts first: it walks
+            // parentId_postId backward and stops once the page is full. Left
+            // to cost estimates, the optimizer drives from Users instead,
+            // which collects and filesorts every non-banned author's
+            // top-level posts to serve a 21-row page (measured ~270x slower
+            // at 40k posts).
             default => DB::rows('
-SELECT `Posts`.*
+SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?

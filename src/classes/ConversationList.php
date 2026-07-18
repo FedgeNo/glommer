@@ -22,26 +22,33 @@ class ConversationList extends ItemList
         // recipientId_senderId_messageId), so the scan is bounded to this user's
         // own messages rather than the whole table - a single OR across the two
         // columns can't use either index and degrades to a full scan for a
-        // heavy-sending account. The halves collapse to one row per partner
-        // (their latest message) before the join to Users for display.
+        // heavy-sending account. Each half takes MAX(messageId) per partner so
+        // it groups entirely within its covering index (createdAt isn't in
+        // either index, so aggregating it would read every message row); the
+        // one latest-message row per partner is then fetched by primary key
+        // for its createdAt. messageId order IS send order, so newest id =
+        // newest message.
         $this -> contents = DB::rows('
-SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `partners`.`lastMessageAt`
+SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `m`.`createdAt` AS `lastMessageAt`
     FROM (
-        SELECT `partnerId`, MAX(`createdAt`) AS `lastMessageAt`
+        SELECT `partnerId`, MAX(`lastId`) AS `lastId`
             FROM (
-                SELECT `recipientId` AS `partnerId`, `createdAt`
+                SELECT `recipientId` AS `partnerId`, MAX(`messageId`) AS `lastId`
                     FROM `Messages`
                     WHERE `senderId` = ?
+                    GROUP BY `recipientId`
                 UNION ALL
-                SELECT `senderId` AS `partnerId`, `createdAt`
+                SELECT `senderId` AS `partnerId`, MAX(`messageId`) AS `lastId`
                     FROM `Messages`
                     WHERE `recipientId` = ?
-            ) AS `mine`
+                    GROUP BY `senderId`
+            ) AS `halves`
             GROUP BY `partnerId`
     ) AS `partners`
+    JOIN `Messages` `m` ON `m`.`messageId` = `partners`.`lastId`
     JOIN `Users` `u` ON `u`.`userId` = `partners`.`partnerId`
     WHERE `u`.`banned` = ?
-    ORDER BY `partners`.`lastMessageAt` DESC
+    ORDER BY `partners`.`lastId` DESC
 ', 'Conversation', 'iii', (int) $this -> userId, (int) $this -> userId, $not_banned);
 
         if ($this -> contents === []) {

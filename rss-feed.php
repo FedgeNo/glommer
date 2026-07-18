@@ -8,8 +8,11 @@ $limit = 50;
 $not_banned = 0;
 
 // The newest top-level posts by non-banned authors - the global feed, as RSS.
+// STRAIGHT_JOIN for the same reason as FeedList's global query: driving from
+// Posts walks parentId_postId backward and stops at the limit, instead of
+// collecting and filesorting every author's top-level posts.
 $feed_rows = DB::rows('
-SELECT `Posts`.*
+SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?

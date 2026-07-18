@@ -237,7 +237,8 @@ CREATE TABLE `EmailChangeReverts` (
   PRIMARY KEY (`revertId`),
   KEY `tokenHash` (`tokenHash`),
   KEY `expiresAt` (`expiresAt`),
-  KEY `userId` (`userId`)
+  KEY `userId` (`userId`),
+  KEY `previousEmail` (`previousEmail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `RateLimitAttempts` (

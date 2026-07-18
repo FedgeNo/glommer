@@ -115,9 +115,12 @@ SELECT `entityId`, `type`, `title`, `score`, `postCount`, `userCount`
 
         // The recent window of top-level posts by non-banned authors, scored
         // for trending entities. Not a display feed - just the deltas and
-        // authors the extractor and per-user counting need.
+        // authors the extractor and per-user counting need. STRAIGHT_JOIN for
+        // the same reason as FeedList's global query: driving from Posts walks
+        // parentId_postId backward and stops at the window size, instead of
+        // collecting and filesorting every author's top-level posts.
         $rows = DB::rows('
-SELECT `Posts`.*
+SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?

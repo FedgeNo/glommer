@@ -1863,7 +1863,8 @@ input[type='file']::file-selector-button {
     border-radius: var(--radius-ctl);
 }
 
-.HashtagChip {
+.HashtagChip,
+.HashtagNode {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -1875,7 +1876,8 @@ input[type='file']::file-selector-button {
     font-size: 0.9375rem;
 }
 
-.HashtagChip:hover {
+.HashtagChip:hover,
+.HashtagNode:hover {
     background-color: var(--accent-soft);
 }
 
@@ -1959,20 +1961,14 @@ input[type='file']::file-selector-button {
     pointer-events: none;
 }
 
-.HashtagNode {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 550;
-    line-height: 1;
-    white-space: nowrap;
-    padding: 0.3rem 0.7rem;
-    border-radius: 999px;
-    background-color: var(--surface-2);
-}
-
 .HashtagGraphField.Active .HashtagNode {
     top: 0;
     left: 0;
+    /* The graph draws its nodes a touch heavier and tighter than the flat
+       fallback list, sized per-node by the script. */
+    font-weight: 550;
+    line-height: 1;
+    white-space: nowrap;
     will-change: transform, opacity;
     /* Nodes are absolutely positioned by the script; -webkit-user-drag stops the
        browser trying to drag the link itself mid-spin. */

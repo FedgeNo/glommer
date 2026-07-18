@@ -18,9 +18,9 @@ class OutgoingFriendRequestList extends UserListSection
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
-    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-', 'SentFriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, $this -> before ?? PHP_INT_MAX, static::PAGE_SIZE + 1);
+    LIMIT ? OFFSET ?
+', 'SentFriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

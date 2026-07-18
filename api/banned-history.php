@@ -17,10 +17,12 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
-$before_user_id = isset($payload['beforeUserId']) && $payload['beforeUserId'] !== '' ? (int) $payload['beforeUserId'] : null;
+// How many banned-user cards the client already shows - the next page starts
+// there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 $limit = BannedUserList::PAGE_SIZE;
 
-$items = BannedUserList::fetch($limit + 1, $before_user_id);
+$items = BannedUserList::fetch($limit + 1, $offset);
 $has_more = count($items) > $limit;
 
 if ($has_more) {
@@ -36,5 +38,4 @@ foreach ($items as $item) {
 JSONResponse::success([
     'items' => $payloads,
     'hasMore' => $has_more,
-    'oldestUserId' => $items !== [] ? (int) end($items) -> userId : null,
 ]) -> send();

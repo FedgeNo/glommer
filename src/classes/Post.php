@@ -43,11 +43,6 @@ class Post extends HTMLObject
 
     public ?User $author = null;
 
-    // Set only by BookmarkList's query (a JOIN column, not a Posts column) -
-    // when this user bookmarked the post, for that list's cursor and sort
-    // order. Null everywhere else.
-    public ?string $bookmarkedAt = null;
-
     // The engagement counts the action bar shows, batch-attached for a whole
     // page at once by withItemsAndCounts(). Null on a bare Post (e.g. a report
     // snapshot) rendered with showActions off, where the bar - and these - are

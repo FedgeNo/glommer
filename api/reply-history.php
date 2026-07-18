@@ -14,15 +14,16 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
 $parent_id = (int) ($payload['parentId'] ?? 0);
-$before_post_id = (int) ($payload['beforePostId'] ?? 0);
+// How many replies the client already shows - the next page starts there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
-if ($parent_id === 0 || $before_post_id === 0) {
+if ($parent_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
 // ReplyList owns the query; it fetches PAGE_SIZE + 1 hydrated replies (items,
 // author, the viewer's like/bookmark counts) into its contents.
-$posts = (new ReplyList(['parentId' => $parent_id, 'before' => $before_post_id])) -> contents;
+$posts = (new ReplyList(['parentId' => $parent_id, 'offset' => $offset])) -> contents;
 
 $has_more = count($posts) > ReplyList::PAGE_SIZE;
 

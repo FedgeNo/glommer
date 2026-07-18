@@ -18,9 +18,9 @@ class PendingFriendRequestList extends UserListSection
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
-    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ? AND `f`.`friendshipId` < ?
+    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
-    LIMIT ?
-', 'FriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, $this -> before ?? PHP_INT_MAX, static::PAGE_SIZE + 1);
+    LIMIT ? OFFSET ?
+', 'FriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

@@ -26,7 +26,7 @@ class UserSearchResults extends ItemList
 
     public function toDOM(): \DOMElement
     {
-        // The suggestion list is a fixed, ranked set, not cursor-paginated
+        // The suggestion list is a fixed, ranked set with no pagination
         // (see api/search-users.php) - infinite scroll only ever kicks in once a
         // typed query gets a paginated result set of its own.
         $this -> attributes['data-has-more'] = '0';

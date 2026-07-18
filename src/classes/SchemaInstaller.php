@@ -399,17 +399,34 @@ SELECT `DELETE_RULE`
             $existing_indexes = self::existingIndexes($connection, $table);
             $existing_constraints = self::existingConstraints($connection, $table);
             $previous_column = null;
+            $combined_indexes = [];
 
             foreach (self::parseBodyLines($body) as $line) {
                 if (preg_match('/^`(\w+)`/', $line, $column_match)) {
                     if (!in_array($column_match[1], $existing_columns, true)) {
                         $position = $previous_column === null ? 'FIRST' : 'AFTER `' . $previous_column . '`';
-                        $missing[$table]['column ' . $column_match[1]] = 'ALTER TABLE `' . $table . '` ADD COLUMN ' . $line . ' ' . $position;
+                        $add = 'ALTER TABLE `' . $table . '` ADD COLUMN ' . $line . ' ' . $position;
+
+                        // MySQL/MariaDB refuse an AUTO_INCREMENT column that
+                        // isn't defined as a key within the same statement, so
+                        // its covering key from the body rides along in this
+                        // ALTER - and the index pass below skips it, or the
+                        // same key would be added twice.
+                        if (str_contains($line, 'AUTO_INCREMENT')) {
+                            $key_line = self::keyLineCovering($body, $column_match[1]);
+
+                            if ($key_line !== null && preg_match('/`(\w+)`/', $key_line, $key_name_match) === 1 && !in_array($key_name_match[1], $existing_indexes, true)) {
+                                $add .= ', ADD ' . $key_line;
+                                $combined_indexes[] = $key_name_match[1];
+                            }
+                        }
+
+                        $missing[$table]['column ' . $column_match[1]] = $add;
                     }
 
                     $previous_column = $column_match[1];
                 } elseif (preg_match('/^(UNIQUE KEY|FULLTEXT KEY|KEY) `(\w+)`/', $line, $index_match)) {
-                    if (!in_array($index_match[2], $existing_indexes, true)) {
+                    if (!in_array($index_match[2], $existing_indexes, true) && !in_array($index_match[2], $combined_indexes, true)) {
                         $missing[$table]['index ' . $index_match[2]] = 'ALTER TABLE `' . $table . '` ADD ' . $line;
                     }
                 } elseif (preg_match('/^CONSTRAINT `(\w+)`/', $line, $constraint_match)) {
@@ -421,6 +438,24 @@ SELECT `DELETE_RULE`
         }
 
         return $missing;
+    }
+
+    /**
+     * The body's key line whose leading column is $column - what an
+     * AUTO_INCREMENT column's ADD COLUMN drift statement must carry along,
+     * since the column can't exist unkeyed even for a moment. Null when the
+     * body declares no key led by it (a schema that did that would be invalid
+     * to CREATE in the first place).
+     */
+    private static function keyLineCovering(string $body, string $column): ?string
+    {
+        foreach (self::parseBodyLines($body) as $line) {
+            if (preg_match('/^(?:PRIMARY KEY|(?:UNIQUE |FULLTEXT )?KEY `\w+`) \(`' . preg_quote($column, '/') . '`/', $line) === 1) {
+                return $line;
+            }
+        }
+
+        return null;
     }
 
     /**

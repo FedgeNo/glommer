@@ -18,7 +18,8 @@ if (!Auth::check()) {
 }
 
 $query = trim((string) ($payload['q'] ?? ''));
-$before_post_id = (int) ($payload['beforePostId'] ?? 0);
+// How many results the client already shows - the next page starts there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 // Optional: restrict the search to one author's posts (the per-user search on a
 // profile page). 0 means "everyone" - the global /search behaviour.
 $author_id = (int) ($payload['userId'] ?? 0);
@@ -40,15 +41,14 @@ SELECT `Posts`.*
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
         AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
         AND (? = 0 OR `Posts`.`userId` = ?)
-        AND (? = 0 OR `Posts`.`postId` < ?)
         AND NOT EXISTS (
             SELECT 1
                 FROM `Blocks` `b`
                 WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `Posts`.`userId`) OR (`b`.`blockerId` = `Posts`.`userId` AND `b`.`blockedId` = ?)
         )
     ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'siiiiiiii', $query, $not_banned, $author_id, $author_id, $before_post_id, $before_post_id, $viewer_id, $viewer_id, $fetch_limit);
+    LIMIT ? OFFSET ?
+', 'Post', 'siiiiiii', $query, $not_banned, $author_id, $author_id, $viewer_id, $viewer_id, $fetch_limit, $offset);
 
 $has_more = count($feed_rows) > $limit;
 

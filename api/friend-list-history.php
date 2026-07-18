@@ -19,9 +19,11 @@ $payload = is_array($payload) ? $payload : [];
 // person whose page it is.
 $list_type = (string) ($payload['listType'] ?? '');
 $user_id = (int) ($payload['userId'] ?? 0);
-$before_friendship_id = (int) ($payload['beforeFriendshipId'] ?? 0);
+// How many cards the client's section already shows - the next page starts
+// there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
-if (!in_array($list_type, ['friends', 'incoming', 'outgoing'], true) || $user_id === 0 || $before_friendship_id === 0) {
+if (!in_array($list_type, ['friends', 'incoming', 'outgoing'], true) || $user_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
@@ -40,19 +42,17 @@ $viewer = Auth::user();
 // The three lists own their queries; the endpoint just constructs the right
 // one for the next page and serializes what it fetched.
 $list = match ($list_type) {
-    'incoming' => new PendingFriendRequestList(['user' => $profile_user, 'before' => $before_friendship_id]),
-    'outgoing' => new OutgoingFriendRequestList(['user' => $profile_user, 'before' => $before_friendship_id]),
-    default => new FriendList(['user' => $profile_user, 'before' => $before_friendship_id]),
+    'incoming' => new PendingFriendRequestList(['user' => $profile_user, 'offset' => $offset]),
+    'outgoing' => new OutgoingFriendRequestList(['user' => $profile_user, 'offset' => $offset]),
+    default => new FriendList(['user' => $profile_user, 'offset' => $offset]),
 };
 
 $items = $list -> items;
-$has_more = count($items) > UserList::PAGE_SIZE;
+$has_more = count($items) > UserListSection::PAGE_SIZE;
 
 if ($has_more) {
     array_pop($items);
 }
-
-$oldest_friendship_id = $items !== [] ? (int) end($items) -> friendshipId : null;
 
 $payloads = [];
 
@@ -71,5 +71,4 @@ foreach ($items as $item) {
 JSONResponse::success([
     'items' => $payloads,
     'hasMore' => $has_more,
-    'oldestFriendshipId' => $oldest_friendship_id,
 ]) -> send();

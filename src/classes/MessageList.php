@@ -7,17 +7,12 @@ class MessageList extends ItemList
     public ?string $class = 'MessageList d-flex flex-column';
 
     public ?int $otherUserId = null;
-    public ?int $oldestMessageId = null;
     public bool $hasMore = false;
 
     public function toDOM(): \DOMElement
     {
         if ($this -> otherUserId !== null) {
             $this -> attributes['data-other-user-id'] = (string) $this -> otherUserId;
-        }
-
-        if ($this -> oldestMessageId !== null) {
-            $this -> attributes['data-oldest-message-id'] = (string) $this -> oldestMessageId;
         }
 
         $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
@@ -39,7 +34,6 @@ class MessageList extends ItemList
             return $list;
         }
 
-        $list -> oldestMessageId = (int) $rows[0] -> messageId;
         $list -> hasMore = $has_more;
 
         $sender_ids = array_values(array_unique(array_map(fn ($message) => (int) $message -> senderId, $rows)));

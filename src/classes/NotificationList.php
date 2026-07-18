@@ -15,6 +15,7 @@ class NotificationList extends ItemList
     public ?string $class = 'NotificationList d-flex flex-column gap-1';
 
     public ?int $userId = null;
+    public int $offset = 0;
 
     public function __construct(array|object|null $properties = null)
     {
@@ -26,8 +27,8 @@ SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, 
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
     WHERE `n`.`userId` = ?
     ORDER BY `n`.`notificationId` DESC
-    LIMIT ?
-', 'Notification', 'ii', (int) $this -> userId, static::PAGE_SIZE + 1);
+    LIMIT ? OFFSET ?
+', 'Notification', 'iii', (int) $this -> userId, static::PAGE_SIZE + 1, $this -> offset);
     }
 
     /**
@@ -51,8 +52,6 @@ SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, 
 
         if ($this -> contents === []) {
             $this -> addContent(new Notice('No notifications yet.'));
-        } else {
-            $this -> attributes['data-oldest-notification-id'] = (string) $this -> contents[count($this -> contents) - 1] -> notificationId;
         }
 
         $this -> attributes['data-has-more'] = $has_more ? '1' : '0';

@@ -21,20 +21,16 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$before_created_at = isset($payload['beforeCreatedAt']) && $payload['beforeCreatedAt'] !== '' ? (string) $payload['beforeCreatedAt'] : null;
-$before_post_id = isset($payload['beforePostId']) && $payload['beforePostId'] !== '' ? (int) $payload['beforePostId'] : null;
-
-if ($before_created_at === null || $before_post_id === null) {
-    JSONResponse::error('Invalid request', 422) -> send();
-}
+// How many posts the client already shows - the next page starts there,
+// same offset pagination as api/search-users.php.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
 // BookmarkList owns the query; it fetches PAGE_SIZE + 1 hydrated posts (items,
-// author, the viewer's like counts) into its contents, cursored on when each
+// author, the viewer's like counts) into its contents, ordered by when each
 // was bookmarked.
 $posts = (new BookmarkList([
     'userId' => (int) $current_user -> userId,
-    'beforeCreatedAt' => $before_created_at,
-    'beforePostId' => $before_post_id,
+    'offset' => $offset,
 ])) -> contents;
 
 $has_more = count($posts) > BookmarkList::PAGE_SIZE;
@@ -42,8 +38,6 @@ $has_more = count($posts) > BookmarkList::PAGE_SIZE;
 if ($has_more) {
     array_pop($posts);
 }
-
-$oldest = $posts !== [] ? $posts[count($posts) - 1] : null;
 
 $post_payloads = [];
 
@@ -60,6 +54,4 @@ foreach ($posts as $post) {
 JSONResponse::success([
     'posts' => $post_payloads,
     'hasMore' => $has_more,
-    'oldestBookmarkCreatedAt' => $oldest ?-> bookmarkedAt,
-    'oldestBookmarkPostId' => $oldest !== null ? (int) $oldest -> postId : null,
 ]) -> send();

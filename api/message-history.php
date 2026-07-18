@@ -20,9 +20,11 @@ if (!Auth::check()) {
 $current_user = Auth::user();
 
 $other_user_id = (int) ($payload['otherUserId'] ?? 0);
-$before_message_id = (int) ($payload['beforeMessageId'] ?? 0);
+// How many messages the client already shows - the next (older) page starts
+// there, counted from the newest.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
-if ($other_user_id === 0 || $before_message_id === 0) {
+if ($other_user_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
@@ -30,7 +32,7 @@ if (Block::exists($current_user -> userId, $other_user_id)) {
     JSONResponse::error('You can\'t message this user.', 403) -> send();
 }
 
-['rows' => $rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20, $before_message_id, MessageData::class);
+['rows' => $rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20, $offset, MessageData::class);
 
 JSONResponse::success([
     'messages' => $rows,

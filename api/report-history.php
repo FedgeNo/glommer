@@ -21,13 +21,11 @@ if (!Auth::canModerate()) {
     JSONResponse::error('Forbidden', 403) -> send();
 }
 
-$before_report_id = (int) ($payload['beforeReportId'] ?? 0);
+// How many report cards the client already shows - the next page starts
+// there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
-if ($before_report_id === 0) {
-    JSONResponse::error('Invalid request', 422) -> send();
-}
-
-['rows' => $rows, 'hasMore' => $has_more] = Report::rowsForAdmin(20, $before_report_id);
+['rows' => $rows, 'hasMore' => $has_more] = Report::rowsForAdmin(20, $offset);
 
 JSONResponse::success([
     'reports' => ReportCard::rowsToPayload($rows),

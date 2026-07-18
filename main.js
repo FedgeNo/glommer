@@ -813,16 +813,11 @@ document.addEventListener('input', (event) => {
         results.replaceChildren();
 
         // Remembered so the scroll handler below knows what query (and author)
-        // to keep paginating, and where to resume from.
+        // to keep paginating; the offset it resumes from is just the count of
+        // results already shown.
         results.dataset.query = query;
         results.dataset.userId = author_id;
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
-
-        if (data.response.posts.length > 0) {
-            results.dataset.oldestPostId = data.response.posts[data.response.posts.length - 1].postId;
-        } else {
-            delete results.dataset.oldestPostId;
-        }
 
         data.response.posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
@@ -857,11 +852,13 @@ window.addEventListener('scroll', async () => {
 
     try {
         const query = results.dataset.query ?? '';
-        const before_post_id = results.dataset.oldestPostId;
+        // The count of rendered results IS the offset the next page starts at
+        // (the spinner li holds no .Post, so it never miscounts).
+        const offset = results.querySelectorAll('.Post').length;
         const response = await fetch(`${window.siteURL}/api/search-posts`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ q: query, beforePostId: before_post_id, userId: results.dataset.userId || '' }),
+            body: JSON.stringify({ q: query, offset, userId: results.dataset.userId || '' }),
         });
 
         if (!response.ok) {
@@ -880,17 +877,11 @@ window.addEventListener('scroll', async () => {
 
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
 
-        if (data.response.posts.length === 0) {
-            return;
-        }
-
         data.response.posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
             results.insertBefore(list_item(element), spinner);
             render_math(element);
         });
-
-        results.dataset.oldestPostId = data.response.posts[data.response.posts.length - 1].postId;
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
         // so the next scroll simply retries.
@@ -2003,12 +1994,15 @@ window.addEventListener('scroll', async () => {
 
     try {
         const other_user_id = list.dataset.otherUserId;
-        const before_message_id = list.dataset.oldestMessageId;
+        // The count of rendered messages IS the offset (from the newest) the
+        // next older page starts at - a message sent or received meanwhile is
+        // also a new newest row in the database, so the count stays in step.
+        const offset = list.querySelectorAll('.Message').length;
 
         const response = await fetch(`${window.siteURL}/api/message-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ otherUserId: other_user_id, beforeMessageId: before_message_id }),
+            body: JSON.stringify({ otherUserId: other_user_id, offset }),
         });
 
         if (!response.ok) {
@@ -2032,8 +2026,6 @@ window.addEventListener('scroll', async () => {
             list.insertBefore(list_item(element), spinner);
             render_math(element);
         }
-
-        list.dataset.oldestMessageId = messages[0].messageId;
 
         window.scrollTo(0, window.scrollY + (document.body.scrollHeight - previous_scroll_height));
     } catch (error) {
@@ -2073,12 +2065,15 @@ window.addEventListener('scroll', async () => {
     list.appendChild(spinner);
 
     try {
-        const before_notification_id = list.dataset.oldestNotificationId;
+        // The count of rendered notifications IS the offset the next page
+        // starts at - a live-pushed one is prepended here and is also a new
+        // newest row in the database, so the count stays in step.
+        const offset = list.querySelectorAll('.Notification').length;
 
         const response = await fetch(`${window.siteURL}/api/notification-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ beforeNotificationId: before_notification_id }),
+            body: JSON.stringify({ offset }),
         });
 
         if (!response.ok) {
@@ -2091,15 +2086,9 @@ window.addEventListener('scroll', async () => {
 
         list.dataset.hasMore = has_more ? '1' : '0';
 
-        if (notifications.length === 0) {
-            return;
-        }
-
         notifications.forEach((notification_data) => {
             list.insertBefore(list_item(Notification.fromData(notification_data).toElement()), spinner);
         });
-
-        list.dataset.oldestNotificationId = notifications[notifications.length - 1].notificationId;
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
         // so the next scroll simply retries.
@@ -2133,12 +2122,15 @@ window.addEventListener('scroll', async () => {
     list.appendChild(spinner);
 
     try {
-        const before_report_id = list.dataset.oldestReportId;
+        // The count of rendered cards IS the offset the next page starts at.
+        // Dismissing a report removes both its card and its database row, so
+        // the count stays a correct offset as the queue shrinks.
+        const offset = list.querySelectorAll('.ReportCard').length;
 
         const response = await fetch(`${window.siteURL}/api/report-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ beforeReportId: before_report_id }),
+            body: JSON.stringify({ offset }),
         });
 
         if (!response.ok) {
@@ -2151,10 +2143,6 @@ window.addEventListener('scroll', async () => {
 
         list.dataset.hasMore = has_more ? '1' : '0';
 
-        if (reports.length === 0) {
-            return;
-        }
-
         reports.forEach((report_data) => {
             const card = ReportCard.fromData(report_data).toElement();
             list.insertBefore(list_item(card), spinner);
@@ -2162,8 +2150,6 @@ window.addEventListener('scroll', async () => {
             // embeds and typed delimiters) the same as the feed does.
             render_math(card);
         });
-
-        list.dataset.oldestReportId = reports[reports.length - 1].reportId;
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
         // so the next scroll simply retries.
@@ -2382,8 +2368,9 @@ window.addEventListener('scroll', async () => {
 
     try {
         const feed_type = list.dataset.feedType;
-        const before_post_id = list.dataset.oldestPostId;
-        const request = { feedType: feed_type, beforePostId: before_post_id };
+        // The count of rendered posts IS the offset the next page starts at -
+        // nothing to track between fetches (the spinner li holds no .Post).
+        const request = { feedType: feed_type, offset: list.querySelectorAll('.Post').length };
 
         if (feed_type === 'user') {
             request.userId = list.dataset.userId;
@@ -2407,17 +2394,11 @@ window.addEventListener('scroll', async () => {
 
         list.dataset.hasMore = has_more ? '1' : '0';
 
-        if (posts.length === 0) {
-            return;
-        }
-
         posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
             list.insertBefore(list_item(element), spinner);
             render_math(element);
         });
-
-        list.dataset.oldestPostId = posts[posts.length - 1].postId;
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
         // so the next scroll simply retries.
@@ -2449,13 +2430,15 @@ window.addEventListener('scroll', async () => {
     list.appendChild(spinner);
 
     try {
-        const before_created_at = list.dataset.oldestBookmarkCreatedAt;
-        const before_post_id = list.dataset.oldestBookmarkPostId;
+        // The next page starts after what's already shown - the count of
+        // rendered posts IS the offset, so there's nothing to track between
+        // fetches. The spinner li holds no .Post, so it never miscounts.
+        const offset = list.querySelectorAll('.Post').length;
 
         const response = await fetch(`${window.siteURL}/api/bookmark-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ beforeCreatedAt: before_created_at, beforePostId: before_post_id }),
+            body: JSON.stringify({ offset }),
         });
 
         if (!response.ok) {
@@ -2464,22 +2447,15 @@ window.addEventListener('scroll', async () => {
 
         const data = await response.json();
 
-        const { posts, hasMore: has_more, oldestBookmarkCreatedAt: oldest_created_at, oldestBookmarkPostId: oldest_post_id } = data.response;
+        const { posts, hasMore: has_more } = data.response;
 
         list.dataset.hasMore = has_more ? '1' : '0';
-
-        if (posts.length === 0) {
-            return;
-        }
 
         posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
             list.insertBefore(list_item(element), spinner);
             render_math(element);
         });
-
-        list.dataset.oldestBookmarkCreatedAt = oldest_created_at;
-        list.dataset.oldestBookmarkPostId = oldest_post_id;
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
         // so the next scroll simply retries.
@@ -2512,12 +2488,13 @@ window.addEventListener('scroll', async () => {
 
     try {
         const parent_id = list.dataset.parentId;
-        const before_post_id = list.dataset.oldestPostId;
+        // The count of rendered replies IS the offset the next page starts at.
+        const offset = list.querySelectorAll('.Post').length;
 
         const response = await fetch(`${window.siteURL}/api/reply-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ parentId: parent_id, beforePostId: before_post_id }),
+            body: JSON.stringify({ parentId: parent_id, offset }),
         });
 
         if (!response.ok) {
@@ -2530,17 +2507,11 @@ window.addEventListener('scroll', async () => {
 
         list.dataset.hasMore = has_more ? '1' : '0';
 
-        if (posts.length === 0) {
-            return;
-        }
-
         posts.forEach((post_data) => {
             const element = Post.fromData(post_data).toElement();
             list.insertBefore(list_item(element), spinner);
             render_math(element);
         });
-
-        list.dataset.oldestPostId = posts[posts.length - 1].postId;
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
         // so the next scroll simply retries.
@@ -2596,12 +2567,15 @@ window.addEventListener('scroll', async () => {
     try {
         const list_type = target.dataset.listType;
         const user_id = target.dataset.userId;
-        const before = target.dataset.oldestFriendshipId;
+        // The count of rendered cards IS the offset the next page starts at.
+        // Accepting a request moves its card (and its Friendships row) between
+        // sections, so each section's count stays a correct offset.
+        const offset = target.querySelectorAll('.OtherUser').length;
 
         const response = await fetch(`${window.siteURL}/api/friend-list-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ listType: list_type, userId: user_id, beforeFriendshipId: before }),
+            body: JSON.stringify({ listType: list_type, userId: user_id, offset }),
         });
 
         if (!response.ok) {
@@ -2610,13 +2584,9 @@ window.addEventListener('scroll', async () => {
 
         const data = await response.json();
 
-        const { items, hasMore: has_more, oldestFriendshipId: oldest_friendship_id } = data.response;
+        const { items, hasMore: has_more } = data.response;
 
         target.dataset.hasMore = has_more ? '1' : '0';
-
-        if (oldest_friendship_id !== null) {
-            target.dataset.oldestFriendshipId = oldest_friendship_id;
-        }
 
         items.forEach((item) => {
             const card = (list_type === 'incoming' ? FriendRequest : OtherUser).fromData(item);
@@ -3312,10 +3282,15 @@ window.addEventListener('scroll', async () => {
     list.appendChild(spinner);
 
     try {
+        // The count of rendered cards IS the offset the next page starts at.
+        // Unbanning removes both the card and the row from the banned set, so
+        // the count stays a correct offset as the list shrinks.
+        const offset = list.querySelectorAll('.BannedUser').length;
+
         const response = await fetch(`${window.siteURL}/api/banned-history`, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ beforeUserId: list.dataset.oldestUserId }),
+            body: JSON.stringify({ offset }),
         });
 
         if (!response.ok) {
@@ -3332,13 +3307,9 @@ window.addEventListener('scroll', async () => {
             return;
         }
 
-        const { items, hasMore: has_more, oldestUserId: oldest_user_id } = data.response;
+        const { items, hasMore: has_more } = data.response;
 
         list.dataset.hasMore = has_more ? '1' : '0';
-
-        if (oldest_user_id !== null) {
-            list.dataset.oldestUserId = oldest_user_id;
-        }
 
         items.forEach((item) => {
             list.insertBefore(list_item(BannedUser.fromData(item).toElement()), spinner);
@@ -3369,8 +3340,8 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        // An empty box goes back to the paginated full list (first page,
-        // cursor reset); a query shows its matches with pagination off.
+        // An empty box goes back to the paginated full list (first page);
+        // a query shows its matches with pagination off.
         const url = query === ''
             ? `${window.siteURL}/api/banned-history`
             : `${window.siteURL}/api/search-banned-users`;
@@ -3405,13 +3376,9 @@ document.addEventListener('input', (event) => {
 
         list.replaceChildren();
 
-        const { items, hasMore: has_more, oldestUserId: oldest_user_id } = data.response;
+        const { items, hasMore: has_more } = data.response;
 
         list.dataset.hasMore = has_more ? '1' : '0';
-
-        if (oldest_user_id !== null && oldest_user_id !== undefined) {
-            list.dataset.oldestUserId = oldest_user_id;
-        }
 
         if (items.length === 0) {
             const notice = document.createElement('p');

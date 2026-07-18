@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 /**
- * The Banned Users page's results area: 20 banned accounts at a time,
- * cursored on userId (newest accounts first) and grown by infinite scroll in
- * main.js off the data-* attributes here - the same shape UserList uses for
- * friends, with a userId cursor instead of a friendshipId one. The
- * search box (BannedUserSearch) repopulates this same container with matches.
+ * The Banned Users page's results area: 20 banned accounts at a time (newest
+ * accounts first), grown by infinite scroll in main.js off the data-*
+ * attributes here - the next page is fetched by offset, how many accounts
+ * are already shown. The search box (BannedUserSearch) repopulates this same
+ * container with matches.
  */
 class BannedUserList extends ItemList
 {
@@ -31,11 +31,7 @@ class BannedUserList extends ItemList
 
         if ($this -> contents === []) {
             $this -> addContent(new Notice('No banned users.'));
-
-            return parent::toDOM();
         }
-
-        $this -> attributes['data-oldest-user-id'] = (string) $this -> contents[count($this -> contents) - 1] -> userId;
 
         return parent::toDOM();
     }
@@ -43,26 +39,16 @@ class BannedUserList extends ItemList
     /**
      * @return BannedUser[]
      */
-    public static function fetch(int $limit, ?int $before_user_id = null): array
+    public static function fetch(int $limit, int $offset = 0): array
     {
         $banned = 1;
-
-        if ($before_user_id !== null) {
-            return DB::rows('
-SELECT *
-    FROM `Users`
-    WHERE `banned` = ? AND `userId` < ?
-    ORDER BY `userId` DESC
-    LIMIT ?
-', 'BannedUser', 'iii', $banned, $before_user_id, $limit);
-        }
 
         return DB::rows('
 SELECT *
     FROM `Users`
     WHERE `banned` = ?
     ORDER BY `userId` DESC
-    LIMIT ?
-', 'BannedUser', 'ii', $banned, $limit);
+    LIMIT ? OFFSET ?
+', 'BannedUser', 'iii', $banned, $limit, $offset);
     }
 }

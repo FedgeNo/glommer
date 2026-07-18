@@ -3,24 +3,19 @@
 declare(strict_types=1);
 
 /**
- * The admin moderation queue's list of ReportCards, cursor-paginated the same
- * way FeedList/NotificationList are: it carries the oldest report id shown and
- * a has-more flag as data-* attributes so main.js can fetch the next page from
- * api/report-history.php and append more cards on scroll.
+ * The admin moderation queue's list of ReportCards, paginated the same way
+ * FeedList/NotificationList are: it carries a has-more flag as a data-*
+ * attribute so main.js can fetch the next page from api/report-history.php
+ * (by offset - how many cards are already shown) and append more on scroll.
  */
 class ReportList extends ItemList
 {
     public ?string $class = 'ReportList d-flex flex-column';
 
-    public ?int $oldestReportId = null;
     public bool $hasMore = false;
 
     public function toDOM(): \DOMElement
     {
-        if ($this -> oldestReportId !== null) {
-            $this -> attributes['data-oldest-report-id'] = (string) $this -> oldestReportId;
-        }
-
         $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
 
         return parent::toDOM();
@@ -39,7 +34,6 @@ class ReportList extends ItemList
             return $list;
         }
 
-        $list -> oldestReportId = (int) $rows[count($rows) - 1] -> reportId;
         $list -> hasMore = $has_more;
 
         foreach ($rows as $row) {

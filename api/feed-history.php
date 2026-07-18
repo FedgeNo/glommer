@@ -14,11 +14,12 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
 $feed_type = (string) ($payload['feedType'] ?? 'global');
-$before_post_id = (int) ($payload['beforePostId'] ?? 0);
+// How many posts the client already shows - the next page starts there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 $profile_user_id = (int) ($payload['userId'] ?? 0);
 $tag = strtolower(trim((string) ($payload['tag'] ?? '')));
 
-if ($before_post_id === 0 || !in_array($feed_type, ['global', 'friends', 'user', 'tag'], true)) {
+if (!in_array($feed_type, ['global', 'friends', 'user', 'tag'], true)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
@@ -43,7 +44,7 @@ $posts = (new FeedList([
     'feedType' => $feed_type,
     'userId' => $feed_user_id,
     'tag' => $tag,
-    'before' => $before_post_id,
+    'offset' => $offset,
 ])) -> contents;
 
 $has_more = count($posts) > FeedList::PAGE_SIZE;

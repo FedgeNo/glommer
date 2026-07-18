@@ -73,42 +73,43 @@ DELETE
 
     /**
      * Fetches messages between two users, newest-first internally, trimmed and
-     * reordered to oldest-first for display. Fetches $limit + 1 rows so an
-     * extra leftover row (if present) signals more history without a separate count query.
+     * reordered to oldest-first for display. Fetches $limit + 1 rows past
+     * $offset so an extra leftover row (if present) signals more history
+     * without a separate count query.
      *
      * $class lets a caller that only needs the data - not a renderable
      * Message - fetch straight into MessageData instead.
      *
      * @return array{rows: self[]|MessageData[], hasMore: bool}
      */
-    public static function rowsBetween(int $user_a, int $user_b, int $limit, ?int $before_message_id = null, string $class = self::class): array
+    public static function rowsBetween(int $user_a, int $user_b, int $limit, int $offset = 0, string $class = self::class): array
     {
         $fetch_limit = $limit + 1;
 
-        // No cursor means "from the newest" - a sentinel above any real
-        // messageId keeps it one query instead of a cursorless duplicate.
-        $cursor = $before_message_id ?? PHP_INT_MAX;
-
         // The two directions run as separate UNION ALL halves rather than one
         // OR: each half walks its (senderId, recipientId, messageId) index
-        // backward and stops at the limit, so only the merged 2x-limit rows
-        // ever get sorted - an OR forces collecting and filesorting the whole
-        // conversation before the LIMIT can apply.
+        // backward and stops at its limit, so only the merged rows ever get
+        // sorted - an OR forces collecting and filesorting the whole
+        // conversation before the LIMIT can apply. The outer OFFSET skips rows
+        // from the merged set, so each half must produce every row up to
+        // offset + fetch_limit for the page to be complete.
+        $half_limit = $offset + $fetch_limit;
+
         $rows = DB::rows('
 (SELECT *
     FROM `Messages`
-    WHERE `senderId` = ? AND `recipientId` = ? AND `messageId` < ?
+    WHERE `senderId` = ? AND `recipientId` = ?
     ORDER BY `messageId` DESC
     LIMIT ?)
 UNION ALL
 (SELECT *
     FROM `Messages`
-    WHERE `senderId` = ? AND `recipientId` = ? AND `messageId` < ?
+    WHERE `senderId` = ? AND `recipientId` = ?
     ORDER BY `messageId` DESC
     LIMIT ?)
     ORDER BY `messageId` DESC
-    LIMIT ?
-', $class, 'iiiiiiiii', $user_a, $user_b, $cursor, $fetch_limit, $user_b, $user_a, $cursor, $fetch_limit, $fetch_limit);
+    LIMIT ? OFFSET ?
+', $class, 'iiiiiiii', $user_a, $user_b, $half_limit, $user_b, $user_a, $half_limit, $fetch_limit, $offset);
 
         $has_more = count($rows) > $limit;
 

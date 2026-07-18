@@ -7,8 +7,8 @@ declare(strict_types=1);
  * and grown by infinite scroll (main.js) off the data-* attributes toDOM sets.
  * Which feed is chosen by feedType: 'global' (the default), 'friends' (the
  * viewer's timeline, needs userId), 'user' (one profile's posts, needs userId),
- * or 'tag' (posts under a #tag, needs tag). Cursored on postId with a sentinel
- * above any real id, so page one and a load-more page are one query. Build with
+ * or 'tag' (posts under a #tag, needs tag). Paginated by offset: the client
+ * asks for the next page by saying how many posts it already shows. Build with
  * the properties for the feed you want, e.g.
  * new FeedList(['feedType' => 'user', 'userId' => 42]).
  */
@@ -21,7 +21,7 @@ class FeedList extends ItemList
     public ?string $feedType = null;
     public ?int $userId = null;
     public ?string $tag = null;
-    public ?int $before = null;
+    public int $offset = 0;
 
     public function __construct(array|object|null $properties = null)
     {
@@ -36,7 +36,6 @@ class FeedList extends ItemList
     private function fetchRows(): array
     {
         $not_banned = 0;
-        $cursor = $this -> before ?? PHP_INT_MAX;
         $limit = self::PAGE_SIZE + 1;
 
         return match ($this -> feedType) {
@@ -45,19 +44,19 @@ SELECT `Posts`.*
     FROM `Timelines`
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ? AND `Timelines`.`postId` < ?
+    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Timelines`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iiii', (int) $this -> userId, $not_banned, $cursor, $limit),
+    LIMIT ? OFFSET ?
+', 'Post', 'iiii', (int) $this -> userId, $not_banned, $limit, $this -> offset),
 
             'user' => DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iiii', (int) $this -> userId, $not_banned, $cursor, $limit),
+    LIMIT ? OFFSET ?
+', 'Post', 'iiii', (int) $this -> userId, $not_banned, $limit, $this -> offset),
 
             'tag' => DB::rows('
 SELECT `Posts`.*
@@ -65,19 +64,19 @@ SELECT `Posts`.*
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'siii', (string) $this -> tag, $not_banned, $cursor, $limit),
+    LIMIT ? OFFSET ?
+', 'Post', 'siii', (string) $this -> tag, $not_banned, $limit, $this -> offset),
 
             default => DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`postId` < ?
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'iii', $not_banned, $cursor, $limit),
+    LIMIT ? OFFSET ?
+', 'Post', 'iii', $not_banned, $limit, $this -> offset),
         };
     }
 
@@ -109,10 +108,6 @@ SELECT `Posts`.*
 
         if ($this -> tag !== null) {
             $this -> attributes['data-tag'] = $this -> tag;
-        }
-
-        if ($this -> contents !== []) {
-            $this -> attributes['data-oldest-post-id'] = (string) $this -> contents[count($this -> contents) - 1] -> postId;
         }
 
         $this -> attributes['data-has-more'] = $has_more ? '1' : '0';

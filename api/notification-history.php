@@ -19,11 +19,9 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$before_notification_id = (int) ($payload['beforeNotificationId'] ?? 0);
-
-if ($before_notification_id === 0) {
-    JSONResponse::error('Invalid request', 422) -> send();
-}
+// How many notifications the client already shows - the next page starts
+// there.
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
 $fetch_limit = NotificationList::PAGE_SIZE + 1;
 
@@ -31,10 +29,10 @@ $rows = DB::rows('
 SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
-    WHERE `n`.`userId` = ? AND `n`.`notificationId` < ?
+    WHERE `n`.`userId` = ?
     ORDER BY `n`.`notificationId` DESC
-    LIMIT ?
-', 'Notification', 'iii', (int) $current_user -> userId, $before_notification_id, $fetch_limit);
+    LIMIT ? OFFSET ?
+', 'Notification', 'iii', (int) $current_user -> userId, $fetch_limit, $offset);
 
 $has_more = count($rows) > NotificationList::PAGE_SIZE;
 

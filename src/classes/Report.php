@@ -290,37 +290,26 @@ SELECT 1
     }
 
     /**
-     * The moderation queue, newest first. Cursor-paginate by passing the
-     * reportId of the last report already seen as $before_report_id; omit it
-     * for the first page. Returns $limit rows plus a hasMore flag (fetches one
-     * extra to detect a next page without a second count query). The reportId
-     * cursor stays correct even as reports are dismissed out of the queue
-     * underneath the moderator - a page may just return fewer rows.
+     * The moderation queue, newest first, paginated by offset (how many
+     * reports the caller already shows). Returns $limit rows plus a hasMore
+     * flag (fetches one extra to detect a next page without a second count
+     * query). Dismissing a report deletes its row, so the count of cards
+     * still shown stays a correct offset as the queue shrinks underneath the
+     * moderator.
      *
      * @return array{rows: ReportData[], hasMore: bool}
      */
-    public static function rowsForAdmin(int $limit, ?int $before_report_id = null): array
+    public static function rowsForAdmin(int $limit, int $offset = 0): array
     {
         $fetch_limit = $limit + 1;
 
-        if ($before_report_id !== null) {
-            $rows = DB::rows('
-SELECT `r`.*, `u`.`slug` AS `reporterUsername`
-    FROM `Reports` `r`
-    JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
-    WHERE `r`.`reportId` < ?
-    ORDER BY `r`.`reportId` DESC
-    LIMIT ?
-', 'ReportData', 'ii', $before_report_id, $fetch_limit);
-        } else {
-            $rows = DB::rows('
+        $rows = DB::rows('
 SELECT `r`.*, `u`.`slug` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
-    LIMIT ?
-', 'ReportData', 'i', $fetch_limit);
-        }
+    LIMIT ? OFFSET ?
+', 'ReportData', 'ii', $fetch_limit, $offset);
 
         $has_more = count($rows) > $limit;
 

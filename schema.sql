@@ -105,12 +105,14 @@ CREATE TABLE `Likes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Bookmarks` (
+  `bookmarkId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,
   `postId` int(10) unsigned NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`userId`,`postId`),
+  UNIQUE KEY `bookmarkId` (`bookmarkId`),
   KEY `fk_bookmarks_post` (`postId`),
-  KEY `idx_bookmarks_user_created` (`userId`,`createdAt`,`postId`),
+  KEY `userId_bookmarkId` (`userId`,`bookmarkId`),
   CONSTRAINT `Bookmarks_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `fk_bookmarks_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -378,6 +380,10 @@ ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `requesterId_status_friendship
 ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `addresseeId_status_friendshipId` (`addresseeId`, `status`, `friendshipId`);
 ALTER TABLE `Friendships` DROP INDEX IF EXISTS `addresseeId`;
 ALTER TABLE `Reports` DROP INDEX IF EXISTS `targetType`;
+-- Bookmarks orders by bookmarkId (insertion order IS bookmarked order),
+-- served by (userId, bookmarkId); no query uses a (userId, createdAt,
+-- postId) index.
+ALTER TABLE `Bookmarks` DROP INDEX IF EXISTS `idx_bookmarks_user_created`;
 
 -- Column-type migrations (safe to re-run): these six tables were originally
 -- created with signed int(11) id/userId columns, unlike every other table's

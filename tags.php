@@ -17,7 +17,6 @@ if ($tag === '') {
         $page -> addContent(new Notice('No hashtags yet.'));
     } else {
         if ($graph['nodes'] !== []) {
-            $page -> addContent(new Heading2('Popular'));
             $page -> addContent(new HashtagGraph($graph));
         }
 

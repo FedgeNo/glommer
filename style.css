@@ -252,6 +252,7 @@ p a:hover {
 .UserItems,
 .TagItems,
 .TrendingEntities,
+.HashtagGraphField,
 .BannedUserList,
 .BannedTrendingEntitiesList,
 .RememberedDevicesList,
@@ -1910,7 +1911,7 @@ input[type='file']::file-selector-button {
    stage the script positions nodes inside; the "sphere" itself is nothing but a
    drag surface. */
 
-.HashtagGraph {
+.HashtagGraphField {
     --HashtagEdge: rgb(31 36 33 / 0.28);
     display: flex;
     flex-wrap: wrap;
@@ -1918,16 +1919,16 @@ input[type='file']::file-selector-button {
 }
 
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) .HashtagGraph {
+    :root:not([data-theme]) .HashtagGraphField {
         --HashtagEdge: rgb(232 236 233 / 0.22);
     }
 }
 
-:root[data-theme='dark'] .HashtagGraph {
+:root[data-theme='dark'] .HashtagGraphField {
     --HashtagEdge: rgb(232 236 233 / 0.22);
 }
 
-.HashtagGraph.Active {
+.HashtagGraphField.Active {
     display: block;
     position: relative;
     width: 100%;
@@ -1942,11 +1943,11 @@ input[type='file']::file-selector-button {
        it per-node from 3D depth, easily into the hundreds) to this element's
        own stacking context - without this, those values escape all the way
        to the root stacking context and can out-rank z-index:20 fixed page
-       chrome like .MainNavigation/.MobileNavMenu. */
+       chrome like .MainNavigation. */
     isolation: isolate;
 }
 
-.HashtagGraph.Active:active {
+.HashtagGraphField.Active:active {
     cursor: grabbing;
 }
 
@@ -1969,7 +1970,7 @@ input[type='file']::file-selector-button {
     background-color: var(--surface-2);
 }
 
-.HashtagGraph.Active .HashtagNode {
+.HashtagGraphField.Active .HashtagNode {
     top: 0;
     left: 0;
     will-change: transform, opacity;

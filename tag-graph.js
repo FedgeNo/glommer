@@ -16,9 +16,19 @@
  * Nodes are the server-rendered HashtagNode links (still clickable); edges are
  * drawn on a <canvas> underlay (a rendering surface, not app "things", so no
  * per-line DOM). Sizes come from each tag's post count.
+ *
+ * Progressive enhancement: the server renders the tags as a plain HashtagGraph
+ * list (see HashtagGraph.php), which this upgrades in place to the graph only at
+ * or above the layout breakpoint. Below it the list is left alone - the graph
+ * captures touch and wheel to rotate and zoom, which on a phone would trap the
+ * page's own scroll.
  */
 
-const GRAPH_SELECTOR = '.HashtagGraph';
+const GRAPH_SELECTOR = '.HashtagGraphField';
+
+// The graph only takes over at or above the nav/layout breakpoint; narrower than
+// this the tags stay a plain, scrollable list.
+const GRAPH_BREAKPOINT = '(min-width: 48rem)';
 
 // --- quaternion helpers (x, y, z, w) ---------------------------------------
 
@@ -85,7 +95,10 @@ class HashtagGraph {
         let edges = [];
 
         try {
-            edges = JSON.parse(element.dataset.edges || '[]');
+            // The edges ride on the enclosing section (.HashtagGraph), the way
+            // UserListSection carries its own data-* on the section, not the list.
+            const section = element.closest('.HashtagGraph');
+            edges = JSON.parse((section && section.dataset.edges) || '[]');
         } catch (error) {
             edges = [];
         }
@@ -530,6 +543,12 @@ document.addEventListener('click', (event) => {
 });
 
 function init_tag_graphs(root) {
+    // Below the breakpoint the tags stay a plain, scrollable list - building the
+    // graph there would capture the touch/wheel the page needs to scroll.
+    if (!window.matchMedia(GRAPH_BREAKPOINT).matches) {
+        return;
+    }
+
     (root || document).querySelectorAll(GRAPH_SELECTOR).forEach((element) => {
         if (!element.__hashtagGraph) {
             element.__hashtagGraph = new HashtagGraph(element);

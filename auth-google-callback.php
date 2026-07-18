@@ -54,6 +54,29 @@ if (!GoogleAuth::isEnabled()) {
                     ? 'Your account has been banned. Reason: ' . $user -> banReason
                     : 'Your account has been banned.';
             } else {
+                if (TwoFactor::isEnabled($user)) {
+                    // Opt-in email 2FA applies the same way it does to a
+                    // password login (api/login.php) - a verified Google
+                    // identity alone isn't enough to skip a second factor the
+                    // user turned on. Hands off to login.php's pending-state
+                    // code-entry step, same one api/login.php starts.
+                    $code_sent = TwoFactor::sendCode($user);
+
+                    if ($code_sent || Mailer::recipientWasRejected()) {
+                        $_SESSION['pending2FAUserId'] = (int) $user -> userId;
+                        // A Google sign-in implies "keep me signed in".
+                        $_SESSION['pending2FARememberMe'] = true;
+
+                        header('Location: ' . ServerURL::absolute('/login'));
+                        exit;
+                    }
+
+                    // Mailer itself is down - can't enforce 2FA. Let them in
+                    // and tell the admin their mail is broken, same fallback
+                    // api/login.php uses.
+                    Notification::warnAdminMailerFailed((int) $user -> userId);
+                }
+
                 Auth::login($user);
                 LoginFingerprint::record((int) $user -> userId);
                 // A Google sign-in implies "keep me signed in".

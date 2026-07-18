@@ -25,10 +25,21 @@ if ($action !== 'enable' && $action !== 'disable') {
     JSONResponse::error('Invalid action', 422) -> send();
 }
 
+// Throttle current-password guessing here too - see change-password.php.
+// Shares the per-user password-verify key with the other password-confirming
+// endpoints so guesses can't be multiplied across them.
+$password_rate_key = 'password-verify:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
+    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+}
+
 // Both directions require the current password - turning the protection off
 // is at least as security-sensitive as turning it on, so neither can be done
 // from a merely-open session without proving the password again.
 if ($current_user -> passwordHash === null || !password_verify($current_password, $current_user -> passwordHash)) {
+    RateLimiter::recordAttempt($password_rate_key);
+
     JSONResponse::error('Current password is incorrect', 422) -> send();
 }
 

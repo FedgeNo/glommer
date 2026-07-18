@@ -38,6 +38,12 @@ if ($new_password !== $confirm_password) {
 
 $user = User::load($user_id);
 
+// The account can vanish between the token being issued and used (deleted,
+// admin-removed) - the token points at nobody, same outcome as an invalid one.
+if ($user === null) {
+    JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
+}
+
 // A no-op, same treatment as resubmitting your current email in
 // change-email.php: nothing to do, and the token stays valid so a follow-up
 // attempt with an actually-different password still works.

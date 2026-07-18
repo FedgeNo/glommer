@@ -25,8 +25,10 @@ $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captcha
 
 // A second limit keyed on the account, not the address - the IP limit alone
 // never trips for a guessing attack spread across many machines that all
-// target one account.
-$account_rate_key = 'login-user:' . strtolower($identifier);
+// target one account. Truncated to fit RateLimitAttempts.rateKey's
+// varchar(255) - an oversized identifier would otherwise make the INSERT
+// throw a data-truncation error (a 500) instead of counting the attempt.
+$account_rate_key = substr('login-user:' . strtolower($identifier), 0, 255);
 
 if ($identifier === '' || $password === '') {
     JSONResponse::error('Username/email and password are required.', 422) -> send();

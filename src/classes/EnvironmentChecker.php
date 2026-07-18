@@ -932,7 +932,7 @@ class EnvironmentChecker
         $token = WSToken::issue(0);
         $key = base64_encode(random_bytes(16));
 
-        fwrite($socket, "GET /?token=" . $token . " HTTP/1.1\r\nHost: 127.0.0.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " . $key . "\r\nSec-WebSocket-Version: 13\r\n\r\n");
+        fwrite($socket, 'GET /?token=' . $token . " HTTP/1.1\r\nHost: 127.0.0.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " . $key . "\r\nSec-WebSocket-Version: 13\r\n\r\n");
 
         $response = fread($socket, 1024);
         $expected_accept = base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));

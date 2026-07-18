@@ -29,7 +29,16 @@ class Env
             return;
         }
 
-        foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        // A .env this process can't read (a root-tightened file, a CLI run as
+        // another user) reads as "no overrides" rather than a warning storm -
+        // file() returns false on failure and foreach would warn on it.
+        $lines = @file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        if ($lines === false) {
+            return;
+        }
+
+        foreach ($lines as $line) {
             $line = trim($line);
 
             if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {

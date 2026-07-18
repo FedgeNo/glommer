@@ -84,15 +84,17 @@ document.addEventListener('ws:message', (event) => {
     // a new message would yank them away from history they've scrolled up to read.
     const was_near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
 
-    const placeholder = list.querySelector(':scope > .Muted');
+    // ItemList wraps every child in its own <li>, so the empty-state .Notice
+    // is a grandchild of the list, not a direct child.
+    const placeholder = list.querySelector('.Notice');
 
     if (placeholder) {
-        placeholder.remove();
+        placeholder.closest('li').remove();
     }
 
     const message = Message.fromData(data);
     const element = message.toElement();
-    list.appendChild(element);
+    list.appendChild(list_item(element));
     render_math(element);
 
     if (was_near_bottom) {

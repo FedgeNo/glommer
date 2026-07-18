@@ -1906,10 +1906,13 @@ document.addEventListener('submit', async (event) => {
         }
 
         const list = document.querySelector('.MessageList');
-        const placeholder = list.querySelector(':scope > .Muted');
+        // ItemList wraps every child in its own <li>, so the empty-state
+        // .Notice is a grandchild of the list, not a direct child - same
+        // structure the notification lists have.
+        const placeholder = list.querySelector('.Notice');
 
         if (placeholder) {
-            placeholder.remove();
+            placeholder.closest('li').remove();
         }
 
         const message = Message.fromData(result);
@@ -2215,16 +2218,20 @@ function handle_incoming_notification(notification_data) {
     const dropdown_list = document.querySelector('.NotificationDropdown .NotificationList');
 
     if (dropdown_list) {
-        const placeholder = dropdown_list.querySelector(':scope > .Muted');
+        // ItemList wraps every child in its own <li>, so .Notification/.Notice
+        // are grandchildren of the list, not direct children - and a plain
+        // .Muted query (rather than .Notice, the empty-state placeholder's own
+        // class) would also match a live notification's own Muted timestamp.
+        const placeholder = dropdown_list.querySelector('.Notice');
 
         if (placeholder) {
-            placeholder.remove();
+            placeholder.closest('li').remove();
         }
 
-        const existing = dropdown_list.querySelectorAll(':scope > .Notification');
+        const existing = dropdown_list.querySelectorAll('.Notification');
 
         if (existing.length >= 5) {
-            existing[existing.length - 1].remove();
+            existing[existing.length - 1].closest('li').remove();
         }
 
         dropdown_list.insertBefore(list_item(notification.toElement()), dropdown_list.firstChild);
@@ -2233,10 +2240,10 @@ function handle_incoming_notification(notification_data) {
     const page_list = Array.from(document.querySelectorAll('.NotificationList')).find((list) => !list.closest('.NotificationDropdown'));
 
     if (page_list) {
-        const page_placeholder = page_list.querySelector(':scope > .Muted');
+        const page_placeholder = page_list.querySelector('.Notice');
 
         if (page_placeholder) {
-            page_placeholder.remove();
+            page_placeholder.closest('li').remove();
         }
 
         page_list.insertBefore(list_item(notification.toElement()), page_list.firstChild);
@@ -2442,7 +2449,7 @@ window.addEventListener('scroll', async () => {
     list.appendChild(spinner);
 
     try {
-        const before_created_at = encodeURIComponent(list.dataset.oldestBookmarkCreatedAt);
+        const before_created_at = list.dataset.oldestBookmarkCreatedAt;
         const before_post_id = list.dataset.oldestBookmarkPostId;
 
         const response = await fetch(`${window.siteURL}/api/bookmark-history`, {

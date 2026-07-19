@@ -38,6 +38,7 @@ class Carousel extends HTMLObject
         }
 
         $this -> contents[] = $track;
+        $this -> contents[] = new MediaFullscreenButton();
 
         if (count($this -> items) > 1) {
             $this -> contents[] = new CarouselNavButton('prev');

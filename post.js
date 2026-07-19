@@ -182,6 +182,15 @@ class Post {
         return wrapper;
     }
 
+    mediaFullscreenButtonElement() {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'MediaFullscreen';
+        button.setAttribute('aria-label', 'Fullscreen');
+        button.textContent = '⛶';
+        return button;
+    }
+
     itemsToCarousel() {
         const carousel = document.createElement('div');
         carousel.className = 'Carousel';
@@ -204,6 +213,7 @@ class Post {
         });
 
         carousel.appendChild(track);
+        carousel.appendChild(this.mediaFullscreenButtonElement());
 
         if (this.items.length > 1) {
             const prev_button = document.createElement('button');
@@ -293,7 +303,9 @@ class Post {
             if (this.items.length > 1) {
                 post.appendChild(this.itemsToCarousel());
             } else if (this.items.length === 1) {
-                post.appendChild(this.itemToElement(this.items[0]));
+                const wrapper = this.itemToElement(this.items[0]);
+                wrapper.appendChild(this.mediaFullscreenButtonElement());
+                post.appendChild(wrapper);
             }
 
             if (this.descriptionDelta) {

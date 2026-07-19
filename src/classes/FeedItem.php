@@ -18,6 +18,21 @@ class FeedItem extends HTMLObject
     // the carousel promotes it. Carousel sets this on items past the first few.
     public bool $deferred = false;
 
+    // Set by Post::contentElement() only for a standalone (non-Carousel)
+    // single-item post - a Carousel carries its own MediaFullscreenButton
+    // once for the whole carousel, so a slide's own FeedItem never sets this
+    // (it would otherwise get one fullscreen button per slide).
+    public bool $showFullscreenButton = false;
+
+    public function toDOM(): \DOMElement
+    {
+        if ($this -> showFullscreenButton) {
+            $this -> contents[] = new MediaFullscreenButton();
+        }
+
+        return parent::toDOM();
+    }
+
     public function srcURL(): string
     {
         return ServerURL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> type));

@@ -1169,6 +1169,7 @@ input[type='file']::file-selector-button {
 }
 
 .FeedItem {
+    position: relative;
     max-height: 50vh;
     margin-top: 0.6rem;
 }
@@ -1737,6 +1738,86 @@ input[type='file']::file-selector-button {
 
 .CarouselAutoplay:hover {
     background-color: rgb(15 18 16 / 0.75);
+}
+
+.MediaFullscreen {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: rgb(15 18 16 / 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.MediaFullscreen:hover {
+    background-color: rgb(15 18 16 / 0.75);
+}
+
+.MediaFullscreenOverlay {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    z-index: 1000;
+    background-color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* The reparented Carousel/FeedItem keeps its normal in-feed margin
+   (.FeedItem's own margin-top, in particular) unless cleared here - flex
+   centering absorbs a stray margin into the centering math rather than
+   discarding it, so it reads as a few pixels of empty background off from
+   true center instead of a clean fill. */
+.InFullscreen {
+    margin: 0;
+}
+
+/* Fullscreen just lets the same box every image/video/audio already renders
+   in (.ImageItem/.VideoItem/.AudioItem already center their content) grow
+   to fill the screen instead of capping at 50vh - no separate fullscreen
+   layout needed. Audio's own control bar stays compact regardless (.AudioItem
+   audio has its own fixed width:60%, no object-fit-style stretch rule), so
+   growing the outer box here only recenters it in more space, the same as
+   for image/video. */
+.InFullscreen.ImageItem,
+.InFullscreen.VideoItem,
+.InFullscreen.AudioItem,
+.InFullscreen .ImageItem,
+.InFullscreen .VideoItem,
+.InFullscreen .AudioItem {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.Carousel.InFullscreen {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* A FeedItem is a normal block box in-feed, so .AudioItem audio's own
+   width:60% resolves against a real, definite parent width. In fullscreen
+   it's instead a flex item - directly of .MediaFullscreenOverlay for a
+   single-item post, or of .CarouselSlide.Active inside a carousel - and
+   flex items size to content by default, which collapses that same
+   width:60% to zero (a percentage of a now-undefined width) and leaves the
+   whole fullscreen view looking collapsed onto the bare audio bar.
+   Restoring 100% here re-gives it the definite width it always had; a
+   no-op for Image/VideoItem, which already have their own explicit 100vw
+   above regardless. */
+.MediaFullscreenOverlay .FeedItem {
+    width: 100%;
 }
 
 /* ---------- Quill editor ---------- */

@@ -1776,6 +1776,86 @@ document.addEventListener('ended', (event) => {
     schedule_carousel_autoplay_advance(carousel);
 }, true);
 
+// The top-right fullscreen toggle on a media post (a single item, or a whole
+// Carousel together with its prev/next/counter/autoplay controls). Reparents
+// the exact same element - never a clone - into a full-viewport overlay and
+// back out again, so the active slide, any running autoplay
+// (carousel_autoplays is keyed by the carousel element itself, unaffected by
+// moving it in the DOM), and a playing video/audio all carry straight
+// through untouched. Only one media element can be fullscreen at a time; the
+// same button that opened it is reused (not a second element) to close it.
+let media_fullscreen_state = null;
+
+function enter_media_fullscreen(container) {
+    if (media_fullscreen_state) {
+        return;
+    }
+
+    const original_parent = container.parentNode;
+    const original_next_sibling = container.nextSibling;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'MediaFullscreenOverlay';
+    document.body.appendChild(overlay);
+    overlay.appendChild(container);
+    container.classList.add('InFullscreen');
+
+    const button = container.querySelector(':scope > .MediaFullscreen');
+
+    if (button) {
+        button.textContent = '×';
+        button.setAttribute('aria-label', 'Exit fullscreen');
+    }
+
+    media_fullscreen_state = { container, overlay, original_parent, original_next_sibling };
+}
+
+function exit_media_fullscreen() {
+    if (!media_fullscreen_state) {
+        return;
+    }
+
+    const { container, overlay, original_parent, original_next_sibling } = media_fullscreen_state;
+
+    container.classList.remove('InFullscreen');
+    original_parent.insertBefore(container, original_next_sibling);
+    overlay.remove();
+
+    const button = container.querySelector(':scope > .MediaFullscreen');
+
+    if (button) {
+        button.textContent = '⛶';
+        button.setAttribute('aria-label', 'Fullscreen');
+    }
+
+    media_fullscreen_state = null;
+}
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('.MediaFullscreen');
+
+    if (!button) {
+        return;
+    }
+
+    if (media_fullscreen_state) {
+        exit_media_fullscreen();
+        return;
+    }
+
+    const container = button.closest('.Carousel, .FeedItem');
+
+    if (container) {
+        enter_media_fullscreen(container);
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && media_fullscreen_state) {
+        exit_media_fullscreen();
+    }
+});
+
 // Stops a post's playback once it's scrolled well clear of the viewport (~50vh
 // past the edge - about a post away): a playing video/audio is paused, and a
 // carousel's autoplay is stopped outright - otherwise its image-slide timer

@@ -179,6 +179,7 @@ class Post extends HTMLObject
                 $carousel -> items = $this -> items;
                 $content -> contents[] = $carousel;
             } elseif (count($this -> items) === 1) {
+                $this -> items[0] -> showFullscreenButton = true;
                 $content -> contents[] = $this -> items[0];
             }
 

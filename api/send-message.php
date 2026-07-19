@@ -44,6 +44,18 @@ if (Block::exists($current_user -> userId, $recipient_id)) {
     JSONResponse::error('Unable to send message.', 403) -> send();
 }
 
+// Independent of the per-recipient throttle below - this one catches a
+// single account blasting many DIFFERENT people (mass spam), which a
+// per-recipient cap alone would never see since each recipient only gets a
+// handful of messages. 100 messages/10min is generous for a genuinely fast
+// back-and-forth conversation but bounds a spam blast to under a couple
+// hundred sends before it has to slow down.
+$spam_rate_key = 'send-message:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($spam_rate_key, 100, 600)) {
+    JSONResponse::error('Too many messages sent in a short time. Please wait a bit and try again.', 429) -> send();
+}
+
 // Locked around the check and the insert together - otherwise two requests
 // fired in parallel can both read a count under the throttle before either's
 // insert lands, letting a client bypass it just by not waiting for a
@@ -63,6 +75,7 @@ INSERT INTO `Messages` (`senderId`, `recipientId`, `body`)
 ', 'iis', $current_user -> userId, $recipient_id, $body);
 $message_id = (int) mysqli_insert_id($mysqli);
 RateLimiter::releaseLock($throttle_key);
+RateLimiter::recordAttempt($spam_rate_key);
 
 Notification::create($recipient_id, $current_user -> userId, 'message');
 

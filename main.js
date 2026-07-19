@@ -2406,6 +2406,84 @@ async function connect_websocket() {
     socket.addEventListener('error', () => socket.close());
 }
 
+/**
+ * The admin Site Settings page's client-side WebSocket check - a real
+ * wss:// connection attempt from the admin's own browser, run once against
+ * the .WebSocketClientStatus placeholder WebSocketStatus.php renders.
+ * Complements the server-side check there (a handshake run from the web
+ * server itself): that one can't catch a problem that only bites an actual
+ * outside client, like a firewall/security-group rule blocking WSPort from
+ * the public internet while allowing localhost, or a TLS certificate a real
+ * browser's trust store rejects even though PHP's stream context (verify_peer
+ * disabled) never would. Reuses the exact same token/URL construction as
+ * connect_websocket() - the live notifications/messages connection - so this
+ * proves the same path a real user's browser takes, not a separate one.
+ */
+async function test_websocket_client_connection(status_line) {
+    let token;
+
+    try {
+        const response = await fetch(`${window.siteURL}/api/ws-token`, {
+            method: 'POST',
+            headers: csrf_headers(),
+        });
+
+        if (!response.ok) {
+            throw new Error('token fetch failed');
+        }
+
+        ({ token } = (await response.json()).response);
+    } catch (error) {
+        status_line.textContent = 'Browser connection: Could not fetch a connection token.';
+        status_line.classList.add('Error');
+        return;
+    }
+
+    const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const socket = new WebSocket(`${scheme}://${window.location.hostname}:${window.WSPort}/?token=${encodeURIComponent(token)}`);
+    let settled = false;
+    let timeout_id;
+
+    const fail = (message) => {
+        if (settled) {
+            return;
+        }
+
+        settled = true;
+        clearTimeout(timeout_id);
+        status_line.textContent = `Browser connection: ${message}`;
+        status_line.classList.add('Error');
+        socket.close();
+    };
+
+    // The WebSocket API gives no detail on why a connection failed (browsers
+    // deliberately withhold it - CSP, mixed content, and TLS-trust failures
+    // all just fire a bare 'error' event) - this timeout is what catches a
+    // handshake that neither opens nor errors, which a blocked port does.
+    timeout_id = setTimeout(() => fail('Timed out - the browser never completed the handshake.'), 8000);
+
+    socket.addEventListener('open', () => {
+        if (settled) {
+            return;
+        }
+
+        settled = true;
+        clearTimeout(timeout_id);
+        status_line.textContent = 'Browser connection: Connected';
+        socket.close();
+    });
+
+    socket.addEventListener('error', () => fail('Failed - see the browser console for detail.'));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const client_status_line = document.querySelector('.WebSocketClientStatus');
+
+    if (client_status_line) {
+        test_websocket_client_connection(client_status_line);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const nav_link = document.querySelector('.NotificationsNavLink');
 

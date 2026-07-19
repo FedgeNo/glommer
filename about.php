@@ -8,14 +8,21 @@ require __DIR__ . '/src/init.php';
 // terms of service and privacy policy.
 $page = new Page(['title' => 'About']);
 
-$page -> addContent(new InfoText(SiteInfo::about()));
+$about_card = new Card();
+$about_card -> addContents(InfoText::paragraphs(SiteInfo::about()));
+$page -> addContent($about_card);
 
-$page -> addContent(new SitePolicyLinks());
+$policy_card = new Card();
+$policy_card -> addContent(new SitePolicyLinks());
+$page -> addContent($policy_card);
 
 $version = new Paragraph('This site runs ');
 $version -> class = 'Muted text-sm';
 $version -> addContent(new Anchor('https://github.com/FedgeNo/glommer', 'Glommer'));
 $version -> addContent(' version ' . GLOMMER_VERSION);
-$page -> addContent($version);
+
+$version_card = new Card();
+$version_card -> addContent($version);
+$page -> addContent($version_card);
 
 $page -> send();

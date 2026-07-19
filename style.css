@@ -354,6 +354,10 @@ p a:hover {
     margin-bottom: 1.5rem;
 }
 
+.Card > *:last-child {
+    margin-bottom: 0;
+}
+
 .Post {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -1231,6 +1235,10 @@ input[type='file']::file-selector-button {
     overflow-wrap: anywhere;
 }
 
+.PostBody > p:last-child {
+    margin-bottom: 0;
+}
+
 .PostBody blockquote {
     border-left: 3px solid var(--accent);
     margin: 0.5rem 0;
@@ -1826,13 +1834,15 @@ input[type='file']::file-selector-button {
 
 /* ---------- Quill editor ---------- */
 
-/* Reserves the toolbar+editor's combined rendered height (measured: ~2.69rem
-   toolbar + ~4.56rem .ql-editor) on the plain empty div Quill mounts into, so
-   the page doesn't jank when Quill finishes loading and inserts its toolbar
-   as a new sibling before this element. min-height (not height) so it still
-   grows freely once real content exceeds it. */
+/* Reserves the toolbar+editor's combined rendered height on the plain empty
+   div Quill mounts into, so the page doesn't jank when Quill finishes
+   loading and inserts its toolbar as a new sibling before this element.
+   min-height (not height) so it still grows freely once real content
+   exceeds it. 9.875rem matches Firefox's real rendered height - browser
+   font/UI metrics for Quill's snow theme differ enough from Chromium's that
+   a headless-Chromium measurement alone undershot it. */
 .QuillEditor {
-    min-height: 7.25rem;
+    min-height: 9.875rem;
 }
 
 .ql-toolbar.ql-snow {

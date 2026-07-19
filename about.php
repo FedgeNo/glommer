@@ -12,8 +12,10 @@ $page -> addContent(new InfoText(SiteInfo::about()));
 
 $page -> addContent(new SitePolicyLinks());
 
-$version = new Paragraph('Software version ' . GLOMMER_VERSION);
+$version = new Paragraph('This site runs ');
 $version -> class = 'Muted text-sm';
+$version -> addContent(new Anchor('https://github.com/FedgeNo/glommer', 'Glommer'));
+$version -> addContent(' version ' . GLOMMER_VERSION);
 $page -> addContent($version);
 
 $page -> send();

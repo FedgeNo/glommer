@@ -1826,6 +1826,15 @@ input[type='file']::file-selector-button {
 
 /* ---------- Quill editor ---------- */
 
+/* Reserves the toolbar+editor's combined rendered height (measured: ~2.69rem
+   toolbar + ~4.56rem .ql-editor) on the plain empty div Quill mounts into, so
+   the page doesn't jank when Quill finishes loading and inserts its toolbar
+   as a new sibling before this element. min-height (not height) so it still
+   grows freely once real content exceeds it. */
+.QuillEditor {
+    min-height: 7.25rem;
+}
+
 .ql-toolbar.ql-snow {
     background-color: var(--surface);
     border-color: var(--hairline);

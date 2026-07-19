@@ -28,23 +28,42 @@ if (strlen($raw) > 8192) {
     JSONResponse::error('That list is too long.', 422) -> send();
 }
 
+// Checked once up front rather than per handle, which would otherwise repeat
+// the same setup error back for every entry in the list.
+if (!ActivityPubKeys::isConfigured()) {
+    JSONResponse::error('Fediverse support is not set up on this server yet.', 503) -> send();
+}
+
 $handles = FediverseHandle::parseAll($raw);
 
 if ($handles === []) {
     JSONResponse::error('No valid Fediverse handles found (expected user@domain).', 422) -> send();
 }
 
-// A paste of a genuinely huge list shouldn't fire off dozens of outbound
-// network requests in a single request cycle - cap how many this one submit
-// actually acts on; the rest can just be pasted again.
-$handles = array_slice($handles, 0, 25);
-
 RateLimiter::recordAttempt($rate_key);
 
+// Following is three network round trips per handle (WebFinger, the actor
+// document, then the signed delivery), any of which can sit at its timeout
+// against an unresponsive server. Both bounds below exist so a long list
+// can't run the request past PHP's execution limit, which would kill it
+// mid-loop - follows already done, no response, and no way for the person to
+// tell what landed. Whatever isn't reached is reported back rather than
+// silently dropped, so re-submitting picks up the rest.
+$max_handles_per_submit = 25;
+$time_budget_seconds = 15.0;
+$started_at = microtime(true);
+
 $results = [];
+$unprocessed = [];
 
 foreach ($handles as $handle) {
+    if (count($results) >= $max_handles_per_submit || microtime(true) - $started_at > $time_budget_seconds) {
+        $unprocessed[] = $handle['handle'];
+
+        continue;
+    }
+
     $results[] = RemoteFollow::create($current_user -> userId, $handle['user'], $handle['domain']);
 }
 
-JSONResponse::success(['results' => $results]) -> send();
+JSONResponse::success(['results' => $results, 'unprocessed' => $unprocessed]) -> send();

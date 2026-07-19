@@ -3648,17 +3648,32 @@ document.addEventListener('submit', async (event) => {
         return;
     }
 
-    const succeeded = data.results.filter((result) => result.ok).length;
-    const failed = data.results.filter((result) => !result.ok);
+    const results = data.results || [];
+    const unprocessed = data.unprocessed || [];
+    const succeeded = results.filter((result) => result.ok).length;
+    const failed = results.filter((result) => !result.ok);
 
-    if (failed.length === 0) {
-        show_toast(`Followed ${succeeded} account${succeeded === 1 ? '' : 's'}.`);
-    } else {
-        show_toast(`Followed ${succeeded}, failed: ${failed.map((result) => `${result.handle} (${result.error})`).join(', ')}`);
+    const parts = [`Followed ${succeeded} account${succeeded === 1 ? '' : 's'}.`];
+
+    if (failed.length > 0) {
+        // Only the first few, named - one line per failure would run a long
+        // list off the screen and bury the count.
+        const shown = failed.slice(0, 3).map((result) => `${result.handle} (${result.error})`).join(', ');
+        parts.push(`${failed.length} failed: ${shown}${failed.length > 3 ? ', ...' : ''}`);
     }
 
-    // Simplest way to reflect the new/updated follow list below the form.
-    window.location.reload();
+    if (unprocessed.length > 0) {
+        parts.push(`${unprocessed.length} not attempted yet - submit again to continue.`);
+    }
+
+    show_toast(parts.join(' '));
+
+    // Reloading is what refreshes the follow list under the form, but it also
+    // wipes the toast - so it only happens when there's nothing in that toast
+    // worth reading. Otherwise the details stay on screen.
+    if (failed.length === 0 && unprocessed.length === 0) {
+        window.location.reload();
+    }
 });
 
 document.addEventListener('submit', async (event) => {

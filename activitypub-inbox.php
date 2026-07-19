@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
+// Server-to-server deliveries never carry or reuse a session cookie, so the
+// session init.php opens for every request is dead weight here - one
+// orphaned session file per delivery, which on an active instance is
+// thousands a day. Nothing below this point reads session state.
+session_destroy();
+
 // Public - remote Fediverse servers deliver activities here. Every request is
 // signature-verified before anything it claims is acted on; an unauthenticated
 // delivery is refused (401/403) and a verified but uninteresting one is

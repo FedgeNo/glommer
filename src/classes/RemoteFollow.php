@@ -153,7 +153,10 @@ SELECT `slug`
         $body = json_encode($activity, JSON_UNESCAPED_SLASHES);
         $parts = parse_url($inbox_url);
 
-        if ($parts === false || !isset($parts['host'], $parts['path'])) {
+        // The actor id inside the activity came from a remote document, so
+        // encoding can genuinely fail on invalid UTF-8 - signing false here
+        // would be a TypeError rather than a failed delivery.
+        if ($body === false || $parts === false || !isset($parts['host'], $parts['path'])) {
             return false;
         }
 

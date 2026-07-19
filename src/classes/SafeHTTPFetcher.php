@@ -157,8 +157,13 @@ class SafeHTTPFetcher
 
     private static function resolveAndValidate(string $host): ?string
     {
-        if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
-            return self::isSafeIP($host) ? $host : null;
+        // Only a real registrable hostname (a dotted name ending in an IANA
+        // TLD) is fetchable - no bare IP (a literal fails this outright), no
+        // localhost, no fake-TLD host - matching URL::isPublicHTTP's post-time
+        // rule. Applies to the initial URL, every redirect target, and a
+        // page's OG image URL, since all three pass through here.
+        if (!URL::isValidHostname($host)) {
+            return null;
         }
 
         // A (IPv4) records only - we don't fetch over IPv6 at all. Beyond the

@@ -16,10 +16,22 @@ class URLTest extends TestCase
 
     public function testAcceptsHTTPSPublicHostname(): void
     {
-        // A hostname with no A record resolves (dns_get_record returns
-        // empty) is left to pass - can't rely on real DNS in a test, so this
-        // exercises the "unresolvable, don't block" branch deliberately.
-        $this -> assertTrue(URL::isPublicHTTP('https://this-host-should-not-exist-in-dns.invalid/path'));
+        // A real-TLD hostname with no A record (dns_get_record returns empty)
+        // is left to pass - can't rely on real DNS in a test, so this exercises
+        // the "valid TLD, unresolvable, don't block" branch deliberately. The
+        // TLD (.com) must be a real one now; a random label under it won't
+        // resolve.
+        $this -> assertTrue(URL::isPublicHTTP('https://glommer-nonexistent-test-a9f3c1.com/path'));
+    }
+
+    public function testRejectsSingleLabelHost(): void
+    {
+        $this -> assertFalse(URL::isPublicHTTP('http://intranet/admin'));
+    }
+
+    public function testRejectsFakeTLD(): void
+    {
+        $this -> assertFalse(URL::isPublicHTTP('https://example.notarealtld/path'));
     }
 
     public function testRejectsLocalhostHostname(): void
@@ -53,8 +65,10 @@ class URLTest extends TestCase
         $this -> assertFalse(URL::isPublicHTTP('http://[::1]/admin'));
     }
 
-    public function testAcceptsLiteralPublicIP(): void
+    public function testRejectsLiteralPublicIP(): void
     {
-        $this -> assertTrue(URL::isPublicHTTP('http://8.8.8.8/'));
+        // No IP links at all - only a real registrable hostname is postable,
+        // even a public IP is refused.
+        $this -> assertFalse(URL::isPublicHTTP('http://8.8.8.8/'));
     }
 }

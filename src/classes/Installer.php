@@ -270,6 +270,10 @@ INSERT INTO `Settings` (`name`, `value`)
                     // Backfill hashtags for existing posts now the tables exist
                     // (idempotent - attach uses INSERT IGNORE / upsert).
                     Hashtag::backfill();
+                    // Materialize the /tags/ Popular and Trending lists so they
+                    // aren't blank until the first lottery-picked read.
+                    HashtagGraph::recompute();
+                    TrendingHashtagList::recompute();
                 } catch (\mysqli_sql_exception $exception) {
                     return false;
                 }

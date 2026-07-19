@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /**
  * A clickable "#tag" chip linking to the tag's page, optionally with the number
- * of posts carrying it. Used across the /tags/ directory (popular and trending).
- * Fetched directly off Hashtag::popular()/trending() -> DB::rows().
+ * of posts carrying it. The tags on the /tags/ Trending cloud, read from the
+ * TrendingHashtags table (see TrendingHashtagList) -> DB::rows().
  */
 class HashtagChip extends Anchor
 {

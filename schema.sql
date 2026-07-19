@@ -84,6 +84,33 @@ CREATE TABLE `PostMentions` (
   CONSTRAINT `PostMentions_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Materialized top-tag lists, recomputed on a timer (bin/compute-trending.php)
+-- or lazily via each list's read-path lottery self-heal - never aggregated at
+-- read time (the full GROUP BY over PostHashtags is the expensive part). One
+-- row per tag currently in the list; each recompute replaces the set.
+-- PopularHashtags is all-time by post count (the /tags/ graph + its fallback
+-- pills), TrendingHashtags is the last-7-days window (the /tags/ Trending
+-- cloud). Populated by HashtagGraph::recompute() / TrendingHashtagList::recompute().
+CREATE TABLE `PopularHashtags` (
+  `hashtagId` int(10) unsigned NOT NULL,
+  `slug` varchar(64) NOT NULL,
+  `title` varchar(64) NOT NULL,
+  `postCount` int(10) unsigned NOT NULL,
+  `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`hashtagId`),
+  KEY `postCount` (`postCount`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `TrendingHashtags` (
+  `hashtagId` int(10) unsigned NOT NULL,
+  `slug` varchar(64) NOT NULL,
+  `title` varchar(64) NOT NULL,
+  `postCount` int(10) unsigned NOT NULL,
+  `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`hashtagId`),
+  KEY `postCount` (`postCount`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `FeedItems` (
   `itemId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `postId` int(10) unsigned NOT NULL,
@@ -238,7 +265,7 @@ CREATE TABLE `EmailChangeReverts` (
   KEY `tokenHash` (`tokenHash`),
   KEY `expiresAt` (`expiresAt`),
   KEY `userId` (`userId`),
-  KEY `previousEmail` (`previousEmail`)
+  UNIQUE KEY `previousEmail` (`previousEmail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `RateLimitAttempts` (

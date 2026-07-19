@@ -12,4 +12,8 @@ $page -> addContent(new InfoText(SiteInfo::about()));
 
 $page -> addContent(new SitePolicyLinks());
 
+$version = new Paragraph('Software version ' . GLOMMER_VERSION);
+$version -> class = 'Muted text-sm';
+$page -> addContent($version);
+
 $page -> send();

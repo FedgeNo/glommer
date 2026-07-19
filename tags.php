@@ -6,22 +6,23 @@ require __DIR__ . '/src/init.php';
 
 $tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
 
-// /tags/ - the public hashtag directory: trending and most-popular tags.
+// /tags/ - the public hashtag directory: the Popular graph and the Trending
+// cloud, each a self-fetching list reading its own materialized table.
 if ($tag === '') {
-    $graph = Hashtag::graphData(40);
-    $trending = Hashtag::trending(20);
+    $popular = new HashtagGraph(40);
+    $trending = new TrendingHashtagList(20);
 
     $page = new Page(['title' => 'Tags', 'description' => 'Browse trending and popular hashtags on Glommer.', 'needsTagGraph' => true]);
 
-    if ($graph['nodes'] === [] && $trending === []) {
+    if (!$popular -> hasItems() && !$trending -> hasItems()) {
         $page -> addContent(new Notice('No hashtags yet.'));
     } else {
-        if ($graph['nodes'] !== []) {
-            $page -> addContent(new HashtagGraph($graph));
+        if ($popular -> hasItems()) {
+            $page -> addContent($popular);
         }
 
-        if ($trending !== []) {
-            $page -> addContent(new TagListSection('Trending', $trending));
+        if ($trending -> hasItems()) {
+            $page -> addContent($trending);
         }
     }
 

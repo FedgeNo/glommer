@@ -5,8 +5,9 @@ declare(strict_types=1);
 /**
  * A titled <section> wrapping an inner ItemList (a <ul>): the items as their
  * own list, headed by an optional <h2>. Subclasses (UserListSection,
- * TagListSection, TrendingSection) supply the heading, the items, and the inner
- * list's CSS class. An empty list shows nothing at all - no heading, no notice -
+ * HashtagGraph, TrendingHashtagList, TrendingSection) supply the heading, the
+ * items, and the inner list's CSS class. An empty list shows nothing at all -
+ * no heading, no notice -
  * just the bare <section> and its empty <ul>, so it takes no visual space while
  * still standing as a stable mount point the client can populate later.
  */

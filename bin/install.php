@@ -4500,6 +4500,14 @@ SELECT COUNT(*) AS `n`
     ok('hashtags backfilled from existing posts');
 }
 
+// Materialize the /tags/ Popular graph and Trending cloud now, so they're
+// populated the moment the install/upgrade finishes rather than only on the
+// first lottery-picked read. A no-op-ish pair of aggregates on a fresh (empty)
+// database. Runs on the runtime connection (plain INSERT/DELETE).
+HashtagGraph::recompute();
+TrendingHashtagList::recompute();
+ok('popular/trending tag lists materialized');
+
 // schema.sql also carries a handful of idempotent index migrations (ALTER
 // TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
 // UPDATE above these need admin privileges the runtime account deliberately

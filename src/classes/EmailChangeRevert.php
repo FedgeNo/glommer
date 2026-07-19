@@ -158,9 +158,16 @@ DELETE
     WHERE `expiresAt` <= NOW()
 ');
 
+        // previousEmail is UNIQUE, so at most one outstanding revert ever
+        // reserves a given address - and since Users.email is itself unique,
+        // only one account can hold (and so change away from) an address at a
+        // time. The upsert makes reserving an address atomic against a
+        // concurrent reservation of the same one, and overwrites a lingering
+        // expired row for it in place.
         DB::run('
 INSERT INTO `EmailChangeReverts` (`userId`, `previousEmail`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, ?, NOW() + INTERVAL ? DAY)
+    ON DUPLICATE KEY UPDATE `userId` = VALUES(`userId`), `tokenHash` = VALUES(`tokenHash`), `expiresAt` = VALUES(`expiresAt`), `createdAt` = NOW()
 ', 'issi', $user_id, $previous_email, $token_hash, $expiry_days);
 
         return $token;

@@ -23,3 +23,8 @@ spl_autoload_register(function (string $class): void {
 });
 
 Trending::recompute();
+
+// The /tags/ Popular graph and Trending cloud are materialized the same way -
+// recomputed here on the same timer rather than aggregated at read time.
+HashtagGraph::recompute();
+TrendingHashtagList::recompute();

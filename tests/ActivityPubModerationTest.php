@@ -212,6 +212,127 @@ SELECT `parentId`
         $this -> assertTrue(RemoteObjectTombstone::isTombstoned($object_uri));
     }
 
+    public function testOneActorCannotDeleteAnotherActorsPost(): void
+    {
+        $victim_uri = 'https://remote.test/users/victim-' . bin2hex(random_bytes(6));
+        self::createShadowUser($victim_uri);
+
+        $attacker_uri = 'https://remote.test/users/attacker-' . bin2hex(random_bytes(6));
+        self::createShadowUser($attacker_uri);
+
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => 'the victim post'],
+        ], $victim_uri);
+
+        $post_id = self::postIdForRemoteObject($object_uri);
+        $this -> assertNotNull($post_id);
+
+        ActivityPubInbox::process(['type' => 'Delete', 'object' => $object_uri], $attacker_uri);
+
+        $this -> assertSame($post_id, self::postIdForRemoteObject($object_uri));
+        $this -> assertFalse(RemoteObjectTombstone::isTombstoned($object_uri));
+    }
+
+    public function testOneActorCannotRewriteAnotherActorsPost(): void
+    {
+        $victim_uri = 'https://remote.test/users/victim-' . bin2hex(random_bytes(6));
+        self::createShadowUser($victim_uri);
+
+        $attacker_uri = 'https://remote.test/users/attacker-' . bin2hex(random_bytes(6));
+        self::createShadowUser($attacker_uri);
+
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => 'the original wording'],
+        ], $victim_uri);
+
+        ActivityPubInbox::process([
+            'type' => 'Update',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => 'attacker rewrote this'],
+        ], $attacker_uri);
+
+        $post = DB::row('
+SELECT `description`
+    FROM `Posts`
+    WHERE `remoteObjectURI` = ?
+', 'Post', 's', $object_uri);
+
+        $this -> assertSame('the original wording', $post -> description);
+    }
+
+    public function testAnActorCanStillDeleteAndUpdateItsOwnPost(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+
+        $updatable_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $updatable_uri, 'content' => 'before'],
+        ], $actor_uri);
+
+        ActivityPubInbox::process([
+            'type' => 'Update',
+            'object' => ['type' => 'Note', 'id' => $updatable_uri, 'content' => 'after'],
+        ], $actor_uri);
+
+        $updated = DB::row('
+SELECT `description`
+    FROM `Posts`
+    WHERE `remoteObjectURI` = ?
+', 'Post', 's', $updatable_uri);
+        $this -> assertSame('after', $updated -> description);
+
+        ActivityPubInbox::process(['type' => 'Delete', 'object' => $updatable_uri], $actor_uri);
+
+        $this -> assertNull(self::postIdForRemoteObject($updatable_uri));
+        $this -> assertTrue(RemoteObjectTombstone::isTombstoned($updatable_uri));
+    }
+
+    public function testANoteAttributedToSomeoneElseIsRefused(): void
+    {
+        $signer_uri = 'https://remote.test/users/signer-' . bin2hex(random_bytes(6));
+        self::createShadowUser($signer_uri);
+
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => [
+                'type' => 'Note',
+                'id' => $object_uri,
+                'attributedTo' => 'https://remote.test/users/somebody-else',
+                'content' => 'claiming another actors object URI',
+            ],
+        ], $signer_uri);
+
+        $this -> assertNull(self::postIdForRemoteObject($object_uri));
+    }
+
+    public function testAnOversizedRemoteNoteIsStoredRatherThanThrowing(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => str_repeat('A', 200000)],
+        ], $actor_uri);
+
+        $post = DB::row('
+SELECT `description`
+    FROM `Posts`
+    WHERE `remoteObjectURI` = ?
+', 'Post', 's', $object_uri);
+
+        $this -> assertNotNull($post);
+        $this -> assertTrue(strlen((string) $post -> description) <= 65535);
+    }
+
     public function testRemotePostsNeverAppearInTheGlobalFeedQuery(): void
     {
         $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));

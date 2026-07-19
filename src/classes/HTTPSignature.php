@@ -15,9 +15,34 @@ class HTTPSignature
 {
     private const SIGNED_HEADERS = '(request-target) host date digest';
 
+    /**
+     * How far a delivery's signed Date may sit from our own clock. A
+     * signature is otherwise valid forever, so anyone who captures one
+     * delivery could replay it indefinitely; bounding the window bounds that.
+     * Deliberately generous - federated servers drift, and a too-tight window
+     * turns ordinary clock skew into silent delivery loss.
+     */
+    private const MAX_DATE_SKEW_SECONDS = 3600;
+
     public static function digest(string $body): string
     {
         return 'SHA-256=' . base64_encode(hash('sha256', $body, true));
+    }
+
+    /**
+     * Whether a delivery's Date header is close enough to now to be accepted.
+     * Rejects an unparseable date outright rather than treating it as 0 (the
+     * epoch), which would otherwise read as "very old" only by accident.
+     */
+    public static function dateIsFresh(string $date): bool
+    {
+        $parsed = strtotime($date);
+
+        if ($parsed === false) {
+            return false;
+        }
+
+        return abs(time() - $parsed) <= self::MAX_DATE_SKEW_SECONDS;
     }
 
     public static function sign(string $method, string $path, string $host, string $date, string $digest, string $keyId, string $privateKeyPem): string
@@ -58,7 +83,10 @@ class HTTPSignature
         $fields = [];
 
         foreach (['keyId', 'algorithm', 'headers', 'signature'] as $name) {
-            if (preg_match('/' . preg_quote($name, '/') . '="([^"]*)"/', $signature_header, $match) !== 1) {
+            // Anchored to a real field boundary (string start, comma, or
+            // whitespace) so a parameter whose name merely ENDS with one of
+            // these - x-keyId="..." - can't be picked up as that field.
+            if (preg_match('/(?:\A|[,\s])' . $name . '="([^"]*)"/', $signature_header, $match) !== 1) {
                 return null;
             }
 
@@ -70,7 +98,7 @@ class HTTPSignature
 
     private static function signingString(string $method, string $path, string $host, string $date, string $digest): string
     {
-        return "(request-target): " . strtolower($method) . ' ' . $path . "\n"
+        return '(request-target): ' . strtolower($method) . ' ' . $path . "\n"
             . 'host: ' . $host . "\n"
             . 'date: ' . $date . "\n"
             . 'digest: ' . $digest;

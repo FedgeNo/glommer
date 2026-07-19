@@ -16,6 +16,12 @@ class ActivityPubKeys
 {
     private const CIPHER = 'aes-256-gcm';
 
+    /** AES-256 takes a 32-byte key, which is 64 hex characters. */
+    private const KEY_HEX_LENGTH = 64;
+
+    /** GCM's authentication tag, appended ahead of the ciphertext. */
+    private const TAG_LENGTH = 16;
+
     /** @return array{publicKeyPem: string, privateKeyPem: string} */
     public static function generateKeypair(): array
     {
@@ -28,18 +34,30 @@ class ActivityPubKeys
             throw new \RuntimeException('openssl_pkey_new() failed to generate an RSA keypair.');
         }
 
-        openssl_pkey_export($resource, $private_key_pem);
-        $public_key_pem = openssl_pkey_get_details($resource)['key'];
+        if (!openssl_pkey_export($resource, $private_key_pem)) {
+            throw new \RuntimeException('openssl_pkey_export() failed to export the generated private key (is openssl.cnf readable?).');
+        }
 
-        return ['publicKeyPem' => $public_key_pem, 'privateKeyPem' => $private_key_pem];
+        $details = openssl_pkey_get_details($resource);
+
+        if ($details === false || !isset($details['key'])) {
+            throw new \RuntimeException('openssl_pkey_get_details() failed to return the generated public key.');
+        }
+
+        return ['publicKeyPem' => $details['key'], 'privateKeyPem' => (string) $private_key_pem];
     }
 
     public static function encryptPrivateKey(string $private_key_pem, string $encryption_key_hex): string
     {
-        $key = hex2bin($encryption_key_hex);
-        $iv = random_bytes(openssl_cipher_iv_length(self::CIPHER));
+        $key = self::binaryKey($encryption_key_hex);
 
-        $ciphertext = openssl_encrypt($private_key_pem, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag);
+        if ($key === null) {
+            throw new \RuntimeException('ACTIVITYPUB_ENCRYPTION_KEY must be exactly ' . self::KEY_HEX_LENGTH . ' hex characters (32 bytes).');
+        }
+
+        $iv = random_bytes((int) openssl_cipher_iv_length(self::CIPHER));
+
+        $ciphertext = openssl_encrypt($private_key_pem, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '', self::TAG_LENGTH);
 
         if ($ciphertext === false) {
             throw new \RuntimeException('Encrypting the ActivityPub private key failed.');
@@ -48,44 +66,72 @@ class ActivityPubKeys
         return base64_encode($iv . $tag . $ciphertext);
     }
 
+    /**
+     * Decodes the .env secret into raw key bytes, or null when it isn't a
+     * usable key. The length check is the load-bearing part: OpenSSL silently
+     * zero-pads an empty or short key to the cipher's block size rather than
+     * refusing it, so an unset or truncated secret would otherwise "encrypt"
+     * the signing key under an all-zeros key - the exact database-leak
+     * scenario this encryption exists to prevent, with no visible symptom.
+     */
+    private static function binaryKey(string $encryption_key_hex): ?string
+    {
+        if (strlen($encryption_key_hex) !== self::KEY_HEX_LENGTH || preg_match('/\A[0-9a-fA-F]+\z/', $encryption_key_hex) !== 1) {
+            return null;
+        }
+
+        $key = hex2bin($encryption_key_hex);
+
+        return $key === false ? null : $key;
+    }
+
     public static function isConfigured(): bool
     {
-        return Settings::get('activityPubPublicKeyPem') !== null
-            && Settings::get('activityPubEncryptedPrivateKey') !== null
-            && Env::get('ACTIVITYPUB_ENCRYPTION_KEY') !== null;
+        return self::publicKeyPem() !== null
+            && (string) Settings::get('activityPubEncryptedPrivateKey', '') !== ''
+            && self::binaryKey((string) Env::get('ACTIVITYPUB_ENCRYPTION_KEY', '')) !== null;
     }
 
     public static function publicKeyPem(): ?string
     {
-        return Settings::get('activityPubPublicKeyPem');
+        $stored = (string) Settings::get('activityPubPublicKeyPem', '');
+
+        return $stored === '' ? null : $stored;
     }
 
     public static function privateKeyPem(): ?string
     {
-        $stored = Settings::get('activityPubEncryptedPrivateKey');
-        $encryption_key_hex = Env::get('ACTIVITYPUB_ENCRYPTION_KEY');
+        $stored = (string) Settings::get('activityPubEncryptedPrivateKey', '');
 
-        if ($stored === null || $encryption_key_hex === null) {
+        if ($stored === '') {
             return null;
         }
 
-        return self::decryptPrivateKey($stored, $encryption_key_hex);
+        return self::decryptPrivateKey($stored, (string) Env::get('ACTIVITYPUB_ENCRYPTION_KEY', ''));
     }
 
     public static function decryptPrivateKey(string $stored, string $encryption_key_hex): ?string
     {
-        $raw = base64_decode($stored, true);
+        $key = self::binaryKey($encryption_key_hex);
 
-        if ($raw === false) {
+        if ($key === null) {
             return null;
         }
 
-        $iv_length = openssl_cipher_iv_length(self::CIPHER);
-        $iv = substr($raw, 0, $iv_length);
-        $tag = substr($raw, $iv_length, 16);
-        $ciphertext = substr($raw, $iv_length + 16);
+        $raw = base64_decode($stored, true);
+        $iv_length = (int) openssl_cipher_iv_length(self::CIPHER);
 
-        $key = hex2bin($encryption_key_hex);
+        // Anything shorter than iv+tag carries no ciphertext at all; substr
+        // would hand openssl empty strings, which it reports as a plain
+        // decryption failure rather than the malformed input it actually is.
+        if ($raw === false || strlen($raw) <= $iv_length + self::TAG_LENGTH) {
+            return null;
+        }
+
+        $iv = substr($raw, 0, $iv_length);
+        $tag = substr($raw, $iv_length, self::TAG_LENGTH);
+        $ciphertext = substr($raw, $iv_length + self::TAG_LENGTH);
+
         $plaintext = openssl_decrypt($ciphertext, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag);
 
         return $plaintext === false ? null : $plaintext;

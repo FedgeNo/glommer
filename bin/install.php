@@ -1557,29 +1557,29 @@ function app_service_user(): ?string
  */
 function ensure_activitypub_keypair(): void
 {
-    $env_path = __DIR__ . '/../.env';
-    $encryption_key_hex = Env::get('ACTIVITYPUB_ENCRYPTION_KEY');
+    $encryption_key_hex = trim((string) Env::get('ACTIVITYPUB_ENCRYPTION_KEY', ''));
 
-    if ($encryption_key_hex === null) {
-        $encryption_key_hex = bin2hex(random_bytes(32));
-        $env_contents = (string) file_get_contents($env_path);
-        $env_contents = rtrim($env_contents, "\n") . "\nACTIVITYPUB_ENCRYPTION_KEY=" . $encryption_key_hex . "\n";
+    // An empty or malformed value is treated exactly like a missing one.
+    // .env.example ships the key present-but-blank, so "is it set at all?"
+    // would read a blank line as configured and hand OpenSSL a zero-length
+    // key - which it silently zero-pads rather than rejecting, encrypting
+    // the signing key under all zeros.
+    if (strlen($encryption_key_hex) !== 64 || preg_match('/\A[0-9a-fA-F]+\z/', $encryption_key_hex) !== 1) {
+        $encryption_key_hex = write_activitypub_encryption_key();
 
-        if (file_put_contents($env_path, $env_contents) === false) {
-            warn('Could not write ACTIVITYPUB_ENCRYPTION_KEY to .env - Fediverse following will stay unavailable until this is set.');
-
+        if ($encryption_key_hex === null) {
             return;
         }
 
-        // This process needs to see it immediately - Env::get() reads
-        // getenv() live, same reason other freshly-written .env values get
-        // putenv()'d here rather than waiting for a new process.
-        putenv('ACTIVITYPUB_ENCRYPTION_KEY=' . $encryption_key_hex);
-
-        ok('generated ACTIVITYPUB_ENCRYPTION_KEY');
+        // A keypair stored under the previous (missing/broken) secret can
+        // never be decrypted with this new one, so it isn't kept: clearing
+        // both halves forces a consistent fresh pair below rather than
+        // leaving a private key nothing can read.
+        Settings::set('activityPubPublicKeyPem', '');
+        Settings::set('activityPubEncryptedPrivateKey', '');
     }
 
-    if (Settings::get('activityPubPublicKeyPem') !== null && Settings::get('activityPubEncryptedPrivateKey') !== null) {
+    if (ActivityPubKeys::isConfigured() && ActivityPubKeys::privateKeyPem() !== null) {
         ok('ActivityPub signing keypair already configured');
 
         return;
@@ -1587,10 +1587,60 @@ function ensure_activitypub_keypair(): void
 
     $keypair = ActivityPubKeys::generateKeypair();
 
-    Settings::set('activityPubPublicKeyPem', $keypair['publicKeyPem']);
     Settings::set('activityPubEncryptedPrivateKey', ActivityPubKeys::encryptPrivateKey($keypair['privateKeyPem'], $encryption_key_hex));
+    Settings::set('activityPubPublicKeyPem', $keypair['publicKeyPem']);
 
     ok('generated the ActivityPub signing keypair');
+}
+
+/**
+ * Writes a freshly generated ACTIVITYPUB_ENCRYPTION_KEY into .env, replacing
+ * an existing (blank or stale) line in place rather than appending a second
+ * one - Env::load() keeps the FIRST occurrence of a key, so an appended line
+ * below an existing blank one would never be read. Returns the new secret,
+ * or null if .env could not be read or written.
+ */
+function write_activitypub_encryption_key(): ?string
+{
+    $env_path = __DIR__ . '/../.env';
+    $env_contents = @file_get_contents($env_path);
+
+    // Never fall back to an empty string here: rewriting .env from "" would
+    // wipe DB_PASSWORD/WS_SECRET/SITE_URL along with everything else.
+    if ($env_contents === false) {
+        warn('Could not read .env to store ACTIVITYPUB_ENCRYPTION_KEY - Fediverse following stays unavailable until this is set.');
+
+        return null;
+    }
+
+    $encryption_key_hex = bin2hex(random_bytes(32));
+
+    $env_contents = preg_replace_callback(
+        '/^ACTIVITYPUB_ENCRYPTION_KEY=.*$/m',
+        fn () => 'ACTIVITYPUB_ENCRYPTION_KEY=' . $encryption_key_hex,
+        $env_contents,
+        -1,
+        $replaced
+    );
+
+    if ($replaced === 0) {
+        $env_contents = rtrim((string) $env_contents, "\n") . "\nACTIVITYPUB_ENCRYPTION_KEY=" . $encryption_key_hex . "\n";
+    }
+
+    if (file_put_contents($env_path, $env_contents) === false) {
+        warn('Could not write ACTIVITYPUB_ENCRYPTION_KEY to .env - Fediverse following stays unavailable until this is set.');
+
+        return null;
+    }
+
+    // This process needs to see it immediately - Env::get() reads getenv()
+    // live, same reason other freshly-written .env values get putenv()'d here
+    // rather than waiting for a new process.
+    putenv('ACTIVITYPUB_ENCRYPTION_KEY=' . $encryption_key_hex);
+
+    ok('generated ACTIVITYPUB_ENCRYPTION_KEY');
+
+    return $encryption_key_hex;
 }
 
 /**

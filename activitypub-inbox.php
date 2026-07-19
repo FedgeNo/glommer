@@ -5,10 +5,15 @@ declare(strict_types=1);
 require __DIR__ . '/src/init.php';
 
 // Public - remote Fediverse servers deliver activities here. Every request is
-// signature-verified before anything it claims is acted on; an unverified or
-// malformed delivery is just dropped (200, so a well-behaved server doesn't
-// endlessly retry a delivery this instance will never accept).
-$rate_key = 'activitypub-inbox:' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+// signature-verified before anything it claims is acted on; an unauthenticated
+// delivery is refused (401/403) and a verified but uninteresting one is
+// accepted-and-ignored (202), so a well-behaved server doesn't keep retrying
+// an activity type this instance has no use for.
+//
+// clientIP(), not REMOTE_ADDR: behind the reverse proxy this app supports,
+// every remote server would otherwise collapse to 127.0.0.1 and a single
+// busy peer would rate-limit the whole instance's federation.
+$rate_key = 'activitypub-inbox:' . (ServerURL::clientIP() ?? 'unknown');
 
 if (RateLimiter::tooManyAttempts($rate_key, 120, 600)) {
     http_response_code(429);
@@ -28,9 +33,15 @@ if ($body === false || strlen($body) > $max_body_bytes) {
 $signature_header = $_SERVER['HTTP_SIGNATURE'] ?? null;
 $date_header = $_SERVER['HTTP_DATE'] ?? null;
 $digest_header = $_SERVER['HTTP_DIGEST'] ?? null;
-$host_header = $_SERVER['HTTP_HOST'] ?? null;
 
-if ($signature_header === null || $date_header === null || $digest_header === null || $host_header === null) {
+if ($signature_header === null || $date_header === null || $digest_header === null) {
+    http_response_code(401);
+    exit;
+}
+
+// A signature is valid forever on its own, so a captured delivery could be
+// replayed indefinitely without this.
+if (!HTTPSignature::dateIsFresh($date_header)) {
     http_response_code(401);
     exit;
 }
@@ -70,17 +81,30 @@ if ($signer === null || $signer -> remoteActorPublicKeyPem === null) {
     exit;
 }
 
-if ($signer -> banned === 1) {
-    http_response_code(403);
-    exit;
-}
-
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/activitypub/inbox', PHP_URL_PATH) ?? '/activitypub/inbox';
 
-$verified = HTTPSignature::verify('POST', $path, $host_header, $date_header, $digest_header, $signature_header, $signer -> remoteActorPublicKeyPem);
+// Our own canonical host, never the client-supplied Host header. Signing
+// `host` is what binds a signature to the server it was meant for; verifying
+// it against whatever Host the caller sent would let a delivery captured for
+// another server be replayed here, since the caller controls both halves of
+// that comparison. Same reasoning the rest of the app uses SERVER_NAME over
+// HTTP_HOST for redirects. A legitimate sender delivers to our advertised
+// inbox URL, so the host it signs is exactly this value.
+$site_url_parts = parse_url((string) Config::get('siteURL'));
+$canonical_host = ($site_url_parts['host'] ?? '') . (isset($site_url_parts['port']) ? ':' . $site_url_parts['port'] : '');
+
+$verified = HTTPSignature::verify('POST', $path, $canonical_host, $date_header, $digest_header, $signature_header, $signer -> remoteActorPublicKeyPem);
 
 if (!$verified) {
     http_response_code(401);
+    exit;
+}
+
+// Checked only after the signature proves who this actually is - doing it
+// first would answer "is this actor banned here?" to anyone who can guess an
+// actor URI, without them having to authenticate at all.
+if ($signer -> banned === 1) {
+    http_response_code(403);
     exit;
 }
 

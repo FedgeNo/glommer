@@ -1782,6 +1782,10 @@ input[type='file']::file-selector-button {
     margin: 0;
 }
 
+.InFullscreen .FeedItem {
+    margin-top: 0;
+}
+
 /* Fullscreen just lets the same box every image/video/audio already renders
    in (.ImageItem/.VideoItem/.AudioItem already center their content) grow
    to fill the screen instead of capping at 50vh - no separate fullscreen

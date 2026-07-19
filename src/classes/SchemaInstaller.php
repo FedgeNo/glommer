@@ -53,9 +53,9 @@ SELECT `TABLE_NAME`
      * fresh and takes the normal upgrade path - the code updates daily, so an
      * install created yesterday can need upgrading today even with no data.
      */
-    public static function isFreshInstall(\mysqli $connection): bool
+    public static function isFreshInstall(): bool
     {
-        $existing_result = mysqli_query($connection, '
+        $existing_result = mysqli_query(DB::connection(), '
 SELECT `TABLE_NAME`
     FROM `information_schema`.`TABLES`
     WHERE `TABLE_SCHEMA` = DATABASE()
@@ -182,17 +182,16 @@ SELECT `TABLE_NAME`
      * The idempotent index migrations in schema.sql (ALTER TABLE ... ADD/DROP
      * INDEX IF NOT EXISTS/IF EXISTS, and MODIFY COLUMN column-type fixes) -
      * DDL, so unlike maintenanceStatements() these need admin privileges.
-     * Returns only the ones actually still needed against $connection (an ADD
-     * whose index already exists, a DROP whose index is already gone, or a
-     * MODIFY whose column already has the target type, is left out), so
-     * callers only have to reach for admin credentials when there's genuinely
-     * DDL work pending - the same "admin creds only when there's real work"
-     * principle missingDefinitions() already follows for column/index/FK
-     * drift.
+     * Returns only the ones actually still needed (an ADD whose index already
+     * exists, a DROP whose index is already gone, or a MODIFY whose column
+     * already has the target type, is left out), so callers only have to
+     * reach for admin credentials when there's genuinely DDL work pending -
+     * the same "admin creds only when there's real work" principle
+     * missingDefinitions() already follows for column/index/FK drift.
      *
      * @return string[]
      */
-    public static function neededIndexMigrations(\mysqli $connection): array
+    public static function neededIndexMigrations(): array
     {
         $needed = [];
         $existing_by_table = [];
@@ -210,7 +209,7 @@ SELECT `TABLE_NAME`
                 // with the type unchanged (e.g. Users.verified), which the
                 // type-only comparison alone would never flag as needed.
                 $target_default = $column_match[4] ?? null;
-                $current_type = self::columnType($connection, $table, $column);
+                $current_type = self::columnType($table, $column);
 
                 if ($current_type === null) {
                     continue;
@@ -219,7 +218,7 @@ SELECT `TABLE_NAME`
                 $needs_migration = strcasecmp($current_type, $target_type) !== 0;
 
                 if (!$needs_migration && $target_default !== null) {
-                    $current_default = self::columnDefault($connection, $table, $column);
+                    $current_default = self::columnDefault($table, $column);
                     $needs_migration = $current_default === null || strcasecmp(trim($current_default, '\''), trim($target_default, '\'')) !== 0;
                 }
 
@@ -246,7 +245,7 @@ SELECT `TABLE_NAME`
             ) {
                 [, $table, $constraint] = $drop_match;
                 $target_rule = $add_match[1];
-                $current_rule = self::foreignKeyDeleteRule($connection, $table, $constraint);
+                $current_rule = self::foreignKeyDeleteRule($table, $constraint);
 
                 if ($current_rule !== null && strcasecmp($current_rule, $target_rule) !== 0) {
                     $needed[] = $statement;
@@ -265,7 +264,7 @@ SELECT `TABLE_NAME`
             [, $table, $action, $index] = $match;
 
             if (!isset($existing_by_table[$table])) {
-                $existing_by_table[$table] = self::existingIndexes($connection, $table);
+                $existing_by_table[$table] = self::existingIndexes($table);
             }
 
             $index_exists = in_array($index, $existing_by_table[$table], true);
@@ -278,9 +277,9 @@ SELECT `TABLE_NAME`
         return $needed;
     }
 
-    private static function columnType(\mysqli $connection, string $table, string $column): ?string
+    private static function columnType(string $table, string $column): ?string
     {
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `COLUMN_TYPE`
     FROM `information_schema`.`COLUMNS`
     WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `COLUMN_NAME` = ?
@@ -292,9 +291,9 @@ SELECT `COLUMN_TYPE`
         return $row !== null ? (string) $row['COLUMN_TYPE'] : null;
     }
 
-    private static function columnDefault(\mysqli $connection, string $table, string $column): ?string
+    private static function columnDefault(string $table, string $column): ?string
     {
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `COLUMN_DEFAULT`
     FROM `information_schema`.`COLUMNS`
     WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `COLUMN_NAME` = ?
@@ -306,9 +305,9 @@ SELECT `COLUMN_DEFAULT`
         return $row !== null && $row['COLUMN_DEFAULT'] !== null ? (string) $row['COLUMN_DEFAULT'] : null;
     }
 
-    private static function foreignKeyDeleteRule(\mysqli $connection, string $table, string $constraint): ?string
+    private static function foreignKeyDeleteRule(string $table, string $constraint): ?string
     {
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `DELETE_RULE`
     FROM `information_schema`.`REFERENTIAL_CONSTRAINTS`
     WHERE `CONSTRAINT_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `CONSTRAINT_NAME` = ?
@@ -386,18 +385,18 @@ SELECT `DELETE_RULE`
      *
      * @return array<string, array<string, string>> table name => [label => ALTER statement]
      */
-    public static function missingDefinitions(\mysqli $connection): array
+    public static function missingDefinitions(): array
     {
         $missing = [];
 
         foreach (self::schemaTableBodies() as $table => $body) {
-            if (!self::tableExists($connection, $table)) {
+            if (!self::tableExists($table)) {
                 continue;
             }
 
-            $existing_columns = self::existingColumns($connection, $table);
-            $existing_indexes = self::existingIndexes($connection, $table);
-            $existing_constraints = self::existingConstraints($connection, $table);
+            $existing_columns = self::existingColumns($table);
+            $existing_indexes = self::existingIndexes($table);
+            $existing_constraints = self::existingConstraints($table);
             $previous_column = null;
             $combined_indexes = [];
 
@@ -500,9 +499,9 @@ SELECT `DELETE_RULE`
         return $lines;
     }
 
-    private static function tableExists(\mysqli $connection, string $table): bool
+    private static function tableExists(string $table): bool
     {
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT 1
     FROM `information_schema`.`TABLES`
     WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ?
@@ -517,9 +516,9 @@ SELECT 1
     /**
      * @return string[]
      */
-    private static function existingColumns(\mysqli $connection, string $table): array
+    private static function existingColumns(string $table): array
     {
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `COLUMN_NAME`
     FROM `information_schema`.`COLUMNS`
     WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ?
@@ -534,9 +533,9 @@ SELECT `COLUMN_NAME`
     /**
      * @return string[]
      */
-    private static function existingIndexes(\mysqli $connection, string $table): array
+    private static function existingIndexes(string $table): array
     {
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT DISTINCT `INDEX_NAME`
     FROM `information_schema`.`STATISTICS`
     WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ?
@@ -551,11 +550,11 @@ SELECT DISTINCT `INDEX_NAME`
     /**
      * @return string[]
      */
-    private static function existingConstraints(\mysqli $connection, string $table): array
+    private static function existingConstraints(string $table): array
     {
         $foreign_key_type = 'FOREIGN KEY';
 
-        $stmt = mysqli_prepare($connection, '
+        $stmt = mysqli_prepare(DB::connection(), '
 SELECT `CONSTRAINT_NAME`
     FROM `information_schema`.`TABLE_CONSTRAINTS`
     WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `CONSTRAINT_TYPE` = ?

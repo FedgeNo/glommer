@@ -4240,42 +4240,27 @@ ok('database connection works (' . Config::get('username') . '@' . Config::get('
 
 /**
  * The app's own runtime DB user is intentionally least-privilege and can't
- * CREATE/ALTER, so schema work needs a separately-supplied admin connection
- * - from DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD when set, otherwise prompted
- * for interactively. Only requested when there's actual schema work to do.
+ * CREATE/ALTER, so schema work needs a separately-supplied admin connection.
+ * DB::adminConnection() covers the two non-interactive strategies (root's
+ * unix_socket auth, or DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD from the
+ * environment) and is the single source of truth for both of those -
+ * everything below is what only a CLI script can add on top: explicit
+ * DB_ADMIN_USERNAME/PASSWORD that are actually wrong fail loudly here rather
+ * than silently falling through to a prompt (which would look identical to
+ * the env vars simply never having been set), and an interactive prompt is
+ * the last resort when neither strategy works. Only requested when there's
+ * actual schema work to do.
  */
 function admin_connection(string $needed_for): ?\mysqli
 {
-    // Running as root: MariaDB's unix_socket auth plugin authenticates the
-    // OS root user as the DB root user with no password at all, but only over
-    // the local socket - not over TCP, which is what Config::get('host') (e.g.
-    // 127.0.0.1, the app's own runtime connection) would use. Passing
-    // 'localhost' literally (not Config::get('host')) is what makes mysqli use
-    // the socket instead of TCP. Tried first so a root install - the only
-    // caller of this function that runs unattended, via set_up_system_
-    // services()'s schema-creation step - never needs DB_ADMIN_USERNAME/
-    // DB_ADMIN_PASSWORD or an interactive prompt at all. Confirmed live:
-    // `sudo mysql` connects with zero credentials the exact same way.
-    if (running_as_root()) {
-        try {
-            return mysqli_connect('localhost', 'root', '', Config::get('database'));
-        } catch (\mysqli_sql_exception $exception) {
-            // Not every root box has unix_socket auth configured for the DB
-            // root account (or even a DB root account by that name) - fall
-            // through to the credential-based paths below rather than fail
-            // outright.
-        }
+    $connection = DB::adminConnection();
+
+    if ($connection !== null) {
+        return $connection;
     }
 
-    $admin_username = Env::get('DB_ADMIN_USERNAME');
-    $admin_password = Env::get('DB_ADMIN_PASSWORD');
-
-    if ($admin_username !== null && $admin_password !== null) {
-        try {
-            return mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
-        } catch (\mysqli_sql_exception $exception) {
-            fail('Could not connect with the DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD credentials: ' . $exception -> getMessage());
-        }
+    if (Env::get('DB_ADMIN_USERNAME') !== null && Env::get('DB_ADMIN_PASSWORD') !== null) {
+        fail('Could not connect with the DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD credentials.');
     }
 
     if (!is_interactive()) {
@@ -4301,7 +4286,7 @@ function admin_connection(string $needed_for): ?\mysqli
 // migrations, data backfills) below - those only apply to an already-installed
 // database. Computed before any table is created. An empty-but-installed DB
 // (tables present, no rows) is NOT fresh and takes the full upgrade path.
-$fresh_install = SchemaInstaller::isFreshInstall($mysqli);
+$fresh_install = SchemaInstaller::isFreshInstall();
 
 try {
     $missing_statements = SchemaInstaller::missingTables($mysqli);
@@ -4328,8 +4313,6 @@ if ($missing_statements === []) {
     } catch (\mysqli_sql_exception $exception) {
         fail('Failed to create missing table(s): ' . $exception -> getMessage());
     }
-
-    mysqli_close($admin_mysqli);
 
     ok('created ' . count($missing_statements) . ' missing table(s): ' . implode(', ', array_keys($missing_statements)));
 }
@@ -4364,8 +4347,6 @@ if ($fresh_install) {
         fail('Failed to apply the 0.9.7 column renames: ' . $exception -> getMessage());
     }
 
-    mysqli_close($rename_mysqli);
-
     ok('applied the 0.9.7 column renames (slug/title/type shared vocabulary)');
 } else {
     ok('column renames already applied (database at ' . Settings::get('appVersion') . ')');
@@ -4379,7 +4360,7 @@ if ($fresh_install) {
 // FK then fails (errno 150). The type migrations in section 7 unsign those
 // columns, so the FKs must wait until after them.
 $deferred_foreign_keys = [];
-$drift = $fresh_install ? [] : SchemaInstaller::missingDefinitions($mysqli);
+$drift = $fresh_install ? [] : SchemaInstaller::missingDefinitions();
 
 if ($fresh_install) {
     ok('fresh install - current schema created directly, no drift to reconcile');
@@ -4480,7 +4461,7 @@ SELECT COUNT(*) AS `n`
     WHERE `descriptionDelta` IS NULL AND `description` IS NOT NULL
 ');
     $pending = $backfilled_before ? (int) mysqli_fetch_assoc($backfilled_before)['n'] : 0;
-    PostDeltaBackfill::run($mysqli);
+    PostDeltaBackfill::run();
     ok('post rich-text backfilled to Delta where needed (' . $pending . ' post(s) had legacy HTML)');
 
     // Backfill forensic snapshots for any report created before snapshots existed,
@@ -4491,7 +4472,7 @@ SELECT COUNT(*) AS `n`
     WHERE `snapshot` IS NULL
 ');
     $reports_to_snapshot = $reports_pending ? (int) mysqli_fetch_assoc($reports_pending)['n'] : 0;
-    Report::backfillSnapshots();
+    ReportSnapshotBackfiller::run();
     ok('report snapshots backfilled where needed (' . $reports_to_snapshot . ' report(s) had none)');
 
     // Extract hashtags from existing posts into the Hashtags/PostHashtags tables and
@@ -4514,7 +4495,7 @@ ok('popular/trending tag lists materialized');
 // doesn't have. Only reach for admin credentials when one is actually still
 // needed (an already-applied migration is a no-op and shouldn't force a
 // prompt on every healthy re-run - same principle as the schema drift step).
-$needed_index_migrations = $fresh_install ? [] : SchemaInstaller::neededIndexMigrations($mysqli);
+$needed_index_migrations = $fresh_install ? [] : SchemaInstaller::neededIndexMigrations();
 
 if ($fresh_install) {
     ok('fresh install - no index/type migrations to apply');

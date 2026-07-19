@@ -17,8 +17,9 @@ declare(strict_types=1);
  */
 class PostDeltaBackfill
 {
-    public static function run(\mysqli $connection): void
+    public static function run(): void
     {
+        $connection = DB::connection();
         $empty = '';
 
         $select = mysqli_prepare($connection, '

@@ -5,6 +5,8 @@ declare(strict_types=1);
 class DB
 {
     private static ?\mysqli $connection = null;
+    private static ?\mysqli $adminConnection = null;
+    private static bool $adminConnectionAttempted = false;
 
     public static function connection(): \mysqli
     {
@@ -34,6 +36,63 @@ SET `time_zone` = ?
         }
 
         return self::$connection;
+    }
+
+    /**
+     * A connection with DDL privileges the app's own least-privilege runtime
+     * user deliberately doesn't have - needed for schema changes (CREATE/
+     * ALTER TABLE and friends). Two non-interactive strategies, tried in
+     * order and cached (including a null result, so a caller that asks
+     * again later in the same process doesn't retry a doomed attempt):
+     *
+     *  1. MariaDB/MySQL's unix_socket auth plugin, which authenticates the
+     *     OS root user as the DB root user with no password at all - but
+     *     only over the local socket, so this only works when the current
+     *     process is actually running as root (a `sudo php bin/install.php`
+     *     run). Passing 'localhost' literally (not Config::get('host')) is
+     *     what makes mysqli use the socket instead of TCP.
+     *  2. DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD from the environment, when set.
+     *
+     * Returns null when neither is available - deliberately never prompts:
+     * that's a CLI-only concern (bin/install.php falls back to an
+     * interactive prompt itself when this comes back empty), not something
+     * that belongs in a general-purpose data-layer class a web request could
+     * also reach through Installer::attemptSilentUpgrade().
+     */
+    public static function adminConnection(): ?\mysqli
+    {
+        if (self::$adminConnectionAttempted) {
+            return self::$adminConnection;
+        }
+
+        self::$adminConnectionAttempted = true;
+
+        if (trim((string) @shell_exec('id -u 2>/dev/null')) === '0') {
+            try {
+                self::$adminConnection = mysqli_connect('localhost', 'root', '', Config::get('database'));
+
+                return self::$adminConnection;
+            } catch (\mysqli_sql_exception $exception) {
+                // Not every root box has unix_socket auth configured for the
+                // DB root account (or even a DB root account by that name) -
+                // fall through to the credential-based path below.
+            }
+        }
+
+        $admin_username = Env::get('DB_ADMIN_USERNAME');
+        $admin_password = Env::get('DB_ADMIN_PASSWORD');
+
+        if ($admin_username === null || $admin_password === null) {
+            return null;
+        }
+
+        try {
+            self::$adminConnection = mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
+        } catch (\mysqli_sql_exception $exception) {
+            return null;
+        }
+
+        return self::$adminConnection;
     }
 
     public static function prepare(string $sql): \mysqli_stmt

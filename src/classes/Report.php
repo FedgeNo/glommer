@@ -100,9 +100,12 @@ UPDATE `' . $table . '`
      * this. A user is captured from an explicit allowlist, never the whole row
      * (that carries passwordHash and email). Null when the target's already gone.
      *
+     * Public so ReportSnapshotBackfiller can build one for a pre-snapshot
+     * report, using the exact same logic create() uses for a new one.
+     *
      * @return array<string, mixed>|null
      */
-    private static function buildSnapshot(string $target_type, int $target_id): ?array
+    public static function buildSnapshot(string $target_type, int $target_id): ?array
     {
         if ($target_type === 'post') {
             $row = self::snapshotRow('Posts', 'postId', $target_id);
@@ -182,83 +185,6 @@ SELECT `itemId`
         }
 
         return $ids;
-    }
-
-    /**
-     * Fills the snapshot for any report created before snapshots existed, from
-     * whatever content is still around (best-effort - a target already deleted
-     * stays snapshotless and renders as unavailable). Race-safe and idempotent
-     * via the snapshot IS NULL guard on both the select and the update.
-     */
-    public static function backfillSnapshots(): void
-    {
-        $pending = DB::rows('
-SELECT `reportId`, `type`, `targetId`
-    FROM `Reports`
-    WHERE `snapshot` IS NULL
-', 'ReportData');
-
-        foreach ($pending as $row) {
-            $snapshot = self::buildSnapshot((string) $row -> type, (int) $row -> targetId);
-
-            if ($snapshot === null) {
-                continue;
-            }
-
-            $snapshot_json = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $report_id = (int) $row -> reportId;
-
-            DB::run('
-UPDATE `Reports`
-    SET `snapshot` = ?
-    WHERE `reportId` = ? AND `snapshot` IS NULL
-', 'si', $snapshot_json, $report_id);
-        }
-    }
-
-    /**
-     * Rewrites user-target snapshots still carrying the earlier username/
-     * displayName keys to the row-named slug/title that User::fromRow reads, so
-     * a report of a since-deleted account created before the rename still
-     * renders its identity. Idempotent - a snapshot already on the new keys has
-     * neither old key and is skipped.
-     */
-    public static function backfillSnapshotUserKeys(): void
-    {
-        $target_user = 'user';
-
-        $rows = DB::rows('
-SELECT `reportId`, `snapshot`
-    FROM `Reports`
-    WHERE `type` = ? AND `snapshot` IS NOT NULL
-', 'ReportData', 's', $target_user);
-
-        foreach ($rows as $row) {
-            $snapshot = json_decode((string) $row -> snapshot, true);
-
-            if (!is_array($snapshot) || (!array_key_exists('username', $snapshot) && !array_key_exists('displayName', $snapshot))) {
-                continue;
-            }
-
-            if (array_key_exists('username', $snapshot)) {
-                $snapshot['slug'] = $snapshot['username'];
-                unset($snapshot['username']);
-            }
-
-            if (array_key_exists('displayName', $snapshot)) {
-                $snapshot['title'] = $snapshot['displayName'];
-                unset($snapshot['displayName']);
-            }
-
-            $snapshot_json = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $report_id = (int) $row -> reportId;
-
-            DB::run('
-UPDATE `Reports`
-    SET `snapshot` = ?
-    WHERE `reportId` = ?
-', 'si', $snapshot_json, $report_id);
-        }
     }
 
     /**

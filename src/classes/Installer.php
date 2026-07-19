@@ -124,13 +124,14 @@ INSERT INTO `Settings` (`name`, `value`)
      * stamps the new version, silently, with no page of its own - the request
      * just keeps going once it returns true. DDL needs privileges the runtime
      * account deliberately doesn't have, so that part only runs when
-     * DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD are set in the environment (the same
-     * non-interactive credential bin/install.php already reads for a scripted
-     * upgrade) - without them, a request with genuine DDL pending returns
-     * false and init.php falls back to its existing maintenance page. Every
-     * statement involved (CREATE TABLE IF NOT EXISTS, ADD/DROP INDEX IF
-     * (NOT) EXISTS, INSERT ... ON DUPLICATE KEY) is idempotent, so this is
-     * safe to run from multiple concurrent requests with no coordination.
+     * DB::adminConnection() can actually get one - in practice that means
+     * DB_ADMIN_USERNAME/DB_ADMIN_PASSWORD set in the environment, since a web
+     * request never runs as root; without it, a request with genuine DDL
+     * pending returns false and init.php falls back to its existing
+     * maintenance page. Every statement involved (CREATE TABLE IF NOT EXISTS,
+     * ADD/DROP INDEX IF (NOT) EXISTS, INSERT ... ON DUPLICATE KEY) is
+     * idempotent, so this is safe to run from multiple concurrent requests
+     * with no coordination.
      *
      * Runs with ignore_user_abort() forced on for its duration: this can be
      * triggered by any visitor's ordinary page load, and a migration that's
@@ -143,38 +144,13 @@ INSERT INTO `Settings` (`name`, `value`)
     {
         $previous_ignore_user_abort = ignore_user_abort(true);
 
-        // One admin connection, opened lazily the first time a DDL step needs
-        // it and reused by every step after, then closed once in the finally.
-        $admin_connection = null;
-
-        $open_admin = function () use (&$admin_connection): bool {
-            if ($admin_connection !== null) {
-                return true;
-            }
-
-            $admin_username = Env::get('DB_ADMIN_USERNAME');
-            $admin_password = Env::get('DB_ADMIN_PASSWORD');
-
-            if ($admin_username === null || $admin_password === null) {
-                return false;
-            }
-
-            try {
-                $admin_connection = mysqli_connect(Config::get('host'), $admin_username, $admin_password, Config::get('database'), Config::get('port'));
-            } catch (\mysqli_sql_exception $exception) {
-                return false;
-            }
-
-            return true;
-        };
-
         try {
             try {
                 // A fresh database (none of the app's tables yet) gets the
                 // current schema created directly - the incremental drift/type
                 // migrations, column renames, and data backfills only make sense
                 // against an already-installed database, so they're skipped here.
-                $fresh = SchemaInstaller::isFreshInstall(DB::connection());
+                $fresh = SchemaInstaller::isFreshInstall();
                 $missing_tables = SchemaInstaller::missingTables(DB::connection());
             } catch (\mysqli_sql_exception | \RuntimeException $exception) {
                 return false;
@@ -193,7 +169,9 @@ INSERT INTO `Settings` (`name`, `value`)
             $renames_pending = !$fresh && version_compare((string) Settings::get('appVersion'), '0.9.7', '<');
 
             if ($missing_tables !== [] || $renames_pending) {
-                if (!$open_admin()) {
+                $admin_connection = DB::adminConnection();
+
+                if ($admin_connection === null) {
                     return false;
                 }
 
@@ -211,14 +189,16 @@ INSERT INTO `Settings` (`name`, `value`)
             // Drift is computed only now, after any renames, so the renamed
             // columns read as present rather than missing.
             try {
-                $drift = $fresh ? [] : SchemaInstaller::missingDefinitions(DB::connection());
-                $needed_index_migrations = $fresh ? [] : SchemaInstaller::neededIndexMigrations(DB::connection());
+                $drift = $fresh ? [] : SchemaInstaller::missingDefinitions();
+                $needed_index_migrations = $fresh ? [] : SchemaInstaller::neededIndexMigrations();
             } catch (\mysqli_sql_exception | \RuntimeException $exception) {
                 return false;
             }
 
             if ($drift !== [] || $needed_index_migrations !== []) {
-                if (!$open_admin()) {
+                $admin_connection = DB::adminConnection();
+
+                if ($admin_connection === null) {
                     return false;
                 }
 
@@ -260,13 +240,13 @@ INSERT INTO `Settings` (`name`, `value`)
             // version isn't bumped and the next request retries the rest.
             if (!$fresh) {
                 try {
-                    PostDeltaBackfill::run(DB::connection());
+                    PostDeltaBackfill::run();
                     // Backfill report snapshots now that the column exists (same
                     // race-safe/idempotent guarantees).
-                    Report::backfillSnapshots();
+                    ReportSnapshotBackfiller::run();
                     // Rewrite user snapshots still on the old username/displayName
                     // keys to the row-named slug/title User::fromRow reads.
-                    Report::backfillSnapshotUserKeys();
+                    ReportSnapshotUserKeyBackfiller::run();
                     // Backfill hashtags for existing posts now the tables exist
                     // (idempotent - attach uses INSERT IGNORE / upsert).
                     Hashtag::backfill();
@@ -284,10 +264,6 @@ INSERT INTO `Settings` (`name`, `value`)
 
             return true;
         } finally {
-            if ($admin_connection !== null) {
-                mysqli_close($admin_connection);
-            }
-
             ignore_user_abort($previous_ignore_user_abort === 1);
         }
     }

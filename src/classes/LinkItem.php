@@ -21,7 +21,10 @@ class LinkItem extends FeedItem
 
     public function toDOM(): \DOMElement
     {
-        $link = new Anchor($this -> linkURL);
+        // Defense-in-depth alongside the write-time linkURL validation
+        // (create/edit-post.php): mirrors DeltaRenderer's link-rendering gate
+        // so nothing server-rendered ever emits an unsafe-scheme href.
+        $link = new Anchor(DeltaRenderer::isSafeLink((string) $this -> linkURL) ? $this -> linkURL : null);
         // Opens in a new tab; rel=noopener keeps the opened (user-submitted)
         // page from reaching back through window.opener.
         $link -> attributes['target'] = '_blank';

@@ -21,7 +21,7 @@ class DeltaRenderer extends HTMLObject
     public string $tagName = 'div';
     public ?string $class = 'PostBody';
 
-    private const ALLOWED_LINK_SCHEMES = ['http', 'https', 'mailto'];
+    public const ALLOWED_LINK_SCHEMES = ['http', 'https', 'mailto'];
 
     /** @param array[] $ops the Delta's ops */
     public function __construct(private readonly array $ops = [])
@@ -331,7 +331,7 @@ class DeltaRenderer extends HTMLObject
         return $span;
     }
 
-    private static function isSafeLink(string $url): bool
+    public static function isSafeLink(string $url): bool
     {
         // Browsers strip ASCII whitespace and control chars while parsing a
         // URL, so "java\tscript:alert(1)" runs as javascript: even though the

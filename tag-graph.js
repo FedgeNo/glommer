@@ -128,7 +128,15 @@ class HashtagGraph {
         this.render();
         this.startSpin();
 
-        window.addEventListener('resize', () => this.onResize());
+        this.boundResize = () => this.onResize();
+        window.addEventListener('resize', this.boundResize);
+    }
+
+    // Stops the spin loop and drops the resize listener - otherwise both would
+    // keep running (and keep the detached element/canvas alive) forever if the
+    // graph's section is ever removed from the document.
+    destroy() {
+        window.removeEventListener('resize', this.boundResize);
     }
 
     // The idle drift: a constant angular velocity about the vertical screen axis
@@ -141,6 +149,14 @@ class HashtagGraph {
         let last = null;
 
         const frame = (now) => {
+            // The graph never gets torn down explicitly today, but if its
+            // section is ever removed from the document this stops the loop
+            // instead of spinning a detached graph forever.
+            if (!this.element.isConnected) {
+                this.destroy();
+                return;
+            }
+
             if (last !== null && !this.dragging) {
                 const angle = (now - last) / 1000 * HashtagGraph.SPIN_RADIANS_PER_SECOND;
                 const spin = [0, Math.sin(angle / 2), 0, Math.cos(angle / 2)];

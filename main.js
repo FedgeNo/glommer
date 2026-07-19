@@ -1812,6 +1812,17 @@ function observe_offscreen_playback(root) {
     root.querySelectorAll?.('video, audio, .Carousel').forEach((element) => offscreen_playback_observer.observe(element));
 }
 
+// The counterpart to observe_offscreen_playback: a removed post/media element
+// stays in the IntersectionObserver's target set (and so un-garbage-collectable)
+// forever otherwise, since nothing else ever unobserves it.
+function unobserve_offscreen_playback(root) {
+    if (root.matches?.('video, audio, .Carousel')) {
+        offscreen_playback_observer.unobserve(root);
+    }
+
+    root.querySelectorAll?.('video, audio, .Carousel').forEach((element) => offscreen_playback_observer.unobserve(element));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     observe_offscreen_playback(document.body);
 
@@ -1819,11 +1830,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // observed too - same "dynamically added content is handled automatically"
     // spirit as the delegated event handlers. observe() is a no-op on an
     // already-observed element, so overlapping mutations don't double up.
+    // Removed media is symmetrically unobserved so a deleted post's elements
+    // don't linger in the observer's target set.
     new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === 1) {
                     observe_offscreen_playback(node);
+                }
+            });
+
+            mutation.removedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    unobserve_offscreen_playback(node);
                 }
             });
         });

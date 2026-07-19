@@ -80,12 +80,20 @@ class Post {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
 
-        const link = document.createElement('a');
-        link.href = this.linkURL;
-        // Opens in a new tab; rel=noopener keeps the opened (user-submitted)
-        // page from reaching back through window.opener.
-        link.target = '_blank';
-        link.rel = 'noopener';
+        // Defense-in-depth alongside the write-time linkURL validation
+        // (api/create-post.php, api/edit-post.php): mirrors delta.js's
+        // is_safe_link() gate so nothing client-rendered ever emits an
+        // unsafe-scheme href.
+        const link_is_safe = is_safe_link(this.linkURL, ALLOWED_LINK_SCHEMES);
+        const link = document.createElement(link_is_safe ? 'a' : 'div');
+
+        if (link_is_safe) {
+            link.href = this.linkURL;
+            // Opens in a new tab; rel=noopener keeps the opened
+            // (user-submitted) page from reaching back through window.opener.
+            link.target = '_blank';
+            link.rel = 'noopener';
+        }
 
         const link_image = this.items.find((item) => item.itemType === 'ImageItem');
 

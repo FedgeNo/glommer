@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 class Message extends HTMLObject
 {
+    // How many messages one side of a conversation can send in a row before
+    // the other person has replied. Resets to 0 the moment the recipient
+    // sends anything back - a real back-and-forth is never throttled, only a
+    // one-sided flood.
+    public const MAX_UNANSWERED = 20;
+
     public string $tagName = 'div';
     public ?string $class = 'Message Card';
 
@@ -55,6 +61,31 @@ class Message extends HTMLObject
     protected function senderHeader(): HTMLObject
     {
         return $this -> sender -> header();
+    }
+
+    /**
+     * How many messages $sender_id has sent to $recipient_id since
+     * $recipient_id last replied (or since the start of the conversation, if
+     * they never have) - messageId is monotonic with send order, so
+     * comparing against the recipient's own latest messageId in the other
+     * direction is exact and needs no separate "last reply" bookkeeping.
+     * Both halves are covered by the existing (senderId, recipientId,
+     * messageId) / (recipientId, senderId, messageId) indexes.
+     */
+    public static function unansweredCount(int $sender_id, int $recipient_id): int
+    {
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT COUNT(*) AS `count`
+    FROM `Messages`
+    WHERE `senderId` = ? AND `recipientId` = ?
+        AND `messageId` > (
+            SELECT COALESCE(MAX(`messageId`), 0)
+                FROM `Messages`
+                WHERE `senderId` = ? AND `recipientId` = ?
+        )
+', 'iiii', $sender_id, $recipient_id, $recipient_id, $sender_id));
+
+        return (int) mysqli_fetch_assoc($result)['count'];
     }
 
     /**

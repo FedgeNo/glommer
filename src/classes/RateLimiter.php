@@ -58,7 +58,14 @@ DELETE
         self::releaseLock($rate_key);
     }
 
-    private static function acquireLock(string $rate_key): void
+    /**
+     * Public so a caller with its own check-then-act sequence to protect
+     * (not a plain tooManyAttempts()/recordAttempt() pair) can take the same
+     * named lock directly - see Message::unansweredCount()'s use in
+     * api/send-message.php, which needs the check and the insert atomic but
+     * has nothing to "record" separately.
+     */
+    public static function acquireLock(string $rate_key): void
     {
         $lock_name = self::lockName($rate_key);
         $timeout_seconds = 5;
@@ -72,7 +79,7 @@ SELECT GET_LOCK(?, ?)
         mysqli_stmt_get_result($stmt);
     }
 
-    private static function releaseLock(string $rate_key): void
+    public static function releaseLock(string $rate_key): void
     {
         $lock_name = self::lockName($rate_key);
 

@@ -63,7 +63,16 @@ foreach ($handles as $handle) {
         continue;
     }
 
-    $results[] = RemoteFollow::create($current_user -> userId, $handle['user'], $handle['domain']);
+    $result = RemoteFollow::create($current_user -> userId, $handle['user'], $handle['domain']);
+
+    // The same one-way link the Follow button creates, so a handle followed
+    // from here reads as followed on that account's profile too.
+    if ($result['ok'] && ($result['userId'] ?? null) !== null) {
+        Friendship::addFollow((int) $current_user -> userId, (int) $result['userId']);
+    }
+
+    unset($result['userId']);
+    $results[] = $result;
 }
 
 JSONResponse::success(['results' => $results, 'unprocessed' => $unprocessed]) -> send();

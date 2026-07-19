@@ -296,6 +296,7 @@ CREATE TABLE `RemoteFollows` (
   `localUserId` int(10) unsigned NOT NULL,
   `remoteActorURI` varchar(255) NOT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `followActivityId` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`remoteFollowId`),
   UNIQUE KEY `localUserId_remoteActorURI` (`localUserId`,`remoteActorURI`),

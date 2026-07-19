@@ -17,6 +17,15 @@ class RemoteFollow
 {
     private const MAX_RESPONSE_BYTES = 65536;
 
+    // Declared so a row fetched via DB::row()/DB::rows() doesn't set them as
+    // deprecated dynamic properties.
+    public ?int $remoteFollowId = null;
+    public ?int $localUserId = null;
+    public ?string $remoteActorURI = null;
+    public ?string $status = null;
+    public ?string $followActivityId = null;
+    public ?string $createdAt = null;
+
     /** @return array<int, array{displayName: string, status: string}> */
     public static function listForUser(int $local_user_id): array
     {
@@ -38,7 +47,7 @@ SELECT `Users`.`title`, `RemoteFollows`.`status`
         return $rows;
     }
 
-    /** @return array{ok: bool, handle: string, error: ?string} */
+    /** @return array{ok: bool, handle: string, error: ?string, userId?: ?int} */
     public static function create(int $local_user_id, string $user, string $domain): array
     {
         $handle = '@' . $user . '@' . $domain;
@@ -59,19 +68,146 @@ SELECT `Users`.`title`, `RemoteFollows`.`status`
             return ['ok' => false, 'handle' => $handle, 'error' => "Could not fetch that account's profile."];
         }
 
+        // The handle's domain pointing somewhere else is legitimate delegation
+        // (a personal domain fronting for the server that really hosts the
+        // account), but only if that server says so too - see
+        // WebFinger::confirmsActor.
+        if (strcasecmp((string) parse_url($actor['id'], PHP_URL_HOST), $domain) !== 0
+            && !WebFinger::confirmsActor($actor['id'], $actor['preferredUsername'])) {
+            return ['ok' => false, 'handle' => $handle, 'error' => 'That account is on a different server than its handle claims, and that server does not confirm it.'];
+        }
+
         self::upsertShadowUser($actor);
 
-        DB::run('
-INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE `remoteActorURI` = VALUES(`remoteActorURI`)
-', 'iss', $local_user_id, $actor['id'], 'pending');
+        // Recorded before delivery, because the Accept answering it is what
+        // this id exists to match and it can arrive the moment we send.
+        $follow_activity_id = ServerURL::absolute('/activitypub/follows/' . bin2hex(random_bytes(16)));
 
-        if (!self::sendFollow($actor)) {
+        DB::run('
+INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`, `followActivityId`)
+    VALUES (?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE `followActivityId` = VALUES(`followActivityId`)
+', 'isss', $local_user_id, $actor['id'], 'pending', $follow_activity_id);
+
+        if (!self::sendFollow($actor, $follow_activity_id)) {
             return ['ok' => false, 'handle' => $handle, 'error' => 'Could not deliver the follow request to that server.'];
         }
 
-        return ['ok' => true, 'handle' => $handle, 'error' => null];
+        return ['ok' => true, 'handle' => $handle, 'error' => null, 'userId' => self::shadowUserIdFor($actor['id'])];
+    }
+
+    public static function shadowUserIdFor(string $remote_actor_uri): ?int
+    {
+        $user = DB::row('
+SELECT `userId`
+    FROM `Users`
+    WHERE `remoteActorURI` = ?
+', 'User', 's', $remote_actor_uri);
+
+        return $user !== null ? (int) $user -> userId : null;
+    }
+
+    /**
+     * Follows an account already known to this instance, by its actor URI -
+     * the Follow button on a shadow profile, where the handle was resolved
+     * once already and there's nothing to look up again.
+     */
+    public static function createForActor(int $local_user_id, string $remote_actor_uri): bool
+    {
+        $actor = RemoteActor::fetch($remote_actor_uri);
+
+        if ($actor === null || $actor['id'] !== $remote_actor_uri) {
+            return false;
+        }
+
+        self::upsertShadowUser($actor);
+
+        $follow_activity_id = ServerURL::absolute('/activitypub/follows/' . bin2hex(random_bytes(16)));
+
+        DB::run('
+INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`, `followActivityId`)
+    VALUES (?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE `followActivityId` = VALUES(`followActivityId`)
+', 'isss', $local_user_id, $actor['id'], 'pending', $follow_activity_id);
+
+        return self::sendFollow($actor, $follow_activity_id);
+    }
+
+    /**
+     * Stops fanning a remote account's posts into this user's feed and tells
+     * the remote server so it stops delivering. The local half is removed
+     * regardless of whether that delivery lands - an unfollow the person
+     * asked for shouldn't be held up by the other server being unreachable.
+     */
+    public static function remove(int $local_user_id, string $remote_actor_uri): bool
+    {
+        $follow = DB::row('
+SELECT *
+    FROM `RemoteFollows`
+    WHERE `localUserId` = ? AND `remoteActorURI` = ?
+', self::class, 'is', $local_user_id, $remote_actor_uri);
+
+        if ($follow === null) {
+            return false;
+        }
+
+        DB::run('
+DELETE
+    FROM `RemoteFollows`
+    WHERE `remoteFollowId` = ?
+', 'i', $follow -> remoteFollowId);
+
+        // Their posts leave this person's feed immediately; the posts
+        // themselves stay for anyone else still following the account.
+        DB::run('
+DELETE `Timelines`
+    FROM `Timelines`
+    JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Timelines`.`userId` = ? AND `Users`.`remoteActorURI` = ?
+', 'is', $local_user_id, $remote_actor_uri);
+
+        // Only tell the remote server once nobody here follows them any
+        // more - the follow itself is instance-wide, so another local
+        // follower still wants the deliveries.
+        if (self::localFollowerCount($remote_actor_uri) === 0 && $follow -> followActivityId !== null) {
+            self::sendUndoFollow($remote_actor_uri, $follow -> followActivityId);
+        }
+
+        return true;
+    }
+
+    private static function localFollowerCount(string $remote_actor_uri): int
+    {
+        $rows = DB::rows('
+SELECT `remoteFollowId`
+    FROM `RemoteFollows`
+    WHERE `remoteActorURI` = ?
+', self::class, 's', $remote_actor_uri);
+
+        return count($rows);
+    }
+
+    private static function sendUndoFollow(string $remote_actor_uri, string $follow_activity_id): void
+    {
+        $actor = RemoteActor::fetch($remote_actor_uri);
+
+        if ($actor === null) {
+            return;
+        }
+
+        self::deliver($actor['inbox'], [
+            '@context' => 'https://www.w3.org/ns/activitystreams',
+            'id' => ServerURL::absolute('/activitypub/undos/' . bin2hex(random_bytes(16))),
+            'type' => 'Undo',
+            'actor' => ServerURL::absolute('/activitypub/actor'),
+            'object' => [
+                'id' => $follow_activity_id,
+                'type' => 'Follow',
+                'actor' => ServerURL::absolute('/activitypub/actor'),
+                'object' => $remote_actor_uri,
+            ],
+        ]);
     }
 
     private static function upsertShadowUser(array $actor): void
@@ -129,11 +265,11 @@ SELECT `slug`
         return substr($base, 0, 16) . bin2hex(random_bytes(6));
     }
 
-    private static function sendFollow(array $actor): bool
+    private static function sendFollow(array $actor, string $follow_activity_id): bool
     {
         $activity = [
             '@context' => 'https://www.w3.org/ns/activitystreams',
-            'id' => ServerURL::absolute('/activitypub/follows/' . bin2hex(random_bytes(16))),
+            'id' => $follow_activity_id,
             'type' => 'Follow',
             'actor' => ServerURL::absolute('/activitypub/actor'),
             'object' => $actor['id'],

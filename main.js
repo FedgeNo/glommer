@@ -917,6 +917,32 @@ document.addEventListener('click', async (event) => {
 });
 
 document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.FollowUserButton');
+
+    if (!button) {
+        return;
+    }
+
+    const user_id = button.dataset.userId;
+    const following = button.dataset.following === '1';
+
+    button.disabled = true;
+
+    try {
+        const result = await api_post(following ? '/api/unfollow-remote' : '/api/follow-user', { userId: user_id });
+
+        if (result === null) {
+            return;
+        }
+
+        button.dataset.following = result.following ? '1' : '0';
+        button.textContent = result.following ? 'Unfollow' : 'Follow';
+    } finally {
+        button.disabled = false;
+    }
+});
+
+document.addEventListener('click', async (event) => {
     const button = event.target.closest('.BlockUserButton');
 
     if (!button) {

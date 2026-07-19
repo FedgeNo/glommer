@@ -28,7 +28,10 @@ if (!isset($_COOKIE[session_name()])) {
 // busy peer would rate-limit the whole instance's federation.
 $rate_key = 'activitypub-inbox:' . (ServerURL::clientIP() ?? 'unknown');
 
-if (RateLimiter::tooManyAttempts($rate_key, 120, 600)) {
+// A single busy peer legitimately delivers a lot: one activity per post per
+// followed account, plus edits, deletes and follow bookkeeping. This is set
+// to stop a flood, not to pace normal federation.
+if (RateLimiter::tooManyAttempts($rate_key, 1200, 600)) {
     http_response_code(429);
     exit;
 }
@@ -106,7 +109,29 @@ $path = parse_url($_SERVER['REQUEST_URI'] ?? '/activitypub/inbox', PHP_URL_PATH)
 $site_url_parts = parse_url((string) Config::get('siteURL'));
 $canonical_host = ($site_url_parts['host'] ?? '') . (isset($site_url_parts['port']) ? ':' . $site_url_parts['port'] : '');
 
-$verified = HTTPSignature::verify('POST', $path, $canonical_host, $date_header, $digest_header, $signature_header, $signer -> remoteActorPublicKeyPem);
+// Every header the sender might have signed, by its lowercase name. Host is
+// deliberately our own value rather than the received one, for the reason
+// above; the rest are as received, since the signature is what vouches for
+// them.
+$received_headers = ['host' => $canonical_host];
+
+foreach ($_SERVER as $key => $value) {
+    if (str_starts_with($key, 'HTTP_') && is_string($value)) {
+        $received_headers[strtolower(str_replace('_', '-', substr($key, 5)))] = $value;
+    }
+}
+
+$received_headers['host'] = $canonical_host;
+
+if (isset($_SERVER['CONTENT_TYPE']) && is_string($_SERVER['CONTENT_TYPE'])) {
+    $received_headers['content-type'] = $_SERVER['CONTENT_TYPE'];
+}
+
+if (isset($_SERVER['CONTENT_LENGTH']) && is_string($_SERVER['CONTENT_LENGTH'])) {
+    $received_headers['content-length'] = $_SERVER['CONTENT_LENGTH'];
+}
+
+$verified = HTTPSignature::verify('POST', $path, $received_headers, $signature_header, $signer -> remoteActorPublicKeyPem);
 
 if (!$verified) {
     http_response_code(401);

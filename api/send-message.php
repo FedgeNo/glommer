@@ -36,6 +36,13 @@ if ($recipient_id === $current_user -> userId) {
 
 $recipient = User::load($recipient_id);
 
+// A Fediverse account has no one behind it here to receive a message -
+// delivering DMs over ActivityPub isn't implemented, so accepting one would
+// only ever mean silently dropping it.
+if ($recipient !== null && $recipient -> remoteActorURI !== null) {
+    JSONResponse::error('You can\'t message a Fediverse account from here.', 422) -> send();
+}
+
 if ($recipient === null || $recipient -> banned) {
     JSONResponse::error('User not found', 404) -> send();
 }

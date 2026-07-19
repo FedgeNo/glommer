@@ -13,7 +13,15 @@ declare(strict_types=1);
  */
 class HTTPSignature
 {
+    /** What we sign on the way out. */
     private const SIGNED_HEADERS = '(request-target) host date digest';
+
+    /**
+     * The coverage an inbound signature must have, whatever else it also
+     * signs: the request target, the host it was meant for, its freshness,
+     * and the body.
+     */
+    private const REQUIRED_HEADERS = ['(request-target)', 'host', 'date', 'digest'];
 
     /**
      * How far a delivery's signed Date may sit from our own clock. A
@@ -58,23 +66,79 @@ class HTTPSignature
         return 'keyId="' . $keyId . '",algorithm="rsa-sha256",headers="' . self::SIGNED_HEADERS . '",signature="' . base64_encode($signature_binary) . '"';
     }
 
-    public static function verify(string $method, string $path, string $host, string $date, string $digest, string $signature_header, string $public_key_pem): bool
+    /**
+     * Verifies a delivery's signature against the header set the sender says
+     * it covered, rather than one exact list. Implementations differ in which
+     * extra headers they sign and in what order, so demanding a single
+     * spelling rejects senders whose signatures are perfectly valid.
+     *
+     * What is NOT flexible is the coverage: the signature must cover
+     * (request-target), host, date and digest, or it isn't binding the thing
+     * that matters - the target, the destination, the freshness and the body.
+     * A sender choosing its own shorter list is exactly the downgrade this
+     * refuses.
+     *
+     * @param array<string, string> $headers received header values, lowercase names
+     */
+    public static function verify(string $method, string $path, array $headers, string $signature_header, string $public_key_pem): bool
     {
         $fields = self::parseSignatureHeader($signature_header);
 
-        if ($fields === null || $fields['algorithm'] !== 'rsa-sha256' || $fields['headers'] !== self::SIGNED_HEADERS) {
+        if ($fields === null || $fields['algorithm'] !== 'rsa-sha256') {
+            return false;
+        }
+
+        $covered = preg_split('/\s+/', strtolower(trim($fields['headers']))) ?: [];
+
+        foreach (self::REQUIRED_HEADERS as $required) {
+            if (!in_array($required, $covered, true)) {
+                return false;
+            }
+        }
+
+        $signing_string = self::signingStringFor($covered, $method, $path, $headers);
+
+        if ($signing_string === null) {
             return false;
         }
 
         $signature_binary = base64_decode($fields['signature'], true);
 
-        if ($signature_binary === false) {
+        if ($signature_binary === false || $signature_binary === '') {
             return false;
         }
 
-        $signing_string = self::signingString($method, $path, $host, $date, $digest);
-
         return openssl_verify($signing_string, $signature_binary, $public_key_pem, OPENSSL_ALGO_SHA256) === 1;
+    }
+
+    /**
+     * Rebuilds the exact string the sender signed, from the headers it named
+     * and the values actually received. Null when it claims to have signed a
+     * header that isn't present - the signature would never match anyway, and
+     * substituting an empty value would be inventing content it never signed.
+     *
+     * @param string[] $covered
+     * @param array<string, string> $headers
+     */
+    private static function signingStringFor(array $covered, string $method, string $path, array $headers): ?string
+    {
+        $lines = [];
+
+        foreach ($covered as $name) {
+            if ($name === '(request-target)') {
+                $lines[] = '(request-target): ' . strtolower($method) . ' ' . $path;
+
+                continue;
+            }
+
+            if (!array_key_exists($name, $headers)) {
+                return null;
+            }
+
+            $lines[] = $name . ': ' . $headers[$name];
+        }
+
+        return implode("\n", $lines);
     }
 
     /** @return array{keyId: string, algorithm: string, headers: string, signature: string}|null */

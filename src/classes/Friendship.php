@@ -4,6 +4,17 @@ declare(strict_types=1);
 
 class Friendship
 {
+    /**
+     * A one-way link, as opposed to the mutual 'pending'/'accepted' pair.
+     * Following is how the relationship with a Fediverse account is
+     * expressed: the row's direction is the whole meaning, nothing ever
+     * accepts it, and it never becomes a friendship. Stored here rather than
+     * in its own table so one place answers "what is A to B", and so the
+     * reverse direction is already available when remote accounts start
+     * following ours.
+     */
+    public const FOLLOWING = 'following';
+
     public ?int $friendshipId = null;
     public ?int $requesterId = null;
     public ?int $addresseeId = null;
@@ -26,6 +37,37 @@ SELECT *
     FROM `Friendships`
     WHERE (`requesterId` = ? AND `addresseeId` = ?) OR (`requesterId` = ? AND `addresseeId` = ?)
 ', 'Friendship', 'iiii', $user_a, $user_b, $user_b, $user_a);
+    }
+
+    /**
+     * Whether this viewer follows that account - the one-way link, in that
+     * direction only. The reverse row is a different relationship entirely.
+     */
+    public static function follows(int $follower_id, int $followee_id): bool
+    {
+        return DB::row('
+SELECT `friendshipId`
+    FROM `Friendships`
+    WHERE `requesterId` = ? AND `addresseeId` = ? AND `status` = ?
+', 'Friendship', 'iis', $follower_id, $followee_id, self::FOLLOWING) !== null;
+    }
+
+    public static function addFollow(int $follower_id, int $followee_id): void
+    {
+        DB::run('
+INSERT INTO `Friendships` (`requesterId`, `addresseeId`, `status`)
+    VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE `status` = VALUES(`status`)
+', 'iis', $follower_id, $followee_id, self::FOLLOWING);
+    }
+
+    public static function removeFollow(int $follower_id, int $followee_id): void
+    {
+        DB::run('
+DELETE
+    FROM `Friendships`
+    WHERE `requesterId` = ? AND `addresseeId` = ? AND `status` = ?
+', 'iis', $follower_id, $followee_id, self::FOLLOWING);
     }
 
     /**

@@ -15,7 +15,8 @@ class ActivityPubInbox
     public static function process(array $activity, string $signed_actor_uri): void
     {
         match ($activity['type'] ?? null) {
-            'Accept' => self::handleAccept($signed_actor_uri),
+            'Accept' => self::handleAccept($activity, $signed_actor_uri),
+            'Reject' => self::handleReject($activity, $signed_actor_uri),
             'Create' => self::handleCreate($activity, $signed_actor_uri),
             'Update' => self::handleUpdate($activity, $signed_actor_uri),
             'Delete' => self::handleDelete($activity, $signed_actor_uri),
@@ -23,15 +24,64 @@ class ActivityPubInbox
         };
     }
 
-    private static function handleAccept(string $actor_uri): void
+    private static function handleAccept(array $activity, string $actor_uri): void
     {
+        if (!self::respondsToOurFollow($activity, $actor_uri)) {
+            return;
+        }
+
         $accepted_status = 'accepted';
+        $pending_status = 'pending';
 
         DB::run('
 UPDATE `RemoteFollows`
     SET `status` = ?
+    WHERE `remoteActorURI` = ? AND `status` = ?
+', 'sss', $accepted_status, $actor_uri, $pending_status);
+    }
+
+    /**
+     * A refused follow is removed rather than parked: leaving it pending
+     * forever would keep showing the person a request that is never coming,
+     * and re-submitting the handle is what asking again should mean.
+     */
+    private static function handleReject(array $activity, string $actor_uri): void
+    {
+        if (!self::respondsToOurFollow($activity, $actor_uri)) {
+            return;
+        }
+
+        DB::run('
+DELETE
+    FROM `RemoteFollows`
     WHERE `remoteActorURI` = ?
-', 'ss', $accepted_status, $actor_uri);
+', 's', $actor_uri);
+    }
+
+    /**
+     * Whether an Accept/Reject actually answers a Follow this instance sent
+     * to this actor, matched on the activity id we recorded when sending it.
+     * Without that, any followed account could flip its own follow to
+     * accepted (or drop it) by asserting a response we never asked for.
+     *
+     * A server that echoes the Follow back only as a bare URI string, rather
+     * than the embedded object, is handled the same way - it's the id either
+     * way.
+     */
+    private static function respondsToOurFollow(array $activity, string $actor_uri): bool
+    {
+        $object = $activity['object'] ?? null;
+        $follow_activity_id = is_array($object) ? ($object['id'] ?? null) : $object;
+
+        if (!is_string($follow_activity_id) || $follow_activity_id === '') {
+            return false;
+        }
+
+        return DB::row('
+SELECT `remoteFollowId`
+    FROM `RemoteFollows`
+    WHERE `remoteActorURI` = ? AND `followActivityId` = ?
+', 'RemoteFollow', 'ss', $actor_uri, $follow_activity_id) !== null;
     }
 
     private static function handleCreate(array $activity, string $actor_uri): void

@@ -42,19 +42,35 @@ class OtherUser extends User
             $actions -> addContent($item);
         }
 
-        if ($friendship === null || $sent_by_viewer) {
-            $friend_button = new Button();
-            $friend_button -> type = 'button';
-            $friend_button -> class = 'Btn FriendRequestButton';
-            $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
-            $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
-            $friend_button -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
-            $actions -> addContent($friend_button);
-        }
+        // A Fediverse account can't hold up its end of a friendship or read a
+        // message here - there's no person on this side of it - so the mutual
+        // actions are replaced by the one-way relationship that does mean
+        // something: following.
+        if ($this -> remoteActorURI !== null) {
+            $following = Friendship::follows($viewer_id, (int) $this -> userId);
 
-        $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> slug), 'Message');
-        $message_link -> class = 'Btn';
-        $actions -> addContent($message_link);
+            $follow_button = new Button();
+            $follow_button -> type = 'button';
+            $follow_button -> class = 'Btn FollowUserButton';
+            $follow_button -> attributes['data-user-id'] = (string) $this -> userId;
+            $follow_button -> attributes['data-following'] = $following ? '1' : '0';
+            $follow_button -> contents[] = $following ? 'Unfollow' : 'Follow';
+            $actions -> addContent($follow_button);
+        } else {
+            if ($friendship === null || $sent_by_viewer) {
+                $friend_button = new Button();
+                $friend_button -> type = 'button';
+                $friend_button -> class = 'Btn FriendRequestButton';
+                $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
+                $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
+                $friend_button -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
+                $actions -> addContent($friend_button);
+            }
+
+            $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> slug), 'Message');
+            $message_link -> class = 'Btn';
+            $actions -> addContent($message_link);
+        }
 
         $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), 'Friends');
         $friends_link -> class = 'Btn';

@@ -46,13 +46,7 @@ class WebFinger
                 continue;
             }
 
-            // The actor has to live on the host we asked. A server answering
-            // for its own domain is expected; one answering with an actor
-            // somewhere else is claiming to speak for a host it doesn't
-            // control, which would quietly follow an account the person never
-            // asked for. (This is what rules out WebFinger delegation to a
-            // separate host - see the note in claude/TODO.md.)
-            if (strcasecmp((string) parse_url($href, PHP_URL_HOST), $domain) !== 0) {
+            if (!is_string(parse_url($href, PHP_URL_HOST))) {
                 continue;
             }
 
@@ -60,5 +54,30 @@ class WebFinger
         }
 
         return null;
+    }
+
+    /**
+     * Whether the actor's own host agrees that this handle belongs to it.
+     *
+     * A handle's domain may legitimately point at an actor elsewhere - that's
+     * how a personal domain delegates to whatever server actually hosts the
+     * account. But taken alone it also lets any domain name an actor it
+     * doesn't own, quietly following an account the person never asked for.
+     * So when the two hosts differ, the actor's own host is asked
+     * independently, and only an answer that points back at the same actor is
+     * accepted. A domain can claim whatever it likes about itself; it can't
+     * make another server corroborate it.
+     */
+    public static function confirmsActor(string $actor_uri, string $preferred_username): bool
+    {
+        $actor_host = parse_url($actor_uri, PHP_URL_HOST);
+
+        if (!is_string($actor_host) || $preferred_username === '') {
+            return false;
+        }
+
+        $confirmed_uri = self::resolveActorURI($preferred_username, $actor_host);
+
+        return $confirmed_uri !== null && $confirmed_uri === $actor_uri;
     }
 }

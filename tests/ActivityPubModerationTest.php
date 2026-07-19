@@ -29,6 +29,92 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
 ', 'iss', $local_user_id, $actor_uri, 'accepted');
     }
 
+    private static function pendingFollow(int $local_user_id, string $actor_uri, string $follow_activity_id): void
+    {
+        DB::run('
+INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`, `followActivityId`)
+    VALUES (?, ?, ?, ?)
+', 'isss', $local_user_id, $actor_uri, 'pending', $follow_activity_id);
+    }
+
+    private static function followStatus(string $actor_uri): ?string
+    {
+        $row = DB::row('
+SELECT `status`
+    FROM `RemoteFollows`
+    WHERE `remoteActorURI` = ?
+', 'RemoteFollow', 's', $actor_uri);
+
+        return $row ?-> status;
+    }
+
+    public function testAcceptMatchingOurFollowMarksItAccepted(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $follow_id = 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8));
+        self::pendingFollow(self::createUser(), $actor_uri, $follow_id);
+
+        ActivityPubInbox::process(['type' => 'Accept', 'object' => ['type' => 'Follow', 'id' => $follow_id]], $actor_uri);
+
+        $this -> assertSame('accepted', self::followStatus($actor_uri));
+    }
+
+    public function testAcceptNotMatchingAnyFollowWeSentIsIgnored(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        self::pendingFollow(self::createUser(), $actor_uri, 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8)));
+
+        ActivityPubInbox::process(['type' => 'Accept', 'object' => ['type' => 'Follow', 'id' => 'https://glommer.test/activitypub/follows/not-ours']], $actor_uri);
+
+        $this -> assertSame('pending', self::followStatus($actor_uri));
+    }
+
+    public function testRejectMatchingOurFollowRemovesIt(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $follow_id = 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8));
+        self::pendingFollow(self::createUser(), $actor_uri, $follow_id);
+
+        ActivityPubInbox::process(['type' => 'Reject', 'object' => ['type' => 'Follow', 'id' => $follow_id]], $actor_uri);
+
+        $this -> assertNull(self::followStatus($actor_uri));
+    }
+
+    public function testRejectNotMatchingAnyFollowWeSentIsIgnored(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        self::pendingFollow(self::createUser(), $actor_uri, 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8)));
+
+        ActivityPubInbox::process(['type' => 'Reject', 'object' => 'https://glommer.test/activitypub/follows/not-ours'], $actor_uri);
+
+        $this -> assertSame('pending', self::followStatus($actor_uri));
+    }
+
+    public function testFollowingIsOneWayAndDistinctFromFriendship(): void
+    {
+        $follower_id = self::createUser();
+        $followee_id = self::createUser();
+
+        Friendship::addFollow($follower_id, $followee_id);
+
+        $this -> assertTrue(Friendship::follows($follower_id, $followee_id));
+
+        // The reverse direction is a different relationship and must not be
+        // implied by this one.
+        $this -> assertFalse(Friendship::follows($followee_id, $follower_id));
+
+        // And it is not a friendship - the friends list must not pick it up.
+        $relationship = Friendship::statusBetween($follower_id, $followee_id);
+        $this -> assertSame(Friendship::FOLLOWING, $relationship -> status);
+
+        Friendship::removeFollow($follower_id, $followee_id);
+        $this -> assertFalse(Friendship::follows($follower_id, $followee_id));
+    }
+
     private static function postIdForRemoteObject(string $uri): ?int
     {
         $row = DB::row('

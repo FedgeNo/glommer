@@ -30,6 +30,13 @@ if ($target_user === null || $target_user -> banned) {
     JSONResponse::error('User not found', 404) -> send();
 }
 
+// Friendship is mutual and needs the other side to accept; a Fediverse
+// account can only be followed, which is the one-way link api/follow-user.php
+// creates.
+if ($target_user -> remoteActorURI !== null) {
+    JSONResponse::error('That is a Fediverse account - follow it instead.', 422) -> send();
+}
+
 // Look at the relationship in BOTH directions - the Friendships unique key is
 // on the ordered (requesterId, addresseeId) pair, so it can't stop a duplicate
 // reverse-direction row on its own. statusBetween is the guard against creating

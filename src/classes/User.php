@@ -28,6 +28,8 @@ class User extends HTMLObject
     public int $lastNotificationId = 0;
     public int $friendCount = 0;
     public int $sessionVersion = 0;
+    public ?string $remoteActorURI = null;
+    public ?string $remoteActorPublicKeyPem = null;
 
     public function toDOM(): \DOMElement
     {

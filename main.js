@@ -3627,6 +3627,41 @@ document.addEventListener('submit', async (event) => {
 });
 
 document.addEventListener('submit', async (event) => {
+    const form = event.target.closest('.RemoteFollowsForm');
+
+    if (!form) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    submit_button.disabled = true;
+
+    const data = await api_post('/api/follow-remote', {
+        handles: form.querySelector('[name=\'handles\']').value,
+    });
+
+    submit_button.disabled = false;
+
+    if (!data) {
+        return;
+    }
+
+    const succeeded = data.results.filter((result) => result.ok).length;
+    const failed = data.results.filter((result) => !result.ok);
+
+    if (failed.length === 0) {
+        show_toast(`Followed ${succeeded} account${succeeded === 1 ? '' : 's'}.`);
+    } else {
+        show_toast(`Followed ${succeeded}, failed: ${failed.map((result) => `${result.handle} (${result.error})`).join(', ')}`);
+    }
+
+    // Simplest way to reflect the new/updated follow list below the form.
+    window.location.reload();
+});
+
+document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.MailSettingsForm');
 
     if (!form) {

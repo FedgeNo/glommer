@@ -39,7 +39,7 @@ SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
-        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
         AND (? = 0 OR `Posts`.`userId` = ?)
         AND NOT EXISTS (
             SELECT 1

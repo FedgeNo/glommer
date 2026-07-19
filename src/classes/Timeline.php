@@ -19,8 +19,42 @@ class Timeline
      */
     public static function fanOutPost(int $author_id, int $post_id): void
     {
-        $recipient_ids = [$author_id, ...self::friendIds($author_id)];
+        self::fanOutToUsers([$author_id, ...self::friendIds($author_id)], $post_id);
+    }
 
+    /**
+     * Fans a remote-origin post out to every local user who's actually
+     * following that remote account (RemoteFollows, status 'accepted') -
+     * never to anyone else, so a followed account's posts only ever reach
+     * the specific local followers who asked for them, not a global feed.
+     */
+    public static function fanOutRemotePost(string $remote_actor_uri, int $post_id): void
+    {
+        $accepted_status = 'accepted';
+
+        $stmt = DB::run('
+SELECT `localUserId`
+    FROM `RemoteFollows`
+    WHERE `remoteActorURI` = ? AND `status` = ?
+', 'ss', $remote_actor_uri, $accepted_status);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $recipient_ids = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $recipient_ids[] = (int) $row['localUserId'];
+        }
+
+        if ($recipient_ids !== []) {
+            self::fanOutToUsers($recipient_ids, $post_id);
+        }
+    }
+
+    /**
+     * @param int[] $recipient_ids
+     */
+    private static function fanOutToUsers(array $recipient_ids, int $post_id): void
+    {
         $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?)'));
 
         $params = [];

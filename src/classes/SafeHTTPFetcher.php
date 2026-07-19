@@ -51,6 +51,133 @@ class SafeHTTPFetcher
         return self::getFollowing($url, $max_bytes, self::MAX_REDIRECTS);
     }
 
+    /**
+     * A GET with caller-chosen headers instead of the browser-shaped ones
+     * get() sends - for ActivityPub/WebFinger fetches, which need to identify
+     * as themselves (Accept: application/activity+json) rather than pretend
+     * to be a browser. Same SSRF protections as get(): resolve-then-pin,
+     * IPv4-only, standard ports only, redirects re-validated one by one.
+     *
+     * @param string[] $headers
+     * @return array{body: string, contentType: ?string}|null
+     */
+    public static function getJSON(string $url, array $headers, int $max_bytes): ?array
+    {
+        return self::sendRequest('GET', $url, $headers, null, $max_bytes, self::MAX_REDIRECTS);
+    }
+
+    /**
+     * A POST with caller-chosen headers and a raw body - for delivering a
+     * signed ActivityPub activity to a remote inbox. Never follows a
+     * redirect: replaying a signed POST at a second, server-chosen URL is a
+     * meaningfully different request than the caller signed for, so this
+     * fails closed instead.
+     *
+     * @param string[] $headers
+     * @return array{body: string, contentType: ?string}|null
+     */
+    public static function postJSON(string $url, string $body, array $headers, int $max_bytes): ?array
+    {
+        return self::sendRequest('POST', $url, $headers, $body, $max_bytes, 0);
+    }
+
+    /**
+     * @param string[] $headers
+     * @return array{body: string, contentType: ?string}|null
+     */
+    private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left): ?array
+    {
+        $parts = parse_url($url);
+
+        if (
+            $parts === false
+            || !isset($parts['host'])
+            || $parts['host'] === ''
+            || !in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)
+        ) {
+            return null;
+        }
+
+        $ip = self::resolveAndValidate($parts['host']);
+
+        if ($ip === null) {
+            return null;
+        }
+
+        $scheme = strtolower($parts['scheme']);
+        $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+        if (!in_array($port, [80, 443], true)) {
+            return null;
+        }
+
+        $downloaded = '';
+        $exceeded_cap = false;
+
+        $curl = curl_init();
+        $options = [
+            CURLOPT_URL => $url,
+            CURLOPT_RESOLVE => [$parts['host'] . ':' . $port . ':' . $ip],
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+            CURLOPT_HEADER => false,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_CONNECTTIMEOUT => self::CONNECT_TIMEOUT_SECONDS,
+            CURLOPT_TIMEOUT => self::TOTAL_TIMEOUT_SECONDS,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_ENCODING => '',
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_WRITEFUNCTION => function ($handle, string $chunk) use (&$downloaded, &$exceeded_cap, $max_bytes) {
+                $downloaded .= $chunk;
+
+                if (strlen($downloaded) > $max_bytes) {
+                    $exceeded_cap = true;
+
+                    return -1;
+                }
+
+                return strlen($chunk);
+            },
+        ];
+
+        if ($method === 'POST') {
+            $options[CURLOPT_POST] = true;
+            $options[CURLOPT_POSTFIELDS] = $body ?? '';
+        }
+
+        curl_setopt_array($curl, $options);
+
+        $success = curl_exec($curl);
+        $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $content_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+        $redirect_url = curl_getinfo($curl, CURLINFO_REDIRECT_URL);
+        curl_close($curl);
+
+        if ($success === false && !$exceeded_cap) {
+            return null;
+        }
+
+        $response_body = substr($downloaded, 0, $max_bytes);
+
+        if ($status >= 300 && $status < 400 && $redirect_url !== '' && $redirect_url !== null) {
+            if ($redirects_left <= 0) {
+                return null;
+            }
+
+            return self::sendRequest($method, $redirect_url, $headers, $body, $max_bytes, $redirects_left - 1);
+        }
+
+        if ($status < 200 || $status >= 300) {
+            return null;
+        }
+
+        return [
+            'body' => (string) $response_body,
+            'contentType' => $content_type !== false ? $content_type : null,
+        ];
+    }
+
     private static function getFollowing(string $url, int $max_bytes, int $redirects_left): ?array
     {
         $parts = parse_url($url);

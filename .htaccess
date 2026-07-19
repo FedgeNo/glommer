@@ -29,6 +29,11 @@
     # tokens are opaque, public, and short-lived - no secret is exposed.
     RewriteRule ^\.well-known/acme-challenge/ - [L]
 
+    # WebFinger (RFC 7033) - also under the .well-known dot-directory, so it
+    # has to be let through ahead of the dotfile block below too, same as the
+    # ACME challenge path above.
+    RewriteRule ^\.well-known/webfinger$ activitypub-webfinger.php [L,QSA]
+
     # Block any request into a dotfile OR a dot-directory (.git, .env, .svn,
     # .htaccess, ...). The <FilesMatch> above only ever sees the request
     # basename, so it stops /.env but NOT a file nested under a dot-directory
@@ -105,6 +110,8 @@
     RewriteRule ^bookmarks$ bookmarks.php [L,QSA]
     RewriteRule ^search$ search.php [L,QSA]
     RewriteRule ^trending-topics$ trending-topics.php [L,QSA]
+    RewriteRule ^activitypub/actor$ activitypub-actor.php [L,QSA]
+    RewriteRule ^activitypub/inbox$ activitypub-inbox.php [L,QSA]
 
     # messages, help, and users are real collections - only their canonical
     # trailing-slash form is served (the bare form redirects to it, above).

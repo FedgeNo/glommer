@@ -30,9 +30,12 @@ CREATE TABLE `Users` (
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
   `friendCount` int(10) unsigned NOT NULL DEFAULT 0,
   `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,
+  `remoteActorURI` varchar(255) DEFAULT NULL,
+  `remoteActorPublicKeyPem` text DEFAULT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `remoteActorURI` (`remoteActorURI`),
   KEY `banned_userId` (`banned`,`userId`),
   FULLTEXT KEY `description` (`description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -49,9 +52,11 @@ CREATE TABLE `Posts` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `editedAt` datetime DEFAULT NULL,
   `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
+  `remoteObjectURI` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
+  UNIQUE KEY `remoteObjectURI` (`remoteObjectURI`),
   FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),
   CONSTRAINT `Posts_ibfk_1` FOREIGN KEY (`parentId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
   CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
@@ -284,6 +289,24 @@ CREATE TABLE `Timelines` (
   KEY `fk_timelines_post` (`postId`),
   CONSTRAINT `Timelines_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `fk_timelines_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `RemoteFollows` (
+  `remoteFollowId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `localUserId` int(10) unsigned NOT NULL,
+  `remoteActorURI` varchar(255) NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`remoteFollowId`),
+  UNIQUE KEY `localUserId_remoteActorURI` (`localUserId`,`remoteActorURI`),
+  CONSTRAINT `RemoteFollows_ibfk_1` FOREIGN KEY (`localUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `RemoteObjectTombstones` (
+  `remoteObjectURI` varchar(255) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`remoteObjectURI`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `LinkPreviews` (

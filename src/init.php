@@ -8,7 +8,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.12';
+const GLOMMER_VERSION = '0.9.13';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -220,7 +220,12 @@ if (Auth::check()) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// The ActivityPub inbox is a legitimate cross-origin, cross-server endpoint -
+// a same-origin browser session (what CSRF protects) never applies to a
+// delivery from another Fediverse server, which can't carry our CSRF token
+// and was never expected to. HTTP Signature verification (inside the
+// endpoint itself) is what authenticates a delivery there instead.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['SCRIPT_FILENAME']) !== 'activitypub-inbox.php') {
     $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['CSRFToken'] ?? null;
 
     if (!CSRF::verify(is_string($csrf_token) ? $csrf_token : null)) {

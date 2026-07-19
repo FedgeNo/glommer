@@ -359,6 +359,22 @@ DELETE
     WHERE `postId` IN (' . $post_id_placeholders . ')
 ', str_repeat('i', count($all_post_ids)), ...$all_post_ids);
 
+        // A remote-origin post being deleted here (owner delete, moderator
+        // delete, report resolution - this is the one place all of them go
+        // through) gets tombstoned first: the origin server redelivering the
+        // same Create later is expected ActivityPub behavior, not a bug, and
+        // a tombstone is what stops that redelivery from copying it back in.
+        $remote_object_uris_stmt = DB::run('
+SELECT `remoteObjectURI`
+    FROM `Posts`
+    WHERE `postId` IN (' . $post_id_placeholders . ') AND `remoteObjectURI` IS NOT NULL
+', str_repeat('i', count($all_post_ids)), ...$all_post_ids);
+        $remote_object_uris_result = mysqli_stmt_get_result($remote_object_uris_stmt);
+
+        while ($row = mysqli_fetch_assoc($remote_object_uris_result)) {
+            RemoteObjectTombstone::tombstone((string) $row['remoteObjectURI'], 'post deleted on this site');
+        }
+
         DB::run('
 DELETE
     FROM `Posts`

@@ -1549,6 +1549,51 @@ function app_service_user(): ?string
 }
 
 /**
+ * The one site-wide ActivityPub signing identity (see ActivityPubKeys) - an
+ * RSA keypair plus the .env secret that encrypts the private key at rest.
+ * Generated here, once, never hand-run; idempotent (a no-op once both
+ * already exist). Runs after .env and the database are both already proven
+ * usable, since it needs to write to both.
+ */
+function ensure_activitypub_keypair(): void
+{
+    $env_path = __DIR__ . '/../.env';
+    $encryption_key_hex = Env::get('ACTIVITYPUB_ENCRYPTION_KEY');
+
+    if ($encryption_key_hex === null) {
+        $encryption_key_hex = bin2hex(random_bytes(32));
+        $env_contents = (string) file_get_contents($env_path);
+        $env_contents = rtrim($env_contents, "\n") . "\nACTIVITYPUB_ENCRYPTION_KEY=" . $encryption_key_hex . "\n";
+
+        if (file_put_contents($env_path, $env_contents) === false) {
+            warn('Could not write ACTIVITYPUB_ENCRYPTION_KEY to .env - Fediverse following will stay unavailable until this is set.');
+
+            return;
+        }
+
+        // This process needs to see it immediately - Env::get() reads
+        // getenv() live, same reason other freshly-written .env values get
+        // putenv()'d here rather than waiting for a new process.
+        putenv('ACTIVITYPUB_ENCRYPTION_KEY=' . $encryption_key_hex);
+
+        ok('generated ACTIVITYPUB_ENCRYPTION_KEY');
+    }
+
+    if (Settings::get('activityPubPublicKeyPem') !== null && Settings::get('activityPubEncryptedPrivateKey') !== null) {
+        ok('ActivityPub signing keypair already configured');
+
+        return;
+    }
+
+    $keypair = ActivityPubKeys::generateKeypair();
+
+    Settings::set('activityPubPublicKeyPem', $keypair['publicKeyPem']);
+    Settings::set('activityPubEncryptedPrivateKey', ActivityPubKeys::encryptPrivateKey($keypair['privateKeyPem'], $encryption_key_hex));
+
+    ok('generated the ActivityPub signing keypair');
+}
+
+/**
  * Creates (if missing) a dedicated, unprivileged system account for the
  * WebSocket daemon specifically - kept separate from the web-server account
  * the upload-worker legitimately shares (see fix_upload_ownership()'s
@@ -4059,6 +4104,8 @@ if ($legacy_mail_from_address !== '' || $legacy_mail_from_name !== '') {
         'MAIL_FROM_NAME' => $legacy_mail_from_name,
     ], static fn (string $value): bool => $value !== ''))) . ' set, but the mail "from" address/name are no longer configured from .env (copied into Settings just now if not already set there) - these .env values are ignored from here on. Edit them from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
 }
+
+ensure_activitypub_keypair();
 
 // No usable value anywhere yet (a fresh install skips this - the wizard
 // above already collected and stored one). Store in Settings when possible;

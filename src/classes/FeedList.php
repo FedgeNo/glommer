@@ -58,13 +58,17 @@ SELECT `Posts`.*
     LIMIT ? OFFSET ?
 ', 'Post', 'iiii', (int) $this -> userId, $not_banned, $limit, $this -> offset),
 
+            // remoteObjectURI IS NULL: a followed Fediverse account's posts
+            // only ever belong in the specific followers' own feed (the
+            // 'friends' branch above, via Timelines) - never in a feed
+            // anyone can browse to, tag pages included.
             'tag' => DB::rows('
 SELECT `Posts`.*
     FROM `PostHashtags`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'siii', (string) $this -> tag, $not_banned, $limit, $this -> offset),
@@ -79,7 +83,7 @@ SELECT `Posts`.*
 SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'iii', $not_banned, $limit, $this -> offset),

@@ -1834,15 +1834,12 @@ input[type='file']::file-selector-button {
 
 /* ---------- Quill editor ---------- */
 
-/* Reserves the toolbar+editor's combined rendered height on the plain empty
-   div Quill mounts into, so the page doesn't jank when Quill finishes
-   loading and inserts its toolbar as a new sibling before this element.
-   min-height (not height) so it still grows freely once real content
-   exceeds it. 9.875rem matches Firefox's real rendered height - browser
-   font/UI metrics for Quill's snow theme differ enough from Chromium's that
-   a headless-Chromium measurement alone undershot it. */
-.QuillEditor {
-    min-height: 9.875rem;
+/* On the wrapper, not .QuillEditor itself - Quill turns that div into the
+   ql-container in place and adds its toolbar as a new sibling before it, so
+   a min-height there would keep forcing the editable box on top of the
+   toolbar's own height. min-height so it still grows with real content. */
+.EditorColumn {
+    min-height: 7.25rem;
 }
 
 .ql-toolbar.ql-snow {

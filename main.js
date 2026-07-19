@@ -1183,10 +1183,15 @@ document.addEventListener('click', (event) => {
 
     fields.appendChild(title_row);
 
+    const editor_column = document.createElement('div');
+    editor_column.className = 'EditorColumn';
+
     const editor_container = document.createElement('div');
     editor_container.className = 'QuillEditor';
     editor_container.dataset.placeholder = 'Edit your post...';
-    fields.appendChild(editor_container);
+    editor_column.appendChild(editor_container);
+
+    fields.appendChild(editor_column);
 
     const description_input = document.createElement('input');
     description_input.type = 'hidden';

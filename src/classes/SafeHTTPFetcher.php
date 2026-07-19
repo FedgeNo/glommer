@@ -159,7 +159,7 @@ class SafeHTTPFetcher
     {
         // Only a real registrable hostname (a dotted name ending in an IANA
         // TLD) is fetchable - no bare IP (a literal fails this outright), no
-        // localhost, no fake-TLD host - matching URL::isPublicHTTP's post-time
+        // localhost, no fake-TLD host - matching URL::isValidHTTPURL's post-time
         // rule. Applies to the initial URL, every redirect target, and a
         // page's OG image URL, since all three pass through here.
         if (!URL::isValidHostname($host)) {

@@ -87,8 +87,8 @@ if ($link_url !== '') {
         JSONResponse::error('Link URL is too long', 422) -> send();
     }
 
-    if (!URL::isPublicHTTP($link_url)) {
-        JSONResponse::error('That link points to a local or private address and can\'t be posted.', 422) -> send();
+    if (!URL::isValidHTTPURL($link_url)) {
+        JSONResponse::error('Link URL must point to a real domain name, not an IP address.', 422) -> send();
     }
 }
 

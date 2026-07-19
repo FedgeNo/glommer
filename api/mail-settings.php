@@ -25,6 +25,12 @@ $smtp_username = trim((string) ($payload['smtpUsername'] ?? ''));
 $smtp_password = (string) ($payload['smtpPassword'] ?? '');
 $smtp_encryption = (string) ($payload['smtpEncryption'] ?? 'tls');
 
+// Exactly the three transports sendViaSMTP() understands - anything else
+// silently degrades to a plaintext AUTH, so reject it rather than store it.
+if (!in_array($smtp_encryption, ['tls', 'ssl', 'none'], true)) {
+    JSONResponse::error('Invalid encryption setting.', 422) -> send();
+}
+
 // Blank leaves the stored address unchanged - not write-only like the
 // password, but a blank address would break every subsequent email, so it
 // must never silently apply (see MailSettingsForm's docblock).

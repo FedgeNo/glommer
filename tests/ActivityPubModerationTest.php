@@ -333,6 +333,36 @@ SELECT `description`
         $this -> assertTrue(strlen((string) $post -> description) <= 65535);
     }
 
+    /**
+     * A canary over the whole public boundary, not just the one query the
+     * behavioural test below covers: every surface that shows posts to people
+     * who never followed the account has to exclude remote content, and only
+     * one of them is reachable from a unit test. Deliberately a crude
+     * occurrence count rather than SQL parsing - it exists to fail loudly if
+     * a surface is added or rewritten without the filter, and something that
+     * tried to parse the queries would just be brittle in its own right.
+     *
+     * FeedList needs two: its global feed and its tag pages. Its friends
+     * query is scoped by Timelines (only actual followers have a row) and its
+     * profile query intentionally shows a followed account's own posts, so
+     * neither carries the filter.
+     */
+    public function testEveryPublicPostSurfaceStillFiltersRemoteContent(): void
+    {
+        $required_occurrences = [
+            '/var/www/html/rss-feed.php' => 1,
+            '/var/www/html/src/classes/Trending.php' => 1,
+            '/var/www/html/api/search-posts.php' => 1,
+            '/var/www/html/src/classes/FeedList.php' => 2,
+        ];
+
+        foreach ($required_occurrences as $path => $expected) {
+            $source = (string) file_get_contents($path);
+
+            $this -> assertSame($expected, substr_count($source, 'remoteObjectURI` IS NULL'));
+        }
+    }
+
     public function testRemotePostsNeverAppearInTheGlobalFeedQuery(): void
     {
         $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));

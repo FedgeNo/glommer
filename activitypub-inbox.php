@@ -8,7 +8,14 @@ require __DIR__ . '/src/init.php';
 // session init.php opens for every request is dead weight here - one
 // orphaned session file per delivery, which on an active instance is
 // thousands a day. Nothing below this point reads session state.
-session_destroy();
+//
+// Gated on the request actually having presented a cookie: without that
+// check this would destroy a real browser session, and since this endpoint
+// is necessarily exempt from the CSRF check, any page could then log a
+// signed-in visitor out by making their browser POST here.
+if (!isset($_COOKIE[session_name()])) {
+    session_destroy();
+}
 
 // Public - remote Fediverse servers deliver activities here. Every request is
 // signature-verified before anything it claims is acted on; an unauthenticated

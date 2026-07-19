@@ -114,7 +114,7 @@ UPDATE `Posts`
     {
         $object_uri = $object['id'] ?? null;
 
-        if (!is_string($object_uri) || $object_uri === '' || RemoteObjectTombstone::isTombstoned($object_uri)) {
+        if (!is_string($object_uri) || !self::isStorableObjectURI($object_uri) || RemoteObjectTombstone::isTombstoned($object_uri)) {
             return;
         }
 
@@ -223,6 +223,25 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         }
 
         return [$plaintext, $delta_json];
+    }
+
+    /** Posts.remoteObjectURI and the tombstone table's key are both varchar(255). */
+    private const MAX_OBJECT_URI_LENGTH = 255;
+
+    /**
+     * Whether an object URI can actually be stored. A longer-than-column
+     * value would abort the insert under strict mode as an uncaught database
+     * exception rather than a declined delivery, so it's rejected here where
+     * the untrusted value arrives.
+     */
+    private static function isStorableObjectURI(string $object_uri): bool
+    {
+        if ($object_uri === '' || strlen($object_uri) > self::MAX_OBJECT_URI_LENGTH) {
+            return false;
+        }
+
+        return in_array(strtolower((string) parse_url($object_uri, PHP_URL_SCHEME)), ['http', 'https'], true)
+            && is_string(parse_url($object_uri, PHP_URL_HOST));
     }
 
     private static function postIdForRemoteObject(string $remote_object_uri): ?int

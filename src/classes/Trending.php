@@ -123,7 +123,7 @@ SELECT `entityId`, `type`, `title`, `score`, `postCount`, `userCount`
 SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
 ', 'Post', 'ii', $not_banned, self::WINDOW_SIZE);

@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
+// Remote servers dereference this on every signature check and never carry a
+// cookie, so the session init.php opened is discarded rather than left as an
+// orphaned file. Only when no cookie was presented, so a signed-in person
+// opening this URL in a browser keeps their session.
+if (!isset($_COOKIE[session_name()])) {
+    session_destroy();
+}
+
 // Public - the one site-wide ActivityPub actor identity (see ActivityPubKeys):
 // what a remote server dereferences to get this instance's inbox URL and
 // public key when verifying an outbound Follow, or when a local user's

@@ -299,6 +299,7 @@ CREATE TABLE `RemoteFollows` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`remoteFollowId`),
   UNIQUE KEY `localUserId_remoteActorURI` (`localUserId`,`remoteActorURI`),
+  KEY `remoteActorURI_status` (`remoteActorURI`,`status`),
   CONSTRAINT `RemoteFollows_ibfk_1` FOREIGN KEY (`localUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

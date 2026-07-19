@@ -20,6 +20,22 @@ class DeleteAccountForm extends Form
         $submit -> class .= ' DeleteAccountButton';
         $this -> contents[] = $submit;
 
+        // Anyone who signs in with Google - including an email/password account
+        // that later switched to it - has no usable password to confirm with,
+        // so offer deletion via a Google re-verification instead. Shown
+        // whenever Google sign-in is configured; the callback only deletes if
+        // the verified Google email matches this account's email. A plain
+        // type=button so it never submits the password form it sits in.
+        if (GoogleAuth::isEnabled()) {
+            $this -> contents[] = new AuthDivider();
+
+            $google_delete = new Button();
+            $google_delete -> type = 'button';
+            $google_delete -> class = 'Btn GoogleDeleteButton';
+            $google_delete -> contents[] = 'Verify with Google to delete';
+            $this -> contents[] = $google_delete;
+        }
+
         return parent::toDOM();
     }
 }

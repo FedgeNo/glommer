@@ -3895,6 +3895,24 @@ document.addEventListener('submit', async (event) => {
     }
 });
 
+// Deleting a Google (passwordless) account: no password to confirm with, so
+// re-verify through Google instead. Confirm here, then hand off to
+// /auth-google?intent=delete, which round-trips through Google and deletes
+// only if the returned verified email matches this account (see the callback).
+document.addEventListener('click', async (event) => {
+    const button = event.target.closest('.GoogleDeleteButton');
+
+    if (!button) {
+        return;
+    }
+
+    if (!await show_confirm('Delete your account? Your posts, replies, and messages are gone permanently - this can\'t be undone. You\'ll confirm by signing in with Google.')) {
+        return;
+    }
+
+    window.location = window.siteURL + '/auth-google?intent=delete';
+});
+
 document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.DeleteAccountForm');
 

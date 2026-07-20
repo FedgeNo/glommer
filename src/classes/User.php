@@ -15,6 +15,20 @@ class User extends HTMLObject
      */
     public const MAX_USERNAME_LENGTH = 32;
 
+    /**
+     * Reduces whatever was typed to the username that would actually be
+     * stored: lowercase, only letters/digits/underscore, capped. Disallowed
+     * characters are dropped, so a name never contains a character the person
+     * didn't type.
+     *
+     * The one place this is decided, so sign-up and the availability check
+     * can't disagree about what a given input means.
+     */
+    public static function normaliseUsername(string $raw): string
+    {
+        return substr((string) preg_replace('/[^a-z0-9_]/', '', strtolower(trim($raw))), 0, self::MAX_USERNAME_LENGTH);
+    }
+
     public string $tagName = 'div';
     public ?string $class = 'User Card';
 

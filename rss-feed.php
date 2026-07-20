@@ -4,21 +4,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
-$limit = 50;
-$not_banned = 0;
-
-// The newest top-level posts by non-banned authors - the global feed, as RSS.
-// STRAIGHT_JOIN for the same reason as FeedList's global query: driving from
-// Posts walks parentId_postId backward and stops at the limit, instead of
-// collecting and filesorting every author's top-level posts.
-$feed_rows = DB::rows('
-SELECT STRAIGHT_JOIN `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ?
-', 'Post', 'ii', $not_banned, $limit);
+// The same rows the on-site global feed shows, rendered as RSS - one query,
+// so the two can't drift into disagreeing about what's public.
+$feed_rows = FeedList::globalRows(50);
 
 $site_title = Config::get('siteTitle');
 

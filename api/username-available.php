@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
-// Normalised exactly as api/signup.php normalises it, so this answers for the
-// name that would actually be stored rather than for what was typed.
-$username = substr(preg_replace('/[^a-z0-9_]/', '', strtolower(trim((string) ($payload['username'] ?? '')))), 0, User::MAX_USERNAME_LENGTH);
+// The same normalisation sign-up applies, so this answers for the name that
+// would actually be stored rather than for what was typed.
+$username = User::normaliseUsername((string) ($payload['username'] ?? ''));
 
 if ($username === '') {
     JSONResponse::success(['username' => '', 'available' => false]) -> send();

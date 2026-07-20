@@ -30,25 +30,9 @@ if ($query === '') {
 
 $limit = 20;
 $fetch_limit = $limit + 1;
-$not_banned = 0;
-
 $viewer_id = (int) Auth::id();
 
-$feed_rows = DB::rows('
-SELECT `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
-        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
-        AND (? = 0 OR `Posts`.`userId` = ?)
-        AND NOT EXISTS (
-            SELECT 1
-                FROM `Blocks` `b`
-                WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `Posts`.`userId`) OR (`b`.`blockerId` = `Posts`.`userId` AND `b`.`blockedId` = ?)
-        )
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'siiiiiii', $query, $not_banned, $author_id, $author_id, $viewer_id, $viewer_id, $fetch_limit, $offset);
+$feed_rows = PostSearch::matchingRows($query, $author_id, $fetch_limit, $offset);
 
 $has_more = count($feed_rows) > $limit;
 

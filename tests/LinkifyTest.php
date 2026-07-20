@@ -178,19 +178,72 @@ class LinkifyTest extends TestCase
     }
 
     /**
-     * The scanner string is shared verbatim with delta.js so both sides
-     * tokenize identically; a change to one that misses the other is exactly
-     * the drift this catches.
+     * PHP and JavaScript must tokenize identically - the same post text is
+     * rendered by DeltaRenderer on the server and by delta.js on the client,
+     * and a disagreement shows up as content that changes when the page
+     * reloads.
+     *
+     * This runs delta.js's own tokenizer under node and compares its output to
+     * PHP's, so it catches a real behavioural divergence rather than only a
+     * textual one. Where node isn't available it falls back to comparing the
+     * shared scanner string, which is weaker but still fails on the most
+     * likely mistake: editing one copy and not the other.
      */
-    public function testScanPatternMatchesTheJavaScriptCopy(): void
+    public function testJavaScriptTokenizesIdenticallyToPHP(): void
     {
-        $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkify.php');
-        $js = (string) file_get_contents(__DIR__ . '/../delta.js');
+        $cases = [
+            'hi @bob@site.com and @alice',
+            'bob@site.com is an email',
+            'see https://example.com/a#b and #tag',
+            '@Bob@Mastodon.Social said so',
+            '@bob@site.com.',
+            '@bob@nodot',
+            'plain text with nothing in it',
+            'a#b ##c @@d',
+        ];
 
-        preg_match('/private const SCAN = "(.*)";/', $php, $php_match);
-        preg_match('/const LINKIFY_SCAN = "(.*)";/', $js, $js_match);
+        $php_output = array_map(static fn (string $text): array => Linkify::tokenize($text), $cases);
 
-        $this -> assertSame($php_match[1], $js_match[1]);
+        $js_output = $this -> tokenizeWithNode($cases);
+
+        if ($js_output === null) {
+            $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkify.php');
+            $js = (string) file_get_contents(__DIR__ . '/../delta.js');
+
+            preg_match('/private const SCAN = "(.*)";/', $php, $php_match);
+            preg_match('/const LINKIFY_SCAN = "(.*)";/', $js, $js_match);
+
+            $this -> assertSame($php_match[1] ?? 'php', $js_match[1] ?? 'js');
+
+            return;
+        }
+
+        $this -> assertSame(json_encode($php_output), json_encode($js_output));
+    }
+
+    /**
+     * Runs delta.js's linkify_tokenize over each input under node. Null when
+     * node isn't installed, so the suite still runs on a box without it.
+     *
+     * @param string[] $cases
+     * @return array[]|null
+     */
+    private function tokenizeWithNode(array $cases): ?array
+    {
+        if (trim((string) shell_exec('command -v node 2>/dev/null')) === '') {
+            return null;
+        }
+
+        $script = 'const fs = require("fs");'
+            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../delta.js') . ', "utf8");'
+            . 'const tokenize = new Function(src + "; return linkify_tokenize;")();'
+            . 'const cases = ' . json_encode($cases) . ';'
+            . 'process.stdout.write(JSON.stringify(cases.map((t) => tokenize(t))));';
+
+        $output = shell_exec('node -e ' . escapeshellarg($script) . ' 2>/dev/null');
+        $decoded = json_decode((string) $output, true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 
     /**

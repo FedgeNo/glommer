@@ -420,33 +420,62 @@ SELECT `description`
     }
 
     /**
-     * A canary over the whole public boundary, not just the one query the
-     * behavioural test below covers: every surface that shows posts to people
-     * who never followed the account has to exclude remote content, and only
-     * one of them is reachable from a unit test. Deliberately a crude
-     * occurrence count rather than SQL parsing - it exists to fail loudly if
-     * a surface is added or rewritten without the filter, and something that
-     * tried to parse the queries would just be brittle in its own right.
-     *
-     * FeedList needs two: its global feed and its tag pages. Its friends
-     * query is scoped by Timelines (only actual followers have a row) and its
-     * profile query intentionally shows a followed account's own posts, so
-     * neither carries the filter.
+     * The public boundary, exercised rather than inspected: a real remote post
+     * is put in the database, then every surface that serves posts to people
+     * who never followed that account is asked for its rows. None of them may
+     * return it.
      */
-    public function testEveryPublicPostSurfaceStillFiltersRemoteContent(): void
+    public function testNoPublicSurfaceReturnsARemotePost(): void
     {
-        $required_occurrences = [
-            '/var/www/html/rss-feed.php' => 1,
-            '/var/www/html/src/classes/Trending.php' => 1,
-            '/var/www/html/api/search-posts.php' => 1,
-            '/var/www/html/src/classes/FeedList.php' => 2,
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+        $needle = 'boundaryprobe' . bin2hex(random_bytes(4));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => $needle],
+        ], $actor_uri);
+
+        $post_id = self::postIdForRemoteObject($object_uri);
+        $this -> assertNotNull($post_id);
+
+        // Indexed against a hashtag by hand: ingestion doesn't index remote
+        // posts, so without this the tag feed would exclude it for the wrong
+        // reason and the filter itself would go untested.
+        $tag = 'boundarytag' . bin2hex(random_bytes(4));
+        DB::run('
+INSERT INTO `Hashtags` (`slug`, `title`)
+    VALUES (?, ?)
+', 'ss', $tag, $tag);
+        $hashtag_id = (int) mysqli_insert_id(DB::connection());
+        DB::run('
+INSERT INTO `PostHashtags` (`postId`, `hashtagId`)
+    VALUES (?, ?)
+', 'ii', $post_id, $hashtag_id);
+
+        $surfaces = [
+            'global feed' => array_map(static fn ($post) => (int) $post -> postId, (new FeedList(['feedType' => 'global'])) -> contents),
+            'global feed rows (also the RSS feed)' => array_map(static fn ($post) => (int) $post -> postId, FeedList::globalRows(100)),
+            'tag feed' => array_map(static fn ($post) => (int) $post -> postId, (new FeedList(['feedType' => 'tag', 'tag' => $tag])) -> contents),
+            'post search' => array_map(static fn ($post) => (int) $post -> postId, PostSearch::matchingRows($needle, 0, 100, 0)),
         ];
 
-        foreach ($required_occurrences as $path => $expected) {
-            $source = (string) file_get_contents($path);
-
-            $this -> assertSame($expected, substr_count($source, 'remoteObjectURI` IS NULL'));
+        foreach ($surfaces as $rows) {
+            $this -> assertFalse(in_array($post_id, $rows, true));
         }
+
+        // The search needle has to be findable at all, or the search
+        // assertion above would pass simply because nothing matched.
+        $local_author = self::createUser();
+        DB::run('
+INSERT INTO `Posts` (`userId`, `description`)
+    VALUES (?, ?)
+', 'is', $local_author, $needle);
+        $local_post_id = (int) mysqli_insert_id(DB::connection());
+
+        $found = array_map(static fn ($post) => (int) $post -> postId, PostSearch::matchingRows($needle, 0, 100, 0));
+        $this -> assertTrue(in_array($local_post_id, $found, true));
     }
 
     public function testRemotePostsNeverAppearInTheGlobalFeedQuery(): void

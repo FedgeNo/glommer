@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 class TrendingEntityList extends ItemList
 {
-    public ?string $class = 'TrendingEntities d-flex flex-wrap gap-2';
+    public ?string $class = 'TrendingEntityList d-flex flex-wrap gap-2';
 
     /** The section shows this many entities and stops - there is no next page. */
     public const PAGE_SIZE = 50;

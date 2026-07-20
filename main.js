@@ -638,7 +638,7 @@ document.addEventListener('input', (event) => {
     const debounce_id = setTimeout(async () => {
         const query = input.value.trim();
         const results = input.closest('.UserSearch').querySelector('.UserSearchSection');
-        const items = results.querySelector('.UserItems');
+        const items = results.querySelector('.UserList');
 
         // Abort whatever this input's previous search is still waiting on -
         // without this, a slower earlier response can resolve after a faster
@@ -703,7 +703,7 @@ window.addEventListener('scroll', async () => {
 
     loading_older_user_results = true;
 
-    const items = results.querySelector('.UserItems');
+    const items = results.querySelector('.UserList');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     items.appendChild(spinner);
@@ -1358,7 +1358,7 @@ document.addEventListener('click', async (event) => {
             const friends_list = document.querySelector('.UserList[data-list-type="friends"]');
 
             if (friends_list) {
-                const friends_items = friends_list.querySelector('.UserItems');
+                const friends_items = friends_list.querySelector('.UserList');
                 friends_items.prepend(list_item(new_card));
             }
 
@@ -2772,7 +2772,7 @@ window.addEventListener('scroll', async () => {
 
     loading_user_section = true;
 
-    const item_list = target.querySelector('.UserItems');
+    const item_list = target.querySelector('.UserList');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     item_list.appendChild(spinner);
@@ -3565,7 +3565,7 @@ window.addEventListener('scroll', async () => {
 
     loading_banned_users = true;
 
-    const items = list.querySelector('.UserItems');
+    const items = list.querySelector('.UserList');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
     items.appendChild(spinner);
@@ -3663,7 +3663,7 @@ document.addEventListener('input', (event) => {
             return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
-        const items = list.querySelector('.UserItems');
+        const items = list.querySelector('.UserList');
 
         items.replaceChildren();
 

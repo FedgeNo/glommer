@@ -301,10 +301,10 @@ p a:hover {
 .ReplyList,
 .BookmarkList,
 .NotificationList,
-.UserItems,
-.TagItems,
-.TrendingEntities,
-.HashtagGraphField,
+.UserList,
+.TrendingHashtagList,
+.TrendingEntityList,
+.HashtagGraphList,
 .BannedTrendingEntitiesList,
 .RememberedDevicesList,
 .ReportList,
@@ -316,7 +316,7 @@ p a:hover {
 }
 
 /* The inner user <ul>; its cards space themselves via the .Card margin. */
-.UserItems {
+.UserList {
     display: flex;
     flex-direction: column;
 }
@@ -2047,7 +2047,7 @@ input[type='file']::file-selector-button {
    stage the script positions nodes inside; the "sphere" itself is nothing but a
    drag surface. */
 
-.HashtagGraphField {
+.HashtagGraphList {
     --HashtagEdge: rgb(31 36 33 / 0.28);
     display: flex;
     flex-wrap: wrap;
@@ -2055,16 +2055,16 @@ input[type='file']::file-selector-button {
 }
 
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) .HashtagGraphField {
+    :root:not([data-theme]) .HashtagGraphList {
         --HashtagEdge: rgb(232 236 233 / 0.22);
     }
 }
 
-:root[data-theme='dark'] .HashtagGraphField {
+:root[data-theme='dark'] .HashtagGraphList {
     --HashtagEdge: rgb(232 236 233 / 0.22);
 }
 
-.HashtagGraphField.Active {
+.HashtagGraphList.Active {
     display: block;
     position: relative;
     width: 100%;
@@ -2083,7 +2083,7 @@ input[type='file']::file-selector-button {
     isolation: isolate;
 }
 
-.HashtagGraphField.Active:active {
+.HashtagGraphList.Active:active {
     cursor: grabbing;
 }
 
@@ -2095,7 +2095,7 @@ input[type='file']::file-selector-button {
     pointer-events: none;
 }
 
-.HashtagGraphField.Active .HashtagNode {
+.HashtagGraphList.Active .HashtagNode {
     top: 0;
     left: 0;
     /* The graph draws its nodes a touch heavier and tighter than the flat

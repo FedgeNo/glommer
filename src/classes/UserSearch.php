@@ -6,8 +6,6 @@ class UserSearch extends HTMLObject
 {
     public ?string $class = 'UserSearch';
 
-    /** Handed to the results, which rank their suggestions for this viewer. */
-    public int $viewerId = 0;
 
     public function toDOM(): \DOMElement
     {
@@ -23,7 +21,7 @@ class UserSearch extends HTMLObject
 
         $this -> contents[] = $input_card;
 
-        $this -> contents[] = new UserSearchSection(['viewerId' => $this -> viewerId]);
+        $this -> contents[] = new UserSearchSection();
 
         return parent::toDOM();
     }

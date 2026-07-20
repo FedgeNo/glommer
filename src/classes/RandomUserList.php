@@ -14,12 +14,10 @@ declare(strict_types=1);
 class RandomUserList extends UserList
 {
 
-    /** Who the list is being built for - the blocks are relative to them. */
-    public int $viewerId = 0;
-
     protected function rows(): array
     {
         $not_banned = 0;
+        $viewer_id = (int) Auth::id();
 
         return DB::rows('
 SELECT `u`.*
@@ -32,6 +30,6 @@ SELECT `u`.*
         )
     ORDER BY RAND()
     LIMIT ? OFFSET ?
-', 'OtherUser', 'iiiiii', $this -> viewerId, $not_banned, $this -> viewerId, $this -> viewerId, static::PAGE_SIZE + 1, $this -> offset);
+', 'OtherUser', 'iiiiii', $viewer_id, $not_banned, $viewer_id, $viewer_id, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

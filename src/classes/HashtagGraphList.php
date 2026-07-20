@@ -20,7 +20,7 @@ declare(strict_types=1);
  */
 class HashtagGraphList extends ItemList
 {
-    public ?string $class = 'HashtagGraphField';
+    public ?string $class = 'HashtagGraphList';
 
     /** The graph shows this many tags and stops - there is no next page. */
     public const PAGE_SIZE = 50;

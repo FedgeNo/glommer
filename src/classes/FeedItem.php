@@ -66,11 +66,6 @@ class FeedItem extends HTMLObject
         return $item;
     }
 
-    public static function itemsForPost(int $post_id): array
-    {
-        return self::itemsForPosts([$post_id])[$post_id] ?? [];
-    }
-
     /**
      * @param int[] $post_ids
      * @return array<int, self[]> postId => that post's items, in itemId order

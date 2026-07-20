@@ -9,11 +9,8 @@ declare(strict_types=1);
  */
 class UserSearchSection extends UserSection
 {
-    public ?string $class = 'UserSearchSection';
-
     protected string $heading = 'Suggested Users';
 
-    public int $viewerId = 0;
 
     protected function headsEmptyList(): bool
     {
@@ -22,6 +19,6 @@ class UserSearchSection extends UserSection
 
     protected function list(): ItemLoader
     {
-        return new UserSearchList(['viewerId' => $this -> viewerId, 'offset' => $this -> offset]);
+        return new UserSearchList(['offset' => $this -> offset]);
     }
 }

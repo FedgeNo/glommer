@@ -11,5 +11,5 @@ $p = new Paragraph('You can follow Fediverse users in ');
 $a = new Anchor(ServerURL::absolute('/settings'), 'Settings');
 $p -> addContent($a);
 $page -> addContent($p);
-$page -> addContent(new UserSearch(['viewerId' => (int) Auth::user() -> userId]));
+$page -> addContent(new UserSearch());
 $page -> send();

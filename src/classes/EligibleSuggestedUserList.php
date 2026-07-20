@@ -25,7 +25,7 @@ class EligibleSuggestedUserList extends RandomUserList
 
     protected function rows(): array
     {
-        $friend_ids = User::load($this -> viewerId) ?-> friendIds() ?? [];
+        $friend_ids = User::load((int) Auth::id()) ?-> friendIds() ?? [];
         $mutual_counts = $this -> mutualFriendCounts($friend_ids);
 
         if ($mutual_counts === []) {
@@ -66,7 +66,7 @@ class EligibleSuggestedUserList extends RandomUserList
 
         $accepted_status = 'accepted';
         $not_banned = 0;
-        $excluded_ids = array_merge($friend_ids, [$this -> viewerId]);
+        $excluded_ids = array_merge($friend_ids, [(int) Auth::id()]);
 
         $friend_placeholders = implode(', ', array_fill(0, count($friend_ids), '?'));
         $excluded_placeholders = implode(', ', array_fill(0, count($excluded_ids), '?'));
@@ -127,7 +127,9 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
         $not_banned = 0;
 
-        $params = array_merge($user_ids, [$not_banned, $this -> viewerId, $this -> viewerId]);
+        $viewer_id = (int) Auth::id();
+
+        $params = array_merge($user_ids, [$not_banned, $viewer_id, $viewer_id]);
 
         $rows = DB::rows('
 SELECT `u`.*

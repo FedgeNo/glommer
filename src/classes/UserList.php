@@ -15,7 +15,7 @@ declare(strict_types=1);
  */
 abstract class UserList extends ItemList
 {
-    public ?string $class = 'UserList UserItems';
+    public ?string $class = 'UserList';
 
     /** Whose list this is, for the lists that belong to one profile. */
     public ?User $user = null;

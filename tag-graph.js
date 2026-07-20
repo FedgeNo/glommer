@@ -24,7 +24,7 @@
  * page's own scroll.
  */
 
-const GRAPH_SELECTOR = '.HashtagGraphField';
+const GRAPH_SELECTOR = '.HashtagGraphList';
 
 // The graph only takes over at or above the nav/layout breakpoint; narrower than
 // this the tags stay a plain, scrollable list.
@@ -95,9 +95,7 @@ class HashtagGraph {
         let edges = [];
 
         try {
-            // The edges ride on the list itself, which is what loaded the nodes
-            // they index against.
-            const section = element.closest('.HashtagGraphField');
+            const section = element.closest('.HashtagGraphList');
             edges = JSON.parse((section && section.dataset.edges) || '[]');
         } catch (error) {
             edges = [];

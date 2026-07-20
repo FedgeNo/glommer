@@ -134,4 +134,63 @@ class LinkifyTest extends TestCase
         $this -> assertSame('url', $segments[0]['type']);
         $this -> assertSame('https://example.com/page#section', $segments[0]['text']);
     }
+    public function testTokenizeRemoteHandleBecomesAMentionOfTheFullHandle(): void
+    {
+        $segments = Linkify::tokenize('hi @bob@site.com');
+
+        $this -> assertSame('mention', $segments[1]['type']);
+        $this -> assertSame('bob@site.com', $segments[1]['username']);
+        $this -> assertSame('@bob@site.com', $segments[1]['text']);
+    }
+
+    /**
+     * A bare email address is not a mention. Only an explicit leading @ makes
+     * one, which is what the pattern's leading boundary enforces.
+     */
+    public function testTokenizeBareEmailIsNeverAMention(): void
+    {
+        foreach (['bob@site.com', 'email me at bob@site.com ok', 'a.b@sub.domain.co.uk'] as $text) {
+            foreach (Linkify::tokenize($text) as $segment) {
+                $this -> assertFalse($segment['type'] === 'mention');
+            }
+        }
+    }
+
+    public function testTokenizeRemoteMentionIsCaseFoldedForTheLink(): void
+    {
+        $segments = Linkify::tokenize('@Bob@Mastodon.Social');
+
+        $this -> assertSame('bob@mastodon.social', $segments[0]['username']);
+    }
+
+    public function testTokenizeRemoteMentionKeepsATrailingSentencePeriodOutOfTheHandle(): void
+    {
+        $segments = Linkify::tokenize('@bob@site.com.');
+
+        $this -> assertSame('bob@site.com', $segments[0]['username']);
+    }
+
+    public function testTokenizeHandleWithoutADottedHostFallsBackToTheLocalMention(): void
+    {
+        $segments = Linkify::tokenize('@bob@nodot');
+
+        $this -> assertSame('bob', $segments[0]['username']);
+    }
+
+    /**
+     * The scanner string is shared verbatim with delta.js so both sides
+     * tokenize identically; a change to one that misses the other is exactly
+     * the drift this catches.
+     */
+    public function testScanPatternMatchesTheJavaScriptCopy(): void
+    {
+        $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkify.php');
+        $js = (string) file_get_contents(__DIR__ . '/../delta.js');
+
+        preg_match('/private const SCAN = "(.*)";/', $php, $php_match);
+        preg_match('/const LINKIFY_SCAN = "(.*)";/', $js, $js_match);
+
+        $this -> assertSame($php_match[1], $js_match[1]);
+    }
+
 }

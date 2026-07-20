@@ -323,7 +323,7 @@ function is_safe_link(url, allowed_schemes) {
 const LINKIFY_MAX_TAG_LENGTH = 50;
 const LINKIFY_MAX_MENTION_LENGTH = 50;
 const LINKIFY_URL_TRAILING_TRIM = ".,!?;:)";
-const LINKIFY_SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+";
+const LINKIFY_SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
 const LINKIFY_LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
 const LINKIFY_AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
 

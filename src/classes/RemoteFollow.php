@@ -17,6 +17,9 @@ class RemoteFollow
 {
     private const MAX_RESPONSE_BYTES = 65536;
 
+    /** Users.slug is varchar(50). */
+    private const MAX_SLUG_LENGTH = 50;
+
     // Declared so a row fetched via DB::row()/DB::rows() doesn't set them as
     // deprecated dynamic properties.
     public ?int $remoteFollowId = null;
@@ -230,7 +233,7 @@ UPDATE `Users`
             return;
         }
 
-        $slug = self::uniqueShadowSlug($actor['preferredUsername'] !== '' ? $actor['preferredUsername'] : 'fedi');
+        $slug = self::uniqueShadowSlug($actor['preferredUsername'], $actor['id']);
         $synthetic_email = 'remote+' . substr(sha1($actor['id']), 0, 32) . '@glommer.invalid';
         $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
 
@@ -240,12 +243,31 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`,
 ', 'ssssssi', $slug, $synthetic_email, $unusable_hash, $display_name, $actor['id'], $actor['publicKeyPem'], 1);
     }
 
-    private static function uniqueShadowSlug(string $preferred_username): string
+    /**
+     * A remote account's slug is its Fediverse handle as-is, minus the
+     * leading @: bob@mastodon.social. That makes the profile URL the handle
+     * (/users/bob@mastodon.social/), so it needs no decoding to display and
+     * no folding that could make two different handles collide.
+     *
+     * It also can't collide with a local username or be squatted by one:
+     * api/signup.php strips local names to [a-z0-9_], so an @ is impossible
+     * there, which keeps the two namespaces structurally disjoint.
+     *
+     * The local part is reduced to the same [a-z0-9_] Mastodon itself allows,
+     * and the whole thing is lowercased - remote usernames are compared
+     * case-insensitively, and the slug column's collation matches that.
+     */
+    private static function uniqueShadowSlug(string $preferred_username, string $actor_uri): string
     {
-        $sanitise = static fn (string $raw): string => (string) preg_replace('/[^a-z0-9_]/', '', strtolower($raw));
+        $local_part = (string) preg_replace('/[^a-z0-9_]/', '', strtolower($preferred_username));
+        $host = strtolower((string) parse_url($actor_uri, PHP_URL_HOST));
 
-        $base = 'fedi-' . $sanitise($preferred_username);
-        $base = substr($base, 0, 24);
+        if ($local_part === '' || $host === '') {
+            $local_part = $local_part !== '' ? $local_part : 'user';
+            $host = $host !== '' ? $host : 'unknown';
+        }
+
+        $base = substr($local_part . '@' . $host, 0, self::MAX_SLUG_LENGTH);
         $candidate = $base;
 
         for ($attempt = 0; $attempt < 50; $attempt++) {
@@ -259,10 +281,13 @@ SELECT `slug`
                 return $candidate;
             }
 
-            $candidate = substr($base, 0, 20) . random_int(1000, 999999);
+            // Only reachable when the handle itself doesn't fit the column and
+            // two different handles truncate to the same thing; a full handle
+            // is unique on its own.
+            $candidate = substr($base, 0, self::MAX_SLUG_LENGTH - 6) . random_int(1000, 999999);
         }
 
-        return substr($base, 0, 16) . bin2hex(random_bytes(6));
+        return substr($base, 0, self::MAX_SLUG_LENGTH - 12) . bin2hex(random_bytes(6));
     }
 
     private static function sendFollow(array $actor, string $follow_activity_id): bool

@@ -41,13 +41,24 @@ class Linkify
 
     // The pass-2 scanner: an http(s) URL, OR a #hashtag preceded by a boundary
     // (not a word char or another #, so a#b and ##b don't tag), OR an @mention
-    // preceded by a boundary (not a word char or another @, so user@host isn't
-    // mistaken for a mention). URL first so a '#'/'@' inside a URL (its
+    // preceded by a boundary. URL first so a '#'/'@' inside a URL (its
     // character class already allows '@', e.g. userinfo@host) never starts a
-    // hashtag/mention of its own. Shared verbatim with delta.js via the same
-    // string; only the delimiter differs (PHP {} vs JS new RegExp). No {} in
-    // the body so the {} delimiter is safe.
-    private const SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+";
+    // hashtag/mention of its own.
+    //
+    // A mention is @name or @name@host.tld - the second form addresses a
+    // Fediverse account, whose slug IS that handle, so the captured username
+    // needs no translation to become a profile link. The host half must carry
+    // a dot and end on an alphanumeric run, which both keeps "@name@" from
+    // half-matching and leaves a sentence's trailing period outside the match.
+    //
+    // The leading boundary is what keeps a bare email address out: in
+    // "bob@site.com" the @ is preceded by a word character, so it never starts
+    // a mention. Only an explicit leading @ does.
+    //
+    // Shared verbatim with delta.js via the same string; only the delimiter
+    // differs (PHP {} vs JS new RegExp). No {} in the body so the {} delimiter
+    // is safe.
+    private const SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
 
     // Pass-1 detector: an http(s) URL, a www.-prefixed host, or a bare
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.

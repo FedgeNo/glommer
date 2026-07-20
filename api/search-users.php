@@ -27,7 +27,7 @@ if ($query === '') {
     // The empty-query suggestion list isn't paginated - it's a fixed, ranked
     // set (mutual-friend count, falling back to random), not the query the
     // offset below walks.
-    $candidates = $current_user -> getSuggestedUsers();
+    $candidates = new EligibleSuggestedUserList((int) $current_user -> userId) -> rows();
 } else {
     // Escape LIKE wildcards so a literal % or _ in the query doesn't match everything.
     $like = '%' . addcslashes($query, '\\%_') . '%';
@@ -51,14 +51,9 @@ SELECT *, (`slug` LIKE ? OR `title` LIKE ?) AS `nameMatch`
     FROM `Users`
     WHERE (`slug` LIKE ? OR `title` LIKE ? OR MATCH(`description`) AGAINST(? IN BOOLEAN MODE))
         AND `userId` != ? AND `banned` = ?
-        AND NOT EXISTS (
-            SELECT 1
-                FROM `Blocks` `b`
-                WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `Users`.`userId`) OR (`b`.`blockerId` = `Users`.`userId` AND `b`.`blockedId` = ?)
-        )
     ORDER BY `nameMatch` DESC
     LIMIT ? OFFSET ?
-', 'User', 'sssssiiiiii', $like, $like, $like, $like, $ft_query, $current_user -> userId, $not_banned, $current_user -> userId, $current_user -> userId, $fetch_limit, $offset);
+', 'User', 'sssssiiii', $like, $like, $like, $like, $ft_query, $current_user -> userId, $not_banned, $fetch_limit, $offset);
 
     $has_more = count($candidates) > $limit;
 

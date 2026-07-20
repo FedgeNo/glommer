@@ -11,7 +11,7 @@ class ConversationList extends ItemList
 {
     public ?string $class = 'ConversationList d-flex flex-column';
 
-    /** Every conversation, in one page - the inbox isn't paged. */
+    /** This query has no LIMIT, so every row it returns is kept. */
     public const PAGE_SIZE = PHP_INT_MAX;
 
     public ?int $userId = null;

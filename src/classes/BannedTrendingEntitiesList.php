@@ -11,7 +11,7 @@ class BannedTrendingEntitiesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column BannedTrendingEntitiesList';
 
-    /** A small, curated set - a moderator action per row - so not paged. */
+    /** This query has no LIMIT, so every row it returns is kept. */
     public const PAGE_SIZE = PHP_INT_MAX;
 
     protected string $emptyNotice = 'No banned trending entities.';

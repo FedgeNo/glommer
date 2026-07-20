@@ -35,7 +35,13 @@ class User extends HTMLObject implements \JsonSerializable
     public ?int $userId = null;
     public ?string $slug = null;
     public ?string $email = null;
-    public ?string $passwordHash = null;
+    /**
+     * Private so a hash can only ever be checked or replaced, never read out
+     * of a User and copied somewhere it could be cracked offline. mysqli's
+     * object hydration fills it regardless of visibility, so loading a user
+     * still works.
+     */
+    private ?string $passwordHash = null;
     public ?string $title = null;
     public ?string $description = null;
     public int $hasAvatar = 0;
@@ -52,6 +58,25 @@ class User extends HTMLObject implements \JsonSerializable
     public int $sessionVersion = 0;
     public ?string $remoteActorURI = null;
     public ?string $remoteActorPublicKeyPem = null;
+
+    public function verifyPassword(string $password): bool
+    {
+        return $this -> passwordHash !== null && password_verify($password, $this -> passwordHash);
+    }
+
+    public function passwordNeedsRehash(): bool
+    {
+        return $this -> passwordHash !== null && password_needs_rehash($this -> passwordHash, PASSWORD_DEFAULT);
+    }
+
+    /**
+     * Keeps a loaded User in step with a hash the caller has already written
+     * to the row.
+     */
+    public function setPasswordHash(string $hash): void
+    {
+        $this -> passwordHash = $hash;
+    }
 
     /**
      * What a User is when it's encoded as JSON. Named explicitly rather than

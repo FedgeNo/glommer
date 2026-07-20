@@ -47,7 +47,7 @@ if ($user === null) {
 // A no-op, same treatment as resubmitting your current email in
 // change-email.php: nothing to do, and the token stays valid so a follow-up
 // attempt with an actually-different password still works.
-if ($user -> passwordHash !== null && password_verify($new_password, $user -> passwordHash)) {
+if ($user -> verifyPassword($new_password)) {
     JSONResponse::success(['reset' => false]) -> send();
 }
 

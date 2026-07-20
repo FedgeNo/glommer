@@ -37,7 +37,7 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
 // Both directions require the current password - turning the protection off
 // is at least as security-sensitive as turning it on, so neither can be done
 // from a merely-open session without proving the password again.
-if ($current_user -> passwordHash === null || !password_verify($current_password, $current_user -> passwordHash)) {
+if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
     JSONResponse::error('Current password is incorrect', 422) -> send();

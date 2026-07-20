@@ -191,7 +191,7 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'sii', $unusable_hash, $verified, $existing_id);
 
-                $existing -> passwordHash = $unusable_hash;
+                $existing -> setPasswordHash($unusable_hash);
                 $existing -> verified = $verified;
                 $existing -> sessionVersion = User::bumpSessionVersion($existing_id);
                 RememberToken::purgeForUser($existing_id);

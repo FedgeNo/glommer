@@ -34,7 +34,7 @@ SELECT *
     WHERE `slug` = ? OR `email` = ?
 ', 'User', 'ss', $identifier, $identifier);
 
-        if ($user === null || $user -> passwordHash === null || !password_verify($password, $user -> passwordHash)) {
+        if ($user === null || !$user -> verifyPassword($password)) {
             return null;
         }
 
@@ -58,7 +58,7 @@ SELECT *
      */
     private static function rehashIfNeeded(User $user, string $password): void
     {
-        if (!password_needs_rehash($user -> passwordHash, PASSWORD_DEFAULT)) {
+        if (!$user -> passwordNeedsRehash()) {
             return;
         }
 
@@ -70,7 +70,7 @@ UPDATE `Users`
     SET `passwordHash` = ?
     WHERE `userId` = ?
 ', 'si', $new_hash, $user -> userId);
-            $user -> passwordHash = $new_hash;
+            $user -> setPasswordHash($new_hash);
         } catch (\mysqli_sql_exception $exception) {
             // Old hash still verifies; leave it and retry on the next sign-in.
         }

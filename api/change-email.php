@@ -31,7 +31,7 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
     JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
 }
 
-if ($current_user -> passwordHash === null || !password_verify($current_password, $current_user -> passwordHash)) {
+if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
     JSONResponse::error('Current password is incorrect', 422) -> send();

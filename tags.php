@@ -9,8 +9,8 @@ $tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
 // /tags/ - the public hashtag directory: the Popular graph and the Trending
 // cloud, each a self-fetching list reading its own materialized table.
 if ($tag === '') {
-    $popular = new HashtagGraph();
-    $trending = new TrendingHashtagList();
+    $popular = new HashtagGraphSection();
+    $trending = new TrendingHashtagSection();
 
     $page = new Page(['title' => 'Tags', 'description' => 'Browse trending and popular hashtags on Glommer.', 'needsTagGraph' => true]);
 

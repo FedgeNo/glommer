@@ -16,10 +16,11 @@ abstract class FeedList extends ItemList
     /** Names this feed to main.js and api/feed-history.php. */
     protected string $feedType = '';
 
-    public function toDOM(): \DOMElement
+    /**
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
     {
-        $this -> attributes['data-feed-type'] = $this -> feedType;
-
-        return parent::toDOM();
+        return ['data-feed-type' => $this -> feedType];
     }
 }

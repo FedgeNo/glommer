@@ -28,12 +28,11 @@ SELECT `Posts`.*
 ', 'Post', 'iiii', (int) $this -> parentId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 
-    public function toDOM(): \DOMElement
+    /**
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
     {
-        if ($this -> parentId !== null) {
-            $this -> attributes['data-parent-id'] = (string) $this -> parentId;
-        }
-
-        return parent::toDOM();
+        return ['data-parent-id' => (string) $this -> parentId];
     }
 }

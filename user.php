@@ -43,7 +43,7 @@ $page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> 
 
 $page -> addContent($profile_user);
 
-$profile_feed = new ProfileFeed(['userId' => $user_id]);
+$profile_feed = new ProfileFeedSection(['userId' => $user_id]);
 
 if ($profile_feed -> hasItems()) {
     if (Auth::check()) {

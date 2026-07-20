@@ -25,10 +25,11 @@ SELECT `Posts`.*
 ', 'Post', 'iiii', (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 
-    public function toDOM(): \DOMElement
+    /**
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
     {
-        $this -> attributes['data-user-id'] = (string) $this -> userId;
-
-        return parent::toDOM();
+        return parent::dataAttributes() + ['data-user-id' => (string) $this -> userId];
     }
 }

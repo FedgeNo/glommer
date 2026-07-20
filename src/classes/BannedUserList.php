@@ -9,9 +9,8 @@ declare(strict_types=1);
  * are already shown. The search box (BannedUserSearch) repopulates this same
  * container with matches.
  */
-class BannedUserList extends UserListSection
+class BannedUserList extends UserList
 {
-    protected string $heading = 'Banned Users';
 
     protected function rows(): array
     {

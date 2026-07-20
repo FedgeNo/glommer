@@ -22,7 +22,6 @@ class EligibleSuggestedUserList extends RandomUserList
      */
     private const MAX_RANKED_CANDIDATES = 200;
 
-    protected string $heading = 'People you may know';
 
     protected function rows(): array
     {

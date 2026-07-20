@@ -18,13 +18,9 @@ declare(strict_types=1);
  * browser hands them back intact via dataset. hashtagId is carried on each node
  * only so the edges index against node order.
  */
-class HashtagGraph extends ListSection
+class HashtagGraphList extends ItemList
 {
-    public ?string $class = 'HashtagGraph';
-
-    protected string $heading = 'Popular';
-
-    protected string $itemsClass = 'HashtagGraphField';
+    public ?string $class = 'HashtagGraphField';
 
     /** The graph shows this many tags and stops - there is no next page. */
     public const PAGE_SIZE = 50;
@@ -55,11 +51,12 @@ SELECT `hashtagId`, `slug`, `title`, `postCount`
 ', 'HashtagNode', 'i', static::PAGE_SIZE);
     }
 
-    public function toDOM(): \DOMElement
+    /**
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
     {
-        $this -> attributes['data-edges'] = json_encode(self::edgesFor($this -> items));
-
-        return parent::toDOM();
+        return ['data-edges' => (string) json_encode(self::edgesFor($this -> items))];
     }
 
     /**

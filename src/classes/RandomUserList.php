@@ -11,9 +11,8 @@ declare(strict_types=1);
  * which is exactly what a block should stop. That's a different question from
  * search, where the viewer is deliberately looking for a specific account.
  */
-class RandomUserList extends UserListSection
+class RandomUserList extends UserList
 {
-    protected string $heading = 'People to discover';
 
     /** Who the list is being built for - the blocks are relative to them. */
     public int $viewerId = 0;

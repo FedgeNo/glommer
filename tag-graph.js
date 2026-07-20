@@ -1,5 +1,5 @@
 /**
- * The /tags/ 3D force-directed hashtag graph (mirrors HashtagGraph.php).
+ * The /tags/ 3D force-directed hashtag graph (mirrors HashtagGraphList.php).
  *
  * Two decoupled layers, per the classic split: a force simulation lays the tags
  * out in 3D MODEL space (repulsion between all nodes, attraction along the
@@ -17,8 +17,8 @@
  * drawn on a <canvas> underlay (a rendering surface, not app "things", so no
  * per-line DOM). Sizes come from each tag's post count.
  *
- * Progressive enhancement: the server renders the tags as a plain HashtagGraph
- * list (see HashtagGraph.php), which this upgrades in place to the graph only at
+ * Progressive enhancement: the server renders the tags as a plain
+ * HashtagGraphList (see HashtagGraphList.php), which this upgrades in place to the graph only at
  * or above the layout breakpoint. Below it the list is left alone - the graph
  * captures touch and wheel to rotate and zoom, which on a phone would trap the
  * page's own scroll.
@@ -95,9 +95,9 @@ class HashtagGraph {
         let edges = [];
 
         try {
-            // The edges ride on the enclosing section (.HashtagGraph), the way
-            // UserListSection carries its own data-* on the section, not the list.
-            const section = element.closest('.HashtagGraph');
+            // The edges ride on the list itself, which is what loaded the nodes
+            // they index against.
+            const section = element.closest('.HashtagGraphField');
             edges = JSON.parse((section && section.dataset.edges) || '[]');
         } catch (error) {
             edges = [];

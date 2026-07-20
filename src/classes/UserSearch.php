@@ -23,7 +23,7 @@ class UserSearch extends HTMLObject
 
         $this -> contents[] = $input_card;
 
-        $this -> contents[] = new UserSearchResults(['viewerId' => $this -> viewerId]);
+        $this -> contents[] = new UserSearchSection(['viewerId' => $this -> viewerId]);
 
         return parent::toDOM();
     }

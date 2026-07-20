@@ -1436,7 +1436,7 @@ input[type='file']::file-selector-button {
     height: 4.5rem;
 }
 
-.UserListSection {
+.UserSection {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

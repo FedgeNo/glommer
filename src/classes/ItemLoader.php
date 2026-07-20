@@ -6,18 +6,17 @@ declare(strict_types=1);
  * An element whose contents come from a query: it loads its own items when it's
  * constructed, then hands them to whichever output step is asked for.
  *
- * Every list on the site descends from here, down either lineage - the bare
- * <ul> lists through UnorderedList, the titled <section> lists through Section
- * - so all of them are built, paged and serialized the same way and differ
- * only in what rows() selects.
+ * Every list on the site descends from here. The query goes in rows(), which
+ * this constructor calls, and whatever that query needs - whose profile the
+ * list belongs to, which page of it, who's looking - is a property seeded
+ * through the constructor (new FriendList(['user' => $profile_user,
+ * 'offset' => 20])), never an argument. Loading in the constructor means an
+ * object is fully populated the moment it exists, so nothing downstream has to
+ * know whether it has been "filled in" yet.
  *
- * The query goes in rows(), which the constructor calls. Whatever that query
- * needs - whose profile the list belongs to, which page of it, who's looking -
- * is a property, seeded through the constructor
- * (new FriendList(['user' => $profile_user, 'offset' => 20])), never an
- * argument. Loading in the constructor means an object is fully populated the
- * moment it exists, so nothing downstream has to know whether it has been
- * "filled in" yet.
+ * Siblings differ in rows(), their heading, their CSS class and the properties
+ * their query reads - nothing else. Markup a subclass needs for the client is
+ * declared in dataAttributes(); this toDOM() is the only one.
  */
 abstract class ItemLoader extends HTMLObject
 {
@@ -33,9 +32,6 @@ abstract class ItemLoader extends HTMLObject
     /** Whether there's a page after the one held here. */
     public bool $hasMore = false;
 
-    /** Set on an element handed someone else's paging to advertise. */
-    public bool $advertisesPaging = false;
-
     public function __construct(array|object|null $properties = null)
     {
         parent::__construct($properties);
@@ -45,7 +41,7 @@ abstract class ItemLoader extends HTMLObject
         // never reaches an output step.
         $this -> items = $this -> rows();
         $this -> hasMore = count($this -> items) > static::PAGE_SIZE;
-        $this -> items = array_slice($this -> items, 0, static::PAGE_SIZE);
+        $this -> items = $this -> arrange(array_slice($this -> items, 0, static::PAGE_SIZE));
     }
 
     /**
@@ -57,13 +53,32 @@ abstract class ItemLoader extends HTMLObject
      * private. Nothing outside the hierarchy calls it; toDOM() and toJSON() are
      * how a loaded element is spent.
      *
-     * Empty by default so the plain wrappers (a bare <section>, the inner <ul>
-     * a ListSection builds) stay usable as themselves. An abstract list base
-     * re-declares it abstract so a real list can't forget it.
-     *
      * @return mixed[]
      */
     protected function rows(): array
+    {
+        return [];
+    }
+
+    /**
+     * The page in the order it should read, for a list whose query has to walk
+     * the other way to find it.
+     *
+     * @param mixed[] $items
+     * @return mixed[]
+     */
+    protected function arrange(array $items): array
+    {
+        return $items;
+    }
+
+    /**
+     * What the client needs to know about this list beyond its paging - which
+     * feed it is, whose profile it belongs to.
+     *
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
     {
         return [];
     }
@@ -94,20 +109,13 @@ abstract class ItemLoader extends HTMLObject
 
     public function toDOM(): \DOMElement
     {
-        // Only something that selects its own items has a page to advertise.
-        // The plain wrappers - the inner <ul> a ListSection builds around its
-        // items, a bare <section> - would otherwise stamp a data-has-more of
-        // their own for the scroll handlers to find and believe.
-        if ($this -> advertisesPaging || $this -> loadsOwnItems()) {
-            $this -> attributes['data-offset'] = (string) ($this -> offset + count($this -> items));
-            $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
+        foreach ($this -> dataAttributes() as $name => $value) {
+            $this -> attributes[$name] = $value;
         }
 
-        return parent::toDOM();
-    }
+        $this -> attributes['data-offset'] = (string) ($this -> offset + count($this -> items));
+        $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
 
-    private function loadsOwnItems(): bool
-    {
-        return (new \ReflectionMethod(static::class, 'rows')) -> getDeclaringClass() -> getName() !== self::class;
+        return parent::toDOM();
     }
 }

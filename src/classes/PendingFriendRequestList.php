@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-class PendingFriendRequestList extends UserListSection
+class PendingFriendRequestList extends UserList
 {
     protected string $listType = 'incoming';
-    protected string $heading = 'Pending requests';
 
     protected function rows(): array
     {

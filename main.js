@@ -637,7 +637,7 @@ document.addEventListener('input', (event) => {
 
     const debounce_id = setTimeout(async () => {
         const query = input.value.trim();
-        const results = input.closest('.UserSearch').querySelector('.UserSearchResults');
+        const results = input.closest('.UserSearch').querySelector('.UserSearchSection');
         const items = results.querySelector('.UserItems');
 
         // Abort whatever this input's previous search is still waiting on -
@@ -689,7 +689,7 @@ document.addEventListener('input', (event) => {
 let loading_older_user_results = false;
 
 window.addEventListener('scroll', async () => {
-    const results = document.querySelector('.UserSearchResults');
+    const results = document.querySelector('.UserSearchSection');
 
     if (!results || results.dataset.hasMore !== '1' || loading_older_user_results) {
         return;
@@ -783,7 +783,7 @@ document.addEventListener('input', (event) => {
         // the box brings the feed back. Global /search has no author / no feed.
         const author_id = post_search.dataset.userId || '';
 
-        const profile_feed = document.querySelector('.ProfileFeed');
+        const profile_feed = document.querySelector('.ProfileFeedSection');
 
         if (profile_feed) {
             profile_feed.style.display = query === '' ? '' : 'none';
@@ -1352,10 +1352,10 @@ document.addEventListener('click', async (event) => {
         // move the rebuilt card into the friends section instead, so the live
         // DOM matches what a reload shows (an accepted friendship only ever
         // appears in FriendList, never PendingFriendRequestList).
-        const pending_list = card.closest('.UserListSection[data-list-type="incoming"]');
+        const pending_list = card.closest('.UserList[data-list-type="incoming"]');
 
         if (pending_list) {
-            const friends_list = document.querySelector('.UserListSection[data-list-type="friends"]');
+            const friends_list = document.querySelector('.UserList[data-list-type="friends"]');
 
             if (friends_list) {
                 const friends_items = friends_list.querySelector('.UserItems');
@@ -2750,7 +2750,7 @@ window.addEventListener('scroll', async () => {
 
     const threshold = 300;
 
-    const target = Array.from(document.querySelectorAll('.UserListSection')).find((list) => {
+    const target = Array.from(document.querySelectorAll('.UserList')).find((list) => {
         if (list.dataset.hasMore !== '1') {
             return false;
         }

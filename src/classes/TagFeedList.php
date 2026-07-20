@@ -31,10 +31,11 @@ SELECT `Posts`.*
 ', 'Post', 'siii', (string) $this -> tag, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 
-    public function toDOM(): \DOMElement
+    /**
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
     {
-        $this -> attributes['data-tag'] = (string) $this -> tag;
-
-        return parent::toDOM();
+        return parent::dataAttributes() + ['data-tag' => (string) $this -> tag];
     }
 }

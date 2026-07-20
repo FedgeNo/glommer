@@ -8,18 +8,14 @@ declare(strict_types=1);
  * TrendingHashtags table (never aggregated at read time); recomputed on a timer
  * (bin/compute-trending.php) or lazily via the read-path lottery self-heal.
  */
-class TrendingHashtagList extends ListSection
+class TrendingHashtagList extends ItemList
 {
-    public ?string $class = 'TrendingHashtagList d-flex flex-column gap-2';
-
-    protected string $heading = 'Trending';
-
-    protected string $itemsClass = 'TagItems d-flex flex-wrap gap-2';
+    public ?string $class = 'TagItems d-flex flex-wrap gap-2';
 
     /** The cloud shows this many tags and stops - there is no next page. */
     public const PAGE_SIZE = 50;
 
-    // Read-path self-heal, same as HashtagGraph / Trending.
+    // Read-path self-heal, same as HashtagGraphList / Trending.
     private const STALE_MINUTES = 30;
     private const RECOMPUTE_LOTTERY_ODDS = 20;
     private const LAST_RUN_SETTING = 'trendingHashtagsRecomputedAt';
@@ -45,7 +41,7 @@ SELECT `slug`, `title`, `postCount`
     /**
      * Recomputes the last-WINDOW_DAYS most-used tags (by count of the
      * top-level, non-banned posts that carry them) into TrendingHashtags. Same
-     * stamp-then-delete replacement as HashtagGraph::recompute(), so a reader
+     * stamp-then-delete replacement as HashtagGraphList::recompute(), so a reader
      * never sees a momentarily-empty table.
      */
     public static function recompute(): void

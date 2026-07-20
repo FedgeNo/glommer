@@ -39,6 +39,6 @@ $page = new MessageList([
 ]) -> toJSON();
 
 JSONResponse::success([
-    'messages' => array_reverse($page['items']),
+    'messages' => $page['items'],
     'hasMore' => $page['hasMore'],
 ]) -> send();

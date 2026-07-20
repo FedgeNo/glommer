@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-class FriendList extends UserListSection
+class FriendList extends UserList
 {
     protected string $listType = 'friends';
-    protected string $heading = 'Friends';
 
     protected function rows(): array
     {

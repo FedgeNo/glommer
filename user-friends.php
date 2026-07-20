@@ -33,13 +33,13 @@ $page -> image = $profile_user -> avatarURL();
 $page -> addContent($profile_user);
 
 if ($is_own) {
-    $page -> addContent(new PendingFriendRequestList(['user' => $profile_user]));
+    $page -> addContent(new PendingFriendRequestSection(['user' => $profile_user]));
 }
 
-$page -> addContent(new FriendList(['user' => $profile_user]));
+$page -> addContent(new FriendSection(['user' => $profile_user]));
 
 if ($is_own) {
-    $page -> addContent(new OutgoingFriendRequestList(['user' => $profile_user]));
+    $page -> addContent(new OutgoingFriendRequestSection(['user' => $profile_user]));
 }
 
 $page -> send();

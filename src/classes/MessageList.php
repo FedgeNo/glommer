@@ -59,16 +59,23 @@ UNION ALL
         return $rows;
     }
 
-    public function toDOM(): \DOMElement
+    /**
+     * Newest last, so the thread reads downward even though the query walks
+     * backward from the newest message to find the page.
+     *
+     * @param mixed[] $items
+     * @return mixed[]
+     */
+    protected function arrange(array $items): array
     {
-        // Newest last, so the thread reads downward even though the query walks
-        // backward from the newest message to find the page.
-        $this -> items = array_reverse($this -> items);
+        return array_reverse($items);
+    }
 
-        if ($this -> otherUserId !== null) {
-            $this -> attributes['data-other-user-id'] = (string) $this -> otherUserId;
-        }
-
-        return parent::toDOM();
+    /**
+     * @return array<string, string>
+     */
+    protected function dataAttributes(): array
+    {
+        return ['data-other-user-id' => (string) $this -> otherUserId];
     }
 }

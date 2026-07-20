@@ -4582,7 +4582,7 @@ SELECT COUNT(*) AS `n`
 // populated the moment the install/upgrade finishes rather than only on the
 // first lottery-picked read. A no-op-ish pair of aggregates on a fresh (empty)
 // database. Runs on the runtime connection (plain INSERT/DELETE).
-HashtagGraph::recompute();
+HashtagGraphList::recompute();
 TrendingHashtagList::recompute();
 ok('popular/trending tag lists materialized');
 

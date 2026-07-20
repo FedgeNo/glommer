@@ -252,7 +252,7 @@ INSERT INTO `Settings` (`name`, `value`)
                     Hashtag::backfill();
                     // Materialize the /tags/ Popular and Trending lists so they
                     // aren't blank until the first lottery-picked read.
-                    HashtagGraph::recompute();
+                    HashtagGraphList::recompute();
                     TrendingHashtagList::recompute();
                 } catch (\mysqli_sql_exception $exception) {
                     return false;

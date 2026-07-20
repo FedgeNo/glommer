@@ -26,5 +26,5 @@ Trending::recompute();
 
 // The /tags/ Popular graph and Trending cloud are materialized the same way -
 // recomputed here on the same timer rather than aggregated at read time.
-HashtagGraph::recompute();
+HashtagGraphList::recompute();
 TrendingHashtagList::recompute();

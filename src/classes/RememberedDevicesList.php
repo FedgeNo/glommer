@@ -15,27 +15,15 @@ class RememberedDevicesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column RememberedDevicesList';
 
-    public int $userId;
+    /** However many devices a person has, they all belong on the page. */
+    public const PAGE_SIZE = PHP_INT_MAX;
 
-    public function __construct(int $user_id)
+    protected string $emptyNotice = 'No remembered devices. Devices where you check "Remember me" at login appear here.';
+
+    public int $userId = 0;
+
+    protected function rows(): array
     {
-        parent::__construct();
-
-        $this -> userId = $user_id;
-    }
-
-    public function toDOM(): \DOMElement
-    {
-        $devices = RememberToken::rowsForUser($this -> userId);
-
-        if ($devices === []) {
-            $this -> addContent(new Notice('No remembered devices. Devices where you check "Remember me" at login appear here.'));
-
-            return parent::toDOM();
-        }
-
-        $this -> addContents($devices);
-
-        return parent::toDOM();
+        return RememberToken::rowsForUser($this -> userId);
     }
 }

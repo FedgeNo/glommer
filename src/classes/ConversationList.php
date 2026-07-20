@@ -11,9 +11,14 @@ class ConversationList extends ItemList
 {
     public ?string $class = 'ConversationList d-flex flex-column';
 
+    /** Every conversation, in one page - the inbox isn't paged. */
+    public const PAGE_SIZE = PHP_INT_MAX;
+
     public ?int $userId = null;
 
-    public function toDOM(): \DOMElement
+    protected string $emptyNotice = 'You don\'t have any conversations yet.';
+
+    protected function rows(): array
     {
         $not_banned = 0;
 
@@ -28,7 +33,7 @@ class ConversationList extends ItemList
         // one latest-message row per partner is then fetched by primary key
         // for its createdAt. messageId order IS send order, so newest id =
         // newest message.
-        $this -> contents = DB::rows('
+        return DB::rows('
 SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `m`.`createdAt` AS `lastMessageAt`
     FROM (
         SELECT `partnerId`, MAX(`lastId`) AS `lastId`
@@ -50,11 +55,5 @@ SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `m`.`createdAt` A
     WHERE `u`.`banned` = ?
     ORDER BY `partners`.`lastId` DESC
 ', 'Conversation', 'iii', (int) $this -> userId, (int) $this -> userId, $not_banned);
-
-        if ($this -> contents === []) {
-            $this -> contents[] = new Notice('You don\'t have any conversations yet.');
-        }
-
-        return parent::toDOM();
     }
 }

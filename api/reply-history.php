@@ -21,19 +21,13 @@ if ($parent_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-// ReplyList owns the query; it fetches PAGE_SIZE + 1 hydrated replies (items,
-// author, the viewer's like/bookmark counts) into its contents.
-$posts = (new ReplyList(['parentId' => $parent_id, 'offset' => $offset])) -> contents;
-
-$has_more = count($posts) > ReplyList::PAGE_SIZE;
-
-if ($has_more) {
-    array_pop($posts);
-}
+// ReplyList owns the query; it loads one page of hydrated replies (items,
+// author, the viewer's like/bookmark counts).
+$page = new ReplyList(['parentId' => $parent_id, 'offset' => $offset]) -> toJSON();
 
 $post_payloads = [];
 
-foreach ($posts as $post) {
+foreach ($page['items'] as $post) {
     $post_payloads[] = $post -> toPayload(
         (int) $post -> replyCount,
         (int) $post -> likeCount,
@@ -44,5 +38,5 @@ foreach ($posts as $post) {
 
 JSONResponse::success([
     'posts' => $post_payloads,
-    'hasMore' => $has_more,
+    'hasMore' => $page['hasMore'],
 ]) -> send();

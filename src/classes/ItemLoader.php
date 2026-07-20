@@ -66,6 +66,15 @@ abstract class ItemLoader extends HTMLObject
     }
 
     /**
+     * Whether anything came back - lets a page hide a whole section rather
+     * than show its heading over nothing.
+     */
+    public function hasItems(): bool
+    {
+        return $this -> items !== [];
+    }
+
+    /**
      * One page of items for the endpoints that hand a list to the client.
      *
      * @return array{items: mixed[], hasMore: bool}

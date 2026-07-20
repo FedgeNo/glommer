@@ -11,19 +11,18 @@ class BannedTrendingEntitiesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column BannedTrendingEntitiesList';
 
-    public function toDOM(): \DOMElement
+    /** A small, curated set - a moderator action per row - so not paged. */
+    public const PAGE_SIZE = PHP_INT_MAX;
+
+    protected string $emptyNotice = 'No banned trending entities.';
+
+    protected function rows(): array
     {
-        $this -> addContents(DB::rows('
+        return DB::rows('
 SELECT `BannedTrendingEntities`.`type`, `BannedTrendingEntities`.`title`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`slug` AS `bannedByUsername`
     FROM `BannedTrendingEntities`
     JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
     ORDER BY `BannedTrendingEntities`.`createdAt` DESC
-', 'BannedTrendingEntity'));
-
-        if ($this -> contents === []) {
-            $this -> addContent(new Notice('No banned trending entities.'));
-        }
-
-        return parent::toDOM();
+', 'BannedTrendingEntity');
     }
 }

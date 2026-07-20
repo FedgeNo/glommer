@@ -25,23 +25,16 @@ $current_user = Auth::user();
 // same offset pagination as api/search-users.php.
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 
-// BookmarkList owns the query; it fetches PAGE_SIZE + 1 hydrated posts (items,
-// author, the viewer's like counts) into its contents, ordered by when each
-// was bookmarked.
-$posts = (new BookmarkList([
+// BookmarkList owns the query; it loads one page of hydrated posts (items,
+// author, the viewer's like counts), ordered by when each was bookmarked.
+$page = new BookmarkList([
     'userId' => (int) $current_user -> userId,
     'offset' => $offset,
-])) -> contents;
-
-$has_more = count($posts) > BookmarkList::PAGE_SIZE;
-
-if ($has_more) {
-    array_pop($posts);
-}
+]) -> toJSON();
 
 $post_payloads = [];
 
-foreach ($posts as $post) {
+foreach ($page['items'] as $post) {
     $post_payloads[] = $post -> toPayload(
         (int) $post -> replyCount,
         (int) $post -> likeCount,
@@ -53,5 +46,5 @@ foreach ($posts as $post) {
 
 JSONResponse::success([
     'posts' => $post_payloads,
-    'hasMore' => $has_more,
+    'hasMore' => $page['hasMore'],
 ]) -> send();

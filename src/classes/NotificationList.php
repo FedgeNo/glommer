@@ -15,13 +15,12 @@ class NotificationList extends ItemList
     public ?string $class = 'NotificationList d-flex flex-column gap-1';
 
     public ?int $userId = null;
-    public int $offset = 0;
 
-    public function __construct(array|object|null $properties = null)
+    protected string $emptyNotice = 'No notifications yet.';
+
+    protected function rows(): array
     {
-        parent::__construct($properties);
-
-        $this -> contents = DB::rows('
+        return DB::rows('
 SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`
     JOIN `Users` `u` ON `u`.`userId` = `n`.`actorId`
@@ -37,25 +36,6 @@ SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, 
      */
     public function newestId(): int
     {
-        return $this -> contents !== [] ? (int) $this -> contents[0] -> notificationId : 0;
-    }
-
-    public function toDOM(): \DOMElement
-    {
-        // One extra was fetched so a leftover signals another page; drop it back
-        // off once it's told us there's more.
-        $has_more = count($this -> contents) > static::PAGE_SIZE;
-
-        if ($has_more) {
-            array_pop($this -> contents);
-        }
-
-        if ($this -> contents === []) {
-            $this -> addContent(new Notice('No notifications yet.'));
-        }
-
-        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
-
-        return parent::toDOM();
+        return $this -> items !== [] ? (int) $this -> items[0] -> notificationId : 0;
     }
 }

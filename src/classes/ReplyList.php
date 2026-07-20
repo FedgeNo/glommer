@@ -3,60 +3,36 @@
 declare(strict_types=1);
 
 /**
- * The list of reply posts under a post, fetched straight into its contents at
- * construction. main.js locates it by its class name to insert newly posted
- * replies at the top, and grows it by infinite scroll off the data-* here.
- * Paginated by offset: the client asks for the next page by saying how many
- * replies it already shows. Build with the post whose replies these are:
+ * The replies under a post. main.js locates it by its class name to insert
+ * newly posted replies at the top, and grows it by infinite scroll off the
+ * data-* attributes. Build with the post whose replies these are:
  * new ReplyList(['parentId' => 5]).
  */
 class ReplyList extends ItemList
 {
-    public const PAGE_SIZE = 20;
-
     public ?string $class = 'ReplyList d-flex flex-column';
 
     public ?int $parentId = null;
-    public int $offset = 0;
 
-    public function __construct(array|object|null $properties = null)
+    protected function rows(): array
     {
-        parent::__construct($properties);
-
         $not_banned = 0;
 
-        $this -> contents = Post::withItemsAndCounts(DB::rows('
+        return Post::withItemsAndCounts(DB::rows('
 SELECT `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` = ? AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
-', 'Post', 'iiii', (int) $this -> parentId, $not_banned, self::PAGE_SIZE + 1, $this -> offset));
-    }
-
-    /**
-     * Whether the post has any replies - lets the page show the "Replies"
-     * heading only when there's something under it.
-     */
-    public function hasItems(): bool
-    {
-        return $this -> contents !== [];
+', 'Post', 'iiii', (int) $this -> parentId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 
     public function toDOM(): \DOMElement
     {
-        $has_more = count($this -> contents) > self::PAGE_SIZE;
-
-        if ($has_more) {
-            array_pop($this -> contents);
-        }
-
         if ($this -> parentId !== null) {
             $this -> attributes['data-parent-id'] = (string) $this -> parentId;
         }
-
-        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
 
         return parent::toDOM();
     }

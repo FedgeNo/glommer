@@ -31,9 +31,19 @@ abstract class ListSection extends Section
         return $this -> items !== [];
     }
 
+    /**
+     * Whether the heading stands even with nothing under it. False keeps an
+     * empty section out of the way entirely; true suits a list the client
+     * populates later and needs a stable <h2> to retitle.
+     */
+    protected function headsEmptyList(): bool
+    {
+        return false;
+    }
+
     public function toDOM(): \DOMElement
     {
-        if ($this -> items !== [] && $this -> heading !== '') {
+        if (($this -> items !== [] || $this -> headsEmptyList()) && $this -> heading !== '') {
             $heading = new Heading2();
             $heading -> contents[] = $this -> heading;
             $this -> contents[] = $heading;

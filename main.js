@@ -638,6 +638,7 @@ document.addEventListener('input', (event) => {
     const debounce_id = setTimeout(async () => {
         const query = input.value.trim();
         const results = input.closest('.UserSearch').querySelector('.UserSearchResults');
+        const items = results.querySelector('.UserItems');
 
         // Abort whatever this input's previous search is still waiting on -
         // without this, a slower earlier response can resolve after a faster
@@ -665,7 +666,10 @@ document.addEventListener('input', (event) => {
             return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
-        results.replaceChildren();
+        items.replaceChildren();
+
+        // The suggestions stand until there's a query to name the list after.
+        results.querySelector('h2').textContent = query === '' ? 'Suggested Users' : 'User Search Results';
 
         // Remembered so the scroll handler below knows what query to keep
         // paginating, and where to resume from.
@@ -675,7 +679,7 @@ document.addEventListener('input', (event) => {
 
         data.response.users.forEach((user_data) => {
             const user = OtherUser.fromData(user_data);
-            results.appendChild(list_item(user.toElement()));
+            items.appendChild(list_item(user.toElement()));
         });
     }, 300);
 
@@ -699,9 +703,10 @@ window.addEventListener('scroll', async () => {
 
     loading_older_user_results = true;
 
+    const items = results.querySelector('.UserItems');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
-    results.appendChild(spinner);
+    items.appendChild(spinner);
 
     try {
         const query = results.dataset.query ?? '';
@@ -723,7 +728,7 @@ window.addEventListener('scroll', async () => {
         // results.innerHTML, detaching our spinner - these are results for a
         // now-stale query, and inserting relative to a detached spinner
         // would throw. Just drop them.
-        if (!results.contains(spinner)) {
+        if (!items.contains(spinner)) {
             return;
         }
 
@@ -732,7 +737,7 @@ window.addEventListener('scroll', async () => {
 
         data.response.users.forEach((user_data) => {
             const user = OtherUser.fromData(user_data);
-            results.insertBefore(list_item(user.toElement()), spinner);
+            items.insertBefore(list_item(user.toElement()), spinner);
         });
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
@@ -3560,15 +3565,16 @@ window.addEventListener('scroll', async () => {
 
     loading_banned_users = true;
 
+    const items = list.querySelector('.UserItems');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
-    list.appendChild(spinner);
+    items.appendChild(spinner);
 
     try {
         // The count of rendered cards IS the offset the next page starts at.
         // Unbanning removes both the card and the row from the banned set, so
         // the count stays a correct offset as the list shrinks.
-        const offset = list.querySelectorAll('.BannedUser').length;
+        const offset = items.querySelectorAll('.BannedUser').length;
 
         const response = await fetch(`${window.siteURL}/api/banned-history`, {
             method: 'POST',
@@ -3586,16 +3592,16 @@ window.addEventListener('scroll', async () => {
         // list.innerHTML, detaching our spinner - these are results for a
         // now-stale query, and inserting relative to a detached spinner
         // would throw. Just drop them.
-        if (!list.contains(spinner)) {
+        if (!items.contains(spinner)) {
             return;
         }
 
-        const { items, hasMore: has_more } = data.response;
+        const { items: fetched, hasMore: has_more } = data.response;
 
         list.dataset.hasMore = has_more ? '1' : '0';
 
-        items.forEach((item) => {
-            list.insertBefore(list_item(BannedUser.fromData(item).toElement()), spinner);
+        fetched.forEach((item) => {
+            items.insertBefore(list_item(BannedUser.fromData(item).toElement()), spinner);
         });
     } catch (error) {
         // A network failure or a non-JSON response body - leave hasMore as-is
@@ -3657,22 +3663,24 @@ document.addEventListener('input', (event) => {
             return; // aborted by a newer search, a network failure, or a non-JSON response body either way
         }
 
-        list.replaceChildren();
+        const items = list.querySelector('.UserItems');
 
-        const { items, hasMore: has_more } = data.response;
+        items.replaceChildren();
+
+        const { items: fetched, hasMore: has_more } = data.response;
 
         list.dataset.hasMore = has_more ? '1' : '0';
 
-        if (items.length === 0) {
+        if (fetched.length === 0) {
             const notice = document.createElement('p');
             notice.className = 'Muted Notice';
             notice.textContent = query === '' ? 'No banned users.' : 'No banned users match that search.';
-            list.appendChild(list_item(notice));
+            items.appendChild(list_item(notice));
             return;
         }
 
-        items.forEach((item) => {
-            list.appendChild(list_item(BannedUser.fromData(item).toElement()));
+        fetched.forEach((item) => {
+            items.appendChild(list_item(BannedUser.fromData(item).toElement()));
         });
     }, 300);
 

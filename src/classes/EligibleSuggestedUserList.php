@@ -12,7 +12,7 @@ declare(strict_types=1);
  * RandomUserList leaves them out: a suggestion is the site offering someone
  * up unprompted.
  */
-class EligibleSuggestedUserList extends UserList
+class EligibleSuggestedUserList extends UserListSection
 {
     /**
      * Ranked candidates are capped well above a page so the eligibility pass
@@ -24,16 +24,19 @@ class EligibleSuggestedUserList extends UserList
 
     protected string $heading = 'People you may know';
 
-    protected function fetchUsers(int $limit, int $offset): array
+    /** Who the list is being built for - the ranking is relative to them. */
+    public int $viewerId = 0;
+
+    protected function rows(): array
     {
         $friend_ids = User::load($this -> viewerId) ?-> friendIds() ?? [];
-        $mutual_counts = self::mutualFriendCounts($friend_ids, $this -> viewerId);
+        $mutual_counts = $this -> mutualFriendCounts($friend_ids);
 
         if ($mutual_counts === []) {
-            return new RandomUserList($this -> viewerId) -> rows($offset);
+            return $this -> randomRows();
         }
 
-        $eligible = self::eligible(array_keys($mutual_counts), $this -> viewerId);
+        $eligible = $this -> eligible(array_keys($mutual_counts));
 
         // Walked in ranked order, so the page keeps the mutual-friend
         // ordering rather than whatever order the eligibility query returned.
@@ -46,10 +49,18 @@ class EligibleSuggestedUserList extends UserList
         }
 
         if ($ranked === []) {
-            return new RandomUserList($this -> viewerId) -> rows($offset);
+            return $this -> randomRows();
         }
 
-        return array_slice($ranked, $offset, $limit);
+        return array_slice($ranked, $this -> offset, static::PAGE_SIZE + 1);
+    }
+
+    /**
+     * @return OtherUser[]
+     */
+    private function randomRows(): array
+    {
+        return new RandomUserList(['viewerId' => $this -> viewerId, 'offset' => $this -> offset]) -> items;
     }
 
     /**
@@ -59,7 +70,7 @@ class EligibleSuggestedUserList extends UserList
      * @param int[] $friend_ids
      * @return array<int, int> candidate userId => mutual friend count, highest first
      */
-    private static function mutualFriendCounts(array $friend_ids, int $viewer_id): array
+    private function mutualFriendCounts(array $friend_ids): array
     {
         if ($friend_ids === []) {
             return [];
@@ -67,7 +78,7 @@ class EligibleSuggestedUserList extends UserList
 
         $accepted_status = 'accepted';
         $not_banned = 0;
-        $excluded_ids = array_merge($friend_ids, [$viewer_id]);
+        $excluded_ids = array_merge($friend_ids, [$this -> viewerId]);
 
         $friend_placeholders = implode(', ', array_fill(0, count($friend_ids), '?'));
         $excluded_placeholders = implode(', ', array_fill(0, count($excluded_ids), '?'));
@@ -119,7 +130,7 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
      * @return array<int, OtherUser> userId => OtherUser, for those who aren't
      *                               banned and aren't blocked either way
      */
-    private static function eligible(array $user_ids, int $viewer_id): array
+    private function eligible(array $user_ids): array
     {
         if ($user_ids === []) {
             return [];
@@ -128,7 +139,7 @@ SELECT `candidateId`, COUNT(*) AS `mutualCount`
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
         $not_banned = 0;
 
-        $params = array_merge($user_ids, [$not_banned, $viewer_id, $viewer_id]);
+        $params = array_merge($user_ids, [$not_banned, $this -> viewerId, $this -> viewerId]);
 
         $rows = DB::rows('
 SELECT `u`.*

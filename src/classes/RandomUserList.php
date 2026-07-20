@@ -11,11 +11,14 @@ declare(strict_types=1);
  * which is exactly what a block should stop. That's a different question from
  * search, where the viewer is deliberately looking for a specific account.
  */
-class RandomUserList extends UserList
+class RandomUserList extends UserListSection
 {
     protected string $heading = 'People to discover';
 
-    protected function fetchUsers(int $limit, int $offset): array
+    /** Who the list is being built for - the blocks are relative to them. */
+    public int $viewerId = 0;
+
+    protected function rows(): array
     {
         $not_banned = 0;
 
@@ -30,6 +33,6 @@ SELECT `u`.*
         )
     ORDER BY RAND()
     LIMIT ? OFFSET ?
-', 'OtherUser', 'iiiiii', $this -> viewerId, $not_banned, $this -> viewerId, $this -> viewerId, $limit, $offset);
+', 'OtherUser', 'iiiiii', $this -> viewerId, $not_banned, $this -> viewerId, $this -> viewerId, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

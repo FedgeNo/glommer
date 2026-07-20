@@ -7,10 +7,8 @@ class FriendList extends UserListSection
     protected string $listType = 'friends';
     protected string $heading = 'Friends';
 
-    public function __construct(array|object|null $properties = null)
+    protected function rows(): array
     {
-        parent::__construct($properties);
-
         $accepted = 'accepted';
         $not_banned = 0;
         $limit = static::PAGE_SIZE + 1;
@@ -26,7 +24,7 @@ class FriendList extends UserListSection
         // every row up to offset + limit for the page to be complete.
         $half_limit = $this -> offset + $limit;
 
-        $this -> items = DB::rows('
+        return DB::rows('
 (SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`

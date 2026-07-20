@@ -305,12 +305,10 @@ p a:hover {
 .TagItems,
 .TrendingEntities,
 .HashtagGraphField,
-.BannedUserList,
 .BannedTrendingEntitiesList,
 .RememberedDevicesList,
 .ReportList,
 .MessageList,
-.UserSearchResults,
 .PostSearchResults,
 .ConversationList {
     list-style: none;
@@ -1470,17 +1468,6 @@ input[type='file']::file-selector-button {
 .FaviconPreview {
     width: 32px;
     height: 32px;
-}
-
-.UserSearchResults {
-    display: flex;
-    flex-direction: column;
-}
-
-.BannedUserList {
-    display: flex;
-    flex-direction: column;
-    margin-top: 0.75rem;
 }
 
 .PostSearchResults {

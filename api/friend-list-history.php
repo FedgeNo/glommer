@@ -47,16 +47,11 @@ $list = match ($list_type) {
     default => new FriendList(['user' => $profile_user, 'offset' => $offset]),
 };
 
-$items = $list -> items;
-$has_more = count($items) > UserListSection::PAGE_SIZE;
-
-if ($has_more) {
-    array_pop($items);
-}
+$page = $list -> toJSON();
 
 $payloads = [];
 
-foreach ($items as $item) {
+foreach ($page['items'] as $item) {
     $item_payload = OtherUser::payloadFor($item, $viewer);
 
     // Incoming requests carry the friendshipId so the client can render the
@@ -70,5 +65,5 @@ foreach ($items as $item) {
 
 JSONResponse::success([
     'items' => $payloads,
-    'hasMore' => $has_more,
+    'hasMore' => $page['hasMore'],
 ]) -> send();

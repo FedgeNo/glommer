@@ -20,22 +20,15 @@ if (!Auth::check() || !Auth::canModerate()) {
 // How many banned-user cards the client already shows - the next page starts
 // there.
 $offset = max(0, (int) ($payload['offset'] ?? 0));
-$limit = BannedUserList::PAGE_SIZE;
-
-$items = BannedUserList::fetch($limit + 1, $offset);
-$has_more = count($items) > $limit;
-
-if ($has_more) {
-    array_pop($items);
-}
+$page = new BannedUserList(['offset' => $offset]) -> toJSON();
 
 $payloads = [];
 
-foreach ($items as $item) {
+foreach ($page['items'] as $item) {
     $payloads[] = BannedUser::payloadFor($item);
 }
 
 JSONResponse::success([
     'items' => $payloads,
-    'hasMore' => $has_more,
+    'hasMore' => $page['hasMore'],
 ]) -> send();

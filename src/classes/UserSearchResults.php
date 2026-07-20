@@ -3,35 +3,19 @@
 declare(strict_types=1);
 
 /**
- * The results area of a UserSearch - a <ul> of user cards. It starts as the
- * ranked suggestions shown before anything is typed, then the client rebuilds
- * it with the matches for the current query (see main.js).
+ * The results area of a UserSearch. It stands as the ranked suggestions until
+ * something is typed, then the client rebuilds it with the matches for the
+ * current query and retitles it (see main.js).
  */
-class UserSearchResults extends ItemList
+class UserSearchResults extends UserListSection
 {
-    public ?string $class = 'UserSearchResults';
+    protected string $heading = 'Suggested Users';
 
-    /** @var OtherUser[] */
-    public array $suggestions = [];
+    /** Who the suggestions are being ranked for. */
+    public int $viewerId = 0;
 
-    /**
-     * @param OtherUser[] $suggestions
-     */
-    public function __construct(array $suggestions = [])
+    protected function rows(): array
     {
-        parent::__construct();
-
-        $this -> suggestions = $suggestions;
-    }
-
-    public function toDOM(): \DOMElement
-    {
-        // The suggestion list is a fixed, ranked set with no pagination
-        // (see api/search-users.php) - infinite scroll only ever kicks in once a
-        // typed query gets a paginated result set of its own.
-        $this -> attributes['data-has-more'] = '0';
-        $this -> addContents($this -> suggestions);
-
-        return parent::toDOM();
+        return new EligibleSuggestedUserList(['viewerId' => $this -> viewerId]) -> items;
     }
 }

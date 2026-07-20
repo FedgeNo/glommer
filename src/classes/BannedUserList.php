@@ -9,37 +9,11 @@ declare(strict_types=1);
  * are already shown. The search box (BannedUserSearch) repopulates this same
  * container with matches.
  */
-class BannedUserList extends ItemList
+class BannedUserList extends UserListSection
 {
-    public const PAGE_SIZE = 20;
+    protected string $heading = 'Banned Users';
 
-    public ?string $class = 'BannedUserList';
-
-    public function toDOM(): \DOMElement
-    {
-        // Pull one extra row so a leftover signals another page without a
-        // separate count query (same trick the feed uses); it's dropped back
-        // off once it has told us there's more.
-        $this -> addContents(self::fetch(self::PAGE_SIZE + 1));
-
-        $has_more = count($this -> contents) > self::PAGE_SIZE;
-        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
-
-        if ($has_more) {
-            array_pop($this -> contents);
-        }
-
-        if ($this -> contents === []) {
-            $this -> addContent(new Notice('No banned users.'));
-        }
-
-        return parent::toDOM();
-    }
-
-    /**
-     * @return BannedUser[]
-     */
-    public static function fetch(int $limit, int $offset = 0): array
+    protected function rows(): array
     {
         $banned = 1;
 
@@ -49,6 +23,6 @@ SELECT *
     WHERE `banned` = ?
     ORDER BY `userId` DESC
     LIMIT ? OFFSET ?
-', 'BannedUser', 'iii', $banned, $limit, $offset);
+', 'BannedUser', 'iii', $banned, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

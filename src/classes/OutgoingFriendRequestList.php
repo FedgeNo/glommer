@@ -7,14 +7,12 @@ class OutgoingFriendRequestList extends UserListSection
     protected string $listType = 'outgoing';
     protected string $heading = 'Sent requests (awaiting response)';
 
-    public function __construct(array|object|null $properties = null)
+    protected function rows(): array
     {
-        parent::__construct($properties);
-
         $pending = 'pending';
         $not_banned = 0;
 
-        $this -> items = DB::rows('
+        return DB::rows('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
     JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`

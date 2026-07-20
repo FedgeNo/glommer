@@ -26,10 +26,11 @@ class HTMLObject
     public array $contents = [];
     public array $attributes = [];
 
-    // Set the first time this object renders; a second toDOM() throws. Rendering
-    // is one-shot because most objects build their children into $this->contents
-    // in toDOM(), so a second call would duplicate them - and plenty of toDOM()s
-    // do non-idempotent work besides. Reuse means building a fresh instance.
+    // Set by the first output step - toDOM() or toJSON() - and a second one
+    // throws. Output is one-shot because most objects build their children into
+    // $this->contents in toDOM(), so a second call would duplicate them, and
+    // plenty of output methods run a query or other non-idempotent work
+    // besides. Reuse means building a fresh instance.
     private bool $rendered = false;
 
     /**
@@ -112,11 +113,7 @@ class HTMLObject
 
     public function toDOM(): \DOMElement
     {
-        if ($this -> rendered) {
-            throw new \LogicException(static::class . '::toDOM() called twice - build a fresh instance per render; a rendered HTMLObject is not reusable.');
-        }
-
-        $this -> rendered = true;
+        $this -> markRendered();
 
         $element = self::$document -> createElement($this -> tagName);
 
@@ -140,6 +137,20 @@ class HTMLObject
         }
 
         return $element;
+    }
+
+    /**
+     * Claims this object's one output step. Any method that turns the object
+     * into something for a client - markup, a payload - calls this first, so
+     * whichever runs, it runs once.
+     */
+    protected function markRendered(): void
+    {
+        if ($this -> rendered) {
+            throw new \LogicException(static::class . ' produced output twice - build a fresh instance per output step; a rendered HTMLObject is not reusable.');
+        }
+
+        $this -> rendered = true;
     }
 
     protected function contentToNode($item): ?\DOMNode

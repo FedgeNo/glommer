@@ -27,7 +27,7 @@ if ($query === '') {
     // The empty-query suggestion list isn't paginated - it's a fixed, ranked
     // set (mutual-friend count, falling back to random), not the query the
     // offset below walks.
-    $candidates = new EligibleSuggestedUserList((int) $current_user -> userId) -> rows();
+    $candidates = new EligibleSuggestedUserList(['viewerId' => (int) $current_user -> userId]) -> toJSON()['items'];
 } else {
     // Escape LIKE wildcards so a literal % or _ in the query doesn't match everything.
     $like = '%' . addcslashes($query, '\\%_') . '%';

@@ -6,14 +6,8 @@ class UserSearch extends HTMLObject
 {
     public ?string $class = 'UserSearch';
 
-    /**
-     * @param OtherUser[] $suggestions shown in the results area before the
-     *                                 user has typed anything
-     */
-    public function __construct(private readonly array $suggestions = [])
-    {
-        parent::__construct();
-    }
+    /** Handed to the results, which rank their suggestions for this viewer. */
+    public int $viewerId = 0;
 
     public function toDOM(): \DOMElement
     {
@@ -29,7 +23,7 @@ class UserSearch extends HTMLObject
 
         $this -> contents[] = $input_card;
 
-        $this -> contents[] = new UserSearchResults($this -> suggestions);
+        $this -> contents[] = new UserSearchResults(['viewerId' => $this -> viewerId]);
 
         return parent::toDOM();
     }

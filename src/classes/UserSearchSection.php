@@ -11,11 +11,8 @@ class UserSearchSection extends UserSection
 {
     protected string $heading = 'Suggested Users';
 
+    protected bool $headsEmptyList = true;
 
-    protected function headsEmptyList(): bool
-    {
-        return true;
-    }
 
     protected function list(): ItemLoader
     {

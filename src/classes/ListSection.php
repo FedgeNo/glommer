@@ -19,6 +19,12 @@ abstract class ListSection extends Section
     /** Loads and renders the items. */
     protected ItemLoader $list;
 
+    /**
+     * Whether the heading stands even with nothing under it. True suits a list
+     * the client populates later and needs a stable <h2> to retitle.
+     */
+    protected bool $headsEmptyList = false;
+
     public function __construct(array|object|null $properties = null)
     {
         parent::__construct($properties);
@@ -31,15 +37,6 @@ abstract class ListSection extends Section
      */
     abstract protected function list(): ItemLoader;
 
-    /**
-     * Whether the heading stands even with nothing under it. True suits a list
-     * the client populates later and needs a stable <h2> to retitle.
-     */
-    protected function headsEmptyList(): bool
-    {
-        return false;
-    }
-
     public function hasItems(): bool
     {
         return $this -> list -> hasItems();
@@ -47,7 +44,7 @@ abstract class ListSection extends Section
 
     public function toDOM(): \DOMElement
     {
-        if (($this -> list -> hasItems() || $this -> headsEmptyList()) && $this -> heading !== '') {
+        if (($this -> list -> hasItems() || $this -> headsEmptyList) && $this -> heading !== '') {
             $heading = new Heading2();
             $heading -> contents[] = $this -> heading;
             $this -> contents[] = $heading;

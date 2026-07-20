@@ -20,17 +20,7 @@ class PostSearch extends HTMLObject
             $this -> attributes['data-user-id'] = (string) $this -> authorId;
         }
 
-        $input_card = new Div();
-        $input_card -> class = 'PostSearchBox Card';
-
-        $input = new TextInput();
-        $input -> name = 'q';
-        $input -> class = 'PostSearchInput';
-        $input -> attributes['placeholder'] = $this -> placeholder;
-        $input -> attributes['autocomplete'] = 'off';
-        $input_card -> addContent($input);
-
-        $this -> contents[] = $input_card;
+        $this -> contents[] = new PostSearchBox(['placeholder' => $this -> placeholder]);
 
         $this -> contents[] = new SearchFeedList(['authorId' => $this -> authorId]);
 

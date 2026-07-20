@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class User extends HTMLObject
+class User extends HTMLObject implements \JsonSerializable
 {
     /** Most friends we ever load/show for one person (the friends-list cap). */
     public const MAX_FRIENDS = 5000;
@@ -52,6 +52,25 @@ class User extends HTMLObject
     public int $sessionVersion = 0;
     public ?string $remoteActorURI = null;
     public ?string $remoteActorPublicKeyPem = null;
+
+    /**
+     * What a User is when it's encoded as JSON. Named explicitly rather than
+     * left to json_encode's default, which would publish every public property
+     * - including the password hash, the email, the session version and the
+     * signing key columns - to anything that ever encodes one.
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'userId' => (int) $this -> userId,
+            'slug' => $this -> slug,
+            'title' => $this -> title,
+            'description' => $this -> description,
+            'image' => $this -> avatarURL(),
+            'createdAt' => $this -> createdAt,
+            'isMod' => (bool) $this -> isMod,
+        ];
+    }
 
     public function toDOM(): \DOMElement
     {

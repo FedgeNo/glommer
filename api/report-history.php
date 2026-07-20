@@ -25,9 +25,9 @@ if (!Auth::canModerate()) {
 // there.
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 
-['rows' => $rows, 'hasMore' => $has_more] = Report::rowsForAdmin(20, $offset);
+$page = new ReportList(['offset' => $offset]) -> toJSON();
 
 JSONResponse::success([
-    'reports' => ReportCard::rowsToPayload($rows),
-    'hasMore' => $has_more,
+    'reports' => array_map(static fn (ReportCard $card): array => $card -> toPayload(), $page['items']),
+    'hasMore' => $page['hasMore'],
 ]) -> send();

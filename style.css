@@ -309,7 +309,6 @@ p a:hover {
 .RememberedDevicesList,
 .ReportList,
 .MessageList,
-.PostSearchResults,
 .ConversationList {
     list-style: none;
     margin: 0;
@@ -1468,11 +1467,6 @@ input[type='file']::file-selector-button {
 .FaviconPreview {
     width: 32px;
     height: 32px;
-}
-
-.PostSearchResults {
-    display: flex;
-    flex-direction: column;
 }
 
 /* ---------- Help ---------- */

@@ -458,7 +458,7 @@ INSERT INTO `PostHashtags` (`postId`, `hashtagId`)
             'global feed' => array_map(static fn ($post) => (int) $post -> postId, new GlobalFeedList() -> items),
             'global feed rows (also the RSS feed)' => array_map(static fn ($post) => (int) $post -> postId, new RSSFeedList() -> items),
             'tag feed' => array_map(static fn ($post) => (int) $post -> postId, new TagFeedList(['tag' => $tag]) -> items),
-            'post search' => array_map(static fn ($post) => (int) $post -> postId, PostSearch::matchingRows($needle, 0, 100, 0)),
+            'post search' => array_map(static fn ($post) => (int) $post -> postId, new SearchFeedList(['query' => $needle]) -> items),
         ];
 
         foreach ($surfaces as $rows) {
@@ -474,7 +474,7 @@ INSERT INTO `Posts` (`userId`, `description`)
 ', 'is', $local_author, $needle);
         $local_post_id = (int) mysqli_insert_id(DB::connection());
 
-        $found = array_map(static fn ($post) => (int) $post -> postId, PostSearch::matchingRows($needle, 0, 100, 0));
+        $found = array_map(static fn ($post) => (int) $post -> postId, new SearchFeedList(['query' => $needle]) -> items);
         $this -> assertTrue(in_array($local_post_id, $found, true));
     }
 

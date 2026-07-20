@@ -3,36 +3,50 @@
 declare(strict_types=1);
 
 /**
- * A profile's "Posts" section: the heading over that user's own post feed. Owns
- * the FeedList it wraps (feedType 'user'), so a page builds one from a user id
- * and asks hasItems() to decide whether to show it - and the post-search box
- * that sits above it - at all. An empty profile shows neither.
+ * A profile's "Posts" section: the heading over that user's own posts, and the
+ * post-search box scoped to them. A page builds one from a user id and asks
+ * hasItems() whether there's anything to show at all.
  */
-class ProfileFeed extends Section
+class ProfileFeed extends ListSection
 {
     public ?string $class = 'ProfileFeed';
 
+    protected string $heading = 'Posts';
+
+    protected string $itemsClass = 'FeedList d-flex flex-column';
+
     public ?int $userId = null;
 
-    private ProfileFeedList $feed;
-
-    public function __construct(array|object|null $properties = null)
+    protected function pagesOnItems(): bool
     {
-        parent::__construct($properties);
-
-        $this -> feed = new ProfileFeedList(['userId' => $this -> userId]);
+        return true;
     }
 
-    public function hasItems(): bool
+    /**
+     * The scroll handler grows this feed by appending to the <ul>, so the <ul>
+     * is where it looks for which feed this is and whose.
+     *
+     * @return array<string, string>
+     */
+    protected function itemsAttributes(): array
     {
-        return $this -> feed -> hasItems();
+        return [
+            'data-feed-type' => 'user',
+            'data-user-id' => (string) $this -> userId,
+        ];
     }
 
-    public function toDOM(): \DOMElement
+    protected function rows(): array
     {
-        $this -> contents[] = new Heading2('Posts');
-        $this -> contents[] = $this -> feed;
+        $not_banned = 0;
 
-        return parent::toDOM();
+        return Post::withItemsAndCounts(DB::rows('
+SELECT `Posts`.*
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ?
+    ORDER BY `Posts`.`postId` DESC
+    LIMIT ? OFFSET ?
+', 'Post', 'iiii', (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 }

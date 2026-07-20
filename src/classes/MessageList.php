@@ -2,48 +2,73 @@
 
 declare(strict_types=1);
 
+/**
+ * One conversation's messages, oldest last so the newest sits at the bottom of
+ * the thread. Grown upward by infinite scroll (main.js) off the data-*
+ * attributes here. Build with new MessageList(['userId' => 5,
+ * 'otherUserId' => 9]).
+ */
 class MessageList extends ItemList
 {
     public ?string $class = 'MessageList d-flex flex-column';
 
+    protected string $emptyNotice = 'No messages yet.';
+
+    public ?int $userId = null;
     public ?int $otherUserId = null;
-    public bool $hasMore = false;
+
+    protected function rows(): array
+    {
+        // The two directions run as separate UNION ALL halves rather than one
+        // OR: each half walks its (senderId, recipientId, messageId) index
+        // backward and stops at its limit, so only the merged rows ever get
+        // sorted - an OR forces collecting and filesorting the whole
+        // conversation before the LIMIT can apply. The outer OFFSET skips rows
+        // from the merged set, so each half must produce every row up to
+        // offset + limit for the page to be complete.
+        $limit = static::PAGE_SIZE + 1;
+        $half_limit = $this -> offset + $limit;
+        $user_id = (int) $this -> userId;
+        $other_id = (int) $this -> otherUserId;
+
+        $rows = DB::rows('
+(SELECT *
+    FROM `Messages`
+    WHERE `senderId` = ? AND `recipientId` = ?
+    ORDER BY `messageId` DESC
+    LIMIT ?)
+UNION ALL
+(SELECT *
+    FROM `Messages`
+    WHERE `senderId` = ? AND `recipientId` = ?
+    ORDER BY `messageId` DESC
+    LIMIT ?)
+    ORDER BY `messageId` DESC
+    LIMIT ? OFFSET ?
+', 'Message', 'iiiiiiii', $user_id, $other_id, $half_limit, $other_id, $user_id, $half_limit, $limit, $this -> offset);
+
+        $senders = User::loadMany(array_values(array_unique(array_map(
+            static fn ($message): int => (int) $message -> senderId,
+            $rows
+        ))));
+
+        foreach ($rows as $message) {
+            $message -> sender = $senders[(int) $message -> senderId] ?? null;
+        }
+
+        return $rows;
+    }
 
     public function toDOM(): \DOMElement
     {
+        // Newest last, so the thread reads downward even though the query walks
+        // backward from the newest message to find the page.
+        $this -> items = array_reverse($this -> items);
+
         if ($this -> otherUserId !== null) {
             $this -> attributes['data-other-user-id'] = (string) $this -> otherUserId;
         }
 
-        $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
-
         return parent::toDOM();
-    }
-
-    /**
-     * @param Message[] $rows oldest first.
-     */
-    public static function fromRows(int $other_user_id, array $rows, bool $has_more): self
-    {
-        $list = new self();
-        $list -> otherUserId = $other_user_id;
-
-        if ($rows === []) {
-            $list -> addContent(new Notice('No messages yet.'));
-
-            return $list;
-        }
-
-        $list -> hasMore = $has_more;
-
-        $sender_ids = array_values(array_unique(array_map(fn ($message) => (int) $message -> senderId, $rows)));
-        $senders = User::loadMany($sender_ids);
-
-        foreach ($rows as $message) {
-            $message -> sender = $senders[(int) $message -> senderId] ?? null;
-            $list -> addContent($message);
-        }
-
-        return $list;
     }
 }

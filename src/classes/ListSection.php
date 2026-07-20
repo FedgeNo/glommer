@@ -32,6 +32,27 @@ abstract class ListSection extends Section
     }
 
     /**
+     * Whether the inner <ul> carries this section's paging state and markers.
+     * True where the client grows the list by appending to that <ul> and reads
+     * how far it has got from the same element.
+     */
+    protected function pagesOnItems(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Attributes for the inner <ul>, for a section whose client-side identity
+     * lives on the list rather than the wrapper.
+     *
+     * @return array<string, string>
+     */
+    protected function itemsAttributes(): array
+    {
+        return [];
+    }
+
+    /**
      * Whether the heading stands even with nothing under it. False keeps an
      * empty section out of the way entirely; true suits a list the client
      * populates later and needs a stable <h2> to retitle.
@@ -55,7 +76,17 @@ abstract class ListSection extends Section
             $list -> class = $this -> itemsClass;
         }
 
-        $list -> addContents($this -> items);
+        $list -> items = $this -> items;
+
+        if ($this -> pagesOnItems()) {
+            $list -> offset = $this -> offset;
+            $list -> hasMore = $this -> hasMore;
+            $list -> advertisesPaging = true;
+        }
+
+        foreach ($this -> itemsAttributes() as $name => $value) {
+            $list -> attributes[$name] = $value;
+        }
 
         $this -> contents[] = $list;
 

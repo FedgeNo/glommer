@@ -28,40 +28,24 @@ if ($query === '') {
     JSONResponse::success(['posts' => [], 'hasMore' => false]) -> send();
 }
 
-$limit = 20;
-$fetch_limit = $limit + 1;
-$viewer_id = (int) Auth::id();
-
-$feed_rows = PostSearch::matchingRows($query, $author_id, $fetch_limit, $offset);
-
-$has_more = count($feed_rows) > $limit;
-
-if ($has_more) {
-    array_pop($feed_rows);
-}
-
-$posts = Post::fromRowsWithItems($feed_rows);
-$post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
-
-$reply_counts = Post::replyCountsForPosts($post_ids);
-$like_counts = Post::likeCountsForPosts($post_ids);
-$liked = $viewer_id !== null ? Post::likedByUserForPosts($post_ids, (int) $viewer_id) : [];
-$bookmarked = $viewer_id !== null ? Bookmark::bookmarkedByUserForPosts($post_ids, (int) $viewer_id) : [];
+$page = new SearchFeedList([
+    'query' => $query,
+    'authorId' => $author_id,
+    'offset' => $offset,
+]) -> toJSON();
 
 $post_payloads = [];
 
-foreach ($posts as $post) {
-    $post_id = (int) $post -> postId;
-
+foreach ($page['items'] as $post) {
     $post_payloads[] = $post -> toPayload(
-        $reply_counts[$post_id] ?? 0,
-        $like_counts[$post_id] ?? 0,
-        $liked[$post_id] ?? false,
-        $bookmarked[$post_id] ?? false
+        (int) $post -> replyCount,
+        (int) $post -> likeCount,
+        (bool) $post -> liked,
+        (bool) $post -> bookmarked
     );
 }
 
 JSONResponse::success([
     'posts' => $post_payloads,
-    'hasMore' => $has_more,
+    'hasMore' => $page['hasMore'],
 ]) -> send();

@@ -53,9 +53,10 @@ $conversation_users = [
 
 $page -> addContent(new JSGlobals(['conversationUsers' => $conversation_users]));
 
-['rows' => $history_rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20);
-
-$page -> addContent(MessageList::fromRows($other_user_id, $history_rows, $has_more));
+$page -> addContent(new MessageList([
+    'userId' => (int) $current_user -> userId,
+    'otherUserId' => $other_user_id,
+]));
 
 $page -> addContent(new MessageComposer($other_user_id));
 

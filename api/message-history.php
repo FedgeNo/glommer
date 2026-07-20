@@ -32,9 +32,13 @@ if (Block::exists($current_user -> userId, $other_user_id)) {
     JSONResponse::error('You can\'t message this user.', 403) -> send();
 }
 
-['rows' => $rows, 'hasMore' => $has_more] = Message::rowsBetween($current_user -> userId, $other_user_id, 20, $offset, MessageData::class);
+$page = new MessageList([
+    'userId' => (int) $current_user -> userId,
+    'otherUserId' => $other_user_id,
+    'offset' => $offset,
+]) -> toJSON();
 
 JSONResponse::success([
-    'messages' => $rows,
-    'hasMore' => $has_more,
+    'messages' => array_reverse($page['items']),
+    'hasMore' => $page['hasMore'],
 ]) -> send();

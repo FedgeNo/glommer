@@ -11,12 +11,10 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-['rows' => $reports, 'hasMore' => $has_more] = Report::rowsForAdmin(20);
-
 // needsMath so KaTeX loads: a reported post can contain math, and main.js runs
 // render_math over each card (server-rendered here, and appended on scroll).
 $page = new Page(['title' => 'Reports', 'needsMath' => true]);
 
-$page -> addContent(ReportList::fromRows($reports, $has_more));
+$page -> addContent(new ReportList());
 
 $page -> send();

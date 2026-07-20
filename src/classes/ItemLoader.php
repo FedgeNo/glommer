@@ -33,6 +33,9 @@ abstract class ItemLoader extends HTMLObject
     /** Whether there's a page after the one held here. */
     public bool $hasMore = false;
 
+    /** Set on an element handed someone else's paging to advertise. */
+    public bool $advertisesPaging = false;
+
     public function __construct(array|object|null $properties = null)
     {
         parent::__construct($properties);
@@ -95,7 +98,7 @@ abstract class ItemLoader extends HTMLObject
         // The plain wrappers - the inner <ul> a ListSection builds around its
         // items, a bare <section> - would otherwise stamp a data-has-more of
         // their own for the scroll handlers to find and believe.
-        if ($this -> loadsOwnItems()) {
+        if ($this -> advertisesPaging || $this -> loadsOwnItems()) {
             $this -> attributes['data-offset'] = (string) ($this -> offset + count($this -> items));
             $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
         }

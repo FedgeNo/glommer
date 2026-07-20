@@ -148,20 +148,6 @@ class ReportCard extends HTMLObject
         ];
     }
 
-    /**
-     * @param array[] $rows
-     * @return array[]
-     */
-    public static function rowsToPayload(array $rows): array
-    {
-        $payloads = [];
-
-        foreach ($rows as $row) {
-            $payloads[] = self::fromRow($row) -> toPayload();
-        }
-
-        return $payloads;
-    }
 
     /** The reported media of a deleted post, streamed from the kept originals. */
     private function forensicAttachmentsElement(): HTMLObject

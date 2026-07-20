@@ -215,36 +215,6 @@ SELECT 1
         return mysqli_fetch_row(mysqli_stmt_get_result($stmt)) !== null;
     }
 
-    /**
-     * The moderation queue, newest first, paginated by offset (how many
-     * reports the caller already shows). Returns $limit rows plus a hasMore
-     * flag (fetches one extra to detect a next page without a second count
-     * query). Dismissing a report deletes its row, so the count of cards
-     * still shown stays a correct offset as the queue shrinks underneath the
-     * moderator.
-     *
-     * @return array{rows: ReportData[], hasMore: bool}
-     */
-    public static function rowsForAdmin(int $limit, int $offset = 0): array
-    {
-        $fetch_limit = $limit + 1;
-
-        $rows = DB::rows('
-SELECT `r`.*, `u`.`slug` AS `reporterUsername`
-    FROM `Reports` `r`
-    JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
-    ORDER BY `r`.`reportId` DESC
-    LIMIT ? OFFSET ?
-', 'ReportData', 'ii', $fetch_limit, $offset);
-
-        $has_more = count($rows) > $limit;
-
-        if ($has_more) {
-            array_pop($rows);
-        }
-
-        return ['rows' => $rows, 'hasMore' => $has_more];
-    }
 
     public static function find(int $report_id): ?ReportData
     {

@@ -775,7 +775,7 @@ document.addEventListener('input', (event) => {
     const debounce_id = setTimeout(async () => {
         const query = input.value.trim();
         const post_search = input.closest('.PostSearch');
-        const results = post_search.querySelector('.PostSearchResults');
+        const results = post_search.querySelector('.SearchFeedList');
 
         // On a profile page PostSearch carries the author's id (data-user-id),
         // so the search is restricted to their posts and the default feed is
@@ -837,7 +837,7 @@ document.addEventListener('input', (event) => {
 let loading_older_post_results = false;
 
 window.addEventListener('scroll', async () => {
-    const results = document.querySelector('.PostSearchResults');
+    const results = document.querySelector('.SearchFeedList');
 
     if (!results || results.dataset.hasMore !== '1' || loading_older_post_results) {
         return;
@@ -2559,7 +2559,7 @@ function list_item(child) {
 let loading_older_feed_items = false;
 
 window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.FeedList');
+    const list = document.querySelector('.FeedList:not(.SearchFeedList)');
 
     // A hidden feed (e.g. the profile feed while a per-user post search is
     // active) must not paginate - offsetParent is null when it's display:none.

@@ -63,21 +63,18 @@ abstract class UserList extends ListSection
 
     /**
      * The same page as a JSON payload, for the endpoints that hand users to
-     * the client. Each card's friendship state is relative to the viewer the
-     * list was built for, and the returned offset is where the next page
-     * begins.
+     * the client. The returned offset is where the next page begins.
      *
-     * @return array{users: array[], hasMore: bool, offset: int}
+     * @return array{users: OtherUser[], hasMore: bool, offset: int}
      */
     public function toJSON(?int $offset = null): array
     {
         $offset = $offset ?? $this -> offset;
         $page = $this -> page($offset);
         $rows = array_slice($page, 0, static::PAGE_SIZE);
-        $viewer = User::load($this -> viewerId);
 
         return [
-            'users' => array_map(static fn (OtherUser $user): array => OtherUser::payloadFor($user, $viewer), $rows),
+            'users' => $rows,
             'hasMore' => count($page) > static::PAGE_SIZE,
             'offset' => $offset + count($rows),
         ];

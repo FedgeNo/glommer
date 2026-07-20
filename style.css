@@ -346,13 +346,28 @@ p a:hover {
     background-color: var(--surface);
     border: 1px solid var(--hairline);
     border-radius: var(--radius-card);
-    padding: 1rem;
+    padding: 0.75rem;
     box-shadow: var(--shadow-card);
     margin-bottom: 1.5rem;
 }
 
 .Card > *:last-child {
     margin-bottom: 0;
+}
+
+/* A deleted item collapses instead of vanishing, so the change is visible even
+   in a column of near-identical cards. Kept in step with SLIDE_OUT_MS in
+   main.js. */
+.SlidingOut {
+    overflow: hidden;
+    opacity: 0;
+    transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .SlidingOut {
+        transition: none;
+    }
 }
 
 .Post {
@@ -1223,7 +1238,7 @@ input[type='file']::file-selector-button {
 }
 
 .PostBody {
-    margin-top: 0.6rem;
+    margin-top: 0.5rem;
     /* Force-break run-on strings (a long unspaced blob a user pastes/types)
        so they can't blow out the post width; overflow-wrap is inherited, so
        this covers the body's paragraphs, list items, and inline code too.

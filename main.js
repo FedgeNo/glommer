@@ -969,11 +969,7 @@ document.addEventListener('click', async (event) => {
             return;
         }
 
-        const user = button.closest('.OtherUser');
-
-        if (user) {
-            user.remove();
-        }
+        slide_out(button.closest('.OtherUser'));
     } finally {
         button.disabled = false;
     }
@@ -1001,11 +997,7 @@ document.addEventListener('click', async (event) => {
             return;
         }
 
-        const user = button.closest('.OtherUser');
-
-        if (user) {
-            user.remove();
-        }
+        slide_out(button.closest('.OtherUser'));
     } finally {
         button.disabled = false;
     }
@@ -1140,11 +1132,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const card = button.closest('.Post');
-
-    if (card) {
-        card.remove();
-    }
+    slide_out(button.closest('.Post'));
 });
 
 /**
@@ -1358,16 +1346,17 @@ document.addEventListener('click', async (event) => {
             const friends_list = document.querySelector('.UserList[data-list-type="friends"]');
 
             if (friends_list) {
-                const friends_items = friends_list.querySelector('.UserList');
-                friends_items.prepend(list_item(new_card));
+                friends_list.prepend(list_item(new_card));
             }
 
-            card.remove();
+            slide_out(card);
 
             // user-friends.php only renders the pending-requests section at all
-            // when it's non-empty - mirror that once the last card leaves.
-            if (pending_list.querySelectorAll('.OtherUser').length === 0) {
-                pending_list.remove();
+            // when it's non-empty - mirror that once the last card leaves. The
+            // one on its way out still holds a place in the DOM until its
+            // collapse finishes, so it doesn't count.
+            if (pending_list.querySelectorAll('li:not(.SlidingOut) .OtherUser').length === 0) {
+                slide_out(pending_list.closest('.UserSection') || pending_list);
             }
         } else {
             card.replaceWith(new_card);
@@ -1393,11 +1382,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const request = button.closest('.OtherUser');
-
-    if (request) {
-        request.remove();
-    }
+    slide_out(button.closest('.OtherUser'));
 });
 
 document.addEventListener('click', async (event) => {
@@ -1486,7 +1471,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    button.closest('.TrendingEntityChip')?.remove();
+    slide_out(button.closest('.TrendingEntityChip'));
 });
 
 document.addEventListener('click', async (event) => {
@@ -1512,7 +1497,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    button.closest('.BannedTrendingEntity')?.remove();
+    slide_out(button.closest('.BannedTrendingEntity'));
 });
 
 document.addEventListener('click', async (event) => {
@@ -1531,11 +1516,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const card = button.closest('.ReportCard');
-
-    if (card) {
-        card.remove();
-    }
+    slide_out(button.closest('.ReportCard'));
 });
 
 document.addEventListener('click', async (event) => {
@@ -1558,11 +1539,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const card = button.closest('.ReportCard');
-
-    if (card) {
-        card.remove();
-    }
+    slide_out(button.closest('.ReportCard'));
 });
 
 document.addEventListener('click', async (event) => {
@@ -2556,6 +2533,43 @@ function list_item(child) {
     return item;
 }
 
+// Kept in step with the .SlidingOut transition in style.css.
+const SLIDE_OUT_MS = 200;
+
+/**
+ * Collapses an item's height to nothing and then removes it, so a deletion
+ * reads as movement. Near-identical cards can otherwise leave the page looking
+ * unchanged after one of them goes.
+ *
+ * The <li> is what collapses, since removing only the card would leave an empty
+ * one holding the space open.
+ */
+function slide_out(element) {
+    if (!element) {
+        return;
+    }
+
+    const item = element.closest('li') || element;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        item.remove();
+        return;
+    }
+
+    item.style.height = item.getBoundingClientRect().height + 'px';
+    item.classList.add('SlidingOut');
+
+    // Read back the height so the browser starts from it rather than
+    // collapsing in one frame with nothing to animate between.
+    void item.offsetHeight;
+
+    item.style.height = '0';
+
+    // A transition that never fires (an item already detached, a tab in the
+    // background) must still take the element with it.
+    setTimeout(() => item.remove(), SLIDE_OUT_MS + 50);
+}
+
 let loading_older_feed_items = false;
 
 window.addEventListener('scroll', async () => {
@@ -3519,7 +3533,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    button.closest('.BannedUser').remove();
+    slide_out(button.closest('.BannedUser'));
 });
 
 /* ----- Settings: revoke a remembered device ----- */
@@ -3544,7 +3558,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    button.closest('.RememberedDevice').remove();
+    slide_out(button.closest('.RememberedDevice'));
 });
 
 let loading_banned_users = false;

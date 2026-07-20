@@ -30,9 +30,6 @@ abstract class UserList extends ListSection
     /** @var OtherUser[] */
     public array $items = [];
 
-    /** Pages already fetched, keyed by offset, so asking twice costs one query. */
-    private array $fetchedByOffset = [];
-
     public function __construct(int $viewer_id, int $offset = 0)
     {
         parent::__construct();
@@ -66,20 +63,22 @@ abstract class UserList extends ListSection
 
     /**
      * The same page as a JSON payload, for the endpoints that hand users to
-     * the client. $viewer is who it's built for - each card's friendship state
-     * is relative to them - and the returned offset is where the next page
+     * the client. Each card's friendship state is relative to the viewer the
+     * list was built for, and the returned offset is where the next page
      * begins.
      *
      * @return array{users: array[], hasMore: bool, offset: int}
      */
-    public function toJSON(User $viewer, ?int $offset = null): array
+    public function toJSON(?int $offset = null): array
     {
         $offset = $offset ?? $this -> offset;
-        $rows = $this -> rows($offset);
+        $page = $this -> page($offset);
+        $rows = array_slice($page, 0, static::PAGE_SIZE);
+        $viewer = User::load($this -> viewerId);
 
         return [
             'users' => array_map(static fn (OtherUser $user): array => OtherUser::payloadFor($user, $viewer), $rows),
-            'hasMore' => $this -> hasMore($offset),
+            'hasMore' => count($page) > static::PAGE_SIZE,
             'offset' => $offset + count($rows),
         ];
     }
@@ -92,19 +91,16 @@ abstract class UserList extends ListSection
      */
     private function page(int $offset): array
     {
-        if (!array_key_exists($offset, $this -> fetchedByOffset)) {
-            $this -> fetchedByOffset[$offset] = $this -> fetchUsers(static::PAGE_SIZE + 1, $offset);
-        }
-
-        return $this -> fetchedByOffset[$offset];
+        return $this -> fetchUsers(static::PAGE_SIZE + 1, $offset);
     }
 
     public function toDOM(): \DOMElement
     {
-        $this -> items = $this -> rows();
+        $page = $this -> page($this -> offset);
+        $this -> items = array_slice($page, 0, static::PAGE_SIZE);
 
         $this -> attributes['data-offset'] = (string) ($this -> offset + count($this -> items));
-        $this -> attributes['data-has-more'] = $this -> hasMore() ? '1' : '0';
+        $this -> attributes['data-has-more'] = count($page) > static::PAGE_SIZE ? '1' : '0';
 
         return parent::toDOM();
     }

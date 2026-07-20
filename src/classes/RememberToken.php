@@ -161,24 +161,6 @@ DELETE
     }
 
     /**
-     * A user's own remembered devices for the Settings page - every
-     * non-expired token, newest-used first. Never exposes the validator (or
-     * its hash); the selector is only used to match against the current
-     * browser's cookie, not shown to the user.
-     *
-     * @return RememberedDevice[]
-     */
-    public static function rowsForUser(int $user_id): array
-    {
-        return DB::rows('
-SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
-    FROM `RememberTokens`
-    WHERE `userId` = ? AND `expiresAt` > NOW()
-    ORDER BY `lastUsedAt` DESC
-', 'RememberedDevice', 'i', $user_id);
-    }
-
-    /**
      * The current browser's token selector, if its cookie is present - used
      * to mark "this device" in the Settings list. Never the validator.
      */

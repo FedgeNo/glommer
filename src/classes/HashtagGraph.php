@@ -26,6 +26,9 @@ class HashtagGraph extends ListSection
 
     protected string $itemsClass = 'HashtagGraphField';
 
+    /** The graph shows this many tags and stops - there is no next page. */
+    public const PAGE_SIZE = 50;
+
     // Read-path self-heal (mirrors Trending): once the last recompute is older
     // than this, a lottery-picked read recomputes, so the list degrades to
     // stale-but-self-healing rather than going dark if the timer isn't
@@ -38,31 +41,23 @@ class HashtagGraph extends ListSection
     // render asks for, so a read's LIMIT always has headroom.
     private const STORED = 100;
 
-    /** @var array<int, array{a: int, b: int, weight: int}> */
-    private array $edges = [];
-
-    public function __construct(int $limit = 40)
+    protected function rows(): array
     {
-        parent::__construct();
-
         if (self::isStale() && mt_rand(1, self::RECOMPUTE_LOTTERY_ODDS) === 1) {
             self::recompute();
         }
 
-        $nodes = DB::rows('
+        return DB::rows('
 SELECT `hashtagId`, `slug`, `title`, `postCount`
     FROM `PopularHashtags`
     ORDER BY `postCount` DESC, `slug` ASC
     LIMIT ?
-', 'HashtagNode', 'i', $limit);
-
-        $this -> items = $nodes;
-        $this -> edges = self::edgesFor($nodes);
+', 'HashtagNode', 'i', static::PAGE_SIZE);
     }
 
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['data-edges'] = json_encode($this -> edges);
+        $this -> attributes['data-edges'] = json_encode(self::edgesFor($this -> items));
 
         return parent::toDOM();
     }

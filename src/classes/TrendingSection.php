@@ -19,13 +19,11 @@ class TrendingSection extends ListSection
 
     protected string $itemsClass = 'TrendingEntities d-flex flex-wrap gap-2';
 
-    /**
-     * @param TrendingEntityChip[] $entities
-     */
-    public function __construct(array $entities)
-    {
-        parent::__construct();
+    /** The section shows this many entities and stops - there is no next page. */
+    public const PAGE_SIZE = 50;
 
-        $this -> items = $entities;
+    protected function rows(): array
+    {
+        return Trending::current(static::PAGE_SIZE);
     }
 }

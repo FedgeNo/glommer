@@ -3,16 +3,12 @@
 declare(strict_types=1);
 
 /**
- * The moderation list of every standing trending-entity ban, each with an
- * Unban control. Not paginated: standing entity bans are a small, curated set
- * (a moderator action per row), unlike the banned-users list.
+ * The moderation list of standing trending-entity bans, each with an Unban
+ * control.
  */
 class BannedTrendingEntitiesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column BannedTrendingEntitiesList';
-
-    /** This query has no LIMIT, so every row it returns is kept. */
-    public const PAGE_SIZE = PHP_INT_MAX;
 
     protected string $emptyNotice = 'No banned trending entities.';
 
@@ -23,6 +19,7 @@ SELECT `BannedTrendingEntities`.`type`, `BannedTrendingEntities`.`title`, `Banne
     FROM `BannedTrendingEntities`
     JOIN `Users` ON `Users`.`userId` = `BannedTrendingEntities`.`bannedBy`
     ORDER BY `BannedTrendingEntities`.`createdAt` DESC
-', 'BannedTrendingEntity');
+    LIMIT ? OFFSET ?
+', 'BannedTrendingEntity', 'ii', static::PAGE_SIZE + 1, $this -> offset);
     }
 }

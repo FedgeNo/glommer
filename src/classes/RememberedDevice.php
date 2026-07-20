@@ -7,7 +7,7 @@ declare(strict_types=1);
  * browser/OS label from the token's stored user-agent, its IP, when it was
  * first seen and last used, and a Revoke button - everything RememberToken
  * tracks per token except the validator itself, which never leaves the
- * server. Fetched directly off RememberToken::rowsForUser() -> DB::rows();
+ * server. Fetched by RememberedDevicesList;
  * the selector is carried only to compare against the current browser's
  * cookie, never shown to the user.
  */

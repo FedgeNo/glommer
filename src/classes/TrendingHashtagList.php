@@ -7,7 +7,6 @@ declare(strict_types=1);
  * non-banned posts, as a wrap of HashtagChips. Read from the materialized
  * TrendingHashtags table (never aggregated at read time); recomputed on a timer
  * (bin/compute-trending.php) or lazily via the read-path lottery self-heal.
- * Build with new TrendingHashtagList(20).
  */
 class TrendingHashtagList extends ListSection
 {
@@ -16,6 +15,9 @@ class TrendingHashtagList extends ListSection
     protected string $heading = 'Trending';
 
     protected string $itemsClass = 'TagItems d-flex flex-wrap gap-2';
+
+    /** The cloud shows this many tags and stops - there is no next page. */
+    public const PAGE_SIZE = 50;
 
     // Read-path self-heal, same as HashtagGraph / Trending.
     private const STALE_MINUTES = 30;
@@ -26,20 +28,18 @@ class TrendingHashtagList extends ListSection
     private const WINDOW_DAYS = 7;
     private const STORED = 100;
 
-    public function __construct(int $limit = 20)
+    protected function rows(): array
     {
-        parent::__construct();
-
         if (self::isStale() && mt_rand(1, self::RECOMPUTE_LOTTERY_ODDS) === 1) {
             self::recompute();
         }
 
-        $this -> items = DB::rows('
+        return DB::rows('
 SELECT `slug`, `title`, `postCount`
     FROM `TrendingHashtags`
     ORDER BY `postCount` DESC, `slug` ASC
     LIMIT ?
-', 'HashtagChip', 'i', $limit);
+', 'HashtagChip', 'i', static::PAGE_SIZE);
     }
 
     /**

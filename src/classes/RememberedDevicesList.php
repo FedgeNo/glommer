@@ -15,15 +15,18 @@ class RememberedDevicesList extends ItemList
 {
     public ?string $class = 'd-flex flex-column RememberedDevicesList';
 
-    /** This query has no LIMIT, so every row it returns is kept. */
-    public const PAGE_SIZE = PHP_INT_MAX;
-
     protected string $emptyNotice = 'No remembered devices. Devices where you check "Remember me" at login appear here.';
 
     public int $userId = 0;
 
     protected function rows(): array
     {
-        return RememberToken::rowsForUser($this -> userId);
+        return DB::rows('
+SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
+    FROM `RememberTokens`
+    WHERE `userId` = ? AND `expiresAt` > NOW()
+    ORDER BY `lastUsedAt` DESC
+    LIMIT ? OFFSET ?
+', 'RememberedDevice', 'iii', $this -> userId, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

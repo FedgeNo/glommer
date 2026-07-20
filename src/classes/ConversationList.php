@@ -11,9 +11,6 @@ class ConversationList extends ItemList
 {
     public ?string $class = 'ConversationList d-flex flex-column';
 
-    /** This query has no LIMIT, so every row it returns is kept. */
-    public const PAGE_SIZE = PHP_INT_MAX;
-
     public ?int $userId = null;
 
     protected string $emptyNotice = 'You don\'t have any conversations yet.';
@@ -54,6 +51,7 @@ SELECT `u`.`userId`, `u`.`slug`, `u`.`title`, `u`.`hasAvatar`, `m`.`createdAt` A
     JOIN `Users` `u` ON `u`.`userId` = `partners`.`partnerId`
     WHERE `u`.`banned` = ?
     ORDER BY `partners`.`lastId` DESC
-', 'Conversation', 'iii', (int) $this -> userId, (int) $this -> userId, $not_banned);
+    LIMIT ? OFFSET ?
+', 'Conversation', 'iiiii', (int) $this -> userId, (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

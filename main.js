@@ -3195,6 +3195,81 @@ document.addEventListener('change', (event) => {
     username_input.value = username_input.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 32);
 });
 
+/**
+ * Tells the person whether the name they're typing is still free, so a taken
+ * one is obvious before they fill in the rest of the form and submit it. The
+ * field self-restricts to valid characters as they type, so the only question
+ * left is availability.
+ */
+document.addEventListener('input', (event) => {
+    const username_input = event.target.closest('.SignupForm [name=\'username\']');
+
+    if (!username_input) {
+        return;
+    }
+
+    const status = username_input.closest('.SignupForm').querySelector('.UsernameAvailability');
+
+    if (!status) {
+        return;
+    }
+
+    clearTimeout(username_input.dataset.debounceId);
+
+    // The value as it reads right now - compared against the response later,
+    // since by then the person may have typed on and the answer be for a name
+    // they've already moved past.
+    const requested = username_input.value;
+
+    if (requested === '') {
+        status.textContent = '';
+        status.classList.remove('Error', 'Muted');
+
+        return;
+    }
+
+    const debounce_id = setTimeout(async () => {
+        // Abort whatever this input is still waiting on - without it a slower
+        // earlier answer can land after a faster later one and report on a
+        // name that is no longer in the box.
+        username_input.availabilityAbortController?.abort();
+        const controller = new AbortController();
+        username_input.availabilityAbortController = controller;
+
+        let data;
+
+        try {
+            const response = await fetch(window.siteURL + '/api/username-available', {
+                method: 'POST',
+                headers: csrf_headers({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ username: requested }),
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            data = await response.json();
+        } catch (error) {
+            return; // aborted by a newer check, or a network failure - either way, say nothing
+        }
+
+        // The box changed while this was in flight, so this answer is stale.
+        if (username_input.value !== requested) {
+            return;
+        }
+
+        status.classList.toggle('Error', !data.response.available);
+        status.classList.toggle('Muted', data.response.available);
+        status.textContent = data.response.available
+            ? `${data.response.username} is available.`
+            : `${data.response.username} is already taken.`;
+    }, 300);
+
+    username_input.dataset.debounceId = debounce_id;
+});
+
 document.addEventListener('change', async (event) => {
     const select = event.target.closest('.ThemeSelect');
 

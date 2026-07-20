@@ -13,7 +13,7 @@
 
 CREATE TABLE `Users` (
   `userId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `slug` varchar(50) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `passwordHash` varchar(255) NOT NULL,
   `title` varchar(100) DEFAULT NULL,
@@ -486,6 +486,10 @@ ALTER TABLE `Posts` ADD CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFEREN
 -- already-verified account. neededIndexMigrations() compares COLUMN_DEFAULT,
 -- not just the type (which isn't changing here), so this is a no-op once applied.
 ALTER TABLE `Users` MODIFY COLUMN `verified` tinyint(1) NOT NULL DEFAULT 0;
+-- A followed Fediverse account's slug is its full handle (user@host), which is
+-- longer than any local username: those are capped far shorter at signup, and
+-- widening this column doesn't raise that cap.
+ALTER TABLE `Users` MODIFY COLUMN `slug` varchar(255) NOT NULL;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

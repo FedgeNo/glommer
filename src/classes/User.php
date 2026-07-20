@@ -7,6 +7,14 @@ class User extends HTMLObject
     /** Most friends we ever load/show for one person (the friends-list cap). */
     public const MAX_FRIENDS = 5000;
 
+    /**
+     * Longest username a person on this site can have, however their account
+     * was created. Well under Users.slug's width, which is sized to hold a
+     * followed Fediverse account's whole handle - that room is for remote
+     * handles, not for longer local names.
+     */
+    public const MAX_USERNAME_LENGTH = 32;
+
     public string $tagName = 'div';
     public ?string $class = 'User Card';
 

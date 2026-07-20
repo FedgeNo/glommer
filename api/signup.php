@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
-$username = substr(preg_replace('/[^a-z0-9_]/', '', strtolower(trim((string) ($payload['username'] ?? '')))), 0, 32);
+$username = substr(preg_replace('/[^a-z0-9_]/', '', strtolower(trim((string) ($payload['username'] ?? '')))), 0, User::MAX_USERNAME_LENGTH);
 $email = trim((string) ($payload['email'] ?? ''));
 $password = (string) ($payload['password'] ?? '');
 $display_name = mb_substr(trim((string) ($payload['displayName'] ?? '')), 0, 50);

@@ -17,8 +17,8 @@ class RemoteFollow
 {
     private const MAX_RESPONSE_BYTES = 65536;
 
-    /** Users.slug is varchar(50). */
-    private const MAX_SLUG_LENGTH = 50;
+    /** Users.slug is varchar(255) - wide enough to hold a whole handle unaltered. */
+    private const MAX_SLUG_LENGTH = 255;
 
     // Declared so a row fetched via DB::row()/DB::rows() doesn't set them as
     // deprecated dynamic properties.

@@ -193,4 +193,20 @@ class LinkifyTest extends TestCase
         $this -> assertSame($php_match[1], $js_match[1]);
     }
 
+    /**
+     * Users.slug is wide enough to hold a whole Fediverse handle, so a mention
+     * has to be able to be that long too - a shorter cap here would silently
+     * make long handles unmentionable.
+     */
+    public function testMentionLengthCapCoversAWholeHandle(): void
+    {
+        $this -> assertSame(255, Linkify::MAX_MENTION_LENGTH);
+
+        $js = (string) file_get_contents(__DIR__ . '/../delta.js');
+        preg_match('/const LINKIFY_MAX_MENTION_LENGTH = (\\d+);/', $js, $match);
+
+        $this -> assertSame((string) Linkify::MAX_MENTION_LENGTH, $match[1]);
+    }
+
+
 }

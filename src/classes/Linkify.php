@@ -29,10 +29,11 @@ class Linkify
     // pattern body stays free of {} and can share one delimiter with JS.
     public const MAX_TAG_LENGTH = 50;
 
-    // Longest @mention username we linkify. Independent of MAX_TAG_LENGTH even
-    // though it happens to match Users.username's varchar(50) - a coincidence,
-    // not a shared concept.
-    public const MAX_MENTION_LENGTH = 50;
+    // Longest @mention username we linkify. Tracks Users.slug's width, since a
+    // mention that can't be as long as a username simply couldn't address one -
+    // a remote account's slug is its whole user@host handle. Independent of
+    // MAX_TAG_LENGTH, which is a different concept that happens to be a number.
+    public const MAX_MENTION_LENGTH = 255;
 
     // Trailing chars trimmed off a matched URL back into following text, so a
     // sentence's "...at https://x.com." doesn't swallow the period (or a wrapping

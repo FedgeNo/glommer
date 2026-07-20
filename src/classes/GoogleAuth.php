@@ -252,7 +252,11 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `verified`)
             $base = 'user';
         }
 
-        $base = substr($base, 0, 24);
+        // The same length a username chosen on the sign-up form gets, so an
+        // account created this way isn't held to a shorter one. Each fallback
+        // trims the base by exactly the suffix it adds, so every candidate
+        // lands on that limit rather than over it.
+        $base = substr($base, 0, User::MAX_USERNAME_LENGTH);
         $candidate = $base;
 
         for ($attempt = 0; $attempt < 50; $attempt++) {
@@ -267,9 +271,9 @@ SELECT 1
                 return $candidate;
             }
 
-            $candidate = substr($base, 0, 20) . random_int(1000, 999999);
+            $candidate = substr($base, 0, User::MAX_USERNAME_LENGTH - 6) . random_int(1000, 999999);
         }
 
-        return substr($base, 0, 16) . bin2hex(random_bytes(6));
+        return substr($base, 0, User::MAX_USERNAME_LENGTH - 12) . bin2hex(random_bytes(6));
     }
 }

@@ -3,142 +3,22 @@
 declare(strict_types=1);
 
 /**
- * A page of feed posts, fetched straight into its own contents at construction
- * and grown by infinite scroll (main.js) off the data-* attributes toDOM sets.
- * Which feed is chosen by feedType: 'global' (the default), 'friends' (the
- * viewer's timeline, needs userId), 'user' (one profile's posts, needs userId),
- * or 'tag' (posts under a #tag, needs tag). Paginated by offset: the client
- * asks for the next page by saying how many posts it already shows. Build with
- * the properties for the feed you want, e.g.
- * new FeedList(['feedType' => 'user', 'userId' => 42]).
+ * A page of feed posts, grown by infinite scroll (main.js) off the data-*
+ * attributes here - the client asks for the next page by saying how many posts
+ * it already shows. Each kind of feed is its own subclass with its own query;
+ * feedType names it for the client so the scroll handler knows which endpoint
+ * branch to ask.
  */
-class FeedList extends ItemList
+abstract class FeedList extends ItemList
 {
-    public const PAGE_SIZE = 20;
-
     public ?string $class = 'FeedList d-flex flex-column';
 
-    public ?string $feedType = null;
-    public ?int $userId = null;
-    public ?string $tag = null;
-    public int $offset = 0;
-
-    public function __construct(array|object|null $properties = null)
-    {
-        parent::__construct($properties);
-
-        $this -> contents = Post::withItemsAndCounts($this -> fetchRows());
-    }
-
-    /**
-     * @return Post[]
-     */
-    private function fetchRows(): array
-    {
-        $not_banned = 0;
-        $limit = self::PAGE_SIZE + 1;
-
-        return match ($this -> feedType) {
-            'friends' => DB::rows('
-SELECT `Posts`.*
-    FROM `Timelines`
-    JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
-    ORDER BY `Timelines`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'iiii', (int) $this -> userId, $not_banned, $limit, $this -> offset),
-
-            'user' => DB::rows('
-SELECT `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ?
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'iiii', (int) $this -> userId, $not_banned, $limit, $this -> offset),
-
-            // remoteObjectURI IS NULL: a followed Fediverse account's posts
-            // only ever belong in the specific followers' own feed (the
-            // 'friends' branch above, via Timelines) - never in a feed
-            // anyone can browse to, tag pages included.
-            'tag' => DB::rows('
-SELECT `Posts`.*
-    FROM `PostHashtags`
-    JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
-    JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'siii', (string) $this -> tag, $not_banned, $limit, $this -> offset),
-
-            default => self::globalRows($limit, $this -> offset),
-        };
-    }
-
-    /**
-     * The global feed's rows - the newest top-level posts by non-banned
-     * authors. Shared with the RSS rendering of the same feed, so both answer
-     * from one query rather than two that have to be kept in step.
-     *
-     * Remote-origin posts are excluded here: a followed Fediverse account's
-     * posts belong in the feed of whoever followed it, not in the one served
-     * to everybody.
-     *
-     * STRAIGHT_JOIN pins the join order to Posts first: it walks
-     * parentId_postId backward and stops once the page is full. Left to cost
-     * estimates, the optimizer drives from Users instead, which collects and
-     * filesorts every non-banned author's top-level posts to serve a 21-row
-     * page (measured ~270x slower at 40k posts).
-     *
-     * @return Post[]
-     */
-    public static function globalRows(int $limit, int $offset = 0): array
-    {
-        $not_banned = 0;
-
-        return DB::rows('
-SELECT STRAIGHT_JOIN `Posts`.*
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
-    ORDER BY `Posts`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'iii', $not_banned, $limit, $offset);
-    }
-
-    /**
-     * Whether the feed came back with any posts - lets a page decide before
-     * rendering whether to 404 (an empty tag) or hide the sibling controls it
-     * would otherwise wrap this in (a profile with no posts).
-     */
-    public function hasItems(): bool
-    {
-        return $this -> contents !== [];
-    }
+    /** Names this feed to main.js and api/feed-history.php. */
+    protected string $feedType = '';
 
     public function toDOM(): \DOMElement
     {
-        $has_more = count($this -> contents) > self::PAGE_SIZE;
-
-        if ($has_more) {
-            array_pop($this -> contents);
-        }
-
-        if ($this -> feedType !== null) {
-            $this -> attributes['data-feed-type'] = $this -> feedType;
-        }
-
-        if ($this -> userId !== null) {
-            $this -> attributes['data-user-id'] = (string) $this -> userId;
-        }
-
-        if ($this -> tag !== null) {
-            $this -> attributes['data-tag'] = $this -> tag;
-        }
-
-        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
+        $this -> attributes['data-feed-type'] = $this -> feedType;
 
         return parent::toDOM();
     }

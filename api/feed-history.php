@@ -35,27 +35,20 @@ if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
-// FeedList owns the query; the friends feed reads the viewer's own timeline,
-// the others the profile/tag/global posts. It fetches PAGE_SIZE + 1 hydrated
-// (items, author, the viewer's like/bookmark counts) into its contents.
-$feed_user_id = $feed_type === 'friends' ? (int) Auth::user() -> userId : $profile_user_id;
+// Each feed owns its query and loads one page of hydrated posts (items,
+// author, the viewer's like/bookmark counts).
+$feed = match ($feed_type) {
+    'friends' => new FriendsFeedList(['userId' => (int) Auth::user() -> userId, 'offset' => $offset]),
+    'user' => new ProfileFeedList(['userId' => $profile_user_id, 'offset' => $offset]),
+    'tag' => new TagFeedList(['tag' => $tag, 'offset' => $offset]),
+    default => new GlobalFeedList(['offset' => $offset]),
+};
 
-$posts = (new FeedList([
-    'feedType' => $feed_type,
-    'userId' => $feed_user_id,
-    'tag' => $tag,
-    'offset' => $offset,
-])) -> contents;
-
-$has_more = count($posts) > FeedList::PAGE_SIZE;
-
-if ($has_more) {
-    array_pop($posts);
-}
+$page = $feed -> toJSON();
 
 $post_payloads = [];
 
-foreach ($posts as $post) {
+foreach ($page['items'] as $post) {
     $post_payloads[] = $post -> toPayload(
         (int) $post -> replyCount,
         (int) $post -> likeCount,
@@ -66,5 +59,5 @@ foreach ($posts as $post) {
 
 JSONResponse::success([
     'posts' => $post_payloads,
-    'hasMore' => $has_more,
+    'hasMore' => $page['hasMore'],
 ]) -> send();

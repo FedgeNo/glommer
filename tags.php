@@ -37,7 +37,7 @@ if (!preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     exit;
 }
 
-$feed = new FeedList(['feedType' => 'tag', 'tag' => $tag]);
+$feed = new TagFeedList(['tag' => $tag]);
 
 // A tag with no posts is a 404 (nothing to show, and it keeps empty/thin
 // pages out of search).

@@ -14,13 +14,13 @@ class ProfileFeed extends Section
 
     public ?int $userId = null;
 
-    private FeedList $feed;
+    private ProfileFeedList $feed;
 
     public function __construct(array|object|null $properties = null)
     {
         parent::__construct($properties);
 
-        $this -> feed = new FeedList(['feedType' => 'user', 'userId' => $this -> userId]);
+        $this -> feed = new ProfileFeedList(['userId' => $this -> userId]);
     }
 
     public function hasItems(): bool

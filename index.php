@@ -17,6 +17,6 @@ if ($current_user !== null) {
 }
 
 // Everything on Glommer is public - the feed is global, not gated by friendship.
-$page -> addContent(new FeedList(['feedType' => 'global']));
+$page -> addContent(new GlobalFeedList());
 
 $page -> send();

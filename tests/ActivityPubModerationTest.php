@@ -455,9 +455,9 @@ INSERT INTO `PostHashtags` (`postId`, `hashtagId`)
 ', 'ii', $post_id, $hashtag_id);
 
         $surfaces = [
-            'global feed' => array_map(static fn ($post) => (int) $post -> postId, (new FeedList(['feedType' => 'global'])) -> contents),
-            'global feed rows (also the RSS feed)' => array_map(static fn ($post) => (int) $post -> postId, FeedList::globalRows(100)),
-            'tag feed' => array_map(static fn ($post) => (int) $post -> postId, (new FeedList(['feedType' => 'tag', 'tag' => $tag])) -> contents),
+            'global feed' => array_map(static fn ($post) => (int) $post -> postId, new GlobalFeedList() -> items),
+            'global feed rows (also the RSS feed)' => array_map(static fn ($post) => (int) $post -> postId, new RSSFeedList() -> items),
+            'tag feed' => array_map(static fn ($post) => (int) $post -> postId, new TagFeedList(['tag' => $tag]) -> items),
             'post search' => array_map(static fn ($post) => (int) $post -> postId, PostSearch::matchingRows($needle, 0, 100, 0)),
         ];
 
@@ -490,8 +490,8 @@ INSERT INTO `Posts` (`userId`, `description`)
         ], $actor_uri);
         $post_id = self::postIdForRemoteObject($object_uri);
 
-        $global_feed = new FeedList(['feedType' => 'global']);
-        $ids_in_feed = array_map(static fn ($post) => $post -> postId, $global_feed -> contents);
+        $global_feed = new GlobalFeedList();
+        $ids_in_feed = array_map(static fn ($post) => $post -> postId, $global_feed -> items);
 
         $this -> assertFalse(in_array($post_id, $ids_in_feed, true));
     }

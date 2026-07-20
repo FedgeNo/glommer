@@ -38,19 +38,22 @@ abstract class UserListSection extends ListSection
 
     public int $offset = 0;
 
-    /**
-     * PAGE_SIZE + 1 rows: the extra one's presence is what says there's another
-     * page, and it's dropped by whichever output step consumes it.
-     *
-     * @var User[]
-     */
+    /** @var User[] one page of them */
     public array $items = [];
+
+    /** Whether there's a page after the one held here. */
+    public bool $hasMore = false;
 
     public function __construct(array|object|null $properties = null)
     {
         parent::__construct($properties);
 
+        // The query fetches one row past the page; that row's existence is the
+        // whole answer to "is there more?", so it's spent on that here and
+        // never reaches an output step.
         $this -> items = $this -> rows();
+        $this -> hasMore = count($this -> items) > static::PAGE_SIZE;
+        $this -> items = array_slice($this -> items, 0, static::PAGE_SIZE);
     }
 
     /**
@@ -78,25 +81,6 @@ abstract class UserListSection extends ListSection
     }
 
     /**
-     * Whether there's a page after the one held here.
-     */
-    protected function hasMore(): bool
-    {
-        return count($this -> items) > static::PAGE_SIZE;
-    }
-
-    /**
-     * The page itself, without the extra row that only ever existed to answer
-     * hasMore().
-     *
-     * @return User[]
-     */
-    protected function page(): array
-    {
-        return array_slice($this -> items, 0, static::PAGE_SIZE);
-    }
-
-    /**
      * One page of users for the endpoints that hand a list to the client.
      *
      * @return array{items: User[], hasMore: bool}
@@ -106,16 +90,13 @@ abstract class UserListSection extends ListSection
         $this -> markRendered();
 
         return [
-            'items' => $this -> page(),
-            'hasMore' => $this -> hasMore(),
+            'items' => $this -> items,
+            'hasMore' => $this -> hasMore,
         ];
     }
 
     public function toDOM(): \DOMElement
     {
-        $has_more = $this -> hasMore();
-        $this -> items = $this -> page();
-
         if ($this -> listType !== '') {
             $this -> attributes['data-list-type'] = $this -> listType;
         }
@@ -125,7 +106,7 @@ abstract class UserListSection extends ListSection
         }
 
         $this -> attributes['data-offset'] = (string) ($this -> offset + count($this -> items));
-        $this -> attributes['data-has-more'] = $has_more ? '1' : '0';
+        $this -> attributes['data-has-more'] = $this -> hasMore ? '1' : '0';
 
         return parent::toDOM();
     }

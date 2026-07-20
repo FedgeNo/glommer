@@ -12,7 +12,7 @@ declare(strict_types=1);
  * RandomUserList leaves them out: a suggestion is the site offering someone
  * up unprompted.
  */
-class EligibleSuggestedUserList extends UserListSection
+class EligibleSuggestedUserList extends RandomUserList
 {
     /**
      * Ranked candidates are capped well above a page so the eligibility pass
@@ -24,16 +24,13 @@ class EligibleSuggestedUserList extends UserListSection
 
     protected string $heading = 'People you may know';
 
-    /** Who the list is being built for - the ranking is relative to them. */
-    public int $viewerId = 0;
-
     protected function rows(): array
     {
         $friend_ids = User::load($this -> viewerId) ?-> friendIds() ?? [];
         $mutual_counts = $this -> mutualFriendCounts($friend_ids);
 
         if ($mutual_counts === []) {
-            return $this -> randomRows();
+            return parent::rows();
         }
 
         $eligible = $this -> eligible(array_keys($mutual_counts));
@@ -49,18 +46,10 @@ class EligibleSuggestedUserList extends UserListSection
         }
 
         if ($ranked === []) {
-            return $this -> randomRows();
+            return parent::rows();
         }
 
         return array_slice($ranked, $this -> offset, static::PAGE_SIZE + 1);
-    }
-
-    /**
-     * @return OtherUser[]
-     */
-    private function randomRows(): array
-    {
-        return new RandomUserList(['viewerId' => $this -> viewerId, 'offset' => $this -> offset]) -> items;
     }
 
     /**

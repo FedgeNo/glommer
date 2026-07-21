@@ -392,6 +392,22 @@ p a:hover {
     display: none;
 }
 
+/* The friends page trades the same way: its results wait out of the way, and
+   the three standing sections step aside while a query is up. */
+.FriendSearchSection {
+    display: none;
+}
+
+.FriendSearchSection.Searching {
+    display: block;
+}
+
+.PendingFriendRequestSection.Searching,
+.FriendSection.Searching,
+.OutgoingFriendRequestSection.Searching {
+    display: none;
+}
+
 /* A deleted item collapses instead of vanishing, so the change is visible even
    in a column of near-identical cards. Kept in step with SLIDE_OUT_MS in
    main.js. */

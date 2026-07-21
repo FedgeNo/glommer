@@ -932,6 +932,132 @@ window.addEventListener('scroll', async () => {
     }
 });
 
+document.addEventListener('input', (event) => {
+    const input = event.target.closest('.FriendSearchInput');
+
+    if (!input) {
+        return;
+    }
+
+    clearTimeout(input.dataset.debounceId);
+
+    const debounce_id = setTimeout(async () => {
+        const query = input.value.trim();
+        const results = document.querySelector('.FriendSearchList');
+
+        // FriendSearch carries whose friends these are (data-user-id), which is
+        // the same profile the sections below belong to.
+        const user_id = input.closest('.FriendSearch').dataset.userId;
+
+        // The results section and the standing sections take turns.
+        document.querySelector('.FriendSearchSection')?.classList.toggle('Searching', query !== '');
+        document.querySelector('.PendingFriendRequestSection')?.classList.toggle('Searching', query !== '');
+        document.querySelector('.FriendSection')?.classList.toggle('Searching', query !== '');
+        document.querySelector('.OutgoingFriendRequestSection')?.classList.toggle('Searching', query !== '');
+
+        // Abort whatever this input's previous search is still waiting on -
+        // without this, a slower earlier response can resolve after a faster
+        // later one and overwrite fresher results with stale ones.
+        input.searchAbortController?.abort();
+        const controller = new AbortController();
+        input.searchAbortController = controller;
+
+        let data;
+
+        try {
+            const response = await fetch(window.siteURL + '/api/search-friends', {
+                method: 'POST',
+                headers: csrf_headers({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ q: query, userId: user_id }),
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            data = await response.json();
+        } catch (error) {
+            return; // aborted by a newer search, a network failure, or a non-JSON response body either way
+        }
+
+        results.replaceChildren();
+
+        // Remembered so the scroll handler below knows what query (and whose
+        // friends) to keep paginating; the offset it resumes from is just the
+        // count of cards already shown.
+        results.dataset.query = query;
+        results.dataset.hasMore = data.response.hasMore ? '1' : '0';
+
+        data.response.users.forEach((user_data) => {
+            results.appendChild(list_item(OtherUser.fromData(user_data).toElement()));
+        });
+    }, 300);
+
+    input.dataset.debounceId = debounce_id;
+});
+
+let loading_older_friend_results = false;
+
+window.addEventListener('scroll', async () => {
+    const results = document.querySelector('.FriendSearchList');
+
+    if (!results || results.dataset.hasMore !== '1' || loading_older_friend_results) {
+        return;
+    }
+
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+
+    if (!near_bottom) {
+        return;
+    }
+
+    loading_older_friend_results = true;
+
+    const spinner = document.createElement('li');
+    spinner.className = 'LoadingSpinner';
+    results.appendChild(spinner);
+
+    try {
+        // The count of rendered cards IS the offset the next page starts at
+        // (the spinner li holds no .OtherUser, so it never miscounts).
+        const response = await fetch(`${window.siteURL}/api/search-friends`, {
+            method: 'POST',
+            headers: csrf_headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                q: results.dataset.query ?? '',
+                offset: results.querySelectorAll('.OtherUser').length,
+                userId: results.dataset.userId,
+            }),
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+
+        // A new search (typed while this fetch was in flight) already emptied
+        // the list, detaching our spinner - these are results for a now-stale
+        // query, and inserting relative to a detached spinner would throw.
+        if (!results.contains(spinner)) {
+            return;
+        }
+
+        results.dataset.hasMore = data.response.hasMore ? '1' : '0';
+
+        data.response.users.forEach((user_data) => {
+            results.insertBefore(list_item(OtherUser.fromData(user_data).toElement()), spinner);
+        });
+    } catch (error) {
+        // A network failure or a non-JSON response body - leave hasMore as-is
+        // so the next scroll simply retries.
+    } finally {
+        spinner.remove();
+        loading_older_friend_results = false;
+    }
+});
+
 document.addEventListener('click', async (event) => {
     const button = event.target.closest('.FriendRequestButton');
 
@@ -2812,7 +2938,12 @@ window.addEventListener('scroll', async () => {
 
     const threshold = 300;
 
-    const target = Array.from(document.querySelectorAll('.UserList')).find((list) => {
+    // The lists api/friend-list-history.php can page, named by the sections
+    // that hold them - a search result list is a FriendList too, and grows
+    // through its own handler and endpoint instead.
+    const paging_lists = '.FriendSection .FriendList, .PendingFriendRequestSection .PendingFriendRequestList, .OutgoingFriendRequestSection .OutgoingFriendRequestList';
+
+    const target = Array.from(document.querySelectorAll(paging_lists)).find((list) => {
         if (list.dataset.hasMore !== '1') {
             return false;
         }
@@ -2834,10 +2965,9 @@ window.addEventListener('scroll', async () => {
 
     loading_user_section = true;
 
-    const item_list = target.querySelector('.UserList');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
-    item_list.appendChild(spinner);
+    target.appendChild(spinner);
 
     try {
         const list_type = target.dataset.listType;
@@ -2865,7 +2995,7 @@ window.addEventListener('scroll', async () => {
 
         items.forEach((item) => {
             const card = (list_type === 'incoming' ? FriendRequest : OtherUser).fromData(item);
-            item_list.insertBefore(list_item(card.toElement()), spinner);
+            target.insertBefore(list_item(card.toElement()), spinner);
         });
 
         if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {

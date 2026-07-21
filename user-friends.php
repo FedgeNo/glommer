@@ -32,6 +32,14 @@ $page -> image = $profile_user -> avatarURL();
 
 $page -> addContent($profile_user);
 
+if (Auth::check()) {
+    // Search this profile's accepted friends. While a query is active the
+    // sections below are hidden and the results take their place (see main.js);
+    // clearing the box brings them back.
+    $page -> addContent(new FriendSearch(['user' => $profile_user, 'placeholder' => 'Search ' . $name . '\'s friends...']));
+    $page -> addContent(new FriendSearchSection(['user' => $profile_user]));
+}
+
 if ($is_own) {
     $page -> addContent(new PendingFriendRequestSection(['user' => $profile_user]));
 }

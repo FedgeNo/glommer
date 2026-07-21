@@ -276,7 +276,7 @@ p a:hover {
     margin-left: auto;
 }
 
-.Muted {
+.muted {
     color: var(--muted);
 }
 
@@ -1332,14 +1332,6 @@ input[type='file']::file-selector-button {
     border-top: 1px solid var(--hairline);
 }
 
-/* While the inline edit form is open (inserted directly after .PostContent,
-   ahead of .PostActionBar in the DOM - see main.js's .EditButton handler), a second
-   click on Edit is already a harmless no-op - hide it so it doesn't sit there
-   doing nothing. */
-.PostEditForm ~ .PostActionBar .EditButton {
-    display: none;
-}
-
 .ParentPostLink {
     font-size: 0.85rem;
 }
@@ -1890,12 +1882,23 @@ input[type='file']::file-selector-button {
     min-height: 7.25rem;
 }
 
-/* The edit form drops this straight into a fieldset, which is a column flex
-   container - so the flex-basis it carries for the composer's row would apply
-   to height and collapse it against the toolbar. Sizing from content instead
-   still stretches to full width on the cross axis. */
+/* The edit form drops this straight into a fieldset, a column flex container,
+   where the flex-basis carried for the composer's row would apply to height.
+   Sizing from content instead still stretches to full width on the cross axis.
+
+   The editor's height has to come from content as well. Quill ships
+   height: 100% on both .ql-container and .ql-editor, and inside a column flex
+   item those percentages resolve against the item's whole height - toolbar
+   included - so the editable box alone ends up as tall as the toolbar and
+   itself together and overflows onto Cancel/Save by the toolbar's height.
+   Both have to be released, or the percentage just moves down a level. */
 .PostEditForm .EditorColumn {
     flex: 0 0 auto;
+}
+
+.PostEditForm .ql-container,
+.PostEditForm .ql-editor {
+    height: auto;
 }
 
 .ql-toolbar.ql-snow {

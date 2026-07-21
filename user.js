@@ -108,7 +108,7 @@ class User {
         info.appendChild(name_line);
 
         const username_line = document.createElement('div');
-        username_line.className = 'Muted text-sm';
+        username_line.className = 'muted text-sm';
         username_line.textContent = '@' + this.slug;
         info.appendChild(username_line);
 
@@ -151,13 +151,13 @@ class User {
         info.appendChild(name_heading);
 
         const username_line = document.createElement('div');
-        username_line.className = 'Muted text-sm';
+        username_line.className = 'muted text-sm';
         username_line.textContent = '@' + this.slug;
         info.appendChild(username_line);
 
         if (this.createdAt) {
             const joined = document.createElement('div');
-            joined.className = 'Muted text-sm';
+            joined.className = 'muted text-sm';
             joined.textContent = 'Joined ' + parse_server_date(this.createdAt).toLocaleString('en-US', {
                 month: 'long',
                 day: 'numeric',

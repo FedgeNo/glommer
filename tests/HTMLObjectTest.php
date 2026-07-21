@@ -64,7 +64,7 @@ class HTMLObjectTest extends TestCase
         // PHP-class-name chaining on top.
         $notice = new Notice('careful now');
 
-        $this -> assertSame('Muted Notice', $notice -> class);
+        $this -> assertSame('muted Notice', $notice -> class);
     }
 
     public function testGenericWrapperGetsNoClassAttribute(): void

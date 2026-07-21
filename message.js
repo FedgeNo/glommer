@@ -21,7 +21,7 @@ class Message {
         }
 
         const meta = document.createElement('time');
-        meta.className = 'Muted text-sm RelativeTime';
+        meta.className = 'muted text-sm RelativeTime';
         meta.dateTime = parse_server_date(this.createdAt).toISOString();
         meta.textContent = format_relative_time(this.createdAt);
         div.appendChild(meta);

@@ -30,7 +30,7 @@ class BannedTrendingEntity extends Div
         $info -> addContent(new Paragraph($this -> title . ' (' . $this -> type . ')'));
 
         $detail = new Paragraph();
-        $detail -> class = 'Muted';
+        $detail -> class = 'muted';
         $detail -> addContent('Banned by ' . $this -> bannedByUsername . ' ');
         $detail -> addContent(new RelativeTime($this -> createdAt));
 

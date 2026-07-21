@@ -110,7 +110,7 @@ class Notification {
         const created_at = parse_server_date(this.createdAt);
 
         const meta = document.createElement('time');
-        meta.className = 'Muted text-sm RelativeTime';
+        meta.className = 'muted text-sm RelativeTime';
         meta.dateTime = created_at.toISOString();
         meta.textContent = format_relative_time(created_at.toISOString());
         info.appendChild(meta);

@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 class PostEditedMarker extends Span
 {
-    public ?string $class = 'PostEditedMarker Muted text-sm';
+    public ?string $class = 'PostEditedMarker muted text-sm';
 
     public ?string $editedAt = null;
 

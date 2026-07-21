@@ -45,12 +45,11 @@ class Post {
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
-            timestamp_link.className = 'TimestampLink Muted text-sm';
+            timestamp_link.className = 'TimestampLink muted text-sm';
             timestamp_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
 
             const timestamp = document.createElement('time');
             timestamp.className = 'RelativeTime';
-            timestamp.dateTime = parse_server_date(this.createdAt).toISOString();
             timestamp.textContent = format_relative_time(this.createdAt);
             timestamp_link.appendChild(timestamp);
 
@@ -59,7 +58,7 @@ class Post {
 
         if (this.editedAt) {
             const edited_marker = document.createElement('span');
-            edited_marker.className = 'Muted text-sm PostEditedMarker';
+            edited_marker.className = 'muted text-sm PostEditedMarker';
             edited_marker.title = parse_server_date(this.editedAt).toLocaleString('en-US', {
                 month: 'long',
                 day: 'numeric',
@@ -251,33 +250,6 @@ class Post {
     postElement() {
         const post = document.createElement('div');
         post.className = 'PostContent';
-        post.dataset.postId = this.postId;
-        post.dataset.authorId = this.userId;
-
-        if (this.parentId !== null) {
-            post.dataset.parentId = this.parentId;
-        }
-
-        if (this.keywords) {
-            post.dataset.keywords = this.keywords;
-        }
-
-        if (this.createdAt) {
-            post.dataset.createdAt = this.createdAt;
-        }
-
-        // Owner-only - what the edit form needs to repopulate Quill, without a
-        // round trip for a post already on the page. Gate on ownership alone
-        // and mirror the server's `?? ''` (Post::toDOM): rawDescriptionDelta is
-        // null both for someone else's post AND for the owner's own bodyless
-        // post (a link post with no text), and that second case must still set
-        // the attribute or its Edit button goes permanently dead.
-        if (Number(this.userId) === Number(window.currentUserId)) {
-            post.dataset.descriptionDelta = this.rawDescriptionDelta || '';
-            post.dataset.editTitle = this.title || '';
-            post.dataset.editLinkUrl = this.linkURL || '';
-            post.dataset.hasMedia = this.items.length > 0 ? '1' : '';
-        }
 
         if (this.author) {
             post.appendChild(this.authorBylineToElement());
@@ -328,7 +300,37 @@ class Post {
     toElement() {
         const card = document.createElement('div');
         card.className = 'Post Card MountIn';
-        card.dataset.itemId = this.postId;
+
+        // The post's own columns, carried once on the card that represents it -
+        // mirroring the server-side Post::toDOM(). Attribute names match the
+        // column names.
+        card.dataset.postId = this.postId;
+        card.dataset.userId = this.userId;
+
+        if (this.parentId !== null) {
+            card.dataset.parentId = this.parentId;
+        }
+
+        if (this.keywords) {
+            card.dataset.keywords = this.keywords;
+        }
+
+        if (this.createdAt) {
+            card.dataset.createdAt = parse_server_date(this.createdAt).toISOString();
+        }
+
+        // Owner-only - what the edit form needs to repopulate Quill, without a
+        // round trip for a post already on the page. Gate on ownership alone
+        // and mirror the server's `?? ''` (Post::toDOM): rawDescriptionDelta is
+        // null both for someone else's post AND for the owner's own bodyless
+        // post (a link post with no text), and that second case must still set
+        // the attribute or its Edit button goes permanently dead.
+        if (Number(this.userId) === Number(window.currentUserId)) {
+            card.dataset.descriptionDelta = this.rawDescriptionDelta || '';
+            card.dataset.title = this.title || '';
+            card.dataset.linkUrl = this.linkURL || '';
+            card.dataset.hasMedia = this.items.length > 0 ? '1' : '';
+        }
 
         card.appendChild(this.postElement());
 

@@ -32,13 +32,13 @@ class Conversation extends Anchor
         $info -> addContent($name_heading);
 
         $username_line = new Div();
-        $username_line -> class = 'Muted text-sm';
+        $username_line -> class = 'muted text-sm';
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> lastMessageAt !== null) {
             $meta = new Div();
-            $meta -> class = 'Muted text-sm';
+            $meta -> class = 'muted text-sm';
             $meta -> contents[] = 'Last message ';
 
             $meta -> addContent(new RelativeTime($this -> lastMessageAt));

@@ -149,13 +149,13 @@ class User extends HTMLObject implements \JsonSerializable
         $info -> addContent($this -> nameElement());
 
         $username_line = new Div();
-        $username_line -> class = 'Muted text-sm';
+        $username_line -> class = 'muted text-sm';
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> createdAt !== null) {
             $joined = new Div();
-            $joined -> class = 'Muted text-sm';
+            $joined -> class = 'muted text-sm';
             $joined -> contents[] = 'Joined ' . date('F j, Y', strtotime($this -> createdAt));
             $info -> addContent($joined);
         }
@@ -206,7 +206,7 @@ class User extends HTMLObject implements \JsonSerializable
         $info -> addContent($name_line);
 
         $username_line = new Div();
-        $username_line -> class = 'Muted text-sm';
+        $username_line -> class = 'muted text-sm';
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 

@@ -45,7 +45,7 @@ class Message extends HTMLObject implements \JsonSerializable
         }
 
         $meta = new RelativeTime($this -> createdAt);
-        $meta -> class = 'Muted text-sm ' . $meta -> class;
+        $meta -> class = 'muted text-sm ' . $meta -> class;
         $this -> contents[] = $meta;
 
         if ($this -> sender !== null) {

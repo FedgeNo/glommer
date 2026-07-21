@@ -8,5 +8,5 @@ declare(strict_types=1);
  */
 class Notice extends Paragraph
 {
-    public ?string $class = 'Muted Notice';
+    public ?string $class = 'muted Notice';
 }

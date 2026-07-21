@@ -24,7 +24,7 @@ class HelpArticleSummary extends HTMLObject
         $this -> contents[] = new Heading3($this -> article -> title);
 
         $summary = new Paragraph($this -> article -> summary);
-        $summary -> class = 'Muted';
+        $summary -> class = 'muted';
         $this -> contents[] = $summary;
 
         return parent::toDOM();

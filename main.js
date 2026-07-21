@@ -64,6 +64,18 @@ function format_relative_time(date_string) {
 
 function refresh_relative_times(root) {
     (root || document).querySelectorAll('.RelativeTime').forEach((time_element) => {
+        // A post's timestamp carries no datetime of its own - the time is the
+        // post's createdAt, held on the .Post card around it.
+        if (!time_element.hasAttribute('datetime')) {
+            const post = time_element.closest('.Post');
+
+            if (!post) {
+                return;
+            }
+
+            time_element.setAttribute('datetime', post.dataset.createdAt);
+        }
+
         time_element.textContent = format_relative_time(time_element.getAttribute('datetime'));
     });
 }
@@ -1086,12 +1098,12 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const item_id = button.closest('.Post')?.dataset.itemId;
+    const post = button.closest('.Post').dataset;
 
     button.disabled = true;
 
     try {
-        const result = await api_post('/api/like', { itemId: item_id });
+        const result = await api_post('/api/like', { itemId: post.postId });
 
         if (result === null) {
             return;
@@ -1111,12 +1123,12 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const item_id = button.closest('.Post')?.dataset.itemId;
+    const post = button.closest('.Post').dataset;
 
     button.disabled = true;
 
     try {
-        const result = await api_post('/api/bookmark', { itemId: item_id });
+        const result = await api_post('/api/bookmark', { itemId: post.postId });
 
         if (result === null) {
             return;
@@ -1140,11 +1152,11 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const item_id = button.closest('.Post')?.dataset.itemId;
+    const post = button.closest('.Post').dataset;
 
     button.disabled = true;
 
-    const result = await api_post('/api/delete', { itemId: item_id });
+    const result = await api_post('/api/delete', { itemId: post.postId });
 
     if (result === null) {
         button.disabled = false;
@@ -1162,14 +1174,12 @@ document.addEventListener('click', async (event) => {
 /**
  * Post editing is entirely client-built (no PHP EditPostForm/SSR counterpart
  * needed - it never appears except through this interaction, same as
- * show_confirm()'s dialog). Clicking Edit hides the .PostContent in place
- * and inserts a small form with its own .QuillEditor, pre-populated from the
- * data-description-delta/data-edit-title/data-edit-link-url attributes
- * Post::contentElement()/toPayload() only ever include for the viewer's own
- * posts. Saving replaces just the .PostContent element with a freshly built
- * one (post.js's postElement(), same as post creation) - the surrounding
- * .Post card and its PostActionBar (reply/like counts, unaffected by an edit)
- * are left alone.
+ * show_confirm()'s dialog). Clicking Edit hides the .Post card in place and
+ * puts a small form with its own .QuillEditor where it sat, populated from the
+ * card's own data attributes, which Post::toDOM()/toPayload() only carry for
+ * the viewer's own posts. Saving swaps the card for a freshly built one
+ * (post.js's toElement(), same as post creation), so its data attributes come
+ * back in step with what was saved.
  */
 document.addEventListener('click', (event) => {
     const button = event.target.closest('.EditButton');
@@ -1178,16 +1188,16 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    const wrapper = button.closest('.Post');
-    const post_element = wrapper ? wrapper.querySelector('.PostContent') : null;
+    const post_element = button.closest('.Post');
+    const post = post_element ? post_element.dataset : null;
 
-    if (!post_element || post_element.dataset.descriptionDelta === undefined) {
+    if (!post || post.descriptionDelta === undefined) {
         return;
     }
 
     // Already editing this post - a second click on Edit shouldn't stack a
     // second form.
-    if (wrapper.querySelector('.PostEditForm')) {
+    if (post_element.nextElementSibling?.classList.contains('PostEditForm')) {
         return;
     }
 
@@ -1195,7 +1205,6 @@ document.addEventListener('click', (event) => {
 
     const form = document.createElement('form');
     form.className = 'PostEditForm Card d-flex flex-column gap-2';
-    form.dataset.postId = post_element.dataset.postId;
 
     const fields = document.createElement('fieldset');
 
@@ -1207,19 +1216,19 @@ document.addEventListener('click', (event) => {
     title_input.name = 'title';
     title_input.placeholder = 'Title (optional)';
     title_input.maxLength = 255;
-    title_input.value = post_element.dataset.editTitle || '';
+    title_input.value = post.title || '';
     title_input.setAttribute('aria-label', 'Title (optional)');
     title_row.appendChild(title_input);
 
     // A media post never had a link to begin with (create-post.php enforces
     // the same XOR api/edit-post.php does), so there's nothing here to edit.
-    if (!post_element.dataset.hasMedia) {
+    if (!post.hasMedia) {
         const link_input = document.createElement('input');
         link_input.type = 'text';
         link_input.name = 'linkURL';
         link_input.placeholder = 'Link (optional)';
         link_input.maxLength = 255;
-        link_input.value = post_element.dataset.editLinkUrl || '';
+        link_input.value = post.linkUrl || '';
         link_input.setAttribute('aria-label', 'Link (optional)');
         title_row.appendChild(link_input);
     }
@@ -1266,8 +1275,7 @@ document.addEventListener('click', (event) => {
     const quill = create_quill_editor(editor_container);
 
     try {
-        const raw_delta = post_element.dataset.descriptionDelta;
-        quill.setContents(raw_delta ? JSON.parse(raw_delta) : { ops: [] });
+        quill.setContents(post.descriptionDelta ? JSON.parse(post.descriptionDelta) : { ops: [] });
     } catch (error) {
         // Malformed/empty stored Delta - start from an empty editor rather
         // than leaving the form broken.
@@ -1286,7 +1294,7 @@ document.addEventListener('click', (event) => {
 
     form.remove();
 
-    if (post_element && post_element.classList.contains('PostContent')) {
+    if (post_element && post_element.classList.contains('Post')) {
         post_element.style.display = '';
     }
 });
@@ -1306,12 +1314,11 @@ document.addEventListener('submit', async (event) => {
     const save_button = form.querySelector('button[type=\'submit\']');
     save_button.disabled = true;
 
-    const post_id = form.dataset.postId;
     const post_element = form.previousElementSibling;
     const link_input = form.querySelector('[name=\'linkURL\']');
 
     const result = await api_post('/api/edit-post', {
-        postId: post_id,
+        postId: post_element.dataset.postId,
         title: form.querySelector('[name=\'title\']').value,
         linkURL: link_input ? link_input.value : '',
         description: form.querySelector('.DescriptionInput').value,
@@ -1322,10 +1329,9 @@ document.addEventListener('submit', async (event) => {
         return;
     }
 
-    const updated_post = Post.fromData(result);
-    const new_post_element = updated_post.postElement();
+    const new_post_element = Post.fromData(result).toElement();
 
-    if (post_element && post_element.classList.contains('PostContent')) {
+    if (post_element && post_element.classList.contains('Post')) {
         post_element.replaceWith(new_post_element);
     }
 
@@ -2342,8 +2348,8 @@ function handle_incoming_notification(notification_data) {
     if (dropdown_list) {
         // ItemList wraps every child in its own <li>, so .Notification/.Notice
         // are grandchildren of the list, not direct children - and a plain
-        // .Muted query (rather than .Notice, the empty-state placeholder's own
-        // class) would also match a live notification's own Muted timestamp.
+        // .muted query (rather than .Notice, the empty-state placeholder's own
+        // class) would also match a live notification's own muted timestamp.
         const placeholder = dropdown_list.querySelector('.Notice');
 
         if (placeholder) {
@@ -3099,7 +3105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const notice = document.createElement('p');
-                notice.className = 'ProcessingNotice Muted text-sm';
+                notice.className = 'ProcessingNotice muted text-sm';
                 notice.textContent = 'Your media files are processing and you will be notified when they\'re ready to view. It\'s safe to leave this page.';
                 form.appendChild(notice);
 
@@ -3284,7 +3290,7 @@ document.addEventListener('input', (event) => {
 
     if (requested === '') {
         status.textContent = '';
-        status.classList.remove('Error', 'Muted');
+        status.classList.remove('Error', 'muted');
 
         return;
     }
@@ -3322,7 +3328,7 @@ document.addEventListener('input', (event) => {
         }
 
         status.classList.toggle('Error', !data.response.available);
-        status.classList.toggle('Muted', data.response.available);
+        status.classList.toggle('muted', data.response.available);
         status.textContent = data.response.available
             ? `${data.response.username} is available.`
             : `${data.response.username} is already taken.`;
@@ -3729,7 +3735,7 @@ document.addEventListener('input', (event) => {
 
         if (fetched.length === 0) {
             const notice = document.createElement('p');
-            notice.className = 'Muted Notice';
+            notice.className = 'muted Notice';
             notice.textContent = query === '' ? 'No banned users.' : 'No banned users match that search.';
             items.appendChild(list_item(notice));
             return;

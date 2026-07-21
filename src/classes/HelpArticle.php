@@ -30,7 +30,7 @@ class HelpArticle extends HTMLObject
     public function toDOM(): \DOMElement
     {
         $category_link = new Anchor(ServerURL::absolute('/help/'), $this -> category);
-        $category_link -> class = 'HelpArticleCategory Muted text-sm';
+        $category_link -> class = 'HelpArticleCategory muted text-sm';
         $this -> contents[] = $category_link;
 
         $this -> contents[] = new Heading3($this -> title);

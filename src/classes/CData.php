@@ -15,7 +15,7 @@ class CData
     {
     }
 
-    public function toNode(): \DOMNode
+    public function toDOM(): \DOMNode
     {
         $document = HTMLObject::currentDocument();
 

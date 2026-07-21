@@ -155,10 +155,8 @@ class HTMLObject
 
     protected function contentToNode($item): ?\DOMNode
     {
-        if ($item instanceof HTMLObject) {
+        if ($item instanceof HTMLObject or $item instanceof CData) {
             return $item -> toDOM();
-        } elseif ($item instanceof CData) {
-            return $item -> toNode();
         } elseif (is_string($item)) {
             return self::$document -> createTextNode($item);
         } elseif ($item instanceof \DOMNode) {
@@ -166,24 +164,6 @@ class HTMLObject
         }
 
         return null;
-    }
-
-    /**
-     * Render a standalone object (not part of a full HTMLDocument) to an HTML string.
-     * Used for AJAX responses that inject a fragment into an existing page.
-     */
-    public function render(): string
-    {
-        $implementation = new \DOMImplementation();
-        self::$document = $implementation -> createDocument();
-        self::$document -> formatOutput = true;
-
-        $element = $this -> toDOM();
-        self::$document -> appendChild($element);
-
-        self::fillEmptyNonVoidTags($element);
-
-        return self::stripSelfClosingSlash(self::$document -> saveXML($element));
     }
 
     protected static function fillEmptyNonVoidTags(\DOMElement $root): void

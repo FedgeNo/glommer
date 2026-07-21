@@ -40,7 +40,7 @@ class RememberedDevice extends Div
         $info -> addContent(new Paragraph($label));
 
         $detail_line = new Paragraph($this -> ipAddress !== null ? $this -> ipAddress . ' - ' : null);
-        $detail_line -> class = 'Muted';
+        $detail_line -> class = 'muted';
         $detail_line -> addContent('Last used ');
         $detail_line -> addContent(new RelativeTime($this -> lastUsedAt));
         $info -> addContent($detail_line);

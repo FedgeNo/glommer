@@ -59,7 +59,7 @@ class ReportCard {
 
         // missing / unknown - a muted notice (mirrors the PHP Notice element).
         const notice = document.createElement('p');
-        notice.className = 'Muted Notice';
+        notice.className = 'muted Notice';
         notice.textContent = target.message || 'Unknown content type.';
         return notice;
     }
@@ -90,7 +90,7 @@ class ReportCard {
 
         if (this.createdAt) {
             const meta = document.createElement('time');
-            meta.className = 'Muted text-sm RelativeTime';
+            meta.className = 'muted text-sm RelativeTime';
             meta.dateTime = parse_server_date(this.createdAt).toISOString();
             meta.textContent = format_relative_time(this.createdAt);
             details.appendChild(meta);
@@ -188,7 +188,7 @@ function forensic_attachment_element(attachment) {
 
     if (attachment.mediaType === null || attachment.mediaType === undefined) {
         const notice = document.createElement('p');
-        notice.className = 'Muted Notice';
+        notice.className = 'muted Notice';
         notice.textContent = 'A reported attachment is no longer available.';
         return notice;
     }

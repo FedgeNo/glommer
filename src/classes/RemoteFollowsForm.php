@@ -37,7 +37,7 @@ class RemoteFollowsForm extends Form
                 $item -> contents[] = $follow['displayName'];
 
                 $status = new Span();
-                $status -> class = 'Muted text-sm';
+                $status -> class = 'muted text-sm';
                 $status -> contents[] = $follow['status'];
                 $item -> contents[] = $status;
 

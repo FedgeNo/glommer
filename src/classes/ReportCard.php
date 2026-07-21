@@ -58,7 +58,7 @@ class ReportCard extends HTMLObject
         }
 
         $meta = new RelativeTime((string) $this -> createdAt);
-        $meta -> class = 'Muted text-sm ' . $meta -> class;
+        $meta -> class = 'muted text-sm ' . $meta -> class;
         $details -> addContent($meta);
 
         $this -> contents[] = $details;

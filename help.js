@@ -18,7 +18,7 @@ function help_article_summary_element(article) {
     card.appendChild(title);
 
     const summary = document.createElement('p');
-    summary.className = 'Muted';
+    summary.className = 'muted';
     summary.textContent = article.summary;
     card.appendChild(summary);
 
@@ -110,7 +110,7 @@ document.addEventListener('input', (event) => {
 
         if (data.response.articles.length === 0) {
             const empty = document.createElement('p');
-            empty.className = 'Muted';
+            empty.className = 'muted';
             empty.textContent = 'No help articles matched your search.';
             results.appendChild(empty);
             return;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 class ParentPostLink extends HTMLObject
 {
     public string $tagName = 'p';
-    public ?string $class = 'Muted text-sm ParentPostLink';
+    public ?string $class = 'muted text-sm ParentPostLink';
 
     public ?int $parentId = null;
     public ?string $parentUsername = null;

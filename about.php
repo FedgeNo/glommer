@@ -17,7 +17,7 @@ $policy_card -> addContent(new SitePolicyLinks());
 $page -> addContent($policy_card);
 
 $version = new Paragraph('This site runs ');
-$version -> class = 'Muted text-sm';
+$version -> class = 'muted text-sm';
 $version -> addContent(new Anchor('https://github.com/FedgeNo/glommer', 'Glommer'));
 $version -> addContent(' version ' . GLOMMER_VERSION);
 

@@ -70,11 +70,46 @@ class Post extends HTMLObject
             $this -> class .= ' PostStandalone';
         }
 
-        // The id belongs to the post, so it's carried once on the card - the
-        // action bar's buttons and the JS handlers behind them read it from
-        // here rather than each repeating it.
+        // The post's own columns, carried once on the card that represents it -
+        // the content, the action bar's buttons and the JS behind them all read
+        // them from here. Attribute names match the column names.
         if ($this -> postId !== null) {
-            $this -> attributes['data-item-id'] = (string) $this -> postId;
+            $this -> attributes['data-post-id'] = (string) $this -> postId;
+        }
+
+        if ($this -> parentId !== null) {
+            $this -> attributes['data-parent-id'] = (string) $this -> parentId;
+        }
+
+        if ($this -> userId !== null) {
+            $this -> attributes['data-user-id'] = (string) $this -> userId;
+        }
+
+        if ($this -> keywords !== null) {
+            $this -> attributes['data-keywords'] = $this -> keywords;
+        }
+
+        if ($this -> createdAt !== null) {
+            $this -> attributes['data-created-at'] = date(DATE_ATOM, strtotime($this -> createdAt));
+        }
+
+        // The raw, untruncated Delta an edit needs to repopulate Quill -
+        // toPayload()'s descriptionDelta is truncated for feed display, so
+        // editing needs this separately. Only present for the viewer's own
+        // post: nobody else can ever open the edit form, and everyone else's
+        // feed shouldn't ship data they'll never use. Data, not markup - the
+        // client reads it and feeds it straight to Quill.setContents(), no
+        // HTML crosses the wire.
+        if ($this -> userId !== null && Auth::id() === $this -> userId) {
+            $this -> attributes['data-description-delta'] = $this -> descriptionDelta ?? '';
+            $this -> attributes['data-title'] = $this -> title ?? '';
+            $this -> attributes['data-link-url'] = $this -> linkURL ?? '';
+
+            // The edit form hides the Link field for a media post: attached
+            // media and a link are mutually exclusive (api/edit-post.php
+            // enforces the same XOR create-post.php always has), and a media
+            // post never had a link to begin with, so there's nothing to edit.
+            $this -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
         }
 
         $this -> contents[] = $this -> contentElement();
@@ -108,45 +143,6 @@ class Post extends HTMLObject
     {
         $content = new Div();
         $content -> class = 'PostContent';
-
-        if ($this -> postId !== null) {
-            $content -> attributes['data-post-id'] = (string) $this -> postId;
-        }
-
-        if ($this -> parentId !== null) {
-            $content -> attributes['data-parent-id'] = (string) $this -> parentId;
-        }
-
-        if ($this -> userId !== null) {
-            $content -> attributes['data-author-id'] = (string) $this -> userId;
-        }
-
-        if ($this -> keywords !== null) {
-            $content -> attributes['data-keywords'] = $this -> keywords;
-        }
-
-        if ($this -> createdAt !== null) {
-            $content -> attributes['data-created-at'] = $this -> createdAt;
-        }
-
-        // The raw, untruncated Delta an edit needs to repopulate Quill -
-        // toPayload()'s descriptionDelta is truncated for feed display, so
-        // editing needs this separately. Only present for the viewer's own
-        // post: nobody else can ever open the edit form, and everyone else's
-        // feed shouldn't ship data they'll never use. Data, not markup - the
-        // client reads it and feeds it straight to Quill.setContents(), no
-        // HTML crosses the wire.
-        if ($this -> userId !== null && Auth::id() === $this -> userId) {
-            $content -> attributes['data-description-delta'] = $this -> descriptionDelta ?? '';
-            $content -> attributes['data-edit-title'] = $this -> title ?? '';
-            $content -> attributes['data-edit-link-url'] = $this -> linkURL ?? '';
-
-            // The edit form hides the Link field for a media post: attached
-            // media and a link are mutually exclusive (api/edit-post.php
-            // enforces the same XOR create-post.php always has), and a media
-            // post never had a link to begin with, so there's nothing to edit.
-            $content -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
-        }
 
         if ($this -> author !== null) {
             $content -> contents[] = $this -> authorByline();

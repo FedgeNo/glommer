@@ -355,6 +355,20 @@ p a:hover {
     margin-bottom: 0;
 }
 
+/* The results wait out of the way until there's a search to show. main.js
+   trades this section and the feed under it as the query comes and goes. */
+.SearchFeedSection {
+    display: none;
+}
+
+.SearchFeedSection.Searching {
+    display: block;
+}
+
+.ProfileFeedSection.Searching {
+    display: none;
+}
+
 /* A deleted item collapses instead of vanishing, so the change is visible even
    in a column of near-identical cards. Kept in step with SLIDE_OUT_MS in
    main.js. */
@@ -1458,25 +1472,39 @@ input[type='file']::file-selector-button {
     margin-bottom: 1.5rem;
 }
 
-.UserSearchBox,
-.BannedUserSearchBox,
-.PostSearchBox {
+.SearchBox {
+    position: relative;
+    display: flex;
+    align-items: center;
     padding: 0.5rem;
 }
 
-.UserSearchInput,
-.BannedUserSearchInput,
-.PostSearchInput {
+.SearchInput {
     width: 100%;
     border: none;
     background-color: transparent;
     font-size: 1rem;
 }
 
-.UserSearchInput:focus,
-.BannedUserSearchInput:focus,
-.PostSearchInput:focus {
+.SearchInput:focus {
     box-shadow: none;
+}
+
+/* Only offered once there's something to clear. */
+.SearchClearButton {
+    display: none;
+    flex: none;
+    padding: 0 0.25rem;
+    border: none;
+    background: none;
+    color: var(--danger);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.SearchBox.HasQuery .SearchClearButton {
+    display: block;
 }
 
 .FaviconPreview {

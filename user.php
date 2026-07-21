@@ -51,6 +51,7 @@ if ($profile_feed -> hasItems()) {
         // active the default feed below is hidden and the results take its place
         // (see main.js); clearing the box brings the feed back.
         $page -> addContent(new PostSearch(['authorId' => $user_id, 'placeholder' => 'Search ' . $profile_user -> title . '\'s posts...']));
+        $page -> addContent(new SearchFeedSection(['authorId' => $user_id]));
     }
 
     $page -> addContent($profile_feed);

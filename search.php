@@ -8,4 +8,5 @@ Auth::requireLogin();
 
 $page = new Page(['title' => 'Search']);
 $page -> addContent(new PostSearch());
+$page -> addContent(new SearchFeedSection());
 $page -> send();

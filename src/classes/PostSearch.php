@@ -22,8 +22,6 @@ class PostSearch extends HTMLObject
 
         $this -> contents[] = new PostSearchBox(['placeholder' => $this -> placeholder]);
 
-        $this -> contents[] = new SearchFeedList(['authorId' => $this -> authorId]);
-
         return parent::toDOM();
     }
 }

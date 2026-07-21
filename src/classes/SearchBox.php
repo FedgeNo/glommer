@@ -17,6 +17,7 @@ abstract class SearchBox extends Div
     public function toDOM(): \DOMElement
     {
         $this -> contents[] = $this -> input();
+        $this -> contents[] = new SearchClearButton();
 
         return parent::toDOM();
     }

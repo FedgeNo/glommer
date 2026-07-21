@@ -626,6 +626,33 @@ document.addEventListener('keydown', (event) => {
     textarea.closest('form').requestSubmit();
 });
 
+// The clear button only offers itself once the field has something in it.
+document.addEventListener('input', (event) => {
+    const input = event.target.closest('.SearchInput');
+
+    if (!input) {
+        return;
+    }
+
+    input.closest('.SearchBox')?.classList.toggle('HasQuery', input.value !== '');
+});
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('.SearchClearButton');
+
+    if (!button) {
+        return;
+    }
+
+    const input = button.closest('.SearchBox').querySelector('.SearchInput');
+
+    input.value = '';
+    input.focus();
+
+    // The searches all listen for input, so clearing is just an empty query.
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+});
+
 document.addEventListener('input', (event) => {
     const input = event.target.closest('.UserSearchInput');
 
@@ -775,19 +802,16 @@ document.addEventListener('input', (event) => {
     const debounce_id = setTimeout(async () => {
         const query = input.value.trim();
         const post_search = input.closest('.PostSearch');
-        const results = post_search.querySelector('.SearchFeedList');
+        const results = document.querySelector('.SearchFeedList');
 
         // On a profile page PostSearch carries the author's id (data-user-id),
-        // so the search is restricted to their posts and the default feed is
-        // hidden while a query is active (the results take its place); clearing
-        // the box brings the feed back. Global /search has no author / no feed.
+        // so the search is restricted to their posts. Global /search has no
+        // author and no feed under it.
         const author_id = post_search.dataset.userId || '';
 
-        const profile_feed = document.querySelector('.ProfileFeedSection');
-
-        if (profile_feed) {
-            profile_feed.style.display = query === '' ? '' : 'none';
-        }
+        // The results section and the feed under it take turns.
+        document.querySelector('.SearchFeedSection')?.classList.toggle('Searching', query !== '');
+        document.querySelector('.ProfileFeedSection')?.classList.toggle('Searching', query !== '');
 
         // Abort whatever this input's previous search is still waiting on -
         // without this, a slower earlier response can resolve after a faster

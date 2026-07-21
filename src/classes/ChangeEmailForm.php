@@ -13,8 +13,10 @@ class ChangeEmailForm extends Form
 
         $fields = new Fieldset('Change your email address');
 
+        // The browser's saved address is the one being replaced, so offering it
+        // back fills the field with the wrong answer.
         $new_email = new InputField('newEmail', 'New email address', 'email', 'New email address', 255);
-        $new_email -> autocomplete = 'email';
+        $new_email -> autocomplete = 'off';
         $new_email -> labelVisible = true;
         $fields -> addContent($new_email);
 

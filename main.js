@@ -2557,6 +2557,24 @@ function list_item(child) {
     return item;
 }
 
+// How far down the page has to be before the trip back is worth offering.
+const SCROLL_TO_TOP_AT = 600;
+
+window.addEventListener('scroll', () => {
+    document.querySelector('.ScrollToTopButton')
+        ?.classList.toggle('Scrolled', window.scrollY > SCROLL_TO_TOP_AT);
+});
+
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('.ScrollToTopButton')) {
+        return;
+    }
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+});
+
 // Kept in step with the .SlidingOut transition in style.css.
 const SLIDE_OUT_MS = 200;
 

@@ -185,6 +185,10 @@ class Page extends HTMLDocument
         }
 
         array_splice($this -> body -> contents, 0, 0, $chrome);
+
+        // Last in the body so it sits above the page's own content without a
+        // stacking context to fight.
+        $this -> body -> addContent(new ScrollToTopButton());
     }
 
     public static function safeJSONForScript(mixed $data): string

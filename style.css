@@ -355,6 +355,29 @@ p a:hover {
     margin-bottom: 0;
 }
 
+/* Offered only once there's a scroll worth undoing (main.js reveals it). It
+   clears the content column on a wide screen and tucks into the corner on a
+   narrow one. */
+.ScrollToTopButton {
+    display: none;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 20;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-card);
+    color: var(--ink);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.ScrollToTopButton.Scrolled {
+    display: block;
+}
+
 /* The results wait out of the way until there's a search to show. main.js
    trades this section and the feed under it as the query comes and goes. */
 .SearchFeedSection {

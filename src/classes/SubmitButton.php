@@ -9,7 +9,7 @@ class SubmitButton extends Button
         parent::__construct();
 
         $this -> type = 'submit';
-        $this -> class = 'Btn align-self-end';
+        $this -> class = 'Button align-self-end';
         $this -> contents[] = $label;
     }
 }

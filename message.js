@@ -46,7 +46,7 @@ class Message {
         if (window.currentUserId !== null && Number(this.senderId) !== Number(window.currentUserId) && Number(this.senderId) !== 1) {
             const report_button = document.createElement('button');
             report_button.type = 'button';
-            report_button.className = 'Btn ReportButton';
+            report_button.className = 'Button ReportButton';
             report_button.dataset.targetType = 'message';
             report_button.dataset.targetId = this.messageId;
             report_button.textContent = 'Report';

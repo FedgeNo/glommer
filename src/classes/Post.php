@@ -70,6 +70,13 @@ class Post extends HTMLObject
             $this -> class .= ' PostStandalone';
         }
 
+        // The id belongs to the post, so it's carried once on the card - the
+        // action bar's buttons and the JS handlers behind them read it from
+        // here rather than each repeating it.
+        if ($this -> postId !== null) {
+            $this -> attributes['data-item-id'] = (string) $this -> postId;
+        }
+
         $this -> contents[] = $this -> contentElement();
 
         // A report snapshot embeds the content alone; every feed/permalink post

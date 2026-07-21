@@ -13,7 +13,7 @@ class DeleteContentButton extends Button
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'Btn DeleteReportedContentButton';
+        $this -> class = 'Button DeleteReportedContentButton';
         $this -> attributes['data-report-id'] = (string) $report_id;
         $this -> contents[] = $label;
     }

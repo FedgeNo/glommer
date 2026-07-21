@@ -8,7 +8,7 @@ class FriendResponseButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Btn ' . ($action === 'accept' ? 'AcceptFriendButton' : 'DenyFriendButton');
+        $this -> class = 'Button ' . ($action === 'accept' ? 'AcceptFriendButton' : 'DenyFriendButton');
         $this -> attributes['data-friendship-id'] = (string) $friendship_id;
         $this -> contents[] = $action === 'accept' ? 'Accept' : 'Deny';
     }

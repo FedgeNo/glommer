@@ -38,6 +38,7 @@ if ($profile_user -> avatarURL() !== null) {
 }
 
 $page -> needsMath = true;
+$page -> needsEditor = Auth::check();
 
 $page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> slug . '/feed.xml'), $profile_user -> title);
 

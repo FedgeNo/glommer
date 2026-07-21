@@ -415,12 +415,12 @@ function show_confirm(message) {
 
         const cancel_button = document.createElement('button');
         cancel_button.type = 'button';
-        cancel_button.className = 'Btn ConfirmDialogCancelButton';
+        cancel_button.className = 'Button ConfirmDialogCancelButton';
         cancel_button.textContent = 'Cancel';
 
         const confirm_button = document.createElement('button');
         confirm_button.type = 'button';
-        confirm_button.className = 'Btn ConfirmDialogConfirmButton';
+        confirm_button.className = 'Button ConfirmDialogConfirmButton';
         confirm_button.textContent = 'OK';
 
         actions.appendChild(cancel_button);
@@ -494,12 +494,12 @@ function show_prompt(message, options = {}) {
 
         const cancel_button = document.createElement('button');
         cancel_button.type = 'button';
-        cancel_button.className = 'Btn ConfirmDialogCancelButton';
+        cancel_button.className = 'Button ConfirmDialogCancelButton';
         cancel_button.textContent = 'Cancel';
 
         const confirm_button = document.createElement('button');
         confirm_button.type = 'button';
-        confirm_button.className = 'Btn ConfirmDialogConfirmButton';
+        confirm_button.className = 'Button ConfirmDialogConfirmButton';
         confirm_button.textContent = options.confirmLabel || 'OK';
         confirm_button.disabled = true;
 
@@ -1086,7 +1086,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const item_id = button.dataset.itemId;
+    const item_id = button.closest('.Post')?.dataset.itemId;
 
     button.disabled = true;
 
@@ -1111,7 +1111,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const item_id = button.dataset.itemId;
+    const item_id = button.closest('.Post')?.dataset.itemId;
 
     button.disabled = true;
 
@@ -1140,7 +1140,7 @@ document.addEventListener('click', async (event) => {
         return;
     }
 
-    const item_id = button.dataset.itemId;
+    const item_id = button.closest('.Post')?.dataset.itemId;
 
     button.disabled = true;
 
@@ -1249,13 +1249,13 @@ document.addEventListener('click', (event) => {
 
     const cancel_button = document.createElement('button');
     cancel_button.type = 'button';
-    cancel_button.className = 'Btn EditFormCancelButton';
+    cancel_button.className = 'Button EditFormCancelButton';
     cancel_button.textContent = 'Cancel';
     actions.appendChild(cancel_button);
 
     const save_button = document.createElement('button');
     save_button.type = 'submit';
-    save_button.className = 'Btn';
+    save_button.className = 'Button';
     save_button.textContent = 'Save';
     actions.appendChild(save_button);
 
@@ -3927,7 +3927,7 @@ function profile_enter_edit(card) {
 
     const save = document.createElement('button');
     save.type = 'button';
-    save.className = 'Btn ProfileSaveButton';
+    save.className = 'Button ProfileSaveButton';
     save.textContent = 'Save';
     bio_input.after(save);
 

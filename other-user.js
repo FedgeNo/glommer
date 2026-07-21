@@ -45,7 +45,7 @@ class OtherUser extends User {
         if (this.blockedByViewer) {
             const unblock_button = document.createElement('button');
             unblock_button.type = 'button';
-            unblock_button.className = 'Btn UnblockUserButton ms-auto';
+            unblock_button.className = 'Button UnblockUserButton ms-auto';
             unblock_button.dataset.userId = this.userId;
             unblock_button.textContent = 'Unblock';
             div.appendChild(unblock_button);
@@ -60,7 +60,7 @@ class OtherUser extends User {
             if (this.friendshipStatus === null || sent_by_viewer) {
                 const friend_button = document.createElement('button');
                 friend_button.type = 'button';
-                friend_button.className = 'Btn FriendRequestButton';
+                friend_button.className = 'Button FriendRequestButton';
                 friend_button.dataset.userId = this.userId;
                 friend_button.dataset.sent = sent_by_viewer ? '1' : '0';
                 friend_button.textContent = sent_by_viewer ? 'Cancel' : 'Add Friend';
@@ -68,13 +68,13 @@ class OtherUser extends User {
             }
 
             const message_link = document.createElement('a');
-            message_link.className = 'Btn';
+            message_link.className = 'Button';
             message_link.href = window.siteURL + '/messages/' + this.slug;
             message_link.textContent = 'Message';
 
             const block_button = document.createElement('button');
             block_button.type = 'button';
-            block_button.className = 'Btn BlockUserButton';
+            block_button.className = 'Button BlockUserButton';
             block_button.dataset.userId = this.userId;
             block_button.textContent = 'Block';
 
@@ -87,13 +87,13 @@ class OtherUser extends User {
                 if (window.currentUserCanModerate) {
                     report_or_ban_button = document.createElement('button');
                     report_or_ban_button.type = 'button';
-                    report_or_ban_button.className = 'Btn BanButton';
+                    report_or_ban_button.className = 'Button BanButton';
                     report_or_ban_button.dataset.userId = this.userId;
                     report_or_ban_button.textContent = 'Ban';
                 } else {
                     report_or_ban_button = document.createElement('button');
                     report_or_ban_button.type = 'button';
-                    report_or_ban_button.className = 'Btn ReportButton';
+                    report_or_ban_button.className = 'Button ReportButton';
                     report_or_ban_button.dataset.targetType = 'user';
                     report_or_ban_button.dataset.targetId = this.userId;
                     report_or_ban_button.textContent = 'Report';
@@ -103,7 +103,7 @@ class OtherUser extends User {
             actions.appendChild(message_link);
 
             const friends_link = document.createElement('a');
-            friends_link.className = 'Btn';
+            friends_link.className = 'Button';
             friends_link.href = window.siteURL + '/users/' + this.slug + '/friends';
             friends_link.textContent = 'Friends';
             actions.appendChild(friends_link);
@@ -111,7 +111,7 @@ class OtherUser extends User {
             if (this.friendshipStatus === 'accepted') {
                 const remove_friend_button = document.createElement('button');
                 remove_friend_button.type = 'button';
-                remove_friend_button.className = 'Btn RemoveFriendButton';
+                remove_friend_button.className = 'Button RemoveFriendButton';
                 remove_friend_button.dataset.userId = this.userId;
                 remove_friend_button.textContent = 'Remove Friend';
                 actions.appendChild(remove_friend_button);
@@ -122,7 +122,7 @@ class OtherUser extends User {
             if (Number(window.currentUserId) === 1) {
                 const mod_button = document.createElement('button');
                 mod_button.type = 'button';
-                mod_button.className = 'Btn ModButton';
+                mod_button.className = 'Button ModButton';
                 mod_button.dataset.userId = this.userId;
                 mod_button.dataset.isMod = this.isMod ? '1' : '0';
                 mod_button.textContent = this.isMod ? 'Remove Mod' : 'Make Mod';
@@ -151,13 +151,13 @@ class FriendRequest extends OtherUser {
     beforeActions() {
         const accept = document.createElement('button');
         accept.type = 'button';
-        accept.className = 'Btn AcceptFriendButton';
+        accept.className = 'Button AcceptFriendButton';
         accept.dataset.friendshipId = this.friendshipId;
         accept.textContent = 'Accept';
 
         const deny = document.createElement('button');
         deny.type = 'button';
-        deny.className = 'Btn DenyFriendButton';
+        deny.className = 'Button DenyFriendButton';
         deny.dataset.friendshipId = this.friendshipId;
         deny.textContent = 'Deny';
 

@@ -20,7 +20,7 @@ class VerificationNotice extends HTMLObject
 
         $resend_button = new Button();
         $resend_button -> type = 'button';
-        $resend_button -> class = 'Btn ResendVerificationButton';
+        $resend_button -> class = 'Button ResendVerificationButton';
         $resend_button -> contents[] = 'Resend verification email';
         $actions -> addContent($resend_button);
 

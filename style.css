@@ -509,6 +509,7 @@ p a:hover {
 .PageTitle {
     position: fixed;
     top: var(--nav-height);
+    height: var(--nav-height);
     left: 0;
     right: 0;
     margin-top: 0;
@@ -516,7 +517,7 @@ p a:hover {
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--hairline);
-    padding: 0.7rem 1rem;
+    padding: 0.6rem 1rem;
     padding-inline: max(1rem, calc((100% - 40rem) / 2));
     z-index: 10;
     white-space: nowrap;
@@ -811,7 +812,7 @@ p a:hover {
    Hierarchy: submit = filled jade; regular chips = quiet tonal;
    destructive = red-tinted; liked state = filled. */
 
-.Btn {
+.Button {
     background-color: var(--surface-2);
     color: var(--ink) !important;
     border: none;
@@ -824,28 +825,28 @@ p a:hover {
     transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
 }
 
-.Btn:hover {
+.Button:hover {
     background-color: color-mix(in srgb, var(--surface-2) 80%, var(--ink) 8%);
     color: var(--ink) !important;
 }
 
-.Btn:active {
+.Button:active {
     transform: scale(0.97);
 }
 
-.Btn:disabled {
+.Button:disabled {
     opacity: 0.55;
     cursor: default;
     transform: none;
 }
 
-button[type='submit'].Btn,
+button[type='submit'].Button,
 .ProfileSaveButton {
     background-color: var(--accent);
     color: var(--accent-ink) !important;
 }
 
-button[type='submit'].Btn:hover,
+button[type='submit'].Button:hover,
 .ProfileSaveButton:hover {
     background-color: var(--accent-strong);
     color: var(--accent-ink) !important;
@@ -898,12 +899,12 @@ button[type='submit'].Btn:hover,
     background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
 }
 
-a.Btn {
+a.Button {
     display: inline-block;
     text-align: center;
 }
 
-a.Btn:hover {
+a.Button:hover {
     color: var(--ink) !important;
 }
 
@@ -1887,6 +1888,14 @@ input[type='file']::file-selector-button {
    toolbar's own height. min-height so it still grows with real content. */
 .EditorColumn {
     min-height: 7.25rem;
+}
+
+/* The edit form drops this straight into a fieldset, which is a column flex
+   container - so the flex-basis it carries for the composer's row would apply
+   to height and collapse it against the toolbar. Sizing from content instead
+   still stretches to full width on the cross axis. */
+.PostEditForm .EditorColumn {
+    flex: 0 0 auto;
 }
 
 .ql-toolbar.ql-snow {

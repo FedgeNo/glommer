@@ -12,7 +12,7 @@ class DismissReportButton extends Button
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'Btn DismissReportButton';
+        $this -> class = 'Button DismissReportButton';
         $this -> attributes['data-report-id'] = (string) $report_id;
         $this -> contents[] = 'Dismiss';
     }

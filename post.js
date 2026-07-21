@@ -328,6 +328,7 @@ class Post {
     toElement() {
         const card = document.createElement('div');
         card.className = 'Post Card MountIn';
+        card.dataset.itemId = this.postId;
 
         card.appendChild(this.postElement());
 
@@ -344,7 +345,7 @@ class Post {
 
         if (logged_in || this.replyCount > 0) {
             const replies_link = document.createElement('a');
-            replies_link.className = 'Btn';
+            replies_link.className = 'Button';
             replies_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
             replies_link.textContent = this.replyCount === 0 ? 'Reply' : 'Replies (' + this.replyCount + ')';
             actions.appendChild(replies_link);
@@ -353,16 +354,14 @@ class Post {
         if (logged_in) {
             const like_button = document.createElement('button');
             like_button.type = 'button';
-            like_button.className = 'Btn LikeButton';
-            like_button.dataset.itemId = this.postId;
+            like_button.className = 'Button LikeButton';
             like_button.dataset.liked = this.liked ? '1' : '0';
             like_button.textContent = (this.liked ? 'Unlike' : 'Like') + ' (' + this.likeCount + ')';
             actions.appendChild(like_button);
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';
-            bookmark_button.className = 'Btn BookmarkButton';
-            bookmark_button.dataset.itemId = this.postId;
+            bookmark_button.className = 'Button BookmarkButton';
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
             bookmark_button.textContent = this.bookmarked ? 'Bookmarked' : 'Bookmark';
             actions.appendChild(bookmark_button);
@@ -370,15 +369,13 @@ class Post {
             if (Number(this.userId) === Number(window.currentUserId)) {
                 const edit_button = document.createElement('button');
                 edit_button.type = 'button';
-                edit_button.className = 'Btn EditButton';
-                edit_button.dataset.itemId = this.postId;
+                edit_button.className = 'Button EditButton';
                 edit_button.textContent = 'Edit';
                 actions.appendChild(edit_button);
 
                 const delete_button = document.createElement('button');
                 delete_button.type = 'button';
-                delete_button.className = 'Btn DeleteButton';
-                delete_button.dataset.itemId = this.postId;
+                delete_button.className = 'Button DeleteButton';
                 delete_button.textContent = 'Delete';
                 actions.appendChild(delete_button);
             } else if (Number(this.userId) !== 1) {
@@ -386,7 +383,7 @@ class Post {
                 // nobody could act on the report anyway).
                 const report_button = document.createElement('button');
                 report_button.type = 'button';
-                report_button.className = 'Btn ReportButton';
+                report_button.className = 'Button ReportButton';
                 report_button.dataset.targetType = 'post';
                 report_button.dataset.targetId = this.postId;
                 report_button.textContent = 'Report';

@@ -17,7 +17,7 @@ class OtherUser extends User
         if (Block::blockedBy($viewer_id, $this -> userId)) {
             $unblock_button = new Button();
             $unblock_button -> type = 'button';
-            $unblock_button -> class = 'Btn UnblockUserButton ms-auto';
+            $unblock_button -> class = 'Button UnblockUserButton ms-auto';
             $unblock_button -> attributes['data-user-id'] = (string) $this -> userId;
             $unblock_button -> contents[] = 'Unblock';
             $element -> appendChild($unblock_button -> toDOM());
@@ -51,7 +51,7 @@ class OtherUser extends User
 
             $follow_button = new Button();
             $follow_button -> type = 'button';
-            $follow_button -> class = 'Btn FollowUserButton';
+            $follow_button -> class = 'Button FollowUserButton';
             $follow_button -> attributes['data-user-id'] = (string) $this -> userId;
             $follow_button -> attributes['data-following'] = $following ? '1' : '0';
             $follow_button -> contents[] = $following ? 'Unfollow' : 'Follow';
@@ -60,7 +60,7 @@ class OtherUser extends User
             if ($friendship === null || $sent_by_viewer) {
                 $friend_button = new Button();
                 $friend_button -> type = 'button';
-                $friend_button -> class = 'Btn FriendRequestButton';
+                $friend_button -> class = 'Button FriendRequestButton';
                 $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
                 $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
                 $friend_button -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
@@ -68,12 +68,12 @@ class OtherUser extends User
             }
 
             $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> slug), 'Message');
-            $message_link -> class = 'Btn';
+            $message_link -> class = 'Button';
             $actions -> addContent($message_link);
         }
 
         $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), 'Friends');
-        $friends_link -> class = 'Btn';
+        $friends_link -> class = 'Button';
         $actions -> addContent($friends_link);
 
         if ($friendship !== null && $friendship -> status === 'accepted') {
@@ -92,7 +92,7 @@ class OtherUser extends User
 
         $block_button = new Button();
         $block_button -> type = 'button';
-        $block_button -> class = 'Btn BlockUserButton';
+        $block_button -> class = 'Button BlockUserButton';
         $block_button -> attributes['data-user-id'] = (string) $this -> userId;
         $block_button -> contents[] = 'Block';
         $actions -> addContent($block_button);

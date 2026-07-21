@@ -8,7 +8,7 @@ class UnbanButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Btn UnbanButton';
+        $this -> class = 'Button UnbanButton';
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> contents[] = 'Unban';
     }

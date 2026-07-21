@@ -8,7 +8,7 @@ class BanTrendingEntityButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Btn BanTrendingEntityButton';
+        $this -> class = 'Button BanTrendingEntityButton';
         $this -> attributes['data-entity-type'] = $entity_type;
         $this -> attributes['data-entity-value'] = $entity_value;
         $this -> addContent('Ban');

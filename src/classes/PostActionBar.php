@@ -75,8 +75,7 @@ SELECT 1
         }
 
         $button = new Button();
-        $button -> class = 'Btn LikeButton';
-        $button -> attributes['data-item-id'] = (string) $this -> postId;
+        $button -> class = 'Button LikeButton';
         $button -> attributes['data-liked'] = $already_liked ? '1' : '0';
         $button -> contents[] = self::likeLabel($already_liked, $count);
 
@@ -100,8 +99,7 @@ SELECT 1
         }
 
         $button = new Button();
-        $button -> class = 'Btn BookmarkButton';
-        $button -> attributes['data-item-id'] = (string) $this -> postId;
+        $button -> class = 'Button BookmarkButton';
         $button -> attributes['data-bookmarked'] = $already_bookmarked ? '1' : '0';
         $button -> contents[] = self::bookmarkLabel($already_bookmarked);
 
@@ -116,7 +114,7 @@ SELECT 1
     protected function replyButton(): HTMLObject
     {
         $link = new Anchor(ServerURL::absolute('/users/' . $this -> postUsername . '/' . $this -> postId), self::replyLabel($this -> replyCount));
-        $link -> class = 'Btn';
+        $link -> class = 'Button';
 
         return $link;
     }
@@ -129,8 +127,7 @@ SELECT 1
     protected function editButton(): HTMLObject
     {
         $button = new Button();
-        $button -> class = 'Btn EditButton';
-        $button -> attributes['data-item-id'] = (string) $this -> postId;
+        $button -> class = 'Button EditButton';
         $button -> contents[] = 'Edit';
 
         return $button;
@@ -139,8 +136,7 @@ SELECT 1
     protected function deleteButton(): HTMLObject
     {
         $button = new Button();
-        $button -> class = 'Btn DeleteButton';
-        $button -> attributes['data-item-id'] = (string) $this -> postId;
+        $button -> class = 'Button DeleteButton';
 
         if ($this -> standalone) {
             $button -> attributes['data-standalone'] = '1';

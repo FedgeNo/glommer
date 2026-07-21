@@ -237,3 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['SCRIPT_FILENAME'
         exit;
     }
 }
+
+function truncate($str, int $len = 50) {
+    return strlen($str) < $len + 1 ? $str : mb_substr($str, 0, $len) . '…';
+
+}

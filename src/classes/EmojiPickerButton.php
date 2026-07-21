@@ -17,7 +17,7 @@ class EmojiPickerButton extends HTMLObject
     {
         $trigger = new Button();
         $trigger -> type = 'button';
-        $trigger -> class = 'Btn EmojiTriggerButton';
+        $trigger -> class = 'Button EmojiTriggerButton';
         $trigger -> attributes['aria-label'] = 'Insert emoji';
         $trigger -> contents[] = '🙂';
         $this -> contents[] = $trigger;

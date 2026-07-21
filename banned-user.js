@@ -21,7 +21,7 @@ class BannedUser extends User {
 
         const unban = document.createElement('button');
         unban.type = 'button';
-        unban.className = 'ms-auto Btn UnbanButton';
+        unban.className = 'ms-auto Button UnbanButton';
         unban.dataset.userId = this.userId;
         unban.textContent = 'Unban';
         row.appendChild(unban);

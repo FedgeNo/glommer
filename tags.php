@@ -46,7 +46,7 @@ if (!$feed -> hasItems()) {
     exit;
 }
 
-$page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on Glommer.', 'needsMath' => true]);
+$page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on Glommer.', 'needsMath' => true, 'needsEditor' => Auth::check()]);
 
 $page -> addContent($feed);
 

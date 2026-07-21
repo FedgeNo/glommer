@@ -119,7 +119,7 @@ class ReportCard {
         if (this.targetLive && (this.targetType === 'post' || this.targetType === 'message')) {
             const delete_button = document.createElement('button');
             delete_button.type = 'button';
-            delete_button.className = 'Btn DeleteReportedContentButton';
+            delete_button.className = 'Button DeleteReportedContentButton';
             delete_button.dataset.reportId = this.reportId;
             delete_button.textContent = 'Delete ' + capitalize(this.targetType);
             actions.appendChild(delete_button);
@@ -127,7 +127,7 @@ class ReportCard {
 
         const dismiss_button = document.createElement('button');
         dismiss_button.type = 'button';
-        dismiss_button.className = 'Btn DismissReportButton';
+        dismiss_button.className = 'Button DismissReportButton';
         dismiss_button.dataset.reportId = this.reportId;
         dismiss_button.textContent = 'Dismiss';
         actions.appendChild(dismiss_button);
@@ -142,7 +142,7 @@ class ReportCard {
     banButton(user_id, label) {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'Btn BanButton';
+        button.className = 'Button BanButton';
         button.dataset.userId = user_id;
         button.textContent = label;
 

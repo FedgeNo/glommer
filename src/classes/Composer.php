@@ -60,7 +60,7 @@ abstract class Composer extends Form
         $file_input -> attributes['aria-label'] = 'Attach images, video, or audio';
 
         $submit_button = new SubmitButton($this -> submitLabel());
-        $submit_button -> class = 'Btn';
+        $submit_button -> class = 'Button';
 
         $actions = new Div();
         $actions -> class = 'd-flex align-items-center gap-2 ms-auto';

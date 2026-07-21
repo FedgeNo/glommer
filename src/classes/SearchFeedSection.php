@@ -17,10 +17,10 @@ class SearchFeedSection extends ListSection
 
     protected bool $headsEmptyList = true;
 
-    public int $authorId = 0;
+    public int $userId = 0;
 
     protected function list(): ItemLoader
     {
-        return new SearchFeedList(['authorId' => $this -> authorId]);
+        return new SearchFeedList(['userId' => $this -> userId]);
     }
 }

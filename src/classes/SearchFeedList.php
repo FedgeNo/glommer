@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The posts matching a search, newest first. authorId scopes the search to one
+ * The posts matching a search, newest first. userId scopes the search to one
  * profile's posts; 0 searches everyone. Empty on the server until there's a
  * query - the client fills it from api/search-posts.php as you type.
  *
@@ -21,7 +21,7 @@ class SearchFeedList extends FeedList
     protected string $feedType = 'search';
 
     public string $query = '';
-    public int $authorId = 0;
+    public int $userId = 0;
 
     protected function rows(): array
     {
@@ -40,6 +40,6 @@ SELECT `Posts`.*
         AND (? = 0 OR `Posts`.`userId` = ?)
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
-', 'Post', 'siiiii', $this -> query, $not_banned, $this -> authorId, $this -> authorId, static::PAGE_SIZE + 1, $this -> offset));
+', 'Post', 'siiiii', $this -> query, $not_banned, $this -> userId, $this -> userId, static::PAGE_SIZE + 1, $this -> offset));
     }
 }

@@ -819,7 +819,7 @@ document.addEventListener('input', (event) => {
         // On a profile page PostSearch carries the author's id (data-user-id),
         // so the search is restricted to their posts. Global /search has no
         // author and no feed under it.
-        const author_id = post_search.dataset.userId || '';
+        const user_id = post_search.dataset.userId || '';
 
         // The results section and the feed under it take turns.
         document.querySelector('.SearchFeedSection')?.classList.toggle('Searching', query !== '');
@@ -838,7 +838,7 @@ document.addEventListener('input', (event) => {
             const response = await fetch(window.siteURL + '/api/search-posts', {
                 method: 'POST',
                 headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({ q: query, userId: author_id }),
+                body: JSON.stringify({ q: query, userId: user_id }),
                 signal: controller.signal,
             });
 
@@ -857,7 +857,7 @@ document.addEventListener('input', (event) => {
         // to keep paginating; the offset it resumes from is just the count of
         // results already shown.
         results.dataset.query = query;
-        results.dataset.userId = author_id;
+        results.dataset.userId = user_id;
         results.dataset.hasMore = data.response.hasMore ? '1' : '0';
 
         data.response.posts.forEach((post_data) => {

@@ -22,7 +22,7 @@ $query = trim((string) ($payload['q'] ?? ''));
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 // Optional: restrict the search to one author's posts (the per-user search on a
 // profile page). 0 means "everyone" - the global /search behaviour.
-$author_id = (int) ($payload['userId'] ?? 0);
+$user_id = (int) ($payload['userId'] ?? 0);
 
 if ($query === '') {
     JSONResponse::success(['posts' => [], 'hasMore' => false]) -> send();
@@ -30,7 +30,7 @@ if ($query === '') {
 
 $page = new SearchFeedList([
     'query' => $query,
-    'authorId' => $author_id,
+    'userId' => $user_id,
     'offset' => $offset,
 ]) -> toJSON();
 

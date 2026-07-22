@@ -27,4 +27,22 @@ class UsernameTest extends TestCase
         $this -> assertSame('', User::normaliseUsername('!!!'));
         $this -> assertSame('', User::normaliseUsername('   '));
     }
+
+    /**
+     * The sign-up field's own maxlength has to agree with what the server
+     * would store, or the form would let someone type a name that is silently
+     * truncated on submit.
+     */
+    public function testTheSignupFieldAllowsExactlyTheStorableLength(): void
+    {
+        (new \ReflectionProperty(HTMLObject::class, 'document')) -> setValue(null, new \DOMDocument());
+
+        $form = (new SignupForm()) -> toDOM();
+        HTMLObject::currentDocument() -> appendChild($form);
+
+        $username = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//input[@name="username"]', $form);
+
+        $this -> assertSame(1, $username -> length);
+        $this -> assertSame(User::MAX_USERNAME_LENGTH, (int) $username -> item(0) -> getAttribute('maxlength'));
+    }
 }

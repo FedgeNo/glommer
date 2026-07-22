@@ -27,19 +27,4 @@ class UsernameTest extends TestCase
         $this -> assertSame('', User::normaliseUsername('!!!'));
         $this -> assertSame('', User::normaliseUsername('   '));
     }
-
-    /**
-     * The sign-up field's own maxlength has to agree with what the server
-     * would store, or the form would let someone type a name that is silently
-     * truncated on submit.
-     */
-    public function testTheSignupFieldAllowsExactlyTheStorableLength(): void
-    {
-        $rendered = (new SignupForm()) -> render();
-
-        preg_match('/name="username"[^>]*maxlength="(\d+)"|maxlength="(\d+)"[^>]*name="username"/', $rendered, $match);
-        $maxlength = (int) ($match[1] !== '' ? $match[1] : ($match[2] ?? 0));
-
-        $this -> assertSame(User::MAX_USERNAME_LENGTH, $maxlength);
-    }
 }

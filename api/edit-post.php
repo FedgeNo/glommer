@@ -132,43 +132,26 @@ Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user 
 // Re-fetch rather than hand-assemble the row: createdAt, parentId, and
 // keywords (just rewritten by reindexPost()) all need to reflect the true
 // current DB state, not values this script would otherwise have to
-// duplicate/guess at.
+// duplicate/guess at. The engagement counts and the viewer's own like/bookmark
+// ride along as correlated subqueries, so one round trip hydrates the whole
+// card rather than a follow-up query per value.
+$viewer_id = (int) $current_user -> userId;
+
 $updated_post = DB::row('
-SELECT *
+SELECT `Posts`.*,
+    (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
+    (SELECT COUNT(*) FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId`) AS `likeCount`,
+    EXISTS(SELECT 1 FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId` AND `Likes`.`userId` = ?) AS `liked`,
+    EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `Posts`
-    WHERE `postId` = ?
-', 'Post', 'i', $post_id);
+    WHERE `Posts`.`postId` = ?
+', 'Post', 'iii', $viewer_id, $viewer_id, $post_id);
 $post = Post::fromRowWithItems($updated_post);
 $post -> author = $current_user;
 
-$reply_count_stmt = DB::run('
-SELECT COUNT(*) AS `count`
-    FROM `Posts`
-    WHERE `parentId` = ?
-', 'i', $post_id);
-$reply_count = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($reply_count_stmt))['count'];
-
-$like_count_stmt = DB::run('
-SELECT COUNT(*) AS `count`
-    FROM `Likes`
-    WHERE `postId` = ?
-', 'i', $post_id);
-$like_count = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($like_count_stmt))['count'];
-
-$liked_stmt = DB::run('
-SELECT 1
-    FROM `Likes`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $post_id, $current_user -> userId);
-mysqli_stmt_store_result($liked_stmt);
-$liked = mysqli_stmt_num_rows($liked_stmt) > 0;
-
-$bookmarked_stmt = DB::run('
-SELECT 1
-    FROM `Bookmarks`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $post_id, $current_user -> userId);
-mysqli_stmt_store_result($bookmarked_stmt);
-$bookmarked = mysqli_stmt_num_rows($bookmarked_stmt) > 0;
-
-JSONResponse::success($post -> toPayload($reply_count, $like_count, $liked, $bookmarked)) -> send();
+JSONResponse::success($post -> toPayload(
+    (int) $post -> replyCount,
+    (int) $post -> likeCount,
+    (bool) $post -> liked,
+    (bool) $post -> bookmarked
+)) -> send();

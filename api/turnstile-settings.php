@@ -29,4 +29,16 @@ if ($secret_key !== '') {
     Settings::set(Turnstile::SECRET_KEY_SETTING, $secret_key);
 }
 
+// The Google reCAPTCHA keys (the locked-account recovery challenge) share this
+// bot-protection form, saved the same way: site key always, secret key only
+// when a non-blank value is submitted.
+$recaptcha_site_key = trim((string) ($payload['recaptchaSiteKey'] ?? ''));
+$recaptcha_secret_key = trim((string) ($payload['recaptchaSecretKey'] ?? ''));
+
+Settings::set(ReCaptcha::SITE_KEY_SETTING, $recaptcha_site_key);
+
+if ($recaptcha_secret_key !== '') {
+    Settings::set(ReCaptcha::SECRET_KEY_SETTING, $recaptcha_secret_key);
+}
+
 JSONResponse::success(['saved' => true]) -> send();

@@ -22,6 +22,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
 $identifier = trim((string) ($payload['identifier'] ?? ''));
 $password = (string) ($payload['password'] ?? '');
 $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captchaToken'] : null;
+$recaptcha_token = is_string($payload['recaptchaToken'] ?? null) ? $payload['recaptchaToken'] : null;
 
 // A second limit keyed on the account, not the address - the IP limit alone
 // never trips for a guessing attack spread across many machines that all
@@ -35,7 +36,28 @@ if ($identifier === '' || $password === '') {
 }
 
 if (RateLimiter::tooManyAttempts($account_rate_key, 10, 900)) {
-    JSONResponse::error('Too many login attempts for this account. Please try again later.', 429) -> send();
+    // This account is under its per-account lockout. Hard-blocking here is a
+    // targeted-DoS foot-gun: anyone can lock a known account out for the whole
+    // window with a handful of wrong passwords, from any address. When reCAPTCHA
+    // is configured, let a solved challenge carry a single attempt through
+    // instead - a human proving themselves per attempt throttles automated
+    // guessing to human speed without stranding the real owner. With no
+    // reCAPTCHA set up there's nothing to prove humanity with, so it stays a
+    // hard block rather than leave the account open to unthrottled guessing.
+    if (!ReCaptcha::isEnabled()) {
+        JSONResponse::error('Too many login attempts for this account. Please try again later.', 429) -> send();
+    }
+
+    // Missing/unsolved token, or Google unreachable (verify fails closed): tell
+    // the client to show the challenge and try again. A success envelope, not an
+    // error, so the client reads the flag rather than surfacing a toast - the
+    // same shape the 2FA step uses.
+    if (!ReCaptcha::verify($recaptcha_token, ServerURL::clientIP())) {
+        JSONResponse::success([
+            'recaptchaRequired' => true,
+            'recaptchaSiteKey' => ReCaptcha::siteKey(),
+        ]) -> send();
+    }
 }
 
 // A no-op when Turnstile isn't configured. Fail open on a Cloudflare outage:

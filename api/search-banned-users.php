@@ -18,28 +18,24 @@ if (!Auth::check() || !Auth::canModerate()) {
 }
 
 $query = trim((string) ($payload['q'] ?? ''));
+$offset = max(0, (int) ($payload['offset'] ?? 0));
 
 if ($query === '') {
     JSONResponse::error('Missing query', 422) -> send();
 }
 
-// Escape LIKE wildcards so a literal % or _ in the query doesn't match everything.
-$like = '%' . addcslashes($query, '\\%_') . '%';
-$banned = 1;
-$limit = 20;
-
-$users = DB::rows('
-SELECT *
-    FROM `Users`
-    WHERE (`slug` LIKE ? OR `title` LIKE ?) AND `banned` = ?
-    ORDER BY `userId` DESC
-    LIMIT ?
-', 'User', 'ssii', $like, $like, $banned, $limit);
+$results = new BannedUserSearchList([
+    'query' => $query,
+    'offset' => $offset,
+]) -> toJSON();
 
 $payloads = [];
 
-foreach ($users as $user) {
+foreach ($results['items'] as $user) {
     $payloads[] = BannedUser::payloadFor($user);
 }
 
-JSONResponse::success(['items' => $payloads]) -> send();
+JSONResponse::success([
+    'items' => $payloads,
+    'hasMore' => $results['hasMore'],
+]) -> send();

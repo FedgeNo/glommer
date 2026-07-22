@@ -3768,10 +3768,18 @@ window.addEventListener('scroll', async () => {
         // the count stays a correct offset as the list shrinks.
         const offset = items.querySelectorAll('.BannedUser').length;
 
-        const response = await fetch(`${window.siteURL}/api/banned-history`, {
+        // Grow whichever list is showing: an active search continues that
+        // query at the offset, an empty box continues the full banned list.
+        const query = list.dataset.searchQuery ?? '';
+        const url = query === ''
+            ? `${window.siteURL}/api/banned-history`
+            : `${window.siteURL}/api/search-banned-users`;
+        const request_body = query === '' ? { offset } : { q: query, offset };
+
+        const response = await fetch(url, {
             method: 'POST',
             headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ offset }),
+            body: JSON.stringify(request_body),
         });
 
         if (!response.ok) {
@@ -3821,8 +3829,12 @@ document.addEventListener('input', (event) => {
             return;
         }
 
-        // An empty box goes back to the paginated full list (first page);
-        // a query shows its matches with pagination off.
+        // Record the active query so the scroll handler grows the right list -
+        // this same search at a growing offset, or the full list when cleared.
+        list.dataset.searchQuery = query;
+
+        // An empty box goes back to the full list (first page); a query shows
+        // its matches. Both are paginated from here by infinite scroll.
         const url = query === ''
             ? `${window.siteURL}/api/banned-history`
             : `${window.siteURL}/api/search-banned-users`;
@@ -3894,6 +3906,8 @@ document.addEventListener('submit', async (event) => {
     const data = await api_post('/api/turnstile-settings', {
         turnstileSiteKey: form.querySelector('[name=\'turnstileSiteKey\']').value,
         turnstileSecretKey: form.querySelector('[name=\'turnstileSecretKey\']').value,
+        recaptchaSiteKey: form.querySelector('[name=\'recaptchaSiteKey\']').value,
+        recaptchaSecretKey: form.querySelector('[name=\'recaptchaSecretKey\']').value,
     });
 
     submit_button.disabled = false;
@@ -4284,6 +4298,80 @@ document.addEventListener('submit', async (event) => {
     window.location = window.siteURL + '/';
 });
 
+// Google reCAPTCHA v2, loaded only when the server asks for it (a locked
+// account's recovery challenge - see api/login.php). Google is a heavy,
+// third-party, in-some-countries-blocked dependency, so nothing pulls it up
+// front; this fetches api.js on demand and resolves once grecaptcha.render is
+// callable.
+let recaptcha_api_loading = null;
+
+function load_recaptcha_api() {
+    if (window.grecaptcha && window.grecaptcha.render) {
+        return Promise.resolve();
+    }
+
+    if (recaptcha_api_loading) {
+        return recaptcha_api_loading;
+    }
+
+    recaptcha_api_loading = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', () => {
+            // api.js has loaded, but grecaptcha.render becomes callable a moment
+            // later once its own bootstrap finishes - poll briefly for it.
+            const wait_for_render = () => {
+                if (window.grecaptcha && window.grecaptcha.render) {
+                    resolve();
+                } else {
+                    setTimeout(wait_for_render, 50);
+                }
+            };
+
+            wait_for_render();
+        });
+        script.addEventListener('error', () => reject(new Error('reCAPTCHA failed to load')));
+        document.head.appendChild(script);
+    });
+
+    return recaptcha_api_loading;
+}
+
+async function show_login_recaptcha(form, site_key) {
+    // Already rendered for this form - reset it so a fresh challenge is solved
+    // (the previous token was single-use and has now been spent).
+    if (form.recaptchaWidgetId !== undefined) {
+        window.grecaptcha.reset(form.recaptchaWidgetId);
+        return;
+    }
+
+    const notice = document.createElement('p');
+    notice.className = 'muted text-sm LoginRecaptchaNotice';
+    notice.textContent = 'Too many attempts on this account. Please complete the verification to continue.';
+
+    const container = document.createElement('div');
+    container.className = 'LoginRecaptcha';
+
+    const submit_button = form.querySelector('button[type=\'submit\']');
+    form.insertBefore(notice, submit_button);
+    form.insertBefore(container, submit_button);
+
+    try {
+        await load_recaptcha_api();
+        form.recaptchaWidgetId = window.grecaptcha.render(container, { sitekey: site_key });
+    } catch (error) {
+        show_toast('Could not load the verification. Please try again in a moment.');
+    }
+}
+
+function reset_login_recaptcha(form) {
+    if (form.recaptchaWidgetId !== undefined && window.grecaptcha) {
+        window.grecaptcha.reset(form.recaptchaWidgetId);
+    }
+}
+
 document.addEventListener('submit', async (event) => {
     const form = event.target.closest('.LoginForm');
 
@@ -4298,14 +4386,33 @@ document.addEventListener('submit', async (event) => {
 
     const captcha_input = form.querySelector('[name=\'cf-turnstile-response\']');
 
+    // Only present once the server has asked this locked account for a reCAPTCHA
+    // and the widget has been rendered; empty string until it's solved.
+    const recaptcha_token = form.recaptchaWidgetId !== undefined && window.grecaptcha
+        ? window.grecaptcha.getResponse(form.recaptchaWidgetId)
+        : null;
+
     const data = await api_post('/api/login', {
         identifier: form.querySelector('[name=\'identifier\']').value,
         password: form.querySelector('[name=\'password\']').value,
         rememberMe: form.querySelector('[name=\'rememberMe\']').checked,
         captchaToken: captcha_input ? captcha_input.value : null,
+        recaptchaToken: recaptcha_token || null,
     });
 
     if (!data) {
+        // A rejected attempt spends the reCAPTCHA token (single-use), so clear
+        // it - the next try needs a fresh solve.
+        reset_login_recaptcha(form);
+        submit_button.disabled = false;
+        return;
+    }
+
+    // This account is locked and the server wants a reCAPTCHA solved before it
+    // will check the password again. Show the challenge (or reset it for another
+    // go) and let them retry.
+    if (data.recaptchaRequired) {
+        show_login_recaptcha(form, data.recaptchaSiteKey);
         submit_button.disabled = false;
         return;
     }

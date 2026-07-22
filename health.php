@@ -36,7 +36,12 @@ $respond = static function (bool $healthy): void {
 // fresh result is cached briefly rather than recomputed on every hit - which
 // would otherwise be a cheap way to load the box. A monitor polling faster
 // than the TTL is served the cached verdict.
-$cache_file = sys_get_temp_dir() . '/glommer-health.json';
+// Cached in uploads/ - the one directory the web server must be able to write
+// for the site to function (avatars, post media, the upload queue all land
+// there), so keeping the verdict here doubles as a live check that uploads/ is
+// writable. A leading dot keeps it out of the served tree - the .htaccess
+// denies dotfiles - and off to one side of real uploaded media.
+$cache_file = __DIR__ . '/uploads/.health.json';
 $cache_ttl_seconds = 60;
 
 if (is_file($cache_file) && (time() - (int) filemtime($cache_file)) < $cache_ttl_seconds) {
@@ -79,6 +84,13 @@ if ($healthy) {
     }
 }
 
-@file_put_contents($cache_file, json_encode(['healthy' => $healthy]), LOCK_EX);
+$written = @file_put_contents($cache_file, json_encode(['healthy' => $healthy]), LOCK_EX);
+
+// The write is itself a probe: if the verdict couldn't be put in uploads/, the
+// web server can't write the directory every upload depends on, so the site is
+// unhealthy no matter what the checks above found.
+if ($written === false || !is_file($cache_file)) {
+    $respond(false);
+}
 
 $respond($healthy);

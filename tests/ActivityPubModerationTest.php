@@ -456,7 +456,11 @@ INSERT INTO `PostHashtags` (`postId`, `hashtagId`)
 
         $surfaces = [
             'global feed' => array_map(static fn ($post) => (int) $post -> postId, new GlobalFeedList() -> items),
-            'global feed rows (also the RSS feed)' => array_map(static fn ($post) => (int) $post -> postId, new RSSFeedList() -> items),
+            'site RSS feed' => array_map(static function ($item) {
+                preg_match('~/(\d+)$~', $item -> link, $matches);
+
+                return (int) ($matches[1] ?? 0);
+            }, new SiteRSSFeed() -> items),
             'tag feed' => array_map(static fn ($post) => (int) $post -> postId, new TagFeedList(['tag' => $tag]) -> items),
             'post search' => array_map(static fn ($post) => (int) $post -> postId, new SearchFeedList(['query' => $needle]) -> items),
         ];

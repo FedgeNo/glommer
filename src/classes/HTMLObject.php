@@ -54,7 +54,7 @@ class HTMLObject
                 // its attributes - so handing it a wider source, e.g. a whole
                 // page, only ever transfers data properties, never changes what
                 // the object is or how it renders.
-                if (in_array($name, ['tagName', 'class', 'contents', 'attributes', 'rendered'], true)) {
+                if (in_array($name, ['tagName', 'class', 'contents', 'attributes', 'rendered', 'items'], true)) {
                     continue;
                 }
 

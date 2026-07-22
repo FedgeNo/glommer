@@ -79,7 +79,7 @@
     RewriteRule ^users/([^/]+)$ /users/$1/ [R=301,L]
 
     RewriteRule ^$ index.php [L,QSA]
-    RewriteRule ^feed\.xml$ rss-feed.php [L,QSA]
+    RewriteRule ^feed\.xml$ site-rss-feed.php [L,QSA]
     RewriteRule ^health$ health.php [L,QSA]
     RewriteRule ^environment-check$ environment-check.php [L,QSA]
 

@@ -2,8 +2,19 @@
 
 declare(strict_types=1);
 
-class RSSFeed
-{
+/**
+ * A syndication feed: channel metadata and a page of items it loads itself. A
+ * subclass supplies its own selection in rows() and its own title/link/
+ * description; this class holds the one rendering both share.
+ *
+ * Whatever the selection needs - whose profile the feed belongs to - is a
+ * property seeded through the constructor (new UserRSSFeed(['user' => $u])),
+ * never an argument, so the object is fully loaded the moment it exists.
+ */
+abstract class RSSFeed {
+    /** How many entries a feed carries. */
+    protected const LIMIT = 50;
+
     public string $title;
     public string $link;
     public string $description;
@@ -11,20 +22,22 @@ class RSSFeed
     /** @var RSSItem[] */
     public array $items = [];
 
-    public function __construct(string $title, string $link, string $description)
-    {
-        $this -> title = $title;
-        $this -> link = $link;
-        $this -> description = $description;
+    public function __construct(array|object|null $properties = null) {
+        if ($properties !== null) {
+            foreach (is_array($properties) ? $properties : get_object_vars($properties) as $name => $value) {
+                if (property_exists($this, $name)) {
+                    $this -> $name = $value;
+                }
+            }
+        }
+
+        $this -> items = $this -> rows();
     }
 
-    public function addItem(RSSItem $item): void
-    {
-        $this -> items[] = $item;
-    }
+    /** @return RSSItem[] */
+    abstract protected function rows(): array;
 
-    public function toXML(): string
-    {
+    public function toXML(): string {
         $document = new \DOMDocument('1.0', 'UTF-8');
         $document -> formatOutput = true;
         RSSItem::$document = $document;
@@ -47,8 +60,7 @@ class RSSFeed
         return $document -> saveXML();
     }
 
-    public function send(): void
-    {
+    public function send(): void {
         while (ob_get_level() > 0) {
             ob_end_clean();
         }

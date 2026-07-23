@@ -91,7 +91,6 @@ SELECT `userId`, `previousEmail`
         }
 
         $user_id = (int) $revert -> userId;
-        $previous_email = $revert -> previousEmail;
 
         // The previous address was already verified before the change
         // happened, so restoring it restores that verified state too - no
@@ -103,7 +102,7 @@ UPDATE `Users`
     SET `email` = ?, `verified` = ?
     WHERE `userId` = ?
 ');
-        DB::bind($update_stmt, 'sii', $previous_email, $verified, $user_id);
+        DB::bind($update_stmt, 'sii', $revert -> previousEmail, $verified, $user_id);
 
         // `email` is UNIQUE. This should never actually fire - signup and
         // change-email both refuse to hand out an address that's reserved by

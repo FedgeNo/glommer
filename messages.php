@@ -27,12 +27,11 @@ if ($other_user === null || $other_user -> banned !== 0) {
     exit;
 }
 
-$other_user_id = $other_user -> userId;
 $name = $other_user -> title ?: $other_user -> slug;
 
 $page = new Page(['title' => 'Messages with ' . $name, 'needsMath' => true, 'needsEmoji' => true, 'bodyClass' => 'MessagesPage']);
 
-if (Block::exists($current_user -> userId, $other_user_id)) {
+if (Block::exists($current_user -> userId, $other_user -> userId)) {
     $page -> addContent(new Notice('You can\'t message this user.'));
     $page -> send();
     exit;
@@ -55,9 +54,9 @@ $page -> addContent(new JSGlobals(['conversationUsers' => $conversation_users]))
 
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,
-    'otherUserId' => $other_user_id,
+    'otherUserId' => $other_user -> userId,
 ]));
 
-$page -> addContent(new MessageComposer($other_user_id));
+$page -> addContent(new MessageComposer($other_user -> userId));
 
 $page -> send();

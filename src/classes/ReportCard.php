@@ -259,16 +259,14 @@ class ReportCard extends HTMLObject
         }
 
         if ($this -> targetKind === 'user' && $this -> targetData instanceof User) {
-            $user = $this -> targetData;
-
             // Explicit allowlist - a User object also carries email and
             // passwordHash, which must never reach a moderator's console.
             return ['kind' => 'user', 'user' => [
-                'userId' => (int) $user -> userId,
-                'slug' => $user -> slug,
-                'title' => $user -> title,
-                'image' => $user -> avatarURL(),
-                'createdAt' => $user -> createdAt,
+                'userId' => (int) $this -> targetData -> userId,
+                'slug' => $this -> targetData -> slug,
+                'title' => $this -> targetData -> title,
+                'image' => $this -> targetData -> avatarURL(),
+                'createdAt' => $this -> targetData -> createdAt,
             ]];
         }
 

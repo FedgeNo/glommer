@@ -1510,7 +1510,7 @@ input[type='file']::file-selector-button {
 }
 
 .Notification .Avatar.AvatarInitial {
-    font-size: 0.5rem;
+    font-size: 0.75rem;
 }
 
 /* ---------- People ---------- */
@@ -1898,7 +1898,7 @@ input[type='file']::file-selector-button {
     color: #ffffff;
     border-radius: 999px;
     padding: 0.1rem 0.5rem;
-    font-size: 0.5rem;
+    font-size: 0.75rem;
 }
 
 .CarouselAutoplay {
@@ -1912,7 +1912,7 @@ input[type='file']::file-selector-button {
     border: none;
     border-radius: 999px;
     padding: 0.1rem 0.7rem;
-    font-size: 0.5rem;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: background-color 0.15s ease;
 }

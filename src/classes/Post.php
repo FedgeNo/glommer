@@ -43,11 +43,12 @@ class Post extends HTMLObject
 
     public ?User $author = null;
 
-    // The engagement counts the action bar shows, batch-attached for a whole
-    // page at once by withItemsAndCounts(). Null on a bare Post (e.g. a report
-    // snapshot) rendered with showActions off, where the bar - and these - are
-    // never used; the action bar falls back to its own per-post lookups when a
-    // count is null but a bar is still shown (a one-off standalone post).
+    // The engagement counts the action bar shows, hydrated as correlated
+    // subqueries by the feed-list query that loads the page. Null on a bare
+    // Post (e.g. a report snapshot) rendered with showActions off, where the
+    // bar - and these - are never used; the action bar falls back to its own
+    // per-post lookups when a count is null but a bar is still shown (a
+    // standalone PostPage, which loads the post without them).
     public ?int $replyCount = null;
     public ?int $likeCount = null;
     public ?bool $liked = null;
@@ -415,128 +416,6 @@ DELETE
         }
 
         return $posts;
-    }
-
-    /**
-     * A whole page of feed-ready Posts: items and authors (fromRowsWithItems)
-     * plus the engagement counts the action bar shows, every lookup batched
-     * into one query rather than a handful per post. This is what a feed list
-     * fetches straight into its contents.
-     *
-     * @param self[] $posts
-     * @return self[]
-     */
-    public static function withItemsAndCounts(array $posts): array
-    {
-        $posts = self::fromRowsWithItems($posts);
-
-        if ($posts === []) {
-            return [];
-        }
-
-        $post_ids = array_map(fn ($post) => (int) $post -> postId, $posts);
-
-        $reply_counts = self::replyCountsForPosts($post_ids);
-        $like_counts = self::likeCountsForPosts($post_ids);
-        $liked = Auth::check() ? self::likedByUserForPosts($post_ids, (int) Auth::id()) : [];
-        $bookmarked = Auth::check() ? Bookmark::bookmarkedByUserForPosts($post_ids, (int) Auth::id()) : [];
-
-        foreach ($posts as $post) {
-            $post_id = (int) $post -> postId;
-
-            $post -> replyCount = $reply_counts[$post_id] ?? 0;
-            $post -> likeCount = $like_counts[$post_id] ?? 0;
-            $post -> liked = $liked[$post_id] ?? false;
-            $post -> bookmarked = $bookmarked[$post_id] ?? false;
-        }
-
-        return $posts;
-    }
-
-    /**
-     * @param int[] $post_ids
-     * @return array<int, int> postId => number of direct replies
-     */
-    public static function replyCountsForPosts(array $post_ids): array
-    {
-        if ($post_ids === []) {
-            return [];
-        }
-
-        $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
-
-        $stmt = DB::run('
-SELECT `parentId`, COUNT(*) AS `replyCount`
-    FROM `Posts`
-    WHERE `parentId` IN (' . $placeholders . ')
-    GROUP BY `parentId`
-', str_repeat('i', count($post_ids)), ...$post_ids);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $counts = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $counts[(int) $row['parentId']] = (int) $row['replyCount'];
-        }
-
-        return $counts;
-    }
-
-    /**
-     * @param int[] $post_ids
-     * @return array<int, int> postId => number of likes
-     */
-    public static function likeCountsForPosts(array $post_ids): array
-    {
-        if ($post_ids === []) {
-            return [];
-        }
-
-        $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
-
-        $stmt = DB::run('
-SELECT `postId`, COUNT(*) AS `likeCount`
-    FROM `Likes`
-    WHERE `postId` IN (' . $placeholders . ')
-    GROUP BY `postId`
-', str_repeat('i', count($post_ids)), ...$post_ids);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $counts = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $counts[(int) $row['postId']] = (int) $row['likeCount'];
-        }
-
-        return $counts;
-    }
-
-    /**
-     * @param int[] $post_ids
-     * @return array<int, true> postId => true for each post $user_id has liked
-     */
-    public static function likedByUserForPosts(array $post_ids, int $user_id): array
-    {
-        if ($post_ids === []) {
-            return [];
-        }
-
-        $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
-
-        $stmt = DB::run('
-SELECT `postId`
-    FROM `Likes`
-    WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')
-', 'i' . str_repeat('i', count($post_ids)), $user_id, ...$post_ids);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $liked = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $liked[(int) $row['postId']] = true;
-        }
-
-        return $liked;
     }
 
     /**

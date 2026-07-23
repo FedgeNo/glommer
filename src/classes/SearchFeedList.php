@@ -30,9 +30,14 @@ class SearchFeedList extends FeedList
         }
 
         $not_banned = 0;
+        $viewer_id = (int) Auth::id();
 
-        return Post::withItemsAndCounts(DB::rows('
-SELECT `Posts`.*
+        return Post::fromRowsWithItems(DB::rows('
+SELECT `Posts`.*,
+    (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
+    (SELECT COUNT(*) FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId`) AS `likeCount`,
+    EXISTS(SELECT 1 FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId` AND `Likes`.`userId` = ?) AS `liked`,
+    EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
@@ -40,6 +45,6 @@ SELECT `Posts`.*
         AND (? = 0 OR `Posts`.`userId` = ?)
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
-', 'Post', 'siiiii', $this -> query, $not_banned, $this -> userId, $this -> userId, static::PAGE_SIZE + 1, $this -> offset));
+', 'Post', 'iisiiiii', $viewer_id, $viewer_id, $this -> query, $not_banned, $this -> userId, $this -> userId, static::PAGE_SIZE + 1, $this -> offset));
     }
 }

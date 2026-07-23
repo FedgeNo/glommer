@@ -1303,9 +1303,9 @@ document.addEventListener('click', async (event) => {
  * show_confirm()'s dialog). Clicking Edit hides the .Post card in place and
  * puts a small form with its own .QuillEditor where it sat, populated from the
  * card's own data attributes, which Post::toDOM()/toPayload() only carry for
- * the viewer's own posts. Saving swaps the card for a freshly built one
- * (post.js's toElement(), same as post creation), so its data attributes come
- * back in step with what was saved.
+ * the viewer's own posts. Saving rebuilds just the post's .PostContent (post.js's
+ * postElement()) and leaves the action bar in place, so the card's own edit
+ * attributes are refreshed in step with what was saved for the next edit.
  */
 document.addEventListener('click', (event) => {
     const button = event.target.closest('.EditButton');
@@ -1455,14 +1455,26 @@ document.addEventListener('submit', async (event) => {
         return;
     }
 
-    const new_post_element = Post.fromData(result).toElement();
-
     if (post_element && post_element.classList.contains('Post')) {
-        post_element.replaceWith(new_post_element);
+        // Swap only the content - an edit touches text/title/link, never the
+        // action bar, so the live bar (and its counts, plus any like/bookmark
+        // the viewer has toggled since load) is left in place rather than
+        // rebuilt from a response that no longer carries counts.
+        const new_content = Post.fromData(result).postElement();
+        post_element.querySelector('.PostContent').replaceWith(new_content);
+
+        // The card stays in place, so refresh its own edit-repopulation
+        // attributes in step with what was saved - a second Edit reads these.
+        post_element.dataset.title = result.title || '';
+        post_element.dataset.linkUrl = result.linkURL || '';
+        post_element.dataset.descriptionDelta = result.rawDescriptionDelta || '';
+        post_element.dataset.hasMedia = result.items.length > 0 ? '1' : '';
+
+        post_element.style.display = '';
+        render_math(new_content);
     }
 
     form.remove();
-    render_math(new_post_element);
 });
 
 document.addEventListener('click', async (event) => {

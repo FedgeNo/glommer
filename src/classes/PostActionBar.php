@@ -46,8 +46,9 @@ class PostActionBar extends HTMLObject
 
     protected function likeButton(): HTMLObject
     {
-        // Batched callers (Post::withItemsAndCounts) provide these up front; fall back
-        // to per-post queries for one-off use (a standalone PostPage).
+        // Feed-list callers hydrate these in the page query (correlated
+        // subqueries); fall back to per-post queries for one-off use (a
+        // standalone PostPage, which loads the post without them).
         if ($this -> likeCount !== null) {
             $count = $this -> likeCount;
         } else {
@@ -89,8 +90,9 @@ SELECT 1
 
     protected function bookmarkButton(): HTMLObject
     {
-        // Batched callers (Post::withItemsAndCounts) provide this up front; fall back
-        // to a live per-post query for one-off use (a standalone PostPage).
+        // Feed-list callers hydrate this in the page query (a correlated
+        // subquery); fall back to a live per-post query for one-off use (a
+        // standalone PostPage, which loads the post without it).
         if ($this -> bookmarked !== null) {
             $already_bookmarked = $this -> bookmarked;
         } else {

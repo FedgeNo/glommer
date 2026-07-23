@@ -21,14 +21,19 @@ class GlobalFeedList extends FeedList
     protected function rows(): array
     {
         $not_banned = 0;
+        $viewer_id = (int) Auth::id();
 
-        return Post::withItemsAndCounts(DB::rows('
-SELECT STRAIGHT_JOIN `Posts`.*
+        return Post::fromRowsWithItems(DB::rows('
+SELECT STRAIGHT_JOIN `Posts`.*,
+    (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
+    (SELECT COUNT(*) FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId`) AS `likeCount`,
+    EXISTS(SELECT 1 FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId` AND `Likes`.`userId` = ?) AS `liked`,
+    EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
-', 'Post', 'iii', $not_banned, static::PAGE_SIZE + 1, $this -> offset));
+', 'Post', 'iiiii', $viewer_id, $viewer_id, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 }

@@ -20,7 +20,7 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $theme = (string) ($payload['theme'] ?? '');
 
-$valid_themes = ['system', 'light', 'dark', 'sepia', 'midnight', 'sunset'];
+$valid_themes = ['system', 'light', 'dark', 'sepia', 'midnight', 'sunset', 'rose', 'forest', 'ocean', 'lavender', 'gold', 'hacker'];
 
 if (!in_array($theme, $valid_themes, true)) {
     JSONResponse::error('Invalid theme', 422) -> send();

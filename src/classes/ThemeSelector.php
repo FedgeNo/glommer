@@ -14,6 +14,12 @@ class ThemeSelector extends HTMLObject
         'sepia' => 'Sepia',
         'midnight' => 'Midnight',
         'sunset' => 'Sunset',
+        'rose' => 'Rose',
+        'forest' => 'Forest',
+        'ocean' => 'Ocean',
+        'lavender' => 'Lavender',
+        'gold' => 'Gold',
+        'hacker' => 'Hacker',
     ];
 
     public function toDOM(): \DOMElement

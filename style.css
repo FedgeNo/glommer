@@ -1438,12 +1438,12 @@ input[type='file']::file-selector-button {
 
 .ImageItem img,
 .VideoItem video {
-    max-width: 100%;
+    max-width: calc(100% - 1rem);
     height: calc(100% - 1rem);
     object-fit: contain;
     border-radius: var(--radius-ctl);
     display: block;
-    margin: 0.5rem 0;
+    margin: 0.5rem;
 }
 
 .VideoItem video {

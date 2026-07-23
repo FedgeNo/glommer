@@ -49,6 +49,23 @@ SELECT *
     }
 
     /**
+     * The userId an identifier (username or email) resolves to, or null if no
+     * account matches - no password involved. Lets the login lockout key its
+     * per-account limit on the account itself, so the username and email forms
+     * of one account share a single budget instead of getting one each.
+     */
+    public static function userIdForIdentifier(string $identifier): ?int
+    {
+        $user = DB::row('
+SELECT `userId`
+    FROM `Users`
+    WHERE `slug` = ? OR `email` = ?
+', 'User', 'ss', $identifier, $identifier);
+
+        return $user !== null ? (int) $user -> userId : null;
+    }
+
+    /**
      * Re-hashes a user's password to the current PASSWORD_DEFAULT and stores it
      * when their existing hash was made with a different algorithm or cost.
      * Called only on a successful credential check (the sole moment the

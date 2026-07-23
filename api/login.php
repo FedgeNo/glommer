@@ -24,16 +24,24 @@ $password = (string) ($payload['password'] ?? '');
 $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captchaToken'] : null;
 $recaptcha_token = is_string($payload['recaptchaToken'] ?? null) ? $payload['recaptchaToken'] : null;
 
-// A second limit keyed on the account, not the address - the IP limit alone
-// never trips for a guessing attack spread across many machines that all
-// target one account. Truncated to fit RateLimitAttempts.rateKey's
-// varchar(255) - an oversized identifier would otherwise make the INSERT
-// throw a data-truncation error (a 500) instead of counting the attempt.
-$account_rate_key = substr('login-user:' . strtolower($identifier), 0, 255);
-
 if ($identifier === '' || $password === '') {
     JSONResponse::error('Username/email and password are required.', 422) -> send();
 }
+
+// A second limit keyed on the account, not the address - the IP limit alone
+// never trips for a guessing attack spread across many machines that all
+// target one account. Keyed on the account the identifier resolves to, so the
+// username and email forms of one account share a single budget rather than
+// getting a lockout each; falls back to the normalized identifier when nothing
+// matches, so a nonexistent identifier is still throttled and the lockout
+// behaves the same whether or not the account exists (no enumeration). The
+// fallback is truncated to fit RateLimitAttempts.rateKey's varchar(255) - an
+// oversized identifier would otherwise make the INSERT throw a data-truncation
+// error (a 500) instead of counting the attempt.
+$account_id = Auth::userIdForIdentifier($identifier);
+$account_rate_key = $account_id !== null
+    ? 'login-user:' . $account_id
+    : substr('login-user:' . strtolower($identifier), 0, 255);
 
 if (RateLimiter::tooManyAttempts($account_rate_key, 10, 900)) {
     // This account is under its per-account lockout. Hard-blocking here is a

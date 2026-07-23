@@ -12,6 +12,7 @@ declare(strict_types=1);
 abstract class InfoSettingsForm extends Form
 {
     public ?string $class = 'Card d-flex flex-column gap-2 InfoSettingsForm';
+    public ?string $description = 'Plain text - blank lines separate paragraphs.';
 
     /** The POST field / Settings name this form edits. */
     protected string $settingName = '';
@@ -32,7 +33,7 @@ abstract class InfoSettingsForm extends Form
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Notice('Plain text - blank lines separate paragraphs.');
+        $this -> contents[] = new Notice($this -> description);
 
         $this -> contents[] = new SubmitButton('Save');
 

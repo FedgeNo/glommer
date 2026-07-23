@@ -52,7 +52,7 @@ class Page extends HTMLDocument
         }
         $full_title = $this -> title === $site_title ? $site_title : $this -> title . ' - ' . $site_title;
         $description = self::truncateAtWordBoundary(
-            $this -> description ?? $site_title . ' - a place to publish.',
+            $this -> description ?? SiteInfo::description(),
             self::META_DESCRIPTION_MAX_LENGTH
         );
         $url = self::currentURL();

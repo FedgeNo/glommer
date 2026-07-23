@@ -239,6 +239,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['SCRIPT_FILENAME'
 }
 
 function truncate($str, int $len = 50) {
-    return strlen($str) < $len + 1 ? $str : mb_substr($str, 0, $len) . '…';
+    if (mb_strlen($str) <= $len) {
+        return $str;
+    }
 
+    $cut = mb_substr($str, 0, $len);
+    $last_space = mb_strrpos($cut, ' ');
+
+    // Back up to the last word boundary so the limit doesn't slice a word in
+    // half - unless there's no space to back up to (a single long word), where
+    // the hard cut stands.
+    if ($last_space !== false) {
+        $cut = mb_substr($cut, 0, $last_space);
+    }
+
+    return rtrim($cut) . '…';
 }

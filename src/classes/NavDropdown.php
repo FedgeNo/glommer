@@ -25,12 +25,13 @@ class NavDropdown extends Div
             $trigger = new Div();
             $trigger -> class = 'NavDropdownTrigger';
             $trigger -> contents[] = $this -> trigger;
-        } else {
-            $trigger = $this -> trigger;
-            $trigger -> class = trim(($trigger -> class ?? '') . ' NavDropdownTrigger');
-        }
 
-        $this -> addContent($trigger);
+            $this -> addContent($trigger);
+        } else {
+            $this -> trigger -> class = trim(($this -> trigger -> class ?? '') . ' NavDropdownTrigger');
+
+            $this -> addContent($this -> trigger);
+        }
 
         $menu = new Div();
         $menu -> class = 'NavDropdownMenu Card';

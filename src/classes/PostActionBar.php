@@ -49,9 +49,9 @@ class PostActionBar extends HTMLObject
         // Feed-list callers hydrate these in the page query (correlated
         // subqueries); fall back to per-post queries for one-off use (a
         // standalone PostPage, which loads the post without them).
-        if ($this -> likeCount !== null) {
-            $count = $this -> likeCount;
-        } else {
+        $count = $this -> likeCount;
+
+        if ($count === null) {
             $count_stmt = DB::run('
 SELECT COUNT(*) AS `likeCount`
     FROM `Likes`
@@ -61,9 +61,9 @@ SELECT COUNT(*) AS `likeCount`
             $count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
         }
 
-        if ($this -> liked !== null) {
-            $already_liked = $this -> liked;
-        } else {
+        $already_liked = $this -> liked;
+
+        if ($already_liked === null) {
             $current_user_id = Auth::id();
 
             $liked_stmt = DB::run('
@@ -93,9 +93,9 @@ SELECT 1
         // Feed-list callers hydrate this in the page query (a correlated
         // subquery); fall back to a live per-post query for one-off use (a
         // standalone PostPage, which loads the post without it).
-        if ($this -> bookmarked !== null) {
-            $already_bookmarked = $this -> bookmarked;
-        } else {
+        $already_bookmarked = $this -> bookmarked;
+
+        if ($already_bookmarked === null) {
             $current_user_id = Auth::id();
             $already_bookmarked = isset(Bookmark::bookmarkedByUserForPosts([$this -> postId], (int) $current_user_id)[$this -> postId]);
         }

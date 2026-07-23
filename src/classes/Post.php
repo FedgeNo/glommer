@@ -246,8 +246,7 @@ class Post extends HTMLObject
     /**
      * The stripped, truncated description shown alongside a post's image(s)
      * or video in the feed - also reused as those images' alt text (via
-     * imageAltText()) and as an RSS item's fallback title (via RSSItem)
-     * rather than duplicating the truncation logic.
+     * imageAltText()).
      */
     public function shortDescription(): string
     {
@@ -261,7 +260,7 @@ class Post extends HTMLObject
         // character, and the resulting invalid UTF-8 makes json_encode()
         // return false for any payload this ends up in (alt text travels
         // through the create-post and feed-history JSON responses).
-        return rtrim(mb_substr($text, 0, self::DESCRIPTION_SUMMARY_MAX_LENGTH)) . '...';
+        return rtrim(mb_substr($text, 0, self::DESCRIPTION_SUMMARY_MAX_LENGTH)) . '…';
     }
 
     /**

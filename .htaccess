@@ -103,6 +103,7 @@
     RewriteRule ^admin/settings$ admin-settings.php [L,QSA]
     RewriteRule ^admin/banned$ admin-banned.php [L,QSA]
     RewriteRule ^admin/banned-entities$ admin-banned-entities.php [L,QSA]
+    RewriteRule ^admin/tests$ admin-tests.php [L,QSA]
     RewriteRule ^about$ about.php [L,QSA]
     RewriteRule ^terms$ terms.php [L,QSA]
     RewriteRule ^privacy$ privacy.php [L,QSA]

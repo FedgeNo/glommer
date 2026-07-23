@@ -1474,6 +1474,8 @@ document.addEventListener('submit', async (event) => {
         render_math(new_content);
     }
 
+    show_toast('Changes saved.');
+
     form.remove();
 });
 

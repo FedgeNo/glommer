@@ -21,14 +21,13 @@ class UserRSSFeed extends RSSFeed {
     protected function rows(): array {
         $user_id = (int) $this -> user -> userId;
 
-        $posts = Post::fromRowsWithItems(DB::rows('
-SELECT *
+        return DB::rows('
+SELECT `Posts`.`postId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`createdAt`, `Users`.`slug` AS `authorSlug`
     FROM `Posts`
-    WHERE `parentId` IS NULL AND `userId` = ?
-    ORDER BY `postId` DESC
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ?
+    ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'Post', 'ii', $user_id, static::LIMIT));
-
-        return array_map(RSSItem::fromPost(...), $posts);
+', 'RSSItem', 'ii', $user_id, static::LIMIT);
     }
 }

@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-class HTMLDocument extends HTMLObject
+class HTMLDocument extends Document
 {
+    private const VOID_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+
     public string $tagName = 'html';
+    public string $contentType = 'text/html; charset=UTF-8';
     public Head $head;
     public Body $body;
 
@@ -30,8 +33,8 @@ class HTMLDocument extends HTMLObject
     {
         $this -> body -> addContent($item);
     }
-    
-    public function addContents(Array $items): void
+
+    public function addContents(array $items): void
     {
         $this -> body -> addContents($items);
     }
@@ -73,14 +76,35 @@ class HTMLDocument extends HTMLObject
 
     public function send(): void
     {
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        echo $this;
+        parent::send();
+    }
+
+    protected static function fillEmptyNonVoidTags(\DOMElement $root): void
+    {
+        $xpath = new \DOMXPath(self::$document);
+
+        foreach ($xpath -> query('//*[not(node())]', $root) as $element) {
+            if (!in_array($element -> tagName, self::VOID_ELEMENTS, true)) {
+                $element -> appendChild(self::$document -> createTextNode(''));
+            }
+        }
+    }
+
+    /**
+     * saveXML() self-closes every empty element ("<tag/>"), which is correct
+     * XML but not HTML5 - void elements (img, br, ...) should read "<tag>"
+     * with no closing tag at all, and fillEmptyNonVoidTags() above already
+     * guarantees no non-void element is ever empty enough to self-close. That
+     * leaves "/>" only ever appearing at an actual void-element close, since
+     * saveXML entity-escapes any bare ">" inside text or attribute values -
+     * so this replace can't corrupt real content.
+     */
+    protected static function stripSelfClosingSlash(string $xml): string
+    {
+        return str_replace('/>', '>', $xml);
     }
 }

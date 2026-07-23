@@ -18,21 +18,19 @@ class SiteRSSFeed extends RSSFeed {
 
         $this -> title = (string) Config::get('siteTitle');
         $this -> link = ServerURL::absolute('/');
-        $this -> description = Config::get('siteTitle') . ' - a place to publish.';
+        $this -> description = SiteInfo::description();
     }
 
     protected function rows(): array {
         $not_banned = 0;
 
-        $posts = Post::fromRowsWithItems(DB::rows('
-SELECT STRAIGHT_JOIN `Posts`.*
+        return DB::rows('
+SELECT STRAIGHT_JOIN `Posts`.`postId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`createdAt`, `Users`.`slug` AS `authorSlug`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'Post', 'ii', $not_banned, static::LIMIT));
-
-        return array_map(RSSItem::fromPost(...), $posts);
+', 'RSSItem', 'ii', $not_banned, static::LIMIT);
     }
 }

@@ -2,78 +2,72 @@
 
 declare(strict_types=1);
 
-class RSSItem
+/**
+ * One <item> in a feed, hydrated straight from the database by its feed's
+ * rows(): the post's id and its author's slug (which together form the
+ * permalink), its title and plaintext description, and when it was created.
+ * link and pubDate are derived from those the moment the row loads, so an item
+ * is a complete element the instant it exists.
+ */
+class RSSItem extends XMLObject
 {
-    /**
-     * Set once by RSSFeed::toXML() before building any items - RSS's own
-     * equivalent of HTMLObject::$document, so an item doesn't need the
-     * document threaded through every call to build its element.
-     */
-    public static \DOMDocument $document;
+    public string $tagName = 'item';
 
-    public string $title;
+    public ?int $postId = null;
+    public ?string $authorSlug = null;
+    public ?string $title = null;
+    public ?string $description = null;
+    public ?string $createdAt = null;
+
     public string $link;
-    public string $description;
     public string $pubDate;
 
-    public function __construct(string $title, string $link, string $description, string $created_at)
+    public function __construct(array|object|null $properties = null)
     {
-        $this -> title = $title;
-        $this -> link = $link;
-        $this -> description = $description;
-        $this -> pubDate = date(DATE_RSS, strtotime($created_at));
+        parent::__construct($properties);
+
+        $this -> link = ServerURL::absolute('/users/' . ($this -> authorSlug ?? '') . '/' . $this -> postId);
+        $this -> pubDate = date(DATE_RSS, strtotime((string) $this -> createdAt));
     }
 
-    public function toElement(): \DOMElement
+    public function toDOM(): \DOMElement
     {
-        $document = self::$document;
+        foreach ([
+            'title' => $this -> displayTitle(),
+            'link' => $this -> link,
+            'description' => (string) $this -> description,
+            'pubDate' => $this -> pubDate,
+        ] as $tag => $text) {
+            $element = new XMLObject();
+            $element -> tagName = $tag;
+            $element -> addContent($text);
+            $this -> contents[] = $element;
+        }
 
-        $item = $document -> createElement('item');
-        $item -> appendChild(self::textElement('title', $this -> title));
-        $item -> appendChild(self::textElement('link', $this -> link));
+        $guid = new XMLObject();
+        $guid -> tagName = 'guid';
+        $guid -> attributes['isPermaLink'] = 'true';
+        $guid -> addContent($this -> link);
+        $this -> contents[] = $guid;
 
-        $description = $document -> createElement('description');
-        $description -> appendChild($document -> createCDATASection($this -> description));
-        $item -> appendChild($description);
-
-        $item -> appendChild(self::textElement('pubDate', $this -> pubDate));
-
-        $guid = self::textElement('guid', $this -> link);
-        $guid -> setAttribute('isPermaLink', 'true');
-        $item -> appendChild($guid);
-
-        return $item;
-    }
-
-    /**
-     * Builds an element whose value is treated as literal text. DOMDocument's
-     * createElement($name, $value) entity-PARSES the value instead, so a raw
-     * '&' (e.g. a display name "AT&T" or a title "Tom & Jerry") emits a warning
-     * and yields an empty element, corrupting the feed. A DOMText node is a
-     * literal-text sink and escapes correctly.
-     */
-    public static function textElement(string $name, string $value): \DOMElement
-    {
-        $element = self::$document -> createElement($name);
-        $element -> appendChild(self::$document -> createTextNode($value));
-
-        return $element;
+        return parent::toDOM();
     }
 
     /**
-     * A post's RSS description is its plaintext form (Posts.description, the
-     * "document" the Delta migration made this column) - the summary a feed
-     * reader wants, not rich markup. It rides in a CDATA section (see
-     * toElement()), so its literal text is what's published.
+     * A post carries its own title when it has one; otherwise the feed shows a
+     * short single-line summary of its description, or a placeholder when it
+     * has neither.
      */
-    public static function fromPost(Post $post): self
+    private function displayTitle(): string
     {
-        $author_username = $post -> author ?-> slug ?? '';
-        $link = ServerURL::absolute('/users/' . $author_username . '/' . $post -> postId);
+        if ($this -> title !== null) {
+            return $this -> title;
+        }
 
-        $description = $post -> description ?? '';
-        $title = $post -> title ?? ($post -> description !== null ? $post -> shortDescription() : 'Untitled');
+        if ($this -> description !== null) {
+            return truncate(trim(preg_replace('/\s+/', ' ', $this -> description)), 160);
+        }
 
-        return new self($title, $link, $description, (string) $post -> createdAt);
+        return 'Untitled';
     }
 }

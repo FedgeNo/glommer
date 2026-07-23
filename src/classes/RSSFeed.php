@@ -3,17 +3,22 @@
 declare(strict_types=1);
 
 /**
- * A syndication feed: channel metadata and a page of items it loads itself. A
- * subclass supplies its own selection in rows() and its own title/link/
- * description; this class holds the one rendering both share.
+ * A syndication feed: an <rss> document wrapping channel metadata and a page of
+ * <item>s it loads itself. A subclass supplies its own selection in rows() and
+ * its own title/link/description; this class holds the rendering both share and
+ * the RSS content type.
  *
  * Whatever the selection needs - whose profile the feed belongs to - is a
  * property seeded through the constructor (new UserRSSFeed(['user' => $u])),
  * never an argument, so the object is fully loaded the moment it exists.
  */
-abstract class RSSFeed {
+abstract class RSSFeed extends XMLDocument
+{
     /** How many entries a feed carries. */
     protected const LIMIT = 50;
+
+    public string $tagName = 'rss';
+    public string $contentType = 'application/rss+xml; charset=UTF-8';
 
     public string $title;
     public string $link;
@@ -22,14 +27,9 @@ abstract class RSSFeed {
     /** @var RSSItem[] */
     public array $items = [];
 
-    public function __construct(array|object|null $properties = null) {
-        if ($properties !== null) {
-            foreach (is_array($properties) ? $properties : get_object_vars($properties) as $name => $value) {
-                if (property_exists($this, $name)) {
-                    $this -> $name = $value;
-                }
-            }
-        }
+    public function __construct(array|object|null $properties = null)
+    {
+        parent::__construct($properties);
 
         $this -> items = $this -> rows();
     }
@@ -37,36 +37,26 @@ abstract class RSSFeed {
     /** @return RSSItem[] */
     abstract protected function rows(): array;
 
-    public function toXML(): string {
-        $document = new \DOMDocument('1.0', 'UTF-8');
-        $document -> formatOutput = true;
-        RSSItem::$document = $document;
+    public function toDOM(): \DOMElement
+    {
+        $this -> attributes['version'] = '2.0';
 
-        $rss = $document -> createElement('rss');
-        $rss -> setAttribute('version', '2.0');
-        $document -> appendChild($rss);
+        $channel = new XMLObject();
+        $channel -> tagName = 'channel';
 
-        $channel = $document -> createElement('channel');
-        $rss -> appendChild($channel);
-
-        $channel -> appendChild(RSSItem::textElement('title', $this -> title));
-        $channel -> appendChild(RSSItem::textElement('link', $this -> link));
-        $channel -> appendChild(RSSItem::textElement('description', $this -> description));
+        foreach (['title' => $this -> title, 'link' => $this -> link, 'description' => $this -> description] as $tag => $text) {
+            $element = new XMLObject();
+            $element -> tagName = $tag;
+            $element -> addContent($text);
+            $channel -> addContent($element);
+        }
 
         foreach ($this -> items as $item) {
-            $channel -> appendChild($item -> toElement());
+            $channel -> addContent($item);
         }
 
-        return $document -> saveXML();
-    }
+        $this -> contents[] = $channel;
 
-    public function send(): void {
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-
-        header('Content-Type: application/rss+xml; charset=UTF-8');
-        echo $this -> toXML();
-        exit;
+        return parent::toDOM();
     }
 }

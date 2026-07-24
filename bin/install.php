@@ -4347,6 +4347,10 @@ ok('database connection works (' . Config::get('username') . '@' . Config::get('
  * the env vars simply never having been set), and an interactive prompt is
  * the last resort when neither strategy works. Only requested when there's
  * actual schema work to do.
+ *
+ * The handle is DB::adminConnection()'s cached singleton, so every step that
+ * asks shares one connection - a caller must never mysqli_close() it, or the
+ * next step gets the dead handle back and every query on it throws.
  */
 function admin_connection(string $needed_for): ?\mysqli
 {
@@ -4514,8 +4518,6 @@ if ($fresh_install) {
             }
         }
 
-        mysqli_close($admin_mysqli);
-
         if ($failed > 0) {
             fail($failed . ' ALTER(s) failed - see above. The statements come straight from schema.sql; apply them manually once the cause is fixed.');
         }
@@ -4630,8 +4632,6 @@ if ($fresh_install) {
             fail('Failed to apply foreign key (' . $label . '): ' . $exception -> getMessage());
         }
     }
-
-    mysqli_close($index_admin_mysqli);
 }
 
 // Record the code version the database now matches - init.php locks the site

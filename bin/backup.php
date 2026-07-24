@@ -9,7 +9,7 @@ declare(strict_types=1);
 // systemd user timer - see README's "Backups" section.
 //
 //   BACKUP_DIR       backup root (default: <parent of project>/glommer-backups)
-//   BACKUP_KEEP_DAYS retention in days (default: 7)
+//   BACKUP_KEEP_DAYS retention in days (default: 3)
 
 if (PHP_SAPI !== 'cli') {
     exit(1);
@@ -25,7 +25,7 @@ spl_autoload_register(function (string $class): void {
 
 $project_root = dirname(__DIR__);
 $backup_root = Backup::rootDir();
-$keep_days = max(1, (int) (Env::get('BACKUP_KEEP_DAYS', '') ?: 7));
+$keep_days = max(1, (int) (Env::get('BACKUP_KEEP_DAYS', '') ?: 3));
 
 if (!is_dir($backup_root) && !@mkdir($backup_root, 0700, true)) {
     fwrite(STDERR, 'Could not create backup directory ' . $backup_root . "\n");

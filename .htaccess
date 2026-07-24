@@ -1,5 +1,12 @@
 # Never serve dotfiles (.env especially - it holds credentials) or SQL dumps.
-<FilesMatch "^\.|\.sql$">
+# .well-known is exempted: newer Apache (2.4.68+) applies this FilesMatch to the
+# .well-known directory segment during the walk and denies it at the authz
+# phase, which runs BEFORE the mod_rewrite ACME/WebFinger exemptions below - so
+# without the exemption those rewrites never get the chance to let it through,
+# and inbound federation (a remote server WebFingering us back to confirm a
+# follow) breaks. Anything else under .well-known is still 403'd by the
+# leading-dot RewriteRule further down.
+<FilesMatch "^\.(?!well-known$)|\.sql$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

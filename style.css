@@ -613,7 +613,7 @@ p a:hover {
     position: relative;
     z-index: 21;
     color: var(--muted);
-    padding: 0.3rem 0.5rem;
+    padding: 0.5rem;
     border: 1px solid transparent;
     border-bottom: none;
     border-radius: var(--radius-ctl) var(--radius-ctl) 0 0;
@@ -690,7 +690,7 @@ p a:hover {
     gap: 0.125rem;
     min-width: 11rem;
     z-index: 20;
-    padding: 0.4rem;
+    padding: 0.5rem;
     border-radius: var(--radius-card);
     border-top-left-radius: 0;
     box-shadow: var(--shadow-pop);
@@ -752,6 +752,7 @@ p a:hover {
     border-top-left-radius: 0;
     box-shadow: var(--shadow-pop);
     opacity: 0;
+    padding: 0.5rem;
     transform: translateY(-0.25rem) scale(0.98);
     transform-origin: top left;
     pointer-events: none;
@@ -767,7 +768,7 @@ p a:hover {
 .NavDropdownMenu a,
 .NotificationDropdown > a {
     display: block;
-    padding: 0.5rem 0.65rem;
+    padding: 0.5rem 0.5rem;
     border-radius: 0.625rem;
     color: var(--ink);
     font-weight: 500;
@@ -1504,8 +1505,8 @@ input[type='file']::file-selector-button {
 /* Avatars are one size by default; their container decides when they're smaller
    (a notification) or larger (a profile header, further down). */
 .Notification .Avatar {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2rem;
+    height: 2rem;
 }
 
 .Notification .Avatar.AvatarInitial {

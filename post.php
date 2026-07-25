@@ -67,7 +67,9 @@ $page -> needsMath = true;
 $page -> needsEmoji = $current_user !== null;
 
 if (!$page -> title) {
-    $page -> title = $page -> description ? truncate($page -> description) : $post -> author -> title . '\'s Post';
+    $page -> title = $page -> description ?
+        truncate($page -> description) :
+        $post -> author -> title . '\'s Post';
 }
 if ($post -> parentId !== null) {
     $parent_link = ParentPostLink::fromParentId($post -> parentId);

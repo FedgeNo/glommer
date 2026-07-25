@@ -14,12 +14,7 @@ class InputField extends HTMLObject
     public string $value = '';
     public ?int $maxLength = null;
     public ?string $autocomplete = null;
-    // Off by default (the label stays screen-reader-only, placeholder text
-    // carries it visually) - a field that starts empty (login, signup, the
-    // post composer) reads fine that way. Set true for a field that can come
-    // prepopulated with an existing value, which hides the placeholder and
-    // leaves no visible indication of what the field is.
-    public bool $labelVisible = false;
+    public bool $labelVisible = true;
 
     public function __construct(string $name, string $label, string $type = 'text', ?string $placeholder = null, ?int $max_length = null)
     {

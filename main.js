@@ -2207,7 +2207,7 @@ document.addEventListener('submit', async (event) => {
     }
 });
 
-// A conversation loads with its whole initial history already in the DOM
+// A conversation loads some of its initial history already in the DOM
 // (oldest first), so it has to be scrolled to the bottom before the
 // "near the top -> load older messages" listener is allowed to act -
 // otherwise the page starts at scrollY 0 (the top, by definition "near the
@@ -2245,7 +2245,7 @@ window.addEventListener('load', () => {
 let loading_older_messages = false;
 
 window.addEventListener('scroll', async () => {
-    if (!message_history_ready || window.scrollY > 150 || loading_older_messages) {
+    if (!message_history_ready || window.scrollY > 300 || loading_older_messages) {
         return;
     }
 
@@ -2254,7 +2254,7 @@ window.addEventListener('scroll', async () => {
     // band - without this, the scroll-to-bottom above would itself satisfy
     // the "near the top" check and immediately fire the loader anyway.
     // Confirmed live: exactly this happened before this check existed.
-    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 300;
 
     if (near_bottom) {
         return;

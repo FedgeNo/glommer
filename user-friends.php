@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
-// Fully public - anyone can browse a user's friends. The pending/sent request
-// sections only appear when you're looking at your own page.
+// Fully public - anyone can browse a user's friends. The search/pending/sent
+// request sections only appear when you're looking at your own page.
 $username = (string) ($_GET['username'] ?? '');
 
 $profile_user = User::byUsername($username);
@@ -27,7 +27,7 @@ $name = $profile_user -> title ?: $profile_user -> slug;
 $page = new Page($profile_user);
 $page -> bodyClass = 'ProfilePage';
 $page -> title = $name . '\'s Friends';
-$page -> description = 'Friends of ' . $name . ' on Glommer';
+$page -> description = 'Friends of ' . $name . ' on ' . Config::get('siteTitle');
 $page -> image = $profile_user -> avatarURL();
 
 $page -> addContent($profile_user);

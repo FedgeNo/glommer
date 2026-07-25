@@ -6,12 +6,12 @@ class TextareaField extends HTMLObject
 {
     public string $tagName = 'div';
     public ?string $class = 'TextareaField';
-
     public string $name;
     public string $label;
     public ?string $placeholder = null;
     public ?int $maxLength = null;
     public string $value = '';
+    public bool $labelVisible = true;
 
     public function __construct(string $name, string $label, ?string $placeholder = null, ?int $max_length = null)
     {
@@ -27,8 +27,8 @@ class TextareaField extends HTMLObject
     {
         $label = new Label();
         $label -> for = $this -> name;
-        $label -> class = 'visually-hidden';
         $label -> contents[] = $this -> label;
+        $label -> class = $this -> labelVisible ? null : 'visually-hidden';
         $this -> contents[] = $label;
 
         $textarea = new Textarea();

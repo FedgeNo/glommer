@@ -39,6 +39,7 @@
     --display-font: 'Bricolage Grotesque', system-ui, sans-serif;
     --nav-height: calc(3.25rem + 1px);
     --page-title-height: calc(3.4rem + 1px);
+    --content-padding-inline: max(1rem, calc((100% - 40rem) / 2));
 }
 
 @media (prefers-color-scheme: dark) {
@@ -268,7 +269,7 @@ body:has(.MainNavigation) {
 
 .PageBody {
     padding: 1rem;
-    padding-inline: max(1rem, calc((100% - 40rem) / 2));
+    padding-inline: var(--content-padding-inline);
 }
 
 ::selection {
@@ -564,7 +565,7 @@ p a:hover {
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--hairline);
     padding: 0.625rem 1rem;
-    padding-inline: max(1rem, calc((100% - 40rem) / 2));
+    padding-inline: var(--content-padding-inline);
     z-index: 20;
     align-items: center;
 }
@@ -644,13 +645,14 @@ p a:hover {
     height: var(--nav-height);
     left: 0;
     right: 0;
-    margin-top: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
     background-color: var(--glass);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--hairline);
-    padding: 0.5rem 1rem;
-    padding-inline: max(1rem, calc((100% - 40rem) / 2));
+    padding-inline: var(--content-padding-inline);
     z-index: 10;
     white-space: nowrap;
     overflow: hidden;
@@ -701,7 +703,8 @@ p a:hover {
     transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.NavDropdown:hover .NavDropdownMenu {
+.NavDropdown:hover .NavDropdownMenu,
+.NavDropdown:focus-within .NavDropdownMenu {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
@@ -759,7 +762,8 @@ p a:hover {
     transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.NotificationsNavLink:hover .NotificationDropdown {
+.NotificationsNavLink:hover .NotificationDropdown,
+.NotificationsNavLink:focus-within .NotificationDropdown {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
@@ -2390,3 +2394,4 @@ input[type='file']::file-selector-button {
     white-space: pre-wrap;
     overflow-x: auto;
 }
+

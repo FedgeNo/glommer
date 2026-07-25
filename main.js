@@ -745,6 +745,7 @@ window.addEventListener('scroll', async () => {
     const items = results.querySelector('.UserList');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     items.appendChild(spinner);
 
     try {
@@ -889,6 +890,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     results.appendChild(spinner);
 
     try {
@@ -1016,6 +1018,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     results.appendChild(spinner);
 
     try {
@@ -2270,6 +2273,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     const height_before_spinner = document.body.scrollHeight;
     list.insertBefore(spinner, list.firstChild);
     window.scrollTo(0, window.scrollY + (document.body.scrollHeight - height_before_spinner));
@@ -2344,6 +2348,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     list.appendChild(spinner);
 
     try {
@@ -2401,6 +2406,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     list.appendChild(spinner);
 
     try {
@@ -2779,6 +2785,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label',  'Loading');
     list.appendChild(spinner);
 
     try {
@@ -2842,6 +2849,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     list.appendChild(spinner);
 
     try {
@@ -2899,6 +2907,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     list.appendChild(spinner);
 
     try {
@@ -2981,6 +2990,7 @@ window.addEventListener('scroll', async () => {
 
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     target.appendChild(spinner);
 
     try {
@@ -3774,6 +3784,7 @@ window.addEventListener('scroll', async () => {
     const items = list.querySelector('.UserList');
     const spinner = document.createElement('li');
     spinner.className = 'LoadingSpinner';
+    spinner.setAttribute('aria-label', 'Loading');
     items.appendChild(spinner);
 
     try {

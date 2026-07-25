@@ -1267,6 +1267,14 @@ input[type='file']::file-selector-button {
     min-width: 0;
 }
 
+.PostComposer fieldset {
+    margin-bottom: 0.5rem;
+}
+
+.PostComposer input[type='file'] {
+    padding: 0;
+}
+
 .MessageComposerFields .TextareaField {
     flex: 1 1 auto;
 }

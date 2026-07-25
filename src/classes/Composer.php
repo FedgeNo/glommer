@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 abstract class Composer extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 Composer';
+    public ?string $class = 'Card d-flex flex-column Composer';
 
     public function toDOM(): \DOMElement
     {
@@ -18,8 +18,12 @@ abstract class Composer extends Form
 
         $title_link_row = new Div();
         $title_link_row -> class = 'PostComposerFields d-flex gap-2';
-        $title_link_row -> addContent(new InputField('title', 'Title (optional)', 'text', 'Title (optional)', 255));
-        $title_link_row -> addContent(new InputField('linkURL', 'Link (optional)', 'text', 'Link (optional)', 255));
+        $field = new InputField('title', 'Title (optional)', 'text', 'Title (optional)', 255);
+        $field -> labelVisible = false;
+        $title_link_row -> addContent($field);
+        $field = new InputField('linkURL', 'Link (optional)', 'text', 'Link (optional)', 255);
+        $field -> labelVisible = false;
+        $title_link_row -> addContent($field);
         $fields -> addContent($title_link_row);
 
         // A class, not an id: this composer's editor coexists with an inline

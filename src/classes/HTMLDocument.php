@@ -76,10 +76,10 @@ class HTMLDocument extends Document
 
     public function send(): void
     {
-        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        //header('Cache-Control: private, no-cache, must-revalidate, max-age=0');
+        header('Cache-Control: private, no-cache, max-age=0');
         header('Pragma: no-cache');
         header('Expires: 0');
-
         parent::send();
     }
 

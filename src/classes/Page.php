@@ -107,6 +107,11 @@ class Page extends HTMLDocument
             $this -> head -> addContent(QuillAssets::CSSLink());
         }
 
+        $inter_font = new Link();
+        $inter_font -> rel = 'stylesheet';
+        $inter_font -> href = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap';
+        $this -> head -> addContent($inter_font);
+
         $stylesheet = new Link();
         $stylesheet -> rel = 'stylesheet';
         $stylesheet -> href = ServerURL::absolute('/style.css');
@@ -149,7 +154,26 @@ class Page extends HTMLDocument
 
         $current_user = Auth::user();
 
-        $chrome[] = new JSGlobals([
+        // delta.js loads before post.js and main.js, which both call
+        // render_delta() to build a post's body from its Delta ops.
+        $script_sources = ['delta.js', 'Avatar.js', 'UserBio.js', 'User.js', 'Post.js', 'Message.js', 'OtherUser.js', 'Notification.js', 'BannedUser.js', 'ReportCard.js'];
+
+        if ($this -> needsTagGraph) {
+            $script_sources[] = 'HashtagGraph.js';
+        }
+
+        $script_sources[] = 'main.js';
+
+        if ($this -> needsHelp) {
+            $script_sources[] = 'help.js';
+        }
+
+        array_splice($this -> body -> contents, 0, 0, $chrome);
+
+        // Last in the body so it sits above the page's own content without a
+        // stacking context to fight.
+        $this -> addContent(new ScrollToTopButton());
+        $globals = new JSGlobals([
             'currentUserId' => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> slug,
             'currentUserSkinTone' => $current_user ?-> skinTone,
@@ -163,32 +187,12 @@ class Page extends HTMLDocument
             // client- and server-rendered carousels can't drift apart.
             'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,
         ]);
-
-        // delta.js loads before post.js and main.js, which both call
-        // render_delta() to build a post's body from its Delta ops.
-        $script_sources = ['delta.js', 'user.js', 'post.js', 'message.js', 'other-user.js', 'notification.js', 'banned-user.js', 'report.js'];
-
-        if ($this -> needsTagGraph) {
-            $script_sources[] = 'tag-graph.js';
-        }
-
-        $script_sources[] = 'main.js';
-
-        if ($this -> needsHelp) {
-            $script_sources[] = 'help.js';
-        }
-
         foreach ($script_sources as $source) {
             $script = new Script();
             $script -> src = ServerURL::absolute('/' . $source);
-            $chrome[] = $script;
+            $this -> body -> addContent($script);
         }
-
-        array_splice($this -> body -> contents, 0, 0, $chrome);
-
-        // Last in the body so it sits above the page's own content without a
-        // stacking context to fight.
-        $this -> body -> addContent(new ScrollToTopButton());
+        $this -> addContent($globals);
     }
 
     public static function safeJSONForScript(mixed $data): string

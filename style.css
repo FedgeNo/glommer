@@ -6,14 +6,6 @@
    Type: Bricolage Grotesque (display) over a native body stack.
    ============================================================ */
 
-@font-face {
-    font-family: 'Bricolage Grotesque';
-    src: url('/fonts/bricolage-grotesque-latin-wght-normal.woff2') format('woff2-variations');
-    font-weight: 200 800;
-    font-style: normal;
-    font-display: swap;
-}
-
 :root {
     --paper: #dfe6db;
     --surface: #ffffff;
@@ -36,7 +28,7 @@
     --radius-card: 1.125rem;
     --radius-ctl: 0.5rem;
     --glom-corner: 0.25rem;
-    --display-font: 'Bricolage Grotesque', system-ui, sans-serif;
+    --display-font: 'Inter', system-ui, sans-serif;
     --nav-height: calc(3.25rem + 1px);
     --page-title-height: calc(3.4rem + 1px);
     --content-padding-inline: max(1rem, calc((100% - 40rem) / 2));

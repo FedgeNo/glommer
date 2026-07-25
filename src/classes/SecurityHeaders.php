@@ -20,38 +20,14 @@ class SecurityHeaders
         $is_https = ServerURL::isHTTPS();
         $nonce = self::nonce();
 
-        // https://challenges.cloudflare.com is allowed for the optional Turnstile
-        // CAPTCHA - its script (script-src), the widget's iframe (frame-src), and
-        // the XHR/fetch the widget makes back to Cloudflare during a real
-        // challenge (connect-src). Without connect-src the widget fails with
-        // "Unable to connect to website" on a live domain, even though it passes
-        // on localhost (where Turnstile usually issues no real challenge).
-        //
-        // Google's reCAPTCHA hosts are allowed on the same basis for the
-        // optional locked-account challenge (see ReCaptcha): www.google.com
-        // serves api.js and the challenge iframe, www.gstatic.com serves the
-        // widget's own scripts.
-        //
-        // All always permitted, not just when the CAPTCHAs are on: this runs
-        // before the database is available (so we can't check whether either is
-        // configured), and they're specific trusted hosts that are inert when
-        // unused.
         $csp = implode('; ', [
             'default-src \'self\'',
             'script-src \'self\' \'nonce-' . $nonce . '\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com',
-            'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net',
+            'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net https://fonts.googleapis.com',
             'img-src \'self\' data:',
-            'font-src \'self\' https://cdn.jsdelivr.net',
+            'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
             'frame-src https://challenges.cloudflare.com https://www.google.com',
-            // The WebSocket connection is a different origin from the page
-            // (same host, different port) - 'self' doesn't cover it, and the
-            // actual hostname varies with however the site is reached, so
-            // this allows the configured port on any host rather than one
-            // hardcoded hostname. Only wss:// (TLS): the site is https-only,
-            // and browsers block a plain ws:// connection from an https page
-            // as mixed content anyway, so allowing ws:// here would buy
-            // nothing but a looser policy.
             'connect-src \'self\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com wss://*:' . Config::get('WSPort'),
             'object-src \'none\'',
             'base-uri \'self\'',

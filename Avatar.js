@@ -1,7 +1,7 @@
 /** Mirrors Avatar.php: an <img> when the user has one, otherwise a pure
  * CSS/text fallback circle in a color derived from their userId, showing the
  * first letter of their name. */
-class Avatar {
+export class Avatar {
     static forUser(user) {
         if (!user) {
             return Avatar.create(false, null, null, 0);

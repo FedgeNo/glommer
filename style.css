@@ -638,8 +638,7 @@ p a:hover {
     left: 0;
     right: 0;
     margin: 0;
-    display: flex;
-    align-items: center;
+    line-height: 3rem;
     background-color: var(--glass);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
@@ -1313,6 +1312,7 @@ input[type='file']::file-selector-button {
     height: 0.4rem;
     border-radius: 999px;
     overflow: hidden;
+    margin-top: 0.5rem;
     accent-color: var(--accent);
 }
 
@@ -1522,6 +1522,10 @@ input[type='file']::file-selector-button {
 .User {
     display: flex;
     align-items: flex-start;
+}
+
+.BannedUser > .d-flex {
+    width: 100%;
 }
 
 .UserMain {

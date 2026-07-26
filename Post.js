@@ -1,4 +1,8 @@
-class Post {
+import { User } from '/User.js';
+import { render_delta, see_more_element, is_safe_link, ALLOWED_LINK_SCHEMES } from '/delta.js';
+import { format_relative_time, parse_server_date } from '/utils.js';
+
+export class Post {
     postId = null;
     userId = null;
     parentId = null;

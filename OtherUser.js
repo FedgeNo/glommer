@@ -1,4 +1,6 @@
-class OtherUser extends User {
+import { User } from '/User.js';
+
+export class OtherUser extends User {
     userId = null;
     slug = null;
     title = null;

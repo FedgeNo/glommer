@@ -112,6 +112,23 @@ class UploadProcessor
     }
 
     /**
+     * Full‑resolution poster / preview image path for videos (and potentially
+     * images). Videos get a still frame at full size (`-original.jpg`); images
+     * already have their full display version via srcPath(), so for them this
+     * can simply return srcPath() or remain unused.
+     */
+    public static function originalImagePath(int|string $item_id, string $item_type): ?string
+    {
+        // Audio has no visual poster.
+        if ($item_type === 'AudioItem') {
+            return null;
+        }
+
+        // Videos use the full‑size frame we will start saving as -original.jpg
+        return self::UPLOAD_URL_PREFIX . self::shard($item_id) . '/' . $item_id . '-original.jpg';
+    }
+
+    /**
      * Determines what kind of media a file is without fully processing it, so callers can
      * decide sync vs. async handling before committing to a (possibly slow) transcode.
      */

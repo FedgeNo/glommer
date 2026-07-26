@@ -61,6 +61,7 @@ class DeltaRenderer extends HTMLObject
                 }
 
                 $list_el -> appendChild($li);
+                $list_el -> appendChild($doc -> createTextNode("\n"));
                 $inline = [];
 
                 return;
@@ -90,6 +91,7 @@ class DeltaRenderer extends HTMLObject
             }
 
             $root -> appendChild($block);
+            //$root -> appendChild($doc -> createTextNode("\n"));
             $inline = [];
         };
 

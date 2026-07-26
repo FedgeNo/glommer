@@ -85,7 +85,11 @@ SELECT 1
 
     public static function likeLabel(bool $liked, int $count): string
     {
-        return ($liked ? 'Unlike' : 'Like') . ' (' . $count . ')';
+        $label = $liked ? 'Unlike' : 'Like';
+            if ($count) {
+                $label .= ' (' . $count . ')';
+            }
+        return $label;
     }
 
     protected function bookmarkButton(): HTMLObject

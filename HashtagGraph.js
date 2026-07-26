@@ -1,3 +1,6 @@
+const GRAPH_SELECTOR = '.HashtagGraphList';
+const GRAPH_BREAKPOINT = '(min-width: 48rem)';
+
 /**
  * The /tags/ 3D force-directed hashtag graph (mirrors HashtagGraphList.php).
  *
@@ -23,12 +26,6 @@
  * captures touch and wheel to rotate and zoom, which on a phone would trap the
  * page's own scroll.
  */
-
-const GRAPH_SELECTOR = '.HashtagGraphList';
-
-// The graph only takes over at or above the nav/layout breakpoint; narrower than
-// this the tags stay a plain, scrollable list.
-const GRAPH_BREAKPOINT = '(min-width: 48rem)';
 
 // --- quaternion helpers (x, y, z, w) ---------------------------------------
 
@@ -64,7 +61,7 @@ function quat_to_matrix(q) {
     ];
 }
 
-class HashtagGraph {
+export class HashtagGraph {
     // Layout / physics tuning.
     static MAX_ITERATIONS = 320;
     static GRAVITY = 0.03;
@@ -109,6 +106,8 @@ class HashtagGraph {
 
         this.sizeNodes();
         element.classList.add('Active');
+        // Force reflow to ensure the CSS height is applied before measuring
+        void element.offsetHeight;
 
         this.canvas = document.createElement('canvas');
         this.canvas.className = 'HashtagGraphEdges';
@@ -570,4 +569,10 @@ function init_tag_graphs(root) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => init_tag_graphs());
+// Run after the DOM is ready (module scripts are deferred, so the DOM is
+// usually already available).
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => init_tag_graphs());
+} else {
+    init_tag_graphs();
+}

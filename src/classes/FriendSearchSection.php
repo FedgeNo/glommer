@@ -8,6 +8,8 @@ declare(strict_types=1);
  */
 class FriendSearchSection extends UserSection
 {
+    public ?string $class = 'FriendSearchSection';
+
     protected string $heading = 'Search Results';
 
     protected bool $headsEmptyList = true;

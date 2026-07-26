@@ -1,7 +1,11 @@
+import { Avatar } from '/Avatar.js';
+import { UserBio } from '/UserBio.js';
+import { parse_server_date } from '/utils.js';
+
 /** Mirrors User.php: the identity card and the byline header, shared by every
  * user-shaped thing (OtherUser, FriendRequest, BannedUser, a report's user
  * target, a message sender). */
-class User {
+export class User {
     static fromData(data) {
         // `new this()` (not `new User()`) so subclasses get an instance of
         // themselves.

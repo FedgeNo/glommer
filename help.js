@@ -1,3 +1,5 @@
+import { csrf_headers } from '/utils.js';
+
 /**
  * Help search - mirrors the user search in main.js, but scoped to the Help
  * pages (loaded only when Page::create is told needsHelp). Typing in the box
@@ -8,7 +10,7 @@
  */
 
 // Mirror of HelpArticleSummary::toDOM() - the whole card is a link.
-function help_article_summary_element(article) {
+export function help_article_summary_element(article) {
     const card = document.createElement('a');
     card.className = 'HelpArticleSummary Card';
     card.href = article.url;
@@ -26,7 +28,7 @@ function help_article_summary_element(article) {
 }
 
 // Mirror of HelpCategory::toDOM().
-function help_category_element(name, articles) {
+export function help_category_element(name, articles) {
     const section = document.createElement('section');
     section.className = 'HelpCategory';
 
@@ -43,8 +45,6 @@ function help_category_element(name, articles) {
 }
 
 function render_help_browse(results, articles) {
-    // Group consecutive articles by category, preserving the order the server
-    // sent them (already category order).
     let current_category = null;
     let current_list = null;
 
@@ -80,9 +80,6 @@ document.addEventListener('input', (event) => {
         const query = input.value.trim();
         const results = input.closest('.HelpSearch').querySelector('.HelpSearchResults');
 
-        // Abort whatever this input's previous search is still waiting on -
-        // without this, a slower earlier response can resolve after a faster
-        // later one and overwrite fresher results with stale ones.
         input.searchAbortController?.abort();
         const controller = new AbortController();
         input.searchAbortController = controller;
@@ -103,7 +100,7 @@ document.addEventListener('input', (event) => {
 
             data = await response.json();
         } catch (error) {
-            return; // aborted by a newer search, a network failure, or a non-JSON response body either way
+            return;
         }
 
         results.replaceChildren();

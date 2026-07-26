@@ -18,7 +18,7 @@
  * @param {Array} ops  the Delta's ops array
  * @returns {HTMLElement} a .PostBody div containing the rendered content
  */
-function render_delta(ops) {
+export function render_delta(ops) {
     const root = document.createElement('div');
     root.className = 'PostBody';
 
@@ -59,6 +59,7 @@ function render_delta(ops) {
             const li = document.createElement('li');
             inline.forEach((n) => li.appendChild(n));
             list_el.appendChild(li);
+            list_el.appendChild(document.createTextNode('\n'));
             inline = [];
             return;
         }
@@ -86,6 +87,7 @@ function render_delta(ops) {
         }
 
         root.appendChild(block);
+        root.appendChild(document.createTextNode('\n'));
         inline = [];
     };
 
@@ -119,7 +121,7 @@ function render_delta(ops) {
     return root;
 }
 
-const ALLOWED_LINK_SCHEMES = ['http:', 'https:', 'mailto:'];
+export const ALLOWED_LINK_SCHEMES = ['http:', 'https:', 'mailto:'];
 
 /**
  * Pass 1: group consecutive string ops sharing a link value and, if the group's
@@ -127,7 +129,7 @@ const ALLOWED_LINK_SCHEMES = ['http:', 'https:', 'mailto:'];
  * DeltaRenderer::stripDeceptiveLinks). Grouping - not per-op - is what stops a
  * URL split across formatting ops from keeping a deceptive href.
  */
-function strip_deceptive_links(ops) {
+export function strip_deceptive_links(ops) {
     const result = [];
     let group = [];
     let group_text = '';
@@ -174,7 +176,7 @@ function strip_deceptive_links(ops) {
  * code is never linkified; otherwise URLs become self-links, #hashtags tag
  * links, the rest plain - each wrapped in the run's formatting, anchor outermost.
  */
-function inline_nodes(text, attributes) {
+export function inline_nodes(text, attributes) {
     const attrs = attributes || {};
 
     if (typeof attrs.link === 'string') {
@@ -202,7 +204,7 @@ function inline_nodes(text, attributes) {
 }
 
 /** A text node wrapped in the run's inline formatting (no link). */
-function formatted_text_node(text, attrs) {
+export function formatted_text_node(text, attrs) {
     let node = document.createTextNode(text);
 
     if (attrs.code) {
@@ -235,7 +237,7 @@ function formatted_text_node(text, attrs) {
 }
 
 /** An anchor to href (external -> new tab), or the bare node if unsafe. */
-function linked_node(href, inner) {
+export function linked_node(href, inner) {
     if (!is_safe_link(href, ALLOWED_LINK_SCHEMES)) {
         return inner;
     }
@@ -253,7 +255,7 @@ function linked_node(href, inner) {
 }
 
 /** An internal (same-window) anchor to a hashtag's tag page. */
-function hashtag_node(tag, inner) {
+export function hashtag_node(tag, inner) {
     const anchor = document.createElement('a');
     anchor.setAttribute('href', window.siteURL + '/tags/' + tag);
     anchor.appendChild(inner);
@@ -261,14 +263,14 @@ function hashtag_node(tag, inner) {
 }
 
 /** An internal (same-window) anchor to a mentioned user's profile. */
-function mention_node(username, inner) {
+export function mention_node(username, inner) {
     const anchor = document.createElement('a');
     anchor.setAttribute('href', window.siteURL + '/users/' + username + '/');
     anchor.appendChild(inner);
     return anchor;
 }
 
-function opens_in_new_tab(href) {
+export function opens_in_new_tab(href) {
     const host = linkify_link_host(href);
 
     if (host === null) {
@@ -287,7 +289,7 @@ function opens_in_new_tab(href) {
  * @param {string} url  the full post's URL
  * @returns {HTMLElement} an <a class="SeeMore">
  */
-function see_more_element(url) {
+export function see_more_element(url) {
     const anchor = document.createElement('a');
     anchor.className = 'SeeMore';
     anchor.href = url;
@@ -300,7 +302,7 @@ function see_more_element(url) {
  * relative URL). Blocks javascript:, data:, etc. Server-side validation is the
  * real gate; this is client-side defense in depth.
  */
-function is_safe_link(url, allowed_schemes) {
+export function is_safe_link(url, allowed_schemes) {
     // Browsers strip ASCII whitespace/control chars while parsing a URL, so
     // "java\tscript:" would run; strip them (interior ones too) before the
     // scheme test. Mirrors DeltaRenderer::isSafeLink().
@@ -327,11 +329,11 @@ const LINKIFY_SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za
 const LINKIFY_LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
 const LINKIFY_AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
 
-function linkify_text_looks_url(text) {
+export function linkify_text_looks_url(text) {
     return new RegExp(LINKIFY_LOOKS_URL).test(text);
 }
 
-function linkify_link_host(url) {
+export function linkify_link_host(url) {
     const stripped = url.replace(/[\u0000-\u0020]+/g, '');
     const match = new RegExp(LINKIFY_AUTHORITY).exec(stripped);
 
@@ -355,7 +357,7 @@ function linkify_link_host(url) {
     return authority.toLowerCase();
 }
 
-function linkify_tokenize(text) {
+export function linkify_tokenize(text) {
     const segments = [];
     let cursor = 0;
     const re = new RegExp(LINKIFY_SCAN, 'g');
@@ -389,7 +391,7 @@ function linkify_tokenize(text) {
     return linkify_merge_text(segments);
 }
 
-function linkify_classify(matched) {
+export function linkify_classify(matched) {
     if (matched[0] === '#') {
         const tag = matched.slice(1);
 
@@ -431,7 +433,7 @@ function linkify_classify(matched) {
     return { segment: { type: 'url', text: url }, trailing };
 }
 
-function linkify_merge_text(segments) {
+export function linkify_merge_text(segments) {
     const merged = [];
 
     segments.forEach((segment) => {

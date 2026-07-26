@@ -1,4 +1,8 @@
-class Message {
+import { parse_server_date, format_relative_time, list_item } from '/utils.js';
+import { render_math } from '/math.js';
+import { User } from '/User.js';
+
+export class Message {
     messageId = null;
     senderId = null;
     recipientId = null;
@@ -32,8 +36,6 @@ class Message {
             div.appendChild(this.senderHeader(sender, this.senderId));
         }
 
-        // Body and (for other people's messages) the report button share one
-        // row - text left, button hugging the right - so they never overlap.
         const line = document.createElement('div');
         line.className = 'MessageLine';
 
@@ -41,8 +43,6 @@ class Message {
         body.textContent = this.body;
         line.appendChild(body);
 
-        // No report button on the admin's messages - the API rejects reports
-        // about the admin, since nobody could act on one anyway.
         if (window.currentUserId !== null && Number(this.senderId) !== Number(window.currentUserId) && Number(this.senderId) !== 1) {
             const report_button = document.createElement('button');
             report_button.type = 'button';
@@ -80,12 +80,8 @@ document.addEventListener('ws:message', (event) => {
         return;
     }
 
-    // Only follow along if the reader was already at the bottom - otherwise
-    // a new message would yank them away from history they've scrolled up to read.
     const was_near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
 
-    // ItemList wraps every child in its own <li>, so the empty-state .Notice
-    // is a grandchild of the list, not a direct child.
     const placeholder = list.querySelector('.Notice');
 
     if (placeholder) {

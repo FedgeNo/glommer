@@ -140,13 +140,9 @@ class Page extends HTMLDocument
         }
     }
 
-    private function assembleBody(): void
-    {
+    private function assembleBody(): void {
         $this -> body -> class = $this -> bodyClass !== null ? 'PageBody ' . $this -> bodyClass : 'PageBody';
 
-        // The page-specific content has already been added to the body (via
-        // addContent during the page script); the chrome below belongs in front
-        // of it, so it's spliced in at the start rather than appended.
         $chrome = [];
 
         $chrome[] = new MainNavigation();
@@ -154,45 +150,28 @@ class Page extends HTMLDocument
 
         $current_user = Auth::user();
 
-        // delta.js loads before post.js and main.js, which both call
-        // render_delta() to build a post's body from its Delta ops.
-        $script_sources = ['delta.js', 'Avatar.js', 'UserBio.js', 'User.js', 'Post.js', 'Message.js', 'OtherUser.js', 'Notification.js', 'BannedUser.js', 'ReportCard.js'];
-
-        if ($this -> needsTagGraph) {
-            $script_sources[] = 'HashtagGraph.js';
-        }
-
-        $script_sources[] = 'main.js';
-
-        if ($this -> needsHelp) {
-            $script_sources[] = 'help.js';
-        }
-
-        array_splice($this -> body -> contents, 0, 0, $chrome);
-
-        // Last in the body so it sits above the page's own content without a
-        // stacking context to fight.
-        $this -> addContent(new ScrollToTopButton());
-        $globals = new JSGlobals([
-            'currentUserId' => $current_user ?-> userId,
+        $chrome[] = new JSGlobals([
+            'currentUserId'       => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> slug,
             'currentUserSkinTone' => $current_user ?-> skinTone,
             'currentUserCanModerate' => Auth::canModerate(),
-            'CSRFToken' => CSRF::token(),
-            'siteURL' => ServerURL::absolute(''),
-            'serverTime' => time() * 1000,
-            'WSPort' => Config::get('WSPort'),
-            // Single source of truth for how many carousel items load eagerly -
-            // post.js reads this rather than hardcoding its own copy, so the
-            // client- and server-rendered carousels can't drift apart.
-            'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,
+            'CSRFToken'           => CSRF::token(),
+            'siteURL'             => ServerURL::absolute(''),
+            'serverTime'          => time() * 1000,
+            'WSPort'              => Config::get('WSPort'),
+            'carouselEagerItems'  => Carousel::INITIAL_EAGER_ITEMS,
+            'needsMath'           => $this -> needsMath,   // ← add this line
         ]);
-        foreach ($script_sources as $source) {
-            $script = new Script();
-            $script -> src = ServerURL::absolute('/' . $source);
-            $this -> body -> addContent($script);
-        }
-        $this -> addContent($globals);
+        $chrome[] = $globals;
+
+        // Module entry point – imports all converted modules and starts the app
+        $main_module = new ModuleScript();
+        $main_module -> src = ServerURL::absolute('/new-main.js');
+        $chrome[] = $main_module;
+
+        array_splice($this -> body -> contents, 0, 0, $chrome);
+
+        $this -> addContent(new ScrollToTopButton());
     }
 
     public static function safeJSONForScript(mixed $data): string

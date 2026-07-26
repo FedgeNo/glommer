@@ -1,9 +1,11 @@
+import { User } from '/User.js';
+
 /**
  * Client-side mirror of the PHP BannedUser class - one entry on the admin
  * Banned Users page (identity plus an Unban button), used when entries arrive
  * as JSON via infinite scroll or the banned-user search.
  */
-class BannedUser extends User {
+export class BannedUser extends User {
     userId = null;
     slug = null;
     title = null;

@@ -1,3 +1,5 @@
+import { parse_server_date, format_relative_time } from '/utils.js';
+
 /**
  * Client-side mirror of the PHP ReportCard (src/classes/ReportCard.php) - the
  * moderation card the admin reports page appends on scroll from the data
@@ -7,7 +9,7 @@
  * / delete / dismiss buttons the server renders, whose delegated handlers live
  * in main.js.
  */
-class ReportCard {
+export class ReportCard {
     reportId = null;
     reporterId = null;
     reporterUsername = null;

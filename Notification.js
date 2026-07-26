@@ -1,4 +1,7 @@
-class Notification {
+import { format_relative_time, parse_server_date } from '/utils.js';
+import { Avatar } from '/Avatar.js';
+
+export class Notification {
     notificationId = null;
     userId = null;
     type = null;
@@ -72,10 +75,6 @@ class Notification {
                 return window.siteURL + '/users/' + this.actor.slug + '/';
             case 'message':
                 return window.siteURL + '/messages/' + this.actor.slug;
-            // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
-            // post belongs to the ACTOR (whoever wrote the post that mentions
-            // you) - same reasoning as 'friendAccepted'/'message' above using
-            // actor.slug, not currentUserUsername.
             case 'mention':
                 return window.siteURL + '/users/' + this.actor.slug + '/' + this.postId;
             case 'passwordRemovedGoogle':
@@ -90,8 +89,6 @@ class Notification {
         div.className = 'Notification MountIn';
         div.dataset.notificationId = this.notificationId;
 
-        // A notification links to its subject when it has one; a targetless one
-        // (a system error, say) is a plain block, never a link to nowhere.
         const target = this.targetURL();
         const container = document.createElement(target === null ? 'div' : 'a');
         container.className = 'd-flex align-items-center gap-3';

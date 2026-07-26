@@ -1,67 +1,29 @@
-function csrf_headers(extra) {
-    return Object.assign({ 'X-CSRF-Token': window.CSRFToken }, extra || {});
-}
+import { Avatar } from '/Avatar.js';
+import { UserBio } from '/UserBio.js';
+import { User } from '/User.js';
+import { OtherUser } from '/OtherUser.js';
+import { Post } from '/Post.js';
+import { Message } from '/Message.js';
+import { Notification } from '/Notification.js';
+import { ReportCard } from '/ReportCard.js';
+import { BannedUser } from '/BannedUser.js';
+import { InfiniteScroller } from '/InfiniteScroller.js';
+import { SearchInput } from '/SearchInput.js';
+import { parse_server_date, format_relative_time, corrected_now, list_item } from '/utils.js';
+// Expose imported classes globally while classic scripts still exist
+window.Avatar = Avatar;
+window.UserBio = UserBio;
+window.User = User;
+window.OtherUser = OtherUser;
+window.Post = Post;
+window.Message = Message;
+window.Notification = Notification;
+window.ReportCard = ReportCard;
 
 /**
- * The viewer's own clock can't be trusted to be in sync with the server
- * (especially once this runs on machines we don't control), so relative
- * timestamps are computed against the server's clock, corrected for
- * whatever drift exists between it and the viewer's clock at page load.
+ * Updates every .RelativeTime element under `root` (defaults to the whole document).
+ * Runs once on load and every 60s afterward.
  */
-const server_time_offset = typeof window.serverTime === 'number' ? window.serverTime - Date.now() : 0;
-
-function corrected_now() {
-    return Date.now() + server_time_offset;
-}
-
-/**
- * Parses a server-sent date string as UTC. The server's clock is UTC
- * everywhere (PHP and MySQL both), but its MySQL-style "Y-m-d H:i:s"
- * strings carry no timezone marker, and JavaScript parses a bare
- * date-time as *local* time - which would shift every timestamp by the
- * viewer's UTC offset. Appending Z pins the interpretation to UTC.
- * Strings that already carry a marker (Z or +hh:mm) parse as-is.
- */
-function parse_server_date(date_string) {
-    const normalized = date_string.includes('T') ? date_string : date_string.replace(' ', 'T');
-
-    return new Date(/Z|[+-]\d\d:\d\d$/.test(normalized) ? normalized : normalized + 'Z');
-}
-
-/**
- * Formats a MySQL-style "Y-m-d H:i:s" (or ISO) date string as a relative
- * time ("5m ago"), falling back to an absolute date once it's a week old,
- * since "23d ago" is less useful than the actual date at that point.
- */
-function format_relative_time(date_string) {
-    const target = parse_server_date(date_string);
-    const diff_seconds = Math.round((corrected_now() - target.getTime()) / 1000);
-
-    if (diff_seconds < 60) {
-        return 'just now';
-    }
-
-    const diff_minutes = Math.round(diff_seconds / 60);
-
-    if (diff_minutes < 60) {
-        return diff_minutes + 'm ago';
-    }
-
-    const diff_hours = Math.round(diff_minutes / 60);
-
-    if (diff_hours < 24) {
-        return diff_hours + 'h ago';
-    }
-
-    const diff_days = Math.round(diff_hours / 24);
-
-    if (diff_days < 7) {
-        return diff_days + 'd ago';
-    }
-
-    return target.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
 function refresh_relative_times(root) {
     (root || document).querySelectorAll('.RelativeTime').forEach((time_element) => {
         // A post's timestamp carries no datetime of its own - the time is the
@@ -78,6 +40,10 @@ function refresh_relative_times(root) {
 
         time_element.textContent = format_relative_time(time_element.getAttribute('datetime'));
     });
+}
+
+function csrf_headers(extra) {
+    return Object.assign({ 'X-CSRF-Token': window.CSRFToken }, extra || {});
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1757,6 +1723,17 @@ function carousel_load_slide(slide) {
 
         media.src = media.dataset.src;
         delete media.dataset.src;
+
+        // In fullscreen, upgrade images and video posters immediately.
+        if (media.closest('.MediaFullscreenOverlay')) {
+            if (media instanceof HTMLImageElement && media.dataset.fullSrc) {
+                media.src = media.dataset.fullSrc;
+                delete media.dataset.fullSrc;
+            } else if (media instanceof HTMLVideoElement && media.dataset.posterFullSrc) {
+                media.poster = media.dataset.posterFullSrc;
+                delete media.dataset.posterFullSrc;
+            }
+        }
     });
 }
 
@@ -1985,6 +1962,21 @@ function enter_media_fullscreen(container) {
     document.body.appendChild(overlay);
     overlay.appendChild(container);
     container.classList.add('InFullscreen');
+
+    // Upgrade all thumbnails / poster thumbnails that are already loaded
+    container.querySelectorAll('img[data-full-src]').forEach(img => {
+        if (img.src !== img.dataset.fullSrc) {
+            img.src = img.dataset.fullSrc;
+            img.removeAttribute('data-full-src');
+        }
+    });
+
+    container.querySelectorAll('video[data-poster-full-src]').forEach(video => {
+        if (video.poster !== video.dataset.posterFullSrc) {
+            video.poster = video.dataset.posterFullSrc;
+            video.removeAttribute('data-poster-full-src');
+        }
+    });
 
     const button = container.querySelector(':scope > .MediaFullscreen');
 
@@ -2325,127 +2317,29 @@ window.addEventListener('scroll', async () => {
     }
 });
 
-let loading_older_notifications = false;
+// Notifications infinite scroll (the main page list, not the nav dropdown)
+const notificationList = Array.from(document.querySelectorAll('.NotificationList'))
+    .find(candidate => !candidate.closest('.NotificationDropdown'));
 
-window.addEventListener('scroll', async () => {
-    // The nav dropdown also renders a .NotificationList (and earlier in the
-    // DOM), so target the page's list specifically - querySelector would grab
-    // the dropdown's, which is capped and always has-more=0, and the page list
-    // would never scroll.
-    const list = Array.from(document.querySelectorAll('.NotificationList')).find((candidate) => !candidate.closest('.NotificationDropdown'));
+if (notificationList) {
+    new InfiniteScroller(notificationList, {
+        endpoint: '/api/notification-history',
+        buildRequest: offset => ({ offset }),
+        countOffset: list => list.querySelectorAll('.Notification').length,
+        renderItem: data => Notification.fromData(data).toElement(),
+    });
+}
 
-    if (!list || list.dataset.hasMore !== '1' || loading_older_notifications) {
-        return;
-    }
-
-    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
-
-    if (!near_bottom) {
-        return;
-    }
-
-    loading_older_notifications = true;
-
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label', 'Loading');
-    list.appendChild(spinner);
-
-    try {
-        // The count of rendered notifications IS the offset the next page
-        // starts at - a live-pushed one is prepended here and is also a new
-        // newest row in the database, so the count stays in step.
-        const offset = list.querySelectorAll('.Notification').length;
-
-        const response = await fetch(`${window.siteURL}/api/notification-history`, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ offset }),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        const { notifications, hasMore: has_more } = data.response;
-
-        list.dataset.hasMore = has_more ? '1' : '0';
-
-        notifications.forEach((notification_data) => {
-            list.insertBefore(list_item(Notification.fromData(notification_data).toElement()), spinner);
-        });
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_older_notifications = false;
-    }
-});
-
-let loading_older_reports = false;
-
-window.addEventListener('scroll', async () => {
-    // There's only ever one .ReportList (the admin moderation queue), so a
-    // plain querySelector is right - no dropdown-dodging like notifications.
-    const list = document.querySelector('.ReportList');
-
-    if (!list || list.dataset.hasMore !== '1' || loading_older_reports) {
-        return;
-    }
-
-    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
-
-    if (!near_bottom) {
-        return;
-    }
-
-    loading_older_reports = true;
-
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label', 'Loading');
-    list.appendChild(spinner);
-
-    try {
-        // The count of rendered cards IS the offset the next page starts at.
-        // Dismissing a report removes both its card and its database row, so
-        // the count stays a correct offset as the queue shrinks.
-        const offset = list.querySelectorAll('.ReportCard').length;
-
-        const response = await fetch(`${window.siteURL}/api/report-history`, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ offset }),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        const { reports, hasMore: has_more } = data.response;
-
-        list.dataset.hasMore = has_more ? '1' : '0';
-
-        reports.forEach((report_data) => {
-            const card = ReportCard.fromData(report_data).toElement();
-            list.insertBefore(list_item(card), spinner);
-            // A reported post/message can contain math - render it (formula
-            // embeds and typed delimiters) the same as the feed does.
-            render_math(card);
-        });
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_older_reports = false;
-    }
-});
+// Reports infinite scroll (admin moderation queue)
+const reportList = document.querySelector('.ReportList');
+if (reportList) {
+    new InfiniteScroller(reportList, {
+        endpoint: '/api/report-history',
+        buildRequest: offset => ({ offset }),
+        countOffset: list => list.querySelectorAll('.ReportCard').length,
+        renderItem: data => ReportCard.fromData(data).toElement(),
+    });
+}
 
 const WS_RECONNECT_DELAY_MS = 10000;
 const WS_MAX_RECONNECT_ATTEMPTS = 3;
@@ -2700,15 +2594,6 @@ document.addEventListener('DOMContentLoaded', () => {
     connect_websocket();
 });
 
-// The item lists are <ul>, so a card inserted client-side (infinite scroll, a
-// live notification, a just-posted reply) is wrapped in an <li> to match the
-// server's markup - mirrors ItemList on the PHP side.
-function list_item(child) {
-    const item = document.createElement('li');
-    item.appendChild(child);
-    return item;
-}
-
 // How far down the page has to be before the trip back is worth offering.
 const SCROLL_TO_TOP_AT = 600;
 
@@ -2764,275 +2649,92 @@ function slide_out(element) {
     setTimeout(() => item.remove(), SLIDE_OUT_MS + 50);
 }
 
-let loading_older_feed_items = false;
-
-window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.FeedList:not(.SearchFeedList)');
-
-    // A hidden feed (e.g. the profile feed while a per-user post search is
-    // active) must not paginate - offsetParent is null when it's display:none.
-    if (!list || list.offsetParent === null || list.dataset.hasMore !== '1' || loading_older_feed_items) {
-        return;
-    }
-
-    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
-
-    if (!near_bottom) {
-        return;
-    }
-
-    loading_older_feed_items = true;
-
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label',  'Loading');
-    list.appendChild(spinner);
-
-    try {
-        const feed_type = list.dataset.feedType;
-        // The count of rendered posts IS the offset the next page starts at -
-        // nothing to track between fetches (the spinner li holds no .Post).
-        const request = { feedType: feed_type, offset: list.querySelectorAll('.Post').length };
-
-        if (feed_type === 'user') {
-            request.userId = list.dataset.userId;
-        } else if (feed_type === 'tag') {
-            request.tag = list.dataset.tag;
-        }
-
-        const response = await fetch(`${window.siteURL}/api/feed-history`, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(request),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        const { posts, hasMore: has_more } = data.response;
-
-        list.dataset.hasMore = has_more ? '1' : '0';
-
-        posts.forEach((post_data) => {
-            const element = Post.fromData(post_data).toElement();
-            list.insertBefore(list_item(element), spinner);
-            render_math(element);
-        });
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_older_feed_items = false;
-    }
-});
-
-let loading_older_bookmarks = false;
-
-window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.BookmarkList');
-
-    if (!list || list.offsetParent === null || list.dataset.hasMore !== '1' || loading_older_bookmarks) {
-        return;
-    }
-
-    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
-
-    if (!near_bottom) {
-        return;
-    }
-
-    loading_older_bookmarks = true;
-
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label', 'Loading');
-    list.appendChild(spinner);
-
-    try {
-        // The next page starts after what's already shown - the count of
-        // rendered posts IS the offset, so there's nothing to track between
-        // fetches. The spinner li holds no .Post, so it never miscounts.
-        const offset = list.querySelectorAll('.Post').length;
-
-        const response = await fetch(`${window.siteURL}/api/bookmark-history`, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ offset }),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        const { posts, hasMore: has_more } = data.response;
-
-        list.dataset.hasMore = has_more ? '1' : '0';
-
-        posts.forEach((post_data) => {
-            const element = Post.fromData(post_data).toElement();
-            list.insertBefore(list_item(element), spinner);
-            render_math(element);
-        });
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_older_bookmarks = false;
-    }
-});
-
-let loading_older_replies = false;
-
-window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.ReplyList');
-
-    if (!list || list.dataset.hasMore !== '1' || loading_older_replies) {
-        return;
-    }
-
-    const near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
-
-    if (!near_bottom) {
-        return;
-    }
-
-    loading_older_replies = true;
-
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label', 'Loading');
-    list.appendChild(spinner);
-
-    try {
-        const parent_id = list.dataset.parentId;
-        // The count of rendered replies IS the offset the next page starts at.
-        const offset = list.querySelectorAll('.Post').length;
-
-        const response = await fetch(`${window.siteURL}/api/reply-history`, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ parentId: parent_id, offset }),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        const { posts, hasMore: has_more } = data.response;
-
-        list.dataset.hasMore = has_more ? '1' : '0';
-
-        posts.forEach((post_data) => {
-            const element = Post.fromData(post_data).toElement();
-            list.insertBefore(list_item(element), spinner);
-            render_math(element);
-        });
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_older_replies = false;
-    }
-});
-
-// Friend-page sections (friends, incoming requests, sent requests) are each
-// their own infinite scroll, stacked vertically. A single handler advances
-// only the topmost section the reader has actually scrolled to the end of, so
-// two never load at once - and never loads a section whose end is already
-// scrolled off above the viewport (which would grow content off-screen and
-// jump the scroll position).
-const FRIENDS_DISPLAY_CAP = 5000;
-let loading_user_section = false;
-
-window.addEventListener('scroll', async () => {
-    if (loading_user_section) {
-        return;
-    }
-
-    const threshold = 300;
-
-    // The lists api/friend-list-history.php can page, named by the sections
-    // that hold them - a search result list is a FriendList too, and grows
-    // through its own handler and endpoint instead.
-    const paging_lists = '.FriendSection .FriendList, .PendingFriendRequestSection .PendingFriendRequestList, .OutgoingFriendRequestSection .OutgoingFriendRequestList';
-
-    const target = Array.from(document.querySelectorAll(paging_lists)).find((list) => {
-        if (list.dataset.hasMore !== '1') {
-            return false;
-        }
-
-        const rect = list.getBoundingClientRect();
-
-        return rect.bottom > 0 && rect.bottom <= window.innerHeight + threshold;
+const feedList = document.querySelector('.FeedList:not(.SearchFeedList)');
+if (feedList) {
+    new InfiniteScroller(feedList, {
+        endpoint: '/api/feed-history',
+        buildRequest: offset => {
+            const type = feedList.dataset.feedType;
+            const req = { feedType: type, offset };
+            if (type === 'user') req.userId = feedList.dataset.userId;
+            else if (type === 'tag') req.tag = feedList.dataset.tag;
+            return req;
+        },
+        countOffset: list => list.querySelectorAll('.Post').length,
+        renderItem: postData => Post.fromData(postData).toElement(),
+        threshold: 150,
+        // wrapper: list_item,         // default, so we can omit
+        // onAfterInsert: undefined,   // math is already rendered by render_math
     });
+}
 
-    if (!target) {
-        return;
-    }
+// Bookmarks infinite scroll
+const bookmarkList = document.querySelector('.BookmarkList');
+if (bookmarkList) {
+    new InfiniteScroller(bookmarkList, {
+        endpoint: '/api/bookmark-history',
+        buildRequest: offset => ({ offset }),
+        countOffset: list => list.querySelectorAll('.Post').length,
+        renderItem: postData => Post.fromData(postData).toElement(),
+    });
+}
 
-    // The friends list is capped for display; requests aren't.
-    if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {
-        target.dataset.hasMore = '0';
-        return;
-    }
+// Replies infinite scroll
+const replyList = document.querySelector('.ReplyList');
+if (replyList) {
+    new InfiniteScroller(replyList, {
+        endpoint: '/api/reply-history',
+        buildRequest: offset => ({ parentId: replyList.dataset.parentId, offset }),
+        countOffset: list => list.querySelectorAll('.Post').length,
+        renderItem: postData => Post.fromData(postData).toElement(),
+    });
+}
 
-    loading_user_section = true;
+// Friends infinite scroll
+const friendsList = document.querySelector('.FriendSection .FriendList');
+if (friendsList) {
+    new InfiniteScroller(friendsList, {
+        endpoint: '/api/friend-list-history',
+        buildRequest: offset => ({
+            listType: friendsList.dataset.listType,
+            userId: friendsList.dataset.userId,
+            offset
+        }),
+        countOffset: list => list.querySelectorAll('.OtherUser').length,
+        renderItem: data => OtherUser.fromData(data).toElement(),
+        threshold: 300
+    });
+}
 
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label', 'Loading');
-    target.appendChild(spinner);
+const incomingList = document.querySelector('.PendingFriendRequestSection .PendingFriendRequestList');
+if (incomingList) {
+    new InfiniteScroller(incomingList, {
+        endpoint: '/api/friend-list-history',
+        buildRequest: offset => ({
+            listType: incomingList.dataset.listType,
+            userId: incomingList.dataset.userId,
+            offset
+        }),
+        countOffset: list => list.querySelectorAll('.OtherUser').length,
+        renderItem: data => FriendRequest.fromData(data).toElement(),
+        threshold: 300
+    });
+}
 
-    try {
-        const list_type = target.dataset.listType;
-        const user_id = target.dataset.userId;
-        // The count of rendered cards IS the offset the next page starts at.
-        // Accepting a request moves its card (and its Friendships row) between
-        // sections, so each section's count stays a correct offset.
-        const offset = target.querySelectorAll('.OtherUser').length;
-
-        const response = await fetch(`${window.siteURL}/api/friend-list-history`, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ listType: list_type, userId: user_id, offset }),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        const { items, hasMore: has_more } = data.response;
-
-        target.dataset.hasMore = has_more ? '1' : '0';
-
-        items.forEach((item) => {
-            const card = (list_type === 'incoming' ? FriendRequest : OtherUser).fromData(item);
-            target.insertBefore(list_item(card.toElement()), spinner);
-        });
-
-        if (target.dataset.listType === 'friends' && target.querySelectorAll('.OtherUser').length >= FRIENDS_DISPLAY_CAP) {
-            target.dataset.hasMore = '0';
-        }
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_user_section = false;
-    }
-});
+const outgoingList = document.querySelector('.OutgoingFriendRequestSection .OutgoingFriendRequestList');
+if (outgoingList) {
+    new InfiniteScroller(outgoingList, {
+        endpoint: '/api/friend-list-history',
+        buildRequest: offset => ({
+            listType: outgoingList.dataset.listType,
+            userId: outgoingList.dataset.userId,
+            offset
+        }),
+        countOffset: list => list.querySelectorAll('.OtherUser').length,
+        renderItem: data => OtherUser.fromData(data).toElement(),
+        threshold: 300
+    });
+}
 
 function sync_post_composer_fields(form) {
     const link_input = form.querySelector('[name=\'linkURL\']');
@@ -3763,79 +3465,21 @@ document.addEventListener('click', async (event) => {
     slide_out(button.closest('.RememberedDevice'));
 });
 
-let loading_banned_users = false;
-
-window.addEventListener('scroll', async () => {
-    const list = document.querySelector('.BannedUserList');
-
-    if (!list || list.dataset.hasMore !== '1' || loading_banned_users) {
-        return;
-    }
-
-    const threshold = 300;
-    const rect = list.getBoundingClientRect();
-
-    if (!(rect.bottom > 0 && rect.bottom <= window.innerHeight + threshold)) {
-        return;
-    }
-
-    loading_banned_users = true;
-
-    const items = list.querySelector('.UserList');
-    const spinner = document.createElement('li');
-    spinner.className = 'LoadingSpinner';
-    spinner.setAttribute('aria-label', 'Loading');
-    items.appendChild(spinner);
-
-    try {
-        // The count of rendered cards IS the offset the next page starts at.
-        // Unbanning removes both the card and the row from the banned set, so
-        // the count stays a correct offset as the list shrinks.
-        const offset = items.querySelectorAll('.BannedUser').length;
-
-        // Grow whichever list is showing: an active search continues that
-        // query at the offset, an empty box continues the full banned list.
-        const query = list.dataset.searchQuery ?? '';
-        const url = query === ''
-            ? `${window.siteURL}/api/banned-history`
-            : `${window.siteURL}/api/search-banned-users`;
-        const request_body = query === '' ? { offset } : { q: query, offset };
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(request_body),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const data = await response.json();
-
-        // A new search (typed while this fetch was in flight) already reset
-        // list.innerHTML, detaching our spinner - these are results for a
-        // now-stale query, and inserting relative to a detached spinner
-        // would throw. Just drop them.
-        if (!items.contains(spinner)) {
-            return;
-        }
-
-        const { items: fetched, hasMore: has_more } = data.response;
-
-        list.dataset.hasMore = has_more ? '1' : '0';
-
-        fetched.forEach((item) => {
-            items.insertBefore(list_item(BannedUser.fromData(item).toElement()), spinner);
-        });
-    } catch (error) {
-        // A network failure or a non-JSON response body - leave hasMore as-is
-        // so the next scroll simply retries.
-    } finally {
-        spinner.remove();
-        loading_banned_users = false;
-    }
-});
+// Banned users infinite scroll (admin page)
+const bannedList = document.querySelector('.BannedUserList');
+if (bannedList) {
+    new InfiniteScroller(bannedList, {
+        endpoint: bannedList.dataset.searchQuery
+            ? '/api/search-banned-users'
+            : '/api/banned-history',
+        buildRequest: offset => {
+            const query = bannedList.dataset.searchQuery || '';
+            return query ? { q: query, offset } : { offset };
+        },
+        countOffset: list => list.querySelectorAll('.BannedUser').length,
+        renderItem: data => BannedUser.fromData(data).toElement(),
+    });
+}
 
 document.addEventListener('input', (event) => {
     const input = event.target.closest('.BannedUserSearchInput');
@@ -4627,4 +4271,21 @@ document.addEventListener('submit', async (event) => {
         submit_button.disabled = false;
     }
 });
+
+document.addEventListener('error', function(event) {
+    const img = event.target;
+    if (img instanceof HTMLImageElement && img.dataset.fullSrc && img.src !== img.dataset.fullSrc) {
+        img.src = img.dataset.fullSrc;
+        img.removeAttribute('data-full-src');
+    }
+}, true);
+
+if (document.querySelector('.HashtagGraphList')) {
+    import('/HashtagGraph.js');
+}
+
+if (document.querySelector('.HelpSearchInput')) {
+    import('/help.js');
+}
+
 

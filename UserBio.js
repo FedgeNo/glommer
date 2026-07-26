@@ -1,7 +1,9 @@
+import { linkify_tokenize, linked_node, hashtag_node, mention_node } from '/delta.js';
+
 /** Mirrors UserBio.php: a user's plain-text bio, linkified the same way the
  * server renders it (delta.js's shared linkifier), so a saved bio round-trips
  * identically. Newlines are preserved by the .UserBio white-space rule. */
-class UserBio {
+export class UserBio {
     constructor(user) {
         this.description = user.description || '';
     }

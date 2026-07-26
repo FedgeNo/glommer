@@ -26,31 +26,31 @@ class MailSettingsForm extends Form
 
         $from_address = new InputField('mailFromAddress', 'From address', 'email', 'No email can be sent until this is set', 255);
         $from_address -> value = (string) Settings::get(Mailer::FROM_ADDRESS_SETTING, '');
-        $from_address -> autocomplete = 'off';
+        $from_address -> autocomplete = 'new-password';
         $from_address -> labelVisible = true;
         $fields -> addContent($from_address);
 
         $from_name = new InputField('mailFromName', 'From name', 'text', 'From name', 100);
         $from_name -> value = (string) Settings::get(Mailer::FROM_NAME_SETTING, '');
-        $from_name -> autocomplete = 'off';
+        $from_name -> autocomplete = 'new-password';
         $from_name -> labelVisible = true;
         $fields -> addContent($from_name);
 
         $host = new InputField('smtpHost', 'SMTP host', 'text', 'SMTP host', 255);
         $host -> value = (string) Settings::get(Mailer::SMTP_HOST_SETTING, '');
-        $host -> autocomplete = 'off';
+        $host -> autocomplete = 'new-password';
         $host -> labelVisible = true;
         $fields -> addContent($host);
 
         $port = new InputField('smtpPort', 'SMTP port', 'text', 'SMTP port', 5);
         $port -> value = (string) Settings::get(Mailer::SMTP_PORT_SETTING, '587');
-        $port -> autocomplete = 'off';
+        $port -> autocomplete = 'new-password';
         $port -> labelVisible = true;
         $fields -> addContent($port);
 
         $username = new InputField('smtpUsername', 'SMTP username', 'text', 'SMTP username', 255);
         $username -> value = (string) Settings::get(Mailer::SMTP_USERNAME_SETTING, '');
-        $username -> autocomplete = 'off';
+        $username -> autocomplete = 'new-password';
         $username -> labelVisible = true;
         $fields -> addContent($username);
 
@@ -59,7 +59,7 @@ class MailSettingsForm extends Form
             ? 'Password is set - leave blank to keep it'
             : 'SMTP password';
         $password = new InputField('smtpPassword', 'SMTP password', 'password', $password_placeholder, 255);
-        $password -> autocomplete = 'off';
+        $password -> autocomplete = 'new-password';
         $password -> labelVisible = true;
         $fields -> addContent($password);
 

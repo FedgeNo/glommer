@@ -11,11 +11,15 @@ class ImageItem extends FeedItem
         $image = new Image();
         $image -> alt = $this -> altText ?? 'Image';
 
+        $fullURL = $this -> srcURL();
+        $thumbURL = $this -> imageURL() ?? $fullURL;
+
         if ($this -> deferred) {
-            $image -> attributes['data-src'] = $this -> srcURL();
+            $image -> attributes['data-src'] = $thumbURL;
         } else {
-            $image -> src = $this -> srcURL();
+            $image -> src = $thumbURL;
         }
+        $image -> attributes['data-full-src'] = $fullURL;
 
         $this -> contents[] = $image;
 

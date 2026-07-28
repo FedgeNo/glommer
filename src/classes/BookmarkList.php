@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The /bookmarks page's list of the viewer's bookmarked posts, grown by
- * infinite scroll (main.js). Ordered by bookmarkId - insertion order, i.e. most
+ * infinite scroll. Ordered by bookmarkId - insertion order, i.e. most
  * recently bookmarked first, which is the ordering this list is about ("most
  * recently bookmarked" and "most recently posted" are genuinely different
  * here). Build with new BookmarkList(['userId' => 5]).
@@ -34,4 +34,15 @@ SELECT `Posts`.*,
     LIMIT ? OFFSET ?
 ', 'Post', 'iiiiii', $viewer_id, $viewer_id, (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
+
+    protected function dataAttributes(): array
+    {
+        $this->attributes['data-infinite-scroll'] = json_encode([
+            'endpoint' => '/api/bookmark-history',
+            'itemType' => 'Post',
+        ]);
+
+        return [];
+    }
 }
+

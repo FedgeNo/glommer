@@ -24,4 +24,15 @@ SELECT `r`.*, `u`.`slug` AS `reporterUsername`
 
         return array_map(static fn (ReportData $row): ReportCard => ReportCard::fromRow($row), $rows);
     }
+
+    protected function dataAttributes(): array
+    {
+        $this->attributes['data-infinite-scroll'] = json_encode([
+            'endpoint' => '/api/report-history',
+            'itemType' => 'ReportCard',
+        ]);
+
+        return [];
+    }
 }
+

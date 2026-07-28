@@ -259,7 +259,7 @@ class Post extends HTMLObject
         // mb_substr, not substr - a byte-based cut can split a multibyte
         // character, and the resulting invalid UTF-8 makes json_encode()
         // return false for any payload this ends up in (alt text travels
-        // through the create-post and feed-history JSON responses).
+        // through the create-post and feed JSON responses).
         return rtrim(mb_substr($text, 0, self::DESCRIPTION_SUMMARY_MAX_LENGTH)) . '…';
     }
 
@@ -418,7 +418,7 @@ DELETE
     }
 
     /**
-     * The JSON representation used by AJAX endpoints (create-post, feed-history)
+     * The JSON representation used by AJAX endpoints (create-post, feed)
      * that feed the client-side Post class, which rebuilds the body from the
      * Delta ops via render_delta() - no HTML crosses the wire.
      */

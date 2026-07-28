@@ -29,9 +29,9 @@ $tests_panel -> addContent($tests_link);
 
 $page -> addContent(new SettingsSection('Tests', $tests_panel));
 
-$page -> addContent(new SettingsSection('Bot protection', new AdminSettingsForm()));
+$page -> addContent(new SettingsSection('Bot protection', new BotProtectionSettingsForm()));
 
-$page -> addContent(new SettingsSection('Google Sign-In', new GoogleAuthSettingsForm()));
+$page -> addContent(new SettingsSection('Google Auth', new GoogleAuthSettingsForm()));
 
 $page -> addContent(new SettingsSection('Mail', new MailSettingsForm()));
 

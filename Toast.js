@@ -5,7 +5,7 @@ export class Toast {
         if (!Toast.container) {
             Toast.container = document.createElement('div');
             Toast.container.className = 'ToastContainer';
-            document.body.appendChild(Toast.container);
+            document.body.appendWithSpace(Toast.container);
         }
         return Toast.container;
     }
@@ -21,21 +21,23 @@ export class Toast {
         text.className = 'ToastMessage';
 
         if (message instanceof Node) {
-            text.appendChild(message);
+            text.appendWithSpace(message);
         } else {
             text.textContent = message;
         }
 
-        toast.appendChild(text);
+        toast.appendWithSpace(text);
 
         const closeButton = document.createElement('button');
         closeButton.type = 'button';
         closeButton.className = 'ToastCloseButton';
         closeButton.setAttribute('aria-label', 'Dismiss');
         closeButton.textContent = '×';
-        toast.appendChild(closeButton);
+        // Bind directly – no delegation needed
+        closeButton.addEventListener('click', () => Toast.dismiss(toast));
+        toast.appendWithSpace(closeButton);
 
-        container.appendChild(toast);
+        container.appendWithSpace(toast);
 
         requestAnimationFrame(() => {
             toast.classList.add('Active');
@@ -46,10 +48,6 @@ export class Toast {
         return toast;
     }
 
-    /**
-     * Dismisses a toast. Accepts either a .Toast element or any descendant
-     * (e.g. the close button). Finds the closest .Toast automatically.
-     */
     static dismiss(element) {
         const toast = element.closest?.('.Toast') || element;
         if (!toast?.classList.contains('Active')) return;

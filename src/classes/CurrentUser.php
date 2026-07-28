@@ -54,7 +54,7 @@ SELECT *
             $friends_link -> class = 'Button';
             $actions -> addContent($friends_link);
 
-            $actions -> addContent(new AvatarUploader());
+            $actions -> addContent(new AvatarUploadForm());
 
             $element -> appendChild($actions -> toDOM());
         }

@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-class AvatarUploader extends Form
+class AvatarUploadForm extends Form
 {
-    public ?string $class = 'd-flex flex-column align-items-end gap-2 ms-auto AvatarUploader';
+    public ?string $class = 'd-flex flex-column align-items-end gap-2 ms-auto AvatarUploadForm';
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/api/upload-avatar');
-        $this -> method = 'POST';
-        $this -> enctype = 'multipart/form-data';
 
         $file_input = new FileInput();
         $file_input -> name = 'avatar';

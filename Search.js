@@ -1,26 +1,11 @@
+import { ClientConfig } from '/ClientConfig.js';
 import { csrf_headers, list_item } from '/utils.js';
 import { InfiniteScroller } from '/InfiniteScroller.js';
+import { OtherUser } from '/OtherUser.js';
+import { Post } from '/Post.js';
+import { BannedUser } from '/BannedUser.js';
+import { ReadyHandler } from '/ReadyHandler.js';
 
-/**
- * A debounced search input that fetches results from an API endpoint,
- * renders them, and optionally handles infinite scrolling.
- *
- * @param {HTMLInputElement} input
- * @param {object}           options
- * @param {string|function}  options.endpoint   – API path, or a function that receives the current query
- *                                                and returns the API path (e.g. for switching endpoints)
- * @param {function}         options.buildRequest – (query: string) => object sent as JSON body
- * @param {HTMLElement}      options.resultsContainer – element where results are rendered
- * @param {function}         options.renderItem – (data: any) => HTMLElement
- * @param {number}           [options.delay=300] – debounce delay in ms
- * @param {function}         [options.onBeforeFetch] – called before fetch, receives (input, query)
- * @param {function}         [options.onResponse] – called after successful fetch, receives (input, data)
- * @param {function}         [options.extractItems] – receives the parsed JSON and returns an array of items;
- *                                                    defaults to looking for `data.response.items`, then
- *                                                    `data.response.users`, `posts`, etc.
- * @param {boolean}          [options.enableInfiniteScroll=false]
- * @param {function}         [options.countOffset] – required if enableInfiniteScroll is true
- */
 export class Search {
     constructor(input, options) {
         this.input = input;
@@ -40,12 +25,12 @@ export class Search {
 
         this._handleInput = this._handleInput.bind(this);
         input.addEventListener('input', this._handleInput);
-        // Optionally attach an InfiniteScroller to the same container
+
         if (options.enableInfiniteScroll) {
             if (!options.countOffset) {
                 throw new Error('Search: countOffset is required when enableInfiniteScroll is true');
             }
-            this.scroller = new InfiniteScroller(this.resultsContainer, {
+            this.scroller = InfiniteScroller.create(this.resultsContainer, {
                 endpoint: () => this._resolveEndpoint(this.input.value.trim()),
                 buildRequest: offset => {
                     const query = this.input.value.trim();
@@ -55,12 +40,11 @@ export class Search {
                 },
                 countOffset: options.countOffset,
                 renderItem: options.renderItem,
-                hasMoreAttr: 'hasMore',
+                active: false,
             });
         }
     }
 
-    /** Force a search immediately (e.g. for a pre-filled query). */
     trigger(queryOverride) {
         clearTimeout(this.debounceId);
         this._performSearch(queryOverride ?? this.input.value.trim());
@@ -92,7 +76,7 @@ export class Search {
         let data;
         try {
             const endpoint = this._resolveEndpoint(query);
-            const response = await fetch(window.siteURL + endpoint, {
+            const response = await fetch(ClientConfig.siteURL() + endpoint, {
                 method: 'POST',
                 headers: csrf_headers({ 'Content-Type': 'application/json' }),
                 body: JSON.stringify(this.buildRequest(query)),
@@ -109,27 +93,155 @@ export class Search {
             return;
         }
 
-        // If the query has changed since we started, discard
         if (this.input.value.trim() !== query) return;
 
-        // Clear previous results
         this.resultsContainer.replaceChildren();
 
-        // Call the original onResponse for external metadata updates
         if (this._originalOnResponse) {
             this._originalOnResponse(this.input, data);
         }
 
-        // Update the list's dataset for the embedded scroller
-        this.resultsContainer.dataset.hasMore = data.response.hasMore ? '1' : '0';
         this.resultsContainer.dataset.query = query;
 
-        // Render initial items
         const items = this._extractItems(data);
         items.forEach(item => {
             const el = this.renderItem(item);
-            this.resultsContainer.appendChild(list_item(el));
+            this.resultsContainer.appendWithSpace(list_item(el));
             if (typeof render_math === 'function') render_math(el);
+        });
+
+        // Enable the scroller if there are more pages
+        if (this.scroller && data.response.hasMore) {
+            this.scroller.setActive(true);
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Static initialisation
+    // ----------------------------------------------------------------
+
+    static init() {
+        document.addEventListener('click', (event) => {
+            const clearBtn = event.target.closest('.SearchClearButton');
+            if (clearBtn) {
+                const input = clearBtn.closest('.SearchBox')?.querySelector('.SearchInput');
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }
+        });
+
+        const query = new URLSearchParams(window.location.search).get('q');
+        const prefillInput = document.querySelector('.PostSearchInput');
+        if (query !== null && prefillInput) {
+            prefillInput.value = query;
+            prefillInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        Search.#initUsers();
+        Search.#initPosts();
+        Search.#initFriends();
+        Search.#initBannedUsers();
+    }
+
+    static #initUsers() {
+        const input = document.querySelector('.UserSearchInput');
+        if (!input) return;
+        const container = input.closest('.UserSearch').querySelector('.UserSearchSection .UserList');
+        new Search(input, {
+            endpoint: '/api/search-users',
+            buildRequest: query => ({ q: query }),
+            resultsContainer: container,
+            renderItem: userData => OtherUser.fromData(userData).toElement(),
+            enableInfiniteScroll: true,
+            countOffset: list => list.querySelectorAll('.OtherUser').length,
+            onResponse: (input, data) => {
+                const section = input.closest('.UserSearch').querySelector('.UserSearchSection');
+                section.querySelector('h2').textContent = input.value.trim() === '' ? 'Suggested Users' : 'User Search Results';
+                section.dataset.query = input.value.trim();
+                section.dataset.offset = String(data.response.users.length);
+            }
+        });
+    }
+
+    static #initPosts() {
+        const input = document.querySelector('.PostSearchInput');
+        if (!input) return;
+        const container = document.querySelector('.SearchFeedList');
+        new Search(input, {
+            endpoint: '/api/search-posts',
+            buildRequest: query => ({
+                q: query,
+                userId: input.closest('.PostSearch').dataset.userId || ''
+            }),
+            resultsContainer: container,
+            renderItem: postData => Post.fromData(postData).toElement(),
+            enableInfiniteScroll: true,
+            countOffset: list => list.querySelectorAll('.Post').length,
+            onBeforeFetch: (input, query) => {
+                const searching = query !== '';
+                document.querySelector('.SearchFeedSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.ProfileFeedSection')?.classList.toggle('Searching', searching);
+            },
+            onResponse: (input, data) => {
+                container.dataset.query = input.value.trim();
+                container.dataset.userId = input.closest('.PostSearch').dataset.userId || '';
+            }
+        });
+    }
+
+    static #initFriends() {
+        const input = document.querySelector('.FriendSearchInput');
+        if (!input) return;
+        const container = document.querySelector('.FriendSearchList');
+        new Search(input, {
+            endpoint: '/api/search-friends',
+            buildRequest: query => ({
+                q: query,
+                userId: input.closest('.FriendSearch').dataset.userId
+            }),
+            resultsContainer: container,
+            renderItem: userData => OtherUser.fromData(userData).toElement(),
+            enableInfiniteScroll: true,
+            countOffset: list => list.querySelectorAll('.OtherUser').length,
+            onBeforeFetch: (input, query) => {
+                const searching = query !== '';
+                document.querySelector('.FriendSearchSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.PendingFriendRequestSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.FriendSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.OutgoingFriendRequestSection')?.classList.toggle('Searching', searching);
+            },
+            onResponse: (input, data) => {
+                container.dataset.query = input.value.trim();
+            }
+        });
+    }
+
+    static #initBannedUsers() {
+        const input = document.querySelector('.BannedUserSearchInput');
+        if (!input) return;
+        const container = document.querySelector('.BannedUserList');
+        new Search(input, {
+            endpoint: query => query ? '/api/search-banned-users' : '/api/banned-history',
+            buildRequest: query => {
+                if (container) container.dataset.searchQuery = query;
+                return query ? { q: query } : {};
+            },
+            resultsContainer: container,
+            renderItem: data => BannedUser.fromData(data).toElement(),
+            enableInfiniteScroll: true,
+            countOffset: list => list.querySelectorAll('.BannedUser').length,
+            onResponse: (input, data) => {
+                if (container) container.dataset.hasMore = data.response.hasMore ? '1' : '0';
+                if (data.response.items.length === 0) {
+                    const notice = document.createElement('p');
+                    notice.className = 'muted Notice';
+                    notice.textContent = input.value.trim() === '' ? 'No banned users.' : 'No banned users match that search.';
+                    container.appendWithSpace(list_item(notice));
+                }
+            }
         });
     }
 }
@@ -138,3 +250,5 @@ function defaultExtractItems(data) {
     const resp = data.response || data;
     return resp.items || resp.users || resp.posts || resp.articles || [];
 }
+
+ReadyHandler.add(Search.init);

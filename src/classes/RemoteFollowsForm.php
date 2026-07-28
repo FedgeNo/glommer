@@ -14,8 +14,6 @@ class RemoteFollowsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/api/follow-remote');
-        $this -> method = 'POST';
 
         $fields = new Fieldset('Follow Fediverse accounts');
         $fields -> addContent(new Notice('Paste one or more handles, e.g. @user@example.social - any separator between them works.'));

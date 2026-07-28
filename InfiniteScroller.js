@@ -1,97 +1,228 @@
+import { ClientConfig } from '/ClientConfig.js';
 import { csrf_headers, list_item } from '/utils.js';
 import { render_math } from '/math.js';
+import { Post } from '/Post.js';
+import { Message } from '/Message.js';
+import { OtherUser } from '/OtherUser.js';
+import { FriendRequest } from '/OtherUser.js';
+import { Notification } from '/Notification.js';
+import { ReportCard } from '/ReportCard.js';
+import { ReadyHandler } from '/ReadyHandler.js';
+
+const REGISTRY = {};
 
 export class InfiniteScroller {
-    /**
-     * @param {HTMLElement|string} container
-     * @param {object}              opts
-     * @param {string|function}     opts.endpoint   - API path, or function returning the API path (receives offset)
-     * @param {function}            opts.buildRequest
-     * @param {function}            opts.countOffset
-     * @param {function}            opts.renderItem
-     * @param {number}              [opts.threshold=150]
-     * @param {function}            [opts.wrapper]
-     * @param {function}            [opts.onAfterInsert]
-     * @param {string}              [opts.hasMoreAttr='hasMore']
-     */
-    constructor(container, opts) {
-        this.list = typeof container === 'string' ? document.querySelector(container) : container;
-        if (!this.list) throw new Error('InfiniteScroller: container not found');
+    static register(type, renderItem, countOffset, buildReq = null) {
+        REGISTRY[type] = { renderItem, countOffset, buildReq };
+    }
 
-        this._resolveEndpoint = typeof opts.endpoint === 'function'
-            ? opts.endpoint
-            : () => opts.endpoint;
+    static init() {
+        document.querySelectorAll('[data-infinite-scroll]').forEach(el => {
+            new InfiniteScroller(el);
+        });
+    }
 
-        this.buildReq   = opts.buildRequest;
-        this.countOff   = opts.countOffset;
-        this.renderItem = opts.renderItem;
-        this.threshold  = opts.threshold ?? 150;
-        this.wrapper    = opts.wrapper ?? list_item;
-        this.onAfterInsert = opts.onAfterInsert || null;
-        this.hasMoreAttr   = opts.hasMoreAttr ?? 'hasMore';
+    static create(list, overrides) {
+        return new InfiniteScroller(list, overrides);
+    }
 
-        this.loading = false;
-        this._onScroll = this._onScroll.bind(this);
-        window.addEventListener('scroll', this._onScroll, { passive: true });
+    #list;
+    #loading = false;
+    #active = true;
+    static #THRESHOLD = 150;
+    #onScroll;
+
+    constructor(list, overrides) {
+        this.#list = list;
+
+        let endpoint, direction, buildReq, renderItem, countOffset, wrapper;
+        let resolveEndpoint = null;
+
+        if (overrides) {
+            if (typeof overrides.endpoint === 'function') {
+                resolveEndpoint = overrides.endpoint;
+                endpoint = resolveEndpoint();
+            } else {
+                endpoint = overrides.endpoint;
+            }
+            direction   = overrides.direction ?? 'down';
+            renderItem  = overrides.renderItem;
+            countOffset = overrides.countOffset;
+            buildReq    = overrides.buildRequest || (offset => ({ offset }));
+            wrapper     = overrides.wrapper ?? list_item;
+
+            if (overrides.active === false) {
+                this.#active = false;
+            }
+        } else {
+            const config = JSON.parse(list.dataset.infiniteScroll);
+            const type = config.itemType;
+            const entry = REGISTRY[type];
+            if (!entry) throw new Error(`InfiniteScroller: unknown item type "${type}"`);
+
+            endpoint  = config.endpoint;
+            direction = config.direction ?? 'down';
+
+            const extraFields = { ...config };
+            delete extraFields.endpoint;
+            delete extraFields.itemType;
+            delete extraFields.direction;
+
+            buildReq = entry.buildReq
+                ? offset => {
+                    const custom = entry.buildReq(list, offset);
+                    return { ...extraFields, ...custom, offset };
+                  }
+                : offset => ({ ...extraFields, offset });
+
+            renderItem  = entry.renderItem;
+            countOffset = entry.countOffset;
+            wrapper     = list_item;
+        }
+
+        this._endpoint        = endpoint;
+        this._resolveEndpoint = resolveEndpoint;
+        this._direction       = direction;
+        this._buildReq        = buildReq;
+        this._renderItem      = renderItem;
+        this._countOffset     = countOffset;
+        this._wrapper         = wrapper;
+
+        this.#onScroll = () => this.#handleScroll();
+        window.addEventListener('scroll', this.#onScroll, { passive: true });
+    }
+
+    setActive(active) {
+        this.#active = active;
     }
 
     destroy() {
-        window.removeEventListener('scroll', this._onScroll);
-        this.list = null;
+        this.#active = false;
+        if (this.#onScroll) {
+            window.removeEventListener('scroll', this.#onScroll);
+            this.#onScroll = null;
+        }
     }
 
-    _nearBottom() {
-        return window.innerHeight + window.scrollY >= document.body.scrollHeight - this.threshold;
+    #nearEdge() {
+        if (this._direction === 'up') return window.scrollY <= InfiniteScroller.#THRESHOLD;
+        return window.innerHeight + window.scrollY >= document.body.scrollHeight - InfiniteScroller.#THRESHOLD;
     }
 
-    async _onScroll() {
-        if (this.loading) return;
-        if (!this.list || this.list.dataset[this.hasMoreAttr] !== '1') return;
-        if (!this._nearBottom()) return;
+    async #handleScroll() {
+        if (this.#loading) return;
+        if (!this.#list || !this.#active) return;
+        if (!this.#nearEdge()) return;
 
-        this.loading = true;
+        this.#loading = true;
 
         const spinner = document.createElement('li');
         spinner.className = 'LoadingSpinner';
         spinner.setAttribute('aria-label', 'Loading');
-        this.list.appendChild(spinner);
+
+        if (this._direction === 'up') {
+            this.#list.insertBeforeWithSpace(spinner, this.#list.firstChild);
+        } else {
+            this.#list.appendWithSpace(spinner);
+        }
 
         try {
-            const offset = this.countOff(this.list);
-            const endpoint = this._resolveEndpoint(offset);
-            const response = await fetch(window.siteURL + endpoint, {
+            const url = this._resolveEndpoint ? this._resolveEndpoint() : this._endpoint;
+            const offset = this._countOffset(this.#list);
+            const response = await fetch(ClientConfig.siteURL() + url, {
                 method: 'POST',
                 headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify(this.buildReq(offset)),
+                body: JSON.stringify(this._buildReq(offset)),
             });
-
             if (!response.ok) return;
 
             const data = await response.json();
-            const { hasMore, items } = this._extractItems(data);
+            const { hasMore, items } = this.#extractItems(data);
 
-            this.list.dataset[this.hasMoreAttr] = hasMore ? '1' : '0';
+            if (!hasMore) {
+                this.#active = false;
+            }
 
-            if (items && items.length > 0) {
-                for (const itemData of items) {
-                    const el = this.renderItem(itemData);
-                    const wrapped = this.wrapper(el);
-                    this.list.insertBefore(wrapped, spinner);
-                    render_math(el);
+            if (items?.length) {
+                if (this._direction === 'up') {
+                    const prevH = document.body.scrollHeight;
+                    const prevY = window.scrollY;
+
+                    for (const item of items) {
+                        const el = this._renderItem(item);
+                        this.#list.insertBeforeWithSpace(this._wrapper(el), spinner);
+                        render_math(el);
+                    }
+
+                    const newH = document.body.scrollHeight;
+                    window.scrollTo({ top: prevY + (newH - prevH), behavior: 'instant' });
+                } else {
+                    for (const item of items) {
+                        const el = this._renderItem(item);
+                        this.#list.insertBeforeWithSpace(this._wrapper(el), spinner);
+                        render_math(el);
+                    }
                 }
-                if (this.onAfterInsert) this.onAfterInsert(this.list, spinner);
             }
         } catch (e) {
             console.error('InfiniteScroller error:', e);
         } finally {
             spinner.remove();
-            this.loading = false;
+            this.#loading = false;
         }
     }
 
-    _extractItems(data) {
+    #extractItems(data) {
         const resp = data.response || data;
-        const items = resp.items || resp.posts || resp.messages || resp.notifications || resp.reports || resp.users || [];
+        const items = resp.items || resp.posts || resp.messages ||
+                      resp.notifications || resp.reports || resp.users || [];
         return { hasMore: resp.hasMore, items };
     }
 }
+
+// ----------------------------------------------------------------
+// Centralised type registrations
+// ----------------------------------------------------------------
+
+InfiniteScroller.register('Post',
+    data => Post.fromData(data).toElement(),
+    list => list.querySelectorAll('.Post').length,
+    (list, offset) => {
+        const feedType = list.dataset.feedType;
+        if (feedType) {
+            const req = { feedType, offset };
+            if (feedType === 'user') req.userId = list.dataset.userId;
+            else if (feedType === 'tag') req.tag = list.dataset.tag;
+            return req;
+        }
+        return { offset };
+    }
+);
+
+InfiniteScroller.register('Message',
+    data => Message.fromData(data).toElement(),
+    list => list.querySelectorAll('.Message').length
+);
+
+InfiniteScroller.register('OtherUser',
+    data => OtherUser.fromData(data).toElement(),
+    list => list.querySelectorAll('.OtherUser').length
+);
+
+InfiniteScroller.register('FriendRequest',
+    data => FriendRequest.fromData(data).toElement(),
+    list => list.querySelectorAll('.OtherUser').length
+);
+
+InfiniteScroller.register('Notification',
+    data => Notification.fromData(data).toElement(),
+    list => list.querySelectorAll('.Notification').length
+);
+
+InfiniteScroller.register('ReportCard',
+    data => ReportCard.fromData(data).toElement(),
+    list => list.querySelectorAll('.ReportCard').length
+);
+
+ReadyHandler.add(InfiniteScroller.init);
+

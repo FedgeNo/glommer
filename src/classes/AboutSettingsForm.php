@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class AboutSettingsForm extends InfoSettingsForm
+class AboutSettingsForm extends SiteInfoSettingsForm
 {
     public ?string $description = 'Plain text - blank lines separate paragraphs. First paragraph will be used as site description.';
     protected string $settingName = SiteInfo::ABOUT_SETTING;

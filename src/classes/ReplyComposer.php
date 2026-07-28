@@ -2,37 +2,26 @@
 
 declare(strict_types=1);
 
+/**
+ * Minimal server‑side placeholder for the reply composer.
+ */
 class ReplyComposer extends Composer
 {
-    public int $replyToPostId;
-
-    public function __construct(int $reply_to_post_id)
+    public function __construct(int $parent_id)
     {
-        parent::__construct();
-
-        $this -> replyToPostId = $reply_to_post_id;
+        $this -> attributes['data-parent-id'] = (string) $parent_id;
     }
 
-    protected function addFields(): void
+    public function toDOM(): \DOMElement
     {
-        $parent_id_input = new HiddenInput();
-        $parent_id_input -> name = 'parentId';
-        $parent_id_input -> value = (string) $this -> replyToPostId;
-        $this -> contents[] = $parent_id_input;
-    }
-
-    protected function legend(): string
-    {
-        return 'Write a reply';
-    }
-
-    protected function editorPlaceholder(): string
-    {
-        return 'Write a reply';
-    }
-
-    protected function submitLabel(): string
-    {
-        return 'Reply';
+        if (Auth::check()) {
+            return parent::toDOM();
+        }
+        $link = new Anchor(ServerURL::absolute('/login'), 'Log in');
+        $paragraph = new Paragraph;
+        $paragraph -> addContent($link);
+        $paragraph -> addContent(' to reply.');
+        $this -> addContent($paragraph);
+        return parent::toDOM();
     }
 }

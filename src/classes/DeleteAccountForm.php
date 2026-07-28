@@ -8,8 +8,6 @@ class DeleteAccountForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/api/delete-account');
-        $this -> method = 'POST';
 
         $fields = new Fieldset('Delete your account');
         $fields -> addContent(new Paragraph('This permanently deletes your account, posts, and messages. This can\'t be undone.'));

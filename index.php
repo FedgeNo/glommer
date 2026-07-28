@@ -10,11 +10,7 @@ $page = new Page(['needsEditor' => $current_user !== null, 'needsMath' => true, 
 
 $page -> rssLink = new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed');
 
-if ($current_user !== null) {
-    $page -> addContent(new PostComposer());
-} else {
-    $page -> addContent(new LoginPrompt('post'));
-}
+$page -> addContent(new PostComposer());
 
 // Everything on Glommer is public - the feed is global, not gated by friendship.
 $page -> addContent(new GlobalFeedList());

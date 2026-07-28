@@ -1,4 +1,8 @@
 import { User } from '/User.js';
+import { Api } from '/Api.js';
+import { Dialog } from '/Dialog.js';
+import { DOMUtils } from '/DOMUtils.js';
+import { ReadyHandler } from '/ReadyHandler.js';
 
 /**
  * Client-side mirror of the PHP BannedUser class - one entry on the admin
@@ -19,17 +23,44 @@ export class BannedUser extends User {
         const row = document.createElement('div');
         row.className = 'd-flex align-items-center gap-3';
 
-        row.appendChild(this.header());
+        row.appendWithSpace(this.header());
 
         const unban = document.createElement('button');
         unban.type = 'button';
         unban.className = 'ms-auto Button UnbanButton';
         unban.dataset.userId = this.userId;
         unban.textContent = 'Unban';
-        row.appendChild(unban);
+        row.appendWithSpace(unban);
 
-        div.appendChild(row);
+        div.appendWithSpace(row);
 
         return div;
     }
+
+    // ----------------------------------------------------------------
+    // Static action handlers (unban)
+    // ----------------------------------------------------------------
+
+    static init() {
+        document.addEventListener('click', async (event) => {
+            const unbanBtn = event.target.closest('.UnbanButton');
+            if (unbanBtn) {
+                BannedUser.#unban(unbanBtn);
+            }
+        });
+    }
+
+    static async #unban(button) {
+        if (!await Dialog.confirm('Unban this user? Their content and login work again.')) return;
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/unban', { userId: button.dataset.userId });
+            if (!result) return;
+            DOMUtils.slideOut(button.closest('.BannedUser'));
+        } finally {
+            button.disabled = false;
+        }
+    }
 }
+
+ReadyHandler.add(BannedUser.init);

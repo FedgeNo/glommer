@@ -17,8 +17,6 @@
     --accent-strong: #0a7d5e;
     --accent-soft: #e2f4ec;
     --accent-ink: #ffffff;
-    /* Link colour, its own token so a theme can part links from the accent
-       (Hacker does); every other theme leaves it tracking --accent. */
     --link: var(--accent);
     --danger: #d64545;
     --danger-soft: #fbeaea;
@@ -126,8 +124,6 @@
     --glass: rgb(255 220 201 / 0.85);
 }
 
-/* Coloured themes: a real colour on the page itself, light cards floated over
-   it for text contrast - not the near-white/near-black of light and dark. */
 :root[data-theme='rose'] {
     --paper: #f2ccd8;
     --surface: #fffafc;
@@ -218,8 +214,6 @@
     --glass: rgb(232 206 143 / 0.85);
 }
 
-/* Hacker: a green-on-black terminal. Links break from the accent to magenta,
-   and the two accents (green, magenta) are what the spec asked for. */
 :root[data-theme='hacker'] {
     --paper: #000000;
     --surface: #000000;
@@ -227,13 +221,13 @@
     --ink: #00ff00;
     --muted: #00aa00;
     --hairline: #008000;
-    --accent: #008800;
+    --accent: #00ff00;
     --accent-strong: #880088;
-    --accent-soft: rgb(0 255 0 / 0.14);
+    --accent-soft: #006600;
     --accent-ink: #000000;
     --link: #ff00ff;
-    --danger: #ff3355;
-    --danger-soft: rgb(255 51 85 / 0.16);
+    --danger: #ff00ff;
+    --danger-soft: #880088;
     --shadow-card: 0 0 0 1px rgb(0 255 0 / 0.25);
     --shadow-pop: 0 0 0 1px rgb(0 255 0 / 0.40), 0 10px 34px -10px rgb(0 255 0 / 0.30);
     --glass: rgb(0 0 0 / 0.90);
@@ -244,7 +238,7 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    /*scroll-behavior: smooth;*/
 }
 
 body {
@@ -294,7 +288,6 @@ h2 {
     border-bottom: 1px solid var(--hairline);
 }
 
-/* The summary reads as the section's h2, with a chevron that flips on open. */
 .SettingsSection > summary {
     display: flex;
     align-items: center;
@@ -333,7 +326,6 @@ h2 {
     transform: rotate(-135deg);
 }
 
-/* Breathing room under the open body before the next disclosure's hairline. */
 .SettingsSection[open] > :last-child {
     margin-bottom: 1.25rem;
 }
@@ -342,7 +334,6 @@ h3 {
     font-size: 1.05rem;
 }
 
-/* Small text-size utilities Bootstrap doesn't ship (it only scales headings via .fs-*). */
 .text-sm {
     font-size: 0.875rem;
 }
@@ -403,9 +394,6 @@ p a:hover {
     color: var(--danger);
 }
 
-/* The item lists render as <ul>; strip the browser/Bootstrap default list
-   chrome (bullets, block margin, inline padding) so the existing flex layout
-   is unchanged. ErrorList keeps its own box padding above. */
 .FeedList,
 .ReplyList,
 .BookmarkList,
@@ -424,10 +412,16 @@ p a:hover {
     padding: 0;
 }
 
-/* The inner user <ul>; its cards space themselves via the .Card margin. */
-.UserList {
-    display: flex;
-    flex-direction: column;
+html {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: calc(var(--nav-height) + var(--page-title-height) + 1rem - 3px);
+}
+
+.FeedList .Card,
+.PostComposer,
+.User {
+    //scroll-snap-align: start;
+    //scroll-snap-stop: normal;
 }
 
 /* ---------- Focus & motion ---------- */
@@ -464,9 +458,6 @@ p a:hover {
     margin-bottom: 0;
 }
 
-/* Offered only once there's a scroll worth undoing (main.js reveals it). It
-   clears the content column on a wide screen and tucks into the corner on a
-   narrow one. */
 .ScrollToTopButton {
     display: none;
     position: fixed;
@@ -487,8 +478,6 @@ p a:hover {
     display: block;
 }
 
-/* The results wait out of the way until there's a search to show. main.js
-   trades this section and the feed under it as the query comes and goes. */
 .SearchFeedSection {
     display: none;
 }
@@ -501,8 +490,6 @@ p a:hover {
     display: none;
 }
 
-/* The friends page trades the same way: its results wait out of the way, and
-   the three standing sections step aside while a query is up. */
 .FriendSearchSection {
     display: none;
 }
@@ -517,9 +504,6 @@ p a:hover {
     display: none;
 }
 
-/* A deleted item collapses instead of vanishing, so the change is visible even
-   in a column of near-identical cards. Kept in step with SLIDE_OUT_MS in
-   main.js. */
 .SlidingOut {
     overflow: hidden;
     opacity: 0;
@@ -548,9 +532,6 @@ p a:hover {
     top: 0;
     left: 0;
     right: 0;
-    /* A fixed height (its single row of controls centred within) so --nav-height
-       is exactly the bar's height - the PageTitle and mobile menu position off
-       it in pure CSS, no measure-and-set on load. */
     height: var(--nav-height);
     background-color: var(--glass);
     -webkit-backdrop-filter: blur(14px);
@@ -623,9 +604,6 @@ p a:hover {
     border-color: var(--hairline);
 }
 
-/* Log in / Sign up (shown to logged-out visitors) are plain links, not dropdown
-   triggers, so they're pills - a full border and radius all the way round -
-   rather than the top-rounded tab shape the triggers use to meet their menu. */
 .MainNavigation .NavAccount > a {
     border-bottom: 1px solid transparent;
     border-radius: 999px;
@@ -650,8 +628,7 @@ p a:hover {
     text-overflow: ellipsis;
 }
 
-/* ---------- Dropdown menus (they "glom" onto their trigger:
-   every floating panel keeps one pulled-in corner) ---------- */
+/* ---------- Dropdown menus ---------- */
 
 .NavDropdown {
     position: relative;
@@ -661,10 +638,6 @@ p a:hover {
     cursor: pointer;
 }
 
-/* A very long display name can't be allowed to blow out the nav bar. The cap
-   lives on an inner label span, not the trigger <a>: an inline <a> reports its
-   short line-box height (which the menu gloms onto and the nav is sized to),
-   whereas making the <a> itself inline-block would grow both. */
 .NavAccountLabel {
     display: inline-block;
     max-width: 14rem;
@@ -701,10 +674,6 @@ p a:hover {
     pointer-events: auto;
 }
 
-/* The account dropdown sits at the right end of the nav, so it lines its right
-   edge up with its trigger's and is never narrower than it - min-width: 100%
-   fills the trigger-width container. The pulled-in "glom" corner moves to the
-   top-right to match. */
 .NavAccount .NavDropdownMenu {
     left: auto;
     right: 0;
@@ -763,7 +732,7 @@ p a:hover {
 .NavDropdownMenu a,
 .NotificationDropdown > a {
     display: block;
-    padding: 0.5rem 0.5rem;
+    padding: 0.5rem;
     border-radius: 0.625rem;
     color: var(--ink);
     font-weight: 500;
@@ -780,8 +749,6 @@ p a:hover {
     color: var(--ink);
 }
 
-/* The logout item is a POST form (CSRF), not an <a> - make its button read
-   and sit exactly like the other dropdown links. */
 .NavDropdownMenu .LogoutForm {
     margin: 0;
 }
@@ -789,7 +756,7 @@ p a:hover {
 .NavDropdownMenu .LogoutButton {
     display: block;
     width: 100%;
-    padding: 0.5rem 0.65rem;
+    padding: 0.5rem;
     border: none;
     border-radius: 0.625rem;
     background: none;
@@ -805,19 +772,8 @@ p a:hover {
     color: var(--ink);
 }
 
-/* ---------- Mobile navigation: hamburger + combined flyout list ----------
-   Below the breakpoint, the two hover flyouts above (brand's main menu, the
-   account menu) are replaced entirely - hover doesn't suit touch, and a
-   position:absolute flyout can't scroll independently of the page. Their
-   trigger anchors (brand, "Logged In As ...") stay visible and still work as
-   plain links; only their .NavDropdownMenu popouts are hidden. The
-   hamburger opens one panel holding every link from both flyouts, scrolling
-   on its own if it's taller than the viewport. */
+/* ---------- Mobile navigation ---------- */
 
-/* The mobile-nav toggle: a visually-hidden checkbox the hamburger label flips.
-   Both hide above the nav breakpoint, where the desktop hover-flyouts run. */
-/* Visually hidden but still operable - NOT pointer-events: none, which would
-   stop the hamburger <label> from toggling it. */
 .NavToggle {
     position: absolute;
     width: 1px;
@@ -843,7 +799,6 @@ p a:hover {
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-/* Hamburger morphs to an X while the menu is open. */
 .NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(1) {
     transform: translateY(0.4rem) rotate(45deg);
 }
@@ -857,8 +812,6 @@ p a:hover {
 }
 
 @media (max-width: 48rem) {
-    /* The hamburger is pinned to the viewport's top-right, above the nav so it
-       stays clickable to close even while the expanded menu scrolls under it. */
     .NavHamburger {
         display: flex;
         position: fixed;
@@ -868,12 +821,6 @@ p a:hover {
         z-index: 30;
     }
 
-    /* The nav flattens into one vertical list: every container passes through
-       (display: contents) and every link/button becomes a full-width block row,
-       in DOM order - the main menu, then notifications, then the account links.
-       Collapsed it clips to the brand row (--nav-height); the toggle grows it
-       into a scrollable panel. Laid out as a plain block (not the d-flex row) so
-       the rows just stack. */
     .MainNavigation {
         display: block !important;
         height: var(--nav-height);
@@ -888,8 +835,6 @@ p a:hover {
         padding-bottom: 0.4rem;
     }
 
-    /* Containers pass their links straight through - !important because .d-flex
-       is a Bootstrap !important utility. */
     .MainNavigation .NavDropdown,
     .MainNavigation .NavDropdownMenu,
     .MainNavigation .NavAccount,
@@ -899,8 +844,6 @@ p a:hover {
         display: contents !important;
     }
 
-    /* Every link and button is a full-width, borderless, fully-rounded block
-       row - overriding the desktop nav-pill styling. */
     .MainNavigation a,
     .MainNavigation .LogoutButton {
         display: block;
@@ -923,22 +866,18 @@ p a:hover {
         background-color: var(--surface-2) !important;
     }
 
-    /* The brand is the top bar row, its text vertically centred at --nav-height. */
     .MainNavigation .NavBrand {
         display: flex;
         align-items: center;
         min-height: var(--nav-height);
     }
 
-    /* The hover-only notification preview isn't a list row. */
     .NotificationDropdown {
         display: none !important;
     }
 }
 
-/* ---------- Buttons ----------
-   Hierarchy: submit = filled jade; regular chips = quiet tonal;
-   destructive = red-tinted; liked state = filled. */
+/* ---------- Buttons ---------- */
 
 .Button {
     background-color: var(--surface-2);
@@ -1036,9 +975,7 @@ a.Button:hover {
     color: var(--ink) !important;
 }
 
-/* ---------- Third-party sign-in ----------
-   The "Continue with Google" button and the "or" divider that separate it from
-   the email/password form on the sign-in and sign-up pages. */
+/* ---------- Third-party sign-in ---------- */
 
 .GoogleSignInButton {
     display: flex;
@@ -1056,8 +993,6 @@ a.Button:hover {
     transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 
-/* Google's four-colour "G" mark as a data-URI (CSP-safe: img-src allows data:),
-   so the button stays a plain anchor and the mark reads on any theme. */
 .GoogleSignInButton::before {
     content: '';
     flex: none;
@@ -1104,6 +1039,7 @@ a.Button:hover {
 }
 
 .EmojiTriggerButton {
+    font-size: 1.25rem;
     line-height: 1;
 }
 
@@ -1117,10 +1053,11 @@ a.Button:hover {
     border-radius: var(--radius-card);
     border-bottom-left-radius: var(--glom-corner);
     box-shadow: var(--shadow-pop);
-    overflow: hidden;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s ease;
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 .EmojiPickerPanel.Active {
@@ -1136,6 +1073,21 @@ emoji-picker {
     --input-font-color: var(--ink);
     --outline-color: var(--accent);
     --category-font-color: var(--ink);
+}
+
+.emoji-text {
+    font-size: 1.25rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.emoji-only .MessageLine,
+.emoji-only .PostBody {
+    text-align: center;
+}
+.emoji-only .emoji-text {
+    font-size: 2.5rem;
+    line-height: 1.3;
 }
 
 /* ---------- Forms ---------- */
@@ -1171,8 +1123,6 @@ label.visually-hidden {
     margin-bottom: 0;
 }
 
-/* A checkbox sits inline with its label, not stacked - overriding the global
-   block label and full-width input rules for this field only. */
 .CheckboxField {
     display: flex;
     align-items: center;
@@ -1257,8 +1207,23 @@ input[type='file']::file-selector-button {
     resize: vertical;
 }
 
-.PostComposerFields {
-    align-items: flex-end;
+.Composer {
+    min-height: 18.875rem;
+}
+
+.Composer {
+    position: relative;
+    min-height: 18.875rem;
+}
+
+.Composer > p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    margin: 0;
+    width: 100%;
 }
 
 .PostComposerFields .InputField {
@@ -1287,9 +1252,6 @@ input[type='file']::file-selector-button {
     min-width: 0;
 }
 
-/* display: none is set inline (LinkImagePreview.php) until main.js clears it
-   to reveal a fetched image - this flex declaration is what that inline
-   style falls back to once cleared. */
 .LinkImagePreview {
     display: flex;
     flex-direction: column;
@@ -1322,8 +1284,6 @@ input[type='file']::file-selector-button {
 
 /* ---------- Feed ---------- */
 
-/* The meta column (timestamp + edited note) never shrinks - the header does, so
-   a long display name ellipsizes instead of pushing the timestamp off the row. */
 .PostMeta {
     flex-shrink: 0;
 }
@@ -1336,9 +1296,6 @@ input[type='file']::file-selector-button {
     color: var(--ink);
 }
 
-/* A long display name in the byline clips to an ellipsis rather than shoving the
-   timestamp off the row - the header and its info column must be free to shrink
-   (min-width: 0) for the name's own overflow to take effect. */
 .PostByline .UserHeader,
 .PostByline .UserHeaderInfo {
     min-width: 0;
@@ -1353,8 +1310,6 @@ input[type='file']::file-selector-button {
 .PostContent > h3,
 .PostContent > a > h3 {
     margin-top: 0.5rem;
-    /* Break an unbroken run-on (no spaces) rather than letting it overflow;
-       normal text still wraps at word boundaries. */
     overflow-wrap: anywhere;
 }
 
@@ -1413,11 +1368,6 @@ input[type='file']::file-selector-button {
 
 .PostBody {
     margin-top: 0.5rem;
-    /* Force-break run-on strings (a long unspaced blob a user pastes/types)
-       so they can't blow out the post width; overflow-wrap is inherited, so
-       this covers the body's paragraphs, list items, and inline code too.
-       Normal prose still wraps only at spaces. Block <pre> is exempt - it
-       scrolls horizontally instead (see .PostBody pre). */
     overflow-wrap: anywhere;
 }
 
@@ -1506,8 +1456,6 @@ input[type='file']::file-selector-button {
     font-size: 1.25rem;
 }
 
-/* Avatars are one size by default; their container decides when they're smaller
-   (a notification) or larger (a profile header, further down). */
 .Notification .Avatar {
     width: 2rem;
     height: 2rem;
@@ -1540,7 +1488,6 @@ input[type='file']::file-selector-button {
     overflow-wrap: anywhere;
 }
 
-/* Your own card is click-to-edit: name, bio, and the pencil all open edit mode. */
 .CurrentUser .DisplayName,
 .CurrentUser .UserBio {
     cursor: pointer;
@@ -1587,7 +1534,6 @@ input[type='file']::file-selector-button {
 
 .ProfileSaveButton {
     align-self: flex-end;
-    /* Matches the gap between a user card's action buttons (gap-2). */
     margin-top: 0.5rem;
 }
 
@@ -1601,10 +1547,6 @@ input[type='file']::file-selector-button {
     margin-bottom: 0.1rem;
 }
 
-/* A very long display name is ellipsized rather than run off the card. The
-   identity column must be allowed to shrink (min-width: 0) for the name's own
-   overflow to take effect - and in CurrentUser the name is itself a flex item
-   beside the edit pencil, which the min-width covers too. */
 .UserIdentity {
     min-width: 0;
 }
@@ -1647,7 +1589,6 @@ input[type='file']::file-selector-button {
     box-shadow: none;
 }
 
-/* Only offered once there's something to clear. */
 .SearchClearButton {
     display: none;
     flex: none;
@@ -1748,14 +1689,15 @@ input[type='file']::file-selector-button {
     color: var(--accent);
 }
 
-/* ---------- Messages (chat bubbles carry the glom corner) ---------- */
+/* ---------- Messages ---------- */
 
 .MessagesPage {
-    padding-bottom: 8rem;
+    padding-bottom: 9rem;
 }
 
 .Message {
     position: relative;
+    width: fit-content;
     max-width: 78%;
     border-radius: var(--radius-card);
     border-bottom-left-radius: var(--glom-corner);
@@ -1766,16 +1708,37 @@ input[type='file']::file-selector-button {
     overflow-wrap: anywhere;
 }
 
-.Message > .RelativeTime {
-    float: right;
-    margin-left: 0.5rem;
+.MessageByline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.MessageByline .UserHeader {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.MessageByline .UserHeaderInfo {
+    min-width: 0;
+}
+
+.MessageByline .UserHeaderName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.MessageByline .RelativeTime {
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
 .MessageLine {
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    clear: both;
 }
 
 .MessageLine > p {
@@ -1825,7 +1788,7 @@ input[type='file']::file-selector-button {
 /* ---------- Notifications ---------- */
 
 .Notification {
-    padding: 0.5rem 0.65rem;
+    padding: 0.5rem;
     border-radius: var(--radius-ctl);
     transition: background-color 0.15s ease;
 }
@@ -1962,11 +1925,6 @@ input[type='file']::file-selector-button {
     justify-content: center;
 }
 
-/* The reparented Carousel/FeedItem keeps its normal in-feed margin
-   (.FeedItem's own margin-top, in particular) unless cleared here - flex
-   centering absorbs a stray margin into the centering math rather than
-   discarding it, so it reads as a few pixels of empty background off from
-   true center instead of a clean fill. */
 .InFullscreen {
     margin: 0;
 }
@@ -1975,13 +1933,6 @@ input[type='file']::file-selector-button {
     margin-top: 0;
 }
 
-/* Fullscreen just lets the same box every image/video/audio already renders
-   in (.ImageItem/.VideoItem/.AudioItem already center their content) grow
-   to fill the screen instead of capping at 50vh - no separate fullscreen
-   layout needed. Audio's own control bar stays compact regardless (.AudioItem
-   audio has its own fixed width:60%, no object-fit-style stretch rule), so
-   growing the outer box here only recenters it in more space, the same as
-   for image/video. */
 .InFullscreen.ImageItem,
 .InFullscreen.VideoItem,
 .InFullscreen.AudioItem,
@@ -1999,40 +1950,16 @@ input[type='file']::file-selector-button {
     height: 100vh;
 }
 
-/* A FeedItem is a normal block box in-feed, so .AudioItem audio's own
-   width:60% resolves against a real, definite parent width. In fullscreen
-   it's instead a flex item - directly of .MediaFullscreenOverlay for a
-   single-item post, or of .CarouselSlide.Active inside a carousel - and
-   flex items size to content by default, which collapses that same
-   width:60% to zero (a percentage of a now-undefined width) and leaves the
-   whole fullscreen view looking collapsed onto the bare audio bar.
-   Restoring 100% here re-gives it the definite width it always had; a
-   no-op for Image/VideoItem, which already have their own explicit 100vw
-   above regardless. */
 .MediaFullscreenOverlay .FeedItem {
     width: 100%;
 }
 
 /* ---------- Quill editor ---------- */
 
-/* On the wrapper, not .QuillEditor itself - Quill turns that div into the
-   ql-container in place and adds its toolbar as a new sibling before it, so
-   a min-height there would keep forcing the editable box on top of the
-   toolbar's own height. min-height so it still grows with real content. */
 .EditorColumn {
     min-height: 7.25rem;
 }
 
-/* The edit form drops this straight into a fieldset, a column flex container,
-   where the flex-basis carried for the composer's row would apply to height.
-   Sizing from content instead still stretches to full width on the cross axis.
-
-   The editor's height has to come from content as well. Quill ships
-   height: 100% on both .ql-container and .ql-editor, and inside a column flex
-   item those percentages resolve against the item's whole height - toolbar
-   included - so the editable box alone ends up as tall as the toolbar and
-   itself together and overflows onto Cancel/Save by the toolbar's height.
-   Both have to be released, or the percentage just moves down a level. */
 .PostEditForm .EditorColumn {
     flex: 0 0 auto;
 }
@@ -2089,7 +2016,7 @@ input[type='file']::file-selector-button {
     border-color: var(--hairline);
 }
 
-/* ---------- Loading spinner (infinite-scroll pagination) ---------- */
+/* ---------- Loading spinner ---------- */
 
 @keyframes spin {
     to {
@@ -2260,11 +2187,7 @@ input[type='file']::file-selector-button {
     font-size: 0.8125rem;
 }
 
-/* ---------- 3D force-directed tag graph ----------
-   Before the script takes over (.Active), it's a plain readable wrap of tag
-   links - a no-JS fallback. Once Active, the container becomes a fixed-size 3D
-   stage the script positions nodes inside; the "sphere" itself is nothing but a
-   drag surface. */
+/* ---------- 3D force-directed tag graph ---------- */
 
 .HashtagGraphList {
     --HashtagEdge: rgb(31 36 33 / 0.28);
@@ -2294,11 +2217,6 @@ input[type='file']::file-selector-button {
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
-    /* Contains its .HashtagNode children's inline z-index (tag-graph.js sets
-       it per-node from 3D depth, easily into the hundreds) to this element's
-       own stacking context - without this, those values escape all the way
-       to the root stacking context and can out-rank z-index:20 fixed page
-       chrome like .MainNavigation. */
     isolation: isolate;
 }
 
@@ -2317,14 +2235,10 @@ input[type='file']::file-selector-button {
 .HashtagGraphList.Active .HashtagNode {
     top: 0;
     left: 0;
-    /* The graph draws its nodes a touch heavier and tighter than the flat
-       fallback list, sized per-node by the script. */
     font-weight: 550;
     line-height: 1;
     white-space: nowrap;
     will-change: transform, opacity;
-    /* Nodes are absolutely positioned by the script; -webkit-user-drag stops the
-       browser trying to drag the link itself mid-spin. */
     -webkit-user-drag: none;
 }
 
@@ -2398,4 +2312,3 @@ input[type='file']::file-selector-button {
     white-space: pre-wrap;
     overflow-x: auto;
 }
-

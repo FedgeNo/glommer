@@ -24,8 +24,6 @@ class VerifyEmailForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/verify-email');
-        $this -> method = 'POST';
 
         $token_input = new HiddenInput();
         $token_input -> name = 'token';

@@ -20,4 +20,17 @@ SELECT `f`.`friendshipId`, `u`.*
     LIMIT ? OFFSET ?
 ', 'SentFriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
     }
+
+    protected function dataAttributes(): array
+    {
+        $this->attributes['data-infinite-scroll'] = json_encode([
+            'endpoint' => '/api/friend-list-history',
+            'itemType' => 'OtherUser',
+            'listType' => $this->listType,
+            'userId'   => (int) $this->user->userId,
+        ]);
+
+        return [];
+    }
 }
+

@@ -1,4 +1,5 @@
-// math.js – KaTeX rendering (extracted from main.js)
+import { ClientConfig } from '/ClientConfig.js';
+
 const MATH_COALESCE_SKIP = 'pre, code, .PostFormula, .katex';
 
 function coalesce_display_math(post_body) {
@@ -103,7 +104,7 @@ function coalesce_run(segments, logical, start, end) {
         last.node.splitText(end - last.start);
     }
 
-    start_node.parentNode.insertBefore(document.createTextNode(logical.slice(start, end)), start_node);
+    start_node.parentNode.insertBeforeWithSpace(document.createTextNode(logical.slice(start, end)), start_node);
 
     start_node.remove();
     covered.slice(1).forEach((segment) => segment.node.remove());
@@ -159,4 +160,12 @@ export function render_formulas(element) {
         katex.render(span.dataset.formula, span, { throwOnError: false });
         span.dataset.rendered = '1';
     });
+}
+
+export class MathRenderer {
+    static init() {
+        if (ClientConfig.get('needsMath')) {
+            render_math(document.body);
+        }
+    }
 }

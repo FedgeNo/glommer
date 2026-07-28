@@ -1,4 +1,6 @@
-import { format_relative_time, parse_server_date } from '/utils.js';
+import { ClientConfig } from '/ClientConfig.js';
+import { RelativeTime } from '/RelativeTime.js';
+import { parse_server_date } from '/utils.js';
 import { Avatar } from '/Avatar.js';
 
 export class Notification {
@@ -68,17 +70,17 @@ export class Notification {
             case 'reply':
             case 'postReady':
             case 'uploadPartlyFailed':
-                return window.siteURL + '/users/' + window.currentUserUsername + '/' + this.postId;
+                return ClientConfig.siteURL() + '/users/' + ClientConfig.get('currentUserUsername') + '/' + this.postId;
             case 'friendRequest':
-                return window.siteURL + '/users/' + window.currentUserUsername + '/friends';
+                return ClientConfig.siteURL() + '/users/' + ClientConfig.get('currentUserUsername') + '/friends';
             case 'friendAccepted':
-                return window.siteURL + '/users/' + this.actor.slug + '/';
+                return ClientConfig.siteURL() + '/users/' + this.actor.slug + '/';
             case 'message':
-                return window.siteURL + '/messages/' + this.actor.slug;
+                return ClientConfig.siteURL() + '/messages/' + this.actor.slug;
             case 'mention':
-                return window.siteURL + '/users/' + this.actor.slug + '/' + this.postId;
+                return ClientConfig.siteURL() + '/users/' + this.actor.slug + '/' + this.postId;
             case 'passwordRemovedGoogle':
-                return window.siteURL + '/forgot-password';
+                return ClientConfig.siteURL() + '/forgot-password';
             default:
                 return null;
         }
@@ -96,27 +98,28 @@ export class Notification {
             container.href = target;
         }
 
-        container.appendChild(Avatar.forUser(this.actor));
+        container.appendWithSpace(Avatar.forUser(this.actor));
 
         const info = document.createElement('div');
 
         const text = document.createElement('div');
         text.textContent = this.text();
-        info.appendChild(text);
+        info.appendWithSpace(text);
 
         const created_at = parse_server_date(this.createdAt);
 
         const meta = document.createElement('time');
         meta.className = 'muted text-sm RelativeTime';
         meta.dateTime = created_at.toISOString();
-        meta.textContent = format_relative_time(created_at.toISOString());
-        info.appendChild(meta);
+        meta.textContent = RelativeTime.format(this.createdAt);
+        info.appendWithSpace(meta);
 
-        container.appendChild(info);
-        div.appendChild(container);
+        container.appendWithSpace(info);
+        div.appendWithSpace(container);
 
         this.element = div;
 
         return div;
     }
 }
+

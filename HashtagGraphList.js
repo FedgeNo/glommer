@@ -61,7 +61,7 @@ function quat_to_matrix(q) {
     ];
 }
 
-export class HashtagGraph {
+export class HashtagGraphList {
     // Layout / physics tuning.
     static MAX_ITERATIONS = 320;
     static GRAVITY = 0.03;
@@ -81,7 +81,7 @@ export class HashtagGraph {
     // the wheel zooms from there.
     static SPREAD = 1.5;
     static MIN_ZOOM = 0.2;
-    static MAX_ZOOM = 6;
+    static MAX_ZOOM = 12;
     static WHEEL_STEP = 1.12;
 
     constructor(element) {
@@ -100,7 +100,7 @@ export class HashtagGraph {
 
         // View rotation, zoom, and the current drag.
         this.orientation = [0, 0, 0, 1];
-        this.zoom = 1;
+        this.zoom = HashtagGraphList.MAX_ZOOM / 2; // start at 6 (previous max)
         this.dragging = false;
         this.suppressClick = false;
 
@@ -155,7 +155,7 @@ export class HashtagGraph {
             }
 
             if (last !== null && !this.dragging) {
-                const angle = (now - last) / 1000 * HashtagGraph.SPIN_RADIANS_PER_SECOND;
+                const angle = (now - last) / 1000 * HashtagGraphList.SPIN_RADIANS_PER_SECOND;
                 const spin = [0, Math.sin(angle / 2), 0, Math.cos(angle / 2)];
                 this.orientation = quat_normalize(quat_multiply(spin, this.orientation));
                 this.render();
@@ -179,7 +179,7 @@ export class HashtagGraph {
 
         this.nodeElements.forEach((node, index) => {
             const normalized = (logs[index] - min) / span;
-            node.style.fontSize = (HashtagGraph.BASE_FONT_REM * (0.5 + normalized * 3.25)).toFixed(3) + 'rem';
+            node.style.fontSize = (HashtagGraphList.BASE_FONT_REM * (0.5 + normalized * 3.25)).toFixed(3) + 'rem';
             node.draggable = false;
             node.style.position = 'absolute';
         });
@@ -252,7 +252,7 @@ export class HashtagGraph {
     // Run the whole simulation to rest right now (cheap at these sizes), then
     // work out the base scale.
     settle() {
-        for (let i = 0; i < HashtagGraph.MAX_ITERATIONS; i++) {
+        for (let i = 0; i < HashtagGraphList.MAX_ITERATIONS; i++) {
             this.stepPhysics();
         }
 
@@ -278,12 +278,12 @@ export class HashtagGraph {
         }
 
         this.maxExtent = Math.sqrt(max_squared);
-        this.baseScale = (Math.min(this.width, this.height) * 0.5 * HashtagGraph.SPREAD) / this.maxExtent;
+        this.baseScale = (Math.min(this.width, this.height) * 0.5 * HashtagGraphList.SPREAD) / this.maxExtent;
     }
 
     onWheel(deltaY) {
-        const step = deltaY < 0 ? HashtagGraph.WHEEL_STEP : 1 / HashtagGraph.WHEEL_STEP;
-        this.zoom = Math.max(HashtagGraph.MIN_ZOOM, Math.min(HashtagGraph.MAX_ZOOM, this.zoom * step));
+        const step = deltaY < 0 ? HashtagGraphList.WHEEL_STEP : 1 / HashtagGraphList.WHEEL_STEP;
+        this.zoom = Math.max(HashtagGraphList.MIN_ZOOM, Math.min(HashtagGraphList.MAX_ZOOM, this.zoom * step));
         this.render();
     }
 
@@ -349,9 +349,9 @@ export class HashtagGraph {
         let center_x = 0, center_y = 0, center_z = 0;
 
         for (let i = 0; i < count; i++) {
-            displacement[i * 3] -= position[i * 3] * HashtagGraph.GRAVITY;
-            displacement[i * 3 + 1] -= position[i * 3 + 1] * HashtagGraph.GRAVITY;
-            displacement[i * 3 + 2] -= position[i * 3 + 2] * HashtagGraph.GRAVITY;
+            displacement[i * 3] -= position[i * 3] * HashtagGraphList.GRAVITY;
+            displacement[i * 3 + 1] -= position[i * 3 + 1] * HashtagGraphList.GRAVITY;
+            displacement[i * 3 + 2] -= position[i * 3 + 2] * HashtagGraphList.GRAVITY;
 
             const dx = displacement[i * 3];
             const dy = displacement[i * 3 + 1];
@@ -379,7 +379,7 @@ export class HashtagGraph {
             position[i * 3 + 2] -= center_z;
         }
 
-        this.temperature = Math.max(this.radius * 0.006, temperature * HashtagGraph.COOL);
+        this.temperature = Math.max(this.radius * 0.006, temperature * HashtagGraphList.COOL);
     }
 
     // Turn a screen-space drag delta into an incremental rotation and premultiply
@@ -391,7 +391,7 @@ export class HashtagGraph {
             return;
         }
 
-        const angle = distance * HashtagGraph.RADIANS_PER_PIXEL;
+        const angle = distance * HashtagGraphList.RADIANS_PER_PIXEL;
         const scale = Math.sin(angle / 2) / distance;
         const delta = [-dy * scale, dx * scale, 0, Math.cos(angle / 2)];
 
@@ -476,7 +476,7 @@ export class HashtagGraph {
         this.lastX = event.clientX;
         this.lastY = event.clientY;
 
-        if (!this.moved && Math.hypot(event.clientX - this.startX, event.clientY - this.startY) > HashtagGraph.DRAG_THRESHOLD) {
+        if (!this.moved && Math.hypot(event.clientX - this.startX, event.clientY - this.startY) > HashtagGraphList.DRAG_THRESHOLD) {
             this.moved = true;
         }
 
@@ -496,7 +496,7 @@ export class HashtagGraph {
 
 function graph_for(target) {
     const element = target.closest(GRAPH_SELECTOR + '.Active');
-    return element && element.__hashtagGraph ? element.__hashtagGraph : null;
+    return element && element.__hashtagGraphList ? element.__hashtagGraphList : null;
 }
 
 let active_graph = null;
@@ -549,9 +549,9 @@ document.addEventListener('click', (event) => {
     }
 
     const element = node.closest(GRAPH_SELECTOR);
-    if (element && element.__hashtagGraph && element.__hashtagGraph.suppressClick) {
+    if (element && element.__hashtagGraphList && element.__hashtagGraphList.suppressClick) {
         event.preventDefault();
-        element.__hashtagGraph.suppressClick = false;
+        element.__hashtagGraphList.suppressClick = false;
     }
 });
 
@@ -563,8 +563,8 @@ function init_tag_graphs(root) {
     }
 
     (root || document).querySelectorAll(GRAPH_SELECTOR).forEach((element) => {
-        if (!element.__hashtagGraph) {
-            element.__hashtagGraph = new HashtagGraph(element);
+        if (!element.__hashtagGraphList) {
+            element.__hashtagGraphList = new HashtagGraphList(element);
         }
     });
 }
@@ -576,3 +576,4 @@ if (document.readyState === 'loading') {
 } else {
     init_tag_graphs();
 }
+

@@ -1,4 +1,13 @@
-import { parse_server_date, format_relative_time } from '/utils.js';
+import { ClientConfig } from '/ClientConfig.js';
+import { RelativeTime } from '/RelativeTime.js';
+import { parse_server_date } from '/utils.js';
+import { Api } from '/Api.js';
+import { Dialog } from '/Dialog.js';
+import { DOMUtils } from '/DOMUtils.js';
+import { Post } from '/Post.js';
+import { User } from '/User.js';
+import { InfiniteScroller } from '/InfiniteScroller.js';
+import { ReadyHandler } from '/ReadyHandler.js';
 
 /**
  * Client-side mirror of the PHP ReportCard (src/classes/ReportCard.php) - the
@@ -41,8 +50,8 @@ export class ReportCard {
             if (Array.isArray(target.attachments) && target.attachments.length > 0) {
                 const media = document.createElement('div');
                 media.className = 'ReportedAttachments d-flex flex-column gap-2';
-                target.attachments.forEach((attachment) => media.appendChild(forensic_attachment_element(attachment)));
-                post.appendChild(media);
+                target.attachments.forEach((attachment) => media.appendWithSpace(forensic_attachment_element(attachment)));
+                post.appendWithSpace(media);
             }
 
             return post;
@@ -74,31 +83,31 @@ export class ReportCard {
         details.className = 'ReportDetails d-flex flex-column gap-2';
 
         const summary = document.createElement('div');
-        summary.appendChild(document.createTextNode(capitalize(this.targetType) + ' #' + this.targetId + ' reported by '));
+        summary.appendWithSpace(document.createTextNode(capitalize(this.targetType) + ' #' + this.targetId + ' reported by '));
 
         const reporter_link = document.createElement('a');
-        reporter_link.href = window.siteURL + '/users/' + this.reporterUsername + '/';
+        reporter_link.href = ClientConfig.siteURL() + '/users/' + this.reporterUsername + '/';
         reporter_link.textContent = this.reporterUsername;
-        summary.appendChild(reporter_link);
-        details.appendChild(summary);
+        summary.appendWithSpace(reporter_link);
+        details.appendWithSpace(summary);
 
-        details.appendChild(this.targetContentElement());
+        details.appendWithSpace(this.targetContentElement());
 
         if (this.reason !== null && this.reason !== undefined) {
             const reason_line = document.createElement('p');
             reason_line.textContent = 'Reason: ' + this.reason;
-            details.appendChild(reason_line);
+            details.appendWithSpace(reason_line);
         }
 
         if (this.createdAt) {
             const meta = document.createElement('time');
             meta.className = 'muted text-sm RelativeTime';
             meta.dateTime = parse_server_date(this.createdAt).toISOString();
-            meta.textContent = format_relative_time(this.createdAt);
-            details.appendChild(meta);
+            meta.textContent = RelativeTime.format(this.createdAt);
+            details.appendWithSpace(meta);
         }
 
-        card.appendChild(details);
+        card.appendWithSpace(details);
 
         const actions = document.createElement('div');
         actions.className = 'ReportActions d-flex flex-column gap-2 ms-auto';
@@ -107,13 +116,13 @@ export class ReportCard {
         // admin filed the report. (The reported user is never the admin - the
         // report API rejects reports about admin content.)
         if (Number(this.reporterId) !== 1) {
-            actions.appendChild(this.banButton(this.reporterId, 'Ban Reporter'));
+            actions.appendWithSpace(this.banButton(this.reporterId, 'Ban Reporter'));
         }
 
         if (this.targetUserId !== null && this.targetUserId !== undefined
             && this.targetUsername !== null && this.targetUsername !== undefined
             && Number(this.targetUserId) !== Number(this.reporterId)) {
-            actions.appendChild(this.banButton(this.targetUserId, 'Ban Reported User'));
+            actions.appendWithSpace(this.banButton(this.targetUserId, 'Ban Reported User'));
         }
 
         // Only offer Delete when the live post/message still exists (a snapshot
@@ -124,7 +133,7 @@ export class ReportCard {
             delete_button.className = 'Button DeleteReportedContentButton';
             delete_button.dataset.reportId = this.reportId;
             delete_button.textContent = 'Delete ' + capitalize(this.targetType);
-            actions.appendChild(delete_button);
+            actions.appendWithSpace(delete_button);
         }
 
         const dismiss_button = document.createElement('button');
@@ -132,9 +141,9 @@ export class ReportCard {
         dismiss_button.className = 'Button DismissReportButton';
         dismiss_button.dataset.reportId = this.reportId;
         dismiss_button.textContent = 'Dismiss';
-        actions.appendChild(dismiss_button);
+        actions.appendWithSpace(dismiss_button);
 
-        card.appendChild(actions);
+        card.appendWithSpace(actions);
 
         this.element = card;
 
@@ -150,12 +159,53 @@ export class ReportCard {
 
         return button;
     }
+
+    // ----------------------------------------------------------------
+    // Static action handlers (dismiss, delete reported content)
+    // ----------------------------------------------------------------
+
+    static init() {
+        document.addEventListener('click', async (event) => {
+            const dismissBtn = event.target.closest('.DismissReportButton');
+            if (dismissBtn) {
+                ReportCard.#dismiss(dismissBtn);
+                return;
+            }
+
+            const deleteBtn = event.target.closest('.DeleteReportedContentButton');
+            if (deleteBtn) {
+                ReportCard.#deleteContent(deleteBtn);
+            }
+        });
+    }
+
+    static async #dismiss(button) {
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/dismiss-report', { reportId: button.dataset.reportId });
+            if (!result) return;
+            DOMUtils.slideOut(button.closest('.ReportCard'));
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    static async #deleteContent(button) {
+        if (!await Dialog.confirm('Delete this content permanently? Deleting a post also removes all its replies.')) return;
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/delete-reported-content', { reportId: button.dataset.reportId });
+            if (!result) return;
+            DOMUtils.slideOut(button.closest('.ReportCard'));
+        } finally {
+            button.disabled = false;
+        }
+    }
 }
 
 /** Uppercases the first character - the JS side of PHP's ucfirst(). */
 function capitalize(text) {
     const value = text || '';
-
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
@@ -202,3 +252,6 @@ function forensic_attachment_element(attachment) {
     link.textContent = 'View reported attachment';
     return link;
 }
+
+ReadyHandler.add(ReportCard.init);
+

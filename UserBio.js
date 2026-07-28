@@ -16,13 +16,13 @@ export class UserBio {
             const inner = document.createTextNode(segment.text);
 
             if (segment.type === 'url') {
-                bio.appendChild(linked_node(segment.text, inner));
+                bio.appendWithSpace(linked_node(segment.text, inner));
             } else if (segment.type === 'hashtag') {
-                bio.appendChild(hashtag_node(segment.tag, inner));
+                bio.appendWithSpace(hashtag_node(segment.tag, inner));
             } else if (segment.type === 'mention') {
-                bio.appendChild(mention_node(segment.username, inner));
+                bio.appendWithSpace(mention_node(segment.username, inner));
             } else {
-                bio.appendChild(inner);
+                bio.appendWithSpace(inner);
             }
         }
 

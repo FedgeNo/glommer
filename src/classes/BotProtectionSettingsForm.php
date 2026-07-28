@@ -10,14 +10,12 @@ declare(strict_types=1);
  * rendered back - so it can't leak into the page source, and a blank submit
  * leaves the stored secret unchanged.
  */
-class AdminSettingsForm extends Form
+class BotProtectionSettingsForm extends Form
 {
     public ?string $class = 'Card d-flex flex-column gap-2 AdminSettingsForm';
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/admin/settings');
-        $this -> method = 'POST';
 
         $fields = new Fieldset('Cloudflare Turnstile');
 

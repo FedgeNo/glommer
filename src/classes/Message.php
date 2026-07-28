@@ -44,13 +44,19 @@ class Message extends HTMLObject implements \JsonSerializable
             $this -> class .= ' Own';
         }
 
-        $meta = new RelativeTime($this -> createdAt);
-        $meta -> class = 'muted text-sm ' . $meta -> class;
-        $this -> contents[] = $meta;
+        // Byline row: header + time (mirrors PostByline)
+        $byline = new Div();
+        $byline -> class = 'MessageByline d-flex align-items-start gap-2';
 
         if ($this -> sender !== null) {
-            $this -> contents[] = $this -> senderHeader();
+            $byline -> addContent($this -> senderHeader());
         }
+
+        $meta = new RelativeTime($this -> createdAt);
+        $meta -> class = 'muted text-sm ' . $meta -> class;
+        $byline -> addContent($meta);
+
+        $this -> contents[] = $byline;
 
         // Body and (for other people's messages) the report button sit on one
         // row - text on the left, button hugging the right - so the button

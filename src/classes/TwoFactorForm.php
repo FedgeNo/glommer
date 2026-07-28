@@ -15,8 +15,6 @@ class TwoFactorForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/api/verify-2fa');
-        $this -> method = 'POST';
 
         $fields = new Fieldset('Enter your verification code');
         $fields -> addContent(new Paragraph('We emailed you a verification code. Enter it below to finish logging in.'));

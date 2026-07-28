@@ -1,3 +1,5 @@
+import { ClientConfig } from '/ClientConfig.js';
+
 /**
  * Renders a Quill Delta (an array of insert ops) to real DOM nodes - no
  * innerHTML, no HTML strings. Mirrors the server-side DeltaRenderer so a post
@@ -53,13 +55,13 @@ export function render_delta(ops) {
             if (list_el === null || list_kind !== attrs.list) {
                 list_el = document.createElement(attrs.list === 'ordered' ? 'ol' : 'ul');
                 list_kind = attrs.list;
-                root.appendChild(list_el);
+                root.appendWithSpace(list_el);
             }
 
             const li = document.createElement('li');
-            inline.forEach((n) => li.appendChild(n));
-            list_el.appendChild(li);
-            list_el.appendChild(document.createTextNode('\n'));
+            inline.forEach((n) => li.appendWithSpace(n));
+            list_el.appendWithSpace(li);
+            list_el.appendWithSpace(document.createTextNode('\n'));
             inline = [];
             return;
         }
@@ -79,15 +81,15 @@ export function render_delta(ops) {
             block = document.createElement('p');
         }
 
-        inline.forEach((n) => block.appendChild(n));
+        inline.forEach((n) => block.appendWithSpace(n));
 
         // An empty line (Quill renders it as <p><br></p>) still takes space.
         if (inline.length === 0 && block.tagName === 'P') {
-            block.appendChild(document.createElement('br'));
+            block.appendWithSpace(document.createElement('br'));
         }
 
-        root.appendChild(block);
-        root.appendChild(document.createTextNode('\n'));
+        root.appendWithSpace(block);
+        root.appendWithSpace(document.createTextNode('\n'));
         inline = [];
     };
 
@@ -209,27 +211,27 @@ export function formatted_text_node(text, attrs) {
 
     if (attrs.code) {
         const code = document.createElement('code');
-        code.appendChild(node);
+        code.appendWithSpace(node);
         node = code;
     }
     if (attrs.bold) {
         const strong = document.createElement('strong');
-        strong.appendChild(node);
+        strong.appendWithSpace(node);
         node = strong;
     }
     if (attrs.italic) {
         const em = document.createElement('em');
-        em.appendChild(node);
+        em.appendWithSpace(node);
         node = em;
     }
     if (attrs.underline) {
         const u = document.createElement('u');
-        u.appendChild(node);
+        u.appendWithSpace(node);
         node = u;
     }
     if (attrs.strike) {
         const s = document.createElement('s');
-        s.appendChild(node);
+        s.appendWithSpace(node);
         node = s;
     }
 
@@ -250,23 +252,23 @@ export function linked_node(href, inner) {
         anchor.setAttribute('rel', 'noopener');
     }
 
-    anchor.appendChild(inner);
+    anchor.appendWithSpace(inner);
     return anchor;
 }
 
 /** An internal (same-window) anchor to a hashtag's tag page. */
 export function hashtag_node(tag, inner) {
     const anchor = document.createElement('a');
-    anchor.setAttribute('href', window.siteURL + '/tags/' + tag);
-    anchor.appendChild(inner);
+    anchor.setAttribute('href', ClientConfig.siteURL() + '/tags/' + tag);
+    anchor.appendWithSpace(inner);
     return anchor;
 }
 
 /** An internal (same-window) anchor to a mentioned user's profile. */
 export function mention_node(username, inner) {
     const anchor = document.createElement('a');
-    anchor.setAttribute('href', window.siteURL + '/users/' + username + '/');
-    anchor.appendChild(inner);
+    anchor.setAttribute('href', ClientConfig.siteURL() + '/users/' + username + '/');
+    anchor.appendWithSpace(inner);
     return anchor;
 }
 
@@ -277,7 +279,7 @@ export function opens_in_new_tab(href) {
         return false;
     }
 
-    return host !== linkify_link_host(window.siteURL);
+    return host !== linkify_link_host(ClientConfig.siteURL());
 }
 
 /**

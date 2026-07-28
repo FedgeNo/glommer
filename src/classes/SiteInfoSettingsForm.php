@@ -9,7 +9,7 @@ declare(strict_types=1);
  * something rather than a blank box) and a save button. One descendant per
  * info text.
  */
-abstract class InfoSettingsForm extends Form
+abstract class SiteInfoSettingsForm extends Form
 {
     public ?string $class = 'Card d-flex flex-column gap-2 InfoSettingsForm';
     public ?string $description = 'Plain text - blank lines separate paragraphs.';
@@ -22,8 +22,6 @@ abstract class InfoSettingsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/admin/settings');
-        $this -> method = 'POST';
 
         $fields = new Fieldset($this -> legend);
 

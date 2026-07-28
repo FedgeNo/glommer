@@ -41,7 +41,7 @@ class UploadProcessor
     private const FF_PROBE_TIMEOUT = 30;
     private const FF_WALL_TIMEOUT = 300;
     private const FF_CPU_TIMELIMIT = 300;
-    private const FF_MAX_ADDRESS_SPACE_KB = 2097152;
+    private const FF_MAX_ADDRESS_SPACE_KB = 4194304;
     private const FF_THREADS = 2;
 
     // ffprobe's format_name is a comma-joined list of the demuxers that claim
@@ -582,7 +582,7 @@ class UploadProcessor
         // Cap resolution/framerate - we're not streaming ultra HD, and bandwidth matters.
         // scale filter only ever downscales (never upscales smaller sources).
         $scale_filter = sprintf(
-            'scale=\'min(%d,iw)\':\'min(%d,ih)\':force_original_aspect_ratio=decrease',
+            'scale=\'min(%d,iw)\':\'min(%d,ih)\':force_original_aspect_ratio=decrease,scale=\'trunc(iw/2)*2\':\'trunc(ih/2)*2\'',
             self::VIDEO_MAX_WIDTH,
             self::VIDEO_MAX_HEIGHT
         );
@@ -603,6 +603,8 @@ class UploadProcessor
         )), $output_lines, $exit_code);
 
         if ($exit_code !== 0 || !is_file($paths['display'])) {
+            $failure_log = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
+            file_put_contents($failure_log, $output_lines);
             // A timed-out / killed run can leave a partial display file; clear it
             // so failures don't accumulate on disk.
             @unlink($paths['display']);
@@ -685,6 +687,8 @@ class UploadProcessor
         )), $output_lines, $exit_code);
 
         if ($exit_code !== 0 || !is_file($paths['display'])) {
+            $failure_log = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
+            file_put_contents($failure_log, $output_lines);
             // A timed-out / killed run can leave a partial display file; clear it
             // so failures don't accumulate on disk.
             @unlink($paths['display']);

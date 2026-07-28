@@ -1,6 +1,10 @@
-import { parse_server_date, format_relative_time, list_item } from '/utils.js';
-import { render_math } from '/math.js';
 import { User } from '/User.js';
+import { ClientConfig } from '/ClientConfig.js';
+import { RelativeTime } from '/RelativeTime.js';
+import { parse_server_date, list_item } from '/utils.js';
+import { render_math } from '/math.js';
+import { EmojiRenderer } from '/EmojiRenderer.js';
+import { ReadyHandler } from '/ReadyHandler.js';
 
 export class Message {
     messageId = null;
@@ -20,42 +24,55 @@ export class Message {
         const div = document.createElement('div');
         div.className = 'Message Card MountIn';
 
-        if (Number(this.senderId) === Number(window.currentUserId)) {
+        if (Number(this.senderId) === Number(ClientConfig.get('currentUserId'))) {
             div.className += ' Own';
+        }
+
+        const byline = document.createElement('div');
+        byline.className = 'MessageByline d-flex align-items-start gap-2';
+
+        const sender = (window.conversationUsers || {})[this.senderId];
+        if (sender) {
+            byline.appendWithSpace(this.senderHeader(sender, this.senderId));
         }
 
         const meta = document.createElement('time');
         meta.className = 'muted text-sm RelativeTime';
         meta.dateTime = parse_server_date(this.createdAt).toISOString();
-        meta.textContent = format_relative_time(this.createdAt);
-        div.appendChild(meta);
+        meta.textContent = RelativeTime.format(this.createdAt);
+        byline.appendWithSpace(meta);
 
-        const sender = (window.conversationUsers || {})[this.senderId];
-
-        if (sender) {
-            div.appendChild(this.senderHeader(sender, this.senderId));
-        }
+        div.appendWithSpace(byline);
 
         const line = document.createElement('div');
         line.className = 'MessageLine';
 
         const body = document.createElement('p');
         body.textContent = this.body;
-        line.appendChild(body);
+        line.appendWithSpace(body);
 
-        if (window.currentUserId !== null && Number(this.senderId) !== Number(window.currentUserId) && Number(this.senderId) !== 1) {
+        if (ClientConfig.get('currentUserId') !== null
+            && Number(this.senderId) !== Number(ClientConfig.get('currentUserId'))
+            && Number(this.senderId) !== 1) {
             const report_button = document.createElement('button');
             report_button.type = 'button';
             report_button.className = 'Button ReportButton';
             report_button.dataset.targetType = 'message';
             report_button.dataset.targetId = this.messageId;
             report_button.textContent = 'Report';
-            line.appendChild(report_button);
+            line.appendWithSpace(report_button);
         }
 
-        div.appendChild(line);
+        div.appendWithSpace(line);
 
         this.element = div;
+
+        EmojiRenderer.render(this.element);
+
+        const messageBody = div.querySelector('.MessageLine p');
+        if (messageBody && EmojiRenderer.isEmojiOnly(messageBody)) {
+            div.classList.add('emoji-only');
+        }
 
         return div;
     }
@@ -63,15 +80,22 @@ export class Message {
     senderHeader(sender, sender_id) {
         return User.fromData({ userId: sender_id, ...sender }).header();
     }
+
+    /**
+     * Scroll the message list to the bottom on page load.
+     */
+    static init() {
+        if (document.querySelector('.MessageList')) {
+            window.addEventListener('load', () => {
+                const msgList = document.querySelector('.MessageList');
+                window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
+                const composerTextarea = document.querySelector('.MessageComposer textarea');
+                if (composerTextarea) composerTextarea.focus();
+            });
+        }
+    }
 }
 
-/**
- * Live-appends a message pushed over the WebSocket connection (see main.js's
- * connect_websocket()) - but only if the conversation it belongs to is the
- * one currently open, since a page has no DOM to append into for any other
- * conversation. Messages for a conversation that isn't open still surface
- * via the normal 'message' notification toast.
- */
 document.addEventListener('ws:message', (event) => {
     const data = event.detail;
     const list = document.querySelector('.MessageList');
@@ -83,17 +107,19 @@ document.addEventListener('ws:message', (event) => {
     const was_near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
 
     const placeholder = list.querySelector('.Notice');
-
     if (placeholder) {
         placeholder.closest('li').remove();
     }
 
     const message = Message.fromData(data);
     const element = message.toElement();
-    list.appendChild(list_item(element));
+    list.appendWithSpace(list_item(element));
     render_math(element);
 
     if (was_near_bottom) {
         window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
     }
 });
+
+ReadyHandler.add(Message.init);
+

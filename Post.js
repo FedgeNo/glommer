@@ -1,15 +1,20 @@
+import { ClientConfig } from '/ClientConfig.js';
 import { User } from '/User.js';
 import { render_delta, see_more_element, is_safe_link, ALLOWED_LINK_SCHEMES } from '/delta.js';
-import { format_relative_time, parse_server_date } from '/utils.js';
+import { RelativeTime } from '/RelativeTime.js';
+import { parse_server_date } from '/utils.js';
+import { Api } from '/Api.js';
+import { Dialog } from '/Dialog.js';
+import { DOMUtils } from '/DOMUtils.js';
+import { EmojiRenderer } from '/EmojiRenderer.js';
+import { InfiniteScroller } from '/InfiniteScroller.js';
+import { ReadyHandler } from '/ReadyHandler.js';
 
 export class Post {
     postId = null;
     userId = null;
     parentId = null;
     title = null;
-    // Plaintext summary, used only by the link-preview card. A post body renders
-    // from descriptionDelta (the Delta ops), truncated in the feed with a
-    // "See More" link when descriptionTruncated is set.
     description = null;
     descriptionDelta = null;
     descriptionTruncated = false;
@@ -18,8 +23,6 @@ export class Post {
     linkURL = null;
     createdAt = null;
     editedAt = null;
-    // Owner-only, same reasoning as the server's data-description-delta -
-    // the untruncated Delta an edit needs to repopulate Quill.
     rawDescriptionDelta = null;
     items = [];
     imageAltText = null;
@@ -40,24 +43,22 @@ export class Post {
         const byline = document.createElement('div');
         byline.className = 'PostByline d-flex align-items-start gap-2';
 
-        byline.appendChild(User.fromData(this.author).header());
+        byline.appendWithSpace(User.fromData(this.author).header());
 
-        // The timestamp sits at the top of the byline, level with the display
-        // name, with the "(edited)" note stacked beneath it.
         const meta = document.createElement('div');
         meta.className = 'PostMeta d-flex flex-column align-items-end ms-auto';
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
             timestamp_link.className = 'TimestampLink muted text-sm';
-            timestamp_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
+            timestamp_link.href = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
 
             const timestamp = document.createElement('time');
             timestamp.className = 'RelativeTime';
-            timestamp.textContent = format_relative_time(this.createdAt);
-            timestamp_link.appendChild(timestamp);
+            timestamp.textContent = RelativeTime.format(this.createdAt);
+            timestamp_link.appendWithSpace(timestamp);
 
-            meta.appendChild(timestamp_link);
+            meta.appendWithSpace(timestamp_link);
         }
 
         if (this.editedAt) {
@@ -71,10 +72,10 @@ export class Post {
                 minute: '2-digit',
             });
             edited_marker.textContent = '(edited)';
-            meta.appendChild(edited_marker);
+            meta.appendWithSpace(edited_marker);
         }
 
-        byline.appendChild(meta);
+        byline.appendWithSpace(meta);
 
         return byline;
     }
@@ -83,17 +84,11 @@ export class Post {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
 
-        // Defense-in-depth alongside the write-time linkURL validation
-        // (api/create-post.php, api/edit-post.php): mirrors delta.js's
-        // is_safe_link() gate so nothing client-rendered ever emits an
-        // unsafe-scheme href.
         const link_is_safe = is_safe_link(this.linkURL, ALLOWED_LINK_SCHEMES);
         const link = document.createElement(link_is_safe ? 'a' : 'div');
 
         if (link_is_safe) {
             link.href = this.linkURL;
-            // Opens in a new tab; rel=noopener keeps the opened
-            // (user-submitted) page from reaching back through window.opener.
             link.target = '_blank';
             link.rel = 'noopener';
         }
@@ -105,7 +100,7 @@ export class Post {
             image.className = 'LinkItemImage';
             image.src = link_image.image;
             image.alt = 'Link preview image';
-            link.appendChild(image);
+            link.appendWithSpace(image);
         }
 
         const text = document.createElement('div');
@@ -114,21 +109,19 @@ export class Post {
         if (this.title) {
             const heading = document.createElement('h3');
             heading.textContent = this.title;
-            text.appendChild(heading);
+            text.appendWithSpace(heading);
         }
 
-        // The link card's description is plaintext (a flat summary), so it's a
-        // text node - never rich, never a Delta. Mirrors the server LinkItem.
         if (this.description) {
             const body = document.createElement('div');
             body.className = 'PostBody';
             body.textContent = this.description;
-            text.appendChild(body);
+            text.appendWithSpace(body);
         }
 
-        text.appendChild(document.createTextNode(this.linkURL));
-        link.appendChild(text);
-        wrapper.appendChild(link);
+        text.appendWithSpace(document.createTextNode(this.linkURL));
+        link.appendWithSpace(text);
+        wrapper.appendWithSpace(link);
 
         return wrapper;
     }
@@ -141,23 +134,19 @@ export class Post {
             const video = document.createElement('video');
             video.controls = true;
 
-            // Deferred: stash the real URLs in data-* so the browser doesn't
-            // fetch until the carousel promotes this slide (see main.js).
             if (deferred) {
                 video.dataset.src = item.src;
-
                 if (item.image) {
                     video.dataset.poster = item.image;
                 }
             } else {
                 video.src = item.src;
-
                 if (item.image) {
                     video.poster = item.image;
                 }
             }
 
-            wrapper.appendChild(video);
+            wrapper.appendWithSpace(video);
         } else if (item.itemType === 'AudioItem') {
             const audio = document.createElement('audio');
             audio.controls = true;
@@ -168,7 +157,7 @@ export class Post {
                 audio.src = item.src;
             }
 
-            wrapper.appendChild(audio);
+            wrapper.appendWithSpace(audio);
         } else {
             const img = document.createElement('img');
             img.alt = this.imageAltText || 'Image';
@@ -179,7 +168,7 @@ export class Post {
                 img.src = item.src;
             }
 
-            wrapper.appendChild(img);
+            wrapper.appendWithSpace(img);
         }
 
         return wrapper;
@@ -201,22 +190,17 @@ export class Post {
         const track = document.createElement('div');
         track.className = 'CarouselTrack';
 
-        // Carousel::INITIAL_EAGER_ITEMS, published as a page global (see
-        // Page::create) so this isn't a second hand-kept copy of the number:
-        // the first slide plus this many ahead load up front (hence > below,
-        // matching Carousel.php), the rest defer until the carousel advances
-        // toward them and main.js keeps the buffer filled.
-        const initial_eager_items = window.carouselEagerItems;
+        const initial_eager_items = ClientConfig.get('carouselEagerItems');
 
         this.items.forEach((item, index) => {
             const slide = document.createElement('div');
             slide.className = 'CarouselSlide' + (index === 0 ? ' Active' : '');
-            slide.appendChild(this.itemToElement(item, index > initial_eager_items));
-            track.appendChild(slide);
+            slide.appendWithSpace(this.itemToElement(item, index > initial_eager_items));
+            track.appendWithSpace(slide);
         });
 
-        carousel.appendChild(track);
-        carousel.appendChild(this.mediaFullscreenButtonElement());
+        carousel.appendWithSpace(track);
+        carousel.appendWithSpace(this.mediaFullscreenButtonElement());
 
         if (this.items.length > 1) {
             const prev_button = document.createElement('button');
@@ -224,43 +208,40 @@ export class Post {
             prev_button.className = 'CarouselPrev';
             prev_button.setAttribute('aria-label', 'Previous');
             prev_button.textContent = '‹';
-            carousel.appendChild(prev_button);
+            carousel.appendWithSpace(prev_button);
 
             const next_button = document.createElement('button');
             next_button.type = 'button';
             next_button.className = 'CarouselNext';
             next_button.setAttribute('aria-label', 'Next');
             next_button.textContent = '›';
-            carousel.appendChild(next_button);
+            carousel.appendWithSpace(next_button);
 
             const counter = document.createElement('div');
             counter.className = 'CarouselCounter';
             counter.textContent = '1 / ' + this.items.length;
-            carousel.appendChild(counter);
+            carousel.appendWithSpace(counter);
 
             const autoplay_button = document.createElement('button');
             autoplay_button.type = 'button';
             autoplay_button.className = 'CarouselAutoplay';
             autoplay_button.textContent = 'Autoplay';
-            carousel.appendChild(autoplay_button);
+            carousel.appendWithSpace(autoplay_button);
         }
 
         return carousel;
     }
 
-    // The bare .Post element (byline + title/media/body, no action bar),
-    // mirroring the server-side Post::contentElement(). toElement() wraps this
-    // in the .Post card with the action bar; a ReportCard embeds it on its own.
     postElement() {
         const post = document.createElement('div');
         post.className = 'PostContent';
 
         if (this.author) {
-            post.appendChild(this.authorBylineToElement());
+            post.appendWithSpace(this.authorBylineToElement());
         }
 
         if (this.linkURL) {
-            post.appendChild(this.linkItemToElement());
+            post.appendWithSpace(this.linkItemToElement());
         } else {
             if (this.title) {
                 const heading = document.createElement('h3');
@@ -268,33 +249,30 @@ export class Post {
 
                 if (this.postId !== null) {
                     const title_link = document.createElement('a');
-                    title_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
-                    title_link.appendChild(heading);
-                    post.appendChild(title_link);
+                    title_link.href = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
+                    title_link.appendWithSpace(heading);
+                    post.appendWithSpace(title_link);
                 } else {
-                    post.appendChild(heading);
+                    post.appendWithSpace(heading);
                 }
             }
 
             if (this.items.length > 1) {
-                post.appendChild(this.itemsToCarousel());
+                post.appendWithSpace(this.itemsToCarousel());
             } else if (this.items.length === 1) {
                 const wrapper = this.itemToElement(this.items[0]);
-                wrapper.appendChild(this.mediaFullscreenButtonElement());
-                post.appendChild(wrapper);
+                wrapper.appendWithSpace(this.mediaFullscreenButtonElement());
+                post.appendWithSpace(wrapper);
             }
 
             if (this.descriptionDelta) {
-                // Built from the Delta ops - same shape the server renders. The
-                // feed ships already-truncated ops; append "See More" to the
-                // full post when the server flagged the body as cut.
                 const body = render_delta(this.descriptionDelta);
 
                 if (this.descriptionTruncated && this.seeMoreURL) {
-                    body.appendChild(see_more_element(this.seeMoreURL));
+                    body.appendWithSpace(see_more_element(this.seeMoreURL));
                 }
 
-                post.appendChild(body);
+                post.appendWithSpace(body);
             }
         }
 
@@ -305,9 +283,6 @@ export class Post {
         const card = document.createElement('div');
         card.className = 'Post Card MountIn';
 
-        // The post's own columns, carried once on the card that represents it -
-        // mirroring the server-side Post::toDOM(). Attribute names match the
-        // column names.
         card.dataset.postId = this.postId;
         card.dataset.userId = this.userId;
 
@@ -323,38 +298,29 @@ export class Post {
             card.dataset.createdAt = parse_server_date(this.createdAt).toISOString();
         }
 
-        // Owner-only - what the edit form needs to repopulate Quill, without a
-        // round trip for a post already on the page. Gate on ownership alone
-        // and mirror the server's `?? ''` (Post::toDOM): rawDescriptionDelta is
-        // null both for someone else's post AND for the owner's own bodyless
-        // post (a link post with no text), and that second case must still set
-        // the attribute or its Edit button goes permanently dead.
-        if (Number(this.userId) === Number(window.currentUserId)) {
+        if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
             card.dataset.descriptionDelta = this.rawDescriptionDelta || '';
             card.dataset.title = this.title || '';
             card.dataset.linkUrl = this.linkURL || '';
             card.dataset.hasMedia = this.items.length > 0 ? '1' : '';
         }
 
-        card.appendChild(this.postElement());
+        card.appendWithSpace(this.postElement());
 
-        // Mirrors the server-side PostActionBar: reply link when it's useful,
-        // like button when logged in, and delete only on your own posts
-        // (report on everyone else's).
         const meta = document.createElement('div');
         meta.className = 'PostActionBar d-flex align-items-center gap-3';
 
         const actions = document.createElement('div');
         actions.className = 'd-flex align-items-center gap-2 ms-auto';
 
-        const logged_in = window.currentUserId !== null;
+        const logged_in = ClientConfig.get('currentUserId') !== null;
 
         if (logged_in || this.replyCount > 0) {
             const replies_link = document.createElement('a');
             replies_link.className = 'Button';
-            replies_link.href = window.siteURL + '/users/' + this.author.slug + '/' + this.postId;
+            replies_link.href = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
             replies_link.textContent = this.replyCount === 0 ? 'Reply' : 'Replies (' + this.replyCount + ')';
-            actions.appendChild(replies_link);
+            actions.appendWithSpace(replies_link);
         }
 
         if (logged_in) {
@@ -363,46 +329,140 @@ export class Post {
             like_button.className = 'Button LikeButton';
             like_button.dataset.liked = this.liked ? '1' : '0';
             like_button.textContent = (this.liked ? 'Unlike' : 'Like') + ' (' + this.likeCount + ')';
-            actions.appendChild(like_button);
+            actions.appendWithSpace(like_button);
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';
             bookmark_button.className = 'Button BookmarkButton';
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
             bookmark_button.textContent = this.bookmarked ? 'Bookmarked' : 'Bookmark';
-            actions.appendChild(bookmark_button);
+            actions.appendWithSpace(bookmark_button);
 
-            if (Number(this.userId) === Number(window.currentUserId)) {
+            if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
                 const edit_button = document.createElement('button');
                 edit_button.type = 'button';
                 edit_button.className = 'Button EditButton';
                 edit_button.textContent = 'Edit';
-                actions.appendChild(edit_button);
+                actions.appendWithSpace(edit_button);
 
                 const delete_button = document.createElement('button');
                 delete_button.type = 'button';
                 delete_button.className = 'Button DeleteButton';
                 delete_button.textContent = 'Delete';
-                actions.appendChild(delete_button);
+                actions.appendWithSpace(delete_button);
             } else if (Number(this.userId) !== 1) {
-                // The admin's posts can't be reported (the API rejects it -
-                // nobody could act on the report anyway).
                 const report_button = document.createElement('button');
                 report_button.type = 'button';
                 report_button.className = 'Button ReportButton';
                 report_button.dataset.targetType = 'post';
                 report_button.dataset.targetId = this.postId;
                 report_button.textContent = 'Report';
-                actions.appendChild(report_button);
+                actions.appendWithSpace(report_button);
             }
         }
 
-        meta.appendChild(actions);
+        meta.appendWithSpace(actions);
 
-        card.appendChild(meta);
+        card.appendWithSpace(meta);
 
         this.element = card;
 
+        EmojiRenderer.render(this.element);
+
+        const postBody = this.element.querySelector('.PostBody');
+        if (postBody && EmojiRenderer.isEmojiOnly(postBody)) {
+            this.element.classList.add('emoji-only');
+        }
+
         return card;
     }
+
+    static init() {
+        document.addEventListener('click', (event) => {
+            const likeBtn = event.target.closest('.LikeButton');
+            if (likeBtn) {
+                Post.#like(likeBtn);
+                return;
+            }
+
+            const bookmarkBtn = event.target.closest('.BookmarkButton');
+            if (bookmarkBtn) {
+                Post.#bookmark(bookmarkBtn);
+                return;
+            }
+
+            const deleteBtn = event.target.closest('.DeleteButton');
+            if (deleteBtn) {
+                Post.#delete(deleteBtn);
+                return;
+            }
+
+            const reportBtn = event.target.closest('.ReportButton');
+            if (reportBtn) {
+                Post.#report(reportBtn);
+            }
+        });
+    }
+
+    static async #like(button) {
+        const postData = button.closest('.Post').dataset;
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/like', { itemId: postData.postId });
+            if (!result) return;
+            button.dataset.liked = result.liked ? '1' : '0';
+            button.textContent = (result.liked ? 'Unlike' : 'Like') + (result.count > 0 ? ' (' + result.count + ')' : '');
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    static async #bookmark(button) {
+        const postData = button.closest('.Post').dataset;
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/bookmark', { itemId: postData.postId });
+            if (!result) return;
+            button.dataset.bookmarked = result.bookmarked ? '1' : '0';
+            button.textContent = result.bookmarked ? 'Bookmarked' : 'Bookmark';
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    static async #delete(button) {
+        if (!await Dialog.confirm('Delete this post?')) return;
+        const postData = button.closest('.Post').dataset;
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/delete', { itemId: postData.postId });
+            if (!result) return;
+            if (button.dataset.standalone === '1') {
+                window.location.href = ClientConfig.siteURL() + '/';
+            } else {
+                DOMUtils.slideOut(button.closest('.Post'));
+            }
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    static async #report(button) {
+        const reason = await Dialog.prompt('Why are you reporting this?', { confirmLabel: 'Report' });
+        if (reason === null) return;
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/report', {
+                targetType: button.dataset.targetType,
+                targetId: button.dataset.targetId,
+                reason
+            });
+            if (!result) return;
+            button.textContent = 'Reported';
+        } finally {
+            button.disabled = false;
+        }
+    }
 }
+
+ReadyHandler.add(Post.init);

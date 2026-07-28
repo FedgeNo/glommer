@@ -21,11 +21,6 @@ class HTMLObject extends DOMObject
 
     public function __construct(array|object|null $properties = null)
     {
-        // Derive the CSS class from the type first, then let DOMObject seed the
-        // data properties - its skip-list already refuses to overwrite the class
-        // just derived (or any other structural property).
-        $this -> deriveClassName();
-
         parent::__construct($properties);
     }
 
@@ -67,6 +62,7 @@ class HTMLObject extends DOMObject
 
     public function toDOM(): \DOMElement
     {
+        $this -> deriveClassName();
         $this -> markRendered();
 
         $element = self::$document -> createElement($this -> tagName);

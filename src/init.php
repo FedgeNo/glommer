@@ -61,6 +61,19 @@ session_set_cookie_params([
 ]);
 session_start();
 
+// Set the CSRF token as a readable cookie for JavaScript
+setcookie(
+    'CSRF-TOKEN',
+    CSRF::token(),
+    [
+        'expires'  => 0,              // session cookie
+        'path'     => '/',
+        'secure'   => true,           // omit if local dev without HTTPS
+        'httponly' => false,          // must be false for JS to read it
+        'samesite' => 'Strict'
+    ]
+);
+
 SecurityHeaders::send();
 
 try {

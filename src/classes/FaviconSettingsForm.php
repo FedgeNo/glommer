@@ -13,9 +13,6 @@ class FaviconSettingsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/admin/settings');
-        $this -> method = 'POST';
-        $this -> enctype = 'multipart/form-data';
 
         $fields = new Fieldset('Favicon');
 

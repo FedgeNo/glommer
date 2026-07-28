@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
-// Private list - unlike feed-history.php (which serves public feeds and only
+// Private list - unlike feed.php (which serves public feeds and only
 // gates the 'friends' feedType), every request here is the viewer's own data.
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();

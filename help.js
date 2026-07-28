@@ -1,3 +1,4 @@
+import { ClientConfig } from '/ClientConfig.js';
 import { csrf_headers } from '/utils.js';
 
 /**
@@ -17,12 +18,12 @@ export function help_article_summary_element(article) {
 
     const title = document.createElement('h3');
     title.textContent = article.title;
-    card.appendChild(title);
+    card.appendWithSpace(title);
 
     const summary = document.createElement('p');
     summary.className = 'muted';
     summary.textContent = article.summary;
-    card.appendChild(summary);
+    card.appendWithSpace(summary);
 
     return card;
 }
@@ -34,12 +35,12 @@ export function help_category_element(name, articles) {
 
     const heading = document.createElement('h2');
     heading.textContent = name;
-    section.appendChild(heading);
+    section.appendWithSpace(heading);
 
     const list = document.createElement('div');
     list.className = 'HelpArticleList';
-    articles.forEach((article) => list.appendChild(help_article_summary_element(article)));
-    section.appendChild(list);
+    articles.forEach((article) => list.appendWithSpace(help_article_summary_element(article)));
+    section.appendWithSpace(list);
 
     return section;
 }
@@ -53,18 +54,18 @@ function render_help_browse(results, articles) {
             current_category = article.category;
             const section = help_category_element(current_category, []);
             current_list = section.querySelector('.HelpArticleList');
-            results.appendChild(section);
+            results.appendWithSpace(section);
         }
 
-        current_list.appendChild(help_article_summary_element(article));
+        current_list.appendWithSpace(help_article_summary_element(article));
     });
 }
 
 function render_help_results(results, articles) {
     const list = document.createElement('div');
     list.className = 'HelpArticleList';
-    articles.forEach((article) => list.appendChild(help_article_summary_element(article)));
-    results.appendChild(list);
+    articles.forEach((article) => list.appendWithSpace(help_article_summary_element(article)));
+    results.appendWithSpace(list);
 }
 
 document.addEventListener('input', (event) => {
@@ -87,7 +88,7 @@ document.addEventListener('input', (event) => {
         let data;
 
         try {
-            const response = await fetch(window.siteURL + '/api/help-search', {
+            const response = await fetch(ClientConfig.siteURL() + '/api/help-search', {
                 method: 'POST',
                 headers: csrf_headers({ 'Content-Type': 'application/json' }),
                 body: JSON.stringify({ q: query }),
@@ -109,7 +110,7 @@ document.addEventListener('input', (event) => {
             const empty = document.createElement('p');
             empty.className = 'muted';
             empty.textContent = 'No help articles matched your search.';
-            results.appendChild(empty);
+            results.appendWithSpace(empty);
             return;
         }
 

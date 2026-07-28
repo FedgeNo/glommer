@@ -1,6 +1,7 @@
-import { csrf_headers, list_item } from '/utils.js';
+import { ClientConfig } from '/ClientConfig.js';
 import { Toast } from '/Toast.js';
 import { Notification } from '/Notification.js';
+import { csrf_headers, list_item } from '/utils.js';
 
 export class WebSocketManager {
     constructor() {
@@ -10,20 +11,33 @@ export class WebSocketManager {
         this.reconnectDelay = 10000;
         this.token = null;
         this.reconnecting = false;
+        // NO this.init() here – init is called explicitly from main.js
     }
 
     init() {
+        if (ClientConfig.get('currentUserId') === null) {
+            return;
+        }
+
         this.connect();
 
         const navLink = document.querySelector('.NotificationsNavLink');
-        if (navLink && window.currentUserId !== null) {
+        if (navLink && ClientConfig.get('currentUserId') !== null) {
             navLink.addEventListener('mouseenter', async () => {
                 const dot = navLink.querySelector('.NotificationDot');
                 if (!dot?.classList.contains('Active')) return;
 
                 dot.classList.remove('Active');
-                const result = await api_post('/api/mark-notifications-seen');
-                if (result === null) {
+
+                try {
+                    const response = await fetch(`${ClientConfig.siteURL()}/api/mark-notifications-seen`, {
+                        method: 'POST',
+                        headers: csrf_headers(),
+                    });
+                    if (!response.ok) {
+                        dot.classList.add('Active');
+                    }
+                } catch (error) {
                     dot.classList.add('Active');
                 }
             });
@@ -32,7 +46,7 @@ export class WebSocketManager {
 
     async connect() {
         try {
-            const response = await fetch(`${window.siteURL}/api/ws-token`, {
+            const response = await fetch(`${ClientConfig.siteURL()}/api/ws-token`, {
                 method: 'POST',
                 headers: csrf_headers(),
             });
@@ -47,12 +61,11 @@ export class WebSocketManager {
         }
 
         const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        this.socket = new WebSocket(`${scheme}://${window.location.hostname}:${window.WSPort}/?token=${encodeURIComponent(this.token)}`);
+        this.socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/?token=${encodeURIComponent(this.token)}`);
 
         this.socket.addEventListener('open', () => {
             this.reconnectAttempts = 0;
 
-            // If the admin status line is present, update it now
             const statusLine = document.querySelector('.WebSocketClientStatus');
             if (statusLine) {
                 this.showStatus(statusLine);
@@ -113,7 +126,7 @@ export class WebSocketManager {
                 existing[existing.length - 1].closest('li').remove();
             }
 
-            dropdownList.insertBefore(list_item(notification.toElement()), dropdownList.firstChild);
+            dropdownList.insertBeforeWithSpace(list_item(notification.toElement()), dropdownList.firstChild);
         }
 
         const pageList = Array.from(document.querySelectorAll('.NotificationList'))
@@ -121,7 +134,7 @@ export class WebSocketManager {
         if (pageList) {
             const placeholder = pageList.querySelector('.Notice');
             if (placeholder) placeholder.closest('li').remove();
-            pageList.insertBefore(list_item(notification.toElement()), pageList.firstChild);
+            pageList.insertBeforeWithSpace(list_item(notification.toElement()), pageList.firstChild);
         }
 
         document.querySelectorAll('.NotificationDot').forEach(dot => dot.classList.add('Active'));

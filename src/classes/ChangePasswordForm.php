@@ -8,8 +8,6 @@ class ChangePasswordForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/api/change-password');
-        $this -> method = 'POST';
 
         $fields = new Fieldset('Change your password');
 
@@ -19,10 +17,12 @@ class ChangePasswordForm extends Form
 
         $new_password = new InputField('newPassword', 'New password', 'password', 'At least 8 characters');
         $new_password -> labelVisible = true;
+        $new_password -> autocomplete = 'new-password';
         $fields -> addContent($new_password);
 
         $confirm_password = new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password');
         $confirm_password -> labelVisible = true;
+        $confirm_password -> autocomplete = 'new-password';
         $fields -> addContent($confirm_password);
 
         $this -> contents[] = $fields;

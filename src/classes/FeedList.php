@@ -13,7 +13,7 @@ abstract class FeedList extends ItemList
 {
     public ?string $class = 'FeedList d-flex flex-column';
 
-    /** Names this feed to main.js and api/feed-history.php. */
+    /** Names this feed to main.js and api/feed.php. */
     protected string $feedType = '';
 
     /**
@@ -21,6 +21,13 @@ abstract class FeedList extends ItemList
      */
     protected function dataAttributes(): array
     {
-        return ['data-feed-type' => $this -> feedType];
+        $this->attributes['data-infinite-scroll'] = json_encode([
+            'endpoint' => '/api/feed',
+            'itemType' => 'Post',
+            'feedType' => $this->feedType,
+        ]);
+
+        return [];
     }
 }
+

@@ -19,8 +19,6 @@ class MailSettingsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/admin/settings');
-        $this -> method = 'POST';
 
         $fields = new Fieldset('Outgoing mail');
 

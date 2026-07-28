@@ -35,12 +35,8 @@ class Page extends HTMLDocument
 
     public function toDOM(): \DOMElement
     {
-        if (!$this -> assembled) {
-            $this -> assembled = true;
-            $this -> assembleHead();
-            $this -> assembleBody();
-        }
-
+        $this -> assembleHead();
+        $this -> assembleBody();
         return parent::toDOM();
     }
 
@@ -57,26 +53,26 @@ class Page extends HTMLDocument
         );
         $url = self::currentURL();
 
-        $charset = new Meta();
+        $charset = new Meta;
         $charset -> charset = 'utf-8';
-        $this -> head -> addContent($charset);
+        $this -> addHeadContent($charset);
 
-        $viewport = new Meta();
+        $viewport = new Meta;
         $viewport -> name = 'viewport';
         $viewport -> content = 'width=device-width, initial-scale=1';
-        $this -> head -> addContent($viewport);
+        $this -> addHeadContent($viewport);
 
-        $title_element = new Title();
+        $title_element = new Title;
         $title_element -> contents[] = $full_title;
-        $this -> head -> addContent($title_element);
+        $this -> addHeadContent($title_element);
 
         $favicon = new Link();
         $favicon -> rel = 'icon';
         $favicon -> href = Favicon::URL();
-        $this -> head -> addContent($favicon);
+        $this -> addHeadContent($favicon);
 
         foreach (self::metaTags($full_title, $description, $this -> image, $url) as $meta) {
-            $this -> head -> addContent($meta);
+            $this -> addHeadContent($meta);
         }
 
         $json_ld = $this -> jsonLD ?? [
@@ -86,36 +82,36 @@ class Page extends HTMLDocument
             'url' => $url,
         ];
 
-        $json_ld_script = new Script();
+        $json_ld_script = new Script;
         $json_ld_script -> attributes['type'] = 'application/ld+json';
         $json_ld_script -> contents[] = self::safeJSONForScript($json_ld);
-        $this -> head -> addContent($json_ld_script);
+        $this -> addHeadContent($json_ld_script);
 
         // Metadata in spirit (an RSS alternate link), added by a page that has a
         // feed - sits right after the metadata block and before any stylesheet.
         if ($this -> rssLink !== null) {
-            $this -> head -> addContent($this -> rssLink);
+            $this -> addHeadContent($this -> rssLink);
         }
 
         // Base layer - loaded before style.css so local rules win the cascade.
-        $bootstrap = new Link();
+        $bootstrap = new Link;
         $bootstrap -> rel = 'stylesheet';
         $bootstrap -> href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
-        $this -> head -> addContent($bootstrap);
+        $this -> addHeadContent($bootstrap);
 
         if ($this -> needsEditor) {
-            $this -> head -> addContent(QuillAssets::CSSLink());
+            $this -> addHeadContent(QuillAssets::CSSLink());
         }
 
         $inter_font = new Link();
         $inter_font -> rel = 'stylesheet';
         $inter_font -> href = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap';
-        $this -> head -> addContent($inter_font);
+        $this -> addHeadContent($inter_font);
 
         $stylesheet = new Link();
         $stylesheet -> rel = 'stylesheet';
         $stylesheet -> href = ServerURL::absolute('/style.css');
-        $this -> head -> addContent($stylesheet);
+        $this -> addHeadContent($stylesheet);
 
         // KaTeX's CSS and core JS load before Quill's JS: Quill's formula module
         // reads window.katex at construction, so the editor's formula button
@@ -123,20 +119,20 @@ class Page extends HTMLDocument
         // The auto-render pass (typed/pasted delimiters) is only needed where
         // posted math is actually shown, so it stays gated on needsMath alone.
         if ($this -> needsMath || $this -> needsEditor) {
-            $this -> head -> addContent(KaTeXAssets::CSSLink());
-            $this -> head -> addContent(KaTeXAssets::JSScript());
+            $this -> addHeadContent(KaTeXAssets::CSSLink());
+            $this -> addHeadContent(KaTeXAssets::JSScript());
         }
 
         if ($this -> needsEditor) {
-            $this -> head -> addContent(QuillAssets::JSScript());
+            $this -> addHeadContent(QuillAssets::JSScript());
         }
 
         if ($this -> needsMath) {
-            $this -> head -> addContent(KaTeXAssets::autoRenderScript());
+            $this -> addHeadContent(KaTeXAssets::autoRenderScript());
         }
 
         if ($this -> needsEmoji) {
-            $this -> head -> addContent(EmojiPickerAssets::initScript());
+            $this -> addHeadContent(EmojiPickerAssets::initScript());
         }
     }
 
@@ -150,28 +146,14 @@ class Page extends HTMLDocument
 
         $current_user = Auth::user();
 
-        $chrome[] = new JSGlobals([
-            'currentUserId'       => $current_user ?-> userId,
-            'currentUserUsername' => $current_user ?-> slug,
-            'currentUserSkinTone' => $current_user ?-> skinTone,
-            'currentUserCanModerate' => Auth::canModerate(),
-            'CSRFToken'           => CSRF::token(),
-            'siteURL'             => ServerURL::absolute(''),
-            'serverTime'          => time() * 1000,
-            'WSPort'              => Config::get('WSPort'),
-            'carouselEagerItems'  => Carousel::INITIAL_EAGER_ITEMS,
-            'needsMath'           => $this -> needsMath,   // ← add this line
-        ]);
-        $chrome[] = $globals;
-
         // Module entry point – imports all converted modules and starts the app
         $main_module = new ModuleScript();
-        $main_module -> src = ServerURL::absolute('/new-main.js');
+        $main_module -> src = ServerURL::absolute('/main.js');
         $chrome[] = $main_module;
 
         array_splice($this -> body -> contents, 0, 0, $chrome);
 
-        $this -> addContent(new ScrollToTopButton());
+        $this -> addContent(new ScrollToTopButton);
     }
 
     public static function safeJSONForScript(mixed $data): string
@@ -217,7 +199,7 @@ class Page extends HTMLDocument
     {
         $tags = [];
 
-        $description_tag = new Meta();
+        $description_tag = new Meta;
         $description_tag -> name = 'description';
         $description_tag -> content = $description;
         $tags[] = $description_tag;
@@ -234,7 +216,7 @@ class Page extends HTMLDocument
         }
 
         foreach ($og_pairs as $property => $content) {
-            $tag = new Meta();
+            $tag = new Meta;
             $tag -> property = $property;
             $tag -> content = $content;
             $tags[] = $tag;
@@ -251,12 +233,26 @@ class Page extends HTMLDocument
         }
 
         foreach ($twitter_pairs as $name => $content) {
-            $tag = new Meta();
+            $tag = new Meta;
             $tag -> name = $name;
             $tag -> content = $content;
             $tags[] = $tag;
         }
 
+        $rta = new Meta;
+        $rta -> name = 'RATING';
+        $rta -> content = 'RTA-5042-1996-1400-1577-RTA';
+        $tags[] = $rta;
+
         return $tags;
+    }
+
+    public function send(): void
+    {
+        ClientConfig::send([
+            'needsMath' => $this->needsMath,
+        ]);
+
+        parent::send();
     }
 }

@@ -1,8 +1,8 @@
+import { ClientConfig } from '/ClientConfig.js';
+
 export class CarouselController {
-    // ---------- static configuration ----------
     static AUTOPLAY_IMAGE_DELAY = 3000;
 
-    // ---------- constructor ----------
     constructor() {
         this._autoplayMap = new WeakMap();
         this._fullscreenState = null;
@@ -21,16 +21,12 @@ export class CarouselController {
             { rootMargin: '50% 0px' }
         );
 
-        // Bind handlers
         this._onClick = this._onClick.bind(this);
         this._onMediaPlay = this._onMediaPlay.bind(this);
         this._onMediaPause = this._onMediaPause.bind(this);
         this._onMediaEnded = this._onMediaEnded.bind(this);
     }
 
-    // ---------- public API ----------
-
-    /** Attach all global event listeners. Call once on page load. */
     init() {
         document.addEventListener('click', this._onClick);
         document.addEventListener('play', this._onMediaPlay, true);
@@ -58,8 +54,6 @@ export class CarouselController {
             }).observe(document.body, { childList: true, subtree: true });
         });
     }
-
-    // ---------- slide loading & advancing ----------
 
     _loadSlide(slide) {
         if (!slide) return;
@@ -95,15 +89,13 @@ export class CarouselController {
 
         this._loadSlide(slides[nextIndex]);
 
-        for (let i = nextIndex + 1; i <= nextIndex + window.carouselEagerItems && i < slides.length; i++) {
+        for (let i = nextIndex + 1; i <= nextIndex + ClientConfig.get('carouselEagerItems') && i < slides.length; i++) {
             this._loadSlide(slides[i]);
         }
 
         const counter = carousel.querySelector('.CarouselCounter');
         if (counter) counter.textContent = (nextIndex + 1) + ' / ' + slides.length;
     }
-
-    // ---------- autoplay ----------
 
     _scheduleAutoplayAdvance(carousel) {
         if (!this._autoplayMap.has(carousel)) return;
@@ -143,8 +135,6 @@ export class CarouselController {
         if (toggle) toggle.textContent = 'Autoplay';
     }
 
-    // ---------- fullscreen ----------
-
     _enterFullscreen(container) {
         if (this._fullscreenState) return;
 
@@ -153,8 +143,8 @@ export class CarouselController {
 
         const overlay = document.createElement('div');
         overlay.className = 'MediaFullscreenOverlay';
-        document.body.appendChild(overlay);
-        overlay.appendChild(container);
+        document.body.appendWithSpace(overlay);
+        overlay.appendWithSpace(container);
         container.classList.add('InFullscreen');
 
         container.querySelectorAll('img[data-full-src]').forEach(img => {
@@ -194,8 +184,6 @@ export class CarouselController {
         this._fullscreenState = null;
     }
 
-    // ---------- off‑screen playback ----------
-
     _observeOffScreen(root) {
         if (root.matches?.('video, audio, .Carousel')) {
             this._offScreenObserver.observe(root);
@@ -213,8 +201,6 @@ export class CarouselController {
             this._offScreenObserver.unobserve(el)
         );
     }
-
-    // ---------- delegated click handler ----------
 
     _onClick(event) {
         const prevNext = event.target.closest('.CarouselPrev, .CarouselNext');
@@ -254,8 +240,6 @@ export class CarouselController {
         }
     }
 
-    // ---------- media event handlers (capture phase) ----------
-
     _onMediaPlay(event) {
         const media = event.target.closest('.Carousel video, .Carousel audio');
         if (!media) return;
@@ -282,3 +266,4 @@ export class CarouselController {
         this._scheduleAutoplayAdvance(carousel);
     }
 }
+

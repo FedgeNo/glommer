@@ -24,8 +24,6 @@ class TwoFactorSettingsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> action = ServerURL::absolute('/api/two-factor');
-        $this -> method = 'POST';
         $this -> attributes['data-enabled'] = $this -> enabled ? '1' : '0';
 
         $legend = $this -> enabled ? 'Two-factor authentication is on' : 'Two-factor authentication is off';

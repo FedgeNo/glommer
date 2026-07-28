@@ -30,15 +30,12 @@ export class ChangePasswordForm {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    const error = document.createElement('p');
-                    error.className = 'Error';
-                    error.textContent = data.error;
-                    form.insertBeforeWithSpace(error, submit_button);
+                    Toast.show(data.error);
                     return;
                 }
 
                 form.reset();
-                submit_button.textContent = 'Changed!';
+                Toast.show('Password changed!');
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {

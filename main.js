@@ -7,10 +7,6 @@ import { EmojiRenderer } from '/EmojiRenderer.js';
 import { ClientConfig } from '/ClientConfig.js';
 import '/dom.js';
 
-if (ClientConfig.get('currentUserId') !== null) {
-    document.documentElement.classList.add('is-authenticated');
-}
-
 ReadyHandler.add(RelativeTime.init);
 ReadyHandler.add(ScrollToTop.init);
 ReadyHandler.add(EmojiRenderer.init);

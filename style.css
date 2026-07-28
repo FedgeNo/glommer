@@ -1787,22 +1787,23 @@ input[type='file']::file-selector-button {
 
 /* ---------- Notifications ---------- */
 
-.Notification {
+.Notification > div,
+.Notification a {
     padding: 0.5rem;
-    border-radius: var(--radius-ctl);
-    transition: background-color 0.15s ease;
-}
-
-.Notification:hover {
-    background-color: var(--surface-2);
 }
 
 .Notification a {
+    border-radius: var(--radius-ctl);
     color: var(--ink);
+    transition: background-color 0.15s ease;
 }
 
 .Notification a:hover {
     color: var(--ink);
+}
+
+.Notification > a:hover {
+    background-color: var(--surface-2);
 }
 
 /* ---------- Carousel ---------- */

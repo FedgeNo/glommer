@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 abstract class SiteInfoSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 InfoSettingsForm';
+    public ?string $class = 'Card d-flex flex-column gap-2 SiteInfoSettingsForm';
     public ?string $description = 'Plain text - blank lines separate paragraphs.';
 
     /** The POST field / Settings name this form edits. */

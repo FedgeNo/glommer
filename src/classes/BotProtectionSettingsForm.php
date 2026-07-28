@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 class BotProtectionSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 AdminSettingsForm';
+    public ?string $class = 'Card d-flex flex-column gap-2 BotProtectionSettingsForm';
 
     public function toDOM(): \DOMElement
     {

@@ -103,12 +103,12 @@ class Page extends HTMLDocument
             $this -> addHeadContent(QuillAssets::CSSLink());
         }
 
-        $inter_font = new Link();
+        $inter_font = new Link;
         $inter_font -> rel = 'stylesheet';
         $inter_font -> href = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap';
         $this -> addHeadContent($inter_font);
 
-        $stylesheet = new Link();
+        $stylesheet = new Link;
         $stylesheet -> rel = 'stylesheet';
         $stylesheet -> href = ServerURL::absolute('/style.css');
         $this -> addHeadContent($stylesheet);
@@ -141,19 +141,16 @@ class Page extends HTMLDocument
 
         $chrome = [];
 
-        $chrome[] = new MainNavigation();
+        $chrome[] = new MainNavigation;
         $chrome[] = new PageTitle((string) $this -> title);
-
-        $current_user = Auth::user();
-
-        // Module entry point – imports all converted modules and starts the app
-        $main_module = new ModuleScript();
-        $main_module -> src = ServerURL::absolute('/main.js');
-        $chrome[] = $main_module;
 
         array_splice($this -> body -> contents, 0, 0, $chrome);
 
         $this -> addContent(new ScrollToTopButton);
+
+        $main_module = new ModuleScript;
+        $main_module -> src = ServerURL::absolute('/main.js');
+        $this -> addContent($main_module);
     }
 
     public static function safeJSONForScript(mixed $data): string

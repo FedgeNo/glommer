@@ -4,19 +4,17 @@ import { ScrollToTop } from '/ScrollToTop.js';
 import { WebSocketManager } from '/WebSocketManager.js';
 import { CarouselController } from '/CarouselController.js';
 import { EmojiRenderer } from '/EmojiRenderer.js';
-import { ClientConfig } from '/ClientConfig.js';   // ← was missing
+import { ClientConfig } from '/ClientConfig.js';
 import '/dom.js';
 
 if (ClientConfig.get('currentUserId') !== null) {
     document.documentElement.classList.add('is-authenticated');
 }
 
-// Essential services that always run
 ReadyHandler.add(RelativeTime.init);
 ReadyHandler.add(ScrollToTop.init);
 ReadyHandler.add(EmojiRenderer.init);
 
-// Conditional dynamic imports – each file self‑registers via ReadyHandler.add at its bottom
 if (document.querySelector('.User, .UserList')) {
     import('/User.js');
     import('/OtherUser.js');
@@ -31,7 +29,6 @@ if (document.querySelector('.NotificationList'))  import('/Notification.js');
 if (document.querySelector('.ReportList'))        import('/ReportCard.js');
 if (document.querySelector('.TrendingEntityChip')) import('/TrendingEntity.js');
 
-// Only load the composer (and its heavy dependency Quill) when a user is signed in
 if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get('currentUserId') !== null) {
     import('/Composer.js');
 }
@@ -41,7 +38,6 @@ if (document.querySelector('.SearchInput'))       import('/Search.js');
 if (document.querySelector('.MessageComposer'))   import('/MessageComposer.js');
 if (document.querySelector('.PostBody'))          import('/math.js');
 
-// Form handlers – each loads only when its specific form is present
 if (document.querySelector('.LoginForm'))              import('/LoginForm.js');
 if (document.querySelector('.LogoutForm'))             import('/LogoutForm.js');
 if (document.querySelector('.SignupForm'))             import('/SignupForm.js');
@@ -61,12 +57,9 @@ if (document.querySelector('.AvatarUploadForm'))       import('/AvatarUploadForm
 if (document.querySelector('.FaviconSettingsForm'))    import('/FaviconSettingsForm.js');
 if (document.querySelector('.ThemeSelect'))            import('/ThemeSelect.js');
 if (document.querySelector('.SignupForm'))             import('/UsernameValidation.js');
-
-// Optional modules
 if (document.querySelector('.HashtagGraphList'))       import('/HashtagGraphList.js');
 if (document.querySelector('.HelpSearchInput'))        import('/help.js');
 
-// Thumbnail fallback
 document.addEventListener('error', function(event) {
     const img = event.target;
     if (img instanceof HTMLImageElement && img.dataset.fullSrc && img.src !== img.dataset.fullSrc) {
@@ -75,7 +68,6 @@ document.addEventListener('error', function(event) {
     }
 }, true);
 
-// WebSocket & Carousel – initialised explicitly
 const wsManager = new WebSocketManager();
 wsManager.init();
 const statusLine = document.querySelector('.WebSocketClientStatus');

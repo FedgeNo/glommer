@@ -1,4 +1,5 @@
 import { ClientConfig } from '/ClientConfig.js';
+import { ReadyHandler } from '/ReadyHandler.js';
 
 const MATH_COALESCE_SKIP = 'pre, code, .PostFormula, .katex';
 
@@ -169,3 +170,6 @@ export class MathRenderer {
         }
     }
 }
+
+ReadyHandler.add(MathRenderer.init);
+

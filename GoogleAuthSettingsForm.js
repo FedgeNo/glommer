@@ -1,4 +1,3 @@
-// GoogleAuthSettingsForm.js
 import { Api } from '/Api.js';
 import { Toast } from '/Toast.js';
 import { ReadyHandler } from '/ReadyHandler.js';

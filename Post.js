@@ -9,6 +9,7 @@ import { DOMUtils } from '/DOMUtils.js';
 import { EmojiRenderer } from '/EmojiRenderer.js';
 import { InfiniteScroller } from '/InfiniteScroller.js';
 import { ReadyHandler } from '/ReadyHandler.js';
+import { enhanceCodeBlocks } from '/CodeBlockCopy.js';
 
 export class Post {
     postId = null;
@@ -374,6 +375,8 @@ export class Post {
             this.element.classList.add('emoji-only');
         }
 
+        enhanceCodeBlocks(card);
+
         return card;
     }
 
@@ -402,6 +405,12 @@ export class Post {
                 Post.#report(reportBtn);
             }
         });
+        
+        Post.enhanceExisting();
+    }
+    
+    static enhanceExisting() {
+       document.querySelectorAll('.Post').forEach(card => enhanceCodeBlocks(card));
     }
 
     static async #like(button) {

@@ -1,0 +1,108 @@
+/* ============================================================
+   Glommer visual system – mobile navigation
+   Hamburger menu and mobile overrides.
+   ============================================================ */
+
+.NavToggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.NavHamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    width: 2.25rem;
+    cursor: pointer;
+}
+
+.NavHamburgerBar {
+    width: 1.35rem;
+    height: 2px;
+    border-radius: 999px;
+    background-color: var(--ink);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(1) {
+    transform: translateY(0.4rem) rotate(45deg);
+}
+
+.NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(2) {
+    opacity: 0;
+}
+
+.NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(3) {
+    transform: translateY(-0.4rem) rotate(-45deg);
+}
+
+@media (max-width: 48rem) {
+    .NavHamburger {
+        display: flex;
+        position: fixed;
+        top: 0;
+        right: 1rem;
+        height: var(--nav-height);
+        z-index: 30;
+    }
+
+    .MainNavigation {
+        display: block !important;
+        height: var(--nav-height);
+        overflow: hidden;
+        padding-block: 0;
+    }
+
+    .MainNavigation:has(.NavToggle:checked) {
+        height: auto;
+        max-height: 100dvh;
+        overflow-y: auto;
+        padding-bottom: 0.4rem;
+    }
+
+    .MainNavigation .NavDropdown,
+    .MainNavigation .NavDropdownMenu,
+    .MainNavigation .NavAccount,
+    .MainNavigation .NotificationsNavLink,
+    .MainNavigation .LogoutForm,
+    .MainNavigation > .d-flex {
+        display: contents !important;
+    }
+
+    .MainNavigation a,
+    .MainNavigation .LogoutButton {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0.5rem 0.85rem !important;
+        border: none !important;
+        border-radius: 0.625rem !important;
+        background: none !important;
+        opacity: 1 !important;
+        color: var(--ink) !important;
+        font-weight: 500;
+        font-size: 1rem;
+        text-align: left;
+    }
+
+    .MainNavigation a:hover,
+    .MainNavigation .LogoutButton:hover {
+        background-color: var(--surface-2) !important;
+    }
+
+    .MainNavigation .NavBrand {
+        display: flex;
+        align-items: center;
+        min-height: var(--nav-height);
+    }
+
+    .NotificationDropdown {
+        display: none !important;
+    }
+}
+

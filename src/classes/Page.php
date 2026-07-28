@@ -108,10 +108,12 @@ class Page extends HTMLDocument
         $inter_font -> href = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap';
         $this -> addHeadContent($inter_font);
 
-        $stylesheet = new Link;
-        $stylesheet -> rel = 'stylesheet';
-        $stylesheet -> href = ServerURL::absolute('/style.css');
-        $this -> addHeadContent($stylesheet);
+        foreach (['themes', 'base', 'utilities', 'components', 'layout', 'mobile'] as $sheet) {
+            $stylesheet = new Link;
+            $stylesheet -> rel = 'stylesheet';
+            $stylesheet -> href = ServerURL::absolute('/styles/' . $sheet . '.css');
+            $this -> addHeadContent($stylesheet);
+        }
 
         // KaTeX's CSS and core JS load before Quill's JS: Quill's formula module
         // reads window.katex at construction, so the editor's formula button

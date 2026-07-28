@@ -1,0 +1,288 @@
+/* ============================================================
+   Glommer visual system – layout
+   Page shell: nav, page title, dropdowns, scroll-to-top,
+   body padding, search‑page toggles.
+   ============================================================ */
+
+body:has(.MainNavigation) {
+    padding-top: calc(var(--nav-height) + var(--page-title-height) + 1rem + 4px);
+}
+
+.PageBody {
+    padding: 1rem;
+    padding-inline: var(--content-padding-inline);
+}
+
+/* ---------- Fixed header: nav bar + page title ---------- */
+
+.MainNavigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    background-color: var(--glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 0.625rem 1rem;
+    padding-inline: var(--content-padding-inline);
+    z-index: 20;
+    align-items: center;
+}
+
+.NavBrand {
+    font-family: var(--display-font);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.3;
+    align-self: center;
+}
+
+.NavBrand::after {
+    content: '';
+    display: inline-block;
+    width: 0.42em;
+    height: 0.42em;
+    margin-left: 0.14em;
+    border-radius: 50% 50% 50% 18%;
+    background-color: var(--accent);
+    transition: background-color 0.15s ease;
+}
+
+.NavBrand:hover { color: var(--ink); }
+.NavBrand:hover::after { background-color: var(--accent-strong); }
+
+.MainNavigation a {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.MainNavigation > div { align-items: center; }
+
+.MainNavigation > div > a,
+.MainNavigation a.NavDropdownTrigger,
+.NotificationsNavLink > a {
+    position: relative;
+    z-index: 21;
+    color: var(--muted);
+    padding: 0.5rem;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: var(--radius-ctl) var(--radius-ctl) 0 0;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.MainNavigation > div > a:hover,
+.MainNavigation a.NavDropdownTrigger:hover,
+.NotificationsNavLink > a:hover,
+.NavDropdown:hover .NavDropdownTrigger,
+.NotificationsNavLink:hover > a {
+    color: var(--ink);
+    background-color: var(--surface);
+    border-color: var(--hairline);
+}
+
+.MainNavigation .NavAccount > a {
+    border-bottom: 1px solid transparent;
+    border-radius: 999px;
+}
+
+.PageTitle {
+    position: fixed;
+    top: var(--nav-height);
+    height: var(--nav-height);
+    left: 0;
+    right: 0;
+    margin: 0;
+    line-height: 3rem;
+    background-color: var(--glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
+    padding-inline: var(--content-padding-inline);
+    z-index: 10;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---------- Dropdown menus ---------- */
+
+.NavDropdown { position: relative; }
+.NavDropdownTrigger { cursor: pointer; }
+
+.NavAccountLabel {
+    display: inline-block;
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+
+.NavDropdownMenu {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 11rem;
+    z-index: 20;
+    padding: 0.5rem;
+    border-radius: var(--radius-card);
+    border-top-left-radius: 0;
+    box-shadow: var(--shadow-pop);
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+    transform-origin: top left;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.NavDropdown:hover .NavDropdownMenu,
+.NavDropdown:focus-within .NavDropdownMenu {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.NavAccount .NavDropdownMenu {
+    left: auto;
+    right: 0;
+    min-width: calc(100% + var(--radius-card));
+    border-top-left-radius: var(--radius-card);
+    border-top-right-radius: 0;
+    transform-origin: top right;
+}
+
+.NotificationsNavLink {
+    position: relative;
+}
+
+.NotificationDot {
+    display: none;
+    position: absolute;
+    top: 0.3rem;
+    right: -0.15rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--danger);
+    pointer-events: none;
+}
+
+.NotificationDot.Active { display: block; }
+
+.NotificationDropdown {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 21rem;
+    max-width: calc(100vw - 2rem);
+    z-index: 20;
+    border-radius: var(--radius-card);
+    border-top-left-radius: 0;
+    box-shadow: var(--shadow-pop);
+    opacity: 0;
+    padding: 0.5rem;
+    transform: translateY(-0.25rem) scale(0.98);
+    transform-origin: top left;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.NotificationsNavLink:hover .NotificationDropdown,
+.NotificationsNavLink:focus-within .NotificationDropdown {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.NavDropdownMenu a,
+.NotificationDropdown > a {
+    display: block;
+    padding: 0.5rem;
+    border-radius: 0.625rem;
+    color: var(--ink);
+    font-weight: 500;
+}
+
+.NavDropdownMenu {
+    top: calc(100% + 3px);
+}
+
+.NotificationDropdown {
+    top: calc(100% + 3px);
+}
+
+.NotificationDropdown > a {
+    text-align: center;
+    color: var(--accent);
+}
+
+.NavDropdownMenu a:hover,
+.NotificationDropdown > a:hover {
+    background-color: var(--surface-2);
+    color: var(--ink);
+}
+
+.NavDropdownMenu .LogoutForm { margin: 0; }
+
+.NavDropdownMenu .LogoutButton {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.625rem;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.NavDropdownMenu .LogoutButton:hover {
+    background-color: var(--surface-2);
+    color: var(--ink);
+}
+
+/* ---------- Scroll-to-top ---------- */
+
+.ScrollToTopButton {
+    display: none;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 20;
+    padding: 0.5rem 0.5rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-card);
+    color: var(--ink);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.ScrollToTopButton.Scrolled { display: block; }
+
+/* ---------- Search page visibility toggles ---------- */
+
+.SearchFeedSection { display: none; }
+.SearchFeedSection.Searching { display: block; }
+
+.ProfileFeedSection.Searching { display: none; }
+
+.FriendSearchSection { display: none; }
+.FriendSearchSection.Searching { display: block; }
+
+.PendingFriendRequestSection.Searching,
+.FriendSection.Searching,
+.OutgoingFriendRequestSection.Searching { display: none; }
+

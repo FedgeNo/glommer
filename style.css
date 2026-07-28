@@ -352,6 +352,34 @@ a:hover {
     color: var(--accent);
 }
 
+/* Code copy button */
+.CodeBlockWrapper {
+  position: relative;
+}
+
+.CodeCopyButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--color-bg-secondary, #f0f0f0);
+  border: 1px solid var(--color-border, #ccc);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.CodeBlockWrapper:hover .CodeCopyButton {
+  opacity: 1;
+}
+
+.CodeCopyButton.copied {
+  background: var(--color-success, #d4edda);
+  border-color: var(--color-success-border, #c3e6cb);
+}
+
 .PostBody a,
 .LoginPrompt a,
 .UserBio a,

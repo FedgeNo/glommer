@@ -1338,6 +1338,11 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 .MapPopup a { font-weight: 600; }
 
+/* Revealed by PostMap.js once a point is picked. !important because the
+   composer carries Bootstrap's d-flex, which is itself !important. */
+.MapComposer { display: none !important; }
+.MapComposer.Active { display: flex !important; }
+
 .LocationButton.Active {
     background-color: var(--accent-soft);
     color: var(--accent) !important;

@@ -55,6 +55,14 @@ export class Composer {
         return Composer.#instances.get(form) || null;
     }
 
+    /**
+     * Attach coordinates chosen somewhere other than the location button - the
+     * map page picks a point by click. Pass nulls to clear it again.
+     */
+    setLocation(latitude, longitude) {
+        this.#setLocation(latitude, longitude);
+    }
+
     constructor(form) {
         this.#form = form;
         this.editorContainer = form.querySelector('.QuillEditor');
@@ -437,6 +445,11 @@ export class Composer {
     }
 
     #onSubmitSuccess(data) {
+        // Read before reset() blanks the hidden inputs - the map listens for
+        // this to drop a permanent pin where the post just landed.
+        const latitude = this.latitudeInput ? this.latitudeInput.value : '';
+        const longitude = this.longitudeInput ? this.longitudeInput.value : '';
+
         this.#form.reset();
         this.#quill.setText('');
         this.#syncFields();
@@ -448,6 +461,11 @@ export class Composer {
             this.linkImageThumb.src = '';
         }
         if (this.linkInput) delete this.linkInput._lastFetchedUrl;
+
+        this.#form.dispatchEvent(new CustomEvent('composer:posted', {
+            bubbles: true,
+            detail: { post: data.response, latitude, longitude },
+        }));
 
         if (data.response.processing) {
             Toast.show("Your media files are processing and you will be notified when they're ready to view. It's safe to leave this page.");

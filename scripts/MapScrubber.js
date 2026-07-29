@@ -25,6 +25,7 @@ export class MapScrubber {
     #last = 0;
     #mode = 'cumulative';
     #timer = null;
+    #bound = false;
 
     constructor(element, onChange) {
         this.#element = element;
@@ -43,9 +44,18 @@ export class MapScrubber {
             .map((post) => ({ post, time: parse_server_date(post.createdAt)?.getTime() }))
             .filter((entry) => Number.isFinite(entry.time));
 
+        this.#activate();
+    }
+
+    /**
+     * Shows the control once there's a span worth scrubbing, and recomputes the
+     * bounds from whatever posts are known. Safe to call again as posts arrive;
+     * the listeners are only bound the first time.
+     */
+    #activate() {
+        // A single post spans no time. Stay hidden rather than offering a
+        // slider that can only ever mean one thing.
         if (this.#posts.length < 2) {
-            // One post has no span to scrub through; leave the control hidden
-            // and the map showing everything.
             return;
         }
 
@@ -56,9 +66,33 @@ export class MapScrubber {
         this.#element.querySelector('.MapScrubberFirst').textContent = MapScrubber.#formatDate(this.#first);
         this.#element.querySelector('.MapScrubberLast').textContent = MapScrubber.#formatDate(this.#last);
 
-        this.#bind();
+        if (!this.#bound) {
+            this.#bind();
+            this.#bound = true;
+        }
+
         this.#element.classList.add('Active');
         this.#apply();
+    }
+
+    /**
+     * Takes a post made after the initial load. Extends the span to reach it
+     * rather than leaving it outside the slider's range, where cumulative mode
+     * would hide a post the viewer just made.
+     */
+    add(post) {
+        const time = parse_server_date(post.createdAt)?.getTime();
+
+        if (!Number.isFinite(time)) {
+            return;
+        }
+
+        this.#posts.push({ post, time });
+
+        // Recomputes from every known post rather than folding into the current
+        // bounds, which would drag the span back to the epoch if the control
+        // had never started and its bounds were still zero.
+        this.#activate();
     }
 
     #bind() {

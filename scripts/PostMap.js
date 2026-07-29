@@ -20,6 +20,13 @@ import { Coordinates } from '/scripts/Coordinates.js';
 export class PostMap {
     static #pendingMarker = null;
 
+    // Shared so a post made on this page can be added to the map properly -
+    // into the same cluster, with the same popup, and known to the time
+    // control - rather than as a loose pin that ignores all three.
+    static #cluster = null;
+    static #markers = new Map();
+    static #scrubber = null;
+
     static init() {
         const container = document.querySelector('.PostMap');
 
@@ -91,17 +98,37 @@ export class PostMap {
             PostMap.#placePending(Composer, map, form, latitude, longitude);
         });
 
-        // A successful post clears the pending pin and leaves a permanent one
-        // where it landed, so the map reflects the new post without a reload.
+        // A successful post clears the pending pin and leaves a real one where
+        // it landed, so the map reflects the new post without a reload.
         form.addEventListener('composer:posted', (event) => {
-            const { latitude, longitude } = event.detail;
+            const { post, latitude, longitude } = event.detail;
 
             PostMap.#clearPending(map);
             form.classList.remove('Active');
 
-            if (latitude !== '' && longitude !== '') {
-                L.marker([Number(latitude), Number(longitude)]).addTo(map);
+            if (latitude === '' || longitude === '') {
+                return;
             }
+
+            // A post carrying media isn't published yet - the upload worker
+            // finishes and publishes it - so there's no post to pin. It shows
+            // up on the next load, once it actually exists.
+            if (post.processing) {
+                return;
+            }
+
+            PostMap.addPost({
+                postId: post.postId,
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+                title: post.title,
+                createdAt: post.createdAt,
+                authorName: post.author?.title || post.author?.slug || '',
+                // The create-post payload has no 'url' - seeMoreURL is the same
+                // permalink map-posts builds, so the popup links the same place
+                // whether the pin arrived from the endpoint or was just made.
+                url: post.seeMoreURL,
+            });
         });
     }
 
@@ -233,11 +260,32 @@ export class PostMap {
         cluster.addLayers([...markers.values()]);
         map.addLayer(cluster);
 
+        PostMap.#cluster = cluster;
+        PostMap.#markers = markers;
+
         if (fitToPins && posts.length > 0) {
             map.fitBounds(cluster.getBounds(), { padding: [40, 40], maxZoom: 12 });
         }
 
         PostMap.#bindScrubber(posts, cluster, markers);
+    }
+
+    /**
+     * Puts a just-made post on the map the same way a fetched one arrives: in
+     * the cluster, with a popup, and handed to the time control so scrubbing
+     * treats it like any other post rather than leaving it stuck on screen.
+     */
+    static addPost(post) {
+        if (PostMap.#cluster === null) {
+            return;
+        }
+
+        const marker = L.marker([post.latitude, post.longitude]);
+        marker.bindPopup(PostMap.#popupElement(post));
+
+        PostMap.#markers.set(post, marker);
+        PostMap.#cluster.addLayers([marker]);
+        PostMap.#scrubber?.add(post);
     }
 
     /**
@@ -254,7 +302,7 @@ export class PostMap {
 
         const { MapScrubber } = await import('/scripts/MapScrubber.js');
 
-        new MapScrubber(element, (visible) => {
+        PostMap.#scrubber = new MapScrubber(element, (visible) => {
             const shown = new Set(visible.map((post) => markers.get(post)));
             const toRemove = [];
             const toAdd = [];
@@ -276,7 +324,9 @@ export class PostMap {
             if (toAdd.length > 0) {
                 cluster.addLayers(toAdd);
             }
-        }).start(posts);
+        });
+
+        PostMap.#scrubber.start(posts);
     }
 
     static #popupElement(post) {

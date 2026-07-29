@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class TextareaField extends HTMLObject
+class TextareaField extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'TextareaField';
     public string $name;
     public string $label;

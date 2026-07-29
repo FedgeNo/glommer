@@ -8,9 +8,8 @@ declare(strict_types=1);
  * button's containing <form> and insert into whichever text input it finds
  * there (the Quill .QuillEditor or a textarea) - this class just renders the UI.
  */
-class EmojiPickerButton extends HTMLObject
+class EmojiPickerButton extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'EmojiPickerButton';
 
     public function toDOM(): \DOMElement

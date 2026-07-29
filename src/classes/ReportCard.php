@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class ReportCard extends HTMLObject
+class ReportCard extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'Card ReportCard d-flex gap-3 align-items-start';
 
     public ?int $reportId = null;

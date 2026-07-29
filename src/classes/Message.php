@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Message extends HTMLObject implements \JsonSerializable
+class Message extends Div implements \JsonSerializable
 {
     // How many messages one side of a conversation can send in a row before
     // the other person has replied. Resets to 0 the moment the recipient
@@ -10,7 +10,6 @@ class Message extends HTMLObject implements \JsonSerializable
     // one-sided flood.
     public const MAX_UNANSWERED = 20;
 
-    public string $tagName = 'div';
     public ?string $class = 'Message Card';
 
     public ?int $messageId = null;

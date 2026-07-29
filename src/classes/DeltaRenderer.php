@@ -16,9 +16,8 @@ declare(strict_types=1);
  * plain text. External links open in a new tab; internal/hashtag links open in
  * place.
  */
-class DeltaRenderer extends HTMLObject
+class DeltaRenderer extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'PostBody';
 
     public const ALLOWED_LINK_SCHEMES = ['http', 'https', 'mailto'];

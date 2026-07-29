@@ -8,9 +8,8 @@ declare(strict_types=1);
  * includes a cf-turnstile-response token the endpoint verifies via Turnstile.
  * Only added to a form when Turnstile::isEnabled().
  */
-class TurnstileWidget extends HTMLObject
+class TurnstileWidget extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'TurnstileWidget';
 
     public function toDOM(): \DOMElement

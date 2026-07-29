@@ -6,9 +6,8 @@ declare(strict_types=1);
  * The check-your-inbox notice shown to unverified accounts: the instruction
  * line plus its actions (resend the email, or log out).
  */
-class VerificationNotice extends HTMLObject
+class VerificationNotice extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'd-flex flex-column gap-3 VerificationNotice';
 
     public function toDOM(): \DOMElement

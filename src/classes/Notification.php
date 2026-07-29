@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class Notification extends HTMLObject
+class Notification extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'Notification';
 
     public ?int $notificationId = null;

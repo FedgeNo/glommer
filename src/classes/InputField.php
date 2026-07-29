@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class InputField extends HTMLObject
+class InputField extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'InputField';
 
     public string $name;

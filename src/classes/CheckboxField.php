@@ -7,9 +7,8 @@ declare(strict_types=1);
  * (unlike InputField, whose label is visually hidden behind the placeholder,
  * a checkbox has no placeholder so the label carries the meaning).
  */
-class CheckboxField extends HTMLObject
+class CheckboxField extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'CheckboxField';
 
     public string $name;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Carousel extends HTMLObject
+class Carousel extends Div
 {
     // How many items ahead of the current one keep their media loaded - so the
     // viewer always stays this many slides ahead of the loading. The first
@@ -13,7 +13,6 @@ class Carousel extends HTMLObject
     // as window.carouselEagerItems (see Page::create).
     public const INITIAL_EAGER_ITEMS = 5;
 
-    public string $tagName = 'div';
     public ?string $class = 'Carousel';
 
     /** @var HTMLObject[] */

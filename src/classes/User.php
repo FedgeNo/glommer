@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class User extends HTMLObject implements \JsonSerializable
+class User extends Div implements \JsonSerializable
 {
     /** Most friends we ever load/show for one person (the friends-list cap). */
     public const MAX_FRIENDS = 5000;
@@ -29,7 +29,6 @@ class User extends HTMLObject implements \JsonSerializable
         return substr((string) preg_replace('/[^a-z0-9_]/', '', strtolower(trim($raw))), 0, self::MAX_USERNAME_LENGTH);
     }
 
-    public string $tagName = 'div';
     public ?string $class = 'User Card';
 
     public ?int $userId = null;

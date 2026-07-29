@@ -8,9 +8,8 @@ declare(strict_types=1);
  * it shares Linkifier's PHP/JS parity) - but never accepting Delta formatting.
  * Newlines are preserved by the .UserBio white-space rule, not <br>s.
  */
-class UserBio extends HTMLObject
+class UserBio extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'UserBio';
 
     public ?string $description = null;

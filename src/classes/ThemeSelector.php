@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class ThemeSelector extends HTMLObject
+class ThemeSelector extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'Card d-flex flex-column gap-2 ThemeSelector';
 
     protected const OPTIONS = [

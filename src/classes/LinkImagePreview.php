@@ -8,9 +8,8 @@ declare(strict_types=1);
  * before posting. The seed input is what actually gets submitted; removing
  * the preview clears it and tells the server to discard the staged files.
  */
-class LinkImagePreview extends HTMLObject
+class LinkImagePreview extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'LinkImagePreview';
 
     public function toDOM(): \DOMElement

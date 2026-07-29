@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class FeedItem extends HTMLObject
+class FeedItem extends Div
 {
-    public string $tagName = 'div';
     public ?string $class = 'FeedItem';
 
     public ?int $itemId = null;

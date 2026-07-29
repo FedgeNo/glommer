@@ -83,8 +83,8 @@ export class Post {
         if (this.latitude !== null && this.longitude !== null) {
             const location_link = document.createElement('a');
             location_link.className = 'PostLocationLink muted text-sm';
-            location_link.href = ClientConfig.siteURL() + '/nearby?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
-            location_link.title = 'See posts near here';
+            location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
+            location_link.title = 'Show this place on the map';
             location_link.textContent = this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4);
             meta.appendWithSpace(location_link);
         }

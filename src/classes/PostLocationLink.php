@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * The place line under a post's timestamp: a link into the nearby feed centred
- * on where the post was filed. Coordinates rather than a place name - there is
- * no geocoder here, and inventing "Vancouver" from a point would be a guess -
- * so it shows the position and lets the feed it links to do the talking.
+ * The place line under a post's timestamp: a link to the map, opened on where
+ * the post was filed. Seeing the spot answers "where is that?" better than a
+ * list does, and the map's own pin menu carries on to the nearby feed from
+ * there. Coordinates rather than a place name - there is no geocoder here, and
+ * inventing "Vancouver" from a point would be a guess.
  */
 class PostLocationLink extends Anchor
 {
@@ -15,11 +16,11 @@ class PostLocationLink extends Anchor
     public function __construct(float $latitude, float $longitude)
     {
         parent::__construct(
-            ServerURL::absolute('/nearby?lat=' . rawurlencode((string) $latitude) . '&lng=' . rawurlencode((string) $longitude)),
+            ServerURL::absolute('/map?lat=' . rawurlencode((string) $latitude) . '&lng=' . rawurlencode((string) $longitude)),
             self::label($latitude, $longitude)
         );
 
-        $this -> attributes['title'] = 'See posts near here';
+        $this -> attributes['title'] = 'Show this place on the map';
     }
 
     /**

@@ -1,6 +1,7 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Coordinates } from '/scripts/Coordinates.js';
 
 /**
  * The /map view: a Leaflet map of every geotagged post, clustered. Reads the
@@ -26,14 +27,21 @@ export class PostMap {
             return;
         }
 
-        const map = L.map(container).setView([20, 0], 2);
+        // Linked to a point (from a post's place line) opens there, zoomed in
+        // enough to read a neighbourhood; otherwise the whole world.
+        const centre = Coordinates.parse(container.dataset.centerLatitude, container.dataset.centerLongitude);
+        const map = centre === null
+            ? L.map(container).setView([20, 0], 2)
+            : L.map(container).setView([centre.latitude, centre.longitude], 13);
 
         L.tileLayer(container.dataset.tileUrl, {
             attribution: container.dataset.tileAttribution,
             maxZoom: 19,
         }).addTo(map);
 
-        PostMap.#loadPosts(map);
+        // An explicit centre wins: fitting the pins would immediately pull the
+        // view back off the point that was linked to.
+        PostMap.#loadPosts(map, centre === null);
         PostMap.#bindComposer(map);
     }
 
@@ -189,7 +197,7 @@ export class PostMap {
         }
     }
 
-    static async #loadPosts(map) {
+    static async #loadPosts(map, fitToPins) {
         let data;
 
         try {
@@ -219,7 +227,7 @@ export class PostMap {
 
         map.addLayer(cluster);
 
-        if (posts.length > 0) {
+        if (fitToPins && posts.length > 0) {
             map.fitBounds(cluster.getBounds(), { padding: [40, 40], maxZoom: 12 });
         }
     }

@@ -12,10 +12,20 @@ class PostMap extends Div
 {
     public ?string $class = 'Card PostMap';
 
+    // Where to open, when the map was linked to with a point (a post's place
+    // line, say). Null opens on the whole world.
+    public ?float $latitude = null;
+    public ?float $longitude = null;
+
     public function toDOM(): \DOMElement
     {
         $this -> attributes['data-tile-url'] = MapTiles::url();
         $this -> attributes['data-tile-attribution'] = MapTiles::attribution();
+
+        if ($this -> latitude !== null && $this -> longitude !== null) {
+            $this -> attributes['data-center-latitude'] = (string) $this -> latitude;
+            $this -> attributes['data-center-longitude'] = (string) $this -> longitude;
+        }
 
         return parent::toDOM();
     }

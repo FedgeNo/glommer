@@ -40,7 +40,7 @@
     transform: translateY(-0.4rem) rotate(-45deg);
 }
 
-@media (max-width: 48rem) {
+@media (max-width: 48rem), (max-height: 48rem) {
     .NavHamburger {
         display: flex;
         position: fixed;

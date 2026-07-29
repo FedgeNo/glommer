@@ -56,6 +56,7 @@ if (document.querySelector('.SignupForm'))             import('/UsernameValidati
 if (document.querySelector('.HashtagGraphList'))       import('/HashtagGraphList.js');
 if (document.querySelector('.HelpSearchInput'))        import('/help.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/NotificationTestPanel.js');
+if (document.querySelector('.RevokeSessionButton')) import('/RememberedDevice.js');
 
 document.addEventListener('error', function(event) {
     const img = event.target;

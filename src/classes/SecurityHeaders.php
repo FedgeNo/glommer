@@ -23,6 +23,18 @@ class SecurityHeaders
         $csp = implode('; ', [
             'default-src \'self\'',
             'script-src \'self\' \'nonce-' . $nonce . '\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com',
+            // 'unsafe-inline' is here for emoji-picker-element, which builds its
+            // own <style> element and sets textContent on it inside its shadow
+            // root (picker.js: attachShadow, then createElement('style')). CSP
+            // reaches into shadow DOM, so without this the emoji picker renders
+            // completely unstyled. It can't be narrowed to a nonce either -
+            // third-party library code has no way to carry ours.
+            //
+            // The site's own markup needs none of it: no page renders a <style>
+            // block, and the handful of inline style attributes it does emit
+            // (AvatarInitial's hue, two display:none) could become classes. JS
+            // setting el.style.* is CSSOM and isn't governed by this at all, so
+            // Leaflet's tile positioning doesn't depend on it.
             'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net https://fonts.googleapis.com',
             // Map tiles come from a configurable (admin-set) provider host, and
             // Leaflet's marker icons from the jsDelivr CDN - both are <img> loads

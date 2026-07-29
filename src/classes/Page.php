@@ -156,12 +156,15 @@ class Page extends HTMLDocument
     private function assembleBody(): void {
         $this -> body -> class = $this -> bodyClass !== null ? 'PageBody ' . $this -> bodyClass : 'PageBody';
 
-        $chrome = [];
+        // Everything the page added becomes the content of a <main> landmark,
+        // with the nav left outside it as a landmark of its own. That gives
+        // assistive tech a "skip to the content" target, which a page whose
+        // content sat loose in <body> after the nav had no way to offer.
+        $main = new Main;
+        $main -> addContent(new PageTitle((string) $this -> title));
+        $main -> addContents($this -> body -> contents);
 
-        $chrome[] = new MainNavigation;
-        $chrome[] = new PageTitle((string) $this -> title);
-
-        array_splice($this -> body -> contents, 0, 0, $chrome);
+        $this -> body -> contents = [new MainNavigation, $main];
 
         $this -> addContent(new ScrollToTopButton);
 

@@ -7,9 +7,8 @@ declare(strict_types=1);
  * carries the fields and renders the full article page. Summary cards in lists
  * and search results are HelpArticleSummary, not this.
  */
-class HelpArticle extends HTMLObject
+class HelpArticle extends Article
 {
-    public string $tagName = 'article';
     public ?string $class = 'HelpArticle';
 
     public function __construct(

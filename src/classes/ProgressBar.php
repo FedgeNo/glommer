@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class ProgressBar extends HTMLObject
+class ProgressBar extends Progress
 {
-    public string $tagName = 'progress';
     public ?string $class = 'ProgressBar';
     public float $value = 0;
     public float $max = 100;

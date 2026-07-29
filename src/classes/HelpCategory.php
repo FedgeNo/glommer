@@ -7,9 +7,8 @@ declare(strict_types=1);
  * cards of the articles in it. Mirrored client-side in HelpSearch.js (the browse
  * view shown when the search box is empty).
  */
-class HelpCategory extends HTMLObject
+class HelpCategory extends Section
 {
-    public string $tagName = 'section';
     public ?string $class = 'HelpCategory';
 
     /**

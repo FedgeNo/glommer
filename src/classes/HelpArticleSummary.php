@@ -7,9 +7,8 @@ declare(strict_types=1);
  * used in the Help index (grouped under categories) and in search results.
  * The whole card is a link to the article. Mirrored client-side in HelpSearch.js.
  */
-class HelpArticleSummary extends HTMLObject
+class HelpArticleSummary extends Anchor
 {
-    public string $tagName = 'a';
     public ?string $class = 'HelpArticleSummary Card';
 
     public function __construct(private readonly HelpArticle $article)

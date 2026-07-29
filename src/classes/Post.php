@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Post extends HTMLObject
+class Post extends Article
 {
     protected const DESCRIPTION_SUMMARY_MAX_LENGTH = 160;
 
@@ -10,7 +10,6 @@ class Post extends HTMLObject
     // self-contained, independently distributable item of content - the textbook
     // <article>. The .Post/.Card styling is class-based, so the tag is free to
     // carry the right semantics.
-    public string $tagName = 'article';
     public ?string $class = 'Post Card';
 
     public ?int $postId = null;

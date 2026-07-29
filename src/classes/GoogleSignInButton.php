@@ -8,9 +8,8 @@ declare(strict_types=1);
  * Google "G" mark is a CSS data-URI background (CSP-safe - img-src allows
  * data:), so the DOM stays a plain anchor.
  */
-class GoogleSignInButton extends HTMLObject
+class GoogleSignInButton extends Anchor
 {
-    public string $tagName = 'a';
     public ?string $class = 'GoogleSignInButton';
 
     public function toDOM(): \DOMElement

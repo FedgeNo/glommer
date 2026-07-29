@@ -8,9 +8,8 @@ declare(strict_types=1);
  * Settings and Site Settings pages stack as disclosures the reader opens one at
  * a time rather than one long always-open column.
  */
-class SettingsSection extends HTMLObject
+class SettingsSection extends Details
 {
-    public string $tagName = 'details';
     public ?string $class = 'SettingsSection';
 
     private string $heading;

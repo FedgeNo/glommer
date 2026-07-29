@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-class ParentPostLink extends HTMLObject
+class ParentPostLink extends Paragraph
 {
-    public string $tagName = 'p';
     public ?string $class = 'muted text-sm ParentPostLink';
 
     public ?int $parentId = null;

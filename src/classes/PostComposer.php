@@ -13,7 +13,7 @@ class PostComposer extends Composer
             return parent::toDOM();
         }
         $link = new Anchor(ServerURL::absolute('/login'), 'Log in');
-        $paragraph = new Paragraph;
+        $paragraph = new Heading2;
         $paragraph -> addContent($link);
         $paragraph -> addContent(' to post.');
         $this -> addContent($paragraph);

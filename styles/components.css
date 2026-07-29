@@ -510,6 +510,11 @@ label.visually-hidden { margin-bottom: 0; }
     border-top: 1px solid var(--hairline);
 }
 
+.PostActionBar .d-flex.ms-auto {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
 .ParentPostLink { font-size: 0.85rem; }
 .LoginPrompt { text-align: center; }
 .ProcessingNotice { color: var(--accent); }

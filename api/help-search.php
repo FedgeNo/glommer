@@ -17,7 +17,7 @@ $payload = is_array($payload) ? $payload : [];
 $query = trim((string) ($payload['q'] ?? ''));
 
 // Empty query is the browse view: every article, in category order, which
-// help.js groups under category headings. A real query returns ranked matches.
+// HelpSearch.js groups under category headings. A real query returns ranked matches.
 $articles = $query === '' ? HelpContent::all() : HelpContent::search($query);
 
 JSONResponse::success([

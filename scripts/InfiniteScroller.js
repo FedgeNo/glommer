@@ -1,6 +1,6 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { csrf_headers, list_item } from '/scripts/utils.js';
-import { render_math } from '/scripts/math.js';
+import { render_math } from '/scripts/MathRenderer.js';
 import { Post } from '/scripts/Post.js';
 import { Message } from '/scripts/Message.js';
 import { OtherUser } from '/scripts/OtherUser.js';

@@ -3,7 +3,7 @@ import { Toast } from '/scripts/Toast.js';
 import { Post } from '/scripts/Post.js';
 import { csrf_headers, list_item } from '/scripts/utils.js';
 import { Cookie } from '/scripts/Cookie.js';
-import { render_math } from '/scripts/math.js';
+import { render_math } from '/scripts/MathRenderer.js';
 import { QuillEditor } from '/scripts/QuillEditor.js';
 import { Api } from '/scripts/Api.js';
 import { EmojiPicker } from '/scripts/EmojiPicker.js';

@@ -2,7 +2,7 @@ import { User } from '/scripts/User.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
 import { parse_server_date, list_item } from '/scripts/utils.js';
-import { render_math } from '/scripts/math.js';
+import { render_math } from '/scripts/MathRenderer.js';
 import { EmojiRenderer } from '/scripts/EmojiRenderer.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 

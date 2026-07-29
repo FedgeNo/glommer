@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * A tappable summary card for one article - its title and a one-line summary -
  * used in the Help index (grouped under categories) and in search results.
- * The whole card is a link to the article. Mirrored client-side in help.js.
+ * The whole card is a link to the article. Mirrored client-side in HelpSearch.js.
  */
 class HelpArticleSummary extends HTMLObject
 {

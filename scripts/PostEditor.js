@@ -2,7 +2,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Post } from '/scripts/Post.js';
 import { QuillEditor } from '/scripts/QuillEditor.js';
-import { render_math } from '/scripts/math.js';
+import { render_math } from '/scripts/MathRenderer.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 

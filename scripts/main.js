@@ -32,7 +32,7 @@ if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get(
 if (document.querySelector('[data-infinite-scroll]'))  import('/scripts/InfiniteScroller.js');
 if (document.querySelector('.SearchInput'))            import('/scripts/Search.js');
 if (document.querySelector('.MessageComposer'))        import('/scripts/MessageComposer.js');
-if (document.querySelector('.PostBody'))               import('/scripts/math.js');
+if (document.querySelector('.PostBody'))               import('/scripts/MathRenderer.js');
 
 if (document.querySelector('.LoginForm'))              import('/scripts/LoginForm.js');
 if (document.querySelector('.LogoutForm'))             import('/scripts/LogoutForm.js');
@@ -54,7 +54,7 @@ if (document.querySelector('.FaviconSettingsForm'))    import('/scripts/FaviconS
 if (document.querySelector('.ThemeSelect'))            import('/scripts/ThemeSelect.js');
 if (document.querySelector('.SignupForm'))             import('/scripts/UsernameValidation.js');
 if (document.querySelector('.HashtagGraphList'))       import('/scripts/HashtagGraphList.js');
-if (document.querySelector('.HelpSearchInput'))        import('/scripts/help.js');
+if (document.querySelector('.HelpSearchInput'))        import('/scripts/HelpSearch.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/scripts/NotificationTestPanel.js');
 if (document.querySelector('.RevokeSessionButton'))    import('/scripts/RememberedDevice.js');
 if (document.querySelector('.LogoutEverywherePanel'))  import('/scripts/LogoutEverywherePanel.js');

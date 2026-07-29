@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { MathRenderer, render_formulas } from '../../scripts/math.js';
+import { MathRenderer, render_formulas } from '../../scripts/MathRenderer.js';
 
 export default {
     suite: 'MathRenderer',

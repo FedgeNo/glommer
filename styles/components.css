@@ -1326,13 +1326,15 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 /* ---------- Map ---------- */
 
+/* Card supplies the frame (shadow, rounded corners, margin) and clips the tiles
+   to its corners; the map fills it edge to edge rather than sitting inside the
+   Card's usual padding. isolation keeps Leaflet's stacking contexts from
+   escaping the card. */
 .PostMap {
     height: 70vh;
     min-height: 24rem;
     width: 100%;
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-card);
-    overflow: hidden;
+    padding: 0;
     isolation: isolate;
 }
 

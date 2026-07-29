@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 class PostMap extends Div
 {
-    public ?string $class = 'PostMap';
+    public ?string $class = 'Card PostMap';
 
     public function toDOM(): \DOMElement
     {

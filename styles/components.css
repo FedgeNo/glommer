@@ -308,6 +308,11 @@ emoji-picker {
 .Composer fieldset { margin-bottom: 0.5rem; }
 .Composer input[type='file'] { padding: 0; }
 
+.ComposerActions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
 .MessageComposerFields .TextareaField { flex: 1 1 auto; }
 
 .EditorRow { align-items: flex-start; }

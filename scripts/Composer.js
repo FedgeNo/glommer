@@ -155,7 +155,7 @@ export class Composer {
         form.appendWithSpace(fieldset);
 
         const actions = document.createElement('div');
-        actions.className = 'd-flex align-items-center gap-2 ms-auto';
+        actions.className = 'd-flex align-items-center gap-2 ms-auto ComposerActions';
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';

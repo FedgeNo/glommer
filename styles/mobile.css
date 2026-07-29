@@ -58,6 +58,16 @@
     }
 
     .MainNavigation:has(.NavToggle:checked) {
+        pointer-events: none;
+    }
+
+    .MainNavigation:has(.NavToggle:checked) a,
+    .MainNavigation:has(.NavToggle:checked) .LogoutButton, 
+    .MainNavigation:has(.NavToggle:checked) .NavHamburger {
+        pointer-events: auto;
+    }
+
+    .MainNavigation:has(.NavToggle:checked) {
         height: auto;
         max-height: 100dvh;
         overflow-y: auto;
@@ -79,9 +89,9 @@
         width: 100%;
         box-sizing: border-box;
         margin: 0;
-        padding: 0.5rem 0.85rem !important;
+        padding: 0.5rem !important;
         border: none !important;
-        border-radius: 0.625rem !important;
+        border-radius: 0.5rem !important;
         background: none !important;
         opacity: 1 !important;
         color: var(--ink) !important;

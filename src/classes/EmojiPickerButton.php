@@ -16,7 +16,8 @@ class EmojiPickerButton extends Div
     {
         $trigger = new Button();
         $trigger -> type = 'button';
-        $trigger -> class = 'Button EmojiTriggerButton';
+        $trigger -> class = 'EmojiTriggerButton';
+        $trigger -> mixins = ['Button'];
         $trigger -> attributes['aria-label'] = 'Insert emoji';
         $trigger -> contents[] = '🙂';
         $this -> contents[] = $trigger;

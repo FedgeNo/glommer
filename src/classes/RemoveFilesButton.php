@@ -8,7 +8,8 @@ class RemoveFilesButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Button RemoveFilesButton';
+        $this -> class = 'RemoveFilesButton';
+        $this -> mixins = ['Button'];
         $this -> attributes['style'] = 'display: none';
         $this -> contents[] = 'Remove Files';
     }

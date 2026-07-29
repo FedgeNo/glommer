@@ -24,23 +24,27 @@ class MapScrubber extends Div
     public function toDOM(): \DOMElement
     {
         $header = new Div;
-        $header -> class = 'MapScrubberHeader d-flex align-items-center gap-2';
+        $header -> class = 'MapScrubberHeader';
+        $header -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
 
         $label = new Div;
         $label -> class = 'MapScrubberLabel';
         $header -> addContent($label);
 
         $play = new Button;
-        $play -> class = 'Button MapScrubberPlay ms-auto';
+        $play -> class = 'MapScrubberPlay';
+        $play -> mixins = ['Button', 'ms-auto'];
         $play -> addContent('Play');
         $header -> addContent($play);
 
         $mode = new Div;
-        $mode -> class = 'MapScrubberMode d-flex gap-1';
+        $mode -> class = 'MapScrubberMode';
+        $mode -> mixins = ['d-flex', 'gap-1'];
 
         foreach (['cumulative' => 'Up to then', 'window' => 'Just then'] as $value => $text) {
             $button = new Button;
-            $button -> class = 'Button MapScrubberModeButton' . ($value === 'cumulative' ? ' Active' : '');
+            $button -> class = 'MapScrubberModeButton' . ($value === 'cumulative' ? ' Active' : '');
+            $button -> mixins = ['Button'];
             $button -> attributes['data-mode'] = $value;
             $button -> addContent($text);
             $mode -> addContent($button);
@@ -60,14 +64,17 @@ class MapScrubber extends Div
         $this -> addContent($range);
 
         $bounds = new Div;
-        $bounds -> class = 'MapScrubberBounds d-flex justify-content-between';
+        $bounds -> class = 'MapScrubberBounds';
+        $bounds -> mixins = ['d-flex', 'justify-content-between'];
 
         $first = new Div;
-        $first -> class = 'MapScrubberFirst muted';
+        $first -> class = 'MapScrubberFirst';
+        $first -> mixins = ['muted'];
         $bounds -> addContent($first);
 
         $last = new Div;
-        $last -> class = 'MapScrubberLast muted';
+        $last -> class = 'MapScrubberLast';
+        $last -> mixins = ['muted'];
         $bounds -> addContent($last);
 
         $this -> addContent($bounds);

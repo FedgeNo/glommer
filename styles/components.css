@@ -280,6 +280,17 @@ emoji-picker {
 .CheckboxField input { width: auto; margin: 0; }
 .CheckboxField label { display: inline; margin-bottom: 0; }
 
+/* Reserves the widget's real rendered height up front, so Cloudflare's iframe
+   loading in asynchronously doesn't jank whatever sits next to it down. */
+.TurnstileWidget {
+    height: 65px;
+}
+
+.LoginFormFooter {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .TextareaField textarea {
     width: 100%;
     resize: vertical;

@@ -24,7 +24,8 @@ class MessageComposer extends Form
         $this -> contents[] = $recipient_hidden;
 
         $row = new Div();
-        $row -> class = 'MessageComposerFields d-flex align-items-end gap-2';
+        $row -> class = 'MessageComposerFields';
+        $row -> mixins = ['d-flex', 'align-items-end', 'gap-2'];
 
         // The server enforces 65535 BYTES (the Messages.body column's real
         // capacity, checked via strlen() in api/send-message.php), but

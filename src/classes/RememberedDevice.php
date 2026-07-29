@@ -30,7 +30,7 @@ class RememberedDevice extends Div
         $this -> attributes['data-token-id'] = (string) $this -> tokenId;
 
         $info = new Div();
-        $info -> class = 'd-flex flex-column gap-1';
+        $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
 
         $label = self::describe($this -> userAgent);
 
@@ -41,7 +41,7 @@ class RememberedDevice extends Div
         $info -> addContent(new Paragraph($label));
 
         $detail_line = new Paragraph($this -> ipAddress !== null ? $this -> ipAddress . ' - ' : null);
-        $detail_line -> class = 'muted';
+        $detail_line -> mixins = ['muted'];
         $detail_line -> addContent('Last used ');
         $detail_line -> addContent(new RelativeTime($this -> lastUsedAt));
         $info -> addContent($detail_line);
@@ -54,7 +54,8 @@ class RememberedDevice extends Div
         if (!$is_current) {
             $revoke = new Button();
             $revoke -> type = 'button';
-            $revoke -> class = 'Button ms-auto RevokeSessionButton';
+            $revoke -> class = 'RevokeSessionButton';
+            $revoke -> mixins = ['Button', 'ms-auto'];
             $revoke -> attributes['data-token-id'] = (string) $this -> tokenId;
             $revoke -> addContent('Revoke');
             $this -> addContent($revoke);

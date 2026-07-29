@@ -21,10 +21,23 @@ class LoginForm extends Form
         $this -> contents[] = $fields;
 
         if (Turnstile::isEnabled()) {
-            $this -> contents[] = new TurnstileWidget();
+            // Turnstile's iframe loads in asynchronously; without a reserved
+            // box the submit button jumps down when it appears. The footer
+            // reserves that height up front and puts the button on the
+            // opposite side, so nothing shifts when it loads.
+            $footer = new Div();
+            $footer -> class = 'LoginFormFooter';
+            // No align-items override: SubmitButton already carries
+            // align-self-end (the same class that right-aligned it before),
+            // which now bottom-aligns it against the reserved Turnstile box
+            // instead - same corner it always stuck to, just beside the box.
+            $footer -> mixins = ['d-flex', 'justify-content-between'];
+            $footer -> addContent(new TurnstileWidget());
+            $footer -> addContent(new SubmitButton('Log In'));
+            $this -> contents[] = $footer;
+        } else {
+            $this -> contents[] = new SubmitButton('Log In');
         }
-
-        $this -> contents[] = new SubmitButton('Log In');
 
         return parent::toDOM();
     }

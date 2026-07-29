@@ -23,7 +23,8 @@ class SignupForm extends Form
         // until there's something to report, and announced politely so a
         // screen reader hears the verdict without it interrupting typing.
         $availability = new Paragraph();
-        $availability -> class = 'UsernameAvailability text-sm';
+        $availability -> class = 'UsernameAvailability';
+        $availability -> mixins = ['text-sm'];
         $availability -> attributes['aria-live'] = 'polite';
         $fields -> addContent($availability);
 

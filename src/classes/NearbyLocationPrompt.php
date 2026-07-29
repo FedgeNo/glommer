@@ -23,10 +23,11 @@ class NearbyLocationPrompt extends Div
         $this -> addContent(new Paragraph('This shows the posts closest to a point - wherever there is activity, however far away it happens to be. Share your location to start from where you are, or pick a spot on the map instead.'));
 
         $actions = new Div;
-        $actions -> class = 'd-flex gap-2 align-items-center';
+        $actions -> mixins = ['d-flex', 'gap-2', 'align-items-center'];
 
         $button = new Button;
-        $button -> class = 'Button NearbyLocateButton';
+        $button -> class = 'NearbyLocateButton';
+        $button -> mixins = ['Button'];
         $button -> addContent('Use my location');
         $actions -> addContent($button);
 

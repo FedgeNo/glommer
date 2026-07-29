@@ -9,7 +9,8 @@ class RemoveFriendButton extends Button
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'Button RemoveFriendButton';
+        $this -> class = 'RemoveFriendButton';
+        $this -> mixins = ['Button'];
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> contents[] = 'Remove Friend';
     }

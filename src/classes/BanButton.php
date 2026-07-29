@@ -8,7 +8,8 @@ class BanButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Button BanButton';
+        $this -> class = 'BanButton';
+        $this -> mixins = ['Button'];
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> contents[] = $label;
     }

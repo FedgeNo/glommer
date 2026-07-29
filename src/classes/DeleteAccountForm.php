@@ -30,7 +30,8 @@ class DeleteAccountForm extends Form
 
             $google_delete = new Button();
             $google_delete -> type = 'button';
-            $google_delete -> class = 'Button GoogleDeleteButton';
+            $google_delete -> class = 'GoogleDeleteButton';
+            $google_delete -> mixins = ['Button'];
             $google_delete -> contents[] = 'Verify with Google to delete';
             $this -> contents[] = $google_delete;
         }

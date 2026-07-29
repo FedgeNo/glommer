@@ -24,7 +24,7 @@ class HelpArticleSummary extends Anchor
         $this -> contents[] = new Heading3($this -> article -> title);
 
         $summary = new Paragraph($this -> article -> summary);
-        $summary -> class = 'muted';
+        $summary -> mixins = ['muted'];
         $this -> contents[] = $summary;
 
         return parent::toDOM();

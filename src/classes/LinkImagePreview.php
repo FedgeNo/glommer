@@ -23,7 +23,8 @@ class LinkImagePreview extends Div
 
         $remove_button = new Button();
         $remove_button -> type = 'button';
-        $remove_button -> class = 'Button RemoveLinkImageButton';
+        $remove_button -> class = 'RemoveLinkImageButton';
+        $remove_button -> mixins = ['Button'];
         $remove_button -> contents[] = 'Remove image';
         $this -> contents[] = $remove_button;
 

@@ -149,13 +149,13 @@ class User extends Div implements \JsonSerializable
         $info -> addContent($this -> nameElement());
 
         $username_line = new Div();
-        $username_line -> class = 'muted text-sm';
+        $username_line -> mixins = ['muted', 'text-sm'];
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> createdAt !== null) {
             $joined = new Div();
-            $joined -> class = 'muted text-sm';
+            $joined -> mixins = ['muted', 'text-sm'];
             $joined -> contents[] = 'Joined ' . date('F j, Y', strtotime($this -> createdAt));
             $info -> addContent($joined);
         }
@@ -193,7 +193,8 @@ class User extends Div implements \JsonSerializable
         $name = $this -> title ?: $this -> slug;
 
         $header = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
-        $header -> class = 'UserHeader d-flex align-items-center gap-3';
+        $header -> class = 'UserHeader';
+        $header -> mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
         $header -> addContent(Avatar::forUser($this));
 
@@ -201,12 +202,13 @@ class User extends Div implements \JsonSerializable
         $info -> class = 'UserHeaderInfo';
 
         $name_line = new Div();
-        $name_line -> class = 'fw-semibold UserHeaderName';
+        $name_line -> class = 'UserHeaderName';
+        $name_line -> mixins = ['fw-semibold'];
         $name_line -> contents[] = $name;
         $info -> addContent($name_line);
 
         $username_line = new Div();
-        $username_line -> class = 'muted text-sm';
+        $username_line -> mixins = ['muted', 'text-sm'];
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 

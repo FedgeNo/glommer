@@ -16,7 +16,8 @@ class HelpSearch extends Div
     {
         // The search landmark is the control itself, not the results below it.
         $input_card = new SearchLandmark();
-        $input_card -> class = 'HelpSearchBox Card';
+        $input_card -> class = 'HelpSearchBox';
+        $input_card -> mixins = ['Card'];
 
         $input = new TextInput();
         $input -> name = 'q';

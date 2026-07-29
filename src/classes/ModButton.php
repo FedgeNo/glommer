@@ -8,7 +8,8 @@ class ModButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Button ModButton';
+        $this -> class = 'ModButton';
+        $this -> mixins = ['Button'];
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> attributes['data-is-mod'] = $is_mod ? '1' : '0';
         $this -> contents[] = $is_mod ? 'Remove Mod' : 'Make Mod';

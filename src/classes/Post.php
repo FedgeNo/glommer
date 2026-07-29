@@ -290,7 +290,8 @@ class Post extends Article
     protected function authorByline(): HTMLObject
     {
         $byline = new Header();
-        $byline -> class = 'PostByline d-flex align-items-start gap-2';
+        $byline -> class = 'PostByline';
+        $byline -> mixins = ['d-flex', 'align-items-start', 'gap-2'];
 
         $byline -> addContent($this -> author -> header());
         $byline -> addContent(new PostMeta($this));

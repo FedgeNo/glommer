@@ -48,7 +48,7 @@ SELECT *
 
         if (Auth::check() && Auth::id() === $this -> userId) {
             $actions = new Div();
-            $actions -> class = 'd-flex flex-column align-items-end gap-2 ms-auto';
+            $actions -> mixins = ['d-flex', 'flex-column', 'align-items-end', 'gap-2', 'ms-auto'];
 
             $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), 'Friends');
             $friends_link -> class = 'Button';
@@ -85,7 +85,8 @@ SELECT *
     protected function nameElement(): HTMLObject
     {
         $row = new Div();
-        $row -> class = 'DisplayNameRow d-flex align-items-center gap-2';
+        $row -> class = 'DisplayNameRow';
+        $row -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
 
         $heading = new Heading2();
         $heading -> class = 'DisplayName';

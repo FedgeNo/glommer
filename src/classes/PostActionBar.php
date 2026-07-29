@@ -19,11 +19,12 @@ class PostActionBar extends Footer
     public function toDOM(): \DOMElement
     {
         $actions = new Div();
-        $actions -> class = 'd-flex align-items-center gap-2 ms-auto';
+        $actions -> mixins = ['d-flex', 'align-items-center', 'gap-2', 'ms-auto'];
 
         // Share button – visible to everyone
         $share_button = new Button();
-        $share_button -> class = 'Button PostShareButton';
+        $share_button -> class = 'PostShareButton';
+        $share_button -> mixins = ['Button'];
         $share_button -> attributes['data-share-url'] = ServerURL::absolute(
             '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
         );
@@ -85,7 +86,8 @@ SELECT 1
         }
 
         $button = new Button();
-        $button -> class = 'Button LikeButton';
+        $button -> class = 'LikeButton';
+        $button -> mixins = ['Button'];
         $button -> attributes['data-liked'] = $already_liked ? '1' : '0';
         $button -> contents[] = self::likeLabel($already_liked, $count);
 
@@ -114,7 +116,8 @@ SELECT 1
         }
 
         $button = new Button();
-        $button -> class = 'Button BookmarkButton';
+        $button -> class = 'BookmarkButton';
+        $button -> mixins = ['Button'];
         $button -> attributes['data-bookmarked'] = $already_bookmarked ? '1' : '0';
         $button -> contents[] = self::bookmarkLabel($already_bookmarked);
 
@@ -142,7 +145,8 @@ SELECT 1
     protected function editButton(): HTMLObject
     {
         $button = new Button();
-        $button -> class = 'Button EditButton';
+        $button -> class = 'EditButton';
+        $button -> mixins = ['Button'];
         $button -> contents[] = 'Edit';
 
         return $button;
@@ -151,7 +155,8 @@ SELECT 1
     protected function deleteButton(): HTMLObject
     {
         $button = new Button();
-        $button -> class = 'Button DeleteButton';
+        $button -> class = 'DeleteButton';
+        $button -> mixins = ['Button'];
 
         if ($this -> standalone) {
             $button -> attributes['data-standalone'] = '1';

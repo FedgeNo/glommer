@@ -34,7 +34,8 @@ class NavDropdown extends Div
         }
 
         $menu = new Div();
-        $menu -> class = 'NavDropdownMenu Card';
+        $menu -> class = 'NavDropdownMenu';
+        $menu -> mixins = ['Card'];
 
         foreach ($this -> links as $link) {
             $menu -> addContent($link);

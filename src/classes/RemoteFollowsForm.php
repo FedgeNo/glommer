@@ -28,15 +28,16 @@ class RemoteFollowsForm extends Form
 
         if ($this -> currentFollows !== []) {
             $list = new Div();
-            $list -> class = 'RemoteFollowsList d-flex flex-column gap-1';
+            $list -> class = 'RemoteFollowsList';
+            $list -> mixins = ['d-flex', 'flex-column', 'gap-1'];
 
             foreach ($this -> currentFollows as $follow) {
                 $item = new Div();
-                $item -> class = 'd-flex gap-2 align-items-center';
+                $item -> mixins = ['d-flex', 'gap-2', 'align-items-center'];
                 $item -> contents[] = $follow['displayName'];
 
                 $status = new Span();
-                $status -> class = 'muted text-sm';
+                $status -> mixins = ['muted', 'text-sm'];
                 $status -> contents[] = $follow['status'];
                 $item -> contents[] = $status;
 

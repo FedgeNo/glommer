@@ -16,11 +16,12 @@ class VerificationNotice extends Div
         $this -> contents[] = new Paragraph('Please check your inbox and click the verification link we sent to confirm your email address. If you don\'t see it, check your junk/spam folder.');
 
         $actions = new Div();
-        $actions -> class = 'd-flex gap-2';
+        $actions -> mixins = ['d-flex', 'gap-2'];
 
         $resend_button = new Button();
         $resend_button -> type = 'button';
-        $resend_button -> class = 'Button ResendVerificationButton';
+        $resend_button -> class = 'ResendVerificationButton';
+        $resend_button -> mixins = ['Button'];
         $resend_button -> contents[] = 'Resend verification email';
         $actions -> addContent($resend_button);
 

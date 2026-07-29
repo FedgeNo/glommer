@@ -8,7 +8,8 @@ class UnbanTrendingEntityButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Button UnbanTrendingEntityButton';
+        $this -> class = 'UnbanTrendingEntityButton';
+        $this -> mixins = ['Button'];
         $this -> attributes['data-entity-type'] = $entity_type;
         $this -> attributes['data-entity-value'] = $entity_value;
         $this -> addContent('Unban');

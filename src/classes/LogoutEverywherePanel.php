@@ -16,7 +16,8 @@ class LogoutEverywherePanel extends Div
 
         $button = new Button();
         $button -> addContent('Log out everywhere');
-        $button -> class = 'Button LogoutEverywhereButton';
+        $button -> class = 'LogoutEverywhereButton';
+        $button -> mixins = ['Button'];
         $this -> addContent($button);
 
         return parent::toDOM();

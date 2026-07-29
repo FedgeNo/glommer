@@ -8,7 +8,8 @@ class ReportButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'Button ReportButton';
+        $this -> class = 'ReportButton';
+        $this -> mixins = ['Button'];
         $this -> attributes['data-target-type'] = $target_type;
         $this -> attributes['data-target-id'] = (string) $target_id;
         $this -> contents[] = 'Report';

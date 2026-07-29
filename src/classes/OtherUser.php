@@ -17,7 +17,8 @@ class OtherUser extends User
         if (Block::blockedBy($viewer_id, $this -> userId)) {
             $unblock_button = new Button();
             $unblock_button -> type = 'button';
-            $unblock_button -> class = 'Button UnblockUserButton ms-auto';
+            $unblock_button -> class = 'UnblockUserButton';
+            $unblock_button -> mixins = ['Button', 'ms-auto'];
             $unblock_button -> attributes['data-user-id'] = (string) $this -> userId;
             $unblock_button -> contents[] = 'Unblock';
             $element -> appendChild($unblock_button -> toDOM());
@@ -36,7 +37,7 @@ class OtherUser extends User
             && (int) $friendship -> requesterId === $viewer_id;
 
         $actions = new Div();
-        $actions -> class = 'd-flex flex-column gap-2 ms-auto';
+        $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
 
         foreach ($this -> beforeActions() as $item) {
             $actions -> addContent($item);
@@ -51,7 +52,8 @@ class OtherUser extends User
 
             $follow_button = new Button();
             $follow_button -> type = 'button';
-            $follow_button -> class = 'Button FollowUserButton';
+            $follow_button -> class = 'FollowUserButton';
+            $follow_button -> mixins = ['Button'];
             $follow_button -> attributes['data-user-id'] = (string) $this -> userId;
             $follow_button -> attributes['data-following'] = $following ? '1' : '0';
             $follow_button -> contents[] = $following ? 'Unfollow' : 'Follow';
@@ -60,7 +62,8 @@ class OtherUser extends User
             if ($friendship === null || $sent_by_viewer) {
                 $friend_button = new Button();
                 $friend_button -> type = 'button';
-                $friend_button -> class = 'Button FriendRequestButton';
+                $friend_button -> class = 'FriendRequestButton';
+                $friend_button -> mixins = ['Button'];
                 $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
                 $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
                 $friend_button -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
@@ -92,7 +95,8 @@ class OtherUser extends User
 
         $block_button = new Button();
         $block_button -> type = 'button';
-        $block_button -> class = 'Button BlockUserButton';
+        $block_button -> class = 'BlockUserButton';
+        $block_button -> mixins = ['Button'];
         $block_button -> attributes['data-user-id'] = (string) $this -> userId;
         $block_button -> contents[] = 'Block';
         $actions -> addContent($block_button);

@@ -27,11 +27,11 @@ class BannedTrendingEntity extends Div
         $this -> attributes['data-entity-value'] = (string) $this -> title;
 
         $info = new Div();
-        $info -> class = 'd-flex flex-column gap-1';
+        $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
         $info -> addContent(new Paragraph($this -> title . ' (' . $this -> type . ')'));
 
         $detail = new Paragraph();
-        $detail -> class = 'muted';
+        $detail -> mixins = ['muted'];
         $detail -> addContent('Banned by ' . $this -> bannedByUsername . ' ');
         $detail -> addContent(new RelativeTime($this -> createdAt));
 
@@ -43,7 +43,7 @@ class BannedTrendingEntity extends Div
         $this -> addContent($info);
 
         $unban = new UnbanTrendingEntityButton((string) $this -> type, (string) $this -> title);
-        $unban -> class = 'ms-auto ' . $unban -> class;
+        $unban -> mixins[] = 'ms-auto';
         $this -> addContent($unban);
 
         return parent::toDOM();

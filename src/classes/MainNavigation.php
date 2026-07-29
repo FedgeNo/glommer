@@ -35,10 +35,11 @@ class MainNavigation extends Nav
         $brand -> class = 'NavBrand';
 
         $site_links = new Div();
-        $site_links -> class = 'd-flex gap-4';
+        $site_links -> mixins = ['d-flex', 'gap-4'];
 
         $account_links = new Div();
-        $account_links -> class = 'd-flex gap-4 ms-auto NavAccount';
+        $account_links -> class = 'NavAccount';
+        $account_links -> mixins = ['d-flex', 'gap-4', 'ms-auto'];
 
         // Desktop: a hover-flyout of the main menu hangs off the brand. Mobile:
         // the same links render inline inside the toggled menu - one set of link

@@ -219,17 +219,64 @@ export class PostMap {
         const posts = data.response.posts;
         const cluster = L.markerClusterGroup();
 
+        // Markers are built once and kept, keyed by post, so scrubbing swaps
+        // which are in the cluster rather than rebuilding them - and a popup
+        // left open on a pin survives the pin going away and coming back.
+        const markers = new Map();
+
         for (const post of posts) {
             const marker = L.marker([post.latitude, post.longitude]);
             marker.bindPopup(PostMap.#popupElement(post));
-            cluster.addLayer(marker);
+            markers.set(post, marker);
         }
 
+        cluster.addLayers([...markers.values()]);
         map.addLayer(cluster);
 
         if (fitToPins && posts.length > 0) {
             map.fitBounds(cluster.getBounds(), { padding: [40, 40], maxZoom: 12 });
         }
+
+        PostMap.#bindScrubber(posts, cluster, markers);
+    }
+
+    /**
+     * Hands the posts to the time control, if the page has one. Bulk add/remove
+     * rather than per-marker: markercluster rebuilds its whole spatial index on
+     * each individual change, which is visibly slow while a slider is moving.
+     */
+    static async #bindScrubber(posts, cluster, markers) {
+        const element = document.querySelector('.MapScrubber');
+
+        if (!element || posts.length === 0) {
+            return;
+        }
+
+        const { MapScrubber } = await import('/scripts/MapScrubber.js');
+
+        new MapScrubber(element, (visible) => {
+            const shown = new Set(visible.map((post) => markers.get(post)));
+            const toRemove = [];
+            const toAdd = [];
+
+            for (const marker of markers.values()) {
+                const on = cluster.hasLayer(marker);
+
+                if (shown.has(marker) && !on) {
+                    toAdd.push(marker);
+                } else if (!shown.has(marker) && on) {
+                    toRemove.push(marker);
+                }
+            }
+
+            if (toRemove.length > 0) {
+                cluster.removeLayers(toRemove);
+            }
+
+            if (toAdd.length > 0) {
+                cluster.addLayers(toAdd);
+            }
+        }).start(posts);
     }
 
     static #popupElement(post) {

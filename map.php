@@ -27,6 +27,8 @@ $page -> addContent(new PostMap([
     'longitude' => $centre ?-> longitude,
 ]));
 
+$page -> addContent(new MapScrubber());
+
 if ($current_user !== null) {
     $page -> addContent(new MapComposer());
 }

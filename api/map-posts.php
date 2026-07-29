@@ -26,7 +26,7 @@ RateLimiter::recordAttempt($rate_key);
 // primary key, rather than filtering the whole Posts table. Ordered by postId
 // (auto-increment, so newest-first) to ride the primary key instead of sorting.
 $rows = DB::rows('
-SELECT `l`.`postId`, `l`.`latitude`, `l`.`longitude`, `p`.`title`, `u`.`slug`, `u`.`title` AS `authorName`
+SELECT `l`.`postId`, `l`.`latitude`, `l`.`longitude`, `p`.`title`, `p`.`createdAt`, `u`.`slug`, `u`.`title` AS `authorName`
     FROM `PostLocations` `l`
     JOIN `Posts` `p` ON `p`.`postId` = `l`.`postId`
     JOIN `Users` `u` ON `u`.`userId` = `p`.`userId`
@@ -43,6 +43,9 @@ foreach ($rows as $row) {
         'latitude' => (float) $row -> latitude,
         'longitude' => (float) $row -> longitude,
         'title' => $row -> title,
+        // Drives the time scrubber, which replays the map from the first
+        // located post to now.
+        'createdAt' => $row -> createdAt,
         'authorName' => $row -> authorName !== null && $row -> authorName !== '' ? $row -> authorName : $row -> slug,
         'url' => ServerURL::absolute('/users/' . $row -> slug . '/' . (int) $row -> postId),
     ];

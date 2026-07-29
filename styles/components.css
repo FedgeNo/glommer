@@ -1345,6 +1345,25 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MapPinMenu { min-width: 9rem; }
 .MapPinMenu .Button { text-align: center; }
 
+/* Revealed by MapScrubber.js once it knows there's a span worth scrubbing. */
+.MapScrubber { display: none !important; }
+.MapScrubber.Active { display: flex !important; }
+
+.MapScrubberLabel { font-weight: 550; }
+
+.MapScrubberRange {
+    width: 100%;
+    accent-color: var(--accent);
+}
+
+.MapScrubberBounds { font-size: 0.8125rem; }
+
+.MapScrubberModeButton.Active {
+    background-color: var(--accent-soft);
+    color: var(--accent) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
 /* The place line under a post's timestamp, alongside the (edited) marker. */
 .PostLocationLink {
     color: var(--muted);

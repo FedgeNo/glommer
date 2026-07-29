@@ -1177,3 +1177,55 @@ label.visually-hidden { margin-bottom: 0; }
     padding: 0;
 }
 
+
+/* ---------- Settings sections (fold‑outs) ---------- */
+
+.SettingsSection {
+    border-top: 1px solid var(--hairline);
+}
+
+.SettingsSection:last-of-type {
+    border-bottom: 1px solid var(--hairline);
+}
+
+.SettingsSection > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding-block: 0.9rem;
+    list-style: none;
+    font-family: var(--display-font);
+    font-weight: 640;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.SettingsSection > summary::-webkit-details-marker {
+    display: none;
+}
+
+.SettingsSection > summary:hover {
+    color: var(--accent);
+}
+
+.SettingsSection > summary::after {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.SettingsSection[open] > summary::after {
+    transform: rotate(-135deg);
+}
+
+.SettingsSection[open] > :last-child {
+    margin-bottom: 1.25rem;
+}

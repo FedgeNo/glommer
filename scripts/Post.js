@@ -64,6 +64,17 @@ export class Post {
             meta.appendWithSpace(timestamp_link);
         }
 
+        // Mirrors PostLocationLink.php - coordinates rather than a place name,
+        // linking to the map opened on where the post was filed.
+        if (this.latitude !== null && this.longitude !== null) {
+            const location_link = document.createElement('a');
+            location_link.className = 'PostLocationLink muted text-sm';
+            location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
+            location_link.title = 'Show this place on the map';
+            location_link.textContent = this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4);
+            meta.appendWithSpace(location_link);
+        }
+
         if (this.editedAt) {
             const edited_marker = document.createElement('span');
             edited_marker.className = 'muted text-sm PostEditedMarker';
@@ -76,17 +87,6 @@ export class Post {
             });
             edited_marker.textContent = '(edited)';
             meta.appendWithSpace(edited_marker);
-        }
-
-        // Mirrors PostLocationLink.php - coordinates rather than a place name,
-        // linking into the nearby feed centred on where the post was filed.
-        if (this.latitude !== null && this.longitude !== null) {
-            const location_link = document.createElement('a');
-            location_link.className = 'PostLocationLink muted text-sm';
-            location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
-            location_link.title = 'Show this place on the map';
-            location_link.textContent = this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4);
-            meta.appendWithSpace(location_link);
         }
 
         byline.appendWithSpace(meta);

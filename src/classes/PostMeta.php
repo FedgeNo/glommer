@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 /**
  * A post byline's right-hand meta column: the permalink timestamp, with the
- * "(edited)" note and the place it was filed from stacked beneath it when the
- * post has either. Seeded from the Post (new PostMeta($post)); top-aligned with
- * the display name.
+ * place it was filed from and then the "(edited)" note stacked beneath it when
+ * the post has either. Seeded from the Post (new PostMeta($post)); top-aligned
+ * with the display name.
  */
 class PostMeta extends Div
 {
@@ -29,12 +29,12 @@ class PostMeta extends Div
             );
         }
 
-        if ($this -> editedAt !== null) {
-            $this -> contents[] = new PostEditedMarker($this -> editedAt);
-        }
-
         if ($this -> latitude !== null && $this -> longitude !== null) {
             $this -> contents[] = new PostLocationLink($this -> latitude, $this -> longitude);
+        }
+
+        if ($this -> editedAt !== null) {
+            $this -> contents[] = new PostEditedMarker($this -> editedAt);
         }
 
         return parent::toDOM();

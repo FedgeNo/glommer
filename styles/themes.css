@@ -140,57 +140,57 @@
 }
 
 :root[data-theme='forest'] {
-    --paper: #cdd9c2;
-    --surface: #fbfdf8;
-    --surface-2: #dbe6d0;
-    --ink: #22301c;
-    --muted: #5f6d55;
-    --hairline: #cad7bf;
-    --accent: #4a7c30;
-    --accent-strong: #3d6827;
-    --accent-soft: #e7f1dd;
-    --accent-ink: #ffffff;
-    --danger: #b23c1e;
-    --danger-soft: #f0ddd2;
-    --shadow-card: 0 1px 2px rgb(34 48 28 / 0.07), 0 6px 20px -8px rgb(34 48 28 / 0.16);
-    --shadow-pop: 0 4px 10px rgb(34 48 28 / 0.10), 0 16px 40px -12px rgb(34 48 28 / 0.28);
-    --glass: rgb(205 217 194 / 0.85);
+    --paper: #7a8b6f;
+    --surface: #a0ae96;
+    --surface-2: #8a9a82;
+    --ink: #e9f0e5;
+    --muted: #b5c2ad;
+    --hairline: #6b7d62;
+    --accent: #5a9a3f;
+    --accent-strong: #4c8435;
+    --accent-soft: rgb(90 154 63 / 0.15);
+    --accent-ink: #1a2e11;
+    --danger: #e2784e;
+    --danger-soft: rgb(226 120 78 / 0.15);
+    --shadow-card: 0 1px 2px rgb(34 48 28 / 0.35), 0 8px 24px -10px rgb(34 48 28 / 0.45);
+    --shadow-pop: 0 4px 10px rgb(34 48 28 / 0.30), 0 18px 44px -12px rgb(34 48 28 / 0.5);
+    --glass: rgb(122 139 111 / 0.82);
 }
 
 :root[data-theme='ocean'] {
-    --paper: #bcd8dc;
-    --surface: #f7fdfe;
-    --surface-2: #cfe6e9;
-    --ink: #162c2f;
-    --muted: #557478;
-    --hairline: #bad6da;
-    --accent: #1a7d90;
-    --accent-strong: #146675;
-    --accent-soft: #dcf0f3;
-    --accent-ink: #ffffff;
-    --danger: #c81e5f;
-    --danger-soft: #f7dae6;
-    --shadow-card: 0 1px 2px rgb(22 44 47 / 0.08), 0 6px 20px -8px rgb(22 44 47 / 0.16);
-    --shadow-pop: 0 4px 10px rgb(22 44 47 / 0.10), 0 16px 40px -12px rgb(22 44 47 / 0.28);
-    --glass: rgb(188 216 220 / 0.85);
+    --paper: #6e8f93;
+    --surface: #8da7aa;
+    --surface-2: #7e999c;
+    --ink: #e8f0f2;
+    --muted: #b0c3c6;
+    --hairline: #5d7b7f;
+    --accent: #2fa8b8;
+    --accent-strong: #2696a5;
+    --accent-soft: rgb(47 168 184 / 0.15);
+    --accent-ink: #0a2a2f;
+    --danger: #e26b8a;
+    --danger-soft: rgb(226 107 138 / 0.15);
+    --shadow-card: 0 1px 2px rgb(22 44 47 / 0.35), 0 8px 24px -10px rgb(22 44 47 / 0.45);
+    --shadow-pop: 0 4px 10px rgb(22 44 47 / 0.30), 0 18px 44px -12px rgb(22 44 47 / 0.5);
+    --glass: rgb(110 143 147 / 0.82);
 }
 
 :root[data-theme='lavender'] {
-    --paper: #d8cdec;
-    --surface: #fdfaff;
-    --surface-2: #e4dbf3;
-    --ink: #281f3a;
-    --muted: #6b6188;
-    --hairline: #d5cbe8;
-    --accent: #7a49cc;
-    --accent-strong: #6739b5;
-    --accent-soft: #ece1fb;
-    --accent-ink: #ffffff;
-    --danger: #c81e5f;
-    --danger-soft: #f6dbe7;
-    --shadow-card: 0 1px 2px rgb(40 31 58 / 0.08), 0 6px 20px -8px rgb(40 31 58 / 0.18);
-    --shadow-pop: 0 4px 10px rgb(40 31 58 / 0.11), 0 16px 40px -12px rgb(40 31 58 / 0.30);
-    --glass: rgb(216 205 236 / 0.85);
+    --paper: #7a6f9e;
+    --surface: #9e95b5;
+    --surface-2: #8a81a6;
+    --ink: #f0edf8;
+    --muted: #c5c0d8;
+    --hairline: #6b6390;
+    --accent: #9a6fd6;
+    --accent-strong: #8659c0;
+    --accent-soft: rgb(154 111 214 / 0.15);
+    --accent-ink: #1f1730;
+    --danger: #e26b8a;
+    --danger-soft: rgb(226 107 138 / 0.15);
+    --shadow-card: 0 1px 2px rgb(40 31 58 / 0.35), 0 8px 24px -10px rgb(40 31 58 / 0.45);
+    --shadow-pop: 0 4px 10px rgb(40 31 58 / 0.30), 0 18px 44px -12px rgb(40 31 58 / 0.5);
+    --glass: rgb(122 111 158 / 0.82);
 }
 
 :root[data-theme='gold'] {

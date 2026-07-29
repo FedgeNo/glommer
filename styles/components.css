@@ -13,6 +13,7 @@
     padding: 1rem;
     box-shadow: var(--shadow-card);
     margin-bottom: 1rem;
+    overflow: hidden;
 }
 
 .Card > *:last-child {

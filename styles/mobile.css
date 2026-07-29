@@ -40,7 +40,7 @@
     transform: translateY(-0.4rem) rotate(-45deg);
 }
 
-@media (max-width: 48rem), (max-height: 48rem) {
+@media (max-width: 48rem), (max-height: 32rem) {
     .NavHamburger {
         display: flex;
         position: fixed;
@@ -68,8 +68,7 @@
     }
 
     .MainNavigation:has(.NavToggle:checked) {
-        height: auto;
-        max-height: 80dvh;
+        height: 100dvh;
         overflow-y: auto;
         padding-bottom: 0.4rem;
     }

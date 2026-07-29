@@ -144,6 +144,9 @@ export class PostMap {
             // be rebuilt when the pin moves or a drag leaves it pointing at
             // where the pin used to be.
             PostMap.#pendingMarker.setPopupContent(PostMap.#pinMenu(Composer, map, form, latitude, longitude));
+            // Every (re)placement opens the menu - a pin sitting there closed
+            // just looks like a mistake the viewer has to click to recover from.
+            PostMap.#pendingMarker.openPopup();
             return;
         }
 
@@ -160,6 +163,7 @@ export class PostMap {
                 }
 
                 PostMap.#pendingMarker.setPopupContent(PostMap.#pinMenu(Composer, map, form, position.lat, position.lng));
+                PostMap.#pendingMarker.openPopup();
             })
             .openPopup();
     }

@@ -22,12 +22,12 @@ $page = new Page([
     'needsEmoji' => $current_user !== null,
 ]);
 
+$page -> addContent(new MapScrubber());
+
 $page -> addContent(new PostMap([
     'latitude' => $centre ?-> latitude,
     'longitude' => $centre ?-> longitude,
 ]));
-
-$page -> addContent(new MapScrubber());
 
 if ($current_user !== null) {
     $page -> addContent(new MapComposer());

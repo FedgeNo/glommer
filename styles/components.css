@@ -1356,6 +1356,7 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MapScrubberRange {
     width: 100%;
     accent-color: var(--accent);
+    padding: 0;
 }
 
 .MapScrubberBounds { font-size: 0.8125rem; }

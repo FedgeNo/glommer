@@ -21,14 +21,17 @@ if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
 }
 
 RateLimiter::recordAttempt($rate_key);
+// Driven from PostLocations: it holds only the posts that actually have a
+// location, so this reads a small table and looks each post and author up by
+// primary key, rather than filtering the whole Posts table. Ordered by postId
+// (auto-increment, so newest-first) to ride the primary key instead of sorting.
 $rows = DB::rows('
-SELECT `p`.`postId`, `p`.`latitude`, `p`.`longitude`, `p`.`title`, `u`.`slug`, `u`.`title` AS `authorName`
-    FROM `Posts` `p`
+SELECT `l`.`postId`, `l`.`latitude`, `l`.`longitude`, `p`.`title`, `u`.`slug`, `u`.`title` AS `authorName`
+    FROM `PostLocations` `l`
+    JOIN `Posts` `p` ON `p`.`postId` = `l`.`postId`
     JOIN `Users` `u` ON `u`.`userId` = `p`.`userId`
-    WHERE `p`.`latitude` IS NOT NULL
-    AND `p`.`longitude` IS NOT NULL
-    AND `u`.`banned` = ?
-    ORDER BY `p`.`createdAt` DESC
+    WHERE `u`.`banned` = ?
+    ORDER BY `l`.`postId` DESC
     LIMIT 5000
 ', \stdClass::class, 'i', 0);
 

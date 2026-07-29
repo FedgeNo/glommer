@@ -226,10 +226,19 @@ if ($needs_async) {
 }
 
 DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `latitude`, `longitude`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-', 'iissssdd', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $latitude, $longitude);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
+    VALUES (?, ?, ?, ?, ?, ?)
+', 'iissss', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
 $post_id = (int) mysqli_insert_id($mysqli);
+
+// Coordinates live in their own postId-keyed table, so only a post that
+// actually has a location costs a row.
+if ($latitude !== null && $longitude !== null) {
+    DB::run('
+INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
+    VALUES (?, ?, ?)
+', 'idd', $post_id, $latitude, $longitude);
+}
 
 Hashtag::indexPost($post_id, $description_ops);
 Mention::notify(Mention::indexPost($post_id, $description_ops), $current_user -> userId, $post_id);

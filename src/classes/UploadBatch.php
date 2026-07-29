@@ -268,10 +268,17 @@ class UploadBatch
         mysqli_begin_transaction($mysqli);
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `latitude`, `longitude`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-', 'iissssdd', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $latitude_value, $longitude_value);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
+    VALUES (?, ?, ?, ?, ?, ?)
+', 'iissss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
         $post_id = (int) mysqli_insert_id($mysqli);
+
+        if ($latitude_value !== null && $longitude_value !== null) {
+            DB::run('
+INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
+    VALUES (?, ?, ?)
+', 'idd', $post_id, $latitude_value, $longitude_value);
+        }
 
         $mentioned_user_ids = [];
 

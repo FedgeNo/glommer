@@ -49,8 +49,6 @@ CREATE TABLE `Posts` (
   `descriptionDelta` mediumtext DEFAULT NULL,
   `keywords` varchar(255) DEFAULT NULL,
   `linkURL` varchar(255) DEFAULT NULL,
-  `latitude` decimal(10,7) DEFAULT NULL,
-  `longitude` decimal(10,7) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `editedAt` datetime DEFAULT NULL,
   `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
@@ -58,10 +56,20 @@ CREATE TABLE `Posts` (
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
+  KEY `parentId_remoteObjectURI_postId` (`parentId`,`remoteObjectURI`,`postId`),
   UNIQUE KEY `remoteObjectURI` (`remoteObjectURI`),
   FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),
   CONSTRAINT `Posts_ibfk_1` FOREIGN KEY (`parentId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
   CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `PostLocations` (
+  `postId` int(10) unsigned NOT NULL,
+  `latitude` decimal(10,7) NOT NULL,
+  `longitude` decimal(10,7) NOT NULL,
+  PRIMARY KEY (`postId`),
+  KEY `latitude_longitude` (`latitude`,`longitude`),
+  CONSTRAINT `fk_postlocations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Hashtags` (

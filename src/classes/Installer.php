@@ -250,6 +250,9 @@ INSERT INTO `Settings` (`name`, `value`)
                     // Backfill hashtags for existing posts now the tables exist
                     // (idempotent - attach uses INSERT IGNORE / upsert).
                     Hashtag::backfill();
+                    // Move post coordinates off Posts into PostLocations now
+                    // that the table exists (idempotent, see the class).
+                    PostLocationBackfill::run();
                     // Materialize the /tags/ Popular and Trending lists so they
                     // aren't blank until the first lottery-picked read.
                     HashtagGraphList::recompute();

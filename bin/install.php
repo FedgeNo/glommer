@@ -4578,6 +4578,17 @@ SELECT COUNT(*) AS `n`
     // the keywords column. Idempotent (attach uses INSERT IGNORE / upsert).
     Hashtag::backfill();
     ok('hashtags backfilled from existing posts');
+
+    // Move post coordinates off Posts into the PostLocations side table, then
+    // drop the old columns. Idempotent (keys off the columns still existing).
+    $locations_pending = mysqli_query($mysqli, '
+SELECT COUNT(*) AS `n`
+    FROM `information_schema`.`COLUMNS`
+    WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = \'Posts\' AND `COLUMN_NAME` = \'latitude\'
+');
+    $locations_to_move = $locations_pending ? (int) mysqli_fetch_assoc($locations_pending)['n'] : 0;
+    PostLocationBackfill::run();
+    ok('post locations moved to PostLocations' . ($locations_to_move > 0 ? ' (columns dropped from Posts)' : ' (already applied)'));
 }
 
 // Materialize the /tags/ Popular graph and Trending cloud now, so they're

@@ -58,6 +58,7 @@ if (document.querySelector('.HelpSearchInput'))        import('/help.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/NotificationTestPanel.js');
 if (document.querySelector('.RevokeSessionButton'))    import('/RememberedDevice.js');
 if (document.querySelector('.LogoutEverywherePanel'))  import('/LogoutEverywherePanel.js');
+if (document.querySelector('.PostShareButton'))        import('/PostShareButton.js');
 
 document.addEventListener('error', function(event) {
     const img = event.target;

@@ -99,6 +99,9 @@ class Page extends HTMLDocument
         $bootstrap = new Link;
         $bootstrap -> rel = 'stylesheet';
         $bootstrap -> href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
+        // Pinned to this version's exact bytes, like the other CDN assets.
+        $bootstrap -> attributes['integrity'] = 'sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH';
+        $bootstrap -> attributes['crossorigin'] = 'anonymous';
         $this -> addHeadContent($bootstrap);
 
         if ($this -> needsEditor) {

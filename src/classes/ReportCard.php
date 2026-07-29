@@ -84,7 +84,7 @@ class ReportCard extends Article
         // Only offer Delete when the live post/message still exists (a snapshot
         // of already-deleted content still shows, but has nothing to delete).
         if ($this -> targetLive && ($this -> type === 'post' || $this -> type === 'message')) {
-            $actions -> addContent(new DeleteContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> type)));
+            $actions -> addContent(new DeleteReportedContentButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> type)));
         }
 
         $actions -> addContent(new DismissReportButton((int) $this -> reportId));

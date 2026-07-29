@@ -40,8 +40,8 @@ class Carousel extends Div
         $this -> contents[] = new MediaFullscreenButton();
 
         if (count($this -> items) > 1) {
-            $this -> contents[] = new CarouselNavButton('prev');
-            $this -> contents[] = new CarouselNavButton('next');
+            $this -> contents[] = new CarouselPrevButton();
+            $this -> contents[] = new CarouselNextButton();
 
             $counter = new Div();
             $counter -> class = 'CarouselCounter';

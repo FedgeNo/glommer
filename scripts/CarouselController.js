@@ -122,7 +122,7 @@ export class CarouselController {
         if (this._autoplayMap.has(carousel)) return;
         this._autoplayMap.set(carousel, null);
         this._scheduleAutoplayAdvance(carousel);
-        const toggle = carousel.querySelector('.CarouselAutoplay');
+        const toggle = carousel.querySelector('.CarouselAutoplayButton');
         if (toggle) toggle.textContent = 'Stop Autoplay';
     }
 
@@ -131,7 +131,7 @@ export class CarouselController {
         const pendingTimeout = this._autoplayMap.get(carousel);
         if (pendingTimeout) clearTimeout(pendingTimeout);
         this._autoplayMap.delete(carousel);
-        const toggle = carousel.querySelector('.CarouselAutoplay');
+        const toggle = carousel.querySelector('.CarouselAutoplayButton');
         if (toggle) toggle.textContent = 'Autoplay';
     }
 
@@ -161,7 +161,7 @@ export class CarouselController {
             }
         });
 
-        const button = container.querySelector(':scope > .MediaFullscreen');
+        const button = container.querySelector(':scope > .MediaFullscreenButton');
         if (button) {
             button.textContent = '×';
             button.setAttribute('aria-label', 'Exit fullscreen');
@@ -176,7 +176,7 @@ export class CarouselController {
         container.classList.remove('InFullscreen');
         originalParent.insertBefore(container, originalNextSibling);
         overlay.remove();
-        const button = container.querySelector(':scope > .MediaFullscreen');
+        const button = container.querySelector(':scope > .MediaFullscreenButton');
         if (button) {
             button.textContent = '⛶';
             button.setAttribute('aria-label', 'Fullscreen');
@@ -203,15 +203,15 @@ export class CarouselController {
     }
 
     _onClick(event) {
-        const prevNext = event.target.closest('.CarouselPrev, .CarouselNext');
+        const prevNext = event.target.closest('.CarouselPrevButton, .CarouselNextButton');
         if (prevNext) {
             const carousel = prevNext.closest('.Carousel');
             this._stopAutoplay(carousel);
-            this._advance(carousel, prevNext.classList.contains('CarouselNext') ? 1 : -1);
+            this._advance(carousel, prevNext.classList.contains('CarouselNextButton') ? 1 : -1);
             return;
         }
 
-        const autoplayBtn = event.target.closest('.CarouselAutoplay');
+        const autoplayBtn = event.target.closest('.CarouselAutoplayButton');
         if (autoplayBtn) {
             const carousel = autoplayBtn.closest('.Carousel');
             if (this._autoplayMap.has(carousel)) {
@@ -228,7 +228,7 @@ export class CarouselController {
             return;
         }
 
-        const fullscreenBtn = event.target.closest('.MediaFullscreen');
+        const fullscreenBtn = event.target.closest('.MediaFullscreenButton');
         if (fullscreenBtn) {
             if (this._fullscreenState) {
                 this._exitFullscreen();

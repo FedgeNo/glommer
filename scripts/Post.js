@@ -191,7 +191,7 @@ export class Post {
     mediaFullscreenButtonElement() {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'MediaFullscreen';
+        button.className = 'MediaFullscreenButton';
         button.setAttribute('aria-label', 'Fullscreen');
         button.textContent = '⛶';
         return button;
@@ -219,14 +219,14 @@ export class Post {
         if (this.items.length > 1) {
             const prev_button = document.createElement('button');
             prev_button.type = 'button';
-            prev_button.className = 'CarouselPrev';
+            prev_button.className = 'CarouselPrevButton';
             prev_button.setAttribute('aria-label', 'Previous');
             prev_button.textContent = '‹';
             carousel.appendWithSpace(prev_button);
 
             const next_button = document.createElement('button');
             next_button.type = 'button';
-            next_button.className = 'CarouselNext';
+            next_button.className = 'CarouselNextButton';
             next_button.setAttribute('aria-label', 'Next');
             next_button.textContent = '›';
             carousel.appendWithSpace(next_button);
@@ -238,7 +238,7 @@ export class Post {
 
             const autoplay_button = document.createElement('button');
             autoplay_button.type = 'button';
-            autoplay_button.className = 'CarouselAutoplay';
+            autoplay_button.className = 'CarouselAutoplayButton';
             autoplay_button.textContent = 'Autoplay';
             carousel.appendWithSpace(autoplay_button);
         }

@@ -882,8 +882,8 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 .CarouselSlide.Active { display: block; }
 
-.CarouselPrev,
-.CarouselNext {
+.CarouselPrevButton,
+.CarouselNextButton {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -901,11 +901,11 @@ body.MessagesPage { padding-bottom: 9rem; }
     transition: background-color 0.15s ease;
 }
 
-.CarouselPrev:hover,
-.CarouselNext:hover { background-color: rgb(15 18 16 / 0.75); }
+.CarouselPrevButton:hover,
+.CarouselNextButton:hover { background-color: rgb(15 18 16 / 0.75); }
 
-.CarouselPrev { left: 0.5rem; }
-.CarouselNext { right: 0.5rem; }
+.CarouselPrevButton { left: 0.5rem; }
+.CarouselNextButton { right: 0.5rem; }
 
 .CarouselCounter {
     position: absolute;
@@ -920,7 +920,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     font-size: 0.75rem;
 }
 
-.CarouselAutoplay {
+.CarouselAutoplayButton {
     position: absolute;
     bottom: 0.5rem;
     right: 0.5rem;
@@ -936,9 +936,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     transition: background-color 0.15s ease;
 }
 
-.CarouselAutoplay:hover { background-color: rgb(15 18 16 / 0.75); }
+.CarouselAutoplayButton:hover { background-color: rgb(15 18 16 / 0.75); }
 
-.MediaFullscreen {
+.MediaFullscreenButton {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
@@ -956,7 +956,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     transition: background-color 0.15s ease;
 }
 
-.MediaFullscreen:hover { background-color: rgb(15 18 16 / 0.75); }
+.MediaFullscreenButton:hover { background-color: rgb(15 18 16 / 0.75); }
 
 .MediaFullscreenOverlay {
     position: fixed;

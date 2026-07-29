@@ -18,7 +18,7 @@ class CarouselAutoplayButton extends Button
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'CarouselAutoplay';
+        $this -> class = 'CarouselAutoplayButton';
         $this -> contents[] = 'Autoplay';
     }
 }

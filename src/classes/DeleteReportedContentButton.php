@@ -6,15 +6,13 @@ declare(strict_types=1);
 // message). Distinct from the post owner's DeleteButton so the owner-only
 // delete handler doesn't fire on it; carries the reportId, and the endpoint
 // resolves what to delete from that report.
-class DeleteContentButton extends Button
+class DeleteReportedContentButton extends ButtonButton
 {
     public function __construct(int $report_id, string $label)
     {
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'DeleteReportedContentButton';
-        $this -> mixins = ['Button'];
         $this -> attributes['data-report-id'] = (string) $report_id;
         $this -> contents[] = $label;
     }

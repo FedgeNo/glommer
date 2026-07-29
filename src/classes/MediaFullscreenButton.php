@@ -15,7 +15,7 @@ class MediaFullscreenButton extends Button
     {
         parent::__construct();
 
-        $this -> class = 'MediaFullscreen';
+        $this -> class = 'MediaFullscreenButton';
         $this -> attributes['aria-label'] = 'Fullscreen';
         $this -> contents[] = '⛶';
     }

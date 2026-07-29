@@ -55,6 +55,7 @@ if (document.querySelector('.ThemeSelect'))            import('/ThemeSelect.js')
 if (document.querySelector('.SignupForm'))             import('/UsernameValidation.js');
 if (document.querySelector('.HashtagGraphList'))       import('/HashtagGraphList.js');
 if (document.querySelector('.HelpSearchInput'))        import('/help.js');
+if (document.querySelector('.NotificationTestPanel'))  import('/NotificationTestPanel.js');
 
 document.addEventListener('error', function(event) {
     const img = event.target;

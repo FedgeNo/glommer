@@ -17,17 +17,9 @@ $page = new Page(['title' => 'Site Settings']);
 
 $page -> addContent(new SettingsSection('Services', new ServicesStatus()));
 
-// Linked, not embedded: running the suite takes a few seconds, so it lives on
-// its own page rather than delaying this one every time it loads.
-$tests_panel = new Div();
-$tests_panel -> class = 'Card d-flex flex-column gap-2 align-items-start';
-$tests_panel -> addContent(new Paragraph('Run the site\'s test suite and see the results. It takes a few seconds, so it opens on its own page.'));
+$page -> addContent(new SettingsSection('Tests', new TestSuitePanel()));
 
-$tests_link = new Anchor(ServerURL::absolute('/admin/tests'), 'Run tests');
-$tests_link -> class = 'Button';
-$tests_panel -> addContent($tests_link);
-
-$page -> addContent(new SettingsSection('Tests', $tests_panel));
+$page->addContent(new SettingsSection('Notification Test', new NotificationTestPanel()));
 
 $page -> addContent(new SettingsSection('Bot protection', new BotProtectionSettingsForm()));
 

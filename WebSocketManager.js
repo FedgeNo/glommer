@@ -28,7 +28,8 @@ export class WebSocketManager {
                 if (!dot?.classList.contains('Active')) return;
 
                 dot.classList.remove('Active');
-
+                const titleEl = document.querySelector('title');
+                if (titleEl.dataset.title) document.title = titleEl.dataset.title;
                 try {
                     const response = await fetch(`${ClientConfig.siteURL()}/api/mark-notifications-seen`, {
                         method: 'POST',
@@ -138,6 +139,9 @@ export class WebSocketManager {
         }
 
         document.querySelectorAll('.NotificationDot').forEach(dot => dot.classList.add('Active'));
+        const titleEl = document.querySelector('title');
+        if (!titleEl.dataset.title) titleEl.dataset.title = document.title;
+        document.title = '🔴 ' + titleEl.dataset.title;
     }
 
     showStatus(statusLine) {

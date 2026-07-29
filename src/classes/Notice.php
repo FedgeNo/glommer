@@ -8,5 +8,6 @@ declare(strict_types=1);
  */
 class Notice extends Paragraph
 {
-    public ?string $class = 'muted Notice';
+    public ?string $class = 'Notice';
+    public array $mixins = ['muted'];
 }

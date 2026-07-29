@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 class VerificationNotice extends Div
 {
-    public ?string $class = 'd-flex flex-column gap-3 VerificationNotice';
+    public ?string $class = 'VerificationNotice';
+    public array $mixins = ['d-flex', 'flex-column', 'gap-3'];
 
     public function toDOM(): \DOMElement
     {

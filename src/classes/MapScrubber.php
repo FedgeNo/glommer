@@ -18,7 +18,8 @@ declare(strict_types=1);
  */
 class MapScrubber extends Div
 {
-    public ?string $class = 'Card MapScrubber d-flex flex-column gap-2';
+    public ?string $class = 'MapScrubber';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

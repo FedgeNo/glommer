@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 class SitePolicyLinks extends Div
 {
-    public ?string $class = 'SitePolicyLinks d-flex gap-3';
+    public ?string $class = 'SitePolicyLinks';
+    public array $mixins = ['d-flex', 'gap-3'];
 
     public function toDOM(): \DOMElement
     {

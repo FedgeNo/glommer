@@ -9,7 +9,8 @@ declare(strict_types=1);
  */
 class RepliesHeading extends Heading2
 {
-    public ?string $class = 'RepliesHeading fw-bold text-lg';
+    public ?string $class = 'RepliesHeading';
+    public array $mixins = ['fw-bold', 'text-lg'];
 
     public function __construct()
     {

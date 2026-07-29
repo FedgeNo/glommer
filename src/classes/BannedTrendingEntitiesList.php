@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 class BannedTrendingEntitiesList extends ItemList
 {
-    public ?string $class = 'd-flex flex-column BannedTrendingEntitiesList';
+    public ?string $class = 'BannedTrendingEntitiesList';
+    public array $mixins = ['d-flex', 'flex-column'];
 
     protected string $emptyNotice = 'No banned trending entities.';
 

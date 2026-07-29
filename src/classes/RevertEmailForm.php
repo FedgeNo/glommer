@@ -12,7 +12,8 @@ declare(strict_types=1);
  */
 class RevertEmailForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 RevertEmailForm';
+    public ?string $class = 'RevertEmailForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
     public string $token;
 
     public function __construct(string $token)

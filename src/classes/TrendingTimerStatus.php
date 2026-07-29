@@ -10,7 +10,8 @@ declare(strict_types=1);
  */
 class TrendingTimerStatus extends Div
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 TrendingTimerStatus';
+    public ?string $class = 'TrendingTimerStatus';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

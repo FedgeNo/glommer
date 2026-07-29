@@ -10,7 +10,8 @@ declare(strict_types=1);
  */
 class UploadWorkerStatus extends Div
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 UploadWorkerStatus';
+    public ?string $class = 'UploadWorkerStatus';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

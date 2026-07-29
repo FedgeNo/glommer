@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class MainNavigation extends Nav
 {
-    public ?string $class = 'MainNavigation d-flex gap-4';
+    public ?string $class = 'MainNavigation';
+    public array $mixins = ['d-flex', 'gap-4'];
 
     public function toDOM(): \DOMElement
     {

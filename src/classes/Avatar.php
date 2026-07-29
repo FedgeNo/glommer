@@ -13,6 +13,10 @@ declare(strict_types=1);
  */
 abstract class Avatar extends HTMLObject
 {
+    // Declared here so both concrete forms carry it from the chain rather than
+    // each repeating it; deriveClassName adds their own name after it.
+    public ?string $class = 'Avatar';
+
     public ?string $name = null;
     public int $userId = 0;
 

@@ -15,7 +15,8 @@ declare(strict_types=1);
  */
 class MailSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 MailSettingsForm';
+    public ?string $class = 'MailSettingsForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

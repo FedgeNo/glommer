@@ -12,7 +12,8 @@ declare(strict_types=1);
  */
 class BannedTrendingEntity extends Div
 {
-    public ?string $class = 'Card d-flex align-items-center gap-3 BannedTrendingEntity';
+    public ?string $class = 'BannedTrendingEntity';
+    public array $mixins = ['Card', 'd-flex', 'align-items-center', 'gap-3'];
 
     public ?string $type = null;
     public ?string $title = null;

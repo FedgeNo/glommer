@@ -10,7 +10,8 @@ declare(strict_types=1);
  */
 class MapSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 MapSettingsForm';
+    public ?string $class = 'MapSettingsForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

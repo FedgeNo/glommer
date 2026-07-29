@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class LoginForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 LoginForm';
+    public ?string $class = 'LoginForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

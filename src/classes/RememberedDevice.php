@@ -13,7 +13,8 @@ declare(strict_types=1);
  */
 class RememberedDevice extends Div
 {
-    public ?string $class = 'Card d-flex align-items-center gap-3 RememberedDevice';
+    public ?string $class = 'RememberedDevice';
+    public array $mixins = ['Card', 'd-flex', 'align-items-center', 'gap-3'];
 
     public ?int $tokenId = null;
     public ?string $selector = null;

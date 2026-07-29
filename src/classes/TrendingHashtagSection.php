@@ -7,7 +7,8 @@ declare(strict_types=1);
  */
 class TrendingHashtagSection extends ListSection
 {
-    public ?string $class = 'TrendingHashtagSection d-flex flex-column gap-2';
+    public ?string $class = 'TrendingHashtagSection';
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     protected string $heading = 'Trending';
 

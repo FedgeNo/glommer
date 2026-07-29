@@ -12,7 +12,8 @@ declare(strict_types=1);
  */
 class BotProtectionSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 BotProtectionSettingsForm';
+    public ?string $class = 'BotProtectionSettingsForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class DeleteAccountForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 DeleteAccountForm';
+    public ?string $class = 'DeleteAccountForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

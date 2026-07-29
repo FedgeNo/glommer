@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class NotificationDropdown extends Div
 {
-    public ?string $class = 'NotificationDropdown Card';
+    public ?string $class = 'NotificationDropdown';
+    public array $mixins = ['Card'];
 
     public ?int $userId = null;
 

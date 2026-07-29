@@ -10,7 +10,8 @@ declare(strict_types=1);
  */
 class TrendingHashtagList extends ItemList
 {
-    public ?string $class = 'TrendingHashtagList d-flex flex-wrap gap-2';
+    public ?string $class = 'TrendingHashtagList';
+    public array $mixins = ['d-flex', 'flex-wrap', 'gap-2'];
 
     /** The cloud shows this many tags and stops - there is no next page. */
     public const PAGE_SIZE = 50;

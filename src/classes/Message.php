@@ -10,7 +10,8 @@ class Message extends Article implements \JsonSerializable
     // one-sided flood.
     public const MAX_UNANSWERED = 20;
 
-    public ?string $class = 'Message Card';
+    public ?string $class = 'Message';
+    public array $mixins = ['Card'];
 
     public ?int $messageId = null;
     public ?int $senderId = null;

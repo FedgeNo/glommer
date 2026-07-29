@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class ForgotPasswordForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 ForgotPasswordForm';
+    public ?string $class = 'ForgotPasswordForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

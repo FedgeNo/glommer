@@ -10,7 +10,8 @@ class Post extends Article
     // self-contained, independently distributable item of content - the textbook
     // <article>. The .Post/.Card styling is class-based, so the tag is free to
     // carry the right semantics.
-    public ?string $class = 'Post Card';
+    public ?string $class = 'Post';
+    public array $mixins = ['Card'];
 
     public ?int $postId = null;
     public ?int $userId = null;

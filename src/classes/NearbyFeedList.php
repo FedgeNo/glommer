@@ -20,7 +20,8 @@ declare(strict_types=1);
  */
 class NearbyFeedList extends ItemList
 {
-    public ?string $class = 'NearbyFeedList FeedList d-flex flex-column';
+    public ?string $class = 'NearbyFeedList';
+    public array $mixins = ['FeedList', 'd-flex', 'flex-column'];
 
     /** How many of the closest posts are eligible, before the newest-first cut. */
     public const NEAREST_LIMIT = 1000;

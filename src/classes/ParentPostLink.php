@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class ParentPostLink extends Paragraph
 {
-    public ?string $class = 'muted text-sm ParentPostLink';
+    public ?string $class = 'ParentPostLink';
+    public array $mixins = ['muted', 'text-sm'];
 
     public ?int $parentId = null;
     public ?string $parentUsername = null;

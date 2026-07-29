@@ -9,7 +9,8 @@ declare(strict_types=1);
  */
 class FaviconSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 FaviconSettingsForm';
+    public ?string $class = 'FaviconSettingsForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

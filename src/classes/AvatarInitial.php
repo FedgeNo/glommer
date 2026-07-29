@@ -10,7 +10,6 @@ declare(strict_types=1);
 class AvatarInitial extends Avatar
 {
     public string $tagName = 'div';
-    public ?string $class = 'Avatar AvatarInitial';
 
     public function toDOM(): \DOMElement
     {

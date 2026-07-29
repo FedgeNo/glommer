@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 class ReportList extends ItemList
 {
-    public ?string $class = 'ReportList d-flex flex-column';
+    public ?string $class = 'ReportList';
+    public array $mixins = ['d-flex', 'flex-column'];
 
     protected string $emptyNotice = 'No reports.';
 

@@ -12,7 +12,8 @@ class NotificationList extends ItemList
 {
     public const PAGE_SIZE = 20;
 
-    public ?string $class = 'NotificationList d-flex flex-column gap-1';
+    public ?string $class = 'NotificationList';
+    public array $mixins = ['d-flex', 'flex-column', 'gap-1'];
 
     public ?int $userId = null;
 

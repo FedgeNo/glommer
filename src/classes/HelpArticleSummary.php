@@ -9,7 +9,8 @@ declare(strict_types=1);
  */
 class HelpArticleSummary extends Anchor
 {
-    public ?string $class = 'HelpArticleSummary Card';
+    public ?string $class = 'HelpArticleSummary';
+    public array $mixins = ['Card'];
 
     public function __construct(private readonly HelpArticle $article)
     {

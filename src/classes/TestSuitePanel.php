@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class TestSuitePanel extends Div
 {
-    public ?string $class = 'Card TestSuitePanel d-flex flex-column gap-2 align-items-start';
+    public ?string $class = 'TestSuitePanel';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2', 'align-items-start'];
 
     public function toDOM(): \DOMElement
     {

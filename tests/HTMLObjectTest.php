@@ -82,10 +82,12 @@ class HTMLObjectTest extends TestCase
     {
         // Notice extends Paragraph and redeclares $class itself - so it IS
         // its own declaring class, and gets exactly what it set, no
-        // PHP-class-name chaining on top.
+        // PHP-class-name chaining on top. What it's composed with (muted) is
+        // carried separately in mixins and never chained.
         $notice = new Notice('careful now');
 
-        $this -> assertSame('muted Notice', $notice -> class);
+        $this -> assertSame('Notice', $notice -> class);
+        $this -> assertSame(['muted'], $notice -> mixins);
     }
 
     public function testGenericWrapperGetsNoClassAttribute(): void

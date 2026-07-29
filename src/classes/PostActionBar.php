@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class PostActionBar extends Footer
 {
-    public ?string $class = 'PostActionBar d-flex align-items-center gap-3';
+    public ?string $class = 'PostActionBar';
+    public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?int $postId = null;
     public ?int $postUserId = null;

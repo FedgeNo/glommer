@@ -9,7 +9,8 @@ declare(strict_types=1);
  */
 class ConversationList extends ItemList
 {
-    public ?string $class = 'ConversationList d-flex flex-column';
+    public ?string $class = 'ConversationList';
+    public array $mixins = ['d-flex', 'flex-column'];
 
     public ?int $userId = null;
 

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class MessageComposer extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 MessageComposer';
+    public ?string $class = 'MessageComposer';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
     public int $recipientId;
 
     public function __construct(int $recipient_id)

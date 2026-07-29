@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class Conversation extends Anchor
 {
-    public ?string $class = 'Card d-flex align-items-center gap-3 Conversation';
+    public ?string $class = 'Conversation';
+    public array $mixins = ['Card', 'd-flex', 'align-items-center', 'gap-3'];
 
     public ?int $userId = null;
     public ?string $slug = null;

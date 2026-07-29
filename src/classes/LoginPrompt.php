@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class LoginPrompt extends Paragraph
 {
-    public ?string $class = 'muted text-sm LoginPrompt';
+    public ?string $class = 'LoginPrompt';
+    public array $mixins = ['muted', 'text-sm'];
 
     public function __construct(string $action)
     {

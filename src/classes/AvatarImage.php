@@ -8,7 +8,6 @@ declare(strict_types=1);
 class AvatarImage extends Avatar
 {
     public string $tagName = 'img';
-    public ?string $class = 'Avatar';
     public ?string $imageURL = null;
 
     public function toDOM(): \DOMElement

@@ -29,7 +29,8 @@ class User extends Div implements \JsonSerializable
         return substr((string) preg_replace('/[^a-z0-9_]/', '', strtolower(trim($raw))), 0, self::MAX_USERNAME_LENGTH);
     }
 
-    public ?string $class = 'User Card';
+    public ?string $class = 'User';
+    public array $mixins = ['Card'];
 
     public ?int $userId = null;
     public ?string $slug = null;

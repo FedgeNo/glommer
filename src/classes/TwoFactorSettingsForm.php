@@ -11,7 +11,8 @@ declare(strict_types=1);
  */
 class TwoFactorSettingsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 TwoFactorSettingsForm';
+    public ?string $class = 'TwoFactorSettingsForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     public bool $enabled;
 

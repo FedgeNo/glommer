@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class AvatarUploadForm extends Form
 {
-    public ?string $class = 'd-flex flex-column align-items-end gap-2 ms-auto AvatarUploadForm';
+    public ?string $class = 'AvatarUploadForm';
+    public array $mixins = ['d-flex', 'flex-column', 'align-items-end', 'gap-2', 'ms-auto'];
 
     public function toDOM(): \DOMElement
     {

@@ -12,7 +12,8 @@ declare(strict_types=1);
  */
 class VerifyEmailForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 VerifyEmailForm';
+    public ?string $class = 'VerifyEmailForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
     public string $token;
 
     public function __construct(string $token)

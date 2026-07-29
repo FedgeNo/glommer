@@ -10,7 +10,8 @@ declare(strict_types=1);
  */
 class MessageList extends ItemList
 {
-    public ?string $class = 'MessageList d-flex flex-column';
+    public ?string $class = 'MessageList';
+    public array $mixins = ['d-flex', 'flex-column'];
 
     protected string $emptyNotice = 'No messages yet.';
 

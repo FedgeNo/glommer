@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 class RemoteFollowsForm extends Form
 {
-    public ?string $class = 'Card d-flex flex-column gap-2 RemoteFollowsForm';
+    public ?string $class = 'RemoteFollowsForm';
+    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
 
     /** @param array<int, array{displayName: string, status: string}> $currentFollows */
     public function __construct(private readonly array $currentFollows)

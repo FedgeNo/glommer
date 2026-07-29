@@ -5,15 +5,13 @@ declare(strict_types=1);
 // Clears a report from the moderation queue by deleting it. Present on every
 // report - the always-available way to resolve one when no ban or content
 // deletion is warranted.
-class DismissReportButton extends Button
+class DismissReportButton extends ButtonButton
 {
     public function __construct(int $report_id)
     {
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'DismissReportButton';
-        $this -> mixins = ['Button'];
         $this -> attributes['data-report-id'] = (string) $report_id;
         $this -> contents[] = 'Dismiss';
     }

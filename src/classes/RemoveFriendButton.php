@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-class RemoveFriendButton extends Button
+class RemoveFriendButton extends ButtonButton
 {
     public function __construct(int $user_id)
     {
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'RemoveFriendButton';
-        $this -> mixins = ['Button'];
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> contents[] = 'Remove Friend';
     }

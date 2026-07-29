@@ -288,7 +288,7 @@ emoji-picker {
     position: relative;
 }
 
-.Composer > p {
+.Composer > h2 {
     position: absolute;
     top: 50%;
     left: 50%;

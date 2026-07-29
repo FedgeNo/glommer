@@ -91,7 +91,7 @@ export class PostEditor {
 
         const editorContainer = document.createElement('div');
         editorContainer.className = 'QuillEditor';
-        editorContainer.dataset.placeholder = 'Edit your post...';
+        editorContainer.dataset.placeholder = 'Edit your post…';
         editorColumn.appendWithSpace(editorContainer);
 
         fields.appendWithSpace(editorColumn);

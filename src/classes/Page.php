@@ -94,7 +94,8 @@ class Page extends HTMLDocument
             $this -> addHeadContent($this -> rssLink);
         }
 
-        // Base layer - loaded before style.css so local rules win the cascade.
+        // Base layer - loaded before the site's own sheets so local rules win
+        // the cascade.
         $bootstrap = new Link;
         $bootstrap -> rel = 'stylesheet';
         $bootstrap -> href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';

@@ -285,7 +285,7 @@ export class DeltaRenderer {
     }
 
     /**
-     * The "See More..." link a truncated feed preview appends, linking to the full
+     * The "See More…" link a truncated feed preview appends, linking to the full
      * post. Mirrors the server-side SeeMore class (same SeeMore class name, text,
      * and href) so a truncated post looks identical whether it arrived in the page
      * or over AJAX.
@@ -297,7 +297,7 @@ export class DeltaRenderer {
         const anchor = document.createElement('a');
         anchor.className = 'SeeMore';
         anchor.href = url;
-        anchor.textContent = 'See More...';
+        anchor.textContent = 'See More…';
         return anchor;
     }
 

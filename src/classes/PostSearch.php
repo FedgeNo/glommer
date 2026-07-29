@@ -12,7 +12,7 @@ class PostSearch extends HTMLObject
      */
     public int $userId = 0;
 
-    public string $placeholder = 'Search posts...';
+    public string $placeholder = 'Search posts…';
 
     public function toDOM(): \DOMElement
     {

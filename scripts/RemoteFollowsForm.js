@@ -23,7 +23,7 @@ export class RemoteFollowsForm {
             const parts = [`Followed ${succeeded} account${succeeded === 1 ? '' : 's'}.`];
             if (failed.length > 0) {
                 const shown = failed.slice(0, 3).map(r => `${r.handle} (${r.error})`).join(', ');
-                parts.push(`${failed.length} failed: ${shown}${failed.length > 3 ? ', ...' : ''}`);
+                parts.push(`${failed.length} failed: ${shown}${failed.length > 3 ? ', …' : ''}`);
             }
             if (unprocessed.length > 0) {
                 parts.push(`${unprocessed.length} not attempted yet - submit again to continue.`);

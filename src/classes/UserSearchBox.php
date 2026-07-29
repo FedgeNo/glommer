@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class UserSearchBox extends SearchBox
 {
-    public string $placeholder = 'Search for a user...';
+    public string $placeholder = 'Search for a user…';
 
     protected function input(): SearchInput
     {

@@ -20,7 +20,7 @@ class HelpSearch extends HTMLObject
         $input = new TextInput();
         $input -> name = 'q';
         $input -> class = 'HelpSearchInput';
-        $input -> attributes['placeholder'] = 'Search help...';
+        $input -> attributes['placeholder'] = 'Search help…';
         $input -> attributes['autocomplete'] = 'off';
         $input_card -> addContent($input);
 

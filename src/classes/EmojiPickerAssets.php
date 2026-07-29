@@ -8,7 +8,8 @@ class EmojiPickerAssets
      * emoji-picker-element defines a <emoji-picker> custom element and renders
      * entirely inside its own Shadow DOM - its internal styles can't leak out
      * onto the page, and the page's own stylesheets can't reach in and affect
-     * it, so there's no cascade fight with style.css in either direction.
+     * it, so there's no cascade fight with the site's stylesheets in either
+     * direction.
      *
      * The picker keeps the user's skin tone preference in its own IndexedDB,
      * and reads it the instant the custom element upgrades - which happens

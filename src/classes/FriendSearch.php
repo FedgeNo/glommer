@@ -9,7 +9,7 @@ class FriendSearch extends HTMLObject
     /** Whose friends are searched. The client reads data-user-id to pass it on. */
     public ?User $user = null;
 
-    public string $placeholder = 'Search friends...';
+    public string $placeholder = 'Search friends…';
 
     public function toDOM(): \DOMElement
     {

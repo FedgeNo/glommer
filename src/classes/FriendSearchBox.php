@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class FriendSearchBox extends SearchBox
 {
-    public string $placeholder = 'Search friends...';
+    public string $placeholder = 'Search friends…';
 
     protected function input(): SearchInput
     {

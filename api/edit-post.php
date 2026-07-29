@@ -16,8 +16,8 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-// api_post() (main.js) sends a JSON body, not form-encoded - $_POST is
-// empty for this request, same as api/delete.php.
+// PostEditor.js sends a JSON body, not form-encoded - $_POST is empty for
+// this request, same as api/delete.php.
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 

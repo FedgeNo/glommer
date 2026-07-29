@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The "Replies" heading above a post's reply list. Only rendered when
- * replies exist - main.js builds the identical element client-side when the
+ * replies exist - Composer.js builds the identical element client-side when the
  * viewer posts the first reply, so keep the two in sync.
  */
 class RepliesHeading extends Heading2

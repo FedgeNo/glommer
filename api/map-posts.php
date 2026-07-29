@@ -10,9 +10,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::error('Method not allowed', 405) -> send();
 }
 
-// Public, read-only: the map shows everyone's geotagged posts. This is a fixed,
-// capped listing (not a full-text search), so it isn't the open-search DDoS
-// hazard the search endpoints guard against - it's bounded and cache-friendly.
+// Public, read-only: the map shows everyone's geotagged posts. The listing is
+// fixed and capped rather than a user-controlled search, but it still costs a
+// 5000-row join per call and needs no login, so it's paced per client to keep
+// it from being used as a cheap database-load lever.
+$rate_key = 'map-posts:' . (ServerURL::clientIP() ?? 'unknown');
+
+if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+    JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
 $rows = DB::rows('
 SELECT `p`.`postId`, `p`.`latitude`, `p`.`longitude`, `p`.`title`, `u`.`slug`, `u`.`title` AS `authorName`
     FROM `Posts` `p`

@@ -140,7 +140,7 @@ class HelpContent
                 'summary' => 'Sign up with a username, email, and password to start posting.',
                 'body' => '
 <p>To join, open the <strong>Sign up</strong> link in the top-right corner and choose a username, enter your email address, and pick a password. Your username is how other people find and mention you, so pick something you\'re happy to be known by.</p>
-<p>You can add a <strong>display name</strong> later from your settings - that\'s the friendlier name shown above your username on your posts and profile. If you leave it blank, your username is shown instead.</p>
+<p>You can add a <strong>display name</strong> later by editing <a href="/help/your-profile">your profile</a> - that\'s the friendlier name shown above your username on your posts and profile. If you leave it blank, your username is shown instead.</p>
 <p>Once your account exists you can read and post right away. The very first account created on a brand-new site automatically becomes its administrator.</p>
 ',
             ],
@@ -163,14 +163,18 @@ class HelpContent
                 'body' => '
 <p>The bar across the top is how you get everywhere:</p>
 <ul>
-<li><strong>The site name</strong> on the left always takes you home to the main feed - and its menu is where you\'ll find <strong>Help</strong> (these articles), whether or not you\'re logged in.</li>
+<li><strong>The site name</strong> on the left always takes you home to the main feed.</li>
 <li><strong>Friends Feed</strong> shows posts from just the people you\'re friends with.</li>
 <li><strong>Friends</strong> is where you accept requests and manage who you\'re connected to.</li>
 <li><strong>Users</strong> lets you search for people and see suggestions of who to connect with.</li>
+<li><strong>Tags</strong> and <strong>Trending</strong> help you discover posts by topic and see what\'s popular right now.</li>
+<li><strong>Search</strong> looks across the site\'s posts.</li>
 <li><strong>Messages</strong> holds your private conversations.</li>
+<li><strong>Bookmarks</strong> is your private list of saved posts.</li>
 <li><strong>Notifications</strong> lights up when someone interacts with you.</li>
+<li><strong>Help</strong> (these articles) and <strong>About</strong> are there whether or not you\'re logged in.</li>
 </ul>
-<p>Your own name sits at the top-right - open it for your <strong>Settings</strong> and to <strong>log out</strong>.</p>
+<p>Your own name sits at the top-right - it links to your profile, and opens your <strong>Settings</strong> and the <strong>log out</strong> option.</p>
 ',
             ],
             [
@@ -351,13 +355,19 @@ class HelpContent
                 'slug' => 'settings-and-appearance',
                 'title' => 'Settings and appearance',
                 'category' => 'Your account',
-                'summary' => 'Change your password and pick a theme that suits you.',
+                'summary' => 'A tour of your Settings page - password, email, security, themes, and more.',
                 'body' => '
-<p>Open <strong>Settings</strong> from your name in the top-right corner. There you can:</p>
+<p>Open <strong>Settings</strong> from your name in the top-right corner. It gathers everything about your account in one place:</p>
 <ul>
-<li><strong>Change your password</strong> - you\'ll enter your current one to confirm it\'s you.</li>
-<li><strong>Pick a theme</strong> - choose from System, Light, Dark, Sepia, Midnight, and Sunset. System follows whatever your device is set to; the rest lock in a look you like. Your choice is remembered.</li>
+<li><strong>Change Password</strong> and <a href="/help/changing-your-email">Change Email</a> - both ask for your current password to confirm it\'s you.</li>
+<li><a href="/help/two-factor-authentication">Two-Factor Authentication</a> - an extra step at login for security.</li>
+<li><strong>Theme</strong> - change how the site looks (see below).</li>
+<li><a href="/help/signed-in-devices">Remembered Devices and Sessions</a> - review where you\'re signed in, and sign out everywhere.</li>
+<li><a href="/help/following-on-the-fediverse">Fediverse</a> - follow accounts on other servers.</li>
+<li><a href="/help/deleting-your-account">Delete Account</a> - close your account for good.</li>
 </ul>
+<h2>Themes</h2>
+<p>The <strong>Theme</strong> picker restyles the whole site, and your choice is remembered. Choose <strong>Match System</strong> to follow whatever your device is set to, or lock in one of the built-in looks: Light, Dark, Sepia, Midnight, Sunset, Rose, Forest, Ocean, Lavender, Gold, and Hacker.</p>
 <p>Forgotten your password and can\'t log in? Use the <strong>Forgot password?</strong> link on the login page to get a reset link by email.</p>
 ',
             ],
@@ -373,6 +383,131 @@ class HelpContent
 <li>Any person\'s posts have their own feed at <code>/users/their-username/feed.xml</code>.</li>
 </ul>
 <p>Most browsers and feed readers also pick these up automatically when you visit the site or a profile, thanks to the discovery links on each page - so you can often just paste the page\'s address into your reader and it will find the feed for you.</p>
+',
+            ],
+            [
+                'slug' => 'editing-a-post',
+                'title' => 'Editing a post',
+                'category' => 'Posting',
+                'summary' => 'Fix a typo or reword one of your own posts after publishing.',
+                'body' => '
+<p>Made a mistake? On any post you wrote, you\'ll find an <strong>edit</strong> action. It reopens the post in the editor so you can fix a typo, reword something, or adjust its formatting, then save your changes.</p>
+<p>The edit replaces the post in place for everyone - there\'s no separate "edited" copy kept. You can change the title, the writing, and its formatting this way. Swapping a post\'s attached media or its link isn\'t part of editing, though; if that\'s what you need, it\'s cleaner to <a href="/help/deleting-a-post">delete</a> the post and put up a new one.</p>
+<p>You can only edit your own posts.</p>
+',
+            ],
+            [
+                'slug' => 'bookmarking-posts',
+                'title' => 'Bookmarking posts',
+                'category' => 'Posting',
+                'summary' => 'Save posts to your private Bookmarks list to find them again later.',
+                'body' => '
+<p>Every post has a <strong>bookmark</strong> action. Tap it to save the post to your <strong>Bookmarks</strong>; tap again to remove it. Bookmarking is private - no one else can see what you\'ve saved, and the author isn\'t notified.</p>
+<p>Open <strong>Bookmarks</strong> from the menu to see everything you\'ve kept, most recent first. It\'s the place to stash a post you want to read properly later, or one you suspect you\'ll want to find again.</p>
+<p>If a post you bookmarked is later deleted by its author, it simply drops out of your list.</p>
+',
+            ],
+            [
+                'slug' => 'hashtags-and-mentions',
+                'title' => 'Hashtags and mentions',
+                'category' => 'Posting',
+                'summary' => 'Tag posts with #hashtags and bring people in with @mentions.',
+                'body' => '
+<p>Two kinds of shortcut turn into links automatically when you post - just type them into your writing.</p>
+<h2>Hashtags</h2>
+<p>Write a <strong>#hashtag</strong> - like <code>#music</code> - and it becomes a link. Tapping it opens that tag\'s page, showing every post using it, so hashtags are a good way to group a topic and to discover posts about things you care about. Browse the active tags any time from <strong>Tags</strong> in the menu, and see which are catching on under <a href="/help/trending-topics">Trending</a>.</p>
+<h2>Mentions</h2>
+<p>Write an <strong>@username</strong> to mention someone. It links to their profile, and they get a notification that you mentioned them - handy for bringing a specific person into a conversation. You can mention people elsewhere on the Fediverse too, using their full <code>@user@server</code> handle.</p>
+',
+            ],
+            [
+                'slug' => 'trending-topics',
+                'title' => 'Trending topics',
+                'category' => 'Connecting',
+                'summary' => 'See which topics and names are being talked about most right now.',
+                'body' => '
+<p>Open <strong>Trending</strong> from the menu to see what\'s catching on across the site. It gathers the hashtags, names, and topics cropping up in a lot of recent posts and ranks them, so you can tell at a glance what people are talking about.</p>
+<p>Each trending item links through to the posts behind it, making it an easy way to jump into an active conversation or find something new. The list is recalculated as activity on the site shifts, so it\'s worth looking back now and then.</p>
+',
+            ],
+            [
+                'slug' => 'following-on-the-fediverse',
+                'title' => 'Following people on the Fediverse',
+                'category' => 'Connecting',
+                'summary' => 'Follow accounts on Mastodon and other Fediverse servers.',
+                'body' => '
+<p>Glommer speaks <strong>ActivityPub</strong>, the standard behind Mastodon and the wider Fediverse, so you can follow people on other servers and read their posts here.</p>
+<p>Open <strong>Settings</strong> from your name in the top-right, find the <strong>Fediverse</strong> section, and paste in one or more handles - written like <code>@user@example.social</code> - then press <strong>Follow</strong>. Any separator between multiple handles works, so you can paste a whole list at once.</p>
+<p>The same section lists the accounts you already follow so you can keep track of them. Mentioning a remote account by its full <code>@user@server</code> handle in a post works too - see <a href="/help/hashtags-and-mentions">hashtags and mentions</a>.</p>
+',
+            ],
+            [
+                'slug' => 'searching',
+                'title' => 'Searching',
+                'category' => 'Connecting',
+                'summary' => 'Search the site\'s posts from the Search page.',
+                'body' => '
+<p><strong>Search</strong> in the menu looks through the site\'s <strong>posts</strong>. Type into the box and matching posts appear as you go, so it\'s the quickest way to find a half-remembered post or dig up something you read a while ago.</p>
+<p>Looking for <em>people</em> rather than posts? <a href="/help/finding-people">The Users page</a> is built for that, with its own search and suggestions of who to connect with.</p>
+',
+            ],
+            [
+                'slug' => 'two-factor-authentication',
+                'title' => 'Two-factor authentication',
+                'category' => 'Staying safe',
+                'summary' => 'Add a login code emailed to you for an extra layer of security.',
+                'body' => '
+<p>Two-factor authentication (2FA) adds a second step to signing in, so your password alone isn\'t enough to get into your account. Turn it on from <strong>Settings</strong>, in the <strong>Two-Factor Authentication</strong> section.</p>
+<p>Here it works by <strong>email</strong>: once it\'s on, each time you log in we email a short numeric code to your address, and you enter that code to finish signing in. There\'s no authenticator app to enrol - it uses the address you already confirmed, so you\'ll need a <a href="/help/verifying-your-email">verified email</a> for this to be available.</p>
+<p>You can switch 2FA off again from the same place whenever you like.</p>
+',
+            ],
+            [
+                'slug' => 'signed-in-devices',
+                'title' => 'Signed-in devices and sessions',
+                'category' => 'Staying safe',
+                'summary' => 'Review where you\'re logged in and sign out everywhere at once.',
+                'body' => '
+<p>Your <strong>Settings</strong> page has two tools for managing where you\'re logged in.</p>
+<h2>Remembered devices</h2>
+<p>When you choose to stay signed in, that device is remembered so you don\'t have to log in every visit. <strong>Remembered Devices</strong> lists them, and you can revoke any one - useful if you signed in on a shared or public computer, or lost a device.</p>
+<h2>Sessions</h2>
+<p>The <strong>Sessions</strong> section has a single button that <strong>signs you out everywhere at once</strong>, ending every active session and remembered device. Reach for it if you think someone else may have access to your account - then follow up by <a href="/help/settings-and-appearance">changing your password</a>.</p>
+',
+            ],
+            [
+                'slug' => 'your-profile',
+                'title' => 'Your profile',
+                'category' => 'Your account',
+                'summary' => 'Set your display name, bio, and avatar so people know who you are.',
+                'body' => '
+<p>Your profile is your own page on the site, showing your posts along with a little about you. To edit it, open your <strong>own profile</strong> - your name in the top-right links there - and use the <strong>edit</strong> control on your profile card. You can click your name or bio directly to start editing.</p>
+<ul>
+<li>Your <strong>display name</strong> is the friendly name shown above your username. Leave it blank and your username is shown instead.</li>
+<li>Your <strong>bio</strong> is a short line about yourself. Any links, #hashtags, and @mentions in it become clickable.</li>
+</ul>
+<p>You can also set an <strong>avatar</strong> - the small picture shown next to your name - by uploading an image from your profile. Your username itself is fixed once you sign up, but your display name, bio, and avatar are yours to change any time.</p>
+',
+            ],
+            [
+                'slug' => 'changing-your-email',
+                'title' => 'Changing your email',
+                'category' => 'Your account',
+                'summary' => 'Update your account\'s email address, with re-verification.',
+                'body' => '
+<p>To change your email address, open <strong>Settings</strong> and use the <strong>Change Email</strong> section. Enter the new address and confirm with your current password. We\'ll send a verification link to the <strong>new</strong> address - open it to confirm the change, just as you did when you first signed up.</p>
+<p>As a safeguard, we also send a note to your <strong>old</strong> address letting it know the email was changed, with a link to reverse it. So if a change ever happens that wasn\'t you, you can undo it from that message. Until the new address is verified, it\'s worth confirming promptly, since things like password resets rely on a verified address.</p>
+',
+            ],
+            [
+                'slug' => 'deleting-your-account',
+                'title' => 'Deleting your account',
+                'category' => 'Your account',
+                'summary' => 'Permanently close your account and remove your content.',
+                'body' => '
+<p>If you want to leave, open <strong>Settings</strong> and use the <strong>Delete Account</strong> section. You\'ll confirm with your password, because this can\'t be undone.</p>
+<p>Deleting your account is <strong>permanent</strong>. Your posts, replies, messages, likes, and connections are removed, and your username is freed up. There\'s no way to recover an account once it\'s gone, so be sure it\'s really what you want.</p>
+<p>The site\'s administrator account can\'t be deleted, since a site needs at least one admin to keep running.</p>
 ',
             ],
         ];

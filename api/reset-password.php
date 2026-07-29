@@ -17,6 +17,18 @@ $token = (string) ($payload['token'] ?? '');
 $new_password = (string) ($payload['newPassword'] ?? '');
 $confirm_password = (string) ($payload['confirmPassword'] ?? '');
 
+// The token is 256 bits and expires in an hour, so guessing one isn't the
+// threat this stops - it just refuses to be a free oracle for anyone grinding
+// tokens at the endpoint. Recorded before the token is looked at so a wrong
+// guess costs an attempt; a legitimate visitor spends one attempt total.
+$rate_key = 'reset-password:' . (ServerURL::clientIP() ?? 'unknown');
+
+if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
+    JSONResponse::error('Too many password reset attempts. Please try again later.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 $user_id = $token !== '' ? PasswordReset::verify($token) : null;
 
 if ($user_id === null) {

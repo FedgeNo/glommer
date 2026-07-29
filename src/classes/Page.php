@@ -23,6 +23,7 @@ class Page extends HTMLDocument
     public bool $needsEmoji = false;
     public bool $needsHelp = false;
     public bool $needsTagGraph = false;
+    public bool $needsMap = false;
 
     public ?string $bodyClass = null;
 
@@ -135,6 +136,16 @@ class Page extends HTMLDocument
 
         if ($this -> needsEmoji) {
             $this -> addHeadContent(EmojiPickerAssets::initScript());
+        }
+
+        if ($this -> needsMap) {
+            foreach (MapAssets::CSSLinks() as $link) {
+                $this -> addHeadContent($link);
+            }
+
+            foreach (MapAssets::JSScripts() as $script) {
+                $this -> addHeadContent($script);
+            }
         }
     }
 

@@ -35,6 +35,23 @@ if (!preg_match('/^lp-[a-f0-9]{32}$/', $link_image_seed) || !UploadProcessor::ex
     $link_image_seed = '';
 }
 
+// Optional geolocation the composer's location button attaches - stored exactly,
+// not rounded. Both coordinates must be present and in range, or neither is kept.
+$latitude = null;
+$longitude = null;
+$latitude_raw = trim((string) ($_POST['latitude'] ?? ''));
+$longitude_raw = trim((string) ($_POST['longitude'] ?? ''));
+
+if ($latitude_raw !== '' && $longitude_raw !== '' && is_numeric($latitude_raw) && is_numeric($longitude_raw)) {
+    $latitude_value = (float) $latitude_raw;
+    $longitude_value = (float) $longitude_raw;
+
+    if ($latitude_value >= -90 && $latitude_value <= 90 && $longitude_value >= -180 && $longitude_value <= 180) {
+        $latitude = $latitude_value;
+        $longitude = $longitude_value;
+    }
+}
+
 // The composer submits the Quill Delta as JSON. Cap the raw input first (bounds
 // the decode work), reject a stale client that still POSTs rendered HTML, then
 // reduce to the ops we render and derive the plaintext the `description` column
@@ -203,15 +220,15 @@ if ($needs_async) {
     // burst of uploads run unlimited concurrent transcodes and overwhelm the
     // host. Completion is signalled by the postReady/uploadPartlyFailed/
     // uploadFailed notification the worker creates when it finishes.
-    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files);
+    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files, $latitude, $longitude);
 
     JSONResponse::success(['processing' => true]) -> send();
 }
 
 DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'iissss', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `latitude`, `longitude`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssdd', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $latitude, $longitude);
 $post_id = (int) mysqli_insert_id($mysqli);
 
 Hashtag::indexPost($post_id, $description_ops);

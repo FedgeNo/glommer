@@ -25,6 +25,8 @@ $page -> addContent(new SettingsSection('Bot protection', new BotProtectionSetti
 
 $page -> addContent(new SettingsSection('Google Auth', new GoogleAuthSettingsForm()));
 
+$page -> addContent(new SettingsSection('Map', new MapSettingsForm()));
+
 $page -> addContent(new SettingsSection('Mail', new MailSettingsForm()));
 
 $page -> addContent(new SettingsSection('Favicon', new FaviconSettingsForm()));

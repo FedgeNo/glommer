@@ -32,7 +32,7 @@ class UploadBatch
     // abandoned and dropped from the post (see the class docblock).
     private const MAX_FILE_DEATHS = 3;
 
-    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files): string
+    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files, ?float $latitude = null, ?float $longitude = null): string
     {
         // Same lottery sweep as UploadProcessor::sweepStagedLinkImages().
         // Triggered here (the web path that stages a batch), not from the
@@ -67,6 +67,8 @@ class UploadBatch
             'description' => $description,
             'descriptionDelta' => $description_delta,
             'linkURL' => $link_url,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
             'files' => $staged_files,
         ]));
 
@@ -234,6 +236,8 @@ class UploadBatch
         $title_value = $metadata['title'] !== null && $metadata['title'] !== '' ? $metadata['title'] : null;
         $description_value = $metadata['description'] !== null && $metadata['description'] !== '' ? $metadata['description'] : null;
         $link_url_value = $metadata['linkURL'] !== null && $metadata['linkURL'] !== '' ? $metadata['linkURL'] : null;
+        $latitude_value = $metadata['latitude'] ?? null;
+        $longitude_value = $metadata['longitude'] ?? null;
         $parent_id = $metadata['parentId'];
 
         // A batch staged after the Delta migration carries the Delta JSON (and
@@ -264,9 +268,9 @@ class UploadBatch
         mysqli_begin_transaction($mysqli);
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'iissss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `latitude`, `longitude`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssdd', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $latitude_value, $longitude_value);
         $post_id = (int) mysqli_insert_id($mysqli);
 
         $mentioned_user_ids = [];

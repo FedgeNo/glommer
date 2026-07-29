@@ -24,7 +24,12 @@ class SecurityHeaders
             'default-src \'self\'',
             'script-src \'self\' \'nonce-' . $nonce . '\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com',
             'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net https://fonts.googleapis.com',
-            'img-src \'self\' data:',
+            // Map tiles come from a configurable (admin-set) provider host, and
+            // Leaflet's marker icons from the jsDelivr CDN - both are <img> loads
+            // from hosts not known here (this runs before the DB is up, so the
+            // configured tile host can't be read). Tiles are non-executable
+            // images, so allowing any HTTPS image source is a contained widening.
+            'img-src \'self\' data: https:',
             'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
             'frame-src https://challenges.cloudflare.com https://www.google.com',

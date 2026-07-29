@@ -81,6 +81,7 @@ class MainNavigation extends HTMLObject
             return [
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
                 new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
+                new Anchor(ServerURL::absolute('/map'), 'Map'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
                 new Anchor(ServerURL::absolute('/about'), 'About'),
             ];
@@ -94,6 +95,7 @@ class MainNavigation extends HTMLObject
             new Anchor(ServerURL::absolute('/users/'), 'Users'),
             new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
             new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
+            new Anchor(ServerURL::absolute('/map'), 'Map'),
             new Anchor(ServerURL::absolute('/search'), 'Search'),
             new Anchor(ServerURL::absolute('/messages/'), 'Messages'),
             new Anchor(ServerURL::absolute('/bookmarks'), 'Bookmarks'),

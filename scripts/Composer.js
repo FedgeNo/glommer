@@ -75,6 +75,10 @@ export class Composer {
         this.linkImageThumb    = form.querySelector('.LinkImagePreviewThumb');
         this.linkImageSeedInput = form.querySelector('[name="linkImageSeed"]');
 
+        this.locationButton = form.querySelector('.LocationButton');
+        this.latitudeInput  = form.querySelector('[name="latitude"]');
+        this.longitudeInput = form.querySelector('[name="longitude"]');
+
         Composer.#instances.set(form, this);
     }
 
@@ -169,6 +173,25 @@ export class Composer {
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
         actions.appendWithSpace(fileInput);
 
+        // Optional geolocation: the button toggles between attaching the browser's
+        // current position and removing it; the hidden inputs ride along in the
+        // form's FormData submission (empty when no location is attached).
+        const latitudeInput = document.createElement('input');
+        latitudeInput.type = 'hidden';
+        latitudeInput.name = 'latitude';
+        form.appendWithSpace(latitudeInput);
+
+        const longitudeInput = document.createElement('input');
+        longitudeInput.type = 'hidden';
+        longitudeInput.name = 'longitude';
+        form.appendWithSpace(longitudeInput);
+
+        const locationButton = document.createElement('button');
+        locationButton.type = 'button';
+        locationButton.className = 'Button LocationButton';
+        locationButton.textContent = 'Add Location';
+        actions.appendWithSpace(locationButton);
+
         // EmojiPickerButton – built and wired by EmojiPicker.setup
         const emojiBtnWrapper = document.createElement('div');
         emojiBtnWrapper.className = 'EmojiPickerButton';
@@ -208,6 +231,7 @@ export class Composer {
         this.#bindLinkPreview();
         this.#bindFileChange();
         this.#bindRemoveButtons();
+        this.#bindLocationButton();
         this.#syncFields();
     }
 
@@ -314,6 +338,44 @@ export class Composer {
         }
     }
 
+    #bindLocationButton() {
+        if (!this.locationButton) return;
+        this.locationButton.addEventListener('click', () => this.#toggleLocation());
+    }
+
+    #toggleLocation() {
+        if (this.latitudeInput.value !== '') {
+            this.#setLocation(null, null);
+            return;
+        }
+
+        if (!navigator.geolocation) {
+            Toast.show('Your browser can\'t share a location.');
+            return;
+        }
+
+        this.locationButton.disabled = true;
+        this.locationButton.textContent = 'Locating…';
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => this.#setLocation(position.coords.latitude, position.coords.longitude),
+            () => {
+                this.#setLocation(null, null);
+                Toast.show('Could not get your location. Check your browser\'s location permission.');
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    }
+
+    #setLocation(latitude, longitude) {
+        const active = latitude !== null && longitude !== null;
+        this.latitudeInput.value = active ? latitude : '';
+        this.longitudeInput.value = active ? longitude : '';
+        this.locationButton.disabled = false;
+        this.locationButton.textContent = active ? 'Remove Location' : 'Add Location';
+        this.locationButton.classList.toggle('Active', active);
+    }
+
     #bindSubmit() {
         this.#form.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -380,6 +442,7 @@ export class Composer {
         this.#syncFields();
 
         if (this.removeFilesButton) this.removeFilesButton.style.display = 'none';
+        if (this.locationButton) this.#setLocation(null, null);
         if (this.linkImagePreview) {
             this.linkImagePreview.style.display = 'none';
             this.linkImageThumb.src = '';

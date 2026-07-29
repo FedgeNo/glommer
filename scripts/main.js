@@ -59,6 +59,8 @@ if (document.querySelector('.NotificationTestPanel'))  import('/scripts/Notifica
 if (document.querySelector('.RevokeSessionButton'))    import('/scripts/RememberedDevice.js');
 if (document.querySelector('.LogoutEverywherePanel'))  import('/scripts/LogoutEverywherePanel.js');
 if (document.querySelector('.PostShareButton'))        import('/scripts/PostShareButton.js');
+if (document.querySelector('.PostMap'))                import('/scripts/PostMap.js');
+if (document.querySelector('.MapSettingsForm'))        import('/scripts/MapSettingsForm.js');
 
 document.addEventListener('error', function(event) {
     const img = event.target;

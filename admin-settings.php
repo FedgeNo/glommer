@@ -27,6 +27,8 @@ $page -> addContent(new SettingsSection('Google Auth', new GoogleAuthSettingsFor
 
 $page -> addContent(new SettingsSection('Map', new MapSettingsForm()));
 
+$page -> addContent(new SettingsSection('AI (OpenRouter)', new OpenRouterSettingsForm()));
+
 $page -> addContent(new SettingsSection('Mail', new MailSettingsForm()));
 
 $page -> addContent(new SettingsSection('Favicon', new FaviconSettingsForm()));

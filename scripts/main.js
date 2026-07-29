@@ -62,6 +62,7 @@ if (document.querySelector('.PostShareButton'))        import('/scripts/PostShar
 if (document.querySelector('.PostMap'))                import('/scripts/PostMap.js');
 if (document.querySelector('.NearbyLocateButton'))     import('/scripts/NearbyLocationPrompt.js');
 if (document.querySelector('.MapSettingsForm'))        import('/scripts/MapSettingsForm.js');
+if (document.querySelector('.OpenRouterSettingsForm')) import('/scripts/OpenRouterSettingsForm.js');
 
 document.addEventListener('error', function(event) {
     const img = event.target;

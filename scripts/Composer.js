@@ -382,6 +382,15 @@ export class Composer {
         this.locationButton.disabled = false;
         this.locationButton.textContent = active ? 'Remove Location' : 'Add Location';
         this.locationButton.classList.toggle('Active', active);
+
+        // Announced however the location changed - the button, the map, or a
+        // cleared form - so a page showing the same location elsewhere can stay
+        // in step with it. The map page uses this to place, move, and drop its
+        // pin, which is why the pin follows the Remove Location button too.
+        this.#form.dispatchEvent(new CustomEvent('composer:locationchange', {
+            bubbles: true,
+            detail: { latitude: active ? latitude : null, longitude: active ? longitude : null },
+        }));
     }
 
     #bindSubmit() {

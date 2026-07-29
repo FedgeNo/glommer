@@ -51,7 +51,39 @@ export class PostMap {
         // just to look at the map.
         const { Composer } = await import('/scripts/Composer.js');
 
-        map.on('click', (event) => PostMap.#choosePoint(Composer, map, form, event.latlng));
+        // Clicking the map only sets the composer's location; the pin is placed
+        // by the locationchange event below. Routing both directions through the
+        // composer means the map and the form can't disagree - picking a point,
+        // dragging the pin, the Add/Remove Location button and a post-submit
+        // clear all end up in the same one place.
+        map.on('click', (event) => {
+            const composer = Composer.getInstance(form);
+
+            // Composer.js mounts on DOM ready; if it somehow hasn't, there's
+            // nowhere to put the coordinates, so leave the map alone rather
+            // than reveal an empty panel.
+            if (composer === null) {
+                return;
+            }
+
+            composer.setLocation(event.latlng.lat, event.latlng.lng);
+            form.classList.add('Active');
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        form.addEventListener('composer:locationchange', (event) => {
+            const { latitude, longitude } = event.detail;
+
+            if (latitude === null) {
+                // Cleared - by the Remove Location button, or by the pin itself.
+                // The composer stays open so nothing typed is lost; the post
+                // simply carries no location unless another point is picked.
+                PostMap.#clearPending(map);
+                return;
+            }
+
+            PostMap.#placePending(Composer, map, form, latitude, longitude);
+        });
 
         // A successful post clears the pending pin and leaves a permanent one
         // where it landed, so the map reflects the new post without a reload.
@@ -67,30 +99,25 @@ export class PostMap {
         });
     }
 
-    static #choosePoint(Composer, map, form, latlng) {
-        const composer = Composer.getInstance(form);
-
-        // Composer.js mounts on DOM ready; if it somehow hasn't, there's nowhere
-        // to put the coordinates, so leave the map alone rather than show an
-        // empty panel.
-        if (composer === null) {
+    /**
+     * Places the pending pin, or moves the existing one. Moving rather than
+     * recreating is what lets a drag update the form without the pin being torn
+     * out from under the cursor mid-gesture.
+     */
+    static #placePending(Composer, map, form, latitude, longitude) {
+        if (PostMap.#pendingMarker !== null) {
+            PostMap.#pendingMarker.setLatLng([latitude, longitude]);
             return;
         }
 
-        PostMap.#clearPending(map);
-
-        PostMap.#pendingMarker = L.marker(latlng, { opacity: 0.7 })
+        PostMap.#pendingMarker = L.marker([latitude, longitude], { draggable: true, opacity: 0.7 })
             .addTo(map)
-            .bindTooltip('Posting here - click to cancel')
-            .on('click', () => {
-                PostMap.#clearPending(map);
-                composer.setLocation(null, null);
-                form.classList.remove('Active');
-            });
-
-        composer.setLocation(latlng.lat, latlng.lng);
-        form.classList.add('Active');
-        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            .bindTooltip('Posting here - drag to move, click to clear')
+            .on('dragend', (event) => {
+                const position = event.target.getLatLng();
+                Composer.getInstance(form)?.setLocation(position.lat, position.lng);
+            })
+            .on('click', () => Composer.getInstance(form)?.setLocation(null, null));
     }
 
     static #clearPending(map) {

@@ -60,6 +60,7 @@ if (document.querySelector('.RevokeSessionButton'))    import('/scripts/Remember
 if (document.querySelector('.LogoutEverywherePanel'))  import('/scripts/LogoutEverywherePanel.js');
 if (document.querySelector('.PostShareButton'))        import('/scripts/PostShareButton.js');
 if (document.querySelector('.PostMap'))                import('/scripts/PostMap.js');
+if (document.querySelector('.NearbyLocateButton'))     import('/scripts/NearbyLocationPrompt.js');
 if (document.querySelector('.MapSettingsForm'))        import('/scripts/MapSettingsForm.js');
 
 document.addEventListener('error', function(event) {

@@ -101,6 +101,7 @@
     RewriteRule ^auth-google-callback$ auth-google-callback.php [L,QSA]
     RewriteRule ^notifications$ notifications.php [L,QSA]
     RewriteRule ^map$ map.php [L,QSA]
+    RewriteRule ^nearby$ nearby.php [L,QSA]
     RewriteRule ^check-inbox$ check-inbox.php [L,QSA]
     RewriteRule ^forgot-password$ forgot-password.php [L,QSA]
     RewriteRule ^reset-password$ reset-password.php [L,QSA]

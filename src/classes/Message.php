@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Message extends Div implements \JsonSerializable
+class Message extends Article implements \JsonSerializable
 {
     // How many messages one side of a conversation can send in a row before
     // the other person has replied. Resets to 0 the moment the recipient

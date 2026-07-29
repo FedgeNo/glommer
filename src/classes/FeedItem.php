@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class FeedItem extends Div
+class FeedItem extends Figure
 {
     public ?string $class = 'FeedItem';
 

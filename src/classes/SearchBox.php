@@ -6,7 +6,7 @@ declare(strict_types=1);
  * The card a search field sits in. Subclasses pair with their own SearchInput,
  * which is what the client listens on.
  */
-abstract class SearchBox extends Div
+abstract class SearchBox extends SearchLandmark
 {
     public ?string $class = 'SearchBox Card';
 

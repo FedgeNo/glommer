@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PostActionBar extends Div
+class PostActionBar extends Footer
 {
     public ?string $class = 'PostActionBar d-flex align-items-center gap-3';
 

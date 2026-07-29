@@ -7,6 +7,12 @@
     box-sizing: border-box;
 }
 
+/* <search> is a landmark element, but a browser that doesn't know it yet lays
+   it out inline, which would collapse the box it wraps. */
+search {
+    display: block;
+}
+
 html {
     scroll-snap-type: y proximity;
     scroll-padding-top: calc(var(--nav-height) + var(--page-title-height) + 1rem - 3px);

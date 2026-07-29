@@ -417,10 +417,12 @@ label.visually-hidden { margin-bottom: 0; }
     overflow-wrap: anywhere;
 }
 
+/* A figure, so the margin is stated in full - the browser default of
+   1em 40px would inset every attachment. */
 .FeedItem {
     position: relative;
     max-height: 50vh;
-    margin-top: 0.5rem;
+    margin: 0.5rem 0 0;
 }
 
 .LinkItem > a {

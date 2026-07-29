@@ -14,7 +14,8 @@ class HelpSearch extends Div
 
     public function toDOM(): \DOMElement
     {
-        $input_card = new Div();
+        // The search landmark is the control itself, not the results below it.
+        $input_card = new SearchLandmark();
         $input_card -> class = 'HelpSearchBox Card';
 
         $input = new TextInput();

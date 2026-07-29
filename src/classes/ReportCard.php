@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ReportCard extends Div
+class ReportCard extends Article
 {
     public ?string $class = 'Card ReportCard d-flex gap-3 align-items-start';
 

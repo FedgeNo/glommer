@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class Notification extends Div
+class Notification extends Article
 {
     public ?string $class = 'Notification';
 

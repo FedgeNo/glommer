@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { RelativeTime } from '../../RelativeTime.js';
+import { RelativeTime } from '../../scripts/RelativeTime.js';
 
 export default {
     suite: 'RelativeTime',

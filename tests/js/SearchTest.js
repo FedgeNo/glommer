@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Search } from '../../Search.js';
+import { Search } from '../../scripts/Search.js';
 
 export default {
     suite: 'Search',

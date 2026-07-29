@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Api } from '../../Api.js';
+import { Api } from '../../scripts/Api.js';
 
 export default {
     suite: 'Api',

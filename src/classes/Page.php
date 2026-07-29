@@ -151,7 +151,7 @@ class Page extends HTMLDocument
         $this -> addContent(new ScrollToTopButton);
 
         $main_module = new ModuleScript;
-        $main_module -> src = ServerURL::absolute('/main.js');
+        $main_module -> src = ServerURL::absolute('/scripts/main.js');
         $this -> addContent($main_module);
     }
 

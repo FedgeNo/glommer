@@ -208,7 +208,7 @@ class LinkifyTest extends TestCase
 
         if ($js_output === null) {
             $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkify.php');
-            $js = (string) file_get_contents(__DIR__ . '/../delta.js');
+            $js = (string) file_get_contents(__DIR__ . '/../scripts/delta.js');
 
             preg_match('/private const SCAN = "(.*)";/', $php, $php_match);
             preg_match('/const LINKIFY_SCAN = "(.*)";/', $js, $js_match);
@@ -235,7 +235,7 @@ class LinkifyTest extends TestCase
         }
 
         $script = 'const fs = require("fs");'
-            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../delta.js') . ', "utf8");'
+            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../scripts/delta.js') . ', "utf8");'
             . 'const tokenize = new Function(src + "; return linkify_tokenize;")();'
             . 'const cases = ' . json_encode($cases) . ';'
             . 'process.stdout.write(JSON.stringify(cases.map((t) => tokenize(t))));';
@@ -255,7 +255,7 @@ class LinkifyTest extends TestCase
     {
         $this -> assertSame(255, Linkify::MAX_MENTION_LENGTH);
 
-        $js = (string) file_get_contents(__DIR__ . '/../delta.js');
+        $js = (string) file_get_contents(__DIR__ . '/../scripts/delta.js');
         preg_match('/const LINKIFY_MAX_MENTION_LENGTH = (\\d+);/', $js, $match);
 
         $this -> assertSame((string) Linkify::MAX_MENTION_LENGTH, $match[1]);

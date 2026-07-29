@@ -22,7 +22,7 @@ globalThis.HTMLElement = dom.window.HTMLElement;
 globalThis.CustomEvent = dom.window.CustomEvent;
 globalThis.NodeFilter = dom.window.NodeFilter;
 
-await import('../dom.js');
+await import('../scripts/dom.js');
 
 // Mocks for modules that need them
 globalThis.Quill = class {

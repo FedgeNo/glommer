@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Composer } from '../../Composer.js';
+import { Composer } from '../../scripts/Composer.js';
 
 export default {
     suite: 'Composer',

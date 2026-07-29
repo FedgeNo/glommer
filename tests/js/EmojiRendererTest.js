@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { EmojiRenderer } from '../../EmojiRenderer.js';
+import { EmojiRenderer } from '../../scripts/EmojiRenderer.js';
 
 export default {
     suite: 'EmojiRenderer',

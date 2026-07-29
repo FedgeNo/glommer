@@ -69,7 +69,7 @@
 
     .MainNavigation:has(.NavToggle:checked) {
         height: auto;
-        max-height: 100dvh;
+        max-height: 80dvh;
         overflow-y: auto;
         padding-bottom: 0.4rem;
     }

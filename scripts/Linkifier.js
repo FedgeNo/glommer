@@ -12,7 +12,7 @@ export class Linkifier {
     }
 
     static linkHost(url) {
-        const stripped = url.replace(/[\u0000-\u0020]+/g);
+        const stripped = url.replace(/[\u0000-\u0020]+/g, '');
         const match = new RegExp(Linkifier.AUTHORITY).exec(stripped);
 
         if (match === null) {

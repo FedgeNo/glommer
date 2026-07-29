@@ -24,6 +24,8 @@ export class Post {
     linkURL = null;
     createdAt = null;
     editedAt = null;
+    latitude = null;
+    longitude = null;
     rawDescriptionDelta = null;
     items = [];
     imageAltText = null;
@@ -74,6 +76,17 @@ export class Post {
             });
             edited_marker.textContent = '(edited)';
             meta.appendWithSpace(edited_marker);
+        }
+
+        // Mirrors PostLocationLink.php - coordinates rather than a place name,
+        // linking into the nearby feed centred on where the post was filed.
+        if (this.latitude !== null && this.longitude !== null) {
+            const location_link = document.createElement('a');
+            location_link.className = 'PostLocationLink muted text-sm';
+            location_link.href = ClientConfig.siteURL() + '/nearby?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
+            location_link.title = 'See posts near here';
+            location_link.textContent = this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4);
+            meta.appendWithSpace(location_link);
         }
 
         byline.appendWithSpace(meta);

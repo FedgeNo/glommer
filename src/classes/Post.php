@@ -29,6 +29,12 @@ class Post extends HTMLObject
     // null for a never-edited post. Shown as a small "(edited)" marker next
     // to the timestamp; there's no edit history, just this one flag.
     public ?string $editedAt = null;
+
+    // From the PostLocations side table, attached by fromRowsWithItems - null
+    // for a post filed without a place. Shown as a link into the nearby feed
+    // under the timestamp.
+    public ?float $latitude = null;
+    public ?float $longitude = null;
     // Set once a moderator dismisses a report on this post - blocks it from
     // being reported again (see api/report.php).
     public ?int $reportsDismissed = null;
@@ -409,9 +415,15 @@ DELETE
         $user_ids = array_values(array_unique(array_map(fn ($post) => (int) $post -> userId, $posts)));
         $authors = User::loadMany($user_ids);
 
+        $locations = PostLocation::forPosts($post_ids);
+
         foreach ($posts as $post) {
             $post -> items = $items_by_post[(int) $post -> postId] ?? [];
             $post -> author = $authors[(int) $post -> userId] ?? null;
+
+            $location = $locations[(int) $post -> postId] ?? null;
+            $post -> latitude = $location['latitude'] ?? null;
+            $post -> longitude = $location['longitude'] ?? null;
         }
 
         return $posts;
@@ -468,6 +480,8 @@ DELETE
             'linkURL' => $this -> linkURL,
             'createdAt' => $this -> createdAt,
             'editedAt' => $this -> editedAt,
+            'latitude' => $this -> latitude,
+            'longitude' => $this -> longitude,
             'items' => $items,
             'imageAltText' => $this -> imageAltText(),
             'replyCount' => $reply_count,

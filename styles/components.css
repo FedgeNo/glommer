@@ -1340,6 +1340,20 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 .MapPopup a { font-weight: 600; }
 
+/* The menu that opens out of a dropped pin. Leaflet's popup is narrow, so the
+   actions stack and stretch rather than sitting in a row. */
+.MapPinMenu { min-width: 9rem; }
+.MapPinMenu .Button { text-align: center; }
+
+/* The place line under a post's timestamp, alongside the (edited) marker. */
+.PostLocationLink {
+    color: var(--muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+}
+
+.PostLocationLink:hover { color: var(--accent); }
+
 /* Revealed by PostMap.js once a point is picked. !important because the
    composer carries Bootstrap's d-flex, which is itself !important. */
 .MapComposer { display: none !important; }

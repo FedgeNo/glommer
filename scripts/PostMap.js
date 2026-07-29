@@ -9,10 +9,12 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
  * its markercluster plugin are plain global scripts loaded via MapAssets, so
  * this reads window.L rather than importing anything.
  *
- * For a logged-in viewer, clicking the map picks a spot to post from: it drops a
- * pending pin and reveals the composer underneath with those coordinates filled
- * in, so a post can be filed at a place being looked at rather than only at the
- * browser's own location. Clicking the pending pin again cancels.
+ * Clicking the map drops a pin and opens a small menu out of it, because a click
+ * is ambiguous - it might mean "post here" or "show me what's here" - so it asks
+ * rather than assuming. Browsing what's nearby needs no account; a logged-in
+ * viewer additionally gets "Post here", which fills the composer below the map
+ * with those coordinates, so a post can be filed at a place being looked at
+ * rather than only where the browser happens to be.
  */
 export class PostMap {
     static #pendingMarker = null;
@@ -36,48 +38,44 @@ export class PostMap {
     }
 
     /**
-     * Wires map clicks to the composer below it. Only a logged-in viewer gets a
-     * composer rendered, so this is a no-op for everyone else.
+     * Wires clicking the map to dropping a pin. Everyone gets the pin and its
+     * menu - browsing what's near a point needs no account - but only a
+     * logged-in viewer has a composer to hand the coordinates to.
      */
     static async #bindComposer(map) {
         const form = document.querySelector('.MapComposer');
+
+        // Imported only when there's a composer to drive, so a logged-out
+        // viewer doesn't pull the whole editor chain down just to look.
+        const { Composer } = form ? await import('/scripts/Composer.js') : { Composer: null };
+
+        // With a composer, clicks route through it and the pin is placed by the
+        // locationchange event below - so the map and the form can't disagree,
+        // whether a point was picked, the pin dragged, the Add/Remove Location
+        // button used, or a post submitted. Without one, the pin is placed
+        // directly since there's nothing to keep in step with.
+        map.on('click', (event) => {
+            const composer = form ? Composer.getInstance(form) : null;
+
+            if (composer === null) {
+                PostMap.#placePending(Composer, map, form, event.latlng.lat, event.latlng.lng);
+                return;
+            }
+
+            composer.setLocation(event.latlng.lat, event.latlng.lng);
+        });
 
         if (!form) {
             return;
         }
 
-        // Imported here rather than at the top so a logged-out viewer - who has
-        // no composer to fill in - doesn't pull the whole editor chain down
-        // just to look at the map.
-        const { Composer } = await import('/scripts/Composer.js');
-
-        // Clicking the map only sets the composer's location; the pin is placed
-        // by the locationchange event below. Routing both directions through the
-        // composer means the map and the form can't disagree - picking a point,
-        // dragging the pin, the Add/Remove Location button and a post-submit
-        // clear all end up in the same one place.
-        map.on('click', (event) => {
-            const composer = Composer.getInstance(form);
-
-            // Composer.js mounts on DOM ready; if it somehow hasn't, there's
-            // nowhere to put the coordinates, so leave the map alone rather
-            // than reveal an empty panel.
-            if (composer === null) {
-                return;
-            }
-
-            composer.setLocation(event.latlng.lat, event.latlng.lng);
-            form.classList.add('Active');
-            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-
         form.addEventListener('composer:locationchange', (event) => {
             const { latitude, longitude } = event.detail;
 
             if (latitude === null) {
-                // Cleared - by the Remove Location button, or by the pin itself.
-                // The composer stays open so nothing typed is lost; the post
-                // simply carries no location unless another point is picked.
+                // Cleared - by the Remove Location button, or by the pin's own
+                // menu. The composer stays open so nothing typed is lost; the
+                // post simply carries no location unless another point is picked.
                 PostMap.#clearPending(map);
                 return;
             }
@@ -107,17 +105,81 @@ export class PostMap {
     static #placePending(Composer, map, form, latitude, longitude) {
         if (PostMap.#pendingMarker !== null) {
             PostMap.#pendingMarker.setLatLng([latitude, longitude]);
+            // The menu carries the coordinates and the nearby link, so it has to
+            // be rebuilt when the pin moves or a drag leaves it pointing at
+            // where the pin used to be.
+            PostMap.#pendingMarker.setPopupContent(PostMap.#pinMenu(Composer, map, form, latitude, longitude));
             return;
         }
 
         PostMap.#pendingMarker = L.marker([latitude, longitude], { draggable: true, opacity: 0.7 })
             .addTo(map)
-            .bindTooltip('Posting here - drag to move, click to clear')
+            .bindPopup(PostMap.#pinMenu(Composer, map, form, latitude, longitude))
             .on('dragend', (event) => {
                 const position = event.target.getLatLng();
-                Composer.getInstance(form)?.setLocation(position.lat, position.lng);
+                const composer = form ? Composer.getInstance(form) : null;
+
+                if (composer !== null) {
+                    composer.setLocation(position.lat, position.lng);
+                    return;
+                }
+
+                PostMap.#pendingMarker.setPopupContent(PostMap.#pinMenu(Composer, map, form, position.lat, position.lng));
             })
-            .on('click', () => Composer.getInstance(form)?.setLocation(null, null));
+            .openPopup();
+    }
+
+    /**
+     * The little menu that opens out of a dropped pin. A click on the map is
+     * ambiguous - it might mean "post here" or "show me what's here" - so it
+     * asks instead of assuming, and nothing scrolls until a choice is made.
+     */
+    static #pinMenu(Composer, map, form, latitude, longitude) {
+        const menu = document.createElement('div');
+        menu.className = 'MapPinMenu d-flex flex-column gap-1';
+
+        const position = document.createElement('div');
+        position.className = 'muted';
+        position.textContent = latitude.toFixed(4) + ', ' + longitude.toFixed(4);
+        menu.appendWithSpace(position);
+
+        // Only offered when there's somewhere to post from - a logged-out
+        // viewer still gets the pin and the nearby link.
+        if (form) {
+            const post_here = document.createElement('button');
+            post_here.type = 'button';
+            post_here.className = 'Button';
+            post_here.textContent = 'Post here';
+            post_here.addEventListener('click', () => {
+                form.classList.add('Active');
+                form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+            menu.appendWithSpace(post_here);
+        }
+
+        const nearby = document.createElement('a');
+        nearby.className = 'Button';
+        nearby.href = ClientConfig.siteURL() + '/nearby?lat=' + encodeURIComponent(latitude) + '&lng=' + encodeURIComponent(longitude);
+        nearby.textContent = 'Posts nearby';
+        menu.appendWithSpace(nearby);
+
+        const clear = document.createElement('button');
+        clear.type = 'button';
+        clear.className = 'Button';
+        clear.textContent = 'Clear pin';
+        clear.addEventListener('click', () => {
+            const composer = form ? Composer.getInstance(form) : null;
+
+            if (composer !== null) {
+                composer.setLocation(null, null);
+                return;
+            }
+
+            PostMap.#clearPending(map);
+        });
+        menu.appendWithSpace(clear);
+
+        return menu;
     }
 
     static #clearPending(map) {

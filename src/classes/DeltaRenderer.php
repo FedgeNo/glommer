@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 /**
- * Server-side mirror of render_delta() in delta.js: turns a Quill Delta (its
+ * Server-side mirror of DeltaRenderer.render() in DeltaRenderer.js: turns a Quill Delta (its
  * decoded ops array) into a .PostBody DOM subtree, for the initial page /
  * permalink render. The rendered HTML is byte-for-byte the shape the client
  * builds from the same ops, so a post looks identical whether it came in the
  * page or over AJAX. Formula embeds emit a .PostFormula span carrying the LaTeX
  * source (KaTeX is JS-only) for the client render_formulas() pass.
  *
- * The render runs the "honest links" pass (see Linkify), kept identical to
- * delta.js: pass 1 strips the href off any link whose visible text reads as a
+ * The render runs the "honest links" pass (see Linkifier), kept identical to
+ * DeltaRenderer.js: pass 1 strips the href off any link whose visible text reads as a
  * URL (anti-phishing), pass 2 linkifies bare URLs (self-links) and #hashtags in
  * plain text. External links open in a new tab; internal/hashtag links open in
  * place.
@@ -143,7 +143,7 @@ class DeltaRenderer extends HTMLObject
         $group_link = null;
 
         $resolve = function () use (&$result, &$group, &$group_text, &$group_link): void {
-            if ($group !== [] && Linkify::textLooksURL($group_text)) {
+            if ($group !== [] && Linkifier::textLooksURL($group_text)) {
                 foreach ($group as $i) {
                     unset($result[$i]['attributes']['link']);
 
@@ -186,7 +186,7 @@ class DeltaRenderer extends HTMLObject
      * The inline nodes for a standalone plain-text string (a user bio): the
      * same pass-2 URL/hashtag/mention linkifying a post gets, with no Delta
      * block or inline-format attributes. Lets a non-Delta text field share the
-     * one linkifier (and its PHP/JS parity via Linkify) rather than growing its
+     * one linkifier (and its PHP/JS parity via Linkifier) rather than growing its
      * own. Newlines stay as text - the caller preserves them with CSS.
      *
      * @return \DOMNode[]
@@ -219,7 +219,7 @@ class DeltaRenderer extends HTMLObject
 
         $nodes = [];
 
-        foreach (Linkify::tokenize($text) as $segment) {
+        foreach (Linkifier::tokenize($text) as $segment) {
             $inner = self::formattedTextNode($doc, $segment['text'], $attrs);
 
             if ($segment['type'] === 'url') {
@@ -306,7 +306,7 @@ class DeltaRenderer extends HTMLObject
 
     private static function opensInNewTab(string $href): bool
     {
-        $host = Linkify::linkHost($href);
+        $host = Linkifier::linkHost($href);
 
         if ($host === null) {
             return false;

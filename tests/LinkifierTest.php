@@ -2,63 +2,63 @@
 
 declare(strict_types=1);
 
-class LinkifyTest extends TestCase
+class LinkifierTest extends TestCase
 {
     public function testTextLooksURLDetectsSchemeURL(): void
     {
-        $this -> assertTrue(Linkify::textLooksURL('check out https://example.com/path for more'));
+        $this -> assertTrue(Linkifier::textLooksURL('check out https://example.com/path for more'));
     }
 
     public function testTextLooksURLDetectsWwwPrefixed(): void
     {
-        $this -> assertTrue(Linkify::textLooksURL('go to www.example.com now'));
+        $this -> assertTrue(Linkifier::textLooksURL('go to www.example.com now'));
     }
 
     public function testTextLooksURLDetectsBareDomainWithSlash(): void
     {
-        $this -> assertTrue(Linkify::textLooksURL('see example.com/page for details'));
+        $this -> assertTrue(Linkifier::textLooksURL('see example.com/page for details'));
     }
 
     public function testTextLooksURLRejectsBareDomainWithoutSlash(): void
     {
         // No path slash - LOOKS_URL requires one for a bare (schemeless,
         // non-www) domain, so this reads as plain text, not a link.
-        $this -> assertFalse(Linkify::textLooksURL('my email is user@example.com'));
+        $this -> assertFalse(Linkifier::textLooksURL('my email is user@example.com'));
     }
 
     public function testTextLooksURLRejectsPlainText(): void
     {
-        $this -> assertFalse(Linkify::textLooksURL('just an ordinary sentence, nothing linky here'));
+        $this -> assertFalse(Linkifier::textLooksURL('just an ordinary sentence, nothing linky here'));
     }
 
     public function testLinkHostExtractsAndLowercasesHost(): void
     {
-        $this -> assertSame('example.com', Linkify::linkHost('https://EXAMPLE.com/path'));
+        $this -> assertSame('example.com', Linkifier::linkHost('https://EXAMPLE.com/path'));
     }
 
     public function testLinkHostStripsUserinfo(): void
     {
-        $this -> assertSame('example.com', Linkify::linkHost('https://user:pass@example.com/path'));
+        $this -> assertSame('example.com', Linkifier::linkHost('https://user:pass@example.com/path'));
     }
 
     public function testLinkHostStripsPort(): void
     {
-        $this -> assertSame('example.com', Linkify::linkHost('https://example.com:8443/path'));
+        $this -> assertSame('example.com', Linkifier::linkHost('https://example.com:8443/path'));
     }
 
     public function testLinkHostReturnsNullForRelativeURL(): void
     {
-        $this -> assertNull(Linkify::linkHost('/users/fedge/'));
+        $this -> assertNull(Linkifier::linkHost('/users/fedge/'));
     }
 
     public function testLinkHostReturnsNullForMailto(): void
     {
-        $this -> assertNull(Linkify::linkHost('mailto:someone@example.com'));
+        $this -> assertNull(Linkifier::linkHost('mailto:someone@example.com'));
     }
 
     public function testTokenizePlainTextIsOneTextSegment(): void
     {
-        $segments = Linkify::tokenize('just plain text, nothing special');
+        $segments = Linkifier::tokenize('just plain text, nothing special');
 
         $this -> assertCount(1, $segments);
         $this -> assertSame('text', $segments[0]['type']);
@@ -67,7 +67,7 @@ class LinkifyTest extends TestCase
 
     public function testTokenizeBareURLBecomesURLSegment(): void
     {
-        $segments = Linkify::tokenize('link: https://example.com/path see');
+        $segments = Linkifier::tokenize('link: https://example.com/path see');
 
         $this -> assertCount(3, $segments);
         $this -> assertSame('text', $segments[0]['type']);
@@ -78,7 +78,7 @@ class LinkifyTest extends TestCase
 
     public function testTokenizeHashtagBecomesHashtagSegmentWithLowercasedTag(): void
     {
-        $segments = Linkify::tokenize('great #Cats content');
+        $segments = Linkifier::tokenize('great #Cats content');
 
         $this -> assertCount(3, $segments);
         $this -> assertSame('hashtag', $segments[1]['type']);
@@ -90,7 +90,7 @@ class LinkifyTest extends TestCase
     {
         // classify() requires at least one letter in the tag body - a bare
         // year like #2024 has none, so it's left as plain text.
-        $segments = Linkify::tokenize('happy #2024 everyone');
+        $segments = Linkifier::tokenize('happy #2024 everyone');
 
         foreach ($segments as $segment) {
             $this -> assertFalse($segment['type'] === 'hashtag', 'a numeric-only tag should never linkify');
@@ -102,7 +102,7 @@ class LinkifyTest extends TestCase
         // The trimmed "." becomes its own trailing text segment - it has no
         // adjacent text segment to merge into here (the URL sits between it
         // and the leading "see "), so this is 3 segments, not 2.
-        $segments = Linkify::tokenize('see https://example.com/page.');
+        $segments = Linkifier::tokenize('see https://example.com/page.');
 
         $this -> assertCount(3, $segments);
         $this -> assertSame('url', $segments[1]['type']);
@@ -116,7 +116,7 @@ class LinkifyTest extends TestCase
         // The trailing "." trimmed off the URL above becomes its own text
         // segment internally - mergeText() must fold it back into the
         // following text rather than leaving two separate text nodes.
-        $segments = Linkify::tokenize('see https://example.com/page. thanks!');
+        $segments = Linkifier::tokenize('see https://example.com/page. thanks!');
 
         $text_segments = array_values(array_filter($segments, fn ($s) => $s['type'] === 'text'));
 
@@ -128,7 +128,7 @@ class LinkifyTest extends TestCase
 
     public function testTokenizeHashInsideURLIsNotATag(): void
     {
-        $segments = Linkify::tokenize('https://example.com/page#section');
+        $segments = Linkifier::tokenize('https://example.com/page#section');
 
         $this -> assertCount(1, $segments);
         $this -> assertSame('url', $segments[0]['type']);
@@ -136,7 +136,7 @@ class LinkifyTest extends TestCase
     }
     public function testTokenizeRemoteHandleBecomesAMentionOfTheFullHandle(): void
     {
-        $segments = Linkify::tokenize('hi @bob@site.com');
+        $segments = Linkifier::tokenize('hi @bob@site.com');
 
         $this -> assertSame('mention', $segments[1]['type']);
         $this -> assertSame('bob@site.com', $segments[1]['username']);
@@ -150,7 +150,7 @@ class LinkifyTest extends TestCase
     public function testTokenizeBareEmailIsNeverAMention(): void
     {
         foreach (['bob@site.com', 'email me at bob@site.com ok', 'a.b@sub.domain.co.uk'] as $text) {
-            foreach (Linkify::tokenize($text) as $segment) {
+            foreach (Linkifier::tokenize($text) as $segment) {
                 $this -> assertFalse($segment['type'] === 'mention');
             }
         }
@@ -158,21 +158,21 @@ class LinkifyTest extends TestCase
 
     public function testTokenizeRemoteMentionIsCaseFoldedForTheLink(): void
     {
-        $segments = Linkify::tokenize('@Bob@Mastodon.Social');
+        $segments = Linkifier::tokenize('@Bob@Mastodon.Social');
 
         $this -> assertSame('bob@mastodon.social', $segments[0]['username']);
     }
 
     public function testTokenizeRemoteMentionKeepsATrailingSentencePeriodOutOfTheHandle(): void
     {
-        $segments = Linkify::tokenize('@bob@site.com.');
+        $segments = Linkifier::tokenize('@bob@site.com.');
 
         $this -> assertSame('bob@site.com', $segments[0]['username']);
     }
 
     public function testTokenizeHandleWithoutADottedHostFallsBackToTheLocalMention(): void
     {
-        $segments = Linkify::tokenize('@bob@nodot');
+        $segments = Linkifier::tokenize('@bob@nodot');
 
         $this -> assertSame('bob', $segments[0]['username']);
     }
@@ -202,16 +202,16 @@ class LinkifyTest extends TestCase
             'a#b ##c @@d',
         ];
 
-        $php_output = array_map(static fn (string $text): array => Linkify::tokenize($text), $cases);
+        $php_output = array_map(static fn (string $text): array => Linkifier::tokenize($text), $cases);
 
         $js_output = $this -> tokenizeWithNode($cases);
 
         if ($js_output === null) {
-            $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkify.php');
-            $js = (string) file_get_contents(__DIR__ . '/../scripts/delta.js');
+            $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkifier.php');
+            $js = (string) file_get_contents(__DIR__ . '/../scripts/Linkifier.js');
 
             preg_match('/private const SCAN = "(.*)";/', $php, $php_match);
-            preg_match('/const LINKIFY_SCAN = "(.*)";/', $js, $js_match);
+            preg_match('/static SCAN = "(.*)";/', $js, $js_match);
 
             $this -> assertSame($php_match[1] ?? 'php', $js_match[1] ?? 'js');
 
@@ -222,7 +222,7 @@ class LinkifyTest extends TestCase
     }
 
     /**
-     * Runs delta.js's linkify_tokenize over each input under node. Null when
+     * Runs Linkifier.js's Linkifier.tokenize over each input under node. Null when
      * node isn't installed, so the suite still runs on a box without it.
      *
      * @param string[] $cases
@@ -235,8 +235,8 @@ class LinkifyTest extends TestCase
         }
 
         $script = 'const fs = require("fs");'
-            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../scripts/delta.js') . ', "utf8");'
-            . 'const tokenize = new Function(src + "; return linkify_tokenize;")();'
+            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../scripts/Linkifier.js') . ', "utf8");'
+            . 'const tokenize = new Function(src.replace(/^export /gm, "") + "; return Linkifier.tokenize;")();'
             . 'const cases = ' . json_encode($cases) . ';'
             . 'process.stdout.write(JSON.stringify(cases.map((t) => tokenize(t))));';
 
@@ -253,12 +253,12 @@ class LinkifyTest extends TestCase
      */
     public function testMentionLengthCapCoversAWholeHandle(): void
     {
-        $this -> assertSame(255, Linkify::MAX_MENTION_LENGTH);
+        $this -> assertSame(255, Linkifier::MAX_MENTION_LENGTH);
 
-        $js = (string) file_get_contents(__DIR__ . '/../scripts/delta.js');
-        preg_match('/const LINKIFY_MAX_MENTION_LENGTH = (\\d+);/', $js, $match);
+        $js = (string) file_get_contents(__DIR__ . '/../scripts/Linkifier.js');
+        preg_match('/static MAX_MENTION_LENGTH = (\\d+);/', $js, $match);
 
-        $this -> assertSame((string) Linkify::MAX_MENTION_LENGTH, $match[1]);
+        $this -> assertSame((string) Linkifier::MAX_MENTION_LENGTH, $match[1]);
     }
 
 

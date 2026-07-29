@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * A user's bio: their plain-text description rendered with the same
  * URL/hashtag/mention linkifying a post's text gets (through DeltaRenderer, so
- * it shares Linkify's PHP/JS parity) - but never accepting Delta formatting.
+ * it shares Linkifier's PHP/JS parity) - but never accepting Delta formatting.
  * Newlines are preserved by the .UserBio white-space rule, not <br>s.
  */
 class UserBio extends HTMLObject

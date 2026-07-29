@@ -1,6 +1,6 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { User } from '/scripts/User.js';
-import { render_delta, see_more_element, is_safe_link, ALLOWED_LINK_SCHEMES } from '/scripts/delta.js';
+import { DeltaRenderer } from '/scripts/DeltaRenderer.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
 import { parse_server_date } from '/scripts/utils.js';
 import { Api } from '/scripts/Api.js';
@@ -85,7 +85,7 @@ export class Post {
         const wrapper = document.createElement('div');
         wrapper.className = 'FeedItem LinkItem';
 
-        const link_is_safe = is_safe_link(this.linkURL, ALLOWED_LINK_SCHEMES);
+        const link_is_safe = DeltaRenderer.isSafeLink(this.linkURL, DeltaRenderer.ALLOWED_LINK_SCHEMES);
         const link = document.createElement(link_is_safe ? 'a' : 'div');
 
         if (link_is_safe) {
@@ -267,10 +267,10 @@ export class Post {
             }
 
             if (this.descriptionDelta) {
-                const body = render_delta(this.descriptionDelta);
+                const body = DeltaRenderer.render(this.descriptionDelta);
 
                 if (this.descriptionTruncated && this.seeMoreURL) {
-                    body.appendWithSpace(see_more_element(this.seeMoreURL));
+                    body.appendWithSpace(DeltaRenderer.seeMoreElement(this.seeMoreURL));
                 }
 
                 post.appendWithSpace(body);

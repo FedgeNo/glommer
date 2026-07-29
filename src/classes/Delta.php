@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Helpers for the Quill Delta a post's rich text is stored as: decoding the
  * stored/submitted JSON to an ops array, sanitizing user-submitted ops down to
- * the formats this app actually renders (DeltaRenderer / render_delta), and
+ * the formats this app actually renders (DeltaRenderer.php / DeltaRenderer.js), and
  * deriving the flat plaintext that Posts.description now holds (the "document"
  * form used for the <meta>/OG description, the RSS summary, and the FULLTEXT
  * search index). The ops array is the one shape both renderers consume.
@@ -185,7 +185,7 @@ class Delta
 
     /**
      * The distinct #hashtags in a post's body (lowercased, first-seen order).
-     * Uses the same rule the renderer linkifies with (Linkify), and - matching
+     * Uses the same rule the renderer linkifies with (Linkifier), and - matching
      * the renderer - skips runs that aren't linkified: inline code and text
      * already inside a link. Uncapped here; Hashtag::indexPost stores only a
      * post's first MAX_HASHTAGS of them.
@@ -210,7 +210,7 @@ class Delta
                 continue;
             }
 
-            foreach (Linkify::tokenize($insert) as $segment) {
+            foreach (Linkifier::tokenize($insert) as $segment) {
                 if ($segment['type'] === 'hashtag') {
                     $tags[$segment['tag']] = true;
                 }
@@ -222,7 +222,7 @@ class Delta
 
     /**
      * The distinct @mentioned usernames in a post's body (lowercased -
-     * Linkify::tokenize() already lowercases them, same as usernames
+     * Linkifier::tokenize() already lowercases them, same as usernames
      * themselves always are - first-seen order. Same skip rules as
      * hashtags() (inline code, already-linked text). Uncapped; Mention::indexPost
      * applies the spam policy and resolves which usernames are real users.
@@ -247,7 +247,7 @@ class Delta
                 continue;
             }
 
-            foreach (Linkify::tokenize($insert) as $segment) {
+            foreach (Linkifier::tokenize($insert) as $segment) {
                 if ($segment['type'] === 'mention') {
                     $usernames[$segment['username']] = true;
                 }

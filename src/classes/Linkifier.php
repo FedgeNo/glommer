@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The shared link/hashtag logic for the render pass, kept byte-for-byte in step
- * with the JS mirror in delta.js (the two renderers must produce identical DOM).
+ * with the JS mirror in Linkifier.js (the two renderers must produce identical DOM).
  *
  * Everything here is pinned for PHP/JS parity: ASCII-only character classes (no
  * \s/\w/\b, which differ between PCRE and JS), no /u or /i flag (also divergent),
@@ -23,7 +23,7 @@ declare(strict_types=1);
  *     URLs become self-links, #hashtags become tag links, @mentions become
  *     profile links, the rest stays text.
  */
-class Linkify
+class Linkifier
 {
     // Longest tag we linkify / store. Enforced in code, not the regex, so the
     // pattern body stays free of {} and can share one delimiter with JS.
@@ -56,7 +56,7 @@ class Linkify
     // "bob@site.com" the @ is preceded by a word character, so it never starts
     // a mention. Only an explicit leading @ does.
     //
-    // Shared verbatim with delta.js via the same string; only the delimiter
+    // Shared verbatim with Linkifier.js via the same string; only the delimiter
     // differs (PHP {} vs JS new RegExp). No {} in the body so the {} delimiter
     // is safe.
     private const SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
@@ -65,7 +65,7 @@ class Linkify
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.
     private const LOOKS_URL = 'https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/';
 
-    // Extracts a URL's authority (userinfo@host:port). Shared with delta.js so
+    // Extracts a URL's authority (userinfo@host:port). Shared with Linkifier.js so
     // internal-vs-external is decided identically without PHP parse_url / JS URL
     // differences (default-port, scheme-relative, userinfo all handled here).
     private const AUTHORITY = '^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)';

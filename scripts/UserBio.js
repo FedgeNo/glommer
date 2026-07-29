@@ -1,7 +1,8 @@
-import { linkify_tokenize, linked_node, hashtag_node, mention_node } from '/scripts/delta.js';
+import { Linkifier } from '/scripts/Linkifier.js';
+import { DeltaRenderer } from '/scripts/DeltaRenderer.js';
 
 /** Mirrors UserBio.php: a user's plain-text bio, linkified the same way the
- * server renders it (delta.js's shared linkifier), so a saved bio round-trips
+ * server renders it (the shared Linkifier), so a saved bio round-trips
  * identically. Newlines are preserved by the .UserBio white-space rule. */
 export class UserBio {
     constructor(user) {
@@ -12,15 +13,15 @@ export class UserBio {
         const bio = document.createElement('div');
         bio.className = 'UserBio';
 
-        for (const segment of linkify_tokenize(this.description)) {
+        for (const segment of Linkifier.tokenize(this.description)) {
             const inner = document.createTextNode(segment.text);
 
             if (segment.type === 'url') {
-                bio.appendWithSpace(linked_node(segment.text, inner));
+                bio.appendWithSpace(DeltaRenderer.linkedNode(segment.text, inner));
             } else if (segment.type === 'hashtag') {
-                bio.appendWithSpace(hashtag_node(segment.tag, inner));
+                bio.appendWithSpace(DeltaRenderer.hashtagNode(segment.tag, inner));
             } else if (segment.type === 'mention') {
-                bio.appendWithSpace(mention_node(segment.username, inner));
+                bio.appendWithSpace(DeltaRenderer.mentionNode(segment.username, inner));
             } else {
                 bio.appendWithSpace(inner);
             }

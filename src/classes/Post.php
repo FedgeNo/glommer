@@ -420,7 +420,7 @@ DELETE
     /**
      * The JSON representation used by AJAX endpoints (create-post, feed)
      * that feed the client-side Post class, which rebuilds the body from the
-     * Delta ops via render_delta() - no HTML crosses the wire.
+     * Delta ops via DeltaRenderer.render() - no HTML crosses the wire.
      */
     public function toPayload(int $reply_count, int $like_count, bool $liked, bool $bookmarked): array
     {

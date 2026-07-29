@@ -21,6 +21,15 @@ class PostActionBar extends HTMLObject
         $actions = new Div();
         $actions -> class = 'd-flex align-items-center gap-2 ms-auto';
 
+        // Share button – visible to everyone
+        $share_button = new Button();
+        $share_button -> class = 'Button PostShareButton';
+        $share_button -> attributes['data-share-url'] = ServerURL::absolute(
+            '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
+        );
+        $share_button -> addContent('Share');
+        $actions -> addContent($share_button);
+
         if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0)) {
             $actions -> addContent($this -> replyButton());
         }

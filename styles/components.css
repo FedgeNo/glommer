@@ -750,7 +750,7 @@ label.visually-hidden { margin-bottom: 0; }
 
 /* ---------- Messages ---------- */
 
-.MessagesPage { padding-bottom: 9rem; }
+body.MessagesPage { padding-bottom: 9rem; }
 
 .Message {
     position: relative;

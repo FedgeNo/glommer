@@ -18,6 +18,8 @@ $page -> addContent(new SettingsSection('Theme', new ThemeSelector()));
 
 $page -> addContent(new SettingsSection('Remembered Devices', new RememberedDevicesList(['userId' => (int) Auth::user() -> userId])));
 
+$page -> addContent(new SettingsSection('Sessions', new LogoutEverywherePanel()));
+
 $page -> addContent(new SettingsSection('Fediverse', new RemoteFollowsForm(RemoteFollow::listForUser((int) Auth::user() -> userId))));
 
 // The site needs at least one admin account to function - api/delete-account.php

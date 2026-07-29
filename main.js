@@ -15,24 +15,24 @@ if (document.querySelector('.User, .UserList')) {
     import('/User.js');
     import('/OtherUser.js');
 }
-if (document.querySelector('.BannedUser'))        import('/BannedUser.js');
+if (document.querySelector('.BannedUser'))             import('/BannedUser.js');
 if (document.querySelector('.Post')) {
     import('/Post.js');
     import('/PostEditor.js');
 }
-if (document.querySelector('.MessageList'))       import('/Message.js');
-if (document.querySelector('.NotificationList'))  import('/Notification.js');
-if (document.querySelector('.ReportList'))        import('/ReportCard.js');
-if (document.querySelector('.TrendingEntityChip')) import('/TrendingEntity.js');
+if (document.querySelector('.MessageList'))            import('/Message.js');
+if (document.querySelector('.NotificationList'))       import('/Notification.js');
+if (document.querySelector('.ReportList'))             import('/ReportCard.js');
+if (document.querySelector('.TrendingEntityChip'))     import('/TrendingEntity.js');
 
 if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get('currentUserId') !== null) {
     import('/Composer.js');
 }
 
-if (document.querySelector('[data-infinite-scroll]')) import('/InfiniteScroller.js');
-if (document.querySelector('.SearchInput'))       import('/Search.js');
-if (document.querySelector('.MessageComposer'))   import('/MessageComposer.js');
-if (document.querySelector('.PostBody'))          import('/math.js');
+if (document.querySelector('[data-infinite-scroll]'))  import('/InfiniteScroller.js');
+if (document.querySelector('.SearchInput'))            import('/Search.js');
+if (document.querySelector('.MessageComposer'))        import('/MessageComposer.js');
+if (document.querySelector('.PostBody'))               import('/math.js');
 
 if (document.querySelector('.LoginForm'))              import('/LoginForm.js');
 if (document.querySelector('.LogoutForm'))             import('/LogoutForm.js');
@@ -56,7 +56,8 @@ if (document.querySelector('.SignupForm'))             import('/UsernameValidati
 if (document.querySelector('.HashtagGraphList'))       import('/HashtagGraphList.js');
 if (document.querySelector('.HelpSearchInput'))        import('/help.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/NotificationTestPanel.js');
-if (document.querySelector('.RevokeSessionButton')) import('/RememberedDevice.js');
+if (document.querySelector('.RevokeSessionButton'))    import('/RememberedDevice.js');
+if (document.querySelector('.LogoutEverywherePanel'))  import('/LogoutEverywherePanel.js');
 
 document.addEventListener('error', function(event) {
     const img = event.target;

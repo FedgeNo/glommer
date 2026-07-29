@@ -7,7 +7,7 @@ declare(strict_types=1);
  * Google) and the email/password form beneath it. The flanking lines are drawn
  * in CSS (::before / ::after), so the element is just the label text.
  */
-class AuthDivider extends HTMLObject
+class AuthDivider extends Div
 {
     public ?string $class = 'AuthDivider';
 

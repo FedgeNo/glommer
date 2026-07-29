@@ -6,9 +6,14 @@ declare(strict_types=1);
 // class derived from its class hierarchy, guards against rendering twice, and
 // accepts CData (and raw DOMNodes) as content on top of the strings and nested
 // objects DOMObject already handles.
-class HTMLObject extends DOMObject
+//
+// Abstract, and it deliberately sets no tagName: every element either names its
+// own tag or inherits one from a primitive that does (Div, Span, Button, ...).
+// A default of 'div' here would silently make anything that forgot into a div,
+// which is how seventeen classes ended up redeclaring a tag they already had.
+// DOMObject's uninitialized $tagName is what turns forgetting into an error.
+abstract class HTMLObject extends DOMObject
 {
-    public string $tagName = 'div';
     public ?string $id = null;
     public ?string $class = null;
 

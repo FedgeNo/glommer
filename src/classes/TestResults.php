@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class TestResults extends HTMLObject
+class TestResults extends Div
 {
     public ?string $class = 'TestResults Card';
 
@@ -20,7 +20,7 @@ class TestResults extends HTMLObject
         $phpBadge -> contents[] = 'PHP: ' . ($phpExitCode === 0 ? 'Passing' : 'Failing');
         $this -> contents[] = $phpBadge;
 
-        $phpReport = new HTMLObject();
+        $phpReport = new Div();
         $phpReport -> tagName = 'pre';
         $phpReport -> class = 'TestResultsOutput';
         $phpReport -> contents[] = $phpOutput !== '' ? $phpOutput : '(no output)';
@@ -66,7 +66,7 @@ class TestResults extends HTMLObject
             $jsBadge -> contents[] = 'JS: ' . ($jsExitCode === 0 ? 'Passing' : 'Failing');
             $this -> contents[] = $jsBadge;
 
-            $jsReport = new HTMLObject();
+            $jsReport = new Div();
             $jsReport -> tagName = 'pre';
             $jsReport -> class = 'TestResultsOutput';
             $jsReport -> contents[] = $jsOutput !== '' ? $jsOutput : '(no output)';

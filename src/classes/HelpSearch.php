@@ -8,7 +8,7 @@ declare(strict_types=1);
  * for ranked matches, clearing it restores the browse view - all handled in
  * HelpSearch.js against /api/help-search, mirroring how UserSearch works.
  */
-class HelpSearch extends HTMLObject
+class HelpSearch extends Div
 {
     public ?string $class = 'HelpSearch';
 

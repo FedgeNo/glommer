@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class UserSearch extends HTMLObject
+class UserSearch extends Div
 {
     public ?string $class = 'UserSearch';
 

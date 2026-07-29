@@ -8,7 +8,7 @@ declare(strict_types=1);
  * /api/search-banned-users as you type and repopulates the BannedUserList
  * below (restoring the paginated first page when the box empties).
  */
-class BannedUserSearch extends HTMLObject
+class BannedUserSearch extends Div
 {
     public ?string $class = 'BannedUserSearch';
 

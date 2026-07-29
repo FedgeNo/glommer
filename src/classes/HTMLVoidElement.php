@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class HTMLVoidElement extends HTMLObject
+abstract class HTMLVoidElement extends HTMLObject
 {
     public function addContent(HTMLObject|CData|string|\DOMNode $item): void
     {

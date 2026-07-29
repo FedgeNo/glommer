@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class FriendSearch extends HTMLObject
+class FriendSearch extends Div
 {
     public ?string $class = 'FriendSearch';
 

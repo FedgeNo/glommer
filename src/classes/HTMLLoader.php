@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class HTMLLoader extends HTMLObject
+class HTMLLoader extends Div
 {
     public function toDOM(): \DOMElement
     {

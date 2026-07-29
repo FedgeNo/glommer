@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PostSearch extends HTMLObject
+class PostSearch extends Div
 {
     public ?string $class = 'PostSearch';
 

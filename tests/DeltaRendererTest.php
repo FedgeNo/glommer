@@ -176,11 +176,15 @@ class DeltaRendererTest extends TestCase
 
     public function testSafeLinkOpensInNewTab()
     {
-        $ops = [['insert' => "click here", 'attributes' => ['link' => 'https://example.com']], ['insert' => "\n"]];
+        // External by construction: a strict subdomain of the configured site
+        // host can never equal that host, so this stays a foreign link whatever
+        // siteURL a given deployment (or the dev box) is set to.
+        $external = 'https://external.' . ServerURL::host() . '/path';
+        $ops = [['insert' => "click here", 'attributes' => ['link' => $external]], ['insert' => "\n"]];
         $el = (new DeltaRenderer($ops)) -> toDOM();
         $anchor = $el -> getElementsByTagName('a') -> item(0);
         $this -> assertNotNull($anchor);
-        $this -> assertSame('https://example.com', $anchor -> getAttribute('href'));
+        $this -> assertSame($external, $anchor -> getAttribute('href'));
         $this -> assertSame('_blank', $anchor -> getAttribute('target'));
     }
 

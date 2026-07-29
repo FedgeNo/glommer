@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/api-init.php';
 
+// A GET must never end every session on its own: init.php's centralized CSRF
+// check only covers POST, so without this a third-party page could force-log
+// a victim out of all their devices with a plain cross-site GET. Same guard
+// the other GET-reachable mutators (logout, resend-verification) carry.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
 if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
 }

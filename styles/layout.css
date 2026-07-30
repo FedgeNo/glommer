@@ -118,12 +118,17 @@ body:has(.MainNavigation) {
    read as one continuous surface instead of seaming at the border - in
    themes like hacker where the shadow is a hard-edged ring rather than a
    soft blur, an unshadowed trigger butting into a shadowed menu looked like
-   two different border weights meeting. */
+   two different border weights meeting. box-shadow wraps all four sides
+   regardless of border-bottom: none above, so it's clipped flush at the
+   trigger's own bottom edge - visible on top/left/right where it matches the
+   menu, absent on the bottom where the trigger flows into the menu instead.
+*/
 .MainNavigation a.NavDropdownTrigger:hover,
 .NavDropdown:hover .NavDropdownTrigger,
 .NotificationsNavLink > a:hover,
 .NotificationsNavLink:hover > a {
     box-shadow: var(--shadow-pop);
+    clip-path: inset(-2rem -2rem 0 -2rem);
 }
 
 .NavAccountLabel {

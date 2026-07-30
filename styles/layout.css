@@ -114,6 +114,18 @@ body:has(.MainNavigation) {
 .NavDropdown { position: relative; }
 .NavDropdownTrigger { cursor: pointer; }
 
+/* Matches .NavDropdownMenu's own shadow below, so the trigger and the menu
+   read as one continuous surface instead of seaming at the border - in
+   themes like hacker where the shadow is a hard-edged ring rather than a
+   soft blur, an unshadowed trigger butting into a shadowed menu looked like
+   two different border weights meeting. */
+.MainNavigation a.NavDropdownTrigger:hover,
+.NavDropdown:hover .NavDropdownTrigger,
+.NotificationsNavLink > a:hover,
+.NotificationsNavLink:hover > a {
+    box-shadow: var(--shadow-pop);
+}
+
 .NavAccountLabel {
     display: inline-block;
     max-width: 14rem;

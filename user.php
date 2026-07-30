@@ -13,6 +13,13 @@ if ($profile_user === null) {
     exit;
 }
 
+// A Fediverse account's profile exists here only so a member can decide
+// whether to follow it - we're not the ones representing that person to the
+// public, so an anonymous visitor doesn't get to browse it.
+if ($profile_user -> remoteActorURI !== null) {
+    Auth::requireLogin();
+}
+
 if (!$profile_user -> title) {
     $profile_user -> title = $profile_user -> slug;
 }

@@ -8,7 +8,7 @@ $username = (string) ($_GET['username'] ?? '');
 
 $profile_user = User::byUsername($username);
 
-// A followed Fediverse account's profile is browsable on the site, but its
+// A followed Fediverse account's profile is browsable by members, but its
 // posts are not ours to re-publish as a feed of our own - syndicating someone
 // else's server's content from our domain is a different thing entirely to
 // showing it to the person who chose to follow them.

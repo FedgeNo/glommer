@@ -15,6 +15,12 @@ if ($profile_user === null) {
     exit;
 }
 
+// Same reasoning as user.php: a Fediverse account's profile is internal to
+// members deciding whether to follow it, not public-facing.
+if ($profile_user -> remoteActorURI !== null) {
+    Auth::requireLogin();
+}
+
 $is_own = Auth::id() === (int) $profile_user -> userId;
 
 // Same profile card user.php renders (CurrentUser for your own page, OtherUser

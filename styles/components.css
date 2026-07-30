@@ -283,7 +283,9 @@ emoji-picker {
 /* Reserves the widget's real rendered height up front, so Cloudflare's iframe
    loading in asynchronously doesn't jank whatever sits next to it down. */
 .TurnstileWidget {
+    width: 300px;
     height: 65px;
+    overflow: hidden;
 }
 
 .LoginFormFooter {

@@ -87,6 +87,8 @@
 
     RewriteRule ^$ index.php [L,QSA]
     RewriteRule ^feed\.xml$ site-rss-feed.php [L,QSA]
+    RewriteRule ^feeds\.opml$ site-opml.php [L,QSA]
+    RewriteRule ^feeds/([0-9]+)\.opml$ site-opml.php?shard=$1 [L,QSA]
     RewriteRule ^health$ health.php [L,QSA]
     RewriteRule ^environment-check$ environment-check.php [L,QSA]
 

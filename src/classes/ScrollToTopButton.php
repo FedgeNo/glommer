@@ -7,10 +7,8 @@ declare(strict_types=1);
  * viewport, and main.js only reveals it once there's enough scrolled past to
  * be worth the trip back.
  */
-class ScrollToTopButton extends Button
+class ScrollToTopButton extends ButtonButton
 {
-    public ?string $class = 'ScrollToTopButton';
-
     public function toDOM(): \DOMElement
     {
         $this -> attributes['aria-label'] = 'Scroll to top';

@@ -9,13 +9,12 @@ declare(strict_types=1);
  * second one) when it moves the media into and out of a fullscreen overlay,
  * swapping the glyph/label in place rather than swapping elements.
  */
-class MediaFullscreenButton extends Button
+class MediaFullscreenButton extends ButtonButton
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this -> class = 'MediaFullscreenButton';
         $this -> attributes['aria-label'] = 'Fullscreen';
         $this -> contents[] = '⛶';
     }

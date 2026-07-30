@@ -11,14 +11,13 @@ declare(strict_types=1);
  * on the next/prev buttons, a click on an image, or the viewer manually
  * (re-)starting a video/audio themselves.
  */
-class CarouselAutoplayButton extends Button
+class CarouselAutoplayButton extends ButtonButton
 {
     public function __construct()
     {
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> class = 'CarouselAutoplayButton';
         $this -> contents[] = 'Autoplay';
     }
 }

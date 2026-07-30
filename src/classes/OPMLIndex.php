@@ -42,7 +42,7 @@ SELECT COUNT(*) AS `count`
             $outline = new OPMLOutline();
             $outline -> attributes['text'] = 'Members ' . $shard;
             $outline -> attributes['type'] = 'link';
-            $outline -> attributes['url'] = ServerURL::absolute('/feeds/' . $shard . '.opml');
+            $outline -> attributes['url'] = ServerURL::absolute('/feeds-' . $shard . '.opml');
             $outlines[] = $outline;
         }
 

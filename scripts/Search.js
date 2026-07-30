@@ -60,6 +60,7 @@ export class Search {
     _handleInput() {
         clearTimeout(this.debounceId);
         const query = this.input.value.trim();
+        this.input.closest('.SearchBox')?.classList.toggle('HasQuery', query !== '');
         this.debounceId = setTimeout(() => {
             this._performSearch(query);
         }, this.delay);

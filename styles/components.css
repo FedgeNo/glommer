@@ -906,6 +906,12 @@ body.MessagesPage { padding-bottom: 9rem; }
 .CarouselPrevButton:hover,
 .CarouselNextButton:hover { background-color: rgb(15 18 16 / 0.75); }
 
+/* .Button:active's bare scale() would otherwise win on specificity and
+   replace (not compose with) the translateY(-50%) centering above, jumping
+   the button down by half its own height until the mouse releases. */
+.CarouselPrevButton:active,
+.CarouselNextButton:active { transform: translateY(-50%) scale(0.97); }
+
 .CarouselPrevButton { left: 0.5rem; }
 .CarouselNextButton { right: 0.5rem; }
 

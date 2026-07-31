@@ -26,10 +26,10 @@ class LoginForm extends FormForm
             // opposite side, so nothing shifts when it loads.
             $footer = new Div();
             $footer -> class = 'LoginFormFooter';
-            // No align-items override: SubmitButton already carries
-            // align-self-end (the same class that right-aligned it before),
-            // which now bottom-aligns it against the reserved Turnstile box
-            // instead - same corner it always stuck to, just beside the box.
+            // No align-items override: .SubmitButton aligns itself to the
+            // trailing edge, which in this row bottom-aligns it against the
+            // reserved Turnstile box - the same corner it always stuck to,
+            // just beside the box rather than under it.
             $footer -> mixins = ['d-flex', 'justify-content-between'];
             $footer -> addContent(new TurnstileWidget());
             $footer -> addContent(new SubmitButton('Log In'));

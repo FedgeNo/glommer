@@ -120,6 +120,10 @@
 .Button:active { transform: scale(0.97); }
 .Button:disabled { opacity: 0.55; cursor: default; transform: none; }
 
+/* Forms lay their fields out in a column, and the button that submits one sits
+   at the trailing edge rather than stretching across it. */
+.SubmitButton { align-self: flex-end; }
+
 button[type='submit'].Button,
 .ProfileSaveButton {
     background-color: var(--accent);

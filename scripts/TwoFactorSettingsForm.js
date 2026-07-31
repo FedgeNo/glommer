@@ -4,10 +4,12 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 export class TwoFactorSettingsForm {
     static init() {
+        // Word for word what TwoFactorSettingsForm.php renders, so toggling shows
+        // the same text a reload would.
         const onExplanation =
             'When you log in, we\'ll email a verification code you have to enter to finish signing in.';
         const offExplanation =
-            'Add a second step at login for extra security.';
+            'Add a second step at login: we\'ll email a verification code you have to enter, so your password alone isn\'t enough to get in.';
 
         document.addEventListener('submit', async (event) => {
             const form = event.target.closest('.TwoFactorSettingsForm');
@@ -32,7 +34,6 @@ export class TwoFactorSettingsForm {
             }
 
             const now_enabled = data.enabled;
-            form.dataset.enabled = now_enabled ? '1' : '0';
             form.querySelector('legend').textContent = now_enabled
                 ? 'Two-factor authentication is on'
                 : 'Two-factor authentication is off';

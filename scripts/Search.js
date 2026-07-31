@@ -1,5 +1,6 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { csrf_headers, list_item } from '/scripts/utils.js';
+import { render_math } from '/scripts/MathRenderer.js';
 import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { OtherUser } from '/scripts/OtherUser.js';
 import { Post } from '/scripts/Post.js';
@@ -102,13 +103,11 @@ export class Search {
             this._originalOnResponse(this.input, data);
         }
 
-        this.resultsContainer.dataset.query = query;
-
         const items = this._extractItems(data);
         items.forEach(item => {
             const el = this.renderItem(item);
             this.resultsContainer.appendWithSpace(list_item(el));
-            if (typeof render_math === 'function') render_math(el);
+            render_math(el);
         });
 
         // Enable the scroller if there are more pages
@@ -158,11 +157,9 @@ export class Search {
             renderItem: userData => OtherUser.fromData(userData).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.OtherUser').length,
-            onResponse: (input, data) => {
+            onResponse: (input) => {
                 const section = input.closest('.UserSearch').querySelector('.UserSearchSection');
                 section.querySelector('h2').textContent = input.value.trim() === '' ? 'Suggested Users' : 'User Search Results';
-                section.dataset.query = input.value.trim();
-                section.dataset.offset = String(data.response.users.length);
             }
         });
     }
@@ -186,10 +183,6 @@ export class Search {
                 document.querySelector('.SearchFeedSection')?.classList.toggle('Searching', searching);
                 document.querySelector('.ProfileFeedSection')?.classList.toggle('Searching', searching);
             },
-            onResponse: (input, data) => {
-                container.dataset.query = input.value.trim();
-                container.dataset.userId = input.closest('.PostSearch').dataset.userId || '';
-            }
         });
     }
 
@@ -214,9 +207,6 @@ export class Search {
                 document.querySelector('.FriendSection')?.classList.toggle('Searching', searching);
                 document.querySelector('.OutgoingFriendRequestSection')?.classList.toggle('Searching', searching);
             },
-            onResponse: (input, data) => {
-                container.dataset.query = input.value.trim();
-            }
         });
     }
 
@@ -226,16 +216,12 @@ export class Search {
         const container = document.querySelector('.BannedUserList');
         new Search(input, {
             endpoint: query => query ? '/api/search-banned-users' : '/api/banned-history',
-            buildRequest: query => {
-                if (container) container.dataset.searchQuery = query;
-                return query ? { q: query } : {};
-            },
+            buildRequest: query => query ? { q: query } : {},
             resultsContainer: container,
             renderItem: data => BannedUser.fromData(data).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.BannedUser').length,
             onResponse: (input, data) => {
-                if (container) container.dataset.hasMore = data.response.hasMore ? '1' : '0';
                 if (data.response.items.length === 0) {
                     const notice = document.createElement('p');
                     notice.className = 'muted Notice';

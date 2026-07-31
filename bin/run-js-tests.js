@@ -41,13 +41,14 @@ globalThis.ClientConfig = {
     get: (key) => key === 'currentUserId' ? 2 : null,
     siteURL: () => 'http://localhost',
 };
-globalThis.fetch = async (url, options) => {
-    return new window.Response(
-        JSON.stringify({ response: { success: true } }),
-        { status: 200 }
-    );
-};
-globalThis.Response = dom.window.Response;
+// jsdom implements neither fetch nor Response, so the Node runtime's own
+// Response is what stands in. Assigning jsdom's (undefined) over it is what made
+// this stub throw on every call, so any test reaching fetch only ever exercised
+// the code's error branch.
+globalThis.fetch = async () => new Response(
+    JSON.stringify({ response: { success: true } }),
+    { status: 200 }
+);
 globalThis.requestAnimationFrame = (cb) => cb();
 dom.window.requestAnimationFrame = (cb) => cb();
 

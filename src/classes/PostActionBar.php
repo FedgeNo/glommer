@@ -97,9 +97,11 @@ SELECT 1
     public static function likeLabel(bool $liked, int $count): string
     {
         $label = $liked ? 'Unlike' : 'Like';
-            if ($count) {
-                $label .= ' (' . $count . ')';
-            }
+
+        if ($count) {
+            $label .= ' (' . $count . ')';
+        }
+
         return $label;
     }
 

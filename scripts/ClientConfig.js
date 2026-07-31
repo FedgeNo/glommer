@@ -32,7 +32,9 @@ export class ClientConfig {
                 siteURL: window.location.origin,
                 serverTime: Date.now(),
                 WSPort: null,
-                carouselEagerItems: 3,
+                // Mirrors Carousel::INITIAL_EAGER_ITEMS, which is what the
+                // cookie normally carries.
+                carouselEagerItems: 5,
                 needsMath: false,
             };
         }

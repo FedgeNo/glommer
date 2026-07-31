@@ -6,7 +6,7 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { Toast } from '/scripts/Toast.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
-import { parse_server_date } from '/scripts/utils.js';
+import { RelativeTime } from '/scripts/RelativeTime.js';
 
 /** Mirrors User.php: the identity card and the byline header, shared by every
  * user-shaped thing (OtherUser, FriendRequest, BannedUser, a report's user
@@ -59,7 +59,7 @@ export class User {
      */
     toElement() {
         const div = document.createElement('div');
-        div.className = 'User Card';
+        div.className = 'User';
 
         if (this.slug) {
             div.dataset.username = this.slug;
@@ -90,11 +90,7 @@ export class User {
         if (this.createdAt) {
             const joined = document.createElement('div');
             joined.className = 'muted text-sm';
-            joined.textContent = 'Joined ' + parse_server_date(this.createdAt).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-            });
+            joined.textContent = 'Joined ' + RelativeTime.date(this.createdAt);
             info.appendWithSpace(joined);
         }
 

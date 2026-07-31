@@ -139,7 +139,7 @@ class OtherUser extends User
 
     /**
      * The viewer-relative JSON an OtherUser card is built from client-side
-     * (other-user.js OtherUser.fromData). Everything that decides which action
+     * (OtherUser.js OtherUser.fromData). Everything that decides which action
      * buttons show - the block state each way and the friendship status - is
      * computed against $viewer, so the same person renders differently
      * depending on who's looking. $viewer is null for a logged-out visitor

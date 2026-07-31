@@ -4,14 +4,14 @@ export class QuillEditor {
 
     /**
      * @param {HTMLElement} container – the .QuillEditor div
-     * @param {object} [options] – optional Quill configuration overrides
+     * @param {object} [options] – optional Quill configuration overrides,
+     *     including the placeholder, which differs per composer
      */
     constructor(container, options = {}) {
         this.#container = container;
 
         const defaultOptions = {
             theme: 'snow',
-            placeholder: container.dataset.placeholder,
             modules: {
                 toolbar: [
                     ['bold', 'italic', 'underline', 'strike'],

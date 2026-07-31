@@ -9,7 +9,7 @@ class Carousel extends Div
     // slide plus this many load up front; the rest defer until the carousel
     // advances toward them (main.js keeps the same buffer filled as it moves),
     // so a large gallery doesn't fetch everything at once. Mirrored client-side
-    // in post.js (itemsToCarousel) and main.js's advance buffer, which read it
+    // in Post.js (itemsToCarousel) and CarouselController.js's advance buffer, which read it
     // as window.carouselEagerItems (see Page::create).
     public const INITIAL_EAGER_ITEMS = 5;
 

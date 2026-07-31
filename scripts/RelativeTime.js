@@ -47,6 +47,32 @@ export class RelativeTime {
         });
     }
 
+    /**
+     * A full date, as the server writes it (PHP's 'F j, Y'). In UTC, like every
+     * absolute time the server renders: it has no way to know the viewer's
+     * timezone, so formatting a client-built copy locally would have the same
+     * date read differently depending on which side rendered it.
+     */
+    static date(dateString) {
+        return parse_server_date(dateString).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            timeZone: 'UTC',
+        });
+    }
+
+    /** That date plus the time of day, matching PHP's 'F j, Y g:i A'. */
+    static dateAndTime(dateString) {
+        const target = parse_server_date(dateString);
+
+        return RelativeTime.date(dateString) + ' ' + target.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZone: 'UTC',
+        });
+    }
+
     // ----------------------------------------------------------------
     // DOM refresh (was refresh_relative_times in main.js)
     // ----------------------------------------------------------------

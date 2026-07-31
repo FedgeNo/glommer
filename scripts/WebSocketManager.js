@@ -11,6 +11,10 @@ export class WebSocketManager {
         this.reconnectDelay = 10000;
         this.token = null;
         this.reconnecting = false;
+        // The page's own title, kept so the unread marker can be put in front of
+        // it and taken back off. Remembered here rather than parked on the
+        // <title> element, since it's this manager's bookkeeping.
+        this.pageTitle = document.title;
         // NO this.init() here – init is called explicitly from main.js
     }
 
@@ -28,8 +32,7 @@ export class WebSocketManager {
                 if (!dot?.classList.contains('Active')) return;
 
                 dot.classList.remove('Active');
-                const titleEl = document.querySelector('title');
-                if (titleEl.dataset.title) document.title = titleEl.dataset.title;
+                document.title = this.pageTitle;
                 try {
                     const response = await fetch(`${ClientConfig.siteURL()}/api/mark-notifications-seen`, {
                         method: 'POST',
@@ -139,9 +142,7 @@ export class WebSocketManager {
         }
 
         document.querySelectorAll('.NotificationDot').forEach(dot => dot.classList.add('Active'));
-        const titleEl = document.querySelector('title');
-        if (!titleEl.dataset.title) titleEl.dataset.title = document.title;
-        document.title = '🔴 ' + titleEl.dataset.title;
+        document.title = '🔴 ' + this.pageTitle;
     }
 
     showStatus(statusLine) {

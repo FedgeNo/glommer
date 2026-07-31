@@ -87,7 +87,7 @@ export class Notification {
     }
 
     toElement() {
-        const div = document.createElement('div');
+        const div = document.createElement('article');
         div.className = 'Notification MountIn';
         div.dataset.notificationId = this.notificationId;
 

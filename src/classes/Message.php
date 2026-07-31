@@ -11,7 +11,6 @@ class Message extends Article implements \JsonSerializable
     public const MAX_UNANSWERED = 20;
 
     public ?string $class = 'Message';
-    public array $mixins = ['Card'];
 
     public ?int $messageId = null;
     public ?int $senderId = null;
@@ -24,7 +23,7 @@ class Message extends Article implements \JsonSerializable
     public ?User $sender = null;
 
     /**
-     * What a Message is when it's encoded as JSON - the fields message.js
+     * What a Message is when it's encoded as JSON - the fields Message.js
      * reads, and nothing about who reported it or how it renders.
      */
     public function jsonSerialize(): array

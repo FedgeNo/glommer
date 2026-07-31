@@ -13,7 +13,7 @@ export class Avatar {
     static create(has_image, image_url, name, user_id) {
         if (has_image && image_url) {
             const image = document.createElement('img');
-            image.className = 'Avatar';
+            image.className = 'Avatar AvatarImage';
             image.src = image_url;
             image.alt = (name || '') + '\'s avatar';
             return image;

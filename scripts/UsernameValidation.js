@@ -4,6 +4,10 @@ import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 export class UsernameValidation {
+    // The pending availability-check timer per input - the handler is delegated
+    // on document, and a timer id is this module's own bookkeeping.
+    static #debounceIds = new WeakMap();
+
     static init() {
         const sanitize = (input) => {
             input.value = input.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 32);
@@ -26,7 +30,7 @@ export class UsernameValidation {
     static #checkAvailability(input) {
         const status = input.closest('.SignupForm').querySelector('.UsernameAvailability');
         if (!status) return;
-        clearTimeout(input.dataset.debounceId);
+        clearTimeout(UsernameValidation.#debounceIds.get(input));
         const requested = input.value;
         if (requested === '') {
             status.textContent = '';
@@ -57,7 +61,7 @@ export class UsernameValidation {
                 ? `${data.response.username} is available.`
                 : `${data.response.username} is already taken.`;
         }, 300);
-        input.dataset.debounceId = debounce_id;
+        UsernameValidation.#debounceIds.set(input, debounce_id);
     }
 }
 

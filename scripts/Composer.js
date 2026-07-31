@@ -10,10 +10,14 @@ import { EmojiPicker } from '/scripts/EmojiPicker.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 export class Composer {
+    static PLACEHOLDER = "What's on your mind?";
+
     static #instances = new WeakMap();
     #slot = 'main';
     #quill = null;
     #form = null;
+    #autofilledTitle = '';
+    #autofilledDescription = '';
 
     static init() {
         document.addEventListener('click', (event) => {
@@ -148,7 +152,6 @@ export class Composer {
 
         const editorContainer = document.createElement('div');
         editorContainer.className = 'QuillEditor';
-        editorContainer.dataset.placeholder = "What's on your mind?";
         editorColumn.appendWithSpace(editorContainer);
 
         editorRow.appendWithSpace(editorColumn);
@@ -244,7 +247,7 @@ export class Composer {
     }
 
     #createQuill() {
-        const editor = new QuillEditor(this.editorContainer);
+        const editor = new QuillEditor(this.editorContainer, { placeholder: Composer.PLACEHOLDER });
         this.#quill = editor.instance;
     }
 
@@ -258,6 +261,7 @@ export class Composer {
     #bindLinkPreview() {
         if (!this.linkInput) return;
         this.linkInput.addEventListener('input', (event) => {
+            this.#syncFields();
             clearTimeout(this.linkInput._debounceId);
             const delay = event.inputType === 'insertFromPaste' ? 0 : 500;
             this.linkInput._debounceId = setTimeout(() => this.#fetchLinkPreview(), delay);
@@ -283,20 +287,23 @@ export class Composer {
 
         this.linkInput._lastFetchedUrl = url;
 
+        // What a previous preview filled in, so a field the author hasn't since
+        // edited can be replaced by a newer preview while anything they typed
+        // themselves is left alone. The composer's own bookkeeping, so it stays
+        // on the instance.
         if (preview.title && this.titleInput) {
             const curTitle = this.titleInput.value.trim();
-            if (curTitle === '' || curTitle === (this.titleInput.dataset.autofilled ?? '')) {
+            if (curTitle === '' || curTitle === this.#autofilledTitle) {
                 this.titleInput.value = preview.title;
-                this.titleInput.dataset.autofilled = preview.title;
+                this.#autofilledTitle = preview.title;
             }
         }
 
         if (preview.description && this.#quill) {
             const curText = this.#quill.getText().trim();
-            const prevAutofill = this.#form.dataset.autofilledDescription ?? '';
-            if (curText === '' || curText === prevAutofill) {
+            if (curText === '' || curText === this.#autofilledDescription) {
                 this.#quill.setText(preview.description);
-                this.#form.dataset.autofilledDescription = preview.description.trim();
+                this.#autofilledDescription = preview.description.trim();
             }
         }
 
@@ -328,6 +335,7 @@ export class Composer {
         this.fileInput.addEventListener('change', () => {
             this.removeFilesButton.style.display =
                 this.fileInput.files.length === 0 ? 'none' : '';
+            this.#syncFields();
         });
     }
 

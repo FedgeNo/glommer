@@ -21,8 +21,8 @@ export class Message {
     }
 
     toElement() {
-        const div = document.createElement('div');
-        div.className = 'Message Card MountIn';
+        const div = document.createElement('article');
+        div.className = 'Message MountIn';
 
         if (Number(this.senderId) === Number(ClientConfig.get('currentUserId'))) {
             div.className += ' Own';
@@ -87,7 +87,6 @@ export class Message {
     static init() {
         if (document.querySelector('.MessageList')) {
             window.addEventListener('load', () => {
-                const msgList = document.querySelector('.MessageList');
                 window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
                 const composerTextarea = document.querySelector('.MessageComposer textarea');
                 if (composerTextarea) composerTextarea.focus();

@@ -17,7 +17,7 @@ export class BannedUser extends User {
 
     toElement() {
         const div = document.createElement('div');
-        div.className = 'User Card BannedUser MountIn';
+        div.className = 'User BannedUser MountIn';
         div.dataset.userId = this.userId;
 
         const row = document.createElement('div');

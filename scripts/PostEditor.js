@@ -57,7 +57,7 @@ export class PostEditor {
         post.style.display = 'none';
 
         const form = document.createElement('form');
-        form.className = 'PostEditForm Card d-flex flex-column gap-2';
+        form.className = 'Form PostEditForm d-flex flex-column gap-2';
 
         const fields = document.createElement('fieldset');
 
@@ -91,7 +91,6 @@ export class PostEditor {
 
         const editorContainer = document.createElement('div');
         editorContainer.className = 'QuillEditor';
-        editorContainer.dataset.placeholder = 'Edit your post…';
         editorColumn.appendWithSpace(editorContainer);
 
         fields.appendWithSpace(editorColumn);
@@ -124,7 +123,7 @@ export class PostEditor {
 
         post.insertAdjacentElement('afterend', form);
 
-        const editor = new QuillEditor(editorContainer);
+        const editor = new QuillEditor(editorContainer, { placeholder: 'Edit your post…' });
         this.#quillEditor = editor;
 
         try {
@@ -203,13 +202,13 @@ export class PostEditor {
         this.#postElement.style.display = '';
         render_math(newContent);
 
-        // Emoji rendering if available – safe, non‑blocking
+        // Emoji rendering if available – safe, non‑blocking. Toggled, not just
+        // added: an edit can turn an emoji-only post into a text one, which
+        // must shed the class as readily as the reverse gains it.
         import('/scripts/EmojiRenderer.js').then(({ EmojiRenderer }) => {
             EmojiRenderer.render(newContent);
             const postBody = this.#postElement.querySelector('.PostBody');
-            if (postBody && EmojiRenderer.isEmojiOnly(postBody)) {
-                this.#postElement.classList.add('emoji-only');
-            }
+            this.#postElement.classList.toggle('emoji-only', postBody !== null && EmojiRenderer.isEmojiOnly(postBody));
         }).catch(() => {});
 
         this.#form.remove();

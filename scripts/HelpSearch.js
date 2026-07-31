@@ -11,6 +11,11 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
  * HelpSearch/HelpCategory/HelpArticleSummary.
  */
 export class HelpSearch {
+    // The pending debounce timer per search box. Keyed on the input rather than
+    // stored on it: the handler is delegated on document, so it needs somewhere
+    // to keep the timer, and a timer id is this module's own bookkeeping.
+    static #debounceIds = new WeakMap();
+
     static init() {
         document.addEventListener('input', (event) => {
             const input = event.target.closest('.HelpSearchInput');
@@ -19,11 +24,8 @@ export class HelpSearch {
                 return;
             }
 
-            clearTimeout(input.dataset.debounceId);
-
-            const debounce_id = setTimeout(() => HelpSearch.#search(input), 300);
-
-            input.dataset.debounceId = debounce_id;
+            clearTimeout(HelpSearch.#debounceIds.get(input));
+            HelpSearch.#debounceIds.set(input, setTimeout(() => HelpSearch.#search(input), 300));
         });
     }
 
@@ -97,7 +99,7 @@ export class HelpSearch {
     // Mirror of HelpArticleSummary::toDOM() - the whole card is a link.
     static #articleSummaryElement(article) {
         const card = document.createElement('a');
-        card.className = 'HelpArticleSummary Card';
+        card.className = 'HelpArticleSummary';
         card.href = article.url;
 
         const title = document.createElement('h3');

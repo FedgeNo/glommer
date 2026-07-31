@@ -43,7 +43,7 @@ export class Post {
     }
 
     authorBylineToElement() {
-        const byline = document.createElement('div');
+        const byline = document.createElement('header');
         byline.className = 'PostByline d-flex align-items-start gap-2';
 
         byline.appendWithSpace(User.fromData(this.author).header());
@@ -68,7 +68,7 @@ export class Post {
         // linking to the map opened on where the post was filed.
         if (this.latitude !== null && this.longitude !== null) {
             const location_link = document.createElement('a');
-            location_link.className = 'PostLocationLink muted text-sm';
+            location_link.className = 'PostLocationLink';
             location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
             location_link.title = 'Show this place on the map';
             location_link.textContent = this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4);
@@ -77,14 +77,8 @@ export class Post {
 
         if (this.editedAt) {
             const edited_marker = document.createElement('span');
-            edited_marker.className = 'muted text-sm PostEditedMarker';
-            edited_marker.title = parse_server_date(this.editedAt).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-            });
+            edited_marker.className = 'PostEditedMarker muted text-sm';
+            edited_marker.title = RelativeTime.dateAndTime(this.editedAt);
             edited_marker.textContent = '(edited)';
             meta.appendWithSpace(edited_marker);
         }
@@ -95,16 +89,18 @@ export class Post {
     }
 
     linkItemToElement() {
-        const wrapper = document.createElement('div');
+        const wrapper = document.createElement('figure');
         wrapper.className = 'FeedItem LinkItem';
 
-        const link_is_safe = DeltaRenderer.isSafeLink(this.linkURL, DeltaRenderer.ALLOWED_LINK_SCHEMES);
-        const link = document.createElement(link_is_safe ? 'a' : 'div');
+        // Always the anchor with target/rel, as LinkItem.php renders it; only the
+        // href is withheld for a scheme we won't link to. Defence in depth either
+        // way - create/edit-post already refuse anything but http(s).
+        const link = document.createElement('a');
+        link.target = '_blank';
+        link.rel = 'noopener';
 
-        if (link_is_safe) {
+        if (DeltaRenderer.isSafeLink(this.linkURL, DeltaRenderer.ALLOWED_LINK_SCHEMES)) {
             link.href = this.linkURL;
-            link.target = '_blank';
-            link.rel = 'noopener';
         }
 
         const link_image = this.items.find((item) => item.itemType === 'ImageItem');
@@ -141,7 +137,7 @@ export class Post {
     }
 
     itemToElement(item, deferred = false) {
-        const wrapper = document.createElement('div');
+        const wrapper = document.createElement('figure');
         wrapper.className = 'FeedItem ' + item.itemType;
 
         if (item.itemType === 'VideoItem') {
@@ -176,11 +172,17 @@ export class Post {
             const img = document.createElement('img');
             img.alt = this.imageAltText || 'Image';
 
+            // The feed shows the thumbnail and carries the display-size URL for
+            // fullscreen to swap in, exactly as ImageItem.php renders it.
+            const thumbnail = item.image || item.src;
+
             if (deferred) {
-                img.dataset.src = item.src;
+                img.dataset.src = thumbnail;
             } else {
-                img.src = item.src;
+                img.src = thumbnail;
             }
+
+            img.dataset.fullSrc = item.src;
 
             wrapper.appendWithSpace(img);
         }
@@ -191,7 +193,7 @@ export class Post {
     mediaFullscreenButtonElement() {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'MediaFullscreenButton';
+        button.className = 'Button MediaFullscreenButton';
         button.setAttribute('aria-label', 'Fullscreen');
         button.textContent = '⛶';
         return button;
@@ -219,14 +221,14 @@ export class Post {
         if (this.items.length > 1) {
             const prev_button = document.createElement('button');
             prev_button.type = 'button';
-            prev_button.className = 'CarouselPrevButton';
+            prev_button.className = 'Button CarouselPrevButton';
             prev_button.setAttribute('aria-label', 'Previous');
             prev_button.textContent = '‹';
             carousel.appendWithSpace(prev_button);
 
             const next_button = document.createElement('button');
             next_button.type = 'button';
-            next_button.className = 'CarouselNextButton';
+            next_button.className = 'Button CarouselNextButton';
             next_button.setAttribute('aria-label', 'Next');
             next_button.textContent = '›';
             carousel.appendWithSpace(next_button);
@@ -238,7 +240,7 @@ export class Post {
 
             const autoplay_button = document.createElement('button');
             autoplay_button.type = 'button';
-            autoplay_button.className = 'CarouselAutoplayButton';
+            autoplay_button.className = 'Button CarouselAutoplayButton';
             autoplay_button.textContent = 'Autoplay';
             carousel.appendWithSpace(autoplay_button);
         }
@@ -294,8 +296,8 @@ export class Post {
     }
 
     toElement() {
-        const card = document.createElement('div');
-        card.className = 'Post Card MountIn';
+        const card = document.createElement('article');
+        card.className = 'Post MountIn';
 
         card.dataset.postId = this.postId;
         card.dataset.userId = this.userId;
@@ -321,13 +323,22 @@ export class Post {
 
         card.appendWithSpace(this.postElement());
 
-        const meta = document.createElement('div');
+        const meta = document.createElement('footer');
         meta.className = 'PostActionBar d-flex align-items-center gap-3';
 
         const actions = document.createElement('div');
         actions.className = 'd-flex align-items-center gap-2 ms-auto';
 
         const logged_in = ClientConfig.get('currentUserId') !== null;
+
+        // Mirrors PostActionBar.php - the share button leads the bar and is
+        // visible to everyone, logged in or not.
+        const share_button = document.createElement('button');
+        share_button.type = 'button';
+        share_button.className = 'PostShareButton Button';
+        share_button.dataset.shareUrl = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
+        share_button.textContent = 'Share';
+        actions.appendWithSpace(share_button);
 
         if (logged_in || this.replyCount > 0) {
             const replies_link = document.createElement('a');
@@ -342,7 +353,9 @@ export class Post {
             like_button.type = 'button';
             like_button.className = 'Button LikeButton';
             like_button.dataset.liked = this.liked ? '1' : '0';
-            like_button.textContent = (this.liked ? 'Unlike' : 'Like') + ' (' + this.likeCount + ')';
+            // Same label rule as PostActionBar::likeLabel() and the post-click
+            // update below: the count only appears once it's nonzero.
+            like_button.textContent = (this.liked ? 'Unlike' : 'Like') + (this.likeCount > 0 ? ' (' + this.likeCount + ')' : '');
             actions.appendWithSpace(like_button);
 
             const bookmark_button = document.createElement('button');

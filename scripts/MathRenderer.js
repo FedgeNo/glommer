@@ -148,18 +148,23 @@ export function render_math(element) {
     });
 }
 
+// Which formula spans KaTeX has already replaced the contents of. Held here
+// rather than marked on the element: whether this pass has run is the renderer's
+// own business, and a weak set lets a span that leaves the page be collected.
+const rendered_formulas = new WeakSet();
+
 export function render_formulas(element) {
     if (typeof katex === 'undefined' || typeof katex.render !== 'function') {
         return;
     }
 
     element.querySelectorAll('.PostFormula[data-formula]').forEach((span) => {
-        if (span.dataset.rendered === '1') {
+        if (rendered_formulas.has(span)) {
             return;
         }
 
         katex.render(span.dataset.formula, span, { throwOnError: false });
-        span.dataset.rendered = '1';
+        rendered_formulas.add(span);
     });
 }
 

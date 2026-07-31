@@ -76,8 +76,8 @@ export class ReportCard {
     }
 
     toElement() {
-        const card = document.createElement('div');
-        card.className = 'Card ReportCard d-flex gap-3 align-items-start';
+        const card = document.createElement('article');
+        card.className = 'ReportCard d-flex gap-3 align-items-start';
 
         const details = document.createElement('div');
         details.className = 'ReportDetails d-flex flex-column gap-2';

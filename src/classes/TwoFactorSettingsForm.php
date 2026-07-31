@@ -9,10 +9,9 @@ declare(strict_types=1);
  * so someone at an already-open session can't silently flip it. Submits to
  * api/two-factor (handled in main.js).
  */
-class TwoFactorSettingsForm extends Form
+class TwoFactorSettingsForm extends FormForm
 {
-    public ?string $class = 'TwoFactorSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public bool $enabled;
 
@@ -25,8 +24,6 @@ class TwoFactorSettingsForm extends Form
 
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['data-enabled'] = $this -> enabled ? '1' : '0';
-
         $legend = $this -> enabled ? 'Two-factor authentication is on' : 'Two-factor authentication is off';
         $fields = new Fieldset($legend);
 

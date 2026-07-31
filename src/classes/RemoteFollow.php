@@ -3,20 +3,18 @@
 declare(strict_types=1);
 
 /**
- * Creates/updates the local bookkeeping for "this local user wants this
- * remote Fediverse account's posts in their feed": resolves the handle,
- * fetches the remote actor, creates or reuses a shadow Users row for them,
- * and delivers a signed Follow. The ActivityPub-level follow relationship is
- * between this Glommer instance (the one site-wide actor - see
- * ActivityPubKeys) and the remote account; RemoteFollows is purely our own
- * bookkeeping of which local users get that account fanned into their feed,
- * so two local users following the same remote account only costs one real
- * follow at the protocol level.
+ * A member here following a Fediverse account: resolves the handle, fetches
+ * the remote actor, creates or reuses a shadow Users row for them, and
+ * delivers a Follow signed by the member.
+ *
+ * The follow is the member's own at the protocol level, not the instance's.
+ * The person on the other end sees who is actually following them rather than
+ * a server name, which is both what they would expect and what lets them
+ * decide about that person rather than about this site. Two members following
+ * the same account is therefore two follows, which is simply what it is.
  */
 class RemoteFollow
 {
-    private const MAX_RESPONSE_BYTES = 65536;
-
     /** Users.slug is varchar(255) - wide enough to hold a whole handle unaltered. */
     private const MAX_SLUG_LENGTH = 255;
 
@@ -76,8 +74,12 @@ SELECT `remoteActorURI`
     public static function create(int $local_user_id, string $user, string $domain): array
     {
         $handle = '@' . $user . '@' . $domain;
+        $follower = User::load($local_user_id);
 
-        if (!ActivityPubKeys::isConfigured()) {
+        // The member's own key signs this now, not the instance's - so what
+        // matters is whether THEY can sign, which also fails when no encryption
+        // secret is configured and no key could be stored safely.
+        if ($follower === null || ActivityPubActor::privateKeyPem($follower) === null) {
             return ['ok' => false, 'handle' => $handle, 'error' => 'ActivityPub is not set up on this server yet.'];
         }
 
@@ -122,7 +124,7 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`, `followA
     ON DUPLICATE KEY UPDATE `followActivityId` = VALUES(`followActivityId`)
 ', 'isss', $local_user_id, $actor['id'], 'pending', $follow_activity_id);
 
-        if (!self::sendFollow($actor, $follow_activity_id)) {
+        if (!self::sendFollow($actor, $follow_activity_id, $follower)) {
             return ['ok' => false, 'handle' => $handle, 'error' => 'Could not deliver the follow request to that server.'];
         }
 
@@ -168,7 +170,9 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`, `followA
     ON DUPLICATE KEY UPDATE `followActivityId` = VALUES(`followActivityId`)
 ', 'isss', $local_user_id, $actor['id'], 'pending', $follow_activity_id);
 
-        return self::sendFollow($actor, $follow_activity_id);
+        $follower = User::load($local_user_id);
+
+        return $follower !== null && self::sendFollow($actor, $follow_activity_id, $follower);
     }
 
     /**
@@ -205,28 +209,19 @@ DELETE `Timelines`
     WHERE `Timelines`.`userId` = ? AND `Users`.`remoteActorURI` = ?
 ', 'is', $local_user_id, $remote_actor_uri);
 
-        // Only tell the remote server once nobody here follows them any
-        // more - the follow itself is instance-wide, so another local
-        // follower still wants the deliveries.
-        if (self::localFollowerCount($remote_actor_uri) === 0 && $follow -> followActivityId !== null) {
-            self::sendUndoFollow($remote_actor_uri, $follow -> followActivityId);
+        // Each member holds their own follow at the protocol level now, so
+        // this one is theirs to withdraw - another member following the same
+        // account has a separate edge that is none of this person's business.
+        $follower = User::load($local_user_id);
+
+        if ($follower !== null && $follow -> followActivityId !== null) {
+            self::sendUndoFollow($remote_actor_uri, $follow -> followActivityId, $follower);
         }
 
         return true;
     }
 
-    private static function localFollowerCount(string $remote_actor_uri): int
-    {
-        $rows = DB::rows('
-SELECT `remoteFollowId`
-    FROM `RemoteFollows`
-    WHERE `remoteActorURI` = ?
-', self::class, 's', $remote_actor_uri);
-
-        return count($rows);
-    }
-
-    private static function sendUndoFollow(string $remote_actor_uri, string $follow_activity_id): void
+    private static function sendUndoFollow(string $remote_actor_uri, string $follow_activity_id, User $follower): void
     {
         $actor = RemoteActor::fetch($remote_actor_uri);
 
@@ -234,67 +229,32 @@ SELECT `remoteFollowId`
             return;
         }
 
-        self::deliver($actor['inbox'], [
+        $follower_uri = ActivityPubActor::uriFor($follower);
+
+        ActivityPubDelivery::postAs($follower, $actor['inbox'], [
             '@context' => 'https://www.w3.org/ns/activitystreams',
-            'id' => ServerURL::absolute('/activitypub/undos/' . bin2hex(random_bytes(16))),
+            'id' => $follower_uri . '#undos/' . bin2hex(random_bytes(8)),
             'type' => 'Undo',
-            'actor' => ServerURL::absolute('/activitypub/actor'),
+            'actor' => $follower_uri,
             'object' => [
                 'id' => $follow_activity_id,
                 'type' => 'Follow',
-                'actor' => ServerURL::absolute('/activitypub/actor'),
+                'actor' => $follower_uri,
                 'object' => $remote_actor_uri,
             ],
         ]);
     }
 
-    private static function sendFollow(array $actor, string $follow_activity_id): bool
+    private static function sendFollow(array $actor, string $follow_activity_id, User $follower): bool
     {
         $activity = [
             '@context' => 'https://www.w3.org/ns/activitystreams',
             'id' => $follow_activity_id,
             'type' => 'Follow',
-            'actor' => ServerURL::absolute('/activitypub/actor'),
+            'actor' => ActivityPubActor::uriFor($follower),
             'object' => $actor['id'],
         ];
 
-        return self::deliver($actor['inbox'], $activity);
-    }
-
-    private static function deliver(string $inbox_url, array $activity): bool
-    {
-        $private_key_pem = ActivityPubKeys::privateKeyPem();
-
-        if ($private_key_pem === null) {
-            return false;
-        }
-
-        $body = json_encode($activity, JSON_UNESCAPED_SLASHES);
-        $parts = parse_url($inbox_url);
-
-        // The actor id inside the activity came from a remote document, so
-        // encoding can genuinely fail on invalid UTF-8 - signing false here
-        // would be a TypeError rather than a failed delivery.
-        if ($body === false || $parts === false || !isset($parts['host'], $parts['path'])) {
-            return false;
-        }
-
-        $path = $parts['path'] . (isset($parts['query']) ? '?' . $parts['query'] : '');
-        $date = gmdate('D, d M Y H:i:s') . ' GMT';
-        $digest = HTTPSignature::digest($body);
-        $key_id = ServerURL::absolute('/activitypub/actor') . '#main-key';
-
-        $signature = HTTPSignature::sign('POST', $path, $parts['host'], $date, $digest, $key_id, $private_key_pem);
-
-        $headers = [
-            'Host: ' . $parts['host'],
-            'Date: ' . $date,
-            'Digest: ' . $digest,
-            'Signature: ' . $signature,
-            'Content-Type: application/activity+json',
-            'Accept: application/activity+json',
-        ];
-
-        return SafeHTTPFetcher::postJSON($inbox_url, $body, $headers, self::MAX_RESPONSE_BYTES) !== null;
+        return ActivityPubDelivery::postAs($follower, $actor['inbox'], $activity);
     }
 }

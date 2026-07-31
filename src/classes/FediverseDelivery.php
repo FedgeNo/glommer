@@ -42,6 +42,13 @@ class FediverseDelivery
         }
 
         foreach (array_unique($inbox_urls) as $inbox_url) {
+            // Checked at queue time and again nowhere else: a domain blocked
+            // after something was queued for it still gets skipped, because the
+            // worker checks too.
+            if (BlockedDomain::blocksURL($inbox_url)) {
+                continue;
+            }
+
             DB::run('
 INSERT INTO `FediverseDeliveries` (`actorUserId`, `inboxURL`, `activity`)
     VALUES (?, ?, ?)

@@ -170,6 +170,22 @@ CREATE TABLE `Likes` (
 -- Its own table rather than a flag on a kept Users row: the account is deleted,
 -- and a row retained only to reserve a string would keep a foreign key alive for
 -- every post, message and follow that was supposed to go with it.
+-- Whole servers this instance refuses to deal with. Blocking accounts one at a
+-- time does not work against a server that mints them faster than a moderator
+-- can act, which is the usual shape of federated abuse.
+--
+-- The domain is stored lowercased and without a port, and matching includes
+-- subdomains, so blocking a host blocks what it hands out.
+CREATE TABLE `BlockedDomains` (
+  `domain` varchar(255) NOT NULL,
+  `reason` text DEFAULT NULL,
+  `blockedBy` int(10) unsigned DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`domain`),
+  KEY `blockedBy` (`blockedBy`),
+  CONSTRAINT `BlockedDomains_ibfk_1` FOREIGN KEY (`blockedBy`) REFERENCES `Users` (`userId`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `RetiredUsernames` (
   `slug` varchar(255) NOT NULL,
   `retiredAt` datetime NOT NULL DEFAULT current_timestamp(),

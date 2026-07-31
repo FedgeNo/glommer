@@ -71,4 +71,9 @@ if (!Report::create($current_user -> userId, $target_type, $target_id, $reason !
     JSONResponse::error('You\'ve already reported this.', 422) -> send();
 }
 
+// Tell the post's own moderators too, when it came from another server -
+// hiding it here leaves the account carrying on unchallenged everywhere else.
+// Sent as the instance, never naming who reported it.
+ActivityPubFlag::send($target_type, $target_id, $reason !== '' ? $reason : null);
+
 JSONResponse::success(['reported' => true]) -> send();

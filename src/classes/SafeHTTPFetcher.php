@@ -69,6 +69,12 @@ class SafeHTTPFetcher
      */
     public static function getJSON(string $url, array $headers, int $max_bytes): ?array
     {
+        // A defederated server is not talked to at all, in either direction -
+        // fetching from one is still dealing with it.
+        if (BlockedDomain::blocksURL($url)) {
+            return null;
+        }
+
         return self::sendRequest('GET', $url, $headers, null, $max_bytes, self::MAX_REDIRECTS);
     }
 
@@ -84,6 +90,13 @@ class SafeHTTPFetcher
      */
     public static function postJSON(string $url, string $body, array $headers, int $max_bytes): ?array
     {
+        // The last gate before anything leaves for a defederated server. Held
+        // here rather than only at the call sites, because the site that
+        // forgets is the one that lets a delivery through.
+        if (BlockedDomain::blocksURL($url)) {
+            return null;
+        }
+
         return self::sendRequest('POST', $url, $headers, $body, $max_bytes, 0);
     }
 

@@ -87,6 +87,14 @@ if ($signature_fields === null) {
 // identifies who this delivery claims to be from.
 $actor_uri = explode('#', $signature_fields['keyId'])[0];
 
+// A defederated server is refused before its key is fetched, so a blocked
+// domain costs no outbound request - otherwise blocking a hostile server would
+// still let it make this one call out on every delivery it sends.
+if (BlockedDomain::blocksURL($actor_uri)) {
+    http_response_code(403);
+    exit;
+}
+
 // Fetched from the actor's own server when this instance has not met them
 // before, which inbound federation requires: someone following a member here
 // is by definition an actor we have never seen, and their key has to come from

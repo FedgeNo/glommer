@@ -24,8 +24,21 @@ class ActivityPubInbox
             'Undo' => self::handleUndo($activity, $signed_actor_uri),
             'Like' => self::handleLike($activity, $signed_actor_uri),
             'Announce' => self::handleAnnounce($activity, $signed_actor_uri),
+            'Flag' => self::handleFlag($activity, $signed_actor_uri),
             default => null,
         };
+    }
+
+    /** An abuse report from another server about something here. */
+    private static function handleFlag(array $activity, string $actor_uri): void
+    {
+        $reporter = self::shadowUserFor($actor_uri);
+
+        if ($reporter === null) {
+            return;
+        }
+
+        ActivityPubFlag::received($activity, $reporter);
     }
 
     /** A favourite from elsewhere, which is the same row a member here would make. */

@@ -240,7 +240,7 @@
    end is anything that acts or warns - which is also the order of attention it
    should get. Everything below was chosen against the LIGHTEST stop of the
    gradient sitting behind it, since that is where a gradient quietly fails. */
-:root[data-theme='inferno'] {
+:root[data-theme='ironbow'] {
     --paper: #000000;
     --surface: #12002d;
     --surface-2: #2a0a5e;
@@ -285,7 +285,7 @@
 }
 
 /* Edges in the ramp's hot end, so the graph reads as heat against the black. */
-:root[data-theme='inferno'] .HashtagGraphList {
+:root[data-theme='ironbow'] .HashtagGraphList {
     --HashtagEdge: rgb(237 105 37 / 0.30);
 }
 

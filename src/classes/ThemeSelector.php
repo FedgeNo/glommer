@@ -20,7 +20,7 @@ class ThemeSelector extends Div
         'lavender' => 'Lavender',
         'gold' => 'Gold',
         'hacker' => 'Hacker',
-        'inferno' => 'Inferno',
+        'ironbow' => 'Ironbow',
     ];
 
     /**

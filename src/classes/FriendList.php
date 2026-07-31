@@ -34,16 +34,17 @@ UNION ALL
 ', 'Friend', 'isiiisiiii', $user_id, $accepted, $not_banned, $half_limit, $user_id, $accepted, $not_banned, $half_limit, $limit, $this -> offset);
     }
 
-    protected function dataAttributes(): array
+    /**
+     * @return array<string, mixed>
+     */
+    protected function scrollConfig(): array
     {
-        $this->attributes['data-infinite-scroll'] = json_encode([
+        return [
             'endpoint' => '/api/friend-list-history',
             'itemType' => 'OtherUser',
-            'listType' => $this->listType,
-            'userId'   => (int) $this->user->userId,
-        ]);
-
-        return [];
+            'listType' => $this -> listType,
+            'userId' => (int) $this -> user -> userId,
+        ];
     }
 }
 

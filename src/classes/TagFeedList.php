@@ -37,10 +37,10 @@ SELECT `Posts`.*,
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
-    protected function dataAttributes(): array
+    protected function scrollConfig(): array
     {
-        return parent::dataAttributes() + ['data-tag' => (string) $this -> tag];
+        return parent::scrollConfig() + ['tag' => (string) $this -> tag];
     }
 }

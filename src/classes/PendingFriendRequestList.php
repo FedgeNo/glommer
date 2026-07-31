@@ -21,16 +21,17 @@ SELECT `f`.`friendshipId`, `u`.*
 ', 'FriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
     }
 
-    protected function dataAttributes(): array
+    /**
+     * @return array<string, mixed>
+     */
+    protected function scrollConfig(): array
     {
-        $this->attributes['data-infinite-scroll'] = json_encode([
+        return [
             'endpoint' => '/api/friend-list-history',
             'itemType' => 'FriendRequest',
-            'listType' => $this->listType,
-            'userId'   => (int) $this->user->userId,
-        ]);
-
-        return [];
+            'listType' => $this -> listType,
+            'userId' => (int) $this -> user -> userId,
+        ];
     }
 }
 

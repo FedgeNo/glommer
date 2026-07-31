@@ -18,11 +18,8 @@ declare(strict_types=1);
  *
  * Build with new NearbyFeedList(['latitude' => 49.28, 'longitude' => -123.09]).
  */
-class NearbyFeedList extends ItemList
+class NearbyFeedList extends FeedList
 {
-    public ?string $class = 'NearbyFeedList';
-    public array $mixins = ['FeedList', 'd-flex', 'flex-column'];
-
     /** How many of the closest posts are eligible, before the newest-first cut. */
     public const NEAREST_LIMIT = 1000;
 
@@ -62,18 +59,21 @@ SELECT `Posts`.*,
 ', 'Post', 'iidddiii', $viewer_id, $viewer_id, $this -> latitude, $this -> longitude, $this -> latitude, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 
-    protected function dataAttributes(): array
+    /**
+     * Its own endpoint rather than api/feed.php, since proximity isn't one of
+     * that endpoint's feed types. The origin rides along here: InfiniteScroller
+     * sends every key that isn't endpoint/itemType/direction with each request,
+     * so page two ranks from the same point page one did.
+     *
+     * @return array<string, mixed>
+     */
+    protected function scrollConfig(): ?array
     {
-        // The origin rides along in the scroll config: InfiniteScroller sends
-        // every key that isn't endpoint/itemType/direction with each request, so
-        // page two ranks from the same point page one did.
-        $this -> attributes['data-infinite-scroll'] = json_encode([
+        return [
             'endpoint' => '/api/nearby-history',
             'itemType' => 'Post',
             'latitude' => $this -> latitude,
             'longitude' => $this -> longitude,
-        ]);
-
-        return [];
+        ];
     }
 }

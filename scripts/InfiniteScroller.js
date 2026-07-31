@@ -1,4 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Toast } from '/scripts/Toast.js';
 import { csrf_headers, list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { Post } from '/scripts/Post.js';
@@ -12,8 +13,8 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 const REGISTRY = {};
 
 export class InfiniteScroller {
-    static register(type, renderItem, countOffset, buildReq = null) {
-        REGISTRY[type] = { renderItem, countOffset, buildReq };
+    static register(type, renderItem, countOffset) {
+        REGISTRY[type] = { renderItem, countOffset };
     }
 
     static init() {
@@ -63,17 +64,15 @@ export class InfiniteScroller {
             endpoint  = config.endpoint;
             direction = config.direction ?? 'down';
 
+            // Everything the list's own config names is part of the request,
+            // so a feed selected by more than its type (one profile's posts,
+            // one tag's) pages correctly with no per-type special casing here.
             const extraFields = { ...config };
             delete extraFields.endpoint;
             delete extraFields.itemType;
             delete extraFields.direction;
 
-            buildReq = entry.buildReq
-                ? offset => {
-                    const custom = entry.buildReq(list, offset);
-                    return { ...extraFields, ...custom, offset };
-                  }
-                : offset => ({ ...extraFields, offset });
+            buildReq = offset => ({ ...extraFields, offset });
 
             renderItem  = entry.renderItem;
             countOffset = entry.countOffset;
@@ -134,7 +133,20 @@ export class InfiniteScroller {
                 headers: csrf_headers({ 'Content-Type': 'application/json' }),
                 body: JSON.stringify(this._buildReq(offset)),
             });
-            if (!response.ok) return;
+
+            // A refused page won't start working on the next scroll event, so
+            // stop asking and say so - silently returning leaves the reader
+            // looking at what appears to be the end of the feed while every
+            // further scroll re-sends the same doomed request. Being throttled
+            // is the exception: that one really is worth retrying.
+            if (!response.ok) {
+                if (response.status !== 429) {
+                    this.#active = false;
+                    Toast.show('Could not load more. Please reload the page.');
+                }
+
+                return;
+            }
 
             const data = await response.json();
             const { hasMore, items } = this.#extractItems(data);
@@ -186,17 +198,7 @@ export class InfiniteScroller {
 
 InfiniteScroller.register('Post',
     data => Post.fromData(data).toElement(),
-    list => list.querySelectorAll('.Post').length,
-    (list, offset) => {
-        const feedType = list.dataset.feedType;
-        if (feedType) {
-            const req = { feedType, offset };
-            if (feedType === 'user') req.userId = list.dataset.userId;
-            else if (feedType === 'tag') req.tag = list.dataset.tag;
-            return req;
-        }
-        return { offset };
-    }
+    list => list.querySelectorAll('.Post').length
 );
 
 InfiniteScroller.register('Message',

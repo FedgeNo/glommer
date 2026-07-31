@@ -36,14 +36,15 @@ SELECT `Posts`.*,
 ', 'Post', 'iiiiii', $viewer_id, $viewer_id, (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function dataAttributes(): array
     {
-        $this->attributes['data-infinite-scroll'] = json_encode([
+        return ['data-infinite-scroll' => (string) json_encode([
             'endpoint' => '/api/bookmark-history',
             'itemType' => 'Post',
-        ]);
-
-        return [];
+        ])];
     }
 }
 

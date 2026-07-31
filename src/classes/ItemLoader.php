@@ -55,10 +55,10 @@ abstract class ItemLoader extends HTMLObject
             $this -> attributes[$name] = $value;
         }
 
-        if (isset($this -> attributes['data-infinite-scroll'])) {
-            if (!$this -> hasMore) {
-                unset($this -> attributes['data-infinite-scroll']);
-            }
+        // A list with no next page carries no scroll config, so the client
+        // never binds a scroller that would only ever fetch an empty page.
+        if (!$this -> hasMore) {
+            unset($this -> attributes['data-infinite-scroll']);
         }
 
         return parent::toDOM();

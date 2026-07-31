@@ -18,10 +18,20 @@ declare(strict_types=1);
  */
 class SearchFeedList extends FeedList
 {
-    protected string $feedType = 'search';
-
     public string $query = '';
     public int $userId = 0;
+
+    /**
+     * No server-side scroll config: a search's next page depends on what's
+     * currently typed, so Search.js builds the request (against
+     * api/search-posts.php) and drives this list's paging itself. Advertising
+     * one here would bind a second scroller to the same list, asking api/feed.php
+     * for a feed type it doesn't serve.
+     */
+    protected function scrollConfig(): ?array
+    {
+        return null;
+    }
 
     protected function rows(): array
     {

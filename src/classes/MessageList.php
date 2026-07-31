@@ -75,15 +75,16 @@ UNION ALL
     /**
      * @return array<string, string>
      */
+    /**
+     * @return array<string, string>
+     */
     protected function dataAttributes(): array
     {
-        $this->attributes['data-infinite-scroll'] = json_encode([
-            'endpoint'    => '/api/message-history',
-            'itemType'    => 'Message',
-            'direction'   => 'up',
-            'otherUserId' => (int) $this->otherUserId,
-        ]);
-
-        return [];
+        return ['data-infinite-scroll' => (string) json_encode([
+            'endpoint' => '/api/message-history',
+            'itemType' => 'Message',
+            'direction' => 'up',
+            'otherUserId' => (int) $this -> otherUserId,
+        ])];
     }
 }

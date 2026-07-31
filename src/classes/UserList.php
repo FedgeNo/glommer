@@ -27,6 +27,20 @@ abstract class UserList extends ItemList
     public array $items = [];
 
     /**
+     * The next-page request's fixed fields, for a list the client can grow;
+     * null for one that renders everything it has at once. Declared here rather
+     * than by overriding dataAttributes() so a paging subclass can't drop
+     * data-list-type on its way past - that attribute is what tells the
+     * accept-a-friend-request handler which list a card sits in.
+     *
+     * @return array<string, mixed>|null
+     */
+    protected function scrollConfig(): ?array
+    {
+        return null;
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function dataAttributes(): array
@@ -37,8 +51,10 @@ abstract class UserList extends ItemList
             $attributes['data-list-type'] = $this -> listType;
         }
 
-        if ($this -> user !== null) {
-            $attributes['data-user-id'] = (string) $this -> user -> userId;
+        $scroll_config = $this -> scrollConfig();
+
+        if ($scroll_config !== null) {
+            $attributes['data-infinite-scroll'] = (string) json_encode($scroll_config);
         }
 
         return $attributes;

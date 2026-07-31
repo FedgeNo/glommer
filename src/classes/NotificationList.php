@@ -40,14 +40,15 @@ SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, 
         return $this -> items !== [] ? (int) $this -> items[0] -> notificationId : 0;
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function dataAttributes(): array
     {
-        $this->attributes['data-infinite-scroll'] = json_encode([
+        return ['data-infinite-scroll' => (string) json_encode([
             'endpoint' => '/api/notification-history',
             'itemType' => 'Notification',
-        ]);
-
-        return [];
+        ])];
     }
 }
 

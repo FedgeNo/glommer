@@ -456,6 +456,19 @@ UPDATE `Users`
      */
     public static function delete(int $user_id): void
     {
+        // Retired before the row goes, since the name is read off it. A local
+        // member only: a shadow row's slug is a remote handle this server does
+        // not own and has no business reserving.
+        $account = DB::row('
+SELECT `slug`, `remoteActorURI`
+    FROM `Users`
+    WHERE `userId` = ?
+', 'User', 'i', $user_id);
+
+        if ($account !== null && $account -> remoteActorURI === null) {
+            RetiredUsername::retire((string) $account -> slug);
+        }
+
         // Every post this user authored, plus (via the parentId cascade)
         // every reply nested under them - the same graph-walk Post::delete()
         // uses, just seeded from every post this user owns instead of one.

@@ -68,7 +68,11 @@ SELECT `userId`
 ', 'ss', $username, $email);
     mysqli_stmt_store_result($stmt);
 
-    if (mysqli_stmt_num_rows($stmt) > 0 || EmailChangeRevert::isReserved($email)) {
+    // A name whose account was deleted stays taken. It is permanent here, so
+    // handing it on would make the new person indistinguishable from the old to
+    // anyone holding a link - and their actor URI is built from it, so remote
+    // servers would deliver the old account's follows to a stranger.
+    if (mysqli_stmt_num_rows($stmt) > 0 || RetiredUsername::isRetired($username) || EmailChangeRevert::isReserved($email)) {
         $errors[] = 'That username or email is already taken.';
     }
 }

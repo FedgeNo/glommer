@@ -206,6 +206,25 @@ recommended first step after every upgrade (§12).
 4. Start the WebSocket server and upload worker (§7).
 5. `php bin/install.php` to verify/repair, then sign up.
 
+### Choose `SITE_URL` once and keep it
+
+Decide before you install whether the site lives at `example.org` or
+`www.example.org`, and do not change it afterwards. `SITE_URL` is not a display
+setting - it is the root every address on the site is built from.
+
+Changing it invalidates every link that has ever left the server: bookmarks,
+search-engine results, the links in mail already sent, and every RSS item. It
+also breaks federation permanently rather than temporarily. A member's
+ActivityPub actor is `SITE_URL/users/{username}/`, and other servers store that
+string when they follow. Move the site and every remote follower is pointing at
+an address that no longer answers, with no way to discover where it went - the
+only recovery is for every follower on every server to find and follow the new
+account by hand.
+
+Adding or dropping `www.` counts as changing it. If both hostnames must work,
+serve one and redirect the other to it, so there is still exactly one address
+the site calls its own.
+
 ## 6. HTTPS & TLS certificates
 
 **Glommer requires HTTPS and will not serve over plain HTTP.** Both installers

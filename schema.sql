@@ -157,6 +157,25 @@ CREATE TABLE `Likes` (
 -- Users row, so a favourite from Mastodon is the same row a member here would
 -- make. Nothing here reposts yet, so a boost has no existing row shape to reuse,
 -- and it has to be remembered anyway or an Undo would have nothing to find.
+-- Usernames that have been used and given up. A name is never handed to anyone
+-- else, because on this site a username is permanent - it is the whole reason
+-- display names exist - and reusing one would make a new person indistinguishable
+-- from the old one to anybody holding a link.
+--
+-- Federation makes that worse than a mix-up. A member's actor URI is built from
+-- their username, so a recycled name inherits the dead account's URI, and every
+-- remote server still holding a follow would start delivering someone else's
+-- posts to it.
+--
+-- Its own table rather than a flag on a kept Users row: the account is deleted,
+-- and a row retained only to reserve a string would keep a foreign key alive for
+-- every post, message and follow that was supposed to go with it.
+CREATE TABLE `RetiredUsernames` (
+  `slug` varchar(255) NOT NULL,
+  `retiredAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Announces` (
   `postId` int(10) unsigned NOT NULL,
   `userId` int(10) unsigned NOT NULL,

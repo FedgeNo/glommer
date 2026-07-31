@@ -20,7 +20,18 @@ class ThemeSelector extends Div
         'lavender' => 'Lavender',
         'gold' => 'Gold',
         'hacker' => 'Hacker',
+        'inferno' => 'Inferno',
     ];
+
+    /**
+     * Whether the site actually offers this theme - api/update-theme.php's
+     * guard. Asked of the list that builds the menu, so a theme can never be
+     * offered and then refused on save.
+     */
+    public static function offers(string $theme): bool
+    {
+        return array_key_exists($theme, self::OPTIONS);
+    }
 
     public function toDOM(): \DOMElement
     {

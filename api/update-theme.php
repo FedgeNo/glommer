@@ -20,9 +20,9 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $theme = (string) ($payload['theme'] ?? '');
 
-$valid_themes = ['system', 'light', 'dark', 'sepia', 'midnight', 'sunset', 'rose', 'forest', 'ocean', 'lavender', 'gold', 'hacker'];
-
-if (!in_array($theme, $valid_themes, true)) {
+// Asked of the same list that builds the menu, rather than a copy of it - two
+// lists would drift the first time a theme was added to only one of them.
+if (!ThemeSelector::offers($theme)) {
     JSONResponse::error('Invalid theme', 422) -> send();
 }
 

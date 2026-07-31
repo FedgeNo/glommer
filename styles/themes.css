@@ -230,6 +230,33 @@
     --glass: rgb(0 0 0 / 0.90);
 }
 
+/* The heat-map ramp - black through deep purple and magenta into orange and pale
+   yellow. The gradient is split by job rather than sprinkled: the cool end is
+   structure, so surfaces and edges climb from near-black through purple, and the
+   hot end is anything that acts or warns - accent, link, danger - which is also
+   the order of attention you want. Text sits at the pale top of the ramp so it
+   stays legible against the purple rather than glowing. */
+:root[data-theme='inferno'] {
+    --paper: #000004;
+    --surface: #17073c;
+    --surface-2: #290b52;
+    --ink: #fce9b4;
+    --muted: #cf8a72;
+    --hairline: #4a0c6b;
+    --accent: #ed6925;
+    --accent-strong: #fb9b06;
+    --accent-soft: rgb(237 105 37 / 0.16);
+    --accent-ink: #1b0c41;
+    --link: #f7d13d;
+    /* A step up the ramp from the red at its middle, which sits too close to
+       the purple surface to read at body size. */
+    --danger: #e2593c;
+    --danger-soft: rgb(226 89 60 / 0.18);
+    --shadow-card: 0 1px 2px rgb(0 0 4 / 0.60), 0 8px 24px -10px rgb(120 28 109 / 0.55);
+    --shadow-pop: 0 4px 10px rgb(0 0 4 / 0.50), 0 18px 44px -12px rgb(237 105 37 / 0.35);
+    --glass: rgb(0 0 4 / 0.88);
+}
+
 /* Dark‑mode edges for the hashtag graph */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) .HashtagGraphList {
@@ -239,5 +266,10 @@
 
 :root[data-theme='dark'] .HashtagGraphList {
     --HashtagEdge: rgb(232 236 233 / 0.22);
+}
+
+/* Edges in the ramp's hot end, so the graph reads as heat against the black. */
+:root[data-theme='inferno'] .HashtagGraphList {
+    --HashtagEdge: rgb(237 105 37 / 0.30);
 }
 

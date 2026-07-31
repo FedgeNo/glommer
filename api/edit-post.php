@@ -143,4 +143,6 @@ SELECT *
 $post = Post::fromRowWithItems($updated_post);
 $post -> author = $current_user;
 
+FediversePublisher::updated($post, $current_user);
+
 JSONResponse::success($post -> toPayload(0, 0, false, false)) -> send();

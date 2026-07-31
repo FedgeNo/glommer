@@ -20,8 +20,103 @@ class ActivityPubInbox
             'Create' => self::handleCreate($activity, $signed_actor_uri),
             'Update' => self::handleUpdate($activity, $signed_actor_uri),
             'Delete' => self::handleDelete($activity, $signed_actor_uri),
+            'Follow' => self::handleFollow($activity, $signed_actor_uri),
+            'Undo' => self::handleUndo($activity, $signed_actor_uri),
             default => null,
         };
+    }
+
+    /**
+     * Someone out on the Fediverse following a member here.
+     *
+     * Accepted without asking, because everything on a Glommer server is
+     * public: there is nothing for approval to protect, and holding a request
+     * that will always be granted only makes people wait.
+     *
+     * The Accept is signed by the member being followed rather than by the
+     * instance - the Follow was addressed to them, and the far side matches the
+     * answer against the actor it asked.
+     */
+    private static function handleFollow(array $activity, string $actor_uri): void
+    {
+        $object = $activity['object'] ?? null;
+        $target_uri = is_string($object) ? $object : (is_array($object) ? ($object['id'] ?? null) : null);
+        $follow_activity_id = $activity['id'] ?? null;
+
+        if (!is_string($target_uri) || !is_string($follow_activity_id) || $follow_activity_id === '') {
+            return;
+        }
+
+        $target = ActivityPubActor::localUserFromURI($target_uri);
+
+        if ($target === null || $target -> userId === null) {
+            return;
+        }
+
+        // The signature already proved who this is, so the row is on file with
+        // their inbox on it - which is where the Accept goes and where their
+        // copies of this member's posts will go from now on.
+        $follower = DB::row('
+SELECT *
+    FROM `Users`
+    WHERE `remoteActorURI` = ?
+', 'User', 's', $actor_uri);
+
+        if ($follower === null || !is_string($follower -> remoteActorInboxURL) || $follower -> remoteActorInboxURL === '') {
+            return;
+        }
+
+        FediverseFollower::add(
+            (int) $target -> userId,
+            $actor_uri,
+            $follower -> remoteActorInboxURL,
+            is_string($follower -> remoteActorSharedInboxURL) ? $follower -> remoteActorSharedInboxURL : null,
+            $follow_activity_id
+        );
+
+        ActivityPubDelivery::postAs($target, $follower -> remoteActorInboxURL, [
+            '@context' => 'https://www.w3.org/ns/activitystreams',
+            'id' => ActivityPubActor::uriFor($target) . '#accepts/' . bin2hex(random_bytes(8)),
+            'type' => 'Accept',
+            'actor' => ActivityPubActor::uriFor($target),
+            'object' => [
+                'id' => $follow_activity_id,
+                'type' => 'Follow',
+                'actor' => $actor_uri,
+                'object' => ActivityPubActor::uriFor($target),
+            ],
+        ]);
+    }
+
+    /**
+     * An Undo withdrawing something previously sent. Only Follow is acted on:
+     * it is the one whose absence changes what this server does, since it stops
+     * their copies of a member's posts.
+     */
+    private static function handleUndo(array $activity, string $actor_uri): void
+    {
+        $object = $activity['object'] ?? null;
+
+        if (!is_array($object) || ($object['type'] ?? null) !== 'Follow') {
+            return;
+        }
+
+        $target_uri = $object['object'] ?? null;
+        $target_uri = is_string($target_uri) ? $target_uri : (is_array($target_uri) ? ($target_uri['id'] ?? null) : null);
+
+        if (!is_string($target_uri)) {
+            return;
+        }
+
+        $target = ActivityPubActor::localUserFromURI($target_uri);
+
+        if ($target === null || $target -> userId === null) {
+            return;
+        }
+
+        // Keyed on the signed actor, never on whoever the activity claims to be
+        // about - otherwise anyone could unfollow on someone else's behalf.
+        FediverseFollower::remove((int) $target -> userId, $actor_uri);
     }
 
     private static function handleAccept(array $activity, string $actor_uri): void

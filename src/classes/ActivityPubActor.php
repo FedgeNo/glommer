@@ -264,6 +264,35 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
         return strcasecmp($authority, self::canonicalHost()) === 0;
     }
 
+    /**
+     * The member an actor URI of ours names, or null if it names nothing here.
+     *
+     * Resolved by matching the URI this server would publish for that member
+     * rather than by pulling a slug out of the path: the two are the same
+     * string when the URI is really ours, and comparing whole URIs means a
+     * path that merely looks like ours cannot be talked into resolving.
+     */
+    public static function localUserFromURI(string $actor_uri): ?User
+    {
+        if (!self::isLocalActorURI($actor_uri)) {
+            return null;
+        }
+
+        $path = parse_url($actor_uri, PHP_URL_PATH);
+
+        if (!is_string($path) || !preg_match('#\A/users/([^/]+)/\z#', $path, $matches)) {
+            return null;
+        }
+
+        $user = User::byUsername(rawurldecode($matches[1]));
+
+        if ($user === null || !self::isLocal($user) || (int) $user -> banned === 1) {
+            return null;
+        }
+
+        return self::uriFor($user) === $actor_uri ? $user : null;
+    }
+
     /** ActivityStreams wants xsd:dateTime; the DB gives a MySQL datetime. */
     public static function timestamp(string $datetime): string
     {

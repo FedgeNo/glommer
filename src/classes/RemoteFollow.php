@@ -110,7 +110,7 @@ SELECT `remoteActorURI`
             return ['ok' => false, 'handle' => $handle, 'error' => 'That account is on a different server than its handle claims, and that server does not confirm it.'];
         }
 
-        self::upsertShadowUser($actor);
+        RemoteActor::upsert($actor);
 
         // Recorded before delivery, because the Accept answering it is what
         // this id exists to match and it can arrive the moment we send.
@@ -158,7 +158,7 @@ SELECT `userId`
             return false;
         }
 
-        self::upsertShadowUser($actor);
+        RemoteActor::upsert($actor);
 
         $follow_activity_id = ServerURL::absolute('/activitypub/follows/' . bin2hex(random_bytes(16)));
 
@@ -246,83 +246,6 @@ SELECT `remoteFollowId`
                 'object' => $remote_actor_uri,
             ],
         ]);
-    }
-
-    private static function upsertShadowUser(array $actor): void
-    {
-        $existing = DB::row('
-SELECT `userId`
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor['id']);
-
-        $display_name = $actor['name'] !== '' ? $actor['name'] : $actor['preferredUsername'];
-
-        if ($existing !== null) {
-            DB::run('
-UPDATE `Users`
-    SET `title` = ?, `remoteActorPublicKeyPem` = ?
-    WHERE `userId` = ?
-', 'ssi', $display_name, $actor['publicKeyPem'], $existing -> userId);
-
-            return;
-        }
-
-        $slug = self::uniqueShadowSlug($actor['preferredUsername'], $actor['id']);
-        $synthetic_email = 'remote+' . substr(sha1($actor['id']), 0, 32) . '@glommer.invalid';
-        $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
-
-        DB::run('
-INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`, `remoteActorPublicKeyPem`, `verified`)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'ssssssi', $slug, $synthetic_email, $unusable_hash, $display_name, $actor['id'], $actor['publicKeyPem'], 1);
-    }
-
-    /**
-     * A remote account's slug is its Fediverse handle as-is, minus the
-     * leading @: bob@mastodon.social. That makes the profile URL the handle
-     * (/users/bob@mastodon.social/), so it needs no decoding to display and
-     * no folding that could make two different handles collide.
-     *
-     * It also can't collide with a local username or be squatted by one:
-     * api/signup.php strips local names to [a-z0-9_], so an @ is impossible
-     * there, which keeps the two namespaces structurally disjoint.
-     *
-     * The local part is reduced to the same [a-z0-9_] Mastodon itself allows,
-     * and the whole thing is lowercased - remote usernames are compared
-     * case-insensitively, and the slug column's collation matches that.
-     */
-    private static function uniqueShadowSlug(string $preferred_username, string $actor_uri): string
-    {
-        $local_part = (string) preg_replace('/[^a-z0-9_]/', '', strtolower($preferred_username));
-        $host = strtolower((string) parse_url($actor_uri, PHP_URL_HOST));
-
-        if ($local_part === '' || $host === '') {
-            $local_part = $local_part !== '' ? $local_part : 'user';
-            $host = $host !== '' ? $host : 'unknown';
-        }
-
-        $base = substr($local_part . '@' . $host, 0, self::MAX_SLUG_LENGTH);
-        $candidate = $base;
-
-        for ($attempt = 0; $attempt < 50; $attempt++) {
-            $existing = DB::row('
-SELECT `slug`
-    FROM `Users`
-    WHERE `slug` = ?
-', 'User', 's', $candidate);
-
-            if ($existing === null) {
-                return $candidate;
-            }
-
-            // Only reachable when the handle itself doesn't fit the column and
-            // two different handles truncate to the same thing; a full handle
-            // is unique on its own.
-            $candidate = substr($base, 0, self::MAX_SLUG_LENGTH - 6) . random_int(1000, 999999);
-        }
-
-        return substr($base, 0, self::MAX_SLUG_LENGTH - 12) . bin2hex(random_bytes(6));
     }
 
     private static function sendFollow(array $actor, string $follow_activity_id): bool

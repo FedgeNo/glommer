@@ -87,16 +87,18 @@ if ($signature_fields === null) {
 // identifies who this delivery claims to be from.
 $actor_uri = explode('#', $signature_fields['keyId'])[0];
 
-$signer = DB::row('
-SELECT *
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor_uri);
+// Fetched from the actor's own server when this instance has not met them
+// before, which inbound federation requires: someone following a member here
+// is by definition an actor we have never seen, and their key has to come from
+// somewhere before their signature can be checked.
+//
+// That is not the same as trusting whatever the request points keyId at. The
+// key is only ever fetched from the actor URI itself, over the guarded fetcher,
+// and RemoteActor::fetch refuses a document whose id belongs to another host -
+// so a server can still only ever speak for its own accounts, and cannot
+// overwrite the cached key of an account already known here.
+$signer = RemoteActor::ensureKnown($actor_uri);
 
-// Only ever verifies against a public key already on file for an actor this
-// instance actually knows about (someone here follows them) - never fetches
-// a key live from whatever the request claims, which would let anyone assert
-// any identity by just pointing keyId at a key they control.
 if ($signer === null || $signer -> remoteActorPublicKeyPem === null) {
     http_response_code(401);
     exit;

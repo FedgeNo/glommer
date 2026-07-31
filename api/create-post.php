@@ -316,4 +316,8 @@ $post -> createdAt = date('Y-m-d H:i:s');
 $post -> items = $items;
 $post -> author = $current_user;
 
+// Queued, not delivered: the author waits for their post, not for every server
+// that follows them.
+FediversePublisher::published($post, $current_user);
+
 JSONResponse::success($post -> toPayload(0, 0, false, false)) -> send();

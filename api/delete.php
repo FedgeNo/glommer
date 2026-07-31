@@ -30,6 +30,14 @@ if ($owner === null || (int) $owner -> userId !== $current_user -> userId) {
     JSONResponse::error('Not your post', 403) -> send();
 }
 
+// Read before the row goes: once it is deleted there is nothing left to build
+// the URI from, and the followers still need telling.
+$object_uri = FediversePublisher::objectURIFor($post_id);
+
 Post::delete($post_id);
+
+if ($object_uri !== null) {
+    FediversePublisher::deleted($object_uri, $current_user);
+}
 
 JSONResponse::success(['deleted' => true]) -> send();

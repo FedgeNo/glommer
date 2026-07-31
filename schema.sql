@@ -344,6 +344,30 @@ CREATE TABLE `FediverseFollowers` (
   CONSTRAINT `FediverseFollowers_ibfk_1` FOREIGN KEY (`localUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Outbound activities waiting to reach a remote inbox. Delivery cannot happen
+-- inside the request that caused it: a post by someone with a thousand
+-- followers is a thousand HTTPS round trips to servers that may be slow, down,
+-- or gone, and none of that belongs between a person pressing Post and seeing
+-- their post.
+--
+-- One row per destination inbox, holding the exact bytes to send. attempts and
+-- nextAttemptAt carry the backoff; a row that exhausts its attempts is dropped
+-- rather than retried forever, because a server that has refused a dozen times
+-- over several days is not coming back for this one activity.
+CREATE TABLE `FediverseDeliveries` (
+  `deliveryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `actorUserId` int(10) unsigned NOT NULL,
+  `inboxURL` varchar(255) NOT NULL,
+  `activity` mediumtext NOT NULL,
+  `attempts` int(10) unsigned NOT NULL DEFAULT 0,
+  `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `lastError` varchar(255) DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`deliveryId`),
+  KEY `nextAttemptAt_deliveryId` (`nextAttemptAt`,`deliveryId`),
+  CONSTRAINT `FediverseDeliveries_ibfk_1` FOREIGN KEY (`actorUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `RemoteObjectTombstones` (
   `remoteObjectURI` varchar(255) NOT NULL,
   `reason` varchar(255) DEFAULT NULL,

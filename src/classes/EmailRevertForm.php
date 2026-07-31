@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Mimecast, Gmail prefetch) fetch every link they see - a GET-side revert
  * would let one of those blind fetches undo a legitimate change.
  */
-class RevertEmailForm extends FormForm
+class EmailRevertForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
     public string $token;

@@ -3,10 +3,10 @@ import { Toast } from '/scripts/Toast.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
-export class ChangeEmailForm {
+export class PasswordChangeForm {
     static init() {
         document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.ChangeEmailForm');
+            const form = event.target.closest('.PasswordChangeForm');
             if (!form) return;
             event.preventDefault();
 
@@ -17,31 +17,25 @@ export class ChangeEmailForm {
             submit_button.disabled = true;
 
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/change-email', {
+                const response = await fetch(ClientConfig.siteURL() + '/api/change-password', {
                     method: 'POST',
                     headers: csrf_headers({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify({
-                        newEmail: form.querySelector('[name="newEmail"]').value,
                         currentPassword: form.querySelector('[name="currentPassword"]').value,
+                        newPassword: form.querySelector('[name="newPassword"]').value,
+                        confirmPassword: form.querySelector('[name="confirmPassword"]').value,
                     }),
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    const error = document.createElement('p');
-                    error.className = 'Error';
-                    error.textContent = data.error;
-                    form.insertBeforeWithSpace(error, submit_button);
+                    Toast.show(data.error);
                     return;
                 }
 
-                if (!data.response.changed) {
-                    Toast.show('That is already your email address.');
-                    return;
-                }
-
-                window.location = ClientConfig.siteURL() + '/check-inbox';
+                form.reset();
+                Toast.show('Password changed!');
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
@@ -51,4 +45,4 @@ export class ChangeEmailForm {
     }
 }
 
-ReadyHandler.add(ChangeEmailForm.init);
+ReadyHandler.add(PasswordChangeForm.init);

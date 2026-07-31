@@ -93,7 +93,7 @@ SELECT *
         $heading -> contents[] = $this -> title ?: $this -> slug;
         $row -> addContent($heading);
 
-        $row -> addContent(new EditProfileButton());
+        $row -> addContent(new ProfileEditButton());
 
         return $row;
     }

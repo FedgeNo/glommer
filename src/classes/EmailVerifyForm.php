@@ -8,9 +8,9 @@ declare(strict_types=1);
  * deliberate click, never on a bare GET of the link. Email security scanners
  * (SafeLinks, Mimecast, Gmail prefetch) fetch every link they see - a GET-side
  * verify would let one of those blind fetches consume the token before the real
- * user ever opened the message. Mirrors RevertEmailForm.
+ * user ever opened the message. Mirrors EmailRevertForm.
  */
-class VerifyEmailForm extends FormForm
+class EmailVerifyForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
     public string $token;

@@ -21,5 +21,5 @@ if ($token === '' || PasswordReset::verify($token) === null) {
 }
 
 $page = new Page(['title' => 'Reset Password']);
-$page -> addContent(new ResetPasswordForm($token));
+$page -> addContent(new PasswordResetForm($token));
 $page -> send();

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class DeleteAccountForm extends FormForm
+class AccountDeleteForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
@@ -15,7 +15,7 @@ class DeleteAccountForm extends FormForm
         $this -> contents[] = $fields;
 
         $submit = new SubmitButton('Delete Account');
-        $submit -> class .= ' DeleteAccountButton';
+        $submit -> class .= ' AccountDeleteButton';
         $this -> contents[] = $submit;
 
         // Anyone who signs in with Google - including an email/password account
@@ -29,7 +29,7 @@ class DeleteAccountForm extends FormForm
 
             $google_delete = new Button();
             $google_delete -> type = 'button';
-            $google_delete -> class = 'GoogleDeleteButton';
+            $google_delete -> class = 'AccountGoogleDeleteButton';
             $google_delete -> mixins = ['Button'];
             $google_delete -> contents[] = 'Verify with Google to delete';
             $this -> contents[] = $google_delete;

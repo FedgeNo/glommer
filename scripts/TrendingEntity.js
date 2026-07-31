@@ -6,13 +6,13 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 export class TrendingEntity {
     static init() {
         document.addEventListener('click', async (event) => {
-            const banBtn = event.target.closest('.BanTrendingEntityButton');
+            const banBtn = event.target.closest('.TrendingEntityBanButton');
             if (banBtn) {
                 TrendingEntity.#ban(banBtn);
                 return;
             }
 
-            const unbanBtn = event.target.closest('.UnbanTrendingEntityButton');
+            const unbanBtn = event.target.closest('.TrendingEntityUnbanButton');
             if (unbanBtn) {
                 TrendingEntity.#unban(unbanBtn);
             }

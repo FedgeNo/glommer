@@ -80,7 +80,7 @@ export class Composer {
         this.descriptionInput = form.querySelector('.DescriptionInput');
 
         this.submitButton       = form.querySelector('button[type="submit"]');
-        this.removeFilesButton  = form.querySelector('.RemoveFilesButton');
+        this.removeFilesButton  = form.querySelector('.ComposerFilesRemoveButton');
         this.progressBar        = form.querySelector('.ProgressBar');
 
         this.linkImagePreview  = form.querySelector('.LinkImagePreview');
@@ -170,7 +170,7 @@ export class Composer {
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';
-        removeFilesBtn.className = 'Button RemoveFilesButton';
+        removeFilesBtn.className = 'Button ComposerFilesRemoveButton';
         removeFilesBtn.style.display = 'none';
         removeFilesBtn.textContent = 'Remove Files';
         actions.appendWithSpace(removeFilesBtn);

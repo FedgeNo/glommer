@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * One row on the moderation "Banned Trending Entities" list: the banned
  * entity (value + type), who banned it and when, the reason if given, and an
- * Unban button. Mirrored by the .UnbanTrendingEntityButton handler in main.js
+ * Unban button. Mirrored by the .TrendingEntityUnbanButton handler in main.js
  * that lifts the ban via api/unban-trending-entity. Fetched directly off
  * BannedTrendingEntitiesList's DB::rows(); bannedByUsername comes from the
  * join to Users so the moderator's name is shown, not their id.
@@ -42,7 +42,7 @@ class BannedTrendingEntity extends Div
         $info -> addContent($detail);
         $this -> addContent($info);
 
-        $unban = new UnbanTrendingEntityButton((string) $this -> type, (string) $this -> title);
+        $unban = new TrendingEntityUnbanButton((string) $this -> type, (string) $this -> title);
         $unban -> mixins[] = 'ms-auto';
         $this -> addContent($unban);
 

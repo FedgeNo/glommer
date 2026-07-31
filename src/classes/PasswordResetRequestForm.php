@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ForgotPasswordForm extends FormForm
+class PasswordResetRequestForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 

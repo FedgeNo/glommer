@@ -38,6 +38,6 @@ if ($token === '') {
 }
 
 $page -> addContent(new Paragraph('Revert the recent email address change on your account? This also signs every device out of your account.'));
-$page -> addContent(new RevertEmailForm($token));
+$page -> addContent(new EmailRevertForm($token));
 
 $page -> send();

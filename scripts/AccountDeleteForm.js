@@ -1,14 +1,17 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
+import { Dialog } from '/scripts/Dialog.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
-export class ChangePasswordForm {
+export class AccountDeleteForm {
     static init() {
         document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.ChangePasswordForm');
+            const form = event.target.closest('.AccountDeleteForm');
             if (!form) return;
             event.preventDefault();
+
+            if (!await Dialog.confirm('Delete your account? Your posts, replies, and messages are gone permanently - this can\'t be undone.')) return;
 
             const existing_error = form.querySelector('.Error');
             if (existing_error) existing_error.remove();
@@ -17,25 +20,25 @@ export class ChangePasswordForm {
             submit_button.disabled = true;
 
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/change-password', {
+                const response = await fetch(ClientConfig.siteURL() + '/api/delete-account', {
                     method: 'POST',
                     headers: csrf_headers({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify({
                         currentPassword: form.querySelector('[name="currentPassword"]').value,
-                        newPassword: form.querySelector('[name="newPassword"]').value,
-                        confirmPassword: form.querySelector('[name="confirmPassword"]').value,
                     }),
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    Toast.show(data.error);
+                    const error = document.createElement('p');
+                    error.className = 'Error';
+                    error.textContent = data.error;
+                    form.insertBeforeWithSpace(error, submit_button);
                     return;
                 }
 
-                form.reset();
-                Toast.show('Password changed!');
+                window.location = ClientConfig.siteURL() + '/';
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
@@ -45,4 +48,4 @@ export class ChangePasswordForm {
     }
 }
 
-ReadyHandler.add(ChangePasswordForm.init);
+ReadyHandler.add(AccountDeleteForm.init);

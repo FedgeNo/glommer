@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class BanTrendingEntityButton extends ButtonButton
+class TrendingEntityBanButton extends ButtonButton
 {
     public function __construct(string $entity_type, string $entity_value)
     {

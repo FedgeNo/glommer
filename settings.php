@@ -8,9 +8,9 @@ Auth::requireLogin();
 
 $page = new Page(['title' => 'Settings']);
 
-$page -> addContent(new SettingsSection('Change Password', new ChangePasswordForm()));
+$page -> addContent(new SettingsSection('Change Password', new PasswordChangeForm()));
 
-$page -> addContent(new SettingsSection('Change Email', new ChangeEmailForm()));
+$page -> addContent(new SettingsSection('Change Email', new EmailChangeForm()));
 
 $page -> addContent(new SettingsSection('Two-Factor Authentication', new TwoFactorSettingsForm(TwoFactor::isEnabled(Auth::user()))));
 
@@ -25,7 +25,7 @@ $page -> addContent(new SettingsSection('Fediverse', new RemoteFollowsForm(Remot
 // The site needs at least one admin account to function - api/delete-account.php
 // rejects userId 1 too, but there's no reason to show the form at all here.
 if ((int) Auth::user() -> userId !== 1) {
-    $page -> addContent(new SettingsSection('Delete Account', new DeleteAccountForm()));
+    $page -> addContent(new SettingsSection('Delete Account', new AccountDeleteForm()));
 }
 
 $page -> send();

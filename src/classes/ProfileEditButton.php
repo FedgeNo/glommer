@@ -7,7 +7,7 @@ declare(strict_types=1);
  * own - clicking it (or the name, or the bio) flips the card into edit mode
  * client-side (see main.js). It's the visible "you can edit this" affordance.
  */
-class EditProfileButton extends ButtonButton
+class ProfileEditButton extends ButtonButton
 {
     public function toDOM(): \DOMElement
     {

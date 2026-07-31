@@ -3,10 +3,10 @@ import { Toast } from '/scripts/Toast.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
-export class ResetPasswordForm {
+export class PasswordResetForm {
     static init() {
         document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.ResetPasswordForm');
+            const form = event.target.closest('.PasswordResetForm');
             if (!form) return;
             event.preventDefault();
 
@@ -42,4 +42,4 @@ export class ResetPasswordForm {
     }
 }
 
-ReadyHandler.add(ResetPasswordForm.init);
+ReadyHandler.add(PasswordResetForm.init);

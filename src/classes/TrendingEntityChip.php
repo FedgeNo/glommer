@@ -42,7 +42,7 @@ class TrendingEntityChip extends Div
         $this -> addContent($link);
 
         if (Auth::canModerate()) {
-            $this -> addContent(new BanTrendingEntityButton((string) $this -> type, (string) $this -> title));
+            $this -> addContent(new TrendingEntityBanButton((string) $this -> type, (string) $this -> title));
         }
 
         return parent::toDOM();

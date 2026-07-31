@@ -130,7 +130,7 @@ export class ReportCard {
         if (this.targetLive && (this.targetType === 'post' || this.targetType === 'message')) {
             const delete_button = document.createElement('button');
             delete_button.type = 'button';
-            delete_button.className = 'Button DeleteReportedContentButton';
+            delete_button.className = 'Button ReportedContentDeleteButton';
             delete_button.dataset.reportId = this.reportId;
             delete_button.textContent = 'Delete ' + capitalize(this.targetType);
             actions.appendWithSpace(delete_button);
@@ -138,7 +138,7 @@ export class ReportCard {
 
         const dismiss_button = document.createElement('button');
         dismiss_button.type = 'button';
-        dismiss_button.className = 'Button DismissReportButton';
+        dismiss_button.className = 'Button ReportDismissButton';
         dismiss_button.dataset.reportId = this.reportId;
         dismiss_button.textContent = 'Dismiss';
         actions.appendWithSpace(dismiss_button);
@@ -166,13 +166,13 @@ export class ReportCard {
 
     static init() {
         document.addEventListener('click', async (event) => {
-            const dismissBtn = event.target.closest('.DismissReportButton');
+            const dismissBtn = event.target.closest('.ReportDismissButton');
             if (dismissBtn) {
                 ReportCard.#dismiss(dismissBtn);
                 return;
             }
 
-            const deleteBtn = event.target.closest('.DeleteReportedContentButton');
+            const deleteBtn = event.target.closest('.ReportedContentDeleteButton');
             if (deleteBtn) {
                 ReportCard.#deleteContent(deleteBtn);
             }

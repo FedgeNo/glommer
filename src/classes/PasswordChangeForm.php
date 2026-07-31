@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ChangePasswordForm extends FormForm
+class PasswordChangeForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ChangeEmailForm extends FormForm
+class EmailChangeForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 

@@ -1,17 +1,14 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
-import { Dialog } from '/scripts/Dialog.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
-export class DeleteAccountForm {
+export class EmailChangeForm {
     static init() {
         document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.DeleteAccountForm');
+            const form = event.target.closest('.EmailChangeForm');
             if (!form) return;
             event.preventDefault();
-
-            if (!await Dialog.confirm('Delete your account? Your posts, replies, and messages are gone permanently - this can\'t be undone.')) return;
 
             const existing_error = form.querySelector('.Error');
             if (existing_error) existing_error.remove();
@@ -20,10 +17,11 @@ export class DeleteAccountForm {
             submit_button.disabled = true;
 
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/delete-account', {
+                const response = await fetch(ClientConfig.siteURL() + '/api/change-email', {
                     method: 'POST',
                     headers: csrf_headers({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify({
+                        newEmail: form.querySelector('[name="newEmail"]').value,
                         currentPassword: form.querySelector('[name="currentPassword"]').value,
                     }),
                 });
@@ -38,7 +36,12 @@ export class DeleteAccountForm {
                     return;
                 }
 
-                window.location = ClientConfig.siteURL() + '/';
+                if (!data.response.changed) {
+                    Toast.show('That is already your email address.');
+                    return;
+                }
+
+                window.location = ClientConfig.siteURL() + '/check-inbox';
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
@@ -48,4 +51,4 @@ export class DeleteAccountForm {
     }
 }
 
-ReadyHandler.add(DeleteAccountForm.init);
+ReadyHandler.add(EmailChangeForm.init);

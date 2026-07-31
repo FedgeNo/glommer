@@ -32,6 +32,6 @@ if ($token === '') {
 }
 
 $page -> addContent(new Paragraph('Confirm that you want to verify this email address.'));
-$page -> addContent(new VerifyEmailForm($token));
+$page -> addContent(new EmailVerifyForm($token));
 
 $page -> send();

@@ -12,7 +12,7 @@ if (!GoogleAuth::isEnabled()) {
 
 // intent=delete re-verifies a logged-in account's Google identity so it can be
 // deleted (a Google account has no usable password to confirm with - see
-// DeleteAccountForm). Every other start is an ordinary sign-in, which only
+// AccountDeleteForm). Every other start is an ordinary sign-in, which only
 // makes sense when logged out.
 $intent = ($_GET['intent'] ?? '') === 'delete' ? 'delete' : null;
 

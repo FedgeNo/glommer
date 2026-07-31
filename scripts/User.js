@@ -113,7 +113,7 @@ export class User {
     static init() {
         document.addEventListener('click', (event) => {
             // Start profile editing
-            const editTrigger = event.target.closest('.User.CurrentUser .DisplayName, .User.CurrentUser .UserBio, .User.CurrentUser .EditProfileButton');
+            const editTrigger = event.target.closest('.User.CurrentUser .DisplayName, .User.CurrentUser .UserBio, .User.CurrentUser .ProfileEditButton');
             if (editTrigger && !editTrigger.closest('a')) {
                 const card = editTrigger.closest('.User.CurrentUser');
                 if (card && !card.classList.contains('Editing')) {
@@ -130,7 +130,7 @@ export class User {
             }
 
             // Google delete
-            const googleDelBtn = event.target.closest('.GoogleDeleteButton');
+            const googleDelBtn = event.target.closest('.AccountGoogleDeleteButton');
             if (googleDelBtn) {
                 User.#confirmGoogleDelete(googleDelBtn);
                 return;

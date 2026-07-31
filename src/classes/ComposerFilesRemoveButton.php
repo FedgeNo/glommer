@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class RemoveFilesButton extends ButtonButton
+class ComposerFilesRemoveButton extends ButtonButton
 {
     public function __construct()
     {

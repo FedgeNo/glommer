@@ -2,10 +2,10 @@ import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
-export class ForgotPasswordForm {
+export class PasswordResetRequestForm {
     static init() {
         document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.ForgotPasswordForm');
+            const form = event.target.closest('.PasswordResetRequestForm');
             if (!form) return;
             event.preventDefault();
 
@@ -27,4 +27,4 @@ export class ForgotPasswordForm {
     }
 }
 
-ReadyHandler.add(ForgotPasswordForm.init);
+ReadyHandler.add(PasswordResetRequestForm.init);

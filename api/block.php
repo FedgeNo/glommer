@@ -24,10 +24,18 @@ if ($target_user_id === $current_user -> userId) {
     JSONResponse::error('You can\'t block yourself.', 422) -> send();
 }
 
-if (User::load($target_user_id) === null) {
+$target_user = User::load($target_user_id);
+
+if ($target_user === null) {
     JSONResponse::error('User not found', 404) -> send();
 }
 
 Block::create($current_user -> userId, $target_user_id);
+
+// Tell their server, and drop the federated follows either way. A block that
+// stops at this server is half a block - their side keeps delivering, because
+// it was never told.
+ActivityPubBlock::severFollows($target_user_id, $current_user -> userId, (string) $target_user -> remoteActorURI);
+ActivityPubBlock::published($current_user, $target_user, true);
 
 JSONResponse::success(['blocked' => true]) -> send();

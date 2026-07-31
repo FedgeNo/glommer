@@ -46,6 +46,9 @@ says so, because that means bumping `GLOMMER_VERSION` and running
   the inbox before a key is fetched and on every outbound request. No admin page
   and blocking severs existing follows both ways, drops what was queued, and has
   a moderation page under Blocked Servers.
+- **Block propagation.** A member blocking a remote account tells their server
+  and cuts the follows both ways; an inbound `Block` is honoured here, and both
+  `Undo`s lift it.
 
 ## Before 1.0, regardless of the list below
 
@@ -65,11 +68,7 @@ Rehearse on dev.
 Nothing here reposts yet, so there is no local action to federate. Inbound
 boosts are recorded; sending one needs the site feature first.
 
-### 2. Block propagation
-A member blocking a remote account should send `Block`, and an inbound `Block`
-should be honoured.
-
-### 3. Federated direct messages
+### 2. Federated direct messages
 A `Note` addressed to one actor with no public audience. Federated DMs must be
 visually distinguished in the thread, because they are meaningfully less private
 than local ones: readable by the remote server's operator as well as ours.
@@ -77,31 +76,31 @@ Glommer has no end-to-end encryption - a local message is readable by one
 operator, a federated one by two. **Schema change** (`remoteObjectURI` on
 Messages).
 
-### 4. Account migration (`Move`)
+### 3. Account migration (`Move`)
 `alsoKnownAs` and `movedTo`, so someone can arrive with their followers intact
 or leave without stranding them.
 
-### 5. Pinned posts
+### 4. Pinned posts
 Wanted on the site regardless; federates as the `featured` collection.
 **Schema change.**
 
-### 6. Custom emoji (`Emoji` tags)
+### 5. Custom emoji (`Emoji` tags)
 Shortcodes carried as `Emoji` tags with image URLs, so `:shortcode:` from a
 remote post renders as the image rather than as literal text, and ours travel
 the same way.
 
-### 7. Video and Audio as first-class objects
+### 6. Video and Audio as first-class objects
 A post whose only attachment is one video or one audio file is a `Video` or
 `Audio` object rather than a `Note` carrying an attachment. That is what
 PeerTube and Funkwhale publish, and what players expect to find.
 
-### 8. Collection pagination
+### 7. Collection pagination
 `followers` and `following` inline their whole list. Anything that can pass ~20
 entries needs paging, same as every other list on the site.
 
-### 9. Polls (`Question`)
+### 8. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.
 
-### 10. Relays
+### 9. Relays
 Subscribing to a relay puts posts in front of servers that do not already follow
 anyone here - the usual answer to a small instance seeing nothing.

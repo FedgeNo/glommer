@@ -27,4 +27,8 @@ if ($target_user === null) {
 
 Block::remove($current_user -> userId, $target_user_id);
 
+// Their server was told about the block, so it has to be told about the lift -
+// otherwise it keeps enforcing one this side no longer holds.
+ActivityPubBlock::published($current_user, $target_user, false);
+
 JSONResponse::success(OtherUser::payloadFor($target_user, $current_user)) -> send();

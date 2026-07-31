@@ -25,8 +25,22 @@ class ActivityPubInbox
             'Like' => self::handleLike($activity, $signed_actor_uri),
             'Announce' => self::handleAnnounce($activity, $signed_actor_uri),
             'Flag' => self::handleFlag($activity, $signed_actor_uri),
+            'Block' => self::handleBlock($activity, $signed_actor_uri),
             default => null,
         };
+    }
+
+    /** A remote account blocking a member here. */
+    private static function handleBlock(array $activity, string $actor_uri): void
+    {
+        $target_uri = self::objectURI($activity['object'] ?? null);
+        $blocker = self::shadowUserFor($actor_uri);
+
+        if ($target_uri === null || $blocker === null) {
+            return;
+        }
+
+        ActivityPubBlock::received($target_uri, $blocker);
     }
 
     /** An abuse report from another server about something here. */
@@ -154,6 +168,18 @@ SELECT *
         $object = $activity['object'] ?? null;
 
         if (!is_array($object)) {
+            return;
+        }
+
+        // Lifting a block, which lets the two see each other again.
+        if (($object['type'] ?? null) === 'Block') {
+            $target = self::objectURI($object['object'] ?? null);
+            $blocker = self::shadowUserFor($actor_uri);
+
+            if ($target !== null && $blocker !== null) {
+                ActivityPubBlock::withdrawn($target, $blocker);
+            }
+
             return;
         }
 

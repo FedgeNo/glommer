@@ -79,6 +79,19 @@ class ActivityPubNote
 
         $tags = self::hashtags((int) $post -> postId);
 
+        // Anyone named directly is addressed as well as tagged. The tag is what
+        // renders the mention as a link on the far side; the addressing is what
+        // actually gets the post to them.
+        foreach (self::remoteRecipients($post) as $recipient) {
+            $document['to'][] = $recipient['uri'];
+
+            $tags[] = [
+                'type' => 'Mention',
+                'name' => $recipient['handle'],
+                'href' => $recipient['uri'],
+            ];
+        }
+
         if ($tags !== []) {
             $document['tag'] = $tags;
         }
@@ -158,6 +171,72 @@ class ActivityPubNote
                 'id' => $object_uri,
                 'type' => 'Tombstone',
             ],
+        ];
+    }
+
+    /**
+     * The remote accounts a post is aimed at directly, as well as at followers:
+     * whoever wrote the thing it replies to, and anyone it mentions.
+     *
+     * Without these a reply never reaches the person replied to unless they
+     * already follow the author, and a mention reaches nobody at all - the post
+     * would go only to followers, which is not who it was addressed to.
+     *
+     * Keyed by actor URI so the same person named twice is one recipient.
+     *
+     * @return array<string, array{uri: string, handle: string, inbox: string}>
+     */
+    public static function remoteRecipients(Post $post): array
+    {
+        if ($post -> postId === null) {
+            return [];
+        }
+
+        $recipients = [];
+
+        // Whoever wrote the parent, when the parent came from elsewhere.
+        if ($post -> parentId !== null) {
+            $parent_author = DB::row('
+SELECT `Users`.`slug`, `Users`.`remoteActorURI`, `Users`.`remoteActorInboxURL`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ? AND `Users`.`remoteActorURI` IS NOT NULL
+', 'RemoteRecipientData', 'i', (int) $post -> parentId);
+
+            self::addRecipient($recipients, $parent_author);
+        }
+
+        // Anyone mentioned who lives on another server. A local mention needs
+        // nothing sent - they are already reading this here.
+        $mentioned = DB::rows('
+SELECT `Users`.`slug`, `Users`.`remoteActorURI`, `Users`.`remoteActorInboxURL`
+    FROM `PostMentions`
+    JOIN `Users` ON `Users`.`userId` = `PostMentions`.`userId`
+    WHERE `PostMentions`.`postId` = ? AND `Users`.`remoteActorURI` IS NOT NULL
+', 'RemoteRecipientData', 'i', (int) $post -> postId);
+
+        foreach ($mentioned as $row) {
+            self::addRecipient($recipients, $row);
+        }
+
+        return $recipients;
+    }
+
+    /**
+     * @param array<string, array{uri: string, handle: string, inbox: string}> $recipients
+     */
+    private static function addRecipient(array &$recipients, ?RemoteRecipientData $row): void
+    {
+        if ($row === null || !is_string($row -> remoteActorURI) || $row -> remoteActorURI === '') {
+            return;
+        }
+
+        // No inbox on file means nothing can be delivered there; the actor is
+        // still worth addressing so other servers see who it was for.
+        $recipients[$row -> remoteActorURI] = [
+            'uri' => $row -> remoteActorURI,
+            'handle' => '@' . (string) $row -> slug,
+            'inbox' => is_string($row -> remoteActorInboxURL) ? $row -> remoteActorInboxURL : '',
         ];
     }
 

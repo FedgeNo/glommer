@@ -16,13 +16,18 @@ declare(strict_types=1);
  */
 class FediversePublisher
 {
-    /** Announces a new post to the author's followers. */
+    /**
+     * Announces a new post to the author's followers, and to anyone it is
+     * aimed at directly - whoever wrote the post it replies to, anyone it
+     * mentions. Those two are not followers and would otherwise never see the
+     * thing that was addressed to them.
+     */
     public static function published(Post $post, User $author): void
     {
         $activity = ActivityPubNote::createActivity($post, $author);
 
         if ($activity !== null) {
-            FediverseDelivery::fanOut($author, $activity);
+            FediverseDelivery::fanOut($author, $activity, self::directInboxes($post));
         }
     }
 
@@ -32,8 +37,22 @@ class FediversePublisher
         $activity = ActivityPubNote::updateActivity($post, $author);
 
         if ($activity !== null) {
-            FediverseDelivery::fanOut($author, $activity);
+            FediverseDelivery::fanOut($author, $activity, self::directInboxes($post));
         }
+    }
+
+    /**
+     * The inboxes of the people a post names, as opposed to the people
+     * following its author.
+     *
+     * @return string[]
+     */
+    private static function directInboxes(Post $post): array
+    {
+        return array_values(array_filter(array_map(
+            static fn (array $recipient): string => $recipient['inbox'],
+            ActivityPubNote::remoteRecipients($post)
+        )));
     }
 
     /**

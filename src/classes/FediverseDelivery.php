@@ -116,9 +116,15 @@ SELECT COUNT(*) AS `total`
      * server is never a destination: a member here is read directly, and a
      * federated copy on top would be the same post twice.
      *
+     * $also carries inboxes that are not followers but are part of the
+     * audience anyway - the author of a post being replied to, someone
+     * mentioned. Without them a reply reaches everyone except the person it
+     * answers.
+     *
      * @param array<string, mixed> $activity
+     * @param string[] $also
      */
-    public static function fanOut(User $author, array $activity): void
+    public static function fanOut(User $author, array $activity, array $also = []): void
     {
         // A banned member's actor stops resolving, so anything sent on their
         // behalf would be unverifiable at the far end anyway - and continuing to
@@ -129,8 +135,8 @@ SELECT COUNT(*) AS `total`
         }
 
         $inboxes = array_filter(
-            FediverseFollower::deliveryInboxesFor((int) $author -> userId),
-            static fn (string $inbox): bool => !ActivityPubActor::isLocalActorURI($inbox)
+            array_merge(FediverseFollower::deliveryInboxesFor((int) $author -> userId), $also),
+            static fn (string $inbox): bool => $inbox !== '' && !ActivityPubActor::isLocalActorURI($inbox)
         );
 
         self::enqueue((int) $author -> userId, $activity, $inboxes);

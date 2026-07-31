@@ -3,7 +3,7 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 export class RememberedDevice {
     static init() {
-        const buttons = document.querySelectorAll('.RevokeSessionButton');
+        const buttons = document.querySelectorAll('.RememberedDeviceRevokeButton');
         if (!buttons.length) {
             return;
         }

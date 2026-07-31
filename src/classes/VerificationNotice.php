@@ -20,7 +20,7 @@ class VerificationNotice extends Div
 
         $resend_button = new Button();
         $resend_button -> type = 'button';
-        $resend_button -> class = 'ResendVerificationButton';
+        $resend_button -> class = 'VerificationResendButton';
         $resend_button -> mixins = ['Button'];
         $resend_button -> contents[] = 'Resend verification email';
         $actions -> addContent($resend_button);

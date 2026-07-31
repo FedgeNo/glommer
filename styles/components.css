@@ -144,7 +144,7 @@ button[type='submit'].Button:hover,
 
 .UserBanButton,
 .TrendingEntityBanButton,
-.BlockUserButton,
+.UserBlockButton,
 .ReportButton,
 .PostDeleteButton,
 .FriendRemoveButton,
@@ -158,7 +158,7 @@ button[type='submit'].Button:hover,
 
 .UserBanButton:hover,
 .TrendingEntityBanButton:hover,
-.BlockUserButton:hover,
+.UserBlockButton:hover,
 .ReportButton:hover,
 .PostDeleteButton:hover,
 .FriendRemoveButton:hover,
@@ -253,9 +253,9 @@ a.Button:hover { color: var(--ink) !important; }
 
 /* ---------- Emoji picker ---------- */
 
-.EmojiPickerButton { position: relative; }
+.EmojiPicker { position: relative; }
 
-.EmojiTriggerButton {
+.EmojiPickerTriggerButton {
     font-size: 1.25rem;
     line-height: 1;
 }

@@ -43,7 +43,7 @@ export class OtherUser extends User {
         if (this.blockedByViewer) {
             const unblock_button = document.createElement('button');
             unblock_button.type = 'button';
-            unblock_button.className = 'Button UnblockUserButton ms-auto';
+            unblock_button.className = 'Button UserUnblockButton ms-auto';
             unblock_button.dataset.userId = this.userId;
             unblock_button.textContent = 'Unblock';
             div.appendWithSpace(unblock_button);
@@ -72,7 +72,7 @@ export class OtherUser extends User {
 
             const block_button = document.createElement('button');
             block_button.type = 'button';
-            block_button.className = 'Button BlockUserButton';
+            block_button.className = 'Button UserBlockButton';
             block_button.dataset.userId = this.userId;
             block_button.textContent = 'Block';
 
@@ -147,13 +147,13 @@ export class OtherUser extends User {
                 return;
             }
 
-            const followBtn = event.target.closest('.FollowUserButton');
+            const followBtn = event.target.closest('.UserFollowButton');
             if (followBtn) {
                 OtherUser.#toggleFollow(followBtn);
                 return;
             }
 
-            const blockBtn = event.target.closest('.BlockUserButton');
+            const blockBtn = event.target.closest('.UserBlockButton');
             if (blockBtn) {
                 OtherUser.#block(blockBtn);
                 return;
@@ -171,7 +171,7 @@ export class OtherUser extends User {
                 return;
             }
 
-            const unblockBtn = event.target.closest('.UnblockUserButton');
+            const unblockBtn = event.target.closest('.UserUnblockButton');
             if (unblockBtn) {
                 OtherUser.#unblock(unblockBtn);
                 return;

@@ -137,14 +137,14 @@ export class User {
             }
 
             // Resend verification email
-            const resendBtn = event.target.closest('.ResendVerificationButton');
+            const resendBtn = event.target.closest('.VerificationResendButton');
             if (resendBtn) {
                 User.#resendVerification(resendBtn);
                 return;
             }
 
             // Revoke session
-            const revokeBtn = event.target.closest('.RevokeSessionButton');
+            const revokeBtn = event.target.closest('.RememberedDeviceRevokeButton');
             if (revokeBtn) {
                 User.#revokeSession(revokeBtn);
             }

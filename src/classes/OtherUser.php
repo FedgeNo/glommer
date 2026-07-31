@@ -17,7 +17,7 @@ class OtherUser extends User
         if (Block::blockedBy($viewer_id, $this -> userId)) {
             $unblock_button = new Button();
             $unblock_button -> type = 'button';
-            $unblock_button -> class = 'UnblockUserButton';
+            $unblock_button -> class = 'UserUnblockButton';
             $unblock_button -> mixins = ['Button', 'ms-auto'];
             $unblock_button -> attributes['data-user-id'] = (string) $this -> userId;
             $unblock_button -> contents[] = 'Unblock';
@@ -52,7 +52,7 @@ class OtherUser extends User
 
             $follow_button = new Button();
             $follow_button -> type = 'button';
-            $follow_button -> class = 'FollowUserButton';
+            $follow_button -> class = 'UserFollowButton';
             $follow_button -> mixins = ['Button'];
             $follow_button -> attributes['data-user-id'] = (string) $this -> userId;
             $follow_button -> attributes['data-following'] = $following ? '1' : '0';
@@ -95,7 +95,7 @@ class OtherUser extends User
 
         $block_button = new Button();
         $block_button -> type = 'button';
-        $block_button -> class = 'BlockUserButton';
+        $block_button -> class = 'UserBlockButton';
         $block_button -> mixins = ['Button'];
         $block_button -> attributes['data-user-id'] = (string) $this -> userId;
         $block_button -> contents[] = 'Block';

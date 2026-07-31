@@ -26,7 +26,7 @@ class NearbyLocationPrompt extends Div
         $actions -> mixins = ['d-flex', 'gap-2', 'align-items-center'];
 
         $button = new Button;
-        $button -> class = 'NearbyLocateButton';
+        $button -> class = 'NearbyLocationButton';
         $button -> mixins = ['Button'];
         $button -> addContent('Use my location');
         $actions -> addContent($button);

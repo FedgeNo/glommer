@@ -6,7 +6,7 @@ let activeWrapper = null;
 // Global click‑outside listener – closes the panel when clicking elsewhere
 document.addEventListener('click', (event) => {
     if (!activePanel) return;
-    if (event.target.closest('.EmojiTriggerButton')) return;
+    if (event.target.closest('.EmojiPickerTriggerButton')) return;
     if (event.target.closest('.EmojiPickerPanel')) return;
     closeActive();
 });
@@ -23,11 +23,11 @@ function closeActive() {
 
 export class EmojiPicker {
     static initAll(root = document) {
-        root.querySelectorAll('.EmojiPickerButton').forEach(btn => EmojiPicker.setup(btn));
+        root.querySelectorAll('.EmojiPicker').forEach(btn => EmojiPicker.setup(btn));
     }
 
     static setup(wrapper) {
-        const trigger = wrapper.querySelector('.EmojiTriggerButton');
+        const trigger = wrapper.querySelector('.EmojiPickerTriggerButton');
         const panel  = wrapper.querySelector('.EmojiPickerPanel');
         if (!trigger || !panel) return;
 

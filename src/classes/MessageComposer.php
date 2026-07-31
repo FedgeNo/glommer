@@ -36,7 +36,7 @@ class MessageComposer extends FormForm
         // regardless of content, so a message the browser lets through never
         // gets rejected server-side as "too long".
         $row -> addContent(new TextareaField('body', 'Message', 'Write a message', 21845));
-        $row -> addContent(new EmojiPickerButton());
+        $row -> addContent(new EmojiPicker());
 
         $row -> addContent(new SubmitButton('Send'));
 

@@ -58,11 +58,11 @@ if (document.querySelector('.HashtagGraphList'))       import('/scripts/HashtagG
 if (document.querySelector('.HelpSearchInput'))        import('/scripts/HelpSearch.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/scripts/NotificationTestPanel.js');
 if (document.querySelector('.VideoCallTestPanel'))     import('/scripts/VideoCallTestPanel.js');
-if (document.querySelector('.RevokeSessionButton'))    import('/scripts/RememberedDevice.js');
+if (document.querySelector('.RememberedDeviceRevokeButton')) import('/scripts/RememberedDevice.js');
 if (document.querySelector('.LogoutEverywherePanel'))  import('/scripts/LogoutEverywherePanel.js');
 if (document.querySelector('.PostShareButton'))        import('/scripts/PostShareButton.js');
 if (document.querySelector('.PostMap'))                import('/scripts/PostMap.js');
-if (document.querySelector('.NearbyLocateButton'))     import('/scripts/NearbyLocationPrompt.js');
+if (document.querySelector('.NearbyLocationButton'))   import('/scripts/NearbyLocationPrompt.js');
 if (document.querySelector('.MapSettingsForm'))        import('/scripts/MapSettingsForm.js');
 if (document.querySelector('.OpenRouterSettingsForm')) import('/scripts/OpenRouterSettingsForm.js');
 

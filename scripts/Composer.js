@@ -21,7 +21,7 @@ export class Composer {
 
     static init() {
         document.addEventListener('click', (event) => {
-            if (event.target.closest('.EmojiTriggerButton')) return;
+            if (event.target.closest('.EmojiPickerTriggerButton')) return;
             if (event.target.closest('.EmojiPickerPanel')) return;
             document.querySelectorAll('.EmojiPickerPanel.Active').forEach(panel => panel.classList.remove('Active'));
         });
@@ -136,7 +136,7 @@ export class Composer {
 
         const removeLinkBtn = document.createElement('button');
         removeLinkBtn.type = 'button';
-        removeLinkBtn.className = 'Button RemoveLinkImageButton';
+        removeLinkBtn.className = 'Button LinkImageRemoveButton';
         removeLinkBtn.textContent = 'Remove image';
         linkImagePreview.appendWithSpace(removeLinkBtn);
 
@@ -203,13 +203,13 @@ export class Composer {
         locationButton.textContent = 'Add Location';
         actions.appendWithSpace(locationButton);
 
-        // EmojiPickerButton – built and wired by EmojiPicker.setup
+        // EmojiPicker – built and wired by EmojiPicker.setup
         const emojiBtnWrapper = document.createElement('div');
-        emojiBtnWrapper.className = 'EmojiPickerButton';
+        emojiBtnWrapper.className = 'EmojiPicker';
 
         const emojiTrigger = document.createElement('button');
         emojiTrigger.type = 'button';
-        emojiTrigger.className = 'Button EmojiTriggerButton';
+        emojiTrigger.className = 'Button EmojiPickerTriggerButton';
         emojiTrigger.setAttribute('aria-label', 'Insert emoji');
         emojiTrigger.textContent = '🙂';
         emojiBtnWrapper.appendWithSpace(emojiTrigger);
@@ -348,7 +348,7 @@ export class Composer {
             });
         }
 
-        const removeLinkBtn = this.#form.querySelector('.RemoveLinkImageButton');
+        const removeLinkBtn = this.#form.querySelector('.LinkImageRemoveButton');
         if (removeLinkBtn) {
             removeLinkBtn.addEventListener('click', () => this.#discardStagedImage());
         }

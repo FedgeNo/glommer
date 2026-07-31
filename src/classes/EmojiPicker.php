@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 /**
- * A trigger button that opens a <emoji-picker> panel. Insertion is handled
- * in main.js by delegated click/emoji-click listeners, which locate this
- * button's containing <form> and insert into whichever text input it finds
+ * A trigger button and the <emoji-picker> panel it opens. Insertion is handled
+ * in main.js by delegated click/emoji-click listeners, which locate the
+ * trigger's containing <form> and insert into whichever text input it finds
  * there (the Quill .QuillEditor or a textarea) - this class just renders the UI.
  */
-class EmojiPickerButton extends Div
+class EmojiPicker extends Div
 {
-    public ?string $class = 'EmojiPickerButton';
+    public ?string $class = 'EmojiPicker';
 
     public function toDOM(): \DOMElement
     {
         $trigger = new Button();
         $trigger -> type = 'button';
-        $trigger -> class = 'EmojiTriggerButton';
+        $trigger -> class = 'EmojiPickerTriggerButton';
         $trigger -> mixins = ['Button'];
         $trigger -> attributes['aria-label'] = 'Insert emoji';
         $trigger -> contents[] = '🙂';

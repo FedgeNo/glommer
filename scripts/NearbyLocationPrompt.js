@@ -10,7 +10,7 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 export class NearbyLocationPrompt {
     static init() {
         document.addEventListener('click', (event) => {
-            const button = event.target.closest('.NearbyLocateButton');
+            const button = event.target.closest('.NearbyLocationButton');
 
             if (!button) {
                 return;

@@ -54,7 +54,7 @@ class RememberedDevice extends Div
         if (!$is_current) {
             $revoke = new Button();
             $revoke -> type = 'button';
-            $revoke -> class = 'RevokeSessionButton';
+            $revoke -> class = 'RememberedDeviceRevokeButton';
             $revoke -> mixins = ['Button', 'ms-auto'];
             $revoke -> attributes['data-token-id'] = (string) $this -> tokenId;
             $revoke -> addContent('Revoke');

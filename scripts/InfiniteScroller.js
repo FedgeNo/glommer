@@ -5,7 +5,7 @@ import { render_math } from '/scripts/MathRenderer.js';
 import { Post } from '/scripts/Post.js';
 import { Message } from '/scripts/Message.js';
 import { OtherUser } from '/scripts/OtherUser.js';
-import { FriendRequest } from '/scripts/OtherUser.js';
+import { ReceivedFriendRequest } from '/scripts/OtherUser.js';
 import { Notification } from '/scripts/Notification.js';
 import { ReportCard } from '/scripts/ReportCard.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -211,8 +211,8 @@ InfiniteScroller.register('OtherUser',
     list => list.querySelectorAll('.OtherUser').length
 );
 
-InfiniteScroller.register('FriendRequest',
-    data => FriendRequest.fromData(data).toElement(),
+InfiniteScroller.register('ReceivedFriendRequest',
+    data => ReceivedFriendRequest.fromData(data).toElement(),
     list => list.querySelectorAll('.OtherUser').length
 );
 

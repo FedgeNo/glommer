@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The columns RememberToken's queries read off a RememberTokens row - never
- * exposed outside RememberToken/RememberedDevicesList; the validator itself
+ * exposed outside RememberToken/RememberedDeviceList; the validator itself
  * never leaves the server.
  */
 class RememberTokenData

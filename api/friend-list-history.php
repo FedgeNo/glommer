@@ -42,8 +42,8 @@ $viewer = Auth::user();
 // The three lists own their queries; the endpoint just constructs the right
 // one for the next page and serializes what it fetched.
 $list = match ($list_type) {
-    'incoming' => new PendingFriendRequestList(['user' => $profile_user, 'offset' => $offset]),
-    'outgoing' => new OutgoingFriendRequestList(['user' => $profile_user, 'offset' => $offset]),
+    'incoming' => new ReceivedFriendRequestList(['user' => $profile_user, 'offset' => $offset]),
+    'outgoing' => new SentFriendRequestList(['user' => $profile_user, 'offset' => $offset]),
     default => new FriendList(['user' => $profile_user, 'offset' => $offset]),
 };
 

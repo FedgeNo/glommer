@@ -16,7 +16,7 @@ $page -> addContent(new SettingsSection('Two-Factor Authentication', new TwoFact
 
 $page -> addContent(new SettingsSection('Theme', new ThemeSelector()));
 
-$page -> addContent(new SettingsSection('Remembered Devices', new RememberedDevicesList(['userId' => (int) Auth::user() -> userId])));
+$page -> addContent(new SettingsSection('Remembered Devices', new RememberedDeviceList(['userId' => (int) Auth::user() -> userId])));
 
 $page -> addContent(new SettingsSection('Sessions', new LogoutEverywherePanel()));
 

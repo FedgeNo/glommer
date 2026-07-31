@@ -11,9 +11,9 @@ declare(strict_types=1);
  * remembered token (if any) is marked and left un-revokable here (see
  * RememberedDevice).
  */
-class RememberedDevicesList extends ItemList
+class RememberedDeviceList extends ItemList
 {
-    public ?string $class = 'RememberedDevicesList';
+    public ?string $class = 'RememberedDeviceList';
     public array $mixins = ['d-flex', 'flex-column'];
 
     protected string $emptyNotice = 'No remembered devices. Devices where you check "Remember me" at login appear here.';

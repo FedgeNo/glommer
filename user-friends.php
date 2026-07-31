@@ -47,13 +47,13 @@ if (Auth::check()) {
 }
 
 if ($is_own) {
-    $page -> addContent(new PendingFriendRequestSection(['user' => $profile_user]));
+    $page -> addContent(new ReceivedFriendRequestSection(['user' => $profile_user]));
 }
 
 $page -> addContent(new FriendSection(['user' => $profile_user]));
 
 if ($is_own) {
-    $page -> addContent(new OutgoingFriendRequestSection(['user' => $profile_user]));
+    $page -> addContent(new SentFriendRequestSection(['user' => $profile_user]));
 }
 
 $page -> send();

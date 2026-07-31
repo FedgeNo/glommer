@@ -13,6 +13,6 @@ if (!Auth::canModerate()) {
 
 $page = new Page(['title' => 'Banned Trending Entities']);
 
-$page -> addContent(new BannedTrendingEntitiesList());
+$page -> addContent(new BannedTrendingEntityList());
 
 $page -> send();

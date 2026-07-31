@@ -203,9 +203,9 @@ export class Search {
             onBeforeFetch: (input, query) => {
                 const searching = query !== '';
                 document.querySelector('.FriendSearchSection')?.classList.toggle('Searching', searching);
-                document.querySelector('.PendingFriendRequestSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.ReceivedFriendRequestSection')?.classList.toggle('Searching', searching);
                 document.querySelector('.FriendSection')?.classList.toggle('Searching', searching);
-                document.querySelector('.OutgoingFriendRequestSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.SentFriendRequestSection')?.classList.toggle('Searching', searching);
             },
         });
     }

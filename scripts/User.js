@@ -9,7 +9,7 @@ import { DOMUtils } from '/scripts/DOMUtils.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
 
 /** Mirrors User.php: the identity card and the byline header, shared by every
- * user-shaped thing (OtherUser, FriendRequest, BannedUser, a report's user
+ * user-shaped thing (OtherUser, ReceivedFriendRequest, BannedUser, a report's user
  * target, a message sender). */
 export class User {
     static fromData(data) {

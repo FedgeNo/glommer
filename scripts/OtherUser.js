@@ -327,7 +327,7 @@ export class OtherUser extends User {
     }
 }
 
-export class FriendRequest extends OtherUser {
+export class ReceivedFriendRequest extends OtherUser {
     beforeActions() {
         const accept = document.createElement('button');
         accept.type = 'button';
@@ -346,7 +346,7 @@ export class FriendRequest extends OtherUser {
 
     toElement() {
         const div = super.toElement();
-        div.classList.add('FriendRequest');
+        div.classList.add('ReceivedFriendRequest');
         return div;
     }
 }

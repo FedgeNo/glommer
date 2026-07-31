@@ -7,7 +7,7 @@ declare(strict_types=1);
  * entity (value + type), who banned it and when, the reason if given, and an
  * Unban button. Mirrored by the .TrendingEntityUnbanButton handler in main.js
  * that lifts the ban via api/unban-trending-entity. Fetched directly off
- * BannedTrendingEntitiesList's DB::rows(); bannedByUsername comes from the
+ * BannedTrendingEntityList's DB::rows(); bannedByUsername comes from the
  * join to Users so the moderator's name is shown, not their id.
  */
 class BannedTrendingEntity extends Div

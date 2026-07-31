@@ -6,9 +6,9 @@ declare(strict_types=1);
  * The moderation list of standing trending-entity bans, each with an Unban
  * control.
  */
-class BannedTrendingEntitiesList extends ItemList
+class BannedTrendingEntityList extends ItemList
 {
-    public ?string $class = 'BannedTrendingEntitiesList';
+    public ?string $class = 'BannedTrendingEntityList';
     public array $mixins = ['d-flex', 'flex-column'];
 
     protected string $emptyNotice = 'No banned trending entities.';

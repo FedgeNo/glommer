@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class FriendRequest extends OtherUser
+class ReceivedFriendRequest extends OtherUser
 {
     public ?int $friendshipId = null;
 

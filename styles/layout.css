@@ -299,7 +299,7 @@ body:has(.MainNavigation) {
 .FriendSearchSection { display: none; }
 .FriendSearchSection.Searching { display: block; }
 
-.PendingFriendRequestSection.Searching,
+.ReceivedFriendRequestSection.Searching,
 .FriendSection.Searching,
-.OutgoingFriendRequestSection.Searching { display: none; }
+.SentFriendRequestSection.Searching { display: none; }
 

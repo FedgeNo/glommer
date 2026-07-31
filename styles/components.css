@@ -1288,8 +1288,8 @@ body.MessagesPage { padding-bottom: 9rem; }
 .TrendingHashtagList,
 .TrendingEntityList,
 .HashtagGraphList,
-.BannedTrendingEntitiesList,
-.RememberedDevicesList,
+.BannedTrendingEntityList,
+.RememberedDeviceList,
 .ReportList,
 .MessageList,
 .ConversationList {

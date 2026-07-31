@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-class PendingFriendRequestList extends UserList
+class SentFriendRequestList extends UserList
 {
-    protected string $listType = 'incoming';
+    protected string $listType = 'outgoing';
 
     protected function rows(): array
     {
@@ -14,11 +14,11 @@ class PendingFriendRequestList extends UserList
         return DB::rows('
 SELECT `f`.`friendshipId`, `u`.*
     FROM `Friendships` `f`
-    JOIN `Users` `u` ON `u`.`userId` = `f`.`requesterId`
-    WHERE `f`.`addresseeId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
+    JOIN `Users` `u` ON `u`.`userId` = `f`.`addresseeId`
+    WHERE `f`.`requesterId` = ? AND `f`.`status` = ? AND `u`.`banned` = ?
     ORDER BY `f`.`friendshipId` DESC
     LIMIT ? OFFSET ?
-', 'FriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
+', 'SentFriendRequest', 'isiii', (int) $this -> user -> userId, $pending, $not_banned, static::PAGE_SIZE + 1, $this -> offset);
     }
 
     /**
@@ -28,7 +28,7 @@ SELECT `f`.`friendshipId`, `u`.*
     {
         return [
             'endpoint' => '/api/friend-list-history',
-            'itemType' => 'FriendRequest',
+            'itemType' => 'OtherUser',
             'listType' => $this -> listType,
             'userId' => (int) $this -> user -> userId,
         ];

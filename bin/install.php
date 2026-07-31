@@ -528,6 +528,39 @@ function offer_enable_websocket_service(): bool
 }
 
 /**
+ * The contents of the federation-worker service's systemd unit file - the
+ * daemon that delivers queued ActivityPub activities to remote inboxes.
+ *
+ * No WatchdogSec, unlike the upload worker: this one does not ping systemd, and
+ * a watchdog nothing feeds would restart a perfectly healthy daemon every
+ * thirty seconds. It holds no state between passes, so Restart=always is the
+ * whole recovery story - a restart simply picks up whatever is still queued.
+ */
+function federation_worker_unit_contents(?string $run_as = null): string
+{
+    $project_root = dirname(__DIR__);
+
+    $service = ['[Service]'];
+
+    if ($run_as !== null) {
+        $service[] = 'User=' . $run_as;
+    }
+
+    // Quoted for the same reason as the others - systemd splits ExecStart on
+    // whitespace.
+    $service[] = 'ExecStart="' . PHP_BINARY . '" "' . $project_root . '/bin/federation-worker.php"';
+    $service[] = 'Restart=always';
+    $service[] = 'RestartSec=5';
+    $service[] = 'WorkingDirectory=' . $project_root;
+
+    return implode("\n", array_merge(
+        ['[Unit]', 'Description=Glommer federation delivery worker', 'After=network.target', ''],
+        $service,
+        ['', '[Install]', 'WantedBy=' . ($run_as !== null ? 'multi-user.target' : 'default.target')]
+    )) . "\n";
+}
+
+/**
  * The contents of the upload-worker service's systemd unit file - the single
  * source used both when first installing the service and when reconciling an
  * existing one to the current template (so the two can never drift apart).
@@ -1382,7 +1415,7 @@ function user_systemd_available(): bool
 function restart_already_running_daemons(): void
 {
     $is_root = running_as_root();
-    $units = ['glommer-websocket.service', 'glommer-upload-worker.service'];
+    $units = ['glommer-websocket.service', 'glommer-upload-worker.service', 'glommer-federation-worker.service'];
 
     if ($is_root) {
         foreach ($units as $unit) {
@@ -2819,6 +2852,8 @@ function set_up_system_services(array &$environment_failures): void
     if (migrate_service_to_system('glommer-upload-worker.service', upload_worker_unit_contents($service_user), $service_user, $prior_user)) {
         unset($environment_failures['Upload worker service persistence']);
     }
+
+    migrate_service_to_system('glommer-federation-worker.service', federation_worker_unit_contents($service_user), $service_user, $prior_user);
 
     if (migrate_backup_to_system($service_user, $prior_user, isset($environment_failures['Backups']) && is_file(__DIR__ . '/../.env'))) {
         unset($environment_failures['Backup timer persistence']);

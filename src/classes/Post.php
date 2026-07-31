@@ -315,6 +315,22 @@ class Post extends Article
     }
 
     /**
+     * How many posts a member has published, for the size their ActivityPub
+     * outbox reports. Their own writing only: a row carrying a remoteObjectURI
+     * came in from elsewhere and is not theirs to publish back out.
+     */
+    public static function publishedCountFor(int $user_id): int
+    {
+        $row = DB::row('
+SELECT COUNT(*) AS `total`
+    FROM `Posts`
+    WHERE `userId` = ? AND `remoteObjectURI` IS NULL
+', 'PostCountData', 'i', $user_id);
+
+        return $row === null ? 0 : (int) $row -> total;
+    }
+
+    /**
      * Deletes a post and (via the parentId cascade) its whole reply subtree,
      * cleaning up every descendant's media files - which the row cascade can't
      * do. The single place a post is destroyed, used both by the owner's own

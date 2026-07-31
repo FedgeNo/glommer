@@ -50,6 +50,28 @@ SELECT `Users`.`title`, `RemoteFollows`.`status`
         return $rows;
     }
 
+    /**
+     * The remote actors this member follows, for the published following
+     * collection. Only accepted ones: a pending follow is a request the far
+     * side has not answered, and listing it would state a relationship that
+     * does not exist yet.
+     *
+     * @return string[]
+     */
+    public static function acceptedActorURIsFor(int $local_user_id): array
+    {
+        $accepted = 'accepted';
+
+        $rows = DB::rows('
+SELECT `remoteActorURI`
+    FROM `RemoteFollows`
+    WHERE `localUserId` = ? AND `status` = ?
+    ORDER BY `remoteFollowId` DESC
+', 'RemoteFollowData', 'is', $local_user_id, $accepted);
+
+        return array_map(static fn (RemoteFollowData $row): string => (string) $row -> remoteActorURI, $rows);
+    }
+
     /** @return array{ok: bool, handle: string, error: ?string, userId?: ?int} */
     public static function create(int $local_user_id, string $user, string $domain): array
     {
@@ -63,6 +85,14 @@ SELECT `Users`.`title`, `RemoteFollows`.`status`
 
         if ($actor_uri === null) {
             return ['ok' => false, 'handle' => $handle, 'error' => 'Could not resolve that account.'];
+        }
+
+        // Two members of this server must not federate with each other - they
+        // already share a feed, and an edge over the wire on top of that would
+        // deliver every post twice. Checked on the resolved URI rather than the
+        // typed domain, since a personal domain can delegate back to us.
+        if (ActivityPubActor::isLocalActorURI($actor_uri)) {
+            return ['ok' => false, 'handle' => $handle, 'error' => 'That account is on this server. Follow them here instead - going the long way round the Fediverse would show you their posts twice.'];
         }
 
         $actor = RemoteActor::fetch($actor_uri);
@@ -117,6 +147,11 @@ SELECT `userId`
      */
     public static function createForActor(int $local_user_id, string $remote_actor_uri): bool
     {
+        // Same rule as create(): never federate with our own members.
+        if (ActivityPubActor::isLocalActorURI($remote_actor_uri)) {
+            return false;
+        }
+
         $actor = RemoteActor::fetch($remote_actor_uri);
 
         if ($actor === null || $actor['id'] !== $remote_actor_uri) {

@@ -13,6 +13,24 @@ if ($profile_user === null) {
     exit;
 }
 
+// This URL is also the member's ActivityPub actor. One canonical address per
+// person means a pasted profile link resolves both in a browser and in a
+// Fediverse search, and nothing has to keep two URLs agreeing about who
+// someone is - so which document comes back is decided by what the caller
+// asked for, before any of the page is built.
+//
+// Only for local members: a shadow row for a remote account is somebody else's
+// actor, and answering for it would be claiming to speak for them.
+if (ActivityPubActor::wantsActivityJSON((string) ($_SERVER['HTTP_ACCEPT'] ?? ''))
+    && ActivityPubActor::isLocal($profile_user)
+    && (int) $profile_user -> banned !== 1) {
+    $actor = ActivityPubActor::document($profile_user);
+
+    if ($actor !== null) {
+        ActivityPubResponse::send($actor);
+    }
+}
+
 // A Fediverse account's profile exists here only so a member can decide
 // whether to follow it - we're not the ones representing that person to the
 // public, so an anonymous visitor doesn't get to browse it.

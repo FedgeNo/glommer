@@ -143,6 +143,15 @@
     RewriteRule ^users/$ users.php [L,QSA]
     RewriteRule ^users/([^/]+)/feed\.xml$ user-rss-feed.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/friends$ user-friends.php?username=$1 [L,QSA]
+
+    # The member's ActivityPub endpoints. The actor itself is the profile URL
+    # above, served as JSON or HTML depending on what the caller asked for -
+    # these are the collections that hang off it. Leaf endpoints, so no
+    # trailing slash, same as friends.
+    RewriteRule ^users/([^/]+)/inbox$ activitypub-inbox.php?username=$1 [L,QSA]
+    RewriteRule ^users/([^/]+)/outbox$ activitypub-outbox.php?username=$1 [L,QSA]
+    RewriteRule ^users/([^/]+)/followers$ activitypub-followers.php?username=$1 [L,QSA]
+    RewriteRule ^users/([^/]+)/following$ activitypub-following.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/([0-9]+)$ post.php?username=$1&id=$2 [L,QSA]
     RewriteRule ^users/([^/]+)/$ user.php?username=$1 [L,QSA]
 

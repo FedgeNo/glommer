@@ -32,6 +32,10 @@ CREATE TABLE `Users` (
   `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,
   `remoteActorURI` varchar(255) DEFAULT NULL,
   `remoteActorPublicKeyPem` text DEFAULT NULL,
+  `remoteActorInboxURL` varchar(255) DEFAULT NULL,
+  `remoteActorSharedInboxURL` varchar(255) DEFAULT NULL,
+  `actorPublicKeyPem` text DEFAULT NULL,
+  `actorEncryptedPrivateKey` text DEFAULT NULL,
   `chatOtherUserId` int(10) unsigned DEFAULT NULL,
   `chatLastSeen` datetime DEFAULT NULL,
   PRIMARY KEY (`userId`),
@@ -314,6 +318,30 @@ CREATE TABLE `RemoteFollows` (
   UNIQUE KEY `localUserId_remoteActorURI` (`localUserId`,`remoteActorURI`),
   KEY `remoteActorURI_status` (`remoteActorURI`,`status`),
   CONSTRAINT `RemoteFollows_ibfk_1` FOREIGN KEY (`localUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- The other direction from RemoteFollows: someone out on the Fediverse
+-- following a local member. Its own table rather than a Friendships row,
+-- because Friendships allows one row per pair in either direction
+-- (uniq_unordered_pair) and federated follows are one-way and independent -
+-- two people following each other is two edges, not one.
+--
+-- inboxURL is denormalized off the actor so publishing a post doesn't have to
+-- dereference every follower's actor document first; sharedInboxURL is the
+-- batching endpoint where the remote server offers one.
+CREATE TABLE `FediverseFollowers` (
+  `fediverseFollowerId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `localUserId` int(10) unsigned NOT NULL,
+  `remoteActorURI` varchar(255) NOT NULL,
+  `inboxURL` varchar(255) NOT NULL,
+  `sharedInboxURL` varchar(255) DEFAULT NULL,
+  `followActivityId` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`fediverseFollowerId`),
+  UNIQUE KEY `localUserId_remoteActorURI` (`localUserId`,`remoteActorURI`),
+  KEY `remoteActorURI` (`remoteActorURI`),
+  KEY `localUserId_fediverseFollowerId` (`localUserId`,`fediverseFollowerId`),
+  CONSTRAINT `FediverseFollowers_ibfk_1` FOREIGN KEY (`localUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `RemoteObjectTombstones` (

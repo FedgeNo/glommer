@@ -21,15 +21,10 @@ class PostActionBar extends Footer
         $actions = new Div();
         $actions -> mixins = ['d-flex', 'align-items-center', 'gap-2', 'ms-auto'];
 
-        // Share button – visible to everyone
-        $share_button = new Button();
-        $share_button -> class = 'PostShareButton';
-        $share_button -> mixins = ['Button'];
-        $share_button -> attributes['data-share-url'] = ServerURL::absolute(
+        // Visible to everyone, signed in or not.
+        $actions -> addContent(new PostShareButton(ServerURL::absolute(
             '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
-        );
-        $share_button -> addContent('Share');
-        $actions -> addContent($share_button);
+        )));
 
         if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0)) {
             $actions -> addContent($this -> replyButton());
@@ -85,24 +80,7 @@ SELECT 1
             $already_liked = mysqli_stmt_num_rows($liked_stmt) > 0;
         }
 
-        $button = new Button();
-        $button -> class = 'LikeButton';
-        $button -> mixins = ['Button'];
-        $button -> attributes['data-liked'] = $already_liked ? '1' : '0';
-        $button -> contents[] = self::likeLabel($already_liked, $count);
-
-        return $button;
-    }
-
-    public static function likeLabel(bool $liked, int $count): string
-    {
-        $label = $liked ? 'Unlike' : 'Like';
-
-        if ($count) {
-            $label .= ' (' . $count . ')';
-        }
-
-        return $label;
+        return new PostLikeButton($already_liked, $count);
     }
 
     protected function bookmarkButton(): HTMLObject
@@ -117,18 +95,7 @@ SELECT 1
             $already_bookmarked = isset(Bookmark::bookmarkedByUserForPosts([$this -> postId], (int) $current_user_id)[$this -> postId]);
         }
 
-        $button = new Button();
-        $button -> class = 'BookmarkButton';
-        $button -> mixins = ['Button'];
-        $button -> attributes['data-bookmarked'] = $already_bookmarked ? '1' : '0';
-        $button -> contents[] = self::bookmarkLabel($already_bookmarked);
-
-        return $button;
-    }
-
-    public static function bookmarkLabel(bool $bookmarked): string
-    {
-        return $bookmarked ? 'Bookmarked' : 'Bookmark';
+        return new PostBookmarkButton($already_bookmarked);
     }
 
     protected function replyButton(): HTMLObject
@@ -146,27 +113,12 @@ SELECT 1
 
     protected function editButton(): HTMLObject
     {
-        $button = new Button();
-        $button -> class = 'EditButton';
-        $button -> mixins = ['Button'];
-        $button -> contents[] = 'Edit';
-
-        return $button;
+        return new PostEditButton();
     }
 
     protected function deleteButton(): HTMLObject
     {
-        $button = new Button();
-        $button -> class = 'DeleteButton';
-        $button -> mixins = ['Button'];
-
-        if ($this -> standalone) {
-            $button -> attributes['data-standalone'] = '1';
-        }
-
-        $button -> contents[] = 'Delete';
-
-        return $button;
+        return new PostDeleteButton($this -> standalone);
     }
 
     protected function reportButton(): HTMLObject

@@ -351,7 +351,7 @@ export class Post {
         if (logged_in) {
             const like_button = document.createElement('button');
             like_button.type = 'button';
-            like_button.className = 'Button LikeButton';
+            like_button.className = 'Button PostLikeButton';
             like_button.dataset.liked = this.liked ? '1' : '0';
             // Same label rule as PostActionBar::likeLabel() and the post-click
             // update below: the count only appears once it's nonzero.
@@ -360,7 +360,7 @@ export class Post {
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';
-            bookmark_button.className = 'Button BookmarkButton';
+            bookmark_button.className = 'Button PostBookmarkButton';
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
             bookmark_button.textContent = this.bookmarked ? 'Bookmarked' : 'Bookmark';
             actions.appendWithSpace(bookmark_button);
@@ -368,13 +368,13 @@ export class Post {
             if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
                 const edit_button = document.createElement('button');
                 edit_button.type = 'button';
-                edit_button.className = 'Button EditButton';
+                edit_button.className = 'Button PostEditButton';
                 edit_button.textContent = 'Edit';
                 actions.appendWithSpace(edit_button);
 
                 const delete_button = document.createElement('button');
                 delete_button.type = 'button';
-                delete_button.className = 'Button DeleteButton';
+                delete_button.className = 'Button PostDeleteButton';
                 delete_button.textContent = 'Delete';
                 actions.appendWithSpace(delete_button);
             } else if (Number(this.userId) !== 1) {
@@ -408,19 +408,19 @@ export class Post {
 
     static init() {
         document.addEventListener('click', (event) => {
-            const likeBtn = event.target.closest('.LikeButton');
+            const likeBtn = event.target.closest('.PostLikeButton');
             if (likeBtn) {
                 Post.#like(likeBtn);
                 return;
             }
 
-            const bookmarkBtn = event.target.closest('.BookmarkButton');
+            const bookmarkBtn = event.target.closest('.PostBookmarkButton');
             if (bookmarkBtn) {
                 Post.#bookmark(bookmarkBtn);
                 return;
             }
 
-            const deleteBtn = event.target.closest('.DeleteButton');
+            const deleteBtn = event.target.closest('.PostDeleteButton');
             if (deleteBtn) {
                 Post.#delete(deleteBtn);
                 return;

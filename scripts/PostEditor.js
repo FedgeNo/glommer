@@ -17,7 +17,7 @@ export class PostEditor {
      */
     static init() {
         document.addEventListener('click', (event) => {
-            const button = event.target.closest('.EditButton');
+            const button = event.target.closest('.PostEditButton');
             if (button) {
                 PostEditor.open(button);
             }

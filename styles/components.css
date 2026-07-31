@@ -20,7 +20,8 @@
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
     .PostMap, .MapScrubber, .NearbyLocationPrompt,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
-    .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity
+    .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
+    .VideoCallTestPanel
 ) {
     background-color: var(--surface);
     border: 1px solid var(--hairline);
@@ -38,7 +39,8 @@
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
     .PostMap, .MapScrubber, .NearbyLocationPrompt,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
-    .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity
+    .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
+    .VideoCallTestPanel
 ) > *:last-child {
     margin-bottom: 0;
 }

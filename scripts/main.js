@@ -56,6 +56,7 @@ if (document.querySelector('.SignupForm'))             import('/scripts/Username
 if (document.querySelector('.HashtagGraphList'))       import('/scripts/HashtagGraphList.js');
 if (document.querySelector('.HelpSearchInput'))        import('/scripts/HelpSearch.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/scripts/NotificationTestPanel.js');
+if (document.querySelector('.VideoCallTestPanel'))     import('/scripts/VideoCallTestPanel.js');
 if (document.querySelector('.RevokeSessionButton'))    import('/scripts/RememberedDevice.js');
 if (document.querySelector('.LogoutEverywherePanel'))  import('/scripts/LogoutEverywherePanel.js');
 if (document.querySelector('.PostShareButton'))        import('/scripts/PostShareButton.js');

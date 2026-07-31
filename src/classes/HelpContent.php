@@ -322,6 +322,21 @@ class HelpContent
 ',
             ],
             [
+                'slug' => 'video-calling',
+                'title' => 'Video calling',
+                'category' => 'Connecting',
+                'summary' => 'Start a private video call with someone while you both have the conversation open.',
+                'body' => '
+<p>You can have a one-to-one video call with someone from a message thread. The call is <strong>peer-to-peer</strong>: your video and audio go directly between the two browsers, so nobody else - this site included - can see or hear it.</p>
+<h2>Starting a call</h2>
+<p>A <strong>Video call</strong> button appears while both of you have the thread open. Before showing it, the site quietly checks that your two browsers can actually reach each other; if they cannot, the call is simply not offered rather than being routed through anything else. The other person can accept or decline.</p>
+<h2>During a call</h2>
+<p>Answering replaces the thread with the call: the other person fills the space the messages were in, with your own camera in a small inset. <strong>End call</strong> hangs up. Declining, hanging up, or either of you leaving the page ends the call, and the conversation comes back exactly as it was.</p>
+<h2>Privacy</h2>
+<p>No video or audio ever passes through this site. The only thing relayed is the short setup message the two browsers use to find each other, and nothing is recorded.</p>
+',
+            ],
+            [
                 'slug' => 'blocking-someone',
                 'title' => 'Blocking someone',
                 'category' => 'Staying safe',

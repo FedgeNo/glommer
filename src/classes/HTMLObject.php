@@ -54,26 +54,46 @@ abstract class HTMLObject extends DOMObject
      */
     private function deriveClassName(): void
     {
-        $declaring_class = (new \ReflectionProperty(static::class, 'class')) -> getDeclaringClass() -> getName();
+        // Every level from the first ancestor that names itself down to this
+        // class contributes one name. A level that declares $class contributes
+        // that value instead of its own class name - which is how ButtonButton
+        // contributes "Button" - and doing so adds to the chain rather than
+        // replacing what sits above it, so an intermediate can rename its own
+        // level without severing the identity it inherited.
+        $levels = [];
 
-        if ($declaring_class === self::class) {
-            return; // generic HTML-primitive wrapper (Div, Button, Anchor, etc.) - no class name of its own
+        for ($class = static::class; $class !== self::class && $class !== false; $class = get_parent_class($class)) {
+            $declares = (new \ReflectionProperty($class, 'class')) -> getDeclaringClass() -> getName() === $class;
+
+            $levels[] = [
+                'name' => $class,
+                'declared' => $declares ? (new \ReflectionClass($class)) -> getDefaultProperties()['class'] : null,
+            ];
+        }
+
+        // Walked bottom-up, so the last declaration found is the least derived
+        // one, and the chain starts there. Nothing naming itself anywhere means
+        // a generic HTML-primitive wrapper (Div, Button, Anchor, ...), which
+        // isn't an app concept and gets no class name at all.
+        $first = null;
+
+        foreach ($levels as $index => $level) {
+            if ($level['declared'] !== null) {
+                $first = $index;
+            }
+        }
+
+        if ($first === null) {
+            return;
         }
 
         $names = [];
-        $class = static::class;
 
-        while ($class !== $declaring_class) {
-            $names[] = $class;
-            $class = get_parent_class($class);
+        for ($index = $first; $index >= 0; $index--) {
+            $names[] = $levels[$index]['declared'] ?? $levels[$index]['name'];
         }
 
-        if ($names === []) {
-            return; // this class is the one that declared $class - nothing further to add
-        }
-
-        $base_value = (new \ReflectionClass($declaring_class)) -> getDefaultProperties()['class'];
-        $this -> class = trim($base_value . ' ' . implode(' ', array_reverse($names)));
+        $this -> class = implode(' ', $names);
     }
 
     public function addContent(HTMLObject|CData|string|\DOMNode $item): void

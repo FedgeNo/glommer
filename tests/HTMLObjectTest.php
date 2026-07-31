@@ -78,16 +78,40 @@ class HTMLObjectTest extends TestCase
         $this -> assertSame('42', $this -> elementFor($div) -> getAttribute('data-user-id'));
     }
 
-    public function testSubclassDeclaringItsOwnClassGetsNoAutoChaining(): void
+    public function testAClassBeneathAPrimitiveNamesOnlyItself(): void
     {
-        // Notice extends Paragraph and redeclares $class itself - so it IS
-        // its own declaring class, and gets exactly what it set, no
-        // PHP-class-name chaining on top. What it's composed with (muted) is
-        // carried separately in mixins and never chained.
+        // Notice extends Paragraph, which is a primitive and names nothing, so
+        // the chain begins and ends at Notice. What it is composed with (muted)
+        // is carried separately in mixins and never chained.
         $notice = new Notice('careful now');
+        $this -> elementFor($notice);
 
+        // The identity alone - the rendered attribute also carries what it is
+        // composed with, which is a separate thing.
         $this -> assertSame('Notice', $notice -> class);
         $this -> assertSame(['muted'], $notice -> mixins);
+    }
+
+    public function testEveryLevelFromTheFirstNamedAncestorDownContributes(): void
+    {
+        $this -> assertSame('ChainBase ChainMiddle ChainLeafFake', $this -> elementFor(new ChainLeafFake()) -> getAttribute('class'));
+    }
+
+    public function testALevelMayRenameItselfWithoutSeveringTheChain(): void
+    {
+        // ChainMiddleFake declares a name of its own, the way ButtonButton
+        // contributes "Button" - it replaces its own level and nothing else, so
+        // what it inherited is still in front of it and what extends it still
+        // follows.
+        $rendered = $this -> elementFor(new ChainLeafFake()) -> getAttribute('class');
+
+        $this -> assertTrue(str_starts_with($rendered, 'ChainBase '), 'the inherited name should still lead');
+        $this -> assertFalse(str_contains($rendered, 'ChainMiddleFake'), 'the renamed level should contribute its declared name, not its class name');
+    }
+
+    public function testAPrimitiveThatNamesNothingAnywhereInItsChainGetsNoClass(): void
+    {
+        $this -> assertFalse($this -> elementFor(new Div()) -> hasAttribute('class'));
     }
 
     public function testGenericWrapperGetsNoClassAttribute(): void
@@ -100,4 +124,19 @@ class HTMLObjectTest extends TestCase
 
         $this -> assertNull($div -> class);
     }
+}
+
+/** Three levels: one names itself, one renames its own level, one names nothing. */
+class ChainBaseFake extends Div
+{
+    public ?string $class = 'ChainBase';
+}
+
+class ChainMiddleFake extends ChainBaseFake
+{
+    public ?string $class = 'ChainMiddle';
+}
+
+class ChainLeafFake extends ChainMiddleFake
+{
 }

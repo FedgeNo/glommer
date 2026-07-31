@@ -15,7 +15,7 @@ export class Dialog {
             overlay.className = 'ConfirmDialogOverlay';
 
             const card = document.createElement('div');
-            card.className = 'ConfirmDialogCard Card';
+            card.className = 'ConfirmDialogCard';
 
             const text = document.createElement('div');
             text.className = 'ConfirmDialogMessage';
@@ -85,7 +85,7 @@ export class Dialog {
             overlay.className = 'ConfirmDialogOverlay';
 
             const card = document.createElement('div');
-            card.className = 'ConfirmDialogCard Card';
+            card.className = 'ConfirmDialogCard';
 
             const text = document.createElement('div');
             text.className = 'ConfirmDialogMessage';

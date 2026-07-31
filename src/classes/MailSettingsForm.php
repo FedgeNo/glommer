@@ -13,10 +13,9 @@ declare(strict_types=1);
  * blank address would break every subsequent email, unlike a blank host,
  * which is a valid state that falls back to PHP's mail()).
  */
-class MailSettingsForm extends Form
+class MailSettingsForm extends FormForm
 {
-    public ?string $class = 'MailSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

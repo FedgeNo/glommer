@@ -11,7 +11,6 @@ declare(strict_types=1);
 class PostMap extends Div
 {
     public ?string $class = 'PostMap';
-    public array $mixins = ['Card'];
 
     // Where to open, when the map was linked to with a point (a post's place
     // line, say). Null opens on the whole world.

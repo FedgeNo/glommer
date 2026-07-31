@@ -30,7 +30,6 @@ class User extends Div implements \JsonSerializable
     }
 
     public ?string $class = 'User';
-    public array $mixins = ['Card'];
 
     public ?int $userId = null;
     public ?string $slug = null;

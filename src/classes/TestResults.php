@@ -5,7 +5,6 @@ declare(strict_types=1);
 class TestResults extends Div
 {
     public ?string $class = 'TestResults';
-    public array $mixins = ['Card'];
 
     public function toDOM(): \DOMElement
     {

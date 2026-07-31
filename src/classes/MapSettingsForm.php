@@ -8,10 +8,9 @@ declare(strict_types=1);
  * key itself, and the attribution text. All fall back to keyless OpenStreetMap
  * when left blank, so the map works with nothing configured.
  */
-class MapSettingsForm extends Form
+class MapSettingsForm extends FormForm
 {
-    public ?string $class = 'MapSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

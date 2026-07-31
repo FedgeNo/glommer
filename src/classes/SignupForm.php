@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-class SignupForm extends Form
+class SignupForm extends FormForm
 {
-    public ?string $class = 'SignupForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

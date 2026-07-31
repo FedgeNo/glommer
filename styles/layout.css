@@ -25,7 +25,7 @@ body:has(.MainNavigation) {
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--hairline);
-    padding: 0.625rem 1rem;
+    padding: 0.5rem 1rem;
     padding-inline: var(--content-padding-inline);
     z-index: 20;
     align-items: center;

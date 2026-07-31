@@ -9,10 +9,9 @@ declare(strict_types=1);
  * submit leaves the stored secret unchanged - the same treatment as the
  * Turnstile keys.
  */
-class GoogleAuthSettingsForm extends Form
+class GoogleAuthSettingsForm extends FormForm
 {
-    public ?string $class = 'GoogleAuthSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

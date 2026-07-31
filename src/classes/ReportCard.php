@@ -5,7 +5,7 @@ declare(strict_types=1);
 class ReportCard extends Article
 {
     public ?string $class = 'ReportCard';
-    public array $mixins = ['Card', 'd-flex', 'gap-3', 'align-items-start'];
+    public array $mixins = ['d-flex', 'gap-3', 'align-items-start'];
 
     public ?int $reportId = null;
     public ?int $reporterId = null;

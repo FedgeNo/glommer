@@ -9,10 +9,9 @@ declare(strict_types=1);
  * something rather than a blank box) and a save button. One descendant per
  * info text.
  */
-abstract class SiteInfoSettingsForm extends Form
+abstract class SiteInfoSettingsForm extends FormForm
 {
-    public ?string $class = 'SiteInfoSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
     public ?string $description = 'Plain text - blank lines separate paragraphs.';
 
     /** The POST field / Settings name this form edits. */

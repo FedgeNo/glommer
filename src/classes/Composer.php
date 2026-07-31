@@ -2,8 +2,7 @@
 
 declare(strict_types=1);
 
-abstract class Composer extends Form
+abstract class Composer extends FormForm
 {
-    public ?string $class = 'Composer';
-    public array $mixins = ['Card', 'd-flex', 'flex-column'];
+    public array $mixins = ['d-flex', 'flex-column'];
 }

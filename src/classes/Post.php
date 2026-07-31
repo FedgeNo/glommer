@@ -11,7 +11,6 @@ class Post extends Article
     // <article>. The .Post/.Card styling is class-based, so the tag is free to
     // carry the right semantics.
     public ?string $class = 'Post';
-    public array $mixins = ['Card'];
 
     public ?int $postId = null;
     public ?int $userId = null;
@@ -489,7 +488,7 @@ DELETE
             'likeCount' => $like_count,
             'liked' => $liked,
             'bookmarked' => $bookmarked,
-            // A nested user object with row-named keys so post.js builds the
+            // A nested user object with row-named keys so Post.js builds the
             // byline straight through User.fromData, no field-by-field transcode.
             'author' => $this -> author !== null ? [
                 'userId' => (int) $this -> author -> userId,

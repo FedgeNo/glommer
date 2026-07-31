@@ -5,7 +5,7 @@ declare(strict_types=1);
 class ThemeSelector extends Div
 {
     public ?string $class = 'ThemeSelector';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     protected const OPTIONS = [
         'system' => 'Match System',

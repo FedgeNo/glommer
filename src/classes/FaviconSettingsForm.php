@@ -7,10 +7,9 @@ declare(strict_types=1);
  * center-cropped, resized, and re-encoded to PNG by Favicon (never the
  * original bytes), and shows up on every page's <link rel="icon"> immediately.
  */
-class FaviconSettingsForm extends Form
+class FaviconSettingsForm extends FormForm
 {
-    public ?string $class = 'FaviconSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

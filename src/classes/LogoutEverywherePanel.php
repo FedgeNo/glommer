@@ -5,7 +5,7 @@ declare(strict_types=1);
 class LogoutEverywherePanel extends Div
 {
     public ?string $class = 'LogoutEverywherePanel';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2', 'align-items-start'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2', 'align-items-start'];
 
     public function toDOM(): \DOMElement
     {

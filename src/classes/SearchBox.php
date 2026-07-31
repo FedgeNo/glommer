@@ -9,7 +9,6 @@ declare(strict_types=1);
 abstract class SearchBox extends SearchLandmark
 {
     public ?string $class = 'SearchBox';
-    public array $mixins = ['Card'];
 
     public string $placeholder = '';
 

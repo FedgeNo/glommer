@@ -24,7 +24,7 @@ declare(strict_types=1);
 class WebSocketStatus extends Div
 {
     public ?string $class = 'WebSocketStatus';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

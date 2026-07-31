@@ -15,7 +15,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.5rem;
     width: 2.25rem;
     cursor: pointer;
 }
@@ -25,7 +25,9 @@
     height: 2px;
     border-radius: 999px;
     background-color: var(--ink);
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(1) {
@@ -62,7 +64,7 @@
     }
 
     .MainNavigation:has(.NavToggle:checked) a,
-    .MainNavigation:has(.NavToggle:checked) .LogoutButton, 
+    .MainNavigation:has(.NavToggle:checked) .LogoutButton,
     .MainNavigation:has(.NavToggle:checked) .NavHamburger {
         pointer-events: auto;
     }
@@ -70,7 +72,7 @@
     .MainNavigation:has(.NavToggle:checked) {
         height: 100dvh;
         overflow-y: auto;
-        padding-bottom: 0.4rem;
+        padding-bottom: 0.5rem;
     }
 
     .MainNavigation .NavDropdown,
@@ -114,4 +116,3 @@
         display: none !important;
     }
 }
-

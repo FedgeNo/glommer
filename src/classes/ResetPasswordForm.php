@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-class ResetPasswordForm extends Form
+class ResetPasswordForm extends FormForm
 {
-    public ?string $class = 'ResetPasswordForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
     public string $token;
 
     public function __construct(string $token)

@@ -9,10 +9,9 @@ declare(strict_types=1);
  * mid-2FA keeps the user on this step rather than dropping them back to the
  * password form. Submits to api/verify-2fa (handled in main.js).
  */
-class TwoFactorForm extends Form
+class TwoFactorForm extends FormForm
 {
-    public ?string $class = 'TwoFactorForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

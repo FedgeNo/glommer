@@ -10,10 +10,9 @@ declare(strict_types=1);
  * rendered back - so it can't leak into the page source, and a blank submit
  * leaves the stored secret unchanged.
  */
-class BotProtectionSettingsForm extends Form
+class BotProtectionSettingsForm extends FormForm
 {
-    public ?string $class = 'BotProtectionSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

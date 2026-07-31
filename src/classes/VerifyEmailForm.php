@@ -10,10 +10,9 @@ declare(strict_types=1);
  * verify would let one of those blind fetches consume the token before the real
  * user ever opened the message. Mirrors RevertEmailForm.
  */
-class VerifyEmailForm extends Form
+class VerifyEmailForm extends FormForm
 {
-    public ?string $class = 'VerifyEmailForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
     public string $token;
 
     public function __construct(string $token)

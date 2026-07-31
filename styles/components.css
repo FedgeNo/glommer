@@ -573,7 +573,6 @@ label.visually-hidden { margin-bottom: 0; }
 
 .ParentPostLink { font-size: 0.85rem; }
 .LoginPrompt { text-align: center; }
-.ProcessingNotice { color: var(--accent); }
 
 .SeeMore {
     display: block;

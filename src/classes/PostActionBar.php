@@ -123,6 +123,6 @@ SELECT 1
 
     protected function reportButton(): HTMLObject
     {
-        return new ReportButton('post', $this -> postId);
+        return new PostReportButton((int) $this -> postId);
     }
 }

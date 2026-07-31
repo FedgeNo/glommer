@@ -380,7 +380,7 @@ export class Post {
             } else if (Number(this.userId) !== 1) {
                 const report_button = document.createElement('button');
                 report_button.type = 'button';
-                report_button.className = 'Button ReportButton';
+                report_button.className = 'Button ReportButton PostReportButton';
                 report_button.dataset.targetType = 'post';
                 report_button.dataset.targetId = this.postId;
                 report_button.textContent = 'Report';

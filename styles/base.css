@@ -20,6 +20,10 @@ html {
 
 body {
     background-color: var(--paper);
+    /* A theme can lay a gradient over its flat colour; the colour stays as the
+       thing underneath it, so a theme that sets no image is unaffected. */
+    background-image: var(--paper-image, none);
+    background-attachment: fixed;
     color: var(--ink);
     line-height: 1.55;
     font-size: 0.9375rem;

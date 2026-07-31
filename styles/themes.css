@@ -255,6 +255,17 @@
     --shadow-card: 0 1px 2px rgb(0 0 4 / 0.60), 0 8px 24px -10px rgb(120 28 109 / 0.55);
     --shadow-pop: 0 4px 10px rgb(0 0 4 / 0.50), 0 18px 44px -12px rgb(237 105 37 / 0.35);
     --glass: rgb(0 0 4 / 0.88);
+
+    /* Slices of the one ramp rather than flat samples of it, each surface taking
+       the segment that matches how far forward it sits: the page is the cold
+       floor, a card a short way up it, a button further still, and the button
+       that commits something is up in the heat. The colours above stay as what
+       sits underneath, so nothing depends on the gradients rendering. */
+    --paper-image: linear-gradient(180deg, #000004 0%, #0b0424 60%, #1b0c41 100%);
+    --surface-image: linear-gradient(160deg, #17073c 0%, #2c0d54 100%);
+    --button-image: linear-gradient(160deg, #290b52 0%, #4a0c6b 100%);
+    --button-image-hover: linear-gradient(160deg, #3c0f61 0%, #781c6d 100%);
+    --accent-image: linear-gradient(135deg, #cf4446 0%, #ed6925 55%, #fb9b06 100%);
 }
 
 /* Dark‑mode edges for the hashtag graph */

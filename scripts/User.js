@@ -130,7 +130,7 @@ export class User {
             }
 
             // Google delete
-            const googleDelBtn = event.target.closest('.AccountGoogleDeleteButton');
+            const googleDelBtn = event.target.closest('.GoogleAccountDeleteButton');
             if (googleDelBtn) {
                 User.#confirmGoogleDelete(googleDelBtn);
                 return;

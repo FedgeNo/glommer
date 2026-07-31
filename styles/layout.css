@@ -4,11 +4,13 @@
    body padding, search‑page toggles.
    ============================================================ */
 
-/* Clears the fixed nav, and only that. The page title used to be a second
-   fixed bar and had to be reserved for here too; it scrolls with the content
-   now, so it takes its own space in the normal way. */
+/* Clears the fixed nav, and only that - exactly, with nothing added. The title
+   is the first thing under it and used to be pinned flush against its lower
+   edge, so any breathing room here would drop it below where it has always sat.
+   It reserved room for the title too when that was a second fixed bar; the
+   title takes its own space in the normal way now. */
 body:has(.MainNavigation) {
-    padding-top: calc(var(--nav-height) + 1rem + 4px);
+    padding-top: var(--nav-height);
 }
 
 .PageBody {

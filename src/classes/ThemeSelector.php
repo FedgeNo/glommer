@@ -21,6 +21,12 @@ class ThemeSelector extends Div
         'gold' => 'Gold',
         'hacker' => 'Hacker',
         'ironbow' => 'Ironbow',
+        'viridis' => 'Viridis',
+        'mako' => 'Mako',
+        'cividis' => 'Cividis',
+        'ylgnbu' => 'YlGnBu',
+        'cubehelix' => 'Cubehelix',
+        'greyscale' => 'Greyscale',
     ];
 
     /**

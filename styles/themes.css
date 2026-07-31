@@ -273,6 +273,184 @@
     --accent-image: linear-gradient(135deg, #e35d3a 0%, #ff8c00 40%, #ffd300 75%, #ffffff 100%);
 }
 
+/* The rest of the ramp themes. Each is a different colormap run through the
+   same treatment as ironbow above: lightness climbs monotonically from black to
+   white, the cool end is handed to structure and the hot end to anything that
+   acts or warns, and every foreground is picked against the LIGHTEST stop of
+   whatever gradient sits behind it. That one property - lightness only ever
+   going up - is what makes the contrast rule checkable at all, so a ramp that
+   dips (jet, rainbow, turbo) can't be used here however good it looks.
+   All of them are anchored at black and white rather than at their published
+   endpoints, which mostly stop short of both; the hot end reaching pure white
+   is what lets a primary button blow out the way a thermal image does. */
+
+/* matplotlib viridis: violet through indigo and teal to green and yellow. */
+:root[data-theme='viridis'] {
+    --paper: #000000;
+    --surface: #1e0733;
+    --surface-2: #2f1a63;
+    --ink: #ffffff;
+    --muted: #a9dcae;
+    --hairline: #3e4a89;
+    --accent: #35b779;
+    --accent-strong: #8fd744;
+    --accent-soft: rgb(53 183 121 / 0.18);
+    --accent-ink: #000000;
+    --link: #8fd744;
+    --danger: #ff7a5c;
+    --danger-soft: rgb(255 122 92 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(62 74 137 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(53 183 121 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
+
+    --paper-image: linear-gradient(180deg, #000000 0%, #12031c 60%, #22093a 100%);
+    --surface-image: linear-gradient(160deg, #1e0733 0%, #3a0f56 100%);
+    --button-image: linear-gradient(160deg, #2f1a63 0%, #3e4a89 100%);
+    --button-image-hover: linear-gradient(160deg, #38246f 0%, #31688e 100%);
+    --accent-image: linear-gradient(135deg, #21918c 0%, #35b779 38%, #8fd744 72%, #fde725 88%, #ffffff 100%);
+}
+
+/* seaborn mako: the same shape as ironbow with none of its colours - near-black
+   through deep blue and teal to pale green. */
+:root[data-theme='mako'] {
+    --paper: #000000;
+    --surface: #101a2e;
+    --surface-2: #24345c;
+    --ink: #ffffff;
+    --muted: #9fd0d2;
+    --hairline: #35538a;
+    --accent: #38aaac;
+    --accent-strong: #78cdd1;
+    --accent-soft: rgb(56 170 172 / 0.18);
+    --accent-ink: #000000;
+    --link: #78cdd1;
+    --danger: #ff7a5c;
+    --danger-soft: rgb(255 122 92 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(53 83 138 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(56 170 172 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
+
+    --paper-image: linear-gradient(180deg, #000000 0%, #04070f 60%, #0a1020 100%);
+    --surface-image: linear-gradient(160deg, #101a2e 0%, #1b2a4a 100%);
+    --button-image: linear-gradient(160deg, #24345c 0%, #35538a 100%);
+    --button-image-hover: linear-gradient(160deg, #2c4478 0%, #357ba2 100%);
+    --accent-image: linear-gradient(135deg, #3c86ae 0%, #38aaac 38%, #78cdd1 70%, #def5e5 90%, #ffffff 100%);
+}
+
+/* matplotlib cividis: built to survive deuteranopia, so it carries only the one
+   blue-to-gold axis and stays legible when that axis is all a reader has. */
+:root[data-theme='cividis'] {
+    --paper: #000000;
+    --surface: #062245;
+    --surface-2: #21386b;
+    --ink: #ffffff;
+    --muted: #bcb693;
+    --hairline: #4a5674;
+    --accent: #c3b369;
+    --accent-strong: #e1cc55;
+    --accent-soft: rgb(195 179 105 / 0.18);
+    --accent-ink: #000000;
+    --link: #e1cc55;
+    --danger: #ff7a5c;
+    --danger-soft: rgb(255 122 92 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(74 86 116 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(195 179 105 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
+
+    --paper-image: linear-gradient(180deg, #000000 0%, #001029 60%, #00224e 100%);
+    --surface-image: linear-gradient(160deg, #062245 0%, #123570 100%);
+    --button-image: linear-gradient(160deg, #21386b 0%, #3b496c 100%);
+    --button-image-hover: linear-gradient(160deg, #2c4278 0%, #575d6d 100%);
+    --accent-image: linear-gradient(135deg, #8a8678 0%, #a59c74 32%, #c3b369 60%, #fee838 88%, #ffffff 100%);
+}
+
+/* ColorBrewer YlGnBu, reversed so it climbs: navy through blue and teal to
+   green and pale yellow. */
+:root[data-theme='ylgnbu'] {
+    --paper: #000000;
+    --surface: #0a1f52;
+    --surface-2: #1e3a8f;
+    --ink: #ffffff;
+    --muted: #a7d8c9;
+    --hairline: #2a4d9c;
+    --accent: #41b6c4;
+    --accent-strong: #7fcdbb;
+    --accent-soft: rgb(65 182 196 / 0.18);
+    --accent-ink: #000000;
+    --link: #7fcdbb;
+    --danger: #ff7a5c;
+    --danger-soft: rgb(255 122 92 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(42 77 156 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(65 182 196 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
+
+    --paper-image: linear-gradient(180deg, #000000 0%, #030a20 60%, #081d58 100%);
+    --surface-image: linear-gradient(160deg, #0a1f52 0%, #16307d 100%);
+    --button-image: linear-gradient(160deg, #1e3a8f 0%, #225ea8 100%);
+    --button-image-hover: linear-gradient(160deg, #24479b 0%, #2a6fb8 100%);
+    --accent-image: linear-gradient(135deg, #1d91c0 0%, #41b6c4 35%, #7fcdbb 60%, #c7e9b4 80%, #edf8b1 92%, #ffffff 100%);
+}
+
+/* Dave Green's cubehelix at its default winding, computed from the closed form
+   rather than sampled: lightness rises strictly linearly while the hue spirals
+   right around the wheel, which is why it passes through teal, olive, salmon
+   and lilac without ever dipping. It brightens faster than the others, so the
+   structural band is taken from lower down the helix than elsewhere - a surface
+   any further up leaves mid-ramp text nowhere to go. */
+:root[data-theme='cubehelix'] {
+    --paper: #000000;
+    --surface: #0c0715;
+    --surface-2: #180f26;
+    --ink: #ffffff;
+    --muted: #8f9ec2;
+    --hairline: #192b47;
+    --accent: #c37a72;
+    --accent-strong: #cca5e3;
+    --accent-soft: rgb(195 122 114 / 0.18);
+    --accent-ink: #000000;
+    --link: #cca5e3;
+    --danger: #ff5347;
+    --danger-soft: rgb(255 83 71 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(25 43 71 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(212 135 179 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
+
+    --paper-image: linear-gradient(180deg, #000000 0%, #08040f 60%, #0c0715 100%);
+    --surface-image: linear-gradient(160deg, #0c0715 0%, #180f26 100%);
+    --button-image: linear-gradient(160deg, #180f26 0%, #192b47 100%);
+    --button-image-hover: linear-gradient(160deg, #16203a 0%, #154f4d 100%);
+    --accent-image: linear-gradient(135deg, #c37a72 0%, #d487b3 28%, #cca5e3 52%, #c1caf3 72%, #cce8f0 88%, #ffffff 100%);
+}
+
+/* No hue at all - the degenerate case of the same rule, and the one place the
+   contrast maths has nothing to hide behind. Danger is the single deliberate
+   break: colour is the only signal that separates a destructive control here,
+   so it cannot also be grey. */
+:root[data-theme='greyscale'] {
+    --paper: #000000;
+    --surface: #161616;
+    --surface-2: #2b2b2b;
+    --ink: #ffffff;
+    --muted: #a0a0a0;
+    --hairline: #444444;
+    --accent: #b4b4b4;
+    --accent-strong: #e0e0e0;
+    --accent-soft: rgb(180 180 180 / 0.18);
+    --accent-ink: #000000;
+    --link: #e0e0e0;
+    --danger: #ff6b5c;
+    --danger-soft: rgb(255 107 92 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(68 68 68 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(180 180 180 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
+
+    --paper-image: linear-gradient(180deg, #000000 0%, #0a0a0a 60%, #141414 100%);
+    --surface-image: linear-gradient(160deg, #161616 0%, #242424 100%);
+    --button-image: linear-gradient(160deg, #2b2b2b 0%, #3a3a3a 100%);
+    --button-image-hover: linear-gradient(160deg, #383838 0%, #4f4f4f 100%);
+    --accent-image: linear-gradient(135deg, #8a8a8a 0%, #b4b4b4 40%, #e0e0e0 75%, #ffffff 100%);
+}
+
 /* Dark‑mode edges for the hashtag graph */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) .HashtagGraphList {
@@ -284,8 +462,32 @@
     --HashtagEdge: rgb(232 236 233 / 0.22);
 }
 
-/* Edges in the ramp's hot end, so the graph reads as heat against the black. */
+/* Edges in each ramp's hot end, so the graph reads as heat against the black. */
 :root[data-theme='ironbow'] .HashtagGraphList {
     --HashtagEdge: rgb(237 105 37 / 0.30);
+}
+
+:root[data-theme='viridis'] .HashtagGraphList {
+    --HashtagEdge: rgb(53 183 121 / 0.30);
+}
+
+:root[data-theme='mako'] .HashtagGraphList {
+    --HashtagEdge: rgb(56 170 172 / 0.30);
+}
+
+:root[data-theme='cividis'] .HashtagGraphList {
+    --HashtagEdge: rgb(195 179 105 / 0.30);
+}
+
+:root[data-theme='ylgnbu'] .HashtagGraphList {
+    --HashtagEdge: rgb(65 182 196 / 0.30);
+}
+
+:root[data-theme='cubehelix'] .HashtagGraphList {
+    --HashtagEdge: rgb(195 122 114 / 0.30);
+}
+
+:root[data-theme='greyscale'] .HashtagGraphList {
+    --HashtagEdge: rgb(180 180 180 / 0.30);
 }
 

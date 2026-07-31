@@ -80,4 +80,8 @@ SELECT COUNT(*) AS `likeCount`
 $count_result = mysqli_stmt_get_result($count_stmt);
 $count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
 
+// Only says anything when the post came from elsewhere - liking a local post is
+// this server's own business and there is nobody to tell.
+ActivityPubReaction::publishLike($post_id, $current_user, $liked);
+
 JSONResponse::success(['liked' => $liked, 'count' => $count]) -> send();

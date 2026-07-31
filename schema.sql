@@ -152,6 +152,22 @@ CREATE TABLE `Likes` (
   CONSTRAINT `fk_likes_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Boosts of a local post from elsewhere. Likes need no table of their own -
+-- Likes is keyed on (userId, postId) and a remote account already has a shadow
+-- Users row, so a favourite from Mastodon is the same row a member here would
+-- make. Nothing here reposts yet, so a boost has no existing row shape to reuse,
+-- and it has to be remembered anyway or an Undo would have nothing to find.
+CREATE TABLE `Announces` (
+  `postId` int(10) unsigned NOT NULL,
+  `userId` int(10) unsigned NOT NULL,
+  `activityURI` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`postId`,`userId`),
+  KEY `userId_postId` (`userId`,`postId`),
+  CONSTRAINT `Announces_ibfk_1` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
+  CONSTRAINT `Announces_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Bookmarks` (
   `bookmarkId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,

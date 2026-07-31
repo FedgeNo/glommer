@@ -22,8 +22,51 @@ class ActivityPubInbox
             'Delete' => self::handleDelete($activity, $signed_actor_uri),
             'Follow' => self::handleFollow($activity, $signed_actor_uri),
             'Undo' => self::handleUndo($activity, $signed_actor_uri),
+            'Like' => self::handleLike($activity, $signed_actor_uri),
+            'Announce' => self::handleAnnounce($activity, $signed_actor_uri),
             default => null,
         };
+    }
+
+    /** A favourite from elsewhere, which is the same row a member here would make. */
+    private static function handleLike(array $activity, string $actor_uri): void
+    {
+        $object_uri = self::objectURI($activity['object'] ?? null);
+        $actor = self::shadowUserFor($actor_uri);
+
+        if ($object_uri === null || $actor === null) {
+            return;
+        }
+
+        ActivityPubReaction::liked($object_uri, $actor);
+    }
+
+    /** A boost of a post here. */
+    private static function handleAnnounce(array $activity, string $actor_uri): void
+    {
+        $object_uri = self::objectURI($activity['object'] ?? null);
+        $actor = self::shadowUserFor($actor_uri);
+        $activity_uri = $activity['id'] ?? null;
+
+        if ($object_uri === null || $actor === null || !is_string($activity_uri) || $activity_uri === '') {
+            return;
+        }
+
+        ActivityPubReaction::announced($object_uri, $actor, $activity_uri);
+    }
+
+    /** An object reference is either the URI itself or a document carrying its id. */
+    private static function objectURI(mixed $object): ?string
+    {
+        if (is_string($object) && $object !== '') {
+            return $object;
+        }
+
+        if (is_array($object) && is_string($object['id'] ?? null) && $object['id'] !== '') {
+            return $object['id'];
+        }
+
+        return null;
     }
 
     /**
@@ -97,7 +140,27 @@ SELECT *
     {
         $object = $activity['object'] ?? null;
 
-        if (!is_array($object) || ($object['type'] ?? null) !== 'Follow') {
+        if (!is_array($object)) {
+            return;
+        }
+
+        // Withdrawing a reaction, which is the row simply going away again.
+        if (in_array($object['type'] ?? null, ['Like', 'Announce'], true)) {
+            $target = self::objectURI($object['object'] ?? null);
+            $actor = self::shadowUserFor($actor_uri);
+
+            if ($target !== null && $actor !== null) {
+                if ($object['type'] === 'Like') {
+                    ActivityPubReaction::unliked($target, $actor);
+                } else {
+                    ActivityPubReaction::unannounced($target, $actor);
+                }
+            }
+
+            return;
+        }
+
+        if (($object['type'] ?? null) !== 'Follow') {
             return;
         }
 

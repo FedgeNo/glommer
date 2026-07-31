@@ -25,6 +25,7 @@ if (document.querySelector('.MessageList[data-other-user-id]')) import('/scripts
 if (document.querySelector('.NotificationList'))       import('/scripts/Notification.js');
 if (document.querySelector('.ReportList'))             import('/scripts/ReportCard.js');
 if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');
+if (document.querySelector('.BlockedDomainList'))      import('/scripts/BlockedDomainCard.js');
 
 if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get('currentUserId') !== null) {
     import('/scripts/Composer.js');

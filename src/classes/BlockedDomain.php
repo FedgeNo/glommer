@@ -17,13 +17,18 @@ declare(strict_types=1);
  */
 class BlockedDomain
 {
-    /** Adds a domain. Silently does nothing for input that is not a hostname. */
-    public static function block(string $domain, ?string $reason, ?int $moderator_id): void
+    /**
+     * Adds a domain and severs what is already established with it. Returns
+     * the normalized name, or null for input that is not shaped like a host -
+     * so a caller can tell a moderator their entry was rejected rather than
+     * silently doing nothing.
+     */
+    public static function block(string $domain, ?string $reason, ?int $moderator_id): ?string
     {
         $normalized = self::normalize($domain);
 
         if ($normalized === null) {
-            return;
+            return null;
         }
 
         DB::run('
@@ -31,6 +36,45 @@ INSERT INTO `BlockedDomains` (`domain`, `reason`, `blockedBy`)
     VALUES (?, ?, ?)
     ON DUPLICATE KEY UPDATE `reason` = VALUES(`reason`), `blockedBy` = VALUES(`blockedBy`)
 ', 'ssi', $normalized, $reason, $moderator_id);
+
+        self::severFollows($normalized);
+
+        return $normalized;
+    }
+
+    /**
+     * Drops every follow in both directions with a newly blocked server.
+     *
+     * Blocking only future traffic would leave the relationships standing:
+     * their followers here would sit waiting for posts that never come, and
+     * members here would keep a follow of an account they can no longer
+     * receive. Cutting them makes the block mean what it says.
+     *
+     * Matched on the host inside each actor URI rather than by joining on a
+     * domain column, because there isn't one - the URI is the only place the
+     * server is recorded.
+     */
+    private static function severFollows(string $domain): void
+    {
+        $suffix = '%.' . $domain . '/%';
+        $exact = '%//' . $domain . '/%';
+
+        DB::run('
+DELETE FROM `FediverseFollowers`
+    WHERE `remoteActorURI` LIKE ? OR `remoteActorURI` LIKE ?
+', 'ss', $exact, $suffix);
+
+        DB::run('
+DELETE FROM `RemoteFollows`
+    WHERE `remoteActorURI` LIKE ? OR `remoteActorURI` LIKE ?
+', 'ss', $exact, $suffix);
+
+        // Anything already queued for them is dropped too - it would only fail
+        // its way through the retry schedule.
+        DB::run('
+DELETE FROM `FediverseDeliveries`
+    WHERE `inboxURL` LIKE ? OR `inboxURL` LIKE ?
+', 'ss', $exact, $suffix);
     }
 
     public static function unblock(string $domain): void

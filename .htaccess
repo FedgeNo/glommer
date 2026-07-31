@@ -119,6 +119,7 @@
     RewriteRule ^admin/settings$ admin-settings.php [L,QSA]
     RewriteRule ^admin/banned$ admin-banned.php [L,QSA]
     RewriteRule ^admin/banned-entities$ admin-banned-entities.php [L,QSA]
+    RewriteRule ^admin/blocked-servers$ admin-blocked-domains.php [L,QSA]
     RewriteRule ^admin/tests$ admin-tests.php [L,QSA]
     RewriteRule ^admin/call-test$ admin-call-test.php [L,QSA]
     RewriteRule ^about$ about.php [L,QSA]

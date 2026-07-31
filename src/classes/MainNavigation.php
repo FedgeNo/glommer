@@ -129,6 +129,7 @@ class MainNavigation extends Nav
             $links[] = new Anchor(ServerURL::absolute('/admin/reports'), 'Reports');
             $links[] = new Anchor(ServerURL::absolute('/admin/banned'), 'Banned Users');
             $links[] = new Anchor(ServerURL::absolute('/admin/banned-entities'), 'Banned Entities');
+            $links[] = new Anchor(ServerURL::absolute('/admin/blocked-servers'), 'Blocked Servers');
         }
 
         // Site-wide settings (e.g. the Turnstile keys) are the primary admin's

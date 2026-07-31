@@ -195,6 +195,68 @@ SELECT `reason`
         $this -> assertFalse(BlockedDomain::blocks($domain));
     }
 
+    public function testBlockingSeversFollowsInBothDirections(): void
+    {
+        // Blocking only future traffic would leave the relationships standing:
+        // their followers here waiting for posts that never come, and members
+        // here holding a follow they can no longer receive.
+        $host = 'bad-' . bin2hex(random_bytes(4)) . '.example';
+        $member = self::localUser();
+        $them = self::remoteUser($host);
+
+        FediverseFollower::add((int) $member -> userId, (string) $them -> remoteActorURI, (string) $them -> remoteActorInboxURL, null, 'x');
+
+        DB::run('
+INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
+    VALUES (?, ?, ?)
+', 'iss', (int) $member -> userId, (string) $them -> remoteActorURI, 'accepted');
+
+        $this -> assertTrue(FediverseFollower::exists((int) $member -> userId, (string) $them -> remoteActorURI));
+
+        BlockedDomain::block($host, 'abuse', null);
+
+        $this -> assertFalse(FediverseFollower::exists((int) $member -> userId, (string) $them -> remoteActorURI), 'their follow of us should be gone');
+        $this -> assertSame([], RemoteFollow::acceptedActorURIsFor((int) $member -> userId), 'our follow of them should be gone');
+    }
+
+    public function testBlockingDropsWhatWasAlreadyQueuedForThatServer(): void
+    {
+        // Leaving it queued only means failing its way through the retry
+        // schedule against a server we have decided not to talk to.
+        $host = 'bad-' . bin2hex(random_bytes(4)) . '.example';
+        $member = self::localUser();
+
+        FediverseDelivery::enqueue((int) $member -> userId, ['type' => 'Create'], ['https://' . $host . '/inbox']);
+        $queued = FediverseDelivery::pendingCount();
+
+        BlockedDomain::block($host, null, null);
+
+        $this -> assertSame($queued - 1, FediverseDelivery::pendingCount());
+    }
+
+    public function testBlockingOneServerLeavesAnotherAlone(): void
+    {
+        $blocked_host = 'bad-' . bin2hex(random_bytes(4)) . '.example';
+        $other_host = 'fine-' . bin2hex(random_bytes(4)) . '.example';
+        $member = self::localUser();
+        $innocent = self::remoteUser($other_host);
+
+        FediverseFollower::add((int) $member -> userId, (string) $innocent -> remoteActorURI, (string) $innocent -> remoteActorInboxURL, null, 'x');
+
+        BlockedDomain::block($blocked_host, null, null);
+
+        $this -> assertTrue(FediverseFollower::exists((int) $member -> userId, (string) $innocent -> remoteActorURI));
+    }
+
+    public function testAnEntryThatIsNotAHostnameReportsItselfAsRejected(): void
+    {
+        // Returning the normalized name lets the endpoint tell a moderator
+        // their typo was refused, rather than showing them a block that is not
+        // in force.
+        $this -> assertNull(BlockedDomain::block('not a domain', null, null));
+        $this -> assertNotNull(BlockedDomain::block('fine-' . bin2hex(random_bytes(4)) . '.example', null, null));
+    }
+
     public function testNothingIsQueuedForABlockedServer(): void
     {
         $user = self::localUser();

@@ -30,12 +30,13 @@ class VideoCall
     ];
 
     /**
-     * What one side may send the other. The payloads themselves (session
-     * descriptions, ICE candidates) are opaque here and are never parsed - only
-     * the kind of message is checked, so a signal can't name something the
-     * client has no handler for.
+     * What one side may send the other. The payloads themselves are opaque here
+     * and never parsed - only the kind is checked, so a signal can't name
+     * something the client has no handler for. There is no candidate kind: the
+     * client gathers before it sends, so every candidate rides inside the
+     * description and one message each way sets up a call.
      */
-    private const SIGNAL_TYPES = ['probeOffer', 'probeAnswer', 'offer', 'answer', 'candidate', 'decline', 'hangup'];
+    private const SIGNAL_TYPES = ['probeOffer', 'probeAnswer', 'offer', 'answer', 'decline', 'hangup'];
 
     /**
      * A session description is a few kilobytes; this is far above anything

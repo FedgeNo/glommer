@@ -869,6 +869,53 @@ body.MessagesPage { padding-bottom: 9rem; }
     box-shadow: var(--shadow-pop);
 }
 
+/* A call takes the thread's place while it runs: the remote person fills the
+   space the messages were in, with your own camera inset in a corner so you can
+   see what you are sending. */
+.VideoCallStage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-color: #000;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.VideoCallRemote {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.VideoCallLocal {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: 8rem;
+    max-width: 30%;
+    border-radius: var(--radius-ctl);
+    box-shadow: var(--shadow-pop);
+    /* Your own camera is a mirror, the way every other video app shows it. */
+    transform: scaleX(-1);
+}
+
+/* Stands where the composer does, so the way out of a call is where the way to
+   say something was. */
+.VideoCallPanel {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-card);
+    background-color: var(--glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-pop);
+}
+
 .Conversation {
     transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
 }

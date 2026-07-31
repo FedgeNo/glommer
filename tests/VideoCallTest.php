@@ -27,7 +27,7 @@ class VideoCallTest extends TestCase
 
     public function testOnlyKnownSignalKindsAreAccepted(): void
     {
-        foreach (['probeOffer', 'probeAnswer', 'offer', 'answer', 'candidate', 'decline', 'hangup'] as $type) {
+        foreach (['probeOffer', 'probeAnswer', 'offer', 'answer', 'decline', 'hangup'] as $type) {
             $this -> assertTrue(VideoCall::isSignalType($type), $type . ' should be a signal the relay carries');
         }
     }
@@ -36,6 +36,10 @@ class VideoCallTest extends TestCase
     {
         $this -> assertFalse(VideoCall::isSignalType('subscribe'));
         $this -> assertFalse(VideoCall::isSignalType(''));
+
+        // Candidates ride inside the descriptions, so a client sending them
+        // separately is one that disagrees with this one about how setup works.
+        $this -> assertFalse(VideoCall::isSignalType('candidate'));
     }
 
     public function testExactlyOneSideOpensTheProbe(): void

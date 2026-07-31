@@ -88,6 +88,8 @@ export class WebSocketManager {
                 this.handleNotification(data.notification);
             } else if (data.event === 'message') {
                 document.dispatchEvent(new CustomEvent('ws:message', { detail: data.message }));
+            } else if (data.event === 'call') {
+                document.dispatchEvent(new CustomEvent('ws:call', { detail: data.call }));
             }
         });
 

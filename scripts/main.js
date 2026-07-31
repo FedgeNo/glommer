@@ -21,6 +21,7 @@ if (document.querySelector('.Post')) {
     import('/scripts/PostEditor.js');
 }
 if (document.querySelector('.MessageList'))            import('/scripts/Message.js');
+if (document.querySelector('.MessageList[data-other-user-id]')) import('/scripts/VideoCall.js');
 if (document.querySelector('.NotificationList'))       import('/scripts/Notification.js');
 if (document.querySelector('.ReportList'))             import('/scripts/ReportCard.js');
 if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');

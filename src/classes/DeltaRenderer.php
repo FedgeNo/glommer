@@ -28,6 +28,54 @@ class DeltaRenderer extends Div
         parent::__construct();
     }
 
+    /**
+     * The same render as an HTML string, for output that isn't a page.
+     *
+     * An ActivityPub Note carries its body as HTML, and it has to be the HTML
+     * this site would show for that post - a second renderer written for
+     * federation would drift from this one and the two copies of a post would
+     * stop matching. So the page renderer is what produces it, into a document
+     * of its own.
+     *
+     * The .PostBody wrapper is left off: it is how this site lays the body out,
+     * not part of what was written, and a receiving server has its own frame to
+     * put the content in. What comes back is the body itself - the paragraphs,
+     * lists and links.
+     *
+     * The shared document is swapped and put back rather than replaced: it is
+     * static across every DOMObject, and a page render in flight would
+     * otherwise find its own tree gone mid-build.
+     *
+     * @param array[] $ops the Delta's ops
+     */
+    public static function toHTML(array $ops): string
+    {
+        $previous = self::$document ?? null;
+
+        try {
+            self::$document = new \DOMDocument('1.0', 'UTF-8');
+
+            // Deliberately self rather than static: federation publishes the
+            // whole post, never a subclass's truncated preview of it.
+            $root = (new self($ops)) -> toDOM();
+            $html = '';
+
+            foreach ($root -> childNodes as $child) {
+                $fragment = self::$document -> saveHTML($child);
+
+                if ($fragment !== false) {
+                    $html .= $fragment;
+                }
+            }
+
+            return $html;
+        } finally {
+            if ($previous !== null) {
+                self::$document = $previous;
+            }
+        }
+    }
+
     public function toDOM(): \DOMElement
     {
         $doc = self::currentDocument();

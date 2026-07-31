@@ -26,7 +26,10 @@ class RemoteActor
     /** @return array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string}|null */
     public static function fetch(string $actor_uri): ?array
     {
-        $response = SafeHTTPFetcher::getJSON($actor_uri, ['Accept: application/activity+json'], self::MAX_RESPONSE_BYTES);
+        // Signed: an instance in secure mode will not hand over an actor to an
+        // unsigned request at all, and the failure looks exactly like the
+        // account not existing.
+        $response = ActivityPubFetch::getJSON($actor_uri, ['Accept: application/activity+json'], self::MAX_RESPONSE_BYTES);
 
         if ($response === null) {
             return null;

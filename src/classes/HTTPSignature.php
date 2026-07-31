@@ -13,8 +13,15 @@ declare(strict_types=1);
  */
 class HTTPSignature
 {
-    /** What we sign on the way out. */
+    /** What we sign on the way out, delivering a body. */
     private const SIGNED_HEADERS = '(request-target) host date digest';
+
+    /**
+     * What we sign fetching something. A GET has no body, so there is no digest
+     * to cover - signing one over nothing is a claim about a body that does not
+     * exist, and servers checking coverage reject it.
+     */
+    private const SIGNED_GET_HEADERS = '(request-target) host date';
 
     /**
      * The coverage an inbound signature must have, whatever else it also
@@ -64,6 +71,26 @@ class HTTPSignature
         }
 
         return 'keyId="' . $keyId . '",algorithm="rsa-sha256",headers="' . self::SIGNED_HEADERS . '",signature="' . base64_encode($signature_binary) . '"';
+    }
+
+    /**
+     * Signs an outbound GET - "authorized fetch", which a growing number of
+     * instances require before they will hand over an actor or an object at
+     * all. Unsigned, those servers are simply invisible to us.
+     */
+    public static function signGet(string $path, string $host, string $date, string $keyId, string $privateKeyPem): string
+    {
+        $signing_string = '(request-target): get ' . $path . "\n"
+            . 'host: ' . $host . "\n"
+            . 'date: ' . $date;
+
+        $signed = openssl_sign($signing_string, $signature_binary, $privateKeyPem, OPENSSL_ALGO_SHA256);
+
+        if (!$signed) {
+            throw new \RuntimeException('openssl_sign() failed while signing an outbound ActivityPub fetch.');
+        }
+
+        return 'keyId="' . $keyId . '",algorithm="rsa-sha256",headers="' . self::SIGNED_GET_HEADERS . '",signature="' . base64_encode($signature_binary) . '"';
     }
 
     /**

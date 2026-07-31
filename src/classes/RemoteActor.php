@@ -162,7 +162,10 @@ UPDATE `Users`
         }
 
         $slug = self::uniqueShadowSlug($actor['preferredUsername'], $actor['id']);
-        $synthetic_email = 'remote+' . substr(sha1($actor['id']), 0, 32) . '@glommer.invalid';
+        // Unroutable by construction (.invalid, RFC 2606) - a shadow row has no
+        // mailbox and must never be mailed. Named for this server so two
+        // instances sharing a database would not collide.
+        $synthetic_email = 'remote+' . substr(sha1($actor['id']), 0, 32) . '@' . ActivityPubActor::canonicalHost() . '.invalid';
         $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
 
         DB::run('

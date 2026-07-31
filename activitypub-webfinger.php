@@ -9,9 +9,9 @@ require __DIR__ . '/src/init.php';
 // member resolves here: acct:{username}@{host} points at their profile URL,
 // which doubles as their actor document.
 //
-// The instance's own Application actor (acct:glommer@{host}) still resolves
-// too. It is what signs an outbound Follow, and a remote server confirming one
-// looks it up the same way.
+// The instance's own Application actor resolves here too - the site speaking as
+// itself rather than as any member. Its handle comes from the configured site
+// title, so nothing here is named after one particular deployment.
 $host = ActivityPubActor::canonicalHost();
 $resource = is_string($_GET['resource'] ?? null) ? $_GET['resource'] : '';
 
@@ -25,14 +25,14 @@ if (!preg_match('/\Aacct:([^@]+)@(.+)\z/i', $resource, $matches) || strcasecmp($
 $username = $matches[1];
 
 // The one instance-wide identity, which is not a member and has no profile.
-if (strcasecmp($username, 'glommer') === 0) {
+if (strcasecmp($username, ActivityPubActor::instanceUsername()) === 0) {
     if (!ActivityPubKeys::isConfigured()) {
         ActivityPubResponse::notFound();
     }
 
     header('Content-Type: application/jrd+json');
     ActivityPubResponse::send([
-        'subject' => 'acct:glommer@' . $host,
+        'subject' => 'acct:' . ActivityPubActor::instanceUsername() . '@' . $host,
         'aliases' => [ServerURL::absolute('/activitypub/actor')],
         'links' => [
             [

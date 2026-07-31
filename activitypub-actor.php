@@ -28,7 +28,7 @@ echo json_encode([
     '@context' => ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'],
     'id' => $actor_url,
     'type' => 'Application',
-    'preferredUsername' => 'glommer',
+    'preferredUsername' => ActivityPubActor::instanceUsername(),
     'name' => Config::get('siteTitle'),
     'inbox' => ServerURL::absolute('/activitypub/inbox'),
     'publicKey' => [

@@ -75,6 +75,32 @@ class ActivityPubActor
         return $user -> slug . '@' . self::canonicalHost();
     }
 
+    /**
+     * The handle of the instance's own Application actor - the site speaking as
+     * itself rather than as any member.
+     *
+     * Derived from the site's configured title so nothing here is named after
+     * one particular deployment. It is deliberately not the software's name:
+     * that identifies what this runs, while this identifies who it is.
+     *
+     * Reduced to what a Fediverse local part may contain, and falling back to
+     * the canonical host when a title reduces to nothing at all - a site called
+     * "!!!" still needs an address.
+     */
+    public static function instanceUsername(): string
+    {
+        $title = strtolower((string) Config::get('siteTitle'));
+        $slug = (string) preg_replace('/[^a-z0-9_]/', '', $title);
+
+        if ($slug !== '') {
+            return substr($slug, 0, 64);
+        }
+
+        $host = (string) preg_replace('/[^a-z0-9_]/', '', strtolower(self::canonicalHost()));
+
+        return $host === '' ? 'site' : substr($host, 0, 64);
+    }
+
     public static function canonicalHost(): string
     {
         $parts = parse_url((string) Config::get('siteURL'));

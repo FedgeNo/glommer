@@ -23,7 +23,7 @@ class EmailChangeRevert
 
         $text_body = 'Hi ' . $name . ',
 
-The email address on your Glommer account was just changed to ' . $user -> email . '.
+The email address on your ' . Config::get('siteTitle') . ' account was just changed to ' . $user -> email . '.
 
 If this was you, no action is needed.
 
@@ -33,7 +33,7 @@ If this was NOT you, click this link to revert the change and sign every device 
 This link expires in 30 days.';
 
         $html_body = '<p>Hi ' . htmlspecialchars($name) . ',</p>'
-            . '<p>The email address on your Glommer account was just changed to ' . htmlspecialchars($user -> email) . '.</p>'
+            . '<p>The email address on your ' . Config::get('siteTitle') . ' account was just changed to ' . htmlspecialchars($user -> email) . '.</p>'
             . '<p>If this was you, no action is needed.</p>'
             . '<p><strong>If this was NOT you</strong>, click the link below to revert the change and sign every device out of your account:</p>'
             . '<p><a href="' . htmlspecialchars($revert_url) . '">Revert Email Change</a></p>'

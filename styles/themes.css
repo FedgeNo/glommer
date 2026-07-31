@@ -230,42 +230,47 @@
     --glass: rgb(0 0 0 / 0.90);
 }
 
-/* The heat-map ramp - black through deep purple and magenta into orange and pale
-   yellow. The gradient is split by job rather than sprinkled: the cool end is
-   structure, so surfaces and edges climb from near-black through purple, and the
-   hot end is anything that acts or warns - accent, link, danger - which is also
-   the order of attention you want. Text sits at the pale top of the ramp so it
-   stays legible against the purple rather than glowing. */
+/* The ironbow ramp thermal cameras use - black through violet and magenta into
+   orange, and on past yellow to white, which is what separates it from
+   matplotlib's inferno (that one stops at pale yellow). It is the colour iron
+   actually glows as it heats, which is why it reads as temperature without
+   having to be explained.
+   The ramp is split by job rather than sprinkled about: the cool end is
+   structure, so surfaces and edges climb from black through violet, and the hot
+   end is anything that acts or warns - which is also the order of attention it
+   should get. Everything below was chosen against the LIGHTEST stop of the
+   gradient sitting behind it, since that is where a gradient quietly fails. */
 :root[data-theme='inferno'] {
-    --paper: #000004;
-    --surface: #17073c;
-    --surface-2: #290b52;
-    --ink: #fce9b4;
-    --muted: #cf8a72;
-    --hairline: #4a0c6b;
-    --accent: #ed6925;
-    --accent-strong: #fb9b06;
-    --accent-soft: rgb(237 105 37 / 0.16);
-    --accent-ink: #1b0c41;
-    --link: #f7d13d;
-    /* A step up the ramp from the red at its middle, which sits too close to
-       the purple surface to read at body size. */
-    --danger: #e2593c;
-    --danger-soft: rgb(226 89 60 / 0.18);
-    --shadow-card: 0 1px 2px rgb(0 0 4 / 0.60), 0 8px 24px -10px rgb(120 28 109 / 0.55);
-    --shadow-pop: 0 4px 10px rgb(0 0 4 / 0.50), 0 18px 44px -12px rgb(237 105 37 / 0.35);
-    --glass: rgb(0 0 4 / 0.88);
+    --paper: #000000;
+    --surface: #12002d;
+    --surface-2: #2a0a5e;
+    --ink: #ffffff;
+    --muted: #ffb37a;
+    --hairline: #4b0f6b;
+    --accent: #ff8c00;
+    --accent-strong: #ffd300;
+    --accent-soft: rgb(255 140 0 / 0.18);
+    --accent-ink: #000000;
+    --link: #ffd300;
+    --danger: #ff7a5c;
+    --danger-soft: rgb(255 122 92 / 0.20);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(123 26 110 / 0.60);
+    --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(255 140 0 / 0.40);
+    --glass: rgb(0 0 0 / 0.90);
 
     /* Slices of the one ramp rather than flat samples of it, each surface taking
        the segment that matches how far forward it sits: the page is the cold
        floor, a card a short way up it, a button further still, and the button
        that commits something is up in the heat. The colours above stay as what
        sits underneath, so nothing depends on the gradients rendering. */
-    --paper-image: linear-gradient(180deg, #000004 0%, #0b0424 60%, #1b0c41 100%);
-    --surface-image: linear-gradient(160deg, #17073c 0%, #2c0d54 100%);
-    --button-image: linear-gradient(160deg, #290b52 0%, #4a0c6b 100%);
-    --button-image-hover: linear-gradient(160deg, #3c0f61 0%, #781c6d 100%);
-    --accent-image: linear-gradient(135deg, #cf4446 0%, #ed6925 55%, #fb9b06 100%);
+    --paper-image: linear-gradient(180deg, #000000 0%, #0a0322 60%, #1a0a3c 100%);
+    --surface-image: linear-gradient(160deg, #12002d 0%, #35085c 100%);
+    --button-image: linear-gradient(160deg, #2a0a5e 0%, #4b0f6b 100%);
+    --button-image-hover: linear-gradient(160deg, #3a0a63 0%, #7b1a6e 100%);
+    /* Runs off the end of the ramp into white, the way a thermal camera shows
+       the hottest thing in frame. Starts at the orange-red rather than the
+       magenta below it so black lettering holds up across the whole sweep. */
+    --accent-image: linear-gradient(135deg, #e35d3a 0%, #ff8c00 40%, #ffd300 75%, #ffffff 100%);
 }
 
 /* Dark‑mode edges for the hashtag graph */

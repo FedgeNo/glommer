@@ -328,7 +328,7 @@ class HelpContent
                 'summary' => 'Cut off contact with a user and hide them from your view.',
                 'body' => '
 <p>Blocking is the tool for when you simply don\'t want anything more to do with someone. Use the <strong>Block</strong> button on their card or profile.</p>
-<p>When you block someone, any existing friendship between you ends, and their content stops appearing for you. It\'s a personal setting - it changes your own experience rather than penalising the other person.</p>
+<p>When you block someone, any existing friendship between you ends, and direct interaction (messaging, likes, comments) is restricted. Blocks do not affect visibility as the site is entirely public and simply logging out would circumvent that. It\'s a personal setting - it changes your own experience rather than penalising the other person.</p>
 <p>You can reverse it at any time: a blocked person\'s card shows an <strong>Unblock</strong> button.</p>
 <p>Blocking is about your comfort. If someone is being abusive - not just annoying - please also <a href="/help/reporting-abuse">report the abusive content</a> so it can be dealt with.</p>
 ',

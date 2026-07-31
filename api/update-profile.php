@@ -41,4 +41,10 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'ssi', $title, $description_value, $current_user -> userId);
 
+// Followers hold a copy of the actor document; a change here makes theirs
+// stale until they are told.
+$current_user -> title = $title;
+$current_user -> description = $description_value;
+FediversePublisher::profileUpdated($current_user);
+
 JSONResponse::success(['title' => $title, 'description' => $description_value]) -> send();

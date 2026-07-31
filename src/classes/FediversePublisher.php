@@ -47,6 +47,56 @@ class FediversePublisher
     }
 
     /**
+     * Tells followers a member's profile changed - display name, bio, avatar.
+     * The whole actor document goes again, since ActivityPub restates rather
+     * than diffs.
+     */
+    public static function profileUpdated(User $author): void
+    {
+        $actor = ActivityPubActor::document($author);
+
+        if ($actor === null) {
+            return;
+        }
+
+        // The context belongs to the activity here, not to the object inside
+        // it, so it is not repeated.
+        unset($actor['@context']);
+
+        FediverseDelivery::fanOut($author, [
+            '@context' => 'https://www.w3.org/ns/activitystreams',
+            'id' => ActivityPubActor::uriFor($author) . '#update-' . time(),
+            'type' => 'Update',
+            'actor' => ActivityPubActor::uriFor($author),
+            'to' => [ActivityPubActor::PUBLIC_AUDIENCE],
+            'object' => $actor,
+        ]);
+    }
+
+    /**
+     * Withdraws a whole account. Sent while the member still exists, because
+     * the followers to send it to are about to be deleted with them - and a
+     * Delete nobody is left to address reaches nobody.
+     */
+    public static function accountDeleted(User $author): void
+    {
+        if (!ActivityPubActor::isLocal($author) || $author -> userId === null) {
+            return;
+        }
+
+        $uri = ActivityPubActor::uriFor($author);
+
+        FediverseDelivery::fanOut($author, [
+            '@context' => 'https://www.w3.org/ns/activitystreams',
+            'id' => $uri . '#delete',
+            'type' => 'Delete',
+            'actor' => $uri,
+            'to' => [ActivityPubActor::PUBLIC_AUDIENCE],
+            'object' => $uri,
+        ]);
+    }
+
+    /**
      * The URI a post will be withdrawn under, read before it is deleted. Null
      * when there is nothing to announce - a post that came in from elsewhere is
      * not ours to withdraw, and its own server will send its own Delete.
@@ -61,5 +111,28 @@ SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
 ', 'PostParentData', 'i', $post_id);
 
         return $row === null ? null : ServerURL::absolute('/users/' . $row -> slug . '/' . (int) $row -> postId);
+    }
+
+    /**
+     * The member who wrote a post, for the times the person acting is not its
+     * author - a moderator deleting reported content. The withdrawal still goes
+     * out as the author, because it is their object being withdrawn and their
+     * followers holding a copy of it.
+     */
+    public static function authorOf(int $post_id): ?User
+    {
+        $post = DB::row('
+SELECT `userId`
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', $post_id);
+
+        if ($post === null) {
+            return null;
+        }
+
+        $author = User::load((int) $post -> userId);
+
+        return $author !== null && ActivityPubActor::isLocal($author) ? $author : null;
     }
 }

@@ -41,6 +41,11 @@
     # ACME challenge path above.
     RewriteRule ^\.well-known/webfinger$ activitypub-webfinger.php [L,QSA]
 
+    # NodeInfo discovery, also under the dot-directory and so exempted the same
+    # way. Relay and directory software reads it to find out what this server
+    # runs before deciding how to talk to it.
+    RewriteRule ^\.well-known/nodeinfo$ nodeinfo.php [L,QSA]
+
     # Block any request into a dotfile OR a dot-directory (.git, .env, .svn,
     # .htaccess, ...). The <FilesMatch> above only ever sees the request
     # basename, so it stops /.env but NOT a file nested under a dot-directory
@@ -123,6 +128,7 @@
     RewriteRule ^bookmarks$ bookmarks.php [L,QSA]
     RewriteRule ^search$ search.php [L,QSA]
     RewriteRule ^trending-topics$ trending-topics.php [L,QSA]
+    RewriteRule ^nodeinfo/2\.0$ nodeinfo.php?schema=2.0 [L,QSA]
     RewriteRule ^activitypub/actor$ activitypub-actor.php [L,QSA]
     RewriteRule ^activitypub/inbox$ activitypub-inbox.php [L,QSA]
 

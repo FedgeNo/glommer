@@ -120,7 +120,11 @@ SELECT COUNT(*) AS `total`
      */
     public static function fanOut(User $author, array $activity): void
     {
-        if ($author -> userId === null || !ActivityPubActor::isLocal($author)) {
+        // A banned member's actor stops resolving, so anything sent on their
+        // behalf would be unverifiable at the far end anyway - and continuing to
+        // publish for someone this server has stopped hosting is wrong however
+        // it is received.
+        if ($author -> userId === null || !ActivityPubActor::isLocal($author) || (int) $author -> banned === 1) {
             return;
         }
 

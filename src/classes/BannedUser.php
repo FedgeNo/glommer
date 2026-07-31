@@ -18,7 +18,7 @@ class BannedUser extends User
 
         $row -> addContent($this -> header());
 
-        $unban = new UnbanButton((int) $this -> userId);
+        $unban = new UserUnbanButton((int) $this -> userId);
         $unban -> mixins[] = 'ms-auto';
         $row -> addContent($unban);
 

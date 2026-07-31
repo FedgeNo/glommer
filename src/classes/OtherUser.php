@@ -80,7 +80,7 @@ class OtherUser extends User
         $actions -> addContent($friends_link);
 
         if ($friendship !== null && $friendship -> status === 'accepted') {
-            $actions -> addContent(new RemoveFriendButton($this -> userId));
+            $actions -> addContent(new FriendRemoveButton($this -> userId));
         }
 
         foreach ($this -> afterMessageActions() as $item) {
@@ -90,7 +90,7 @@ class OtherUser extends User
         // Only the primary admin can promote/demote moderators - not mods
         // themselves, to avoid a mod-promotes-mod escalation chain.
         if ($viewer_id === 1) {
-            $actions -> addContent(new ModButton($this -> userId, (bool) $this -> isMod));
+            $actions -> addContent(new UserModButton($this -> userId, (bool) $this -> isMod));
         }
 
         $block_button = new Button();
@@ -106,7 +106,7 @@ class OtherUser extends User
         // report anyway), so their card gets neither button.
         if ($this -> userId !== 1) {
             $actions -> addContent(
-                Auth::canModerate() ? new BanButton($this -> userId, 'Ban') : new ReportButton('user', $this -> userId)
+                Auth::canModerate() ? new UserBanButton($this -> userId, 'Ban') : new ReportButton('user', $this -> userId)
             );
         }
 

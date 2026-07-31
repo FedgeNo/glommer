@@ -143,30 +143,30 @@ button[type='submit'].Button:hover,
 }
 
 .DeleteButton,
-.BanButton,
+.UserBanButton,
 .BanTrendingEntityButton,
 .BlockUserButton,
 .ReportButton,
 .PostDeleteButton,
-.RemoveFriendButton,
+.FriendRemoveButton,
 .DeleteReportedContentButton,
 .DeleteAccountButton,
-.ModButton[data-is-mod='1'] {
+.UserModButton[data-is-mod='1'] {
     background-color: transparent;
     color: var(--danger) !important;
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent);
 }
 
 .DeleteButton:hover,
-.BanButton:hover,
+.UserBanButton:hover,
 .BanTrendingEntityButton:hover,
 .BlockUserButton:hover,
 .ReportButton:hover,
 .PostDeleteButton:hover,
-.RemoveFriendButton:hover,
+.FriendRemoveButton:hover,
 .DeleteReportedContentButton:hover,
 .DeleteAccountButton:hover,
-.ModButton[data-is-mod='1']:hover {
+.UserModButton[data-is-mod='1']:hover {
     background-color: var(--danger-soft);
     color: var(--danger) !important;
 }

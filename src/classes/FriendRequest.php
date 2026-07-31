@@ -18,8 +18,8 @@ class FriendRequest extends OtherUser
     protected function beforeActions(): array
     {
         return [
-            new AcceptFriendButton((int) $this -> friendshipId),
-            new DenyFriendButton((int) $this -> friendshipId),
+            new FriendRequestAcceptButton((int) $this -> friendshipId),
+            new FriendRequestDenyButton((int) $this -> friendshipId),
         ];
     }
 }

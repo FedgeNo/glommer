@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ModButton extends ButtonButton
+class UserModButton extends ButtonButton
 {
     public function __construct(int $user_id, bool $is_mod)
     {

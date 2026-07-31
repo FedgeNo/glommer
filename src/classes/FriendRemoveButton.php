@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class RemoveFriendButton extends ButtonButton
+class FriendRemoveButton extends ButtonButton
 {
     public function __construct(int $user_id)
     {

@@ -82,7 +82,7 @@ export class OtherUser extends User {
                 if (ClientConfig.get('currentUserCanModerate')) {
                     report_or_ban_button = document.createElement('button');
                     report_or_ban_button.type = 'button';
-                    report_or_ban_button.className = 'Button BanButton';
+                    report_or_ban_button.className = 'Button UserBanButton';
                     report_or_ban_button.dataset.userId = this.userId;
                     report_or_ban_button.textContent = 'Ban';
                 } else {
@@ -106,7 +106,7 @@ export class OtherUser extends User {
             if (this.friendshipStatus === 'accepted') {
                 const remove_friend_button = document.createElement('button');
                 remove_friend_button.type = 'button';
-                remove_friend_button.className = 'Button RemoveFriendButton';
+                remove_friend_button.className = 'Button FriendRemoveButton';
                 remove_friend_button.dataset.userId = this.userId;
                 remove_friend_button.textContent = 'Remove Friend';
                 actions.appendWithSpace(remove_friend_button);
@@ -115,7 +115,7 @@ export class OtherUser extends User {
             if (Number(ClientConfig.get('currentUserId')) === 1) {
                 const mod_button = document.createElement('button');
                 mod_button.type = 'button';
-                mod_button.className = 'Button ModButton';
+                mod_button.className = 'Button UserModButton';
                 mod_button.dataset.userId = this.userId;
                 mod_button.dataset.isMod = this.isMod ? '1' : '0';
                 mod_button.textContent = this.isMod ? 'Remove Mod' : 'Make Mod';
@@ -159,13 +159,13 @@ export class OtherUser extends User {
                 return;
             }
 
-            const removeFriendBtn = event.target.closest('.RemoveFriendButton');
+            const removeFriendBtn = event.target.closest('.FriendRemoveButton');
             if (removeFriendBtn) {
                 OtherUser.#removeFriend(removeFriendBtn);
                 return;
             }
 
-            const modBtn = event.target.closest('.ModButton');
+            const modBtn = event.target.closest('.UserModButton');
             if (modBtn) {
                 OtherUser.#toggleMod(modBtn);
                 return;
@@ -177,19 +177,19 @@ export class OtherUser extends User {
                 return;
             }
 
-            const acceptBtn = event.target.closest('.AcceptFriendButton');
+            const acceptBtn = event.target.closest('.FriendRequestAcceptButton');
             if (acceptBtn) {
                 OtherUser.#acceptFriendRequest(acceptBtn);
                 return;
             }
 
-            const denyBtn = event.target.closest('.DenyFriendButton');
+            const denyBtn = event.target.closest('.FriendRequestDenyButton');
             if (denyBtn) {
                 OtherUser.#denyFriendRequest(denyBtn);
                 return;
             }
 
-            const banBtn = event.target.closest('.BanButton');
+            const banBtn = event.target.closest('.UserBanButton');
             if (banBtn) {
                 OtherUser.#ban(banBtn);
             }
@@ -331,13 +331,13 @@ export class FriendRequest extends OtherUser {
     beforeActions() {
         const accept = document.createElement('button');
         accept.type = 'button';
-        accept.className = 'Button AcceptFriendButton';
+        accept.className = 'Button FriendRequestAcceptButton';
         accept.dataset.friendshipId = this.friendshipId;
         accept.textContent = 'Accept';
 
         const deny = document.createElement('button');
         deny.type = 'button';
-        deny.className = 'Button DenyFriendButton';
+        deny.className = 'Button FriendRequestDenyButton';
         deny.dataset.friendshipId = this.friendshipId;
         deny.textContent = 'Deny';
 

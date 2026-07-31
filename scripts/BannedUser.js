@@ -27,7 +27,7 @@ export class BannedUser extends User {
 
         const unban = document.createElement('button');
         unban.type = 'button';
-        unban.className = 'ms-auto Button UnbanButton';
+        unban.className = 'ms-auto Button UserUnbanButton';
         unban.dataset.userId = this.userId;
         unban.textContent = 'Unban';
         row.appendWithSpace(unban);
@@ -43,7 +43,7 @@ export class BannedUser extends User {
 
     static init() {
         document.addEventListener('click', async (event) => {
-            const unbanBtn = event.target.closest('.UnbanButton');
+            const unbanBtn = event.target.closest('.UserUnbanButton');
             if (unbanBtn) {
                 BannedUser.#unban(unbanBtn);
             }

@@ -74,11 +74,11 @@ class ReportCard extends Article
         $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
 
         if ($this -> reporterId !== 1) {
-            $actions -> addContent(new BanButton($this -> reporterId, 'Ban Reporter'));
+            $actions -> addContent(new UserBanButton($this -> reporterId, 'Ban Reporter'));
         }
 
         if ($this -> targetUserId !== null && $this -> targetUsername !== null && $this -> targetUserId !== $this -> reporterId) {
-            $actions -> addContent(new BanButton($this -> targetUserId, 'Ban Reported User'));
+            $actions -> addContent(new UserBanButton($this -> targetUserId, 'Ban Reported User'));
         }
 
         // Only offer Delete when the live post/message still exists (a snapshot

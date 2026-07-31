@@ -153,7 +153,7 @@ export class ReportCard {
     banButton(user_id, label) {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'Button BanButton';
+        button.className = 'Button UserBanButton';
         button.dataset.userId = user_id;
         button.textContent = label;
 

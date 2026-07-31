@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class DenyFriendButton extends ButtonButton
+class FriendRequestDenyButton extends ButtonButton
 {
     public function __construct(int $friendship_id)
     {

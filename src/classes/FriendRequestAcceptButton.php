@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class AcceptFriendButton extends ButtonButton
+class FriendRequestAcceptButton extends ButtonButton
 {
     public function __construct(int $friendship_id)
     {

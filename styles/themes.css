@@ -40,7 +40,6 @@
     --glom-corner: 0.25rem;
     --display-font: 'Inter', system-ui, sans-serif;
     --nav-height: calc(3.25rem + 1px);
-    --page-title-height: calc(3.4rem + 1px);
     --content-padding-inline: max(1rem, calc((100% - 40rem) / 2));
 }
 

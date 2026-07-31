@@ -15,7 +15,7 @@ search {
 
 html {
     scroll-snap-type: y proximity;
-    scroll-padding-top: calc(var(--nav-height) + var(--page-title-height) + 1rem - 3px);
+    scroll-padding-top: calc(var(--nav-height) + 1rem - 3px);
 }
 
 body {

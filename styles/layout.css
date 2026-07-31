@@ -4,8 +4,11 @@
    body padding, search‑page toggles.
    ============================================================ */
 
+/* Clears the fixed nav, and only that. The page title used to be a second
+   fixed bar and had to be reserved for here too; it scrolls with the content
+   now, so it takes its own space in the normal way. */
 body:has(.MainNavigation) {
-    padding-top: calc(var(--nav-height) + var(--page-title-height) + 1rem + 4px);
+    padding-top: calc(var(--nav-height) + 1rem + 4px);
 }
 
 .PageBody {
@@ -90,20 +93,19 @@ body:has(.MainNavigation) {
     border-radius: 999px;
 }
 
+/* The title is content, not chrome: it sits at the top of <main> and scrolls up
+   out of view with everything below it, leaving the nav as the only thing
+   pinned. The glass and the backdrop blur went with the fixed position - they
+   were there so content could pass underneath, which it no longer does - and so
+   did the full-bleed offsets and its own inline padding, since it now sits in
+   the content column the body already indents. The rule under it stays, as the
+   separation it was drawing is still worth drawing. */
 .PageTitle {
-    position: fixed;
-    top: var(--nav-height);
+    position: relative;
     height: var(--nav-height);
-    left: 0;
-    right: 0;
-    margin: 0;
+    margin: 0 0 1rem;
     line-height: 3rem;
-    background-color: var(--glass);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--hairline);
-    padding-inline: var(--content-padding-inline);
-    z-index: 10;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

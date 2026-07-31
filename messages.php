@@ -50,7 +50,12 @@ $conversation_users = [
     ],
 ];
 
-$page -> addContent(new JSGlobals(['conversationUsers' => $conversation_users]));
+// iceServers rides on this page rather than the site-wide config cookie: it is
+// only ever wanted by a thread, and it is a list, not a value.
+$page -> addContent(new JSGlobals([
+    'conversationUsers' => $conversation_users,
+    'iceServers' => VideoCall::iceServers(),
+]));
 
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,

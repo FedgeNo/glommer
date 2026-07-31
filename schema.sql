@@ -32,6 +32,8 @@ CREATE TABLE `Users` (
   `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,
   `remoteActorURI` varchar(255) DEFAULT NULL,
   `remoteActorPublicKeyPem` text DEFAULT NULL,
+  `chatOtherUserId` int(10) unsigned DEFAULT NULL,
+  `chatLastSeen` datetime DEFAULT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `email` (`email`),

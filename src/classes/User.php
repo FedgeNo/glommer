@@ -58,6 +58,15 @@ class User extends Div implements \JsonSerializable
     public ?string $remoteActorURI = null;
     public ?string $remoteActorPublicKeyPem = null;
 
+    /**
+     * Who this user currently has a message thread open with, and when they
+     * were last known to still be looking at it. A person can only read one
+     * thread at a time, so this lives on the user rather than in a table of its
+     * own. Presence is only ever "recent enough" - see ChatPresence.
+     */
+    public ?int $chatOtherUserId = null;
+    public ?string $chatLastSeen = null;
+
     public function verifyPassword(string $password): bool
     {
         return $this -> passwordHash !== null && password_verify($password, $this -> passwordHash);

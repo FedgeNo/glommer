@@ -104,6 +104,20 @@ class ItemLoaderTest extends TestCase
         $this -> assertFalse($this -> elementFor($feed) -> hasAttribute('data-infinite-scroll'));
     }
 
+    public function testAMessageThreadNamesWhoItIsWith(): void
+    {
+        $thread = new class(['otherUserId' => 9]) extends MessageList {
+            protected function rows(): array
+            {
+                return ItemLoaderTest::fullPage();
+            }
+        };
+
+        // A message arriving live is only appended to the thread it belongs to,
+        // which the client decides by comparing the sender against this.
+        $this -> assertSame('9', $this -> elementFor($thread) -> getAttribute('data-other-user-id'));
+    }
+
     public function testASearchFeedLeavesItsPagingToTheClient(): void
     {
         // The next page depends on what's currently typed, so Search.js owns it;

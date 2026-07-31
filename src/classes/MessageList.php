@@ -73,18 +73,23 @@ UNION ALL
     }
 
     /**
-     * @return array<string, string>
-     */
-    /**
+     * Whose thread this is, both as the list's own identity - a message arriving
+     * live is only appended when it came from the person being read, and a call
+     * is only offered to them - and inside the scroll config, which is what the
+     * next page of history is fetched with.
+     *
      * @return array<string, string>
      */
     protected function dataAttributes(): array
     {
-        return ['data-infinite-scroll' => (string) json_encode([
-            'endpoint' => '/api/message-history',
-            'itemType' => 'Message',
-            'direction' => 'up',
-            'otherUserId' => (int) $this -> otherUserId,
-        ])];
+        return [
+            'data-other-user-id' => (string) $this -> otherUserId,
+            'data-infinite-scroll' => (string) json_encode([
+                'endpoint' => '/api/message-history',
+                'itemType' => 'Message',
+                'direction' => 'up',
+                'otherUserId' => (int) $this -> otherUserId,
+            ]),
+        ];
     }
 }

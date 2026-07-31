@@ -13,10 +13,9 @@ declare(strict_types=1);
  * this starts as free as OpenRouter allows until an admin deliberately opens it
  * up.
  */
-class OpenRouterSettingsForm extends Form
+class OpenRouterSettingsForm extends FormForm
 {
-    public ?string $class = 'OpenRouterSettingsForm';
-    public array $mixins = ['Card', 'd-flex', 'flex-column', 'gap-2'];
+    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {
@@ -32,6 +31,13 @@ class OpenRouterSettingsForm extends Form
         $key -> labelVisible = true;
         $fields -> addContent($key);
 
+        // A blank submit keeps the stored key, so clearing it needs its own
+        // deliberate control - this is the only way the form can turn AI
+        // features off. Only offered while there's a key to remove.
+        if ($key_is_set) {
+            $fields -> addContent(new CheckboxField('clearOpenRouterAPIKey', 'Remove the stored API key (turns AI features off)'));
+        }
+
         $model = new InputField('openRouterModel', 'Model', 'text', OpenRouter::DEFAULT_MODEL, 255);
         $model -> value = (string) Settings::get(OpenRouter::MODEL_SETTING, '');
         $model -> autocomplete = 'off';
@@ -44,7 +50,7 @@ class OpenRouterSettingsForm extends Form
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Paragraph('With the guard on, every request caps its price at zero, so it fails outright rather than falling back to a paid model when no free provider is available. Clear the API key to turn AI features off entirely.');
+        $this -> contents[] = new Paragraph('With the guard on, every request caps its price at zero, so it fails outright rather than falling back to a paid model when no free provider is available. Remove the stored API key to turn AI features off entirely.');
 
         $this -> contents[] = new SubmitButton('Save');
 

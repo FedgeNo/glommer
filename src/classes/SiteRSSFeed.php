@@ -14,8 +14,10 @@ declare(strict_types=1);
  * posts are excluded: a followed Fediverse account's posts aren't ours to
  * syndicate from our own domain.
  */
-class SiteRSSFeed extends RSSFeed {
-    public function __construct(array|object|null $properties = null) {
+class SiteRSSFeed extends RSSFeed
+{
+    public function __construct(array|object|null $properties = null)
+    {
         parent::__construct($properties);
 
         $this -> title = (string) Config::get('siteTitle');
@@ -23,7 +25,8 @@ class SiteRSSFeed extends RSSFeed {
         $this -> description = SiteInfo::description();
     }
 
-    protected function rows(): array {
+    protected function rows(): array
+    {
         $not_banned = 0;
 
         return DB::rows('

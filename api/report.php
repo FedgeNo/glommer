@@ -38,6 +38,13 @@ if ($target_user_id === null) {
     JSONResponse::error('Invalid report', 422) -> send();
 }
 
+// A message can only be reported by the person it was sent to. Without this,
+// any guessed messageId could be reported, snapshotting a private conversation
+// between two other people into the moderation queue.
+if ($target_type === 'message' && !Report::messageWasSentTo($target_id, $current_user -> userId)) {
+    JSONResponse::error('Invalid report', 422) -> send();
+}
+
 // Reports about the admin - their account, their posts, their messages -
 // are dead letters: only the admin and mods see reports, and the admin
 // can't be banned, so nobody could ever act on one. Rejected here (not

@@ -154,7 +154,7 @@ if ($watchdog_interval > 0) {
 $connections = [];
 
 /** @var array<int, int[]> userId => list of connection ids (a user can have several tabs open) */
-$connectionsByUser = [];
+$connections_by_user = [];
 
 // Hard per-connection buffer caps - without these, a client could declare a
 // multi-gigabyte frame length (or stream bytes without ever completing a
@@ -276,7 +276,7 @@ function ws_uses_tls(): bool
 
 function drop_connection(int $id): void
 {
-    global $connections, $connectionsByUser;
+    global $connections, $connections_by_user;
 
     if (!isset($connections[$id])) {
         return;
@@ -284,14 +284,14 @@ function drop_connection(int $id): void
 
     $user_id = $connections[$id]['userId'];
 
-    if ($user_id !== null && isset($connectionsByUser[$user_id])) {
-        $connectionsByUser[$user_id] = array_values(array_filter(
-            $connectionsByUser[$user_id],
+    if ($user_id !== null && isset($connections_by_user[$user_id])) {
+        $connections_by_user[$user_id] = array_values(array_filter(
+            $connections_by_user[$user_id],
             fn (int $existing_id) => $existing_id !== $id
         ));
 
-        if ($connectionsByUser[$user_id] === []) {
-            unset($connectionsByUser[$user_id]);
+        if ($connections_by_user[$user_id] === []) {
+            unset($connections_by_user[$user_id]);
         }
     }
 
@@ -301,10 +301,10 @@ function drop_connection(int $id): void
 
 function attach_user(int $id, int $user_id): void
 {
-    global $connections, $connectionsByUser;
+    global $connections, $connections_by_user;
 
     $connections[$id]['userId'] = $user_id;
-    $connectionsByUser[$user_id][] = $id;
+    $connections_by_user[$user_id][] = $id;
 }
 
 // ---------- WebSocket framing ----------
@@ -436,7 +436,7 @@ function ws_decode_frames(string $buffer): array
 
 function try_complete_handshake(int $id): bool
 {
-    global $connections, $ws_secret, $connectionsByUser;
+    global $connections, $ws_secret, $connections_by_user;
 
     $header_end = strpos($connections[$id]['recvBuffer'], "\r\n\r\n");
 
@@ -505,7 +505,7 @@ function try_complete_handshake(int $id): bool
     $connections[$id]['handshakeDone'] = true;
     attach_user($id, $user_id);
 
-    log_line('Client connected: user ' . $user_id . ' (connection ' . count($connectionsByUser[$user_id] ?? []) . ')');
+    log_line('Client connected: user ' . $user_id . ' (connection ' . count($connections_by_user[$user_id] ?? []) . ')');
 
     return true;
 }
@@ -514,7 +514,7 @@ function try_complete_handshake(int $id): bool
 
 function handle_push_request(int $id): void
 {
-    global $connections, $connectionsByUser, $ws_secret;
+    global $connections, $connections_by_user, $ws_secret;
 
     $newline_pos = strpos($connections[$id]['recvBuffer'], "\n");
 
@@ -549,7 +549,7 @@ function handle_push_request(int $id): void
     if ($encoded_payload !== false) {
         $frame = ws_encode_text_frame($encoded_payload);
 
-        foreach ($connectionsByUser[$target_user_id] ?? [] as $client_id) {
+        foreach ($connections_by_user[$target_user_id] ?? [] as $client_id) {
             if (($connections[$client_id]['kind'] ?? null) !== 'client') {
                 continue;
             }

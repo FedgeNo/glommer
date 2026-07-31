@@ -16,12 +16,16 @@ if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
 }
 
-$userId = (int) Auth::user() -> userId;
+$user_id = (int) Auth::user() -> userId;
 
 // Remove all persistent "Remember me" tokens for this user.
-DB::run('DELETE FROM `RememberTokens` WHERE `userId` = ?', 'i', $userId);
+DB::run('
+DELETE
+    FROM `RememberTokens`
+    WHERE `userId` = ?
+', 'i', $user_id);
 
 // Invalidate every active session by bumping the session version.
-User::bumpSessionVersion($userId);
+User::bumpSessionVersion($user_id);
 
 JSONResponse::success(['message' => 'All sessions ended.']) -> send();

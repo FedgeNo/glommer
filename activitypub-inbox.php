@@ -65,8 +65,13 @@ if (!HTTPSignature::dateIsFresh($date_header)) {
 // The Digest header is claimed by the sender as part of what it signed - but
 // signing a claim doesn't make the claim true. Recomputed from the actual
 // received bytes and compared, so a signature that's valid for a DIFFERENT
-// body than the one actually sent is caught here, not trusted.
-if (!hash_equals(HTTPSignature::digest($body), $digest_header)) {
+// body than the one actually sent is caught here, not trusted. The algorithm
+// token is case-insensitive (RFC 3230), so "sha-256=" from another
+// implementation is the same claim as "SHA-256=" - only the hash itself is
+// compared in constant time.
+[$digest_algorithm, $digest_value] = array_pad(explode('=', $digest_header, 2), 2, '');
+
+if (strtolower($digest_algorithm) !== 'sha-256' || !hash_equals(base64_encode(hash('sha256', $body, true)), $digest_value)) {
     http_response_code(401);
     exit;
 }

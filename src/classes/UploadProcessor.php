@@ -112,23 +112,6 @@ class UploadProcessor
     }
 
     /**
-     * Full‑resolution poster / preview image path for videos (and potentially
-     * images). Videos get a still frame at full size (`-original.jpg`); images
-     * already have their full display version via srcPath(), so for them this
-     * can simply return srcPath() or remain unused.
-     */
-    public static function originalImagePath(int|string $item_id, string $item_type): ?string
-    {
-        // Audio has no visual poster.
-        if ($item_type === 'AudioItem') {
-            return null;
-        }
-
-        // Videos use the full‑size frame we will start saving as -original.jpg
-        return self::UPLOAD_URL_PREFIX . self::shard($item_id) . '/' . $item_id . '-original.jpg';
-    }
-
-    /**
      * Determines what kind of media a file is without fully processing it, so callers can
      * decide sync vs. async handling before committing to a (possibly slow) transcode.
      */
@@ -603,8 +586,10 @@ class UploadProcessor
         )), $output_lines, $exit_code);
 
         if ($exit_code !== 0 || !is_file($paths['display'])) {
-            $failure_log = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
-            file_put_contents($failure_log, $output_lines);
+            // Under the non-web-served private tree: ffmpeg's output names
+            // absolute server paths, which a publicly fetchable log would leak.
+            $failure_log = self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
+            file_put_contents($failure_log, implode("\n", $output_lines));
             // A timed-out / killed run can leave a partial display file; clear it
             // so failures don't accumulate on disk.
             @unlink($paths['display']);
@@ -632,24 +617,32 @@ class UploadProcessor
             escapeshellarg($raw_frame_path)
         )), $frame_output_lines, $frame_exit_code);
 
-        $thumbnail_ok = false;
+        $poster_ok = false;
 
         if ($frame_exit_code === 0 && is_file($raw_frame_path)) {
             $frame_image = @imagecreatefromjpeg($raw_frame_path);
 
             if ($frame_image !== false) {
-                $thumbnail_ok = ImageProcessor::resizeAndSave($frame_image, $paths['thumbnail'], ImageProcessor::THUMBNAIL_MAX_DIMENSION);
+                // Kept at the video's own size rather than shrunk to a
+                // thumbnail: this file is the <video> element's poster, so it's
+                // shown wherever the video is - inline and full screen - and a
+                // thumbnail-sized one is visibly soft at either. The frame comes
+                // from the already-transcoded file, so it's bounded by the same
+                // VIDEO_MAX_WIDTH/HEIGHT the video is, and resizeAndSave only
+                // ever scales down - at this cap it just re-encodes.
+                $poster_ok = ImageProcessor::resizeAndSave($frame_image, $paths['thumbnail'], max(self::VIDEO_MAX_WIDTH, self::VIDEO_MAX_HEIGHT));
+                imagedestroy($frame_image);
             }
 
             unlink($raw_frame_path);
         }
 
-        if (!$thumbnail_ok) {
+        if (!$poster_ok) {
             unlink($paths['display']);
 
             // resizeAndSave() can fail after imagejpeg() already created a
-            // partial thumbnail file (e.g. disk full) - clean that up too, or
-            // it's left orphaned with no sweeper to remove it (same reasoning
+            // partial poster file (e.g. disk full) - clean that up too, or it's
+            // left orphaned with no sweeper to remove it (same reasoning
             // processImage's failure path spells out).
             if ($paths['thumbnail'] !== null && is_file($paths['thumbnail'])) {
                 unlink($paths['thumbnail']);
@@ -687,8 +680,10 @@ class UploadProcessor
         )), $output_lines, $exit_code);
 
         if ($exit_code !== 0 || !is_file($paths['display'])) {
-            $failure_log = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
-            file_put_contents($failure_log, $output_lines);
+            // Under the non-web-served private tree: ffmpeg's output names
+            // absolute server paths, which a publicly fetchable log would leak.
+            $failure_log = self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-failure.log';
+            file_put_contents($failure_log, implode("\n", $output_lines));
             // A timed-out / killed run can leave a partial display file; clear it
             // so failures don't accumulate on disk.
             @unlink($paths['display']);

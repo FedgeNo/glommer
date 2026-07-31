@@ -44,23 +44,6 @@ class FeedItem extends Figure
         return $path !== null ? ServerURL::absolute($path) : null;
     }
 
-    /**
-     * Full-resolution poster / preview image (e.g. 93-original.jpg).
-     * Requires UploadProcessor::originalImagePath(); returns null
-     * (with no error) if that method doesn't exist yet, so videos
-     * simply keep their thumbnail poster until you add the method.
-     */
-    public function fullImageURL(): ?string
-    {
-        if (method_exists(UploadProcessor::class, 'originalImagePath')) {
-            $path = UploadProcessor::originalImagePath((int) $this -> itemId, (string) $this -> type);
-
-            return $path !== null ? ServerURL::absolute($path) : null;
-        }
-
-        return null;
-    }
-
     public static function fromRow(FeedItemData $row): self
     {
         $class = $row -> type ?? static::class;

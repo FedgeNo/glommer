@@ -29,7 +29,7 @@ function spaceBetween(parent, prev, next) {
 }
 
 // ----------------------------------------------------------------
-// appendWithSpace (unchanged)
+// appendWithSpace
 // ----------------------------------------------------------------
 
 Element.prototype.appendWithSpace = function (child) {
@@ -64,7 +64,7 @@ Element.prototype.appendWithSpace = function (child) {
 };
 
 // ----------------------------------------------------------------
-// insertBeforeWithSpace (new)
+// insertBeforeWithSpace
 // ----------------------------------------------------------------
 
 Element.prototype.insertBeforeWithSpace = function (newNode, refNode) {

@@ -270,4 +270,19 @@ SELECT `senderId`
 
         return $message !== null ? (int) $message -> senderId : null;
     }
+
+    /**
+     * Whether this message was sent to this user - the authorization gate for
+     * reporting one. Only the recipient legitimately holds a message; without
+     * this check, any guessed messageId would snapshot a private conversation
+     * between two other people into the moderation queue.
+     */
+    public static function messageWasSentTo(int $message_id, int $recipient_id): bool
+    {
+        return DB::row('
+SELECT `messageId`
+    FROM `Messages`
+    WHERE `messageId` = ? AND `recipientId` = ?
+', 'Message', 'ii', $message_id, $recipient_id) !== null;
+    }
 }

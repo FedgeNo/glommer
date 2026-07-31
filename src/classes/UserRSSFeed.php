@@ -5,10 +5,12 @@ declare(strict_types=1);
 /**
  * One profile's posts as an RSS feed: the newest top-level posts they authored.
  */
-class UserRSSFeed extends RSSFeed {
+class UserRSSFeed extends RSSFeed
+{
     public User $user;
 
-    public function __construct(array|object|null $properties = null) {
+    public function __construct(array|object|null $properties = null)
+    {
         parent::__construct($properties);
 
         $name = $this -> user -> title ?: $this -> user -> slug;
@@ -18,7 +20,8 @@ class UserRSSFeed extends RSSFeed {
         $this -> description = $this -> title;
     }
 
-    protected function rows(): array {
+    protected function rows(): array
+    {
         $user_id = (int) $this -> user -> userId;
 
         return DB::rows('

@@ -19,7 +19,7 @@ $page -> addContent(new SettingsSection('Services', new ServicesStatus()));
 
 $page -> addContent(new SettingsSection('Tests', new TestSuitePanel()));
 
-$page->addContent(new SettingsSection('Notification Test', new NotificationTestPanel()));
+$page -> addContent(new SettingsSection('Notification Test', new NotificationTestPanel()));
 
 $page -> addContent(new SettingsSection('Bot protection', new BotProtectionSettingsForm()));
 

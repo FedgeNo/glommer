@@ -90,7 +90,6 @@ class DeltaRenderer extends Div
             }
 
             $root -> appendChild($block);
-            //$root -> appendChild($doc -> createTextNode("\n"));
             $inline = [];
         };
 

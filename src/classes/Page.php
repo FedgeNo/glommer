@@ -153,7 +153,8 @@ class Page extends HTMLDocument
         }
     }
 
-    private function assembleBody(): void {
+    private function assembleBody(): void
+    {
         $this -> body -> class = $this -> bodyClass !== null ? 'PageBody ' . $this -> bodyClass : 'PageBody';
 
         // Everything the page added becomes the content of a <main> landmark,

@@ -463,14 +463,6 @@ INSERT INTO `FeedItems` (`postId`, `type`)
     }
 
     /**
-     * Removes batch directories left behind by an upload that never completed -
-     * scans staging/ (a stage that died mid-copy), pending/ (never claimed, e.g.
-     * the service was down), and processing/ (left mid-assembly). process()/
-     * recovery clean up a batch they finish, and claim/requeue touch a batch's
-     * mtime so a live one is never aged out; anything older than the cutoff is a
-     * genuine orphan (no real transcode runs anywhere near a day).
-     */
-    /**
      * How many batches are sitting in each stage of the queue right now - a
      * cheap directory count (the queue itself is directory-based, see the
      * class docblock), not a DB query. Lets the admin Site Settings page tell
@@ -539,6 +531,14 @@ INSERT INTO `FeedItems` (`postId`, `type`)
         };
     }
 
+    /**
+     * Removes batch directories left behind by an upload that never completed -
+     * scans staging/ (a stage that died mid-copy), pending/ (never claimed, e.g.
+     * the service was down), and processing/ (left mid-assembly). process()/
+     * recovery clean up a batch they finish, and claim/requeue touch a batch's
+     * mtime so a live one is never aged out; anything older than the cutoff is a
+     * genuine orphan (no real transcode runs anywhere near a day).
+     */
     public static function sweepOrphanedBatches(): void
     {
         $cutoff = time() - 86400;

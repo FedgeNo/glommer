@@ -508,6 +508,20 @@ DELETE
 
         file_put_contents($tmp_path, $fetched['body']);
 
+        // Images only, verified from the bytes before the pipeline sees them -
+        // process() routes anything GD can't load into the video/audio branch,
+        // so an og:image URL pointed at a video file would otherwise buy a
+        // full synchronous ffmpeg transcode (minutes of CPU) per request.
+        $image = ImageProcessor::load($tmp_path);
+
+        if ($image === false) {
+            unlink($tmp_path);
+
+            return null;
+        }
+
+        imagedestroy($image);
+
         $seed = 'lp-' . bin2hex(random_bytes(16));
         $result = UploadProcessor::process($tmp_path, $seed);
 

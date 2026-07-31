@@ -23,6 +23,7 @@ export class OpenRouterSettingsForm {
                 openRouterAPIKey: form.querySelector('[name="openRouterAPIKey"]').value,
                 openRouterModel: form.querySelector('[name="openRouterModel"]').value,
                 openRouterNeverSpend: form.querySelector('[name="openRouterNeverSpend"]').checked,
+                clearOpenRouterAPIKey: form.querySelector('[name="clearOpenRouterAPIKey"]')?.checked ?? false,
             });
 
             if (submit_button) {

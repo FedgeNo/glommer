@@ -23,9 +23,13 @@ $api_key = trim((string) ($payload['openRouterAPIKey'] ?? ''));
 
 // The API key is write-only: a blank field means "leave the stored key
 // unchanged" (it's never rendered back into the form), so only overwrite it
-// when an actual value is submitted.
+// when an actual value is submitted. Clearing is therefore its own explicit
+// flag (the form's "remove the stored key" checkbox) - a typed key wins over
+// a simultaneously ticked clear, being the more deliberate act.
 if ($api_key !== '') {
     Settings::set(OpenRouter::API_KEY_SETTING, $api_key);
+} elseif (($payload['clearOpenRouterAPIKey'] ?? false) === true) {
+    Settings::set(OpenRouter::API_KEY_SETTING, '');
 }
 
 Settings::set(OpenRouter::MODEL_SETTING, trim((string) ($payload['openRouterModel'] ?? '')));

@@ -5,6 +5,11 @@ export class CarouselController {
 
     constructor() {
         this._autoplayMap = new WeakMap();
+        // Carousels whose current media autoplay started playing itself, so the
+        // resulting 'play' event isn't mistaken for the viewer taking over and
+        // stopping autoplay. The distinction is this controller's own state, so
+        // it lives here beside the autoplay map rather than on the element.
+        this._autoplayStartedPlay = new WeakSet();
         this._fullscreenState = null;
 
         this._offScreenObserver = new IntersectionObserver(
@@ -65,14 +70,9 @@ export class CarouselController {
             media.src = media.dataset.src;
             delete media.dataset.src;
 
-            if (media.closest('.MediaFullscreenOverlay')) {
-                if (media instanceof HTMLImageElement && media.dataset.fullSrc) {
-                    media.src = media.dataset.fullSrc;
-                    delete media.dataset.fullSrc;
-                } else if (media instanceof HTMLVideoElement && media.dataset.posterFullSrc) {
-                    media.poster = media.dataset.posterFullSrc;
-                    delete media.dataset.posterFullSrc;
-                }
+            if (media.closest('.MediaFullscreenOverlay') && media instanceof HTMLImageElement && media.dataset.fullSrc) {
+                media.src = media.dataset.fullSrc;
+                delete media.dataset.fullSrc;
             }
         });
     }
@@ -103,9 +103,9 @@ export class CarouselController {
         const media = carousel.querySelector('.CarouselSlide.Active video, .CarouselSlide.Active audio');
         if (media) {
             this._autoplayMap.set(carousel, null);
-            carousel.dataset.autoplayStartedPlay = '1';
+            this._autoplayStartedPlay.add(carousel);
             media.play().catch(() => {
-                delete carousel.dataset.autoplayStartedPlay;
+                this._autoplayStartedPlay.delete(carousel);
             });
             return;
         }
@@ -151,13 +151,6 @@ export class CarouselController {
             if (img.src !== img.dataset.fullSrc) {
                 img.src = img.dataset.fullSrc;
                 img.removeAttribute('data-full-src');
-            }
-        });
-
-        container.querySelectorAll('video[data-poster-full-src]').forEach(video => {
-            if (video.poster !== video.dataset.posterFullSrc) {
-                video.poster = video.dataset.posterFullSrc;
-                video.removeAttribute('data-poster-full-src');
             }
         });
 
@@ -244,8 +237,8 @@ export class CarouselController {
         const media = event.target.closest('.Carousel video, .Carousel audio');
         if (!media) return;
         const carousel = media.closest('.Carousel');
-        if (carousel.dataset.autoplayStartedPlay === '1') {
-            delete carousel.dataset.autoplayStartedPlay;
+        if (this._autoplayStartedPlay.has(carousel)) {
+            this._autoplayStartedPlay.delete(carousel);
             return;
         }
         this._stopAutoplay(carousel);

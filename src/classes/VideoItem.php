@@ -11,22 +11,17 @@ class VideoItem extends FeedItem
         $video = new Video();
         $video -> attributes['controls'] = 'controls';
 
-        $thumbPoster = $this -> imageURL();                    // thumbnail poster (e.g. 93-thumb.jpg)
-        $fullPoster  = $this -> fullImageURL() ?? $thumbPoster; // full poster (e.g. 93-original.jpg), fallback to thumb
+        $poster = $this -> imageURL();
 
         if ($this -> deferred) {
             $video -> attributes['data-src'] = $this -> srcURL();
-            if ($thumbPoster !== null) {
-                $video -> attributes['data-poster'] = $thumbPoster;
+
+            if ($poster !== null) {
+                $video -> attributes['data-poster'] = $poster;
             }
         } else {
             $video -> src = $this -> srcURL();
-            $video -> attributes['poster'] = $thumbPoster;
-        }
-
-        // Always attach the full poster URL so fullscreen can upgrade it
-        if ($fullPoster !== null) {
-            $video -> attributes['data-poster-full-src'] = $fullPoster;
+            $video -> attributes['poster'] = $poster;
         }
 
         $this -> contents[] = $video;

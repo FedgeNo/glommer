@@ -27,6 +27,14 @@ export class VideoCall {
     /** How long to wait for ICE gathering before giving up on a negotiation. */
     static #GATHER_TIMEOUT_MS = 5000;
 
+    /**
+     * How long a probe may stay unresolved before it is abandoned. ICE reaches
+     * 'failed' on its own eventually, but not always promptly and not from every
+     * state, and a probe left open blocks every later attempt - so there is a
+     * clock on it rather than a wait for the browser to give up.
+     */
+    static #PROBE_TIMEOUT_MS = 15000;
+
     static #otherUserId = null;
     static #list = null;
     static #composer = null;
@@ -35,6 +43,7 @@ export class VideoCall {
     /** Set once a data-channel probe has actually connected these two browsers. */
     static #pathProven = false;
     static #probe = null;
+    static #probeTimer = null;
 
     static #connection = null;
     static #localStream = null;
@@ -60,6 +69,7 @@ export class VideoCall {
         // side stops being offered a call to someone who has gone.
         window.addEventListener('pagehide', () => {
             VideoCall.#hangUp(false);
+            VideoCall.#endProbe();
             VideoCall.#post('/api/chat-presence', { otherUserId: VideoCall.#otherUserId, leaving: true });
         });
 
@@ -128,21 +138,40 @@ export class VideoCall {
     /**
      * A probe that connects has answered its only question, so it is closed
      * again straight away rather than held open for the life of the page.
+     *
+     * Every other way it can end has to close it too. #beat() will not open a
+     * second probe while one is open, so a probe that stalls - in 'checking'
+     * forever, or dropped into 'disconnected' - would otherwise mean the call
+     * button never appears again for the life of the page, even once a path
+     * becomes available.
      */
     static #watchProbe(connection) {
+        VideoCall.#probeTimer = setTimeout(() => VideoCall.#endProbe(), VideoCall.#PROBE_TIMEOUT_MS);
+
         connection.onconnectionstatechange = () => {
             if (connection.connectionState === 'connected') {
                 VideoCall.#pathProven = true;
                 VideoCall.#showCallButton(true);
-                connection.close();
-                VideoCall.#probe = null;
-            } else if (connection.connectionState === 'failed') {
+                VideoCall.#endProbe();
+            } else if (['failed', 'disconnected', 'closed'].includes(connection.connectionState)) {
                 // No direct path, and there is no relay by design - so no call
-                // is offered rather than one being proxied.
-                connection.close();
-                VideoCall.#probe = null;
+                // is offered rather than one being proxied. The next beat tries
+                // again, in case the network has changed since.
+                VideoCall.#endProbe();
             }
         };
+    }
+
+    /** Closes any open probe and frees the slot, so the next beat can retry. */
+    static #endProbe() {
+        clearTimeout(VideoCall.#probeTimer);
+        VideoCall.#probeTimer = null;
+
+        // Cleared before closing: close() raises 'closed', which lands back
+        // here, and this way that second pass has nothing left to do.
+        const probe = VideoCall.#probe;
+        VideoCall.#probe = null;
+        probe?.close();
     }
 
     /**
@@ -272,6 +301,20 @@ export class VideoCall {
         } else if (call.type === 'probeAnswer') {
             VideoCall.#probe?.setRemoteDescription(call.signal);
         } else if (call.type === 'offer') {
+            // Both pressed Video call inside the same moment, so each is holding
+            // an attempt and being offered another. The rule that settles who
+            // opens the probe settles this too: the initiator keeps its own
+            // attempt and ignores the incoming one, the other drops its attempt
+            // and takes theirs. Without it both sides sit in 'Calling…' waiting
+            // for an answer neither will send.
+            if (VideoCall.#connection !== null || VideoCall.#offer !== null) {
+                if (VideoCall.#initiates()) {
+                    return;
+                }
+
+                VideoCall.#hangUp(false);
+            }
+
             VideoCall.#offer = call.signal;
             VideoCall.#showIncoming();
         } else if (call.type === 'answer') {

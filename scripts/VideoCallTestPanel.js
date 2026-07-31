@@ -26,8 +26,16 @@ export class VideoCallTestPanel {
 
     static async #run(button) {
         const results = document.querySelector('.VideoCallTestResults');
+        const verdict = document.querySelector('.VideoCallTestVerdict');
         results.replaceChildren();
+        verdict.replaceChildren();
+        verdict.className = 'VideoCallTestVerdict';
         button.disabled = true;
+
+        // Which step stopped the run, if one did - the verdict is a reading of
+        // that rather than of a pass count, since the steps do not all mean the
+        // same thing for whether a call can happen.
+        let stopped_at = null;
 
         for (const step of VideoCallTestPanel.#steps()) {
             const line = VideoCallTestPanel.#lineFor(step.name);
@@ -47,9 +55,12 @@ export class VideoCallTestPanel {
             // failures too would just be noise pointing away from the real cause.
             if (!outcome.ok) {
                 results.appendWithSpace(VideoCallTestPanel.#note('Stopped here - the steps after this one depend on it.'));
+                stopped_at = step.id;
                 break;
             }
         }
+
+        VideoCallTestPanel.#declare(verdict, stopped_at);
 
         button.disabled = false;
     }
@@ -57,30 +68,74 @@ export class VideoCallTestPanel {
     static #steps() {
         return [
             {
+                id: 'secure',
                 name: 'This page is a secure context',
                 run: async () => window.isSecureContext
                     ? { ok: true, detail: 'Served over HTTPS, so the browser will allow a camera and a peer connection.' }
                     : { ok: false, detail: 'Not a secure context. Browsers refuse both the camera and WebRTC outside HTTPS, so no call can be set up from here.' },
             },
             {
+                id: 'webrtc',
                 name: 'The browser supports WebRTC',
                 run: async () => typeof RTCPeerConnection === 'function'
                     ? { ok: true, detail: 'RTCPeerConnection is available.' }
                     : { ok: false, detail: 'This browser has no RTCPeerConnection, so it cannot make or receive calls at all.' },
             },
             {
+                id: 'loopback',
                 name: 'A negotiation completes locally',
                 run: () => VideoCallTestPanel.#loopback(),
             },
             {
+                id: 'stun',
                 name: 'STUN is reachable from this network',
                 run: () => VideoCallTestPanel.#stun(),
             },
             {
+                id: 'signalling',
                 name: 'The signalling endpoint answers',
                 run: () => VideoCallTestPanel.#signalling(),
             },
         ];
+    }
+
+    /**
+     * The one line the page exists to produce. Only the STUN failure is a
+     * partial - it costs calls across the internet while leaving them working
+     * between two people on the same network, which is a real and quite
+     * different answer from "no".
+     */
+    static #VERDICTS = {
+        secure: {
+            state: 'Failed',
+            text: 'No - video calling cannot work from here. This page is not a secure context, and browsers refuse both the camera and WebRTC outside HTTPS. Nothing else matters until that is fixed.',
+        },
+        webrtc: {
+            state: 'Failed',
+            text: 'No - video calling cannot work from this browser. It has no WebRTC support at all, so it can neither make nor receive a call. Another browser on this same machine may well be fine.',
+        },
+        loopback: {
+            state: 'Failed',
+            text: 'No - video calling cannot work from this browser. Its own WebRTC stack could not connect two peers inside this one page, which rules the network out entirely; something local is blocking it, most likely an extension or a hardened privacy setting.',
+        },
+        stun: {
+            state: 'Partial',
+            text: 'Only on this network. Calls between two people on the same local network should work from here, but this connection cannot discover its own public address, so it has no way to find a path to someone behind a different router. Because no call is ever relayed through the server, one simply would not be offered.',
+        },
+        signalling: {
+            state: 'Failed',
+            text: 'No - video calling cannot be set up from here. This browser is capable of a call, but the two sides cannot exchange the messages that arrange one, so the call button would never appear.',
+        },
+    };
+
+    static #declare(verdict, stopped_at) {
+        const outcome = VideoCallTestPanel.#VERDICTS[stopped_at] ?? {
+            state: 'Passed',
+            text: 'Yes - video calling should work from this connection. Every part of call setup this machine is responsible for succeeded, including reaching STUN, so a direct path to another person can be found and negotiated. The only thing left untested is the other person\'s side, which needs that person.',
+        };
+
+        verdict.className = 'VideoCallTestVerdict ' + outcome.state;
+        verdict.textContent = outcome.text;
     }
 
     /**
@@ -96,8 +151,14 @@ export class VideoCallTestPanel {
             caller.onicecandidate = (event) => event.candidate && callee.addIceCandidate(event.candidate);
             callee.onicecandidate = (event) => event.candidate && caller.addIceCandidate(event.candidate);
 
+            // The channel is opened outside the executor on purpose: a stack
+            // that is present but unusable throws here, and inside the executor
+            // that throw becomes a rejected promise nothing is waiting on yet -
+            // an unhandled rejection instead of the failure this step exists to
+            // report.
+            const channel = caller.createDataChannel('check');
+
             const opened = new Promise((resolve) => {
-                const channel = caller.createDataChannel('check');
                 channel.onopen = () => resolve(true);
             });
 

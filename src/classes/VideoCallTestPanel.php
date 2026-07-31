@@ -14,6 +14,11 @@ declare(strict_types=1);
  * and a browser without WebRTC produce the same symptom for a caller (no call
  * button) and want completely different fixes.
  *
+ * The steps are then read together into one verdict on whether a call would
+ * work from this machine, since which step failed implies the answer but does
+ * not say it - a failed STUN check means calls still work on the local network,
+ * while a failed WebRTC check means none of them ever will.
+ *
  * The last mile - two people actually connecting - needs a second person by
  * definition, so this says so rather than pretending to test it.
  */
@@ -39,6 +44,12 @@ class VideoCallTestPanel extends Div
         $results = new UnorderedList();
         $results -> class = 'VideoCallTestResults';
         $this -> contents[] = $results;
+
+        // The verdict the steps add up to, written here once they have all run.
+        // Empty until then, and styled to take no room while it is.
+        $verdict = new Paragraph();
+        $verdict -> class = 'VideoCallTestVerdict';
+        $this -> contents[] = $verdict;
 
         return parent::toDOM();
     }

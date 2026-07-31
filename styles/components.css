@@ -925,6 +925,51 @@ body.MessagesPage { padding-bottom: 9rem; }
     box-shadow: var(--shadow-pop);
 }
 
+/* The admin check. A step carries its own outcome down its leading edge, so the
+   one that stopped the run is findable without reading every line. */
+.VideoCallTestResults {
+    list-style: none;
+    padding-left: 0;
+}
+
+.VideoCallTestStep {
+    border-left: 3px solid var(--hairline);
+    padding-left: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.VideoCallTestStep.Passed { border-left-color: var(--accent); }
+.VideoCallTestStep.Failed { border-left-color: var(--danger); }
+
+/* Empty until the run finishes, and taking no room while it is - the verdict
+   appearing is itself the signal that the check is done. */
+.VideoCallTestVerdict:empty { display: none; }
+
+.VideoCallTestVerdict {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    font-weight: 600;
+}
+
+.VideoCallTestVerdict.Passed {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    background-color: var(--accent-soft);
+    color: var(--accent) !important;
+}
+
+.VideoCallTestVerdict.Partial {
+    border-color: color-mix(in srgb, var(--muted) 40%, transparent);
+    color: var(--muted);
+}
+
+.VideoCallTestVerdict.Failed {
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    background-color: var(--danger-soft);
+    color: var(--danger) !important;
+}
+
 .Conversation {
     transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
 }

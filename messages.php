@@ -67,6 +67,7 @@ if ($other_user -> remoteActorURI !== null) {
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,
     'otherUserId' => $other_user -> userId,
+    'otherUserIsLocal' => $other_user -> remoteActorURI === null,
 ]));
 
 $page -> addContent(new MessageComposer($other_user -> userId));

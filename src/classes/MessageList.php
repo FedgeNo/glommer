@@ -18,6 +18,13 @@ class MessageList extends ItemList
     public ?int $userId = null;
     public ?int $otherUserId = null;
 
+    /**
+     * Whether the other person is a member here. Seeded by whoever builds the
+     * list, which has already loaded them - see dataAttributes(), which decides
+     * on video calling from it and must not query.
+     */
+    public bool $otherUserIsLocal = true;
+
     protected function rows(): array
     {
         // The two directions run as separate UNION ALL halves rather than one
@@ -94,11 +101,14 @@ UNION ALL
         // Video calling is offered only in a thread with another member here.
         // It needs both people present in the same thread at once, which this
         // server can only know about its own, and a direct browser-to-browser
-        // path there is no way to negotiate with someone on another server.
-        // Omitting the attribute is what turns it off - VideoCall.js keys on it.
-        $other = User::load((int) $this -> otherUserId);
-
-        if ($other !== null && $other -> remoteActorURI === null) {
+        // path there is no way to negotiate with someone elsewhere. Omitting the
+        // attribute is what turns it off - VideoCall.js keys on it.
+        //
+        // Read from a seeded property rather than looked up: this runs during
+        // render, and a query here would put one in a method the whole list
+        // pattern relies on being pure. The page that builds this list has
+        // already loaded the other person anyway.
+        if ($this -> otherUserIsLocal) {
             $attributes['data-other-user-id'] = (string) $this -> otherUserId;
         }
 

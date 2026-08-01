@@ -93,7 +93,24 @@ abstract class HTMLObject extends DOMObject
             $names[] = $levels[$index]['declared'] ?? $levels[$index]['name'];
         }
 
-        $this -> class = implode(' ', $names);
+        // Anything on the property that isn't this class's declared default was
+        // put there at runtime - a state a render decides on (Own, PostStandalone)
+        // or a second identity composed at the call site. The chain replaces the
+        // declared identity only; the rest is carried through, because this runs
+        // inside toDOM() and a plain assignment would silently discard whatever
+        // the object had just set on itself.
+        $declared = (new \ReflectionClass(static::class)) -> getDefaultProperties()['class'] ?? '';
+
+        // The chain itself is excluded as well as the declared default, so
+        // deriving twice cannot mistake what it wrote last time for something
+        // the object added.
+        $added = array_values(array_diff(
+            array_filter(explode(' ', (string) $this -> class)),
+            array_filter(explode(' ', (string) $declared)),
+            $names
+        ));
+
+        $this -> class = implode(' ', array_merge($names, $added));
     }
 
     public function addContent(HTMLObject|CData|string|\DOMNode $item): void

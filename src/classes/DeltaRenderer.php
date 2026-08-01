@@ -22,8 +22,14 @@ class DeltaRenderer extends Div
 
     public const ALLOWED_LINK_SCHEMES = ['http', 'https', 'mailto'];
 
-    /** @param array[] $ops the Delta's ops */
-    public function __construct(private readonly array $ops = [])
+    /**
+     * @param array[] $ops the Delta's ops
+     * @param array<string, string> $customEmoji shortcode => image URL, for a
+     *        post whose sending server declared some. Empty for anything local:
+     *        a custom emoji is per-server and nobody can resolve a name they
+     *        were not told about.
+     */
+    public function __construct(private readonly array $ops = [], private readonly array $customEmoji = [])
     {
         parent::__construct();
     }
@@ -47,8 +53,9 @@ class DeltaRenderer extends Div
      * otherwise find its own tree gone mid-build.
      *
      * @param array[] $ops the Delta's ops
+     * @param array<string, string> $customEmoji shortcode => image URL
      */
-    public static function toHTML(array $ops): string
+    public static function toHTML(array $ops, array $customEmoji = []): string
     {
         $previous = self::$document ?? null;
 
@@ -57,7 +64,7 @@ class DeltaRenderer extends Div
 
             // Deliberately self rather than static: federation publishes the
             // whole post, never a subclass's truncated preview of it.
-            $root = (new self($ops)) -> toDOM();
+            $root = (new self($ops, $customEmoji)) -> toDOM();
             $html = '';
 
             foreach ($root -> childNodes as $child) {
@@ -171,7 +178,7 @@ class DeltaRenderer extends Div
         // Last step of the output stage, and only there: the stored post still
         // says exactly what its author typed, and editing gives it back
         // unchanged. Done over the finished tree so code keeps its colons.
-        EmojiShortcode::expandInDOM($root);
+        EmojiShortcode::expandInDOM($root, $this -> customEmoji);
 
         return $root;
     }

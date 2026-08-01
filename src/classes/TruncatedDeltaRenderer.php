@@ -34,11 +34,11 @@ class TruncatedDeltaRenderer extends DeltaRenderer
     /** @var array[] the ops after truncation - what the feed payload also carries */
     private array $truncatedOps;
 
-    public function __construct(array $ops = [], private readonly ?string $seeMoreURL = null, int $max_length = self::DEFAULT_MAX_LENGTH)
+    public function __construct(array $ops = [], private readonly ?string $seeMoreURL = null, int $max_length = self::DEFAULT_MAX_LENGTH, array $custom_emoji = [])
     {
         [$this -> truncatedOps, $this -> truncated] = self::truncate($ops, $max_length);
 
-        parent::__construct($this -> truncatedOps);
+        parent::__construct($this -> truncatedOps, $custom_emoji);
     }
 
     /** @return array[] */

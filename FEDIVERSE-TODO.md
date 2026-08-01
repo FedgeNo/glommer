@@ -73,6 +73,10 @@ says so, because that means bumping `GLOMMER_VERSION` and running
   form for both halves, outbound `Move` to followers, and inbound handling that
   moves a member's follow to the new account - only once both accounts claim
   each other.
+- **Custom emoji, inbound.** A post's `Emoji` tags are learned and its
+  shortcodes render as those images, scoped to the server that declared them -
+  the same name on two instances is two different pictures. Outbound needs a
+  local custom emoji feature, which does not exist; see below.
 
 ## Before 1.0, regardless of the list below
 
@@ -88,15 +92,12 @@ Rehearse on dev.
 
 ## Next
 
-### 1. Custom emoji (`Emoji` tags)
-The shortcode machinery is in place and deliberately leaves an unknown name
-alone, so this is now additive: a per-post map of name to image URL, passed into
-the same expansion, plus an `Emoji` tag on the way out.
-
-Outbound still needs a custom emoji feature on the site - there is none, so
-there is nothing of ours to publish. Inbound is the useful half and is no longer
-blocked by the plain-text reduction, since the tag travels beside the content
-rather than inside it.
+### 1. Custom emoji, outbound
+Nothing here defines a custom emoji, so there is nothing of ours to publish.
+Needs the site feature first - uploading an image against a shortcode, an admin
+page to manage the set, and moderation of what gets added - after which
+publishing is just an `Emoji` tag per shortcode a post actually uses. The
+rendering side already handles them.
 
 ### 2. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.

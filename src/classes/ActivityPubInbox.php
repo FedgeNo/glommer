@@ -343,6 +343,10 @@ SELECT `remoteFollowId`
             return;
         }
 
+        // What the sender says its own shortcodes mean. Recorded before the
+        // post, so the body renders with them from the first view.
+        CustomEmoji::learnFrom(is_array($object['tag'] ?? null) ? $object['tag'] : [], $object_uri);
+
         [$description, $description_delta] = self::deltaFromContent(is_string($object['content'] ?? null) ? $object['content'] : '');
 
         DB::run('
@@ -427,6 +431,10 @@ UPDATE `Posts`
                 return;
             }
         }
+
+        // What the sender says its own shortcodes mean. Recorded before the
+        // post, so the body renders with them from the first view.
+        CustomEmoji::learnFrom(is_array($object['tag'] ?? null) ? $object['tag'] : [], $object_uri);
 
         [$description, $description_delta] = self::deltaFromContent(is_string($object['content'] ?? null) ? $object['content'] : '');
 

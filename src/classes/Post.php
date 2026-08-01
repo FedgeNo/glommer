@@ -229,12 +229,26 @@ class Post extends Article
 
     protected function fullDescription(): HTMLObject
     {
-        return new DeltaRenderer($this -> descriptionOps());
+        return new DeltaRenderer($this -> descriptionOps(), $this -> customEmoji());
+    }
+
+    /**
+     * The custom emoji this post's shortcodes may mean.
+     *
+     * Scoped to the server the post came from, because that is the only place a
+     * custom name has a meaning - and empty for a local post, since nothing
+     * here defines any yet.
+     *
+     * @return array<string, string>
+     */
+    protected function customEmoji(): array
+    {
+        return CustomEmoji::forObject(is_string($this -> remoteObjectURI) ? $this -> remoteObjectURI : null);
     }
 
     protected function summarizedDescription(): HTMLObject
     {
-        return new TruncatedDeltaRenderer($this -> descriptionOps(), $this -> seeMoreURL());
+        return new TruncatedDeltaRenderer($this -> descriptionOps(), $this -> seeMoreURL(), TruncatedDeltaRenderer::DEFAULT_MAX_LENGTH, $this -> customEmoji());
     }
 
     /**
@@ -487,6 +501,7 @@ DELETE
             // description is shown as flat text, never rich). A regular post
             // body renders from descriptionDelta instead.
             'description' => $this -> description,
+            'customEmoji' => (object) $this -> customEmoji(),
             'descriptionDelta' => $description_delta,
             'descriptionTruncated' => $description_truncated,
             // The raw, untruncated Delta an edit needs to repopulate Quill -

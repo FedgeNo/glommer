@@ -23,7 +23,7 @@ export class DeltaRenderer {
      * @param {Array} ops  the Delta's ops array
      * @returns {HTMLElement} a .PostBody div containing the rendered content
      */
-    static render(ops) {
+    static render(ops, customEmoji = {}) {
         const root = document.createElement('div');
         root.className = 'PostBody';
 
@@ -125,7 +125,7 @@ export class DeltaRenderer {
 
         // Last step of the output stage, matching DeltaRenderer.php. Over the
         // finished tree, so code keeps its colons.
-        expandInDOM(root);
+        expandInDOM(root, customEmoji);
 
         return root;
     }

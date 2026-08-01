@@ -43,7 +43,7 @@ class EmojiShortcode
      * is - and it is the same rule EmojiRenderer.js applies on the client, so
      * the two agree about what is left alone.
      */
-    public static function expandInDOM(\DOMElement $root): void
+    public static function expandInDOM(\DOMElement $root, array $custom = []): void
     {
         $document = $root -> ownerDocument;
 
@@ -61,13 +61,94 @@ class EmojiShortcode
             return;
         }
 
-        foreach ($nodes as $node) {
-            $expanded = self::expand($node -> nodeValue ?? '');
+        // Collected before anything is replaced: swapping a node out while the
+        // list is still live is asking for a surprise.
+        $text_nodes = [];
 
-            if ($expanded !== $node -> nodeValue) {
-                $node -> nodeValue = $expanded;
+        foreach ($nodes as $node) {
+            $text_nodes[] = $node;
+        }
+
+        foreach ($text_nodes as $node) {
+            $replacement = self::fragmentFor($document, (string) $node -> nodeValue, $custom);
+
+            if ($replacement !== null) {
+                $node -> parentNode ?-> replaceChild($replacement, $node);
             }
         }
+    }
+
+    /**
+     * One text node's worth of expansion, or null when nothing in it changes.
+     *
+     * A custom emoji becomes an image and so needs real nodes, which is why
+     * this returns a fragment rather than a string. A Unicode one is still just
+     * text, and stays text.
+     *
+     * The custom map wins where both know a name. A tag is the sending server
+     * stating what a shortcode means in THIS post, which is a more specific
+     * claim than a table everyone shares.
+     *
+     * @param array<string, string> $custom
+     */
+    private static function fragmentFor(\DOMDocument $document, string $text, array $custom): ?\DOMDocumentFragment
+    {
+        if (!str_contains($text, ':')) {
+            return null;
+        }
+
+        $matches = [];
+
+        if (preg_match_all(self::PATTERN, $text, $matches, PREG_OFFSET_CAPTURE) === 0) {
+            return null;
+        }
+
+        $fragment = $document -> createDocumentFragment();
+        $cursor = 0;
+        $changed = false;
+
+        foreach ($matches[0] as $index => $whole) {
+            $name = strtolower($matches[1][$index][0]);
+            $image = $custom[$name] ?? null;
+            $character = EmojiShortcodeMap::MAP[$name] ?? null;
+
+            if ($image === null && $character === null) {
+                continue;
+            }
+
+            $offset = (int) $whole[1];
+
+            if ($offset > $cursor) {
+                $fragment -> appendChild($document -> createTextNode(substr($text, $cursor, $offset - $cursor)));
+            }
+
+            if ($image !== null) {
+                $element = $document -> createElement('img');
+                $element -> setAttribute('class', 'CustomEmoji');
+                $element -> setAttribute('src', $image);
+                // The shortcode is the alt text: it is what the author wrote,
+                // and the only description of the picture that exists.
+                $element -> setAttribute('alt', ':' . $name . ':');
+                $element -> setAttribute('title', ':' . $name . ':');
+                $element -> setAttribute('loading', 'lazy');
+                $fragment -> appendChild($element);
+            } else {
+                $fragment -> appendChild($document -> createTextNode((string) $character));
+            }
+
+            $cursor = $offset + strlen($whole[0]);
+            $changed = true;
+        }
+
+        if (!$changed) {
+            return null;
+        }
+
+        if ($cursor < strlen($text)) {
+            $fragment -> appendChild($document -> createTextNode(substr($text, $cursor)));
+        }
+
+        return $fragment;
     }
 
     public static function expand(string $text): string

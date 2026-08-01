@@ -39,7 +39,7 @@ export function expand(text) {
  * skip list matches EmojiRenderer's, so the two passes agree about what is
  * left alone.
  */
-export function expandInDOM(root) {
+export function expandInDOM(root, custom = {}) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
         acceptNode: node => {
             if (node.parentElement?.closest(CODE_CONTEXT)) {
@@ -59,10 +59,75 @@ export function expandInDOM(root) {
     }
 
     nodes.forEach(node => {
-        const expanded = expand(node.data);
+        const replacement = fragmentFor(node.data, custom);
 
-        if (expanded !== node.data) {
-            node.data = expanded;
+        if (replacement !== null) {
+            node.parentNode?.replaceChild(replacement, node);
         }
     });
+}
+
+/**
+ * One text node's worth of expansion, or null when nothing in it changes.
+ *
+ * A custom emoji becomes an image and so needs real nodes, which is why this
+ * builds a fragment rather than a string. A Unicode one is still just text.
+ *
+ * The custom map wins where both know a name: a tag is the sending server
+ * stating what a shortcode means in THIS post, which is a more specific claim
+ * than a table everyone shares.
+ */
+function fragmentFor(text, custom) {
+    if (!text.includes(':')) {
+        return null;
+    }
+
+    const fragment = document.createDocumentFragment();
+    let cursor = 0;
+    let changed = false;
+
+    SHORTCODE.lastIndex = 0;
+
+    let match;
+
+    while ((match = SHORTCODE.exec(text)) !== null) {
+        const name = match[1].toLowerCase();
+        const image = custom[name];
+        const character = EMOJI_SHORTCODES[name];
+
+        if (image === undefined && character === undefined) {
+            continue;
+        }
+
+        if (match.index > cursor) {
+            fragment.appendChild(document.createTextNode(text.slice(cursor, match.index)));
+        }
+
+        if (image !== undefined) {
+            const element = document.createElement('img');
+            element.className = 'CustomEmoji';
+            element.src = image;
+            // The shortcode is the alt text: it is what the author wrote, and
+            // the only description of the picture that exists.
+            element.alt = `:${name}:`;
+            element.title = `:${name}:`;
+            element.loading = 'lazy';
+            fragment.appendChild(element);
+        } else {
+            fragment.appendChild(document.createTextNode(character));
+        }
+
+        cursor = match.index + match[0].length;
+        changed = true;
+    }
+
+    if (!changed) {
+        return null;
+    }
+
+    if (cursor < text.length) {
+        fragment.appendChild(document.createTextNode(text.slice(cursor)));
+    }
+
+    return fragment;
 }

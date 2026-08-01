@@ -50,6 +50,41 @@ export default {
             TestCase.assertTrue(root.querySelector('pre').textContent === 'x = :smile:', 'a code block keeps its colons');
         },
 
+        'a custom emoji renders as an image'() {
+            const root = document.createElement('div');
+            root.appendChild(document.createTextNode('look :blobcat: here'));
+
+            expandInDOM(root, { blobcat: 'https://remote.invalid/blobcat.png' });
+
+            const image = root.querySelector('img.CustomEmoji');
+
+            TestCase.assertNotNull(image);
+            TestCase.assertEquals('https://remote.invalid/blobcat.png', image.getAttribute('src'));
+            TestCase.assertEquals(':blobcat:', image.alt);
+            TestCase.assertTrue(root.textContent.includes('look '), 'the surrounding text survives');
+        },
+
+        'a custom name beats the unicode table'() {
+            // A tag is the sending server saying what a shortcode means in THIS
+            // post - a more specific claim than a table everyone shares.
+            const root = document.createElement('div');
+            root.appendChild(document.createTextNode(':smile:'));
+
+            expandInDOM(root, { smile: 'https://remote.invalid/theirs.png' });
+
+            TestCase.assertNotNull(root.querySelector('img.CustomEmoji'));
+            TestCase.assertFalse(root.textContent.includes('\u{1f604}'));
+        },
+
+        'a custom emoji in code is left alone'() {
+            const root = document.createElement('div');
+            root.innerHTML = '<pre>x = :blobcat:</pre>';
+
+            expandInDOM(root, { blobcat: 'https://remote.invalid/blobcat.png' });
+
+            TestCase.assertEquals('x = :blobcat:', root.querySelector('pre').textContent);
+        },
+
         'a rendered formula is left alone'() {
             const root = document.createElement('div');
             root.innerHTML = '<span class="PostFormula">a :smile: b</span>';

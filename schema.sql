@@ -194,6 +194,24 @@ CREATE TABLE `RetiredUsernames` (
   PRIMARY KEY (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Custom emoji, keyed by the server they belong to. Every instance has its own
+-- set and nobody can resolve a name they were not told about, so :blobcat: from
+-- one server and :blobcat: from another are different pictures and both have to
+-- be storable at once.
+--
+-- Learned from the Emoji tags that ride alongside a post's content: the tag is
+-- how a sender says what a name in its text means, and without one a shortcode
+-- is simply text.
+CREATE TABLE `CustomEmojis` (
+  `customEmojiId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `domain` varchar(255) NOT NULL,
+  `shortcode` varchar(64) NOT NULL,
+  `imageURL` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`customEmojiId`),
+  UNIQUE KEY `domain_shortcode` (`domain`,`shortcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Announces` (
   `postId` int(10) unsigned NOT NULL,
   `userId` int(10) unsigned NOT NULL,

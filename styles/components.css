@@ -1561,3 +1561,14 @@ body.MessagesPage { padding-bottom: 9rem; }
 .PostRepostButton[data-reposted='1']:hover {
     background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
 }
+
+/* A custom emoji from another server - an image standing in for a word, so it
+   sits on the text baseline at roughly the height of one. */
+.CustomEmoji {
+    display: inline-block;
+    width: 1.35em;
+    height: 1.35em;
+    object-fit: contain;
+    vertical-align: -0.25em;
+    margin: 0 0.05em;
+}

@@ -83,9 +83,8 @@ says so, because that means bumping `GLOMMER_VERSION` and running
 **Interop against a real instance.** Everything here is verified against a
 reading of the spec and tests written from that same reading - a closed loop
 that stays green even where the reading is wrong. A real Mastodon server
-(one runs in a container on the prod box) following a member, receiving a post,
-a reply and a like is the only thing that breaks the loop, and it can invalidate
-work already done.
+following a member, receiving a post, a reply and a like is the only thing that
+breaks the loop, and it can invalidate work already done.
 
 **Restore a backup.** The timer runs; nothing has ever been restored from it.
 Rehearse on dev.

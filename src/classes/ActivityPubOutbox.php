@@ -11,15 +11,13 @@ declare(strict_types=1);
  */
 class ActivityPubOutbox
 {
-    public const PAGE_SIZE = 20;
-
     /**
      * @return array<int, array<string, mixed>>
      */
     public static function activitiesFor(User $user, int $page): array
     {
-        $offset = (max(1, $page) - 1) * self::PAGE_SIZE;
-        $limit = self::PAGE_SIZE;
+        $limit = ActivityPubCollection::PAGE_SIZE;
+        $offset = (max(1, $page) - 1) * $limit;
 
         // The member's own writing only: a row carrying a remoteObjectURI came
         // in from somewhere else and is not ours to publish back out.

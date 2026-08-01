@@ -13,7 +13,17 @@ if ($user === null) {
     ActivityPubResponse::notFound();
 }
 
-ActivityPubResponse::send(ActivityPubResponse::orderedCollection(
-    ActivityPubActor::followersFor($user),
-    FediverseFollower::actorURIsFor((int) $user -> userId)
+$id = ActivityPubActor::followersFor($user);
+$total = FediverseFollower::countFor((int) $user -> userId);
+$page = ActivityPubCollection::requestedPage();
+
+if ($page === null) {
+    ActivityPubResponse::send(ActivityPubCollection::describe($id, $total));
+}
+
+ActivityPubResponse::send(ActivityPubCollection::page(
+    $id,
+    $total,
+    $page,
+    FediverseFollower::actorURIsFor((int) $user -> userId, $page)
 ));

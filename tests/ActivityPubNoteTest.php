@@ -213,14 +213,14 @@ SELECT *
     {
         $user = self::user();
 
-        foreach (range(1, ActivityPubOutbox::PAGE_SIZE + 3) as $index) {
+        foreach (range(1, ActivityPubCollection::PAGE_SIZE + 3) as $index) {
             self::post((int) $user -> userId, [['insert' => 'post ' . $index . "\n"]]);
         }
 
         $first = ActivityPubOutbox::activitiesFor($user, 1);
         $second = ActivityPubOutbox::activitiesFor($user, 2);
 
-        $this -> assertSame(ActivityPubOutbox::PAGE_SIZE, count($first));
+        $this -> assertSame(ActivityPubCollection::PAGE_SIZE, count($first));
         $this -> assertSame(3, count($second));
 
         // Inside a collection the context is carried by the collection itself.

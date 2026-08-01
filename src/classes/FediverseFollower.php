@@ -60,21 +60,40 @@ SELECT `fediverseFollowerId`
     }
 
     /**
-     * The actor URIs following this member, newest first - the followers
-     * collection, as the network reads it.
+     * One page of the actor URIs following this member, newest first - the
+     * followers collection, as the network reads it.
+     *
+     * Paged rather than whole: a popular account's followers do not fit in one
+     * response, and a collection that tries anyway gets slower the more it has
+     * to say.
      *
      * @return string[]
      */
-    public static function actorURIsFor(int $local_user_id): array
+    public static function actorURIsFor(int $local_user_id, int $page = 1): array
     {
+        $limit = ActivityPubCollection::PAGE_SIZE;
+        $offset = (max(1, $page) - 1) * $limit;
+
         $rows = DB::rows('
 SELECT `remoteActorURI`
     FROM `FediverseFollowers`
     WHERE `localUserId` = ?
     ORDER BY `fediverseFollowerId` DESC
-', 'FediverseFollowerData', 'i', $local_user_id);
+    LIMIT ? OFFSET ?
+', 'FediverseFollowerData', 'iii', $local_user_id, $limit, $offset);
 
         return array_map(static fn (FediverseFollowerData $row): string => (string) $row -> remoteActorURI, $rows);
+    }
+
+    public static function countFor(int $local_user_id): int
+    {
+        $row = DB::row('
+SELECT COUNT(*) AS `total`
+    FROM `FediverseFollowers`
+    WHERE `localUserId` = ?
+', 'PostCountData', 'i', $local_user_id);
+
+        return $row === null ? 0 : (int) $row -> total;
     }
 
     /**

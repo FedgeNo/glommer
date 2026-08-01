@@ -56,18 +56,35 @@ SELECT `Users`.`title`, `RemoteFollows`.`status`
      *
      * @return string[]
      */
-    public static function acceptedActorURIsFor(int $local_user_id): array
+    public static function acceptedActorURIsFor(int $local_user_id, int $page = 1): array
     {
         $accepted = 'accepted';
+        $limit = ActivityPubCollection::PAGE_SIZE;
+        $offset = (max(1, $page) - 1) * $limit;
 
         $rows = DB::rows('
 SELECT `remoteActorURI`
     FROM `RemoteFollows`
     WHERE `localUserId` = ? AND `status` = ?
     ORDER BY `remoteFollowId` DESC
-', 'RemoteFollowData', 'is', $local_user_id, $accepted);
+    LIMIT ? OFFSET ?
+', 'RemoteFollowData', 'isii', $local_user_id, $accepted, $limit, $offset);
 
         return array_map(static fn (RemoteFollowData $row): string => (string) $row -> remoteActorURI, $rows);
+    }
+
+    /** How many accepted follows this member holds, for the collection's total. */
+    public static function acceptedCountFor(int $local_user_id): int
+    {
+        $accepted = 'accepted';
+
+        $row = DB::row('
+SELECT COUNT(*) AS `total`
+    FROM `RemoteFollows`
+    WHERE `localUserId` = ? AND `status` = ?
+', 'PostCountData', 'is', $local_user_id, $accepted);
+
+        return $row === null ? 0 : (int) $row -> total;
     }
 
     /** @return array{ok: bool, handle: string, error: ?string, userId?: ?int} */

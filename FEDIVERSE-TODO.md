@@ -59,6 +59,9 @@ says so, because that means bumping `GLOMMER_VERSION` and running
   recording why a post is in a feed, so undoing a repost removes only what the
   repost added. A repost here and a boost from elsewhere share one table, so a
   post carries one count rather than two.
+- **Collection pagination.** followers, following and the outbox all describe
+  themselves and page at 20, the way the network expects. `featured` is capped
+  at five, so it stays inline.
 
 ## Before 1.0, regardless of the list below
 
@@ -88,13 +91,9 @@ A post whose only attachment is one video or one audio file is a `Video` or
 `Audio` object rather than a `Note` carrying an attachment. That is what
 PeerTube and Funkwhale publish, and what players expect to find.
 
-### 4. Collection pagination
-`followers` and `following` inline their whole list. Anything that can pass ~20
-entries needs paging, same as every other list on the site.
-
-### 5. Polls (`Question`)
+### 4. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.
 
-### 6. Relays
+### 5. Relays
 Subscribing to a relay puts posts in front of servers that do not already follow
 anyone here - the usual answer to a small instance seeing nothing.

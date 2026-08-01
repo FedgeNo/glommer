@@ -9,7 +9,8 @@ declare(strict_types=1);
  * rendering; this class is the corpus and the search over it.
  *
  * Article bodies are trusted HTML written here, rendered through HelpArticleBody
- * (an HTMLLoader) - not user input, so there's nothing to sanitize.
+ * (an HTMLLoader). The site's own name is the one thing in them that isn't
+ * written here - see siteTitle(), which escapes it.
  */
 class HelpContent
 {
@@ -26,6 +27,16 @@ class HelpContent
         'Staying safe',
         'Your account',
     ];
+
+    /**
+     * The site's own name, for the article bodies that talk about it. Escaped
+     * because those bodies are parsed as HTML and this is the one part of them
+     * an admin writes rather than us.
+     */
+    private static function siteTitle(): string
+    {
+        return htmlspecialchars((string) Config::get('siteTitle'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
 
     /**
      * @return HelpArticle[] every article, in category then authoring order
@@ -275,7 +286,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'Send, accept, and manage friend requests, and remove friends.',
                 'body' => '
-<p>Friendship on Glommer is mutual and starts with a request. Use <strong>Add Friend</strong> on someone\'s card or profile to send one. While it\'s pending you can <strong>Cancel</strong> it; once they accept, you\'re friends.</p>
+<p>Friendship on ' . self::siteTitle() . ' is mutual and starts with a request. Use <strong>Add Friend</strong> on someone\'s card or profile to send one. While it\'s pending you can <strong>Cancel</strong> it; once they accept, you\'re friends.</p>
 <p>The <strong>Friends</strong> page is your hub for this:</p>
 <ul>
 <li>Requests waiting for you appear at the top, each with <strong>Accept</strong> and <strong>Deny</strong>.</li>
@@ -392,7 +403,7 @@ class HelpContent
                 'category' => 'Your account',
                 'summary' => 'Subscribe to the site or a person in any RSS reader.',
                 'body' => '
-<p>Prefer to read in a feed reader? Glommer publishes <strong>RSS feeds</strong> you can subscribe to:</p>
+<p>Prefer to read in a feed reader? ' . self::siteTitle() . ' publishes <strong>RSS feeds</strong> you can subscribe to:</p>
 <ul>
 <li>The whole site\'s recent posts are at <code>/feed.xml</code>.</li>
 <li>Any person\'s posts have their own feed at <code>/users/their-username/feed.xml</code>.</li>
@@ -451,7 +462,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'Follow accounts on Mastodon and other Fediverse servers.',
                 'body' => '
-<p>Glommer speaks <strong>ActivityPub</strong>, the standard behind Mastodon and the wider Fediverse, so you can follow people on other servers and read their posts here.</p>
+<p>' . self::siteTitle() . ' speaks <strong>ActivityPub</strong>, the standard behind Mastodon and the wider Fediverse, so you can follow people on other servers and read their posts here.</p>
 <p>Open <strong>Settings</strong> from your name in the top-right, find the <strong>Fediverse</strong> section, and paste in one or more handles - written like <code>@user@example.social</code> - then press <strong>Follow</strong>. Any separator between multiple handles works, so you can paste a whole list at once.</p>
 <p>The same section lists the accounts you already follow so you can keep track of them. Mentioning a remote account by its full <code>@user@server</code> handle in a post works too - see <a href="/help/hashtags-and-mentions">hashtags and mentions</a>.</p>
 ',

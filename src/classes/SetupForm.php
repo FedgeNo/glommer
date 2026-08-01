@@ -22,8 +22,10 @@ class SetupForm extends FormForm
         $site_url = new InputField('siteURL', 'Site URL', 'text', 'Site URL', 255);
         $site_url -> value = $current_url;
 
+        // Deliberately not prefilled, unlike its neighbours: this is the site's
+        // own name, nothing about the request can guess it, and offering one
+        // would just be putting a name in the admin's mouth. Required on submit.
         $site_title = new InputField('siteTitle', 'Site title', 'text', 'Site title', 100);
-        $site_title -> value = 'Glommer';
 
         $mail_from_address = new InputField('mailFromAddress', 'Mail from address', 'email', 'Mail from address', 255);
         $mail_from_address -> value = 'noreply@' . (parse_url($current_url, PHP_URL_HOST) ?: 'example.com');

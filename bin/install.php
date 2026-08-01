@@ -3986,7 +3986,9 @@ if ($env_just_created) {
     $site_url = prompt('Site URL (e.g. https://example.com)', null, function (string $value): ?string {
         return filter_var($value, FILTER_VALIDATE_URL) === false ? 'That is not a valid URL.' : null;
     });
-    $site_title = prompt('Site title', 'Glommer');
+    // No default offered: this is the site's own name, so there is nothing to
+    // suggest. prompt() re-asks until it gets one.
+    $site_title = prompt('Site title');
     $mail_from_address = prompt('Mail "from" address', null, function (string $value): ?string {
         return filter_var($value, FILTER_VALIDATE_EMAIL) === false ? 'That is not a valid email address.' : null;
     });
@@ -4207,6 +4209,10 @@ if ((string) Settings::get(Mailer::FROM_ADDRESS_SETTING, '') === '' && is_intera
 
 if (Config::get('siteURL') === 'https://example.com') {
     fail('SITE_URL is not set in .env - every generated link would point at the https://example.com placeholder.');
+}
+
+if ((string) Config::get('siteTitle') === '') {
+    fail('SITE_TITLE is not set in .env - the site has no name for its page titles, its outgoing email, or its Fediverse actor. Set it to whatever you call this site; there is no default.');
 }
 
 // HTTPS is a requirement, not a preference: an http:// SITE_URL is a

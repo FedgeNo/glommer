@@ -12,16 +12,21 @@ return [
     // username/password/encryption) used to live here (MAIL_FROM_ADDRESS etc.,
     // SMTP_HOST etc.) - they're now Settings DB table settings, editable live
     // from the admin Site Settings page (see Mailer's *_SETTING constants)
-    // instead of requiring a .env edit + no live-reload. mailFromName keeps a
-    // friendly hardcoded fallback here (a missing display name is cosmetic);
+    // instead of requiring a .env edit + no live-reload. mailFromName falls
+    // back to the site's own title, the only name it could honestly sign mail
+    // with (a missing display name is cosmetic either way);
     // mailFromAddress has none - a missing "from" address isn't safe to
     // silently paper over with a fake one (see Mailer::send()), so there's no
     // config.php key for it at all anymore. Left empty, Mailer's SMTP relay
     // falls back to PHP's mail() (the local sendmail handoff, which on a
     // typical VPS lands straight in spam folders).
-    'mailFromName' => Env::get('MAIL_FROM_NAME', 'Glommer'),
+    'mailFromName' => Env::get('MAIL_FROM_NAME', '') ?: Env::get('SITE_TITLE', ''),
     'siteURL' => Env::get('SITE_URL', 'https://example.com'),
-    'siteTitle' => Env::get('SITE_TITLE', 'Glommer'),
+    // No default, unlike every other key here: a site's title is its own name,
+    // and there is no name that would be right to hand someone else's site.
+    // Both install paths require one and bin/install.php fails without it, so
+    // the empty string is a misconfiguration rather than a state to design for.
+    'siteTitle' => Env::get('SITE_TITLE', ''),
     // How many media transcodes the upload-worker service (bin/upload-worker.php)
     // runs at once. It drains the async upload queue at this bounded rate so a
     // burst of uploads can't spawn unlimited concurrent ffmpeg processes and

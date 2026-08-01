@@ -32,7 +32,7 @@ class UploadBatch
     // abandoned and dropped from the post (see the class docblock).
     private const MAX_FILE_DEATHS = 3;
 
-    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files, ?float $latitude = null, ?float $longitude = null): string
+    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files, ?float $latitude = null, ?float $longitude = null, int $sensitive = 0): string
     {
         // Same lottery sweep as UploadProcessor::sweepStagedLinkImages().
         // Triggered here (the web path that stages a batch), not from the
@@ -69,6 +69,7 @@ class UploadBatch
             'linkURL' => $link_url,
             'latitude' => $latitude,
             'longitude' => $longitude,
+            'sensitive' => $sensitive,
             'files' => $staged_files,
         ]));
 
@@ -238,6 +239,9 @@ class UploadBatch
         $link_url_value = $metadata['linkURL'] !== null && $metadata['linkURL'] !== '' ? $metadata['linkURL'] : null;
         $latitude_value = $metadata['latitude'] ?? null;
         $longitude_value = $metadata['longitude'] ?? null;
+        // A batch staged before the composer's sensitive toggle carries no key;
+        // absent means unclassified, same as the column default.
+        $sensitive_value = (int) ($metadata['sensitive'] ?? 0);
         $parent_id = $metadata['parentId'];
 
         // A batch staged after the Delta migration carries the Delta JSON (and
@@ -268,9 +272,9 @@ class UploadBatch
         mysqli_begin_transaction($mysqli);
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'iissss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+', 'iissssi', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value);
         $post_id = (int) mysqli_insert_id($mysqli);
 
         if ($latitude_value !== null && $longitude_value !== null) {
@@ -327,6 +331,23 @@ INSERT INTO `FeedItems` (`postId`, `type`)
 
         if ($any_failed) {
             Notification::create($user_id, $user_id, 'uploadPartlyFailed', $post_id, true);
+        }
+
+        // The same announcement api/create-post.php queues for a synchronous
+        // post - without it a video/audio post exists here but the author's
+        // Fediverse followers are never told about it. Re-fetched so the
+        // activity is built from the committed row and its FeedItems.
+        $author = User::load($user_id);
+        $published_post = DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', $post_id);
+
+        if ($author !== null && $published_post !== null) {
+            $post = Post::fromRowWithItems($published_post);
+            $post -> author = $author;
+            FediversePublisher::published($post, $author);
         }
 
         self::cleanupBatch($batch_dir, $progress);

@@ -118,17 +118,14 @@ class ActivityPubFlag
             return [null, null];
         }
 
-        // A post: /users/{slug}/{id}, matched through its author so a URI
-        // naming the right id under the wrong person resolves to nothing.
-        if (preg_match('#\A/users/([^/]+)/([0-9]+)\z#', $path, $matches)) {
-            $post = DB::row('
-SELECT `Posts`.`postId`
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`postId` = ? AND `Users`.`slug` = ? AND `Posts`.`remoteObjectURI` IS NULL
-', 'PostParentData', 'is', (int) $matches[2], rawurldecode($matches[1]));
+        // A post: /users/{slug}/{id}, resolved by the inverse of the method
+        // that mints those URIs in the first place, which is also what matches
+        // it through its author so a URI naming the right id under the wrong
+        // person resolves to nothing.
+        if (preg_match('#\A/users/[^/]+/[0-9]+\z#', $path) === 1) {
+            $post_id = ActivityPubNote::localPostIdFor($uri);
 
-            return $post === null ? [null, null] : ['post', (int) $post -> postId];
+            return $post_id === null ? [null, null] : ['post', $post_id];
         }
 
         $member = ActivityPubActor::localUserFromURI($uri);

@@ -34,6 +34,9 @@ class Post extends Article
     // under the timestamp.
     public ?float $latitude = null;
     public ?float $longitude = null;
+    // From the Polls side table, attached by fromRowsWithItems - null for the
+    // overwhelming majority of posts, which are not polls.
+    public ?Poll $poll = null;
     // Set once a moderator dismisses a report on this post - blocks it from
     // being reported again (see api/report.php).
     public ?int $reportsDismissed = null;
@@ -222,6 +225,13 @@ class Post extends Article
                 $content -> contents[] = $this -> truncateDescription
                     ? $this -> summarizedDescription()
                     : $this -> fullDescription();
+            }
+
+            // Under the words, since the poll is what the words are asking
+            // about.
+            if ($this -> poll !== null) {
+                $this -> poll -> viewerId = Auth::id();
+                $content -> contents[] = $this -> poll;
             }
         }
 
@@ -487,6 +497,7 @@ DELETE
         $authors = User::loadMany($user_ids);
 
         $locations = PostLocation::forPosts($post_ids);
+        $polls = Poll::forPosts($post_ids);
 
         foreach ($posts as $post) {
             $post -> items = $items_by_post[(int) $post -> postId] ?? [];
@@ -495,6 +506,8 @@ DELETE
             $location = $locations[(int) $post -> postId] ?? null;
             $post -> latitude = $location['latitude'] ?? null;
             $post -> longitude = $location['longitude'] ?? null;
+
+            $post -> poll = $polls[(int) $post -> postId] ?? null;
         }
 
         return $posts;
@@ -509,6 +522,13 @@ DELETE
     {
         $description_delta = null;
         $description_truncated = false;
+
+        // Whether the poll comes back as controls or as answers depends on who
+        // is asking, so it has to be told before it builds its payload - the
+        // same thing toDOM() does before rendering it.
+        if ($this -> poll !== null) {
+            $this -> poll -> viewerId = Auth::id();
+        }
 
         // toPayload only ever feeds the client-side feed, never the permalink
         // page, so it truncates the ops exactly like the server-rendered feed
@@ -555,6 +575,7 @@ DELETE
             'editedAt' => $this -> editedAt,
             'latitude' => $this -> latitude,
             'longitude' => $this -> longitude,
+            'poll' => $this -> poll?-> toPayload(),
             'items' => $items,
             'sensitive' => $this -> sensitive === 1,
             'imageAltText' => $this -> imageAltText(),

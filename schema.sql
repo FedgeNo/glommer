@@ -84,6 +84,77 @@ CREATE TABLE `PostLocations` (
   CONSTRAINT `fk_postlocations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- A poll attached to a post. Its own table rather than columns on Posts, the
+-- same shape PostLocations uses: most posts are not polls, and the options are
+-- a list that could never be columns anyway.
+--
+-- A poll IS its post as far as the network is concerned - ActivityPub has no
+-- separate poll object, the post's type simply becomes Question - so there is
+-- one poll per post and no independent identity to publish.
+--
+-- endsAt is not nullable. Every implementation that reads these requires an
+-- endTime, and a poll that never closes has no result anyone can quote; the
+-- composer offers a set of durations rather than a free date.
+CREATE TABLE `Polls` (
+  `pollId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `postId` int(10) unsigned NOT NULL,
+  -- Whether more than one option may be chosen. Decides oneOf vs anyOf on the
+  -- wire, and whether a second vote replaces the first or adds to it.
+  `multiple` tinyint(1) NOT NULL DEFAULT 0,
+  `endsAt` datetime NOT NULL,
+  -- How many distinct people voted, as the origin server reported it. Only ever
+  -- set for a poll that came from elsewhere: for one of ours the answer is a
+  -- count of our own rows. A multiple-choice poll needs it because the votes
+  -- across its options cannot be added up into a number of voters.
+  `remoteVotersCount` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`pollId`),
+  UNIQUE KEY `postId` (`postId`),
+  CONSTRAINT `fk_polls_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- One choice on a poll. `position` fixes the order the author wrote them in,
+-- since a poll's options are a sequence and re-ordering them would change what
+-- a result means.
+--
+-- `title` is the option's text, and it is also its identity on the wire: a vote
+-- arrives naming the option by its text rather than by any id, so two options
+-- on one poll may not read the same.
+--
+-- remoteVoteCount is null for a poll of ours, where the count is a count of
+-- PollVotes rows, and set for one that came from elsewhere, where we hold no
+-- votes and the origin server's tally is the only figure there is.
+CREATE TABLE `PollOptions` (
+  `pollOptionId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pollId` int(10) unsigned NOT NULL,
+  `position` tinyint(3) unsigned NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `remoteVoteCount` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`pollOptionId`),
+  UNIQUE KEY `pollId_title` (`pollId`,`title`),
+  KEY `pollId_position` (`pollId`,`position`),
+  CONSTRAINT `fk_polloptions_poll` FOREIGN KEY (`pollId`) REFERENCES `Polls` (`pollId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- One person's vote for one option. Keyed on the option rather than the poll so
+-- a multiple-choice poll is simply several rows, and carrying pollId as well so
+-- "has this person voted at all" is one indexed read rather than a join.
+--
+-- A remote voter has a shadow Users row like any other account, so an inbound
+-- vote on a poll of ours is the same row a member here would make - the same
+-- way Likes already works.
+CREATE TABLE `PollVotes` (
+  `pollId` int(10) unsigned NOT NULL,
+  `pollOptionId` int(10) unsigned NOT NULL,
+  `userId` int(10) unsigned NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`pollOptionId`,`userId`),
+  KEY `pollId_userId` (`pollId`,`userId`),
+  KEY `fk_pollvotes_user` (`userId`),
+  CONSTRAINT `fk_pollvotes_poll` FOREIGN KEY (`pollId`) REFERENCES `Polls` (`pollId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pollvotes_option` FOREIGN KEY (`pollOptionId`) REFERENCES `PollOptions` (`pollOptionId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pollvotes_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Hashtags` (
   `hashtagId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `slug` varchar(64) NOT NULL,

@@ -28,6 +28,36 @@ class ActivityPubNote
     }
 
     /**
+     * The local post an object URI names, or null when it names something that
+     * isn't one - the inverse of uriFor().
+     *
+     * Matched through the author as well as the id, so a URI naming the right
+     * post under the wrong person resolves to nothing rather than to the post,
+     * and never to something that arrived from elsewhere.
+     */
+    public static function localPostIdFor(string $object_uri): ?int
+    {
+        if (!ActivityPubActor::isLocalActorURI($object_uri)) {
+            return null;
+        }
+
+        $path = parse_url($object_uri, PHP_URL_PATH);
+
+        if (!is_string($path) || !preg_match('#\A/users/([^/]+)/([0-9]+)\z#', $path, $matches)) {
+            return null;
+        }
+
+        $post = DB::row('
+SELECT `Posts`.`postId`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ? AND `Users`.`slug` = ? AND `Posts`.`remoteObjectURI` IS NULL
+', 'PostParentData', 'is', (int) $matches[2], rawurldecode($matches[1]));
+
+        return $post === null ? null : (int) $post -> postId;
+    }
+
+    /**
      * The object a remote server stores. Null for a post that came in from
      * elsewhere: it already has an id on its own server and re-publishing it
      * under ours would be claiming someone else's writing.
@@ -43,12 +73,19 @@ class ActivityPubNote
         $uri = self::uriFor($post, $author);
         $title = is_string($post -> title) ? trim($post -> title) : '';
         $media = self::soleMediaItem($post);
+        $poll = Poll::forPost((int) $post -> postId);
 
         // A post that is one video or one audio file IS that thing, rather than
         // a note with something attached - which is how PeerTube and Funkwhale
         // publish, and what a player on the other side goes looking for. A
         // titled one keeps its title either way.
+        //
+        // A poll likewise IS the post: ActivityPub has no separate poll object,
+        // so a post carrying one becomes a Question. It comes first because a
+        // Question that arrived as anything else is just a post whose choices
+        // vanished, and a poll takes no media to compete with anyway.
         $type = match (true) {
+            $poll !== null => 'Question',
             $media !== null => $media['type'],
             $title !== '' => 'Article',
             default => 'Note',
@@ -80,6 +117,10 @@ class ActivityPubNote
 
         if ($in_reply_to !== null) {
             $document['inReplyTo'] = $in_reply_to;
+        }
+
+        if ($poll !== null) {
+            $document += self::pollFields($poll);
         }
 
         if ($media !== null) {
@@ -359,6 +400,58 @@ SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
         }
 
         return $attachments;
+    }
+
+    /**
+     * The poll half of a Question.
+     *
+     * The choices go under oneOf or anyOf, and which key carries them is the
+     * only thing that says whether more than one may be picked - there is no
+     * flag for it. Each is a Note whose name is the option's text and whose
+     * replies collection states the tally, which is where every implementation
+     * reads a result from.
+     *
+     * endTime is always present; closed appears only once it has passed, and is
+     * what tells the far side to stop offering the vote.
+     *
+     * @return array<string, mixed>
+     */
+    private static function pollFields(Poll $poll): array
+    {
+        // The same list the page builds from, for the same reason the body is
+        // rendered by DeltaRenderer rather than by something written for
+        // federation: a second query would drift from the first and the two
+        // copies of a result would quietly stop matching.
+        $options = new PollOptionList();
+        $options -> pollId = (int) $poll -> pollId;
+        $options -> totalVotes = $poll -> voterCount();
+
+        $choices = [];
+
+        foreach ($options -> toJSON() as $option) {
+            $choices[] = [
+                'type' => 'Note',
+                'name' => $option['title'],
+                'replies' => [
+                    'type' => 'Collection',
+                    'totalItems' => $option['voteCount'],
+                ],
+            ];
+        }
+
+        $fields = [
+            (int) $poll -> multiple === 1 ? 'anyOf' : 'oneOf' => $choices,
+            'endTime' => ActivityPubActor::timestamp((string) $poll -> endsAt),
+            // How many people answered, which on a multiple-choice poll is not
+            // the sum of the tallies above.
+            'votersCount' => $poll -> voterCount(),
+        ];
+
+        if ($poll -> isClosed()) {
+            $fields['closed'] = ActivityPubActor::timestamp((string) $poll -> endsAt);
+        }
+
+        return $fields;
     }
 
     /**

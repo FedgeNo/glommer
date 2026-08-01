@@ -24,7 +24,7 @@ class ActivityPubReaction
      */
     public static function liked(string $object_uri, User $actor): void
     {
-        $post_id = self::localPostIdFor($object_uri);
+        $post_id = ActivityPubNote::localPostIdFor($object_uri);
 
         if ($post_id === null || $actor -> userId === null || (int) $actor -> banned === 1) {
             return;
@@ -40,7 +40,7 @@ INSERT IGNORE INTO `Likes` (`postId`, `userId`)
 
     public static function unliked(string $object_uri, User $actor): void
     {
-        $post_id = self::localPostIdFor($object_uri);
+        $post_id = ActivityPubNote::localPostIdFor($object_uri);
 
         if ($post_id === null || $actor -> userId === null) {
             return;
@@ -55,7 +55,7 @@ DELETE FROM `Likes`
     /** Someone out there boosted a post here. */
     public static function announced(string $object_uri, User $actor, string $activity_uri): void
     {
-        $post_id = self::localPostIdFor($object_uri);
+        $post_id = ActivityPubNote::localPostIdFor($object_uri);
 
         if ($post_id === null || $actor -> userId === null || (int) $actor -> banned === 1) {
             return;
@@ -70,7 +70,7 @@ INSERT INTO `Announces` (`postId`, `userId`, `activityURI`)
 
     public static function unannounced(string $object_uri, User $actor): void
     {
-        $post_id = self::localPostIdFor($object_uri);
+        $post_id = ActivityPubNote::localPostIdFor($object_uri);
 
         if ($post_id === null || $actor -> userId === null) {
             return;
@@ -131,32 +131,6 @@ SELECT COUNT(*) AS `total`
             ];
 
         FediverseDelivery::enqueue((int) $liker -> userId, $activity, [$target['inboxURL']]);
-    }
-
-    /** The local post an object URI names, or null when it names something else. */
-    private static function localPostIdFor(string $object_uri): ?int
-    {
-        if (!ActivityPubActor::isLocalActorURI($object_uri)) {
-            return null;
-        }
-
-        $path = parse_url($object_uri, PHP_URL_PATH);
-
-        if (!is_string($path) || !preg_match('#\A/users/([^/]+)/([0-9]+)\z#', $path, $matches)) {
-            return null;
-        }
-
-        // Matched through the author as well as the id, so a URI naming the
-        // right post under the wrong person resolves to nothing rather than to
-        // the post.
-        $post = DB::row('
-SELECT `Posts`.`postId`
-    FROM `Posts`
-    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`postId` = ? AND `Users`.`slug` = ? AND `Posts`.`remoteObjectURI` IS NULL
-', 'PostParentData', 'is', (int) $matches[2], rawurldecode($matches[1]));
-
-        return $post === null ? null : (int) $post -> postId;
     }
 
     /**

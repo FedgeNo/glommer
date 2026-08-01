@@ -25,6 +25,12 @@ class ClientConfig
             'serverTime' => time() * 1000,
             'WSPort' => Config::get('WSPort'),
             'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,
+            // The composer is built in JavaScript, so the durations a poll may
+            // run for are shipped rather than restated there - two lists of the
+            // same thing would eventually disagree, and the server refuses any
+            // duration not in its own.
+            'pollDurations' => (object) Poll::DURATIONS,
+            'pollMaxOptions' => Poll::MAX_OPTIONS,
             'needsMath' => false,
         ], $overrides);
 

@@ -36,6 +36,13 @@ $sensitive = ($_POST['sensitive'] ?? '') === '1' ? 1 : 0;
 
 $link_image_seed = trim((string) ($_POST['linkImageSeed'] ?? ''));
 
+// A poll's options arrive as a repeated field, the same way files do. Cleaned
+// by Poll rather than here, so the composer and an inbound Question are held to
+// one definition of what a usable set of options is.
+$poll_options = Poll::cleanOptions(is_array($_POST['pollOptions'] ?? null) ? $_POST['pollOptions'] : []);
+$poll_multiple = ($_POST['pollMultiple'] ?? '') === '1';
+$poll_duration = (int) ($_POST['pollDuration'] ?? 0);
+
 if (!preg_match('/^lp-[a-f0-9]{32}$/', $link_image_seed) || !UploadProcessor::exists($link_image_seed, 'ImageItem')) {
     $link_image_seed = '';
 }
@@ -143,6 +150,35 @@ if ($has_files && $link_url !== '') {
     JSONResponse::error('A post can have either attached files or a link, not both', 422) -> send();
 }
 
+$has_poll = $poll_options !== [];
+
+// A poll is a third kind of post and exclusive with the other two for the same
+// reason they are with each other: its options are the thing to interact with,
+// and there is no layout that sets them beside a gallery or a link preview.
+if ($has_poll && ($has_files || $link_url !== '')) {
+    JSONResponse::error('A post can have a poll, attached files, or a link - not more than one', 422) -> send();
+}
+
+// Counted after Poll::cleanOptions has dropped blanks and duplicates, so this
+// is about how many distinct choices there really are rather than how many
+// boxes were submitted.
+if ($has_poll && count($poll_options) < Poll::MIN_OPTIONS) {
+    JSONResponse::error('A poll needs at least ' . Poll::MIN_OPTIONS . ' different options.', 422) -> send();
+}
+
+// The question is the post itself - there is nowhere else for it to go, and a
+// poll that is only buttons asks nothing.
+if ($has_poll && !$has_text) {
+    JSONResponse::error('A poll needs a question in the post.', 422) -> send();
+}
+
+// Checked here as well as in Poll::create, which answers an unusable duration
+// with null. Left to that, a mistyped duration would publish the post with its
+// poll quietly missing rather than telling anyone.
+if ($has_poll && !in_array($poll_duration, Poll::DURATIONS, true)) {
+    JSONResponse::error('Choose how long the poll should run.', 422) -> send();
+}
+
 // The staged image is the link's preview thumbnail, not standalone media -
 // with no link on the post it has nothing to belong to, so discard it.
 if ($link_image_seed !== '' && $link_url === '') {
@@ -208,9 +244,10 @@ if (!$has_text && $valid_files === []) {
 $needs_async = count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0;
 
 if ($needs_async) {
-    // Each of these spawns its own detached ffmpeg transcode - without a cap,
-    // one user firing off many video/audio posts in a burst could exhaust
-    // CPU/memory with unbounded concurrent worker processes.
+    // Paced because staging is not the part that waits. The worker decides how
+    // many transcodes run at once, but every batch writes its files to the disk
+    // queue the moment it is accepted, so a burst of large video posts fills
+    // the disk long before it troubles the CPU.
     $async_upload_rate_key = 'async-upload:' . $current_user -> userId;
 
     if (RateLimiter::tooManyAttempts($async_upload_rate_key, 5, 600)) {
@@ -220,12 +257,11 @@ if ($needs_async) {
     RateLimiter::recordAttempt($async_upload_rate_key);
 
     // Stage the batch and return immediately. The upload-worker service
-    // (bin/upload-worker.php) drains the queue at a bounded concurrency - no
-    // per-upload worker is spawned here any more, which is exactly what let a
-    // burst of uploads run unlimited concurrent transcodes and overwhelm the
-    // host. Completion is signalled by the postReady/uploadPartlyFailed/
-    // uploadFailed notification the worker creates when it finishes.
-    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files, $latitude, $longitude);
+    // (bin/upload-worker.php) drains the queue at a bounded concurrency, so a
+    // transcode waits its turn rather than competing with every other one.
+    // Completion is signalled by the postReady/uploadPartlyFailed/uploadFailed
+    // notification the worker creates when it finishes.
+    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files, $latitude, $longitude, $sensitive);
 
     JSONResponse::success(['processing' => true]) -> send();
 }
@@ -318,8 +354,18 @@ $post -> description = $description_value;
 $post -> descriptionDelta = $description_delta_value;
 $post -> linkURL = $link_url_value;
 $post -> createdAt = date('Y-m-d H:i:s');
+$post -> latitude = $latitude;
+$post -> longitude = $longitude;
+$post -> sensitive = $sensitive;
 $post -> items = $items;
 $post -> author = $current_user;
+
+// Attached before the post is announced, because a poll IS the post as far as
+// the network reads it: without its choices in place the Create would go out as
+// an ordinary Note and the poll would never exist anywhere but here.
+if ($has_poll) {
+    $post -> poll = Poll::create($post_id, $poll_options, $poll_multiple, $poll_duration);
+}
 
 // Queued, not delivered: the author waits for their post, not for every server
 // that follows them.

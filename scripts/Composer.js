@@ -94,6 +94,62 @@ export class Composer {
         Composer.#instances.set(form, this);
     }
 
+    /**
+     * The poll controls: the choices, whether several may be picked, and how
+     * long it runs.
+     *
+     * The durations come from ClientConfig rather than being listed here. The
+     * server refuses any duration outside its own set, so a second list in this
+     * file would only be a way for the two to disagree.
+     */
+    static pollFieldsToElement() {
+        const poll = document.createElement('fieldset');
+        poll.className = 'ComposerPoll';
+        poll.style.display = 'none';
+
+        const legend = document.createElement('legend');
+        legend.textContent = 'Poll';
+        poll.appendWithSpace(legend);
+
+        for (let index = 0; index < (ClientConfig.get('pollMaxOptions') || 4); index++) {
+            const option = document.createElement('input');
+            option.type = 'text';
+            option.className = 'PollOptionInput';
+            option.name = 'pollOptions[]';
+            option.placeholder = 'Option ' + (index + 1);
+            option.setAttribute('aria-label', 'Poll option ' + (index + 1));
+            poll.appendWithSpace(option);
+        }
+
+        const multiple = document.createElement('label');
+        multiple.className = 'PollMultipleToggle';
+
+        const multipleInput = document.createElement('input');
+        multipleInput.type = 'checkbox';
+        multipleInput.name = 'pollMultiple';
+        multipleInput.value = '1';
+        multiple.appendWithSpace(multipleInput);
+        multiple.appendWithSpace(document.createTextNode('Allow more than one choice'));
+
+        poll.appendWithSpace(multiple);
+
+        const duration = document.createElement('select');
+        duration.className = 'PollDurationSelect';
+        duration.name = 'pollDuration';
+        duration.setAttribute('aria-label', 'How long the poll runs');
+
+        for (const [label, minutes] of Object.entries(ClientConfig.get('pollDurations') || {})) {
+            const choice = document.createElement('option');
+            choice.value = String(minutes);
+            choice.textContent = label;
+            duration.appendWithSpace(choice);
+        }
+
+        poll.appendWithSpace(duration);
+
+        return poll;
+    }
+
     static #buildEditor(form, legendText) {
         const fieldset = document.createElement('fieldset');
 
@@ -178,7 +234,6 @@ export class Composer {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.name = 'files[]';
-        fileInput.id = 'files';
         fileInput.multiple = true;
         fileInput.accept = 'image/*,video/*,audio/*';
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
@@ -235,6 +290,33 @@ export class Composer {
         sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
 
         actions.appendWithSpace(sensitiveToggle);
+
+        const pollButton = document.createElement('button');
+        pollButton.type = 'button';
+        pollButton.className = 'Button ComposerPollButton';
+        pollButton.textContent = 'Add Poll';
+        actions.appendWithSpace(pollButton);
+
+        // Hidden until asked for, and emptied again when withdrawn - the inputs
+        // stay in the form either way, so leaving text behind in them would
+        // attach a poll the author had just removed.
+        const poll = Composer.pollFieldsToElement();
+        form.appendWithSpace(poll);
+
+        pollButton.addEventListener('click', () => {
+            const adding = poll.style.display === 'none';
+
+            poll.style.display = adding ? '' : 'none';
+            pollButton.textContent = adding ? 'Remove Poll' : 'Add Poll';
+
+            if (!adding) {
+                for (const input of poll.querySelectorAll('input[name="pollOptions[]"]')) {
+                    input.value = '';
+                }
+
+                poll.querySelector('input[name="pollMultiple"]').checked = false;
+            }
+        });
 
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';

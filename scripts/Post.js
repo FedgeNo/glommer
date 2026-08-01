@@ -10,6 +10,7 @@ import { EmojiRenderer } from '/scripts/EmojiRenderer.js';
 import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { enhanceCodeBlocks } from '/scripts/CodeBlockCopy.js';
+import { Poll } from '/scripts/Poll.js';
 
 export class Post {
     postId = null;
@@ -26,6 +27,7 @@ export class Post {
     editedAt = null;
     latitude = null;
     longitude = null;
+    poll = null;
     rawDescriptionDelta = null;
     items = [];
     imageAltText = null;
@@ -317,6 +319,12 @@ export class Post {
 
                 post.appendWithSpace(body);
             }
+
+            // Mirrors Post.php - under the words, since the poll is what the
+            // words are asking about.
+            if (this.poll) {
+                post.appendWithSpace(Poll.fromData(this.poll).element());
+            }
         }
 
         return post;
@@ -346,6 +354,10 @@ export class Post {
             card.dataset.title = this.title || '';
             card.dataset.linkUrl = this.linkURL || '';
             card.dataset.hasMedia = this.items.length > 0 ? '1' : '';
+            // Mirrors Post.php's data-sensitive - without it the edit form
+            // opens unchecked on an AJAX-rendered post and saving a typo fix
+            // would silently clear the classification.
+            card.dataset.sensitive = this.sensitive ? '1' : '';
         }
 
         card.appendWithSpace(this.postElement());

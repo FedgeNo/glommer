@@ -35,6 +35,11 @@ export class ClientConfig {
                 // Mirrors Carousel::INITIAL_EAGER_ITEMS, which is what the
                 // cookie normally carries.
                 carouselEagerItems: 5,
+                // Empty rather than a guessed list: without the cookie there is
+                // no composer to offer durations in, and inventing them here
+                // would be a second definition of what the server accepts.
+                pollDurations: {},
+                pollMaxOptions: 4,
                 needsMath: false,
             };
         }

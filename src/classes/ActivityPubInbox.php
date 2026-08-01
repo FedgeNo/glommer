@@ -354,7 +354,35 @@ SELECT `remoteFollowId`
     {
         $object = $activity['object'] ?? null;
 
-        if (!is_array($object) || ($object['type'] ?? null) !== 'Note') {
+        if (!is_array($object)) {
+            return;
+        }
+
+        // A post carrying a poll arrives as a Question rather than a Note -
+        // there is no separate poll object in ActivityPub, the type simply
+        // changes - so it is ingested as the post it is.
+        if (($object['type'] ?? null) === 'Question') {
+            self::ingestNote($object, $actor_uri);
+
+            return;
+        }
+
+        if (($object['type'] ?? null) !== 'Note') {
+            return;
+        }
+
+        // A vote is a Note with a name, no content and an inReplyTo pointing at
+        // a poll. Checked before anything else looks at inReplyTo, because to
+        // the reply path a vote is indistinguishable from a reply, and taking
+        // it as one would file an empty post in the thread for every answer
+        // anybody gave.
+        if (ActivityPubPollVote::isVote($object)) {
+            $voter = self::shadowUserFor($actor_uri);
+
+            if ($voter !== null && $voter -> banned !== 1) {
+                ActivityPubPollVote::received($object, $voter);
+            }
+
             return;
         }
 
@@ -375,11 +403,34 @@ SELECT `remoteFollowId`
         self::ingestNote($object, $actor_uri);
     }
 
+    /** The actor types ActivityPub defines - any of them can carry a signing key. */
+    private const ACTOR_TYPES = ['Person', 'Service', 'Application', 'Group', 'Organization'];
+
     private static function handleUpdate(array $activity, string $actor_uri): void
     {
         $object = $activity['object'] ?? null;
 
-        if (!is_array($object) || ($object['type'] ?? null) !== 'Note') {
+        if (!is_array($object)) {
+            return;
+        }
+
+        // Somebody's profile changed on their own server - or, the reason this
+        // matters, their signing key did. What this server holds is stale
+        // either way, so it goes back and reads the actor again. Only ever for
+        // the account that signed the delivery: a server may update its own.
+        if (in_array($object['type'] ?? null, self::ACTOR_TYPES, true)) {
+            if (($object['id'] ?? null) === $actor_uri) {
+                RemoteActor::refresh($actor_uri);
+            }
+
+            return;
+        }
+
+        // A Question is a post like any other here, and its restatement is also
+        // how a poll's running totals arrive - the origin re-sends the whole
+        // object every time somebody answers, since ActivityPub has no way to
+        // send just a number.
+        if (!in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
             return;
         }
 
@@ -399,6 +450,15 @@ SELECT `remoteFollowId`
 
         if ($post === null || RemoteObjectTombstone::isTombstoned($object_uri)) {
             return;
+        }
+
+        // Only the tallies move, and only for a poll we already hold: an Update
+        // is not a reason to start holding one, and rewriting the choices would
+        // change what the votes already counted were cast for.
+        $poll = Poll::forPost((int) $post -> postId);
+
+        if ($poll !== null) {
+            Poll::updateTallies($poll, $object);
         }
 
         // What the sender says its own shortcodes mean. Recorded before the
@@ -519,6 +579,14 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         $post_id = (int) mysqli_insert_id(DB::connection());
 
         self::storeAttachments($object['attachment'] ?? null, $post_id);
+
+        // A Question carries its choices with it. Stored now rather than
+        // fetched later: the post is already here, and a poll that appeared
+        // some time after the post it belongs to would read as a different
+        // thing arriving.
+        if (($object['type'] ?? null) === 'Question') {
+            Poll::fromQuestion($post_id, $object);
+        }
 
         // Only top-level posts fan out to followers' feeds - a reply is
         // reached through the parent post's own reply list, the same as any

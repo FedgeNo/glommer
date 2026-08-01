@@ -367,10 +367,24 @@ CREATE TABLE `RateLimitAttempts` (
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Whose feed holds which post. reposterId records WHY it is there: null means
+-- the post reached this feed on its own account (its author is a friend, or
+-- followed), and a value means somebody put it there by reposting it.
+--
+-- That distinction is what makes un-reposting possible. Without it, withdrawing
+-- a repost would have to delete the row, which would also remove a post that
+-- was in the feed because its author is a friend. With it, only the rows the
+-- repost created are removed.
+--
+-- Still one row per (userId, postId): a post appears once in a feed however many
+-- ways it arrived. A repost of something already there leaves the existing row
+-- alone, so the reason it was originally shown survives the repost being undone.
 CREATE TABLE `Timelines` (
   `userId` int(10) unsigned NOT NULL,
   `postId` int(10) unsigned NOT NULL,
+  `reposterId` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`userId`,`postId`),
+  KEY `reposterId_postId` (`reposterId`,`postId`),
   KEY `fk_timelines_post` (`postId`),
   CONSTRAINT `Timelines_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `fk_timelines_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE

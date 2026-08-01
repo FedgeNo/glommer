@@ -77,6 +77,7 @@ class Notification extends Article
 
         return match ($this -> type) {
             'like' => $name . ' liked your post',
+            'repost' => $name . ' reposted your post',
             'reply' => $name . ' replied to your post',
             'friendRequest' => $name . ' sent you a friend request',
             'friendAccepted' => $name . ' accepted your friend request',
@@ -89,7 +90,7 @@ class Notification extends Article
     protected function targetURL(): ?string
     {
         return match ($this -> type) {
-            'like', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
+            'like', 'repost', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/friends'),
             'friendAccepted' => ServerURL::absolute('/users/' . $this -> actorUsername . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actorUsername),

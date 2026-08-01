@@ -32,6 +32,13 @@ class PostActionBar extends Footer
 
         if (Auth::check()) {
             $actions -> addContent($this -> likeButton());
+
+            // Not on your own post - passing on your own writing is what your
+            // profile is for.
+            if ($this -> postUserId !== Auth::id()) {
+                $actions -> addContent($this -> repostButton());
+            }
+
             $actions -> addContent($this -> bookmarkButton());
 
             if ($this -> postUserId === Auth::id()) {
@@ -120,6 +127,14 @@ SELECT 1
     protected function deleteButton(): HTMLObject
     {
         return new PostDeleteButton($this -> standalone);
+    }
+
+    protected function repostButton(): HTMLObject
+    {
+        return new PostRepostButton(
+            Repost::exists((int) Auth::id(), (int) $this -> postId),
+            ActivityPubReaction::announceCount((int) $this -> postId)
+        );
     }
 
     /** Only ever on your own post - the caller has already checked that. */

@@ -53,21 +53,47 @@ SELECT `localUserId`
     /**
      * @param int[] $recipient_ids
      */
-    private static function fanOutToUsers(array $recipient_ids, int $post_id): void
+    /**
+     * Puts a post into a reposter's friends' feeds, marked as theirs.
+     *
+     * INSERT IGNORE, so a post already in someone's feed keeps the row it has -
+     * whoever it originally reached them through stays recorded, and undoing
+     * the repost later leaves that alone.
+     */
+    public static function fanOutRepost(int $reposter_id, int $post_id): void
     {
-        $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?)'));
+        self::fanOutToUsers([$reposter_id, ...self::friendIds($reposter_id)], $post_id, $reposter_id);
+    }
+
+    /**
+     * Takes a repost back out of the feeds it was fanned into. Only the rows
+     * this repost created - a post that was already in a feed on its own
+     * account keeps its place.
+     */
+    public static function removeRepost(int $reposter_id, int $post_id): void
+    {
+        DB::run('
+DELETE FROM `Timelines`
+    WHERE `postId` = ? AND `reposterId` = ?
+', 'ii', $post_id, $reposter_id);
+    }
+
+    private static function fanOutToUsers(array $recipient_ids, int $post_id, ?int $reposter_id = null): void
+    {
+        $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?, ?)'));
 
         $params = [];
 
         foreach ($recipient_ids as $recipient_id) {
             $params[] = $recipient_id;
             $params[] = $post_id;
+            $params[] = $reposter_id;
         }
 
         DB::run('
-INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
+INSERT IGNORE INTO `Timelines` (`userId`, `postId`, `reposterId`)
     VALUES ' . $placeholders . '
-', str_repeat('ii', count($recipient_ids)), ...$params);
+', str_repeat('iii', count($recipient_ids)), ...$params);
     }
 
     /**

@@ -55,6 +55,10 @@ says so, because that means bumping `GLOMMER_VERSION` and running
   operators), and video calling is not offered there.
 - **Pinned posts.** Up to five of a member's own posts, shown above their feed
   and published as the actor's `featured` collection.
+- **Reposting**, in both directions. `Timelines` gained a `reposterId` column
+  recording why a post is in a feed, so undoing a repost removes only what the
+  repost added. A repost here and a boost from elsewhere share one table, so a
+  post carries one count rather than two.
 
 ## Before 1.0, regardless of the list below
 
@@ -70,39 +74,27 @@ Rehearse on dev.
 
 ## Next
 
-### 1. Outbound Announce (reposting)
-Nothing here reposts yet, so there is no local action to federate. Inbound
-boosts are recorded; sending one needs the site feature first.
-
-The open question is what a repost does to local feeds. `Timelines` is keyed
-`(userId, postId)` with no record of *why* a post is in someone's feed, so
-fanning a repost out is easy but withdrawing one is not - deleting the row
-would also remove a post that is there because its author is your friend.
-Either a repost adds nothing to local feeds (and is purely a federation
-signal), or `Timelines` grows a column saying who put it there. Worth deciding
-before building, not during.
-
-### 2. Account migration (`Move`)
+### 1. Account migration (`Move`)
 `alsoKnownAs` and `movedTo`, so someone can arrive with their followers intact
 or leave without stranding them.
 
-### 4. Custom emoji (`Emoji` tags)
+### 2. Custom emoji (`Emoji` tags)
 Shortcodes carried as `Emoji` tags with image URLs, so `:shortcode:` from a
 remote post renders as the image rather than as literal text, and ours travel
 the same way.
 
-### 5. Video and Audio as first-class objects
+### 3. Video and Audio as first-class objects
 A post whose only attachment is one video or one audio file is a `Video` or
 `Audio` object rather than a `Note` carrying an attachment. That is what
 PeerTube and Funkwhale publish, and what players expect to find.
 
-### 6. Collection pagination
+### 4. Collection pagination
 `followers` and `following` inline their whole list. Anything that can pass ~20
 entries needs paging, same as every other list on the site.
 
-### 7. Polls (`Question`)
+### 5. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.
 
-### 8. Relays
+### 6. Relays
 Subscribing to a relay puts posts in front of servers that do not already follow
 anyone here - the usual answer to a small instance seeing nothing.

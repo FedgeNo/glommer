@@ -140,6 +140,50 @@ SELECT *
 
         self::upsert($actor);
 
+        return self::shadowRowFor($actor_uri);
+    }
+
+    /**
+     * Re-reads an actor this server already knows, replacing what it holds -
+     * display name, avatar, inbox, and the public key its deliveries are
+     * verified against.
+     *
+     * The key is the reason this exists. A remote server rotating its signing
+     * key is routine, and obligatory after one is exposed; against a cached
+     * copy every delivery that follows fails verification, and it fails the
+     * same way forever, because nothing else here ever asks again. That account
+     * simply goes quiet, and no amount of retrying on their side changes it.
+     *
+     * Fetched from the actor's own server rather than believed from the
+     * delivery that prompted it: the request that says a key has changed is
+     * signed with the key being replaced, so trusting the document inside it
+     * would let a stolen key install a new one and keep the account. Going back
+     * to the source means the far server has to still be serving that key for
+     * it to be adopted here.
+     */
+    public static function refresh(string $actor_uri): ?User
+    {
+        if (ActivityPubActor::isLocalActorURI($actor_uri)) {
+            return null;
+        }
+
+        $actor = self::fetch($actor_uri);
+
+        // Only ever the account that was asked about. fetch() already refuses a
+        // document whose id belongs to another host; this refuses one that
+        // renames itself within the same host, so a refresh can never write
+        // over a different row than the one being refreshed.
+        if ($actor === null || $actor['id'] !== $actor_uri) {
+            return null;
+        }
+
+        self::upsert($actor);
+
+        return self::shadowRowFor($actor_uri);
+    }
+
+    private static function shadowRowFor(string $actor_uri): ?User
+    {
         return DB::row('
 SELECT *
     FROM `Users`

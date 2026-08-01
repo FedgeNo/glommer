@@ -138,12 +138,55 @@ class HTTPSignatureTest extends TestCase
         $this -> assertFalse(HTTPSignature::verify('POST', '/inbox', $headers, $header, $keypair['publicKeyPem']));
     }
 
-    public function testRefusesANonRSASHA256Algorithm(): void
+    /**
+     * Signs a real request, then rewrites only the algorithm parameter - so
+     * what each of these tests turns on is the name, not a broken signature.
+     *
+     * @return array{header: string, headers: array<string, string>, publicKeyPem: string}
+     */
+    private function signedWithAlgorithm(?string $algorithm): array
     {
         $keypair = $this -> keypair();
-        $header = 'keyId="k",algorithm="hs2019",headers="(request-target) host date digest",signature="' . base64_encode('x') . '"';
+        $digest = HTTPSignature::digest('{"type":"Follow"}');
+        $headers = $this -> headers($digest);
 
-        $this -> assertFalse(HTTPSignature::verify('POST', '/inbox', $this -> headers('d'), $header, $keypair['publicKeyPem']));
+        $header = HTTPSignature::sign('POST', '/inbox', $headers['host'], $headers['date'], $digest, 'k', $keypair['privateKeyPem']);
+        $header = str_replace(
+            'algorithm="rsa-sha256",',
+            $algorithm === null ? '' : 'algorithm="' . $algorithm . '",',
+            $header
+        );
+
+        return ['header' => $header, 'headers' => $headers, 'publicKeyPem' => $keypair['publicKeyPem']];
+    }
+
+    public function testRefusesAnAlgorithmItCannotPerform(): void
+    {
+        // Every actor key here is RSA, so a signature naming something else is
+        // refused outright rather than verified as RSA regardless of what it
+        // says it is.
+        $signed = $this -> signedWithAlgorithm('ed25519-sha512');
+
+        $this -> assertFalse(HTTPSignature::verify('POST', '/inbox', $signed['headers'], $signed['header'], $signed['publicKeyPem']));
+    }
+
+    public function testAcceptsTheHS2019AlgorithmName(): void
+    {
+        // hs2019 is what the draft this profile comes from actually recommends,
+        // and it says the algorithm is a property of the key rather than of the
+        // header. Refusing it turned away senders whose signatures verify.
+        $signed = $this -> signedWithAlgorithm('hs2019');
+
+        $this -> assertTrue(HTTPSignature::verify('POST', '/inbox', $signed['headers'], $signed['header'], $signed['publicKeyPem']));
+    }
+
+    public function testAcceptsASignatureThatNamesNoAlgorithmAtAll(): void
+    {
+        // The parameter is optional in the profile - omitting it is no claim
+        // rather than a wrong one.
+        $signed = $this -> signedWithAlgorithm(null);
+
+        $this -> assertTrue(HTTPSignature::verify('POST', '/inbox', $signed['headers'], $signed['header'], $signed['publicKeyPem']));
     }
 
     public function testRejectsAMalformedSignatureHeader(): void

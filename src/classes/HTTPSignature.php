@@ -39,6 +39,19 @@ class HTTPSignature
      */
     private const MAX_DATE_SKEW_SECONDS = 3600;
 
+    /**
+     * What an inbound signature may call its algorithm.
+     *
+     * Only RSA-SHA256 is actually performed - it is the one thing every actor
+     * key here is - but three spellings arrive. `rsa-sha256` is what Mastodon
+     * sends; `hs2019` is what the draft this profile comes from actually
+     * recommends, and says the real algorithm is a property of the key rather
+     * than of the header; and an absent field is allowed outright, the
+     * parameter being optional. Refusing the latter two rejected perfectly
+     * valid senders for naming the same thing differently.
+     */
+    private const ACCEPTED_ALGORITHMS = ['rsa-sha256', 'hs2019', ''];
+
     public static function digest(string $body): string
     {
         return 'SHA-256=' . base64_encode(hash('sha256', $body, true));
@@ -111,7 +124,7 @@ class HTTPSignature
     {
         $fields = self::parseSignatureHeader($signature_header);
 
-        if ($fields === null || $fields['algorithm'] !== 'rsa-sha256') {
+        if ($fields === null || !in_array(strtolower($fields['algorithm']), self::ACCEPTED_ALGORITHMS, true)) {
             return false;
         }
 
@@ -168,16 +181,27 @@ class HTTPSignature
         return implode("\n", $lines);
     }
 
-    /** @return array{keyId: string, algorithm: string, headers: string, signature: string}|null */
+    /**
+     * The signature header's parameters, or null when one that has to be there
+     * isn't. `algorithm` is optional in the profile - senders that omit it are
+     * making no claim rather than a wrong one - so it comes back as an empty
+     * string instead of failing the parse.
+     *
+     * @return array{keyId: string, algorithm: string, headers: string, signature: string}|null
+     */
     public static function parseSignatureHeader(string $signature_header): ?array
     {
-        $fields = [];
+        $fields = ['algorithm' => ''];
 
         foreach (['keyId', 'algorithm', 'headers', 'signature'] as $name) {
             // Anchored to a real field boundary (string start, comma, or
             // whitespace) so a parameter whose name merely ENDS with one of
             // these - x-keyId="..." - can't be picked up as that field.
             if (preg_match('/(?:\A|[,\s])' . $name . '="([^"]*)"/', $signature_header, $match) !== 1) {
+                if ($name === 'algorithm') {
+                    continue;
+                }
+
                 return null;
             }
 

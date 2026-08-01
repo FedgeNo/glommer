@@ -69,9 +69,28 @@ if (!HTTPSignature::dateIsFresh($date_header)) {
 // token is case-insensitive (RFC 3230), so "sha-256=" from another
 // implementation is the same claim as "SHA-256=" - only the hash itself is
 // compared in constant time.
-[$digest_algorithm, $digest_value] = array_pad(explode('=', $digest_header, 2), 2, '');
+// RFC 3230 lets a sender state several digests in one header, comma separated,
+// so the sha-256 one is picked out rather than the header being assumed to hold
+// nothing else - a sender offering "sha-256=...,sha-512=..." is making a
+// perfectly ordinary claim. Split on the first = only, since base64 padding is
+// itself made of them.
+$digest_verified = false;
 
-if (strtolower($digest_algorithm) !== 'sha-256' || !hash_equals(base64_encode(hash('sha256', $body, true)), $digest_value)) {
+foreach (explode(',', $digest_header) as $digest_entry) {
+    [$digest_algorithm, $digest_value] = array_pad(explode('=', trim($digest_entry), 2), 2, '');
+
+    if (strtolower($digest_algorithm) !== 'sha-256') {
+        continue;
+    }
+
+    // The first sha-256 claim settles it either way: one that doesn't match is
+    // a failed body check, not something to look past in the hope of a second.
+    $digest_verified = hash_equals(base64_encode(hash('sha256', $body, true)), $digest_value);
+
+    break;
+}
+
+if (!$digest_verified) {
     http_response_code(401);
     exit;
 }
@@ -147,6 +166,36 @@ if (isset($_SERVER['CONTENT_LENGTH']) && is_string($_SERVER['CONTENT_LENGTH'])) 
 }
 
 $verified = HTTPSignature::verify('POST', $path, $received_headers, $signature_header, $signer -> remoteActorPublicKeyPem);
+
+// A signature that doesn't verify is usually just that. It is also exactly what
+// a key rotation looks like from this side - the far server signed with its new
+// key while this one still holds the old - and nothing else here ever asks for
+// the key again, so without this that account's deliveries fail identically
+// from now until somebody edits the database. Rotation is routine and obliged
+// after a key is exposed, so this has to recover on its own.
+//
+// The key is re-read from the actor's own server, never taken from the delivery
+// that failed, and the signature is checked again against whatever that server
+// serves now. A forged signature just fails twice.
+//
+// Rate-limited on the actor rather than left to the endpoint's own limiter:
+// otherwise anyone could make this server perform an outbound fetch by sending
+// one bad signature, as many times as the inbox limiter allows. One attempt per
+// actor per window costs a rotation at most a few minutes of delay.
+if (!$verified) {
+    $refresh_key = 'activitypub-key-refresh:' . $actor_uri;
+
+    if (!RateLimiter::tooManyAttempts($refresh_key, 1, 300)) {
+        RateLimiter::recordAttempt($refresh_key);
+
+        $refreshed = RemoteActor::refresh($actor_uri);
+
+        if ($refreshed !== null && is_string($refreshed -> remoteActorPublicKeyPem) && $refreshed -> remoteActorPublicKeyPem !== $signer -> remoteActorPublicKeyPem) {
+            $signer = $refreshed;
+            $verified = HTTPSignature::verify('POST', $path, $received_headers, $signature_header, $signer -> remoteActorPublicKeyPem);
+        }
+    }
+}
 
 if (!$verified) {
     http_response_code(401);

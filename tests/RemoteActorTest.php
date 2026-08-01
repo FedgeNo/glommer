@@ -48,4 +48,14 @@ class RemoteActorTest extends TestCase
         $this -> assertFalse($this -> sameHost('', ''));
         $this -> assertFalse($this -> sameHost('not a url', 'not a url'));
     }
+
+    public function testRefreshingOneOfOurOwnActorsIsRefused(): void
+    {
+        // A refresh is triggered by a delivery failing to verify, and the actor
+        // URI it names comes from that delivery's keyId. Pointing it at this
+        // server would have us dereference our own actor to decide whether to
+        // trust a signature - and, since a local member has no shadow row, is
+        // only ever either a mistake or an attempt to make us fetch ourselves.
+        $this -> assertNull(RemoteActor::refresh(ServerURL::absolute('/users/someone/')));
+    }
 }

@@ -49,6 +49,8 @@ export class Notification {
         switch (this.type) {
             case 'like':
                 return name + ' liked your post';
+            case 'repost':
+                return name + ' reposted your post';
             case 'reply':
                 return name + ' replied to your post';
             case 'friendRequest':
@@ -67,6 +69,7 @@ export class Notification {
     targetURL() {
         switch (this.type) {
             case 'like':
+            case 'repost':
             case 'reply':
             case 'postReady':
             case 'uploadPartlyFailed':

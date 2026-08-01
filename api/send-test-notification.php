@@ -19,5 +19,4 @@ if (Auth::id() !== 1) {
 // "Admin did something" (or whatever the admin's display name is) is shown.
 Notification::create(1, 1, 'test_notification', null, true);
 
-JSONResponse::success(['message' => 'Test notification sent.'])->send();
-
+JSONResponse::success(['message' => 'Test notification sent.']) -> send();

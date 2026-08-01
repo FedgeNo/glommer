@@ -523,6 +523,10 @@ function handle_push_request(int $id): void
     }
 
     $line = substr($connections[$id]['recvBuffer'], 0, $newline_pos);
+    // Consume the processed line - leaving it in the buffer would make any
+    // further bytes on this connection re-process it from the top, delivering
+    // the same payload again.
+    $connections[$id]['recvBuffer'] = substr($connections[$id]['recvBuffer'], $newline_pos + 1);
     $request = json_decode($line, true);
 
     $delivered = 0;

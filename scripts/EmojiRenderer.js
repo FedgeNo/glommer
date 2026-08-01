@@ -15,6 +15,10 @@ export class EmojiRenderer {
                 if (node.parentElement.closest('.emoji-text, pre, code, .katex, .PostFormula')) {
                     return NodeFilter.FILTER_REJECT;
                 }
+                // The regex is global, so a previous test() leaves lastIndex
+                // mid-string - unreset, the next node's test starts there and
+                // can miss an emoji earlier in its text.
+                EMOJI_SEQUENCE.lastIndex = 0;
                 return EMOJI_SEQUENCE.test(node.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
             }
         });

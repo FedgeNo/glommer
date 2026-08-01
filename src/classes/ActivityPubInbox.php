@@ -284,18 +284,19 @@ SELECT *
 
     private static function handleAccept(array $activity, string $actor_uri): void
     {
-        if (!self::respondsToOurFollow($activity, $actor_uri)) {
+        $follow = self::answeredFollow($activity, $actor_uri);
+
+        if ($follow === null) {
             return;
         }
 
         $accepted_status = 'accepted';
-        $pending_status = 'pending';
 
         DB::run('
 UPDATE `RemoteFollows`
     SET `status` = ?
-    WHERE `remoteActorURI` = ? AND `status` = ?
-', 'sss', $accepted_status, $actor_uri, $pending_status);
+    WHERE `remoteFollowId` = ?
+', 'si', $accepted_status, $follow -> remoteFollowId);
     }
 
     /**
@@ -305,41 +306,48 @@ UPDATE `RemoteFollows`
      */
     private static function handleReject(array $activity, string $actor_uri): void
     {
-        if (!self::respondsToOurFollow($activity, $actor_uri)) {
+        $follow = self::answeredFollow($activity, $actor_uri);
+
+        if ($follow === null) {
             return;
         }
 
         DB::run('
 DELETE
     FROM `RemoteFollows`
-    WHERE `remoteActorURI` = ?
-', 's', $actor_uri);
+    WHERE `remoteFollowId` = ?
+', 'i', $follow -> remoteFollowId);
     }
 
     /**
-     * Whether an Accept/Reject actually answers a Follow this instance sent
-     * to this actor, matched on the activity id we recorded when sending it.
-     * Without that, any followed account could flip its own follow to
-     * accepted (or drop it) by asserting a response we never asked for.
+     * The one Follow an Accept/Reject answers, matched on the activity id
+     * recorded when it was sent. Without that, any followed account could flip
+     * its own follow to accepted (or drop it) by asserting a response we never
+     * asked for.
+     *
+     * Returning the row rather than a yes/no is what keeps the answer to one
+     * member's follow from moving another's. Each member holds their own edge
+     * to a remote account, so several rows can share this actor URI, and an
+     * Accept naming one of them says nothing about the rest.
      *
      * A server that echoes the Follow back only as a bare URI string, rather
      * than the embedded object, is handled the same way - it's the id either
      * way.
      */
-    private static function respondsToOurFollow(array $activity, string $actor_uri): bool
+    private static function answeredFollow(array $activity, string $actor_uri): ?RemoteFollow
     {
         $object = $activity['object'] ?? null;
         $follow_activity_id = is_array($object) ? ($object['id'] ?? null) : $object;
 
         if (!is_string($follow_activity_id) || $follow_activity_id === '') {
-            return false;
+            return null;
         }
 
         return DB::row('
 SELECT `remoteFollowId`
     FROM `RemoteFollows`
     WHERE `remoteActorURI` = ? AND `followActivityId` = ?
-', 'RemoteFollow', 'ss', $actor_uri, $follow_activity_id) !== null;
+', 'RemoteFollow', 'ss', $actor_uri, $follow_activity_id);
     }
 
     private static function handleCreate(array $activity, string $actor_uri): void
@@ -443,6 +451,17 @@ UPDATE `Posts`
         $object_uri = $object['id'] ?? null;
 
         if (!is_string($object_uri) || !self::isStorableObjectURI($object_uri) || RemoteObjectTombstone::isTombstoned($object_uri)) {
+            return;
+        }
+
+        // The note's id has to belong to the server that signed for it. A
+        // server is only ever entitled to speak for its own objects, the same
+        // rule RemoteActor::fetch applies to an actor's id - and here the
+        // consequence of skipping it is permanent, because the URI column is
+        // unique: an actor anywhere could claim a URI on someone else's host
+        // and block the real note from ever being ingested, while every reply
+        // and Like naming that URI resolved to the impostor's copy instead.
+        if (!RemoteActor::sameHost($object_uri, $actor_uri)) {
             return;
         }
 

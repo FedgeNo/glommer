@@ -48,6 +48,21 @@ SELECT `status`
         return $row ?-> status;
     }
 
+    /**
+     * One actor can be followed by several members here, each holding their own
+     * edge, so a status read has to name which one it means.
+     */
+    private static function followStatusFor(int $local_user_id, string $actor_uri): ?string
+    {
+        $row = DB::row('
+SELECT `status`
+    FROM `RemoteFollows`
+    WHERE `localUserId` = ? AND `remoteActorURI` = ?
+', 'RemoteFollow', 'is', $local_user_id, $actor_uri);
+
+        return $row ?-> status;
+    }
+
     public function testAcceptMatchingOurFollowMarksItAccepted(): void
     {
         $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
@@ -92,6 +107,50 @@ SELECT `status`
         ActivityPubInbox::process(['type' => 'Reject', 'object' => 'https://glommer.test/activitypub/follows/not-ours'], $actor_uri);
 
         $this -> assertSame('pending', self::followStatus($actor_uri));
+    }
+
+    public function testAnAcceptAnswersOnlyTheFollowItNames(): void
+    {
+        // Each member holds their own follow at the protocol level, so one
+        // remote account can have several here at once. Answering one of them
+        // says nothing about the rest, and treating it as an answer to all
+        // would start delivering an account's posts to somebody it never
+        // accepted.
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+
+        $answered = self::createUser();
+        $unanswered = self::createUser();
+        $answered_follow = 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8));
+
+        self::pendingFollow($answered, $actor_uri, $answered_follow);
+        self::pendingFollow($unanswered, $actor_uri, 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8)));
+
+        ActivityPubInbox::process(['type' => 'Accept', 'object' => ['type' => 'Follow', 'id' => $answered_follow]], $actor_uri);
+
+        $this -> assertSame('accepted', self::followStatusFor($answered, $actor_uri));
+        $this -> assertSame('pending', self::followStatusFor($unanswered, $actor_uri), 'a follow the far side never answered must stay pending');
+    }
+
+    public function testARejectDropsOnlyTheFollowItNames(): void
+    {
+        // The same rule the other way round, and worse if it slips: a refusal
+        // aimed at one member's request must not delete another member's
+        // standing, accepted follow of the same account.
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+
+        $refused = self::createUser();
+        $bystander = self::createUser();
+        $refused_follow = 'https://glommer.test/activitypub/follows/' . bin2hex(random_bytes(8));
+
+        self::pendingFollow($refused, $actor_uri, $refused_follow);
+        self::acceptFollow($bystander, $actor_uri);
+
+        ActivityPubInbox::process(['type' => 'Reject', 'object' => ['type' => 'Follow', 'id' => $refused_follow]], $actor_uri);
+
+        $this -> assertNull(self::followStatusFor($refused, $actor_uri));
+        $this -> assertSame('accepted', self::followStatusFor($bystander, $actor_uri), 'somebody else\'s accepted follow is not the one being refused');
     }
 
     public function testFollowingIsOneWayAndDistinctFromFriendship(): void
@@ -396,6 +455,46 @@ SELECT `description`
         ], $signer_uri);
 
         $this -> assertNull(self::postIdForRemoteObject($object_uri));
+    }
+
+    public function testANoteWhoseIdBelongsToAnotherServerIsRefused(): void
+    {
+        // A server may only speak for its own objects. Without this an actor
+        // anywhere could mint a note under someone else's host - and because
+        // remoteObjectURI is unique, that claim is permanent: the real note
+        // could never be ingested afterwards.
+        $signer_uri = 'https://remote.test/users/squatter-' . bin2hex(random_bytes(6));
+        self::createShadowUser($signer_uri);
+
+        $object_uri = 'https://mastodon.example/users/victim/statuses/' . bin2hex(random_bytes(6));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => [
+                'type' => 'Note',
+                'id' => $object_uri,
+                'content' => 'minting a URI on a host this actor does not speak for',
+            ],
+        ], $signer_uri);
+
+        $this -> assertNull(self::postIdForRemoteObject($object_uri));
+    }
+
+    public function testANoteWhoseIdIsOnTheSignersOwnHostIsAccepted(): void
+    {
+        // The other side of the same rule: the ordinary case must still work,
+        // including when the note sits on a different path than the actor.
+        $signer_uri = 'https://remote.test/users/author-' . bin2hex(random_bytes(6));
+        self::createShadowUser($signer_uri);
+
+        $object_uri = 'https://remote.test/objects/' . bin2hex(random_bytes(6));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => 'an ordinary note'],
+        ], $signer_uri);
+
+        $this -> assertNotNull(self::postIdForRemoteObject($object_uri));
     }
 
     public function testAnOversizedRemoteNoteIsStoredRatherThanThrowing(): void

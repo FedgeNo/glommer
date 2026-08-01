@@ -106,6 +106,14 @@ class ActivityPubMessage
             return;
         }
 
+        // The message's id has to belong to the server that signed for it, the
+        // same rule an inbound post is held to. The URI is what deduplicates a
+        // redelivery, so a server allowed to name one on someone else's host
+        // could permanently suppress a message it has no part in.
+        if (!is_string($sender -> remoteActorURI) || !RemoteActor::sameHost($object_uri, $sender -> remoteActorURI)) {
+            return;
+        }
+
         if ((int) $sender -> banned === 1 || self::alreadyHave($object_uri)) {
             return;
         }

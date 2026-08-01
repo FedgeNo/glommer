@@ -62,6 +62,9 @@ says so, because that means bumping `GLOMMER_VERSION` and running
 - **Collection pagination.** followers, following and the outbox all describe
   themselves and page at 20, the way the network expects. `featured` is capped
   at five, so it stays inline.
+- **Video and Audio objects.** A post that is one video or one audio file is
+  published as that object rather than as a note carrying an attachment, with
+  `url` giving both the page and the file.
 
 ## Before 1.0, regardless of the list below
 
@@ -82,18 +85,21 @@ Rehearse on dev.
 or leave without stranding them.
 
 ### 2. Custom emoji (`Emoji` tags)
-Shortcodes carried as `Emoji` tags with image URLs, so `:shortcode:` from a
-remote post renders as the image rather than as literal text, and ours travel
-the same way.
+Two halves, and neither is small.
 
-### 3. Video and Audio as first-class objects
-A post whose only attachment is one video or one audio file is a `Video` or
-`Audio` object rather than a `Note` carrying an attachment. That is what
-PeerTube and Funkwhale publish, and what players expect to find.
+Outbound needs a custom emoji feature on the site first - there is none, so
+there is nothing to publish. Same shape as reposting needing a button.
 
-### 4. Polls (`Question`)
+Inbound is the awkward one. Remote content is deliberately reduced to plain
+text on the way in (see ActivityPubInbox::deltaFromContent), which is what keeps
+untrusted markup out of a post, so `:shortcode:` survives as literal text. To
+render one as an image, either the shortcode-to-URL mapping is stored and
+resolved at display time, or an image embed is put into the Delta - and the
+second means relaxing a safety-critical path. Worth deciding deliberately.
+
+### 3. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.
 
-### 5. Relays
+### 4. Relays
 Subscribing to a relay puts posts in front of servers that do not already follow
 anyone here - the usual answer to a small instance seeing nothing.

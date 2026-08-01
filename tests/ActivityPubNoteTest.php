@@ -86,6 +86,98 @@ SELECT *
         $this -> assertSame('A Real Title', $document['name']);
     }
 
+    private static function attach(int $post_id, string $type): void
+    {
+        DB::run('
+INSERT INTO `FeedItems` (`postId`, `type`)
+    VALUES (?, ?)
+', 'is', $post_id, $type);
+    }
+
+    private static function withItems(Post $post, User $author): Post
+    {
+        $loaded = Post::fromRowWithItems($post);
+        $loaded -> author = $author;
+
+        return $loaded;
+    }
+
+    public function testAPostThatIsOneVideoIsPublishedAsAVideo(): void
+    {
+        // PeerTube publishes this way and a player on the other side goes
+        // looking for it - a note with something attached is not the same thing.
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "watch\n"]]);
+        self::attach((int) $post -> postId, 'VideoItem');
+
+        $document = ActivityPubNote::document(self::withItems($post, $user), $user);
+
+        $this -> assertSame('Video', $document['type']);
+        $this -> assertFalse(isset($document['attachment']), 'the media is the object, not an attachment on it');
+    }
+
+    public function testAVideoCarriesBothThePageAndTheFile(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "watch\n"]]);
+        self::attach((int) $post -> postId, 'VideoItem');
+
+        $document = ActivityPubNote::document(self::withItems($post, $user), $user);
+        $types = array_column($document['url'], 'mediaType');
+
+        $this -> assertTrue(in_array('text/html', $types, true), 'a person needs the page');
+        $this -> assertTrue(in_array('video/mp4', $types, true), 'a player needs the file');
+    }
+
+    public function testAPostThatIsOneAudioFileIsPublishedAsAudio(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "listen\n"]]);
+        self::attach((int) $post -> postId, 'AudioItem');
+
+        $this -> assertSame('Audio', ActivityPubNote::document(self::withItems($post, $user), $user)['type']);
+    }
+
+    public function testAVideoAlongsideOtherMediaStaysANote(): void
+    {
+        // Publishing it as a video would leave the photo with nowhere to go.
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "mixed\n"]]);
+        self::attach((int) $post -> postId, 'VideoItem');
+        self::attach((int) $post -> postId, 'ImageItem');
+
+        $document = ActivityPubNote::document(self::withItems($post, $user), $user);
+
+        $this -> assertSame('Note', $document['type']);
+        $this -> assertSame(2, count($document['attachment']));
+    }
+
+    public function testAPostThatIsOneImageIsStillANote(): void
+    {
+        // Only video and audio become objects in their own right; an image post
+        // is an ordinary note that happens to carry a picture.
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "look\n"]]);
+        self::attach((int) $post -> postId, 'ImageItem');
+
+        $document = ActivityPubNote::document(self::withItems($post, $user), $user);
+
+        $this -> assertSame('Note', $document['type']);
+        $this -> assertSame(1, count($document['attachment']));
+    }
+
+    public function testATitledVideoKeepsItsTitle(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "watch\n"]], 'My Film');
+        self::attach((int) $post -> postId, 'VideoItem');
+
+        $document = ActivityPubNote::document(self::withItems($post, $user), $user);
+
+        $this -> assertSame('Video', $document['type']);
+        $this -> assertSame('My Film', $document['name']);
+    }
+
     public function testEverythingIsAddressedPublicly(): void
     {
         $user = self::user();

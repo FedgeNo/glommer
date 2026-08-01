@@ -42,10 +42,21 @@ class ActivityPubNote
 
         $uri = self::uriFor($post, $author);
         $title = is_string($post -> title) ? trim($post -> title) : '';
+        $media = self::soleMediaItem($post);
+
+        // A post that is one video or one audio file IS that thing, rather than
+        // a note with something attached - which is how PeerTube and Funkwhale
+        // publish, and what a player on the other side goes looking for. A
+        // titled one keeps its title either way.
+        $type = match (true) {
+            $media !== null => $media['type'],
+            $title !== '' => 'Article',
+            default => 'Note',
+        };
 
         $document = [
             'id' => $uri,
-            'type' => $title === '' ? 'Note' : 'Article',
+            'type' => $type,
             'attributedTo' => ActivityPubActor::uriFor($author),
             'content' => DeltaRenderer::toHTML(Delta::decode($post -> descriptionDelta)),
             'url' => $uri,
@@ -71,10 +82,20 @@ class ActivityPubNote
             $document['inReplyTo'] = $in_reply_to;
         }
 
-        $attachments = self::attachments($post);
+        if ($media !== null) {
+            // The media is the object, so url carries both ways in: the page a
+            // person opens, and the file a player streams. Attaching it as well
+            // would hand the receiver the same thing twice.
+            $document['url'] = [
+                ['type' => 'Link', 'mediaType' => 'text/html', 'href' => $uri],
+                ['type' => 'Link', 'mediaType' => $media['mediaType'], 'href' => $media['href']],
+            ];
+        } else {
+            $attachments = self::attachments($post);
 
-        if ($attachments !== []) {
-            $document['attachment'] = $attachments;
+            if ($attachments !== []) {
+                $document['attachment'] = $attachments;
+            }
         }
 
         $tags = self::hashtags((int) $post -> postId);
@@ -268,6 +289,38 @@ SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
         }
 
         return ServerURL::absolute('/users/' . $parent -> slug . '/' . (int) $parent -> postId);
+    }
+
+    /**
+     * The one video or audio file a post consists of, when that is all it is.
+     *
+     * Only when it is the whole post: a video alongside three photos is a note
+     * carrying media, not a video, and publishing it as one would leave the
+     * photos with nowhere to go.
+     *
+     * @return array{type: string, mediaType: string, href: string}|null
+     */
+    private static function soleMediaItem(Post $post): ?array
+    {
+        $media = array_values(array_filter(
+            $post -> items,
+            static fn ($item): bool => $item instanceof FeedItem && in_array((string) $item -> type, ['ImageItem', 'VideoItem', 'AudioItem'], true)
+        ));
+
+        if (count($media) !== 1) {
+            return null;
+        }
+
+        // The transcoder's own output formats - every video becomes mp4 and
+        // every audio mp3, so these are what is actually being served.
+        $kinds = [
+            'VideoItem' => ['type' => 'Video', 'mediaType' => 'video/mp4'],
+            'AudioItem' => ['type' => 'Audio', 'mediaType' => 'audio/mpeg'],
+        ];
+
+        $kind = $kinds[(string) $media[0] -> type] ?? null;
+
+        return $kind === null ? null : $kind + ['href' => $media[0] -> srcURL()];
     }
 
     /**

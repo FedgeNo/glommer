@@ -42,9 +42,11 @@ class FediverseDelivery
         }
 
         foreach (array_unique($inbox_urls) as $inbox_url) {
-            // Checked at queue time and again nowhere else: a domain blocked
-            // after something was queued for it still gets skipped, because the
-            // worker checks too.
+            // Nothing is queued for a server already blocked, so the queue
+            // doesn't fill with rows whose only future is to be refused. A
+            // domain blocked after the fact is covered twice over: blocking
+            // deletes what is queued for it, and SafeHTTPFetcher refuses the
+            // send regardless.
             if (BlockedDomain::blocksURL($inbox_url)) {
                 continue;
             }

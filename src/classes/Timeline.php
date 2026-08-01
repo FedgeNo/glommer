@@ -51,9 +51,6 @@ SELECT `localUserId`
     }
 
     /**
-     * @param int[] $recipient_ids
-     */
-    /**
      * Puts a post into a reposter's friends' feeds, marked as theirs.
      *
      * INSERT IGNORE, so a post already in someone's feed keeps the row it has -
@@ -78,6 +75,9 @@ DELETE FROM `Timelines`
 ', 'ii', $post_id, $reposter_id);
     }
 
+    /**
+     * @param int[] $recipient_ids
+     */
     private static function fanOutToUsers(array $recipient_ids, int $post_id, ?int $reposter_id = null): void
     {
         $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?, ?)'));

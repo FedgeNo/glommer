@@ -371,13 +371,6 @@ SELECT COUNT(*) AS `total`
     }
 
     /**
-     * Deletes a post and (via the parentId cascade) its whole reply subtree,
-     * cleaning up every descendant's media files - which the row cascade can't
-     * do. The single place a post is destroyed, used both by the owner's own
-     * delete and by a moderator deleting reported content. Caller is
-     * responsible for the authorization check.
-     */
-    /**
      * Sets or clears the sensitive classification on its own. The author
      * reclassifies through the ordinary edit, which rewrites the whole row;
      * this is for a moderator acting on somebody else's post, where nothing
@@ -392,6 +385,13 @@ UPDATE `Posts`
 ', 'ii', $sensitive ? 1 : 0, $post_id);
     }
 
+    /**
+     * Deletes a post and (via the parentId cascade) its whole reply subtree,
+     * cleaning up every descendant's media files - which the row cascade can't
+     * do. The single place a post is destroyed, used both by the owner's own
+     * delete and by a moderator deleting reported content. Caller is
+     * responsible for the authorization check.
+     */
     public static function delete(int $post_id): void
     {
         // Collect the post plus all descendant replies, since the row DELETE

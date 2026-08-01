@@ -60,6 +60,12 @@ class ActivityPubActor
         return ServerURL::absolute('/users/' . $user -> slug . '/following');
     }
 
+    /** Where the network looks for someone's pinned posts. */
+    public static function featuredFor(User $user): string
+    {
+        return ServerURL::absolute('/users/' . $user -> slug . '/featured');
+    }
+
     /** The key id a remote server sees in a signature and dereferences back to. */
     public static function keyIdFor(User $user): string
     {
@@ -236,6 +242,7 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
             'outbox' => self::outboxFor($user),
             'followers' => self::followersFor($user),
             'following' => self::followingFor($user),
+            'featured' => self::featuredFor($user),
             'endpoints' => ['sharedInbox' => ServerURL::absolute('/activitypub/inbox')],
             'manuallyApprovesFollowers' => false,
             'discoverable' => true,

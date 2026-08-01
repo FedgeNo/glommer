@@ -203,6 +203,22 @@ CREATE TABLE `Announces` (
   CONSTRAINT `Announces_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Posts a member has pinned to the top of their own profile. Their own posts
+-- only, and capped - a pinned list that can hold everything pins nothing.
+--
+-- Federates as the actor's `featured` collection, which is where the rest of
+-- the network looks for exactly this.
+CREATE TABLE `PinnedPosts` (
+  `userId` int(10) unsigned NOT NULL,
+  `postId` int(10) unsigned NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`userId`,`postId`),
+  KEY `userId_createdAt` (`userId`,`createdAt`),
+  KEY `fk_pinnedposts_post` (`postId`),
+  CONSTRAINT `PinnedPosts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_pinnedposts_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Bookmarks` (
   `bookmarkId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,

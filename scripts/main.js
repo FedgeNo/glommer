@@ -62,6 +62,7 @@ if (document.querySelector('.VideoCallTestPanel'))     import('/scripts/VideoCal
 if (document.querySelector('.RememberedDeviceRevokeButton')) import('/scripts/RememberedDevice.js');
 if (document.querySelector('.LogoutEverywherePanel'))  import('/scripts/LogoutEverywherePanel.js');
 if (document.querySelector('.PostShareButton'))        import('/scripts/PostShareButton.js');
+if (document.querySelector('.PostPinButton'))          import('/scripts/PostPinButton.js');
 if (document.querySelector('.PostMap'))                import('/scripts/PostMap.js');
 if (document.querySelector('.NearbyLocationButton'))   import('/scripts/NearbyLocationPrompt.js');
 if (document.querySelector('.MapSettingsForm'))        import('/scripts/MapSettingsForm.js');

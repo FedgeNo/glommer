@@ -35,6 +35,7 @@ class PostActionBar extends Footer
             $actions -> addContent($this -> bookmarkButton());
 
             if ($this -> postUserId === Auth::id()) {
+                $actions -> addContent($this -> pinButton());
                 $actions -> addContent($this -> editButton());
                 $actions -> addContent($this -> deleteButton());
             } elseif ($this -> postUserId !== 1) {
@@ -119,6 +120,12 @@ SELECT 1
     protected function deleteButton(): HTMLObject
     {
         return new PostDeleteButton($this -> standalone);
+    }
+
+    /** Only ever on your own post - the caller has already checked that. */
+    protected function pinButton(): HTMLObject
+    {
+        return new PostPinButton(PinnedPost::isPinned((int) Auth::id(), (int) $this -> postId));
     }
 
     protected function reportButton(): HTMLObject

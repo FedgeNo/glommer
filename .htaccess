@@ -159,6 +159,7 @@
     RewriteRule ^users/([^/]+)/outbox$ activitypub-outbox.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/followers$ activitypub-followers.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/following$ activitypub-following.php?username=$1 [L,QSA]
+    RewriteRule ^users/([^/]+)/featured$ activitypub-featured.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/([0-9]+)$ post.php?username=$1&id=$2 [L,QSA]
     RewriteRule ^users/([^/]+)/$ user.php?username=$1 [L,QSA]
 

@@ -69,6 +69,9 @@ $page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> 
 
 $page -> addContent($profile_user);
 
+// Above the ordinary posts, which is the whole point of pinning one.
+$page -> addContent(new PinnedPostSection(['userId' => $user_id]));
+
 $profile_feed = new ProfileFeedSection(['userId' => $user_id]);
 
 if ($profile_feed -> hasItems()) {

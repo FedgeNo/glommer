@@ -53,6 +53,8 @@ says so, because that means bumping `GLOMMER_VERSION` and running
   audience, in both directions. Remote profiles carry a Message button, the
   thread is marked as less private (stored on two servers, readable by both
   operators), and video calling is not offered there.
+- **Pinned posts.** Up to five of a member's own posts, shown above their feed
+  and published as the actor's `featured` collection.
 
 ## Before 1.0, regardless of the list below
 
@@ -72,13 +74,17 @@ Rehearse on dev.
 Nothing here reposts yet, so there is no local action to federate. Inbound
 boosts are recorded; sending one needs the site feature first.
 
+The open question is what a repost does to local feeds. `Timelines` is keyed
+`(userId, postId)` with no record of *why* a post is in someone's feed, so
+fanning a repost out is easy but withdrawing one is not - deleting the row
+would also remove a post that is there because its author is your friend.
+Either a repost adds nothing to local feeds (and is purely a federation
+signal), or `Timelines` grows a column saying who put it there. Worth deciding
+before building, not during.
+
 ### 2. Account migration (`Move`)
 `alsoKnownAs` and `movedTo`, so someone can arrive with their followers intact
 or leave without stranding them.
-
-### 3. Pinned posts
-Wanted on the site regardless; federates as the `featured` collection.
-**Schema change.**
 
 ### 4. Custom emoji (`Emoji` tags)
 Shortcodes carried as `Emoji` tags with image URLs, so `:shortcode:` from a

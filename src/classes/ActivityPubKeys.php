@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * The one site-wide ActivityPub signing identity (not per-user - the local
  * user who initiated a given follow is purely our own bookkeeping via
- * RemoteFollows; the remote side only ever sees "this Glommer instance").
+ * RemoteFollows; a member's own follows are signed by their own key).
  * The keypair itself is generated once by bin/install.php, never hand-run -
  * see ensure_activitypub_keypair() there. The private key is encrypted at
  * rest (Settings holds only ciphertext) using ACTIVITYPUB_ENCRYPTION_KEY, a

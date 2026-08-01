@@ -12,7 +12,7 @@ if ($tag === '') {
     $popular = new HashtagGraphSection();
     $trending = new TrendingHashtagSection();
 
-    $page = new Page(['title' => 'Tags', 'description' => 'Browse trending and popular hashtags on Glommer.', 'needsTagGraph' => true]);
+    $page = new Page(['title' => 'Tags', 'description' => 'Browse trending and popular hashtags on ' . Config::get('siteTitle') . '.', 'needsTagGraph' => true]);
 
     if (!$popular -> hasItems() && !$trending -> hasItems()) {
         $page -> addContent(new Notice('No hashtags yet.'));
@@ -46,7 +46,7 @@ if (!$feed -> hasItems()) {
     exit;
 }
 
-$page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on Glommer.', 'needsMath' => true, 'needsEditor' => Auth::check()]);
+$page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on ' . Config::get('siteTitle') . '.', 'needsMath' => true, 'needsEditor' => Auth::check()]);
 
 $page -> addContent($feed);
 

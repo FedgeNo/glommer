@@ -36,6 +36,8 @@ CREATE TABLE `Users` (
   `remoteActorSharedInboxURL` varchar(255) DEFAULT NULL,
   `actorPublicKeyPem` text DEFAULT NULL,
   `actorEncryptedPrivateKey` text DEFAULT NULL,
+  `movedToURI` varchar(255) DEFAULT NULL,
+  `alsoKnownAs` text DEFAULT NULL,
   `chatOtherUserId` int(10) unsigned DEFAULT NULL,
   `chatLastSeen` datetime DEFAULT NULL,
   PRIMARY KEY (`userId`),

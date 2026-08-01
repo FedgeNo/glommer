@@ -22,6 +22,8 @@ $page -> addContent(new SettingsSection('Sessions', new LogoutEverywherePanel())
 
 $page -> addContent(new SettingsSection('Fediverse', new RemoteFollowsForm(RemoteFollow::listForUser((int) Auth::user() -> userId))));
 
+$page -> addContent(new SettingsSection('Moving Servers', new AccountMigrationForm()));
+
 // The site needs at least one admin account to function - api/delete-account.php
 // rejects userId 1 too, but there's no reason to show the form at all here.
 if ((int) Auth::user() -> userId !== 1) {

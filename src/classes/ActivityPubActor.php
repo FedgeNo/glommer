@@ -260,6 +260,18 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
             $document['summary'] = '<p>' . htmlspecialchars($user -> description, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
         }
 
+        // Both halves of a migration. movedTo says this account has left;
+        // alsoKnownAs says which accounts may move onto it.
+        if (is_string($user -> movedToURI) && $user -> movedToURI !== '') {
+            $document['movedTo'] = $user -> movedToURI;
+        }
+
+        $aliases = ActivityPubMove::aliasesFor($user);
+
+        if ($aliases !== []) {
+            $document['alsoKnownAs'] = $aliases;
+        }
+
         if ((int) $user -> hasAvatar === 1) {
             $document['icon'] = [
                 'type' => 'Image',

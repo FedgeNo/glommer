@@ -69,6 +69,10 @@ says so, because that means bumping `GLOMMER_VERSION` and running
   output, in both languages, from one generated table. Never stored, so what an
   author typed is what an edit gives back - and an unknown name survives intact,
   which is the room custom emoji will need.
+- **Account migration.** `movedTo` and `alsoKnownAs` on the actor, a settings
+  form for both halves, outbound `Move` to followers, and inbound handling that
+  moves a member's follow to the new account - only once both accounts claim
+  each other.
 
 ## Before 1.0, regardless of the list below
 
@@ -94,13 +98,9 @@ there is nothing of ours to publish. Inbound is the useful half and is no longer
 blocked by the plain-text reduction, since the tag travels beside the content
 rather than inside it.
 
-### 2. Account migration (`Move`)
-`alsoKnownAs` and `movedTo`, so someone can arrive with their followers intact
-or leave without stranding them.
-
-### 3. Polls (`Question`)
+### 2. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.
 
-### 4. Relays
+### 3. Relays
 Subscribing to a relay puts posts in front of servers that do not already follow
 anyone here - the usual answer to a small instance seeing nothing.

@@ -26,6 +26,7 @@ class ActivityPubInbox
             'Announce' => self::handleAnnounce($activity, $signed_actor_uri),
             'Flag' => self::handleFlag($activity, $signed_actor_uri),
             'Block' => self::handleBlock($activity, $signed_actor_uri),
+            'Move' => self::handleMove($activity, $signed_actor_uri),
             default => null,
         };
     }
@@ -41,6 +42,16 @@ class ActivityPubInbox
         }
 
         ActivityPubBlock::received($target_uri, $blocker);
+    }
+
+    /** Somebody a member here follows has changed servers. */
+    private static function handleMove(array $activity, string $actor_uri): void
+    {
+        $mover = self::shadowUserFor($actor_uri);
+
+        if ($mover !== null) {
+            ActivityPubMove::received($activity, $mover);
+        }
     }
 
     /** An abuse report from another server about something here. */

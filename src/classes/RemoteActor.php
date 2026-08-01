@@ -23,7 +23,7 @@ class RemoteActor
     /** Far above any real RSA/Ed25519 PEM, and well inside the TEXT column that holds it. */
     private const MAX_PUBLIC_KEY_LENGTH = 8192;
 
-    /** @return array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string}|null */
+    /** @return array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string, alsoKnownAs: string[]}|null */
     public static function fetch(string $actor_uri): ?array
     {
         // Signed: an instance in secure mode will not hand over an actor to an
@@ -82,10 +82,20 @@ class RemoteActor
             ? $shared_inbox
             : null;
 
+        // The aliases this account claims. Half of a migration handshake: a
+        // Move is only acted on when the destination independently names the
+        // account that says it is leaving.
+        $also_known_as = $data['alsoKnownAs'] ?? [];
+        $also_known_as = array_values(array_filter(
+            is_array($also_known_as) ? $also_known_as : [$also_known_as],
+            static fn ($alias): bool => is_string($alias) && $alias !== ''
+        ));
+
         return [
             'id' => $id,
             'inbox' => $data['inbox'],
             'sharedInbox' => $shared_inbox,
+            'alsoKnownAs' => $also_known_as,
             'publicKeyPem' => $data['publicKey']['publicKeyPem'],
             'preferredUsername' => mb_substr($preferred_username, 0, self::MAX_DISPLAY_NAME_LENGTH),
             'name' => mb_substr($name, 0, self::MAX_DISPLAY_NAME_LENGTH),

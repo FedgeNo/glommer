@@ -49,6 +49,7 @@ if (document.querySelector('.PasswordResetForm'))      import('/scripts/Password
 if (document.querySelector('.BotProtectionSettingsForm')) import('/scripts/BotProtectionSettingsForm.js');
 if (document.querySelector('.GoogleAuthSettingsForm')) import('/scripts/GoogleAuthSettingsForm.js');
 if (document.querySelector('.RemoteFollowsForm'))      import('/scripts/RemoteFollowsForm.js');
+if (document.querySelector('.AccountMigrationForm'))    import('/scripts/AccountMigrationForm.js');
 if (document.querySelector('.MailSettingsForm'))       import('/scripts/MailSettingsForm.js');
 if (document.querySelector('.SiteInfoSettingsForm'))   import('/scripts/SiteInfoSettingsForm.js');
 if (document.querySelector('.AvatarUploadForm'))       import('/scripts/AvatarUploadForm.js');

@@ -13,6 +13,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
+// Public, like the thread it pages: a permalink shows its replies to anyone.
+// Paced per client for the same reason map-posts and nearby-history are - a
+// page here hydrates every reply with its media, author and the viewer's like
+// and bookmark state, so it costs meaningfully more than the single indexed
+// read it looks like, and nothing else stands between it and a loop.
+$rate_key = 'reply-history:' . (ServerURL::clientIP() ?? 'unknown');
+
+if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+    JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 $parent_id = (int) ($payload['parentId'] ?? 0);
 // How many replies the client already shows - the next page starts there.
 $offset = max(0, (int) ($payload['offset'] ?? 0));

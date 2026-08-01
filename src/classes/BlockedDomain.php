@@ -128,11 +128,29 @@ DELETE FROM `BlockedDomains`
 
         $placeholders = implode(', ', array_fill(0, count($candidates), '?'));
 
-        return DB::row('
+        try {
+            return DB::row('
 SELECT `domain`
     FROM `BlockedDomains`
     WHERE `domain` IN (' . $placeholders . ')
 ', 'BlockedDomainData', str_repeat('s', count($candidates)), ...$candidates) !== null;
+        } catch (\mysqli_sql_exception $exception) {
+            // 1146 is "no such table". Every outbound request passes through
+            // this, including the ones bin/install.php makes while checking the
+            // environment - which happens before the schema step has created
+            // anything, so on a database being upgraded from a version that
+            // predates this table there is nothing to read. A blocklist that
+            // does not exist yet blocks nothing.
+            //
+            // Narrowed to that one code deliberately: any other database
+            // failure here has to keep throwing rather than be read as
+            // permission to make the request.
+            if ($exception -> getCode() !== 1146) {
+                throw $exception;
+            }
+
+            return false;
+        }
     }
 
     /** @return BlockedDomainData[] */

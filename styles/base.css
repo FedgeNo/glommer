@@ -113,11 +113,18 @@ select {
     background-color: var(--surface);
     color: var(--ink);
     border: 1px solid var(--hairline);
-    border-radius: var(--radius-ctl);
+    border-radius: 999px;
     padding: 0.5rem;
     font-size: 0.9375rem;
     width: 100%;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* A single-line control is button-shaped, so it takes the button's pill. A
+   textarea is not: the same radius on something several lines tall curves its
+   corners in through the text. */
+textarea {
+    border-radius: var(--radius-ctl);
 }
 
 input:focus,
@@ -150,9 +157,14 @@ select {
 }
 
 input[type='file'] {
-    max-width: calc(14rem + 3ch);
+    /* Wide enough for the button it draws and nothing else - the browser's
+       "no file chosen" beside it says what the composer already shows. */
+    width: 5.7rem;
     min-width: 0;
-    width: 100%;
+    /* The control is its own button, which brings its own padding. The field
+       padding on top only made it taller than every other file input on the
+       site, which is what the composer was overriding locally. */
+    padding: 0;
     border-style: none;
     color: var(--muted);
     font-size: 0.8125rem;

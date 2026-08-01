@@ -354,8 +354,6 @@ emoji-picker {
 }
 
 .Composer fieldset { margin-bottom: 0.5rem; }
-.Composer input[type='file'] { padding: 0; }
-
 .ComposerActions {
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -672,11 +670,15 @@ label.visually-hidden { margin-bottom: 0; }
     color: var(--ink);
     background-color: var(--surface);
     border: 1px solid var(--hairline);
-    border-radius: var(--radius-ctl);
     padding: 0.5rem;
 }
 
+.DisplayNameInput {
+    border-radius: 999px;
+}
+
 .UserBioInput {
+    border-radius: var(--radius-ctl);
     min-height: 4.5rem;
     resize: vertical;
 }
@@ -1004,6 +1006,7 @@ body.MessagesPage { padding-bottom: 9rem; }
    exactly as an unmarked post's would, so nothing about the layout depends on
    which state it is in. */
 .SensitiveMedia {
+    margin-top: 0.5rem;
     border: 1px solid var(--hairline);
     border-radius: var(--radius-ctl);
     overflow: hidden;

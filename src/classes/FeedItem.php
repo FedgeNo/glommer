@@ -12,6 +12,11 @@ class FeedItem extends Figure
     public ?string $createdAt = null;
     public ?string $altText = null;
 
+    // Where this item's file lives on the server that sent it. Null for
+    // anything posted here, which is the common case and the one with bytes
+    // on local disk.
+    public ?string $remoteURL = null;
+
     // When true, the real media URL is emitted as data-src (data-poster for a
     // video's thumbnail) instead of src, so the browser doesn't fetch it until
     // the carousel promotes it. Carousel sets this on items past the first few.
@@ -32,13 +37,33 @@ class FeedItem extends Figure
         return parent::toDOM();
     }
 
+    /**
+     * Remote media is addressed by this item's own id, never by the remote
+     * URL: the URL is looked up here, on the server, exactly the way rendering
+     * the post looks it up. Nothing a visitor sends chooses what gets fetched,
+     * which is the difference between a media proxy and an open one.
+     */
     public function srcURL(): string
     {
+        if ($this -> remoteURL !== null) {
+            return RemoteMedia::proxyURL((int) $this -> itemId);
+        }
+
         return ServerURL::absolute(UploadProcessor::srcPath((int) $this -> itemId, (string) $this -> type));
     }
 
+    /**
+     * Nothing generates a thumbnail for remote media - it isn't ours to
+     * transcode, and one would mean storing a copy. Callers already treat a
+     * missing thumbnail as "use the full file" (an image) or "no poster" (a
+     * video).
+     */
     public function imageURL(): ?string
     {
+        if ($this -> remoteURL !== null) {
+            return null;
+        }
+
         $path = UploadProcessor::thumbnailPath((int) $this -> itemId, (string) $this -> type);
 
         return $path !== null ? ServerURL::absolute($path) : null;
@@ -61,8 +86,27 @@ class FeedItem extends Figure
         $item -> postId = $row -> postId;
         $item -> type = $row -> type;
         $item -> createdAt = $row -> createdAt;
+        $item -> remoteURL = $row -> remoteURL;
+        $item -> altText = $row -> altText;
 
         return $item;
+    }
+
+    /** What the remoteURL and altText columns hold, so callers can refuse what won't fit. */
+    public const MAX_REMOTE_URL_LENGTH = 500;
+    public const MAX_ALT_TEXT_LENGTH = 1000;
+
+    /**
+     * Records one attachment on a post that arrived from another server. No
+     * bytes are fetched here - only the address of them, which RemoteMedia
+     * resolves per request.
+     */
+    public static function createRemote(int $post_id, string $type, string $remote_url, ?string $alt_text): void
+    {
+        DB::run('
+INSERT INTO `FeedItems` (`postId`, `type`, `remoteURL`, `altText`)
+    VALUES (?, ?, ?, ?)
+', 'isss', $post_id, $type, $remote_url, $alt_text);
     }
 
     /**

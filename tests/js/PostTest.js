@@ -58,6 +58,29 @@ export default {
             TestCase.assertEquals('https://example.com/uploads/2a/42-thumb.jpg', image.getAttribute('src'));
             TestCase.assertEquals('https://example.com/uploads/2a/42.jpg', image.dataset.fullSrc);
         },
+        'classified media sits behind the same cover the server renders'() {
+            const element = post_element({ sensitive: true });
+            const cover = element.querySelector('details.SensitiveMedia');
+
+            TestCase.assertNotNull(cover);
+            TestCase.assertEquals('SUMMARY', cover.firstElementChild.tagName);
+            TestCase.assertNotNull(cover.querySelector('.FeedItem'), 'the media belongs inside the cover');
+        },
+        'unclassified media is just shown'() {
+            const element = post_element();
+
+            TestCase.assertNull(element.querySelector('details.SensitiveMedia'));
+            TestCase.assertNotNull(element.querySelector('.FeedItem'));
+        },
+        'a remote attachment describes itself'() {
+            // The server prefers the sender's per-attachment alt text over the
+            // post-level fallback; FeedItem.php does the same.
+            const element = post_element({
+                items: [{ itemType: 'ImageItem', src: '/media-9', image: null, altText: 'a cat asleep on a keyboard' }],
+            });
+
+            TestCase.assertEquals('a cat asleep on a keyboard', element.querySelector('.FeedItem img').alt);
+        },
         'the icon buttons carry the shared Button look'() {
             const fullscreen = post_element().querySelector('.MediaFullscreenButton');
 

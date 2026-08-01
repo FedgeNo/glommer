@@ -87,6 +87,11 @@ class ReportCard extends Article
             $actions -> addContent(new ReportedContentDeleteButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> type)));
         }
 
+        // Only a post has media to put behind a cover.
+        if ($this -> targetLive && $this -> type === 'post') {
+            $actions -> addContent(new ReportedContentClassifyButton((int) $this -> reportId));
+        }
+
         $actions -> addContent(new ReportDismissButton((int) $this -> reportId));
 
         $this -> contents[] = $actions;

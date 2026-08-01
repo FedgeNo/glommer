@@ -63,7 +63,7 @@ class ActivityPubNote
             'published' => ActivityPubActor::timestamp((string) $post -> createdAt),
             'to' => [ActivityPubActor::PUBLIC_AUDIENCE],
             'cc' => [ActivityPubActor::followersFor($author)],
-            'sensitive' => false,
+            'sensitive' => $post -> sensitive === 1,
         ];
 
         if ($title !== '') {

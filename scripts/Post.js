@@ -29,6 +29,7 @@ export class Post {
     rawDescriptionDelta = null;
     items = [];
     imageAltText = null;
+    sensitive = false;
     replyCount = 0;
     likeCount = 0;
     liked = false;
@@ -170,7 +171,10 @@ export class Post {
             wrapper.appendWithSpace(audio);
         } else {
             const img = document.createElement('img');
-            img.alt = this.imageAltText || 'Image';
+
+            // A remote attachment describes itself; ours is described by the
+            // post it belongs to. Same order of preference as FeedItem's.
+            img.alt = item.altText || this.imageAltText || 'Image';
 
             // The feed shows the thumbnail and carries the display-size URL for
             // fullscreen to swap in, exactly as ImageItem.php renders it.
@@ -197,6 +201,24 @@ export class Post {
         button.setAttribute('aria-label', 'Fullscreen');
         button.textContent = '⛶';
         return button;
+    }
+
+    /**
+     * The disclosure SensitiveMedia.php renders, built the same way: a real
+     * <details>, so opening it needs no script of ours.
+     */
+    static sensitiveCover(media) {
+        const cover = document.createElement('details');
+        cover.className = 'SensitiveMedia';
+
+        const summary = document.createElement('summary');
+        summary.className = 'SensitiveMediaSummary';
+        summary.textContent = 'Sensitive media';
+
+        cover.appendWithSpace(summary);
+        cover.appendWithSpace(media);
+
+        return cover;
     }
 
     itemsToCarousel() {
@@ -273,12 +295,17 @@ export class Post {
                 }
             }
 
+            let media = null;
+
             if (this.items.length > 1) {
-                post.appendWithSpace(this.itemsToCarousel());
+                media = this.itemsToCarousel();
             } else if (this.items.length === 1) {
-                const wrapper = this.itemToElement(this.items[0]);
-                wrapper.appendWithSpace(this.mediaFullscreenButtonElement());
-                post.appendWithSpace(wrapper);
+                media = this.itemToElement(this.items[0]);
+                media.appendWithSpace(this.mediaFullscreenButtonElement());
+            }
+
+            if (media) {
+                post.appendWithSpace(this.sensitive ? Post.sensitiveCover(media) : media);
             }
 
             if (this.descriptionDelta) {

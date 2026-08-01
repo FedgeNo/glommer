@@ -45,6 +45,11 @@ $title = mb_substr(trim((string) ($payload['title'] ?? '')), 0, 255);
 $description_raw = (string) ($payload['description'] ?? '');
 $link_url = trim((string) ($payload['linkURL'] ?? ''));
 
+// Reclassifying is the one thing about attached media an edit can change: the
+// media itself is fixed at creation, but whether it should be shown unasked is
+// a judgement the author is allowed to revise.
+$sensitive = ($payload['sensitive'] ?? false) === true ? 1 : 0;
+
 // Mirrors create-post.php's Delta validation exactly - same limits, same
 // sanitize/plaintext derivation, so an edited post is held to the identical
 // rules a new one is.
@@ -122,9 +127,9 @@ $edited_at = date('Y-m-d H:i:s');
 
 DB::run('
 UPDATE `Posts`
-    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `editedAt` = ?
+    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `sensitive` = ?, `editedAt` = ?
     WHERE `postId` = ?
-', 'sssssi', $title_value, $description_value, $description_delta_value, $link_url_value, $edited_at, $post_id);
+', 'ssssisi', $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $edited_at, $post_id);
 
 Hashtag::reindexPost($post_id, $description_ops);
 Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user -> userId, $post_id);

@@ -999,6 +999,52 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 /* ---------- Carousel ---------- */
 
+/* Media the author or a moderator classified as sensitive. Closed, it is a
+   plain labelled bar taking up almost no room; open, the media sits below it
+   exactly as an unmarked post's would, so nothing about the layout depends on
+   which state it is in. */
+.SensitiveMedia {
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    overflow: hidden;
+}
+
+.SensitiveMediaSummary {
+    padding: 0.5rem 1rem;
+    color: var(--muted);
+    background: var(--button-image);
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.875rem;
+}
+
+.SensitiveMediaSummary:hover {
+    background: var(--button-image-hover);
+    color: var(--ink);
+}
+
+/* The disclosure triangle is the one part of a <summary> that can't be styled
+   consistently across browsers, and the bar already reads as a control. */
+.SensitiveMediaSummary::-webkit-details-marker { display: none; }
+.SensitiveMediaSummary { list-style: none; }
+
+.SensitiveMedia[open] .SensitiveMediaSummary {
+    border-bottom: 1px solid var(--hairline);
+}
+
+.SensitiveMediaToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.SensitiveMediaToggle:hover { color: var(--ink); }
+
 .Carousel {
     position: relative;
     overflow: hidden;

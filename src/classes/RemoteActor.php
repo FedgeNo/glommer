@@ -235,7 +235,7 @@ SELECT `slug`
      * with a host - anything unparseable is "not the same", so a malformed
      * value can never pass by both sides failing to parse.
      */
-    private static function sameHost(string $url, string $other_url): bool
+    public static function sameHost(string $url, string $other_url): bool
     {
         $host = parse_url($url, PHP_URL_HOST);
         $other_host = parse_url($other_url, PHP_URL_HOST);

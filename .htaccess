@@ -95,6 +95,10 @@
     RewriteRule ^feeds\.opml$ site-opml.php [L,QSA]
     RewriteRule ^feeds-([0-9]+)\.opml$ site-opml.php?shard=$1 [L,QSA]
     RewriteRule ^emoji-shortcodes\.js$ emoji-shortcodes.php [L,QSA]
+
+    # A remote post's media, addressed by the id of the item that holds it -
+    # never by the remote URL, which is looked up server-side (see RemoteMedia).
+    RewriteRule ^media-([0-9]+)$ remote-media.php?item=$1 [L,QSA]
     RewriteRule ^health$ health.php [L,QSA]
     RewriteRule ^environment-check$ environment-check.php [L,QSA]
 

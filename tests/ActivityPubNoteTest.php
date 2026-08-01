@@ -86,6 +86,25 @@ SELECT *
         $this -> assertSame('A Real Title', $document['name']);
     }
 
+    public function testAClassifiedPostSaysSoOnTheWire(): void
+    {
+        // Without this the far side shows the media unasked, which is the one
+        // thing the classification exists to stop.
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "careful\n"]]);
+
+        $this -> assertFalse(ActivityPubNote::document($post, $user)['sensitive']);
+
+        Post::classify((int) $post -> postId, true);
+        $classified = DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', (int) $post -> postId);
+
+        $this -> assertTrue(ActivityPubNote::document($classified, $user)['sensitive']);
+    }
+
     private static function attach(int $post_id, string $type): void
     {
         DB::run('

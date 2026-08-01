@@ -53,12 +53,20 @@ SELECT `postId`
 ', 'PinnedPostData', 'ii', $user_id, $post_id) !== null;
     }
 
+    /**
+     * Counts what the profile actually shows, joining Posts the same way
+     * postsFor() does. The cap is enforced from this, and a pin whose post no
+     * longer exists is invisible - so counting it would hold a slot its owner
+     * has no way to reach and free. The cascade normally removes such a row
+     * with the post; this is what keeps the cap honest if one ever survives.
+     */
     public static function countFor(int $user_id): int
     {
         $row = DB::row('
 SELECT COUNT(*) AS `total`
     FROM `PinnedPosts`
-    WHERE `userId` = ?
+    JOIN `Posts` ON `Posts`.`postId` = `PinnedPosts`.`postId`
+    WHERE `PinnedPosts`.`userId` = ?
 ', 'PostCountData', 'i', $user_id);
 
         return $row === null ? 0 : (int) $row -> total;
@@ -108,6 +116,61 @@ SELECT `Posts`.*
         }
 
         return $uris;
+    }
+
+    /**
+     * Tells followers elsewhere that this member's featured collection changed.
+     *
+     * The collection is served and could simply be re-read, but nothing would
+     * prompt anyone to re-read it - a profile fetched once stays as it was
+     * fetched. Add/Remove is how the rest of the network says a pin changed,
+     * so it is how a pin here changes anywhere else.
+     */
+    public static function publish(User $user, int $post_id, bool $pinning): void
+    {
+        if (!ActivityPubActor::isLocal($user) || $user -> userId === null) {
+            return;
+        }
+
+        $object_uri = self::objectURIFor($post_id);
+
+        if ($object_uri === null) {
+            return;
+        }
+
+        FediverseDelivery::fanOut($user, [
+            '@context' => 'https://www.w3.org/ns/activitystreams',
+            // Stable per (person, post, direction), so pinning something twice
+            // is the same activity rather than one the far side must reconcile.
+            'id' => ServerURL::absolute('/activitypub/featured/' . ($pinning ? 'add' : 'remove') . '/' . (int) $user -> userId . '-' . $post_id),
+            'type' => $pinning ? 'Add' : 'Remove',
+            'actor' => ActivityPubActor::uriFor($user),
+            'object' => $object_uri,
+            'target' => ActivityPubActor::featuredFor($user),
+            'to' => [ActivityPubActor::PUBLIC_AUDIENCE],
+            'cc' => [ActivityPubActor::followersFor($user)],
+        ]);
+    }
+
+    /** What was pinned: its own URI when the post came from elsewhere. */
+    private static function objectURIFor(int $post_id): ?string
+    {
+        $row = DB::row('
+SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ?
+', 'PostParentData', 'i', $post_id);
+
+        if ($row === null) {
+            return null;
+        }
+
+        if (is_string($row -> remoteObjectURI) && $row -> remoteObjectURI !== '') {
+            return $row -> remoteObjectURI;
+        }
+
+        return ServerURL::absolute('/users/' . $row -> slug . '/' . (int) $row -> postId);
     }
 
     private static function ownsPost(int $user_id, int $post_id): bool

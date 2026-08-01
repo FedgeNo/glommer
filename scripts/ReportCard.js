@@ -136,6 +136,16 @@ export class ReportCard {
             actions.appendWithSpace(delete_button);
         }
 
+        // Only a post has media to put behind a cover.
+        if (this.targetLive && this.targetType === 'post') {
+            const classify_button = document.createElement('button');
+            classify_button.type = 'button';
+            classify_button.className = 'Button ReportedContentClassifyButton';
+            classify_button.dataset.reportId = this.reportId;
+            classify_button.textContent = 'Mark Sensitive';
+            actions.appendWithSpace(classify_button);
+        }
+
         const dismiss_button = document.createElement('button');
         dismiss_button.type = 'button';
         dismiss_button.className = 'Button ReportDismissButton';
@@ -175,8 +185,25 @@ export class ReportCard {
             const deleteBtn = event.target.closest('.ReportedContentDeleteButton');
             if (deleteBtn) {
                 ReportCard.#deleteContent(deleteBtn);
+                return;
+            }
+
+            const classifyBtn = event.target.closest('.ReportedContentClassifyButton');
+            if (classifyBtn) {
+                ReportCard.#classifyContent(classifyBtn);
             }
         });
+    }
+
+    static async #classifyContent(button) {
+        button.disabled = true;
+        try {
+            const result = await Api.post('/api/classify-reported-content', { reportId: button.dataset.reportId });
+            if (!result) return;
+            DOMUtils.slideOut(button.closest('.ReportCard'));
+        } finally {
+            button.disabled = false;
+        }
     }
 
     static async #dismiss(button) {

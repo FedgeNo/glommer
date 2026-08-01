@@ -101,6 +101,28 @@ class SafeHTTPFetcher
     }
 
     /**
+     * A GET whose body is handed to $sink in chunks instead of being collected
+     * into a string - for proxying a file far too big to want in memory, where
+     * every byte is going straight back out to the client anyway.
+     *
+     * $sink receives each chunk along with the response's content type, and
+     * returns false to abort the transfer (a type we won't serve, a client
+     * that has gone away). It is only ever called for a 2xx, so a redirect
+     * body is never mistaken for the file.
+     *
+     * @param string[] $headers
+     * @param callable(string, string): bool $sink
+     */
+    public static function stream(string $url, array $headers, int $max_bytes, callable $sink): bool
+    {
+        if (BlockedDomain::blocksURL($url)) {
+            return false;
+        }
+
+        return self::sendRequest('GET', $url, $headers, null, $max_bytes, self::MAX_REDIRECTS, [], $sink) !== null;
+    }
+
+    /**
      * The one implementation of "make an outbound request safely". Every
      * caller goes through here so the SSRF protections - resolve the host
      * ourselves, pin curl to that validated IP, IPv4 only, standard ports
@@ -108,9 +130,10 @@ class SafeHTTPFetcher
      *
      * @param string[] $headers
      * @param array<int, mixed> $extra_options
+     * @param null|callable(string, string): bool $sink
      * @return array{body: string, contentType: ?string}|null
      */
-    private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left, array $extra_options = []): ?array
+    private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left, array $extra_options = [], ?callable $sink = null): ?array
     {
         $parts = parse_url($url);
 
@@ -137,7 +160,9 @@ class SafeHTTPFetcher
         }
 
         $downloaded = '';
+        $streamed = 0;
         $exceeded_cap = false;
+        $sink_refused = false;
 
         $curl = curl_init();
         $options = [
@@ -153,7 +178,30 @@ class SafeHTTPFetcher
             CURLOPT_ENCODING => '',
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_WRITEFUNCTION => function ($handle, string $chunk) use (&$downloaded, &$exceeded_cap, $max_bytes) {
+            CURLOPT_WRITEFUNCTION => function ($handle, string $chunk) use (&$downloaded, &$streamed, &$exceeded_cap, &$sink_refused, $max_bytes, $sink) {
+                // A sink is only ever handed the body of a success. A redirect's
+                // own body, or an error page, is collected the ordinary way
+                // instead so the redirect handling below still works on it.
+                $status = (int) curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+                if ($sink !== null && $status >= 200 && $status < 300) {
+                    $streamed += strlen($chunk);
+
+                    if ($streamed > $max_bytes) {
+                        $exceeded_cap = true;
+
+                        return -1;
+                    }
+
+                    if (!$sink($chunk, (string) curl_getinfo($handle, CURLINFO_CONTENT_TYPE))) {
+                        $sink_refused = true;
+
+                        return -1;
+                    }
+
+                    return strlen($chunk);
+                }
+
                 $downloaded .= $chunk;
 
                 if (strlen($downloaded) > $max_bytes) {

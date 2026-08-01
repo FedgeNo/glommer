@@ -14,4 +14,6 @@ class FeedItemData
     public ?int $postId = null;
     public ?string $type = null;
     public ?string $createdAt = null;
+    public ?string $remoteURL = null;
+    public ?string $altText = null;
 }

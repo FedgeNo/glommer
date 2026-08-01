@@ -348,23 +348,25 @@ SELECT `DELETE_RULE`
 
         $schema_sql = (string) file_get_contents($schema_path);
 
-        // Remove the CREATE TABLE blocks (created separately).
-        $without_tables = (string) preg_replace('/CREATE TABLE `\w+` \([^;]+;/s', '', $schema_sql);
-
-        // Strip full-line `--` comments BEFORE splitting on `;` - a comment can
-        // contain a semicolon (the header does), which would otherwise split a
-        // comment into a bogus statement.
+        // Strip full-line `--` comments first, before anything else looks at a
+        // semicolon. Prose contains them freely, and both steps below treat a
+        // semicolon as a statement boundary: one inside a comment would end the
+        // CREATE TABLE match early and spill the rest of the table's columns
+        // out as though they were statements of their own.
         $code_lines = [];
 
-        foreach (explode("\n", $without_tables) as $line) {
+        foreach (explode("\n", $schema_sql) as $line) {
             if (!str_starts_with(trim($line), '--')) {
                 $code_lines[] = $line;
             }
         }
 
+        // Remove the CREATE TABLE blocks (created separately).
+        $without_tables = (string) preg_replace('/CREATE TABLE `\w+` \([^;]+;/s', '', implode("\n", $code_lines));
+
         $statements = [];
 
-        foreach (explode(';', implode("\n", $code_lines)) as $chunk) {
+        foreach (explode(';', $without_tables) as $chunk) {
             $statement = trim($chunk);
 
             if ($statement !== '') {

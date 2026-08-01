@@ -38,6 +38,13 @@ class Post extends Article
     // being reported again (see api/report.php).
     public ?int $reportsDismissed = null;
 
+    // Marks this post's media as something to opt into seeing rather than be
+    // shown unasked. Set by the author when posting or editing, and by a
+    // moderator on someone else's post; travels both ways over ActivityPub as
+    // `sensitive`. It hides media, not words - which is what the rest of the
+    // network does with the same flag, and what keeps a post readable.
+    public ?int $sensitive = null;
+
     // Whether a media post's description is truncated (with a "See More" link)
     // rather than shown in full. True in the feed, where a post is a preview;
     // PostPage flips it off so the permalink page shows the whole description.
@@ -116,6 +123,10 @@ class Post extends Article
             // enforces the same XOR create-post.php always has), and a media
             // post never had a link to begin with, so there's nothing to edit.
             $this -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
+
+            // So the edit form opens with the classification the post already
+            // carries, rather than silently clearing it on every save.
+            $this -> attributes['data-sensitive'] = $this -> sensitive === 1 ? '1' : '';
         }
 
         $this -> contents[] = $this -> contentElement();
@@ -180,16 +191,31 @@ class Post extends Article
             }
 
             foreach ($this -> items as $item) {
-                $item -> altText = $this -> imageAltText();
+                // Only where the item hasn't brought its own: a remote server
+                // sends alt text per attachment, which describes that picture,
+                // where ours is derived from the post and describes all of them.
+                $item -> altText ??= $this -> imageAltText();
             }
+
+            $media = null;
 
             if (count($this -> items) > 1) {
                 $carousel = new Carousel();
                 $carousel -> items = $this -> items;
-                $content -> contents[] = $carousel;
+                $media = $carousel;
             } elseif (count($this -> items) === 1) {
                 $this -> items[0] -> showFullscreenButton = true;
-                $content -> contents[] = $this -> items[0];
+                $media = $this -> items[0];
+            }
+
+            if ($media !== null) {
+                if ($this -> sensitive === 1) {
+                    $cover = new SensitiveMedia();
+                    $cover -> contents[] = $media;
+                    $media = $cover;
+                }
+
+                $content -> contents[] = $media;
             }
 
             if ($this -> descriptionDelta !== null) {
@@ -351,6 +377,21 @@ SELECT COUNT(*) AS `total`
      * delete and by a moderator deleting reported content. Caller is
      * responsible for the authorization check.
      */
+    /**
+     * Sets or clears the sensitive classification on its own. The author
+     * reclassifies through the ordinary edit, which rewrites the whole row;
+     * this is for a moderator acting on somebody else's post, where nothing
+     * else about it is theirs to change.
+     */
+    public static function classify(int $post_id, bool $sensitive): void
+    {
+        DB::run('
+UPDATE `Posts`
+    SET `sensitive` = ?
+    WHERE `postId` = ?
+', 'ii', $sensitive ? 1 : 0, $post_id);
+    }
+
     public static function delete(int $post_id): void
     {
         // Collect the post plus all descendant replies, since the row DELETE
@@ -487,6 +528,7 @@ DELETE
                 'itemType' => $item -> type,
                 'src' => $item -> srcURL(),
                 'image' => $item -> imageURL(),
+                'altText' => $item -> altText,
             ];
         }
 
@@ -514,6 +556,7 @@ DELETE
             'latitude' => $this -> latitude,
             'longitude' => $this -> longitude,
             'items' => $items,
+            'sensitive' => $this -> sensitive === 1,
             'imageAltText' => $this -> imageAltText(),
             'replyCount' => $reply_count,
             'likeCount' => $like_count,

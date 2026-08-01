@@ -27,8 +27,58 @@ class ActivityPubInbox
             'Flag' => self::handleFlag($activity, $signed_actor_uri),
             'Block' => self::handleBlock($activity, $signed_actor_uri),
             'Move' => self::handleMove($activity, $signed_actor_uri),
+            'Add' => self::handlePinChange($activity, $signed_actor_uri, true),
+            'Remove' => self::handlePinChange($activity, $signed_actor_uri, false),
             default => null,
         };
+    }
+
+    /**
+     * Somebody elsewhere pinned or unpinned one of their own posts.
+     *
+     * The target has to be a collection on the sender's own server, which is
+     * as precise as this can be: the actor document's featured collection URI
+     * isn't stored here, so there is nothing to compare a specific one
+     * against. It is enough in practice - the implementations that send these
+     * use them for pins, and the two things that could go wrong are both shut
+     * by other checks. An Add naming someone else's collection fails the host
+     * test; an Add of anything that isn't a post we hold (a featured hashtag,
+     * say) resolves to no post and stops there.
+     *
+     * Only a post already held gets pinned: a pin is not a reason to go and
+     * fetch something. One naming a post that arrives later simply doesn't
+     * show until the next Add.
+     */
+    private static function handlePinChange(array $activity, string $actor_uri, bool $pinning): void
+    {
+        $actor = self::shadowUserFor($actor_uri);
+        $object_uri = self::objectURI($activity['object'] ?? null);
+        $target = $activity['target'] ?? null;
+
+        if ($actor === null || $object_uri === null || !is_string($target)) {
+            return;
+        }
+
+        if (!RemoteActor::sameHost($target, $actor_uri)) {
+            return;
+        }
+
+        $post_id = self::postIdForRemoteObject($object_uri);
+
+        if ($post_id === null) {
+            return;
+        }
+
+        // PinnedPost::pin() refuses a post that isn't this actor's, which is
+        // also the check that stops one server pinning another's writing to a
+        // profile here.
+        if ($pinning) {
+            PinnedPost::pin((int) $actor -> userId, $post_id);
+
+            return;
+        }
+
+        PinnedPost::unpin((int) $actor -> userId, $post_id);
     }
 
     /** A remote account blocking a member here. */
@@ -351,9 +401,9 @@ SELECT `remoteFollowId`
 
         DB::run('
 UPDATE `Posts`
-    SET `description` = ?, `descriptionDelta` = ?, `editedAt` = current_timestamp()
+    SET `description` = ?, `descriptionDelta` = ?, `sensitive` = ?, `editedAt` = current_timestamp()
     WHERE `postId` = ?
-', 'ssi', $description, $description_delta, $post -> postId);
+', 'ssii', $description, $description_delta, ($object['sensitive'] ?? false) === true ? 1 : 0, $post -> postId);
     }
 
     private static function handleDelete(array $activity, string $actor_uri): void
@@ -438,11 +488,18 @@ UPDATE `Posts`
 
         [$description, $description_delta] = self::deltaFromContent(is_string($object['content'] ?? null) ? $object['content'] : '');
 
+        // The sending server's own classification, taken at its word: it is the
+        // only party that knows what it is sending, and the cost of trusting it
+        // is a cover over media that didn't need one.
+        $sensitive = ($object['sensitive'] ?? false) === true ? 1 : 0;
+
         $stmt = DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`)
-    VALUES (?, ?, ?, ?, ?)
-', 'iisss', $author -> userId, $parent_id, $description, $description_delta, $object_uri);
+INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`)
+    VALUES (?, ?, ?, ?, ?, ?)
+', 'iisssi', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive);
         $post_id = (int) mysqli_insert_id(DB::connection());
+
+        self::storeAttachments($object['attachment'] ?? null, $post_id);
 
         // Only top-level posts fan out to followers' feeds - a reply is
         // reached through the parent post's own reply list, the same as any
@@ -450,6 +507,118 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         if ($parent_id === null) {
             Timeline::fanOutRemotePost($actor_uri, $post_id);
         }
+    }
+
+    /**
+     * How many attachments one post may bring. Every server sets its own
+     * limit, so this is ours: a post claiming hundreds costs a bounded number
+     * of rows rather than however many it asked for.
+     */
+    private const MAX_ATTACHMENTS = 8;
+
+    /**
+     * The pictures, video and sound on an inbound post. Only the address of
+     * each is kept - the file itself stays on the server that published it and
+     * is proxied per request (see RemoteMedia), so nothing here downloads
+     * anything or commits this server to hosting it.
+     */
+    private static function storeAttachments(mixed $attachment, int $post_id): void
+    {
+        if (!is_array($attachment)) {
+            return;
+        }
+
+        // A lone attachment sometimes arrives unwrapped rather than as a
+        // one-element list.
+        if (isset($attachment['url']) || isset($attachment['mediaType'])) {
+            $attachment = [$attachment];
+        }
+
+        $stored = 0;
+
+        foreach ($attachment as $entry) {
+            if ($stored >= self::MAX_ATTACHMENTS) {
+                return;
+            }
+
+            if (!is_array($entry)) {
+                continue;
+            }
+
+            // A mediaType we don't serve is a refusal, not a reason to fall
+            // back on the object type - the fallback is for the servers that
+            // leave mediaType off entirely.
+            $media_type = $entry['mediaType'] ?? null;
+            $type = is_string($media_type) && $media_type !== ''
+                ? RemoteMedia::itemTypeFor($media_type)
+                : self::itemTypeForObjectType($entry['type'] ?? null);
+
+            $url = self::attachmentURL($entry['url'] ?? null);
+
+            if ($type === null || $url === null) {
+                continue;
+            }
+
+            $name = $entry['name'] ?? null;
+
+            FeedItem::createRemote(
+                $post_id,
+                $type,
+                $url,
+                is_string($name) && $name !== '' ? mb_substr($name, 0, FeedItem::MAX_ALT_TEXT_LENGTH) : null
+            );
+
+            $stored++;
+        }
+    }
+
+    private static function itemTypeForObjectType(mixed $type): ?string
+    {
+        return match ($type) {
+            'Image' => 'ImageItem',
+            'Video' => 'VideoItem',
+            'Audio' => 'AudioItem',
+            default => null,
+        };
+    }
+
+    /** ActivityStreams is loose here: a string, a Link object, or a list of either. */
+    private static function attachmentURL(mixed $url): ?string
+    {
+        if (is_string($url)) {
+            return self::usableMediaURL($url);
+        }
+
+        if (!is_array($url)) {
+            return null;
+        }
+
+        if (is_string($url['href'] ?? null)) {
+            return self::usableMediaURL($url['href']);
+        }
+
+        foreach ($url as $entry) {
+            if (is_array($entry) && is_string($entry['href'] ?? null)) {
+                $usable = self::usableMediaURL($entry['href']);
+
+                if ($usable !== null) {
+                    return $usable;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static function usableMediaURL(string $url): ?string
+    {
+        // https only - the proxy fetches this later, and a plain-HTTP fetch
+        // would put the file on the wire in the clear. Length is checked
+        // because a URL too long for the column is one that could be stored
+        // truncated and then fetched as something else entirely.
+        return str_starts_with($url, 'https://') && strlen($url) <= FeedItem::MAX_REMOTE_URL_LENGTH
+            ? $url
+            : null;
     }
 
     /** Posts.description is a TEXT column; MySQL runs strict, so an oversized value errors rather than truncating. */

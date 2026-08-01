@@ -106,6 +106,21 @@ export class PostEditor {
         const actions = document.createElement('div');
         actions.className = 'd-flex align-items-center gap-2 ms-auto';
 
+        // The media itself can't be changed here, but how it's classified can -
+        // opened with whatever the post already carries, so saving an unrelated
+        // typo fix doesn't quietly unmark it.
+        const sensitiveToggle = document.createElement('label');
+        sensitiveToggle.className = 'SensitiveMediaToggle';
+
+        const sensitiveInput = document.createElement('input');
+        sensitiveInput.type = 'checkbox';
+        sensitiveInput.name = 'sensitive';
+        sensitiveInput.checked = data.sensitive === '1';
+        sensitiveToggle.appendWithSpace(sensitiveInput);
+        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+
+        actions.appendWithSpace(sensitiveToggle);
+
         const cancelButton = document.createElement('button');
         cancelButton.type = 'button';
         cancelButton.className = 'Button EditFormCancelButton';
@@ -169,6 +184,7 @@ export class PostEditor {
                             ? this.#form.querySelector('[name="linkURL"]').value
                             : '',
                         description: descriptionInput.value,
+                        sensitive: this.#form.querySelector('[name="sensitive"]').checked,
                     }),
                 }
             );
@@ -198,6 +214,7 @@ export class PostEditor {
         this.#postElement.dataset.linkUrl = result.linkURL || '';
         this.#postElement.dataset.descriptionDelta = result.rawDescriptionDelta || '';
         this.#postElement.dataset.hasMedia = result.items.length > 0 ? '1' : '';
+        this.#postElement.dataset.sensitive = result.sensitive ? '1' : '';
 
         this.#postElement.style.display = '';
         render_math(newContent);

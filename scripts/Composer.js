@@ -221,6 +221,21 @@ export class Composer {
         actions.appendWithSpace(emojiBtnWrapper);
         EmojiPicker.setup(emojiBtnWrapper);
 
+        // Classifies this post's media as something to opt into seeing. A real
+        // checkbox, so it rides along in the form's own FormData and there is
+        // no toggle state to keep anywhere.
+        const sensitiveToggle = document.createElement('label');
+        sensitiveToggle.className = 'SensitiveMediaToggle';
+
+        const sensitiveInput = document.createElement('input');
+        sensitiveInput.type = 'checkbox';
+        sensitiveInput.name = 'sensitive';
+        sensitiveInput.value = '1';
+        sensitiveToggle.appendWithSpace(sensitiveInput);
+        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+
+        actions.appendWithSpace(sensitiveToggle);
+
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
         submitBtn.className = 'Button';

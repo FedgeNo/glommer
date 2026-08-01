@@ -38,8 +38,11 @@ if (PinnedPost::isPinned($user_id, $post_id)) {
     $pinned = true;
 }
 
-// The featured collection changed, so anyone holding a copy of this profile
-// should refetch it. An actor Update is how the network is told that.
+// Add/Remove names the post that changed, which is what a server needs to act
+// on the pin without re-reading anything. The actor Update goes too, for the
+// implementations that treat the featured collection as part of the profile
+// and refetch it when the profile is restated.
+PinnedPost::publish($current_user, $post_id, $pinned);
 FediversePublisher::profileUpdated($current_user);
 
 JSONResponse::success(['pinned' => $pinned]) -> send();

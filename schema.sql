@@ -60,6 +60,10 @@ CREATE TABLE `Posts` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `editedAt` datetime DEFAULT NULL,
   `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
+  -- The author's (or a moderator's) classification of this post's media as
+  -- something to opt into seeing. Federates both ways as ActivityStreams'
+  -- `sensitive`.
+  `sensitive` tinyint(1) NOT NULL DEFAULT 0,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
@@ -139,6 +143,14 @@ CREATE TABLE `FeedItems` (
   `postId` int(10) unsigned NOT NULL,
   `type` varchar(50) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  -- Set only on an item that arrived from another server, where it names the
+  -- file on that server. A local item's bytes live under uploads/ at a path
+  -- derived from its itemId, so it needs no URL of its own; a remote one is
+  -- never copied here, it's fetched per request through RemoteMedia. altText
+  -- likewise only ever holds what a remote server sent, since local items
+  -- derive their alt text from the post (see Post::imageAltText()).
+  `remoteURL` varchar(500) DEFAULT NULL,
+  `altText` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`itemId`),
   KEY `fk_feeditems_post` (`postId`),
   CONSTRAINT `fk_feeditems_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE

@@ -29,6 +29,11 @@ $description_raw = (string) ($_POST['description'] ?? '');
 $link_url = trim((string) ($_POST['linkURL'] ?? ''));
 $parent_id = isset($_POST['parentId']) && $_POST['parentId'] !== '' ? (int) $_POST['parentId'] : null;
 
+// The composer's sensitive toggle. Stored whether or not this post ends up
+// with media - the author is classifying the post, and media can arrive later
+// through the upload worker.
+$sensitive = ($_POST['sensitive'] ?? '') === '1' ? 1 : 0;
+
 $link_image_seed = trim((string) ($_POST['linkImageSeed'] ?? ''));
 
 if (!preg_match('/^lp-[a-f0-9]{32}$/', $link_image_seed) || !UploadProcessor::exists($link_image_seed, 'ImageItem')) {
@@ -226,9 +231,9 @@ if ($needs_async) {
 }
 
 DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'iissss', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+', 'iissssi', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive);
 $post_id = (int) mysqli_insert_id($mysqli);
 
 // Coordinates live in their own postId-keyed table, so only a post that

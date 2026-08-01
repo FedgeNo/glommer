@@ -58,6 +58,13 @@ class OtherUser extends User
             $follow_button -> attributes['data-following'] = $following ? '1' : '0';
             $follow_button -> contents[] = $following ? 'Unfollow' : 'Follow';
             $actions -> addContent($follow_button);
+
+            // A Fediverse account can be messaged, so it needs the way in to
+            // the thread the same as anyone else. Friendship stays absent -
+            // that is mutual, and there is nobody on this side of it.
+            $remote_message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> slug), 'Message');
+            $remote_message_link -> class = 'Button';
+            $actions -> addContent($remote_message_link);
         } else {
             if ($friendship === null || $sent_by_viewer) {
                 $friend_button = new Button();

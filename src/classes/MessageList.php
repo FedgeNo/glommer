@@ -82,8 +82,7 @@ UNION ALL
      */
     protected function dataAttributes(): array
     {
-        return [
-            'data-other-user-id' => (string) $this -> otherUserId,
+        $attributes = [
             'data-infinite-scroll' => (string) json_encode([
                 'endpoint' => '/api/message-history',
                 'itemType' => 'Message',
@@ -91,5 +90,18 @@ UNION ALL
                 'otherUserId' => (int) $this -> otherUserId,
             ]),
         ];
+
+        // Video calling is offered only in a thread with another member here.
+        // It needs both people present in the same thread at once, which this
+        // server can only know about its own, and a direct browser-to-browser
+        // path there is no way to negotiate with someone on another server.
+        // Omitting the attribute is what turns it off - VideoCall.js keys on it.
+        $other = User::load((int) $this -> otherUserId);
+
+        if ($other !== null && $other -> remoteActorURI === null) {
+            $attributes['data-other-user-id'] = (string) $this -> otherUserId;
+        }
+
+        return $attributes;
     }
 }

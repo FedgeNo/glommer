@@ -57,6 +57,13 @@ $page -> addContent(new JSGlobals([
     'iceServers' => VideoCall::iceServers(),
 ]));
 
+// A conversation with someone on another server is stored on that server too,
+// in the clear, and its administrator can read it. The thread looks identical
+// otherwise, so it says so.
+if ($other_user -> remoteActorURI !== null) {
+    $page -> addContent(new FederatedThreadNotice('@' . $other_user -> slug));
+}
+
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,
     'otherUserId' => $other_user -> userId,

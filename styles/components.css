@@ -1539,3 +1539,14 @@ body.MessagesPage { padding-bottom: 9rem; }
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
+
+/* A conversation with someone on another server. Marked rather than left to
+   look identical to a local one: those messages are stored on a second server
+   in the clear, and the difference is otherwise invisible. */
+.FederatedThreadNotice {
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    background-color: var(--danger-soft);
+    border-radius: var(--radius-ctl);
+    padding: 0.5rem;
+    color: var(--ink) !important;
+}

@@ -285,9 +285,25 @@ SELECT `remoteFollowId`
     {
         $object = $activity['object'] ?? null;
 
-        if (is_array($object) && ($object['type'] ?? null) === 'Note') {
-            self::ingestNote($object, $actor_uri);
+        if (!is_array($object) || ($object['type'] ?? null) !== 'Note') {
+            return;
         }
+
+        // A Note addressed to one member here and to nobody public is a direct
+        // message, and belongs in their inbox rather than in a feed. Decided on
+        // the absence of a public audience rather than on a mention, since a
+        // public post can name someone too.
+        if (ActivityPubMessage::isDirect($object, $activity)) {
+            $sender = self::shadowUserFor($actor_uri);
+
+            if ($sender !== null) {
+                ActivityPubMessage::received($object, $activity, $sender);
+            }
+
+            return;
+        }
+
+        self::ingestNote($object, $actor_uri);
     }
 
     private static function handleUpdate(array $activity, string $actor_uri): void

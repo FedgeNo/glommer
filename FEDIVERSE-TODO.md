@@ -49,6 +49,10 @@ says so, because that means bumping `GLOMMER_VERSION` and running
 - **Block propagation.** A member blocking a remote account tells their server
   and cuts the follows both ways; an inbound `Block` is honoured here, and both
   `Undo`s lift it.
+- **Federated direct messages.** A `Note` addressed to one actor with no public
+  audience, in both directions. Remote profiles carry a Message button, the
+  thread is marked as less private (stored on two servers, readable by both
+  operators), and video calling is not offered there.
 
 ## Before 1.0, regardless of the list below
 
@@ -68,39 +72,31 @@ Rehearse on dev.
 Nothing here reposts yet, so there is no local action to federate. Inbound
 boosts are recorded; sending one needs the site feature first.
 
-### 2. Federated direct messages
-A `Note` addressed to one actor with no public audience. Federated DMs must be
-visually distinguished in the thread, because they are meaningfully less private
-than local ones: readable by the remote server's operator as well as ours.
-Glommer has no end-to-end encryption - a local message is readable by one
-operator, a federated one by two. **Schema change** (`remoteObjectURI` on
-Messages).
-
-### 3. Account migration (`Move`)
+### 2. Account migration (`Move`)
 `alsoKnownAs` and `movedTo`, so someone can arrive with their followers intact
 or leave without stranding them.
 
-### 4. Pinned posts
+### 3. Pinned posts
 Wanted on the site regardless; federates as the `featured` collection.
 **Schema change.**
 
-### 5. Custom emoji (`Emoji` tags)
+### 4. Custom emoji (`Emoji` tags)
 Shortcodes carried as `Emoji` tags with image URLs, so `:shortcode:` from a
 remote post renders as the image rather than as literal text, and ours travel
 the same way.
 
-### 6. Video and Audio as first-class objects
+### 5. Video and Audio as first-class objects
 A post whose only attachment is one video or one audio file is a `Video` or
 `Audio` object rather than a `Note` carrying an attachment. That is what
 PeerTube and Funkwhale publish, and what players expect to find.
 
-### 7. Collection pagination
+### 6. Collection pagination
 `followers` and `following` inline their whole list. Anything that can pass ~20
 entries needs paging, same as every other list on the site.
 
-### 8. Polls (`Question`)
+### 7. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.
 
-### 9. Relays
+### 8. Relays
 Subscribing to a relay puts posts in front of servers that do not already follow
 anyone here - the usual answer to a small instance seeing nothing.

@@ -103,5 +103,28 @@ rendering side already handles them.
 Both directions, and a local poll feature to federate in the first place.
 
 ### 3. Relays
-Subscribing to a relay puts posts in front of servers that do not already follow
-anyone here - the usual answer to a small instance seeing nothing.
+
+A relay is a shared firehose: subscribe, and every public post from every other
+subscribed server arrives, while yours go out to all of them. It is the usual
+answer to a new instance seeing nothing, because federation is follow-shaped and
+a server nobody follows from receives nothing to discover people by.
+
+Requirements, decided in advance:
+
+- **Off by default.** Subscribing is an explicit act by an admin, never a
+  default state.
+- **Say plainly that the cost is variable.** The load is whatever the subscribed
+  servers happen to publish - quiet one week, thousands of posts an hour the
+  next. Storage, the delivery queue and the moderation queue all take that
+  weight. The admin page has to say so before the subscription, not after.
+- **Follow either the relay actor or `as:Public`, never both.** Implementations
+  disagree about which the `Follow` should name, so both forms have to be
+  supported - but only one is ever sent per relay. Two would be one
+  subscription counted twice, whatever the database does about it.
+- **The firehose is its own feed.** Relayed posts have no follower here by
+  definition, so they must not reach the friends feed or the main feed. They go
+  to a feed of their own, which someone opens deliberately.
+
+Also worth knowing: modern relays forward an `Announce` naming a post's URI
+rather than the post itself, so each one has to be fetched from its home server.
+That depends on signed outbound fetches, which are already in place.

@@ -64,18 +64,23 @@ class SafeHTTPFetcher
      * to be a browser. Same SSRF protections as get(): resolve-then-pin,
      * IPv4-only, standard ports only, redirects re-validated one by one.
      *
+     * $per_request carries the headers that describe one particular request
+     * rather than the exchange - Host, Date and the signature over them. It is
+     * a callback rather than an array because a redirect is a different
+     * request: the signature covers (request-target), host and date, so a hop
+     * as small as a trailing slash invalidates it, and a caller-supplied Host
+     * is sent verbatim by curl and would name the old server to the new one.
+     * Called once per hop, it re-signs for the URL actually being fetched, so a
+     * redirected fetch stays signed instead of quietly degrading to an
+     * anonymous one that a secure-mode instance answers with nothing.
+     *
      * @param string[] $headers
+     * @param null|callable(string): string[] $per_request
      * @return array{body: string, contentType: ?string}|null
      */
-    public static function getJSON(string $url, array $headers, int $max_bytes): ?array
+    public static function getJSON(string $url, array $headers, int $max_bytes, ?callable $per_request = null): ?array
     {
-        // A defederated server is not talked to at all, in either direction -
-        // fetching from one is still dealing with it.
-        if (BlockedDomain::blocksURL($url)) {
-            return null;
-        }
-
-        return self::sendRequest('GET', $url, $headers, null, $max_bytes, self::MAX_REDIRECTS);
+        return self::sendRequest('GET', $url, $headers, null, $max_bytes, self::MAX_REDIRECTS, [], null, $per_request);
     }
 
     /**
@@ -90,13 +95,6 @@ class SafeHTTPFetcher
      */
     public static function postJSON(string $url, string $body, array $headers, int $max_bytes): ?array
     {
-        // The last gate before anything leaves for a defederated server. Held
-        // here rather than only at the call sites, because the site that
-        // forgets is the one that lets a delivery through.
-        if (BlockedDomain::blocksURL($url)) {
-            return null;
-        }
-
         return self::sendRequest('POST', $url, $headers, $body, $max_bytes, 0);
     }
 
@@ -115,10 +113,6 @@ class SafeHTTPFetcher
      */
     public static function stream(string $url, array $headers, int $max_bytes, callable $sink): bool
     {
-        if (BlockedDomain::blocksURL($url)) {
-            return false;
-        }
-
         return self::sendRequest('GET', $url, $headers, null, $max_bytes, self::MAX_REDIRECTS, [], $sink) !== null;
     }
 
@@ -131,9 +125,10 @@ class SafeHTTPFetcher
      * @param string[] $headers
      * @param array<int, mixed> $extra_options
      * @param null|callable(string, string): bool $sink
+     * @param null|callable(string): string[] $per_request headers built for this exact URL, rebuilt on every hop
      * @return array{body: string, contentType: ?string}|null
      */
-    private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left, array $extra_options = [], ?callable $sink = null): ?array
+    private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left, array $extra_options = [], ?callable $sink = null, ?callable $per_request = null): ?array
     {
         $parts = parse_url($url);
 
@@ -143,6 +138,14 @@ class SafeHTTPFetcher
             || $parts['host'] === ''
             || !in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)
         ) {
+            return null;
+        }
+
+        // A defederated server is not talked to at all, in either direction.
+        // Checked here rather than at each entry point because a redirect is a
+        // request too: gating only the URL a caller passed in let any server
+        // hand back a 302 and have this fetch the blocked one on its behalf.
+        if (BlockedDomain::blocksURL($url)) {
             return null;
         }
 
@@ -174,7 +177,7 @@ class SafeHTTPFetcher
             CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
             CURLOPT_CONNECTTIMEOUT => self::CONNECT_TIMEOUT_SECONDS,
             CURLOPT_TIMEOUT => self::TOTAL_TIMEOUT_SECONDS,
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_HTTPHEADER => $per_request === null ? $headers : array_merge($headers, $per_request($url)),
             CURLOPT_ENCODING => '',
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
@@ -238,7 +241,7 @@ class SafeHTTPFetcher
                 return null;
             }
 
-            return self::sendRequest($method, $redirect_url, $headers, $body, $max_bytes, $redirects_left - 1, $extra_options);
+            return self::sendRequest($method, $redirect_url, $headers, $body, $max_bytes, $redirects_left - 1, $extra_options, $sink, $per_request);
         }
 
         if ($status < 200 || $status >= 300) {

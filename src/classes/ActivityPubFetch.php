@@ -30,12 +30,18 @@ class ActivityPubFetch
      */
     public static function getJSON(string $url, array $accept = ['Accept: application/activity+json'], int $max_bytes = self::MAX_RESPONSE_BYTES): ?array
     {
-        return SafeHTTPFetcher::getJSON($url, array_merge($accept, self::signatureHeaders($url)), $max_bytes);
+        // Signed per hop rather than once for the URL asked about. A redirect
+        // is a different request and the signature covers the target, so one
+        // signed for the original would not verify at the destination - and an
+        // instance in secure mode answers an unverifiable fetch with nothing,
+        // which is the failure this exists to avoid. Every hop is a fresh
+        // signature for the URL actually being requested.
+        return SafeHTTPFetcher::getJSON($url, $accept, $max_bytes, self::signatureHeaders(...));
     }
 
     /**
-     * The Date and Signature a signed fetch carries, or nothing at all when
-     * this instance cannot sign - in which case the request goes unsigned
+     * The Host, Date and Signature a signed fetch carries, or nothing at all
+     * when this instance cannot sign - in which case the request goes unsigned
      * rather than not going.
      *
      * @return string[]
@@ -45,11 +51,14 @@ class ActivityPubFetch
         $private_key = ActivityPubKeys::privateKeyPem();
         $parts = parse_url($url);
 
-        if ($private_key === null || $parts === false || !isset($parts['host'], $parts['path'])) {
+        if ($private_key === null || $parts === false || !isset($parts['host'])) {
             return [];
         }
 
-        $path = $parts['path'] . (isset($parts['query']) ? '?' . $parts['query'] : '');
+        // An origin-form request target is always at least "/", so a URL
+        // written without one still signs the path curl will actually send
+        // rather than signing nothing and failing to verify.
+        $path = ($parts['path'] ?? '/') . (isset($parts['query']) ? '?' . $parts['query'] : '');
         $date = gmdate('D, d M Y H:i:s') . ' GMT';
         $key_id = ServerURL::absolute('/activitypub/actor') . '#main-key';
 

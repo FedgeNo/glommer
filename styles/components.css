@@ -33,6 +33,11 @@
     overflow: hidden;
 }
 
+.NavDropdownMenu {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
 :is(
     .Card,
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,

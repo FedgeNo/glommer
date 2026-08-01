@@ -26,6 +26,14 @@ if ($post -> author === null || $post -> author -> slug !== $username || $post -
     exit;
 }
 
+// A remote account's post is here only so members can read and reply to what
+// they follow - the same rule its author's profile (user.php) and RSS feed
+// (user-rss-feed.php) already apply: we don't represent Fediverse content to
+// the public, and the remote-media proxy refuses logged-out visitors anyway.
+if ($post -> author -> remoteActorURI !== null) {
+    Auth::requireLogin();
+}
+
 $json_ld = [
     '@context' => 'https://schema.org',
     '@type' => 'SocialMediaPosting',

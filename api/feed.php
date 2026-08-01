@@ -31,6 +31,14 @@ if ($feed_type === 'user' && $profile_user_id === 0) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
+// A remote account's posts are members-only - the same rule its profile page
+// (user.php), permalink (post.php) and RSS feed (user-rss-feed.php) apply.
+// Without this, paging the profile feed by userId would hand a logged-out
+// caller the very posts those gates withhold.
+if ($feed_type === 'user' && !Auth::check() && User::load($profile_user_id) ?-> remoteActorURI !== null) {
+    JSONResponse::error('Not logged in', 401) -> send();
+}
+
 if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }

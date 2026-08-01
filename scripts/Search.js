@@ -133,17 +133,45 @@ export class Search {
             }
         });
 
-        const query = new URLSearchParams(window.location.search).get('q');
-        const prefillInput = document.querySelector('.PostSearchInput');
-        if (query !== null && prefillInput) {
-            prefillInput.value = query;
-            prefillInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-
         Search.#initUsers();
-        Search.#initPosts();
+        const posts = Search.#initPosts();
         Search.#initFriends();
         Search.#initBannedUsers();
+
+        Search.#searchFromURL(posts);
+    }
+
+    /**
+     * Arriving with ?q= should actually search, not just fill the box.
+     *
+     * This runs after the initialisers on purpose. It used to fill the input
+     * and dispatch an input event first, but the listener that would react to
+     * one does not exist until #initPosts has constructed the Search - so the
+     * event fired into nothing and a linked search landed on an empty page.
+     * Calling trigger() also skips the debounce, which there is no reason to
+     * wait out when the query arrived with the page.
+     */
+    static #searchFromURL(search) {
+        if (search === null) {
+            return;
+        }
+
+        const query = new URLSearchParams(window.location.search).get('q');
+
+        // An empty q= is the same as no q= - searching for nothing would just
+        // hide the default feed behind an empty result list.
+        if (query === null || query.trim() === '') {
+            return;
+        }
+
+        search.input.value = query;
+
+        // Typing sets this from _handleInput, and it is what reveals the clear
+        // button. Arriving with a query has to leave the box in the same state
+        // as typing one, or there is no way to get back out of the search.
+        search.input.closest('.SearchBox')?.classList.add('HasQuery');
+
+        search.trigger();
     }
 
     static #initUsers() {
@@ -166,9 +194,9 @@ export class Search {
 
     static #initPosts() {
         const input = document.querySelector('.PostSearchInput');
-        if (!input) return;
+        if (!input) return null;
         const container = document.querySelector('.SearchFeedList');
-        new Search(input, {
+        return new Search(input, {
             endpoint: '/api/search-posts',
             buildRequest: query => ({
                 q: query,

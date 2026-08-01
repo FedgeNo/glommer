@@ -95,21 +95,24 @@ class EmojiShortcodeTest extends TestCase
         $this -> assertTrue(str_contains($html, '<strong>🔥</strong>'));
     }
 
-    public function testTheTwoTablesAgree(): void
+    public function testTheClientIsServedTheSameTable(): void
     {
-        // Generated together from one source, so a drift here means somebody
-        // hand-edited one of them.
-        $js = (string) file_get_contents(__DIR__ . '/../scripts/EmojiShortcodeMap.js');
+        // One hard-coded table, handed to the browser as data rather than kept
+        // as a second file - so there is nothing that can drift, and nothing
+        // writes executable source from anything fetched.
+        $module = EmojiShortcodeMap::javaScriptModule();
 
-        preg_match_all("/^    '([^']+)':/m", $js, $matches);
+        $this -> assertTrue(str_starts_with($module, 'export const EMOJI_SHORTCODES = {'));
 
-        // Cast to strings first: PHP turns a canonical numeric array key into
-        // an integer, so ':100:' and ':-1:' arrive here as ints. Lookups are
-        // unaffected - PHP normalises a numeric string key the same way on
-        // read - but a raw comparison against the JS names would fail on them.
-        $php_names = array_map('strval', array_keys(EmojiShortcodeMap::MAP));
+        $decoded = json_decode(substr($module, strlen('export const EMOJI_SHORTCODES = '), -2), true);
 
-        $this -> assertSame(count($php_names), count($matches[1]));
-        $this -> assertSame($php_names, $matches[1]);
+        $this -> assertSame(count(EmojiShortcodeMap::MAP), count($decoded));
+        $this -> assertSame(EmojiShortcodeMap::MAP['smile'], $decoded['smile']);
+    }
+
+    public function testTheVersionChangesOnlyWithTheTable(): void
+    {
+        $this -> assertSame(EmojiShortcodeMap::version(), EmojiShortcodeMap::version());
+        $this -> assertSame(16, strlen(EmojiShortcodeMap::version()));
     }
 }

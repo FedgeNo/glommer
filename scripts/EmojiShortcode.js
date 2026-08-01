@@ -1,8 +1,12 @@
-import { EMOJI_SHORTCODES } from '/scripts/EmojiShortcodeMap.js';
+import { EMOJI_SHORTCODES } from '/emoji-shortcodes.js';
 
 /**
  * Turns :shortcode: into the emoji it names - the client half of
- * EmojiShortcode.php, working off the table generated alongside it.
+ * EmojiShortcode.php, working off the same table, served by it.
+ *
+ * The table is imported rather than duplicated. It is hard-coded once in
+ * EmojiShortcodeMap.php and handed here as data, so there is no second copy to
+ * drift and nothing writes executable source from anything fetched.
  *
  * Only ever at the last step of output. What someone typed is never rewritten,
  * so the composer, the stored post and an edit all still say exactly that; only

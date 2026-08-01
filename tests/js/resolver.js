@@ -4,6 +4,12 @@ import { resolve as pathResolve } from 'node:path';
 const projectRoot = pathResolve(import.meta.dirname, '../..');
 
 export function resolve(specifier, context, nextResolve) {
+    // Served by PHP in the running site, so there is no file here to find - the
+    // runner asks PHP for it and points this at the result.
+    if (specifier === '/emoji-shortcodes.js' && process.env.GLOMMER_EMOJI_MODULE) {
+        return nextResolve(pathToFileURL(process.env.GLOMMER_EMOJI_MODULE).href, context);
+    }
+
     // Only remap bare absolute imports like '/ClientConfig.js'
     // (specifiers that start with a single '/' and don't already
     // point to a file inside the project root).

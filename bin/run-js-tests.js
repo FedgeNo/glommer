@@ -1,4 +1,24 @@
 import { register } from 'node:module';
+import { execFileSync } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join as joinPath, resolve as resolvePath, dirname as dirnameOf } from 'node:path';
+import { fileURLToPath as fileURLToPathFn } from 'node:url';
+
+// The emoji shortcode table lives in PHP and is served to the browser rather
+// than kept as a JS file, so there is nothing on disk for the resolver to find.
+// It is asked for here, from that one copy - a stub would be a second table,
+// and the point of serving it is that there is only ever one.
+const emojiModulePath = joinPath(tmpdir(), 'glommer-emoji-shortcodes.js');
+const projectDir = resolvePath(dirnameOf(fileURLToPathFn(import.meta.url)), '..');
+
+writeFileSync(emojiModulePath, execFileSync('php', [
+    '-r',
+    "require '" + projectDir + "/src/classes/EmojiShortcodeMap.php'; echo EmojiShortcodeMap::javaScriptModule();",
+]));
+
+process.env.GLOMMER_EMOJI_MODULE = emojiModulePath;
+
 register('../tests/js/resolver.js', import.meta.url);
 
 import { readdirSync } from 'fs';

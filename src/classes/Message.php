@@ -65,7 +65,9 @@ class Message extends Article implements \JsonSerializable
         $line -> class = 'MessageLine';
 
         $body = new Paragraph();
-        $body -> contents[] = $this -> body;
+        // Same last-step expansion posts get, on the path messages take -
+        // a message body is plain text and never goes near DeltaRenderer.
+        $body -> contents[] = EmojiShortcode::expand((string) $this -> body);
         $line -> addContent($body);
 
         // No report button on the admin's messages - api/report.php rejects

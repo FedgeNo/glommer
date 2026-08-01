@@ -39,7 +39,9 @@ class ActivityPubMessage
             'id' => $object_uri,
             'type' => 'Note',
             'attributedTo' => $sender_uri,
-            'content' => '<p>' . htmlspecialchars($body, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>',
+            // Expanded here too: this path never touches DeltaRenderer, and
+            // unexpanded a shortcode would reach the far side as literal text.
+            'content' => '<p>' . htmlspecialchars(EmojiShortcode::expand($body), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>',
             'published' => ActivityPubActor::timestamp(date('Y-m-d H:i:s')),
             // The recipient and nobody else. No public collection, no
             // followers - that omission is what makes it a direct message.

@@ -1,3 +1,4 @@
+import { expand } from '/scripts/EmojiShortcode.js';
 import { User } from '/scripts/User.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
@@ -48,7 +49,7 @@ export class Message {
         line.className = 'MessageLine';
 
         const body = document.createElement('p');
-        body.textContent = this.body;
+        body.textContent = expand(this.body);
         line.appendWithSpace(body);
 
         if (ClientConfig.get('currentUserId') !== null

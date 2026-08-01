@@ -168,6 +168,11 @@ class DeltaRenderer extends Div
             $flush([]);
         }
 
+        // Last step of the output stage, and only there: the stored post still
+        // says exactly what its author typed, and editing gives it back
+        // unchanged. Done over the finished tree so code keeps its colons.
+        EmojiShortcode::expandInDOM($root);
+
         return $root;
     }
 

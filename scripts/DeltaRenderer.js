@@ -1,3 +1,4 @@
+import { expandInDOM } from '/scripts/EmojiShortcode.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Linkifier } from '/scripts/Linkifier.js';
 
@@ -121,6 +122,10 @@ export class DeltaRenderer {
         if (inline.length > 0) {
             flush_line({});
         }
+
+        // Last step of the output stage, matching DeltaRenderer.php. Over the
+        // finished tree, so code keeps its colons.
+        expandInDOM(root);
 
         return root;
     }

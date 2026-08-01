@@ -65,6 +65,10 @@ says so, because that means bumping `GLOMMER_VERSION` and running
 - **Video and Audio objects.** A post that is one video or one audio file is
   published as that object rather than as a note carrying an attachment, with
   `url` giving both the page and the file.
+- **Emoji shortcodes.** `:smile:` expands to the character at the last step of
+  output, in both languages, from one generated table. Never stored, so what an
+  author typed is what an edit gives back - and an unknown name survives intact,
+  which is the room custom emoji will need.
 
 ## Before 1.0, regardless of the list below
 
@@ -80,22 +84,19 @@ Rehearse on dev.
 
 ## Next
 
-### 1. Account migration (`Move`)
+### 1. Custom emoji (`Emoji` tags)
+The shortcode machinery is in place and deliberately leaves an unknown name
+alone, so this is now additive: a per-post map of name to image URL, passed into
+the same expansion, plus an `Emoji` tag on the way out.
+
+Outbound still needs a custom emoji feature on the site - there is none, so
+there is nothing of ours to publish. Inbound is the useful half and is no longer
+blocked by the plain-text reduction, since the tag travels beside the content
+rather than inside it.
+
+### 2. Account migration (`Move`)
 `alsoKnownAs` and `movedTo`, so someone can arrive with their followers intact
 or leave without stranding them.
-
-### 2. Custom emoji (`Emoji` tags)
-Two halves, and neither is small.
-
-Outbound needs a custom emoji feature on the site first - there is none, so
-there is nothing to publish. Same shape as reposting needing a button.
-
-Inbound is the awkward one. Remote content is deliberately reduced to plain
-text on the way in (see ActivityPubInbox::deltaFromContent), which is what keeps
-untrusted markup out of a post, so `:shortcode:` survives as literal text. To
-render one as an image, either the shortcode-to-URL mapping is stored and
-resolved at display time, or an image embed is put into the Delta - and the
-second means relaxing a safety-critical path. Worth deciding deliberately.
 
 ### 3. Polls (`Question`)
 Both directions, and a local poll feature to federate in the first place.

@@ -66,7 +66,7 @@ SELECT `Posts`.`postId`
      */
     public static function document(Post $post, User $author): ?array
     {
-        if ($post -> postId === null || $post -> remoteObjectURI !== null || !ActivityPubActor::isLocal($author)) {
+        if ($post -> postId === null || $post -> remoteObjectURI !== null || $author -> remoteActorURI !== null) {
             return null;
         }
 

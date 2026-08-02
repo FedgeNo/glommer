@@ -128,7 +128,7 @@ SELECT `Posts`.*
      */
     public static function publish(User $user, int $post_id, bool $pinning): void
     {
-        if (!ActivityPubActor::isLocal($user) || $user -> userId === null) {
+        if ($user -> remoteActorURI !== null || $user -> userId === null) {
             return;
         }
 

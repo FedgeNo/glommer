@@ -61,7 +61,7 @@ class ActivityPubResponse
     {
         $user = User::byUsername($username);
 
-        if ($user === null || !ActivityPubActor::isLocal($user) || (int) $user -> banned === 1) {
+        if ($user === null || $user -> remoteActorURI !== null || (int) $user -> banned === 1) {
             return null;
         }
 

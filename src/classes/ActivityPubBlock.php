@@ -22,7 +22,7 @@ class ActivityPubBlock
      */
     public static function published(User $blocker, User $blocked, bool $blocking): void
     {
-        if (!ActivityPubActor::isLocal($blocker)
+        if ($blocker -> remoteActorURI !== null
             || $blocker -> userId === null
             || $blocked -> remoteActorURI === null
             || !is_string($blocked -> remoteActorInboxURL)

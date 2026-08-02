@@ -98,7 +98,7 @@ INSERT IGNORE INTO `PollVotes` (`pollId`, `pollOptionId`, `userId`)
     {
         $target = self::remotePollTarget((int) $poll -> postId);
 
-        if ($target === null || !ActivityPubActor::isLocal($voter) || $voter -> userId === null) {
+        if ($target === null || $voter -> remoteActorURI !== null || $voter -> userId === null) {
             return;
         }
 

@@ -139,7 +139,7 @@ SELECT COUNT(*) AS `total`
         // behalf would be unverifiable at the far end anyway - and continuing to
         // publish for someone this server has stopped hosting is wrong however
         // it is received.
-        if ($author -> userId === null || !ActivityPubActor::isLocal($author) || (int) $author -> banned === 1) {
+        if ($author -> userId === null || $author -> remoteActorURI !== null || (int) $author -> banned === 1) {
             return;
         }
 

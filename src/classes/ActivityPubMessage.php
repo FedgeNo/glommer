@@ -24,7 +24,7 @@ class ActivityPubMessage
      */
     public static function publish(int $message_id, User $sender, User $recipient, string $body): void
     {
-        if (!ActivityPubActor::isLocal($sender)
+        if ($sender -> remoteActorURI !== null
             || $sender -> userId === null
             || $recipient -> remoteActorURI === null
             || !is_string($recipient -> remoteActorInboxURL)

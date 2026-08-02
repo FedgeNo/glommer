@@ -104,7 +104,7 @@ SELECT COUNT(*) AS `total`
     {
         $target = self::remoteObjectFor($post_id);
 
-        if ($target === null || !ActivityPubActor::isLocal($liker) || $liker -> userId === null) {
+        if ($target === null || $liker -> remoteActorURI !== null || $liker -> userId === null) {
             return;
         }
 

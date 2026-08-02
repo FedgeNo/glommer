@@ -22,7 +22,7 @@ if ($profile_user === null) {
 // Only for local members: a shadow row for a remote account is somebody else's
 // actor, and answering for it would be claiming to speak for them.
 if (ActivityPubActor::wantsActivityJSON((string) ($_SERVER['HTTP_ACCEPT'] ?? ''))
-    && ActivityPubActor::isLocal($profile_user)
+    && $profile_user -> remoteActorURI === null
     && (int) $profile_user -> banned !== 1) {
     $actor = ActivityPubActor::document($profile_user);
 

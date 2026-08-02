@@ -26,15 +26,6 @@ class ActivityPubActor
     /** Every post here is public, so this is the only audience there is. */
     public const PUBLIC_AUDIENCE = 'https://www.w3.org/ns/activitystreams#Public';
 
-    /**
-     * Whether this user is one of ours. A shadow row for a remote account has
-     * remoteActorURI set and is emphatically not something we publish for.
-     */
-    public static function isLocal(User $user): bool
-    {
-        return $user -> remoteActorURI === null;
-    }
-
     public static function uriFor(User $user): string
     {
         return ServerURL::absolute('/users/' . $user -> slug . '/');
@@ -122,7 +113,7 @@ class ActivityPubActor
      */
     public static function publicKeyPem(User $user): ?string
     {
-        if (!self::isLocal($user)) {
+        if ($user -> remoteActorURI !== null) {
             return $user -> remoteActorPublicKeyPem;
         }
 
@@ -139,7 +130,7 @@ class ActivityPubActor
      */
     public static function privateKeyPem(User $user): ?string
     {
-        if (!self::isLocal($user)) {
+        if ($user -> remoteActorURI !== null) {
             return null;
         }
 
@@ -163,7 +154,7 @@ class ActivityPubActor
      */
     private static function generateKeypairFor(User $user): array
     {
-        if (!self::isLocal($user) || $user -> userId === null) {
+        if ($user -> remoteActorURI !== null || $user -> userId === null) {
             return [];
         }
 
@@ -216,7 +207,7 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
      */
     public static function document(User $user): ?array
     {
-        if (!self::isLocal($user) || $user -> userId === null) {
+        if ($user -> remoteActorURI !== null || $user -> userId === null) {
             return null;
         }
 
@@ -331,7 +322,7 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
 
         $user = User::byUsername(rawurldecode($matches[1]));
 
-        if ($user === null || !self::isLocal($user) || (int) $user -> banned === 1) {
+        if ($user === null || $user -> remoteActorURI !== null || (int) $user -> banned === 1) {
             return null;
         }
 

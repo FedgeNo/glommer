@@ -142,7 +142,6 @@ SELECT `actorEncryptedPrivateKey`
         $user -> slug = 'someone';
         $user -> remoteActorURI = 'https://mastodon.social/users/someone';
 
-        $this -> assertFalse(ActivityPubActor::isLocal($user));
         $this -> assertNull(ActivityPubActor::document($user));
     }
 

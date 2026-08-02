@@ -99,7 +99,7 @@ class FediversePublisher
      */
     public static function accountDeleted(User $author): void
     {
-        if (!ActivityPubActor::isLocal($author) || $author -> userId === null) {
+        if ($author -> remoteActorURI !== null || $author -> userId === null) {
             return;
         }
 
@@ -152,6 +152,6 @@ SELECT `userId`
 
         $author = User::load((int) $post -> userId);
 
-        return $author !== null && ActivityPubActor::isLocal($author) ? $author : null;
+        return $author !== null && $author -> remoteActorURI === null ? $author : null;
     }
 }

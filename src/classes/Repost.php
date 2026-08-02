@@ -67,7 +67,7 @@ SELECT `postId`
      */
     public static function publish(User $reposter, int $post_id, bool $reposting): void
     {
-        if (!ActivityPubActor::isLocal($reposter) || $reposter -> userId === null) {
+        if ($reposter -> remoteActorURI !== null || $reposter -> userId === null) {
             return;
         }
 

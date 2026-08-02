@@ -81,7 +81,7 @@ UPDATE `Users`
      */
     public static function publish(User $mover, string $destination_uri): array
     {
-        if (!ActivityPubActor::isLocal($mover) || $mover -> userId === null) {
+        if ($mover -> remoteActorURI !== null || $mover -> userId === null) {
             return ['ok' => false, 'error' => 'Only a local account can be moved.'];
         }
 

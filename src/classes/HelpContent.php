@@ -343,6 +343,8 @@ class HelpContent
 <p>A <strong>Video call</strong> button appears while both of you have the thread open. Before showing it, the site quietly checks that your two browsers can actually reach each other; if they cannot, the call is simply not offered rather than being routed through anything else. The other person can accept or decline.</p>
 <h2>During a call</h2>
 <p>Answering replaces the thread with the call: the other person fills the space the messages were in, with your own camera in a small inset. <strong>End call</strong> hangs up. Declining, hanging up, or either of you leaving the page ends the call, and the conversation comes back exactly as it was.</p>
+<h2>If the button never appears</h2>
+<p>That means one of the two browsers could not be reached, and it is usually the network rather than the site - a browser without WebRTC, or a firewall blocking the port the two use to find each other. <a href="/settings">Settings</a> has a <strong>Video Calling</strong> check that runs the setup steps against your own browser and says which one fails, so you can tell a browser problem from a network one.</p>
 <h2>Privacy</h2>
 <p>No video or audio ever passes through this site. The only thing relayed is the short setup message the two browsers use to find each other, and nothing is recorded.</p>
 ',

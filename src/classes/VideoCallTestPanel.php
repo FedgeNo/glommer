@@ -3,11 +3,16 @@
 declare(strict_types=1);
 
 /**
- * The admin's live check of whether a video call can actually be set up from
- * this browser, on this network. The unit tests cover what the code agrees on;
- * this covers what only the real machinery can answer - whether the browser's
- * WebRTC stack completes a negotiation, whether STUN is reachable from here, and
- * whether the signalling path answers an authenticated request.
+ * A live check of whether a video call can actually be set up from this
+ * browser, on this network. It sits in a member's own settings because the
+ * answer is about their machine and their network rather than the server's:
+ * when calls fail for one person and work for everyone else, this is the thing
+ * that says which part of their setup is the reason.
+ *
+ * The unit tests cover what the code agrees on; this covers what only the real
+ * machinery can answer - whether the browser's WebRTC stack completes a
+ * negotiation, whether STUN is reachable from here, and whether the signalling
+ * path answers an authenticated request.
  *
  * Each step reports what specifically failed rather than a bare pass/fail,
  * because the useful part is which link in the chain broke: a blocked STUN port

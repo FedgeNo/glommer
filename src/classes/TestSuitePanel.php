@@ -17,13 +17,14 @@ class TestSuitePanel extends Div
         $link -> class = 'Button';
         $this -> addContent($link);
 
-        // Its own page for the same reason: it negotiates for real and each step
-        // has to be allowed to time out.
+        // Not here, because the answer is about whoever's browser is asking
+        // rather than about the server - so it lives in everyone's own settings,
+        // where the person whose calls are failing can reach it.
         $this -> addContent(new Paragraph(
-            'Video calling has its own check, since it can only be answered by the browser actually attempting a connection.'
+            'Video calling has its own check, in Settings, since it can only be answered by the browser actually attempting a connection - and it answers for that browser rather than for the site.'
         ));
 
-        $call_link = new Anchor(ServerURL::absolute('/admin/call-test'), 'Check video calling');
+        $call_link = new Anchor(ServerURL::absolute('/settings'), 'Check video calling');
         $call_link -> class = 'Button';
         $this -> addContent($call_link);
 

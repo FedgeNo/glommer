@@ -18,6 +18,14 @@ class UserSearchList extends EligibleSuggestedUserList
 
     protected function rows(): array
     {
+        // The two empty states are different questions and want different
+        // answers: nobody to suggest is the ordinary state of a small server,
+        // while nothing matching what was typed is about the typing. Set here
+        // because rows() is what knows which of the two ran.
+        $this -> emptyNotice = $this -> query === ''
+            ? 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.'
+            : 'Nobody here matches that.';
+
         if ($this -> query === '') {
             return parent::rows();
         }

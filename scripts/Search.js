@@ -185,9 +185,22 @@ export class Search {
             renderItem: userData => OtherUser.fromData(userData).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.OtherUser').length,
-            onResponse: (input) => {
+            onResponse: (input, data) => {
                 const section = input.closest('.UserSearch').querySelector('.UserSearchSection');
-                section.querySelector('h2').textContent = input.value.trim() === '' ? 'Suggested Users' : 'User Search Results';
+                const searching = input.value.trim() !== '';
+                section.querySelector('h2').textContent = searching ? 'User Search Results' : 'Suggested Users';
+
+                // Mirrors UserSearchList's two empty notices. Without it the
+                // list just empties and the heading is the only thing left,
+                // which reads as the page having failed rather than answered.
+                if (data.response.items.length === 0) {
+                    const notice = document.createElement('p');
+                    notice.className = 'muted Notice';
+                    notice.textContent = searching
+                        ? 'Nobody here matches that.'
+                        : 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.';
+                    container.appendWithSpace(list_item(notice));
+                }
             }
         });
     }

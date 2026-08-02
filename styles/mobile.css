@@ -31,7 +31,7 @@
 }
 
 .NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(1) {
-    transform: translateY(0.4rem) rotate(45deg);
+    transform: translateY(calc(0.5rem + 2px)) rotate(45deg);
 }
 
 .NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(2) {
@@ -39,7 +39,7 @@
 }
 
 .NavToggle:checked ~ .NavHamburger .NavHamburgerBar:nth-child(3) {
-    transform: translateY(-0.4rem) rotate(-45deg);
+    transform: translateY(calc(-0.5rem - 2px)) rotate(-45deg);
 }
 
 @media (max-width: 48rem), (max-height: 32rem) {

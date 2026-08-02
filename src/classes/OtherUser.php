@@ -82,7 +82,7 @@ class OtherUser extends User
             $actions -> addContent($message_link);
         }
 
-        $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), 'Friends');
+        $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), $this -> friendsButtonLabel());
         $friends_link -> class = 'Button';
         $actions -> addContent($friends_link);
 

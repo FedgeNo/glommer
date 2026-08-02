@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 /**
  * Friends-of-friends, ranked by how many of the viewer's friends each one is
- * already friends with, then filtered to the accounts the viewer may actually
- * be shown. Falls back to random accounts when the viewer has no friends yet,
- * or when ranking turns up nobody eligible, so the list is never empty.
+ * already friends with, then filtered to the accounts they may actually be
+ * shown.
  *
- * Blocked accounts are left out, in either direction, for the same reason
- * RandomUserList leaves them out: a suggestion is the site offering someone
- * up unprompted.
+ * It comes back empty when there is nobody to suggest, and that is the honest
+ * answer. It used to fall back to accounts picked at random so the list was
+ * never empty, which reads as a suggestion without being one - and on a server
+ * where most people already know each other the ranking finds only accounts
+ * the viewer has already added, so the fallback stopped being the exception
+ * and became what the page almost always showed.
+ *
+ * Blocked accounts are left out in either direction, and so is anyone the
+ * viewer is already connected to: a suggestion is the site offering someone up
+ * unprompted, which is a thing to be careful about in both directions.
  */
-class EligibleSuggestedUserList extends RandomUserList
+class EligibleSuggestedUserList extends UserList
 {
     /**
      * Ranked candidates are capped well above a page so the eligibility pass
@@ -29,7 +35,7 @@ class EligibleSuggestedUserList extends RandomUserList
         $mutual_counts = $this -> mutualFriendCounts($friend_ids);
 
         if ($mutual_counts === []) {
-            return parent::rows();
+            return [];
         }
 
         $eligible = $this -> eligible(array_keys($mutual_counts));
@@ -42,10 +48,6 @@ class EligibleSuggestedUserList extends RandomUserList
             if (isset($eligible[$candidate_id])) {
                 $ranked[] = $eligible[$candidate_id];
             }
-        }
-
-        if ($ranked === []) {
-            return parent::rows();
         }
 
         return array_slice($ranked, $this -> offset, static::PAGE_SIZE + 1);

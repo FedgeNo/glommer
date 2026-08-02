@@ -1134,6 +1134,10 @@ body.MessagesPage { padding-bottom: 9rem; }
     border-bottom: 1px solid var(--hairline);
 }
 
+.SensitiveMedia .FeedItem {
+    margin: 0.5rem;
+}
+
 .SensitiveMediaToggle {
     display: flex;
     align-items: center;

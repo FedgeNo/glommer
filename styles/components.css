@@ -1025,7 +1025,6 @@ body.MessagesPage { padding-bottom: 9rem; }
     gap: 0.5rem;
 }
 
-/* A whole row is the target, not just the box beside it. */
 .PollOptionControl {
     display: flex;
     align-items: center;
@@ -1045,8 +1044,6 @@ body.MessagesPage { padding-bottom: 9rem; }
     margin: 0;
 }
 
-/* The text sits above the bar rather than beside it, so a long option wraps
-   without squeezing the figures onto their own line. */
 .PollOptionResult {
     display: flex;
     flex-direction: column;
@@ -1072,8 +1069,6 @@ body.MessagesPage { padding-bottom: 9rem; }
     align-self: flex-start;
 }
 
-/* The deadline sits under the count rather than beside it - they are two
-   separate facts, and running them together reads as one sentence. */
 .PollTally {
     display: flex;
     flex-direction: column;

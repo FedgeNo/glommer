@@ -1072,7 +1072,11 @@ body.MessagesPage { padding-bottom: 9rem; }
     align-self: flex-start;
 }
 
+/* The deadline sits under the count rather than beside it - they are two
+   separate facts, and running them together reads as one sentence. */
 .PollTally {
+    display: flex;
+    flex-direction: column;
     color: var(--muted);
     font-size: 0.8125rem;
 }

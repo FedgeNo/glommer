@@ -18,9 +18,7 @@ class PollTally extends Footer
     {
         parent::__construct();
 
-        // Trailing space because the deadline follows immediately: adjacent
-        // content is appended as it is given, so nothing else separates them.
-        $this -> addContent(($voters === 1 ? '1 person voted' : $voters . ' people voted') . ' ');
+        $this -> addContent($voters === 1 ? '1 person voted' : $voters . ' people voted');
         $this -> addContent(new PollDeadline($ends_at, $closed));
     }
 }

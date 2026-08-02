@@ -163,7 +163,7 @@ export class Poll {
         const tally = document.createElement('footer');
         tally.className = 'PollTally';
         tally.appendChild(document.createTextNode(
-            (this.voterCount === 1 ? '1 person voted' : this.voterCount + ' people voted') + ' '
+            this.voterCount === 1 ? '1 person voted' : this.voterCount + ' people voted'
         ));
 
         const deadline = document.createElement('time');

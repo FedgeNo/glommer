@@ -1010,6 +1010,96 @@ body.MessagesPage { padding-bottom: 9rem; }
    plain labelled bar taking up almost no room; open, the media sits below it
    exactly as an unmarked post's would, so nothing about the layout depends on
    which state it is in. */
+/* ---------- Polls ---------- */
+
+.Poll {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.PollOptionList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* A whole row is the target, not just the box beside it. */
+.PollOptionControl {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.PollOptionControl:hover {
+    background-color: var(--surface-2);
+}
+
+.PollVoteInput {
+    width: auto;
+    margin: 0;
+}
+
+/* The text sits above the bar rather than beside it, so a long option wraps
+   without squeezing the figures onto their own line. */
+.PollOptionResult {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.PollOptionResult.Chosen .PollOptionTitle {
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.PollOptionMeter {
+    width: 100%;
+    height: 0.5rem;
+}
+
+.PollOptionShare {
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+.PollVoteButton {
+    align-self: flex-start;
+}
+
+.PollTally {
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+/* ---------- Poll composer ---------- */
+
+.ComposerPoll {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+}
+
+.PollMultipleToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0;
+}
+
+.PollMultipleToggle input {
+    width: auto;
+}
+
 .SensitiveMedia {
     margin-top: 0.5rem;
     border: 1px solid var(--hairline);

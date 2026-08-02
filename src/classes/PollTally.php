@@ -18,35 +18,9 @@ class PollTally extends Footer
     {
         parent::__construct();
 
-        $this -> addContent($voters === 1 ? '1 person voted' : $voters . ' people voted');
-
-        $when = new Time();
-        $when -> class = 'PollDeadline';
-        // The machine-readable form is UTC, since the column is; the words
-        // beside it are the reader's to interpret.
-        $when -> datetime = gmdate('c', (int) strtotime($ends_at));
-        $when -> addContent($closed ? 'Final result' : 'Closes ' . self::remaining($ends_at));
-
-        $this -> addContent($when);
-    }
-
-    /**
-     * How long is left, in the largest unit that still says something useful.
-     * "in 2 days" rather than "in 51 hours" - a poll's deadline is something a
-     * reader judges at a glance, not a figure they need to the minute.
-     */
-    private static function remaining(string $ends_at): string
-    {
-        $seconds = max(0, (int) strtotime($ends_at) - time());
-
-        foreach ([86400 => 'day', 3600 => 'hour', 60 => 'minute'] as $size => $unit) {
-            if ($seconds >= $size) {
-                $count = intdiv($seconds, $size);
-
-                return 'in ' . $count . ' ' . ($count === 1 ? $unit : $unit . 's');
-            }
-        }
-
-        return 'in under a minute';
+        // Trailing space because the deadline follows immediately: adjacent
+        // content is appended as it is given, so nothing else separates them.
+        $this -> addContent(($voters === 1 ? '1 person voted' : $voters . ' people voted') . ' ');
+        $this -> addContent(new PollDeadline($ends_at, $closed));
     }
 }

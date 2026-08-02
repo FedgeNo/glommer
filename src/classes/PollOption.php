@@ -5,14 +5,14 @@ declare(strict_types=1);
 /**
  * One choice on a poll.
  *
- * Renders as a control while the poll is open to this reader, and as a result
- * once it isn't - voted, or closed. Both states carry the same text, so the
- * thing being chosen and the thing being reported are visibly one option.
+ * It is a control while this reader can still pick it and a result once they
+ * cannot - voted, or closed. Both carry the same text, so the thing being
+ * chosen and the thing being reported are visibly one option.
  *
- * The vote count is either ours to count or the origin server's to state, and
- * remoteVoteCount is which: null means this poll is ours and the tally is a
- * count of PollVotes rows, set means the poll came from elsewhere, where we
- * hold no votes and their figure is the only one there is.
+ * The tally is either ours to count or the origin server's to state, and
+ * remoteVoteCount is which: null means the poll is ours and the figure is a
+ * count of PollVotes rows, set means it came from elsewhere, where this server
+ * holds no votes and their number is the only one there is.
  */
 class PollOption extends Div
 {
@@ -67,67 +67,10 @@ class PollOption extends Div
 
     public function toDOM(): \DOMElement
     {
-        if ($this -> showResults) {
-            $this -> addContent($this -> result());
-
-            return parent::toDOM();
-        }
-
-        $this -> addContent($this -> control());
+        $this -> addContent($this -> showResults
+            ? new PollOptionResult((string) $this -> title, $this -> share(), $this -> voteCount(), (int) $this -> chosen === 1)
+            : new PollOptionControl((int) $this -> pollOptionId, (string) $this -> title, $this -> multiple));
 
         return parent::toDOM();
-    }
-
-    /**
-     * The option as something to pick. A radio for a poll that takes one answer
-     * and a checkbox for one that takes several, which is the difference the
-     * browser already knows how to enforce - so a single-answer poll cannot
-     * submit two without the page being tampered with, and the server checks
-     * again besides.
-     */
-    private function control(): Label
-    {
-        $label = new Label();
-        $label -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
-
-        $input = new Input();
-        $input -> attributes['type'] = $this -> multiple ? 'checkbox' : 'radio';
-        $input -> attributes['name'] = 'pollOption';
-        $input -> attributes['value'] = (string) $this -> pollOptionId;
-
-        $label -> addContent($input);
-        $label -> addContent(new PollOptionTitle((string) $this -> title));
-
-        return $label;
-    }
-
-    /**
-     * The option as an answer. The bar is a <meter> rather than a styled div:
-     * a share of a total is exactly what it means, so a reader who cannot see
-     * the bar is still told the number by their browser.
-     */
-    private function result(): Div
-    {
-        $result = new Div();
-        $result -> class = 'PollOptionResult';
-
-        // The reader's own choice is marked, since results replace the controls
-        // entirely and there would otherwise be nothing left saying what they
-        // picked.
-        if ((int) $this -> chosen === 1) {
-            $result -> class .= ' Chosen';
-        }
-
-        $result -> addContent(new PollOptionTitle((string) $this -> title));
-
-        $meter = new Meter();
-        $meter -> attributes['value'] = (string) $this -> share();
-        $meter -> attributes['min'] = '0';
-        $meter -> attributes['max'] = '100';
-        $result -> addContent($meter);
-
-        $result -> addContent(new PollOptionShare($this -> share(), $this -> voteCount()));
-
-        return $result;
     }
 }

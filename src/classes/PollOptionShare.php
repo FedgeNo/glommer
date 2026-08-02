@@ -17,12 +17,7 @@ class PollOptionShare extends Span
     {
         parent::__construct();
 
-        $this -> addContent($share . '%');
-
-        $count = new Span();
-        $count -> class = 'PollOptionVotes';
-        $count -> addContent($votes === 1 ? '1 vote' : $votes . ' votes');
-
-        $this -> addContent($count);
+        $this -> addContent($share . '% ');
+        $this -> addContent(new PollOptionVotes($votes));
     }
 }

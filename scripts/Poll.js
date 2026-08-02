@@ -2,12 +2,12 @@ import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 /**
- * Client twin of Poll.php - builds the same DOM from the same payload, with the
- * same class names, and handles voting.
+ * Client twin of Poll.php - the same DOM from the same payload, class for
+ * class, and the voting that turns one into the other.
  *
- * Whether the controls or the answers are shown is the server's decision, not
- * this file's: showResults arrives on the payload already decided, because it
- * depends on who is asking and only the server knows whether they have voted.
+ * Whether the controls or the answers are shown is not decided here: it depends
+ * on who is asking and whether they have voted, which only the server knows, so
+ * showResults arrives already settled.
  */
 export class Poll {
     static init() {
@@ -18,14 +18,13 @@ export class Poll {
             const poll = button.closest('.Poll');
             if (!poll) return;
 
-            const chosen = [...poll.querySelectorAll('input[name="pollOption"]:checked')]
-                .map((input) => Number(input.value));
+            const chosen = [...poll.querySelectorAll('.PollVoteInput:checked')].map((input) => Number(input.value));
 
             if (chosen.length === 0) return;
 
             // Disabled for the round trip rather than after it: a second click
-            // while the first is in flight would be refused by the server as a
-            // repeat vote, and the reader would be told their own answer failed.
+            // while the first is in flight comes back refused as a repeat vote,
+            // and the reader would be told their own answer failed.
             button.disabled = true;
 
             const data = await Api.post('/api/poll-vote', {
@@ -61,84 +60,88 @@ export class Poll {
         const poll = document.createElement('section');
         poll.className = 'Poll';
 
-        poll.appendChild(this.optionList());
+        poll.appendWithSpace(this.optionListElement());
 
+        // The button is what turns a set of ticked boxes into a vote, so it
+        // exists only while there is a vote left to cast.
         if (!this.showResults) {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'Button PollVoteButton';
-            button.dataset.pollId = String(this.pollId);
-            button.textContent = 'Vote';
-            poll.appendChild(button);
+            poll.appendWithSpace(this.voteButtonElement());
         }
 
-        poll.appendChild(this.tally());
+        poll.appendWithSpace(this.tallyElement());
 
         return poll;
     }
 
-    optionList() {
+    optionListElement() {
         const list = document.createElement('ul');
         list.className = 'PollOptionList';
 
         for (const option of this.options) {
             const item = document.createElement('li');
-            item.appendChild(this.showResults ? this.result(option) : this.control(option));
-            list.appendChild(item);
+            item.appendWithSpace(this.optionElement(option));
+            list.appendWithSpace(item);
         }
 
         return list;
     }
 
-    control(option) {
+    optionElement(option) {
         const wrapper = document.createElement('div');
         wrapper.className = 'PollOption';
-
-        const label = document.createElement('label');
-        label.className = 'd-flex align-items-center gap-2';
-
-        const input = document.createElement('input');
-        input.type = this.multiple ? 'checkbox' : 'radio';
-        input.name = 'pollOption';
-        input.value = String(option.pollOptionId);
-
-        label.appendChild(input);
-        label.appendChild(Poll.title(option.title));
-        wrapper.appendChild(label);
+        wrapper.appendWithSpace(this.showResults ? Poll.resultElement(option) : this.controlElement(option));
 
         return wrapper;
     }
 
-    result(option) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'PollOption';
+    controlElement(option) {
+        const label = document.createElement('label');
+        label.className = 'PollOptionControl';
 
+        const input = document.createElement('input');
+        input.className = 'PollVoteInput';
+        input.type = this.multiple ? 'checkbox' : 'radio';
+        // One name across the group, which is what makes a set of radios a
+        // single choice rather than several independent ones.
+        input.name = 'pollOption';
+        input.value = String(option.pollOptionId);
+
+        label.appendWithSpace(input);
+        label.appendWithSpace(Poll.titleElement(option.title));
+
+        return label;
+    }
+
+    static resultElement(option) {
         const result = document.createElement('div');
         result.className = option.chosen ? 'PollOptionResult Chosen' : 'PollOptionResult';
-        result.appendChild(Poll.title(option.title));
+
+        result.appendWithSpace(Poll.titleElement(option.title));
 
         const meter = document.createElement('meter');
+        meter.className = 'PollOptionMeter';
         meter.setAttribute('value', String(option.share));
         meter.setAttribute('min', '0');
         meter.setAttribute('max', '100');
-        result.appendChild(meter);
+        result.appendWithSpace(meter);
 
         const share = document.createElement('span');
         share.className = 'PollOptionShare';
-        share.textContent = option.share + '%';
+        // Trailing space, as PollOptionShare.php writes it - the count follows
+        // immediately and nothing else separates them.
+        share.appendChild(document.createTextNode(option.share + '% '));
 
         const votes = document.createElement('span');
         votes.className = 'PollOptionVotes';
         votes.textContent = option.voteCount === 1 ? '1 vote' : option.voteCount + ' votes';
         share.appendChild(votes);
 
-        result.appendChild(share);
-        wrapper.appendChild(result);
+        result.appendWithSpace(share);
 
-        return wrapper;
+        return result;
     }
 
-    static title(text) {
+    static titleElement(text) {
         const title = document.createElement('span');
         title.className = 'PollOptionTitle';
         title.textContent = text;
@@ -146,22 +149,34 @@ export class Poll {
         return title;
     }
 
-    tally() {
-        const footer = document.createElement('footer');
-        footer.className = 'PollTally';
-        footer.textContent = this.voterCount === 1 ? '1 person voted' : this.voterCount + ' people voted';
+    voteButtonElement() {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'Button PollVoteButton';
+        button.dataset.pollId = String(this.pollId);
+        button.textContent = 'Vote';
+
+        return button;
+    }
+
+    tallyElement() {
+        const tally = document.createElement('footer');
+        tally.className = 'PollTally';
+        tally.appendChild(document.createTextNode(
+            (this.voterCount === 1 ? '1 person voted' : this.voterCount + ' people voted') + ' '
+        ));
 
         const deadline = document.createElement('time');
         deadline.className = 'PollDeadline';
         deadline.dateTime = this.endsAt;
         deadline.textContent = this.closed ? 'Final result' : 'Closes ' + Poll.remaining(this.endsAt);
 
-        footer.appendChild(deadline);
+        tally.appendChild(deadline);
 
-        return footer;
+        return tally;
     }
 
-    /** Mirrors PollTally::remaining() - the largest unit that still says something useful. */
+    /** Mirrors PollDeadline::remaining() - the largest unit that still says something useful. */
     static remaining(endsAt) {
         const seconds = Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
 

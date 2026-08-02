@@ -28,8 +28,13 @@ SELECT `u`.*
                 FROM `Blocks` `b`
                 WHERE (`b`.`blockerId` = ? AND `b`.`blockedId` = `u`.`userId`) OR (`b`.`blockerId` = `u`.`userId` AND `b`.`blockedId` = ?)
         )
+        AND NOT EXISTS (
+            SELECT 1
+                FROM `Friendships` `f`
+                WHERE (`f`.`requesterId` = ? AND `f`.`addresseeId` = `u`.`userId`) OR (`f`.`requesterId` = `u`.`userId` AND `f`.`addresseeId` = ?)
+        )
     ORDER BY RAND()
     LIMIT ? OFFSET ?
-', 'OtherUser', 'iiiiii', $viewer_id, $not_banned, $viewer_id, $viewer_id, static::PAGE_SIZE + 1, $this -> offset);
+', 'OtherUser', 'iiiiiiii', $viewer_id, $not_banned, $viewer_id, $viewer_id, $viewer_id, $viewer_id, static::PAGE_SIZE + 1, $this -> offset);
     }
 }

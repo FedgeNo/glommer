@@ -69,20 +69,25 @@ $page -> rssLink = new RSSLink(ServerURL::absolute('/users/' . $profile_user -> 
 
 $page -> addContent($profile_user);
 
+$profile_feed = new ProfileFeedSection(['userId' => $user_id]);
+
+if ($profile_feed -> hasItems() && Auth::check()) {
+    // Above everything it searches, rather than between the pinned posts and
+    // the feed. Below them it could only be reached by scrolling past the very
+    // posts being searched, and hiding those on the first keystroke pulled the
+    // box back up under the reader's hands.
+    //
+    // Scoped to this user's own posts. While a query is active the sections
+    // below are hidden and the results stand in their place (see Search.js);
+    // clearing the box brings them back.
+    $page -> addContent(new PostSearch(['userId' => $user_id, 'placeholder' => 'Search ' . $profile_user -> title . '\'s posts...']));
+    $page -> addContent(new SearchFeedSection(['userId' => $user_id]));
+}
+
 // Above the ordinary posts, which is the whole point of pinning one.
 $page -> addContent(new PinnedPostSection(['userId' => $user_id]));
 
-$profile_feed = new ProfileFeedSection(['userId' => $user_id]);
-
 if ($profile_feed -> hasItems()) {
-    if (Auth::check()) {
-        // Search this user's own posts (scoped to their userId). While a query is
-        // active the default feed below is hidden and the results take its place
-        // (see main.js); clearing the box brings the feed back.
-        $page -> addContent(new PostSearch(['userId' => $user_id, 'placeholder' => 'Search ' . $profile_user -> title . '\'s posts...']));
-        $page -> addContent(new SearchFeedSection(['userId' => $user_id]));
-    }
-
     $page -> addContent($profile_feed);
 }
 

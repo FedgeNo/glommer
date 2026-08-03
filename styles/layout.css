@@ -298,7 +298,8 @@ body:has(.MainNavigation) {
 .SearchFeedSection { display: none; }
 .SearchFeedSection.Searching { display: block; }
 
-.ProfileFeedSection.Searching { display: none; }
+.ProfileFeedSection.Searching,
+.PinnedPostSection.Searching { display: none; }
 
 .FriendSearchSection { display: none; }
 .FriendSearchSection.Searching { display: block; }

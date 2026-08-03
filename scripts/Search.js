@@ -223,6 +223,7 @@ export class Search {
                 const searching = query !== '';
                 document.querySelector('.SearchFeedSection')?.classList.toggle('Searching', searching);
                 document.querySelector('.ProfileFeedSection')?.classList.toggle('Searching', searching);
+                document.querySelector('.PinnedPostSection')?.classList.toggle('Searching', searching);
             },
         });
     }

@@ -155,7 +155,8 @@ button[type='submit'].Button:hover,
 .FriendRemoveButton,
 .ReportedContentDeleteButton,
 .AccountDeleteButton,
-.UserModButton[data-is-mod='1'] {
+.UserModButton[data-is-mod='1'],
+.Removing {
     background-color: transparent;
     color: var(--danger) !important;
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent);
@@ -169,7 +170,8 @@ button[type='submit'].Button:hover,
 .FriendRemoveButton:hover,
 .ReportedContentDeleteButton:hover,
 .AccountDeleteButton:hover,
-.UserModButton[data-is-mod='1']:hover {
+.UserModButton[data-is-mod='1']:hover,
+.Removing:hover {
     background-color: var(--danger-soft);
     color: var(--danger) !important;
 }
@@ -192,20 +194,6 @@ button[type='submit'].Button:hover,
 
 .PostBookmarkButton[data-bookmarked='1']:hover {
     background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
-}
-
-/* Any button while it is the one that takes something away - Unpin, Unfollow,
-   Remove Poll. Carried by the button rather than named per button, so a new one
-   is marked by wearing it. */
-.Removing {
-    background-color: var(--danger-soft);
-    color: var(--danger) !important;
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 30%, transparent);
-}
-
-.Removing:hover {
-    background-color: color-mix(in srgb, var(--danger-soft) 70%, var(--danger) 12%);
-    color: var(--danger) !important;
 }
 
 a.Button {

@@ -47,7 +47,10 @@ await import('../scripts/dom.js');
 // Mocks for modules that need them
 globalThis.Quill = class {
     constructor() {}
-    getModule() { return { container: { querySelector: () => null } }; }
+    // A real element, so QuillEditor's tooltip pass can query it the way it
+    // queries a real toolbar - it reaches for querySelectorAll as well as
+    // querySelector, and a hand-rolled shape has to answer both.
+    getModule() { return { container: document.createElement('div') }; }
     getContents() { return []; }
     getText() { return ''; }
     setContents() {}

@@ -91,6 +91,9 @@ export class Composer {
         this.latitudeInput  = form.querySelector('[name="latitude"]');
         this.longitudeInput = form.querySelector('[name="longitude"]');
 
+        this.pollButton = form.querySelector('.ComposerPollButton');
+        this.pollFields = form.querySelector('.ComposerPoll');
+
         Composer.#instances.set(form, this);
     }
 
@@ -297,26 +300,10 @@ export class Composer {
         pollButton.textContent = 'Add Poll';
         actions.appendWithSpace(pollButton);
 
-        // Hidden until asked for, and emptied again when withdrawn - the inputs
-        // stay in the form either way, so leaving text behind in them would
-        // attach a poll the author had just removed.
-        const poll = Composer.pollFieldsToElement();
-        form.appendWithSpace(poll);
-
-        pollButton.addEventListener('click', () => {
-            const adding = poll.style.display === 'none';
-
-            poll.style.display = adding ? '' : 'none';
-            pollButton.textContent = adding ? 'Remove Poll' : 'Add Poll';
-
-            if (!adding) {
-                for (const input of poll.querySelectorAll('input[name="pollOptions[]"]')) {
-                    input.value = '';
-                }
-
-                poll.querySelector('input[name="pollMultiple"]').checked = false;
-            }
-        });
+        // Hidden until asked for. The toggle is bound on the instance rather
+        // than here, because opening a poll has to tell the rest of the
+        // composer to get out of the way.
+        form.appendWithSpace(Composer.pollFieldsToElement());
 
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
@@ -340,6 +327,7 @@ export class Composer {
         this.#bindFileChange();
         this.#bindRemoveButtons();
         this.#bindLocationButton();
+        this.#bindPollButton();
         this.#syncFields();
     }
 
@@ -348,11 +336,70 @@ export class Composer {
         this.#quill = editor.instance;
     }
 
+    /**
+     * A post carries a link, attached media, or a poll - one of the three, and
+     * create-post refuses any combination. So the composer offers one at a
+     * time: picking any of them takes the other two away rather than letting
+     * someone fill in two and be told no on submit.
+     */
     #syncFields() {
-        const hasLink = this.linkInput?.value.trim() !== '';
-        const hasFiles = this.fileInput?.files.length > 0;
-        if (this.fileInput) this.fileInput.style.display = hasLink ? 'none' : '';
-        if (this.linkInput) this.linkInput.style.display = hasFiles ? 'none' : '';
+        // Defaulted before trimming: a missing input is "not chosen", where
+        // undefined !== '' would have read as chosen and hidden the other two.
+        const hasLink = (this.linkInput?.value ?? '').trim() !== '';
+        const hasFiles = (this.fileInput?.files.length ?? 0) > 0;
+        const hasPoll = this.#pollIsOpen();
+
+        Composer.#toggle(this.linkInput, !hasFiles && !hasPoll);
+        Composer.#toggle(this.fileInput, !hasLink && !hasPoll);
+        Composer.#toggle(this.pollButton, !hasLink && !hasFiles);
+    }
+
+    static #toggle(element, visible) {
+        if (element) {
+            element.style.display = visible ? '' : 'none';
+        }
+    }
+
+    #pollIsOpen() {
+        return this.pollFields !== null && this.pollFields.style.display !== 'none';
+    }
+
+    #bindPollButton() {
+        if (!this.pollButton || !this.pollFields) return;
+
+        this.pollButton.addEventListener('click', () => {
+            if (this.#pollIsOpen()) {
+                this.#closePoll();
+            } else {
+                this.pollFields.style.display = '';
+                this.pollButton.textContent = 'Remove Poll';
+            }
+
+            this.#syncFields();
+        });
+    }
+
+    /**
+     * Shuts the poll and empties it. The inputs stay in the form either way, so
+     * text left behind in them would attach a poll the author had just taken
+     * back - and form.reset() cannot help, since which of the three a post is
+     * lives in what is shown rather than in any field's value.
+     */
+    #closePoll() {
+        if (!this.pollButton || !this.pollFields) return;
+
+        this.pollFields.style.display = 'none';
+        this.pollButton.textContent = 'Add Poll';
+
+        for (const option of this.pollFields.querySelectorAll('[name="pollOptions[]"]')) {
+            option.value = '';
+        }
+
+        const multiple = this.pollFields.querySelector('[name="pollMultiple"]');
+
+        if (multiple) {
+            multiple.checked = false;
+        }
     }
 
     #bindLinkPreview() {
@@ -566,6 +613,7 @@ export class Composer {
 
         this.#form.reset();
         this.#quill.setText('');
+        this.#closePoll();
         this.#syncFields();
 
         if (this.removeFilesButton) this.removeFilesButton.style.display = 'none';

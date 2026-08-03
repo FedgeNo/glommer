@@ -99,6 +99,21 @@ export default {
             composer.remove();
         },
 
+        'the poll button warns while it is the one that takes the poll away'() {
+            const composer = mounted();
+
+            TestCase.assertFalse(composer.poll.classList.contains('Removing'));
+
+            composer.poll.click();
+            TestCase.assertTrue(composer.poll.classList.contains('Removing'));
+
+            // Back to an ordinary button once there is nothing left to remove.
+            composer.poll.click();
+            TestCase.assertFalse(composer.poll.classList.contains('Removing'));
+
+            composer.remove();
+        },
+
         'withdrawing a poll brings the other two back and empties it'() {
             const composer = mounted();
 

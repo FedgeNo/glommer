@@ -155,7 +155,7 @@ export class Composer {
 
     static #buildEditor(form, legendText) {
         const fieldset = document.createElement('fieldset');
-
+        fieldset.className = 'ComposerFieldset';
         const legend = document.createElement('legend');
         legend.textContent = legendText;
         fieldset.appendWithSpace(legend);
@@ -373,6 +373,7 @@ export class Composer {
             } else {
                 this.pollFields.style.display = '';
                 this.pollButton.textContent = 'Remove Poll';
+                this.pollButton.classList.add('Removing');
             }
 
             this.#syncFields();
@@ -390,6 +391,7 @@ export class Composer {
 
         this.pollFields.style.display = 'none';
         this.pollButton.textContent = 'Add Poll';
+        this.pollButton.classList.remove('Removing');
 
         for (const option of this.pollFields.querySelectorAll('[name="pollOptions[]"]')) {
             option.value = '';
@@ -533,7 +535,7 @@ export class Composer {
         this.longitudeInput.value = active ? longitude : '';
         this.locationButton.disabled = false;
         this.locationButton.textContent = active ? 'Remove Location' : 'Add Location';
-        this.locationButton.classList.toggle('Active', active);
+        this.locationButton.classList.toggle('Removing', active);
 
         // Announced however the location changed - the button, the map, or a
         // cleared form - so a page showing the same location elsewhere can stay

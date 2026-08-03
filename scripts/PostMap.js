@@ -48,7 +48,7 @@ export class PostMap {
 
         // An explicit centre wins: fitting the pins would immediately pull the
         // view back off the point that was linked to.
-        PostMap.#loadPosts(map, centre === null);
+        PostMap.#loadPosts(map, centre);
         PostMap.#bindComposer(map);
     }
 
@@ -228,7 +228,7 @@ export class PostMap {
         }
     }
 
-    static async #loadPosts(map, fitToPins) {
+    static async #loadPosts(map, centre) {
         let data;
 
         try {
@@ -267,11 +267,46 @@ export class PostMap {
         PostMap.#cluster = cluster;
         PostMap.#markers = markers;
 
-        if (fitToPins && posts.length > 0) {
+        if (centre === null && posts.length > 0) {
             map.fitBounds(cluster.getBounds(), { padding: [40, 40], maxZoom: 12 });
         }
 
+        PostMap.#revealAt(cluster, markers, centre);
+
         PostMap.#bindScrubber(posts, cluster, markers);
+    }
+
+    /**
+     * Opens the post the map was pointed at.
+     *
+     * Arriving from a post's place line centres the map on that post, but the
+     * post itself may be inside a cluster bubble at that zoom - so the one
+     * thing the reader came to see is the one thing they cannot see. This asks
+     * the cluster to reveal it, which zooms or spiderfies as far as it needs
+     * to, and then opens its popup.
+     *
+     * Only ever the marker at the requested point, and only when a point was
+     * requested. Keying on where the map happens to be looking would pull
+     * markers in and out of clusters as it was panned.
+     */
+    static #revealAt(cluster, markers, centre) {
+        if (centre === null) {
+            return;
+        }
+
+        // Coordinates are stored exactly and travel through the URL as written,
+        // so this is a tolerance for the round trip through text rather than
+        // for nearby posts - a tenth of a metre, not a neighbourhood.
+        const samePlace = (position) => Math.abs(position.lat - centre.latitude) < 0.000001
+            && Math.abs(position.lng - centre.longitude) < 0.000001;
+
+        for (const marker of markers.values()) {
+            if (samePlace(marker.getLatLng())) {
+                cluster.zoomToShowLayer(marker, () => marker.openPopup());
+
+                return;
+            }
+        }
     }
 
     /**

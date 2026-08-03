@@ -350,7 +350,7 @@ export class Composer {
         const hasPoll = this.#pollIsOpen();
 
         Composer.#toggle(this.linkInput, !hasFiles && !hasPoll);
-        Composer.#toggle(this.fileInput, !hasLink && !hasPoll);
+        Composer.#toggle(this.fileInput, !hasLink && !hasPoll && !hasFiles);
         Composer.#toggle(this.pollButton, !hasLink && !hasFiles);
     }
 

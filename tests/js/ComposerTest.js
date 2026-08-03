@@ -88,6 +88,28 @@ export default {
             composer.remove();
         },
 
+        'choosing files puts the picker away and leaves the way to undo it'() {
+            const composer = mounted();
+            const remove = composer.form.querySelector('.ComposerFilesRemoveButton');
+
+            // jsdom has no FileList to assign, and the picker only cares how
+            // many there are.
+            Object.defineProperty(composer.file, 'files', { value: [{}], configurable: true });
+            composer.file.dispatchEvent(new window.Event('change'));
+
+            TestCase.assertTrue(hidden(composer.file));
+            TestCase.assertFalse(hidden(remove));
+
+            // Taking them away again brings the picker back.
+            Object.defineProperty(composer.file, 'files', { value: [], configurable: true });
+            composer.file.dispatchEvent(new window.Event('change'));
+
+            TestCase.assertFalse(hidden(composer.file));
+            TestCase.assertTrue(hidden(remove));
+
+            composer.remove();
+        },
+
         'opening a poll puts away the link and the files'() {
             const composer = mounted();
 

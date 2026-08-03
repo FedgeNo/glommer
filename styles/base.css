@@ -158,7 +158,7 @@ input[type='file'] {
     padding: 0;
     border-style: none;
     color: var(--muted);
-    width: 5.7rem;
+    width: 7rem;
     font-size: 0.8125rem;
 }
 
@@ -168,8 +168,8 @@ input[type='file']::file-selector-button {
     color: var(--ink);
     border: none;
     border-radius: 999px;
+    width: 100%;
     padding: 0.5rem 1rem;
-    margin-right: 0.5rem;
     font-weight: 550;
     font-size: 0.875rem;
     line-height: 1.4;

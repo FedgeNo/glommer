@@ -52,7 +52,7 @@ class OtherUser extends User
 
             $follow_button = new Button();
             $follow_button -> type = 'button';
-            $follow_button -> class = 'UserFollowButton';
+            $follow_button -> class = $following ? 'UserFollowButton Removing' : 'UserFollowButton';
             $follow_button -> mixins = ['Button'];
             $follow_button -> attributes['data-user-id'] = (string) $this -> userId;
             $follow_button -> attributes['data-following'] = $following ? '1' : '0';
@@ -69,7 +69,7 @@ class OtherUser extends User
             if ($friendship === null || $sent_by_viewer) {
                 $friend_button = new Button();
                 $friend_button -> type = 'button';
-                $friend_button -> class = 'FriendRequestButton';
+                $friend_button -> class = $sent_by_viewer ? 'FriendRequestButton Removing' : 'FriendRequestButton';
                 $friend_button -> mixins = ['Button'];
                 $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
                 $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';

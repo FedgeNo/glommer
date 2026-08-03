@@ -164,13 +164,21 @@ input[type='file'] {
 
 input[type='file']::file-selector-button {
     background-color: var(--surface-2);
+    background-image: var(--button-image, none);
     color: var(--ink);
     border: none;
     border-radius: 999px;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
     font-weight: 550;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
     cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+input[type='file']:hover::file-selector-button {
+    background-color: color-mix(in srgb, var(--surface-2) 80%, var(--ink) 8%);
+    background-image: var(--button-image-hover, var(--button-image, none));
 }
 

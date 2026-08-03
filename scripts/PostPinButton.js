@@ -35,6 +35,7 @@ export class PostPinButton {
             if (!result) return;
 
             button.textContent = result.pinned ? 'Unpin' : 'Pin';
+            button.classList.toggle('Removing', result.pinned);
             Toast.show(result.pinned ? 'Pinned to your profile.' : 'Unpinned.');
         } finally {
             button.disabled = false;

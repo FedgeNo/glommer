@@ -12,7 +12,10 @@ class PostPinButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> attributes['data-pinned'] = $pinned ? '1' : '0';
+        if ($pinned) {
+            $this -> class .= ' Removing';
+        }
+
         $this -> contents[] = $pinned ? 'Unpin' : 'Pin';
     }
 }

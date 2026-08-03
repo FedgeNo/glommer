@@ -58,7 +58,9 @@ export class OtherUser extends User {
             if (this.friendshipStatus === null || sent_by_viewer) {
                 const friend_button = document.createElement('button');
                 friend_button.type = 'button';
-                friend_button.className = 'Button FriendRequestButton';
+                friend_button.className = sent_by_viewer
+                    ? 'Button FriendRequestButton Removing'
+                    : 'Button FriendRequestButton';
                 friend_button.dataset.userId = this.userId;
                 friend_button.dataset.sent = sent_by_viewer ? '1' : '0';
                 friend_button.textContent = sent_by_viewer ? 'Cancel' : 'Add Friend';
@@ -203,6 +205,7 @@ export class OtherUser extends User {
             if (!result) return;
             button.dataset.sent = result.sent ? '1' : '0';
             button.textContent = result.sent ? 'Cancel' : 'Add Friend';
+            button.classList.toggle('Removing', result.sent);
         } finally {
             button.disabled = false;
         }
@@ -217,6 +220,7 @@ export class OtherUser extends User {
             if (!result) return;
             button.dataset.following = result.following ? '1' : '0';
             button.textContent = result.following ? 'Unfollow' : 'Follow';
+            button.classList.toggle('Removing', result.following);
         } finally {
             button.disabled = false;
         }

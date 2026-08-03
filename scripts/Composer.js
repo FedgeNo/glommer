@@ -195,7 +195,7 @@ export class Composer {
 
         const removeLinkBtn = document.createElement('button');
         removeLinkBtn.type = 'button';
-        removeLinkBtn.className = 'Button LinkImageRemoveButton';
+        removeLinkBtn.className = 'Button LinkImageRemoveButton Removing';
         removeLinkBtn.textContent = 'Remove image';
         linkImagePreview.appendWithSpace(removeLinkBtn);
 
@@ -229,7 +229,7 @@ export class Composer {
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';
-        removeFilesBtn.className = 'Button ComposerFilesRemoveButton';
+        removeFilesBtn.className = 'Button ComposerFilesRemoveButton Removing';
         removeFilesBtn.style.display = 'none';
         removeFilesBtn.textContent = 'Remove Files';
         actions.appendWithSpace(removeFilesBtn);

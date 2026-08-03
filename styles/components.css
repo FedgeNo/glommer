@@ -194,19 +194,16 @@ button[type='submit'].Button:hover,
     background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
 }
 
-.ComposerPollButton.Removing,
-.LocationButton.Removing,
-.ComposerFilesRemoveButton,
-.LinkImageRemoveButton {
+/* Any button while it is the one that takes something away - Unpin, Unfollow,
+   Remove Poll. Carried by the button rather than named per button, so a new one
+   is marked by wearing it. */
+.Removing {
     background-color: var(--danger-soft);
     color: var(--danger) !important;
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 30%, transparent);
 }
 
-.ComposerPollButton.Removing:hover,
-.LocationButton.Removing:hover,
-.ComposerFilesRemoveButton:hover,
-.LinkImageRemoveButton:hover {
+.Removing:hover {
     background-color: color-mix(in srgb, var(--danger-soft) 70%, var(--danger) 12%);
     color: var(--danger) !important;
 }
@@ -1143,8 +1140,13 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 /* The disclosure triangle is the one part of a <summary> that can't be styled
    consistently across browsers, and the bar already reads as a control. */
-.SensitiveMediaSummary::-webkit-details-marker { display: none; }
-.SensitiveMediaSummary { list-style: none; }
+.SensitiveMediaSummary::-webkit-details-marker {
+    display: none;
+}
+
+.SensitiveMediaSummary { 
+    list-style: none;
+}
 
 .SensitiveMedia[open] .SensitiveMediaSummary {
     border-bottom: 1px solid var(--hairline);
@@ -1165,7 +1167,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     white-space: nowrap;
 }
 
-.SensitiveMediaToggle:hover { color: var(--ink); }
+.SensitiveMediaToggle:hover {
+    color: var(--ink);
+}
 
 .Carousel {
     position: relative;
@@ -1173,7 +1177,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     border-radius: var(--radius-ctl);
 }
 
-.CarouselTrack { display: flex; }
+.CarouselTrack {
+    display: flex;
+}
 
 .CarouselSlide {
     display: none;
@@ -1181,7 +1187,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     flex-shrink: 0;
 }
 
-.CarouselSlide.Active { display: block; }
+.CarouselSlide.Active {
+    display: block;
+}
 
 .CarouselPrevButton,
 .CarouselNextButton {
@@ -1204,16 +1212,25 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 .CarouselPrevButton:hover,
-.CarouselNextButton:hover { background-color: rgb(15 18 16 / 0.75); }
+.CarouselNextButton:hover {
+    background-color: rgb(15 18 16 / 0.75);
+}
 
 /* .Button:active's bare scale() would otherwise win on specificity and
    replace (not compose with) the translateY(-50%) centering above, jumping
    the button down by half its own height until the mouse releases. */
 .CarouselPrevButton:active,
-.CarouselNextButton:active { transform: translateY(-50%) scale(0.97); }
+.CarouselNextButton:active {
+    transform: translateY(-50%) scale(0.97);
+}
 
-.CarouselPrevButton { left: 0.5rem; }
-.CarouselNextButton { right: 0.5rem; }
+.CarouselPrevButton {
+    left: 0.5rem;
+}
+
+.CarouselNextButton {
+    right: 0.5rem;
+}
 
 .CarouselCounter {
     position: absolute;
@@ -1244,7 +1261,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     transition: background-color 0.15s ease;
 }
 
-.CarouselAutoplayButton:hover { background-color: rgb(15 18 16 / 0.75); }
+.CarouselAutoplayButton:hover {
+    background-color: rgb(15 18 16 / 0.75);
+}
 
 .MediaFullscreenButton {
     position: absolute;
@@ -1265,7 +1284,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     transition: background-color 0.15s ease;
 }
 
-.MediaFullscreenButton:hover { background-color: rgb(15 18 16 / 0.75); }
+.MediaFullscreenButton:hover {
+    background-color: rgb(15 18 16 / 0.75);
+}
 
 .MediaFullscreenOverlay {
     position: fixed;
@@ -1278,9 +1299,13 @@ body.MessagesPage { padding-bottom: 9rem; }
     justify-content: center;
 }
 
-.InFullscreen { margin: 0; }
+.InFullscreen {
+    margin: 0;
+}
 
-.InFullscreen .FeedItem { margin-top: 0; }
+.InFullscreen .FeedItem {
+    margin-top: 0;
+}
 
 .InFullscreen.ImageItem,
 .InFullscreen.VideoItem,
@@ -1299,7 +1324,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     height: 100vh;
 }
 
-.MediaFullscreenOverlay .FeedItem { width: 100%; }
+.MediaFullscreenOverlay .FeedItem {
+    width: 100%;
+}
 
 /* ---------- Hashtags & Trending ---------- */
 
@@ -1317,7 +1344,9 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 .HashtagChip:hover,
-.HashtagNode:hover { background-color: var(--accent-soft); }
+.HashtagNode:hover {
+    background-color: var(--accent-soft);
+}
 
 .HashtagChipCount {
     color: var(--muted);
@@ -1336,7 +1365,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     font-size: 0.9375rem;
 }
 
-.TrendingEntityLink:hover { background-color: var(--accent-soft); }
+.TrendingEntityLink:hover {
+    background-color: var(--accent-soft);
+}
 
 .TrendingEntityCount {
     color: var(--muted);
@@ -1366,7 +1397,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     isolation: isolate;
 }
 
-.HashtagGraphList.Active:active { cursor: grabbing; }
+.HashtagGraphList.Active:active {
+    cursor: grabbing;
+}
 
 .HashtagGraphEdges {
     position: absolute;
@@ -1411,9 +1444,17 @@ body.MessagesPage { padding-bottom: 9rem; }
     box-shadow: var(--shadow-pop);
 }
 
-.ConfirmDialogMessage { color: var(--ink); }
-.ConfirmDialogInput { resize: vertical; }
-.ConfirmDialogActions { justify-content: flex-end; }
+.ConfirmDialogMessage {
+    color: var(--ink);
+}
+
+.ConfirmDialogInput {
+    resize: vertical;
+}
+
+.ConfirmDialogActions {
+    justify-content: flex-end;
+}
 
 /* ---------- Test results ---------- */
 
@@ -1469,7 +1510,9 @@ body.MessagesPage { padding-bottom: 9rem; }
     transition: opacity 0.2s;
 }
 
-.CodeBlockWrapper:hover .CodeCopyButton { opacity: 1; }
+.CodeBlockWrapper:hover .CodeCopyButton {
+    opacity: 1;
+}
 
 .CodeCopyButton.copied {
     background: var(--color-success, #d4edda);
@@ -1492,6 +1535,7 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 /* ---------- List resets ---------- */
 
+.PinnedPostList,
 .FeedList,
 .ReplyList,
 .BookmarkList,

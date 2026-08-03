@@ -199,8 +199,9 @@ class HelpContent
 <ul>
 <li>A <strong>title</strong>, if you want to give your post a headline.</li>
 <li>A <strong>link</strong>, if you\'re sharing a web page (see <a href="/help/sharing-a-link">Sharing a link</a>).</li>
+<li>A <strong>poll</strong>, if you\'re asking a question rather than making a statement (see <a href="/help/polls">Asking a question with a poll</a>).</li>
 </ul>
-<p>You can dress your writing up with formatting, emoji, and even math, and you can attach photos, video, or audio. Those each have their own article. Note that a single post carries either a link <em>or</em> attached media, not both.</p>
+<p>You can dress your writing up with formatting, emoji, and even math, and you can attach photos, video, or audio. Those each have their own article. Note that a single post carries a link, attached media, <em>or</em> a poll - one of the three, never a combination.</p>
 ',
             ],
             [
@@ -235,7 +236,29 @@ class HelpContent
                 'body' => '
 <p>To share a web page, put its address in the <strong>Link</strong> field above the writing area. We\'ll fetch the page and offer a preview - its title, a short description, and an image where one is available - which shows on your published post so people can see what they\'re about to open.</p>
 <p>You can still add your own words in the writing area to say why you\'re sharing it. If you don\'t want the preview image, you can remove it before posting.</p>
-<p>A post can carry a link or attached media, but not both at once.</p>
+<p>A post can carry a link, attached media, or a poll - one of the three, not several.</p>
+',
+            ],
+            [
+                'slug' => 'polls',
+                'title' => 'Asking a question with a poll',
+                'category' => 'Posting',
+                'summary' => 'Attach a poll to a post and let people answer it, here and across the Fediverse.',
+                'body' => '
+<p>Press <strong>Add Poll</strong> in the composer to turn a post into a question. You get up to four options, and the post\'s own writing is the question - a poll with no words asks nothing, so it won\'t publish without them.</p>
+<p>Two choices to make before you post:</p>
+<ul>
+<li><strong>Allow more than one choice</strong> - tick it and people can pick several options; leave it and they pick exactly one.</li>
+<li><strong>How long it runs</strong> - from five minutes to seven days. Every poll ends, because a result nobody can call final isn\'t a result.</li>
+</ul>
+<p>Two options can\'t read the same, even in different capitals. An answer names the option by its text rather than by its position, so two that look alike couldn\'t be told apart when one came back.</p>
+<p>A poll goes in place of media or a link, not alongside them - the options are the thing to interact with.</p>
+<h2>Answering one</h2>
+<p>Pick your option or options and press <strong>Vote</strong>. Your answer is final: there\'s no changing it afterwards, since being able to switch after seeing the running total would make the total the thing being voted on.</p>
+<p>Once you\'ve answered - or once the poll closes - the options are replaced by the results: each one\'s share of the vote with the number behind it, and your own choice marked. Underneath, how many people have answered and how long is left. On a poll that takes several choices those are different numbers, which is why the count is of people rather than of votes.</p>
+<p>If you haven\'t voted you\'ll still see the results once it closes, and so will anyone reading while logged out.</p>
+<h2>Across the Fediverse</h2>
+<p>Polls travel. People on other servers can answer yours and their votes count here, and you can answer polls from accounts you follow elsewhere. For a poll from another server the numbers are that server\'s to keep - we show what it last told us, so a total can lag slightly behind the vote you just cast.</p>
 ',
             ],
             [
@@ -276,7 +299,8 @@ class HelpContent
                 'summary' => 'Search for users by name, or browse suggestions on the Users page.',
                 'body' => '
 <p>Open <strong>Users</strong> from the menu to find people. Start typing a name or username into the search box and matching people appear as you type.</p>
-<p>Before you\'ve typed anything, the page shows <strong>suggestions</strong> - people you might know. These lean on friends of your friends, ranked by how many friends you have in common, so the more connected you are, the more relevant they get. If you\'re new and haven\'t added anyone yet, it shows a few people to get you started.</p>
+<p>Before you\'ve typed anything, the page shows <strong>suggestions</strong> - people you might know. These are friends of your friends, ranked by how many friends you have in common, so the more connected you are, the more relevant they get.</p>
+<p>If it\'s empty, that isn\'t a fault: it means there\'s nobody left to suggest, either because you haven\'t added anyone yet or because you\'ve already added everyone your friends know. Search by name to find anyone else - the search covers everybody, suggested or not.</p>
 <p>From any person\'s card you can add them as a friend, send a message, or open their profile to see their posts.</p>
 ',
             ],
@@ -391,7 +415,9 @@ class HelpContent
 <li><a href="/help/two-factor-authentication">Two-Factor Authentication</a> - an extra step at login for security.</li>
 <li><strong>Theme</strong> - change how the site looks (see below).</li>
 <li><a href="/help/signed-in-devices">Remembered Devices and Sessions</a> - review where you\'re signed in, and sign out everywhere.</li>
+<li><a href="/help/video-calling">Video Calling</a> - check whether calls can work from this browser and network.</li>
 <li><a href="/help/following-on-the-fediverse">Fediverse</a> - follow accounts on other servers.</li>
+<li><strong>Moving Servers</strong> - take your followers with you to an account elsewhere on the Fediverse.</li>
 <li><a href="/help/deleting-your-account">Delete Account</a> - close your account for good.</li>
 </ul>
 <h2>Themes</h2>

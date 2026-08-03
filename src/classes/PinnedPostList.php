@@ -9,7 +9,7 @@ declare(strict_types=1);
  * nothing to page through and no more to load. It renders what there is or
  * nothing at all.
  */
-class PinnedPostList extends UnorderedList
+class PinnedPostList extends FeedList
 {
     public ?string $class = 'PinnedPostList';
     public array $mixins = ['d-flex', 'flex-column'];

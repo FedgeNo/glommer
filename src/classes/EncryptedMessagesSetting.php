@@ -27,6 +27,14 @@ class EncryptedMessagesSetting extends Div
         if (Auth::user() -> messagePublicKey === null) {
             $this -> addContent(new MessageKeySetupForm(false));
         } else {
+            // Changing the passphrase happens entirely in the browser (unwrap
+            // under the old, rewrap under the new), so the keys come down with
+            // the section that does it. Ciphertext and a public key, both this
+            // member's own - and on the element rather than in the config
+            // cookie, which every later request would carry them back up in.
+            $this -> attributes['data-public-key'] = (string) Auth::user() -> messagePublicKey;
+            $this -> attributes['data-wrapped-private-key'] = (string) Auth::user() -> messageWrappedPrivateKey;
+
             $status = new Paragraph();
             $status -> contents[] = 'Encrypted messages are on.';
             $this -> addContent($status);

@@ -182,12 +182,22 @@ export class VideoCallTestPanel {
     }
 
     /**
+     * The ICE configuration a real call would use, carried on the panel by
+     * VideoCallTestPanel.php.
+     */
+    static #iceServers() {
+        const panel = document.querySelector('.VideoCallTestPanel');
+
+        return panel === null ? [] : (JSON.parse(panel.dataset.iceServers ?? '[]') ?? []);
+    }
+
+    /**
      * Whether STUN answers from here. A server-reflexive candidate is the
      * browser being told what its own address looks like from outside; without
      * one, two people behind different routers have no way to find each other.
      */
     static async #stun() {
-        const ice_servers = ClientConfig.get('iceServers') ?? [];
+        const ice_servers = VideoCallTestPanel.#iceServers();
 
         if (ice_servers.length === 0) {
             return { ok: false, detail: 'No STUN endpoint is configured, so calls can only work between people on the same network.' };

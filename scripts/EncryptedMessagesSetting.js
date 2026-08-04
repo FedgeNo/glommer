@@ -1,6 +1,5 @@
 import { Api } from '/scripts/Api.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
-import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
@@ -15,12 +14,22 @@ export class EncryptedMessagesSetting {
     static MIN_PASSPHRASE_LENGTH = 8;
 
     /**
-     * Keys created or rewrapped since the page loaded. Preferred over
-     * ClientConfig, which only knows what existed when the page rendered -
-     * without this, a passphrase change right after enabling (or a second
+     * Keys created or rewrapped since the page loaded. Preferred over what the
+     * section was rendered with, which only knows what existed at that moment
+     * - without this, a passphrase change right after enabling (or a second
      * change in a row) would unwrap a stale blob.
      */
     static #keys = null;
+
+    /** The keys the section was rendered with (EncryptedMessagesSetting.php). */
+    static #storedKeys(form) {
+        const section = form.closest('.EncryptedMessagesSetting');
+
+        return {
+            publicKey: JSON.parse(section.dataset.publicKey),
+            wrappedPrivateKey: JSON.parse(section.dataset.wrappedPrivateKey),
+        };
+    }
 
     static init() {
         document.addEventListener('submit', (event) => {
@@ -84,7 +93,7 @@ export class EncryptedMessagesSetting {
 
         if (!EncryptedMessagesSetting.#acceptable(new_passphrase, form.querySelector('[name="newPassphraseConfirm"]').value)) return;
 
-        const keys = EncryptedMessagesSetting.#keys ?? ClientConfig.get('messageKeys');
+        const keys = EncryptedMessagesSetting.#keys ?? EncryptedMessagesSetting.#storedKeys(form);
         const private_jwk = await MessageCrypto.unwrapPrivateKey(keys.wrappedPrivateKey, form.querySelector('[name="currentPassphrase"]').value);
 
         if (private_jwk === null) {

@@ -34,6 +34,13 @@ class VideoCallTestPanel extends Div
 
     public function toDOM(): \DOMElement
     {
+        // The check negotiates for real, so it needs the same ICE configuration
+        // a call would use - anything else would be testing a different thing
+        // than it reports. Carried on the panel rather than in the config
+        // cookie: it belongs to this one panel, and the cookie is sent back up
+        // on every request the page makes afterwards.
+        $this -> attributes['data-ice-servers'] = (string) json_encode(VideoCall::iceServers());
+
         $this -> contents[] = new Paragraph('Runs the parts of call setup that can be checked from one browser. Everything up to an actual peer-to-peer connection is testable here; connecting to another person needs that person.');
 
         $this -> contents[] = new VideoCallTestButton();

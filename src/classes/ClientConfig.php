@@ -3,28 +3,26 @@
 declare(strict_types=1);
 
 /**
- * Builds the client-side configuration, which Page renders into the document as
- * a JSON block for ClientConfig.js to read. This is the only channel
- * server-side values reach the client by: a value every page wants is listed
- * here, and a value one page needs rides through Page::$clientConfig as an
- * override.
+ * Builds the client-side configuration and sends it as a JSON cookie, read back
+ * by ClientConfig.js. Call ClientConfig::send() before the response body is sent
+ * (Page::send() does). This is the only channel server-side values reach the
+ * client by: a value every page wants is listed here, and a value one page
+ * needs rides through Page::$clientConfig as an override.
  *
- * In the page rather than in a cookie, for two reasons. A cookie is sent back
- * up on every subsequent request, which is pure weight for values the server
- * already knows; and a cookie is shared by every tab, so config belonging to
- * one page render was reachable from another page's tab.
+ * Configuration only - what the site is and who is signed in. The data of
+ * whatever is being looked at (a conversation's keys, a list's next page)
+ * belongs on the element that needs it or in the endpoint that serves it: the
+ * cookie is sent back up on every request from then on, so anything put here
+ * is paid for by every image, script and API call the page makes afterwards.
  */
 class ClientConfig
 {
-    /**
-     * @param array<string, mixed> $overrides Additional or override values
-     * @return array<string, mixed>
-     */
-    public static function payload(array $overrides = []): array
+    /** @param array<string, mixed> $overrides Additional or override values */
+    public static function send(array $overrides = []): void
     {
         $current_user = Auth::user();
 
-        return array_merge([
+        $config = array_merge([
             'currentUserId' => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> slug,
             'currentUserSkinTone' => $current_user ?-> skinTone,
@@ -42,5 +40,19 @@ class ClientConfig
             'pollMaxOptions' => Poll::MAX_OPTIONS,
             'needsMath' => false,
         ], $overrides);
+
+        $json = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        setcookie(
+            'APP-CONFIG',
+            $json,
+            [
+                'expires'  => 0,               // session cookie
+                'path'     => '/',
+                'secure'   => true,
+                'httponly' => false,
+                'samesite' => 'Strict'
+            ]
+        );
     }
 }

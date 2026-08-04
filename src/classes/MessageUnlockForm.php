@@ -10,8 +10,26 @@ declare(strict_types=1);
  */
 class MessageUnlockForm extends FormForm
 {
+    public string $otherPublicKey;
+    public string $wrappedPrivateKey;
+
+    public function __construct(string $other_public_key, string $wrapped_private_key)
+    {
+        parent::__construct();
+
+        $this -> otherPublicKey = $other_public_key;
+        $this -> wrappedPrivateKey = $wrapped_private_key;
+    }
+
     public function toDOM(): \DOMElement
     {
+        // Both are ciphertext or a public key - nothing here is a secret the
+        // viewer doesn't already hold - and they belong to this conversation
+        // rather than to the session, so they travel on the form that uses
+        // them.
+        $this -> attributes['data-other-public-key'] = $this -> otherPublicKey;
+        $this -> attributes['data-wrapped-private-key'] = $this -> wrappedPrivateKey;
+
         $passphrase = new InputField('messagePassphrase', 'Passphrase', 'password', 'Passphrase to unlock this conversation');
         $passphrase -> autocomplete = 'current-password';
         $this -> contents[] = $passphrase;

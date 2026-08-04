@@ -37,10 +37,6 @@ if (Block::exists($current_user -> userId, $other_user -> userId)) {
     exit;
 }
 
-// Only a thread wants this, so it rides on this page's config rather than
-// being restated in every response's site-wide block.
-$page -> clientConfig['iceServers'] = VideoCall::iceServers();
-
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,
     'otherUserId' => $other_user -> userId,
@@ -60,14 +56,13 @@ if ($other_user -> remoteActorURI !== null) {
 
     // What the browser needs to take part: the other side's public key to
     // derive the conversation key against, and the viewer's own wrapped
-    // private key for the unlock form to open. Ciphertext both - the server
-    // is handing over exactly what it stores.
-    $page -> clientConfig['messageEncryption'] = [
-        'otherPublicKey' => json_decode((string) $other_user -> messagePublicKey, true),
-        'wrappedPrivateKey' => json_decode((string) $current_user -> messageWrappedPrivateKey, true),
-    ];
-
-    $page -> addContent(new MessageUnlockForm());
+    // private key to open. Ciphertext both - the server is handing over
+    // exactly what it stores - and carried on the form that uses them rather
+    // than in the config cookie, which every later request would send back up.
+    $page -> addContent(new MessageUnlockForm(
+        (string) $other_user -> messagePublicKey,
+        (string) $current_user -> messageWrappedPrivateKey
+    ));
 } elseif ($current_user -> messagePublicKey !== null) {
     $privacy_state = 'awaiting-theirs';
 } else {

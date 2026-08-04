@@ -2,7 +2,6 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { Message } from '/scripts/Message.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
-import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { list_item } from '/scripts/utils.js';
 import { EmojiPicker } from '/scripts/EmojiPicker.js';
@@ -54,11 +53,13 @@ export class MessageComposer {
 
             // In an encrypted conversation every message is encrypted - a
             // locked thread prompts for the passphrase rather than quietly
-            // falling back to plaintext.
+            // falling back to plaintext. The unlock form is only rendered for
+            // a conversation both sides hold keys for, so its presence is what
+            // says this thread is encrypted.
             const payload = { recipientId: recipient_id };
-            const encryption = ClientConfig.get('messageEncryption');
+            const unlock_form = document.querySelector('.MessageUnlockForm');
 
-            if (encryption) {
+            if (unlock_form !== null) {
                 if (MessageCrypto.threadKey() === null) {
                     Toast.show('Unlock the conversation first.');
                     document.querySelector('.MessageUnlockForm [name="messagePassphrase"]')?.focus();

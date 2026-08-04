@@ -1,5 +1,4 @@
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
-import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Message } from '/scripts/Message.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -25,7 +24,7 @@ export class MessageUnlockForm {
             event.preventDefault();
 
             const passphrase_input = form.querySelector('[name="messagePassphrase"]');
-            const wrapped = ClientConfig.get('messageEncryption').wrappedPrivateKey;
+            const wrapped = JSON.parse(form.dataset.wrappedPrivateKey);
             const private_jwk = await MessageCrypto.unwrapPrivateKey(wrapped, passphrase_input.value);
 
             if (private_jwk === null) {
@@ -41,11 +40,11 @@ export class MessageUnlockForm {
     }
 
     static async #activate(private_jwk) {
-        const encryption = ClientConfig.get('messageEncryption');
-        if (!encryption) return;
+        const form = document.querySelector('.MessageUnlockForm');
+        if (form === null) return;
 
         try {
-            MessageCrypto.setThreadKey(await MessageCrypto.conversationKey(private_jwk, encryption.otherPublicKey));
+            MessageCrypto.setThreadKey(await MessageCrypto.conversationKey(private_jwk, JSON.parse(form.dataset.otherPublicKey)));
         } catch {
             // A stored key that doesn't parse as a P-256 key (say, after a
             // reset in another tab) just leaves the thread locked - the form

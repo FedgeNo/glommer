@@ -1,10 +1,12 @@
+import { Cookie } from '/scripts/Cookie.js';
+
 export class ClientConfig {
-    /** Parsed once - the block it comes from doesn't change within a page. */
+    /** Parsed once - the cookie doesn't change within a page. */
     static #cached = null;
 
     /** @returns {string|null} */
-    static _readBlock() {
-        return document.getElementById('ClientConfig')?.textContent ?? null;
+    static _getCookie(name) {
+        return Cookie.get(name);
     }
 
     /**
@@ -26,9 +28,9 @@ export class ClientConfig {
             return ClientConfig.#cached;
         }
 
-        const raw = this._readBlock();
+        const raw = this._getCookie('APP-CONFIG');
         if (!raw) {
-            // Sensible defaults when the block is missing (saved page, etc.)
+            // Sensible defaults when cookie is missing (saved page, logged-out, etc.)
             return {
                 currentUserId: null,
                 currentUserUsername: null,
@@ -39,9 +41,9 @@ export class ClientConfig {
                 serverTime: Date.now(),
                 WSPort: null,
                 // Mirrors Carousel::INITIAL_EAGER_ITEMS, which is what the
-                // page normally carries.
+                // cookie normally carries.
                 carouselEagerItems: 5,
-                // Empty rather than a guessed list: without the config there is
+                // Empty rather than a guessed list: without the cookie there is
                 // no composer to offer durations in, and inventing them here
                 // would be a second definition of what the server accepts.
                 pollDurations: {},
@@ -52,7 +54,7 @@ export class ClientConfig {
         try {
             ClientConfig.#cached = JSON.parse(raw);
         } catch (e) {
-            console.error('Invalid ClientConfig block:', e);
+            console.error('Invalid APP-CONFIG cookie:', e);
             return {};
         }
 

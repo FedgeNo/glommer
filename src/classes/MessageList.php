@@ -110,6 +110,12 @@ UNION ALL
         // already loaded the other person anyway.
         if ($this -> otherUserIsLocal) {
             $attributes['data-other-user-id'] = (string) $this -> otherUserId;
+            // The ICE configuration a call negotiates with, alongside the id
+            // of who it would be with. A fixed list rather than a lookup, so
+            // reading it here breaks none of the purity above; it rides on the
+            // thread rather than in the config cookie, which every later
+            // request would carry it back up in.
+            $attributes['data-ice-servers'] = (string) json_encode(VideoCall::iceServers());
         }
 
         return $attributes;

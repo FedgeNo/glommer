@@ -8,19 +8,9 @@ export class TestCase {
 }
 
 /**
- * Puts a config block in the document the way Page renders one, for a test
+ * Sets the config cookie the way ClientConfig::send() does, for a test
  * exercising code that reads ClientConfig.
  */
 export function write_client_config(config) {
-    const existing = document.getElementById('ClientConfig');
-
-    if (existing !== null) {
-        existing.remove();
-    }
-
-    const block = document.createElement('script');
-    block.type = 'application/json';
-    block.id = 'ClientConfig';
-    block.textContent = JSON.stringify(config);
-    document.head.appendChild(block);
+    document.cookie = 'APP-CONFIG=' + encodeURIComponent(JSON.stringify(config));
 }

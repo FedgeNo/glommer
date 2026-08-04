@@ -95,6 +95,31 @@ export class MessageCrypto {
         );
     }
 
+    /**
+     * A short code standing for the pair of public keys this conversation is
+     * encrypted with. Both sides compute the same one - the keys are sorted
+     * before hashing, so it does not matter who is reading - and two people
+     * who read it to each other over any other channel can tell whether they
+     * are really talking to each other.
+     *
+     * It is the answer to the one thing encryption here cannot check by
+     * itself: the server is what tells each browser the other's key, so a
+     * server that handed out a key of its own would sit in the middle
+     * undetected. It cannot make both codes agree, because it does not get to
+     * choose either real key - so the codes differ, and that is the tell.
+     */
+    static async fingerprint(one_jwk, other_jwk) {
+        const material = [one_jwk, other_jwk]
+            .map((jwk) => jwk.x + '.' + jwk.y)
+            .sort()
+            .join('|');
+
+        const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(material));
+        const hex = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+
+        return (hex.slice(0, 20).toUpperCase().match(/.{4}/g) ?? []).join(' ');
+    }
+
     /** Builds the envelope JSON api/send-message.php takes. */
     static async encrypt(conversation_key, text) {
         const message_key_bytes = crypto.getRandomValues(new Uint8Array(32));

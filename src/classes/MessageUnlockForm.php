@@ -11,13 +11,15 @@ declare(strict_types=1);
 class MessageUnlockForm extends FormForm
 {
     public string $otherPublicKey;
+    public string $ownPublicKey;
     public string $wrappedPrivateKey;
 
-    public function __construct(string $other_public_key, string $wrapped_private_key)
+    public function __construct(string $other_public_key, string $own_public_key, string $wrapped_private_key)
     {
         parent::__construct();
 
         $this -> otherPublicKey = $other_public_key;
+        $this -> ownPublicKey = $own_public_key;
         $this -> wrappedPrivateKey = $wrapped_private_key;
     }
 
@@ -28,6 +30,9 @@ class MessageUnlockForm extends FormForm
         // rather than to the session, so they travel on the form that uses
         // them.
         $this -> attributes['data-other-public-key'] = $this -> otherPublicKey;
+        // Both public keys, because the conversation's safety code stands for
+        // the pair (see MessageKeyFingerprint).
+        $this -> attributes['data-own-public-key'] = $this -> ownPublicKey;
         $this -> attributes['data-wrapped-private-key'] = $this -> wrappedPrivateKey;
 
         $passphrase = new InputField('messagePassphrase', 'Passphrase', 'password', 'Passphrase to unlock this conversation');

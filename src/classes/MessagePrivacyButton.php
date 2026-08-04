@@ -21,7 +21,7 @@ class MessagePrivacyButton extends ButtonButton
         [$label, $explanation] = match ($state) {
             'encrypted' => [
                 '🔒 Encrypted',
-                'Messages in this conversation are end-to-end encrypted: they are unlocked with your passphrase and read in your browsers, and what this server stores is ciphertext. That keeps them from anyone reading the database or the backups; it is not a guard against this server itself handing out the wrong key, which nothing here can yet check by hand. Messages sent before encryption was turned on stay readable as they were.',
+                'Messages in this conversation are end-to-end encrypted: they are unlocked with your passphrase and read in your browsers, and what this server stores is ciphertext. Check the safety code at the bottom of the thread with the other person to be sure nobody is between you. Messages sent before encryption was turned on stay readable as they were.',
             ],
             'awaiting-theirs' => [
                 '🔓 Not encrypted',

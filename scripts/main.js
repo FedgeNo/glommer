@@ -27,6 +27,7 @@ if (document.querySelector('.SensitiveMediaSetting'))  import('/scripts/Sensitiv
 if (document.querySelector('.MessageList'))            import('/scripts/Message.js');
 if (document.querySelector('.MessageList[data-other-user-id]')) import('/scripts/VideoCall.js');
 if (document.querySelector('.MessageUnlockForm'))      import('/scripts/MessageUnlockForm.js');
+if (document.querySelector('.MessageKeyFingerprint'))  import('/scripts/MessageKeyFingerprint.js');
 if (document.querySelector('.EncryptedMessagesSetting')) import('/scripts/EncryptedMessagesSetting.js');
 // .MessageList too: an empty thread has no report button yet, but the first
 // message to arrive live brings one.

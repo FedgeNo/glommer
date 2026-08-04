@@ -82,12 +82,13 @@ a WebSocket open, transcoding video out of band).
   the other person replies. Conversations between two members who have turned
   on **end-to-end encryption** (Settings → Encrypted Messages) are encrypted
   in the browser with WebCrypto - the server relays and stores ciphertext, so
-  the database, the backups and the wire carry nothing readable. Be precise
-  about the bound, since the interface is: this defeats a passive operator and
-  anyone who gets hold of the data, not an actively dishonest one. The server
-  is what introduces the two browsers to each other's public keys, and there
-  is no fingerprint check yet, so a server serving modified code could hand
-  over a key of its own and read what followed.
+  the database, the backups and the wire carry nothing readable. Since the
+  server is what introduces the two browsers to each other's public keys, each
+  encrypted thread also shows a **safety code** over that pair of keys, worked
+  out in the browser: two people who read it to each other over any other
+  channel can see that nothing was substituted, and can mark it verified so a
+  later change is called out. That leaves only the page itself as something to
+  trust - a server serving modified code is outside what any of this can check.
   Each member's private key is wrapped under a passphrase that
   never leaves their device; the wrapped blob is stored server-side, so the
   same passphrase unlocks the history from any browser - and losing it loses

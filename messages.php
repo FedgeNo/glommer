@@ -61,8 +61,13 @@ if ($other_user -> remoteActorURI !== null) {
     // than in the config cookie, which every later request would send back up.
     $page -> addContent(new MessageUnlockForm(
         (string) $other_user -> messagePublicKey,
+        (string) $current_user -> messagePublicKey,
         (string) $current_user -> messageWrappedPrivateKey
     ));
+
+    // The safety code for this pair of keys, which is the one thing encryption
+    // here cannot check on its own.
+    $page -> addContent(new MessageKeyFingerprint());
 } elseif ($current_user -> messagePublicKey !== null) {
     $privacy_state = 'awaiting-theirs';
 } else {

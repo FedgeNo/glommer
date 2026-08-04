@@ -1754,6 +1754,41 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MapComposer.Active { display: flex !important; }
 
 
+/* The conversation's safety code, and what it says once it has been checked
+   or has changed underneath someone. */
+.MessageKeyFingerprint {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.MessageKeyFingerprintCode {
+    font-family: monospace;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    user-select: all;
+}
+
+.MessageKeyFingerprint.Verified .MessageKeyFingerprintCode {
+    color: var(--accent);
+}
+
+.MessageKeyFingerprintVerified {
+    color: var(--accent);
+    margin-bottom: 0;
+}
+
+.MessageKeyFingerprintWarning {
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    background-color: var(--danger-soft);
+    border-radius: var(--radius-ctl);
+    padding: 0.5rem;
+    color: var(--ink);
+    margin-bottom: 0;
+}
+
 .MessageUnlockForm {
     display: flex;
     align-items: flex-end;

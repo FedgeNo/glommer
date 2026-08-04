@@ -45,6 +45,16 @@ export class Post {
         return post;
     }
 
+    /** Mirrors PostLikeButton::label() - the two must agree or the button rewords itself when pressed. */
+    static likeLabel(liked, count) {
+        return (liked ? 'Unlike' : 'Like') + (count > 0 ? ' (' + count + ')' : '');
+    }
+
+    /** Mirrors PostBookmarkButton::label(). */
+    static bookmarkLabel(bookmarked) {
+        return bookmarked ? 'Unbookmark' : 'Bookmark';
+    }
+
     authorBylineToElement() {
         const byline = document.createElement('header');
         byline.className = 'PostByline d-flex align-items-start gap-2';
@@ -399,16 +409,14 @@ export class Post {
             like_button.type = 'button';
             like_button.className = this.liked ? 'Button PostLikeButton Removing' : 'Button PostLikeButton';
             like_button.dataset.liked = this.liked ? '1' : '0';
-            // Same label rule as PostActionBar::likeLabel() and the post-click
-            // update below: the count only appears once it's nonzero.
-            like_button.textContent = (this.liked ? 'Unlike' : 'Like') + (this.likeCount > 0 ? ' (' + this.likeCount + ')' : '');
+            like_button.textContent = Post.likeLabel(this.liked, this.likeCount);
             actions.appendWithSpace(like_button);
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';
             bookmark_button.className = this.bookmarked ? 'Button PostBookmarkButton Removing' : 'Button PostBookmarkButton';
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
-            bookmark_button.textContent = this.bookmarked ? 'Unbookmark' : 'Bookmark';
+            bookmark_button.textContent = Post.bookmarkLabel(this.bookmarked);
             actions.appendWithSpace(bookmark_button);
 
             if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
@@ -493,7 +501,7 @@ export class Post {
             if (!result) return;
             button.dataset.liked = result.liked ? '1' : '0';
             button.classList.toggle('Removing', result.liked);
-            button.textContent = (result.liked ? 'Unlike' : 'Like') + (result.count > 0 ? ' (' + result.count + ')' : '');
+            button.textContent = Post.likeLabel(result.liked, result.count);
         } finally {
             button.disabled = false;
         }
@@ -507,7 +515,7 @@ export class Post {
             if (!result) return;
             button.dataset.bookmarked = result.bookmarked ? '1' : '0';
             button.classList.toggle('Removing', result.bookmarked);
-            button.textContent = result.bookmarked ? 'Unbookmark' : 'Bookmark';
+            button.textContent = Post.bookmarkLabel(result.bookmarked);
         } finally {
             button.disabled = false;
         }

@@ -26,6 +26,11 @@ if (document.querySelector('.Poll'))                   import('/scripts/Poll.js'
 if (document.querySelector('.SensitiveMediaSetting'))  import('/scripts/SensitiveMediaSetting.js');
 if (document.querySelector('.MessageList'))            import('/scripts/Message.js');
 if (document.querySelector('.MessageList[data-other-user-id]')) import('/scripts/VideoCall.js');
+if (document.querySelector('.MessageUnlockForm'))      import('/scripts/MessageUnlockForm.js');
+if (document.querySelector('.EncryptedMessagesSetting')) import('/scripts/EncryptedMessagesSetting.js');
+// .MessageList too: an empty thread has no report button yet, but the first
+// message to arrive live brings one.
+if (document.querySelector('.ReportButton, .MessageList')) import('/scripts/ReportButton.js');
 if (document.querySelector('.NotificationList'))       import('/scripts/Notification.js');
 if (document.querySelector('.ReportList'))             import('/scripts/ReportCard.js');
 if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');

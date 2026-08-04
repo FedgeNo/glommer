@@ -57,9 +57,24 @@ $page -> clientConfig['iceServers'] = VideoCall::iceServers();
 
 // A conversation with someone on another server is stored on that server too,
 // in the clear, and its administrator can read it. The thread looks identical
-// otherwise, so it says so.
+// otherwise, so it says so. Between two members here, the honest note runs the
+// other way: encrypted when both have keys, and if not, whose move it is.
 if ($other_user -> remoteActorURI !== null) {
     $page -> addContent(new FederatedThreadNotice('@' . $other_user -> slug));
+} elseif ($current_user -> messagePublicKey !== null && $other_user -> messagePublicKey !== null) {
+    // What the browser needs to take part: the other side's public key to
+    // derive the conversation key against, and the viewer's own wrapped
+    // private key for the unlock form to open. Ciphertext both - the server
+    // is handing over exactly what it stores.
+    $page -> clientConfig['messageEncryption'] = [
+        'otherPublicKey' => json_decode((string) $other_user -> messagePublicKey, true),
+        'wrappedPrivateKey' => json_decode((string) $current_user -> messageWrappedPrivateKey, true),
+    ];
+
+    $page -> addContent(new EncryptedThreadNotice());
+    $page -> addContent(new MessageUnlockForm());
+} else {
+    $page -> addContent(new MessageEncryptionNudge($current_user -> messagePublicKey !== null, '@' . $other_user -> slug));
 }
 
 $page -> addContent(new MessageList([

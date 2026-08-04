@@ -516,10 +516,6 @@ export class Post {
                 return;
             }
 
-            const reportBtn = event.target.closest('.ReportButton');
-            if (reportBtn) {
-                Post.#report(reportBtn);
-            }
         });
         
         Post.enhanceExisting();
@@ -574,22 +570,6 @@ export class Post {
         }
     }
 
-    static async #report(button) {
-        const reason = await Dialog.prompt('Why are you reporting this?', { confirmLabel: 'Report' });
-        if (reason === null) return;
-        button.disabled = true;
-        try {
-            const result = await Api.post('/api/report', {
-                targetType: button.dataset.targetType,
-                targetId: button.dataset.targetId,
-                reason
-            });
-            if (!result) return;
-            button.textContent = 'Reported';
-        } finally {
-            button.disabled = false;
-        }
-    }
 }
 
 ReadyHandler.add(Post.init);

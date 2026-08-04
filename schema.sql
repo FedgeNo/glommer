@@ -44,6 +44,14 @@ CREATE TABLE `Users` (
   `alsoKnownAs` text DEFAULT NULL,
   `chatOtherUserId` int(10) unsigned DEFAULT NULL,
   `chatLastSeen` datetime DEFAULT NULL,
+  -- End-to-end encrypted messaging keys, both produced client-side. The
+  -- public key is a P-256 ECDH JWK; the private key arrives already wrapped
+  -- under a key derived from a passphrase this server never sees, so the row
+  -- only ever holds ciphertext - storing it here is what makes the same
+  -- passphrase unlock the history from any browser. Losing the passphrase
+  -- loses the history; there is deliberately no server-side recovery.
+  `messagePublicKey` text DEFAULT NULL,
+  `messageWrappedPrivateKey` text DEFAULT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `email` (`email`),
@@ -374,7 +382,18 @@ CREATE TABLE `Messages` (
   `messageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `senderId` int(10) unsigned NOT NULL,
   `recipientId` int(10) unsigned NOT NULL,
-  `body` text NOT NULL,
+  -- Exactly one of body and bodyCiphertext is set: a message is either
+  -- plaintext (the legacy rows, and every federated message - ActivityPub has
+  -- no encryption to speak) or an end-to-end encrypted envelope this server
+  -- relayed but cannot read (see MessageEnvelope). mediumtext because the
+  -- envelope base64-encodes a body that may itself run to the 65535-byte cap.
+  `body` text DEFAULT NULL,
+  `bodyCiphertext` mediumtext DEFAULT NULL,
+  -- HMAC the server computed over the envelope as it relayed it (see
+  -- MessageFranking). A report of an encrypted message re-verifies this tag,
+  -- proving the reported ciphertext is the one that actually passed through
+  -- here before the revealed message key is used to open it.
+  `frankingTag` char(64) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
@@ -753,6 +772,10 @@ ALTER TABLE `Users` MODIFY COLUMN `verified` tinyint(1) NOT NULL DEFAULT 0;
 -- longer than any local username: those are capped far shorter at signup, and
 -- widening this column doesn't raise that cap.
 ALTER TABLE `Users` MODIFY COLUMN `slug` varchar(255) NOT NULL;
+-- An end-to-end encrypted message stores its ciphertext in bodyCiphertext and
+-- nothing in body, so body can no longer be NOT NULL. Nullability is a column
+-- change rather than a missing column, so the drift check won't apply it.
+ALTER TABLE `Messages` MODIFY COLUMN `body` text DEFAULT NULL;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

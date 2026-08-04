@@ -16,6 +16,11 @@ class Message extends Article implements \JsonSerializable
     public ?int $senderId = null;
     public ?int $recipientId = null;
     public ?string $body = null;
+    // The end-to-end encrypted alternative to body (see MessageEnvelope) and
+    // the relay-time commitment to it (see MessageFranking). A message has a
+    // body or a ciphertext, never both.
+    public ?string $bodyCiphertext = null;
+    public ?string $frankingTag = null;
     public ?string $createdAt = null;
     // Set once a moderator dismisses a report on this message - blocks it from
     // being reported again (see api/report.php).
@@ -33,6 +38,7 @@ class Message extends Article implements \JsonSerializable
             'senderId' => (int) $this -> senderId,
             'recipientId' => (int) $this -> recipientId,
             'body' => $this -> body,
+            'bodyCiphertext' => $this -> bodyCiphertext,
             'createdAt' => $this -> createdAt,
         ];
     }
@@ -63,9 +69,21 @@ class Message extends Article implements \JsonSerializable
         $line = new MessageLine();
 
         $body = new Paragraph();
-        // Same last-step expansion posts get, on the path messages take -
-        // a message body is plain text and never goes near DeltaRenderer.
-        $body -> contents[] = EmojiShortcode::expand((string) $this -> body);
+
+        if ($this -> bodyCiphertext !== null) {
+            // The server can't read this one - it ships the envelope on the
+            // element for MessageUnlockForm.js to open in the browser, and
+            // renders as a locked placeholder until it does.
+            $this -> class .= ' Encrypted Locked';
+            $this -> attributes['data-cipher-envelope'] = $this -> bodyCiphertext;
+            $this -> attributes['data-message-id'] = (string) $this -> messageId;
+            $body -> contents[] = 'Encrypted message';
+        } else {
+            // Same last-step expansion posts get, on the path messages take -
+            // a message body is plain text and never goes near DeltaRenderer.
+            $body -> contents[] = EmojiShortcode::expand((string) $this -> body);
+        }
+
         $line -> addContent($body);
 
         // No report button on the admin's messages - api/report.php rejects

@@ -21,8 +21,26 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $recipient_id = (int) ($payload['recipientId'] ?? 0);
 $body = trim((string) ($payload['body'] ?? ''));
+$envelope = null;
 
-if ($body === '') {
+// An encrypted message arrives as an envelope instead of a body - ciphertext
+// this server relays without being able to read (see MessageEnvelope). The
+// two are exclusive: a message is one or the other.
+if (isset($payload['envelope'])) {
+    if ($body !== '') {
+        JSONResponse::error('A message is either plaintext or encrypted, not both.', 422) -> send();
+    }
+
+    $envelope = MessageEnvelope::normalize((string) $payload['envelope']);
+
+    if ($envelope === null) {
+        JSONResponse::error('Malformed encrypted message.', 422) -> send();
+    }
+
+    if (!MessageFranking::isConfigured()) {
+        JSONResponse::error('Encrypted messaging is not available on this server.', 422) -> send();
+    }
+} elseif ($body === '') {
     JSONResponse::error('Message cannot be empty', 422) -> send();
 }
 
@@ -42,6 +60,15 @@ if ($recipient === null || $recipient -> banned) {
 
 if (Block::exists($current_user -> userId, $recipient_id)) {
     JSONResponse::error('Unable to send message.', 403) -> send();
+}
+
+// Encryption is a property of the pair, not the sender: the envelope's
+// wrapped key is only openable by someone holding one of the two ECDH private
+// keys, so a recipient without a published public key could never read it -
+// and a remote recipient can never take one at all, because a federated
+// message leaves here as ActivityPub, which has no encryption to speak.
+if ($envelope !== null && ($recipient -> remoteActorURI !== null || $recipient -> messagePublicKey === null || $current_user -> messagePublicKey === null)) {
+    JSONResponse::error('This conversation can\'t take encrypted messages.', 422) -> send();
 }
 
 // Independent of the per-recipient throttle below - this one catches a
@@ -69,10 +96,16 @@ if (Message::unansweredCount($current_user -> userId, $recipient_id) >= Message:
     JSONResponse::error('You\'ve sent a lot of messages without a reply - wait for them to respond before sending more.', 429) -> send();
 }
 
+// The franking tag is the server's commitment, made at relay time, that this
+// exact ciphertext passed between these two people - what lets a report of an
+// encrypted message be verified later. See MessageFranking.
+$franking_tag = $envelope !== null ? MessageFranking::tag($current_user -> userId, $recipient_id, $envelope) : null;
+$stored_body = $envelope !== null ? null : $body;
+
 DB::run('
-INSERT INTO `Messages` (`senderId`, `recipientId`, `body`)
-    VALUES (?, ?, ?)
-', 'iis', $current_user -> userId, $recipient_id, $body);
+INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `bodyCiphertext`, `frankingTag`)
+    VALUES (?, ?, ?, ?, ?)
+', 'iisss', $current_user -> userId, $recipient_id, $stored_body, $envelope, $franking_tag);
 $message_id = (int) mysqli_insert_id($mysqli);
 RateLimiter::releaseLock($throttle_key);
 RateLimiter::recordAttempt($spam_rate_key);
@@ -83,7 +116,8 @@ $message_payload = [
     'messageId' => $message_id,
     'senderId' => $current_user -> userId,
     'recipientId' => $recipient_id,
-    'body' => $body,
+    'body' => $stored_body,
+    'bodyCiphertext' => $envelope,
     'createdAt' => date('Y-m-d H:i:s'),
 ];
 

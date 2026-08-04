@@ -887,6 +887,11 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MessageLine > p { flex: 1; margin: 0; }
 .MessageLine > .ReportButton { flex-shrink: 0; }
 
+.Message.Locked .MessageLine > p {
+    font-style: italic;
+    color: var(--muted);
+}
+
 .Message.Own {
     margin-left: auto;
     background-color: var(--accent-soft);
@@ -1744,6 +1749,31 @@ body.MessagesPage { padding-bottom: 9rem; }
     border-radius: var(--radius-ctl);
     padding: 0.5rem;
     color: var(--ink) !important;
+}
+
+/* The encrypted counterpart, and the nudge shown while a local thread is
+   still plaintext - same standing-note shape, accent instead of danger. */
+.EncryptedThreadNotice,
+.MessageEncryptionNudge {
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    background-color: var(--accent-soft);
+    border-radius: var(--radius-ctl);
+    padding: 0.5rem;
+    color: var(--ink) !important;
+}
+
+.MessageUnlockForm {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.MessageKeySetupForm,
+.MessageKeyPassphraseForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 24rem;
 }
 
 

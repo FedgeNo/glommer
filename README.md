@@ -79,11 +79,22 @@ a WebSocket open, transcoding video out of band).
   trending.
 - **Search** - full-text post search and user search.
 - **Messaging** - direct conversations, updating **live over WebSocket** when
-  the other person replies. Messages are stored in plain text - private from
-  other members, but the operator of a server can technically read their own
-  database, and a conversation with a Fediverse account also lives on that
-  account's server, where its operator can too. The thread says so whenever
-  that applies; nothing here claims end-to-end encryption.
+  the other person replies. Conversations between two members who have turned
+  on **end-to-end encryption** (Settings → Encrypted Messages) are encrypted
+  in the browser with WebCrypto - the server relays and stores only ciphertext
+  it cannot read. Each member's private key is wrapped under a passphrase that
+  never leaves their device; the wrapped blob is stored server-side, so the
+  same passphrase unlocks the history from any browser - and losing it loses
+  the encrypted history, with no operator recovery. Reporting still works via
+  **message franking**: the server HMACs each ciphertext as it relays it, and
+  a report reveals that one message's key (never the conversation's), which
+  the server verifies against its own tag before trusting the plaintext.
+  Everything else is stored in plain text - private from other members, but
+  the operator of a server can technically read their own database, and a
+  conversation with a Fediverse account also lives on that account's server,
+  where its operator can too (ActivityPub has no message encryption, so
+  federated threads can never be end-to-end encrypted). The thread says which
+  case applies, whichever it is.
 - **Video calls** - one-to-one, peer-to-peer WebRTC from an open message
   thread. Media never touches the server: STUN only, no TURN relay - if the
   two browsers can't reach each other directly the call simply isn't offered.

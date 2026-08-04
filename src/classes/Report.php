@@ -9,12 +9,14 @@ class Report
      * this exact target (the reporter_target unique key rejects the duplicate)
      * so the caller can report that back rather than 500.
      */
-    public static function create(int $reporter_id, string $target_type, int $target_id, ?string $reason): bool
+    public static function create(int $reporter_id, string $target_type, int $target_id, ?string $reason, ?string $decrypted_body = null): bool
     {
         // Snapshot the reported content at report time so the moderator judges
         // what was actually reported, not whatever it's since been edited to (or
-        // deleted). See buildSnapshot.
-        $snapshot = self::buildSnapshot($target_type, $target_id);
+        // deleted). See buildSnapshot. For an encrypted message the caller has
+        // already verified and opened the envelope (api/report.php), and hands
+        // the plaintext in - the row alone holds only ciphertext.
+        $snapshot = self::buildSnapshot($target_type, $target_id, $decrypted_body);
         $snapshot_json = $snapshot !== null ? json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
 
         try {
@@ -105,7 +107,7 @@ UPDATE `' . $table . '`
      *
      * @return array<string, mixed>|null
      */
-    public static function buildSnapshot(string $target_type, int $target_id): ?array
+    public static function buildSnapshot(string $target_type, int $target_id, ?string $decrypted_body = null): ?array
     {
         if ($target_type === 'post') {
             $row = self::snapshotRow('Posts', 'postId', $target_id);
@@ -120,7 +122,16 @@ UPDATE `' . $table . '`
         }
 
         if ($target_type === 'message') {
-            return self::snapshotRow('Messages', 'messageId', $target_id);
+            $row = self::snapshotRow('Messages', 'messageId', $target_id);
+
+            // The verified plaintext of an encrypted message, decrypted with
+            // the key the reporter revealed. The ciphertext and franking tag
+            // stay in the row for forensics; body is what the moderator reads.
+            if ($row !== null && $decrypted_body !== null) {
+                $row['body'] = $decrypted_body;
+            }
+
+            return $row;
         }
 
         if ($target_type === 'user') {

@@ -1,6 +1,7 @@
 import { expand } from '/scripts/EmojiShortcode.js';
 import { User } from '/scripts/User.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
 import { parse_server_date, list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
@@ -12,6 +13,7 @@ export class Message {
     senderId = null;
     recipientId = null;
     body = null;
+    bodyCiphertext = null;
     createdAt = null;
     element = null;
 
@@ -49,7 +51,16 @@ export class Message {
         line.className = 'MessageLine';
 
         const body = document.createElement('p');
-        body.textContent = expand(this.body);
+
+        if (this.bodyCiphertext !== null) {
+            div.className += ' Encrypted Locked';
+            div.dataset.cipherEnvelope = this.bodyCiphertext;
+            div.dataset.messageId = this.messageId;
+            body.textContent = 'Encrypted message';
+        } else {
+            body.textContent = expand(this.body);
+        }
+
         line.appendWithSpace(body);
 
         if (ClientConfig.get('currentUserId') !== null
@@ -75,11 +86,49 @@ export class Message {
             div.classList.add('emoji-only');
         }
 
+        if (this.bodyCiphertext !== null) {
+            Message.decryptInto(div);
+        }
+
         return div;
     }
 
     senderHeader(sender, sender_id) {
         return User.fromData({ userId: sender_id, ...sender }).header();
+    }
+
+    /**
+     * Opens one rendered message's envelope in place, once the thread key is
+     * available (MessageUnlockForm.js). Registering the envelope first is what
+     * lets a report of this message reveal its key later - see ReportButton.js.
+     */
+    static async decryptInto(article) {
+        const envelope = article.dataset.cipherEnvelope;
+        if (!envelope) return;
+
+        MessageCrypto.rememberEnvelope(article.dataset.messageId, envelope);
+
+        const thread_key = MessageCrypto.threadKey();
+        if (thread_key === null) return;
+
+        const body = article.querySelector('.MessageLine p');
+        const text = await MessageCrypto.decrypt(thread_key, envelope);
+
+        if (text === null) {
+            // An envelope the current keys don't open - sent under keys that
+            // have since been reset. Honest and final; nothing can read it now.
+            body.textContent = 'This message was encrypted with keys that no longer exist.';
+            return;
+        }
+
+        body.textContent = expand(text);
+        article.classList.remove('Locked');
+
+        EmojiRenderer.render(body);
+        if (EmojiRenderer.isEmojiOnly(body)) {
+            article.classList.add('emoji-only');
+        }
+        render_math(article);
     }
 
     /**

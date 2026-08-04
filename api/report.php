@@ -45,6 +45,41 @@ if ($target_type === 'message' && !Report::messageWasSentTo($target_id, $current
     JSONResponse::error('Invalid report', 422) -> send();
 }
 
+// An encrypted message can't be judged from its row - the server holds only
+// ciphertext. The reporter reveals that one message's key (never the
+// conversation key: see MessageEnvelope), and two checks make the result
+// trustworthy. The franking tag proves the ciphertext is the one the server
+// relayed between these two people, and GCM's authentication proves the
+// revealed key is the key it was really encrypted under - together, the
+// decrypted body genuinely is what was sent, not a fabrication.
+$decrypted_body = null;
+
+if ($target_type === 'message') {
+    $message = DB::row('
+SELECT *
+    FROM `Messages`
+    WHERE `messageId` = ?
+', 'Message', 'i', $target_id);
+
+    if ($message !== null && $message -> bodyCiphertext !== null) {
+        $revealed_key = base64_decode((string) ($payload['revealedKey'] ?? ''), true);
+
+        if ($revealed_key === false || strlen($revealed_key) !== 32) {
+            JSONResponse::error('Unlock the conversation to report an encrypted message.', 422) -> send();
+        }
+
+        if (!MessageFranking::verify((int) $message -> senderId, (int) $message -> recipientId, $message -> bodyCiphertext, (string) $message -> frankingTag)) {
+            JSONResponse::error('This message could not be verified.', 422) -> send();
+        }
+
+        $decrypted_body = MessageEnvelope::decryptWithKey($message -> bodyCiphertext, $revealed_key);
+
+        if ($decrypted_body === null) {
+            JSONResponse::error('This message could not be verified.', 422) -> send();
+        }
+    }
+}
+
 // Reports about the admin - their account, their posts, their messages -
 // are dead letters: only the admin and mods see reports, and the admin
 // can't be banned, so nobody could ever act on one. Rejected here (not
@@ -67,7 +102,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
 
 RateLimiter::recordAttempt($rate_key);
 
-if (!Report::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null)) {
+if (!Report::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null, $decrypted_body)) {
     JSONResponse::error('You\'ve already reported this.', 422) -> send();
 }
 

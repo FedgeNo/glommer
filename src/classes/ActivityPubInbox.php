@@ -51,7 +51,7 @@ class ActivityPubInbox
      */
     private static function handlePinChange(array $activity, string $actor_uri, bool $pinning): void
     {
-        $actor = self::shadowUserFor($actor_uri);
+        $actor = User::byRemoteActorURI($actor_uri);
         $object_uri = self::objectURI($activity['object'] ?? null);
         $target = $activity['target'] ?? null;
 
@@ -85,7 +85,7 @@ class ActivityPubInbox
     private static function handleBlock(array $activity, string $actor_uri): void
     {
         $target_uri = self::objectURI($activity['object'] ?? null);
-        $blocker = self::shadowUserFor($actor_uri);
+        $blocker = User::byRemoteActorURI($actor_uri);
 
         if ($target_uri === null || $blocker === null) {
             return;
@@ -97,7 +97,7 @@ class ActivityPubInbox
     /** Somebody a member here follows has changed servers. */
     private static function handleMove(array $activity, string $actor_uri): void
     {
-        $mover = self::shadowUserFor($actor_uri);
+        $mover = User::byRemoteActorURI($actor_uri);
 
         if ($mover !== null) {
             ActivityPubMove::received($activity, $mover);
@@ -107,7 +107,7 @@ class ActivityPubInbox
     /** An abuse report from another server about something here. */
     private static function handleFlag(array $activity, string $actor_uri): void
     {
-        $reporter = self::shadowUserFor($actor_uri);
+        $reporter = User::byRemoteActorURI($actor_uri);
 
         if ($reporter === null) {
             return;
@@ -120,7 +120,7 @@ class ActivityPubInbox
     private static function handleLike(array $activity, string $actor_uri): void
     {
         $object_uri = self::objectURI($activity['object'] ?? null);
-        $actor = self::shadowUserFor($actor_uri);
+        $actor = User::byRemoteActorURI($actor_uri);
 
         if ($object_uri === null || $actor === null) {
             return;
@@ -133,7 +133,7 @@ class ActivityPubInbox
     private static function handleAnnounce(array $activity, string $actor_uri): void
     {
         $object_uri = self::objectURI($activity['object'] ?? null);
-        $actor = self::shadowUserFor($actor_uri);
+        $actor = User::byRemoteActorURI($actor_uri);
         $activity_uri = $activity['id'] ?? null;
 
         if ($object_uri === null || $actor === null || !is_string($activity_uri) || $activity_uri === '') {
@@ -187,11 +187,7 @@ class ActivityPubInbox
         // The signature already proved who this is, so the row is on file with
         // their inbox on it - which is where the Accept goes and where their
         // copies of this member's posts will go from now on.
-        $follower = DB::row('
-SELECT *
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor_uri);
+        $follower = User::byRemoteActorURI($actor_uri);
 
         if ($follower === null || !is_string($follower -> remoteActorInboxURL) || $follower -> remoteActorInboxURL === '') {
             return;
@@ -235,7 +231,7 @@ SELECT *
         // Lifting a block, which lets the two see each other again.
         if (($object['type'] ?? null) === 'Block') {
             $target = self::objectURI($object['object'] ?? null);
-            $blocker = self::shadowUserFor($actor_uri);
+            $blocker = User::byRemoteActorURI($actor_uri);
 
             if ($target !== null && $blocker !== null) {
                 ActivityPubBlock::withdrawn($target, $blocker);
@@ -247,7 +243,7 @@ SELECT *
         // Withdrawing a reaction, which is the row simply going away again.
         if (in_array($object['type'] ?? null, ['Like', 'Announce'], true)) {
             $target = self::objectURI($object['object'] ?? null);
-            $actor = self::shadowUserFor($actor_uri);
+            $actor = User::byRemoteActorURI($actor_uri);
 
             if ($target !== null && $actor !== null) {
                 if ($object['type'] === 'Like') {
@@ -377,7 +373,7 @@ SELECT `remoteFollowId`
         // it as one would file an empty post in the thread for every answer
         // anybody gave.
         if (ActivityPubPollVote::isVote($object)) {
-            $voter = self::shadowUserFor($actor_uri);
+            $voter = User::byRemoteActorURI($actor_uri);
 
             if ($voter !== null && $voter -> banned !== 1) {
                 ActivityPubPollVote::received($object, $voter);
@@ -391,7 +387,7 @@ SELECT `remoteFollowId`
         // the absence of a public audience rather than on a mention, since a
         // public post can name someone too.
         if (ActivityPubMessage::isDirect($object, $activity)) {
-            $sender = self::shadowUserFor($actor_uri);
+            $sender = User::byRemoteActorURI($actor_uri);
 
             if ($sender !== null) {
                 ActivityPubMessage::received($object, $activity, $sender);
@@ -440,7 +436,7 @@ SELECT `remoteFollowId`
             return;
         }
 
-        $author = self::shadowUserFor($actor_uri);
+        $author = User::byRemoteActorURI($actor_uri);
 
         if ($author === null || $author -> banned === 1) {
             return;
@@ -483,7 +479,7 @@ UPDATE `Posts`
             return;
         }
 
-        $author = self::shadowUserFor($actor_uri);
+        $author = User::byRemoteActorURI($actor_uri);
 
         if ($author === null) {
             return;
@@ -541,7 +537,7 @@ UPDATE `Posts`
             return;
         }
 
-        $author = self::shadowUserFor($actor_uri);
+        $author = User::byRemoteActorURI($actor_uri);
 
         if ($author === null || $author -> banned === 1) {
             return;
@@ -714,27 +710,10 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
     /** @return array{0: ?string, 1: ?string} [description, descriptionDelta] */
     private static function deltaFromContent(string $content): array
     {
-        // Remote content arrives as HTML from an untrusted server. It's
-        // reduced to plain text rather than trusted as markup, then run
-        // through the same Delta::sanitize() a locally-typed post goes
-        // through. Block boundaries become newlines FIRST - stripping the
-        // tags alone would run every paragraph of a post together into one
-        // unreadable line - and entities are decoded afterwards, so an
-        // ordinary "&amp;" reads as "&" instead of showing its escape.
-        // Decoding last is also what keeps it safe: the result is only ever
-        // used as text (a Delta insert renders as a text node, and the
-        // plaintext copy is escaped again on output), so a decoded "<" is
-        // inert rather than markup.
-        $with_breaks = preg_replace('#<br\s*/?>|</(?:p|div|li|h[1-6]|blockquote|pre|tr)\s*>#i', "\n", $content);
-        $plain = html_entity_decode(strip_tags((string) $with_breaks), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-        // Invalid UTF-8 from a remote server would be rejected by the utf8mb4
-        // columns and break json_encode; drop the bad bytes rather than 500.
-        $plain = mb_convert_encoding($plain, 'UTF-8', 'UTF-8');
-
-        // Collapse the runs of blank lines the block-to-newline pass leaves
-        // behind (nested block tags each contribute one), then trim.
-        $plain = trim((string) preg_replace('/\n{3,}/', "\n\n", $plain));
+        // Flattened by the shared reducer, then run through the same
+        // Delta::sanitize() a locally-typed post goes through - a Delta insert
+        // renders as a text node, so the decoded text stays inert.
+        $plain = RemoteHTML::toPlainText($content);
 
         if ($plain === '') {
             return [null, null];
@@ -808,12 +787,4 @@ SELECT `postId`, `userId`
 ', 'Post', 'si', $remote_object_uri, $author_user_id);
     }
 
-    private static function shadowUserFor(string $actor_uri): ?User
-    {
-        return DB::row('
-SELECT *
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor_uri);
-    }
 }

@@ -115,11 +115,7 @@ class RemoteActor
      */
     public static function ensureKnown(string $actor_uri): ?User
     {
-        $existing = DB::row('
-SELECT *
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor_uri);
+        $existing = User::byRemoteActorURI($actor_uri);
 
         if ($existing !== null && $existing -> remoteActorPublicKeyPem !== null) {
             return $existing;
@@ -140,7 +136,7 @@ SELECT *
 
         self::upsert($actor);
 
-        return self::shadowRowFor($actor_uri);
+        return User::byRemoteActorURI($actor_uri);
     }
 
     /**
@@ -179,16 +175,7 @@ SELECT *
 
         self::upsert($actor);
 
-        return self::shadowRowFor($actor_uri);
-    }
-
-    private static function shadowRowFor(string $actor_uri): ?User
-    {
-        return DB::row('
-SELECT *
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor_uri);
+        return User::byRemoteActorURI($actor_uri);
     }
 
     /**
@@ -200,11 +187,7 @@ SELECT *
      */
     public static function upsert(array $actor): void
     {
-        $existing = DB::row('
-SELECT `userId`
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $actor['id']);
+        $existing = User::byRemoteActorURI($actor['id']);
 
         $display_name = $actor['name'] !== '' ? $actor['name'] : $actor['preferredUsername'];
 

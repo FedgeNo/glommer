@@ -150,11 +150,7 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`, `followA
 
     public static function shadowUserIdFor(string $remote_actor_uri): ?int
     {
-        $user = DB::row('
-SELECT `userId`
-    FROM `Users`
-    WHERE `remoteActorURI` = ?
-', 'User', 's', $remote_actor_uri);
+        $user = User::byRemoteActorURI($remote_actor_uri);
 
         return $user !== null ? (int) $user -> userId : null;
     }

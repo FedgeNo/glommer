@@ -304,6 +304,22 @@ SELECT *
      * behind the profile page, its friends page, and its RSS feed, so that
      * visibility rule lives in one place instead of being hand-copied.
      */
+    /**
+     * The local shadow row standing in for a remote account, by its actor URI
+     * - or null when this server has never met them. The one lookup behind
+     * every place federation turns an actor URI into the Users row it acts as,
+     * which used to be the same query hand-copied across the inbox, the
+     * follow machinery and the actor cache.
+     */
+    public static function byRemoteActorURI(string $actor_uri): ?User
+    {
+        return DB::row('
+SELECT *
+    FROM `Users`
+    WHERE `remoteActorURI` = ?
+', self::class, 's', $actor_uri);
+    }
+
     public static function byUsername(string $username): ?OtherUser
     {
         $user = DB::row('

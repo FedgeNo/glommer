@@ -5,8 +5,7 @@ declare(strict_types=1);
 /**
  * The small privacy chip at the top right of the message composer: a couple of
  * words and an emoji saying what this conversation is, with the full
- * explanation a click away (MessageComposer.js pops it up). This replaces the
- * old standing-notice boxes, which sat where nobody could read them.
+ * explanation a click away (MessageComposer.js pops it up).
  *
  * The states are the honest ones a thread can be in: end-to-end encrypted,
  * plaintext because one side hasn't set up keys yet (named, so it's clear

@@ -63,9 +63,10 @@ $page -> addContent(new MessageList([
 
 // What this conversation is - end-to-end encrypted, plaintext until someone
 // (named) sets up keys, or federated and stored on a second server - rides on
-// the composer as a small chip with the full explanation a click away. A
-// notice in the page flow was never readable: the thread opens scrolled to
-// the bottom, and scrolling toward one triggers the infinite scroll.
+// the composer as a small chip with the full explanation a click away. On the
+// composer because that is the one fixed place in a thread: the page opens
+// scrolled to the bottom, and anything in the scrolling flow is fair game for
+// the infinite scroll to bury.
 if ($other_user -> remoteActorURI !== null) {
     $privacy_state = 'federated';
 } elseif ($current_user -> messagePublicKey !== null && $other_user -> messagePublicKey !== null) {

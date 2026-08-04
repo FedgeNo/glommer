@@ -1536,6 +1536,7 @@ body.MessagesPage { padding-bottom: 9rem; }
 .RememberedDeviceList,
 .ReportList,
 .MessageList,
+.PollOptionList,
 .ConversationList {
     list-style: none;
     margin: 0;

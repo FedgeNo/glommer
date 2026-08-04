@@ -282,6 +282,17 @@ export class Composer {
         locationButton.textContent = 'Add Location';
         actions.appendWithSpace(locationButton);
 
+        const pollButton = document.createElement('button');
+        pollButton.type = 'button';
+        pollButton.className = 'Button ComposerPollButton';
+        pollButton.textContent = 'Add Poll';
+        actions.appendWithSpace(pollButton);
+
+        // Hidden until asked for. The toggle is bound on the instance rather
+        // than here, because opening a poll has to tell the rest of the
+        // composer to get out of the way.
+        form.appendWithSpace(Composer.pollFieldsToElement());
+
         // EmojiPicker – built and wired by EmojiPicker.setup
         const emojiBtnWrapper = document.createElement('div');
         emojiBtnWrapper.className = 'EmojiPicker';
@@ -297,20 +308,11 @@ export class Composer {
         emojiPanel.className = 'EmojiPickerPanel';
         emojiBtnWrapper.appendWithSpace(emojiPanel);
 
+        // Last before Post, and the only control here that never appears or
+        // disappears - so it stays put while the ones to its left come and go.
         actions.appendWithSpace(emojiBtnWrapper);
         EmojiPicker.setup(emojiBtnWrapper);
 
-
-        const pollButton = document.createElement('button');
-        pollButton.type = 'button';
-        pollButton.className = 'Button ComposerPollButton';
-        pollButton.textContent = 'Add Poll';
-        actions.appendWithSpace(pollButton);
-
-        // Hidden until asked for. The toggle is bound on the instance rather
-        // than here, because opening a poll has to tell the rest of the
-        // composer to get out of the way.
-        form.appendWithSpace(Composer.pollFieldsToElement());
 
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';

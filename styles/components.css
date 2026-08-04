@@ -196,6 +196,36 @@ button[type='submit'].Button:hover,
     background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
 }
 
+/* A checkbox or radio with a label wrapped round it is a control you press, so
+   it takes the button's own colours and hover and keeps the box inside. The
+   wrapping is what makes the whole of it the target rather than the box alone,
+   so this only claims the ones built that way. */
+label:has(> input[type='checkbox']),
+label:has(> input[type='radio']) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--surface-2);
+    background-image: var(--button-image, none);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0;
+    font-weight: 550;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+label:has(> input[type='checkbox']):hover,
+label:has(> input[type='radio']):hover {
+    background-color: color-mix(in srgb, var(--surface-2) 80%, var(--ink) 8%);
+    background-image: var(--button-image-hover, var(--button-image, none));
+    color: var(--ink);
+}
+
 a.Button {
     display: inline-block;
     text-align: center;
@@ -1032,18 +1062,10 @@ body.MessagesPage { padding-bottom: 9rem; }
     gap: 0.5rem;
 }
 
-.PollOptionControl {
+/* Out-specifies the shared checkbox rule on purpose: an option is a row of the
+   list, so it spans it rather than shrinking to its own words. */
+.PollOption > .PollOptionControl {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border: 1px solid var(--hairline);
-    border-radius: 999px;
-    cursor: pointer;
-}
-
-.PollOptionControl:hover {
-    background-color: var(--surface-2);
 }
 
 .PollVoteInput {
@@ -1096,14 +1118,7 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 .PollMultipleToggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0;
-}
-
-.PollMultipleToggle input {
-    width: auto;
+    align-self: flex-start;
 }
 
 .SensitiveMedia {
@@ -1146,18 +1161,7 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 .SensitiveMediaToggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--muted);
-    cursor: pointer;
-    user-select: none;
-    font-size: 0.875rem;
     white-space: nowrap;
-}
-
-.SensitiveMediaToggle:hover {
-    color: var(--ink);
 }
 
 .Carousel {

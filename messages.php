@@ -50,12 +50,10 @@ $conversation_users = [
     ],
 ];
 
-// iceServers rides on this page rather than the site-wide config cookie: it is
-// only ever wanted by a thread, and it is a list, not a value.
-$page -> addContent(new JSGlobals([
-    'conversationUsers' => $conversation_users,
-    'iceServers' => VideoCall::iceServers(),
-]));
+// Only a thread wants these, so they ride on this page's config rather than
+// being restated in every response's site-wide block.
+$page -> clientConfig['conversationUsers'] = $conversation_users;
+$page -> clientConfig['iceServers'] = VideoCall::iceServers();
 
 // A conversation with someone on another server is stored on that server too,
 // in the clear, and its administrator can read it. The thread looks identical

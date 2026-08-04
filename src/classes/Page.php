@@ -20,6 +20,16 @@ class Page extends HTMLDocument
 
     public bool $needsEditor = false;
     public bool $needsMath = false;
+
+    /**
+     * Values this one page adds to the client configuration - the only channel
+     * server-side values reach the client by. A list a single page needs (ICE
+     * servers on a thread, the people in a conversation) rides here rather
+     * than in the site-wide block every request carries.
+     *
+     * @var array<string, mixed>
+     */
+    public array $clientConfig = [];
     public bool $needsEmoji = false;
     public bool $needsHelp = false;
     public bool $needsTagGraph = false;
@@ -279,9 +289,9 @@ class Page extends HTMLDocument
 
     public function send(): void
     {
-        ClientConfig::send([
+        ClientConfig::send(array_merge($this -> clientConfig, [
             'needsMath' => $this->needsMath,
-        ]);
+        ]));
 
         parent::send();
     }

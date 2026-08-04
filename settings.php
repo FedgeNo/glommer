@@ -24,7 +24,7 @@ $page -> addContent(new SettingsSection('Sessions', new LogoutEverywherePanel())
 
 // The check negotiates for real, so it needs the same ICE configuration a call
 // would use - anything else would be testing a different thing than it reports.
-$page -> addContent(new JSGlobals(['iceServers' => VideoCall::iceServers()]));
+$page -> clientConfig['iceServers'] = VideoCall::iceServers();
 
 $page -> addContent(new SettingsSection('Video Calling', new VideoCallTestPanel()));
 

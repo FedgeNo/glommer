@@ -20,9 +20,9 @@ class EmojiPickerAssets
      * imported, and the <emoji-picker> elements have to be created afterward
      * rather than present in the page's initial markup - see emoji-picker-init.js.
      * A module script (inline or external) is deferred regardless of where it
-     * sits in the document, so this can safely load from <head> despite
-     * depending on window.currentUserSkinTone, which JSGlobals sets later in
-     * the body - it still runs after the whole document has parsed.
+     * sits in the document, so this can safely load from <head> - it still
+     * runs after the whole document has parsed, with the config cookie it
+     * reads the skin tone from long since set.
      */
     public static function initScript(): Script
     {

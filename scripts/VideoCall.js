@@ -111,7 +111,7 @@ export class VideoCall {
     }
 
     static #peerConnection() {
-        return new RTCPeerConnection({ iceServers: window.iceServers ?? [] });
+        return new RTCPeerConnection({ iceServers: ClientConfig.get('iceServers') ?? [] });
     }
 
     /** The probe carries no media at all - it exists only to prove a path. */

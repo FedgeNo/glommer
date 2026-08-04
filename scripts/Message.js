@@ -32,7 +32,7 @@ export class Message {
         const byline = document.createElement('div');
         byline.className = 'MessageByline d-flex align-items-start gap-2';
 
-        const sender = (window.conversationUsers || {})[this.senderId];
+        const sender = (ClientConfig.get('conversationUsers') || {})[this.senderId];
         if (sender) {
             byline.appendWithSpace(this.senderHeader(sender, this.senderId));
         }

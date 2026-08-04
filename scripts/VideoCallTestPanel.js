@@ -187,7 +187,7 @@ export class VideoCallTestPanel {
      * one, two people behind different routers have no way to find each other.
      */
     static async #stun() {
-        const ice_servers = window.iceServers ?? [];
+        const ice_servers = ClientConfig.get('iceServers') ?? [];
 
         if (ice_servers.length === 0) {
             return { ok: false, detail: 'No STUN endpoint is configured, so calls can only work between people on the same network.' };

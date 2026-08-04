@@ -77,7 +77,7 @@ class Delta
 
             if (is_string($insert)) {
                 $attributes = self::sanitizeAttributes($op['attributes'] ?? null);
-                $clean_op = ['insert' => $insert];
+                $clean_op = ['insert' => ControlCharacters::strip($insert)];
 
                 if ($attributes !== []) {
                     $clean_op['attributes'] = $attributes;
@@ -85,7 +85,7 @@ class Delta
 
                 $clean[] = $clean_op;
             } elseif (is_array($insert) && isset($insert['formula']) && is_string($insert['formula'])) {
-                $clean[] = ['insert' => ['formula' => mb_substr($insert['formula'], 0, self::MAX_FORMULA_LENGTH)]];
+                $clean[] = ['insert' => ['formula' => ControlCharacters::strip(mb_substr($insert['formula'], 0, self::MAX_FORMULA_LENGTH))]];
             }
         }
 

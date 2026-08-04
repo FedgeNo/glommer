@@ -41,7 +41,7 @@ if ($owner === null || (int) $owner -> userId !== $current_user -> userId) {
 // change, but that's caught below by the same "no content" rule create-post
 // already enforces - a media-only post still needs SOME of title/link/body
 // to remain non-empty after the edit, same as at creation.
-$title = mb_substr(trim((string) ($payload['title'] ?? '')), 0, 255);
+$title = ControlCharacters::strip(mb_substr(trim((string) ($payload['title'] ?? '')), 0, 255));
 $description_raw = (string) ($payload['description'] ?? '');
 $link_url = trim((string) ($payload['linkURL'] ?? ''));
 

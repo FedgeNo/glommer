@@ -19,8 +19,10 @@ $current_user = Auth::user();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
-$title = trim((string) ($payload['title'] ?? ''));
-$description = trim((string) ($payload['description'] ?? ''));
+// Control characters render as nothing and cannot be written to XML at all,
+// so a display name carrying one would break the feeds these appear in.
+$title = ControlCharacters::strip(trim((string) ($payload['title'] ?? '')));
+$description = ControlCharacters::strip(trim((string) ($payload['description'] ?? '')));
 
 if (mb_strlen($title) > 50) {
     JSONResponse::error('Display name must be 50 characters or fewer.', 422) -> send();

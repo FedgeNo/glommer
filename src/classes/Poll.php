@@ -371,6 +371,27 @@ UPDATE `PollOptions`
      */
     public static function vote(int $poll_id, int $user_id, array $option_ids): bool
     {
+        // Serialized per voter per poll, and held across the insert below.
+        // PollVotes is keyed on (option, user), so it stops the same option
+        // being counted twice but not two different ones: without this, two
+        // requests fired at once both read "has not voted" and a single-answer
+        // poll takes two answers from one person. Same lock the message
+        // throttle uses, for the same check-then-write race.
+        $vote_lock_key = 'poll-vote:' . $poll_id . ':' . $user_id;
+        RateLimiter::acquireLock($vote_lock_key);
+
+        try {
+            return self::recordVote($poll_id, $user_id, $option_ids);
+        } finally {
+            RateLimiter::releaseLock($vote_lock_key);
+        }
+    }
+
+    /**
+     * @param int[] $option_ids
+     */
+    private static function recordVote(int $poll_id, int $user_id, array $option_ids): bool
+    {
         $poll = DB::row('
 SELECT *
     FROM `Polls`

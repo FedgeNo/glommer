@@ -24,7 +24,7 @@ if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0 && $_POST === [] && $_FILES === 
     JSONResponse::error('Your upload is too large. The maximum total upload size is ' . ini_get('post_max_size') . 'B.', 413) -> send();
 }
 
-$title = mb_substr(trim((string) ($_POST['title'] ?? '')), 0, 255);
+$title = ControlCharacters::strip(mb_substr(trim((string) ($_POST['title'] ?? '')), 0, 255));
 $description_raw = (string) ($_POST['description'] ?? '');
 $link_url = trim((string) ($_POST['linkURL'] ?? ''));
 $parent_id = isset($_POST['parentId']) && $_POST['parentId'] !== '' ? (int) $_POST['parentId'] : null;

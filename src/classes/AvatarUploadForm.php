@@ -15,7 +15,7 @@ class AvatarUploadForm extends Form
         $file_input -> attributes['accept'] = 'image/*';
         $this -> contents[] = $file_input;
 
-        $this -> contents[] = new SubmitButton('Update profile picture');
+        $this -> contents[] = new SubmitButton('Update Avatar');
 
         return parent::toDOM();
     }

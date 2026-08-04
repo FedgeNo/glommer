@@ -163,13 +163,10 @@ class Post extends Article
             $action_bar -> reposted = $this -> reposted;
             $action_bar -> repostCount = $this -> repostCount;
             $action_bar -> pinned = $this -> pinned;
+            $action_bar -> remote = $this -> remoteObjectURI !== null;
             $action_bar -> standalone = $this -> standalone;
 
-            // A bar with nothing in it is still a row of margin under every
-            // card - see hasButtons().
-            if ($action_bar -> hasButtons()) {
-                $this -> contents[] = $action_bar;
-            }
+            $this -> contents[] = $action_bar;
         }
 
         return parent::toDOM();
@@ -615,6 +612,9 @@ DELETE
             'latitude' => $this -> latitude,
             'longitude' => $this -> longitude,
             'poll' => $this -> poll?-> toPayload(),
+            // Whether this came from another server, which decides the share
+            // button the same way it does server-side.
+            'remote' => $this -> remoteObjectURI !== null,
             'repostedBy' => $this -> repostedBySlug === null ? null : [
                 'slug' => $this -> repostedBySlug,
                 'title' => $this -> repostedByTitle,

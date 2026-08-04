@@ -52,6 +52,19 @@ export default {
             TestCase.assertEquals('FIGURE', element.querySelector('.FeedItem').tagName);
             TestCase.assertEquals('FOOTER', element.querySelector('.PostActionBar').tagName);
         },
+        'a local post always offers Share'() {
+            TestCase.assertNotNull(post_element().querySelector('.PostShareButton'));
+        },
+        'a post from another server offers no Share'() {
+            // Sharing is handing someone the permalink, and for one of these
+            // the address worth passing on is the original rather than this
+            // server's copy. Mirrors PostActionBar.php - see
+            // tests/PostShareButtonTest.php for the other half.
+            const element = post_element({ remote: true });
+
+            TestCase.assertNull(element.querySelector('.PostShareButton'));
+            TestCase.assertNotNull(element.querySelector('.PostActionBar'), 'the bar itself still renders');
+        },
         'a media post shows the thumbnail and carries the full image for fullscreen'() {
             const image = post_element().querySelector('.FeedItem img');
 

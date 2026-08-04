@@ -73,22 +73,23 @@ class ActivityPubFlag
             return;
         }
 
-        $private_key = ActivityPubKeys::privateKeyPem();
-
-        if ($private_key === null) {
+        if (ActivityPubKeys::privateKeyPem() === null) {
             return;
         }
 
         $instance_actor = ServerURL::absolute('/activitypub/actor');
 
-        ActivityPubDelivery::post($target['inboxURL'], [
+        // Queued like everything else, with no member named so the worker
+        // signs it as the instance. Queued rather than posted here so a report
+        // to a server that is briefly unreachable is retried instead of lost.
+        FediverseDelivery::enqueue(null, [
             '@context' => 'https://www.w3.org/ns/activitystreams',
             'id' => $instance_actor . '#flags/' . bin2hex(random_bytes(8)),
             'type' => 'Flag',
             'actor' => $instance_actor,
             'content' => (string) $reason,
             'object' => [$target['objectURI'], $target['actorURI']],
-        ], $instance_actor . '#main-key', $private_key);
+        ], [$target['inboxURL']]);
     }
 
     /** Marks a reason as having come from elsewhere, and from whom. */

@@ -585,7 +585,9 @@ CREATE TABLE `FediverseFollowers` (
 -- over several days is not coming back for this one activity.
 CREATE TABLE `FediverseDeliveries` (
   `deliveryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `actorUserId` int(10) unsigned NOT NULL,
+  -- Null means the instance itself signs this one, which is how a Flag goes
+  -- out: naming the member who reported would hand a harasser their identity.
+  `actorUserId` int(10) unsigned DEFAULT NULL,
   `inboxURL` varchar(255) NOT NULL,
   `activity` mediumtext NOT NULL,
   `attempts` int(10) unsigned NOT NULL DEFAULT 0,
@@ -792,6 +794,12 @@ ALTER TABLE `Messages` MODIFY COLUMN `body` text DEFAULT NULL;
 -- than the bare hash it used to be, and a column change rather than a missing
 -- column, so the drift check won't apply it.
 ALTER TABLE `Messages` MODIFY COLUMN `frankingTag` varchar(128) DEFAULT NULL;
+-- A queued delivery may now be signed by the instance rather than by a member
+-- (null actorUserId), which is what lets a Flag be queued and retried instead
+-- of being posted once, in-request, and lost if the far server is down.
+-- Nullability is a column change rather than a missing column, so the drift
+-- check won't apply it.
+ALTER TABLE `FediverseDeliveries` MODIFY COLUMN `actorUserId` int(10) unsigned DEFAULT NULL;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

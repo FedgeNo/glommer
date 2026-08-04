@@ -30,10 +30,14 @@ class FediverseDelivery
      * that cannot be encoded fails at the point it was built rather than
      * silently later.
      *
+     * A null actor means the instance signs it rather than a member - the one
+     * case being a Flag, where naming who reported would hand a harasser their
+     * identity.
+     *
      * @param array<string, mixed> $activity
      * @param string[] $inbox_urls
      */
-    public static function enqueue(int $actor_user_id, array $activity, array $inbox_urls): void
+    public static function enqueue(?int $actor_user_id, array $activity, array $inbox_urls): void
     {
         $body = json_encode($activity, JSON_UNESCAPED_SLASHES);
 

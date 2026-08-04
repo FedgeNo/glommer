@@ -72,21 +72,32 @@ while ($running) {
         }
 
         $delivery_id = (int) $delivery -> deliveryId;
-        $author_id = (int) $delivery -> actorUserId;
 
-        if (!isset($authors[$author_id])) {
-            $authors[$author_id] = DB::row('
+        // No member named means the instance signs it - a Flag, which must not
+        // name whoever reported.
+        if ($delivery -> actorUserId === null) {
+            $instance_actor = ServerURL::absolute('/activitypub/actor');
+            $key_id = $instance_actor . '#main-key';
+            $private_key = ActivityPubKeys::privateKeyPem();
+        } else {
+            $author_id = (int) $delivery -> actorUserId;
+
+            if (!isset($authors[$author_id])) {
+                $authors[$author_id] = DB::row('
 SELECT *
     FROM `Users`
     WHERE `userId` = ?
 ', 'User', 'i', $author_id);
+            }
+
+            $author = $authors[$author_id];
+            $key_id = $author === null ? '' : ActivityPubActor::keyIdFor($author);
+            $private_key = $author === null ? null : ActivityPubActor::privateKeyPem($author);
         }
 
-        $author = $authors[$author_id];
-
-        // The member is gone, or cannot sign. Neither resolves by waiting, so
-        // the row is dropped rather than retried until it ages out.
-        if ($author === null || ActivityPubActor::privateKeyPem($author) === null) {
+        // Nobody left to sign as, or no key to sign with. Neither resolves by
+        // waiting, so the row is dropped rather than retried until it ages out.
+        if ($private_key === null) {
             FediverseDelivery::succeeded($delivery_id);
 
             continue;
@@ -103,8 +114,8 @@ SELECT *
         $delivered = ActivityPubDelivery::post(
             (string) $delivery -> inboxURL,
             $activity,
-            ActivityPubActor::keyIdFor($author),
-            (string) ActivityPubActor::privateKeyPem($author)
+            $key_id,
+            $private_key
         );
 
         if ($delivered) {

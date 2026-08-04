@@ -30,6 +30,9 @@ export class Post {
     longitude = null;
     poll = null;
     repostedBy = null;
+    // A post that came from another server - it carries no share button,
+    // because the address worth passing on is the original.
+    remote = false;
     reposted = false;
     repostCount = 0;
     rawDescriptionDelta = null;
@@ -414,13 +417,17 @@ export class Post {
         const logged_in = ClientConfig.get('currentUserId') !== null;
 
         // Mirrors PostActionBar.php - the share button leads the bar and is
-        // visible to everyone, logged in or not.
-        const share_button = document.createElement('button');
-        share_button.type = 'button';
-        share_button.className = 'PostShareButton Button';
-        share_button.dataset.shareUrl = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
-        share_button.textContent = 'Share';
-        actions.appendWithSpace(share_button);
+        // visible to everyone, logged in or not, but never on a post from
+        // another server: the address worth passing on is the original, not
+        // this server's copy of it.
+        if (!this.remote) {
+            const share_button = document.createElement('button');
+            share_button.type = 'button';
+            share_button.className = 'PostShareButton Button';
+            share_button.dataset.shareUrl = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
+            share_button.textContent = 'Share';
+            actions.appendWithSpace(share_button);
+        }
 
         if (logged_in || this.replyCount > 0) {
             const replies_link = document.createElement('a');

@@ -23,6 +23,9 @@ class PostActionBar extends Footer
     public ?bool $liked = null;
     public ?bool $bookmarked = null;
     public ?bool $reposted = null;
+    // A post that came from another server. Its permalink here is a copy, not
+    // the address of the thing itself.
+    public bool $remote = false;
     public ?int $repostCount = null;
     public ?bool $pinned = null;
 
@@ -31,12 +34,17 @@ class PostActionBar extends Footer
         $actions = new Div();
         $actions -> mixins = ['d-flex', 'align-items-center', 'gap-2', 'ms-auto'];
 
-        // Visible to everyone, signed in or not.
-        $actions -> addContent(new PostShareButton(ServerURL::absolute(
-            '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
-        )));
+        // Visible to everyone, signed in or not - but never on a post from
+        // another server: sharing is handing someone the permalink, and for
+        // one of those the address worth passing on is the original, not this
+        // server's copy of it.
+        if (!$this -> remote) {
+            $actions -> addContent(new PostShareButton(ServerURL::absolute(
+                '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
+            )));
+        }
 
-        if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0 || ((int) $this -> likeCount) > 0)) {
+        if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0)) {
             $actions -> addContent($this -> replyButton());
         }
 
@@ -65,22 +73,6 @@ class PostActionBar extends Footer
         $this -> contents[] = $actions;
 
         return parent::toDOM();
-    }
-
-    /**
-     * Whether this bar is worth rendering. A signed-in reader always has
-     * something here (like, bookmark, and their own post's controls). A signed
-     * -out one only does once the post has drawn something - replies or likes
-     * to look at; on a bare post the row would be a share button and a strip
-     * of margin under every card.
-     */
-    public function hasButtons(): bool
-    {
-        if (Auth::check()) {
-            return true;
-        }
-
-        return ((int) $this -> replyCount) > 0 || ((int) $this -> likeCount) > 0;
     }
 
     protected function likeButton(): HTMLObject

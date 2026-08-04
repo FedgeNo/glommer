@@ -397,7 +397,7 @@ export class Post {
         if (logged_in) {
             const like_button = document.createElement('button');
             like_button.type = 'button';
-            like_button.className = 'Button PostLikeButton';
+            like_button.className = this.liked ? 'Button PostLikeButton Removing' : 'Button PostLikeButton';
             like_button.dataset.liked = this.liked ? '1' : '0';
             // Same label rule as PostActionBar::likeLabel() and the post-click
             // update below: the count only appears once it's nonzero.
@@ -406,7 +406,7 @@ export class Post {
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';
-            bookmark_button.className = 'Button PostBookmarkButton';
+            bookmark_button.className = this.bookmarked ? 'Button PostBookmarkButton Removing' : 'Button PostBookmarkButton';
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
             bookmark_button.textContent = this.bookmarked ? 'Bookmarked' : 'Bookmark';
             actions.appendWithSpace(bookmark_button);
@@ -492,6 +492,7 @@ export class Post {
             const result = await Api.post('/api/like', { itemId: postData.postId });
             if (!result) return;
             button.dataset.liked = result.liked ? '1' : '0';
+            button.classList.toggle('Removing', result.liked);
             button.textContent = (result.liked ? 'Unlike' : 'Like') + (result.count > 0 ? ' (' + result.count + ')' : '');
         } finally {
             button.disabled = false;
@@ -505,6 +506,7 @@ export class Post {
             const result = await Api.post('/api/bookmark', { itemId: postData.postId });
             if (!result) return;
             button.dataset.bookmarked = result.bookmarked ? '1' : '0';
+            button.classList.toggle('Removing', result.bookmarked);
             button.textContent = result.bookmarked ? 'Bookmarked' : 'Bookmark';
         } finally {
             button.disabled = false;

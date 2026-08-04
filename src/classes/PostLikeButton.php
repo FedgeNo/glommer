@@ -13,6 +13,13 @@ class PostLikeButton extends ButtonButton
         parent::__construct();
 
         $this -> attributes['data-liked'] = $liked ? '1' : '0';
+
+        // Pressing it now would take the like away, and every button in that
+        // position wears the same state.
+        if ($liked) {
+            $this -> class .= ' Removing';
+        }
+
         $this -> contents[] = self::label($liked, $count);
     }
 

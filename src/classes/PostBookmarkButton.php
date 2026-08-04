@@ -13,6 +13,11 @@ class PostBookmarkButton extends ButtonButton
         parent::__construct();
 
         $this -> attributes['data-bookmarked'] = $bookmarked ? '1' : '0';
+
+        if ($bookmarked) {
+            $this -> class .= ' Removing';
+        }
+
         $this -> contents[] = self::label($bookmarked);
     }
 

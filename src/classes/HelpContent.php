@@ -327,7 +327,8 @@ class HelpContent
                 'summary' => 'Send private messages and keep up with your conversations.',
                 'body' => '
 <p>To message someone, use the <strong>Message</strong> button on their card or profile, or open <strong>Messages</strong> from the menu and pick a conversation. Type in the box at the bottom and send - the other person gets a notification, and new messages appear live without reloading the page.</p>
-<p>The Messages page lists your conversations with the most recent at the top, so it\'s easy to pick up where you left off. Messages are private between you and the other person.</p>
+<p>The Messages page lists your conversations with the most recent at the top, so it\'s easy to pick up where you left off.</p>
+<p>Messages are private from other members, but they are not end-to-end encrypted: like most social sites, the server stores them readably, so the operator of a server could technically access them. A conversation with someone on another Fediverse server is also stored on <em>their</em> server, under its operator - the thread carries a notice whenever that applies. Don\'t put anything in a message that must stay secret from everyone but the recipient.</p>
 <p>If someone is bothering you, you can <a href="/help/blocking-someone">block</a> them or <a href="/help/reporting-abuse">report</a> a specific message.</p>
 ',
             ],
@@ -451,6 +452,16 @@ class HelpContent
 ',
             ],
             [
+                'slug' => 'reposting-posts',
+                'title' => 'Reposting',
+                'category' => 'Posting',
+                'summary' => 'Pass someone\'s post on to your friends and followers.',
+                'body' => '
+<p>Press <strong>Repost</strong> on a post to pass it on. It shows up in your friends\' feeds and on your own profile, marked with your name and sorted by when you passed it on - and your Fediverse followers are told too. The button becomes <strong>Unrepost</strong>, which takes it back.</p>
+<p>The count beside the button adds reposts made here and boosts from other servers into one number. You can\'t repost your own post - your profile already carries it.</p>
+',
+            ],
+            [
                 'slug' => 'bookmarking-posts',
                 'title' => 'Bookmarking posts',
                 'category' => 'Posting',
@@ -493,6 +504,10 @@ class HelpContent
 <p>' . self::siteTitle() . ' speaks <strong>ActivityPub</strong>, the standard behind Mastodon and the wider Fediverse, so you can follow people on other servers and read their posts here.</p>
 <p>Open <strong>Settings</strong> from your name in the top-right, find the <strong>Fediverse</strong> section, and paste in one or more handles - written like <code>@user@example.social</code> - then press <strong>Follow</strong>. Any separator between multiple handles works, so you can paste a whole list at once.</p>
 <p>The same section lists the accounts you already follow so you can keep track of them. Mentioning a remote account by its full <code>@user@server</code> handle in a post works too - see <a href="/help/hashtags-and-mentions">hashtags and mentions</a>.</p>
+<h2>Being followed from out there</h2>
+<p>You have a Fediverse address of your own: <strong>@your-username@this-site\'s-domain</strong>. Anyone on Mastodon, Threads, or another ActivityPub server can search that handle and follow you - no approval step, since everything here is public anyway.</p>
+<p>Your posts travel to your followers as you publish them: text, pictures, video, <a href="/help/polls">polls</a>, sensitive-media covers, even your <a href="/help/your-profile">pinned posts</a> and profile edits. Their likes, boosts, and replies land back here and count like anyone else\'s. Reposting a remote post tells your followers about it too.</p>
+<p>If you ever leave for another server, <strong>Moving Servers</strong> in Settings sends your followers along - see the section there for the handshake it needs.</p>
 ',
             ],
             [
@@ -541,6 +556,8 @@ class HelpContent
 <li>Your <strong>bio</strong> is a short line about yourself. Any links, #hashtags, and @mentions in it become clickable.</li>
 </ul>
 <p>You can also set an <strong>avatar</strong> - the small picture shown next to your name - by uploading an image from your profile. Your username itself is fixed once you sign up, but your display name, bio, and avatar are yours to change any time.</p>
+<h2>Pinned posts</h2>
+<p>Every post of yours carries a <strong>Pin</strong> button. Pinning lifts it to a <strong>Pinned</strong> section at the top of your profile - up to five at a time, with <strong>Unpin</strong> to swap them out. Pins travel to the Fediverse too, so other servers show them on your profile there.</p>
 ',
             ],
             [

@@ -52,6 +52,18 @@ a WebSocket open, transcoding video out of band).
   math formulas (KaTeX).
 - **Replies** - threaded conversations under any post.
 - **Likes** and **bookmarks** (bookmarks are private, and never notify).
+- **Polls** - attach up to four options to a post, single- or multiple-choice,
+  with a fixed run time. Votes are final, results replace the ballot once
+  you've answered or it closes, and polls federate in both directions as
+  ActivityPub `Question`s.
+- **Reposts** - pass someone's post to your friends and Fediverse followers;
+  it appears on your profile and in their feeds, attributed and sorted by when
+  you passed it on. Remote boosts of local posts count in the same tally.
+- **Pinned posts** - pin up to five of your own posts to the top of your
+  profile; pins federate as the standard `featured` collection.
+- **Sensitive media** - authors (or moderators) can classify a post's media as
+  sensitive; it renders behind a no-JS `<details>` cover, travels both ways
+  over ActivityPub, and every member can opt out of the cover in Settings.
 - **Friends** - requests (send/accept/deny/cancel), a friends-only feed, and
   friend-of-friend suggestions ranked by mutual friends. Friend lists are
   public at `/users/{username}/friends`.
@@ -67,7 +79,15 @@ a WebSocket open, transcoding video out of band).
   trending.
 - **Search** - full-text post search and user search.
 - **Messaging** - direct conversations, updating **live over WebSocket** when
-  the other person replies.
+  the other person replies. Messages are stored in plain text - private from
+  other members, but the operator of a server can technically read their own
+  database, and a conversation with a Fediverse account also lives on that
+  account's server, where its operator can too. The thread says so whenever
+  that applies; nothing here claims end-to-end encryption.
+- **Video calls** - one-to-one, peer-to-peer WebRTC from an open message
+  thread. Media never touches the server: STUN only, no TURN relay - if the
+  two browsers can't reach each other directly the call simply isn't offered.
+  Settings carries a per-browser diagnostic that says which setup step fails.
 - **Notifications** - live via WebSocket (toast + unseen dot) for likes,
   replies, mentions, friend activity, messages, and media-processing results.
 - **Accounts** - signup with email verification; login with "Remember me";
@@ -77,14 +97,30 @@ a WebSocket open, transcoding video out of band).
 - **Two-factor authentication** - opt-in, email-based: when enabled, login
   emails a short-lived code that must be entered to finish signing in.
 - **Google Sign-In** - optional OAuth, admin-configured.
+- **Geotagged posts** - optionally attach your location to a post; a site map
+  clusters every located post, each card links to the spot, and a **Nearby**
+  feed ranks posts by distance from you. Coordinates are stored exactly and
+  only when you choose to attach them.
 - **Moderation** - block users; report a post/message/user; an admin/mod
   reports queue with content snapshots taken at report time.
 - **Site settings** (admin) - Cloudflare Turnstile CAPTCHA, SMTP relay, mail
   "from" address, custom favicon, editable Terms of Service and Privacy Policy,
   Google Sign-In credentials, and live status for the background services.
-- **Themes** - light, dark, sepia, midnight, and sunset, plus a mobile
-  hamburger navigation.
+- **Themes** - a wide set of built-in looks plus Match System, picked in
+  Settings, and a mobile hamburger navigation.
 - **RSS** - a site feed at `/feed.xml` and per-user feeds.
+- **Fediverse federation (ActivityPub)** - every member is an actor at
+  `@username@your-host`, followable from Mastodon, Threads, and the rest of
+  the network; interoperation is verified live against both. Members follow
+  remote accounts from Settings. Posts (with media, polls, and sensitive
+  flags), replies, likes, boosts, pins, profile updates, account migrations
+  (`Move`, both directions), blocks and abuse reports all federate; deliveries
+  are queued and retried by a worker, remote media is proxied per-request
+  rather than hotlinked or copied, and signing keys rotate cleanly on both
+  sides. Remote accounts and their posts are visible to logged-in members
+  only - this server never re-publishes another server's content to the open
+  web. Admins and moderators can defederate whole domains (Blocked Servers),
+  which severs existing follows both ways.
 - **Everything AJAX** - all updates go over JSON endpoints and update the DOM
   in place; full-page reloads are rare. Every `/api/` endpoint is POST-only and
   CSRF-protected (the one exception is the moderator media-preview stream,
@@ -274,7 +310,7 @@ after each renewal.
 
 ## 7. Background services
 
-Glommer needs three scheduled/long-running jobs, all **separate from the web
+Glommer needs four scheduled/long-running jobs, all **separate from the web
 server**. As root, `bin/install.php` installs them as **system** systemd units
 (started on boot, run as the web-server/daemon accounts). Without root it
 installs **user-level** units and enables lingering so they survive logout.
@@ -283,6 +319,7 @@ installs **user-level** units and enables lingering so they survive logout.
 | --- | --- | --- |
 | WebSocket server | live notifications & messaging (§3) | `glommer-websocket.service` |
 | Upload worker | transcodes queued media (§3) | `glommer-upload-worker.service` |
+| Federation worker | delivers queued ActivityPub activities, with backoff and retry | `glommer-federation-worker.service` |
 | Trending recompute | rescores trending every ~15 min | `glommer-trending.timer` |
 
 The installer offers to create, enable, and health-check each one, and keeps
@@ -420,7 +457,9 @@ The **first account created on a fresh install is the administrator** - this is
 structural, not a convention: the admin is always `userId` 1. Admin-only
 actions (appointing/revoking moderators, editing site settings, Google/Turnstile
 config) are theirs alone; general moderators can work the reports queue, ban
-users, and ban trending entities.
+users, ban trending entities, and defederate whole domains from the
+**Blocked Servers** page - a domain block refuses that server's deliveries,
+stops all fetches to it, and severs existing follows in both directions.
 
 ## 12. Upgrading
 

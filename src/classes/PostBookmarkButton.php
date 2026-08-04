@@ -24,6 +24,6 @@ class PostBookmarkButton extends ButtonButton
     /** Post.js builds the same label after a click. */
     public static function label(bool $bookmarked): string
     {
-        return $bookmarked ? 'Bookmarked' : 'Bookmark';
+        return $bookmarked ? 'Unbookmark' : 'Bookmark';
     }
 }

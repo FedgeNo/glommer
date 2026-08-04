@@ -408,7 +408,7 @@ export class Post {
             bookmark_button.type = 'button';
             bookmark_button.className = this.bookmarked ? 'Button PostBookmarkButton Removing' : 'Button PostBookmarkButton';
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
-            bookmark_button.textContent = this.bookmarked ? 'Bookmarked' : 'Bookmark';
+            bookmark_button.textContent = this.bookmarked ? 'Unbookmark' : 'Bookmark';
             actions.appendWithSpace(bookmark_button);
 
             if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
@@ -507,7 +507,7 @@ export class Post {
             if (!result) return;
             button.dataset.bookmarked = result.bookmarked ? '1' : '0';
             button.classList.toggle('Removing', result.bookmarked);
-            button.textContent = result.bookmarked ? 'Bookmarked' : 'Bookmark';
+            button.textContent = result.bookmarked ? 'Unbookmark' : 'Bookmark';
         } finally {
             button.disabled = false;
         }

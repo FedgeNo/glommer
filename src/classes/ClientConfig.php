@@ -20,6 +20,7 @@ class ClientConfig
             'currentUserId' => $current_user ?-> userId,
             'currentUserUsername' => $current_user ?-> slug,
             'currentUserSkinTone' => $current_user ?-> skinTone,
+            'showSensitiveMedia' => SensitiveMedia::shownByDefault(),
             'currentUserCanModerate' => Auth::canModerate(),
             'siteURL' => ServerURL::absolute(''),
             'serverTime' => time() * 1000,

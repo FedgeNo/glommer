@@ -307,7 +307,11 @@ export class Post {
             }
 
             if (media) {
-                post.appendWithSpace(this.sensitive ? Post.sensitiveCover(media) : media);
+                // Mirrors Post.php: a reader who has asked to see this media
+                // gets it uncovered, the same as the server would have sent it.
+                const cover = this.sensitive && !ClientConfig.get('showSensitiveMedia');
+
+                post.appendWithSpace(cover ? Post.sensitiveCover(media) : media);
             }
 
             if (this.descriptionDelta) {

@@ -212,7 +212,7 @@ class Post extends Article
             }
 
             if ($media !== null) {
-                if ($this -> sensitive === 1) {
+                if ($this -> sensitive === 1 && !SensitiveMedia::shownByDefault()) {
                     $cover = new SensitiveMedia();
                     $cover -> contents[] = $media;
                     $media = $cover;

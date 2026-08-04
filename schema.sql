@@ -27,6 +27,10 @@ CREATE TABLE `Users` (
   `twoFactorEnabled` tinyint(1) NOT NULL DEFAULT 0,
   `theme` varchar(10) NOT NULL DEFAULT 'system',
   `skinTone` varchar(16) DEFAULT NULL,
+  -- Whether this member has asked to be shown media classified as sensitive
+  -- without having to open it each time. Off unless they say otherwise: the
+  -- cover exists so nobody meets that media without choosing to.
+  `showSensitiveMedia` tinyint(1) NOT NULL DEFAULT 0,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
   `friendCount` int(10) unsigned NOT NULL DEFAULT 0,
   `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,

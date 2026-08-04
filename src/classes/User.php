@@ -52,6 +52,7 @@ class User extends Div implements \JsonSerializable
     public int $twoFactorEnabled = 0;
     public string $theme = 'system';
     public ?string $skinTone = null;
+    public int $showSensitiveMedia = 0;
     public int $lastNotificationId = 0;
     public int $friendCount = 0;
     public int $sessionVersion = 0;

@@ -27,6 +27,7 @@ function mounted() {
         link: form.querySelector('[name="linkURL"]'),
         file: form.querySelector('[name="files[]"]'),
         poll: form.querySelector('.ComposerPollButton'),
+        sensitive: form.querySelector('.SensitiveMediaToggle'),
         remove: () => document.body.removeChild(form),
     };
 }
@@ -106,6 +107,28 @@ export default {
 
             TestCase.assertFalse(hidden(composer.file));
             TestCase.assertTrue(hidden(remove));
+
+            composer.remove();
+        },
+
+        'sensitive is offered only once there are files for it to be about'() {
+            const composer = mounted();
+            const box = composer.sensitive.querySelector('[name="sensitive"]');
+
+            TestCase.assertTrue(hidden(composer.sensitive));
+
+            Object.defineProperty(composer.file, 'files', { value: [{}], configurable: true });
+            composer.file.dispatchEvent(new window.Event('change'));
+
+            TestCase.assertFalse(hidden(composer.sensitive));
+
+            box.checked = true;
+            Object.defineProperty(composer.file, 'files', { value: [], configurable: true });
+            composer.file.dispatchEvent(new window.Event('change'));
+
+            TestCase.assertTrue(hidden(composer.sensitive));
+            // Cleared with them, so it cannot ride along on a post with no media.
+            TestCase.assertFalse(box.checked);
 
             composer.remove();
         },

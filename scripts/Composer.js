@@ -91,6 +91,7 @@ export class Composer {
         this.latitudeInput  = form.querySelector('[name="latitude"]');
         this.longitudeInput = form.querySelector('[name="longitude"]');
 
+        this.sensitiveToggle = form.querySelector('.SensitiveMediaToggle');
         this.pollButton = form.querySelector('.ComposerPollButton');
         this.pollFields = form.querySelector('.ComposerPoll');
 
@@ -242,6 +243,26 @@ export class Composer {
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
         actions.appendWithSpace(fileInput);
 
+        // Classifies this post's media as something to opt into seeing. A real
+        // checkbox, so it rides along in the form's own FormData and there is
+        // no toggle state to keep anywhere.
+        //
+        // Placed immediately after the picker because it only ever appears once
+        // the picker has gone: it says something about attached files, so it is
+        // offered when there are some and stands exactly where the control that
+        // attached them was.
+        const sensitiveToggle = document.createElement('label');
+        sensitiveToggle.className = 'SensitiveMediaToggle';
+
+        const sensitiveInput = document.createElement('input');
+        sensitiveInput.type = 'checkbox';
+        sensitiveInput.name = 'sensitive';
+        sensitiveInput.value = '1';
+        sensitiveToggle.appendWithSpace(sensitiveInput);
+        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+
+        actions.appendWithSpace(sensitiveToggle);
+
         // Optional geolocation: the button toggles between attaching the browser's
         // current position and removing it; the hidden inputs ride along in the
         // form's FormData submission (empty when no location is attached).
@@ -279,20 +300,6 @@ export class Composer {
         actions.appendWithSpace(emojiBtnWrapper);
         EmojiPicker.setup(emojiBtnWrapper);
 
-        // Classifies this post's media as something to opt into seeing. A real
-        // checkbox, so it rides along in the form's own FormData and there is
-        // no toggle state to keep anywhere.
-        const sensitiveToggle = document.createElement('label');
-        sensitiveToggle.className = 'SensitiveMediaToggle';
-
-        const sensitiveInput = document.createElement('input');
-        sensitiveInput.type = 'checkbox';
-        sensitiveInput.name = 'sensitive';
-        sensitiveInput.value = '1';
-        sensitiveToggle.appendWithSpace(sensitiveInput);
-        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
-
-        actions.appendWithSpace(sensitiveToggle);
 
         const pollButton = document.createElement('button');
         pollButton.type = 'button';
@@ -352,6 +359,15 @@ export class Composer {
         Composer.#toggle(this.linkInput, !hasFiles && !hasPoll);
         Composer.#toggle(this.fileInput, !hasLink && !hasPoll && !hasFiles);
         Composer.#toggle(this.pollButton, !hasLink && !hasFiles);
+
+        // Only ever alongside attached files, since covering media is all it
+        // does. Cleared as it goes, so a classification cannot outlive the
+        // files it was about and ride along on a post with none.
+        Composer.#toggle(this.sensitiveToggle, hasFiles);
+
+        if (!hasFiles && this.sensitiveToggle !== null) {
+            this.sensitiveToggle.querySelector('[name="sensitive"]').checked = false;
+        }
     }
 
     static #toggle(element, visible) {

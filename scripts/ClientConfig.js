@@ -28,6 +28,7 @@ export class ClientConfig {
                 currentUserId: null,
                 currentUserUsername: null,
                 currentUserSkinTone: null,
+                showSensitiveMedia: false,
                 currentUserCanModerate: false,
                 siteURL: window.location.origin,
                 serverTime: Date.now(),

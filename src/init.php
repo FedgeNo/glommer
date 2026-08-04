@@ -8,7 +8,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.27';
+const GLOMMER_VERSION = '0.9.28';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -171,7 +171,7 @@ if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
         ? 'The code is version ' . GLOMMER_VERSION . ' but the database is at ' . ($db_app_version ?? 'an unknown version') . '. Run "php bin/install.php" to bring the database up to date.'
         : 'The site is being upgraded and will be back shortly.';
 
-    ErrorDocument::send(503, 'Upgrade In Progress', $maintenance_message);
+    ErrorDocument::sendWithoutChrome(503, 'Upgrade In Progress', $maintenance_message);
     exit;
 }
 

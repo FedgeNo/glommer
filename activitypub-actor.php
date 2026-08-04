@@ -24,13 +24,24 @@ if (!ActivityPubKeys::isConfigured()) {
 $actor_url = ServerURL::absolute('/activitypub/actor');
 
 header('Content-Type: application/activity+json');
+// The extra fields beyond what our own verification needs - url, outbox, the
+// shared inbox, manuallyApprovesFollowers - are what other implementations'
+// verifiers expect to find on any actor they dereference. Threads in
+// particular answers our signed fetches with a bare 500 after reading this
+// document, and a minimal Application actor is the standing suspect: Mastodon
+// serves all of these on its instance actor, and Mastodon is what everyone
+// tests against.
 echo json_encode([
     '@context' => ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'],
     'id' => $actor_url,
     'type' => 'Application',
     'preferredUsername' => ActivityPubActor::instanceUsername(),
     'name' => Config::get('siteTitle'),
+    'url' => ServerURL::absolute('/'),
     'inbox' => ServerURL::absolute('/activitypub/inbox'),
+    'outbox' => $actor_url . '/outbox',
+    'manuallyApprovesFollowers' => true,
+    'endpoints' => ['sharedInbox' => ServerURL::absolute('/activitypub/inbox')],
     'publicKey' => [
         'id' => $actor_url . '#main-key',
         'owner' => $actor_url,

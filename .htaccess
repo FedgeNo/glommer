@@ -156,6 +156,7 @@
     RewriteRule ^nodeinfo/2\.0$ nodeinfo.php?schema=2.0 [L,QSA]
     RewriteRule ^activitypub/actor$ activitypub-actor.php [L,QSA]
     RewriteRule ^activitypub/inbox$ activitypub-inbox.php [L,QSA]
+    RewriteRule ^activitypub/actor/outbox$ activitypub-actor-outbox.php [L,QSA]
 
     # messages, help, and users are real collections - only their canonical
     # trailing-slash form is served (the bare form redirects to it, above).

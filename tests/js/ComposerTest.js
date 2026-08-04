@@ -1,4 +1,4 @@
-import { TestCase } from './TestCase.js';
+import { TestCase, write_client_config } from './TestCase.js';
 import { Composer } from '../../scripts/Composer.js';
 
 /**
@@ -8,14 +8,14 @@ import { Composer } from '../../scripts/Composer.js';
  * other two away.
  */
 function mounted() {
-    // Composer.mount reads the real ClientConfig, which reads this cookie, and
+    // Composer.mount reads the real ClientConfig, which reads this block, and
     // bails out entirely when there is no signed-in user to compose as.
-    document.cookie = 'APP-CONFIG=' + encodeURIComponent(JSON.stringify({
+    write_client_config({
         currentUserId: 2,
         siteURL: 'https://example.test',
         pollDurations: { '1 hour': 60, '1 day': 1440 },
         pollMaxOptions: 4,
-    }));
+    });
 
     const form = document.createElement('form');
     form.className = 'Card d-flex flex-column Composer PostComposer';

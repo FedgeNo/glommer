@@ -98,6 +98,17 @@ class Page extends HTMLDocument
         $json_ld_script -> contents[] = self::safeJSONForScript($json_ld);
         $this -> addHeadContent($json_ld_script);
 
+        // The values the client reads through ClientConfig.js. A data block
+        // rather than executable script, so nothing here is a script-injection
+        // surface and the CSP has nothing to allow.
+        $client_config_script = new Script;
+        $client_config_script -> attributes['type'] = 'application/json';
+        $client_config_script -> attributes['id'] = 'ClientConfig';
+        $client_config_script -> contents[] = self::safeJSONForScript(ClientConfig::payload(array_merge($this -> clientConfig, [
+            'needsMath' => $this -> needsMath,
+        ])));
+        $this -> addHeadContent($client_config_script);
+
         // Metadata in spirit (an RSS alternate link), added by a page that has a
         // feed - sits right after the metadata block and before any stylesheet.
         if ($this -> rssLink !== null) {
@@ -297,12 +308,4 @@ class Page extends HTMLDocument
         return $tags;
     }
 
-    public function send(): void
-    {
-        ClientConfig::send(array_merge($this -> clientConfig, [
-            'needsMath' => $this->needsMath,
-        ]));
-
-        parent::send();
-    }
 }

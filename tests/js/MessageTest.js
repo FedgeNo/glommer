@@ -1,8 +1,6 @@
-import { TestCase } from './TestCase.js';
+import { TestCase, write_client_config } from './TestCase.js';
 
-document.cookie = 'APP-CONFIG=' + encodeURIComponent(JSON.stringify({
-    currentUserId: 1,
-}));
+write_client_config({ currentUserId: 1 });
 
 const { Message } = await import('../../scripts/Message.js');
 

@@ -1,12 +1,10 @@
-import { Cookie } from '/scripts/Cookie.js';
-
 export class ClientConfig {
-    /** The parsed config, held here because the cookie is deleted on first read. */
+    /** Parsed once - the block it comes from doesn't change within a page. */
     static #cached = null;
 
     /** @returns {string|null} */
-    static _getCookie(name) {
-        return Cookie.get(name);
+    static _readBlock() {
+        return document.getElementById('ClientConfig')?.textContent ?? null;
     }
 
     /**
@@ -28,9 +26,9 @@ export class ClientConfig {
             return ClientConfig.#cached;
         }
 
-        const raw = this._getCookie('APP-CONFIG');
+        const raw = this._readBlock();
         if (!raw) {
-            // Sensible defaults when cookie is missing (saved page, logged‑out, etc.)
+            // Sensible defaults when the block is missing (saved page, etc.)
             return {
                 currentUserId: null,
                 currentUserUsername: null,
@@ -41,9 +39,9 @@ export class ClientConfig {
                 serverTime: Date.now(),
                 WSPort: null,
                 // Mirrors Carousel::INITIAL_EAGER_ITEMS, which is what the
-                // cookie normally carries.
+                // page normally carries.
                 carouselEagerItems: 5,
-                // Empty rather than a guessed list: without the cookie there is
+                // Empty rather than a guessed list: without the config there is
                 // no composer to offer durations in, and inventing them here
                 // would be a second definition of what the server accepts.
                 pollDurations: {},
@@ -54,15 +52,9 @@ export class ClientConfig {
         try {
             ClientConfig.#cached = JSON.parse(raw);
         } catch (e) {
-            console.error('Invalid APP-CONFIG cookie:', e);
+            console.error('Invalid ClientConfig block:', e);
             return {};
         }
-
-        // The cookie is a one-way delivery from the render that just
-        // happened: parsed once, then dropped, so its weight (per-page keys,
-        // ICE servers, ...) doesn't ride along on every request this page
-        // makes afterwards. The next page render sets a fresh one.
-        document.cookie = 'APP-CONFIG=; Max-Age=0; path=/; secure; samesite=Strict';
 
         return ClientConfig.#cached;
     }

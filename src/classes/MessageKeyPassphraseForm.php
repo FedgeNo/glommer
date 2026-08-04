@@ -24,6 +24,12 @@ class MessageKeyPassphraseForm extends FormForm
         $confirm -> autocomplete = 'new-password';
         $this -> contents[] = $confirm;
 
+        // Rewrapping stores a new key blob, so the server demands the account
+        // password - see api/message-keys.php.
+        $account_password = new InputField('rewrapAccountPassword', 'Account password', 'password');
+        $account_password -> autocomplete = 'current-password';
+        $this -> contents[] = $account_password;
+
         $this -> contents[] = new SubmitButton('Change passphrase');
 
         return parent::toDOM();

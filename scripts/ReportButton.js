@@ -32,12 +32,19 @@ export class ReportButton {
         };
 
         if (button.dataset.targetType === 'message' && button.closest('.Message')?.dataset.cipherEnvelope) {
+            const { MessageCrypto } = await import('/scripts/MessageCrypto.js');
+
+            // Still locked with the thread key in hand means this envelope
+            // didn't open - it was encrypted under keys that have since been
+            // reset, so there is no key left to reveal and nothing the server
+            // could verify.
             if (button.closest('.Message').classList.contains('Locked')) {
-                Toast.show('Unlock the conversation before reporting an encrypted message.');
+                Toast.show(MessageCrypto.threadKey() !== null
+                    ? 'This message was encrypted with keys that no longer exist, so it can\'t be verified or reported.'
+                    : 'Unlock the conversation before reporting an encrypted message.');
                 return;
             }
 
-            const { MessageCrypto } = await import('/scripts/MessageCrypto.js');
             payload.revealedKey = await MessageCrypto.revealKeyForMessage(button.dataset.targetId);
         }
 

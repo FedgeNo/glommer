@@ -40,6 +40,13 @@ class Message extends Article implements \JsonSerializable
             'body' => $this -> body,
             'bodyCiphertext' => $this -> bodyCiphertext,
             'createdAt' => $this -> createdAt,
+            // Each message carries its sender the way any list item carries
+            // its user, so the client needs no side channel to build a byline.
+            'sender' => $this -> sender !== null ? [
+                'slug' => $this -> sender -> slug,
+                'title' => $this -> sender -> title,
+                'image' => $this -> sender -> avatarURL(),
+            ] : null,
         ];
     }
 

@@ -37,22 +37,8 @@ if (Block::exists($current_user -> userId, $other_user -> userId)) {
     exit;
 }
 
-$conversation_users = [
-    $current_user -> userId => [
-        'slug' => $current_user -> slug,
-        'title' => $current_user -> title,
-        'image' => $current_user -> avatarURL(),
-    ],
-    $other_user -> userId => [
-        'slug' => $other_user -> slug,
-        'title' => $other_user -> title,
-        'image' => $other_user -> avatarURL(),
-    ],
-];
-
-// Only a thread wants these, so they ride on this page's config rather than
+// Only a thread wants this, so it rides on this page's config rather than
 // being restated in every response's site-wide block.
-$page -> clientConfig['conversationUsers'] = $conversation_users;
 $page -> clientConfig['iceServers'] = VideoCall::iceServers();
 
 $page -> addContent(new MessageList([

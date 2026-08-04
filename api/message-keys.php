@@ -21,6 +21,22 @@ $payload = is_array($payload) ? $payload : [];
 $public_key = is_array($payload['publicKey'] ?? null) ? $payload['publicKey'] : [];
 $wrapped = is_array($payload['wrappedPrivateKey'] ?? null) ? $payload['wrappedPrivateKey'] : [];
 
+// Replacing the keys decides who can read every message sent to this account
+// from now on, so it takes the account password - a live session alone isn't
+// enough, same bar as changing the password itself. Rate-limited under the
+// shared password-verify key so this endpoint can't be used to guess the
+// password any faster than the others that confirm it.
+$password_rate_key = 'password-verify:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($password_rate_key, 10, 600)) {
+    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+}
+
+if (!$current_user -> verifyPassword((string) ($payload['password'] ?? ''))) {
+    RateLimiter::recordAttempt($password_rate_key);
+    JSONResponse::error('That isn\'t your account password.', 403) -> send();
+}
+
 // Both blobs are rebuilt from allowlisted fields rather than stored as
 // received, so nothing else ever rides into the row. The public key is a
 // P-256 JWK; its coordinates are 32 bytes each, 43 characters in unpadded
@@ -69,5 +85,21 @@ UPDATE `Users`
     SET `messagePublicKey` = ?, `messageWrappedPrivateKey` = ?
     WHERE `userId` = ?
 ', 'ssi', $stored_public_key, $stored_wrapped_key, $current_user -> userId);
+
+// Key changes are announced by mail, so a change the account holder didn't
+// make doesn't stay invisible - whoever holds the new keys can read every
+// message sent to this account from now on.
+$site_title = (string) Config::get('siteTitle');
+$notice = 'The message encryption keys for your ' . $site_title . ' account were just replaced. '
+    . 'If this was you - turning encryption on, changing your passphrase, or resetting your keys - there is nothing to do. '
+    . 'If it was not, change your password immediately: whoever replaced them can read messages sent to you from now on.';
+
+Mailer::send(
+    (string) $current_user -> email,
+    $current_user -> title ?: $current_user -> slug,
+    'Your message encryption keys changed',
+    $notice,
+    '<p>' . htmlspecialchars($notice) . '</p>'
+);
 
 JSONResponse::success(['saved' => true]) -> send();

@@ -2,7 +2,6 @@ import { TestCase } from './TestCase.js';
 
 document.cookie = 'APP-CONFIG=' + encodeURIComponent(JSON.stringify({
     currentUserId: 1,
-    conversationUsers: {},
 }));
 
 const { Message } = await import('../../scripts/Message.js');

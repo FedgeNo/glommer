@@ -11,4 +11,11 @@ declare(strict_types=1);
 class FormForm extends Form
 {
     public ?string $class = 'Form';
+
+    // POST by default so that a form submitted without JavaScript (the
+    // handlers all intercept submit) never falls back to a native GET with
+    // its fields - passwords among them - in the query string and the server
+    // log. Form adds the CSRF token to every POST form. A form that really
+    // is a GET form overrides this.
+    public ?string $method = 'POST';
 }

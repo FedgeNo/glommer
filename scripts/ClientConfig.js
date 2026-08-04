@@ -1,6 +1,9 @@
 import { Cookie } from '/scripts/Cookie.js';
 
 export class ClientConfig {
+    /** The parsed config, held here because the cookie is deleted on first read. */
+    static #cached = null;
+
     /** @returns {string|null} */
     static _getCookie(name) {
         return Cookie.get(name);
@@ -21,6 +24,10 @@ export class ClientConfig {
      * }}
      */
     static all() {
+        if (ClientConfig.#cached !== null) {
+            return ClientConfig.#cached;
+        }
+
         const raw = this._getCookie('APP-CONFIG');
         if (!raw) {
             // Sensible defaults when cookie is missing (saved page, logged‑out, etc.)
@@ -45,11 +52,19 @@ export class ClientConfig {
             };
         }
         try {
-            return JSON.parse(raw);
+            ClientConfig.#cached = JSON.parse(raw);
         } catch (e) {
             console.error('Invalid APP-CONFIG cookie:', e);
             return {};
         }
+
+        // The cookie is a one-way delivery from the render that just
+        // happened: parsed once, then dropped, so its weight (per-page keys,
+        // ICE servers, ...) doesn't ride along on every request this page
+        // makes afterwards. The next page render sets a fresh one.
+        document.cookie = 'APP-CONFIG=; Max-Age=0; path=/; secure; samesite=Strict';
+
+        return ClientConfig.#cached;
     }
 
     /**

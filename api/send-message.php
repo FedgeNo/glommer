@@ -119,6 +119,11 @@ $message_payload = [
     'body' => $stored_body,
     'bodyCiphertext' => $envelope,
     'createdAt' => date('Y-m-d H:i:s'),
+    'sender' => [
+        'slug' => $current_user -> slug,
+        'title' => $current_user -> title,
+        'image' => $current_user -> avatarURL(),
+    ],
 ];
 
 // A remote recipient is reached over the network instead of over the socket -

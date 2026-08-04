@@ -153,6 +153,11 @@ INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `remoteObjectURI`)
                 'recipientId' => (int) $recipient -> userId,
                 'body' => $body,
                 'createdAt' => date('Y-m-d H:i:s'),
+                'sender' => [
+                    'slug' => $sender -> slug,
+                    'title' => $sender -> title,
+                    'image' => $sender -> avatarURL(),
+                ],
             ],
         ]);
     }

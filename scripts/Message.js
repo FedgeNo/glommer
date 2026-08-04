@@ -15,6 +15,7 @@ export class Message {
     body = null;
     bodyCiphertext = null;
     createdAt = null;
+    sender = null;
     element = null;
 
     static fromData(data) {
@@ -34,9 +35,8 @@ export class Message {
         const byline = document.createElement('div');
         byline.className = 'MessageByline d-flex align-items-start gap-2';
 
-        const sender = (ClientConfig.get('conversationUsers') || {})[this.senderId];
-        if (sender) {
-            byline.appendWithSpace(this.senderHeader(sender, this.senderId));
+        if (this.sender) {
+            byline.appendWithSpace(this.senderHeader(this.sender, this.senderId));
         }
 
         const meta = document.createElement('time');

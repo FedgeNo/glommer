@@ -55,6 +55,7 @@ export class EncryptedMessagesSetting {
             const result = await Api.post('/api/message-keys', {
                 publicKey: pair.publicKey,
                 wrappedPrivateKey: wrapped,
+                password: form.querySelector('[name="setupAccountPassword"]').value,
             });
             if (result === null) return;
 
@@ -100,6 +101,7 @@ export class EncryptedMessagesSetting {
             const result = await Api.post('/api/message-keys', {
                 publicKey: keys.publicKey,
                 wrappedPrivateKey: wrapped,
+                password: form.querySelector('[name="rewrapAccountPassword"]').value,
             });
             if (result === null) return;
 
@@ -130,6 +132,7 @@ export class EncryptedMessagesSetting {
         passphrase_form.appendWithSpace(input_field('currentPassphrase', 'Current passphrase', 'current-password'));
         passphrase_form.appendWithSpace(input_field('newPassphrase', 'New passphrase', 'new-password'));
         passphrase_form.appendWithSpace(input_field('newPassphraseConfirm', 'Confirm new passphrase', 'new-password'));
+        passphrase_form.appendWithSpace(input_field('rewrapAccountPassword', 'Account password', 'current-password'));
         passphrase_form.appendWithSpace(submit_button('Change passphrase'));
         section.appendWithSpace(passphrase_form);
 
@@ -142,6 +145,7 @@ export class EncryptedMessagesSetting {
 
         reset_form.appendWithSpace(input_field('passphrase', 'New passphrase', 'new-password'));
         reset_form.appendWithSpace(input_field('passphraseConfirm', 'Confirm passphrase', 'new-password'));
+        reset_form.appendWithSpace(input_field('setupAccountPassword', 'Account password', 'current-password'));
         reset_form.appendWithSpace(submit_button('Reset encryption keys'));
         section.appendWithSpace(reset_form);
     }

@@ -36,6 +36,12 @@ class MessageKeySetupForm extends FormForm
         $confirm -> autocomplete = 'new-password';
         $this -> contents[] = $confirm;
 
+        // Replacing keys decides who can read future messages, so the server
+        // demands the account password - see api/message-keys.php.
+        $account_password = new InputField('setupAccountPassword', 'Account password', 'password');
+        $account_password -> autocomplete = 'current-password';
+        $this -> contents[] = $account_password;
+
         $this -> contents[] = new SubmitButton($this -> reset ? 'Reset encryption keys' : 'Turn on encrypted messages');
 
         return parent::toDOM();

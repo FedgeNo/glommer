@@ -1,8 +1,10 @@
 import { Api } from '/scripts/Api.js';
+import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
+import { list_item } from '/scripts/utils.js';
 
 /**
  * The moderation page for shutting out whole servers: the form that adds one
@@ -52,13 +54,63 @@ export class BlockedDomainCard {
 
             if (!result) return;
 
-            // Reloaded rather than prepended: the block may have severed
-            // follows and dropped queued deliveries, so what else the page is
-            // showing has changed too.
-            window.location.reload();
+            // The new row joins the list in place - the same card the server
+            // renders for one. The cascade the confirmation warned about
+            // (severed follows, dropped deliveries) has no rendering on this
+            // page, so the list is the whole picture here.
+            const list = document.querySelector('.BlockedDomainList');
+
+            if (list) {
+                const placeholder = list.querySelector('.Notice');
+                if (placeholder) placeholder.closest('li').remove();
+
+                list.prepend(list_item(BlockedDomainCard.#card(result.domain, reason)));
+            }
+
+            form.querySelector('[name="domain"]').value = '';
+            form.querySelector('[name="reason"]').value = '';
         } finally {
             submit.disabled = false;
         }
+    }
+
+    static #card(domain, reason) {
+        const card = document.createElement('div');
+        card.className = 'BlockedDomainCard d-flex align-items-center gap-3';
+        card.dataset.domain = domain;
+
+        const info = document.createElement('div');
+        info.className = 'd-flex flex-column gap-1';
+
+        const name = document.createElement('p');
+        name.textContent = domain;
+        info.appendWithSpace(name);
+
+        const detail = document.createElement('p');
+        detail.className = 'muted';
+        detail.appendWithSpace(document.createTextNode('Blocked by ' + (ClientConfig.get('currentUserUsername') || 'you') + ' '));
+
+        const time = document.createElement('time');
+        time.className = 'RelativeTime';
+        time.dateTime = new Date().toISOString();
+        time.textContent = 'just now';
+        detail.appendWithSpace(time);
+
+        if (reason !== '') {
+            detail.appendWithSpace(document.createTextNode(' - ' + reason));
+        }
+
+        info.appendWithSpace(detail);
+        card.appendWithSpace(info);
+
+        const unblock = document.createElement('button');
+        unblock.type = 'button';
+        unblock.className = 'Button DomainUnblockButton ms-auto';
+        unblock.dataset.domain = domain;
+        unblock.textContent = 'Unblock';
+        card.appendWithSpace(unblock);
+
+        return card;
     }
 
     static async #unblock(button) {

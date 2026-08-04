@@ -29,7 +29,37 @@ export class RemoteFollowsForm {
                 parts.push(`${unprocessed.length} not attempted yet - submit again to continue.`);
             }
             Toast.show(parts.join(' '));
-            if (failed.length === 0 && unprocessed.length === 0) window.location.reload();
+
+            // The new follows join the list in place, pending until their
+            // server accepts - the same row the server renders for one.
+            const followed = results.filter(r => r.ok);
+
+            if (followed.length > 0) {
+                let list = form.querySelector('.RemoteFollowsList');
+
+                if (!list) {
+                    list = document.createElement('div');
+                    list.className = 'RemoteFollowsList d-flex flex-column gap-1';
+                    form.appendWithSpace(list);
+                }
+
+                for (const result of followed) {
+                    const item = document.createElement('div');
+                    item.className = 'd-flex gap-2 align-items-center';
+                    item.appendWithSpace(document.createTextNode(result.handle));
+
+                    const status = document.createElement('span');
+                    status.className = 'muted text-sm';
+                    status.textContent = 'pending';
+                    item.appendWithSpace(status);
+
+                    list.appendWithSpace(item);
+                }
+            }
+
+            if (failed.length === 0 && unprocessed.length === 0) {
+                form.querySelector('[name="handles"]').value = '';
+            }
         });
     }
 }

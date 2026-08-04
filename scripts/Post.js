@@ -357,7 +357,10 @@ export class Post {
             card.dataset.descriptionDelta = this.rawDescriptionDelta || '';
             card.dataset.title = this.title || '';
             card.dataset.linkUrl = this.linkURL || '';
-            card.dataset.hasMedia = this.items.length > 0 ? '1' : '';
+            // Mirrors Post.php: a link post's preview picture is an item too,
+            // and this asks whether the post is a media post rather than
+            // whether it holds one.
+            card.dataset.hasMedia = this.items.length > 0 && !this.linkURL ? '1' : '';
             // Mirrors Post.php's data-sensitive - without it the edit form
             // opens unchecked on an AJAX-rendered post and saving a typo fix
             // would silently clear the classification.

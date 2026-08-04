@@ -125,7 +125,14 @@ class Post extends Article
             // media and a link are mutually exclusive (api/edit-post.php
             // enforces the same XOR create-post.php always has), and a media
             // post never had a link to begin with, so there's nothing to edit.
-            $this -> attributes['data-has-media'] = count($this -> items) > 0 ? '1' : '';
+            //
+            // A link post's preview picture is a FeedItem too, so this asks
+            // whether the post IS a media post rather than whether it holds an
+            // item. Counting the item alone hid the Link field from the one
+            // kind of post whose link is the whole point, and saving then wrote
+            // the link away and left the picture behind - a link post silently
+            // became an image post.
+            $this -> attributes['data-has-media'] = count($this -> items) > 0 && $this -> linkURL === null ? '1' : '';
 
             // So the edit form opens with the classification the post already
             // carries, rather than silently clearing it on every save.

@@ -213,7 +213,7 @@ export class PostEditor {
         this.#postElement.dataset.title = result.title || '';
         this.#postElement.dataset.linkUrl = result.linkURL || '';
         this.#postElement.dataset.descriptionDelta = result.rawDescriptionDelta || '';
-        this.#postElement.dataset.hasMedia = result.items.length > 0 ? '1' : '';
+        this.#postElement.dataset.hasMedia = result.items.length > 0 && !result.linkURL ? '1' : '';
         this.#postElement.dataset.sensitive = result.sensitive ? '1' : '';
 
         this.#postElement.style.display = '';

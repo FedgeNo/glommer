@@ -24,7 +24,7 @@ $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['postId'] ?? 0);
 
 $owner = DB::row('
-SELECT `userId`
+SELECT `userId`, `linkURL`
     FROM `Posts`
     WHERE `postId` = ?
 ', 'Post', 'i', $post_id);
@@ -114,12 +114,14 @@ if ($title_value === null && $link_url_value === null && $description_value === 
     JSONResponse::error('Post has no content', 422) -> send();
 }
 
-// Same "media post XOR link post" rule create-post enforces. A post with
-// attached media never had a link to begin with (creation already enforces
-// the XOR), so this only ever fires when the edit is trying to newly add
-// one to a media post - editing an existing link-post's URL always passes,
-// since it has no media by construction.
-if ($link_url_value !== null && $media_count > 0) {
+// Same "media post XOR link post" rule create-post enforces, and it turns on
+// which kind of post this already is rather than on whether it holds an item.
+// A link post's preview picture is a FeedItem too, so counting items alone
+// refused every edit to a link post that had one - the rule fired on a post
+// that has never broken it.
+$was_link_post = $owner -> linkURL !== null;
+
+if ($link_url_value !== null && $media_count > 0 && !$was_link_post) {
     JSONResponse::error('A post can have either attached files or a link, not both', 422) -> send();
 }
 

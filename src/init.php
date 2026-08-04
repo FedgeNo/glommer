@@ -8,7 +8,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.30';
+const GLOMMER_VERSION = '0.9.31';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -153,6 +153,13 @@ if ($site_is_installed && !str_starts_with((string) Config::get('siteURL'), 'htt
     exit;
 }
 
+// Persistent "Remember me" login: a request arriving without a session but
+// with a valid remember-me cookie gets its session re-established (and the
+// used token rotated) before anything below asks who's logged in.
+if (!Auth::check()) {
+    RememberToken::loginFromCookie();
+}
+
 // Version gate: the code and the database must have been installed/upgraded
 // together. After a code update, the database stays at the old version until
 // `php bin/install.php` applies the migrations and records the new version -
@@ -173,13 +180,6 @@ if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
 
     ErrorDocument::sendWithoutChrome(503, 'Upgrade In Progress', $maintenance_message);
     exit;
-}
-
-// Persistent "Remember me" login: a request arriving without a session but
-// with a valid remember-me cookie gets its session re-established (and the
-// used token rotated) before anything below asks who's logged in.
-if (!Auth::check()) {
-    RememberToken::loginFromCookie();
 }
 
 if (!Auth::check() && basename($_SERVER['SCRIPT_FILENAME']) !== 'signup.php') {

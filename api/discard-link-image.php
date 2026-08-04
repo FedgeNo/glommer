@@ -18,7 +18,9 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $seed = (string) ($payload['seed'] ?? '');
 
-if (!preg_match('/^lp-[a-f0-9]{32}$/', $seed)) {
+// The name carries who staged the file, so this refuses one belonging to
+// somebody else rather than deleting whatever it is handed.
+if (!StagedUploadSeed::belongsTo($seed, (int) Auth::id())) {
     JSONResponse::error('Invalid seed', 422) -> send();
 }
 

@@ -45,6 +45,14 @@ if ($target_type === 'message' && !Report::messageWasSentTo($target_id, $current
     JSONResponse::error('Invalid report', 422) -> send();
 }
 
+$rate_key = 'report:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
+    JSONResponse::error('Too many reports. Please try again later.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 // An encrypted message can't be judged from its row - the server holds only
 // ciphertext. The reporter reveals that one message's key (never the
 // conversation key: see MessageEnvelope), and two checks make the result
@@ -93,14 +101,6 @@ if ($target_user_id === 1) {
 if (Report::isContentDismissed($target_type, $target_id)) {
     JSONResponse::error('This content has already been reviewed by a moderator.', 422) -> send();
 }
-
-$rate_key = 'report:' . $current_user -> userId;
-
-if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
-    JSONResponse::error('Too many reports. Please try again later.', 429) -> send();
-}
-
-RateLimiter::recordAttempt($rate_key);
 
 if (!Report::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null, $decrypted_body)) {
     JSONResponse::error('You\'ve already reported this.', 422) -> send();

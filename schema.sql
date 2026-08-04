@@ -393,7 +393,7 @@ CREATE TABLE `Messages` (
   -- MessageFranking). A report of an encrypted message re-verifies this tag,
   -- proving the reported ciphertext is the one that actually passed through
   -- here before the revealed message key is used to open it.
-  `frankingTag` char(64) DEFAULT NULL,
+  `frankingTag` varchar(128) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `reportsDismissed` tinyint(1) NOT NULL DEFAULT 0,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
@@ -776,6 +776,11 @@ ALTER TABLE `Users` MODIFY COLUMN `slug` varchar(255) NOT NULL;
 -- nothing in body, so body can no longer be NOT NULL. Nullability is a column
 -- change rather than a missing column, so the drift check won't apply it.
 ALTER TABLE `Messages` MODIFY COLUMN `body` text DEFAULT NULL;
+-- A franking tag now names the key that made it, so rotating the server key
+-- doesn't make every message franked under the old one unreportable. Longer
+-- than the bare hash it used to be, and a column change rather than a missing
+-- column, so the drift check won't apply it.
+ALTER TABLE `Messages` MODIFY COLUMN `frankingTag` varchar(128) DEFAULT NULL;
 
 -- Maintenance (safe to re-run): recompute the denormalized Users.friendCount
 -- from the actual accepted friendships. Runs after every install and upgrade -

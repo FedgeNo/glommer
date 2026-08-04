@@ -23,7 +23,7 @@ $mysqli = DB::connection();
 // Set well above what writing looks like and below what a script does.
 $post_rate_key = 'create-post:' . $current_user -> userId;
 
-if (RateLimiter::tooManyAttempts($post_rate_key, 30, 600)) {
+if (RateLimiter::tooManyAttempts($post_rate_key, 60, 600)) {
     JSONResponse::error('You\'re posting very quickly. Please wait a moment and try again.', 429) -> send();
 }
 
@@ -55,7 +55,7 @@ $poll_options = Poll::cleanOptions(is_array($_POST['pollOptions'] ?? null) ? $_P
 $poll_multiple = ($_POST['pollMultiple'] ?? '') === '1';
 $poll_duration = (int) ($_POST['pollDuration'] ?? 0);
 
-if (!preg_match('/^lp-[a-f0-9]{32}$/', $link_image_seed) || !UploadProcessor::exists($link_image_seed, 'ImageItem')) {
+if (!StagedUploadSeed::belongsTo($link_image_seed, (int) $current_user -> userId) || !UploadProcessor::exists($link_image_seed, 'ImageItem')) {
     $link_image_seed = '';
 }
 

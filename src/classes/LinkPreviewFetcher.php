@@ -522,7 +522,9 @@ DELETE
 
         imagedestroy($image);
 
-        $seed = 'lp-' . bin2hex(random_bytes(16));
+        // Named for whoever is staging it, so only they can discard it or
+        // attach it to a post - see StagedUploadSeed.
+        $seed = StagedUploadSeed::issue((int) Auth::id());
         $result = UploadProcessor::process($tmp_path, $seed);
 
         unlink($tmp_path);

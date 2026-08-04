@@ -94,7 +94,11 @@ a WebSocket open, transcoding video out of band).
   the encrypted history, with no operator recovery. Reporting still works via
   **message franking**: the server HMACs each ciphertext as it relays it, and
   a report reveals that one message's key (never the conversation's), which
-  the server verifies against its own tag before trusting the plaintext.
+  the server verifies against its own tag before trusting the plaintext. Each
+  tag records which server key made it: if `ACTIVITYPUB_ENCRYPTION_KEY` is ever
+  rotated, move the old value to `ACTIVITYPUB_ENCRYPTION_KEY_PREVIOUS` in
+  `.env` (comma-separated, oldest last) or every message franked under it
+  becomes unreportable.
   Everything else is stored in plain text - private from other members, but
   the operator of a server can technically read their own database, and a
   conversation with a Fediverse account also lives on that account's server,

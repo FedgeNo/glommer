@@ -120,4 +120,37 @@ class MessageEncryptionTest extends TestCase
         $this -> assertFalse(MessageFranking::verify(9, 5, $envelope, $tag));
         $this -> assertFalse(MessageFranking::verify(5, 10, $envelope, $tag));
     }
+
+    /**
+     * A tag names the key that made it, so the server key can be rotated
+     * without every message franked under the old one becoming unreportable.
+     */
+    public function testATagNamesTheKeyThatMadeIt(): void
+    {
+        if (!MessageFranking::isConfigured()) {
+            return;
+        }
+
+        $tag = MessageFranking::tag(5, 9, $this -> envelope('hello')['envelope']);
+
+        $this -> assertTrue(str_contains((string) $tag, ':'));
+        $this -> assertSame(1, preg_match('/^[a-f0-9]{16}:[a-f0-9]{64}$/', (string) $tag));
+    }
+
+    /**
+     * A tag naming a key this server no longer holds fails closed - that is a
+     * report it cannot vouch for, not one to wave through.
+     */
+    public function testATagFromAnUnknownKeyIsRefused(): void
+    {
+        if (!MessageFranking::isConfigured()) {
+            return;
+        }
+
+        $envelope = $this -> envelope('hello')['envelope'];
+        $tag = (string) MessageFranking::tag(5, 9, $envelope);
+        $foreign = str_repeat('0', 16) . substr($tag, 16);
+
+        $this -> assertFalse(MessageFranking::verify(5, 9, $envelope, $foreign));
+    }
 }

@@ -26,8 +26,7 @@ class RemoteFollowsForm extends FormForm
         $this -> contents[] = new SubmitButton('Follow');
 
         if ($this -> currentFollows !== []) {
-            $list = new Div();
-            $list -> class = 'RemoteFollowsList';
+            $list = new RemoteFollowsList();
             $list -> mixins = ['d-flex', 'flex-column', 'gap-1'];
 
             foreach ($this -> currentFollows as $follow) {

@@ -18,12 +18,7 @@ class VerificationNotice extends Div
         $actions = new Div();
         $actions -> mixins = ['d-flex', 'gap-2'];
 
-        $resend_button = new Button();
-        $resend_button -> type = 'button';
-        $resend_button -> class = 'VerificationResendButton';
-        $resend_button -> mixins = ['Button'];
-        $resend_button -> contents[] = 'Resend verification email';
-        $actions -> addContent($resend_button);
+        $actions -> addContent(new VerificationResendButton());
 
         $actions -> addContent(new LogoutForm());
 

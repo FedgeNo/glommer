@@ -14,11 +14,7 @@ class LogoutEverywherePanel extends Div
             'You will be signed out of all browsers, including this one.'
         ));
 
-        $button = new Button();
-        $button -> addContent('Log out everywhere');
-        $button -> class = 'LogoutEverywhereButton';
-        $button -> mixins = ['Button'];
-        $this -> addContent($button);
+        $this -> addContent(new LogoutEverywhereButton());
 
         return parent::toDOM();
     }

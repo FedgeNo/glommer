@@ -38,8 +38,7 @@ class WebSocketStatus extends Div
 
         $this -> contents[] = $server_line;
 
-        $client_line = new Paragraph('Browser connection: Testing…');
-        $client_line -> class = 'WebSocketClientStatus';
+        $client_line = new WebSocketClientStatus('Browser connection: Testing…');
         $this -> contents[] = $client_line;
 
         return parent::toDOM();

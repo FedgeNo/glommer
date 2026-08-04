@@ -27,12 +27,7 @@ class AccountDeleteForm extends FormForm
         if (GoogleAuth::isEnabled()) {
             $this -> contents[] = new AuthDivider();
 
-            $google_delete = new Button();
-            $google_delete -> type = 'button';
-            $google_delete -> class = 'GoogleAccountDeleteButton';
-            $google_delete -> mixins = ['Button'];
-            $google_delete -> contents[] = 'Verify with Google to delete';
-            $this -> contents[] = $google_delete;
+            $this -> contents[] = new GoogleAccountDeleteButton();
         }
 
         return parent::toDOM();

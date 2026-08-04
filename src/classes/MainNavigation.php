@@ -24,21 +24,18 @@ class MainNavigation extends Nav
         $hamburger -> attributes['aria-label'] = 'Menu';
 
         for ($i = 0; $i < 3; $i++) {
-            $bar = new Div();
-            $bar -> class = 'NavHamburgerBar';
+            $bar = new NavHamburgerBar();
             $hamburger -> addContent($bar);
         }
 
         $this -> addContent($hamburger);
 
-        $brand = new Anchor(ServerURL::absolute('/'), Config::get('siteTitle'));
-        $brand -> class = 'NavBrand';
+        $brand = new NavBrand(ServerURL::absolute('/'), Config::get('siteTitle'));
 
         $site_links = new Div();
         $site_links -> mixins = ['d-flex', 'gap-4'];
 
-        $account_links = new Div();
-        $account_links -> class = 'NavAccount';
+        $account_links = new NavAccount();
         $account_links -> mixins = ['d-flex', 'gap-4', 'ms-auto'];
 
         // Desktop: a hover-flyout of the main menu hangs off the brand. Mobile:
@@ -51,8 +48,7 @@ class MainNavigation extends Nav
 
             $site_links -> addContent(new NotificationsNavLink((int) $current_user -> userId, (int) $current_user -> lastNotificationId));
 
-            $account_label = new Span();
-            $account_label -> class = 'NavAccountLabel';
+            $account_label = new NavAccountLabel();
             $account_label -> addContent('Logged In As ' . ($current_user -> title ?: $current_user -> slug));
 
             $account_trigger = new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/'));

@@ -27,8 +27,7 @@ class HelpSearch extends Div
 
         $this -> contents[] = $input_card;
 
-        $results = new Div();
-        $results -> class = 'HelpSearchResults';
+        $results = new HelpSearchResults();
 
         foreach (HelpContent::groupedByCategory() as $name => $articles) {
             $results -> addContent(new HelpCategory($name, $articles));

@@ -36,24 +36,16 @@ class VideoCallTestPanel extends Div
     {
         $this -> contents[] = new Paragraph('Runs the parts of call setup that can be checked from one browser. Everything up to an actual peer-to-peer connection is testable here; connecting to another person needs that person.');
 
-        // Composed rather than a ButtonButton subclass: the identity is set at
-        // runtime here, which would overwrite the chained one.
-        $run = new Button();
-        $run -> class = 'VideoCallTestButton';
-        $run -> mixins = ['Button'];
-        $run -> addContent('Run the check');
-        $this -> contents[] = $run;
+        $this -> contents[] = new VideoCallTestButton();
 
         // Filled in by VideoCallTestPanel.js, a step at a time as each finishes,
         // so a step that hangs is visibly the one that hung.
-        $results = new UnorderedList();
-        $results -> class = 'VideoCallTestResults';
+        $results = new VideoCallTestResults();
         $this -> contents[] = $results;
 
         // The verdict the steps add up to, written here once they have all run.
         // Empty until then, and styled to take no room while it is.
-        $verdict = new Paragraph();
-        $verdict -> class = 'VideoCallTestVerdict';
+        $verdict = new VideoCallTestVerdict();
         $this -> contents[] = $verdict;
 
         return parent::toDOM();

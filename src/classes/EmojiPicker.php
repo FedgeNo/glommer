@@ -14,16 +14,9 @@ class EmojiPicker extends Div
 
     public function toDOM(): \DOMElement
     {
-        $trigger = new Button();
-        $trigger -> type = 'button';
-        $trigger -> class = 'EmojiPickerTriggerButton';
-        $trigger -> mixins = ['Button'];
-        $trigger -> attributes['aria-label'] = 'Insert emoji';
-        $trigger -> contents[] = '🙂';
-        $this -> contents[] = $trigger;
+        $this -> contents[] = new EmojiPickerTriggerButton();
 
-        $panel = new Div();
-        $panel -> class = 'EmojiPickerPanel';
+        $panel = new EmojiPickerPanel();
         $this -> contents[] = $panel;
 
         return parent::toDOM();

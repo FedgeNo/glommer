@@ -44,8 +44,7 @@ class Message extends Article implements \JsonSerializable
         }
 
         // Byline row: header + time (mirrors PostByline)
-        $byline = new Div();
-        $byline -> class = 'MessageByline';
+        $byline = new MessageByline();
         $byline -> mixins = ['d-flex', 'align-items-start', 'gap-2'];
 
         if ($this -> sender !== null) {
@@ -61,8 +60,7 @@ class Message extends Article implements \JsonSerializable
         // Body and (for other people's messages) the report button sit on one
         // row - text on the left, button hugging the right - so the button
         // never overlaps the text.
-        $line = new Div();
-        $line -> class = 'MessageLine';
+        $line = new MessageLine();
 
         $body = new Paragraph();
         // Same last-step expansion posts get, on the path messages take -

@@ -21,8 +21,7 @@ class HashtagChip extends Anchor
         $this -> contents[] = '#' . $this -> title;
 
         if ($this -> postCount !== null) {
-            $count_span = new Span();
-            $count_span -> class = 'HashtagChipCount';
+            $count_span = new HashtagChipCount();
             $count_span -> contents[] = (string) $this -> postCount;
             $this -> contents[] = $count_span;
         }

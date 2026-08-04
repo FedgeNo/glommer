@@ -15,13 +15,7 @@ class OtherUser extends User
         $viewer_id = (int) Auth::id();
 
         if (Block::blockedBy($viewer_id, $this -> userId)) {
-            $unblock_button = new Button();
-            $unblock_button -> type = 'button';
-            $unblock_button -> class = 'UserUnblockButton';
-            $unblock_button -> mixins = ['Button', 'ms-auto'];
-            $unblock_button -> attributes['data-user-id'] = (string) $this -> userId;
-            $unblock_button -> contents[] = 'Unblock';
-            $element -> appendChild($unblock_button -> toDOM());
+            $element -> appendChild(new UserUnblockButton((int) $this -> userId) -> toDOM());
 
             return $element;
         }
@@ -50,14 +44,7 @@ class OtherUser extends User
         if ($this -> remoteActorURI !== null) {
             $following = Friendship::follows($viewer_id, (int) $this -> userId);
 
-            $follow_button = new Button();
-            $follow_button -> type = 'button';
-            $follow_button -> class = $following ? 'UserFollowButton Removing' : 'UserFollowButton';
-            $follow_button -> mixins = ['Button'];
-            $follow_button -> attributes['data-user-id'] = (string) $this -> userId;
-            $follow_button -> attributes['data-following'] = $following ? '1' : '0';
-            $follow_button -> contents[] = $following ? 'Unfollow' : 'Follow';
-            $actions -> addContent($follow_button);
+            $actions -> addContent(new UserFollowButton((int) $this -> userId, $following));
 
             // A Fediverse account can be messaged, so it needs the way in to
             // the thread the same as anyone else. Friendship stays absent -
@@ -67,14 +54,7 @@ class OtherUser extends User
             $actions -> addContent($remote_message_link);
         } else {
             if ($friendship === null || $sent_by_viewer) {
-                $friend_button = new Button();
-                $friend_button -> type = 'button';
-                $friend_button -> class = $sent_by_viewer ? 'FriendRequestButton Removing' : 'FriendRequestButton';
-                $friend_button -> mixins = ['Button'];
-                $friend_button -> attributes['data-user-id'] = (string) $this -> userId;
-                $friend_button -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
-                $friend_button -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
-                $actions -> addContent($friend_button);
+                $actions -> addContent(new FriendRequestButton((int) $this -> userId, $sent_by_viewer));
             }
 
             $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> slug), 'Message');
@@ -100,13 +80,7 @@ class OtherUser extends User
             $actions -> addContent(new UserModButton($this -> userId, (bool) $this -> isMod));
         }
 
-        $block_button = new Button();
-        $block_button -> type = 'button';
-        $block_button -> class = 'UserBlockButton';
-        $block_button -> mixins = ['Button'];
-        $block_button -> attributes['data-user-id'] = (string) $this -> userId;
-        $block_button -> contents[] = 'Block';
-        $actions -> addContent($block_button);
+        $actions -> addContent(new UserBlockButton((int) $this -> userId));
 
         // The admin (userId 1) can be neither banned (api/ban.php rejects it)
         // nor reported (api/report.php rejects it - nobody could act on the

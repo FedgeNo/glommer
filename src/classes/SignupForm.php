@@ -21,8 +21,7 @@ class SignupForm extends FormForm
         // Filled in by main.js as the name is typed. Empty (and so invisible)
         // until there's something to report, and announced politely so a
         // screen reader hears the verdict without it interrupting typing.
-        $availability = new Paragraph();
-        $availability -> class = 'UsernameAvailability';
+        $availability = new UsernameAvailability();
         $availability -> mixins = ['text-sm'];
         $availability -> attributes['aria-live'] = 'polite';
         $fields -> addContent($availability);

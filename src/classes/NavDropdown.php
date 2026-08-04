@@ -22,8 +22,7 @@ class NavDropdown extends Div
     public function toDOM(): \DOMElement
     {
         if (is_string($this -> trigger)) {
-            $trigger = new Div();
-            $trigger -> class = 'NavDropdownTrigger';
+            $trigger = new NavDropdownTrigger();
             $trigger -> contents[] = $this -> trigger;
 
             $this -> addContent($trigger);
@@ -33,8 +32,7 @@ class NavDropdown extends Div
             $this -> addContent($this -> trigger);
         }
 
-        $menu = new Div();
-        $menu -> class = 'NavDropdownMenu';
+        $menu = new NavDropdownMenu();
 
         foreach ($this -> links as $link) {
             $menu -> addContent($link);

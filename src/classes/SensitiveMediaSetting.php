@@ -27,8 +27,7 @@ class SensitiveMediaSetting extends Div
             $checkbox -> attributes['checked'] = 'checked';
         }
 
-        $toggle = new Label();
-        $toggle -> class = 'SensitiveMediaSettingToggle';
+        $toggle = new SensitiveMediaSettingToggle();
         $toggle -> addContent($checkbox);
         $toggle -> addContent('Show sensitive media by default');
 

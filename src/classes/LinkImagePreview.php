@@ -16,17 +16,11 @@ class LinkImagePreview extends Div
     {
         $this -> attributes['style'] = 'display: none';
 
-        $image = new Image();
-        $image -> class = 'LinkImagePreviewThumb';
+        $image = new LinkImagePreviewThumb();
         $image -> alt = 'Link preview image';
         $this -> contents[] = $image;
 
-        $remove_button = new Button();
-        $remove_button -> type = 'button';
-        $remove_button -> class = 'LinkImageRemoveButton';
-        $remove_button -> mixins = ['Button'];
-        $remove_button -> contents[] = 'Remove image';
-        $this -> contents[] = $remove_button;
+        $this -> contents[] = new LinkImageRemoveButton();
 
         $seed_input = new HiddenInput();
         $seed_input -> name = 'linkImageSeed';

@@ -24,8 +24,7 @@ class LoginForm extends FormForm
             // box the submit button jumps down when it appears. The footer
             // reserves that height up front and puts the button on the
             // opposite side, so nothing shifts when it loads.
-            $footer = new Div();
-            $footer -> class = 'LoginFormFooter';
+            $footer = new LoginFormFooter();
             // No align-items override: .SubmitButton aligns itself to the
             // trailing edge, which in this row bottom-aligns it against the
             // reserved Turnstile box - the same corner it always stuck to,

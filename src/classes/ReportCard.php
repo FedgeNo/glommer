@@ -37,8 +37,7 @@ class ReportCard extends Article
     public function toDOM(): \DOMElement
     {
         // Left: who reported what, the content in question, the reason, and when.
-        $details = new Div();
-        $details -> class = 'ReportDetails';
+        $details = new ReportDetails();
         $details -> mixins = ['d-flex', 'flex-column', 'gap-2'];
 
         $summary = new Div();
@@ -69,8 +68,7 @@ class ReportCard extends Article
         // the one who filed the report. (The reported user is never the admin -
         // api/report.php rejects reports about admin content - so that side
         // needs no such guard.)
-        $actions = new Div();
-        $actions -> class = 'ReportActions';
+        $actions = new ReportActions();
         $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
 
         if ($this -> reporterId !== 1) {
@@ -159,8 +157,7 @@ class ReportCard extends Article
     /** The reported media of a deleted post, streamed from the kept originals. */
     private function forensicAttachmentsElement(): HTMLObject
     {
-        $wrap = new Div();
-        $wrap -> class = 'ReportedAttachments';
+        $wrap = new ReportedAttachments();
         $wrap -> mixins = ['d-flex', 'flex-column', 'gap-2'];
 
         foreach ($this -> forensicAttachmentIds as $item_id) {
@@ -177,8 +174,7 @@ class ReportCard extends Article
         $media_type = $original['mediaType'] ?? null;
 
         if ($media_type === 'image') {
-            $image = new Image();
-            $image -> class = 'ReportedMedia';
+            $image = new ReportedMedia();
             $image -> src = $url;
             $image -> alt = 'Reported image';
 

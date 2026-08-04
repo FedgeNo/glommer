@@ -23,8 +23,7 @@ class HelpCategory extends Section
     {
         $this -> contents[] = new Heading2($this -> name);
 
-        $list = new Div();
-        $list -> class = 'HelpArticleList';
+        $list = new HelpArticleList();
 
         foreach ($this -> articles as $article) {
             $list -> addContent(new HelpArticleSummary($article));

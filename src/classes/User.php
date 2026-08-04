@@ -115,8 +115,7 @@ class User extends Div implements \JsonSerializable
         // The identity block and the bio stack in a growing left column, so the
         // bio runs the full width beneath the avatar/name up to whatever sits on
         // the card's right (the action buttons).
-        $main = new Div();
-        $main -> class = 'UserMain';
+        $main = new UserMain();
         $main -> addContent($this -> identityElement());
 
         $bio = $this -> bioElement();
@@ -137,8 +136,7 @@ class User extends Div implements \JsonSerializable
      */
     protected function identityElement(): HTMLObject
     {
-        $link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
-        $link -> class = 'UserLink';
+        $link = new UserLink(ServerURL::absolute('/users/' . $this -> slug . '/'));
 
         $link -> addContent(Avatar::forUser($this));
         $link -> addContent($this -> identityInfo());
@@ -152,8 +150,7 @@ class User extends Div implements \JsonSerializable
      */
     protected function identityInfo(): HTMLObject
     {
-        $info = new Div();
-        $info -> class = 'UserIdentity';
+        $info = new UserIdentity();
 
         $info -> addContent($this -> nameElement());
 
@@ -175,8 +172,7 @@ class User extends Div implements \JsonSerializable
     /** The display-name heading. CurrentUser pairs it with the edit pencil. */
     protected function nameElement(): HTMLObject
     {
-        $name_heading = new Heading2();
-        $name_heading -> class = 'DisplayName';
+        $name_heading = new DisplayName();
         $name_heading -> contents[] = $this -> title ?: $this -> slug;
 
         return $name_heading;
@@ -207,11 +203,9 @@ class User extends Div implements \JsonSerializable
 
         $header -> addContent(Avatar::forUser($this));
 
-        $info = new Div();
-        $info -> class = 'UserHeaderInfo';
+        $info = new UserHeaderInfo();
 
-        $name_line = new Div();
-        $name_line -> class = 'UserHeaderName';
+        $name_line = new UserHeaderName();
         $name_line -> mixins = ['fw-semibold'];
         $name_line -> contents[] = $name;
         $info -> addContent($name_line);

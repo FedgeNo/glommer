@@ -69,6 +69,8 @@ SELECT *
      */
     protected function identityElement(): HTMLObject
     {
+        // The same identity UserLink (the Anchor) renders, on a plain block:
+        // your own name edits in place, so it must not link away mid-edit.
         $block = new Div();
         $block -> class = 'UserLink';
 
@@ -84,12 +86,10 @@ SELECT *
     /** The display name paired with the edit pencil. */
     protected function nameElement(): HTMLObject
     {
-        $row = new Div();
-        $row -> class = 'DisplayNameRow';
+        $row = new DisplayNameRow();
         $row -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
 
-        $heading = new Heading2();
-        $heading -> class = 'DisplayName';
+        $heading = new DisplayName();
         $heading -> contents[] = $this -> title ?: $this -> slug;
         $row -> addContent($heading);
 

@@ -20,8 +20,7 @@ class Carousel extends Div
 
     public function toDOM(): \DOMElement
     {
-        $track = new Div();
-        $track -> class = 'CarouselTrack';
+        $track = new CarouselTrack();
 
         foreach ($this -> items as $index => $item) {
             if ($item instanceof FeedItem) {
@@ -43,8 +42,7 @@ class Carousel extends Div
             $this -> contents[] = new CarouselPrevButton();
             $this -> contents[] = new CarouselNextButton();
 
-            $counter = new Div();
-            $counter -> class = 'CarouselCounter';
+            $counter = new CarouselCounter();
             $counter -> contents[] = '1 / ' . count($this -> items);
             $this -> contents[] = $counter;
 

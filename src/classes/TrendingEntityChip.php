@@ -33,8 +33,7 @@ class TrendingEntityChip extends Div
         $link -> class = 'TrendingEntityLink';
 
         if ($this -> postCount !== null) {
-            $count_span = new Span();
-            $count_span -> class = 'TrendingEntityCount';
+            $count_span = new TrendingEntityCount();
             $count_span -> addContent((string) $this -> postCount);
             $link -> addContent($count_span);
         }

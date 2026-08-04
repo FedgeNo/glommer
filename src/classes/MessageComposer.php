@@ -22,8 +22,7 @@ class MessageComposer extends FormForm
         $recipient_hidden -> value = (string) $this -> recipientId;
         $this -> contents[] = $recipient_hidden;
 
-        $row = new Div();
-        $row -> class = 'MessageComposerFields';
+        $row = new MessageComposerFields();
         $row -> mixins = ['d-flex', 'align-items-end', 'gap-2'];
 
         // The server enforces 65535 BYTES (the Messages.body column's real

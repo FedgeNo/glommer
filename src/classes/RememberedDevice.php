@@ -52,13 +52,7 @@ class RememberedDevice extends Div
         // would log this very session's persistent cookie out from under the
         // user mid-visit; logout is the right tool for "forget this browser".
         if (!$is_current) {
-            $revoke = new Button();
-            $revoke -> type = 'button';
-            $revoke -> class = 'RememberedDeviceRevokeButton';
-            $revoke -> mixins = ['Button', 'ms-auto'];
-            $revoke -> attributes['data-token-id'] = (string) $this -> tokenId;
-            $revoke -> addContent('Revoke');
-            $this -> addContent($revoke);
+            $this -> addContent(new RememberedDeviceRevokeButton((int) $this -> tokenId));
         }
 
         return parent::toDOM();

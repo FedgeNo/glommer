@@ -39,8 +39,7 @@ class SensitiveMedia extends Details
 
     public function toDOM(): \DOMElement
     {
-        $summary = new Summary();
-        $summary -> class = 'SensitiveMediaSummary';
+        $summary = new SensitiveMediaSummary();
         $summary -> contents[] = 'Sensitive media';
 
         // Prepended rather than appended: <summary> is only the disclosure

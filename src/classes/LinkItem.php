@@ -31,15 +31,13 @@ class LinkItem extends FeedItem
         $link -> attributes['rel'] = 'noopener';
 
         if ($this -> image !== null) {
-            $image = new Image();
-            $image -> class = 'LinkItemImage';
+            $image = new LinkItemImage();
             $image -> src = $this -> image -> imageURL();
             $image -> alt = 'Link preview image';
             $link -> addContent($image);
         }
 
-        $text = new Div();
-        $text -> class = 'LinkItemText';
+        $text = new LinkItemText();
 
         if ($this -> title !== null) {
             $heading = new Heading3();

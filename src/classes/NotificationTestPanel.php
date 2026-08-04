@@ -14,8 +14,7 @@ class NotificationTestPanel extends Div
             'It should appear instantly as a toast and in the notification dropdown.'
         ));
 
-        $button = new Button();
-        $button -> class = 'Button';
+        $button = new ButtonButton();
         $button -> addContent('Send test notification');
         $this -> addContent($button);
 

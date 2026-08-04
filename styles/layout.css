@@ -92,7 +92,7 @@ body:has(.MainNavigation) {
 
 .MainNavigation .NavAccount > a {
     border-bottom: 1px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
 }
 
 /* The title is content, not chrome: it sits at the top of <main> and scrolls up
@@ -191,7 +191,7 @@ body:has(.MainNavigation) {
     right: -0.15rem;
     width: 0.5rem;
     height: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background-color: var(--danger);
     pointer-events: none;
 }

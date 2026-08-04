@@ -110,7 +110,7 @@
     background-image: var(--button-image, none);
     color: var(--ink) !important;
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.5rem 1rem;
     font-weight: 550;
     font-size: 0.875rem;
@@ -194,7 +194,7 @@ label:has(> input[type='radio']) {
     background-color: var(--surface-2);
     background-image: var(--button-image, none);
     color: var(--ink);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.5rem 1rem;
     margin-bottom: 0;
     font-weight: 550;
@@ -420,7 +420,7 @@ emoji-picker {
     display: none;
     width: 100%;
     height: 0.4rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     overflow: hidden;
     margin-top: 0.5rem;
     accent-color: var(--accent);
@@ -624,7 +624,7 @@ label.visually-hidden { margin-bottom: 0; }
 /* ---------- Avatars ---------- */
 
 .Avatar {
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     object-fit: cover;
     width: 3rem;
     height: 3rem;
@@ -701,7 +701,7 @@ label.visually-hidden { margin-bottom: 0; }
 }
 
 .DisplayNameInput {
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
 }
 
 .UserBioInput {
@@ -1180,7 +1180,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     backdrop-filter: blur(6px);
     color: #ffffff !important;
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     width: 2.25rem;
     height: 2.25rem;
     padding: 0;
@@ -1219,7 +1219,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
     color: #ffffff;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.1rem 0.5rem;
     font-size: 0.75rem;
 }
@@ -1233,7 +1233,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     backdrop-filter: blur(6px);
     color: #ffffff !important;
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.1rem 0.5rem;
     font-size: 0.75rem;
     cursor: pointer;
@@ -1253,7 +1253,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     backdrop-filter: blur(6px);
     color: #ffffff !important;
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     width: 2.25rem;
     height: 2.25rem;
     padding: 0;
@@ -1315,7 +1315,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background-color: var(--surface-2);
     color: var(--accent);
     text-decoration: none;
@@ -1337,7 +1337,7 @@ body.MessagesPage { padding-bottom: 9rem; }
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background-color: var(--surface-2);
     color: var(--accent);
     text-decoration: none;

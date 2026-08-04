@@ -112,7 +112,7 @@ select {
     background-color: var(--surface);
     color: var(--ink);
     border: 1px solid var(--hairline);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.5rem;
     font-size: 0.9375rem;
     width: 100%;
@@ -166,7 +166,7 @@ input[type='file']::file-selector-button {
     background-image: var(--button-image, none);
     color: var(--ink);
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     width: 100%;
     padding: 0.5rem 1rem;
     font-weight: 550;

@@ -23,7 +23,7 @@
 .NavHamburgerBar {
     width: 1.35rem;
     height: 2px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background-color: var(--ink);
     transition:
         transform 0.2s ease,

@@ -37,6 +37,7 @@
 
     --radius-card: 1.125rem;
     --radius-ctl: 0.5rem;
+    --radius-pill: 999px;
     --glom-corner: 0.25rem;
     --display-font: 'Inter', system-ui, sans-serif;
     --nav-height: calc(3.25rem + 1px);

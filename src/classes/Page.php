@@ -153,6 +153,12 @@ class Page extends HTMLDocument
         }
     }
 
+    /**
+     * Whether to render the site navigation. Off only for a page shown because
+     * the database is not safe to read - see ErrorDocument::sendWithoutChrome.
+     */
+    public bool $showNavigation = true;
+
     private function assembleBody(): void
     {
         $this -> body -> class = $this -> bodyClass !== null ? 'PageBody ' . $this -> bodyClass : 'PageBody';
@@ -165,7 +171,13 @@ class Page extends HTMLDocument
         $main -> addContent(new PageTitle((string) $this -> title));
         $main -> addContents($this -> body -> contents);
 
-        $this -> body -> contents = [new MainNavigation, $main];
+        // The navigation reads the database - it asks whether this member has
+        // unseen notifications - so a page sent because the database cannot be
+        // trusted leaves it off rather than querying tables the running code
+        // may no longer agree with.
+        $this -> body -> contents = $this -> showNavigation
+            ? [new MainNavigation, $main]
+            : [$main];
 
         $this -> addContent(new ScrollToTopButton);
 

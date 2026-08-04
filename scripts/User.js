@@ -115,6 +115,17 @@ export class User {
             // Start profile editing
             const editTrigger = event.target.closest('.User.CurrentUser .DisplayName, .User.CurrentUser .UserBio, .User.CurrentUser .ProfileEditButton');
             if (editTrigger && !editTrigger.closest('a')) {
+                // A hashtag or link inside your own bio is text you are about
+                // to edit rather than somewhere to go. Without this the click
+                // both opens the editor and follows the link, and the
+                // navigation wins - so the bio is the one part of your profile
+                // you cannot click to edit.
+                const link = event.target.closest('a');
+
+                if (link !== null && editTrigger.contains(link)) {
+                    event.preventDefault();
+                }
+
                 const card = editTrigger.closest('.User.CurrentUser');
                 if (card && !card.classList.contains('Editing')) {
                     User.#startEdit(card);

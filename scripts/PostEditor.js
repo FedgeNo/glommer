@@ -108,18 +108,22 @@ export class PostEditor {
 
         // The media itself can't be changed here, but how it's classified can -
         // opened with whatever the post already carries, so saving an unrelated
-        // typo fix doesn't quietly unmark it.
-        const sensitiveToggle = document.createElement('label');
-        sensitiveToggle.className = 'SensitiveMediaToggle';
+        // typo fix doesn't quietly unmark it. Only on a media post at all: the
+        // cover is over media, so on a link, poll or plain text post the box
+        // would classify nothing.
+        if (data.hasMedia) {
+            const sensitiveToggle = document.createElement('label');
+            sensitiveToggle.className = 'SensitiveMediaToggle';
 
-        const sensitiveInput = document.createElement('input');
-        sensitiveInput.type = 'checkbox';
-        sensitiveInput.name = 'sensitive';
-        sensitiveInput.checked = data.sensitive === '1';
-        sensitiveToggle.appendWithSpace(sensitiveInput);
-        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+            const sensitiveInput = document.createElement('input');
+            sensitiveInput.type = 'checkbox';
+            sensitiveInput.name = 'sensitive';
+            sensitiveInput.checked = data.sensitive === '1';
+            sensitiveToggle.appendWithSpace(sensitiveInput);
+            sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
 
-        actions.appendWithSpace(sensitiveToggle);
+            actions.appendWithSpace(sensitiveToggle);
+        }
 
         const cancelButton = document.createElement('button');
         cancelButton.type = 'button';
@@ -184,7 +188,7 @@ export class PostEditor {
                             ? this.#form.querySelector('[name="linkURL"]').value
                             : '',
                         description: descriptionInput.value,
-                        sensitive: this.#form.querySelector('[name="sensitive"]').checked,
+                        sensitive: this.#form.querySelector('[name="sensitive"]')?.checked ?? false,
                     }),
                 }
             );

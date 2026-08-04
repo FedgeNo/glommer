@@ -13,4 +13,22 @@ class XMLObject extends DOMObject
     {
         $this -> contents[] = $item;
     }
+
+    /**
+     * XML 1.0 cannot represent most C0 control characters at all - not even
+     * escaped - so a single one anywhere in a post's text would make the whole
+     * feed unparseable and every reader would drop it, not just that item.
+     * Dropped at the point of serialization rather than at write time: the post
+     * still says what its author typed everywhere else, and this covers text
+     * that arrived before any write-time rule existed. Tab, newline and
+     * carriage return are the three XML does allow.
+     */
+    protected function contentToNode($item): ?\DOMNode
+    {
+        if (is_string($item)) {
+            $item = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $item);
+        }
+
+        return parent::contentToNode($item);
+    }
 }

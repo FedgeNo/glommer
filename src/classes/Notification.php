@@ -133,9 +133,30 @@ class Notification extends Article
         ], $notifications);
     }
 
+    /**
+     * The types that can be undone and done again: like/unlike, repost/
+     * unrepost, and a friend request that can be cancelled and re-sent. Each
+     * repeat would otherwise be a fresh notification and a fresh push - a way
+     * to ring someone's bell as often as you like, needing nothing but the
+     * button. Deliberately not every type: a second message or a second reply
+     * is a second thing said, and has to arrive.
+     */
+    private const REPEATABLE_TYPES = ['like', 'repost', 'friendRequest'];
+
+    /**
+     * How long one of those counts as the same event. A day is long enough
+     * that no flood survives it, and short enough that genuinely asking again
+     * months later still says so.
+     */
+    private const REPEAT_WINDOW_SECONDS = 86400;
+
     public static function create(int $user_id, int $actor_id, string $type, ?int $post_id = null, bool $allow_self = false): void
     {
         if ($user_id === $actor_id && !$allow_self) {
+            return;
+        }
+
+        if (self::alreadyNotified($user_id, $actor_id, $type, $post_id)) {
             return;
         }
 
@@ -231,6 +252,33 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
      * Whether any of $user_id's most recent $within notifications is of $type.
      * Used to throttle repeat system alerts so duplicates don't pile up.
      */
+    /**
+     * Whether this exact event - same person, same kind, same post - was
+     * already announced inside the repeat window. A null postId is its own
+     * case rather than a wildcard (`<=>` is the null-safe comparison): a
+     * friend request names no post, and two from the same person are the same
+     * event, while two likes on different posts are not.
+     */
+    private static function alreadyNotified(int $user_id, int $actor_id, string $type, ?int $post_id): bool
+    {
+        if (!in_array($type, self::REPEATABLE_TYPES, true)) {
+            return false;
+        }
+
+        $window = self::REPEAT_WINDOW_SECONDS;
+
+        $existing = DB::row('
+SELECT `notificationId`
+    FROM `Notifications`
+    WHERE `userId` = ? AND `actorId` = ? AND `type` = ?
+        AND (`postId` <=> ?)
+        AND `createdAt` > NOW() - INTERVAL ? SECOND
+    LIMIT 1
+', 'Notification', 'iisii', $user_id, $actor_id, $type, $post_id, $window);
+
+        return $existing !== null;
+    }
+
     public static function hasRecentOfType(int $user_id, string $type, int $within): bool
     {
         $recent = DB::rows('

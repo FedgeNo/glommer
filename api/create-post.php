@@ -17,6 +17,18 @@ if (!Auth::check()) {
 $current_user = Auth::user();
 $mysqli = DB::connection();
 
+// Posting is paced the way messaging is. A top-level post is written once per
+// friend into their feed and a reply notifies the author, so an unpaced client
+// costs storage and attention on every account it reaches, not just its own.
+// Set well above what writing looks like and below what a script does.
+$post_rate_key = 'create-post:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($post_rate_key, 30, 600)) {
+    JSONResponse::error('You\'re posting very quickly. Please wait a moment and try again.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($post_rate_key);
+
 // If the whole request body exceeded post_max_size, PHP has already thrown away
 // $_POST and $_FILES before this script ran. Catch that here so an oversized
 // upload gets a clear "too large" error instead of a misleading "no content" one.

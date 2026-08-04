@@ -14,6 +14,16 @@ Auth::requireLogin();
 
 $current_user = Auth::user();
 
+// A repost is a toggle and can be repeated indefinitely, so it is paced the
+// same way liking is (the notification itself is deduplicated).
+$repost_rate_key = 'repost:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($repost_rate_key, 60, 600)) {
+    JSONResponse::error('You\'re doing that very quickly. Please wait a moment.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($repost_rate_key);
+
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 

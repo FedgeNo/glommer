@@ -16,6 +16,16 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
+// A request can be cancelled and sent again, so it is paced like the other
+// toggles (the notification itself is deduplicated).
+$friend_request_rate_key = 'friend-request:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($friend_request_rate_key, 60, 600)) {
+    JSONResponse::error('You\'re doing that very quickly. Please wait a moment.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($friend_request_rate_key);
+
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $target_user_id = (int) ($payload['userId'] ?? 0);

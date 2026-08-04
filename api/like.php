@@ -16,6 +16,16 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
+// Liking is a toggle, so it can be repeated indefinitely; paced so it cannot
+// be used to hammer the database (the notification itself is deduplicated).
+$like_rate_key = 'like:' . $current_user -> userId;
+
+if (RateLimiter::tooManyAttempts($like_rate_key, 120, 600)) {
+    JSONResponse::error('You\'re doing that very quickly. Please wait a moment.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($like_rate_key);
+
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['itemId'] ?? 0);

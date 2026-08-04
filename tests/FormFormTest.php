@@ -62,6 +62,25 @@ class FormFormTest extends TestCase
 
         $this -> assertSame([], $offenders, 'these forms compose Card on top of the shared .Form look');
     }
+
+    /**
+     * A form with no method submits as a GET, which puts every field in the
+     * URL - passwords and passphrases included - and skips the CSRF token
+     * Form only attaches to a POST. It also silently breaks the two forms that
+     * are genuinely submitted by the browser rather than by script: the
+     * verify-email and revert-email confirmations only act on a POST, so a GET
+     * just re-renders the same page and the link can never be completed.
+     */
+    public function testAFormPostsByDefaultAndCarriesTheCSRFToken(): void
+    {
+        (new \ReflectionProperty(HTMLObject::class, 'document')) -> setValue(null, new \DOMDocument());
+
+        $element = (new EmailVerifyForm('a-token')) -> toDOM();
+        HTMLObject::currentDocument() -> appendChild($element);
+
+        $this -> assertSame('POST', $element -> getAttribute('method'));
+        $this -> assertSame(1, new \DOMXPath(HTMLObject::currentDocument()) -> query('.//input[@name="CSRFToken"]', $element) -> length);
+    }
 }
 
 class LoginFormFake extends FormForm

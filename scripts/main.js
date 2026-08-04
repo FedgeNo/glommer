@@ -5,11 +5,13 @@ import { WebSocketManager } from '/scripts/WebSocketManager.js';
 import { CarouselController } from '/scripts/CarouselController.js';
 import { EmojiRenderer } from '/scripts/EmojiRenderer.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { sync_theme_color } from '/scripts/utils.js';
 import '/scripts/dom.js';
 
 ReadyHandler.add(RelativeTime.init);
 ReadyHandler.add(ScrollToTop.init);
 ReadyHandler.add(EmojiRenderer.init);
+ReadyHandler.add(sync_theme_color);
 
 if (document.querySelector('.User, .UserList')) {
     import('/scripts/User.js');

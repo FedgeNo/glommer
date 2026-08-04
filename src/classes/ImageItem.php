@@ -10,6 +10,8 @@ class ImageItem extends FeedItem
     {
         $image = new Image();
         $image -> alt = $this -> altText ?? 'Image';
+        $image -> attributes['loading'] = 'lazy';
+        $image -> attributes['decoding'] = 'async';
 
         $fullURL = $this -> srcURL();
         $thumbURL = $this -> imageURL() ?? $fullURL;

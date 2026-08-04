@@ -30,3 +30,24 @@ export function list_item(child) {
     item.appendWithSpace(child);
     return item;
 }
+
+/**
+ * Keeps the browser chrome's own colour in step with the active theme -
+ * read from the live --paper token, so every theme (and Match System) is
+ * covered without a second list of colours anywhere.
+ */
+export function sync_theme_color() {
+    const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+
+    if (paper === '') return;
+
+    let meta = document.querySelector('meta[name="theme-color"]');
+
+    if (!meta) {
+        meta = document.createElement('meta');
+        meta.name = 'theme-color';
+        document.head.appendChild(meta);
+    }
+
+    meta.content = paper;
+}

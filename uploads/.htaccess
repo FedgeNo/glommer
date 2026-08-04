@@ -11,3 +11,13 @@
         Deny from all
     </IfModule>
 </FilesMatch>
+
+# A processed upload never changes: media is not editable, and a re-uploaded
+# avatar is cache-busted by the ?v= its URL carries. So these are safe to hold
+# for as long as a cache likes, where the site-wide rule would revalidate every
+# image on every view.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(?i:jpe?g|png|gif|webp|mp4|mp3)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

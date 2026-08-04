@@ -183,6 +183,8 @@ export class Post {
             wrapper.appendWithSpace(audio);
         } else {
             const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.decoding = 'async';
 
             // A remote attachment describes itself; ours is described by the
             // post it belongs to. Same order of preference as FeedItem's.

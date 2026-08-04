@@ -13,6 +13,7 @@ class AvatarImage extends Avatar
     public function toDOM(): \DOMElement
     {
         $this -> attributes['src'] = (string) $this -> imageURL;
+        $this -> attributes['decoding'] = 'async';
         $this -> attributes['alt'] = $this -> name . '\'s avatar';
 
         return parent::toDOM();

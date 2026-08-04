@@ -44,7 +44,9 @@ if (Repost::exists($user_id, $post_id)) {
     $reposted = false;
 } else {
     // Refused rather than silently ignored: the only reason is that it is the
-    // reposter's own post, and they should be told.
+    // reposter's own post, and they should be told. Also, this can't happen
+    // unless the user has a modified client because the button doesn't show
+    // on your own posts.
     if (!Repost::create($user_id, $post_id)) {
         JSONResponse::error('You can\'t repost your own post.', 422) -> send();
     }

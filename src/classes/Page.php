@@ -118,6 +118,16 @@ class Page extends HTMLDocument
             $this -> addHeadContent(QuillAssets::CSSLink());
         }
 
+        // The stylesheet lives on googleapis but the font files it names live
+        // on gstatic - an origin the browser only discovers once that CSS has
+        // arrived. Warming it now runs the handshake during the CSS download
+        // instead of after it.
+        $font_origin = new Link;
+        $font_origin -> rel = 'preconnect';
+        $font_origin -> href = 'https://fonts.gstatic.com';
+        $font_origin -> attributes['crossorigin'] = 'anonymous';
+        $this -> addHeadContent($font_origin);
+
         $inter_font = new Link;
         $inter_font -> rel = 'stylesheet';
         $inter_font -> href = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap';

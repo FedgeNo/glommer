@@ -70,6 +70,66 @@ export class Dialog {
     }
 
     /**
+     * Show a message with a single OK button.
+     * @param {string} message
+     * @returns {Promise<void>} – resolves when dismissed
+     */
+    static alert(message) {
+        Dialog.#activeCancel?.();
+
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.className = 'ConfirmDialogOverlay';
+
+            const card = document.createElement('div');
+            card.className = 'ConfirmDialogCard';
+
+            const text = document.createElement('div');
+            text.className = 'ConfirmDialogMessage';
+            text.textContent = message;
+            card.appendWithSpace(text);
+
+            const actions = document.createElement('div');
+            actions.className = 'ConfirmDialogActions d-flex gap-2';
+
+            const confirmButton = document.createElement('button');
+            confirmButton.type = 'button';
+            confirmButton.className = 'Button ConfirmDialogConfirmButton';
+            confirmButton.textContent = 'OK';
+
+            actions.appendWithSpace(confirmButton);
+            card.appendWithSpace(actions);
+            overlay.appendWithSpace(card);
+            document.body.appendWithSpace(overlay);
+
+            const finish = () => {
+                Dialog.#activeCancel = null;
+                document.removeEventListener('keydown', onKeydown);
+                overlay.remove();
+                resolve();
+            };
+
+            Dialog.#activeCancel = finish;
+
+            const onKeydown = (event) => {
+                if (event.key === 'Escape') {
+                    finish();
+                }
+            };
+
+            confirmButton.addEventListener('click', finish);
+            overlay.addEventListener('click', (event) => {
+                if (event.target === overlay) {
+                    finish();
+                }
+            });
+            document.addEventListener('keydown', onKeydown);
+
+            confirmButton.focus();
+        });
+    }
+
+    /**
      * Show a prompt dialog with a textarea and a confirm button.
      * @param {string} message
      * @param {object} [options]

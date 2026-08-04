@@ -1740,26 +1740,11 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MapComposer.Active { display: flex !important; }
 
 
-/* A conversation with someone on another server. Marked rather than left to
-   look identical to a local one: those messages are stored on a second server
-   in the clear, and the difference is otherwise invisible. */
-.FederatedThreadNotice {
-    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
-    background-color: var(--danger-soft);
-    border-radius: var(--radius-ctl);
-    padding: 0.5rem;
-    color: var(--ink) !important;
-}
-
-/* The encrypted counterpart, and the nudge shown while a local thread is
-   still plaintext - same standing-note shape, accent instead of danger. */
-.EncryptedThreadNotice,
-.MessageEncryptionNudge {
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    background-color: var(--accent-soft);
-    border-radius: var(--radius-ctl);
-    padding: 0.5rem;
-    color: var(--ink) !important;
+/* The conversation's privacy chip, perched on the composer's top right. */
+.MessageComposer .MessagePrivacyButton {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.5rem);
 }
 
 .MessageUnlockForm {

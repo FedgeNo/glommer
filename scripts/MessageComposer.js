@@ -1,4 +1,5 @@
 import { Api } from '/scripts/Api.js';
+import { Dialog } from '/scripts/Dialog.js';
 import { Message } from '/scripts/Message.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
@@ -17,6 +18,13 @@ export class MessageComposer {
                 EmojiPicker.setup(emojiWrapper);
             }
         }
+
+        // --- The privacy chip pops its full explanation ---
+        document.addEventListener('click', (event) => {
+            const chip = event.target.closest('.MessagePrivacyButton');
+            if (!chip) return;
+            Dialog.alert(chip.dataset.privacyExplanation);
+        });
 
         // --- Click outside closes the panel ---
         document.addEventListener('click', (event) => {

@@ -6,16 +6,19 @@ class MessageComposer extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
     public int $recipientId;
+    public MessagePrivacyButton $privacyButton;
 
-    public function __construct(int $recipient_id)
+    public function __construct(int $recipient_id, MessagePrivacyButton $privacy_button)
     {
         parent::__construct();
 
         $this -> recipientId = $recipient_id;
+        $this -> privacyButton = $privacy_button;
     }
 
     public function toDOM(): \DOMElement
     {
+        $this -> contents[] = $this -> privacyButton;
 
         $recipient_hidden = new HiddenInput();
         $recipient_hidden -> name = 'recipientId';

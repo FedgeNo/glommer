@@ -61,18 +61,16 @@ $page -> addContent(new MessageList([
     'otherUserIsLocal' => $other_user -> remoteActorURI === null,
 ]));
 
-// A conversation with someone on another server is stored on that server too,
-// in the clear, and its administrator can read it. The thread looks identical
-// otherwise, so it says so. Between two members here, the honest note runs the
-// other way: encrypted when both have keys, and if not, whose move it is.
-//
-// Below the list, not above it: the thread opens scrolled to the bottom, so
-// this is where the reader actually is - and above the list it can't be read
-// at all, because scrolling up to it triggers the infinite scroll and loads
-// more history underneath it.
+// What this conversation is - end-to-end encrypted, plaintext until someone
+// (named) sets up keys, or federated and stored on a second server - rides on
+// the composer as a small chip with the full explanation a click away. A
+// notice in the page flow was never readable: the thread opens scrolled to
+// the bottom, and scrolling toward one triggers the infinite scroll.
 if ($other_user -> remoteActorURI !== null) {
-    $page -> addContent(new FederatedThreadNotice('@' . $other_user -> slug));
+    $privacy_state = 'federated';
 } elseif ($current_user -> messagePublicKey !== null && $other_user -> messagePublicKey !== null) {
+    $privacy_state = 'encrypted';
+
     // What the browser needs to take part: the other side's public key to
     // derive the conversation key against, and the viewer's own wrapped
     // private key for the unlock form to open. Ciphertext both - the server
@@ -82,12 +80,13 @@ if ($other_user -> remoteActorURI !== null) {
         'wrappedPrivateKey' => json_decode((string) $current_user -> messageWrappedPrivateKey, true),
     ];
 
-    $page -> addContent(new EncryptedThreadNotice());
     $page -> addContent(new MessageUnlockForm());
+} elseif ($current_user -> messagePublicKey !== null) {
+    $privacy_state = 'awaiting-theirs';
 } else {
-    $page -> addContent(new MessageEncryptionNudge($current_user -> messagePublicKey !== null, '@' . $other_user -> slug));
+    $privacy_state = 'awaiting-yours';
 }
 
-$page -> addContent(new MessageComposer($other_user -> userId));
+$page -> addContent(new MessageComposer($other_user -> userId, new MessagePrivacyButton($privacy_state, '@' . $other_user -> slug)));
 
 $page -> send();

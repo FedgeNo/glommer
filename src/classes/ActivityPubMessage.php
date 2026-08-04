@@ -158,19 +158,13 @@ INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `remoteObjectURI`)
     }
 
     /**
-     * A message body is plain text here, while the wire carries HTML. Paragraph
-     * and line breaks become newlines first so the shape of what was written
-     * survives; everything else is dropped rather than stored as markup nobody
-     * will render.
+     * A message body is plain text here, while the wire carries HTML - the
+     * shared flattening, then the cap. Messages.body is TEXT - 65535 bytes,
+     * which is what api/send-message enforces for a local message too.
      */
     private static function plainText(string $html): string
     {
-        $text = preg_replace('#</p\s*>|<br\s*/?>#i', "\n", $html);
-        $text = html_entity_decode(strip_tags((string) $text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-        // Messages.body is TEXT - 65535 bytes, which is what api/send-message
-        // enforces for a local message too.
-        return substr(trim($text), 0, 65535);
+        return substr(RemoteHTML::toPlainText($html), 0, 65535);
     }
 
     /** The one member here this message is addressed to, if exactly one is. */

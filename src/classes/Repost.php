@@ -52,6 +52,62 @@ DELETE FROM `Announces`
         Timeline::removeRepost($user_id, $post_id);
     }
 
+    /**
+     * Which of these posts this member has reposted, and how many times each
+     * has been passed on in total (local reposts and remote boosts share the
+     * Announces table, so one count covers both).
+     *
+     * Two queries for a page rather than two per post: a feed renders twenty
+     * cards, and every one of them used to ask these questions on its own.
+     *
+     * @param int[] $post_ids
+     * @return array<int, array{reposted: bool, count: int}> keyed by postId
+     */
+    public static function stateForPosts(array $post_ids, ?int $user_id): array
+    {
+        if ($post_ids === []) {
+            return [];
+        }
+
+        $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
+        $types = str_repeat('i', count($post_ids));
+
+        $state = [];
+
+        foreach ($post_ids as $post_id) {
+            $state[(int) $post_id] = ['reposted' => false, 'count' => 0];
+        }
+
+        $counts = mysqli_stmt_get_result(DB::run('
+SELECT `postId`, COUNT(*) AS `announceCount`
+    FROM `Announces`
+    WHERE `postId` IN (' . $placeholders . ')
+    GROUP BY `postId`
+', $types, ...$post_ids));
+
+        while ($row = mysqli_fetch_assoc($counts)) {
+            $state[(int) $row['postId']]['count'] = (int) $row['announceCount'];
+        }
+
+        // Nobody signed in has reposted anything, so the second query is the
+        // one thing here that depends on who is looking.
+        if ($user_id === null) {
+            return $state;
+        }
+
+        $mine = mysqli_stmt_get_result(DB::run('
+SELECT `postId`
+    FROM `Announces`
+    WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')
+', 'i' . $types, $user_id, ...$post_ids));
+
+        while ($row = mysqli_fetch_assoc($mine)) {
+            $state[(int) $row['postId']]['reposted'] = true;
+        }
+
+        return $state;
+    }
+
     public static function exists(int $user_id, int $post_id): bool
     {
         return DB::row('

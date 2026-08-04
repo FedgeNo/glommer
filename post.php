@@ -8,11 +8,20 @@ $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 $post_id = (int) ($_GET['id'] ?? 0);
 
+// The counts and the viewer's own like/bookmark come with the row, the same
+// way every feed loads them - the action bar is built from the post rather
+// than asking after it.
+$viewer_id = (int) Auth::id();
+
 $post = DB::row('
-SELECT *
+SELECT `Posts`.*,
+    (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
+    (SELECT COUNT(*) FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId`) AS `likeCount`,
+    EXISTS(SELECT 1 FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId` AND `Likes`.`userId` = ?) AS `liked`,
+    EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `Posts`
-    WHERE `postId` = ?
-', 'Post', 'i', $post_id);
+    WHERE `Posts`.`postId` = ?
+', 'Post', 'iii', $viewer_id, $viewer_id, $post_id);
 
 if ($post === null) {
     require __DIR__ . '/404.php';

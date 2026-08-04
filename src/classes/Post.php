@@ -42,6 +42,13 @@ class Post extends Article
     // null everywhere else.
     public ?string $repostedBySlug = null;
     public ?string $repostedByTitle = null;
+
+    // Hydrated for a whole page at once by fromRowsWithItems, so the action
+    // bar can be built without asking anything of its own. Null means nobody
+    // filled them in - a lone Post built by hand, which asks for itself.
+    public ?bool $reposted = null;
+    public ?int $repostCount = null;
+    public ?bool $pinned = null;
     // Set once a moderator dismisses a report on this post - blocks it from
     // being reported again (see api/report.php).
     public ?int $reportsDismissed = null;
@@ -77,6 +84,8 @@ class Post extends Article
     // The permalink shows one focused post: its Delete redirects home rather
     // than removing a card in place (PostActionBar reads this). standalone
     // pages also render the description untruncated (truncateDescription off).
+    // A permalink's body is not height-capped either - that cap belongs to
+    // .FeedList .PostBody, so being outside a feed is what lifts it.
     public bool $standalone = false;
 
     // A report snapshot embeds only the post's content, no action bar; every
@@ -85,12 +94,6 @@ class Post extends Article
 
     public function toDOM(): \DOMElement
     {
-        // The permalink shows one post in full - its body isn't height-capped
-        // the way a feed card's is (see .Post:not(.PostStandalone) .PostBody).
-        if ($this -> standalone) {
-            $this -> class .= ' PostStandalone';
-        }
-
         // The post's own columns, carried once on the card that represents it -
         // the content, the action bar's buttons and the JS behind them all read
         // them from here. Attribute names match the column names.
@@ -157,9 +160,16 @@ class Post extends Article
             $action_bar -> likeCount = $this -> likeCount;
             $action_bar -> liked = $this -> liked;
             $action_bar -> bookmarked = $this -> bookmarked;
+            $action_bar -> reposted = $this -> reposted;
+            $action_bar -> repostCount = $this -> repostCount;
+            $action_bar -> pinned = $this -> pinned;
             $action_bar -> standalone = $this -> standalone;
 
-            $this -> contents[] = $action_bar;
+            // A bar with nothing in it is still a row of margin under every
+            // card - see hasButtons().
+            if ($action_bar -> hasButtons()) {
+                $this -> contents[] = $action_bar;
+            }
         }
 
         return parent::toDOM();
@@ -517,6 +527,13 @@ DELETE
         $locations = PostLocation::forPosts($post_ids);
         $polls = Poll::forPosts($post_ids);
 
+        // The action bar's own state, gathered for the page rather than per
+        // card: every post used to ask whether the viewer had reposted it, how
+        // many times it had been passed on, and whether it was pinned.
+        $viewer_id = Auth::id();
+        $repost_state = Repost::stateForPosts($post_ids, $viewer_id);
+        $pinned = $viewer_id === null ? [] : PinnedPost::pinnedForPosts($post_ids, $viewer_id);
+
         foreach ($posts as $post) {
             $post -> items = $items_by_post[(int) $post -> postId] ?? [];
             $post -> author = $authors[(int) $post -> userId] ?? null;
@@ -526,6 +543,10 @@ DELETE
             $post -> longitude = $location['longitude'] ?? null;
 
             $post -> poll = $polls[(int) $post -> postId] ?? null;
+
+            $post -> reposted = $repost_state[(int) $post -> postId]['reposted'] ?? false;
+            $post -> repostCount = $repost_state[(int) $post -> postId]['count'] ?? 0;
+            $post -> pinned = isset($pinned[(int) $post -> postId]);
         }
 
         return $posts;

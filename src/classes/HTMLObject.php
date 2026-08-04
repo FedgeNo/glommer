@@ -94,7 +94,7 @@ abstract class HTMLObject extends DOMObject
         }
 
         // Anything on the property that isn't this class's declared default was
-        // put there at runtime - a state a render decides on (Own, PostStandalone)
+        // put there at runtime - a state a render decides on (Own, Encrypted)
         // or a second identity composed at the call site. The chain replaces the
         // declared identity only; the rest is carried through, because this runs
         // inside toDOM() and a plain assignment would silently discard whatever

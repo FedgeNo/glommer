@@ -550,7 +550,7 @@ label.visually-hidden { margin-bottom: 0; }
 .Post .VideoItem,
 .Post .AudioItem { height: 50vh; }
 
-.Post:not(.PostStandalone) .PostBody {
+.FeedList .PostBody {
     max-height: 50vh;
     overflow-y: auto;
 }

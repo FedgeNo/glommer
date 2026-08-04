@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/**
+ * The row of controls under a post. Every value it shows - the counts, and
+ * whether the viewer has liked, bookmarked, reposted or pinned this post -
+ * arrives from the Post that builds it, hydrated once for the whole page (see
+ * Post::fromRowsWithItems). This class runs no queries of its own: a feed is
+ * twenty of these, and anything asked here is asked twenty times.
+ */
 class PostActionBar extends Footer
 {
     public ?string $class = 'PostActionBar';
@@ -15,6 +22,9 @@ class PostActionBar extends Footer
     public ?int $likeCount = null;
     public ?bool $liked = null;
     public ?bool $bookmarked = null;
+    public ?bool $reposted = null;
+    public ?int $repostCount = null;
+    public ?bool $pinned = null;
 
     public function toDOM(): \DOMElement
     {
@@ -26,7 +36,7 @@ class PostActionBar extends Footer
             '/users/' . ($this -> postUsername ?? '') . '/' . $this -> postId
         )));
 
-        if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0)) {
+        if ($this -> replyCount !== null && (Auth::check() || $this -> replyCount > 0 || ((int) $this -> likeCount) > 0)) {
             $actions -> addContent($this -> replyButton());
         }
 
@@ -57,53 +67,30 @@ class PostActionBar extends Footer
         return parent::toDOM();
     }
 
+    /**
+     * Whether this bar is worth rendering. A signed-in reader always has
+     * something here (like, bookmark, and their own post's controls). A signed
+     * -out one only does once the post has drawn something - replies or likes
+     * to look at; on a bare post the row would be a share button and a strip
+     * of margin under every card.
+     */
+    public function hasButtons(): bool
+    {
+        if (Auth::check()) {
+            return true;
+        }
+
+        return ((int) $this -> replyCount) > 0 || ((int) $this -> likeCount) > 0;
+    }
+
     protected function likeButton(): HTMLObject
     {
-        // Feed-list callers hydrate these in the page query (correlated
-        // subqueries); fall back to per-post queries for one-off use (a
-        // standalone PostPage, which loads the post without them).
-        $count = $this -> likeCount;
-
-        if ($count === null) {
-            $count_stmt = DB::run('
-SELECT COUNT(*) AS `likeCount`
-    FROM `Likes`
-    WHERE `postId` = ?
-', 'i', $this -> postId);
-            $count_result = mysqli_stmt_get_result($count_stmt);
-            $count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
-        }
-
-        $already_liked = $this -> liked;
-
-        if ($already_liked === null) {
-            $current_user_id = Auth::id();
-
-            $liked_stmt = DB::run('
-SELECT 1
-    FROM `Likes`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $this -> postId, $current_user_id);
-            mysqli_stmt_store_result($liked_stmt);
-            $already_liked = mysqli_stmt_num_rows($liked_stmt) > 0;
-        }
-
-        return new PostLikeButton($already_liked, $count);
+        return new PostLikeButton((bool) $this -> liked, (int) $this -> likeCount);
     }
 
     protected function bookmarkButton(): HTMLObject
     {
-        // Feed-list callers hydrate this in the page query (a correlated
-        // subquery); fall back to a live per-post query for one-off use (a
-        // standalone PostPage, which loads the post without it).
-        $already_bookmarked = $this -> bookmarked;
-
-        if ($already_bookmarked === null) {
-            $current_user_id = Auth::id();
-            $already_bookmarked = isset(Bookmark::bookmarkedByUserForPosts([$this -> postId], (int) $current_user_id)[$this -> postId]);
-        }
-
-        return new PostBookmarkButton($already_bookmarked);
+        return new PostBookmarkButton((bool) $this -> bookmarked);
     }
 
     protected function replyButton(): HTMLObject
@@ -127,16 +114,13 @@ SELECT 1
 
     protected function repostButton(): HTMLObject
     {
-        return new PostRepostButton(
-            Repost::exists((int) Auth::id(), (int) $this -> postId),
-            ActivityPubReaction::announceCount((int) $this -> postId)
-        );
+        return new PostRepostButton((bool) $this -> reposted, (int) $this -> repostCount);
     }
 
     /** Only ever on your own post - the caller has already checked that. */
     protected function pinButton(): HTMLObject
     {
-        return new PostPinButton(PinnedPost::isPinned((int) Auth::id(), (int) $this -> postId));
+        return new PostPinButton((bool) $this -> pinned);
     }
 
     protected function reportButton(): HTMLObject

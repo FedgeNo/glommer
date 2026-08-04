@@ -22,10 +22,11 @@ class Page extends HTMLDocument
     public bool $needsMath = false;
 
     /**
-     * Values this one page adds to the client configuration - the only channel
-     * server-side values reach the client by. A list a single page needs (ICE
-     * servers on a thread, the people in a conversation) rides here rather
-     * than in the site-wide block every request carries.
+     * Configuration this one page adds to the site-wide block - a setting that
+     * only matters here, rather than one every page carries. The data of
+     * whatever is being looked at does not belong here: the config travels as
+     * a cookie, which every later request sends back up, so it rides on the
+     * element that needs it instead (see ClientConfig).
      *
      * @var array<string, mixed>
      */
@@ -58,7 +59,7 @@ class Page extends HTMLDocument
             $this -> title = $site_title;
         }
         $full_title = $this -> title === $site_title ? $site_title : $this -> title . ' - ' . $site_title;
-        $description = self::truncateAtWordBoundary(
+        $description = truncate(
             $this -> description ?? SiteInfo::description(),
             self::META_DESCRIPTION_MAX_LENGTH
         );
@@ -231,27 +232,6 @@ class Page extends HTMLDocument
     public static function currentURL(): string
     {
         return ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/');
-    }
-
-    /**
-     * Caps text to a maximum length without splitting a word: cut at the limit,
-     * back up to the last space so the result ends on a whole word, and mark the
-     * trim with an ellipsis. Text already within the limit is returned as-is.
-     */
-    private static function truncateAtWordBoundary(string $text, int $max_length): string
-    {
-        if (mb_strlen($text) <= $max_length) {
-            return $text;
-        }
-
-        $cut = mb_substr($text, 0, $max_length);
-        $last_space = mb_strrpos($cut, ' ');
-
-        if ($last_space !== false) {
-            $cut = mb_substr($cut, 0, $last_space);
-        }
-
-        return rtrim($cut) . '…';
     }
 
     protected static function metaTags(string $title, string $description, ?string $image, string $url): array

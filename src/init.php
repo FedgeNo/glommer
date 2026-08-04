@@ -251,7 +251,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['SCRIPT_FILENAME'
     }
 }
 
-function truncate($str, int $len = 50) {
+function truncate(string $str, int $len = 50): string
+{
     if (mb_strlen($str) <= $len) {
         return $str;
     }

@@ -7,8 +7,8 @@ declare(strict_types=1);
  * chain being derived.
  *
  * deriveClassName() runs inside toDOM(), after the object has already decided
- * things about itself - Message marks its own sender's messages Own, Post marks
- * a permalink PostStandalone - so assigning the chain over the property drops
+ * things about itself - Message marks its own sender's messages Own, and an
+ * encrypted one Encrypted - so assigning the chain over the property drops
  * exactly the state the render just set. Silently: the markup is still valid,
  * the styling simply never applies.
  */
@@ -33,12 +33,12 @@ class RuntimeClassTest extends TestCase
         $this -> assertSame('Message Own', self::derived($message));
     }
 
-    public function testAPermalinkPostKeepsItsStandaloneClass(): void
+    public function testAnEncryptedMessageKeepsTheStateItsRenderSet(): void
     {
-        $post = (new \ReflectionClass(Post::class)) -> newInstanceWithoutConstructor();
-        $post -> class .= ' PostStandalone';
+        $message = (new \ReflectionClass(Message::class)) -> newInstanceWithoutConstructor();
+        $message -> class .= ' Encrypted Locked';
 
-        $this -> assertSame('Post PostStandalone', self::derived($post));
+        $this -> assertSame('Message Encrypted Locked', self::derived($message));
     }
 
     public function testASecondIdentityComposedAtTheCallSiteSurvives(): void

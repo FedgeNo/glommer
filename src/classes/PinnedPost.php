@@ -44,6 +44,37 @@ DELETE FROM `PinnedPosts`
 ', 'ii', $user_id, $post_id);
     }
 
+    /**
+     * Which of these posts this member has pinned. One query for a page rather
+     * than one per card - only your own posts can be pinned, so this is only
+     * ever asked about the person looking.
+     *
+     * @param int[] $post_ids
+     * @return array<int, true> keyed by postId
+     */
+    public static function pinnedForPosts(array $post_ids, int $user_id): array
+    {
+        if ($post_ids === []) {
+            return [];
+        }
+
+        $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
+
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT `postId`
+    FROM `PinnedPosts`
+    WHERE `userId` = ? AND `postId` IN (' . $placeholders . ')
+', 'i' . str_repeat('i', count($post_ids)), $user_id, ...$post_ids));
+
+        $pinned = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $pinned[(int) $row['postId']] = true;
+        }
+
+        return $pinned;
+    }
+
     public static function isPinned(int $user_id, int $post_id): bool
     {
         return DB::row('
@@ -81,14 +112,20 @@ SELECT COUNT(*) AS `total`
     {
         $limit = self::MAX_PINNED;
 
+        $viewer_id = (int) Auth::id();
+
         $posts = DB::rows('
-SELECT `Posts`.*
+SELECT `Posts`.*,
+    (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
+    (SELECT COUNT(*) FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId`) AS `likeCount`,
+    EXISTS(SELECT 1 FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId` AND `Likes`.`userId` = ?) AS `liked`,
+    EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `PinnedPosts`
     JOIN `Posts` ON `Posts`.`postId` = `PinnedPosts`.`postId`
     WHERE `PinnedPosts`.`userId` = ?
     ORDER BY `PinnedPosts`.`createdAt` DESC
     LIMIT ?
-', 'Post', 'ii', $user_id, $limit);
+', 'Post', 'iiii', $viewer_id, $viewer_id, $user_id, $limit);
 
         return $posts === [] ? [] : Post::fromRowsWithItems($posts);
     }

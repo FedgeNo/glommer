@@ -7,10 +7,20 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 /**
  * The Settings section for encrypted messaging. Key generation, wrapping,
  * and rewrapping all happen here in the browser; the server only ever
- * receives the public key and the passphrase-wrapped private key.
+ * receives the public key and the passphrase-wrapped private key. Turning it
+ * on rebuilds the section in place to the same DOM the server renders for an
+ * enabled account - no page reload.
  */
 export class EncryptedMessagesSetting {
     static MIN_PASSPHRASE_LENGTH = 8;
+
+    /**
+     * Keys created or rewrapped since the page loaded. Preferred over
+     * ClientConfig, which only knows what existed when the page rendered -
+     * without this, a passphrase change right after enabling (or a second
+     * change in a row) would unwrap a stale blob.
+     */
+    static #keys = null;
 
     static init() {
         document.addEventListener('submit', (event) => {
@@ -48,9 +58,20 @@ export class EncryptedMessagesSetting {
             });
             if (result === null) return;
 
+            EncryptedMessagesSetting.#keys = { publicKey: pair.publicKey, wrappedPrivateKey: wrapped };
+
             // The tab that just made the key is already unlocked with it.
             MessageCrypto.storeUnlocked(pair.privateKey);
-            window.location.reload();
+
+            // The same form serves first-time setup and the reset an enabled
+            // account offers; only the former changes the section's shape.
+            if (form.closest('.EncryptedMessagesSetting').querySelector('.MessageKeyPassphraseForm') !== null) {
+                Toast.show('New keys created.');
+                form.reset();
+            } else {
+                EncryptedMessagesSetting.#showEnabled(form);
+                Toast.show('Encrypted messages are on.');
+            }
         } finally {
             submit_button.disabled = false;
         }
@@ -62,7 +83,7 @@ export class EncryptedMessagesSetting {
 
         if (!EncryptedMessagesSetting.#acceptable(new_passphrase, form.querySelector('[name="newPassphraseConfirm"]').value)) return;
 
-        const keys = ClientConfig.get('messageKeys');
+        const keys = EncryptedMessagesSetting.#keys ?? ClientConfig.get('messageKeys');
         const private_jwk = await MessageCrypto.unwrapPrivateKey(keys.wrappedPrivateKey, form.querySelector('[name="currentPassphrase"]').value);
 
         if (private_jwk === null) {
@@ -74,17 +95,55 @@ export class EncryptedMessagesSetting {
         submit_button.disabled = true;
 
         try {
+            const wrapped = await MessageCrypto.wrapPrivateKey(private_jwk, new_passphrase);
+
             const result = await Api.post('/api/message-keys', {
                 publicKey: keys.publicKey,
-                wrappedPrivateKey: await MessageCrypto.wrapPrivateKey(private_jwk, new_passphrase),
+                wrappedPrivateKey: wrapped,
             });
             if (result === null) return;
+
+            EncryptedMessagesSetting.#keys = { publicKey: keys.publicKey, wrappedPrivateKey: wrapped };
 
             Toast.show('Passphrase changed.');
             form.reset();
         } finally {
             submit_button.disabled = false;
         }
+    }
+
+    /**
+     * Swaps the section from its setup state to the enabled one the server
+     * renders: a status line, the change-passphrase form, and the reset form
+     * (see EncryptedMessagesSetting.php).
+     */
+    static #showEnabled(setup_form) {
+        const section = setup_form.closest('.EncryptedMessagesSetting');
+        setup_form.remove();
+
+        const status = document.createElement('p');
+        status.textContent = 'Encrypted messages are on.';
+        section.appendWithSpace(status);
+
+        const passphrase_form = document.createElement('form');
+        passphrase_form.className = 'Form MessageKeyPassphraseForm';
+        passphrase_form.appendWithSpace(input_field('currentPassphrase', 'Current passphrase', 'current-password'));
+        passphrase_form.appendWithSpace(input_field('newPassphrase', 'New passphrase', 'new-password'));
+        passphrase_form.appendWithSpace(input_field('newPassphraseConfirm', 'Confirm new passphrase', 'new-password'));
+        passphrase_form.appendWithSpace(submit_button('Change passphrase'));
+        section.appendWithSpace(passphrase_form);
+
+        const reset_form = document.createElement('form');
+        reset_form.className = 'Form MessageKeySetupForm';
+
+        const warning = document.createElement('p');
+        warning.textContent = 'Forgotten your passphrase? Resetting creates new keys under a new one - but messages encrypted with the old keys can never be read again, by anyone.';
+        reset_form.appendWithSpace(warning);
+
+        reset_form.appendWithSpace(input_field('passphrase', 'New passphrase', 'new-password'));
+        reset_form.appendWithSpace(input_field('passphraseConfirm', 'Confirm passphrase', 'new-password'));
+        reset_form.appendWithSpace(submit_button('Reset encryption keys'));
+        section.appendWithSpace(reset_form);
     }
 
     static #acceptable(passphrase, confirmation) {
@@ -100,6 +159,35 @@ export class EncryptedMessagesSetting {
 
         return true;
     }
+}
+
+function input_field(name, label, autocomplete) {
+    const field = document.createElement('div');
+    field.className = 'InputField';
+
+    const label_element = document.createElement('label');
+    label_element.htmlFor = name;
+    label_element.textContent = label;
+    field.appendWithSpace(label_element);
+
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.name = name;
+    input.id = name;
+    input.placeholder = label;
+    input.setAttribute('autocomplete', autocomplete);
+    field.appendWithSpace(input);
+
+    return field;
+}
+
+function submit_button(label) {
+    const button = document.createElement('button');
+    button.type = 'submit';
+    button.className = 'Button SubmitButton';
+    button.textContent = label;
+
+    return button;
 }
 
 ReadyHandler.add(EncryptedMessagesSetting.init);

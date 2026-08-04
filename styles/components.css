@@ -1740,11 +1740,12 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MapComposer.Active { display: flex !important; }
 
 
-/* The conversation's privacy chip, perched on the composer's top right. */
+/* The conversation's privacy chip: the first row inside the composer's
+   column, hugging the right - in flow, so nothing can paint over it. */
 .MessageComposer .MessagePrivacyButton {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 0.5rem);
+    align-self: flex-end;
+    font-size: 0.85rem;
+    padding: 0.15rem 0.75rem;
 }
 
 .MessageUnlockForm {

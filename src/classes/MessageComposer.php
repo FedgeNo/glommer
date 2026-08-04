@@ -18,15 +18,16 @@ class MessageComposer extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $this -> contents[] = $this -> privacyButton;
-
         $recipient_hidden = new HiddenInput();
         $recipient_hidden -> name = 'recipientId';
         $recipient_hidden -> value = (string) $this -> recipientId;
         $this -> contents[] = $recipient_hidden;
 
+        // Laid out as a grid (components.css): the textarea fills the left,
+        // and the privacy chip sits to its right, directly above the emoji
+        // picker and Send button.
         $row = new MessageComposerFields();
-        $row -> mixins = ['d-flex', 'align-items-end', 'gap-2'];
+        $row -> addContent($this -> privacyButton);
 
         // The server enforces 65535 BYTES (the Messages.body column's real
         // capacity, checked via strlen() in api/send-message.php), but

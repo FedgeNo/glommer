@@ -37,6 +37,11 @@ class Post extends Article
     // From the Polls side table, attached by fromRowsWithItems - null for the
     // overwhelming majority of posts, which are not polls.
     public ?Poll $poll = null;
+    // Who put this post in the feed row it came from, when that was a repost
+    // rather than the author being followed - hydrated by the feed queries,
+    // null everywhere else.
+    public ?string $repostedBySlug = null;
+    public ?string $repostedByTitle = null;
     // Set once a moderator dismisses a report on this post - blocks it from
     // being reported again (see api/report.php).
     public ?int $reportsDismissed = null;
@@ -170,6 +175,12 @@ class Post extends Article
     {
         $content = new Div();
         $content -> class = 'PostContent';
+
+        // Above the byline, because it answers the question the byline raises:
+        // why an unfollowed author's post is in this feed at all.
+        if ($this -> repostedBySlug !== null) {
+            $content -> contents[] = new RepostAttribution($this -> repostedBySlug, $this -> repostedByTitle);
+        }
 
         if ($this -> author !== null) {
             $content -> contents[] = $this -> authorByline();
@@ -583,6 +594,12 @@ DELETE
             'latitude' => $this -> latitude,
             'longitude' => $this -> longitude,
             'poll' => $this -> poll?-> toPayload(),
+            'repostedBy' => $this -> repostedBySlug === null ? null : [
+                'slug' => $this -> repostedBySlug,
+                'title' => $this -> repostedByTitle,
+            ],
+            'reposted' => Auth::check() && Repost::exists((int) Auth::id(), (int) $this -> postId),
+            'repostCount' => ActivityPubReaction::announceCount((int) $this -> postId),
             'items' => $items,
             'sensitive' => $this -> sensitive === 1,
             'imageAltText' => $this -> imageAltText(),

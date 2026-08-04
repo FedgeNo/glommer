@@ -8,6 +8,11 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
  * they will see corrected on the next load.
  */
 export class PostRepostButton {
+    /** Mirrors PostRepostButton::label() - the two must agree or the button rewords itself when pressed. */
+    static label(reposted, count) {
+        return (reposted ? 'Unrepost' : 'Repost') + (count > 0 ? ' (' + count + ')' : '');
+    }
+
     static init() {
         document.addEventListener('click', (event) => {
             const button = event.target.closest('.PostRepostButton');
@@ -30,8 +35,8 @@ export class PostRepostButton {
 
             if (!result) return;
 
-            button.dataset.reposted = result.reposted ? '1' : '0';
-            button.textContent = result.count > 0 ? `Repost ${result.count}` : 'Repost';
+            button.classList.toggle('Removing', result.reposted);
+            button.textContent = PostRepostButton.label(result.reposted, result.count);
         } finally {
             button.disabled = false;
         }

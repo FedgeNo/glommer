@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * Passes a post on to your own friends and Fediverse followers. One button in
- * two states, since reposting and undoing it are the same decision.
+ * Passes a post on to your own friends and Fediverse followers, or takes that
+ * back. One button in two states, since it is one decision.
  */
 class PostRepostButton extends ButtonButton
 {
@@ -12,7 +12,22 @@ class PostRepostButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> attributes['data-reposted'] = $reposted ? '1' : '0';
-        $this -> contents[] = $count > 0 ? 'Repost ' . $count : 'Repost';
+        if ($reposted) {
+            $this -> class .= ' Removing';
+        }
+
+        $this -> contents[] = self::label($reposted, $count);
+    }
+
+    /** PostRepostButton.js builds the same label after a click. */
+    public static function label(bool $reposted, int $count): string
+    {
+        $label = $reposted ? 'Unrepost' : 'Repost';
+
+        if ($count) {
+            $label .= ' (' . $count . ')';
+        }
+
+        return $label;
     }
 }

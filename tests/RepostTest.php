@@ -196,4 +196,68 @@ SELECT *
 
         $this -> assertSame($remote_uri, json_decode((string) $row -> activity, true)['object']);
     }
+
+    public function testARepostAppearsOnTheReposterProfileAttributed(): void
+    {
+        $author = self::localUser();
+        $reposter = self::localUser();
+        $post_id = self::post((int) $author -> userId);
+
+        Repost::create((int) $reposter -> userId, $post_id);
+
+        $rows = new ProfileFeedList(['userId' => (int) $reposter -> userId]) -> items;
+        $reposted = array_values(array_filter($rows, static fn (Post $row): bool => (int) $row -> postId === $post_id));
+
+        $this -> assertSame(1, count($reposted));
+        // Attributed to the profile whose page it appears on - the line the
+        // card renders is built from exactly these two columns.
+        $this -> assertSame($reposter -> slug, $reposted[0] -> repostedBySlug);
+    }
+
+    public function testAFreshRepostOfAnOldPostLeadsTheFriendsFeed(): void
+    {
+        // Ordered by the post alone, a repost of anything older than a page
+        // lands pages deep and is never seen - the repost's own moment is what
+        // the feed sorts it by. The reader here follows only the reposter:
+        // for someone already holding the post from its author, the earlier
+        // row keeps its place, which a neighbouring test pins down.
+        $author = self::localUser();
+        $reposter = self::localUser();
+        $reader = self::localUser();
+
+        $old_post = self::post((int) $author -> userId);
+        $reposter_own = self::post((int) $reposter -> userId);
+
+        DB::run('
+UPDATE `Posts`
+    SET `createdAt` = ?
+    WHERE `postId` = ?
+', 'si', '2020-01-01 00:00:00', $old_post);
+        DB::run('
+UPDATE `Posts`
+    SET `createdAt` = ?
+    WHERE `postId` = ?
+', 'si', '2021-01-01 00:00:00', $reposter_own);
+
+        DB::run('
+INSERT INTO `Friendships` (`requesterId`, `addresseeId`, `status`)
+    VALUES (?, ?, ?)
+', 'iis', (int) $reader -> userId, (int) $reposter -> userId, 'accepted');
+
+        Timeline::fanOutPost((int) $reposter -> userId, $reposter_own);
+        Repost::create((int) $reposter -> userId, $old_post);
+
+        $_SESSION['userId'] = (int) $reader -> userId;
+
+        try {
+            $rows = new FriendsFeedList(['userId' => (int) $reader -> userId]) -> items;
+        } finally {
+            unset($_SESSION['userId']);
+        }
+
+        $this -> assertSame($old_post, (int) $rows[0] -> postId, 'the fresh repost leads the feed');
+        $this -> assertSame($reposter -> slug, $rows[0] -> repostedBySlug);
+        $this -> assertSame($reposter_own, (int) $rows[1] -> postId);
+        $this -> assertNull($rows[1] -> repostedBySlug, 'an organic row carries no attribution');
+    }
 }

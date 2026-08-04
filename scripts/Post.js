@@ -11,6 +11,7 @@ import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { enhanceCodeBlocks } from '/scripts/CodeBlockCopy.js';
 import { Poll } from '/scripts/Poll.js';
+import { PostRepostButton } from '/scripts/PostRepostButton.js';
 
 export class Post {
     postId = null;
@@ -28,6 +29,9 @@ export class Post {
     latitude = null;
     longitude = null;
     poll = null;
+    repostedBy = null;
+    reposted = false;
+    repostCount = 0;
     rawDescriptionDelta = null;
     items = [];
     imageAltText = null;
@@ -53,6 +57,20 @@ export class Post {
     /** Mirrors PostBookmarkButton::label(). */
     static bookmarkLabel(bookmarked) {
         return bookmarked ? 'Unbookmark' : 'Bookmark';
+    }
+
+    repostAttributionToElement() {
+        const line = document.createElement('div');
+        line.className = 'RepostAttribution';
+
+        const who = document.createElement('a');
+        who.href = ClientConfig.siteURL() + '/users/' + this.repostedBy.slug + '/';
+        who.textContent = this.repostedBy.title || this.repostedBy.slug;
+
+        line.appendWithSpace(who);
+        line.appendWithSpace(document.createTextNode(' reposted'));
+
+        return line;
     }
 
     authorBylineToElement() {
@@ -288,6 +306,12 @@ export class Post {
         const post = document.createElement('div');
         post.className = 'PostContent';
 
+        // Mirrors Post.php - above the byline, because it answers the question
+        // the byline raises.
+        if (this.repostedBy) {
+            post.appendWithSpace(this.repostAttributionToElement());
+        }
+
         if (this.author) {
             post.appendWithSpace(this.authorBylineToElement());
         }
@@ -413,6 +437,16 @@ export class Post {
             like_button.dataset.liked = this.liked ? '1' : '0';
             like_button.textContent = Post.likeLabel(this.liked, this.likeCount);
             actions.appendWithSpace(like_button);
+
+            // Not on your own post - passing on your own writing is what your
+            // profile is for, and the bar draws the same line.
+            if (Number(this.userId) !== Number(ClientConfig.get('currentUserId'))) {
+                const repost_button = document.createElement('button');
+                repost_button.type = 'button';
+                repost_button.className = this.reposted ? 'Button PostRepostButton Removing' : 'Button PostRepostButton';
+                repost_button.textContent = PostRepostButton.label(this.reposted, this.repostCount);
+                actions.appendWithSpace(repost_button);
+            }
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';

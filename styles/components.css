@@ -1033,6 +1033,16 @@ body.MessagesPage { padding-bottom: 9rem; }
    plain labelled bar taking up almost no room; open, the media sits below it
    exactly as an unmarked post's would, so nothing about the layout depends on
    which state it is in. */
+.RepostAttribution {
+    color: var(--muted);
+    font-size: 0.8125rem;
+    margin-bottom: 0.5rem;
+}
+
+.RepostAttribution a {
+    font-weight: 550;
+}
+
 /* ---------- Polls ---------- */
 
 .Poll {
@@ -1736,16 +1746,6 @@ body.MessagesPage { padding-bottom: 9rem; }
     color: var(--ink) !important;
 }
 
-/* A post the reader has passed on, marked the way a liked one is. */
-.PostRepostButton[data-reposted='1'] {
-    background-color: var(--accent-soft);
-    color: var(--accent) !important;
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
-}
-
-.PostRepostButton[data-reposted='1']:hover {
-    background-color: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 12%);
-}
 
 /* A custom emoji from another server - an image standing in for a word, so it
    sits on the text baseline at roughly the height of one. */

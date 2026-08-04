@@ -422,9 +422,10 @@ SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
         // rendered by DeltaRenderer rather than by something written for
         // federation: a second query would drift from the first and the two
         // copies of a result would quietly stop matching.
-        $options = new PollOptionList();
-        $options -> pollId = (int) $poll -> pollId;
-        $options -> totalVotes = $poll -> voterCount();
+        $options = new PollOptionList([
+            'pollId' => (int) $poll -> pollId,
+            'totalVotes' => $poll -> voterCount(),
+        ]);
 
         $choices = [];
 

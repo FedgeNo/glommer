@@ -124,10 +124,13 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
     {
         $this -> markRendered();
 
-        $options = new PollOptionList();
-        $options -> pollId = (int) $this -> pollId;
-        $options -> viewerId = $this -> viewerId;
-        $options -> totalVotes = $this -> voterCount();
+        $options = new PollOptionList([
+            'pollId' => (int) $this -> pollId,
+            'viewerId' => $this -> viewerId,
+            'showResults' => $this -> showResultsTo($this -> viewerId),
+            'multiple' => (int) $this -> multiple === 1,
+            'totalVotes' => $this -> voterCount(),
+        ]);
 
         return [
             'pollId' => (int) $this -> pollId,
@@ -147,12 +150,13 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
     {
         $show_results = $this -> showResultsTo($this -> viewerId);
 
-        $options = new PollOptionList();
-        $options -> pollId = (int) $this -> pollId;
-        $options -> viewerId = $this -> viewerId;
-        $options -> showResults = $show_results;
-        $options -> multiple = (int) $this -> multiple === 1;
-        $options -> totalVotes = $this -> voterCount();
+        $options = new PollOptionList([
+            'pollId' => (int) $this -> pollId,
+            'viewerId' => $this -> viewerId,
+            'showResults' => $show_results,
+            'multiple' => (int) $this -> multiple === 1,
+            'totalVotes' => $this -> voterCount(),
+        ]);
 
         $this -> addContent($options);
 

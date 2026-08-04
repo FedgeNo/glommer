@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 /**
- * The choices on one poll, in the order they were written.
- *
- * Not an ItemLoader: a poll holds at most Poll::MAX_OPTIONS, so there is
- * nothing to page through and no more to load.
+ * The choices on one poll, in the order they were written - an ordinary loader
+ * whose page is never full, since a poll holds at most Poll::MAX_OPTIONS.
  *
  * The tally and the reader's own choice ride along on each row as correlated
  * subqueries rather than being fetched per option, so a poll costs one query
  * however many choices it offers.
  */
-class PollOptionList extends UnorderedList
+class PollOptionList extends ItemList
 {
+    public const PAGE_SIZE = Poll::MAX_OPTIONS;
+
     public ?string $class = 'PollOptionList';
 
     public ?int $pollId = null;
@@ -50,9 +50,27 @@ SELECT `o`.*,
     }
 
     /**
-     * The same options the markup would carry, for the client to build its own
-     * copy from. Not the ItemLoader shape: there is no next page to report on a
-     * list that is complete by construction.
+     * Each option renders by what the whole poll knows - whether results are
+     * being shown, and out of how many votes - so the rows take that from here
+     * on their way through.
+     *
+     * @param PollOption[] $items
+     * @return PollOption[]
+     */
+    protected function arrange(array $items): array
+    {
+        foreach ($items as $option) {
+            $option -> showResults = $this -> showResults;
+            $option -> multiple = $this -> multiple;
+            $option -> totalVotes = $this -> totalVotes;
+        }
+
+        return $items;
+    }
+
+    /**
+     * The options as the client rebuilds them. Not the ItemLoader shape: there
+     * is no next page to report on a list that is complete by construction.
      *
      * @return array<int, array<string, mixed>>
      */
@@ -60,25 +78,6 @@ SELECT `o`.*,
     {
         $this -> markRendered();
 
-        return array_map(function (PollOption $option): array {
-            $option -> totalVotes = $this -> totalVotes;
-
-            return $option -> toPayload();
-        }, $this -> rows());
-    }
-
-    public function toDOM(): \DOMElement
-    {
-        foreach ($this -> rows() as $option) {
-            $option -> showResults = $this -> showResults;
-            $option -> multiple = $this -> multiple;
-            $option -> totalVotes = $this -> totalVotes;
-
-            $item = new ListItem();
-            $item -> addContent($option);
-            $this -> contents[] = $item;
-        }
-
-        return parent::toDOM();
+        return array_map(static fn (PollOption $option): array => $option -> toPayload(), $this -> items);
     }
 }

@@ -18,7 +18,7 @@ $current_user = Auth::user();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$target_user_id = (int) ($payload['userId'] ?? $_POST['userId'] ?? 0);
+$target_user_id = (int) ($payload['userId'] ?? 0);
 
 if ($target_user_id === $current_user -> userId) {
     JSONResponse::error('You can\'t send a friend request to yourself.', 422) -> send();

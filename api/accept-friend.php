@@ -19,7 +19,7 @@ $mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$friendship_id = (int) ($payload['friendshipId'] ?? $_POST['friendshipId'] ?? 0);
+$friendship_id = (int) ($payload['friendshipId'] ?? 0);
 
 $accepted_status = 'accepted';
 $pending_status = 'pending';

@@ -18,7 +18,7 @@ $current_user = Auth::user();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$target_user_id = (int) ($payload['userId'] ?? $_POST['userId'] ?? 0);
+$target_user_id = (int) ($payload['userId'] ?? 0);
 $target_user = User::load($target_user_id);
 
 if ($target_user === null) {

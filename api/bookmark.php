@@ -18,7 +18,7 @@ $current_user = Auth::user();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$post_id = (int) ($payload['itemId'] ?? $_POST['itemId'] ?? 0);
+$post_id = (int) ($payload['itemId'] ?? 0);
 
 $owner_stmt = DB::run('
 SELECT 1

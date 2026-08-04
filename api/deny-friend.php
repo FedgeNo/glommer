@@ -18,7 +18,7 @@ $current_user = Auth::user();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$friendship_id = (int) ($payload['friendshipId'] ?? $_POST['friendshipId'] ?? 0);
+$friendship_id = (int) ($payload['friendshipId'] ?? 0);
 $pending_status = 'pending';
 
 // Only a still-pending request can be denied. Without the status guard a real

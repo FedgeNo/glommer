@@ -18,9 +18,9 @@ $current_user = Auth::user();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$current_password = (string) ($payload['currentPassword'] ?? $_POST['currentPassword'] ?? '');
-$new_password = (string) ($payload['newPassword'] ?? $_POST['newPassword'] ?? '');
-$confirm_password = (string) ($payload['confirmPassword'] ?? $_POST['confirmPassword'] ?? '');
+$current_password = (string) ($payload['currentPassword'] ?? '');
+$new_password = (string) ($payload['newPassword'] ?? '');
+$confirm_password = (string) ($payload['confirmPassword'] ?? '');
 
 // Throttle current-password guessing: anyone holding a logged-in session (a
 // hijacked cookie, a borrowed browser) could otherwise brute-force the

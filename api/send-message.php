@@ -19,8 +19,8 @@ $mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$recipient_id = (int) ($payload['recipientId'] ?? $_POST['recipientId'] ?? 0);
-$body = trim((string) ($payload['body'] ?? $_POST['body'] ?? ''));
+$recipient_id = (int) ($payload['recipientId'] ?? 0);
+$body = trim((string) ($payload['body'] ?? ''));
 
 if ($body === '') {
     JSONResponse::error('Message cannot be empty', 422) -> send();

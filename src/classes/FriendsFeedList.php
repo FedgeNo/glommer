@@ -17,12 +17,18 @@ class FriendsFeedList extends FeedList
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
 
-        // A reposted row sorts by when it was reposted, not by the post's own
-        // age - ordered by the post alone, a repost of anything older than a
-        // page would land pages deep and never be seen, which made reposting
-        // look like it did nothing.
+        // A row sorts by the moment it entered this feed - a repost by when it
+        // was reposted, a post by when it was posted - which sortAt carries so
+        // the order comes straight off its index. Ordering by anything computed
+        // here would instead sort the person's entire timeline every page.
+        //
+        // STRAIGHT_JOIN because the optimizer, left to itself, leads with a
+        // covering scan of every unbanned user and sorts the lot in a
+        // temporary table; measured, that plan is hundreds of times slower
+        // than reading this person's timeline rows in index order and
+        // stopping at the page.
         return Post::fromRowsWithItems(DB::rows('
-SELECT `Posts`.*,
+SELECT STRAIGHT_JOIN `Posts`.*,
     `reposter`.`slug` AS `repostedBySlug`,
     `reposter`.`title` AS `repostedByTitle`,
     (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
@@ -33,9 +39,8 @@ SELECT `Posts`.*,
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     LEFT JOIN `Users` `reposter` ON `reposter`.`userId` = `Timelines`.`reposterId`
-    LEFT JOIN `Announces` ON `Announces`.`postId` = `Timelines`.`postId` AND `Announces`.`userId` = `Timelines`.`reposterId`
     WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
-    ORDER BY COALESCE(`Announces`.`createdAt`, `Posts`.`createdAt`) DESC, `Timelines`.`postId` DESC
+    ORDER BY `Timelines`.`sortAt` DESC, `Timelines`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'iiiiii', $viewer_id, $viewer_id, (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
     }

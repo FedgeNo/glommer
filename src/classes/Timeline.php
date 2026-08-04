@@ -80,7 +80,11 @@ DELETE FROM `Timelines`
      */
     private static function fanOutToUsers(array $recipient_ids, int $post_id, ?int $reposter_id = null): void
     {
-        $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?, ?)'));
+        // Every caller here fans out at the moment of the event - a post as it
+        // is published, a repost as it is made - so NOW() is that moment.
+        // History arriving late goes through backfillFriendship, which carries
+        // each post's own time instead.
+        $placeholders = implode(', ', array_fill(0, count($recipient_ids), '(?, ?, ?, NOW())'));
 
         $params = [];
 
@@ -91,7 +95,7 @@ DELETE FROM `Timelines`
         }
 
         DB::run('
-INSERT IGNORE INTO `Timelines` (`userId`, `postId`, `reposterId`)
+INSERT IGNORE INTO `Timelines` (`userId`, `postId`, `reposterId`, `sortAt`)
     VALUES ' . $placeholders . '
 ', str_repeat('iii', count($recipient_ids)), ...$params);
     }
@@ -105,8 +109,8 @@ INSERT IGNORE INTO `Timelines` (`userId`, `postId`, `reposterId`)
     public static function backfillFriendship(int $user_a, int $user_b): void
     {
         $stmt = DB::prepare('
-INSERT IGNORE INTO `Timelines` (`userId`, `postId`)
-    SELECT ?, `postId`
+INSERT IGNORE INTO `Timelines` (`userId`, `postId`, `sortAt`)
+    SELECT ?, `postId`, `createdAt`
         FROM `Posts`
         WHERE `userId` = ? AND `parentId` IS NULL
 ');

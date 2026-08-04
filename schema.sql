@@ -306,6 +306,8 @@ CREATE TABLE `Announces` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`postId`,`userId`),
   KEY `userId_postId` (`userId`,`postId`),
+  -- A profile lists its owner's reposts newest-first, straight off this index.
+  KEY `userId_createdAt` (`userId`,`createdAt`),
   CONSTRAINT `Announces_ibfk_1` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
   CONSTRAINT `Announces_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -490,7 +492,14 @@ CREATE TABLE `Timelines` (
   `userId` int(10) unsigned NOT NULL,
   `postId` int(10) unsigned NOT NULL,
   `reposterId` int(10) unsigned DEFAULT NULL,
+  -- The moment this row entered the feed: the post's own time for a fanned-out
+  -- post (including backfilled history, which must stay buried at its age),
+  -- the repost's moment for a repost. The feed orders by it straight off the
+  -- index below - a computed order would mean sorting a person's whole
+  -- timeline for every page.
+  `sortAt` datetime DEFAULT NULL,
   PRIMARY KEY (`userId`,`postId`),
+  KEY `userId_sortAt_postId` (`userId`,`sortAt`,`postId`),
   KEY `reposterId_postId` (`reposterId`,`postId`),
   KEY `fk_timelines_post` (`postId`),
   CONSTRAINT `Timelines_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
@@ -750,6 +759,15 @@ ALTER TABLE `Users` MODIFY COLUMN `slug` varchar(255) NOT NULL;
 -- a no-op on a fresh database, and on an upgrade it corrects existing rows the
 -- moment the column is added rather than waiting for each user's next sign-in.
 -- The installer runs every non-CREATE-TABLE statement in this file here.
+-- Timeline rows from before sortAt existed take the moment they stood for:
+-- the repost's time where the row is a repost, the post's own time otherwise.
+-- Idempotent - only ever rows the column predates.
+UPDATE `Timelines`
+    JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
+    LEFT JOIN `Announces` ON `Announces`.`postId` = `Timelines`.`postId` AND `Announces`.`userId` = `Timelines`.`reposterId`
+    SET `Timelines`.`sortAt` = COALESCE(`Announces`.`createdAt`, `Posts`.`createdAt`)
+    WHERE `Timelines`.`sortAt` IS NULL;
+
 UPDATE `Users` `u`
     SET `u`.`friendCount` = (
         SELECT COUNT(*)

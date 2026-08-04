@@ -245,6 +245,14 @@ INSERT INTO `Friendships` (`requesterId`, `addresseeId`, `status`)
 ', 'iis', (int) $reader -> userId, (int) $reposter -> userId, 'accepted');
 
         Timeline::fanOutPost((int) $reposter -> userId, $reposter_own);
+
+        // Backdated the same way its post was: the fan-out stamps the moment
+        // it ran, and this row is standing in for a post fanned out in 2021.
+        DB::run('
+UPDATE `Timelines`
+    SET `sortAt` = ?
+    WHERE `postId` = ?
+', 'si', '2021-01-01 00:00:00', $reposter_own);
         Repost::create((int) $reposter -> userId, $old_post);
 
         $_SESSION['userId'] = (int) $reader -> userId;

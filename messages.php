@@ -55,10 +55,21 @@ $conversation_users = [
 $page -> clientConfig['conversationUsers'] = $conversation_users;
 $page -> clientConfig['iceServers'] = VideoCall::iceServers();
 
+$page -> addContent(new MessageList([
+    'userId' => (int) $current_user -> userId,
+    'otherUserId' => $other_user -> userId,
+    'otherUserIsLocal' => $other_user -> remoteActorURI === null,
+]));
+
 // A conversation with someone on another server is stored on that server too,
 // in the clear, and its administrator can read it. The thread looks identical
 // otherwise, so it says so. Between two members here, the honest note runs the
 // other way: encrypted when both have keys, and if not, whose move it is.
+//
+// Below the list, not above it: the thread opens scrolled to the bottom, so
+// this is where the reader actually is - and above the list it can't be read
+// at all, because scrolling up to it triggers the infinite scroll and loads
+// more history underneath it.
 if ($other_user -> remoteActorURI !== null) {
     $page -> addContent(new FederatedThreadNotice('@' . $other_user -> slug));
 } elseif ($current_user -> messagePublicKey !== null && $other_user -> messagePublicKey !== null) {
@@ -76,12 +87,6 @@ if ($other_user -> remoteActorURI !== null) {
 } else {
     $page -> addContent(new MessageEncryptionNudge($current_user -> messagePublicKey !== null, '@' . $other_user -> slug));
 }
-
-$page -> addContent(new MessageList([
-    'userId' => (int) $current_user -> userId,
-    'otherUserId' => $other_user -> userId,
-    'otherUserIsLocal' => $other_user -> remoteActorURI === null,
-]));
 
 $page -> addContent(new MessageComposer($other_user -> userId));
 

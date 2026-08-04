@@ -210,6 +210,15 @@ if ($signer -> banned === 1) {
     exit;
 }
 
+// A signature stays valid for as long as its date is fresh, so without this a
+// captured delivery could be posted again by anyone who saw it, for the rest
+// of that hour. Accepted-and-ignored rather than refused: a sender that never
+// got our first answer is entitled to ask again.
+if (ActivityPubReplay::seenBefore($signature_header)) {
+    http_response_code(202);
+    exit;
+}
+
 $activity = json_decode($body, true);
 
 if (is_array($activity)) {

@@ -507,6 +507,17 @@ CREATE TABLE `RateLimitAttempts` (
 -- Still one row per (userId, postId): a post appears once in a feed however many
 -- ways it arrived. A repost of something already there leaves the existing row
 -- alone, so the reason it was originally shown survives the repost being undone.
+-- Signatures already accepted at the inbox, so one cannot be replayed. A
+-- signature is valid for as long as its Date header is fresh (an hour), which
+-- without this is an hour in which a captured delivery can be posted again by
+-- anyone who saw it. Rows older than that window are swept as new ones arrive.
+CREATE TABLE `ActivityPubReplays` (
+  `signatureHash` char(64) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`signatureHash`),
+  KEY `createdAt` (`createdAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `Timelines` (
   `userId` int(10) unsigned NOT NULL,
   `postId` int(10) unsigned NOT NULL,

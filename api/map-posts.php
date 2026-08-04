@@ -11,16 +11,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Public, read-only: the map shows everyone's geotagged posts. The listing is
-// fixed and capped rather than a user-controlled search, but it still costs a
-// 5000-row join per call and needs no login, so it's paced per client to keep
-// it from being used as a cheap database-load lever.
+// fixed and capped rather than a user-controlled search, but it needs no login,
+// so it's paced per client to keep it from being used as a cheap
+// database-load lever or as a way to sweep the site's locations.
 $rate_key = 'map-posts:' . (ServerURL::clientIP() ?? 'unknown');
 
-if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+if (RateLimiter::tooManyAttempts($rate_key, 20, 60)) {
     JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
+
+// A member sees where a post was actually made; anyone else sees the
+// neighbourhood it was made in. Posts are public and so are their places, but
+// exact coordinates handed to an anonymous caller in bulk is a different thing
+// from a pin on a map - it is everybody's address, harvestable in a few
+// requests. Two decimal places is a bit over a kilometre: enough to place a
+// post in a town, not enough to place it at a door.
+$exact_locations = Auth::check();
+$rounding = 2;
 // Driven from PostLocations: it holds only the posts that actually have a
 // location, so this reads a small table and looks each post and author up by
 // primary key, rather than filtering the whole Posts table. Ordered by postId
@@ -32,7 +41,7 @@ SELECT `l`.`postId`, `l`.`latitude`, `l`.`longitude`, `p`.`title`, `p`.`createdA
     JOIN `Users` `u` ON `u`.`userId` = `p`.`userId`
     WHERE `u`.`banned` = ?
     ORDER BY `l`.`postId` DESC
-    LIMIT 5000
+    LIMIT 1000
 ', \stdClass::class, 'i', 0);
 
 $posts = [];
@@ -40,8 +49,8 @@ $posts = [];
 foreach ($rows as $row) {
     $posts[] = [
         'postId' => (int) $row -> postId,
-        'latitude' => (float) $row -> latitude,
-        'longitude' => (float) $row -> longitude,
+        'latitude' => $exact_locations ? (float) $row -> latitude : round((float) $row -> latitude, $rounding),
+        'longitude' => $exact_locations ? (float) $row -> longitude : round((float) $row -> longitude, $rounding),
         'title' => $row -> title,
         // Drives the time scrubber, which replays the map from the first
         // located post to now.

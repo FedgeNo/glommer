@@ -5,7 +5,7 @@ import { render_math } from '/scripts/MathRenderer.js';
 import { Post } from '/scripts/Post.js';
 import { Message } from '/scripts/Message.js';
 import { OtherUser } from '/scripts/OtherUser.js';
-import { ReceivedFriendRequest } from '/scripts/OtherUser.js';
+import { ReceivedFriendRequest } from '/scripts/ReceivedFriendRequest.js';
 import { Notification } from '/scripts/Notification.js';
 import { ReportCard } from '/scripts/ReportCard.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';

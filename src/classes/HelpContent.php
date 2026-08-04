@@ -330,7 +330,7 @@ class HelpContent
 <p>The Messages page lists your conversations with the most recent at the top, so it\'s easy to pick up where you left off.</p>
 <p>Messages are private from other members. How private they are from the server itself depends on the conversation, and the thread always says which case it is:</p>
 <ul>
-<li><strong>End-to-end encrypted</strong> - once both of you have turned on <a href="/help/encrypted-messages">encrypted messages</a>, new messages are locked and unlocked in your browsers and this server stores only ciphertext it cannot read.</li>
+<li><strong>End-to-end encrypted</strong> - once both of you have turned on <a href="/help/encrypted-messages">encrypted messages</a>, new messages are locked and unlocked in your browsers, and what this server stores and keeps in its backups is ciphertext.</li>
 <li><strong>Plain</strong> - otherwise, like most social sites, the server stores messages readably, so the operator of a server could technically access them.</li>
 <li><strong>Federated</strong> - a conversation with someone on another Fediverse server is also stored on <em>their</em> server, under its operator, and can never be end-to-end encrypted - the Fediverse\'s messaging protocol has no way to carry it. Don\'t put anything in a federated message that must stay secret from everyone but the recipient.</li>
 </ul>
@@ -347,6 +347,7 @@ class HelpContent
 <p>A conversation becomes end-to-end encrypted once <em>both</em> people have turned this on - it takes both keys. From then on, new messages in that thread are unlocked and read in your browsers only; older messages from before stay as they were. Conversations with people on other Fediverse servers are never encrypted, because the protocol between servers has no way to carry it - those threads say so.</p>
 <p>Opening an encrypted conversation asks for your passphrase once per browser tab. Because the locked copy of your key lives on the server, the same passphrase works from any browser or device.</p>
 <p><strong>There is no way to recover a lost passphrase</strong> - not by you, not by the administrator; that is the point of the design. If you lose it, the reset option in Settings creates fresh keys under a new passphrase, but messages encrypted with the old keys are gone for good. You can change your passphrase any time in Settings without losing anything, as long as you still know the current one.</p>
+<p><strong>What this protects you from, and what it does not.</strong> Nobody reading the database, the backups, or the traffic can read your messages - which is the whole reason to turn it on. It is not protection against this server itself behaving dishonestly: your two browsers are introduced to each other\'s keys by the server, so a server that handed one of you the wrong key could read what followed. There is no way to check the keys against each other by hand yet - that is on the list - so what you are trusting is that the software running here is the software it says it is.</p>
 <p>You can still <a href="/help/reporting-abuse">report</a> an encrypted message. Reporting reveals to the moderators the content of that one message only - never your key, and never the rest of the conversation - and the server checks the revealed message against a seal it made when it relayed it, so a report can\'t be faked either.</p>
 ',
             ],

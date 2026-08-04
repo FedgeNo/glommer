@@ -81,8 +81,14 @@ a WebSocket open, transcoding video out of band).
 - **Messaging** - direct conversations, updating **live over WebSocket** when
   the other person replies. Conversations between two members who have turned
   on **end-to-end encryption** (Settings → Encrypted Messages) are encrypted
-  in the browser with WebCrypto - the server relays and stores only ciphertext
-  it cannot read. Each member's private key is wrapped under a passphrase that
+  in the browser with WebCrypto - the server relays and stores ciphertext, so
+  the database, the backups and the wire carry nothing readable. Be precise
+  about the bound, since the interface is: this defeats a passive operator and
+  anyone who gets hold of the data, not an actively dishonest one. The server
+  is what introduces the two browsers to each other's public keys, and there
+  is no fingerprint check yet, so a server serving modified code could hand
+  over a key of its own and read what followed.
+  Each member's private key is wrapped under a passphrase that
   never leaves their device; the wrapped blob is stored server-side, so the
   same passphrase unlocks the history from any browser - and losing it loses
   the encrypted history, with no operator recovery. Reporting still works via

@@ -2,77 +2,72 @@
 
 declare(strict_types=1);
 
+/**
+ * The output of running both test suites, for the admin's Tests page. Each
+ * runner is invoked as its own process and its console output shown verbatim,
+ * so what the page reports is exactly what the command line would have said.
+ *
+ * The runs happen under the web server's account, which is not root - so the
+ * database-backed tests skip themselves rather than building the throwaway
+ * database they need. Reading this page cannot touch the live data.
+ */
 class TestResults extends Div
 {
     public ?string $class = 'TestResults';
 
     public function toDOM(): \DOMElement
     {
-        // ----- PHP tests (always run) -----
-        $phpScript = __DIR__ . '/../../bin/run-tests.php';
-        exec('php ' . escapeshellarg($phpScript) . ' 2>&1', $phpLines, $phpExitCode);
-        $phpOutput = preg_replace('/\e\[[0-9;]*m/', '', implode("\n", $phpLines));
+        $this -> addSuite('PHP', 'php ' . escapeshellarg(__DIR__ . '/../../bin/run-tests.php'));
 
-        $phpBadge = new Div();
-        $phpBadge -> class = $phpExitCode === 0
-            ? 'TestResultsBadge TestResultsPass'
-            : 'TestResultsBadge TestResultsFail';
-        $phpBadge -> contents[] = 'PHP: ' . ($phpExitCode === 0 ? 'Passing' : 'Failing');
-        $this -> contents[] = $phpBadge;
+        // JavaScript needs Node and its one dev dependency; without either
+        // there is nothing to report rather than a failure to report.
+        if (trim((string) shell_exec('command -v node 2>/dev/null')) === '') {
+            $this -> addContent(new Paragraph('Node.js is not installed. Install Node.js to enable JavaScript tests.'));
 
-        $phpReport = new Div();
-        $phpReport -> tagName = 'pre';
-        $phpReport -> class = 'TestResultsOutput';
-        $phpReport -> contents[] = $phpOutput !== '' ? $phpOutput : '(no output)';
-        $this -> contents[] = $phpReport;
-
-        // ----- JavaScript tests (only if Node.js is installed) -----
-        $hasNode = trim(shell_exec('command -v node 2>/dev/null') ?? '') !== '';
-
-        if (!$hasNode) {
-            $this -> contents[] = new Paragraph(
-                'Node.js is not installed. Install Node.js to enable JavaScript tests.'
-            );
             return parent::toDOM();
         }
 
-        $nodeModulesPath = __DIR__ . '/../../node_modules';
-        $hasNodeModules = is_dir($nodeModulesPath);
+        if (!is_dir(__DIR__ . '/../../node_modules')) {
+            $this -> addContent(new Paragraph('Run `npm install` in the document root to enable JavaScript tests.'));
 
-        if (!$hasNodeModules) {
-            $this -> contents[] = new Paragraph(
-                'Run `npm install` in the document root to enable JavaScript tests.'
-            );
             return parent::toDOM();
         }
 
-        // Node and dependencies present – run JS tests
-        $jsScript = __DIR__ . '/../../bin/run-js-tests.js';
-        exec('node ' . escapeshellarg($jsScript) . ' 2>&1', $jsLines, $jsExitCode);
-        $jsOutput = preg_replace('/\e\[[0-9;]*m/', '', implode("\n", $jsLines));
-
-        // If Node crashed before any test ran (V8_Fatal), show a notice instead of a false failure
-        if ($jsExitCode !== 0 && strpos($jsOutput, 'V8_Fatal') !== false) {
-            $this -> contents[] = new Paragraph(
-                'JavaScript tests could not be started. Node.js encountered a fatal error, ' .
-                'most likely due to SELinux restrictions on the web server. ' .
-                'This will be handled by the installer in a future update.'
-            );
-        } else {
-            $jsBadge = new Div();
-            $jsBadge -> class = $jsExitCode === 0
-                ? 'TestResultsBadge TestResultsPass'
-                : 'TestResultsBadge TestResultsFail';
-            $jsBadge -> contents[] = 'JS: ' . ($jsExitCode === 0 ? 'Passing' : 'Failing');
-            $this -> contents[] = $jsBadge;
-
-            $jsReport = new Div();
-            $jsReport -> tagName = 'pre';
-            $jsReport -> class = 'TestResultsOutput';
-            $jsReport -> contents[] = $jsOutput !== '' ? $jsOutput : '(no output)';
-            $this -> contents[] = $jsReport;
-        }
+        $this -> addSuite('JS', 'node ' . escapeshellarg(__DIR__ . '/../../bin/run-js-tests.js'));
 
         return parent::toDOM();
+    }
+
+    /**
+     * Runs one suite and adds its verdict and output. A Node that dies before
+     * any test runs is reported as what it is rather than as a failing suite -
+     * a hardened web server can refuse it the memory V8 wants, which says
+     * nothing about the tests.
+     */
+    private function addSuite(string $name, string $command): void
+    {
+        $lines = [];
+        $exit_code = 0;
+        exec($command . ' 2>&1', $lines, $exit_code);
+
+        $output = self::withoutColour(implode("\n", $lines));
+
+        if ($exit_code !== 0 && str_contains($output, 'V8_Fatal')) {
+            $this -> addContent(new Paragraph(
+                'JavaScript tests could not be started. Node.js encountered a fatal error, '
+                . 'most likely due to SELinux restrictions on the web server.'
+            ));
+
+            return;
+        }
+
+        $this -> addContent(new TestResultsBadge($name, $exit_code === 0));
+        $this -> addContent(new TestResultsOutput($output));
+    }
+
+    /** The runners colour their output for a terminal; this is not one. */
+    private static function withoutColour(string $output): string
+    {
+        return (string) preg_replace('/\e\[[0-9;]*m/', '', $output);
     }
 }

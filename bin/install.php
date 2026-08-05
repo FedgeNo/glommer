@@ -1412,42 +1412,248 @@ function user_systemd_available(): bool
  * service() etc. bring those up for the first time; this only refreshes
  * ones already going.
  */
-function restart_already_running_daemons(): void
+/** The long-running daemons, which all load their code once at start. */
+function daemon_units(): array
 {
-    $is_root = running_as_root();
-    $units = ['glommer-websocket.service', 'glommer-upload-worker.service', 'glommer-federation-worker.service'];
+    return ['glommer-websocket.service', 'glommer-upload-worker.service', 'glommer-federation-worker.service'];
+}
 
-    if ($is_root) {
-        foreach ($units as $unit) {
-            if (run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active') {
-                run('systemctl restart :unit 2>&1', ['unit' => $unit]);
-            }
+/**
+ * The daemons that read the database, and so are the ones a schema change can
+ * break underneath. Stopped for the length of the run.
+ *
+ * The WebSocket server is deliberately not among them: it holds no database
+ * connection at all - it moves opaque payloads and nothing else - so there is
+ * no schema change that can hurt it, and leaving it up means the environment
+ * check that connects to it is still checking something. It is restarted at
+ * the end like the others, because it does load its code at start.
+ */
+function database_daemon_units(): array
+{
+    return ['glommer-upload-worker.service', 'glommer-federation-worker.service'];
+}
+
+/**
+ * Whether the daemons are currently stopped for this run - see
+ * stop_daemons_for_upgrade().
+ *
+ * Read from deep inside the service setup, which must not start a daemon while
+ * the window is open, so it is a flag rather than a parameter threaded through
+ * every layer between here and there.
+ */
+function upgrade_window_open(?bool $set = null): bool
+{
+    static $open = false;
+
+    if ($set !== null) {
+        $open = $set;
+    }
+
+    return $open;
+}
+
+/**
+ * Stops the daemons for the length of the run, and reports which were running
+ * so the end can put back exactly what it found.
+ *
+ * A daemon holds its code in memory from the moment it starts, so one running
+ * through an upgrade is running whatever was deployed last - and one started
+ * mid-run is running new code against a database the schema work has not
+ * reached yet. That is not hypothetical: the deploy that added RelayFetches
+ * started the federation worker before creating the table, and it crash-looped
+ * until the run got far enough to create it. It recovered, but only because
+ * systemd's restart policy outlasted the gap, and the run printed a failure
+ * for something that was fine by the end - which is worse than useless.
+ *
+ * So nothing runs during the work. The window closes in
+ * start_daemons_after_upgrade().
+ *
+ * @return string[] the units that were running and should be again
+ */
+function stop_daemons_for_upgrade(): array
+{
+    upgrade_window_open(true);
+
+    $running = [];
+
+    foreach (database_daemon_units() as $unit) {
+        if (daemon_is_active($unit)) {
+            $running[] = $unit;
         }
 
-        // A root run hasn't reached set_up_system_services() yet at this
-        // point (it runs after these checks) - if this box was previously
-        // set up unprivileged, what's actually live right now is still a
+        stop_daemon($unit);
+    }
+
+    if ($running !== []) {
+        ok('the background workers are stopped while this runs - started again at the end');
+    }
+
+    return $running;
+}
+
+/** Whether a unit is running, as either a system or a user-level service. */
+function daemon_is_active(string $unit): bool
+{
+    if (running_as_root()) {
+        if (run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active') {
+            return true;
+        }
+
+        $candidate = app_service_user();
+
+        return $candidate !== null && user_systemctl($candidate, 'is-active :unit', ['unit' => $unit]) === 'active';
+    }
+
+    return user_systemd_available()
+        && run('systemctl --user is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active';
+}
+
+function stop_daemon(string $unit): void
+{
+    if (running_as_root()) {
+        run('systemctl stop :unit 2>&1', ['unit' => $unit]);
+
+        // A root run has not reached set_up_system_services() yet - if this box
+        // was previously set up unprivileged, what is actually live is still a
         // user-level unit under the likely service account, not a system one.
         $candidate = app_service_user();
 
         if ($candidate !== null) {
-            foreach ($units as $unit) {
-                if (user_systemctl($candidate, 'is-active :unit', ['unit' => $unit]) === 'active') {
-                    user_systemctl($candidate, 'restart :unit', ['unit' => $unit]);
-                }
-            }
+            user_systemctl($candidate, 'stop :unit', ['unit' => $unit]);
         }
-    } elseif (user_systemd_available()) {
-        foreach ($units as $unit) {
-            if (run('systemctl --user is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active') {
-                run('systemctl --user restart :unit 2>&1', ['unit' => $unit]);
-            }
-        }
+
+        return;
     }
 
-    // Give both a moment to finish binding their ports/claiming lock files
-    // before the checks below probe them.
-    usleep(500000);
+    if (user_systemd_available()) {
+        run('systemctl --user stop :unit 2>&1', ['unit' => $unit]);
+    }
+}
+
+/**
+ * Starts the daemons again, once code and schema are both settled, and says
+ * plainly what happened to each.
+ *
+ * Every unit that is enabled is started, not merely the ones that were running
+ * before: a fresh install has just enabled units that never ran, and a box
+ * whose daemon was down for a reason has it disabled rather than merely
+ * stopped.
+ *
+ * reset-failed first, because a unit that crash-looped past its start limit -
+ * in an earlier run, or earlier in this one - is refused a plain start until
+ * its failure state is cleared, and "the installer could not start it" would
+ * be a lie about why.
+ *
+ * @param string[] $were_running
+ */
+function start_daemons_after_upgrade(array $were_running): void
+{
+    upgrade_window_open(false);
+
+    $started = [];
+    $failed = [];
+
+    foreach (daemon_units() as $unit) {
+        if (!daemon_wanted($unit, $were_running)) {
+            continue;
+        }
+
+        reset_daemon_failure($unit);
+
+        // Restart rather than start: this both starts the workers that were
+        // stopped for the run and reloads the WebSocket server, which stayed
+        // up throughout and is therefore still holding the code that was
+        // deployed before this run.
+        restart_daemon($unit);
+
+        if (daemon_came_up($unit)) {
+            $started[] = $unit;
+
+            continue;
+        }
+
+        $failed[] = $unit;
+    }
+
+    if ($started !== []) {
+        ok('background daemons running (' . implode(', ', array_map(static fn (string $unit): string => str_replace(['glommer-', '.service'], '', $unit), $started)) . ')');
+    }
+
+    foreach ($failed as $unit) {
+        fail_line($unit . ' did not come up - the site works without it, but check: systemctl status ' . $unit);
+    }
+}
+
+/** @param string[] $were_running */
+function daemon_wanted(string $unit, array $were_running): bool
+{
+    if (in_array($unit, $were_running, true)) {
+        return true;
+    }
+
+    if (running_as_root()) {
+        return run('systemctl is-enabled :unit 2>/dev/null', ['unit' => $unit])['output'] === 'enabled';
+    }
+
+    return user_systemd_available()
+        && run('systemctl --user is-enabled :unit 2>/dev/null', ['unit' => $unit])['output'] === 'enabled';
+}
+
+function reset_daemon_failure(string $unit): void
+{
+    if (running_as_root()) {
+        run('systemctl reset-failed :unit 2>/dev/null', ['unit' => $unit]);
+
+        return;
+    }
+
+    if (user_systemd_available()) {
+        run('systemctl --user reset-failed :unit 2>/dev/null', ['unit' => $unit]);
+    }
+}
+
+function restart_daemon(string $unit): void
+{
+    if (running_as_root()) {
+        run('systemctl restart :unit 2>&1', ['unit' => $unit]);
+
+        // A box previously set up unprivileged still has the live daemon under
+        // the service account's own manager rather than as a system unit.
+        $candidate = app_service_user();
+
+        if ($candidate !== null) {
+            user_systemctl($candidate, 'restart :unit', ['unit' => $unit]);
+        }
+
+        return;
+    }
+
+    if (user_systemd_available()) {
+        run('systemctl --user restart :unit 2>&1', ['unit' => $unit]);
+    }
+}
+
+/**
+ * Whether a unit is up and has stayed up. Given a moment first: a daemon that
+ * is going to die on its configuration usually does so immediately, and one
+ * that binds a port needs the moment anyway.
+ */
+function daemon_came_up(string $unit): bool
+{
+    sleep(3);
+
+    if (!daemon_is_active($unit)) {
+        return false;
+    }
+
+    // Restarts since the start above mean it is crash-looping rather than
+    // running - reset_daemon_failure() zeroed this counter first, so anything
+    // here happened in the last few seconds.
+    if (running_as_root()) {
+        return (int) run('systemctl show -p NRestarts --value :unit 2>/dev/null', ['unit' => $unit])['output'] === 0;
+    }
+
+    return true;
 }
 
 /**
@@ -1919,8 +2125,10 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
     $active = run('systemctl is-active :unit 2>/dev/null', ['unit' => $unit])['output'] === 'active';
 
     // Already installed as a current system unit - just retire any lingering
-    // user-level copy and move on.
-    if ($existing === $contents && $active) {
+    // user-level copy and move on. Inactive counts as installed while the
+    // daemons are stopped for the upgrade: the unit file is the thing being
+    // checked here, and this run is the reason it is not running.
+    if ($existing === $contents && ($active || upgrade_window_open())) {
         remove_user_service($prior_user, $unit);
         ok($unit . ' already installed as a system service (runs as ' . $service_user . ')');
 
@@ -1948,6 +2156,19 @@ function migrate_service_to_system(string $unit, string $contents, string $servi
 
     run('systemctl daemon-reload 2>&1');
     run('systemctl enable :unit 2>&1', ['unit' => $unit]);
+
+    // Installed and enabled, but deliberately not started while the daemons
+    // are stopped for the upgrade: the schema work has not run yet, and a
+    // daemon started against a database this run is still changing crashes on
+    // the columns it is about to gain. start_daemons_after_upgrade() starts it
+    // and reports whether it came up.
+    if (upgrade_window_open()) {
+        remove_user_service($prior_user, $unit);
+        ok($unit . ' installed as a system service (runs as ' . $service_user . ')');
+
+        return true;
+    }
+
     run('systemctl restart :unit 2>&1', ['unit' => $unit]);
 
     if (!system_unit_healthy($unit)) {
@@ -3812,9 +4033,26 @@ $run_environment_checks = function (): array {
     return $failures;
 };
 
-// Restart whatever's already running before testing it - see
-// restart_already_running_daemons()'s docblock for why this isn't optional.
-restart_already_running_daemons();
+// Nothing runs while the work happens - see stop_daemons_for_upgrade(). The
+// checks below therefore report on the units rather than on live daemons, and
+// start_daemons_after_upgrade() puts back what was running once code and
+// schema have both settled.
+$daemons_were_running = stop_daemons_for_upgrade();
+
+// Whatever happens between here and there, the daemons come back. There are
+// dozens of ways this run can stop early - a failed check, a refused prompt, a
+// fatal - and every one of them would otherwise leave the site with no
+// WebSocket and no workers, which is a far worse outcome than whatever ended
+// the run. The window flag is what makes this a no-op on the ordinary path:
+// start_daemons_after_upgrade() closes it before this ever fires.
+register_shutdown_function(static function () use (&$daemons_were_running): void {
+    if (!upgrade_window_open()) {
+        return;
+    }
+
+    warn('This run ended before it finished - starting the background daemons again.');
+    start_daemons_after_upgrade($daemons_were_running);
+});
 
 $environment_failures = $run_environment_checks();
 
@@ -4714,14 +4952,12 @@ ok('database marked as version ' . $code_version);
 // against the fully sharded tree.
 shard_uploads_tree();
 
-// Restart the long-running daemons, at the end, once code and schema are both
-// settled - they load code into memory at start, so a pull (or a src/classes
-// change they autoload) leaves them running stale until restarted. Done every
-// run, not just on a schema change: re-running the installer is the natural
-// "make what's running match what's deployed" step, and an unconditional
-// restart doubles as a troubleshooting reset for a wedged daemon.
-restart_already_running_daemons();
-ok('background daemons restarted');
+// Start the long-running daemons again, at the end, once code and schema are
+// both settled - they load code into memory at start, so one running through
+// the work would be running whatever was deployed last, and one started before
+// the schema work would crash on the columns it is about to gain. They were
+// stopped at the top of the run for exactly that reason.
+start_daemons_after_upgrade($daemons_were_running);
 
 // ---------- Done ----------
 

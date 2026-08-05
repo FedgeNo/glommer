@@ -185,6 +185,51 @@ class RemoteActor
      *
      * @param array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string} $actor
      */
+    /**
+     * Re-reads the shadow accounts this server holds that are missing the
+     * inbox a message would be delivered to, and fills it in.
+     *
+     * A row can end up that way when it was created before this server learned
+     * to record an inbox, or when the fetch that created it half-succeeded.
+     * Nothing surfaces the gap - the account looks ordinary, offers a Message
+     * button like any other, and the message simply has nowhere to go - so it
+     * is repaired rather than waited on.
+     *
+     * Fetches one actor per row, so it belongs in the installer or a
+     * deliberate run, never in a request.
+     *
+     * @return array{repaired: int, failed: int}
+     */
+    public static function repairMissingInboxes(): array
+    {
+        $no_inbox = '';
+
+        $incomplete = DB::rows('
+SELECT `remoteActorURI`
+    FROM `Users`
+    WHERE `remoteActorURI` IS NOT NULL
+        AND (`remoteActorInboxURL` IS NULL OR `remoteActorInboxURL` = ?)
+', 'User', 's', $no_inbox);
+
+        $repaired = 0;
+        $failed = 0;
+
+        foreach ($incomplete as $shadow) {
+            $actor = self::fetch((string) $shadow -> remoteActorURI);
+
+            if ($actor === null || $actor['inbox'] === '') {
+                $failed++;
+
+                continue;
+            }
+
+            self::upsert($actor);
+            $repaired++;
+        }
+
+        return ['repaired' => $repaired, 'failed' => $failed];
+    }
+
     public static function upsert(array $actor): void
     {
         $existing = User::byRemoteActorURI($actor['id']);

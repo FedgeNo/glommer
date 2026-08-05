@@ -4952,6 +4952,20 @@ ok('database marked as version ' . $code_version);
 // against the fully sharded tree.
 shard_uploads_tree();
 
+// A shadow account with no inbox recorded looks ordinary and offers a Message
+// button like any other, but the message has nowhere to go. Repaired here
+// rather than left: it takes one fetch per affected account, which is why it
+// belongs in a deliberate run and not in a request.
+$inbox_repair = RemoteActor::repairMissingInboxes();
+
+if ($inbox_repair['repaired'] > 0) {
+    ok('filled in the missing inbox for ' . $inbox_repair['repaired'] . ' Fediverse account(s)');
+}
+
+if ($inbox_repair['failed'] > 0) {
+    warn($inbox_repair['failed'] . ' Fediverse account(s) could not be re-read - they cannot be messaged until their server answers again.');
+}
+
 // Start the long-running daemons again, at the end, once code and schema are
 // both settled - they load code into memory at start, so one running through
 // the work would be running whatever was deployed last, and one started before

@@ -150,6 +150,14 @@ class OtherUser extends User
             'description' => $user -> description,
             'image' => $user -> avatarURL(),
             'createdAt' => $user -> createdAt,
+            // Whether this is a Fediverse account, which decides the actions
+            // the card offers - following rather than friendship. Without it
+            // the client rebuilt every remote account as a local one and
+            // offered to send a friend request no server would answer.
+            'remote' => $user -> remoteActorURI !== null,
+            'following' => $viewer !== null && $user -> remoteActorURI !== null
+                ? Friendship::follows((int) $viewer -> userId, $user_id)
+                : false,
             'blockedByViewer' => $blocked_by_viewer,
             'blockedByOther' => $blocked_by_other,
             'friendshipStatus' => $friendship ?-> status,

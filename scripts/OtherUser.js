@@ -18,6 +18,10 @@ export class OtherUser extends User {
     friendshipStatus = null;
     friendshipSentByViewer = null;
     isMod = false;
+    // A Fediverse account, and whether the viewer follows it - what the card
+    // offers instead of friendship. See toElement().
+    remote = false;
+    following = false;
     friendshipId = null;
     element = null;
 
@@ -55,7 +59,22 @@ export class OtherUser extends User {
 
             this.beforeActions().forEach((button) => actions.appendWithSpace(button));
 
-            if (this.friendshipStatus === null || sent_by_viewer) {
+            // Mirrors OtherUser.php: a Fediverse account can't hold up its end
+            // of a friendship - there is no person on this side of it - so the
+            // mutual action is replaced by the one-way one that does mean
+            // something. Messaging stays, which is the whole point of holding
+            // a shadow account for them.
+            if (this.remote) {
+                const follow_button = document.createElement('button');
+                follow_button.type = 'button';
+                follow_button.className = this.following
+                    ? 'Button UserFollowButton Removing'
+                    : 'Button UserFollowButton';
+                follow_button.dataset.userId = this.userId;
+                follow_button.dataset.following = this.following ? '1' : '0';
+                follow_button.textContent = this.following ? 'Unfollow' : 'Follow';
+                actions.appendWithSpace(follow_button);
+            } else if (this.friendshipStatus === null || sent_by_viewer) {
                 const friend_button = document.createElement('button');
                 friend_button.type = 'button';
                 friend_button.className = sent_by_viewer

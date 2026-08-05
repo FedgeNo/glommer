@@ -99,11 +99,17 @@ export class Search {
 
         this.resultsContainer.replaceChildren();
 
+        // Extracted before the callback runs, and handed to it: every endpoint
+        // names its results something slightly different (items, users, posts)
+        // and a callback that guessed wrong used to throw here - after the
+        // list had been emptied and before anything was rendered into it, so
+        // the search simply went blank.
+        const items = this._extractItems(data);
+
         if (this._originalOnResponse) {
-            this._originalOnResponse(this.input, data);
+            this._originalOnResponse(this.input, data, items);
         }
 
-        const items = this._extractItems(data);
         items.forEach(item => {
             const el = this.renderItem(item);
             this.resultsContainer.appendWithSpace(list_item(el));
@@ -185,7 +191,7 @@ export class Search {
             renderItem: userData => OtherUser.fromData(userData).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.OtherUser').length,
-            onResponse: (input, data) => {
+            onResponse: (input, data, items) => {
                 const section = input.closest('.UserSearch').querySelector('.UserSearchSection');
                 const searching = input.value.trim() !== '';
                 section.querySelector('h2').textContent = searching ? 'User Search Results' : 'Suggested Users';
@@ -193,7 +199,7 @@ export class Search {
                 // Mirrors UserSearchList's two empty notices. Without it the
                 // list just empties and the heading is the only thing left,
                 // which reads as the page having failed rather than answered.
-                if (data.response.items.length === 0) {
+                if (items.length === 0) {
                     const notice = document.createElement('p');
                     notice.className = 'muted Notice';
                     notice.textContent = searching
@@ -263,8 +269,8 @@ export class Search {
             renderItem: data => BannedUser.fromData(data).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.BannedUser').length,
-            onResponse: (input, data) => {
-                if (data.response.items.length === 0) {
+            onResponse: (input, data, items) => {
+                if (items.length === 0) {
                     const notice = document.createElement('p');
                     notice.className = 'muted Notice';
                     notice.textContent = input.value.trim() === '' ? 'No banned users.' : 'No banned users match that search.';

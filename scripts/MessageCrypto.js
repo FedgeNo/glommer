@@ -14,7 +14,11 @@
  */
 
 const CURVE = { name: 'ECDH', namedCurve: 'P-256' };
-const PBKDF2_ITERATIONS = 600000;
+// What it costs to turn a passphrase into the key that unwraps the private
+// one, and so what it costs to guess a passphrase against a stolen blob. A
+// wrapped key records the count it was made with, so raising this only affects
+// keys wrapped from now on and never locks an older one out.
+const PBKDF2_ITERATIONS = 1000000;
 
 function to_base64(bytes) {
     return btoa(String.fromCharCode(...new Uint8Array(bytes)));

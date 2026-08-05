@@ -28,6 +28,10 @@ class MessageKeySetupForm extends FormForm
             $this -> contents[] = $warning;
         }
 
+        $requirements = new Paragraph();
+        $requirements -> contents[] = 'At least 12 characters, and not your account password - that one is sent to this server, and your passphrase must never be.';
+        $this -> contents[] = $requirements;
+
         $passphrase = new InputField('passphrase', $this -> reset ? 'New passphrase' : 'Passphrase', 'password');
         $passphrase -> autocomplete = 'new-password';
         $this -> contents[] = $passphrase;

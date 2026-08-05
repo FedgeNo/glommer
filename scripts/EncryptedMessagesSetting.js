@@ -11,7 +11,7 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
  * enabled account - no page reload.
  */
 export class EncryptedMessagesSetting {
-    static MIN_PASSPHRASE_LENGTH = 8;
+    static MIN_PASSPHRASE_LENGTH = 12;
 
     /**
      * Keys created or rewrapped since the page loaded. Preferred over what the
@@ -51,8 +51,9 @@ export class EncryptedMessagesSetting {
     /** Creates a keypair (or replaces one - the reset variant) and stores it wrapped. */
     static async #setup(form) {
         const passphrase = form.querySelector('[name="passphrase"]').value;
+        const account_password = form.querySelector('[name="setupAccountPassword"]').value;
 
-        if (!EncryptedMessagesSetting.#acceptable(passphrase, form.querySelector('[name="passphraseConfirm"]').value)) return;
+        if (!EncryptedMessagesSetting.#acceptable(passphrase, form.querySelector('[name="passphraseConfirm"]').value, account_password)) return;
 
         const submit_button = form.querySelector('button[type="submit"]');
         submit_button.disabled = true;
@@ -64,7 +65,7 @@ export class EncryptedMessagesSetting {
             const result = await Api.post('/api/message-keys', {
                 publicKey: pair.publicKey,
                 wrappedPrivateKey: wrapped,
-                password: form.querySelector('[name="setupAccountPassword"]').value,
+                password: account_password,
             });
             if (result === null) return;
 
@@ -90,8 +91,9 @@ export class EncryptedMessagesSetting {
     /** Same key, new wrapping: unwrap under the old passphrase, rewrap under the new. */
     static async #changePassphrase(form) {
         const new_passphrase = form.querySelector('[name="newPassphrase"]').value;
+        const account_password = form.querySelector('[name="rewrapAccountPassword"]').value;
 
-        if (!EncryptedMessagesSetting.#acceptable(new_passphrase, form.querySelector('[name="newPassphraseConfirm"]').value)) return;
+        if (!EncryptedMessagesSetting.#acceptable(new_passphrase, form.querySelector('[name="newPassphraseConfirm"]').value, account_password)) return;
 
         const keys = EncryptedMessagesSetting.#keys ?? EncryptedMessagesSetting.#storedKeys(form);
         const private_jwk = await MessageCrypto.unwrapPrivateKey(keys.wrappedPrivateKey, form.querySelector('[name="currentPassphrase"]').value);
@@ -110,7 +112,7 @@ export class EncryptedMessagesSetting {
             const result = await Api.post('/api/message-keys', {
                 publicKey: keys.publicKey,
                 wrappedPrivateKey: wrapped,
-                password: form.querySelector('[name="rewrapAccountPassword"]').value,
+                password: account_password,
             });
             if (result === null) return;
 
@@ -159,14 +161,46 @@ export class EncryptedMessagesSetting {
         section.appendWithSpace(reset_form);
     }
 
-    static #acceptable(passphrase, confirmation) {
+    /**
+     * What is wrong with a proposed passphrase, or null if nothing is.
+     *
+     * This one secret guards every encrypted message the account will ever
+     * hold, on every device, for as long as the account exists - there is no
+     * second factor behind it and no reset that keeps the messages. So the bar
+     * is higher than a password's, where a lockout and a reset stand behind a
+     * weak choice.
+     *
+     * Reusing the account password is refused outright and is the important
+     * one: the account password is sent to the server to authorise this very
+     * change, so making it the passphrase too hands the server the key it is
+     * not supposed to have, and the encryption stops meaning anything.
+     */
+    static passphraseProblem(passphrase, confirmation, account_password) {
         if (passphrase.length < EncryptedMessagesSetting.MIN_PASSPHRASE_LENGTH) {
-            Toast.show('Use a passphrase of at least ' + EncryptedMessagesSetting.MIN_PASSPHRASE_LENGTH + ' characters.');
-            return false;
+            return 'Use a passphrase of at least ' + EncryptedMessagesSetting.MIN_PASSPHRASE_LENGTH + ' characters.';
         }
 
         if (passphrase !== confirmation) {
-            Toast.show('The passphrases don\'t match.');
+            return 'The passphrases don\'t match.';
+        }
+
+        if (account_password !== '' && passphrase === account_password) {
+            return 'Your passphrase can\'t be your account password - that one is sent to the server, and this one must never be.';
+        }
+
+        if (new Set(passphrase).size < 5) {
+            return 'That passphrase repeats too few different characters to be worth much. Use a longer phrase.';
+        }
+
+        return null;
+    }
+
+    static #acceptable(passphrase, confirmation, account_password) {
+        const problem = EncryptedMessagesSetting.passphraseProblem(passphrase, confirmation, account_password);
+
+        if (problem !== null) {
+            Toast.show(problem);
+
             return false;
         }
 

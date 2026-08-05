@@ -89,10 +89,18 @@ a WebSocket open, transcoding video out of band).
   channel can see that nothing was substituted, and can mark it verified so a
   later change is called out. That leaves only the page itself as something to
   trust - a server serving modified code is outside what any of this can check.
-  Each member's private key is wrapped under a passphrase that
-  never leaves their device; the wrapped blob is stored server-side, so the
-  same passphrase unlocks the history from any browser - and losing it loses
-  the encrypted history, with no operator recovery. Reporting still works via
+  Each member's private key is wrapped under a passphrase (PBKDF2, one million
+  iterations) that never leaves their device; the wrapped blob is stored
+  server-side, so the same passphrase unlocks the history from any browser -
+  and losing it loses the encrypted history, with no operator recovery. That
+  property is also the deliberate limit of the design: because any browser can
+  still open old messages, the keys that open them still exist, so there is no
+  forward secrecy and a passphrase learned later exposes the whole history.
+  Discarding old keys is the only way to buy that, and it would mean a new
+  browser starting from an empty conversation - the opposite of what this is
+  for. The passphrase is therefore held to a higher bar than a password (12
+  characters minimum, and refused outright if it matches the account password,
+  which the server does see). Reporting still works via
   **message franking**: the server HMACs each ciphertext as it relays it, and
   a report reveals that one message's key (never the conversation's), which
   the server verifies against its own tag before trusting the plaintext. Each

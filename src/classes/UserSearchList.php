@@ -58,18 +58,29 @@ class UserSearchList extends UserList
         $viewer_id = (int) Auth::id();
         $limit = static::PAGE_SIZE + 1;
 
-        // nameMatch (a hit on the username or display name) orders every name
-        // match ahead of a bio-only (full-text) match; userId breaks the ties
-        // so the order is total and stable across the growing-offset requests
-        // infinite scroll makes - without a tiebreaker, rows sharing a
-        // nameMatch value have no defined order and a page could repeat or skip
+        // localMember leads the ordering so this site's own people always come
+        // first. A server subscribed to a relay holds a shadow account for
+        // every author whose post has passed through it - thousands of
+        // strangers nobody here follows, against a membership that might be
+        // eight - and without this the members someone was actually looking for
+        // are somewhere on page forty.
+        //
+        // Remote accounts are still listed, and must be: finding one by handle
+        // is how you follow it, and a blocked one has to stay findable to be
+        // unblocked.
+        //
+        // Then nameMatch (a hit on the username or display name) orders every
+        // name match ahead of a bio-only (full-text) match; userId breaks the
+        // ties so the order is total and stable across the growing-offset
+        // requests infinite scroll makes - without a tiebreaker, rows sharing
+        // these values have no defined order and a page could repeat or skip
         // accounts.
         return DB::rows('
-SELECT *, (`slug` LIKE ? OR `title` LIKE ?) AS `nameMatch`
+SELECT *, (`slug` LIKE ? OR `title` LIKE ?) AS `nameMatch`, (`remoteActorURI` IS NULL) AS `localMember`
     FROM `Users`
     WHERE (`slug` LIKE ? OR `title` LIKE ? OR MATCH(`description`) AGAINST(? IN BOOLEAN MODE))
         AND `userId` != ? AND `banned` = ?
-    ORDER BY `nameMatch` DESC, `userId` DESC
+    ORDER BY `localMember` DESC, `nameMatch` DESC, `userId` DESC
     LIMIT ? OFFSET ?
 ', 'OtherUser', 'sssssiiii', $like, $like, $like, $like, $ft_query, $viewer_id, $not_banned, $limit, $this -> offset);
     }

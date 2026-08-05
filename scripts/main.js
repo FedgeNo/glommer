@@ -36,6 +36,7 @@ if (document.querySelector('.NotificationList'))       import('/scripts/Notifica
 if (document.querySelector('.ReportList'))             import('/scripts/ReportCard.js');
 if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');
 if (document.querySelector('.BlockedDomainList'))      import('/scripts/BlockedDomainCard.js');
+if (document.querySelector('.RelayList'))              import('/scripts/RelayCard.js');
 
 if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get('currentUserId') !== null) {
     import('/scripts/Composer.js');

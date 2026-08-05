@@ -86,7 +86,7 @@ class MainNavigation extends Nav
 
         $current_user = Auth::user();
 
-        return [
+        $links = [
             new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
             new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/friends'), 'Friends'),
             new Anchor(ServerURL::absolute('/users/'), 'Users'),
@@ -100,6 +100,15 @@ class MainNavigation extends Nav
             new Anchor(ServerURL::absolute('/help/'), 'Help'),
             new Anchor(ServerURL::absolute('/about'), 'About'),
         ];
+
+        // Only where a relay is actually subscribed: on a server that never
+        // joins one the feed can only ever be empty, and a permanent link to
+        // it is furniture in everybody's way.
+        if (Relay::anySubscribed()) {
+            array_splice($links, 1, 0, [new Anchor(ServerURL::absolute('/relay-feed'), 'Relay Feed')]);
+        }
+
+        return $links;
     }
 
     /**
@@ -132,6 +141,7 @@ class MainNavigation extends Nav
         // alone, not general moderators'.
         if (Auth::id() === 1) {
             $links[] = new Anchor(ServerURL::absolute('/admin/settings'), 'Site Settings');
+            $links[] = new Anchor(ServerURL::absolute('/admin/relays'), 'Relays');
         }
 
         return $links;

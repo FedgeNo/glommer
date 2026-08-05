@@ -19,11 +19,17 @@ $offset = max(0, (int) ($payload['offset'] ?? 0));
 $profile_user_id = (int) ($payload['userId'] ?? 0);
 $tag = strtolower(trim((string) ($payload['tag'] ?? '')));
 
-if (!in_array($feed_type, ['global', 'friends', 'user', 'tag'], true)) {
+if (!in_array($feed_type, ['global', 'friends', 'user', 'tag', 'relay'], true)) {
     JSONResponse::error('Invalid request', 422) -> send();
 }
 
 if ($feed_type === 'friends' && !Auth::check()) {
+    JSONResponse::error('Not logged in', 401) -> send();
+}
+
+// The firehose is other servers' writing, held to the same members-only rule
+// as every other remote-origin listing.
+if ($feed_type === 'relay' && !Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
 }
 
@@ -49,6 +55,7 @@ $feed = match ($feed_type) {
     'friends' => new FriendsFeedList(['userId' => (int) Auth::user() -> userId, 'offset' => $offset]),
     'user' => new ProfileFeedList(['userId' => $profile_user_id, 'offset' => $offset]),
     'tag' => new TagFeedList(['tag' => $tag, 'offset' => $offset]),
+    'relay' => new RelayFeedList(['offset' => $offset]),
     default => new GlobalFeedList(['offset' => $offset]),
 };
 

@@ -40,6 +40,25 @@ class ActivityPubFetch
     }
 
     /**
+     * One ActivityPub object, decoded - for a post named to this server rather
+     * than delivered to it, which is how a relay forwards them.
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function object(string $object_uri): ?array
+    {
+        $response = self::getJSON($object_uri);
+
+        if ($response === null) {
+            return null;
+        }
+
+        $object = json_decode($response['body'], true);
+
+        return is_array($object) ? $object : null;
+    }
+
+    /**
      * The Host, Date and Signature a signed fetch carries, or nothing at all
      * when this instance cannot sign - in which case the request goes unsigned
      * rather than not going.

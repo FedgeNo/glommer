@@ -511,6 +511,47 @@ CREATE TABLE `RateLimitAttempts` (
 -- signature is valid for as long as its Date header is fresh (an hour), which
 -- without this is an hour in which a captured delivery can be posted again by
 -- anyone who saw it. Rows older than that window are swept as new ones arrive.
+-- A shared firehose this server subscribes to. A relay forwards every public
+-- post from every other subscribed server, and takes this server's in return,
+-- which is the usual answer to a new instance seeing nothing: federation is
+-- follow-shaped, and a server nobody follows from receives nothing to discover
+-- anyone by.
+--
+-- followObject records which form the subscribing Follow named, because
+-- implementations disagree about it - some expect the relay's own actor, some
+-- expect as:Public. Only ever one per relay: sending both would be one
+-- subscription counted twice, and the Undo has to name the same thing the
+-- Follow did.
+CREATE TABLE `Relays` (
+  `relayId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `actorURI` varchar(255) NOT NULL,
+  `inboxURL` varchar(255) NOT NULL,
+  `followActivityId` varchar(255) NOT NULL,
+  `followObject` varchar(16) NOT NULL DEFAULT 'public',
+  `status` varchar(16) NOT NULL DEFAULT 'pending',
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`relayId`),
+  UNIQUE KEY `actorURI` (`actorURI`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Which posts arrived through a relay rather than through anybody here
+-- following their author. Its own table for the same reason PostLocations is:
+-- only a post that actually came that way costs a row, and it is what keeps
+-- the firehose to a feed of its own rather than letting it into the main one.
+--
+-- relayId goes null rather than cascading when a relay is dropped: the posts
+-- have already been read, replied to and liked, and removing a subscription is
+-- not a reason to make them vanish - only a reason to stop new ones arriving.
+CREATE TABLE `RelayPosts` (
+  `postId` int(10) unsigned NOT NULL,
+  `relayId` int(10) unsigned DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`postId`),
+  KEY `relayId` (`relayId`),
+  CONSTRAINT `fk_relayposts_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_relayposts_relay` FOREIGN KEY (`relayId`) REFERENCES `Relays` (`relayId`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `ActivityPubReplays` (
   `signatureHash` char(64) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),

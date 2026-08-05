@@ -151,6 +151,12 @@ a WebSocket open, transcoding video out of band).
   only - this server never re-publishes another server's content to the open
   web. Admins and moderators can defederate whole domains (Blocked Servers),
   which severs existing follows both ways.
+- **Relays** - optional, off until an admin subscribes to one. A relay is a
+  shared firehose: every public post from every other subscribed server
+  arrives, and this server's go out to all of them, which is how a new
+  instance finds anyone at all when nobody is following it yet. What arrives
+  goes to a **Relay Feed** of its own rather than into the main or friends
+  feeds, and the link to it only appears once a relay is actually subscribed.
 - **Everything AJAX** - all updates go over JSON endpoints and update the DOM
   in place; full-page reloads are rare. Every `/api/` endpoint is POST-only and
   CSRF-protected (the one exception is the moderator media-preview stream,
@@ -490,6 +496,16 @@ config) are theirs alone; general moderators can work the reports queue, ban
 users, ban trending entities, and defederate whole domains from the
 **Blocked Servers** page - a domain block refuses that server's deliveries,
 stops all fetches to it, and severs existing follows in both directions.
+
+**Relays** (`/admin/relays`, admin only) subscribe this server to a shared
+firehose. Weigh it before subscribing: the volume is whatever the servers on
+the other side publish - quiet one week, thousands of posts an hour the next -
+and your storage, delivery queue and moderation queue all carry it. Subscribing
+sends a Follow signed by the instance and the relay answers it, so a
+subscription sits at "waiting" until it does. Relay software disagrees about
+whether that Follow should name the relay's own actor or the public stream, so
+the form offers both; if one is never accepted, withdraw and try the other.
+Unsubscribing stops new posts and leaves the ones already here.
 
 ## 12. Upgrading
 

@@ -147,8 +147,11 @@ SELECT COUNT(*) AS `total`
             return;
         }
 
+        // Subscribed relays are fed exactly what a follower is: a relay stands
+        // in for a crowd of them, and half of what subscribing to one buys is
+        // that this server's public posts reach everyone else subscribed.
         $inboxes = array_filter(
-            array_merge(FediverseFollower::deliveryInboxesFor((int) $author -> userId), $also),
+            array_merge(FediverseFollower::deliveryInboxesFor((int) $author -> userId), Relay::deliveryInboxes(), $also),
             static fn (string $inbox): bool => $inbox !== '' && !ActivityPubActor::isLocalActorURI($inbox)
         );
 

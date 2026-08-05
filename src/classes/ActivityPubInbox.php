@@ -129,18 +129,107 @@ class ActivityPubInbox
         ActivityPubReaction::liked($object_uri, $actor);
     }
 
-    /** A boost of a post here. */
+    /** A boost of a post here - or, from a relay, the firehose arriving. */
     private static function handleAnnounce(array $activity, string $actor_uri): void
     {
         $object_uri = self::objectURI($activity['object'] ?? null);
+
+        if ($object_uri === null) {
+            return;
+        }
+
+        // A relay announces other servers' posts at us rather than boosting
+        // ours, so what it names is something to go and read, not something to
+        // credit an account here with passing on.
+        if (Relay::isSubscribed($actor_uri)) {
+            self::relayedPost($object_uri, $actor_uri);
+
+            return;
+        }
+
         $actor = User::byRemoteActorURI($actor_uri);
         $activity_uri = $activity['id'] ?? null;
 
-        if ($object_uri === null || $actor === null || !is_string($activity_uri) || $activity_uri === '') {
+        if ($actor === null || !is_string($activity_uri) || $activity_uri === '') {
             return;
         }
 
         ActivityPubReaction::announced($object_uri, $actor, $activity_uri);
+    }
+
+    /**
+     * A post a relay has named. Modern relays forward the URI rather than the
+     * post, so it has to be read from the server that wrote it - which is also
+     * the only way to be sure of it: the relay is a stranger passing on a
+     * claim, and nothing it says about somebody else's post is taken on trust.
+     *
+     * The fetch is signed, so this works against an instance in secure mode.
+     */
+    private static function relayedPost(string $object_uri, string $relay_actor_uri): void
+    {
+        $relay = Relay::byActorURI($relay_actor_uri);
+
+        if ($relay === null || !self::isStorableObjectURI($object_uri) || RemoteObjectTombstone::isTombstoned($object_uri)) {
+            return;
+        }
+
+        // Already held - through a follow, or through another relay naming the
+        // same post. Recorded against this relay too, so it shows in the
+        // firehose feed rather than only wherever it first landed.
+        $existing = self::postIdForRemoteObject($object_uri);
+
+        if ($existing !== null) {
+            Relay::recordPost($existing, (int) $relay -> relayId);
+
+            return;
+        }
+
+        if (BlockedDomain::blocksURL($object_uri)) {
+            return;
+        }
+
+        $object = ActivityPubFetch::object($object_uri);
+
+        if ($object === null || !in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
+            return;
+        }
+
+        // The document has to be the one that was asked for, and has to be
+        // attributed to somebody on its own host: a relay could otherwise name
+        // a URI whose server hands back a post claiming to be by an account
+        // somewhere else entirely.
+        $id = is_string($object['id'] ?? null) ? $object['id'] : '';
+        $attributed_to = $object['attributedTo'] ?? null;
+
+        if ($id !== $object_uri || !is_string($attributed_to) || !RemoteActor::sameHost($attributed_to, $object_uri)) {
+            return;
+        }
+
+        // A reply read out of context has nothing here to hang from, the same
+        // rule the follow path applies - and a relay carries a great many of
+        // them.
+        if (isset($object['inReplyTo']) && $object['inReplyTo'] !== null && $object['inReplyTo'] !== '') {
+            return;
+        }
+
+        $author = RemoteActor::ensureKnown($attributed_to);
+
+        if ($author === null || $author -> banned === 1) {
+            return;
+        }
+
+        $post_id = self::storeNote($object, $object_uri, $author);
+
+        if ($post_id === null) {
+            return;
+        }
+
+        Relay::recordPost($post_id, (int) $relay -> relayId);
+
+        // Somebody here may follow this author anyway - the relay just got the
+        // post here first. Fanning out is what puts it in their feed as well as
+        // in the firehose; with no follower it writes nothing.
+        Timeline::fanOutRemotePost($attributed_to, $post_id);
     }
 
     /** An object reference is either the URI itself or a document carrying its id. */
@@ -280,6 +369,14 @@ class ActivityPubInbox
 
     private static function handleAccept(array $activity, string $actor_uri): void
     {
+        $relay = self::answeredRelay($activity, $actor_uri);
+
+        if ($relay !== null) {
+            Relay::accepted((int) $relay -> relayId);
+
+            return;
+        }
+
         $follow = self::answeredFollow($activity, $actor_uri);
 
         if ($follow === null) {
@@ -302,6 +399,14 @@ UPDATE `RemoteFollows`
      */
     private static function handleReject(array $activity, string $actor_uri): void
     {
+        $relay = self::answeredRelay($activity, $actor_uri);
+
+        if ($relay !== null) {
+            Relay::rejected((int) $relay -> relayId);
+
+            return;
+        }
+
         $follow = self::answeredFollow($activity, $actor_uri);
 
         if ($follow === null) {
@@ -330,6 +435,24 @@ DELETE
      * than the embedded object, is handled the same way - it's the id either
      * way.
      */
+    /**
+     * The relay subscription an Accept or Reject answers, matched the same way
+     * a member's follow is: on the activity id this server recorded when it
+     * sent the Follow. Without that, a server could grant itself a
+     * subscription here by asserting an answer to a request nobody made.
+     */
+    private static function answeredRelay(array $activity, string $actor_uri): ?Relay
+    {
+        $object = $activity['object'] ?? null;
+        $follow_activity_id = is_array($object) ? ($object['id'] ?? null) : $object;
+
+        if (!is_string($follow_activity_id) || $follow_activity_id === '') {
+            return null;
+        }
+
+        return Relay::answering($actor_uri, $follow_activity_id);
+    }
+
     private static function answeredFollow(array $activity, string $actor_uri): ?RemoteFollow
     {
         $object = $activity['object'] ?? null;
@@ -557,6 +680,31 @@ UPDATE `Posts`
             }
         }
 
+        $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
+
+        // Only top-level posts fan out to followers' feeds - a reply is
+        // reached through the parent post's own reply list, the same as any
+        // other reply, visible to whoever can already see that parent.
+        if ($post_id !== null && $parent_id === null) {
+            Timeline::fanOutRemotePost($actor_uri, $post_id);
+        }
+    }
+
+    /**
+     * Writes an inbound post and everything hanging off it, once whoever is
+     * calling has established that it may be written: that the object belongs
+     * to the server vouching for it, and who its author is here.
+     *
+     * Shared by the two ways a post arrives - delivered by the account that
+     * wrote it, or named at us by a relay - so there is one definition of what
+     * storing one means. Whose feeds it then reaches is the caller's business,
+     * because that is the part the two paths genuinely differ on.
+     *
+     * @param array<string, mixed> $object
+     * @return int|null the new post's id, or null if the insert lost a race
+     */
+    private static function storeNote(array $object, string $object_uri, User $author, ?int $parent_id = null): ?int
+    {
         // What the sender says its own shortcodes mean. Recorded before the
         // post, so the body renders with them from the first view.
         CustomEmoji::learnFrom(is_array($object['tag'] ?? null) ? $object['tag'] : [], $object_uri);
@@ -568,10 +716,22 @@ UPDATE `Posts`
         // is a cover over media that didn't need one.
         $sensitive = ($object['sensitive'] ?? false) === true ? 1 : 0;
 
-        $stmt = DB::run('
+        try {
+            DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`)
     VALUES (?, ?, ?, ?, ?, ?)
 ', 'iisssi', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive);
+        } catch (\mysqli_sql_exception $exception) {
+            // 1062 = the unique remoteObjectURI rejected a post already held.
+            // Two relays naming the same post at once is an ordinary race, not
+            // a failure worth raising.
+            if ($exception -> getCode() === 1062) {
+                return null;
+            }
+
+            throw $exception;
+        }
+
         $post_id = (int) mysqli_insert_id(DB::connection());
 
         self::storeAttachments($object['attachment'] ?? null, $post_id);
@@ -584,12 +744,7 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
             Poll::fromQuestion($post_id, $object);
         }
 
-        // Only top-level posts fan out to followers' feeds - a reply is
-        // reached through the parent post's own reply list, the same as any
-        // other reply, visible to whoever can already see that parent.
-        if ($parent_id === null) {
-            Timeline::fanOutRemotePost($actor_uri, $post_id);
-        }
+        return $post_id;
     }
 
     /**

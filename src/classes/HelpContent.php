@@ -355,6 +355,18 @@ class HelpContent
 ',
             ],
             [
+                'slug' => 'the-relay-feed',
+                'title' => 'The Relay Feed',
+                'category' => 'Connecting',
+                'summary' => 'Where posts from the wider Fediverse arrive when this server subscribes to a relay.',
+                'body' => '
+<p>If you see a <strong>Relay Feed</strong> in the menu, this server subscribes to a relay - a shared firehose that carries public posts between servers that have all joined it. It is how a small site sees anything from the wider Fediverse before its members have found people to follow: normally a server only receives what someone here already follows, which leaves a new site very quiet.</p>
+<p>It is deliberately kept apart from your other feeds. Nobody here chose these posts or follows the people who wrote them - it is simply everything those servers published - so it never mixes into the main feed or your <a href="/help/your-feeds">Friends Feed</a>. You open it when you feel like browsing, and it leaves you alone otherwise.</p>
+<p>You can reply to, like and report anything in it the same as any other post, and if you find someone worth keeping up with you can <a href="/help/following-on-the-fediverse">follow them</a> - their posts then arrive in your Friends Feed like anyone else\'s, whether or not the relay is still subscribed.</p>
+<p>Only the administrator decides whether this server uses a relay at all. If there is no Relay Feed in your menu, this one does not.</p>
+',
+            ],
+            [
                 'slug' => 'your-feeds',
                 'title' => 'Your feeds',
                 'category' => 'Connecting',

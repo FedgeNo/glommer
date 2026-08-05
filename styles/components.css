@@ -1754,6 +1754,19 @@ body.MessagesPage { padding-bottom: 9rem; }
 .MapComposer.Active { display: flex !important; }
 
 
+/* One relay on the admin page, and the field that picks how to subscribe. */
+.RelayCard p { overflow-wrap: anywhere; }
+
+.RelayFollowObjectField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.RelayFollowObjectField > p {
+    margin-bottom: 0;
+}
+
 /* The conversation's safety code, and what it says once it has been checked
    or has changed underneath someone. */
 .MessageKeyFingerprint {

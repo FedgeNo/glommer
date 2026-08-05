@@ -158,12 +158,14 @@ class ActivityPubInbox
     }
 
     /**
-     * A post a relay has named. Modern relays forward the URI rather than the
-     * post, so it has to be read from the server that wrote it - which is also
-     * the only way to be sure of it: the relay is a stranger passing on a
-     * claim, and nothing it says about somebody else's post is taken on trust.
+     * A post a relay has named - noted for later, not read now.
      *
-     * The fetch is signed, so this works against an instance in secure mode.
+     * Reading it means fetching it from the server that wrote it, and doing
+     * that here would hold a PHP worker for as long as that server takes to
+     * answer, while the relay waits on us. At the rate the inbox already
+     * allows, that is enough held workers to exhaust the pool and stop the
+     * site answering. So this does database work only and returns; the reading
+     * happens in bin/federation-worker.php (see RelayFetch).
      */
     private static function relayedPost(string $object_uri, string $relay_actor_uri): void
     {
@@ -188,10 +190,49 @@ class ActivityPubInbox
             return;
         }
 
+        RelayFetch::enqueue($object_uri, (int) $relay -> relayId);
+    }
+
+    /**
+     * Reads a post a relay named and stores it, called by the federation
+     * worker rather than by an inbox request - see relayedPost() above.
+     *
+     * The fetch is what authenticates it: a relay is a stranger passing on a
+     * claim about somebody else's writing, so nothing it says is taken on
+     * trust and the post is read from its own server, signed, which works
+     * against an instance in secure mode.
+     *
+     * @return bool false only when the read itself failed and is worth one
+     *              more try. Everything else - stored, blocked, not a post we
+     *              take - is finished with, however it turned out.
+     */
+    public static function fetchRelayedPost(string $object_uri, int $relay_id): bool
+    {
+        // Re-checked rather than assumed: this was queued some time ago, and
+        // the post may have arrived through a follow in the meantime, or its
+        // server may have been blocked since.
+        if (RemoteObjectTombstone::isTombstoned($object_uri) || BlockedDomain::blocksURL($object_uri)) {
+            return true;
+        }
+
+        $existing = self::postIdForRemoteObject($object_uri);
+
+        if ($existing !== null) {
+            Relay::recordPost($existing, $relay_id);
+
+            return true;
+        }
+
         $object = ActivityPubFetch::object($object_uri);
 
-        if ($object === null || !in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
-            return;
+        // Unreachable, too slow, or refused - the one case worth asking again
+        // about, since the server may simply have been busy.
+        if ($object === null) {
+            return false;
+        }
+
+        if (!in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
+            return true;
         }
 
         // The document has to be the one that was asked for, and has to be
@@ -202,34 +243,36 @@ class ActivityPubInbox
         $attributed_to = $object['attributedTo'] ?? null;
 
         if ($id !== $object_uri || !is_string($attributed_to) || !RemoteActor::sameHost($attributed_to, $object_uri)) {
-            return;
+            return true;
         }
 
         // A reply read out of context has nothing here to hang from, the same
         // rule the follow path applies - and a relay carries a great many of
         // them.
         if (isset($object['inReplyTo']) && $object['inReplyTo'] !== null && $object['inReplyTo'] !== '') {
-            return;
+            return true;
         }
 
         $author = RemoteActor::ensureKnown($attributed_to);
 
         if ($author === null || $author -> banned === 1) {
-            return;
+            return true;
         }
 
         $post_id = self::storeNote($object, $object_uri, $author);
 
         if ($post_id === null) {
-            return;
+            return true;
         }
 
-        Relay::recordPost($post_id, (int) $relay -> relayId);
+        Relay::recordPost($post_id, $relay_id);
 
         // Somebody here may follow this author anyway - the relay just got the
         // post here first. Fanning out is what puts it in their feed as well as
         // in the firehose; with no follower it writes nothing.
         Timeline::fanOutRemotePost($attributed_to, $post_id);
+
+        return true;
     }
 
     /** An object reference is either the URI itself or a document carrying its id. */

@@ -57,6 +57,34 @@ if (function_exists('pcntl_async_signals')) {
 $authors = [];
 
 while ($running) {
+    // Posts a relay named, read here rather than in the inbox request that
+    // heard about them: fetching one means waiting on somebody else's server,
+    // and doing that under the inbox would hold PHP workers until the pool ran
+    // out. Ahead of the deliveries so a firehose cannot starve the queue that
+    // people are actually waiting on - it is bounded, they are not.
+    foreach (RelayFetch::due() as $fetch) {
+        if (!$running) {
+            break;
+        }
+
+        try {
+            $finished = ActivityPubInbox::fetchRelayedPost((string) $fetch -> objectURI, (int) $fetch -> relayId);
+        } catch (\Throwable $exception) {
+            // One unreadable post must not take the worker down with it -
+            // every delivery queued behind it is waiting.
+            error_log('Relayed post ' . $fetch -> objectURI . ' could not be read: ' . $exception -> getMessage());
+            $finished = false;
+        }
+
+        if ($finished) {
+            RelayFetch::done((int) $fetch -> relayFetchId);
+
+            continue;
+        }
+
+        RelayFetch::failed((int) $fetch -> relayFetchId, (int) $fetch -> attempts);
+    }
+
     $due = FediverseDelivery::due();
 
     if ($due === []) {

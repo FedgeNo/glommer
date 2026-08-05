@@ -534,6 +534,28 @@ CREATE TABLE `Relays` (
   UNIQUE KEY `actorURI` (`actorURI`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Posts a relay has named that have yet to be read from the server that wrote
+-- them. A relay forwards an address rather than a post, so ingesting one means
+-- fetching it - and doing that while the relay waits would hold a PHP worker
+-- for as long as somebody else's server takes to answer. At the inbox's own
+-- rate limit that is enough concurrent workers to exhaust the pool and take
+-- the site down, so the fetch happens in bin/federation-worker.php instead and
+-- the inbox only writes down what to fetch.
+--
+-- objectURI is unique: two relays naming the same post is one thing to read.
+CREATE TABLE `RelayFetches` (
+  `relayFetchId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `relayId` int(10) unsigned DEFAULT NULL,
+  `objectURI` varchar(255) NOT NULL,
+  `attempts` int(10) unsigned NOT NULL DEFAULT 0,
+  `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`relayFetchId`),
+  UNIQUE KEY `objectURI` (`objectURI`),
+  KEY `nextAttemptAt_relayFetchId` (`nextAttemptAt`,`relayFetchId`),
+  CONSTRAINT `fk_relayfetches_relay` FOREIGN KEY (`relayId`) REFERENCES `Relays` (`relayId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Which posts arrived through a relay rather than through anybody here
 -- following their author. Its own table for the same reason PostLocations is:
 -- only a post that actually came that way costs a row, and it is what keeps

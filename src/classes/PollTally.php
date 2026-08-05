@@ -18,7 +18,7 @@ class PollTally extends Footer
     {
         parent::__construct();
 
-        $this -> addContent($voters === 1 ? '1 person voted' : $voters . ' people voted');
+        $this -> addContent($voters === 1 ? '1 person voted ' : $voters . ' people voted ');
         $this -> addContent(new PollDeadline($ends_at, $closed));
     }
 }

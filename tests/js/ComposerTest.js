@@ -147,6 +147,25 @@ export default {
             composer.remove();
         },
 
+        'the hundred-and-first file is refused, not silently truncated later'() {
+            const composer = mounted();
+
+            const batch = [];
+            for (let i = 0; i < Composer.MAX_FILES + 2; i++) {
+                batch.push(imageFile('photo-' + i + '.png'));
+            }
+            pick(composer, batch);
+
+            TestCase.assertEquals(Composer.MAX_FILES, composer.form.querySelectorAll('.ComposerAttachment').length);
+
+            // Still full after another pick - the cap holds across picks, which
+            // is the whole reason it exists client-side.
+            pick(composer, [imageFile('one-more.png')]);
+            TestCase.assertEquals(Composer.MAX_FILES, composer.form.querySelectorAll('.ComposerAttachment').length);
+
+            composer.remove();
+        },
+
         'removing the last file removes the list itself'() {
             const composer = mounted();
             const remove = composer.form.querySelector('.ComposerFilesRemoveButton');

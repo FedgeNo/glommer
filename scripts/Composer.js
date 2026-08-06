@@ -505,10 +505,24 @@ export class Composer {
         }
     }
 
+    /**
+     * The most files one post accepts - the ceiling the server's
+     * max_file_uploads is provisioned for (EnvironmentChecker demands 100+).
+     * Enforced here as well because the attachment list accumulates across
+     * picks: without a client cap, pick 60 twice and the server would
+     * silently truncate the batch.
+     */
+    static MAX_FILES = 100;
+
     #bindFileChange() {
         if (!this.fileInput || !this.removeFilesButton) return;
         this.fileInput.addEventListener('change', () => {
             for (const file of this.fileInput.files) {
+                if (this.#attachments.length >= Composer.MAX_FILES) {
+                    Toast.show('A post can carry at most ' + Composer.MAX_FILES + ' files - the rest were not added.');
+                    break;
+                }
+
                 this.#addAttachment(file);
             }
 

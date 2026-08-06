@@ -23,6 +23,22 @@ $version -> addContent(' version ' . GLOMMER_VERSION);
 
 $version_card = new Card();
 $version_card -> addContent($version);
+
+// Hardcoded rather than left to the admin-written text above: the GeoNames
+// licence (CC BY 4.0) requires attribution wherever its data is used, so it
+// ships with the software - on every install whose place directory is
+// actually loaded - instead of depending on each admin remembering it.
+if (Place::count() > 0) {
+    $credit = new Paragraph('Place names from ');
+    $credit -> class = 'muted text-sm';
+    $credit -> addContent(new Anchor('https://www.geonames.org/', 'GeoNames'));
+    $credit -> addContent(', licensed ');
+    $credit -> addContent(new Anchor('https://creativecommons.org/licenses/by/4.0/', 'CC BY 4.0'));
+    $credit -> addContent('.');
+
+    $version_card -> addContent($credit);
+}
+
 $page -> addContent($version_card);
 
 $page -> send();

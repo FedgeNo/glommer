@@ -11,7 +11,76 @@
    theme into a display piece. Foregrounds are still checked against the worst
    stop of whatever sits behind them, not the flat colour. */
 
+/* The default look is Sunset: what a visitor with a light-mode system sees
+   before choosing anything. Its values are duplicated under
+   [data-theme='sunset'] below for the people who picked it explicitly; the
+   original plain palette lives on as [data-theme='light']. */
 :root {
+    --paper: #ffbfa8;
+    --surface: #ffffff;
+    --surface-2: #ffe3d4;
+    --ink: #35201c;
+    --muted: #62483f;
+    --hairline: #ffd9c2;
+    --accent: #8a3630;
+    --accent-strong: #6f2b26;
+    --accent-soft: #ffe1dc;
+    --accent-ink: #ffffff;
+    --link: var(--accent);
+    --danger: #b21a54;
+    --danger-soft: #fbdce8;
+    --shadow-card: 0 1px 2px rgb(53 32 28 / 0.07), 0 6px 20px -8px rgb(53 32 28 / 0.14);
+    --shadow-pop: 0 4px 10px rgb(53 32 28 / 0.10), 0 16px 40px -12px rgb(53 32 28 / 0.26);
+    --glass: rgb(238 219 240 / 0.88);
+
+    --paper-image: linear-gradient(180deg, #d9c2e8 0%, #f2c4d8 28%, #ffbfa8 52%, #ffcf94 76%, #ffe6b0 100%);
+    --surface-image: linear-gradient(160deg, #ffffff 0%, #fff6f1 100%);
+    --button-image: linear-gradient(160deg, #ffe8dc 0%, #ffdccb 100%);
+    --button-image-hover: linear-gradient(160deg, #ffe2d3 0%, #ffd2bc 100%);
+    --accent-image: linear-gradient(135deg, #9c3d36 0%, #8a3630 55%, #6f2b26 100%);
+
+    --radius-card: 1.125rem;
+    --radius-ctl: 0.5rem;
+    --radius-pill: 999px;
+    --glom-corner: 0.25rem;
+    --display-font: 'Inter', system-ui, sans-serif;
+    --nav-height: calc(3.25rem + 1px);
+    --content-padding-inline: max(1rem, calc((100% - 40rem) / 2));
+}
+
+/* The default dark look is Ironbow: what a dark-mode system gets before
+   choosing anything. Duplicated under [data-theme='ironbow'] below for the
+   people who picked it; the original plain palette lives on as
+   [data-theme='dark']. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --paper: #000000;
+        --surface: #12002d;
+        --surface-2: #2a0a5e;
+        --ink: #ffffff;
+        --muted: #ffb37a;
+        --hairline: #4b0f6b;
+        --accent: #ff8c00;
+        --accent-strong: #ffd300;
+        --accent-soft: rgb(255 140 0 / 0.18);
+        --accent-ink: #000000;
+        --link: #ffd300;
+        --danger: #ff7a5c;
+        --danger-soft: rgb(255 122 92 / 0.20);
+        --shadow-card: 0 1px 2px rgb(0 0 0 / 0.70), 0 8px 24px -10px rgb(123 26 110 / 0.60);
+        --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.55), 0 18px 44px -12px rgb(255 140 0 / 0.40);
+        --glass: rgb(0 0 0 / 0.90);
+
+        --paper-image: linear-gradient(180deg, #000000 0%, #0a0322 60%, #1a0a3c 100%);
+        --surface-image: linear-gradient(160deg, #12002d 0%, #35085c 100%);
+        --button-image: linear-gradient(160deg, #2a0a5e 0%, #4b0f6b 100%);
+        --button-image-hover: linear-gradient(160deg, #3a0a63 0%, #7b1a6e 100%);
+        --accent-image: linear-gradient(135deg, #e35d3a 0%, #ff8c00 40%, #ffd300 75%, #ffffff 100%);
+    }
+}
+
+/* The plain palette the site used to default to in light mode. */
+:root[data-theme='light'] {
     --paper: #dfe6db;
     --surface: #ffffff;
     --surface-2: #e9ece7;
@@ -22,7 +91,6 @@
     --accent-strong: #05543f;
     --accent-soft: #e2f4ec;
     --accent-ink: #ffffff;
-    --link: var(--accent);
     --danger: #bd3535;
     --danger-soft: #fbeaea;
     --shadow-card: 0 1px 2px rgb(31 36 33 / 0.05), 0 6px 20px -8px rgb(31 36 33 / 0.10);
@@ -34,40 +102,6 @@
     --button-image: linear-gradient(160deg, #eef1ec 0%, #e2e6df 100%);
     --button-image-hover: linear-gradient(160deg, #e7ebe4 0%, #d9dfd4 100%);
     --accent-image: linear-gradient(135deg, #07785c 0%, #076850 55%, #05543f 100%);
-
-    --radius-card: 1.125rem;
-    --radius-ctl: 0.5rem;
-    --radius-pill: 999px;
-    --glom-corner: 0.25rem;
-    --display-font: 'Inter', system-ui, sans-serif;
-    --nav-height: calc(3.25rem + 1px);
-    --content-padding-inline: max(1rem, calc((100% - 40rem) / 2));
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) {
-        --paper: #131715;
-        --surface: #1c211e;
-        --surface-2: #262d29;
-        --ink: #e8ece9;
-        --muted: #94a099;
-        --hairline: #2a322d;
-        --accent: #3dd9a4;
-        --accent-strong: #5ee3b5;
-        --accent-soft: rgb(61 217 164 / 0.12);
-        --accent-ink: #0b2a1f;
-        --danger: #f17b7b;
-        --danger-soft: rgb(241 123 123 / 0.12);
-        --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 8px 24px -10px rgb(0 0 0 / 0.5);
-        --shadow-pop: 0 4px 10px rgb(0 0 0 / 0.4), 0 18px 44px -12px rgb(0 0 0 / 0.6);
-        --glass: rgb(19 23 21 / 0.82);
-
-        --paper-image: linear-gradient(180deg, #0f1311 0%, #131715 55%, #171c19 100%);
-        --surface-image: linear-gradient(160deg, #1c211e 0%, #222823 100%);
-        --button-image: linear-gradient(160deg, #262d29 0%, #2e3630 100%);
-        --button-image-hover: linear-gradient(160deg, #2c3430 0%, #364039 100%);
-        --accent-image: linear-gradient(135deg, #35c795 0%, #3dd9a4 55%, #5ee3b5 100%);
-    }
 }
 
 :root[data-theme='dark'] {
@@ -551,10 +585,11 @@
     --accent-image: linear-gradient(135deg, #8a8a8a 0%, #b4b4b4 40%, #e0e0e0 75%, #ffffff 100%);
 }
 
-/* Dark‑mode edges for the hashtag graph */
+/* Dark‑mode edges for the hashtag graph - Ironbow's, since that is what an
+   unthemed dark-mode visitor is looking at. */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) .HashtagGraphList {
-        --HashtagEdge: rgb(232 236 233 / 0.22);
+        --HashtagEdge: rgb(237 105 37 / 0.30);
     }
 }
 

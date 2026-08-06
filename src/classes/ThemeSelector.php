@@ -7,10 +7,13 @@ class ThemeSelector extends Div
     public ?string $class = 'ThemeSelector';
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
+    // 'light' and 'dark' keep their stored identifiers - only the labels say
+    // "Plain": the bare defaults became Sunset and Ironbow, and these are the
+    // original palettes for anyone who wants them back.
     protected const OPTIONS = [
         'system' => 'Match System',
-        'light' => 'Light',
-        'dark' => 'Dark',
+        'light' => 'Plain Light',
+        'dark' => 'Plain Dark',
         'sepia' => 'Sepia',
         'midnight' => 'Midnight',
         'sunset' => 'Sunset',

@@ -82,7 +82,7 @@ export class OtherUser extends User {
                     : 'Button FriendRequestButton';
                 friend_button.dataset.userId = this.userId;
                 friend_button.dataset.sent = sent_by_viewer ? '1' : '0';
-                friend_button.textContent = sent_by_viewer ? 'Cancel' : 'Add Friend';
+                friend_button.textContent = sent_by_viewer ? 'Cancel Request' : 'Add Friend';
                 actions.appendWithSpace(friend_button);
             }
 
@@ -223,7 +223,7 @@ export class OtherUser extends User {
             const result = await Api.post('/api/friend-request', { userId: button.dataset.userId });
             if (!result) return;
             button.dataset.sent = result.sent ? '1' : '0';
-            button.textContent = result.sent ? 'Cancel' : 'Add Friend';
+            button.textContent = result.sent ? 'Cancel Request' : 'Add Friend';
             button.classList.toggle('Removing', result.sent);
         } finally {
             button.disabled = false;

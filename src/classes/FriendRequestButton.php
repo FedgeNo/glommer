@@ -19,6 +19,6 @@ class FriendRequestButton extends ButtonButton
 
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> attributes['data-sent'] = $sent_by_viewer ? '1' : '0';
-        $this -> contents[] = $sent_by_viewer ? 'Cancel' : 'Add Friend';
+        $this -> contents[] = $sent_by_viewer ? 'Cancel Request' : 'Add Friend';
     }
 }

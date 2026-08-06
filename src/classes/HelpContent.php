@@ -310,7 +310,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'Send, accept, and manage friend requests, and remove friends.',
                 'body' => '
-<p>Friendship on ' . self::siteTitle() . ' is mutual and starts with a request. Use <strong>Add Friend</strong> on someone\'s card or profile to send one. While it\'s pending you can <strong>Cancel</strong> it; once they accept, you\'re friends.</p>
+<p>Friendship on ' . self::siteTitle() . ' is mutual and starts with a request. Use <strong>Add Friend</strong> on someone\'s card or profile to send one. While it\'s pending you can <strong>Cancel Request</strong>; once they accept, you\'re friends.</p>
 <p>The <strong>Friends</strong> page is your hub for this:</p>
 <ul>
 <li>Requests waiting for you appear at the top, each with <strong>Accept</strong> and <strong>Deny</strong>.</li>

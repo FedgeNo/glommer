@@ -5,10 +5,16 @@ declare(strict_types=1);
 class SchemaInstaller
 {
     /**
-     * @return array<string, string> table name => its CREATE TABLE statement, for every table
-     *                                in schema.sql not yet present in $connection's current database
+     * Every CREATE TABLE in schema.sql, keyed by table name, boundaries found
+     * on comment-stripped text. The statements are split on semicolons, and a
+     * semicolon inside a `--` comment ("the public key is a P-256 ECDH JWK;")
+     * would otherwise truncate its statement mid-column-list - executing that
+     * fragment is a syntax error, so a fresh install of the table would fail.
+     * MariaDB doesn't need the comments; whoever reads schema.sql does.
+     *
+     * @return array<string, string> table name => its CREATE TABLE statement
      */
-    public static function missingTables(\mysqli $connection): array
+    public static function createTableStatements(): array
     {
         $schema_path = __DIR__ . '/../../schema.sql';
 
@@ -16,17 +22,32 @@ class SchemaInstaller
             throw new \RuntimeException('schema.sql not found at ' . $schema_path . '.');
         }
 
-        $schema_sql = (string) file_get_contents($schema_path);
+        $code_lines = array_filter(
+            explode("\n", (string) file_get_contents($schema_path)),
+            static fn (string $line): bool => !str_starts_with(trim($line), '--')
+        );
 
-        // One block per CREATE TABLE statement (schema.sql is DDL only, comments and
-        // blank lines between statements), so each table can be checked and created
-        // independently rather than treating "some tables exist" as all-or-nothing.
-        preg_match_all('/CREATE TABLE `(\w+)` \([^;]+;/s', $schema_sql, $matches, PREG_SET_ORDER);
+        preg_match_all('/CREATE TABLE `(\w+)` \([^;]+;/s', implode("\n", $code_lines), $matches, PREG_SET_ORDER);
 
         if ($matches === []) {
             throw new \RuntimeException('Could not parse any CREATE TABLE statements out of schema.sql.');
         }
 
+        $statements = [];
+
+        foreach ($matches as $match) {
+            $statements[$match[1]] = $match[0];
+        }
+
+        return $statements;
+    }
+
+    /**
+     * @return array<string, string> table name => its CREATE TABLE statement, for every table
+     *                                in schema.sql not yet present in $connection's current database
+     */
+    public static function missingTables(\mysqli $connection): array
+    {
         $existing_tables_result = mysqli_query($connection, '
 SELECT `TABLE_NAME`
     FROM `information_schema`.`TABLES`
@@ -34,15 +55,11 @@ SELECT `TABLE_NAME`
 ');
         $existing_tables = array_column(mysqli_fetch_all($existing_tables_result, MYSQLI_ASSOC), 'TABLE_NAME');
 
-        $missing_statements = [];
-
-        foreach ($matches as $match) {
-            if (!in_array($match[1], $existing_tables, true)) {
-                $missing_statements[$match[1]] = $match[0];
-            }
-        }
-
-        return $missing_statements;
+        return array_filter(
+            self::createTableStatements(),
+            static fn (string $table): bool => !in_array($table, $existing_tables, true),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**

@@ -121,10 +121,25 @@ INSERT INTO `Relays` (`actorURI`, `inboxURL`, `followActivityId`, `followObject`
 
         $this -> assertSame(0, $this -> queueDepth());
     }
-}
 
-// Unsubscribing drops whatever was queued for that relay, through
-// RelayFetches' foreign key - nothing is waiting on posts from a firehose that
-// has been turned off. Not covered here: the test database is built with
-// CREATE TABLE ... LIKE, which drops foreign keys, so a cascade assertion
-// would pass or fail for reasons unrelated to the schema. See PITFALLS.md.
+    public function testUnsubscribingDropsWhatWasQueuedForThatRelay(): void
+    {
+        // Through RelayFetches' foreign key: nothing is waiting on posts from
+        // a firehose that has been turned off. The test database replays
+        // schema.sql, so the cascade asserted here is the real one.
+        $this -> clearQueue();
+        $relay_id = $this -> subscribedRelay();
+
+        RelayFetch::enqueue('https://elsewhere.example/notes/' . bin2hex(random_bytes(4)), $relay_id);
+
+        $this -> assertSame(1, $this -> queueDepth());
+
+        DB::run('
+DELETE
+    FROM `Relays`
+    WHERE `relayId` = ?
+', 'i', $relay_id);
+
+        $this -> assertSame(0, $this -> queueDepth());
+    }
+}

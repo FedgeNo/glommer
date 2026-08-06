@@ -57,7 +57,10 @@ class UploadBatch
 
         foreach (array_values($files) as $index => $file) {
             copy($file['tmpPath'], $staging_dir . '/' . $index);
-            $staged_files[] = ['originalFilename' => $file['originalFilename']];
+            $staged_files[] = [
+                'originalFilename' => $file['originalFilename'],
+                'altText' => $file['altText'] ?? null,
+            ];
         }
 
         file_put_contents($staging_dir . '/metadata.json', json_encode([
@@ -305,12 +308,21 @@ SELECT `userId`
             Timeline::fanOutPost($user_id, $post_id);
         }
 
-        foreach ($survivors as $file) {
+        // array_filter kept the original indexes, which is what ties each
+        // survivor back to its own staged metadata - and so its alt text.
+        foreach ($survivors as $index => $file) {
             $item_type = $file['itemType'];
+
+            // A batch staged before alt text existed carries no key; and only
+            // an image row has anything for one to say.
+            $alt_text = $item_type === 'ImageItem'
+                ? ($metadata['files'][$index]['altText'] ?? null)
+                : null;
+
             DB::run('
-INSERT INTO `FeedItems` (`postId`, `type`)
-    VALUES (?, ?)
-', 'is', $post_id, $item_type);
+INSERT INTO `FeedItems` (`postId`, `type`, `altText`)
+    VALUES (?, ?, ?)
+', 'iss', $post_id, $item_type, $alt_text);
             $item_id = (int) mysqli_insert_id($mysqli);
 
             UploadProcessor::rename($file['seed'], $item_id, $file['itemType'], $file['ext']);

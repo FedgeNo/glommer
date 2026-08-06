@@ -30,6 +30,13 @@ class FeedItem extends Figure
 
     public function toDOM(): \DOMElement
     {
+        // The row's identity, for the post editor: editing an item's alt text
+        // has to name which row it means, and the rendered element is the only
+        // place the editor can learn that from.
+        if ($this -> itemId !== null) {
+            $this -> attributes['data-item-id'] = (string) $this -> itemId;
+        }
+
         if ($this -> showFullscreenButton) {
             $this -> contents[] = new MediaFullscreenButton();
         }

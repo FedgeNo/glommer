@@ -34,6 +34,16 @@ function mounted() {
 
 const hidden = (element) => element.style.display === 'none';
 
+const imageFile = (name) => new window.File(['x'], name, { type: 'image/png' });
+const videoFile = (name) => new window.File(['x'], name, { type: 'video/mp4' });
+
+/** Hands the picker a fresh selection, the way choosing files in it would. */
+function pick(composer, files) {
+    Object.defineProperty(composer.file, 'files', { value: files, configurable: true });
+    composer.file.dispatchEvent(new window.Event('change'));
+    Object.defineProperty(composer.file, 'files', { value: [], configurable: true });
+}
+
 export default {
     suite: 'Composer',
     tests: {
@@ -89,23 +99,64 @@ export default {
             composer.remove();
         },
 
-        'choosing files puts the picker away and leaves the way to undo it'() {
+        'choosing files lists them, and the picker stays for adding more'() {
             const composer = mounted();
             const remove = composer.form.querySelector('.ComposerFilesRemoveButton');
 
-            // jsdom has no FileList to assign, and the picker only cares how
-            // many there are.
-            Object.defineProperty(composer.file, 'files', { value: [{}], configurable: true });
-            composer.file.dispatchEvent(new window.Event('change'));
+            pick(composer, [imageFile('cat.png'), videoFile('clip.mp4')]);
 
-            TestCase.assertTrue(hidden(composer.file));
+            // The rows are the files now; the picker staying open is how a
+            // third file joins the two.
+            const rows = composer.form.querySelectorAll('.ComposerAttachment');
+            TestCase.assertEquals(2, rows.length);
+            TestCase.assertFalse(hidden(composer.file));
             TestCase.assertFalse(hidden(remove));
 
-            // Taking them away again brings the picker back.
-            Object.defineProperty(composer.file, 'files', { value: [], configurable: true });
-            composer.file.dispatchEvent(new window.Event('change'));
+            // A second pick adds rather than replaces.
+            pick(composer, [imageFile('dog.png')]);
+            TestCase.assertEquals(3, composer.form.querySelectorAll('.ComposerAttachment').length);
 
-            TestCase.assertFalse(hidden(composer.file));
+            composer.remove();
+        },
+
+        'only an image row offers alt text'() {
+            const composer = mounted();
+
+            pick(composer, [imageFile('cat.png'), videoFile('clip.mp4')]);
+
+            const rows = composer.form.querySelectorAll('.ComposerAttachment');
+            TestCase.assertNotNull(rows[0].querySelector('.ComposerAttachmentAltInput'));
+            TestCase.assertNull(rows[1].querySelector('.ComposerAttachmentAltInput'));
+
+            composer.remove();
+        },
+
+        'removing a row removes exactly that file'() {
+            const composer = mounted();
+
+            pick(composer, [imageFile('cat.png'), imageFile('dog.png')]);
+
+            const rows = composer.form.querySelectorAll('.ComposerAttachment');
+            rows[0].querySelector('.ComposerAttachmentRemoveButton').click();
+
+            const names = [...composer.form.querySelectorAll('.ComposerAttachmentName')]
+                .map((name) => name.textContent);
+            TestCase.assertEquals(1, names.length);
+            TestCase.assertEquals('dog.png', names[0]);
+
+            composer.remove();
+        },
+
+        'removing the last file removes the list itself'() {
+            const composer = mounted();
+            const remove = composer.form.querySelector('.ComposerFilesRemoveButton');
+
+            pick(composer, [imageFile('cat.png')]);
+            TestCase.assertNotNull(composer.form.querySelector('.ComposerAttachmentList'));
+
+            composer.form.querySelector('.ComposerAttachmentRemoveButton').click();
+
+            TestCase.assertNull(composer.form.querySelector('.ComposerAttachmentList'));
             TestCase.assertTrue(hidden(remove));
 
             composer.remove();
@@ -117,14 +168,12 @@ export default {
 
             TestCase.assertTrue(hidden(composer.sensitive));
 
-            Object.defineProperty(composer.file, 'files', { value: [{}], configurable: true });
-            composer.file.dispatchEvent(new window.Event('change'));
+            pick(composer, [imageFile('cat.png')]);
 
             TestCase.assertFalse(hidden(composer.sensitive));
 
             box.checked = true;
-            Object.defineProperty(composer.file, 'files', { value: [], configurable: true });
-            composer.file.dispatchEvent(new window.Event('change'));
+            composer.form.querySelector('.ComposerFilesRemoveButton').click();
 
             TestCase.assertTrue(hidden(composer.sensitive));
             // Cleared with them, so it cannot ride along on a post with no media.

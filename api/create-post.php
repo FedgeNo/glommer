@@ -226,6 +226,17 @@ $valid_files = [];
 if ($has_files) {
     $file_count = count($uploaded_files['name']);
 
+    // One alt text per file, paired by position - the same indexing $_FILES
+    // itself uses, appended in the same order by the composer. Absent entirely
+    // for an old page still open across a deploy; anything else mismatched is
+    // refused rather than guessed at, since a shifted pairing would caption
+    // every image with its neighbour's words.
+    $alt_texts = $_POST['altTexts'] ?? array_fill(0, $file_count, '');
+
+    if (!is_array($alt_texts) || count($alt_texts) !== $file_count) {
+        JSONResponse::error('Alt texts do not match the uploaded files', 422) -> send();
+    }
+
     for ($i = 0; $i < $file_count; $i++) {
         if ($uploaded_files['error'][$i] !== UPLOAD_ERR_OK) {
             continue;
@@ -237,10 +248,19 @@ if ($has_files) {
             continue;
         }
 
+        $alt_text = trim((string) ($alt_texts[$i] ?? ''));
+
+        if (mb_strlen($alt_text) > FeedItem::MAX_ALT_TEXT_LENGTH) {
+            JSONResponse::error('Alt text is too long (max ' . FeedItem::MAX_ALT_TEXT_LENGTH . ' characters)', 422) -> send();
+        }
+
         $valid_files[] = [
             'tmpPath' => $uploaded_files['tmp_name'][$i],
             'originalFilename' => $uploaded_files['name'][$i],
             'type' => $type,
+            // Only an image can carry one - there is nothing an alt text could
+            // honestly say about a video or audio row.
+            'altText' => $type === 'image' && $alt_text !== '' ? $alt_text : null,
         ];
     }
 }
@@ -325,16 +345,21 @@ DELETE
         continue;
     }
 
+    // The alt text only lands when the file really processed as an image -
+    // classify() guessed from the upload, but process() has the last word.
+    $alt_text_value = $result['itemType'] === 'ImageItem' ? $file['altText'] : null;
+
     DB::run('
 UPDATE `FeedItems`
-    SET `type` = ?
+    SET `type` = ?, `altText` = ?
     WHERE `itemId` = ?
-', 'si', $result['itemType'], $item_id);
+', 'ssi', $result['itemType'], $alt_text_value, $item_id);
 
     $placeholder_row = new FeedItemData();
     $placeholder_row -> itemId = $item_id;
     $placeholder_row -> postId = $post_id;
     $placeholder_row -> type = $result['itemType'];
+    $placeholder_row -> altText = $alt_text_value;
 
     $items[] = FeedItem::fromRow($placeholder_row);
 }

@@ -67,6 +67,15 @@ export class Composer {
         this.#setLocation(latitude, longitude);
     }
 
+    /**
+     * The picked files and their alt texts, in the order they will submit.
+     * The file input itself is emptied after every pick - a FileList can't be
+     * added to or spliced, so the input would otherwise REPLACE the whole
+     * selection on a second pick and could never offer per-file removal.
+     * Each entry: { file, row, altInput, thumbURL }.
+     */
+    #attachments = [];
+
     constructor(form) {
         this.#form = form;
         this.editorContainer = form.querySelector('.QuillEditor');
@@ -355,11 +364,13 @@ export class Composer {
         // Defaulted before trimming: a missing input is "not chosen", where
         // undefined !== '' would have read as chosen and hidden the other two.
         const hasLink = (this.linkInput?.value ?? '').trim() !== '';
-        const hasFiles = (this.fileInput?.files.length ?? 0) > 0;
+        const hasFiles = this.#attachments.length > 0;
         const hasPoll = this.#pollIsOpen();
 
         Composer.#toggle(this.linkInput, !hasFiles && !hasPoll);
-        Composer.#toggle(this.fileInput, !hasLink && !hasPoll && !hasFiles);
+        // The picker stays through having files - that is how more are added;
+        // the attachment rows carry their own removal.
+        Composer.#toggle(this.fileInput, !hasLink && !hasPoll);
         Composer.#toggle(this.pollButton, !hasLink && !hasFiles);
 
         // Only ever alongside attached files, since covering media is all it
@@ -497,18 +508,117 @@ export class Composer {
     #bindFileChange() {
         if (!this.fileInput || !this.removeFilesButton) return;
         this.fileInput.addEventListener('change', () => {
+            for (const file of this.fileInput.files) {
+                this.#addAttachment(file);
+            }
+
+            // The files now live in #attachments; emptied so the same file can
+            // be picked again after a remove, and so the input contributes
+            // nothing of its own to the form's FormData at submit.
+            this.fileInput.value = '';
+
             this.removeFilesButton.style.display =
-                this.fileInput.files.length === 0 ? 'none' : '';
+                this.#attachments.length === 0 ? 'none' : '';
             this.#syncFields();
         });
+    }
+
+    /**
+     * The list the picked files live in, one row each: a thumbnail for an
+     * image (with a field for its alt text - what a screen reader will say in
+     * the picture's place), a bare name for video/audio, and a remove button.
+     * Created when the first attachment needs it and removed with the last,
+     * so an empty list is never in the page.
+     */
+    #attachmentList() {
+        let list = this.#form.querySelector('.ComposerAttachmentList');
+
+        if (!list) {
+            list = document.createElement('ul');
+            list.className = 'ComposerAttachmentList d-flex flex-column gap-2';
+            this.#form.querySelector('.ComposerActions').before(list);
+        }
+
+        return list;
+    }
+
+    #addAttachment(file) {
+        const row = document.createElement('li');
+        row.className = 'ComposerAttachment d-flex align-items-center gap-2';
+
+        const entry = { file, row, altInput: null, thumbURL: null };
+
+        if (file.type.startsWith('image/')) {
+            // Best-effort: a preview that cannot be built must never cost the
+            // attachment itself.
+            try {
+                entry.thumbURL = URL.createObjectURL(file);
+            } catch (_) {}
+
+            if (entry.thumbURL !== null) {
+                const thumb = document.createElement('img');
+                thumb.className = 'ComposerAttachmentThumb';
+                thumb.src = entry.thumbURL;
+                thumb.alt = '';
+                row.appendWithSpace(thumb);
+            }
+        }
+
+        const name = document.createElement('span');
+        name.className = 'ComposerAttachmentName text-sm';
+        name.textContent = file.name;
+        row.appendWithSpace(name);
+
+        if (file.type.startsWith('image/')) {
+            entry.altInput = document.createElement('input');
+            entry.altInput.type = 'text';
+            entry.altInput.className = 'ComposerAttachmentAltInput';
+            entry.altInput.placeholder = 'Alt text - describe this image';
+            entry.altInput.maxLength = 1000;
+            entry.altInput.setAttribute('aria-label', 'Alt text for ' + file.name);
+            row.appendWithSpace(entry.altInput);
+        }
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'Button ComposerAttachmentRemoveButton Removing ms-auto';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => this.#removeAttachment(entry));
+        row.appendWithSpace(remove);
+
+        this.#attachments.push(entry);
+        this.#attachmentList().appendWithSpace(row);
+    }
+
+    #removeAttachment(entry) {
+        if (entry.thumbURL !== null) {
+            URL.revokeObjectURL(entry.thumbURL);
+        }
+
+        entry.row.remove();
+        this.#attachments = this.#attachments.filter((candidate) => candidate !== entry);
+
+        if (this.#attachments.length === 0) {
+            this.#form.querySelector('.ComposerAttachmentList')?.remove();
+
+            if (this.removeFilesButton) {
+                this.removeFilesButton.style.display = 'none';
+            }
+        }
+
+        this.#syncFields();
+    }
+
+    #clearAttachments() {
+        for (const entry of [...this.#attachments]) {
+            this.#removeAttachment(entry);
+        }
     }
 
     #bindRemoveButtons() {
         if (this.removeFilesButton) {
             this.removeFilesButton.addEventListener('click', () => {
-                if (!this.fileInput) return;
-                this.fileInput.value = '';
-                this.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                this.#clearAttachments();
             });
         }
 
@@ -622,7 +732,19 @@ export class Composer {
 
         xhr.open('POST', ClientConfig.siteURL() + '/api/create-post');
         xhr.setRequestHeader('X-CSRF-Token', Cookie.get('CSRF-TOKEN'));
-        xhr.send(new FormData(this.#form));
+
+        // The files live in #attachments, not in the (always empty) file
+        // input, so they are appended here - files[] and altTexts[] in the
+        // same order, one alt entry per file, which is exactly the positional
+        // pairing the server reads them back by.
+        const formData = new FormData(this.#form);
+
+        for (const entry of this.#attachments) {
+            formData.append('files[]', entry.file);
+            formData.append('altTexts[]', entry.altInput?.value.trim() ?? '');
+        }
+
+        xhr.send(formData);
     }
 
     #onSubmitSuccess(data) {
@@ -634,6 +756,7 @@ export class Composer {
         this.#form.reset();
         this.#quill.setText('');
         this.#closePoll();
+        this.#clearAttachments();
         this.#syncFields();
 
         if (this.removeFilesButton) this.removeFilesButton.style.display = 'none';

@@ -12,6 +12,9 @@ export class PostEditor {
     #form;
     #quillEditor;
 
+    /** Which alt-text field belongs to which image row, for the save below. */
+    #altInputs = [];
+
     /**
      * Bind the delegated click for edit buttons.
      */
@@ -101,6 +104,44 @@ export class PostEditor {
         descriptionInput.name = 'description';
         fields.appendWithSpace(descriptionInput);
 
+        // One alt-text field per attached image, prefilled from the rendered
+        // item's raw value (data-alt-text - never the img's alt, whose "Image"
+        // fallback would read back as the author's own words). The images
+        // themselves are fixed at creation; how they're described is not.
+        const imageItems = post.querySelectorAll('.ImageItem[data-item-id]');
+
+        if (imageItems.length > 0) {
+            const altList = document.createElement('ul');
+            altList.className = 'PostEditAltList d-flex flex-column gap-2';
+
+            for (const item of imageItems) {
+                const row = document.createElement('li');
+                row.className = 'PostEditAltRow d-flex align-items-center gap-2';
+
+                const sourceImage = item.querySelector('img');
+                const thumb = document.createElement('img');
+                thumb.className = 'ComposerAttachmentThumb';
+                thumb.src = sourceImage?.currentSrc || sourceImage?.src || sourceImage?.dataset.src || '';
+                thumb.alt = '';
+                row.appendWithSpace(thumb);
+
+                const altInput = document.createElement('input');
+                altInput.type = 'text';
+                altInput.className = 'ComposerAttachmentAltInput';
+                altInput.placeholder = 'Alt text - describe this image';
+                altInput.maxLength = 1000;
+                altInput.value = item.dataset.altText || '';
+                altInput.setAttribute('aria-label', 'Alt text');
+                row.appendWithSpace(altInput);
+
+                this.#altInputs.push({ itemId: item.dataset.itemId, input: altInput });
+
+                altList.appendWithSpace(row);
+            }
+
+            fields.appendWithSpace(altList);
+        }
+
         form.appendWithSpace(fields);
 
         const actions = document.createElement('div');
@@ -189,6 +230,7 @@ export class PostEditor {
                             : '',
                         description: descriptionInput.value,
                         sensitive: this.#form.querySelector('[name="sensitive"]')?.checked ?? false,
+                        altTexts: Object.fromEntries(this.#altInputs.map(({ itemId, input }) => [itemId, input.value.trim()])),
                     }),
                 }
             );

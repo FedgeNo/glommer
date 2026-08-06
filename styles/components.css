@@ -386,6 +386,34 @@ emoji-picker {
     justify-content: flex-end;
 }
 
+.ComposerAttachmentList,
+.PostEditAltList {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0;
+}
+
+.ComposerAttachmentThumb {
+    width: 3rem;
+    height: 3rem;
+    object-fit: cover;
+    border-radius: var(--radius-ctl);
+    flex-shrink: 0;
+}
+
+.ComposerAttachmentName {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ComposerAttachmentAltInput {
+    flex: 1 1 8rem;
+    min-width: 0;
+}
+
 .MessageComposerFields {
     display: grid;
     grid-template-columns: 1fr auto auto;

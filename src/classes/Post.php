@@ -589,6 +589,7 @@ DELETE
 
         foreach ($this -> items as $item) {
             $items[] = [
+                'itemId' => $item -> itemId,
                 'itemType' => $item -> type,
                 'src' => $item -> srcURL(),
                 'image' => $item -> imageURL(),

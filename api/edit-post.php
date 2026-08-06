@@ -45,10 +45,25 @@ $title = ControlCharacters::strip(mb_substr(trim((string) ($payload['title'] ?? 
 $description_raw = (string) ($payload['description'] ?? '');
 $link_url = trim((string) ($payload['linkURL'] ?? ''));
 
-// Reclassifying is the one thing about attached media an edit can change: the
-// media itself is fixed at creation, but whether it should be shown unasked is
-// a judgement the author is allowed to revise.
+// Reclassifying media as sensitive, and rewording an image's alt text, are
+// the two things about attached media an edit can change: the media itself is
+// fixed at creation, but both of those are judgements the author is allowed
+// to revise.
 $sensitive = ($payload['sensitive'] ?? false) === true ? 1 : 0;
+
+// itemId => alt text. Validated per entry below, once the post's ownership
+// has been established.
+$alt_texts = $payload['altTexts'] ?? [];
+
+if (!is_array($alt_texts)) {
+    JSONResponse::error('Alt texts must map items to text', 422) -> send();
+}
+
+foreach ($alt_texts as $alt_text) {
+    if (mb_strlen(trim((string) $alt_text)) > FeedItem::MAX_ALT_TEXT_LENGTH) {
+        JSONResponse::error('Alt text is too long (max ' . FeedItem::MAX_ALT_TEXT_LENGTH . ' characters)', 422) -> send();
+    }
+}
 
 // Mirrors create-post.php's Delta validation exactly - same limits, same
 // sanitize/plaintext derivation, so an edited post is held to the identical
@@ -132,6 +147,20 @@ UPDATE `Posts`
     SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `sensitive` = ?, `editedAt` = ?
     WHERE `postId` = ?
 ', 'ssssisi', $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $edited_at, $post_id);
+
+// Each alt text lands only on a row that is this post's own image - the
+// WHERE re-checks both, so an itemId belonging to someone else's post (or to
+// a video) is simply not matched rather than trusted.
+foreach ($alt_texts as $item_id => $alt_text) {
+    $alt_text_value = trim((string) $alt_text) !== '' ? trim((string) $alt_text) : null;
+    $image_type = 'ImageItem';
+
+    DB::run('
+UPDATE `FeedItems`
+    SET `altText` = ?
+    WHERE `itemId` = ? AND `postId` = ? AND `type` = ?
+', 'siis', $alt_text_value, (int) $item_id, $post_id, $image_type);
+}
 
 Hashtag::reindexPost($post_id, $description_ops);
 Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user -> userId, $post_id);

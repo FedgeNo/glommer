@@ -176,6 +176,17 @@ export class Post {
         const wrapper = document.createElement('figure');
         wrapper.className = 'FeedItem ' + item.itemType;
 
+        // Mirrors FeedItem.php/ImageItem.php: the row's identity for the post
+        // editor, and the raw alt text - distinct from the img's alt below,
+        // which falls back to "Image" and so can't be read back as the
+        // author's own words.
+        if (item.itemId) {
+            wrapper.setAttribute('data-item-id', item.itemId);
+        }
+        if (item.itemType === 'ImageItem' && item.altText) {
+            wrapper.setAttribute('data-alt-text', item.altText);
+        }
+
         if (item.itemType === 'VideoItem') {
             const video = document.createElement('video');
             video.controls = true;

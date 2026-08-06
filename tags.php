@@ -48,6 +48,16 @@ if (!$feed -> hasItems()) {
 
 $page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on ' . Config::get('siteTitle') . '.', 'needsMath' => true, 'needsEditor' => Auth::check()]);
 
+// What people are posting about here, when the trending timer has had a
+// chance to write one - absent otherwise, and the page reads as it always
+// did. Its text also makes a better meta description than the boilerplate.
+$summary = TopicSummary::for('hashtag', $tag);
+
+if ($summary !== null) {
+    $page -> description = truncate($summary, 160);
+    $page -> addContent(new TopicSummaryCard($summary));
+}
+
 $page -> addContent($feed);
 
 $page -> send();

@@ -47,4 +47,56 @@ class OpenRouter
     {
         return self::apiKey() !== '';
     }
+
+    /**
+     * One chat completion, or null for any failure at all - a caller here is
+     * always a background job or a request someone chose to wait on, and
+     * "no answer" has to be an ordinary outcome, never an exception climbing
+     * into a timer.
+     *
+     * @param array<int, array{role: string, content: string}> $messages
+     */
+    public static function chat(array $messages, int $max_tokens = 400): ?string
+    {
+        if (!self::isEnabled()) {
+            return null;
+        }
+
+        $body = [
+            'model' => self::model(),
+            'messages' => $messages,
+            'max_tokens' => $max_tokens,
+        ];
+
+        // The independent guard the class docblock promises: with neverSpend
+        // on, a request routed toward any paid provider fails outright rather
+        // than billing - even if the admin's chosen model slug is paid.
+        if (self::neverSpend()) {
+            $body['provider'] = ['max_price' => ['prompt' => 0, 'completion' => 0]];
+        }
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => implode("\r\n", [
+                    'Authorization: Bearer ' . self::apiKey(),
+                    'Content-Type: application/json',
+                ]),
+                'content' => (string) json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                'timeout' => 30,
+                'ignore_errors' => true,
+            ],
+        ]);
+
+        $response = @file_get_contents('https://openrouter.ai/api/v1/chat/completions', false, $context);
+
+        if ($response === false) {
+            return null;
+        }
+
+        $decoded = json_decode($response, true);
+        $content = $decoded['choices'][0]['message']['content'] ?? null;
+
+        return is_string($content) && trim($content) !== '' ? trim($content) : null;
+    }
 }

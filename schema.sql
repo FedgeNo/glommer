@@ -805,6 +805,21 @@ CREATE TABLE `TrendingEntities` (
 -- being fully replaced every run (a banned entity is excluded from scoring
 -- entirely, not just hidden after the fact) and survives falling out of the
 -- trending window too (still banned if it becomes active again later).
+-- One AI-written paragraph per topic - "what people are posting about under
+-- #x" - shown atop the topic's tag page. Its own table rather than a column
+-- on TrendingEntities, whose rows are rewritten by every rescore: a summary
+-- outlives the scoring run that prompted it and keeps serving the tag page
+-- after the topic falls off trending. Written by the trending timer, at most
+-- one topic per pass (the model call is rate-limited by design); rows are
+-- upserted on (type, slug) as topics come back around.
+CREATE TABLE `TopicSummaries` (
+  `type` varchar(16) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `summary` text NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`type`,`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `BannedTrendingEntities` (
   `type` varchar(16) NOT NULL,
   `slug` varchar(255) NOT NULL,

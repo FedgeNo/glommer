@@ -1593,6 +1593,10 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 
+.TopicSummaryLabel {
+    margin: 0.5rem 0 0;
+}
+
 /* ---------- Settings sections (fold‑outs) ---------- */
 
 .SettingsSection {

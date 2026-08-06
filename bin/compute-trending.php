@@ -31,3 +31,12 @@ Trending::recompute();
 // recomputed here on the same timer rather than aggregated at read time.
 HashtagGraphList::recompute();
 TrendingHashtagList::recompute();
+
+// At most one topic per pass, spaced by its own internal floor besides - a
+// deliberate drip, so trending never turns into a burst of model calls. A
+// failure here is the summary staying absent, never the timer failing.
+try {
+    TopicSummary::refreshDue();
+} catch (\Throwable $exception) {
+    fwrite(STDERR, 'Topic summary refresh failed: ' . $exception -> getMessage() . "\n");
+}

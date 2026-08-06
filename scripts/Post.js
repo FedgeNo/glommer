@@ -28,6 +28,7 @@ export class Post {
     editedAt = null;
     latitude = null;
     longitude = null;
+    placeLabel = null;
     poll = null;
     repostedBy = null;
     // A post that came from another server - it carries no share button,
@@ -98,14 +99,15 @@ export class Post {
             meta.appendWithSpace(timestamp_link);
         }
 
-        // Mirrors PostLocationLink.php - coordinates rather than a place name,
-        // linking to the map opened on where the post was filed.
+        // Mirrors PostLocationLink.php - the place name the server resolved
+        // from its own gazetteer, or coordinates when nowhere is close enough
+        // to name, linking to the map opened on where the post was filed.
         if (this.latitude !== null && this.longitude !== null) {
             const location_link = document.createElement('a');
             location_link.className = 'PostLocationLink';
             location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
             location_link.title = 'Show this place on the map';
-            location_link.textContent = this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4);
+            location_link.textContent = this.placeLabel || (this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4));
             meta.appendWithSpace(location_link);
         }
 

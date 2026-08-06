@@ -215,7 +215,15 @@ a WebSocket open, transcoding video out of band).
   sandboxed under wall-clock, CPU, and memory limits. If `exec()`/`shell_exec()`
   are disabled for the web SAPI, either re-enable them (remove them from the
   pool's `disable_functions`) or provision media handling by hand.
-- **Outbound HTTPS** (for link-preview fetching).
+- **Outbound HTTPS** (for link-preview fetching, and for the installer to
+  download the place directory below).
+- **`unzip`**, so the installer can load the place directory: the
+  [GeoNames](https://www.geonames.org/) gazetteer (CC BY 4.0), around 10MB
+  downloaded once, which is what lets a post's location read "Kingston,
+  Ontario, Canada" instead of raw coordinates - resolved locally, with no
+  geocoding service in the request path. If the download fails the installer
+  says so and the site runs fine without it (locations show as coordinates);
+  re-run `php bin/install.php` to retry.
 - **Optional, for smarter trending**: Python 3 (with `pip`/`venv`/dev headers)
   and a C++ compiler, so the installer can build the spaCy environment (§8).
 - **Two background daemons plus a timer**, all separate from the web server and

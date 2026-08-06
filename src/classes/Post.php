@@ -34,6 +34,10 @@ class Post extends Article
     // under the timestamp.
     public ?float $latitude = null;
     public ?float $longitude = null;
+    // The nearest named place, resolved from the local gazetteer by
+    // fromRowsWithItems - null when the post has no location, nowhere is close
+    // enough to name it, or the Places table hasn't been loaded yet.
+    public ?string $placeLabel = null;
     // From the Polls side table, attached by fromRowsWithItems - null for the
     // overwhelming majority of posts, which are not polls.
     public ?Poll $poll = null;
@@ -539,6 +543,10 @@ DELETE
             $post -> latitude = $location['latitude'] ?? null;
             $post -> longitude = $location['longitude'] ?? null;
 
+            if ($location !== null) {
+                $post -> placeLabel = Place::nearest($location['latitude'], $location['longitude']) ?-> label();
+            }
+
             $post -> poll = $polls[(int) $post -> postId] ?? null;
 
             $post -> reposted = $repost_state[(int) $post -> postId]['reposted'] ?? false;
@@ -611,6 +619,7 @@ DELETE
             'editedAt' => $this -> editedAt,
             'latitude' => $this -> latitude,
             'longitude' => $this -> longitude,
+            'placeLabel' => $this -> placeLabel,
             'poll' => $this -> poll?-> toPayload(),
             // Whether this came from another server, which decides the share
             // button the same way it does server-side.

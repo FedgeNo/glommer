@@ -18,6 +18,7 @@ class PostMeta extends Div
     public ?string $editedAt = null;
     public ?float $latitude = null;
     public ?float $longitude = null;
+    public ?string $placeLabel = null;
     public ?User $author = null;
 
     public function toDOM(): \DOMElement
@@ -30,7 +31,7 @@ class PostMeta extends Div
         }
 
         if ($this -> latitude !== null && $this -> longitude !== null) {
-            $this -> contents[] = new PostLocationLink($this -> latitude, $this -> longitude);
+            $this -> contents[] = new PostLocationLink($this -> latitude, $this -> longitude, $this -> placeLabel);
         }
 
         if ($this -> editedAt !== null) {

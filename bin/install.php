@@ -4927,6 +4927,82 @@ HashtagGraphList::recompute();
 TrendingHashtagList::recompute();
 ok('popular/trending tag lists materialized');
 
+ensure_places_loaded();
+
+/**
+ * Loads the GeoNames place directory (geonames.org, CC BY 4.0) into the
+ * Places table - what lets a post's coordinates read "near Kingston, Ontario"
+ * with no outside service in the request path. Around 10MB downloaded once,
+ * a couple of hundred thousand rows.
+ *
+ * Skipped once loaded; failure is deferred loudly, never papered over: the
+ * site works fine without it, posts simply show bare coordinates until a
+ * re-run of this script succeeds.
+ */
+function ensure_places_loaded(): void
+{
+    $loaded = Place::count();
+
+    if ($loaded > 0) {
+        ok('place directory already loaded (' . number_format($loaded) . ' places; empty the Places table and re-run to refresh)');
+
+        return;
+    }
+
+    $sources = [
+        'cities500.zip' => 'https://download.geonames.org/export/dump/cities500.zip',
+        'admin1CodesASCII.txt' => 'https://download.geonames.org/export/dump/admin1CodesASCII.txt',
+        'countryInfo.txt' => 'https://download.geonames.org/export/dump/countryInfo.txt',
+    ];
+
+    $work_directory = sys_get_temp_dir() . '/glommer-geonames';
+
+    if (!is_dir($work_directory) && !@mkdir($work_directory, 0755, true)) {
+        warn('DEFERRED: could not create ' . $work_directory . ' - the place directory was NOT loaded. Posts will show bare coordinates until a re-run of this script succeeds.');
+
+        return;
+    }
+
+    foreach ($sources as $name => $url) {
+        $path = $work_directory . '/' . $name;
+
+        // Downloaded to a scratch name and renamed only once curl finishes
+        // cleanly, so a connection that dies mid-file can never leave a
+        // truncated download behind for a later run to trust.
+        $scratch = $path . '.part';
+        $download = run('curl -fsSL --max-time 300 -o :scratch :url', ['scratch' => $scratch, 'url' => $url]);
+
+        if ($download['exitCode'] !== 0 || !is_file($scratch) || !rename($scratch, $path)) {
+            @unlink($scratch);
+            warn('DEFERRED: could not download ' . $url . ' - the place directory was NOT loaded. Posts will show bare coordinates until a re-run of this script succeeds.', $download);
+
+            return;
+        }
+    }
+
+    $unzip = run('unzip -o -qq :zip -d :dir', ['zip' => $work_directory . '/cities500.zip', 'dir' => $work_directory]);
+
+    if ($unzip['exitCode'] !== 0 || !is_file($work_directory . '/cities500.txt')) {
+        warn('DEFERRED: could not unpack cities500.zip (is unzip installed?) - the place directory was NOT loaded. Posts will show bare coordinates until a re-run of this script succeeds.', $unzip);
+
+        return;
+    }
+
+    try {
+        $written = Place::import(
+            $work_directory . '/cities500.txt',
+            $work_directory . '/admin1CodesASCII.txt',
+            $work_directory . '/countryInfo.txt'
+        );
+    } catch (\mysqli_sql_exception | \RuntimeException $exception) {
+        warn('DEFERRED: loading the place directory failed (' . $exception -> getMessage() . ') - posts will show bare coordinates until a re-run of this script succeeds.');
+
+        return;
+    }
+
+    ok('place directory loaded: ' . number_format($written) . ' places from GeoNames (geonames.org, CC BY 4.0)');
+}
+
 // schema.sql also carries a handful of idempotent index migrations (ALTER
 // TABLE ... ADD/DROP INDEX IF NOT EXISTS/IF EXISTS) - DDL, so unlike the
 // UPDATE above these need admin privileges the runtime account deliberately

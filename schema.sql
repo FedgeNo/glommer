@@ -106,6 +106,26 @@ CREATE TABLE `PostLocations` (
   CONSTRAINT `fk_postlocations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- The world's towns and cities, from the GeoNames gazetteer (geonames.org,
+-- CC BY 4.0) - what turns a post's coordinates into "near Kingston, Ontario"
+-- without asking any outside service at request time. Loaded by
+-- bin/install.php from the cities500 dump; empty until that step has run,
+-- and everything reading it treats empty as "show coordinates".
+--
+-- placeId is the GeoNames id, not AUTO_INCREMENT, so a reload upserts in
+-- place instead of duplicating the planet.
+CREATE TABLE `Places` (
+  `placeId` int(10) unsigned NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `region` varchar(100) NOT NULL DEFAULT '',
+  `country` varchar(100) NOT NULL DEFAULT '',
+  `latitude` decimal(10,7) NOT NULL,
+  `longitude` decimal(10,7) NOT NULL,
+  `population` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`placeId`),
+  KEY `latitude_longitude` (`latitude`,`longitude`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- A poll attached to a post. Its own table rather than columns on Posts, the
 -- same shape PostLocations uses: most posts are not polls, and the options are
 -- a list that could never be columns anyway.

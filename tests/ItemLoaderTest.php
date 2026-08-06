@@ -104,7 +104,7 @@ class ItemLoaderTest extends TestCase
         $this -> assertFalse($this -> elementFor($feed) -> hasAttribute('data-infinite-scroll'));
     }
 
-    public function testAMessageThreadNamesWhoItIsWith(): void
+    public function testAMessageThreadPagesWithWhoItIsWith(): void
     {
         $thread = new class(['otherUserId' => 9]) extends MessageList {
             protected function rows(): array
@@ -113,9 +113,36 @@ class ItemLoaderTest extends TestCase
             }
         };
 
-        // A message arriving live is only appended to the thread it belongs to,
-        // which the client decides by comparing the sender against this.
-        $this -> assertSame('9', $this -> elementFor($thread) -> getAttribute('data-other-user-id'));
+        $this -> assertSame(9, $this -> scrollConfigFor($thread)['otherUserId'] ?? null);
+    }
+
+    public function testAnEmptyListIsNotRenderedAtAll(): void
+    {
+        // "No messages yet." is not a message, so it is not a row - and with no
+        // rows there is no list for one to sit in.
+        $empty = new class() extends MessageList {
+            protected function rows(): array
+            {
+                return [];
+            }
+        };
+
+        $element = $this -> elementFor($empty);
+
+        $this -> assertSame('p', $element -> tagName);
+        $this -> assertSame('No messages yet.', trim($element -> textContent));
+    }
+
+    public function testAListWithRowsIsStillAList(): void
+    {
+        $filled = new class() extends MessageList {
+            protected function rows(): array
+            {
+                return ItemLoaderTest::fullPage();
+            }
+        };
+
+        $this -> assertSame('ul', $this -> elementFor($filled) -> tagName);
     }
 
     public function testASearchFeedLeavesItsPagingToTheClient(): void

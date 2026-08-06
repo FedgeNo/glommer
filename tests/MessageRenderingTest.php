@@ -60,4 +60,30 @@ class MessageRenderingTest extends TestCase
         $body = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//p', $element) -> item(0);
         $this -> assertSame('hello there', $body -> textContent);
     }
+
+    private function composer(bool $recipient_is_local): \DOMElement
+    {
+        $state = $recipient_is_local ? 'awaiting-yours' : 'federated';
+
+        return $this -> elementFor(new MessageComposer(9, new MessagePrivacyButton($state, '@someone'), $recipient_is_local));
+    }
+
+    public function testTheComposerNamesWhoTheThreadIsWith(): void
+    {
+        // The composer rather than the list, because a thread nobody has
+        // written in yet renders no list at all - and a live message arriving
+        // in one still has to be recognised as belonging here.
+        $this -> assertSame('9', $this -> composer(true) -> getAttribute('data-other-user-id'));
+    }
+
+    public function testNoCallIsOfferedInAThreadWithSomeoneElsewhere(): void
+    {
+        // There is no way to negotiate a direct browser-to-browser path with
+        // someone on another server, and no relay to fall back on. The absent
+        // attribute is what turns calling off.
+        $element = $this -> composer(false);
+
+        $this -> assertFalse($element -> hasAttribute('data-other-user-id'));
+        $this -> assertFalse($element -> hasAttribute('data-ice-servers'));
+    }
 }

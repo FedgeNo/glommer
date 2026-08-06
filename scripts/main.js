@@ -24,19 +24,21 @@ if (document.querySelector('.Post')) {
 }
 if (document.querySelector('.Poll'))                   import('/scripts/Poll.js');
 if (document.querySelector('.SensitiveMediaSetting'))  import('/scripts/SensitiveMediaSetting.js');
-if (document.querySelector('.MessageList'))            import('/scripts/Message.js');
-if (document.querySelector('.MessageList[data-other-user-id]')) import('/scripts/VideoCall.js');
+// Keyed on the composer, not the list: a thread nobody has written in yet
+// renders no list, only the notice saying so.
+if (document.querySelector('.MessageComposer'))        import('/scripts/Message.js');
+if (document.querySelector('.MessageComposer[data-other-user-id]')) import('/scripts/VideoCall.js');
 if (document.querySelector('.MessageUnlockForm'))      import('/scripts/MessageUnlockForm.js');
 if (document.querySelector('.MessageKeyFingerprint'))  import('/scripts/MessageKeyFingerprint.js');
 if (document.querySelector('.EncryptedMessagesSetting')) import('/scripts/EncryptedMessagesSetting.js');
-// .MessageList too: an empty thread has no report button yet, but the first
-// message to arrive live brings one.
-if (document.querySelector('.ReportButton, .MessageList')) import('/scripts/ReportButton.js');
-if (document.querySelector('.NotificationList'))       import('/scripts/Notification.js');
+// .MessageComposer too: a thread with nothing in it has no report button yet,
+// but the first message to arrive live brings one.
+if (document.querySelector('.ReportButton, .MessageComposer')) import('/scripts/ReportButton.js');
+if (document.querySelector('.NotificationList, .NotificationDropdown')) import('/scripts/Notification.js');
 if (document.querySelector('.ReportList'))             import('/scripts/ReportCard.js');
 if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');
-if (document.querySelector('.BlockedServerList'))      import('/scripts/BlockedServerCard.js');
-if (document.querySelector('.RelayList'))              import('/scripts/RelayCard.js');
+if (document.querySelector('.BlockedServersSetting'))  import('/scripts/BlockedServerCard.js');
+if (document.querySelector('.RelaysSetting'))          import('/scripts/RelayCard.js');
 
 if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get('currentUserId') !== null) {
     import('/scripts/Composer.js');

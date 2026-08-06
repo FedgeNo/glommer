@@ -1,7 +1,7 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Notification } from '/scripts/Notification.js';
-import { csrf_headers, list_item } from '/scripts/utils.js';
+import { csrf_headers, list_in, list_item } from '/scripts/utils.js';
 
 export class WebSocketManager {
     constructor() {
@@ -129,11 +129,8 @@ export class WebSocketManager {
         toastContent.textContent = notification.text();
         Toast.show(toastContent);
 
-        const dropdownList = document.querySelector('.NotificationDropdown .NotificationList');
+        const dropdownList = list_in(document.querySelector('.NotificationDropdown'), 'NotificationList RecentNotificationList d-flex flex-column gap-1');
         if (dropdownList) {
-            const placeholder = dropdownList.querySelector('.Notice');
-            if (placeholder) placeholder.closest('li').remove();
-
             const existing = dropdownList.querySelectorAll('.Notification');
             if (existing.length >= 5) {
                 existing[existing.length - 1].closest('li').remove();
@@ -142,11 +139,8 @@ export class WebSocketManager {
             dropdownList.insertBeforeWithSpace(list_item(notification.toElement()), dropdownList.firstChild);
         }
 
-        const pageList = Array.from(document.querySelectorAll('.NotificationList'))
-            .find(list => !list.closest('.NotificationDropdown'));
+        const pageList = list_in(document.querySelector('.NotificationsPage main'), 'NotificationList d-flex flex-column gap-1');
         if (pageList) {
-            const placeholder = pageList.querySelector('.Notice');
-            if (placeholder) placeholder.closest('li').remove();
             pageList.insertBeforeWithSpace(list_item(notification.toElement()), pageList.firstChild);
         }
 

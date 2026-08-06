@@ -3,7 +3,7 @@ import { Dialog } from '/scripts/Dialog.js';
 import { Message } from '/scripts/Message.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { Toast } from '/scripts/Toast.js';
-import { list_item } from '/scripts/utils.js';
+import { list_in, list_item } from '/scripts/utils.js';
 import { EmojiPicker } from '/scripts/EmojiPicker.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
@@ -80,9 +80,7 @@ export class MessageComposer {
 
                 if (result === null) return;
 
-                const list = document.querySelector('.MessageList');
-                const placeholder = list.querySelector('.Notice');
-                if (placeholder) placeholder.closest('li').remove();
+                const list = list_in(document.querySelector('main'), 'MessageList d-flex flex-column');
 
                 const message = Message.fromData(result);
                 const element = message.toElement();

@@ -53,14 +53,15 @@ export class VideoCall {
     static #offer = null;
 
     static init() {
-        VideoCall.#list = document.querySelector('.MessageList[data-other-user-id]');
+        // The composer, not the list: a thread nobody has written in yet has no
+        // list at all, and a call is exactly the thing you might want there.
+        VideoCall.#composer = document.querySelector('.MessageComposer[data-other-user-id]');
 
-        if (!VideoCall.#list || ClientConfig.get('currentUserId') === null) {
+        if (!VideoCall.#composer || ClientConfig.get('currentUserId') === null) {
             return;
         }
 
-        VideoCall.#otherUserId = Number(VideoCall.#list.dataset.otherUserId);
-        VideoCall.#composer = document.querySelector('.MessageComposer');
+        VideoCall.#otherUserId = Number(VideoCall.#composer.dataset.otherUserId);
 
         document.addEventListener('ws:call', (event) => VideoCall.#receive(event.detail));
         document.addEventListener('click', (event) => VideoCall.#onClick(event));
@@ -111,7 +112,7 @@ export class VideoCall {
     }
 
     static #peerConnection() {
-        return new RTCPeerConnection({ iceServers: JSON.parse(VideoCall.#list.dataset.iceServers ?? '[]') ?? [] });
+        return new RTCPeerConnection({ iceServers: JSON.parse(VideoCall.#composer.dataset.iceServers ?? '[]') ?? [] });
     }
 
     /** The probe carries no media at all - it exists only to prove a path. */
@@ -386,8 +387,16 @@ export class VideoCall {
         local.srcObject = VideoCall.#localStream;
         VideoCall.#stage.appendWithSpace(local);
 
-        VideoCall.#list.hidden = true;
-        VideoCall.#list.after(VideoCall.#stage);
+        // A thread with nothing in it has no list to stand aside, so the stage
+        // takes its place directly above the composer.
+        VideoCall.#list = document.querySelector('.MessageList');
+
+        if (VideoCall.#list !== null) {
+            VideoCall.#list.hidden = true;
+            VideoCall.#list.after(VideoCall.#stage);
+        } else {
+            VideoCall.#composer.before(VideoCall.#stage);
+        }
 
         VideoCall.#showPanel(status, end_label);
     }
@@ -459,7 +468,9 @@ export class VideoCall {
         VideoCall.#panel?.remove();
         VideoCall.#panel = null;
 
-        VideoCall.#list.hidden = false;
+        if (VideoCall.#list !== null) {
+            VideoCall.#list.hidden = false;
+        }
 
         if (VideoCall.#composer !== null) {
             VideoCall.#composer.hidden = false;

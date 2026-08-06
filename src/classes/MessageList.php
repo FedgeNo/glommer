@@ -18,13 +18,6 @@ class MessageList extends ItemList
     public ?int $userId = null;
     public ?int $otherUserId = null;
 
-    /**
-     * Whether the other person is a member here. Seeded by whoever builds the
-     * list, which has already loaded them - see dataAttributes(), which decides
-     * on video calling from it and must not query.
-     */
-    public bool $otherUserIsLocal = true;
-
     protected function rows(): array
     {
         // The two directions run as separate UNION ALL halves rather than one
@@ -80,16 +73,18 @@ UNION ALL
     }
 
     /**
-     * Whose thread this is, both as the list's own identity - a message arriving
-     * live is only appended when it came from the person being read, and a call
-     * is only offered to them - and inside the scroll config, which is what the
-     * next page of history is fetched with.
+     * Whose thread this is, inside the scroll config that fetches the next page
+     * of history.
+     *
+     * Nothing else about the thread rides here: a thread nobody has written in
+     * yet renders no list at all, so anything the page needs regardless lives
+     * on the composer instead.
      *
      * @return array<string, string>
      */
     protected function dataAttributes(): array
     {
-        $attributes = [
+        return [
             'data-infinite-scroll' => (string) json_encode([
                 'endpoint' => '/api/message-history',
                 'itemType' => 'Message',
@@ -97,27 +92,5 @@ UNION ALL
                 'otherUserId' => (int) $this -> otherUserId,
             ]),
         ];
-
-        // Video calling is offered only in a thread with another member here.
-        // It needs both people present in the same thread at once, which this
-        // server can only know about its own, and a direct browser-to-browser
-        // path there is no way to negotiate with someone elsewhere. Omitting the
-        // attribute is what turns it off - VideoCall.js keys on it.
-        //
-        // Read from a seeded property rather than looked up: this runs during
-        // render, and a query here would put one in a method the whole list
-        // pattern relies on being pure. The page that builds this list has
-        // already loaded the other person anyway.
-        if ($this -> otherUserIsLocal) {
-            $attributes['data-other-user-id'] = (string) $this -> otherUserId;
-            // The ICE configuration a call negotiates with, alongside the id
-            // of who it would be with. A fixed list rather than a lookup, so
-            // reading it here breaks none of the purity above; it rides on the
-            // thread rather than in the config cookie, which every later
-            // request would carry it back up in.
-            $attributes['data-ice-servers'] = (string) json_encode(VideoCall::iceServers());
-        }
-
-        return $attributes;
     }
 }

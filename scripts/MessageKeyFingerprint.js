@@ -21,7 +21,7 @@ export class MessageKeyFingerprint {
     static init() {
         const block = document.querySelector('.MessageKeyFingerprint');
         const form = document.querySelector('.MessageUnlockForm');
-        const thread = document.querySelector('.MessageList[data-other-user-id]');
+        const thread = document.querySelector('.MessageComposer[data-other-user-id]');
 
         if (block === null || form === null || thread === null) return;
 

@@ -4,7 +4,7 @@ import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
-import { list_item } from '/scripts/utils.js';
+import { list_in, list_item } from '/scripts/utils.js';
 
 /**
  * The moderation page for shutting out whole servers: the form that adds one
@@ -58,12 +58,9 @@ export class BlockedServerCard {
             // renders for one. The cascade the confirmation warned about
             // (severed follows, dropped deliveries) has no rendering on this
             // page, so the list is the whole picture here.
-            const list = document.querySelector('.BlockedServerList');
+            const list = list_in(document.querySelector('.BlockedServersSetting'), 'BlockedServerList d-flex flex-column');
 
             if (list) {
-                const placeholder = list.querySelector('.Notice');
-                if (placeholder) placeholder.closest('li').remove();
-
                 list.prepend(list_item(BlockedServerCard.#card(result.domain, reason)));
             }
 

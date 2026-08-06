@@ -2,7 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
-import { list_item } from '/scripts/utils.js';
+import { list_in, list_item } from '/scripts/utils.js';
 
 /**
  * The Relays page: the form that joins one and the control on each row that
@@ -49,12 +49,9 @@ export class RelayCard {
 
             if (!result) return;
 
-            const list = document.querySelector('.RelayList');
+            const list = list_in(document.querySelector('.RelaysSetting'), 'RelayList d-flex flex-column');
 
             if (list) {
-                const placeholder = list.querySelector('.Notice');
-                if (placeholder) placeholder.closest('li').remove();
-
                 list.prepend(list_item(RelayCard.#card(result.actorURI)));
             }
 

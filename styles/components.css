@@ -1552,6 +1552,8 @@ body.MessagesPage { padding-bottom: 9rem; }
 .TrendingEntityList,
 .HashtagGraphList,
 .BannedTrendingEntityList,
+.BlockedServerList,
+.RelayList,
 .RememberedDeviceList,
 .ReportList,
 .MessageList,

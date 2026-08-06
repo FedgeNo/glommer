@@ -13,7 +13,9 @@ $current_user = Auth::user();
 Notification::markSeen($current_user -> userId);
 Auth::clearUserCache();
 
-$page = new Page(['title' => 'Notifications']);
+// The live notification handler needs to know it is on this page before it
+// builds a list over an empty state - every page carries the nav dropdown's.
+$page = new Page(['title' => 'Notifications', 'bodyClass' => 'NotificationsPage']);
 
 $page -> addContent(new NotificationList(['userId' => (int) $current_user -> userId]));
 

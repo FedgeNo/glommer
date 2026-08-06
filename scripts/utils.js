@@ -32,6 +32,33 @@ export function list_item(child) {
 }
 
 /**
+ * The list inside a container, built over the empty-state notice standing
+ * there if this is the first item to arrive. A list with nothing in it isn't
+ * rendered at all - only the notice saying so - so there is nothing to append
+ * to until something asks for one.
+ *
+ * Null when the container holds neither, which is how a caller tells that this
+ * list isn't on the page at all rather than being empty.
+ */
+export function list_in(container, classes) {
+    if (!container) return null;
+
+    const existing = container.querySelector('.' + classes.split(' ')[0]);
+
+    if (existing) return existing;
+
+    const notice = container.querySelector('.Notice');
+
+    if (!notice) return null;
+
+    const list = document.createElement('ul');
+    list.className = classes;
+    notice.replaceWith(list);
+
+    return list;
+}
+
+/**
  * Keeps the browser chrome's own colour in step with the active theme -
  * read from the live --paper token, so every theme (and Match System) is
  * covered without a second list of colours anywhere.

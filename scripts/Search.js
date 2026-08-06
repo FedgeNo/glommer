@@ -1,5 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
-import { csrf_headers, list_item } from '/scripts/utils.js';
+import { csrf_headers, list_in, list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { OtherUser } from '/scripts/OtherUser.js';
@@ -14,7 +14,13 @@ export class Search {
             ? options.endpoint
             : () => options.endpoint;
         this.buildRequest = options.buildRequest;
-        this.resultsContainer = options.resultsContainer;
+        // Either the list itself or, for a list that may not be on the page at
+        // all - an empty one renders only its notice - something that builds it
+        // on demand. Resolved per render rather than once here, so the first
+        // results are what bring the list into being.
+        this._resolveContainer = typeof options.resultsContainer === 'function'
+            ? options.resultsContainer
+            : () => options.resultsContainer;
         this.renderItem = options.renderItem;
         this.delay = options.delay ?? 300;
         this.onBeforeFetch = options.onBeforeFetch || null;
@@ -27,7 +33,9 @@ export class Search {
         this._handleInput = this._handleInput.bind(this);
         input.addEventListener('input', this._handleInput);
 
-        if (options.enableInfiniteScroll) {
+        this.resultsContainer = this._resolveContainer();
+
+        if (options.enableInfiniteScroll && this.resultsContainer) {
             if (!options.countOffset) {
                 throw new Error('Search: countOffset is required when enableInfiniteScroll is true');
             }
@@ -96,6 +104,10 @@ export class Search {
         }
 
         if (this.input.value.trim() !== query) return;
+
+        this.resultsContainer = this.resultsContainer ?? this._resolveContainer();
+
+        if (!this.resultsContainer) return;
 
         this.resultsContainer.replaceChildren();
 
@@ -183,16 +195,15 @@ export class Search {
     static #initUsers() {
         const input = document.querySelector('.UserSearchInput');
         if (!input) return;
-        const container = input.closest('.UserSearch').querySelector('.UserSearchSection .UserList');
+        const section = input.closest('.UserSearch').querySelector('.UserSearchSection');
         new Search(input, {
             endpoint: '/api/search-users',
             buildRequest: query => ({ q: query }),
-            resultsContainer: container,
+            resultsContainer: () => list_in(section, 'UserList UserSearchList d-flex flex-column'),
             renderItem: userData => OtherUser.fromData(userData).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.OtherUser').length,
             onResponse: (input, data, items) => {
-                const section = input.closest('.UserSearch').querySelector('.UserSearchSection');
                 const searching = input.value.trim() !== '';
                 section.querySelector('h2').textContent = searching ? 'User Search Results' : 'Suggested Users';
 
@@ -205,7 +216,7 @@ export class Search {
                     notice.textContent = searching
                         ? 'Nobody here matches that.'
                         : 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.';
-                    container.appendWithSpace(list_item(notice));
+                    section.querySelector('.UserList')?.appendWithSpace(list_item(notice));
                 }
             }
         });

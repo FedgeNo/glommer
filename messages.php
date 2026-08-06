@@ -45,7 +45,6 @@ if (Block::exists($current_user -> userId, $other_user -> userId)) {
 $page -> addContent(new MessageList([
     'userId' => (int) $current_user -> userId,
     'otherUserId' => $other_user -> userId,
-    'otherUserIsLocal' => $other_user -> remoteActorURI === null,
 ]));
 
 // What this conversation is - end-to-end encrypted, plaintext until someone
@@ -79,6 +78,10 @@ if ($other_user -> remoteActorURI !== null) {
     $privacy_state = 'awaiting-yours';
 }
 
-$page -> addContent(new MessageComposer($other_user -> userId, new MessagePrivacyButton($privacy_state, '@' . $other_user -> slug)));
+$page -> addContent(new MessageComposer(
+    $other_user -> userId,
+    new MessagePrivacyButton($privacy_state, '@' . $other_user -> slug),
+    $other_user -> remoteActorURI === null
+));
 
 $page -> send();

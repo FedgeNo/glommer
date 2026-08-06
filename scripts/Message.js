@@ -3,7 +3,7 @@ import { User } from '/scripts/User.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
-import { parse_server_date, list_item } from '/scripts/utils.js';
+import { parse_server_date, list_in, list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { EmojiRenderer } from '/scripts/EmojiRenderer.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -135,7 +135,7 @@ export class Message {
      * Scroll the message list to the bottom on page load.
      */
     static init() {
-        if (document.querySelector('.MessageList')) {
+        if (document.querySelector('.MessageComposer')) {
             window.addEventListener('load', () => {
                 window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
                 const composerTextarea = document.querySelector('.MessageComposer textarea');
@@ -147,18 +147,19 @@ export class Message {
 
 document.addEventListener('ws:message', (event) => {
     const data = event.detail;
-    const list = document.querySelector('.MessageList');
 
-    if (!list || Number(list.dataset.otherUserId) !== Number(data.senderId)) {
+    // Who this thread is with, read off the composer: a thread nobody has
+    // written in yet has no list to ask.
+    const recipient = document.querySelector('.MessageComposer [name="recipientId"]');
+
+    if (!recipient || Number(recipient.value) !== Number(data.senderId)) {
         return;
     }
 
     const was_near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
+    const list = list_in(document.querySelector('main'), 'MessageList d-flex flex-column');
 
-    const placeholder = list.querySelector('.Notice');
-    if (placeholder) {
-        placeholder.closest('li').remove();
-    }
+    if (!list) return;
 
     const message = Message.fromData(data);
     const element = message.toElement();

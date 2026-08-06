@@ -21,7 +21,11 @@ return [
     // falls back to PHP's mail() (the local sendmail handoff, which on a
     // typical VPS lands straight in spam folders).
     'mailFromName' => Env::get('MAIL_FROM_NAME', '') ?: Env::get('SITE_TITLE', ''),
-    'siteURL' => Env::get('SITE_URL', 'https://example.com'),
+    // No default, for the same reason siteTitle has none, and a sharper one:
+    // a placeholder here is a real address belonging to somebody else, and the
+    // canonical-host redirect would send every visitor to it. Empty is a
+    // misconfiguration, caught in init.php rather than papered over.
+    'siteURL' => Env::get('SITE_URL', ''),
     // No default, unlike every other key here: a site's title is its own name,
     // and there is no name that would be right to hand someone else's site.
     // Both install paths require one and bin/install.php fails without it, so

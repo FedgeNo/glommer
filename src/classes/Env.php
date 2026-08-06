@@ -5,6 +5,7 @@ declare(strict_types=1);
 class Env
 {
     private static bool $loaded = false;
+    private static bool $unreadable = false;
 
     public static function get(string $key, ?string $default = null): ?string
     {
@@ -15,6 +16,25 @@ class Env
         return $value === false ? $default : $value;
     }
 
+    /**
+     * Whether there is a .env that this process cannot read. Distinct from
+     * there being none: a site with no .env is simply not installed yet, while
+     * one whose .env is unreadable is installed and answering every request
+     * with placeholder configuration - a different problem, and one nothing
+     * downstream can tell apart without asking.
+     */
+    public static function unreadable(): bool
+    {
+        self::load();
+
+        return self::$unreadable;
+    }
+
+    public static function path(): string
+    {
+        return __DIR__ . '/../../.env';
+    }
+
     private static function load(): void
     {
         if (self::$loaded) {
@@ -23,7 +43,7 @@ class Env
 
         self::$loaded = true;
 
-        $path = __DIR__ . '/../../.env';
+        $path = self::path();
 
         if (!is_file($path)) {
             return;
@@ -31,10 +51,14 @@ class Env
 
         // A .env this process can't read (a root-tightened file, a CLI run as
         // another user) reads as "no overrides" rather than a warning storm -
-        // file() returns false on failure and foreach would warn on it.
+        // file() returns false on failure and foreach would warn on it. It is
+        // recorded rather than shrugged off, because every value downstream is
+        // then a placeholder and a caller has to be able to say so.
         $lines = @file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
         if ($lines === false) {
+            self::$unreadable = true;
+
             return;
         }
 

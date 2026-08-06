@@ -526,8 +526,8 @@ class EnvironmentChecker
 
         // Request the CONFIGURED host directly, with its real scheme - not a
         // bare "http://127.0.0.1/..." URL. A request whose Host header is
-        // literally "127.0.0.1" doesn't match this site's own vhost
-        // (ServerName glommer.local, say); on a box with more than one vhost
+        // literally "127.0.0.1" doesn't match this site's own vhost, whose
+        // ServerName is a hostname; on a box with more than one vhost
         // that falls through to Apache's default vhost (whichever is first
         // alphabetically) - a COMPLETELY different site - and this probe
         // silently gets nothing useful back, forever, on that box. Once

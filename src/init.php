@@ -29,6 +29,24 @@ spl_autoload_register(function (string $class): void {
 // further down (after the error handlers are in place) rather than served.
 $site_is_installed = is_file(__DIR__ . '/../.env');
 
+// An installed site with no usable configuration has every Config value at its
+// default, and the canonical-host redirect below would then send every visitor
+// to whatever address that leaves behind - silently, with the cause (a file
+// mode, a missing line) invisible from the outside. Diagnosed here instead.
+$configuration_problem = $site_is_installed ? ConfigurationError::reason() : null;
+
+if ($configuration_problem !== null) {
+    if (defined('IS_API_REQUEST')) {
+        http_response_code(503);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'This site is not configured.']);
+        exit;
+    }
+
+    ConfigurationError::send($configuration_problem);
+    exit;
+}
+
 if (
     $site_is_installed
     && str_starts_with((string) Config::get('siteURL'), 'https://')

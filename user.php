@@ -55,7 +55,7 @@ $page -> jsonLD = [
     '@context' => 'https://schema.org',
     '@type' => 'Person',
     'name' => $profile_user -> title,
-    'url' => Page::currentURL(),
+    'url' => current_url(),
 ];
 
 if ($profile_user -> avatarURL() !== null) {

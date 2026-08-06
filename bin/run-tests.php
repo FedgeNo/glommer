@@ -21,6 +21,7 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+require __DIR__ . '/../src/functions.php';
 require __DIR__ . '/../tests/TestCase.php';
 require __DIR__ . '/../tests/DatabaseTestCase.php';
 require __DIR__ . '/../tests/TestDatabase.php';

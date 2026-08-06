@@ -16,7 +16,7 @@ class ClientConfigTest extends TestCase
      */
     public function testAValueCannotCloseTheScriptBlock(): void
     {
-        $encoded = Page::safeJSONForScript(['title' => '</script><img src=x onerror=alert(1)>']);
+        $encoded = safe_json_for_script(['title' => '</script><img src=x onerror=alert(1)>']);
 
         $this -> assertFalse(str_contains($encoded, '</script>'));
         $this -> assertFalse(str_contains($encoded, '<'));
@@ -29,7 +29,7 @@ class ClientConfigTest extends TestCase
 
     public function testAmpersandsSurviveTheRoundTrip(): void
     {
-        $encoded = Page::safeJSONForScript(['title' => 'this & that']);
+        $encoded = safe_json_for_script(['title' => 'this & that']);
 
         $this -> assertFalse(str_contains($encoded, '&'));
         $this -> assertSame('this & that', json_decode($encoded, true)['title']);

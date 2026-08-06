@@ -23,6 +23,9 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+// Standalone helpers have no class name for the autoloader to find them by.
+require __DIR__ . '/../src/functions.php';
+
 $batch_id = $argv[1] ?? '';
 
 if (!preg_match('/^[a-f0-9]{32}$/', $batch_id)) {

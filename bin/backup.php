@@ -23,6 +23,9 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+// Standalone helpers have no class name for the autoloader to find them by.
+require __DIR__ . '/../src/functions.php';
+
 $project_root = dirname(__DIR__);
 $backup_root = Backup::rootDir();
 $keep_days = max(1, (int) (Env::get('BACKUP_KEEP_DAYS', '') ?: 3));

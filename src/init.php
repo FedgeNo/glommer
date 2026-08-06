@@ -18,6 +18,9 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+// Standalone helpers have no class name for the autoloader to find them by.
+require __DIR__ . '/functions.php';
+
 // HTTPS is required on an installed site - nothing is served over plain HTTP
 // except the redirect pointing at the https URL (the .htaccess enforces the
 // same for static files Apache serves without PHP). Only a fresh,
@@ -269,21 +272,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['SCRIPT_FILENAME'
     }
 }
 
-function truncate(string $str, int $len = 50): string
-{
-    if (mb_strlen($str) <= $len) {
-        return $str;
-    }
-
-    $cut = mb_substr($str, 0, $len);
-    $last_space = mb_strrpos($cut, ' ');
-
-    // Back up to the last word boundary so the limit doesn't slice a word in
-    // half - unless there's no space to back up to (a single long word), where
-    // the hard cut stands.
-    if ($last_space !== false) {
-        $cut = mb_substr($cut, 0, $last_space);
-    }
-
-    return rtrim($cut) . '…';
-}

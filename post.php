@@ -49,7 +49,7 @@ $json_ld = [
     'headline' => $post -> title ?? $post -> shortDescription(),
     'articleBody' => $post -> description,
     'datePublished' => $post -> createdAt,
-    'url' => Page::currentURL(),
+    'url' => current_url(),
     'author' => [
         '@type' => 'Person',
         'name' => $post -> author !== null ? ($post -> author -> title ?: $post -> author -> slug) : null,

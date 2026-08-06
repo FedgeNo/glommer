@@ -34,6 +34,9 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+// Standalone helpers have no class name for the autoloader to find them by.
+require __DIR__ . '/../src/functions.php';
+
 require __DIR__ . '/../src/config.php';
 
 /** How long to wait before looking again when the queue came back empty. */

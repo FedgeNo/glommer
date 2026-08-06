@@ -63,7 +63,7 @@ class Page extends HTMLDocument
             $this -> description ?? SiteInfo::description(),
             self::META_DESCRIPTION_MAX_LENGTH
         );
-        $url = self::currentURL();
+        $url = current_url();
 
         $charset = new Meta;
         $charset -> charset = 'utf-8';
@@ -96,7 +96,7 @@ class Page extends HTMLDocument
 
         $json_ld_script = new Script;
         $json_ld_script -> attributes['type'] = 'application/ld+json';
-        $json_ld_script -> contents[] = self::safeJSONForScript($json_ld);
+        $json_ld_script -> contents[] = safe_json_for_script($json_ld);
         $this -> addHeadContent($json_ld_script);
 
         // Metadata in spirit (an RSS alternate link), added by a page that has a
@@ -214,24 +214,6 @@ class Page extends HTMLDocument
         ]));
 
         parent::send();
-    }
-
-    public static function safeJSONForScript(mixed $data): string
-    {
-        // DOMDocument HTML-escapes text node content (&, <, >) regardless of
-        // the parent tag. Browsers don't decode entities inside <script>
-        // (it's a "raw text" element), so that escaping would corrupt the
-        // JSON. Encoding these characters as JSON \uXXXX escapes first keeps
-        // them out of DOMDocument's escaping pass while still round-tripping
-        // correctly through JSON.parse().
-        $json = json_encode($data, JSON_UNESCAPED_SLASHES);
-
-        return str_replace(['&', '<', '>'], ['\\u0026', '\\u003C', '\\u003E'], $json);
-    }
-
-    public static function currentURL(): string
-    {
-        return ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/');
     }
 
     protected static function metaTags(string $title, string $description, ?string $image, string $url): array

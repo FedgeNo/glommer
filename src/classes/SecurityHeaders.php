@@ -41,7 +41,9 @@ class SecurityHeaders
             // from hosts not known here (this runs before the DB is up, so the
             // configured tile host can't be read). Tiles are non-executable
             // images, so allowing any HTTPS image source is a contained widening.
-            'img-src \'self\' data: https:',
+            // blob: is the composer's attachment previews - object URLs over
+            // files still sitting in the browser's own memory.
+            'img-src \'self\' data: blob: https:',
             'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
             'frame-src https://challenges.cloudflare.com https://www.google.com',

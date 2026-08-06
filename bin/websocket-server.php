@@ -87,13 +87,37 @@ if ($use_tls) {
     stream_context_set_option($context, 'ssl', 'verify_peer', false);
 }
 
-$public_listener = stream_socket_server(
-    'tcp://' . $ws_host . ':' . $ws_port,
-    $error_code,
-    $error_message,
-    STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
-    $context
-);
+// "Every interface" has to mean both address families: a browser told to
+// reach this host over IPv6 gets connection-refused from a v4-only listener
+// and never falls back - Firefox resolves *.localhost to ::1 itself, so on a
+// dev install that was every connection it made. Binding [::] with v6only
+// off accepts IPv4 through the same socket (as v4-mapped addresses); a box
+// with IPv6 genuinely unavailable falls back to the plain v4 bind.
+$bind_all = $ws_host === '0.0.0.0' || $ws_host === '::' || $ws_host === '[::]';
+
+if ($bind_all) {
+    stream_context_set_option($context, 'socket', 'ipv6_v6only', false);
+}
+
+$public_listener = $bind_all
+    ? @stream_socket_server(
+        'tcp://[::]:' . $ws_port,
+        $error_code,
+        $error_message,
+        STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
+        $context
+    )
+    : false;
+
+if ($public_listener === false) {
+    $public_listener = stream_socket_server(
+        'tcp://' . ($bind_all ? '0.0.0.0' : $ws_host) . ':' . $ws_port,
+        $error_code,
+        $error_message,
+        STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
+        $context
+    );
+}
 
 if ($public_listener === false) {
     log_line('Could not bind public WebSocket listener on ' . $ws_host . ':' . $ws_port . ' - ' . $error_message);

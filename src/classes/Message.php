@@ -136,9 +136,15 @@ SELECT COUNT(*) AS `count`
 
     /**
      * The newest message this person has been sent, or 0 if none - what the
-     * nav's unread dot compares against their lastMessageId. Served by the
-     * (recipientId, senderId, messageId) index, so it is one index read on a
-     * page render rather than a count of anything.
+     * nav's unread dot compares against their lastMessageId.
+     *
+     * Served by the (recipientId, messageId) index, where equality on the
+     * whole prefix makes MAX a single dive to the last entry. That index
+     * exists for exactly this: under (recipientId, senderId, messageId) the
+     * unbound senderId turns the same MAX into a scan of every message the
+     * person was ever sent - measured at thousands of entries per page render
+     * on an ordinary mailbox, and MariaDB declines the per-sender loose scan
+     * that would have avoided it.
      */
     public static function newestReceivedId(int $user_id): int
     {
@@ -161,6 +167,7 @@ SELECT COALESCE(MAX(`messageId`), 0) AS `newestId`
     {
         $none = 0;
 
+        // Same single-dive MAX as newestReceivedId(), off the same index.
         DB::run('
 UPDATE `Users`
     SET `lastMessageId` = (

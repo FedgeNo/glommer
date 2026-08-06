@@ -62,7 +62,12 @@ CREATE TABLE `Users` (
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `remoteActorURI` (`remoteActorURI`),
   KEY `banned_userId` (`banned`,`userId`),
-  FULLTEXT KEY `description` (`description`)
+  -- Two full-text indexes because user search asks two questions: the wide one
+  -- answers "does this account match at all" and drives the WHERE; the narrow
+  -- one answers "was that a hit on the name" and orders name matches ahead of
+  -- bio-only matches.
+  FULLTEXT KEY `slug_title_description` (`slug`,`title`,`description`),
+  FULLTEXT KEY `slug_title` (`slug`,`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Posts` (
@@ -406,6 +411,10 @@ CREATE TABLE `Messages` (
   UNIQUE KEY `remoteObjectURI` (`remoteObjectURI`),
   KEY `senderId_recipientId_messageId` (`senderId`,`recipientId`,`messageId`),
   KEY `recipientId_senderId_messageId` (`recipientId`,`senderId`,`messageId`),
+  -- For the nav's unread check: MAX(messageId) for a recipient is a single
+  -- dive here, where the conversation indexes above would leave senderId
+  -- unbound and scan the person's whole mailbox on every page render.
+  KEY `recipientId_messageId` (`recipientId`,`messageId`),
   CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`senderId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`recipientId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -420,6 +429,10 @@ CREATE TABLE `Notifications` (
   PRIMARY KEY (`notificationId`),
   KEY `userId` (`userId`,`notificationId`),
   KEY `postId` (`postId`),
+  -- Declared, not left to the actorId foreign key's implicit index: the
+  -- repeat-collapse check (Notification::alreadyNotified) filters on actorId
+  -- and only stays fast because an index on it exists.
+  KEY `actorId` (`actorId`),
   CONSTRAINT `Notifications_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `Notifications_ibfk_2` FOREIGN KEY (`actorId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -796,6 +809,15 @@ ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `requesterId_status_friendship
 ALTER TABLE `Friendships` ADD INDEX IF NOT EXISTS `addresseeId_status_friendshipId` (`addresseeId`, `status`, `friendshipId`);
 ALTER TABLE `Friendships` DROP INDEX IF EXISTS `addresseeId`;
 ALTER TABLE `Reports` DROP INDEX IF EXISTS `targetType`;
+-- Notifications: before actorId was declared above, InnoDB had silently
+-- created an index for the actorId foreign key under the constraint's own
+-- name. Once the declared one exists (drift adds it), the accidental twin is
+-- redundant. Dropping it only ever succeeds after the replacement is in
+-- place - the engine refuses to drop the last index backing a foreign key.
+ALTER TABLE `Notifications` DROP INDEX IF EXISTS `Notifications_ibfk_2`;
+-- Users: the bio-only full-text index is superseded by the two above (drift
+-- adds those), which cover the name columns user search actually ranks by.
+ALTER TABLE `Users` DROP INDEX IF EXISTS `description`;
 -- Bookmarks orders by bookmarkId (insertion order IS bookmarked order),
 -- served by (userId, bookmarkId); no query uses a (userId, createdAt,
 -- postId) index.

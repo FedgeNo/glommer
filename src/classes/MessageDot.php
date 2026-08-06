@@ -24,13 +24,30 @@ class MessageDot extends Span
         }
     }
 
-    /** Whether this member has been sent anything since they last looked. */
+    /** One answer per loaded User - see unreadFor(). */
+    private static ?\WeakMap $unreadByUser = null;
+
+    /**
+     * Whether this member has been sent anything since they last looked.
+     *
+     * Answered once per User instance: the navigation asks three times per
+     * render (the mobile alert dot, the dot on the site title, the one beside
+     * the Messages link), each time for the same cached Auth::user(), and the
+     * answer cannot change between them. Keyed on the instance rather than the
+     * id so a freshly loaded User is always answered fresh.
+     */
     public static function unreadFor(?User $user): bool
     {
         if ($user === null || $user -> userId === null) {
             return false;
         }
 
-        return Message::newestReceivedId((int) $user -> userId) > (int) $user -> lastMessageId;
+        self::$unreadByUser ??= new \WeakMap();
+
+        if (!isset(self::$unreadByUser[$user])) {
+            self::$unreadByUser[$user] = Message::newestReceivedId((int) $user -> userId) > (int) $user -> lastMessageId;
+        }
+
+        return self::$unreadByUser[$user];
     }
 }

@@ -43,19 +43,30 @@ class UserSearchList extends UserList
             return $this -> suggestionRows();
         }
 
-        // Escape LIKE wildcards so a literal % or _ in the query doesn't match
-        // everything.
-        $like = '%' . addcslashes($this -> query, '\\%_') . '%';
-
-        // The bio is searched full-text (whole-word / prefix); the username and
-        // display name by substring. Each query word must prefix-match a bio
-        // word (+word*); a query that's only punctuation leaves this empty, so
-        // just the name LIKEs run.
-        $ft_tokens = array_filter(preg_split('/[^A-Za-z0-9_]+/', $this -> query));
+        // Names and bio are all searched full-text: each query word must
+        // prefix-match a word of the slug, display name, or bio (+word*), so
+        // the index answers the search instead of a table scan re-checking a
+        // substring against every account - a walk that grows with every relay
+        // shadow account. Words below the engine's indexed minimum
+        // (innodb_ft_min_token_size, 3) are dropped: they are not in the index,
+        // and a required term that cannot match would turn the whole query into
+        // "nobody".
+        $ft_tokens = array_filter(
+            preg_split('/[^A-Za-z0-9_]+/', $this -> query),
+            static fn (string $token): bool => strlen($token) >= 3
+        );
         $ft_query = implode(' ', array_map(static fn (string $token): string => '+' . $token . '*', $ft_tokens));
 
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+
+        // A query with no indexable word ("ab", "@", "…") would full-text
+        // match nothing at all. Those fall back to the substring scan - names
+        // this short are cheap to check and rare to search for, and answering
+        // them badly is still better than answering them with silence.
+        if ($ft_query === '') {
+            return $this -> substringRows();
+        }
         $limit = static::PAGE_SIZE + 1;
 
         // localMember leads the ordering so this site's own people always come
@@ -76,13 +87,35 @@ class UserSearchList extends UserList
         // these values have no defined order and a page could repeat or skip
         // accounts.
         return DB::rows('
-SELECT *, (`slug` LIKE ? OR `title` LIKE ?) AS `nameMatch`, (`remoteActorURI` IS NULL) AS `localMember`
+SELECT *, (MATCH(`slug`, `title`) AGAINST(? IN BOOLEAN MODE) > 0) AS `nameMatch`, (`remoteActorURI` IS NULL) AS `localMember`
     FROM `Users`
-    WHERE (`slug` LIKE ? OR `title` LIKE ? OR MATCH(`description`) AGAINST(? IN BOOLEAN MODE))
+    WHERE MATCH(`slug`, `title`, `description`) AGAINST(? IN BOOLEAN MODE)
         AND `userId` != ? AND `banned` = ?
     ORDER BY `localMember` DESC, `nameMatch` DESC, `userId` DESC
     LIMIT ? OFFSET ?
-', 'OtherUser', 'sssssiiii', $like, $like, $like, $like, $ft_query, $viewer_id, $not_banned, $limit, $this -> offset);
+', 'OtherUser', 'ssiiii', $ft_query, $ft_query, $viewer_id, $not_banned, $limit, $this -> offset);
+    }
+
+    /**
+     * The scan the full-text query replaced, kept for the queries full-text
+     * cannot express: everything typed is shorter than an indexed word.
+     * Escapes LIKE wildcards so a literal % or _ doesn't match everything.
+     */
+    private function substringRows(): array
+    {
+        $like = '%' . addcslashes($this -> query, '\\%_') . '%';
+        $not_banned = 0;
+        $viewer_id = (int) Auth::id();
+        $limit = static::PAGE_SIZE + 1;
+
+        return DB::rows('
+SELECT *, (`slug` LIKE ? OR `title` LIKE ?) AS `nameMatch`, (`remoteActorURI` IS NULL) AS `localMember`
+    FROM `Users`
+    WHERE (`slug` LIKE ? OR `title` LIKE ?)
+        AND `userId` != ? AND `banned` = ?
+    ORDER BY `localMember` DESC, `nameMatch` DESC, `userId` DESC
+    LIMIT ? OFFSET ?
+', 'OtherUser', 'ssssiiii', $like, $like, $like, $like, $viewer_id, $not_banned, $limit, $this -> offset);
     }
 
     /**

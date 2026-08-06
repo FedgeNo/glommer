@@ -780,13 +780,6 @@ label.visually-hidden { margin-bottom: 0; }
     height: 4.5rem;
 }
 
-/* The base 7rem file-input width is sized for the composer's compact picker;
-   in the profile card's actions column every control shares the column's one
-   width, and an explicit width would win over the flex stretch. */
-.AvatarUploadForm input[type='file'] {
-    width: 100%;
-}
-
 .UserSection {
     display: flex;
     flex-direction: column;

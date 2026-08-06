@@ -28,6 +28,6 @@ if ($domain === '') {
 // Lifting a block does not restore what it severed. The follows it dropped are
 // gone, and both sides have to follow again - which is the honest outcome, since
 // neither server kept the relationship while the block stood.
-BlockedDomain::unblock($domain);
+RemoteServer::unblock($domain);
 
 JSONResponse::success(['unblocked' => true]) -> send();

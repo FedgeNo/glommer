@@ -186,7 +186,7 @@ class ActivityPubInbox
             return;
         }
 
-        if (BlockedDomain::blocksURL($object_uri)) {
+        if (RemoteServer::isBlockedURL($object_uri)) {
             return;
         }
 
@@ -211,7 +211,7 @@ class ActivityPubInbox
         // Re-checked rather than assumed: this was queued some time ago, and
         // the post may have arrived through a follow in the meantime, or its
         // server may have been blocked since.
-        if (RemoteObjectTombstone::isTombstoned($object_uri) || BlockedDomain::blocksURL($object_uri)) {
+        if (RemoteObjectTombstone::isTombstoned($object_uri) || RemoteServer::isBlockedURL($object_uri)) {
             return true;
         }
 

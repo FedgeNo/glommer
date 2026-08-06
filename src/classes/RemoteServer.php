@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 /**
- * Whole servers this instance refuses to deal with.
+ * Another server, as this one deals with it. Today that means defederation;
+ * anything else this instance comes to decide about a whole server belongs
+ * here rather than in a class named for one answer.
  *
  * Blocking accounts one at a time does not work against a server that mints
  * them faster than a moderator can act, which is the usual shape of federated
@@ -15,7 +17,7 @@ declare(strict_types=1);
  * a hostname is case-insensitive, and letting BadServer.example through while
  * badserver.example is blocked would make the whole thing decorative.
  */
-class BlockedDomain
+class RemoteServer
 {
     /**
      * Adds a domain and severs what is already established with it. Returns
@@ -32,7 +34,7 @@ class BlockedDomain
         }
 
         DB::run('
-INSERT INTO `BlockedDomains` (`domain`, `reason`, `blockedBy`)
+INSERT INTO `BlockedServers` (`domain`, `reason`, `blockedBy`)
     VALUES (?, ?, ?)
     ON DUPLICATE KEY UPDATE `reason` = VALUES(`reason`), `blockedBy` = VALUES(`blockedBy`)
 ', 'ssi', $normalized, $reason, $moderator_id);
@@ -86,7 +88,7 @@ DELETE FROM `FediverseDeliveries`
         }
 
         DB::run('
-DELETE FROM `BlockedDomains`
+DELETE FROM `BlockedServers`
     WHERE `domain` = ?
 ', 's', $normalized);
     }
@@ -96,15 +98,15 @@ DELETE FROM `BlockedDomains`
      * than a host so no caller has to remember to extract one - the place that
      * forgets is the place that lets a delivery through.
      */
-    public static function blocksURL(string $url): bool
+    public static function isBlockedURL(string $url): bool
     {
         $host = parse_url($url, PHP_URL_HOST);
 
-        return is_string($host) && self::blocks($host);
+        return is_string($host) && self::isBlocked($host);
     }
 
     /** Whether a hostname is blocked, itself or as a subdomain of one. */
-    public static function blocks(string $domain): bool
+    public static function isBlocked(string $domain): bool
     {
         $normalized = self::normalize($domain);
 
@@ -131,9 +133,9 @@ DELETE FROM `BlockedDomains`
         try {
             return DB::row('
 SELECT `domain`
-    FROM `BlockedDomains`
+    FROM `BlockedServers`
     WHERE `domain` IN (' . $placeholders . ')
-', 'BlockedDomainData', str_repeat('s', count($candidates)), ...$candidates) !== null;
+', 'BlockedServerData', str_repeat('s', count($candidates)), ...$candidates) !== null;
         } catch (\mysqli_sql_exception $exception) {
             // 1146 is "no such table". Every outbound request passes through
             // this, including the ones bin/install.php makes while checking the
@@ -151,16 +153,6 @@ SELECT `domain`
 
             return false;
         }
-    }
-
-    /** @return BlockedDomainData[] */
-    public static function all(): array
-    {
-        return DB::rows('
-SELECT *
-    FROM `BlockedDomains`
-    ORDER BY `domain`
-', 'BlockedDomainData');
     }
 
     /**

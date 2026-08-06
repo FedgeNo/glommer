@@ -303,6 +303,22 @@ SELECT `type`
      * not just whatever the caller happened to have loaded, since "seen" is
      * meant to track against the true most-recent notification.
      */
+    /**
+     * The newest notification this person has, or 0 if none - for the nav's
+     * unseen mark, which needs the answer without building the dropdown that
+     * usually provides it.
+     */
+    public static function newestIdFor(int $user_id): int
+    {
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT COALESCE(MAX(`notificationId`), 0) AS `newestId`
+    FROM `Notifications`
+    WHERE `userId` = ?
+', 'i', $user_id));
+
+        return (int) mysqli_fetch_assoc($result)['newestId'];
+    }
+
     public static function markSeen(int $user_id): void
     {
         $no_notifications_fallback = 0;

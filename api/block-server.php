@@ -28,7 +28,7 @@ if (ActivityPubActor::isLocalActorURI('https://' . $domain . '/')) {
     JSONResponse::error('That is this server.', 422) -> send();
 }
 
-$blocked = BlockedDomain::block($domain, $reason !== '' ? $reason : null, (int) Auth::id());
+$blocked = RemoteServer::block($domain, $reason !== '' ? $reason : null, (int) Auth::id());
 
 // Null means the entry was not shaped like a hostname. Said plainly rather than
 // accepted quietly, so a typo does not look like a block that is in force.

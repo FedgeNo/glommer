@@ -119,7 +119,7 @@ SELECT `inboxURL`
             return 'Unknown subscription style.';
         }
 
-        if (BlockedDomain::blocksURL($actor_uri)) {
+        if (RemoteServer::isBlockedURL($actor_uri)) {
             return 'That server is blocked. Unblock it first if you mean to subscribe to it.';
         }
 

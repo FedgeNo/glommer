@@ -151,6 +151,28 @@ INSERT INTO `Settings` (`name`, `value`)
                 // migrations, column renames, and data backfills only make sense
                 // against an already-installed database, so they're skipped here.
                 $fresh = SchemaInstaller::isFreshInstall();
+                $pending_table_renames = SchemaInstaller::pendingTableRenames(DB::connection());
+
+                // Both names holding a table at once is not something to
+                // resolve unattended - which one has the live rows is a
+                // judgement call. Left for bin/install.php, which says so.
+                if (SchemaInstaller::conflictingTableRenames(DB::connection()) !== []) {
+                    return false;
+                }
+
+                if ($pending_table_renames !== []) {
+                    $admin_connection = DB::adminConnection();
+
+                    if ($admin_connection === null) {
+                        return false;
+                    }
+
+                    // Before missingTables() below, which would otherwise read
+                    // the new name as absent and create it empty beside the
+                    // rows still sitting under the old one.
+                    SchemaInstaller::applyTableRenames($admin_connection, $pending_table_renames);
+                }
+
                 $missing_tables = SchemaInstaller::missingTables(DB::connection());
             } catch (\mysqli_sql_exception | \RuntimeException $exception) {
                 return false;

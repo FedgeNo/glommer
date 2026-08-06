@@ -4668,6 +4668,55 @@ function admin_connection(string $needed_for): ?\mysqli
 // (tables present, no rows) is NOT fresh and takes the full upgrade path.
 $fresh_install = SchemaInstaller::isFreshInstall();
 
+// Before anything is created: a table that has been renamed since the installed
+// release still holds its rows under the old name, and the missing-tables step
+// below would read the new name as absent and create it empty beside them.
+$conflicting_renames = SchemaInstaller::conflictingTableRenames($mysqli);
+
+if ($conflicting_renames !== []) {
+    $pairs = [];
+
+    foreach ($conflicting_renames as $old => $new) {
+        $pairs[] = $old . ' and ' . $new;
+    }
+
+    fail(
+        'Both halves of a table rename exist at once (' . implode('; ', $pairs) . '). '
+        . 'Only one of each pair holds the live rows and this script will not guess which. '
+        . 'Merge or drop the stale table yourself, then re-run.'
+    );
+}
+
+$pending_renames = SchemaInstaller::pendingTableRenames($mysqli);
+
+if ($pending_renames === []) {
+    ok('no table renames to apply');
+} else {
+    $pairs = [];
+
+    foreach ($pending_renames as $old => $new) {
+        $pairs[] = $old . ' -> ' . $new;
+    }
+
+    $rename_mysqli = admin_connection('rename ' . count($pending_renames) . ' table(s): ' . implode(', ', $pairs));
+
+    if ($rename_mysqli === null) {
+        fail(
+            count($pending_renames) . ' table(s) have been renamed in this release (' . implode(', ', $pairs) . ') '
+            . 'and applying that needs an admin account. '
+            . 'Set DB_ADMIN_USERNAME and DB_ADMIN_PASSWORD (an account with ALTER privileges) before re-running this script.'
+        );
+    }
+
+    try {
+        SchemaInstaller::applyTableRenames($rename_mysqli, $pending_renames);
+    } catch (\mysqli_sql_exception | \RuntimeException $exception) {
+        fail('Failed to rename table(s): ' . $exception -> getMessage());
+    }
+
+    ok('renamed ' . count($pending_renames) . ' table(s): ' . implode(', ', $pairs));
+}
+
 try {
     $missing_statements = SchemaInstaller::missingTables($mysqli);
 } catch (\RuntimeException $exception) {

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /** Lifts a server block. Carries the domain it acts on. */
-class DomainUnblockButton extends ButtonButton
+class ServerUnblockButton extends ButtonButton
 {
     public function __construct(string $domain)
     {

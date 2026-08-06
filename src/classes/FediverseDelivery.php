@@ -51,7 +51,7 @@ class FediverseDelivery
             // domain blocked after the fact is covered twice over: blocking
             // deletes what is queued for it, and SafeHTTPFetcher refuses the
             // send regardless.
-            if (BlockedDomain::blocksURL($inbox_url)) {
+            if (RemoteServer::isBlockedURL($inbox_url)) {
                 continue;
             }
 

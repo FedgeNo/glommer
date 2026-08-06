@@ -135,6 +135,44 @@ SELECT COUNT(*) AS `count`
     }
 
     /**
+     * The newest message this person has been sent, or 0 if none - what the
+     * nav's unread dot compares against their lastMessageId. Served by the
+     * (recipientId, senderId, messageId) index, so it is one index read on a
+     * page render rather than a count of anything.
+     */
+    public static function newestReceivedId(int $user_id): int
+    {
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT COALESCE(MAX(`messageId`), 0) AS `newestId`
+    FROM `Messages`
+    WHERE `recipientId` = ?
+', 'i', $user_id));
+
+        return (int) mysqli_fetch_assoc($result)['newestId'];
+    }
+
+    /**
+     * Marks everything received so far as seen. Opening the conversations list
+     * is enough - seeing that a thread has something new in it is the whole
+     * job of the dot, and having to open every thread to clear it would make
+     * it nag about messages already known about.
+     */
+    public static function markSeen(int $user_id): void
+    {
+        $none = 0;
+
+        DB::run('
+UPDATE `Users`
+    SET `lastMessageId` = (
+        SELECT COALESCE(MAX(`messageId`), ?)
+            FROM `Messages`
+            WHERE `recipientId` = ?
+    )
+    WHERE `userId` = ?
+', 'iii', $none, $user_id, $user_id);
+    }
+
+    /**
      * Deletes a single message. Messages have no child rows or media, so this
      * is a plain one-row delete. Caller is responsible for authorization
      * (used by a moderator removing reported content).

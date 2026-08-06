@@ -82,6 +82,104 @@ SELECT `TABLE_NAME`
     }
 
     /**
+     * Tables schema.sql has renamed since an earlier release, old name => new.
+     *
+     * A rename is invisible to every other step here: missingTables() would
+     * read the new name as a table that does not exist and create it empty,
+     * leaving the real rows stranded under the old name with nothing reading
+     * them. So this runs first, before anything is created.
+     *
+     * An entry stays for as long as a database might still be old enough to
+     * need it; once nothing in the wild predates the rename it can go.
+     *
+     * @return array<string, string>
+     */
+    private static function tableRenames(): array
+    {
+        return ['BlockedDomains' => 'BlockedServers'];
+    }
+
+    /**
+     * The renames still to do. A pair whose new table is already there is
+     * done; a pair where both exist is not something to guess at, so it is
+     * reported separately by conflictingTableRenames().
+     *
+     * @return array<string, string> old name => new name
+     */
+    public static function pendingTableRenames(\mysqli $connection): array
+    {
+        $existing = self::tableNames($connection);
+        $pending = [];
+
+        foreach (self::tableRenames() as $old => $new) {
+            if (in_array($old, $existing, true) && !in_array($new, $existing, true)) {
+                $pending[$old] = $new;
+            }
+        }
+
+        return $pending;
+    }
+
+    /**
+     * Renames where both names hold a table at once, so neither can be assumed
+     * to be the live one. Only reachable if something outside this installer
+     * created the new table, and merging the two is a judgement call about
+     * data - so it is surfaced rather than resolved.
+     *
+     * @return array<string, string> old name => new name
+     */
+    public static function conflictingTableRenames(\mysqli $connection): array
+    {
+        $existing = self::tableNames($connection);
+        $conflicting = [];
+
+        foreach (self::tableRenames() as $old => $new) {
+            if (in_array($old, $existing, true) && in_array($new, $existing, true)) {
+                $conflicting[$old] = $new;
+            }
+        }
+
+        return $conflicting;
+    }
+
+    /**
+     * @param array<string, string> $renames old name => new name, from pendingTableRenames()
+     */
+    public static function applyTableRenames(\mysqli $admin_connection, array $renames): void
+    {
+        foreach ($renames as $old => $new) {
+            self::assertIdentifier($old);
+            self::assertIdentifier($new);
+
+            // The table's implicitly named foreign keys (`<table>_ibfk_N`) come
+            // along under the new name, so schema.sql declares them that way and
+            // the drift check finds nothing to reconcile afterwards.
+            mysqli_query($admin_connection, 'RENAME TABLE `' . $old . '` TO `' . $new . '`');
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function tableNames(\mysqli $connection): array
+    {
+        $result = mysqli_query($connection, '
+SELECT `TABLE_NAME`
+    FROM `information_schema`.`TABLES`
+    WHERE `TABLE_SCHEMA` = DATABASE()
+');
+
+        return array_column(mysqli_fetch_all($result, MYSQLI_ASSOC), 'TABLE_NAME');
+    }
+
+    private static function assertIdentifier(string $identifier): void
+    {
+        if (preg_match('/\A\w+\z/', $identifier) !== 1) {
+            throw new \RuntimeException('Refusing to build DDL around the identifier ' . $identifier . '.');
+        }
+    }
+
+    /**
      * The non-CREATE-TABLE, non-ALTER-TABLE statements in schema.sql -
      * idempotent DML maintenance the installer runs after tables are ensured,
      * on every install and upgrade (currently just the Users.friendCount

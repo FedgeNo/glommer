@@ -13,9 +13,14 @@ if (Auth::id() !== 1) {
     exit;
 }
 
-$page = new Page(['title' => 'Site Settings']);
+$page = new Page(['title' => 'Admin Settings']);
 
 $page -> addContent(new SettingsSection('Services', new ServicesStatus()));
+
+// Relays are a subscription this server takes out, which is administration
+// rather than moderation - and short enough to read here rather than on a
+// page of its own.
+$page -> addContent(new SettingsSection('Relays', new RelaysSetting()));
 
 $page -> addContent(new SettingsSection('Tests', new TestSuitePanel()));
 

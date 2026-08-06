@@ -46,19 +46,44 @@ body:has(.MainNavigation) {
     align-self: center;
 }
 
-.NavBrand::after {
-    content: '';
-    display: inline-block;
-    width: 0.42em;
-    height: 0.42em;
-    margin-left: 0.14em;
-    border-radius: 50% 50% 50% 18%;
-    background-color: var(--accent);
-    transition: background-color 0.15s ease;
+.NavBrand:hover { color: var(--ink); }
+
+/* Every unread mark in the navigation, defined once. They are one thing said
+   about different lists, and the moment there were two copies of these few
+   values they drifted - one ended up a shade smaller and sitting on the
+   baseline like a full stop while the other was a badge. Only placement
+   differs below; size and colour live here. */
+.NotificationDot,
+.MessageDot,
+.NavAlertDot {
+    display: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--danger);
+    pointer-events: none;
 }
 
-.NavBrand:hover { color: var(--ink); }
-.NavBrand:hover::after { background-color: var(--accent-strong); }
+/* Where the site's name used to carry a decorative mark. It says something now
+   instead: a message is waiting. Raised to sit against the top of the letters,
+   which is where the badge on Notifications sits against its link. */
+.NavBrand .MessageDot {
+    margin-left: 0.2rem;
+    vertical-align: 0.4em;
+}
+
+.NavBrand .MessageDot.Active { display: inline-block; }
+
+/* On the Messages link in the menu, riding alongside the label rather than
+   positioned against it - the menu is a list of plain links. */
+.NavDropdownMenu a { position: relative; }
+
+.NavDropdownMenu .MessageDot {
+    margin-left: 0.4rem;
+    vertical-align: 0.08rem;
+}
+
+.NavDropdownMenu .MessageDot.Active { display: inline-block; }
 
 .MainNavigation a {
     font-weight: 500;
@@ -184,16 +209,12 @@ body:has(.MainNavigation) {
     position: relative;
 }
 
+/* A badge in the link's top corner. Size and colour come from the shared rule
+   above, beside the site name's. */
 .NotificationDot {
-    display: none;
     position: absolute;
     top: 0.3rem;
     right: -0.15rem;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: var(--radius-pill);
-    background-color: var(--danger);
-    pointer-events: none;
 }
 
 .NotificationDot.Active { display: block; }

@@ -145,7 +145,7 @@ class SafeHTTPFetcher
         // Checked here rather than at each entry point because a redirect is a
         // request too: gating only the URL a caller passed in let any server
         // hand back a 302 and have this fetch the blocked one on its behalf.
-        if (BlockedDomain::blocksURL($url)) {
+        if (RemoteServer::isBlockedURL($url)) {
             return null;
         }
 

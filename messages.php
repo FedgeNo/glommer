@@ -10,6 +10,11 @@ $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 
 if ($username === '') {
+    // Seeing which conversations have something new in them is the whole job
+    // of the unread mark, so opening this list clears it - without having to
+    // open every thread it was pointing at.
+    Message::markSeen((int) $current_user -> userId);
+
     $page = new Page(['title' => 'Messages']);
 
     $page -> addContent(new ConversationList(['userId' => (int) $current_user -> userId]));

@@ -88,6 +88,13 @@ export class WebSocketManager {
                 this.handleNotification(data.notification);
             } else if (data.event === 'message') {
                 document.dispatchEvent(new CustomEvent('ws:message', { detail: data.message }));
+
+                // Somewhere other than the conversations list, where opening
+                // the page is what clears the mark - marking it read from
+                // under the reader while they are elsewhere would lose it.
+                if (!window.location.pathname.startsWith('/messages')) {
+                    document.querySelectorAll('.MessageDot, .NavAlertDot').forEach(dot => dot.classList.add('Active'));
+                }
             } else if (data.event === 'call') {
                 document.dispatchEvent(new CustomEvent('ws:call', { detail: data.call }));
             }
@@ -143,7 +150,7 @@ export class WebSocketManager {
             pageList.insertBeforeWithSpace(list_item(notification.toElement()), pageList.firstChild);
         }
 
-        document.querySelectorAll('.NotificationDot').forEach(dot => dot.classList.add('Active'));
+        document.querySelectorAll('.NotificationDot, .NavAlertDot').forEach(dot => dot.classList.add('Active'));
         document.title = '🔴 ' + this.pageTitle;
     }
 

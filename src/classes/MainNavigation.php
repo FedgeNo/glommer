@@ -28,9 +28,20 @@ class MainNavigation extends Nav
             $hamburger -> addContent($bar);
         }
 
+        // Sits beside the hamburger, and only exists on a narrow screen: with
+        // the menu closed, the marks on Notifications and Messages are inside
+        // something nobody can see.
+        $this -> addContent(new NavAlertDot(NavAlertDot::anythingNewFor(Auth::user())));
+
         $this -> addContent($hamburger);
 
         $brand = new NavBrand(ServerURL::absolute('/'), Config::get('siteTitle'));
+
+        // On the site's own name, because it is on every page and is where the
+        // eye lands first - so a waiting message is visible without opening
+        // the menu the Messages link lives in.
+        $unread_messages = MessageDot::unreadFor(Auth::user());
+        $brand -> addContent(new MessageDot($unread_messages));
 
         $site_links = new Div();
         $site_links -> mixins = ['d-flex', 'gap-4'];
@@ -95,7 +106,7 @@ class MainNavigation extends Nav
             new Anchor(ServerURL::absolute('/map'), 'Map'),
             new Anchor(ServerURL::absolute('/nearby'), 'Nearby'),
             new Anchor(ServerURL::absolute('/search'), 'Search'),
-            new Anchor(ServerURL::absolute('/messages/'), 'Messages'),
+            $this -> messagesLink(),
             new Anchor(ServerURL::absolute('/bookmarks'), 'Bookmarks'),
             new Anchor(ServerURL::absolute('/help/'), 'Help'),
             new Anchor(ServerURL::absolute('/about'), 'About'),
@@ -112,6 +123,18 @@ class MainNavigation extends Nav
     }
 
     /**
+     * The Messages link, carrying the same unread mark the brand does - the
+     * brand says something is waiting, this says where.
+     */
+    private function messagesLink(): HTMLObject
+    {
+        $link = new Anchor(ServerURL::absolute('/messages/'), 'Messages');
+        $link -> addContent(new MessageDot(MessageDot::unreadFor(Auth::user())));
+
+        return $link;
+    }
+
+    /**
      * The account-menu links.
      *
      * @return HTMLObject[]
@@ -125,24 +148,25 @@ class MainNavigation extends Nav
             ];
         }
 
-        $links = [
-            new Anchor(ServerURL::absolute('/settings'), 'Settings'),
-            new LogoutForm(),
-        ];
+        // The settings pages together, then logging out last - it is the one
+        // thing here that ends the session rather than opening something, and
+        // it does not want to be in the middle of a list being scanned.
+        $links = [new Anchor(ServerURL::absolute('/settings'), 'Settings')];
 
+        // Everything a moderator does now gathers on one page, which either
+        // holds the tool or points at it.
         if (Auth::canModerate()) {
-            $links[] = new Anchor(ServerURL::absolute('/admin/reports'), 'Reports');
-            $links[] = new Anchor(ServerURL::absolute('/admin/banned'), 'Banned Users');
-            $links[] = new Anchor(ServerURL::absolute('/admin/banned-entities'), 'Banned Entities');
-            $links[] = new Anchor(ServerURL::absolute('/admin/blocked-servers'), 'Blocked Servers');
+            $links[] = new Anchor(ServerURL::absolute('/admin/mod-settings'), 'Mod Settings');
         }
 
-        // Site-wide settings (e.g. the Turnstile keys) are the primary admin's
-        // alone, not general moderators'.
+        // Site-wide settings (the Turnstile keys, the relays this server
+        // subscribes to) are the primary admin's alone, not general
+        // moderators'.
         if (Auth::id() === 1) {
-            $links[] = new Anchor(ServerURL::absolute('/admin/settings'), 'Site Settings');
-            $links[] = new Anchor(ServerURL::absolute('/admin/relays'), 'Relays');
+            $links[] = new Anchor(ServerURL::absolute('/admin/settings'), 'Admin Settings');
         }
+
+        $links[] = new LogoutForm();
 
         return $links;
     }

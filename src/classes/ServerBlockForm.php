@@ -9,7 +9,7 @@ declare(strict_types=1);
  * moderator, and a year later the only way to judge whether it still belongs is
  * whatever was written down when it was made.
  */
-class DomainBlockForm extends FormForm
+class ServerBlockForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 

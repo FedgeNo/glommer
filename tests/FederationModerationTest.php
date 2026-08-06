@@ -130,13 +130,13 @@ SELECT `reason`
     // Defederation
     // ----------------------------------------------------------------
 
-    public function testABlockedDomainIsRecognised(): void
+    public function testABlockedServerIsRecognised(): void
     {
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
-        BlockedDomain::block($domain, 'spam', null);
+        RemoteServer::block($domain, 'spam', null);
 
-        $this -> assertTrue(BlockedDomain::blocks($domain));
-        $this -> assertTrue(BlockedDomain::blocksURL('https://' . $domain . '/users/someone'));
+        $this -> assertTrue(RemoteServer::isBlocked($domain));
+        $this -> assertTrue(RemoteServer::isBlockedURL('https://' . $domain . '/users/someone'));
     }
 
     public function testBlockingAServerBlocksWhatItHandsOut(): void
@@ -144,55 +144,55 @@ SELECT `reason`
         // A host giving out anything.badserver.example is the same problem as
         // badserver.example itself.
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
-        BlockedDomain::block($domain, null, null);
+        RemoteServer::block($domain, null, null);
 
-        $this -> assertTrue(BlockedDomain::blocks('shard7.' . $domain));
-        $this -> assertTrue(BlockedDomain::blocksURL('https://a.b.' . $domain . '/inbox'));
+        $this -> assertTrue(RemoteServer::isBlocked('shard7.' . $domain));
+        $this -> assertTrue(RemoteServer::isBlockedURL('https://a.b.' . $domain . '/inbox'));
     }
 
     public function testAHostThatMerelyEndsSimilarlyIsNotBlocked(): void
     {
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
-        BlockedDomain::block($domain, null, null);
+        RemoteServer::block($domain, null, null);
 
-        $this -> assertFalse(BlockedDomain::blocks('not' . $domain));
+        $this -> assertFalse(RemoteServer::isBlocked('not' . $domain));
     }
 
     public function testMatchingIgnoresCaseAndPort(): void
     {
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
-        BlockedDomain::block(strtoupper($domain), null, null);
+        RemoteServer::block(strtoupper($domain), null, null);
 
-        $this -> assertTrue(BlockedDomain::blocks($domain));
-        $this -> assertTrue(BlockedDomain::blocks($domain . ':8443'));
+        $this -> assertTrue(RemoteServer::isBlocked($domain));
+        $this -> assertTrue(RemoteServer::isBlocked($domain . ':8443'));
     }
 
-    public function testAPastedURLIsAcceptedAsADomain(): void
+    public function testAPastedURLIsAcceptedAsAServer(): void
     {
         // A moderator reaching for this has usually just copied an address.
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
-        BlockedDomain::block('https://' . $domain . '/users/someone', null, null);
+        RemoteServer::block('https://' . $domain . '/users/someone', null, null);
 
-        $this -> assertTrue(BlockedDomain::blocks($domain));
+        $this -> assertTrue(RemoteServer::isBlocked($domain));
     }
 
     public function testRubbishNeverBecomesARuleThatMatchesEverything(): void
     {
         foreach (['', '   ', 'localhost', '.', '://'] as $bad) {
-            BlockedDomain::block($bad, null, null);
+            RemoteServer::block($bad, null, null);
         }
 
-        $this -> assertFalse(BlockedDomain::blocks('mastodon.social'));
-        $this -> assertFalse(BlockedDomain::blocksURL('https://example.org/inbox'));
+        $this -> assertFalse(RemoteServer::isBlocked('mastodon.social'));
+        $this -> assertFalse(RemoteServer::isBlockedURL('https://example.org/inbox'));
     }
 
     public function testUnblockingLetsAServerBackIn(): void
     {
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
-        BlockedDomain::block($domain, null, null);
-        BlockedDomain::unblock($domain);
+        RemoteServer::block($domain, null, null);
+        RemoteServer::unblock($domain);
 
-        $this -> assertFalse(BlockedDomain::blocks($domain));
+        $this -> assertFalse(RemoteServer::isBlocked($domain));
     }
 
     public function testBlockingSeversFollowsInBothDirections(): void
@@ -213,7 +213,7 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
 
         $this -> assertTrue(FediverseFollower::exists((int) $member -> userId, (string) $them -> remoteActorURI));
 
-        BlockedDomain::block($host, 'abuse', null);
+        RemoteServer::block($host, 'abuse', null);
 
         $this -> assertFalse(FediverseFollower::exists((int) $member -> userId, (string) $them -> remoteActorURI), 'their follow of us should be gone');
         $this -> assertSame([], RemoteFollow::acceptedActorURIsFor((int) $member -> userId), 'our follow of them should be gone');
@@ -229,7 +229,7 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
         FediverseDelivery::enqueue((int) $member -> userId, ['type' => 'Create'], ['https://' . $host . '/inbox']);
         $queued = FediverseDelivery::pendingCount();
 
-        BlockedDomain::block($host, null, null);
+        RemoteServer::block($host, null, null);
 
         $this -> assertSame($queued - 1, FediverseDelivery::pendingCount());
     }
@@ -243,7 +243,7 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
 
         FediverseFollower::add((int) $member -> userId, (string) $innocent -> remoteActorURI, (string) $innocent -> remoteActorInboxURL, null, 'x');
 
-        BlockedDomain::block($blocked_host, null, null);
+        RemoteServer::block($blocked_host, null, null);
 
         $this -> assertTrue(FediverseFollower::exists((int) $member -> userId, (string) $innocent -> remoteActorURI));
     }
@@ -253,8 +253,8 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
         // Returning the normalized name lets the endpoint tell a moderator
         // their typo was refused, rather than showing them a block that is not
         // in force.
-        $this -> assertNull(BlockedDomain::block('not a domain', null, null));
-        $this -> assertNotNull(BlockedDomain::block('fine-' . bin2hex(random_bytes(4)) . '.example', null, null));
+        $this -> assertNull(RemoteServer::block('not a domain', null, null));
+        $this -> assertNotNull(RemoteServer::block('fine-' . bin2hex(random_bytes(4)) . '.example', null, null));
     }
 
     public function testNothingIsQueuedForABlockedServer(): void
@@ -262,7 +262,7 @@ INSERT INTO `RemoteFollows` (`localUserId`, `remoteActorURI`, `status`)
         $user = self::localUser();
         $domain = 'bad-' . bin2hex(random_bytes(4)) . '.example';
 
-        BlockedDomain::block($domain, null, null);
+        RemoteServer::block($domain, null, null);
 
         $before = FediverseDelivery::pendingCount();
         FediverseDelivery::enqueue((int) $user -> userId, ['type' => 'Create'], ['https://' . $domain . '/inbox']);

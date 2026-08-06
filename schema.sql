@@ -32,6 +32,11 @@ CREATE TABLE `Users` (
   -- cover exists so nobody meets that media without choosing to.
   `showSensitiveMedia` tinyint(1) NOT NULL DEFAULT 0,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
+  -- The newest message this member had received when they last opened their
+  -- conversations, which is what the unread dot compares against. Same shape
+  -- as lastNotificationId, and for the same reason: a per-message read flag
+  -- would be a row per message per person to answer a yes/no question.
+  `lastMessageId` int(10) unsigned NOT NULL DEFAULT 0,
   `friendCount` int(10) unsigned NOT NULL DEFAULT 0,
   `sessionVersion` int(10) unsigned NOT NULL DEFAULT 0,
   `remoteActorURI` varchar(255) DEFAULT NULL,
@@ -273,14 +278,14 @@ CREATE TABLE `Likes` (
 --
 -- The domain is stored lowercased and without a port, and matching includes
 -- subdomains, so blocking a host blocks what it hands out.
-CREATE TABLE `BlockedDomains` (
+CREATE TABLE `BlockedServers` (
   `domain` varchar(255) NOT NULL,
   `reason` text DEFAULT NULL,
   `blockedBy` int(10) unsigned DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`domain`),
   KEY `blockedBy` (`blockedBy`),
-  CONSTRAINT `BlockedDomains_ibfk_1` FOREIGN KEY (`blockedBy`) REFERENCES `Users` (`userId`) ON DELETE SET NULL
+  CONSTRAINT `BlockedServers_ibfk_1` FOREIGN KEY (`blockedBy`) REFERENCES `Users` (`userId`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `RetiredUsernames` (

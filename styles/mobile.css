@@ -115,4 +115,43 @@
     .NotificationDropdown {
         display: none !important;
     }
+
+    /* The site's name loses its mark here: the menu is closed, so one mark
+       beside the hamburger stands for everything inside it instead. */
+    .MainNavigation .NavBrand .MessageDot {
+        display: none !important;
+    }
+
+    /* Size and colour come from the shared rule in layout.css - only where it
+       sits is a mobile concern. */
+    .NavAlertDot.Active {
+        display: block;
+        position: fixed;
+        top: calc(var(--nav-height) / 2 - 0.25rem);
+        right: 3.25rem;
+        z-index: 30;
+    }
+
+    /* Once the menu is open, the marks inside it are the answer to which of
+       them it was - so the one beside the hamburger stands down. */
+    .MainNavigation:has(.NavToggle:checked) .NavAlertDot {
+        display: none;
+    }
+
+    /* Both marks ride beside their label in the open menu. The flattening
+       above (display: contents) leaves them as siblings of the link they
+       belong to, so positioning them against it is no longer possible. */
+    .MainNavigation .NotificationDot,
+    .MainNavigation .MessageDot {
+        position: static;
+        margin: 0 0 0 0.4rem;
+        vertical-align: 0.08rem;
+        align-self: center;
+        flex: 0 0 auto;
+    }
+
+    .MainNavigation .NotificationDot.Active,
+    .MainNavigation .MessageDot.Active {
+        display: inline-block;
+    }
 }

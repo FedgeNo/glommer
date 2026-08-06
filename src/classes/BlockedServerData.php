@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/** The columns read off a BlockedDomains row. */
-class BlockedDomainData
+/** The columns read off a BlockedServers row. */
+class BlockedServerData
 {
     public ?string $domain = null;
     public ?string $reason = null;

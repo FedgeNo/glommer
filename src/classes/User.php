@@ -54,6 +54,7 @@ class User extends Div implements \JsonSerializable
     public ?string $skinTone = null;
     public int $showSensitiveMedia = 0;
     public int $lastNotificationId = 0;
+    public int $lastMessageId = 0;
     public int $friendCount = 0;
     public int $sessionVersion = 0;
     public ?string $remoteActorURI = null;

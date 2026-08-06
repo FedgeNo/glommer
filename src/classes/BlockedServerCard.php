@@ -6,13 +6,13 @@ declare(strict_types=1);
  * One row on the moderation "Blocked Servers" list: the domain, who blocked it
  * and when, the reason if one was given, and the control to lift it.
  *
- * Hydrated straight off BlockedDomainList's query; blockedByUsername comes from
+ * Hydrated straight off BlockedServerList's query; blockedByUsername comes from
  * the join to Users so the moderator's name shows rather than their id, and is
  * null when the account that blocked it has since been deleted.
  */
-class BlockedDomainCard extends Div
+class BlockedServerCard extends Div
 {
-    public ?string $class = 'BlockedDomainCard';
+    public ?string $class = 'BlockedServerCard';
     public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?string $domain = null;
@@ -40,7 +40,7 @@ class BlockedDomainCard extends Div
         $info -> addContent($detail);
         $this -> addContent($info);
 
-        $unblock = new DomainUnblockButton((string) $this -> domain);
+        $unblock = new ServerUnblockButton((string) $this -> domain);
         $unblock -> mixins[] = 'ms-auto';
         $this -> addContent($unblock);
 

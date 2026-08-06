@@ -14,22 +14,22 @@ import { list_item } from '/scripts/utils.js';
  * it severs every follow in both directions with that server, and lifting the
  * block afterwards does not bring them back.
  */
-export class BlockedDomainCard {
+export class BlockedServerCard {
     static init() {
-        const form = document.querySelector('.DomainBlockForm');
+        const form = document.querySelector('.ServerBlockForm');
 
         if (form) {
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
-                BlockedDomainCard.#block(form);
+                BlockedServerCard.#block(form);
             });
         }
 
         document.addEventListener('click', (event) => {
-            const button = event.target.closest('.DomainUnblockButton');
+            const button = event.target.closest('.ServerUnblockButton');
 
             if (button) {
-                BlockedDomainCard.#unblock(button);
+                BlockedServerCard.#unblock(button);
             }
         });
     }
@@ -50,7 +50,7 @@ export class BlockedDomainCard {
         submit.disabled = true;
 
         try {
-            const result = await Api.post('/api/block-domain', { domain, reason });
+            const result = await Api.post('/api/block-server', { domain, reason });
 
             if (!result) return;
 
@@ -58,13 +58,13 @@ export class BlockedDomainCard {
             // renders for one. The cascade the confirmation warned about
             // (severed follows, dropped deliveries) has no rendering on this
             // page, so the list is the whole picture here.
-            const list = document.querySelector('.BlockedDomainList');
+            const list = document.querySelector('.BlockedServerList');
 
             if (list) {
                 const placeholder = list.querySelector('.Notice');
                 if (placeholder) placeholder.closest('li').remove();
 
-                list.prepend(list_item(BlockedDomainCard.#card(result.domain, reason)));
+                list.prepend(list_item(BlockedServerCard.#card(result.domain, reason)));
             }
 
             form.querySelector('[name="domain"]').value = '';
@@ -76,7 +76,7 @@ export class BlockedDomainCard {
 
     static #card(domain, reason) {
         const card = document.createElement('div');
-        card.className = 'BlockedDomainCard d-flex align-items-center gap-3';
+        card.className = 'BlockedServerCard d-flex align-items-center gap-3';
         card.dataset.domain = domain;
 
         const info = document.createElement('div');
@@ -105,7 +105,7 @@ export class BlockedDomainCard {
 
         const unblock = document.createElement('button');
         unblock.type = 'button';
-        unblock.className = 'Button DomainUnblockButton ms-auto';
+        unblock.className = 'Button ServerUnblockButton ms-auto';
         unblock.dataset.domain = domain;
         unblock.textContent = 'Unblock';
         card.appendWithSpace(unblock);
@@ -123,16 +123,16 @@ export class BlockedDomainCard {
         button.disabled = true;
 
         try {
-            const result = await Api.post('/api/unblock-domain', { domain });
+            const result = await Api.post('/api/unblock-server', { domain });
 
             if (!result) return;
 
             Toast.show(`${domain} unblocked.`);
-            DOMUtils.slideOut(button.closest('.BlockedDomainCard'));
+            DOMUtils.slideOut(button.closest('.BlockedServerCard'));
         } finally {
             button.disabled = false;
         }
     }
 }
 
-ReadyHandler.add(BlockedDomainCard.init);
+ReadyHandler.add(BlockedServerCard.init);

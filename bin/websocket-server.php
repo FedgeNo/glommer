@@ -141,7 +141,10 @@ if ($push_listener === false) {
 stream_set_blocking($public_listener, false);
 stream_set_blocking($push_listener, false);
 
-log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . $ws_host . ':' . $ws_port . ', internal push 127.0.0.1:' . $ws_push_port);
+// The address actually bound, not the configured one - a "listen everywhere"
+// host is served as one dual-stack socket, and a log that said 0.0.0.0 would
+// send whoever is debugging a v6 connection looking at the wrong thing.
+log_line('Listening: public ws' . ($use_tls ? 's' : '') . '://' . stream_socket_get_name($public_listener, false) . ' (both address families when bracketed), internal push 127.0.0.1:' . $ws_push_port);
 
 // systemd watchdog. WATCHDOG_USEC is set only when the unit configures
 // WatchdogSec; ping at half that interval (systemd's recommendation) so a hung

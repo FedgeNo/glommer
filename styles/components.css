@@ -285,15 +285,22 @@ a.Button:hover { color: var(--ink) !important; }
 
 /* In Quill's toolbar the trigger is a bare emoji among the formatting
    controls, not a Button - and its panel opens downward, since the toolbar
-   sits at the top of the editor with the page above it. */
+   sits at the top of the editor with the page above it. Sized and floated
+   exactly like the snow theme's own buttons (24px boxes, floated left), or
+   the glyph rides its text baseline well below their row. */
 .ql-toolbar .EmojiPickerTriggerButton {
     background: none;
     border: none;
-    padding: 0 0.3rem;
-    font-size: 1.125rem;
-    line-height: 1.5;
     cursor: pointer;
+    float: left;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
     width: auto;
+    padding: 0 5px;
+    font-size: 1.125rem;
+    line-height: 1;
 }
 
 .ql-toolbar .EmojiPickerPanel {

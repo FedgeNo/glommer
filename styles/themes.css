@@ -16,28 +16,28 @@
    [data-theme='sunset'] below for the people who picked it explicitly; the
    original plain palette lives on as [data-theme='light']. */
 :root {
-    --paper: #ffbfa8;
-    --surface: #ffffff;
-    --surface-2: #ffe3d4;
+    --paper: #e06a48;
+    --surface: #ffc4ad;
+    --surface-2: #f5a488;
     --ink: #35201c;
-    --muted: #62483f;
-    --hairline: #ffd9c2;
-    --accent: #8a3630;
-    --accent-strong: #6f2b26;
-    --accent-soft: #ffe1dc;
+    --muted: #5e4237;
+    --hairline: #e79b7c;
+    --accent: #7e2a25;
+    --accent-strong: #641f1b;
+    --accent-soft: #ffb09b;
     --accent-ink: #ffffff;
     --link: var(--accent);
-    --danger: #b21a54;
-    --danger-soft: #fbdce8;
-    --shadow-card: 0 1px 2px rgb(53 32 28 / 0.07), 0 6px 20px -8px rgb(53 32 28 / 0.14);
-    --shadow-pop: 0 4px 10px rgb(53 32 28 / 0.10), 0 16px 40px -12px rgb(53 32 28 / 0.26);
-    --glass: rgb(238 219 240 / 0.88);
+    --danger: #8f0f40;
+    --danger-soft: #ffb3c8;
+    --shadow-card: 0 1px 2px rgb(53 32 28 / 0.12), 0 6px 20px -8px rgb(53 32 28 / 0.24);
+    --shadow-pop: 0 4px 10px rgb(53 32 28 / 0.16), 0 16px 40px -12px rgb(53 32 28 / 0.38);
+    --glass: rgb(255 196 173 / 0.88);
 
-    --paper-image: linear-gradient(180deg, #d9c2e8 0%, #f2c4d8 28%, #ffbfa8 52%, #ffcf94 76%, #ffe6b0 100%);
-    --surface-image: linear-gradient(160deg, #ffffff 0%, #fff6f1 100%);
-    --button-image: linear-gradient(160deg, #ffe8dc 0%, #ffdccb 100%);
-    --button-image-hover: linear-gradient(160deg, #ffe2d3 0%, #ffd2bc 100%);
-    --accent-image: linear-gradient(135deg, #9c3d36 0%, #8a3630 55%, #6f2b26 100%);
+    --paper-image: linear-gradient(180deg, #7d5aa4 0%, #c3648c 30%, #e06a48 58%, #ec8a3c 80%, #e5a34a 100%);
+    --surface-image: linear-gradient(160deg, #ffcdb8 0%, #ffbaa0 100%);
+    --button-image: linear-gradient(160deg, #ffb79c 0%, #ffa585 100%);
+    --button-image-hover: linear-gradient(160deg, #ffad8e 0%, #ff9a76 100%);
+    --accent-image: linear-gradient(135deg, #93332d 0%, #7e2a25 55%, #641f1b 100%);
 
     --radius-card: 1.125rem;
     --radius-ctl: 0.5rem;
@@ -179,35 +179,37 @@
 :root[data-theme='sunset'] {
     /* The flat colour under the sky below - a stop from its middle, so a
        browser that drops the gradient still lands inside the sunset. */
-    --paper: #ffbfa8;
-    --surface: #ffffff;
-    --surface-2: #ffe3d4;
+    --paper: #e06a48;
+    --surface: #ffc4ad;
+    --surface-2: #f5a488;
     --ink: #35201c;
-    --muted: #62483f;
-    --hairline: #ffd9c2;
-    --accent: #8a3630;
-    --accent-strong: #6f2b26;
-    --accent-soft: #ffe1dc;
+    --muted: #5e4237;
+    --hairline: #e79b7c;
+    --accent: #7e2a25;
+    --accent-strong: #641f1b;
+    --accent-soft: #ffb09b;
     --accent-ink: #ffffff;
-    --danger: #b21a54;
-    --danger-soft: #fbdce8;
-    --shadow-card: 0 1px 2px rgb(53 32 28 / 0.07), 0 6px 20px -8px rgb(53 32 28 / 0.14);
-    --shadow-pop: 0 4px 10px rgb(53 32 28 / 0.10), 0 16px 40px -12px rgb(53 32 28 / 0.26);
-    --glass: rgb(238 219 240 / 0.88);
+    --danger: #8f0f40;
+    --danger-soft: #ffb3c8;
+    --shadow-card: 0 1px 2px rgb(53 32 28 / 0.12), 0 6px 20px -8px rgb(53 32 28 / 0.24);
+    --shadow-pop: 0 4px 10px rgb(53 32 28 / 0.16), 0 16px 40px -12px rgb(53 32 28 / 0.38);
+    --glass: rgb(255 196 173 / 0.88);
 
     /* The page is the sky. Read down the way you would look down at a sunset:
-       the violet afterglow overhead, then rose, then the coral and amber the sun
-       is actually setting through, and gold sitting on the horizon at the
-       bottom. body already pins this with background-attachment: fixed, so it
-       stays put and the content moves over it rather than dragging the sky along.
-       How far it can be pushed is set by the darkest stop, since every dark
-       foreground on the page has to stay readable against it - which is what
-       moved --muted and --accent down with it. */
-    --paper-image: linear-gradient(180deg, #d9c2e8 0%, #f2c4d8 28%, #ffbfa8 52%, #ffcf94 76%, #ffe6b0 100%);
-    --surface-image: linear-gradient(160deg, #ffffff 0%, #fff6f1 100%);
-    --button-image: linear-gradient(160deg, #ffe8dc 0%, #ffdccb 100%);
-    --button-image-hover: linear-gradient(160deg, #ffe2d3 0%, #ffd2bc 100%);
-    --accent-image: linear-gradient(135deg, #9c3d36 0%, #8a3630 55%, #6f2b26 100%);
+       the violet dusk overhead, then rose, the deep coral the sun is actually
+       burning through, and amber sitting on the horizon at the bottom.
+       Saturated and dark enough to read as evening, never white glare - the
+       content lives on the warm cards, not on the sky. body pins this with
+       background-attachment: fixed, so it stays put and the content moves
+       over it rather than dragging the sky along. How far it can be pushed is
+       set by the darkest stop, since every dark foreground on the page has to
+       stay readable against it - which is what moved --muted and --accent
+       down with it. */
+    --paper-image: linear-gradient(180deg, #7d5aa4 0%, #c3648c 30%, #e06a48 58%, #ec8a3c 80%, #e5a34a 100%);
+    --surface-image: linear-gradient(160deg, #ffcdb8 0%, #ffbaa0 100%);
+    --button-image: linear-gradient(160deg, #ffb79c 0%, #ffa585 100%);
+    --button-image-hover: linear-gradient(160deg, #ffad8e 0%, #ff9a76 100%);
+    --accent-image: linear-gradient(135deg, #93332d 0%, #7e2a25 55%, #641f1b 100%);
 }
 
 :root[data-theme='rose'] {

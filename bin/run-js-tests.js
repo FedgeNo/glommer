@@ -1,6 +1,6 @@
 import { register } from 'node:module';
 import { execFileSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join as joinPath, resolve as resolvePath, dirname as dirnameOf } from 'node:path';
 import { fileURLToPath as fileURLToPathFn } from 'node:url';
@@ -9,7 +9,12 @@ import { fileURLToPath as fileURLToPathFn } from 'node:url';
 // than kept as a JS file, so there is nothing on disk for the resolver to find.
 // It is asked for here, from that one copy - a stub would be a second table,
 // and the point of serving it is that there is only ever one.
-const emojiModulePath = joinPath(tmpdir(), 'glommer-emoji-shortcodes.js');
+//
+// In a fresh per-run directory, not a fixed /tmp name: a fixed name is owned
+// by whoever ran the suite first, and the next account to try (the admin
+// Tests page runs this as the web server) gets EACCES off someone else's
+// leftover file.
+const emojiModulePath = joinPath(mkdtempSync(joinPath(tmpdir(), 'glommer-js-tests-')), 'glommer-emoji-shortcodes.js');
 const projectDir = resolvePath(dirnameOf(fileURLToPathFn(import.meta.url)), '..');
 
 writeFileSync(emojiModulePath, execFileSync('php', [

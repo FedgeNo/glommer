@@ -21,8 +21,13 @@ class TestResults extends Div
 
         // JavaScript needs Node and its one dev dependency; without either
         // there is nothing to report rather than a failure to report.
-        if (trim((string) shell_exec('command -v node 2>/dev/null')) === '') {
-            $this -> addContent(new Paragraph('Node.js is not installed. Install Node.js to enable JavaScript tests.'));
+        $node = self::nodeBinary();
+
+        if ($node === null) {
+            $this -> addContent(new Paragraph(
+                'No Node.js the web server can use. Install it system-wide (e.g. dnf install nodejs) to enable '
+                . 'JavaScript tests - a version manager inside someone\'s home directory (nvm) is invisible here.'
+            ));
 
             return parent::toDOM();
         }
@@ -33,7 +38,7 @@ class TestResults extends Div
             return parent::toDOM();
         }
 
-        $this -> addSuite('JS', 'node ' . escapeshellarg(__DIR__ . '/../../bin/run-js-tests.js'));
+        $this -> addSuite('JS', escapeshellarg($node) . ' ' . escapeshellarg(__DIR__ . '/../../bin/run-js-tests.js'));
 
         return parent::toDOM();
     }
@@ -63,6 +68,24 @@ class TestResults extends Div
 
         $this -> addContent(new TestResultsBadge($name, $exit_code === 0));
         $this -> addContent(new TestResultsOutput($output));
+    }
+
+    /**
+     * A node binary this process can actually run, or null. PATH under
+     * PHP-FPM is a stub, so "not on PATH" proves nothing - the usual install
+     * locations are probed directly before giving up.
+     */
+    private static function nodeBinary(): ?string
+    {
+        $on_path = trim((string) shell_exec('command -v node 2>/dev/null'));
+
+        foreach (array_filter([$on_path, '/usr/bin/node', '/usr/local/bin/node', '/opt/homebrew/bin/node']) as $candidate) {
+            if (is_executable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 
     /** The runners colour their output for a terminal; this is not one. */

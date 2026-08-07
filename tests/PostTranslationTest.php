@@ -26,6 +26,43 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
         $this -> assertSame('zh-hant', PostTranslation::normalizeLanguage('zh-Hant'));
     }
 
+    /**
+     * A browser reports a region nobody asked about. Every English-speaking
+     * reader wants the same English, and keying on what they happened to
+     * report would buy a model call and a stored row per locale.
+     */
+    public function testARegionThatDoesNotChangeTheAnswerIsDroppedFromTheKey(): void
+    {
+        foreach (['en-US', 'en-GB', 'en-CA', 'en-AU'] as $reported) {
+            $this -> assertSame('en', PostTranslation::normalizeLanguage($reported), $reported . ' is just English');
+        }
+
+        $this -> assertSame('de', PostTranslation::normalizeLanguage('de-AT'));
+        $this -> assertSame('fr', PostTranslation::normalizeLanguage('fr-CA'));
+    }
+
+    /** Where the variant really is a different text, it stays in the key. */
+    public function testAVariantThatChangesTheAnswerIsKept(): void
+    {
+        $this -> assertSame('pt-br', PostTranslation::normalizeLanguage('pt-BR'));
+        $this -> assertSame('pt-pt', PostTranslation::normalizeLanguage('pt-PT'));
+        $this -> assertSame('sr-latn', PostTranslation::normalizeLanguage('sr-Latn'));
+
+        // Written either as the script or as a region implying it, so the two
+        // ways of asking for the same Chinese meet at one key.
+        $this -> assertSame('zh-hans', PostTranslation::normalizeLanguage('zh-CN'));
+        $this -> assertSame('zh-hans', PostTranslation::normalizeLanguage('zh-Hans'));
+        $this -> assertSame('zh-hant', PostTranslation::normalizeLanguage('zh-TW'));
+        $this -> assertSame('zh-hant', PostTranslation::normalizeLanguage('zh-Hant-HK'));
+    }
+
+    /** A base language with no variant asked for is just itself. */
+    public function testABaseLanguageStaysAsItIs(): void
+    {
+        $this -> assertSame('pt', PostTranslation::normalizeLanguage('pt'));
+        $this -> assertSame('zh', PostTranslation::normalizeLanguage('zh'));
+    }
+
     public function testRubbishIsRefusedNotPassedToAModel(): void
     {
         // Anything that is not shaped like a tag would otherwise ride into

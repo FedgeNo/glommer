@@ -20,9 +20,31 @@ class PostTranslation
     public const MAX_SOURCE_LENGTH = 4000;
 
     /**
+     * The variants worth translating separately, by base language: the ones
+     * where a reader gets a materially different text, not merely a different
+     * spelling of the same one.
+     *
+     * Everything absent from here reduces to its base language. A browser
+     * reports "en-US", "en-GB", "en-CA" and a dozen more, and treating those
+     * as different languages would ask a model for the same English over and
+     * over and store each answer under its own key - a cache that misses
+     * almost every time it is asked.
+     */
+    private const VARIANTS = [
+        'pt' => ['br' => 'br', 'pt' => 'pt'],
+        'zh' => ['hans' => 'hans', 'hant' => 'hant', 'cn' => 'hans', 'sg' => 'hans', 'tw' => 'hant', 'hk' => 'hant', 'mo' => 'hant'],
+        'sr' => ['cyrl' => 'cyrl', 'latn' => 'latn'],
+    ];
+
+    /**
      * A usable language identifier, or null. BCP 47 shapes ("en", "pt-BR",
-     * "zh-hant") normalize to lowercase; anything else is refused rather
-     * than passed to a model as free text.
+     * "zh-hant") normalize to lowercase and down to the language actually
+     * being asked for; anything else is refused rather than passed to a model
+     * as free text.
+     *
+     * This is the cache key as well as what the prompt names, so two readers
+     * asking for the same language in different words are one model call and
+     * one stored answer.
      */
     public static function normalizeLanguage(string $language): ?string
     {
@@ -32,7 +54,17 @@ class PostTranslation
             return null;
         }
 
-        return $language;
+        $subtags = explode('-', $language);
+        $base = $subtags[0];
+        $variants = self::VARIANTS[$base] ?? [];
+
+        foreach (array_slice($subtags, 1) as $subtag) {
+            if (isset($variants[$subtag])) {
+                return $base . '-' . $variants[$subtag];
+            }
+        }
+
+        return $base;
     }
 
     /**

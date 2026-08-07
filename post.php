@@ -54,11 +54,17 @@ $json_ld = [
     'description' => truncate((string) $post -> description, Page::META_DESCRIPTION_MAX_LENGTH),
     'datePublished' => $post -> createdAt,
     'url' => current_url(),
-    'author' => [
-        '@type' => 'Person',
-        'name' => $post -> author !== null ? ($post -> author -> title ?: $post -> author -> slug) : null,
-    ],
 ];
+
+// Named only when there is a name to give. An author object asserting a null
+// name says the post was written by nobody, which is a worse answer than not
+// raising the subject.
+if ($post -> author !== null) {
+    $json_ld['author'] = [
+        '@type' => 'Person',
+        'name' => $post -> author -> title ?: $post -> author -> slug,
+    ];
+}
 
 $first_image = null;
 

@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/api-init.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    JSONResponse::error('Method not allowed', 405) -> send();
+}
+
+// Members only: the content is public, but each cache miss spends a model
+// call this server is accountable for.
+Auth::requireLogin();
+
+if (!OpenRouter::isEnabled()) {
+    JSONResponse::error('Translation is not available on this server.', 503) -> send();
+}
+
+$payload = json_decode((string) file_get_contents('php://input'), true);
+
+$post_id = (int) ($payload['postId'] ?? 0);
+$language = PostTranslation::normalizeLanguage((string) ($payload['language'] ?? ''));
+
+if ($post_id < 1 || $language === null) {
+    JSONResponse::error('A post and a language are required', 422) -> send();
+}
+
+$post = DB::row('
+SELECT `Posts`.`postId`, `Posts`.`description`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ? AND `Users`.`banned` = 0
+', \stdClass::class, 'i', $post_id);
+
+if ($post === null || (string) $post -> description === '') {
+    JSONResponse::error('Nothing to translate', 404) -> send();
+}
+
+// The cache is answered before the rate limit spends anything: a stored
+// translation is one indexed read, and the limiter exists to pace model
+// calls, not readers.
+$cached = PostTranslation::cached($post_id, $language);
+
+if ($cached !== null) {
+    JSONResponse::success(['language' => $language, 'body' => $cached]) -> send();
+}
+
+if (strlen((string) $post -> description) > PostTranslation::MAX_SOURCE_LENGTH) {
+    JSONResponse::error('This post is too long to translate.', 422) -> send();
+}
+
+$rate_key = 'translate:' . Auth::id();
+
+if (RateLimiter::tooManyAttempts($rate_key, 10, 600)) {
+    JSONResponse::error('Too many translations in a short time. Please wait a bit and try again.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
+$translated = PostTranslation::translate($post_id, $language, (string) $post -> description);
+
+if ($translated === null) {
+    JSONResponse::error('Translation is not available right now. Please try again later.', 502) -> send();
+}
+
+JSONResponse::success(['language' => $language, 'body' => $translated]) -> send();

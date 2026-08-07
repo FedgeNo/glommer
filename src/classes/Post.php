@@ -169,6 +169,7 @@ class Post extends Article
             $action_bar -> pinned = $this -> pinned;
             $action_bar -> remote = $this -> remoteObjectURI !== null;
             $action_bar -> standalone = $this -> standalone;
+            $action_bar -> translatable = (string) $this -> description !== '' && OpenRouter::isEnabled();
 
             $this -> contents[] = $action_bar;
         }
@@ -622,6 +623,7 @@ DELETE
             'longitude' => $this -> longitude,
             'placeLabel' => $this -> placeLabel,
             'poll' => $this -> poll?-> toPayload(),
+            'translatable' => (string) $this -> description !== '' && OpenRouter::isEnabled(),
             // Whether this came from another server, which decides the share
             // button the same way it does server-side.
             'remote' => $this -> remoteObjectURI !== null,

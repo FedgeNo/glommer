@@ -28,6 +28,10 @@ class PostActionBar extends Footer
     public bool $remote = false;
     public ?int $repostCount = null;
     public ?bool $pinned = null;
+    // Whether there is body text a translation could work on, and whether
+    // this server can translate at all - both settled by the builder, since
+    // this class runs no queries (and Settings reads are queries).
+    public bool $translatable = false;
 
     public function toDOM(): \DOMElement
     {
@@ -49,6 +53,10 @@ class PostActionBar extends Footer
         }
 
         if (Auth::check()) {
+            if ($this -> translatable) {
+                $actions -> addContent(new PostTranslateButton());
+            }
+
             $actions -> addContent($this -> likeButton());
 
             // Not on your own post - passing on your own writing is what your

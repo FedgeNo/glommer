@@ -805,6 +805,19 @@ CREATE TABLE `TrendingEntities` (
 -- being fully replaced every run (a banned entity is excluded from scoring
 -- entirely, not just hidden after the fact) and survives falling out of the
 -- trending window too (still banned if it becomes active again later).
+-- A post's body rendered into another language, cached forever per (post,
+-- language) so each translation is paid for - in model calls and in waiting -
+-- exactly once. The language is whatever BCP 47 tag the reader's browser
+-- asked in, normalized lowercase; rows die with their post.
+CREATE TABLE `PostTranslations` (
+  `postId` int(10) unsigned NOT NULL,
+  `language` varchar(35) NOT NULL,
+  `body` text NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`postId`,`language`),
+  CONSTRAINT `fk_posttranslations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- One AI-written paragraph per topic - "what people are posting about under
 -- #x" - shown atop the topic's tag page. Its own table rather than a column
 -- on TrendingEntities, whose rows are rewritten by every rescore: a summary

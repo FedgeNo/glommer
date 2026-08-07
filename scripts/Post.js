@@ -29,6 +29,7 @@ export class Post {
     latitude = null;
     longitude = null;
     placeLabel = null;
+    translatable = null;
     poll = null;
     repostedBy = null;
     // A post that came from another server - it carries no share button,
@@ -451,6 +452,16 @@ export class Post {
         }
 
         if (logged_in) {
+            // Mirrors PostActionBar.php: offered only when there is body text
+            // to translate and the server has a translator configured.
+            if (this.translatable) {
+                const translate_button = document.createElement('button');
+                translate_button.type = 'button';
+                translate_button.className = 'Button PostTranslateButton';
+                translate_button.textContent = 'Translate';
+                actions.appendWithSpace(translate_button);
+            }
+
             const like_button = document.createElement('button');
             like_button.type = 'button';
             like_button.className = this.liked ? 'Button PostLikeButton Removing' : 'Button PostLikeButton';
@@ -536,6 +547,12 @@ export class Post {
                 return;
             }
 
+            const translateBtn = event.target.closest('.PostTranslateButton');
+            if (translateBtn) {
+                Post.#translate(translateBtn);
+                return;
+            }
+
         });
         
         Post.enhanceExisting();
@@ -543,6 +560,61 @@ export class Post {
     
     static enhanceExisting() {
        document.querySelectorAll('.Post').forEach(card => enhanceCodeBlocks(card));
+    }
+
+    /**
+     * Each translated post's original body element, so "Show original" is a
+     * swap back rather than a re-render - and so the state lives here, never
+     * in the DOM.
+     */
+    static #originalBodies = new WeakMap();
+
+    static async #translate(button) {
+        const post = button.closest('.Post');
+        const body = post.querySelector('.PostBody');
+        if (!body) return;
+
+        // Already translated: swap the original back in place.
+        if (Post.#originalBodies.has(post)) {
+            body.replaceWith(Post.#originalBodies.get(post));
+            Post.#originalBodies.delete(post);
+            button.textContent = 'Translate';
+            return;
+        }
+
+        button.disabled = true;
+
+        try {
+            // The reader's own interface language today; the parameter is
+            // what lets a translated interface ask for its language later.
+            const result = await Api.post('/api/translate-post', {
+                postId: Number(post.dataset.postId),
+                language: navigator.language || 'en',
+            });
+
+            if (!result) return;
+
+            const translated = document.createElement('div');
+            translated.className = 'PostBody MachineTranslation';
+
+            for (const paragraph_text of String(result.body).split(/\n{2,}/)) {
+                if (paragraph_text.trim() === '') continue;
+                const paragraph = document.createElement('p');
+                paragraph.textContent = paragraph_text.trim();
+                translated.appendWithSpace(paragraph);
+            }
+
+            const label = document.createElement('p');
+            label.className = 'MachineTranslationLabel muted text-sm';
+            label.textContent = 'Machine translation';
+            translated.appendWithSpace(label);
+
+            Post.#originalBodies.set(post, body);
+            body.replaceWith(translated);
+            button.textContent = 'Show original';
+        } finally {
+            button.disabled = false;
+        }
     }
 
     static async #like(button) {

@@ -137,9 +137,7 @@ abstract class HTMLObject extends DOMObject
             $element -> setAttribute('class', implode(' ', $class_names));
         }
 
-        foreach ($this -> attributes as $name => $value) {
-            $element -> setAttribute($name, $value);
-        }
+        $this -> applyAttributes($element);
 
         foreach ($this -> contents as $item) {
             $node = $this -> contentToNode($item);

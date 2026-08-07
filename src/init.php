@@ -147,6 +147,35 @@ set_exception_handler(function (\Throwable $exception) use ($send_server_error, 
     $send_server_error();
 });
 
+// A warning this code raised about itself is a fault worth hearing about, not
+// a line nobody reads: it means the code was wrong about its own data and only
+// got away with it. Answered like the two handlers above - logged, and the
+// admin told - but the request carries on, because a warning by definition did
+// not stop it.
+$inside_warning_handler = false;
+
+set_error_handler(function (int $severity, string $message, string $file, int $line) use ($warn_admin, &$inside_warning_handler): bool {
+    // Suppressed (@) or below the configured reporting level - left alone,
+    // since both of those are somebody saying they don't want to hear it.
+    if ((error_reporting() & $severity) === 0) {
+        return false;
+    }
+
+    // Notifying does a DB write and a WebSocket push, either of which can warn
+    // in turn. Without this, the first warning inside that path would call it
+    // again, and again.
+    if ($inside_warning_handler) {
+        return false;
+    }
+
+    $inside_warning_handler = true;
+    error_log($message . ' in ' . $file . ':' . $line);
+    $warn_admin();
+    $inside_warning_handler = false;
+
+    return true;
+}, E_USER_WARNING);
+
 register_shutdown_function(function () use ($send_server_error, $warn_admin): void {
     $error = error_get_last();
     $fatal_error_types = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR];

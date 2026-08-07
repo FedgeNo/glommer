@@ -65,9 +65,7 @@ abstract class DOMObject
     {
         $element = self::$document -> createElement($this -> tagName);
 
-        foreach ($this -> attributes as $name => $value) {
-            $element -> setAttribute($name, $value);
-        }
+        $this -> applyAttributes($element);
 
         foreach ($this -> contents as $item) {
             $node = $this -> contentToNode($item);
@@ -78,6 +76,31 @@ abstract class DOMObject
         }
 
         return $element;
+    }
+
+    /**
+     * Writes the attributes onto the element, leaving out any whose value is
+     * null.
+     *
+     * A null means the caller had nothing to put there and should not have set
+     * the attribute at all. Handing it to setAttribute() is a TypeError, and
+     * because a document is built by one recursive descent, that takes down
+     * the entire page over a single missing string - a video with no poster
+     * blanking the feed it appears in. Dropping it renders the page instead,
+     * and the warning is what stops that being silent: it reaches the error
+     * log and the admin's notifications like any other server fault.
+     */
+    protected function applyAttributes(\DOMElement $element): void
+    {
+        foreach ($this -> attributes as $name => $value) {
+            if ($value === null) {
+                trigger_error(static::class . ' left the "' . $name . '" attribute null', E_USER_WARNING);
+
+                continue;
+            }
+
+            $element -> setAttribute($name, $value);
+        }
     }
 
     protected function contentToNode($item): ?\DOMNode

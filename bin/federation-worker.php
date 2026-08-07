@@ -42,6 +42,14 @@ require __DIR__ . '/../src/config.php';
 /** How long to wait before looking again when the queue came back empty. */
 const IDLE_SLEEP_SECONDS = 5;
 
+/**
+ * How often the relay retention sweep runs. Housekeeping rather than work
+ * anybody is waiting on, and it lives here rather than on a timer of its own
+ * because this is the process that exists wherever relays do - a firehose
+ * cannot end up unbounded because a timer was never installed.
+ */
+const RETENTION_SWEEP_SECONDS = 900;
+
 $running = true;
 
 // Answer a stop the way systemd expects rather than dying mid-delivery: the
@@ -58,6 +66,9 @@ if (function_exists('pcntl_async_signals')) {
 
 /** The members whose keys this pass has already decrypted, so a fan-out costs one. */
 $authors = [];
+
+/** When the retention sweep last ran. Zero, so a fresh worker sweeps at once. */
+$swept_at = 0;
 
 while ($running) {
     // Posts a relay named, read here rather than in the inbox request that
@@ -95,6 +106,19 @@ while ($running) {
         WebPush::deliverDue();
     } catch (\Throwable $exception) {
         error_log('Web Push pass failed: ' . $exception -> getMessage());
+    }
+
+    // Everything a relay ever named is still here otherwise, along with an
+    // account per author it ever mentioned. Guarded like the pass above: a
+    // sweep that throws costs one sweep, never the deliveries queued behind it.
+    if (time() - $swept_at >= RETENTION_SWEEP_SECONDS) {
+        $swept_at = time();
+
+        try {
+            RelayRetention::sweep();
+        } catch (\Throwable $exception) {
+            error_log('Relay retention sweep failed: ' . $exception -> getMessage());
+        }
     }
 
     $due = FediverseDelivery::due();

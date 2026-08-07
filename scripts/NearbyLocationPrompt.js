@@ -1,4 +1,5 @@
 import { Api } from '/scripts/Api.js';
+import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
@@ -26,12 +27,8 @@ export class NearbyLocationPrompt {
             const suggestion = event.target.closest('.NearbyPlaceSuggestion');
 
             if (suggestion) {
-                const parameters = new URLSearchParams({
-                    lat: suggestion.dataset.latitude,
-                    lng: suggestion.dataset.longitude,
-                });
-
-                window.location.search = parameters.toString();
+                // Straight to the place's own canonical page.
+                window.location.href = ClientConfig.siteURL() + '/nearby/' + suggestion.dataset.placeId;
                 return;
             }
 
@@ -98,8 +95,7 @@ export class NearbyLocationPrompt {
             button.type = 'button';
             button.className = 'NearbyPlaceSuggestion';
             button.textContent = place.label;
-            button.dataset.latitude = place.latitude;
-            button.dataset.longitude = place.longitude;
+            button.dataset.placeId = place.placeId;
             item.appendWithSpace(button);
 
             list.appendWithSpace(item);

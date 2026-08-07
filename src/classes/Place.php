@@ -129,6 +129,15 @@ SELECT `placeId`, `title`, `region`, `country`,
 ', 'Place', 'ddd' . $types, $latitude, $longitude, $latitude, ...$parameters);
     }
 
+    public static function load(int $place_id): ?self
+    {
+        return DB::row('
+SELECT `placeId`, `title`, `region`, `country`, `latitude`, `longitude`
+    FROM `Places`
+    WHERE `placeId` = ?
+', self::class, 'i', $place_id);
+    }
+
     /**
      * Places whose name starts with what was typed, biggest first - the
      * autocomplete behind the nearby page's search. Prefix match only, so

@@ -121,24 +121,24 @@ SELECT `postId`, `latitude`, `longitude`
 
     public function testTheHeadingNamesWhereNearbyIs(): void
     {
-        DB::run('
-INSERT INTO `Places` (`placeId`, `title`, `region`, `country`, `latitude`, `longitude`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'isssdd', 903000001, 'Kingston', 'Ontario', 'Canada', 44.2312, -76.4860);
-
         // A post nearby, so the section genuinely renders its list and the
-        // heading over it.
+        // heading over it. The place's page seeds the heading, the way
+        // nearby.php does after canonicalizing coordinates to a place.
         self::locatedPost(44.23, -76.48);
 
         (new \ReflectionProperty(HTMLObject::class, 'document')) -> setValue(null, new \DOMDocument());
 
-        $section = new NearbyFeedSection(['latitude' => 44.23, 'longitude' => -76.48]);
+        $section = new NearbyFeedSection([
+            'latitude' => 44.23,
+            'longitude' => -76.48,
+            'heading' => 'Posts near Kingston, Ontario, Canada',
+        ]);
         $element = $section -> toDOM();
         HTMLObject::currentDocument() -> appendChild($element);
 
         $heading = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//h2', $element) -> item(0);
 
-        $this -> assertSame('Near Kingston, Ontario, Canada', $heading -> textContent);
+        $this -> assertSame('Posts near Kingston, Ontario, Canada', $heading -> textContent);
     }
 
     public function testAPoleDoesNotBreakTheBoxes(): void

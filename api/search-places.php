@@ -26,9 +26,8 @@ $places = [];
 
 foreach (Place::suggest((string) ($payload['q'] ?? '')) as $place) {
     $places[] = [
+        'placeId' => (int) $place -> placeId,
         'label' => $place -> label(),
-        'latitude' => (float) $place -> latitude,
-        'longitude' => (float) $place -> longitude,
     ];
 }
 

@@ -47,7 +47,11 @@ $json_ld = [
     '@context' => 'https://schema.org',
     '@type' => 'SocialMediaPosting',
     'headline' => $post -> title ?? $post -> shortDescription(),
-    'articleBody' => $post -> description,
+    // A summary, not the post. Structured data describes the page for a
+    // machine reading about it; the writing itself is the page, and repeating
+    // all of it here would send every post twice - once as the markup a person
+    // reads and once as JSON nothing renders.
+    'description' => truncate((string) $post -> description, Page::META_DESCRIPTION_MAX_LENGTH),
     'datePublished' => $post -> createdAt,
     'url' => current_url(),
     'author' => [

@@ -322,7 +322,6 @@ a.Button:hover { color: var(--ink) !important; }
 }
 
 .EmojiPickerPanel {
-    display: block;
     position: absolute;
     bottom: 100%;
     left: 0;
@@ -339,7 +338,16 @@ a.Button:hover { color: var(--ink) !important; }
     display: none;
 }
 
-.EmojiPickerPanel.Active { opacity: 1; pointer-events: auto; display: block;}
+/* The shadowed box is the picker and nothing else. Flex rather than block so
+   the panel is exactly its child's size with no line box of its own, and the
+   picker brings no margin into it. */
+.EmojiPickerPanel.Active {
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+}
+
+.EmojiPickerPanel emoji-picker { margin: 0; }
 
 emoji-picker {
     --background: var(--surface);

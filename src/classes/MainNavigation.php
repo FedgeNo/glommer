@@ -99,7 +99,6 @@ class MainNavigation extends Nav
 
         $links = [
             new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
-            new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/friends'), 'Friends'),
             new Anchor(ServerURL::absolute('/users/'), 'Users'),
             new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
             new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
@@ -148,10 +147,13 @@ class MainNavigation extends Nav
             ];
         }
 
-        // The settings pages together, then logging out last - it is the one
-        // thing here that ends the session rather than opening something, and
-        // it does not want to be in the middle of a list being scanned.
+        // Friends leads, right under the "Logged In As" header - it is about
+        // the person named there. Then the settings pages together, and
+        // logging out last - it is the one thing here that ends the session
+        // rather than opening something, and it does not want to be in the
+        // middle of a list being scanned.
         $links = [
+            new Anchor(ServerURL::absolute('/users/' . Auth::user() -> slug . '/friends'), 'Friends'),
             new Anchor(ServerURL::absolute('/drafts'), 'Drafts & Scheduled'),
             new Anchor(ServerURL::absolute('/settings'), 'Settings'),
         ];

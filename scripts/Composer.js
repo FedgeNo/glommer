@@ -500,12 +500,15 @@ export class Composer {
         const hasLink = (this.linkInput?.value ?? '').trim() !== '';
         const hasFiles = this.#attachments.length > 0;
         const hasPoll = this.#pollIsOpen();
+        const scheduling = this.scheduleInput !== null && this.scheduleInput.style.display !== 'none';
 
         Composer.#toggle(this.linkInput, !hasFiles && !hasPoll);
         // The picker stays through having files - that is how more are added;
-        // the attachment rows carry their own removal.
-        Composer.#toggle(this.fileInput, !hasLink && !hasPoll);
-        Composer.#toggle(this.pollButton, !hasLink && !hasFiles);
+        // the attachment rows carry their own removal. It goes away while the
+        // schedule clock is out (and Add Poll with it): a scheduled post can't
+        // carry either, and choosing one must never silently eat the other.
+        Composer.#toggle(this.fileInput, !hasLink && !hasPoll && !scheduling);
+        Composer.#toggle(this.pollButton, !hasLink && !hasFiles && !scheduling);
 
         // Only ever alongside attached files, since covering media is all it
         // does. Cleared as it goes, so a classification cannot outlive the
@@ -517,11 +520,12 @@ export class Composer {
         // readers can vote, so both put these controls away. And while the
         // schedule clock is out, Save Draft goes away too: the two are ways
         // of NOT posting yet, and offering both at once just crowds the row.
-        const scheduling = this.scheduleInput && this.scheduleInput.style.display !== 'none';
-
         Composer.#toggle(this.draftButton, !hasFiles && !hasPoll && !scheduling);
         Composer.#toggle(this.scheduleButton, !hasFiles && !hasPoll);
 
+        // Unreachable through the controls above (they hide before they could
+        // collide), but kept so no code path can ever hold files or a poll
+        // AND a schedule at once.
         if ((hasFiles || hasPoll) && this.scheduleInput) {
             this.#resetSchedule();
         }

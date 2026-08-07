@@ -101,3 +101,12 @@ if (statusLine) wsManager.showStatus(statusLine);
 const carousel = new CarouselController();
 carousel.init();
 
+// Register the service worker so push (and installability) can work at all -
+// only for a signed-in visitor, since there is nothing to be notified about
+// otherwise, and only where the browser supports it.
+if ('serviceWorker' in navigator && ClientConfig.get('currentUserId') !== null) {
+    navigator.serviceWorker.register(ClientConfig.siteURL() + '/sw.js').catch(() => {});
+}
+
+if (document.querySelector('.PushSubscribeButton')) import('/scripts/PushNotificationSetting.js');
+

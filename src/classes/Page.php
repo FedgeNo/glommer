@@ -83,6 +83,14 @@ class Page extends HTMLDocument
         $favicon -> href = Favicon::URL();
         $this -> addHeadContent($favicon);
 
+        // Makes the site installable and gives the service worker (registered
+        // in main.js) something to belong to. Both are static, same for every
+        // page and visitor.
+        $manifest = new Link();
+        $manifest -> rel = 'manifest';
+        $manifest -> href = ServerURL::absolute('/manifest.webmanifest');
+        $this -> addHeadContent($manifest);
+
         foreach (self::metaTags($full_title, $description, $this -> image, $url) as $meta) {
             $this -> addHeadContent($meta);
         }

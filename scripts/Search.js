@@ -33,25 +33,40 @@ export class Search {
         this._handleInput = this._handleInput.bind(this);
         input.addEventListener('input', this._handleInput);
 
-        this.resultsContainer = this._resolveContainer();
+        // A function resolver is NOT called here: it may build the list over
+        // an empty-state notice, and construction happens on page load, when
+        // that notice is exactly what should be showing. The list is built
+        // when the first results arrive to go in it (_performSearch).
+        this.resultsContainer = typeof options.resultsContainer === 'function' ? null : options.resultsContainer;
+        this._scrollerOptions = options.enableInfiniteScroll ? options : null;
 
-        if (options.enableInfiniteScroll && this.resultsContainer) {
-            if (!options.countOffset) {
-                throw new Error('Search: countOffset is required when enableInfiniteScroll is true');
-            }
-            this.scroller = InfiniteScroller.create(this.resultsContainer, {
-                endpoint: () => this._resolveEndpoint(this.input.value.trim()),
-                buildRequest: offset => {
-                    const query = this.input.value.trim();
-                    const req = options.buildRequest(query);
-                    req.offset = offset;
-                    return req;
-                },
-                countOffset: options.countOffset,
-                renderItem: options.renderItem,
-                active: false,
-            });
+        if (options.enableInfiniteScroll && !options.countOffset) {
+            throw new Error('Search: countOffset is required when enableInfiniteScroll is true');
         }
+
+        if (this.resultsContainer) {
+            this._ensureScroller();
+        }
+    }
+
+    /** Binds the scroller to the container, once there is one. */
+    _ensureScroller() {
+        if (this.scroller || this._scrollerOptions === null || !this.resultsContainer) return;
+
+        const options = this._scrollerOptions;
+
+        this.scroller = InfiniteScroller.create(this.resultsContainer, {
+            endpoint: () => this._resolveEndpoint(this.input.value.trim()),
+            buildRequest: offset => {
+                const query = this.input.value.trim();
+                const req = options.buildRequest(query);
+                req.offset = offset;
+                return req;
+            },
+            countOffset: options.countOffset,
+            renderItem: options.renderItem,
+            active: false,
+        });
     }
 
     trigger(queryOverride) {
@@ -108,6 +123,9 @@ export class Search {
         this.resultsContainer = this.resultsContainer ?? this._resolveContainer();
 
         if (!this.resultsContainer) return;
+
+        // The list may have only just been built; bind the scroller to it now.
+        this._ensureScroller();
 
         this.resultsContainer.replaceChildren();
 

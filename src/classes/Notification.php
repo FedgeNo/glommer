@@ -59,7 +59,17 @@ class Notification extends Article
 
     protected function text(): string
     {
-        return match ($this -> type) {
+        return self::textFor($this -> type, $this -> actorName());
+    }
+
+    /**
+     * The one wording for a notification, shared by the page, the dropdown,
+     * and the Web Push a phone shows with no tab open - static because the
+     * push is composed at creation time, before any hydrated instance exists.
+     */
+    public static function textFor(string $type, string $actor_name): string
+    {
+        return match ($type) {
             'postReady' => 'Your media has finished processing and is now live',
             'scheduledPostLive' => 'Your scheduled post is now live',
             'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
@@ -68,23 +78,14 @@ class Notification extends Article
             'mailFromNotConfigured' => 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.',
             'systemError' => 'A server error occurred. Check the error log for details.',
             'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
-            default => $this -> actorText(),
-        };
-    }
-
-    protected function actorText(): string
-    {
-        $name = $this -> actorName();
-
-        return match ($this -> type) {
-            'like' => $name . ' liked your post',
-            'repost' => $name . ' reposted your post',
-            'reply' => $name . ' replied to your post',
-            'friendRequest' => $name . ' sent you a friend request',
-            'friendAccepted' => $name . ' accepted your friend request',
-            'message' => $name . ' sent you a message',
-            'mention' => $name . ' mentioned you in a post',
-            default => $name . ' did something',
+            'like' => $actor_name . ' liked your post',
+            'repost' => $actor_name . ' reposted your post',
+            'reply' => $actor_name . ' replied to your post',
+            'friendRequest' => $actor_name . ' sent you a friend request',
+            'friendAccepted' => $actor_name . ' accepted your friend request',
+            'message' => $actor_name . ' sent you a message',
+            'mention' => $actor_name . ' mentioned you in a post',
+            default => $actor_name . ' did something',
         };
     }
 
@@ -187,6 +188,17 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
                 ],
             ],
         ]);
+
+        // The phone in a pocket: queued for the push worker, never sent from
+        // this request. A message opens its thread; everything else opens the
+        // notifications page, which carries the full context.
+        WebPush::enqueueFor(
+            $user_id,
+            self::textFor($type, (string) ($actor ?-> title ?: $actor ?-> slug)),
+            $type === 'message' && $actor !== null
+                ? ServerURL::absolute('/messages/' . $actor -> slug)
+                : ServerURL::absolute('/notifications')
+        );
     }
 
     /**

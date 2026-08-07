@@ -152,6 +152,7 @@
     RewriteRule ^admin/mod-settings$ admin-mod-settings.php [L,QSA]
     RewriteRule ^admin/tests$ admin-tests.php [L,QSA]
     RewriteRule ^about$ about.php [L,QSA]
+    RewriteRule ^manifest\.webmanifest$ manifest.php [L,QSA]
     RewriteRule ^terms$ terms.php [L,QSA]
     RewriteRule ^privacy$ privacy.php [L,QSA]
     RewriteRule ^friends-feed$ friends-feed.php [L,QSA]

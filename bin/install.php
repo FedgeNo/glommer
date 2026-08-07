@@ -1836,6 +1836,36 @@ function ensure_activitypub_keypair(): void
 }
 
 /**
+ * The VAPID keypair Web Push identifies this server with - P-256, stored
+ * like the ActivityPub keys: public half plain in Settings, private half
+ * encrypted under the same .env secret. Runs after
+ * ensure_activitypub_keypair(), which guarantees that secret exists.
+ */
+function ensure_vapid_keypair(): void
+{
+    $encryption_key_hex = trim((string) Env::get('ACTIVITYPUB_ENCRYPTION_KEY', ''));
+
+    if (strlen($encryption_key_hex) !== 64 || preg_match('/\A[0-9a-fA-F]+\z/', $encryption_key_hex) !== 1) {
+        warn('DEFERRED: no usable ACTIVITYPUB_ENCRYPTION_KEY, so the Web Push (VAPID) keypair was NOT generated. Re-run this script once the key exists.');
+
+        return;
+    }
+
+    if (WebPushKeys::isConfigured() && WebPushKeys::privateKeyPem() !== null) {
+        ok('Web Push (VAPID) keypair already configured');
+
+        return;
+    }
+
+    $keypair = WebPushKeys::generateKeypair();
+
+    Settings::set(WebPushKeys::PRIVATE_SETTING, ActivityPubKeys::encryptPrivateKey($keypair['privateKeyPem'], $encryption_key_hex));
+    Settings::set(WebPushKeys::PUBLIC_SETTING, $keypair['publicKeyPem']);
+
+    ok('generated the Web Push (VAPID) keypair');
+}
+
+/**
  * Writes a freshly generated ACTIVITYPUB_ENCRYPTION_KEY into .env, replacing
  * an existing (blank or stale) line in place rather than appending a second
  * one - Env::load() keeps the FIRST occurrence of a key, so an appended line
@@ -4443,6 +4473,7 @@ if ($legacy_mail_from_address !== '' || $legacy_mail_from_name !== '') {
 }
 
 ensure_activitypub_keypair();
+ensure_vapid_keypair();
 
 // No usable value anywhere yet (a fresh install skips this - the wizard
 // above already collected and stored one). Store in Settings when possible;

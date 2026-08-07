@@ -88,6 +88,15 @@ while ($running) {
         RelayFetch::failed((int) $fetch -> relayFetchId, (int) $fetch -> attempts);
     }
 
+    // Web Pushes ride this worker too - short, independent HTTP calls, same
+    // "never from a request" rule as everything else here. Guarded so a push
+    // service having a bad day costs one pass, never the worker.
+    try {
+        WebPush::deliverDue();
+    } catch (\Throwable $exception) {
+        error_log('Web Push pass failed: ' . $exception -> getMessage());
+    }
+
     $due = FediverseDelivery::due();
 
     if ($due === []) {

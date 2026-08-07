@@ -130,6 +130,11 @@ class SafeHTTPFetcher
      */
     private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left, array $extra_options = [], ?callable $sink = null, ?callable $per_request = null): ?array
     {
+        // Cleared up front so a request that dies before HTTP (unresolvable,
+        // refused, unsafe address) can't leave the previous request's status
+        // lying around for lastResponseStatus() to misreport.
+        self::$lastStatus = null;
+
         $parts = parse_url($url);
 
         if (
@@ -245,13 +250,43 @@ class SafeHTTPFetcher
         }
 
         if ($status < 200 || $status >= 300) {
+            self::$lastStatus = $status;
+
             return null;
         }
+
+        self::$lastStatus = $status;
 
         return [
             'body' => (string) $response_body,
             'contentType' => $content_type !== false ? $content_type : null,
         ];
+    }
+
+    /** The HTTP status of the most recent request, when one got far enough to have one. */
+    private static ?int $lastStatus = null;
+
+    /**
+     * What the last request's status code was - the way a caller that got
+     * null back tells a dead endpoint (404/410, stop trying forever) from a
+     * bad afternoon (retry later). Null when the request never reached HTTP
+     * at all (unresolvable host, refused connection, unsafe address).
+     */
+    public static function lastResponseStatus(): ?int
+    {
+        return self::$lastStatus;
+    }
+
+    /**
+     * A POST of arbitrary bytes - a Web Push message is an encrypted binary
+     * body, not JSON. Same one safe pipeline as everything else.
+     *
+     * @param string[] $headers
+     * @return array{body: string, contentType: ?string}|null
+     */
+    public static function post(string $url, string $body, array $headers, int $max_bytes): ?array
+    {
+        return self::sendRequest('POST', $url, $headers, $body, $max_bytes, 0);
     }
 
     private static function resolveAndValidate(string $host): ?string

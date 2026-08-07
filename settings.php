@@ -20,6 +20,10 @@ $page -> addContent(new SettingsSection('Sensitive Media', new SensitiveMediaSet
 
 $page -> addContent(new SettingsSection('Encrypted Messages', new EncryptedMessagesSetting()));
 
+if (WebPushKeys::isConfigured()) {
+    $page -> addContent(new SettingsSection('Push Notifications', new PushNotificationSetting()));
+}
+
 $page -> addContent(new SettingsSection('Remembered Devices', new RememberedDeviceList(['userId' => (int) Auth::user() -> userId])));
 
 $page -> addContent(new SettingsSection('Sessions', new LogoutEverywherePanel()));

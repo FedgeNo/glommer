@@ -827,6 +827,40 @@ CREATE TABLE `PostTranslations` (
   CONSTRAINT `fk_posttranslations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- A browser that asked to be told about notifications while no tab is open.
+-- One row per browser per member (the endpoint URL is the browser's own
+-- identity); rows die with their member, and a push service answering
+-- 404/410 for an endpoint deletes its row (the browser revoked it).
+CREATE TABLE `PushSubscriptions` (
+  `pushSubscriptionId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `endpoint` varchar(500) NOT NULL,
+  `p256dh` varchar(255) NOT NULL,
+  `auth` varchar(64) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`pushSubscriptionId`),
+  UNIQUE KEY `endpoint` (`endpoint`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `fk_pushsubscriptions_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Pushes waiting to be sent, drained by the federation worker - a request
+-- that creates a notification must never wait on a push service across the
+-- internet. Same nextAttemptAt shape as FediverseDeliveries, but pushes are
+-- fire-and-mostly-forget: one retry, then the row is dropped - a
+-- notification is news, and stale news isn't worth a retry schedule.
+CREATE TABLE `PushDeliveries` (
+  `pushDeliveryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pushSubscriptionId` int(10) unsigned NOT NULL,
+  `payload` text NOT NULL,
+  `attempts` int(10) unsigned NOT NULL DEFAULT 0,
+  `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`pushDeliveryId`),
+  KEY `nextAttemptAt_pushDeliveryId` (`nextAttemptAt`,`pushDeliveryId`),
+  KEY `fk_pushdeliveries_subscription` (`pushSubscriptionId`),
+  CONSTRAINT `fk_pushdeliveries_subscription` FOREIGN KEY (`pushSubscriptionId`) REFERENCES `PushSubscriptions` (`pushSubscriptionId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- A post written but not published: a draft (publishAt NULL, published by
 -- hand) or a scheduled post (published by the upload worker when the clock
 -- passes publishAt). Its own table rather than a future timestamp on Posts,

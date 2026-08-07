@@ -38,6 +38,10 @@ class ClientConfig
             // duration not in its own.
             'pollDurations' => (object) Poll::DURATIONS,
             'pollMaxOptions' => Poll::MAX_OPTIONS,
+            // The applicationServerKey a browser subscribes to push with;
+            // null when this server has no VAPID keypair, which is how the
+            // client knows push isn't on offer here.
+            'vapidPublicKey' => WebPushKeys::publicKeyForBrowser(),
             'needsMath' => false,
         ], $overrides);
 

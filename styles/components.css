@@ -1209,6 +1209,13 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 /* ---------- Nearby place search ---------- */
 
+/* The card group clips its children (overflow: hidden, for the rounded
+   corners); this one card holds a dropdown that must hang past its bottom
+   edge, and nothing in it bleeds into the corners anyway. */
+.NearbyLocationPrompt {
+    overflow: visible;
+}
+
 .NearbyPlaceSearch {
     position: relative;
     max-width: 24rem;

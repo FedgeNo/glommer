@@ -314,19 +314,27 @@ a.Button:hover { color: var(--ink) !important; }
     line-height: 1;
 }
 
-.ql-toolbar .EmojiPickerPanel {
-    bottom: auto;
-    top: 100%;
-    margin-top: 0.4rem;
-    margin-bottom: 0;
-}
+/* The picker is the popup - there is nothing wrapped around it. A box drawn
+   around it could only ever be told a size, and any size but the element's
+   own leaves a rim down one side or a gap along another. It shrinks to fit a
+   short viewport and scrolls its list inside itself.
+ *
+ * Selected on the bare element rather than through .EmojiPicker: opening it
+ * moves it to the body, out of any wrapper, and a descendant selector would
+ * drop everything here at exactly that moment. Where it sits is script's
+ * business (it is placed against the trigger, in viewport coordinates); this
+ * is only what it looks like and whether it is showing. */
+emoji-picker {
+    --background: var(--surface);
+    --border-color: var(--hairline);
+    --indicator-color: var(--accent);
+    --input-border-color: var(--hairline);
+    --input-font-color: var(--ink);
+    --outline-color: var(--accent);
+    --category-font-color: var(--ink);
 
-.EmojiPickerPanel {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
+    height: min(400px, 70vh);
     z-index: 20;
-    margin-bottom: 0.4rem;
     border-radius: var(--radius-card);
     border-bottom-left-radius: var(--glom-corner);
     box-shadow: var(--shadow-pop);
@@ -336,28 +344,10 @@ a.Button:hover { color: var(--ink) !important; }
     display: none;
 }
 
-/* The shadowed box is the picker and nothing else: flex rather than block, so
-   the panel is exactly its child's size and forms no line box of its own. */
-.EmojiPickerPanel.Active {
+emoji-picker.Active {
     opacity: 1;
     pointer-events: auto;
     display: flex;
-}
-
-/* The picker scrolls its own list, so the panel must never scroll it too: a
-   viewport shorter than the picker gave the panel a scrollbar, and the gutter
-   stood the shadowed box half a rem wider than the picker in it. The height
-   belongs on the picker, which shrinks and scrolls inside itself. */
-.EmojiPickerPanel emoji-picker { height: min(400px, 70vh); }
-
-emoji-picker {
-    --background: var(--surface);
-    --border-color: var(--hairline);
-    --indicator-color: var(--accent);
-    --input-border-color: var(--hairline);
-    --input-font-color: var(--ink);
-    --outline-color: var(--accent);
-    --category-font-color: var(--ink);
 }
 
 .emoji-text {

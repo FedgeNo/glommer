@@ -16,6 +16,6 @@ if ([0, 1, 2, 3, 4, 5].includes(skin_tone)) {
 
 await import('https://cdn.jsdelivr.net/npm/emoji-picker-element@1.22.8/index.js');
 
-document.querySelectorAll('.EmojiPickerPanel').forEach(function (panel) {
-    panel.appendWithSpace(document.createElement('emoji-picker'));
+document.querySelectorAll('.EmojiPicker').forEach(function (wrapper) {
+    wrapper.appendChild(document.createElement('emoji-picker'));
 });

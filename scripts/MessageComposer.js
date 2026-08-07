@@ -28,8 +28,8 @@ export class MessageComposer {
         // --- Click outside closes the panel ---
         document.addEventListener('click', (event) => {
             if (event.target.closest('.EmojiPickerTriggerButton')) return;
-            if (event.target.closest('.EmojiPickerPanel')) return;
-            document.querySelectorAll('.EmojiPickerPanel.Active').forEach(panel => panel.classList.remove('Active'));
+            if (event.target.closest('emoji-picker')) return;
+            document.querySelectorAll('emoji-picker.Active').forEach(panel => panel.classList.remove('Active'));
         });
 
         // --- Submit on Enter (without Shift) ---

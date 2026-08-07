@@ -7,7 +7,7 @@ let activeWrapper = null;
 document.addEventListener('click', (event) => {
     if (!activePanel) return;
     if (event.target.closest('.EmojiPickerTriggerButton')) return;
-    if (event.target.closest('.EmojiPickerPanel')) return;
+    if (event.target.closest('emoji-picker')) return;
     closeActive();
 });
 
@@ -28,12 +28,8 @@ export class EmojiPicker {
 
     static setup(wrapper) {
         const trigger = wrapper.querySelector('.EmojiPickerTriggerButton');
-        const panel  = wrapper.querySelector('.EmojiPickerPanel');
+        const panel  = wrapper.querySelector('emoji-picker');
         if (!trigger || !panel) return;
-
-        // Hard dimensions – no measurement needed
-        panel.style.width  = '352px';
-        panel.style.height = '430px';
 
         // Replace trigger to remove any previous event listeners
         const newTrigger = trigger.cloneNode(true);
@@ -55,29 +51,38 @@ export class EmojiPicker {
             // to the viewport (avoids issues when the button is inside a fixed/transformed container)
             document.body.appendChild(panel);
 
+            // Shown before it is placed, so it can be measured rather than
+            // assumed: the picker decides its own size, and a number written
+            // down here would only ever be the wrong one by a few pixels.
+            // Hidden across the measurement so it is never painted at the
+            // default position first.
+            panel.style.visibility = 'hidden';
+            panel.style.position = 'fixed';
+            panel.style.top = '0';
+            panel.style.left = '0';
+            panel.classList.add('Active');
+
             const triggerRect = newTrigger.getBoundingClientRect();
+            const panelRect = panel.getBoundingClientRect();
             const gap = 4;
-            const panelWidth  = 352;
-            const panelHeight = Math.min(430, window.innerHeight * 0.7);
 
             // Vertical: prefer below the trigger
             let top = triggerRect.bottom + gap;
-            if (top + panelHeight > window.innerHeight) {
-                top = triggerRect.top - panelHeight - gap;
+            if (top + panelRect.height > window.innerHeight) {
+                top = triggerRect.top - panelRect.height - gap;
             }
             if (top < gap) top = gap;
 
             // Horizontal: align left edges, keep inside viewport
             let left = triggerRect.left;
-            if (left + panelWidth > window.innerWidth) {
-                left = window.innerWidth - panelWidth - gap;
+            if (left + panelRect.width > window.innerWidth) {
+                left = window.innerWidth - panelRect.width - gap;
             }
             if (left < gap) left = gap;
 
-            panel.style.position = 'fixed';
             panel.style.top  = top + 'px';
             panel.style.left = left + 'px';
-            panel.classList.add('Active');
+            panel.style.visibility = '';
 
             activePanel = panel;
             activeWrapper = wrapper;

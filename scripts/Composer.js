@@ -22,8 +22,8 @@ export class Composer {
     static init() {
         document.addEventListener('click', (event) => {
             if (event.target.closest('.EmojiPickerTriggerButton')) return;
-            if (event.target.closest('.EmojiPickerPanel')) return;
-            document.querySelectorAll('.EmojiPickerPanel.Active').forEach(panel => panel.classList.remove('Active'));
+            if (event.target.closest('emoji-picker')) return;
+            document.querySelectorAll('emoji-picker.Active').forEach(panel => panel.classList.remove('Active'));
         });
 
         const main = document.querySelector('.PostComposer');
@@ -572,9 +572,7 @@ export class Composer {
             trigger.textContent = '🙂';
             wrapper.appendWithSpace(trigger);
 
-            const panel = document.createElement('div');
-            panel.className = 'EmojiPickerPanel';
-            wrapper.appendWithSpace(panel);
+            wrapper.appendChild(document.createElement('emoji-picker'));
 
             toolbar.appendWithSpace(wrapper);
             EmojiPicker.setup(wrapper);

@@ -97,8 +97,24 @@ class HTMLToDelta
                 continue;
             }
 
+            // The shape DeltaRenderer gives a formula, read back as the embed
+            // it came from. Its text is the same LaTeX, so recursing would
+            // file the source twice, once as words.
+            $formula = (string) $child -> getAttribute('data-formula');
+
+            if ($formula !== '') {
+                $this -> pending[] = ['insert' => ['formula' => $formula]];
+
+                continue;
+            }
+
             if (isset(self::INLINE_TAGS[$tag])) {
-                $this -> walk($child, array_merge($inline, [self::INLINE_TAGS[$tag] => true]), $block);
+                // <pre><code> is one construct - a fenced block - rather than
+                // a code span that happens to sit inside a code block, so the
+                // inner tag adds nothing the outer one has not already said.
+                $redundant = $tag === 'code' && isset($block['code-block']);
+
+                $this -> walk($child, $redundant ? $inline : array_merge($inline, [self::INLINE_TAGS[$tag] => true]), $block);
 
                 continue;
             }

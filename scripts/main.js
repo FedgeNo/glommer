@@ -39,6 +39,7 @@ if (document.querySelector('.ReportList'))             import('/scripts/ReportCa
 if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');
 if (document.querySelector('.BlockedServersSetting'))  import('/scripts/BlockedServerCard.js');
 if (document.querySelector('.RelaysSetting'))          import('/scripts/RelayCard.js');
+if (document.querySelector('.StagedPostCard'))         import('/scripts/StagedPostCard.js');
 
 if (document.querySelector('.PostComposer, .ReplyComposer') && ClientConfig.get('currentUserId') !== null) {
     import('/scripts/Composer.js');

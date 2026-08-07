@@ -151,7 +151,10 @@ class MainNavigation extends Nav
         // The settings pages together, then logging out last - it is the one
         // thing here that ends the session rather than opening something, and
         // it does not want to be in the middle of a list being scanned.
-        $links = [new Anchor(ServerURL::absolute('/settings'), 'Settings')];
+        $links = [
+            new Anchor(ServerURL::absolute('/drafts'), 'Drafts & Scheduled'),
+            new Anchor(ServerURL::absolute('/settings'), 'Settings'),
+        ];
 
         // Everything a moderator does now gathers on one page, which either
         // holds the tool or points at it.

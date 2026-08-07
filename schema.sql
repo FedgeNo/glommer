@@ -818,6 +818,30 @@ CREATE TABLE `PostTranslations` (
   CONSTRAINT `fk_posttranslations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- A post written but not published: a draft (publishAt NULL, published by
+-- hand) or a scheduled post (published by the upload worker when the clock
+-- passes publishAt). Its own table rather than a future timestamp on Posts,
+-- so no feed query ever grows a time predicate for a feature most posts
+-- never use - a row here becomes a Posts row only at publish. Text, link and
+-- location only; attached media still publishes immediately.
+CREATE TABLE `StagedPosts` (
+  `stagedPostId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `descriptionDelta` mediumtext DEFAULT NULL,
+  `linkURL` varchar(255) DEFAULT NULL,
+  `latitude` decimal(10,7) DEFAULT NULL,
+  `longitude` decimal(10,7) DEFAULT NULL,
+  `sensitive` tinyint(1) NOT NULL DEFAULT 0,
+  `publishAt` datetime DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`stagedPostId`),
+  KEY `userId_stagedPostId` (`userId`,`stagedPostId`),
+  KEY `publishAt` (`publishAt`),
+  CONSTRAINT `fk_stagedposts_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- One AI-written paragraph per topic - "what people are posting about under
 -- #x" - shown atop the topic's tag page. Its own table rather than a column
 -- on TrendingEntities, whose rows are rewritten by every rescore: a summary

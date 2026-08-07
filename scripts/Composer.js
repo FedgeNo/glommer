@@ -103,6 +103,9 @@ export class Composer {
         this.sensitiveToggle = form.querySelector('.SensitiveMediaToggle');
         this.pollButton = form.querySelector('.ComposerPollButton');
         this.pollFields = form.querySelector('.ComposerPoll');
+        this.draftButton = form.querySelector('.ComposerDraftButton');
+        this.scheduleButton = form.querySelector('.ComposerScheduleButton');
+        this.scheduleInput = form.querySelector('.ComposerScheduleInput');
 
         Composer.#instances.set(form, this);
     }
@@ -297,6 +300,28 @@ export class Composer {
         pollButton.textContent = 'Add Poll';
         actions.appendWithSpace(pollButton);
 
+        // Drafts and scheduling - text/link posts only; #syncFields puts both
+        // away when files or a poll are in play, since those publish through
+        // paths a StagedPosts row can't carry.
+        const draftButton = document.createElement('button');
+        draftButton.type = 'button';
+        draftButton.className = 'Button ComposerDraftButton';
+        draftButton.textContent = 'Save Draft';
+        actions.appendWithSpace(draftButton);
+
+        const scheduleButton = document.createElement('button');
+        scheduleButton.type = 'button';
+        scheduleButton.className = 'Button ComposerScheduleButton';
+        scheduleButton.textContent = 'Schedule';
+        actions.appendWithSpace(scheduleButton);
+
+        const scheduleInput = document.createElement('input');
+        scheduleInput.type = 'datetime-local';
+        scheduleInput.className = 'ComposerScheduleInput';
+        scheduleInput.style.display = 'none';
+        scheduleInput.setAttribute('aria-label', 'Publish at');
+        actions.appendWithSpace(scheduleInput);
+
         // Hidden until asked for. The toggle is bound on the instance rather
         // than here, because opening a poll has to tell the rest of the
         // composer to get out of the way.
@@ -346,7 +371,72 @@ export class Composer {
         this.#bindRemoveButtons();
         this.#bindLocationButton();
         this.#bindPollButton();
+        this.#bindStagingButtons();
         this.#syncFields();
+    }
+
+    #bindStagingButtons() {
+        if (!this.draftButton) return;
+
+        this.draftButton.addEventListener('click', () => this.#stagePost(null));
+
+        this.scheduleButton.addEventListener('click', () => {
+            if (this.scheduleInput.style.display === 'none') {
+                // First click reveals the clock; the post goes nowhere yet.
+                this.scheduleInput.style.display = '';
+
+                return;
+            }
+
+            if (this.scheduleInput.value === '') {
+                Toast.show('Pick a date and time first.');
+
+                return;
+            }
+
+            const epoch = Math.floor(new Date(this.scheduleInput.value).getTime() / 1000);
+            this.#stagePost(epoch);
+        });
+    }
+
+    /**
+     * Saves what is written as a draft (no epoch) or a scheduled post - the
+     * text/link path only, which #syncFields guarantees by hiding these
+     * controls whenever files or a poll are in play.
+     */
+    async #stagePost(publish_at_epoch) {
+        if (!this.#quill) return;
+
+        this.draftButton.disabled = true;
+        this.scheduleButton.disabled = true;
+
+        try {
+            const result = await Api.post('/api/stage-post', {
+                title: this.titleInput?.value ?? '',
+                description: JSON.stringify(this.#quill.getContents()),
+                linkURL: this.linkInput?.value ?? '',
+                latitude: this.latitudeInput?.value ?? '',
+                longitude: this.longitudeInput?.value ?? '',
+                sensitive: false,
+                publishAtEpoch: publish_at_epoch,
+            });
+
+            if (!result) return;
+
+            Toast.show(publish_at_epoch === null
+                ? 'Saved to Drafts & Scheduled.'
+                : 'Scheduled - see Drafts & Scheduled in the menu.');
+
+            this.#form.reset();
+            this.#quill.setText('');
+            this.scheduleInput.value = '';
+            this.scheduleInput.style.display = 'none';
+            if (this.locationButton) this.#setLocation(null, null);
+            this.#syncFields();
+        } finally {
+            this.draftButton.disabled = false;
+            this.scheduleButton.disabled = false;
+        }
     }
 
     #createQuill() {
@@ -377,6 +467,17 @@ export class Composer {
         // does. Cleared as it goes, so a classification cannot outlive the
         // files it was about and ride along on a post with none.
         Composer.#toggle(this.sensitiveToggle, hasFiles);
+
+        // Drafts and scheduling carry text, link and location only - media
+        // publishes through the upload queue and a poll's clock starts when
+        // readers can vote, so both put these controls away.
+        Composer.#toggle(this.draftButton, !hasFiles && !hasPoll);
+        Composer.#toggle(this.scheduleButton, !hasFiles && !hasPoll);
+
+        if ((hasFiles || hasPoll) && this.scheduleInput) {
+            this.scheduleInput.value = '';
+            this.scheduleInput.style.display = 'none';
+        }
 
         if (!hasFiles && this.sensitiveToggle !== null) {
             this.sensitiveToggle.querySelector('[name="sensitive"]').checked = false;

@@ -171,6 +171,18 @@ while (true) {
         }
     }
 
+    // Scheduled text posts whose clock has passed go live from the same loop
+    // that publishes transcoded media - this is already the daemon whose job
+    // is posts written earlier than they publish. Guarded so a database
+    // hiccup costs one pass, never the daemon.
+    if (!$shutting_down) {
+        try {
+            StagedPost::publishDue();
+        } catch (\Throwable $exception) {
+            log_line('Scheduled-post publish pass failed: ' . $exception -> getMessage());
+        }
+    }
+
     // 2. Fill free slots with pending work (never while shutting down).
     if (!$shutting_down) {
         while (count($workers) < $concurrency) {

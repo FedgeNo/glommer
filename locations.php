@@ -30,6 +30,10 @@ if ($place_id !== null) {
         'needsMath' => true,
     ]);
 
+    // First thing on the page, the way a reply page opens by naming its
+    // parent: the way back up to the directory this page lives in.
+    $page -> addContent(new MoreLocationsLink());
+
     $page -> addContent(new NearbyFeedSection([
         'latitude' => (float) $place -> latitude,
         'longitude' => (float) $place -> longitude,

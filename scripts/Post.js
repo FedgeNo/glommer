@@ -1,6 +1,7 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { User } from '/scripts/User.js';
 import { DeltaRenderer } from '/scripts/DeltaRenderer.js';
+import { Linkifier } from '/scripts/Linkifier.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
 import { parse_server_date } from '/scripts/utils.js';
 import { Api } from '/scripts/Api.js';
@@ -611,6 +612,28 @@ export class Post {
      */
     static #originalBodies = new WeakMap();
 
+    /**
+     * One line of translated text, with its links, #tags and @mentions live
+     * again. A translation arrives as plain text, so what the body renderer
+     * makes clickable has to be found in it a second time - by the same
+     * tokenizer, so a tag reads the same translated as it did before.
+     */
+    static #appendLinkified(paragraph, line) {
+        for (const segment of Linkifier.tokenize(line)) {
+            const inner = document.createTextNode(segment.text);
+
+            if (segment.type === 'url') {
+                paragraph.appendChild(DeltaRenderer.linkedNode(segment.text, inner));
+            } else if (segment.type === 'hashtag') {
+                paragraph.appendChild(DeltaRenderer.hashtagNode(segment.tag, inner));
+            } else if (segment.type === 'mention') {
+                paragraph.appendChild(DeltaRenderer.mentionNode(segment.username, inner));
+            } else {
+                paragraph.appendChild(inner);
+            }
+        }
+    }
+
     static async #translate(button) {
         const post = button.closest('.Post');
         const body = post.querySelector('.PostBody');
@@ -653,7 +676,7 @@ export class Post {
                         paragraph.appendChild(document.createElement('br'));
                     }
 
-                    paragraph.appendChild(document.createTextNode(line));
+                    Post.#appendLinkified(paragraph, line);
                 });
 
                 translated.appendWithSpace(paragraph);

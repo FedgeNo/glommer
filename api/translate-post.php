@@ -26,7 +26,7 @@ if ($post_id < 1 || $language === null) {
 }
 
 $post = DB::row('
-SELECT `Posts`.`postId`, `Posts`.`description`
+SELECT `Posts`.`postId`, `Posts`.`description`, `Posts`.`descriptionDelta`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`postId` = ? AND `Users`.`banned` = 0
@@ -34,6 +34,16 @@ SELECT `Posts`.`postId`, `Posts`.`description`
 
 if ($post === null || (string) $post -> description === '') {
     JSONResponse::error('Nothing to translate', 404) -> send();
+}
+
+// From the Delta, not from description: description is the flattened form
+// kept for search and meta tags, with every line break collapsed to a space,
+// and a model can only give back the lines it was given. Falls back to it for
+// a post stored before the rich body existed.
+$source = Delta::plainTextWithLineBreaks(Delta::decode($post -> descriptionDelta));
+
+if ($source === '') {
+    $source = (string) $post -> description;
 }
 
 // The cache is answered before the rate limit spends anything: a stored
@@ -45,7 +55,7 @@ if ($cached !== null) {
     JSONResponse::success(['language' => $language, 'body' => $cached]) -> send();
 }
 
-if (strlen((string) $post -> description) > PostTranslation::MAX_SOURCE_LENGTH) {
+if (strlen($source) > PostTranslation::MAX_SOURCE_LENGTH) {
     JSONResponse::error('This post is too long to translate.', 422) -> send();
 }
 
@@ -57,7 +67,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 10, 600)) {
 
 RateLimiter::recordAttempt($rate_key);
 
-$translated = PostTranslation::translate($post_id, $language, (string) $post -> description);
+$translated = PostTranslation::translate($post_id, $language, $source);
 
 if ($translated === null) {
     JSONResponse::error('Translation is not available right now. Please try again later.', 502) -> send();

@@ -121,4 +121,47 @@ class DeltaTest extends TestCase
         $text = Delta::plainText($ops);
         $this -> assertSame('padded', $text);
     }
+
+    // ---------- plainTextWithLineBreaks ----------
+
+    /**
+     * What plainText() throws away. A translation is asked for from this,
+     * because a model can only give back the lines it was handed.
+     */
+    public function testLineBreaksSurviveWhereTheFlatFormLosesThem()
+    {
+        $newline = chr(10);
+        $ops = [['insert' => 'Line one' . $newline . 'Line two' . $newline]];
+
+        $this -> assertSame('Line one' . $newline . 'Line two', Delta::plainTextWithLineBreaks($ops));
+        $this -> assertSame('Line one Line two', Delta::plainText($ops));
+    }
+
+    public function testABlankLineIsKeptAsTheParagraphBreakItIs()
+    {
+        $newline = chr(10);
+        $ops = [['insert' => 'First para' . $newline . $newline . 'Second para' . $newline]];
+
+        $this -> assertSame(
+            'First para' . $newline . $newline . 'Second para',
+            Delta::plainTextWithLineBreaks($ops)
+        );
+    }
+
+    /** Spacing is not structure: a run of blank lines is one break. */
+    public function testARunOfBlankLinesCountsAsOne()
+    {
+        $newline = chr(10);
+        $ops = [['insert' => 'First' . str_repeat($newline, 5) . 'Second' . $newline]];
+
+        $this -> assertSame('First' . $newline . $newline . 'Second', Delta::plainTextWithLineBreaks($ops));
+    }
+
+    public function testSpacesAndTabsStillCollapseWithinALine()
+    {
+        $newline = chr(10);
+        $ops = [['insert' => '  padded   out' . chr(9) . 'here  ' . $newline . '  and here ' . $newline]];
+
+        $this -> assertSame('padded out here' . $newline . 'and here', Delta::plainTextWithLineBreaks($ops));
+    }
 }

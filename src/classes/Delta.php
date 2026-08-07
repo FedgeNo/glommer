@@ -176,6 +176,64 @@ class Delta
     }
 
     /**
+     * The same text with the lines the author wrote still in it: spaces and
+     * tabs collapsed within a line, a blank line kept as the paragraph break
+     * it is, a run of them counted as one.
+     *
+     * plainText() above flattens all of that, which is right for a search
+     * index and a meta description and wrong for anything that has to read
+     * back the way the post did - a translation above all, where the model
+     * can only preserve the breaks it was given.
+     *
+     * @param array[] $ops
+     */
+    public static function plainTextWithLineBreaks(array $ops): string
+    {
+        $text = '';
+
+        foreach ($ops as $op) {
+            $insert = $op['insert'] ?? null;
+
+            if (is_string($insert)) {
+                $text .= $insert;
+            } elseif (is_array($insert) && isset($insert['formula']) && is_string($insert['formula'])) {
+                $text .= ' ' . $insert['formula'] . ' ';
+            }
+        }
+
+        $lines = [];
+        $blank_run = 0;
+
+        foreach (explode(chr(10), str_replace(chr(13), '', $text)) as $line) {
+            $words = array_filter(
+                explode(' ', str_replace(chr(9), ' ', $line)),
+                static fn (string $word): bool => $word !== ''
+            );
+
+            $line = implode(' ', $words);
+
+            if ($line === '') {
+                $blank_run++;
+
+                // Nothing yet to break away from, or a break already made.
+                if ($lines === [] || $blank_run > 1) {
+                    continue;
+                }
+            } else {
+                $blank_run = 0;
+            }
+
+            $lines[] = $line;
+        }
+
+        while ($lines !== [] && $lines[count($lines) - 1] === '') {
+            array_pop($lines);
+        }
+
+        return implode(chr(10), $lines);
+    }
+
+    /**
      * @param array[] $ops
      */
     public static function isBlank(array $ops): bool

@@ -96,7 +96,7 @@ SELECT *
 ', self::class);
 
         foreach ($due as $staged) {
-            $staged -> publish();
+            $staged -> publish(true);
         }
     }
 
@@ -105,8 +105,12 @@ SELECT *
      * loses one staged post, where deleting after could publish it twice
      * (once per worker pass), and a duplicate publish is the worse failure:
      * it federates.
+     *
+     * $notify_author only when the clock published it - someone was elsewhere
+     * and should hear. A publish-now click needs no notification that the
+     * button they just pressed worked.
      */
-    public function publish(): ?int
+    public function publish(bool $notify_author = false): ?int
     {
         $author = User::load((int) $this -> userId);
 
@@ -165,9 +169,9 @@ INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
 
         FediversePublisher::published($post, $author);
 
-        // The author was elsewhere when this went live - same signal the
-        // upload worker sends when a transcoded post lands.
-        Notification::create((int) $this -> userId, (int) $this -> userId, 'postReady', $post_id, true);
+        if ($notify_author) {
+            Notification::create((int) $this -> userId, (int) $this -> userId, 'scheduledPostLive', $post_id, true);
+        }
 
         return $post_id;
     }

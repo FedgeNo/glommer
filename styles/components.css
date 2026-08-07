@@ -283,6 +283,26 @@ a.Button:hover { color: var(--ink) !important; }
     line-height: 1;
 }
 
+/* In Quill's toolbar the trigger is a bare emoji among the formatting
+   controls, not a Button - and its panel opens downward, since the toolbar
+   sits at the top of the editor with the page above it. */
+.ql-toolbar .EmojiPickerTriggerButton {
+    background: none;
+    border: none;
+    padding: 0 0.3rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    cursor: pointer;
+    width: auto;
+}
+
+.ql-toolbar .EmojiPickerPanel {
+    bottom: auto;
+    top: 100%;
+    margin-top: 0.4rem;
+    margin-bottom: 0;
+}
+
 .EmojiPickerPanel {
     display: block;
     position: absolute;
@@ -1583,6 +1603,7 @@ body.MessagesPage { padding-bottom: 9rem; }
 .BlockedServerList,
 .RelayList,
 .RememberedDeviceList,
+.StagedPostList,
 .ReportList,
 .MessageList,
 .PollOptionList,

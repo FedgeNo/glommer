@@ -312,7 +312,7 @@ export class Composer {
         const scheduleButton = document.createElement('button');
         scheduleButton.type = 'button';
         scheduleButton.className = 'Button ComposerScheduleButton';
-        scheduleButton.textContent = 'Schedule';
+        scheduleButton.textContent = 'Add Schedule';
         actions.appendWithSpace(scheduleButton);
 
         const scheduleInput = document.createElement('input');
@@ -328,26 +328,6 @@ export class Composer {
         form.appendWithSpace(Composer.pollFieldsToElement());
 
         // EmojiPicker – built and wired by EmojiPicker.setup
-        const emojiBtnWrapper = document.createElement('div');
-        emojiBtnWrapper.className = 'EmojiPicker';
-
-        const emojiTrigger = document.createElement('button');
-        emojiTrigger.type = 'button';
-        emojiTrigger.className = 'Button EmojiPickerTriggerButton';
-        emojiTrigger.setAttribute('aria-label', 'Insert emoji');
-        emojiTrigger.textContent = '🙂';
-        emojiBtnWrapper.appendWithSpace(emojiTrigger);
-
-        const emojiPanel = document.createElement('div');
-        emojiPanel.className = 'EmojiPickerPanel';
-        emojiBtnWrapper.appendWithSpace(emojiPanel);
-
-        // Last before Post, and the only control here that never appears or
-        // disappears - so it stays put while the ones to its left come and go.
-        actions.appendWithSpace(emojiBtnWrapper);
-        EmojiPicker.setup(emojiBtnWrapper);
-
-
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
         submitBtn.className = 'Button';
@@ -380,23 +360,49 @@ export class Composer {
 
         this.draftButton.addEventListener('click', () => this.#stagePost(null));
 
+        // The Schedule button only reveals or hides the clock - reading
+        // "Remove Schedule" while it's out, so an accidental or curious click
+        // has its own way back. Committing is the main submit button's job:
+        // once a time is picked, IT reads "Schedule Post", so the one button
+        // that has always published the post is the one that schedules it.
         this.scheduleButton.addEventListener('click', () => {
-            if (this.scheduleInput.style.display === 'none') {
-                // First click reveals the clock; the post goes nowhere yet.
-                this.scheduleInput.style.display = '';
+            const hidden = this.scheduleInput.style.display === 'none';
+            this.scheduleInput.style.display = hidden ? '' : 'none';
+            this.scheduleButton.textContent = hidden ? 'Remove Schedule' : 'Add Schedule';
 
-                return;
+            if (!hidden) {
+                this.scheduleInput.value = '';
             }
 
-            if (this.scheduleInput.value === '') {
-                Toast.show('Pick a date and time first.');
-
-                return;
-            }
-
-            const epoch = Math.floor(new Date(this.scheduleInput.value).getTime() / 1000);
-            this.#stagePost(epoch);
+            this.#syncSubmitLabel();
         });
+
+        this.scheduleInput.addEventListener('input', () => this.#syncSubmitLabel());
+    }
+
+    /** The chosen publish time, or null when the clock is hidden or unset. */
+    #scheduledEpoch() {
+        if (!this.scheduleInput || this.scheduleInput.style.display === 'none' || this.scheduleInput.value === '') {
+            return null;
+        }
+
+        return Math.floor(new Date(this.scheduleInput.value).getTime() / 1000);
+    }
+
+    #syncSubmitLabel() {
+        if (this.submitButton) {
+            this.submitButton.textContent = this.#scheduledEpoch() !== null ? 'Schedule Post' : 'Post';
+        }
+    }
+
+    /** Puts the clock away and every label with it. */
+    #resetSchedule() {
+        if (!this.scheduleInput) return;
+
+        this.scheduleInput.value = '';
+        this.scheduleInput.style.display = 'none';
+        this.scheduleButton.textContent = 'Add Schedule';
+        this.#syncSubmitLabel();
     }
 
     /**
@@ -406,6 +412,15 @@ export class Composer {
      */
     async #stagePost(publish_at_epoch) {
         if (!this.#quill) return;
+
+        // Nothing written is nothing to stage - said here, so an empty
+        // composer can't appear to succeed at anything.
+        if (this.#quill.getText().trim() === ''
+            && (this.titleInput?.value.trim() ?? '') === ''
+            && (this.linkInput?.value.trim() ?? '') === '') {
+            Toast.show('Write something first - there is nothing to save yet.');
+            return;
+        }
 
         this.draftButton.disabled = true;
         this.scheduleButton.disabled = true;
@@ -429,8 +444,7 @@ export class Composer {
 
             this.#form.reset();
             this.#quill.setText('');
-            this.scheduleInput.value = '';
-            this.scheduleInput.style.display = 'none';
+            this.#resetSchedule();
             if (this.locationButton) this.#setLocation(null, null);
             this.#syncFields();
         } finally {
@@ -442,6 +456,31 @@ export class Composer {
     #createQuill() {
         const editor = new QuillEditor(this.editorContainer, { placeholder: Composer.PLACEHOLDER });
         this.#quill = editor.instance;
+
+        // The emoji picker lives in Quill's own toolbar - a bare clickable
+        // emoji among the formatting controls, not another button crowding
+        // the bottom of the form. Built here because the toolbar only exists
+        // once Quill does.
+        const toolbar = this.#form.querySelector('.ql-toolbar');
+
+        if (toolbar) {
+            const wrapper = document.createElement('span');
+            wrapper.className = 'ql-formats EmojiPicker';
+
+            const trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'EmojiPickerTriggerButton';
+            trigger.setAttribute('aria-label', 'Insert emoji');
+            trigger.textContent = '🙂';
+            wrapper.appendWithSpace(trigger);
+
+            const panel = document.createElement('div');
+            panel.className = 'EmojiPickerPanel';
+            wrapper.appendWithSpace(panel);
+
+            toolbar.appendWithSpace(wrapper);
+            EmojiPicker.setup(wrapper);
+        }
     }
 
     /**
@@ -475,8 +514,7 @@ export class Composer {
         Composer.#toggle(this.scheduleButton, !hasFiles && !hasPoll);
 
         if ((hasFiles || hasPoll) && this.scheduleInput) {
-            this.scheduleInput.value = '';
-            this.scheduleInput.style.display = 'none';
+            this.#resetSchedule();
         }
 
         if (!hasFiles && this.sensitiveToggle !== null) {
@@ -799,6 +837,21 @@ export class Composer {
 
     #submit() {
         if (!this.#quill) return;
+
+        // A picked publish time turns the submit into a scheduling - the
+        // button already says "Schedule" when this path is live.
+        const scheduled_epoch = this.#scheduledEpoch();
+
+        if (scheduled_epoch !== null) {
+            if (scheduled_epoch * 1000 <= Date.now() + 60000) {
+                Toast.show('The publish time has to be in the future.');
+                return;
+            }
+
+            this.#stagePost(scheduled_epoch);
+            return;
+        }
+
         this.descriptionInput.value = JSON.stringify(this.#quill.getContents());
 
         this.submitButton.disabled = true;

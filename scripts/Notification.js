@@ -26,6 +26,8 @@ export class Notification {
         switch (this.type) {
             case 'postReady':
                 return 'Your media has finished processing and is now live';
+            case 'scheduledPostLive':
+                return 'Your scheduled post is now live';
             case 'uploadPartlyFailed':
                 return 'Your post is live, but one or more of its files couldn\'t be processed';
             case 'uploadFailed':
@@ -72,6 +74,7 @@ export class Notification {
             case 'repost':
             case 'reply':
             case 'postReady':
+            case 'scheduledPostLive':
             case 'uploadPartlyFailed':
                 return ClientConfig.siteURL() + '/users/' + ClientConfig.get('currentUserUsername') + '/' + this.postId;
             case 'friendRequest':

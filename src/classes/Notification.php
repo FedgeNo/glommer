@@ -61,6 +61,7 @@ class Notification extends Article
     {
         return match ($this -> type) {
             'postReady' => 'Your media has finished processing and is now live',
+            'scheduledPostLive' => 'Your scheduled post is now live',
             'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
             'uploadFailed' => 'One of your uploads failed to process and was not posted',
             'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
@@ -90,7 +91,7 @@ class Notification extends Article
     protected function targetURL(): ?string
     {
         return match ($this -> type) {
-            'like', 'repost', 'reply', 'postReady', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
+            'like', 'repost', 'reply', 'postReady', 'scheduledPostLive', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/friends'),
             'friendAccepted' => ServerURL::absolute('/users/' . $this -> actorUsername . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actorUsername),

@@ -18,7 +18,7 @@
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
     .Form, .SearchBox, .HelpSearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
-    .PostMap, .MapScrubber, .NearbyLocationPrompt,
+    .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
     .VideoCallTestPanel
@@ -38,12 +38,23 @@
     overflow-y: auto;
 }
 
+/* The dropdown is already a card; the list inside it doesn't get to be a
+   second one nested in the first. */
+.NotificationDropdown .NotificationList {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+}
+
 :is(
     .Card,
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
     .Form, .SearchBox, .HelpSearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
-    .PostMap, .MapScrubber, .NearbyLocationPrompt,
+    .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
     .VideoCallTestPanel
@@ -1185,6 +1196,53 @@ body.MessagesPage { padding-bottom: 9rem; }
     padding: 0.5rem;
     border: 1px solid var(--hairline);
     border-radius: var(--radius-card);
+}
+
+/* The schedule row sits above the buttons the way the poll does, framed the
+   same. display is JS-toggled, so only the visible shape lives here. */
+.ComposerSchedule {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+}
+
+/* ---------- Nearby place search ---------- */
+
+.NearbyPlaceSearch {
+    position: relative;
+    max-width: 24rem;
+}
+
+.NearbyPlaceSuggestions {
+    list-style: none;
+    margin: 0.25rem 0 0;
+    padding: 0.25rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background-color: var(--surface);
+    background-image: var(--surface-image, none);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    box-shadow: var(--shadow-pop);
+}
+
+.NearbyPlaceSuggestion {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: var(--radius-ctl);
+    padding: 0.5rem;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.NearbyPlaceSuggestion:hover {
+    background-color: var(--accent-soft);
 }
 
 .PollMultipleToggle {

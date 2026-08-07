@@ -23,7 +23,7 @@ class NearbyLocationPrompt extends Div
         $this -> addContent(new Paragraph('This shows the posts closest to a point - wherever there is activity, however far away it happens to be. Share your location to start from where you are, or pick a spot on the map instead.'));
 
         $actions = new Div;
-        $actions -> mixins = ['d-flex', 'gap-2', 'align-items-center'];
+        $actions -> mixins = ['d-flex', 'gap-2', 'align-items-center', 'flex-wrap'];
 
         $button = new Button;
         $button -> class = 'NearbyLocationButton';
@@ -31,9 +31,30 @@ class NearbyLocationPrompt extends Div
         $button -> addContent('Use my location');
         $actions -> addContent($button);
 
-        $actions -> addContent(new Anchor(ServerURL::absolute('/map'), 'Pick on the map'));
+        $map_link = new Anchor(ServerURL::absolute('/map'), 'Pick on the map');
+        $map_link -> class = 'Button';
+        $actions -> addContent($map_link);
 
         $this -> addContent($actions);
+
+        // Or name the place instead: suggestions from the local gazetteer as
+        // you type, and clicking one opens this same page on its coordinates.
+        // Members only, because the endpoint behind it is a real search (see
+        // api/search-places.php); signed-out visitors keep the two buttons.
+        if (Auth::check() && Place::count() > 0) {
+            $search = new Div;
+            $search -> class = 'NearbyPlaceSearch';
+
+            $input = new Input;
+            $input -> class = 'NearbyPlaceSearchInput';
+            $input -> attributes['type'] = 'search';
+            $input -> attributes['placeholder'] = 'Or type a place name…';
+            $input -> attributes['autocomplete'] = 'off';
+            $input -> attributes['aria-label'] = 'Search for a place';
+            $search -> addContent($input);
+
+            $this -> addContent($search);
+        }
 
         return parent::toDOM();
     }

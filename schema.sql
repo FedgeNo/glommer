@@ -123,7 +123,10 @@ CREATE TABLE `Places` (
   `longitude` decimal(10,7) NOT NULL,
   `population` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`placeId`),
-  KEY `latitude_longitude` (`latitude`,`longitude`)
+  KEY `latitude_longitude` (`latitude`,`longitude`),
+  -- Serves the nearby page's place autocomplete: a name-prefix range walk
+  -- instead of a scan of the whole gazetteer per keystroke.
+  KEY `title` (`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- A poll attached to a post. Its own table rather than columns on Posts, the

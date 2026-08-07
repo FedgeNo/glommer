@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 /**
  * The /nearby heading over the posts closest to the given point - named from
- * the gazetteer when somewhere is close enough to name ("Near Kingston,
- * Ontario, Canada"), plain "Nearby" when nowhere is (the open ocean, or a
- * place directory that hasn't loaded).
+ * the gazetteer when somewhere is close enough to name ("Near Town, Region,
+ * Country"), plain "Nearby" when nowhere is (the open ocean, or a place
+ * directory that hasn't loaded).
  */
 class NearbyFeedSection extends ListSection
 {

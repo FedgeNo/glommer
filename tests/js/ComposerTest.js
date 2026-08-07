@@ -218,6 +218,44 @@ export default {
             composer.remove();
         },
 
+        'an empty composer offers no live Post or Save Draft'() {
+            const composer = mounted();
+            const submit = composer.form.querySelector('button[type="submit"]');
+            const draft = composer.form.querySelector('.ComposerDraftButton');
+            const title = composer.form.querySelector('[name="title"]');
+
+            TestCase.assertTrue(submit.disabled);
+            TestCase.assertTrue(draft.disabled);
+
+            title.value = 'Something to say';
+            title.dispatchEvent(new window.Event('input'));
+
+            TestCase.assertFalse(submit.disabled);
+            TestCase.assertFalse(draft.disabled);
+
+            title.value = '';
+            title.dispatchEvent(new window.Event('input'));
+
+            TestCase.assertTrue(submit.disabled);
+            TestCase.assertTrue(draft.disabled);
+
+            composer.remove();
+        },
+
+        'files alone arm Post but never Save Draft'() {
+            const composer = mounted();
+            const submit = composer.form.querySelector('button[type="submit"]');
+            const draft = composer.form.querySelector('.ComposerDraftButton');
+
+            pick(composer, [imageFile('cat.png')]);
+
+            // A media post needs no words; a draft can't carry files at all.
+            TestCase.assertFalse(submit.disabled);
+            TestCase.assertTrue(draft.disabled);
+
+            composer.remove();
+        },
+
         'the schedule toggle wears the removal colour only while removing'() {
             const composer = mounted();
             const schedule = composer.form.querySelector('.ComposerScheduleButton');

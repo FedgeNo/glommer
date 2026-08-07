@@ -219,8 +219,8 @@ a WebSocket open, transcoding video out of band).
   download the place directory below).
 - **`unzip`**, so the installer can load the place directory: the
   [GeoNames](https://www.geonames.org/) gazetteer (CC BY 4.0), around 10MB
-  downloaded once, which is what lets a post's location read "Kingston,
-  Ontario, Canada" instead of raw coordinates - resolved locally, with no
+  downloaded once, which is what lets a post's location read as a place name
+  instead of raw coordinates - resolved locally, with no
   geocoding service in the request path. If the download fails the installer
   says so and the site runs fine without it (locations show as coordinates);
   re-run `php bin/install.php` to retry.

@@ -33,6 +33,8 @@ class Place
     public ?string $title = null;
     public ?string $region = null;
     public ?string $country = null;
+    public ?float $latitude = null;
+    public ?float $longitude = null;
 
     /**
      * The nearest place to a point that is close enough to name it, or null.
@@ -65,7 +67,7 @@ class Place
         return null;
     }
 
-    /** "Kingston, Ontario, Canada" - with empty and repeated parts dropped. */
+    /** "Town, Region, Country" - with empty and repeated parts dropped. */
     public function label(): string
     {
         $parts = [];
@@ -125,6 +127,33 @@ SELECT `placeId`, `title`, `region`, `country`,
     ORDER BY `distance`
     LIMIT 1
 ', 'Place', 'ddd' . $types, $latitude, $longitude, $latitude, ...$parameters);
+    }
+
+    /**
+     * Places whose name starts with what was typed, biggest first - the
+     * autocomplete behind the nearby page's search. Prefix match only, so
+     * the title index serves it as a range walk; population order because
+     * whoever types a city's name almost always means the big one.
+     *
+     * @return self[]
+     */
+    public static function suggest(string $query, int $limit = 8): array
+    {
+        $query = trim($query);
+
+        if ($query === '' || mb_strlen($query) > 100) {
+            return [];
+        }
+
+        $prefix = addcslashes($query, '\\%_') . '%';
+
+        return DB::rows('
+SELECT `placeId`, `title`, `region`, `country`, `latitude`, `longitude`
+    FROM `Places`
+    WHERE `title` LIKE ?
+    ORDER BY `population` DESC
+    LIMIT ' . max(1, min(20, $limit)) . '
+', self::class, 's', $prefix);
     }
 
     public static function count(): int

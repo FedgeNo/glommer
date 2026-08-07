@@ -28,12 +28,6 @@ class NearbyFeedList extends FeedList
      */
     public const NEAREST_LIMIT = 2000;
 
-    /**
-     * However few candidates there are, past this it is not "nearby" - if
-     * you'd drive more than an hour, it's somewhere else. Vancouver's page
-     * showing Ontario was k-nearest being honest about a sparse corpus, and
-     * honestly empty beats confidently wrong here.
-     */
     public const MAX_DISTANCE_KM = 100;
 
     /** Earth's mean radius, for turning the cap into radians of arc. */

@@ -105,6 +105,7 @@ export class Composer {
         this.pollFields = form.querySelector('.ComposerPoll');
         this.draftButton = form.querySelector('.ComposerDraftButton');
         this.scheduleButton = form.querySelector('.ComposerScheduleButton');
+        this.scheduleRow = form.querySelector('.ComposerSchedule');
         this.scheduleDate = form.querySelector('.ComposerScheduleDate');
         this.scheduleTime = form.querySelector('.ComposerScheduleTime');
 
@@ -304,34 +305,33 @@ export class Composer {
         // Drafts and scheduling - text/link posts only; #syncFields puts both
         // away when files or a poll are in play, since those publish through
         // paths a StagedPosts row can't carry.
-        const draftButton = document.createElement('button');
-        draftButton.type = 'button';
-        draftButton.className = 'Button ComposerDraftButton';
-        draftButton.textContent = 'Save Draft';
-        actions.appendWithSpace(draftButton);
-
         const scheduleButton = document.createElement('button');
         scheduleButton.type = 'button';
         scheduleButton.className = 'Button ComposerScheduleButton';
         scheduleButton.textContent = 'Add Schedule';
         actions.appendWithSpace(scheduleButton);
 
-        // A date input and a separate, optional time - datetime-local can't
-        // say "this day, whenever", and a day alone is a perfectly good
-        // schedule (it publishes as the day starts).
+        // The clock lives in its own row above the buttons, the way the poll
+        // fields do. A date input and a separate, optional time -
+        // datetime-local can't say "this day, whenever", and a day alone is
+        // a perfectly good schedule (it publishes as the day starts).
+        const scheduleRow = document.createElement('div');
+        scheduleRow.className = 'ComposerSchedule d-flex gap-2 align-items-center';
+        scheduleRow.style.display = 'none';
+
         const scheduleDate = document.createElement('input');
         scheduleDate.type = 'date';
         scheduleDate.className = 'ComposerScheduleDate';
-        scheduleDate.style.display = 'none';
         scheduleDate.setAttribute('aria-label', 'Publish date');
-        actions.appendWithSpace(scheduleDate);
+        scheduleRow.appendWithSpace(scheduleDate);
 
         const scheduleTime = document.createElement('input');
         scheduleTime.type = 'time';
         scheduleTime.className = 'ComposerScheduleTime';
-        scheduleTime.style.display = 'none';
         scheduleTime.setAttribute('aria-label', 'Publish time (optional)');
-        actions.appendWithSpace(scheduleTime);
+        scheduleRow.appendWithSpace(scheduleTime);
+
+        form.appendWithSpace(scheduleRow);
 
         // Hidden until asked for. The toggle is bound on the instance rather
         // than here, because opening a poll has to tell the rest of the
@@ -339,6 +339,14 @@ export class Composer {
         form.appendWithSpace(Composer.pollFieldsToElement());
 
         // EmojiPicker – built and wired by EmojiPicker.setup
+        // Last before Post: the two ways of keeping what's written, together
+        // at the row's committing end.
+        const draftButton = document.createElement('button');
+        draftButton.type = 'button';
+        draftButton.className = 'Button ComposerDraftButton';
+        draftButton.textContent = 'Save Draft';
+        actions.appendWithSpace(draftButton);
+
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
         submitBtn.className = 'Button';
@@ -377,9 +385,8 @@ export class Composer {
         // with the clock out it reads "Schedule Post", disabled until there
         // is both something written and a valid future date to send it to.
         this.scheduleButton.addEventListener('click', () => {
-            const hidden = this.scheduleDate.style.display === 'none';
-            this.scheduleDate.style.display = hidden ? '' : 'none';
-            this.scheduleTime.style.display = hidden ? '' : 'none';
+            const hidden = this.scheduleRow.style.display === 'none';
+            this.scheduleRow.style.display = hidden ? '' : 'none';
             this.scheduleButton.textContent = hidden ? 'Remove Schedule' : 'Add Schedule';
             this.scheduleButton.classList.toggle('Removing', hidden);
 
@@ -402,7 +409,7 @@ export class Composer {
     }
 
     #isScheduling() {
-        return this.scheduleDate !== null && this.scheduleDate.style.display !== 'none';
+        return this.scheduleRow !== null && this.scheduleRow.style.display !== 'none';
     }
 
     /**
@@ -431,19 +438,29 @@ export class Composer {
 
     /**
      * The submit button's whole state in one place: what it says, and whether
-     * it can be pressed. Scheduling disables it until the post exists and the
-     * moment is real and in the future - never a click that only then finds
-     * out what was missing.
+     * it can be pressed. An empty composer never offers a live button -
+     * attached files count as content (a media post needs no words), and
+     * scheduling additionally demands a real future moment. No click ever
+     * finds out afterwards what was missing.
      */
     #syncSubmitState() {
         if (!this.submitButton) return;
+
+        const has_anything = this.#formHasContent() || this.#attachments.length > 0;
 
         if (this.#isScheduling()) {
             this.submitButton.textContent = 'Schedule Post';
             this.submitButton.disabled = !(this.#scheduleIsValid() && this.#formHasContent());
         } else {
             this.submitButton.textContent = 'Post';
-            this.submitButton.disabled = false;
+            this.submitButton.disabled = !has_anything;
+        }
+
+        // Same rule for saving a draft: nothing written is nothing to save.
+        // Files don't count here - a draft carries text, link and location
+        // only.
+        if (this.draftButton) {
+            this.draftButton.disabled = !this.#formHasContent();
         }
     }
 
@@ -456,8 +473,7 @@ export class Composer {
 
         this.scheduleDate.value = '';
         this.scheduleTime.value = '';
-        this.scheduleDate.style.display = 'none';
-        this.scheduleTime.style.display = 'none';
+        this.scheduleRow.style.display = 'none';
         this.scheduleButton.textContent = 'Add Schedule';
         this.scheduleButton.classList.remove('Removing');
         this.#syncSubmitState();
@@ -508,6 +524,9 @@ export class Composer {
             this.#syncFields();
         } finally {
             this.draftButton.disabled = false;
+            // Re-imposes the content rule: after a successful save the form
+            // is empty again, and an empty form offers no live Save Draft.
+            this.#syncSubmitState();
             this.scheduleButton.disabled = false;
         }
     }
@@ -594,6 +613,10 @@ export class Composer {
         if (!hasFiles && this.sensitiveToggle !== null) {
             this.sensitiveToggle.querySelector('[name="sensitive"]').checked = false;
         }
+
+        // Content arriving or leaving by any route above changes what the
+        // committing buttons may offer.
+        this.#syncSubmitState();
     }
 
     static #toggle(element, visible) {

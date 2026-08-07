@@ -4943,7 +4943,7 @@ ensure_places_loaded();
 
 /**
  * Loads the GeoNames place directory (geonames.org, CC BY 4.0) into the
- * Places table - what lets a post's coordinates read "near Kingston, Ontario"
+ * Places table - what lets a post's coordinates read as a place name
  * with no outside service in the request path. Around 10MB downloaded once,
  * a couple of hundred thousand rows.
  *

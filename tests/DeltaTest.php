@@ -122,46 +122,48 @@ class DeltaTest extends TestCase
         $this -> assertSame('padded', $text);
     }
 
-    // ---------- plainTextWithLineBreaks ----------
+    // ---------- plainTextInParagraphs ----------
 
     /**
-     * What plainText() throws away. A translation is asked for from this,
-     * because a model can only give back the lines it was handed.
+     * One newline in a delta ends a block - DeltaRenderer makes a <p> at every
+     * one of them - so two blocks are two paragraphs, written out as the blank
+     * line that says so in plain text. A single newline would be read back as
+     * a soft break and put the whole post in one paragraph.
      */
-    public function testLineBreaksSurviveWhereTheFlatFormLosesThem()
+    public function testEachBlockBecomesAParagraphSeparatedByABlankLine()
     {
         $newline = chr(10);
         $ops = [['insert' => 'Line one' . $newline . 'Line two' . $newline]];
 
-        $this -> assertSame('Line one' . $newline . 'Line two', Delta::plainTextWithLineBreaks($ops));
+        $this -> assertSame('Line one' . $newline . $newline . 'Line two', Delta::plainTextInParagraphs($ops));
         $this -> assertSame('Line one Line two', Delta::plainText($ops));
     }
 
-    public function testABlankLineIsKeptAsTheParagraphBreakItIs()
-    {
-        $newline = chr(10);
-        $ops = [['insert' => 'First para' . $newline . $newline . 'Second para' . $newline]];
-
-        $this -> assertSame(
-            'First para' . $newline . $newline . 'Second para',
-            Delta::plainTextWithLineBreaks($ops)
-        );
-    }
-
-    /** Spacing is not structure: a run of blank lines is one break. */
-    public function testARunOfBlankLinesCountsAsOne()
+    /** An empty block is spacing, not a paragraph, and carries nothing to say. */
+    public function testAnEmptyBlockAddsNoParagraphOfItsOwn()
     {
         $newline = chr(10);
         $ops = [['insert' => 'First' . str_repeat($newline, 5) . 'Second' . $newline]];
 
-        $this -> assertSame('First' . $newline . $newline . 'Second', Delta::plainTextWithLineBreaks($ops));
+        $this -> assertSame('First' . $newline . $newline . 'Second', Delta::plainTextInParagraphs($ops));
     }
 
-    public function testSpacesAndTabsStillCollapseWithinALine()
+    public function testSpacesAndTabsStillCollapseWithinAParagraph()
     {
         $newline = chr(10);
         $ops = [['insert' => '  padded   out' . chr(9) . 'here  ' . $newline . '  and here ' . $newline]];
 
-        $this -> assertSame('padded out here' . $newline . 'and here', Delta::plainTextWithLineBreaks($ops));
+        $this -> assertSame(
+            'padded out here' . $newline . $newline . 'and here',
+            Delta::plainTextInParagraphs($ops)
+        );
+    }
+
+    /** A single paragraph stays one, with no trailing blank line after it. */
+    public function testOneParagraphComesBackAlone()
+    {
+        $ops = [['insert' => 'Just the one' . chr(10)]];
+
+        $this -> assertSame('Just the one', Delta::plainTextInParagraphs($ops));
     }
 }

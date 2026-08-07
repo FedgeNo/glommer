@@ -40,7 +40,7 @@ if ($post === null || (string) $post -> description === '') {
 // kept for search and meta tags, with every line break collapsed to a space,
 // and a model can only give back the lines it was given. Falls back to it for
 // a post stored before the rich body existed.
-$source = Delta::plainTextWithLineBreaks(Delta::decode($post -> descriptionDelta));
+$source = Delta::plainTextInParagraphs(Delta::decode($post -> descriptionDelta));
 
 if ($source === '') {
     $source = (string) $post -> description;

@@ -176,18 +176,23 @@ class Delta
     }
 
     /**
-     * The same text with the lines the author wrote still in it: spaces and
-     * tabs collapsed within a line, a blank line kept as the paragraph break
-     * it is, a run of them counted as one.
+     * The same text laid out in paragraphs, one per block, separated by a
+     * blank line - spaces and tabs collapsed inside a paragraph, empty blocks
+     * dropped.
      *
-     * plainText() above flattens all of that, which is right for a search
-     * index and a meta description and wrong for anything that has to read
-     * back the way the post did - a translation above all, where the model
-     * can only preserve the breaks it was given.
+     * Every newline in a delta ends a block: that is how DeltaRenderer reads
+     * one, so a paragraph here is exactly what becomes a <p> there. Written
+     * out as a blank line because that is what says "new paragraph" in plain
+     * text, to a reader and to a model alike - a single newline would be read
+     * back as a soft break and put the whole post in one paragraph.
+     *
+     * plainText() above flattens all of it to one line, which is right for a
+     * search index and a meta description and wrong for anything that has to
+     * read the way the post did.
      *
      * @param array[] $ops
      */
-    public static function plainTextWithLineBreaks(array $ops): string
+    public static function plainTextInParagraphs(array $ops): string
     {
         $text = '';
 
@@ -201,36 +206,22 @@ class Delta
             }
         }
 
-        $lines = [];
-        $blank_run = 0;
+        $paragraphs = [];
 
-        foreach (explode(chr(10), str_replace(chr(13), '', $text)) as $line) {
+        foreach (explode(chr(10), str_replace(chr(13), '', $text)) as $block) {
             $words = array_filter(
-                explode(' ', str_replace(chr(9), ' ', $line)),
+                explode(' ', str_replace(chr(9), ' ', $block)),
                 static fn (string $word): bool => $word !== ''
             );
 
-            $line = implode(' ', $words);
+            $block = implode(' ', $words);
 
-            if ($line === '') {
-                $blank_run++;
-
-                // Nothing yet to break away from, or a break already made.
-                if ($lines === [] || $blank_run > 1) {
-                    continue;
-                }
-            } else {
-                $blank_run = 0;
+            if ($block !== '') {
+                $paragraphs[] = $block;
             }
-
-            $lines[] = $line;
         }
 
-        while ($lines !== [] && $lines[count($lines) - 1] === '') {
-            array_pop($lines);
-        }
-
-        return implode(chr(10), $lines);
+        return implode(chr(10) . chr(10), $paragraphs);
     }
 
     /**

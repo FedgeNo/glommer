@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * The /nearby heading over the posts closest to the given point.
+ * The /nearby heading over the posts closest to the given point - named from
+ * the gazetteer when somewhere is close enough to name ("Near Kingston,
+ * Ontario, Canada"), plain "Nearby" when nowhere is (the open ocean, or a
+ * place directory that hasn't loaded).
  */
 class NearbyFeedSection extends ListSection
 {
@@ -14,6 +17,19 @@ class NearbyFeedSection extends ListSection
     public ?float $latitude = null;
     public ?float $longitude = null;
     public int $offset = 0;
+
+    public function toDOM(): \DOMElement
+    {
+        if ($this -> latitude !== null && $this -> longitude !== null) {
+            $place = Place::nearest($this -> latitude, $this -> longitude);
+
+            if ($place !== null) {
+                $this -> heading = 'Near ' . $place -> label();
+            }
+        }
+
+        return parent::toDOM();
+    }
 
     protected function list(): ItemLoader
     {

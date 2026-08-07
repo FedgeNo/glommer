@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  * Deliberately k-nearest rather than a radius search. A radius needs a constant
  * that is wrong at every scale - 50km shows an empty page on a quiet site and a
- * firehose on a busy one - whereas "the NEAREST_LIMIT closest posts, whatever
- * the distance" casts a wide net while there's little to find and tightens to
- * genuinely local content as density grows, with nothing to tune.
+ * firehose on a busy one - whereas "the nearest ~2·sqrt(N) of the located
+ * posts, whatever the distance" casts a wide net while there's little to find
+ * and tightens to genuinely local content as density grows, with nothing to
+ * tune (see candidateLimit).
  *
  * Distance decides membership only; the page is then ordered by postId so it
  * reads like an ordinary timeline. Ranking by distance would put an older post
@@ -20,8 +21,37 @@ declare(strict_types=1);
  */
 class NearbyFeedList extends FeedList
 {
-    /** How many of the closest posts are eligible, before the newest-first cut. */
-    public const NEAREST_LIMIT = 1000;
+    /**
+     * The ceiling on how many of the closest posts are eligible, before the
+     * newest-first cut. The working number is a tenth of all located posts
+     * (see candidateLimit) - "nearby" should mean the nearest tenth of the
+     * world this server knows, at any scale - and this cap keeps a huge
+     * corpus from turning the distance pass into the whole table anyway.
+     */
+    public const NEAREST_LIMIT = 2000;
+
+    /**
+     * How many nearest posts are eligible: twice the square root of the
+     * located corpus, floored at a page, capped at NEAREST_LIMIT.
+     *
+     * Square-root, not a percentage: a percentage loosens "nearby" at
+     * exactly the rate the corpus grows, so a big spread-out site ends up
+     * calling a continent local. Root growth is the standard k-NN heuristic
+     * for the same tension - generous while posts are sparse (a small site's
+     * whole corpus is one page, and the floor serves all of it), tightening
+     * relatively as density rises (four hundred posts field forty
+     * candidates, ten thousand field two hundred), with no cliff anywhere on
+     * the way to the cap.
+     */
+    protected function candidateLimit(): int
+    {
+        $row = DB::row('
+SELECT COUNT(*) AS `total`
+    FROM `PostLocations`
+', 'PostCountData');
+
+        return (int) min(static::NEAREST_LIMIT, max(static::PAGE_SIZE, (int) ceil(2 * sqrt((int) $row -> total))));
+    }
 
     /**
      * The latitude half-widths, in degrees, of the boxes candidates are looked
@@ -62,10 +92,11 @@ SELECT `Posts`.*,
     }
 
     /**
-     * The NEAREST_LIMIT closest located posts, found through boxes the
-     * (latitude, longitude) index can answer rather than by ranking the whole
-     * table - which is what this cost before, on every page of the feed,
-     * growing with every located post ever made.
+     * The candidateLimit() closest located posts - the nearest tenth of what
+     * this server holds - found through boxes the (latitude, longitude) index
+     * can answer rather than by ranking the whole table, which is what this
+     * cost before, on every page of the feed, growing with every located post
+     * ever made.
      *
      * Each box is tried with the same great-circle ordering the whole-earth
      * pass uses, so a box that holds enough candidates gives exactly the rows
@@ -79,14 +110,16 @@ SELECT `Posts`.*,
      */
     private function nearestPostIds(): array
     {
+        $limit = $this -> candidateLimit();
+
         foreach (self::BOX_HALF_WIDTHS as $half_width) {
-            $candidates = $this -> candidatesInBox($half_width);
+            $candidates = $this -> candidatesInBox($half_width, $limit);
 
             if ($half_width === null) {
                 return array_map(static fn (object $row): int => (int) $row -> postId, $candidates);
             }
 
-            if (count($candidates) < static::NEAREST_LIMIT) {
+            if (count($candidates) < $limit) {
                 continue;
             }
 
@@ -105,8 +138,8 @@ SELECT `Posts`.*,
     }
 
     /**
-     * The closest NEAREST_LIMIT posts within a box, nearest first, each with
-     * its angular distance. A null half-width is the whole earth.
+     * The closest $limit posts within a box, nearest first, each with its
+     * angular distance. A null half-width is the whole earth.
      *
      * LEAST(1, ...) clamps the cosine before ACOS: floating point can push an
      * exact-match point a hair above 1, where ACOS returns NULL and the post
@@ -114,7 +147,7 @@ SELECT `Posts`.*,
      *
      * @return object[]
      */
-    private function candidatesInBox(?float $half_width): array
+    private function candidatesInBox(?float $half_width, int $limit): array
     {
         $distance = 'ACOS(LEAST(1,
                 COS(RADIANS(?)) * COS(RADIANS(`latitude`)) * COS(RADIANS(`longitude`) - RADIANS(?))
@@ -165,7 +198,7 @@ SELECT `Posts`.*,
 SELECT `postId`, ' . $distance . ' AS `distance`
     FROM `PostLocations`' . $where . '
     ORDER BY `distance`
-    LIMIT ' . static::NEAREST_LIMIT . '
+    LIMIT ' . $limit . '
 ', \stdClass::class, $types, ...$parameters);
     }
 

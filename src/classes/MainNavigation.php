@@ -103,7 +103,7 @@ class MainNavigation extends Nav
             new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
             new Anchor(ServerURL::absolute('/trending-topics'), 'Trending'),
             new Anchor(ServerURL::absolute('/map'), 'Map'),
-            new Anchor(ServerURL::absolute('/nearby'), 'Nearby'),
+            new Anchor(ServerURL::absolute('/locations/'), 'Locations'),
             new Anchor(ServerURL::absolute('/search'), 'Search'),
             $this -> messagesLink(),
             new Anchor(ServerURL::absolute('/bookmarks'), 'Bookmarks'),

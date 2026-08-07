@@ -198,7 +198,7 @@ export class PostMap {
 
         const nearby = document.createElement('a');
         nearby.className = 'Button';
-        nearby.href = ClientConfig.siteURL() + '/nearby?lat=' + encodeURIComponent(latitude) + '&lng=' + encodeURIComponent(longitude);
+        nearby.href = ClientConfig.siteURL() + '/locations/?lat=' + encodeURIComponent(latitude) + '&lng=' + encodeURIComponent(longitude);
         nearby.textContent = 'Posts nearby';
         menu.appendWithSpace(nearby);
 

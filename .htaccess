@@ -107,7 +107,7 @@
     # path segments) only ever serve at their trailing-slash form - the bare
     # form always redirects to it, enforced, never silently accepted as an
     # alternative the way a real directory's slash-less URL redirects too.
-    RewriteRule ^(messages|users|help|tags)$ /$1/ [R=301,L]
+    RewriteRule ^(messages|users|help|tags|locations)$ /$1/ [R=301,L]
     RewriteRule ^users/([^/]+)$ /users/$1/ [R=301,L]
 
     RewriteRule ^$ index.php [L,QSA]
@@ -133,13 +133,16 @@
     RewriteRule ^auth-google-callback$ auth-google-callback.php [L,QSA]
     RewriteRule ^notifications$ notifications.php [L,QSA]
     RewriteRule ^map$ map.php [L,QSA]
-    RewriteRule ^nearby$ nearby.php [L,QSA]
+    RewriteRule ^locations/$ locations.php [L,QSA]
+    # The directory's old name, from before it held one page per place.
+    RewriteRule ^nearby$ /locations/ [R=301,L,QSA]
+    RewriteRule ^nearby/([0-9]+)$ /locations/$1 [R=301,L]
     RewriteRule ^check-inbox$ check-inbox.php [L,QSA]
     RewriteRule ^forgot-password$ forgot-password.php [L,QSA]
     RewriteRule ^reset-password$ reset-password.php [L,QSA]
     RewriteRule ^settings$ settings.php [L,QSA]
     RewriteRule ^drafts$ drafts.php [L,QSA]
-    RewriteRule ^nearby/([0-9]+)$ nearby.php?place=$1 [L,QSA]
+    RewriteRule ^locations/([0-9]+)$ locations.php?place=$1 [L,QSA]
     RewriteRule ^verify-email$ verify-email.php [L,QSA]
     RewriteRule ^revert-email$ revert-email.php [L,QSA]
     RewriteRule ^admin/reports$ admin-reports.php [L,QSA]

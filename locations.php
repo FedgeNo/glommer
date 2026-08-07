@@ -7,7 +7,7 @@ require __DIR__ . '/src/init.php';
 // Public - the posts are the same public ones the feed serves, just chosen by
 // proximity.
 //
-// The canonical nearby page is a PLACE's page (/nearby/{placeId}), not a
+// The canonical nearby page is a PLACE's page (/locations/{placeId}), not a
 // coordinate pair's: coordinates arriving in the query string (the
 // geolocation button, a pasted link) are rounded to the nearest place in the
 // gazetteer and redirected there, so every spot in and around a town shares
@@ -46,13 +46,13 @@ if ($origin !== null) {
     $nearest = Place::nearest($origin -> latitude, $origin -> longitude);
 
     if ($nearest !== null) {
-        header('Location: ' . ServerURL::absolute('/nearby/' . $nearest -> placeId), true, 302);
+        header('Location: ' . ServerURL::absolute('/locations/' . $nearest -> placeId), true, 302);
         exit;
     }
 }
 
 $page = new Page([
-    'title' => 'Nearby',
+    'title' => 'Locations',
     'description' => 'Posts from the places closest to you.',
     'needsMath' => true,
 ]);

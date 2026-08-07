@@ -4,7 +4,7 @@ import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 /**
- * The ways /nearby learns where "near" is: the "Use my location" button, and
+ * The ways /locations learns where "near" is: the "Use my location" button, and
  * a place search fed by the local gazetteer. Both end the same way - a
  * reload with coordinates in the query string, so the result is shareable
  * and bookmarkable rather than trapped in client state. The search commits
@@ -28,7 +28,7 @@ export class NearbyLocationPrompt {
 
             if (suggestion) {
                 // Straight to the place's own canonical page.
-                window.location.href = ClientConfig.siteURL() + '/nearby/' + suggestion.dataset.placeId;
+                window.location.href = ClientConfig.siteURL() + '/locations/' + suggestion.dataset.placeId;
                 return;
             }
 

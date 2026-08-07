@@ -105,7 +105,8 @@ export class Composer {
         this.pollFields = form.querySelector('.ComposerPoll');
         this.draftButton = form.querySelector('.ComposerDraftButton');
         this.scheduleButton = form.querySelector('.ComposerScheduleButton');
-        this.scheduleInput = form.querySelector('.ComposerScheduleInput');
+        this.scheduleDate = form.querySelector('.ComposerScheduleDate');
+        this.scheduleTime = form.querySelector('.ComposerScheduleTime');
 
         Composer.#instances.set(form, this);
     }
@@ -315,12 +316,22 @@ export class Composer {
         scheduleButton.textContent = 'Add Schedule';
         actions.appendWithSpace(scheduleButton);
 
-        const scheduleInput = document.createElement('input');
-        scheduleInput.type = 'datetime-local';
-        scheduleInput.className = 'ComposerScheduleInput';
-        scheduleInput.style.display = 'none';
-        scheduleInput.setAttribute('aria-label', 'Publish at');
-        actions.appendWithSpace(scheduleInput);
+        // A date input and a separate, optional time - datetime-local can't
+        // say "this day, whenever", and a day alone is a perfectly good
+        // schedule (it publishes as the day starts).
+        const scheduleDate = document.createElement('input');
+        scheduleDate.type = 'date';
+        scheduleDate.className = 'ComposerScheduleDate';
+        scheduleDate.style.display = 'none';
+        scheduleDate.setAttribute('aria-label', 'Publish date');
+        actions.appendWithSpace(scheduleDate);
+
+        const scheduleTime = document.createElement('input');
+        scheduleTime.type = 'time';
+        scheduleTime.className = 'ComposerScheduleTime';
+        scheduleTime.style.display = 'none';
+        scheduleTime.setAttribute('aria-label', 'Publish time (optional)');
+        actions.appendWithSpace(scheduleTime);
 
         // Hidden until asked for. The toggle is bound on the instance rather
         // than here, because opening a poll has to tell the rest of the
@@ -363,36 +374,75 @@ export class Composer {
         // The Schedule button only reveals or hides the clock - reading
         // "Remove Schedule" while it's out, so an accidental or curious click
         // has its own way back. Committing is the main submit button's job:
-        // once a time is picked, IT reads "Schedule Post", so the one button
-        // that has always published the post is the one that schedules it.
+        // with the clock out it reads "Schedule Post", disabled until there
+        // is both something written and a valid future date to send it to.
         this.scheduleButton.addEventListener('click', () => {
-            const hidden = this.scheduleInput.style.display === 'none';
-            this.scheduleInput.style.display = hidden ? '' : 'none';
+            const hidden = this.scheduleDate.style.display === 'none';
+            this.scheduleDate.style.display = hidden ? '' : 'none';
+            this.scheduleTime.style.display = hidden ? '' : 'none';
             this.scheduleButton.textContent = hidden ? 'Remove Schedule' : 'Add Schedule';
 
-            if (!hidden) {
-                this.scheduleInput.value = '';
+            if (hidden) {
+                // Yesterday isn't offered - the same rule the server enforces.
+                this.scheduleDate.min = new Date().toISOString().slice(0, 10);
+            } else {
+                this.scheduleDate.value = '';
+                this.scheduleTime.value = '';
             }
 
-            this.#syncSubmitLabel();
+            this.#syncSubmitState();
             this.#syncFields();
         });
 
-        this.scheduleInput.addEventListener('input', () => this.#syncSubmitLabel());
+        this.scheduleDate.addEventListener('input', () => this.#syncSubmitState());
+        this.scheduleTime.addEventListener('input', () => this.#syncSubmitState());
+        this.titleInput?.addEventListener('input', () => this.#syncSubmitState());
+        this.linkInput?.addEventListener('input', () => this.#syncSubmitState());
     }
 
-    /** The chosen publish time, or null when the clock is hidden or unset. */
+    #isScheduling() {
+        return this.scheduleDate !== null && this.scheduleDate.style.display !== 'none';
+    }
+
+    /**
+     * The chosen publish moment, or null when the clock is hidden or has no
+     * date yet. A date alone is enough - it means as that day starts.
+     */
     #scheduledEpoch() {
-        if (!this.scheduleInput || this.scheduleInput.style.display === 'none' || this.scheduleInput.value === '') {
+        if (!this.#isScheduling() || this.scheduleDate.value === '') {
             return null;
         }
 
-        return Math.floor(new Date(this.scheduleInput.value).getTime() / 1000);
+        return Math.floor(new Date(this.scheduleDate.value + 'T' + (this.scheduleTime.value || '00:00')).getTime() / 1000);
     }
 
-    #syncSubmitLabel() {
-        if (this.submitButton) {
-            this.submitButton.textContent = this.#scheduledEpoch() !== null ? 'Schedule Post' : 'Post';
+    #scheduleIsValid() {
+        const epoch = this.#scheduledEpoch();
+
+        return epoch !== null && epoch * 1000 > Date.now() + 60000;
+    }
+
+    #formHasContent() {
+        return (this.#quill?.getText().trim() ?? '') !== ''
+            || (this.titleInput?.value.trim() ?? '') !== ''
+            || (this.linkInput?.value.trim() ?? '') !== '';
+    }
+
+    /**
+     * The submit button's whole state in one place: what it says, and whether
+     * it can be pressed. Scheduling disables it until the post exists and the
+     * moment is real and in the future - never a click that only then finds
+     * out what was missing.
+     */
+    #syncSubmitState() {
+        if (!this.submitButton) return;
+
+        if (this.#isScheduling()) {
+            this.submitButton.textContent = 'Schedule Post';
+            this.submitButton.disabled = !(this.#scheduleIsValid() && this.#formHasContent());
+        } else {
+            this.submitButton.textContent = 'Post';
+            this.submitButton.disabled = false;
         }
     }
 
@@ -401,12 +451,14 @@ export class Composer {
         // Already away means nothing to do - this also parts the mutual
         // recursion with #syncFields, which calls here when files or a poll
         // arrive and is called back so the draft button can return.
-        if (!this.scheduleInput || this.scheduleInput.style.display === 'none') return;
+        if (!this.#isScheduling()) return;
 
-        this.scheduleInput.value = '';
-        this.scheduleInput.style.display = 'none';
+        this.scheduleDate.value = '';
+        this.scheduleTime.value = '';
+        this.scheduleDate.style.display = 'none';
+        this.scheduleTime.style.display = 'none';
         this.scheduleButton.textContent = 'Add Schedule';
-        this.#syncSubmitLabel();
+        this.#syncSubmitState();
         this.#syncFields();
     }
 
@@ -462,6 +514,13 @@ export class Composer {
         const editor = new QuillEditor(this.editorContainer, { placeholder: Composer.PLACEHOLDER });
         this.#quill = editor.instance;
 
+        // While scheduling, the submit button tracks whether there is
+        // anything to schedule - which changes with every keystroke here.
+        // Guarded: the test runner's Quill stand-in has no event emitter.
+        if (typeof this.#quill.on === 'function') {
+            this.#quill.on('text-change', () => this.#syncSubmitState());
+        }
+
         // The emoji picker lives in Quill's own toolbar - a bare clickable
         // emoji among the formatting controls, not another button crowding
         // the bottom of the form. Built here because the toolbar only exists
@@ -500,7 +559,7 @@ export class Composer {
         const hasLink = (this.linkInput?.value ?? '').trim() !== '';
         const hasFiles = this.#attachments.length > 0;
         const hasPoll = this.#pollIsOpen();
-        const scheduling = this.scheduleInput !== null && this.scheduleInput.style.display !== 'none';
+        const scheduling = this.#isScheduling();
 
         Composer.#toggle(this.linkInput, !hasFiles && !hasPoll);
         // The picker stays through having files - that is how more are added;
@@ -526,7 +585,7 @@ export class Composer {
         // Unreachable through the controls above (they hide before they could
         // collide), but kept so no code path can ever hold files or a poll
         // AND a schedule at once.
-        if ((hasFiles || hasPoll) && this.scheduleInput) {
+        if ((hasFiles || hasPoll) && this.scheduleDate) {
             this.#resetSchedule();
         }
 

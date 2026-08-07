@@ -181,6 +181,43 @@ export default {
             composer.remove();
         },
 
+        'scheduling disarms the submit until there is a post and a future day'() {
+            const composer = mounted();
+            const schedule = composer.form.querySelector('.ComposerScheduleButton');
+            const date = composer.form.querySelector('.ComposerScheduleDate');
+            const title = composer.form.querySelector('[name="title"]');
+            const submit = composer.form.querySelector('button[type="submit"]');
+
+            schedule.click();
+
+            // Armed the moment the clock comes out: right label, no click yet.
+            TestCase.assertEquals('Schedule Post', submit.textContent);
+            TestCase.assertTrue(submit.disabled);
+
+            // A future day alone is not enough - there is nothing to schedule.
+            date.value = new Date(Date.now() + 86400000 * 2).toISOString().slice(0, 10);
+            date.dispatchEvent(new window.Event('input'));
+            TestCase.assertTrue(submit.disabled);
+
+            // Content plus the day is.
+            title.value = 'A titled post';
+            title.dispatchEvent(new window.Event('input'));
+            TestCase.assertFalse(submit.disabled);
+
+            // A past day disarms it again, client-side, before the server
+            // would refuse it anyway.
+            date.value = '2020-01-01';
+            date.dispatchEvent(new window.Event('input'));
+            TestCase.assertTrue(submit.disabled);
+
+            // Putting the schedule away hands back an ordinary Post button.
+            schedule.click();
+            TestCase.assertEquals('Post', submit.textContent);
+            TestCase.assertFalse(submit.disabled);
+
+            composer.remove();
+        },
+
         'sensitive is offered only once there are files for it to be about'() {
             const composer = mounted();
             const box = composer.sensitive.querySelector('[name="sensitive"]');

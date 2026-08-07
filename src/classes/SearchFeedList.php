@@ -13,8 +13,10 @@ declare(strict_types=1);
  * inconvenience the blocker while changing nothing about who can actually see
  * what.
  *
- * Remote-origin posts ARE excluded: a followed Fediverse account's posts are
- * for whoever followed it, and search answers anyone who asks.
+ * Remote-origin posts are included, unlike every public listing: searching is
+ * for members only (both the page and api/search-posts.php refuse anyone else),
+ * so nothing found here is being shown to the world - and a member searching
+ * their own server should find what it actually holds.
  */
 class SearchFeedList extends FeedList
 {
@@ -51,7 +53,7 @@ SELECT `Posts`.*,
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
-        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
         AND (? = 0 OR `Posts`.`userId` = ?)
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?

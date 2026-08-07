@@ -5,9 +5,11 @@ declare(strict_types=1);
 /**
  * The posts carrying one #tag.
  *
- * Remote-origin posts are excluded: a followed Fediverse account's posts only
- * belong in the specific follower's own feed, never in one anyone can browse
- * to, tag pages included.
+ * A tag page is public, and remote-origin posts are not: this site does not
+ * represent other servers' writing to the world, the same rule a Fediverse
+ * profile and the relay feed already follow. So a logged-out visitor sees
+ * only what was written here, and a member sees the tag as it actually is
+ * across everything this server holds.
  */
 class TagFeedList extends FeedList
 {
@@ -19,6 +21,7 @@ class TagFeedList extends FeedList
     {
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+        $local_only = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL';
 
         return Post::fromRowsWithItems(DB::rows('
 SELECT `Posts`.*,
@@ -30,7 +33,7 @@ SELECT `Posts`.*,
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?' . $local_only . '
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'iisiii', $viewer_id, $viewer_id, (string) $this -> tag, $not_banned, static::PAGE_SIZE + 1, $this -> offset));

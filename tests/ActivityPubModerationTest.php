@@ -561,24 +561,33 @@ INSERT INTO `PostHashtags` (`postId`, `hashtagId`)
                 return (int) ($matches[1] ?? 0);
             }, new SiteRSSFeed() -> items),
             'tag feed' => array_map(static fn ($post) => (int) $post -> postId, new TagFeedList(['tag' => $tag]) -> items),
-            'post search' => array_map(static fn ($post) => (int) $post -> postId, new SearchFeedList(['query' => $needle]) -> items),
         ];
 
         foreach ($surfaces as $rows) {
             $this -> assertFalse(in_array($post_id, $rows, true));
         }
 
-        // The search needle has to be findable at all, or the search
-        // assertion above would pass simply because nothing matched.
-        $local_author = self::createUser();
-        DB::run('
-INSERT INTO `Posts` (`userId`, `description`)
-    VALUES (?, ?)
-', 'is', $local_author, $needle);
-        $local_post_id = (int) mysqli_insert_id(DB::connection());
+        // Search is not among them: both the page and its endpoint refuse
+        // anyone not signed in, so nothing it finds is being shown publicly.
+        $was = $_SESSION['userId'] ?? null;
+        $_SESSION['userId'] = self::createUser();
 
-        $found = array_map(static fn ($post) => (int) $post -> postId, new SearchFeedList(['query' => $needle]) -> items);
-        $this -> assertTrue(in_array($local_post_id, $found, true));
+        try {
+            $member_tag_feed = array_map(static fn ($post) => (int) $post -> postId, new TagFeedList(['tag' => $tag]) -> items);
+            $member_search = array_map(static fn ($post) => (int) $post -> postId, new SearchFeedList(['query' => $needle]) -> items);
+        } finally {
+            if ($was === null) {
+                unset($_SESSION['userId']);
+            } else {
+                $_SESSION['userId'] = $was;
+            }
+        }
+
+        // A member sees it on both - which is also what proves the assertions
+        // above turn on who is asking, rather than on the post being absent or
+        // the tag being wrong.
+        $this -> assertTrue(in_array($post_id, $member_tag_feed, true));
+        $this -> assertTrue(in_array($post_id, $member_search, true));
     }
 
     public function testRemotePostsNeverAppearInTheGlobalFeedQuery(): void

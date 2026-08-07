@@ -38,6 +38,8 @@ $page -> addContent(new SettingsSection('Mail', new MailSettingsForm()));
 
 $page -> addContent(new SettingsSection('Favicon', new FaviconSettingsForm()));
 
+$page -> addContent(new SettingsSection('Front Page Image', new FrontPageImageSettingsForm()));
+
 $page -> addContent(new SettingsSection('About', new AboutSettingsForm()));
 
 $page -> addContent(new SettingsSection('Terms of Service', new TermsSettingsForm()));

@@ -67,6 +67,7 @@ if (document.querySelector('.MailSettingsForm'))       import('/scripts/MailSett
 if (document.querySelector('.SiteInfoSettingsForm'))   import('/scripts/SiteInfoSettingsForm.js');
 if (document.querySelector('.AvatarUploadForm'))       import('/scripts/AvatarUploadForm.js');
 if (document.querySelector('.FaviconSettingsForm'))    import('/scripts/FaviconSettingsForm.js');
+if (document.querySelector('.FrontPageImageSettingsForm')) import('/scripts/FrontPageImageSettingsForm.js');
 if (document.querySelector('.ThemeSelect'))            import('/scripts/ThemeSelect.js');
 if (document.querySelector('.SignupForm'))             import('/scripts/UsernameValidation.js');
 if (document.querySelector('.HashtagGraphList'))       import('/scripts/HashtagGraphList.js');

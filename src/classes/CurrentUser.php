@@ -47,10 +47,7 @@ SELECT *
         $element = parent::toDOM();
 
         if (Auth::check() && Auth::id() === $this -> userId) {
-            // No align-items-end: the column's default stretch is what gives
-            // every button one uniform width, same as OtherUser's actions.
-            $actions = new Div();
-            $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
+            $actions = new CurrentUserActions();
 
             $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), $this -> friendsButtonLabel());
             $friends_link -> class = 'Button';

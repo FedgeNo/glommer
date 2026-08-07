@@ -1199,12 +1199,55 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 /* The schedule row sits above the buttons the way the poll does, framed the
-   same. display is JS-toggled, so only the visible shape lives here. */
+   same. Hidden by an inline display:none until asked for - which is why the
+   flex lives here rather than as a d-flex utility, whose !important would
+   overpower the hiding. */
 .ComposerSchedule {
-    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
     padding: 0.5rem;
     border: 1px solid var(--hairline);
     border-radius: var(--radius-card);
+}
+
+/* ---------- Signed-in profile actions ---------- */
+
+/* A grid, so every control takes the widest one's width. The file input
+   contributes no width of its own (width 0, min-width 100%) - its natural
+   ~260px would otherwise become the column and drag every button wide. */
+.CurrentUserActions {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: stretch;
+    align-content: start;
+}
+
+/* Inside the column it is a cluster of controls, not a card within the
+   profile card - the .Form surface chrome would inset its children 1rem and
+   break the shared width. */
+.CurrentUserActions .AvatarUploadForm {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: stretch;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 0;
+    overflow: visible;
+}
+
+.CurrentUserActions input[type='file'] {
+    width: 0;
+    min-width: 100%;
+}
+
+.CurrentUserActions .SubmitButton {
+    align-self: auto;
+    justify-self: stretch;
 }
 
 /* ---------- Quoted post embed ---------- */

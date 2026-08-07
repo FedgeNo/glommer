@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 class AvatarUploadForm extends Form
 {
-    // Stretch, not align-items-end: this lives in the profile card's actions
-    // column, where every control shares the column's one width.
+    // No d-flex utility: its !important display would overpower the grid
+    // the actions column lays this out with (see .CurrentUserActions).
     public ?string $class = 'AvatarUploadForm';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

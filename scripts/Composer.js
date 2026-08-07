@@ -326,8 +326,10 @@ export class Composer {
         // fields do. A date input and a separate, optional time -
         // datetime-local can't say "this day, whenever", and a day alone is
         // a perfectly good schedule (it publishes as the day starts).
+        // No d-flex utility: its !important display would overpower the
+        // inline display:none that keeps the row away until asked for.
         const scheduleRow = document.createElement('div');
-        scheduleRow.className = 'ComposerSchedule d-flex gap-2 align-items-center';
+        scheduleRow.className = 'ComposerSchedule';
         scheduleRow.style.display = 'none';
 
         const scheduleDate = document.createElement('input');
@@ -525,7 +527,7 @@ export class Composer {
             if (!result) return;
 
             Toast.show(publish_at_epoch === null
-                ? 'Saved to Drafts & Scheduled.'
+                ? 'Saved to Drafts.'
                 : 'Scheduled - see Drafts & Scheduled in the menu.');
 
             this.#form.reset();

@@ -516,6 +516,28 @@ SELECT `remoteFollowId`
     {
         $object = $activity['object'] ?? null;
 
+        // Relays disagree about how to pass a post on: some Announce its
+        // address, others forward the writing server's own Create unchanged
+        // and sign the delivery themselves. Both say the same thing - there is
+        // a post elsewhere worth reading - and both are answered the same way,
+        // because a relay is a stranger passing on somebody else's writing
+        // either way. The forwarded copy is not stored; only the address it
+        // names is noted, for the worker to read from the server that wrote it.
+        //
+        // Checked before anything below looks at the object, since a forwarded
+        // Create is addressed to the relay's subscribers rather than to anyone
+        // here - read as an ordinary delivery it would be somebody's direct
+        // message or somebody's poll vote.
+        if (Relay::isSubscribed($actor_uri)) {
+            $relayed_uri = self::objectURI($object);
+
+            if ($relayed_uri !== null) {
+                self::relayedPost($relayed_uri, $actor_uri);
+            }
+
+            return;
+        }
+
         if (!is_array($object)) {
             return;
         }

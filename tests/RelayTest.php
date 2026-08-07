@@ -156,6 +156,52 @@ SELECT COUNT(*) AS `count`
         $this -> clearRelays();
     }
 
+    /**
+     * The other way a relay passes a post on: the writing server's own Create,
+     * forwarded unchanged and signed by the relay. It has to be taken as the
+     * address it names rather than as writing the relay is entitled to file
+     * here - otherwise a whole relay's firehose arrives and is silently
+     * dropped for naming objects on hosts other than the relay's own.
+     */
+    public function testAForwardedCreateIsQueuedToBeReadRatherThanStored(): void
+    {
+        $this -> clearRelays();
+
+        $this -> subscribe('https://live.example/actor', 'accepted');
+        $object_uri = 'https://elsewhere.example/users/someone/statuses/' . bin2hex(random_bytes(4));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'id' => 'https://live.example/activities/1',
+            'object' => [
+                'type' => 'Note',
+                'id' => $object_uri,
+                'attributedTo' => 'https://elsewhere.example/users/someone',
+                'content' => 'passed on by the relay',
+            ],
+        ], 'https://live.example/actor');
+
+        $queued = mysqli_stmt_get_result(DB::run('
+SELECT COUNT(*) AS `count`
+    FROM `RelayFetches`
+    WHERE `objectURI` = ?
+', 's', $object_uri));
+
+        $this -> assertSame(1, (int) mysqli_fetch_assoc($queued)['count']);
+
+        // Nothing the relay said about the post is taken on trust: the copy it
+        // forwarded is not stored, only read later from the server that wrote it.
+        $stored = mysqli_stmt_get_result(DB::run('
+SELECT COUNT(*) AS `count`
+    FROM `Posts`
+    WHERE `remoteObjectURI` = ?
+', 's', $object_uri));
+
+        $this -> assertSame(0, (int) mysqli_fetch_assoc($stored)['count']);
+
+        $this -> clearRelays();
+    }
+
     /** Two relays naming the same post is one post, listed once. */
     public function testTheSamePostArrivingTwiceIsRecordedOnce(): void
     {

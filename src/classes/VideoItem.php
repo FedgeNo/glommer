@@ -21,7 +21,14 @@ class VideoItem extends FeedItem
             }
         } else {
             $video -> src = $this -> srcURL();
-            $video -> attributes['poster'] = $poster;
+
+            // Remote media has no thumbnail here and never will - it isn't
+            // ours to transcode (see FeedItem::imageURL()) - so a video from
+            // another server plays without a poster rather than carrying an
+            // empty one.
+            if ($poster !== null) {
+                $video -> attributes['poster'] = $poster;
+            }
         }
 
         $this -> contents[] = $video;

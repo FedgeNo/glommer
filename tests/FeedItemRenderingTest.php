@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * What an attached image says about itself in the markup: the alt a screen
+ * What an attached file says about itself in the markup: the alt a screen
  * reader speaks, and the raw author-written value plus row identity the post
  * editor reads back - which must stay distinct, because the spoken fallback
- * would otherwise be read back as the author's own words.
+ * would otherwise be read back as the author's own words - and what a video
+ * from another server offers in place of the thumbnail it does not have.
  */
 class FeedItemRenderingTest extends TestCase
 {
@@ -32,6 +33,35 @@ class FeedItemRenderingTest extends TestCase
         $item -> deferred = false;
 
         return $item;
+    }
+
+    private function remoteVideo(): VideoItem
+    {
+        $row = new FeedItemData();
+        $row -> itemId = 43;
+        $row -> postId = 7;
+        $row -> type = 'VideoItem';
+        $row -> remoteURL = 'https://remote.example/media/clip.mp4';
+
+        $item = FeedItem::fromRow($row);
+        $item -> deferred = false;
+
+        return $item;
+    }
+
+    /**
+     * Nothing thumbnails remote media - it isn't ours to transcode - so a
+     * video from another server has no poster to give. Setting the attribute
+     * anyway is not an empty poster: it is a TypeError that takes down every
+     * page the video appears on, which is what the relay feed is.
+     */
+    public function testARemoteVideoRendersWithNoPosterRatherThanAnEmptyOne(): void
+    {
+        $element = $this -> elementFor($this -> remoteVideo());
+        $video = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//video', $element) -> item(0);
+
+        $this -> assertNotNull($video);
+        $this -> assertFalse($video -> hasAttribute('poster'));
     }
 
     public function testAuthorAltTextIsSpokenAndReadableBack(): void

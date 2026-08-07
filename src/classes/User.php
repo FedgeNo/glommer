@@ -371,8 +371,8 @@ SELECT IF(`requesterId` = ?, `addresseeId`, `requesterId`) AS `friendId`
     public function friendsButtonLabel(): string
     {
         return $this -> remoteActorURI === null
-            ? 'Friends (' . $this -> friendCount . ')'
-            : 'Friends';
+            ? 'View Friends (' . $this -> friendCount . ')'
+            : 'View Friends';
     }
 
     /**

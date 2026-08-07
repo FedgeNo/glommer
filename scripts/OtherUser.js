@@ -121,7 +121,7 @@ export class OtherUser extends User {
             const friends_link = document.createElement('a');
             friends_link.className = 'Button';
             friends_link.href = ClientConfig.siteURL() + '/users/' + this.slug + '/friends';
-            friends_link.textContent = 'Friends';
+            friends_link.textContent = 'View Friends';
             actions.appendWithSpace(friends_link);
 
             if (this.friendshipStatus === 'accepted') {

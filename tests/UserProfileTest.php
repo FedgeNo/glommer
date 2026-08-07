@@ -45,7 +45,7 @@ SELECT *
         $user = self::localUser();
         $friend = self::localUser();
 
-        $this -> assertSame('Friends (0)', $user -> friendsButtonLabel());
+        $this -> assertSame('View Friends (0)', $user -> friendsButtonLabel());
 
         $accepted = 'accepted';
 
@@ -64,7 +64,7 @@ SELECT *
     WHERE `userId` = ?
 ', 'User', 'i', (int) $user -> userId);
 
-        $this -> assertSame('Friends (1)', $reloaded -> friendsButtonLabel());
+        $this -> assertSame('View Friends (1)', $reloaded -> friendsButtonLabel());
     }
 
     public function testARemoteProfileGetsNoCount(): void
@@ -72,6 +72,6 @@ SELECT *
         // Friendship is a relationship held here; people follow a Fediverse
         // account rather than befriending it, so a number beside their name
         // would state something about them that is only true of this server.
-        $this -> assertSame('Friends', self::shadowUser() -> friendsButtonLabel());
+        $this -> assertSame('View Friends', self::shadowUser() -> friendsButtonLabel());
     }
 }

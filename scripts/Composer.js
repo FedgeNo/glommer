@@ -375,6 +375,7 @@ export class Composer {
             }
 
             this.#syncSubmitLabel();
+            this.#syncFields();
         });
 
         this.scheduleInput.addEventListener('input', () => this.#syncSubmitLabel());
@@ -397,12 +398,16 @@ export class Composer {
 
     /** Puts the clock away and every label with it. */
     #resetSchedule() {
-        if (!this.scheduleInput) return;
+        // Already away means nothing to do - this also parts the mutual
+        // recursion with #syncFields, which calls here when files or a poll
+        // arrive and is called back so the draft button can return.
+        if (!this.scheduleInput || this.scheduleInput.style.display === 'none') return;
 
         this.scheduleInput.value = '';
         this.scheduleInput.style.display = 'none';
         this.scheduleButton.textContent = 'Add Schedule';
         this.#syncSubmitLabel();
+        this.#syncFields();
     }
 
     /**
@@ -509,8 +514,12 @@ export class Composer {
 
         // Drafts and scheduling carry text, link and location only - media
         // publishes through the upload queue and a poll's clock starts when
-        // readers can vote, so both put these controls away.
-        Composer.#toggle(this.draftButton, !hasFiles && !hasPoll);
+        // readers can vote, so both put these controls away. And while the
+        // schedule clock is out, Save Draft goes away too: the two are ways
+        // of NOT posting yet, and offering both at once just crowds the row.
+        const scheduling = this.scheduleInput && this.scheduleInput.style.display !== 'none';
+
+        Composer.#toggle(this.draftButton, !hasFiles && !hasPoll && !scheduling);
         Composer.#toggle(this.scheduleButton, !hasFiles && !hasPoll);
 
         if ((hasFiles || hasPoll) && this.scheduleInput) {

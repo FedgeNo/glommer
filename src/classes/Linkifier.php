@@ -59,7 +59,25 @@ class Linkifier
     // Shared verbatim with Linkifier.js via the same string; only the delimiter
     // differs (PHP {} vs JS new RegExp). No {} in the body so the {} delimiter
     // is safe.
-    private const SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
+    // What a #tag may be made of, stated as the ASCII it may NOT be made of:
+    // everything below the digits, the punctuation between them and the
+    // letters, and the rest up to DEL - leaving letters, digits, underscore,
+    // and, by omission, every character above ASCII. Written that way on
+    // purpose. A positive range would have to name the high characters, and
+    // "\\x80-\\xFF" does not mean the same thing on both sides - PHP reads
+    // bytes, so it covers a whole UTF-8 sequence, while JS reads code points
+    // and would stop at U+00FF, tagging Latin-1 and refusing everything else.
+    // Excluding ASCII says "anything else" identically to both.
+    //
+    // No /u flag either, for a worse divergence than the one it would fix:
+    // PCRE returns no match at all from a subject that isn't valid UTF-8, so
+    // one bad byte in a post would drop every link in it here while the
+    // browser linkified them all.
+    private const TAG_CHARS = "[^\\x00-\\x2F\\x3A-\\x40\\x5B-\\x5E\\x60\\x7B-\\x7F]";
+
+    // The '#' is inside that excluded range, so it reads as a boundary and
+    // "##b" would tag - hence the second lookbehind naming it.
+    private const SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<!" . self::TAG_CHARS . ")(?<!#)#" . self::TAG_CHARS . "+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
 
     // Pass-1 detector: an http(s) URL, a www.-prefixed host, or a bare
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.
@@ -155,6 +173,27 @@ class Linkifier
     }
 
     /**
+     * Whether a string is usable as a tag: made only of tag characters, no
+     * longer than the cap in characters (not bytes - a tag of CJK is as long
+     * as it looks), and not just a number, so "#2024" stays text.
+     *
+     * The one place that decides it, so a tag the renderer links and a tag
+     * /tags/ will serve are the same thing by construction.
+     */
+    public static function isTagSlug(string $tag): bool
+    {
+        if ($tag === '' || mb_strlen($tag) > self::MAX_TAG_LENGTH) {
+            return false;
+        }
+
+        if (preg_match('{^' . self::TAG_CHARS . '+$}', $tag) !== 1) {
+            return false;
+        }
+
+        return trim($tag, '0123456789_') !== '';
+    }
+
+    /**
      * @return array{segment: array{type: string, text: string, tag?: string}, trailing: string}|null
      */
     private static function classify(string $matched): ?array
@@ -162,11 +201,14 @@ class Linkifier
         if ($matched[0] === '#') {
             $tag = substr($matched, 1);
 
-            if ($tag === '' || strlen($tag) > self::MAX_TAG_LENGTH || preg_match('{[A-Za-z]}', $tag) !== 1) {
+            if (!self::isTagSlug($tag)) {
                 return null;
             }
 
-            return ['segment' => ['type' => 'hashtag', 'text' => $matched, 'tag' => strtolower($tag)], 'trailing' => ''];
+            // mb_strtolower, not strtolower: the ASCII-only one leaves #CAFÉ
+            // as "cafÉ" while the browser's toLowerCase gives "café", and the
+            // two renderers would link one tag to two different pages.
+            return ['segment' => ['type' => 'hashtag', 'text' => $matched, 'tag' => mb_strtolower($tag)], 'trailing' => ''];
         }
 
         if ($matched[0] === '@') {

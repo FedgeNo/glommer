@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
-$tag = strtolower(trim((string) ($_GET['tag'] ?? '')));
+$tag = mb_strtolower(trim((string) ($_GET['tag'] ?? '')));
 
 // /tags/ - the public hashtag directory: the Popular graph and the Trending
 // cloud, each a self-fetching list reading its own materialized table.
@@ -32,7 +32,9 @@ if ($tag === '') {
 
 // /tags/{tag} - the posts carrying one tag. A tag with no posts is a 404
 // (nothing to show, and it keeps empty/thin pages out of search).
-if (!preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
+// The renderer's own rule for what a tag is, so a tag it linked always leads
+// somewhere rather than to a 404.
+if (!Linkifier::isTagSlug($tag)) {
     require __DIR__ . '/404.php';
     exit;
 }

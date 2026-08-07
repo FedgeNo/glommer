@@ -2,7 +2,11 @@ export class Linkifier {
     static MAX_TAG_LENGTH = 50;
     static MAX_MENTION_LENGTH = 255;
     static URL_TRAILING_TRIM = ".,!?;:)";
-    static SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<![A-Za-z0-9_#])#[A-Za-z0-9_]+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
+    // Kept identical to Linkifier.php's TAG_CHARS - see the reasoning there
+    // for why a #tag is stated as the ASCII it may not contain rather than as
+    // the characters it may.
+    static TAG_CHARS = "[^\\x00-\\x2F\\x3A-\\x40\\x5B-\\x5E\\x60\\x7B-\\x7F]";
+    static SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<!" + Linkifier.TAG_CHARS + ")(?<!#)#" + Linkifier.TAG_CHARS + "+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
     static LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
     static AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
 
@@ -69,11 +73,28 @@ export class Linkifier {
         return Linkifier.#mergeText(segments);
     }
 
+    /**
+     * The mirror of Linkifier::isTagSlug(). Counted in code points rather
+     * than in string length, which counts UTF-16 units and would make the cap
+     * mean something different here than it does on the server.
+     */
+    static isTagSlug(tag) {
+        if (tag === '' || [...tag].length > Linkifier.MAX_TAG_LENGTH) {
+            return false;
+        }
+
+        if (!new RegExp('^' + Linkifier.TAG_CHARS + '+$').test(tag)) {
+            return false;
+        }
+
+        return [...tag].some((character) => !'0123456789_'.includes(character));
+    }
+
     static #classify(matched) {
         if (matched[0] === '#') {
             const tag = matched.slice(1);
 
-            if (tag === '' || tag.length > Linkifier.MAX_TAG_LENGTH || !/[A-Za-z]/.test(tag)) {
+            if (!Linkifier.isTagSlug(tag)) {
                 return null;
             }
 

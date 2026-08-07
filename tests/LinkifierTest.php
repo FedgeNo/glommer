@@ -86,6 +86,64 @@ class LinkifierTest extends TestCase
         $this -> assertSame('cats', $segments[1]['tag']);
     }
 
+    /**
+     * A tag is not an English word. These have to survive the byte-level
+     * scanner, and the tag they resolve to has to be what the browser's mirror
+     * resolves the same text to - the parity cases live in
+     * tests/js/LinkifierTest.js against this same list.
+     */
+    public function testTokenizeTagsBeyondASCII(): void
+    {
+        $accented = Linkifier::tokenize('un #café');
+        $this -> assertSame('hashtag', $accented[1]['type']);
+        $this -> assertSame('café', $accented[1]['tag']);
+
+        $cjk = Linkifier::tokenize('read #日本語 here');
+        $this -> assertSame('hashtag', $cjk[1]['type']);
+        $this -> assertSame('日本語', $cjk[1]['tag']);
+    }
+
+    /**
+     * Lowercasing has to know about more than ASCII, or #CAFÉ and #café are
+     * two tags here and one in the browser.
+     */
+    public function testATagIsLowercasedBeyondASCIIToo(): void
+    {
+        $segments = Linkifier::tokenize('#CAFÉ');
+
+        $this -> assertSame('café', $segments[0]['tag']);
+    }
+
+    /** The text on either side still has to come back whole. */
+    public function testTextAroundANonASCIITagSurvivesIntact(): void
+    {
+        $segments = Linkifier::tokenize('vor #Ünicode nach');
+
+        $this -> assertSame('vor ', $segments[0]['text']);
+        $this -> assertSame('#Ünicode', $segments[1]['text']);
+        $this -> assertSame('ünicode', $segments[1]['tag']);
+        $this -> assertSame(' nach', $segments[2]['text']);
+    }
+
+    /**
+     * The boundary in front of a tag has to hold for an accented word too -
+     * on this side that means a UTF-8 continuation byte must not read as the
+     * punctuation that would let a tag start.
+     */
+    public function testAnAccentedWordBeforeAHashDoesNotStartATag(): void
+    {
+        foreach (Linkifier::tokenize('café#nope') as $segment) {
+            $this -> assertFalse($segment['type'] === 'hashtag');
+        }
+    }
+
+    /** The cap counts characters, not the bytes they happen to take. */
+    public function testTheLengthCapCountsCharacters(): void
+    {
+        $this -> assertTrue(Linkifier::isTagSlug(str_repeat('é', Linkifier::MAX_TAG_LENGTH)));
+        $this -> assertFalse(Linkifier::isTagSlug(str_repeat('é', Linkifier::MAX_TAG_LENGTH + 1)));
+    }
+
     public function testTokenizeAllNumericHashtagIsNotLinkified(): void
     {
         // classify() requires at least one letter in the tag body - a bare
@@ -200,6 +258,14 @@ class LinkifierTest extends TestCase
             '@bob@nodot',
             'plain text with nothing in it',
             'a#b ##c @@d',
+            // Beyond ASCII, where the two engines could most easily disagree:
+            // this side scans bytes and slices by byte offset, the other scans
+            // code points and slices by UTF-16 offset.
+            'un #café et #Ünicode',
+            'read #日本語 here',
+            '#CAFÉ shouting',
+            'café#nope',
+            'emoji #ok🎉 tail',
         ];
 
         $php_output = array_map(static fn (string $text): array => Linkifier::tokenize($text), $cases);
@@ -207,13 +273,28 @@ class LinkifierTest extends TestCase
         $js_output = $this -> tokenizeWithNode($cases);
 
         if ($js_output === null) {
+            // No node to run the other side with, so fall back to proving the
+            // two patterns are still the same text. They are written as an
+            // expression rather than one literal, so the language's own way of
+            // naming and joining the parts is normalised away first.
             $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkifier.php');
             $js = (string) file_get_contents(__DIR__ . '/../scripts/Linkifier.js');
 
-            preg_match('/private const SCAN = "(.*)";/', $php, $php_match);
-            preg_match('/static SCAN = "(.*)";/', $js, $js_match);
+            preg_match('/private const TAG_CHARS = "(.*)";/', $php, $php_tag_chars);
+            preg_match('/static TAG_CHARS = "(.*)";/', $js, $js_tag_chars);
 
-            $this -> assertSame($php_match[1] ?? 'php', $js_match[1] ?? 'js');
+            $this -> assertSame($php_tag_chars[1] ?? 'php', $js_tag_chars[1] ?? 'js');
+
+            preg_match('/private const SCAN = (.*);/', $php, $php_match);
+            preg_match('/static SCAN = (.*);/', $js, $js_match);
+
+            $normalize = static fn (string $expression): string => str_replace(
+                ['self::TAG_CHARS', 'Linkifier.TAG_CHARS', ' . ', ' + '],
+                ['TAG_CHARS', 'TAG_CHARS', ' JOIN ', ' JOIN '],
+                $expression
+            );
+
+            $this -> assertSame($normalize($php_match[1] ?? 'php'), $normalize($js_match[1] ?? 'js'));
 
             return;
         }

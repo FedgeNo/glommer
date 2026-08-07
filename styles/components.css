@@ -1207,6 +1207,20 @@ body.MessagesPage { padding-bottom: 9rem; }
     border-radius: var(--radius-card);
 }
 
+/* ---------- Quoted post embed ---------- */
+
+.QuotedPost {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    background-color: var(--surface-2);
+}
+
+.QuotedPostTitle {
+    font-weight: 640;
+}
+
 /* ---------- Nearby place search ---------- */
 
 /* The card group clips its children (overflow: hidden, for the rounded

@@ -143,6 +143,7 @@
     RewriteRule ^settings$ settings.php [L,QSA]
     RewriteRule ^drafts$ drafts.php [L,QSA]
     RewriteRule ^locations/([0-9]+)$ locations.php?place=$1 [L,QSA]
+    RewriteRule ^quote/([0-9]+)$ quote.php?post=$1 [L,QSA]
     RewriteRule ^verify-email$ verify-email.php [L,QSA]
     RewriteRule ^revert-email$ revert-email.php [L,QSA]
     RewriteRule ^admin/reports$ admin-reports.php [L,QSA]

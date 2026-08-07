@@ -50,6 +50,17 @@ export class Composer {
             form.appendWithSpace(input);
         }
 
+        // A quote composer (quote.php stamps the reference on the form): the
+        // id rides the same FormData as everything else.
+        const quotedPostId = form.dataset.quotedPostId;
+        if (quotedPostId) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'quotedPostId';
+            input.value = quotedPostId;
+            form.appendWithSpace(input);
+        }
+
         const instance = new Composer(form);
         instance.#slot = slot;
         instance.#init();
@@ -600,8 +611,12 @@ export class Composer {
         // readers can vote, so both put these controls away. And while the
         // schedule clock is out, Save Draft goes away too: the two are ways
         // of NOT posting yet, and offering both at once just crowds the row.
-        Composer.#toggle(this.draftButton, !hasFiles && !hasPoll && !scheduling);
-        Composer.#toggle(this.scheduleButton, !hasFiles && !hasPoll);
+        // A quote can't be staged - StagedPosts carries no reference - so a
+        // quote composer offers neither keeping option.
+        const quoting = Boolean(this.#form.dataset.quotedPostId);
+
+        Composer.#toggle(this.draftButton, !hasFiles && !hasPoll && !scheduling && !quoting);
+        Composer.#toggle(this.scheduleButton, !hasFiles && !hasPoll && !quoting);
 
         // Unreachable through the controls above (they hide before they could
         // collide), but kept so no code path can ever hold files or a poll
@@ -1013,6 +1028,14 @@ export class Composer {
     }
 
     #onSubmitSuccess(data) {
+        // A quote page has no feed to drop the new post into - the finished
+        // quote's own page is the natural place to land.
+        if (this.#form.dataset.quotedPostId && data.response.postId) {
+            window.location.href = ClientConfig.siteURL() + '/users/'
+                + ClientConfig.get('currentUserUsername') + '/' + data.response.postId;
+            return;
+        }
+
         // Read before reset() blanks the hidden inputs - the map listens for
         // this to drop a permanent pin where the post just landed.
         const latitude = this.latitudeInput ? this.latitudeInput.value : '';

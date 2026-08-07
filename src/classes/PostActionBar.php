@@ -65,6 +65,10 @@ class PostActionBar extends Footer
                 $actions -> addContent($this -> repostButton());
             }
 
+            // Beside Repost, being its talkative sibling: pass the post on
+            // WITH something to say about it.
+            $actions -> addContent(new PostQuoteButton((int) $this -> postId));
+
             $actions -> addContent($this -> bookmarkButton());
 
             if ($this -> postUserId === Auth::id()) {

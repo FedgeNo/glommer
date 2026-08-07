@@ -759,11 +759,23 @@ UPDATE `Posts`
         // is a cover over media that didn't need one.
         $sensitive = ($object['sensitive'] ?? false) === true ? 1 : 0;
 
+        // A remote quote post: quoteUrl and _misskey_quote are the spellings
+        // most of the network sends. Resolved only against posts already held
+        // here - a quote of something this server has never seen renders as
+        // plain words, the same as a quote whose target was deleted. Never a
+        // fetch: a quote is not an invitation to go crawling.
+        $quoted_post_id = null;
+        $quoted_uri = $object['quoteUrl'] ?? $object['_misskey_quote'] ?? null;
+
+        if (is_string($quoted_uri) && $quoted_uri !== '') {
+            $quoted_post_id = self::localPostIdFor($quoted_uri);
+        }
+
         try {
             DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'iisssi', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive);
+INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `quotedPostId`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+', 'iisssii', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $quoted_post_id);
         } catch (\mysqli_sql_exception $exception) {
             // 1062 = the unique remoteObjectURI rejected a post already held.
             // Two relays naming the same post at once is an ordinary race, not
@@ -957,6 +969,41 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
 
         return in_array(strtolower((string) parse_url($object_uri, PHP_URL_SCHEME)), ['http', 'https'], true)
             && is_string(parse_url($object_uri, PHP_URL_HOST));
+    }
+
+    /**
+     * The post a URI names, whichever side it lives on: a remote object URI
+     * this server already holds a copy of, or one of this server's own
+     * permalinks - the valuable case, since a quote arriving from elsewhere
+     * most often quotes the post it was delivered about.
+     */
+    private static function localPostIdFor(string $uri): ?int
+    {
+        $known_remote = self::postIdForRemoteObject($uri);
+
+        if ($known_remote !== null) {
+            return $known_remote;
+        }
+
+        // Our own permalink shape, host-checked: /users/{slug}/{postId}.
+        $host = strtolower((string) parse_url($uri, PHP_URL_HOST));
+
+        if ($host !== ServerURL::host()) {
+            return null;
+        }
+
+        if (preg_match('#/users/([^/]+)/([0-9]+)$#', (string) parse_url($uri, PHP_URL_PATH), $match) !== 1) {
+            return null;
+        }
+
+        $post = DB::row('
+SELECT `Posts`.`postId`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ? AND `Users`.`slug` = ? AND `Posts`.`remoteObjectURI` IS NULL
+', 'Post', 'is', (int) $match[2], $match[1]);
+
+        return $post !== null ? (int) $post -> postId : null;
     }
 
     private static function postIdForRemoteObject(string $remote_object_uri): ?int

@@ -205,6 +205,12 @@ SELECT `Posts`.`postId`
     if ($quoted_exists === null) {
         JSONResponse::error('The post being quoted no longer exists.', 404) -> send();
     }
+
+    // Video and audio publish through the async worker, whose staged batches
+    // don't carry the reference. Images process synchronously and ride fine.
+    if (count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0) {
+        JSONResponse::error('A quote post can carry images, but not video or audio.', 422) -> send();
+    }
 }
 
 // Checked here as well as in Poll::create, which answers an unusable duration
@@ -322,9 +328,9 @@ if ($needs_async) {
 }
 
 DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'iissssi', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `quotedPostId`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssii', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $quoted_post_id);
 $post_id = (int) mysqli_insert_id($mysqli);
 
 // Coordinates live in their own postId-keyed table, so only a post that
@@ -417,6 +423,7 @@ $post -> createdAt = date('Y-m-d H:i:s');
 $post -> latitude = $latitude;
 $post -> longitude = $longitude;
 $post -> sensitive = $sensitive;
+$post -> quotedPostId = $quoted_post_id;
 $post -> items = $items;
 $post -> author = $current_user;
 

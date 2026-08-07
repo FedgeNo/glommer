@@ -119,6 +119,23 @@ SELECT `Posts`.`postId`
             $document['inReplyTo'] = $in_reply_to;
         }
 
+        // A quote post names what it quotes three ways at once - quoteUrl
+        // (the Misskey/Fedibird lineage most servers read), _misskey_quote
+        // (its older spelling), and an FEP-e232 object link tag - because
+        // there is no single property the whole network agrees on yet.
+        $quoted_uri = self::quotedURI($post);
+
+        if ($quoted_uri !== null) {
+            $document['quoteUrl'] = $quoted_uri;
+            $document['_misskey_quote'] = $quoted_uri;
+            $document['tag'][] = [
+                'type' => 'Link',
+                'mediaType' => 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+                'href' => $quoted_uri,
+                'name' => 'RE: ' . $quoted_uri,
+            ];
+        }
+
         if ($poll !== null) {
             $document += self::pollFields($poll);
         }
@@ -155,7 +172,9 @@ SELECT `Posts`.`postId`
         }
 
         if ($tags !== []) {
-            $document['tag'] = $tags;
+            // Merged, never assigned - a quote post has already put its
+            // FEP-e232 object link in here.
+            $document['tag'] = array_merge($document['tag'] ?? [], $tags);
         }
 
         return $document;
@@ -330,6 +349,36 @@ SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
         }
 
         return ServerURL::absolute('/users/' . $parent -> slug . '/' . (int) $parent -> postId);
+    }
+
+    /**
+     * The ActivityPub id of the post this one quotes: the original's own URI
+     * for something that came from elsewhere, our permalink for local work.
+     * Null when the quote's target has been deleted - the note goes out as
+     * plain words, exactly as the page renders it.
+     */
+    private static function quotedURI(Post $post): ?string
+    {
+        if ($post -> quotedPostId === null) {
+            return null;
+        }
+
+        $quoted = DB::row('
+SELECT `Posts`.`postId`, `Posts`.`remoteObjectURI`, `Users`.`slug`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ?
+', 'PostParentData', 'i', (int) $post -> quotedPostId);
+
+        if ($quoted === null) {
+            return null;
+        }
+
+        if (is_string($quoted -> remoteObjectURI) && $quoted -> remoteObjectURI !== '') {
+            return $quoted -> remoteObjectURI;
+        }
+
+        return ServerURL::absolute('/users/' . $quoted -> slug . '/' . (int) $quoted -> postId);
     }
 
     /**

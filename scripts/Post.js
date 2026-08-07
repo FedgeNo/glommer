@@ -30,6 +30,7 @@ export class Post {
     longitude = null;
     placeLabel = null;
     translatable = null;
+    quotedPost = null;
     poll = null;
     repostedBy = null;
     // A post that came from another server - it carries no share button,
@@ -384,6 +385,39 @@ export class Post {
             }
         }
 
+        // Mirrors QuotedPost.php: the quoted material under the commentary,
+        // byline and a readable slice, linking to the real thing.
+        if (this.quotedPost) {
+            const quoted = document.createElement('div');
+            quoted.className = 'QuotedPost';
+
+            const byline = document.createElement('p');
+            byline.className = 'QuotedPostByline muted text-sm';
+            byline.textContent = (this.quotedPost.authorTitle || this.quotedPost.slug) + ' · @' + this.quotedPost.slug;
+            quoted.appendWithSpace(byline);
+
+            if (this.quotedPost.title) {
+                const title = document.createElement('p');
+                title.className = 'QuotedPostTitle';
+                title.textContent = this.quotedPost.title;
+                quoted.appendWithSpace(title);
+            }
+
+            if (this.quotedPost.description) {
+                const body = document.createElement('p');
+                body.textContent = this.quotedPost.description;
+                quoted.appendWithSpace(body);
+            }
+
+            const link = document.createElement('a');
+            link.className = 'QuotedPostLink text-sm';
+            link.href = ClientConfig.siteURL() + '/users/' + this.quotedPost.slug + '/' + this.quotedPost.postId;
+            link.textContent = 'View the quoted post';
+            quoted.appendWithSpace(link);
+
+            post.appendWithSpace(quoted);
+        }
+
         return post;
     }
 
@@ -478,6 +512,14 @@ export class Post {
                 repost_button.textContent = PostRepostButton.label(this.reposted, this.repostCount);
                 actions.appendWithSpace(repost_button);
             }
+
+            // Mirrors PostActionBar.php - Repost's talkative sibling, a link
+            // to the quote-composing page.
+            const quote_link = document.createElement('a');
+            quote_link.className = 'PostQuoteButton Button';
+            quote_link.href = ClientConfig.siteURL() + '/quote/' + this.postId;
+            quote_link.textContent = 'Quote';
+            actions.appendWithSpace(quote_link);
 
             const bookmark_button = document.createElement('button');
             bookmark_button.type = 'button';

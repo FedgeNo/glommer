@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Opens the quote-composing page for a post - Repost's talkative sibling:
+ * pass it on with words of your own above it. A link dressed as a button,
+ * because composing happens on a page of its own.
+ */
+class PostQuoteButton extends Anchor
+{
+    public ?string $class = 'PostQuoteButton';
+    public array $mixins = ['Button'];
+
+    public function __construct(int $post_id)
+    {
+        parent::__construct(ServerURL::absolute('/quote/' . $post_id), 'Quote');
+    }
+}

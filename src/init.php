@@ -147,34 +147,39 @@ set_exception_handler(function (\Throwable $exception) use ($send_server_error, 
     $send_server_error();
 });
 
-// A warning this code raised about itself is a fault worth hearing about, not
-// a line nobody reads: it means the code was wrong about its own data and only
-// got away with it. Answered like the two handlers above - logged, and the
-// admin told - but the request carries on, because a warning by definition did
-// not stop it.
-$inside_warning_handler = false;
+// Everything else that goes wrong mid-request: a warning this code raised
+// about itself, one PHP raised about something underneath it, a notice, a
+// deprecation. Each means the code was wrong about something and only got away
+// with it, and none of them stopped the request - so this logs, tells the
+// admin, and lets it carry on.
+//
+// Every level, deliberately: a fault nobody hears about is one nobody fixes.
+// The fatals are the exception and not by choice - E_ERROR and its siblings
+// cannot reach a handler installed here at all, which is what the shutdown
+// function below is for.
+$inside_error_handler = false;
 
-set_error_handler(function (int $severity, string $message, string $file, int $line) use ($warn_admin, &$inside_warning_handler): bool {
+set_error_handler(function (int $severity, string $message, string $file, int $line) use ($warn_admin, &$inside_error_handler): bool {
     // Suppressed (@) or below the configured reporting level - left alone,
     // since both of those are somebody saying they don't want to hear it.
     if ((error_reporting() & $severity) === 0) {
         return false;
     }
 
-    // Notifying does a DB write and a WebSocket push, either of which can warn
-    // in turn. Without this, the first warning inside that path would call it
-    // again, and again.
-    if ($inside_warning_handler) {
+    // Notifying does a DB write and a WebSocket push, either of which can go
+    // wrong in turn. Without this, the first fault inside that path would call
+    // it again, and again.
+    if ($inside_error_handler) {
         return false;
     }
 
-    $inside_warning_handler = true;
+    $inside_error_handler = true;
     error_log($message . ' in ' . $file . ':' . $line);
     $warn_admin();
-    $inside_warning_handler = false;
+    $inside_error_handler = false;
 
     return true;
-}, E_USER_WARNING);
+});
 
 register_shutdown_function(function () use ($send_server_error, $warn_admin): void {
     $error = error_get_last();

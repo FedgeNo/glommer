@@ -38,6 +38,10 @@ class Post extends Article
     // fromRowsWithItems - null when the post has no location, nowhere is close
     // enough to name it, or the Places table hasn't been loaded yet.
     public ?string $placeLabel = null;
+    // The post this one quotes, when it is a quote post - see schema.sql's
+    // Posts.quotedPostId. The quoted post itself is attached at hydration.
+    public ?int $quotedPostId = null;
+    public ?QuotedPost $quotedPost = null;
     // From the Polls side table, attached by fromRowsWithItems - null for the
     // overwhelming majority of posts, which are not polls.
     public ?Poll $poll = null;
@@ -263,6 +267,13 @@ class Post extends Article
                 $this -> poll -> viewerId = Auth::id();
                 $content -> contents[] = $this -> poll;
             }
+        }
+
+        // Under everything the author wrote: the commentary is the post, the
+        // quoted material is its context. Absent when the quoted post has
+        // been deleted or its author banned - the words above stand alone.
+        if ($this -> quotedPost !== null) {
+            $content -> contents[] = $this -> quotedPost;
         }
 
         return $content;
@@ -535,10 +546,12 @@ DELETE
         $viewer_id = Auth::id();
         $repost_state = Repost::stateForPosts($post_ids, $viewer_id);
         $pinned = $viewer_id === null ? [] : PinnedPost::pinnedForPosts($post_ids, $viewer_id);
+        $quoted = QuotedPost::forPosts($posts);
 
         foreach ($posts as $post) {
             $post -> items = $items_by_post[(int) $post -> postId] ?? [];
             $post -> author = $authors[(int) $post -> userId] ?? null;
+            $post -> quotedPost = $quoted[(int) $post -> postId] ?? null;
 
             $location = $locations[(int) $post -> postId] ?? null;
             $post -> latitude = $location['latitude'] ?? null;
@@ -624,6 +637,7 @@ DELETE
             'placeLabel' => $this -> placeLabel,
             'poll' => $this -> poll?-> toPayload(),
             'translatable' => (string) $this -> description !== '' && OpenRouter::isEnabled(),
+            'quotedPost' => $this -> quotedPost ?-> toPayloadArray(),
             // Whether this came from another server, which decides the share
             // button the same way it does server-side.
             'remote' => $this -> remoteObjectURI !== null,

@@ -184,6 +184,29 @@ if ($has_poll && !$has_text) {
     JSONResponse::error('A poll needs a question in the post.', 422) -> send();
 }
 
+// A quote post: this one carries a reference to the post it comments on.
+// The reference has to name a real post by an unbanned author, and the
+// commentary itself is required - a quote with no words of its own is what
+// the Repost button is for.
+$quoted_post_id = isset($_POST['quotedPostId']) && $_POST['quotedPostId'] !== '' ? (int) $_POST['quotedPostId'] : null;
+
+if ($quoted_post_id !== null) {
+    if (!$has_text) {
+        JSONResponse::error('A quote post needs words of its own - to pass a post on unchanged, use Repost.', 422) -> send();
+    }
+
+    $quoted_exists = DB::row('
+SELECT `Posts`.`postId`
+    FROM `Posts`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Posts`.`postId` = ? AND `Users`.`banned` = 0
+', \stdClass::class, 'i', $quoted_post_id);
+
+    if ($quoted_exists === null) {
+        JSONResponse::error('The post being quoted no longer exists.', 404) -> send();
+    }
+}
+
 // Checked here as well as in Poll::create, which answers an unusable duration
 // with null. Left to that, a mistyped duration would publish the post with its
 // poll quietly missing rather than telling anyone.

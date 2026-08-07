@@ -87,14 +87,20 @@ CREATE TABLE `Posts` (
   -- `sensitive`.
   `sensitive` tinyint(1) NOT NULL DEFAULT 0,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
+  -- The post this one quotes - repost-with-commentary. SET NULL rather than
+  -- CASCADE: the commentary is its author's own writing and outlives the
+  -- deletion of what it commented on, rendering as an ordinary post.
+  `quotedPostId` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
   KEY `parentId_remoteObjectURI_postId` (`parentId`,`remoteObjectURI`,`postId`),
+  KEY `quotedPostId` (`quotedPostId`),
   UNIQUE KEY `remoteObjectURI` (`remoteObjectURI`),
   FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),
   CONSTRAINT `Posts_ibfk_1` FOREIGN KEY (`parentId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
-  CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+  CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_posts_quoted` FOREIGN KEY (`quotedPostId`) REFERENCES `Posts` (`postId`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `PostLocations` (

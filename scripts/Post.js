@@ -639,10 +639,23 @@ export class Post {
             const translated = document.createElement('div');
             translated.className = 'PostBody MachineTranslation';
 
+            const newline = String.fromCharCode(10);
+
             for (const paragraph_text of String(result.body).split(/\n{2,}/)) {
                 if (paragraph_text.trim() === '') continue;
                 const paragraph = document.createElement('p');
-                paragraph.textContent = paragraph_text.trim();
+
+                // A blank line started a new paragraph above; a single newline
+                // is a break the author made inside one, and setting the whole
+                // paragraph as text would collapse it into a space.
+                paragraph_text.trim().split(newline).forEach((line, index) => {
+                    if (index > 0) {
+                        paragraph.appendChild(document.createElement('br'));
+                    }
+
+                    paragraph.appendChild(document.createTextNode(line));
+                });
+
                 translated.appendWithSpace(paragraph);
             }
 

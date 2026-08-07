@@ -35,6 +35,42 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
         }
     }
 
+    /**
+     * The configured model is usually the free-models router, and some of what
+     * it picks classifies a message rather than translating it. A verdict
+     * stored as a translation is the answer that post gets forever, so it is
+     * recognised for what it is and never becomes one.
+     */
+    public function testAVerdictInsteadOfATranslationCountsAsNoTranslation(): void
+    {
+        $this -> assertSame('', PostTranslation::translationFrom('User Safety: safe'));
+        $this -> assertSame('', PostTranslation::translationFrom('safety: SAFE'));
+    }
+
+    public function testAVerdictAlongsideARealTranslationIsTakenOffIt(): void
+    {
+        $newline = chr(10);
+
+        $this -> assertSame(
+            'hello everyone',
+            PostTranslation::translationFrom('User Safety: safe' . $newline . $newline . 'hello everyone')
+        );
+
+        $this -> assertSame(
+            'hello everyone',
+            PostTranslation::translationFrom('hello everyone' . $newline . 'Classification: benign')
+        );
+    }
+
+    /** Ordinary words are left exactly as they came, line breaks and all. */
+    public function testATranslationIsNotTrimmedOfItsOwnLines(): void
+    {
+        $newline = chr(10);
+        $translation = 'hello everyone' . $newline . 'and good evening' . $newline . $newline . 'a second paragraph';
+
+        $this -> assertSame($translation, PostTranslation::translationFrom($translation));
+    }
+
     public function testACachedTranslationReadsBackByPostAndLanguage(): void
     {
         $post_id = $this -> post();

@@ -2742,6 +2742,15 @@ function fix_upload_ownership(string $service_user, ?array $web): void
     $uploads = $project_root . '/uploads';
     $env_file = $project_root . '/.env';
 
+    // The site-asset corner (custom favicon, front-page image) is created
+    // here rather than left to a runtime mkdir(): created by whatever first
+    // writes an asset, the directory would belong to whoever that happened
+    // to be - a root CLI run would leave one the web server can't write
+    // into. Made before the ownership pass below, which then covers it.
+    if (!is_dir($uploads . '/site')) {
+        @mkdir($uploads . '/site', 0755, true);
+    }
+
     // /var/www gets httpd_sys_content_t for free via SELinux's built-in path
     // equivalence rule - an install anywhere else (a home directory, /srv,
     // /opt) doesn't, and Unix permissions alone won't get Apache/PHP-FPM

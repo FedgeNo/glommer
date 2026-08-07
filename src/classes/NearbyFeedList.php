@@ -5,12 +5,11 @@ declare(strict_types=1);
 /**
  * The /nearby page: posts closest to a point, newest first.
  *
- * Deliberately k-nearest rather than a radius search. A radius needs a constant
- * that is wrong at every scale - 50km shows an empty page on a quiet site and a
- * firehose on a busy one - whereas "the nearest ~2·sqrt(N) of the located
- * posts, whatever the distance" casts a wide net while there's little to find
- * and tightens to genuinely local content as density grows, with nothing to
- * tune (see candidateLimit).
+ * Membership is k-nearest AND within an hour's drive: the nearest ~2·sqrt(N)
+ * of the located posts (see candidateLimit - generous while sparse, tighter
+ * as density grows), cut at MAX_DISTANCE_KM so a sparse corpus never passes
+ * off another province as nearby. An honestly short page beats a full one
+ * of somewhere else.
  *
  * Distance decides membership only; the page is then ordered by postId so it
  * reads like an ordinary timeline. Ranking by distance would put an older post
@@ -23,12 +22,22 @@ class NearbyFeedList extends FeedList
 {
     /**
      * The ceiling on how many of the closest posts are eligible, before the
-     * newest-first cut. The working number is a tenth of all located posts
-     * (see candidateLimit) - "nearby" should mean the nearest tenth of the
-     * world this server knows, at any scale - and this cap keeps a huge
-     * corpus from turning the distance pass into the whole table anyway.
+     * newest-first cut. The working number grows with the corpus (see
+     * candidateLimit); this cap keeps a huge corpus from turning the distance
+     * pass into the whole table anyway.
      */
     public const NEAREST_LIMIT = 2000;
+
+    /**
+     * However few candidates there are, past this it is not "nearby" - if
+     * you'd drive more than an hour, it's somewhere else. Vancouver's page
+     * showing Ontario was k-nearest being honest about a sparse corpus, and
+     * honestly empty beats confidently wrong here.
+     */
+    public const MAX_DISTANCE_KM = 100;
+
+    /** Earth's mean radius, for turning the cap into radians of arc. */
+    private const EARTH_RADIUS_KM = 6371;
 
     /**
      * How many nearest posts are eligible: twice the square root of the
@@ -52,15 +61,6 @@ SELECT COUNT(*) AS `total`
 
         return (int) min(static::NEAREST_LIMIT, max(static::PAGE_SIZE, (int) ceil(2 * sqrt((int) $row -> total))));
     }
-
-    /**
-     * The latitude half-widths, in degrees, of the boxes candidates are looked
-     * for in, nearest box first. Null is the whole earth - the terminal pass
-     * that always answers, and the exact query this replaced. Each step covers
-     * sixteen times the area of the one before, so even the widest miss costs
-     * a handful of empty index ranges before falling through.
-     */
-    private const BOX_HALF_WIDTHS = [0.5, 2.0, 8.0, 32.0, null];
 
     public ?float $latitude = null;
     public ?float $longitude = null;
@@ -92,54 +92,33 @@ SELECT `Posts`.*,
     }
 
     /**
-     * The candidateLimit() closest located posts - the nearest tenth of what
-     * this server holds - found through boxes the (latitude, longitude) index
-     * can answer rather than by ranking the whole table, which is what this
-     * cost before, on every page of the feed, growing with every located post
-     * ever made.
-     *
-     * Each box is tried with the same great-circle ordering the whole-earth
-     * pass uses, so a box that holds enough candidates gives exactly the rows
-     * the full ranking would have. Exactness is checked, not assumed: the box
-     * only proves itself when the farthest candidate kept is nearer than the
-     * box's own inradius - anything outside the box is necessarily farther
-     * than that - and a page that fails the check falls through to a wider
-     * box, ending at the whole earth.
+     * The eligible posts: the candidateLimit() closest, of those within
+     * MAX_DISTANCE_KM. One box query answers it exactly - a box whose
+     * inradius exceeds the range cap contains everything that could
+     * qualify, so there is nothing beyond it to miss. The (latitude,
+     * longitude) index serves the box; the great-circle ordering and the
+     * range cut run over only what it holds.
      *
      * @return int[]
      */
     private function nearestPostIds(): array
     {
-        $limit = $this -> candidateLimit();
+        // 1.05: a shade over the exact degrees-per-km conversion, so the
+        // box's inradius stays safely outside the range cap.
+        $half_width = self::MAX_DISTANCE_KM / 111.0 * 1.05;
+        $cutoff = self::MAX_DISTANCE_KM / self::EARTH_RADIUS_KM;
 
-        foreach (self::BOX_HALF_WIDTHS as $half_width) {
-            $candidates = $this -> candidatesInBox($half_width, $limit);
+        $near = array_filter(
+            $this -> candidatesInBox($half_width, $this -> candidateLimit()),
+            static fn (object $row): bool => (float) $row -> distance <= $cutoff
+        );
 
-            if ($half_width === null) {
-                return array_map(static fn (object $row): int => (int) $row -> postId, $candidates);
-            }
-
-            if (count($candidates) < $limit) {
-                continue;
-            }
-
-            // The distances are radians of arc, so the guard compares against
-            // the box's half-width in the same unit. Latitude degrees are
-            // degrees of arc everywhere on the sphere; the longitude span was
-            // sized to be at least as wide.
-            $farthest_kept = (float) end($candidates) -> distance;
-
-            if ($farthest_kept <= deg2rad($half_width)) {
-                return array_map(static fn (object $row): int => (int) $row -> postId, $candidates);
-            }
-        }
-
-        return [];
+        return array_map(static fn (object $row): int => (int) $row -> postId, $near);
     }
 
     /**
      * The closest $limit posts within a box, nearest first, each with its
-     * angular distance. A null half-width is the whole earth.
+     * angular distance.
      *
      * LEAST(1, ...) clamps the cosine before ACOS: floating point can push an
      * exact-match point a hair above 1, where ACOS returns NULL and the post
@@ -147,51 +126,53 @@ SELECT `Posts`.*,
      *
      * @return object[]
      */
-    private function candidatesInBox(?float $half_width, int $limit): array
+    private function candidatesInBox(float $half_width, int $limit): array
     {
         $distance = 'ACOS(LEAST(1,
                 COS(RADIANS(?)) * COS(RADIANS(`latitude`)) * COS(RADIANS(`longitude`) - RADIANS(?))
                 + SIN(RADIANS(?)) * SIN(RADIANS(`latitude`))
             ))';
 
-        $where = '';
-        $types = 'ddd';
-        $parameters = [$this -> latitude, $this -> longitude, $this -> latitude];
+        // The latitude band is what the index serves; longitude then filters
+        // within it. The longitude span widens by the cosine of the latitude
+        // so the box never narrows below the range it stands for, and near a
+        // pole (or once it spans the globe) the predicate is simply dropped -
+        // every longitude is close there.
+        $where = ' WHERE `latitude` BETWEEN ? AND ?';
+        $types = 'ddddd';
+        $parameters = [
+            $this -> latitude,
+            $this -> longitude,
+            $this -> latitude,
+            max(-90.0, $this -> latitude - $half_width),
+            min(90.0, $this -> latitude + $half_width),
+        ];
 
-        if ($half_width !== null) {
-            // The latitude band is what the index serves; longitude then
-            // filters within it. The longitude span widens by the cosine of
-            // the latitude so the box never narrows below the guard's radius,
-            // and near a pole (or once it spans the globe) the predicate is
-            // simply dropped - every longitude is close there.
-            $where = ' WHERE `latitude` BETWEEN ? AND ?';
-            $types .= 'dd';
-            $parameters[] = max(-90.0, $this -> latitude - $half_width);
-            $parameters[] = min(90.0, $this -> latitude + $half_width);
+        $lng_half_width = $half_width / max(cos(deg2rad($this -> latitude)), 1e-9);
 
-            $lng_half_width = $half_width / max(cos(deg2rad($this -> latitude)), 1e-9);
+        // No longitude predicate once the box's latitude band touches a pole:
+        // up there, somewhere an hour away can sit at any longitude at all,
+        // and the cosine-scaled span stops being a bound on anything.
+        if ($lng_half_width < 180.0 && abs($this -> latitude) + $half_width < 90.0) {
+            $lng_min = $this -> longitude - $lng_half_width;
+            $lng_max = $this -> longitude + $lng_half_width;
 
-            if ($lng_half_width < 180.0) {
-                $lng_min = $this -> longitude - $lng_half_width;
-                $lng_max = $this -> longitude + $lng_half_width;
-
-                if ($lng_min < -180.0) {
-                    // The box crosses the antimeridian: one range on each side.
-                    $where .= ' AND (`longitude` >= ? OR `longitude` <= ?)';
-                    $parameters[] = $lng_min + 360.0;
-                    $parameters[] = $lng_max;
-                } elseif ($lng_max > 180.0) {
-                    $where .= ' AND (`longitude` >= ? OR `longitude` <= ?)';
-                    $parameters[] = $lng_min;
-                    $parameters[] = $lng_max - 360.0;
-                } else {
-                    $where .= ' AND `longitude` BETWEEN ? AND ?';
-                    $parameters[] = $lng_min;
-                    $parameters[] = $lng_max;
-                }
-
-                $types .= 'dd';
+            if ($lng_min < -180.0) {
+                // The box crosses the antimeridian: one range on each side.
+                $where .= ' AND (`longitude` >= ? OR `longitude` <= ?)';
+                $parameters[] = $lng_min + 360.0;
+                $parameters[] = $lng_max;
+            } elseif ($lng_max > 180.0) {
+                $where .= ' AND (`longitude` >= ? OR `longitude` <= ?)';
+                $parameters[] = $lng_min;
+                $parameters[] = $lng_max - 360.0;
+            } else {
+                $where .= ' AND `longitude` BETWEEN ? AND ?';
+                $parameters[] = $lng_min;
+                $parameters[] = $lng_max;
             }
+
+            $types .= 'dd';
         }
 
         return DB::rows('

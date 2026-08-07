@@ -70,6 +70,29 @@ INSERT INTO `StagedPosts` (`userId`, `title`, `description`, `descriptionDelta`,
         return (int) mysqli_insert_id(DB::connection());
     }
 
+    /**
+     * Rewrites a staged post's fields, the schedule included - clearing it
+     * turns a scheduled post back into a draft. Scoped to the owner inside
+     * the UPDATE itself.
+     */
+    public static function update(
+        int $staged_post_id,
+        int $user_id,
+        ?string $title,
+        ?string $description,
+        ?string $description_delta,
+        ?string $link_url,
+        ?float $latitude,
+        ?float $longitude,
+        ?string $publish_at
+    ): void {
+        DB::run('
+UPDATE `StagedPosts`
+    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `latitude` = ?, `longitude` = ?, `publishAt` = ?
+    WHERE `stagedPostId` = ? AND `userId` = ?
+', 'ssssddsii', $title, $description, $description_delta, $link_url, $latitude, $longitude, $publish_at, $staged_post_id, $user_id);
+    }
+
     /** Deletes without publishing. Only ever the owner's to call. */
     public static function discard(int $staged_post_id, int $user_id): void
     {

@@ -53,8 +53,9 @@ INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
 
     /**
      * The definition itself, written the slow way: every located post ranked
-     * by great-circle distance in PHP, the nearest TEST_LIMIT kept, then
-     * newest first - membership by distance, order by time.
+     * by great-circle distance in PHP, the nearest TEST_LIMIT kept, anything
+     * past the range cap dropped, then newest first - membership by
+     * distance, order by time.
      *
      * @return int[]
      */
@@ -75,7 +76,8 @@ SELECT `postId`, `latitude`, `longitude`
         }
 
         asort($distances);
-        $nearest = array_slice(array_keys($distances), 0, self::TEST_LIMIT);
+        $near_enough = array_filter($distances, static fn (float $d): bool => $d <= NearbyFeedList::MAX_DISTANCE_KM / 6371);
+        $nearest = array_slice(array_keys($near_enough), 0, self::TEST_LIMIT);
         rsort($nearest);
 
         return $nearest;
@@ -107,17 +109,14 @@ SELECT `postId`, `latitude`, `longitude`
         $this -> assertSame($this -> referenceResults(0.0, 179.9), $this -> feedResults(0.0, 179.9));
     }
 
-    public function testAnEmptyRegionIsAnsweredFromAcrossTheWorld(): void
+    public function testAnEmptyRegionIsHonestlyEmpty(): void
     {
-        // Nothing anywhere near the query point, so every box comes up short
-        // and the whole-earth pass has to fill the quota - k-nearest promises
-        // the closest posts whatever the distance, never an empty page.
+        // Nothing within the hour's-drive line means an empty page - never
+        // the far side of the world dressed up as local.
         self::locatedPost(10.0, 10.0);
 
-        $reference = $this -> referenceResults(-75.0, -100.0);
-
-        $this -> assertSame($reference, $this -> feedResults(-75.0, -100.0));
-        $this -> assertTrue($reference !== [], 'the reference itself should have found the posts this test created');
+        $this -> assertSame([], $this -> feedResults(-75.0, -100.0));
+        $this -> assertSame([], $this -> referenceResults(-75.0, -100.0), 'the reference must agree that nothing qualifies');
     }
 
     public function testTheHeadingNamesWhereNearbyIs(): void

@@ -218,6 +218,23 @@ export default {
             composer.remove();
         },
 
+        'the schedule toggle wears the removal colour only while removing'() {
+            const composer = mounted();
+            const schedule = composer.form.querySelector('.ComposerScheduleButton');
+
+            TestCase.assertFalse(schedule.classList.contains('Removing'));
+
+            schedule.click();
+            TestCase.assertEquals('Remove Schedule', schedule.textContent);
+            TestCase.assertTrue(schedule.classList.contains('Removing'));
+
+            schedule.click();
+            TestCase.assertEquals('Add Schedule', schedule.textContent);
+            TestCase.assertFalse(schedule.classList.contains('Removing'));
+
+            composer.remove();
+        },
+
         'sensitive is offered only once there are files for it to be about'() {
             const composer = mounted();
             const box = composer.sensitive.querySelector('[name="sensitive"]');

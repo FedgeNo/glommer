@@ -381,6 +381,7 @@ export class Composer {
             this.scheduleDate.style.display = hidden ? '' : 'none';
             this.scheduleTime.style.display = hidden ? '' : 'none';
             this.scheduleButton.textContent = hidden ? 'Remove Schedule' : 'Add Schedule';
+            this.scheduleButton.classList.toggle('Removing', hidden);
 
             if (hidden) {
                 // Yesterday isn't offered - the same rule the server enforces.
@@ -458,6 +459,7 @@ export class Composer {
         this.scheduleDate.style.display = 'none';
         this.scheduleTime.style.display = 'none';
         this.scheduleButton.textContent = 'Add Schedule';
+        this.scheduleButton.classList.remove('Removing');
         this.#syncSubmitState();
         this.#syncFields();
     }

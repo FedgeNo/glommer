@@ -59,29 +59,47 @@ class UploadProcessor
     ];
 
     /**
-     * Uploads are refused while the uploads volume has less than this much
-     * free space left - the database (typically on the same disk) needs
-     * headroom far more than the site needs one more video. 10 GiB.
+     * The most headroom uploads will ever insist on: past this, a bigger disk
+     * is just a bigger disk and there is no more to protect. 10 GiB.
      */
-    private const MIN_FREE_DISK_BYTES = 10 * 1024 * 1024 * 1024;
+    private const MAX_RESERVED_BYTES = 10 * 1024 * 1024 * 1024;
+
+    /**
+     * And the most of a volume it will ever insist on, whatever that comes to.
+     * A flat floor asks the impossible of a small disk - ten gigabytes held
+     * back on a fifteen gigabyte volume refuses every upload from a third full
+     * onward, with the disk in no trouble at all.
+     */
+    private const RESERVED_FRACTION = 0.1;
+
+    /**
+     * The free space uploads must leave behind on a volume of this size - the
+     * database usually shares the disk and needs headroom far more than the
+     * site needs one more video.
+     */
+    public static function reservedFor(float $total_bytes): int
+    {
+        return (int) min(self::MAX_RESERVED_BYTES, $total_bytes * self::RESERVED_FRACTION);
+    }
 
     /**
      * Whether the uploads volume has room for $incoming_bytes of new upload
-     * while keeping MIN_FREE_DISK_BYTES free. The incoming size is doubled to
-     * cover processing copies (the preserved original plus the transcoded
-     * display file can briefly both exist alongside the tmp upload).
+     * while leaving its reserve free. The incoming size is doubled to cover
+     * processing copies (the preserved original plus the transcoded display
+     * file can briefly both exist alongside the tmp upload).
      */
     public static function hasFreeDiskSpace(int $incoming_bytes = 0): bool
     {
         $free = disk_free_space(self::UPLOAD_DIR);
+        $total = disk_total_space(self::UPLOAD_DIR);
 
-        if ($free === false) {
+        if ($free === false || $total === false) {
             // Can't measure - don't turn a stat failure into a site-wide
             // upload outage.
             return true;
         }
 
-        return ($free - $incoming_bytes * 2) >= self::MIN_FREE_DISK_BYTES;
+        return ($free - $incoming_bytes * 2) >= self::reservedFor($total);
     }
 
     /**

@@ -942,16 +942,11 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
     /** @return array{0: ?string, 1: ?string} [description, descriptionDelta] */
     private static function deltaFromContent(string $content): array
     {
-        // Flattened by the shared reducer, then run through the same
-        // Delta::sanitize() a locally-typed post goes through - a Delta insert
-        // renders as a text node, so the decoded text stays inert.
-        $plain = RemoteHTML::toPlainText($content);
-
-        if ($plain === '') {
-            return [null, null];
-        }
-
-        $ops = Delta::sanitize([['insert' => $plain . "\n"]]);
+        // Read as the markup it is, so a post keeps the links, emphasis and
+        // lists it was written with. HTMLToDelta ends on the same
+        // Delta::sanitize() a locally-typed post passes, and a Delta insert
+        // renders as a text node, so the decoded text stays inert either way.
+        $ops = HTMLToDelta::convert($content);
         $plaintext = Delta::plainText($ops);
 
         if ($plaintext === '') {
@@ -959,10 +954,11 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         }
 
         // mb_strcut, not substr: cuts on a byte budget without splitting a
-        // multi-byte character in half.
+        // multi-byte character in half. The formatting goes with the cut - a
+        // body this size is being kept for its words, not its emphasis.
         if (strlen($plaintext) > self::MAX_DESCRIPTION_BYTES) {
             $plaintext = mb_strcut($plaintext, 0, self::MAX_DESCRIPTION_BYTES, 'UTF-8');
-            $ops = Delta::sanitize([['insert' => $plaintext . "\n"]]);
+            $ops = Delta::sanitize([['insert' => $plaintext . chr(10)]]);
         }
 
         $delta_json = json_encode(['ops' => $ops], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

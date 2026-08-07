@@ -3,22 +3,53 @@
 declare(strict_types=1);
 
 /**
- * Best-effort converter from the sanitized HTML that posts were stored as
- * before the Delta migration into Quill Delta ops. Used once to backfill
- * existing posts' descriptionDelta (and by UploadBatch for any batch staged
- * with the old HTML metadata before the deploy). It's the inverse of
- * DeltaRenderer over the exact tag vocabulary the old PostBody whitelist
- * allowed (p, br, h1-3, blockquote, pre, ul/ol/li, and inline strong/em/u/s/
- * code/a/span). Typed math delimiters were plain text then and stay plain text
- * here - only the new editor's formula button produces formula embeds.
+ * HTML read into the delta this site stores.
  *
- * Callers should run the result through Delta::sanitize() (as the migration and
- * batch paths do) to normalise and validate it the same way a fresh post is.
+ * Everything written here is a delta - the composer produces one, both
+ * renderers build from one - so anything arriving as markup has to become one
+ * before it can be a post. Inbound Fediverse content is the first caller: a
+ * post from elsewhere arrives as HTML and was flattened to plain text, which
+ * cost it every link, every emphasis and every list it was written with.
+ *
+ * A delta is flat: inline runs carry their own formatting, and a block's kind
+ * lives on the newline that ends it. Nesting therefore cannot survive - a list
+ * inside a quote is a quoted list here, not a list within a quote - so this
+ * flattens deliberately rather than by accident, an inner block winning the
+ * attribute it shares with an outer one.
+ *
+ * Nothing it produces is taken on trust: the ops go through Delta::sanitize()
+ * on the way out, which is the same gate a locally-typed post passes and the
+ * only thing that decides which attributes may exist at all.
  */
 class HTMLToDelta
 {
+    /** Tags that change how a run reads, and the attribute each one sets. */
+    private const INLINE_TAGS = [
+        'strong' => 'bold',
+        'b' => 'bold',
+        'em' => 'italic',
+        'i' => 'italic',
+        'u' => 'underline',
+        's' => 'strike',
+        'del' => 'strike',
+        'strike' => 'strike',
+        'code' => 'code',
+    ];
+
+    /** Tags that hold a block's worth of content without naming a kind. */
+    private const PLAIN_BLOCK_TAGS = ['p', 'div', 'section', 'article', 'header', 'footer', 'tr', 'dd', 'dt'];
+
+    /** Tags whose content is not writing and must not become any. */
+    private const SKIPPED_TAGS = ['script', 'style', 'head', 'template', 'noscript'];
+
+    /** @var array[] the finished ops */
+    private array $ops = [];
+
+    /** @var array[] the inline runs of the block still being read */
+    private array $pending = [];
+
     /**
-     * @return array[] the Delta ops
+     * @return array[] delta ops, sanitized - empty when the HTML held no words
      */
     public static function convert(string $html): array
     {
@@ -26,186 +57,207 @@ class HTMLToDelta
             return [];
         }
 
-        $doc = new \DOMDocument();
-        $previous = libxml_use_internal_errors(true);
-        // The XML encoding hint makes DOMDocument read the markup as UTF-8; the
-        // wrapper gives every block a single known parent to walk.
-        $doc -> loadHTML('<?xml encoding="utf-8"?><div id="root">' . $html . '</div>', LIBXML_NOWARNING | LIBXML_NOERROR);
-        libxml_clear_errors();
-        libxml_use_internal_errors($previous);
+        // A real HTML5 parser rather than a pattern: what arrives is somebody
+        // else's markup, and the shapes it can take are the browser's problem
+        // to define, not this file's.
+        $document = \Dom\HTMLDocument::createFromString(
+            '<!DOCTYPE html><body>' . $html,
+            LIBXML_NOERROR
+        );
 
-        $root = $doc -> getElementById('root');
+        $converter = new self();
+        $converter -> walk($document -> body, [], []);
+        $converter -> endBlock([]);
 
-        if ($root === null) {
-            return [];
-        }
-
-        $ops = [];
-        self::walkBlocks($root, $ops);
-
-        return $ops;
+        return Delta::sanitize($converter -> ops);
     }
 
-    private static function walkBlocks(\DOMNode $container, array &$ops): void
+    private function walk(\Dom\Node $node, array $inline, array $block): void
     {
-        foreach ($container -> childNodes as $node) {
-            if ($node instanceof \DOMText) {
-                if (trim($node -> textContent) !== '') {
-                    self::pushText($ops, $node -> textContent, []);
-                    $ops[] = ['insert' => "\n"];
-                }
+        foreach (iterator_to_array($node -> childNodes) as $child) {
+            if ($child instanceof \Dom\Text) {
+                $this -> addText($child -> data, $inline, $block);
 
                 continue;
             }
 
-            if (!($node instanceof \DOMElement)) {
+            if (!($child instanceof \Dom\Element)) {
                 continue;
             }
 
-            switch (strtolower($node -> tagName)) {
-                case 'p':
-                    self::emitBlock($node, $ops, []);
-                    break;
-                case 'h1':
-                case 'h2':
-                case 'h3':
-                    self::emitBlock($node, $ops, ['header' => (int) substr($node -> tagName, 1)]);
-                    break;
-                case 'blockquote':
-                    self::emitBlock($node, $ops, ['blockquote' => true]);
-                    break;
-                case 'pre':
-                    self::emitBlock($node, $ops, ['code-block' => true]);
-                    break;
-                case 'ul':
-                    self::emitList($node, $ops, 'bullet');
-                    break;
-                case 'ol':
-                    self::emitList($node, $ops, 'ordered');
-                    break;
-                default:
-                    // An unrecognised wrapper contributes only its contents.
-                    self::walkBlocks($node, $ops);
-            }
-        }
-    }
+            $tag = strtolower($child -> localName);
 
-    /**
-     * @param array<string, mixed> $block_attrs
-     */
-    private static function emitBlock(\DOMElement $element, array &$ops, array $block_attrs): void
-    {
-        self::walkInline($element, $ops, [], $block_attrs);
-        $ops[] = self::lineOp($block_attrs);
-    }
-
-    private static function emitList(\DOMElement $list, array &$ops, string $kind): void
-    {
-        foreach ($list -> childNodes as $item) {
-            if ($item instanceof \DOMElement && strtolower($item -> tagName) === 'li') {
-                self::walkInline($item, $ops, [], ['list' => $kind]);
-                $ops[] = self::lineOp(['list' => $kind]);
-            }
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $inline_attrs  formats inherited from ancestors
-     * @param array<string, mixed> $block_attrs   this line's block type, for <br> breaks
-     */
-    private static function walkInline(\DOMNode $node, array &$ops, array $inline_attrs, array $block_attrs): void
-    {
-        foreach ($node -> childNodes as $child) {
-            if ($child instanceof \DOMText) {
-                self::pushText($ops, $child -> textContent, $inline_attrs);
-
+            if (in_array($tag, self::SKIPPED_TAGS, true) || self::isHidden($child)) {
                 continue;
             }
-
-            if (!($child instanceof \DOMElement)) {
-                continue;
-            }
-
-            $tag = strtolower($child -> tagName);
 
             if ($tag === 'br') {
-                $ops[] = self::lineOp($block_attrs);
+                $this -> endBlock($block);
 
                 continue;
             }
 
-            $attrs = $inline_attrs;
+            if (isset(self::INLINE_TAGS[$tag])) {
+                $this -> walk($child, array_merge($inline, [self::INLINE_TAGS[$tag] => true]), $block);
 
-            switch ($tag) {
-                case 'strong':
-                case 'b':
-                    $attrs['bold'] = true;
-                    break;
-                case 'em':
-                case 'i':
-                    $attrs['italic'] = true;
-                    break;
-                case 'u':
-                    $attrs['underline'] = true;
-                    break;
-                case 's':
-                case 'strike':
-                case 'del':
-                    $attrs['strike'] = true;
-                    break;
-                case 'code':
-                    $attrs['code'] = true;
-                    break;
-                case 'a':
-                    $href = $child -> getAttribute('href');
-
-                    if ($href !== '') {
-                        $attrs['link'] = $href;
-                    }
-
-                    break;
-                // span (and anything else inline) just passes its formats through.
+                continue;
             }
 
-            self::walkInline($child, $ops, $attrs, $block_attrs);
+            if ($tag === 'a') {
+                $href = trim((string) $child -> getAttribute('href'));
+
+                $this -> walk($child, $href === '' ? $inline : array_merge($inline, ['link' => $href]), $block);
+
+                continue;
+            }
+
+            $block_attributes = self::blockAttributes($tag, $child, $block);
+
+            // Something with no block of its own - a span, a font - whose
+            // contents belong to whatever block already encloses them.
+            if ($block_attributes === null) {
+                $this -> walk($child, $inline, $block);
+
+                continue;
+            }
+
+            $this -> walk($child, $inline, $block_attributes);
+            $this -> endBlock($block_attributes);
         }
     }
 
     /**
-     * @param array<string, mixed> $attrs
+     * The block a tag opens, merged over the one enclosing it - or null when
+     * the tag opens no block at all.
      */
-    private static function pushText(array &$ops, string $text, array $attrs): void
+    private static function blockAttributes(string $tag, \Dom\Element $element, array $enclosing): ?array
     {
-        // A stored text node's own newlines were rendered whitespace, never
-        // line breaks (those were <br>/<p>); a raw "\n" in a Delta insert would
-        // wrongly become a block break, so flatten them to spaces.
-        $text = str_replace(["\r\n", "\r", "\n"], ' ', $text);
+        return match (true) {
+            $tag === 'h1' => array_merge($enclosing, ['header' => 1]),
+            $tag === 'h2' => array_merge($enclosing, ['header' => 2]),
+            // Three is the smallest heading this site renders, so everything
+            // below it arrives as one rather than as nothing.
+            in_array($tag, ['h3', 'h4', 'h5', 'h6'], true) => array_merge($enclosing, ['header' => 3]),
+            $tag === 'blockquote' => array_merge($enclosing, ['blockquote' => true]),
+            $tag === 'pre' => array_merge($enclosing, ['code-block' => true]),
+            $tag === 'li' => array_merge($enclosing, ['list' => self::listKind($element)]),
+            in_array($tag, self::PLAIN_BLOCK_TAGS, true) => $enclosing,
+            default => null,
+        };
+    }
 
+    /** Numbered only inside an <ol>; everything else is a bullet. */
+    private static function listKind(\Dom\Element $item): string
+    {
+        for ($parent = $item -> parentNode; $parent instanceof \Dom\Element; $parent = $parent -> parentNode) {
+            $tag = strtolower($parent -> localName);
+
+            if ($tag === 'ol') {
+                return 'ordered';
+            }
+
+            if ($tag === 'ul') {
+                return 'bullet';
+            }
+        }
+
+        return 'bullet';
+    }
+
+    /**
+     * Whether an element is one the sender means nobody to read. Mastodon
+     * shortens a long link by wrapping its scheme and tail in these, so taking
+     * their text would put back the very thing the sender took out - a link
+     * whose text is longer than the line it sits in.
+     */
+    private static function isHidden(\Dom\Element $element): bool
+    {
+        foreach (explode(' ', (string) $element -> getAttribute('class')) as $name) {
+            if ($name === 'invisible') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function addText(string $text, array $inline, array $block): void
+    {
+        // Inside a <pre> the spacing is the content, and a newline there ends
+        // a line of code rather than joining one.
+        if (isset($block['code-block'])) {
+            $lines = explode(chr(10), str_replace(chr(13), '', $text));
+
+            foreach ($lines as $index => $line) {
+                if ($index > 0) {
+                    $this -> endBlock($block);
+                }
+
+                $this -> push($line, $inline);
+            }
+
+            return;
+        }
+
+        $this -> push(self::collapseWhitespace($text), $inline);
+    }
+
+    private function push(string $text, array $inline): void
+    {
         if ($text === '') {
             return;
         }
 
-        $op = ['insert' => $text];
-
-        if ($attrs !== []) {
-            $op['attributes'] = $attrs;
-        }
-
-        $ops[] = $op;
+        $this -> pending[] = $inline === []
+            ? ['insert' => $text]
+            : ['insert' => $text, 'attributes' => $inline];
     }
 
     /**
-     * @param array<string, mixed> $attrs
-     * @return array{insert: string, attributes?: array}
+     * Ends the block being read, if anything is in it. An empty one is the
+     * markup's own layout - a wrapper around a wrapper - rather than a blank
+     * line somebody wrote.
      */
-    private static function lineOp(array $attrs): array
+    private function endBlock(array $block): void
     {
-        $op = ['insert' => "\n"];
-
-        if ($attrs !== []) {
-            $op['attributes'] = $attrs;
+        if ($this -> pending === []) {
+            return;
         }
 
-        return $op;
+        foreach ($this -> pending as $op) {
+            $this -> ops[] = $op;
+        }
+
+        $this -> pending = [];
+        $this -> ops[] = $block === [] ? ['insert' => chr(10)] : ['insert' => chr(10), 'attributes' => $block];
+    }
+
+    /**
+     * The whitespace rule the markup was written under: a run of it is one
+     * space, and where it falls between two elements it still separates them.
+     */
+    private static function collapseWhitespace(string $text): string
+    {
+        $collapsed = '';
+        $pending_space = false;
+
+        for ($index = 0; $index < strlen($text); $index++) {
+            $character = $text[$index];
+
+            if ($character === ' ' || $character === chr(9) || $character === chr(10) || $character === chr(13)) {
+                $pending_space = true;
+
+                continue;
+            }
+
+            if ($pending_space) {
+                $collapsed .= ' ';
+                $pending_space = false;
+            }
+
+            $collapsed .= $character;
+        }
+
+        return $pending_space ? $collapsed . ' ' : $collapsed;
     }
 }

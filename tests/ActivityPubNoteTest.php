@@ -35,6 +35,34 @@ SELECT *
 ', 'Post', 'i', $post_id);
     }
 
+    /**
+     * A post is announced the moment it is written, from the Post the endpoint
+     * filled in by hand - not one selected back out of the row it just wrote.
+     * So every column the document asks about has to be answerable on an
+     * object no query ever hydrated, which is a different thing from every
+     * other test here and the one shape that goes wrong unnoticed.
+     */
+    public function testAPostAssembledForPublishingIsPublishedAsItsAuthorsOwn(): void
+    {
+        $user = self::user();
+        $written = self::post((int) $user -> userId, [['insert' => "fresh off the composer\n"]]);
+
+        // The shape api/create-post.php hands to the publisher.
+        $post = new Post();
+        $post -> postId = $written -> postId;
+        $post -> userId = (int) $user -> userId;
+        $post -> description = 'plain text';
+        $post -> descriptionDelta = json_encode([['insert' => "fresh off the composer\n"]]);
+        $post -> createdAt = date('Y-m-d H:i:s');
+        $post -> author = $user;
+
+        $activity = ActivityPubNote::createActivity($post, $user);
+
+        $this -> assertNotNull($activity);
+        $this -> assertSame('Create', $activity['type']);
+        $this -> assertSame('<p>fresh off the composer</p>', $activity['object']['content']);
+    }
+
     public function testTheBodyIsTheRenderedPostWithoutThePageWrapper(): void
     {
         $user = self::user();

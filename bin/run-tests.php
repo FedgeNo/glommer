@@ -21,6 +21,19 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
+// A PHP warning is a bug this suite should catch rather than a line scrolling
+// past in a production log - an undefined property means the code is wrong
+// about its own data, and nothing about a green run should hide that. Thrown,
+// so it fails the case that provoked it and names it. Suppressed diagnostics
+// (@) are left alone, since those are deliberate.
+set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
+    if ((error_reporting() & $severity) === 0) {
+        return false;
+    }
+
+    throw new \ErrorException($message, 0, $severity, $file, $line);
+});
+
 require __DIR__ . '/../src/functions.php';
 require __DIR__ . '/../tests/TestCase.php';
 require __DIR__ . '/../tests/DatabaseTestCase.php';

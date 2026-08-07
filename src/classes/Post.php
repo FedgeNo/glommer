@@ -29,6 +29,13 @@ class Post extends Article
     // to the timestamp; there's no edit history, just this one flag.
     public ?string $editedAt = null;
 
+    // The id this post has on the server that wrote it - null for writing
+    // composed here, which is what makes it publishable to the Fediverse and
+    // editable by its author. Declared like every other column so a post built
+    // by hand rather than hydrated from a row (api/create-post.php) still
+    // answers the question, instead of reading as an undefined property.
+    public ?string $remoteObjectURI = null;
+
     // From the PostLocations side table, attached by fromRowsWithItems - null
     // for a post filed without a place. Shown as a link into the nearby feed
     // under the timestamp.

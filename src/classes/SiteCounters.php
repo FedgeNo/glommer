@@ -29,8 +29,6 @@ class SiteCounters extends Div
         $counts = self::counts();
         $waiting_to_read = RelayFetch::pendingCount();
 
-        $this -> addContent(new Heading3('Numbers'));
-
         $this -> addLine('Members: ' . $counts -> members
             . ' (' . $counts -> joinedThisWeek . ' joined in the last ' . self::RECENT_DAYS . ' days)');
 

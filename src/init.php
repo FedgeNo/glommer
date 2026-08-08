@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+// Before anything else this file does, so what the admin is shown at the foot
+// of the page covers the whole of building it and not just the tail.
+define('GLOMMER_REQUEST_STARTED_AT', microtime(true));
+
 ob_start();
 
 // The version of this codebase. The database records the version it was last

@@ -213,6 +213,13 @@ class Page extends HTMLDocument
         $main_module = new ModuleScript;
         $main_module -> src = ServerURL::absolute('/scripts/main.js');
         $this -> addContent($main_module);
+
+        // Last of all, and only for the admin: what this page cost to build.
+        // After the script tag rather than before it, so the figure covers as
+        // much of the work as a thing inside the page can.
+        if (PageGenerationTime::isForViewer()) {
+            $this -> addContent(new PageGenerationTime());
+        }
     }
 
     public function send(): void

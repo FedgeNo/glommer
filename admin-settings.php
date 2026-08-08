@@ -17,6 +17,10 @@ $page = new Page(['title' => 'Admin Settings']);
 
 $page -> addContent(new SettingsSection('Services', new ServicesStatus()));
 
+// How the site is doing, which is a different question from whether the
+// daemons are up - so it opens and closes on its own.
+$page -> addContent(new SettingsSection('Statistics', new SiteCounters()));
+
 // What the moderators have done. Here rather than on Mod Settings on purpose:
 // it is the record of their work, and the person it answers to is the one who
 // appointed them.

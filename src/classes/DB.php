@@ -105,8 +105,25 @@ SET `time_zone` = ?
         mysqli_stmt_bind_param($stmt, $types, ...$params);
     }
 
+    /**
+     * How many statements this request has run.
+     *
+     * Counted so a page can say so - a number nobody watches is how a listing
+     * quietly grows a query per row. Kept on execute() rather than on run(),
+     * so a statement prepared once and executed in a loop counts every time
+     * it actually goes to the server.
+     */
+    private static int $queries = 0;
+
+    public static function queryCount(): int
+    {
+        return self::$queries;
+    }
+
     public static function execute(\mysqli_stmt $stmt): void
     {
+        self::$queries++;
+
         mysqli_stmt_execute($stmt);
     }
 

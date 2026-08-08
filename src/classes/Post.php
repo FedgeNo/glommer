@@ -371,6 +371,46 @@ class Post extends Article
         return rtrim(mb_substr($text, 0, self::DESCRIPTION_SUMMARY_MAX_LENGTH)) . '…';
     }
 
+    /** How much of a post stands in for a title it does not have. */
+    private const PAGE_TITLE_MAX_LENGTH = 50;
+
+    /**
+     * What to head this post's page with.
+     *
+     * Its own title when it has one. Otherwise its opening line, which is
+     * usually a sentence somebody meant as an opening - far better as a title
+     * than the body cut mid-word at fifty characters, which is what a post
+     * written as one long paragraph still gets, there being nothing else to
+     * take. Only when that line is short enough to be a title on its own: a
+     * first line longer than the cut would be truncated anyway, so the whole
+     * body may as well be.
+     *
+     * The lines are only in the delta - description is the flattened form and
+     * has none left - so that is what this reads.
+     */
+    public function pageTitle(): string
+    {
+        if ((string) $this -> title !== '') {
+            return (string) $this -> title;
+        }
+
+        $paragraphs = Delta::paragraphs(Delta::decode($this -> descriptionDelta));
+
+        if (count($paragraphs) > 1 && mb_strlen($paragraphs[0]) < self::PAGE_TITLE_MAX_LENGTH) {
+            return $paragraphs[0];
+        }
+
+        $flattened = $this -> plainTextDescription();
+
+        if ($flattened !== '') {
+            return truncate($flattened, self::PAGE_TITLE_MAX_LENGTH);
+        }
+
+        $name = $this -> author !== null ? ($this -> author -> title ?: $this -> author -> slug) : null;
+
+        return $name !== null ? $name . '\'s Post' : 'Post';
+    }
+
     /**
      * Alt text for this post's attached image(s). All images in a multi-image
      * carousel share the same alt text, since there's no per-image caption to

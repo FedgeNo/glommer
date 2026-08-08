@@ -231,6 +231,20 @@ class Delta
      */
     public static function plainTextInParagraphs(array $ops): string
     {
+        return implode(chr(10) . chr(10), self::paragraphs($ops));
+    }
+
+    /**
+     * The same paragraphs as a list, for anything that wants one of them
+     * rather than the whole body - a post with no title of its own is headed
+     * by its opening line, which is only findable while the blocks are still
+     * apart.
+     *
+     * @param array[] $ops
+     * @return string[]
+     */
+    public static function paragraphs(array $ops): array
+    {
         $text = '';
 
         foreach ($ops as $op) {
@@ -258,7 +272,7 @@ class Delta
             }
         }
 
-        return implode(chr(10) . chr(10), $paragraphs);
+        return $paragraphs;
     }
 
     /**

@@ -271,7 +271,7 @@ export class Composer {
         const markdownBtn = document.createElement('button');
         markdownBtn.type = 'button';
         markdownBtn.className = 'Button MarkdownModeButton';
-        markdownBtn.textContent = 'Markdown';
+        markdownBtn.textContent = 'Use Markdown';
         actions.appendWithSpace(markdownBtn);
 
         const removeFilesBtn = document.createElement('button');
@@ -1026,7 +1026,7 @@ export class Composer {
         this.markdownMode = !this.markdownMode;
         this.markdownInput.style.display = this.markdownMode ? '' : 'none';
         this.editorContainer.style.display = this.markdownMode ? 'none' : '';
-        this.markdownButton.textContent = this.markdownMode ? 'Rich Text' : 'Markdown';
+        this.markdownButton.textContent = this.markdownMode ? 'Use Rich Text' : 'Use Markdown';
         this.markdownButton.classList.toggle('Removing', this.markdownMode);
 
         // Quill's toolbar is its own element beside the editor, and it means

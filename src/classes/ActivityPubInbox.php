@@ -813,6 +813,12 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
 
         $post_id = (int) mysqli_insert_id(DB::connection());
 
+        // Its tags belong to this site's tag pages now. The body links them
+        // here rather than back to whoever wrote it (see HTMLToDelta), and a
+        // link to a page that does not list the post it came from is worse
+        // than no link - so the post is indexed under them like any other.
+        Hashtag::indexPost($post_id, Delta::decode($description_delta));
+
         self::storeAttachments($object['attachment'] ?? null, $post_id);
 
         // A Question carries its choices with it. Stored now rather than

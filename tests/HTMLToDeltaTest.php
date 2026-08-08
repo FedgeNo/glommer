@@ -99,6 +99,41 @@ class HTMLToDeltaTest extends TestCase
     }
 
     /**
+     * A hashtag arrives linked to the tag page of the server that wrote the
+     * post. #cats is a subject, and the subject on this site is this site's
+     * own page for it - so the link is dropped and the words come out plain,
+     * for the renderer's tokenizer to link here as it does for a tag typed
+     * here.
+     */
+    public function testAHashtagLosesTheOriginServersLink(): void
+    {
+        $ops = HTMLToDelta::convert(
+            '<p>Look at <a href="https://mastodon.social/tags/cats" class="mention hashtag" rel="tag">#<span>cats</span></a> today</p>'
+        );
+
+        $this -> assertSame('Look at #cats today' . self::NEWLINE, $this -> text($ops));
+
+        foreach ($ops as $op) {
+            $this -> assertFalse(isset($op['attributes']['link']), 'a hashtag should carry no link of its own');
+        }
+    }
+
+    /**
+     * A mention keeps its own. It travels as "@user" without the domain, so
+     * relinking one here would point at whoever happens to share the name, or
+     * at nobody at all.
+     */
+    public function testAMentionKeepsTheLinkToWhoeverItNames(): void
+    {
+        $ops = HTMLToDelta::convert('<p>hi <a href="https://mastodon.social/@bob" class="u-url mention">@<span>bob</span></a></p>');
+
+        $this -> assertSame(
+            ['link' => 'https://mastodon.social/@bob'],
+            $this -> attributesOf($ops, '@bob')
+        );
+    }
+
+    /**
      * The sanitizer every conversion ends on is what decides this, and it is
      * the reason nothing here needs its own idea of a safe scheme.
      */

@@ -31,6 +31,11 @@ CREATE TABLE `Users` (
   -- without having to open it each time. Off unless they say otherwise: the
   -- cover exists so nobody meets that media without choosing to.
   `showSensitiveMedia` tinyint(1) NOT NULL DEFAULT 0,
+  -- Whether this member has said they are done with the welcome on the home
+  -- feed. Only ticking its checkbox sets this: dismissing without ticking
+  -- puts it away for the moment and it comes back, which is what somebody
+  -- who has not finished reading it would want.
+  `welcomeDismissed` tinyint(1) NOT NULL DEFAULT 0,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
   -- The newest message this member had received when they last opened their
   -- conversations, which is what the unread dot compares against. Same shape

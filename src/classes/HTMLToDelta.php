@@ -122,7 +122,21 @@ class HTMLToDelta
             if ($tag === 'a') {
                 $href = trim((string) $child -> getAttribute('href'));
 
-                $this -> walk($child, $href === '' ? $inline : array_merge($inline, ['link' => $href]), $block);
+                // A hashtag arrives linked to the tag page of the server that
+                // wrote the post, which is not where a reader here means to
+                // go: #cats is a subject, and the subject on this site is this
+                // site's tag page. Carrying no link, the words come out as
+                // plain text and the renderer's own tokenizer makes the link -
+                // the same one it makes for a tag typed here.
+                //
+                // Only tags. A mention travels as "@user" without its domain,
+                // so relinking one locally would point at whoever here happens
+                // to share the name, or at nobody.
+                $hashtag = str_starts_with(trim((string) $child -> textContent), '#');
+
+                $carried = ($href === '' || $hashtag) ? $inline : array_merge($inline, ['link' => $href]);
+
+                $this -> walk($child, $carried, $block);
 
                 continue;
             }

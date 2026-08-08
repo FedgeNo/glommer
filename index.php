@@ -15,6 +15,12 @@ $page -> image = FrontPageImage::URL();
 
 $page -> rssLink = new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed');
 
+// Above the composer, because it explains the composer. Gone for good once
+// its checkbox says so.
+if (WelcomeBanner::isDue($current_user)) {
+    $page -> addContent(new WelcomeBanner());
+}
+
 $page -> addContent(new PostComposer());
 
 // Everything on Glommer is public - the feed is global, not gated by friendship.

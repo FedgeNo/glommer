@@ -548,6 +548,40 @@ SELECT `description`
         $this -> assertSame('fr', self::languageOfRemoteObject($object_uri));
     }
 
+    /**
+     * The body links its tags to this site's pages, so the post has to be on
+     * them - a link to a page that does not list what it came from is worse
+     * than no link.
+     */
+    public function testAPostsTagsAreIndexedHereLikeAnyOthers(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+        $tag = 'ingesttag' . bin2hex(random_bytes(4));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => [
+                'type' => 'Note',
+                'id' => $object_uri,
+                'content' => '<p>all about <a href="https://remote.test/tags/' . $tag . '" rel="tag">#' . $tag . '</a></p>',
+            ],
+        ], $actor_uri);
+
+        $post_id = self::postIdForRemoteObject($object_uri);
+        $this -> assertNotNull($post_id);
+
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT COUNT(*) AS `count`
+    FROM `PostHashtags`
+    JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
+    WHERE `PostHashtags`.`postId` = ? AND `Hashtags`.`slug` = ?
+', 'is', $post_id, $tag));
+
+        $this -> assertSame(1, (int) mysqli_fetch_assoc($result)['count']);
+    }
+
     /** Most of the network says nothing, and a guess would be worse. */
     public function testAPostThatSaysNothingIsRecordedAsSayingNothing(): void
     {
@@ -591,9 +625,9 @@ SELECT `language`
         $post_id = self::postIdForRemoteObject($object_uri);
         $this -> assertNotNull($post_id);
 
-        // Indexed against a hashtag by hand: ingestion doesn't index remote
-        // posts, so without this the tag feed would exclude it for the wrong
-        // reason and the filter itself would go untested.
+        // Indexed against a tag of its own rather than one the body happens to
+        // carry, so this test turns on the boundary it is about and not on
+        // what ingestion made of the words.
         $tag = 'boundarytag' . bin2hex(random_bytes(4));
         DB::run('
 INSERT INTO `Hashtags` (`slug`, `title`)

@@ -18,7 +18,7 @@
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
     .Form, .SearchBox, .HelpSearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
-    .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList,
+    .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
     .VideoCallTestPanel
@@ -54,7 +54,7 @@
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
     .Form, .SearchBox, .HelpSearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
-    .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList,
+    .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
     .VideoCallTestPanel
@@ -574,6 +574,17 @@ label.visually-hidden { margin-bottom: 0; }
 /* The other way of writing the same post, standing where the editor stands so
    switching moves nothing around it. Monospaced, because what is typed here
    is markers as much as it is words. */
+.WelcomeBannerActions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* The checkbox already reads as a control of its own, so it does not also
+   need the button chrome the shared label rule gives one. */
+.WelcomeBannerActions .CheckboxField { margin-left: auto; }
+
 .MarkdownInput {
     /* A textarea is inline by default, so it sits on the text baseline and
        the line box round it reserves room underneath for descenders - a

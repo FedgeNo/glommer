@@ -1,4 +1,5 @@
 import { TestCase, write_client_config } from './TestCase.js';
+import { ToggleButton } from '../../scripts/ToggleButton.js';
 import { Composer } from '../../scripts/Composer.js';
 
 /**
@@ -191,7 +192,7 @@ export default {
             schedule.click();
 
             // Armed the moment the clock comes out: right label, no click yet.
-            TestCase.assertEquals('Schedule Post', submit.textContent);
+            TestCase.assertEquals('Schedule Post', ToggleButton.selected(submit));
             TestCase.assertTrue(submit.disabled);
 
             // A future day alone is not enough - there is nothing to schedule.
@@ -212,7 +213,7 @@ export default {
 
             // Putting the schedule away hands back an ordinary Post button.
             schedule.click();
-            TestCase.assertEquals('Post', submit.textContent);
+            TestCase.assertEquals('Post', ToggleButton.selected(submit));
             TestCase.assertFalse(submit.disabled);
 
             composer.remove();
@@ -263,11 +264,11 @@ export default {
             TestCase.assertFalse(schedule.classList.contains('Removing'));
 
             schedule.click();
-            TestCase.assertEquals('Remove Schedule', schedule.textContent);
+            TestCase.assertEquals('Remove Schedule', ToggleButton.selected(schedule));
             TestCase.assertTrue(schedule.classList.contains('Removing'));
 
             schedule.click();
-            TestCase.assertEquals('Add Schedule', schedule.textContent);
+            TestCase.assertEquals('Add Schedule', ToggleButton.selected(schedule));
             TestCase.assertFalse(schedule.classList.contains('Removing'));
 
             composer.remove();

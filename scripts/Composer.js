@@ -8,6 +8,7 @@ import { QuillEditor } from '/scripts/QuillEditor.js';
 import { Api } from '/scripts/Api.js';
 import { EmojiPicker } from '/scripts/EmojiPicker.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { ToggleButton } from '/scripts/ToggleButton.js';
 
 export class Composer {
     static PLACEHOLDER = "What's on your mind?";
@@ -266,20 +267,26 @@ export class Composer {
         form.appendWithSpace(fieldset);
 
         const actions = document.createElement('div');
-        actions.className = 'd-flex align-items-center gap-2 ms-auto ComposerActions';
+        actions.className = 'd-flex align-items-center ComposerActions';
 
-        const markdownBtn = document.createElement('button');
-        markdownBtn.type = 'button';
-        markdownBtn.className = 'Button MarkdownModeButton';
-        markdownBtn.textContent = 'Use Markdown';
-        actions.appendWithSpace(markdownBtn);
+        // What goes into the post, and separately what to do with it. Kept
+        // apart so neither group's changes move the other.
+        const contentActions = document.createElement('div');
+        contentActions.className = 'ComposerContentActions';
+        actions.appendWithSpace(contentActions);
+
+        const commitActions = document.createElement('div');
+        commitActions.className = 'ComposerCommitActions';
+
+        const markdownBtn = ToggleButton.build(['Use Markdown', 'Use Rich Text'], 'MarkdownModeButton');
+        contentActions.appendWithSpace(markdownBtn);
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';
         removeFilesBtn.className = 'Button ComposerFilesRemoveButton Removing';
         removeFilesBtn.style.display = 'none';
         removeFilesBtn.textContent = 'Remove Files';
-        actions.appendWithSpace(removeFilesBtn);
+        contentActions.appendWithSpace(removeFilesBtn);
 
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -287,7 +294,7 @@ export class Composer {
         fileInput.multiple = true;
         fileInput.accept = 'image/*,video/*,audio/*';
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
-        actions.appendWithSpace(fileInput);
+        contentActions.appendWithSpace(fileInput);
 
         // Classifies this post's media as something to opt into seeing. A real
         // checkbox, so it rides along in the form's own FormData and there is
@@ -307,7 +314,7 @@ export class Composer {
         sensitiveToggle.appendWithSpace(sensitiveInput);
         sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
 
-        actions.appendWithSpace(sensitiveToggle);
+        contentActions.appendWithSpace(sensitiveToggle);
 
         // Optional geolocation: the button toggles between attaching the browser's
         // current position and removing it; the hidden inputs ride along in the
@@ -322,26 +329,17 @@ export class Composer {
         longitudeInput.name = 'longitude';
         form.appendWithSpace(longitudeInput);
 
-        const locationButton = document.createElement('button');
-        locationButton.type = 'button';
-        locationButton.className = 'Button LocationButton';
-        locationButton.textContent = 'Add Location';
-        actions.appendWithSpace(locationButton);
+        const locationButton = ToggleButton.build(['Add Location', 'Remove Location', 'Locating…'], 'LocationButton');
+        contentActions.appendWithSpace(locationButton);
 
-        const pollButton = document.createElement('button');
-        pollButton.type = 'button';
-        pollButton.className = 'Button ComposerPollButton';
-        pollButton.textContent = 'Add Poll';
-        actions.appendWithSpace(pollButton);
+        const pollButton = ToggleButton.build(['Add Poll', 'Remove Poll'], 'ComposerPollButton');
+        contentActions.appendWithSpace(pollButton);
 
         // Drafts and scheduling - text/link posts only; #syncFields puts both
         // away when files or a poll are in play, since those publish through
         // paths a StagedPosts row can't carry.
-        const scheduleButton = document.createElement('button');
-        scheduleButton.type = 'button';
-        scheduleButton.className = 'Button ComposerScheduleButton';
-        scheduleButton.textContent = 'Add Schedule';
-        actions.appendWithSpace(scheduleButton);
+        const scheduleButton = ToggleButton.build(['Add Schedule', 'Remove Schedule'], 'ComposerScheduleButton');
+        contentActions.appendWithSpace(scheduleButton);
 
         // The clock lives in its own row above the buttons, the way the poll
         // fields do. A date input and a separate, optional time -
@@ -379,13 +377,13 @@ export class Composer {
         draftButton.type = 'button';
         draftButton.className = 'Button ComposerDraftButton';
         draftButton.textContent = 'Save Draft';
-        actions.appendWithSpace(draftButton);
+        commitActions.appendWithSpace(draftButton);
 
-        const submitBtn = document.createElement('button');
+        const submitBtn = ToggleButton.build(['Post', 'Schedule Post'], 'ComposerSubmitButton');
         submitBtn.type = 'submit';
-        submitBtn.className = 'Button';
-        submitBtn.textContent = 'Post';
-        actions.appendWithSpace(submitBtn);
+        commitActions.appendWithSpace(submitBtn);
+
+        actions.appendWithSpace(commitActions);
 
         form.appendWithSpace(actions);
 
@@ -421,7 +419,7 @@ export class Composer {
         this.scheduleButton.addEventListener('click', () => {
             const hidden = this.scheduleRow.style.display === 'none';
             this.scheduleRow.style.display = hidden ? '' : 'none';
-            this.scheduleButton.textContent = hidden ? 'Remove Schedule' : 'Add Schedule';
+            ToggleButton.select(this.scheduleButton, hidden ? 'Remove Schedule' : 'Add Schedule');
             this.scheduleButton.classList.toggle('Removing', hidden);
 
             if (hidden) {
@@ -489,10 +487,10 @@ export class Composer {
         const has_anything = this.#formHasContent() || this.#attachments.length > 0;
 
         if (this.#isScheduling()) {
-            this.submitButton.textContent = 'Schedule Post';
+            ToggleButton.select(this.submitButton, 'Schedule Post');
             this.submitButton.disabled = !(this.#scheduleIsValid() && this.#formHasContent());
         } else {
-            this.submitButton.textContent = 'Post';
+            ToggleButton.select(this.submitButton, 'Post');
             this.submitButton.disabled = !has_anything;
         }
 
@@ -514,7 +512,7 @@ export class Composer {
         this.scheduleDate.value = '';
         this.scheduleTime.value = '';
         this.scheduleRow.style.display = 'none';
-        this.scheduleButton.textContent = 'Add Schedule';
+        ToggleButton.select(this.scheduleButton, 'Add Schedule');
         this.scheduleButton.classList.remove('Removing');
         this.#syncSubmitState();
         this.#syncFields();
@@ -684,7 +682,7 @@ export class Composer {
                 this.#closePoll();
             } else {
                 this.pollFields.style.display = '';
-                this.pollButton.textContent = 'Remove Poll';
+                ToggleButton.select(this.pollButton, 'Remove Poll');
                 this.pollButton.classList.add('Removing');
             }
 
@@ -702,7 +700,7 @@ export class Composer {
         if (!this.pollButton || !this.pollFields) return;
 
         this.pollFields.style.display = 'none';
-        this.pollButton.textContent = 'Add Poll';
+        ToggleButton.select(this.pollButton, 'Add Poll');
         this.pollButton.classList.remove('Removing');
 
         for (const option of this.pollFields.querySelectorAll('[name="pollOptions[]"]')) {
@@ -942,7 +940,7 @@ export class Composer {
         }
 
         this.locationButton.disabled = true;
-        this.locationButton.textContent = 'Locating…';
+        ToggleButton.select(this.locationButton, 'Locating…');
 
         navigator.geolocation.getCurrentPosition(
             (position) => this.#setLocation(position.coords.latitude, position.coords.longitude),
@@ -959,7 +957,7 @@ export class Composer {
         this.latitudeInput.value = active ? latitude : '';
         this.longitudeInput.value = active ? longitude : '';
         this.locationButton.disabled = false;
-        this.locationButton.textContent = active ? 'Remove Location' : 'Add Location';
+        ToggleButton.select(this.locationButton, active ? 'Remove Location' : 'Add Location');
         this.locationButton.classList.toggle('Removing', active);
 
         // Announced however the location changed - the button, the map, or a
@@ -1026,7 +1024,7 @@ export class Composer {
         this.markdownMode = !this.markdownMode;
         this.markdownInput.style.display = this.markdownMode ? '' : 'none';
         this.editorContainer.style.display = this.markdownMode ? 'none' : '';
-        this.markdownButton.textContent = this.markdownMode ? 'Use Rich Text' : 'Use Markdown';
+        ToggleButton.select(this.markdownButton, this.markdownMode ? 'Use Rich Text' : 'Use Markdown');
 
         // Quill's toolbar is its own element beside the editor, and it means
         // nothing while the textarea is the one being written in.

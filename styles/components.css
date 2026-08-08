@@ -418,10 +418,36 @@ emoji-picker.Active {
 }
 
 .Composer fieldset { margin-bottom: 0.5rem; }
+/* Two groups, not one row: what goes into the post on the left, what to do
+   with it on the right. Anchoring everything to one edge meant any button
+   changing width shifted every button beside it, so Post moved when a poll
+   was added. Now a change is confined to its own group and the primary
+   actions stay where the hand expects them. */
 .ComposerActions {
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: 0.5rem;
 }
+
+.ComposerContentActions,
+.ComposerCommitActions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Every wording the button can show, stacked in one cell so the widest of
+   them sets the width once and toggling never resizes it. */
+.ToggleButton {
+    display: inline-grid;
+    grid-template-areas: 'label';
+    place-items: center;
+}
+
+.ToggleButtonLabel { grid-area: label; }
+
+.ToggleButtonLabel.Inactive { visibility: hidden; }
 
 .ComposerAttachmentList,
 .PostEditAltList {

@@ -6,15 +6,15 @@ declare(strict_types=1);
  * How the site is doing, in numbers, beside the daemons that keep it running.
  *
  * Every figure says exactly what it counts rather than something rounder that
- * would need trusting. In particular there is no "active users" here: nothing
- * records a visit, so the closest honest thing is who has posted, and that is
- * what it is called.
+ * would need trusting - who was here is who was here, and who posted is who
+ * posted, because on a quiet site those are very different numbers and an
+ * admin reading one for the other would draw the wrong conclusion.
  *
- * The federation figures are of the queue, not of history. A delivery that
- * succeeds is deleted, so what is left to count is what has not gone yet -
- * "failing" means a delivery still waiting that has already been refused at
- * least once, which is the number worth watching. A rate over all time is not
- * something this server keeps and is not implied.
+ * The delivery figures come from Statistics rather than from the queue. A
+ * queue holds only what has not been dealt with yet, so counting it says
+ * nothing about how much got through; those are counted as they happen and
+ * read back over a window. The queue depth is still worth showing beside
+ * them, as the backlog rather than the outcome.
  */
 class SiteCounters extends Div
 {
@@ -34,24 +34,28 @@ class SiteCounters extends Div
         $this -> addLine('Members: ' . $counts -> members
             . ' (' . $counts -> joinedThisWeek . ' joined in the last ' . self::RECENT_DAYS . ' days)');
 
-        $this -> addLine('Members who posted in the last ' . self::RECENT_DAYS . ' days: ' . $counts -> postedThisWeek);
+        $this -> addLine('Members here in the last ' . self::RECENT_DAYS . ' days: '
+            . User::activeSince(self::RECENT_DAYS)
+            . ' (' . $counts -> postedThisWeek . ' of them posted)');
 
         $this -> addLine('Posts written here: ' . $counts -> posts
             . ' (' . $counts -> postsThisWeek . ' in the last ' . self::RECENT_DAYS . ' days)');
 
-        $queued = 'Federation deliveries waiting: ' . $counts -> deliveriesQueued;
+        $delivered = Statistic::since(Statistic::DELIVERED, self::RECENT_DAYS);
+        $undeliverable = Statistic::since(Statistic::UNDELIVERABLE, self::RECENT_DAYS);
 
-        if ((int) $counts -> deliveriesQueued > 0) {
-            $queued .= ', ' . $counts -> deliveriesFailing . ' of them already refused once or more';
-        }
+        $delivery_line = $this -> addLine('Federated deliveries in the last ' . self::RECENT_DAYS . ' days: '
+            . $delivered . ' arrived, ' . $undeliverable . ' given up on');
 
-        $delivery_line = $this -> addLine($queued);
-
-        // A queue that is all failures is a server nobody can reach, or a key
-        // nobody accepts - worth the eye going to it.
-        if ((int) $counts -> deliveriesQueued > 0 && $counts -> deliveriesFailing === $counts -> deliveriesQueued) {
+        // Given up on more than got through: something is wrong with this
+        // server's signing, its network, or the servers it talks to - and it
+        // is not the sort of thing anybody notices without being told.
+        if ($undeliverable > $delivered) {
             $delivery_line -> class = 'Error';
         }
+
+        $this -> addLine('Waiting to go out: ' . $counts -> deliveriesQueued
+            . ' (' . $counts -> deliveriesFailing . ' already refused at least once)');
 
         $this -> addLine('Posts waiting to be read from other servers: ' . $waiting_to_read);
 

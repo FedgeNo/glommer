@@ -118,7 +118,16 @@ INSERT INTO `Posts` (`userId`, `description`, `createdAt`)
     {
         $markup = $this -> markup();
 
-        foreach (['Members:', 'posted in the last', 'Posts written here:', 'Federation deliveries waiting:'] as $label) {
+        $labels = [
+            'Members:',
+            'Members here in the last',
+            'of them posted',
+            'Posts written here:',
+            'Federated deliveries in the last',
+            'Waiting to go out:',
+        ];
+
+        foreach ($labels as $label) {
             $this -> assertTrue(str_contains($markup, $label), 'missing: ' . $label);
         }
     }

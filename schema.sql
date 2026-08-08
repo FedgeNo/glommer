@@ -36,6 +36,12 @@ CREATE TABLE `Users` (
   -- puts it away for the moment and it comes back, which is what somebody
   -- who has not finished reading it would want.
   `welcomeDismissed` tinyint(1) NOT NULL DEFAULT 0,
+  -- When this member was last here, to the nearest few minutes - init.php
+  -- writes it on a request from somebody signed in, but only once the stored
+  -- value has gone stale, so reading a long thread is one write rather than
+  -- one per page. Null for an account that has never signed in since the
+  -- column existed.
+  `lastSeen` datetime DEFAULT NULL,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
   -- The newest message this member had received when they last opened their
   -- conversations, which is what the unread dot compares against. Same shape
@@ -740,6 +746,25 @@ CREATE TABLE `LinkPreviews` (
   `fetchedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`url`),
   KEY `fetchedAt` (`fetchedAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Things that happened, counted by the day they happened on.
+--
+-- A queue only ever says what has not been dealt with yet: a delivery that
+-- succeeds is deleted, so counting the queue tells an admin nothing about how
+-- much got through. This is where anything worth knowing after the fact goes,
+-- one row per thing per day.
+--
+-- Kept as counts rather than as rows per event on purpose. A busy server
+-- delivers hundreds of thousands of activities and nobody is going to read
+-- them one by one - what a dashboard wants is how many, and old days are
+-- pruned once they are too old to be looked at.
+CREATE TABLE `Statistics` (
+  `name` varchar(64) NOT NULL,
+  `day` date NOT NULL,
+  `total` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`name`,`day`),
+  KEY `day` (`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Settings` (

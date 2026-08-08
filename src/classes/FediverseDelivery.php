@@ -94,13 +94,18 @@ DELETE FROM `FediverseDeliveries`
      * Records a failure and schedules the retry, or gives up. The delay
      * doubles - a minute, two, four - so a server that is briefly down is
      * retried quickly and one that is properly gone is left alone.
+     *
+     * @return bool true when that was the last try and the activity is never
+     *              going out - the caller counts that, since giving up and
+     *              arriving both end with the row deleted and only the caller
+     *              knows which happened
      */
-    public static function failed(int $delivery_id, int $attempts, string $error): void
+    public static function failed(int $delivery_id, int $attempts, string $error): bool
     {
         if ($attempts + 1 >= self::MAX_ATTEMPTS) {
             self::succeeded($delivery_id);
 
-            return;
+            return true;
         }
 
         $delay_seconds = 60 * (2 ** min($attempts, 10));
@@ -111,6 +116,8 @@ UPDATE `FediverseDeliveries`
     SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND, `lastError` = ?
     WHERE `deliveryId` = ?
 ', 'isi', $delay_seconds, $trimmed, $delivery_id);
+
+        return false;
     }
 
     /** How much is waiting - for the admin services panel to report. */

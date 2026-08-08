@@ -8,7 +8,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.45';
+const GLOMMER_VERSION = '0.9.46';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -286,6 +286,12 @@ if (Auth::check()) {
         header('Location: ' . ServerURL::absolute('/check-inbox'));
         exit;
     }
+
+    // Somebody is here. Recorded after the checks above, so a session being
+    // turned away does not count as a visit - and throttled inside, so a
+    // person reading for an hour is a handful of writes rather than one per
+    // page.
+    User::seen($current_user);
 }
 
 // The ActivityPub inbox is a legitimate cross-origin, cross-server endpoint -

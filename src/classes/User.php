@@ -54,6 +54,7 @@ class User extends Div implements \JsonSerializable
     public ?string $skinTone = null;
     public int $showSensitiveMedia = 0;
     public int $welcomeDismissed = 0;
+    public ?string $lastSeen = null;
     public int $lastNotificationId = 0;
     public int $lastMessageId = 0;
     public int $friendCount = 0;
@@ -371,6 +372,52 @@ SELECT IF(`requesterId` = ?, `addresseeId`, `requesterId`) AS `friendId`
     public function friendsButtonLabel(): string
     {
         return 'View Friends (' . $this -> friendCount . ')';
+    }
+
+    /**
+     * How stale the stored mark may be before it is worth writing again.
+     *
+     * Every request from somebody signed in could write one, and on a page
+     * with any reading in it that is a write per click for a figure nobody
+     * needs to the second. Five minutes is finer than any question asked of
+     * it - who was here today, who this week - and turns a long read into a
+     * single write.
+     */
+    private const SEEN_AGAIN_AFTER_SECONDS = 300;
+
+    /**
+     * Notes that this member is here now, if it has been long enough since
+     * the last time.
+     *
+     * Called from init.php on every request with somebody behind it. Whether
+     * the mark is stale is judged against the row already loaded, so a
+     * request that writes nothing also reads nothing extra.
+     */
+    public static function seen(self $user): void
+    {
+        if ($user -> lastSeen !== null && strtotime($user -> lastSeen) > time() - self::SEEN_AGAIN_AFTER_SECONDS) {
+            return;
+        }
+
+        DB::run('
+UPDATE `Users`
+    SET `lastSeen` = NOW()
+    WHERE `userId` = ?
+', 'i', (int) $user -> userId);
+
+        $user -> lastSeen = date('Y-m-d H:i:s');
+    }
+
+    /** How many members have been here within the last $days. */
+    public static function activeSince(int $days): int
+    {
+        $row = DB::row('
+SELECT COUNT(*) AS `total`
+    FROM `Users`
+    WHERE `remoteActorURI` IS NULL AND `lastSeen` >= NOW() - INTERVAL ? DAY
+', 'PostCountData', 'i', $days);
+
+        return $row === null ? 0 : (int) $row -> total;
     }
 
     /**

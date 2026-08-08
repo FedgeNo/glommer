@@ -116,6 +116,7 @@ while ($running) {
 
         try {
             RelayRetention::sweep();
+            Statistic::prune();
         } catch (\Throwable $exception) {
             error_log('Relay retention sweep failed: ' . $exception -> getMessage());
         }
@@ -182,12 +183,20 @@ SELECT *
             $private_key
         );
 
+        // Counted here rather than inside either method, because arriving and
+        // being given up on both end with the row deleted and only this knows
+        // which of the two happened.
         if ($delivered) {
             FediverseDelivery::succeeded($delivery_id);
+            Statistic::count(Statistic::DELIVERED);
 
             continue;
         }
 
-        FediverseDelivery::failed($delivery_id, (int) $delivery -> attempts, 'delivery to ' . $delivery -> inboxURL . ' failed');
+        $gave_up = FediverseDelivery::failed($delivery_id, (int) $delivery -> attempts, 'delivery to ' . $delivery -> inboxURL . ' failed');
+
+        if ($gave_up) {
+            Statistic::count(Statistic::UNDELIVERABLE);
+        }
     }
 }

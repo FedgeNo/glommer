@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-/** Opens a draft or scheduled post for editing, in place of its card. */
-class StagedPostEditButton extends ButtonButton
+/**
+ * Opens a draft or scheduled post in the composer. A link dressed as a
+ * button, because editing happens on a page of its own - the same composer
+ * the post was written in, rather than a smaller form standing in for it.
+ */
+class StagedPostEditButton extends Anchor
 {
-    public function __construct()
-    {
-        parent::__construct();
+    public ?string $class = 'StagedPostEditButton';
+    public array $mixins = ['Button'];
 
-        $this -> contents[] = 'Edit';
+    public function __construct(int $staged_post_id)
+    {
+        parent::__construct(ServerURL::absolute('/drafts/' . $staged_post_id), 'Edit');
     }
 }

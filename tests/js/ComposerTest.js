@@ -26,7 +26,7 @@ function mounted() {
     return {
         form,
         link: form.querySelector('[name="linkURL"]'),
-        file: form.querySelector('[name="files[]"]'),
+        file: form.querySelector('.ComposerFileInput'),
         poll: form.querySelector('.ComposerPollButton'),
         sensitive: form.querySelector('.SensitiveMediaToggle'),
         remove: () => document.body.removeChild(form),

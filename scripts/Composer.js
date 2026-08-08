@@ -97,7 +97,7 @@ export class Composer {
 
         this.titleInput   = form.querySelector('[name="title"]');
         this.linkInput    = form.querySelector('[name="linkURL"]');
-        this.fileInput    = form.querySelector('[name="files[]"]');
+        this.fileInput    = form.querySelector('.ComposerFileInput');
         this.descriptionInput = form.querySelector('.DescriptionInput');
         this.markdownInput  = form.querySelector('.MarkdownInput');
         this.markdownButton = form.querySelector('.MarkdownModeButton');
@@ -285,9 +285,15 @@ export class Composer {
         removeFilesBtn.textContent = 'Remove Files';
         actions.appendWithSpace(removeFilesBtn);
 
+        // Named by its class rather than a field name, because it is a picker
+        // and not a field: what it holds is moved straight into #attachments
+        // and the files are appended from there at submit. A name would put
+        // the emptied picker in the form data as a file of its own - one more
+        // files[] slot than there are alt texts, which the server reads as a
+        // pairing it cannot trust and refuses.
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.name = 'files[]';
+        fileInput.className = 'ComposerFileInput';
         fileInput.multiple = true;
         fileInput.accept = 'image/*,video/*,audio/*';
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
@@ -376,7 +382,7 @@ export class Composer {
         draftButton.textContent = 'Save Draft';
         commitActions.appendWithSpace(draftButton);
 
-        const submitBtn = ToggleButton.build(['Post', 'Schedule Post'], 'ComposerSubmitButton');
+        const submitBtn = ToggleButton.build(['Post', 'Schedule Post', 'Save Draft'], 'ComposerSubmitButton');
         submitBtn.type = 'submit';
         commitActions.appendWithSpace(submitBtn);
 
@@ -400,13 +406,70 @@ export class Composer {
         this.#bindLocationButton();
         this.#bindPollButton();
         this.#bindStagingButtons();
+        this.#seedFromDraft();
         this.#syncFields();
+    }
+
+    /** Whether this composer is holding a draft rather than a fresh post. */
+    #editingDraft() {
+        return Boolean(this.#form.dataset.stagedPostId);
+    }
+
+    /**
+     * The draft the page opened with, put back into the composer it was
+     * written in - title, body, link, location and the time it was set to go.
+     *
+     * The submit button says what it now does. Posting is not it: that would
+     * write a second, separate post and leave the draft sitting where it was,
+     * so submitting this form saves the draft instead. Publishing stays on
+     * the drafts list, which already offers it.
+     */
+    #seedFromDraft() {
+        if (!this.#editingDraft()) return;
+
+        const draft = this.#form.dataset;
+
+        if (this.titleInput) this.titleInput.value = draft.title || '';
+        if (this.linkInput) this.linkInput.value = draft.linkUrl || '';
+
+        if (draft.descriptionDelta) {
+            try {
+                this.#quill.setContents(JSON.parse(draft.descriptionDelta));
+            } catch (_) {
+                // A delta that will not parse is not worth losing the rest of
+                // the draft over; the body simply opens empty.
+            }
+        }
+
+        if (draft.latitude && draft.longitude) {
+            this.#setLocation(Number(draft.latitude), Number(draft.longitude));
+        }
+
+        if (draft.publishAtEpoch) {
+            this.scheduleButton.click();
+
+            const when = new Date(Number(draft.publishAtEpoch) * 1000);
+            const pad = (part) => String(part).padStart(2, '0');
+
+            this.scheduleDate.value = when.getFullYear() + '-' + pad(when.getMonth() + 1) + '-' + pad(when.getDate());
+            this.scheduleTime.value = pad(when.getHours()) + ':' + pad(when.getMinutes());
+        }
+
+        ToggleButton.select(this.submitButton, 'Save Draft');
+        this.draftButton.remove();
+        this.draftButton = null;
     }
 
     #bindStagingButtons() {
         if (!this.draftButton) return;
 
-        this.draftButton.addEventListener('click', () => this.#stagePost(null));
+        // Saving a fresh composer makes a draft, which by definition has no
+        // time set. Saving one that is already a draft keeps whatever the
+        // clock now says - including nothing, which turns a scheduled post
+        // back into a plain draft.
+        this.draftButton.addEventListener('click', () => {
+            this.#stagePost(this.#editingDraft() ? this.#scheduledEpoch() : null);
+        });
 
         // The Schedule button only reveals or hides the clock - reading
         // "Remove Schedule" while it's out, so an accidental or curious click
@@ -483,6 +546,16 @@ export class Composer {
 
         const has_anything = this.#formHasContent() || this.#attachments.length > 0;
 
+        // Editing one, the button only ever saves it - whether it stays a
+        // draft or keeps a time is the clock's business, not the button's.
+        if (this.#editingDraft()) {
+            ToggleButton.select(this.submitButton, 'Save Draft');
+            this.submitButton.disabled = !this.#formHasContent()
+                || (this.#isScheduling() && !this.#scheduleIsValid());
+
+            return;
+        }
+
         if (this.#isScheduling()) {
             ToggleButton.select(this.submitButton, 'Schedule Post');
             this.submitButton.disabled = !(this.#scheduleIsValid() && this.#formHasContent());
@@ -532,11 +605,14 @@ export class Composer {
             return;
         }
 
-        this.draftButton.disabled = true;
+        // Whichever button set this going - Save Draft on a fresh composer,
+        // the submit button on one holding a draft already.
+        if (this.draftButton) this.draftButton.disabled = true;
+        if (this.submitButton) this.submitButton.disabled = true;
         this.scheduleButton.disabled = true;
 
         try {
-            const result = await Api.post('/api/stage-post', {
+            const staged = {
                 title: this.titleInput?.value ?? '',
                 description: JSON.stringify(this.#quill.getContents()),
                 linkURL: this.linkInput?.value ?? '',
@@ -544,9 +620,23 @@ export class Composer {
                 longitude: this.longitudeInput?.value ?? '',
                 sensitive: false,
                 publishAtEpoch: publish_at_epoch,
-            });
+            };
+
+            if (this.#editingDraft()) {
+                staged.stagedPostId = Number(this.#form.dataset.stagedPostId);
+            }
+
+            const result = await Api.post(this.#editingDraft() ? '/api/update-staged' : '/api/stage-post', staged);
 
             if (!result) return;
+
+            // Editing happened on a page of its own, so there is nowhere to
+            // stay: the list it came from is where the saved draft now is.
+            if (this.#editingDraft()) {
+                window.location.href = ClientConfig.siteURL() + '/drafts';
+
+                return;
+            }
 
             Toast.show(publish_at_epoch === null
                 ? 'Saved to Drafts.'
@@ -558,7 +648,7 @@ export class Composer {
             if (this.locationButton) this.#setLocation(null, null);
             this.#syncFields();
         } finally {
-            this.draftButton.disabled = false;
+            if (this.draftButton) this.draftButton.disabled = false;
             // Re-imposes the content rule: after a successful save the form
             // is empty again, and an empty form offers no live Save Draft.
             this.#syncSubmitState();
@@ -970,6 +1060,16 @@ export class Composer {
     #bindSubmit() {
         this.#form.addEventListener('submit', (event) => {
             event.preventDefault();
+
+            // A form submits on Enter whether or not it still has a button to
+            // do it with, and posting is not what this page is for: it would
+            // write a second post and leave the draft where it was. Saving is.
+            if (this.#editingDraft()) {
+                this.#stagePost(this.#scheduledEpoch());
+
+                return;
+            }
+
             this.#submit();
         });
     }

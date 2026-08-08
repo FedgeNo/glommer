@@ -67,7 +67,7 @@ class StagedPostCard extends Card
         $actions = new Div();
         $actions -> mixins = ['d-flex', 'gap-2'];
         $actions -> addContent(new StagedPostPublishButton());
-        $actions -> addContent(new StagedPostEditButton());
+        $actions -> addContent(new StagedPostEditButton((int) $this -> stagedPostId));
         $actions -> addContent(new StagedPostDiscardButton());
         $this -> contents[] = $actions;
 

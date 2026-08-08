@@ -142,6 +142,7 @@
     RewriteRule ^reset-password$ reset-password.php [L,QSA]
     RewriteRule ^settings$ settings.php [L,QSA]
     RewriteRule ^drafts$ drafts.php [L,QSA]
+    RewriteRule ^drafts/([0-9]+)$ drafts.php?draft=$1 [L,QSA]
     RewriteRule ^locations/([0-9]+)$ locations.php?place=$1 [L,QSA]
     RewriteRule ^quote/([0-9]+)$ quote.php?post=$1 [L,QSA]
     RewriteRule ^verify-email$ verify-email.php [L,QSA]

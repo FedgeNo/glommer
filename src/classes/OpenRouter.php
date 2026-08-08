@@ -153,20 +153,23 @@ class OpenRouter
         return trim(implode(chr(10), $lines));
     }
 
+    /**
+     * Whether a line opens with one of those labels.
+     *
+     * Only what stands before the colon is compared. The verdict after it is
+     * whatever the model decided - "safe", or a list of categories - and will
+     * read differently every time, while the label naming it does not.
+     */
     private static function isVerdict(string $line): bool
     {
-        $line = strtolower(trim($line));
+        $colon = strpos($line, ':');
 
-        if ($line === '') {
+        if ($colon === false) {
             return false;
         }
 
-        foreach (self::VERDICT_LABELS as $label) {
-            if (str_starts_with($line, $label)) {
-                return true;
-            }
-        }
+        $label = strtolower(trim(substr($line, 0, $colon))) . ':';
 
-        return false;
+        return in_array($label, self::VERDICT_LABELS, true);
     }
 }

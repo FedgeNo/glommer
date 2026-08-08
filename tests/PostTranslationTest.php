@@ -73,56 +73,41 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
     }
 
     /**
-     * The reader's own language, taken from the browser's header so the first
-     * render already knows - otherwise the translate button appears and then
-     * thinks better of itself once a script has run.
+     * A post declaring a language decides nothing about whether to offer the
+     * translation. Mastodon fills that in from the poster's account setting
+     * rather than from the words, so foreign posts routinely arrive claiming
+     * English - and a reader who cannot read one needs the button most
+     * exactly when it is wrong.
      */
-    public function testTheReadersLanguageComesOffTheHeader(): void
+    public function testWhatAPostClaimsAboutItsLanguageDoesNotHideTheButton(): void
     {
-        $was = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+        $post = DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', $this -> post());
+
+        // Settings::set is how OpenRouter is switched on, and without a
+        // translator configured nothing is offered at all.
+        Settings::set(OpenRouter::API_KEY_SETTING, 'test-key');
 
         try {
-            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-GB,en;q=0.9,fr;q=0.8';
-            $this -> assertSame('en', PostTranslation::readerLanguage());
+            foreach ([null, 'en', 'fr', 'zh-hant'] as $claimed) {
+                $post -> language = $claimed;
 
-            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'pt-BR';
-            $this -> assertSame('pt-br', PostTranslation::readerLanguage());
-
-            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = '';
-            $this -> assertNull(PostTranslation::readerLanguage());
-        } finally {
-            if ($was === null) {
-                unset($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            } else {
-                $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $was;
+                $this -> assertTrue($post -> translatable(), 'claimed ' . var_export($claimed, true));
             }
+        } finally {
+            Settings::set(OpenRouter::API_KEY_SETTING, '');
         }
     }
 
-    /**
-     * Nobody is offered their own language back - and a post that never said
-     * what it was written in is offered anyway, since a button that turns out
-     * to do nothing is a smaller fault than no button at all.
-     */
-    public function testAPostAlreadyInTheReadersLanguageIsNotWorthTranslating(): void
+    /** No words is nothing to translate, whatever else is true. */
+    public function testAPostWithNoWordsIsNotOffered(): void
     {
-        $was = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+        $post = new Post();
 
-        try {
-            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
-
-            $this -> assertTrue(PostTranslation::isReaderLanguage('en'));
-            // The region is not the language: en-GB is the same English.
-            $this -> assertTrue(PostTranslation::isReaderLanguage('en-GB'));
-            $this -> assertFalse(PostTranslation::isReaderLanguage('fr'));
-            $this -> assertFalse(PostTranslation::isReaderLanguage(null));
-        } finally {
-            if ($was === null) {
-                unset($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            } else {
-                $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $was;
-            }
-        }
+        $this -> assertFalse($post -> translatable());
     }
 
     public function testACachedTranslationReadsBackByPostAndLanguage(): void

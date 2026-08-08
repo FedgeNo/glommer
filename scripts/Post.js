@@ -59,21 +59,6 @@ export class Post {
         return post;
     }
 
-    /**
-     * Whether a post is already in the language this reader reads, and so has
-     * nothing to translate. Mirrors PostTranslation::isReaderLanguage(), which
-     * decides the same thing for the render that arrives before any script has
-     * run - compared on the base language, so a reader on en-GB is not offered
-     * a translation of en-US.
-     */
-    static #isReaderLanguage(language) {
-        if (!language) return false;
-
-        const base = (tag) => String(tag).toLowerCase().split('-')[0];
-
-        return base(language) === base(navigator.language || '');
-    }
-
     /** Mirrors PostLikeButton::label() - the two must agree or the button rewords itself when pressed. */
     static likeLabel(liked, count) {
         return (liked ? 'Unlike' : 'Like') + (count > 0 ? ' (' + count + ')' : '');
@@ -507,7 +492,7 @@ export class Post {
         if (logged_in) {
             // Mirrors PostActionBar.php: offered only when there is body text
             // to translate and the server has a translator configured.
-            if (this.translatable && !Post.#isReaderLanguage(this.language)) {
+            if (this.translatable) {
                 const translate_button = document.createElement('button');
                 translate_button.type = 'button';
                 translate_button.className = 'Button PostTranslateButton';

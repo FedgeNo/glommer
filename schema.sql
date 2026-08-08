@@ -92,11 +92,15 @@ CREATE TABLE `Posts` (
   -- `sensitive`.
   `sensitive` tinyint(1) NOT NULL DEFAULT 0,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
-  -- What language this was written in, when the sender said so - a post from
-  -- elsewhere carries it as ActivityPub's contentMap. Null means nobody has
-  -- said, which is every post written here: there is no way to declare one
-  -- yet, and guessing would be worse than not knowing. Read only to stop the
-  -- translate button offering a reader their own language back.
+  -- What language the sender SAID this was written in - ActivityPub's
+  -- contentMap - which is not the same as what it is written in. Mastodon
+  -- fills it from the poster's own account setting rather than from the
+  -- words, so an account set to English writing in French says English.
+  --
+  -- Recorded because it is a fact about the post, and nothing is decided on
+  -- it: the translate button is offered on everything, since withholding it
+  -- on a wrong reading leaves somebody unable to read a post with no way to
+  -- ask. Null means nobody said, which is every post written here.
   `language` varchar(35) DEFAULT NULL,
   -- The post this one quotes - repost-with-commentary. SET NULL rather than
   -- CASCADE: the commentary is its author's own writing and outlives the

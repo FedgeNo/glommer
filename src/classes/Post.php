@@ -456,15 +456,19 @@ UPDATE `Posts`
      * responsible for the authorization check.
      */
     /**
-     * Whether to offer this post for translation: there are words, a
-     * translator is configured, and it is not already in the language the
-     * reader reads.
+     * Whether to offer this post for translation: there are words, and a
+     * translator is configured.
+     *
+     * Not narrowed by the language the post declares, though it declares one.
+     * Mastodon fills that in from the poster's own account setting rather than
+     * from the words, so an account set to English writing in French says
+     * English - and hiding the button on that reading leaves a reader looking
+     * at a language they cannot read with no way to ask. Offering it once too
+     * often costs a click; withholding it costs the post.
      */
     public function translatable(): bool
     {
-        return (string) $this -> description !== ''
-            && OpenRouter::isEnabled()
-            && !PostTranslation::isReaderLanguage($this -> language);
+        return (string) $this -> description !== '' && OpenRouter::isEnabled();
     }
 
     public static function delete(int $post_id): void

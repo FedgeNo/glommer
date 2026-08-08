@@ -15,7 +15,7 @@ export class QuillEditor {
             modules: {
                 toolbar: [
                     ['bold', 'italic', 'underline', 'strike'],
-                    [{ header: 3 }],
+                    [{ header: 1 }, { header: 2 }, { header: 3 }],
                     [{ list: 'ordered' }, { list: 'bullet' }],
                     ['blockquote', 'code-block', 'code'],
                     ['link', 'formula'],

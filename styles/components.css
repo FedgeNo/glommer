@@ -21,6 +21,7 @@
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
+    .SiteCounters, .ModerationActionCard,
     .VideoCallTestPanel
 ) {
     background-color: var(--surface);
@@ -57,6 +58,7 @@
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
+    .SiteCounters, .ModerationActionCard,
     .VideoCallTestPanel
 ) > *:last-child {
     margin-bottom: 0;

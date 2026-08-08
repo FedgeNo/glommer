@@ -17,6 +17,11 @@ $page = new Page(['title' => 'Admin Settings']);
 
 $page -> addContent(new SettingsSection('Services', new ServicesStatus()));
 
+// What the moderators have done. Here rather than on Mod Settings on purpose:
+// it is the record of their work, and the person it answers to is the one who
+// appointed them.
+$page -> addContent(new SettingsSection('Moderation Log', new ModerationActionList()));
+
 // Relays are a subscription this server takes out, which is administration
 // rather than moderation - and short enough to read here rather than on a
 // page of its own.

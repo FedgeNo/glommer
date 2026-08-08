@@ -524,6 +524,58 @@ SELECT `description`
      * who never followed that account is asked for its rows. None of them may
      * return it.
      */
+    /**
+     * A post says what language it was written in, as contentMap keyed by
+     * tag, and is taken at its word - it decides nothing but whether a reader
+     * is offered a translation into the language they are already reading.
+     */
+    public function testAPostsOwnLanguageIsRecordedFromWhatItSays(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => [
+                'type' => 'Note',
+                'id' => $object_uri,
+                'content' => 'bonjour tout le monde',
+                'contentMap' => ['fr' => 'bonjour tout le monde'],
+            ],
+        ], $actor_uri);
+
+        $this -> assertSame('fr', self::languageOfRemoteObject($object_uri));
+    }
+
+    /** Most of the network says nothing, and a guess would be worse. */
+    public function testAPostThatSaysNothingIsRecordedAsSayingNothing(): void
+    {
+        $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
+        self::createShadowUser($actor_uri);
+        $object_uri = 'https://remote.test/notes/' . bin2hex(random_bytes(6));
+
+        ActivityPubInbox::process([
+            'type' => 'Create',
+            'object' => ['type' => 'Note', 'id' => $object_uri, 'content' => 'no idea what this is'],
+        ], $actor_uri);
+
+        $this -> assertNull(self::languageOfRemoteObject($object_uri));
+    }
+
+    private static function languageOfRemoteObject(string $uri): ?string
+    {
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT `language`
+    FROM `Posts`
+    WHERE `remoteObjectURI` = ?
+', 's', $uri));
+
+        $row = mysqli_fetch_assoc($result);
+
+        return $row === null ? null : $row['language'];
+    }
+
     public function testNoPublicSurfaceReturnsARemotePost(): void
     {
         $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));

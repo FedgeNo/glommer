@@ -29,6 +29,11 @@ class Post extends Article
     // to the timestamp; there's no edit history, just this one flag.
     public ?string $editedAt = null;
 
+    // What language this was written in, when the sender said so - null for
+    // anything typed here, since there is no way to declare one yet. Read
+    // only by translatable() below.
+    public ?string $language = null;
+
     // The id this post has on the server that wrote it - null for writing
     // composed here, which is what makes it publishable to the Fediverse and
     // editable by its author. Declared like every other column so a post built
@@ -180,7 +185,7 @@ class Post extends Article
             $action_bar -> pinned = $this -> pinned;
             $action_bar -> remote = $this -> remoteObjectURI !== null;
             $action_bar -> standalone = $this -> standalone;
-            $action_bar -> translatable = (string) $this -> description !== '' && OpenRouter::isEnabled();
+            $action_bar -> translatable = $this -> translatable();
 
             $this -> contents[] = $action_bar;
         }
@@ -450,6 +455,18 @@ UPDATE `Posts`
      * delete and by a moderator deleting reported content. Caller is
      * responsible for the authorization check.
      */
+    /**
+     * Whether to offer this post for translation: there are words, a
+     * translator is configured, and it is not already in the language the
+     * reader reads.
+     */
+    public function translatable(): bool
+    {
+        return (string) $this -> description !== ''
+            && OpenRouter::isEnabled()
+            && !PostTranslation::isReaderLanguage($this -> language);
+    }
+
     public static function delete(int $post_id): void
     {
         // Collect the post plus all descendant replies, since the row DELETE
@@ -643,7 +660,8 @@ DELETE
             'longitude' => $this -> longitude,
             'placeLabel' => $this -> placeLabel,
             'poll' => $this -> poll?-> toPayload(),
-            'translatable' => (string) $this -> description !== '' && OpenRouter::isEnabled(),
+            'translatable' => $this -> translatable(),
+            'language' => $this -> language,
             'quotedPost' => $this -> quotedPost ?-> toPayloadArray(),
             // Whether this came from another server, which decides the share
             // button the same way it does server-side.

@@ -793,11 +793,13 @@ UPDATE `Posts`
             $quoted_post_id = self::localPostIdFor($quoted_uri);
         }
 
+        $language = self::languageOf($object);
+
         try {
             DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `quotedPostId`)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'iisssii', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $quoted_post_id);
+INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `quotedPostId`, `language`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+', 'iisssiis', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $quoted_post_id, $language);
         } catch (\mysqli_sql_exception $exception) {
             // 1062 = the unique remoteObjectURI rejected a post already held.
             // Two relays naming the same post at once is an ordinary race, not
@@ -934,6 +936,34 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         return str_starts_with($url, 'https://') && strlen($url) <= FeedItem::MAX_REMOTE_URL_LENGTH
             ? $url
             : null;
+    }
+
+    /**
+     * What language a post says it is in, or null when it does not say.
+     *
+     * ActivityPub carries it as contentMap, an object keyed by language tag -
+     * the same content again, once per language it was written in. Almost
+     * always exactly one key, and where there are several the first is the one
+     * `content` itself holds.
+     *
+     * Taken at the sender's word and used for nothing but hiding a translate
+     * button, so a wrong one costs a reader an offer they did not need.
+     */
+    private static function languageOf(array $object): ?string
+    {
+        $map = $object['contentMap'] ?? null;
+
+        if (!is_array($map)) {
+            return null;
+        }
+
+        foreach (array_keys($map) as $tag) {
+            if (is_string($tag) && $tag !== '') {
+                return PostTranslation::normalizeLanguage($tag);
+            }
+        }
+
+        return null;
     }
 
     /** Posts.description is a TEXT column; MySQL runs strict, so an oversized value errors rather than truncating. */

@@ -72,6 +72,59 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
         }
     }
 
+    /**
+     * The reader's own language, taken from the browser's header so the first
+     * render already knows - otherwise the translate button appears and then
+     * thinks better of itself once a script has run.
+     */
+    public function testTheReadersLanguageComesOffTheHeader(): void
+    {
+        $was = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+
+        try {
+            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-GB,en;q=0.9,fr;q=0.8';
+            $this -> assertSame('en', PostTranslation::readerLanguage());
+
+            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'pt-BR';
+            $this -> assertSame('pt-br', PostTranslation::readerLanguage());
+
+            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = '';
+            $this -> assertNull(PostTranslation::readerLanguage());
+        } finally {
+            if ($was === null) {
+                unset($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            } else {
+                $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $was;
+            }
+        }
+    }
+
+    /**
+     * Nobody is offered their own language back - and a post that never said
+     * what it was written in is offered anyway, since a button that turns out
+     * to do nothing is a smaller fault than no button at all.
+     */
+    public function testAPostAlreadyInTheReadersLanguageIsNotWorthTranslating(): void
+    {
+        $was = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+
+        try {
+            $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
+
+            $this -> assertTrue(PostTranslation::isReaderLanguage('en'));
+            // The region is not the language: en-GB is the same English.
+            $this -> assertTrue(PostTranslation::isReaderLanguage('en-GB'));
+            $this -> assertFalse(PostTranslation::isReaderLanguage('fr'));
+            $this -> assertFalse(PostTranslation::isReaderLanguage(null));
+        } finally {
+            if ($was === null) {
+                unset($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            } else {
+                $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $was;
+            }
+        }
+    }
+
     public function testACachedTranslationReadsBackByPostAndLanguage(): void
     {
         $post_id = $this -> post();

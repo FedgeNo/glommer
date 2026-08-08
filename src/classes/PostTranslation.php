@@ -67,6 +67,44 @@ class PostTranslation
         return $base;
     }
 
+    /**
+     * The language this reader reads, as far as their browser has said, or
+     * null when it has not.
+     *
+     * Only ever compared against a post's own, to keep the translate button
+     * from offering somebody their own language back. The browser's own
+     * navigator.language decides it once the page is live; this is the same
+     * answer for the render that arrives before any script has run, so the
+     * button does not appear and then think better of it.
+     */
+    public static function readerLanguage(): ?string
+    {
+        $header = (string) ($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
+
+        // "en-GB,en;q=0.9,fr;q=0.8" - the first is the preferred one, and the
+        // quality ordering behind it is not worth reading for a yes or no.
+        $first = trim(explode(',', $header)[0]);
+        $tag = trim(explode(';', $first)[0]);
+
+        return $tag === '' ? null : self::normalizeLanguage($tag);
+    }
+
+    /**
+     * Whether a post written in this language is already in the reader's, and
+     * so has nothing to translate. Unknown either way means offering it: a
+     * button that does nothing is a smaller fault than no button at all.
+     */
+    public static function isReaderLanguage(?string $language): bool
+    {
+        if ($language === null || $language === '') {
+            return false;
+        }
+
+        $reader = self::readerLanguage();
+
+        return $reader !== null && self::normalizeLanguage($language) === $reader;
+    }
+
     public static function cached(int $post_id, string $language): ?string
     {
         $row = DB::row('

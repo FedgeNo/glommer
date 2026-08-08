@@ -87,6 +87,12 @@ CREATE TABLE `Posts` (
   -- `sensitive`.
   `sensitive` tinyint(1) NOT NULL DEFAULT 0,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
+  -- What language this was written in, when the sender said so - a post from
+  -- elsewhere carries it as ActivityPub's contentMap. Null means nobody has
+  -- said, which is every post written here: there is no way to declare one
+  -- yet, and guessing would be worse than not knowing. Read only to stop the
+  -- translate button offering a reader their own language back.
+  `language` varchar(35) DEFAULT NULL,
   -- The post this one quotes - repost-with-commentary. SET NULL rather than
   -- CASCADE: the commentary is its author's own writing and outlives the
   -- deletion of what it commented on, rendering as an ordinary post.

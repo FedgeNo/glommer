@@ -575,6 +575,11 @@ label.visually-hidden { margin-bottom: 0; }
    switching moves nothing around it. Monospaced, because what is typed here
    is markers as much as it is words. */
 .MarkdownInput {
+    /* A textarea is inline by default, so it sits on the text baseline and
+       the line box round it reserves room underneath for descenders - a
+       couple of pixels the editor it stands in for does not have, arriving
+       and leaving with every switch. */
+    display: block;
     width: 100%;
     min-height: 7.25rem;
     padding: 0.75rem;

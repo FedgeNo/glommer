@@ -17,7 +17,7 @@ export class UserBio {
             const inner = document.createTextNode(segment.text);
 
             if (segment.type === 'url') {
-                bio.appendWithSpace(DeltaRenderer.linkedNode(segment.text, inner));
+                bio.appendWithSpace(DeltaRenderer.linkedNode(segment.href, inner));
             } else if (segment.type === 'hashtag') {
                 bio.appendWithSpace(DeltaRenderer.hashtagNode(segment.tag, inner));
             } else if (segment.type === 'mention') {

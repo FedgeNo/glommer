@@ -200,7 +200,7 @@ export class DeltaRenderer {
             const inner = DeltaRenderer.#formattedTextNode(segment.text, attrs);
 
             if (segment.type === 'url') {
-                return DeltaRenderer.linkedNode(segment.text, inner);
+                return DeltaRenderer.linkedNode(segment.href, inner);
             }
             if (segment.type === 'hashtag') {
                 return DeltaRenderer.hashtagNode(segment.tag, inner);

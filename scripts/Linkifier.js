@@ -6,7 +6,12 @@ export class Linkifier {
     // for why a #tag is stated as the ASCII it may not contain rather than as
     // the characters it may.
     static TAG_CHARS = "[^\\x00-\\x2F\\x3A-\\x40\\x5B-\\x5E\\x60\\x7B-\\x7F]";
-    static SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<!" + Linkifier.TAG_CHARS + ")(?<!#)#" + Linkifier.TAG_CHARS + "+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
+    // The characters a URL may be spelled with, once one has started.
+    static URL_CHARS = "[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]";
+    // A link written without its scheme - see Linkifier.php's BARE_URL for
+    // why it is this narrow.
+    static BARE_URL = "(?<![A-Za-z0-9._~:/?#@-])(?:www\\.[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*|[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z][A-Za-z]+/)";
+    static SCAN = "https?://" + Linkifier.URL_CHARS + "+|" + Linkifier.BARE_URL + Linkifier.URL_CHARS + "*|(?<!" + Linkifier.TAG_CHARS + ")(?<!#)#" + Linkifier.TAG_CHARS + "+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
     static LOOKS_URL = "https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/";
     static AUTHORITY = "^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)";
 
@@ -125,11 +130,25 @@ export class Linkifier {
         const url = matched.slice(0, end);
         const trailing = matched.slice(end);
 
-        if (!/^https?:\/\/./.test(url)) {
+        const lower = url.toLowerCase();
+        const schemeLength = lower.startsWith('https://') ? 8 : (lower.startsWith('http://') ? 7 : 0);
+
+        // Trimmed down to just the scheme - not a real URL.
+        if (schemeLength > 0 && url.length === schemeLength) {
             return null;
         }
 
-        return { segment: { type: 'url', text: url }, trailing };
+        // The text stays as it was written; where the scheme is missing the
+        // destination supplies one, since a link has to be absolute to lead
+        // anywhere and https is what a bare host means now.
+        return {
+            segment: {
+                type: 'url',
+                text: url,
+                href: schemeLength > 0 ? url : 'https://' + url,
+            },
+            trailing,
+        };
     }
 
     static #mergeText(segments) {

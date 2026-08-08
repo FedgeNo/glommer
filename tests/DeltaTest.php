@@ -91,6 +91,57 @@ class DeltaTest extends TestCase
         $this -> assertFalse(isset($clean[0]['attributes']), 'attributes key should be removed when all were stripped');
     }
 
+    // ---------- sanitize: compacting ----------
+
+    /**
+     * A delta is canonically compact. Markup can produce three runs of one
+     * link - an address split across spans - which renders identically and so
+     * went unnoticed, but writes back out as three markdown links where the
+     * author wrote one.
+     */
+    public function testAdjacentRunsThatReadTheSameBecomeOne()
+    {
+        $ops = Delta::sanitize([
+            ['insert' => 'https://', 'attributes' => ['link' => 'https://example.test/x']],
+            ['insert' => 'example.test', 'attributes' => ['link' => 'https://example.test/x']],
+            ['insert' => '/x', 'attributes' => ['link' => 'https://example.test/x']],
+            ['insert' => "\n"],
+        ]);
+
+        $this -> assertCount(2, $ops);
+        $this -> assertSame('https://example.test/x', $ops[0]['insert']);
+    }
+
+    public function testRunsThatReadDifferentlyStayApart()
+    {
+        $ops = Delta::sanitize([
+            ['insert' => 'bold', 'attributes' => ['bold' => true]],
+            ['insert' => 'plain'],
+            ['insert' => "\n"],
+        ]);
+
+        $this -> assertSame('bold', $ops[0]['insert']);
+        $this -> assertSame(['bold' => true], $ops[0]['attributes']);
+        // The unformatted run and the newline after it read the same way, so
+        // they are one - which is how Quill writes it too.
+        $this -> assertSame("plain\n", $ops[1]['insert']);
+    }
+
+    /** An embed is its own thing and never folds into the words beside it. */
+    public function testAnEmbedIsNeverFoldedIntoText()
+    {
+        $ops = Delta::sanitize([
+            ['insert' => 'before'],
+            ['insert' => ['formula' => 'x^2']],
+            ['insert' => 'after'],
+            ['insert' => "\n"],
+        ]);
+
+        $this -> assertSame('before', $ops[0]['insert']);
+        $this -> assertSame(['formula' => 'x^2'], $ops[1]['insert']);
+        $this -> assertSame("after\n", $ops[2]['insert']);
+    }
+
     // ---------- plainText ----------
 
     public function testPlainTextExtractsStringInserts()

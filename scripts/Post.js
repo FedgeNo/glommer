@@ -623,7 +623,7 @@ export class Post {
             const inner = document.createTextNode(segment.text);
 
             if (segment.type === 'url') {
-                paragraph.appendChild(DeltaRenderer.linkedNode(segment.text, inner));
+                paragraph.appendChild(DeltaRenderer.linkedNode(segment.href, inner));
             } else if (segment.type === 'hashtag') {
                 paragraph.appendChild(DeltaRenderer.hashtagNode(segment.tag, inner));
             } else if (segment.type === 'mention') {

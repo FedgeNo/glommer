@@ -77,7 +77,20 @@ class Linkifier
 
     // The '#' is inside that excluded range, so it reads as a boundary and
     // "##b" would tag - hence the second lookbehind naming it.
-    private const SCAN = "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+|(?<!" . self::TAG_CHARS . ")(?<!#)#" . self::TAG_CHARS . "+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
+    // The characters a URL may be spelled with, once one has started.
+    private const URL_CHARS = "[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]";
+
+    // A link written without its scheme, which is how most of them read on the
+    // Fediverse. Kept narrow, because a bare host is also what an ordinary
+    // sentence is full of: either it says www, or it carries a path, and its
+    // last label is letters - so "example.com/thing" and "www.example.com" are
+    // links while "e.g." and "Node.js" are words. Two letters minimum rather
+    // than a counted repeat, since {} is this pattern's own delimiter.
+    private const BARE_URL = "(?<![A-Za-z0-9._~:/?#@-])(?:www\\.[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*|[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z][A-Za-z]+/)";
+
+    // The '#' is inside that excluded range, so it reads as a boundary and
+    // "##b" would tag - hence the second lookbehind naming it.
+    private const SCAN = "https?://" . self::URL_CHARS . "+|" . self::BARE_URL . self::URL_CHARS . "*|(?<!" . self::TAG_CHARS . ")(?<!#)#" . self::TAG_CHARS . "+|(?<![A-Za-z0-9_@])@[A-Za-z0-9_]+(?:@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+)?";
 
     // Pass-1 detector: an http(s) URL, a www.-prefixed host, or a bare
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.
@@ -230,12 +243,25 @@ class Linkifier
         $url = rtrim($matched, self::URL_TRAILING_TRIM);
         $trailing = substr($matched, strlen($url));
 
+        $lower = strtolower($url);
+        $scheme_length = str_starts_with($lower, 'https://') ? 8 : (str_starts_with($lower, 'http://') ? 7 : 0);
+
         // Trimmed down to just the scheme (e.g. "https://).") - not a real URL.
-        if (preg_match('{^https?://.}', $url) !== 1) {
+        if ($scheme_length > 0 && strlen($url) === $scheme_length) {
             return null;
         }
 
-        return ['segment' => ['type' => 'url', 'text' => $url], 'trailing' => $trailing];
+        // The text stays as it was written; where the scheme is missing the
+        // destination supplies one, since a link has to be absolute to lead
+        // anywhere and https is what a bare host means now.
+        return [
+            'segment' => [
+                'type' => 'url',
+                'text' => $url,
+                'href' => $scheme_length > 0 ? $url : 'https://' . $url,
+            ],
+            'trailing' => $trailing,
+        ];
     }
 
     /**

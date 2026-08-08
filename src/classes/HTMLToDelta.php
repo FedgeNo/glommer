@@ -87,7 +87,7 @@ class HTMLToDelta
 
             $tag = strtolower($child -> localName);
 
-            if (in_array($tag, self::SKIPPED_TAGS, true) || self::isHidden($child)) {
+            if (in_array($tag, self::SKIPPED_TAGS, true)) {
                 continue;
             }
 
@@ -178,23 +178,6 @@ class HTMLToDelta
         }
 
         return 'bullet';
-    }
-
-    /**
-     * Whether an element is one the sender means nobody to read. Mastodon
-     * shortens a long link by wrapping its scheme and tail in these, so taking
-     * their text would put back the very thing the sender took out - a link
-     * whose text is longer than the line it sits in.
-     */
-    private static function isHidden(\Dom\Element $element): bool
-    {
-        foreach (explode(' ', (string) $element -> getAttribute('class')) as $name) {
-            if ($name === 'invisible') {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function addText(string $text, array $inline, array $block): void

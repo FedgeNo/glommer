@@ -281,7 +281,7 @@ class DeltaRenderer extends Div
             $inner = self::formattedTextNode($doc, $segment['text'], $attrs);
 
             if ($segment['type'] === 'url') {
-                $nodes[] = self::linkedNode($doc, $segment['text'], $inner);
+                $nodes[] = self::linkedNode($doc, $segment['href'], $inner);
             } elseif ($segment['type'] === 'hashtag') {
                 $nodes[] = self::hashtagNode($doc, $segment['tag'], $inner);
             } elseif ($segment['type'] === 'mention') {

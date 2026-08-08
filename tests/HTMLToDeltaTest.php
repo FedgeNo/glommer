@@ -74,11 +74,12 @@ class HTMLToDeltaTest extends TestCase
     }
 
     /**
-     * Mastodon shortens a long link by hiding its scheme and tail. Reading
-     * those back would restore the very text the sender removed, so the link
-     * keeps its whole destination and shows only what was meant to be seen.
+     * Mastodon shortens a long link by hiding its scheme and tail behind
+     * spans. That is its idea of tidy, not ours - a link here reads as the
+     * whole address it leads to, so the hidden parts are taken like any other
+     * words.
      */
-    public function testAShortenedLinkKeepsItsDestinationAndNotItsHiddenText(): void
+    public function testAShortenedLinkIsPutBackTogetherWhole(): void
     {
         $ops = HTMLToDelta::convert(
             '<p><a href="https://example.test/verylong">'
@@ -86,11 +87,15 @@ class HTMLToDeltaTest extends TestCase
             . '<span class="invisible">long</span></a></p>'
         );
 
-        $this -> assertSame('example.test/very' . self::NEWLINE, $this -> text($ops));
-        $this -> assertSame(
-            ['link' => 'https://example.test/verylong'],
-            $this -> attributesOf($ops, 'example.test/very')
-        );
+        $this -> assertSame('https://example.test/verylong' . self::NEWLINE, $this -> text($ops));
+
+        // One span per piece, so the address arrives as three runs rather than
+        // one - every one of them part of the same link.
+        foreach ($ops as $op) {
+            if ($op['insert'] !== self::NEWLINE) {
+                $this -> assertSame(['link' => 'https://example.test/verylong'], $op['attributes'] ?? []);
+            }
+        }
     }
 
     /**

@@ -266,6 +266,12 @@ class LinkifierTest extends TestCase
             '#CAFÉ shouting',
             'café#nope',
             'emoji #ok🎉 tail',
+            // Written without a scheme, which is how most links read on the
+            // Fediverse - and the sentences that only look like one.
+            'see example.com/thing here',
+            'visit www.example.com today',
+            'e.g. that is all and Node.js is fine',
+            'at example.com/a. Next',
         ];
 
         $php_output = array_map(static fn (string $text): array => Linkifier::tokenize($text), $cases);

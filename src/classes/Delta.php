@@ -89,7 +89,44 @@ class Delta
             }
         }
 
-        return $clean;
+        return self::merged($clean);
+    }
+
+    /**
+     * Consecutive runs that read the same way, folded into one.
+     *
+     * A delta is canonically compact - Quill's own never carries two adjacent
+     * runs with identical formatting - but one built from markup does: a link
+     * whose address is split across three spans arrives as three runs of the
+     * same link. Rendered they are indistinguishable, so nothing downstream
+     * noticed; written back out as markdown they are three links where the
+     * author wrote one.
+     *
+     * @param array[] $ops
+     * @return array[]
+     */
+    private static function merged(array $ops): array
+    {
+        $merged = [];
+
+        foreach ($ops as $op) {
+            $last = count($merged) - 1;
+
+            if (
+                $last >= 0
+                && is_string($op['insert'])
+                && is_string($merged[$last]['insert'])
+                && ($merged[$last]['attributes'] ?? []) === ($op['attributes'] ?? [])
+            ) {
+                $merged[$last]['insert'] .= $op['insert'];
+
+                continue;
+            }
+
+            $merged[] = $op;
+        }
+
+        return $merged;
     }
 
     /**

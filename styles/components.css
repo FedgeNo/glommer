@@ -533,6 +533,23 @@ label.visually-hidden { margin-bottom: 0; }
     border-bottom-right-radius: var(--radius-card);
 }
 
+/* The other way of writing the same post, standing where the editor stands so
+   switching moves nothing around it. Monospaced, because what is typed here
+   is markers as much as it is words. */
+.MarkdownInput {
+    width: 100%;
+    min-height: 7.25rem;
+    padding: 0.75rem;
+    background-color: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    resize: vertical;
+}
+
 .ql-editor.ql-blank::before {
     color: var(--muted);
     opacity: 1;

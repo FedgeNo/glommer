@@ -98,6 +98,11 @@ export class Composer {
         this.linkInput    = form.querySelector('[name="linkURL"]');
         this.fileInput    = form.querySelector('[name="files[]"]');
         this.descriptionInput = form.querySelector('.DescriptionInput');
+        this.markdownInput  = form.querySelector('.MarkdownInput');
+        this.markdownButton = form.querySelector('.MarkdownModeButton');
+
+        /** Whether the textarea is the one being written in. */
+        this.markdownMode = false;
 
         this.submitButton       = form.querySelector('button[type="submit"]');
         this.removeFilesButton  = form.querySelector('.ComposerFilesRemoveButton');
@@ -239,6 +244,16 @@ export class Composer {
         editorContainer.className = 'QuillEditor';
         editorColumn.appendWithSpace(editorContainer);
 
+        // The other way of writing the same post. Hidden until asked for; the
+        // two are never both in play, and whichever is showing is the one the
+        // body comes from.
+        const markdownInput = document.createElement('textarea');
+        markdownInput.className = 'MarkdownInput';
+        markdownInput.setAttribute('aria-label', 'Post text as markdown');
+        markdownInput.placeholder = Composer.PLACEHOLDER;
+        markdownInput.style.display = 'none';
+        editorColumn.appendWithSpace(markdownInput);
+
         editorRow.appendWithSpace(editorColumn);
         fieldset.appendWithSpace(editorRow);
 
@@ -252,6 +267,12 @@ export class Composer {
 
         const actions = document.createElement('div');
         actions.className = 'd-flex align-items-center gap-2 ms-auto ComposerActions';
+
+        const markdownBtn = document.createElement('button');
+        markdownBtn.type = 'button';
+        markdownBtn.className = 'Button MarkdownModeButton';
+        markdownBtn.textContent = 'Markdown';
+        actions.appendWithSpace(markdownBtn);
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';
@@ -444,7 +465,13 @@ export class Composer {
     }
 
     #formHasContent() {
-        return (this.#quill?.getText().trim() ?? '') !== ''
+        // Whichever mode is showing is where the words are; the other one is
+        // holding a copy from before the last switch.
+        const body = this.markdownMode
+            ? (this.markdownInput?.value ?? '')
+            : (this.#quill?.getText() ?? '');
+
+        return body.trim() !== ''
             || (this.titleInput?.value.trim() ?? '') !== ''
             || (this.linkInput?.value.trim() ?? '') !== '';
     }
@@ -553,6 +580,11 @@ export class Composer {
         // Guarded: the test runner's Quill stand-in has no event emitter.
         if (typeof this.#quill.on === 'function') {
             this.#quill.on('text-change', () => this.#syncSubmitState());
+        }
+
+        if (this.markdownButton) {
+            this.markdownButton.addEventListener('click', () => this.#toggleMarkdownMode());
+            this.markdownInput?.addEventListener('input', () => this.#syncSubmitState());
         }
 
         // The emoji picker lives in Quill's own toolbar - a bare clickable
@@ -947,7 +979,68 @@ export class Composer {
         });
     }
 
-    #submit() {
+    /**
+     * One body converted to the other way of writing it, or null when the
+     * server would not. Conversion lives there rather than here so markdown
+     * means one thing on this site: the same pair that reads an inbound
+     * Fediverse post reads a member's markdown.
+     */
+    static async #converted(body, to) {
+        const result = await Api.post('/api/convert-body', { body, to });
+
+        return result ? result.body : null;
+    }
+
+    /**
+     * Swaps which of the two the post is being written in, carrying the words
+     * across. Lossless in the direction that matters - what is stored is the
+     * delta, and a delta written out as markdown and read back is the same
+     * delta - though markdown typed by hand comes back in the site's own
+     * spelling, since *x* and _x_ are one thing and only one can be written.
+     */
+    async #toggleMarkdownMode() {
+        this.markdownButton.disabled = true;
+
+        try {
+            if (this.markdownMode) {
+                const delta = await Composer.#converted(this.markdownInput.value, 'delta');
+
+                if (delta === null) {
+                    return;
+                }
+
+                this.#quill.setContents(JSON.parse(delta).ops);
+            } else {
+                const markdown = await Composer.#converted(JSON.stringify(this.#quill.getContents()), 'markdown');
+
+                if (markdown === null) {
+                    return;
+                }
+
+                this.markdownInput.value = markdown;
+            }
+        } finally {
+            this.markdownButton.disabled = false;
+        }
+
+        this.markdownMode = !this.markdownMode;
+        this.markdownInput.style.display = this.markdownMode ? '' : 'none';
+        this.editorContainer.style.display = this.markdownMode ? 'none' : '';
+        this.markdownButton.textContent = this.markdownMode ? 'Rich Text' : 'Markdown';
+        this.markdownButton.classList.toggle('Removing', this.markdownMode);
+
+        // Quill's toolbar is its own element beside the editor, and it means
+        // nothing while the textarea is the one being written in.
+        const toolbar = this.#form.querySelector('.ql-toolbar');
+
+        if (toolbar) {
+            toolbar.style.display = this.markdownMode ? 'none' : '';
+        }
+
+        this.#syncSubmitState();
+    }
+
+    async #submit() {
         if (!this.#quill) return;
 
         // A picked publish time turns the submit into a scheduling - the
@@ -964,7 +1057,20 @@ export class Composer {
             return;
         }
 
-        this.descriptionInput.value = JSON.stringify(this.#quill.getContents());
+        // Whichever mode is showing is the one the post comes from, and the
+        // form only ever carries a delta - so a markdown body is converted
+        // here rather than the endpoints learning a second format.
+        if (this.markdownMode) {
+            const delta = await Composer.#converted(this.markdownInput.value, 'delta');
+
+            if (delta === null) {
+                return;
+            }
+
+            this.descriptionInput.value = delta;
+        } else {
+            this.descriptionInput.value = JSON.stringify(this.#quill.getContents());
+        }
 
         this.submitButton.disabled = true;
         this.progressBar.value = 0;

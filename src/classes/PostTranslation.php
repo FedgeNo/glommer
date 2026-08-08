@@ -67,51 +67,6 @@ class PostTranslation
         return $base;
     }
 
-    /**
-     * How a moderation model labels its answer. The configured model is
-     * usually the free-models router, which picks whatever is free at the
-     * moment - and some of what it picks classifies a message instead of
-     * translating it, answering with one of these and nothing else.
-     */
-    private const VERDICT_LABELS = ['user safety:', 'safety:', 'content safety:', 'classification:'];
-
-    /**
-     * The translated words in a model's answer: the answer itself, minus a
-     * verdict line at either end of it. The empty string when the verdict was
-     * the whole answer and no translation came back at all.
-     */
-    public static function translationFrom(string $translated): string
-    {
-        $lines = explode(chr(10), $translated);
-
-        while ($lines !== [] && self::isVerdict($lines[0])) {
-            array_shift($lines);
-        }
-
-        while ($lines !== [] && self::isVerdict($lines[count($lines) - 1])) {
-            array_pop($lines);
-        }
-
-        return trim(implode(chr(10), $lines));
-    }
-
-    private static function isVerdict(string $line): bool
-    {
-        $line = strtolower(trim($line));
-
-        if ($line === '') {
-            return false;
-        }
-
-        foreach (self::VERDICT_LABELS as $label) {
-            if (str_starts_with($line, $label)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static function cached(int $post_id, string $language): ?string
     {
         $row = DB::row('
@@ -159,12 +114,15 @@ SELECT `body`
             $answer = OpenRouter::chat($messages, 2000);
 
             // Nothing came back at all - a missing key, a dead API. Asking
-            // again would fail the same way, however many times.
+            // again would fail the same way, however many times. An empty
+            // string is the other case: a model answered with a verdict and
+            // OpenRouter took it off, which the next roll of the router will
+            // not do.
             if ($answer === null) {
                 return null;
             }
 
-            $translated = self::translationFrom(trim(ControlCharacters::strip($answer)));
+            $translated = trim(ControlCharacters::strip($answer));
         }
 
         if ($translated === '' || strlen($translated) > 65535) {

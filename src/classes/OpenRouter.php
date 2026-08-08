@@ -49,10 +49,37 @@ class OpenRouter
     }
 
     /**
-     * One chat completion, or null for any failure at all - a caller here is
-     * always a background job or a request someone chose to wait on, and
-     * "no answer" has to be an ordinary outcome, never an exception climbing
-     * into a timer.
+     * How a moderation model labels its answer.
+     *
+     * The router picks whatever is free at the moment, and some of what it
+     * picks classifies the message instead of doing as it was asked - back
+     * comes "User Safety: safe", or a list of categories, and nothing else.
+     * Every caller here would otherwise publish that as its answer: a
+     * translation nobody can read, a topic summary sitting on a tag page.
+     *
+     * Matched by the label a verdict opens with, because the verdict itself is
+     * whatever that model felt like saying. New ones turn up as the free set
+     * changes; this is the list to add them to.
+     */
+    private const VERDICT_LABELS = [
+        'user safety:',
+        'safety:',
+        'safety categories:',
+        'content safety:',
+        'classification:',
+    ];
+
+    /**
+     * One chat completion.
+     *
+     * Three outcomes, and the difference matters to a caller deciding whether
+     * to ask again: the answer, or the empty string when a model answered with
+     * nothing but a verdict (a bad roll of the router - asking again lands
+     * somewhere else), or null when there was no answer at all (no key, no
+     * network, nothing to try differently).
+     *
+     * Never an exception: a caller here is always a background job or a
+     * request someone chose to wait on.
      *
      * @param array<int, array{role: string, content: string}> $messages
      */
@@ -97,6 +124,49 @@ class OpenRouter
         $decoded = json_decode($response, true);
         $content = $decoded['choices'][0]['message']['content'] ?? null;
 
-        return is_string($content) && trim($content) !== '' ? trim($content) : null;
+        if (!is_string($content) || trim($content) === '') {
+            return null;
+        }
+
+        return self::withoutVerdict(trim($content));
+    }
+
+    /**
+     * The answer with any verdict taken off, front or back - and the empty
+     * string when the verdict was the whole of it.
+     *
+     * Stripped here rather than by each caller so a model that classifies
+     * cannot be published by whichever feature forgot to look.
+     */
+    public static function withoutVerdict(string $answer): string
+    {
+        $lines = explode(chr(10), $answer);
+
+        while ($lines !== [] && self::isVerdict($lines[0])) {
+            array_shift($lines);
+        }
+
+        while ($lines !== [] && self::isVerdict($lines[count($lines) - 1])) {
+            array_pop($lines);
+        }
+
+        return trim(implode(chr(10), $lines));
+    }
+
+    private static function isVerdict(string $line): bool
+    {
+        $line = strtolower(trim($line));
+
+        if ($line === '') {
+            return false;
+        }
+
+        foreach (self::VERDICT_LABELS as $label) {
+            if (str_starts_with($line, $label)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -205,12 +205,6 @@ SELECT `Posts`.`postId`
     if ($quoted_exists === null) {
         JSONResponse::error('The post being quoted no longer exists.', 404) -> send();
     }
-
-    // Video and audio publish through the async worker, whose staged batches
-    // don't carry the reference. Images process synchronously and ride fine.
-    if (count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0) {
-        JSONResponse::error('A quote post can carry images, but not video or audio.', 422) -> send();
-    }
 }
 
 // Checked here as well as in Poll::create, which answers an unusable duration
@@ -303,6 +297,13 @@ if (!$has_text && $valid_files === []) {
 }
 
 $needs_async = count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0;
+
+// Asked here rather than up with the rest of the quote checks, because it is
+// the first point at which what was attached is known - video and audio
+// publish through the worker, whose staged batches carry no quoted reference.
+if ($needs_async && $quoted_post_id !== null) {
+    JSONResponse::error('A quote post can carry images, but not video or audio.', 422) -> send();
+}
 
 if ($needs_async) {
     // Paced because staging is not the part that waits. The worker decides how

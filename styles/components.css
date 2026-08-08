@@ -424,12 +424,16 @@ emoji-picker.Active {
    was added. Now a change is confined to its own group and the primary
    actions stay where the hand expects them. */
 .ComposerActions {
+    display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    /* Level with the last row of the left group rather than floating against
+       the middle of it, when that group has taken more than one line. */
+    align-items: flex-end;
 }
 
-.ComposerContentActions,
-.ComposerCommitActions {
+/* The left group wraps within itself as it runs out of room. */
+.ComposerContentActions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -439,8 +443,20 @@ emoji-picker.Active {
 /* Saving and posting stay together at the end, on whatever line they finish
    on. A margin rather than space-between, which only holds while both groups
    share a line - once the left group wraps, the pair would be left-aligned on
-   a line of their own. */
-.ComposerCommitActions { margin-left: auto; }
+   a line of their own.
+ *
+ * The pair itself never breaks or squashes, which is what makes it move as
+ * one: it rides the end of the first line while there is room for both, and
+ * takes a line of its own the moment there is not, rather than leaving Save
+ * Draft up there with Post alone underneath. */
+.ComposerCommitActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+}
 
 /* Every wording the button can show, stacked in one cell so the widest of
    them sets the width once and toggling never resizes it. */

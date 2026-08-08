@@ -267,7 +267,7 @@ export class Composer {
         form.appendWithSpace(fieldset);
 
         const actions = document.createElement('div');
-        actions.className = 'd-flex align-items-center ComposerActions';
+        actions.className = 'ComposerActions';
 
         // What goes into the post, and separately what to do with it. Kept
         // apart so neither group's changes move the other.

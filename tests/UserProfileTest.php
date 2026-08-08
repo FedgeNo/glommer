@@ -67,11 +67,56 @@ SELECT *
         $this -> assertSame('View Friends (1)', $reloaded -> friendsButtonLabel());
     }
 
-    public function testARemoteProfileGetsNoCount(): void
+    /** The rendered actions on a card, as the admin sees them. */
+    private static function actionsFor(User $user): string
     {
-        // Friendship is a relationship held here; people follow a Fediverse
-        // account rather than befriending it, so a number beside their name
-        // would state something about them that is only true of this server.
-        $this -> assertSame('View Friends', self::shadowUser() -> friendsButtonLabel());
+        $was = $_SESSION['userId'] ?? null;
+        // The admin, who is the only one offered the moderator button at all.
+        $_SESSION['userId'] = 1;
+
+        try {
+            (new \ReflectionProperty(HTMLObject::class, 'document')) -> setValue(null, new \DOMDocument());
+
+            // Hydrated straight off the row as the card's own class, the way
+            // every listing builds one.
+            $card = DB::row('
+SELECT *
+    FROM `Users`
+    WHERE `userId` = ?
+', 'OtherUser', 'i', (int) $user -> userId);
+
+            $element = $card -> toDOM();
+            HTMLObject::currentDocument() -> appendChild($element);
+
+            return (string) HTMLObject::currentDocument() -> saveHTML($element);
+        } finally {
+            if ($was === null) {
+                unset($_SESSION['userId']);
+            } else {
+                $_SESSION['userId'] = $was;
+            }
+        }
+    }
+
+    /**
+     * Neither of these means anything for an account that lives elsewhere.
+     * Friendship is held on this server, and moderating is done by signing in
+     * here - which nobody on another server can do.
+     */
+    public function testAFediverseAccountIsOfferedNeitherFriendsNorModeration(): void
+    {
+        $markup = self::actionsFor(self::shadowUser());
+
+        $this -> assertFalse(str_contains($markup, '/friends'), 'a Fediverse account has no friends here to view');
+        $this -> assertFalse(str_contains($markup, 'UserModButton'), 'a Fediverse account cannot moderate this server');
+    }
+
+    /** A member is offered both, which is what makes their absence above mean something. */
+    public function testAMemberIsOfferedBoth(): void
+    {
+        $markup = self::actionsFor(self::localUser());
+
+        $this -> assertTrue(str_contains($markup, '/friends'));
+        $this -> assertTrue(str_contains($markup, 'UserModButton'));
     }
 }

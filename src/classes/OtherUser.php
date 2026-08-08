@@ -60,11 +60,14 @@ class OtherUser extends User
             $message_link = new Anchor(ServerURL::absolute('/messages/' . $this -> slug), 'Message');
             $message_link -> class = 'Button';
             $actions -> addContent($message_link);
-        }
 
-        $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), $this -> friendsButtonLabel());
-        $friends_link -> class = 'Button';
-        $actions -> addContent($friends_link);
+            // Friendship is a thing that happens here, between two people who
+            // both signed up. A Fediverse account has no friends on this site
+            // to look at, so it is offered no way to look at them.
+            $friends_link = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/friends'), $this -> friendsButtonLabel());
+            $friends_link -> class = 'Button';
+            $actions -> addContent($friends_link);
+        }
 
         if ($friendship !== null && $friendship -> status === 'accepted') {
             $actions -> addContent(new FriendRemoveButton($this -> userId));
@@ -75,8 +78,10 @@ class OtherUser extends User
         }
 
         // Only the primary admin can promote/demote moderators - not mods
-        // themselves, to avoid a mod-promotes-mod escalation chain.
-        if ($viewer_id === 1) {
+        // themselves, to avoid a mod-promotes-mod escalation chain. And only
+        // members: moderating happens by signing in here, which nobody on
+        // another server can do.
+        if ($viewer_id === 1 && $this -> remoteActorURI === null) {
             $actions -> addContent(new UserModButton($this -> userId, (bool) $this -> isMod));
         }
 

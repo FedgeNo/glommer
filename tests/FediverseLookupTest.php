@@ -51,6 +51,22 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `remoteActorURI`, `verifie
     }
 
     /**
+     * Handles are written with capitals - @Gargron@mastodon.social is how that
+     * one appears everywhere - while parsing lowercases them. Comparing the
+     * two literally rejected every handle anybody actually types, which is
+     * exactly what the fixtures here missed by being lowercase hex.
+     */
+    public function testACapitalisedHandleIsStillTheSameHandle(): void
+    {
+        $unique = bin2hex(random_bytes(4));
+        $handle = 'dave' . $unique . '@example.social';
+        $user_id = $this -> remoteAccount($handle, 'https://example.social/users/dave' . $unique);
+
+        $this -> assertSame($user_id, (int) FediverseLookup::find('@Dave' . $unique . '@Example.Social') -> userId);
+        $this -> assertSame($user_id, (int) FediverseLookup::find('DAVE' . $unique . '@EXAMPLE.SOCIAL') -> userId);
+    }
+
+    /**
      * The query has to be the handle and nothing else. Somebody searching for
      * words that happen to contain an address is searching for words, and must
      * not send this server off to fetch a stranger.

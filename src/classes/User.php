@@ -361,19 +361,16 @@ SELECT IF(`requesterId` = ?, `addresseeId`, `requesterId`) AS `friendId`
     /**
      * The label on a profile's Friends button, carrying how many they have.
      *
-     * A remote account gets the bare word. Friendship is a relationship held on
-     * this server, and a shadow row has none by definition - people follow
-     * those accounts rather than befriending them - so a count beside their
-     * name would read as a fact about them when it is only a fact about us.
+     * Asked only of a member: friendship is a relationship held on this
+     * server, so a Fediverse account is offered no Friends button at all
+     * rather than one leading to an empty list (see OtherUser).
      *
      * Reads the maintained friendCount cache, the same figure the friend cap is
      * enforced against, rather than counting Friendships for a label.
      */
     public function friendsButtonLabel(): string
     {
-        return $this -> remoteActorURI === null
-            ? 'View Friends (' . $this -> friendCount . ')'
-            : 'View Friends';
+        return 'View Friends (' . $this -> friendCount . ')';
     }
 
     /**

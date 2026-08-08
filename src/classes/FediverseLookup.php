@@ -59,7 +59,11 @@ class FediverseLookup
         // Everything else in the query has to be the handle's own punctuation
         // - a leading @, whitespace - or this is a search for a phrase that
         // happens to contain one.
-        if (trim($query, " \t@") !== $user . '@' . $domain) {
+        //
+        // Compared without case, because the parse lowercases a handle and
+        // people do not: @Gargron@mastodon.social is how that one is written
+        // everywhere it appears.
+        if (strcasecmp(trim($query, " \t@"), $user . '@' . $domain) !== 0) {
             return null;
         }
 

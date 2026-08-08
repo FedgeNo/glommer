@@ -118,11 +118,16 @@ export class OtherUser extends User {
 
             actions.appendWithSpace(message_link);
 
-            const friends_link = document.createElement('a');
-            friends_link.className = 'Button';
-            friends_link.href = ClientConfig.siteURL() + '/users/' + this.slug + '/friends';
-            friends_link.textContent = 'View Friends';
-            actions.appendWithSpace(friends_link);
+            // Mirrors OtherUser.php: friendship happens here, between two
+            // people who both signed up, so a Fediverse account has none on
+            // this site to look at.
+            if (!this.remote) {
+                const friends_link = document.createElement('a');
+                friends_link.className = 'Button';
+                friends_link.href = ClientConfig.siteURL() + '/users/' + this.slug + '/friends';
+                friends_link.textContent = 'View Friends';
+                actions.appendWithSpace(friends_link);
+            }
 
             if (this.friendshipStatus === 'accepted') {
                 const remove_friend_button = document.createElement('button');
@@ -133,7 +138,9 @@ export class OtherUser extends User {
                 actions.appendWithSpace(remove_friend_button);
             }
 
-            if (Number(ClientConfig.get('currentUserId')) === 1) {
+            // Members only: moderating happens by signing in here, which
+            // nobody on another server can do.
+            if (Number(ClientConfig.get('currentUserId')) === 1 && !this.remote) {
                 const mod_button = document.createElement('button');
                 mod_button.type = 'button';
                 mod_button.className = 'Button UserModButton';

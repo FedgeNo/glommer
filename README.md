@@ -474,8 +474,30 @@ systemctl --user enable --now glommer-backup.timer
 loginctl enable-linger "$USER"
 ```
 
-**Restore**: create the database, `gunzip -c database.sql.gz | mysql glommer`,
-untar `uploads.tar.gz` into the project root, visit the site.
+**Restore**: `bin/restore.php` puts a run back - the database and the uploads
+tree together.
+
+```
+php bin/restore.php                                   # what it would do, and nothing else
+php bin/restore.php 2026-08-08_085356                 # ditto, for a named run
+GLOMMER_RESTORE_CONFIRMED=1 sudo php bin/restore.php  # go ahead, newest run
+```
+
+Without the confirmation it only reports; nothing is changed. A run is named,
+never given as a path, and the name is resolved under this install's own
+backup root - so no argument reaches another server's backups. Run it as root
+(or set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD`): the dump drops and recreates
+every table, which the least-privilege runtime account cannot do.
+
+The uploads tree is moved to `uploads.before-restore-<timestamp>` rather than
+deleted, so a restore onto the wrong install is survivable; remove it once
+you're satisfied. If the backup predates the code, the database comes back a
+version behind and the site holds a maintenance page until `bin/install.php`
+catches it up.
+
+**Rehearse it.** A backup nobody has restored is not known to be a backup.
+Restore on a development machine, from that machine's own backup - never
+production's database onto anywhere else.
 
 ## 10. Email deliverability
 

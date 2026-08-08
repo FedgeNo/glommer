@@ -65,7 +65,12 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
 
         foreach ($wanting as $quoting_id => $quoted_id) {
             if (isset($by_quoted_id[$quoted_id])) {
-                $attached[$quoting_id] = $by_quoted_id[$quoted_id];
+                // One instance each, because rendering one is a one-shot act:
+                // two posts quoting the same post are two embeds to draw, and
+                // handing both the same object makes the second render throw
+                // and take the whole page with it. One row read, several
+                // objects made from it.
+                $attached[$quoting_id] = clone $by_quoted_id[$quoted_id];
             }
         }
 

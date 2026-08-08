@@ -269,24 +269,21 @@ export class Composer {
         const actions = document.createElement('div');
         actions.className = 'ComposerActions';
 
-        // What goes into the post, and separately what to do with it. Kept
-        // apart so neither group's changes move the other.
-        const contentActions = document.createElement('div');
-        contentActions.className = 'ComposerContentActions';
-        actions.appendWithSpace(contentActions);
-
+        // The buttons flow as one sequence and wrap as one, so what goes into
+        // the post fills the line and what to do with it rides the end of it.
+        // Only the committing pair is grouped, to keep the two together.
         const commitActions = document.createElement('div');
         commitActions.className = 'ComposerCommitActions';
 
         const markdownBtn = ToggleButton.build(['Use Markdown', 'Use Rich Text'], 'MarkdownModeButton');
-        contentActions.appendWithSpace(markdownBtn);
+        actions.appendWithSpace(markdownBtn);
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';
         removeFilesBtn.className = 'Button ComposerFilesRemoveButton Removing';
         removeFilesBtn.style.display = 'none';
         removeFilesBtn.textContent = 'Remove Files';
-        contentActions.appendWithSpace(removeFilesBtn);
+        actions.appendWithSpace(removeFilesBtn);
 
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -294,7 +291,7 @@ export class Composer {
         fileInput.multiple = true;
         fileInput.accept = 'image/*,video/*,audio/*';
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
-        contentActions.appendWithSpace(fileInput);
+        actions.appendWithSpace(fileInput);
 
         // Classifies this post's media as something to opt into seeing. A real
         // checkbox, so it rides along in the form's own FormData and there is
@@ -314,7 +311,7 @@ export class Composer {
         sensitiveToggle.appendWithSpace(sensitiveInput);
         sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
 
-        contentActions.appendWithSpace(sensitiveToggle);
+        actions.appendWithSpace(sensitiveToggle);
 
         // Optional geolocation: the button toggles between attaching the browser's
         // current position and removing it; the hidden inputs ride along in the
@@ -330,16 +327,16 @@ export class Composer {
         form.appendWithSpace(longitudeInput);
 
         const locationButton = ToggleButton.build(['Add Location', 'Remove Location', 'Locating…'], 'LocationButton');
-        contentActions.appendWithSpace(locationButton);
+        actions.appendWithSpace(locationButton);
 
         const pollButton = ToggleButton.build(['Add Poll', 'Remove Poll'], 'ComposerPollButton');
-        contentActions.appendWithSpace(pollButton);
+        actions.appendWithSpace(pollButton);
 
         // Drafts and scheduling - text/link posts only; #syncFields puts both
         // away when files or a poll are in play, since those publish through
         // paths a StagedPosts row can't carry.
         const scheduleButton = ToggleButton.build(['Add Schedule', 'Remove Schedule'], 'ComposerScheduleButton');
-        contentActions.appendWithSpace(scheduleButton);
+        actions.appendWithSpace(scheduleButton);
 
         // The clock lives in its own row above the buttons, the way the poll
         // fields do. A date input and a separate, optional time -

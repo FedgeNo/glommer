@@ -288,7 +288,13 @@ SELECT `postId`
         $this -> assertNull(self::postIdForRemoteObject($object_uri));
     }
 
-    public function testAReplyToAnUnknownPostIsIgnoredEntirely(): void
+    /**
+     * A reply to a thread this server has never seen is not filed with no
+     * context - and no longer thrown away either. It is queued, so the worker
+     * can go up the thread and place it, which is the one part the inbox must
+     * not do itself: a signed request per post while a delivery waits on it.
+     */
+    public function testAReplyToAnUnknownPostIsQueuedRatherThanFiledOrDropped(): void
     {
         $actor_uri = 'https://remote.test/users/' . bin2hex(random_bytes(6));
         self::createShadowUser($actor_uri);
@@ -304,7 +310,21 @@ SELECT `postId`
             ],
         ], $actor_uri);
 
+        // Nothing stored: it has nowhere to hang until the thread above it is
+        // read.
         $this -> assertNull(self::postIdForRemoteObject($object_uri));
+
+        $queued = mysqli_stmt_get_result(DB::run('
+SELECT `relayId`
+    FROM `RelayFetches`
+    WHERE `objectURI` = ?
+', 's', $object_uri));
+
+        $row = mysqli_fetch_assoc($queued);
+
+        $this -> assertNotNull($row, 'the reply should be queued for the worker to complete');
+        // No relay named it - this one is a thread to finish reading.
+        $this -> assertNull($row['relayId']);
     }
 
     public function testAReplyToAKnownRemotePostThreadsCorrectly(): void

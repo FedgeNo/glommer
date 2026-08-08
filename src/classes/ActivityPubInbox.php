@@ -206,7 +206,7 @@ class ActivityPubInbox
      *              more try. Everything else - stored, blocked, not a post we
      *              take - is finished with, however it turned out.
      */
-    public static function fetchRelayedPost(string $object_uri, int $relay_id): bool
+    public static function fetchRelayedPost(string $object_uri, ?int $relay_id): bool
     {
         // Re-checked rather than assumed: this was queued some time ago, and
         // the post may have arrived through a follow in the meantime, or its
@@ -218,7 +218,9 @@ class ActivityPubInbox
         $existing = self::postIdForRemoteObject($object_uri);
 
         if ($existing !== null) {
-            Relay::recordPost($existing, $relay_id);
+            if ($relay_id !== null) {
+                Relay::recordPost($existing, $relay_id);
+            }
 
             return true;
         }
@@ -246,11 +248,19 @@ class ActivityPubInbox
             return true;
         }
 
-        // A reply read out of context has nothing here to hang from, the same
-        // rule the follow path applies - and a relay carries a great many of
-        // them.
-        if (isset($object['inReplyTo']) && $object['inReplyTo'] !== null && $object['inReplyTo'] !== '') {
-            return true;
+        // A reply needs something to hang from. This is the worker, so it can
+        // go and get it: up the thread until it reaches a post already held or
+        // one that started a conversation. A reply whose thread cannot be
+        // completed is given up on rather than filed with no context.
+        $in_reply_to = $object['inReplyTo'] ?? null;
+        $parent_id = null;
+
+        if (is_string($in_reply_to) && $in_reply_to !== '') {
+            $parent_id = self::completeThread($in_reply_to);
+
+            if ($parent_id === null) {
+                return true;
+            }
         }
 
         $author = RemoteActor::ensureKnown($attributed_to);
@@ -259,20 +269,100 @@ class ActivityPubInbox
             return true;
         }
 
-        $post_id = self::storeNote($object, $object_uri, $author);
+        $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
 
         if ($post_id === null) {
             return true;
         }
 
-        Relay::recordPost($post_id, $relay_id);
+        if ($relay_id !== null) {
+            Relay::recordPost($post_id, $relay_id);
+        }
 
         // Somebody here may follow this author anyway - the relay just got the
         // post here first. Fanning out is what puts it in their feed as well as
-        // in the firehose; with no follower it writes nothing.
-        Timeline::fanOutRemotePost($attributed_to, $post_id);
+        // in the firehose; with no follower it writes nothing. Only what starts
+        // a conversation: a reply is reached through the post it answers.
+        if ($parent_id === null) {
+            Timeline::fanOutRemotePost($attributed_to, $post_id);
+        }
 
         return true;
+    }
+
+    /**
+     * How far up a thread this will climb. A conversation deeper than this is
+     * one whose beginning nobody here is waiting on, and the cap is what stops
+     * a long thread - or one that answers itself in a circle - turning into an
+     * unbounded run of requests.
+     */
+    private const MAX_THREAD_DEPTH = 10;
+
+    /**
+     * The post a reply hangs from, reading the thread above it when this
+     * server has not seen it - and the posts above that, as far as the cap.
+     *
+     * Only ever from the worker. Each step is a signed request to somebody
+     * else's server, which is exactly what the inbox must not do while a
+     * delivery waits on it (see relayedPost).
+     *
+     * @return int|null the parent's postId, or null when the thread cannot be
+     *                  completed and the reply has nowhere to go
+     */
+    private static function completeThread(string $object_uri, int $depth = 0): ?int
+    {
+        $held = self::postIdForRemoteObject($object_uri);
+
+        if ($held !== null) {
+            return $held;
+        }
+
+        if ($depth >= self::MAX_THREAD_DEPTH || !self::isStorableObjectURI($object_uri)) {
+            return null;
+        }
+
+        if (RemoteObjectTombstone::isTombstoned($object_uri) || RemoteServer::isBlockedURL($object_uri)) {
+            return null;
+        }
+
+        $object = ActivityPubFetch::object($object_uri);
+
+        if ($object === null || !in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
+            return null;
+        }
+
+        // The same rule every inbound object passes: the document has to be
+        // the one asked for, and attributed to somebody on its own host.
+        $id = is_string($object['id'] ?? null) ? $object['id'] : '';
+        $attributed_to = $object['attributedTo'] ?? null;
+
+        if ($id !== $object_uri || !is_string($attributed_to) || !RemoteActor::sameHost($attributed_to, $object_uri)) {
+            return null;
+        }
+
+        // Up first, so this post has its own place before it becomes one.
+        $in_reply_to = $object['inReplyTo'] ?? null;
+        $parent_id = null;
+
+        if (is_string($in_reply_to) && $in_reply_to !== '') {
+            $parent_id = self::completeThread($in_reply_to, $depth + 1);
+
+            if ($parent_id === null) {
+                return null;
+            }
+        }
+
+        $author = RemoteActor::ensureKnown($attributed_to);
+
+        if ($author === null || $author -> banned === 1) {
+            return null;
+        }
+
+        $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
+
+        // Nobody here asked for these - they are context for a reply somebody
+        // did - so they fill the thread out without also filling feeds.
+        return $post_id;
     }
 
     /** An object reference is either the URI itself or a document carrying its id. */
@@ -737,10 +827,16 @@ UPDATE `Posts`
         if (is_string($in_reply_to) && $in_reply_to !== '') {
             $parent_id = self::postIdForRemoteObject($in_reply_to);
 
-            // Not in reply to anything on this site (a post we don't hold) -
-            // ignored outright, per the scoping decision: no dangling replies
-            // with unresolvable context.
+            // A reply to a post this server has never seen. It used to be
+            // dropped, which left a member reading half a conversation - the
+            // branch that happened to be addressed here, and nothing it was
+            // answering. So the thread is read instead: queued rather than
+            // fetched, because going up it means a signed request per post and
+            // the inbox has a delivery waiting on it. The worker picks this
+            // same reply up and completes it (see completeThread).
             if ($parent_id === null) {
+                RelayFetch::enqueue($object_uri, null);
+
                 return;
             }
         }

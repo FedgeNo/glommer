@@ -57,6 +57,29 @@ INSERT INTO `Relays` (`actorURI`, `inboxURL`, `followActivityId`, `followObject`
     }
 
     /** Two relays naming the same post is one thing to read, not two. */
+    /**
+     * A thread to finish reading is queued the same way a relayed post is,
+     * naming no relay - the queue is addresses to read, and where an address
+     * came from only decides whether it also belongs to a firehose.
+     */
+    public function testAPostBelongingToNoRelayCanBeQueued(): void
+    {
+        $object_uri = 'https://elsewhere.example/notes/' . bin2hex(random_bytes(6));
+
+        RelayFetch::enqueue($object_uri, null);
+
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT `relayId`
+    FROM `RelayFetches`
+    WHERE `objectURI` = ?
+', 's', $object_uri));
+
+        $row = mysqli_fetch_assoc($result);
+
+        $this -> assertNotNull($row);
+        $this -> assertNull($row['relayId']);
+    }
+
     public function testTheSamePostQueuedTwiceIsQueuedOnce(): void
     {
         $this -> clearQueue();

@@ -82,7 +82,7 @@ while ($running) {
         }
 
         try {
-            $finished = ActivityPubInbox::fetchRelayedPost((string) $fetch -> objectURI, (int) $fetch -> relayId);
+            $finished = ActivityPubInbox::fetchRelayedPost((string) $fetch -> objectURI, $fetch -> relayId);
         } catch (\Throwable $exception) {
             // One unreadable post must not take the worker down with it -
             // every delivery queued behind it is waiting.

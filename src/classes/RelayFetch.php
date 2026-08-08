@@ -3,18 +3,21 @@
 declare(strict_types=1);
 
 /**
- * The queue of posts a relay has named and this server has yet to read.
+ * The queue of posts this server has been told about and has yet to read.
  *
- * A relay forwards a post's address rather than the post, so taking one means
- * fetching it from the server that wrote it - and that cannot happen while the
- * relay waits. Two signed fetches at five seconds each, redirects allowed, is
- * tens of seconds of a PHP worker held on somebody else's server; at the rate
- * the inbox already permits, that is enough concurrent workers to exhaust the
- * pool and stop the site answering at all. So the inbox writes down what to
- * read and returns, and bin/federation-worker.php does the reading.
+ * Two things put one here, and both are an address rather than a post. A relay
+ * forwards what other servers published; and a reply arrives whose parent this
+ * server has never seen, which is a thread to go and read the rest of.
  *
- * Unlike an outbound delivery, what is queued here is best-effort. Nobody
- * asked for any of it, so the queue is bounded and sheds new arrivals rather
+ * Either way the reading cannot happen where the address arrived. Two signed
+ * fetches at five seconds each, redirects allowed, is tens of seconds of a PHP
+ * worker held on somebody else's server; at the rate the inbox already permits,
+ * that is enough concurrent workers to exhaust the pool and stop the site
+ * answering at all. So the inbox writes down what to read and returns, and
+ * bin/federation-worker.php does the reading.
+ *
+ * Unlike an outbound delivery, what is queued here is best-effort. Nobody is
+ * waiting on any of it, so the queue is bounded and sheds new arrivals rather
  * than growing without limit, and a fetch that keeps failing is given up on
  * quickly - there is always more where it came from.
  */
@@ -45,8 +48,12 @@ class RelayFetch
      * Notes a post to read later. Silent about a duplicate: two relays naming
      * the same post is one thing to fetch, and the unique key is what settles
      * which of them got there first.
+     *
+     * A null relay is a post nobody relayed - a reply whose thread this server
+     * needs to read before it can place it. It is fetched the same way and
+     * simply belongs to no firehose.
      */
-    public static function enqueue(string $object_uri, int $relay_id): void
+    public static function enqueue(string $object_uri, ?int $relay_id): void
     {
         if (self::pendingCount() >= self::MAX_PENDING) {
             return;

@@ -1027,7 +1027,6 @@ export class Composer {
         this.markdownInput.style.display = this.markdownMode ? '' : 'none';
         this.editorContainer.style.display = this.markdownMode ? 'none' : '';
         this.markdownButton.textContent = this.markdownMode ? 'Use Rich Text' : 'Use Markdown';
-        this.markdownButton.classList.toggle('Removing', this.markdownMode);
 
         // Quill's toolbar is its own element beside the editor, and it means
         // nothing while the textarea is the one being written in.

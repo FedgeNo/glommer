@@ -145,6 +145,18 @@ export class PostEditor {
 
         form.appendWithSpace(fields);
 
+        // Under what is being written, the same place the composer puts it.
+        const warningInput = document.createElement('input');
+        warningInput.type = 'text';
+        warningInput.className = 'ContentWarningInput';
+        warningInput.name = 'contentWarning';
+        warningInput.maxLength = 255;
+        warningInput.placeholder = 'Content Warning (optional)';
+        warningInput.setAttribute('aria-label', 'Content warning (optional)');
+        warningInput.value = data.contentWarning || '';
+        warningInput.style.display = data.sensitive === '1' ? '' : 'none';
+        form.appendWithSpace(warningInput);
+
         const actions = document.createElement('div');
         actions.className = 'd-flex align-items-center gap-2 ms-auto';
 
@@ -163,16 +175,6 @@ export class PostEditor {
         sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
 
         actions.appendWithSpace(sensitiveToggle);
-
-        const warningInput = document.createElement('input');
-        warningInput.type = 'text';
-        warningInput.className = 'ContentWarningInput';
-        warningInput.name = 'contentWarning';
-        warningInput.maxLength = 255;
-        warningInput.placeholder = 'Content Warning (optional)';
-        warningInput.setAttribute('aria-label', 'Content warning (optional)');
-        warningInput.value = data.contentWarning || '';
-        warningInput.style.display = sensitiveInput.checked ? '' : 'none';
 
         sensitiveInput.addEventListener('change', () => {
             warningInput.style.display = sensitiveInput.checked ? '' : 'none';
@@ -196,7 +198,6 @@ export class PostEditor {
         actions.appendWithSpace(saveButton);
 
         form.appendWithSpace(actions);
-        form.appendWithSpace(warningInput);
 
         post.insertAdjacentElement('afterend', form);
 

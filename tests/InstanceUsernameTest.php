@@ -16,6 +16,10 @@ class InstanceUsernameTest extends TestCase
     /** Not the software's name, and not a hardcoded anything: the site's own title. */
     public function testTheHandleComesFromTheSiteTitle(): void
     {
+        // The title is a real setting read from the real installation, which
+        // an unprivileged run cannot reach.
+        $this -> requireInstallation();
+
         $this -> assertSame(
             (string) preg_replace('/[^a-z0-9_]/', '', strtolower((string) Config::get('siteTitle'))),
             ActivityPubActor::instanceUsername()

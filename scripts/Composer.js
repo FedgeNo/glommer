@@ -402,6 +402,21 @@ export class Composer {
         // composer to get out of the way.
         form.appendWithSpace(Composer.pollFieldsToElement());
 
+        // The words to read before the post - under what is being written,
+        // with the schedule and the poll, since those are the other things
+        // that appear only when asked for. Optional even once asked for:
+        // marking a post is a complete answer on its own, and being made to
+        // name the thing is a reason not to warn at all.
+        const warningInput = document.createElement('input');
+        warningInput.type = 'text';
+        warningInput.className = 'ContentWarningInput';
+        warningInput.name = 'contentWarning';
+        warningInput.maxLength = 255;
+        warningInput.placeholder = 'Content Warning (optional)';
+        warningInput.setAttribute('aria-label', 'Content warning (optional)');
+        warningInput.style.display = 'none';
+        form.appendWithSpace(warningInput);
+
         // EmojiPicker – built and wired by EmojiPicker.setup
         // Last before Post: the two ways of keeping what's written, together
         // at the row's committing end.
@@ -418,20 +433,6 @@ export class Composer {
         actions.appendWithSpace(commitActions);
 
         form.appendWithSpace(actions);
-
-        // The words to read before the post. Directly under the checkbox that
-        // reveals it, and optional even then: marking a post sensitive is a
-        // complete answer on its own, and being made to name the thing is a
-        // reason not to warn at all.
-        const warningInput = document.createElement('input');
-        warningInput.type = 'text';
-        warningInput.className = 'ContentWarningInput';
-        warningInput.name = 'contentWarning';
-        warningInput.maxLength = 255;
-        warningInput.placeholder = 'Content Warning (optional)';
-        warningInput.setAttribute('aria-label', 'Content warning (optional)');
-        warningInput.style.display = 'none';
-        form.appendWithSpace(warningInput);
 
         const progress = document.createElement('progress');
         progress.className = 'ProgressBar';

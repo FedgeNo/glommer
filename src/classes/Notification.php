@@ -63,6 +63,19 @@ class Notification extends Article
     }
 
     /**
+     * The types that are somebody doing something to you, as against this
+     * server telling you about itself or about your own account.
+     *
+     * The difference only matters where notifications are read back as news:
+     * "a server error occurred" is a thing to go and look at, not a thing you
+     * missed while you were away. The default arm of textFor() below covers
+     * anything unlisted with "did something", which is fine on a page next to
+     * a timestamp and is not fine in an email, so this names what belongs
+     * rather than what does not.
+     */
+    public const FROM_A_PERSON = ['like', 'repost', 'reply', 'friendRequest', 'friendAccepted', 'message', 'mention'];
+
+    /**
      * The one wording for a notification, shared by the page, the dropdown,
      * and the Web Push a phone shows with no tab open - static because the
      * push is composed at creation time, before any hydrated instance exists.

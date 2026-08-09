@@ -120,6 +120,9 @@ a WebSocket open, transcoding video out of band).
   Settings carries a per-browser diagnostic that says which setup step fails.
 - **Notifications** - live via WebSocket (toast + unseen dot) for likes,
   replies, mentions, friend activity, messages, and media-processing results.
+- **Email digests** - after a week away, one mail saying what you missed, at
+  most one a week and never when nothing happened. One-click unsubscribe that
+  needs no password (§10).
 - **Accounts** - signup with email verification; login with "Remember me";
   forgot/reset password; email change (with a revert link mailed to the old
   address); account deletion; a **"Remembered devices"** view in Settings that
@@ -509,6 +512,20 @@ sending reputation and lands in spam. For real deliverability:
    directly; a failed send is reported immediately.
 2. **Publish SPF/DKIM/DMARC** for the `MAIL_FROM_ADDRESS` domain, matching what
    your relay documents.
+
+**Email digests** are the one mail Glommer sends that nobody asked for
+individually, so they are held to tighter rules. A member gets one only after a
+week away with a week since their last, only when something actually happened
+while they were gone, and never once they have said no. Every one carries a
+one-click unsubscribe link that works with no password and never expires; on an
+installation with no `ACTIVITYPUB_ENCRYPTION_KEY` no such link can be signed, so
+no digest is sent at all. Members switch them off under Settings → Email
+Digests, and the admin can add a closing paragraph of the server's own under
+Site Settings → Email Digest. Where an OpenRouter key is configured, the mail
+opens with a short written summary of what has been posted; without one it is
+simply the list of what was missed. They go out a trickle at a time from the
+federation worker, so a site full of dormant accounts never turns into a mail
+run.
 
 If sending fails outright, Glommer degrades deliberately: a signup whose
 verification email can't be sent is verified automatically rather than being

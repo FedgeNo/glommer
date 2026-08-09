@@ -20,6 +20,8 @@ $page -> addContent(new SettingsSection('Sensitive Media', new SensitiveMediaSet
 
 $page -> addContent(new SettingsSection('Encrypted Messages', new EncryptedMessagesSetting()));
 
+$page -> addContent(new SettingsSection('Email Digests', new EmailDigestSetting()));
+
 if (WebPushKeys::isConfigured()) {
     $page -> addContent(new SettingsSection('Push Notifications', new PushNotificationSetting()));
 }

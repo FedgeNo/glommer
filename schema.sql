@@ -42,6 +42,15 @@ CREATE TABLE `Users` (
   -- one per page. Null for an account that has never signed in since the
   -- column existed.
   `lastSeen` datetime DEFAULT NULL,
+  -- Whether this member wants the mail that tells them what they missed while
+  -- they were away. On unless they say otherwise, since somebody who has
+  -- stopped visiting is exactly who it is for and would never see an in-site
+  -- invitation to switch it on.
+  `emailDigests` tinyint(1) NOT NULL DEFAULT 1,
+  -- When the last one went out, so the next is a week away whatever else
+  -- happens. Written whether or not the send succeeded: a bad address must
+  -- not be retried every pass, and the cadence is the point.
+  `emailDigestSent` datetime DEFAULT NULL,
   `lastNotificationId` int(10) unsigned NOT NULL DEFAULT 0,
   -- The newest message this member had received when they last opened their
   -- conversations, which is what the unread dot compares against. Same shape

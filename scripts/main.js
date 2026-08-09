@@ -24,6 +24,7 @@ if (document.querySelector('.Post')) {
 }
 if (document.querySelector('.Poll'))                   import('/scripts/Poll.js');
 if (document.querySelector('.SensitiveMediaSetting'))  import('/scripts/SensitiveMediaSetting.js');
+if (document.querySelector('.EmailDigestSetting'))     import('/scripts/EmailDigestSetting.js');
 // Keyed on the composer, not the list: a thread nobody has written in yet
 // renders no list, only the notice saying so.
 if (document.querySelector('.MessageComposer'))        import('/scripts/Message.js');
@@ -66,6 +67,7 @@ if (document.querySelector('.GoogleAuthSettingsForm')) import('/scripts/GoogleAu
 if (document.querySelector('.RemoteFollowsForm'))      import('/scripts/RemoteFollowsForm.js');
 if (document.querySelector('.AccountMigrationForm'))    import('/scripts/AccountMigrationForm.js');
 if (document.querySelector('.MailSettingsForm'))       import('/scripts/MailSettingsForm.js');
+if (document.querySelector('.EmailDigestSettingsForm')) import('/scripts/EmailDigestSettingsForm.js');
 if (document.querySelector('.SiteInfoSettingsForm'))   import('/scripts/SiteInfoSettingsForm.js');
 if (document.querySelector('.AvatarUploadForm'))       import('/scripts/AvatarUploadForm.js');
 if (document.querySelector('.FaviconSettingsForm'))    import('/scripts/FaviconSettingsForm.js');

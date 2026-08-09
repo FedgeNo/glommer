@@ -45,6 +45,8 @@ $page -> addContent(new SettingsSection('AI (OpenRouter)', new OpenRouterSetting
 
 $page -> addContent(new SettingsSection('Mail', new MailSettingsForm()));
 
+$page -> addContent(new SettingsSection('Email Digest', new EmailDigestSettingsForm()));
+
 $page -> addContent(new SettingsSection('Favicon', new FaviconSettingsForm()));
 
 $page -> addContent(new SettingsSection('Front Page Image', new FrontPageImageSettingsForm()));

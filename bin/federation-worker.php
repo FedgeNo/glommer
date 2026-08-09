@@ -120,6 +120,16 @@ while ($running) {
         } catch (\Throwable $exception) {
             error_log('Relay retention sweep failed: ' . $exception -> getMessage());
         }
+
+        // One digest per sweep at most, and only to somebody a week absent, so
+        // this is a trickle rather than a mail run - a stalled SMTP or model
+        // call can cost one pass and never a queue of them. Caught apart from
+        // the sweep above so neither can cost the other.
+        try {
+            EmailDigest::sendDue();
+        } catch (\Throwable $exception) {
+            error_log('Email digest pass failed: ' . $exception -> getMessage());
+        }
     }
 
     $due = FediverseDelivery::due();

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * way a heart does - so what says it is on is the colour, and aria-pressed for
  * anybody not reading colour.
  */
-class PostRepostButton extends ToggleButton
+class PostRepostButton extends ButtonButton
 {
     private const GLYPH = '🔁';
 
@@ -25,8 +25,7 @@ class PostRepostButton extends ToggleButton
             $this -> class .= ' Removing';
         }
 
-        $this -> labels = [self::label($reposted, $count)];
-        $this -> reserve = self::GLYPH . ' ' . self::RESERVED_COUNT;
+        $this -> contents[] = self::label($reposted, $count);
     }
 
     /** PostRepostButton.js builds the same label after a click. */

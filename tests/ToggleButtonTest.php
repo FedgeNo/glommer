@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 /**
- * The buttons under a post that reword themselves.
+ * The buttons under a post, now that they are glyphs.
  *
- * Pressing Like used to shove every button after it along, because the label
- * grew. The fix is that a button carries every wording it can show from the
- * start, hidden but measured, so its width is settled before anybody presses
- * anything. These hold that: the wordings have to actually be in the markup,
- * or the width is not reserved and the row jumps again.
+ * A button that swaps between fixed wordings still carries every one of them
+ * from the start, hidden but measured, so its width is settled before anybody
+ * presses anything - that is what ToggleButton is for and what the first test
+ * here holds. The rest is about the part a picture cannot do on its own: say
+ * what it is, and say whether it is on.
  */
 class ToggleButtonTest extends TestCase
 {
@@ -119,45 +119,13 @@ class ToggleButtonTest extends TestCase
         }
     }
 
-    /**
-     * A count cannot be listed in advance - it is whatever it is, and it moves
-     * under the reader - so these reserve the width of the widest form instead
-     * and rewrite one live label inside it.
-     */
-    public function testACountedLabelReservesRoomForTheCountItDoesNotKnowYet(): void
-    {
-        $thumb = PostLikeButton::GLYPH;
-
-        $this -> assertSame([$thumb, $thumb . ' XXX'], $this -> labelsOf(new PostLikeButton(false, 0)));
-        $this -> assertSame([$thumb], $this -> showingIn(new PostLikeButton(false, 0)));
-
-        $this -> assertSame([$thumb . ' 7', $thumb . ' XXX'], $this -> labelsOf(new PostLikeButton(true, 7)));
-        $this -> assertSame([$thumb . ' 7'], $this -> showingIn(new PostLikeButton(true, 7)));
-
-        $this -> assertSame([$thumb . ' 12'], $this -> showingIn(new PostLikeButton(true, 12)));
-    }
-
-    /**
-     * The reserved wording is furniture. A reader on a screen reader would
-     * otherwise be told the button says two things, one of them nonsense.
-     */
-    public function testTheReservedWordingIsHiddenFromAssistiveTech(): void
-    {
-        $reserved = $this -> xpathOver(new PostLikeButton(false, 0))
-            -> query('//span[contains(@class, "ToggleButtonReservation")]');
-
-        $this -> assertSame(1, $reserved -> length);
-        $this -> assertSame('true', $reserved -> item(0) -> getAttribute('aria-hidden'));
-        $this -> assertTrue(str_contains((string) $reserved -> item(0) -> getAttribute('class'), 'Inactive'), 'and never shown');
-    }
-
     /** The identity the CSS and the click handlers key on, unchanged by all this. */
     public function testEachButtonKeepsItsOwnNameBesideTheSharedOnes(): void
     {
         $classes = (string) $this -> xpathOver(new PostLikeButton(true, 3))
             -> query('//button') -> item(0) -> getAttribute('class');
 
-        foreach (['Button', 'ToggleButton', 'PostLikeButton', 'Removing'] as $name) {
+        foreach (['Button', 'PostLikeButton', 'Removing'] as $name) {
             $this -> assertTrue(str_contains($classes, $name), $name . ' is on the button');
         }
     }

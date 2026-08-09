@@ -1,6 +1,5 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
-import { ToggleButton } from '/scripts/ToggleButton.js';
 import { Working } from '/scripts/Working.js';
 
 /**
@@ -41,7 +40,7 @@ export class PostRepostButton {
             if (!result) return;
 
             button.classList.toggle('Removing', result.reposted);
-            ToggleButton.setLabel(button, PostRepostButton.label(result.reposted, result.count));
+            button.textContent = PostRepostButton.label(result.reposted, result.count);
             button.setAttribute('aria-pressed', result.reposted ? 'true' : 'false');
             button.setAttribute('aria-label', result.reposted ? 'Undo repost' : 'Repost');
             button.setAttribute('title', result.reposted ? 'Undo repost' : 'Repost');

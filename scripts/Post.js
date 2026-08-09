@@ -572,13 +572,11 @@ export class Post {
                 actions.appendWithSpace(translate_button);
             }
 
-            // One live label inside a width reserved for the longest form the
-            // count can take - mirrors PostLikeButton.php.
-            const like_button = ToggleButton.build(
-                [Post.likeLabel(this.liked, this.likeCount)],
-                'PostLikeButton',
-                Post.likeLabel(true, 0) + ' ' + ToggleButton.RESERVED_COUNT
-            );
+            // Sized by what it says - mirrors PostLikeButton.php.
+            const like_button = document.createElement('button');
+            like_button.type = 'button';
+            like_button.className = 'Button PostLikeButton';
+            like_button.textContent = Post.likeLabel(this.liked, this.likeCount);
             if (this.liked) like_button.classList.add('Removing');
             like_button.dataset.liked = this.liked ? '1' : '0';
             like_button.setAttribute('aria-pressed', this.liked ? 'true' : 'false');
@@ -588,11 +586,10 @@ export class Post {
             // Not on your own post - passing on your own writing is what your
             // profile is for, and the bar draws the same line.
             if (Number(this.userId) !== Number(ClientConfig.get('currentUserId'))) {
-                const repost_button = ToggleButton.build(
-                    [PostRepostButton.label(this.reposted, this.repostCount)],
-                    'PostRepostButton',
-                    PostRepostButton.label(true, 0) + ' ' + ToggleButton.RESERVED_COUNT
-                );
+                const repost_button = document.createElement('button');
+                repost_button.type = 'button';
+                repost_button.className = 'Button PostRepostButton';
+                repost_button.textContent = PostRepostButton.label(this.reposted, this.repostCount);
                 if (this.reposted) repost_button.classList.add('Removing');
                 repost_button.setAttribute('aria-pressed', this.reposted ? 'true' : 'false');
                 Post.nameIt(repost_button, this.reposted ? 'Undo repost' : 'Repost');
@@ -801,7 +798,7 @@ export class Post {
             button.classList.toggle('Removing', result.liked);
             button.setAttribute('aria-pressed', result.liked ? 'true' : 'false');
             Post.nameIt(button, Post.likeName(result.liked));
-            ToggleButton.setLabel(button, Post.likeLabel(result.liked, result.count));
+            button.textContent = Post.likeLabel(result.liked, result.count);
         } finally {
             Working.stop(button);
         }

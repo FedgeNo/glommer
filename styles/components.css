@@ -484,11 +484,6 @@ emoji-picker.Active {
 
 .ToggleButtonLabel.Inactive { visibility: hidden; }
 
-/* Never shown, only measured - it holds the width a label carrying a count
-   will need once the count arrives. Kept out of the accessibility tree by its
-   aria-hidden; this is what keeps it out of a text selection too. */
-.ToggleButtonReservation { user-select: none; }
-
 /* ---------- The action bar under a post ---------- */
 
 /* The core actions are a glyph and nothing else, so they no longer need the

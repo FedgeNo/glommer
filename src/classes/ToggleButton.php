@@ -32,37 +32,12 @@ class ToggleButton extends ButtonButton
     /** Which of them it is showing. Null shows the first. */
     protected ?string $showing = null;
 
-    /**
-     * A wording never shown, there only to be measured.
-     *
-     * A label carrying a count cannot be listed in advance - the count is
-     * whatever it is, and it changes under the reader as other people press
-     * the same button. So the button reserves the width of the widest form it
-     * expects instead, and the live label is rewritten inside that. Three
-     * digits is the bargain: wide enough that few posts ever exceed it,
-     * narrow enough that a button sized for it does not look padded.
-     */
-    protected ?string $reserve = null;
-
-    /** The stand-in a count-carrying label reserves room for. */
-    public const RESERVED_COUNT = 'XXX';
-
     public function toDOM(): \DOMElement
     {
         $showing = $this -> showing ?? ($this -> labels[0] ?? '');
 
         foreach ($this -> labels as $label) {
             $this -> contents[] = self::labelSpan($label, $label !== $showing);
-        }
-
-        if ($this -> reserve !== null) {
-            $reservation = self::labelSpan($this -> reserve, true);
-            $reservation -> class .= ' ToggleButtonReservation';
-            // Nothing should read this out: it is furniture holding a width,
-            // not a second thing the button says.
-            $reservation -> attributes['aria-hidden'] = 'true';
-
-            $this -> contents[] = $reservation;
         }
 
         return parent::toDOM();

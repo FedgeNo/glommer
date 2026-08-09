@@ -30,29 +30,6 @@ export default {
             TestCase.assertEquals(1, button.querySelectorAll('.ToggleButtonLabel:not(.Inactive)').length);
             TestCase.assertEquals(2, button.querySelectorAll('.ToggleButtonLabel').length);
         },
-        'a counted label reserves the width of a count it does not know yet'() {
-            const button = ToggleButton.build(['Like'], 'PostLikeButton', 'Unlike ' + ToggleButton.RESERVED_COUNT);
-            const labels = [...button.querySelectorAll('.ToggleButtonLabel')].map((l) => l.textContent);
-
-            TestCase.assertEquals('Like,Unlike (XXX)', labels.join(','));
-            TestCase.assertEquals('Like', ToggleButton.selected(button));
-        },
-        'the reserved wording is never shown and never read out'() {
-            const button = ToggleButton.build(['Like'], 'PostLikeButton', 'Unlike (XXX)');
-            const reserved = button.querySelector('.ToggleButtonReservation');
-
-            TestCase.assertNotNull(reserved);
-            TestCase.assertEquals('true', reserved.getAttribute('aria-hidden'));
-            TestCase.assertTrue(reserved.classList.contains('Inactive'));
-        },
-        'setLabel rewrites the live wording and leaves the reservation alone'() {
-            const button = ToggleButton.build(['Like'], 'PostLikeButton', 'Unlike (XXX)');
-
-            ToggleButton.setLabel(button, 'Unlike (8)');
-
-            TestCase.assertEquals('Unlike (8)', ToggleButton.selected(button));
-            TestCase.assertEquals('Unlike (XXX)', button.querySelector('.ToggleButtonReservation').textContent);
-        },
         'it can hold more than two, as the location button does'() {
             const button = ToggleButton.build(['Add Location', 'Remove Location', 'Locating…'], 'LocationButton');
 

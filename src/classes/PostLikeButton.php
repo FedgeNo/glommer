@@ -12,7 +12,7 @@ declare(strict_types=1);
  * emoji picker. Having asked somebody which hand is theirs, it would be a
  * strange thing to then show them a different one.
  */
-class PostLikeButton extends ToggleButton
+class PostLikeButton extends ButtonButton
 {
     public const GLYPH = '👍';
 
@@ -32,10 +32,9 @@ class PostLikeButton extends ToggleButton
             $this -> class .= ' Removing';
         }
 
-        // One live label, rewritten in place as the count moves, inside a
-        // width reserved for the longest form it can take.
-        $this -> labels = [self::label($liked, $count, $tone)];
-        $this -> reserve = self::label(true, 0, $tone) . ' ' . self::RESERVED_COUNT;
+        // Sized by what it says. The count moving is a digit's worth of
+        // width on a row anchored at its start, so nothing else shifts.
+        $this -> contents[] = self::label($liked, $count, $tone);
     }
 
     /**

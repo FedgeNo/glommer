@@ -757,6 +757,33 @@ CREATE TABLE `FediverseDeliveries` (
   CONSTRAINT `FediverseDeliveries_ibfk_1` FOREIGN KEY (`actorUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- What a remote server said when it refused an activity.
+--
+-- Only refusals. A delivery that arrived is already counted (Statistic
+-- DELIVERED) and its body says nothing anybody needs; a delivery that was
+-- turned away is the one case where the reason exists solely in the response,
+-- and the queue row that might have carried it is deleted whether the activity
+-- arrived or was given up on. Without this an activity the far side rejected
+-- is indistinguishable from one it accepted, which makes every interop
+-- question a guess.
+--
+-- Swept on the same retention pass as the rest of the housekeeping, since this
+-- is a diagnostic log and an unbounded one would be a slow leak.
+CREATE TABLE `FediverseDeliveryRefusals` (
+  `refusalId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `inboxURL` varchar(255) NOT NULL,
+  `activityType` varchar(64) DEFAULT NULL,
+  `activityURI` varchar(255) DEFAULT NULL,
+  -- Null when the request never reached HTTP at all - an unresolvable host, a
+  -- refused connection - which is a different failure from being turned away.
+  `status` smallint(5) unsigned DEFAULT NULL,
+  `body` varchar(500) DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`refusalId`),
+  KEY `createdAt` (`createdAt`),
+  KEY `activityType_createdAt` (`activityType`,`createdAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `RemoteObjectTombstones` (
   `remoteObjectURI` varchar(255) NOT NULL,
   `reason` varchar(255) DEFAULT NULL,

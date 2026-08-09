@@ -134,6 +134,7 @@ class SafeHTTPFetcher
         // refused, unsafe address) can't leave the previous request's status
         // lying around for lastResponseStatus() to misreport.
         self::$lastStatus = null;
+        self::$lastRefusalBody = null;
 
         $parts = parse_url($url);
 
@@ -251,6 +252,10 @@ class SafeHTTPFetcher
 
         if ($status < 200 || $status >= 300) {
             self::$lastStatus = $status;
+            // Kept because a refusal is the one response worth reading: the
+            // caller gets null either way, and the reason it was refused is in
+            // here and nowhere else.
+            self::$lastRefusalBody = substr((string) $response_body, 0, self::MAX_REFUSAL_BODY_BYTES);
 
             return null;
         }
@@ -265,6 +270,17 @@ class SafeHTTPFetcher
 
     /** The HTTP status of the most recent request, when one got far enough to have one. */
     private static ?int $lastStatus = null;
+
+    /** Enough of a refusal to say why; a server explaining itself does it in the first line. */
+    private const MAX_REFUSAL_BODY_BYTES = 500;
+
+    private static ?string $lastRefusalBody = null;
+
+    /** What the last refused request said, or null when it was not refused. */
+    public static function lastRefusalBody(): ?string
+    {
+        return self::$lastRefusalBody;
+    }
 
     /**
      * What the last request's status code was - the way a caller that got

@@ -117,6 +117,7 @@ while ($running) {
         try {
             RelayRetention::sweep();
             Statistic::prune();
+            FediverseDeliveryRefusal::prune();
         } catch (\Throwable $exception) {
             error_log('Relay retention sweep failed: ' . $exception -> getMessage());
         }

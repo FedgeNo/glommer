@@ -48,7 +48,21 @@ class ActivityPubDelivery
             'Accept: application/activity+json',
         ];
 
-        return SafeHTTPFetcher::postJSON($inbox_url, $body, $headers, self::MAX_RESPONSE_BYTES) !== null;
+        $delivered = SafeHTTPFetcher::postJSON($inbox_url, $body, $headers, self::MAX_RESPONSE_BYTES) !== null;
+
+        // Recorded here rather than by the worker, because this is the only
+        // place that holds the inbox, the activity and the response at once -
+        // and by the time the worker hears "false" the reason is gone.
+        if (!$delivered) {
+            FediverseDeliveryRefusal::record(
+                $inbox_url,
+                $activity,
+                SafeHTTPFetcher::lastResponseStatus(),
+                SafeHTTPFetcher::lastRefusalBody()
+            );
+        }
+
+        return $delivered;
     }
 
     /**

@@ -269,6 +269,8 @@ class HelpContent
                 'body' => '
 <p>Every post has a <strong>reply</strong> action. Replying opens a composer right there, and your reply is attached beneath the original post as part of its thread. Replies work just like posts - you can format them, add emoji, and attach media.</p>
 <p>Open any post on its own page to read the whole conversation, with the original at the top and replies below it. This is the best way to follow a longer back-and-forth.</p>
+<h2>Replies in a feed</h2>
+<p>Replies show up in feeds alongside everything else, so you see a conversation as it happens rather than only when you open the post it hangs from. A reply carries a line above it saying <strong>In response to</strong> whatever it answers, and where the thread runs deeper than a single exchange, a <strong>Jump to start</strong> link beside it takes you to the post that began the whole thing.</p>
 ',
             ],
             [
@@ -378,6 +380,7 @@ class HelpContent
 <li><strong>Friends Feed</strong> shows posts only from people you\'re friends with, for when you just want to catch up with your circle.</li>
 </ul>
 <p>Both feeds load more as you scroll, so you can keep going back through older posts. To fill out your Friends Feed, <a href="/help/finding-people">find some people</a> and <a href="/help/friends-and-friend-requests">add them as friends</a>.</p>
+<p>Feeds carry <a href="/help/replies-and-threads">replies</a> as well as posts that start something. A reply says what it is answering, so one arriving on its own still makes sense.</p>
 ',
             ],
             [
@@ -450,6 +453,7 @@ class HelpContent
 <li><a href="/help/two-factor-authentication">Two-Factor Authentication</a> - an extra step at login for security.</li>
 <li><strong>Theme</strong> - change how the site looks (see below).</li>
 <li><a href="/help/signed-in-devices">Remembered Devices and Sessions</a> - review where you\'re signed in, and sign out everywhere.</li>
+<li><strong>Email Digests</strong> - whether we email you what you missed after you have been away a while. On unless you turn it off (see below).</li>
 <li><a href="/help/video-calling">Video Calling</a> - check whether calls can work from this browser and network.</li>
 <li><a href="/help/following-on-the-fediverse">Fediverse</a> - follow accounts on other servers.</li>
 <li><strong>Moving Servers</strong> - take your followers with you to an account elsewhere on the Fediverse.</li>
@@ -457,6 +461,8 @@ class HelpContent
 </ul>
 <h2>Themes</h2>
 <p>The <strong>Theme</strong> picker restyles the whole site, and your choice is remembered. Choose <strong>Match System</strong> to follow whatever your device is set to, or lock in one of the built-in looks: Light, Dark, Sepia, Midnight, Sunset, Rose, Forest, Ocean, Lavender, Gold, and Hacker.</p>
+<h2>Email digests</h2>
+<p>If you have not visited for a week and something has happened while you were gone, we will email you once to say what. Never more than one a week, and never when nothing happened. Turn them off under <strong>Email Digests</strong> in Settings, or use the unsubscribe link in any one of them - that works in a single click, without signing in.</p>
 <p>Forgotten your password and can\'t log in? Use the <strong>Forgot password?</strong> link on the login page to get a reset link by email.</p>
 ',
             ],
@@ -527,6 +533,7 @@ class HelpContent
                 'body' => '
 <p>Open <strong>Trending</strong> from the menu to see what\'s catching on across the site. It gathers the hashtags, names, and topics cropping up in a lot of recent posts and ranks them, so you can tell at a glance what people are talking about.</p>
 <p>Each trending item links through to the posts behind it, making it an easy way to jump into an active conversation or find something new. The list is recalculated as activity on the site shifts, so it\'s worth looking back now and then.</p>
+<p>It listens to everything this server can hear, posts arriving from other servers included - so on a server carrying a <a href="/help/the-relay-feed">relay</a> the list reflects the wider conversation and not only what was written here. A topic needs several different people talking about it before it can appear at all, so one enthusiastic poster cannot push something onto the list.</p>
 ',
             ],
             [

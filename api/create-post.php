@@ -348,9 +348,13 @@ Mention::notify(Mention::indexPost($post_id, $description_ops), $current_user ->
 
 if ($parent_id !== null) {
     Notification::create((int) $parent_post -> userId, $current_user -> userId, 'reply', $parent_id);
-} else {
-    Timeline::fanOutPost($current_user -> userId, $post_id);
 }
+
+// Replies fan out like anything else. A friend's reply is a thing they said,
+// and it was only ever held back because, arriving alone in a feed, it read as
+// an answer to a question that was not on the page - which the card now says
+// for itself.
+Timeline::fanOutPost($current_user -> userId, $post_id);
 
 $items = [];
 

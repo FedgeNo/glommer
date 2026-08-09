@@ -304,9 +304,10 @@ SELECT `userId`
     WHERE `postId` = ?
 ', 'Post', 'i', $parent_id);
             $parent_user_id = $parent_post !== null ? (int) $parent_post -> userId : null;
-        } else {
-            Timeline::fanOutPost($user_id, $post_id);
         }
+
+        // Replies included, the same as the request path does it.
+        Timeline::fanOutPost($user_id, $post_id);
 
         // array_filter kept the original indexes, which is what ties each
         // survivor back to its own staged metadata - and so its alt text.

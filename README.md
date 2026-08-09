@@ -50,7 +50,10 @@ a WebSocket open, transcoding video out of band).
   title/description/image preview), or attached images/video/audio, all
   composed in a rich-text editor (Quill) with **hashtags**, **@mentions**, and
   math formulas (KaTeX).
-- **Replies** - threaded conversations under any post.
+- **Replies** - threaded conversations under any post. A reply appears in the
+  feeds too, headed by what it answers and, in a longer thread, a link back to
+  the post that began it - so a conversation is followable without opening
+  every post it hangs from.
 - **Likes** and **bookmarks** (bookmarks are private, and never notify).
 - **Polls** - attach up to four options to a post, single- or multiple-choice,
   with a fixed run time. Votes are final, results replace the ballot once
@@ -75,8 +78,11 @@ a WebSocket open, transcoding video out of band).
 - **Trending topics** - a materialized, decay-scored ranking of what people
   are talking about, at `/trending-topics`. Entities are extracted both from
   hashtags and, when the NER environment (§8) is installed, from post text via
-  a spaCy model (people, orgs, places, ...). Moderators can ban an entity from
-  trending.
+  a spaCy model (people, orgs, places, ...). It reads everything the server can
+  hear, posts arriving from other servers included, so a server carrying a
+  relay ranks the wider conversation rather than only what was written locally.
+  An entity needs several distinct authors before it can appear at all, and
+  moderators can ban one from trending outright.
 - **Search** - full-text post search and user search.
 - **Messaging** - direct conversations, updating **live over WebSocket** when
   the other person replies. Conversations between two members who have turned

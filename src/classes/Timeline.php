@@ -13,9 +13,15 @@ declare(strict_types=1);
 class Timeline
 {
     /**
-     * Fans a newly created top-level post out to everyone who should see it
-     * in their friends feed: the author themselves, and every accepted friend
-     * of the author at the time of posting.
+     * Fans a newly created post out to everyone who should see it in their
+     * friends feed: the author themselves, and every accepted friend of the
+     * author at the time of posting.
+     *
+     * Replies too. They were held back while a reply arriving alone in a feed
+     * read as an answer to a question that was not on the page; the card says
+     * what it answers now. Only from here on, though - nothing goes back and
+     * fans out the replies written before this, so a feed fills with them as
+     * they are written rather than all at once.
      */
     public static function fanOutPost(int $author_id, int $post_id): void
     {

@@ -37,7 +37,7 @@ SELECT * FROM (
         EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
         FROM `Posts`
         JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-        WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ? AND `Users`.`banned` = ?
+        WHERE `Posts`.`userId` = ? AND `Users`.`banned` = ?
         ORDER BY `Posts`.`postId` DESC
         LIMIT ?)
     UNION ALL

@@ -33,7 +33,7 @@ SELECT `Posts`.*,
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?' . $local_only . '
+    WHERE `Hashtags`.`slug` = ? AND `Users`.`banned` = ?' . $local_only . '
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'iisiii', $viewer_id, $viewer_id, (string) $this -> tag, $not_banned, static::PAGE_SIZE + 1, $this -> offset));

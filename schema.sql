@@ -125,6 +125,13 @@ CREATE TABLE `Posts` (
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
   KEY `parentId_remoteObjectURI_postId` (`parentId`,`remoteObjectURI`,`postId`),
+  -- What the global feed reads: everything written here, newest first. The
+  -- unique key on remoteObjectURI alone cannot serve it - it groups the local
+  -- posts together but carries no order within the group, so the page was
+  -- filesorted out of every one of them. Here postId is ordered inside the
+  -- NULL group, so the feed is read backward off the index and stops when the
+  -- page is full.
+  KEY `remoteObjectURI_postId` (`remoteObjectURI`,`postId`),
   KEY `quotedPostId` (`quotedPostId`),
   UNIQUE KEY `remoteObjectURI` (`remoteObjectURI`),
   FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),

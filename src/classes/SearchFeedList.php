@@ -53,7 +53,7 @@ SELECT `Posts`.*,
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
-        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+        AND `Users`.`banned` = ?
         AND (? = 0 OR `Posts`.`userId` = ?)
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?

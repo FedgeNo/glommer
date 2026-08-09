@@ -311,7 +311,10 @@ class ActivityPubInbox
      */
     private static function completeThread(string $object_uri, int $depth = 0): ?int
     {
-        $held = self::postIdForRemoteObject($object_uri);
+        // Local-aware for the same reason the reply path is: a thread walked
+        // upwards usually ends at a post of ours, and that is the one URI here
+        // that must never be fetched as though it belonged to somebody else.
+        $held = self::localPostIdFor($object_uri);
 
         if ($held !== null) {
             return $held;
@@ -825,15 +828,17 @@ UPDATE `Posts`
         $in_reply_to = $object['inReplyTo'] ?? null;
 
         if (is_string($in_reply_to) && $in_reply_to !== '') {
-            $parent_id = self::postIdForRemoteObject($in_reply_to);
+            // Local-aware, because the commonest reply of all is somebody out
+            // there answering a post of ours, and that inReplyTo names our own
+            // permalink rather than any remote object.
+            $parent_id = self::localPostIdFor($in_reply_to);
 
-            // A reply to a post this server has never seen. It used to be
-            // dropped, which left a member reading half a conversation - the
-            // branch that happened to be addressed here, and nothing it was
-            // answering. So the thread is read instead: queued rather than
-            // fetched, because going up it means a signed request per post and
-            // the inbox has a delivery waiting on it. The worker picks this
-            // same reply up and completes it (see completeThread).
+            // A reply to a post this server has never seen. Reading the thread
+            // is what keeps a member from being left with the branch addressed
+            // here and nothing it was answering. Queued rather than fetched,
+            // because going up it means a signed request per post and the
+            // inbox has a delivery waiting on it. The worker picks this same
+            // reply up and completes it (see completeThread).
             if ($parent_id === null) {
                 RelayFetch::enqueue($object_uri, null);
 

@@ -163,8 +163,11 @@ SELECT STRAIGHT_JOIN `Posts`.*
                 // Keyed on a case-folded value so "COVID" and "Covid" are one
                 // entity (one vote pool, one ban match) instead of splitting
                 // across two dictionary entries that only collide later at
-                // the database's collation-insensitive unique key - the
-                // first-seen casing is kept as the display value below.
+                // the database's collation-insensitive unique key. The casing
+                // seen first in this run becomes the display value, and is
+                // written again on every run: a row that kept the casing it
+                // was created with went on showing a spelling that no longer
+                // appears anywhere in the window.
                 $key = $entity['type'] . "\0" . mb_strtolower($entity['value']);
 
                 if (isset($banned[$key])) {
@@ -201,7 +204,7 @@ SELECT STRAIGHT_JOIN `Posts`.*
             DB::run('
 INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `computedAt`)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `computedAt` = VALUES(`computedAt`)
+    ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `computedAt` = VALUES(`computedAt`)
 ', 'sssdiis', $entity['type'], mb_strtolower($entity['value']), $entity['value'], $entity['score'], $entity['postCount'], $user_count, $computed_at);
         }
 

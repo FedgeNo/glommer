@@ -29,6 +29,29 @@ class EntityExtractorTest extends TestCase
     }
 
     /**
+     * The same word opening a sentence is capitalised, which case alone cannot
+     * tell from a name - this is what was left trending after the first pass
+     * at it, spelled "Un".
+     */
+    public function testAFunctionWordIsRefusedInWhateverCaseItArrives(): void
+    {
+        foreach (['Un', 'La', 'Des', 'Der', 'Het', 'The', 'Une'] as $word) {
+            $this -> assertFalse(EntityExtractor::readsAsAName($word), $word . ' opens a sentence, it is not the subject of one');
+        }
+    }
+
+    /**
+     * All-caps survives the word list, because that is how an initialism is
+     * written and several of them spell a function word in some language.
+     */
+    public function testAnInitialismIsKeptEvenWhenItSpellsAWord(): void
+    {
+        foreach (['UN', 'IT', 'AS', 'IN', 'ON', 'A'] as $initialism) {
+            $this -> assertTrue(EntityExtractor::readsAsAName($initialism), $initialism . ' is written as an initialism');
+        }
+    }
+
+    /**
      * The test is only trustworthy on values too short to judge any other way,
      * so anything longer is kept whatever its case.
      */

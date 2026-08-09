@@ -89,6 +89,37 @@ class EntityExtractor
     private const SHORT_ENOUGH_TO_MISREAD = 3;
 
     /**
+     * The words that are never a subject, in the languages a relay actually
+     * carries. Articles, determiners and the shortest prepositions - the parts
+     * of a sentence an English model has no idea what to do with when the
+     * sentence is not English.
+     *
+     * Written in one case and matched in any, because the same word arrives
+     * both ways: "un homme" mid-sentence and "Un homme" at the start of one.
+     * All-caps is the exception and is kept - see readsAsAName().
+     */
+    private const FUNCTION_WORDS = [
+        // French
+        'un', 'une', 'le', 'la', 'les', 'des', 'du', 'de', 'ce', 'cet', 'cette',
+        'et', 'ou', 'dans', 'pour', 'avec', 'sur', 'par', 'au', 'aux', 'que', 'qui',
+        // Spanish
+        'el', 'los', 'las', 'una', 'unos', 'unas', 'del', 'y', 'en', 'por', 'para', 'con',
+        // German
+        'der', 'die', 'das', 'den', 'dem', 'ein', 'eine', 'einen', 'einem',
+        'und', 'oder', 'mit', 'für', 'von', 'zu', 'im',
+        // Italian
+        'il', 'lo', 'gli', 'uno', 'di', 'della', 'nel',
+        // Portuguese
+        'o', 'a', 'os', 'as', 'um', 'uma', 'do', 'da', 'dos', 'das', 'em', 'no', 'na',
+        // Dutch
+        'het', 'een', 'of', 'op', 'voor', 'van',
+        // Nordic
+        'ett', 'det', 'och', 'eller', 'på', 'av', 'som',
+        // English
+        'the', 'an', 'and', 'or', 'in', 'on', 'at', 'to', 'is', 'it', 'this', 'that',
+    ];
+
+    /**
      * Whether a short thing the model named reads like a name at all.
      *
      * The model reads English and a relay carries every language there is, so
@@ -97,15 +128,19 @@ class EntityExtractor
      * being everywhere across many authors is precisely what trending looks
      * for: one of them outranked every genuine topic on a live server.
      *
-     * Case is what separates them. A real name of three characters or fewer is
-     * written capitalised - US, AI, EU, UN - while the words leaking through
-     * are lowercase in the text they came from. Anything longer is left alone,
-     * since the test is only trustworthy while there is too little of a word
-     * to judge it any other way.
+     * Two things catch them, because one is not enough. A short value written
+     * in lowercase is not a name: a real one of three characters or fewer is
+     * capitalised, US and AI and EU. But the same word is capitalised too when
+     * it opens a sentence - "Un homme" - and case alone cannot tell that from
+     * Bob, so a word that is never anybody's subject in any language a relay
+     * carries is refused in whatever case it arrives.
      *
-     * A script without capitals is deliberately never caught: a value that has
-     * no upper and lower form of itself cannot be lowercase, so a short name
-     * written in one is kept.
+     * All-caps is kept either way. It is how an initialism is written, and UN
+     * really is the United Nations while "Un" is only ever French.
+     *
+     * A script without capitals is deliberately never caught by the first
+     * test: a value that has no upper and lower form of itself cannot be
+     * lowercase, so a short name written in one is kept.
      *
      * Public because which values this keeps is the whole of the judgement,
      * and the tests hold it to account without spending a model call.
@@ -113,14 +148,33 @@ class EntityExtractor
     public static function readsAsAName(string $value): bool
     {
         $value = trim($value);
+        $lowercase = mb_strtolower($value);
+
+        // An initialism, whatever it spells. Checked before the word list so
+        // UN, US, IT and AS survive it.
+        if ($value === mb_strtoupper($value) && $value !== $lowercase) {
+            return true;
+        }
+
+        if (isset(self::functionWords()[$lowercase])) {
+            return false;
+        }
 
         if (mb_strlen($value) > self::SHORT_ENOUGH_TO_MISREAD) {
             return true;
         }
 
-        $has_case = mb_strtoupper($value) !== mb_strtolower($value);
+        $has_case = mb_strtoupper($value) !== $lowercase;
 
-        return !$has_case || $value !== mb_strtolower($value);
+        return !$has_case || $value !== $lowercase;
+    }
+
+    /** The word list as a lookup, built once rather than per entity. */
+    private static function functionWords(): array
+    {
+        static $words = null;
+
+        return $words ??= array_fill_keys(self::FUNCTION_WORDS, true);
     }
 
     /**

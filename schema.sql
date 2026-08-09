@@ -124,6 +124,12 @@ CREATE TABLE `Posts` (
   PRIMARY KEY (`postId`),
   KEY `parentId_postId` (`parentId`,`postId`),
   KEY `userId_parentId_postId` (`userId`,`parentId`,`postId`),
+  -- What a profile feed reads: one author's posts, newest first. The index
+  -- above cannot serve it now that a profile shows replies too - parentId sits
+  -- between the author and the order, so every post of theirs was read and
+  -- then sorted. Cheap while somebody has a few hundred; this is for the
+  -- server where somebody has thousands.
+  KEY `userId_postId` (`userId`,`postId`),
   KEY `parentId_remoteObjectURI_postId` (`parentId`,`remoteObjectURI`,`postId`),
   -- What the global feed reads: everything written here, newest first. The
   -- unique key on remoteObjectURI alone cannot serve it - it groups the local

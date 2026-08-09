@@ -92,7 +92,7 @@ class MainNavigation extends Nav
         if (!Auth::check()) {
             return [
                 new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
-                new Anchor(ServerURL::absolute('/topics/'), 'Trending'),
+                new Anchor(ServerURL::absolute('/topics/'), 'Topics'),
                 new Anchor(ServerURL::absolute('/map'), 'Map'),
                 new Anchor(ServerURL::absolute('/help/'), 'Help'),
                 new Anchor(ServerURL::absolute('/about'), 'About'),
@@ -105,7 +105,7 @@ class MainNavigation extends Nav
             new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
             new Anchor(ServerURL::absolute('/users/'), 'Users'),
             new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
-            new Anchor(ServerURL::absolute('/topics/'), 'Trending'),
+            new Anchor(ServerURL::absolute('/topics/'), 'Topics'),
             new Anchor(ServerURL::absolute('/map'), 'Map'),
             new Anchor(ServerURL::absolute('/locations/'), 'Locations'),
             new Anchor(ServerURL::absolute('/search'), 'Search'),

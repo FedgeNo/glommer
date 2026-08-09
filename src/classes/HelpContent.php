@@ -178,7 +178,7 @@ class HelpContent
 <li><strong>Friends Feed</strong> shows posts from just the people you\'re friends with.</li>
 <li><strong>Friends</strong> is where you accept requests and manage who you\'re connected to.</li>
 <li><strong>Users</strong> lets you search for people and see suggestions of who to connect with.</li>
-<li><strong>Tags</strong> and <strong>Trending</strong> help you discover posts by topic and see what\'s popular right now.</li>
+<li><strong>Tags</strong> and <strong>Topics</strong> help you discover posts by topic and see what\'s popular right now.</li>
 <li><strong>Search</strong> looks across the site\'s posts.</li>
 <li><strong>Messages</strong> holds your private conversations.</li>
 <li><strong>Bookmarks</strong> is your private list of saved posts.</li>
@@ -520,7 +520,7 @@ class HelpContent
                 'body' => '
 <p>Two kinds of shortcut turn into links automatically when you post - just type them into your writing.</p>
 <h2>Hashtags</h2>
-<p>Write a <strong>#hashtag</strong> - like <code>#music</code> - and it becomes a link. Tapping it opens that tag\'s page, showing every post using it, so hashtags are a good way to group a topic and to discover posts about things you care about. Browse the active tags any time from <strong>Tags</strong> in the menu, and see which are catching on under <a href="/help/trending-topics">Trending</a>.</p>
+<p>Write a <strong>#hashtag</strong> - like <code>#music</code> - and it becomes a link. Tapping it opens that tag\'s page, showing every post using it, so hashtags are a good way to group a topic and to discover posts about things you care about. Browse the active tags any time from <strong>Tags</strong> in the menu, and see which are catching on under <a href="/help/trending-topics">Topics</a>.</p>
 <h2>Mentions</h2>
 <p>Write an <strong>@username</strong> to mention someone. It links to their profile, and they get a notification that you mentioned them - handy for bringing a specific person into a conversation. You can mention people elsewhere on the Fediverse too, using their full <code>@user@server</code> handle.</p>
 ',
@@ -531,7 +531,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'See which topics and names are being talked about most right now.',
                 'body' => '
-<p>Open <strong>Trending</strong> from the menu to see what\'s catching on across the site. It gathers the hashtags, names, and topics cropping up in a lot of recent posts and ranks them, so you can tell at a glance what people are talking about.</p>
+<p>Open <strong>Topics</strong> from the menu to see what\'s catching on across the site. It gathers the hashtags, names, and topics cropping up in a lot of recent posts and ranks them, so you can tell at a glance what people are talking about.</p>
 <p>Each trending item has a page of its own, listing the posts behind it - an easy way to jump into an active conversation or find something new. The list is recalculated as activity on the site shifts, so it\'s worth looking back now and then.</p>
 <p>Topics are grouped by what kind of thing they are: people, organizations, places, hashtags and so on. Any topic page names its kind, and that name is a link to everything else of the same kind that is currently being talked about.</p>
 <p>It listens to everything this server can hear, posts arriving from other servers included - so on a server carrying a <a href="/help/the-relay-feed">relay</a> the list reflects the wider conversation and not only what was written here. A topic needs several different people talking about it before it can appear at all, so one enthusiastic poster cannot push something onto the list.</p>

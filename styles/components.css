@@ -116,6 +116,34 @@
     box-shadow: var(--shadow-pop);
 }
 
+/* ---------- Skipping the navigation ---------- */
+
+/* Out of the way until somebody tabs to it, then a real control in the corner.
+   Moved off-screen rather than hidden: display:none and visibility:hidden both
+   take it out of the tab order, which is the one thing it must stay in. */
+.SkipLink {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 0.75rem 1rem;
+    background-color: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--hairline);
+    border-radius: 0 0 var(--radius-card) 0;
+    transform: translateY(-120%);
+}
+
+.SkipLink:focus {
+    transform: translateY(0);
+}
+
+/* The content it lands on is only focusable so the jump lands - it is not a
+   control, and should not draw a ring as though it were. */
+#PageContent:focus {
+    outline: none;
+}
+
 /* ---------- Buttons ---------- */
 
 .Button {

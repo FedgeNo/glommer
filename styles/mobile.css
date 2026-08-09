@@ -10,6 +10,15 @@
     opacity: 0;
 }
 
+/* The checkbox is a pixel of nothing, so focusing it showed a ring around a
+   pixel of nothing - somebody tabbing had no idea they were on the menu. The
+   ring goes on the bars they can actually see instead. */
+.NavToggle:focus-visible + .NavAlertDot + .NavHamburger,
+.NavToggle:focus-visible + .NavHamburger {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 .NavHamburger {
     display: none;
     flex-direction: column;

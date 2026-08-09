@@ -29,6 +29,8 @@ class NotificationsNavLink extends Div
 
         $dot = new Span();
         $dot -> class = 'NotificationDot' . ($has_unseen ? ' Active' : '');
+        // See MessageDot - a dot with no words is silent to a screen reader.
+        $dot -> addContent(new HiddenLabel('Unseen notifications'));
         $this -> addContent($dot);
 
         $this -> addContent($dropdown);

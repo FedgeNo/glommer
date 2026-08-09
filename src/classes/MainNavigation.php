@@ -16,12 +16,16 @@ class MainNavigation extends Nav
         $toggle = new CheckboxInput();
         $toggle -> id = 'NavToggle';
         $toggle -> class = 'NavToggle';
+        // The control itself is the checkbox, not the bars that show it - so
+        // it is the checkbox that has to say what it is. Without this a screen
+        // reader reaches an unnamed checkbox, the label being three empty
+        // spans, and the hamburger's own aria-label is not reliably borrowed.
+        $toggle -> attributes['aria-label'] = 'Menu';
         $this -> addContent($toggle);
 
         $hamburger = new Label();
         $hamburger -> for = 'NavToggle';
         $hamburger -> class = 'NavHamburger';
-        $hamburger -> attributes['aria-label'] = 'Menu';
 
         for ($i = 0; $i < 3; $i++) {
             $bar = new NavHamburgerBar();

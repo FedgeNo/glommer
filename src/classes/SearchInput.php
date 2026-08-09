@@ -18,6 +18,15 @@ class SearchInput extends TextInput
         $this -> attributes['placeholder'] = $this -> placeholder;
         $this -> attributes['autocomplete'] = 'off';
 
+        // A placeholder is not a label - it is gone the moment anybody types,
+        // and several screen readers never announce it at all. The box's own
+        // placeholder is what it would have been called, so it is called that.
+        $this -> attributes['aria-label'] = $this -> placeholder !== '' ? $this -> placeholder : 'Search';
+
+        // Announces itself as a search field rather than a text box, which is
+        // what a reader skipping between landmarks is looking for.
+        $this -> attributes['type'] = 'search';
+
         return parent::toDOM();
     }
 }

@@ -197,6 +197,11 @@ class Page extends HTMLDocument
         // assistive tech a "skip to the content" target, which a page whose
         // content sat loose in <body> after the nav had no way to offer.
         $main = new Main;
+        // What the skip link jumps to, and what it needs focusing on when it
+        // does: a browser moves focus to the target of an in-page link only if
+        // that target can hold focus.
+        $main -> attributes['id'] = SkipLink::TARGET;
+        $main -> attributes['tabindex'] = '-1';
         $main -> addContent(new PageTitle((string) $this -> title));
         $main -> addContents($this -> body -> contents);
 
@@ -204,8 +209,10 @@ class Page extends HTMLDocument
         // unseen notifications - so a page sent because the database cannot be
         // trusted leaves it off rather than querying tables the running code
         // may no longer agree with.
+        // The skip link leads, because a thing that lets somebody past the
+        // navigation has to come before it.
         $this -> body -> contents = $this -> showNavigation
-            ? [new MainNavigation, $main]
+            ? [new SkipLink, new MainNavigation, $main]
             : [$main];
 
         $this -> addContent(new ScrollToTopButton);

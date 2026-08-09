@@ -22,6 +22,11 @@ class MessageDot extends Span
         if ($unread) {
             $this -> class .= ' Active';
         }
+
+        // A coloured circle says nothing to anybody not looking at it. The
+        // words ride inside it out of sight, and are only in the accessibility
+        // tree at all while the dot is shown - an inactive one is display:none.
+        $this -> addContent(new HiddenLabel('Unread messages'));
     }
 
     /** One answer per loaded User - see unreadFor(). */

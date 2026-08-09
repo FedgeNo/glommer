@@ -2,6 +2,75 @@ export class Dialog {
     // Currently active cancel callback – set by confirm/prompt, cleared on close
     static #activeCancel = null;
 
+    /** Ids for aria-labelledby, since a dialog is named by the words in it. */
+    static #counter = 0;
+
+    /**
+     * Everything inside the card a keyboard can reach, in the order it will.
+     */
+    static #focusable(card) {
+        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+        return [...card.querySelectorAll(selector)].filter((element) => !element.disabled);
+    }
+
+    /**
+     * Makes a dialog behave like one.
+     *
+     * Without this the card is decoration: Tab walks straight out of it into
+     * the page behind, which is still there and still clickable, and on close
+     * the focus somebody had is gone - they are returned to the top of the
+     * document to find their way back to whatever they were deleting. So the
+     * card says what it is, keeps Tab inside itself while it is open, and
+     * hands focus back where it came from afterwards.
+     *
+     * @returns {() => void} call it when the dialog closes
+     */
+    static #trap(card, message_element) {
+        const returnTo = document.activeElement;
+
+        card.setAttribute('role', 'dialog');
+        card.setAttribute('aria-modal', 'true');
+
+        if (message_element) {
+            const id = 'DialogMessage' + (++Dialog.#counter);
+            message_element.id = id;
+            card.setAttribute('aria-labelledby', id);
+        }
+
+        const onTab = (event) => {
+            if (event.key !== 'Tab') return;
+
+            const focusable = Dialog.#focusable(card);
+
+            if (focusable.length === 0) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        };
+
+        document.addEventListener('keydown', onTab);
+
+        return () => {
+            document.removeEventListener('keydown', onTab);
+
+            // Back where they were. A dialog opened from a post's delete
+            // button should leave them on that button, not at the top of a
+            // feed they now have to scroll through again.
+            if (returnTo && typeof returnTo.focus === 'function' && returnTo.isConnected) {
+                returnTo.focus();
+            }
+        };
+    }
+
     /**
      * Show a confirmation dialog with OK / Cancel buttons.
      * @param {string} message
@@ -41,9 +110,12 @@ export class Dialog {
             overlay.appendWithSpace(card);
             document.body.appendWithSpace(overlay);
 
+            const release = Dialog.#trap(card, text);
+
             const finish = (confirmed) => {
                 Dialog.#activeCancel = null;
                 document.removeEventListener('keydown', onKeydown);
+                release();
                 overlay.remove();
                 resolve(confirmed);
             };
@@ -102,9 +174,12 @@ export class Dialog {
             overlay.appendWithSpace(card);
             document.body.appendWithSpace(overlay);
 
+            const release = Dialog.#trap(card, text);
+
             const finish = () => {
                 Dialog.#activeCancel = null;
                 document.removeEventListener('keydown', onKeydown);
+                release();
                 overlay.remove();
                 resolve();
             };
@@ -184,9 +259,16 @@ export class Dialog {
             overlay.appendWithSpace(card);
             document.body.appendWithSpace(overlay);
 
+            const release = Dialog.#trap(card, text);
+
+            // The question above the box is the box's label. A placeholder is
+            // not one: it is gone the moment anybody types.
+            input.setAttribute('aria-labelledby', text.id);
+
             const finish = (value) => {
                 Dialog.#activeCancel = null;
                 document.removeEventListener('keydown', onKeydown);
+                release();
                 overlay.remove();
                 resolve(value);
             };

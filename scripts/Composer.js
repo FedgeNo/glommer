@@ -1,7 +1,7 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Post } from '/scripts/Post.js';
-import { csrf_headers, list_item } from '/scripts/utils.js';
+import { list_item } from '/scripts/utils.js';
 import { Cookie } from '/scripts/Cookie.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { QuillEditor } from '/scripts/QuillEditor.js';
@@ -861,7 +861,7 @@ export class Composer {
             return;
         }
 
-        const preview = await this.#apiPost('/api/link-preview', { url }, { signal: controller.signal });
+        const preview = await Api.post('/api/link-preview', { url }, { signal: controller.signal });
         if (!preview || this.linkInput.value.trim() !== url) return;
 
         this.linkInput._lastFetchedUrl = url;
@@ -905,7 +905,7 @@ export class Composer {
         this.linkImagePreview.style.display = 'none';
         this.linkImageThumb.src = '';
         if (seed) {
-            await this.#apiPost('/api/discard-link-image', { seed });
+            await Api.post('/api/discard-link-image', { seed });
         }
     }
 
@@ -1349,29 +1349,6 @@ export class Composer {
         }
 
         render_math(element);
-    }
-
-    async #apiPost(path, payload, { signal } = {}) {
-        try {
-            const response = await fetch(ClientConfig.siteURL() + path, {
-                method: 'POST',
-                headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify(payload),
-                signal,
-            });
-            if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
-                Toast.show(data.error || 'Something went wrong. Please try again.');
-                return null;
-            }
-            const data = await response.json();
-            return data.response;
-        } catch (error) {
-            if (error.name !== 'AbortError') {
-                Toast.show('Network error. Please check your connection and try again.');
-            }
-            return null;
-        }
     }
 }
 

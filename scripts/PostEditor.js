@@ -3,7 +3,7 @@ import { Toast } from '/scripts/Toast.js';
 import { Post } from '/scripts/Post.js';
 import { QuillEditor } from '/scripts/QuillEditor.js';
 import { render_math } from '/scripts/MathRenderer.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
@@ -217,38 +217,29 @@ export class PostEditor {
         const saveButton = this.#form.querySelector('button[type="submit"]');
         Working.start(saveButton);
 
-        try {
-            const response = await fetch(
-                ClientConfig.siteURL() + '/api/edit-post',
-                {
-                    method: 'POST',
-                    headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                    body: JSON.stringify({
-                        postId: this.#postData.postId,
-                        title: this.#form.querySelector('[name="title"]').value,
-                        linkURL: this.#form.querySelector('[name="linkURL"]')
-                            ? this.#form.querySelector('[name="linkURL"]').value
-                            : '',
-                        description: descriptionInput.value,
-                        sensitive: this.#form.querySelector('[name="sensitive"]')?.checked ?? false,
-                        altTexts: Object.fromEntries(this.#altInputs.map(({ itemId, input }) => [itemId, input.value.trim()])),
-                    }),
-                }
-            );
+        // The form goes too, so a refusal about the link or the title is
+        // written under that box rather than thrown at the corner of the
+        // screen.
+        const result = await Api.post('/api/edit-post', {
+            postId: this.#postData.postId,
+            title: this.#form.querySelector('[name="title"]').value,
+            linkURL: this.#form.querySelector('[name="linkURL"]')
+                ? this.#form.querySelector('[name="linkURL"]').value
+                : '',
+            description: descriptionInput.value,
+            sensitive: this.#form.querySelector('[name="sensitive"]')?.checked ?? false,
+            altTexts: Object.fromEntries(this.#altInputs.map(({ itemId, input }) => [itemId, input.value.trim()])),
+        }, { form: this.#form });
 
-            if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
-                Toast.show(data.error || 'Could not save changes. Please try again.');
-                Working.stop(saveButton);
-                return;
-            }
-
-            const data = await response.json();
-            this.#onSaveSuccess(data.response);
-        } catch (error) {
-            Toast.show('Network error. Please check your connection and try again.');
+        // Not given back on success: the card is swapped out whole and the
+        // button goes with it.
+        if (!result) {
             Working.stop(saveButton);
+
+            return;
         }
+
+        this.#onSaveSuccess(result);
     }
 
     #onSaveSuccess(result) {

@@ -29,6 +29,12 @@ export class InfiniteScroller {
 
     #list;
     #loading = false;
+
+    /** The live region that says what arrived, made on first use. */
+    #announcer = null;
+
+    /** The last payload, so the announcement can name what it held. */
+    #lastResponse = null;
     #active = true;
     static #THRESHOLD = 150;
     #onScroll;
@@ -176,6 +182,11 @@ export class InfiniteScroller {
                     }
                 }
             }
+            if (items?.length) {
+                this.#announce(items.length + ' more ' + this.#noun(items.length) + ' loaded.');
+            } else if (!hasMore) {
+                this.#announce('You have reached the end.');
+            }
         } catch (e) {
             console.error('InfiniteScroller error:', e);
         } finally {
@@ -184,8 +195,45 @@ export class InfiniteScroller {
         }
     }
 
+    /** What this list is a list of, for the announcement. */
+    #noun(count) {
+        const resp = this.#lastResponse || {};
+
+        for (const [key, word] of [
+            ['posts', 'post'], ['messages', 'message'], ['notifications', 'notification'],
+            ['reports', 'report'], ['users', 'person'],
+        ]) {
+            if (Array.isArray(resp[key])) {
+                return count === 1 ? word : (word === 'person' ? 'people' : word + 's');
+            }
+        }
+
+        return count === 1 ? 'item' : 'items';
+    }
+
+    /**
+     * Says what just arrived, for somebody who cannot see it arrive.
+     *
+     * A feed that grows as you scroll is silent: more posts appear below and
+     * nothing tells a screen reader they are there, so the reader has no
+     * reason to go looking. Polite, because this is never urgent - it waits
+     * for whatever is being read to finish.
+     */
+    #announce(text) {
+        if (!this.#announcer) {
+            this.#announcer = document.createElement('div');
+            this.#announcer.className = 'visually-hidden';
+            this.#announcer.setAttribute('role', 'status');
+            this.#announcer.setAttribute('aria-live', 'polite');
+            this.#list.parentNode?.insertBefore(this.#announcer, this.#list.nextSibling);
+        }
+
+        this.#announcer.textContent = text;
+    }
+
     #extractItems(data) {
         const resp = data.response || data;
+        this.#lastResponse = resp;
         const items = resp.items || resp.posts || resp.messages ||
                       resp.notifications || resp.reports || resp.users || [];
         return { hasMore: resp.hasMore, items };

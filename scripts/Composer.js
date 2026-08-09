@@ -242,6 +242,19 @@ export class Composer {
         const editorColumn = document.createElement('div');
         editorColumn.className = 'EditorColumn';
 
+        // Read out when the writing area is reached, and never shown. A
+        // rich-text editor is a contenteditable with a toolbar, which is the
+        // hardest thing on this site to use without sight - and the plain text
+        // box that writes the same post is one button away, which is worth
+        // knowing before struggling with the other one rather than after.
+        const editorHelp = document.createElement('p');
+        editorHelp.className = 'ComposerEditorHelp visually-hidden';
+        editorHelp.id = 'ComposerEditorHelp';
+        editorHelp.textContent = 'Rich text editor. If you would rather write in plain text, '
+            + 'use the "Use Markdown" button below to swap this for an ordinary text box - '
+            + 'the same post, written with markdown for any formatting you want.';
+        editorColumn.appendWithSpace(editorHelp);
+
         const editorContainer = document.createElement('div');
         editorContainer.className = 'QuillEditor';
         editorColumn.appendWithSpace(editorContainer);
@@ -251,10 +264,27 @@ export class Composer {
         // body comes from.
         const markdownInput = document.createElement('textarea');
         markdownInput.className = 'MarkdownInput';
-        markdownInput.setAttribute('aria-label', 'Post text as markdown');
+        markdownInput.setAttribute('aria-label', 'Post text, in markdown');
+        markdownInput.setAttribute('aria-describedby', 'ComposerMarkdownHelp');
         markdownInput.placeholder = Composer.PLACEHOLDER;
         markdownInput.style.display = 'none';
         editorColumn.appendWithSpace(markdownInput);
+
+        const markdownHelp = document.createElement('p');
+        markdownHelp.className = 'ComposerMarkdownHelp visually-hidden';
+        markdownHelp.id = 'ComposerMarkdownHelp';
+        markdownHelp.textContent = 'Plain text. Markdown works here: '
+            + 'asterisks around a word make it bold or italic, a hash at the start of a line makes a heading. '
+            + 'Use the "Use Rich Text" button below to go back to the formatting toolbar.';
+        editorColumn.appendWithSpace(markdownHelp);
+
+        // Says what changed, for anybody who cannot see it change: the mode
+        // swapping under them, files arriving, a poll appearing.
+        const status = document.createElement('div');
+        status.className = 'ComposerStatus visually-hidden';
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
+        editorColumn.appendWithSpace(status);
 
         editorRow.appendWithSpace(editorColumn);
         fieldset.appendWithSpace(editorRow);
@@ -976,6 +1006,12 @@ export class Composer {
 
         this.#attachments.push(entry);
         this.#attachmentList().appendWithSpace(row);
+
+        // A file appearing in a list below is silent, and there is an alt text
+        // box that came with it which nobody would know to look for.
+        this.#announce(this.#attachments.length === 1
+            ? '1 file attached. Each image has a box for describing it.'
+            : this.#attachments.length + ' files attached.');
     }
 
     #removeAttachment(entry) {
@@ -985,6 +1021,10 @@ export class Composer {
 
         entry.row.remove();
         this.#attachments = this.#attachments.filter((candidate) => candidate !== entry);
+
+        this.#announce(this.#attachments.length === 0
+            ? 'File removed. Nothing attached now.'
+            : 'File removed. ' + this.#attachments.length + ' left.');
 
         if (this.#attachments.length === 0) {
             this.#form.querySelector('.ComposerAttachmentList')?.remove();
@@ -1092,6 +1132,13 @@ export class Composer {
         return result ? result.body : null;
     }
 
+    /** Says what just changed, for anybody who cannot see it change. */
+    #announce(text) {
+        const status = this.#form.querySelector('.ComposerStatus');
+
+        if (status) status.textContent = text;
+    }
+
     /**
      * Swaps which of the two the post is being written in, carrying the words
      * across. Lossless in the direction that matters - what is stored is the
@@ -1135,6 +1182,18 @@ export class Composer {
 
         if (toolbar) {
             toolbar.style.display = this.markdownMode ? 'none' : '';
+        }
+
+        this.#announce(this.markdownMode
+            ? 'Now writing in plain text with markdown.'
+            : 'Now writing in the rich text editor.');
+
+        // The box they were in has just been hidden, which leaves focus
+        // nowhere. Put it in the one that replaced it, at the same job.
+        if (this.markdownMode) {
+            this.markdownInput.focus();
+        } else {
+            this.editorContainer.querySelector('.ql-editor')?.focus();
         }
 
         this.#syncSubmitState();

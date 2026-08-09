@@ -31,6 +31,32 @@ export class QuillEditor {
         container.__quill = this.#quill;
 
         this.#addTooltips();
+        this.#nameTheWritingArea();
+    }
+
+    /**
+     * Gives the writing surface a name and says what it is.
+     *
+     * Quill builds a contenteditable div. Unnamed, a screen reader reaching it
+     * announces an edit area and nothing about what goes in it - and gives no
+     * hint that the plain-text alternative beside it exists, which for anybody
+     * who finds a rich-text toolbar unusable is the whole answer.
+     */
+    #nameTheWritingArea() {
+        const area = this.#container.querySelector('.ql-editor');
+
+        if (!area) return;
+
+        area.setAttribute('aria-label', this.#container.dataset.editorLabel || 'Post text');
+
+        const help = this.#container
+            .closest('form')
+            ?.querySelector('.ComposerEditorHelp');
+
+        if (help) {
+            if (!help.id) help.id = 'ComposerEditorHelp';
+            area.setAttribute('aria-describedby', help.id);
+        }
     }
 
     /** The Quill instance. */

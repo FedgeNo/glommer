@@ -48,6 +48,42 @@ function pick(composer, files) {
 export default {
     suite: 'Composer',
     tests: {
+        'the writing area explains itself and points at the plain-text way'() {
+            const composer = mounted();
+
+            const help = composer.form.querySelector('.ComposerEditorHelp');
+
+            TestCase.assertNotNull(help);
+            TestCase.assertTrue(help.classList.contains('visually-hidden'), 'said, not shown');
+            TestCase.assertTrue(help.textContent.includes('Use Markdown'), 'names the button that swaps it');
+
+            composer.remove();
+        },
+        'the plain-text box is named and explained too'() {
+            const composer = mounted();
+
+            const markdown = composer.form.querySelector('.MarkdownInput');
+
+            TestCase.assertNotNull(markdown.getAttribute('aria-label'));
+            TestCase.assertEquals('ComposerMarkdownHelp', markdown.getAttribute('aria-describedby'));
+            TestCase.assertNotNull(composer.form.querySelector('#ComposerMarkdownHelp'));
+
+            composer.remove();
+        },
+        'attaching a file says so'() {
+            const composer = mounted();
+
+            pick(composer, [imageFile('cat.png')]);
+
+            const status = composer.form.querySelector('.ComposerStatus');
+
+            TestCase.assertNotNull(status);
+            TestCase.assertEquals('polite', status.getAttribute('aria-live'));
+            TestCase.assertTrue(status.textContent.includes('1 file attached'), status.textContent);
+
+            composer.remove();
+        },
+
         'init runs without error when PostComposer is present'() {
             const form = document.createElement('form');
             form.className = 'Card d-flex flex-column Composer PostComposer';

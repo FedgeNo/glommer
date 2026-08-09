@@ -457,8 +457,10 @@ export class Post {
 
             if (media) {
                 // Mirrors Post.php: a reader who has asked to see this media
-                // gets it uncovered, the same as the server would have sent it.
-                const cover = this.sensitive && !ClientConfig.get('showSensitiveMedia');
+                // gets it uncovered, the same as the server would have sent it -
+                // and a warning already gated it, so a second cover inside the
+                // first would only make them ask twice.
+                const cover = this.sensitive && warning === '' && !ClientConfig.get('showSensitiveMedia');
 
                 target.appendWithSpace(cover ? Post.sensitiveCover(media) : media);
             }
@@ -551,6 +553,7 @@ export class Post {
             // opens unchecked on an AJAX-rendered post and saving a typo fix
             // would silently clear the classification.
             card.dataset.sensitive = this.sensitive ? '1' : '';
+            card.dataset.contentWarning = this.contentWarning || '';
         }
 
         card.appendWithSpace(this.postElement());

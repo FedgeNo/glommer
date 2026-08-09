@@ -148,24 +148,39 @@ export class PostEditor {
         const actions = document.createElement('div');
         actions.className = 'd-flex align-items-center gap-2 ms-auto';
 
-        // The media itself can't be changed here, but how it's classified can -
-        // opened with whatever the post already carries, so saving an unrelated
-        // typo fix doesn't quietly unmark it. Only on a media post at all: the
-        // cover is over media, so on a link, poll or plain text post the box
-        // would classify nothing.
-        if (data.hasMedia) {
-            const sensitiveToggle = document.createElement('label');
-            sensitiveToggle.className = 'SensitiveMediaToggle';
+        // How the post is classified can be revised even though the media
+        // cannot - opened with whatever it already carries, so saving an
+        // unrelated typo fix doesn't quietly unmark it. Offered on every post,
+        // media or not: the warning gates the words too.
+        const sensitiveToggle = document.createElement('label');
+        sensitiveToggle.className = 'SensitiveMediaToggle';
 
-            const sensitiveInput = document.createElement('input');
-            sensitiveInput.type = 'checkbox';
-            sensitiveInput.name = 'sensitive';
-            sensitiveInput.checked = data.sensitive === '1';
-            sensitiveToggle.appendWithSpace(sensitiveInput);
-            sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+        const sensitiveInput = document.createElement('input');
+        sensitiveInput.type = 'checkbox';
+        sensitiveInput.name = 'sensitive';
+        sensitiveInput.checked = data.sensitive === '1';
+        sensitiveToggle.appendWithSpace(sensitiveInput);
+        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
 
-            actions.appendWithSpace(sensitiveToggle);
-        }
+        actions.appendWithSpace(sensitiveToggle);
+
+        const warningInput = document.createElement('input');
+        warningInput.type = 'text';
+        warningInput.className = 'ContentWarningInput';
+        warningInput.name = 'contentWarning';
+        warningInput.maxLength = 255;
+        warningInput.placeholder = 'Content Warning (optional)';
+        warningInput.setAttribute('aria-label', 'Content warning (optional)');
+        warningInput.value = data.contentWarning || '';
+        warningInput.style.display = sensitiveInput.checked ? '' : 'none';
+
+        sensitiveInput.addEventListener('change', () => {
+            warningInput.style.display = sensitiveInput.checked ? '' : 'none';
+
+            if (!sensitiveInput.checked) {
+                warningInput.value = '';
+            }
+        });
 
         const cancelButton = document.createElement('button');
         cancelButton.type = 'button';
@@ -181,6 +196,7 @@ export class PostEditor {
         actions.appendWithSpace(saveButton);
 
         form.appendWithSpace(actions);
+        form.appendWithSpace(warningInput);
 
         post.insertAdjacentElement('afterend', form);
 
@@ -228,6 +244,7 @@ export class PostEditor {
                 : '',
             description: descriptionInput.value,
             sensitive: this.#form.querySelector('[name="sensitive"]')?.checked ?? false,
+            contentWarning: this.#form.querySelector('[name="contentWarning"]')?.value ?? '',
             altTexts: Object.fromEntries(this.#altInputs.map(({ itemId, input }) => [itemId, input.value.trim()])),
         }, { form: this.#form });
 

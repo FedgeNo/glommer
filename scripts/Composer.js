@@ -119,6 +119,8 @@ export class Composer {
         this.longitudeInput = form.querySelector('[name="longitude"]');
 
         this.sensitiveToggle = form.querySelector('.SensitiveMediaToggle');
+        this.sensitiveInput = form.querySelector('[name="sensitive"]');
+        this.warningInput = form.querySelector('.ContentWarningInput');
         this.pollButton = form.querySelector('.ComposerPollButton');
         this.pollFields = form.querySelector('.ComposerPoll');
         this.draftButton = form.querySelector('.ComposerDraftButton');
@@ -330,14 +332,10 @@ export class Composer {
         fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
         actions.appendWithSpace(fileInput);
 
-        // Classifies this post's media as something to opt into seeing. A real
-        // checkbox, so it rides along in the form's own FormData and there is
-        // no toggle state to keep anywhere.
-        //
-        // Placed immediately after the picker because it only ever appears once
-        // the picker has gone: it says something about attached files, so it is
-        // offered when there are some and stands exactly where the control that
-        // attached them was.
+        // Marks the post as something to opt into. A real checkbox, so it rides
+        // along in the form's own FormData and there is no toggle state to keep
+        // anywhere. Offered on every post: words need warning about at least as
+        // often as pictures do, and a spoiler is usually text.
         const sensitiveToggle = document.createElement('label');
         sensitiveToggle.className = 'SensitiveMediaToggle';
 
@@ -420,6 +418,20 @@ export class Composer {
         actions.appendWithSpace(commitActions);
 
         form.appendWithSpace(actions);
+
+        // The words to read before the post. Directly under the checkbox that
+        // reveals it, and optional even then: marking a post sensitive is a
+        // complete answer on its own, and being made to name the thing is a
+        // reason not to warn at all.
+        const warningInput = document.createElement('input');
+        warningInput.type = 'text';
+        warningInput.className = 'ContentWarningInput';
+        warningInput.name = 'contentWarning';
+        warningInput.maxLength = 255;
+        warningInput.placeholder = 'Content Warning (optional)';
+        warningInput.setAttribute('aria-label', 'Content warning (optional)');
+        warningInput.style.display = 'none';
+        form.appendWithSpace(warningInput);
 
         const progress = document.createElement('progress');
         progress.className = 'ProgressBar';
@@ -529,6 +541,8 @@ export class Composer {
         this.scheduleTime.addEventListener('input', () => this.#syncSubmitState());
         this.titleInput?.addEventListener('input', () => this.#syncSubmitState());
         this.linkInput?.addEventListener('input', () => this.#syncSubmitState());
+        // Marking the post is what brings the warning field out.
+        this.sensitiveInput?.addEventListener('change', () => this.#syncFields());
     }
 
     #isScheduling() {
@@ -758,10 +772,16 @@ export class Composer {
         Composer.#toggle(this.fileInput, !hasLink && !hasPoll && !scheduling);
         Composer.#toggle(this.pollButton, !hasLink && !hasFiles && !scheduling);
 
-        // Only ever alongside attached files, since covering media is all it
-        // does. Cleared as it goes, so a classification cannot outlive the
-        // files it was about and ride along on a post with none.
-        Composer.#toggle(this.sensitiveToggle, hasFiles);
+        // The warning follows the checkbox rather than the attachments: it is
+        // offered whenever the post is marked, and emptied when the mark comes
+        // off so a warning cannot ride along on a post nobody flagged.
+        const sensitive = Boolean(this.sensitiveInput ?. checked);
+
+        Composer.#toggle(this.warningInput, sensitive);
+
+        if (!sensitive && this.warningInput) {
+            this.warningInput.value = '';
+        }
 
         // Drafts and scheduling carry text, link and location only - media
         // publishes through the upload queue and a poll's clock starts when
@@ -780,10 +800,6 @@ export class Composer {
         // AND a schedule at once.
         if ((hasFiles || hasPoll) && this.scheduleDate) {
             this.#resetSchedule();
-        }
-
-        if (!hasFiles && this.sensitiveToggle !== null) {
-            this.sensitiveToggle.querySelector('[name="sensitive"]').checked = false;
         }
 
         // Content arriving or leaving by any route above changes what the

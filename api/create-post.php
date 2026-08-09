@@ -46,6 +46,12 @@ $parent_id = isset($_POST['parentId']) && $_POST['parentId'] !== '' ? (int) $_PO
 // through the upload worker.
 $sensitive = ($_POST['sensitive'] ?? '') === '1' ? 1 : 0;
 
+// The words to read before the post, and only ever alongside that mark: a
+// warning on a post nobody flagged has nothing to gate. Optional even then -
+// the mark is a complete answer on its own.
+$content_warning = $sensitive === 1 ? mb_substr(trim((string) ($_POST['contentWarning'] ?? '')), 0, 255) : '';
+$content_warning = $content_warning === '' ? null : $content_warning;
+
 $link_image_seed = trim((string) ($_POST['linkImageSeed'] ?? ''));
 
 // A poll's options arrive as a repeated field, the same way files do. Cleaned
@@ -323,15 +329,15 @@ if ($needs_async) {
     // transcode waits its turn rather than competing with every other one.
     // Completion is signalled by the postReady/uploadPartlyFailed/uploadFailed
     // notification the worker creates when it finishes.
-    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files, $latitude, $longitude, $sensitive);
+    UploadBatch::stage($current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $valid_files, $latitude, $longitude, $sensitive, $content_warning);
 
     JSONResponse::success(['processing' => true]) -> send();
 }
 
 DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `quotedPostId`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-', 'iissssii', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $quoted_post_id);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `quotedPostId`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssisi', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $content_warning, $quoted_post_id);
 $post_id = (int) mysqli_insert_id($mysqli);
 
 // Coordinates live in their own postId-keyed table, so only a post that

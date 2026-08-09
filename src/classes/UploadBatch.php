@@ -32,7 +32,7 @@ class UploadBatch
     // abandoned and dropped from the post (see the class docblock).
     private const MAX_FILE_DEATHS = 3;
 
-    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files, ?float $latitude = null, ?float $longitude = null, int $sensitive = 0): string
+    public static function stage(int $user_id, ?int $parent_id, ?string $title, ?string $description, ?string $description_delta, ?string $link_url, array $files, ?float $latitude = null, ?float $longitude = null, int $sensitive = 0, ?string $content_warning = null): string
     {
         // Same lottery sweep as UploadProcessor::sweepStagedLinkImages().
         // Triggered here (the web path that stages a batch), not from the
@@ -73,6 +73,7 @@ class UploadBatch
             'latitude' => $latitude,
             'longitude' => $longitude,
             'sensitive' => $sensitive,
+            'contentWarning' => $content_warning,
             'files' => $staged_files,
         ]));
 
@@ -245,6 +246,9 @@ class UploadBatch
         // A batch staged before the composer's sensitive toggle carries no key;
         // absent means unclassified, same as the column default.
         $sensitive_value = (int) ($metadata['sensitive'] ?? 0);
+        // Absent on a batch staged before the warning existed, the same as the
+        // key above and for the same reason.
+        $content_warning_value = $metadata['contentWarning'] ?? null;
         $parent_id = $metadata['parentId'];
 
         // A batch staged after the Delta migration carries the Delta JSON (and
@@ -275,9 +279,9 @@ class UploadBatch
         mysqli_begin_transaction($mysqli);
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'iissssi', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssis', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value, $content_warning_value);
         $post_id = (int) mysqli_insert_id($mysqli);
 
         if ($latitude_value !== null && $longitude_value !== null) {

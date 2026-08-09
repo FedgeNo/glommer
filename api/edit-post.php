@@ -51,6 +51,11 @@ $link_url = trim((string) ($payload['linkURL'] ?? ''));
 // to revise.
 $sensitive = ($payload['sensitive'] ?? false) === true ? 1 : 0;
 
+// Only alongside that mark, and optional even then - the same rule the
+// composer applies, so an edit cannot produce a post the composer could not.
+$content_warning = $sensitive === 1 ? mb_substr(trim((string) ($payload['contentWarning'] ?? '')), 0, 255) : '';
+$content_warning = $content_warning === '' ? null : $content_warning;
+
 // itemId => alt text. Validated per entry below, once the post's ownership
 // has been established.
 $alt_texts = $payload['altTexts'] ?? [];
@@ -144,9 +149,9 @@ $edited_at = date('Y-m-d H:i:s');
 
 DB::run('
 UPDATE `Posts`
-    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `sensitive` = ?, `editedAt` = ?
+    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `sensitive` = ?, `contentWarning` = ?, `editedAt` = ?
     WHERE `postId` = ?
-', 'ssssisi', $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $edited_at, $post_id);
+', 'ssssissi', $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $content_warning, $edited_at, $post_id);
 
 // Each alt text lands only on a row that is this post's own image - the
 // WHERE re-checks both, so an itemId belonging to someone else's post (or to

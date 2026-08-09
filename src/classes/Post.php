@@ -175,6 +175,7 @@ class Post extends Article
             // So the edit form opens with the classification the post already
             // carries, rather than silently clearing it on every save.
             $this -> attributes['data-sensitive'] = $this -> sensitive === 1 ? '1' : '';
+            $this -> attributes['data-content-warning'] = (string) $this -> contentWarning;
         }
 
         $this -> contents[] = $this -> contentElement();
@@ -282,7 +283,10 @@ class Post extends Article
             }
 
             if ($media !== null) {
-                if ($this -> sensitive === 1 && !SensitiveMedia::shownByDefault()) {
+                // Not under a warning: opening that gate is already the reader
+                // asking for what is behind it, and a second cover inside the
+                // first only makes them say so twice.
+                if ($this -> sensitive === 1 && $warning === '' && !SensitiveMedia::shownByDefault()) {
                     $cover = new SensitiveMedia();
                     $cover -> contents[] = $media;
                     $media = $cover;

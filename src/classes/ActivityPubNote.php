@@ -107,6 +107,13 @@ SELECT `Posts`.`postId`
             $document['name'] = $title;
         }
 
+        // The warning as the rest of the network reads one. Not the title:
+        // `name` is what a post is called, `summary` is what to know before
+        // reading it, and a receiver puts only the second behind a cover.
+        if ($post -> contentWarning !== null && trim((string) $post -> contentWarning) !== '') {
+            $document['summary'] = $post -> contentWarning;
+        }
+
         // An edit is a fact about the object, not a separate one - a reader
         // that already has it needs to know its copy is stale.
         if ($post -> editedAt !== null) {

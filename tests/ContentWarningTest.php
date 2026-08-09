@@ -128,6 +128,37 @@ SELECT *
         );
     }
 
+    /**
+     * One gate, not two. A sender that writes a warning also sets `sensitive`
+     * - Mastodon always does - so without this the media sits under a cover
+     * inside the warning and the reader has to ask for it twice.
+     */
+    public function testAWarnedPostDoesNotAlsoCoverItsMediaSeparately(): void
+    {
+        $post = self::deliver('Spoilers for the finale');
+        $post = Post::fromRowWithItems($post);
+
+        DB::run('
+INSERT INTO `FeedItems` (`postId`, `type`, `remoteURL`)
+    VALUES (?, ?, ?)
+', 'iss', (int) $post -> postId, 'ImageItem', 'https://remote.test/media/1.jpg');
+
+        $reloaded = Post::fromRowWithItems(DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', (int) $post -> postId));
+
+        $xpath = self::render($reloaded);
+
+        $this -> assertSame(1, $xpath -> query('//details[contains(@class, "ContentWarning")]') -> length);
+        $this -> assertSame(
+            0,
+            $xpath -> query('//details[contains(@class, "SensitiveMedia")]') -> length,
+            'the warning already asked; asking again inside it is one gate too many'
+        );
+    }
+
     /** And a post with no warning is not put behind an empty one. */
     public function testAPostWithNoWarningHasNoGate(): void
     {

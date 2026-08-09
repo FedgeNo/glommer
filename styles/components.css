@@ -1589,6 +1589,11 @@ body.MessagesPage { padding-bottom: 9rem; }
     border-bottom: 1px solid var(--hairline);
 }
 
+.ContentWarningInput {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
 .Carousel {
     position: relative;
     overflow: hidden;

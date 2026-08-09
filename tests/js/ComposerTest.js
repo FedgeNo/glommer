@@ -29,6 +29,8 @@ function mounted() {
         file: form.querySelector('.ComposerFileInput'),
         poll: form.querySelector('.ComposerPollButton'),
         sensitive: form.querySelector('.SensitiveMediaToggle'),
+        sensitiveBox: form.querySelector('[name="sensitive"]'),
+        warning: form.querySelector('.ContentWarningInput'),
         remove: () => document.body.removeChild(form),
     };
 }
@@ -310,22 +312,49 @@ export default {
             composer.remove();
         },
 
-        'sensitive is offered only once there are files for it to be about'() {
+        // Words need warning about at least as often as pictures do, and a
+        // spoiler is usually text - so the mark is offered on every post,
+        // whether or not anything is attached.
+        'sensitive is offered on a post with no files'() {
             const composer = mounted();
-            const box = composer.sensitive.querySelector('[name="sensitive"]');
-
-            TestCase.assertTrue(hidden(composer.sensitive));
-
-            pick(composer, [imageFile('cat.png')]);
 
             TestCase.assertFalse(hidden(composer.sensitive));
 
-            box.checked = true;
-            composer.form.querySelector('.ComposerFilesRemoveButton').click();
+            pick(composer, [imageFile('cat.png')]);
+            TestCase.assertFalse(hidden(composer.sensitive));
 
-            TestCase.assertTrue(hidden(composer.sensitive));
-            // Cleared with them, so it cannot ride along on a post with no media.
-            TestCase.assertFalse(box.checked);
+            composer.form.querySelector('.ComposerFilesRemoveButton').click();
+            TestCase.assertFalse(hidden(composer.sensitive), 'and it stays when the files go');
+
+            composer.remove();
+        },
+
+        'the warning field appears with the mark and is emptied when it comes off'() {
+            const composer = mounted();
+
+            TestCase.assertTrue(hidden(composer.warning), 'nothing to warn about until the post is marked');
+
+            composer.sensitiveBox.checked = true;
+            composer.sensitiveBox.dispatchEvent(new window.Event('change'));
+
+            TestCase.assertFalse(hidden(composer.warning));
+
+            composer.warning.value = 'Spoilers';
+            composer.sensitiveBox.checked = false;
+            composer.sensitiveBox.dispatchEvent(new window.Event('change'));
+
+            TestCase.assertTrue(hidden(composer.warning));
+            // Emptied as it goes, so a warning cannot ride along on a post
+            // nobody flagged and gate a body the author had un-warned.
+            TestCase.assertEquals('', composer.warning.value);
+
+            composer.remove();
+        },
+
+        'the warning says it is optional'() {
+            const composer = mounted();
+
+            TestCase.assertEquals('Content Warning (optional)', composer.warning.placeholder);
 
             composer.remove();
         },

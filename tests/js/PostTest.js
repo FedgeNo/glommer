@@ -98,6 +98,16 @@ export default {
             TestCase.assertNotNull(gate.querySelector('.FeedItem'), 'the media belongs inside the gate');
             TestCase.assertNotNull(gate.querySelector('h3'), 'so does the title');
         },
+        // Mirrors Post.php: a sender that writes a warning also sets sensitive,
+        // so without this the media sits under a cover inside the warning and
+        // the reader has to ask for it twice.
+        'a warned post does not cover its media a second time'() {
+            const element = post_element({ contentWarning: 'Spoilers', sensitive: true });
+
+            TestCase.assertNotNull(element.querySelector('details.ContentWarning'));
+            TestCase.assertNull(element.querySelector('details.SensitiveMedia'));
+            TestCase.assertNotNull(element.querySelector('.ContentWarning .FeedItem'));
+        },
         'the byline stays outside the warning'() {
             // A gate with nothing identifying it is a gate nobody can judge.
             const element = post_element({ contentWarning: 'Spoilers' });

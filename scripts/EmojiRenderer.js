@@ -2,10 +2,17 @@ const EMOJI_SEQUENCE = /\p{Emoji_Presentation}\uFE0F?\p{Emoji_Modifier}?(\u200D\
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 export class EmojiRenderer {
+    /**
+     * Where an emoji is somebody's writing rather than part of the page.
+     *
+     * Enlarging one is only ever right inside what somebody wrote. Everywhere
+     * else - an action bar's buttons, a display name, a topic, a nav label -
+     * the emoji IS the furniture and is already sized by its own rules.
+     */
+    static CONTENT = '.PostContent, .MessageLine';
+
     static init() {
-        // 1. Wrap emojis across the entire page
-        EmojiRenderer.render(document.body);
-        // 2. Mark existing emoji‑only posts / messages
+        document.querySelectorAll(EmojiRenderer.CONTENT).forEach(content => EmojiRenderer.render(content));
         EmojiRenderer.#markExistingEmojiOnly();
     }
 

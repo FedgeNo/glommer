@@ -79,7 +79,9 @@ export class Message {
 
         this.element = div;
 
-        EmojiRenderer.render(this.element);
+        // The written line only - the byline and the timestamp beside it are
+        // not somebody's writing.
+        this.element.querySelectorAll(EmojiRenderer.CONTENT).forEach(content => EmojiRenderer.render(content));
 
         const messageBody = div.querySelector('.MessageLine p');
         if (messageBody && EmojiRenderer.isEmojiOnly(messageBody)) {

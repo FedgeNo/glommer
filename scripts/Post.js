@@ -676,7 +676,10 @@ export class Post {
 
         this.element = card;
 
-        EmojiRenderer.render(this.element);
+        // The content, not the card: the action bar's buttons are emoji too,
+        // and they are furniture sized by their own rules rather than anything
+        // somebody wrote.
+        this.element.querySelectorAll(EmojiRenderer.CONTENT).forEach(content => EmojiRenderer.render(content));
 
         const postBody = this.element.querySelector('.PostBody');
         if (postBody && EmojiRenderer.isEmojiOnly(postBody)) {

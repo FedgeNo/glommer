@@ -1568,6 +1568,10 @@ body.MessagesPage { padding-bottom: 9rem; }
 }
 
 .ContentWarningSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
     margin-inline: -0.5rem;
     padding: 0.5rem 1rem;
     color: var(--ink);
@@ -1583,6 +1587,24 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 .ContentWarningSummary::-webkit-details-marker {
     display: none;
+}
+
+/* The same chevron the settings disclosures carry, and it turns the same way:
+   two of these on one page pointing differently would read as two different
+   kinds of control. */
+.ContentWarningSummary::after {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.ContentWarning[open] > .ContentWarningSummary::after {
+    transform: rotate(-135deg);
 }
 
 .ContentWarning[open] .ContentWarningSummary {

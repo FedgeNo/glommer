@@ -434,6 +434,7 @@ $post -> createdAt = date('Y-m-d H:i:s');
 $post -> latitude = $latitude;
 $post -> longitude = $longitude;
 $post -> sensitive = $sensitive;
+$post -> contentWarning = $content_warning;
 $post -> quotedPostId = $quoted_post_id;
 $post -> items = $items;
 $post -> author = $current_user;

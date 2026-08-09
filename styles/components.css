@@ -463,8 +463,18 @@ emoji-picker.Active {
     resize: vertical;
 }
 
+/* Holds the space the composer will take before it takes it. The editor is a
+   CDN script and arrives noticeably late - without this the whole page below
+   jumps several seconds after it is already being read.
+
+   Measured, not guessed: 334.8px with everything loaded, in the 40rem column
+   the content is capped to, which is the width every screen wider than that
+   gets. Rounded up to the nearest quarter so it can only ever over-reserve -
+   a shortfall is the jump this exists to prevent. Narrower screens are taller
+   still (the buttons wrap), and take the smaller reservation rather than
+   leaving a gap on every desktop to suit a phone. */
 .Composer {
-    min-height: 18.25rem;
+    min-height: 21rem;
     position: relative;
 }
 

@@ -56,7 +56,9 @@ $page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $ta
 $summary = TopicSummary::for('hashtag', $tag);
 
 if ($summary !== null) {
-    $page -> description = truncate($summary, Page::META_DESCRIPTION_MAX_LENGTH);
+    // Handed over whole: the page cuts it once for the search snippet and
+    // again, longer, for a shared card.
+    $page -> description = $summary;
 }
 
 // Written to order for a reader who got here before the timer did - but only

@@ -65,7 +65,9 @@ $page -> addContent(new TopicHeading($entity));
 $summary = TopicSummary::for($type, $slug);
 
 if ($summary !== null) {
-    $page -> description = truncate($summary, Page::META_DESCRIPTION_MAX_LENGTH);
+    // Handed over whole: the page cuts it once for the search snippet and
+    // again, longer, for a shared card.
+    $page -> description = $summary;
 }
 
 // Rendered either way: with words when there are some, and as an empty slot

@@ -4,15 +4,34 @@ declare(strict_types=1);
 
 class Page extends HTMLDocument
 {
-    // The description meta (and its og/twitter twins) is capped near the length
-    // search engines actually display, on a word boundary so it never ends
-    // mid-word.
+    // The description meta is capped near the length search engines actually
+    // display, on a word boundary so it never ends mid-word. The real limit is
+    // a pixel width rather than a character count, so this is a proxy for it.
     public const META_DESCRIPTION_MAX_LENGTH = 160;
+
+    // The og/twitter twins get their own, longer cut. They are not bound by a
+    // search snippet's width: Facebook takes an og:description up to 300
+    // characters, and clipping a share to a search engine's limit threw away
+    // most of a sentence for a reason that did not apply to it.
+    public const SOCIAL_DESCRIPTION_MAX_LENGTH = 300;
 
     public ?string $title = null;
     public ?string $description = null;
     public ?string $image = null;
     public ?array $jsonLD = null;
+
+    /**
+     * When the thing this page is about was written, and last changed.
+     *
+     * A page that says when it is from is treated as a different kind of
+     * result from one that does not - it can be sorted by date, shown with
+     * one, and judged fresh or stale rather than undated. Set from whatever
+     * the page is about (a Post hands over its own columns by name); left null
+     * on a page that is not about anything dated, where claiming a date would
+     * be worse than having none.
+     */
+    public ?string $createdAt = null;
+    public ?string $editedAt = null;
 
     // Metadata-in-spirit link (an RSS <link rel="alternate">) - a property like
     // any other page metadata, emitted in the head right after the meta block.
@@ -59,10 +78,13 @@ class Page extends HTMLDocument
             $this -> title = $site_title;
         }
         $full_title = $this -> title === $site_title ? $site_title : $this -> title . ' - ' . $site_title;
-        $description = truncate(
-            $this -> description ?? SiteInfo::description(),
-            self::META_DESCRIPTION_MAX_LENGTH
-        );
+
+        // Handed on whole. A search snippet and a shared card have different
+        // room, and each cuts to its own at the point it is written - carrying
+        // two pre-cut copies of one sentence around would only be two things
+        // to keep in step.
+        $description = $this -> description ?? SiteInfo::description();
+
         $url = current_url();
 
         $charset = new Meta;
@@ -91,7 +113,7 @@ class Page extends HTMLDocument
         $manifest -> href = ServerURL::absolute('/manifest.webmanifest');
         $this -> addHeadContent($manifest);
 
-        foreach (self::metaTags($full_title, $description, $this -> image, $url) as $meta) {
+        foreach (self::metaTags($full_title, $description, $this -> image, $url, $this -> createdAt, $this -> editedAt) as $meta) {
             $this -> addHeadContent($meta);
         }
 
@@ -238,21 +260,62 @@ class Page extends HTMLDocument
         parent::send();
     }
 
-    protected static function metaTags(string $title, string $description, ?string $image, string $url): array
+    /**
+     * A stored timestamp as the date format the metadata wants, or null where
+     * there is no timestamp to give. The columns are UTC, which is the clock
+     * PHP runs on here, so the offset comes out right without being told.
+     */
+    private static function asISO8601(?string $timestamp): ?string
     {
+        if ($timestamp === null || trim($timestamp) === '') {
+            return null;
+        }
+
+        $moment = strtotime($timestamp);
+
+        return $moment === false ? null : date('c', $moment);
+    }
+
+    /**
+     * The description arrives whole and is cut where it is written: a search
+     * snippet has less room than a shared card, and each tag knows its own.
+     */
+    protected static function metaTags(
+        string $title,
+        string $description,
+        ?string $image,
+        string $url,
+        ?string $created_at = null,
+        ?string $edited_at = null
+    ): array {
         $tags = [];
 
         $description_tag = new Meta;
         $description_tag -> name = 'description';
-        $description_tag -> content = $description;
+        $description_tag -> content = truncate($description, self::META_DESCRIPTION_MAX_LENGTH);
         $tags[] = $description_tag;
+
+        $published = self::asISO8601($created_at);
+        $modified = self::asISO8601($edited_at);
 
         $og_pairs = [
             'og:title' => $title,
-            'og:description' => $description,
-            'og:type' => 'website',
+            'og:description' => truncate($description, self::SOCIAL_DESCRIPTION_MAX_LENGTH),
+            // A dated page is an article, and the article:* properties below
+            // only mean anything under that type.
+            'og:type' => $published === null ? 'website' : 'article',
             'og:url' => $url,
         ];
+
+        if ($published !== null) {
+            $og_pairs['article:published_time'] = $published;
+        }
+
+        // Only when it really was changed - a modified time equal to the
+        // published one says an edit happened that did not.
+        if ($modified !== null) {
+            $og_pairs['article:modified_time'] = $modified;
+        }
 
         if ($image !== null) {
             $og_pairs['og:image'] = $image;
@@ -268,7 +331,7 @@ class Page extends HTMLDocument
         $twitter_pairs = [
             'twitter:card' => $image !== null ? 'summary_large_image' : 'summary',
             'twitter:title' => $title,
-            'twitter:description' => $description,
+            'twitter:description' => truncate($description, self::SOCIAL_DESCRIPTION_MAX_LENGTH),
         ];
 
         if ($image !== null) {

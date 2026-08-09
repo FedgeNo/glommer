@@ -56,6 +56,12 @@ $json_ld = [
     'url' => current_url(),
 ];
 
+// Only on a post that was actually edited. A modified date equal to the
+// published one claims a revision that never happened.
+if ($post -> editedAt !== null) {
+    $json_ld['dateModified'] = $post -> editedAt;
+}
+
 // Named only when there is a name to give. An author object asserting a null
 // name says the post was written by nobody, which is a worse answer than not
 // raising the subject.

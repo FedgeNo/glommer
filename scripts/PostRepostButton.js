@@ -1,5 +1,6 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { ToggleButton } from '/scripts/ToggleButton.js';
 
 /**
  * Passing a post on. The button carries its own state and count, so it flips in
@@ -36,7 +37,7 @@ export class PostRepostButton {
             if (!result) return;
 
             button.classList.toggle('Removing', result.reposted);
-            button.textContent = PostRepostButton.label(result.reposted, result.count);
+            ToggleButton.setLabel(button, PostRepostButton.label(result.reposted, result.count));
         } finally {
             button.disabled = false;
         }

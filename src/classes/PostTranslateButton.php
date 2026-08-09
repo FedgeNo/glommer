@@ -9,12 +9,14 @@ declare(strict_types=1);
  * when the post has body text and the server has a translator configured;
  * the click swaps the body in place and offers the original back.
  */
-class PostTranslateButton extends ButtonButton
+class PostTranslateButton extends ToggleButton
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this -> contents[] = 'Translate';
+        // Both wordings from the start: pressing it swaps the body and the
+        // button, and "Show original" is the wider of the two.
+        $this -> labels = ['Translate', 'Show original'];
     }
 }

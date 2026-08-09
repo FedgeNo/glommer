@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
+import { ToggleButton } from '/scripts/ToggleButton.js';
 
 /**
  * Pinning one of your own posts to the top of your profile.
@@ -34,7 +35,7 @@ export class PostPinButton {
 
             if (!result) return;
 
-            button.textContent = result.pinned ? 'Unpin' : 'Pin';
+            ToggleButton.select(button, result.pinned ? 'Unpin' : 'Pin');
             button.classList.toggle('Removing', result.pinned);
             Toast.show(result.pinned ? 'Pinned to your profile.' : 'Unpinned.');
         } finally {

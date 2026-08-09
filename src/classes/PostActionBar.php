@@ -35,8 +35,13 @@ class PostActionBar extends Footer
 
     public function toDOM(): \DOMElement
     {
+        // Left-aligned, not pushed to the trailing edge. Against the right
+        // edge every button is positioned from the end of the row, so any one
+        // of them changing width slides all of its neighbours - and the
+        // buttons here are exactly the ones whose wording changes. Anchored at
+        // the start, a width that does move only moves what follows it.
         $actions = new Div();
-        $actions -> mixins = ['d-flex', 'align-items-center', 'gap-2', 'ms-auto'];
+        $actions -> mixins = ['d-flex', 'align-items-center', 'gap-2', 'flex-wrap'];
 
         // Visible to everyone, signed in or not - but never on a post from
         // another server: sharing is handing someone the permalink, and for

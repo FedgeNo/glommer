@@ -13,6 +13,7 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { enhanceCodeBlocks } from '/scripts/CodeBlockCopy.js';
 import { Poll } from '/scripts/Poll.js';
 import { PostRepostButton } from '/scripts/PostRepostButton.js';
+import { ToggleButton } from '/scripts/ToggleButton.js';
 
 export class Post {
     postId = null;
@@ -499,7 +500,8 @@ export class Post {
         meta.className = 'PostActionBar d-flex align-items-center gap-3';
 
         const actions = document.createElement('div');
-        actions.className = 'd-flex align-items-center gap-2 ms-auto';
+        // Mirrors PostActionBar.php - anchored at the start, not the end.
+        actions.className = 'd-flex align-items-center gap-2 flex-wrap';
 
         const logged_in = ClientConfig.get('currentUserId') !== null;
 
@@ -528,27 +530,31 @@ export class Post {
             // Mirrors PostActionBar.php: offered only when there is body text
             // to translate and the server has a translator configured.
             if (this.translatable) {
-                const translate_button = document.createElement('button');
-                translate_button.type = 'button';
-                translate_button.className = 'Button PostTranslateButton';
-                translate_button.textContent = 'Translate';
-                actions.appendWithSpace(translate_button);
+                actions.appendWithSpace(
+                    ToggleButton.build(['Translate', 'Show original'], 'PostTranslateButton')
+                );
             }
 
-            const like_button = document.createElement('button');
-            like_button.type = 'button';
-            like_button.className = this.liked ? 'Button PostLikeButton Removing' : 'Button PostLikeButton';
+            // One live label inside a width reserved for the longest form the
+            // count can take - mirrors PostLikeButton.php.
+            const like_button = ToggleButton.build(
+                [Post.likeLabel(this.liked, this.likeCount)],
+                'PostLikeButton',
+                Post.likeLabel(true, 0) + ' ' + ToggleButton.RESERVED_COUNT
+            );
+            if (this.liked) like_button.classList.add('Removing');
             like_button.dataset.liked = this.liked ? '1' : '0';
-            like_button.textContent = Post.likeLabel(this.liked, this.likeCount);
             actions.appendWithSpace(like_button);
 
             // Not on your own post - passing on your own writing is what your
             // profile is for, and the bar draws the same line.
             if (Number(this.userId) !== Number(ClientConfig.get('currentUserId'))) {
-                const repost_button = document.createElement('button');
-                repost_button.type = 'button';
-                repost_button.className = this.reposted ? 'Button PostRepostButton Removing' : 'Button PostRepostButton';
-                repost_button.textContent = PostRepostButton.label(this.reposted, this.repostCount);
+                const repost_button = ToggleButton.build(
+                    [PostRepostButton.label(this.reposted, this.repostCount)],
+                    'PostRepostButton',
+                    PostRepostButton.label(true, 0) + ' ' + ToggleButton.RESERVED_COUNT
+                );
+                if (this.reposted) repost_button.classList.add('Removing');
                 actions.appendWithSpace(repost_button);
             }
 
@@ -560,11 +566,13 @@ export class Post {
             quote_link.textContent = 'Quote';
             actions.appendWithSpace(quote_link);
 
-            const bookmark_button = document.createElement('button');
-            bookmark_button.type = 'button';
-            bookmark_button.className = this.bookmarked ? 'Button PostBookmarkButton Removing' : 'Button PostBookmarkButton';
+            const bookmark_button = ToggleButton.build(
+                [Post.bookmarkLabel(false), Post.bookmarkLabel(true)],
+                'PostBookmarkButton'
+            );
+            ToggleButton.select(bookmark_button, Post.bookmarkLabel(this.bookmarked));
+            if (this.bookmarked) bookmark_button.classList.add('Removing');
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
-            bookmark_button.textContent = Post.bookmarkLabel(this.bookmarked);
             actions.appendWithSpace(bookmark_button);
 
             if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
@@ -681,7 +689,7 @@ export class Post {
         if (Post.#originalBodies.has(post)) {
             body.replaceWith(Post.#originalBodies.get(post));
             Post.#originalBodies.delete(post);
-            button.textContent = 'Translate';
+            ToggleButton.select(button, 'Translate');
             return;
         }
 
@@ -727,7 +735,7 @@ export class Post {
 
             Post.#originalBodies.set(post, body);
             body.replaceWith(translated);
-            button.textContent = 'Show original';
+            ToggleButton.select(button, 'Show original');
         } finally {
             button.disabled = false;
         }
@@ -741,7 +749,7 @@ export class Post {
             if (!result) return;
             button.dataset.liked = result.liked ? '1' : '0';
             button.classList.toggle('Removing', result.liked);
-            button.textContent = Post.likeLabel(result.liked, result.count);
+            ToggleButton.setLabel(button, Post.likeLabel(result.liked, result.count));
         } finally {
             button.disabled = false;
         }
@@ -755,7 +763,7 @@ export class Post {
             if (!result) return;
             button.dataset.bookmarked = result.bookmarked ? '1' : '0';
             button.classList.toggle('Removing', result.bookmarked);
-            button.textContent = Post.bookmarkLabel(result.bookmarked);
+            ToggleButton.select(button, Post.bookmarkLabel(result.bookmarked));
         } finally {
             button.disabled = false;
         }

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * The like toggle on a post's action bar. Carries the current state as
  * data-liked, which is what Post.js reads before it flips it.
  */
-class PostLikeButton extends ButtonButton
+class PostLikeButton extends ToggleButton
 {
     public function __construct(bool $liked, int $count)
     {
@@ -20,7 +20,10 @@ class PostLikeButton extends ButtonButton
             $this -> class .= ' Removing';
         }
 
-        $this -> contents[] = self::label($liked, $count);
+        // One live label, rewritten in place as the count moves, inside a
+        // width reserved for the longest form it can take.
+        $this -> labels = [self::label($liked, $count)];
+        $this -> reserve = self::label(true, 0) . ' ' . self::RESERVED_COUNT;
     }
 
     /**

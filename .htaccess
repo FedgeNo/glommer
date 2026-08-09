@@ -49,66 +49,25 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Let's Encrypt / ACME HTTP-01 challenge files live under /.well-known/ (a
-    # dot-directory) and are fetched over plain HTTP by the CA - serve them
-    # directly, ahead of the dotfile 403 and the https redirect below, or cert
-    # issuance AND automatic renewal would be blocked by our own rules. The
-    # tokens are opaque, public, and short-lived - no secret is exposed.
     RewriteRule ^\.well-known/acme-challenge/ - [L]
-
-    # WebFinger (RFC 7033) - also under the .well-known dot-directory, so it
-    # has to be let through ahead of the dotfile block below too, same as the
-    # ACME challenge path above.
     RewriteRule ^\.well-known/webfinger$ activitypub-webfinger.php [L,QSA]
-
-    # NodeInfo discovery, also under the dot-directory and so exempted the same
-    # way. Relay and directory software reads it to find out what this server
-    # runs before deciding how to talk to it.
     RewriteRule ^\.well-known/nodeinfo$ nodeinfo.php [L,QSA]
 
-    # Block any request into a dotfile OR a dot-directory (.git, .env, .svn,
-    # .htaccess, ...). The <FilesMatch> above only ever sees the request
-    # basename, so it stops /.env but NOT a file nested under a dot-directory
-    # like /.git/config - which would otherwise hand out the whole repo
-    # (source + history). This matches a leading-dot segment anywhere in the
-    # path and 403s it outright, before any other rule runs.
     RewriteRule (^|/)\. - [F]
 
-    # Once installed (.env exists), nothing is served over plain HTTP - not
-    # even static files (uploads, CSS, JS), which Apache serves without PHP:
-    # everything 301s to its https URL. Before .env exists the setup wizard
-    # must stay reachable over whatever protocol works, since TLS may not be
-    # configured yet. X-Forwarded-Proto covers a TLS-terminating proxy.
-    #
-    # %{SERVER_NAME}, not %{HTTP_HOST}: HTTP_HOST is literally the client-
-    # supplied Host header, so building the redirect target from it lets
-    # anyone forge that header and get 301'd to a domain of their choosing.
-    # SERVER_NAME only reflects the real configured name instead - which
-    # requires "ServerName <host>" and "UseCanonicalName On" to be set in
-    # Apache's config (bin/install.php and the web setup wizard both require
-    # this be confirmed before install finishes; see README.md's HTTPS
-    # section). Without those two directives, SERVER_NAME falls back to the
-    # Host header too and this protection does nothing.
     RewriteCond %{HTTPS} off
     RewriteCond %{HTTP:X-Forwarded-Proto} !=https
     RewriteCond %{DOCUMENT_ROOT}/.env -f
     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 
-    # Direct .php access is never allowed - everything goes through the routes below.
     RewriteCond %{THE_REQUEST} \s/+[^?\s]*\.php[\s?] [NC]
     RewriteRule ^ 404.php [L]
 
-    # JSON API endpoints: /api/{name} -> api/{name}.php. api/ contains many
-    # endpoints (a real directory), but each one is itself a flat leaf - no
-    # trailing slash, exact match, same as every other endpoint below.
     RewriteRule ^api/([a-zA-Z0-9-]+)$ api/$1.php [L,QSA]
 
-    # Genuine collections (they have children nested under them as further
-    # path segments) only ever serve at their trailing-slash form - the bare
-    # form always redirects to it, enforced, never silently accepted as an
-    # alternative the way a real directory's slash-less URL redirects too.
-    RewriteRule ^(messages|users|help|tags|locations)$ /$1/ [R=301,L]
+    RewriteRule ^(messages|users|help|tags|locations|topics)$ /$1/ [R=301,L]
     RewriteRule ^users/([^/]+)$ /users/$1/ [R=301,L]
+    RewriteRule ^topics/([a-z_]+)$ /topics/$1/ [R=301,L]
 
     RewriteRule ^$ index.php [L,QSA]
     RewriteRule ^feed\.xml$ site-rss-feed.php [L,QSA]
@@ -116,16 +75,10 @@
     RewriteRule ^feeds-([0-9]+)\.opml$ site-opml.php?shard=$1 [L,QSA]
     RewriteRule ^emoji-shortcodes\.js$ emoji-shortcodes.php [L,QSA]
 
-    # A remote post's media, addressed by the id of the item that holds it -
-    # never by the remote URL, which is looked up server-side (see RemoteMedia).
     RewriteRule ^media-([0-9]+)$ remote-media.php?item=$1 [L,QSA]
     RewriteRule ^health$ health.php [L,QSA]
     RewriteRule ^environment-check$ environment-check.php [L,QSA]
 
-    # Fixed single endpoints, not collections - treated exactly like a real
-    # file would be: no trailing slash, and no redirect either direction. The
-    # trailing-slash form simply isn't a route (falls through to the 404
-    # catch-all below), same as requesting a directory that doesn't exist.
     RewriteRule ^login$ login.php [L,QSA]
     RewriteRule ^logout$ logout.php [L,QSA]
     RewriteRule ^signup$ signup.php [L,QSA]
@@ -134,7 +87,6 @@
     RewriteRule ^notifications$ notifications.php [L,QSA]
     RewriteRule ^map$ map.php [L,QSA]
     RewriteRule ^locations/$ locations.php [L,QSA]
-    # The directory's old name, from before it held one page per place.
     RewriteRule ^nearby$ /locations/ [R=301,L,QSA]
     RewriteRule ^nearby/([0-9]+)$ /locations/$1 [R=301,L]
     RewriteRule ^check-inbox$ check-inbox.php [L,QSA]
@@ -161,20 +113,14 @@
     RewriteRule ^relay-feed$ relay-feed.php [L,QSA]
     RewriteRule ^bookmarks$ bookmarks.php [L,QSA]
     RewriteRule ^search$ search.php [L,QSA]
-    RewriteRule ^trending-topics$ trending-topics.php [L,QSA]
+    RewriteRule ^topics/$ topics.php [L,QSA]
+    RewriteRule ^topics/([a-z_]+)/$ topics.php?type=$1 [L,QSA]
+    RewriteRule ^topics/([a-z_]+)/([^/]+)$ topics.php?type=$1&slug=$2 [L,QSA]
     RewriteRule ^nodeinfo/2\.0$ nodeinfo.php?schema=2.0 [L,QSA]
     RewriteRule ^activitypub/actor$ activitypub-actor.php [L,QSA]
     RewriteRule ^activitypub/inbox$ activitypub-inbox.php [L,QSA]
     RewriteRule ^activitypub/actor/outbox$ activitypub-actor-outbox.php [L,QSA]
 
-    # messages, help, and users are real collections - only their canonical
-    # trailing-slash form is served (the bare form redirects to it, above).
-    # Within a user's profile, "friends" and a specific post are leaf
-    # endpoints (nothing nests under either) - no trailing slash at all, same
-    # treatment as the fixed endpoints above; the profile root itself is a
-    # collection too (friends/feed.xml/a post all nest under it), so it gets
-    # the enforced-redirect treatment (the redirect for it is above, next to
-    # the other collection redirects).
     RewriteRule ^messages/$ messages.php [L,QSA]
     RewriteRule ^messages/([^/]+)$ messages.php?username=$1 [L,QSA]
     RewriteRule ^help/$ help.php [L,QSA]
@@ -185,10 +131,6 @@
     RewriteRule ^users/([^/]+)/feed\.xml$ user-rss-feed.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/friends$ user-friends.php?username=$1 [L,QSA]
 
-    # The member's ActivityPub endpoints. The actor itself is the profile URL
-    # above, served as JSON or HTML depending on what the caller asked for -
-    # these are the collections that hang off it. Leaf endpoints, so no
-    # trailing slash, same as friends.
     RewriteRule ^users/([^/]+)/inbox$ activitypub-inbox.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/outbox$ activitypub-outbox.php?username=$1 [L,QSA]
     RewriteRule ^users/([^/]+)/followers$ activitypub-followers.php?username=$1 [L,QSA]
@@ -197,7 +139,6 @@
     RewriteRule ^users/([^/]+)/([0-9]+)$ post.php?username=$1&id=$2 [L,QSA]
     RewriteRule ^users/([^/]+)/$ user.php?username=$1 [L,QSA]
 
-    # Anything else that isn't a real file/directory and didn't match a route above.
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ 404.php [L]

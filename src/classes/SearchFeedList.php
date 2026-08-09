@@ -13,10 +13,12 @@ declare(strict_types=1);
  * inconvenience the blocker while changing nothing about who can actually see
  * what.
  *
- * Remote-origin posts are included, unlike every public listing: searching is
- * for members only (both the page and api/search-posts.php refuse anyone else),
- * so nothing found here is being shown to the world - and a member searching
- * their own server should find what it actually holds.
+ * A member sees what this server actually holds, remote-origin posts included.
+ * A logged-out visitor does not: this site does not represent other servers'
+ * writing to the world, the same rule the tag page and a Fediverse profile
+ * already follow. Search itself is members-only, so that only bites where this
+ * list is reused on a public page - the topic pages under /topics/, which are
+ * open to anyone.
  */
 class SearchFeedList extends FeedList
 {
@@ -43,6 +45,7 @@ class SearchFeedList extends FeedList
 
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+        $local_only = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL';
 
         return Post::fromRowsWithItems(DB::rows('
 SELECT `Posts`.*,
@@ -54,7 +57,7 @@ SELECT `Posts`.*,
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
         AND `Users`.`banned` = ?
-        AND (? = 0 OR `Posts`.`userId` = ?)
+        AND (? = 0 OR `Posts`.`userId` = ?)' . $local_only . '
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'iisiiiii', $viewer_id, $viewer_id, $this -> query, $not_banned, $this -> userId, $this -> userId, static::PAGE_SIZE + 1, $this -> offset));

@@ -76,16 +76,49 @@ class Trending
      */
     public static function current(int $limit): array
     {
-        if (self::isStale() && mt_rand(1, self::RECOMPUTE_LOTTERY_ODDS) === 1) {
-            self::recompute();
-        }
+        self::refreshIfStale();
 
         return DB::rows('
-SELECT `entityId`, `type`, `title`, `score`, `postCount`, `userCount`
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
     FROM `TrendingEntities`
     ORDER BY `score` DESC
     LIMIT ?
 ', 'TrendingEntityChip', 'i', $limit);
+    }
+
+    /**
+     * The same, of one kind only - what /topics/{type}/ lists.
+     *
+     * @return TrendingEntityChip[]
+     */
+    public static function ofType(string $type, int $limit): array
+    {
+        self::refreshIfStale();
+
+        return DB::rows('
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
+    FROM `TrendingEntities`
+    WHERE `type` = ?
+    ORDER BY `score` DESC
+    LIMIT ?
+', 'TrendingEntityChip', 'si', $type, $limit);
+    }
+
+    /** One topic, or null where nothing by that name has trended. */
+    public static function entity(string $type, string $slug): ?TrendingEntityChip
+    {
+        return DB::row('
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
+    FROM `TrendingEntities`
+    WHERE `type` = ? AND `slug` = ?
+', 'TrendingEntityChip', 'ss', $type, $slug);
+    }
+
+    private static function refreshIfStale(): void
+    {
+        if (self::isStale() && mt_rand(1, self::RECOMPUTE_LOTTERY_ODDS) === 1) {
+            self::recompute();
+        }
     }
 
     private static function isStale(): bool

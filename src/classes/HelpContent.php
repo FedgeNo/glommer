@@ -532,7 +532,8 @@ class HelpContent
                 'summary' => 'See which topics and names are being talked about most right now.',
                 'body' => '
 <p>Open <strong>Trending</strong> from the menu to see what\'s catching on across the site. It gathers the hashtags, names, and topics cropping up in a lot of recent posts and ranks them, so you can tell at a glance what people are talking about.</p>
-<p>Each trending item links through to the posts behind it, making it an easy way to jump into an active conversation or find something new. The list is recalculated as activity on the site shifts, so it\'s worth looking back now and then.</p>
+<p>Each trending item has a page of its own, listing the posts behind it - an easy way to jump into an active conversation or find something new. The list is recalculated as activity on the site shifts, so it\'s worth looking back now and then.</p>
+<p>Topics are grouped by what kind of thing they are: people, organizations, places, hashtags and so on. Any topic page names its kind, and that name is a link to everything else of the same kind that is currently being talked about.</p>
 <p>It listens to everything this server can hear, posts arriving from other servers included - so on a server carrying a <a href="/help/the-relay-feed">relay</a> the list reflects the wider conversation and not only what was written here. A topic needs several different people talking about it before it can appear at all, so one enthusiastic poster cannot push something onto the list.</p>
 ',
             ],

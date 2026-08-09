@@ -1735,6 +1735,24 @@ body.MessagesPage { padding-bottom: 9rem; }
     font-size: 0.8125rem;
 }
 
+/* A topic's name, with what kind of thing it is under it - "Amazon" is a
+   company or a river depending on which page this is, so the kind is not
+   decoration. It is a link to the rest of its kind. */
+.TopicHeading {
+    margin-bottom: 1rem;
+}
+
+.TopicHeading h2 {
+    margin-bottom: 0.25rem;
+}
+
+.TopicKind {
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
 .TrendingEntityLink {
     display: inline-flex;
     align-items: center;

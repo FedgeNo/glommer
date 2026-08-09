@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 /**
- * The "Trending" section on the /trending-topics page: extracted entities, not
- * hashtags - EntityExtractor only produces 'hashtag'-type entities today, but
- * this component (and everything under it - TrendingEntityChip, Trending.php
- * itself) has no hashtag-specific naming, styling, or behavior anywhere.
- * Separate from the /tags/ tag clouds (HashtagGraphList /
- * TrendingHashtagList / HashtagChip, which genuinely ARE hashtag-only and
- * unrelated to the trending engine) rather than sharing a component with them.
+ * What is trending, of every kind, on /topics/ - hashtags alongside the people,
+ * organizations and places the extractor found in post text. This component and
+ * everything under it has no hashtag-specific naming, styling or behaviour
+ * anywhere.
+ *
+ * Separate from the /tags/ tag clouds (HashtagGraphList / TrendingHashtagList /
+ * HashtagChip, which genuinely ARE hashtag-only and unrelated to the trending
+ * engine) rather than sharing a component with them.
  */
 class TrendingEntityList extends ItemList
 {

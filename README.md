@@ -78,7 +78,9 @@ a WebSocket open, transcoding video out of band).
 - **Hashtags** - `#tags` are extracted from posts (the first 10 per post are
   indexed), with public tag pages at `/tags/` and a tag graph.
 - **Trending topics** - a materialized, decay-scored ranking of what people
-  are talking about, at `/trending-topics`. Entities are extracted both from
+  are talking about, at `/topics/` - and nested under it by kind, so
+  `/topics/person/` is the people and `/topics/person/ada-lovelace` is one of
+  them with the posts mentioning it. Entities are extracted both from
   hashtags and, when the NER environment (§8) is installed, from post text via
   a spaCy model (people, orgs, places, ...). It reads everything the server can
   hear, posts arriving from other servers included, so a server carrying a

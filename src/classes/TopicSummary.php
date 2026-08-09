@@ -51,6 +51,13 @@ SELECT `summary`
      */
     public static function refreshDue(): void
     {
+        // Checked before the throttle, not after: with no key there is no call
+        // to space out, and consuming the window anyway would mean the first
+        // pass after a key is finally configured has to wait for one.
+        if (!OpenRouter::isEnabled()) {
+            return;
+        }
+
         $last_call = (int) Settings::get(self::LAST_CALL_SETTING, '0');
 
         if (time() - $last_call < self::MIN_SECONDS_BETWEEN_CALLS) {
@@ -192,17 +199,20 @@ INSERT INTO `TopicSummaries` (`type`, `slug`, `summary`, `createdAt`)
 
     /**
      * The texts a summary is allowed to read: recent top-level posts by
-     * unbanned local authors, trimmed to a budget so a busy topic doesn't grow
-     * the prompt without bound.
+     * unbanned authors, trimmed to a budget so a busy topic doesn't grow the
+     * prompt without bound.
      *
      * A hashtag is found by its index, which is exact. Anything else is found
      * by searching for its name, which is the same thing the topic page itself
      * lists - there is no per-post index of extracted entities, and building
      * one to feed a prompt would be a table per post for a paragraph a day.
      *
-     * Local posts only, whoever is asking. A paragraph written here is shown
-     * to anybody, so it must not be assembled out of writing this site does
-     * not show to everybody.
+     * Posts from other servers count, because on a server carrying a relay
+     * they are what made the topic trend in the first place. Reading only the
+     * local ones meant the busiest topics - which are relay-driven, every one
+     * of them - had nothing to summarize, so the summariser wrote nothing at
+     * all and never got past them. What comes back is a paraphrase of a public
+     * conversation this server can already see, not a republication of it.
      *
      * @return string[]
      */
@@ -217,7 +227,7 @@ SELECT `Posts`.`title`, `Posts`.`description`
     JOIN `Hashtags` ON `Hashtags`.`hashtagId` = `PostHashtags`.`hashtagId`
     JOIN `Posts` ON `Posts`.`postId` = `PostHashtags`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+    WHERE `Hashtags`.`slug` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ' . self::SOURCE_POST_LIMIT . '
 ', \stdClass::class, 'si', $slug, $not_banned)
@@ -226,7 +236,7 @@ SELECT `Posts`.`title`, `Posts`.`description`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE MATCH(`Posts`.`title`, `Posts`.`description`, `Posts`.`keywords`) AGAINST (? IN NATURAL LANGUAGE MODE)
-        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+        AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ' . self::SOURCE_POST_LIMIT . '
 ', \stdClass::class, 'si', $title, $not_banned);

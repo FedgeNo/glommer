@@ -1,7 +1,8 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Notification } from '/scripts/Notification.js';
-import { csrf_headers, list_in, list_item } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
+import { list_in, list_item } from '/scripts/utils.js';
 
 export class WebSocketManager {
     constructor() {
@@ -33,15 +34,11 @@ export class WebSocketManager {
 
                 dot.classList.remove('Active');
                 document.title = this.pageTitle;
-                try {
-                    const response = await fetch(`${ClientConfig.siteURL()}/api/mark-notifications-seen`, {
-                        method: 'POST',
-                        headers: csrf_headers(),
-                    });
-                    if (!response.ok) {
-                        dot.classList.add('Active');
-                    }
-                } catch (error) {
+
+                // Quiet: nobody asked for this, it happened because they moved
+                // the mouse. If it fails the dot simply comes back, which says
+                // everything a toast would and interrupts nothing.
+                if (await Api.post('/api/mark-notifications-seen', undefined, { quiet: true }) === null) {
                     dot.classList.add('Active');
                 }
             });
@@ -49,20 +46,19 @@ export class WebSocketManager {
     }
 
     async connect() {
-        try {
-            const response = await fetch(`${ClientConfig.siteURL()}/api/ws-token`, {
-                method: 'POST',
-                headers: csrf_headers(),
-            });
+        // Quiet: this reconnects on its own schedule and can fail a dozen
+        // times while a laptop is asleep. A dozen toasts about a socket
+        // nobody asked about is worse than the socket being down.
+        const token = await Api.post('/api/ws-token', undefined, { quiet: true });
 
-            if (!response.ok) throw new Error(`token fetch failed (${response.status})`);
-            const json = await response.json();
-            this.token = json.response.token;
-        } catch (error) {
-            console.error('WebSocket token fetch error:', error);
+        if (token === null) {
+            console.error('WebSocket token fetch failed');
             this.scheduleReconnect();
+
             return;
         }
+
+        this.token = token.token;
 
         const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
         this.socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/?token=${encodeURIComponent(this.token)}`);

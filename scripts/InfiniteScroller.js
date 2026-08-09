@@ -1,6 +1,6 @@
-import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
-import { csrf_headers, list_item } from '/scripts/utils.js';
+import { list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { Post } from '/scripts/Post.js';
 import { Message } from '/scripts/Message.js';
@@ -134,19 +134,19 @@ export class InfiniteScroller {
         try {
             const url = this._resolveEndpoint ? this._resolveEndpoint() : this._endpoint;
             const offset = this._countOffset(this.#list);
-            const response = await fetch(ClientConfig.siteURL() + url, {
-                method: 'POST',
-                headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify(this._buildReq(offset)),
-            });
+
+            // request() rather than post(), because what to do next turns on
+            // the status: it says nothing itself, and the wording below is the
+            // scroller's own.
+            const result = await Api.request(url, this._buildReq(offset));
 
             // A refused page won't start working on the next scroll event, so
             // stop asking and say so - silently returning leaves the reader
             // looking at what appears to be the end of the feed while every
             // further scroll re-sends the same doomed request. Being throttled
             // is the exception: that one really is worth retrying.
-            if (!response.ok) {
-                if (response.status !== 429) {
+            if (!result.ok) {
+                if (result.status !== 429) {
                     this.#active = false;
                     Toast.show('Could not load more. Please reload the page.');
                 }
@@ -154,8 +154,7 @@ export class InfiniteScroller {
                 return;
             }
 
-            const data = await response.json();
-            const { hasMore, items } = this.#extractItems(data);
+            const { hasMore, items } = this.#extractItems(result.data);
 
             if (!hasMore) {
                 this.#active = false;

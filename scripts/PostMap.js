@@ -1,5 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Coordinates } from '/scripts/Coordinates.js';
 
@@ -229,25 +229,13 @@ export class PostMap {
     }
 
     static async #loadPosts(map, centre) {
-        let data;
+        // Quiet: the map is drawn either way, and an empty one says as much as
+        // a complaint would.
+        const data = await Api.post('/api/map-posts', {}, { quiet: true });
 
-        try {
-            const response = await fetch(ClientConfig.siteURL() + '/api/map-posts', {
-                method: 'POST',
-                headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({}),
-            });
+        if (!data) return;
 
-            if (!response.ok) {
-                return;
-            }
-
-            data = await response.json();
-        } catch (error) {
-            return;
-        }
-
-        const posts = data.response.posts;
+        const posts = data.posts;
         const cluster = L.markerClusterGroup();
 
         // Markers are built once and kept, keyed by post, so scrubbing swaps

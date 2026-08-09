@@ -1,6 +1,6 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 /**
@@ -491,24 +491,17 @@ export class VideoCall {
         }
     }
 
-    /** Signals are ordinary requests - the WebSocket daemon carries only the reply. */
+    /**
+     * Signals are ordinary requests - the WebSocket daemon carries only the
+     * reply.
+     *
+     * Quiet, because these go every few seconds while a call is up and a run
+     * of toasts about signalling would bury the call itself. Kept alive past
+     * the page, so the hangup sent while somebody closes the tab still leaves
+     * the browser.
+     */
     static async #post(path, body) {
-        try {
-            const response = await fetch(ClientConfig.siteURL() + path, {
-                method: 'POST',
-                headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify(body),
-                keepalive: true,
-            });
-
-            if (!response.ok) {
-                return null;
-            }
-
-            return (await response.json()).response;
-        } catch (error) {
-            return null;
-        }
+        return Api.post(path, body, { quiet: true, keepalive: true });
     }
 }
 

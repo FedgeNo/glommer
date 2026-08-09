@@ -1,5 +1,4 @@
-import { ClientConfig } from '/scripts/ClientConfig.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 /**
@@ -37,28 +36,18 @@ export class HelpSearch {
         const controller = new AbortController();
         input.searchAbortController = controller;
 
-        let data;
+        // Quiet: this runs on every keystroke and cancels the one before it,
+        // so a failure here is nothing to interrupt somebody's typing over.
+        const data = await Api.post('/api/help-search', { q: query }, {
+            signal: controller.signal,
+            quiet: true,
+        });
 
-        try {
-            const response = await fetch(ClientConfig.siteURL() + '/api/help-search', {
-                method: 'POST',
-                headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({ q: query }),
-                signal: controller.signal,
-            });
-
-            if (!response.ok) {
-                return;
-            }
-
-            data = await response.json();
-        } catch (error) {
-            return;
-        }
+        if (!data) return;
 
         results.replaceChildren();
 
-        if (data.response.articles.length === 0) {
+        if (data.articles.length === 0) {
             const empty = document.createElement('p');
             empty.className = 'muted';
             empty.textContent = 'No help articles matched your search.';
@@ -66,10 +55,10 @@ export class HelpSearch {
             return;
         }
 
-        if (data.response.grouped) {
-            HelpSearch.#renderBrowse(results, data.response.articles);
+        if (data.grouped) {
+            HelpSearch.#renderBrowse(results, data.articles);
         } else {
-            HelpSearch.#renderResults(results, data.response.articles);
+            HelpSearch.#renderResults(results, data.articles);
         }
     }
 

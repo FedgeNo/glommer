@@ -1,5 +1,5 @@
-import { ClientConfig } from '/scripts/ClientConfig.js';
-import { csrf_headers, list_in, list_item } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
+import { list_in, list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { OtherUser } from '/scripts/OtherUser.js';
@@ -98,25 +98,14 @@ export class Search {
             this.onBeforeFetch(this.input, query);
         }
 
-        let data;
-        try {
-            const endpoint = this._resolveEndpoint(query);
-            const response = await fetch(ClientConfig.siteURL() + endpoint, {
-                method: 'POST',
-                headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify(this.buildRequest(query)),
-                signal: this.abortController.signal,
-            });
+        // Quiet: a search runs on every keystroke and cancels the one before
+        // it, so a failure is not worth interrupting somebody's typing over.
+        const data = await Api.post(this._resolveEndpoint(query), this.buildRequest(query), {
+            signal: this.abortController.signal,
+            quiet: true,
+        });
 
-            if (!response.ok) return;
-
-            data = await response.json();
-        } catch (error) {
-            if (error.name !== 'AbortError') {
-                console.error('Search fetch error:', error);
-            }
-            return;
-        }
+        if (!data) return;
 
         if (this.input.value.trim() !== query) return;
 
@@ -147,7 +136,7 @@ export class Search {
         });
 
         // Enable the scroller if there are more pages
-        if (this.scroller && data.response.hasMore) {
+        if (this.scroller && data.hasMore) {
             this.scroller.setActive(true);
         }
     }

@@ -1,6 +1,5 @@
 // UsernameValidation.js
-import { ClientConfig } from '/scripts/ClientConfig.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 export class UsernameValidation {
@@ -41,25 +40,21 @@ export class UsernameValidation {
             input.availabilityAbortController?.abort();
             const controller = new AbortController();
             input.availabilityAbortController = controller;
-            let data;
-            try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/username-available', {
-                    method: 'POST',
-                    headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                    body: JSON.stringify({ username: requested }),
-                    signal: controller.signal,
-                });
-                if (!response.ok) return;
-                data = await response.json();
-            } catch (error) {
-                return;
-            }
+            // Quiet: this asks again on every keystroke and cancels the one
+            // before it, so a failure just leaves the hint blank.
+            const data = await Api.post('/api/username-available', { username: requested }, {
+                signal: controller.signal,
+                quiet: true,
+            });
+
+            if (!data) return;
             if (input.value !== requested) return;
-            status.classList.toggle('Error', !data.response.available);
-            status.classList.toggle('muted', data.response.available);
-            status.textContent = data.response.available
-                ? `${data.response.username} is available.`
-                : `${data.response.username} is already taken.`;
+
+            status.classList.toggle('Error', !data.available);
+            status.classList.toggle('muted', data.available);
+            status.textContent = data.available
+                ? `${data.username} is available.`
+                : `${data.username} is already taken.`;
         }, 300);
         UsernameValidation.#debounceIds.set(input, debounce_id);
     }

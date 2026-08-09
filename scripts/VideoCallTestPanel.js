@@ -1,5 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
@@ -237,25 +237,24 @@ export class VideoCallTestPanel {
      * worked, and nothing is left behind.
      */
     static async #signalling() {
-        const response = await fetch(ClientConfig.siteURL() + '/api/call-signal', {
-            method: 'POST',
-            headers: csrf_headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({
-                otherUserId: ClientConfig.get('currentUserId'),
-                type: 'hangup',
-                signal: null,
-            }),
+        // request() rather than post(): the status IS the result here, and a
+        // refusal is what this step is hoping for rather than something to
+        // announce.
+        const { status } = await Api.request('/api/call-signal', {
+            otherUserId: ClientConfig.get('currentUserId'),
+            type: 'hangup',
+            signal: null,
         });
 
-        if (response.status === 422) {
+        if (status === 422) {
             return { ok: true, detail: 'The endpoint is reachable and accepted the request as authenticated before rejecting its content, which is everything a real signal needs.' };
         }
 
-        if (response.status === 401 || response.status === 403) {
-            return { ok: false, detail: 'The endpoint refused the request as unauthenticated (' + response.status + '). Signals between two real people would be refused the same way, so no call could be set up.' };
+        if (status === 401 || status === 403) {
+            return { ok: false, detail: 'The endpoint refused the request as unauthenticated (' + status + '). Signals between two real people would be refused the same way, so no call could be set up.' };
         }
 
-        return { ok: false, detail: 'The endpoint answered ' + response.status + ', which is not what it should say to this request - something in front of it is interfering.' };
+        return { ok: false, detail: 'The endpoint answered ' + status + ', which is not what it should say to this request - something in front of it is interfering.' };
     }
 
     /** Resolves false if the promise has not settled before the step timeout. */

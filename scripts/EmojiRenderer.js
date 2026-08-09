@@ -1,6 +1,9 @@
 const EMOJI_SEQUENCE = /\p{Emoji_Presentation}\uFE0F?\p{Emoji_Modifier}?(\u200D\p{Emoji}\uFE0F?\p{Emoji_Modifier}?)*|\p{Emoji}\uFE0F\p{Emoji_Modifier}?(\u200D\p{Emoji}\uFE0F?\p{Emoji_Modifier}?)*/gu;
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
+/** What counts as one character to the person who typed it. */
+const GRAPHEMES = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+
 export class EmojiRenderer {
     /**
      * Where an emoji is somebody's writing rather than part of the page.
@@ -38,40 +41,73 @@ export class EmojiRenderer {
         nodes.forEach(textNode => {
             const parent = textNode.parentNode;
             const fragment = document.createDocumentFragment();
-            let lastIndex = 0;
+            let plain = '';
 
-            EMOJI_SEQUENCE.lastIndex = 0;
-            let match;
-            while ((match = EMOJI_SEQUENCE.exec(textNode.data)) !== null) {
-                const matched = match[0];
-                const offset = match.index;
+            // Cut into grapheme clusters and decide per cluster, rather than
+            // wrapping whatever the pattern happened to match. A flag is a
+            // PAIR of regional indicators with nothing joining them, so a
+            // pattern matching one emoji at a time takes 🇺🇸 as two and puts
+            // each in its own span - which is why flags came out as two big
+            // letters. Keycaps and joined families split the same way.
+            // The cluster is the unit the writer typed and the unit a font
+            // draws, so it is the unit to wrap.
+            for (const { segment } of GRAPHEMES.segment(textNode.data)) {
+                EMOJI_SEQUENCE.lastIndex = 0;
 
-                if (offset > lastIndex) {
-                    fragment.appendChild(document.createTextNode(textNode.data.slice(lastIndex, offset)));
+                if (!EMOJI_SEQUENCE.test(segment)) {
+                    plain += segment;
+
+                    continue;
+                }
+
+                if (plain !== '') {
+                    fragment.appendChild(document.createTextNode(plain));
+                    plain = '';
                 }
 
                 const span = document.createElement('span');
                 span.className = 'emoji-text';
-                span.textContent = matched;
+                span.textContent = segment;
                 fragment.appendChild(span);
-
-                lastIndex = offset + matched.length;
             }
 
-            if (lastIndex < textNode.data.length) {
-                fragment.appendChild(document.createTextNode(textNode.data.slice(lastIndex)));
+            if (plain !== '') {
+                fragment.appendChild(document.createTextNode(plain));
             }
 
             parent.replaceChild(fragment, textNode);
         });
     }
 
+    /**
+     * Whether this is emoji and nothing else - what decides that a post or a
+     * message is shown big and centred.
+     *
+     * Cluster by cluster, for the same reason render() is: stripping matches
+     * out of the text and asking whether anything is left leaves behind the
+     * parts of a sequence the pattern does not reach - a keycap's enclosing
+     * mark, say - and one leftover character answers no.
+     */
     static isEmojiOnly(element) {
-        const text = element.textContent;
-        const stripped = text.replace(EMOJI_SEQUENCE, '').replace(/[\s\u00A0]/g, '');
-        if (stripped.length !== 0) return false;
-        EMOJI_SEQUENCE.lastIndex = 0;
-        return EMOJI_SEQUENCE.test(text);
+        let sawEmoji = false;
+
+        for (const { segment } of GRAPHEMES.segment(element.textContent)) {
+            // trim() takes the no-break space too, so nothing separating the
+            // emoji counts against them.
+            if (segment.trim() === '') {
+                continue;
+            }
+
+            EMOJI_SEQUENCE.lastIndex = 0;
+
+            if (!EMOJI_SEQUENCE.test(segment)) {
+                return false;
+            }
+
+            sawEmoji = true;
+        }
+
+        return sawEmoji;
     }
 
     // ----------------------------------------------------------------

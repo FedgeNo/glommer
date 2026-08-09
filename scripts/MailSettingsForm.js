@@ -12,6 +12,8 @@ export class MailSettingsForm {
             const submit_button = form.querySelector('button[type="submit"]');
             submit_button.disabled = true;
             const data = await Api.post('/api/mail-settings', {
+                mailFromAddress: form.querySelector('[name="mailFromAddress"]').value,
+                mailFromName: form.querySelector('[name="mailFromName"]').value,
                 smtpHost: form.querySelector('[name="smtpHost"]').value,
                 smtpPort: form.querySelector('[name="smtpPort"]').value,
                 smtpUsername: form.querySelector('[name="smtpUsername"]').value,

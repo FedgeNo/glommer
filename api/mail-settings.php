@@ -42,11 +42,32 @@ if ($mail_from_address !== '') {
     Settings::set(Mailer::FROM_ADDRESS_SETTING, $mail_from_address);
 }
 
-Settings::set(Mailer::FROM_NAME_SETTING, $mail_from_name);
-Settings::set(Mailer::SMTP_HOST_SETTING, $smtp_host);
-Settings::set(Mailer::SMTP_PORT_SETTING, $smtp_port);
-Settings::set(Mailer::SMTP_USERNAME_SETTING, $smtp_username);
-Settings::set(Mailer::SMTP_ENCRYPTION_SETTING, $smtp_encryption);
+// Only what the payload actually carried. Blank is a real answer for these -
+// clearing the SMTP host is how an admin goes back to PHP's mail() - so a
+// field that simply wasn't sent must not be read as one that was cleared, or a
+// form that forgets to send something erases it as the side effect of saving
+// something else.
+$given = static fn (string $field): bool => array_key_exists($field, $payload);
+
+if ($given('mailFromName')) {
+    Settings::set(Mailer::FROM_NAME_SETTING, $mail_from_name);
+}
+
+if ($given('smtpHost')) {
+    Settings::set(Mailer::SMTP_HOST_SETTING, $smtp_host);
+}
+
+if ($given('smtpPort')) {
+    Settings::set(Mailer::SMTP_PORT_SETTING, $smtp_port);
+}
+
+if ($given('smtpUsername')) {
+    Settings::set(Mailer::SMTP_USERNAME_SETTING, $smtp_username);
+}
+
+if ($given('smtpEncryption')) {
+    Settings::set(Mailer::SMTP_ENCRYPTION_SETTING, $smtp_encryption);
+}
 
 // Write-only, same as the Turnstile/Google Auth secrets: a blank field keeps
 // the stored password rather than clearing it.

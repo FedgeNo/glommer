@@ -36,6 +36,8 @@ class ActivityPubReaction
 INSERT IGNORE INTO `Likes` (`postId`, `userId`)
     VALUES (?, ?)
 ', 'ii', $post_id, (int) $actor -> userId);
+
+        FediverseNotice::aboutPost($post_id, $actor, 'like');
     }
 
     public static function unliked(string $object_uri, User $actor): void
@@ -66,6 +68,8 @@ INSERT INTO `Announces` (`postId`, `userId`, `activityURI`)
     VALUES (?, ?, ?)
     ON DUPLICATE KEY UPDATE `activityURI` = VALUES(`activityURI`)
 ', 'iis', $post_id, (int) $actor -> userId, $activity_uri);
+
+        FediverseNotice::aboutPost($post_id, $actor, 'repost');
     }
 
     public static function unannounced(string $object_uri, User $actor): void

@@ -426,6 +426,8 @@ class ActivityPubInbox
             $follow_activity_id
         );
 
+        FediverseNotice::followed((int) $target -> userId, $follower);
+
         ActivityPubDelivery::postAs($target, $follower -> remoteActorInboxURL, [
             '@context' => 'https://www.w3.org/ns/activitystreams',
             'id' => ActivityPubActor::uriFor($target) . '#accepts/' . bin2hex(random_bytes(8)),
@@ -746,9 +748,9 @@ SELECT `remoteFollowId`
 
         DB::run('
 UPDATE `Posts`
-    SET `description` = ?, `descriptionDelta` = ?, `sensitive` = ?, `editedAt` = current_timestamp()
+    SET `description` = ?, `descriptionDelta` = ?, `sensitive` = ?, `contentWarning` = ?, `editedAt` = current_timestamp()
     WHERE `postId` = ?
-', 'ssii', $description, $description_delta, ($object['sensitive'] ?? false) === true ? 1 : 0, $post -> postId);
+', 'ssisi', $description, $description_delta, ($object['sensitive'] ?? false) === true ? 1 : 0, self::contentWarningOf($object), $post -> postId);
     }
 
     private static function handleDelete(array $activity, string $actor_uri): void
@@ -848,10 +850,29 @@ UPDATE `Posts`
 
         $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
 
+        if ($post_id === null) {
+            return;
+        }
+
+        // Told about the same way a reply from a member here would be. Without
+        // this a reply from another server lands in the thread and the person
+        // answered finds out by scrolling past their own post.
+        $answered = $parent_id === null ? null : FediverseNotice::aboutPost($parent_id, $author, 'reply');
+
+        // Whoever a reply answers is tagged as a Mention in it as well, which
+        // is how the network addresses one - so without dropping them here the
+        // same person is told twice about the same post.
+        $mentioned = array_filter(
+            FediverseNotice::mentionedLocalUserIds($object),
+            static fn (int $user_id): bool => $user_id !== $answered
+        );
+
+        FediverseNotice::mentioned($post_id, $author, $mentioned);
+
         // Only top-level posts fan out to followers' feeds - a reply is
         // reached through the parent post's own reply list, the same as any
         // other reply, visible to whoever can already see that parent.
-        if ($post_id !== null && $parent_id === null) {
+        if ($parent_id === null) {
             Timeline::fanOutRemotePost($actor_uri, $post_id);
         }
     }
@@ -881,6 +902,7 @@ UPDATE `Posts`
         // only party that knows what it is sending, and the cost of trusting it
         // is a cover over media that didn't need one.
         $sensitive = ($object['sensitive'] ?? false) === true ? 1 : 0;
+        $content_warning = self::contentWarningOf($object);
 
         // A remote quote post: quoteUrl and _misskey_quote are the spellings
         // most of the network sends. Resolved only against posts already held
@@ -898,9 +920,9 @@ UPDATE `Posts`
 
         try {
             DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `quotedPostId`, `language`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-', 'iisssiis', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $quoted_post_id, $language);
+INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `contentWarning`, `quotedPostId`, `language`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'iisssisis', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $content_warning, $quoted_post_id, $language);
         } catch (\mysqli_sql_exception $exception) {
             // 1062 = the unique remoteObjectURI rejected a post already held.
             // Two relays naming the same post at once is an ordinary race, not
@@ -1071,6 +1093,32 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         }
 
         return null;
+    }
+
+    /** Posts.contentWarning is a varchar(255), and a warning is a line, not an essay. */
+    private const MAX_CONTENT_WARNING_LENGTH = 255;
+
+    /**
+     * The warning a sender put in front of its post - ActivityStreams'
+     * `summary`, which Mastodon and everything descended from it use for the
+     * content warning a reader sees before deciding to read on.
+     *
+     * Flattened like any other inbound markup, because a warning is displayed
+     * as words rather than as a document, and null when there is nothing in it
+     * - an empty string here would put an empty gate in front of a post that
+     * was never warned about.
+     */
+    private static function contentWarningOf(array $object): ?string
+    {
+        $summary = $object['summary'] ?? null;
+
+        if (!is_string($summary) || trim($summary) === '') {
+            return null;
+        }
+
+        $warning = trim(RemoteHTML::toPlainText($summary));
+
+        return $warning === '' ? null : mb_substr($warning, 0, self::MAX_CONTENT_WARNING_LENGTH);
     }
 
     /** Posts.description is a TEXT column; MySQL runs strict, so an oversized value errors rather than truncating. */

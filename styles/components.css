@@ -1553,6 +1553,42 @@ body.MessagesPage { padding-bottom: 9rem; }
     white-space: nowrap;
 }
 
+/* Content warning */
+
+.ContentWarning {
+    margin-top: 0.5rem;
+    padding-inline: 0.5rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-ctl);
+    overflow: hidden;
+}
+
+.ContentWarning[open] {
+    padding-bottom: 0.5rem;
+}
+
+.ContentWarningSummary {
+    margin-inline: -0.5rem;
+    padding: 0.5rem 1rem;
+    color: var(--ink);
+    background: var(--button-image);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+}
+
+.ContentWarningSummary:hover {
+    background: var(--button-image-hover);
+}
+
+.ContentWarningSummary::-webkit-details-marker {
+    display: none;
+}
+
+.ContentWarning[open] .ContentWarningSummary {
+    border-bottom: 1px solid var(--hairline);
+}
+
 .Carousel {
     position: relative;
     overflow: hidden;

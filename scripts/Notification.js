@@ -63,6 +63,10 @@ export class Notification {
                 return name + ' sent you a message';
             case 'mention':
                 return name + ' mentioned you in a post';
+            // Mirrors Notification.php: only ever a Fediverse follow, since a
+            // local one is a friendship and has its own two types above.
+            case 'follow':
+                return name + ' followed you from another server';
             default:
                 return name + ' did something';
         }
@@ -80,6 +84,7 @@ export class Notification {
             case 'friendRequest':
                 return ClientConfig.siteURL() + '/users/' + ClientConfig.get('currentUserUsername') + '/friends';
             case 'friendAccepted':
+            case 'follow':
                 return ClientConfig.siteURL() + '/users/' + this.actor.slug + '/';
             case 'message':
                 return ClientConfig.siteURL() + '/messages/' + this.actor.slug;

@@ -52,6 +52,7 @@ export class Post {
     items = [];
     imageAltText = null;
     sensitive = false;
+    contentWarning = null;
     replyCount = 0;
     likeCount = 0;
     liked = false;
@@ -335,6 +336,24 @@ export class Post {
         return cover;
     }
 
+    /**
+     * The disclosure ContentWarning.php renders. Unlike the media cover there
+     * is no reader preference that opens it: a warning is a sentence about
+     * this post in particular, so there is nothing to have decided in advance.
+     */
+    static contentWarningGate(warning) {
+        const gate = document.createElement('details');
+        gate.className = 'ContentWarning';
+
+        const summary = document.createElement('summary');
+        summary.className = 'ContentWarningSummary';
+        summary.textContent = warning;
+
+        gate.appendWithSpace(summary);
+
+        return gate;
+    }
+
     itemsToCarousel() {
         const carousel = document.createElement('div');
         carousel.className = 'Carousel';
@@ -404,8 +423,14 @@ export class Post {
             post.appendWithSpace(this.authorBylineToElement());
         }
 
+        // Mirrors Post.php: everything the author wrote is built into the
+        // warning where there is one, so a spoiler in the words is covered
+        // along with one in the pictures. The byline stays outside it.
+        const warning = (this.contentWarning || '').trim();
+        const target = warning === '' ? post : Post.contentWarningGate(warning);
+
         if (this.linkURL) {
-            post.appendWithSpace(this.linkItemToElement());
+            target.appendWithSpace(this.linkItemToElement());
         } else {
             if (this.title) {
                 const heading = document.createElement('h3');
@@ -415,9 +440,9 @@ export class Post {
                     const title_link = document.createElement('a');
                     title_link.href = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
                     title_link.appendWithSpace(heading);
-                    post.appendWithSpace(title_link);
+                    target.appendWithSpace(title_link);
                 } else {
-                    post.appendWithSpace(heading);
+                    target.appendWithSpace(heading);
                 }
             }
 
@@ -435,7 +460,7 @@ export class Post {
                 // gets it uncovered, the same as the server would have sent it.
                 const cover = this.sensitive && !ClientConfig.get('showSensitiveMedia');
 
-                post.appendWithSpace(cover ? Post.sensitiveCover(media) : media);
+                target.appendWithSpace(cover ? Post.sensitiveCover(media) : media);
             }
 
             if (this.descriptionDelta) {
@@ -445,13 +470,13 @@ export class Post {
                     body.appendWithSpace(DeltaRenderer.seeMoreElement(this.seeMoreURL));
                 }
 
-                post.appendWithSpace(body);
+                target.appendWithSpace(body);
             }
 
             // Mirrors Post.php - under the words, since the poll is what the
             // words are asking about.
             if (this.poll) {
-                post.appendWithSpace(Poll.fromData(this.poll).element());
+                target.appendWithSpace(Poll.fromData(this.poll).element());
             }
         }
 
@@ -485,7 +510,11 @@ export class Post {
             link.textContent = 'View the quoted post';
             quoted.appendWithSpace(link);
 
-            post.appendWithSpace(quoted);
+            target.appendWithSpace(quoted);
+        }
+
+        if (target !== post) {
+            post.appendWithSpace(target);
         }
 
         return post;

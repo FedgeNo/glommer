@@ -83,6 +83,13 @@ class Post extends Article
     // network does with the same flag, and what keeps a post readable.
     public ?int $sensitive = null;
 
+    // The warning to read before this post, where its author wrote one -
+    // ActivityStreams' `summary`, which is how the rest of the network carries
+    // a content warning. Where there is one it gates the whole body rather
+    // than only the media: the commonest warning of all is a spoiler, and the
+    // thing being spoiled is usually the words.
+    public ?string $contentWarning = null;
+
     // Whether a media post's description is truncated (with a "See More" link)
     // rather than shown in full. True in the feed, where a post is a preview;
     // PostPage flips it off so the permalink page shows the whole description.
@@ -223,6 +230,14 @@ class Post extends Article
             $content -> contents[] = $this -> authorByline();
         }
 
+        // Everything below is what the author wrote, and where they wrote a
+        // warning it is built into that instead of straight onto the card - so
+        // a spoiler in the words is covered along with one in the pictures.
+        // The byline above stays out: who posted it is not the spoiler, and a
+        // gate with nothing identifying it is a gate nobody can judge.
+        $warning = trim((string) $this -> contentWarning);
+        $body = $warning === '' ? $content : new ContentWarning($warning);
+
         if ($this -> linkURL !== null) {
             $link_image = null;
 
@@ -233,7 +248,7 @@ class Post extends Article
                 }
             }
 
-            $content -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description, $link_image);
+            $body -> contents[] = new LinkItem($this -> linkURL, $this -> title, $this -> description, $link_image);
         } else {
             if ($this -> title !== null) {
                 $heading = new Heading3();
@@ -242,9 +257,9 @@ class Post extends Article
                 if ($this -> postId !== null && $this -> author !== null) {
                     $title_link = new Anchor(ServerURL::absolute('/users/' . $this -> author -> slug . '/' . $this -> postId));
                     $title_link -> addContent($heading);
-                    $content -> contents[] = $title_link;
+                    $body -> contents[] = $title_link;
                 } else {
-                    $content -> contents[] = $heading;
+                    $body -> contents[] = $heading;
                 }
             }
 
@@ -273,11 +288,11 @@ class Post extends Article
                     $media = $cover;
                 }
 
-                $content -> contents[] = $media;
+                $body -> contents[] = $media;
             }
 
             if ($this -> descriptionDelta !== null) {
-                $content -> contents[] = $this -> truncateDescription
+                $body -> contents[] = $this -> truncateDescription
                     ? $this -> summarizedDescription()
                     : $this -> fullDescription();
             }
@@ -286,7 +301,7 @@ class Post extends Article
             // about.
             if ($this -> poll !== null) {
                 $this -> poll -> viewerId = Auth::id();
-                $content -> contents[] = $this -> poll;
+                $body -> contents[] = $this -> poll;
             }
         }
 
@@ -294,7 +309,11 @@ class Post extends Article
         // quoted material is its context. Absent when the quoted post has
         // been deleted or its author banned - the words above stand alone.
         if ($this -> quotedPost !== null) {
-            $content -> contents[] = $this -> quotedPost;
+            $body -> contents[] = $this -> quotedPost;
+        }
+
+        if ($body !== $content) {
+            $content -> contents[] = $body;
         }
 
         return $content;
@@ -731,6 +750,7 @@ DELETE
             'repostCount' => ActivityPubReaction::announceCount((int) $this -> postId),
             'items' => $items,
             'sensitive' => $this -> sensitive === 1,
+            'contentWarning' => $this -> contentWarning,
             'imageAltText' => $this -> imageAltText(),
             'replyCount' => $reply_count,
             'likeCount' => $like_count,

@@ -106,6 +106,11 @@ CREATE TABLE `Posts` (
   -- something to opt into seeing. Federates both ways as ActivityStreams'
   -- `sensitive`.
   `sensitive` tinyint(1) NOT NULL DEFAULT 0,
+  -- The warning to read before the post, as ActivityStreams' `summary`. Where
+  -- there is one it is not a label on the post but a gate in front of it: the
+  -- words go behind it along with the media, because a spoiler warning whose
+  -- spoiler is the text is the one case `sensitive` alone cannot cover.
+  `contentWarning` varchar(255) DEFAULT NULL,
   `remoteObjectURI` varchar(255) DEFAULT NULL,
   -- What language the sender SAID this was written in - ActivityPub's
   -- contentMap - which is not the same as what it is written in. Mastodon

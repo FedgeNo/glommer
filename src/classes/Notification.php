@@ -73,7 +73,7 @@ class Notification extends Article
      * a timestamp and is not fine in an email, so this names what belongs
      * rather than what does not.
      */
-    public const FROM_A_PERSON = ['like', 'repost', 'reply', 'friendRequest', 'friendAccepted', 'message', 'mention'];
+    public const FROM_A_PERSON = ['like', 'repost', 'reply', 'friendRequest', 'friendAccepted', 'message', 'mention', 'follow'];
 
     /**
      * The one wording for a notification, shared by the page, the dropdown,
@@ -98,6 +98,9 @@ class Notification extends Article
             'friendAccepted' => $actor_name . ' accepted your friend request',
             'message' => $actor_name . ' sent you a message',
             'mention' => $actor_name . ' mentioned you in a post',
+            // Only ever a Fediverse follow. A local one is a friendship, which
+            // is mutual and asks first, so it has its own two types above.
+            'follow' => $actor_name . ' followed you from another server',
             default => $actor_name . ' did something',
         };
     }
@@ -107,7 +110,7 @@ class Notification extends Article
         return match ($this -> type) {
             'like', 'repost', 'reply', 'postReady', 'scheduledPostLive', 'uploadPartlyFailed' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/' . $this -> postId),
             'friendRequest' => ServerURL::absolute('/users/' . Auth::user() ?-> slug . '/friends'),
-            'friendAccepted' => ServerURL::absolute('/users/' . $this -> actorUsername . '/'),
+            'friendAccepted', 'follow' => ServerURL::absolute('/users/' . $this -> actorUsername . '/'),
             'message' => ServerURL::absolute('/messages/' . $this -> actorUsername),
             // Unlike 'like'/'reply' (the recipient's OWN post), a mentioned
             // post belongs to the ACTOR (whoever wrote the post that mentions

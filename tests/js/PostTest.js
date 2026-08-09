@@ -85,6 +85,30 @@ export default {
             TestCase.assertNull(element.querySelector('details.SensitiveMedia'));
             TestCase.assertNotNull(element.querySelector('.FeedItem'));
         },
+        // Mirrors ContentWarning.php: the warning covers the whole body, not
+        // just the pictures, because what it is usually warning about is the
+        // words. See tests/ContentWarningTest.php for the server's half.
+        'a warning covers the whole body, title and media alike'() {
+            const element = post_element({ contentWarning: 'Spoilers for the finale' });
+            const gate = element.querySelector('details.ContentWarning');
+
+            TestCase.assertNotNull(gate);
+            TestCase.assertEquals('SUMMARY', gate.firstElementChild.tagName);
+            TestCase.assertEquals('Spoilers for the finale', gate.firstElementChild.textContent);
+            TestCase.assertNotNull(gate.querySelector('.FeedItem'), 'the media belongs inside the gate');
+            TestCase.assertNotNull(gate.querySelector('h3'), 'so does the title');
+        },
+        'the byline stays outside the warning'() {
+            // A gate with nothing identifying it is a gate nobody can judge.
+            const element = post_element({ contentWarning: 'Spoilers' });
+
+            TestCase.assertNotNull(element.querySelector('.PostByline'));
+            TestCase.assertNull(element.querySelector('.ContentWarning .PostByline'));
+        },
+        'a post nobody warned about is not put behind an empty gate'() {
+            TestCase.assertNull(post_element().querySelector('details.ContentWarning'));
+            TestCase.assertNull(post_element({ contentWarning: '   ' }).querySelector('details.ContentWarning'));
+        },
         'a remote attachment describes itself'() {
             // The server prefers the sender's per-attachment alt text over the
             // post-level fallback; FeedItem.php does the same.

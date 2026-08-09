@@ -35,17 +35,22 @@ if ($user_id === null) {
     JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
 }
 
-if (strlen($new_password) < 8) {
-    JSONResponse::error('Password must be at least 8 characters.', 422) -> send();
-}
+// Gathered rather than answered one at a time - see api/change-password.php.
+$refused = [];
 
-if (strlen($new_password) > 72) {
+if (strlen($new_password) < 8) {
+    $refused['newPassword'] = 'Use at least 8 characters.';
+} elseif (strlen($new_password) > 72) {
     // bcrypt (password_hash's default) only uses the first 72 bytes and rejects longer input outright.
-    JSONResponse::error('Password must be at most 72 characters.', 422) -> send();
+    $refused['newPassword'] = 'Use at most 72 characters.';
 }
 
 if ($new_password !== $confirm_password) {
-    JSONResponse::error('Passwords do not match.', 422) -> send();
+    $refused['confirmPassword'] = 'This does not match the new password.';
+}
+
+if ($refused !== []) {
+    JSONResponse::fieldErrors($refused) -> send();
 }
 
 $user = User::load($user_id);

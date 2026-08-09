@@ -21,7 +21,7 @@ export class SignupForm {
                 password: form.querySelector('[name="password"]').value,
                 rememberMe: form.querySelector('[name="rememberMe"]').checked,
                 captchaToken: captcha_input ? captcha_input.value : null,
-            });
+            }, { form });
             if (!data) {
                 Working.stop(submit_button);
                 return;

@@ -15,6 +15,16 @@ class InputField extends Div
     public ?string $autocomplete = null;
     public bool $labelVisible = true;
 
+    /**
+     * Why this input was refused, shown under it.
+     *
+     * Set where the server already knows before the page is drawn. The client
+     * puts the same element in the same place when an endpoint answers with a
+     * field it would not accept - see FormErrors.js, which has to agree with
+     * what is built here.
+     */
+    public ?string $error = null;
+
     public function __construct(string $name, string $label, string $type = 'text', ?string $placeholder = null, ?int $max_length = null)
     {
         parent::__construct();
@@ -48,9 +58,32 @@ class InputField extends Div
             $input -> attributes['autocomplete'] = $this -> autocomplete;
         }
 
+        if ($this -> error !== null) {
+            $input -> attributes['aria-invalid'] = 'true';
+            $input -> attributes['aria-describedby'] = $this -> name . 'Error';
+        }
+
         $this -> contents[] = $input;
 
+        if ($this -> error !== null) {
+            $this -> contents[] = self::errorElement($this -> name, $this -> error);
+        }
+
         return parent::toDOM();
+    }
+
+    /**
+     * The reason under a refused input, built the one way so the server and
+     * the client cannot drift into showing it differently.
+     */
+    public static function errorElement(string $name, string $reason): Paragraph
+    {
+        $error = new Paragraph();
+        $error -> class = 'FieldError';
+        $error -> attributes['id'] = $name . 'Error';
+        $error -> contents[] = $reason;
+
+        return $error;
     }
 
     protected static function inputForType(string $type): Input

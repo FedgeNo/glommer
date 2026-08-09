@@ -20,21 +20,24 @@ $display_name = mb_substr(trim((string) ($payload['displayName'] ?? '')), 0, 50)
 $description = mb_substr(trim((string) ($payload['description'] ?? '')), 0, 500);
 $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captchaToken'] : null;
 
+// Keyed by the input each is about, so all of them are answered at once and
+// each lands under its own box rather than in one sentence at the corner of
+// the screen. Anything with no box of its own has no key - see below.
 $errors = [];
 
 if ($username === '') {
-    $errors[] = 'Username is required.';
+    $errors['username'] = 'Please choose a username.';
 }
 
 if ($email === '' || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-    $errors[] = 'A valid email is required.';
+    $errors['email'] = 'Please give a valid email address.';
 }
 
 if (strlen($password) < 8) {
-    $errors[] = 'Password must be at least 8 characters.';
+    $errors['password'] = 'Use at least 8 characters.';
 } elseif (strlen($password) > 72) {
     // bcrypt (password_hash's default) only uses the first 72 bytes and rejects longer input outright.
-    $errors[] = 'Password must be at most 72 characters.';
+    $errors['password'] = 'Use at most 72 characters.';
 }
 
 $mysqli = DB::connection();
@@ -73,12 +76,20 @@ SELECT `userId`
     // anyone holding a link - and their actor URI is built from it, so remote
     // servers would deliver the old account's follows to a stranger.
     if (mysqli_stmt_num_rows($stmt) > 0 || RetiredUsername::isRetired($username) || EmailChangeRevert::isReserved($email)) {
-        $errors[] = 'That username or email is already taken.';
+        // Deliberately not said of one or the other: which of the two is taken
+        // is what an account-enumeration probe is asking, and the rate limit
+        // above only slows that down rather than answering it differently.
+        $errors['username'] = 'That username or email is already taken.';
     }
 }
 
 if ($errors !== []) {
-    JSONResponse::error(implode(' ', $errors), 422) -> send();
+    // The ones keyed by a field go under those fields; the rest - a rate limit,
+    // a failed captcha - have no box to sit under and stay in the summary,
+    // which is what the client shows when nothing could be marked up.
+    $named = array_filter($errors, static fn (string $key): bool => !ctype_digit($key), ARRAY_FILTER_USE_KEY);
+
+    JSONResponse::fieldErrors($named, implode(' ', $errors)) -> send();
 }
 
 $hash = password_hash($password, PASSWORD_DEFAULT);

@@ -116,6 +116,25 @@
     box-shadow: var(--shadow-pop);
 }
 
+/* ---------- A refused field ---------- */
+
+/* Under the input it is about, in the colour everything that has gone wrong
+   wears. Tied to the input by aria-describedby, so it is read out on reaching
+   the box rather than found by hunting - which is the whole point of putting
+   it here instead of in a toast floating at the edge of the screen. */
+.FieldError {
+    color: var(--danger);
+    font-size: 0.8125rem;
+    margin: 0.25rem 0 0;
+}
+
+/* The box itself, so the eye lands on which one before reading why. */
+.InputField :is(input, textarea)[aria-invalid='true'],
+.TextareaField :is(input, textarea)[aria-invalid='true'] {
+    border-color: var(--danger);
+    outline-color: var(--danger);
+}
+
 /* ---------- Skipping the navigation ---------- */
 
 /* Out of the way until somebody tabs to it, then a real control in the corner.

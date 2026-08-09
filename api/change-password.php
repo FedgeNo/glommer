@@ -33,23 +33,30 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
     JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
 }
 
+// Gathered rather than answered one at a time: a form that refuses the first
+// thing it finds makes somebody press the button once per mistake to discover
+// the next one.
+$refused = [];
+
 if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
-    JSONResponse::error('Current password is incorrect', 422) -> send();
+    $refused['currentPassword'] = 'That is not your current password.';
 }
 
 if (strlen($new_password) < 8) {
-    JSONResponse::error('New password must be at least 8 characters', 422) -> send();
-}
-
+    $refused['newPassword'] = 'Use at least 8 characters.';
 // bcrypt (password_hash's default) only uses the first 72 bytes and rejects longer input outright.
-if (strlen($new_password) > 72) {
-    JSONResponse::error('New password must be at most 72 characters', 422) -> send();
+} elseif (strlen($new_password) > 72) {
+    $refused['newPassword'] = 'Use at most 72 characters.';
 }
 
 if ($new_password !== $confirm_password) {
-    JSONResponse::error('New passwords do not match', 422) -> send();
+    $refused['confirmPassword'] = 'This does not match the new password.';
+}
+
+if ($refused !== []) {
+    JSONResponse::fieldErrors($refused) -> send();
 }
 
 $hash = password_hash($new_password, PASSWORD_DEFAULT);

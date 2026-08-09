@@ -18,7 +18,7 @@ export class PasswordResetForm {
                 token: form.querySelector('[name="token"]').value,
                 newPassword: form.querySelector('[name="newPassword"]').value,
                 confirmPassword: form.querySelector('[name="confirmPassword"]').value,
-            });
+            }, { form });
 
             if (!data) {
                 Working.stop(submit_button);

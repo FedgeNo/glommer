@@ -1,9 +1,15 @@
-import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
-import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
+/**
+ * Changing your own password.
+ *
+ * Api is handed the form, so a refusal that names the boxes it is about -
+ * which of the three was wrong, and all of them at once - is written under
+ * those boxes instead of thrown at the corner of the screen.
+ */
 export class PasswordChangeForm {
     static init() {
         document.addEventListener('submit', async (event) => {
@@ -11,34 +17,20 @@ export class PasswordChangeForm {
             if (!form) return;
             event.preventDefault();
 
-            const existing_error = form.querySelector('.Error');
-            if (existing_error) existing_error.remove();
-
             const submit_button = form.querySelector('button[type="submit"]');
             Working.start(submit_button);
 
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/change-password', {
-                    method: 'POST',
-                    headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                    body: JSON.stringify({
-                        currentPassword: form.querySelector('[name="currentPassword"]').value,
-                        newPassword: form.querySelector('[name="newPassword"]').value,
-                        confirmPassword: form.querySelector('[name="confirmPassword"]').value,
-                    }),
-                });
+                const data = await Api.post('/api/change-password', {
+                    currentPassword: form.querySelector('[name="currentPassword"]').value,
+                    newPassword: form.querySelector('[name="newPassword"]').value,
+                    confirmPassword: form.querySelector('[name="confirmPassword"]').value,
+                }, { form });
 
-                const data = await response.json();
-
-                if (!response.ok) {
-                    Toast.show(data.error);
-                    return;
-                }
+                if (!data) return;
 
                 form.reset();
                 Toast.show('Password changed!');
-            } catch (error) {
-                Toast.show('Network error. Please check your connection and try again.');
             } finally {
                 Working.stop(submit_button);
             }

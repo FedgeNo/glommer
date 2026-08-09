@@ -41,11 +41,11 @@ if (isset($payload['envelope'])) {
         JSONResponse::error('Encrypted messaging is not available on this server.', 422) -> send();
     }
 } elseif ($body === '') {
-    JSONResponse::error('Message cannot be empty', 422) -> send();
+    JSONResponse::fieldError('body', 'Write something first.') -> send();
 }
 
 if (strlen($body) > 65535) {
-    JSONResponse::error('Message is too long', 422) -> send();
+    JSONResponse::fieldError('body', 'That message is too long.') -> send();
 }
 
 if ($recipient_id === $current_user -> userId) {

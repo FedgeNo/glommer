@@ -15,15 +15,15 @@ if (!Auth::check() || Auth::id() !== 1) {
 }
 
 if (!isset($_FILES['frontPageImage'])) {
-    JSONResponse::error('No file was uploaded', 422) -> send();
+    JSONResponse::fieldError('frontPageImage', 'Choose a file first.') -> send();
 }
 
 if ($_FILES['frontPageImage']['error'] !== UPLOAD_ERR_OK) {
-    JSONResponse::error('The image upload failed. Please try again.', 422) -> send();
+    JSONResponse::fieldError('frontPageImage', 'That upload did not arrive. Please try again.') -> send();
 }
 
 if (!FrontPageImage::updateFromUpload($_FILES['frontPageImage']['tmp_name'])) {
-    JSONResponse::error('That file could not be read as an image.', 422) -> send();
+    JSONResponse::fieldError('frontPageImage', 'That file could not be read as an image.') -> send();
 }
 
 JSONResponse::success(['saved' => true, 'url' => FrontPageImage::URL()]) -> send();

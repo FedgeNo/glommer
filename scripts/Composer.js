@@ -657,7 +657,11 @@ export class Composer {
                 staged.stagedPostId = Number(this.#form.dataset.stagedPostId);
             }
 
-            const result = await Api.post(this.#editingDraft() ? '/api/update-staged' : '/api/stage-post', staged);
+            const result = await Api.post(
+                this.#editingDraft() ? '/api/update-staged' : '/api/stage-post',
+                staged,
+                { form: this.#form }
+            );
 
             if (!result) return;
 

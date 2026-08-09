@@ -34,7 +34,11 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 600)) {
 
 if (!$current_user -> verifyPassword((string) ($payload['password'] ?? ''))) {
     RateLimiter::recordAttempt($password_rate_key);
-    JSONResponse::error('That isn\'t your account password.', 403) -> send();
+
+    // Named for the box it is typed into rather than for the payload key -
+    // the form calls it setupAccountPassword, and the message goes under the
+    // box, not under the key.
+    JSONResponse::fieldError('setupAccountPassword', 'That is not your account password.', 403) -> send();
 }
 
 // Both blobs are rebuilt from allowlisted fields rather than stored as

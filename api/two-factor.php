@@ -40,7 +40,7 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
 if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
-    JSONResponse::error('Current password is incorrect', 422) -> send();
+    JSONResponse::fieldError('currentPassword', 'That is not your current password.') -> send();
 }
 
 TwoFactor::setEnabled((int) $current_user -> userId, $action === 'enable');

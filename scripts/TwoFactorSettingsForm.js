@@ -27,7 +27,7 @@ export class TwoFactorSettingsForm {
             const data = await Api.post('/api/two-factor', {
                 action: submit_button.dataset.action,
                 currentPassword: password_input.value,
-            });
+            }, { form });
 
             if (!data) {
                 Working.stop(submit_button);

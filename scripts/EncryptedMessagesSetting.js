@@ -67,7 +67,7 @@ export class EncryptedMessagesSetting {
                 publicKey: pair.publicKey,
                 wrappedPrivateKey: wrapped,
                 password: account_password,
-            });
+            }, { form });
             if (result === null) return;
 
             EncryptedMessagesSetting.#keys = { publicKey: pair.publicKey, wrappedPrivateKey: wrapped };
@@ -114,7 +114,7 @@ export class EncryptedMessagesSetting {
                 publicKey: keys.publicKey,
                 wrappedPrivateKey: wrapped,
                 password: account_password,
-            });
+            }, { form });
             if (result === null) return;
 
             EncryptedMessagesSetting.#keys = { publicKey: keys.publicKey, wrappedPrivateKey: wrapped };

@@ -77,7 +77,7 @@ export class MessageComposer {
             Working.start(submit_button);
 
             try {
-                const result = await Api.post('/api/send-message', payload);
+                const result = await Api.post('/api/send-message', payload, { form });
 
                 if (result === null) return;
 

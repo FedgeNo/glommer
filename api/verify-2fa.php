@@ -42,13 +42,13 @@ $payload = is_array($payload) ? $payload : [];
 $code = trim((string) ($payload['code'] ?? ''));
 
 if ($code === '') {
-    JSONResponse::error('Enter the code we emailed you.', 422) -> send();
+    JSONResponse::fieldError('code', 'Enter the code we emailed you.') -> send();
 }
 
 if (!TwoFactor::verifyCode($user_id, $code)) {
     RateLimiter::recordAttempt($rate_key);
 
-    JSONResponse::error('That code is incorrect or has expired.', 422) -> send();
+    JSONResponse::fieldError('code', 'That code is incorrect or has expired.') -> send();
 }
 
 $user = User::load($user_id);

@@ -28,7 +28,7 @@ $smtp_encryption = (string) ($payload['smtpEncryption'] ?? 'tls');
 // Exactly the three transports sendViaSMTP() understands - anything else
 // silently degrades to a plaintext AUTH, so reject it rather than store it.
 if (!in_array($smtp_encryption, ['tls', 'ssl', 'none'], true)) {
-    JSONResponse::error('Invalid encryption setting.', 422) -> send();
+    JSONResponse::fieldError('smtpEncryption', 'Choose one of the three listed transports.') -> send();
 }
 
 // Blank leaves the stored address unchanged - not write-only like the
@@ -36,7 +36,7 @@ if (!in_array($smtp_encryption, ['tls', 'ssl', 'none'], true)) {
 // must never silently apply (see MailSettingsForm's docblock).
 if ($mail_from_address !== '') {
     if (filter_var($mail_from_address, FILTER_VALIDATE_EMAIL) === false) {
-        JSONResponse::error('That is not a valid email address.', 422) -> send();
+        JSONResponse::fieldError('mailFromAddress', 'That is not a valid email address.') -> send();
     }
 
     Settings::set(Mailer::FROM_ADDRESS_SETTING, $mail_from_address);

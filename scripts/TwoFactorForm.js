@@ -14,7 +14,7 @@ export class TwoFactorForm {
             Working.start(submit_button);
             const data = await Api.post('/api/verify-2fa', {
                 code: form.querySelector('[name="code"]').value,
-            });
+            }, { form });
             if (!data) {
                 Working.stop(submit_button);
                 return;

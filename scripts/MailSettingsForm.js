@@ -20,7 +20,7 @@ export class MailSettingsForm {
                 smtpUsername: form.querySelector('[name="smtpUsername"]').value,
                 smtpPassword: form.querySelector('[name="smtpPassword"]').value,
                 smtpEncryption: form.querySelector('[name="smtpEncryption"]').value,
-            });
+            }, { form });
             Working.stop(submit_button);
             if (data) Toast.show('Settings saved.');
         });

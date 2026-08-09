@@ -71,7 +71,7 @@ if ($link_url !== '') {
     }
 
     if (!preg_match('/^https?:\/\//i', $link_url) || strlen($link_url) > 255 || !URL::isValidHTTPURL($link_url)) {
-        JSONResponse::error('Link URL must point to a real domain name.', 422) -> send();
+        JSONResponse::fieldError('linkURL', 'Point this at a real domain name.') -> send();
     }
 
     $link_url_value = $link_url;

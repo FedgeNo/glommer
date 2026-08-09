@@ -15,15 +15,15 @@ if (!Auth::check() || Auth::id() !== 1) {
 }
 
 if (!isset($_FILES['favicon'])) {
-    JSONResponse::error('No file was uploaded', 422) -> send();
+    JSONResponse::fieldError('favicon', 'Choose a file first.') -> send();
 }
 
 if ($_FILES['favicon']['error'] !== UPLOAD_ERR_OK) {
-    JSONResponse::error('The favicon upload failed. Please try again.', 422) -> send();
+    JSONResponse::fieldError('favicon', 'That upload did not arrive. Please try again.') -> send();
 }
 
 if (!Favicon::updateFromUpload($_FILES['favicon']['tmp_name'])) {
-    JSONResponse::error('That file could not be read as an image.', 422) -> send();
+    JSONResponse::fieldError('favicon', 'That file could not be read as an image.') -> send();
 }
 
 JSONResponse::success(['saved' => true]) -> send();

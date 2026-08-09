@@ -30,7 +30,7 @@ RateLimiter::recordAttempt($rate_key);
 $uploaded_file = $_FILES['avatar'] ?? null;
 
 if ($uploaded_file === null || $uploaded_file['error'] !== UPLOAD_ERR_OK) {
-    JSONResponse::error('No file uploaded', 422) -> send();
+    JSONResponse::fieldError('avatar', 'Choose an image first.') -> send();
 }
 
 // Refuse uploads outright when the disk is nearly full - the database (on the
@@ -53,7 +53,7 @@ if (!is_dir($avatar_dir)) {
 $image = ImageProcessor::load($uploaded_file['tmp_name']);
 
 if ($image === false) {
-    JSONResponse::error('Not a valid image', 422) -> send();
+    JSONResponse::fieldError('avatar', 'That file could not be read as an image.') -> send();
 }
 
 $thumbnail_path = $avatar_dir . '/' . $current_user -> userId . '-thumb.jpg';
@@ -67,7 +67,7 @@ $thumbnail_ok = ImageProcessor::resizeAndSave($image, $thumbnail_path, ImageProc
 imagedestroy($image);
 
 if (!$thumbnail_ok) {
-    JSONResponse::error('Could not process image', 422) -> send();
+    JSONResponse::fieldError('avatar', 'That image could not be processed. Try another.') -> send();
 }
 
 $has_avatar = 1;

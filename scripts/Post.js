@@ -36,6 +36,9 @@ export class Post {
     language = null;
     quotedPost = null;
     poll = null;
+    // What this reply answers and where its thread began - null on a post that
+    // starts one. Mirrors Post.php's ThreadContext.
+    threadContext = null;
     repostedBy = null;
     // A post that came from another server - it carries no share button,
     // because the address worth passing on is the original.
@@ -67,6 +70,32 @@ export class Post {
     /** Mirrors PostBookmarkButton::label(). */
     static bookmarkLabel(bookmarked) {
         return bookmarked ? 'Unbookmark' : 'Bookmark';
+    }
+
+    threadContextToElement() {
+        const line = document.createElement('div');
+        line.className = 'ThreadContext';
+
+        const response = document.createElement('span');
+        response.appendWithSpace(document.createTextNode('In response to '));
+
+        const parent = document.createElement('a');
+        parent.href = ClientConfig.siteURL() + '/users/' + this.threadContext.parentUsername + '/' + this.threadContext.parentId;
+        parent.textContent = this.threadContext.parentLabel;
+        response.appendWithSpace(parent);
+
+        line.appendWithSpace(response);
+
+        // Only where the start is somewhere else - see ThreadContext.php.
+        if (this.threadContext.rootId && this.threadContext.rootId !== this.threadContext.parentId) {
+            const start = document.createElement('a');
+            start.className = 'ThreadStartLink';
+            start.href = ClientConfig.siteURL() + '/users/' + this.threadContext.rootUsername + '/' + this.threadContext.rootId;
+            start.textContent = 'Jump to start';
+            line.appendWithSpace(start);
+        }
+
+        return line;
     }
 
     repostAttributionToElement() {
@@ -327,6 +356,12 @@ export class Post {
     postElement() {
         const post = document.createElement('div');
         post.className = 'PostContent';
+
+        // Mirrors Post.php - first of all, because a reply read without it is
+        // an answer to a question that is not on the page.
+        if (this.threadContext) {
+            post.appendWithSpace(this.threadContextToElement());
+        }
 
         // Mirrors Post.php - above the byline, because it answers the question
         // the byline raises.

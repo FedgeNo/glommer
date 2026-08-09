@@ -296,7 +296,7 @@ class ActivityPubInbox
      * a long thread - or one that answers itself in a circle - turning into an
      * unbounded run of requests.
      */
-    private const MAX_THREAD_DEPTH = 10;
+    private const MAX_THREAD_DEPTH = 30;
 
     /**
      * The post a reply hangs from, reading the thread above it when this

@@ -69,14 +69,31 @@ $run_classes = array_values(array_diff($test_classes, $db_test_classes));
 
 $running_as_root = trim((string) shell_exec('id -u 2>/dev/null')) === '0';
 
+// A whole class stood down counts as every test in it, not as one line. A
+// summary saying four were skipped while several hundred silently did not run
+// is worse than no summary: it reads as a suite that passed.
+$test_method_count = static fn (string $class): int => count(array_filter(
+    get_class_methods($class),
+    fn (string $method) => str_starts_with($method, 'test')
+));
+
+$skipped_classes = [];
+
 if ($db_test_classes !== [] && $running_as_root && TestDatabase::setUp()) {
     register_shutdown_function([TestDatabase::class, 'tearDown']);
     $run_classes = array_merge($run_classes, $db_test_classes);
     sort($run_classes);
-} elseif ($db_test_classes !== [] && !$running_as_root) {
-    echo 'Skipping ' . count($db_test_classes) . " database-backed test class(es) - re-run with sudo to include them.\n\n";
 } elseif ($db_test_classes !== []) {
-    echo 'Skipping ' . count($db_test_classes) . " database-backed test class(es) - test database setup failed, see above.\n\n";
+    $skipped_classes = [
+        'classes' => count($db_test_classes),
+        'tests' => array_sum(array_map($test_method_count, $db_test_classes)),
+        'reason' => $running_as_root
+            ? 'test database setup failed, see above'
+            : 're-run with sudo to include them',
+    ];
+
+    echo 'Skipping ' . $skipped_classes['tests'] . ' test(s) in ' . $skipped_classes['classes']
+        . ' database-backed class(es) - ' . $skipped_classes['reason'] . ".\n\n";
 }
 
 $total = 0;
@@ -129,8 +146,17 @@ if ($failures !== []) {
     echo "\n";
 }
 
-if ($skipped !== []) {
-    echo 'Skipped ' . count($skipped) . ":\n";
+// Everything that did not run, however it came to be stood down - the tests
+// that asked to be, and the whole classes never reached at all.
+$skipped_total = count($skipped) + ($skipped_classes['tests'] ?? 0);
+
+if ($skipped_total > 0) {
+    echo 'Skipped ' . $skipped_total . ":\n";
+
+    if ($skipped_classes !== []) {
+        echo '  ' . $skipped_classes['tests'] . ' in ' . $skipped_classes['classes']
+            . " database-backed class(es)\n    " . $skipped_classes['reason'] . "\n";
+    }
 
     foreach ($skipped as $skip) {
         echo "  {$skip['label']}\n    {$skip['message']}\n";
@@ -139,10 +165,10 @@ if ($skipped !== []) {
     echo "\n";
 }
 
-// Skipped tests leave the denominator rather than joining the numerator: a
-// run that skipped four is not a run that passed them.
+// Skipped tests leave the denominator rather than joining the numerator: a run
+// that skipped a hundred is not a run that passed them.
 $ran = $total - count($skipped);
 $passed = $ran - count($failures);
-echo "{$passed}/{$ran} passed" . ($skipped !== [] ? ', ' . count($skipped) . ' skipped' : '') . " ({$elapsed_ms}ms)\n";
+echo "{$passed}/{$ran} passed" . ($skipped_total > 0 ? ', ' . $skipped_total . ' skipped' : '') . " ({$elapsed_ms}ms)\n";
 
 exit($failures === [] ? 0 : 1);

@@ -94,13 +94,6 @@ $page -> needsMath = true;
 $page -> needsEmoji = $current_user !== null;
 
 $page -> title = $post -> pageTitle();
-if ($post -> parentId !== null) {
-    $parent_link = ParentPostLink::fromParentId($post -> parentId);
-
-    if ($parent_link !== null) {
-        $page -> addContent($parent_link);
-    }
-}
 
 // The permalink shows this one post in full: description untruncated, and its
 // action bar's Delete redirects home rather than removing a card in place.

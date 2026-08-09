@@ -748,7 +748,6 @@ label.visually-hidden { margin-bottom: 0; }
     justify-content: flex-end;
 }
 
-.ParentPostLink { font-size: 0.85rem; }
 .LoginPrompt { text-align: center; }
 
 .SeeMore {
@@ -1198,6 +1197,29 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 .RepostAttribution a {
     font-weight: 550;
+}
+
+/* Matches the repost line above it, since the two do the same job: a quiet
+   line of context over the card. The way back to the start of the thread sits
+   at the far end of it, and drops to its own line when there is no room -
+   which on a phone, against a long parent title, is most of the time. */
+.ThreadContext {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    margin-bottom: 0.5rem;
+}
+
+.ThreadContext a {
+    font-weight: 550;
+}
+
+.ThreadStartLink {
+    white-space: nowrap;
 }
 
 /* ---------- Polls ---------- */
@@ -1965,9 +1987,13 @@ body.MessagesPage { padding-bottom: 9rem; }
    to its corners; the map fills it edge to edge rather than sitting inside the
    Card's usual padding. isolation keeps Leaflet's stacking contexts from
    escaping the card. */
+/* Square at the very most, and wider than tall wherever there is room for it.
+   Sized from its own width rather than the viewport's height: a fixed vh on a
+   phone made a tall portrait slab of it, several screens of map to scroll past
+   to reach whatever came next. */
 .PostMap {
-    height: 70vh;
-    min-height: 24rem;
+    aspect-ratio: 1 / 1;
+    max-height: 70vh;
     width: 100%;
     padding: 0;
     isolation: isolate;

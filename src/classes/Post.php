@@ -54,6 +54,9 @@ class Post extends Article
     // Posts.quotedPostId. The quoted post itself is attached at hydration.
     public ?int $quotedPostId = null;
     public ?QuotedPost $quotedPost = null;
+    // What this reply answers and where its thread began, attached at
+    // hydration for the whole page at once - null on a post that starts one.
+    public ?ThreadContext $threadContext = null;
     // From the Polls side table, attached by fromRowsWithItems - null for the
     // overwhelming majority of posts, which are not polls.
     public ?Poll $poll = null;
@@ -203,6 +206,12 @@ class Post extends Article
     {
         $content = new Div();
         $content -> class = 'PostContent';
+
+        // First of all, because a reply read without it is an answer to a
+        // question that is not on the page.
+        if ($this -> threadContext !== null) {
+            $content -> contents[] = $this -> threadContext;
+        }
 
         // Above the byline, because it answers the question the byline raises:
         // why an unfollowed author's post is in this feed at all.
@@ -615,11 +624,13 @@ DELETE
         $repost_state = Repost::stateForPosts($post_ids, $viewer_id);
         $pinned = $viewer_id === null ? [] : PinnedPost::pinnedForPosts($post_ids, $viewer_id);
         $quoted = QuotedPost::forPosts($posts);
+        $thread_context = ThreadContext::forPosts($posts);
 
         foreach ($posts as $post) {
             $post -> items = $items_by_post[(int) $post -> postId] ?? [];
             $post -> author = $authors[(int) $post -> userId] ?? null;
             $post -> quotedPost = $quoted[(int) $post -> postId] ?? null;
+            $post -> threadContext = $thread_context[(int) $post -> postId] ?? null;
 
             $location = $locations[(int) $post -> postId] ?? null;
             $post -> latitude = $location['latitude'] ?? null;
@@ -707,6 +718,7 @@ DELETE
             'translatable' => $this -> translatable(),
             'language' => $this -> language,
             'quotedPost' => $this -> quotedPost ?-> toPayloadArray(),
+            'threadContext' => $this -> threadContext ?-> toPayloadArray(),
             // Whether this came from another server, which decides the share
             // button the same way it does server-side.
             'remote' => $this -> remoteObjectURI !== null,

@@ -12,8 +12,15 @@ class PostQuoteButton extends Anchor
     public ?string $class = 'PostQuoteButton';
     public array $mixins = ['Button'];
 
+    public const GLYPH = '✍️';
+
     public function __construct(int $post_id)
     {
-        parent::__construct(ServerURL::absolute('/quote/' . $post_id), 'Quote');
+        parent::__construct(ServerURL::absolute('/quote/' . $post_id), self::GLYPH);
+
+        // A link, so it has no ButtonButton to name it - and a glyph on its
+        // own is nameless to anything not looking at it.
+        $this -> attributes['aria-label'] = 'Quote';
+        $this -> attributes['title'] = 'Quote';
     }
 }

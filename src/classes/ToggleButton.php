@@ -45,7 +45,7 @@ class ToggleButton extends ButtonButton
     protected ?string $reserve = null;
 
     /** The stand-in a count-carrying label reserves room for. */
-    public const RESERVED_COUNT = '(XXX)';
+    public const RESERVED_COUNT = 'XXX';
 
     public function toDOM(): \DOMElement
     {

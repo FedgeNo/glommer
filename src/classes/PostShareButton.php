@@ -9,11 +9,14 @@ declare(strict_types=1);
  */
 class PostShareButton extends ButtonButton
 {
+    public const GLYPH = '📤';
+
     public function __construct(string $post_url)
     {
         parent::__construct();
 
         $this -> attributes['data-share-url'] = $post_url;
-        $this -> contents[] = 'Share';
+        $this -> nameIt('Share');
+        $this -> contents[] = self::GLYPH;
     }
 }

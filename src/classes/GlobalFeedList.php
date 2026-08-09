@@ -14,14 +14,21 @@ declare(strict_types=1);
  * non-banned author's top-level posts to serve a 21-row page (measured ~270x
  * slower at 40k posts).
  *
- * FORCE INDEX is the same fight one step further. Left to itself the optimizer
- * reaches for the unique key on remoteObjectURI, which groups the local posts
- * together but carries no order within the group - so it filesorts every one of
- * them to serve a 21-row page. remoteObjectURI_postId has postId ordered inside
- * the NULL group, so the page is read straight off the index and the read stops
- * when it is full. It is pinned because the optimizer counts rows examined and
- * cannot see that LIMIT ends the ordered read early. Any change to this WHERE
- * clause needs the index changed to match, or the hint dropped.
+ * FORCE INDEX is the same fight one step further. Given the choice the
+ * optimizer index_merges parentId_postId with remoteObjectURI, and intersecting
+ * two indexes destroys the primary-key ordering this ORDER BY relies on - so it
+ * filesorts the whole matching set for a 21-row page (measured 120ms vs 0.5ms
+ * at 55k posts). parentId_remoteObjectURI_postId covers both WHERE columns and
+ * carries postId in order, so the page is read straight off the index. It's
+ * pinned because the optimizer counts rows examined and can't see that LIMIT
+ * makes the ordered read stop early. Any change to this WHERE clause needs the
+ * index changed to match, or the hint dropped.
+ *
+ * Replies are kept out of this one feed, unlike the others. It is the only
+ * feed a signed-out visitor sees, and a local reply to a post on another
+ * server is itself local - so it would pass the filter above and arrive
+ * carrying a link to a remote post, which nobody signed out is allowed to
+ * open.
  */
 class GlobalFeedList extends FeedList
 {
@@ -38,9 +45,9 @@ SELECT STRAIGHT_JOIN `Posts`.*,
     (SELECT COUNT(*) FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId`) AS `likeCount`,
     EXISTS(SELECT 1 FROM `Likes` WHERE `Likes`.`postId` = `Posts`.`postId` AND `Likes`.`userId` = ?) AS `liked`,
     EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
-    FROM `Posts` FORCE INDEX (`remoteObjectURI_postId`)
+    FROM `Posts` FORCE INDEX (`parentId_remoteObjectURI_postId`)
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'iiiii', $viewer_id, $viewer_id, $not_banned, static::PAGE_SIZE + 1, $this -> offset));

@@ -14,6 +14,7 @@ import { enhanceCodeBlocks } from '/scripts/CodeBlockCopy.js';
 import { Poll } from '/scripts/Poll.js';
 import { PostRepostButton } from '/scripts/PostRepostButton.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
+import { SkinTone } from '/scripts/SkinTone.js';
 
 export class Post {
     postId = null;
@@ -63,14 +64,42 @@ export class Post {
         return post;
     }
 
-    /** Mirrors PostLikeButton::label() - the two must agree or the button rewords itself when pressed. */
+    /** The glyphs the action bar shows, mirroring the PHP button classes. */
+    static GLYPHS = {
+        share: '📤',
+        reply: '💬',
+        translate: '🌐',
+        showOriginal: '↩️',
+        like: '👍',
+        repost: '🔁',
+        quote: '✍️',
+        bookmark: '🔖',
+    };
+
+    /** Mirrors PostLikeButton::label() - the two must agree or the button changes shape when pressed. */
     static likeLabel(liked, count) {
-        return (liked ? 'Unlike' : 'Like') + (count > 0 ? ' (' + count + ')' : '');
+        // The reader's own thumb, whichever tone they chose - mirrors
+        // PostLikeButton::label(). The thumb is the same whether or not they
+        // have liked it; the colour is what says so.
+        const thumb = SkinTone.applied(Post.GLYPHS.like, SkinTone.forViewer());
+
+        return count > 0 ? thumb + ' ' + count : thumb;
     }
 
-    /** Mirrors PostBookmarkButton::label(). */
+    /** Mirrors PostLikeButton's aria-label - the name the glyph does not say. */
+    static likeName(liked) {
+        return liked ? 'Unlike' : 'Like';
+    }
+
+    /** Mirrors PostBookmarkButton::label() - its name, since the glyph never changes. */
     static bookmarkLabel(bookmarked) {
-        return bookmarked ? 'Unbookmark' : 'Bookmark';
+        return bookmarked ? 'Remove bookmark' : 'Bookmark';
+    }
+
+    /** Names a glyph-only control for anything not looking at it. */
+    static nameIt(element, name) {
+        element.setAttribute('aria-label', name);
+        element.setAttribute('title', name);
     }
 
     threadContextToElement() {
@@ -514,7 +543,8 @@ export class Post {
             share_button.type = 'button';
             share_button.className = 'PostShareButton Button';
             share_button.dataset.shareUrl = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
-            share_button.textContent = 'Share';
+            Post.nameIt(share_button, 'Share');
+            share_button.textContent = Post.GLYPHS.share;
             actions.appendWithSpace(share_button);
         }
 
@@ -522,7 +552,10 @@ export class Post {
             const replies_link = document.createElement('a');
             replies_link.className = 'Button';
             replies_link.href = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
-            replies_link.textContent = this.replyCount === 0 ? 'Reply' : 'Replies (' + this.replyCount + ')';
+            replies_link.textContent = this.replyCount === 0
+                ? Post.GLYPHS.reply
+                : Post.GLYPHS.reply + ' ' + this.replyCount;
+            Post.nameIt(replies_link, this.replyCount === 0 ? 'Reply' : 'Replies (' + this.replyCount + ')');
             actions.appendWithSpace(replies_link);
         }
 
@@ -530,9 +563,12 @@ export class Post {
             // Mirrors PostActionBar.php: offered only when there is body text
             // to translate and the server has a translator configured.
             if (this.translatable) {
-                actions.appendWithSpace(
-                    ToggleButton.build(['Translate', 'Show original'], 'PostTranslateButton')
+                const translate_button = ToggleButton.build(
+                    [Post.GLYPHS.translate, Post.GLYPHS.showOriginal],
+                    'PostTranslateButton'
                 );
+                Post.nameIt(translate_button, 'Translate');
+                actions.appendWithSpace(translate_button);
             }
 
             // One live label inside a width reserved for the longest form the
@@ -544,6 +580,8 @@ export class Post {
             );
             if (this.liked) like_button.classList.add('Removing');
             like_button.dataset.liked = this.liked ? '1' : '0';
+            like_button.setAttribute('aria-pressed', this.liked ? 'true' : 'false');
+            Post.nameIt(like_button, Post.likeName(this.liked));
             actions.appendWithSpace(like_button);
 
             // Not on your own post - passing on your own writing is what your
@@ -555,6 +593,8 @@ export class Post {
                     PostRepostButton.label(true, 0) + ' ' + ToggleButton.RESERVED_COUNT
                 );
                 if (this.reposted) repost_button.classList.add('Removing');
+                repost_button.setAttribute('aria-pressed', this.reposted ? 'true' : 'false');
+                Post.nameIt(repost_button, this.reposted ? 'Undo repost' : 'Repost');
                 actions.appendWithSpace(repost_button);
             }
 
@@ -563,16 +603,18 @@ export class Post {
             const quote_link = document.createElement('a');
             quote_link.className = 'PostQuoteButton Button';
             quote_link.href = ClientConfig.siteURL() + '/quote/' + this.postId;
-            quote_link.textContent = 'Quote';
+            quote_link.textContent = Post.GLYPHS.quote;
+            Post.nameIt(quote_link, 'Quote');
             actions.appendWithSpace(quote_link);
 
-            const bookmark_button = ToggleButton.build(
-                [Post.bookmarkLabel(false), Post.bookmarkLabel(true)],
-                'PostBookmarkButton'
-            );
-            ToggleButton.select(bookmark_button, Post.bookmarkLabel(this.bookmarked));
+            const bookmark_button = document.createElement('button');
+            bookmark_button.type = 'button';
+            bookmark_button.className = 'Button PostBookmarkButton';
+            bookmark_button.textContent = Post.GLYPHS.bookmark;
             if (this.bookmarked) bookmark_button.classList.add('Removing');
             bookmark_button.dataset.bookmarked = this.bookmarked ? '1' : '0';
+            bookmark_button.setAttribute('aria-pressed', this.bookmarked ? 'true' : 'false');
+            Post.nameIt(bookmark_button, Post.bookmarkLabel(this.bookmarked));
             actions.appendWithSpace(bookmark_button);
 
             if (Number(this.userId) === Number(ClientConfig.get('currentUserId'))) {
@@ -689,7 +731,9 @@ export class Post {
         if (Post.#originalBodies.has(post)) {
             body.replaceWith(Post.#originalBodies.get(post));
             Post.#originalBodies.delete(post);
-            ToggleButton.select(button, 'Translate');
+            ToggleButton.select(button, Post.GLYPHS.translate);
+            button.classList.remove('Removing');
+            Post.nameIt(button, 'Translate');
             return;
         }
 
@@ -735,7 +779,12 @@ export class Post {
 
             Post.#originalBodies.set(post, body);
             body.replaceWith(translated);
-            ToggleButton.select(button, 'Show original');
+            ToggleButton.select(button, Post.GLYPHS.showOriginal);
+            // Red, like every other button whose next press undoes what the
+            // last one did - the glyph alone cannot say the body is no longer
+            // what its author wrote.
+            button.classList.add('Removing');
+            Post.nameIt(button, 'Show original');
         } finally {
             button.disabled = false;
         }
@@ -749,6 +798,8 @@ export class Post {
             if (!result) return;
             button.dataset.liked = result.liked ? '1' : '0';
             button.classList.toggle('Removing', result.liked);
+            button.setAttribute('aria-pressed', result.liked ? 'true' : 'false');
+            Post.nameIt(button, Post.likeName(result.liked));
             ToggleButton.setLabel(button, Post.likeLabel(result.liked, result.count));
         } finally {
             button.disabled = false;
@@ -763,7 +814,8 @@ export class Post {
             if (!result) return;
             button.dataset.bookmarked = result.bookmarked ? '1' : '0';
             button.classList.toggle('Removing', result.bookmarked);
-            ToggleButton.select(button, Post.bookmarkLabel(result.bookmarked));
+            button.setAttribute('aria-pressed', result.bookmarked ? 'true' : 'false');
+            Post.nameIt(button, Post.bookmarkLabel(result.bookmarked));
         } finally {
             button.disabled = false;
         }

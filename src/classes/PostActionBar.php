@@ -12,6 +12,8 @@ declare(strict_types=1);
 class PostActionBar extends Footer
 {
     public ?string $class = 'PostActionBar';
+
+    public const REPLY_GLYPH = '💬';
     public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?int $postId = null;
@@ -107,12 +109,17 @@ class PostActionBar extends Footer
         $link = new Anchor(ServerURL::absolute('/users/' . $this -> postUsername . '/' . $this -> postId), self::replyLabel($this -> replyCount));
         $link -> class = 'Button';
 
+        $name = $this -> replyCount === 0 ? 'Reply' : 'Replies (' . $this -> replyCount . ')';
+        $link -> attributes['aria-label'] = $name;
+        $link -> attributes['title'] = $name;
+
         return $link;
     }
 
+    /** The glyph, with the count beside it once there is one. */
     public static function replyLabel(int $reply_count): string
     {
-        return $reply_count === 0 ? 'Reply' : 'Replies (' . $reply_count . ')';
+        return $reply_count === 0 ? self::REPLY_GLYPH : self::REPLY_GLYPH . ' ' . $reply_count;
     }
 
 

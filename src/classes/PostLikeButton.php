@@ -5,14 +5,26 @@ declare(strict_types=1);
 /**
  * The like toggle on a post's action bar. Carries the current state as
  * data-liked, which is what Post.js reads before it flips it.
+ *
+ * A thumb rather than the word, since this is the most-pressed thing on the
+ * page and a row of nine worded buttons was bigger than the posts it sat
+ * under - and the reader's own thumb, in whatever skin tone they picked in the
+ * emoji picker. Having asked somebody which hand is theirs, it would be a
+ * strange thing to then show them a different one.
  */
 class PostLikeButton extends ToggleButton
 {
+    public const GLYPH = '👍';
+
     public function __construct(bool $liked, int $count)
     {
         parent::__construct();
 
+        $tone = SkinTone::forViewer();
+
         $this -> attributes['data-liked'] = $liked ? '1' : '0';
+        $this -> nameIt($liked ? 'Unlike' : 'Like');
+        $this -> pressed($liked);
 
         // Pressing it now would take the like away, and every button in that
         // position wears the same state.
@@ -22,24 +34,23 @@ class PostLikeButton extends ToggleButton
 
         // One live label, rewritten in place as the count moves, inside a
         // width reserved for the longest form it can take.
-        $this -> labels = [self::label($liked, $count)];
-        $this -> reserve = self::label(true, 0) . ' ' . self::RESERVED_COUNT;
+        $this -> labels = [self::label($liked, $count, $tone)];
+        $this -> reserve = self::label(true, 0, $tone) . ' ' . self::RESERVED_COUNT;
     }
 
     /**
-     * The count only appears once there is one, so a post nobody has liked
-     * reads "Like" rather than "Like (0)". Post.js builds the same label after
-     * a click, and the two have to agree or the button changes wording when it
-     * is pressed.
+     * The count only appears once there is one, so a post nobody has liked is
+     * the thumb alone. Post.js builds the same label after a click, and the
+     * two have to agree or the button changes shape when it is pressed.
+     *
+     * The thumb is the same either way - a thumbs-up has no emptied form the
+     * way a heart does - so what says you have liked it is the colour, and
+     * aria-pressed for anybody not reading colour.
      */
-    public static function label(bool $liked, int $count): string
+    public static function label(bool $liked, int $count, ?string $tone = null): string
     {
-        $label = $liked ? 'Unlike' : 'Like';
+        $thumb = SkinTone::applied(self::GLYPH, $tone);
 
-        if ($count) {
-            $label .= ' (' . $count . ')';
-        }
-
-        return $label;
+        return $count > 0 ? $thumb . ' ' . $count : $thumb;
     }
 }

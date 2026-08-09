@@ -270,7 +270,7 @@ class HelpContent
 <p>Every post has a <strong>reply</strong> action. Replying opens a composer right there, and your reply is attached beneath the original post as part of its thread. Replies work just like posts - you can format them, add emoji, and attach media.</p>
 <p>Open any post on its own page to read the whole conversation, with the original at the top and replies below it. This is the best way to follow a longer back-and-forth.</p>
 <h2>Replies in a feed</h2>
-<p>Replies show up in feeds alongside everything else, so you see a conversation as it happens rather than only when you open the post it hangs from. A reply carries a line above it saying <strong>In response to</strong> whatever it answers, and where the thread runs deeper than a single exchange, a <strong>Jump to start</strong> link beside it takes you to the post that began the whole thing.</p>
+<p>Replies show up in your Friends Feed and on profiles alongside everything else, so you see a conversation as it happens rather than only when you open the post it hangs from. A reply carries a line above it saying <strong>In response to</strong> whatever it answers, and where the thread runs deeper than a single exchange, a <strong>Jump to start</strong> link beside it takes you to the post that began the whole thing.</p>
 ',
             ],
             [
@@ -380,7 +380,7 @@ class HelpContent
 <li><strong>Friends Feed</strong> shows posts only from people you\'re friends with, for when you just want to catch up with your circle.</li>
 </ul>
 <p>Both feeds load more as you scroll, so you can keep going back through older posts. To fill out your Friends Feed, <a href="/help/finding-people">find some people</a> and <a href="/help/friends-and-friend-requests">add them as friends</a>.</p>
-<p>Feeds carry <a href="/help/replies-and-threads">replies</a> as well as posts that start something. A reply says what it is answering, so one arriving on its own still makes sense.</p>
+<p>Your Friends Feed carries <a href="/help/replies-and-threads">replies</a> as well as posts that start something, and a reply says what it is answering so one arriving on its own still makes sense. The main feed shows only posts that start something, keeping it readable to visitors who are not signed in.</p>
 ',
             ],
             [

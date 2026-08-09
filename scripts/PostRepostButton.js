@@ -10,8 +10,11 @@ import { ToggleButton } from '/scripts/ToggleButton.js';
  */
 export class PostRepostButton {
     /** Mirrors PostRepostButton::label() - the two must agree or the button rewords itself when pressed. */
+    /** The arrows, with the count beside them once there is one. Mirrors PostRepostButton.php. */
+    static GLYPH = '🔁';
+
     static label(reposted, count) {
-        return (reposted ? 'Unrepost' : 'Repost') + (count > 0 ? ' (' + count + ')' : '');
+        return count > 0 ? PostRepostButton.GLYPH + ' ' + count : PostRepostButton.GLYPH;
     }
 
     static init() {
@@ -38,6 +41,9 @@ export class PostRepostButton {
 
             button.classList.toggle('Removing', result.reposted);
             ToggleButton.setLabel(button, PostRepostButton.label(result.reposted, result.count));
+            button.setAttribute('aria-pressed', result.reposted ? 'true' : 'false');
+            button.setAttribute('aria-label', result.reposted ? 'Undo repost' : 'Repost');
+            button.setAttribute('title', result.reposted ? 'Undo repost' : 'Repost');
         } finally {
             button.disabled = false;
         }

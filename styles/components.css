@@ -468,6 +468,31 @@ emoji-picker.Active {
    aria-hidden; this is what keeps it out of a text selection too. */
 .ToggleButtonReservation { user-select: none; }
 
+/* ---------- The action bar under a post ---------- */
+
+/* The core actions are a glyph and nothing else, so they no longer need the
+   width a word asked for. Padded to sit square-ish rather than as a stretched
+   pill, and the glyph itself set a little larger than the text it replaced so
+   it reads at a glance. The three worded ones - Edit, Delete, Report - keep
+   the ordinary button padding: they are deliberate acts and the difference in
+   weight is the point. */
+.PostActionBar :is(
+    .PostShareButton, .PostTranslateButton, .PostLikeButton,
+    .PostRepostButton, .PostQuoteButton, .PostBookmarkButton, .PostPinButton
+) {
+    padding: 0.375rem 0.625rem;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+/* The reply link is an anchor rather than a button, so it is named here
+   instead of by a class of its own. */
+.PostActionBar a.Button:not(.PostQuoteButton) {
+    padding: 0.375rem 0.625rem;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
 .ComposerAttachmentList,
 .PostEditAltList {
     list-style: none;

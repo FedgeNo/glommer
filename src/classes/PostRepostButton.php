@@ -5,30 +5,33 @@ declare(strict_types=1);
 /**
  * Passes a post on to your own friends and Fediverse followers, or takes that
  * back. One button in two states, since it is one decision.
+ *
+ * No second glyph for the two states - the arrows have no natural opposite the
+ * way a heart does - so what says it is on is the colour, and aria-pressed for
+ * anybody not reading colour.
  */
 class PostRepostButton extends ToggleButton
 {
+    private const GLYPH = '🔁';
+
     public function __construct(bool $reposted, int $count)
     {
         parent::__construct();
+
+        $this -> nameIt($reposted ? 'Undo repost' : 'Repost');
+        $this -> pressed($reposted);
 
         if ($reposted) {
             $this -> class .= ' Removing';
         }
 
         $this -> labels = [self::label($reposted, $count)];
-        $this -> reserve = self::label(true, 0) . ' ' . self::RESERVED_COUNT;
+        $this -> reserve = self::GLYPH . ' ' . self::RESERVED_COUNT;
     }
 
     /** PostRepostButton.js builds the same label after a click. */
     public static function label(bool $reposted, int $count): string
     {
-        $label = $reposted ? 'Unrepost' : 'Repost';
-
-        if ($count) {
-            $label .= ' (' . $count . ')';
-        }
-
-        return $label;
+        return $count > 0 ? self::GLYPH . ' ' . $count : self::GLYPH;
     }
 }

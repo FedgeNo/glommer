@@ -35,7 +35,9 @@ export class PostPinButton {
 
             if (!result) return;
 
-            ToggleButton.select(button, result.pinned ? 'Unpin' : 'Pin');
+            button.setAttribute('aria-pressed', result.pinned ? 'true' : 'false');
+            button.setAttribute('aria-label', result.pinned ? 'Unpin' : 'Pin');
+            button.setAttribute('title', result.pinned ? 'Unpin' : 'Pin');
             button.classList.toggle('Removing', result.pinned);
             Toast.show(result.pinned ? 'Pinned to your profile.' : 'Unpinned.');
         } finally {

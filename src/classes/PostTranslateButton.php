@@ -8,15 +8,20 @@ declare(strict_types=1);
  * this is what makes them readable without leaving the page. Only rendered
  * when the post has body text and the server has a translator configured;
  * the click swaps the body in place and offers the original back.
+ *
+ * Two glyphs, because the way back is a different act from the way there and
+ * the button is all the reader has to tell them which one they are looking at.
  */
 class PostTranslateButton extends ToggleButton
 {
+    public const TRANSLATE = '🌐';
+    public const SHOW_ORIGINAL = '↩️';
+
     public function __construct()
     {
         parent::__construct();
 
-        // Both wordings from the start: pressing it swaps the body and the
-        // button, and "Show original" is the wider of the two.
-        $this -> labels = ['Translate', 'Show original'];
+        $this -> nameIt('Translate');
+        $this -> labels = [self::TRANSLATE, self::SHOW_ORIGINAL];
     }
 }

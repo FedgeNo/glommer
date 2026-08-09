@@ -51,9 +51,11 @@ a WebSocket open, transcoding video out of band).
   composed in a rich-text editor (Quill) with **hashtags**, **@mentions**, and
   math formulas (KaTeX).
 - **Replies** - threaded conversations under any post. A reply appears in the
-  feeds too, headed by what it answers and, in a longer thread, a link back to
-  the post that began it - so a conversation is followable without opening
-  every post it hangs from.
+  friends, profile and tag feeds too, headed by what it answers and, in a
+  longer thread, a link back to the post that began it - so a conversation is
+  followable without opening every post it hangs from. The signed-out main feed
+  carries only posts that start something, since a reply's context may be a
+  post on another server that a visitor is not shown.
 - **Likes** and **bookmarks** (bookmarks are private, and never notify).
 - **Polls** - attach up to four options to a post, single- or multiple-choice,
   with a fixed run time. Votes are final, results replace the ballot once

@@ -45,18 +45,78 @@ class ToggleButtonTest extends TestCase
         return $showing;
     }
 
-    /** A pair of wordings: both present, exactly one of them showing. */
-    public function testAPairCarriesBothWordingsAndShowsOne(): void
+    /** A pair of glyphs: both present, exactly one of them showing. */
+    public function testAPairCarriesBothGlyphsAndShowsOne(): void
     {
-        $this -> assertSame(['Bookmark', 'Unbookmark'], $this -> labelsOf(new PostBookmarkButton(false)));
-        $this -> assertSame(['Bookmark'], $this -> showingIn(new PostBookmarkButton(false)));
-        $this -> assertSame(['Unbookmark'], $this -> showingIn(new PostBookmarkButton(true)));
+        $this -> assertSame(
+            [PostTranslateButton::TRANSLATE, PostTranslateButton::SHOW_ORIGINAL],
+            $this -> labelsOf(new PostTranslateButton())
+        );
+        $this -> assertSame([PostTranslateButton::TRANSLATE], $this -> showingIn(new PostTranslateButton()));
+    }
 
-        $this -> assertSame(['Pin', 'Unpin'], $this -> labelsOf(new PostPinButton(false)));
-        $this -> assertSame(['Unpin'], $this -> showingIn(new PostPinButton(true)));
+    /**
+     * A glyph is not a name. Every one of these shows a picture and nothing
+     * else, so without this a screen reader announces "button" and stops.
+     */
+    public function testEveryWordlessActionSaysWhatItIs(): void
+    {
+        $buttons = [
+            'Like' => new PostLikeButton(false, 0),
+            'Unlike' => new PostLikeButton(true, 2),
+            'Repost' => new PostRepostButton(false, 0),
+            'Undo repost' => new PostRepostButton(true, 2),
+            'Bookmark' => new PostBookmarkButton(false),
+            'Remove bookmark' => new PostBookmarkButton(true),
+            'Pin' => new PostPinButton(false),
+            'Unpin' => new PostPinButton(true),
+            'Translate' => new PostTranslateButton(),
+            'Share' => new PostShareButton('https://example.test/users/someone/1'),
+            'Quote' => new PostQuoteButton(1),
+        ];
 
-        $this -> assertSame(['Translate', 'Show original'], $this -> labelsOf(new PostTranslateButton()));
-        $this -> assertSame(['Translate'], $this -> showingIn(new PostTranslateButton()));
+        foreach ($buttons as $name => $button) {
+            $element = $this -> xpathOver($button) -> query('//button | //a') -> item(0);
+
+            $this -> assertSame($name, $element -> getAttribute('aria-label'));
+            $this -> assertSame($name, $element -> getAttribute('title'), 'and says it on hover too');
+        }
+    }
+
+    /**
+     * What is on, for anybody not reading the colour. Only the like button's
+     * glyph could have carried its own state and it does not either - a thumb
+     * has no emptied form - so this is the whole of it.
+     */
+    public function testATogglesStateIsReadableWithoutSeeingTheColour(): void
+    {
+        foreach ([
+            [new PostLikeButton(true, 1), 'true'],
+            [new PostLikeButton(false, 0), 'false'],
+            [new PostRepostButton(true, 1), 'true'],
+            [new PostBookmarkButton(true), 'true'],
+            [new PostPinButton(false), 'false'],
+        ] as [$button, $expected]) {
+            $pressed = $this -> xpathOver($button) -> query('//button') -> item(0) -> getAttribute('aria-pressed');
+
+            $this -> assertSame($expected, $pressed);
+        }
+    }
+
+    /** The undo state wears the same red as everything else that takes something away. */
+    public function testTheUndoStateIsMarkedAsOne(): void
+    {
+        foreach ([new PostLikeButton(true, 1), new PostRepostButton(true, 1), new PostBookmarkButton(true), new PostPinButton(true)] as $button) {
+            $classes = (string) $this -> xpathOver($button) -> query('//button') -> item(0) -> getAttribute('class');
+
+            $this -> assertTrue(str_contains($classes, 'Removing'), $classes);
+        }
+
+        foreach ([new PostLikeButton(false, 0), new PostBookmarkButton(false)] as $button) {
+            $classes = (string) $this -> xpathOver($button) -> query('//button') -> item(0) -> getAttribute('class');
+
+            $this -> assertFalse(str_contains($classes, 'Removing'), $classes);
+        }
     }
 
     /**
@@ -66,14 +126,15 @@ class ToggleButtonTest extends TestCase
      */
     public function testACountedLabelReservesRoomForTheCountItDoesNotKnowYet(): void
     {
-        $this -> assertSame(['Like', 'Unlike (XXX)'], $this -> labelsOf(new PostLikeButton(false, 0)));
-        $this -> assertSame(['Like'], $this -> showingIn(new PostLikeButton(false, 0)));
+        $thumb = PostLikeButton::GLYPH;
 
-        $this -> assertSame(['Unlike (7)', 'Unlike (XXX)'], $this -> labelsOf(new PostLikeButton(true, 7)));
-        $this -> assertSame(['Unlike (7)'], $this -> showingIn(new PostLikeButton(true, 7)));
+        $this -> assertSame([$thumb, $thumb . ' XXX'], $this -> labelsOf(new PostLikeButton(false, 0)));
+        $this -> assertSame([$thumb], $this -> showingIn(new PostLikeButton(false, 0)));
 
-        $this -> assertSame(['Repost', 'Unrepost (XXX)'], $this -> labelsOf(new PostRepostButton(false, 0)));
-        $this -> assertSame(['Unrepost (12)'], $this -> showingIn(new PostRepostButton(true, 12)));
+        $this -> assertSame([$thumb . ' 7', $thumb . ' XXX'], $this -> labelsOf(new PostLikeButton(true, 7)));
+        $this -> assertSame([$thumb . ' 7'], $this -> showingIn(new PostLikeButton(true, 7)));
+
+        $this -> assertSame([$thumb . ' 12'], $this -> showingIn(new PostLikeButton(true, 12)));
     }
 
     /**

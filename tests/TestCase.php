@@ -73,6 +73,23 @@ abstract class TestCase
         }
     }
 
+    /**
+     * Stands this test down where the installation it reads is not there.
+     *
+     * A few tests assert against the real configuration rather than a fixture
+     * - the site's own address, and the settings table that address leads to.
+     * An unprivileged run cannot read .env at all, so those were failing on
+     * something that is not about the software, and a suite with four
+     * permanent red marks in it stops being read. They run under sudo, like
+     * the database-backed ones, and stand down otherwise.
+     */
+    protected function requireInstallation(): void
+    {
+        if (Env::unreadable() || (string) Env::get('SITE_URL', '') === '') {
+            throw new TestSkippedException('needs the installation\'s own configuration - re-run with sudo');
+        }
+    }
+
     private static function describe(mixed $value): string
     {
         if (is_string($value)) {
@@ -96,5 +113,14 @@ abstract class TestCase
 }
 
 class AssertionFailedException extends \Exception
+{
+}
+
+/**
+ * Thrown by a test that cannot run here - not a pass and not a failure. The
+ * runner reports these apart from both, so what was skipped stays visible
+ * rather than quietly reading as success.
+ */
+class TestSkippedException extends \Exception
 {
 }

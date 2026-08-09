@@ -13,6 +13,9 @@ class ServerURLTest extends TestCase
 
     public function testHostReturnsTheHostFromSiteUrl()
     {
+        // Reads the configured site address, so there has to be one.
+        $this -> requireInstallation();
+
         $host = ServerURL::host();
         $this -> assertTrue(is_string($host));
         $this -> assertTrue(strlen($host) > 0);
@@ -43,6 +46,9 @@ class ServerURLTest extends TestCase
 
     public function testAbsolutePrependsSiteUrlHost()
     {
+        // Reads the configured site address, so there has to be one.
+        $this -> requireInstallation();
+
         $url = ServerURL::absolute('/test');
         $this -> assertTrue(str_starts_with($url, 'https://'));
         $this -> assertTrue(str_ends_with($url, '/test'));

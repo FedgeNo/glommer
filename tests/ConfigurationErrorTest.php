@@ -46,8 +46,10 @@ class ConfigurationErrorTest extends TestCase
 
     public function testAConfiguredSiteReportsNoProblem(): void
     {
-        // Whatever else is true of the machine running this, the test suite
-        // only gets here with a readable .env naming a site address.
+        // The one test here that needs a real site address to find - the other
+        // two make their own conditions up.
+        $this -> requireInstallation();
+
         $this -> withUnreadableEnv(false, function (): void {
             $this -> assertNull(ConfigurationError::reason());
         });

@@ -89,6 +89,10 @@ class OpenRouterTest extends TestCase
 
     public function testWithoutAKeyThereIsNoAnswerAtAll(): void
     {
+        // The only test here that stores a setting, which means a database,
+        // which means the configuration naming one.
+        $this -> requireInstallation();
+
         Settings::set(OpenRouter::API_KEY_SETTING, '');
 
         $this -> assertFalse(OpenRouter::isEnabled());

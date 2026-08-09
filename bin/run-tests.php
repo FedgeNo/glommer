@@ -81,6 +81,7 @@ if ($db_test_classes !== [] && $running_as_root && TestDatabase::setUp()) {
 
 $total = 0;
 $failures = [];
+$skipped = [];
 $started_at = microtime(true);
 
 foreach ($run_classes as $class) {
@@ -99,6 +100,11 @@ foreach ($run_classes as $class) {
         try {
             $instance -> $method();
             echo "  \033[32mPASS\033[0m  {$label}\n";
+        } catch (TestSkippedException $exception) {
+            // Neither passed nor failed - it never ran. Counted apart from
+            // both so an unprivileged run reads as honest rather than green.
+            echo "  \033[33mSKIP\033[0m  {$label}\n";
+            $skipped[] = ['label' => $label, 'message' => $exception -> getMessage()];
         } catch (AssertionFailedException $exception) {
             echo "  \033[31mFAIL\033[0m  {$label}\n";
             $failures[] = ['label' => $label, 'message' => $exception -> getMessage()];
@@ -123,7 +129,20 @@ if ($failures !== []) {
     echo "\n";
 }
 
-$passed = $total - count($failures);
-echo "{$passed}/{$total} passed ({$elapsed_ms}ms)\n";
+if ($skipped !== []) {
+    echo 'Skipped ' . count($skipped) . ":\n";
+
+    foreach ($skipped as $skip) {
+        echo "  {$skip['label']}\n    {$skip['message']}\n";
+    }
+
+    echo "\n";
+}
+
+// Skipped tests leave the denominator rather than joining the numerator: a
+// run that skipped four is not a run that passed them.
+$ran = $total - count($skipped);
+$passed = $ran - count($failures);
+echo "{$passed}/{$ran} passed" . ($skipped !== [] ? ', ' . count($skipped) . ' skipped' : '') . " ({$elapsed_ms}ms)\n";
 
 exit($failures === [] ? 0 : 1);

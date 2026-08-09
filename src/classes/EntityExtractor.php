@@ -72,10 +72,55 @@ class EntityExtractor
         $entities = [];
 
         foreach ($description_deltas as $i => $description_delta) {
-            $entities[] = array_merge($hashtag_entities[$i], $ner_entities[$i] ?? []);
+            // Only what the model named is filtered. A hashtag is somebody's
+            // own word for their own post and is lowercase as often as not.
+            $named = array_values(array_filter(
+                $ner_entities[$i] ?? [],
+                static fn (array $entity): bool => self::readsAsAName((string) $entity['value'])
+            ));
+
+            $entities[] = array_merge($hashtag_entities[$i], $named);
         }
 
         return $entities;
+    }
+
+    /** Beyond this there is enough of a word to be worth keeping regardless. */
+    private const SHORT_ENOUGH_TO_MISREAD = 3;
+
+    /**
+     * Whether a short thing the model named reads like a name at all.
+     *
+     * The model reads English and a relay carries every language there is, so
+     * ordinary function words come back tagged as organizations - "un", "la",
+     * "des". Frequency cannot tell them apart from real subjects, because
+     * being everywhere across many authors is precisely what trending looks
+     * for: one of them outranked every genuine topic on a live server.
+     *
+     * Case is what separates them. A real name of three characters or fewer is
+     * written capitalised - US, AI, EU, UN - while the words leaking through
+     * are lowercase in the text they came from. Anything longer is left alone,
+     * since the test is only trustworthy while there is too little of a word
+     * to judge it any other way.
+     *
+     * A script without capitals is deliberately never caught: a value that has
+     * no upper and lower form of itself cannot be lowercase, so a short name
+     * written in one is kept.
+     *
+     * Public because which values this keeps is the whole of the judgement,
+     * and the tests hold it to account without spending a model call.
+     */
+    public static function readsAsAName(string $value): bool
+    {
+        $value = trim($value);
+
+        if (mb_strlen($value) > self::SHORT_ENOUGH_TO_MISREAD) {
+            return true;
+        }
+
+        $has_case = mb_strtoupper($value) !== mb_strtolower($value);
+
+        return !$has_case || $value !== mb_strtolower($value);
     }
 
     /**

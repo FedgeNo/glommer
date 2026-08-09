@@ -98,6 +98,20 @@ class ActivityPubActor
         return $host === '' ? 'site' : substr($host, 0, 64);
     }
 
+    /**
+     * Whether a username is the instance's own.
+     *
+     * It cannot be anybody's: WebFinger answers for the instance actor before
+     * it looks for a member (see activitypub-webfinger.php), so a member
+     * holding this name would be unreachable from the rest of the network -
+     * their handle would resolve to the server itself, and every follow and
+     * mention aimed at them would land on an actor with no profile.
+     */
+    public static function isInstanceUsername(string $slug): bool
+    {
+        return strcasecmp(trim($slug), self::instanceUsername()) === 0;
+    }
+
     public static function canonicalHost(): string
     {
         $parts = parse_url((string) Config::get('siteURL'));

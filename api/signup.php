@@ -75,7 +75,10 @@ SELECT `userId`
     // handing it on would make the new person indistinguishable from the old to
     // anyone holding a link - and their actor URI is built from it, so remote
     // servers would deliver the old account's follows to a stranger.
-    if (mysqli_stmt_num_rows($stmt) > 0 || RetiredUsername::isRetired($username) || EmailChangeRevert::isReserved($email)) {
+    if (mysqli_stmt_num_rows($stmt) > 0
+        || RetiredUsername::isRetired($username)
+        || ActivityPubActor::isInstanceUsername($username)
+        || EmailChangeRevert::isReserved($email)) {
         // Deliberately not said of one or the other: which of the two is taken
         // is what an account-enumeration probe is asking, and the rate limit
         // above only slows that down rather than answering it differently.

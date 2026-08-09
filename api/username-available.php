@@ -39,6 +39,8 @@ SELECT `userId`
 
 // A retired name is as taken as a held one - saying otherwise here would offer
 // something signup then refuses.
-$available = $taken === null && !RetiredUsername::isRetired($username);
+$available = $taken === null
+    && !RetiredUsername::isRetired($username)
+    && !ActivityPubActor::isInstanceUsername($username);
 
 JSONResponse::success(['username' => $username, 'available' => $available]) -> send();

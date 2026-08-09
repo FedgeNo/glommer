@@ -35,7 +35,13 @@ class Mailer
     // verification).
     private static bool $recipientRejected = false;
 
-    public static function send(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
+    /**
+     * @param array<string, string> $extra_headers Headers this particular
+     *   message needs on top of the ones every message carries - the
+     *   unsubscribe pair on a digest, and nothing else so far. Never for
+     *   transactional mail: a password reset is not something to opt out of.
+     */
+    public static function send(string $to_address, string $to_name, string $subject, string $text_body, string $html_body, array $extra_headers = []): bool
     {
         // Reset up front (not just in attempt(), which the early return below
         // skips entirely) - a previous call's stale true would otherwise leak
@@ -55,7 +61,7 @@ class Mailer
         }
 
         for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
-            if (self::attempt($to_address, $to_name, $subject, $text_body, $html_body)) {
+            if (self::attempt($to_address, $to_name, $subject, $text_body, $html_body, $extra_headers)) {
                 return true;
             }
 
@@ -67,18 +73,32 @@ class Mailer
         return false;
     }
 
+    /**
+     * The display name mail goes out under.
+     *
+     * Unlike the address, a missing name is cosmetic - the From header still
+     * works without one - so this falls back rather than refusing to send.
+     * Blank counts as missing: a default handed to Settings::get() only
+     * applies where there is no row at all, so a stored empty string, which is
+     * what a form saving the field without a value leaves behind, silently
+     * beat the fallback and sent mail from nobody.
+     */
+    public static function fromName(): string
+    {
+        $stored = (string) Settings::get(self::FROM_NAME_SETTING, '');
+
+        return $stored !== '' ? $stored : (string) Config::get('mailFromName');
+    }
+
     public static function recipientWasRejected(): bool
     {
         return self::$recipientRejected;
     }
 
-    private static function attempt(string $to_address, string $to_name, string $subject, string $text_body, string $html_body): bool
+    private static function attempt(string $to_address, string $to_name, string $subject, string $text_body, string $html_body, array $extra_headers = []): bool
     {
         $from_address = (string) Settings::get(self::FROM_ADDRESS_SETTING, '');
-        // Unlike the address, a missing name is cosmetic (the From header
-        // still works, just with no display name) - a friendly fallback is
-        // fine here, no need to block sending over it.
-        $from_name = (string) Settings::get(self::FROM_NAME_SETTING, Config::get('mailFromName'));
+        $from_name = self::fromName();
 
         $smtp_host = (string) Settings::get(self::SMTP_HOST_SETTING, '');
 
@@ -92,6 +112,13 @@ class Mailer
         $headers[] = 'Message-ID: <' . bin2hex(random_bytes(16)) . '@' . self::domainFromAddress($from_address) . '>';
         $headers[] = 'MIME-Version: 1.0';
         $headers[] = 'Content-Type: multipart/alternative; boundary="' . $boundary . '"';
+
+        // Whatever this one message adds. Folded in with no newline allowed
+        // through: a value carrying one would end this header and start
+        // another of the caller's choosing, which is header injection.
+        foreach ($extra_headers as $name => $value) {
+            $headers[] = $name . ': ' . str_replace([chr(13), chr(10)], '', $value);
+        }
 
         $body = '--' . $boundary . $eol
             . 'Content-Type: text/plain; charset=UTF-8' . $eol

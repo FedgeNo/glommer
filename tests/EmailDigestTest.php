@@ -401,6 +401,31 @@ UPDATE `Users`
         $this -> assertSame(EmailDigest::paragraph(), trim((string) $areas -> item(0) -> textContent));
     }
 
+    /**
+     * The name mail goes out under.
+     *
+     * A form that saved the field without a value left an empty row behind,
+     * and an empty row is not the same as no row: the fallback handed to
+     * Settings::get() never fired, so mail went out from nobody while the
+     * configured name sat there unused.
+     */
+    public function testABlankFromNameFallsBackRatherThanSendingFromNobody(): void
+    {
+        $was = (string) Settings::get(Mailer::FROM_NAME_SETTING, '');
+
+        try {
+            Settings::set(Mailer::FROM_NAME_SETTING, '');
+
+            $this -> assertSame((string) Config::get('mailFromName'), Mailer::fromName());
+
+            Settings::set(Mailer::FROM_NAME_SETTING, 'A Chosen Name');
+
+            $this -> assertSame('A Chosen Name', Mailer::fromName(), 'what the admin set still wins');
+        } finally {
+            Settings::set(Mailer::FROM_NAME_SETTING, $was);
+        }
+    }
+
     /** The admin's paragraph, when they have written one. */
     public function testTheServerCanSaySomethingOfItsOwn(): void
     {

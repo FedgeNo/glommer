@@ -220,7 +220,20 @@ UPDATE `Users`
             $this -> name(),
             'What you missed on ' . (string) Config::get('siteTitle'),
             $this -> textBody(),
-            $this -> htmlBody()
+            $this -> htmlBody(),
+            // The unsubscribe a mail client offers itself, in its own chrome,
+            // before the message is even opened (RFC 8058). The pair has to
+            // travel together: the URL alone is only a hint, and it is the
+            // second header that promises pressing the button is enough and
+            // nothing further will be asked of the reader.
+            //
+            // No mailto alternative. One would advertise an address nothing
+            // here reads, and the link in the body already covers a client
+            // that does not do this.
+            [
+                'List-Unsubscribe' => '<' . $unsubscribe_url . '>',
+                'List-Unsubscribe-Post' => 'List-Unsubscribe=One-Click',
+            ]
         );
     }
 

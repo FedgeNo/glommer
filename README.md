@@ -517,9 +517,12 @@ sending reputation and lands in spam. For real deliverability:
 individually, so they are held to tighter rules. A member gets one only after a
 week away with a week since their last, only when something actually happened
 while they were gone, and never once they have said no. Every one carries a
-one-click unsubscribe link that works with no password and never expires; on an
-installation with no `ACTIVITYPUB_ENCRYPTION_KEY` no such link can be signed, so
-no digest is sent at all. Members switch them off under Settings → Email
+one-click unsubscribe link that works with no password and never expires, and
+the `List-Unsubscribe` pair (RFC 8058) so Gmail and Apple Mail offer their own
+unsubscribe button beside the sender's name - which the large mailbox providers
+now expect of anything sending in bulk. On an installation with no
+`ACTIVITYPUB_ENCRYPTION_KEY` no such link can be signed, so no digest is sent
+at all. Members switch them off under Settings → Email
 Digests, and the admin can add a closing paragraph of the server's own under
 Site Settings → Email Digest. Where an OpenRouter key is configured, the mail
 opens with a short written summary of what has been posted; without one it is

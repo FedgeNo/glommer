@@ -298,12 +298,26 @@ if (Auth::check()) {
     User::seen($current_user);
 }
 
+// The two POSTs that cannot carry a CSRF token and were never meant to, each
+// proving itself another way instead.
+//
 // The ActivityPub inbox is a legitimate cross-origin, cross-server endpoint -
 // a same-origin browser session (what CSRF protects) never applies to a
 // delivery from another Fediverse server, which can't carry our CSRF token
 // and was never expected to. HTTP Signature verification (inside the
 // endpoint itself) is what authenticates a delivery there instead.
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['SCRIPT_FILENAME']) !== 'activitypub-inbox.php') {
+//
+// A one-click unsubscribe (RFC 8058) comes from the reader's mail provider
+// rather than their browser, so it has no session and no token of ours
+// either. The signed token in the URL is its authority, and it can do one
+// thing with it. Recognised by the exact body the RFC specifies, so an
+// ordinary forged POST at that same page is still refused.
+$script = basename((string) $_SERVER['SCRIPT_FILENAME']);
+
+$csrf_exempt = $script === 'activitypub-inbox.php'
+    || ($script === 'unsubscribe.php' && ($_POST['List-Unsubscribe'] ?? '') === 'One-Click');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$csrf_exempt) {
     $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['CSRFToken'] ?? null;
 
     if (!CSRF::verify(is_string($csrf_token) ? $csrf_token : null)) {

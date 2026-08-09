@@ -17,6 +17,25 @@ require __DIR__ . '/src/init.php';
 $token = (string) ($_POST['token'] ?? $_GET['token'] ?? '');
 $user_id = $token === '' ? null : EmailDigestUnsubscribe::userIdFor($token);
 
+// A mail client acting on the List-Unsubscribe header itself (RFC 8058),
+// before anybody has opened the message. Answered first and answered plainly:
+// there is no reader at the other end of this, only a program that wants to
+// know it worked, and every POST below this line is a person pressing the
+// button on the page - which asks for the opposite.
+if (($_POST['List-Unsubscribe'] ?? '') === 'One-Click') {
+    header('Content-Type: text/plain; charset=utf-8');
+
+    if ($user_id === null) {
+        http_response_code(400);
+        echo 'That unsubscribe link is not one this site issued.' . chr(10);
+        exit;
+    }
+
+    EmailDigest::setEnabled($user_id, false);
+    echo 'Unsubscribed.' . chr(10);
+    exit;
+}
+
 $page = new Page(['title' => 'Email Digests']);
 
 if ($user_id === null) {

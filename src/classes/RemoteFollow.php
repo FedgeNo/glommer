@@ -31,7 +31,7 @@ class RemoteFollow
     public static function listForUser(int $local_user_id): array
     {
         $stmt = DB::run('
-SELECT `Users`.`title`, `RemoteFollows`.`status`
+SELECT `Users`.`title`, `Users`.`slug`, `RemoteFollows`.`status`
     FROM `RemoteFollows`
     JOIN `Users` ON `Users`.`remoteActorURI` = `RemoteFollows`.`remoteActorURI`
     WHERE `RemoteFollows`.`localUserId` = ?
@@ -42,7 +42,16 @@ SELECT `Users`.`title`, `RemoteFollows`.`status`
         $rows = [];
 
         while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = ['displayName' => (string) $row['title'], 'status' => (string) $row['status']];
+            // The slug carries the name when there is no display name to show -
+            // an account that set none would otherwise be a blank row with a
+            // status beside it.
+            $slug = (string) $row['slug'];
+
+            $rows[] = [
+                'displayName' => ($row['title'] ?? '') === '' ? $slug : (string) $row['title'],
+                'slug' => $slug,
+                'status' => (string) $row['status'],
+            ];
         }
 
         return $rows;

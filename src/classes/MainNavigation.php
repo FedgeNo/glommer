@@ -159,7 +159,7 @@ class MainNavigation extends Nav
         $links = [
             new Anchor(ServerURL::absolute('/users/' . Auth::user() -> slug . '/friends'), 'Friends'),
             new Anchor(ServerURL::absolute('/drafts'), 'Drafts & Scheduled'),
-            new Anchor(ServerURL::absolute('/settings'), 'Settings'),
+            new Anchor(ServerURL::absolute('/user-settings'), 'User Settings'),
         ];
 
         // Everything a moderator does now gathers on one page, which either

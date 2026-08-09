@@ -63,7 +63,7 @@ if ($intent === 'delete') {
 
     $page = new Page(['title' => 'Delete Account']);
     $page -> addContent(new ErrorList([$error]));
-    $page -> addContent(new Anchor(ServerURL::absolute('/settings'), 'Back to settings'));
+    $page -> addContent(new Anchor(ServerURL::absolute('/user-settings'), 'Back to User Settings'));
     $page -> send();
     exit;
 }

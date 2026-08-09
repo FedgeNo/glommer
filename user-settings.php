@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-$page = new Page(['title' => 'Settings']);
+$page = new Page(['title' => 'User Settings']);
 
 $page -> addContent(new SettingsSection('Change Password', new PasswordChangeForm()));
 

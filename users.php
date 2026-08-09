@@ -8,7 +8,7 @@ Auth::requireLogin();
 
 $page = new Page(['title' => 'Users']);
 $p = new Paragraph('You can follow Fediverse users in ');
-$a = new Anchor(ServerURL::absolute('/settings'), 'Settings');
+$a = new Anchor(ServerURL::absolute('/user-settings'), 'User Settings');
 $p -> addContent($a);
 $page -> addContent($p);
 $page -> addContent(new UserSearch());

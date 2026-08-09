@@ -185,7 +185,7 @@ class HelpContent
 <li><strong>Notifications</strong> lights up when someone interacts with you.</li>
 <li><strong>Help</strong> (these articles) and <strong>About</strong> are there whether or not you\'re logged in.</li>
 </ul>
-<p>Your own name sits at the top-right - it links to your profile, and opens your <strong>Settings</strong> and the <strong>log out</strong> option.</p>
+<p>Your own name sits at the top-right - it links to your profile, and opens your <strong>User Settings</strong> and the <strong>log out</strong> option.</p>
 ',
             ],
             [
@@ -345,7 +345,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'Turn on end-to-end encryption for your conversations, and what the passphrase means.',
                 'body' => '
-<p>Turn on <strong>Encrypted Messages</strong> in <a href="/settings">Settings</a> by choosing a passphrase. Your browser creates an encryption key of its own, locks it under that passphrase, and stores only the locked copy on the server - the passphrase itself never leaves your device, and the server never holds a key it could read your messages with.</p>
+<p>Turn on <strong>Encrypted Messages</strong> in <a href="/user-settings">User Settings</a> by choosing a passphrase. Your browser creates an encryption key of its own, locks it under that passphrase, and stores only the locked copy on the server - the passphrase itself never leaves your device, and the server never holds a key it could read your messages with.</p>
 <p>A conversation becomes end-to-end encrypted once <em>both</em> people have turned this on - it takes both keys. From then on, new messages in that thread are unlocked and read in your browsers only; older messages from before stay as they were. Conversations with people on other Fediverse servers are never encrypted, because the protocol between servers has no way to carry it - those threads say so.</p>
 <p>Opening an encrypted conversation asks for your passphrase once per browser tab. Because the locked copy of your key lives on the server, the same passphrase works from any browser or device.</p>
 <p><strong>Choose the passphrase carefully.</strong> It is the only thing guarding every encrypted message you will ever have, on every device, and there is nothing behind it - no second step, no lockout, no reset that keeps your messages. A long phrase of several words beats a short complicated one. It must not be your account password: that one is sent to this server when you sign in, and your passphrase must never be.</p>
@@ -406,7 +406,7 @@ class HelpContent
 <h2>During a call</h2>
 <p>Answering replaces the thread with the call: the other person fills the space the messages were in, with your own camera in a small inset. <strong>End call</strong> hangs up. Declining, hanging up, or either of you leaving the page ends the call, and the conversation comes back exactly as it was.</p>
 <h2>If the button never appears</h2>
-<p>That means one of the two browsers could not be reached, and it is usually the network rather than the site - a browser without WebRTC, or a firewall blocking the port the two use to find each other. <a href="/settings">Settings</a> has a <strong>Video Calling</strong> check that runs the setup steps against your own browser and says which one fails, so you can tell a browser problem from a network one.</p>
+<p>That means one of the two browsers could not be reached, and it is usually the network rather than the site - a browser without WebRTC, or a firewall blocking the port the two use to find each other. <a href="/user-settings">User Settings</a> has a <strong>Video Calling</strong> check that runs the setup steps against your own browser and says which one fails, so you can tell a browser problem from a network one.</p>
 <h2>Privacy</h2>
 <p>No video or audio ever passes through this site. The only thing relayed is the short setup message the two browsers use to find each other, and nothing is recorded.</p>
 ',
@@ -445,9 +445,9 @@ class HelpContent
                 'slug' => 'settings-and-appearance',
                 'title' => 'Settings and appearance',
                 'category' => 'Your account',
-                'summary' => 'A tour of your Settings page - password, email, security, themes, and more.',
+                'summary' => 'A tour of your User Settings page - password, email, security, themes, and more.',
                 'body' => '
-<p>Open <strong>Settings</strong> from your name in the top-right corner. It gathers everything about your account in one place:</p>
+<p>Open <strong>User Settings</strong> from your name in the top-right corner. It gathers everything about your account in one place:</p>
 <ul>
 <li><strong>Change Password</strong> and <a href="/help/changing-your-email">Change Email</a> - both ask for your current password to confirm it\'s you.</li>
 <li><a href="/help/two-factor-authentication">Two-Factor Authentication</a> - an extra step at login for security.</li>
@@ -544,7 +544,7 @@ class HelpContent
                 'summary' => 'Follow accounts on Mastodon and other Fediverse servers.',
                 'body' => '
 <p>' . self::siteTitle() . ' speaks <strong>ActivityPub</strong>, the standard behind Mastodon and the wider Fediverse, so you can follow people on other servers and read their posts here.</p>
-<p>Open <strong>Settings</strong> from your name in the top-right, find the <strong>Fediverse</strong> section, and paste in one or more handles - written like <code>@user@example.social</code> - then press <strong>Follow</strong>. Any separator between multiple handles works, so you can paste a whole list at once.</p>
+<p>Open <strong>User Settings</strong> from your name in the top-right, find the <strong>Fediverse</strong> section, and paste in one or more handles - written like <code>@user@example.social</code> - then press <strong>Follow</strong>. Any separator between multiple handles works, so you can paste a whole list at once.</p>
 <p>The same section lists the accounts you already follow so you can keep track of them. Mentioning a remote account by its full <code>@user@server</code> handle in a post works too - see <a href="/help/hashtags-and-mentions">hashtags and mentions</a>.</p>
 <h2>Being followed from out there</h2>
 <p>You have a Fediverse address of your own: <strong>@your-username@this-site\'s-domain</strong>. Anyone on Mastodon, Threads, or another ActivityPub server can search that handle and follow you - no approval step, since everything here is public anyway.</p>
@@ -568,7 +568,7 @@ class HelpContent
                 'category' => 'Staying safe',
                 'summary' => 'Add a login code emailed to you for an extra layer of security.',
                 'body' => '
-<p>Two-factor authentication (2FA) adds a second step to signing in, so your password alone isn\'t enough to get into your account. Turn it on from <strong>Settings</strong>, in the <strong>Two-Factor Authentication</strong> section.</p>
+<p>Two-factor authentication (2FA) adds a second step to signing in, so your password alone isn\'t enough to get into your account. Turn it on from <strong>User Settings</strong>, in the <strong>Two-Factor Authentication</strong> section.</p>
 <p>Here it works by <strong>email</strong>: once it\'s on, each time you log in we email a short numeric code to your address, and you enter that code to finish signing in. There\'s no authenticator app to enrol - it uses the address you already confirmed, so you\'ll need a <a href="/help/verifying-your-email">verified email</a> for this to be available.</p>
 <p>You can switch 2FA off again from the same place whenever you like.</p>
 ',
@@ -579,7 +579,7 @@ class HelpContent
                 'category' => 'Staying safe',
                 'summary' => 'Review where you\'re logged in and sign out everywhere at once.',
                 'body' => '
-<p>Your <strong>Settings</strong> page has two tools for managing where you\'re logged in.</p>
+<p>Your <strong>User Settings</strong> page has two tools for managing where you\'re logged in.</p>
 <h2>Remembered devices</h2>
 <p>When you choose to stay signed in, that device is remembered so you don\'t have to log in every visit. <strong>Remembered Devices</strong> lists them, and you can revoke any one - useful if you signed in on a shared or public computer, or lost a device.</p>
 <h2>Sessions</h2>
@@ -608,7 +608,7 @@ class HelpContent
                 'category' => 'Your account',
                 'summary' => 'Update your account\'s email address, with re-verification.',
                 'body' => '
-<p>To change your email address, open <strong>Settings</strong> and use the <strong>Change Email</strong> section. Enter the new address and confirm with your current password. We\'ll send a verification link to the <strong>new</strong> address - open it to confirm the change, just as you did when you first signed up.</p>
+<p>To change your email address, open <strong>User Settings</strong> and use the <strong>Change Email</strong> section. Enter the new address and confirm with your current password. We\'ll send a verification link to the <strong>new</strong> address - open it to confirm the change, just as you did when you first signed up.</p>
 <p>As a safeguard, we also send a note to your <strong>old</strong> address letting it know the email was changed, with a link to reverse it. So if a change ever happens that wasn\'t you, you can undo it from that message. Until the new address is verified, it\'s worth confirming promptly, since things like password resets rely on a verified address.</p>
 ',
             ],
@@ -618,7 +618,7 @@ class HelpContent
                 'category' => 'Your account',
                 'summary' => 'Permanently close your account and remove your content.',
                 'body' => '
-<p>If you want to leave, open <strong>Settings</strong> and use the <strong>Delete Account</strong> section. You\'ll confirm with your password, because this can\'t be undone.</p>
+<p>If you want to leave, open <strong>User Settings</strong> and use the <strong>Delete Account</strong> section. You\'ll confirm with your password, because this can\'t be undone.</p>
 <p>Deleting your account is <strong>permanent</strong>. Your posts, replies, messages, likes, and connections are removed, and your username is freed up. There\'s no way to recover an account once it\'s gone, so be sure it\'s really what you want.</p>
 <p>The site\'s administrator account can\'t be deleted, since a site needs at least one admin to keep running.</p>
 ',

@@ -6,7 +6,7 @@ class RemoteFollowsForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
-    /** @param array<int, array{displayName: string, status: string}> $currentFollows */
+    /** @param array<int, array{displayName: string, slug: string, status: string}> $currentFollows */
     public function __construct(private readonly array $currentFollows)
     {
         parent::__construct();
@@ -32,7 +32,14 @@ class RemoteFollowsForm extends FormForm
             foreach ($this -> currentFollows as $follow) {
                 $item = new Div();
                 $item -> mixins = ['d-flex', 'gap-2', 'align-items-center'];
-                $item -> contents[] = $follow['displayName'];
+
+                // Their profile here, which is where the Unfollow button is -
+                // otherwise the only way back to someone already followed is
+                // to search for a name you may not remember.
+                $item -> contents[] = new Anchor(
+                    ServerURL::absolute('/users/' . $follow['slug'] . '/'),
+                    $follow['displayName']
+                );
 
                 $status = new Span();
                 $status -> mixins = ['muted', 'text-sm'];

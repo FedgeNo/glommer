@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-define('IS_API_REQUEST', true);
 require __DIR__ . '/api-init.php';
 
 // The composer's mode selector, answered here rather than in the browser so

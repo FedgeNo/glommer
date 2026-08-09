@@ -119,11 +119,20 @@ SELECT `entityId`, `type`, `title`, `score`, `postCount`, `userCount`
         // the same reason as FeedList's global query: driving from Posts walks
         // parentId_postId backward and stops at the window size, instead of
         // collecting and filesorting every author's top-level posts.
+        //
+        // Posts from elsewhere count. This asks what is being talked about
+        // where this server can hear it, which is a different question from
+        // how big this site is - the member and post counters exclude remote
+        // rows precisely because they answer that second question, and a
+        // relay's shadow accounts would make an eight-person site look like
+        // thousands. Here they are the conversation. On a server carrying a
+        // relay they are nearly all of it, and excluding them left the
+        // extractor reading a few dozen posts and nothing ever qualifying.
         $rows = DB::rows('
 SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
 ', 'Post', 'ii', $not_banned, self::WINDOW_SIZE);

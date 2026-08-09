@@ -16,6 +16,7 @@ ReadyHandler.add(sync_theme_color);
 // The navigation is on every page that has any, and this only adds a spoken
 // state to a menu that already works without it.
 if (document.getElementById('NavToggle')) import('/scripts/NavMenu.js');
+if (document.querySelector('.TopicSummaryCard.Awaited')) import('/scripts/TopicSummaryCard.js');
 
 if (document.querySelector('.User, .UserList')) {
     import('/scripts/User.js');

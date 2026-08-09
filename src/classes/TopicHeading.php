@@ -34,6 +34,17 @@ class TopicHeading extends Div
 
         $this -> addContent($kind);
 
+        // Above the paragraph rather than under it: the paragraph can arrive
+        // seconds after the page does, and anything below it moves when it
+        // lands.
+        $search = new Anchor(
+            ServerURL::absolute('/search?q=' . urlencode((string) $this -> entity -> title)),
+            'Search for this'
+        );
+        $search -> class = 'TopicSearchLink';
+
+        $this -> addContent($search);
+
         return parent::toDOM();
     }
 }

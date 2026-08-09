@@ -56,16 +56,21 @@ $page = new Page([
     'needsEditor' => Auth::check(),
 ]);
 
+// The heading carries the kind and the way to search for this - both above
+// the paragraph, because the paragraph is the one thing here that can arrive
+// after the page has: written to order for a topic the timer has not reached
+// yet, and anything below it would jump when it lands.
 $page -> addContent(new TopicHeading($entity));
 
-// What people here are posting about it, when the trending timer has had a
-// chance to write one - absent otherwise, and the page reads as it did.
 $summary = TopicSummary::for($type, $slug);
 
 if ($summary !== null) {
     $page -> description = truncate($summary, Page::META_DESCRIPTION_MAX_LENGTH);
-    $page -> addContent(new TopicSummaryCard($summary));
 }
+
+// Rendered either way: with words when there are some, and as an empty slot
+// the client fills when there are not.
+$page -> addContent(new TopicSummaryCard($summary, $type, $slug));
 
 $feed = new SearchFeedList(['query' => (string) $entity -> title]);
 

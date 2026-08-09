@@ -72,17 +72,37 @@ class EntityExtractor
         $entities = [];
 
         foreach ($description_deltas as $i => $description_delta) {
-            // Only what the model named is filtered. A hashtag is somebody's
-            // own word for their own post and is lowercase as often as not.
+            // Only what the model named is judged on how it reads. A hashtag is
+            // somebody's own word for their own post and is lowercase as often
+            // as not.
             $named = array_values(array_filter(
                 $ner_entities[$i] ?? [],
                 static fn (array $entity): bool => self::readsAsAName((string) $entity['value'])
             ));
 
-            $entities[] = array_merge($hashtag_entities[$i], $named);
+            $entities[] = array_values(array_filter(
+                array_merge($hashtag_entities[$i], $named),
+                static fn (array $entity): bool => self::isFindable((string) $entity['value'])
+            ));
         }
 
         return $entities;
+    }
+
+    /**
+     * The shortest name the database can find again.
+     *
+     * A topic's page lists the posts that mention it, and that search is a
+     * full-text match - which never sees a word shorter than InnoDB's minimum
+     * token, three characters by default. So "UN" and "AI" can trend, be
+     * stored, get a page, and that page is empty however much is written about
+     * them. Better not to claim the topic exists.
+     */
+    private const SHORTEST_FINDABLE = 3;
+
+    public static function isFindable(string $value): bool
+    {
+        return mb_strlen(trim($value)) >= self::SHORTEST_FINDABLE;
     }
 
     /** Beyond this there is enough of a word to be worth keeping regardless. */

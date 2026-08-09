@@ -74,7 +74,7 @@ class EntityExtractorTest extends TestCase
     /** Hashtags are somebody's own word for their own post, and stay lowercase. */
     public function testAHashtagIsNotJudgedThisWay(): void
     {
-        $delta = (string) json_encode([['insert' => "a post about #ai and #un\n"]]);
+        $delta = (string) json_encode([['insert' => "a post about #gardening and #welding\n"]]);
 
         $entities = EntityExtractor::extractBatch([$delta])[0];
 
@@ -85,6 +85,36 @@ class EntityExtractorTest extends TestCase
 
         sort($tags);
 
-        $this -> assertSame('ai,un', implode(',', $tags));
+        $this -> assertSame('gardening,welding', implode(',', $tags));
+    }
+
+    /**
+     * A topic's page lists the posts mentioning it by searching for its name,
+     * and a full-text index never sees a word shorter than its minimum token -
+     * three characters. So a two-letter topic could trend, be stored, get a
+     * page, and that page would be empty however much was written about it.
+     */
+    public function testAnameTooShortToSearchForIsNotATopic(): void
+    {
+        foreach (['UN', 'AI', 'US', 'a'] as $short) {
+            $this -> assertFalse(EntityExtractor::isFindable($short), $short);
+        }
+
+        foreach (['BBC', 'Amazon', '日本語'] as $findable) {
+            $this -> assertTrue(EntityExtractor::isFindable($findable), $findable);
+        }
+    }
+
+    /** And nothing that short comes out of the extractor at all, tag or name. */
+    public function testNothingTooShortIsExtracted(): void
+    {
+        $delta = (string) json_encode([['insert' => "a post about #ai and #gardening\n"]]);
+
+        foreach (EntityExtractor::extractBatch([$delta])[0] as $entity) {
+            $this -> assertTrue(
+                mb_strlen($entity['value']) >= 3,
+                $entity['type'] . ' "' . $entity['value'] . '" is too short to find again'
+            );
+        }
     }
 }

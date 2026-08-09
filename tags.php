@@ -56,8 +56,15 @@ $page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $ta
 $summary = TopicSummary::for('hashtag', $tag);
 
 if ($summary !== null) {
-    $page -> description = truncate($summary, 160);
-    $page -> addContent(new TopicSummaryCard($summary));
+    $page -> description = truncate($summary, Page::META_DESCRIPTION_MAX_LENGTH);
+}
+
+// Written to order for a reader who got here before the timer did - but only
+// for a tag that is actually trending, since that is all the summariser will
+// write about and an empty slot would otherwise ask for one on every tag page
+// on the site.
+if ($summary !== null || Trending::entity('hashtag', $tag) !== null) {
+    $page -> addContent(new TopicSummaryCard($summary, 'hashtag', $tag));
 }
 
 $page -> addContent($feed);

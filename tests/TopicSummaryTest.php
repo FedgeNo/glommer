@@ -66,14 +66,35 @@ INSERT INTO `TopicSummaries` (`type`, `slug`, `summary`, `createdAt`)
         $this -> assertSame('loud', TopicSummary::nextDue() ?-> slug);
     }
 
-    public function testOnlyHashtagsAreEverDue(): void
+    /**
+     * Every kind of topic is due, not just hashtags: they all have a page of
+     * their own now, and a page about a person is exactly the one somebody
+     * would want a paragraph on.
+     */
+    public function testEveryKindOfTopicIsDue(): void
     {
-        // People and places trend too, but only a hashtag has a page of its
-        // own to carry the paragraph.
         $this -> clearTopics();
         $this -> trending('person', 'ada-lovelace', 9.0);
 
-        $this -> assertNull(TopicSummary::nextDue());
+        $this -> assertSame('ada-lovelace', TopicSummary::nextDue() ?-> slug);
+    }
+
+    /**
+     * Most talked-about first, whatever kind it is - so the pages anybody is
+     * likely to open are already written by the time they open them, and the
+     * write-on-demand path is only ever the long tail.
+     */
+    public function testTheBusiestTopicIsWrittenFirstWhateverKindItIs(): void
+    {
+        $this -> clearTopics();
+        $this -> trending('hashtag', 'quiet', 1.0);
+        $this -> trending('org', 'loud-org', 9.0);
+        $this -> trending('person', 'middling', 5.0);
+
+        $due = TopicSummary::nextDue();
+
+        $this -> assertSame('loud-org', $due ?-> slug);
+        $this -> assertSame('org', $due ?-> type);
     }
 
     public function testNothingTrendingMeansNothingDue(): void

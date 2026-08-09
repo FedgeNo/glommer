@@ -1739,11 +1739,28 @@ body.MessagesPage { padding-bottom: 9rem; }
    company or a river depending on which page this is, so the kind is not
    decoration. It is a link to the rest of its kind. */
 .TopicHeading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
     margin-bottom: 1rem;
 }
 
 .TopicHeading h2 {
+    flex-basis: 100%;
     margin-bottom: 0.25rem;
+}
+
+.TopicSearchLink {
+    font-size: 0.875rem;
+}
+
+/* Nothing at all until there are words for it. The paragraph is written to
+   order for a topic nobody has opened before, so it arrives seconds after the
+   page - an empty card holding its place would be a bordered box of nothing
+   for as long as that took. */
+.TopicSummaryCard.Awaited {
+    display: none;
 }
 
 .TopicKind {

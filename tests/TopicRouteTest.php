@@ -17,6 +17,13 @@ class TopicRouteTest extends DatabaseTestCase
     {
         $computed_at = date('Y-m-d H:i:s');
 
+        // Reading the trending list draws a lottery that recomputes it when it
+        // looks stale, and a recompute deletes everything the current pass did
+        // not produce - which is every row a test just wrote. Saying it has
+        // only just run keeps that from firing under the test one time in
+        // twenty.
+        Settings::set('trendingLastRecomputedAt', $computed_at);
+
         DB::run('
 INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `computedAt`)
     VALUES (?, ?, ?, ?, ?, ?, ?)

@@ -1,7 +1,4 @@
-// AvatarUploadForm.js
-import { ClientConfig } from '/scripts/ClientConfig.js';
-import { Toast } from '/scripts/Toast.js';
-import { csrf_headers } from '/scripts/utils.js';
+import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
@@ -11,26 +8,20 @@ export class AvatarUploadForm {
             const form = event.target.closest('.AvatarUploadForm');
             if (!form) return;
             event.preventDefault();
+
             const submit_button = form.querySelector('button[type="submit"]');
             Working.start(submit_button);
+
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/upload-avatar', {
-                    method: 'POST',
-                    headers: csrf_headers(),
-                    body: new FormData(form),
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    Toast.show(data.error || 'Could not upload the image. Please try again.');
-                    return;
-                }
+                const data = await Api.post('/api/upload-avatar', new FormData(form), { form });
+
+                if (!data) return;
+
                 const avatar = document.createElement('img');
                 avatar.className = 'Avatar';
                 avatar.alt = 'Your avatar';
-                avatar.src = data.response.image;
+                avatar.src = data.image;
                 form.closest('.User').querySelector('.UserLink .Avatar').replaceWith(avatar);
-            } catch (error) {
-                Toast.show('Network error. Please check your connection and try again.');
             } finally {
                 Working.stop(submit_button);
             }

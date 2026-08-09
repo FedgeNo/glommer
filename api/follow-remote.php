@@ -25,7 +25,7 @@ $payload = is_array($payload) ? $payload : [];
 $raw = (string) ($payload['handles'] ?? '');
 
 if (strlen($raw) > 8192) {
-    JSONResponse::error('That list is too long.', 422) -> send();
+    JSONResponse::fieldError('handles', 'That list is too long.') -> send();
 }
 
 // Checked once up front rather than per handle, which would otherwise repeat
@@ -37,7 +37,7 @@ if (!ActivityPubKeys::isConfigured()) {
 $handles = FediverseHandle::parseAll($raw);
 
 if ($handles === []) {
-    JSONResponse::error('No valid Fediverse handles found (expected user@domain).', 422) -> send();
+    JSONResponse::fieldError('handles', 'No valid handles found here - they look like user@domain.') -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);

@@ -17,14 +17,20 @@ export class Api {
     static async post(path, payload, { signal, form } = {}) {
         let response;
         try {
+            // FormData goes as it is. Encoding it as JSON would throw the
+            // files away, and setting a Content-Type would override the
+            // multipart boundary the browser generates - which is the one
+            // header that must be left alone.
+            const is_form_data = payload instanceof FormData;
+
             response = await fetch(ClientConfig.siteURL() + path, {
                 method: 'POST',
                 headers: csrf_headers(
-                    payload !== undefined
+                    payload !== undefined && !is_form_data
                         ? { 'Content-Type': 'application/json' }
                         : undefined
                 ),
-                body: payload === undefined ? undefined : JSON.stringify(payload),
+                body: payload === undefined ? undefined : (is_form_data ? payload : JSON.stringify(payload)),
                 signal,
             });
         } catch (error) {

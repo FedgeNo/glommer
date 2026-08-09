@@ -1,7 +1,5 @@
-// FrontPageImageSettingsForm.js
-import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
-import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
@@ -13,8 +11,10 @@ export class FrontPageImageSettingsForm {
             event.preventDefault();
 
             const file_input = form.querySelector('input[type="file"][name="frontPageImage"]');
+
             if (!file_input.files.length) {
                 Toast.show('Choose a file first.');
+
                 return;
             }
 
@@ -25,17 +25,9 @@ export class FrontPageImageSettingsForm {
             body.append('frontPageImage', file_input.files[0]);
 
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/front-page-image', {
-                    method: 'POST',
-                    headers: csrf_headers(),
-                    body,
-                });
-                const data = await response.json();
+                const data = await Api.post('/api/front-page-image', body, { form });
 
-                if (!response.ok) {
-                    Toast.show(data.error || 'Something went wrong. Please try again.');
-                    return;
-                }
+                if (!data) return;
 
                 Toast.show('Settings saved.');
 
@@ -43,11 +35,10 @@ export class FrontPageImageSettingsForm {
                 // gets one the next time the form renders, and the cache-bust
                 // keeps an existing one honest.
                 const preview = form.querySelector('.FrontPageImagePreview');
+
                 if (preview) {
-                    preview.src = data.response.url + '?' + Date.now();
+                    preview.src = data.url + '?' + Date.now();
                 }
-            } catch (error) {
-                Toast.show('Network error. Please check your connection and try again.');
             } finally {
                 Working.stop(submit_button);
             }

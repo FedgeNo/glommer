@@ -14,7 +14,7 @@ export class RemoteFollowsForm {
             Working.start(submit_button);
             const data = await Api.post('/api/follow-remote', {
                 handles: form.querySelector('[name="handles"]').value,
-            });
+            }, { form });
             Working.stop(submit_button);
             if (!data) return;
             const results = data.results || [];

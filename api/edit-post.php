@@ -100,15 +100,15 @@ if ($link_url !== '') {
     }
 
     if (!preg_match('/^https?:\/\//i', $link_url)) {
-        JSONResponse::error('Link URL must be an http:// or https:// link', 422) -> send();
+        JSONResponse::fieldError('linkURL', 'Give an http:// or https:// link.') -> send();
     }
 
     if (strlen($link_url) > 255) {
-        JSONResponse::error('Link URL is too long', 422) -> send();
+        JSONResponse::fieldError('linkURL', 'That link is too long.') -> send();
     }
 
     if (!URL::isValidHTTPURL($link_url)) {
-        JSONResponse::error('Link URL must point to a real domain name, not an IP address.', 422) -> send();
+        JSONResponse::fieldError('linkURL', 'Point this at a domain name, not an IP address.') -> send();
     }
 }
 

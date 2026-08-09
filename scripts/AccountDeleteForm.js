@@ -1,10 +1,15 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
-import { Toast } from '/scripts/Toast.js';
+import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
-import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
+/**
+ * Closing your own account, which asks for the password first.
+ *
+ * Api is handed the form, so a wrong password is said under the password box
+ * rather than as a loose line above the button.
+ */
 export class AccountDeleteForm {
     static init() {
         document.addEventListener('submit', async (event) => {
@@ -14,34 +19,17 @@ export class AccountDeleteForm {
 
             if (!await Dialog.confirm('Delete your account? Your posts, replies, and messages are gone permanently - this can\'t be undone.')) return;
 
-            const existing_error = form.querySelector('.Error');
-            if (existing_error) existing_error.remove();
-
             const submit_button = form.querySelector('button[type="submit"]');
             Working.start(submit_button);
 
             try {
-                const response = await fetch(ClientConfig.siteURL() + '/api/delete-account', {
-                    method: 'POST',
-                    headers: csrf_headers({ 'Content-Type': 'application/json' }),
-                    body: JSON.stringify({
-                        currentPassword: form.querySelector('[name="currentPassword"]').value,
-                    }),
-                });
+                const data = await Api.post('/api/delete-account', {
+                    currentPassword: form.querySelector('[name="currentPassword"]').value,
+                }, { form });
 
-                const data = await response.json();
-
-                if (!response.ok) {
-                    const error = document.createElement('p');
-                    error.className = 'Error';
-                    error.textContent = data.error;
-                    form.insertBeforeWithSpace(error, submit_button);
-                    return;
-                }
+                if (!data) return;
 
                 window.location = ClientConfig.siteURL() + '/';
-            } catch (error) {
-                Toast.show('Network error. Please check your connection and try again.');
             } finally {
                 Working.stop(submit_button);
             }

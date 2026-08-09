@@ -27,7 +27,7 @@ export class LoginForm {
                 rememberMe: form.querySelector('[name="rememberMe"]').checked,
                 captchaToken: captcha_input ? captcha_input.value : null,
                 recaptchaToken: recaptcha_token || null,
-            });
+            }, { form });
 
             if (!data) {
                 LoginForm.#resetRecaptcha(form);

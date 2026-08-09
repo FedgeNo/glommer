@@ -31,14 +31,21 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
     JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
 }
 
+// Gathered rather than answered one at a time - see api/change-password.php.
+$refused = [];
+
 if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
-    JSONResponse::error('Current password is incorrect', 422) -> send();
+    $refused['currentPassword'] = 'That is not your current password.';
 }
 
 if ($new_email === '' || filter_var($new_email, FILTER_VALIDATE_EMAIL) === false) {
-    JSONResponse::error('A valid email address is required', 422) -> send();
+    $refused['newEmail'] = 'Please give a valid email address.';
+}
+
+if ($refused !== []) {
+    JSONResponse::fieldErrors($refused) -> send();
 }
 
 if (strcasecmp($new_email, (string) $current_user -> email) === 0) {
@@ -61,7 +68,7 @@ SELECT `userId`
 mysqli_stmt_store_result($taken_stmt);
 
 if (mysqli_stmt_num_rows($taken_stmt) > 0 || EmailChangeRevert::isReserved($new_email)) {
-    JSONResponse::error('That email address is already in use', 422) -> send();
+    JSONResponse::fieldError('newEmail', 'That address is already in use.') -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -91,7 +98,7 @@ UPDATE `Users`
         throw $exception;
     }
 
-    JSONResponse::error('That email address is already in use', 422) -> send();
+    JSONResponse::fieldError('newEmail', 'That address is already in use.') -> send();
 }
 
 Auth::clearUserCache();

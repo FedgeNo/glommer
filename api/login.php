@@ -25,7 +25,20 @@ $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captcha
 $recaptcha_token = is_string($payload['recaptchaToken'] ?? null) ? $payload['recaptchaToken'] : null;
 
 if ($identifier === '' || $password === '') {
-    JSONResponse::error('Username/email and password are required.', 422) -> send();
+    // Named, since an empty box is not a secret. The refusal further down -
+    // that the pair did not match - deliberately names neither: which half was
+    // wrong is exactly what somebody guessing wants to know.
+    $refused = [];
+
+    if (trim($identifier) === '') {
+        $refused['identifier'] = 'Please give your username or email.';
+    }
+
+    if ($password === '') {
+        $refused['password'] = 'Please give your password.';
+    }
+
+    JSONResponse::fieldErrors($refused, 'Username/email and password are required.') -> send();
 }
 
 // A second limit keyed on the account, not the address - the IP limit alone

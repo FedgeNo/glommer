@@ -297,18 +297,11 @@ SELECT *
     }
 
     /**
-     * A user looked up by username for public profile display, as an
-     * OtherUser - or null if there's no such user or they're banned (a banned
-     * profile is a 404 to everyone). The single shared "load + banned gate"
-     * behind the profile page, its friends page, and its RSS feed, so that
-     * visibility rule lives in one place instead of being hand-copied.
-     */
-    /**
      * The local shadow row standing in for a remote account, by its actor URI
      * - or null when this server has never met them. The one lookup behind
      * every place federation turns an actor URI into the Users row it acts as,
-     * which used to be the same query hand-copied across the inbox, the
-     * follow machinery and the actor cache.
+     * so the inbox, the follow machinery and the actor cache cannot drift into
+     * disagreeing about which row an actor is.
      */
     public static function byRemoteActorURI(string $actor_uri): ?User
     {
@@ -319,6 +312,13 @@ SELECT *
 ', self::class, 's', $actor_uri);
     }
 
+    /**
+     * A user looked up by username for public profile display, as an
+     * OtherUser - or null if there's no such user or they're banned (a banned
+     * profile is a 404 to everyone). The single shared "load + banned gate"
+     * behind the profile page, its friends page, and its RSS feed, so that
+     * visibility rule lives in one place instead of being hand-copied.
+     */
     public static function byUsername(string $username): ?OtherUser
     {
         $user = DB::row('

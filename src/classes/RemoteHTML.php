@@ -11,10 +11,9 @@ declare(strict_types=1);
  * would run every paragraph into one unreadable line; entities are decoded
  * after the tags are gone, so "&amp;" reads as "&" instead of its escape.
  *
- * The one implementation for everything inbound. A post and a direct message
- * used to flatten separately, with different ideas of which tags end a line -
- * so the same list arrived shaped differently depending on which kind of
- * object carried it.
+ * The one implementation for everything inbound, so a post and a direct
+ * message cannot hold different ideas about which tags end a line and leave
+ * the same list arriving shaped differently depending on what carried it.
  */
 class RemoteHTML
 {

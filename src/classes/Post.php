@@ -618,8 +618,9 @@ DELETE
         $polls = Poll::forPosts($post_ids);
 
         // The action bar's own state, gathered for the page rather than per
-        // card: every post used to ask whether the viewer had reposted it, how
-        // many times it had been passed on, and whether it was pinned.
+        // card: whether the viewer reposted it, how many times it has been
+        // passed on, and whether it is pinned are three questions each, and a
+        // feed would otherwise ask all of them once per post.
         $viewer_id = Auth::id();
         $repost_state = Repost::stateForPosts($post_ids, $viewer_id);
         $pinned = $viewer_id === null ? [] : PinnedPost::pinnedForPosts($post_ids, $viewer_id);

@@ -521,9 +521,9 @@ SELECT *
      * match wins. Read-only service-status queries need no special Unix
      * privilege, but on an Enforcing SELinux host they can still be denied by
      * policy to the web server's own domain (confirmed live: `systemctl
-     * is-active` from PHP-FPM returned nothing but "Access denied" on stderr,
-     * which - discarded via 2>/dev/null - used to read back as an empty
-     * string and get folded into a false "dead"). bin/install.php's
+     * is-active` from PHP-FPM returns nothing but "Access denied" on stderr,
+     * which - discarded via 2>/dev/null - reads back as an empty string and
+     * would fold into a false "dead"). bin/install.php's
      * ensure_httpd_can_query_systemd_status() fixes that at the source; this
      * only tells the two apart so a host that hasn't run it yet reports
      * "don't know" instead of confidently lying that a healthy worker is down.

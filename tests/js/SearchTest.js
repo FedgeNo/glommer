@@ -66,9 +66,9 @@ export default {
             search.destroy();
             document.body.removeChild(input);
         },
-        // Arriving with ?q= has to actually search. It used to fill the box and
-        // dispatch an input event before the listener existed, so a linked
-        // search landed on an empty page with the term sitting in the input.
+        // Arriving with ?q= has to actually search. Filling the box and
+        // dispatching an input event before the listener exists lands a linked
+        // search on an empty page with the term sitting in the input.
         'a search page arrived at with a query runs that search'() {
             const { input, box, searched } = setUpSearchPage('kittens');
 

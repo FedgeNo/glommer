@@ -58,7 +58,7 @@ DELETE FROM `Announces`
      * Announces table, so one count covers both).
      *
      * Two queries for a page rather than two per post: a feed renders twenty
-     * cards, and every one of them used to ask these questions on its own.
+     * cards, and asking per card is forty round trips for one screen.
      *
      * @param int[] $post_ids
      * @return array<int, array{reposted: bool, count: int}> keyed by postId

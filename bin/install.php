@@ -166,16 +166,14 @@ if (!function_exists('shell_exec') || !function_exists('exec') || !function_exis
 
 /**
  * Runs a shell command and returns its exit code, combined stdout+stderr,
- * and the command itself - without printing anything, same as the raw
- * shell_exec()/exec() calls this replaces throughout the file. $command
- * should redirect its own stderr as needed (2>&1 to capture it, 2>/dev/null
- * to discard it) exactly as the old direct calls did - run() doesn't impose
- * a redirection of its own, so a caller that wants clean output for string
- * comparison (e.g. `systemctl is-active ... 2>/dev/null`) still gets it.
+ * and the command itself - without printing anything. $command should
+ * redirect its own stderr as needed (2>&1 to capture it, 2>/dev/null to
+ * discard it): run() imposes no redirection of its own, so a caller that
+ * wants clean output for string comparison (e.g. `systemctl is-active ...
+ * 2>/dev/null`) still gets it.
  * 'output' is trimmed (leading/trailing whitespace only - internal lines are
- * untouched) since nearly every caller immediately does its own trim() on
- * what used to be a raw shell_exec() string; doing it once here means call
- * sites don't have to.
+ * untouched) since nearly every caller would otherwise immediately trim the
+ * raw string itself; doing it once here means call sites don't have to.
  *
  * $args, when given, is a name => value map: every ':name' token in
  * $command is replaced with escapeshellarg($value) before running it - e.g.
@@ -1372,10 +1370,10 @@ function offer_root_reexec(): void
  * non-interactive SSH command, a `sudo -u someuser ...` invocation, or cron
  * frequently doesn't have. Every write-and-enable/reconcile function for the
  * user-level services (websocket, upload-worker, backup timer) shells out
- * to `systemctl --user` assuming this works; without checking first, a
- * missing session bus previously surfaced as a generic "the service was
- * written but did not start" - true, but pointing at the wrong cause
- * entirely (the unit is fine; there's just nothing to talk to).
+ * to `systemctl --user` assuming this works; unchecked, a missing session bus
+ * surfaces as a generic "the service was written but did not start" - true,
+ * but pointing at the wrong cause entirely (the unit is fine; there's just
+ * nothing to talk to).
  */
 function user_systemd_available(): bool
 {

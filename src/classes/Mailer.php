@@ -5,10 +5,10 @@ declare(strict_types=1);
 /**
  * The SMTP relay settings (host/port/username/password/encryption), plus the
  * mail "from" address/name, all live in the Settings DB table, editable from
- * the admin Site Settings page - live, no restart. They used to be
- * .env-only (SMTP_HOST etc., MAIL_FROM_ADDRESS/MAIL_FROM_NAME);
- * bin/install.php warns if it finds those still set, since they're no
- * longer read from there.
+ * the admin Site Settings page - live, no restart. Nothing reads them from
+ * .env, so bin/install.php warns when it finds SMTP_HOST etc. or
+ * MAIL_FROM_ADDRESS/MAIL_FROM_NAME set there: they would look like the live
+ * configuration while having no effect on anything.
  */
 class Mailer
 {

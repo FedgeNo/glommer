@@ -64,9 +64,9 @@ body:has(.MainNavigation) {
     pointer-events: none;
 }
 
-/* Where the site's name used to carry a decorative mark. It says something now
-   instead: a message is waiting. Raised to sit against the top of the letters,
-   which is where the badge on Notifications sits against its link. */
+/* Against the site's name: a message is waiting. Raised to sit against the top
+   of the letters, which is where the badge on Notifications sits against its
+   link. */
 .NavBrand .MessageDot {
     margin-left: 0.2rem;
     vertical-align: 0.4em;

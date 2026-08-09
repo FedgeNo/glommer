@@ -2,6 +2,7 @@
 import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class SignupForm {
     static init() {
@@ -10,7 +11,7 @@ export class SignupForm {
             if (!form) return;
             event.preventDefault();
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
             const captcha_input = form.querySelector('[name="cf-turnstile-response"]');
             const data = await Api.post('/api/signup', {
                 username: form.querySelector('[name="username"]').value,
@@ -22,7 +23,7 @@ export class SignupForm {
                 captchaToken: captcha_input ? captcha_input.value : null,
             });
             if (!data) {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 return;
             }
             window.location = ClientConfig.siteURL() + (data.verified ? '/' : '/check-inbox');

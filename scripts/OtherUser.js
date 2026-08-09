@@ -5,6 +5,7 @@ import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { list_item } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class OtherUser extends User {
     userId = null;
@@ -225,7 +226,7 @@ export class OtherUser extends User {
     }
 
     static async #sendFriendRequest(button) {
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/friend-request', { userId: button.dataset.userId });
             if (!result) return;
@@ -233,14 +234,14 @@ export class OtherUser extends User {
             button.textContent = result.sent ? 'Cancel Request' : 'Add Friend';
             button.classList.toggle('Removing', result.sent);
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #toggleFollow(button) {
         const id = button.dataset.userId;
         const following = button.dataset.following === '1';
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post(following ? '/api/unfollow-remote' : '/api/follow-user', { userId: id });
             if (!result) return;
@@ -248,67 +249,67 @@ export class OtherUser extends User {
             button.textContent = result.following ? 'Unfollow' : 'Follow';
             button.classList.toggle('Removing', result.following);
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #block(button) {
         if (!await Dialog.confirm('Block this user? This will remove any existing friendship.')) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/block', { userId: button.dataset.userId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.OtherUser'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #removeFriend(button) {
         if (!await Dialog.confirm('Remove this friend?')) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/remove-friend', { userId: button.dataset.userId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.OtherUser'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #toggleMod(button) {
         const id = button.dataset.userId;
         const isMod = button.dataset.isMod === '1';
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/set-mod', { userId: id, isMod: !isMod });
             if (!result) return;
             button.dataset.isMod = result.isMod ? '1' : '0';
             button.textContent = result.isMod ? 'Remove Mod' : 'Make Mod';
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #unblock(button) {
         const id = button.dataset.userId;
         const card = button.closest('.OtherUser');
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/unblock', { userId: id });
             if (!result) return;
             card.replaceWith(OtherUser.fromData(result).toElement());
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #acceptFriendRequest(button) {
         const friendshipId = button.dataset.friendshipId;
-        button.disabled = true;
+        Working.start(button);
         const result = await Api.post('/api/accept-friend', { friendshipId });
         if (!result) {
-            button.disabled = false;
+            Working.stop(button);
             return;
         }
         const card = button.closest('.OtherUser');
@@ -331,10 +332,10 @@ export class OtherUser extends User {
     }
 
     static async #denyFriendRequest(button) {
-        button.disabled = true;
+        Working.start(button);
         const result = await Api.post('/api/deny-friend', { friendshipId: button.dataset.friendshipId });
         if (!result) {
-            button.disabled = false;
+            Working.stop(button);
             return;
         }
         DOMUtils.slideOut(button.closest('.OtherUser'));
@@ -346,13 +347,13 @@ export class OtherUser extends User {
             { confirmLabel: 'Ban', placeholder: 'Reason for ban (required)' }
         );
         if (reason === null) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/ban', { userId: button.dataset.userId, reason });
             if (!result) return;
             button.textContent = 'Banned';
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

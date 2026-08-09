@@ -3,6 +3,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class FrontPageImageSettingsForm {
     static init() {
@@ -18,7 +19,7 @@ export class FrontPageImageSettingsForm {
             }
 
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             const body = new FormData();
             body.append('frontPageImage', file_input.files[0]);
@@ -48,7 +49,7 @@ export class FrontPageImageSettingsForm {
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
         });
     }

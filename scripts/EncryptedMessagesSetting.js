@@ -2,6 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * The Settings section for encrypted messaging. Key generation, wrapping,
@@ -56,7 +57,7 @@ export class EncryptedMessagesSetting {
         if (!EncryptedMessagesSetting.#acceptable(passphrase, form.querySelector('[name="passphraseConfirm"]').value, account_password)) return;
 
         const submit_button = form.querySelector('button[type="submit"]');
-        submit_button.disabled = true;
+        Working.start(submit_button);
 
         try {
             const pair = await MessageCrypto.generateKeypair();
@@ -84,7 +85,7 @@ export class EncryptedMessagesSetting {
                 Toast.show('Encrypted messages are on.');
             }
         } finally {
-            submit_button.disabled = false;
+            Working.stop(submit_button);
         }
     }
 
@@ -104,7 +105,7 @@ export class EncryptedMessagesSetting {
         }
 
         const submit_button = form.querySelector('button[type="submit"]');
-        submit_button.disabled = true;
+        Working.start(submit_button);
 
         try {
             const wrapped = await MessageCrypto.wrapPrivateKey(private_jwk, new_passphrase);
@@ -121,7 +122,7 @@ export class EncryptedMessagesSetting {
             Toast.show('Passphrase changed.');
             form.reset();
         } finally {
-            submit_button.disabled = false;
+            Working.stop(submit_button);
         }
     }
 

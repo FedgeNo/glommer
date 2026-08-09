@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class LogoutEverywherePanel {
     static init() {
@@ -24,7 +25,7 @@ export class LogoutEverywherePanel {
             }
 
             button.textContent = 'Signing out…';
-            button.disabled = true;
+            Working.start(button);
 
             try {
                 await Api.post('/api/logout-everywhere', {});
@@ -32,7 +33,7 @@ export class LogoutEverywherePanel {
                 window.location.href = '/';
             } catch {
                 button.textContent = 'Failed';
-                button.disabled = false;
+                Working.stop(button);
             }
         });
     }

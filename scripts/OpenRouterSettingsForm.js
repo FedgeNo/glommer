@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class OpenRouterSettingsForm {
     static init() {
@@ -16,7 +17,7 @@ export class OpenRouterSettingsForm {
             const submit_button = form.querySelector('button[type="submit"]');
 
             if (submit_button) {
-                submit_button.disabled = true;
+                Working.start(submit_button);
             }
 
             const data = await Api.post('/api/openrouter-settings', {
@@ -27,7 +28,7 @@ export class OpenRouterSettingsForm {
             });
 
             if (submit_button) {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
 
             if (data !== null) {

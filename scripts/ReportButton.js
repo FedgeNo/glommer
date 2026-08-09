@@ -2,6 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Every Report button on the site, delegated in one place - report buttons
@@ -48,14 +49,14 @@ export class ReportButton {
             payload.revealedKey = await MessageCrypto.revealKeyForMessage(button.dataset.targetId);
         }
 
-        button.disabled = true;
+        Working.start(button);
 
         try {
             const result = await Api.post('/api/report', payload);
             if (!result) return;
             button.textContent = 'Reported';
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

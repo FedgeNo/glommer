@@ -2,6 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Pinning one of your own posts to the top of your profile.
@@ -28,7 +29,7 @@ export class PostPinButton {
 
         if (!postId) return;
 
-        button.disabled = true;
+        Working.start(button);
 
         try {
             const result = await Api.post('/api/pin-post', { postId: Number(postId) });
@@ -41,7 +42,7 @@ export class PostPinButton {
             button.classList.toggle('Removing', result.pinned);
             Toast.show(result.pinned ? 'Pinned to your profile.' : 'Unpinned.');
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

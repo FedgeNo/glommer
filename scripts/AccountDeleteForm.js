@@ -3,6 +3,7 @@ import { Toast } from '/scripts/Toast.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class AccountDeleteForm {
     static init() {
@@ -17,7 +18,7 @@ export class AccountDeleteForm {
             if (existing_error) existing_error.remove();
 
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             try {
                 const response = await fetch(ClientConfig.siteURL() + '/api/delete-account', {
@@ -42,7 +43,7 @@ export class AccountDeleteForm {
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
         });
     }

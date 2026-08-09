@@ -143,6 +143,27 @@
 .Button:active { transform: scale(0.97); }
 .Button:disabled { opacity: 0.55; cursor: default; transform: none; }
 
+/* Waiting on the server. Disabling alone only dims a control slightly and
+   then nothing happens, which on anything slow reads as a press that did not
+   land - so it pulses for as long as it is working. The animation beats the
+   :disabled opacity above by being an animation, which is the whole reason
+   this is not just another opacity rule. */
+@keyframes throb {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+}
+
+.Working {
+    animation: throb 1.1s ease-in-out infinite;
+    cursor: progress;
+}
+
+/* Somebody who has asked for less movement still needs to know it is working,
+   so the pulse becomes a steady dimming rather than nothing at all. */
+@media (prefers-reduced-motion: reduce) {
+    .Working { animation: none; opacity: 0.5; }
+}
+
 /* Forms lay their fields out in a column, and the button that submits one sits
    at the trailing edge rather than stretching across it. */
 .SubmitButton { align-self: flex-end; }

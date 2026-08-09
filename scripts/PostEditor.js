@@ -5,6 +5,7 @@ import { QuillEditor } from '/scripts/QuillEditor.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class PostEditor {
     #postElement;
@@ -214,7 +215,7 @@ export class PostEditor {
         descriptionInput.value = JSON.stringify(quill.getContents());
 
         const saveButton = this.#form.querySelector('button[type="submit"]');
-        saveButton.disabled = true;
+        Working.start(saveButton);
 
         try {
             const response = await fetch(
@@ -238,7 +239,7 @@ export class PostEditor {
             if (!response.ok) {
                 const data = await response.json().catch(() => ({}));
                 Toast.show(data.error || 'Could not save changes. Please try again.');
-                saveButton.disabled = false;
+                Working.stop(saveButton);
                 return;
             }
 
@@ -246,7 +247,7 @@ export class PostEditor {
             this.#onSaveSuccess(data.response);
         } catch (error) {
             Toast.show('Network error. Please check your connection and try again.');
-            saveButton.disabled = false;
+            Working.stop(saveButton);
         }
     }
 

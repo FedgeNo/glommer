@@ -1,6 +1,7 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class LogoutForm {
     static init() {
@@ -10,7 +11,7 @@ export class LogoutForm {
             event.preventDefault();
 
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             try {
                 const response = await fetch(ClientConfig.siteURL() + '/api/logout', {
@@ -25,14 +26,14 @@ export class LogoutForm {
                         errorMsg = data.error || errorMsg;
                     } catch (_) {}
                     Toast.show(errorMsg);
-                    submit_button.disabled = false;
+                    Working.stop(submit_button);
                     return;
                 }
 
                 window.location = ClientConfig.siteURL() + '/';
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
         });
     }

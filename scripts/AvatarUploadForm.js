@@ -3,6 +3,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class AvatarUploadForm {
     static init() {
@@ -11,7 +12,7 @@ export class AvatarUploadForm {
             if (!form) return;
             event.preventDefault();
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
             try {
                 const response = await fetch(ClientConfig.siteURL() + '/api/upload-avatar', {
                     method: 'POST',
@@ -31,7 +32,7 @@ export class AvatarUploadForm {
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
         });
     }

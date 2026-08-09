@@ -2,6 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class PasswordResetForm {
     static init() {
@@ -11,7 +12,7 @@ export class PasswordResetForm {
             event.preventDefault();
 
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             const data = await Api.post('/api/reset-password', {
                 token: form.querySelector('[name="token"]').value,
@@ -20,12 +21,12 @@ export class PasswordResetForm {
             });
 
             if (!data) {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 return;
             }
 
             if (!data.reset) {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 Toast.show('That\'s already your password - nothing was changed.');
                 return;
             }

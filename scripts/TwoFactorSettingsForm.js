@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class TwoFactorSettingsForm {
     static init() {
@@ -21,7 +22,7 @@ export class TwoFactorSettingsForm {
 
             const submit_button = form.querySelector('button[type="submit"]');
             const password_input = form.querySelector('[name="currentPassword"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             const data = await Api.post('/api/two-factor', {
                 action: submit_button.dataset.action,
@@ -29,7 +30,7 @@ export class TwoFactorSettingsForm {
             });
 
             if (!data) {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 return;
             }
 
@@ -45,7 +46,7 @@ export class TwoFactorSettingsForm {
                 : 'Turn on two-factor authentication';
             submit_button.dataset.action = now_enabled ? 'disable' : 'enable';
             password_input.value = '';
-            submit_button.disabled = false;
+            Working.stop(submit_button);
 
             Toast.show(
                 now_enabled

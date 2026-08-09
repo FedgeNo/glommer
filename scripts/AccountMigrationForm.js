@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Declaring an alias, and moving away.
@@ -27,7 +28,7 @@ export class AccountMigrationForm {
             }
 
             const submit = form.querySelector('button[type="submit"]');
-            submit.disabled = true;
+            Working.start(submit);
 
             try {
                 const result = await Api.post('/api/account-migration', { movedTo, alsoKnownAs });
@@ -36,7 +37,7 @@ export class AccountMigrationForm {
 
                 Toast.show(result.moved ? 'Your followers have been asked to follow you at the new account.' : 'Saved.');
             } finally {
-                submit.disabled = false;
+                Working.stop(submit);
             }
         });
     }

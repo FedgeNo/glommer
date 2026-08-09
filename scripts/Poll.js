@@ -1,5 +1,6 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Client twin of Poll.php - the same DOM from the same payload, class for
@@ -25,7 +26,7 @@ export class Poll {
             // Disabled for the round trip rather than after it: a second click
             // while the first is in flight comes back refused as a repeat vote,
             // and the reader would be told their own answer failed.
-            button.disabled = true;
+            Working.start(button);
 
             const data = await Api.post('/api/poll-vote', {
                 pollId: Number(button.dataset.pollId),
@@ -33,7 +34,7 @@ export class Poll {
             });
 
             if (!data) {
-                button.disabled = false;
+                Working.stop(button);
                 return;
             }
 

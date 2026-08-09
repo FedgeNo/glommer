@@ -174,6 +174,8 @@ export class Dialog {
             confirmButton.type = 'button';
             confirmButton.className = 'Button ConfirmDialogConfirmButton';
             confirmButton.textContent = options.confirmLabel || 'OK';
+            // Off until the box has something in it - a rule about the input,
+            // not a wait, so it does not throb.
             confirmButton.disabled = true;
 
             actions.appendWithSpace(cancelButton);

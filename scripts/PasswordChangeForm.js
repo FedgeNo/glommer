@@ -2,6 +2,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class PasswordChangeForm {
     static init() {
@@ -14,7 +15,7 @@ export class PasswordChangeForm {
             if (existing_error) existing_error.remove();
 
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             try {
                 const response = await fetch(ClientConfig.siteURL() + '/api/change-password', {
@@ -39,7 +40,7 @@ export class PasswordChangeForm {
             } catch (error) {
                 Toast.show('Network error. Please check your connection and try again.');
             } finally {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
         });
     }

@@ -1,6 +1,7 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { csrf_headers } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Mirrors VideoCallTestPanel.php: runs call setup for real, one step at a time,
@@ -30,7 +31,7 @@ export class VideoCallTestPanel {
         results.replaceChildren();
         verdict.replaceChildren();
         verdict.className = 'VideoCallTestVerdict';
-        button.disabled = true;
+        Working.start(button);
 
         // Which step stopped the run, if one did - the verdict is a reading of
         // that rather than of a pass count, since the steps do not all mean the
@@ -62,7 +63,7 @@ export class VideoCallTestPanel {
 
         VideoCallTestPanel.#declare(verdict, stopped_at);
 
-        button.disabled = false;
+        Working.stop(button);
     }
 
     static #steps() {

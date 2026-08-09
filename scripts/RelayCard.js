@@ -3,6 +3,7 @@ import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { list_in, list_item } from '/scripts/utils.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * The Relays page: the form that joins one and the control on each row that
@@ -42,7 +43,7 @@ export class RelayCard {
         if (!confirmed) return;
 
         const submit = form.querySelector('button[type="submit"]');
-        submit.disabled = true;
+        Working.start(submit);
 
         try {
             const result = await Api.post('/api/subscribe-relay', { actorURI: actor_uri, followObject: follow_object });
@@ -57,7 +58,7 @@ export class RelayCard {
 
             form.querySelector('[name="actorURI"]').value = '';
         } finally {
-            submit.disabled = false;
+            Working.stop(submit);
         }
     }
 
@@ -68,7 +69,7 @@ export class RelayCard {
             return;
         }
 
-        button.disabled = true;
+        Working.start(button);
 
         try {
             const result = await Api.post('/api/unsubscribe-relay', { actorURI: actor_uri });
@@ -77,7 +78,7 @@ export class RelayCard {
 
             DOMUtils.slideOut(button.closest('.RelayCard'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 

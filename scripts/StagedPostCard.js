@@ -5,6 +5,7 @@ import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * The controls on a draft or scheduled post: publish it now, open it for
@@ -106,7 +107,7 @@ export class StagedPostCard {
 
     static async #act(button, endpoint, done) {
         const card = button.closest('.StagedPostCard');
-        button.disabled = true;
+        Working.start(button);
 
         try {
             const result = await Api.post(endpoint, {
@@ -118,7 +119,7 @@ export class StagedPostCard {
             Toast.show(done);
             DOMUtils.slideOut(card);
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

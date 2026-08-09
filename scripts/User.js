@@ -7,6 +7,7 @@ import { Dialog } from '/scripts/Dialog.js';
 import { Toast } from '/scripts/Toast.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
+import { Working } from '/scripts/Working.js';
 
 /** Mirrors User.php: the identity card and the byline header, shared by every
  * user-shaped thing (OtherUser, ReceivedFriendRequest, BannedUser, a report's user
@@ -194,7 +195,7 @@ export class User {
         const nameInput = card.querySelector('.DisplayNameInput');
         const bioInput = card.querySelector('.UserBioInput');
         const save = card.querySelector('.ProfileSaveButton');
-        save.disabled = true;
+        Working.start(save);
 
         const data = await Api.post('/api/update-profile', {
             title: nameInput.value,
@@ -202,7 +203,7 @@ export class User {
         });
 
         if (!data) {
-            save.disabled = false;
+            Working.stop(save);
             return;
         }
 
@@ -229,10 +230,10 @@ export class User {
     }
 
     static async #resendVerification(button) {
-        button.disabled = true;
+        Working.start(button);
         const result = await Api.post('/api/resend-verification');
         if (!result) {
-            button.disabled = false;
+            Working.stop(button);
             return;
         }
         button.textContent = 'Sent!';
@@ -240,13 +241,13 @@ export class User {
 
     static async #revokeSession(button) {
         if (!await Dialog.confirm('Revoke this device? It will be signed out and have to log in again.')) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/revoke-session', { tokenId: button.dataset.tokenId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.RememberedDevice'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

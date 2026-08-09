@@ -1,5 +1,6 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class RememberedDevice {
     static init() {
@@ -17,7 +18,7 @@ export class RememberedDevice {
                 }
 
                 button.textContent = 'Revoking…';
-                button.disabled = true;
+                Working.start(button);
 
                 try {
                     await Api.post('/api/revoke-session', { tokenId });
@@ -27,7 +28,7 @@ export class RememberedDevice {
                     }
                 } catch {
                     button.textContent = 'Failed';
-                    button.disabled = false;
+                    Working.stop(button);
                 }
             });
         });

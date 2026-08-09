@@ -15,6 +15,7 @@ import { Poll } from '/scripts/Poll.js';
 import { PostRepostButton } from '/scripts/PostRepostButton.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
 import { SkinTone } from '/scripts/SkinTone.js';
+import { Working } from '/scripts/Working.js';
 
 export class Post {
     postId = null;
@@ -737,7 +738,7 @@ export class Post {
             return;
         }
 
-        button.disabled = true;
+        Working.start(button);
 
         try {
             // The reader's own interface language today; the parameter is
@@ -786,13 +787,13 @@ export class Post {
             button.classList.add('Removing');
             Post.nameIt(button, 'Show original');
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #like(button) {
         const postData = button.closest('.Post').dataset;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/like', { itemId: postData.postId });
             if (!result) return;
@@ -802,13 +803,13 @@ export class Post {
             Post.nameIt(button, Post.likeName(result.liked));
             ToggleButton.setLabel(button, Post.likeLabel(result.liked, result.count));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #bookmark(button) {
         const postData = button.closest('.Post').dataset;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/bookmark', { itemId: postData.postId });
             if (!result) return;
@@ -817,14 +818,14 @@ export class Post {
             button.setAttribute('aria-pressed', result.bookmarked ? 'true' : 'false');
             Post.nameIt(button, Post.bookmarkLabel(result.bookmarked));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #delete(button) {
         if (!await Dialog.confirm('Delete this post?')) return;
         const postData = button.closest('.Post').dataset;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/delete', { itemId: postData.postId });
             if (!result) return;
@@ -834,7 +835,7 @@ export class Post {
                 DOMUtils.slideOut(button.closest('.Post'));
             }
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 

@@ -2,6 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * The ways /locations learns where "near" is: the "Use my location" button, and
@@ -48,7 +49,7 @@ export class NearbyLocationPrompt {
                 return;
             }
 
-            button.disabled = true;
+            Working.start(button);
             button.textContent = 'Locating…';
 
             navigator.geolocation.getCurrentPosition(
@@ -61,7 +62,7 @@ export class NearbyLocationPrompt {
                     window.location.search = parameters.toString();
                 },
                 () => {
-                    button.disabled = false;
+                    Working.stop(button);
                     button.textContent = 'Use my location';
                     Toast.show('Could not get your location. Check your browser\'s location permission.');
                 },

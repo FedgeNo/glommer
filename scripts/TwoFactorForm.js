@@ -2,6 +2,7 @@
 import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class TwoFactorForm {
     static init() {
@@ -10,12 +11,12 @@ export class TwoFactorForm {
             if (!form) return;
             event.preventDefault();
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
             const data = await Api.post('/api/verify-2fa', {
                 code: form.querySelector('[name="code"]').value,
             });
             if (!data) {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 return;
             }
             window.location = ClientConfig.siteURL() + '/';

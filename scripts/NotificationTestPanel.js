@@ -1,5 +1,6 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class NotificationTestPanel {
     static init() {
@@ -16,18 +17,18 @@ export class NotificationTestPanel {
         button.addEventListener('click', async (event) => {
             event.preventDefault();
             button.textContent = 'Sending…';
-            button.disabled = true;
+            Working.start(button);
 
             try {
                 await Api.post('/api/send-test-notification', {});
                 button.textContent = 'Sent!';
                 setTimeout(() => {
                     button.textContent = 'Send test notification';
-                    button.disabled = false;
+                    Working.stop(button);
                 }, 2000);
             } catch {
                 button.textContent = 'Failed';
-                button.disabled = false;
+                Working.stop(button);
             }
         });
     }

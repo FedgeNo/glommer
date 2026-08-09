@@ -1,6 +1,7 @@
 // WelcomeBanner.js
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Closing the welcome on the home feed.
@@ -20,7 +21,7 @@ export class WelcomeBanner {
         if (!dismiss) return;
 
         dismiss.addEventListener('click', async () => {
-            dismiss.disabled = true;
+            Working.start(dismiss);
 
             if (forGood?.checked) {
                 const result = await Api.post('/api/dismiss-welcome', { forGood: true });
@@ -28,7 +29,7 @@ export class WelcomeBanner {
                 // Left standing when the server would not record it, rather
                 // than vanishing on a promise it did not make.
                 if (!result) {
-                    dismiss.disabled = false;
+                    Working.stop(dismiss);
 
                     return;
                 }

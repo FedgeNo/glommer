@@ -3,6 +3,7 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Client-side mirror of the PHP BannedUser class - one entry on the admin
@@ -52,13 +53,13 @@ export class BannedUser extends User {
 
     static async #unban(button) {
         if (!await Dialog.confirm('Unban this user? Their content and login work again.')) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/unban', { userId: button.dataset.userId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.BannedUser'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

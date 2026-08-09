@@ -3,6 +3,7 @@ import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * The one button that turns browser push on or off for this device. Whether
@@ -17,6 +18,7 @@ export class PushNotificationSetting {
 
         // A browser without service workers or push simply can't offer this.
         if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            // Nothing to wait for - this browser will never offer it.
             button.disabled = true;
             button.textContent = 'Push isn\'t supported in this browser';
             return;
@@ -28,7 +30,7 @@ export class PushNotificationSetting {
         PushNotificationSetting.#reflect(button, existing !== null);
 
         button.addEventListener('click', async () => {
-            button.disabled = true;
+            Working.start(button);
 
             try {
                 const subscription = await registration.pushManager.getSubscription();
@@ -41,7 +43,7 @@ export class PushNotificationSetting {
                     PushNotificationSetting.#reflect(button, made);
                 }
             } finally {
-                button.disabled = false;
+                Working.stop(button);
             }
         });
     }

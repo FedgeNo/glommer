@@ -6,6 +6,7 @@ import { Toast } from '/scripts/Toast.js';
 import { list_in, list_item } from '/scripts/utils.js';
 import { EmojiPicker } from '/scripts/EmojiPicker.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class MessageComposer {
     static init() {
@@ -73,7 +74,7 @@ export class MessageComposer {
                 payload.body = body_input.value;
             }
 
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             try {
                 const result = await Api.post('/api/send-message', payload);
@@ -89,7 +90,7 @@ export class MessageComposer {
                 body_input.value = '';
                 window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
             } finally {
-                submit_button.disabled = false;
+                Working.stop(submit_button);
             }
         });
     }

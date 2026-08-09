@@ -8,6 +8,7 @@ import { Post } from '/scripts/Post.js';
 import { User } from '/scripts/User.js';
 import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Client-side mirror of the PHP ReportCard (src/classes/ReportCard.php) - the
@@ -196,36 +197,36 @@ export class ReportCard {
     }
 
     static async #classifyContent(button) {
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/classify-reported-content', { reportId: button.dataset.reportId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.ReportCard'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #dismiss(button) {
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/dismiss-report', { reportId: button.dataset.reportId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.ReportCard'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
     static async #deleteContent(button) {
         if (!await Dialog.confirm('Delete this content permanently? Deleting a post also removes all its replies.')) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/delete-reported-content', { reportId: button.dataset.reportId });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.ReportCard'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

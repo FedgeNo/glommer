@@ -2,6 +2,7 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class TrendingEntity {
     static init() {
@@ -27,13 +28,13 @@ export class TrendingEntity {
             { confirmLabel: 'Ban', placeholder: 'Reason for ban (required)' }
         );
         if (reason === null) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/ban-trending-entity', { entityType, entityValue, reason });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.TrendingEntityChip'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 
@@ -41,13 +42,13 @@ export class TrendingEntity {
         const entityType = button.dataset.entityType;
         const entityValue = button.dataset.entityValue;
         if (!await Dialog.confirm(`Unban "${entityValue}"? It will be able to trend again.`)) return;
-        button.disabled = true;
+        Working.start(button);
         try {
             const result = await Api.post('/api/unban-trending-entity', { entityType, entityValue });
             if (!result) return;
             DOMUtils.slideOut(button.closest('.BannedTrendingEntity'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

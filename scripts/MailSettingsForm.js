@@ -2,6 +2,7 @@
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class MailSettingsForm {
     static init() {
@@ -10,7 +11,7 @@ export class MailSettingsForm {
             if (!form) return;
             event.preventDefault();
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
             const data = await Api.post('/api/mail-settings', {
                 mailFromAddress: form.querySelector('[name="mailFromAddress"]').value,
                 mailFromName: form.querySelector('[name="mailFromName"]').value,
@@ -20,7 +21,7 @@ export class MailSettingsForm {
                 smtpPassword: form.querySelector('[name="smtpPassword"]').value,
                 smtpEncryption: form.querySelector('[name="smtpEncryption"]').value,
             });
-            submit_button.disabled = false;
+            Working.stop(submit_button);
             if (data) Toast.show('Settings saved.');
         });
     }

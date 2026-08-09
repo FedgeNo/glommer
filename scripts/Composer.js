@@ -9,6 +9,7 @@ import { Api } from '/scripts/Api.js';
 import { EmojiPicker } from '/scripts/EmojiPicker.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
+import { Working } from '/scripts/Working.js';
 
 export class Composer {
     static PLACEHOLDER = "What's on your mind?";
@@ -607,9 +608,9 @@ export class Composer {
 
         // Whichever button set this going - Save Draft on a fresh composer,
         // the submit button on one holding a draft already.
-        if (this.draftButton) this.draftButton.disabled = true;
-        if (this.submitButton) this.submitButton.disabled = true;
-        this.scheduleButton.disabled = true;
+        if (this.draftButton) Working.start(this.draftButton);
+        if (this.submitButton) Working.start(this.submitButton);
+        Working.start(this.scheduleButton);
 
         try {
             const staged = {
@@ -648,11 +649,16 @@ export class Composer {
             if (this.locationButton) this.#setLocation(null, null);
             this.#syncFields();
         } finally {
-            if (this.draftButton) this.draftButton.disabled = false;
+            if (this.draftButton) Working.stop(this.draftButton);
+            // Hands the submit button back before the rule below decides
+            // whether it should be usable: syncSubmitState sets .disabled
+            // straight, so leaving this out would clear the disabling and
+            // leave the button pulsing at nothing.
+            Working.stop(this.submitButton);
             // Re-imposes the content rule: after a successful save the form
             // is empty again, and an empty form offers no live Save Draft.
             this.#syncSubmitState();
-            this.scheduleButton.disabled = false;
+            Working.stop(this.scheduleButton);
         }
     }
 
@@ -1026,7 +1032,7 @@ export class Composer {
             return;
         }
 
-        this.locationButton.disabled = true;
+        Working.start(this.locationButton);
         ToggleButton.select(this.locationButton, 'Locating…');
 
         navigator.geolocation.getCurrentPosition(
@@ -1043,7 +1049,7 @@ export class Composer {
         const active = latitude !== null && longitude !== null;
         this.latitudeInput.value = active ? latitude : '';
         this.longitudeInput.value = active ? longitude : '';
-        this.locationButton.disabled = false;
+        Working.stop(this.locationButton);
         ToggleButton.select(this.locationButton, active ? 'Remove Location' : 'Add Location');
         this.locationButton.classList.toggle('Removing', active);
 
@@ -1094,7 +1100,7 @@ export class Composer {
      * spelling, since *x* and _x_ are one thing and only one can be written.
      */
     async #toggleMarkdownMode() {
-        this.markdownButton.disabled = true;
+        Working.start(this.markdownButton);
 
         try {
             if (this.markdownMode) {
@@ -1115,7 +1121,7 @@ export class Composer {
                 this.markdownInput.value = markdown;
             }
         } finally {
-            this.markdownButton.disabled = false;
+            Working.stop(this.markdownButton);
         }
 
         this.markdownMode = !this.markdownMode;
@@ -1166,7 +1172,7 @@ export class Composer {
             this.descriptionInput.value = JSON.stringify(this.#quill.getContents());
         }
 
-        this.submitButton.disabled = true;
+        Working.start(this.submitButton);
         this.progressBar.value = 0;
         this.progressBar.classList.add('Active');
 
@@ -1179,7 +1185,7 @@ export class Composer {
         });
 
         xhr.addEventListener('loadend', () => {
-            this.submitButton.disabled = false;
+            Working.stop(this.submitButton);
             this.progressBar.classList.remove('Active');
             this.progressBar.value = 0;
 

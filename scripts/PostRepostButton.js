@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * Passing a post on. The button carries its own state and count, so it flips in
@@ -32,7 +33,7 @@ export class PostRepostButton {
 
         if (!postId) return;
 
-        button.disabled = true;
+        Working.start(button);
 
         try {
             const result = await Api.post('/api/repost', { postId: Number(postId) });
@@ -45,7 +46,7 @@ export class PostRepostButton {
             button.setAttribute('aria-label', result.reposted ? 'Undo repost' : 'Repost');
             button.setAttribute('title', result.reposted ? 'Undo repost' : 'Repost');
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

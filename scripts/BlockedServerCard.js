@@ -5,6 +5,7 @@ import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
 import { list_in, list_item } from '/scripts/utils.js';
+import { Working } from '/scripts/Working.js';
 
 /**
  * The moderation page for shutting out whole servers: the form that adds one
@@ -47,7 +48,7 @@ export class BlockedServerCard {
         if (!confirmed) return;
 
         const submit = form.querySelector('button[type="submit"]');
-        submit.disabled = true;
+        Working.start(submit);
 
         try {
             const result = await Api.post('/api/block-server', { domain, reason });
@@ -67,7 +68,7 @@ export class BlockedServerCard {
             form.querySelector('[name="domain"]').value = '';
             form.querySelector('[name="reason"]').value = '';
         } finally {
-            submit.disabled = false;
+            Working.stop(submit);
         }
     }
 
@@ -117,7 +118,7 @@ export class BlockedServerCard {
             return;
         }
 
-        button.disabled = true;
+        Working.start(button);
 
         try {
             const result = await Api.post('/api/unblock-server', { domain });
@@ -127,7 +128,7 @@ export class BlockedServerCard {
             Toast.show(`${domain} unblocked.`);
             DOMUtils.slideOut(button.closest('.BlockedServerCard'));
         } finally {
-            button.disabled = false;
+            Working.stop(button);
         }
     }
 }

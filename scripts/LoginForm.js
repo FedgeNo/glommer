@@ -2,6 +2,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Working } from '/scripts/Working.js';
 
 export class LoginForm {
     static #recaptchaLoading = null;
@@ -13,7 +14,7 @@ export class LoginForm {
             event.preventDefault();
 
             const submit_button = form.querySelector('button[type="submit"]');
-            submit_button.disabled = true;
+            Working.start(submit_button);
 
             const captcha_input = form.querySelector('[name="cf-turnstile-response"]');
             const recaptcha_token = form.recaptchaWidgetId !== undefined && window.grecaptcha
@@ -30,13 +31,13 @@ export class LoginForm {
 
             if (!data) {
                 LoginForm.#resetRecaptcha(form);
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 return;
             }
 
             if (data.recaptchaRequired) {
                 LoginForm.#showRecaptcha(form, data.recaptchaSiteKey);
-                submit_button.disabled = false;
+                Working.stop(submit_button);
                 return;
             }
 

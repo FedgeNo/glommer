@@ -17,6 +17,7 @@ class RSSItem extends XMLObject
     public ?string $authorSlug = null;
     public ?string $title = null;
     public ?string $description = null;
+    public ?string $contentWarning = null;
     public ?string $createdAt = null;
 
     public string $link;
@@ -32,10 +33,15 @@ class RSSItem extends XMLObject
 
     public function toDOM(): \DOMElement
     {
+        // A reader has no gate to put a warned post behind, so it carries its
+        // warning in place of the writing rather than handing the whole thing
+        // to whoever subscribed.
+        $warned = (string) $this -> contentWarning !== '';
+
         foreach ([
             'title' => $this -> displayTitle(),
             'link' => $this -> link,
-            'description' => (string) $this -> description,
+            'description' => $warned ? (string) $this -> contentWarning : (string) $this -> description,
             'pubDate' => $this -> pubDate,
         ] as $tag => $text) {
             $element = new XMLObject();
@@ -60,6 +66,12 @@ class RSSItem extends XMLObject
      */
     private function displayTitle(): string
     {
+        // Ahead of the title, which sits behind the gate on the page as much
+        // as the body does.
+        if ((string) $this -> contentWarning !== '') {
+            return (string) $this -> contentWarning;
+        }
+
         if ($this -> title !== null) {
             return $this -> title;
         }

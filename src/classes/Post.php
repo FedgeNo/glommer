@@ -390,6 +390,13 @@ class Post extends Article
      */
     public function shortDescription(): string
     {
+        // Same rule as pageTitle(): this summarises the post for places that
+        // cannot gate it - structured data, a share card - so a warned post
+        // offers its warning instead of the writing it covers.
+        if ((string) $this -> contentWarning !== '') {
+            return (string) $this -> contentWarning;
+        }
+
         $text = $this -> plainTextDescription();
 
         if (mb_strlen($text) <= self::DESCRIPTION_SUMMARY_MAX_LENGTH) {
@@ -422,6 +429,16 @@ class Post extends Article
      */
     public function pageTitle(): string
     {
+        // A warned post names itself by its warning, and does so before
+        // anything else - including its own title, which sits behind the gate
+        // on the page like the rest of the body. The title is printed in the
+        // tab, in the heading above the post, and on every card a share
+        // produces, none of which have a gate to sit behind; taking it from
+        // the writing would publish the words the warning exists to withhold.
+        if ((string) $this -> contentWarning !== '') {
+            return (string) $this -> contentWarning;
+        }
+
         if ((string) $this -> title !== '') {
             return (string) $this -> title;
         }

@@ -27,6 +27,8 @@ function mounted() {
         form,
         link: form.querySelector('[name="linkURL"]'),
         file: form.querySelector('.ComposerFileInput'),
+        // The label standing in for the input, which is what shows and hides.
+        filePicker: form.querySelector('.ComposerFilePicker'),
         poll: form.querySelector('.ComposerPollButton'),
         sensitive: form.querySelector('.SensitiveMediaToggle'),
         sensitiveBox: form.querySelector('[name="sensitive"]'),
@@ -106,7 +108,7 @@ export default {
             const composer = mounted();
 
             TestCase.assertFalse(hidden(composer.link));
-            TestCase.assertFalse(hidden(composer.file));
+            TestCase.assertFalse(hidden(composer.filePicker));
             TestCase.assertFalse(hidden(composer.poll));
 
             composer.remove();
@@ -118,7 +120,7 @@ export default {
             composer.link.value = 'https://example.com';
             composer.link.dispatchEvent(new window.Event('input'));
 
-            TestCase.assertTrue(hidden(composer.file));
+            TestCase.assertTrue(hidden(composer.filePicker));
             TestCase.assertTrue(hidden(composer.poll));
 
             composer.remove();
@@ -132,7 +134,7 @@ export default {
             composer.link.value = '';
             composer.link.dispatchEvent(new window.Event('input'));
 
-            TestCase.assertFalse(hidden(composer.file));
+            TestCase.assertFalse(hidden(composer.filePicker));
             TestCase.assertFalse(hidden(composer.poll));
 
             composer.remove();
@@ -148,7 +150,7 @@ export default {
             // third file joins the two.
             const rows = composer.form.querySelectorAll('.ComposerAttachment');
             TestCase.assertEquals(2, rows.length);
-            TestCase.assertFalse(hidden(composer.file));
+            TestCase.assertFalse(hidden(composer.filePicker));
             TestCase.assertFalse(hidden(remove));
 
             // A second pick adds rather than replaces.
@@ -365,7 +367,7 @@ export default {
             composer.poll.click();
 
             TestCase.assertTrue(hidden(composer.link));
-            TestCase.assertTrue(hidden(composer.file));
+            TestCase.assertTrue(hidden(composer.filePicker));
 
             composer.remove();
         },
@@ -395,7 +397,7 @@ export default {
             composer.poll.click();
 
             TestCase.assertFalse(hidden(composer.link));
-            TestCase.assertFalse(hidden(composer.file));
+            TestCase.assertFalse(hidden(composer.filePicker));
             // Emptied, because the inputs stay in the form either way - text
             // left behind would attach a poll that had been taken back.
             TestCase.assertEquals('', option.value);

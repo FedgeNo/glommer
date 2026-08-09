@@ -159,6 +159,48 @@ SELECT *
         );
     }
 
+    /**
+     * The title is printed in the tab, in the heading above the post, and on
+     * every card a share produces - none of which have a gate to sit behind.
+     * Derived from the writing, it published the words the warning withheld.
+     */
+    public function testAWarnedPostIsNamedByItsWarningRatherThanItsWords(): void
+    {
+        $post = Post::fromRowWithItems(self::deliver('Spoilers for the finale'));
+
+        $this -> assertSame('Spoilers for the finale', $post -> pageTitle());
+        $this -> assertFalse(str_contains($post -> pageTitle(), 'the spoiler itself'));
+        $this -> assertSame('Spoilers for the finale', $post -> shortDescription());
+    }
+
+    /** Its own title is behind the gate too, so it may not stand in either. */
+    public function testAWarnedPostsOwnTitleDoesNotEscapeEither(): void
+    {
+        $post = Post::fromRowWithItems(self::deliver('Spoilers'));
+
+        DB::run('
+UPDATE `Posts`
+    SET `title` = ?
+    WHERE `postId` = ?
+', 'si', 'Who dies at the end', (int) $post -> postId);
+
+        $reloaded = Post::fromRowWithItems(DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', (int) $post -> postId));
+
+        $this -> assertSame('Spoilers', $reloaded -> pageTitle());
+    }
+
+    /** An unwarned post still names itself the way it always did. */
+    public function testAnUnwarnedPostIsStillNamedByItsWords(): void
+    {
+        $post = Post::fromRowWithItems(self::deliver(null));
+
+        $this -> assertTrue(str_contains($post -> pageTitle(), 'the spoiler itself'));
+    }
+
     /** And a post with no warning is not put behind an empty one. */
     public function testAPostWithNoWarningHasNoGate(): void
     {

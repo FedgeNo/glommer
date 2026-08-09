@@ -99,6 +99,8 @@ export class Composer {
         this.titleInput   = form.querySelector('[name="title"]');
         this.linkInput    = form.querySelector('[name="linkURL"]');
         this.fileInput    = form.querySelector('.ComposerFileInput');
+        // What is shown and hidden, since the input itself is out of sight.
+        this.filePicker   = form.querySelector('.ComposerFilePicker');
         this.descriptionInput = form.querySelector('.DescriptionInput');
         this.markdownInput  = form.querySelector('.MarkdownInput');
         this.markdownButton = form.querySelector('.MarkdownModeButton');
@@ -324,13 +326,26 @@ export class Composer {
         // the emptied picker in the form data as a file of its own - one more
         // files[] slot than there are alt texts, which the server reads as a
         // pairing it cannot trust and refuses.
+        // The picker's own button reads "Browse..." and that text belongs to
+        // the browser - no attribute changes it. So the input is hidden and a
+        // label stands in: clicking a label opens the file input it wraps with
+        // no script at all, and the input keeps its place in the tab order, so
+        // nothing about the keyboard path changes.
+        const filePicker = document.createElement('label');
+        filePicker.className = 'Button ComposerFilePicker';
+        filePicker.appendWithSpace(document.createTextNode('Add Files'));
+
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.className = 'ComposerFileInput';
+        fileInput.className = 'ComposerFileInput visually-hidden';
         fileInput.multiple = true;
         fileInput.accept = 'image/*,video/*,audio/*';
-        fileInput.setAttribute('aria-label', 'Attach images, video, or audio');
-        actions.appendWithSpace(fileInput);
+        // Contains the words on the button, so what is announced and what is
+        // read are the same control rather than two names for one thing.
+        fileInput.setAttribute('aria-label', 'Add Files - images, video, or audio');
+        filePicker.appendWithSpace(fileInput);
+
+        actions.appendWithSpace(filePicker);
 
         // Marks the post as something to opt into. A real checkbox, so it rides
         // along in the form's own FormData and there is no toggle state to keep
@@ -770,7 +785,7 @@ export class Composer {
         // the attachment rows carry their own removal. It goes away while the
         // schedule clock is out (and Add Poll with it): a scheduled post can't
         // carry either, and choosing one must never silently eat the other.
-        Composer.#toggle(this.fileInput, !hasLink && !hasPoll && !scheduling);
+        Composer.#toggle(this.filePicker, !hasLink && !hasPoll && !scheduling);
         Composer.#toggle(this.pollButton, !hasLink && !hasFiles && !scheduling);
 
         // The warning follows the checkbox rather than the attachments: it is

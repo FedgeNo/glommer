@@ -25,7 +25,7 @@ class UserRSSFeed extends RSSFeed
         $user_id = (int) $this -> user -> userId;
 
         return DB::rows('
-SELECT `Posts`.`postId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`createdAt`, `Users`.`slug` AS `authorSlug`
+SELECT `Posts`.`postId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`contentWarning`, `Posts`.`createdAt`, `Users`.`slug` AS `authorSlug`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Posts`.`userId` = ?

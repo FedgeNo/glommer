@@ -30,7 +30,7 @@ class SiteRSSFeed extends RSSFeed
         $not_banned = 0;
 
         return DB::rows('
-SELECT STRAIGHT_JOIN `Posts`.`postId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`createdAt`, `Users`.`slug` AS `authorSlug`
+SELECT STRAIGHT_JOIN `Posts`.`postId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`contentWarning`, `Posts`.`createdAt`, `Users`.`slug` AS `authorSlug`
     FROM `Posts` FORCE INDEX (`parentId_remoteObjectURI_postId`)
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL

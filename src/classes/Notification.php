@@ -58,27 +58,30 @@ class Notification extends Article
     }
 
     /**
-     * What to call whoever did this.
+     * What to call whoever did this: their name and always their username too.
      *
-     * An account from another server is named by its whole handle rather than
-     * its display name, which is neither unique nor its own: two servers can
-     * each have a Chris, and "Chris boosted your post" leaves the reader
-     * unable to tell which one - or whether it was somebody here at all. The
-     * handle answers all of that in the same space.
+     * A display name alone is neither unique nor the account's own - two
+     * servers can each have a Chris, and anyone can set their name to somebody
+     * else's - so a notification carrying only that leaves the reader unable
+     * to tell who acted, which is the one thing it exists to say. The username
+     * is the part nobody else can take.
      *
-     * A local username cannot contain an @ (User::normaliseUsername keeps only
-     * a-z, 0-9 and _), so carrying one is what makes a shadow row a shadow row
-     * and there is nothing else to check.
+     * A username is written with its @ wherever it is shown, the same as on a
+     * profile (User::identityInfo); only the URL goes without one. For an
+     * account from elsewhere the slug already carries the host, so the same
+     * rule prints the whole handle with no special case.
      */
     public static function nameFor(?string $display_name, ?string $slug): string
     {
-        $handle = (string) $slug;
+        $handle = '@' . (string) $slug;
+        $name = (string) $display_name;
 
-        if (str_contains($handle, '@')) {
-            return '@' . $handle;
+        // Nothing to pair it with, or the pair would say one thing twice.
+        if ($name === '' || $name === (string) $slug) {
+            return $handle;
         }
 
-        return (string) $display_name !== '' ? (string) $display_name : $handle;
+        return $name . ' (' . $handle . ')';
     }
 
     protected function text(): string

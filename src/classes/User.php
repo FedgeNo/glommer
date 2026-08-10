@@ -63,6 +63,10 @@ class User extends Div implements \JsonSerializable
     public int $sessionVersion = 0;
     public ?string $remoteActorURI = null;
     public ?string $remoteActorPublicKeyPem = null;
+    // What kind of account the far side says this is - Person for somebody
+    // typing, Service for a bot. Null on a row recorded before it was kept,
+    // which is a different answer from "not a bot" and is read as such.
+    public ?string $remoteActorType = null;
 
     /**
      * Who this user currently has a message thread open with, and when they

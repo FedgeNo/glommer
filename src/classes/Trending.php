@@ -142,33 +142,56 @@ SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
      * entirely) is deleted after - not a blind TRUNCATE-then-insert, so a
      * reader never sees a momentarily-empty table.
      */
-    public static function recompute(): void
+    /**
+     * The recent window of top-level posts the extractor reads: just the
+     * deltas and authors it and the per-user counting need, not a display
+     * feed. STRAIGHT_JOIN for the same reason as FeedList's global query -
+     * driving from Posts walks parentId_postId backward and stops at the
+     * window size, instead of collecting and filesorting every author's
+     * top-level posts.
+     *
+     * Posts from elsewhere count. This asks what is being talked about where
+     * this server can hear it, which is a different question from how big this
+     * site is - the member and post counters exclude remote rows precisely
+     * because they answer that second question, and a relay's shadow accounts
+     * would make an eight-person site look like thousands. Here they are the
+     * conversation. On a server carrying a relay they are nearly all of it,
+     * and excluding them left the extractor reading a few dozen posts and
+     * nothing ever qualifying.
+     *
+     * Bots do not. Two thirds of the volume reaching a server carrying a relay
+     * is automated - transit boards, weather stations, release feeds, bird
+     * detectors - each writing the same shape of line hundreds of times a day.
+     * The extractor reads their station names and street names as topics,
+     * correctly, and not one of them is a thing anybody is discussing. They
+     * say what they are: Mastodon's "this is a bot account" publishes Service.
+     *
+     * Asked as "is not automated" rather than "is a Person", so an account
+     * whose type nobody has fetched yet stays in rather than falling out of
+     * the corpus while the backfill catches up.
+     *
+     * @return Post[]
+     */
+    private static function corpus(): array
     {
         $not_banned = 0;
+        $automated = RemoteActor::AUTOMATED_TYPES;
+        $placeholders = implode(', ', array_fill(0, count($automated), '?'));
 
-        // The recent window of top-level posts by non-banned authors, scored
-        // for trending entities. Not a display feed - just the deltas and
-        // authors the extractor and per-user counting need. STRAIGHT_JOIN for
-        // the same reason as FeedList's global query: driving from Posts walks
-        // parentId_postId backward and stops at the window size, instead of
-        // collecting and filesorting every author's top-level posts.
-        //
-        // Posts from elsewhere count. This asks what is being talked about
-        // where this server can hear it, which is a different question from
-        // how big this site is - the member and post counters exclude remote
-        // rows precisely because they answer that second question, and a
-        // relay's shadow accounts would make an eight-person site look like
-        // thousands. Here they are the conversation. On a server carrying a
-        // relay they are nearly all of it, and excluding them left the
-        // extractor reading a few dozen posts and nothing ever qualifying.
-        $rows = DB::rows('
+        return DB::rows('
 SELECT STRAIGHT_JOIN `Posts`.*
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?
+      AND (`Users`.`remoteActorType` IS NULL OR `Users`.`remoteActorType` NOT IN (' . $placeholders . '))
     ORDER BY `Posts`.`postId` DESC
     LIMIT ?
-', 'Post', 'ii', $not_banned, self::WINDOW_SIZE);
+', 'Post', 'i' . str_repeat('s', count($automated)) . 'i', $not_banned, ...[...$automated, self::WINDOW_SIZE]);
+    }
+
+    public static function recompute(): void
+    {
+        $rows = self::corpus();
 
         $banned = self::bannedKeys();
 

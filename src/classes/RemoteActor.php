@@ -23,7 +23,18 @@ class RemoteActor
     /** Far above any real RSA/Ed25519 PEM, and well inside the TEXT column that holds it. */
     private const MAX_PUBLIC_KEY_LENGTH = 8192;
 
-    /** @return array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string, alsoKnownAs: string[]}|null */
+    /**
+     * The actor types that mean nobody is typing.
+     *
+     * Self-declared, and standard: Mastodon's "this is a bot account"
+     * checkbox publishes Service rather than Person, and every implementation
+     * that has the idea spells it the same way. Application is an instance
+     * speaking as itself. Taken at its word - claiming to be a bot gains
+     * nobody anything, and nothing here rests on it but what trending reads.
+     */
+    public const AUTOMATED_TYPES = ['Service', 'Application'];
+
+    /** @return array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string, alsoKnownAs: string[], actorType: ?string}|null */
     public static function fetch(string $actor_uri): ?array
     {
         // Signed: an instance in secure mode will not hand over an actor to an
@@ -100,6 +111,7 @@ class RemoteActor
             'preferredUsername' => mb_substr($preferred_username, 0, self::MAX_DISPLAY_NAME_LENGTH),
             'name' => mb_substr($name, 0, self::MAX_DISPLAY_NAME_LENGTH),
             'iconURL' => $icon_url,
+            'actorType' => is_string($data['type'] ?? null) ? mb_substr($data['type'], 0, 20) : null,
         ];
     }
 
@@ -179,13 +191,6 @@ class RemoteActor
     }
 
     /**
-     * Writes a fetched actor into the shadow row that represents them here,
-     * creating it the first time. The inbox URLs are stored so publishing does
-     * not have to dereference the actor again for every post.
-     *
-     * @param array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string} $actor
-     */
-    /**
      * Re-reads the shadow accounts this server holds that are missing the
      * inbox a message would be delivered to, and fills it in.
      *
@@ -230,18 +235,66 @@ SELECT `remoteActorURI`
         return ['repaired' => $repaired, 'failed' => $failed];
     }
 
+    /** How many actors one backfill pass reads. A trickle, not a crawl of the network. */
+    private const TYPES_PER_PASS = 20;
+
+    /**
+     * Fills in what kind of account a shadow row is, for the rows recorded
+     * before that was kept.
+     *
+     * One signed fetch per account and several hundred accounts to get
+     * through, so it runs a handful at a time from the federation worker
+     * rather than all at once from anywhere: the point of knowing is to keep
+     * bots out of trending, and trending recomputes on a timer, so there is
+     * nothing waiting on this finishing quickly.
+     *
+     * A fetch that fails leaves the row null and it will be tried again on a
+     * later pass. That is the right way round - an account this server cannot
+     * currently read stays in the corpus rather than being guessed at.
+     *
+     * @return int how many were filled in
+     */
+    public static function backfillMissingTypes(): int
+    {
+        $unknown = DB::rows('
+SELECT `remoteActorURI`
+    FROM `Users`
+    WHERE `remoteActorURI` IS NOT NULL AND `remoteActorType` IS NULL
+    LIMIT ?
+', 'User', 'i', self::TYPES_PER_PASS);
+
+        $filled = 0;
+
+        foreach ($unknown as $shadow) {
+            if (self::refresh((string) $shadow -> remoteActorURI) !== null) {
+                $filled++;
+            }
+        }
+
+        return $filled;
+    }
+
+    /**
+     * Writes a fetched actor into the shadow row that represents them here,
+     * creating it the first time. The inbox URLs are stored so publishing does
+     * not have to dereference the actor again for every post.
+     *
+     * @param array{id: string, inbox: string, sharedInbox: ?string, publicKeyPem: string, preferredUsername: string, name: string, iconURL: ?string, actorType: ?string} $actor
+     */
     public static function upsert(array $actor): void
     {
         $existing = User::byRemoteActorURI($actor['id']);
 
         $display_name = $actor['name'] !== '' ? $actor['name'] : $actor['preferredUsername'];
 
+        $actor_type = $actor['actorType'] ?? null;
+
         if ($existing !== null) {
             DB::run('
 UPDATE `Users`
-    SET `title` = ?, `remoteActorPublicKeyPem` = ?, `remoteActorInboxURL` = ?, `remoteActorSharedInboxURL` = ?
+    SET `title` = ?, `remoteActorPublicKeyPem` = ?, `remoteActorInboxURL` = ?, `remoteActorSharedInboxURL` = ?, `remoteActorType` = ?
     WHERE `userId` = ?
-', 'ssssi', $display_name, $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $existing -> userId);
+', 'sssssi', $display_name, $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $actor_type, $existing -> userId);
 
             return;
         }
@@ -254,9 +307,9 @@ UPDATE `Users`
         $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
 
         DB::run('
-INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`, `remoteActorPublicKeyPem`, `remoteActorInboxURL`, `remoteActorSharedInboxURL`, `verified`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'ssssssssi', $slug, $synthetic_email, $unusable_hash, $display_name, $actor['id'], $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], 1);
+INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`, `remoteActorPublicKeyPem`, `remoteActorInboxURL`, `remoteActorSharedInboxURL`, `remoteActorType`, `verified`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'sssssssssi', $slug, $synthetic_email, $unusable_hash, $display_name, $actor['id'], $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $actor_type, 1);
     }
 
     /**

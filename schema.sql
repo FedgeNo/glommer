@@ -63,6 +63,16 @@ CREATE TABLE `Users` (
   `remoteActorPublicKeyPem` text DEFAULT NULL,
   `remoteActorInboxURL` varchar(255) DEFAULT NULL,
   `remoteActorSharedInboxURL` varchar(255) DEFAULT NULL,
+  -- What the account says it is: Person for somebody typing, Service for a
+  -- bot. Self-declared and standard - Mastodon's "this is a bot account"
+  -- checkbox publishes Service - and taken at its word, since nobody has a
+  -- reason to claim to be a bot and it is not load-bearing for anything but
+  -- what trending reads.
+  --
+  -- Null on a row recorded before the actor's type was kept, which is why the
+  -- trending query asks for what is NOT a bot rather than what is a person: an
+  -- account nobody has fetched again yet must not vanish out of the corpus.
+  `remoteActorType` varchar(20) DEFAULT NULL,
   `actorPublicKeyPem` text DEFAULT NULL,
   `actorEncryptedPrivateKey` text DEFAULT NULL,
   `movedToURI` varchar(255) DEFAULT NULL,

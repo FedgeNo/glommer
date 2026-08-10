@@ -118,6 +118,10 @@ while ($running) {
             RelayRetention::sweep();
             Statistic::prune();
             FediverseDeliveryRefusal::prune();
+            // A few accounts per sweep until every shadow row says what kind
+            // of account it is. Nothing waits on it: trending simply keeps
+            // reading the bots it cannot yet recognise until it can.
+            RemoteActor::backfillMissingTypes();
         } catch (\Throwable $exception) {
             error_log('Relay retention sweep failed: ' . $exception -> getMessage());
         }

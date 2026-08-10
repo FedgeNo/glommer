@@ -18,8 +18,19 @@ export class Notification {
         return notification;
     }
 
+    /**
+     * Mirrors Notification::nameFor - an account from another server is named
+     * by its whole handle, since a display name is neither unique nor its own
+     * and a local username can never contain an @.
+     */
     actorName() {
-        return this.actor.title || this.actor.slug;
+        const handle = this.actor.slug || '';
+
+        if (handle.includes('@')) {
+            return '@' + handle;
+        }
+
+        return this.actor.title || handle;
     }
 
     text() {

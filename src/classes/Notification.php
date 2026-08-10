@@ -54,7 +54,31 @@ class Notification extends Article
 
     protected function actorName(): string
     {
-        return $this -> actorDisplayName ?? $this -> actorUsername;
+        return self::nameFor($this -> actorDisplayName, $this -> actorUsername);
+    }
+
+    /**
+     * What to call whoever did this.
+     *
+     * An account from another server is named by its whole handle rather than
+     * its display name, which is neither unique nor its own: two servers can
+     * each have a Chris, and "Chris boosted your post" leaves the reader
+     * unable to tell which one - or whether it was somebody here at all. The
+     * handle answers all of that in the same space.
+     *
+     * A local username cannot contain an @ (User::normaliseUsername keeps only
+     * a-z, 0-9 and _), so carrying one is what makes a shadow row a shadow row
+     * and there is nothing else to check.
+     */
+    public static function nameFor(?string $display_name, ?string $slug): string
+    {
+        $handle = (string) $slug;
+
+        if (str_contains($handle, '@')) {
+            return '@' . $handle;
+        }
+
+        return (string) $display_name !== '' ? (string) $display_name : $handle;
     }
 
     protected function text(): string
@@ -210,7 +234,7 @@ INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
         // notifications page, which carries the full context.
         WebPush::enqueueFor(
             $user_id,
-            self::textFor($type, (string) ($actor ?-> title ?: $actor ?-> slug)),
+            self::textFor($type, self::nameFor($actor ?-> title, $actor ?-> slug)),
             $type === 'message' && $actor !== null
                 ? ServerURL::absolute('/messages/' . $actor -> slug)
                 : ServerURL::absolute('/notifications')

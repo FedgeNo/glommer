@@ -106,6 +106,37 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`, `remoteObjectU
         $this -> assertTrue(in_array($local, self::corpusIds(), true));
     }
 
+    /**
+     * The backfill has to get past accounts it cannot read.
+     *
+     * Shadow rows arrive from a relay in host order, so deleted accounts
+     * cluster - one instance answering 410 Gone for a hundred of them would
+     * sit at the head of an unordered queue and be handed back every pass,
+     * and nothing behind it would ever be read.
+     */
+    public function testTheBackfillDoesNotKeepAskingForTheSameAccounts(): void
+    {
+        for ($i = 0; $i < 40; $i++) {
+            self::shadow(null);
+        }
+
+        $choose = new \ReflectionMethod(RemoteActor::class, 'unknownTypeURIs');
+        $choose -> setAccessible(true);
+
+        $seen = [];
+
+        for ($pass = 0; $pass < 6; $pass++) {
+            foreach ($choose -> invoke(null, 10) as $actor_uri) {
+                $seen[$actor_uri] = true;
+            }
+        }
+
+        $this -> assertTrue(
+            count($seen) > 10,
+            'six passes that can only ever hand back the same ten would never drain the queue'
+        );
+    }
+
     /** What the far side calls itself is what gets recorded. */
     public function testTheTypeIsTakenFromTheActorDocument(): void
     {

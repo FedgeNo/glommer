@@ -252,26 +252,45 @@ SELECT `remoteActorURI`
      * later pass. That is the right way round - an account this server cannot
      * currently read stays in the corpus rather than being guessed at.
      *
+     * Picked at random, which is the whole reason this drains. Shadow rows
+     * arrive from a relay in host order, so deleted accounts cluster: an
+     * instance that answers 410 Gone for a hundred of them sits at the head of
+     * an unordered queue and is handed back every pass, and nothing behind it
+     * is ever read. Randomly, a permanently dead host costs the odd fetch
+     * instead of the whole backfill.
+     *
      * @return int how many were filled in
      */
     public static function backfillMissingTypes(): int
     {
-        $unknown = DB::rows('
-SELECT `remoteActorURI`
-    FROM `Users`
-    WHERE `remoteActorURI` IS NOT NULL AND `remoteActorType` IS NULL
-    LIMIT ?
-', 'User', 'i', self::TYPES_PER_PASS);
-
         $filled = 0;
 
-        foreach ($unknown as $shadow) {
-            if (self::refresh((string) $shadow -> remoteActorURI) !== null) {
+        foreach (self::unknownTypeURIs(self::TYPES_PER_PASS) as $actor_uri) {
+            if (self::refresh($actor_uri) !== null) {
                 $filled++;
             }
         }
 
         return $filled;
+    }
+
+    /**
+     * Which accounts to ask about next. Its own method so the choosing can be
+     * tested without the fetching.
+     *
+     * @return string[]
+     */
+    private static function unknownTypeURIs(int $limit): array
+    {
+        $rows = DB::rows('
+SELECT `remoteActorURI`
+    FROM `Users`
+    WHERE `remoteActorURI` IS NOT NULL AND `remoteActorType` IS NULL
+    ORDER BY RAND()
+    LIMIT ?
+', 'User', 'i', $limit);
+
+        return array_map(static fn (User $row): string => (string) $row -> remoteActorURI, $rows);
     }
 
     /**

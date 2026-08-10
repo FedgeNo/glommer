@@ -37,6 +37,7 @@ export class DeltaRenderer {
         let inline = [];      // inline nodes accumulated for the current line
         let list_el = null;   // the <ol>/<ul> currently being filled, or null
         let list_kind = null; // 'ordered' | 'bullet'
+        let pre_el = null;    // the <pre> currently being filled, or null
 
         const formula_node = (source) => {
             // Carries the LaTeX source; render_formulas() renders it via KaTeX
@@ -55,6 +56,8 @@ export class DeltaRenderer {
 
             // List items group consecutive same-kind lines under one <ol>/<ul>.
             if (attrs.list === 'ordered' || attrs.list === 'bullet') {
+                pre_el = null;
+
                 if (list_el === null || list_kind !== attrs.list) {
                     list_el = document.createElement(attrs.list === 'ordered' ? 'ol' : 'ul');
                     list_kind = attrs.list;
@@ -73,13 +76,37 @@ export class DeltaRenderer {
             list_el = null;
             list_kind = null;
 
+            // Mirrors DeltaRenderer.php: a code block is one <pre> however
+            // many lines it runs to. Quill marks each of its lines separately,
+            // the way it marks each list item, so a fresh element per line
+            // turns a script into a stack of one-line boxes.
+            if (attrs['code-block']) {
+                if (pre_el === null) {
+                    pre_el = document.createElement('pre');
+                    root.appendWithSpace(pre_el);
+                } else {
+                    // Between lines rather than after each, so the block does
+                    // not end on a blank line it never had.
+                    pre_el.appendChild(document.createTextNode('\n'));
+                }
+
+                // appendChild, not appendWithSpace: that one puts a space
+                // between adjacent inline elements to keep the markup
+                // readable, which is fine in a paragraph and is an edit to the
+                // code in here.
+                inline.forEach((n) => pre_el.appendChild(n));
+                inline = [];
+
+                return;
+            }
+
+            pre_el = null;
+
             let block;
             if (attrs.header === 1 || attrs.header === 2 || attrs.header === 3) {
                 block = document.createElement('h' + attrs.header);
             } else if (attrs.blockquote) {
                 block = document.createElement('blockquote');
-            } else if (attrs['code-block']) {
-                block = document.createElement('pre');
             } else {
                 block = document.createElement('p');
             }

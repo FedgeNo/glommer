@@ -97,11 +97,14 @@ class DeltaRenderer extends Div
         $inline = [];
         $list_el = null;
         $list_kind = null;
+        $pre_el = null;
 
-        $flush = function (array $attrs) use (&$inline, &$list_el, &$list_kind, $doc, $root): void {
+        $flush = function (array $attrs) use (&$inline, &$list_el, &$list_kind, &$pre_el, $doc, $root): void {
             $list = $attrs['list'] ?? null;
 
             if ($list === 'ordered' || $list === 'bullet') {
+                $pre_el = null;
+
                 if ($list_el === null || $list_kind !== $list) {
                     $list_el = $doc -> createElement($list === 'ordered' ? 'ol' : 'ul');
                     $list_kind = $list;
@@ -124,14 +127,39 @@ class DeltaRenderer extends Div
             $list_el = null;
             $list_kind = null;
 
+            // A code block is one <pre> however many lines it runs to. Quill
+            // marks each line of it separately, the same way it marks each
+            // item of a list, so consecutive marked lines are one block and a
+            // fresh element per line turns a script into a stack of one-line
+            // boxes. Held open like the list above, and closed by the first
+            // line that is not code.
+            if ($attrs['code-block'] ?? false) {
+                if ($pre_el === null) {
+                    $pre_el = $doc -> createElement('pre');
+                    $root -> appendChild($pre_el);
+                } else {
+                    // Between lines rather than after each, so the block does
+                    // not end on a blank line it never had.
+                    $pre_el -> appendChild($doc -> createTextNode("\n"));
+                }
+
+                foreach ($inline as $node) {
+                    $pre_el -> appendChild($node);
+                }
+
+                $inline = [];
+
+                return;
+            }
+
+            $pre_el = null;
+
             $header = $attrs['header'] ?? null;
 
             if ($header === 1 || $header === 2 || $header === 3) {
                 $block = $doc -> createElement('h' . $header);
             } elseif ($attrs['blockquote'] ?? false) {
                 $block = $doc -> createElement('blockquote');
-            } elseif ($attrs['code-block'] ?? false) {
-                $block = $doc -> createElement('pre');
             } else {
                 $block = $doc -> createElement('p');
             }

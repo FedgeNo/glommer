@@ -100,6 +100,79 @@ class DeltaRendererTest extends TestCase
         $this -> assertNotNull($el -> getElementsByTagName('pre') -> item(0));
     }
 
+    /**
+     * Quill marks every line of a code block separately, the way it marks
+     * every item of a list, so a renderer that opens an element per line turns
+     * a script into a stack of one-line boxes.
+     */
+    public function testAMultiLineCodeBlockIsOnePre(): void
+    {
+        $ops = [
+            ['insert' => 'function greet() {'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+            ['insert' => '    return 1;'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+            ['insert' => '}'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+        ];
+
+        $el = (new DeltaRenderer($ops)) -> toDOM();
+        $blocks = $el -> getElementsByTagName('pre');
+
+        $this -> assertSame(1, $blocks -> length);
+        $this -> assertSame("function greet() {\n    return 1;\n}", $blocks -> item(0) -> textContent);
+    }
+
+    /** A blank line inside the block is kept, not collapsed away. */
+    public function testABlankLineInsideACodeBlockSurvives(): void
+    {
+        $ops = [
+            ['insert' => 'one'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+            ['insert' => 'three'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+        ];
+
+        $el = (new DeltaRenderer($ops)) -> toDOM();
+
+        $this -> assertSame("one\n\nthree", $el -> getElementsByTagName('pre') -> item(0) -> textContent);
+    }
+
+    /** Ordinary writing after the block closes it rather than joining it. */
+    public function testWritingAfterACodeBlockIsNotInsideIt(): void
+    {
+        $ops = [
+            ['insert' => 'code();'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+            ['insert' => "and then some words\n"],
+        ];
+
+        $el = (new DeltaRenderer($ops)) -> toDOM();
+
+        $this -> assertSame('code();', $el -> getElementsByTagName('pre') -> item(0) -> textContent);
+        $this -> assertSame('and then some words', $el -> getElementsByTagName('p') -> item(0) -> textContent);
+    }
+
+    /** Two blocks with prose between them stay two blocks. */
+    public function testTwoCodeBlocksSeparatedByWritingStayApart(): void
+    {
+        $ops = [
+            ['insert' => 'first();'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+            ['insert' => "between\n"],
+            ['insert' => 'second();'],
+            ['attributes' => ['code-block' => true], 'insert' => "\n"],
+        ];
+
+        $el = (new DeltaRenderer($ops)) -> toDOM();
+        $blocks = $el -> getElementsByTagName('pre');
+
+        $this -> assertSame(2, $blocks -> length);
+        $this -> assertSame('first();', $blocks -> item(0) -> textContent);
+        $this -> assertSame('second();', $blocks -> item(1) -> textContent);
+    }
+
     public function testOrderedList()
     {
         $ops = [

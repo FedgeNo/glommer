@@ -314,6 +314,33 @@ body:has(.MainNavigation) {
 
 .ScrollToTopButton.Scrolled { display: block; }
 
+/* ---------- Build cost ---------- */
+
+/* Pinned into the corner rather than sitting under the last thing on the
+   page: it is a standing readout for one person, not part of what anybody
+   came to read.
+
+   Only once there is room for it beside the content instead of over it. The
+   column is capped at 40rem and centred, so each gutter is (100vw - 40rem)/2,
+   and this needs its 1rem inset plus its own width - measured at 12.8rem for
+   the longest it goes, "Built in 1234.5 ms, 128 queries.". A 70rem window
+   clears that by 12px, which is real but thinner than the webfont's own
+   variation, so the room starts at 72rem and the clearance is 28px. Narrower
+   than that it stays in the flow, where it can overlap nothing.
+
+   The left corner because the right one is the scroll-to-top button's. The
+   max-width is the backstop: a figure longer than the one measured wraps
+   upward rather than growing into the column. */
+@media (min-width: 72rem) {
+    .PageGenerationTime {
+        position: fixed;
+        left: 1rem;
+        bottom: 1rem;
+        max-width: 13rem;
+        margin: 0;
+    }
+}
+
 /* ---------- Search page visibility toggles ---------- */
 
 .SearchFeedSection { display: none; }

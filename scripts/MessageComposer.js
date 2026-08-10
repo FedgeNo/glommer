@@ -9,10 +9,40 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
 export class MessageComposer {
+    /**
+     * Keeps the page's bottom padding equal to however tall the composer
+     * actually is.
+     *
+     * It is fixed to the bottom of the window, so nothing in the flow knows it
+     * is there and the page has to leave the room by hand. A fixed figure only
+     * holds while the composer is one fixed size, and it is not: the video
+     * call button appears when the other person turns up and adds a row, and
+     * the last messages in the thread end up underneath it.
+     *
+     * Measured rather than counted up from what is in there, so anything else
+     * that ever grows it - a wrapped chip, a taller textarea - is covered
+     * without this needing to know about it.
+     */
+    static #reserveRoomFor(composer) {
+        const measure = () => {
+            document.body.style.setProperty('--composer-height', composer.offsetHeight + 'px');
+        };
+
+        // Once up front, so the room is right whether or not anything below
+        // this is available to watch for changes.
+        measure();
+
+        if (typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(measure).observe(composer);
+        }
+    }
+
     static init() {
         // --- Emoji picker (identical to Composer's wiring) ---
         const messageForm = document.querySelector('.MessageComposer');
         if (messageForm) {
+            MessageComposer.#reserveRoomFor(messageForm);
+
             const emojiWrapper = messageForm.querySelector('.EmojiPicker');
             if (emojiWrapper) {
                 EmojiPicker.setup(emojiWrapper);

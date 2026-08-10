@@ -1099,7 +1099,13 @@ label.visually-hidden { margin-bottom: 0; }
 
 /* ---------- Messages ---------- */
 
-body.MessagesPage { padding-bottom: 9rem; }
+/* The composer is fixed to the bottom of the window, so nothing in the flow
+   knows it is there and the page leaves the room by hand. Measured by
+   MessageComposer.js rather than fixed, because the composer is not one size -
+   the video call button appears when the other person does, and the last
+   messages in the thread ended up underneath it. The fallback is the height it
+   has with nothing extra in it, so the page is right before any script runs. */
+body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 
 .Message {
     position: relative;
@@ -1551,6 +1557,15 @@ body.MessagesPage { padding-bottom: 9rem; }
 
 .SensitiveMediaToggle {
     white-space: nowrap;
+}
+
+/* Sized by its words rather than stretched across the composer, which is a
+   flex column and would otherwise give a rarely-used control the full width
+   and its own row. */
+.VideoCallStartButton {
+    align-self: flex-start;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8125rem;
 }
 
 /* Content warning */

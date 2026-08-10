@@ -361,7 +361,7 @@ export class VideoCall {
         VideoCall.#callButton = document.createElement('button');
         VideoCall.#callButton.type = 'button';
         VideoCall.#callButton.className = 'VideoCallStartButton Button';
-        VideoCall.#callButton.textContent = 'Video call';
+        VideoCall.#callButton.textContent = '📹 Call';
         VideoCall.#composer.appendWithSpace(VideoCall.#callButton);
     }
 

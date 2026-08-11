@@ -2707,6 +2707,109 @@ function ensure_ner_environment(): void
     }
 }
 
+// Where the translator lives. Its own venv rather than sharing the NER one:
+// they have entirely separate compiled stacks underneath (ctranslate2 against
+// thinc), and a shared environment would mean one's upgrade could break the
+// other's models.
+const TRANSLATE_VENV_DIR = '/opt/glommer-translate';
+
+/**
+ * Installs Argos Translate and its language packages into a venv at
+ * TRANSLATE_VENV_DIR, so the Translate button runs on this machine.
+ *
+ * Idempotent, and idempotent per package: re-running installs only what is
+ * missing, which matters because each package is around a hundred megabytes
+ * and there are two per language.
+ *
+ * Same shape as ensure_ner_environment() above, down to the permissions and
+ * the SELinux types - /opt gets none of /var/www's path equivalence, and
+ * ctranslate2 ships relocatable .so files for the same reason numpy does.
+ */
+function ensure_translate_environment(): void
+{
+    heading('Translation environment (running as root)');
+
+    $venv_python = TRANSLATE_VENV_DIR . '/bin/python';
+    $argospm = TRANSLATE_VENV_DIR . '/bin/argospm';
+
+    if (!is_file($venv_python)) {
+        $manager = detected_package_manager();
+
+        if ($manager !== 'dnf' && $manager !== 'yum') {
+            warn('No known package names for this distribution\'s package manager (' . ($manager ?? 'none detected') . ') - install Python 3 (with pip and venv) by hand, create a venv at ' . TRANSLATE_VENV_DIR . ', pip install argostranslate, then re-run.');
+
+            return;
+        }
+
+        $venv_result = run('python3 -m venv :dir 2>&1', ['dir' => TRANSLATE_VENV_DIR]);
+
+        if ($venv_result['exitCode'] !== 0) {
+            warn('Could not create the venv at ' . TRANSLATE_VENV_DIR . ' - create it by hand (python3 -m venv ' . TRANSLATE_VENV_DIR . '), then re-run.', $venv_result);
+
+            return;
+        }
+    }
+
+    if (!is_file($argospm)) {
+        echo "Installing Argos Translate (this can take a few minutes)...\n";
+
+        $pip_result = run(':pip install -U pip wheel argostranslate 2>&1', ['pip' => TRANSLATE_VENV_DIR . '/bin/pip']);
+
+        if ($pip_result['exitCode'] !== 0) {
+            warn('Failed to install argostranslate into ' . TRANSLATE_VENV_DIR . ' - install it by hand (' . TRANSLATE_VENV_DIR . '/bin/pip install argostranslate), then re-run.', $pip_result);
+
+            return;
+        }
+    }
+
+    // The index of what is downloadable, refreshed before anything is asked
+    // for by name - a stale one reports a package missing that exists.
+    run(':argospm update 2>&1', ['argospm' => $argospm]);
+
+    $installed = run(':argospm list 2>/dev/null', ['argospm' => $argospm])['output'];
+    $missing = [];
+
+    foreach (Translator::wantedPackages() as $package) {
+        if (!str_contains($installed, $package)) {
+            $missing[] = $package;
+        }
+    }
+
+    if ($missing === []) {
+        ok('Argos Translate and all ' . count(Translator::wantedPackages()) . ' language packages already installed at ' . TRANSLATE_VENV_DIR);
+    } else {
+        // Around a hundred megabytes each. A pair that fails is reported and
+        // skipped rather than stopping the rest: a language nobody has a
+        // package for should cost that language, not the whole button.
+        foreach ($missing as $package) {
+            echo 'Downloading ' . $package . "...\n";
+            $result = run(':argospm install :package 2>&1', ['argospm' => $argospm, 'package' => $package]);
+
+            if ($result['exitCode'] !== 0) {
+                warn('Could not install ' . $package . ' - that pairing will not be offered. Install it by hand (' . $argospm . ' install ' . $package . ') if it should be.', $result);
+            }
+        }
+
+        ok('Argos Translate installed at ' . TRANSLATE_VENV_DIR);
+    }
+
+    run('find :dir -type d -exec chmod 755 {} \; -o -type f -exec chmod 644 {} \;', ['dir' => TRANSLATE_VENV_DIR]);
+    run('find :dir -type f \( -path "*/bin/*" -o -name "*.so" -o -name "*.so.*" \) -exec chmod 755 {} \;', ['dir' => TRANSLATE_VENV_DIR]);
+
+    ensure_selinux_context(TRANSLATE_VENV_DIR, 'httpd_sys_content_t');
+
+    if (run('command -v getenforce 2>/dev/null')['output'] !== ''
+        && in_array(run('getenforce 2>/dev/null')['output'], ['Enforcing', 'Permissive'], true)
+        && run('command -v semanage 2>/dev/null')['output'] !== ''
+        && run('command -v restorecon 2>/dev/null')['output'] !== '') {
+        $so_pattern = TRANSLATE_VENV_DIR . '(/.*)?\.so(\.[^/]*)*';
+        run('semanage fcontext -a -t textrel_shlib_t :pattern 2>/dev/null || semanage fcontext -m -t textrel_shlib_t :pattern 2>/dev/null', ['pattern' => $so_pattern]);
+        run('restorecon -R :dir 2>&1', ['dir' => TRANSLATE_VENV_DIR]);
+
+        ok('SELinux context set for ' . TRANSLATE_VENV_DIR . '\'s .so files (textrel_shlib_t, persists across relabels)');
+    }
+}
+
 /**
  * Makes every directory under $root world-writable (0777) - the fallback when
  * the web server's account can't be detected, so it can still create files
@@ -3086,6 +3189,7 @@ function set_up_system_services(array &$environment_failures): void
     // whichever web server fronts it) already runs as, not a separate daemon
     // account.
     ensure_ner_environment();
+    ensure_translate_environment();
 
     $web = web_server_account();
 

@@ -81,6 +81,23 @@ class TranslatorTest extends TestCase
         $this -> assertNull(Translator::translate('Das Wetter ist schoen.', 'en', 'not-a-language'));
     }
 
+    /**
+     * A language with no package is turned away here rather than by the
+     * command. "not-a-language" reduces to "not", which is three letters and
+     * passes for a tag - and would otherwise cost a slot and five seconds to
+     * learn what this already knows.
+     */
+    public function testOnlyLanguagesThisInstallationHasAreAttempted(): void
+    {
+        $this -> assertTrue(Translator::isSupported('de'));
+        $this -> assertTrue(Translator::isSupported('pt-BR'));
+        $this -> assertTrue(Translator::isSupported(Translator::PIVOT));
+
+        foreach (['not-a-language', 'xyz', 'eo', null, ''] as $unsupported) {
+            $this -> assertFalse(Translator::isSupported($unsupported), var_export($unsupported, true));
+        }
+    }
+
     // ---- The text itself ----
 
     /**

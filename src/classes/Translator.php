@@ -138,6 +138,15 @@ class Translator
             return null;
         }
 
+        // Checked against what this installation has packages for before a
+        // slot is taken. "not-a-language" reduces to "not", which is three
+        // letters and looks like a language tag - without this it costs one of
+        // the two slots and five seconds to be told by the command what could
+        // have been known here.
+        if (!self::isSupported($source) || !self::isSupported($target)) {
+            return null;
+        }
+
         $slot = self::takeSlot();
 
         if ($slot === null) {
@@ -301,6 +310,14 @@ SELECT RELEASE_LOCK(?)
         $translated = trim($output);
 
         return $translated === '' ? null : $translated;
+    }
+
+    /** Whether this installation can read or write that language at all. */
+    public static function isSupported(?string $language): bool
+    {
+        $base = self::baseLanguage($language);
+
+        return $base !== null && ($base === self::PIVOT || in_array($base, self::LANGUAGES, true));
     }
 
     /**

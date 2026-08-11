@@ -151,8 +151,10 @@ class Translator
             $settings .= $name . '=' . escapeshellarg($value) . ' ';
         }
 
+        // Through env, not as a bare prefix: exec takes a command, so
+        // "exec VAR=x cmd" has bash looking for a program called VAR=x.
         $inner = sprintf(
-            '%snice -n 10 %s --from-lang %s --to-lang %s',
+            'env %snice -n 10 %s --from-lang %s --to-lang %s',
             $settings,
             escapeshellarg(self::COMMAND),
             escapeshellarg($source),

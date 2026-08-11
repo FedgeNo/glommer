@@ -109,7 +109,12 @@ class EntityExtractor
 
             $entities[] = array_values(array_filter(
                 array_merge($hashtag_entities[$i], $named),
+                // A kind this software has no page for is not stored. A topic
+                // is addressed by its type, so a label nothing here knows -
+                // one a model version adds, or a label set that names things
+                // differently - would be a row whose own page is a 404.
                 static fn (array $entity): bool => self::isFindable((string) $entity['value'])
+                    && in_array((string) $entity['type'], self::ENTITY_TYPES, true)
             ));
         }
 

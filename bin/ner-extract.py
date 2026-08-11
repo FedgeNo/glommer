@@ -48,10 +48,20 @@ MODELS = {
 ALLOWED_LABELS = {
     'PERSON', 'ORG', 'GPE', 'LOC', 'FAC', 'PRODUCT', 'EVENT',
     'WORK_OF_ART', 'LAW', 'LANGUAGE', 'NORP',
-    # What the non-English models label a person and a bare name with. Without
-    # these every entity from every language but English would be discarded.
-    'PER', 'MISC',
+    # What the non-English models call a person. Their label set is a smaller
+    # vocabulary for the same things, so it is translated below rather than
+    # stored as a second name for one concept.
+    'PER',
 }
+
+# The non-English models are trained on WikiNER, which names a person PER
+# where the English model says PERSON. Same thing, and a topic page is
+# addressed by its type, so two names for it would be two pages.
+#
+# WikiNER's fourth label, MISC, is deliberately not taken: it is the catch-all
+# every entity that is none of the other three falls into, so it is both the
+# noisiest and the one with nothing to call itself on a page.
+LABEL_ALIASES = {'PER': 'PERSON'}
 
 MAX_ENTITY_LENGTH = 100
 
@@ -86,13 +96,14 @@ def entities_in(doc):
         if not value or len(value) > MAX_ENTITY_LENGTH:
             continue
 
-        key = (ent.label_, value)
+        label = LABEL_ALIASES.get(ent.label_, ent.label_)
+        key = (label, value)
 
         if key in seen:
             continue
 
         seen.add(key)
-        entities.append({'type': ent.label_.lower(), 'value': value})
+        entities.append({'type': label.lower(), 'value': value})
 
     return entities
 

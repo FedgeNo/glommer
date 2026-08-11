@@ -99,6 +99,39 @@ class DetectedLanguageTest extends DatabaseTestCase
         $this -> assertFalse(in_array('kaikille', $values, true));
     }
 
+    /**
+     * Every kind stored has a page. The non-English models name a person PER
+     * where the English one says PERSON, and a topic is addressed by its type
+     * - so an untranslated label would be a row whose own page is a 404.
+     */
+    public function testNothingIsStoredUnderAKindWithNoPage(): void
+    {
+        $this -> requireExtractor();
+
+        $batch = EntityExtractor::extractBatch([
+            json_encode(['ops' => [['insert' => "Angela Merkel hat in Berlin mit Emmanuel Macron gesprochen.\n"]]]),
+            json_encode(['ops' => [['insert' => "Sanna Marin tapasi Helsingissä presidentti Sauli Niinistön.\n"]]]),
+            json_encode(['ops' => [['insert' => "Microsoft announced a new version of Windows in Seattle yesterday.\n"]]]),
+        ]);
+
+        $types = [];
+
+        foreach ($batch as $entities) {
+            foreach ($entities as $entity) {
+                $types[(string) $entity['type']] = true;
+            }
+        }
+
+        $this -> assertTrue($types !== [], 'the sample produces entities at all');
+
+        foreach (array_keys($types) as $type) {
+            $this -> assertTrue(
+                EntityType::isKnown($type),
+                $type . ' is stored but /topics/' . $type . '/ is a 404'
+            );
+        }
+    }
+
     /** The answer is written onto the post, so it can be read without asking again. */
     public function testTheAnswerIsKeptOnThePost(): void
     {

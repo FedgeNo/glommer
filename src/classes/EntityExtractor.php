@@ -39,6 +39,24 @@ class EntityExtractor
     private const NER_TIMEOUT_SECONDS = 60;
 
     /**
+     * What language each text of the last extractBatch() turned out to be
+     * written in, by the same index, null where nothing could read it.
+     *
+     * Kept here rather than returned because it is a by-product: the extractor
+     * has to know the language to pick a model, and the answer is worth
+     * recording, but every caller wants the entities and only one wants this.
+     *
+     * @var array<int, ?string>
+     */
+    private static array $detectedLanguages = [];
+
+    /** @return array<int, ?string> by the same index extractBatch() was given */
+    public static function detectedLanguages(): array
+    {
+        return self::$detectedLanguages;
+    }
+
+    /**
      * @param array<int, ?string> $description_deltas
      * @return array<int, array<int, array{type: string, value: string}>> Same
      *   length and order as $description_deltas.
@@ -67,7 +85,16 @@ class EntityExtractor
             $plain_texts[] = Delta::plainText($ops);
         }
 
-        $ner_entities = self::runNER($plain_texts);
+        $read = self::runNER($plain_texts);
+
+        $ner_entities = [];
+        self::$detectedLanguages = [];
+
+        foreach ($plain_texts as $i => $plain_text) {
+            $ner_entities[$i] = is_array($read[$i]['entities'] ?? null) ? $read[$i]['entities'] : [];
+            $language = $read[$i]['language'] ?? null;
+            self::$detectedLanguages[$i] = is_string($language) && $language !== '' ? $language : null;
+        }
 
         $entities = [];
 
@@ -205,7 +232,7 @@ class EntityExtractor
      * recompute over an optional enrichment step.
      *
      * @param string[] $plain_texts
-     * @return array<int, array<int, array{type: string, value: string}>>
+     * @return array<int, array{language: ?string, entities: array<int, array{type: string, value: string}>}>
      */
     private static function runNER(array $plain_texts): array
     {

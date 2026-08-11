@@ -132,6 +132,12 @@ CREATE TABLE `Posts` (
   -- on a wrong reading leaves somebody unable to read a post with no way to
   -- ask. Null means nobody said, which is every post written here.
   `language` varchar(35) DEFAULT NULL,
+  -- What the words are actually in, as opposed to what the sender said above.
+  -- Read off the text by the entity extractor, which has to know anyway to
+  -- pick a model that can read it, and kept because knowing is useful on its
+  -- own. Null where nothing could tell - too short, punctuation, a bare URL -
+  -- which is a real answer and not a gap to fill in with a guess.
+  `detectedLanguage` varchar(20) DEFAULT NULL,
   -- The post this one quotes - repost-with-commentary. SET NULL rather than
   -- CASCADE: the commentary is its author's own writing and outlives the
   -- deletion of what it commented on, rendering as an ordinary post.

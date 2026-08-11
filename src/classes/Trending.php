@@ -189,6 +189,35 @@ SELECT STRAIGHT_JOIN `Posts`.*
 ', 'Post', 'i' . str_repeat('s', count($automated)) . 'i', $not_banned, ...[...$automated, self::WINDOW_SIZE]);
     }
 
+    /**
+     * Writes down what each post turned out to be written in.
+     *
+     * A by-product of extraction rather than a job of its own: the extractor
+     * has to read the language to pick a model, and doing it again anywhere
+     * else would be a second subprocess over the same words. Only where the
+     * answer changed, so a recompute over a window that is mostly the same
+     * posts writes almost nothing.
+     *
+     * @param Post[] $rows
+     * @param array<int, ?string> $languages by the same index
+     */
+    private static function recordDetectedLanguages(array $rows, array $languages): void
+    {
+        foreach ($rows as $i => $row) {
+            $detected = $languages[$i] ?? null;
+
+            if ($detected === ($row -> detectedLanguage ?? null)) {
+                continue;
+            }
+
+            DB::run('
+UPDATE `Posts`
+    SET `detectedLanguage` = ?
+    WHERE `postId` = ?
+', 'si', $detected, (int) $row -> postId);
+        }
+    }
+
     public static function recompute(): void
     {
         $rows = self::corpus();
@@ -199,6 +228,8 @@ SELECT STRAIGHT_JOIN `Posts`.*
             static fn (Post $row): ?string => $row -> descriptionDelta,
             $rows
         ));
+
+        self::recordDetectedLanguages($rows, EntityExtractor::detectedLanguages());
 
         $now = time();
         $stats = [];

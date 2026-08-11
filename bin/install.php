@@ -2559,11 +2559,45 @@ function ensure_ner_environment(): void
 
     $venv_python = NER_VENV_DIR . '/bin/python';
 
-    $already_set_up = is_file($venv_python)
-        && run(':python -c "import spacy; spacy.load(\'en_core_web_sm\')" 2>/dev/null', ['python' => $venv_python])['exitCode'] === 0;
+    // Named by the extractor itself (bin/ner-extract.py --models), which runs
+    // on a bare Python for exactly this, so the list of models lives in one
+    // place rather than here as well.
+    $models = array_values(array_filter(array_map(
+        'trim',
+        explode("\n", run(':python :script --models 2>/dev/null', [
+            'python' => 'python3',
+            'script' => __DIR__ . '/ner-extract.py',
+        ])['output'])
+    )));
 
-    if ($already_set_up) {
-        ok('spaCy + en_core_web_sm already installed at ' . NER_VENV_DIR);
+    if ($models === []) {
+        warn('Could not ask bin/ner-extract.py which models it needs - skipping the NER environment.');
+
+        return;
+    }
+
+    $missing = [];
+
+    foreach ($models as $model) {
+        // The model name goes in as an argument rather than into the source:
+        // run() shell-quotes every placeholder, which inside a Python string
+        // literal would be quotes within quotes.
+        $loads = is_file($venv_python)
+            && run(':python -c "import spacy, sys; spacy.load(sys.argv[1])" :model 2>/dev/null', [
+                'python' => $venv_python,
+                'model' => $model,
+            ])['exitCode'] === 0;
+
+        if (!$loads) {
+            $missing[] = $model;
+        }
+    }
+
+    $detector_ready = is_file($venv_python)
+        && run(':python -c "import langdetect" 2>/dev/null', ['python' => $venv_python])['exitCode'] === 0;
+
+    if ($missing === [] && $detector_ready) {
+        ok('spaCy, langdetect and all ' . count($models) . ' language models already installed at ' . NER_VENV_DIR);
     } else {
         $manager = detected_package_manager();
 
@@ -2604,24 +2638,36 @@ function ensure_ner_environment(): void
         // in transitively as of typer 0.27.0, so it has to be installed
         // alongside spacy explicitly or `spacy download` below fails with
         // ModuleNotFoundError: No module named 'click'.
-        $pip_result = run(':pip install -U pip wheel spacy click 2>&1', ['pip' => $venv_pip]);
+        // langdetect alongside them: the extractor reads each post's language
+        // off the words to pick a model, because the language a Fediverse
+        // sender declares comes from their account setting rather than from
+        // what they wrote.
+        $pip_result = run(':pip install -U pip wheel spacy click langdetect 2>&1', ['pip' => $venv_pip]);
 
         if ($pip_result['exitCode'] !== 0) {
-            warn('Failed to install spaCy into ' . NER_VENV_DIR . ' - install it by hand (' . NER_VENV_DIR . '/bin/pip install spacy), then re-run.', $pip_result);
+            warn('Failed to install spaCy into ' . NER_VENV_DIR . ' - install it by hand (' . NER_VENV_DIR . '/bin/pip install spacy langdetect), then re-run.', $pip_result);
 
             return;
         }
 
-        echo "Downloading the en_core_web_sm model...\n";
-        $model_result = run(':python -m spacy download en_core_web_sm 2>&1', ['python' => $venv_python]);
+        // One model per language the relay actually carries. An English model
+        // over everything read every capitalised German noun as a proper name,
+        // German capitalising all of them.
+        foreach ($missing as $model) {
+            echo 'Downloading the ' . $model . " model...\n";
+            $model_result = run(':python -m spacy download :model 2>&1', [
+                'python' => $venv_python,
+                'model' => $model,
+            ]);
 
-        if ($model_result['exitCode'] !== 0) {
-            warn('Failed to download en_core_web_sm - download it by hand (' . NER_VENV_DIR . '/bin/python -m spacy download en_core_web_sm), then re-run.', $model_result);
+            if ($model_result['exitCode'] !== 0) {
+                warn('Failed to download ' . $model . ' - download it by hand (' . NER_VENV_DIR . '/bin/python -m spacy download ' . $model . '), then re-run.', $model_result);
 
-            return;
+                return;
+            }
         }
 
-        ok('spaCy + en_core_web_sm installed at ' . NER_VENV_DIR);
+        ok('spaCy, langdetect and ' . count($models) . ' language models installed at ' . NER_VENV_DIR);
     }
 
     // World-readable so the web server can read/exec every file regardless of

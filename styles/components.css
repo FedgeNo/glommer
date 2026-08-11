@@ -1628,7 +1628,8 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 
 .ContentWarningInput {
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
 }
 
 /* A label standing in for a file input, because the text on the input's own

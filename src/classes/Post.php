@@ -90,6 +90,10 @@ class Post extends Article
     // thing being spoiled is usually the words.
     public ?string $contentWarning = null;
 
+    // What the words are in, read off the text rather than taken from what a
+    // sender declared (see Posts.language). Null where nothing could tell.
+    public ?string $detectedLanguage = null;
+
     // Whether a media post's description is truncated (with a "See More" link)
     // rather than shown in full. True in the feed, where a post is a preview;
     // PostPage flips it off so the permalink page shows the whole description.

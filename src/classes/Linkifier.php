@@ -75,6 +75,22 @@ class Linkifier
     // browser linkified them all.
     private const TAG_CHARS = "[^\\x00-\\x2F\\x3A-\\x40\\x5B-\\x5E\\x60\\x7B-\\x7F]";
 
+    /**
+     * Punctuation that ends a tag rather than belonging to it.
+     *
+     * TAG_CHARS excludes ASCII punctuation and keeps everything above it, which
+     * is what lets a tag be written in any script - and lets an ellipsis or a
+     * smart quote in with them. Truncation is where that bites: shortening a
+     * post appends an ellipsis, the text is linkified after, and "#Brazil…"
+     * becomes a link to /tags/brazil… which leads nowhere. A tag that is
+     * nothing but these is no tag at all and stays as the text it was.
+     *
+     * Trimmed by comparing whole characters rather than with rtrim(), which
+     * works a byte at a time and would happily eat the tail off a multibyte
+     * character that merely ends in the same byte.
+     */
+    private const TAG_TRAILING_PUNCTUATION = ['…', '—', '–', '“', '”', '‘', '’', '«', '»', '„'];
+
     // The '#' is inside that excluded range, so it reads as a boundary and
     // "##b" would tag - hence the second lookbehind naming it.
     // The characters a URL may be spelled with, once one has started.
@@ -186,6 +202,28 @@ class Linkifier
     }
 
     /**
+     * A tag with any punctuation it collected off its end removed - see
+     * TAG_TRAILING_PUNCTUATION. Mirrored in Linkifier.js.
+     */
+    private static function withoutTrailingPunctuation(string $tag): string
+    {
+        $trimming = true;
+
+        while ($trimming && $tag !== '') {
+            $trimming = false;
+
+            foreach (self::TAG_TRAILING_PUNCTUATION as $mark) {
+                if (str_ends_with($tag, $mark)) {
+                    $tag = substr($tag, 0, -strlen($mark));
+                    $trimming = true;
+                }
+            }
+        }
+
+        return $tag;
+    }
+
+    /**
      * Whether a string is usable as a tag: made only of tag characters, no
      * longer than the cap in characters (not bytes - a tag of CJK is as long
      * as it looks), and not just a number, so "#2024" stays text.
@@ -212,7 +250,8 @@ class Linkifier
     private static function classify(string $matched): ?array
     {
         if ($matched[0] === '#') {
-            $tag = substr($matched, 1);
+            $tag = self::withoutTrailingPunctuation(substr($matched, 1));
+            $trailing = substr($matched, 1 + strlen($tag));
 
             if (!self::isTagSlug($tag)) {
                 return null;
@@ -221,7 +260,10 @@ class Linkifier
             // mb_strtolower, not strtolower: the ASCII-only one leaves #CAFÉ
             // as "cafÉ" while the browser's toLowerCase gives "café", and the
             // two renderers would link one tag to two different pages.
-            return ['segment' => ['type' => 'hashtag', 'text' => $matched, 'tag' => mb_strtolower($tag)], 'trailing' => ''];
+            return [
+                'segment' => ['type' => 'hashtag', 'text' => '#' . $tag, 'tag' => mb_strtolower($tag)],
+                'trailing' => $trailing,
+            ];
         }
 
         if ($matched[0] === '@') {

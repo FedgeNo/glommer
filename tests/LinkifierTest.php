@@ -272,6 +272,14 @@ class LinkifierTest extends TestCase
             'visit www.example.com today',
             'e.g. that is all and Node.js is fine',
             'at example.com/a. Next',
+            // Punctuation a tag collects off its end. Byte-length here against
+            // UTF-16 length there, over multibyte marks, is exactly where the
+            // two could slice differently and produce different links for one
+            // post depending on whether it arrived in the page or by scroll.
+            'a story about #Brazil…',
+            'cut short at #…',
+            'he said #Brazil” and #Brazil—',
+            'in #Köln… and #café…',
         ];
 
         $php_output = array_map(static fn (string $text): array => Linkifier::tokenize($text), $cases);
@@ -348,5 +356,49 @@ class LinkifierTest extends TestCase
         $this -> assertSame((string) Linkifier::MAX_MENTION_LENGTH, $match[1]);
     }
 
+    /**
+     * A tag may be written in any script, which is why tag characters are
+     * stated as the ASCII they exclude - and that lets an ellipsis in with
+     * them. Truncating a post appends one and the text is linkified after, so
+     * a tag left at the cut became a link to a page that does not exist.
+     */
+    public function testAnEllipsisIsNotPartOfTheTagItLandsOn(): void
+    {
+        $segments = Linkifier::tokenize('a story about #Brazil…');
 
+        $this -> assertSame('hashtag', $segments[1]['type']);
+        $this -> assertSame('brazil', $segments[1]['tag']);
+        $this -> assertSame('#Brazil', $segments[1]['text']);
+        $this -> assertSame('…', $segments[2]['text']);
+    }
+
+    /** And where the cut leaves nothing but the mark, there is no tag at all. */
+    public function testAHashWithNothingButAnEllipsisIsNotATag(): void
+    {
+        $segments = Linkifier::tokenize('cut short at #…');
+
+        foreach ($segments as $segment) {
+            $this -> assertSame('text', $segment['type']);
+        }
+
+        $this -> assertSame('cut short at #…', implode('', array_column($segments, 'text')));
+    }
+
+    /** The same for the other marks a sentence ends a tag with. */
+    public function testASmartQuoteOrDashDoesNotJoinTheTag(): void
+    {
+        $this -> assertSame('brazil', Linkifier::tokenize('he said #Brazil”')[1]['tag']);
+        $this -> assertSame('brazil', Linkifier::tokenize('he said #Brazil—')[1]['tag']);
+    }
+
+    /**
+     * The whole reason tag characters are permissive: a tag in another script
+     * is a tag. Trimming punctuation must not reach into one.
+     */
+    public function testANonASCIITagIsUntouched(): void
+    {
+        $this -> assertSame('café', Linkifier::tokenize('at the #café')[1]['tag']);
+        $this -> assertSame('日本語', Linkifier::tokenize('in #日本語')[1]['tag']);
+        $this -> assertSame('köln', Linkifier::tokenize('in #Köln…')[1]['tag']);
+    }
 }

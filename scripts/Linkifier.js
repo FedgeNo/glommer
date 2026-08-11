@@ -6,6 +6,10 @@ export class Linkifier {
     // for why a #tag is stated as the ASCII it may not contain rather than as
     // the characters it may.
     static TAG_CHARS = "[^\\x00-\\x2F\\x3A-\\x40\\x5B-\\x5E\\x60\\x7B-\\x7F]";
+    // Punctuation that ends a tag rather than belonging to it - identical to
+    // Linkifier.php's TAG_TRAILING_PUNCTUATION, see the reasoning there. This
+    // matters most here: a feed's truncated posts are rendered by this side.
+    static TAG_TRAILING_PUNCTUATION = ['…', '—', '–', '“', '”', '‘', '’', '«', '»', '„'];
     // The characters a URL may be spelled with, once one has started.
     static URL_CHARS = "[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]";
     // A link written without its scheme - see Linkifier.php's BARE_URL for
@@ -95,15 +99,34 @@ export class Linkifier {
         return [...tag].some((character) => !'0123456789_'.includes(character));
     }
 
+    /** Mirrors Linkifier::withoutTrailingPunctuation(). */
+    static #withoutTrailingPunctuation(tag) {
+        let trimming = true;
+
+        while (trimming && tag !== '') {
+            trimming = false;
+
+            for (const mark of Linkifier.TAG_TRAILING_PUNCTUATION) {
+                if (tag.endsWith(mark)) {
+                    tag = tag.slice(0, -mark.length);
+                    trimming = true;
+                }
+            }
+        }
+
+        return tag;
+    }
+
     static #classify(matched) {
         if (matched[0] === '#') {
-            const tag = matched.slice(1);
+            const tag = Linkifier.#withoutTrailingPunctuation(matched.slice(1));
+            const trailing = matched.slice(1 + tag.length);
 
             if (!Linkifier.isTagSlug(tag)) {
                 return null;
             }
 
-            return { segment: { type: 'hashtag', text: matched, tag: tag.toLowerCase() }, trailing: '' };
+            return { segment: { type: 'hashtag', text: '#' + tag, tag: tag.toLowerCase() }, trailing };
         }
 
         if (matched[0] === '@') {

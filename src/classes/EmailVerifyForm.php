@@ -24,13 +24,12 @@ class EmailVerifyForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-
         $token_input = new HiddenInput();
         $token_input -> name = 'token';
         $token_input -> value = $this -> token;
         $this -> contents[] = $token_input;
 
-        $this -> contents[] = new SubmitButton('Verify email address');
+        $this -> contents[] = new SubmitButton((string) (Strings::for(self::class)['submit'] ?? ''));
 
         return parent::toDOM();
     }

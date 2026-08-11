@@ -9,13 +9,12 @@ class NotificationTestPanel extends Div
 
     public function toDOM(): \DOMElement
     {
-        $this -> addContent(new Paragraph(
-            'Send a test notification to yourself (the admin). ' .
-            'It should appear instantly as a toast and in the notification dropdown.'
-        ));
+        $words = Strings::for(self::class);
+
+        $this -> addContent(new Paragraph((string) ($words['intro'] ?? '')));
 
         $button = new ButtonButton();
-        $button -> addContent('Send test notification');
+        $button -> addContent((string) ($words['button'] ?? ''));
         $this -> addContent($button);
 
         return parent::toDOM();

@@ -109,13 +109,15 @@ DELETE FROM `FediverseDeliveries`
         }
 
         $delay_seconds = 60 * (2 ** min($attempts, 10));
-        $trimmed = substr($error, 0, 255);
 
+        // Cut by character rather than by byte: the message is whatever a
+        // remote server said, and half a UTF-8 sequence is not storable in a
+        // utf8mb4 column.
         DB::run('
 UPDATE `FediverseDeliveries`
     SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND, `lastError` = ?
     WHERE `deliveryId` = ?
-', 'isi', $delay_seconds, $trimmed, $delivery_id);
+', 'isi', $delay_seconds, mb_substr($error, 0, 255), $delivery_id);
 
         return false;
     }

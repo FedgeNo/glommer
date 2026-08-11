@@ -9,7 +9,13 @@ class EmojiPickerTriggerButton extends ButtonButton
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> attributes['aria-label'] = 'Insert emoji';
         $this -> contents[] = '🙂';
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $this -> attributes['aria-label'] = (string) (Strings::for(self::class)['label'] ?? '');
+
+        return parent::toDOM();
     }
 }

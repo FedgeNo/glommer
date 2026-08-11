@@ -81,24 +81,23 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
      */
     public function testWhatAPostClaimsAboutItsLanguageDoesNotHideTheButton(): void
     {
+        // What the button waits on is a translator being installed here, not a
+        // key in the settings - an installation without one offers nothing to
+        // translate with, and there is no claim about language that changes it.
+        if (!Translator::isAvailable()) {
+            throw new TestSkippedException('needs the translation environment - run bin/install.php');
+        }
+
         $post = DB::row('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
 ', 'Post', 'i', $this -> post());
 
-        // Settings::set is how OpenRouter is switched on, and without a
-        // translator configured nothing is offered at all.
-        Settings::set(OpenRouter::API_KEY_SETTING, 'test-key');
+        foreach ([null, 'en', 'fr', 'zh-hant'] as $claimed) {
+            $post -> language = $claimed;
 
-        try {
-            foreach ([null, 'en', 'fr', 'zh-hant'] as $claimed) {
-                $post -> language = $claimed;
-
-                $this -> assertTrue($post -> translatable(), 'claimed ' . var_export($claimed, true));
-            }
-        } finally {
-            Settings::set(OpenRouter::API_KEY_SETTING, '');
+            $this -> assertTrue($post -> translatable(), 'claimed ' . var_export($claimed, true));
         }
     }
 

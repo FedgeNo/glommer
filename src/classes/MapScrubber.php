@@ -23,6 +23,8 @@ class MapScrubber extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         $header = new Div;
         $header -> class = 'MapScrubberHeader';
         $header -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
@@ -34,14 +36,16 @@ class MapScrubber extends Div
         $play = new Button;
         $play -> class = 'MapScrubberPlay';
         $play -> mixins = ['Button', 'ms-auto'];
-        $play -> addContent('Play');
+        $play -> addContent((string) ($words['play'] ?? ''));
         $header -> addContent($play);
 
         $mode = new Div;
         $mode -> class = 'MapScrubberMode';
         $mode -> mixins = ['d-flex', 'gap-1'];
 
-        foreach (['cumulative' => 'Up to then', 'window' => 'Just then'] as $value => $text) {
+        $mode_labels = ['cumulative' => (string) ($words['cumulativeMode'] ?? ''), 'window' => (string) ($words['windowMode'] ?? '')];
+
+        foreach ($mode_labels as $value => $text) {
             $button = new Button;
             $button -> class = 'MapScrubberModeButton' . ($value === 'cumulative' ? ' Active' : '');
             $button -> mixins = ['Button'];
@@ -60,7 +64,7 @@ class MapScrubber extends Div
         // feel whether the site is a week or a decade old.
         $range = new RangeInput(0, 1000, 1000);
         $range -> class = 'MapScrubberRange';
-        $range -> attributes['aria-label'] = 'Show posts up to a date';
+        $range -> attributes['aria-label'] = (string) ($words['rangeLabel'] ?? '');
         $this -> addContent($range);
 
         $bounds = new Div;

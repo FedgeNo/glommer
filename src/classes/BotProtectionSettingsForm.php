@@ -16,54 +16,55 @@ class BotProtectionSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
 
-        $fields = new Fieldset('Cloudflare Turnstile');
+        $fields = new Fieldset((string) ($words['turnstileLegend'] ?? ''));
 
         // autocomplete='off' (and a plain text field for the secret, not a
         // password field) keeps the browser's password manager from autofilling
         // saved login credentials over these API-key fields. The secret is a
         // paste-a-value key, write-only and admin-only, so it isn't masked.
-        $site_key = new InputField('turnstileSiteKey', 'Site key', 'text', 'Cloudflare Turnstile site key', 255);
+        $site_key = new InputField('turnstileSiteKey', (string) ($words['turnstileSiteKeyLabel'] ?? ''), 'text', (string) ($words['turnstileSiteKeyPlaceholder'] ?? ''), 255);
         $site_key -> value = Turnstile::siteKey();
         $site_key -> autocomplete = 'off';
         $site_key -> labelVisible = true;
         $fields -> addContent($site_key);
 
         $secret_is_set = (string) Settings::get(Turnstile::SECRET_KEY_SETTING, '') !== '';
-        $secret_placeholder = $secret_is_set
-            ? 'Secret key is set - leave blank to keep it'
-            : 'Cloudflare Turnstile secret key';
-        $secret_key = new InputField('turnstileSecretKey', 'Secret key', 'text', $secret_placeholder, 255);
+        $secret_placeholder = (string) ($secret_is_set
+            ? ($words['turnstileSecretKeyPlaceholder']['set'] ?? '')
+            : ($words['turnstileSecretKeyPlaceholder']['unset'] ?? ''));
+        $secret_key = new InputField('turnstileSecretKey', (string) ($words['turnstileSecretKeyLabel'] ?? ''), 'text', $secret_placeholder, 255);
         $secret_key -> autocomplete = 'off';
         $secret_key -> labelVisible = true;
         $fields -> addContent($secret_key);
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Paragraph('Both keys are required for the CAPTCHA to appear on sign-up and sign-in. Clear the site key to turn it off.');
+        $this -> contents[] = new Paragraph((string) ($words['turnstileExplainer'] ?? ''));
 
-        $recaptcha_fields = new Fieldset('Google reCAPTCHA (account-lock recovery)');
+        $recaptcha_fields = new Fieldset((string) ($words['recaptchaLegend'] ?? ''));
 
-        $recaptcha_site_key = new InputField('recaptchaSiteKey', 'Site key', 'text', 'Google reCAPTCHA v2 site key', 255);
+        $recaptcha_site_key = new InputField('recaptchaSiteKey', (string) ($words['recaptchaSiteKeyLabel'] ?? ''), 'text', (string) ($words['recaptchaSiteKeyPlaceholder'] ?? ''), 255);
         $recaptcha_site_key -> value = ReCaptcha::siteKey();
         $recaptcha_site_key -> autocomplete = 'off';
         $recaptcha_site_key -> labelVisible = true;
         $recaptcha_fields -> addContent($recaptcha_site_key);
 
         $recaptcha_secret_is_set = (string) Settings::get(ReCaptcha::SECRET_KEY_SETTING, '') !== '';
-        $recaptcha_secret_placeholder = $recaptcha_secret_is_set
-            ? 'Secret key is set - leave blank to keep it'
-            : 'Google reCAPTCHA v2 secret key';
-        $recaptcha_secret_key = new InputField('recaptchaSecretKey', 'Secret key', 'text', $recaptcha_secret_placeholder, 255);
+        $recaptcha_secret_placeholder = (string) ($recaptcha_secret_is_set
+            ? ($words['recaptchaSecretKeyPlaceholder']['set'] ?? '')
+            : ($words['recaptchaSecretKeyPlaceholder']['unset'] ?? ''));
+        $recaptcha_secret_key = new InputField('recaptchaSecretKey', (string) ($words['recaptchaSecretKeyLabel'] ?? ''), 'text', $recaptcha_secret_placeholder, 255);
         $recaptcha_secret_key -> autocomplete = 'off';
         $recaptcha_secret_key -> labelVisible = true;
         $recaptcha_fields -> addContent($recaptcha_secret_key);
 
         $this -> contents[] = $recaptcha_fields;
 
-        $this -> contents[] = new Paragraph('Both keys are required. When set, an account that hits its login-attempt limit can get back in by passing this challenge instead of waiting out the lockout; when unset, the lockout is a hard wait. Use reCAPTCHA v2 ("I\'m not a robot"). Clear the site key to turn it off.');
+        $this -> contents[] = new Paragraph((string) ($words['recaptchaExplainer'] ?? ''));
 
-        $this -> contents[] = new SubmitButton('Save');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

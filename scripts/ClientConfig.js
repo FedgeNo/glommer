@@ -29,36 +29,54 @@ export class ClientConfig {
         }
 
         const raw = this._getCookie('APP-CONFIG');
+
         if (!raw) {
-            // Sensible defaults when cookie is missing (saved page, logged-out, etc.)
-            return {
-                currentUserId: null,
-                currentUserUsername: null,
-                currentUserSkinTone: null,
-                showSensitiveMedia: false,
-                currentUserCanModerate: false,
-                siteURL: window.location.origin,
-                serverTime: Date.now(),
-                WSPort: null,
-                // Mirrors Carousel::INITIAL_EAGER_ITEMS, which is what the
-                // cookie normally carries.
-                carouselEagerItems: 5,
-                // Empty rather than a guessed list: without the cookie there is
-                // no composer to offer durations in, and inventing them here
-                // would be a second definition of what the server accepts.
-                pollDurations: {},
-                pollMaxOptions: 4,
-                needsMath: false,
-            };
+            return ClientConfig.#defaults();
         }
+
         try {
-            ClientConfig.#cached = JSON.parse(raw);
+            // The defaults sit underneath rather than beside: a page whose
+            // cookie was written before a value existed still answers for it,
+            // which is otherwise a key that reads undefined until the next
+            // navigation rewrites the cookie.
+            ClientConfig.#cached = { ...ClientConfig.#defaults(), ...JSON.parse(raw) };
         } catch (e) {
             console.error('Invalid APP-CONFIG cookie:', e);
-            return {};
+
+            return ClientConfig.#defaults();
         }
 
         return ClientConfig.#cached;
+    }
+
+    /**
+     * What a page says about itself when its cookie cannot: one that was saved,
+     * one served before a value was added, one whose cookie will not parse.
+     */
+    static #defaults() {
+        return {
+            currentUserId: null,
+            currentUserUsername: null,
+            currentUserSkinTone: null,
+            showSensitiveMedia: false,
+            currentUserCanModerate: false,
+            siteURL: window.location.origin,
+            serverTime: Date.now(),
+            WSPort: null,
+            // Mirrors Carousel::INITIAL_EAGER_ITEMS, which is what the cookie
+            // normally carries.
+            carouselEagerItems: 5,
+            // Empty rather than a guessed list: without the cookie there is no
+            // composer to offer durations in, and inventing them here would be
+            // a second definition of what the server accepts.
+            pollDurations: {},
+            pollMaxOptions: 4,
+            // Mirrors QuotedPost::DESCRIPTION_MAX_LENGTH.
+            quotedPostMaxLength: 280,
+            // Mirrors Place::MINIMUM_QUERY_LENGTH.
+            placeSearchMinimumLength: 3,
+            needsMath: false,
+        };
     }
 
     /**

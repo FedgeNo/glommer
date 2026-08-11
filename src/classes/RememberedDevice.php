@@ -25,6 +25,7 @@ class RememberedDevice extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
         $is_current = $this -> selector === RememberToken::currentSelector();
 
         $this -> attributes['data-token-id'] = (string) $this -> tokenId;
@@ -32,18 +33,19 @@ class RememberedDevice extends Div
         $info = new Div();
         $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
 
-        $label = self::describe($this -> userAgent);
+        $label = self::describe($this -> userAgent, $words);
 
         if ($is_current) {
-            $label .= ' (this device)';
+            $label .= (string) ($words['thisDevice'] ?? '');
         }
 
         $info -> addContent(new Paragraph($label));
 
         $detail_line = new Paragraph($this -> ipAddress !== null ? $this -> ipAddress . ' - ' : null);
         $detail_line -> mixins = ['muted'];
-        $detail_line -> addContent('Last used ');
+        $detail_line -> addContent((string) ($words['lastUsed']['before'] ?? ''));
         $detail_line -> addContent(new RelativeTime($this -> lastUsedAt));
+        $detail_line -> addContent((string) ($words['lastUsed']['after'] ?? ''));
         $info -> addContent($detail_line);
 
         $this -> addContent($info);
@@ -63,11 +65,17 @@ class RememberedDevice extends Div
      * good enough to tell devices apart in a list, not meant to be exact.
      * Deliberately not a real UA-parsing library: this is display-only,
      * never a security decision.
+     *
+     * The browser and OS names themselves are brand names, not prose - the
+     * same word in every locale - so only the phrase joining them comes from
+     * $words.
+     *
+     * @param array<string, mixed> $words
      */
-    private static function describe(?string $user_agent): string
+    private static function describe(?string $user_agent, array $words): string
     {
         if ($user_agent === null || $user_agent === '') {
-            return 'Unknown device';
+            return (string) ($words['unknownDevice'] ?? '');
         }
 
         $os = match (true) {
@@ -89,9 +97,9 @@ class RememberedDevice extends Div
         };
 
         if ($browser !== null && $os !== null) {
-            return $browser . ' on ' . $os;
+            return str_replace(['{browser}', '{os}'], [$browser, $os], (string) ($words['browserOnOS'] ?? ''));
         }
 
-        return $browser ?? $os ?? 'Unknown device';
+        return $browser ?? $os ?? (string) ($words['unknownDevice'] ?? '');
     }
 }

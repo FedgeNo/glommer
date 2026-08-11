@@ -146,11 +146,20 @@ SELECT `placeId`, `title`, `region`, `country`, `latitude`, `longitude`
      *
      * @return self[]
      */
+    /**
+     * The shortest prefix worth answering. One letter ranges a fifth of the
+     * gazetteer and then sorts all of it by population to show eight rows -
+     * measured at 122ms against 0.3ms for a prefix that narrows - and nobody
+     * who has typed one letter has said which place they mean yet.
+     */
+    public const MINIMUM_QUERY_LENGTH = 3;
+
     public static function suggest(string $query, int $limit = 8): array
     {
         $query = trim($query);
+        $length = mb_strlen($query);
 
-        if ($query === '' || mb_strlen($query) > 100) {
+        if ($length < self::MINIMUM_QUERY_LENGTH || $length > 100) {
             return [];
         }
 
@@ -163,6 +172,23 @@ SELECT `placeId`, `title`, `region`, `country`, `latitude`, `longitude`
     ORDER BY `population` DESC
     LIMIT ' . max(1, min(20, $limit)) . '
 ', self::class, 's', $prefix);
+    }
+
+    /**
+     * Whether the gazetteer has been loaded at all - which is all anything
+     * deciding whether to offer a place name needs to know.
+     *
+     * Counting the table to answer it walks every row in an index: a quarter of
+     * a million of them once the cities file is in, for a question the first
+     * row settles. The installer, which wants the number itself, still counts.
+     */
+    public static function any(): bool
+    {
+        return DB::row('
+SELECT 1 AS `total`
+    FROM `Places`
+    LIMIT 1
+', 'PostCountData') !== null;
     }
 
     public static function count(): int

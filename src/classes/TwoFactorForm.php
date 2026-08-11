@@ -15,18 +15,20 @@ class TwoFactorForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $code_words = (string) ($words['code'] ?? '');
 
-        $fields = new Fieldset('Enter your verification code');
-        $fields -> addContent(new Paragraph('We emailed you a verification code. Enter it below to finish logging in.'));
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new Paragraph((string) ($words['explanation'] ?? '')));
 
-        $code = new InputField('code', 'Verification code', 'text', 'Verification code', 6);
+        $code = new InputField('code', $code_words, 'text', $code_words, 6);
         $code -> labelVisible = true;
         $code -> autocomplete = 'one-time-code';
         $fields -> addContent($code);
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new SubmitButton('Verify');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         return parent::toDOM();
     }

@@ -7,6 +7,7 @@ import { parse_server_date, list_in, list_item } from '/scripts/utils.js';
 import { render_math } from '/scripts/MathRenderer.js';
 import { EmojiRenderer } from '/scripts/EmojiRenderer.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 
 export class Message {
     messageId = null;
@@ -56,7 +57,7 @@ export class Message {
             div.className += ' Encrypted Locked';
             div.dataset.cipherEnvelope = this.bodyCiphertext;
             div.dataset.messageId = this.messageId;
-            body.textContent = 'Encrypted message';
+            body.textContent = Strings.for('Message', { encrypted: 'Encrypted message' }).encrypted;
         } else {
             body.textContent = expand(this.body);
         }
@@ -119,7 +120,9 @@ export class Message {
         if (text === null) {
             // An envelope the current keys don't open - sent under keys that
             // have since been reset. Honest and final; nothing can read it now.
-            body.textContent = 'This message was encrypted with keys that no longer exist.';
+            body.textContent = Strings.for('Message', {
+                decryptionFailed: 'This message was encrypted with keys that no longer exist.',
+            }).decryptionFailed;
             return;
         }
 

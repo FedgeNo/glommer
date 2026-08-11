@@ -1,4 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { Toast } from '/scripts/Toast.js';
 import { Post } from '/scripts/Post.js';
 import { list_item } from '/scripts/utils.js';
@@ -151,7 +152,7 @@ export class Composer {
         legend.textContent = 'Poll';
         poll.appendWithSpace(legend);
 
-        for (let index = 0; index < (ClientConfig.get('pollMaxOptions') || 4); index++) {
+        for (let index = 0; index < ClientConfig.get('pollMaxOptions'); index++) {
             const option = document.createElement('input');
             option.type = 'text';
             option.className = 'PollOptionInput';
@@ -227,13 +228,13 @@ export class Composer {
 
         const thumb = document.createElement('img');
         thumb.className = 'LinkImagePreviewThumb';
-        thumb.alt = 'Link preview image';
+        thumb.alt = Strings.for('LinkImagePreview', { alt: 'Link preview image' }).alt;
         linkImagePreview.appendWithSpace(thumb);
 
         const removeLinkBtn = document.createElement('button');
         removeLinkBtn.type = 'button';
         removeLinkBtn.className = 'Button LinkImageRemoveButton Removing';
-        removeLinkBtn.textContent = 'Remove image';
+        removeLinkBtn.textContent = Strings.for('LinkImageRemoveButton', { label: 'Remove image' }).label;
         linkImagePreview.appendWithSpace(removeLinkBtn);
 
         const seedInput = document.createElement('input');
@@ -755,7 +756,7 @@ export class Composer {
             const trigger = document.createElement('button');
             trigger.type = 'button';
             trigger.className = 'EmojiPickerTriggerButton';
-            trigger.setAttribute('aria-label', 'Insert emoji');
+            trigger.setAttribute('aria-label', Strings.for('EmojiPickerTriggerButton', { label: 'Insert emoji' }).label);
             trigger.textContent = '🙂';
             wrapper.appendWithSpace(trigger);
 

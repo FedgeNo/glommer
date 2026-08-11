@@ -10,7 +10,7 @@ class SearchClearButton extends ButtonButton
 {
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['aria-label'] = 'Clear search';
+        $this -> attributes['aria-label'] = (string) (Strings::for(self::class)['label'] ?? '');
         $this -> contents[] = '✘';
 
         return parent::toDOM();

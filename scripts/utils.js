@@ -23,6 +23,32 @@ export function csrf_headers(extra = {}) {
 }
 
 // ----------------------------------------------------------------
+// Text
+// ----------------------------------------------------------------
+
+/**
+ * The same cut as PHP's truncate() in src/functions.php. A post can reach the
+ * page from either renderer, so the two have to land on the same character or
+ * the writing changes length when the page is reloaded.
+ *
+ * Counted in code points, which is what mb_substr counts; backing up to the
+ * last space is also what keeps the cut out of the middle of an emoji, since
+ * anything long enough to truncate has a space to retreat to.
+ */
+export function truncate(text, length = 50) {
+    const characters = Array.from(text);
+
+    if (characters.length <= length) return text;
+
+    let cut = characters.slice(0, length).join('');
+    const last_space = cut.lastIndexOf(' ');
+
+    if (last_space !== -1) cut = cut.slice(0, last_space);
+
+    return cut.replace(/\s+$/, '') + '…';
+}
+
+// ----------------------------------------------------------------
 // DOM helpers
 // ----------------------------------------------------------------
 export function list_item(child) {

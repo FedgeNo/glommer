@@ -16,12 +16,14 @@ class EncryptedMessagesSetting extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         $explanation = new Paragraph();
-        $explanation -> contents[] = 'End-to-end encrypted messages are locked and unlocked in your browser: this server relays and stores them without being able to read them. Your key is protected by a passphrase, and the same passphrase unlocks your messages from any browser. Conversations are encrypted once both people have turned this on; messages to people on other servers stay unencrypted, because federation has no way to carry them otherwise.';
+        $explanation -> contents[] = (string) ($words['explanation'] ?? '');
         $this -> addContent($explanation);
 
         $warning = new Paragraph();
-        $warning -> contents[] = 'There is no way to recover a lost passphrase - not even for the administrator. Losing it means losing your encrypted messages.';
+        $warning -> contents[] = (string) ($words['noRecovery'] ?? '');
         $this -> addContent($warning);
 
         if (Auth::user() -> messagePublicKey === null) {
@@ -36,7 +38,7 @@ class EncryptedMessagesSetting extends Div
             $this -> attributes['data-wrapped-private-key'] = (string) Auth::user() -> messageWrappedPrivateKey;
 
             $status = new Paragraph();
-            $status -> contents[] = 'Encrypted messages are on.';
+            $status -> contents[] = (string) ($words['enabledStatus'] ?? '');
             $this -> addContent($status);
 
             $this -> addContent(new MessageKeyPassphraseForm());

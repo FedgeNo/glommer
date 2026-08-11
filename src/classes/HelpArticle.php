@@ -28,6 +28,8 @@ class HelpArticle extends Article
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         $category_link = new Anchor(ServerURL::absolute('/help/'), $this -> category);
         $category_link -> class = 'HelpArticleCategory';
         $category_link -> mixins = ['muted', 'text-sm'];
@@ -39,7 +41,7 @@ class HelpArticle extends Article
         $body -> contents[] = $this -> body;
         $this -> contents[] = $body;
 
-        $back = new Anchor(ServerURL::absolute('/help/'), 'Back to all help');
+        $back = new Anchor(ServerURL::absolute('/help/'), (string) ($words['backLabel'] ?? ''));
         $back -> class = 'HelpBackLink';
         $this -> contents[] = $back;
 

@@ -18,17 +18,19 @@ class EmailDigestSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $fields = new Fieldset('Email digest');
+        $words = Strings::for(self::class);
 
-        $textarea = new TextareaField(EmailDigest::PARAGRAPH_SETTING, 'Closing paragraph', null, 1000);
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+
+        $textarea = new TextareaField(EmailDigest::PARAGRAPH_SETTING, (string) ($words['fieldLabel'] ?? ''), null, 1000);
         $textarea -> value = EmailDigest::paragraph();
         $fields -> addContent($textarea);
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Notice('Added near the end of every digest, after the list of what the member missed. Plain text. Leave it blank to go back to the wording this software ships with.');
+        $this -> contents[] = new Notice((string) ($words['notice'] ?? ''));
 
-        $this -> contents[] = new SubmitButton('Save');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

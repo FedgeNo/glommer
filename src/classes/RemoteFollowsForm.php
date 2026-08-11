@@ -14,16 +14,17 @@ class RemoteFollowsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
 
-        $fields = new Fieldset('Follow Fediverse accounts');
-        $fields -> addContent(new Notice('Paste one or more handles, e.g. @user@example.social - any separator between them works.'));
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new Notice((string) ($words['notice'] ?? '')));
 
-        $textarea = new TextareaField('handles', 'Fediverse handles to follow');
+        $textarea = new TextareaField('handles', (string) ($words['handlesLabel'] ?? ''));
         $textarea -> maxLength = 8192;
         $fields -> addContent($textarea);
 
         $this -> contents[] = $fields;
-        $this -> contents[] = new SubmitButton('Follow');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         if ($this -> currentFollows !== []) {
             $list = new RemoteFollowsList();
@@ -43,7 +44,15 @@ class RemoteFollowsForm extends FormForm
 
                 $status = new Span();
                 $status -> mixins = ['muted', 'text-sm'];
-                $status -> contents[] = $follow['status'];
+                // RemoteFollows.status is only ever 'pending' or 'accepted' -
+                // a rejected follow is deleted rather than parked (see
+                // ActivityPubInbox::handleReject()) - but a stray value falls
+                // back to itself rather than fataling the settings page.
+                $status -> contents[] = (string) (match ($follow['status']) {
+                    'pending' => $words['statusPending'] ?? 'pending',
+                    'accepted' => $words['statusAccepted'] ?? 'accepted',
+                    default => $follow['status'],
+                });
                 $item -> contents[] = $status;
 
                 $list -> contents[] = $item;

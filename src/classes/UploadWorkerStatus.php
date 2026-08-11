@@ -15,15 +15,19 @@ class UploadWorkerStatus extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
         $is_active = UploadBatch::workerIsActive();
 
-        $status_text = match ($is_active) {
-            true => 'Running',
-            false => 'Not running - staged uploads will never be transcoded until it is restarted',
-            null => 'Unknown - either systemctl isn\'t available on this host, or SELinux is denying the web server\'s own status query (run bin/install.php as root to fix that)',
+        // One whole phrase per state rather than a label glued to a word: a
+        // language that puts the verdict before the noun needs the sentence,
+        // not the pieces.
+        $status_key = match ($is_active) {
+            true => 'running',
+            false => 'stopped',
+            null => 'unknown',
         };
 
-        $status_line = new Paragraph('Worker service: ' . $status_text);
+        $status_line = new Paragraph((string) ($words[$status_key] ?? ''));
 
         if ($is_active === false) {
             $status_line -> class = 'Error';
@@ -33,11 +37,10 @@ class UploadWorkerStatus extends Div
 
         $depth = UploadBatch::queueDepth();
 
-        $this -> contents[] = new Paragraph(sprintf(
-            'Queue: %d staging, %d pending, %d processing',
-            $depth['staging'],
-            $depth['pending'],
-            $depth['processing']
+        $this -> contents[] = new Paragraph(str_replace(
+            ['{staging}', '{pending}', '{processing}'],
+            [(string) $depth['staging'], (string) $depth['pending'], (string) $depth['processing']],
+            (string) ($words['queue'] ?? '')
         ));
 
         return parent::toDOM();

@@ -16,14 +16,37 @@ class PostLocationLink extends Anchor
 {
     public ?string $class = 'PostLocationLink';
 
+    public float $latitude;
+    public float $longitude;
+    public ?string $placeLabel = null;
+
+    // The point itself is kept rather than only the link built from it, so
+    // anything else this element grows to need - a data attribute, a second
+    // link shape - still has the position to work from.
     public function __construct(float $latitude, float $longitude, ?string $place_label = null)
     {
-        parent::__construct(
-            ServerURL::absolute('/map?lat=' . rawurlencode((string) $latitude) . '&lng=' . rawurlencode((string) $longitude)),
-            $place_label !== null && $place_label !== '' ? $place_label : self::label($latitude, $longitude)
+        parent::__construct();
+
+        $this -> latitude = $latitude;
+        $this -> longitude = $longitude;
+        $this -> placeLabel = $place_label;
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $words = Strings::for(self::class);
+
+        $this -> href = ServerURL::absolute(
+            '/map?lat=' . (string) $this -> latitude . '&lng=' . (string) $this -> longitude
         );
 
-        $this -> attributes['title'] = 'Show this place on the map';
+        $this -> attributes['title'] = (string) ($words['title'] ?? '');
+
+        $this -> contents[] = $this -> placeLabel !== null && $this -> placeLabel !== ''
+            ? $this -> placeLabel
+            : $this -> coordinates((string) ($words['between'] ?? ''));
+
+        return parent::toDOM();
     }
 
     /**
@@ -31,8 +54,8 @@ class PostLocationLink extends Anchor
      * without printing a wall of digits. The link itself carries the exact
      * position, so nothing is lost from what the feed centres on.
      */
-    private static function label(float $latitude, float $longitude): string
+    private function coordinates(string $between): string
     {
-        return number_format($latitude, 4) . ', ' . number_format($longitude, 4);
+        return number_format($this -> latitude, 4) . $between . number_format($this -> longitude, 4);
     }
 }

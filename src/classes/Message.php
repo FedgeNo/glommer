@@ -84,7 +84,7 @@ class Message extends Article implements \JsonSerializable
             $this -> class .= ' Encrypted Locked';
             $this -> attributes['data-cipher-envelope'] = $this -> bodyCiphertext;
             $this -> attributes['data-message-id'] = (string) $this -> messageId;
-            $body -> contents[] = 'Encrypted message';
+            $body -> contents[] = (string) (Strings::for(self::class)['encrypted'] ?? '');
         } else {
             // Same last-step expansion posts get, on the path messages take -
             // a message body is plain text and never goes near DeltaRenderer.
@@ -92,6 +92,13 @@ class Message extends Article implements \JsonSerializable
         }
 
         $line -> addContent($body);
+
+        // Only on what arrived, never on what this member wrote: reading a
+        // message in another language is the whole point, and their own words
+        // need no decoding. Nothing happens until it is pressed.
+        if (Auth::check() && Auth::id() === $this -> recipientId && Translator::isAvailable()) {
+            $line -> addContent(new MessageTranslateButton((int) $this -> messageId));
+        }
 
         // No report button on the admin's messages - api/report.php rejects
         // reports about the admin, since nobody could act on one anyway.

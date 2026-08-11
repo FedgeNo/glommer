@@ -40,9 +40,10 @@ trending topic extractor (§8).
 
 It is deliberately a "boring stack, built carefully" project: procedural PHP
 page scripts, a thin class hierarchy that renders HTML through DOM (never
-string concatenation), prepared statements for every query, and two small
+string concatenation), prepared statements for every query, and three small
 long-running PHP daemons for the things a per-request model can't do (holding
-a WebSocket open, transcoding video out of band).
+a WebSocket open, and transcoding video and delivering federation out of
+band).
 
 ## 2. What it does
 
@@ -124,6 +125,13 @@ a WebSocket open, transcoding video out of band).
   where its operator can too (ActivityPub has no message encryption, so
   federated threads can never be end-to-end encrypted). The thread says which
   case applies, whichever it is.
+  A received message (never one of your own, and never automatic) can be
+  translated with one click - the same button that's on posts. Nothing is
+  cached, but a one-time notice says the words are read by the server to do
+  it; in an end-to-end encrypted thread specifically, that means the one
+  message translated stops being end-to-end encrypted the way the rest of the
+  conversation is, since it's the plaintext already open in the browser that
+  gets sent.
 - **Video calls** - one-to-one, peer-to-peer WebRTC from an open message
   thread. Media never touches the server: STUN only, no TURN relay - if the
   two browsers can't reach each other directly the call simply isn't offered.
@@ -146,7 +154,7 @@ a WebSocket open, transcoding video out of band).
   only when you choose to attach them.
 - **Moderation** - block users; report a post/message/user; an admin/mod
   reports queue with content snapshots taken at report time.
-- **Site settings** (admin) - Cloudflare Turnstile CAPTCHA, SMTP relay, mail
+- **Admin settings** - Cloudflare Turnstile CAPTCHA, SMTP relay, mail
   "from" address, custom favicon, editable Terms of Service and Privacy Policy,
   Google Sign-In credentials, and live status for the background services.
 - **Themes** - a wide set of built-in looks plus Match System, picked in
@@ -192,6 +200,10 @@ a WebSocket open, transcoding video out of band).
 - **Upload worker** (`bin/upload-worker.php`) - drains a disk-backed queue of
   staged video/audio uploads, transcoding each with `ffmpeg` in an OS-sandboxed
   subprocess, then publishing the post and notifying the author.
+- **Federation worker** (`bin/federation-worker.php`) - drains the outbound
+  ActivityPub delivery queue, signing each activity as the member it's from;
+  also fetches posts a subscribed relay has named, delivers Web Push
+  notifications, and sends the trickle of email digests (§10).
 - **Trending recompute** (`bin/compute-trending.php`) - periodically rescores
   the trending table; runs on a systemd timer (§7) with a read-path self-heal
   as a fallback.
@@ -237,10 +249,12 @@ a WebSocket open, transcoding video out of band).
   geocoding service in the request path. If the download fails the installer
   says so and the site runs fine without it (locations show as coordinates);
   re-run `php bin/install.php` to retry.
-- **Optional, for smarter trending**: Python 3 (with `pip`/`venv`/dev headers)
-  and a C++ compiler, so the installer can build the spaCy environment (§8).
-- **Two background daemons plus a timer**, all separate from the web server and
-  all set up for you by the installer (§7).
+- **Optional, for smarter trending and for translation**: Python 3 (with
+  `pip`/`venv`), so the installer can build the NER environment (§8) and the
+  translation environment (§6); only the NER build additionally needs dev
+  headers and a C++ compiler.
+- **Three background daemons plus a timer**, all separate from the web server
+  and all set up for you by the installer (§7).
 
 ## 5. Installation
 
@@ -251,9 +265,9 @@ schema.
 
 **Run the installer as root (via `sudo`) when you can.** As root it installs
 real *system* systemd services (no lingering needed), auto-installs missing
-prerequisite packages, builds the trending NER environment (§8), and relocates
-TLS certs to a readable location. Without root it falls back to user-level
-services and prints manual steps.
+prerequisite packages, builds the trending NER environment (§8) and the
+translation environment (§6), and relocates TLS certs to a readable location.
+Without root it falls back to user-level services and prints manual steps.
 
 ### Web setup wizard
 
@@ -290,13 +304,16 @@ recommended first step after every upgrade (§12).
 
 ### Manual
 
-1. Copy `.env.example` to `.env` and fill in `SITE_URL`, `SITE_TITLE`,
-   `MAIL_FROM_ADDRESS`, and the least-privilege `DB_*` credentials.
+1. Copy `.env.example` to `.env` and fill in `SITE_URL`, `SITE_TITLE`, and the
+   least-privilege `DB_*` credentials. The mail "from" address and SMTP relay
+   are no longer `.env` settings - they live on the Admin Settings page
+   instead (step 5 prompts for the "from" address the first time it's unset
+   anywhere).
 2. As a DB admin account, create the database (`utf8mb4`/`utf8mb4_unicode_ci`),
    load `schema.sql`, then create the runtime account with only
    `SELECT, INSERT, UPDATE, DELETE` on it.
 3. Ensure `uploads/` is writable by the web-server user.
-4. Start the WebSocket server and upload worker (§7).
+4. Start the WebSocket server, upload worker, and federation worker (§7).
 5. `php bin/install.php` to verify/repair, then sign up.
 
 ### Choose `SITE_URL` once and keep it
@@ -333,6 +350,13 @@ both, the HTTPS redirect can be pointed at an attacker's host via a forged
 `Host` header. The installer sends a forged-Host request and refuses to
 continue until this is genuinely in place (set `SERVERNAME_CONFIRMED=1` to
 assert it in a non-interactive run).
+
+**Skipping the translation environment.** The installer builds a Python venv
+with PyTorch and a model per language pair in it, which is the better part of a
+gigabyte to fetch. An installation that will never offer the translate button
+can set `SKIP_TRANSLATE=1` and the installer leaves it alone, saying so in its
+output; translation stays unavailable there until it is run again without the
+flag. Everything else installs as normal.
 
 **Getting a certificate.** The cert lives in your web server, not in Glommer.
 
@@ -376,7 +400,7 @@ installs **user-level** units and enables lingering so they survive logout.
 | --- | --- | --- |
 | WebSocket server | live notifications & messaging (§3) | `glommer-websocket.service` |
 | Upload worker | transcodes queued media (§3) | `glommer-upload-worker.service` |
-| Federation worker | delivers queued ActivityPub activities, with backoff and retry | `glommer-federation-worker.service` |
+| Federation worker | delivers queued ActivityPub activities, with backoff and retry (§3) | `glommer-federation-worker.service` |
 | Trending recompute | rescores trending every ~15 min | `glommer-trending.timer` |
 
 The installer offers to create, enable, and health-check each one, and keeps
@@ -411,7 +435,11 @@ loginctl enable-linger "$USER"   # survive logout / start on boot
 ```
 
 The upload worker is identical (swap the ExecStart to `bin/upload-worker.php`,
-drop `RuntimeMaxSec`). `enable-linger` is **essential on a headless server** -
+drop `RuntimeMaxSec`). The federation worker is similar but not identical
+(swap the ExecStart to `bin/federation-worker.php`, drop `WatchdogSec` and
+`RuntimeMaxSec`, and use `RestartSec=5`) - it pings no watchdog and holds no
+state between passes, so a plain restart is its whole recovery story.
+`enable-linger` is **essential on a headless server** -
 a user service otherwise stops the moment you disconnect. `WatchdogSec` lets
 systemd restart a hung event loop; `RuntimeMaxSec=1d` recycles the WS daemon
 daily. Note: the daemons load code into memory at start, so after pulling new
@@ -427,8 +455,11 @@ uses hashtags, and `EntityExtractor` fails closed to that.
 
 Run as root, the installer builds an isolated virtualenv at
 **`/opt/glommer-ner`** - installing `python3`/`pip`/`venv`/dev-headers and a
-C++ compiler, then `spacy` + `click` + the `en_core_web_sm` model - and labels
-it for SELinux where applicable. The web-server user execs into it directly.
+C++ compiler, then `spacy` + `click` + `langdetect`, plus one small spaCy
+model per supported language (`en_core_web_sm`, `de_core_news_sm`, and so on -
+nine in all, one per language `bin/ner-extract.py --models` lists) - and
+labels it for SELinux where applicable. The web-server user execs into it
+directly.
 
 If the installer can't do it automatically (**unknown package manager**), set
 it up by hand:
@@ -436,13 +467,14 @@ it up by hand:
 ```
 sudo dnf install python3 python3-pip python3-devel gcc-c++   # or your equivalent
 sudo python3 -m venv /opt/glommer-ner
-sudo /opt/glommer-ner/bin/pip install -U pip wheel spacy click
+sudo /opt/glommer-ner/bin/pip install -U pip wheel spacy click langdetect
 sudo /opt/glommer-ner/bin/python -m spacy download en_core_web_sm
+# ...and again for each other language bin/ner-extract.py --models lists
 # make it world-readable/executable so the web-server user can exec it:
 sudo chmod -R a+rX /opt/glommer-ner
 ```
 
-`en_core_web_sm` and spaCy are MIT-licensed. On an SELinux-enforcing host the
+spaCy and its language models are MIT-licensed. On an SELinux-enforcing host the
 venv needs `httpd_sys_content_t`, and its compiled `.so` files need
 `textrel_shlib_t` (they use text relocation) - the installer applies both.
 
@@ -453,7 +485,7 @@ venv needs `httpd_sys_content_t`, and its compiled `.so` files need
 older runs.
 
 ```
-php bin/backup.php                 # defaults: ../glommer-backups, keep 7 days
+php bin/backup.php                 # defaults: ../glommer-backups, keep 3 days
 BACKUP_DIR=/mnt/backups/glommer BACKUP_KEEP_DAYS=14 php bin/backup.php
 ```
 
@@ -517,11 +549,11 @@ production's database onto anywhere else.
 Out of the box mail goes through PHP's `mail()`, which on a typical VPS has no
 sending reputation and lands in spam. For real deliverability:
 
-1. **Use an SMTP relay** - set host/port/username/password/encryption in the
-   admin Site Settings → Mail section (live, no restart). Glommer speaks SMTP
+1. **Use an SMTP relay** - set host/port/username/password/encryption in
+   Admin Settings → Mail section (live, no restart). Glommer speaks SMTP
    directly; a failed send is reported immediately.
-2. **Publish SPF/DKIM/DMARC** for the `MAIL_FROM_ADDRESS` domain, matching what
-   your relay documents.
+2. **Publish SPF/DKIM/DMARC** for your configured mail "from" address's
+   domain, matching what your relay documents.
 
 **Email digests** are the one mail Glommer sends that nobody asked for
 individually, so they are held to tighter rules. A member gets one only after a
@@ -534,7 +566,7 @@ now expect of anything sending in bulk. On an installation with no
 `ACTIVITYPUB_ENCRYPTION_KEY` no such link can be signed, so no digest is sent
 at all. Members switch them off under Settings → Email
 Digests, and the admin can add a closing paragraph of the server's own under
-Site Settings → Email Digest. Where an OpenRouter key is configured, the mail
+Admin Settings → Email Digest. Where an OpenRouter key is configured, the mail
 opens with a short written summary of what has been posted; without one it is
 simply the list of what was missed. They go out a trickle at a time from the
 federation worker, so a site full of dormant accounts never turns into a mail
@@ -551,13 +583,14 @@ which is exactly why the relay approach is recommended.
 
 The **first account created on a fresh install is the administrator** - this is
 structural, not a convention: the admin is always `userId` 1. Admin-only
-actions (appointing/revoking moderators, editing site settings, Google/Turnstile
+actions (appointing/revoking moderators, editing admin settings, Google/Turnstile
 config) are theirs alone; general moderators can work the reports queue, ban
 users, ban trending entities, and defederate whole domains from the
-**Blocked Servers** page - a domain block refuses that server's deliveries,
-stops all fetches to it, and severs existing follows in both directions.
+**Blocked Servers** section of Mod Settings - a domain block refuses that
+server's deliveries, stops all fetches to it, and severs existing follows in
+both directions.
 
-**Relays** (`/admin/relays`, admin only) subscribe this server to a shared
+**Relays** (Admin Settings, admin only) subscribe this server to a shared
 firehose. Weigh it before subscribing: the volume is whatever the servers on
 the other side publish - quiet one week, thousands of posts an hour the next -
 and your storage, delivery queue and moderation queue all carry it. Subscribing
@@ -572,10 +605,14 @@ Unsubscribing stops new posts and leaves the ones already here.
 The codebase carries `GLOMMER_VERSION` (in `src/init.php`) and the database
 records the version it was last installed/upgraded to. After pulling new code,
 **run `php bin/install.php`** to apply schema changes and record the version.
-If the only pending work is DML maintenance (the common case), the site
-upgrades itself silently on the first request, protected by `ignore_user_abort()`.
-Remember to `systemctl restart` the daemons after any pull that touches their
-code (§7).
+The site also attempts this itself on every request while the database
+lags behind, protected by `ignore_user_abort()`: DML maintenance and data
+backfills always apply silently; schema changes (missing tables, drift, index
+migrations) do too, but only when `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` are
+set in `.env` for a non-interactive admin connection. Without those, a pending
+schema change falls back to the maintenance page until someone runs
+`bin/install.php` by hand. Remember to `systemctl restart` the daemons after
+any pull that touches their code (§7).
 
 ## 13. Monitoring
 

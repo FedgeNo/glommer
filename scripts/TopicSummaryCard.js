@@ -1,4 +1,5 @@
 import { Api } from '/scripts/Api.js';
+import { Strings } from '/scripts/Strings.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 /**
@@ -38,7 +39,7 @@ export class TopicSummaryCard {
 
         const label = document.createElement('p');
         label.className = 'TopicSummaryLabel muted text-sm';
-        label.textContent = 'AI-generated summary';
+        label.textContent = Strings.for('TopicSummaryCard', { label: 'AI-generated summary' }).label;
 
         card.appendWithSpace(paragraph);
         card.appendWithSpace(label);

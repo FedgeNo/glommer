@@ -15,7 +15,7 @@ class GoogleSignInButton extends Anchor
     public function toDOM(): \DOMElement
     {
         $this -> attributes['href'] = ServerURL::absolute('/auth-google');
-        $this -> contents[] = 'Continue with Google';
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
 
         return parent::toDOM();
     }

@@ -14,29 +14,34 @@ class MapSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $fields = new Fieldset('Map tiles');
-        $fields -> addContent(new Notice('Leave blank to use OpenStreetMap. To use a keyed provider, paste its URL template with a literal {apiKey} where the key goes, plus the key and attribution below.'));
+        $words = Strings::for(self::class);
 
-        $url = new InputField('mapTileURL', 'Tile URL template', 'text', 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 255);
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new Notice((string) ($words['notice'] ?? '')));
+
+        // The template itself is syntax to paste ({z}/{x}/{y}, an {apiKey}
+        // token), not prose, so unlike the labels around it, it stays here
+        // rather than moving to the locale.
+        $url = new InputField('mapTileURL', (string) ($words['urlLabel'] ?? ''), 'text', 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 255);
         $url -> value = (string) Settings::get(MapTiles::URL_SETTING, '');
         $url -> autocomplete = 'off';
         $url -> labelVisible = true;
         $fields -> addContent($url);
 
-        $key = new InputField('mapTileAPIKey', 'API key', 'text', 'Your tile provider API key', 255);
+        $key = new InputField('mapTileAPIKey', (string) ($words['keyLabel'] ?? ''), 'text', (string) ($words['keyPlaceholder'] ?? ''), 255);
         $key -> value = (string) Settings::get(MapTiles::KEY_SETTING, '');
         $key -> autocomplete = 'off';
         $key -> labelVisible = true;
         $fields -> addContent($key);
 
-        $attribution = new InputField('mapTileAttribution', 'Attribution', 'text', '© OpenStreetMap contributors', 255);
+        $attribution = new InputField('mapTileAttribution', (string) ($words['attributionLabel'] ?? ''), 'text', (string) ($words['attributionPlaceholder'] ?? ''), 255);
         $attribution -> value = (string) Settings::get(MapTiles::ATTRIBUTION_SETTING, '');
         $attribution -> autocomplete = 'off';
         $attribution -> labelVisible = true;
         $fields -> addContent($attribution);
 
         $this -> contents[] = $fields;
-        $this -> contents[] = new SubmitButton('Save');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

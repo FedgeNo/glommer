@@ -12,25 +12,27 @@ class MessageKeyPassphraseForm extends FormForm
 {
     public function toDOM(): \DOMElement
     {
-        $current = new InputField('currentPassphrase', 'Current passphrase', 'password');
+        $words = Strings::for(self::class);
+
+        $current = new InputField('currentPassphrase', (string) ($words['currentPassphraseLabel'] ?? ''), 'password');
         $current -> autocomplete = 'current-password';
         $this -> contents[] = $current;
 
-        $new = new InputField('newPassphrase', 'New passphrase', 'password');
+        $new = new InputField('newPassphrase', (string) ($words['newPassphraseLabel'] ?? ''), 'password');
         $new -> autocomplete = 'new-password';
         $this -> contents[] = $new;
 
-        $confirm = new InputField('newPassphraseConfirm', 'Confirm new passphrase', 'password');
+        $confirm = new InputField('newPassphraseConfirm', (string) ($words['confirmNewPassphraseLabel'] ?? ''), 'password');
         $confirm -> autocomplete = 'new-password';
         $this -> contents[] = $confirm;
 
         // Rewrapping stores a new key blob, so the server demands the account
         // password - see api/message-keys.php.
-        $account_password = new InputField('rewrapAccountPassword', 'Account password', 'password');
+        $account_password = new InputField('rewrapAccountPassword', (string) ($words['accountPasswordLabel'] ?? ''), 'password');
         $account_password -> autocomplete = 'current-password';
         $this -> contents[] = $account_password;
 
-        $this -> contents[] = new SubmitButton('Change passphrase');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         return parent::toDOM();
     }

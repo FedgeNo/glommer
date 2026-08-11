@@ -6,8 +6,9 @@ declare(strict_types=1);
  * One <item> in a feed, hydrated straight from the database by its feed's
  * rows(): the post's id and its author's slug (which together form the
  * permalink), its title and plaintext description, and when it was created.
- * link and pubDate are derived from those the moment the row loads, so an item
- * is a complete element the instant it exists.
+ * The permalink and the RSS date are read off those where they are written,
+ * so the item carries the row it came from rather than a second copy of it in
+ * another shape.
  */
 class RSSItem extends XMLObject
 {
@@ -20,17 +21,6 @@ class RSSItem extends XMLObject
     public ?string $contentWarning = null;
     public ?string $createdAt = null;
 
-    public string $link;
-    public string $pubDate;
-
-    public function __construct(array|object|null $properties = null)
-    {
-        parent::__construct($properties);
-
-        $this -> link = ServerURL::absolute('/users/' . ($this -> authorSlug ?? '') . '/' . $this -> postId);
-        $this -> pubDate = date(DATE_RSS, strtotime((string) $this -> createdAt));
-    }
-
     public function toDOM(): \DOMElement
     {
         // A reader has no gate to put a warned post behind, so it carries its
@@ -40,9 +30,9 @@ class RSSItem extends XMLObject
 
         foreach ([
             'title' => $this -> displayTitle(),
-            'link' => $this -> link,
+            'link' => $this -> link(),
             'description' => $warned ? (string) $this -> contentWarning : (string) $this -> description,
-            'pubDate' => $this -> pubDate,
+            'pubDate' => date(DATE_RSS, strtotime((string) $this -> createdAt)),
         ] as $tag => $text) {
             $element = new XMLObject();
             $element -> tagName = $tag;
@@ -53,10 +43,15 @@ class RSSItem extends XMLObject
         $guid = new XMLObject();
         $guid -> tagName = 'guid';
         $guid -> attributes['isPermaLink'] = 'true';
-        $guid -> addContent($this -> link);
+        $guid -> addContent($this -> link());
         $this -> contents[] = $guid;
 
         return parent::toDOM();
+    }
+
+    public function link(): string
+    {
+        return ServerURL::absolute('/users/' . ($this -> authorSlug ?? '') . '/' . $this -> postId);
     }
 
     /**

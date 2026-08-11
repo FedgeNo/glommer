@@ -11,12 +11,22 @@ class RepostAttribution extends Div
 {
     public ?string $class = 'RepostAttribution';
 
-    public function __construct(string $slug, ?string $title)
+    public function __construct(private readonly string $slug, private readonly ?string $title)
     {
         parent::__construct();
+    }
 
-        $this -> addContent('');
-        $this -> addContent(new Anchor(ServerURL::absolute('/users/' . $slug . '/'), $title !== null && $title !== '' ? $title : $slug));
-        $this -> addContent(' reposted');
+    public function toDOM(): \DOMElement
+    {
+        $sentence = Strings::for(self::class)['attribution'] ?? [];
+
+        $this -> addContent((string) ($sentence['before'] ?? ''));
+        $this -> addContent(new Anchor(
+            ServerURL::absolute('/users/' . $this -> slug . '/'),
+            $this -> title !== null && $this -> title !== '' ? $this -> title : $this -> slug
+        ));
+        $this -> addContent((string) ($sentence['after'] ?? ''));
+
+        return parent::toDOM();
     }
 }

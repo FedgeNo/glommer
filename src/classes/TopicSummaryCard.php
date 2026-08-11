@@ -34,14 +34,11 @@ class TopicSummaryCard extends Card
 
         $this -> addContent(new Paragraph($this -> summary));
 
-        $label = new Paragraph('AI-generated summary');
+        $label = new Paragraph((string) (Strings::for(self::class)['label'] ?? ''));
         $label -> class = 'TopicSummaryLabel';
         $label -> mixins = ['muted', 'text-sm'];
         $this -> addContent($label);
 
         return parent::toDOM();
     }
-
-    /** The wording the client repeats when it fills one in - one place for it. */
-    public const LABEL = 'AI-generated summary';
 }

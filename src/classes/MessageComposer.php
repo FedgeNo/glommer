@@ -26,6 +26,8 @@ class MessageComposer extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         // Video calling is offered only in a thread with another member here.
         // It needs both people present in the same thread at once, which this
         // server can only know about its own, and a direct browser-to-browser
@@ -64,10 +66,10 @@ class MessageComposer extends FormForm
         // floor(65535 / 3) guarantees the byte cap is never exceeded
         // regardless of content, so a message the browser lets through never
         // gets rejected server-side as "too long".
-        $row -> addContent(new TextareaField('body', 'Message', 'Write a message', 21845));
+        $row -> addContent(new TextareaField('body', (string) ($words['bodyLabel'] ?? ''), (string) ($words['bodyPlaceholder'] ?? ''), 21845));
         $row -> addContent(new EmojiPicker());
 
-        $row -> addContent(new SubmitButton('Send'));
+        $row -> addContent(new SubmitButton((string) ($words['send'] ?? '')));
 
         $this -> contents[] = $row;
 

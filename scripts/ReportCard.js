@@ -9,6 +9,7 @@ import { User } from '/scripts/User.js';
 import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * Client-side mirror of the PHP ReportCard (src/classes/ReportCard.php) - the
@@ -40,7 +41,7 @@ export class ReportCard {
     }
 
     /** Mirrors ReportCard::targetContentElement - the reported item itself. */
-    targetContentElement() {
+    targetContentElement(words) {
         const target = this.target || { kind: 'missing' };
 
         if (target.kind === 'post' && target.post) {
@@ -51,7 +52,7 @@ export class ReportCard {
             if (Array.isArray(target.attachments) && target.attachments.length > 0) {
                 const media = document.createElement('div');
                 media.className = 'ReportedAttachments d-flex flex-column gap-2';
-                target.attachments.forEach((attachment) => media.appendWithSpace(forensic_attachment_element(attachment)));
+                target.attachments.forEach((attachment) => media.appendWithSpace(forensic_attachment_element(attachment, words)));
                 post.appendWithSpace(media);
             }
 
@@ -70,13 +71,32 @@ export class ReportCard {
         }
 
         // missing / unknown - a muted notice (mirrors the PHP Notice element).
+        // The server already resolved and localized target.message; the
+        // fallback here is only for a payload that somehow carries neither.
         const notice = document.createElement('p');
         notice.className = 'muted Notice';
-        notice.textContent = target.message || 'Unknown content type.';
+        notice.textContent = target.message || words.missing.unknownType;
         return notice;
     }
 
     toElement() {
+        const words = Strings.for('ReportCard', {
+            targetTypes: { post: 'Post', message: 'Message', user: 'User' },
+            summary: { before: '{type} #{id} reported by ', after: '' },
+            reasonLine: 'Reason: {reason}',
+            banReporterLabel: 'Ban Reporter',
+            banReportedUserLabel: 'Ban Reported User',
+            deleteLabel: 'Delete {type}',
+            reportedImageAlt: 'Reported image',
+            attachmentUnavailable: 'A reported attachment is no longer available.',
+            viewAttachment: 'View reported attachment',
+            missing: {
+                noSnapshot: 'The reported content is no longer available.',
+                unknownType: 'Unknown content type.',
+            },
+        });
+        const type_label = words.targetTypes[this.targetType] || capitalize(this.targetType);
+
         const card = document.createElement('article');
         card.className = 'ReportCard d-flex gap-3 align-items-start';
 
@@ -84,19 +104,22 @@ export class ReportCard {
         details.className = 'ReportDetails d-flex flex-column gap-2';
 
         const summary = document.createElement('div');
-        summary.appendWithSpace(document.createTextNode(capitalize(this.targetType) + ' #' + this.targetId + ' reported by '));
+        summary.appendWithSpace(document.createTextNode(
+            words.summary.before.replace('{type}', type_label).replace('{id}', this.targetId)
+        ));
 
         const reporter_link = document.createElement('a');
         reporter_link.href = ClientConfig.siteURL() + '/users/' + this.reporterUsername + '/';
         reporter_link.textContent = this.reporterUsername;
         summary.appendWithSpace(reporter_link);
+        summary.appendWithSpace(document.createTextNode(words.summary.after));
         details.appendWithSpace(summary);
 
-        details.appendWithSpace(this.targetContentElement());
+        details.appendWithSpace(this.targetContentElement(words));
 
         if (this.reason !== null && this.reason !== undefined) {
             const reason_line = document.createElement('p');
-            reason_line.textContent = 'Reason: ' + this.reason;
+            reason_line.textContent = words.reasonLine.replace('{reason}', this.reason);
             details.appendWithSpace(reason_line);
         }
 
@@ -117,13 +140,13 @@ export class ReportCard {
         // admin filed the report. (The reported user is never the admin - the
         // report API rejects reports about admin content.)
         if (Number(this.reporterId) !== 1) {
-            actions.appendWithSpace(this.banButton(this.reporterId, 'Ban Reporter'));
+            actions.appendWithSpace(this.banButton(this.reporterId, words.banReporterLabel));
         }
 
         if (this.targetUserId !== null && this.targetUserId !== undefined
             && this.targetUsername !== null && this.targetUsername !== undefined
             && Number(this.targetUserId) !== Number(this.reporterId)) {
-            actions.appendWithSpace(this.banButton(this.targetUserId, 'Ban Reported User'));
+            actions.appendWithSpace(this.banButton(this.targetUserId, words.banReportedUserLabel));
         }
 
         // Only offer Delete when the live post/message still exists (a snapshot
@@ -133,7 +156,7 @@ export class ReportCard {
             delete_button.type = 'button';
             delete_button.className = 'Button ReportedContentDeleteButton';
             delete_button.dataset.reportId = this.reportId;
-            delete_button.textContent = 'Delete ' + capitalize(this.targetType);
+            delete_button.textContent = words.deleteLabel.replace('{type}', type_label);
             actions.appendWithSpace(delete_button);
         }
 
@@ -242,12 +265,12 @@ function capitalize(text) {
  * an img/video/audio pointed at the mod-only passthrough, a notice when the
  * original is gone, or a link for any other type. mediaType is resolved server-side.
  */
-function forensic_attachment_element(attachment) {
+function forensic_attachment_element(attachment, words) {
     if (attachment.mediaType === 'image') {
         const image = document.createElement('img');
         image.className = 'ReportedMedia';
         image.src = attachment.url;
-        image.alt = 'Reported image';
+        image.alt = words.reportedImageAlt;
         return image;
     }
 
@@ -269,7 +292,7 @@ function forensic_attachment_element(attachment) {
     if (attachment.mediaType === null || attachment.mediaType === undefined) {
         const notice = document.createElement('p');
         notice.className = 'muted Notice';
-        notice.textContent = 'A reported attachment is no longer available.';
+        notice.textContent = words.attachmentUnavailable;
         return notice;
     }
 
@@ -277,7 +300,7 @@ function forensic_attachment_element(attachment) {
     link.href = attachment.url;
     link.target = '_blank';
     link.rel = 'noopener';
-    link.textContent = 'View reported attachment';
+    link.textContent = words.viewAttachment;
     return link;
 }
 

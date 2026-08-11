@@ -1,4 +1,6 @@
 import { parse_server_date } from '/scripts/utils.js';
+import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * The time control under the map. Owns the slider, the mode buttons and the
@@ -126,7 +128,7 @@ export class MapScrubber {
             this.#range.value = 0;
         }
 
-        this.#element.querySelector('.MapScrubberPlay').textContent = 'Pause';
+        this.#element.querySelector('.MapScrubberPlay').textContent = Strings.for('MapScrubber', { pause: 'Pause' }).pause;
 
         this.#timer = setInterval(() => {
             const next = Number(this.#range.value) + MapScrubber.#STEPS / 120;
@@ -149,7 +151,7 @@ export class MapScrubber {
             this.#timer = null;
         }
 
-        this.#element.querySelector('.MapScrubberPlay').textContent = 'Play';
+        this.#element.querySelector('.MapScrubberPlay').textContent = Strings.for('MapScrubber', { play: 'Play' }).play;
     }
 
     /** The moment the handle currently points at. */
@@ -167,9 +169,14 @@ export class MapScrubber {
             ? this.#posts.filter((entry) => Math.abs(entry.time - at) <= span)
             : this.#posts.filter((entry) => entry.time <= at);
 
-        this.#label.textContent = this.#mode === 'window'
-            ? 'Posted around ' + MapScrubber.#formatDate(at) + ' — ' + visible.length + ' post' + (visible.length === 1 ? '' : 's')
-            : 'Posted up to ' + MapScrubber.#formatDate(at) + ' — ' + visible.length + ' post' + (visible.length === 1 ? '' : 's');
+        const words = Strings.for('MapScrubber', {
+            cumulativeLabel: { one: 'Posted up to {date} — {count} post', other: 'Posted up to {date} — {count} posts' },
+            windowLabel: { one: 'Posted around {date} — {count} post', other: 'Posted around {date} — {count} posts' },
+        });
+
+        const forms = this.#mode === 'window' ? words.windowLabel : words.cumulativeLabel;
+
+        this.#label.textContent = MapScrubber.#pluralPhrase(forms, visible.length).replace('{date}', MapScrubber.#formatDate(at));
 
         this.#onChange(visible.map((entry) => entry.post));
     }
@@ -180,5 +187,12 @@ export class MapScrubber {
             month: 'short',
             day: 'numeric',
         });
+    }
+
+    /** Mirrors Poll.pluralPhrase() - one/other picked by the browser's own CLDR data. */
+    static #pluralPhrase(forms, count) {
+        const category = new Intl.PluralRules(ClientConfig.get('locale') || 'en').select(count);
+
+        return (forms[category] || forms.other || '').replace('{count}', String(count));
     }
 }

@@ -13,9 +13,11 @@ class MoreLocationsLink extends Paragraph
 
     public function toDOM(): \DOMElement
     {
-        $this -> contents[] = 'See ';
-        $this -> addContent(new Anchor(ServerURL::absolute('/locations/'), 'more locations'));
-        $this -> contents[] = '';
+        $sentence = Strings::for(self::class)['moreLocations'] ?? [];
+
+        $this -> contents[] = (string) ($sentence['before'] ?? '');
+        $this -> addContent(new Anchor(ServerURL::absolute('/locations/'), (string) ($sentence['link'] ?? '')));
+        $this -> contents[] = (string) ($sentence['after'] ?? '');
 
         return parent::toDOM();
     }

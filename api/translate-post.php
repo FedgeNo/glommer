@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // call this server is accountable for.
 Auth::requireLogin();
 
-if (!OpenRouter::isEnabled()) {
+if (!Translator::isAvailable()) {
     JSONResponse::error('Translation is not available on this server.', 503) -> send();
 }
 

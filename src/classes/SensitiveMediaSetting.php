@@ -29,7 +29,7 @@ class SensitiveMediaSetting extends Div
 
         $toggle = new SensitiveMediaSettingToggle();
         $toggle -> addContent($checkbox);
-        $toggle -> addContent('Show sensitive media by default');
+        $toggle -> addContent((string) (Strings::for(self::class)['toggle'] ?? ''));
 
         $this -> addContent($toggle);
 

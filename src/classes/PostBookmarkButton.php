@@ -14,12 +14,11 @@ class PostBookmarkButton extends ButtonButton
 {
     private const GLYPH = '🔖';
 
-    public function __construct(bool $bookmarked)
+    public function __construct(private readonly bool $bookmarked)
     {
         parent::__construct();
 
         $this -> attributes['data-bookmarked'] = $bookmarked ? '1' : '0';
-        $this -> nameIt(self::label($bookmarked));
         $this -> pressed($bookmarked);
 
         if ($bookmarked) {
@@ -29,9 +28,18 @@ class PostBookmarkButton extends ButtonButton
         $this -> contents[] = self::GLYPH;
     }
 
+    public function toDOM(): \DOMElement
+    {
+        $this -> nameIt(self::label($this -> bookmarked));
+
+        return parent::toDOM();
+    }
+
     /** The name it goes by, which is the only part that changes. */
     public static function label(bool $bookmarked): string
     {
-        return $bookmarked ? 'Remove bookmark' : 'Bookmark';
+        $words = Strings::for(self::class);
+
+        return $bookmarked ? (string) ($words['remove'] ?? '') : (string) ($words['add'] ?? '');
     }
 }

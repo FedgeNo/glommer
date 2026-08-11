@@ -11,8 +11,9 @@ class ScrollToTopButton extends ButtonButton
 {
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['aria-label'] = 'Scroll to top';
-        $this -> contents[] = 'Scroll to top';
+        $label = (string) (Strings::for(self::class)['label'] ?? '');
+        $this -> attributes['aria-label'] = $label;
+        $this -> contents[] = $label;
 
         return parent::toDOM();
     }

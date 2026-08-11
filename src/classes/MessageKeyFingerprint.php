@@ -22,7 +22,7 @@ class MessageKeyFingerprint extends Div
     public function toDOM(): \DOMElement
     {
         $explanation = new Paragraph();
-        $explanation -> contents[] = 'Read this code to each other some other way - out loud, in person, over a call. If it matches on both sides, nobody is between you.';
+        $explanation -> contents[] = (string) (Strings::for(self::class)['explanation'] ?? '');
         $this -> addContent($explanation);
 
         // Filled in by the browser; empty here because a code this server

@@ -15,20 +15,22 @@ class ServerBlockForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $fields = new Fieldset('Block a server');
+        $words = Strings::for(self::class);
 
-        $fields -> addContent(new Paragraph('Refuses everything from that server and everything under it: no deliveries in, none out, and existing follows in both directions are dropped.'));
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
 
-        $domain = new InputField('domain', 'Server', 'text', 'example.social', 255);
+        $fields -> addContent(new Paragraph((string) ($words['description'] ?? '')));
+
+        $domain = new InputField('domain', (string) ($words['serverLabel'] ?? ''), 'text', (string) ($words['serverPlaceholder'] ?? ''), 255);
         $domain -> labelVisible = true;
         $fields -> addContent($domain);
 
-        $reason = new InputField('reason', 'Reason', 'text', 'Why this server is blocked', 255);
+        $reason = new InputField('reason', (string) ($words['reasonLabel'] ?? ''), 'text', (string) ($words['reasonPlaceholder'] ?? ''), 255);
         $reason -> labelVisible = true;
         $fields -> addContent($reason);
 
         $this -> contents[] = $fields;
-        $this -> contents[] = new SubmitButton('Block Server');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         return parent::toDOM();
     }

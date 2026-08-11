@@ -95,10 +95,10 @@ class Notification extends Article
      *
      * The difference only matters where notifications are read back as news:
      * "a server error occurred" is a thing to go and look at, not a thing you
-     * missed while you were away. The default arm of textFor() below covers
-     * anything unlisted with "did something", which is fine on a page next to
-     * a timestamp and is not fine in an email, so this names what belongs
-     * rather than what does not.
+     * missed while you were away. The 'default' wording textFor() below falls
+     * back to covers anything unlisted with "did something", which is fine on
+     * a page next to a timestamp and is not fine in an email, so this names
+     * what belongs rather than what does not.
      */
     public const FROM_A_PERSON = ['like', 'repost', 'reply', 'friendRequest', 'friendAccepted', 'message', 'mention', 'follow'];
 
@@ -109,31 +109,14 @@ class Notification extends Article
      */
     public static function textFor(string $type, string $actor_name): string
     {
-        return match ($type) {
-            'postReady' => 'Your media has finished processing and is now live',
-            'scheduledPostLive' => 'Your scheduled post is now live',
-            'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
-            'uploadFailed' => 'One of your uploads failed to process and was not posted',
-            'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
-            'mailFromNotConfigured' => 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.',
-            'systemError' => 'A server error occurred. Check the error log for details.',
-            'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
-            // The empty piece in front of the name is a slot to translate
-            // into: a language that says "your post was liked by X" has
-            // nowhere to put those words otherwise, and the order would be
-            // settled here rather than by whoever translates it.
-            'like' => '' . $actor_name . ' liked your post',
-            'repost' => '' . $actor_name . ' reposted your post',
-            'reply' => '' . $actor_name . ' replied to your post',
-            'friendRequest' => '' . $actor_name . ' sent you a friend request',
-            'friendAccepted' => '' . $actor_name . ' accepted your friend request',
-            'message' => '' . $actor_name . ' sent you a message',
-            'mention' => '' . $actor_name . ' mentioned you in a post',
-            // Only ever a Fediverse follow. A local one is a friendship, which
-            // is mutual and asks first, so it has its own two types above.
-            'follow' => '' . $actor_name . ' followed you from another server',
-            default => '' . $actor_name . ' did something',
-        };
+        $words = Strings::for(self::class);
+        // An unrecognised type still says something, by the same 'default'
+        // this replaced when the wording was a match().
+        $phrase = (string) ($words[$type] ?? $words['default'] ?? '');
+
+        // {name} rather than concatenation: where the actor's name sits in
+        // the sentence, or whether it appears at all, is the locale's call.
+        return str_replace('{name}', $actor_name, $phrase);
     }
 
     protected function targetURL(): ?string

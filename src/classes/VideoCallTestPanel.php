@@ -41,7 +41,7 @@ class VideoCallTestPanel extends Div
         // on every request the page makes afterwards.
         $this -> attributes['data-ice-servers'] = (string) json_encode(VideoCall::iceServers());
 
-        $this -> contents[] = new Paragraph('Runs the parts of call setup that can be checked from one browser. Everything up to an actual peer-to-peer connection is testable here; connecting to another person needs that person.');
+        $this -> contents[] = new Paragraph((string) (Strings::for(self::class)['intro'] ?? ''));
 
         $this -> contents[] = new VideoCallTestButton();
 

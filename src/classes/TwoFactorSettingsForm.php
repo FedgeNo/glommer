@@ -24,15 +24,14 @@ class TwoFactorSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $legend = $this -> enabled ? 'Two-factor authentication is on' : 'Two-factor authentication is off';
-        $fields = new Fieldset($legend);
+        $words = Strings::for(self::class);
+        $state = $this -> enabled ? 'on' : 'off';
+        $current_password_words = (string) ($words['currentPassword'] ?? '');
 
-        $explanation = $this -> enabled
-            ? 'When you log in, we\'ll email a verification code you have to enter to finish signing in.'
-            : 'Add a second step at login: we\'ll email a verification code you have to enter, so your password alone isn\'t enough to get in.';
-        $fields -> addContent(new Paragraph($explanation));
+        $fields = new Fieldset((string) ($words['legend'][$state] ?? ''));
+        $fields -> addContent(new Paragraph((string) ($words['explanation'][$state] ?? '')));
 
-        $current_password = new InputField('currentPassword', 'Current password', 'password', 'Current password');
+        $current_password = new InputField('currentPassword', $current_password_words, 'password', $current_password_words);
         $current_password -> labelVisible = true;
         $fields -> addContent($current_password);
 
@@ -40,7 +39,7 @@ class TwoFactorSettingsForm extends FormForm
 
         // The button's action is fixed by the current state - the endpoint
         // reads it from data-action so the two can't disagree.
-        $button = new SubmitButton($this -> enabled ? 'Turn off two-factor authentication' : 'Turn on two-factor authentication');
+        $button = new SubmitButton((string) ($words['submit'][$state] ?? ''));
         $button -> attributes['data-action'] = $this -> enabled ? 'disable' : 'enable';
         $this -> contents[] = $button;
 

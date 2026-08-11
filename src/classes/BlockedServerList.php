@@ -11,10 +11,10 @@ class BlockedServerList extends ItemList
     public ?string $class = 'BlockedServerList';
     public array $mixins = ['d-flex', 'flex-column'];
 
-    protected string $emptyNotice = 'No blocked servers.';
-
     protected function rows(): array
     {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+
         // LEFT JOIN: a block outlives the moderator who made it, and the row
         // still has to show.
         return DB::rows('

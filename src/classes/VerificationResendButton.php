@@ -9,6 +9,12 @@ class VerificationResendButton extends ButtonButton
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> contents[] = 'Resend verification email';
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
+
+        return parent::toDOM();
     }
 }

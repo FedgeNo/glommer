@@ -2,6 +2,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Notification } from '/scripts/Notification.js';
 import { Api } from '/scripts/Api.js';
+import { Strings } from '/scripts/Strings.js';
 import { list_in, list_item } from '/scripts/utils.js';
 
 export class WebSocketManager {
@@ -96,7 +97,18 @@ export class WebSocketManager {
             }
         });
 
-        this.socket.addEventListener('close', () => this.scheduleReconnect());
+        this.socket.addEventListener('close', () => {
+            // Only on a real change of state. Saying it on page load instead
+            // would replace the line the server rendered - in the reader's own
+            // language - with this one, before anything had happened.
+            const statusLine = document.querySelector('.WebSocketClientStatus');
+
+            if (statusLine) {
+                this.showStatus(statusLine);
+            }
+
+            this.scheduleReconnect();
+        });
         this.socket.addEventListener('error', () => this.socket?.close());
     }
 
@@ -144,16 +156,24 @@ export class WebSocketManager {
         document.title = '🔴 ' + this.pageTitle;
     }
 
+    // Keyed on WebSocketStatus, which is the element the server rendered and
+    // the words this replaces: one entry says the line in both renderers.
     showStatus(statusLine) {
+        const words = Strings.for('WebSocketStatus', {
+            clientConnecting: 'Browser connection: Connecting…',
+            clientConnected: 'Browser connection: Connected',
+            clientDisconnecting: 'Browser connection: Disconnecting…',
+            clientNotConnected: 'Browser connection: Not connected',
+        });
+
         const states = {
-            [WebSocket.CONNECTING]: 'Connecting…',
-            [WebSocket.OPEN]:       'Connected',
-            [WebSocket.CLOSING]:    'Disconnecting…',
-            [WebSocket.CLOSED]:     'Not connected',
+            [WebSocket.CONNECTING]: words.clientConnecting,
+            [WebSocket.OPEN]:       words.clientConnected,
+            [WebSocket.CLOSING]:    words.clientDisconnecting,
+            [WebSocket.CLOSED]:     words.clientNotConnected,
         };
 
-        const stateText = this.socket ? states[this.socket.readyState] || 'Unknown' : 'Not connected';
-        statusLine.textContent = `Browser connection: ${stateText}`;
+        statusLine.textContent = (this.socket ? states[this.socket.readyState] : null) || words.clientNotConnected;
 
         if (this.socket?.readyState === WebSocket.OPEN) {
             statusLine.classList.remove('Error');

@@ -16,18 +16,26 @@ class PasswordResetForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
 
         $token_input = new HiddenInput();
         $token_input -> name = 'token';
         $token_input -> value = $this -> token;
         $this -> contents[] = $token_input;
 
-        $fields = new Fieldset('Choose a new password');
-        $fields -> addContent(new InputField('newPassword', 'New password', 'password', 'At least 8 characters'));
-        $fields -> addContent(new InputField('confirmPassword', 'Confirm new password', 'password', 'Confirm new password'));
+        $confirm_password_label = (string) ($words['confirmPasswordLabel'] ?? '');
+
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new InputField(
+            'newPassword',
+            (string) ($words['newPasswordLabel'] ?? ''),
+            'password',
+            (string) ($words['newPasswordPlaceholder'] ?? '')
+        ));
+        $fields -> addContent(new InputField('confirmPassword', $confirm_password_label, 'password', $confirm_password_label));
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new SubmitButton('Reset Password');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         return parent::toDOM();
     }

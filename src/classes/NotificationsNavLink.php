@@ -19,18 +19,20 @@ class NotificationsNavLink extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         $dropdown = new NotificationDropdown(['userId' => $this -> userId]);
 
         // Its newest notification is all that's needed to know whether there's
         // something unseen right now.
         $has_unseen = $dropdown -> newestId() > $this -> lastNotificationId;
 
-        $this -> addContent(new Anchor(ServerURL::absolute('/notifications'), 'Notifications'));
+        $this -> addContent(new Anchor(ServerURL::absolute('/notifications'), (string) ($words['label'] ?? '')));
 
         $dot = new Span();
         $dot -> class = 'NotificationDot' . ($has_unseen ? ' Active' : '');
         // See MessageDot - a dot with no words is silent to a screen reader.
-        $dot -> addContent(new HiddenLabel('Unseen notifications'));
+        $dot -> addContent(new HiddenLabel((string) ($words['unseen'] ?? '')));
         $this -> addContent($dot);
 
         $this -> addContent($dropdown);

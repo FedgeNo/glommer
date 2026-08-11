@@ -38,11 +38,15 @@ class Conversation extends Anchor
         $info -> addContent($username_line);
 
         if ($this -> lastMessageAt !== null) {
+            $words = Strings::for(self::class)['lastMessage'] ?? [];
+
             $meta = new Div();
             $meta -> mixins = ['muted', 'text-sm'];
-            $meta -> contents[] = 'Last message ';
+            $meta -> contents[] = (string) ($words['before'] ?? '');
 
             $meta -> addContent(new RelativeTime($this -> lastMessageAt));
+
+            $meta -> contents[] = (string) ($words['after'] ?? '');
 
             $info -> addContent($meta);
         }

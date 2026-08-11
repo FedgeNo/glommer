@@ -13,11 +13,13 @@ class SitePolicyLinks extends Div
 
     public function toDOM(): \DOMElement
     {
-        $terms_link = new Anchor(ServerURL::absolute('/terms'), 'Terms of Service');
+        $words = Strings::for(self::class);
+
+        $terms_link = new Anchor(ServerURL::absolute('/terms'), (string) ($words['terms'] ?? ''));
         $terms_link -> class = 'Button';
         $this -> contents[] = $terms_link;
 
-        $privacy_link = new Anchor(ServerURL::absolute('/privacy'), 'Privacy Policy');
+        $privacy_link = new Anchor(ServerURL::absolute('/privacy'), (string) ($words['privacy'] ?? ''));
         $privacy_link -> class = 'Button';
         $this -> contents[] = $privacy_link;
 

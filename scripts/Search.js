@@ -6,6 +6,7 @@ import { OtherUser } from '/scripts/OtherUser.js';
 import { Post } from '/scripts/Post.js';
 import { BannedUser } from '/scripts/BannedUser.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 
 export class Search {
     constructor(input, options) {
@@ -218,11 +219,13 @@ export class Search {
                 // list just empties and the heading is the only thing left,
                 // which reads as the page having failed rather than answered.
                 if (items.length === 0) {
+                    const words = Strings.for('UserSearchList', {
+                        noSuggestions: 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.',
+                        noMatches: 'Nobody here matches that.',
+                    });
                     const notice = document.createElement('p');
                     notice.className = 'muted Notice';
-                    notice.textContent = searching
-                        ? 'Nobody here matches that.'
-                        : 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.';
+                    notice.textContent = searching ? words.noMatches : words.noSuggestions;
                     section.querySelector('.UserList')?.appendWithSpace(list_item(notice));
                 }
             }

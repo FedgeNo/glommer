@@ -22,11 +22,19 @@ class MessageDot extends Span
         if ($unread) {
             $this -> class .= ' Active';
         }
+    }
 
+    public function toDOM(): \DOMElement
+    {
         // A coloured circle says nothing to anybody not looking at it. The
         // words ride inside it out of sight, and are only in the accessibility
         // tree at all while the dot is shown - an inactive one is display:none.
-        $this -> addContent(new HiddenLabel('Unread messages'));
+        // Read here rather than in the constructor above: an object built
+        // early and rendered late would otherwise be fixed in whatever
+        // language was current when somebody happened to construct it.
+        $this -> addContent(new HiddenLabel((string) (Strings::for(self::class)['label'] ?? '')));
+
+        return parent::toDOM();
     }
 
     /** One answer per loaded User - see unreadFor(). */

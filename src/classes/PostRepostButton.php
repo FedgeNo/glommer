@@ -14,11 +14,10 @@ class PostRepostButton extends ButtonButton
 {
     private const GLYPH = '🔁';
 
-    public function __construct(bool $reposted, int $count)
+    public function __construct(private readonly bool $reposted, int $count)
     {
         parent::__construct();
 
-        $this -> nameIt($reposted ? 'Undo repost' : 'Repost');
         $this -> pressed($reposted);
 
         if ($reposted) {
@@ -26,6 +25,14 @@ class PostRepostButton extends ButtonButton
         }
 
         $this -> contents[] = self::label($reposted, $count);
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $words = Strings::for(self::class);
+        $this -> nameIt($this -> reposted ? (string) ($words['undo'] ?? '') : (string) ($words['repost'] ?? ''));
+
+        return parent::toDOM();
     }
 
     /** PostRepostButton.js builds the same label after a click. */

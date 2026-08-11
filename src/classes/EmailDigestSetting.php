@@ -30,7 +30,7 @@ class EmailDigestSetting extends Div
 
         $toggle = new EmailDigestSettingToggle();
         $toggle -> addContent($checkbox);
-        $toggle -> addContent('Email me what I missed when I have been away a while');
+        $toggle -> addContent((string) (Strings::for(self::class)['label'] ?? ''));
 
         $this -> addContent($toggle);
 

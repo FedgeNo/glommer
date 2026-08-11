@@ -4,6 +4,7 @@ import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { list_in, list_item } from '/scripts/utils.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * The Relays page: the form that joins one and the control on each row that
@@ -84,6 +85,8 @@ export class RelayCard {
 
     /** The row the server renders for a subscription that has yet to be answered. */
     static #card(actor_uri) {
+        const words = Strings.for('RelayCard', { waiting: 'Waiting for the relay to accept - subscribed ' });
+
         const card = document.createElement('div');
         card.className = 'RelayCard d-flex align-items-center gap-3';
         card.dataset.actorUri = actor_uri;
@@ -97,7 +100,9 @@ export class RelayCard {
 
         const detail = document.createElement('p');
         detail.className = 'muted';
-        detail.appendWithSpace(document.createTextNode('Waiting for the relay to accept - subscribed '));
+        // A freshly submitted subscription always starts pending, never
+        // accepted - see RelayCard.php for the counterpart of both phrasings.
+        detail.appendWithSpace(document.createTextNode(words.waiting));
 
         const time = document.createElement('time');
         time.className = 'RelativeTime';

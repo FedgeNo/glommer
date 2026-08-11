@@ -22,31 +22,33 @@ class MessageKeySetupForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         if ($this -> reset) {
             $warning = new Paragraph();
-            $warning -> contents[] = 'Forgotten your passphrase? Resetting creates new keys under a new one - but messages encrypted with the old keys can never be read again, by anyone.';
+            $warning -> contents[] = (string) ($words['resetWarning'] ?? '');
             $this -> contents[] = $warning;
         }
 
         $requirements = new Paragraph();
-        $requirements -> contents[] = 'At least 12 characters, and not your account password - that one is sent to this server, and your passphrase must never be.';
+        $requirements -> contents[] = (string) ($words['requirements'] ?? '');
         $this -> contents[] = $requirements;
 
-        $passphrase = new InputField('passphrase', $this -> reset ? 'New passphrase' : 'Passphrase', 'password');
+        $passphrase = new InputField('passphrase', (string) ($this -> reset ? ($words['resetPassphraseLabel'] ?? '') : ($words['passphraseLabel'] ?? '')), 'password');
         $passphrase -> autocomplete = 'new-password';
         $this -> contents[] = $passphrase;
 
-        $confirm = new InputField('passphraseConfirm', 'Confirm passphrase', 'password');
+        $confirm = new InputField('passphraseConfirm', (string) ($words['confirmLabel'] ?? ''), 'password');
         $confirm -> autocomplete = 'new-password';
         $this -> contents[] = $confirm;
 
         // Replacing keys decides who can read future messages, so the server
         // demands the account password - see api/message-keys.php.
-        $account_password = new InputField('setupAccountPassword', 'Account password', 'password');
+        $account_password = new InputField('setupAccountPassword', (string) ($words['accountPasswordLabel'] ?? ''), 'password');
         $account_password -> autocomplete = 'current-password';
         $this -> contents[] = $account_password;
 
-        $this -> contents[] = new SubmitButton($this -> reset ? 'Reset encryption keys' : 'Turn on encrypted messages');
+        $this -> contents[] = new SubmitButton((string) ($this -> reset ? ($words['resetSubmitLabel'] ?? '') : ($words['submitLabel'] ?? '')));
 
         return parent::toDOM();
     }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 class LogoutEverywhereButton extends ButtonButton
 {
-    public function __construct()
+    public function toDOM(): \DOMElement
     {
-        parent::__construct();
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
 
-        $this -> contents[] = 'Log out everywhere';
+        return parent::toDOM();
     }
 }

@@ -17,11 +17,13 @@ class ModQueueLinks extends Div
 
     public function toDOM(): \DOMElement
     {
-        $this -> addContent(new Paragraph('The queues are long enough to read a page at a time, so they have pages of their own.'));
+        $words = Strings::for(self::class);
+
+        $this -> addContent(new Paragraph((string) ($words['intro'] ?? '')));
 
         foreach ([
-            '/admin/reports' => 'Reports',
-            '/admin/banned' => 'Banned Users',
+            '/admin/reports' => (string) ($words['reportsLabel'] ?? ''),
+            '/admin/banned' => (string) ($words['bannedUsersLabel'] ?? ''),
         ] as $path => $label) {
             $link = new Anchor(ServerURL::absolute($path), $label);
             $link -> class = 'Button';

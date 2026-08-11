@@ -2,6 +2,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
 import { parse_server_date } from '/scripts/utils.js';
 import { Avatar } from '/scripts/Avatar.js';
+import { Strings } from '/scripts/Strings.js';
 
 export class Notification {
     notificationId = null;
@@ -35,56 +36,31 @@ export class Notification {
         return name + ' (' + handle + ')';
     }
 
+    /** Mirrors Notification::textFor() - see MessagingExtras.php for the words. */
     text() {
-        switch (this.type) {
-            case 'postReady':
-                return 'Your media has finished processing and is now live';
-            case 'scheduledPostLive':
-                return 'Your scheduled post is now live';
-            case 'uploadPartlyFailed':
-                return 'Your post is live, but one or more of its files couldn\'t be processed';
-            case 'uploadFailed':
-                return 'One of your uploads failed to process and was not posted';
-            case 'mailerFailed':
-                return 'Email delivery failed - the mailer may be down. Please check your mail configuration.';
-            case 'mailFromNotConfigured':
-                return 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.';
-            case 'systemError':
-                return 'A server error occurred. Check the error log for details.';
-            case 'passwordRemovedGoogle':
-                return 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.';
-            default:
-                return this.actorText();
-        }
-    }
+        const words = Strings.for('Notification', {
+            postReady: 'Your media has finished processing and is now live',
+            scheduledPostLive: 'Your scheduled post is now live',
+            uploadPartlyFailed: 'Your post is live, but one or more of its files couldn\'t be processed',
+            uploadFailed: 'One of your uploads failed to process and was not posted',
+            mailerFailed: 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
+            mailFromNotConfigured: 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.',
+            systemError: 'A server error occurred. Check the error log for details.',
+            passwordRemovedGoogle: 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
+            like: '{name} liked your post',
+            repost: '{name} reposted your post',
+            reply: '{name} replied to your post',
+            friendRequest: '{name} sent you a friend request',
+            friendAccepted: '{name} accepted your friend request',
+            message: '{name} sent you a message',
+            mention: '{name} mentioned you in a post',
+            follow: '{name} followed you from another server',
+            default: '{name} did something',
+        });
 
-    actorText() {
-        const name = this.actorName();
+        const phrase = words[this.type] ?? words.default;
 
-        // The empty piece in front of the name is a slot to translate into -
-        // mirrors Notification::textFor().
-        switch (this.type) {
-            case 'like':
-                return '' + name + ' liked your post';
-            case 'repost':
-                return '' + name + ' reposted your post';
-            case 'reply':
-                return '' + name + ' replied to your post';
-            case 'friendRequest':
-                return '' + name + ' sent you a friend request';
-            case 'friendAccepted':
-                return '' + name + ' accepted your friend request';
-            case 'message':
-                return '' + name + ' sent you a message';
-            case 'mention':
-                return '' + name + ' mentioned you in a post';
-            // Mirrors Notification.php: only ever a Fediverse follow, since a
-            // local one is a friendship and has its own two types above.
-            case 'follow':
-                return '' + name + ' followed you from another server';
-            default:
-                return '' + name + ' did something';
-        }
+        return phrase.replace('{name}', this.actorName());
     }
 
     targetURL() {

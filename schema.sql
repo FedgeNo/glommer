@@ -92,6 +92,12 @@ CREATE TABLE `Users` (
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `remoteActorURI` (`remoteActorURI`),
   KEY `banned_userId` (`banned`,`userId`),
+  -- Counting the people who are actually of this server. Both questions asked
+  -- about them - how many there are, and how many have been here lately -
+  -- start by separating local accounts from the shadow rows federation
+  -- creates, which is what leads these two.
+  KEY `remoteActorURI_banned` (`remoteActorURI`,`banned`),
+  KEY `remoteActorURI_lastSeen` (`remoteActorURI`,`lastSeen`),
   -- Two full-text indexes because user search asks two questions: the wide one
   -- answers "does this account match at all" and drives the WHERE; the narrow
   -- one answers "was that a hit on the name" and orders name matches ahead of
@@ -195,8 +201,12 @@ CREATE TABLE `Places` (
   PRIMARY KEY (`placeId`),
   KEY `latitude_longitude` (`latitude`,`longitude`),
   -- Serves the nearby page's place autocomplete: a name-prefix range walk
-  -- instead of a scan of the whole gazetteer per keystroke.
-  KEY `title` (`title`)
+  -- instead of a scan of the whole gazetteer per keystroke. Carrying
+  -- population as well makes that walk covering - the rows still have to be
+  -- sorted, since a range on the name cannot also order by size, but they are
+  -- sorted out of the index rather than by fetching each row to read one
+  -- column off it.
+  KEY `title_population` (`title`,`population`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- A poll attached to a post. Its own table rather than columns on Posts, the
@@ -508,6 +518,10 @@ CREATE TABLE `Messages` (
   -- dive here, where the conversation indexes above would leave senderId
   -- unbound and scan the person's whole mailbox on every page render.
   KEY `recipientId_messageId` (`recipientId`,`messageId`),
+  -- What the weekly digest counts: one person's messages since a moment. The
+  -- index above carries messageId rather than a time, so the digest's date
+  -- predicate had nothing to range on and fell back to reading the table.
+  KEY `recipientId_createdAt` (`recipientId`,`createdAt`),
   CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`senderId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`recipientId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1047,6 +1061,19 @@ ALTER TABLE `Users` DROP INDEX IF EXISTS `description`;
 -- served by (userId, bookmarkId); no query uses a (userId, createdAt,
 -- postId) index.
 ALTER TABLE `Bookmarks` DROP INDEX IF EXISTS `idx_bookmarks_user_created`;
+-- Messages: the weekly digest counts one person's messages since a moment, and
+-- the recipient index carries messageId rather than a time, so that count read
+-- the whole table for anyone with a full mailbox.
+ALTER TABLE `Messages` ADD INDEX IF NOT EXISTS `recipientId_createdAt` (`recipientId`, `createdAt`);
+-- Places: the autocomplete walks a name prefix and orders what it finds by
+-- population. Carrying population in the same index makes that walk covering;
+-- the bare title index it replaces cannot answer the ordering at all.
+ALTER TABLE `Places` ADD INDEX IF NOT EXISTS `title_population` (`title`, `population`);
+ALTER TABLE `Places` DROP INDEX IF EXISTS `title`;
+-- Users: both counts of "people who are actually of this server" start by
+-- separating local accounts from the shadow rows federation creates.
+ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_banned` (`remoteActorURI`, `banned`);
+ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_lastSeen` (`remoteActorURI`, `lastSeen`);
 
 -- Column-type migrations (safe to re-run): these six tables were originally
 -- created with signed int(11) id/userId columns, unlike every other table's

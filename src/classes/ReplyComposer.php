@@ -17,11 +17,12 @@ class ReplyComposer extends Composer
         if (Auth::check()) {
             return parent::toDOM();
         }
-        $link = new Anchor(ServerURL::absolute('/login'), 'Log in');
+        $sentence = Strings::for(self::class)['prompt'] ?? [];
+        $link = new Anchor(ServerURL::absolute('/login'), (string) ($sentence['link'] ?? ''));
         $paragraph = new Heading2;
-        $paragraph -> addContent('');
+        $paragraph -> addContent((string) ($sentence['before'] ?? ''));
         $paragraph -> addContent($link);
-        $paragraph -> addContent(' to reply.');
+        $paragraph -> addContent((string) ($sentence['after'] ?? ''));
         $this -> addContent($paragraph);
         return parent::toDOM();
     }

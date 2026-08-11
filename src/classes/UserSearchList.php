@@ -31,13 +31,15 @@ class UserSearchList extends UserList
 
     protected function rows(): array
     {
+        $words = Strings::for(self::class);
+
         // The two empty states are different questions and want different
         // answers: nobody to suggest is the ordinary state of a small server,
         // while nothing matching what was typed is about the typing. Set here
         // because rows() is what knows which of the two ran.
         $this -> emptyNotice = $this -> query === ''
-            ? 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.'
-            : 'Nobody here matches that.';
+            ? (string) ($words['noSuggestions'] ?? '')
+            : (string) ($words['noMatches'] ?? '');
 
         if ($this -> query === '') {
             return $this -> suggestionRows();

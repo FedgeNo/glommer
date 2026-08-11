@@ -8,13 +8,15 @@ class SignupForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $display_name_words = (string) ($words['displayName'] ?? '');
 
-        $fields = new Fieldset('Create an account');
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
 
         // Autocomplete hints mark this as a registration form: 'new-password'
         // tells the browser this isn't a login, so it stops autofilling saved
         // credentials over the placeholders (and offers to save the new ones).
-        $username = new InputField('username', 'Username', 'text', 'Lowercase letters, numbers, and _', User::MAX_USERNAME_LENGTH);
+        $username = new InputField('username', (string) ($words['usernameLabel'] ?? ''), 'text', (string) ($words['usernamePlaceholder'] ?? ''), User::MAX_USERNAME_LENGTH);
         $username -> autocomplete = 'username';
         $fields -> addContent($username);
 
@@ -26,22 +28,22 @@ class SignupForm extends FormForm
         $availability -> attributes['aria-live'] = 'polite';
         $fields -> addContent($availability);
 
-        $email = new InputField('email', 'Email', 'email', 'Valid email address', 255);
+        $email = new InputField('email', (string) ($words['emailLabel'] ?? ''), 'email', (string) ($words['emailPlaceholder'] ?? ''), 255);
         $email -> autocomplete = 'email';
         $fields -> addContent($email);
 
-        $display_name = new InputField('displayName', 'Display name (optional)', 'text', 'Display name (optional)', 50);
+        $display_name = new InputField('displayName', $display_name_words, 'text', $display_name_words, 50);
         $display_name -> autocomplete = 'nickname';
         $fields -> addContent($display_name);
 
-        $bio = new TextareaField('description', 'Bio (optional)', 'A short bio - #hashtags, @mentions, and links become clickable', 500);
+        $bio = new TextareaField('description', (string) ($words['bioLabel'] ?? ''), (string) ($words['bioPlaceholder'] ?? ''), 500);
         $fields -> addContent($bio);
 
-        $password = new InputField('password', 'Password', 'password', 'Password: At least 8 characters');
+        $password = new InputField('password', (string) ($words['passwordLabel'] ?? ''), 'password', (string) ($words['passwordPlaceholder'] ?? ''));
         $password -> autocomplete = 'new-password';
         $fields -> addContent($password);
 
-        $remember_me = new CheckboxField('rememberMe', 'Remember me');
+        $remember_me = new CheckboxField('rememberMe', (string) ($words['rememberMe'] ?? ''));
         $remember_me -> checked = true;
         $fields -> addContent($remember_me);
 
@@ -51,7 +53,7 @@ class SignupForm extends FormForm
             $this -> contents[] = new TurnstileWidget();
         }
 
-        $this -> contents[] = new SubmitButton('Sign Up');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         return parent::toDOM();
     }

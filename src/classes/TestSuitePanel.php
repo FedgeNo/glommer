@@ -9,11 +9,11 @@ class TestSuitePanel extends Div
 
     public function toDOM(): \DOMElement
     {
-        $this -> addContent(new Paragraph(
-            'Run the site\'s test suite and see the results. It takes a few seconds, so it opens on its own page.'
-        ));
+        $words = Strings::for(self::class);
 
-        $link = new Anchor(ServerURL::absolute('/admin/tests'), 'Run tests');
+        $this -> addContent(new Paragraph((string) ($words['intro'] ?? '')));
+
+        $link = new Anchor(ServerURL::absolute('/admin/tests'), (string) ($words['runLabel'] ?? ''));
         $link -> class = 'Button';
         $this -> addContent($link);
 

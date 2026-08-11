@@ -21,13 +21,19 @@ export class Strings {
         try {
             const module = await import('/locales/' + locale + '.js');
 
-            Strings.#table = module.STRINGS || {};
+            Strings.use(module.STRINGS);
         } catch {
             // No words is not a reason to render nothing: a twin asking for a
             // string it has not got falls back the same way a missing key
             // does, which is to what the caller passes as the English.
-            Strings.#table = {};
+            Strings.use({});
         }
+    }
+
+    /** The words, handed over directly - the counterpart to the server's
+     *  Strings::useLocale(), for whatever is not asking a browser. */
+    static use(table) {
+        Strings.#table = table || {};
     }
 
     /**
@@ -36,6 +42,29 @@ export class Strings {
      * the same fall-back the server does, for the same reason.
      */
     static for(name, english = {}) {
-        return { ...english, ...(Strings.#table[name] || {}) };
+        return Strings.#merge(english, Strings.#table[name] || {});
+    }
+
+    /**
+     * What array_replace_recursive does on the server, because a sentence is a
+     * list of named pieces and a locale may have translated one of them and not
+     * another. Replacing the entry wholesale would drop the pieces nobody got
+     * to yet, so a half-translated sentence would lose its English words here
+     * while still reading correctly server-side.
+     */
+    static #merge(base, over) {
+        const merged = { ...base };
+
+        for (const [key, value] of Object.entries(over)) {
+            merged[key] = Strings.#isTable(value) && Strings.#isTable(base[key])
+                ? Strings.#merge(base[key], value)
+                : value;
+        }
+
+        return merged;
+    }
+
+    static #isTable(value) {
+        return value !== null && typeof value === 'object' && !Array.isArray(value);
     }
 }

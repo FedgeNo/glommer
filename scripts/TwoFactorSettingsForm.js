@@ -2,15 +2,15 @@ import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 export class TwoFactorSettingsForm {
     static init() {
-        // Word for word what TwoFactorSettingsForm.php renders, so toggling shows
-        // the same text a reload would.
-        const onExplanation =
-            'When you log in, we\'ll email a verification code you have to enter to finish signing in.';
-        const offExplanation =
-            'Add a second step at login: we\'ll email a verification code you have to enter, so your password alone isn\'t enough to get in.';
+        // Read from the same table TwoFactorSettingsForm.php renders from, so
+        // toggling shows the same words a reload would - in whatever language
+        // that is, not just English.
+        const words = Strings.for('TwoFactorSettingsForm');
+        const pick = (entry, state) => (entry || {})[state] || '';
 
         document.addEventListener('submit', async (event) => {
             const form = event.target.closest('.TwoFactorSettingsForm');
@@ -35,15 +35,10 @@ export class TwoFactorSettingsForm {
             }
 
             const now_enabled = data.enabled;
-            form.querySelector('legend').textContent = now_enabled
-                ? 'Two-factor authentication is on'
-                : 'Two-factor authentication is off';
-            form.querySelector('fieldset p').textContent = now_enabled
-                ? onExplanation
-                : offExplanation;
-            submit_button.textContent = now_enabled
-                ? 'Turn off two-factor authentication'
-                : 'Turn on two-factor authentication';
+            const state = now_enabled ? 'on' : 'off';
+            form.querySelector('legend').textContent = pick(words.legend, state);
+            form.querySelector('fieldset p').textContent = pick(words.explanation, state);
+            submit_button.textContent = pick(words.submit, state);
             submit_button.dataset.action = now_enabled ? 'disable' : 'enable';
             password_input.value = '';
             Working.stop(submit_button);

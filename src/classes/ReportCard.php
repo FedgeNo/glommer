@@ -17,10 +17,11 @@ class ReportCard extends Article
     public ?int $targetUserId = null;
     public ?string $targetUsername = null;
 
-    // The reported item, resolved once (resolveTarget) into a kind plus its raw
-    // data, so the server render (toDOM) and the AJAX payload (toPayload) build
-    // from one source and can't diverge. kind is 'message'|'post'|'user'|
-    // 'missing'; data is the message body, a Post, a User, or the notice text.
+    // The reported item, resolved once (resolveFromSnapshot) into a kind plus
+    // its raw data, so the server render (toDOM) and the AJAX payload
+    // (toPayload) build from one source and can't diverge. kind is
+    // 'message'|'post'|'user'|'missing'; data is the message body, a Post, a
+    // User, or a locale key naming the missing-content notice.
     public ?string $targetKind = null;
     public User|Post|string|null $targetData = null;
 
@@ -36,13 +37,23 @@ class ReportCard extends Article
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $type_label = (string) ($words['targetTypes'][$this -> type] ?? ucfirst((string) $this -> type));
+
         // Left: who reported what, the content in question, the reason, and when.
         $details = new ReportDetails();
         $details -> mixins = ['d-flex', 'flex-column', 'gap-2'];
 
+        $summary_words = is_array($words['summary'] ?? null) ? $words['summary'] : [];
+
         $summary = new Div();
-        $summary -> contents[] = ucfirst((string) $this -> type) . ' #' . $this -> targetId . ' reported by ';
+        $summary -> contents[] = str_replace(
+            ['{type}', '{id}'],
+            [$type_label, (string) $this -> targetId],
+            (string) ($summary_words['before'] ?? '')
+        );
         $summary -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
+        $summary -> contents[] = (string) ($summary_words['after'] ?? '');
         $details -> addContent($summary);
 
         $details -> addContent($this -> targetContentElement());
@@ -53,7 +64,7 @@ class ReportCard extends Article
 
         if ($this -> reason !== null) {
             $reason_line = new Paragraph();
-            $reason_line -> contents[] = 'Reason: ' . $this -> reason;
+            $reason_line -> contents[] = str_replace('{reason}', $this -> reason, (string) ($words['reasonLine'] ?? ''));
             $details -> addContent($reason_line);
         }
 
@@ -72,17 +83,18 @@ class ReportCard extends Article
         $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
 
         if ($this -> reporterId !== 1) {
-            $actions -> addContent(new UserBanButton($this -> reporterId, 'Ban Reporter'));
+            $actions -> addContent(new UserBanButton($this -> reporterId, (string) ($words['banReporterLabel'] ?? '')));
         }
 
         if ($this -> targetUserId !== null && $this -> targetUsername !== null && $this -> targetUserId !== $this -> reporterId) {
-            $actions -> addContent(new UserBanButton($this -> targetUserId, 'Ban Reported User'));
+            $actions -> addContent(new UserBanButton($this -> targetUserId, (string) ($words['banReportedUserLabel'] ?? '')));
         }
 
         // Only offer Delete when the live post/message still exists (a snapshot
         // of already-deleted content still shows, but has nothing to delete).
         if ($this -> targetLive && ($this -> type === 'post' || $this -> type === 'message')) {
-            $actions -> addContent(new ReportedContentDeleteButton((int) $this -> reportId, 'Delete ' . ucfirst($this -> type)));
+            $delete_label = str_replace('{type}', $type_label, (string) ($words['deleteLabel'] ?? ''));
+            $actions -> addContent(new ReportedContentDeleteButton((int) $this -> reportId, $delete_label));
         }
 
         // Only a post has media to put behind a cover.
@@ -169,6 +181,7 @@ class ReportCard extends Article
 
     private static function forensicAttachmentElement(int $item_id): HTMLObject
     {
+        $words = Strings::for(self::class);
         $url = ServerURL::absolute('/api/report-attachment?itemId=' . $item_id);
         $original = UploadProcessor::originalForItem($item_id);
         $media_type = $original['mediaType'] ?? null;
@@ -176,7 +189,7 @@ class ReportCard extends Article
         if ($media_type === 'image') {
             $image = new ReportedMedia();
             $image -> src = $url;
-            $image -> alt = 'Reported image';
+            $image -> alt = (string) ($words['reportedImageAlt'] ?? '');
 
             return $image;
         }
@@ -201,17 +214,17 @@ class ReportCard extends Article
         // No original on disk (deleted before originals were kept), or an
         // unrecognised type - a plain note, and a link if the file is there.
         if ($media_type === null) {
-            return new Notice('A reported attachment is no longer available.');
+            return new Notice((string) ($words['attachmentUnavailable'] ?? ''));
         }
 
-        $link = new Anchor($url, 'View reported attachment');
+        $link = new Anchor($url, (string) ($words['viewAttachment'] ?? ''));
         $link -> attributes['target'] = '_blank';
         $link -> attributes['rel'] = 'noopener';
 
         return $link;
     }
 
-    /** The reported item rendered so a moderator can assess it (see resolveTarget). */
+    /** The reported item rendered so a moderator can assess it (see resolveFromSnapshot). */
     private function targetContentElement(): HTMLObject
     {
         if ($this -> targetKind === 'message') {
@@ -232,7 +245,12 @@ class ReportCard extends Article
             return $this -> targetData;
         }
 
-        return new Notice((string) $this -> targetData);
+        // Only reachable when targetKind is 'missing': resolveFromSnapshot
+        // leaves one of its two keys in targetData rather than English, so
+        // this follows the reader's language like everything else here.
+        $words = Strings::for(self::class);
+
+        return new Notice((string) ($words['missing'][$this -> targetData] ?? ''));
     }
 
     /**
@@ -274,7 +292,13 @@ class ReportCard extends Article
             ]];
         }
 
-        return ['kind' => 'missing', 'message' => (string) $this -> targetData];
+        // Only reachable when targetKind is 'missing' - see targetContentElement.
+        // Resolved here rather than sent as a bare key: toPayload() is the AJAX
+        // counterpart of toDOM(), so this is this response's one render step,
+        // in whatever locale is serving the request.
+        $words = Strings::for(self::class);
+
+        return ['kind' => 'missing', 'message' => (string) ($words['missing'][$this -> targetData] ?? '')];
     }
 
     /**
@@ -292,7 +316,7 @@ class ReportCard extends Article
     private static function resolveFromSnapshot(string $target_type, ?array $snapshot, bool $live): array
     {
         if ($snapshot === null) {
-            return ['userId' => null, 'kind' => 'missing', 'data' => 'The reported content is no longer available.'];
+            return ['userId' => null, 'kind' => 'missing', 'data' => 'noSnapshot'];
         }
 
         if ($target_type === 'message') {
@@ -326,6 +350,6 @@ class ReportCard extends Article
             return ['userId' => $user_id, 'kind' => 'user', 'data' => User::fromRow($snapshot)];
         }
 
-        return ['userId' => null, 'kind' => 'missing', 'data' => 'Unknown content type.'];
+        return ['userId' => null, 'kind' => 'missing', 'data' => 'unknownType'];
     }
 }

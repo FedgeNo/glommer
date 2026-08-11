@@ -12,28 +12,31 @@ declare(strict_types=1);
 abstract class SiteInfoSettingsForm extends FormForm
 {
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
-    public ?string $description = 'Plain text - blank lines separate paragraphs.';
 
     /** The POST field / Settings name this form edits. */
     protected string $settingName = '';
-    protected string $legend = '';
 
     abstract protected function currentText(): string;
 
     public function toDOM(): \DOMElement
     {
+        // static:: rather than self:: - toDOM() lives here once, but each
+        // descendant (About/Terms/Privacy) says its own legend and
+        // description, so the lookup has to follow the concrete class.
+        $words = Strings::for(static::class);
+        $legend = (string) ($words['legend'] ?? '');
 
-        $fields = new Fieldset($this -> legend);
+        $fields = new Fieldset($legend);
 
-        $textarea = new TextareaField($this -> settingName, $this -> legend, null, 65535);
+        $textarea = new TextareaField($this -> settingName, $legend, null, 65535);
         $textarea -> value = $this -> currentText();
         $fields -> addContent($textarea);
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Notice($this -> description);
+        $this -> contents[] = new Notice((string) ($words['description'] ?? ''));
 
-        $this -> contents[] = new SubmitButton('Save');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

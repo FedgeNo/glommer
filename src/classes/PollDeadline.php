@@ -13,12 +13,28 @@ class PollDeadline extends Time
 {
     public ?string $class = 'PollDeadline';
 
-    public function __construct(string $ends_at, bool $closed)
+    public function __construct(private readonly string $endsAt, private readonly bool $closed)
     {
         parent::__construct();
+    }
 
-        $this -> datetime = gmdate('c', (int) strtotime($ends_at));
-        $this -> addContent($closed ? 'Final result' : 'Closes ' . self::remaining($ends_at));
+    public function toDOM(): \DOMElement
+    {
+        $this -> datetime = gmdate('c', (int) strtotime($this -> endsAt));
+
+        $words = Strings::for(self::class);
+
+        if ($this -> closed) {
+            $this -> addContent((string) ($words['final'] ?? ''));
+        } else {
+            $sentence = $words['closes'] ?? [];
+
+            $this -> contents[] = (string) ($sentence['before'] ?? '');
+            $this -> contents[] = self::remaining($this -> endsAt);
+            $this -> contents[] = (string) ($sentence['after'] ?? '');
+        }
+
+        return parent::toDOM();
     }
 
     /**
@@ -30,14 +46,14 @@ class PollDeadline extends Time
     {
         $seconds = max(0, (int) strtotime($ends_at) - time());
 
-        foreach ([86400 => 'day', 3600 => 'hour', 60 => 'minute'] as $size => $unit) {
+        foreach ([86400 => 'days', 3600 => 'hours', 60 => 'minutes'] as $size => $key) {
             if ($seconds >= $size) {
                 $count = intdiv($seconds, $size);
 
-                return 'in ' . $count . ' ' . ($count === 1 ? $unit : $unit . 's');
+                return str_replace('{count}', (string) $count, Strings::plural(self::class, $key, $count));
             }
         }
 
-        return 'in under a minute';
+        return (string) (Strings::for(self::class)['underMinute'] ?? '');
     }
 }

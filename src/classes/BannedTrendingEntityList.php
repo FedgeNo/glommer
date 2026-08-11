@@ -11,10 +11,10 @@ class BannedTrendingEntityList extends ItemList
     public ?string $class = 'BannedTrendingEntityList';
     public array $mixins = ['d-flex', 'flex-column'];
 
-    protected string $emptyNotice = 'No banned trending entities.';
-
     protected function rows(): array
     {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+
         return DB::rows('
 SELECT `BannedTrendingEntities`.`type`, `BannedTrendingEntities`.`title`, `BannedTrendingEntities`.`reason`, `BannedTrendingEntities`.`createdAt`, `Users`.`slug` AS `bannedByUsername`
     FROM `BannedTrendingEntities`

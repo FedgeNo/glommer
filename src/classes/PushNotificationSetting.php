@@ -17,16 +17,16 @@ class PushNotificationSetting extends Div
 
     public function toDOM(): \DOMElement
     {
-        $this -> addContent(new Paragraph(
-            'Get notifications on this device even when the site isn\'t open. This is a per-browser choice - turn it on wherever you want to be reached.'
-        ));
+        $words = Strings::for(self::class);
+
+        $this -> addContent(new Paragraph((string) ($words['explanation'] ?? '')));
 
         $button = new ButtonButton();
         $button -> class = 'PushSubscribeButton';
         // The real label and disabled state are set by the script once it has
         // read the browser's actual subscription; this is the pre-JS resting
         // text, and what a no-JS visitor is left with.
-        $button -> contents[] = 'Enable on this device';
+        $button -> contents[] = (string) ($words['label']['off'] ?? '');
         $this -> addContent($button);
 
         return parent::toDOM();

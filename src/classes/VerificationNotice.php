@@ -13,7 +13,7 @@ class VerificationNotice extends Div
 
     public function toDOM(): \DOMElement
     {
-        $this -> contents[] = new Paragraph('Please check your inbox and click the verification link we sent to confirm your email address. If you don\'t see it, check your junk/spam folder.');
+        $this -> contents[] = new Paragraph((string) (Strings::for(self::class)['instructions'] ?? ''));
 
         $actions = new Div();
         $actions -> mixins = ['d-flex', 'gap-2'];

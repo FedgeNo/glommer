@@ -28,9 +28,15 @@ class WebSocketStatus extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
         $check = EnvironmentChecker::checkWebSocketServer();
 
-        $server_line = new Paragraph('WebSocket server: ' . ($check['ok'] ? 'Running' : $check['message']));
+        // The failure text is EnvironmentChecker's own diagnostic - which
+        // socket, which port, which errno - so it rides into the phrasing as
+        // data, the same way a vote count rides into PollOptionVotes's.
+        $server_line = new Paragraph($check['ok']
+            ? (string) ($words['ok'] ?? '')
+            : str_replace('{detail}', (string) $check['message'], (string) ($words['failed'] ?? '')));
 
         if (!$check['ok']) {
             $server_line -> class = 'Error';
@@ -38,7 +44,7 @@ class WebSocketStatus extends Div
 
         $this -> contents[] = $server_line;
 
-        $client_line = new WebSocketClientStatus('Browser connection: Testing…');
+        $client_line = new WebSocketClientStatus((string) ($words['clientTesting'] ?? ''));
         $this -> contents[] = $client_line;
 
         return parent::toDOM();

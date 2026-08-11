@@ -1,4 +1,6 @@
 import { Api } from '/scripts/Api.js';
+import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
@@ -163,33 +165,60 @@ export class Poll {
     tallyElement() {
         const tally = document.createElement('footer');
         tally.className = 'PollTally';
-        tally.appendChild(document.createTextNode(
-            this.voterCount === 1 ? '1 person voted' : this.voterCount + ' people voted'
-        ));
+
+        const talliedWords = Strings.for('PollTally', {
+            voters: { one: '1 person voted ', other: '{count} people voted ' },
+        });
+        tally.appendChild(document.createTextNode(Poll.pluralPhrase(talliedWords.voters, this.voterCount)));
 
         const deadline = document.createElement('time');
         deadline.className = 'PollDeadline';
         deadline.dateTime = this.endsAt;
-        deadline.textContent = this.closed ? 'Final result' : 'Closes ' + Poll.remaining(this.endsAt);
+        deadline.textContent = this.closed
+            ? Strings.for('PollDeadline', { final: 'Final result' }).final
+            : Poll.closesText(this.endsAt);
 
         tally.appendChild(deadline);
 
         return tally;
     }
 
+    /**
+     * One of a set of `one`/`other`-shaped phrasings, chosen by count through
+     * the browser's own CLDR data (Intl.PluralRules) - mirrors
+     * Strings::plural() server-side without a shared file having to carry the
+     * per-locale category rule a second time for the client.
+     */
+    static pluralPhrase(forms, count) {
+        const category = new Intl.PluralRules(ClientConfig.get('locale') || 'en').select(count);
+
+        return (forms[category] || forms.other || '').replace('{count}', String(count));
+    }
+
+    /** Mirrors PollDeadline::toDOM()'s non-closed branch: "Closes " + remaining(). */
+    static closesText(endsAt) {
+        const words = Strings.for('PollDeadline', { closes: { before: 'Closes ', after: '' } });
+
+        return (words.closes.before || '') + Poll.remaining(endsAt) + (words.closes.after || '');
+    }
+
     /** Mirrors PollDeadline::remaining() - the largest unit that still says something useful. */
     static remaining(endsAt) {
         const seconds = Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
+        const words = Strings.for('PollDeadline', {
+            days: { one: 'in {count} day', other: 'in {count} days' },
+            hours: { one: 'in {count} hour', other: 'in {count} hours' },
+            minutes: { one: 'in {count} minute', other: 'in {count} minutes' },
+            underMinute: 'in under a minute',
+        });
 
-        for (const [size, unit] of [[86400, 'day'], [3600, 'hour'], [60, 'minute']]) {
+        for (const [size, key] of [[86400, 'days'], [3600, 'hours'], [60, 'minutes']]) {
             if (seconds >= size) {
-                const count = Math.floor(seconds / size);
-
-                return 'in ' + count + ' ' + (count === 1 ? unit : unit + 's');
+                return Poll.pluralPhrase(words[key], Math.floor(seconds / size));
             }
         }
 
-        return 'in under a minute';
+        return words.underMinute;
     }
 }
 

@@ -33,7 +33,7 @@ class LinkItem extends FeedItem
         if ($this -> image !== null) {
             $image = new LinkItemImage();
             $image -> src = $this -> image -> imageURL();
-            $image -> alt = 'Link preview image';
+            $image -> alt = (string) (Strings::for(self::class)['alt'] ?? '');
             $link -> addContent($image);
         }
 

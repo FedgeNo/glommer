@@ -81,6 +81,17 @@ class NoEnglishInClassesTest extends TestCase
         return $entry;
     }
 
+    /**
+     * Everything a person reads, which is more than the text: the name on a
+     * glyph-only button lives in aria-label and a picture's description in alt,
+     * and textContent cannot see either - so a class whose only words are in an
+     * attribute could never be checked here, and could put its English back
+     * without failing anything.
+     *
+     * These four and not the whole markup. A class name is words too, and
+     * PascalCase means they are the same words - checking the serialized
+     * element instead fails SetupForm for saying "Site" in a CSS class.
+     */
     private static function render(HTMLObject $object): string
     {
         (new \ReflectionProperty(HTMLObject::class, 'document')) -> setValue(null, new \DOMDocument());
@@ -88,7 +99,15 @@ class NoEnglishInClassesTest extends TestCase
         $element = $object -> toDOM();
         HTMLObject::currentDocument() -> appendChild($element);
 
-        return (string) HTMLObject::currentDocument() -> textContent;
+        $readable = [(string) $element -> textContent];
+        $attributes = (new \DOMXPath(HTMLObject::currentDocument()))
+            -> query('//@aria-label | //@title | //@alt | //@placeholder');
+
+        foreach ($attributes as $attribute) {
+            $readable[] = (string) $attribute -> nodeValue;
+        }
+
+        return implode("\n", $readable);
     }
 
     public function testAConvertedClassContributesNoEnglishOfItsOwn(): void

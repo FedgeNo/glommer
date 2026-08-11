@@ -25,11 +25,17 @@ class NavAlertDot extends Span
         if ($anything_new) {
             $this -> class .= ' Active';
         }
+    }
 
+    public function toDOM(): \DOMElement
+    {
         // See MessageDot: the dot needs words for anybody not looking at it,
         // and it says only that there is something, because that is all it
-        // knows until the menu is opened.
-        $this -> addContent(new HiddenLabel('Something new in the menu'));
+        // knows until the menu is opened. Read here, not in the constructor
+        // above, for the same reason MessageDot's is.
+        $this -> addContent(new HiddenLabel((string) (Strings::for(self::class)['label'] ?? '')));
+
+        return parent::toDOM();
     }
 
     /** Whether either kind of thing is waiting. */

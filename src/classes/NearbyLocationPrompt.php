@@ -16,11 +16,13 @@ class NearbyLocationPrompt extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         $heading = new Heading2;
-        $heading -> addContent('Posts near you');
+        $heading -> addContent((string) ($words['heading'] ?? ''));
         $this -> addContent($heading);
 
-        $this -> addContent(new Paragraph('This shows the posts closest to a point - wherever there is activity, however far away it happens to be. Share your location to start from where you are, or pick a spot on the map instead.'));
+        $this -> addContent(new Paragraph((string) ($words['description'] ?? '')));
 
         $actions = new Div;
         $actions -> mixins = ['d-flex', 'gap-2', 'align-items-center', 'flex-wrap'];
@@ -28,10 +30,10 @@ class NearbyLocationPrompt extends Div
         $button = new Button;
         $button -> class = 'NearbyLocationButton';
         $button -> mixins = ['Button'];
-        $button -> addContent('Use my location');
+        $button -> addContent((string) ($words['useMyLocation'] ?? ''));
         $actions -> addContent($button);
 
-        $map_link = new Anchor(ServerURL::absolute('/map'), 'Pick on the map');
+        $map_link = new Anchor(ServerURL::absolute('/map'), (string) ($words['pickOnMap'] ?? ''));
         $map_link -> class = 'Button';
         $actions -> addContent($map_link);
 
@@ -41,16 +43,16 @@ class NearbyLocationPrompt extends Div
         // you type, and clicking one opens this same page on its coordinates.
         // Members only, because the endpoint behind it is a real search (see
         // api/search-places.php); signed-out visitors keep the two buttons.
-        if (Auth::check() && Place::count() > 0) {
+        if (Auth::check() && Place::any()) {
             $search = new Div;
             $search -> class = 'NearbyPlaceSearch';
 
             $input = new Input;
             $input -> class = 'NearbyPlaceSearchInput';
             $input -> attributes['type'] = 'search';
-            $input -> attributes['placeholder'] = 'Or type a place name…';
+            $input -> attributes['placeholder'] = (string) ($words['searchPlaceholder'] ?? '');
             $input -> attributes['autocomplete'] = 'off';
-            $input -> attributes['aria-label'] = 'Search for a place';
+            $input -> attributes['aria-label'] = (string) ($words['searchLabel'] ?? '');
             $search -> addContent($input);
 
             $this -> addContent($search);

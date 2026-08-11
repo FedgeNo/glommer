@@ -42,6 +42,10 @@ class ClientConfig
             // duration not in its own.
             'pollDurations' => (object) Poll::DURATIONS,
             'pollMaxOptions' => Poll::MAX_OPTIONS,
+            'quotedPostMaxLength' => QuotedPost::DESCRIPTION_MAX_LENGTH,
+            // So the box stops asking before the server would refuse to answer,
+            // rather than spending a request and a rate-limit slot to be told.
+            'placeSearchMinimumLength' => Place::MINIMUM_QUERY_LENGTH,
             // The applicationServerKey a browser subscribes to push with;
             // null when this server has no VAPID keypair, which is how the
             // client knows push isn't on offer here.

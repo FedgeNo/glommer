@@ -9,15 +9,18 @@ class UserRSSFeed extends RSSFeed
 {
     public User $user;
 
-    public function __construct(array|object|null $properties = null)
+    // Named at render off the account this feed is for, rather than copied out
+    // of it at construction: the profile is already here to be read from, and a
+    // renamed account would otherwise still be announced under the old title.
+    public function toDOM(): \DOMElement
     {
-        parent::__construct($properties);
-
         $name = $this -> user -> title ?: $this -> user -> slug;
 
         $this -> title = 'Posts by ' . $name . ' on ' . Config::get('siteTitle');
         $this -> link = ServerURL::absolute('/users/' . $this -> user -> slug . '/');
         $this -> description = $this -> title;
+
+        return parent::toDOM();
     }
 
     protected function rows(): array

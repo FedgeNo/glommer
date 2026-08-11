@@ -42,6 +42,8 @@ if (document.querySelector('.EmailDigestSetting'))     import('/scripts/EmailDig
 if (document.querySelector('.MessageComposer'))        import('/scripts/Message.js');
 if (document.querySelector('.MessageComposer[data-other-user-id]')) import('/scripts/VideoCall.js');
 if (document.querySelector('.MessageUnlockForm'))      import('/scripts/MessageUnlockForm.js');
+if (document.querySelector('.MessageTranslateButton')) import('/scripts/MessageTranslateButton.js');
+if (document.querySelector('.SpectrumAnalyser'))       import('/scripts/SpectrumAnalyser.js');
 if (document.querySelector('.MessageKeyFingerprint'))  import('/scripts/MessageKeyFingerprint.js');
 if (document.querySelector('.EncryptedMessagesSetting')) import('/scripts/EncryptedMessagesSetting.js');
 // .MessageComposer too: a thread with nothing in it has no report button yet,
@@ -110,8 +112,6 @@ document.addEventListener('error', function(event) {
 
 const wsManager = new WebSocketManager();
 wsManager.init();
-const statusLine = document.querySelector('.WebSocketClientStatus');
-if (statusLine) wsManager.showStatus(statusLine);
 
 const carousel = new CarouselController();
 carousel.init();

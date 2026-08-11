@@ -662,7 +662,7 @@ INSERT INTO `PostHashtags` (`postId`, `hashtagId`)
         $surfaces = [
             'global feed' => array_map(static fn ($post) => (int) $post -> postId, new GlobalFeedList() -> items),
             'site RSS feed' => array_map(static function ($item) {
-                preg_match('~/(\d+)$~', $item -> link, $matches);
+                preg_match('~/(\d+)$~', $item -> link(), $matches);
 
                 return (int) ($matches[1] ?? 0);
             }, new SiteRSSFeed() -> items),

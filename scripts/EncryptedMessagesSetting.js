@@ -3,6 +3,7 @@ import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * The Settings section for encrypted messaging. Key generation, wrapping,
@@ -135,10 +136,23 @@ export class EncryptedMessagesSetting {
         const section = setup_form.closest('.EncryptedMessagesSetting');
         setup_form.remove();
 
+        // Same keys MessageKeySetupForm.php reads, so the rebuilt reset form
+        // says what the server would have said for the same element.
+        const setup_words = Strings.for('MessageKeySetupForm', {
+            resetWarning: 'Forgotten your passphrase? Resetting creates new keys under a new one - but messages encrypted with the old keys can never be read again, by anyone.',
+            resetPassphraseLabel: 'New passphrase',
+            confirmLabel: 'Confirm passphrase',
+            accountPasswordLabel: 'Account password',
+            resetSubmitLabel: 'Reset encryption keys',
+        });
+
         const status = document.createElement('p');
-        status.textContent = 'Encrypted messages are on.';
+        status.textContent = Strings.for('EncryptedMessagesSetting', { enabledStatus: 'Encrypted messages are on.' }).enabledStatus;
         section.appendWithSpace(status);
 
+        // MessageKeyPassphraseForm's own labels - not sourced from Strings
+        // here because that class isn't converted, so there is nothing yet
+        // to read them from.
         const passphrase_form = document.createElement('form');
         passphrase_form.className = 'Form MessageKeyPassphraseForm';
         passphrase_form.appendWithSpace(input_field('currentPassphrase', 'Current passphrase', 'current-password'));
@@ -152,13 +166,13 @@ export class EncryptedMessagesSetting {
         reset_form.className = 'Form MessageKeySetupForm';
 
         const warning = document.createElement('p');
-        warning.textContent = 'Forgotten your passphrase? Resetting creates new keys under a new one - but messages encrypted with the old keys can never be read again, by anyone.';
+        warning.textContent = setup_words.resetWarning;
         reset_form.appendWithSpace(warning);
 
-        reset_form.appendWithSpace(input_field('passphrase', 'New passphrase', 'new-password'));
-        reset_form.appendWithSpace(input_field('passphraseConfirm', 'Confirm passphrase', 'new-password'));
-        reset_form.appendWithSpace(input_field('setupAccountPassword', 'Account password', 'current-password'));
-        reset_form.appendWithSpace(submit_button('Reset encryption keys'));
+        reset_form.appendWithSpace(input_field('passphrase', setup_words.resetPassphraseLabel, 'new-password'));
+        reset_form.appendWithSpace(input_field('passphraseConfirm', setup_words.confirmLabel, 'new-password'));
+        reset_form.appendWithSpace(input_field('setupAccountPassword', setup_words.accountPasswordLabel, 'current-password'));
+        reset_form.appendWithSpace(submit_button(setup_words.resetSubmitLabel));
         section.appendWithSpace(reset_form);
     }
 

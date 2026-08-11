@@ -28,7 +28,7 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`)
     /** @return int[] the post id each item links to */
     private static function postIdsInFeed(RSSFeed $feed): array {
         return array_map(static function (RSSItem $item): int {
-            preg_match('~/(\d+)$~', $item -> link, $matches);
+            preg_match('~/(\d+)$~', $item -> link(), $matches);
 
             return (int) ($matches[1] ?? 0);
         }, $feed -> items);

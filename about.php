@@ -28,7 +28,7 @@ $version_card -> addContent($version);
 // licence (CC BY 4.0) requires attribution wherever its data is used, so it
 // ships with the software - on every install whose place directory is
 // actually loaded - instead of depending on each admin remembering it.
-if (Place::count() > 0) {
+if (Place::any()) {
     $credit = new Paragraph('Place names from ');
     $credit -> class = 'muted text-sm';
     $credit -> addContent(new Anchor('https://www.geonames.org/', 'GeoNames'));

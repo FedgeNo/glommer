@@ -19,6 +19,13 @@ class SkipLink extends Anchor
 
     public function __construct()
     {
-        parent::__construct('#' . self::TARGET, 'Skip to content');
+        parent::__construct('#' . self::TARGET);
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
+
+        return parent::toDOM();
     }
 }

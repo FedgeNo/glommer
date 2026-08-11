@@ -8,12 +8,16 @@ class LoginForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $identifier = (string) ($words['identifier'] ?? '');
+        $password = (string) ($words['password'] ?? '');
+        $submit = (string) ($words['submit'] ?? '');
 
-        $fields = new Fieldset('Log in');
-        $fields -> addContent(new InputField('identifier', 'Username or email', 'text', 'Username or email', 255));
-        $fields -> addContent(new InputField('password', 'Password', 'password', 'Password'));
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new InputField('identifier', $identifier, 'text', $identifier, 255));
+        $fields -> addContent(new InputField('password', $password, 'password', $password));
 
-        $remember_me = new CheckboxField('rememberMe', 'Remember me');
+        $remember_me = new CheckboxField('rememberMe', (string) ($words['rememberMe'] ?? ''));
         $remember_me -> checked = true;
         $fields -> addContent($remember_me);
 
@@ -31,10 +35,10 @@ class LoginForm extends FormForm
             // just beside the box rather than under it.
             $footer -> mixins = ['d-flex', 'justify-content-between'];
             $footer -> addContent(new TurnstileWidget());
-            $footer -> addContent(new SubmitButton('Log In'));
+            $footer -> addContent(new SubmitButton($submit));
             $this -> contents[] = $footer;
         } else {
-            $this -> contents[] = new SubmitButton('Log In');
+            $this -> contents[] = new SubmitButton($submit);
         }
 
         return parent::toDOM();

@@ -20,10 +20,10 @@ class ModerationActionList extends ItemList
     public ?string $class = 'ModerationActionList';
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
-    protected string $emptyNotice = 'No moderator has done anything yet.';
-
     protected function rows(): array
     {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+
         $rows = DB::rows('
 SELECT `a`.*, `m`.`slug` AS `moderatorUsername`, `t`.`slug` AS `targetUsername`
     FROM `ModerationActions` `a`

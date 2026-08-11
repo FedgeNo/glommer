@@ -14,30 +14,25 @@ declare(strict_types=1);
  */
 class MessagePrivacyButton extends ButtonButton
 {
-    public function __construct(string $state, string $handle)
+    public function __construct(private readonly string $state, private readonly string $handle)
     {
         parent::__construct();
+    }
 
-        [$label, $explanation] = match ($state) {
-            'encrypted' => [
-                '🔒 Encrypted',
-                'Messages in this conversation are end-to-end encrypted: they are unlocked with your passphrase and read in your browsers, and what this server stores is ciphertext. Check the safety code at the bottom of the thread with the other person to be sure nobody is between you. Messages sent before encryption was turned on stay readable as they were.',
-            ],
-            'awaiting-theirs' => [
-                '🔓 Not encrypted',
-                'Messages here will be end-to-end encrypted once ' . $handle . ' turns on encrypted messages in their settings.',
-            ],
-            'awaiting-yours' => [
-                '🔓 Not encrypted',
-                'Messages here are not end-to-end encrypted. Turn on encrypted messages in Settings to secure this conversation.',
-            ],
-            'federated' => [
-                '🔓 Not encrypted',
-                $handle . ' is on another server. Messages in this conversation are stored on that server as well as this one, and its administrator can read them - the protocol between servers has no way to encrypt them. Keep anything sensitive to conversations on this site.',
-            ],
-        };
+    public function toDOM(): \DOMElement
+    {
+        $words = Strings::for(self::class);
+        // An unrecognised state still renders something rather than fataling
+        // the composer - the same fallback LoginPrompt uses.
+        $entry = $words[$this -> state] ?? reset($words);
 
-        $this -> attributes['data-privacy-explanation'] = $explanation;
-        $this -> contents[] = $label;
+        $this -> attributes['data-privacy-explanation'] = str_replace(
+            '{handle}',
+            $this -> handle,
+            (string) ($entry['explanation'] ?? '')
+        );
+        $this -> contents[] = (string) ($entry['label'] ?? '');
+
+        return parent::toDOM();
     }
 }

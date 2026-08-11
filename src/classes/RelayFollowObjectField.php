@@ -17,9 +17,12 @@ class RelayFollowObjectField extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $options = is_array($words['options'] ?? null) ? $words['options'] : [];
+
         $label = new Label();
         $label -> for = 'followObject';
-        $label -> contents[] = 'Subscription style';
+        $label -> contents[] = (string) ($words['label'] ?? '');
         $this -> addContent($label);
 
         $select = new Select();
@@ -27,8 +30,8 @@ class RelayFollowObjectField extends Div
         $select -> id = 'followObject';
 
         $styles = [
-            Relay::FOLLOW_PUBLIC => 'Follow the public stream (what most relays expect)',
-            Relay::FOLLOW_ACTOR => 'Follow the relay\'s own actor',
+            Relay::FOLLOW_PUBLIC => (string) ($options[Relay::FOLLOW_PUBLIC] ?? ''),
+            Relay::FOLLOW_ACTOR => (string) ($options[Relay::FOLLOW_ACTOR] ?? ''),
         ];
 
         foreach ($styles as $value => $text) {
@@ -44,7 +47,7 @@ class RelayFollowObjectField extends Div
         }
 
         $this -> addContent($select);
-        $this -> addContent(new Paragraph('If the relay never accepts, withdraw and try the other style - some relay software only recognises one of them.'));
+        $this -> addContent(new Paragraph((string) ($words['retryNotice'] ?? '')));
 
         return parent::toDOM();
     }

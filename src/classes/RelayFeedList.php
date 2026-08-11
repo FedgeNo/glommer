@@ -18,10 +18,10 @@ class RelayFeedList extends FeedList
 {
     protected string $feedType = 'relay';
 
-    protected string $emptyNotice = 'Nothing has come through a relay yet. Posts appear here as the servers on the other side publish them.';
-
     protected function rows(): array
     {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
 

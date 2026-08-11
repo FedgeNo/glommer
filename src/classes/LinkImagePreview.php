@@ -17,7 +17,7 @@ class LinkImagePreview extends Div
         $this -> attributes['style'] = 'display: none';
 
         $image = new LinkImagePreviewThumb();
-        $image -> alt = 'Link preview image';
+        $image -> alt = (string) (Strings::for(self::class)['alt'] ?? '');
         $this -> contents[] = $image;
 
         $this -> contents[] = new LinkImageRemoveButton();

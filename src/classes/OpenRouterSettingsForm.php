@@ -19,14 +19,16 @@ class OpenRouterSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $fields = new Fieldset('OpenRouter');
-        $fields -> addContent(new Notice('Used by AI features on the site (trending-topic summaries, etc). Leave the model blank to use the Free Models Router, which OpenRouter picks at random from whatever is currently free and can never incur cost.'));
+        $words = Strings::for(self::class);
+
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new Notice((string) ($words['notice'] ?? '')));
 
         $key_is_set = (string) Settings::get(OpenRouter::API_KEY_SETTING, '') !== '';
-        $key_placeholder = $key_is_set
-            ? 'API key is set - leave blank to keep it'
-            : 'OpenRouter API key';
-        $key = new InputField('openRouterAPIKey', 'API key', 'text', $key_placeholder, 255);
+        $key_placeholder = (string) ($key_is_set
+            ? ($words['keyPlaceholder']['set'] ?? '')
+            : ($words['keyPlaceholder']['unset'] ?? ''));
+        $key = new InputField('openRouterAPIKey', (string) ($words['keyLabel'] ?? ''), 'text', $key_placeholder, 255);
         $key -> autocomplete = 'off';
         $key -> labelVisible = true;
         $fields -> addContent($key);
@@ -35,24 +37,26 @@ class OpenRouterSettingsForm extends FormForm
         // deliberate control - this is the only way the form can turn AI
         // features off. Only offered while there's a key to remove.
         if ($key_is_set) {
-            $fields -> addContent(new CheckboxField('clearOpenRouterAPIKey', 'Remove the stored API key (turns AI features off)'));
+            $fields -> addContent(new CheckboxField('clearOpenRouterAPIKey', (string) ($words['clearKeyLabel'] ?? '')));
         }
 
-        $model = new InputField('openRouterModel', 'Model', 'text', OpenRouter::DEFAULT_MODEL, 255);
+        // DEFAULT_MODEL is an OpenRouter model id (e.g. "openrouter/free"), not
+        // English prose, so it stays here rather than moving to the locale.
+        $model = new InputField('openRouterModel', (string) ($words['modelLabel'] ?? ''), 'text', OpenRouter::DEFAULT_MODEL, 255);
         $model -> value = (string) Settings::get(OpenRouter::MODEL_SETTING, '');
         $model -> autocomplete = 'off';
         $model -> labelVisible = true;
         $fields -> addContent($model);
 
-        $never_spend = new CheckboxField('openRouterNeverSpend', 'Never allow this to spend money (recommended)');
+        $never_spend = new CheckboxField('openRouterNeverSpend', (string) ($words['neverSpendLabel'] ?? ''));
         $never_spend -> checked = OpenRouter::neverSpend();
         $fields -> addContent($never_spend);
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Paragraph('With the guard on, every request caps its price at zero, so it fails outright rather than falling back to a paid model when no free provider is available. Remove the stored API key to turn AI features off entirely.');
+        $this -> contents[] = new Paragraph((string) ($words['explainer'] ?? ''));
 
-        $this -> contents[] = new SubmitButton('Save');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

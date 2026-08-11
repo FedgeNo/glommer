@@ -17,6 +17,9 @@ class AudioItem extends FeedItem
             $audio -> src = $this -> srcURL();
         }
 
+        // Above the controls, so the bars sit between the post and the player
+        // rather than pushing the controls around as they move.
+        $this -> contents[] = new SpectrumAnalyser();
         $this -> contents[] = $audio;
 
         return parent::toDOM();

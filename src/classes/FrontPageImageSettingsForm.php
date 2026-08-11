@@ -14,12 +14,11 @@ class FrontPageImageSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $fields = new Fieldset('Front Page Image');
+        $words = Strings::for(self::class);
 
-        $explainer = new Paragraph(
-            'Shown by other sites when someone shares a link to this one - Open Graph metadata only, never on the page. '
-            . 'Cropped to 1200×630. Without one, link previews carry no image at all.'
-        );
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+
+        $explainer = new Paragraph((string) ($words['explainer'] ?? ''));
         $explainer -> mixins = ['muted', 'text-sm'];
         $fields -> addContent($explainer);
 
@@ -28,7 +27,7 @@ class FrontPageImageSettingsForm extends FormForm
         if ($current_url !== null) {
             $current = new Image();
             $current -> src = $current_url;
-            $current -> alt = 'Current front page image';
+            $current -> alt = (string) ($words['currentAlt'] ?? '');
             $current -> class = 'FrontPageImagePreview';
             $fields -> addContent($current);
         }
@@ -40,7 +39,7 @@ class FrontPageImageSettingsForm extends FormForm
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new SubmitButton('Upload Image');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

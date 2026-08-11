@@ -11,7 +11,7 @@ class ProfileEditButton extends ButtonButton
 {
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['aria-label'] = 'Edit profile';
+        $this -> attributes['aria-label'] = (string) (Strings::for(self::class)['ariaLabel'] ?? '');
         $this -> contents[] = '✏️';
 
         return parent::toDOM();

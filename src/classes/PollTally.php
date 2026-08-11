@@ -14,11 +14,20 @@ class PollTally extends Footer
 {
     public ?string $class = 'PollTally';
 
-    public function __construct(int $voters, string $ends_at, bool $closed)
+    public function __construct(private readonly int $voters, private readonly string $endsAt, private readonly bool $closed)
     {
         parent::__construct();
+    }
 
-        $this -> addContent($voters === 1 ? '1 person voted ' : $voters . ' people voted ');
-        $this -> addContent(new PollDeadline($ends_at, $closed));
+    public function toDOM(): \DOMElement
+    {
+        $this -> addContent(str_replace(
+            '{count}',
+            (string) $this -> voters,
+            Strings::plural(self::class, 'voters', $this -> voters)
+        ));
+        $this -> addContent(new PollDeadline($this -> endsAt, $this -> closed));
+
+        return parent::toDOM();
     }
 }

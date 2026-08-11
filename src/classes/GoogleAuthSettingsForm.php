@@ -15,29 +15,34 @@ class GoogleAuthSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
 
-        $fields = new Fieldset('Google Sign-In');
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
 
-        $client_id = new InputField('googleAuthClientId', 'Client ID', 'text', 'Google OAuth client ID', 255);
+        $client_id = new InputField('googleAuthClientId', (string) ($words['clientIdLabel'] ?? ''), 'text', (string) ($words['clientIdPlaceholder'] ?? ''), 255);
         $client_id -> value = GoogleAuth::clientId();
         $client_id -> autocomplete = 'off';
         $client_id -> labelVisible = true;
         $fields -> addContent($client_id);
 
         $secret_is_set = (string) Settings::get(GoogleAuth::CLIENT_SECRET_SETTING, '') !== '';
-        $secret_placeholder = $secret_is_set
-            ? 'Client secret is set - leave blank to keep it'
-            : 'Google OAuth client secret';
-        $secret = new InputField('googleAuthSecret', 'Client secret', 'text', $secret_placeholder, 255);
+        $secret_placeholder = (string) ($secret_is_set
+            ? ($words['secretPlaceholder']['set'] ?? '')
+            : ($words['secretPlaceholder']['unset'] ?? ''));
+        $secret = new InputField('googleAuthSecret', (string) ($words['secretLabel'] ?? ''), 'text', $secret_placeholder, 255);
         $secret -> autocomplete = 'off';
         $secret -> labelVisible = true;
         $fields -> addContent($secret);
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new Paragraph('Both are required for "Continue with Google" to appear on sign-up and sign-in. In your Google Cloud OAuth client, set the authorized redirect URI to ' . ServerURL::absolute('/auth-google-callback') . ' - clear the Client ID to turn it off.');
+        // Not a link - it's a value to paste into Google's console, not
+        // something to click - so a token in the phrasing rather than the
+        // before/link/after split a control gets.
+        $explainer = str_replace('{url}', ServerURL::absolute('/auth-google-callback'), (string) ($words['explainer'] ?? ''));
+        $this -> contents[] = new Paragraph($explainer);
 
-        $this -> contents[] = new SubmitButton('Save');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

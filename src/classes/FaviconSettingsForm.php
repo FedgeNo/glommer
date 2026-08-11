@@ -13,12 +13,13 @@ class FaviconSettingsForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
 
-        $fields = new Fieldset('Favicon');
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
 
         $current = new Image();
         $current -> src = Favicon::URL();
-        $current -> alt = 'Current favicon';
+        $current -> alt = (string) ($words['currentAlt'] ?? '');
         $current -> class = 'FaviconPreview';
         $fields -> addContent($current);
 
@@ -29,7 +30,7 @@ class FaviconSettingsForm extends FormForm
 
         $this -> contents[] = $fields;
 
-        $this -> contents[] = new SubmitButton('Upload Favicon');
+        $this -> contents[] = new SubmitButton((string) ($words['save'] ?? ''));
 
         return parent::toDOM();
     }

@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 class MessageKeyVerifyButton extends ButtonButton
 {
-    public function __construct()
+    public function toDOM(): \DOMElement
     {
-        parent::__construct();
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
 
-        $this -> contents[] = 'Mark as verified';
+        return parent::toDOM();
     }
 }

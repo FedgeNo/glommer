@@ -9,6 +9,12 @@ class GoogleAccountDeleteButton extends ButtonButton
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> contents[] = 'Verify with Google to delete';
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
+
+        return parent::toDOM();
     }
 }

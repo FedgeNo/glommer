@@ -780,12 +780,27 @@ label.visually-hidden { margin-bottom: 0; }
 .VideoItem,
 .AudioItem {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     overflow: hidden;
     background-color: var(--surface-2);
     border-radius: var(--radius-ctl);
 }
+
+/* Three quarters of the block, so the player sits under the spectrum rather
+   than beside a strip of it. min-height carries the case where nothing has
+   given the block a height of its own and the percentage has nothing to
+   resolve against. */
+.SpectrumAnalyser {
+    width: 100%;
+    height: 75%;
+    min-height: 6rem;
+    color: var(--accent);
+}
+
+.AudioItem audio { flex: 0 0 auto; }
 
 .Post .ImageItem,
 .Post .VideoItem,

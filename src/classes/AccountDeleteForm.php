@@ -8,13 +8,15 @@ class AccountDeleteForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $current_password_words = (string) ($words['currentPassword'] ?? '');
 
-        $fields = new Fieldset('Delete your account');
-        $fields -> addContent(new Paragraph('This permanently deletes your account, posts, and messages. This can\'t be undone.'));
-        $fields -> addContent(new InputField('currentPassword', 'Current password', 'password', 'Current password'));
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
+        $fields -> addContent(new Paragraph((string) ($words['warning'] ?? '')));
+        $fields -> addContent(new InputField('currentPassword', $current_password_words, 'password', $current_password_words));
         $this -> contents[] = $fields;
 
-        $submit = new SubmitButton('Delete Account');
+        $submit = new SubmitButton((string) ($words['submit'] ?? ''));
         $submit -> class .= ' AccountDeleteButton';
         $this -> contents[] = $submit;
 

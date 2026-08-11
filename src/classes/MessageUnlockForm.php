@@ -35,11 +35,13 @@ class MessageUnlockForm extends FormForm
         $this -> attributes['data-own-public-key'] = $this -> ownPublicKey;
         $this -> attributes['data-wrapped-private-key'] = $this -> wrappedPrivateKey;
 
-        $passphrase = new InputField('messagePassphrase', 'Passphrase', 'password', 'Passphrase to unlock this conversation');
+        $words = Strings::for(self::class);
+
+        $passphrase = new InputField('messagePassphrase', (string) ($words['passphraseLabel'] ?? ''), 'password', (string) ($words['passphrasePlaceholder'] ?? ''));
         $passphrase -> autocomplete = 'current-password';
         $this -> contents[] = $passphrase;
 
-        $this -> contents[] = new SubmitButton('Unlock');
+        $this -> contents[] = new SubmitButton((string) ($words['submit'] ?? ''));
 
         return parent::toDOM();
     }

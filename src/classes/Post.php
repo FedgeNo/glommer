@@ -460,8 +460,11 @@ class Post extends Article
         }
 
         $name = $this -> author !== null ? ($this -> author -> title ?: $this -> author -> slug) : null;
+        $words = Strings::for(self::class);
 
-        return $name !== null ? $name . '\'s Post' : 'Post';
+        return $name !== null
+            ? str_replace('{name}', $name, (string) ($words['pageTitleByAuthor'] ?? ''))
+            : (string) ($words['pageTitleUntitled'] ?? '');
     }
 
     /**
@@ -478,8 +481,11 @@ class Post extends Article
         }
 
         $name = $this -> author !== null ? ($this -> author -> title ?: $this -> author -> slug) : null;
+        $words = Strings::for(self::class);
 
-        return $name !== null ? 'Photo posted by ' . $name : 'Photo';
+        return $name !== null
+            ? str_replace('{name}', $name, (string) ($words['imageAltByAuthor'] ?? ''))
+            : (string) ($words['imageAltUntitled'] ?? '');
     }
 
     protected function authorByline(): HTMLObject
@@ -561,7 +567,7 @@ UPDATE `Posts`
      */
     public function translatable(): bool
     {
-        return (string) $this -> description !== '' && OpenRouter::isEnabled();
+        return (string) $this -> description !== '' && Translator::isAvailable();
     }
 
     public static function delete(int $post_id): void

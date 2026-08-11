@@ -923,8 +923,14 @@ class EnvironmentChecker
         $transport = $daemon_uses_tls ? 'ssl://' : 'tcp://';
         $socket = @stream_socket_client($transport . '127.0.0.1:' . $ws_port, $error_code, $error_message, 3, STREAM_CLIENT_CONNECT, $context);
 
+        $words = Strings::for(self::class);
+
         if ($socket === false) {
-            return ['ok' => false, 'message' => 'Could not connect to the WebSocket server on 127.0.0.1:' . $ws_port . ($daemon_uses_tls ? ' over TLS' : '') . ' (' . $error_message . '). Start it first: systemctl --user start glommer-websocket (see README.md for the unit file). If it just gained or lost WS_TLS_CERT/WS_TLS_KEY, restart it so it matches .env.'];
+            return ['ok' => false, 'message' => strtr((string) ($words['wsCannotConnect'] ?? ''), [
+                '{port}' => (string) $ws_port,
+                '{tls}' => $daemon_uses_tls ? (string) ($words['wsOverTLS'] ?? '') : '',
+                '{error}' => (string) $error_message,
+            ])];
         }
 
         stream_set_timeout($socket, 3);
@@ -940,7 +946,7 @@ class EnvironmentChecker
         if ($response === false || !str_contains($response, '101 Switching Protocols') || !str_contains($response, $expected_accept)) {
             fclose($socket);
 
-            return ['ok' => false, 'message' => 'The service on 127.0.0.1:' . $ws_port . ' did not complete a valid WebSocket handshake - something other than bin/websocket-server.php may be listening on that port.'];
+            return ['ok' => false, 'message' => str_replace('{port}', (string) $ws_port, (string) ($words['wsBadHandshake'] ?? ''))];
         }
 
         $mask_key = random_bytes(4);
@@ -958,10 +964,10 @@ class EnvironmentChecker
         fclose($socket);
 
         if (!$is_pong) {
-            return ['ok' => false, 'message' => 'The WebSocket server accepted the handshake but did not respond to a ping - it may be stuck or misbehaving. Check its logs.'];
+            return ['ok' => false, 'message' => (string) ($words['wsNoPong'] ?? '')];
         }
 
-        return ['ok' => true, 'message' => 'WebSocket server reachable and responding on 127.0.0.1:' . $ws_port];
+        return ['ok' => true, 'message' => str_replace('{port}', (string) $ws_port, (string) ($words['wsReachable'] ?? ''))];
     }
 
     /**

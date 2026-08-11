@@ -1,9 +1,10 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { User } from '/scripts/User.js';
 import { DeltaRenderer } from '/scripts/DeltaRenderer.js';
 import { Linkifier } from '/scripts/Linkifier.js';
 import { RelativeTime } from '/scripts/RelativeTime.js';
-import { parse_server_date } from '/scripts/utils.js';
+import { parse_server_date, truncate } from '/scripts/utils.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
@@ -95,7 +96,8 @@ export class Post {
 
     /** Mirrors PostBookmarkButton::label() - its name, since the glyph never changes. */
     static bookmarkLabel(bookmarked) {
-        return bookmarked ? 'Remove bookmark' : 'Bookmark';
+        const words = Strings.for('PostBookmarkButton', { remove: 'Remove bookmark', add: 'Bookmark' });
+        return bookmarked ? words.remove : words.add;
     }
 
     /** Names a glyph-only control for anything not looking at it. */
@@ -108,13 +110,23 @@ export class Post {
         const line = document.createElement('div');
         line.className = 'ThreadContext';
 
+        const words = Strings.for('ThreadContext', {
+            response: { before: 'In response to ', after: '' },
+            untitled: 'this post',
+            jumpToStart: 'Jump to start',
+        });
+
         const response = document.createElement('span');
-        response.appendWithSpace(document.createTextNode('In response to '));
+        response.appendWithSpace(document.createTextNode(words.response.before || ''));
 
         const parent = document.createElement('a');
         parent.href = ClientConfig.siteURL() + '/users/' + this.threadContext.parentUsername + '/' + this.threadContext.parentId;
-        parent.textContent = this.threadContext.parentLabel;
+        // Mirrors ThreadContext::labelFor(): the server ships null rather than
+        // baking "this post" in at fetch time, so the fallback words are said
+        // here, in whichever language this renderer is running in.
+        parent.textContent = this.threadContext.parentLabel ?? words.untitled;
         response.appendWithSpace(parent);
+        response.appendWithSpace(document.createTextNode(words.response.after || ''));
 
         line.appendWithSpace(response);
 
@@ -123,7 +135,7 @@ export class Post {
             const start = document.createElement('a');
             start.className = 'ThreadStartLink';
             start.href = ClientConfig.siteURL() + '/users/' + this.threadContext.rootUsername + '/' + this.threadContext.rootId;
-            start.textContent = 'Jump to start';
+            start.textContent = words.jumpToStart;
             line.appendWithSpace(start);
         }
 
@@ -134,12 +146,16 @@ export class Post {
         const line = document.createElement('div');
         line.className = 'RepostAttribution';
 
+        const words = Strings.for('RepostAttribution', { attribution: { before: '', after: ' reposted' } });
+
+        line.appendWithSpace(document.createTextNode(words.attribution.before || ''));
+
         const who = document.createElement('a');
         who.href = ClientConfig.siteURL() + '/users/' + this.repostedBy.slug + '/';
         who.textContent = this.repostedBy.title || this.repostedBy.slug;
-
         line.appendWithSpace(who);
-        line.appendWithSpace(document.createTextNode(' reposted'));
+
+        line.appendWithSpace(document.createTextNode(words.attribution.after || ''));
 
         return line;
     }
@@ -212,7 +228,7 @@ export class Post {
             const image = document.createElement('img');
             image.className = 'LinkItemImage';
             image.src = link_image.image;
-            image.alt = 'Link preview image';
+            image.alt = Strings.for('LinkItem', { alt: 'Link preview image' }).alt;
             link.appendWithSpace(image);
         }
 
@@ -272,7 +288,22 @@ export class Post {
 
             wrapper.appendWithSpace(video);
         } else if (item.itemType === 'AudioItem') {
+            // Mirrors AudioItem.php: the spectrum goes above the controls, and
+            // SpectrumAnalyser.js finds it by sitting beside the player.
+            const spectrum = document.createElement('canvas');
+            spectrum.className = 'SpectrumAnalyser';
+            spectrum.width = 600;
+            spectrum.height = 192;
+            spectrum.setAttribute('aria-hidden', 'true');
+            wrapper.appendWithSpace(spectrum);
+
+            // Loaded here rather than only from main.js: a post can scroll in
+            // long after page load, and the guard there ran once. Importing a
+            // module twice costs nothing - the second call is the cached one.
+            import('/scripts/SpectrumAnalyser.js');
+
             const audio = document.createElement('audio');
+            audio.className = 'Audio';
             audio.controls = true;
 
             if (deferred) {
@@ -502,14 +533,17 @@ export class Post {
 
             if (this.quotedPost.description) {
                 const body = document.createElement('p');
-                body.textContent = this.quotedPost.description;
+                body.textContent = truncate(
+                    this.quotedPost.description,
+                    ClientConfig.get('quotedPostMaxLength')
+                );
                 quoted.appendWithSpace(body);
             }
 
             const link = document.createElement('a');
             link.className = 'QuotedPostLink text-sm';
             link.href = ClientConfig.siteURL() + '/users/' + this.quotedPost.slug + '/' + this.quotedPost.postId;
-            link.textContent = 'View the quoted post';
+            link.textContent = Strings.for('QuotedPost', { viewLink: 'View the quoted post' }).viewLink;
             quoted.appendWithSpace(link);
 
             target.appendWithSpace(quoted);
@@ -624,7 +658,7 @@ export class Post {
                 repost_button.textContent = PostRepostButton.label(this.reposted, this.repostCount);
                 if (this.reposted) repost_button.classList.add('Removing');
                 repost_button.setAttribute('aria-pressed', this.reposted ? 'true' : 'false');
-                Post.nameIt(repost_button, this.reposted ? 'Undo repost' : 'Repost');
+                Post.nameIt(repost_button, PostRepostButton.name(this.reposted));
                 actions.appendWithSpace(repost_button);
             }
 

@@ -9,10 +9,7 @@ class LogoutEverywherePanel extends Div
 
     public function toDOM(): \DOMElement
     {
-        $this -> addContent(new Paragraph(
-            'End every active session and forget every remembered device. ' .
-            'You will be signed out of all browsers, including this one.'
-        ));
+        $this -> addContent(new Paragraph((string) (Strings::for(self::class)['explanation'] ?? '')));
 
         $this -> addContent(new LogoutEverywhereButton());
 

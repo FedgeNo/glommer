@@ -30,7 +30,7 @@ class EmailDigestResubscribeForm extends FormForm
         $token_input -> value = $this -> token;
         $this -> contents[] = $token_input;
 
-        $this -> contents[] = new SubmitButton('Turn them back on');
+        $this -> contents[] = new SubmitButton((string) (Strings::for(self::class)['submit'] ?? ''));
 
         return parent::toDOM();
     }

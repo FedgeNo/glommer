@@ -20,6 +20,8 @@ class RelayCard extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+
         $this -> attributes['data-actor-uri'] = (string) $this -> actorURI;
 
         $info = new Div();
@@ -30,8 +32,15 @@ class RelayCard extends Div
         $detail -> mixins = ['muted'];
 
         // A relay that has not answered is not yet delivering anything, and
-        // saying so is the difference between "waiting" and "broken".
-        $detail -> addContent($this -> status === 'accepted' ? 'Subscribed ' : 'Waiting for the relay to accept - subscribed ');
+        // saying so is the difference between "waiting" and "broken" - see
+        // TrendingTimerStatus/UploadWorkerStatus for the same match()-to-key,
+        // key-to-phrase shape.
+        $status_key = match ($this -> status) {
+            'accepted' => 'accepted',
+            default => 'waiting',
+        };
+
+        $detail -> addContent((string) ($words[$status_key] ?? ''));
         $detail -> addContent(new RelativeTime((string) $this -> createdAt));
 
         $info -> addContent($detail);

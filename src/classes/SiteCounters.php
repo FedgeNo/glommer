@@ -26,24 +26,36 @@ class SiteCounters extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
         $counts = self::counts();
         $waiting_to_read = RelayFetch::pendingCount();
 
-        $this -> addLine('Members: ' . $counts -> members
-            . ' (' . $counts -> joinedThisWeek . ' joined in the last ' . self::RECENT_DAYS . ' days)');
+        $this -> addLine(str_replace(
+            ['{count}', '{joined}', '{days}'],
+            [(string) $counts -> members, (string) $counts -> joinedThisWeek, (string) self::RECENT_DAYS],
+            (string) ($words['members'] ?? '')
+        ));
 
-        $this -> addLine('Members here in the last ' . self::RECENT_DAYS . ' days: '
-            . User::activeSince(self::RECENT_DAYS)
-            . ' (' . $counts -> postedThisWeek . ' of them posted)');
+        $this -> addLine(str_replace(
+            ['{days}', '{count}', '{posted}'],
+            [(string) self::RECENT_DAYS, (string) User::activeSince(self::RECENT_DAYS), (string) $counts -> postedThisWeek],
+            (string) ($words['activeMembers'] ?? '')
+        ));
 
-        $this -> addLine('Posts written here: ' . $counts -> posts
-            . ' (' . $counts -> postsThisWeek . ' in the last ' . self::RECENT_DAYS . ' days)');
+        $this -> addLine(str_replace(
+            ['{count}', '{recent}', '{days}'],
+            [(string) $counts -> posts, (string) $counts -> postsThisWeek, (string) self::RECENT_DAYS],
+            (string) ($words['posts'] ?? '')
+        ));
 
         $delivered = Statistic::since(Statistic::DELIVERED, self::RECENT_DAYS);
         $undeliverable = Statistic::since(Statistic::UNDELIVERABLE, self::RECENT_DAYS);
 
-        $delivery_line = $this -> addLine('Federated deliveries in the last ' . self::RECENT_DAYS . ' days: '
-            . $delivered . ' arrived, ' . $undeliverable . ' given up on');
+        $delivery_line = $this -> addLine(str_replace(
+            ['{days}', '{delivered}', '{undeliverable}'],
+            [(string) self::RECENT_DAYS, (string) $delivered, (string) $undeliverable],
+            (string) ($words['deliveries'] ?? '')
+        ));
 
         // Given up on more than got through: something is wrong with this
         // server's signing, its network, or the servers it talks to - and it
@@ -52,10 +64,13 @@ class SiteCounters extends Div
             $delivery_line -> class = 'Error';
         }
 
-        $this -> addLine('Waiting to go out: ' . $counts -> deliveriesQueued
-            . ' (' . $counts -> deliveriesFailing . ' already refused at least once)');
+        $this -> addLine(str_replace(
+            ['{count}', '{failing}'],
+            [(string) $counts -> deliveriesQueued, (string) $counts -> deliveriesFailing],
+            (string) ($words['queued'] ?? '')
+        ));
 
-        $this -> addLine('Posts waiting to be read from other servers: ' . $waiting_to_read);
+        $this -> addLine(str_replace('{count}', (string) $waiting_to_read, (string) ($words['pendingReads'] ?? '')));
 
         return parent::toDOM();
     }

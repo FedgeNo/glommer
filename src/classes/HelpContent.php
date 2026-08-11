@@ -174,18 +174,18 @@ class HelpContent
                 'body' => '
 <p>The bar across the top is how you get everywhere:</p>
 <ul>
-<li><strong>The site name</strong> on the left always takes you home to the main feed.</li>
+<li><strong>The site name</strong> on the left always takes you home to the main feed, and opens a menu of everywhere else on the site.</li>
 <li><strong>Friends Feed</strong> shows posts from just the people you\'re friends with.</li>
-<li><strong>Friends</strong> is where you accept requests and manage who you\'re connected to.</li>
 <li><strong>Users</strong> lets you search for people and see suggestions of who to connect with.</li>
 <li><strong>Tags</strong> and <strong>Topics</strong> help you discover posts by topic and see what\'s popular right now.</li>
+<li><strong>Map</strong> and <strong>Locations</strong> show posts by where they were posted from, on a map or listed by place.</li>
 <li><strong>Search</strong> looks across the site\'s posts.</li>
-<li><strong>Messages</strong> holds your private conversations.</li>
+<li><strong>Messages</strong> holds your private conversations, and marks itself when one is waiting.</li>
 <li><strong>Bookmarks</strong> is your private list of saved posts.</li>
 <li><strong>Notifications</strong> lights up when someone interacts with you.</li>
 <li><strong>Help</strong> (these articles) and <strong>About</strong> are there whether or not you\'re logged in.</li>
 </ul>
-<p>Your own name sits at the top-right - it links to your profile, and opens your <strong>User Settings</strong> and the <strong>log out</strong> option.</p>
+<p>Your own name sits at the top-right - it links to your profile, and opens a menu with <strong>Friends</strong> (where you accept requests and manage who you\'re connected to), your drafts and scheduled posts, your <strong>User Settings</strong>, and the <strong>log out</strong> option.</p>
 ',
             ],
             [
@@ -195,11 +195,12 @@ class HelpContent
                 'summary' => 'Write and publish a post from the box at the top of the feed.',
                 'body' => '
 <p>The composer sits at the top of the main feed. Type your post in the writing area and press the post button to publish it. Posts appear in the public feed straight away - everything on the site is public, so write with that in mind.</p>
-<p>A couple of optional extras sit above the writing area:</p>
+<p>A few optional extras sit alongside the writing area:</p>
 <ul>
 <li>A <strong>title</strong>, if you want to give your post a headline.</li>
 <li>A <strong>link</strong>, if you\'re sharing a web page (see <a href="/help/sharing-a-link">Sharing a link</a>).</li>
 <li>A <strong>poll</strong>, if you\'re asking a question rather than making a statement (see <a href="/help/polls">Asking a question with a poll</a>).</li>
+<li>A <strong>Sensitive</strong> mark, for a post that should be opened rather than shown right away (see <a href="/help/content-warnings">Content warnings and sensitive media</a>).</li>
 </ul>
 <p>You can dress your writing up with formatting, emoji, and even math, and you can attach photos, video, or audio. Those each have their own article. Note that a single post carries a link, attached media, <em>or</em> a poll - one of the three, never a combination.</p>
 ',
@@ -214,7 +215,7 @@ class HelpContent
 <h2>Emoji</h2>
 <p>Open the emoji picker from the composer to drop emoji into your text. The picker remembers your preferred skin tone, so once you set it, it sticks.</p>
 <h2>Math</h2>
-<p>You can write mathematical notation using LaTeX. Wrap display math in <code>$$ ... $$</code> or <code>\\[ ... \\]</code>, and inline math in <code>\\( ... \\)</code>. It renders as proper equations when the post is shown. A lone dollar sign in ordinary text is left alone, so writing about prices is safe.</p>
+<p>You can write mathematical notation using LaTeX. Wrap display math in <code>$$ ... $$</code> or <code>\\[ ... \\]</code>, and inline math in <code>\\( ... \\)</code> or a plain <code>$ ... $</code>. It renders as proper equations when the post is shown. Because a single dollar sign counts as a delimiter too, two of them in the same post - two prices, say - can be read as a formula\'s start and end; write in <code>\\( ... \\)</code> instead if that\'s a risk.</p>
 ',
             ],
             [
@@ -223,7 +224,7 @@ class HelpContent
                 'category' => 'Posting',
                 'summary' => 'Attach one or more images, a video, or audio to a post.',
                 'body' => '
-<p>Use the attach control in the composer to add <strong>images, video, or audio</strong> to a post. You can attach more than one file - several images become a swipeable gallery on the finished post. You can attach up to ' . (int) ini_get('max_file_uploads') . ' files to a single post.</p>
+<p>Use the attach control in the composer to add <strong>images, video, or audio</strong> to a post. You can attach more than one file - several images become a swipeable gallery on the finished post. You can attach up to 100 files to a single post; past that, the rest are not added.</p>
 <p>Larger video and audio files are processed after you post, so there may be a short wait before they\'re playable. You\'ll get a notification once your media has finished processing and is live.</p>
 <p>If you change your mind before posting, use the cancel control next to the file picker to drop the attachment. Remember that a post with media can\'t also carry a link - pick whichever fits what you\'re sharing.</p>
 ',
@@ -256,9 +257,23 @@ class HelpContent
 <h2>Answering one</h2>
 <p>Pick your option or options and press <strong>Vote</strong>. Your answer is final: there\'s no changing it afterwards, since being able to switch after seeing the running total would make the total the thing being voted on.</p>
 <p>Once you\'ve answered - or once the poll closes - the options are replaced by the results: each one\'s share of the vote with the number behind it, and your own choice marked. Underneath, how many people have answered and how long is left. On a poll that takes several choices those are different numbers, which is why the count is of people rather than of votes.</p>
-<p>If you haven\'t voted you\'ll still see the results once it closes, and so will anyone reading while logged out.</p>
+<p>Reading while logged out shows you the results from the start, since there\'s no vote for you to cast. Signed in and haven\'t answered yet, you\'ll see the options - and can still cast one - right up until the poll closes.</p>
 <h2>Across the Fediverse</h2>
 <p>Polls travel. People on other servers can answer yours and their votes count here, and you can answer polls from accounts you follow elsewhere. For a poll from another server the numbers are that server\'s to keep - we show what it last told us, so a total can lag slightly behind the vote you just cast.</p>
+',
+            ],
+            [
+                'slug' => 'content-warnings',
+                'title' => 'Content warnings and sensitive media',
+                'category' => 'Posting',
+                'summary' => 'Mark a post as sensitive, or add warning text that hides the whole thing until it\'s opened.',
+                'body' => '
+<p>Every post you write carries a <strong>Sensitive</strong> mark, whether or not it has a picture, video, or audio attached - words need a warning as often as pictures do.</p>
+<p>On its own, checking it covers any attached media behind a cover the reader has to open before it shows; the words stay visible. Checking it on a post with nothing attached covers nothing, since there\'s no media to hide - if it\'s the writing itself that needs the warning, use the <strong>warning text</strong> field that appears once Sensitive is checked.</p>
+<p>Add warning text and the effect changes: the whole post moves behind that warning instead of just the media - words, poll and all. The commonest warning of all is a spoiler, and what a spoiler spoils is usually the words.</p>
+<p>Nobody sees a content warning\'s contents by default - it\'s a sentence written about this particular post, and there\'s no standing answer to a post nobody\'s read yet. Sensitive media is different: the <strong>Sensitive Media</strong> section of <a href="/user-settings">User Settings</a> can show it without opening the cover, for anyone who\'d rather it just did.</p>
+<h2>Across the Fediverse</h2>
+<p>Both travel in both directions: your covers and warnings show the same way to your followers elsewhere, and a post arriving from another server marked the same way is covered here too.</p>
 ',
             ],
             [
@@ -295,12 +310,25 @@ class HelpContent
 ',
             ],
             [
+                'slug' => 'translating',
+                'title' => 'Translating a post or a message',
+                'category' => 'Posting',
+                'summary' => 'Read something written in another language, and what translating it does with the words.',
+                'body' => '
+<p>Posts arrive here from servers all over the Fediverse, in every language there is. Where a post has writing in it, its action bar carries a <strong>translate</strong> button - press it and the body is replaced by a translation, with the button turning into one that gives you the original back.</p>
+<p>Translation happens on this server, not at an outside service, and a post\'s translation is kept so the next person to ask for the same one gets it straight away.</p>
+<p>Messages you have been sent carry the same button. Two things are deliberately different there. Your own messages never have one - the point is reading what arrived, not what you wrote - and nothing is translated until you ask, so a conversation is never quietly sent through a translator.</p>
+<p>Translating a message does hand its text to this server, which is worth knowing if you use <a href="/help/encrypted-messages">encrypted messages</a>: an encrypted message is one this server cannot read, and translating it is you choosing to let it. Nothing is written down - the translation is not saved and the message itself is unchanged - but it has been read here, so it is not end-to-end encrypted the way an untranslated message is. You are told this once, before the first message you translate.</p>
+<p>The button only appears where the server has a translator installed, so on some sites you will not see it at all.</p>
+',
+            ],
+            [
                 'slug' => 'finding-people',
                 'title' => 'Finding people',
                 'category' => 'Connecting',
                 'summary' => 'Search for users by name, or browse suggestions on the Users page.',
                 'body' => '
-<p>Open <strong>Users</strong> from the menu to find people. Start typing a name or username into the search box and matching people appear as you type.</p>
+<p>Open <strong>Users</strong> from the menu to find people. Start typing a name or username into the search box and matching people appear as you type, with this site\'s own members listed first and anyone known only from the wider Fediverse after.</p>
 <p>Before you\'ve typed anything, the page shows <strong>suggestions</strong> - people you might know. These are friends of your friends, ranked by how many friends you have in common, so the more connected you are, the more relevant they get.</p>
 <p>If it\'s empty, that isn\'t a fault: it means there\'s nobody left to suggest, either because you haven\'t added anyone yet or because you\'ve already added everyone your friends know. Search by name to find anyone else - the search covers everybody, suggested or not.</p>
 <p>From any person\'s card you can add them as a friend, send a message, or open their profile to see their posts.</p>
@@ -348,7 +376,7 @@ class HelpContent
 <p>Turn on <strong>Encrypted Messages</strong> in <a href="/user-settings">User Settings</a> by choosing a passphrase. Your browser creates an encryption key of its own, locks it under that passphrase, and stores only the locked copy on the server - the passphrase itself never leaves your device, and the server never holds a key it could read your messages with.</p>
 <p>A conversation becomes end-to-end encrypted once <em>both</em> people have turned this on - it takes both keys. From then on, new messages in that thread are unlocked and read in your browsers only; older messages from before stay as they were. Conversations with people on other Fediverse servers are never encrypted, because the protocol between servers has no way to carry it - those threads say so.</p>
 <p>Opening an encrypted conversation asks for your passphrase once per browser tab. Because the locked copy of your key lives on the server, the same passphrase works from any browser or device.</p>
-<p><strong>Choose the passphrase carefully.</strong> It is the only thing guarding every encrypted message you will ever have, on every device, and there is nothing behind it - no second step, no lockout, no reset that keeps your messages. A long phrase of several words beats a short complicated one. It must not be your account password: that one is sent to this server when you sign in, and your passphrase must never be.</p>
+<p><strong>Choose the passphrase carefully.</strong> It is the only thing guarding every encrypted message you will ever have, on every device, and there is nothing behind it - no second step, no lockout, no reset that keeps your messages. A long phrase of several words beats a short complicated one, and needs to be at least twelve characters. It must not be your account password: that one is sent to this server when you sign in, and your passphrase must never be.</p>
 <p>What this design does not do is forget. Because your passphrase unlocks your history from any browser, the keys that open old messages still exist - so if someone ever learns your passphrase, everything you have is open to them, not just what arrives afterwards. Apps that guard against that (Signal and the like) throw old keys away, which is why a new phone there starts with an empty conversation. Keeping your history readable and throwing old keys away are opposites; this site keeps the history. If a conversation is sensitive enough that its past should not survive a future mistake, the answer here is to delete it, not to trust the encryption to forget it for you.</p>
 <p><strong>There is no way to recover a lost passphrase</strong> - not by you, not by the administrator; that is the point of the design. If you lose it, the reset option in Settings creates fresh keys under a new passphrase, but messages encrypted with the old keys are gone for good. You can change your passphrase any time in Settings without losing anything, as long as you still know the current one.</p>
 <p><strong>Check the safety code.</strong> Every encrypted conversation shows a short code standing for the two keys it is locked with. Read it to each other some other way - out loud, in person, over a call - and if it matches on both sides, nobody is sitting between you. It is worth doing once, because the server is what tells each of your browsers the other\'s key, and a dishonest one could hand over a key of its own; it cannot make both of your codes agree, so a mismatch is the tell. Mark it verified once you have checked, and you will be warned if it ever changes - which happens when one of you resets your keys, and is also what an interception would look like.</p>
@@ -364,6 +392,7 @@ class HelpContent
                 'body' => '
 <p>If you see a <strong>Relay Feed</strong> in the menu, this server subscribes to a relay - a shared firehose that carries public posts between servers that have all joined it. It is how a small site sees anything from the wider Fediverse before its members have found people to follow: normally a server only receives what someone here already follows, which leaves a new site very quiet.</p>
 <p>It is deliberately kept apart from your other feeds. Nobody here chose these posts or follows the people who wrote them - it is simply everything those servers published - so it never mixes into the main feed or your <a href="/help/your-feeds">Friends Feed</a>. You open it when you feel like browsing, and it leaves you alone otherwise.</p>
+<p>Only a recent window of it is kept. A post that scrolls out of that window drops out of the feed too, unless you did something with it - replied, liked, bookmarked, reposted, pinned, or reported it - in which case it stays.</p>
 <p>You can reply to, like and report anything in it the same as any other post, and if you find someone worth keeping up with you can <a href="/help/following-on-the-fediverse">follow them</a> - their posts then arrive in your Friends Feed like anyone else\'s, whether or not the relay is still subscribed.</p>
 <p>Only the administrator decides whether this server uses a relay at all. If there is no Relay Feed in your menu, this one does not.</p>
 ',
@@ -374,7 +403,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'The difference between the main feed and your Friends Feed.',
                 'body' => '
-<p>There are two feeds:</p>
+<p>There are two feeds you\'ll use most:</p>
 <ul>
 <li><strong>The main feed</strong> - your home page - shows posts from across the whole site. It\'s public and global, a good way to discover people and things you\'re not yet connected to.</li>
 <li><strong>Friends Feed</strong> shows posts only from people you\'re friends with, for when you just want to catch up with your circle.</li>
@@ -389,7 +418,7 @@ class HelpContent
                 'category' => 'Connecting',
                 'summary' => 'How you hear about likes, replies, friend requests, and messages.',
                 'body' => '
-<p>The <strong>Notifications</strong> item in the menu lights up when something happens that involves you - someone likes or replies to your post, sends or accepts a friend request, messages you, or your uploaded media finishes processing.</p>
+<p>The <strong>Notifications</strong> item in the menu lights up when something happens that involves you - someone likes, reposts, or replies to your post, mentions you, sends or accepts a friend request, messages you, or your uploaded media finishes processing. The same things happening from elsewhere in the Fediverse - a like, a boost, a reply, a mention, a new follower - notify you exactly the same way.</p>
 <p>Notifications arrive <strong>live</strong>: you don\'t need to refresh the page to see them. Open the notifications area for a quick list of the most recent, or the full Notifications page for your whole history, which loads more as you scroll.</p>
 <p>Each notification links straight to whatever it\'s about, so a tap takes you to the post, conversation, or profile in question.</p>
 ',
@@ -418,7 +447,7 @@ class HelpContent
                 'summary' => 'Cut off contact with a user and hide them from your view.',
                 'body' => '
 <p>Blocking is the tool for when you simply don\'t want anything more to do with someone. Use the <strong>Block</strong> button on their card or profile.</p>
-<p>When you block someone, any existing friendship between you ends, and direct interaction (messaging, likes, comments) is restricted. Blocks do not affect visibility as the site is entirely public and simply logging out would circumvent that. It\'s a personal setting - it changes your own experience rather than penalising the other person.</p>
+<p>When you block someone, any existing friendship between you ends, and direct interaction (messaging, likes, replies, reposts) is restricted. Blocks do not affect visibility as the site is entirely public and simply logging out would circumvent that. It\'s a personal setting - it changes your own experience rather than penalising the other person.</p>
 <p>You can reverse it at any time: a blocked person\'s card shows an <strong>Unblock</strong> button.</p>
 <p>Blocking is about your comfort. If someone is being abusive - not just annoying - please also <a href="/help/reporting-abuse">report the abusive content</a> so it can be dealt with.</p>
 ',
@@ -452,15 +481,18 @@ class HelpContent
 <li><strong>Change Password</strong> and <a href="/help/changing-your-email">Change Email</a> - both ask for your current password to confirm it\'s you.</li>
 <li><a href="/help/two-factor-authentication">Two-Factor Authentication</a> - an extra step at login for security.</li>
 <li><strong>Theme</strong> - change how the site looks (see below).</li>
-<li><a href="/help/signed-in-devices">Remembered Devices and Sessions</a> - review where you\'re signed in, and sign out everywhere.</li>
+<li><strong>Sensitive Media</strong> - always show media marked sensitive without opening its cover first (see <a href="/help/content-warnings">Content warnings and sensitive media</a>).</li>
+<li><a href="/help/encrypted-messages">Encrypted Messages</a> - lock your conversations behind a passphrase.</li>
 <li><strong>Email Digests</strong> - whether we email you what you missed after you have been away a while. On unless you turn it off (see below).</li>
+<li><strong>Push Notifications</strong> - where the server has it set up, get notified on this device without the page open.</li>
+<li><a href="/help/signed-in-devices">Remembered Devices and Sessions</a> - review where you\'re signed in, and sign out everywhere.</li>
 <li><a href="/help/video-calling">Video Calling</a> - check whether calls can work from this browser and network.</li>
 <li><a href="/help/following-on-the-fediverse">Fediverse</a> - follow accounts on other servers.</li>
 <li><strong>Moving Servers</strong> - take your followers with you to an account elsewhere on the Fediverse.</li>
 <li><a href="/help/deleting-your-account">Delete Account</a> - close your account for good.</li>
 </ul>
 <h2>Themes</h2>
-<p>The <strong>Theme</strong> picker restyles the whole site, and your choice is remembered. Choose <strong>Match System</strong> to follow whatever your device is set to, or lock in one of the built-in looks: Light, Dark, Sepia, Midnight, Sunset, Rose, Forest, Ocean, Lavender, Gold, and Hacker.</p>
+<p>The <strong>Theme</strong> picker restyles the whole site, and your choice is remembered. Choose <strong>Match System</strong> to follow whatever your device is set to, or lock in one of the built-in looks: Plain Light, Plain Dark, Sepia, Midnight, Sunset, Rose, Forest, Ocean, Lavender, Gold, Hacker, Ironbow, Viridis, Mako, Cividis, YlGnBu, Cubehelix, and Greyscale.</p>
 <h2>Email digests</h2>
 <p>If you have not visited for a week and something has happened while you were gone, we will email you once to say what. Never more than one a week, and never when nothing happened. Turn them off under <strong>Email Digests</strong> in Settings, or use the unsubscribe link in any one of them - that works in a single click, without signing in.</p>
 <p>Forgotten your password and can\'t log in? Use the <strong>Forgot password?</strong> link on the login page to get a reset link by email.</p>
@@ -487,18 +519,21 @@ class HelpContent
                 'summary' => 'Fix a typo or reword one of your own posts after publishing.',
                 'body' => '
 <p>Made a mistake? On any post you wrote, you\'ll find an <strong>edit</strong> action. It reopens the post in the editor so you can fix a typo, reword something, or adjust its formatting, then save your changes.</p>
-<p>The edit replaces the post in place for everyone - there\'s no separate "edited" copy kept. You can change the title, the writing, and its formatting this way. Swapping a post\'s attached media or its link isn\'t part of editing, though; if that\'s what you need, it\'s cleaner to <a href="/help/deleting-a-post">delete</a> the post and put up a new one.</p>
+<p>The edit replaces the post in place for everyone - there\'s no separate "edited" copy kept, though the post carries a small <strong>(edited)</strong> note afterwards so readers know it changed. You can change the title, the writing and its formatting, and the link this way. Swapping a post\'s attached media isn\'t part of editing, though; if that\'s what you need, it\'s cleaner to <a href="/help/deleting-a-post">delete</a> the post and put up a new one.</p>
 <p>You can only edit your own posts.</p>
 ',
             ],
             [
                 'slug' => 'reposting-posts',
-                'title' => 'Reposting',
+                'title' => 'Reposting and quoting',
                 'category' => 'Posting',
-                'summary' => 'Pass someone\'s post on to your friends and followers.',
+                'summary' => 'Pass someone\'s post on to your friends and followers, plain or with words of your own.',
                 'body' => '
-<p>Press <strong>Repost</strong> on a post to pass it on. It shows up in your friends\' feeds and on your own profile, marked with your name and sorted by when you passed it on - and your Fediverse followers are told too. The button becomes <strong>Unrepost</strong>, which takes it back.</p>
+<p>Press <strong>Repost</strong> on a post to pass it on unchanged. It shows up in your friends\' feeds and on your own profile, marked with your name and sorted by when you passed it on - and your Fediverse followers are told too. The button becomes <strong>Undo repost</strong>, which takes it back.</p>
 <p>The count beside the button adds reposts made here and boosts from other servers into one number. You can\'t repost your own post - your profile already carries it.</p>
+<h2>Quoting</h2>
+<p>Press <strong>Quote</strong> instead to pass a post on with something to say about it. It opens a composer with the original embedded, and needs words of your own above it - a quote with nothing added is what Repost is for. You can attach images to a quote the way you would any post, but not video or audio.</p>
+<p>A quote post is a post like any other: it can be replied to, liked, and reported, and it travels to the Fediverse the same way yours always do.</p>
 ',
             ],
             [
@@ -545,10 +580,10 @@ class HelpContent
                 'body' => '
 <p>' . self::siteTitle() . ' speaks <strong>ActivityPub</strong>, the standard behind Mastodon and the wider Fediverse, so you can follow people on other servers and read their posts here.</p>
 <p>Open <strong>User Settings</strong> from your name in the top-right, find the <strong>Fediverse</strong> section, and paste in one or more handles - written like <code>@user@example.social</code> - then press <strong>Follow</strong>. Any separator between multiple handles works, so you can paste a whole list at once.</p>
-<p>The same section lists the accounts you already follow so you can keep track of them. Mentioning a remote account by its full <code>@user@server</code> handle in a post works too - see <a href="/help/hashtags-and-mentions">hashtags and mentions</a>.</p>
+<p>The same section lists the accounts you already follow, and whether each one has accepted yet or is still pending - some accounts out there approve their followers by hand rather than automatically. Mentioning a remote account by its full <code>@user@server</code> handle in a post works too - see <a href="/help/hashtags-and-mentions">hashtags and mentions</a>.</p>
 <h2>Being followed from out there</h2>
 <p>You have a Fediverse address of your own: <strong>@your-username@this-site\'s-domain</strong>. Anyone on Mastodon, Threads, or another ActivityPub server can search that handle and follow you - no approval step, since everything here is public anyway.</p>
-<p>Your posts travel to your followers as you publish them: text, pictures, video, <a href="/help/polls">polls</a>, sensitive-media covers, even your <a href="/help/your-profile">pinned posts</a> and profile edits. Their likes, boosts, and replies land back here and count like anyone else\'s. Reposting a remote post tells your followers about it too.</p>
+<p>Your posts travel to your followers as you publish them: text, pictures, video, <a href="/help/polls">polls</a>, <a href="/help/content-warnings">sensitive marks and content warnings</a>, even your <a href="/help/your-profile">pinned posts</a> and profile edits. Their likes, boosts, and replies land back here and count like anyone else\'s. Reposting a remote post tells your followers about it too.</p>
 <p>If you ever leave for another server, <strong>Moving Servers</strong> in Settings sends your followers along - see the section there for the handshake it needs.</p>
 ',
             ],
@@ -609,7 +644,7 @@ class HelpContent
                 'summary' => 'Update your account\'s email address, with re-verification.',
                 'body' => '
 <p>To change your email address, open <strong>User Settings</strong> and use the <strong>Change Email</strong> section. Enter the new address and confirm with your current password. We\'ll send a verification link to the <strong>new</strong> address - open it to confirm the change, just as you did when you first signed up.</p>
-<p>As a safeguard, we also send a note to your <strong>old</strong> address letting it know the email was changed, with a link to reverse it. So if a change ever happens that wasn\'t you, you can undo it from that message. Until the new address is verified, it\'s worth confirming promptly, since things like password resets rely on a verified address.</p>
+<p>As a safeguard, we also send a note to your <strong>old</strong> address letting it know the email was changed, with a link to reverse it. That link needs no password - opening it reverts the address and signs every device out of the account, so if a change ever happens that wasn\'t you, it undoes the change and shuts out whoever made it in one step. Until the new address is verified, it\'s worth confirming promptly, since things like password resets rely on a verified address.</p>
 ',
             ],
             [
@@ -619,7 +654,8 @@ class HelpContent
                 'summary' => 'Permanently close your account and remove your content.',
                 'body' => '
 <p>If you want to leave, open <strong>User Settings</strong> and use the <strong>Delete Account</strong> section. You\'ll confirm with your password, because this can\'t be undone.</p>
-<p>Deleting your account is <strong>permanent</strong>. Your posts, replies, messages, likes, and connections are removed, and your username is freed up. There\'s no way to recover an account once it\'s gone, so be sure it\'s really what you want.</p>
+<p>Deleting your account is <strong>permanent</strong>. Your posts, replies, messages, likes, and connections are removed - and, the same as <a href="/help/deleting-a-post">deleting a single post</a>, so is anything anyone else wrote underneath one of yours. Your username is retired rather than freed up: nobody, including you, can ever sign up with it again, so a link, a mention, or a follow from elsewhere in the Fediverse can never end up reaching a stranger wearing your old name.</p>
+<p>There\'s no way to recover an account once it\'s gone, so be sure it\'s really what you want.</p>
 <p>The site\'s administrator account can\'t be deleted, since a site needs at least one admin to keep running.</p>
 ',
             ],

@@ -39,7 +39,7 @@ class TopicHeading extends Div
         // lands.
         $search = new Anchor(
             ServerURL::absolute('/search?q=' . urlencode((string) $this -> entity -> title)),
-            'Search for this'
+            (string) (Strings::for(self::class)['searchLink'] ?? '')
         );
         $search -> class = 'TopicSearchLink';
 

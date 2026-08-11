@@ -3,6 +3,7 @@ import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 export class RemoteFollowsForm {
     static init() {
@@ -49,9 +50,13 @@ export class RemoteFollowsForm {
                     item.className = 'd-flex gap-2 align-items-center';
                     item.appendWithSpace(document.createTextNode(result.handle));
 
+                    // A follow just submitted is always freshly pending - the
+                    // same key RemoteFollowsForm.php reads for the same word,
+                    // so a follow accepted before the next reload doesn't
+                    // read differently from one the server rendered.
                     const status = document.createElement('span');
                     status.className = 'muted text-sm';
-                    status.textContent = 'pending';
+                    status.textContent = Strings.for('RemoteFollowsForm', { statusPending: 'pending' }).statusPending;
                     item.appendWithSpace(status);
 
                     list.appendWithSpace(item);

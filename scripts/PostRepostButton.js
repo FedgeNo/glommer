@@ -1,6 +1,7 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * Passing a post on. The button carries its own state and count, so it flips in
@@ -15,6 +16,12 @@ export class PostRepostButton {
 
     static label(reposted, count) {
         return count > 0 ? PostRepostButton.GLYPH + ' ' + count : PostRepostButton.GLYPH;
+    }
+
+    /** Mirrors PostRepostButton::toDOM() - the accessible name, since the glyph alone does not say it. */
+    static name(reposted) {
+        const words = Strings.for('PostRepostButton', { undo: 'Undo repost', repost: 'Repost' });
+        return reposted ? words.undo : words.repost;
     }
 
     static init() {
@@ -42,8 +49,9 @@ export class PostRepostButton {
             button.classList.toggle('Removing', result.reposted);
             button.textContent = PostRepostButton.label(result.reposted, result.count);
             button.setAttribute('aria-pressed', result.reposted ? 'true' : 'false');
-            button.setAttribute('aria-label', result.reposted ? 'Undo repost' : 'Repost');
-            button.setAttribute('title', result.reposted ? 'Undo repost' : 'Repost');
+            const name = PostRepostButton.name(result.reposted);
+            button.setAttribute('aria-label', name);
+            button.setAttribute('title', name);
         } finally {
             Working.stop(button);
         }

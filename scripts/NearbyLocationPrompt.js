@@ -1,5 +1,6 @@
 import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
@@ -44,13 +45,20 @@ export class NearbyLocationPrompt {
                 return;
             }
 
+            const words = Strings.for('NearbyLocationPrompt', {
+                useMyLocation: 'Use my location',
+                locating: 'Locating…',
+                noGeolocation: 'Your browser can\'t share a location.',
+                locationError: 'Could not get your location. Check your browser\'s location permission.',
+            });
+
             if (!navigator.geolocation) {
-                Toast.show('Your browser can\'t share a location.');
+                Toast.show(words.noGeolocation);
                 return;
             }
 
             Working.start(button);
-            button.textContent = 'Locating…';
+            button.textContent = words.locating;
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -63,8 +71,8 @@ export class NearbyLocationPrompt {
                 },
                 () => {
                     Working.stop(button);
-                    button.textContent = 'Use my location';
-                    Toast.show('Could not get your location. Check your browser\'s location permission.');
+                    button.textContent = words.useMyLocation;
+                    Toast.show(words.locationError);
                 },
                 { enableHighAccuracy: true, timeout: 10000 }
             );
@@ -79,7 +87,9 @@ export class NearbyLocationPrompt {
         const query = input.value.trim();
         document.querySelector('.NearbyPlaceSuggestions')?.remove();
 
-        if (query.length < 2) return;
+        // Counted the way the server counts it, so the box asks exactly when
+        // there is an answer to be had.
+        if (Array.from(query).length < ClientConfig.get('placeSearchMinimumLength')) return;
 
         const result = await Api.post('/api/search-places', { q: query });
 

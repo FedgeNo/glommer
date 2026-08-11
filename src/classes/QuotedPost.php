@@ -11,6 +11,11 @@ declare(strict_types=1);
  */
 class QuotedPost extends Div
 {
+    /** How much of the quoted writing the embed shows. Shipped to the client
+     *  through ClientConfig, since both renderers cut it and two numbers would
+     *  eventually disagree. */
+    public const DESCRIPTION_MAX_LENGTH = 280;
+
     public ?string $class = 'QuotedPost';
 
     public ?int $postId = null;
@@ -91,12 +96,12 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
         }
 
         if ((string) $this -> description !== '') {
-            $this -> contents[] = new Paragraph(truncate((string) $this -> description, 280));
+            $this -> contents[] = new Paragraph(truncate((string) $this -> description, self::DESCRIPTION_MAX_LENGTH));
         }
 
         $link = new Anchor(
             ServerURL::absolute('/users/' . $this -> slug . '/' . $this -> postId),
-            'View the quoted post'
+            (string) (Strings::for(self::class)['viewLink'] ?? '')
         );
         $link -> class = 'QuotedPostLink';
         $link -> mixins = ['text-sm'];
@@ -105,13 +110,20 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
         return parent::toDOM();
     }
 
-    /** The JSON the client twin rebuilds this from. @return array<string, mixed> */
+    /**
+     * The JSON the client twin rebuilds this from. The writing goes over whole
+     * and is cut where it is shown, the same way the post's own body travels -
+     * a payload carrying only the slice this embed happens to display today
+     * cannot be shown any other way tomorrow.
+     *
+     * @return array<string, mixed>
+     */
     public function toPayloadArray(): array
     {
         return [
             'postId' => (int) $this -> postId,
             'title' => $this -> title,
-            'description' => $this -> description !== null ? truncate($this -> description, 280) : null,
+            'description' => $this -> description,
             'slug' => $this -> slug,
             'authorTitle' => $this -> authorTitle,
         ];

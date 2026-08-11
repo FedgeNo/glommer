@@ -4,6 +4,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * The one button that turns browser push on or off for this device. Whether
@@ -16,18 +17,23 @@ export class PushNotificationSetting {
         const button = document.querySelector('.PushSubscribeButton');
         if (!button) return;
 
+        // Read from the same table PushNotificationSetting.php renders from,
+        // so every label the script sets afterward is in whatever language a
+        // reload would show, not always English.
+        const words = Strings.for('PushNotificationSetting');
+
         // A browser without service workers or push simply can't offer this.
         if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
             // Nothing to wait for - this browser will never offer it.
             button.disabled = true;
-            button.textContent = 'Push isn\'t supported in this browser';
+            button.textContent = words.unsupported || '';
             return;
         }
 
         const registration = await navigator.serviceWorker.ready;
         const existing = await registration.pushManager.getSubscription();
 
-        PushNotificationSetting.#reflect(button, existing !== null);
+        PushNotificationSetting.#reflect(button, words, existing !== null);
 
         button.addEventListener('click', async () => {
             Working.start(button);
@@ -37,10 +43,10 @@ export class PushNotificationSetting {
 
                 if (subscription) {
                     await PushNotificationSetting.#disable(subscription);
-                    PushNotificationSetting.#reflect(button, false);
+                    PushNotificationSetting.#reflect(button, words, false);
                 } else {
                     const made = await PushNotificationSetting.#enable(registration);
-                    PushNotificationSetting.#reflect(button, made);
+                    PushNotificationSetting.#reflect(button, words, made);
                 }
             } finally {
                 Working.stop(button);
@@ -48,8 +54,8 @@ export class PushNotificationSetting {
         });
     }
 
-    static #reflect(button, subscribed) {
-        button.textContent = subscribed ? 'Turn off on this device' : 'Enable on this device';
+    static #reflect(button, words, subscribed) {
+        button.textContent = (words.label || {})[subscribed ? 'on' : 'off'] || '';
         button.classList.toggle('Removing', subscribed);
     }
 

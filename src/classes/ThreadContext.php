@@ -34,13 +34,16 @@ class ThreadContext extends Div
 
     public function toDOM(): \DOMElement
     {
+        $words = Strings::for(self::class);
+        $sentence = $words['response'] ?? [];
+
         $response = new Span();
-        $response -> contents[] = 'In response to ';
+        $response -> contents[] = (string) ($sentence['before'] ?? '');
         $response -> addContent(new Anchor(
             ServerURL::absolute('/users/' . $this -> parentUsername . '/' . $this -> parentId),
-            (string) $this -> parentLabel
+            $this -> parentLabel ?? (string) ($words['untitled'] ?? '')
         ));
-        $response -> contents[] = '';
+        $response -> contents[] = (string) ($sentence['after'] ?? '');
 
         $this -> addContent($response);
 
@@ -49,7 +52,7 @@ class ThreadContext extends Div
         if ($this -> rootId !== null && $this -> rootId !== $this -> parentId) {
             $this -> addContent(new ThreadStartLink(
                 ServerURL::absolute('/users/' . $this -> rootUsername . '/' . $this -> rootId),
-                'Jump to start'
+                (string) ($words['jumpToStart'] ?? '')
             ));
         }
 
@@ -143,8 +146,14 @@ SELECT `Ancestry`.`origin`, `Ancestry`.`depth`, `Posts`.`postId`, `Posts`.`paren
         return array_filter($contexts, static fn (self $context): bool => $context -> parentId !== null);
     }
 
-    /** What to call the post being answered. */
-    private static function labelFor(object $row): string
+    /**
+     * What to call the post being answered, or null when there is nothing to
+     * build one from. Null rather than a fallback phrase here: this runs at
+     * fetch time and ships to the client in toPayloadArray(), and the words
+     * for "nothing to call it" belong to whichever side renders - toDOM()
+     * here, threadContextToElement() in Post.js - not to this query.
+     */
+    private static function labelFor(object $row): ?string
     {
         if ($row -> title !== null && trim((string) $row -> title) !== '') {
             return trim((string) $row -> title);
@@ -156,7 +165,7 @@ SELECT `Ancestry`.`origin`, `Ancestry`.`depth`, `Posts`.`postId`, `Posts`.`paren
         $description = trim((string) ($row -> description ?? ''));
 
         if ($description === '') {
-            return 'this post';
+            return null;
         }
 
         return mb_strlen($description) > self::LABEL_LENGTH

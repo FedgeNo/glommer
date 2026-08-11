@@ -16,23 +16,27 @@ class RelaySubscribeForm extends FormForm
 
     public function toDOM(): \DOMElement
     {
-        $fields = new Fieldset('Subscribe to a relay');
+        $words = Strings::for(self::class);
 
-        $fields -> addContent(new Paragraph(
-            'A relay is a shared firehose: every public post from every other subscribed server arrives here, and this server\'s go out to all of them. It is how a new instance finds anyone at all, since federation otherwise only carries what somebody here already follows.'
-        ));
+        $fields = new Fieldset((string) ($words['legend'] ?? ''));
 
-        $fields -> addContent(new Paragraph(
-            'The load is not yours to predict - it is whatever those servers publish, quiet one week and thousands of posts an hour the next, and your storage, delivery queue and moderation queue all carry it. Relayed posts stay out of the main and friends feeds; they go to the Relay Feed, which people open deliberately.'
-        ));
+        $fields -> addContent(new Paragraph((string) ($words['explainerOne'] ?? '')));
 
-        $actor = new InputField('actorURI', 'Relay address', 'text', 'https://relay.example/actor', 255);
+        $fields -> addContent(new Paragraph((string) ($words['explainerTwo'] ?? '')));
+
+        $actor = new InputField(
+            'actorURI',
+            (string) ($words['addressLabel'] ?? ''),
+            'text',
+            (string) ($words['addressPlaceholder'] ?? ''),
+            255
+        );
         $fields -> addContent($actor);
 
         $fields -> addContent(new RelayFollowObjectField());
 
         $this -> contents[] = $fields;
-        $this -> contents[] = new SubmitButton('Subscribe');
+        $this -> contents[] = new SubmitButton((string) ($words['submitLabel'] ?? ''));
 
         return parent::toDOM();
     }

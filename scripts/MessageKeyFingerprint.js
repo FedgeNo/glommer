@@ -1,6 +1,7 @@
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * The safety code for an encrypted conversation, and the memory of having
@@ -64,7 +65,9 @@ export class MessageKeyFingerprint {
 
         const warning = document.createElement('p');
         warning.className = 'MessageKeyFingerprintWarning';
-        warning.textContent = 'This code has changed since you checked it. That happens when one of you resets your encryption keys - but it is also what someone reading this conversation would look like. Check the new code with them before trusting it.';
+        warning.textContent = Strings.for('MessageKeyFingerprint', {
+            changed: 'This code has changed since you checked it. That happens when one of you resets your encryption keys - but it is also what someone reading this conversation would look like. Check the new code with them before trusting it.',
+        }).changed;
         block.prepend(warning);
     }
 
@@ -80,7 +83,7 @@ export class MessageKeyFingerprint {
 
         const done = document.createElement('p');
         done.className = 'MessageKeyFingerprintVerified';
-        done.textContent = 'You have checked this code.';
+        done.textContent = Strings.for('MessageKeyFingerprint', { verified: 'You have checked this code.' }).verified;
         block.appendWithSpace(done);
     }
 

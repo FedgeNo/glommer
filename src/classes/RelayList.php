@@ -10,10 +10,10 @@ class RelayList extends ItemList
     public ?string $class = 'RelayList';
     public array $mixins = ['d-flex', 'flex-column'];
 
-    protected string $emptyNotice = 'Not subscribed to any relays. Nothing arrives here except what members follow.';
-
     protected function rows(): array
     {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+
         return DB::rows('
 SELECT `actorURI`, `status`, `createdAt`
     FROM `Relays`

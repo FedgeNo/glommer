@@ -9,6 +9,12 @@ class LinkImageRemoveButton extends ButtonButton
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> contents[] = 'Remove image';
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
+
+        return parent::toDOM();
     }
 }

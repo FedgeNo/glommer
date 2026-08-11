@@ -13,6 +13,12 @@ class MessageList extends ItemList
     public ?string $class = 'MessageList';
     public array $mixins = ['d-flex', 'flex-column'];
 
+    // English, so anything that never calls rows() below still says something
+    // sensible (ItemLoaderTest builds a MessageList whose rows() is replaced
+    // outright, for one). Overwritten with this locale's own wording once
+    // rows() actually runs, the same as UserSearchList::rows() overwrites it
+    // dynamically for a reason of its own - a class-level default is fixed
+    // the moment the object exists, before this class can ask Strings anything.
     protected string $emptyNotice = 'No messages yet.';
 
     public ?int $userId = null;
@@ -20,6 +26,8 @@ class MessageList extends ItemList
 
     protected function rows(): array
     {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? $this -> emptyNotice);
+
         // The two directions run as separate UNION ALL halves rather than one
         // OR: each half walks its (senderId, recipientId, messageId) index
         // backward and stops at its limit, so only the merged rows ever get

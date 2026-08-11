@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings map form: the tile source Leaflet uses on /map. A URL
+ * The Admin Settings map form: the tile source Leaflet uses on /map. A URL
  * template (with a literal {apiKey} where the provider wants the key), the API
  * key itself, and the attribution text. All fall back to keyless OpenStreetMap
  * when left blank, so the map works with nothing configured.

@@ -9,6 +9,6 @@ class ComposerFilesRemoveButton extends ButtonButton
         parent::__construct();
 
         $this -> attributes['style'] = 'display: none';
-        $this -> contents[] = 'Remove Files';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

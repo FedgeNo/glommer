@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-// Same gate as Site Settings: the primary admin (userId 1) only, not general
+// Same gate as Admin Settings: the primary admin (userId 1) only, not general
 // moderators.
 if (Auth::id() !== 1) {
     require __DIR__ . '/404.php';
@@ -14,8 +14,8 @@ if (Auth::id() !== 1) {
 }
 
 // Runs the whole suite on load, which takes a few seconds - kept on its own
-// page (linked from Site Settings) so it never slows that page down.
-$page = new Page(['title' => 'Tests']);
+// page (linked from Admin Settings) so it never slows that page down.
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['adminTests'] ?? '')]);
 
 $page -> addContent(new TestResults());
 

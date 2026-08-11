@@ -20,9 +20,12 @@ return [
         'uploadPartlyFailed' => 'Your post is live, but one or more of its files couldn\'t be processed',
         'uploadFailed' => 'One of your uploads failed to process and was not posted',
         'mailerFailed' => 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
-        'mailFromNotConfigured' => 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.',
+        // Names the page by the navigation link that reaches it and the section
+        // by the legend MailSettingsForm renders, so both things the reader is
+        // told to look for are things they will actually see.
+        'mailFromNotConfigured' => 'No mail "from" address is configured, so emails can\'t be sent. Set one in Admin Settings (Outgoing Mail section) or via bin/install.php.',
         'systemError' => 'A server error occurred. Check the error log for details.',
-        'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
+        'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot Password" if you want to set a new one.',
         // {name} rather than concatenation, so a language can put the actor
         // anywhere in the sentence, or leave them out entirely.
         'like' => '{name} liked your post',
@@ -49,7 +52,7 @@ return [
 
     'NotificationTestPanel' => [
         'intro' => 'Send a test notification to yourself (the admin). It should appear instantly as a toast and in the notification dropdown.',
-        'button' => 'Send test notification',
+        'button' => 'Send Test Notification',
         // The other states NotificationTestPanel.js's button cycles through
         // after a click - kept here too so it never reverts to English
         // partway through, under another locale.
@@ -95,7 +98,7 @@ return [
     ],
 
     'MessageKeyVerifyButton' => [
-        'label' => 'Mark as verified',
+        'label' => 'Mark as Verified',
     ],
 
     'MessageUnlockForm' => [
@@ -115,6 +118,6 @@ return [
     ],
 
     'SensitiveMediaSetting' => [
-        'toggle' => 'Show sensitive media by default',
+        'toggle' => 'Show Sensitive Media by Default',
     ],
 ];

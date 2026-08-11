@@ -15,7 +15,7 @@ Auth::clearUserCache();
 
 // The live notification handler needs to know it is on this page before it
 // builds a list over an empty state - every page carries the nav dropdown's.
-$page = new Page(['title' => 'Notifications', 'bodyClass' => 'NotificationsPage']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['notifications'] ?? ''), 'bodyClass' => 'NotificationsPage']);
 
 $page -> addContent(new NotificationList(['userId' => (int) $current_user -> userId]));
 

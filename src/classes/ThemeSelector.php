@@ -7,29 +7,19 @@ class ThemeSelector extends Div
     public ?string $class = 'ThemeSelector';
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
-    // 'light' and 'dark' keep their stored identifiers - only the labels say
-    // "Plain": the bare defaults became Sunset and Ironbow, and these are the
-    // original palettes for anyone who wants them back.
+    /**
+     * The stored identifiers, in the order the menu offers them. What each is
+     * called is the locale's to say - see src/locales/en/ThemeSelector.php -
+     * so this is the list of themes and not a second copy of their names.
+     *
+     * 'light' and 'dark' keep their identifiers although their labels say
+     * "Plain": the bare defaults became Sunset and Ironbow, and these are the
+     * original palettes for anyone who wants them back.
+     */
     protected const OPTIONS = [
-        'system' => 'Match System',
-        'light' => 'Plain Light',
-        'dark' => 'Plain Dark',
-        'sepia' => 'Sepia',
-        'midnight' => 'Midnight',
-        'sunset' => 'Sunset',
-        'rose' => 'Rose',
-        'forest' => 'Forest',
-        'ocean' => 'Ocean',
-        'lavender' => 'Lavender',
-        'gold' => 'Gold',
-        'hacker' => 'Hacker',
-        'ironbow' => 'Ironbow',
-        'viridis' => 'Viridis',
-        'mako' => 'Mako',
-        'cividis' => 'Cividis',
-        'ylgnbu' => 'YlGnBu',
-        'cubehelix' => 'Cubehelix',
-        'greyscale' => 'Greyscale',
+        'system', 'light', 'dark', 'sepia', 'midnight', 'sunset', 'rose',
+        'forest', 'ocean', 'lavender', 'gold', 'hacker', 'ironbow', 'viridis',
+        'mako', 'cividis', 'ylgnbu', 'cubehelix', 'greyscale',
     ];
 
     /**
@@ -39,7 +29,7 @@ class ThemeSelector extends Div
      */
     public static function offers(string $theme): bool
     {
-        return array_key_exists($theme, self::OPTIONS);
+        return in_array($theme, self::OPTIONS, true);
     }
 
     public function toDOM(): \DOMElement
@@ -49,9 +39,11 @@ class ThemeSelector extends Div
         // DB::connection() itself.
         $selected = Auth::user() ?-> theme ?? 'system';
 
+        $words = Strings::for(self::class);
+
         $label = new Label();
         $label -> for = 'theme';
-        $label -> contents[] = 'Theme';
+        $label -> contents[] = (string) ($words['label'] ?? '');
         $this -> contents[] = $label;
 
         $select = new Select();
@@ -59,10 +51,10 @@ class ThemeSelector extends Div
         $select -> id = 'theme';
         $select -> class = 'ThemeSelect';
 
-        foreach (self::OPTIONS as $value => $text) {
+        foreach (self::OPTIONS as $value) {
             $option = new SelectOption();
             $option -> value = $value;
-            $option -> contents[] = $text;
+            $option -> contents[] = (string) ($words['themes'][$value] ?? $value);
 
             if ($value === $selected) {
                 $option -> attributes['selected'] = 'selected';

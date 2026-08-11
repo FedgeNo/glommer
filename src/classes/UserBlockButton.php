@@ -10,6 +10,6 @@ class UserBlockButton extends ButtonButton
 
         $this -> type = 'button';
         $this -> attributes['data-user-id'] = (string) $user_id;
-        $this -> contents[] = 'Block';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

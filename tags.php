@@ -12,7 +12,11 @@ if ($tag === '') {
     $popular = new HashtagGraphSection();
     $trending = new TrendingHashtagSection();
 
-    $page = new Page(['title' => 'Tags', 'description' => 'Browse trending and popular hashtags on ' . Config::get('siteTitle') . '.', 'needsTagGraph' => true]);
+    $page = new Page([
+        'title' => (string) (Strings::for('PageTitle')['tags'] ?? ''),
+        'description' => str_replace('{siteTitle}', (string) Config::get('siteTitle'), (string) (Strings::for('PageTitle')['tagsDescription'] ?? '')),
+        'needsTagGraph' => true,
+    ]);
 
     if (!$popular -> hasItems() && !$trending -> hasItems()) {
         $page -> addContent(new Notice('No hashtags yet.'));
@@ -48,7 +52,15 @@ if (!$feed -> hasItems()) {
     exit;
 }
 
-$page = new Page(['title' => '#' . $tag, 'description' => 'Posts tagged #' . $tag . ' on ' . Config::get('siteTitle') . '.', 'needsMath' => true, 'needsEditor' => Auth::check()]);
+$page = new Page([
+    'title' => '#' . $tag,
+    'description' => strtr((string) (Strings::for('PageTitle')['tagsTagDescription'] ?? ''), [
+        '{tag}' => '#' . $tag,
+        '{siteTitle}' => (string) Config::get('siteTitle'),
+    ]),
+    'needsMath' => true,
+    'needsEditor' => Auth::check(),
+]);
 
 // What people are posting about here, when the trending timer has had a
 // chance to write one - absent otherwise, and the page reads as it always

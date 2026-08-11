@@ -104,7 +104,7 @@ class SetupForm extends FormForm
         $this -> contents[] = $ws_tls_fields;
 
         // Optional: Cloudflare Turnstile ("I am not a robot") on sign-up and
-        // sign-in. Leave blank to skip - it can be set later in Site Settings.
+        // sign-in. Leave blank to skip - it can be set later in Admin Settings.
         // Both keys are needed for it to take effect.
         $turnstile_fields = new Fieldset((string) ($words['botProtectionLegend'] ?? ''));
 

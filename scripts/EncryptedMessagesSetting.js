@@ -143,7 +143,7 @@ export class EncryptedMessagesSetting {
             resetPassphraseLabel: 'New passphrase',
             confirmLabel: 'Confirm passphrase',
             accountPasswordLabel: 'Account password',
-            resetSubmitLabel: 'Reset encryption keys',
+            resetSubmitLabel: 'Reset Encryption Keys',
         });
 
         const status = document.createElement('p');

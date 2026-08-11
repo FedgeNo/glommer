@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-$page = new Page(['title' => 'Users']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['users'] ?? '')]);
 $p = new Paragraph('You can follow a list of Fediverse users in ');
 $a = new Anchor(ServerURL::absolute('/user-settings'), 'User Settings');
 $p -> addContent($a);

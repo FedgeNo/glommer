@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for one editable site-info text (the About
+ * The Admin Settings form for one editable site-info text (the About
  * overview, Terms of Service, or Privacy Policy): a textarea prefilled with
  * the current text (shipped default included, so the admin edits from
  * something rather than a blank box) and a save button. One descendant per

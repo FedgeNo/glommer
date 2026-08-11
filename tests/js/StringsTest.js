@@ -15,7 +15,7 @@ export default {
     suite: 'Strings',
     tests: {
         'a class nobody translated is said in the English it was written with'() {
-            Strings.use({});
+            Strings.useLocale({});
 
             const words = Strings.for('LoginPrompt', { before: '', link: 'Log in', after: ' to reply.' });
 
@@ -23,7 +23,7 @@ export default {
             TestCase.assertEquals(' to reply.', words.after);
         },
         'a translated class is said in the translation'() {
-            Strings.use({ LoginPrompt: { before: 'Zum Antworten bitte ', link: 'anmelden', after: '.' } });
+            Strings.useLocale({ LoginPrompt: { before: 'Zum Antworten bitte ', link: 'anmelden', after: '.' } });
 
             const words = Strings.for('LoginPrompt', { before: '', link: 'Log in', after: ' to reply.' });
 
@@ -31,7 +31,7 @@ export default {
             TestCase.assertEquals('Zum Antworten bitte ', words.before);
         },
         'a piece of a sentence nobody translated is still said'() {
-            Strings.use({ LoginPrompt: { link: 'anmelden' } });
+            Strings.useLocale({ LoginPrompt: { link: 'anmelden' } });
 
             const words = Strings.for('LoginPrompt', { before: '', link: 'Log in', after: ' to reply.' });
 
@@ -39,7 +39,7 @@ export default {
             TestCase.assertEquals(' to reply.', words.after, 'the piece nobody translated survives');
         },
         'a nested sentence falls back piece by piece, not entry by entry'() {
-            Strings.use({ Poll: { closes: { after: ' übrig' } } });
+            Strings.useLocale({ Poll: { closes: { after: ' übrig' } } });
 
             const words = Strings.for('Poll', { closes: { before: 'closes in ', after: ' left' }, final: 'Final' });
 
@@ -48,7 +48,7 @@ export default {
             TestCase.assertEquals('Final', words.final, 'a sibling entry is untouched');
         },
         'a translated string replaces rather than merges into the English'() {
-            Strings.use({ Thing: { label: 'Etikett' } });
+            Strings.useLocale({ Thing: { label: 'Etikett' } });
 
             TestCase.assertEquals('Etikett', Strings.for('Thing', { label: 'Label' }).label);
         },

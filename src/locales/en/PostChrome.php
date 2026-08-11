@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'EmojiPickerTriggerButton' => [
-        'label' => 'Insert emoji',
+        'label' => 'Insert Emoji',
     ],
 
     'LinkImagePreview' => [
@@ -22,7 +22,7 @@ return [
     ],
 
     'LinkImageRemoveButton' => [
-        'label' => 'Remove image',
+        'label' => 'Remove Image',
     ],
 
     'LinkItem' => [
@@ -35,9 +35,9 @@ return [
         // button between the two - same convention as NearbyLocationPrompt's
         // JS-only keys.
         'pause' => 'Pause',
-        'cumulativeMode' => 'Up to then',
-        'windowMode' => 'Just then',
-        'rangeLabel' => 'Show posts up to a date',
+        'cumulativeMode' => 'Up to Then',
+        'windowMode' => 'Just Then',
+        'rangeLabel' => 'Show Posts up to a Date',
         // Also JS-only: the label over the map, rebuilt on every drag of the
         // handle. {date} is the browser's own locale-formatted date, dropped
         // in beside the count the same way {count} is.
@@ -56,29 +56,29 @@ return [
     ],
 
     'PostBookmarkButton' => [
-        'remove' => 'Remove bookmark',
+        'remove' => 'Remove Bookmark',
         'add' => 'Bookmark',
     ],
 
     'PostRepostButton' => [
-        'undo' => 'Undo repost',
+        'undo' => 'Undo Repost',
         'repost' => 'Repost',
     ],
 
     'QuotedPost' => [
-        'viewLink' => 'View the quoted post',
+        'viewLink' => 'View the Quoted Post',
     ],
 
     'ReceivedFriendRequestSection' => [
-        'heading' => 'Pending requests',
+        'heading' => 'Pending Requests',
     ],
 
     'ScrollToTopButton' => [
-        'label' => 'Scroll to top',
+        'label' => 'Scroll to Top',
     ],
 
     'SearchClearButton' => [
-        'label' => 'Clear search',
+        'label' => 'Clear Search',
     ],
 
     'SitePolicyLinks' => [
@@ -87,10 +87,20 @@ return [
     ],
 
     'SkipLink' => [
-        'label' => 'Skip to content',
+        'label' => 'Skip to Content',
     ],
 
     'TopicHeading' => [
-        'searchLink' => 'Search for this',
+        'searchLink' => 'Search for This',
+        // Shown in place of the feed under a topic nothing currently mentions.
+        'noPosts' => 'No posts mention this right now.',
+    ],
+
+    'PopularEntityList' => [
+        'emptyNotice' => 'Nothing of this kind has been written about yet.',
+    ],
+
+    'TrendingEntitySection' => [
+        'heading' => 'Trending',
     ],
 ];

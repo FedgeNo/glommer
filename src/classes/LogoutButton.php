@@ -16,6 +16,6 @@ class LogoutButton extends Button
         parent::__construct();
 
         $this -> type = 'submit';
-        $this -> contents[] = 'Log out';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

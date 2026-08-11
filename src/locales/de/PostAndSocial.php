@@ -64,7 +64,7 @@ return [
         'heading' => ['before' => 'Willkommen bei ', 'after' => ''],
         'paragraphs' => [
             'Schreib etwas in das Feld unten, und es geht an deinen Feed. Jeder kann antworten, und eine Antwort ist einfach ein Beitrag mit einem übergeordneten Beitrag, sodass sich Unterhaltungen so tief verschachteln, wie sie müssen.',
-            'Füge Leute als Freunde hinzu, und ihre Beiträge erscheinen in deinem Feed. Der Globale Feed zeigt alles, was hier geschrieben wurde - der richtige Ort, um jemanden zum Hinzufügen zu finden.',
+            'Füge Leute als Freunde hinzu, und ihre Beiträge erscheinen in deinem Feed. Der Globale Feed - der Name der Website oben links - zeigt alles, was hier geschrieben wurde, und ist der richtige Ort, um jemanden zum Hinzufügen zu finden.',
             'Diese Seite ist Teil des Fediverse: Du kannst Konten auf Mastodon und anderen Servern über ihr vollständiges Handle folgen, und was du postest, erreicht die Leute, die dir dort folgen. Suche nach einem Handle wie @someone@example.social, und dieser Server sucht die Person für dich.',
             'Versieh einen Beitrag mit #Hashtags, und er erscheint auf der Seite dieses Tags und in den Trends, wenn genug Leute darüber schreiben.',
             'Nachrichten zwischen Mitgliedern sind Ende-zu-Ende-verschlüsselt - der Server speichert nur Chiffretext, den er nicht lesen kann. Aktiviere das in den Einstellungen.',

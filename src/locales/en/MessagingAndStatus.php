@@ -15,11 +15,11 @@ return [
         'resetWarning' => 'Forgotten your passphrase? Resetting creates new keys under a new one - but messages encrypted with the old keys can never be read again, by anyone.',
         'requirements' => 'At least 12 characters, and not your account password - that one is sent to this server, and your passphrase must never be.',
         'passphraseLabel' => 'Passphrase',
-        'resetPassphraseLabel' => 'New passphrase',
-        'confirmLabel' => 'Confirm passphrase',
-        'accountPasswordLabel' => 'Account password',
-        'submitLabel' => 'Turn on encrypted messages',
-        'resetSubmitLabel' => 'Reset encryption keys',
+        'resetPassphraseLabel' => 'New Passphrase',
+        'confirmLabel' => 'Confirm Passphrase',
+        'accountPasswordLabel' => 'Account Password',
+        'submitLabel' => 'Turn On Encrypted Messages',
+        'resetSubmitLabel' => 'Reset Encryption Keys',
     ],
 
     'EncryptedMessagesSetting' => [
@@ -53,16 +53,16 @@ return [
     ],
 
     'RemoteFollowsForm' => [
-        'legend' => 'Follow Fediverse accounts',
+        'legend' => 'Follow Fediverse Accounts',
         'notice' => 'Paste one or more handles, e.g. @user@example.social - any separator between them works.',
-        'handlesLabel' => 'Fediverse handles to follow',
+        'handlesLabel' => 'Fediverse Handles to Follow',
         'submit' => 'Follow',
         'statusPending' => 'pending',
         'statusAccepted' => 'accepted',
     ],
 
     'ServerBlockForm' => [
-        'legend' => 'Block a server',
+        'legend' => 'Block a Server',
         'description' => 'Refuses everything from that server and everything under it: no deliveries in, none out, and existing follows in both directions are dropped.',
         'serverLabel' => 'Server',
         'serverPlaceholder' => 'example.social',
@@ -76,7 +76,7 @@ return [
     ],
 
     'VideoCallTestButton' => [
-        'label' => 'Run the check',
+        'label' => 'Run the Check',
     ],
 
     'WebSocketStatus' => [

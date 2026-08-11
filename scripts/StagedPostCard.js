@@ -71,19 +71,24 @@ export class StagedPostCard {
             card.appendWithSpace(link);
         }
 
+        const when_words = Strings.for('StagedPostWhen', {
+            scheduled: 'Scheduled for {when}',
+            draft: 'Draft - publishes only when you say so',
+        });
+
         const when = document.createElement('p');
         when.className = 'StagedPostWhen muted text-sm';
         when.textContent = data.publishAt !== null
-            ? 'Scheduled for ' + data.publishAt
-            : 'Draft - publishes only when you say so';
+            ? when_words.scheduled.replace('{when}', data.publishAt)
+            : when_words.draft;
         card.appendWithSpace(when);
 
         const actions = document.createElement('div');
         actions.className = 'd-flex gap-2';
 
         for (const [className, label] of [
-            ['StagedPostPublishButton', 'Publish Now'],
-            ['StagedPostDiscardButton Removing', 'Discard'],
+            ['StagedPostPublishButton', Strings.for('StagedPostPublishButton', { name: 'Publish Now' }).name],
+            ['StagedPostDiscardButton Removing', Strings.for('StagedPostDiscardButton', { name: 'Discard' }).name],
         ]) {
             const button = document.createElement('button');
             button.type = 'button';

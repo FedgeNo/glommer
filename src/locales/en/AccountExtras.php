@@ -16,62 +16,62 @@ return [
     'SetupForm' => [
         'siteLegend' => 'Site',
         'siteURLLabel' => 'Site URL',
-        'siteTitleLabel' => 'Site title',
-        'mailFromAddressLabel' => 'Mail from address',
+        'siteTitleLabel' => 'Site Title',
+        'mailFromAddressLabel' => 'Mail From Address',
         // {host} is the hostname parsed from the site URL above, spliced into
         // the middle of the sentence rather than glued to one end of it.
         'serverNameConfirmedLabel' => 'I\'ve set "ServerName {host}" and "UseCanonicalName On" in my web server\'s config (only checked if the automated live test can\'t complete - see README.md\'s HTTPS section)',
         'databaseLegend' => 'Database',
-        'databaseHostLabel' => 'Database host',
-        'databasePortLabel' => 'Database port',
-        'databaseNameLabel' => 'Database name',
-        'databaseAdminUsernameLabel' => 'Database admin username',
-        'databaseAdminPasswordLabel' => 'Database admin password',
-        'webSocketTLSLegend' => 'WebSocket TLS (optional)',
-        'certificatePathLabel' => 'Certificate path',
+        'databaseHostLabel' => 'Database Host',
+        'databasePortLabel' => 'Database Port',
+        'databaseNameLabel' => 'Database Name',
+        'databaseAdminUsernameLabel' => 'Database Admin Username',
+        'databaseAdminPasswordLabel' => 'Database Admin Password',
+        'webSocketTLSLegend' => 'WebSocket TLS (Optional)',
+        'certificatePathLabel' => 'Certificate Path',
         'certificatePathPlaceholder' => 'Leave blank to generate automatically via mkcert',
-        'keyPathLabel' => 'Key path',
+        'keyPathLabel' => 'Key Path',
         'keyPathPlaceholder' => 'Leave blank to generate automatically via mkcert',
-        'botProtectionLegend' => 'Bot protection (optional)',
-        'turnstileSiteKeyLabel' => 'Cloudflare Turnstile site key',
+        'botProtectionLegend' => 'Bot Protection (Optional)',
+        'turnstileSiteKeyLabel' => 'Cloudflare Turnstile Site Key',
         'turnstileSiteKeyPlaceholder' => 'Leave blank to skip',
-        'turnstileSecretKeyLabel' => 'Cloudflare Turnstile secret key',
+        'turnstileSecretKeyLabel' => 'Cloudflare Turnstile Secret Key',
         'turnstileSecretKeyPlaceholder' => 'Leave blank to skip',
         'submit' => 'Set Up',
     ],
 
     'MessageKeyPassphraseForm' => [
-        'currentPassphraseLabel' => 'Current passphrase',
-        'newPassphraseLabel' => 'New passphrase',
-        'confirmNewPassphraseLabel' => 'Confirm new passphrase',
-        'accountPasswordLabel' => 'Account password',
-        'submit' => 'Change passphrase',
+        'currentPassphraseLabel' => 'Current Passphrase',
+        'newPassphraseLabel' => 'New Passphrase',
+        'confirmNewPassphraseLabel' => 'Confirm New Passphrase',
+        'accountPasswordLabel' => 'Account Password',
+        'submit' => 'Change Passphrase',
     ],
 
     'PasswordResetForm' => [
-        'legend' => 'Choose a new password',
-        'newPasswordLabel' => 'New password',
+        'legend' => 'Choose a New Password',
+        'newPasswordLabel' => 'New Password',
         'newPasswordPlaceholder' => 'At least 8 characters',
-        'confirmPasswordLabel' => 'Confirm new password',
+        'confirmPasswordLabel' => 'Confirm New Password',
         'submit' => 'Reset Password',
     ],
 
     'PasswordResetRequestForm' => [
-        'legend' => 'Reset your password',
+        'legend' => 'Reset Your Password',
         'emailLabel' => 'Email',
         'submit' => 'Send Reset Link',
     ],
 
     'EmailRevertForm' => [
-        'submit' => 'Revert email change',
+        'submit' => 'Revert Email Change',
     ],
 
     'EmailVerifyForm' => [
-        'submit' => 'Verify email address',
+        'submit' => 'Verify Email Address',
     ],
 
     'EmailDigestResubscribeForm' => [
-        'submit' => 'Turn them back on',
+        'submit' => 'Turn Them Back On',
     ],
 
     'EmailDigestSetting' => [
@@ -95,19 +95,19 @@ return [
     ],
 
     'LogoutEverywhereButton' => [
-        'label' => 'Log out everywhere',
+        'label' => 'Log Out Everywhere',
     ],
 
     'GoogleAccountDeleteButton' => [
-        'label' => 'Verify with Google to delete',
+        'label' => 'Verify With Google to Delete',
     ],
 
     'GoogleSignInButton' => [
-        'label' => 'Continue with Google',
+        'label' => 'Continue With Google',
     ],
 
     'ProfileEditButton' => [
-        'ariaLabel' => 'Edit profile',
+        'ariaLabel' => 'Edit Profile',
     ],
 
     'PushNotificationSetting' => [
@@ -117,8 +117,8 @@ return [
         // to keep the button's label in step with the browser's own
         // subscription state after that - see that file.
         'label' => [
-            'off' => 'Enable on this device',
-            'on' => 'Turn off on this device',
+            'off' => 'Enable on This Device',
+            'on' => 'Turn Off on This Device',
         ],
         'unsupported' => 'Push isn\'t supported in this browser',
     ],

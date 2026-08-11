@@ -13,7 +13,7 @@ if (Auth::id() !== 1) {
     exit;
 }
 
-$page = new Page(['title' => 'Admin Settings']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['adminSettings'] ?? '')]);
 
 $page -> addContent(new SettingsSection('Services', new ServicesStatus()));
 

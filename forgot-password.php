@@ -9,6 +9,6 @@ if (Auth::check()) {
     exit;
 }
 
-$page = new Page(['title' => 'Forgot Password']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['forgotPassword'] ?? '')]);
 $page -> addContent(new PasswordResetRequestForm());
 $page -> send();

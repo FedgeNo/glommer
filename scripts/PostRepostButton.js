@@ -20,7 +20,7 @@ export class PostRepostButton {
 
     /** Mirrors PostRepostButton::toDOM() - the accessible name, since the glyph alone does not say it. */
     static name(reposted) {
-        const words = Strings.for('PostRepostButton', { undo: 'Undo repost', repost: 'Repost' });
+        const words = Strings.for('PostRepostButton', { undo: 'Undo Repost', repost: 'Repost' });
         return reposted ? words.undo : words.repost;
     }
 

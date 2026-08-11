@@ -158,7 +158,7 @@ export class Composer {
             option.className = 'PollOptionInput';
             option.name = 'pollOptions[]';
             option.placeholder = 'Option ' + (index + 1);
-            option.setAttribute('aria-label', 'Poll option ' + (index + 1));
+            option.setAttribute('aria-label', 'Poll Option ' + (index + 1));
             poll.appendWithSpace(option);
         }
 
@@ -177,7 +177,7 @@ export class Composer {
         const duration = document.createElement('select');
         duration.className = 'PollDurationSelect';
         duration.name = 'pollDuration';
-        duration.setAttribute('aria-label', 'How long the poll runs');
+        duration.setAttribute('aria-label', 'How Long the Poll Runs');
 
         for (const [label, minutes] of Object.entries(ClientConfig.get('pollDurations') || {})) {
             const choice = document.createElement('option');
@@ -206,7 +206,7 @@ export class Composer {
         titleInput.name = 'title';
         titleInput.placeholder = 'Title (optional)';
         titleInput.maxLength = 255;
-        titleInput.setAttribute('aria-label', 'Title (optional)');
+        titleInput.setAttribute('aria-label', 'Title (Optional)');
         titleRow.appendWithSpace(titleInput);
 
         const linkInput = document.createElement('input');
@@ -214,7 +214,7 @@ export class Composer {
         linkInput.name = 'linkURL';
         linkInput.placeholder = 'Link (optional)';
         linkInput.maxLength = 255;
-        linkInput.setAttribute('aria-label', 'Link (optional)');
+        linkInput.setAttribute('aria-label', 'Link (Optional)');
         titleRow.appendWithSpace(linkInput);
 
         fieldset.appendWithSpace(titleRow);
@@ -234,7 +234,7 @@ export class Composer {
         const removeLinkBtn = document.createElement('button');
         removeLinkBtn.type = 'button';
         removeLinkBtn.className = 'Button LinkImageRemoveButton Removing';
-        removeLinkBtn.textContent = Strings.for('LinkImageRemoveButton', { label: 'Remove image' }).label;
+        removeLinkBtn.textContent = Strings.for('LinkImageRemoveButton', { label: 'Remove Image' }).label;
         linkImagePreview.appendWithSpace(removeLinkBtn);
 
         const seedInput = document.createElement('input');
@@ -269,7 +269,7 @@ export class Composer {
         // body comes from.
         const markdownInput = document.createElement('textarea');
         markdownInput.className = 'MarkdownInput';
-        markdownInput.setAttribute('aria-label', 'Post text, in markdown');
+        markdownInput.setAttribute('aria-label', 'Post Text, in Markdown');
         markdownInput.setAttribute('aria-describedby', 'ComposerMarkdownHelp');
         markdownInput.placeholder = Composer.PLACEHOLDER;
         markdownInput.style.display = 'none';
@@ -343,7 +343,7 @@ export class Composer {
         fileInput.accept = 'image/*,video/*,audio/*';
         // Contains the words on the button, so what is announced and what is
         // read are the same control rather than two names for one thing.
-        fileInput.setAttribute('aria-label', 'Add Files - images, video, or audio');
+        fileInput.setAttribute('aria-label', 'Add Files - Images, Video, or Audio');
         filePicker.appendWithSpace(fileInput);
 
         actions.appendWithSpace(filePicker);
@@ -402,13 +402,13 @@ export class Composer {
         const scheduleDate = document.createElement('input');
         scheduleDate.type = 'date';
         scheduleDate.className = 'ComposerScheduleDate';
-        scheduleDate.setAttribute('aria-label', 'Publish date');
+        scheduleDate.setAttribute('aria-label', 'Publish Date');
         scheduleRow.appendWithSpace(scheduleDate);
 
         const scheduleTime = document.createElement('input');
         scheduleTime.type = 'time';
         scheduleTime.className = 'ComposerScheduleTime';
-        scheduleTime.setAttribute('aria-label', 'Publish time (optional)');
+        scheduleTime.setAttribute('aria-label', 'Publish Time (Optional)');
         scheduleRow.appendWithSpace(scheduleTime);
 
         form.appendWithSpace(scheduleRow);
@@ -429,7 +429,7 @@ export class Composer {
         warningInput.name = 'contentWarning';
         warningInput.maxLength = 255;
         warningInput.placeholder = 'Content Warning (optional)';
-        warningInput.setAttribute('aria-label', 'Content warning (optional)');
+        warningInput.setAttribute('aria-label', 'Content Warning (Optional)');
         warningInput.style.display = 'none';
         form.appendWithSpace(warningInput);
 
@@ -756,7 +756,7 @@ export class Composer {
             const trigger = document.createElement('button');
             trigger.type = 'button';
             trigger.className = 'EmojiPickerTriggerButton';
-            trigger.setAttribute('aria-label', Strings.for('EmojiPickerTriggerButton', { label: 'Insert emoji' }).label);
+            trigger.setAttribute('aria-label', Strings.for('EmojiPickerTriggerButton', { label: 'Insert Emoji' }).label);
             trigger.textContent = '🙂';
             wrapper.appendWithSpace(trigger);
 
@@ -1030,7 +1030,7 @@ export class Composer {
             entry.altInput.className = 'ComposerAttachmentAltInput';
             entry.altInput.placeholder = 'Alt text - describe this image';
             entry.altInput.maxLength = 1000;
-            entry.altInput.setAttribute('aria-label', 'Alt text for ' + file.name);
+            entry.altInput.setAttribute('aria-label', 'Alt Text for ' + file.name);
             row.appendWithSpace(entry.altInput);
         }
 

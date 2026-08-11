@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * A collapsible settings group: a <details> whose <summary> is the section's
  * heading and whose body is the form (or status widget) it wraps. Lets the
- * Settings and Site Settings pages stack as disclosures the reader opens one at
- * a time rather than one long always-open column.
+ * User, Mod and Admin Settings pages stack as disclosures the reader opens one
+ * at a time rather than one long always-open column.
  */
 class SettingsSection extends Details
 {

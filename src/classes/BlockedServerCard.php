@@ -28,13 +28,20 @@ class BlockedServerCard extends Div
         $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
         $info -> addContent(new Paragraph((string) $this -> domain));
 
+        $words = Strings::for(self::class);
+        $sentence = $words['blockedBy'] ?? [];
+        $who = $this -> blockedByUsername ?? (string) ($words['deletedAccount'] ?? '');
+
         $detail = new Paragraph();
         $detail -> mixins = ['muted'];
-        $detail -> addContent('Blocked by ' . ($this -> blockedByUsername ?? 'a deleted account') . ' ');
+        // See BannedTrendingEntity: the time is its own element between two
+        // text nodes rather than glued to the end of one.
+        $detail -> addContent(str_replace('{name}', $who, (string) ($sentence['before'] ?? '')));
         $detail -> addContent(new RelativeTime((string) $this -> createdAt));
+        $detail -> addContent((string) ($sentence['after'] ?? ''));
 
         if ($this -> reason !== null && $this -> reason !== '') {
-            $detail -> addContent(' - ' . $this -> reason);
+            $detail -> addContent(str_replace('{reason}', $this -> reason, (string) ($words['reason'] ?? '')));
         }
 
         $info -> addContent($detail);

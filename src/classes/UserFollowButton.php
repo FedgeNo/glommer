@@ -20,6 +20,7 @@ class UserFollowButton extends ButtonButton
 
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> attributes['data-following'] = $following ? '1' : '0';
-        $this -> contents[] = $following ? 'Unfollow' : 'Follow';
+        $words = Strings::for(self::class);
+        $this -> contents[] = (string) ($words[$following ? 'unfollow' : 'follow'] ?? '');
     }
 }

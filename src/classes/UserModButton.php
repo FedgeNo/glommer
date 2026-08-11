@@ -10,6 +10,7 @@ class UserModButton extends ButtonButton
 
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> attributes['data-is-mod'] = $is_mod ? '1' : '0';
-        $this -> contents[] = $is_mod ? 'Remove Mod' : 'Make Mod';
+        $words = Strings::for(self::class);
+        $this -> contents[] = (string) ($words[$is_mod ? 'remove' : 'make'] ?? '');
     }
 }

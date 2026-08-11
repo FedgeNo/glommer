@@ -8,7 +8,7 @@ return [
     'MessageTranslateButton' => [
         // The button shows a glyph, so this is the only thing that says what
         // it does - to a screen reader, and in the tooltip.
-        'name' => 'Translate this message',
+        'name' => 'Translate This Message',
     ],
 
     // Said once, before the first message this member ever translates, and
@@ -16,9 +16,9 @@ return [
     // real change in who can see them, and it is not something to discover
     // afterwards.
     'MessageTranslationNotice' => [
-        'heading' => 'About translating messages',
+        'heading' => 'About Translating Messages',
         'body' => 'To translate a message, its text is sent to this server and translated here. Nothing is kept: the translation is not written to the database and the message itself is unchanged. But a message translated this way has been read by the server, so it is not end-to-end encrypted the way an untranslated message is. Only messages you receive can be translated, and only when you ask.',
-        'confirm' => 'Translate it',
-        'cancel' => 'Not now',
+        'confirm' => 'Translate It',
+        'cancel' => 'Not Now',
     ],
 ];

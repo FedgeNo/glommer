@@ -63,7 +63,7 @@ return [
         'heading' => ['before' => 'Te damos la bienvenida a ', 'after' => ''],
         'paragraphs' => [
             'Escribe algo en el cuadro de abajo y se publicará en tu feed. Cualquiera puede responder, y una respuesta no es más que una publicación con un padre, así que las conversaciones se anidan tan profundo como haga falta.',
-            'Añade personas como amigos y sus publicaciones se sumarán a tu feed. El feed Global muestra todo lo que se escribe aquí, que es el lugar para encontrar a alguien a quien añadir.',
+            'Añade personas como amigos y sus publicaciones se sumarán a tu feed. El feed Global - el nombre del sitio, arriba a la izquierda - muestra todo lo que se escribe aquí, y es el lugar para encontrar a alguien a quien añadir.',
             'Este sitio forma parte del Fediverso: puedes seguir cuentas de Mastodon y de otros servidores por su identificador completo, y lo que publiques llegará a quienes te sigan allí. Busca un identificador como @someone@example.social y este servidor lo encontrará.',
             'Etiqueta una publicación con #hashtags y aparecerá en la página de esa etiqueta, y en Tendencias si suficientes personas están escribiendo sobre ella.',
             'Los mensajes entre miembros están cifrados de extremo a extremo: el servidor almacena texto cifrado que no puede leer. Actívalo en Ajustes.',

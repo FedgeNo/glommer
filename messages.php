@@ -15,7 +15,7 @@ if ($username === '') {
     // open every thread it was pointing at.
     Message::markSeen((int) $current_user -> userId);
 
-    $page = new Page(['title' => 'Messages']);
+    $page = new Page(['title' => (string) (Strings::for('PageTitle')['messages'] ?? '')]);
 
     $page -> addContent(new ConversationList(['userId' => (int) $current_user -> userId]));
 
@@ -34,7 +34,7 @@ if ($other_user === null || $other_user -> banned !== 0) {
 
 $name = $other_user -> title ?: $other_user -> slug;
 
-$page = new Page(['title' => 'Messages with ' . $name, 'needsMath' => true, 'needsEmoji' => true, 'bodyClass' => 'MessagesPage']);
+$page = new Page(['title' => str_replace('{name}', $name, (string) (Strings::for('PageTitle')['messagesWithUser'] ?? '')), 'needsMath' => true, 'needsEmoji' => true, 'bodyClass' => 'MessagesPage']);
 
 if (Block::exists($current_user -> userId, $other_user -> userId)) {
     $page -> addContent(new Notice('You can\'t message this user.'));

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The map's tile source, configured in admin Site Settings. Defaults to
+ * The map's tile source, configured in Admin Settings. Defaults to
  * OpenStreetMap's standard tiles (keyless, works out of the box); an admin can
  * point it at a keyed provider (MapTiler, Stadia, ...) by pasting a URL template
  * and key. A literal {apiKey} in the template is replaced with the stored key.

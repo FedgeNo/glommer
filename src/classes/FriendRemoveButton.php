@@ -10,6 +10,6 @@ class FriendRemoveButton extends ButtonButton
 
         $this -> type = 'button';
         $this -> attributes['data-user-id'] = (string) $user_id;
-        $this -> contents[] = 'Remove Friend';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

@@ -9,6 +9,6 @@ class RelayUnsubscribeButton extends ButtonButton
         parent::__construct();
 
         $this -> attributes['data-actor-uri'] = $actor_uri;
-        $this -> contents[] = 'Unsubscribe';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

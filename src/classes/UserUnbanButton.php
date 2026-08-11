@@ -9,6 +9,6 @@ class UserUnbanButton extends ButtonButton
         parent::__construct();
 
         $this -> attributes['data-user-id'] = (string) $user_id;
-        $this -> contents[] = 'Unban';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

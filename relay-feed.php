@@ -9,8 +9,8 @@ require __DIR__ . '/src/init.php';
 Auth::requireLogin();
 
 $page = new Page([
-    'title' => 'Relay Feed',
-    'description' => 'Public posts arriving from the relays this server subscribes to.',
+    'title' => (string) (Strings::for('PageTitle')['relayFeed'] ?? ''),
+    'description' => (string) (Strings::for('PageTitle')['relayFeedDescription'] ?? ''),
     'needsMath' => true,
 ]);
 

@@ -50,7 +50,7 @@ class EmailDigest
     private const MAX_PROSE_LENGTH = 800;
 
     /**
-     * The server's own closing line, editable in Site Settings, so one
+     * The server's own closing line, editable in Admin Settings, so one
      * installation can sign off in its own voice rather than everybody's
      * digests reading identically. Blanking it restores the shipped wording,
      * same as the About/Terms texts.

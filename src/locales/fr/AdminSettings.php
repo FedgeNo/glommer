@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * French for the admin Site Settings forms. See src/locales/en/AdminSettings.php
+ * French for the Admin Settings forms. See src/locales/en/AdminSettings.php
  * for what each of these is.
  */
 

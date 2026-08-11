@@ -20,7 +20,7 @@ class LogoutForm extends Form
         $button = new Button();
         $button -> type = 'submit';
         $button -> class = 'LogoutButton';
-        $button -> contents[] = 'Log out';
+        $button -> contents[] = (string) (Strings::for(self::class)['submit'] ?? '');
         // Overwrite, not append - toDOM() can run more than once on the same
         // instance now (MainNavigation reuses it for both the desktop
         // account dropdown and the mobile nav panel), and contents[] is

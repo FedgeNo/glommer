@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for outgoing mail: the "from" address/name,
+ * The Admin Settings form for outgoing mail: the "from" address/name,
  * plus the SMTP relay. The SMTP password is write-only, never rendered back,
  * and a blank submit leaves it unchanged - the same treatment as the
  * Turnstile/Google Auth secrets. Everything else IS shown (nothing sensitive

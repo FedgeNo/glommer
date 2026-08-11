@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 return [
     'PostLocationLink' => [
-        'title' => 'Show this place on the map',
+        'title' => 'Show This Place on the Map',
         // What goes between the two numbers when there is no name to use
         // instead. Its own entry because how a pair of figures is joined is a
         // thing languages differ about - not because of the decimal mark,

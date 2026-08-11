@@ -16,6 +16,6 @@ class PollVoteButton extends ButtonButton
 
         $this -> attributes['type'] = 'button';
         $this -> attributes['data-poll-id'] = (string) $poll_id;
-        $this -> addContent('Vote');
+        $this -> addContent((string) (Strings::for(self::class)['name'] ?? ''));
     }
 }

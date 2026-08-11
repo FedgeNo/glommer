@@ -53,7 +53,7 @@ if ($intent === 'delete') {
             Auth::logout();
             RememberToken::forget();
 
-            $page = new Page(['title' => 'Account Deleted']);
+            $page = new Page(['title' => (string) (Strings::for('PageTitle')['authGoogleCallbackAccountDeleted'] ?? '')]);
             $page -> addContent(new Paragraph('Your account has been permanently deleted.'));
             $page -> addContent(new Anchor(ServerURL::absolute('/'), 'Back to home'));
             $page -> send();
@@ -61,7 +61,7 @@ if ($intent === 'delete') {
         }
     }
 
-    $page = new Page(['title' => 'Delete Account']);
+    $page = new Page(['title' => (string) (Strings::for('PageTitle')['authGoogleCallbackDeleteAccount'] ?? '')]);
     $page -> addContent(new ErrorList([$error]));
     $page -> addContent(new Anchor(ServerURL::absolute('/user-settings'), 'Back to User Settings'));
     $page -> send();
@@ -153,7 +153,7 @@ if (!GoogleAuth::isEnabled()) {
     }
 }
 
-$page = new Page(['title' => 'Log In']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['authGoogleCallbackLogin'] ?? '')]);
 $page -> addContent(new ErrorList([$error]));
 $page -> addContent(new Anchor(ServerURL::absolute('/login'), 'Back to sign in'));
 $page -> send();

@@ -11,6 +11,6 @@ class ServerUnblockButton extends ButtonButton
 
         $this -> type = 'button';
         $this -> attributes['data-domain'] = $domain;
-        $this -> contents[] = 'Unblock';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

@@ -14,6 +14,7 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
  */
 export class Strings {
     static #table = {};
+    static #locale = 'en';
 
     static async load() {
         const locale = ClientConfig.get('locale') || 'en';
@@ -21,19 +22,30 @@ export class Strings {
         try {
             const module = await import('/locales/' + locale + '.js');
 
-            Strings.use(module.STRINGS);
+            Strings.useLocale(module.STRINGS, locale);
         } catch {
             // No words is not a reason to render nothing: a twin asking for a
             // string it has not got falls back the same way a missing key
-            // does, which is to what the caller passes as the English.
-            Strings.use({});
+            // does, which is to what the caller passes as the English. The
+            // locale still stands, so counted phrasings that fell back to their
+            // English are at least counted this language's way.
+            Strings.useLocale({}, locale);
         }
     }
 
-    /** The words, handed over directly - the counterpart to the server's
-     *  Strings::useLocale(), for whatever is not asking a browser. */
-    static use(table) {
+    /**
+     * The words and the language they are, for whatever is not asking a
+     * browser - the same name as the server's Strings::useLocale() because it
+     * is the same call, the way every twin here shares its object's name.
+     *
+     * Both together, because they are one fact: a table of Polish with the
+     * language still set to English picks singulars for counts Polish has three
+     * other forms for, and reads as a bug in the translation rather than in the
+     * call that installed it.
+     */
+    static useLocale(table, locale = 'en') {
         Strings.#table = table || {};
+        Strings.#locale = locale || 'en';
     }
 
     /**
@@ -43,6 +55,25 @@ export class Strings {
      */
     static for(name, english = {}) {
         return Strings.#merge(english, Strings.#table[name] || {});
+    }
+
+    /**
+     * One of a set of phrasings keyed by CLDR category, chosen by how many of
+     * the thing there are - the client's Strings::plural().
+     *
+     * The category comes from Intl.PluralRules, which is the browser's own copy
+     * of the same CLDR data the locale files' @plural closures encode. That rule
+     * is a PHP closure and cannot be serialized into the table the browser
+     * fetches, and asking the browser is better than shipping a second copy
+     * anyway: there is only one place per language for it to be wrong.
+     *
+     * Unlike the server's, this substitutes {count} - every caller here wants
+     * it, and a phrasing that leaves the number out simply has no token to fill.
+     */
+    static plural(forms, count) {
+        const category = new Intl.PluralRules(Strings.#locale).select(count);
+
+        return (forms[category] || forms.other || '').replace('{count}', String(count));
     }
 
     /**

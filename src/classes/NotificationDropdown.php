@@ -26,7 +26,10 @@ class NotificationDropdown extends Div
     public function toDOM(): \DOMElement
     {
         $this -> contents[] = $this -> list;
-        $this -> contents[] = new Anchor(ServerURL::absolute('/notifications'), 'Show All');
+        $this -> contents[] = new Anchor(
+            ServerURL::absolute('/notifications'),
+            (string) (Strings::for(self::class)['showAll'] ?? '')
+        );
 
         return parent::toDOM();
     }

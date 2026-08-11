@@ -14,6 +14,6 @@ class WelcomeBannerDismissButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> contents[] = 'Got It';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

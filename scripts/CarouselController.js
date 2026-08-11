@@ -157,7 +157,7 @@ export class CarouselController {
         const button = container.querySelector(':scope > .MediaFullscreenButton');
         if (button) {
             button.textContent = '×';
-            button.setAttribute('aria-label', 'Exit fullscreen');
+            button.setAttribute('aria-label', 'Exit Fullscreen');
         }
 
         this._fullscreenState = { container, overlay, originalParent, originalNextSibling };

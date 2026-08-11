@@ -27,7 +27,7 @@ class TopicHeading extends Div
         $this -> addContent($name);
 
         $kind = new Anchor(
-            ServerURL::absolute('/topics/' . rawurlencode((string) $this -> entity -> type) . '/'),
+            ServerURL::absolute('/topics/' . rawurlencode(EntityType::slug((string) $this -> entity -> type)) . '/'),
             EntityType::label((string) $this -> entity -> type)
         );
         $kind -> class = 'TopicKind';

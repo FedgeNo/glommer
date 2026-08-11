@@ -166,7 +166,7 @@ export class ReportCard {
             classify_button.type = 'button';
             classify_button.className = 'Button ReportedContentClassifyButton';
             classify_button.dataset.reportId = this.reportId;
-            classify_button.textContent = 'Mark Sensitive';
+            classify_button.textContent = Strings.for('ReportedContentClassifyButton', { name: 'Mark Sensitive' }).name;
             actions.appendWithSpace(classify_button);
         }
 
@@ -174,7 +174,7 @@ export class ReportCard {
         dismiss_button.type = 'button';
         dismiss_button.className = 'Button ReportDismissButton';
         dismiss_button.dataset.reportId = this.reportId;
-        dismiss_button.textContent = 'Dismiss';
+        dismiss_button.textContent = Strings.for('ReportDismissButton', { name: 'Dismiss' }).name;
         actions.appendWithSpace(dismiss_button);
 
         card.appendWithSpace(actions);

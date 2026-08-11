@@ -1,4 +1,5 @@
 import { OtherUser } from '/scripts/OtherUser.js';
+import { Strings } from '/scripts/Strings.js';
 
 /**
  * Client twin of ReceivedFriendRequest.php: an incoming request's card, which
@@ -10,13 +11,13 @@ export class ReceivedFriendRequest extends OtherUser {
         accept.type = 'button';
         accept.className = 'Button FriendRequestAcceptButton';
         accept.dataset.friendshipId = this.friendshipId;
-        accept.textContent = 'Accept';
+        accept.textContent = Strings.for('FriendRequestAcceptButton', { name: 'Accept' }).name;
 
         const deny = document.createElement('button');
         deny.type = 'button';
         deny.className = 'Button FriendRequestDenyButton';
         deny.dataset.friendshipId = this.friendshipId;
-        deny.textContent = 'Deny';
+        deny.textContent = Strings.for('FriendRequestDenyButton', { name: 'Deny' }).name;
 
         return [accept, deny];
     }

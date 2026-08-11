@@ -46,7 +46,7 @@ export class NearbyLocationPrompt {
             }
 
             const words = Strings.for('NearbyLocationPrompt', {
-                useMyLocation: 'Use my location',
+                useMyLocation: 'Use My Location',
                 locating: 'Locating…',
                 noGeolocation: 'Your browser can\'t share a location.',
                 locationError: 'Could not get your location. Check your browser\'s location permission.',

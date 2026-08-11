@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 // Public - the site's overview, and the one reachable place linking out to the
 // terms of service and privacy policy.
-$page = new Page(['title' => 'About']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['about'] ?? '')]);
 
 $about_card = new Card();
 $about_card -> addContents(InfoText::paragraphs(SiteInfo::about()));

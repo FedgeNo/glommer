@@ -20,7 +20,8 @@ class PostQuoteButton extends Anchor
 
         // A link, so it has no ButtonButton to name it - and a glyph on its
         // own is nameless to anything not looking at it.
-        $this -> attributes['aria-label'] = 'Quote';
-        $this -> attributes['title'] = 'Quote';
+        $name = (string) (Strings::for(self::class)['name'] ?? '');
+        $this -> attributes['aria-label'] = $name;
+        $this -> attributes['title'] = $name;
     }
 }

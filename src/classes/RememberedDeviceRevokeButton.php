@@ -11,6 +11,6 @@ class RememberedDeviceRevokeButton extends ButtonButton
         $this -> type = 'button';
         $this -> mixins = ['ms-auto'];
         $this -> attributes['data-token-id'] = (string) $token_id;
-        $this -> contents[] = 'Revoke';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

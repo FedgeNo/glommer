@@ -1,5 +1,4 @@
 import { parse_server_date } from '/scripts/utils.js';
-import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Strings } from '/scripts/Strings.js';
 
 /**
@@ -176,7 +175,7 @@ export class MapScrubber {
 
         const forms = this.#mode === 'window' ? words.windowLabel : words.cumulativeLabel;
 
-        this.#label.textContent = MapScrubber.#pluralPhrase(forms, visible.length).replace('{date}', MapScrubber.#formatDate(at));
+        this.#label.textContent = Strings.plural(forms, visible.length).replace('{date}', MapScrubber.#formatDate(at));
 
         this.#onChange(visible.map((entry) => entry.post));
     }
@@ -189,10 +188,4 @@ export class MapScrubber {
         });
     }
 
-    /** Mirrors Poll.pluralPhrase() - one/other picked by the browser's own CLDR data. */
-    static #pluralPhrase(forms, count) {
-        const category = new Intl.PluralRules(ClientConfig.get('locale') || 'en').select(count);
-
-        return (forms[category] || forms.other || '').replace('{count}', String(count));
-    }
 }

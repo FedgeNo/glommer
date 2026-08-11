@@ -15,7 +15,7 @@ return [
         'uploadPartlyFailed' => 'Votre publication est en ligne, mais un ou plusieurs de ses fichiers n\'ont pas pu être traités',
         'uploadFailed' => 'Un de vos envois n\'a pas pu être traité et n\'a pas été publié',
         'mailerFailed' => 'L\'envoi de l\'e-mail a échoué - le service de messagerie est peut-être hors service. Veuillez vérifier votre configuration de messagerie.',
-        'mailFromNotConfigured' => 'Aucune adresse "d\'expédition" n\'est configurée, les e-mails ne peuvent donc pas être envoyés. Définissez-en une dans les paramètres du site (section Courrier) ou via bin/install.php.',
+        'mailFromNotConfigured' => 'Aucune adresse "d\'expédition" n\'est configurée, les e-mails ne peuvent donc pas être envoyés. Définissez-en une dans les paramètres d\'administration (section "Courrier sortant") ou via bin/install.php.',
         'systemError' => 'Une erreur serveur est survenue. Consultez le journal des erreurs pour plus de détails.',
         'passwordRemovedGoogle' => 'Votre mot de passe a été supprimé lorsque vous vous êtes connecté avec Google. Utilisez "Mot de passe oublié" si vous voulez en définir un nouveau.',
         'like' => '{name} a aimé votre publication',

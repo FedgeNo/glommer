@@ -1,5 +1,6 @@
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 import { Toast } from '/scripts/Toast.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
 import { Working } from '/scripts/Working.js';
@@ -36,9 +37,12 @@ export class PostPinButton {
 
             if (!result) return;
 
+            const words = Strings.for('PostPinButton', { pin: 'Pin', unpin: 'Unpin' });
+            const name = result.pinned ? words.unpin : words.pin;
+
             button.setAttribute('aria-pressed', result.pinned ? 'true' : 'false');
-            button.setAttribute('aria-label', result.pinned ? 'Unpin' : 'Pin');
-            button.setAttribute('title', result.pinned ? 'Unpin' : 'Pin');
+            button.setAttribute('aria-label', name);
+            button.setAttribute('title', name);
             button.classList.toggle('Removing', result.pinned);
             Toast.show(result.pinned ? 'Pinned to your profile.' : 'Unpinned.');
         } finally {

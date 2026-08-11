@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * The admin's to read, not the moderators': it is the record of what they did,
  * and the person it answers to is the one who appointed them. That is why it
- * lives on Site Settings rather than on the Mod Settings page.
+ * lives on Admin Settings rather than on the Mod Settings page.
  *
  * Both names are joined here rather than looked up per row, so a page of the
  * log costs one query. They are left outer joins because an account can be

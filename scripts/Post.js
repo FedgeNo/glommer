@@ -91,12 +91,14 @@ export class Post {
 
     /** Mirrors PostLikeButton's aria-label - the name the glyph does not say. */
     static likeName(liked) {
-        return liked ? 'Unlike' : 'Like';
+        const words = Strings.for('PostLikeButton', { like: 'Like', unlike: 'Unlike' });
+
+        return liked ? words.unlike : words.like;
     }
 
     /** Mirrors PostBookmarkButton::label() - its name, since the glyph never changes. */
     static bookmarkLabel(bookmarked) {
-        const words = Strings.for('PostBookmarkButton', { remove: 'Remove bookmark', add: 'Bookmark' });
+        const words = Strings.for('PostBookmarkButton', { remove: 'Remove Bookmark', add: 'Bookmark' });
         return bookmarked ? words.remove : words.add;
     }
 
@@ -113,7 +115,7 @@ export class Post {
         const words = Strings.for('ThreadContext', {
             response: { before: 'In response to ', after: '' },
             untitled: 'this post',
-            jumpToStart: 'Jump to start',
+            jumpToStart: 'Jump to Start',
         });
 
         const response = document.createElement('span');
@@ -198,7 +200,7 @@ export class Post {
             const edited_marker = document.createElement('span');
             edited_marker.className = 'PostEditedMarker muted text-sm';
             edited_marker.title = RelativeTime.dateAndTime(this.editedAt);
-            edited_marker.textContent = '(edited)';
+            edited_marker.textContent = Strings.for('PostEditedMarker', { label: '(edited)' }).label;
             meta.appendWithSpace(edited_marker);
         }
 
@@ -543,7 +545,7 @@ export class Post {
             const link = document.createElement('a');
             link.className = 'QuotedPostLink text-sm';
             link.href = ClientConfig.siteURL() + '/users/' + this.quotedPost.slug + '/' + this.quotedPost.postId;
-            link.textContent = Strings.for('QuotedPost', { viewLink: 'View the quoted post' }).viewLink;
+            link.textContent = Strings.for('QuotedPost', { viewLink: 'View the Quoted Post' }).viewLink;
             quoted.appendWithSpace(link);
 
             target.appendWithSpace(quoted);
@@ -622,7 +624,14 @@ export class Post {
             replies_link.textContent = this.replyCount === 0
                 ? Post.GLYPHS.reply
                 : Post.GLYPHS.reply + ' ' + this.replyCount;
-            Post.nameIt(replies_link, this.replyCount === 0 ? 'Reply' : 'Replies (' + this.replyCount + ')');
+            const reply_words = Strings.for('PostActionBar', {
+                reply: 'Reply',
+                replies: { one: 'Replies ({count})', other: 'Replies ({count})' },
+            });
+
+            Post.nameIt(replies_link, this.replyCount === 0
+                ? reply_words.reply
+                : Strings.plural(reply_words.replies, this.replyCount));
             actions.appendWithSpace(replies_link);
         }
 
@@ -668,7 +677,7 @@ export class Post {
             quote_link.className = 'PostQuoteButton Button';
             quote_link.href = ClientConfig.siteURL() + '/quote/' + this.postId;
             quote_link.textContent = Post.GLYPHS.quote;
-            Post.nameIt(quote_link, 'Quote');
+            Post.nameIt(quote_link, Strings.for('PostQuoteButton', { name: 'Quote' }).name);
             actions.appendWithSpace(quote_link);
 
             const bookmark_button = document.createElement('button');
@@ -685,13 +694,13 @@ export class Post {
                 const edit_button = document.createElement('button');
                 edit_button.type = 'button';
                 edit_button.className = 'Button PostEditButton';
-                edit_button.textContent = 'Edit';
+                edit_button.textContent = Strings.for('PostEditButton', { name: 'Edit' }).name;
                 actions.appendWithSpace(edit_button);
 
                 const delete_button = document.createElement('button');
                 delete_button.type = 'button';
                 delete_button.className = 'Button PostDeleteButton';
-                delete_button.textContent = 'Delete';
+                delete_button.textContent = Strings.for('PostDeleteButton', { name: 'Delete' }).name;
                 actions.appendWithSpace(delete_button);
             } else if (Number(this.userId) !== 1) {
                 const report_button = document.createElement('button');
@@ -699,7 +708,7 @@ export class Post {
                 report_button.className = 'Button ReportButton PostReportButton';
                 report_button.dataset.targetType = 'post';
                 report_button.dataset.targetId = this.postId;
-                report_button.textContent = 'Report';
+                report_button.textContent = Strings.for('ReportButton', { name: 'Report' }).name;
                 actions.appendWithSpace(report_button);
             }
         }

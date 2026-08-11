@@ -16,12 +16,12 @@ return [
     ],
 
     'NearbyLocationPrompt' => [
-        'heading' => 'Posts near you',
+        'heading' => 'Posts Near You',
         'description' => 'This shows the posts closest to a point - wherever there is activity, however far away it happens to be. Share your location to start from where you are, or pick a spot on the map instead.',
-        'useMyLocation' => 'Use my location',
-        'pickOnMap' => 'Pick on the map',
+        'useMyLocation' => 'Use My Location',
+        'pickOnMap' => 'Pick on the Map',
         'searchPlaceholder' => 'Or type a place name…',
-        'searchLabel' => 'Search for a place',
+        'searchLabel' => 'Search for a Place',
         // Read only by the client twin (NearbyLocationPrompt.js): the button's
         // text mid-lookup, and the two failure toasts geolocation can produce.
         // Kept under this same key, same as every other class whose words
@@ -71,7 +71,7 @@ return [
         // as data; the words for "nothing to call it" belong to whichever
         // side renders, English here and Post.js's own fallback there.
         'untitled' => 'this post',
-        'jumpToStart' => 'Jump to start',
+        'jumpToStart' => 'Jump to Start',
     ],
 
     'TopicSummaryCard' => [
@@ -85,13 +85,16 @@ return [
         // thing people close without reading.
         'paragraphs' => [
             'Write something in the box below and it goes out to your feed. Anyone can reply, and a reply is just a post with a parent, so conversations nest as deep as they need to.',
-            'Add people as friends and their posts join your feed. The Global feed shows everything written here, which is the place to find somebody to add.',
+            // Says how to get there, because nothing else does: the Global Feed
+            // is behind the site's own name, which does not look like a link to
+            // a feed until somebody tells you it is one.
+            'Add people as friends and their posts join your feed. The Global Feed - the site\'s name at the top left - shows everything written here, which is the place to find somebody to add.',
             'This site is part of the Fediverse: you can follow accounts on Mastodon and other servers by their full handle, and what you post reaches the people who follow you there. Search for a handle like @someone@example.social and this server will go and find them.',
             'Tag a post with #hashtags and it turns up on that tag\'s page, and in Trending if enough people are writing about it.',
             'Messages between members are end-to-end encrypted - the server stores ciphertext it cannot read. Turn that on in Settings.',
             'You do not have to post straight away: save a draft, or set a time and it publishes itself. Both live under Drafts & Scheduled.',
         ],
         'more' => ['before' => 'There is more in ', 'link' => 'the help pages', 'after' => ', including how to move an account here from elsewhere.'],
-        'dontShowAgain' => 'Don\'t show this again',
+        'dontShowAgain' => 'Don\'t Show This Again',
     ],
 ];

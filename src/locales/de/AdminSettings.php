@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * German for the admin Site Settings forms. See
+ * German for the Admin Settings forms. See
  * src/locales/en/AdminSettings.php for the source and the shape each entry is
  * built to.
  */

@@ -13,7 +13,7 @@ if (!Auth::canModerate()) {
 
 // needsMath so KaTeX loads: a reported post can contain math, and main.js runs
 // render_math over each card (server-rendered here, and appended on scroll).
-$page = new Page(['title' => 'Reports', 'needsMath' => true]);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['adminReports'] ?? ''), 'needsMath' => true]);
 
 $page -> addContent(new ReportList());
 

@@ -117,7 +117,7 @@ export class RelayCard {
         unsubscribe.type = 'button';
         unsubscribe.className = 'Button RelayUnsubscribeButton ms-auto';
         unsubscribe.dataset.actorUri = actor_uri;
-        unsubscribe.textContent = 'Unsubscribe';
+        unsubscribe.textContent = Strings.for('RelayUnsubscribeButton', { name: 'Unsubscribe' }).name;
         card.appendWithSpace(unsubscribe);
 
         return card;

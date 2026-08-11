@@ -109,7 +109,10 @@ class PostActionBar extends Footer
         $link = new Anchor(ServerURL::absolute('/users/' . $this -> postUsername . '/' . $this -> postId), self::replyLabel($this -> replyCount));
         $link -> class = 'Button';
 
-        $name = $this -> replyCount === 0 ? 'Reply' : 'Replies (' . $this -> replyCount . ')';
+        $words = Strings::for(self::class);
+        $name = $this -> replyCount === 0
+            ? (string) ($words['reply'] ?? '')
+            : str_replace('{count}', (string) $this -> replyCount, Strings::plural(self::class, 'replies', $this -> replyCount));
         $link -> attributes['aria-label'] = $name;
         $link -> attributes['title'] = $name;
 

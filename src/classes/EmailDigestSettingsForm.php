@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for the paragraph this server adds to every
+ * The Admin Settings form for the paragraph this server adds to every
  * email digest.
  *
  * The rest of a digest is the member's own missed activity and, where an API

@@ -23,7 +23,8 @@ class PostLikeButton extends ButtonButton
         $tone = SkinTone::forViewer();
 
         $this -> attributes['data-liked'] = $liked ? '1' : '0';
-        $this -> nameIt($liked ? 'Unlike' : 'Like');
+        $words = Strings::for(self::class);
+        $this -> nameIt((string) ($words[$liked ? 'unlike' : 'like'] ?? ''));
         $this -> pressed($liked);
 
         // Pressing it now would take the like away, and every button in that

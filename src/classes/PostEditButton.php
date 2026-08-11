@@ -12,6 +12,6 @@ class PostEditButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> contents[] = 'Edit';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

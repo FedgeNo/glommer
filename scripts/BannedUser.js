@@ -3,6 +3,7 @@ import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 import { Working } from '/scripts/Working.js';
 
 /**
@@ -30,7 +31,7 @@ export class BannedUser extends User {
         unban.type = 'button';
         unban.className = 'ms-auto Button UserUnbanButton';
         unban.dataset.userId = this.userId;
-        unban.textContent = 'Unban';
+        unban.textContent = Strings.for('UserUnbanButton', { name: 'Unban' }).name;
         row.appendWithSpace(unban);
 
         div.appendWithSpace(row);

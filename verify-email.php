@@ -11,7 +11,7 @@ require __DIR__ . '/src/init.php';
 // blind scanner consume the token before the user opened the message.
 $token = (string) ($_POST['token'] ?? $_GET['token'] ?? '');
 
-$page = new Page(['title' => 'Verify Email']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['verifyEmail'] ?? '')]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $token !== '' ? EmailVerification::verify($token) : null;

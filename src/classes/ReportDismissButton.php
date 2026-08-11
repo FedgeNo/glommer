@@ -13,6 +13,6 @@ class ReportDismissButton extends ButtonButton
 
         $this -> type = 'button';
         $this -> attributes['data-report-id'] = (string) $report_id;
-        $this -> contents[] = 'Dismiss';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

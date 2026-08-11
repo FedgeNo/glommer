@@ -22,8 +22,8 @@ class PostEditedMarker extends Span
 
     public function toDOM(): \DOMElement
     {
-        $this -> attributes['title'] = date('F j, Y g:i A', strtotime((string) $this -> editedAt));
-        $this -> contents[] = '(edited)';
+        $this -> attributes['title'] = DateFormat::longWithTime((int) strtotime((string) $this -> editedAt));
+        $this -> contents[] = (string) (Strings::for(self::class)['label'] ?? '');
 
         return parent::toDOM();
     }

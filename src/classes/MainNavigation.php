@@ -20,7 +20,7 @@ class MainNavigation extends Nav
         // it is the checkbox that has to say what it is. Without this a screen
         // reader reaches an unnamed checkbox, the label being three empty
         // spans, and the hamburger's own aria-label is not reliably borrowed.
-        $toggle -> attributes['aria-label'] = 'Menu';
+        $toggle -> attributes['aria-label'] = (string) (Strings::for(self::class)['toggleLabel'] ?? '');
         $this -> addContent($toggle);
 
         $hamburger = new Label();
@@ -64,7 +64,11 @@ class MainNavigation extends Nav
             $site_links -> addContent(new NotificationsNavLink((int) $current_user -> userId, (int) $current_user -> lastNotificationId));
 
             $account_label = new NavAccountLabel();
-            $account_label -> addContent('Logged In As ' . ($current_user -> title ?: $current_user -> slug));
+            $account_label -> addContent(str_replace(
+                '{name}',
+                (string) ($current_user -> title ?: $current_user -> slug),
+                (string) (Strings::for(self::class)['loggedInAs'] ?? '')
+            ));
 
             $account_trigger = new Anchor(ServerURL::absolute('/users/' . $current_user -> slug . '/'));
             $account_trigger -> addContent($account_label);
@@ -89,37 +93,39 @@ class MainNavigation extends Nav
      */
     private function mainMenuLinks(): array
     {
+        $words = Strings::for(self::class);
+
         if (!Auth::check()) {
             return [
-                new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
-                new Anchor(ServerURL::absolute('/topics/'), 'Topics'),
-                new Anchor(ServerURL::absolute('/map'), 'Map'),
-                new Anchor(ServerURL::absolute('/help/'), 'Help'),
-                new Anchor(ServerURL::absolute('/about'), 'About'),
+                new Anchor(ServerURL::absolute('/tags/'), (string) ($words['tags'] ?? '')),
+                new Anchor(ServerURL::absolute('/topics/'), (string) ($words['topics'] ?? '')),
+                new Anchor(ServerURL::absolute('/map'), (string) ($words['map'] ?? '')),
+                new Anchor(ServerURL::absolute('/help/'), (string) ($words['help'] ?? '')),
+                new Anchor(ServerURL::absolute('/about'), (string) ($words['about'] ?? '')),
             ];
         }
 
-        $current_user = Auth::user();
-
         $links = [
-            new Anchor(ServerURL::absolute('/friends-feed'), 'Friends Feed'),
-            new Anchor(ServerURL::absolute('/users/'), 'Users'),
-            new Anchor(ServerURL::absolute('/tags/'), 'Tags'),
-            new Anchor(ServerURL::absolute('/topics/'), 'Topics'),
-            new Anchor(ServerURL::absolute('/map'), 'Map'),
-            new Anchor(ServerURL::absolute('/locations/'), 'Locations'),
-            new Anchor(ServerURL::absolute('/search'), 'Search'),
+            new Anchor(ServerURL::absolute('/friends-feed'), (string) ($words['friendsFeed'] ?? '')),
+            new Anchor(ServerURL::absolute('/users/'), (string) ($words['users'] ?? '')),
+            new Anchor(ServerURL::absolute('/tags/'), (string) ($words['tags'] ?? '')),
+            new Anchor(ServerURL::absolute('/topics/'), (string) ($words['topics'] ?? '')),
+            new Anchor(ServerURL::absolute('/map'), (string) ($words['map'] ?? '')),
+            new Anchor(ServerURL::absolute('/locations/'), (string) ($words['locations'] ?? '')),
+            new Anchor(ServerURL::absolute('/search'), (string) ($words['search'] ?? '')),
             $this -> messagesLink(),
-            new Anchor(ServerURL::absolute('/bookmarks'), 'Bookmarks'),
-            new Anchor(ServerURL::absolute('/help/'), 'Help'),
-            new Anchor(ServerURL::absolute('/about'), 'About'),
+            new Anchor(ServerURL::absolute('/bookmarks'), (string) ($words['bookmarks'] ?? '')),
+            new Anchor(ServerURL::absolute('/help/'), (string) ($words['help'] ?? '')),
+            new Anchor(ServerURL::absolute('/about'), (string) ($words['about'] ?? '')),
         ];
 
         // Only where a relay is actually subscribed: on a server that never
         // joins one the feed can only ever be empty, and a permanent link to
         // it is furniture in everybody's way.
         if (Relay::anySubscribed()) {
-            array_splice($links, 1, 0, [new Anchor(ServerURL::absolute('/relay-feed'), 'Relay Feed')]);
+            array_splice($links, 1, 0, [
+                new Anchor(ServerURL::absolute('/relay-feed'), (string) ($words['relayFeed'] ?? '')),
+            ]);
         }
 
         return $links;
@@ -131,7 +137,7 @@ class MainNavigation extends Nav
      */
     private function messagesLink(): HTMLObject
     {
-        $link = new Anchor(ServerURL::absolute('/messages/'), 'Messages');
+        $link = new Anchor(ServerURL::absolute('/messages/'), (string) (Strings::for(self::class)['messages'] ?? ''));
         $link -> addContent(new MessageDot(MessageDot::unreadFor(Auth::user())));
 
         return $link;
@@ -144,10 +150,12 @@ class MainNavigation extends Nav
      */
     private function accountMenuLinks(): array
     {
+        $words = Strings::for(self::class);
+
         if (!Auth::check()) {
             return [
-                new Anchor(ServerURL::absolute('/login'), 'Log in'),
-                new Anchor(ServerURL::absolute('/signup'), 'Sign up'),
+                new Anchor(ServerURL::absolute('/login'), (string) ($words['login'] ?? '')),
+                new Anchor(ServerURL::absolute('/signup'), (string) ($words['signup'] ?? '')),
             ];
         }
 
@@ -157,22 +165,22 @@ class MainNavigation extends Nav
         // rather than opening something, and it does not want to be in the
         // middle of a list being scanned.
         $links = [
-            new Anchor(ServerURL::absolute('/users/' . Auth::user() -> slug . '/friends'), 'Friends'),
-            new Anchor(ServerURL::absolute('/drafts'), 'Drafts & Scheduled'),
-            new Anchor(ServerURL::absolute('/user-settings'), 'User Settings'),
+            new Anchor(ServerURL::absolute('/users/' . Auth::user() -> slug . '/friends'), (string) ($words['friends'] ?? '')),
+            new Anchor(ServerURL::absolute('/drafts'), (string) ($words['drafts'] ?? '')),
+            new Anchor(ServerURL::absolute('/user-settings'), (string) ($words['userSettings'] ?? '')),
         ];
 
         // Everything a moderator does now gathers on one page, which either
         // holds the tool or points at it.
         if (Auth::canModerate()) {
-            $links[] = new Anchor(ServerURL::absolute('/admin/mod-settings'), 'Mod Settings');
+            $links[] = new Anchor(ServerURL::absolute('/admin/mod-settings'), (string) ($words['modSettings'] ?? ''));
         }
 
         // Site-wide settings (the Turnstile keys, the relays this server
         // subscribes to) are the primary admin's alone, not general
         // moderators'.
         if (Auth::id() === 1) {
-            $links[] = new Anchor(ServerURL::absolute('/admin/settings'), 'Admin Settings');
+            $links[] = new Anchor(ServerURL::absolute('/admin/settings'), (string) ($words['adminSettings'] ?? ''));
         }
 
         $links[] = new LogoutForm();

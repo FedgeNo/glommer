@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for replacing the site favicon. The upload is
+ * The Admin Settings form for replacing the site favicon. The upload is
  * center-cropped, resized, and re-encoded to PNG by Favicon (never the
  * original bytes), and shows up on every page's <link rel="icon"> immediately.
  */

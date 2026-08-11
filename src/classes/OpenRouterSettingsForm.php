@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for OpenRouter, the model provider AI features
+ * The Admin Settings form for OpenRouter, the model provider AI features
  * on the site use (trending-topic summaries, etc.). The API key is write-only,
  * never rendered back, and a blank submit leaves the stored key unchanged - the
  * same treatment as the Turnstile and Google Auth keys.

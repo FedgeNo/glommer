@@ -8,7 +8,7 @@ class CarouselNextButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> attributes['aria-label'] = 'Next';
+        $this -> attributes['aria-label'] = (string) (Strings::for(self::class)['name'] ?? '');
         $this -> contents[] = '›';
     }
 }

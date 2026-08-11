@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The site's browser-tab icon. Ships with a default /favicon.ico; the admin
- * can replace it from Site Settings, which stores a processed PNG under
+ * can replace it from Admin Settings, which stores a processed PNG under
  * uploads/site/ (the uploads tree is the writable area - the project root
  * isn't writable on a locked-down install). Every page's <link rel="icon">
  * points at whichever is current.

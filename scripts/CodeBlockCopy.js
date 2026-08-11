@@ -17,7 +17,7 @@ function addCopyButton(pre) {
   const button = document.createElement('button');
   button.className = 'CodeCopyButton';
   button.textContent = 'Copy';
-  button.setAttribute('aria-label', 'Copy code to clipboard');
+  button.setAttribute('aria-label', 'Copy Code to Clipboard');
   button.setAttribute('type', 'button');
 
   button.addEventListener('click', () => {

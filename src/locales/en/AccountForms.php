@@ -12,84 +12,84 @@ declare(strict_types=1);
 
 return [
     'LoginForm' => [
-        'legend' => 'Log in',
-        'identifier' => 'Username or email',
+        'legend' => 'Log In',
+        'identifier' => 'Username or Email',
         'password' => 'Password',
-        'rememberMe' => 'Remember me',
+        'rememberMe' => 'Remember Me',
         'submit' => 'Log In',
     ],
 
     'SignupForm' => [
-        'legend' => 'Create an account',
+        'legend' => 'Create an Account',
         'usernameLabel' => 'Username',
         'usernamePlaceholder' => 'Lowercase letters, numbers, and _',
         'emailLabel' => 'Email',
         'emailPlaceholder' => 'Valid email address',
-        'displayName' => 'Display name (optional)',
-        'bioLabel' => 'Bio (optional)',
+        'displayName' => 'Display Name (Optional)',
+        'bioLabel' => 'Bio (Optional)',
         'bioPlaceholder' => 'A short bio - #hashtags, @mentions, and links become clickable',
         'passwordLabel' => 'Password',
         'passwordPlaceholder' => 'Password: At least 8 characters',
-        'rememberMe' => 'Remember me',
+        'rememberMe' => 'Remember Me',
         'submit' => 'Sign Up',
     ],
 
     'PasswordChangeForm' => [
-        'legend' => 'Change your password',
-        'currentPassword' => 'Current password',
-        'newPasswordLabel' => 'New password',
+        'legend' => 'Change Your Password',
+        'currentPassword' => 'Current Password',
+        'newPasswordLabel' => 'New Password',
         'newPasswordPlaceholder' => 'At least 8 characters',
-        'confirmPassword' => 'Confirm new password',
+        'confirmPassword' => 'Confirm New Password',
         'submit' => 'Change Password',
     ],
 
     'EmailChangeForm' => [
-        'legend' => 'Change your email address',
-        'newEmail' => 'New email address',
-        'currentPassword' => 'Current password',
+        'legend' => 'Change Your Email Address',
+        'newEmail' => 'New Email Address',
+        'currentPassword' => 'Current Password',
         'notice' => 'You\'ll need to verify the new address before you can keep using the site.',
         'submit' => 'Change Email',
     ],
 
     'AccountDeleteForm' => [
-        'legend' => 'Delete your account',
+        'legend' => 'Delete Your Account',
         'warning' => 'This permanently deletes your account, posts, and messages. This can\'t be undone.',
-        'currentPassword' => 'Current password',
+        'currentPassword' => 'Current Password',
         'submit' => 'Delete Account',
     ],
 
     'AccountMigrationForm' => [
-        'legend' => 'Move to another server',
+        'legend' => 'Move to Another Server',
         // {destination}/{address} rather than concatenation, so a translation
         // is not stuck with the address landing wherever English puts it -
         // see PollOptionVotes for the same idea with a count.
         'movedNotice' => 'This account has moved to {destination}. Your followers were asked to follow you there.',
         'explanation' => 'Your followers are asked to follow you at the new account. Your posts stay here - object addresses belong to the server that made them, so they cannot be taken along.',
         'addressNotice' => 'The account you are moving to has to list this one under "also known as" first. Your address here is {address}.',
-        'movedToLabel' => 'Move to',
+        'movedToLabel' => 'Move To',
         'movedToPlaceholder' => 'https://example.social/users/you',
-        'aliasesLegend' => 'Also known as',
+        'aliasesLegend' => 'Also Known As',
         'aliasesExplanation' => 'Accounts elsewhere that are also you. Listing one here lets that account move to this one - it is the permission, not the move itself. One address per line.',
-        'aliasesLabel' => 'Your other accounts',
+        'aliasesLabel' => 'Your Other Accounts',
         'aliasesPlaceholder' => 'https://example.social/users/you',
         'submit' => 'Save',
     ],
 
     'TwoFactorForm' => [
-        'legend' => 'Enter your verification code',
+        'legend' => 'Enter Your Verification Code',
         'explanation' => 'We emailed you a verification code. Enter it below to finish logging in.',
-        'code' => 'Verification code',
+        'code' => 'Verification Code',
         'submit' => 'Verify',
     ],
 
     'TwoFactorSettingsForm' => [
-        'legend' => ['on' => 'Two-factor authentication is on', 'off' => 'Two-factor authentication is off'],
+        'legend' => ['on' => 'Two-Factor Authentication Is On', 'off' => 'Two-Factor Authentication Is Off'],
         'explanation' => [
             'on' => 'When you log in, we\'ll email a verification code you have to enter to finish signing in.',
             'off' => 'Add a second step at login: we\'ll email a verification code you have to enter, so your password alone isn\'t enough to get in.',
         ],
-        'currentPassword' => 'Current password',
-        'submit' => ['on' => 'Turn off two-factor authentication', 'off' => 'Turn on two-factor authentication'],
+        'currentPassword' => 'Current Password',
+        'submit' => ['on' => 'Turn Off Two-Factor Authentication', 'off' => 'Turn On Two-Factor Authentication'],
     ],
 
     'VerificationNotice' => [
@@ -97,6 +97,6 @@ return [
     ],
 
     'VerificationResendButton' => [
-        'label' => 'Resend verification email',
+        'label' => 'Resend Verification Email',
     ],
 ];

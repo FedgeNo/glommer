@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * WebSocket-daemon health for the admin Site Settings page, from two
+ * WebSocket-daemon health for the Admin Settings page, from two
  * different vantage points:
  *   - Server-side: EnvironmentChecker::checkWebSocketServer() - a real
  *     handshake + ping/pong round trip against bin/websocket-server.php run

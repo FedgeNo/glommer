@@ -14,7 +14,8 @@ class PostPinButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> nameIt($pinned ? 'Unpin' : 'Pin');
+        $words = Strings::for(self::class);
+        $this -> nameIt((string) ($words[$pinned ? 'unpin' : 'pin'] ?? ''));
         $this -> pressed($pinned);
 
         if ($pinned) {

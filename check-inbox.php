@@ -6,7 +6,7 @@ require __DIR__ . '/src/init.php';
 
 Auth::requireLogin();
 
-$page = new Page(['title' => 'Check Your Inbox']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['checkInbox'] ?? '')]);
 
 $page -> addContent(new VerificationNotice());
 

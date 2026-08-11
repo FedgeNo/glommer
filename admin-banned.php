@@ -11,7 +11,7 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-$page = new Page(['title' => 'Banned Users']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['adminBanned'] ?? '')]);
 
 $page -> addContent(new BannedUserSearch());
 $page -> addContent(new BannedUserSection());

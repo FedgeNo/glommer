@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Read-only trending-timer health for the admin Site Settings page - whether
+ * Read-only trending-timer health for the Admin Settings page - whether
  * glommer-trending.timer is confirmed armed and waiting for its next run.
  * Mirrors UploadWorkerStatus's three-way active/not-running/unknown states
  * and the same SELinux status-query caveat.

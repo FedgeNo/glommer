@@ -119,4 +119,34 @@ SELECT *
         $this -> assertTrue(str_contains($markup, '/friends'));
         $this -> assertTrue(str_contains($markup, 'UserModButton'));
     }
+
+    /**
+     * The joining line comes from the locale, not from the class.
+     *
+     * This is what NoEnglishInClassesTest does for every converted class, done
+     * by hand here because User cannot be built without a database and so
+     * cannot join that test's subjects. Without it, User is the one converted
+     * class free to put its English back unnoticed.
+     */
+    public function testTheJoinedLineIsTheLocalesToSay(): void
+    {
+        $tables = new \ReflectionProperty(Strings::class, 'tables');
+        $tables -> setAccessible(true);
+        $locale = new \ReflectionProperty(Strings::class, 'locale');
+        $locale -> setAccessible(true);
+
+        $original = $tables -> getValue();
+        $tables -> setValue(null, array_merge($original, ['zz' => ['User' => ['joined' => 'ZZJOINEDZZ {date}']]]));
+        $locale -> setValue(null, 'zz');
+
+        try {
+            $markup = self::actionsFor(self::localUser());
+        } finally {
+            $tables -> setValue(null, $original);
+            $locale -> setValue(null, null);
+        }
+
+        $this -> assertTrue(str_contains($markup, 'ZZJOINEDZZ'), 'the locale decides the wording');
+        $this -> assertFalse(str_contains($markup, 'Joined '), 'and the class keeps none of its own');
+    }
 }

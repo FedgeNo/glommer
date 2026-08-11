@@ -15,8 +15,8 @@ $centre = Coordinates::parse($_GET['lat'] ?? null, $_GET['lng'] ?? null);
 // visitor already gets from the feed. The editor only loads for someone who can
 // actually post to a spot they click.
 $page = new Page([
-    'title' => 'Map',
-    'description' => 'A map of posts from around the world - find people and things near you.',
+    'title' => (string) (Strings::for('PageTitle')['map'] ?? ''),
+    'description' => (string) (Strings::for('PageTitle')['mapDescription'] ?? ''),
     'needsMap' => true,
     'needsEditor' => $current_user !== null,
     'needsEmoji' => $current_user !== null,

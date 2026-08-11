@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The words the admin Site Settings forms say, in Portuguese. See
+ * The words the Admin Settings forms say, in Portuguese. See
  * src/locales/en/AdminSettings.php for what these classes are.
  */
 

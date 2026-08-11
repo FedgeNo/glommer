@@ -26,7 +26,7 @@ if ($place_id !== null) {
 
     $page = new Page([
         'title' => $place -> label(),
-        'description' => 'Posts near ' . $place -> label() . '.',
+        'description' => str_replace('{place}', $place -> label(), (string) (Strings::for('PageTitle')['locationsPlaceDescription'] ?? '')),
         'needsMath' => true,
     ]);
 
@@ -56,8 +56,8 @@ if ($origin !== null) {
 }
 
 $page = new Page([
-    'title' => 'Locations',
-    'description' => 'Posts from the places closest to you.',
+    'title' => (string) (Strings::for('PageTitle')['locations'] ?? ''),
+    'description' => (string) (Strings::for('PageTitle')['locationsDescription'] ?? ''),
     'needsMath' => true,
 ]);
 

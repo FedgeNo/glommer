@@ -32,8 +32,11 @@ $name = $profile_user -> title ?: $profile_user -> slug;
 
 $page = new Page($profile_user);
 $page -> bodyClass = 'ProfilePage';
-$page -> title = $name . '\'s Friends';
-$page -> description = 'Friends of ' . $name . ' on ' . Config::get('siteTitle');
+$page -> title = str_replace('{name}', $name, (string) (Strings::for('PageTitle')['userFriends'] ?? ''));
+$page -> description = strtr((string) (Strings::for('PageTitle')['userFriendsDescription'] ?? ''), [
+    '{name}' => $name,
+    '{siteTitle}' => (string) Config::get('siteTitle'),
+]);
 $page -> image = $profile_user -> avatarURL();
 
 $page -> addContent($profile_user);

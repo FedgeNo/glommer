@@ -32,7 +32,7 @@ class AccessibilityTest extends DatabaseTestCase
         $link = $xpath -> query('//a') -> item(0);
 
         $this -> assertSame('#' . SkipLink::TARGET, $link -> getAttribute('href'));
-        $this -> assertSame('Skip to content', trim($link -> textContent));
+        $this -> assertSame('Skip to Content', trim($link -> textContent));
     }
 
     /**

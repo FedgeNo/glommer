@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 /**
- * The words the admin Site Settings forms say, in English. See
+ * The words the Admin Settings forms say, in English. See
  * src/locales/en.php for what this file is and why it exists apart from it.
  */
 
 return [
     'MailSettingsForm' => [
-        'legend' => 'Outgoing mail',
-        'fromAddressLabel' => 'From address',
+        'legend' => 'Outgoing Mail',
+        'fromAddressLabel' => 'From Address',
         'fromAddressPlaceholder' => 'No email can be sent until this is set',
-        'fromNameLabel' => 'From name',
-        'hostLabel' => 'SMTP host',
-        'portLabel' => 'SMTP port',
-        'usernameLabel' => 'SMTP username',
-        'passwordLabel' => 'SMTP password',
+        'fromNameLabel' => 'From Name',
+        'hostLabel' => 'SMTP Host',
+        'portLabel' => 'SMTP Port',
+        'usernameLabel' => 'SMTP Username',
+        'passwordLabel' => 'SMTP Password',
         'passwordPlaceholder' => [
             'set' => 'Password is set - leave blank to keep it',
             'unset' => 'SMTP password',
@@ -32,10 +32,10 @@ return [
     ],
 
     'MapSettingsForm' => [
-        'legend' => 'Map tiles',
+        'legend' => 'Map Tiles',
         'notice' => 'Leave blank to use OpenStreetMap. To use a keyed provider, paste its URL template with a literal {apiKey} where the key goes, plus the key and attribution below.',
-        'urlLabel' => 'Tile URL template',
-        'keyLabel' => 'API key',
+        'urlLabel' => 'Tile URL Template',
+        'keyLabel' => 'API Key',
         'keyPlaceholder' => 'Your tile provider API key',
         'attributionLabel' => 'Attribution',
         'attributionPlaceholder' => '© OpenStreetMap contributors',
@@ -46,7 +46,7 @@ return [
         'legend' => 'Google Sign-In',
         'clientIdLabel' => 'Client ID',
         'clientIdPlaceholder' => 'Google OAuth client ID',
-        'secretLabel' => 'Client secret',
+        'secretLabel' => 'Client Secret',
         'secretPlaceholder' => [
             'set' => 'Client secret is set - leave blank to keep it',
             'unset' => 'Google OAuth client secret',
@@ -60,18 +60,18 @@ return [
 
     'BotProtectionSettingsForm' => [
         'turnstileLegend' => 'Cloudflare Turnstile',
-        'turnstileSiteKeyLabel' => 'Site key',
+        'turnstileSiteKeyLabel' => 'Site Key',
         'turnstileSiteKeyPlaceholder' => 'Cloudflare Turnstile site key',
-        'turnstileSecretKeyLabel' => 'Secret key',
+        'turnstileSecretKeyLabel' => 'Secret Key',
         'turnstileSecretKeyPlaceholder' => [
             'set' => 'Secret key is set - leave blank to keep it',
             'unset' => 'Cloudflare Turnstile secret key',
         ],
         'turnstileExplainer' => 'Both keys are required for the CAPTCHA to appear on sign-up and sign-in. Clear the site key to turn it off.',
-        'recaptchaLegend' => 'Google reCAPTCHA (account-lock recovery)',
-        'recaptchaSiteKeyLabel' => 'Site key',
+        'recaptchaLegend' => 'Google reCAPTCHA (Account-Lock Recovery)',
+        'recaptchaSiteKeyLabel' => 'Site Key',
         'recaptchaSiteKeyPlaceholder' => 'Google reCAPTCHA v2 site key',
-        'recaptchaSecretKeyLabel' => 'Secret key',
+        'recaptchaSecretKeyLabel' => 'Secret Key',
         'recaptchaSecretKeyPlaceholder' => [
             'set' => 'Secret key is set - leave blank to keep it',
             'unset' => 'Google reCAPTCHA v2 secret key',
@@ -83,7 +83,7 @@ return [
     'OpenRouterSettingsForm' => [
         'legend' => 'OpenRouter',
         'notice' => 'Used by AI features on the site (trending-topic summaries, etc). Leave the model blank to use the Free Models Router, which OpenRouter picks at random from whatever is currently free and can never incur cost.',
-        'keyLabel' => 'API key',
+        'keyLabel' => 'API Key',
         'keyPlaceholder' => [
             'set' => 'API key is set - leave blank to keep it',
             'unset' => 'OpenRouter API key',
@@ -117,8 +117,8 @@ return [
     ],
 
     'EmailDigestSettingsForm' => [
-        'legend' => 'Email digest',
-        'fieldLabel' => 'Closing paragraph',
+        'legend' => 'Email Digest',
+        'fieldLabel' => 'Closing Paragraph',
         'notice' => 'Added near the end of every digest, after the list of what the member missed. Plain text. Leave it blank to go back to the wording this software ships with.',
         'save' => 'Save',
     ],

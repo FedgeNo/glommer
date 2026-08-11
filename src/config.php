@@ -11,7 +11,7 @@ return [
     // Both the mail "from" address/name and the SMTP relay (host/port/
     // username/password/encryption) used to live here (MAIL_FROM_ADDRESS etc.,
     // SMTP_HOST etc.) - they're now Settings DB table settings, editable live
-    // from the admin Site Settings page (see Mailer's *_SETTING constants)
+    // from the Admin Settings page (see Mailer's *_SETTING constants)
     // instead of requiring a .env edit + no live-reload. mailFromName falls
     // back to the site's own title, the only name it could honestly sign mail
     // with (a missing display name is cosmetic either way);

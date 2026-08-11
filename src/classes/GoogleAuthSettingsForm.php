@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings form for "Continue with Google" - the OAuth client id
+ * The Admin Settings form for "Continue with Google" - the OAuth client id
  * and secret. The client id is shown (it's public - it ships in the redirect
  * URL anyway); the client secret is write-only, never rendered back, and a blank
  * submit leaves the stored secret unchanged - the same treatment as the

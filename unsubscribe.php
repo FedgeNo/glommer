@@ -36,7 +36,7 @@ if (($_POST['List-Unsubscribe'] ?? '') === 'One-Click') {
     exit;
 }
 
-$page = new Page(['title' => 'Email Digests']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['unsubscribe'] ?? '')]);
 
 if ($user_id === null) {
     $page -> addContent(new Paragraph('That unsubscribe link is not one this site issued.'));

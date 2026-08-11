@@ -30,13 +30,24 @@ class BannedTrendingEntity extends Div
         $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
         $info -> addContent(new Paragraph($this -> title . ' (' . $this -> type . ')'));
 
+        $words = Strings::for(self::class);
+        $sentence = $words['bannedBy'] ?? [];
+
         $detail = new Paragraph();
         $detail -> mixins = ['muted'];
-        $detail -> addContent('Banned by ' . $this -> bannedByUsername . ' ');
+        // The time is an element of its own between two text nodes, so a
+        // language can put it anywhere in the sentence - the same shape an
+        // inline link takes.
+        $detail -> addContent(str_replace(
+            '{name}',
+            (string) $this -> bannedByUsername,
+            (string) ($sentence['before'] ?? '')
+        ));
         $detail -> addContent(new RelativeTime($this -> createdAt));
+        $detail -> addContent((string) ($sentence['after'] ?? ''));
 
         if ($this -> reason !== null && $this -> reason !== '') {
-            $detail -> addContent(' - ' . $this -> reason);
+            $detail -> addContent(str_replace('{reason}', $this -> reason, (string) ($words['reason'] ?? '')));
         }
 
         $info -> addContent($detail);

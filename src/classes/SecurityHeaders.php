@@ -47,7 +47,11 @@ class SecurityHeaders
             'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
             'frame-src https://challenges.cloudflare.com https://www.google.com',
-            'connect-src \'self\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com wss://*:' . Config::get('WSPort'),
+            // The socket is this host's own, on its own port - the client builds
+            // that address from window.location.hostname and can reach nowhere
+            // else. Naming the host rather than wildcarding it keeps connect-src
+            // from being a way to talk to somebody else's server on that port.
+            'connect-src \'self\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com wss://' . ServerURL::host() . ':' . Config::get('WSPort'),
             'object-src \'none\'',
             'base-uri \'self\'',
             'form-action \'self\'',

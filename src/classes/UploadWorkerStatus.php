@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Read-only upload-worker health for the admin Site Settings page: whether
+ * Read-only upload-worker health for the Admin Settings page: whether
  * the systemd service is currently running, and how many batches are sitting
  * in each stage of the disk-backed queue right now - lets the admin tell
  * "dead" from "alive but backlogged" at a glance instead of SSHing in.

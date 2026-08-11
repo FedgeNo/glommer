@@ -1,5 +1,4 @@
 import { Api } from '/scripts/Api.js';
-import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Strings } from '/scripts/Strings.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
@@ -169,14 +168,16 @@ export class Poll {
         const talliedWords = Strings.for('PollTally', {
             voters: { one: '1 person voted ', other: '{count} people voted ' },
         });
-        tally.appendChild(document.createTextNode(Poll.pluralPhrase(talliedWords.voters, this.voterCount)));
+        tally.appendChild(document.createTextNode(Strings.plural(talliedWords.voters, this.voterCount)));
 
-        const deadline = document.createElement('time');
+        const deadline = document.createElement('span');
         deadline.className = 'PollDeadline';
-        deadline.dateTime = this.endsAt;
-        deadline.textContent = this.closed
-            ? Strings.for('PollDeadline', { final: 'Final result' }).final
-            : Poll.closesText(this.endsAt);
+
+        if (this.closed) {
+            deadline.textContent = Strings.for('PollDeadline', { final: 'Final result' }).final;
+        } else {
+            Poll.appendClosesSentence(deadline, this.endsAt);
+        }
 
         tally.appendChild(deadline);
 
@@ -184,22 +185,18 @@ export class Poll {
     }
 
     /**
-     * One of a set of `one`/`other`-shaped phrasings, chosen by count through
-     * the browser's own CLDR data (Intl.PluralRules) - mirrors
-     * Strings::plural() server-side without a shared file having to carry the
-     * per-locale category rule a second time for the client.
+     * Mirrors PollDeadline::toDOM()'s non-closed branch: the two text nodes
+     * either side of a <time> that carries only the remaining time, so a
+     * translation can put the deadline anywhere in the sentence.
      */
-    static pluralPhrase(forms, count) {
-        const category = new Intl.PluralRules(ClientConfig.get('locale') || 'en').select(count);
-
-        return (forms[category] || forms.other || '').replace('{count}', String(count));
-    }
-
-    /** Mirrors PollDeadline::toDOM()'s non-closed branch: "Closes " + remaining(). */
-    static closesText(endsAt) {
+    static appendClosesSentence(into, endsAt) {
         const words = Strings.for('PollDeadline', { closes: { before: 'Closes ', after: '' } });
 
-        return (words.closes.before || '') + Poll.remaining(endsAt) + (words.closes.after || '');
+        const remaining = document.createElement('time');
+        remaining.dateTime = new Date(endsAt).toISOString();
+        remaining.textContent = Poll.remaining(endsAt);
+
+        into.append(words.closes.before || '', remaining, words.closes.after || '');
     }
 
     /** Mirrors PollDeadline::remaining() - the largest unit that still says something useful. */
@@ -214,7 +211,7 @@ export class Poll {
 
         for (const [size, key] of [[86400, 'days'], [3600, 'hours'], [60, 'minutes']]) {
             if (seconds >= size) {
-                return Poll.pluralPhrase(words[key], Math.floor(seconds / size));
+                return Strings.plural(words[key], Math.floor(seconds / size));
             }
         }
 

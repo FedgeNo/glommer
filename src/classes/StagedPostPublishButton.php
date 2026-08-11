@@ -9,6 +9,6 @@ class StagedPostPublishButton extends ButtonButton
     {
         parent::__construct();
 
-        $this -> contents[] = 'Publish Now';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

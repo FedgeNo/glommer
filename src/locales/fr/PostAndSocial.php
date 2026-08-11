@@ -63,7 +63,7 @@ return [
         'heading' => ['before' => 'Bienvenue sur ', 'after' => ''],
         'paragraphs' => [
             'Écrivez quelque chose dans la zone ci-dessous et cela part sur votre fil. Tout le monde peut répondre, et une réponse n\'est qu\'une publication avec un parent, donc les conversations s\'imbriquent aussi profondément que nécessaire.',
-            'Ajoutez des personnes comme amis et leurs publications rejoignent votre fil. Le fil Global montre tout ce qui est écrit ici, c\'est l\'endroit pour trouver quelqu\'un à ajouter.',
+            'Ajoutez des personnes comme amis et leurs publications rejoignent votre fil. Le fil Global - le nom du site, en haut à gauche - montre tout ce qui est écrit ici, c\'est l\'endroit pour trouver quelqu\'un à ajouter.',
             'Ce site fait partie du fédivers : vous pouvez suivre des comptes sur Mastodon et d\'autres serveurs grâce à leur identifiant complet, et ce que vous publiez atteint les personnes qui vous suivent là-bas. Recherchez un identifiant comme @someone@example.social et ce serveur ira le trouver.',
             'Ajoutez un #hashtag à une publication et elle apparaît sur la page de ce hashtag, ainsi que dans les tendances si suffisamment de personnes en parlent.',
             'Les messages entre membres sont chiffrés de bout en bout - le serveur stocke un texte chiffré qu\'il ne peut pas lire. Activez cela dans les paramètres.',

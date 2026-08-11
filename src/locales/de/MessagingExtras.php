@@ -15,7 +15,7 @@ return [
         'uploadPartlyFailed' => 'Dein Beitrag ist live, aber eine oder mehrere seiner Dateien konnten nicht verarbeitet werden',
         'uploadFailed' => 'Einer deiner Uploads konnte nicht verarbeitet werden und wurde nicht veröffentlicht',
         'mailerFailed' => 'E-Mail-Zustellung fehlgeschlagen - der Mailer könnte nicht erreichbar sein. Bitte überprüfe deine Mail-Konfiguration.',
-        'mailFromNotConfigured' => 'Es ist keine Absenderadresse konfiguriert, daher können keine E-Mails gesendet werden. Lege eine in den Website-Einstellungen (Bereich "Ausgehende E-Mail") fest oder über bin/install.php.',
+        'mailFromNotConfigured' => 'Es ist keine Absenderadresse konfiguriert, daher können keine E-Mails gesendet werden. Lege eine in den Admin-Einstellungen (Bereich "Ausgehende E-Mail") fest oder über bin/install.php.',
         'systemError' => 'Ein Serverfehler ist aufgetreten. Prüfe das Fehlerprotokoll für Details.',
         'passwordRemovedGoogle' => 'Dein Passwort wurde entfernt, als du dich mit Google angemeldet hast. Nutze "Passwort vergessen", wenn du ein neues setzen möchtest.',
         'like' => '{name} gefällt dein Beitrag',

@@ -15,7 +15,7 @@ return [
         'uploadPartlyFailed' => 'A tua publicação está no ar, mas um ou mais dos seus ficheiros não puderam ser processados',
         'uploadFailed' => 'Um dos teus carregamentos falhou o processamento e não foi publicado',
         'mailerFailed' => 'O envio de email falhou - o serviço de correio pode estar em baixo. Verifica a tua configuração de email.',
-        'mailFromNotConfigured' => 'Não está configurado nenhum endereço de "remetente", por isso não é possível enviar emails. Define um nas Definições do Site (secção de Correio) ou através de bin/install.php.',
+        'mailFromNotConfigured' => 'Não está configurado nenhum endereço de "remetente", por isso não é possível enviar emails. Define um nas Definições de Administração (secção "Correio de saída") ou através de bin/install.php.',
         'systemError' => 'Ocorreu um erro no servidor. Verifica o registo de erros para mais detalhes.',
         'passwordRemovedGoogle' => 'A tua palavra-passe foi removida quando iniciaste sessão com a Google. Usa "Esqueci-me da palavra-passe" se quiseres definir uma nova.',
         'like' => '{name} gostou da tua publicação',

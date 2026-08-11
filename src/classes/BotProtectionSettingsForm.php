@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The admin Site Settings bot-protection form: the Cloudflare Turnstile keys
+ * The Admin Settings bot-protection form: the Cloudflare Turnstile keys
  * (the everyday sign-up/sign-in CAPTCHA) and the Google reCAPTCHA keys (the
  * locked-account recovery challenge). For each, the site key is shown (it's
  * public - it ships in the widget anyway); the secret key is write-only - never

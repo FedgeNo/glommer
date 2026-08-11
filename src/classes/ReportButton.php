@@ -10,6 +10,8 @@ class ReportButton extends ButtonButton
 
         $this -> attributes['data-target-type'] = $target_type;
         $this -> attributes['data-target-id'] = (string) $target_id;
-        $this -> contents[] = 'Report';
+        // self::class, not static::class: PostReportButton is the same button
+        // pointed at a post, and says the same word.
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

@@ -5,6 +5,7 @@ import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { list_item } from '/scripts/utils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 import { Working } from '/scripts/Working.js';
 
 export class OtherUser extends User {
@@ -30,6 +31,23 @@ export class OtherUser extends User {
         return [];
     }
 
+    /**
+     * Mirrors UserFollowButton and UserModButton. Each is written in two places
+     * here - once when the card is built, once when the server answers - so the
+     * wording lives in one method rather than being got right twice.
+     */
+    static followName(following) {
+        const words = Strings.for('UserFollowButton', { follow: 'Follow', unfollow: 'Unfollow' });
+
+        return following ? words.unfollow : words.follow;
+    }
+
+    static modName(isMod) {
+        const words = Strings.for('UserModButton', { make: 'Make Mod', remove: 'Remove Mod' });
+
+        return isMod ? words.remove : words.make;
+    }
+
     toElement() {
         const div = super.toElement();
         div.classList.add('OtherUser', 'MountIn');
@@ -50,7 +68,7 @@ export class OtherUser extends User {
             unblock_button.type = 'button';
             unblock_button.className = 'Button UserUnblockButton ms-auto';
             unblock_button.dataset.userId = this.userId;
-            unblock_button.textContent = 'Unblock';
+            unblock_button.textContent = Strings.for('UserUnblockButton', { name: 'Unblock' }).name;
             div.appendWithSpace(unblock_button);
         } else if (!this.blockedByOther) {
             const sent_by_viewer = this.friendshipStatus === 'pending' && this.friendshipSentByViewer;
@@ -73,7 +91,7 @@ export class OtherUser extends User {
                     : 'Button UserFollowButton';
                 follow_button.dataset.userId = this.userId;
                 follow_button.dataset.following = this.following ? '1' : '0';
-                follow_button.textContent = this.following ? 'Unfollow' : 'Follow';
+                follow_button.textContent = OtherUser.followName(this.following);
                 actions.appendWithSpace(follow_button);
             } else if (this.friendshipStatus === null || sent_by_viewer) {
                 const friend_button = document.createElement('button');
@@ -90,13 +108,13 @@ export class OtherUser extends User {
             const message_link = document.createElement('a');
             message_link.className = 'Button';
             message_link.href = ClientConfig.siteURL() + '/messages/' + this.slug;
-            message_link.textContent = 'Message';
+            message_link.textContent = Strings.for('OtherUser', { message: 'Message' }).message;
 
             const block_button = document.createElement('button');
             block_button.type = 'button';
             block_button.className = 'Button UserBlockButton';
             block_button.dataset.userId = this.userId;
-            block_button.textContent = 'Block';
+            block_button.textContent = Strings.for('UserBlockButton', { name: 'Block' }).name;
 
             let report_or_ban_button = null;
 
@@ -113,7 +131,7 @@ export class OtherUser extends User {
                     report_or_ban_button.className = 'Button ReportButton';
                     report_or_ban_button.dataset.targetType = 'user';
                     report_or_ban_button.dataset.targetId = this.userId;
-                    report_or_ban_button.textContent = 'Report';
+                    report_or_ban_button.textContent = Strings.for('ReportButton', { name: 'Report' }).name;
                 }
             }
 
@@ -135,7 +153,7 @@ export class OtherUser extends User {
                 remove_friend_button.type = 'button';
                 remove_friend_button.className = 'Button FriendRemoveButton';
                 remove_friend_button.dataset.userId = this.userId;
-                remove_friend_button.textContent = 'Remove Friend';
+                remove_friend_button.textContent = Strings.for('FriendRemoveButton', { name: 'Remove Friend' }).name;
                 actions.appendWithSpace(remove_friend_button);
             }
 
@@ -147,7 +165,7 @@ export class OtherUser extends User {
                 mod_button.className = 'Button UserModButton';
                 mod_button.dataset.userId = this.userId;
                 mod_button.dataset.isMod = this.isMod ? '1' : '0';
-                mod_button.textContent = this.isMod ? 'Remove Mod' : 'Make Mod';
+                mod_button.textContent = OtherUser.modName(this.isMod);
                 actions.appendWithSpace(mod_button);
             }
 
@@ -246,7 +264,7 @@ export class OtherUser extends User {
             const result = await Api.post(following ? '/api/unfollow-remote' : '/api/follow-user', { userId: id });
             if (!result) return;
             button.dataset.following = result.following ? '1' : '0';
-            button.textContent = result.following ? 'Unfollow' : 'Follow';
+            button.textContent = OtherUser.followName(result.following);
             button.classList.toggle('Removing', result.following);
         } finally {
             Working.stop(button);
@@ -285,7 +303,7 @@ export class OtherUser extends User {
             const result = await Api.post('/api/set-mod', { userId: id, isMod: !isMod });
             if (!result) return;
             button.dataset.isMod = result.isMod ? '1' : '0';
-            button.textContent = result.isMod ? 'Remove Mod' : 'Make Mod';
+            button.textContent = OtherUser.modName(result.isMod);
         } finally {
             Working.stop(button);
         }

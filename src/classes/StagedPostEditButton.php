@@ -14,6 +14,9 @@ class StagedPostEditButton extends Anchor
 
     public function __construct(int $staged_post_id)
     {
-        parent::__construct(ServerURL::absolute('/drafts/' . $staged_post_id), 'Edit');
+        parent::__construct(
+            ServerURL::absolute('/drafts/' . $staged_post_id),
+            (string) (Strings::for(self::class)['name'] ?? '')
+        );
     }
 }

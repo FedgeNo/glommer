@@ -285,7 +285,7 @@ class HelpContent
 <p>Every post has a <strong>reply</strong> action. Replying opens a composer right there, and your reply is attached beneath the original post as part of its thread. Replies work just like posts - you can format them, add emoji, and attach media.</p>
 <p>Open any post on its own page to read the whole conversation, with the original at the top and replies below it. This is the best way to follow a longer back-and-forth.</p>
 <h2>Replies in a feed</h2>
-<p>Replies show up in your Friends Feed and on profiles alongside everything else, so you see a conversation as it happens rather than only when you open the post it hangs from. A reply carries a line above it saying <strong>In response to</strong> whatever it answers, and where the thread runs deeper than a single exchange, a <strong>Jump to start</strong> link beside it takes you to the post that began the whole thing.</p>
+<p>Replies show up in your Friends Feed and on profiles alongside everything else, so you see a conversation as it happens rather than only when you open the post it hangs from. A reply carries a line above it saying <strong>In response to</strong> whatever it answers, and where the thread runs deeper than a single exchange, a <strong>Jump to Start</strong> link beside it takes you to the post that began the whole thing.</p>
 ',
             ],
             [
@@ -401,11 +401,11 @@ class HelpContent
                 'slug' => 'your-feeds',
                 'title' => 'Your feeds',
                 'category' => 'Connecting',
-                'summary' => 'The difference between the main feed and your Friends Feed.',
+                'summary' => 'The difference between the Global Feed and your Friends Feed.',
                 'body' => '
 <p>There are two feeds you\'ll use most:</p>
 <ul>
-<li><strong>The main feed</strong> - your home page - shows posts from across the whole site. It\'s public and global, a good way to discover people and things you\'re not yet connected to.</li>
+<li><strong>The Global Feed</strong> - your home page - shows posts from across the whole site. It\'s public and global, a good way to discover people and things you\'re not yet connected to.</li>
 <li><strong>Friends Feed</strong> shows posts only from people you\'re friends with, for when you just want to catch up with your circle.</li>
 </ul>
 <p>Both feeds load more as you scroll, so you can keep going back through older posts. To fill out your Friends Feed, <a href="/help/finding-people">find some people</a> and <a href="/help/friends-and-friend-requests">add them as friends</a>.</p>
@@ -495,7 +495,7 @@ class HelpContent
 <p>The <strong>Theme</strong> picker restyles the whole site, and your choice is remembered. Choose <strong>Match System</strong> to follow whatever your device is set to, or lock in one of the built-in looks: Plain Light, Plain Dark, Sepia, Midnight, Sunset, Rose, Forest, Ocean, Lavender, Gold, Hacker, Ironbow, Viridis, Mako, Cividis, YlGnBu, Cubehelix, and Greyscale.</p>
 <h2>Email digests</h2>
 <p>If you have not visited for a week and something has happened while you were gone, we will email you once to say what. Never more than one a week, and never when nothing happened. Turn them off under <strong>Email Digests</strong> in Settings, or use the unsubscribe link in any one of them - that works in a single click, without signing in.</p>
-<p>Forgotten your password and can\'t log in? Use the <strong>Forgot password?</strong> link on the login page to get a reset link by email.</p>
+<p>Forgotten your password and can\'t log in? Use the <strong>Forgot Password?</strong> link on the login page to get a reset link by email.</p>
 ',
             ],
             [
@@ -529,7 +529,7 @@ class HelpContent
                 'category' => 'Posting',
                 'summary' => 'Pass someone\'s post on to your friends and followers, plain or with words of your own.',
                 'body' => '
-<p>Press <strong>Repost</strong> on a post to pass it on unchanged. It shows up in your friends\' feeds and on your own profile, marked with your name and sorted by when you passed it on - and your Fediverse followers are told too. The button becomes <strong>Undo repost</strong>, which takes it back.</p>
+<p>Press <strong>Repost</strong> on a post to pass it on unchanged. It shows up in your friends\' feeds and on your own profile, marked with your name and sorted by when you passed it on - and your Fediverse followers are told too. The button becomes <strong>Undo Repost</strong>, which takes it back.</p>
 <p>The count beside the button adds reposts made here and boosts from other servers into one number. You can\'t repost your own post - your profile already carries it.</p>
 <h2>Quoting</h2>
 <p>Press <strong>Quote</strong> instead to pass a post on with something to say about it. It opens a composer with the original embedded, and needs words of your own above it - a quote with nothing added is what Repost is for. You can attach images to a quote the way you would any post, but not video or audio.</p>

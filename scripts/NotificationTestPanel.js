@@ -20,7 +20,7 @@ export class NotificationTestPanel {
         // stay in the same language rather than falling back to English
         // partway through.
         const words = Strings.for('NotificationTestPanel', {
-            button: 'Send test notification',
+            button: 'Send Test Notification',
             sending: 'Sending…',
             sent: 'Sent!',
             failed: 'Failed',

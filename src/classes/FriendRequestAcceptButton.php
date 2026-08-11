@@ -9,6 +9,6 @@ class FriendRequestAcceptButton extends ButtonButton
         parent::__construct();
 
         $this -> attributes['data-friendship-id'] = (string) $friendship_id;
-        $this -> contents[] = 'Accept';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

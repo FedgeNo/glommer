@@ -14,7 +14,7 @@ return [
         'uploadPartlyFailed' => 'Tu publicación ya está en línea, pero uno o más de sus archivos no se pudieron procesar',
         'uploadFailed' => 'Uno de tus archivos no se pudo procesar y no se publicó',
         'mailerFailed' => 'Error al enviar el correo: es posible que el servicio de correo no esté funcionando. Comprueba tu configuración de correo.',
-        'mailFromNotConfigured' => 'No hay ninguna dirección de remitente configurada, así que no se pueden enviar correos. Configúrala en Ajustes del sitio (sección de correo) o mediante bin/install.php.',
+        'mailFromNotConfigured' => 'No hay ninguna dirección de remitente configurada, así que no se pueden enviar correos. Configúrala en Ajustes de administración (sección "Correo saliente") o mediante bin/install.php.',
         'systemError' => 'Se produjo un error del servidor. Consulta el registro de errores para más detalles.',
         'passwordRemovedGoogle' => 'Tu contraseña se eliminó al iniciar sesión con Google. Usa "¿Olvidaste tu contraseña?" si quieres establecer una nueva.',
         'like' => 'A {name} le gustó tu publicación',

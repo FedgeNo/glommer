@@ -80,5 +80,15 @@ return [
 
     'TopicHeading' => [
         'searchLink' => 'Danach suchen',
+        'noPosts' => 'Derzeit erwähnt kein Beitrag das hier.',
+    ],
+
+    'PopularEntityList' => [
+        'emptyNotice' => 'Über nichts dieser Art wurde bisher geschrieben.',
+    ],
+
+    'TrendingEntitySection' => [
+        // "Trends", as the navigation calls the same thing.
+        'heading' => 'Trends',
     ],
 ];

@@ -21,7 +21,7 @@ class HelpSearch extends Div
         $input = new TextInput();
         $input -> name = 'q';
         $input -> class = 'HelpSearchInput';
-        $input -> attributes['placeholder'] = 'Search help…';
+        $input -> attributes['placeholder'] = (string) (Strings::for(self::class)['placeholder'] ?? '');
         $input -> attributes['autocomplete'] = 'off';
         $input_card -> addContent($input);
 

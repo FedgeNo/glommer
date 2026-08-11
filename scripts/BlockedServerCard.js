@@ -3,6 +3,8 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { RelativeTime } from '/scripts/RelativeTime.js';
+import { Strings } from '/scripts/Strings.js';
 import { Toast } from '/scripts/Toast.js';
 import { list_in, list_item } from '/scripts/utils.js';
 import { Working } from '/scripts/Working.js';
@@ -84,18 +86,29 @@ export class BlockedServerCard {
         name.textContent = domain;
         info.appendWithSpace(name);
 
+        // Mirrors BlockedServerCard.php: the time is its own element between
+        // two text nodes, so a language can put it anywhere in the sentence.
+        const words = Strings.for('BlockedServerCard', {
+            blockedBy: { before: 'Blocked by {name} ', after: '' },
+            deletedAccount: 'a deleted account',
+            reason: ' - {reason}',
+        });
+
         const detail = document.createElement('p');
         detail.className = 'muted';
-        detail.appendWithSpace(document.createTextNode('Blocked by ' + (ClientConfig.get('currentUserUsername') || 'you') + ' '));
+        detail.appendWithSpace(document.createTextNode(
+            (words.blockedBy.before || '').replace('{name}', ClientConfig.get('currentUserUsername') || '')
+        ));
 
         const time = document.createElement('time');
         time.className = 'RelativeTime';
         time.dateTime = new Date().toISOString();
-        time.textContent = 'just now';
+        time.textContent = RelativeTime.format(time.dateTime);
         detail.appendWithSpace(time);
+        detail.appendWithSpace(document.createTextNode(words.blockedBy.after || ''));
 
         if (reason !== '') {
-            detail.appendWithSpace(document.createTextNode(' - ' + reason));
+            detail.appendWithSpace(document.createTextNode(words.reason.replace('{reason}', reason)));
         }
 
         info.appendWithSpace(detail);
@@ -105,7 +118,7 @@ export class BlockedServerCard {
         unblock.type = 'button';
         unblock.className = 'Button ServerUnblockButton ms-auto';
         unblock.dataset.domain = domain;
-        unblock.textContent = 'Unblock';
+        unblock.textContent = Strings.for('ServerUnblockButton', { name: 'Unblock' }).name;
         card.appendWithSpace(unblock);
 
         return card;

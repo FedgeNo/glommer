@@ -15,6 +15,11 @@ class TestResultsBadge extends Div
         parent::__construct();
 
         $this -> class .= $passing ? ' TestResultsPass' : ' TestResultsFail';
-        $this -> addContent($suite . ': ' . ($passing ? 'Passing' : 'Failing'));
+        $words = Strings::for(self::class);
+        $this -> addContent(str_replace(
+            '{suite}',
+            $suite,
+            (string) ($words[$passing ? 'passing' : 'failing'] ?? '')
+        ));
     }
 }

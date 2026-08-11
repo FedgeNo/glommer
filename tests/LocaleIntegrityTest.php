@@ -196,7 +196,16 @@ class LocaleIntegrityTest extends TestCase
         }
     }
 
-    /** A locale file that is a list where English is a sentence renders nothing usable. */
+    /**
+     * A locale file that is a list where English is a sentence renders nothing
+     * usable.
+     *
+     * A counted phrase is the exception, and the reason this cannot simply
+     * demand the same paths: how many forms a phrase has is the language's
+     * answer, not English's. Polish writes a "few" where English has only "one"
+     * and "other", and that extra form is the whole point of the mechanism - so
+     * a category the locale's own rule can produce is not a stray key.
+     */
     public function testATranslationKeepsTheShapeOfWhatItReplaces(): void
     {
         $source = self::leaves(self::table(Strings::SOURCE_LOCALE));
@@ -206,12 +215,43 @@ class LocaleIntegrityTest extends TestCase
                 continue;
             }
 
-            foreach (self::leaves(self::table($locale)) as $path => $text) {
+            $categories = self::categoriesUsedBy($locale);
+
+            foreach (array_keys(self::leaves(self::table($locale))) as $path) {
+                if (isset($source[$path])) {
+                    continue;
+                }
+
+                // The path with its last segment removed, and that segment.
+                $cut = strrpos($path, '.');
+                $entry = $cut === false ? '' : substr($path, 0, $cut);
+                $form = $cut === false ? $path : substr($path, $cut + 1);
+
                 $this -> assertTrue(
-                    isset($source[$path]),
+                    in_array($form, $categories, true) && self::isCountedInSource($entry),
                     $locale . ' says "' . $path . '", which English has no such string for'
                 );
             }
         }
+    }
+
+    /** Whether English writes this path as a set of phrasings keyed by category. */
+    private static function isCountedInSource(string $path): bool
+    {
+        if ($path === '') {
+            return false;
+        }
+
+        $entry = self::table(Strings::SOURCE_LOCALE);
+
+        foreach (explode('.', $path) as $step) {
+            if (!is_array($entry) || !array_key_exists($step, $entry)) {
+                return false;
+            }
+
+            $entry = $entry[$step];
+        }
+
+        return is_array($entry) && self::isCounted($entry);
     }
 }

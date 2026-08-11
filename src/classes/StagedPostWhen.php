@@ -13,8 +13,12 @@ class StagedPostWhen extends Paragraph
 
     public function __construct(?string $publish_at)
     {
+        $words = Strings::for(self::class);
+
+        // {when} rather than concatenation, so a language that leads with the
+        // time can - "Am 3. Mai wird das veröffentlicht" puts it first.
         parent::__construct($publish_at !== null
-            ? 'Scheduled for ' . $publish_at
-            : 'Draft - publishes only when you say so');
+            ? str_replace('{when}', $publish_at, (string) ($words['scheduled'] ?? ''))
+            : (string) ($words['draft'] ?? ''));
     }
 }

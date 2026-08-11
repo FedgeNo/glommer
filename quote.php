@@ -21,7 +21,7 @@ if ($quoted === null) {
     exit;
 }
 
-$page = new Page(['title' => 'Quote', 'needsEditor' => true, 'needsMath' => true, 'needsEmoji' => true]);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['quote'] ?? ''), 'needsEditor' => true, 'needsMath' => true, 'needsEmoji' => true]);
 
 // What will sit under the words: the same embed the finished post renders,
 // so what you see composing is what readers get.

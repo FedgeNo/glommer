@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Converted admin Site Settings forms - see tests/NoEnglishInClassesTest.php
+ * Converted Admin Settings forms - see tests/NoEnglishInClassesTest.php
  * for what this list is for.
  *
  * @return array<string, callable(): HTMLObject>

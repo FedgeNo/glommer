@@ -503,7 +503,7 @@ SELECT *
     /**
      * How many batches are sitting in each stage of the queue right now - a
      * cheap directory count (the queue itself is directory-based, see the
-     * class docblock), not a DB query. Lets the admin Site Settings page tell
+     * class docblock), not a DB query. Lets the Admin Settings page tell
      * "dead" from "alive but backlogged" instead of SSHing in to check.
      *
      * @return array{staging: int, pending: int, processing: int}

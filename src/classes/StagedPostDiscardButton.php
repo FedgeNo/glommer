@@ -10,6 +10,6 @@ class StagedPostDiscardButton extends ButtonButton
         parent::__construct();
 
         $this -> mixins = ['Removing'];
-        $this -> contents[] = 'Discard';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

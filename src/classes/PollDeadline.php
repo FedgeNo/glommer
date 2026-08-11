@@ -5,11 +5,16 @@ declare(strict_types=1);
 /**
  * When a poll closes, or that it already has.
  *
- * A <time> carrying the machine-readable instant, so the deadline is something
- * a reader's own tools can act on rather than only a phrase. The attribute is
- * UTC because the column is; the words beside it are the reader's to interpret.
+ * The remaining time is a <time> of its own inside the sentence rather than a
+ * <time> wrapped around the whole of it: only the part that names an instant is
+ * machine-readable, and the words either side are ordinary prose. It sits
+ * between two text nodes for the reason an inline link does - a language is
+ * free to put the deadline anywhere in the phrasing, or at the front of it.
+ *
+ * A closed poll says only that its result is final, which names no instant, so
+ * there is no <time> in that phrasing at all.
  */
-class PollDeadline extends Time
+class PollDeadline extends Span
 {
     public ?string $class = 'PollDeadline';
 
@@ -20,19 +25,25 @@ class PollDeadline extends Time
 
     public function toDOM(): \DOMElement
     {
-        $this -> datetime = gmdate('c', (int) strtotime($this -> endsAt));
-
         $words = Strings::for(self::class);
 
         if ($this -> closed) {
-            $this -> addContent((string) ($words['final'] ?? ''));
-        } else {
-            $sentence = $words['closes'] ?? [];
+            $this -> contents[] = (string) ($words['final'] ?? '');
 
-            $this -> contents[] = (string) ($sentence['before'] ?? '');
-            $this -> contents[] = self::remaining($this -> endsAt);
-            $this -> contents[] = (string) ($sentence['after'] ?? '');
+            return parent::toDOM();
         }
+
+        $sentence = $words['closes'] ?? [];
+
+        // The instant is UTC because the column is; the words beside it are the
+        // reader's to interpret.
+        $remaining = new Time();
+        $remaining -> datetime = gmdate('c', (int) strtotime($this -> endsAt));
+        $remaining -> contents[] = self::remaining($this -> endsAt);
+
+        $this -> contents[] = (string) ($sentence['before'] ?? '');
+        $this -> addContent($remaining);
+        $this -> contents[] = (string) ($sentence['after'] ?? '');
 
         return parent::toDOM();
     }

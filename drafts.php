@@ -10,7 +10,7 @@ $draft_id = (int) ($_GET['draft'] ?? 0);
 
 // /drafts - everything staged, waiting.
 if ($draft_id === 0) {
-    $page = new Page(['title' => 'Drafts & Scheduled']);
+    $page = new Page(['title' => (string) (Strings::for('PageTitle')['drafts'] ?? '')]);
     $page -> addContent(new StagedPostList(['userId' => (int) Auth::id()]));
     $page -> send();
 
@@ -28,7 +28,9 @@ if ($draft === null || (int) $draft -> userId !== (int) Auth::id()) {
 }
 
 $page = new Page([
-    'title' => $draft -> publishAt === null ? 'Edit Draft' : 'Edit Scheduled Post',
+    'title' => $draft -> publishAt === null
+        ? (string) (Strings::for('PageTitle')['draftsEditDraft'] ?? '')
+        : (string) (Strings::for('PageTitle')['draftsEditScheduled'] ?? ''),
     'needsEditor' => true,
     'needsEmoji' => true,
     'needsMath' => true,

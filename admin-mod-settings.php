@@ -13,7 +13,7 @@ if (!Auth::canModerate()) {
     exit;
 }
 
-$page = new Page(['title' => 'Mod Settings']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['adminModSettings'] ?? '')]);
 
 // The two that page as you scroll keep their own pages - a list that grows
 // under you does not belong inside a settings page beside other things - so

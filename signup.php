@@ -9,7 +9,7 @@ if (Auth::check()) {
     exit;
 }
 
-$page = new Page(['title' => 'Sign Up']);
+$page = new Page(['title' => (string) (Strings::for('PageTitle')['signup'] ?? '')]);
 
 if (GoogleAuth::isEnabled()) {
     $page -> addContent(new GoogleSignInButton());

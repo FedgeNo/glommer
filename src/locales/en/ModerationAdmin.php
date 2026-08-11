@@ -28,7 +28,7 @@ return [
         'deleteLabel' => 'Delete {type}',
         'reportedImageAlt' => 'Reported image',
         'attachmentUnavailable' => 'A reported attachment is no longer available.',
-        'viewAttachment' => 'View reported attachment',
+        'viewAttachment' => 'View Reported Attachment',
         // Two different reasons the reported item itself can't be shown -
         // kept apart because they are different questions ("did we keep a
         // copy" vs "was this ever a type we understand"), not the same notice
@@ -75,16 +75,16 @@ return [
     ],
 
     'RelaySubscribeForm' => [
-        'legend' => 'Subscribe to a relay',
+        'legend' => 'Subscribe to a Relay',
         'explainerOne' => 'A relay is a shared firehose: every public post from every other subscribed server arrives here, and this server\'s go out to all of them. It is how a new instance finds anyone at all, since federation otherwise only carries what somebody here already follows.',
         'explainerTwo' => 'The load is not yours to predict - it is whatever those servers publish, quiet one week and thousands of posts an hour the next, and your storage, delivery queue and moderation queue all carry it. Relayed posts stay out of the main and friends feeds; they go to the Relay Feed, which people open deliberately.',
-        'addressLabel' => 'Relay address',
+        'addressLabel' => 'Relay Address',
         'addressPlaceholder' => 'https://relay.example/actor',
         'submitLabel' => 'Subscribe',
     ],
 
     'RelayFollowObjectField' => [
-        'label' => 'Subscription style',
+        'label' => 'Subscription Style',
         'options' => [
             'public' => 'Follow the public stream (what most relays expect)',
             'actor' => 'Follow the relay\'s own actor',
@@ -103,11 +103,11 @@ return [
 
     'TestSuitePanel' => [
         'intro' => 'Run the site\'s test suite and see the results. It takes a few seconds, so it opens on its own page.',
-        'runLabel' => 'Run tests',
+        'runLabel' => 'Run Tests',
     ],
 
     'HelpArticle' => [
-        'backLabel' => 'Back to all help',
+        'backLabel' => 'Back to All Help',
     ],
 
     'UserSearchList' => [

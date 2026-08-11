@@ -17,6 +17,6 @@ class PostDeleteButton extends ButtonButton
             $this -> attributes['data-standalone'] = '1';
         }
 
-        $this -> contents[] = 'Delete';
+        $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }
 }

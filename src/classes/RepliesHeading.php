@@ -14,6 +14,6 @@ class RepliesHeading extends Heading2
 
     public function __construct()
     {
-        parent::__construct('Replies');
+        parent::__construct((string) (Strings::for(self::class)['heading'] ?? ''));
     }
 }

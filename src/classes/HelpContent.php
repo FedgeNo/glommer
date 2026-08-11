@@ -151,8 +151,8 @@ class HelpContent
                 'summary' => 'Sign up with a username, email, and password to start posting.',
                 'body' => '
 <p>To join, open the <strong>Sign up</strong> link in the top-right corner and choose a username, enter your email address, and pick a password. Your username is how other people find and mention you, so pick something you\'re happy to be known by.</p>
-<p>You can add a <strong>display name</strong> later by editing <a href="/help/your-profile">your profile</a> - that\'s the friendlier name shown above your username on your posts and profile. If you leave it blank, your username is shown instead.</p>
-<p>Once your account exists you can read and post right away. The very first account created on a brand-new site automatically becomes its administrator.</p>
+<p>The form also has room for a <strong>display name</strong> and a short bio, if you\'d rather fill those in now - both are optional, and you can just as easily leave them and set them later by editing <a href="/help/your-profile">your profile</a>. A display name is the friendlier name shown above your username on your posts and profile; leave it blank and your username is shown instead.</p>
+<p>Once you\'ve signed up you can read and post right away - unless this site verifies email addresses, in which case you\'ll need to do that first (see <a href="/help/verifying-your-email">verifying your email</a>). The very first account created on a brand-new site automatically becomes its administrator.</p>
 ',
             ],
             [
@@ -161,7 +161,7 @@ class HelpContent
                 'category' => 'Getting started',
                 'summary' => 'Confirm your address from the link we email you, if email is turned on.',
                 'body' => '
-<p>If this site is set up to send email, we\'ll send you a verification link right after you sign up. Open it and your account is confirmed - this is how we know the address is really yours, so password resets and notifications can reach you.</p>
+<p>If this site is set up to send email, we\'ll send you a verification link right after you sign up - and until you open it, every page here sends you to a Check your inbox notice instead. Opening the link confirms your account and lets you in properly. It\'s also how we know the address is really yours, so password resets and notifications can reach you.</p>
 <p>Didn\'t get it? Check your spam folder first. You can ask for a fresh link from the <strong>Check your inbox</strong> page, which appears until you\'ve verified.</p>
 <p>Some sites don\'t send email at all. If that\'s the case here, there\'s nothing to verify and you can start using everything immediately.</p>
 ',
@@ -343,9 +343,9 @@ class HelpContent
 <p>Friendship on ' . self::siteTitle() . ' is mutual and starts with a request. Use <strong>Add Friend</strong> on someone\'s card or profile to send one. While it\'s pending you can <strong>Cancel Request</strong>; once they accept, you\'re friends.</p>
 <p>The <strong>Friends</strong> page is your hub for this:</p>
 <ul>
-<li>Requests waiting for you appear at the top, each with <strong>Accept</strong> and <strong>Deny</strong>.</li>
-<li>Below that are your current friends.</li>
-<li>Requests you\'ve sent that haven\'t been answered yet are listed too.</li>
+<li>Requests waiting for you appear at the top, each with <strong>Accept</strong> and <strong>Deny</strong> - visible only to you.</li>
+<li>Below that are your current friends - this part is public, so anyone can see who you\'re friends with here, signed in or not.</li>
+<li>Requests you\'ve sent that haven\'t been answered yet are listed too, also visible only to you.</li>
 </ul>
 <p>Any friend\'s card has a <strong>Remove Friend</strong> button if you want to end the connection. Becoming friends means their posts show up in your <a href="/help/your-feeds">Friends Feed</a>.</p>
 ',
@@ -556,8 +556,9 @@ class HelpContent
 <p>Two kinds of shortcut turn into links automatically when you post - just type them into your writing.</p>
 <h2>Hashtags</h2>
 <p>Write a <strong>#hashtag</strong> - like <code>#music</code> - and it becomes a link. Tapping it opens that tag\'s page, showing every post using it, so hashtags are a good way to group a topic and to discover posts about things you care about. Browse the active tags any time from <strong>Tags</strong> in the menu, and see which are catching on under <a href="/help/trending-topics">Topics</a>.</p>
+<p>Only a post\'s first ten distinct hashtags are indexed onto tag pages and counted toward trending. Pile on more than that and the rest still show as links in your text, but won\'t turn up on a tag\'s page.</p>
 <h2>Mentions</h2>
-<p>Write an <strong>@username</strong> to mention someone. It links to their profile, and they get a notification that you mentioned them - handy for bringing a specific person into a conversation. You can mention people elsewhere on the Fediverse too, using their full <code>@user@server</code> handle.</p>
+<p>Write an <strong>@username</strong> to mention someone. It links to their profile, and they get a notification that you mentioned them - handy for bringing a specific person into a conversation. Mention more than ten distinct people in a single post, though, and nobody is notified - the links still work. You can mention people elsewhere on the Fediverse too, using their full <code>@user@server</code> handle.</p>
 ',
             ],
             [
@@ -570,6 +571,7 @@ class HelpContent
 <p>Each trending item has a page of its own, listing the posts behind it - an easy way to jump into an active conversation or find something new. The list is recalculated as activity on the site shifts, so it\'s worth looking back now and then.</p>
 <p>Topics are grouped by what kind of thing they are: people, organizations, places, hashtags and so on. Any topic page names its kind, and that name is a link to everything else of the same kind that is currently being talked about.</p>
 <p>It listens to everything this server can hear, posts arriving from other servers included - so on a server carrying a <a href="/help/the-relay-feed">relay</a> the list reflects the wider conversation and not only what was written here. A topic needs several different people talking about it before it can appear at all, so one enthusiastic poster cannot push something onto the list.</p>
+<p>If something shouldn\'t be there - it\'s abusive, or just noise - a moderator can ban it outright, and it stays off the list until a moderator lifts the ban.</p>
 ',
             ],
             [
@@ -616,7 +618,7 @@ class HelpContent
                 'body' => '
 <p>Your <strong>User Settings</strong> page has two tools for managing where you\'re logged in.</p>
 <h2>Remembered devices</h2>
-<p>When you choose to stay signed in, that device is remembered so you don\'t have to log in every visit. <strong>Remembered Devices</strong> lists them, and you can revoke any one - useful if you signed in on a shared or public computer, or lost a device.</p>
+<p>When you choose to stay signed in, that device is remembered so you don\'t have to log in every visit. <strong>Remembered Devices</strong> lists them, and you can revoke any of them but the one you\'re currently using - useful if you signed in on a shared or public computer, or lost a device. To forget the device you\'re on right now, log out instead.</p>
 <h2>Sessions</h2>
 <p>The <strong>Sessions</strong> section has a single button that <strong>signs you out everywhere at once</strong>, ending every active session and remembered device. Reach for it if you think someone else may have access to your account - then follow up by <a href="/help/settings-and-appearance">changing your password</a>.</p>
 ',

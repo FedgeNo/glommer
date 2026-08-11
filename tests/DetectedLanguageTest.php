@@ -15,6 +15,30 @@ declare(strict_types=1);
  */
 class DetectedLanguageTest extends DatabaseTestCase
 {
+    /**
+     * The whole class's texts, read in one go.
+     *
+     * Every extraction is a subprocess that imports spaCy and loads a model
+     * per language in the batch - four and a half seconds before it reads a
+     * word. Asking once and having each test look at its own line costs that
+     * once rather than once per test, which is the difference between this
+     * class taking five seconds and taking a minute.
+     */
+    private const CORPUS = [
+        'german' => 'Der Bundestag hat heute in Berlin über den Haushalt abgestimmt worden.',
+        'french' => 'Le trafic est interrompu entre Nation et Vincennes ce matin.',
+        'english' => 'Microsoft announced a new version of Windows in Seattle yesterday.',
+        'finnish' => 'Helsingin kaupunki aloittaa uuden hankkeen. Tämä on tärkeää kaikille asukkaille.',
+        'germanNames' => 'Angela Merkel hat in Berlin mit Emmanuel Macron gesprochen.',
+        'finnishNames' => 'Sanna Marin tapasi Helsingissä presidentti Sauli Niinistön.',
+        'tooShort' => 'ok',
+        'justEmoji' => '👍',
+        'justALink' => 'https://example.test/',
+    ];
+
+    /** @var array{entities: array<string, array>, languages: array<string, ?string>}|null */
+    private static ?array $read = null;
+
     private function requireExtractor(): void
     {
         $python = new \ReflectionClassConstant(EntityExtractor::class, 'NER_PYTHON');
@@ -24,30 +48,45 @@ class DetectedLanguageTest extends DatabaseTestCase
         }
     }
 
-    /** @return array<int, ?string> */
-    private static function languagesFor(string ...$texts): array
+    /** @return array{entities: array<string, array>, languages: array<string, ?string>} */
+    private function read(): array
     {
-        EntityExtractor::extractBatch(array_map(
-            static fn (string $text): string => json_encode(['ops' => [['insert' => $text . "\n"]]]),
-            $texts
-        ));
+        $this -> requireExtractor();
 
-        return EntityExtractor::detectedLanguages();
+        if (self::$read === null) {
+            $names = array_keys(self::CORPUS);
+
+            $entities = EntityExtractor::extractBatch(array_map(
+                static fn (string $text): string => json_encode(['ops' => [['insert' => $text . "\n"]]]),
+                array_values(self::CORPUS)
+            ));
+
+            self::$read = [
+                'entities' => array_combine($names, $entities),
+                'languages' => array_combine($names, EntityExtractor::detectedLanguages()),
+            ];
+        }
+
+        return self::$read;
+    }
+
+    /** @return string[] the entity values found in one of the corpus texts */
+    private function valuesIn(string $name): array
+    {
+        return array_map(
+            static fn (array $entity): string => (string) $entity['value'],
+            $this -> read()['entities'][$name]
+        );
     }
 
     public function testEachPostIsReadInTheLanguageItIsWrittenIn(): void
     {
-        $this -> requireExtractor();
+        $languages = $this -> read()['languages'];
 
-        $found = self::languagesFor(
-            'Der Bundestag hat heute in Berlin über den Haushalt abgestimmt worden.',
-            'Le trafic est interrompu entre Nation et Vincennes ce matin.',
-            'Microsoft announced a new version of Windows in Seattle yesterday.'
-        );
-
-        $this -> assertSame('de', $found[0]);
-        $this -> assertSame('fr', $found[1]);
-        $this -> assertSame('en', $found[2]);
+        $this -> assertSame('de', $languages['german']);
+        $this -> assertSame('fr', $languages['french']);
+        $this -> assertSame('en', $languages['english']);
+        $this -> assertSame('fi', $languages['finnish']);
     }
 
     /**
@@ -57,13 +96,11 @@ class DetectedLanguageTest extends DatabaseTestCase
      */
     public function testTooLittleToReadIsNotGuessedAt(): void
     {
-        $this -> requireExtractor();
+        $languages = $this -> read()['languages'];
 
-        $found = self::languagesFor('ok', '👍', 'https://example.test/');
-
-        $this -> assertNull($found[0]);
-        $this -> assertNull($found[1]);
-        $this -> assertNull($found[2]);
+        $this -> assertNull($languages['tooShort']);
+        $this -> assertNull($languages['justEmoji']);
+        $this -> assertNull($languages['justALink']);
     }
 
     /**
@@ -72,13 +109,7 @@ class DetectedLanguageTest extends DatabaseTestCase
      */
     public function testGermanCommonNounsAreNotTakenForNames(): void
     {
-        $this -> requireExtractor();
-
-        $entities = EntityExtractor::extractBatch([
-            json_encode(['ops' => [['insert' => "Der Bundestag hat heute in Berlin über den Haushalt abgestimmt worden.\n"]]]),
-        ]);
-
-        $values = array_map(static fn (array $entity): string => (string) $entity['value'], $entities[0]);
+        $values = $this -> valuesIn('german');
 
         $this -> assertTrue(in_array('Berlin', $values, true), 'a real place is still found');
         $this -> assertFalse(in_array('Haushalt', $values, true), 'an ordinary noun is not a name');
@@ -87,13 +118,7 @@ class DetectedLanguageTest extends DatabaseTestCase
     /** A Finnish function word is what the English model was storing as a topic. */
     public function testAFinnishFunctionWordIsNotATopic(): void
     {
-        $this -> requireExtractor();
-
-        $entities = EntityExtractor::extractBatch([
-            json_encode(['ops' => [['insert' => "Helsingin kaupunki aloittaa uuden hankkeen. Tämä on tärkeää kaikille asukkaille.\n"]]]),
-        ]);
-
-        $values = array_map(static fn (array $entity): string => (string) $entity['value'], $entities[0]);
+        $values = $this -> valuesIn('finnish');
 
         $this -> assertFalse(in_array('Tämä', $values, true));
         $this -> assertFalse(in_array('kaikille', $values, true));
@@ -106,23 +131,15 @@ class DetectedLanguageTest extends DatabaseTestCase
      */
     public function testNothingIsStoredUnderAKindWithNoPage(): void
     {
-        $this -> requireExtractor();
-
-        $batch = EntityExtractor::extractBatch([
-            json_encode(['ops' => [['insert' => "Angela Merkel hat in Berlin mit Emmanuel Macron gesprochen.\n"]]]),
-            json_encode(['ops' => [['insert' => "Sanna Marin tapasi Helsingissä presidentti Sauli Niinistön.\n"]]]),
-            json_encode(['ops' => [['insert' => "Microsoft announced a new version of Windows in Seattle yesterday.\n"]]]),
-        ]);
-
         $types = [];
 
-        foreach ($batch as $entities) {
+        foreach ($this -> read()['entities'] as $entities) {
             foreach ($entities as $entity) {
                 $types[(string) $entity['type']] = true;
             }
         }
 
-        $this -> assertTrue($types !== [], 'the sample produces entities at all');
+        $this -> assertTrue($types !== [], 'the corpus produces entities at all');
 
         foreach (array_keys($types) as $type) {
             $this -> assertTrue(
@@ -141,7 +158,7 @@ class DetectedLanguageTest extends DatabaseTestCase
 INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
     VALUES (?, ?, ?)
 ', 'iss', self::createUser(), 'german',
-            json_encode(['ops' => [['insert' => "Der Bundestag hat heute in Berlin über den Haushalt abgestimmt worden.\n"]]]));
+            json_encode(['ops' => [['insert' => self::CORPUS['german'] . "\n"]]]));
 
         $post_id = (int) mysqli_insert_id(DB::connection());
 

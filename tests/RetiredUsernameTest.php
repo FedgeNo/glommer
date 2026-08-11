@@ -54,7 +54,7 @@ SELECT `slug`
         DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `remoteActorURI`)
     VALUES (?, ?, ?, ?)
-', 'ssss', $handle, 'test-' . bin2hex(random_bytes(6)) . '@example.test', password_hash('x', PASSWORD_DEFAULT), 'https://remote.invalid/users/' . bin2hex(random_bytes(4)));
+', 'ssss', $handle, 'test-' . bin2hex(random_bytes(6)) . '@example.test', self::cheapHash('x'), 'https://remote.invalid/users/' . bin2hex(random_bytes(4)));
 
         $shadow_id = (int) mysqli_insert_id(DB::connection());
 

@@ -27,7 +27,7 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`,
 ', 'sssssi',
             'test-remote-' . bin2hex(random_bytes(6)),
             'test-' . bin2hex(random_bytes(6)) . '@example.test',
-            password_hash('x', PASSWORD_DEFAULT),
+            self::cheapHash('x'),
             'Remote Person',
             $actor_uri,
             1

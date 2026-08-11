@@ -25,7 +25,7 @@ SELECT *
         DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `remoteActorURI`, `remoteActorPublicKeyPem`, `remoteActorInboxURL`, `verified`)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'ssssssi', 'r-' . bin2hex(random_bytes(6)) . '@remote.invalid', 'test-' . bin2hex(random_bytes(6)) . '@example.test', password_hash('x', PASSWORD_DEFAULT), $actor, 'key', $actor . '/inbox', 1);
+', 'ssssssi', 'r-' . bin2hex(random_bytes(6)) . '@remote.invalid', 'test-' . bin2hex(random_bytes(6)) . '@example.test', self::cheapHash('x'), $actor, 'key', $actor . '/inbox', 1);
 
         return DB::row('
 SELECT *

@@ -71,12 +71,42 @@ class EntityExtractorTest extends TestCase
         $this -> assertTrue(EntityExtractor::readsAsAName('中国'));
     }
 
+    /**
+     * Both texts this class extracts, read in one go.
+     *
+     * An extraction is a subprocess that imports spaCy and loads a model
+     * before it reads a word - four and a half seconds either way - so the two
+     * tests below share one rather than paying it twice.
+     *
+     * @var array<int, array<int, array{type: string, value: string}>>|null
+     */
+    private static ?array $extracted = null;
+
+    private const TEXTS = [
+        'tags' => 'a post about #gardening and #welding',
+        'shortTags' => 'a post about #ai and #gardening',
+    ];
+
+    /** @return array<int, array{type: string, value: string}> */
+    private static function entitiesIn(string $name): array
+    {
+        if (self::$extracted === null) {
+            self::$extracted = array_combine(
+                array_keys(self::TEXTS),
+                EntityExtractor::extractBatch(array_map(
+                    static fn (string $text): string => (string) json_encode([['insert' => $text . "\n"]]),
+                    array_values(self::TEXTS)
+                ))
+            );
+        }
+
+        return self::$extracted[$name];
+    }
+
     /** Hashtags are somebody's own word for their own post, and stay lowercase. */
     public function testAHashtagIsNotJudgedThisWay(): void
     {
-        $delta = (string) json_encode([['insert' => "a post about #gardening and #welding\n"]]);
-
-        $entities = EntityExtractor::extractBatch([$delta])[0];
+        $entities = self::entitiesIn('tags');
 
         $tags = array_values(array_map(
             static fn (array $entity): string => $entity['value'],
@@ -108,9 +138,7 @@ class EntityExtractorTest extends TestCase
     /** And nothing that short comes out of the extractor at all, tag or name. */
     public function testNothingTooShortIsExtracted(): void
     {
-        $delta = (string) json_encode([['insert' => "a post about #ai and #gardening\n"]]);
-
-        foreach (EntityExtractor::extractBatch([$delta])[0] as $entity) {
+        foreach (self::entitiesIn('shortTags') as $entity) {
             $this -> assertTrue(
                 mb_strlen($entity['value']) >= 3,
                 $entity['type'] . ' "' . $entity['value'] . '" is too short to find again'

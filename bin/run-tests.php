@@ -99,6 +99,7 @@ if ($db_test_classes !== [] && $running_as_root && TestDatabase::setUp()) {
 $total = 0;
 $failures = [];
 $skipped = [];
+$timings = [];
 $started_at = microtime(true);
 
 foreach ($run_classes as $class) {
@@ -114,8 +115,11 @@ foreach ($run_classes as $class) {
         $total++;
         $label = $class . '::' . $method;
 
+        $test_started_at = microtime(true);
+
         try {
             $instance -> $method();
+            $timings[$label] = microtime(true) - $test_started_at;
             echo "  \033[32mPASS\033[0m  {$label}\n";
         } catch (TestSkippedException $exception) {
             // Neither passed nor failed - it never ran. Counted apart from
@@ -135,6 +139,20 @@ foreach ($run_classes as $class) {
 $elapsed_ms = (int) round((microtime(true) - $started_at) * 1000);
 
 echo "\n";
+
+// The twenty that cost the most, so a suite getting slower says which test
+// did it rather than only that it happened.
+if (getenv('SHOW_SLOWEST') !== false) {
+    arsort($timings);
+
+    echo "Slowest:\n";
+
+    foreach (array_slice($timings, 0, 20, true) as $label => $seconds) {
+        printf("  %6.2fs  %s\n", $seconds, $label);
+    }
+
+    echo "\n";
+}
 
 if ($failures !== []) {
     echo "Failures:\n";

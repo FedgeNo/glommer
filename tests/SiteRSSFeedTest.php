@@ -41,7 +41,7 @@ INSERT INTO `Posts` (`userId`, `description`, `remoteObjectURI`)
         DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `banned`)
     VALUES (?, ?, ?, ?)
-', 'sssi', 'test-' . $unique, 'test-' . $unique . '@example.test', password_hash($unique, PASSWORD_DEFAULT), 1);
+', 'sssi', 'test-' . $unique, 'test-' . $unique . '@example.test', self::cheapHash($unique), 1);
 
         return (int) mysqli_insert_id(DB::connection());
     }

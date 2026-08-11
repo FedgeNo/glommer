@@ -120,7 +120,7 @@ INSERT INTO `Timelines` (`userId`, `postId`)
         DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `remoteActorURI`, `verified`)
     VALUES (?, ?, ?, ?, ?)
-', 'ssssi', 'r-' . bin2hex(random_bytes(6)) . '@remote.invalid', 'test-' . bin2hex(random_bytes(6)) . '@example.test', password_hash('x', PASSWORD_DEFAULT), $actor, 1);
+', 'ssssi', 'r-' . bin2hex(random_bytes(6)) . '@remote.invalid', 'test-' . bin2hex(random_bytes(6)) . '@example.test', self::cheapHash('x'), $actor, 1);
 
         $them = DB::row('
 SELECT *

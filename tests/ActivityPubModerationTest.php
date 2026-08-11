@@ -16,7 +16,7 @@ class ActivityPubModerationTest extends DatabaseTestCase
         DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`, `banned`, `verified`)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'sssssii', 'test-shadow-' . bin2hex(random_bytes(6)), 'test-' . bin2hex(random_bytes(6)) . '@example.test', password_hash('x', PASSWORD_DEFAULT), 'Test Shadow', $actor_uri, $banned, 1);
+', 'sssssii', 'test-shadow-' . bin2hex(random_bytes(6)), 'test-' . bin2hex(random_bytes(6)) . '@example.test', self::cheapHash('x'), 'Test Shadow', $actor_uri, $banned, 1);
 
         return (int) mysqli_insert_id(DB::connection());
     }

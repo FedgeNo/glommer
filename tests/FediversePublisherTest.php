@@ -125,7 +125,7 @@ SELECT *
         DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `remoteActorURI`)
     VALUES (?, ?, ?, ?)
-', 'ssss', 'test-shadow-' . bin2hex(random_bytes(6)), 'test-' . bin2hex(random_bytes(6)) . '@example.test', password_hash('x', PASSWORD_DEFAULT), 'https://remote.invalid/users/' . bin2hex(random_bytes(4)));
+', 'ssss', 'test-shadow-' . bin2hex(random_bytes(6)), 'test-' . bin2hex(random_bytes(6)) . '@example.test', self::cheapHash('x'), 'https://remote.invalid/users/' . bin2hex(random_bytes(4)));
 
         DB::run('
 INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)

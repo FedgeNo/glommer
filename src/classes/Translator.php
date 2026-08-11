@@ -33,7 +33,36 @@ class Translator
      */
     private const WALL_TIMEOUT = 60;
     private const CPU_TIMELIMIT = 45;
-    private const MAX_ADDRESS_SPACE_KB = 3145728;
+
+    /**
+     * Deliberately far above what a translation uses, unlike the transcoder's,
+     * which is sized to the job.
+     *
+     * Measured: 702MB resident for a four-sentence post, and over 3GB of
+     * address space, because MKL reserves several times what it touches. A cap
+     * anywhere near real use fails on the length of the text rather than on
+     * anything being wrong - at 3GB a post split into one more sentence than
+     * the last died with "mkl_malloc: failed to allocate memory", which reads
+     * as a broken installation and is not one.
+     *
+     * So this catches a runaway and nothing else. What actually bounds the
+     * memory is that the model is a fixed size, the input is capped, and only
+     * so many of these run at once.
+     */
+    private const MAX_ADDRESS_SPACE_KB = 8388608;
+
+    /**
+     * How many translations may run at once.
+     *
+     * Each holds about 700MB while it runs and this machine has under two
+     * spare, so a page of readers all pressing Translate is the one way this
+     * feature could take the site down. Two is what fits.
+     *
+     * A reader who arrives when both are busy is told it did not work rather
+     * than queued: the alternative is a request holding a PHP worker for the
+     * length of somebody else's translation and then starting its own.
+     */
+    private const CONCURRENT = 2;
 
     /** Enough for the longest post that will be offered, and a cap on what a model is handed. */
     private const MAX_INPUT_BYTES = 8192;
@@ -109,7 +138,55 @@ class Translator
             return null;
         }
 
-        return self::run($text, $source, $target);
+        $slot = self::takeSlot();
+
+        if ($slot === null) {
+            error_log('Translator: all ' . self::CONCURRENT . ' slots busy, refusing rather than queueing');
+
+            return null;
+        }
+
+        try {
+            return self::run($text, $source, $target);
+        } finally {
+            self::releaseSlot($slot);
+        }
+    }
+
+    /**
+     * One of the concurrency slots, or null when they are all taken.
+     *
+     * Named database locks rather than a counter, because a counter has to be
+     * put back and a PHP process that dies mid-translation would never do it -
+     * a lock is released when the connection goes, however it goes. Asked for
+     * with no timeout: waiting for a slot means holding a PHP worker for the
+     * length of somebody else's translation, and then starting a five-second
+     * one of your own.
+     */
+    private static function takeSlot(): ?string
+    {
+        for ($slot = 0; $slot < self::CONCURRENT; $slot++) {
+            $name = 'glommer-translate-' . $slot;
+
+            $result = mysqli_stmt_get_result(DB::run('
+SELECT GET_LOCK(?, 0) AS `taken`
+', 's', $name));
+
+            $row = $result === false ? null : mysqli_fetch_assoc($result);
+
+            if ((int) ($row['taken'] ?? 0) === 1) {
+                return $name;
+            }
+        }
+
+        return null;
+    }
+
+    private static function releaseSlot(string $name): void
+    {
+        mysqli_stmt_get_result(DB::run('
+SELECT RELEASE_LOCK(?)
+', 's', $name));
     }
 
     /**

@@ -61,27 +61,29 @@ export class Notification {
     actorText() {
         const name = this.actorName();
 
+        // The empty piece in front of the name is a slot to translate into -
+        // mirrors Notification::textFor().
         switch (this.type) {
             case 'like':
-                return name + ' liked your post';
+                return '' + name + ' liked your post';
             case 'repost':
-                return name + ' reposted your post';
+                return '' + name + ' reposted your post';
             case 'reply':
-                return name + ' replied to your post';
+                return '' + name + ' replied to your post';
             case 'friendRequest':
-                return name + ' sent you a friend request';
+                return '' + name + ' sent you a friend request';
             case 'friendAccepted':
-                return name + ' accepted your friend request';
+                return '' + name + ' accepted your friend request';
             case 'message':
-                return name + ' sent you a message';
+                return '' + name + ' sent you a message';
             case 'mention':
-                return name + ' mentioned you in a post';
+                return '' + name + ' mentioned you in a post';
             // Mirrors Notification.php: only ever a Fediverse follow, since a
             // local one is a friendship and has its own two types above.
             case 'follow':
-                return name + ' followed you from another server';
+                return '' + name + ' followed you from another server';
             default:
-                return name + ' did something';
+                return '' + name + ' did something';
         }
     }
 

@@ -40,6 +40,7 @@ class ThreadContext extends Div
             ServerURL::absolute('/users/' . $this -> parentUsername . '/' . $this -> parentId),
             (string) $this -> parentLabel
         ));
+        $response -> contents[] = '';
 
         $this -> addContent($response);
 

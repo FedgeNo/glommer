@@ -14,6 +14,7 @@ class PostComposer extends Composer
         }
         $link = new Anchor(ServerURL::absolute('/login'), 'Log in');
         $paragraph = new Heading2;
+        $paragraph -> addContent('');
         $paragraph -> addContent($link);
         $paragraph -> addContent(' to post.');
         $this -> addContent($paragraph);

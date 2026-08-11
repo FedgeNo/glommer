@@ -15,6 +15,7 @@ class RepostAttribution extends Div
     {
         parent::__construct();
 
+        $this -> addContent('');
         $this -> addContent(new Anchor(ServerURL::absolute('/users/' . $slug . '/'), $title !== null && $title !== '' ? $title : $slug));
         $this -> addContent(' reposted');
     }

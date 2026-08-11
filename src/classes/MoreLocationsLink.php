@@ -15,6 +15,7 @@ class MoreLocationsLink extends Paragraph
     {
         $this -> contents[] = 'See ';
         $this -> addContent(new Anchor(ServerURL::absolute('/locations/'), 'more locations'));
+        $this -> contents[] = '';
 
         return parent::toDOM();
     }

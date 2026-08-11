@@ -118,17 +118,21 @@ class Notification extends Article
             'mailFromNotConfigured' => 'No mail "from" address is configured, so emails can\'t be sent. Set one in Site Settings (Mail section) or via bin/install.php.',
             'systemError' => 'A server error occurred. Check the error log for details.',
             'passwordRemovedGoogle' => 'Your password was removed when you signed in with Google. Use "Forgot password" if you want to set a new one.',
-            'like' => $actor_name . ' liked your post',
-            'repost' => $actor_name . ' reposted your post',
-            'reply' => $actor_name . ' replied to your post',
-            'friendRequest' => $actor_name . ' sent you a friend request',
-            'friendAccepted' => $actor_name . ' accepted your friend request',
-            'message' => $actor_name . ' sent you a message',
-            'mention' => $actor_name . ' mentioned you in a post',
+            // The empty piece in front of the name is a slot to translate
+            // into: a language that says "your post was liked by X" has
+            // nowhere to put those words otherwise, and the order would be
+            // settled here rather than by whoever translates it.
+            'like' => '' . $actor_name . ' liked your post',
+            'repost' => '' . $actor_name . ' reposted your post',
+            'reply' => '' . $actor_name . ' replied to your post',
+            'friendRequest' => '' . $actor_name . ' sent you a friend request',
+            'friendAccepted' => '' . $actor_name . ' accepted your friend request',
+            'message' => '' . $actor_name . ' sent you a message',
+            'mention' => '' . $actor_name . ' mentioned you in a post',
             // Only ever a Fediverse follow. A local one is a friendship, which
             // is mutual and asks first, so it has its own two types above.
-            'follow' => $actor_name . ' followed you from another server',
-            default => $actor_name . ' did something',
+            'follow' => '' . $actor_name . ' followed you from another server',
+            default => '' . $actor_name . ' did something',
         };
     }
 

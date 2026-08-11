@@ -53,3 +53,21 @@ function current_url(): string
 {
     return ServerURL::absolute($_SERVER['REQUEST_URI'] ?? '/');
 }
+
+/**
+ * A topic's name as an address segment: lowercased, with every run of anything
+ * that is not a letter or a number becoming one hyphen.
+ *
+ * Letters and numbers of every script, not just ASCII - a topic is named in
+ * whatever language somebody wrote the post in, and transliterating Ελλάδα to
+ * "ellada" would make an address its own readers do not recognise.
+ *
+ * Two names that differ only in punctuation land on the same slug, which is the
+ * intended reading: they are the same topic written two ways.
+ */
+function topic_slug(string $value): string
+{
+    $slug = (string) preg_replace('/[^\p{L}\p{N}]+/u', '-', mb_strtolower(trim($value)));
+
+    return trim($slug, '-');
+}

@@ -8,6 +8,7 @@ import { OtherUser } from '/scripts/OtherUser.js';
 import { ReceivedFriendRequest } from '/scripts/ReceivedFriendRequest.js';
 import { Notification } from '/scripts/Notification.js';
 import { ReportCard } from '/scripts/ReportCard.js';
+import { TrendingEntityChip } from '/scripts/TrendingEntityChip.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 const REGISTRY = {};
@@ -271,6 +272,11 @@ InfiniteScroller.register('Notification',
 InfiniteScroller.register('ReportCard',
     data => ReportCard.fromData(data).toElement(),
     list => list.querySelectorAll('.ReportCard').length
+);
+
+InfiniteScroller.register('TrendingEntityChip',
+    data => TrendingEntityChip.fromData(data).toElement(),
+    list => list.querySelectorAll('.TrendingEntityChip').length
 );
 
 ReadyHandler.add(InfiniteScroller.init);

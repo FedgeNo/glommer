@@ -43,6 +43,77 @@ INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `
         }
     }
 
+    /**
+     * Every kind the extractor produces has an address, and that address leads
+     * back to it. A kind missing from the slug list would build links to a page
+     * the router cannot resolve.
+     */
+    public function testEveryKindsAddressLeadsBackToIt(): void
+    {
+        foreach (EntityType::all() as $type) {
+            $slug = EntityType::slug($type);
+
+            $this -> assertSame($type, EntityType::fromSlug($slug), $type . ' addresses itself');
+            $this -> assertTrue($slug !== $type, $type . ' has an address of its own');
+        }
+    }
+
+    /** The extractor's own label is not an address. */
+    public function testTheRawLabelIsNotASecondAddress(): void
+    {
+        $this -> assertNull(EntityType::fromSlug('work_of_art'));
+        $this -> assertNull(EntityType::fromSlug('gpe'));
+        $this -> assertNull(EntityType::fromSlug('nonsense'));
+    }
+
+    /**
+     * A topic's own address segment. Anything a name can carry that an address
+     * cannot has to come out, and what is left has to still be the name -
+     * transliterating would hand a reader an address they do not recognise.
+     */
+    public function testANameBecomesSomethingAnAddressCanCarry(): void
+    {
+        $this -> assertSame('a-thing', topic_slug('A Thing'));
+        $this -> assertSame('a-thing', topic_slug('  A   Thing  '));
+        $this -> assertSame('a-thing', topic_slug('A. Thing!'));
+        $this -> assertSame('rock-roll', topic_slug('Rock & Roll'));
+        $this -> assertSame('ελλάδα', topic_slug('Ελλάδα'));
+        $this -> assertSame('café-münchen', topic_slug('Café München'));
+        $this -> assertSame('covid-19', topic_slug('COVID-19'));
+
+        // Nothing a URL can carry at all, which is not a topic anybody can open.
+        $this -> assertSame('', topic_slug('!!!'));
+        $this -> assertSame('', topic_slug(''));
+    }
+
+    /**
+     * A ban is matched by slug, so a stored one built under the old rule would
+     * quietly stop matching the topic it bans.
+     */
+    public function testABannedTopicKeepsBanningItAfterItsSlugIsRebuilt(): void
+    {
+        $name = 'Route Ban ' . bin2hex(random_bytes(3));
+        $moderator = self::createUser();
+
+        // As the old rule wrote it: lowercased, spaces and all.
+        DB::run('
+INSERT INTO `BannedTrendingEntities` (`type`, `slug`, `title`, `bannedBy`, `reason`)
+    VALUES (?, ?, ?, ?, ?)
+', 'sssis', 'org', mb_strtolower($name), $name, $moderator, 'test');
+
+        $this -> assertFalse(Trending::isBanned('org', $name), 'the old spelling matches nothing');
+
+        BannedTrendingEntitySlugs::run();
+
+        $this -> assertTrue(Trending::isBanned('org', $name), 'and the rebuilt one bans it again');
+
+        DB::run('
+DELETE
+    FROM `BannedTrendingEntities`
+    WHERE `type` = ? AND `slug` = ?
+', 'ss', 'org', topic_slug($name));
+    }
+
     /** spaCy's vocabulary is not English, so a page never shows it raw. */
     public function testEachKindHasWordsAReaderKnows(): void
     {
@@ -97,7 +168,7 @@ INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `
         $chip -> title = 'A Thing';
 
         $this -> assertSame(
-            ServerURL::absolute('/topics/work_of_art/a%20thing'),
+            ServerURL::absolute('/topics/works/a%20thing'),
             $chip -> url(),
             'the slug is escaped, since it can carry spaces and accents'
         );

@@ -14,10 +14,19 @@ class TrendingEntitySection extends ListSection
     public ?string $class = 'TrendingEntitySection';
     public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
-    protected string $heading = 'Trending';
-
     protected function list(): ItemLoader
     {
         return new TrendingEntityList();
+    }
+
+    public function toDOM(): \DOMElement
+    {
+        // Only when this class is the one rendering: PopularEntitySection is a
+        // subclass and titles itself with the kind it is listing.
+        if ($this -> heading === '') {
+            $this -> heading = (string) (Strings::for(self::class)['heading'] ?? '');
+        }
+
+        return parent::toDOM();
     }
 }

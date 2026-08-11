@@ -2431,7 +2431,7 @@ function ensure_selinux_context(string $path, string $type = 'httpd_sys_content_
 }
 
 /**
- * The admin Site Settings page has the web server itself (PHP-FPM/Apache,
+ * The Admin Settings page has the web server itself (PHP-FPM/Apache,
  * running under SELinux's httpd_t domain on an Enforcing host) run `systemctl
  * is-active glommer-upload-worker.service` to report worker health - a
  * read-only status query, not a privileged control action. SELinux's
@@ -2450,7 +2450,7 @@ function ensure_selinux_context(string $path, string $type = 'httpd_sys_content_
  * systemd_unit_file_t is the generic type every unit file gets unless
  * specifically relabeled (all of glommer-upload-worker/glommer-websocket/
  * glommer-backup included), so this one rule covers every status line the
- * Site Settings page shows, not just the upload worker's.
+ * Admin Settings page shows, not just the upload worker's.
  */
 function ensure_httpd_can_query_systemd_status(): void
 {
@@ -2466,7 +2466,7 @@ function ensure_httpd_can_query_systemd_status(): void
 
     foreach (['checkmodule', 'semodule_package', 'semodule'] as $binary) {
         if (run('command -v :binary 2>/dev/null', ['binary' => $binary])['output'] === '') {
-            warn('SELinux is ' . $mode . ' but ' . $binary . ' isn\'t available - the web server won\'t be able to read service status (Site Settings will show services as "Not running" even when they are). Install policycoreutils-devel (or selinux-policy-devel) and re-run - this doesn\'t affect the services themselves, only that one status line.');
+            warn('SELinux is ' . $mode . ' but ' . $binary . ' isn\'t available - the web server won\'t be able to read service status (Admin Settings will show services as "Not running" even when they are). Install policycoreutils-devel (or selinux-policy-devel) and re-run - this doesn\'t affect the services themselves, only that one status line.');
 
             return;
         }
@@ -2500,7 +2500,7 @@ function ensure_httpd_can_query_systemd_status(): void
     $mod_path = $tmp_dir . '/' . $module_name . '.mod';
     $pp_path = $tmp_dir . '/' . $module_name . '.pp';
 
-    file_put_contents($te_path, "module $module_name 1.0;\n\nrequire {\n    type httpd_t;\n    type systemd_unit_file_t;\n    class service status;\n}\n\n# Read-only: lets the Site Settings worker/WebSocket status lines report\n# reality instead of always \"Not running\" under Enforcing SELinux.\nallow httpd_t systemd_unit_file_t:service status;\n");
+    file_put_contents($te_path, "module $module_name 1.0;\n\nrequire {\n    type httpd_t;\n    type systemd_unit_file_t;\n    class service status;\n}\n\n# Read-only: lets the Admin Settings worker/WebSocket status lines report\n# reality instead of always \"Not running\" under Enforcing SELinux.\nallow httpd_t systemd_unit_file_t:service status;\n");
 
     $compile = run('checkmodule -M -m -o :mod :te 2>&1', ['mod' => $mod_path, 'te' => $te_path]);
 
@@ -2531,7 +2531,7 @@ function ensure_httpd_can_query_systemd_status(): void
         return;
     }
 
-    ok('SELinux policy module installed - the web server can now read systemd unit status (Site Settings\' status lines will reflect reality).');
+    ok('SELinux policy module installed - the web server can now read systemd unit status (Admin Settings\' status lines will reflect reality).');
 }
 
 // The venv the trending-entities pipeline's (future) NER extractor shells out
@@ -4629,7 +4629,7 @@ if ($env_just_created) {
 }
 
 // The SMTP relay settings moved from .env to the Settings DB table (edit them
-// from the admin Site Settings page now) - config.php no longer reads these
+// from the Admin Settings page now) - config.php no longer reads these
 // keys at all, so check .env directly rather than through Config.
 $legacy_smtp_env_keys = array_filter([
     'SMTP_HOST' => Env::get('SMTP_HOST', ''),
@@ -4640,7 +4640,7 @@ $legacy_smtp_env_keys = array_filter([
 ], static fn (string $value): bool => $value !== '');
 
 if ($legacy_smtp_env_keys !== []) {
-    warn('.env still has ' . implode(', ', array_keys($legacy_smtp_env_keys)) . ' set, but the SMTP relay is no longer configured from .env - these values are ignored. Set the relay from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
+    warn('.env still has ' . implode(', ', array_keys($legacy_smtp_env_keys)) . ' set, but the SMTP relay is no longer configured from .env - these values are ignored. Set the relay from the Admin Settings page instead (Outgoing Mail section), then remove these lines from .env.');
 }
 
 // The mail-from backfill just below (and the HTTPS/WS-TLS checks after it)
@@ -4658,7 +4658,7 @@ try {
 // missing "from" address stops Mailer::send() from even attempting to send -
 // so an existing .env value is backfilled into Settings here rather than
 // just warned about, or upgrading this box would silently break every
-// outgoing email until an admin happened to visit Site Settings.
+// outgoing email until an admin happened to visit Admin Settings.
 $legacy_mail_from_address = Env::get('MAIL_FROM_ADDRESS', '');
 $legacy_mail_from_name = Env::get('MAIL_FROM_NAME', '');
 
@@ -4674,7 +4674,7 @@ if ($legacy_mail_from_address !== '' || $legacy_mail_from_name !== '') {
     warn('.env still has ' . implode(', ', array_keys(array_filter([
         'MAIL_FROM_ADDRESS' => $legacy_mail_from_address,
         'MAIL_FROM_NAME' => $legacy_mail_from_name,
-    ], static fn (string $value): bool => $value !== ''))) . ' set, but the mail "from" address/name are no longer configured from .env (copied into Settings just now if not already set there) - these .env values are ignored from here on. Edit them from the admin Site Settings page instead (Mail section), then remove these lines from .env.');
+    ], static fn (string $value): bool => $value !== ''))) . ' set, but the mail "from" address/name are no longer configured from .env (copied into Settings just now if not already set there) - these .env values are ignored from here on. Edit them from the Admin Settings page instead (Outgoing Mail section), then remove these lines from .env.');
 }
 
 ensure_activitypub_keypair();
@@ -5165,6 +5165,13 @@ SELECT COUNT(*) AS `n`
     $locations_to_move = $locations_pending ? (int) mysqli_fetch_assoc($locations_pending)['n'] : 0;
     PostLocationBackfill::run();
     ok('post locations moved to PostLocations' . ($locations_to_move > 0 ? ' (columns dropped from Posts)' : ' (already applied)'));
+
+    // A banned topic is matched by its slug, and slugs gained hyphens where they
+    // used to carry whatever punctuation the name had. A row still holding the
+    // old spelling would stop matching the topic it bans - silently, since a
+    // ban that matches nothing looks exactly like no ban at all.
+    $rebanned = BannedTrendingEntitySlugs::run();
+    ok('banned topic slugs in address form (' . $rebanned . ' rebuilt)');
 }
 
 // Materialize the /tags/ Popular graph and Trending cloud now, so they're

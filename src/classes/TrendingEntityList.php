@@ -17,7 +17,11 @@ class TrendingEntityList extends ItemList
     public ?string $class = 'TrendingEntityList';
     public array $mixins = ['d-flex', 'flex-wrap', 'gap-2'];
 
-    /** The section shows this many entities and stops - there is no next page. */
+    /**
+     * This list shows this many and stops: what is trending is a top, and a
+     * hundredth-place spike is not one. PopularEntityList inherits the size and
+     * does page, since it is a standing list rather than a top.
+     */
     public const PAGE_SIZE = 50;
 
     protected function rows(): array

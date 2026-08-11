@@ -63,6 +63,16 @@ class Trending
     // recompute on every near-future request.
     private const LAST_RUN_SETTING = 'trendingLastRecomputedAt';
 
+    // The newest post whose mentions have already been added to popularity. The
+    // window overlaps between runs, so this is what keeps a post from being
+    // counted again every run it stays inside it.
+    private const COUNTED_THROUGH_SETTING = 'trendingPopularityCountedThrough';
+
+    // How many topics of one kind are kept. Past this the tail is pruned by
+    // popularity - what nobody has said much about, and is not saying much
+    // about now.
+    private const RETAINED_PER_TYPE = 1000;
+
     // Recompute is real work (pulls + scores the whole window) - a low-odds
     // lottery on a stale read avoids every concurrent stale request
     // recomputing at once, while still self-healing reasonably quickly under
@@ -72,6 +82,10 @@ class Trending
     /**
      * The current top trending entities, freshest-first by score.
      *
+     * Rows outlive the run that produced them, so "trending" is the ones this
+     * last run stamped rather than everything in the table - what is being
+     * talked about now, not everything ever kept.
+     *
      * @return TrendingEntityChip[]
      */
     public static function current(int $limit): array
@@ -79,15 +93,16 @@ class Trending
         self::refreshIfStale();
 
         return DB::rows('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
     FROM `TrendingEntities`
+    WHERE `computedAt` = ?
     ORDER BY `score` DESC
     LIMIT ?
-', 'TrendingEntityChip', 'i', $limit);
+', 'TrendingEntityChip', 'si', self::lastRun(), $limit);
     }
 
     /**
-     * The same, of one kind only - what /topics/{type}/ lists.
+     * The same, of one kind only.
      *
      * @return TrendingEntityChip[]
      */
@@ -96,19 +111,48 @@ SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
         self::refreshIfStale();
 
         return DB::rows('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
     FROM `TrendingEntities`
-    WHERE `type` = ?
+    WHERE `type` = ? AND `computedAt` = ?
     ORDER BY `score` DESC
     LIMIT ?
-', 'TrendingEntityChip', 'si', $type, $limit);
+', 'TrendingEntityChip', 'ssi', $type, self::lastRun(), $limit);
+    }
+
+    /**
+     * Every topic of one kind that is still kept, most talked about first -
+     * what /topics/{type}/ lists.
+     *
+     * Popularity, not score: score says what is spiking, which is a different
+     * question and the one the front page already answers. This is the standing
+     * list, so it is ordered by how much has been said.
+     *
+     * @return TrendingEntityChip[]
+     */
+    public static function popularOfType(string $type, int $limit, int $offset): array
+    {
+        self::refreshIfStale();
+
+        return DB::rows('
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
+    FROM `TrendingEntities`
+    WHERE `type` = ?
+    ORDER BY `popularity` DESC, `entityId` ASC
+    LIMIT ? OFFSET ?
+', 'TrendingEntityChip', 'sii', $type, $limit, $offset);
+    }
+
+    /** When the last completed run stamped its rows. */
+    private static function lastRun(): string
+    {
+        return (string) (Settings::get(self::LAST_RUN_SETTING) ?? '');
     }
 
     /** One topic, or null where nothing by that name has trended. */
     public static function entity(string $type, string $slug): ?TrendingEntityChip
     {
         return DB::row('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`
+SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
     FROM `TrendingEntities`
     WHERE `type` = ? AND `slug` = ?
 ', 'TrendingEntityChip', 'ss', $type, $slug);
@@ -231,6 +275,16 @@ UPDATE `Posts`
 
         self::recordDetectedLanguages($rows, EntityExtractor::detectedLanguages());
 
+        // The high-water mark of what popularity has already been told about.
+        // Anything above it is new since the last run and counts once; anything
+        // at or below it was counted then.
+        $counted_through = (int) (Settings::get(self::COUNTED_THROUGH_SETTING) ?? 0);
+        $highest_seen = $counted_through;
+
+        foreach ($rows as $row) {
+            $highest_seen = max($highest_seen, (int) $row -> postId);
+        }
+
         $now = time();
         $stats = [];
 
@@ -244,7 +298,6 @@ UPDATE `Posts`
             $created_at = strtotime((string) $row -> createdAt);
             $age_hours = $created_at !== false ? max(0, ($now - $created_at) / 3600) : 0;
             $weight = 0.5 ** ($age_hours / self::HALF_LIFE_HOURS);
-            $user_id = (int) $row -> userId;
 
             foreach ($entities as $entity) {
                 // Keyed on a case-folded value so "COVID" and "Covid" are one
@@ -255,7 +308,7 @@ UPDATE `Posts`
                 // written again on every run: a row that kept the casing it
                 // was created with went on showing a spelling that no longer
                 // appears anywhere in the window.
-                $key = $entity['type'] . "\0" . mb_strtolower($entity['value']);
+                $key = $entity['type'] . "\0" . topic_slug($entity['value']);
 
                 if (isset($banned[$key])) {
                     continue;
@@ -265,6 +318,11 @@ UPDATE `Posts`
                     'type' => $entity['type'],
                     'value' => $entity['value'],
                     'postCount' => 0,
+                    // Posts this run is seeing for the first time. The window
+                    // is the newest WINDOW_SIZE posts and runs overlap heavily,
+                    // so counting all of them into a running total would count
+                    // the same post at every run it stayed in the window.
+                    'freshCount' => 0,
                     // One vote per user: keyed by userId, value is that
                     // user's single best (freshest/highest-weight) post
                     // mentioning this entity - repeats from the same user
@@ -273,7 +331,12 @@ UPDATE `Posts`
                 ];
 
                 $stats[$key]['postCount']++;
-                $stats[$key]['userWeights'][$user_id] = max($stats[$key]['userWeights'][$user_id] ?? 0.0, $weight);
+
+                if ((int) $row -> postId > $counted_through) {
+                    $stats[$key]['freshCount']++;
+                }
+
+                $stats[$key]['userWeights'][(int) $row -> userId] = max($stats[$key]['userWeights'][(int) $row -> userId] ?? 0.0, $weight);
             }
         }
 
@@ -286,24 +349,72 @@ UPDATE `Posts`
                 continue;
             }
 
+            $slug = topic_slug($entity['value']);
+
+            // A name of nothing but punctuation has no address, and a topic
+            // nobody can open is not one worth listing.
+            if ($slug === '') {
+                continue;
+            }
+
             $entity['score'] = array_sum($entity['userWeights']);
 
+            // popularity adds rather than replaces: it is every post ever
+            // counted against this topic, where the three beside it describe
+            // the window this run just read.
             DB::run('
-INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `computedAt`)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `computedAt` = VALUES(`computedAt`)
-', 'sssdiis', $entity['type'], mb_strtolower($entity['value']), $entity['value'], $entity['score'], $entity['postCount'], $user_count, $computed_at);
+INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`, `computedAt`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `popularity` = `popularity` + VALUES(`popularity`), `computedAt` = VALUES(`computedAt`)
+', 'sssdiiis', $entity['type'], $slug, $entity['value'], $entity['score'], $entity['postCount'], $user_count, $entity['freshCount'], $computed_at);
         }
 
-        DB::run('
-DELETE
-    FROM `TrendingEntities`
-    WHERE `computedAt` < ?
-', 's', $computed_at);
+        // Stamped before the prune, so a run that dies partway leaves posts
+        // uncounted rather than counted twice - popularity that reads low is a
+        // wrong ordering, one that reads high is a number nothing can correct.
+        Settings::set(self::COUNTED_THROUGH_SETTING, (string) $highest_seen);
+
+        self::prune($computed_at);
 
         // Stamped unconditionally, even when nothing qualified this run - see
         // LAST_RUN_SETTING's docblock.
         Settings::set(self::LAST_RUN_SETTING, $computed_at);
+    }
+
+    /**
+     * Keeps each kind down to RETAINED_PER_TYPE, dropping what has had least
+     * said about it.
+     *
+     * Never anything trending right now, however little history it has: a topic
+     * spiking for the first time has barely any popularity by definition, and
+     * dropping it would empty the front page of exactly the things it exists to
+     * show. So the trailing edge is chosen from what is not currently trending.
+     */
+    private static function prune(string $computed_at): void
+    {
+        foreach (EntityExtractor::ENTITY_TYPES as $type) {
+            // The popularity of the RETAINED_PER_TYPE'th most popular row -
+            // the waterline. Read first rather than deleted against directly,
+            // since MySQL will not LIMIT a subquery of the table it deletes
+            // from.
+            $waterline = DB::row('
+SELECT `popularity`
+    FROM `TrendingEntities`
+    WHERE `type` = ?
+    ORDER BY `popularity` DESC
+    LIMIT 1 OFFSET ?
+', 'stdClass', 'si', $type, self::RETAINED_PER_TYPE - 1);
+
+            if ($waterline === null) {
+                continue;
+            }
+
+            DB::run('
+DELETE
+    FROM `TrendingEntities`
+    WHERE `type` = ? AND `popularity` < ? AND `computedAt` < ?
+', 'sis', $type, (int) $waterline -> popularity, $computed_at);
+        }
     }
 
     /**
@@ -315,7 +426,7 @@ DELETE
      */
     public static function ban(string $entity_type, string $entity_value, int $moderator_id, ?string $reason): void
     {
-        $slug = mb_strtolower($entity_value);
+        $slug = topic_slug($entity_value);
 
         DB::run('
 INSERT INTO `BannedTrendingEntities` (`type`, `slug`, `title`, `bannedBy`, `reason`)
@@ -340,7 +451,7 @@ DELETE
 
     public static function unban(string $entity_type, string $entity_value): void
     {
-        $slug = mb_strtolower($entity_value);
+        $slug = topic_slug($entity_value);
 
         DB::run('
 DELETE
@@ -353,7 +464,7 @@ DELETE
 
     public static function isBanned(string $entity_type, string $entity_value): bool
     {
-        $slug = mb_strtolower($entity_value);
+        $slug = topic_slug($entity_value);
 
         $stmt = DB::run('
 SELECT 1

@@ -4,38 +4,52 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
-$type = strtolower(trim((string) ($_GET['type'] ?? '')));
+// The type in the address is its plural, which is not the label the extractor
+// and the table use.
+$type_slug = strtolower(trim((string) ($_GET['type'] ?? '')));
+$type = $type_slug === '' ? '' : EntityType::fromSlug($type_slug);
 $slug = mb_strtolower(trim((string) ($_GET['slug'] ?? '')));
 
 // /topics/ - everything that is trending, of every kind.
 if ($type === '') {
     $page = new Page([
-        'title' => 'Topics',
-        'description' => 'What people are talking about on ' . Config::get('siteTitle') . ' right now.',
+        'title' => (string) (Strings::for('PageTitle')['topics'] ?? ''),
+        'description' => str_replace('{siteTitle}', (string) Config::get('siteTitle'), (string) (Strings::for('PageTitle')['topicsDescription'] ?? '')),
     ]);
 
     $page -> addContent(new TrendingEntitySection());
+
+    // Trending is a short top, so most of what this server knows about is not
+    // on it at any moment. These lead to the standing list of each kind.
+    $page -> addContent(new EntityTypeLinks());
+
     $page -> send();
     exit;
 }
 
 // A kind the extractor cannot produce is not a page, however well-formed the
 // address looks.
-if (!EntityType::isKnown($type)) {
+if ($type === null) {
     require __DIR__ . '/404.php';
     exit;
 }
 
-// /topics/{type}/ - the trending topics of one kind.
+// /topics/{type}/ - every topic of one kind, most talked about first.
 if ($slug === '') {
-    $section = new TypedTrendingEntitySection(['type' => $type]);
+    $section = new PopularEntitySection(['type' => $type]);
 
     $page = new Page([
         'title' => EntityType::plural($type),
-        'description' => EntityType::plural($type) . ' people are talking about on ' . Config::get('siteTitle') . ' right now.',
+        'description' => strtr((string) (Strings::for('PageTitle')['topicsTypeDescription'] ?? ''), [
+            '{typePlural}' => EntityType::plural($type),
+            '{siteTitle}' => (string) Config::get('siteTitle'),
+        ]),
     ]);
 
-    $page -> addContent($section -> hasItems() ? $section : new Notice('Nothing of this kind is trending.'));
+    $page -> addContent($section -> hasItems()
+        ? $section
+        : new Notice((string) (Strings::for('PopularEntityList')['emptyNotice'] ?? '')));
+
     $page -> send();
     exit;
 }
@@ -51,7 +65,11 @@ if ($entity === null) {
 
 $page = new Page([
     'title' => (string) $entity -> title,
-    'description' => EntityType::label($type) . ' - posts mentioning ' . $entity -> title . ' on ' . Config::get('siteTitle') . '.',
+    'description' => strtr((string) (Strings::for('PageTitle')['topicsEntityDescription'] ?? ''), [
+        '{typeLabel}' => EntityType::label($type),
+        '{entityTitle}' => (string) $entity -> title,
+        '{siteTitle}' => (string) Config::get('siteTitle'),
+    ]),
     'needsMath' => true,
     'needsEditor' => Auth::check(),
 ]);
@@ -76,6 +94,8 @@ $page -> addContent(new TopicSummaryCard($summary, $type, $slug));
 
 $feed = new SearchFeedList(['query' => (string) $entity -> title]);
 
-$page -> addContent($feed -> hasItems() ? $feed : new Notice('No posts mention this right now.'));
+$page -> addContent($feed -> hasItems()
+    ? $feed
+    : new Notice((string) (Strings::for('TopicHeading')['noPosts'] ?? '')));
 
 $page -> send();

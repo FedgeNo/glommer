@@ -928,10 +928,19 @@ CREATE TABLE `TrendingEntities` (
   `score` double NOT NULL,
   `postCount` int(10) unsigned NOT NULL,
   `userCount` int(10) unsigned NOT NULL,
+  -- Every post ever counted against this topic, added to run by run and never
+  -- recomputed. score/postCount/userCount are the current window and answer
+  -- "is this spiking"; this one answers "how much has been said about it",
+  -- which is a different question and the one /topics/{type}/ is ordered by.
+  `popularity` int(10) unsigned NOT NULL DEFAULT 0,
   `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`entityId`),
   UNIQUE KEY `type_slug` (`type`,`slug`),
-  KEY `score` (`score`)
+  KEY `score` (`score`),
+  -- The type page, ordered by popularity, and the prune that keeps it bounded.
+  KEY `type_popularity` (`type`,`popularity`),
+  -- What is trending now: the rows stamped with the latest run.
+  KEY `computedAt_score` (`computedAt`,`score`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- A standing moderation rule, not a recomputed row - survives TrendingEntities
@@ -1074,6 +1083,12 @@ ALTER TABLE `Places` DROP INDEX IF EXISTS `title`;
 -- separating local accounts from the shadow rows federation creates.
 ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_banned` (`remoteActorURI`, `banned`);
 ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_lastSeen` (`remoteActorURI`, `lastSeen`);
+-- TrendingEntities: rows now outlive the run that produced them, so what is
+-- trending is the newest computedAt rather than everything in the table, and
+-- the type page reads all of one kind ordered by how much has been said.
+ALTER TABLE `TrendingEntities` ADD COLUMN IF NOT EXISTS `popularity` int(10) unsigned NOT NULL DEFAULT 0 AFTER `userCount`;
+ALTER TABLE `TrendingEntities` ADD INDEX IF NOT EXISTS `type_popularity` (`type`, `popularity`);
+ALTER TABLE `TrendingEntities` ADD INDEX IF NOT EXISTS `computedAt_score` (`computedAt`, `score`);
 
 -- Column-type migrations (safe to re-run): these six tables were originally
 -- created with signed int(11) id/userId columns, unlike every other table's

@@ -39,6 +39,23 @@ if (Place::count() > 0) {
     $version_card -> addContent($credit);
 }
 
+// The map already credits its tiles on the map itself, where Leaflet puts
+// them; this is the same credit somewhere a reader can find it without
+// opening a map. Read from the configured source rather than hardcoded,
+// because which tiles are in use is an admin's choice and crediting the wrong
+// service is worse than crediting none - and stripped to its text, since an
+// attribution is a line to read here rather than markup to run.
+$tiles = trim(strip_tags(MapTiles::attribution()));
+
+if ($tiles !== '') {
+    $map_credit = new Paragraph('Map tiles from ');
+    $map_credit -> class = 'muted text-sm';
+    $map_credit -> addContent($tiles);
+    $map_credit -> addContent('.');
+
+    $version_card -> addContent($map_credit);
+}
+
 // The MIT licence asks for a notice in copies of the software, and nothing is
 // being copied here - this is thanks rather than compliance. Translating on
 // this machine instead of somebody's API is the reason a post never leaves the

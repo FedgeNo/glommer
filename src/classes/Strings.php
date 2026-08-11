@@ -89,6 +89,61 @@ class Strings
     }
 
     /**
+     * The key a locale file puts its counting rule under. Not a class name, so
+     * it cannot collide with one, and skipped when a table is read as words.
+     */
+    public const PLURAL_RULE = '@plural';
+
+    /**
+     * One of a set of phrasings, chosen by how many of the thing there are.
+     *
+     * English has two forms and most of the code was written assuming that -
+     * `$n === 1 ? 'vote' : 'votes'`. Polish has three and Arabic six, and no
+     * amount of care with a ternary in a class will produce them; the choosing
+     * has to belong to the language.
+     *
+     * So a counted string is a set of phrasings keyed by CLDR category, and
+     * each locale file says which category a number falls in. A locale that
+     * gives only "other" is a language with one form, which is a real answer
+     * and what Japanese wants.
+     *
+     * The count is not substituted here: the phrasing says where the number
+     * goes, or leaves it out, which is a thing languages differ about too.
+     */
+    public static function plural(string $class, string $key, int $count): string
+    {
+        $forms = self::for($class)[$key] ?? [];
+
+        if (!is_array($forms) || $forms === []) {
+            return '';
+        }
+
+        $category = self::category($count);
+
+        // Falling back to "other" rather than to nothing: a locale that has
+        // not written its "few" yet should read a little wrong, not vanish.
+        $chosen = $forms[$category] ?? $forms['other'] ?? reset($forms);
+
+        return is_string($chosen) ? $chosen : '';
+    }
+
+    /** Which CLDR category a count falls in, by the current locale's own rule. */
+    private static function category(int $count): string
+    {
+        $rule = self::table(self::locale())[self::PLURAL_RULE]
+            ?? self::table(self::SOURCE_LOCALE)[self::PLURAL_RULE]
+            ?? null;
+
+        if (!is_callable($rule)) {
+            // What English does, which is what the code assumed before any of
+            // this and is right for a good half of the languages there are.
+            return $count === 1 ? 'one' : 'other';
+        }
+
+        return (string) $rule($count);
+    }
+
+    /**
      * What one class says, in the current locale, with anything untranslated
      * falling back to the English it was written in.
      *
@@ -133,8 +188,22 @@ class Strings
         }
 
         $table = require self::DIRECTORY . '/' . $locale . '.php';
+        $table = is_array($table) ? $table : [];
 
-        return self::$tables[$locale] = is_array($table) ? $table : [];
+        // Plus anything in a directory of the same name, merged in. A locale
+        // is a thousand strings before long, and one file is both an awkward
+        // thing to read and the file every hand touches at once - a fragment
+        // per area of the site keeps a change to the messaging strings out of
+        // the way of a change to the settings ones.
+        foreach ((array) glob(self::DIRECTORY . '/' . $locale . '/*.php') as $fragment) {
+            $part = require (string) $fragment;
+
+            if (is_array($part)) {
+                $table = array_replace_recursive($table, $part);
+            }
+        }
+
+        return self::$tables[$locale] = $table;
     }
 
     /**

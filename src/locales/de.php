@@ -12,6 +12,15 @@ declare(strict_types=1);
  */
 
 return [
+    // Two forms, the same as English - written out rather than left to the
+    // fallback so that adding a language with three is an edit to that
+    // language's file and nowhere else.
+    Strings::PLURAL_RULE => static fn (int $count): string => $count === 1 ? 'one' : 'other',
+
+    'PollOptionVotes' => [
+        'votes' => ['one' => '1 Stimme', 'other' => '{count} Stimmen'],
+    ],
+
     'LoginPrompt' => [
         'reply' => ['before' => 'Zum Antworten bitte ', 'link' => 'anmelden', 'after' => '.'],
         'post' => ['before' => 'Zum Posten bitte ', 'link' => 'anmelden', 'after' => '.'],

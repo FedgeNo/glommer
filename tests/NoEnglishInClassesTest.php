@@ -29,9 +29,21 @@ class NoEnglishInClassesTest extends TestCase
      */
     private static function subjects(): array
     {
-        return [
+        $subjects = [
             LoginPrompt::class => static fn (): HTMLObject => new LoginPrompt('reply'),
         ];
+
+        // Plus a file per area of the site, so converting the settings forms
+        // and converting the messaging ones are not two edits to one list.
+        foreach ((array) glob(__DIR__ . '/locale-subjects/*.php') as $file) {
+            $part = require (string) $file;
+
+            if (is_array($part)) {
+                $subjects = array_merge($subjects, $part);
+            }
+        }
+
+        return $subjects;
     }
 
     /**

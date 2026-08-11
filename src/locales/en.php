@@ -23,6 +23,18 @@ declare(strict_types=1);
  */
 
 return [
+    // Which CLDR category a count falls in. English has two forms; a locale
+    // with more says so here and writes the extra phrasings, and one with a
+    // single form returns 'other' for everything.
+    Strings::PLURAL_RULE => static fn (int $count): string => $count === 1 ? 'one' : 'other',
+
+    'PollOptionVotes' => [
+        // The number is written into the phrasing rather than glued to the
+        // front of it: a language that says "votes: 5" needs it somewhere the
+        // code cannot put it.
+        'votes' => ['one' => '1 vote', 'other' => '{count} votes'],
+    ],
+
     'LoginPrompt' => [
         // One phrasing per thing the reader was trying to do. A language need
         // not say "to reply" as a suffix, or at all, so the whole sentence is

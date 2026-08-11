@@ -105,6 +105,84 @@ class StringsTest extends TestCase
         }
     }
 
+    public function testACountChoosesThePhrasing(): void
+    {
+        Strings::useLocale('en');
+
+        try {
+            $this -> assertSame('1 vote', Strings::plural(PollOptionVotes::class, 'votes', 1));
+            $this -> assertSame('{count} votes', Strings::plural(PollOptionVotes::class, 'votes', 0));
+            $this -> assertSame('{count} votes', Strings::plural(PollOptionVotes::class, 'votes', 7));
+        } finally {
+            Strings::useLocale(null);
+        }
+    }
+
+    /**
+     * The case English cannot demonstrate and the reason none of this is a
+     * ternary in a class: Polish has three forms, and 2 takes a different one
+     * from 5.
+     */
+    public function testALanguageWithThreeFormsGetsThreeForms(): void
+    {
+        $tables = new \ReflectionProperty(Strings::class, 'tables');
+        $tables -> setAccessible(true);
+        $locale = new \ReflectionProperty(Strings::class, 'locale');
+        $locale -> setAccessible(true);
+
+        $tables -> setValue(null, ['pl' => [
+            Strings::PLURAL_RULE => static function (int $count): string {
+                if ($count === 1) {
+                    return 'one';
+                }
+
+                $last_two = $count % 100;
+                $last = $count % 10;
+
+                return $last >= 2 && $last <= 4 && ($last_two < 12 || $last_two > 14) ? 'few' : 'many';
+            },
+            'PollOptionVotes' => ['votes' => [
+                'one' => '1 głos',
+                'few' => '{count} głosy',
+                'many' => '{count} głosów',
+            ]],
+        ]]);
+        $locale -> setValue(null, 'pl');
+
+        try {
+            $this -> assertSame('1 głos', Strings::plural(PollOptionVotes::class, 'votes', 1));
+            $this -> assertSame('{count} głosy', Strings::plural(PollOptionVotes::class, 'votes', 2));
+            $this -> assertSame('{count} głosów', Strings::plural(PollOptionVotes::class, 'votes', 5));
+            $this -> assertSame('{count} głosów', Strings::plural(PollOptionVotes::class, 'votes', 12));
+            $this -> assertSame('{count} głosy', Strings::plural(PollOptionVotes::class, 'votes', 22));
+        } finally {
+            $tables -> setValue(null, []);
+            $locale -> setValue(null, null);
+        }
+    }
+
+    /** A phrasing a locale has not written yet reads a little wrong rather than vanishing. */
+    public function testAMissingFormFallsBackRatherThanDisappearing(): void
+    {
+        $tables = new \ReflectionProperty(Strings::class, 'tables');
+        $tables -> setAccessible(true);
+        $locale = new \ReflectionProperty(Strings::class, 'locale');
+        $locale -> setAccessible(true);
+
+        $tables -> setValue(null, ['xx' => [
+            Strings::PLURAL_RULE => static fn (int $count): string => 'few',
+            'PollOptionVotes' => ['votes' => ['other' => '{count} stemmer']],
+        ]]);
+        $locale -> setValue(null, 'xx');
+
+        try {
+            $this -> assertSame('{count} stemmer', Strings::plural(PollOptionVotes::class, 'votes', 3));
+        } finally {
+            $tables -> setValue(null, []);
+            $locale -> setValue(null, null);
+        }
+    }
+
     /** English is the source, so it is always one of the languages on offer. */
     public function testTheSourceLanguageIsAlwaysAvailable(): void
     {

@@ -744,7 +744,10 @@ SELECT `remoteFollowId`
         // post, so the body renders with them from the first view.
         CustomEmoji::learnFrom(is_array($object['tag'] ?? null) ? $object['tag'] : [], $object_uri);
 
-        [$description, $description_delta] = self::deltaFromContent(is_string($object['content'] ?? null) ? $object['content'] : '');
+        [$description, $description_delta] = self::deltaFromContent(
+            is_string($object['content'] ?? null) ? $object['content'] : '',
+            RemoteMentions::localProfiles($object)
+        );
 
         DB::run('
 UPDATE `Posts`
@@ -896,7 +899,10 @@ UPDATE `Posts`
         // post, so the body renders with them from the first view.
         CustomEmoji::learnFrom(is_array($object['tag'] ?? null) ? $object['tag'] : [], $object_uri);
 
-        [$description, $description_delta] = self::deltaFromContent(is_string($object['content'] ?? null) ? $object['content'] : '');
+        [$description, $description_delta] = self::deltaFromContent(
+            is_string($object['content'] ?? null) ? $object['content'] : '',
+            RemoteMentions::localProfiles($object)
+        );
 
         // The sending server's own classification, taken at its word: it is the
         // only party that knows what it is sending, and the cost of trusting it
@@ -1124,14 +1130,17 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
     /** Posts.description is a TEXT column; MySQL runs strict, so an oversized value errors rather than truncating. */
     private const MAX_DESCRIPTION_BYTES = 65535;
 
-    /** @return array{0: ?string, 1: ?string} [description, descriptionDelta] */
-    private static function deltaFromContent(string $content): array
+    /**
+     * @param array<string, string> $mentions handle => actor address
+     * @return array{0: ?string, 1: ?string} [description, descriptionDelta]
+     */
+    private static function deltaFromContent(string $content, array $mentions = []): array
     {
         // Read as the markup it is, so a post keeps the links, emphasis and
         // lists it was written with. HTMLToDelta ends on the same
         // Delta::sanitize() a locally-typed post passes, and a Delta insert
         // renders as a text node, so the decoded text stays inert either way.
-        $ops = HTMLToDelta::convert($content);
+        $ops = HTMLToDelta::convert($content, $mentions);
         $plaintext = Delta::plainText($ops);
 
         if ($plaintext === '') {

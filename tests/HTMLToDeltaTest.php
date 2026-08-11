@@ -177,4 +177,89 @@ class HTMLToDeltaTest extends TestCase
         $this -> assertSame([], HTMLToDelta::convert(''));
         $this -> assertSame([], HTMLToDelta::convert('   '));
     }
+
+    /** What RemoteMentions::localProfiles() hands over: handle => page here. */
+    private const MENTIONS = [
+        'alice' => 'https://glommer.test/users/alice%40mastodon.social/',
+        'alice@mastodon.social' => 'https://glommer.test/users/alice%40mastodon.social/',
+    ];
+
+    /**
+     * A mention arriving as bare words leads to the account it names.
+     *
+     * Without this it reads as a local @alice - a link to whoever here happens
+     * to share the name, or to a profile that does not exist. The words are
+     * left exactly as written; only the link knows the difference.
+     */
+    public function testABareMentionLeadsToTheAccountItNames(): void
+    {
+        $ops = HTMLToDelta::convert('<p>morning @alice how are you</p>', self::MENTIONS);
+
+        $this -> assertSame('morning @alice how are you' . self::NEWLINE, $this -> text($ops));
+        $this -> assertSame(
+            ['link' => self::MENTIONS['alice']],
+            $this -> attributesOf($ops, '@alice'),
+            'the short form still gets the long treatment in its link'
+        );
+    }
+
+    /** The same words, when nothing said who they meant, stay words. */
+    public function testAMentionNobodyExplainedIsLeftAlone(): void
+    {
+        $ops = HTMLToDelta::convert('<p>morning @stranger how are you</p>', self::MENTIONS);
+
+        $this -> assertSame('morning @stranger how are you' . self::NEWLINE, $this -> text($ops));
+        $this -> assertSame([], $this -> attributesOf($ops, '@stranger'));
+    }
+
+    /** Written in full, it resolves the same way. */
+    public function testAFullHandleResolvesToo(): void
+    {
+        $ops = HTMLToDelta::convert('<p>ask @alice@mastodon.social about it</p>', self::MENTIONS);
+
+        $this -> assertSame(
+            ['link' => self::MENTIONS['alice']],
+            $this -> attributesOf($ops, '@alice@mastodon.social')
+        );
+    }
+
+    /**
+     * A mention the far server anchored itself leads here as well, so the two
+     * forms of one mention do not go to two different places.
+     */
+    public function testAnAnchoredMentionIsBroughtHomeToo(): void
+    {
+        $ops = HTMLToDelta::convert(
+            '<p>morning <a href="https://mastodon.social/@alice">@alice</a></p>',
+            self::MENTIONS
+        );
+
+        $this -> assertSame(
+            ['link' => self::MENTIONS['alice']],
+            $this -> attributesOf($ops, '@alice')
+        );
+    }
+
+    /** An ordinary link is still the writer's own, mentions or not. */
+    public function testAnOrdinaryLinkIsUntouched(): void
+    {
+        $ops = HTMLToDelta::convert(
+            '<p>see <a href="https://example.test/thing">this thing</a></p>',
+            self::MENTIONS
+        );
+
+        $this -> assertSame(
+            ['link' => 'https://example.test/thing'],
+            $this -> attributesOf($ops, 'this thing')
+        );
+    }
+
+    /** With nothing to resolve against, the words are words - as before. */
+    public function testWithoutMentionsNothingIsRewritten(): void
+    {
+        $ops = HTMLToDelta::convert('<p>morning @alice</p>');
+
+        $this -> assertSame('morning @alice' . self::NEWLINE, $this -> text($ops));
+        $this -> assertSame([], $this -> attributesOf($ops, '@alice'));
+    }
 }

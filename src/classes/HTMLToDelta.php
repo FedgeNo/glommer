@@ -49,9 +49,19 @@ class HTMLToDelta
     private array $pending = [];
 
     /**
+     * Handle => the profile page here for that account. What a bare "@alice"
+     * in the content is resolved against.
+     *
+     * @var array<string, string>
+     */
+    private array $mentions = [];
+
+    /**
+     * @param array<string, string> $mentions handle => local profile URL, from
+     *                                        RemoteMentions::localProfiles()
      * @return array[] delta ops, sanitized - empty when the HTML held no words
      */
-    public static function convert(string $html): array
+    public static function convert(string $html, array $mentions = []): array
     {
         if (trim($html) === '') {
             return [];
@@ -66,6 +76,7 @@ class HTMLToDelta
         );
 
         $converter = new self();
+        $converter -> mentions = $mentions;
         $converter -> walk($document -> body, [], []);
         $converter -> endBlock([]);
 
@@ -129,10 +140,18 @@ class HTMLToDelta
                 // plain text and the renderer's own tokenizer makes the link -
                 // the same one it makes for a tag typed here.
                 //
-                // Only tags. A mention travels as "@user" without its domain,
-                // so relinking one locally would point at whoever here happens
-                // to share the name, or at nobody.
-                $hashtag = str_starts_with(trim((string) $child -> textContent), '#');
+                $text = trim((string) $child -> textContent);
+                $hashtag = str_starts_with($text, '#');
+
+                // A mention already anchored at the writer's own server. The
+                // account has a page here now, so it leads there instead - the
+                // same place the bare form leads, rather than the two forms of
+                // the same mention going to two different places.
+                $mention = $this -> mentions[strtolower(ltrim($text, '@'))] ?? null;
+
+                if ($mention !== null && !$hashtag) {
+                    $href = $mention;
+                }
 
                 $carried = ($href === '' || $hashtag) ? $inline : array_merge($inline, ['link' => $href]);
 
@@ -221,6 +240,45 @@ class HTMLToDelta
             return;
         }
 
+        // A run already carrying a link is one the writer's own markup linked -
+        // there is nothing to work out about it.
+        if ($this -> mentions === [] || isset($inline['link'])) {
+            $this -> insert($text, $inline);
+
+            return;
+        }
+
+        foreach (self::splitOnMentions($text) as $piece) {
+            $address = $this -> mentions[strtolower(ltrim($piece, '@'))] ?? null;
+
+            // The words stay exactly as they were written - a post saying
+            // "@alice" goes on saying it, and only the link underneath knows
+            // which account that is and where their page here is.
+            $this -> insert($piece, $address === null ? $inline : array_merge($inline, ['link' => $address]));
+        }
+    }
+
+    /**
+     * The text broken into @handles and the parts between them. A handle keeps
+     * its @ so the caller can tell the two kinds of piece apart.
+     *
+     * @return string[]
+     */
+    private static function splitOnMentions(string $text): array
+    {
+        $pieces = preg_split(
+            '/(@[A-Za-z0-9_.-]+(?:@[A-Za-z0-9.-]+\.[A-Za-z]{2,})?)/',
+            $text,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+
+        return $pieces === false ? [$text] : $pieces;
+    }
+
+    /** @param array<string, mixed> $inline */
+    private function insert(string $text, array $inline): void
+    {
         $this -> pending[] = $inline === []
             ? ['insert' => $text]
             : ['insert' => $text, 'attributes' => $inline];

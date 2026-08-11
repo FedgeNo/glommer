@@ -876,7 +876,8 @@ label.visually-hidden { margin-bottom: 0; }
 
 .PostBody a,
 .LoginPrompt a,
-.UserBio a {
+.UserBio a,
+.UserFieldValue a {
     color: var(--link);
     text-decoration: underline;
     text-decoration-color: color-mix(in srgb, var(--link) 35%, transparent);
@@ -885,7 +886,8 @@ label.visually-hidden { margin-bottom: 0; }
 
 .PostBody a:hover,
 .LoginPrompt a:hover,
-.UserBio a:hover {
+.UserBio a:hover,
+.UserFieldValue a:hover {
     color: var(--accent-strong);
     text-decoration-color: currentColor;
 }
@@ -936,6 +938,37 @@ label.visually-hidden { margin-bottom: 0; }
 .UserBio {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+}
+
+/* Name and value on one line each, the names aligned down a column so the
+   values start together and the list reads as a table of particulars. */
+.UserFields {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.5rem;
+    row-gap: 0.25rem;
+    margin: 0;
+    font-size: 0.9em;
+}
+
+.UserFields dt {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.UserFields dt::after {
+    content: ':';
+}
+
+.UserFields dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.UserFields dt,
+.UserFields dd {
+    align-self: baseline;
 }
 
 .CurrentUser .DisplayName,

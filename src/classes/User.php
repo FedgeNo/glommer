@@ -67,6 +67,8 @@ class User extends Div implements \JsonSerializable
     // typing, Service for a bot. Null on a row recorded before it was kept,
     // which is a different answer from "not a bot" and is read as such.
     public ?string $remoteActorType = null;
+    public ?string $remoteActorIconURL = null;
+    public ?string $remoteActorFields = null;
 
     /**
      * Who this user currently has a message thread open with, and when they
@@ -133,6 +135,14 @@ class User extends Div implements \JsonSerializable
             $main -> addContent($bio);
         }
 
+        // Under the bio: the bio is what somebody wrote about themselves and
+        // the fields are the particulars, which is the order they read in.
+        $fields = $this -> fieldsElement();
+
+        if ($fields !== null) {
+            $main -> addContent($fields);
+        }
+
         $this -> contents[] = $main;
 
         return parent::toDOM();
@@ -171,7 +181,13 @@ class User extends Div implements \JsonSerializable
         if ($this -> createdAt !== null) {
             $joined = new Div();
             $joined -> mixins = ['muted', 'text-sm'];
-            $joined -> contents[] = 'Joined ' . date('F j, Y', strtotime($this -> createdAt));
+            // {date} rather than concatenation: the date does not have to come
+            // last, and in several languages it does not.
+            $joined -> contents[] = str_replace(
+                '{date}',
+                DateFormat::long((int) strtotime($this -> createdAt)),
+                (string) (Strings::for(self::class)['joined'] ?? '')
+            );
             $info -> addContent($joined);
         }
 
@@ -195,6 +211,24 @@ class User extends Div implements \JsonSerializable
         }
 
         return new UserBio($this);
+    }
+
+    /**
+     * The account's own labelled fields, or null where it publishes none.
+     * Remote accounts only - a member here has no such thing to publish.
+     */
+    protected function fieldsElement(): ?HTMLObject
+    {
+        $fields = RemoteActorFields::decode($this -> remoteActorFields);
+
+        if ($fields === []) {
+            return null;
+        }
+
+        $list = new UserFields();
+        $list -> fields = $fields;
+
+        return $list;
     }
 
     /**
@@ -243,9 +277,23 @@ class User extends Div implements \JsonSerializable
         return $mtime !== false ? $path . '?v=' . $mtime : $path;
     }
 
+    /**
+     * Where this account's picture is served from, or null when it has none.
+     *
+     * A remote one is proxied rather than pointed at directly: an <img> aimed
+     * at the far server would hand it a log line - address, browser, the page
+     * being read - for every member who so much as scrolls past. See
+     * RemoteAvatar, which is the same reasoning RemoteMedia is built on.
+     */
     public function avatarURL(): ?string
     {
-        return $this -> hasAvatar ? ServerURL::absolute(self::avatarPath((int) $this -> userId)) : null;
+        if ($this -> hasAvatar) {
+            return ServerURL::absolute(self::avatarPath((int) $this -> userId));
+        }
+
+        return $this -> remoteActorIconURL === null
+            ? null
+            : ServerURL::absolute('/remote-avatar/' . (int) $this -> userId);
     }
 
     public static function fromRow(array $row): static

@@ -73,6 +73,19 @@ CREATE TABLE `Users` (
   -- trending query asks for what is NOT a bot rather than what is a person: an
   -- account nobody has fetched again yet must not vanish out of the corpus.
   `remoteActorType` varchar(20) DEFAULT NULL,
+  -- The avatar the actor document points at. Kept as the URL rather than the
+  -- picture: RemoteMedia's reasoning applies here too - copying it would make
+  -- this server the host of whatever another chose to publish, and hotlinking
+  -- would hand that server a log line for every member who scrolls past. It is
+  -- proxied, and this column is what makes that a lookup rather than an open
+  -- fetch of whatever a visitor asks for.
+  `remoteActorIconURL` varchar(500) DEFAULT NULL,
+  -- The account's own labelled fields - "Website", "Pronouns" - as the
+  -- PropertyValue attachments the actor document carries them in, kept as the
+  -- JSON array of {name, value} this reads back. A side table would be a join
+  -- on every profile render for data that is only ever read whole, and is
+  -- replaced whole every time the actor is re-read.
+  `remoteActorFields` text DEFAULT NULL,
   `actorPublicKeyPem` text DEFAULT NULL,
   `actorEncryptedPrivateKey` text DEFAULT NULL,
   `movedToURI` varchar(255) DEFAULT NULL,
@@ -1086,6 +1099,11 @@ ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_lastSeen` (`remoteAc
 -- TrendingEntities: rows now outlive the run that produced them, so what is
 -- trending is the newest computedAt rather than everything in the table, and
 -- the type page reads all of one kind ordered by how much has been said.
+-- Users: a remote account's profile is more than a name - the bio, the labelled
+-- fields it publishes, and the avatar it points at all arrive in the same actor
+-- document and were being dropped.
+ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorIconURL` varchar(500) DEFAULT NULL AFTER `remoteActorType`;
+ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorFields` text DEFAULT NULL AFTER `remoteActorIconURL`;
 ALTER TABLE `TrendingEntities` ADD COLUMN IF NOT EXISTS `popularity` int(10) unsigned NOT NULL DEFAULT 0 AFTER `userCount`;
 ALTER TABLE `TrendingEntities` ADD INDEX IF NOT EXISTS `type_popularity` (`type`, `popularity`);
 ALTER TABLE `TrendingEntities` ADD INDEX IF NOT EXISTS `computedAt_score` (`computedAt`, `score`);

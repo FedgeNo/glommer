@@ -23,6 +23,12 @@ class RemoteActor
     /** Far above any real RSA/Ed25519 PEM, and well inside the TEXT column that holds it. */
     private const MAX_PUBLIC_KEY_LENGTH = 8192;
 
+    /** Users.description is TEXT, and a bio is a paragraph or two either way. */
+    private const MAX_SUMMARY_LENGTH = 2000;
+
+    /** Matches Users.remoteActorIconURL. */
+    private const MAX_ICON_URL_LENGTH = 500;
+
     /**
      * The actor types that mean nobody is typing.
      *
@@ -110,9 +116,46 @@ class RemoteActor
             'publicKeyPem' => $data['publicKey']['publicKeyPem'],
             'preferredUsername' => mb_substr($preferred_username, 0, self::MAX_DISPLAY_NAME_LENGTH),
             'name' => mb_substr($name, 0, self::MAX_DISPLAY_NAME_LENGTH),
-            'iconURL' => $icon_url,
+            'iconURL' => self::iconURL($icon_url),
+            'summary' => self::summaryText($data['summary'] ?? null),
+            'fields' => RemoteActorFields::fromAttachments($data['attachment'] ?? null),
             'actorType' => is_string($data['type'] ?? null) ? mb_substr($data['type'], 0, 20) : null,
         ];
+    }
+
+    /**
+     * The account's bio as words.
+     *
+     * It arrives as HTML, and Users.description is plain text everywhere else -
+     * a bio typed here is plain text that the renderer linkifies. So this is
+     * read as the markup it is and reduced to the words and line breaks in it,
+     * which is what the same renderer then treats identically to a local one.
+     */
+    private static function summaryText(mixed $summary): ?string
+    {
+        if (!is_string($summary) || trim($summary) === '') {
+            return null;
+        }
+
+        $text = trim(Delta::plainText(HTMLToDelta::convert($summary)));
+
+        return $text === '' ? null : mb_substr($text, 0, self::MAX_SUMMARY_LENGTH);
+    }
+
+    /**
+     * The avatar's address, held to the same rule every other URL out of an
+     * actor document is: it is fetched later on a member's behalf, so it has to
+     * be an http(s) address and no longer than the column keeping it.
+     */
+    private static function iconURL(?string $url): ?string
+    {
+        if ($url === null || strlen($url) > self::MAX_ICON_URL_LENGTH) {
+            return null;
+        }
+
+        $scheme = strtolower((string) (parse_url($url, PHP_URL_SCHEME) ?? ''));
+
+        return $scheme === 'https' || $scheme === 'http' ? $url : null;
     }
 
     /**
@@ -308,12 +351,17 @@ SELECT `remoteActorURI`
 
         $actor_type = $actor['actorType'] ?? null;
 
+        // The profile is replaced wholesale rather than merged: what the actor
+        // document says now is what the account is now, and a bio or a field
+        // somebody removed there has to disappear here too.
+        $fields = RemoteActorFields::encode($actor['fields'] ?? []);
+
         if ($existing !== null) {
             DB::run('
 UPDATE `Users`
-    SET `title` = ?, `remoteActorPublicKeyPem` = ?, `remoteActorInboxURL` = ?, `remoteActorSharedInboxURL` = ?, `remoteActorType` = ?
+    SET `title` = ?, `description` = ?, `remoteActorPublicKeyPem` = ?, `remoteActorInboxURL` = ?, `remoteActorSharedInboxURL` = ?, `remoteActorType` = ?, `remoteActorIconURL` = ?, `remoteActorFields` = ?
     WHERE `userId` = ?
-', 'sssssi', $display_name, $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $actor_type, $existing -> userId);
+', 'ssssssssi', $display_name, $actor['summary'] ?? null, $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $actor_type, $actor['iconURL'] ?? null, $fields, $existing -> userId);
 
             return;
         }
@@ -326,9 +374,9 @@ UPDATE `Users`
         $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
 
         DB::run('
-INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `remoteActorURI`, `remoteActorPublicKeyPem`, `remoteActorInboxURL`, `remoteActorSharedInboxURL`, `remoteActorType`, `verified`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'sssssssssi', $slug, $synthetic_email, $unusable_hash, $display_name, $actor['id'], $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $actor_type, 1);
+INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `remoteActorURI`, `remoteActorPublicKeyPem`, `remoteActorInboxURL`, `remoteActorSharedInboxURL`, `remoteActorType`, `remoteActorIconURL`, `remoteActorFields`, `verified`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'ssssssssssssi', $slug, $synthetic_email, $unusable_hash, $display_name, $actor['summary'] ?? null, $actor['id'], $actor['publicKeyPem'], $actor['inbox'], $actor['sharedInbox'], $actor_type, $actor['iconURL'] ?? null, $fields, 1);
     }
 
     /**

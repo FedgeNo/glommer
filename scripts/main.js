@@ -6,7 +6,14 @@ import { CarouselController } from '/scripts/CarouselController.js';
 import { EmojiRenderer } from '/scripts/EmojiRenderer.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { sync_theme_color } from '/scripts/utils.js';
+import { Strings } from '/scripts/Strings.js';
 import '/scripts/dom.js';
+
+// Before anything renders, so a twin can read its words synchronously. A
+// renderer that had to await its own text would be async all the way up, and
+// the words are one cached module rather than something worth restructuring
+// the whole client around.
+await Strings.load();
 
 ReadyHandler.add(RelativeTime.init);
 ReadyHandler.add(ScrollToTop.init);

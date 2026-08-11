@@ -29,6 +29,10 @@ class ClientConfig
             'showSensitiveMedia' => SensitiveMedia::shownByDefault(),
             'currentUserCanModerate' => Auth::canModerate(),
             'siteURL' => ServerURL::absolute(''),
+            // Which language the page was rendered in, so the client twins can
+            // fetch the same words rather than a second copy of them travelling
+            // in here - the table is far too big for a cookie.
+            'locale' => Strings::locale(),
             'serverTime' => time() * 1000,
             'WSPort' => Config::get('WSPort'),
             'carouselEagerItems' => Carousel::INITIAL_EAGER_ITEMS,

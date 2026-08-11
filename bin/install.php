@@ -2751,22 +2751,50 @@ function ensure_translate_environment(): void
     }
 
     if (!is_file($argospm)) {
+        $pip = TRANSLATE_VENV_DIR . '/bin/pip';
+
+        // CPU torch first, and deliberately. argostranslate depends on stanza,
+        // stanza depends on torch, and torch's default wheel drags in the
+        // whole NVIDIA CUDA stack - measured at 5.1GB installed on a machine
+        // with no GPU, against 1.4GB this way. Installed before argostranslate
+        // so pip finds the requirement already met rather than fetching the
+        // other one and being unpicked afterwards.
+        echo "Installing PyTorch (CPU build)...\n";
+
+        $torch_result = run(':pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch 2>&1', ['pip' => $pip]);
+
+        if ($torch_result['exitCode'] !== 0) {
+            warn('Failed to install the CPU build of torch into ' . TRANSLATE_VENV_DIR . ' - install it by hand (' . $pip . ' install --index-url https://download.pytorch.org/whl/cpu torch), then re-run.', $torch_result);
+
+            return;
+        }
+
         echo "Installing Argos Translate (this can take a few minutes)...\n";
 
-        $pip_result = run(':pip install -U pip wheel argostranslate 2>&1', ['pip' => TRANSLATE_VENV_DIR . '/bin/pip']);
+        // --no-cache-dir because pip's cache is on the root filesystem and had
+        // grown to 1.7GB; nothing here is installed twice.
+        $pip_result = run(':pip install --no-cache-dir -U pip wheel argostranslate 2>&1', ['pip' => $pip]);
 
         if ($pip_result['exitCode'] !== 0) {
-            warn('Failed to install argostranslate into ' . TRANSLATE_VENV_DIR . ' - install it by hand (' . TRANSLATE_VENV_DIR . '/bin/pip install argostranslate), then re-run.', $pip_result);
+            warn('Failed to install argostranslate into ' . TRANSLATE_VENV_DIR . ' - install it by hand (' . $pip . ' install argostranslate), then re-run.', $pip_result);
 
             return;
         }
     }
 
+    // Every argospm call is told where the packages go, because it otherwise
+    // uses the invoking user's home - and the installer runs as root while the
+    // thing that has to read them is the web server. In the literal command
+    // rather than a placeholder: run() shell-quotes what it substitutes, and a
+    // quoted "VAR=x cmd" is one filename rather than a command with a setting
+    // in front of it.
+    $argos_env = 'ARGOS_PACKAGES_DIR=' . escapeshellarg(Translator::PACKAGES_DIR) . ' HOME=/tmp ';
+
     // The index of what is downloadable, refreshed before anything is asked
     // for by name - a stale one reports a package missing that exists.
-    run(':argospm update 2>&1', ['argospm' => $argospm]);
+    run($argos_env . ':argospm update 2>&1', ['argospm' => $argospm]);
 
-    $installed = run(':argospm list 2>/dev/null', ['argospm' => $argospm])['output'];
+    $installed = run($argos_env . ':argospm list 2>/dev/null', ['argospm' => $argospm])['output'];
     $missing = [];
 
     foreach (Translator::wantedPackages() as $package) {
@@ -2783,10 +2811,10 @@ function ensure_translate_environment(): void
         // package for should cost that language, not the whole button.
         foreach ($missing as $package) {
             echo 'Downloading ' . $package . "...\n";
-            $result = run(':argospm install :package 2>&1', ['argospm' => $argospm, 'package' => $package]);
+            $result = run($argos_env . ':argospm install :package 2>&1', ['argospm' => $argospm, 'package' => $package]);
 
             if ($result['exitCode'] !== 0) {
-                warn('Could not install ' . $package . ' - that pairing will not be offered. Install it by hand (' . $argospm . ' install ' . $package . ') if it should be.', $result);
+                warn('Could not install ' . $package . ' - that pairing will not be offered. Install it by hand (' . $argos_env . $argospm . ' install ' . $package . ') if it should be.', $result);
             }
         }
 
@@ -2795,6 +2823,24 @@ function ensure_translate_environment(): void
 
     run('find :dir -type d -exec chmod 755 {} \; -o -type f -exec chmod 644 {} \;', ['dir' => TRANSLATE_VENV_DIR]);
     run('find :dir -type f \( -path "*/bin/*" -o -name "*.so" -o -name "*.so.*" \) -exec chmod 755 {} \;', ['dir' => TRANSLATE_VENV_DIR]);
+
+    // The one place under here the web server must be able to write, which is
+    // why it is chowned after the read-only sweep above rather than exempted
+    // from it. A model writes a temporary directory inside its own package
+    // while loading, so a strictly read-only package directory fails at the
+    // first translation with a permission error and nothing else wrong.
+    $web_account = web_server_account();
+
+    if ($web_account !== null) {
+        run('chown -R :owner :dir', [
+            'owner' => $web_account['user'] . ':' . ($web_account['group'] ?? $web_account['user']),
+            'dir' => Translator::PACKAGES_DIR,
+        ]);
+
+        ok('Translation packages writable by ' . $web_account['user'] . ' (a model writes a scratch directory beside itself as it loads)');
+    } else {
+        warn('Could not tell which account the web server runs as - make ' . Translator::PACKAGES_DIR . ' writable by it, or the first translation fails with a permission error.');
+    }
 
     ensure_selinux_context(TRANSLATE_VENV_DIR, 'httpd_sys_content_t');
 

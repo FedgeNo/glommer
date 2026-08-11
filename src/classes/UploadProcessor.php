@@ -538,7 +538,11 @@ class UploadProcessor
      */
     private static function guardedCommand(string $ffmpeg_command): string
     {
-        $preamble = 'ulimit -v ' . self::FF_MAX_ADDRESS_SPACE_KB . ' -t ' . self::FF_CPU_TIMELIMIT . '; exec ' . $ffmpeg_command;
+        // Niced, so a transcode gets the cores nothing else wants. Several run
+        // at once (uploadWorkerConcurrency) and each is happy to saturate one
+        // for minutes; unniced, a burst of uploads is indistinguishable from
+        // the site going down for everybody reading it.
+        $preamble = 'ulimit -v ' . self::FF_MAX_ADDRESS_SPACE_KB . ' -t ' . self::FF_CPU_TIMELIMIT . '; exec nice -n 10 ' . $ffmpeg_command;
 
         return sprintf('timeout -k 10 %d bash -c %s', self::FF_WALL_TIMEOUT, escapeshellarg($preamble));
     }

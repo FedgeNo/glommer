@@ -39,6 +39,19 @@ if (Place::count() > 0) {
     $version_card -> addContent($credit);
 }
 
+// The MIT licence asks for a notice in copies of the software, and nothing is
+// being copied here - this is thanks rather than compliance. Translating on
+// this machine instead of somebody's API is the reason a post never leaves the
+// server to be read in another language, which seems worth saying out loud.
+if (Translator::isAvailable()) {
+    $translation = new Paragraph('Translation by ');
+    $translation -> class = 'muted text-sm';
+    $translation -> addContent(new Anchor('https://www.argosopentech.com/', 'Argos Translate'));
+    $translation -> addContent(', which runs here rather than anywhere else.');
+
+    $version_card -> addContent($translation);
+}
+
 $page -> addContent($version_card);
 
 $page -> send();

@@ -41,18 +41,50 @@ class Translator
     private const MAX_OUTPUT_BYTES = 262144;
 
     /**
-     * The languages worth holding packages for: what this server has actually
-     * seen people writing in, which is the only honest basis for spending a
-     * hundred megabytes a direction. Adding one is adding it here and
-     * re-running the installer.
+     * The languages worth holding packages for: the ones this server has
+     * actually seen people writing in (Posts.detectedLanguage), which is the
+     * only honest basis for spending 158MB a direction. Adding one is adding
+     * it here and re-running the installer; every language Argos publishes is
+     * available, this list is a budget rather than a limit.
      *
      * English is the pivot rather than a preference - Argos routes any pair
      * through it, so the set costs two packages a language instead of one per
      * pairing.
      */
-    public const LANGUAGES = ['es', 'fr', 'de', 'pt', 'it', 'nl', 'pl', 'ru', 'ja', 'zh'];
+    public const LANGUAGES = ['de', 'es', 'fi', 'fr', 'it', 'ja', 'lv', 'pl', 'pt'];
 
     public const PIVOT = 'en';
+
+    /**
+     * Where the packages live, and how the command is told to behave.
+     *
+     * Not in a home directory: argos-translate defaults to the invoking user's,
+     * so packages installed by the installer as root would be invisible to the
+     * web server that has to read them.
+     *
+     * MiniSBD rather than the packaged Stanza model for splitting sentences.
+     * Same translation, measured - and 7.3 seconds against 4.8, because Stanza
+     * loads a second neural model just to find where the sentences end.
+     *
+     * One thread, so a translation can never take more than one of the four
+     * cores, and niced so it yields to anything serving a page. It is CPU-bound
+     * for its whole run and most of that is loading the model, not translating.
+     *
+     * @return array<string, string>
+     */
+    private static function environment(): array
+    {
+        return [
+            'ARGOS_PACKAGES_DIR' => self::PACKAGES_DIR,
+            'ARGOS_CHUNK_TYPE' => 'MINISBD',
+            'OMP_NUM_THREADS' => '1',
+            // The web server's home need not exist or be writable, and a
+            // Python that cannot resolve one fails before it starts.
+            'HOME' => sys_get_temp_dir(),
+        ];
+    }
+
+    public const PACKAGES_DIR = '/opt/glommer-translate/packages';
 
     public static function isAvailable(): bool
     {
@@ -113,8 +145,15 @@ class Translator
         // Same shape as UploadProcessor::guardedCommand(): ulimit for what
         // timeout cannot cap, exec so timeout supervises the command itself
         // rather than a shell that outlives it.
+        $settings = '';
+
+        foreach (self::environment() as $name => $value) {
+            $settings .= $name . '=' . escapeshellarg($value) . ' ';
+        }
+
         $inner = sprintf(
-            '%s --from-lang %s --to-lang %s',
+            '%snice -n 10 %s --from-lang %s --to-lang %s',
+            $settings,
             escapeshellarg(self::COMMAND),
             escapeshellarg($source),
             escapeshellarg($target)

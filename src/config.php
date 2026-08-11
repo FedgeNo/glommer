@@ -34,9 +34,13 @@ return [
     // How many media transcodes the upload-worker service (bin/upload-worker.php)
     // runs at once. It drains the async upload queue at this bounded rate so a
     // burst of uploads can't spawn unlimited concurrent ffmpeg processes and
-    // exhaust the host. 2 is safe on almost any hardware; raise it on a box with
-    // spare cores.
-    'uploadWorkerConcurrency' => max(1, (int) Env::get('UPLOAD_WORKER_CONCURRENCY', '2')),
+    // exhaust the host.
+    //
+    // Four, because a transcode is niced: it gets the cores nothing else wants
+    // and steps aside for anything serving a page, so the ceiling can be the
+    // number of cores rather than a fraction of them held back in case the box
+    // is busy. Lower it on a machine with fewer.
+    'uploadWorkerConcurrency' => max(1, (int) Env::get('UPLOAD_WORKER_CONCURRENCY', '4')),
     // The WebSocket daemon (bin/websocket-server.php) is a separate long-running
     // process from Apache/PHP-FPM - these let both sides agree on where it
     // lives and share a secret for signing/verifying connection tokens and

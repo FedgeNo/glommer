@@ -20,9 +20,9 @@ export class Strings {
         const locale = ClientConfig.get('locale') || 'en';
 
         try {
-            const module = await import('/locales/' + locale + '.js');
+            const response = await fetch('/locales/' + locale + '.json');
 
-            Strings.useLocale(module.STRINGS, locale);
+            Strings.useLocale(await response.json(), locale);
         } catch {
             // No words is not a reason to render nothing: a twin asking for a
             // string it has not got falls back the same way a missing key

@@ -50,7 +50,7 @@
     #
     # A browser that does not know stale-while-revalidate revalidates once the
     # five minutes are up, which is the same bargain with a shorter reach.
-    <FilesMatch "\.(js|css)$">
+    <FilesMatch "\.(js|css|json)$">
         Header set Cache-Control "max-age=300, stale-while-revalidate=604800"
     </FilesMatch>
 

@@ -63,16 +63,16 @@ class LocaleIntegrityTest extends TestCase
      */
     private static function categoriesUsedBy(string $locale): array
     {
-        $rule = self::table($locale)[Strings::PLURAL_RULE] ?? null;
+        $rule = self::table($locale)[Strings::PLURAL_RULE] ?? [];
 
-        if (!is_callable($rule)) {
+        if (!is_array($rule) || $rule === []) {
             return ['one', 'other'];
         }
 
         $found = [];
 
         foreach ([...range(0, 130), 200, 201, 1000, 1002, 1005, 1011, 1024] as $count) {
-            $found[(string) $rule($count)] = true;
+            $found[PluralRule::categoryFor($rule, $count)] = true;
         }
 
         return array_keys($found);

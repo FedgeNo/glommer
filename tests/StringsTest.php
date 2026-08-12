@@ -131,16 +131,13 @@ class StringsTest extends TestCase
         $locale -> setAccessible(true);
 
         $tables -> setValue(null, ['pl' => [
-            Strings::PLURAL_RULE => static function (int $count): string {
-                if ($count === 1) {
-                    return 'one';
-                }
-
-                $last_two = $count % 100;
-                $last = $count % 10;
-
-                return $last >= 2 && $last <= 4 && ($last_two < 12 || $last_two > 14) ? 'few' : 'many';
-            },
+            // As a locale file carries it: cases tried in order, each naming a
+            // category and what a count has to satisfy to take it.
+            Strings::PLURAL_RULE => [
+                ['category' => 'one', 'is' => [1]],
+                ['category' => 'few', 'mod10' => [2, 3, 4], 'notMod100' => [12, 13, 14]],
+                ['category' => 'many'],
+            ],
             'PollOptionVotes' => ['votes' => [
                 'one' => '1 głos',
                 'few' => '{count} głosy',

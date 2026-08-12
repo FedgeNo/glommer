@@ -147,7 +147,9 @@ class HTMLToDelta
                 // account has a page here now, so it leads there instead - the
                 // same place the bare form leads, rather than the two forms of
                 // the same mention going to two different places.
-                $mention = $this -> mentions[strtolower(ltrim($text, '@'))] ?? null;
+                $mention = str_starts_with($text, '@')
+                    ? ($this -> mentions[strtolower(substr($text, 1))] ?? null)
+                    : null;
 
                 if ($mention !== null && !$hashtag) {
                     $href = $mention;
@@ -249,7 +251,13 @@ class HTMLToDelta
         }
 
         foreach (self::splitOnMentions($text) as $piece) {
-            $address = $this -> mentions[strtolower(ltrim($piece, '@'))] ?? null;
+            // Only ever a piece that says @. A hashtag arrives as a link this
+            // strips, so its words reach here on their own - and "startrek"
+            // out of #startrek is not a person, however many people are called
+            // that.
+            $address = str_starts_with($piece, '@')
+                ? ($this -> mentions[strtolower(substr($piece, 1))] ?? null)
+                : null;
 
             // The words stay exactly as they were written - a post saying
             // "@alice" goes on saying it, and only the link underneath knows

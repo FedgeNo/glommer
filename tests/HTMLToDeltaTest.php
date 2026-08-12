@@ -240,6 +240,33 @@ class HTMLToDeltaTest extends TestCase
         );
     }
 
+    /**
+     * A hashtag is never a person, however many people share the name.
+     *
+     * It arrives linked at the writer's own tag page, which this strips so the
+     * words become a tag link here - and a server writing the # and the word as
+     * separate nodes hands the word over on its own. Only a piece that says @
+     * addresses anybody.
+     */
+    public function testAHashtagSharingAUsernameIsStillAHashtag(): void
+    {
+        $mentions = ['startrek' => 'https://glommer.test/users/startrek%40fedigroups.social/'];
+
+        $ops = HTMLToDelta::convert(
+            '<p>about <a href="https://host/tags/startrek">#<span>startrek</span></a> today</p>',
+            $mentions
+        );
+
+        $this -> assertSame('about #startrek today' . self::NEWLINE, $this -> text($ops));
+
+        foreach ($ops as $op) {
+            $this -> assertFalse(
+                isset($op['attributes']['link']),
+                'the tag was linked at a person: ' . json_encode($op)
+            );
+        }
+    }
+
     /** An ordinary link is still the writer's own, mentions or not. */
     public function testAnOrdinaryLinkIsUntouched(): void
     {

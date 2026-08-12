@@ -1,0 +1,1080 @@
+{
+    "@plural": [
+        {
+            "category": "one",
+            "is": [
+                1
+            ]
+        },
+        {
+            "category": "other"
+        }
+    ],
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 voto",
+            "other": "{count} votos"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Inicia sesión",
+            "after": " para responder."
+        },
+        "post": {
+            "before": "",
+            "link": "Inicia sesión",
+            "after": " para publicar."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Sitio",
+        "siteURLLabel": "URL del sitio",
+        "siteTitleLabel": "Título del sitio",
+        "mailFromAddressLabel": "Dirección de correo del remitente",
+        "serverNameConfirmedLabel": "He configurado \"ServerName {host}\" y \"UseCanonicalName On\" en la configuración de mi servidor web (solo se comprueba si la prueba automática en vivo no puede completarse; consulta la sección HTTPS de README.md)",
+        "databaseLegend": "Base de datos",
+        "databaseHostLabel": "Servidor de la base de datos",
+        "databasePortLabel": "Puerto de la base de datos",
+        "databaseNameLabel": "Nombre de la base de datos",
+        "databaseAdminUsernameLabel": "Nombre de usuario del administrador de la base de datos",
+        "databaseAdminPasswordLabel": "Contraseña del administrador de la base de datos",
+        "webSocketTLSLegend": "TLS de WebSocket (opcional)",
+        "certificatePathLabel": "Ruta del certificado",
+        "certificatePathPlaceholder": "Déjalo en blanco para generarlo automáticamente con mkcert",
+        "keyPathLabel": "Ruta de la clave",
+        "keyPathPlaceholder": "Déjalo en blanco para generarla automáticamente con mkcert",
+        "botProtectionLegend": "Protección contra bots (opcional)",
+        "turnstileSiteKeyLabel": "Clave de sitio de Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Déjalo en blanco para omitirlo",
+        "turnstileSecretKeyLabel": "Clave secreta de Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Déjalo en blanco para omitirlo",
+        "submit": "Configurar"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Frase de contraseña actual",
+        "newPassphraseLabel": "Nueva frase de contraseña",
+        "confirmNewPassphraseLabel": "Confirma la nueva frase de contraseña",
+        "accountPasswordLabel": "Contraseña de la cuenta",
+        "submit": "Cambiar frase de contraseña"
+    },
+    "PasswordResetForm": {
+        "legend": "Elige una nueva contraseña",
+        "newPasswordLabel": "Nueva contraseña",
+        "newPasswordPlaceholder": "Al menos 8 caracteres",
+        "confirmPasswordLabel": "Confirma la nueva contraseña",
+        "submit": "Restablecer contraseña"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Restablece tu contraseña",
+        "emailLabel": "Correo electrónico",
+        "submit": "Enviar enlace de restablecimiento"
+    },
+    "EmailRevertForm": {
+        "submit": "Revertir cambio de correo electrónico"
+    },
+    "EmailVerifyForm": {
+        "submit": "Verificar dirección de correo electrónico"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Volver a activarlos"
+    },
+    "EmailDigestSetting": {
+        "label": "Enviarme por correo lo que me perdí después de un tiempo sin conectarme"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Dispositivo desconocido",
+        "browserOnOS": "{browser} en {os}",
+        "thisDevice": " (este dispositivo)",
+        "lastUsed": {
+            "before": "Usado por última vez ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Cierra todas las sesiones activas y olvida todos los dispositivos recordados. Se cerrará tu sesión en todos los navegadores, incluido este."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Cerrar sesión en todas partes"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Verificar con Google para eliminar"
+    },
+    "GoogleSignInButton": {
+        "label": "Continuar con Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Editar perfil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Recibe notificaciones en este dispositivo aunque el sitio no esté abierto. Esta opción se aplica por navegador: actívala en cada uno donde quieras recibir avisos.",
+        "label": {
+            "off": "Activar en este dispositivo",
+            "on": "Desactivar en este dispositivo"
+        },
+        "unsupported": "Este navegador no admite las notificaciones push"
+    },
+    "LoginForm": {
+        "legend": "Iniciar sesión",
+        "identifier": "Nombre de usuario o correo electrónico",
+        "password": "Contraseña",
+        "rememberMe": "Recuérdame",
+        "submit": "Iniciar sesión"
+    },
+    "SignupForm": {
+        "legend": "Crear una cuenta",
+        "usernameLabel": "Nombre de usuario",
+        "usernamePlaceholder": "Letras minúsculas, números y _",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "Una dirección de correo electrónico válida",
+        "displayName": "Nombre para mostrar (opcional)",
+        "bioLabel": "Biografía (opcional)",
+        "bioPlaceholder": "Una biografía breve: los #hashtags, @menciones y enlaces se vuelven clicables",
+        "passwordLabel": "Contraseña",
+        "passwordPlaceholder": "Contraseña: al menos 8 caracteres",
+        "rememberMe": "Recuérdame",
+        "submit": "Registrarse"
+    },
+    "PasswordChangeForm": {
+        "legend": "Cambia tu contraseña",
+        "currentPassword": "Contraseña actual",
+        "newPasswordLabel": "Nueva contraseña",
+        "newPasswordPlaceholder": "Al menos 8 caracteres",
+        "confirmPassword": "Confirma la nueva contraseña",
+        "submit": "Cambiar contraseña"
+    },
+    "EmailChangeForm": {
+        "legend": "Cambia tu dirección de correo electrónico",
+        "newEmail": "Nueva dirección de correo electrónico",
+        "currentPassword": "Contraseña actual",
+        "notice": "Tendrás que verificar la nueva dirección antes de poder seguir usando el sitio.",
+        "submit": "Cambiar correo electrónico"
+    },
+    "AccountDeleteForm": {
+        "legend": "Elimina tu cuenta",
+        "warning": "Esto elimina de forma permanente tu cuenta, tus publicaciones y tus mensajes. No se puede deshacer.",
+        "currentPassword": "Contraseña actual",
+        "submit": "Eliminar cuenta"
+    },
+    "AccountMigrationForm": {
+        "legend": "Mudarse a otro servidor",
+        "movedNotice": "Esta cuenta se ha mudado a {destination}. Se pidió a tus seguidores que te siguieran allí.",
+        "explanation": "Se pide a tus seguidores que te sigan en la cuenta nueva. Tus publicaciones se quedan aquí: las direcciones de los objetos pertenecen al servidor que las creó, así que no se pueden llevar consigo.",
+        "addressNotice": "La cuenta a la que te mudas debe tener esta cuenta listada antes en \"también conocido como\". Tu dirección aquí es {address}.",
+        "movedToLabel": "Mudarse a",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "También conocido como",
+        "aliasesExplanation": "Cuentas en otros lugares que también eres tú. Añadir una aquí permite que esa cuenta se mude a esta: es el permiso, no la mudanza en sí. Una dirección por línea.",
+        "aliasesLabel": "Tus otras cuentas",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Guardar"
+    },
+    "TwoFactorForm": {
+        "legend": "Introduce tu código de verificación",
+        "explanation": "Te hemos enviado un código de verificación por correo. Introdúcelo abajo para terminar de iniciar sesión.",
+        "code": "Código de verificación",
+        "submit": "Verificar"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "La autenticación en dos pasos está activada",
+            "off": "La autenticación en dos pasos está desactivada"
+        },
+        "explanation": {
+            "on": "Cuando inicies sesión, te enviaremos por correo un código de verificación que deberás introducir para terminar de entrar.",
+            "off": "Añade un segundo paso al iniciar sesión: te enviaremos por correo un código de verificación que deberás introducir, de modo que tu contraseña por sí sola no baste para entrar."
+        },
+        "currentPassword": "Contraseña actual",
+        "submit": {
+            "on": "Desactivar la autenticación en dos pasos",
+            "off": "Activar la autenticación en dos pasos"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Revisa tu bandeja de entrada y haz clic en el enlace de verificación que te hemos enviado para confirmar tu dirección de correo electrónico. Si no lo ves, revisa tu carpeta de correo no deseado o spam."
+    },
+    "VerificationResendButton": {
+        "label": "Reenviar correo de verificación"
+    },
+    "MailSettingsForm": {
+        "legend": "Correo saliente",
+        "fromAddressLabel": "Dirección del remitente",
+        "fromAddressPlaceholder": "No se puede enviar ningún correo hasta que se configure esto",
+        "fromNameLabel": "Nombre del remitente",
+        "hostLabel": "Servidor SMTP",
+        "portLabel": "Puerto SMTP",
+        "usernameLabel": "Usuario SMTP",
+        "passwordLabel": "Contraseña SMTP",
+        "passwordPlaceholder": {
+            "set": "La contraseña está establecida; déjala en blanco para conservarla",
+            "unset": "Contraseña SMTP"
+        },
+        "encryptionLabel": "Cifrado",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, habitual en el puerto 587)",
+            "ssl": "SSL (TLS implícito, habitual en el puerto 465)",
+            "none": "Ninguno"
+        },
+        "explainer": "Deja el servidor SMTP en blanco para enviar mediante mail() de PHP en su lugar (no recomendado; consulta la sección de entregabilidad del README). No se puede enviar ningún correo hasta que se configure una dirección de remitente.",
+        "save": "Guardar"
+    },
+    "MapSettingsForm": {
+        "legend": "Teselas del mapa",
+        "notice": "Déjalo en blanco para usar OpenStreetMap. Para usar un proveedor con clave, pega su plantilla de URL con un {apiKey} literal donde debe ir la clave, más la clave y la atribución más abajo.",
+        "urlLabel": "Plantilla de URL de teselas",
+        "keyLabel": "Clave de API",
+        "keyPlaceholder": "La clave de API de tu proveedor de teselas",
+        "attributionLabel": "Atribución",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Guardar"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Inicio de sesión con Google",
+        "clientIdLabel": "ID de cliente",
+        "clientIdPlaceholder": "ID de cliente de OAuth de Google",
+        "secretLabel": "Secreto de cliente",
+        "secretPlaceholder": {
+            "set": "El secreto de cliente está establecido; déjalo en blanco para conservarlo",
+            "unset": "Secreto de cliente de OAuth de Google"
+        },
+        "explainer": "Ambos son necesarios para que aparezca \"Continuar con Google\" al registrarse e iniciar sesión. En tu cliente de OAuth de Google Cloud, configura el URI de redirección autorizado como {url}; borra el ID de cliente para desactivarlo.",
+        "save": "Guardar"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Clave de sitio",
+        "turnstileSiteKeyPlaceholder": "Clave de sitio de Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Clave secreta",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "La clave secreta está establecida; déjala en blanco para conservarla",
+            "unset": "Clave secreta de Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Ambas claves son necesarias para que aparezca el CAPTCHA al registrarse e iniciar sesión. Borra la clave de sitio para desactivarlo.",
+        "recaptchaLegend": "Google reCAPTCHA (recuperación de bloqueo de cuenta)",
+        "recaptchaSiteKeyLabel": "Clave de sitio",
+        "recaptchaSiteKeyPlaceholder": "Clave de sitio de Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Clave secreta",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "La clave secreta está establecida; déjala en blanco para conservarla",
+            "unset": "Clave secreta de Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Ambas claves son necesarias. Cuando están configuradas, una cuenta que alcanza su límite de intentos de inicio de sesión puede volver a entrar superando esta prueba en lugar de esperar el bloqueo; si no están configuradas, el bloqueo es una espera obligatoria. Usa reCAPTCHA v2 (\"No soy un robot\"). Borra la clave de sitio para desactivarlo.",
+        "save": "Guardar"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Lo usan las funciones de IA del sitio (resúmenes de temas de tendencia, etc.). Deja el modelo en blanco para usar el Free Models Router, que OpenRouter elige al azar entre lo que esté disponible gratis en cada momento y que nunca puede generar coste.",
+        "keyLabel": "Clave de API",
+        "keyPlaceholder": {
+            "set": "La clave de API está establecida; déjala en blanco para conservarla",
+            "unset": "Clave de API de OpenRouter"
+        },
+        "clearKeyLabel": "Eliminar la clave de API guardada (desactiva las funciones de IA)",
+        "modelLabel": "Modelo",
+        "neverSpendLabel": "No permitir nunca que esto gaste dinero (recomendado)",
+        "explainer": "Con esta protección activada, cada solicitud limita su precio a cero, así que falla directamente en lugar de recurrir a un modelo de pago cuando no hay ningún proveedor gratuito disponible. Elimina la clave de API guardada para desactivar las funciones de IA por completo.",
+        "save": "Guardar"
+    },
+    "AboutSettingsForm": {
+        "legend": "Acerca de",
+        "description": "Texto sin formato: las líneas en blanco separan los párrafos. El primer párrafo se usará como descripción del sitio.",
+        "save": "Guardar"
+    },
+    "TermsSettingsForm": {
+        "legend": "Términos del servicio",
+        "description": "Texto sin formato: las líneas en blanco separan los párrafos.",
+        "save": "Guardar"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Política de privacidad",
+        "description": "Texto sin formato: las líneas en blanco separan los párrafos.",
+        "save": "Guardar"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Resumen por correo",
+        "fieldLabel": "Párrafo de cierre",
+        "notice": "Se añade cerca del final de cada resumen, después de la lista de lo que el miembro se perdió. Texto sin formato. Déjalo en blanco para volver al texto que trae este software de fábrica.",
+        "save": "Guardar"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Favicon actual",
+        "save": "Subir favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Imagen de portada",
+        "explainer": "Otros sitios la muestran cuando alguien comparte un enlace a este: son solo metadatos Open Graph, nunca aparece en la página. Se recorta a 1200×630. Sin ella, las vistas previas de enlace no llevan ninguna imagen.",
+        "currentAlt": "Imagen de portada actual",
+        "save": "Subir imagen"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Reproducción automática"
+    },
+    "CarouselNextButton": {
+        "name": "Siguiente"
+    },
+    "CarouselPrevButton": {
+        "name": "Anterior"
+    },
+    "MediaFullscreenButton": {
+        "name": "Pantalla completa"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Quitar archivos"
+    },
+    "NotificationDropdown": {
+        "showAll": "Ver todas"
+    },
+    "HelpSearch": {
+        "placeholder": "Buscar en la ayuda…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Entendido"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Descartar"
+    },
+    "StagedPostEditButton": {
+        "name": "Editar"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publicar ahora"
+    },
+    "LogoutButton": {
+        "name": "Cerrar sesión"
+    },
+    "AvatarUploadForm": {
+        "submit": "Actualizar avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Buscar usuarios baneados…"
+    },
+    "BannedUserSection": {
+        "heading": "Usuarios baneados"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Solicitudes enviadas (esperando respuesta)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Baneado por {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Bloqueado por {name} ",
+            "after": ""
+        },
+        "deletedAccount": "una cuenta eliminada",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "enero",
+            "2": "febrero",
+            "3": "marzo",
+            "4": "abril",
+            "5": "mayo",
+            "6": "junio",
+            "7": "julio",
+            "8": "agosto",
+            "9": "septiembre",
+            "10": "octubre",
+            "11": "noviembre",
+            "12": "diciembre"
+        },
+        "shortMonths": {
+            "1": "ene",
+            "2": "feb",
+            "3": "mar",
+            "4": "abr",
+            "5": "may",
+            "6": "jun",
+            "7": "jul",
+            "8": "ago",
+            "9": "sept",
+            "10": "oct",
+            "11": "nov",
+            "12": "dic"
+        },
+        "long": "{day} de {month} de {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "No se pudo conectar con el servidor WebSocket en 127.0.0.1:{port}{tls} ({error}). Inícialo primero: systemctl --user start glommer-websocket (consulta README.md para ver el archivo de unidad). Si acaba de ganar o perder WS_TLS_CERT/WS_TLS_KEY, reinícialo para que coincida con .env.",
+        "wsOverTLS": " por TLS",
+        "wsBadHandshake": "El servicio en 127.0.0.1:{port} no completó un protocolo de enlace WebSocket válido: puede que algo distinto de bin/websocket-server.php esté escuchando en ese puerto.",
+        "wsNoPong": "El servidor WebSocket aceptó el protocolo de enlace pero no respondió a un ping: puede estar bloqueado o funcionando mal. Consulta sus registros.",
+        "wsReachable": "Servidor WebSocket accesible y respondiendo en 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Etiqueta",
+            "person": "Persona",
+            "org": "Organización",
+            "gpe": "Lugar",
+            "loc": "Región",
+            "fac": "Punto de referencia",
+            "product": "Producto",
+            "event": "Evento",
+            "work_of_art": "Obra",
+            "law": "Ley",
+            "language": "Idioma",
+            "norp": "Grupo"
+        },
+        "plural": {
+            "hashtag": "Etiquetas",
+            "person": "Personas",
+            "org": "Organizaciones",
+            "gpe": "Lugares",
+            "loc": "Regiones",
+            "fac": "Puntos de referencia",
+            "product": "Productos",
+            "event": "Eventos",
+            "work_of_art": "Obras",
+            "law": "Leyes",
+            "language": "Idiomas",
+            "norp": "Grupos"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Eliminar de amigos"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Aceptar"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Rechazar"
+    },
+    "UserFollowButton": {
+        "follow": "Seguir",
+        "unfollow": "Dejar de seguir"
+    },
+    "UserBlockButton": {
+        "name": "Bloquear"
+    },
+    "UserUnblockButton": {
+        "name": "Desbloquear"
+    },
+    "OtherUser": {
+        "message": "Enviar mensaje"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menú",
+        "loggedInAs": "Sesión iniciada como {name}",
+        "friendsFeed": "Feed de amigos",
+        "relayFeed": "Feed de relé",
+        "users": "Usuarios",
+        "tags": "Etiquetas",
+        "topics": "Tendencias",
+        "map": "Mapa",
+        "locations": "Ubicaciones",
+        "search": "Buscar",
+        "messages": "Mensajes",
+        "bookmarks": "Guardados",
+        "help": "Ayuda",
+        "about": "Acerca de",
+        "login": "Iniciar sesión",
+        "signup": "Registrarse",
+        "friends": "Amigos",
+        "drafts": "Borradores y programadas",
+        "userSettings": "Ajustes de usuario",
+        "modSettings": "Ajustes de moderación",
+        "adminSettings": "Ajustes de administración"
+    },
+    "LogoutForm": {
+        "submit": "Cerrar sesión"
+    },
+    "User": {
+        "joined": "Se unió el {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Añadir amigo",
+        "cancel": "Cancelar solicitud"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Programada para {when}",
+        "draft": "Borrador - se publica solo cuando tú lo digas"
+    },
+    "MessageTranslateButton": {
+        "name": "Traducir este mensaje"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Sobre la traducción de mensajes",
+        "body": "Para traducir un mensaje, su texto se envía a este servidor y se traduce aquí. No se guarda nada: la traducción no se escribe en la base de datos y el mensaje original no cambia. Pero un mensaje traducido de esta manera ha sido leído por el servidor, así que no queda cifrado de extremo a extremo como un mensaje sin traducir. Solo se pueden traducir los mensajes que recibes, y solo cuando tú lo pides.",
+        "confirm": "Traducirlo",
+        "cancel": "Ahora no"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "¿Olvidaste tu frase de contraseña? Al restablecerla se crean claves nuevas bajo una frase nueva, pero los mensajes cifrados con las claves antiguas no los podrá volver a leer nadie, nunca más.",
+        "requirements": "Al menos 12 caracteres, y que no sea tu contraseña de la cuenta: esa se envía a este servidor, y tu frase de contraseña no debe hacerlo nunca.",
+        "passphraseLabel": "Frase de contraseña",
+        "resetPassphraseLabel": "Nueva frase de contraseña",
+        "confirmLabel": "Confirma la frase de contraseña",
+        "accountPasswordLabel": "Contraseña de la cuenta",
+        "submitLabel": "Activar los mensajes cifrados",
+        "resetSubmitLabel": "Restablecer claves de cifrado"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Los mensajes cifrados de extremo a extremo se bloquean y desbloquean en tu navegador: este servidor los retransmite y almacena sin poder leerlos. Tu clave está protegida por una frase de contraseña, y esa misma frase desbloquea tus mensajes desde cualquier navegador. Las conversaciones se cifran en cuanto ambas personas lo han activado; los mensajes a personas de otros servidores permanecen sin cifrar, porque la federación no tiene otra forma de transportarlos.",
+        "noRecovery": "No hay forma de recuperar una frase de contraseña perdida, ni siquiera para el administrador. Perderla significa perder tus mensajes cifrados.",
+        "enabledStatus": "Los mensajes cifrados están activados."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "🔒 Cifrado",
+            "explanation": "Los mensajes de esta conversación están cifrados de extremo a extremo: se desbloquean con tu frase de contraseña y se leen en el navegador de cada persona, y lo que este servidor almacena es texto cifrado. Comprueba el código de seguridad al final del hilo con la otra persona para asegurarte de que no hay nadie interponiéndose entre los dos. Los mensajes enviados antes de activar el cifrado siguen siendo legibles como antes."
+        },
+        "awaiting-theirs": {
+            "label": "🔓 No cifrado",
+            "explanation": "Los mensajes aquí se cifrarán de extremo a extremo en cuanto {handle} active los mensajes cifrados en sus ajustes."
+        },
+        "awaiting-yours": {
+            "label": "🔓 No cifrado",
+            "explanation": "Los mensajes aquí no están cifrados de extremo a extremo. Activa los mensajes cifrados en Ajustes para proteger esta conversación."
+        },
+        "federated": {
+            "label": "🔓 No cifrado",
+            "explanation": "{handle} está en otro servidor. Los mensajes de esta conversación se almacenan tanto en ese servidor como en este, y su administrador puede leerlos: el protocolo entre servidores no tiene forma de cifrarlos. Reserva lo sensible para conversaciones dentro de este sitio."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Seguir cuentas del Fediverso",
+        "notice": "Pega uno o más identificadores, por ejemplo @user@example.social. Puedes separarlos con cualquier símbolo.",
+        "handlesLabel": "Identificadores del Fediverso a seguir",
+        "submit": "Seguir",
+        "statusPending": "pendiente",
+        "statusAccepted": "aceptado"
+    },
+    "ServerBlockForm": {
+        "legend": "Bloquear un servidor",
+        "description": "Rechaza todo lo que provenga de ese servidor y de cualquiera bajo su dominio: no entra ni sale ninguna entrega, y se eliminan los seguimientos existentes en ambas direcciones.",
+        "serverLabel": "Servidor",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Motivo",
+        "reasonPlaceholder": "Por qué se bloquea este servidor",
+        "submit": "Bloquear servidor"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Ejecuta las partes de la configuración de llamada que se pueden comprobar desde un solo navegador. Todo lo previo a la conexión punto a punto real se puede probar aquí; conectar con otra persona requiere que esa persona esté presente."
+    },
+    "VideoCallTestButton": {
+        "label": "Ejecutar la comprobación"
+    },
+    "WebSocketStatus": {
+        "ok": "Servidor WebSocket: en ejecución",
+        "failed": "Servidor WebSocket: {detail}",
+        "clientTesting": "Conexión del navegador: probando…",
+        "clientConnecting": "Conexión del navegador: conectando…",
+        "clientConnected": "Conexión del navegador: conectada",
+        "clientDisconnecting": "Conexión del navegador: desconectando…",
+        "clientNotConnected": "Conexión del navegador: no conectada"
+    },
+    "UploadWorkerStatus": {
+        "running": "Servicio de subidas: en ejecución",
+        "stopped": "Servicio de subidas: detenido; los archivos en espera no se transcodificarán hasta que se reinicie",
+        "unknown": "Servicio de subidas: desconocido; puede que systemctl no esté disponible en este host, o que SELinux esté denegando la consulta de estado del propio servidor web (ejecuta bin/install.php como root para solucionarlo)",
+        "queue": "Cola: {staging} en espera, {pending} pendientes, {processing} en proceso"
+    },
+    "TrendingTimerStatus": {
+        "running": "Temporizador de tendencias: en ejecución",
+        "stopped": "Temporizador de tendencias: detenido; los temas de tendencia solo se actualizarán mediante la autorreparación en la ruta de lectura (Trending::current()), no según un horario. Ejecuta bin/install.php como root para configurarlo.",
+        "unknown": "Temporizador de tendencias: desconocido; puede que systemctl no esté disponible en este host, o que SELinux esté denegando la consulta de estado del propio servidor web (ejecuta bin/install.php como root para solucionarlo)"
+    },
+    "Notification": {
+        "postReady": "Tu contenido multimedia ha terminado de procesarse y ya está publicado",
+        "scheduledPostLive": "Tu publicación programada ya está publicada",
+        "uploadPartlyFailed": "Tu publicación ya está en línea, pero uno o más de sus archivos no se pudieron procesar",
+        "uploadFailed": "Uno de tus archivos no se pudo procesar y no se publicó",
+        "mailerFailed": "Error al enviar el correo: es posible que el servicio de correo no esté funcionando. Comprueba tu configuración de correo.",
+        "mailFromNotConfigured": "No hay ninguna dirección de remitente configurada, así que no se pueden enviar correos. Configúrala en Ajustes de administración (sección \"Correo saliente\") o mediante bin/install.php.",
+        "systemError": "Se produjo un error del servidor. Consulta el registro de errores para más detalles.",
+        "passwordRemovedGoogle": "Tu contraseña se eliminó al iniciar sesión con Google. Usa \"¿Olvidaste tu contraseña?\" si quieres establecer una nueva.",
+        "like": "A {name} le gustó tu publicación",
+        "repost": "{name} republicó tu publicación",
+        "reply": "{name} respondió a tu publicación",
+        "friendRequest": "{name} te envió una solicitud de amistad",
+        "friendAccepted": "{name} aceptó tu solicitud de amistad",
+        "message": "{name} te envió un mensaje",
+        "mention": "{name} te mencionó en una publicación",
+        "follow": "{name} te siguió desde otro servidor",
+        "default": "{name} hizo algo"
+    },
+    "NotificationList": {
+        "emptyNotice": "Todavía no hay notificaciones."
+    },
+    "NotificationsNavLink": {
+        "label": "Notificaciones",
+        "unseen": "Notificaciones sin ver"
+    },
+    "NotificationTestPanel": {
+        "intro": "Envíate una notificación de prueba a ti mismo (el administrador). Debería aparecer al instante como aviso emergente y en el menú desplegable de notificaciones.",
+        "button": "Enviar notificación de prueba",
+        "sending": "Enviando…",
+        "sent": "Enviado",
+        "failed": "Fallido"
+    },
+    "MessageDot": {
+        "label": "Mensajes sin leer"
+    },
+    "NavAlertDot": {
+        "label": "Algo nuevo en el menú"
+    },
+    "Message": {
+        "encrypted": "Mensaje cifrado",
+        "decryptionFailed": "Este mensaje se cifró con claves que ya no existen."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mensaje",
+        "bodyPlaceholder": "Escribe un mensaje",
+        "send": "Enviar"
+    },
+    "MessageList": {
+        "emptyNotice": "Todavía no hay mensajes."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Comparte este código en voz alta con la otra persona, por otro medio: en persona o por llamada. Si coincide en ambos lados, no hay nadie interponiéndose entre los dos.",
+        "changed": "Este código ha cambiado desde que lo comprobaste. Eso ocurre cuando alguno de los dos restablece sus claves de cifrado, pero también es lo que parecería si alguien estuviera leyendo esta conversación. Comprueba el nuevo código con esa persona antes de confiar en él.",
+        "verified": "Has comprobado este código."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Marcar como verificado"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Frase de contraseña",
+        "passphrasePlaceholder": "Frase de contraseña para desbloquear esta conversación",
+        "submit": "Desbloquear"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Último mensaje ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Contenido sensible"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Mostrar contenido sensible de forma predeterminada"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Publicación",
+            "message": "Mensaje",
+            "user": "Usuario"
+        },
+        "summary": {
+            "before": "Denuncia sobre {type} #{id}, de ",
+            "after": ""
+        },
+        "reasonLine": "Motivo: {reason}",
+        "banReporterLabel": "Banear al denunciante",
+        "banReportedUserLabel": "Banear al usuario denunciado",
+        "deleteLabel": "Eliminar {type}",
+        "reportedImageAlt": "Imagen denunciada",
+        "attachmentUnavailable": "Un archivo adjunto denunciado ya no está disponible.",
+        "viewAttachment": "Ver archivo adjunto denunciado",
+        "missing": {
+            "noSnapshot": "El contenido denunciado ya no está disponible.",
+            "unknownType": "Tipo de contenido desconocido."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "No hay denuncias."
+    },
+    "ModQueueLinks": {
+        "intro": "Las colas son lo bastante largas como para leerlas página por página, así que tienen sus propias páginas.",
+        "reportsLabel": "Denuncias",
+        "bannedUsersLabel": "Usuarios baneados"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Ningún moderador ha hecho nada todavía."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "No hay entidades baneadas de las tendencias."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "No hay servidores bloqueados."
+    },
+    "RelayCard": {
+        "accepted": "Suscrito ",
+        "waiting": "Esperando a que el relé acepte - suscrito "
+    },
+    "RelayList": {
+        "emptyNotice": "No estás suscrito a ningún relé. Aquí no llega nada salvo lo que sigan los miembros."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Todavía no ha llegado nada a través de un relé. Las publicaciones aparecen aquí a medida que los servidores del otro lado las publican."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Suscribirse a un relé",
+        "explainerOne": "Un relé es un flujo compartido y sin filtrar: aquí llega cada publicación pública de cualquier otro servidor suscrito, y las de este servidor salen hacia todos ellos. Así es como una instancia nueva encuentra a alguien, ya que de otro modo la federación solo trae lo que alguien de aquí ya sigue.",
+        "explainerTwo": "La carga no depende de ti: es lo que esos servidores publiquen, tranquila una semana y con miles de publicaciones por hora la siguiente, y tu almacenamiento, tu cola de entrega y tu cola de moderación la asumen por completo. Las publicaciones retransmitidas no aparecen en el feed principal ni en el de amigos; van al feed de relé, que la gente abre a propósito.",
+        "addressLabel": "Dirección del relé",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Suscribirse"
+    },
+    "RelayFollowObjectField": {
+        "label": "Estilo de suscripción",
+        "options": {
+            "public": "Seguir el flujo público (lo que esperan la mayoría de los relés)",
+            "actor": "Seguir el actor propio del relé"
+        },
+        "retryNotice": "Si el relé nunca acepta, cancela la suscripción y prueba el otro estilo: algunos programas de relé solo reconocen uno de los dos."
+    },
+    "SiteCounters": {
+        "members": "Miembros: {count} ({joined} se unieron en los últimos {days} días)",
+        "activeMembers": "Miembros activos en los últimos {days} días: {count} ({posted} de ellos publicaron)",
+        "posts": "Publicaciones escritas aquí: {count} ({recent} en los últimos {days} días)",
+        "deliveries": "Entregas federadas en los últimos {days} días: {delivered} llegaron, {undeliverable} se dieron por perdidas",
+        "queued": "Esperando para salir: {count} ({failing} ya rechazadas al menos una vez)",
+        "pendingReads": "Publicaciones pendientes de leer desde otros servidores: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Ejecuta la batería de pruebas del sitio y consulta los resultados. Tarda unos segundos, así que se abre en su propia página.",
+        "runLabel": "Ejecutar pruebas"
+    },
+    "HelpArticle": {
+        "backLabel": "Volver a toda la ayuda"
+    },
+    "UserSearchList": {
+        "noSuggestions": "No hay sugerencias por ahora: las sugerencias provienen de los amigos de las personas con las que ya eres amigo. Busca arriba para encontrar a alguien por su nombre.",
+        "noMatches": "Aquí no hay nadie que coincida con eso."
+    },
+    "UserModButton": {
+        "make": "Hacer moderador",
+        "remove": "Quitar moderador"
+    },
+    "UserUnbanButton": {
+        "name": "Desbanear"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Banear"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Desbanear"
+    },
+    "ReportDismissButton": {
+        "name": "Descartar"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Marcar como sensible"
+    },
+    "ServerUnblockButton": {
+        "name": "Desbloquear"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Cancelar suscripción"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Revocar"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Aprobado",
+        "failing": "{suite}: Fallido"
+    },
+    "PageTitle": {
+        "about": "Acerca de",
+        "adminBanned": "Usuarios baneados",
+        "adminModSettings": "Ajustes de moderación",
+        "adminReports": "Denuncias",
+        "adminSettings": "Ajustes de administración",
+        "adminTests": "Pruebas",
+        "authGoogleCallbackAccountDeleted": "Cuenta eliminada",
+        "authGoogleCallbackDeleteAccount": "Eliminar cuenta",
+        "authGoogleCallbackLogin": "Iniciar sesión",
+        "bookmarks": "Guardados",
+        "checkInbox": "Revisa tu bandeja de entrada",
+        "drafts": "Borradores y programadas",
+        "draftsEditDraft": "Editar borrador",
+        "draftsEditScheduled": "Editar publicación programada",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "friendsFeed": "Feed de amigos",
+        "help": "Ayuda",
+        "helpDescription": "Guías y respuestas para usar el sitio.",
+        "locations": "Ubicaciones",
+        "locationsDescription": "Publicaciones de los lugares más cercanos a ti.",
+        "locationsPlaceDescription": "Publicaciones cerca de {place}.",
+        "login": "Iniciar sesión",
+        "loginVerificationCode": "Código de verificación",
+        "map": "Mapa",
+        "mapDescription": "Un mapa de publicaciones de todo el mundo - encuentra personas y cosas cerca de ti.",
+        "messages": "Mensajes",
+        "messagesWithUser": "Mensajes con {name}",
+        "notifications": "Notificaciones",
+        "privacy": "Política de privacidad",
+        "quote": "Citar",
+        "relayFeed": "Feed de relé",
+        "relayFeedDescription": "Publicaciones públicas que llegan de los relés a los que está suscrito este servidor.",
+        "resetPassword": "Restablecer contraseña",
+        "revertEmail": "Revertir cambio de correo electrónico",
+        "search": "Buscar",
+        "signup": "Registrarse",
+        "tags": "Etiquetas",
+        "tagsDescription": "Explora las etiquetas populares y de tendencia en {siteTitle}.",
+        "tagsTagDescription": "Publicaciones etiquetadas con {tag} en {siteTitle}.",
+        "terms": "Términos del servicio",
+        "topics": "Tendencias",
+        "topicsDescription": "De qué habla la gente en {siteTitle} ahora mismo.",
+        "topicsEntityDescription": "{typeLabel} - publicaciones que mencionan {entityTitle} en {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} que la gente comenta en {siteTitle} ahora mismo.",
+        "unsubscribe": "Resúmenes por correo",
+        "userFriends": "Amigos de {name}",
+        "userFriendsDescription": "Amigos de {name} en {siteTitle}",
+        "userSettings": "Ajustes de usuario",
+        "users": "Usuarios",
+        "verifyEmail": "Verificar correo electrónico"
+    },
+    "PostLikeButton": {
+        "like": "Me gusta",
+        "unlike": "Ya no me gusta"
+    },
+    "PostPinButton": {
+        "pin": "Fijar",
+        "unpin": "Dejar de fijar"
+    },
+    "PostQuoteButton": {
+        "name": "Citar"
+    },
+    "PostDeleteButton": {
+        "name": "Eliminar"
+    },
+    "PostEditButton": {
+        "name": "Editar"
+    },
+    "ReportButton": {
+        "name": "Denunciar"
+    },
+    "PostActionBar": {
+        "reply": "Responder",
+        "replies": {
+            "one": "Respuesta ({count})",
+            "other": "Respuestas ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(editado)"
+    },
+    "RepliesHeading": {
+        "heading": "Respuestas"
+    },
+    "PollVoteButton": {
+        "name": "Votar"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Ver ",
+            "link": "más ubicaciones",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Publicaciones cerca de ti",
+        "description": "Esto muestra las publicaciones más cercanas a un punto, dondequiera que haya actividad, por lejos que esté. Comparte tu ubicación para empezar desde donde estás, o elige un punto en el mapa.",
+        "useMyLocation": "Usar mi ubicación",
+        "pickOnMap": "Elegir en el mapa",
+        "searchPlaceholder": "O escribe el nombre de un lugar…",
+        "searchLabel": "Buscar un lugar",
+        "locating": "Localizando…",
+        "noGeolocation": "Tu navegador no puede compartir una ubicación.",
+        "locationError": "No se pudo obtener tu ubicación. Comprueba el permiso de ubicación de tu navegador."
+    },
+    "PollDeadline": {
+        "final": "Resultado final",
+        "closes": {
+            "before": "Cierra ",
+            "after": ""
+        },
+        "days": {
+            "one": "en {count} día",
+            "other": "en {count} días"
+        },
+        "hours": {
+            "one": "en {count} hora",
+            "other": "en {count} horas"
+        },
+        "minutes": {
+            "one": "en {count} minuto",
+            "other": "en {count} minutos"
+        },
+        "underMinute": "en menos de un minuto"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 persona votó ",
+            "other": "{count} personas votaron "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Inicia sesión",
+            "after": " para publicar."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Inicia sesión",
+            "after": " para responder."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " republicó"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "En respuesta a ",
+            "after": ""
+        },
+        "untitled": "esta publicación",
+        "jumpToStart": "Ir al inicio"
+    },
+    "TopicSummaryCard": {
+        "label": "Resumen generado por IA"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Te damos la bienvenida a ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Escribe algo en el cuadro de abajo y se publicará en tu feed. Cualquiera puede responder, y una respuesta no es más que una publicación con un padre, así que las conversaciones se anidan tan profundo como haga falta.",
+            "Añade personas como amigos y sus publicaciones se sumarán a tu feed. El feed Global - el nombre del sitio, arriba a la izquierda - muestra todo lo que se escribe aquí, y es el lugar para encontrar a alguien a quien añadir.",
+            "Este sitio forma parte del Fediverso: puedes seguir cuentas de Mastodon y de otros servidores por su identificador completo, y lo que publiques llegará a quienes te sigan allí. Busca un identificador como @someone@example.social y este servidor lo encontrará.",
+            "Etiqueta una publicación con #hashtags y aparecerá en la página de esa etiqueta, y en Tendencias si suficientes personas están escribiendo sobre ella.",
+            "Los mensajes entre miembros están cifrados de extremo a extremo: el servidor almacena texto cifrado que no puede leer. Actívalo en Ajustes.",
+            "No tienes que publicar de inmediato: guarda un borrador, o fija una hora y se publicará solo. Ambos están en Borradores y programadas."
+        ],
+        "more": {
+            "before": "Hay más información en ",
+            "link": "las páginas de ayuda",
+            "after": ", incluido cómo trasladar una cuenta aquí desde otro sitio."
+        },
+        "dontShowAgain": "No volver a mostrar esto"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Insertar emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Imagen de vista previa del enlace"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Quitar imagen"
+    },
+    "LinkItem": {
+        "alt": "Imagen de vista previa del enlace"
+    },
+    "MapScrubber": {
+        "play": "Reproducir",
+        "pause": "Pausar",
+        "cumulativeMode": "Hasta entonces",
+        "windowMode": "Solo entonces",
+        "rangeLabel": "Mostrar publicaciones hasta una fecha",
+        "cumulativeLabel": {
+            "one": "Publicado hasta {date} — {count} publicación",
+            "other": "Publicado hasta {date} — {count} publicaciones"
+        },
+        "windowLabel": {
+            "one": "Publicado alrededor de {date} — {count} publicación",
+            "other": "Publicado alrededor de {date} — {count} publicaciones"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Publicación de {name}",
+        "pageTitleUntitled": "Publicación",
+        "imageAltByAuthor": "Foto publicada por {name}",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Quitar de guardados",
+        "add": "Añadir a guardados"
+    },
+    "PostRepostButton": {
+        "undo": "Deshacer republicación",
+        "repost": "Republicar"
+    },
+    "QuotedPost": {
+        "viewLink": "Ver la publicación citada"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Solicitudes pendientes"
+    },
+    "ScrollToTopButton": {
+        "label": "Volver arriba"
+    },
+    "SearchClearButton": {
+        "label": "Borrar búsqueda"
+    },
+    "SitePolicyLinks": {
+        "terms": "Términos del servicio",
+        "privacy": "Política de privacidad"
+    },
+    "SkipLink": {
+        "label": "Saltar al contenido"
+    },
+    "TopicHeading": {
+        "searchLink": "Buscar esto",
+        "noPosts": "Ahora mismo ninguna publicación menciona esto."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Todavía no se ha escrito sobre nada de este tipo."
+    },
+    "TrendingEntitySection": {
+        "heading": "Tendencias"
+    },
+    "PostLocationLink": {
+        "title": "Mostrar este lugar en el mapa",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "ahora mismo",
+        "minutes": {
+            "one": "hace {count} min",
+            "other": "hace {count} min"
+        },
+        "hours": {
+            "one": "hace {count} h",
+            "other": "hace {count} h"
+        },
+        "days": {
+            "one": "hace {count} d",
+            "other": "hace {count} d"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Igual que el sistema",
+            "light": "Claro sencillo",
+            "dark": "Oscuro sencillo",
+            "sepia": "Sepia",
+            "midnight": "Medianoche",
+            "sunset": "Atardecer",
+            "rose": "Rosa",
+            "forest": "Bosque",
+            "ocean": "Océano",
+            "lavender": "Lavanda",
+            "gold": "Oro",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Escala de grises"
+        }
+    }
+}

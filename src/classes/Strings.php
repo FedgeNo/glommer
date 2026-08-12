@@ -25,7 +25,11 @@ class Strings
     /** The locale every other one falls back to, and the one the code is written in. */
     public const SOURCE_LOCALE = 'en';
 
-    private const DIRECTORY = __DIR__ . '/../locales';
+    /**
+     * One JSON file per language, in locales/ - the same files the browser
+     * fetches, read here rather than copied for it.
+     */
+    private const DIRECTORY = __DIR__ . '/../../locales';
 
     private static ?string $locale = null;
 
@@ -44,8 +48,8 @@ class Strings
     {
         $found = [];
 
-        foreach ((array) glob(self::DIRECTORY . '/*.php') as $path) {
-            $found[] = basename((string) $path, '.php');
+        foreach ((array) glob(self::DIRECTORY . '/*.json') as $path) {
+            $found[] = basename((string) $path, '.json');
         }
 
         sort($found);
@@ -88,11 +92,8 @@ class Strings
         self::$locale = $locale !== null && in_array($locale, self::available(), true) ? $locale : null;
     }
 
-    /**
-     * The key a locale file puts its counting rule under. Not a class name, so
-     * it cannot collide with one, and skipped when a table is read as words.
-     */
-    public const PLURAL_RULE = '@plural';
+    /** Where a locale file keeps its counting rule - see PluralRule. */
+    public const PLURAL_RULE = PluralRule::KEY;
 
     /**
      * One of a set of phrasings, chosen by how many of the thing there are.
@@ -132,15 +133,9 @@ class Strings
     {
         $rule = self::table(self::locale())[self::PLURAL_RULE]
             ?? self::table(self::SOURCE_LOCALE)[self::PLURAL_RULE]
-            ?? null;
+            ?? [];
 
-        if (!is_callable($rule)) {
-            // What English does, which is what the code assumed before any of
-            // this and is right for a good half of the languages there are.
-            return $count === 1 ? 'one' : 'other';
-        }
-
-        return (string) $rule($count);
+        return PluralRule::categoryFor(is_array($rule) ? $rule : [], $count);
     }
 
     /**
@@ -181,29 +176,15 @@ class Strings
         }
 
         // Checked against the directory listing rather than pattern-matched:
-        // this ends up in a require, and the only safe answer to "which file"
-        // is one of the files that is actually there.
+        // the only safe answer to "which file" is one of the files that is
+        // actually there.
         if (!in_array($locale, self::available(), true)) {
             return self::$tables[$locale] = [];
         }
 
-        $table = require self::DIRECTORY . '/' . $locale . '.php';
-        $table = is_array($table) ? $table : [];
+        $decoded = json_decode((string) @file_get_contents(self::DIRECTORY . '/' . $locale . '.json'), true);
 
-        // Plus anything in a directory of the same name, merged in. A locale
-        // is a thousand strings before long, and one file is both an awkward
-        // thing to read and the file every hand touches at once - a fragment
-        // per area of the site keeps a change to the messaging strings out of
-        // the way of a change to the settings ones.
-        foreach ((array) glob(self::DIRECTORY . '/' . $locale . '/*.php') as $fragment) {
-            $part = require (string) $fragment;
-
-            if (is_array($part)) {
-                $table = array_replace_recursive($table, $part);
-            }
-        }
-
-        return self::$tables[$locale] = $table;
+        return self::$tables[$locale] = is_array($decoded) ? $decoded : [];
     }
 
     /**

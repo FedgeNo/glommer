@@ -126,6 +126,16 @@ while ($running) {
             error_log('Relay retention sweep failed: ' . $exception -> getMessage());
         }
 
+        // A batch of posts that have no language yet. Trending only ever read
+        // some of them - a bot's post, a reply, and anything that fell past its
+        // window were never looked at - and translation needs a language for
+        // any post somebody asks about, not only the ones that could trend.
+        try {
+            LanguageDetector::fillInBatch();
+        } catch (\Throwable $exception) {
+            error_log('Language detection pass failed: ' . $exception -> getMessage());
+        }
+
         // One digest per sweep at most, and only to somebody a week absent, so
         // this is a trickle rather than a mail run - a stalled SMTP or model
         // call can cost one pass and never a queue of them. Caught apart from

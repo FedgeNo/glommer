@@ -20,6 +20,7 @@ and loading all nine would waste most of it.
 """
 
 import json
+import re
 import sys
 
 # spacy and langdetect are imported inside main() rather than here, so that
@@ -71,8 +72,24 @@ MAX_ENTITY_LENGTH = 100
 SHORTEST_DETECTABLE = 20
 
 
+def readable_words(text):
+    """The text with the parts no language can be read from taken out.
+
+    A post that is a headline and a link is mostly the link, and a bot's is
+    almost entirely one. Measuring the raw string lets that pass the length
+    guard on the strength of characters that say nothing about the language,
+    and langdetect then answers confidently off the few words left.
+    """
+    without_links = re.sub(r'https?://\S+|www\.\S+', ' ', text)
+    without_handles = re.sub(r'[@#]\S+', ' ', without_links)
+
+    return re.sub(r'\s+', ' ', without_handles).strip()
+
+
 def language_of(text, detect):
-    if len(text.strip()) < SHORTEST_DETECTABLE:
+    text = readable_words(text)
+
+    if len(text) < SHORTEST_DETECTABLE:
         return None
 
     try:
@@ -113,6 +130,19 @@ def main():
     # one place. Answered before importing anything that has to be installed.
     if '--models' in sys.argv[1:]:
         print('\n'.join(sorted(set(MODELS.values()))))
+
+        return
+
+    # Reading a language needs no model - langdetect is the whole of it - so
+    # this mode skips importing spacy entirely. It is what fills in the
+    # language of every post, including the ones trending never reads: a bot's,
+    # a reply, anything that fell past the window before a pass got to it.
+    if '--detect' in sys.argv[1:]:
+        from langdetect import DetectorFactory, detect
+
+        DetectorFactory.seed = 0
+
+        json.dump([language_of(text, detect) for text in json.load(sys.stdin)], sys.stdout)
 
         return
 

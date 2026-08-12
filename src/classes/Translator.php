@@ -158,12 +158,12 @@ class Translator
             return self::ALREADY_READABLE;
         }
 
-        if (self::isSupported($source) && self::isSupported($target)) {
+        if (self::isAvailable() && self::isSupported($source) && self::isSupported($target)) {
             return null;
         }
 
-        // No package for this pair. A model can still read it, so this is only
-        // a refusal where there is no model to ask either.
+        // Nothing installed can read this pair. A model can, so it is only a
+        // refusal where there is no model to ask either.
         return OpenRouter::isEnabled() ? null : self::UNSUPPORTED_PAIR;
     }
 
@@ -222,22 +222,31 @@ class Translator
             return null;
         }
 
-        $source = self::baseLanguage($source);
-        $target = self::baseLanguage($target);
+        $source = (string) self::baseLanguage($source);
+        $target = (string) self::baseLanguage($target);
         $text = self::readable($text);
 
-        // A pair this installation has no package for goes to a model instead.
-        // Argos is preferred where it can do the job: it runs here, costs
-        // nothing, and answers in seconds rather than depending on somebody
-        // else's service being up.
-        if (!self::isSupported($source) || !self::isSupported($target)) {
-            return self::byModel($text, $source, $target);
+        // Argos first where it can do the job: it runs here, costs nothing and
+        // answers in seconds rather than depending on somebody else's service
+        // being up. The model is the backup, and it stands behind every way
+        // Argos can come back with nothing - no package for the pair, every
+        // slot busy, the command failing or answering with nothing at all. A
+        // reader asked for the words in their language; which of those went
+        // wrong is not their problem.
+        return self::byArgos($text, $source, $target) ?? self::byModel($text, $source, $target);
+    }
+
+    /** What Argos makes of it, or null however it failed to. */
+    private static function byArgos(string $text, string $source, string $target): ?string
+    {
+        if (!self::isAvailable() || !self::isSupported($source) || !self::isSupported($target)) {
+            return null;
         }
 
         $slot = self::takeSlot();
 
         if ($slot === null) {
-            error_log('Translator: all ' . self::CONCURRENT . ' slots busy, refusing rather than queueing');
+            error_log('Translator: all ' . self::CONCURRENT . ' slots busy, going to the model instead');
 
             return null;
         }

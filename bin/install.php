@@ -5172,6 +5172,18 @@ SELECT COUNT(*) AS `n`
     // ban that matches nothing looks exactly like no ban at all.
     $rebanned = BannedTrendingEntitySlugs::run();
     ok('banned topic slugs in address form (' . $rebanned . ' rebuilt)');
+
+    // Every language on record was read by a guard that measured the raw text,
+    // so a post that was mostly a link was answered for on the strength of the
+    // link. Cleared rather than corrected in place: the detector is the only
+    // thing that can say what these are, and the federation worker refills
+    // them a batch at a time from now on.
+    DB::run('
+UPDATE `Posts`
+    SET `detectedLanguage` = NULL
+    WHERE `detectedLanguage` IS NOT NULL
+');
+    ok('post languages queued to be read again by the corrected detector');
 }
 
 // Materialize the /tags/ Popular graph and Trending cloud now, so they're

@@ -92,10 +92,12 @@ SELECT `body`
     /**
      * What language a post is in, as well as this server knows.
      *
-     * The extractor works it out off the words, which is the only reliable
-     * way. The declared language stands in until then - it is what the
-     * sender's account setting says rather than what they wrote, so it is a
-     * poor answer and only used where there is no better one.
+     * What was read off the words wins over what the post says about itself,
+     * always. A sender's declared language comes from their account setting
+     * rather than from what they wrote, so somebody who set it once and then
+     * posted in three languages declares all three the same - and a bot
+     * declares whatever its author left in the field. It stands in only where
+     * nothing has read the words yet.
      */
     private static function sourceLanguage(int $post_id): ?string
     {

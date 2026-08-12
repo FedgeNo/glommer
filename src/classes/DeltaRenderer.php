@@ -29,7 +29,13 @@ class DeltaRenderer extends Div
      *        a custom emoji is per-server and nobody can resolve a name they
      *        were not told about.
      */
-    public function __construct(private readonly array $ops = [], private readonly array $customEmoji = [])
+    /**
+     * @param bool $mentionsAreLocal whether a bare "@name" in this text
+     *        addresses somebody here. False for writing from another server,
+     *        where a bare name is one of their neighbours and linking it here
+     *        points at whoever shares it, or at nobody.
+     */
+    public function __construct(private readonly array $ops = [], private readonly array $customEmoji = [], private readonly bool $mentionsAreLocal = true)
     {
         parent::__construct();
     }
@@ -185,7 +191,7 @@ class DeltaRenderer extends Div
 
                 foreach ($segments as $index => $text) {
                     if ($text !== '') {
-                        foreach (self::inlineNodes($doc, $text, $op['attributes'] ?? []) as $node) {
+                        foreach (self::inlineNodes($doc, $text, $op['attributes'] ?? [], $this -> mentionsAreLocal) as $node) {
                             $inline[] = $node;
                         }
                     }
@@ -291,7 +297,7 @@ class DeltaRenderer extends Div
      *
      * @return \DOMNode[]
      */
-    private static function inlineNodes(\DOMDocument $doc, string $text, array $attrs): array
+    private static function inlineNodes(\DOMDocument $doc, string $text, array $attrs, bool $mentions_are_local = true): array
     {
         $link = $attrs['link'] ?? null;
 
@@ -313,7 +319,13 @@ class DeltaRenderer extends Div
             } elseif ($segment['type'] === 'hashtag') {
                 $nodes[] = self::hashtagNode($doc, $segment['tag'], $inner);
             } elseif ($segment['type'] === 'mention') {
-                $nodes[] = self::mentionNode($doc, $segment['username'], $inner);
+                // A bare name in writing from elsewhere addresses one of the
+                // writer's own neighbours, not a member here - so it stays
+                // words. One written in full says which server it means and
+                // can be followed.
+                $nodes[] = $mentions_are_local || str_contains($segment['username'], '@')
+                    ? self::mentionNode($doc, $segment['username'], $inner)
+                    : $inner;
             } else {
                 $nodes[] = $inner;
             }

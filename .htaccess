@@ -92,6 +92,7 @@
 
     RewriteRule ^media-([0-9]+)$ remote-media.php?item=$1 [L,QSA]
     RewriteRule ^remote-avatar/([0-9]+)$ remote-avatar.php?user=$1 [L,QSA]
+    RewriteRule ^authorize_interaction$ authorize_interaction.php [L,QSA]
     RewriteRule ^health$ health.php [L,QSA]
     RewriteRule ^environment-check$ environment-check.php [L,QSA]
 

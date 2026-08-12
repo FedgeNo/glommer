@@ -128,23 +128,110 @@ class Translator
      * Portuguese, not for pt-BR, and asking for a tag it has never heard of
      * fails where asking for the language would have worked.
      */
+    /**
+     * Why this pair cannot be translated, or null where nothing stops it.
+     *
+     * Every one of these is settled: asking again in a minute answers the same.
+     * They are told apart so a reader can be told which it is, rather than
+     * being sent away with "try again later" by something that will never
+     * succeed.
+     */
+    public static function refusalFor(string $text, string $target, ?string $source): ?string
+    {
+        $source = self::baseLanguage($source);
+        $target = self::baseLanguage($target);
+
+        // Either can do the work, so it takes both being absent to refuse.
+        if (!self::isAvailable() && !OpenRouter::isEnabled()) {
+            return self::UNAVAILABLE;
+        }
+
+        if (self::readable($text) === '') {
+            return self::NOTHING_TO_TRANSLATE;
+        }
+
+        if ($source === null) {
+            return self::UNKNOWN_SOURCE;
+        }
+
+        if ($target === null || $source === $target) {
+            return self::ALREADY_READABLE;
+        }
+
+        if (self::isSupported($source) && self::isSupported($target)) {
+            return null;
+        }
+
+        // No package for this pair. A model can still read it, so this is only
+        // a refusal where there is no model to ask either.
+        return OpenRouter::isEnabled() ? null : self::UNSUPPORTED_PAIR;
+    }
+
+    /**
+     * A language this installation holds no package for, translated by the
+     * model provider instead.
+     *
+     * Every pair Argos can do is a download, and the ones it can do are a
+     * hundred pairs of a few hundred megabytes each - more than a server has
+     * room for to cover a language that turns up once. So the common ones are
+     * installed and the rest are asked of a model.
+     *
+     * Given the words and nothing else: the model is told to answer with the
+     * translation alone, and anything it says about itself would be printed at
+     * a reader as though the post had said it.
+     */
+    private static function byModel(string $text, string $source, string $target): ?string
+    {
+        $answer = OpenRouter::chat([
+            [
+                'role' => 'system',
+                'content' => 'You are a translation engine. Translate the user\'s message from '
+                    . $source . ' into ' . $target . '. Reply with the translation and nothing else -'
+                    . ' no notes, no quotes around it, no explanation. Keep the line breaks. If it is'
+                    . ' already in ' . $target . ', reply with it unchanged.',
+            ],
+            ['role' => 'user', 'content' => $text],
+        ], self::MODEL_MAX_TOKENS);
+
+        $answer = $answer === null ? null : trim($answer);
+
+        return $answer === null || $answer === '' ? null : $answer;
+    }
+
+    /** Room for a post of the length this refuses above, plus its punctuation. */
+    private const MODEL_MAX_TOKENS = 2000;
+
+    /** This server has no translator at all. */
+    public const UNAVAILABLE = 'unavailable';
+
+    /** Nothing in the post is words. */
+    public const NOTHING_TO_TRANSLATE = 'nothing';
+
+    /** Nobody has worked out what language the post is in. */
+    public const UNKNOWN_SOURCE = 'unknownSource';
+
+    /** It is already the language being asked for - or says it is. */
+    public const ALREADY_READABLE = 'alreadyReadable';
+
+    /** No package installed for one side of the pair. */
+    public const UNSUPPORTED_PAIR = 'unsupportedPair';
+
     public static function translate(string $text, string $target, ?string $source): ?string
     {
+        if (self::refusalFor($text, $target, $source) !== null) {
+            return null;
+        }
+
         $source = self::baseLanguage($source);
         $target = self::baseLanguage($target);
         $text = self::readable($text);
 
-        if (!self::isAvailable() || $source === null || $target === null || $source === $target || $text === '') {
-            return null;
-        }
-
-        // Checked against what this installation has packages for before a
-        // slot is taken. "not-a-language" reduces to "not", which is three
-        // letters and looks like a language tag - without this it costs one of
-        // the two slots and five seconds to be told by the command what could
-        // have been known here.
+        // A pair this installation has no package for goes to a model instead.
+        // Argos is preferred where it can do the job: it runs here, costs
+        // nothing, and answers in seconds rather than depending on somebody
+        // else's service being up.
         if (!self::isSupported($source) || !self::isSupported($target)) {
-            return null;
+            return self::byModel($text, $source, $target);
         }
 
         $slot = self::takeSlot();

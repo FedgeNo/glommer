@@ -23,7 +23,7 @@ export class DeltaRenderer {
      * @param {Array} ops  the Delta's ops array
      * @returns {HTMLElement} a .PostBody div containing the rendered content
      */
-    static render(ops, customEmoji = {}) {
+    static render(ops, customEmoji = {}, mentionsAreLocal = true) {
         const root = document.createElement('div');
         root.className = 'PostBody';
 
@@ -131,7 +131,7 @@ export class DeltaRenderer {
 
                 segments.forEach((text, index) => {
                     if (text !== '') {
-                        inline.push(...DeltaRenderer.#inlineNodes(text, op.attributes));
+                        inline.push(...DeltaRenderer.#inlineNodes(text, op.attributes, mentionsAreLocal));
                     }
 
                     if (index < segments.length - 1) {
@@ -212,7 +212,7 @@ export class DeltaRenderer {
      * code is never linkified; otherwise URLs become self-links, #hashtags tag
      * links, the rest plain - each wrapped in the run's formatting, anchor outermost.
      */
-    static #inlineNodes(text, attributes) {
+    static #inlineNodes(text, attributes, mentionsAreLocal = true) {
         const attrs = attributes || {};
 
         if (typeof attrs.link === 'string') {
@@ -233,7 +233,12 @@ export class DeltaRenderer {
                 return DeltaRenderer.hashtagNode(segment.tag, inner);
             }
             if (segment.type === 'mention') {
-                return DeltaRenderer.mentionNode(segment.username, inner);
+                // Mirrors DeltaRenderer.php: a bare name in writing from
+                // another server is one of the writer's own neighbours, and
+                // the account of that name here is a different person.
+                return mentionsAreLocal || segment.username.includes('@')
+                    ? DeltaRenderer.mentionNode(segment.username, inner)
+                    : inner;
             }
             return inner;
         });

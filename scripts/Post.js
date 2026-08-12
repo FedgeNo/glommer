@@ -499,7 +499,7 @@ export class Post {
             }
 
             if (this.descriptionDelta) {
-                const body = DeltaRenderer.render(this.descriptionDelta, this.customEmoji || {});
+                const body = DeltaRenderer.render(this.descriptionDelta, this.customEmoji || {}, !this.remote);
 
                 if (this.descriptionTruncated && this.seeMoreURL) {
                     body.appendWithSpace(DeltaRenderer.seeMoreElement(this.seeMoreURL));

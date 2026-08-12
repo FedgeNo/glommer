@@ -376,4 +376,46 @@ class DeltaRendererTest extends TestCase
         $this -> assertSame('PostFormula', $span -> getAttribute('class'));
         $this -> assertSame('x^2', $span -> getAttribute('data-formula'));
     }
+
+    // ---------- who a mention addresses ----------
+
+    /** The text of every link this renderer made. @return string[] */
+    private function linkTextsIn(array $ops, bool $mentions_are_local): array
+    {
+        (new \ReflectionProperty(DOMObject::class, 'document')) -> setValue(null, new \DOMDocument('1.0', 'UTF-8'));
+
+        $element = (new DeltaRenderer($ops, [], $mentions_are_local)) -> toDOM();
+        HTMLObject::currentDocument() -> appendChild($element);
+
+        $texts = [];
+
+        foreach ((new \DOMXPath(HTMLObject::currentDocument())) -> query('//a') as $anchor) {
+            $texts[] = $anchor -> textContent;
+        }
+
+        return $texts;
+    }
+
+    /**
+     * A bare "@name" in a post from another server is one of the writer's own
+     * neighbours. Linked here it points at whoever shares the name - usually
+     * nobody - so it stays words. Written in full it says which server it
+     * means, and that can be followed.
+     */
+    public function testABareMentionFromElsewhereIsNotAPersonHere(): void
+    {
+        $ops = [['insert' => "hi @alice and @bob@mastodon.social\n"]];
+
+        $this -> assertSame(
+            ['@alice', '@bob@mastodon.social'],
+            $this -> linkTextsIn($ops, true),
+            'a post written here means the people here'
+        );
+
+        $this -> assertSame(
+            ['@bob@mastodon.social'],
+            $this -> linkTextsIn($ops, false),
+            'and one from elsewhere only means the one it names in full'
+        );
+    }
 }

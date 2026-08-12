@@ -1076,5 +1076,12 @@
             "cubehelix": "Cubehelix",
             "greyscale": "Greyscale"
         }
+    },
+    "PostTranslation": {
+        "unavailable": "Translation is not set up on this server.",
+        "nothing": "There is nothing here to translate.",
+        "unknownSource": "Nobody has worked out what language this post is in yet, so it cannot be translated.",
+        "alreadyReadable": "This post is already in that language.",
+        "unsupportedPair": "This server cannot translate that language yet."
     }
 }

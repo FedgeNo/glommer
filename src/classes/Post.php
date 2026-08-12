@@ -354,7 +354,7 @@ class Post extends Article
 
     protected function fullDescription(): HTMLObject
     {
-        return new DeltaRenderer($this -> descriptionOps(), $this -> customEmoji());
+        return new DeltaRenderer($this -> descriptionOps(), $this -> customEmoji(), $this -> mentionsAreLocal());
     }
 
     /**
@@ -373,7 +373,19 @@ class Post extends Article
 
     protected function summarizedDescription(): HTMLObject
     {
-        return new TruncatedDeltaRenderer($this -> descriptionOps(), $this -> seeMoreURL(), TruncatedDeltaRenderer::DEFAULT_MAX_LENGTH, $this -> customEmoji());
+        return new TruncatedDeltaRenderer($this -> descriptionOps(), $this -> seeMoreURL(), TruncatedDeltaRenderer::DEFAULT_MAX_LENGTH, $this -> customEmoji(), $this -> mentionsAreLocal());
+    }
+
+    /**
+     * Whether a bare "@name" in this post addresses somebody here.
+     *
+     * Only in a post written here. Elsewhere it names one of the writer's own
+     * neighbours, and the account of that name here - if there is one at all -
+     * is a different person.
+     */
+    protected function mentionsAreLocal(): bool
+    {
+        return $this -> remoteObjectURI === null;
     }
 
     /**

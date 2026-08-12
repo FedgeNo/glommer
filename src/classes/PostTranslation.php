@@ -89,6 +89,39 @@ SELECT `body`
      * no idea whether to wait a moment or give up. It also sent what somebody
      * wrote to a third party to do it.
      */
+    /**
+     * What language a post is in, as well as this server knows.
+     *
+     * The extractor works it out off the words, which is the only reliable
+     * way. The declared language stands in until then - it is what the
+     * sender's account setting says rather than what they wrote, so it is a
+     * poor answer and only used where there is no better one.
+     */
+    private static function sourceLanguage(int $post_id): ?string
+    {
+        $post = DB::row('
+SELECT `detectedLanguage`, `language`
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', $post_id);
+
+        return $post ?-> detectedLanguage ?? $post ?-> language;
+    }
+
+    /** Why this post cannot be translated into that language, or null if it can. */
+    public static function refusalFor(int $post_id, string $language, string $body): ?string
+    {
+        return Translator::refusalFor($body, $language, self::sourceLanguage($post_id));
+    }
+
+    /** What to tell a reader about a refusal. */
+    public static function refusalMessage(string $refusal): string
+    {
+        $words = Strings::for(self::class);
+
+        return (string) ($words[$refusal] ?? $words[Translator::UNAVAILABLE] ?? '');
+    }
+
     public static function translate(int $post_id, string $language, string $body): ?string
     {
         // A translator has to be told what it is translating from, and this
@@ -101,15 +134,7 @@ SELECT `body`
         // answer and only used where there is no better one; nothing is gated
         // on it, and being wrong costs one bad translation the reader asked
         // for rather than something silently withheld.
-        $post = DB::row('
-SELECT `detectedLanguage`, `language`
-    FROM `Posts`
-    WHERE `postId` = ?
-', 'Post', 'i', $post_id);
-
-        $source = $post ?-> detectedLanguage ?? $post ?-> language;
-
-        $translated = Translator::translate($body, $language, $source);
+        $translated = Translator::translate($body, $language, self::sourceLanguage($post_id));
 
         if ($translated === null) {
             return null;

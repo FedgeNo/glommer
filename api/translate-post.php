@@ -59,6 +59,15 @@ if (strlen($source) > PostTranslation::MAX_SOURCE_LENGTH) {
     JSONResponse::error('This post is too long to translate.', 422) -> send();
 }
 
+// Told before a slot is taken and before the rate limit counts against them:
+// every one of these is settled, so asking again in a minute answers the same,
+// and a reader sent away with "try again later" would be waiting on nothing.
+$refusal = PostTranslation::refusalFor($post_id, $language, $source);
+
+if ($refusal !== null) {
+    JSONResponse::error(PostTranslation::refusalMessage($refusal), 422) -> send();
+}
+
 $rate_key = 'translate:' . Auth::id();
 
 if (RateLimiter::tooManyAttempts($rate_key, 10, 600)) {

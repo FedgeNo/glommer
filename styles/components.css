@@ -1861,6 +1861,16 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     margin-block: 0 0.5rem;
 }
 
+/* The chip's own margin is the whole of the space between rows. Their lists
+   carry a flex gap for the space along a row, and left to apply to both axes
+   it would stack with that margin and separate the rows by twice as much. */
+.TrendingEntityList,
+.TrendingHashtagList,
+.HashtagGraphList,
+.EntityTypeLinks {
+    row-gap: 0;
+}
+
 .HashtagChip,
 .HashtagNode {
     display: inline-flex;

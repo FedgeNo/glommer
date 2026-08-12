@@ -1852,6 +1852,15 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 
 /* ---------- Hashtags & Trending ---------- */
 
+/* Chips wrap onto as many lines as they need, and a wrapped line sits hard
+   against the one above it without this. Bottom only: the space belongs
+   between the rows, not above the first one. */
+.HashtagChip,
+.HashtagNode,
+.TrendingEntityChip {
+    margin-block: 0 0.5rem;
+}
+
 .HashtagChip,
 .HashtagNode {
     display: inline-flex;

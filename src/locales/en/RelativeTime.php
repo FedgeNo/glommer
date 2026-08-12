@@ -8,9 +8,8 @@ declare(strict_types=1);
  * Only the client ever says these: RelativeTime::toDOM() renders an absolute
  * date, and RelativeTime.js replaces it with one of these the moment the page
  * loads and once a minute after that. They live in the shared table anyway,
- * because locales.php serves that table to the browser and a second file of
- * words for the client to read would be the drift this whole system exists to
- * avoid.
+ * since locales/*.js is that table written out - a separate file of words for
+ * the client would be the drift this whole system exists to avoid.
  *
  * Counted rather than glued together from a number and a unit: the marker for
  * "ago" is a suffix in English and a prefix in most of the languages beside it,

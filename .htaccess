@@ -36,13 +36,29 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-    # Apache already sends ETag/Last-Modified on every static file - this
-    # just tells the browser to actually use them: keep a cached copy, but
-    # always revalidate with the server (a cheap conditional request,
-    # answered 304 Not Modified if unchanged) before serving it, rather than
-    # either never caching at all or trusting a stale copy.
-    <FilesMatch "\.(js|css|jpe?g|mp4|mp3|png|ico)$">
-        Header set Cache-Control "no-cache"
+    # A page is around forty ES modules, each imported by name from the last.
+    # Revalidating every one of them before use costs no bytes and a round
+    # trip apiece - which is nothing on a fast connection and seconds on a
+    # slow one, on every visit, forever. So a cached copy is used at once and
+    # checked afterwards: stale-while-revalidate serves what the browser has
+    # and refreshes it in the background, leaving a reader waiting on the
+    # network only the first time they ever see the file.
+    #
+    # The cost is that a script changed by a deploy reaches a returning reader
+    # one page view late. Apache's own ETag still decides what actually
+    # changed, so that view fetches nothing it already has.
+    #
+    # A browser that does not know stale-while-revalidate revalidates once the
+    # five minutes are up, which is the same bargain with a shorter reach.
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "max-age=300, stale-while-revalidate=604800"
+    </FilesMatch>
+
+    # Uploads are written once under an id of their own and never rewritten,
+    # and an avatar carries its own ?v= stamp - so nothing at one of these
+    # addresses becomes something else.
+    <FilesMatch "\.(jpe?g|mp4|mp3|png|ico)$">
+        Header set Cache-Control "max-age=31536000, immutable"
     </FilesMatch>
 </IfModule>
 
@@ -73,7 +89,6 @@
     RewriteRule ^feed\.xml$ site-rss-feed.php [L,QSA]
     RewriteRule ^feeds\.opml$ site-opml.php [L,QSA]
     RewriteRule ^feeds-([0-9]+)\.opml$ site-opml.php?shard=$1 [L,QSA]
-    RewriteRule ^emoji-shortcodes\.js$ emoji-shortcodes.php [L,QSA]
 
     RewriteRule ^media-([0-9]+)$ remote-media.php?item=$1 [L,QSA]
     RewriteRule ^remote-avatar/([0-9]+)$ remote-avatar.php?user=$1 [L,QSA]
@@ -109,7 +124,6 @@
     RewriteRule ^admin/tests$ admin-tests.php [L,QSA]
     RewriteRule ^about$ about.php [L,QSA]
     RewriteRule ^manifest\.webmanifest$ manifest.php [L,QSA]
-    RewriteRule ^locales/([a-z]{2,3})\.js$ locales.php?locale=$1 [L,QSA]
     RewriteRule ^terms$ terms.php [L,QSA]
     RewriteRule ^privacy$ privacy.php [L,QSA]
     RewriteRule ^friends-feed$ friends-feed.php [L,QSA]

@@ -161,8 +161,8 @@ class Strings
     }
 
     /**
-     * The whole table, for handing to the browser - see locales.php, which
-     * serves it as the module the client twins read.
+     * The whole table, for handing to the browser - the locales/*.js modules
+     * the client twins read are this, written out.
      *
      * @return array<string, mixed>
      */

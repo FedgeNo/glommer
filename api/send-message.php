@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -106,7 +105,7 @@ DB::run('
 INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `bodyCiphertext`, `frankingTag`)
     VALUES (?, ?, ?, ?, ?)
 ', 'iisss', $current_user -> userId, $recipient_id, $stored_body, $envelope, $franking_tag);
-$message_id = (int) mysqli_insert_id($mysqli);
+$message_id = (int) mysqli_insert_id(DB::connection());
 RateLimiter::releaseLock($throttle_key);
 RateLimiter::recordAttempt($spam_rate_key);
 

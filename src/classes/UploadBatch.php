@@ -236,7 +236,6 @@ class UploadBatch
             return;
         }
 
-        $mysqli = DB::connection();
 
         $title_value = $metadata['title'] !== null && $metadata['title'] !== '' ? $metadata['title'] : null;
         $description_value = $metadata['description'] !== null && $metadata['description'] !== '' ? $metadata['description'] : null;
@@ -276,13 +275,13 @@ class UploadBatch
         // inside the commit; a rollback leaves them as invisible orphan files
         // rather than a visibly broken post. Notifications fire only AFTER the
         // commit, so a rolled-back assembly signals nothing.
-        mysqli_begin_transaction($mysqli);
+        mysqli_begin_transaction(DB::connection());
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-', 'iissssis', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value, $content_warning_value);
-        $post_id = (int) mysqli_insert_id($mysqli);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `detectedLanguage`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssiss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value, $content_warning_value, LanguageDetector::of((string) $description_value));
+        $post_id = (int) mysqli_insert_id(DB::connection());
 
         if ($latitude_value !== null && $longitude_value !== null) {
             DB::run('
@@ -328,12 +327,12 @@ SELECT `userId`
 INSERT INTO `FeedItems` (`postId`, `type`, `altText`)
     VALUES (?, ?, ?)
 ', 'iss', $post_id, $item_type, $alt_text);
-            $item_id = (int) mysqli_insert_id($mysqli);
+            $item_id = (int) mysqli_insert_id(DB::connection());
 
             UploadProcessor::rename($file['seed'], $item_id, $file['itemType'], $file['ext']);
         }
 
-        mysqli_commit($mysqli);
+        mysqli_commit(DB::connection());
 
         // A reply notifies the parent's author; postReady always tells the
         // uploader their post is live; uploadPartlyFailed warns them if some of

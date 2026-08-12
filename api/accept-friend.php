@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
@@ -30,7 +29,7 @@ $current_user_id = (int) $current_user -> userId;
 // requests accepted at the same moment could both read "under cap" and push a
 // user to 5001. Do it all in one transaction, locking the request row and both
 // user rows so concurrent accepts serialize.
-mysqli_begin_transaction($mysqli);
+mysqli_begin_transaction(DB::connection());
 
 $friendship = DB::row('
 SELECT `requesterId`
@@ -40,7 +39,7 @@ SELECT `requesterId`
 ', 'Friendship', 'iis', $friendship_id, $current_user_id, $pending_status);
 
 if ($friendship === null) {
-    mysqli_rollback($mysqli);
+    mysqli_rollback(DB::connection());
     JSONResponse::error('Not your request', 403) -> send();
 }
 
@@ -61,12 +60,12 @@ foreach ($counted_users as $counted_user) {
 }
 
 if (($friend_counts[$current_user_id] ?? 0) >= $max_friends) {
-    mysqli_rollback($mysqli);
+    mysqli_rollback(DB::connection());
     JSONResponse::error('You\'ve reached the maximum of ' . $max_friends . ' friends.', 422) -> send();
 }
 
 if (($friend_counts[$requester_id] ?? 0) >= $max_friends) {
-    mysqli_rollback($mysqli);
+    mysqli_rollback(DB::connection());
     JSONResponse::error('That user has reached their friend limit, so this request can\'t be accepted.', 422) -> send();
 }
 
@@ -77,7 +76,7 @@ UPDATE `Friendships`
 ', 'siis', $accepted_status, $friendship_id, $current_user_id, $pending_status);
 
 if (mysqli_stmt_affected_rows($accept_stmt) === 0) {
-    mysqli_rollback($mysqli);
+    mysqli_rollback(DB::connection());
     JSONResponse::error('Not your request', 403) -> send();
 }
 
@@ -87,7 +86,7 @@ UPDATE `Users`
     WHERE `userId` = ? OR `userId` = ?
 ', 'ii', $current_user_id, $requester_id);
 
-mysqli_commit($mysqli);
+mysqli_commit(DB::connection());
 
 // Side effects that don't need to be in the transaction.
 Timeline::backfillFriendship($requester_id, $current_user_id);

@@ -15,7 +15,6 @@ if (!Auth::check()) {
 }
 
 $current_user = Auth::user();
-$mysqli = DB::connection();
 
 // Posting is paced the way messaging is. A top-level post is written once per
 // friend into their feed and a reply notifies the author, so an unpaced client
@@ -334,11 +333,15 @@ if ($needs_async) {
     JSONResponse::success(['processing' => true]) -> send();
 }
 
+// Read before the row exists, so a post has a language for as long as it has
+// existed and nothing ever falls back to what an account setting claims.
+$detected_language = LanguageDetector::of($description_value);
+
 DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `quotedPostId`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'iissssisi', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $content_warning, $quoted_post_id);
-$post_id = (int) mysqli_insert_id($mysqli);
+INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `quotedPostId`, `detectedLanguage`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'iissssisis', $current_user -> userId, $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $content_warning, $quoted_post_id, $detected_language);
+$post_id = (int) mysqli_insert_id(DB::connection());
 
 // Coordinates live in their own postId-keyed table, so only a post that
 // actually has a location costs a row.
@@ -372,7 +375,7 @@ foreach ($valid_files as $file) {
 INSERT INTO `FeedItems` (`postId`, `type`)
     VALUES (?, ?)
 ', 'is', $post_id, $placeholder_item_type);
-    $item_id = (int) mysqli_insert_id($mysqli);
+    $item_id = (int) mysqli_insert_id(DB::connection());
 
     $result = UploadProcessor::process($file['tmpPath'], $item_id, $file['originalFilename']);
 
@@ -410,7 +413,7 @@ if ($link_image_seed !== '') {
 INSERT INTO `FeedItems` (`postId`, `type`)
     VALUES (?, ?)
 ', 'is', $post_id, $link_image_item_type);
-    $link_image_item_id = (int) mysqli_insert_id($mysqli);
+    $link_image_item_id = (int) mysqli_insert_id(DB::connection());
 
     UploadProcessor::rename($link_image_seed, $link_image_item_id, 'ImageItem', null);
 

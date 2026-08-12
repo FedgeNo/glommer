@@ -192,14 +192,13 @@ class Notification extends Article
             return;
         }
 
-        $mysqli = DB::connection();
 
         DB::run('
 INSERT INTO `Notifications` (`userId`, `actorId`, `type`, `postId`)
     VALUES (?, ?, ?, ?)
 ', 'iisi', $user_id, $actor_id, $type, $post_id);
 
-        $notification_id = (int) mysqli_insert_id($mysqli);
+        $notification_id = (int) mysqli_insert_id(DB::connection());
         $actor = User::load($actor_id);
 
         WebSocketPusher::push($user_id, [

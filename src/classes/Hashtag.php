@@ -80,7 +80,6 @@ UPDATE `Posts`
             return;
         }
 
-        $mysqli = DB::connection();
 
         foreach ($tags as $tag) {
             DB::run('
@@ -88,7 +87,7 @@ INSERT INTO `Hashtags` (`slug`, `title`)
     VALUES (?, ?)
     ON DUPLICATE KEY UPDATE `hashtagId` = LAST_INSERT_ID(`hashtagId`)
 ', 'ss', $tag, $tag);
-            $hashtag_id = (int) mysqli_insert_id($mysqli);
+            $hashtag_id = (int) mysqli_insert_id(DB::connection());
 
             DB::run('
 INSERT IGNORE INTO `PostHashtags` (`postId`, `hashtagId`)
@@ -137,9 +136,8 @@ UPDATE `Posts`
      */
     public static function backfill(): void
     {
-        $mysqli = DB::connection();
 
-        $result = mysqli_query($mysqli, '
+        $result = mysqli_query(DB::connection(), '
 SELECT `postId`, `descriptionDelta`
     FROM `Posts`
     WHERE `descriptionDelta` IS NOT NULL

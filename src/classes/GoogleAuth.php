@@ -163,7 +163,6 @@ class GoogleAuth
      */
     public static function resolveUser(string $email, ?string $name): ?User
     {
-        $mysqli = DB::connection();
 
         $existing = DB::row('
 SELECT *
@@ -224,7 +223,7 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `verified`)
 ', 'ssssi', $username, $email, $hash, $display_name, $verified);
 
         $user = new User();
-        $user -> userId = (int) mysqli_insert_id($mysqli);
+        $user -> userId = (int) mysqli_insert_id(DB::connection());
         $user -> slug = $username;
         $user -> email = $email;
         $user -> title = $display_name;

@@ -35,6 +35,30 @@ class LanguageDetector
     }
 
     /**
+     * What one post is written in, read before it is stored.
+     *
+     * Read at the moment of writing rather than caught up with afterwards, so
+     * a post has a language for as long as it exists and nothing ever has to
+     * fall back to what its sender's account setting claims.
+     *
+     * Reading needs no model - langdetect is the whole of it - which is what
+     * makes this affordable per post where the entity extractor never could
+     * be. Null where the words could not be read, or where this installation
+     * has no detector: fillInBatch() picks those up later.
+     */
+    public static function of(string $text): ?string
+    {
+        if (trim($text) === '' || !self::isAvailable()) {
+            return null;
+        }
+
+        $languages = self::detect([$text]);
+        $language = $languages[0] ?? null;
+
+        return is_string($language) && $language !== '' ? $language : null;
+    }
+
+    /**
      * Fills in the language of posts that have none, newest first.
      *
      * Newest first because those are the ones somebody is reading now. The

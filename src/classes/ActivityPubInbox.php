@@ -926,9 +926,9 @@ UPDATE `Posts`
 
         try {
             DB::run('
-INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `contentWarning`, `quotedPostId`, `language`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'iisssisis', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $content_warning, $quoted_post_id, $language);
+INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `contentWarning`, `quotedPostId`, `language`, `detectedLanguage`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'iisssisiss', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $content_warning, $quoted_post_id, $language, LanguageDetector::of((string) $description));
         } catch (\mysqli_sql_exception $exception) {
             // 1062 = the unique remoteObjectURI rejected a post already held.
             // Two relays naming the same post at once is an ordinary race, not

@@ -160,9 +160,9 @@ DELETE
             : [];
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'issssi', $this -> userId, $this -> title, $this -> description, $this -> descriptionDelta, $this -> linkURL, $this -> sensitive);
+INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `detectedLanguage`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+', 'issssis', $this -> userId, $this -> title, $this -> description, $this -> descriptionDelta, $this -> linkURL, $this -> sensitive, LanguageDetector::of((string) $this -> description));
         $post_id = (int) mysqli_insert_id(DB::connection());
 
         if ($this -> latitude !== null && $this -> longitude !== null) {

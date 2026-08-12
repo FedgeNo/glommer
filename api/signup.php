@@ -40,7 +40,6 @@ if (strlen($password) < 8) {
     $errors['password'] = 'Use at most 72 characters.';
 }
 
-$mysqli = DB::connection();
 $rate_key = 'signup:' . (ServerURL::clientIP() ?? 'unknown');
 
 if ($errors === []) {
@@ -104,7 +103,7 @@ DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `verified`)
     VALUES (?, ?, ?, ?, ?, ?)
 ', 'sssssi', $username, $email, $hash, $display_name, $description_value, $unverified);
-$new_user_id = (int) mysqli_insert_id($mysqli);
+$new_user_id = (int) mysqli_insert_id(DB::connection());
 
 $user = new User();
 $user -> userId = $new_user_id;

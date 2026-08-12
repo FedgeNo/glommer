@@ -91,17 +91,29 @@ SELECT `Posts`.`postId`
             default => 'Note',
         };
 
+        // Where it was written, as the vocabulary has always had it - and as a
+        // link in the content too, since almost nothing renders the property.
+        $place = ActivityPubPlace::forPost((int) $post -> postId);
+
         $document = [
             'id' => $uri,
             'type' => $type,
             'attributedTo' => ActivityPubActor::uriFor($author),
-            'content' => DeltaRenderer::toHTML(Delta::decode($post -> descriptionDelta)),
+            'content' => DeltaRenderer::toHTML(
+                Delta::decode($post -> descriptionDelta),
+                [],
+                $place === null ? [] : [ActivityPubPlace::linkFor($place)]
+            ),
             'url' => $uri,
             'published' => ActivityPubActor::timestamp((string) $post -> createdAt),
             'to' => [ActivityPubActor::PUBLIC_AUDIENCE],
             'cc' => [ActivityPubActor::followersFor($author)],
             'sensitive' => $post -> sensitive === 1,
         ];
+
+        if ($place !== null) {
+            $document['location'] = $place;
+        }
 
         if ($title !== '') {
             $document['name'] = $title;

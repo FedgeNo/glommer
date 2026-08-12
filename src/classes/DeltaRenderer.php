@@ -61,7 +61,13 @@ class DeltaRenderer extends Div
      * @param array[] $ops the Delta's ops
      * @param array<string, string> $customEmoji shortcode => image URL
      */
-    public static function toHTML(array $ops, array $customEmoji = []): string
+    /**
+     * @param HTMLObject[] $appended rendered into the same document, after the
+     *        body - anything the post carries that its Delta does not, like
+     *        where it was written. Built here rather than concatenated on
+     *        afterwards so the whole content is one document made in one pass.
+     */
+    public static function toHTML(array $ops, array $customEmoji = [], array $appended = []): string
     {
         $previous = self::$document ?? null;
 
@@ -71,6 +77,11 @@ class DeltaRenderer extends Div
             // Deliberately self rather than static: federation publishes the
             // whole post, never a subclass's truncated preview of it.
             $root = (new self($ops, $customEmoji)) -> toDOM();
+
+            foreach ($appended as $extra) {
+                $root -> appendChild($extra -> toDOM());
+            }
+
             $html = '';
 
             foreach ($root -> childNodes as $child) {

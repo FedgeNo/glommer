@@ -374,4 +374,96 @@ SELECT *
 
         $this -> assertSame(1, Post::publishedCountFor((int) $user -> userId));
     }
+
+    /** Puts a post at a point, the way the composer does. */
+    private static function locate(Post $post, float $latitude, float $longitude): void
+    {
+        DB::run('
+INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
+    VALUES (?, ?, ?)
+', 'idd', (int) $post -> postId, $latitude, $longitude);
+    }
+
+    /**
+     * A post that says where it was written says so on the wire.
+     *
+     * ActivityStreams has carried a location since the beginning, so that is
+     * what goes out - coordinates, not prose a receiver would have to parse
+     * back into them.
+     */
+    public function testAPostWithALocationCarriesItAsAPlace(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "Sunny here\n"]]);
+
+        self::locate($post, 49.2827, -123.1207);
+
+        $document = ActivityPubNote::document(self::reload($post), $user);
+
+        $this -> assertSame('Place', $document['location']['type'] ?? null);
+        $this -> assertSame(49.2827, (float) ($document['location']['latitude'] ?? 0));
+        $this -> assertSame(-123.1207, (float) ($document['location']['longitude'] ?? 0));
+    }
+
+    /**
+     * And says it where a person will actually see it.
+     *
+     * Mastodon reads neither the property nor the coordinates in it, and most
+     * implementations follow Mastodon - so a post whose only mention of where
+     * it came from is that property arrives somewhere nobody can see it.
+     */
+    public function testTheLocationIsAlsoALinkInTheContent(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "Sunny here\n"]]);
+
+        self::locate($post, 49.2827, -123.1207);
+
+        $content = ActivityPubNote::document(self::reload($post), $user)['content'];
+
+        $this -> assertTrue(str_contains($content, 'Sunny here'), 'the post is still the post');
+        $this -> assertTrue(str_contains($content, '/map?lat=49.2827'), 'and it leads back to the point: ' . $content);
+        $this -> assertTrue(str_starts_with($content, '<p>Sunny here'), 'the body comes first: ' . $content);
+    }
+
+    /**
+     * The whole content is one document rather than two glued together - the
+     * body rendered, then the location appended to that same render, so the
+     * escaping and the shape of an element are decided in one place.
+     */
+    public function testTheBodyAndTheLocationAreOneRender(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "5 > 3 & true\n"]]);
+
+        self::locate($post, 49.2827, -123.1207);
+
+        $content = ActivityPubNote::document(self::reload($post), $user)['content'];
+
+        // Escaped once, by the renderer - not twice, and not left raw.
+        $this -> assertTrue(str_contains($content, '5 &gt; 3 &amp; true'), $content);
+        $this -> assertFalse(str_contains($content, '&amp;gt;'), 'escaped twice: ' . $content);
+    }
+
+    /** A post with no location says nothing about one. */
+    public function testAPostWithoutALocationSaysNothingAboutOne(): void
+    {
+        $user = self::user();
+        $post = self::post((int) $user -> userId, [['insert' => "Nowhere in particular\n"]]);
+
+        $document = ActivityPubNote::document($post, $user);
+
+        $this -> assertFalse(isset($document['location']), 'no location property');
+        $this -> assertFalse(str_contains($document['content'], '/map?lat='), 'and no link to one');
+    }
+
+    /** The post as a query gives it back, so postId is set for the lookup. */
+    private static function reload(Post $post): Post
+    {
+        return DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', (int) $post -> postId);
+    }
 }

@@ -28,8 +28,14 @@ class RelayRetention
     /**
      * How many relayed posts this server keeps. Everything older than the
      * newest this many goes, provided nothing here holds it.
+     *
+     * Comfortably more than the window trending reads (Trending::WINDOW_SIZE),
+     * so that window is a choice about how much to score rather than a
+     * description of everything there was. Kept the same distance clear as it
+     * grows: a store the size of the window means the oldest post trending
+     * looks at is also the oldest post there is.
      */
-    public const RETAINED_POSTS = 5000;
+    public const RETAINED_POSTS = 20000;
 
     /**
      * How much one pass may take. A sweep competes with live traffic, so it

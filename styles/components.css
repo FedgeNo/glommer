@@ -2016,6 +2016,11 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     .HashtagNode { transition: none; }
 }
 
+/* The words for the language offer, rendered by the server because they are in
+   a language this page is not in. LanguagePrompt.js takes them into a dialog
+   and takes this away; it is never something to read in place. */
+.LanguagePrompt { display: none; }
+
 /* ---------- Confirm dialog ---------- */
 
 .ConfirmDialogOverlay {

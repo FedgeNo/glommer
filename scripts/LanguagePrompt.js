@@ -1,4 +1,5 @@
 import { Api } from '/scripts/Api.js';
+import { Dialog } from '/scripts/Dialog.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 
 /**
@@ -11,36 +12,17 @@ import { ReadyHandler } from '/scripts/ReadyHandler.js';
  * already built cannot be re-translated in place - every string on it came
  * from the server - so the reload is the point rather than a shortcut.
  *
+ * The offer is asked as a real dialog, which is what makes it answerable by
+ * somebody on a keyboard: it holds focus, Escape answers it, and the page
+ * behind it is not still tabbable underneath. The server renders the words -
+ * they are in a language this page is not in, so they cannot come from the
+ * strings the browser loaded - and this hands them to the dialog.
+ *
  * Declining is an answer too. It is recorded the same way, so the offer is
  * made once and not on every page after.
  */
 export class LanguagePrompt {
     static init() {
-        document.addEventListener('click', async (event) => {
-            const accept = event.target.closest('.LanguagePromptAccept');
-            const decline = event.target.closest('.LanguagePromptDecline');
-
-            if (!accept && !decline) {
-                return;
-            }
-
-            const prompt = event.target.closest('.LanguagePrompt');
-
-            if (accept) {
-                await LanguagePrompt.choose(prompt.dataset.locale);
-
-                return;
-            }
-
-            // Declining keeps the language they are already reading, which is
-            // still a choice - it is what stops the asking. Nothing on the page
-            // changes but the offer, so the offer is what goes: fetching the
-            // same page again to remove one card is a round trip for nothing.
-            if (await LanguagePrompt.remember(document.documentElement.lang)) {
-                prompt.remove();
-            }
-        });
-
         document.addEventListener('change', async (event) => {
             const select = event.target.closest('.LanguageSelect');
 
@@ -48,6 +30,33 @@ export class LanguagePrompt {
                 await LanguagePrompt.choose(select.value);
             }
         });
+
+        const offer = document.querySelector('.LanguagePrompt');
+
+        if (offer) {
+            LanguagePrompt.ask(offer);
+        }
+    }
+
+    static async ask(offer) {
+        const locale = offer.dataset.locale;
+        const words = (selector) => offer.querySelector(selector)?.textContent ?? '';
+
+        const question = words('.LanguagePromptQuestion');
+        const accept = words('.LanguagePromptAccept');
+        const decline = words('.LanguagePromptDecline');
+
+        offer.remove();
+
+        if (await Dialog.confirm(question, { confirmText: accept, cancelText: decline })) {
+            await LanguagePrompt.choose(locale);
+
+            return;
+        }
+
+        // Staying put changes nothing on the page, so nothing is fetched again -
+        // but it is still an answer, and recording it is what stops the asking.
+        await LanguagePrompt.remember(document.documentElement.lang);
     }
 
     /** Tells the server, and says whether it took. */

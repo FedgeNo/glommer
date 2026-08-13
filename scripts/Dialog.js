@@ -73,10 +73,15 @@ export class Dialog {
 
     /**
      * Show a confirmation dialog with OK / Cancel buttons.
+     * The buttons can be labelled with the answers themselves rather than OK
+     * and Cancel - a question whose two answers are in different languages has
+     * to say each one in its own.
+     *
      * @param {string} message
+     * @param {{ confirmText?: string, cancelText?: string }} labels
      * @returns {Promise<boolean>} – resolves true for OK, false for Cancel/Escape
      */
-    static confirm(message) {
+    static confirm(message, { confirmText = 'OK', cancelText = 'Cancel' } = {}) {
         Dialog.#activeCancel?.();
 
         return new Promise((resolve) => {
@@ -97,12 +102,12 @@ export class Dialog {
             const cancelButton = document.createElement('button');
             cancelButton.type = 'button';
             cancelButton.className = 'Button ConfirmDialogCancelButton';
-            cancelButton.textContent = 'Cancel';
+            cancelButton.textContent = cancelText;
 
             const confirmButton = document.createElement('button');
             confirmButton.type = 'button';
             confirmButton.className = 'Button ConfirmDialogConfirmButton';
-            confirmButton.textContent = 'OK';
+            confirmButton.textContent = confirmText;
 
             actions.appendWithSpace(cancelButton);
             actions.appendWithSpace(confirmButton);

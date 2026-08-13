@@ -46,6 +46,30 @@ class Place
      */
     public static function nearest(float $latitude, float $longitude): ?Place
     {
+        // Answered once per point per request. The gazetteer does not change
+        // while a page is being built, and a page asks the same question more
+        // than once as a matter of course: a pinned post is in the feed below
+        // it too, and somebody who posts from home posts from one point. Each
+        // of these costs a few milliseconds of trigonometry over a couple of
+        // thousand candidate rows, which is more than any other single thing a
+        // post needs.
+        //
+        // Keyed on the point as given rather than a rounded one: two places a
+        // few metres apart can sit either side of the line between two towns.
+        $key = $latitude . ',' . $longitude;
+
+        if (array_key_exists($key, self::$nearestByPoint)) {
+            return self::$nearestByPoint[$key];
+        }
+
+        return self::$nearestByPoint[$key] = self::nearestUncached($latitude, $longitude);
+    }
+
+    /** @var array<string, ?Place> */
+    private static array $nearestByPoint = [];
+
+    private static function nearestUncached(float $latitude, float $longitude): ?Place
+    {
         foreach (self::BOX_HALF_WIDTHS as $half_width) {
             $candidate = self::nearestInBox($latitude, $longitude, $half_width);
 

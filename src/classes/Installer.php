@@ -165,31 +165,27 @@ INSERT INTO `Settings` (`name`, `value`)
     {
         $setting = 'appVersion';
 
-        try {
-            $result = mysqli_stmt_get_result(DB::run('
+        // This one row and nothing else. The gate runs before it is known
+        // whether the request can be served at all, and reading the rest of the
+        // table here would be reading a schema the running code may disagree
+        // with - which is the thing the gate exists to stop. The page loads the
+        // settings it needs afterwards, once it is established there is a page.
+        //
+        // Nothing is caught. However the database fails to answer this - gone,
+        // refusing, or without the table to answer from - the request cannot be
+        // served and the caller sends a 500. A maintenance page would be
+        // telling somebody to run an installer against a database that is not
+        // there to be installed into.
+        $result = mysqli_stmt_get_result(DB::run('
 SELECT `value`
     FROM `Settings`
     WHERE `name` = ?
 ', 's', $setting));
-        } catch (\mysqli_sql_exception $exception) {
-            // A database with none of the tables in it is a database waiting to
-            // be installed, which the upgrade below knows how to do - so it
-            // reads as no version rather than as a fault. Anything else the
-            // database has to say is a fault.
-            if ($exception -> getCode() !== self::NO_SUCH_TABLE) {
-                throw $exception;
-            }
-
-            return null;
-        }
 
         $row = $result === false ? null : mysqli_fetch_assoc($result);
 
         return $row === null ? null : (string) $row['value'];
     }
-
-    /** MySQL's ER_NO_SUCH_TABLE. */
-    private const NO_SUCH_TABLE = 1146;
 
     /**
      * Called from init.php's version gate on every request while the database

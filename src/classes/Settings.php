@@ -23,12 +23,32 @@ class Settings
 
     public static function get(string $name, ?string $default = null): ?string
     {
-        self::load();
+        try {
+            self::load();
+        } catch (\mysqli_sql_exception $exception) {
+            // The Settings table may not exist yet - an existing install whose
+            // code was updated before the schema migration ran. This is on the
+            // login/signup render path, so degrade gracefully: treat every
+            // setting as unset (Turnstile stays off) rather than failing the
+            // whole page. The version gate, which asks through load() itself,
+            // does want to hear about it.
+        }
 
         return self::$cache[$name] ?? $default;
     }
 
-    private static function load(): void
+    /**
+     * Reads the table, once.
+     *
+     * Public because the version gate reads a setting before anything else on
+     * the request does, and that read is the one that must not be swallowed -
+     * a database that cannot answer is a server fault, not a site with its
+     * settings unset. Everything after it is served from what this brought
+     * back.
+     *
+     * @throws \mysqli_sql_exception
+     */
+    public static function load(): void
     {
         if (self::$loaded) {
             return;
@@ -39,23 +59,15 @@ class Settings
         // stop.
         self::$loaded = true;
 
-        try {
-            $result = mysqli_stmt_get_result(DB::run('
+        $result = mysqli_stmt_get_result(DB::run('
 SELECT `name`, `value`
     FROM `Settings`
 '));
 
-            while ($result !== false && $row = mysqli_fetch_assoc($result)) {
-                // Whatever a caller has already stored this request stands: it
-                // knows something the table does not yet.
-                self::$cache[$row['name']] ??= $row['value'];
-            }
-        } catch (\mysqli_sql_exception $exception) {
-            // The Settings table may not exist yet - an existing install whose
-            // code was updated before the schema migration ran. This is on the
-            // login/signup render path, so degrade gracefully: treat every
-            // setting as unset (Turnstile stays off) rather than failing the
-            // whole page.
+        while ($result !== false && $row = mysqli_fetch_assoc($result)) {
+            // Whatever a caller has already stored this request stands: it
+            // knows something the table does not yet.
+            self::$cache[$row['name']] ??= $row['value'];
         }
     }
 

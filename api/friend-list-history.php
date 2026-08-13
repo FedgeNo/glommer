@@ -13,6 +13,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
+// Paced per client, like every other list a signed-out visitor can page. A page
+// here loads a row of accounts and builds each one's card, so it costs more
+// than the single indexed read it looks like, and the offset is the caller's -
+// which is what turns a loop into a walk through the whole table.
+$rate_key = 'friend-list-history:' . (ServerURL::clientIP() ?? 'unknown');
+
+if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+    JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 // Serves the next page for any of the three friend sections. The friends list
 // is public (anyone can browse a profile's friends); the incoming/outgoing
 // request lists are private to their owner, so those require you to be the

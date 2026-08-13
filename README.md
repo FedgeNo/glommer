@@ -253,6 +253,12 @@ band).
   `pip`/`venv`), so the installer can build the NER environment (§8) and the
   translation environment (§6); only the NER build additionally needs dev
   headers and a C++ compiler.
+- **Free disk space: 25GB minimum, 500GB or more recommended.** The minimum is
+  what it takes to install and try the thing: most of it is the translation
+  environment, which is PyTorch plus a model for every language pair Argos
+  publishes (§6, skippable). The recommendation is for a site with members on
+  it - uploads are kept at full size alongside their transcodes, and a video
+  is the largest thing anybody posts.
 - **Three background daemons plus a timer**, all separate from the web server
   and all set up for you by the installer (§7).
 
@@ -352,11 +358,11 @@ continue until this is genuinely in place (set `SERVERNAME_CONFIRMED=1` to
 assert it in a non-interactive run).
 
 **Skipping the translation environment.** The installer builds a Python venv
-with PyTorch and a model per language pair in it, which is the better part of a
-gigabyte to fetch. An installation that will never offer the translate button
-can set `SKIP_TRANSLATE=1` and the installer leaves it alone, saying so in its
-output; translation stays unavailable there until it is run again without the
-flag. Everything else installs as normal.
+with PyTorch and a model for every language pair Argos publishes - around a
+hundred packages, ten gigabytes, and a long download. An installation that will
+never offer the translate button can set `SKIP_TRANSLATE=1` and the installer
+leaves it alone, saying so in its output; translation stays unavailable there
+until it is run again without the flag. Everything else installs as normal.
 
 **Getting a certificate.** The cert lives in your web server, not in Glommer.
 

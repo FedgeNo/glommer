@@ -49,16 +49,42 @@ class TranslatorTest extends TestCase
         }
     }
 
-    public function testEveryWantedLanguageHasBothDirections(): void
+    /**
+     * What the installer downloads is the difference between two argospm
+     * listings, which are printed differently - so reading one of them as the
+     * other would have it download every package it already holds.
+     */
+    public function testBothArgosListingsAreReadAsPackageNames(): void
     {
-        $packages = Translator::wantedPackages();
+        $search = Translator::packagesIn("translate-sq_en: sq -> en\ntranslate-en_zh: en -> zh\n");
+        $list = Translator::packagesIn("translate-sq_en\ntranslate-en_zh\n");
+        $versioned = Translator::packagesIn("translate-sq_en-1_9\ntranslate-en_zh-1_1\n");
 
-        foreach (Translator::LANGUAGES as $language) {
-            $this -> assertTrue(in_array('translate-en_' . $language, $packages, true), $language . ' out of English');
-            $this -> assertTrue(in_array('translate-' . $language . '_en', $packages, true), $language . ' into English');
-        }
+        $this -> assertSame(['translate-sq_en', 'translate-en_zh'], $search);
+        $this -> assertSame($search, $list, 'the same packages, however they were listed');
+        $this -> assertSame($search, $versioned, 'a version on the end is the same package, not a missing one');
+    }
 
-        $this -> assertFalse(in_array(Translator::PIVOT, Translator::LANGUAGES, true), 'the pivot is not one of the pairs');
+    /** Standard output carries whatever else the command had to say. */
+    public function testWhatIsNotAPackageNameIsNotTakenForOne(): void
+    {
+        $listing = "Downloading index...\ntranslate-en_es: en -> es\n\nrm -rf /: nice try\n";
+
+        $this -> assertSame(['translate-en_es'], Translator::packagesIn($listing));
+    }
+
+    /**
+     * Both naming shapes Argos has published, because a server added to over
+     * time holds a mix of them and a language read from neither is a language
+     * the installation quietly stops offering.
+     */
+    public function testAPackageDirectoryNamesItsTwoLanguages(): void
+    {
+        $languages = Translator::languagesIn(['en_es', 'translate-de_en-1_3', 'stanza_resources', '__pycache__', '.']);
+
+        sort($languages);
+
+        $this -> assertSame(['de', 'en', 'es'], $languages);
     }
 
     // ---- Requests that should be turned away before anything is run ----
@@ -87,13 +113,14 @@ class TranslatorTest extends TestCase
      * passes for a tag - and would otherwise cost a slot and five seconds to
      * learn what this already knows.
      */
-    public function testOnlyLanguagesThisInstallationHasAreAttempted(): void
+    public function testOnlyLanguagesThisInstallationHasAPackageForAreAttempted(): void
     {
-        $this -> assertTrue(Translator::isSupported('de'));
-        $this -> assertTrue(Translator::isSupported('pt-BR'));
-        $this -> assertTrue(Translator::isSupported(Translator::PIVOT));
+        foreach (Translator::installedLanguages() as $language) {
+            $this -> assertTrue(Translator::isSupported($language), $language);
+            $this -> assertTrue(Translator::isSupported($language . '-BR'), 'a place does not make it another language');
+        }
 
-        foreach (['not-a-language', 'xyz', 'eo', null, ''] as $unsupported) {
+        foreach (['not-a-language', 'xyz', null, ''] as $unsupported) {
             $this -> assertFalse(Translator::isSupported($unsupported), var_export($unsupported, true));
         }
     }

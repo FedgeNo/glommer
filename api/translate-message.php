@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 Auth::requireLogin();
 
-if (!Translator::isAvailable()) {
+if (!Translator::canTranslate()) {
     JSONResponse::error('Translation is not available on this server.', 503) -> send();
 }
 
@@ -73,7 +73,10 @@ RateLimiter::recordAttempt($rate_key);
 // Nothing is written down. A post's translation is cached because a post is
 // public and the same one is read by everybody; a message is one conversation's
 // own, and a second copy of it in another table is a second thing to leak.
-$translated = Translator::translate($source_text, $language, null);
+// Read off the words here rather than stored: a message has no row of its own
+// to keep a language on, and nothing else has read it - the trending pass never
+// sees a message and never should.
+$translated = Translator::translate($source_text, $language, LanguageDetector::of($source_text));
 
 if ($translated === null) {
     JSONResponse::error('Translation is not available right now. Please try again later.', 502) -> send();

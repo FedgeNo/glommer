@@ -70,18 +70,10 @@ class Translator
     private const MAX_OUTPUT_BYTES = 262144;
 
     /**
-     * The languages worth holding packages for: the ones this server has
-     * actually seen people writing in (Posts.detectedLanguage), which is the
-     * only honest basis for spending 158MB a direction. Adding one is adding
-     * it here and re-running the installer; every language Argos publishes is
-     * available, this list is a budget rather than a limit.
-     *
-     * English is the pivot rather than a preference - Argos routes any pair
-     * through it, so the set costs two packages a language instead of one per
-     * pairing.
+     * English is the pivot rather than a preference - Argos publishes each
+     * package as English and one other language and routes any other pairing
+     * through it, so a language costs two packages instead of one per pairing.
      */
-    public const LANGUAGES = ['de', 'es', 'fi', 'fr', 'it', 'ja', 'lv', 'pl', 'pt'];
-
     public const PIVOT = 'en';
 
     /**
@@ -129,6 +121,19 @@ class Translator
      * fails where asking for the language would have worked.
      */
     /**
+     * Whether this installation can translate anything at all.
+     *
+     * Either does: Argos where its packages are installed, and the model
+     * provider for whatever they do not cover - or for the whole job on a
+     * server with no Argos. Both are optional, so both being absent is a real
+     * state and the one case where there is nothing to offer a reader.
+     */
+    public static function canTranslate(): bool
+    {
+        return self::isAvailable() || OpenRouter::isEnabled();
+    }
+
+    /**
      * Why this pair cannot be translated, or null where nothing stops it.
      *
      * Every one of these is settled: asking again in a minute answers the same.
@@ -141,8 +146,7 @@ class Translator
         $source = self::baseLanguage($source);
         $target = self::baseLanguage($target);
 
-        // Either can do the work, so it takes both being absent to refuse.
-        if (!self::isAvailable() && !OpenRouter::isEnabled()) {
+        if (!self::canTranslate()) {
             return self::UNAVAILABLE;
         }
 
@@ -168,13 +172,9 @@ class Translator
     }
 
     /**
-     * A language this installation holds no package for, translated by the
-     * model provider instead.
-     *
-     * Every pair Argos can do is a download, and the ones it can do are a
-     * hundred pairs of a few hundred megabytes each - more than a server has
-     * room for to cover a language that turns up once. So the common ones are
-     * installed and the rest are asked of a model.
+     * The words as the model provider renders them, for everything Argos did
+     * not do: a language it publishes no package for, a server that installed
+     * none, or a translation that simply failed.
      *
      * Given the words and nothing else: the model is told to answer with the
      * translation alone, and anything it says about itself would be printed at
@@ -185,10 +185,17 @@ class Translator
         $answer = OpenRouter::chat([
             [
                 'role' => 'system',
+                // Addresses, tags and handles are identifiers rather than
+                // words: a translated #cats reaches a tag page nobody is
+                // writing under, and a translated @name addresses nobody at
+                // all. Said explicitly because a model asked to translate a
+                // sentence will happily translate the words inside them.
                 'content' => 'You are a translation engine. Translate the user\'s message from '
                     . $source . ' into ' . $target . '. Reply with the translation and nothing else -'
-                    . ' no notes, no quotes around it, no explanation. Keep the line breaks. If it is'
-                    . ' already in ' . $target . ', reply with it unchanged.',
+                    . ' no notes, no quotes around it, no explanation. Keep the line breaks.'
+                    . ' Leave URLs, #hashtags and @mentions exactly as they are, including any'
+                    . ' words inside them. If it is already in ' . $target . ', reply with it'
+                    . ' unchanged.',
             ],
             ['role' => 'user', 'content' => $text],
         ], self::MODEL_MAX_TOKENS);
@@ -413,7 +420,54 @@ SELECT RELEASE_LOCK(?)
     {
         $base = self::baseLanguage($language);
 
-        return $base !== null && ($base === self::PIVOT || in_array($base, self::LANGUAGES, true));
+        return $base !== null && in_array($base, self::installedLanguages(), true);
+    }
+
+    /**
+     * The languages there is a package on disk for.
+     *
+     * Read from the package directory rather than listed here, because what a
+     * server can do is what its admin downloaded: the installer fetches every
+     * pair Argos publishes, but one can be missing for the length of a failed
+     * download and a server can be told to skip translation entirely.
+     *
+     * @return string[]
+     */
+    public static function installedLanguages(): array
+    {
+        static $languages = null;
+
+        if ($languages === null) {
+            $languages = self::languagesIn(array_map('basename', glob(self::PACKAGES_DIR . '/*', GLOB_ONLYDIR) ?: []));
+        }
+
+        return $languages;
+    }
+
+    /**
+     * The languages a set of package directory names covers.
+     *
+     * Two shapes are read, because Argos has published both and a server that
+     * has been added to over time holds a mix: "en_es", and "translate-en_es-1_9"
+     * with the package version on the end. Anything else down there - the
+     * package manager's own working directories - names no pair and is skipped.
+     *
+     * @param string[] $directories
+     *
+     * @return string[]
+     */
+    public static function languagesIn(array $directories): array
+    {
+        $languages = [];
+
+        foreach ($directories as $directory) {
+            if (preg_match('/\A(?:translate-)?([a-z]{2,3})_([a-z]{2,3})(?:-[0-9_]+)?\z/', $directory, $matches) === 1) {
+                $languages[$matches[1]] = true;
+                $languages[$matches[2]] = true;
+            }
+        }
+
+        return array_keys($languages);
     }
 
     /**
@@ -431,23 +485,32 @@ SELECT RELEASE_LOCK(?)
     }
 
     /**
-     * The package names this installation wants, for bin/install.php.
+     * The package names in a listing from argospm, for bin/install.php.
      *
-     * Both directions per language, because a package translates one way and
-     * a reader wants both: their language into the pivot, and the pivot into
-     * theirs.
+     * Both of its listings, because the installer wants the difference between
+     * them and they are printed differently: "argospm search" names a package
+     * and then describes it ("translate-en_es: en -> es"), "argospm list" names
+     * it alone. A line naming no package is skipped rather than trusted -
+     * these come off a command's standard output, which carries whatever else
+     * it has to say about a slow index.
+     *
+     * Reduced to the pair it holds, so anything trailing the name - a version,
+     * a description - cannot make a package that is installed look missing.
+     * The difference between the two listings is a download of a hundred
+     * megabytes a package, on a connection somebody pays for by the gigabyte.
      *
      * @return string[]
      */
-    public static function wantedPackages(): array
+    public static function packagesIn(string $listing): array
     {
         $packages = [];
 
-        foreach (self::LANGUAGES as $language) {
-            $packages[] = 'translate-' . self::PIVOT . '_' . $language;
-            $packages[] = 'translate-' . $language . '_' . self::PIVOT;
+        foreach (explode("\n", $listing) as $line) {
+            if (preg_match('/\Atranslate-([a-z]{2,3})_([a-z]{2,3})\b/', trim($line), $matches) === 1) {
+                $packages[] = 'translate-' . $matches[1] . '_' . $matches[2];
+            }
         }
 
-        return $packages;
+        return array_values(array_unique($packages));
     }
 }

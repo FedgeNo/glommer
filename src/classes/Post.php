@@ -579,7 +579,7 @@ UPDATE `Posts`
      */
     public function translatable(): bool
     {
-        return (string) $this -> description !== '' && Translator::isAvailable();
+        return (string) $this -> description !== '' && Translator::canTranslate();
     }
 
     public static function delete(int $post_id): void

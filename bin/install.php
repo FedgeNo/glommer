@@ -2729,10 +2729,10 @@ function ensure_translate_environment(): void
 {
     heading('Translation environment (running as root)');
 
-    // A Python venv with PyTorch and a language model per pair in it - the
-    // better part of a gigabyte to fetch. An installation that will never
-    // serve the translate button (a development box, a mirror) can say so and
-    // skip the download rather than paying for it on every install.
+    // A Python venv with PyTorch and a language model per pair in it - around
+    // ten gigabytes to fetch. An installation that will never serve the
+    // translate button (a development box, a mirror) can say so and skip the
+    // download rather than paying for it on every install.
     if (Env::get('SKIP_TRANSLATE', '') === '1') {
         ok('Skipped: SKIP_TRANSLATE=1. Nothing is installed at ' . TRANSLATE_VENV_DIR
             . ', and translation stays unavailable on this installation until this runs without the flag.');
@@ -2805,23 +2805,27 @@ function ensure_translate_environment(): void
     // for by name - a stale one reports a package missing that exists.
     run($argos_env . ':argospm update 2>&1', ['argospm' => $argospm]);
 
-    $installed = run($argos_env . ':argospm list 2>/dev/null', ['argospm' => $argospm])['output'];
-    $missing = [];
+    // Every pair the index offers, rather than a chosen few: which languages a
+    // server's readers and its federated posts arrive in is not knowable in
+    // advance, and a language with no package is a translation asked of a model
+    // instead - a cost per reader, where a package is paid for once. The whole
+    // set is around ten gigabytes of disk.
+    $available = Translator::packagesIn(run($argos_env . ':argospm search 2>/dev/null', ['argospm' => $argospm])['output']);
+    $installed = Translator::packagesIn(run($argos_env . ':argospm list 2>/dev/null', ['argospm' => $argospm])['output']);
+    $missing = array_values(array_diff($available, $installed));
 
-    foreach (Translator::wantedPackages() as $package) {
-        if (!str_contains($installed, $package)) {
-            $missing[] = $package;
-        }
-    }
-
-    if ($missing === []) {
-        ok('Argos Translate and all ' . count(Translator::wantedPackages()) . ' language packages already installed at ' . TRANSLATE_VENV_DIR);
+    if ($available === []) {
+        warn('Could not read the list of available packages from argospm, so nothing was downloaded. Whatever is already installed still works and the rest falls back to the configured model provider. Check this machine can reach the Argos package index, then re-run.');
+    } elseif ($missing === []) {
+        ok('Argos Translate and all ' . count($available) . ' language packages already installed at ' . TRANSLATE_VENV_DIR);
     } else {
-        // Around a hundred megabytes each. A pair that fails is reported and
-        // skipped rather than stopping the rest: a language nobody has a
-        // package for should cost that language, not the whole button.
-        foreach ($missing as $package) {
-            echo 'Downloading ' . $package . "...\n";
+        echo 'Downloading ' . count($missing) . ' of ' . count($available) . " language packages, around a hundred megabytes each...\n";
+
+        // A pair that fails is reported and skipped rather than stopping the
+        // rest: a language whose package will not download should cost that
+        // language, not every other one behind it in the list.
+        foreach ($missing as $position => $package) {
+            echo '[' . ($position + 1) . '/' . count($missing) . '] ' . $package . "\n";
             $result = run($argos_env . ':argospm install :package 2>&1', ['argospm' => $argospm, 'package' => $package]);
 
             if ($result['exitCode'] !== 0) {

@@ -96,7 +96,7 @@ class Message extends Article implements \JsonSerializable
         // Only on what arrived, never on what this member wrote: reading a
         // message in another language is the whole point, and their own words
         // need no decoding. Nothing happens until it is pressed.
-        if (Auth::check() && Auth::id() === $this -> recipientId && Translator::isAvailable()) {
+        if (Auth::check() && Auth::id() === $this -> recipientId && Translator::canTranslate()) {
             $line -> addContent(new MessageTranslateButton((int) $this -> messageId));
         }
 

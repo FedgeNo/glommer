@@ -177,6 +177,33 @@ SELECT *
     }
 
     /**
+     * Whether any report holds this attachment in its snapshot.
+     *
+     * What makes an upload's kept original readable by a moderator: it was
+     * attached to a post somebody reported, and the snapshot taken at that
+     * moment listed it. Read out of the snapshots rather than off the post,
+     * because the case this exists for is a post that has since been deleted -
+     * its rows are gone and the snapshot is all that remembers what was on it.
+     *
+     * The snapshot is JSON in a text column, so this is a scan of the reports
+     * table. It runs once per piece of forensic media a moderator looks at,
+     * against a table the size of a moderation queue.
+     */
+    public static function capturedAttachment(int $item_id): bool
+    {
+        $wanted = (string) $item_id;
+
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT 1
+    FROM `Reports`
+    WHERE JSON_CONTAINS(`snapshot`, ?, \'$.attachmentIds\')
+    LIMIT 1
+', 's', $wanted));
+
+        return $result !== false && mysqli_fetch_row($result) !== null;
+    }
+
+    /**
      * @return int[] the FeedItem ids attached to a post, in id order
      */
     private static function attachmentIds(int $post_id): array

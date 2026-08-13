@@ -26,6 +26,16 @@ if ($item_id <= 0) {
     exit;
 }
 
+// Only what a report actually captured. Being mod-gated is not the same as
+// being scoped: without this, the kept original of any upload on the server is
+// one guessed id away, reported or not, and the kept originals are the copies
+// that outlive a deletion. A report card only ever asks for ids out of a
+// snapshot, so nothing that should be reachable stops being.
+if (!Report::capturedAttachment($item_id)) {
+    http_response_code(404);
+    exit;
+}
+
 $original = UploadProcessor::originalForItem($item_id);
 
 if ($original === null) {

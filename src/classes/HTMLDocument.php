@@ -48,6 +48,17 @@ class HTMLDocument extends Document
         self::$document -> encoding = 'UTF-8';
         self::$document -> formatOutput = true;
 
+        $this -> applyReaderTheme();
+
+        return parent::toDOM();
+    }
+
+    /**
+     * The theme this reader chose, which is a column on their row - so a
+     * document that must not read the database overrides this with nothing.
+     */
+    protected function applyReaderTheme(): void
+    {
         if (Auth::check()) {
             $current_user = Auth::user();
 
@@ -55,8 +66,6 @@ class HTMLDocument extends Document
                 $this -> attributes['data-theme'] = $current_user -> theme;
             }
         }
-
-        return parent::toDOM();
     }
 
     public function __toString(): string

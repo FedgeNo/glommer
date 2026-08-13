@@ -116,6 +116,66 @@ INSERT INTO `Settings` (`name`, `value`)
         return $match[1];
     }
 
+    /** How long an unsuccessful upgrade stands as the answer for. */
+    private const UPGRADE_RETRY_SECONDS = 60;
+
+    /**
+     * Whether to read the schema again, or let the last attempt stand.
+     *
+     * What stops a silent upgrade is still true a moment later: a rename only
+     * a person can judge, or no account holding the privileges for DDL. Left
+     * unguarded, every request arriving while the site is behind reads the
+     * whole schema to be told that again, which is worst exactly when the site
+     * is already struggling. Trying once a minute picks up an admin fixing the
+     * reason soon enough, and leaves the maintenance page costing one query.
+     *
+     * The marker is keyed to this installation and this version of the code,
+     * so pulling a new one is tried at once rather than waited out.
+     */
+    private static function mayAttemptUpgrade(): bool
+    {
+        $marker = sys_get_temp_dir() . '/glommer-upgrade-' . hash('sha256', __DIR__ . '|' . self::codeVersion());
+        $attempted = is_file($marker) ? (int) filemtime($marker) : 0;
+
+        if (time() - $attempted < self::UPGRADE_RETRY_SECONDS) {
+            return false;
+        }
+
+        // Before the attempt rather than after it, so the requests arriving
+        // during a slow migration wait for it instead of starting their own.
+        touch($marker);
+
+        return true;
+    }
+
+    /**
+     * The version the database says it was installed at, or null where it has
+     * never been stamped with one.
+     *
+     * Read straight rather than through Settings, which answers a query that
+     * failed with "unset" so a login page still renders. This one is the gate
+     * every request passes: a database that cannot be asked what version it is
+     * is a server fault, and reading it as an old version would answer every
+     * visitor with a maintenance page saying to run an installer that would
+     * find nothing wrong.
+     *
+     * @throws \mysqli_sql_exception
+     */
+    public static function recordedVersion(): ?string
+    {
+        $setting = 'appVersion';
+
+        $result = mysqli_stmt_get_result(DB::run('
+SELECT `value`
+    FROM `Settings`
+    WHERE `name` = ?
+', 's', $setting));
+
+        $row = $result === false ? null : mysqli_fetch_assoc($result);
+
+        return $row === null ? null : (string) $row['value'];
+    }
+
     /**
      * Called from init.php's version gate on every request while the database
      * is behind GLOMMER_VERSION - a separate concern from the fresh-install
@@ -142,6 +202,10 @@ INSERT INTO `Settings` (`name`, `value`)
      */
     public static function attemptSilentUpgrade(): bool
     {
+        if (!self::mayAttemptUpgrade()) {
+            return false;
+        }
+
         $previous_ignore_user_abort = ignore_user_abort(true);
 
         try {

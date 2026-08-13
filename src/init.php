@@ -212,13 +212,6 @@ if ($site_is_installed && !str_starts_with((string) Config::get('siteURL'), 'htt
     exit;
 }
 
-// Persistent "Remember me" login: a request arriving without a session but
-// with a valid remember-me cookie gets its session re-established (and the
-// used token rotated) before anything below asks who's logged in.
-if (!Auth::check()) {
-    RememberToken::loginFromCookie();
-}
-
 // Version gate: the code and the database must have been installed/upgraded
 // together. After a code update, the database stays at the old version until
 // `php bin/install.php` applies the migrations and records the new version -
@@ -226,7 +219,25 @@ if (!Auth::check()) {
 // exist yet), so lock everyone out with a maintenance page instead. The admin
 // (userId 1) gets the specific mismatch and the fix; everyone else gets a
 // generic "upgrading" message.
-$db_app_version = Settings::get('appVersion');
+//
+// First of everything that reads the database, and one query: whether this
+// request may be served at all is settled before anything spends a query on
+// who is asking, and the page it is turned away with reads nothing further.
+try {
+    $db_app_version = Installer::recordedVersion();
+} catch (\mysqli_sql_exception $exception) {
+    error_log('Version gate could not read the recorded version: ' . $exception);
+
+    if (defined('IS_API_REQUEST')) {
+        JSONResponse::error('Server error', 500) -> send();
+    }
+
+    // Not the maintenance page: a database that answers nothing is not a
+    // database waiting for an installer to be run, and telling an admin to run
+    // one would send them after a migration that is not the problem.
+    MaintenancePage::saying(500, 'Something Went Wrong', 'The site cannot reach its database. Please try again, and let us know if it keeps happening.') -> send();
+    exit;
+}
 
 if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
     if (defined('IS_API_REQUEST')) {
@@ -237,8 +248,15 @@ if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
         ? 'The code is version ' . GLOMMER_VERSION . ' but the database is at ' . ($db_app_version ?? 'an unknown version') . '. Run "php bin/install.php" to bring the database up to date.'
         : 'The site is being upgraded and will be back shortly.';
 
-    ErrorDocument::sendWithoutChrome(503, 'Upgrade In Progress', $maintenance_message);
+    MaintenancePage::saying(503, 'Upgrade In Progress', $maintenance_message) -> send();
     exit;
+}
+
+// Persistent "Remember me" login: a request arriving without a session but
+// with a valid remember-me cookie gets its session re-established (and the
+// used token rotated) before anything below asks who's logged in.
+if (!Auth::check()) {
+    RememberToken::loginFromCookie();
 }
 
 if (!Auth::check() && basename($_SERVER['SCRIPT_FILENAME']) !== 'signup.php') {

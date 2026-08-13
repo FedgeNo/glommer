@@ -11,12 +11,7 @@ class ErrorDocument
      * that here - it asks whether there are unseen notifications - so this
      * sends the same page without it.
      */
-    public static function sendWithoutChrome(int $status_code, string $title, string $message): void
-    {
-        self::send($status_code, $title, $message, false);
-    }
-
-    public static function send(int $status_code, string $title, string $message, bool $with_chrome = true): void
+    public static function send(int $status_code, string $title, string $message): void
     {
         while (ob_get_level() > 0) {
             ob_end_clean();
@@ -25,7 +20,6 @@ class ErrorDocument
         http_response_code($status_code);
 
         $page = new Page(['title' => $title]);
-        $page -> showNavigation = $with_chrome;
 
         $page -> addContent(new Paragraph($message));
 

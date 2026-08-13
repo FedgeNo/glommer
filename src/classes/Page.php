@@ -204,12 +204,6 @@ class Page extends HTMLDocument
         }
     }
 
-    /**
-     * Whether to render the site navigation. Off only for a page shown because
-     * the database is not safe to read - see ErrorDocument::sendWithoutChrome.
-     */
-    public bool $showNavigation = true;
-
     private function assembleBody(): void
     {
         $this -> body -> class = $this -> bodyClass !== null ? 'PageBody ' . $this -> bodyClass : 'PageBody';
@@ -235,15 +229,9 @@ class Page extends HTMLDocument
 
         $main -> addContents($this -> body -> contents);
 
-        // The navigation reads the database - it asks whether this member has
-        // unseen notifications - so a page sent because the database cannot be
-        // trusted leaves it off rather than querying tables the running code
-        // may no longer agree with.
         // The skip link leads, because a thing that lets somebody past the
         // navigation has to come before it.
-        $this -> body -> contents = $this -> showNavigation
-            ? [new SkipLink, new MainNavigation, $main]
-            : [$main];
+        $this -> body -> contents = [new SkipLink, new MainNavigation, $main];
 
         $this -> addContent(new ScrollToTopButton);
 

@@ -75,7 +75,7 @@ class Message extends Article implements \JsonSerializable
         // never overlaps the text.
         $line = new MessageLine();
 
-        $body = new Paragraph();
+        $body = new MessageBody();
 
         if ($this -> bodyCiphertext !== null) {
             // The server can't read this one - it ships the envelope on the

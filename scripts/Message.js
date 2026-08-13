@@ -51,7 +51,8 @@ export class Message {
         const line = document.createElement('div');
         line.className = 'MessageLine';
 
-        const body = document.createElement('p');
+        const body = document.createElement('pre');
+        body.className = 'MessageBody';
 
         if (this.bodyCiphertext !== null) {
             div.className += ' Encrypted Locked';
@@ -84,7 +85,7 @@ export class Message {
         // not somebody's writing.
         this.element.querySelectorAll(EmojiRenderer.CONTENT).forEach(content => EmojiRenderer.render(content));
 
-        const messageBody = div.querySelector('.MessageLine p');
+        const messageBody = div.querySelector('.MessageBody');
         if (messageBody && EmojiRenderer.isEmojiOnly(messageBody)) {
             div.classList.add('emoji-only');
         }
@@ -114,7 +115,7 @@ export class Message {
         const thread_key = MessageCrypto.threadKey();
         if (thread_key === null) return;
 
-        const body = article.querySelector('.MessageLine p');
+        const body = article.querySelector('.MessageBody');
         const text = await MessageCrypto.decrypt(thread_key, envelope);
 
         if (text === null) {

@@ -23,7 +23,7 @@ export default {
             TestCase.assertTrue(element.classList.contains('Locked'));
             TestCase.assertEquals('{"v":1}', element.dataset.cipherEnvelope);
             TestCase.assertEquals('9', element.dataset.messageId);
-            TestCase.assertEquals('Encrypted message', element.querySelector('.MessageLine p').textContent);
+            TestCase.assertEquals('Encrypted message', element.querySelector('.MessageBody').textContent);
         },
 
         'a plaintext payload renders its body with no envelope'() {
@@ -38,9 +38,28 @@ export default {
 
             const element = message.toElement();
 
-            TestCase.assertEquals('hello there', element.querySelector('.MessageLine p').textContent);
+            TestCase.assertEquals('hello there', element.querySelector('.MessageBody').textContent);
             TestCase.assertFalse(element.classList.contains('Locked'));
             TestCase.assertFalse('cipherEnvelope' in element.dataset);
+        },
+
+        /** The same element the server renders, so a live message keeps its shape too. */
+        'a message arriving live keeps the lines it was written with'() {
+            const written = "def greet(name):\n    print('hi ' + name)";
+
+            const message = Message.fromData({
+                messageId: 11,
+                senderId: 2,
+                recipientId: 1,
+                body: written,
+                bodyCiphertext: null,
+                createdAt: '2026-08-01 12:00:00',
+            });
+
+            const body = message.toElement().querySelector('.MessageBody');
+
+            TestCase.assertEquals('PRE', body.tagName);
+            TestCase.assertEquals(written, body.textContent);
         },
     }
 };

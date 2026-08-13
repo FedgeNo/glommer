@@ -1172,7 +1172,16 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     padding: 0.5rem 1rem;
 }
 
-.Message p { overflow-wrap: anywhere; }
+/* The line breaks and the indentation somebody typed, kept - and still the
+   site's own typeface, wrapping like every other paragraph on the page. The
+   element is preformatted because the shape of the text is part of what was
+   said, not because the words are code. */
+.MessageBody {
+    margin: 0;
+    font: inherit;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 
 .MessageByline {
     display: flex;

@@ -124,7 +124,7 @@ export class EmojiRenderer {
         });
 
         // Messages
-        document.querySelectorAll('.MessageLine p').forEach(body => {
+        document.querySelectorAll('.MessageBody').forEach(body => {
             if (EmojiRenderer.isEmojiOnly(body)) {
                 const card = body.closest('.Message');
                 if (card) card.classList.add('emoji-only');

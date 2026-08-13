@@ -43,7 +43,7 @@ class MessageRenderingTest extends TestCase
         $this -> assertSame('{"v":1,"iv":"abc"}', $element -> getAttribute('data-cipher-envelope'));
         $this -> assertSame('7', $element -> getAttribute('data-message-id'));
 
-        $body = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//p', $element) -> item(0);
+        $body = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//*[@class="MessageBody"]', $element) -> item(0);
         $this -> assertSame('Encrypted message', $body -> textContent);
     }
 
@@ -57,8 +57,29 @@ class MessageRenderingTest extends TestCase
         $this -> assertFalse($element -> hasAttribute('data-cipher-envelope'));
         $this -> assertFalse(str_contains($element -> getAttribute('class'), 'Locked'));
 
-        $body = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//p', $element) -> item(0);
+        $body = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//*[@class="MessageBody"]', $element) -> item(0);
         $this -> assertSame('hello there', $body -> textContent);
+    }
+
+    /**
+     * The line breaks and the indentation somebody typed are part of what they
+     * said. Asserted on the serialized markup as well as the DOM, because a
+     * formatter that indents the children of an element would rewrite pasted
+     * code on its way out and every assertion against the tree would still pass.
+     */
+    public function testAMessageKeepsTheLineBreaksAndIndentationItWasWrittenWith(): void
+    {
+        $written = "def greet(name):\n    print('hi ' + name)\n\ngreet('you')";
+
+        $message = $this -> message();
+        $message -> body = $written;
+
+        $element = $this -> elementFor($message);
+        $body = new \DOMXPath(HTMLObject::currentDocument()) -> query('.//*[@class="MessageBody"]', $element) -> item(0);
+
+        $this -> assertSame('pre', $body -> tagName, 'the shape is in the markup, not only in a stylesheet');
+        $this -> assertSame($written, $body -> textContent);
+        $this -> assertTrue(str_contains((string) HTMLObject::currentDocument() -> saveXML($element), $written), 'the written lines survive serialization');
     }
 
     private function composer(bool $recipient_is_local): \DOMElement

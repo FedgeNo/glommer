@@ -34,7 +34,7 @@ export class MessageTranslateButton {
             // no sense translating that.
             if (message.classList.contains('Locked')) return;
 
-            const body = message.querySelector('.MessageLine p');
+            const body = message.querySelector('.MessageBody');
 
             if (!body) return;
 

@@ -99,10 +99,25 @@ $description_value = $description !== '' ? $description : null;
 
 $unverified = 0;
 
-DB::run('
+try {
+    DB::run('
 INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `verified`)
     VALUES (?, ?, ?, ?, ?, ?)
 ', 'sssssi', $username, $email, $hash, $display_name, $description_value, $unverified);
+} catch (\mysqli_sql_exception $exception) {
+    // The check above has a TOCTOU gap: another signup can claim this name or
+    // this address in between. `slug` and `email` are both UNIQUE, so the
+    // database refuses the second one - 1062 is its duplicate-key error, and
+    // anything else is a real failure rather than a race. Answered with what
+    // the form would have said, since a server error page for a name somebody
+    // else took a moment earlier tells the person nothing they can act on.
+    if ($exception -> getCode() !== 1062) {
+        throw $exception;
+    }
+
+    JSONResponse::fieldError('username', 'That username or email is already taken.') -> send();
+}
+
 $new_user_id = (int) mysqli_insert_id(DB::connection());
 
 $user = new User();

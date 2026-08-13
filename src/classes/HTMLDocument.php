@@ -48,9 +48,21 @@ class HTMLDocument extends Document
         self::$document -> encoding = 'UTF-8';
         self::$document -> formatOutput = true;
 
+        // What language the page is written in, said out loud. A screen reader
+        // picks its pronunciation from this and nothing else, so a Spanish page
+        // that does not declare itself is read to somebody in a Spanish voice
+        // only by luck, and in an English one otherwise.
+        $this -> attributes['lang'] = $this -> documentLanguage();
+
         $this -> applyReaderTheme();
 
         return parent::toDOM();
+    }
+
+    /** The language this document says it is in. */
+    protected function documentLanguage(): string
+    {
+        return Strings::locale();
     }
 
     /**

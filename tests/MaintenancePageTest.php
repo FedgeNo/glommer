@@ -49,6 +49,14 @@ class MaintenancePageTest extends TestCase
         $this -> assertFalse(str_contains($html, 'scripts/main.js'), 'a script that expects a configuration it was not sent');
     }
 
+    /** Its words are in the code, in English, and it says so. */
+    public function testItDeclaresTheLanguageItIsWrittenIn(): void
+    {
+        $html = $this -> documentFor(MaintenancePage::saying(503, 'Upgrade In Progress', 'Back shortly.'));
+
+        $this -> assertTrue(str_contains($html, 'lang="en"'));
+    }
+
     /** Static files, so the page still arrives looking like the site it belongs to. */
     public function testItStillWearsTheSitesStylesheets(): void
     {

@@ -3,10 +3,10 @@ import { ClientConfig } from '/scripts/ClientConfig.js';
 /**
  * The words the client twins say, which are the same words the server says.
  *
- * Fetched once as a module from /locales/{locale}.js, which the server builds
- * out of the same src/locales/ table it reads itself. A second hand-kept copy
- * of every string would be the easiest drift there is between the two
- * renderers, and they already work hard not to drift.
+ * Fetched once from /locales/{locale}.json - the same file the server reads,
+ * not a copy built for the browser. A second hand-kept set of every string
+ * would be the easiest drift there is between the two renderers, and they
+ * already work hard not to drift.
  *
  * load() is awaited by main.js before any twin renders, so for() can stay
  * synchronous - a renderer that had to await its own words would have to be

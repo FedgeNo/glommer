@@ -87,4 +87,14 @@ class MaintenancePage extends HTMLDocument
     protected function applyReaderTheme(): void
     {
     }
+
+    /**
+     * English, which is what this page is written in - the language a reader
+     * chose is another column in that same table, and its words are here in the
+     * code rather than translated.
+     */
+    protected function documentLanguage(): string
+    {
+        return Strings::SOURCE_LOCALE;
+    }
 }

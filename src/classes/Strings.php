@@ -58,12 +58,14 @@ class Strings
     }
 
     /**
-     * Which language to say it in.
+     * Which language to say it in: what this reader asked for, and English
+     * until they ask.
      *
-     * The browser's Accept-Language, matched against what this installation
-     * has, and English otherwise. A per-member setting belongs in front of this
-     * once there is a column for it - somebody who has said what they want
-     * should not be re-asked by every browser they open.
+     * What the browser asks for is an offer rather than an answer - it decides
+     * which language to put the question in (see LanguagePrompt), not which one
+     * to serve. A site that simply followed the header would switch under
+     * somebody who never said they wanted it, on a machine whose language is
+     * not necessarily theirs, and would have nothing left to ask them.
      */
     public static function locale(): string
     {
@@ -71,24 +73,10 @@ class Strings
             return self::$locale;
         }
 
-        $available = self::available();
-
-        // What they said, ahead of what their browser guesses. Somebody who
-        // has chosen should not be asked again by every browser they open.
         $chosen = self::chosen();
 
-        if ($chosen !== null && in_array($chosen, $available, true)) {
+        if ($chosen !== null && in_array($chosen, self::available(), true)) {
             return self::$locale = $chosen;
-        }
-
-        foreach (self::preferredLanguages() as $language) {
-            // A tag names a language and optionally a place - de-AT is German.
-            // The place only narrows it, so the language alone is a match.
-            $base = strtolower(explode('-', $language)[0]);
-
-            if (in_array($base, $available, true)) {
-                return self::$locale = $base;
-            }
         }
 
         return self::$locale = self::SOURCE_LOCALE;

@@ -611,11 +611,12 @@ Unsubscribing stops new posts and leaves the ones already here.
 The codebase carries `GLOMMER_VERSION` (in `src/init.php`) and the database
 records the version it was last installed/upgraded to. After pulling new code,
 **run `php bin/install.php`** to apply schema changes and record the version.
-The site also attempts this itself on every request while the database
-lags behind, protected by `ignore_user_abort()`: DML maintenance and data
-backfills always apply silently; schema changes (missing tables, drift, index
-migrations) do too, but only when `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` are
-set in `.env` for a non-interactive admin connection. Without those, a pending
+The site also attempts this itself while the database lags behind - at most
+once a minute, since what stops an upgrade is still true a moment later -
+protected by `ignore_user_abort()`: DML maintenance and data backfills always
+apply silently; schema changes (missing tables, drift, index migrations) do
+too, but only when `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` are set in `.env`
+for a non-interactive admin connection. Without those, a pending
 schema change falls back to the maintenance page until someone runs
 `bin/install.php` by hand. Remember to `systemctl restart` the daemons after
 any pull that touches their code (§7).
@@ -626,3 +627,69 @@ any pull that touches their code (§7).
 query succeeds, and the WebSocket server and upload worker are not confirmed
 down; it returns 503 otherwise. It bypasses the version gate, so it works even
 mid-upgrade. Point an uptime monitor at it.
+
+## 14. What defends the site
+
+Running a server means being answerable for what happens on it. This is what
+the software already does, so you know what you are relying on - not a promise
+that nothing can go wrong.
+
+**HTTPS is required, not preferred** (§6). Plain HTTP is redirected, HSTS is
+sent, and the canonical-host check means a forged `Host` header cannot bounce
+your visitors somewhere else.
+
+**Passwords** are hashed with `password_hash()` at PHP's current default, and
+re-hashed on the next login whenever that default changes. Changing a password
+bumps a session version that invalidates every other session on the account.
+
+**"Remember me" cookies** are a selector plus a validator, and only a SHA-256
+of the validator is stored - the database cannot be read for a working cookie.
+Each one is single-use and rotates as it is spent, so a cookie arriving with a
+known selector and the wrong validator means a copy is in circulation, and
+every token on that account is revoked.
+
+**CSRF** is checked in one place, `init.php`, on every POST. Two endpoints are
+exempt because they cannot carry a token and were never meant to, and each
+proves itself another way instead: the ActivityPub inbox (HTTP signature) and
+one-click unsubscribe (the RFC 8058 body token).
+
+**Cross-site scripting** has no route in through content. The browser code
+never assigns `innerHTML` - every node is built with `createElement` and
+`textContent` - and a post is stored as a Delta sanitized to an allowlist of
+formats, with link schemes checked and control characters stripped before the
+scheme is read.
+
+**SQL** is prepared statements throughout, with every value bound, including
+hardcoded ones. The account the site runs as holds `SELECT`, `INSERT`,
+`UPDATE` and `DELETE` and nothing else; schema changes need the separate admin
+account (§12).
+
+**Uploads** are accepted on their container format rather than their file
+extension. Transcoding runs `ffmpeg` behind a protocol allowlist so it cannot
+be talked into reading local files, under a wall-clock timeout, a CPU limit and
+an address-space cap. Source dimensions are checked before decode, so a
+decode bomb is refused rather than expanded, and metadata is stripped from
+what gets published. The original is kept privately, out of the web root, so a
+report about deleted media still has something to show a moderator.
+
+**Outbound fetches** - link previews, remote avatars, federation - resolve the
+hostname first, refuse every private and reserved address, and pin curl to the
+address that was validated, so a name that answers differently between the
+check and the fetch cannot reach anything on your network. Each redirect goes
+through the same check before it is followed.
+
+**Deliveries from other servers** must carry an HTTP signature covering the
+request target, host, date and digest. The digest is checked against the body
+actually received, the date against a bounded clock window, and a signature is
+accepted once. An object has to belong to the server that signed for it, and
+`attributedTo` has to match the signer.
+
+**Encrypted messages** are HMAC-tagged by the server as it relays each one, so
+a report can be checked against what was really sent rather than against what
+a client claims was sent. The tag records which key made it, so the key can be
+rotated without orphaning old messages.
+
+**Rate limits** cover logging in, signing up, resetting a password, posting,
+messaging, reporting, translating and federated delivery. Login is limited by
+IP and by account at once, so neither a spread-out attempt nor a targeted one
+gets a free run.

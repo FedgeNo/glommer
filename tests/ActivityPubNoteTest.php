@@ -63,6 +63,66 @@ SELECT *
         $this -> assertSame('<p>fresh off the composer</p>', $activity['object']['content']);
     }
 
+    /**
+     * The same post, announced twice: once from the object api/create-post.php
+     * fills in by hand and once from the row it just wrote, which is how
+     * api/edit-post.php and the upload worker do it. They have to produce the
+     * same document.
+     *
+     * This is the check the hand-assembly needs. A column added to Posts that
+     * changes what goes on the wire will be set by whichever path re-reads the
+     * row and missed by the one filling properties in one at a time, and the
+     * post reads correctly here either way - the miss only shows on somebody
+     * else's server, which is the hardest place to notice anything. Comparing
+     * the two documents is what fails at home instead.
+     */
+    public function testTheHandAssembledPostAnnouncesWhatTheStoredRowWould(): void
+    {
+        $user = self::user();
+
+        $sensitive = 1;
+        $warning = 'spoilers';
+        $ops = [['insert' => "both ways\n"]];
+
+        DB::run('
+INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `sensitive`, `contentWarning`, `detectedLanguage`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+', 'isssiss', $user -> userId, 'a title', 'plain text', json_encode($ops), $sensitive, $warning, 'en');
+
+        $post_id = (int) mysqli_insert_id(DB::connection());
+
+        $stored = DB::row('
+SELECT *
+    FROM `Posts`
+    WHERE `postId` = ?
+', 'Post', 'i', $post_id);
+        $stored -> author = $user;
+
+        // Exactly the shape api/create-post.php hands to the publisher: every
+        // property named there, filled from what that script has in hand.
+        $assembled = new Post();
+        $assembled -> postId = $post_id;
+        $assembled -> userId = (int) $user -> userId;
+        $assembled -> parentId = null;
+        $assembled -> title = 'a title';
+        $assembled -> description = 'plain text';
+        $assembled -> descriptionDelta = json_encode($ops);
+        $assembled -> linkURL = null;
+        $assembled -> createdAt = $stored -> createdAt;
+        $assembled -> latitude = null;
+        $assembled -> longitude = null;
+        $assembled -> sensitive = $sensitive;
+        $assembled -> contentWarning = $warning;
+        $assembled -> quotedPostId = null;
+        $assembled -> items = [];
+        $assembled -> author = $user;
+
+        $this -> assertSame(
+            ActivityPubNote::createActivity($stored, $user),
+            ActivityPubNote::createActivity($assembled, $user)
+        );
+    }
+
     public function testTheBodyIsTheRenderedPostWithoutThePageWrapper(): void
     {
         $user = self::user();

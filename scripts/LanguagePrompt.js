@@ -26,9 +26,19 @@ export class LanguagePrompt {
 
             const prompt = event.target.closest('.LanguagePrompt');
 
+            if (accept) {
+                await LanguagePrompt.choose(prompt.dataset.locale);
+
+                return;
+            }
+
             // Declining keeps the language they are already reading, which is
-            // still a choice - it is what stops the asking.
-            await LanguagePrompt.choose(accept ? prompt.dataset.locale : document.documentElement.lang);
+            // still a choice - it is what stops the asking. Nothing on the page
+            // changes but the offer, so the offer is what goes: fetching the
+            // same page again to remove one card is a round trip for nothing.
+            if (await LanguagePrompt.remember(document.documentElement.lang)) {
+                prompt.remove();
+            }
         });
 
         document.addEventListener('change', async (event) => {
@@ -40,14 +50,17 @@ export class LanguagePrompt {
         });
     }
 
-    static async choose(locale) {
+    /** Tells the server, and says whether it took. */
+    static async remember(locale) {
         if (!locale) {
-            return;
+            return false;
         }
 
-        const result = await Api.post('/api/set-language', { locale });
+        return await Api.post('/api/set-language', { locale }) !== null;
+    }
 
-        if (result) {
+    static async choose(locale) {
+        if (await LanguagePrompt.remember(locale)) {
             window.location.reload();
         }
     }

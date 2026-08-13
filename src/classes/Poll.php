@@ -90,6 +90,14 @@ SELECT `pollOptionId`
             return (int) $this -> remoteVotersCount;
         }
 
+        // Counted with the poll when it was loaded for a page. Asked for here
+        // only by a poll somebody built rather than selected, or one this
+        // request has voted on since - the number arrived with the row and
+        // does not know about that.
+        if (isset($this -> localVoterCount) && !isset(self::$votedThisRequest[(int) $this -> pollId])) {
+            return (int) $this -> localVoterCount;
+        }
+
         $row = DB::row('
 SELECT COUNT(DISTINCT `userId`) AS `total`
     FROM `PollVotes`
@@ -171,11 +179,23 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
         return parent::toDOM();
     }
 
+    /**
+     * How many people have answered, counted alongside the poll rather than
+     * asked for afterwards - see voterCount(), which reads this where it is
+     * here. Distinct voters, not votes: a multiple-choice poll takes several
+     * rows from one person.
+     */
+    private const VOTER_COUNT = '(
+        SELECT COUNT(DISTINCT `PollVotes`.`userId`)
+            FROM `PollVotes`
+            WHERE `PollVotes`.`pollId` = `Polls`.`pollId`
+    ) AS `localVoterCount`';
+
     /** The poll on a post, or null when it hasn't got one. */
     public static function forPost(int $post_id): ?Poll
     {
         return DB::row('
-SELECT *
+SELECT `Polls`.*, ' . self::VOTER_COUNT . '
     FROM `Polls`
     WHERE `postId` = ?
 ', self::class, 'i', $post_id);
@@ -199,7 +219,7 @@ SELECT *
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
         $polls = DB::rows('
-SELECT *
+SELECT `Polls`.*, ' . self::VOTER_COUNT . '
     FROM `Polls`
     WHERE `postId` IN (' . $placeholders . ')
 ', self::class, str_repeat('i', count($post_ids)), ...$post_ids);
@@ -381,11 +401,23 @@ UPDATE `PollOptions`
         RateLimiter::acquireLock($vote_lock_key);
 
         try {
-            return self::recordVote($poll_id, $user_id, $option_ids);
+            $recorded = self::recordVote($poll_id, $user_id, $option_ids);
+
+            if ($recorded) {
+                // The count that came with this poll described the moment it
+                // was selected, and this request has just moved it. Any object
+                // holding that number counts again rather than repeating it.
+                self::$votedThisRequest[$poll_id] = true;
+            }
+
+            return $recorded;
         } finally {
             RateLimiter::releaseLock($vote_lock_key);
         }
     }
+
+    /** @var array<int, true> polls this request has recorded a vote on */
+    private static array $votedThisRequest = [];
 
     /**
      * @param int[] $option_ids

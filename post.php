@@ -35,6 +35,21 @@ if ($post -> author === null || $post -> author -> slug !== $username || $post -
     exit;
 }
 
+// The same address, as the network reads it. Every reply, boost and quote of
+// this post on another server begins by fetching this URI and expecting the
+// object, so a post that answers only in HTML is one nobody can thread.
+// Answered before the page is built, and only for a post written here: a
+// remote author's object belongs to the server it came from, and serving our
+// own document for it would be speaking for them.
+if (ActivityPubActor::wantsActivityJSON((string) ($_SERVER['HTTP_ACCEPT'] ?? ''))
+    && $post -> author -> remoteActorURI === null) {
+    $document = ActivityPubNote::document($post, $post -> author);
+
+    if ($document !== null) {
+        ActivityPubResponse::send($document);
+    }
+}
+
 // A remote account's post is here only so members can read and reply to what
 // they follow - the same rule its author's profile (user.php) and RSS feed
 // (user-rss-feed.php) already apply: we don't represent Fediverse content to

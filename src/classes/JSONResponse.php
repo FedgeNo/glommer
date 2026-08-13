@@ -85,7 +85,12 @@ class JSONResponse
             $body['fields'] = $this -> fields;
         }
 
-        echo json_encode($body);
+        // Thrown rather than returned false and echoed as nothing: a payload
+        // that cannot be encoded - a byte string from somewhere that is not
+        // UTF-8 - would otherwise be answered with an empty body under a
+        // success status, which is the one failure nobody can diagnose from
+        // the outside. As an exception it reaches the handler and the log.
+        echo json_encode($body, JSON_THROW_ON_ERROR);
 
         exit;
     }

@@ -118,17 +118,51 @@ class OpenRouter
         $response = @file_get_contents('https://openrouter.ai/api/v1/chat/completions', false, $context);
 
         if ($response === false) {
+            error_log('OpenRouter: the request did not complete (no response, or the connection failed).');
+
             return null;
         }
 
         $decoded = json_decode($response, true);
         $content = $decoded['choices'][0]['message']['content'] ?? null;
 
+        // ignore_errors is what lets the body of a refusal be read at all, and
+        // the cost of it is that a refusal looks exactly like an answer until
+        // something checks. Logged with the status and what the service said,
+        // because an expired key and a model with nothing to say are the same
+        // silence from the outside - and this is the fallback the translate
+        // button leans on, so it can be broken for weeks without a page
+        // looking any different.
         if (!is_string($content) || trim($content) === '') {
+            $status = self::statusFrom($http_response_header ?? []);
+
+            error_log(
+                'OpenRouter: no usable answer'
+                . ($status === null ? '' : ' (HTTP ' . $status . ')')
+                . ': ' . substr((string) ($decoded['error']['message'] ?? $response), 0, 300)
+            );
+
             return null;
         }
 
         return self::withoutVerdict(trim($content));
+    }
+
+    /**
+     * The status out of the headers file_get_contents leaves behind, or null
+     * where there is no status line to read.
+     *
+     * @param string[] $headers
+     */
+    private static function statusFrom(array $headers): ?int
+    {
+        foreach ($headers as $header) {
+            if (preg_match('#\AHTTP/[0-9.]+ ([0-9]{3})#', $header, $matches) === 1) {
+                return (int) $matches[1];
+            }
+        }
+
+        return null;
     }
 
     /**

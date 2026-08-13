@@ -15,7 +15,15 @@ class EmailChangeRevert
 {
     public static function sendFor(User $user, string $previous_email): void
     {
-        $token = self::create((int) $user -> userId, $previous_email);
+        // Under the address's lock, so this reservation cannot land between
+        // somebody else's check that the address is free and their taking it.
+        RateLimiter::acquireLock(self::addressLock($previous_email));
+
+        try {
+            $token = self::create((int) $user -> userId, $previous_email);
+        } finally {
+            RateLimiter::releaseLock(self::addressLock($previous_email));
+        }
 
         $revert_url = ServerURL::absolute('/revert-email?token=' . $token);
 
@@ -56,6 +64,24 @@ This link expires in 30 days.';
      * nobody else (a new signup, or another account's email change) can be
      * handed it in the meantime.
      */
+    /**
+     * The lock held while an address is checked and then written.
+     *
+     * isReserved() answers about the moment it is asked, and the places that
+     * ask write afterwards. Between the two, somebody else's change can
+     * reserve the same address - and then the reservation points at an address
+     * a second account now holds, so the revert link that was its owner's way
+     * back fails when they eventually press it, quietly, long after anybody
+     * could connect the two events.
+     *
+     * The same named lock the vote and message throttles use, keyed on the
+     * address so two people doing unrelated things never wait on each other.
+     */
+    public static function addressLock(string $email): string
+    {
+        return 'email-address:' . strtolower(trim($email));
+    }
+
     public static function isReserved(string $email): bool
     {
         $stmt = DB::run('
@@ -92,6 +118,16 @@ SELECT `userId`, `previousEmail`
 
         $user_id = (int) $revert -> userId;
 
+        // All of it or none of it. Restoring the address and then failing to
+        // end the sessions that took it is the worst outcome available here:
+        // the account reads as its owner's again while whoever changed it is
+        // still signed in, and the revert link that would have fixed that has
+        // been spent.
+        return DB::transaction(static fn (): bool => self::restore($user_id, (string) $revert -> previousEmail));
+    }
+
+    private static function restore(int $user_id, string $previous_email): bool
+    {
         // The previous address was already verified before the change
         // happened, so restoring it restores that verified state too - no
         // fresh verification round trip needed.
@@ -102,7 +138,7 @@ UPDATE `Users`
     SET `email` = ?, `verified` = ?
     WHERE `userId` = ?
 ');
-        DB::bind($update_stmt, 'sii', $revert -> previousEmail, $verified, $user_id);
+        DB::bind($update_stmt, 'sii', $previous_email, $verified, $user_id);
 
         // `email` is UNIQUE. This should never actually fire - signup and
         // change-email both refuse to hand out an address that's reserved by

@@ -63,6 +63,11 @@ if ($errors === [] && !Turnstile::verify($captcha_token, ServerURL::clientIP()))
 }
 
 if ($errors === []) {
+    // Held from here through the insert below, so a revert reservation for
+    // this address cannot be created in between and end up pointing at an
+    // address this account now holds - see EmailChangeRevert::addressLock.
+    RateLimiter::acquireLock(EmailChangeRevert::addressLock($email));
+
     $stmt = DB::run('
 SELECT `userId`
     FROM `Users`

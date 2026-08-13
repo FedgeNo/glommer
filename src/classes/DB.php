@@ -127,6 +127,38 @@ SET `time_zone` = ?
         mysqli_stmt_execute($stmt);
     }
 
+    /**
+     * Everything $work does, or none of it.
+     *
+     * For the handful of sequences where a half-finished run is worse than no
+     * run at all - restoring an address and then failing to end the sessions
+     * that took it, say, which leaves the account back in its owner's name and
+     * still open to whoever changed it.
+     *
+     * Anything thrown rolls the whole thing back and carries on out, so a
+     * caller sees the failure rather than a silently partial result. Does not
+     * nest: MySQL has no nested transactions, and the inner commit would end
+     * the outer one.
+     */
+    public static function transaction(callable $work): mixed
+    {
+        $connection = self::connection();
+
+        mysqli_begin_transaction($connection);
+
+        try {
+            $result = $work();
+        } catch (\Throwable $exception) {
+            mysqli_rollback($connection);
+
+            throw $exception;
+        }
+
+        mysqli_commit($connection);
+
+        return $result;
+    }
+
     public static function run(string $sql, ?string $types = null, mixed ...$params): \mysqli_stmt
     {
         $stmt = self::prepare($sql);

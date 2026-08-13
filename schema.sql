@@ -380,11 +380,6 @@ CREATE TABLE `Likes` (
   CONSTRAINT `fk_likes_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Boosts of a local post from elsewhere. Likes need no table of their own -
--- Likes is keyed on (userId, postId) and a remote account already has a shadow
--- Users row, so a favourite from Mastodon is the same row a member here would
--- make. Nothing here reposts yet, so a boost has no existing row shape to reuse,
--- and it has to be remembered anyway or an Undo would have nothing to find.
 -- Usernames that have been used and given up. A name is never handed to anyone
 -- else, because on this site a username is permanent - it is the whole reason
 -- display names exist - and reusing one would make a new person indistinguishable
@@ -438,6 +433,15 @@ CREATE TABLE `CustomEmojis` (
   UNIQUE KEY `domain_shortcode` (`domain`,`shortcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Who has boosted a post, whether from here or from another server. A like
+-- needs no table of its own - Likes is keyed on (userId, postId) and a remote
+-- account that has one already has a shadow Users row, so a favourite from
+-- Mastodon is the same row a member here would make. A boost has no such row
+-- to reuse, and it has to be remembered anyway or an Undo would have nothing
+-- to find: an Undo is matched on this row's key, the post and the account.
+--
+-- activityURI is the id this server publishes for a boost made here, so
+-- another server can name it. Nothing reads it back.
 CREATE TABLE `Announces` (
   `postId` int(10) unsigned NOT NULL,
   `userId` int(10) unsigned NOT NULL,

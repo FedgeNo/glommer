@@ -121,6 +121,14 @@ class UploadProcessor
 
     public static function srcPath(int|string $item_id, string $item_type): string
     {
+        // A type with no extension here has no address to give. Said out loud
+        // rather than warned about and appended as nothing, which builds a URL
+        // ending in a full stop and leaves whoever added the media type
+        // looking at a broken image instead of a message naming their mistake.
+        if (!isset(self::DISPLAY_EXTENSIONS[$item_type])) {
+            throw new \InvalidArgumentException($item_type . ' has no display extension - add one to UploadProcessor::DISPLAY_EXTENSIONS.');
+        }
+
         return self::UPLOAD_URL_PREFIX . self::shard($item_id) . '/' . $item_id . '.' . self::DISPLAY_EXTENSIONS[$item_type];
     }
 

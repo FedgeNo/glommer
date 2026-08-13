@@ -43,7 +43,13 @@ class SecurityHeaders
             // images, so allowing any HTTPS image source is a contained widening.
             // blob: is the composer's attachment previews - object URLs over
             // files still sitting in the browser's own memory.
-            'img-src \'self\' data: blob: https:',
+            // This origin only. Every picture from anywhere else is fetched by
+            // the server and served from here - remote media through
+            // /media-N, a remote account's avatar through /remote-avatar/N -
+            // so nothing on a page needs to reach another host for an image,
+            // and a scheme-wide https: would have let a post carry a beacon
+            // that reports who read it and from where.
+            'img-src \'self\' data: blob:',
             'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
             'frame-src https://challenges.cloudflare.com https://www.google.com',

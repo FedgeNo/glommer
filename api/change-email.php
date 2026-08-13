@@ -60,6 +60,12 @@ if (RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
     JSONResponse::error('Too many email changes in a short time. Please try again later.', 429) -> send();
 }
 
+// Held from the check below through the UPDATE, so a reservation for this
+// address cannot be created in between - see EmailChangeRevert::addressLock.
+// Released when this request's connection closes, which is also what covers
+// every path out of here that answers and exits.
+RateLimiter::acquireLock(EmailChangeRevert::addressLock($new_email));
+
 $taken_stmt = DB::run('
 SELECT `userId`
     FROM `Users`

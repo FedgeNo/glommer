@@ -50,7 +50,7 @@ SELECT `userId`
 
     public static function consume(string $token, string $new_password): bool
     {
-        $user_id = self::verify($token);
+        $user_id = self::claim($token);
 
         if ($user_id === null) {
             return false;
@@ -69,7 +69,34 @@ UPDATE `Users`
         User::bumpSessionVersion($user_id);
         RememberToken::purgeForUser($user_id);
 
+        return true;
+    }
+
+    /**
+     * Spends the token and says whose it was, or null where it was already
+     * spent or has expired.
+     *
+     * The delete is the check. Reading the row and deleting it afterwards
+     * leaves a window where two requests holding the same token both read it
+     * as good and both set a password - and the one that lands second is the
+     * one that stands, so somebody who got hold of the link could race the
+     * person it was sent to and end up owning the account they were both
+     * trying to rescue. A DELETE reports how many rows it took, and only one
+     * request can be told it took this one.
+     */
+    private static function claim(string $token): ?int
+    {
         $token_hash = hash('sha256', $token);
+
+        $reset = DB::row('
+SELECT `userId`
+    FROM `PasswordResets`
+    WHERE `tokenHash` = ? AND `expiresAt` > NOW()
+', 'PasswordResetData', 's', $token_hash);
+
+        if ($reset === null) {
+            return null;
+        }
 
         DB::run('
 DELETE
@@ -77,7 +104,7 @@ DELETE
     WHERE `tokenHash` = ?
 ', 's', $token_hash);
 
-        return true;
+        return mysqli_affected_rows(DB::connection()) === 1 ? (int) $reset -> userId : null;
     }
 
     private static function create(int $user_id): string

@@ -27,7 +27,14 @@ class SchemaInstaller
             static fn (string $line): bool => !str_starts_with(trim($line), '--')
         );
 
-        preg_match_all('/CREATE TABLE `(\w+)` \([^;]+;/s', implode("\n", $code_lines), $matches, PREG_SET_ORDER);
+        // Up to the closing bracket and the terminator after it, rather than
+        // up to the first semicolon anywhere. A semicolon inside a column's
+        // default would otherwise end the statement in the middle of itself
+        // and hand the installer half a table to create. The options between
+        // the bracket and the terminator (ENGINE, CHARSET, COLLATE) carry
+        // neither brackets nor semicolons, which is what keeps the
+        // non-greedy body from stopping at the first nested bracket.
+        preg_match_all('/CREATE TABLE `(\w+)` \(.+?\)[^;()]*;/s', implode("\n", $code_lines), $matches, PREG_SET_ORDER);
 
         if ($matches === []) {
             throw new \RuntimeException('Could not parse any CREATE TABLE statements out of schema.sql.');

@@ -157,6 +157,23 @@
     RewriteRule ^users/([^/]+)/([0-9]+)$ post.php?username=$1&id=$2 [L,QSA]
     RewriteRule ^users/([^/]+)/$ user.php?username=$1 [L,QSA]
 
+    # A file being on disk is not a reason to serve it. Every address this site
+    # actually offers was matched above and left with [L], so anything still
+    # going that resolves to a real file is either one of the static files
+    # named here or something that exists only because it sits in the same
+    # directory as the site - a readme, a lockfile, a dependency tree, notes
+    # somebody left. Adding a file to the project should not publish it, and
+    # this is what makes that true by default rather than by remembering.
+    #
+    # !\.php$ skips a path that has already been rewritten to a script:
+    # mod_rewrite runs this file again after each rewrite, and on that pass it
+    # is looking at login.php while REQUEST_URI still reads /login.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_URI} !^/(scripts|styles|locales|fonts)/[A-Za-z0-9._-]+$
+    RewriteCond %{REQUEST_URI} !^/uploads/
+    RewriteCond %{REQUEST_URI} !^/(favicon\.ico|robots\.txt|sw\.js|emoji-shortcodes\.js)$
+    RewriteRule !\.php$ 404.php [L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ 404.php [L]

@@ -789,8 +789,13 @@ DELETE
                 'slug' => $this -> repostedBySlug,
                 'title' => $this -> repostedByTitle,
             ],
-            'reposted' => Auth::check() && Repost::exists((int) Auth::id(), (int) $this -> postId),
-            'repostCount' => ActivityPubReaction::announceCount((int) $this -> postId),
+            // Both come with the page where the post was loaded for one -
+            // Repost::stateForPosts answers a screen of them in two queries,
+            // and asking again here made it two per post again on every list
+            // that goes out as JSON. Asked only by a post built rather than
+            // selected.
+            'reposted' => $this -> reposted ?? (Auth::check() && Repost::exists((int) Auth::id(), (int) $this -> postId)),
+            'repostCount' => $this -> repostCount ?? ActivityPubReaction::announceCount((int) $this -> postId),
             'items' => $items,
             'sensitive' => $this -> sensitive === 1,
             'contentWarning' => $this -> contentWarning,

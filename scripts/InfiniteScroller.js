@@ -38,6 +38,16 @@ export class InfiniteScroller {
     #lastResponse = null;
     #active = true;
     static #THRESHOLD = 150;
+
+    /**
+     * How long the view has to be still before its position is acted on. Short
+     * enough that flicking to the end of a feed still loads the moment it
+     * lands, long enough that the whole of a smooth scroll counts as one
+     * arrival rather than a hundred.
+     */
+    static #SETTLE_MS = 120;
+
+    #scrollTimer;
     #onScroll;
 
     constructor(list, overrides) {
@@ -94,7 +104,15 @@ export class InfiniteScroller {
         this._countOffset     = countOffset;
         this._wrapper         = wrapper;
 
-        this.#onScroll = () => this.#handleScroll();
+        // Debounced, because a smooth scroll is not one scroll event but a
+        // stream of them all the way down. Reacting to each would load a page
+        // of messages for every frame of the journey; waiting until the view
+        // has come to rest asks once, about where it actually stopped.
+        this.#onScroll = () => {
+            clearTimeout(this.#scrollTimer);
+            this.#scrollTimer = setTimeout(() => this.#handleScroll(), InfiniteScroller.#SETTLE_MS);
+        };
+
         window.addEventListener('scroll', this.#onScroll, { passive: true });
     }
 
@@ -104,6 +122,8 @@ export class InfiniteScroller {
 
     destroy() {
         this.#active = false;
+        clearTimeout(this.#scrollTimer);
+
         if (this.#onScroll) {
             window.removeEventListener('scroll', this.#onScroll);
             this.#onScroll = null;

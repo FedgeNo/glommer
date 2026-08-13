@@ -52,7 +52,11 @@ export default {
             const requests = capture_requests();
 
             window.dispatchEvent(new window.Event('scroll'));
-            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            // Past the settle the scroller waits out before it acts on where
+            // the view has come to rest - a smooth scroll is a stream of these
+            // events and only the last position is worth a request.
+            await new Promise((resolve) => setTimeout(resolve, 200));
 
             requests.restore();
             scroller.destroy();

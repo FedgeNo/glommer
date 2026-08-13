@@ -569,6 +569,11 @@ function handle_push_request(int $id): void
         // hash_equals be called with a null expected value.
         && is_string($ws_secret) && $ws_secret !== ''
         && hash_equals($ws_secret, $request['secret'])
+        // A whole number and nothing else. Casting whatever arrived turns an
+        // array into 1 and a word into 0, so a caller that got its own
+        // argument wrong would deliver somebody's notification to userId 1 -
+        // the admin - rather than to nobody.
+        && (is_int($request['userId']) || (is_string($request['userId']) && ctype_digit($request['userId'])))
     ) {
         $target_user_id = (int) $request['userId'];
         $encoded_payload = json_encode($request['payload']);

@@ -165,16 +165,31 @@ INSERT INTO `Settings` (`name`, `value`)
     {
         $setting = 'appVersion';
 
-        $result = mysqli_stmt_get_result(DB::run('
+        try {
+            $result = mysqli_stmt_get_result(DB::run('
 SELECT `value`
     FROM `Settings`
     WHERE `name` = ?
 ', 's', $setting));
+        } catch (\mysqli_sql_exception $exception) {
+            // A database with none of the tables in it is a database waiting to
+            // be installed, which the upgrade below knows how to do - so it
+            // reads as no version rather than as a fault. Anything else the
+            // database has to say is a fault.
+            if ($exception -> getCode() !== self::NO_SUCH_TABLE) {
+                throw $exception;
+            }
+
+            return null;
+        }
 
         $row = $result === false ? null : mysqli_fetch_assoc($result);
 
         return $row === null ? null : (string) $row['value'];
     }
+
+    /** MySQL's ER_NO_SUCH_TABLE. */
+    private const NO_SUCH_TABLE = 1146;
 
     /**
      * Called from init.php's version gate on every request while the database

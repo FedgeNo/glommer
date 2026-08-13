@@ -61,10 +61,17 @@ export class WebSocketManager {
 
         this.token = token.token;
 
+        // Nothing in the address. A handshake is a GET and this API will not
+        // set headers, so a token here could only ride in the URL - which is
+        // the one part of a request that gets written down along the way. It
+        // goes as the first message instead, inside the same encrypted channel
+        // as everything after it, and the server tells nobody anything until
+        // it has read one.
         const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        this.socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/?token=${encodeURIComponent(this.token)}`);
+        this.socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/`);
 
         this.socket.addEventListener('open', () => {
+            this.socket.send(this.token);
             this.reconnectAttempts = 0;
 
             const statusLine = document.querySelector('.WebSocketClientStatus');

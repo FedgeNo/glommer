@@ -307,14 +307,14 @@ class User extends Div implements \JsonSerializable
         return $user;
     }
 
-    public static function load(int $user_id): ?self
+    public static function load(int $user_id): ?static
     {
-        return self::loadMany([$user_id])[$user_id] ?? null;
+        return static::loadMany([$user_id])[$user_id] ?? null;
     }
 
     /**
      * @param int[] $user_ids
-     * @return array<int, self> userId => User
+     * @return array<int, static> userId => User
      */
     public static function loadMany(array $user_ids): array
     {
@@ -324,11 +324,16 @@ class User extends Div implements \JsonSerializable
 
         $placeholders = implode(', ', array_fill(0, count($user_ids), '?'));
 
+        // static:: rather than self::, and the class hydrated into rather than
+        // the name written here: both are resolved when the call is made, so a
+        // subclass calling the inherited load() is answered with itself. Named
+        // self::, this promised ?self and handed back a User - the subclass's
+        // own methods missing, and instanceof quietly false.
         $rows = DB::rows('
 SELECT *
     FROM `Users`
     WHERE `userId` IN (' . $placeholders . ')
-', 'User', str_repeat('i', count($user_ids)), ...$user_ids);
+', static::class, str_repeat('i', count($user_ids)), ...$user_ids);
 
         $users = [];
 

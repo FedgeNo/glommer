@@ -282,6 +282,18 @@ function reap_stale_connections(): void
             continue;
         }
 
+        // Upgraded but never said who it is. The token is the first message,
+        // so a connection that has not sent one by now is either not a client
+        // of this site or is holding a socket for nothing - and one that is in
+        // no user's list can never be delivered to anyway.
+        if ($connection['userId'] === null) {
+            if ($now - $connection['connectedAt'] > HANDSHAKE_TIMEOUT_SECONDS) {
+                drop_connection($id);
+            }
+
+            continue;
+        }
+
         if ($connection['pingSentAt'] !== null) {
             if ($now - $connection['pingSentAt'] > CLIENT_PONG_GRACE_SECONDS) {
                 drop_connection($id);
@@ -335,6 +347,33 @@ function attach_user(int $id, int $user_id): void
 
     $connections[$id]['userId'] = $user_id;
     $connections_by_user[$user_id][] = $id;
+}
+
+/**
+ * Reads a client's first message as its token and, if it holds up, gives the
+ * connection its identity.
+ *
+ * A connection that says anything else first is dropped rather than left open
+ * to try again: the token is signed and either verifies or does not, so a
+ * second guess is not somebody who typed it wrong. Until this runs the
+ * connection is in no user's list, so nothing can be delivered to it.
+ */
+function authenticate_client(int $id, string $message): void
+{
+    global $connections, $connections_by_user, $ws_secret;
+
+    $user_id = WSToken::verify(trim($message), $ws_secret);
+
+    if ($user_id === null) {
+        log_line('Client failed authentication (connection ' . $id . ')');
+        drop_connection($id);
+
+        return;
+    }
+
+    attach_user($id, $user_id);
+
+    log_line('Client connected: user ' . $user_id . ' (connection ' . count($connections_by_user[$user_id] ?? []) . ')');
 }
 
 // ---------- WebSocket framing ----------
@@ -514,12 +553,16 @@ function try_complete_handshake(int $id): bool
     $query_string = parse_url($request_match[1], PHP_URL_QUERY) ?? '';
     parse_str($query_string, $query_params);
 
-    $token = $query_params['token'] ?? '';
-    $user_id = $token !== '' ? WSToken::verify($token, $ws_secret) : null;
-
-    if ($path !== '/' || $user_id === null) {
-        $connections[$id]['sendBuffer'] .= "HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n";
-        $connections[$id]['handshakeDone'] = true; // let the 401 flush, then close on write-complete
+    // No credential in the handshake. A WebSocket handshake is a GET, and the
+    // browser's WebSocket API will not set headers, so the only place a token
+    // could ride is the URL - where it lands in access logs, in whatever sits
+    // between here and the client, and in anything that ever prints a
+    // connection. The socket opens unauthenticated instead and the token
+    // arrives as the first message, over the same encrypted channel every
+    // other message uses.
+    if ($path !== '/') {
+        $connections[$id]['sendBuffer'] .= "HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n";
+        $connections[$id]['handshakeDone'] = true;
         $connections[$id]['closeAfterFlush'] = true;
 
         return true;
@@ -533,9 +576,6 @@ function try_complete_handshake(int $id): bool
         . "Sec-WebSocket-Accept: " . $accept . "\r\n\r\n";
 
     $connections[$id]['handshakeDone'] = true;
-    attach_user($id, $user_id);
-
-    log_line('Client connected: user ' . $user_id . ' (connection ' . count($connections_by_user[$user_id] ?? []) . ')');
 
     return true;
 }
@@ -659,10 +699,13 @@ function handle_client_frames(int $id): void
                     $connections[$id]['fragOpcode'] = $frame['opcode'];
                     $connections[$id]['fragBuffer'] = $frame['payload'];
                 }
-                // Complete, unfragmented application messages aren't
-                // currently used for anything client -> server - this is a
-                // push-only channel from the app's point of view - so a
-                // finished text message is simply discarded.
+                // The first message a client sends is its token. After that
+                // this is a push-only channel from the app's point of view, so
+                // anything further is discarded.
+                if ($connections[$id]['userId'] === null) {
+                    authenticate_client($id, $frame['payload']);
+                }
+
                 break;
 
             case 0x0: // continuation

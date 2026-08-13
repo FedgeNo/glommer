@@ -87,6 +87,7 @@ if (document.querySelector('.AvatarUploadForm'))       import('/scripts/AvatarUp
 if (document.querySelector('.FaviconSettingsForm'))    import('/scripts/FaviconSettingsForm.js');
 if (document.querySelector('.FrontPageImageSettingsForm')) import('/scripts/FrontPageImageSettingsForm.js');
 if (document.querySelector('.ThemeSelect'))            import('/scripts/ThemeSelect.js');
+if (document.querySelector('.LanguagePrompt, .LanguageSelect')) import('/scripts/LanguagePrompt.js');
 if (document.querySelector('.SignupForm'))             import('/scripts/UsernameValidation.js');
 if (document.querySelector('.HashtagGraphList'))       import('/scripts/HashtagGraphList.js');
 if (document.querySelector('.HelpSearchInput'))        import('/scripts/HelpSearch.js');

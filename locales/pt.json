@@ -1077,5 +1077,14 @@
             "cubehelix": "Cubehelix",
             "greyscale": "Escala de cinzentos"
         }
+    },
+    "LanguagePrompt": {
+        "question": "Queres ver o site em português?",
+        "accept": "Sim",
+        "decline": "Não, obrigado"
+    },
+    "LanguageSelector": {
+        "label": "Idioma",
+        "legend": "Idioma"
     }
 }

@@ -1076,5 +1076,14 @@
             "cubehelix": "Cubehelix",
             "greyscale": "Grijstinten"
         }
+    },
+    "LanguagePrompt": {
+        "question": "Wil je de site in het Nederlands bekijken?",
+        "accept": "Ja",
+        "decline": "Nee, bedankt"
+    },
+    "LanguageSelector": {
+        "label": "Taal",
+        "legend": "Taal"
     }
 }

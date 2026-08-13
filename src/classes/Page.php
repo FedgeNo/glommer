@@ -225,6 +225,14 @@ class Page extends HTMLDocument
         $main -> attributes['id'] = SkipLink::TARGET;
         $main -> attributes['tabindex'] = '-1';
         $main -> addContent(new PageTitle((string) $this -> title));
+
+        // Before the page rather than on one page of it: somebody arrives at
+        // whatever address was shared with them, and the offer is only worth
+        // making where they land.
+        if (LanguagePrompt::offer() !== null) {
+            $main -> addContent(new LanguagePrompt());
+        }
+
         $main -> addContents($this -> body -> contents);
 
         // The navigation reads the database - it asks whether this member has

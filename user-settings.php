@@ -14,6 +14,8 @@ $page -> addContent(new SettingsSection('Change Email', new EmailChangeForm()));
 
 $page -> addContent(new SettingsSection('Two-Factor Authentication', new TwoFactorSettingsForm(TwoFactor::isEnabled(Auth::user()))));
 
+$page -> addContent(new SettingsSection((string) (Strings::for('LanguageSelector')['legend'] ?? ''), new LanguageSelector()));
+
 $page -> addContent(new SettingsSection('Theme', new ThemeSelector()));
 
 $page -> addContent(new SettingsSection('Sensitive Media', new SensitiveMediaSetting()));

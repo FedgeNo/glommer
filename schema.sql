@@ -26,6 +26,11 @@ CREATE TABLE `Users` (
   `verified` tinyint(1) NOT NULL DEFAULT 0,
   `twoFactorEnabled` tinyint(1) NOT NULL DEFAULT 0,
   `theme` varchar(10) NOT NULL DEFAULT 'system',
+  -- The language this member asked to read the site in. Null until they say,
+  -- and only ever set by them saying so - a browser's Accept-Language is a
+  -- guess that answers for them until then, and re-guessing on every browser
+  -- they open is what having said so is meant to stop.
+  `locale` varchar(5) DEFAULT NULL,
   `skinTone` varchar(16) DEFAULT NULL,
   -- Whether this member has asked to be shown media classified as sensitive
   -- without having to open it each time. Off unless they say otherwise: the
@@ -1102,6 +1107,8 @@ ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_lastSeen` (`remoteAc
 -- Users: a remote account's profile is more than a name - the bio, the labelled
 -- fields it publishes, and the avatar it points at all arrive in the same actor
 -- document and were being dropped.
+-- Users: which language a member reads the site in, once they have said.
+ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `locale` varchar(5) DEFAULT NULL AFTER `theme`;
 ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorIconURL` varchar(500) DEFAULT NULL AFTER `remoteActorType`;
 ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorFields` text DEFAULT NULL AFTER `remoteActorIconURL`;
 ALTER TABLE `TrendingEntities` ADD COLUMN IF NOT EXISTS `popularity` int(10) unsigned NOT NULL DEFAULT 0 AFTER `userCount`;

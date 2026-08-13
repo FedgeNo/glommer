@@ -73,6 +73,14 @@ class Strings
 
         $available = self::available();
 
+        // What they said, ahead of what their browser guesses. Somebody who
+        // has chosen should not be asked again by every browser they open.
+        $chosen = self::chosen();
+
+        if ($chosen !== null && in_array($chosen, $available, true)) {
+            return self::$locale = $chosen;
+        }
+
         foreach (self::preferredLanguages() as $language) {
             // A tag names a language and optionally a place - de-AT is German.
             // The place only narrows it, so the language alone is a match.
@@ -84,6 +92,93 @@ class Strings
         }
 
         return self::$locale = self::SOURCE_LOCALE;
+    }
+
+    /**
+     * The language this reader has asked for, or null if they never have.
+     *
+     * A member's answer lives on their row, so it follows them to any browser
+     * they sign in from. Somebody signed out has only this session to keep it
+     * in, which is as long as they are here for.
+     */
+    private static function chosen(): ?string
+    {
+        $stored = Auth::check() ? Auth::user() ?-> locale : null;
+
+        if (is_string($stored) && $stored !== '') {
+            return $stored;
+        }
+
+        $session = $_SESSION['locale'] ?? null;
+
+        return is_string($session) && $session !== '' ? $session : null;
+    }
+
+    /**
+     * Remembers what a reader asked for: on their row where there is one, and
+     * in their session either way so the page they are on already changes.
+     */
+    public static function choose(string $locale): bool
+    {
+        if (!in_array($locale, self::available(), true)) {
+            return false;
+        }
+
+        $_SESSION['locale'] = $locale;
+        self::$locale = $locale;
+
+        if (Auth::check()) {
+            DB::run('
+UPDATE `Users`
+    SET `locale` = ?
+    WHERE `userId` = ?
+', 'si', $locale, Auth::id());
+        }
+
+        return true;
+    }
+
+    /** Whether this reader has said which language they want. */
+    public static function hasChosen(): bool
+    {
+        return self::chosen() !== null;
+    }
+
+    /**
+     * The language this reader's browser asks for and this site has, or null
+     * where it asks for nothing this site speaks.
+     *
+     * Their own preference, not the site's answer: locale() falls back to
+     * English, and a fallback is not something to offer somebody as a choice.
+     */
+    public static function preferred(): ?string
+    {
+        $available = self::available();
+
+        foreach (self::preferredLanguages() as $language) {
+            $base = strtolower(explode('-', $language)[0]);
+
+            if (in_array($base, $available, true)) {
+                return $base;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * What one class says in a named language rather than in the current one -
+     * for asking somebody, in the language they read, whether they would like
+     * it. Falls back to English per key, the same as for().
+     *
+     * @return array<string, mixed>
+     */
+    public static function forLocale(string $class, string $locale): array
+    {
+        return array_replace_recursive(
+            self::table(self::SOURCE_LOCALE)[$class] ?? [],
+            self::table($locale)[$class] ?? []
+        );
     }
 
     /** Set the locale directly, for the times nothing is asking a browser. */

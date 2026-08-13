@@ -1111,5 +1111,14 @@
             "cubehelix": "Cubehelix",
             "greyscale": "Skala szarości"
         }
+    },
+    "LanguagePrompt": {
+        "question": "Czy chcesz przeglądać stronę w języku polskim?",
+        "accept": "Tak",
+        "decline": "Nie, dziękuję"
+    },
+    "LanguageSelector": {
+        "label": "Język",
+        "legend": "Język"
     }
 }

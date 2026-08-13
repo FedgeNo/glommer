@@ -1070,5 +1070,14 @@
             "cubehelix": "Cubehelix",
             "greyscale": "グレースケール"
         }
+    },
+    "LanguagePrompt": {
+        "question": "このサイトを日本語で表示しますか？",
+        "accept": "はい",
+        "decline": "いいえ"
+    },
+    "LanguageSelector": {
+        "label": "言語",
+        "legend": "言語"
     }
 }

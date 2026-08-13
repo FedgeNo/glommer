@@ -1083,5 +1083,14 @@
         "unknownSource": "Nobody has worked out what language this post is in yet, so it cannot be translated.",
         "alreadyReadable": "This post is already in that language.",
         "unsupportedPair": "This server cannot translate that language yet."
+    },
+    "LanguagePrompt": {
+        "question": "Would you like to view the site in English?",
+        "accept": "Yes",
+        "decline": "No thanks"
+    },
+    "LanguageSelector": {
+        "label": "Language",
+        "legend": "Language"
     }
 }

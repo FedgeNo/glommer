@@ -155,11 +155,6 @@ export class User {
                 return;
             }
 
-            // Revoke session
-            const revokeBtn = event.target.closest('.RememberedDeviceRevokeButton');
-            if (revokeBtn) {
-                User.#revokeSession(revokeBtn);
-            }
         });
     }
 
@@ -239,17 +234,6 @@ export class User {
         button.textContent = 'Sent!';
     }
 
-    static async #revokeSession(button) {
-        if (!await Dialog.confirm('Revoke this device? It will be signed out and have to log in again.')) return;
-        Working.start(button);
-        try {
-            const result = await Api.post('/api/revoke-session', { tokenId: button.dataset.tokenId });
-            if (!result) return;
-            DOMUtils.slideOut(button.closest('.RememberedDevice'));
-        } finally {
-            Working.stop(button);
-        }
-    }
 }
 
 ReadyHandler.add(User.init);

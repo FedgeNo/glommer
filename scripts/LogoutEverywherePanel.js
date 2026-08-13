@@ -27,14 +27,22 @@ export class LogoutEverywherePanel {
             button.textContent = 'Signing out…';
             Working.start(button);
 
-            try {
-                await Api.post('/api/logout-everywhere', {});
-                button.textContent = 'Done';
-                window.location.href = '/';
-            } catch {
+            // Api.post answers null rather than throwing, so this is a check
+            // and not a catch. It said "Done" and left for the home page on a
+            // request that never landed, which is the worst thing this
+            // particular button can get wrong: somebody signing every device
+            // out is somebody who thinks another person is holding one.
+            const signed_out = await Api.post('/api/logout-everywhere', {});
+
+            if (!signed_out) {
                 button.textContent = 'Failed';
                 Working.stop(button);
+
+                return;
             }
+
+            button.textContent = 'Done';
+            window.location.href = '/';
         });
     }
 }

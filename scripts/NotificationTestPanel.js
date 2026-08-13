@@ -31,17 +31,24 @@ export class NotificationTestPanel {
             button.textContent = words.sending;
             Working.start(button);
 
-            try {
-                await Api.post('/api/send-test-notification', {});
-                button.textContent = words.sent;
-                setTimeout(() => {
-                    button.textContent = words.button;
-                    Working.stop(button);
-                }, 2000);
-            } catch {
+            // Api.post answers null rather than throwing, so this is a check
+            // and not a catch. Saying it was sent when it was not is the one
+            // thing a button for testing notifications must not do.
+            const sent = await Api.post('/api/send-test-notification', {});
+
+            if (!sent) {
                 button.textContent = words.failed;
                 Working.stop(button);
+
+                return;
             }
+
+            button.textContent = words.sent;
+
+            setTimeout(() => {
+                button.textContent = words.button;
+                Working.stop(button);
+            }, 2000);
         });
     }
 }

@@ -19,6 +19,17 @@ if (!Auth::check()) {
     JSONResponse::error('Not logged in', 401) -> send();
 }
 
+// Signing in is what stops a stranger looping this; the limit is what stops
+// anybody else, since a LIKE across the accounts table is not free however
+// welcome the person running it.
+$rate_key = 'search-friends:' . Auth::id();
+
+if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+    JSONResponse::error('Too many searches. Please slow down.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 $query = trim((string) ($payload['q'] ?? ''));
 // Whose friends are searched.
 $user_id = (int) ($payload['userId'] ?? 0);

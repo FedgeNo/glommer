@@ -15,9 +15,6 @@ export class ScrollToTop {
             const button = event.target.closest('.ScrollToTopButton');
             if (!button) return;
 
-            if (window.scrollY !== 0) {
-                window.scrollTo({ top: 1, behavior: 'instant' });
-            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }

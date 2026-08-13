@@ -169,7 +169,11 @@ INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `remoteObjectURI`)
      */
     private static function plainText(string $html): string
     {
-        return substr(RemoteHTML::toPlainText($html), 0, 65535);
+        // Cut on a character boundary, not a byte one. The column counts bytes,
+        // so the limit is in bytes - but a cut through the middle of a
+        // multi-byte character makes a string the database refuses outright,
+        // and the delivery carrying it fails rather than arriving shortened.
+        return mb_strcut(RemoteHTML::toPlainText($html), 0, 65535);
     }
 
     /** The one member here this message is addressed to, if exactly one is. */

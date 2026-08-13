@@ -134,23 +134,36 @@ UPDATE `Posts`
      * uses INSERT IGNORE / upsert), so a re-run just re-confirms existing links.
      * Run once from the installer after the tables exist.
      */
+    /** How many posts are held in memory at a time while backfilling. */
+    private const BACKFILL_BATCH = 500;
+
     public static function backfill(): void
     {
+        // A page at a time, walked by id. Every post's rich body read into one
+        // array is a number that only goes up - fine on the install this was
+        // written against, and an installer that dies on the one it is
+        // eventually run on. Keyed on postId rather than an offset so the
+        // indexing happening alongside cannot shift the window underneath it.
+        $after = 0;
+        $batch = self::BACKFILL_BATCH;
 
-        $result = mysqli_query(DB::connection(), '
+        while (true) {
+            $posts = DB::rows('
 SELECT `postId`, `descriptionDelta`
     FROM `Posts`
-    WHERE `descriptionDelta` IS NOT NULL
-');
+    WHERE `descriptionDelta` IS NOT NULL AND `postId` > ?
+    ORDER BY `postId`
+    LIMIT ' . $batch . '
+', 'stdClass', 'i', $after);
 
-        $posts = [];
+            if ($posts === []) {
+                return;
+            }
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            $posts[] = $row;
-        }
-
-        foreach ($posts as $row) {
-            self::indexPost((int) $row['postId'], Delta::decode((string) $row['descriptionDelta']));
+            foreach ($posts as $post) {
+                self::indexPost((int) $post -> postId, Delta::decode((string) $post -> descriptionDelta));
+                $after = (int) $post -> postId;
+            }
         }
     }
 }

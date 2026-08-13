@@ -17,6 +17,19 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::error('Not authorized', 403) -> send();
 }
 
+// Moderators are trusted and still get the pace every other search here has:
+// a wedged script in an open tab is the usual way one of these ends up in a
+// loop, and it costs the same whoever is signed in. After the authorization
+// check, so somebody with no business here cannot spend the budget of
+// somebody who has.
+$rate_key = 'search-banned-users:' . Auth::id();
+
+if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+    JSONResponse::error('Too many searches. Please slow down.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 $query = trim((string) ($payload['q'] ?? ''));
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 

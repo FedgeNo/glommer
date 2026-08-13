@@ -1,5 +1,6 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Api } from '/scripts/Api.js';
+import { DeltaRenderer } from '/scripts/DeltaRenderer.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Coordinates } from '/scripts/Coordinates.js';
 
@@ -360,9 +361,17 @@ export class PostMap {
         const wrapper = document.createElement('div');
         wrapper.className = 'MapPopup';
 
+        // Checked like every other href built from a payload. These addresses
+        // are this server's own today, but the check is what keeps that from
+        // being a thing somebody has to remember when the map one day carries
+        // a post from somewhere else.
         const link = document.createElement('a');
-        link.href = post.url;
         link.textContent = post.title || 'View post';
+
+        if (DeltaRenderer.isSafeLink(post.url, DeltaRenderer.ALLOWED_LINK_SCHEMES)) {
+            link.href = post.url;
+        }
+
         wrapper.appendWithSpace(link);
 
         const author = document.createElement('div');

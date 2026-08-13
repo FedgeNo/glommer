@@ -80,6 +80,17 @@ export class CarouselController {
     _advance(carousel, direction) {
         const slides = Array.from(carousel.querySelectorAll('.CarouselSlide'));
         const currentIndex = slides.findIndex((slide) => slide.classList.contains('Active'));
+
+        // A carousel always arrives with one slide showing. If it somehow does
+        // not, findIndex says -1 and the arithmetic below lands on the last
+        // slide - which is a stranger place to start than the first, and the
+        // line after would throw and take every later click with it.
+        if (slides.length === 0 || currentIndex === -1) {
+            slides[0]?.classList.add('Active');
+
+            return;
+        }
+
         const nextIndex = (currentIndex + direction + slides.length) % slides.length;
 
         slides[currentIndex].classList.remove('Active');

@@ -19,6 +19,18 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
+// Paced like every other search here. This one spends two things per call - a
+// LIKE across the accounts table and, for anything shaped like a handle, an
+// outbound request to another server to see whether it exists - so a loop
+// against it costs this server twice and somebody else's once.
+$rate_key = 'search-users:' . Auth::id();
+
+if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+    JSONResponse::error('Too many searches. Please slow down.', 429) -> send();
+}
+
+RateLimiter::recordAttempt($rate_key);
+
 $query = trim((string) ($payload['q'] ?? ''));
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 

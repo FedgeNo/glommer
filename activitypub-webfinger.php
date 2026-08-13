@@ -30,7 +30,6 @@ if (strcasecmp($username, ActivityPubActor::instanceUsername()) === 0) {
         ActivityPubResponse::notFound();
     }
 
-    header('Content-Type: application/jrd+json');
     ActivityPubResponse::send([
         'subject' => 'acct:' . ActivityPubActor::instanceUsername() . '@' . $host,
         'aliases' => [ServerURL::absolute('/activitypub/actor')],
@@ -41,7 +40,7 @@ if (strcasecmp($username, ActivityPubActor::instanceUsername()) === 0) {
                 'href' => ServerURL::absolute('/activitypub/actor'),
             ],
         ],
-    ]);
+    ], ActivityPubResponse::JRD_CONTENT_TYPE);
 }
 
 $user = ActivityPubResponse::localUser($username);
@@ -55,7 +54,6 @@ if ($user === null || ActivityPubActor::publicKeyPem($user) === null) {
 
 $actor_uri = ActivityPubActor::uriFor($user);
 
-header('Content-Type: application/jrd+json');
 ActivityPubResponse::send([
     'subject' => 'acct:' . $user -> slug . '@' . $host,
     'aliases' => [$actor_uri],
@@ -71,4 +69,4 @@ ActivityPubResponse::send([
             'href' => $actor_uri,
         ],
     ],
-]);
+], ActivityPubResponse::JRD_CONTENT_TYPE);

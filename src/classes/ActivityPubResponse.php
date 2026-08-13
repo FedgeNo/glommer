@@ -20,6 +20,13 @@ class ActivityPubResponse
 {
     public const CONTENT_TYPE = 'application/activity+json';
 
+    /**
+     * WebFinger's answer is a JRD and says so - a different document under a
+     * different specification (RFC 7033 §10.2), which happens to be reached
+     * through the same code as everything else here.
+     */
+    public const JRD_CONTENT_TYPE = 'application/jrd+json';
+
     /** Drops the session a cookieless server-to-server request opened. */
     public static function discardAnonymousSession(): void
     {
@@ -28,12 +35,18 @@ class ActivityPubResponse
         }
     }
 
-    /** @param array<string, mixed> $document */
-    public static function send(array $document): never
+    /**
+     * The type is sent from here rather than by the caller: a header set
+     * before this runs is replaced by this one, which is how WebFinger came to
+     * announce itself as ActivityPub for as long as it did.
+     *
+     * @param array<string, mixed> $document
+     */
+    public static function send(array $document, string $content_type = self::CONTENT_TYPE): never
     {
         self::discardAnonymousSession();
 
-        header('Content-Type: ' . self::CONTENT_TYPE);
+        header('Content-Type: ' . $content_type);
 
         // Slashes unescaped because every id in here is a URL and readable ids
         // matter when someone is debugging federation by eye.

@@ -46,15 +46,14 @@ class Place
      */
     public static function nearest(float $latitude, float $longitude): ?Place
     {
-        // Answered once per point per request. The gazetteer does not change
-        // while a page is being built, and a page asks the same question more
-        // than once as a matter of course: a pinned post is in the feed below
-        // it too, and somebody who posts from home posts from one point. Each
-        // of these costs a few milliseconds of trigonometry over a couple of
-        // thousand candidate rows, which is more than any other single thing a
-        // post needs.
+        // Answered once per point. A page asks the same question more than
+        // once as a matter of course - a pinned post is in the feed below it
+        // too, and somebody who posts from home posts from one point - and each
+        // ask costs a few milliseconds of trigonometry over a couple of
+        // thousand candidate rows, which is more than anything else a post
+        // needs.
         //
-        // Keyed on the point as given rather than a rounded one: two places a
+        // Keyed on the point as given rather than a rounded one: two points a
         // few metres apart can sit either side of the line between two towns.
         $key = $latitude . ',' . $longitude;
 
@@ -62,8 +61,21 @@ class Place
             return self::$nearestByPoint[$key];
         }
 
+        // Bounded, because this class is not only used by requests that end.
+        // The upload worker resolves a place for every queued post it
+        // publishes and runs for weeks, so an answer kept for every point it
+        // has ever seen is a process that grows until something kills it.
+        // Oldest out first: what a page asked a moment ago is what it is about
+        // to ask again.
+        if (count(self::$nearestByPoint) >= self::REMEMBERED_POINTS) {
+            unset(self::$nearestByPoint[array_key_first(self::$nearestByPoint)]);
+        }
+
         return self::$nearestByPoint[$key] = self::nearestUncached($latitude, $longitude);
     }
+
+    /** Comfortably more points than one page can show, and a bound for a daemon. */
+    private const REMEMBERED_POINTS = 200;
 
     /** @var array<string, ?Place> */
     private static array $nearestByPoint = [];

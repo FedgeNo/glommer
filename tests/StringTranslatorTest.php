@@ -62,6 +62,61 @@ class StringTranslatorTest extends TestCase
     }
 
     /**
+     * Polish counts in one/few/many where English counts in one/other, and a
+     * file built from English's shape alone would delete the two forms Polish
+     * actually needs - every run, silently, leaving it counting in the wrong
+     * grammar.
+     */
+    public function testAFormThisLanguageHasAndEnglishLacksSurvives(): void
+    {
+        $merged = StringTranslator::merge(
+            ['RelativeTime' => ['minutes' => ['one' => '{count}m ago', 'other' => '{count}m ago']]],
+            [
+                'RelativeTime.minutes.one' => '{count} min temu',
+                'RelativeTime.minutes.other' => '{count} min temu',
+                'RelativeTime.minutes.few' => '{count} min temu',
+                'RelativeTime.minutes.many' => '{count} min temu',
+            ]
+        );
+
+        $this -> assertSame(
+            ['one', 'other', 'few', 'many'],
+            array_keys($merged['RelativeTime']['minutes']),
+            'the forms English does not share were dropped'
+        );
+    }
+
+    /**
+     * English writes "See {link}" and Japanese "{link}を見る", so the fragment
+     * English leaves empty is the one Japanese fills in. An empty source
+     * string is not a translatable string, so it has to survive on the shape
+     * of the branch rather than on English having something to say there.
+     */
+    public function testAFragmentEnglishLeavesEmptySurvivesWhereALanguageFillsIt(): void
+    {
+        $merged = StringTranslator::merge(
+            ['MoreLocationsLink' => ['moreLocations' => ['before' => 'See ', 'link' => 'more locations', 'after' => '']]],
+            [
+                'MoreLocationsLink.moreLocations.link' => '他の地域',
+                'MoreLocationsLink.moreLocations.after' => 'を見る',
+            ]
+        );
+
+        $this -> assertSame('を見る', $merged['MoreLocationsLink']['moreLocations']['after'] ?? null);
+    }
+
+    /** A class English has dropped is walked by nobody and goes with it. */
+    public function testAClassEnglishNoLongerHasIsNotCarriedForward(): void
+    {
+        $merged = StringTranslator::merge(
+            ['Kept' => ['word' => 'One']],
+            ['Kept.word' => 'Eins', 'Gone.word' => 'Zwei', 'Gone.extra' => 'Drei']
+        );
+
+        $this -> assertSame(['Kept' => ['word' => 'Eins']], $merged);
+    }
+
+    /**
      * A model reads "{count}" as a word and translates what is inside the
      * braces, taking the rest of the sentence with it.
      */

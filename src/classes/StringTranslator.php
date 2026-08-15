@@ -99,7 +99,49 @@ class StringTranslator
             }
         }
 
+        // What this language has and English has no key for at all. Polish
+        // counts in four forms where English counts in two, and a language
+        // whose word order puts the link at the other end of the sentence
+        // carries the fragment on the other side of it. A file built from
+        // English alone would delete both, every run.
+        foreach (self::beyondSource($translations, $prefix, $source) as $key => $value) {
+            $merged[$key] = $value;
+        }
+
         return $merged;
+    }
+
+    /**
+     * The translations directly under $prefix that the source has no key for.
+     *
+     * Keyed on the branch rather than the exact path, so a language is only
+     * allowed the extra forms of something English still has - a class English
+     * has dropped is walked by nobody and goes with it.
+     *
+     * @param array<string, string> $translations
+     * @param array<string, mixed> $source
+     * @return array<string, string>
+     */
+    private static function beyondSource(array $translations, string $prefix, array $source): array
+    {
+        $head = $prefix === '' ? '' : $prefix . '.';
+        $beyond = [];
+
+        foreach ($translations as $path => $value) {
+            if ($head !== '' && !str_starts_with($path, $head)) {
+                continue;
+            }
+
+            $key = substr($path, strlen($head));
+
+            if ($key === '' || $value === '' || str_contains($key, '.') || array_key_exists($key, $source)) {
+                continue;
+            }
+
+            $beyond[$key] = $value;
+        }
+
+        return $beyond;
     }
 
     /**
@@ -616,9 +658,10 @@ class StringTranslator
             return;
         }
 
-        // Only what this run stands behind: a path whose English is gone, or
-        // whose translation was refused, has no business in either file.
-        $translations = array_intersect_key($translations, $source);
+        // What English no longer has a branch for is dropped by merge() not
+        // walking it, rather than by matching paths against the source: an
+        // English key that is deliberately empty is not in $source at all,
+        // and matching would take every language's filled-in version of it.
         $fingerprints = array_intersect_key($fingerprints, $translations);
 
         self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations));

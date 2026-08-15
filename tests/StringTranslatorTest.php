@@ -319,6 +319,20 @@ class StringTranslatorTest extends TestCase
     }
 
     /**
+     * An address is the same in every language by definition, and a model
+     * asked for one anyway translated the words inside it - "example.social"
+     * came back as Japanese for "example.societal" - so it is never asked.
+     */
+    public function testAnAddressIsNeverHandedToAModel(): void
+    {
+        $this -> assertTrue(StringTranslator::isInvariant('example.social'));
+        $this -> assertTrue(StringTranslator::isInvariant('https://relay.example/actor'));
+        $this -> assertTrue(StringTranslator::isInvariant('https://example.social/users/you'));
+        $this -> assertFalse(StringTranslator::isInvariant('Save Draft'));
+        $this -> assertFalse(StringTranslator::isInvariant('e.g. a name'));
+    }
+
+    /**
      * Half a counted set is worse than none: one count in the reader's
      * language and the next in English, in the same place on the same page.
      * A set with any words is finished from its own plural; a set with none

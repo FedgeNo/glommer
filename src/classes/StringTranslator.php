@@ -286,6 +286,22 @@ class StringTranslator
     }
 
     /**
+     * Whether a string is an address rather than language: a URL, or a bare
+     * hostname. The same in every language by definition, and a model asked
+     * for one anyway translates the words inside it or grows words onto it.
+     */
+    public static function isInvariant(string $english): bool
+    {
+        $english = trim($english);
+
+        if (str_contains($english, '://')) {
+            return true;
+        }
+
+        return preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/i', $english) === 1;
+    }
+
+    /**
      * Whether an answer is the question handed back, in a language that cannot
      * have written it.
      *
@@ -1139,15 +1155,13 @@ class StringTranslator
         $source = self::expanded($source, $locale);
         $existing = self::flatten(self::read($locale), '', true);
 
-        // What a previous run stored before it could tell a translation from
-        // the question repeated back. Dropped rather than left, so the file
-        // says what it really has and the reader falls back to the English it
-        // was already being shown.
-        foreach ($existing as $path => $translated) {
-            if (isset($source[$path]) && self::isUntouched($locale, $source[$path], $translated)) {
-                unset($existing[$path]);
-            }
-        }
+        // What is already stored stays stored, echoes included - an entry
+        // identical to its English renders exactly what the fallback would,
+        // and dropping it makes the path stale, which asks the model again:
+        // measured, the second answer turned "Cloudflare Turnstile" into
+        // Japanese for "Cloudflare's revolving door" and it passed every
+        // check. isUntouched() guards what comes in, where a misfire costs
+        // nothing; here it would cost whatever the next answer invents.
 
         $fingerprints = $this -> force
             ? []
@@ -1181,6 +1195,15 @@ class StringTranslator
         // rather than falling through to the model that ruins it.
         foreach (array_keys($stale) as $path) {
             if (self::isCalendar($path)) {
+                unset($stale[$path]);
+            }
+        }
+
+        // An address is not language, and a model does not leave one alone:
+        // asked, it turned "example.social" into Japanese for "example.societal"
+        // and grew a word onto the end of a URL. Never asked; English stands.
+        foreach ($stale as $path => $english) {
+            if (self::isInvariant($english)) {
                 unset($stale[$path]);
             }
         }

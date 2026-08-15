@@ -253,6 +253,11 @@ band).
   `pip`/`venv`), so the installer can build the NER environment (§8) and the
   translation environment (§6); only the NER build additionally needs dev
   headers and a C++ compiler.
+- **Optional, to translate the interface**: the `intl` extension
+  (`php-intl`). Month names and the order of a date's parts are facts about a
+  language rather than anything to ask a model for - it answers "Januaro
+  Januaro Januaro" - so `bin/translate-strings.php` reads them from ICU and
+  leaves those keys alone where it cannot. Nothing a reader does needs it.
 - **Free disk space: 25GB minimum, 500GB or more recommended.** The minimum is
   what it takes to install and try the thing: most of it is the translation
   environment, which is PyTorch plus a model for every language pair Argos

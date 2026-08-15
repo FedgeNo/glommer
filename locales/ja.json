@@ -397,8 +397,8 @@
         "short": "{year}年{month}月{day}日",
         "time": "{hour}時{minute}分",
         "dateAndTime": "{date} {time}",
-        "am": "AM",
-        "pm": "PM",
+        "am": "午前",
+        "pm": "午後",
         "clock": 24
     },
     "EnvironmentChecker": {

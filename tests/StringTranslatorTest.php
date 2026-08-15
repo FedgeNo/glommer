@@ -13,17 +13,6 @@ declare(strict_types=1);
 class StringTranslatorTest extends TestCase
 {
     /**
-     * The calendar answers are ICU's, so they can only be checked where ICU
-     * is. Everything else here runs on any machine.
-     */
-    private function requireICU(): void
-    {
-        if (!extension_loaded('intl')) {
-            throw new TestSkippedException('needs the intl extension - ICU is where calendar data comes from');
-        }
-    }
-
-    /**
      * A locale file holds more than language: the plural rule is code and the
      * clock is a number, and handing either to a model is how a locale ends up
      * counting in a rule nobody wrote.
@@ -344,8 +333,6 @@ class StringTranslatorTest extends TestCase
      */
     public function testTheLanguagePromptOffersTheLanguageItIsWrittenIn(): void
     {
-        $this -> requireICU();
-
         $this -> assertSame(
             'Would you like to view the site in Spanish?',
             StringTranslator::sourceFor('es', 'LanguagePrompt.question', 'Would you like to view the site in English?')
@@ -367,8 +354,6 @@ class StringTranslatorTest extends TestCase
      */
     public function testMonthNamesComeFromTheCalendarRatherThanAModel(): void
     {
-        $this -> requireICU();
-
         $this -> assertSame('enero', StringTranslator::fromCalendar('es', 'DateFormat.months.1'));
         $this -> assertSame('Januar', StringTranslator::fromCalendar('de', 'DateFormat.months.1'));
     }
@@ -379,8 +364,6 @@ class StringTranslatorTest extends TestCase
      */
     public function testTheDatePatternIsTheLocalesOwnOrder(): void
     {
-        $this -> requireICU();
-
         $japanese = StringTranslator::fromCalendar('ja', 'DateFormat.long');
 
         $this -> assertNotNull($japanese);

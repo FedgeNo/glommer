@@ -187,22 +187,11 @@ class StringTranslator
      */
     public static function fromCalendar(string $locale, string $path): ?string
     {
-        // ICU is the whole answer here, so without it there is none. Nothing
-        // falls through to a model on its own: isCalendar() keeps these keys
-        // out of a batch, and they stay as they are.
-        if (!extension_loaded('intl')) {
-            return null;
-        }
-
-        // LLLL rather than MMMM: the standalone name of the month, not the
-        // form a date puts it in. Slavic languages decline it inside a date
-        // (Russian "января", Czech "ledna") and Catalan prefixes it ("de
-        // gener"), and a list of months wants neither.
         if (preg_match('/^DateFormat\.(months|shortMonths)\.([0-9]{1,2})$/', $path, $found) === 1) {
-            return self::formatted(
+            return self::month(
                 $locale,
-                $found[1] === 'months' ? 'LLLL' : 'LLL',
-                mktime(0, 0, 0, (int) $found[2], 15, 2026)
+                (int) $found[2],
+                $found[1] === 'months' ? \IntlDateFormatter::LONG : \IntlDateFormatter::MEDIUM
             );
         }
 
@@ -214,9 +203,12 @@ class StringTranslator
         // their parts is the locale's, not a translator's opinion: Spanish
         // writes "d 'de' MMMM 'de' y" and Japanese "y年M月d日". Translated
         // instead of read from ICU, every language renders dates in US order.
+        //
+        // "short" here is ICU's medium: the one that abbreviates the month
+        // rather than numbering it, which is what shortMonths is a list of.
         $patterns = [
             'DateFormat.long' => [\IntlDateFormatter::LONG, \IntlDateFormatter::NONE],
-            'DateFormat.short' => [\IntlDateFormatter::SHORT, \IntlDateFormatter::NONE],
+            'DateFormat.short' => [\IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE],
             'DateFormat.time' => [\IntlDateFormatter::NONE, \IntlDateFormatter::SHORT],
         ];
 
@@ -228,12 +220,12 @@ class StringTranslator
     }
 
     /**
-     * Whether this key is calendar data, which belongs to ICU whether or not
-     * ICU is here to give it.
+     * Whether this key is calendar data, which is ICU's whether or not ICU
+     * knows the locale.
      *
-     * Asked separately from fromCalendar() because the two answers differ on a
-     * server without intl: there is nothing to write, and a model must still
-     * not be asked. An English month beats an invented one.
+     * Asked separately from fromCalendar(), because a locale ICU has never
+     * heard of answers nothing there - and a model must still not be asked
+     * for a month name. An English month beats an invented one.
      */
     public static function isCalendar(string $path): bool
     {
@@ -242,6 +234,84 @@ class StringTranslator
             ['DateFormat.am', 'DateFormat.pm', 'DateFormat.long', 'DateFormat.short', 'DateFormat.time'],
             true
         ) || preg_match('/^DateFormat\.(months|shortMonths)\.[0-9]{1,2}$/', $path) === 1;
+    }
+
+    /**
+     * A month as this locale's own date pattern will use it.
+     *
+     * The name and the pattern are chosen together, because the pattern is the
+     * only place the name ever lands - DateFormat puts it in {month} and so
+     * does its JavaScript twin. The standalone name is the wrong one for that
+     * job in every language that inflects: Polish writes "15 stycznia 2026"
+     * and declines the month to do it, where standalone is "styczeń", and
+     * Catalan's pattern carries no "de" because its own month name does.
+     *
+     * Where the pattern counts months rather than naming them - Japanese
+     * "y年M月d日" - the number is the answer. A name there prints the 月 twice.
+     */
+    private static function month(string $locale, int $number, int $style): ?string
+    {
+        $field = self::monthField($locale, $style);
+
+        if ($field === null) {
+            return null;
+        }
+
+        [$letter, $width] = $field;
+
+        if ($width <= 2) {
+            return (string) $number;
+        }
+
+        return self::formatted($locale, str_repeat($letter, $width), mktime(0, 0, 0, $number, 15, 2026));
+    }
+
+    /**
+     * The month field this locale's pattern uses, as its letter and its width.
+     *
+     * @return array{0: string, 1: int}|null
+     */
+    private static function monthField(string $locale, int $style): ?array
+    {
+        try {
+            $pattern = (new \IntlDateFormatter($locale, $style, \IntlDateFormatter::NONE, 'UTC')) -> getPattern();
+        } catch (\Throwable) {
+            return null;
+        }
+
+        if (!is_string($pattern) || $pattern === '') {
+            return null;
+        }
+
+        $length = strlen($pattern);
+
+        for ($at = 0; $at < $length; $at++) {
+            // Skipped whole: a quoted literal holds a language's connecting
+            // words, and an M in one of those is a letter rather than a field.
+            if ($pattern[$at] === "'") {
+                $end = strpos($pattern, "'", $at + 1);
+
+                if ($end === false) {
+                    break;
+                }
+
+                $at = $end;
+
+                continue;
+            }
+
+            if ($pattern[$at] === 'M' || $pattern[$at] === 'L') {
+                $run = 0;
+
+                while ($at + $run < $length && $pattern[$at + $run] === $pattern[$at]) {
+                    $run++;
+                }
+
+                return [$pattern[$at], $run];
+            }
+        }
+
+        return null;
     }
 
     /** An ICU pattern for this locale, written in the placeholders a locale file uses. */

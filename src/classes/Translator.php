@@ -106,13 +106,27 @@ class Translator
             'ARGOS_PACKAGES_DIR' => self::PACKAGES_DIR,
             'ARGOS_CHUNK_TYPE' => 'MINISBD',
             'OMP_NUM_THREADS' => '1',
-            // The web server's home need not exist or be writable, and a
-            // Python that cannot resolve one fails before it starts.
-            'HOME' => sys_get_temp_dir(),
+            // The web server's own home need not exist or be writable, and a
+            // Python that cannot resolve one fails before it starts - so it is
+            // given one that is its own. See STATE_DIR.
+            'HOME' => self::STATE_DIR,
         ];
     }
 
     public const PACKAGES_DIR = '/opt/glommer-translate/packages';
+
+    /**
+     * A home of its own for the translator to keep its working files in.
+     *
+     * Not the temporary directory. Argos writes a sentence-splitter cache
+     * under $HOME/.local/share, and anything shared is a directory somebody
+     * else can get to first: on this server a CLI run left one owned by the
+     * account that made it, and from then on the web server could not write
+     * there - so every translation failed locally and went to the model
+     * provider instead, which is exactly what running it here avoids. It
+     * failed in the log and nowhere a reader could see.
+     */
+    public const STATE_DIR = '/opt/glommer-translate/state';
 
     public static function isAvailable(): bool
     {

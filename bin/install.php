@@ -2853,6 +2853,23 @@ function ensure_translate_environment(): void
         ]);
 
         ok('Translation packages writable by ' . $web_account['user'] . ' (a model writes a scratch directory beside itself as it loads)');
+
+        // A home of the translator's own, because Argos caches its sentence
+        // splitter under $HOME and the temporary directory is somewhere
+        // another account can get there first: one CLI run by a person left a
+        // directory the web server could not write, and every translation
+        // after it failed here and went to the model provider instead - in the
+        // log, and nowhere a reader could see. See Translator::STATE_DIR.
+        if (!is_dir(Translator::STATE_DIR)) {
+            mkdir(Translator::STATE_DIR, 0755, true);
+        }
+
+        run('chown -R :owner :dir', [
+            'owner' => $web_account['user'] . ':' . ($web_account['group'] ?? $web_account['user']),
+            'dir' => Translator::STATE_DIR,
+        ]);
+
+        ok('Translator state directory owned by ' . $web_account['user'] . ' at ' . Translator::STATE_DIR);
     } else {
         warn('Could not tell which account the web server runs as - make ' . Translator::PACKAGES_DIR . ' writable by it, or the first translation fails with a permission error.');
     }

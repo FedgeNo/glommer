@@ -6,7 +6,7 @@
     ],
     "PollOptionVotes": {
         "votes": {
-            "one": "1 vote",
+            "one": "{count}票",
             "other": "{count}票"
         }
     },
@@ -847,7 +847,7 @@
     "PostActionBar": {
         "reply": "返信",
         "replies": {
-            "one": "Replies ({count})",
+            "one": "返信 ({count})",
             "other": "返信 ({count})"
         }
     },
@@ -885,22 +885,22 @@
             "after": "で終了"
         },
         "days": {
-            "one": "in {count} day",
+            "one": "{count}日",
             "other": "{count}日"
         },
         "hours": {
-            "one": "in {count} hour",
+            "one": "{count}時間",
             "other": "{count}時間"
         },
         "minutes": {
-            "one": "in {count} minute",
+            "one": "{count}分",
             "other": "{count}分"
         },
         "underMinute": "1分未満"
     },
     "PollTally": {
         "voters": {
-            "one": "1 person voted ",
+            "one": "{count}人が投票・",
             "other": "{count}人が投票・"
         }
     },
@@ -972,11 +972,11 @@
         "windowMode": "その時だけ",
         "rangeLabel": "日付までの投稿を表示",
         "cumulativeLabel": {
-            "one": "Posted up to {date} — {count} post",
+            "one": "{date}までの投稿 {count}件",
             "other": "{date}までの投稿 {count}件"
         },
         "windowLabel": {
-            "one": "Posted around {date} — {count} post",
+            "one": "{date}ごろの投稿 {count}件",
             "other": "{date}ごろの投稿 {count}件"
         }
     },
@@ -1025,20 +1025,20 @@
     },
     "PostLocationLink": {
         "title": "地図でこの場所を表示",
-        "between": ", "
+        "between": "、"
     },
     "RelativeTime": {
         "justNow": "たった今",
         "minutes": {
-            "one": "{count}m ago",
+            "one": "{count}分前",
             "other": "{count}分前"
         },
         "hours": {
-            "one": "{count}h ago",
+            "one": "{count}時間前",
             "other": "{count}時間前"
         },
         "days": {
-            "one": "{count}d ago",
+            "one": "{count}日前",
             "other": "{count}日前"
         }
     },

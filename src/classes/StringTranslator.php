@@ -503,7 +503,10 @@ class StringTranslator
      */
     public static function punctuatedAsSource(string $english, string $translated): string
     {
-        $ending = '/[.!?。！？]+$/u';
+        // Not every language ends a sentence with a full stop: Urdu closes
+        // with one mark, Devanagari with another, and a label that gained
+        // either is as wrong as one that gained a period.
+        $ending = '/[.!?。！？۔।॥]+$/u';
 
         if (preg_match($ending, trim($english)) === 1) {
             return $translated;

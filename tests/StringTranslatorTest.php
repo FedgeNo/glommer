@@ -13,14 +13,13 @@ declare(strict_types=1);
 class StringTranslatorTest extends TestCase
 {
     /**
-     * A locale file holds more than language: the plural rule is code and the
-     * clock is a number, and handing either to a model is how a locale ends up
-     * counting in a rule nobody wrote.
+     * A locale file holds more than language: the clock is a number, and
+     * handing a number to a model is how a locale ends up telling the time in
+     * something nobody wrote.
      */
     public function testOnlyActualStringsAreOfferedForTranslation(): void
     {
         $flat = StringTranslator::flatten([
-            Strings::PLURAL_RULE => 'one,other',
             'DateFormat' => ['clock' => 12, 'am' => 'AM'],
             'LoginForm' => ['submit' => 'Log In', 'blank' => '   '],
         ]);
@@ -143,23 +142,19 @@ class StringTranslatorTest extends TestCase
     }
 
     /**
-     * Polish counts in four forms and German tells the time on a 24-hour
-     * clock, and neither is a sentence anybody translated. Rebuilt from
-     * English's shape and the strings that came back, a locale loses both -
-     * which is Polish counting in the wrong grammar and German reading 3:04
-     * for a quarter past three in the afternoon.
+     * German tells the time on a 24-hour clock, which is not a sentence
+     * anybody translated. Rebuilt from English's shape and the strings that
+     * came back, a locale lost it - and read 3:04 for a quarter past three in
+     * the afternoon.
      */
     public function testWhatIsTheLocalesOwnRatherThanLanguageSurvives(): void
     {
-        $rule = [['category' => 'one', 'is' => [1]], ['category' => 'few']];
-
         $merged = StringTranslator::merge(
-            [Strings::PLURAL_RULE => [['category' => 'one']], 'DateFormat' => ['clock' => 12, 'am' => 'AM']],
+            ['DateFormat' => ['clock' => 12, 'am' => 'AM']],
             ['DateFormat.am' => 'AM'],
-            [Strings::PLURAL_RULE => $rule, 'DateFormat' => ['clock' => 24, 'am' => 'AM']]
+            ['DateFormat' => ['clock' => 24, 'am' => 'AM']]
         );
 
-        $this -> assertSame($rule, $merged[Strings::PLURAL_RULE], 'the counting rule was dropped');
         $this -> assertSame(24, $merged['DateFormat']['clock'], 'the clock was dropped');
     }
 

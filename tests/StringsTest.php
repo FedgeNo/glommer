@@ -130,14 +130,9 @@ class StringsTest extends TestCase
         $locale = new \ReflectionProperty(Strings::class, 'locale');
         $locale -> setAccessible(true);
 
+        // Nothing here says how Polish counts: naming the language is what
+        // says it, and CLDR answers for the rest.
         $tables -> setValue(null, ['pl' => [
-            // As a locale file carries it: cases tried in order, each naming a
-            // category and what a count has to satisfy to take it.
-            Strings::PLURAL_RULE => [
-                ['category' => 'one', 'is' => [1]],
-                ['category' => 'few', 'mod10' => [2, 3, 4], 'notMod100' => [12, 13, 14]],
-                ['category' => 'many'],
-            ],
             'PollOptionVotes' => ['votes' => [
                 'one' => '1 głos',
                 'few' => '{count} głosy',
@@ -166,14 +161,14 @@ class StringsTest extends TestCase
         $locale = new \ReflectionProperty(Strings::class, 'locale');
         $locale -> setAccessible(true);
 
-        $tables -> setValue(null, ['xx' => [
-            Strings::PLURAL_RULE => static fn (int $count): string => 'few',
-            'PollOptionVotes' => ['votes' => ['other' => '{count} stemmer']],
+        // Three is "few" in Polish, and this locale has never written one.
+        $tables -> setValue(null, ['pl' => [
+            'PollOptionVotes' => ['votes' => ['other' => '{count} głosów']],
         ]]);
-        $locale -> setValue(null, 'xx');
+        $locale -> setValue(null, 'pl');
 
         try {
-            $this -> assertSame('{count} stemmer', Strings::plural(PollOptionVotes::class, 'votes', 3));
+            $this -> assertSame('{count} głosów', Strings::plural(PollOptionVotes::class, 'votes', 3));
         } finally {
             $tables -> setValue(null, []);
             $locale -> setValue(null, null);

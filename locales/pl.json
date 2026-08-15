@@ -1,28 +1,4 @@
 {
-    "@plural": [
-        {
-            "category": "one",
-            "is": [
-                1
-            ]
-        },
-        {
-            "category": "few",
-            "mod10": [
-                2,
-                3,
-                4
-            ],
-            "notMod100": [
-                12,
-                13,
-                14
-            ]
-        },
-        {
-            "category": "many"
-        }
-    ],
     "PollOptionVotes": {
         "votes": {
             "one": "1 głos",

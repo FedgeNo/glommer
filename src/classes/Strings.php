@@ -175,9 +175,6 @@ UPDATE `Users`
         self::$locale = $locale !== null && in_array($locale, self::available(), true) ? $locale : null;
     }
 
-    /** Where a locale file keeps its counting rule - see PluralRule. */
-    public const PLURAL_RULE = PluralRule::KEY;
-
     /**
      * One of a set of phrasings, chosen by how many of the thing there are.
      *
@@ -187,9 +184,9 @@ UPDATE `Users`
      * has to belong to the language.
      *
      * So a counted string is a set of phrasings keyed by CLDR category, and
-     * each locale file says which category a number falls in. A locale that
-     * gives only "other" is a language with one form, which is a real answer
-     * and what Japanese wants.
+     * PluralRule says which category a number falls in. A locale that gives
+     * only "other" is a language with one form, which is a real answer and
+     * what Japanese wants.
      *
      * The count is not substituted here: the phrasing says where the number
      * goes, or leaves it out, which is a thing languages differ about too.
@@ -211,14 +208,10 @@ UPDATE `Users`
         return is_string($chosen) ? $chosen : '';
     }
 
-    /** Which CLDR category a count falls in, by the current locale's own rule. */
+    /** Which CLDR category a count falls in, in the language being read. */
     private static function category(int $count): string
     {
-        $rule = self::table(self::locale())[self::PLURAL_RULE]
-            ?? self::table(self::SOURCE_LOCALE)[self::PLURAL_RULE]
-            ?? [];
-
-        return PluralRule::categoryFor(is_array($rule) ? $rule : [], $count);
+        return PluralRule::categoryFor(self::locale(), $count);
     }
 
     /**

@@ -53,26 +53,19 @@ class LocaleIntegrityTest extends TestCase
     }
 
     /**
-     * Which categories a locale's own rule can actually produce, found by
-     * asking it rather than by looking the language up: the rule in the file is
-     * the only thing that decides, so it is the only thing worth checking
-     * against. The range covers every shape CLDR rules turn on - the teens and
-     * the hundreds are where Slavic and Arabic rules change their minds.
+     * Which categories this language can actually produce, found by counting
+     * rather than by looking a list up. The range covers every shape CLDR
+     * rules turn on - the teens and the hundreds are where Slavic and Arabic
+     * rules change their minds.
      *
      * @return string[]
      */
     private static function categoriesUsedBy(string $locale): array
     {
-        $rule = self::table($locale)[Strings::PLURAL_RULE] ?? [];
-
-        if (!is_array($rule) || $rule === []) {
-            return ['one', 'other'];
-        }
-
         $found = [];
 
         foreach ([...range(0, 130), 200, 201, 1000, 1002, 1005, 1011, 1024] as $count) {
-            $found[PluralRule::categoryFor($rule, $count)] = true;
+            $found[PluralRule::categoryFor($locale, $count)] = true;
         }
 
         return array_keys($found);
@@ -100,10 +93,6 @@ class LocaleIntegrityTest extends TestCase
         $found = [];
 
         foreach ($table as $key => $value) {
-            if ($key === Strings::PLURAL_RULE) {
-                continue;
-            }
-
             $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
 
             if (is_array($value)) {
@@ -128,7 +117,7 @@ class LocaleIntegrityTest extends TestCase
             $categories = self::categoriesUsedBy($locale);
 
             foreach (self::table($locale) as $class => $entry) {
-                if ($class === Strings::PLURAL_RULE || !is_array($entry)) {
+                if (!is_array($entry)) {
                     continue;
                 }
 
@@ -170,7 +159,7 @@ class LocaleIntegrityTest extends TestCase
             }
 
             foreach (self::table($locale) as $class => $entry) {
-                if ($class === Strings::PLURAL_RULE || !is_array($entry) || !isset($source[$class])) {
+                if (!is_array($entry) || !isset($source[$class])) {
                     continue;
                 }
 

@@ -1,9 +1,4 @@
 {
-    "@plural": [
-        {
-            "category": "other"
-        }
-    ],
     "PollOptionVotes": {
         "votes": {
             "one": "{count}票",

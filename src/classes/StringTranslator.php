@@ -41,8 +41,8 @@ class StringTranslator
     /**
      * Every translatable string in a locale table, by dotted path.
      *
-     * Only strings: a locale carries numbers ("clock": 12) and the counting
-     * rule as well, and neither is language a model has anything to say about.
+     * Only strings: a locale carries numbers ("clock": 12) as well, and a
+     * number is not language a model has anything to say about.
      *
      * $keep_empty is for reading a locale rather than the source. An empty
      * string is nothing to translate, but in a locale it is an answer - the
@@ -57,10 +57,6 @@ class StringTranslator
         $flat = [];
 
         foreach ($table as $key => $value) {
-            if ($prefix === '' && $key === Strings::PLURAL_RULE) {
-                continue;
-            }
-
             $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
 
             if (is_array($value)) {
@@ -79,10 +75,10 @@ class StringTranslator
      * order it was written in rather than the order it was translated in.
      *
      * A locale file holds more than language, and the rest of it is the
-     * locale's own rather than a translation of English's: the rule it counts
-     * by, and the clock it tells the time on. Those are taken from $existing,
-     * because rebuilding the file out of English's shape and the strings that
-     * came back would otherwise drop every one of them.
+     * locale's own rather than a translation of English's: the clock it tells
+     * the time on. That is taken from $existing, because rebuilding the file
+     * out of English's shape and the strings that came back would otherwise
+     * drop it.
      *
      * @param array<string, mixed> $source
      * @param array<string, string> $translations
@@ -95,16 +91,6 @@ class StringTranslator
 
         foreach ($source as $key => $value) {
             $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
-
-            // The counting rule is code, and each language's own: English's
-            // would have Polish counting in two forms where it has four.
-            if ($prefix === '' && $key === Strings::PLURAL_RULE) {
-                if (array_key_exists($key, $existing)) {
-                    $merged[$key] = $existing[$key];
-                }
-
-                continue;
-            }
 
             if (is_array($value)) {
                 $branch = self::merge(

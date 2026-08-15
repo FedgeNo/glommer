@@ -1,15 +1,4 @@
 {
-    "@plural": [
-        {
-            "category": "one",
-            "is": [
-                1
-            ]
-        },
-        {
-            "category": "other"
-        }
-    ],
     "PollOptionVotes": {
         "votes": {
             "one": "1 voto",

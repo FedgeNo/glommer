@@ -61,11 +61,10 @@ export class Strings {
      * One of a set of phrasings keyed by CLDR category, chosen by how many of
      * the thing there are - the client's Strings::plural().
      *
-     * The category comes from Intl.PluralRules, which is the browser's own copy
-     * of the same CLDR data the locale files' @plural closures encode. That rule
-     * is a PHP closure and cannot be serialized into the table the browser
-     * fetches, and asking the browser is better than shipping a second copy
-     * anyway: there is only one place per language for it to be wrong.
+     * The category comes from Intl.PluralRules, which is the browser's copy of
+     * CLDR - the same data ICU answers the server's PluralRule with. Neither
+     * side carries a rule of its own, so there is nowhere for the two to
+     * disagree and nothing to write for a new language.
      *
      * Unlike the server's, this substitutes {count} - every caller here wants
      * it, and a phrasing that leaves the number out simply has no token to fill.

@@ -364,6 +364,24 @@ never offer the translate button can set `SKIP_TRANSLATE=1` and the installer
 leaves it alone, saying so in its output; translation stays unavailable there
 until it is run again without the flag. Everything else installs as normal.
 
+**Translating the interface.** The same packages write Glommer's own wording.
+English lives in `locales/en.json` and every other locale is made from it:
+
+```
+php bin/translate-strings.php                 # everything that has changed
+php bin/translate-strings.php --force pl      # one locale, from scratch
+php bin/add-string.php PostCard.replies "{count} replies"
+```
+
+Both are CLI-only and need the translation environment above, so run them where
+it is installed and commit the locale files that come back. Only strings whose
+English has been edited since the last run are translated, so a rerun with
+nothing changed does nothing and a correction made by hand is never overwritten
+- `--force` is how to ask for a language again. A locale is written with
+whatever translated and left without the rest, since English stands in per key.
+Read what comes back before committing it: the models are close enough to be
+worth it and wrong often enough to need an eye.
+
 **Getting a certificate.** The cert lives in your web server, not in Glommer.
 
 - **Real domain** - Let's Encrypt via certbot:

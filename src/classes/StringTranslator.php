@@ -442,11 +442,18 @@ class StringTranslator
      * reorders around it the way the language wants - "X1X views" becomes
      * "Vistas X1X".
      *
+     * A unit written against the number goes with it. "{count}m ago" masked to
+     * "X1Xm ago" leaves the tokenizer one word, "X1Xm", which comes back fused
+     * - the unit dropped, uppercased, or carrying a piece of the sentinel with
+     * it. Masking "{count}m" whole means the unit is not translated, which is
+     * the lesser loss: a language that abbreviates minutes differently can be
+     * given that by hand, where a corrupted one has to be found first.
+     *
      * @return array{0: string, 1: array<string, string>}
      */
     public static function mask(string $text): array
     {
-        preg_match_all('/\{[a-zA-Z]+\}/', $text, $found);
+        preg_match_all('/[a-zA-Z]*\{[a-zA-Z]+\}[a-zA-Z]*/', $text, $found);
 
         $sentinels = [];
         $masked = $text;
@@ -915,7 +922,12 @@ class StringTranslator
             throw new \RuntimeException('Could not encode ' . $path . '.');
         }
 
-        file_put_contents($path, $json . "\n");
+        // Thrown rather than ignored: a run that saved nothing still counts
+        // what it translated, so a write refused for want of permission was
+        // reported as "24 of 24 translated" and the files sat unchanged.
+        if (file_put_contents($path, $json . "\n") === false) {
+            throw new \RuntimeException('Could not write ' . $path . '.');
+        }
     }
 
     private static function path(string $locale): string

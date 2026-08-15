@@ -73,11 +73,18 @@ export class Strings {
      *
      * Unlike the server's, this substitutes {count} - every caller here wants
      * it, and a phrasing that leaves the number out simply has no token to fill.
+     *
+     * ?? rather than ||, and replaceAll rather than replace, to match
+     * Strings::plural() exactly: an empty phrasing is a language saying there
+     * are no words for this here, which || would throw away in favour of
+     * another form, and a phrasing naming the count twice would otherwise
+     * fill one of them and print the token at the reader for the other.
      */
     static plural(forms, count) {
         const category = new Intl.PluralRules(Strings.#locale).select(count);
+        const chosen = forms[category] ?? forms.other ?? '';
 
-        return (forms[category] || forms.other || '').replace('{count}', String(count));
+        return chosen.replaceAll('{count}', String(count));
     }
 
     /**

@@ -130,6 +130,29 @@ class StringTranslatorTest extends TestCase
         );
     }
 
+    /**
+     * A run that saved nothing counted what it translated all the same, so a
+     * write refused for want of permission was reported as a full success and
+     * the files sat unchanged.
+     */
+    public function testAWriteThatDidNotHappenIsNotReportedAsOne(): void
+    {
+        $write = new \ReflectionMethod(StringTranslator::class, 'writeJSON');
+        $write -> setAccessible(true);
+
+        // Under a file rather than a directory, which no filesystem will take.
+        set_error_handler(static fn (): bool => true);
+
+        try {
+            $write -> invoke(null, '/dev/null/locale.json', ['A' => 'B']);
+            $this -> assertTrue(false, 'a refused write was reported as a success');
+        } catch (\RuntimeException $exception) {
+            $this -> assertTrue(str_contains($exception -> getMessage(), 'Could not write'));
+        } finally {
+            restore_error_handler();
+        }
+    }
+
     /** A key nobody has translated is absent, and stays out of the file. */
     public function testAKeyNobodyHasTranslatedStaysOut(): void
     {
@@ -225,6 +248,28 @@ class StringTranslatorTest extends TestCase
 
         $this -> assertSame('X1X of X2X views', $masked);
         $this -> assertSame('{count} of {total} views', StringTranslator::unmask($masked, $sentinels));
+    }
+
+    /**
+     * A unit written against the number travels with it. Masked apart, the
+     * tokenizer is handed one word - "X1Xm" - and hands it back fused: the
+     * unit dropped, uppercased, or carrying a piece of the sentinel with it.
+     */
+    public function testAUnitGluedToTheNumberIsMaskedWithIt(): void
+    {
+        [$masked, $sentinels] = StringTranslator::mask('{count}m ago');
+
+        $this -> assertSame('X1X ago', $masked, 'the unit was left for the tokenizer to fuse');
+        $this -> assertSame('{count}m temu', StringTranslator::unmask('X1X temu', $sentinels));
+    }
+
+    /** A number standing on its own is masked on its own. */
+    public function testAPlaceholderWithNothingAgainstItIsMaskedAlone(): void
+    {
+        [$masked, $sentinels] = StringTranslator::mask('{count} views');
+
+        $this -> assertSame('X1X views', $masked);
+        $this -> assertSame('{count} vistas', StringTranslator::unmask('X1X vistas', $sentinels));
     }
 
     /** The same placeholder twice is one sentinel, used twice. */

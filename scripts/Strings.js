@@ -20,15 +20,28 @@ export class Strings {
         const locale = ClientConfig.get('locale') || 'en';
 
         try {
-            const response = await fetch('/locales/' + locale + '.json');
+            const response = await fetch('/locales/' + encodeURIComponent(locale) + '.json');
+
+            // Checked before it is parsed, the same as Api does: an error page
+            // that happens to be readable as JSON would install itself as the
+            // whole string table, and every twin would say pieces of it.
+            if (!response.ok) {
+                throw new Error('locales/' + locale + '.json answered ' + response.status);
+            }
 
             Strings.useLocale(await response.json(), locale);
-        } catch {
+        } catch (error) {
             // No words is not a reason to render nothing: a twin asking for a
             // string it has not got falls back the same way a missing key
             // does, which is to what the caller passes as the English. The
             // locale still stands, so counted phrasings that fell back to their
             // English are at least counted this language's way.
+            //
+            // Said out loud, because a whole language quietly reverting to
+            // English is the one thing nobody thinks to look for - the server
+            // logs the same failure for the same reason.
+            console.error('Strings: falling back to English.', error);
+
             Strings.useLocale({}, locale);
         }
     }

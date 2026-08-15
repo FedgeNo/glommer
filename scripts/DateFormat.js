@@ -58,20 +58,28 @@ export class DateFormat {
         const hour = date.getUTCHours();
         const twelve = Number(words.clock) === 12;
 
-        return words.time
-            .replace('{hour}', twelve
+        return String(words.time ?? '')
+            .replaceAll('{hour}', twelve
                 ? String(hour % 12 || 12)
                 : String(hour).padStart(2, '0'))
-            .replace('{minute}', String(date.getUTCMinutes()).padStart(2, '0'))
-            .replace('{meridiem}', hour < 12 ? words.am : words.pm);
+            .replaceAll('{minute}', String(date.getUTCMinutes()).padStart(2, '0'))
+            .replaceAll('{meridiem}', String(words[hour < 12 ? 'am' : 'pm'] ?? ''));
     }
 
+    /**
+     * Coerced and replaceAll'd to match DateFormat.php exactly, which casts
+     * what it reads and substitutes with str_replace: a pattern naming a piece
+     * of the date twice would otherwise be filled once here and twice there,
+     * and the same day would read differently depending on which side built
+     * the card.
+     */
     static #date(date, pattern, monthList) {
         const words = DateFormat.#words();
+        const months = words[monthList] ?? {};
 
-        return words[pattern]
-            .replace('{month}', words[monthList][date.getUTCMonth() + 1] || '')
-            .replace('{day}', String(date.getUTCDate()))
-            .replace('{year}', String(date.getUTCFullYear()));
+        return String(words[pattern] ?? '')
+            .replaceAll('{month}', String(months[date.getUTCMonth() + 1] ?? ''))
+            .replaceAll('{day}', String(date.getUTCDate()))
+            .replaceAll('{year}', String(date.getUTCFullYear()));
     }
 }

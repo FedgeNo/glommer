@@ -175,6 +175,26 @@ class StringsTest extends TestCase
         }
     }
 
+    /**
+     * An answer that no longer names a language this site has counts as never
+     * having answered, or locale() falls back to English while hasChosen()
+     * insists they chose - and the prompt that would put it right never comes.
+     */
+    public function testAnAnswerNamingALanguageThatIsGoneIsNotAnAnswer(): void
+    {
+        $locale = new \ReflectionProperty(Strings::class, 'locale');
+        $locale -> setValue(null, null);
+        $_SESSION['locale'] = 'kl';
+
+        try {
+            $this -> assertFalse(Strings::hasChosen());
+            $this -> assertSame(Strings::SOURCE_LOCALE, Strings::locale());
+        } finally {
+            unset($_SESSION['locale']);
+            $locale -> setValue(null, null);
+        }
+    }
+
     /** English is the source, so it is always one of the languages on offer. */
     public function testTheSourceLanguageIsAlwaysAvailable(): void
     {

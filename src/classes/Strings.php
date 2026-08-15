@@ -5,10 +5,10 @@ declare(strict_types=1);
 /**
  * The words the software says, in whichever language it is saying them.
  *
- * A PHP array file per locale under src/locales/, because there is no build
- * step here and there is not going to be one: an array file is compiled once
- * by opcache and read back as a hash lookup, where JSON would be parsed on
- * every request and a database table would be a query on every page.
+ * One JSON file per locale under locales/, read here and fetched as-is by the
+ * browser. One file rather than one per side, because a second hand-kept copy
+ * of every string is the easiest drift there is between two renderers that
+ * already work hard not to drift.
  *
  * Everything a person reads comes from here, including the label on a button.
  * A class keeps only the shape of a sentence - which piece is a link, where it
@@ -93,13 +93,26 @@ class Strings
     {
         $stored = Auth::check() ? Auth::user() ?-> locale : null;
 
-        if (is_string($stored) && $stored !== '') {
+        if (self::isOffered($stored)) {
             return $stored;
         }
 
         $session = $_SESSION['locale'] ?? null;
 
-        return is_string($session) && $session !== '' ? $session : null;
+        return self::isOffered($session) ? $session : null;
+    }
+
+    /**
+     * Whether an answer somebody gave is still one this site can act on.
+     *
+     * Checked here rather than only where it is used, because an answer that
+     * no longer names a language - the file removed since - counts as having
+     * answered: locale() would fall back to English while hasChosen() said
+     * they had chosen, and LanguagePrompt would never offer to put it right.
+     */
+    private static function isOffered(mixed $locale): bool
+    {
+        return is_string($locale) && $locale !== '' && in_array($locale, self::available(), true);
     }
 
     /**
@@ -232,8 +245,7 @@ UPDATE `Users`
     }
 
     /**
-     * The whole table, for handing to the browser - the locales/*.js modules
-     * the client twins read are this, written out.
+     * The whole table for a locale, English underneath it.
      *
      * @return array<string, mixed>
      */
@@ -258,7 +270,19 @@ UPDATE `Users`
             return self::$tables[$locale] = [];
         }
 
-        $decoded = json_decode((string) @file_get_contents(self::DIRECTORY . '/' . $locale . '.json'), true);
+        $path = self::DIRECTORY . '/' . $locale . '.json';
+        $contents = @file_get_contents($path);
+        $decoded = $contents === false ? null : json_decode($contents, true);
+
+        // English rather than nothing, because a page in the wrong language is
+        // better than no page - but said out loud, since a whole language
+        // quietly reverting to English is the one thing nobody would think to
+        // look for. The file is listed in the directory, so it existing and
+        // not being readable is a fault rather than a state.
+        if (!is_array($decoded)) {
+            error_log('Strings: ' . $path . ' could not be read as JSON; falling back to '
+                . self::SOURCE_LOCALE . '. ' . ($contents === false ? 'Unreadable.' : json_last_error_msg()));
+        }
 
         return self::$tables[$locale] = is_array($decoded) ? $decoded : [];
     }

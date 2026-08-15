@@ -406,6 +406,14 @@ SELECT RELEASE_LOCK(?)
             }
         }
 
+        // The cap above counts bytes and a character is up to four of them, so
+        // a translation long enough to be cut can end mid-character. Repaired
+        // rather than passed on: what readable() does to what goes in, since a
+        // half a character coming back is no more decodable than one going.
+        if (!mb_check_encoding($output, 'UTF-8')) {
+            $output = (string) mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+        }
+
         $status = proc_close($process);
 
         // Non-zero is a missing package for the pairing as often as anything

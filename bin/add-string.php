@@ -81,7 +81,13 @@ if ($json === false) {
     exit(1);
 }
 
-file_put_contents($source, $json . "\n");
+// Checked, because everything after this point translates that key into every
+// language from an en.json this was supposed to have written: a refused write
+// would leave the English behind and the translations of it everywhere.
+if (file_put_contents($source, $json . "\n") === false) {
+    fwrite(STDERR, 'Could not write ' . $source . ".\n");
+    exit(1);
+}
 
 echo ($existing === null ? 'Added ' : 'Rewrote ') . $path . ': ' . $text . "\n";
 
@@ -94,6 +100,14 @@ if ($locales === []) {
 }
 
 $started_at = microtime(true);
-$translator -> run();
+
+// The English is already written by now, so a failure here is one language
+// short rather than a lost string - said plainly, and the run reruns.
+try {
+    $translator -> run();
+} catch (\Throwable $exception) {
+    fwrite(STDERR, 'The English was saved; translating it failed: ' . $exception -> getMessage() . "\n");
+    exit(1);
+}
 
 echo count($locales) . ' locale(s) in ' . (int) round(microtime(true) - $started_at) . "s.\n";

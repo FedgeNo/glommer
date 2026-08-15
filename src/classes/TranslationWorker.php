@@ -27,6 +27,13 @@ class TranslationWorker
     /** Past this the padding in a batch costs more than the batching saves. */
     public const BATCH = 64;
 
+    /**
+     * How long one batch may take before the worker is taken as gone. Generous
+     * against the couple of seconds a batch of short strings costs, because the
+     * first one also waits for the model to load.
+     */
+    public const ANSWER_TIMEOUT = 300;
+
     /** Argos's own default, and what a few hundred interface strings deserve. */
     public const CAREFUL = 4;
 
@@ -109,7 +116,10 @@ class TranslationWorker
 
         $answer = fgets($this -> pipes[1]);
 
-        if ($answer === false) {
+        // A model that stops answering would otherwise hold this here for as
+        // long as the machine is up: fgets on a pipe nobody closes waits
+        // forever, and the pass would look like it was still working.
+        if ($answer === false || stream_get_meta_data($this -> pipes[1])['timed_out']) {
             $this -> close();
 
             return $empty;
@@ -311,6 +321,11 @@ PYTHON;
         $process = @proc_open($command, $descriptors, $pipes);
 
         if (!is_resource($process)) {
+            // Said out loud: the suppression above is for the warning, not for
+            // the fact, and every answer coming back empty is a poor way to
+            // learn that the interpreter could not be started at all.
+            error_log('TranslationWorker: could not start ' . Translator::PYTHON
+                . ' for ' . $this -> from . '_' . $this -> to);
             $this -> unavailable = true;
 
             return false;
@@ -318,6 +333,12 @@ PYTHON;
 
         $this -> process = $process;
         $this -> pipes = $pipes;
+
+        // A model loads in about half a second and a batch of short strings
+        // takes seconds; a read still waiting minutes later is one that is
+        // never going to arrive, and waiting for it is indistinguishable from
+        // working. The pass reruns and translates only what is still missing.
+        stream_set_timeout($pipes[1], self::ANSWER_TIMEOUT);
 
         register_shutdown_function([$this, 'close']);
 

@@ -5,11 +5,17 @@ declare(strict_types=1);
 /**
  * A date, written the way the reader's language writes one.
  *
- * PHP's date() only ever says January, and there is no ext-intl here to ask
- * instead - so the month names and the order they go in come from the locale,
- * the same place every other word does. A language decides three separate
- * things and this keeps them separate: what the months are called, how a date
- * is arranged, and whether a clock has twelve hours or twenty-four.
+ * PHP's date() only ever says January, so the month names and the order they
+ * go in come from the locale file, the same place every other word does. A
+ * language decides three separate things and this keeps them separate: what
+ * the months are called, how a date is arranged, and whether a clock has
+ * twelve hours or twenty-four.
+ *
+ * Read rather than asked, even though ICU is installed: this renders and so
+ * does its JavaScript twin, and two libraries of locale data - one on each
+ * side, at whatever versions each happens to be - would disagree about a date
+ * on the same page. bin/translate-strings.php asks ICU once, when the file is
+ * written, and both renderers read the answer.
  *
  * Everything is rendered in UTC, because the server has no way to know the
  * viewer's timezone and a date that read differently either side of midnight

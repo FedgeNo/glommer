@@ -70,6 +70,55 @@ class StringTranslator
     }
 
     /**
+     * The English to translate, with every counted phrase widened to the
+     * categories this language counts in.
+     *
+     * English counts in two and the work list is English's, so without this
+     * nothing ever asks for a form English does not have - and Polish could
+     * never be given the "few" and "many" its grammar requires, however many
+     * times the pass was run. The extra forms start from English's plural,
+     * which is the only English there is for them; what a language does with
+     * that is the translation's business.
+     *
+     * @param array<string, string> $source English, by path
+     * @return array<string, string>
+     */
+    public static function expanded(array $source, string $locale): array
+    {
+        $groups = [];
+
+        foreach ($source as $path => $english) {
+            $at = strrpos($path, '.');
+
+            if ($at !== false) {
+                $groups[substr($path, 0, $at)][substr($path, $at + 1)] = $english;
+            }
+        }
+
+        foreach ($groups as $parent => $forms) {
+            // A counted phrase is one whose every key is a category, which no
+            // sentence-of-pieces entry is - those are keyed before/link/after.
+            if (array_diff(array_keys($forms), PluralRule::CATEGORIES) !== []) {
+                continue;
+            }
+
+            $plural = $forms['other'] ?? $forms['one'] ?? null;
+
+            if ($plural === null) {
+                continue;
+            }
+
+            foreach (PluralRule::categoriesFor($locale) as $category) {
+                if (!isset($forms[$category])) {
+                    $source[$parent . '.' . $category] = $plural;
+                }
+            }
+        }
+
+        return $source;
+    }
+
+    /**
      * The source's shape with translations in place of its strings, leaving out
      * what has none. Built by walking the source so the file comes out in the
      * order it was written in rather than the order it was translated in.
@@ -651,6 +700,7 @@ class StringTranslator
     /** @param array<string, string> $source */
     private function translate(string $locale, array $source): void
     {
+        $source = self::expanded($source, $locale);
         $existing = self::flatten(self::read($locale), '', true);
         $fingerprints = $this -> force ? [] : self::fingerprints($locale);
         $stale = self::stale($source, $existing, $fingerprints);

@@ -106,6 +106,31 @@ class LocaleIntegrityTest extends TestCase
     }
 
     /**
+     * A locale file's name is handed to ICU here and to Intl.PluralRules in
+     * the browser, exactly as it is written. A code neither has heard of does
+     * not fail - it falls back, and differently on each side: ICU to root,
+     * which calls every count "other", and the browser to its own default
+     * locale, which is usually English. Brazilian Portuguese filed as "pb"
+     * would render "1 vídeos" on the server and "1 vídeo" in the browser, and
+     * nothing anywhere would say why.
+     */
+    public function testEveryLocaleIsOneTheCalendarAndTheCounterKnow(): void
+    {
+        if (!extension_loaded('intl')) {
+            throw new TestSkippedException('needs the intl extension - see the README requirements');
+        }
+
+        $known = \ResourceBundle::getLocales('');
+
+        foreach (Strings::available() as $locale) {
+            $this -> assertTrue(
+                in_array($locale, $known, true),
+                $locale . '.json is not a locale ICU knows, so it would count in the wrong grammar'
+            );
+        }
+    }
+
+    /**
      * A locale that has written a counted phrase has written every form its own
      * rule can ask for. Missing one is not a fallback that reads a little
      * wrong - it is the language's own grammar going unsaid for the numbers it

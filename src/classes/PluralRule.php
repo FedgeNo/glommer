@@ -13,7 +13,10 @@ declare(strict_types=1);
  * transcribing a rule into a file to be wrong in.
  *
  * A language with one form answers "other" to every count, which is a real
- * answer and what Japanese wants.
+ * answer and what Japanese wants - and indistinguishable from what a code ICU
+ * has never heard of answers, since that falls back to root. The browser falls
+ * back elsewhere, so the two would quietly disagree; LocaleIntegrityTest keeps
+ * every locale file to a name ICU knows rather than leaving that to notice.
  */
 class PluralRule
 {
@@ -23,6 +26,32 @@ class PluralRule
      * the branch it took.
      */
     private const BRANCHES = '{n, plural, zero{zero} one{one} two{two} few{few} many{many} other{other}}';
+
+    /** The order CLDR names them in, so a widened phrase comes out stably. */
+    public const CATEGORIES = ['zero', 'one', 'two', 'few', 'many', 'other'];
+
+    /**
+     * Every category this language actually counts in.
+     *
+     * Found by counting rather than by looking a list up, over a range that
+     * covers every shape a CLDR rule turns on - the teens and the hundreds are
+     * where Slavic and Arabic rules change their minds.
+     *
+     * @return string[]
+     */
+    public static function categoriesFor(string $locale): array
+    {
+        $found = [];
+
+        foreach ([...range(0, 130), 200, 201, 1000, 1002, 1005, 1011, 1024] as $count) {
+            $found[self::categoryFor($locale, $count)] = true;
+        }
+
+        return array_values(array_filter(
+            self::CATEGORIES,
+            static fn (string $category): bool => isset($found[$category])
+        ));
+    }
 
     public static function categoryFor(string $locale, int $count): string
     {

@@ -178,6 +178,44 @@ class StringTranslatorTest extends TestCase
     }
 
     /**
+     * The work list is English's, and English counts in two - so without
+     * widening it, nothing ever asks for a form English lacks and Polish could
+     * never be given the "few" and "many" its grammar requires, however many
+     * times the pass was run.
+     */
+    public function testACountedPhraseIsWidenedToTheFormsTheLanguageNeeds(): void
+    {
+        $source = ['Votes' => ['count' => ['one' => '1 vote', 'other' => '{count} votes']]];
+        $wide = StringTranslator::expanded(StringTranslator::flatten($source), 'pl');
+
+        $this -> assertSame('{count} votes', $wide['Votes.count.few'] ?? null);
+        $this -> assertSame('{count} votes', $wide['Votes.count.many'] ?? null);
+        $this -> assertSame('1 vote', $wide['Votes.count.one'], 'the forms English has are left as they are');
+    }
+
+    /** A language counting no more ways than English asks for nothing extra. */
+    public function testALanguageWithNoExtraFormsIsAskedForNothingExtra(): void
+    {
+        $flat = StringTranslator::flatten(['Votes' => ['count' => ['one' => '1 vote', 'other' => '{count} votes']]]);
+
+        $this -> assertSame($flat, StringTranslator::expanded($flat, 'de'));
+        $this -> assertSame($flat, StringTranslator::expanded($flat, 'ja'));
+    }
+
+    /**
+     * A sentence split around a link is keyed before/link/after, not by
+     * category, and widening one would invent halves of a sentence.
+     */
+    public function testASentenceOfPiecesIsNotACountedPhrase(): void
+    {
+        $flat = StringTranslator::flatten(
+            ['LoginPrompt' => ['reply' => ['before' => 'Please ', 'link' => 'log in', 'after' => ' to reply.']]]
+        );
+
+        $this -> assertSame($flat, StringTranslator::expanded($flat, 'pl'));
+    }
+
+    /**
      * A model reads "{count}" as a word and translates what is inside the
      * braces, taking the rest of the sentence with it.
      */

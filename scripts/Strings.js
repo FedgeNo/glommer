@@ -62,9 +62,14 @@ export class Strings {
      * the thing there are - the client's Strings::plural().
      *
      * The category comes from Intl.PluralRules, which is the browser's copy of
-     * CLDR - the same data ICU answers the server's PluralRule with. Neither
-     * side carries a rule of its own, so there is nowhere for the two to
-     * disagree and nothing to write for a new language.
+     * CLDR - the same data ICU answers the server's PluralRule with, so a new
+     * language needs no rule written for it on either side.
+     *
+     * The two agree for as long as the locale is one they both know. Neither
+     * fails on a code it does not: this falls back to the runtime's own
+     * locale and ICU falls back to root, which are different answers, so a
+     * made-up code counts one way here and another on the server. A test
+     * keeps every locale file to a name ICU knows for that reason.
      *
      * Unlike the server's, this substitutes {count} - every caller here wants
      * it, and a phrasing that leaves the number out simply has no token to fill.

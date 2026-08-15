@@ -89,6 +89,53 @@ export default {
 
             TestCase.assertNotNull(requests.forFeedType('short'), 'the short list never asked for more');
         },
+        // A window that grows can leave a feed no longer reaching the bottom
+        // of it - a phone turned on its side - and from then on no scroll
+        // event fires and nothing more ever loads.
+        async 'a window that grows past the feed starts it loading again'() {
+            InfiniteScroller.register('Grown',
+                () => document.createElement('div'),
+                (list) => list.querySelectorAll('.Grown').length
+            );
+
+            const list = document.createElement('ul');
+            list.dataset.infiniteScroll = JSON.stringify({
+                endpoint: '/api/grown',
+                itemType: 'Grown',
+                feedType: 'grown',
+            });
+            document.body.appendWithSpace(list);
+
+            // A feed with more to give, so the scroller is still willing when
+            // the window changes - one that has ended has nothing to load and
+            // is right not to.
+            const original_fetch = globalThis.fetch;
+            let asked = 0;
+
+            globalThis.fetch = async () => {
+                asked++;
+
+                return new Response(
+                    JSON.stringify({ response: { items: [], hasMore: true } }),
+                    { status: 200 }
+                );
+            };
+
+            const scroller = new InfiniteScroller(list);
+            await new Promise((resolve) => setTimeout(resolve, 50));
+
+            const before = asked;
+            window.dispatchEvent(new window.Event('resize'));
+            await new Promise((resolve) => setTimeout(resolve, 50));
+
+            const after = asked;
+
+            globalThis.fetch = original_fetch;
+            scroller.destroy();
+            list.remove();
+
+            TestCase.assertTrue(after > before, 'the feed stayed stranded after the window changed size');
+        },
     }
 };
 

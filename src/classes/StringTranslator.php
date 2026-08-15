@@ -658,6 +658,36 @@ class StringTranslator
         return sha1($english);
     }
 
+    /**
+     * The fingerprints, with a record added for every translation that has
+     * none - taking it as made from the English beside it.
+     *
+     * Nothing else can be assumed about a translation nobody kept a record
+     * for, and the alternative is retranslating it: overwriting whatever
+     * somebody wrote by hand with whatever a model says today. Polish's "few"
+     * and "many" were exactly that - written by hand years before any of this
+     * existed - and a pass replaced both with one machine phrasing, which is
+     * the distinction those forms exist to make, gone.
+     *
+     * Recorded rather than merely skipped, so editing the English still marks
+     * it stale afterwards. --force is how to ask for it again regardless.
+     *
+     * @param array<string, string> $existing what this locale already says
+     * @param array<string, string> $source English, by path
+     * @param array<string, string> $fingerprints
+     * @return array<string, string>
+     */
+    public static function adopting(array $existing, array $source, array $fingerprints): array
+    {
+        foreach ($existing as $path => $translation) {
+            if ($translation !== '' && isset($source[$path]) && !isset($fingerprints[$path])) {
+                $fingerprints[$path] = self::fingerprint($source[$path]);
+            }
+        }
+
+        return $fingerprints;
+    }
+
     /** Translates every locale that needs it, saying what it did as it goes. */
     public function run(): void
     {
@@ -703,6 +733,11 @@ class StringTranslator
         $source = self::expanded($source, $locale);
         $existing = self::flatten(self::read($locale), '', true);
         $fingerprints = $this -> force ? [] : self::fingerprints($locale);
+
+        if (!$this -> force) {
+            $fingerprints = self::adopting($existing, $source, $fingerprints);
+        }
+
         $stale = self::stale($source, $existing, $fingerprints);
 
         if ($this -> paths !== []) {

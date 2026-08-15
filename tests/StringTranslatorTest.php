@@ -336,6 +336,41 @@ class StringTranslatorTest extends TestCase
         $this -> assertSame(['A.one' => 'One', 'A.two' => 'Two'], $stale);
     }
 
+    /**
+     * A translation nobody kept a record for is taken as made from the English
+     * beside it, not retranslated. Polish's "few" and "many" were written by
+     * hand long before any of this existed, and a pass that treated them as
+     * unrecorded replaced both with one machine phrasing - which is the
+     * distinction those two forms exist to make, gone.
+     */
+    public function testATranslationWithNoRecordIsKeptRatherThanRedone(): void
+    {
+        $source = ['Votes.count.few' => '{count} votes'];
+        $existing = ['Votes.count.few' => '{count} głosy'];
+
+        $fingerprints = StringTranslator::adopting($existing, $source, []);
+
+        $this -> assertSame([], StringTranslator::stale($source, $existing, $fingerprints));
+    }
+
+    /** Adopted, not ignored: editing the English still marks it stale after. */
+    public function testAnAdoptedTranslationStillNoticesTheEnglishChanging(): void
+    {
+        $existing = ['Votes.count.few' => '{count} głosy'];
+        $fingerprints = StringTranslator::adopting($existing, ['Votes.count.few' => '{count} votes'], []);
+
+        $this -> assertSame(
+            ['Votes.count.few' => '{count} ballots'],
+            StringTranslator::stale(['Votes.count.few' => '{count} ballots'], $existing, $fingerprints)
+        );
+    }
+
+    /** Nothing is adopted for a key the locale has never translated. */
+    public function testAKeyWithNoTranslationIsNotAdopted(): void
+    {
+        $this -> assertSame([], StringTranslator::adopting([], ['Votes.count.few' => '{count} votes'], []));
+    }
+
     /** A rerun with nothing edited asks for nothing. */
     public function testAStringTranslatedFromTheEnglishItStillSaysIsNotStale(): void
     {

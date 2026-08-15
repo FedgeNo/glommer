@@ -105,6 +105,83 @@ class StringTranslatorTest extends TestCase
         $this -> assertSame('を見る', $merged['MoreLocationsLink']['moreLocations']['after'] ?? null);
     }
 
+    /**
+     * A locale's blank is a decision and has to survive being read back;
+     * the source's is just nothing to translate.
+     */
+    public function testALocalesBlankIsReadBackAndTheSourcesIsNot(): void
+    {
+        $table = ['MoreLocationsLink' => ['moreLocations' => ['before' => '', 'link' => '他の地域']]];
+
+        $this -> assertSame(
+            ['MoreLocationsLink.moreLocations.link' => '他の地域'],
+            StringTranslator::flatten($table)
+        );
+
+        $this -> assertSame(
+            ['MoreLocationsLink.moreLocations.before' => '', 'MoreLocationsLink.moreLocations.link' => '他の地域'],
+            StringTranslator::flatten($table, '', true)
+        );
+    }
+
+    /**
+     * Written back rather than dropped: a language that says nothing where
+     * English says "See " would otherwise lose the blank each run and be
+     * asked to fill it again.
+     */
+    public function testADeliberateBlankIsWrittenBackIntoTheFile(): void
+    {
+        $merged = StringTranslator::merge(
+            ['MoreLocationsLink' => ['moreLocations' => ['before' => 'See ', 'link' => 'more locations']]],
+            ['MoreLocationsLink.moreLocations.before' => '', 'MoreLocationsLink.moreLocations.link' => '他の地域']
+        );
+
+        $this -> assertSame(
+            ['before' => '', 'link' => '他の地域'],
+            $merged['MoreLocationsLink']['moreLocations']
+        );
+    }
+
+    /** A key nobody has translated is absent, and stays out of the file. */
+    public function testAKeyNobodyHasTranslatedStaysOut(): void
+    {
+        $merged = StringTranslator::merge(
+            ['A' => ['one' => 'One', 'two' => 'Two']],
+            ['A.one' => 'Eins']
+        );
+
+        $this -> assertSame(['A' => ['one' => 'Eins']], $merged);
+    }
+
+    /**
+     * Polish counts in four forms and German tells the time on a 24-hour
+     * clock, and neither is a sentence anybody translated. Rebuilt from
+     * English's shape and the strings that came back, a locale loses both -
+     * which is Polish counting in the wrong grammar and German reading 3:04
+     * for a quarter past three in the afternoon.
+     */
+    public function testWhatIsTheLocalesOwnRatherThanLanguageSurvives(): void
+    {
+        $rule = [['category' => 'one', 'is' => [1]], ['category' => 'few']];
+
+        $merged = StringTranslator::merge(
+            [Strings::PLURAL_RULE => [['category' => 'one']], 'DateFormat' => ['clock' => 12, 'am' => 'AM']],
+            ['DateFormat.am' => 'AM'],
+            [Strings::PLURAL_RULE => $rule, 'DateFormat' => ['clock' => 24, 'am' => 'AM']]
+        );
+
+        $this -> assertSame($rule, $merged[Strings::PLURAL_RULE], 'the counting rule was dropped');
+        $this -> assertSame(24, $merged['DateFormat']['clock'], 'the clock was dropped');
+    }
+
+    /** A locale with no clock of its own gets the source's. */
+    public function testALocaleWithoutOneOfItsOwnFallsBackToTheSource(): void
+    {
+        $merged = StringTranslator::merge(['DateFormat' => ['clock' => 12]], [], []);
+
+        $this -> assertSame(12, $merged['DateFormat']['clock']);
+    }
+
     /** A class English has dropped is walked by nobody and goes with it. */
     public function testAClassEnglishNoLongerHasIsNotCarriedForward(): void
     {

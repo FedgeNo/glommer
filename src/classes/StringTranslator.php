@@ -44,10 +44,15 @@ class StringTranslator
      * Only strings: a locale carries numbers ("clock": 12) and the counting
      * rule as well, and neither is language a model has anything to say about.
      *
+     * $keep_empty is for reading a locale rather than the source. An empty
+     * string is nothing to translate, but in a locale it is an answer - the
+     * half of a split sentence this language has no words for - and telling
+     * that apart from a key nobody has got to yet is the whole point.
+     *
      * @param array<string, mixed> $table
      * @return array<string, string>
      */
-    public static function flatten(array $table, string $prefix = ''): array
+    public static function flatten(array $table, string $prefix = '', bool $keep_empty = false): array
     {
         $flat = [];
 
@@ -59,8 +64,8 @@ class StringTranslator
             $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
 
             if (is_array($value)) {
-                $flat += self::flatten($value, $path);
-            } elseif (is_string($value) && trim($value) !== '') {
+                $flat += self::flatten($value, $path, $keep_empty);
+            } elseif (is_string($value) && ($keep_empty || trim($value) !== '')) {
                 $flat[$path] = $value;
             }
         }
@@ -73,28 +78,54 @@ class StringTranslator
      * what has none. Built by walking the source so the file comes out in the
      * order it was written in rather than the order it was translated in.
      *
+     * A locale file holds more than language, and the rest of it is the
+     * locale's own rather than a translation of English's: the rule it counts
+     * by, and the clock it tells the time on. Those are taken from $existing,
+     * because rebuilding the file out of English's shape and the strings that
+     * came back would otherwise drop every one of them.
+     *
      * @param array<string, mixed> $source
      * @param array<string, string> $translations
+     * @param array<string, mixed> $existing what this locale already said
      * @return array<string, mixed>
      */
-    public static function merge(array $source, array $translations, string $prefix = ''): array
+    public static function merge(array $source, array $translations, array $existing = [], string $prefix = ''): array
     {
         $merged = [];
 
         foreach ($source as $key => $value) {
+            $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
+
+            // The counting rule is code, and each language's own: English's
+            // would have Polish counting in two forms where it has four.
             if ($prefix === '' && $key === Strings::PLURAL_RULE) {
+                if (array_key_exists($key, $existing)) {
+                    $merged[$key] = $existing[$key];
+                }
+
                 continue;
             }
 
-            $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
-
             if (is_array($value)) {
-                $branch = self::merge($value, $translations, $path);
+                $branch = self::merge(
+                    $value,
+                    $translations,
+                    is_array($existing[$key] ?? null) ? $existing[$key] : [],
+                    $path
+                );
 
                 if ($branch !== []) {
                     $merged[$key] = $branch;
                 }
-            } elseif (isset($translations[$path]) && $translations[$path] !== '') {
+            } elseif (!is_string($value)) {
+                // A number is a fact about the locale - which clock it counts
+                // hours on - so its own answer stands and English's is only
+                // what a locale without one gets.
+                $merged[$key] = $existing[$key] ?? $value;
+            } elseif (isset($translations[$path])) {
+                // Present rather than non-empty: a key nobody has translated
+                // is absent here, so what is left is either a translation or
+                // a language's deliberate blank, and both belong in the file.
                 $merged[$key] = $translations[$path];
             }
         }
@@ -561,7 +592,7 @@ class StringTranslator
     /** @param array<string, string> $source */
     private function translate(string $locale, array $source): void
     {
-        $existing = self::flatten(self::read($locale));
+        $existing = self::flatten(self::read($locale), '', true);
         $fingerprints = $this -> force ? [] : self::fingerprints($locale);
         $stale = self::stale($source, $existing, $fingerprints);
 
@@ -600,6 +631,20 @@ class StringTranslator
             if (self::isCalendar($path)) {
                 unset($stale[$path]);
             }
+        }
+
+        // A blank this language means is an answer, not a gap. Japanese puts
+        // the link at the end of the sentence, so the words English writes in
+        // front of it have nowhere to go - asked anyway, the model fills the
+        // blank and the sentence says its own name twice.
+        foreach ($stale as $path => $english) {
+            if (($existing[$path] ?? null) !== '') {
+                continue;
+            }
+
+            $fingerprints[$path] = self::fingerprint($english);
+            $kept++;
+            unset($stale[$path]);
         }
 
         $worker = new TranslationWorker(Strings::SOURCE_LOCALE, $locale);
@@ -664,7 +709,7 @@ class StringTranslator
         // and matching would take every language's filled-in version of it.
         $fingerprints = array_intersect_key($fingerprints, $translations);
 
-        self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations));
+        self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations, self::read($locale)));
         self::writeFingerprints($locale, $fingerprints);
 
         echo $locale . ': ' . $kept . ' of ' . $wanted . " translated\n";

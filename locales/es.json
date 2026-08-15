@@ -18,12 +18,10 @@
     },
     "LoginPrompt": {
         "reply": {
-            "before": "",
             "link": "Inicia sesión",
             "after": " para responder."
         },
         "post": {
-            "before": "",
             "link": "Inicia sesión",
             "after": " para publicar."
         }
@@ -88,8 +86,7 @@
         "browserOnOS": "{browser} en {os}",
         "thisDevice": " (este dispositivo)",
         "lastUsed": {
-            "before": "Usado por última vez ",
-            "after": ""
+            "before": "Usado por última vez "
         }
     },
     "LogoutEverywherePanel": {
@@ -358,15 +355,13 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Baneado por {name} ",
-            "after": ""
+            "before": "Baneado por {name} "
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Bloqueado por {name} ",
-            "after": ""
+            "before": "Bloqueado por {name} "
         },
         "deletedAccount": "una cuenta eliminada",
         "reason": " - {reason}"
@@ -655,8 +650,7 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Último mensaje ",
-            "after": ""
+            "before": "Último mensaje "
         }
     },
     "SensitiveMedia": {
@@ -672,8 +666,7 @@
             "user": "Usuario"
         },
         "summary": {
-            "before": "Denuncia sobre {type} #{id}, de ",
-            "after": ""
+            "before": "Denuncia sobre {type} #{id}, de "
         },
         "reasonLine": "Motivo: {reason}",
         "banReporterLabel": "Banear al denunciante",
@@ -872,8 +865,7 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Ver ",
-            "link": "más ubicaciones",
-            "after": ""
+            "link": "más ubicaciones"
         }
     },
     "NearbyLocationPrompt": {
@@ -890,8 +882,7 @@
     "PollDeadline": {
         "final": "Resultado final",
         "closes": {
-            "before": "Cierra ",
-            "after": ""
+            "before": "Cierra "
         },
         "days": {
             "one": "en {count} día",
@@ -915,28 +906,24 @@
     },
     "PostComposer": {
         "prompt": {
-            "before": "",
             "link": "Inicia sesión",
             "after": " para publicar."
         }
     },
     "ReplyComposer": {
         "prompt": {
-            "before": "",
             "link": "Inicia sesión",
             "after": " para responder."
         }
     },
     "RepostAttribution": {
         "attribution": {
-            "before": "",
             "after": " republicó"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "En respuesta a ",
-            "after": ""
+            "before": "En respuesta a "
         },
         "untitled": "esta publicación",
         "jumpToStart": "Ir al inicio"
@@ -946,8 +933,7 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Te damos la bienvenida a ",
-            "after": ""
+            "before": "Te damos la bienvenida a "
         },
         "paragraphs": [
             "Escribe algo en el cuadro de abajo y se publicará en tu feed. Cualquiera puede responder, y una respuesta no es más que una publicación con un padre, así que las conversaciones se anidan tan profundo como haga falta.",
@@ -1085,5 +1071,12 @@
     "LanguageSelector": {
         "label": "Idioma",
         "legend": "Idioma"
+    },
+    "PostTranslation": {
+        "unavailable": "La traducción no está configurada en este servidor.",
+        "nothing": "No hay nada aquí para traducir.",
+        "unknownSource": "Todavía nadie ha determinado en qué idioma está esta publicación, así que no se puede traducir.",
+        "alreadyReadable": "Esta publicación ya está en ese idioma.",
+        "unsupportedPair": "Este servidor no puede traducir ese idioma todavía."
     }
 }

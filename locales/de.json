@@ -88,8 +88,7 @@
         "browserOnOS": "{browser} unter {os}",
         "thisDevice": " (dieses Gerät)",
         "lastUsed": {
-            "before": "Zuletzt verwendet ",
-            "after": ""
+            "before": "Zuletzt verwendet "
         }
     },
     "LogoutEverywherePanel": {
@@ -358,15 +357,13 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Gesperrt von {name} ",
-            "after": ""
+            "before": "Gesperrt von {name} "
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Blockiert von {name} ",
-            "after": ""
+            "before": "Blockiert von {name} "
         },
         "deletedAccount": "einem gelöschten Konto",
         "reason": " - {reason}"
@@ -655,8 +652,7 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Letzte Nachricht ",
-            "after": ""
+            "before": "Letzte Nachricht "
         }
     },
     "SensitiveMedia": {
@@ -672,8 +668,7 @@
             "user": "Nutzer"
         },
         "summary": {
-            "before": "{type} #{id} gemeldet von ",
-            "after": ""
+            "before": "{type} #{id} gemeldet von "
         },
         "reasonLine": "Grund: {reason}",
         "banReporterLabel": "Melder sperren",
@@ -872,8 +867,7 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Siehe ",
-            "link": "weitere Orte",
-            "after": ""
+            "link": "weitere Orte"
         }
     },
     "NearbyLocationPrompt": {
@@ -890,8 +884,7 @@
     "PollDeadline": {
         "final": "Endergebnis",
         "closes": {
-            "before": "Endet ",
-            "after": ""
+            "before": "Endet "
         },
         "days": {
             "one": "in {count} Tag",
@@ -929,14 +922,12 @@
     },
     "RepostAttribution": {
         "attribution": {
-            "before": "",
             "after": " hat das geteilt"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "Als Antwort auf ",
-            "after": ""
+            "before": "Als Antwort auf "
         },
         "untitled": "diesen Beitrag",
         "jumpToStart": "Zum Anfang springen"
@@ -946,8 +937,7 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Willkommen bei ",
-            "after": ""
+            "before": "Willkommen bei "
         },
         "paragraphs": [
             "Schreib etwas in das Feld unten, und es geht an deinen Feed. Jeder kann antworten, und eine Antwort ist einfach ein Beitrag mit einem übergeordneten Beitrag, sodass sich Unterhaltungen so tief verschachteln, wie sie müssen.",
@@ -1085,5 +1075,12 @@
     "LanguageSelector": {
         "label": "Sprache",
         "legend": "Sprache"
+    },
+    "PostTranslation": {
+        "unavailable": "Die Übersetzung ist auf diesem Server nicht eingerichtet.",
+        "nothing": "Hier gibt es nichts zu übersetzen.",
+        "unknownSource": "Es hat noch niemand herausgefunden, in welcher Sprache dieser Beitrag verfasst ist, daher kann er nicht übersetzt werden.",
+        "alreadyReadable": "Dieser Beitrag ist bereits in dieser Sprache.",
+        "unsupportedPair": "Dieser Server kann diese Sprache noch nicht übersetzen."
     }
 }

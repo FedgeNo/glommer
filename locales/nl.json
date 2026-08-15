@@ -18,12 +18,10 @@
     },
     "LoginPrompt": {
         "reply": {
-            "before": "",
             "link": "Log in",
             "after": " om te reageren."
         },
         "post": {
-            "before": "",
             "link": "Log in",
             "after": " om te posten."
         }
@@ -88,8 +86,7 @@
         "browserOnOS": "{browser} op {os}",
         "thisDevice": " (dit apparaat)",
         "lastUsed": {
-            "before": "Laatst gebruikt ",
-            "after": ""
+            "before": "Laatst gebruikt "
         }
     },
     "LogoutEverywherePanel": {
@@ -358,15 +355,13 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Verbannen door {name} ",
-            "after": ""
+            "before": "Verbannen door {name} "
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Geblokkeerd door {name} ",
-            "after": ""
+            "before": "Geblokkeerd door {name} "
         },
         "deletedAccount": "een verwijderd account",
         "reason": " - {reason}"
@@ -655,8 +650,7 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Laatste bericht ",
-            "after": ""
+            "before": "Laatste bericht "
         }
     },
     "SensitiveMedia": {
@@ -672,8 +666,7 @@
             "user": "Gebruiker"
         },
         "summary": {
-            "before": "{type} #{id} gerapporteerd door ",
-            "after": ""
+            "before": "{type} #{id} gerapporteerd door "
         },
         "reasonLine": "Reden: {reason}",
         "banReporterLabel": "Melder verbannen",
@@ -872,8 +865,7 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Bekijk ",
-            "link": "meer locaties",
-            "after": ""
+            "link": "meer locaties"
         }
     },
     "NearbyLocationPrompt": {
@@ -890,8 +882,7 @@
     "PollDeadline": {
         "final": "Eindresultaat",
         "closes": {
-            "before": "Sluit ",
-            "after": ""
+            "before": "Sluit "
         },
         "days": {
             "one": "over {count} dag",
@@ -915,28 +906,24 @@
     },
     "PostComposer": {
         "prompt": {
-            "before": "",
             "link": "Log in",
             "after": " om te posten."
         }
     },
     "ReplyComposer": {
         "prompt": {
-            "before": "",
             "link": "Log in",
             "after": " om te reageren."
         }
     },
     "RepostAttribution": {
         "attribution": {
-            "before": "",
             "after": " heeft dit gerepost"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "Als reactie op ",
-            "after": ""
+            "before": "Als reactie op "
         },
         "untitled": "deze post",
         "jumpToStart": "Naar het begin"
@@ -946,8 +933,7 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Welkom bij ",
-            "after": ""
+            "before": "Welkom bij "
         },
         "paragraphs": [
             "Schrijf iets in het vak hieronder en het gaat naar je feed. Iedereen kan reageren, en een reactie is gewoon een post met een bovenliggende post, dus gesprekken nesten zo diep als nodig is.",
@@ -1085,5 +1071,12 @@
     "LanguageSelector": {
         "label": "Taal",
         "legend": "Taal"
+    },
+    "PostTranslation": {
+        "unavailable": "Vertaling is niet ingesteld op deze server.",
+        "nothing": "Er valt hier niets te vertalen.",
+        "unknownSource": "Niemand heeft nog uitgezocht in welke taal deze post is, dus hij kan niet worden vertaald.",
+        "alreadyReadable": "Deze post is al in die taal.",
+        "unsupportedPair": "Deze server kan die taal nog niet vertalen."
     }
 }

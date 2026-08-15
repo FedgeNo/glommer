@@ -518,6 +518,37 @@ class StringTranslatorTest extends TestCase
         );
     }
 
+    /**
+     * Asked about 5, an answer saying 15 does not contain the count - and
+     * rewriting the 5 inside it would store "1{count}" as a translation.
+     * In the language's own digits as well.
+     */
+    public function testADigitInsideALargerNumberIsNotTheCount(): void
+    {
+        $this -> assertNull(StringTranslator::recounted('od 15 minut', 5, 'pl'));
+        $this -> assertNull(StringTranslator::recounted('١٥ أصوات', 5, 'ar'));
+    }
+
+    /**
+     * A trailing space can be structural - "{count} people voted " ends in
+     * one because the deadline is appended right after it - and a model
+     * never echoes edge whitespace.
+     */
+    public function testTheEnglishsEdgeWhitespaceIsPutBackOn(): void
+    {
+        $this -> assertSame(
+            '{count} osób głosowało ',
+            StringTranslator::spacedAsSource('{count} people voted ', '{count} osób głosowało')
+        );
+        $this -> assertSame('Zapisz', StringTranslator::spacedAsSource('Save', ' Zapisz '));
+    }
+
+    /** English writes labels with an ellipsis, and the answer keeps its own. */
+    public function testAnEllipsisIsPunctuationTheEnglishHas(): void
+    {
+        $this -> assertSame('Chargement...', StringTranslator::punctuatedAsSource('Loading…', 'Chargement...'));
+    }
+
     /** A button with a full stop on it reads as prose. */
     public function testAFullStopTheLabelNeverHadIsTakenOff(): void
     {

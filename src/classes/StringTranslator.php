@@ -246,8 +246,13 @@ class StringTranslator
     public static function recounted(string $translated, int $count, string $locale): ?string
     {
         foreach (self::numerals($count, $locale) as $numeral) {
-            if (substr_count($translated, $numeral) === 1) {
-                return str_replace($numeral, '{count}', $translated);
+            // A whole number, not a digit inside one: asked about 5, an
+            // answer saying 15 does not contain the count - and rewriting
+            // its 5 would store "1{count}" as though it were a translation.
+            $whole = '/(?<!\p{Nd})' . preg_quote($numeral, '/') . '(?!\p{Nd})/u';
+
+            if (preg_match_all($whole, $translated) === 1) {
+                return (string) preg_replace($whole, '{count}', $translated);
             }
         }
 
@@ -953,6 +958,23 @@ class StringTranslator
     }
 
     /**
+     * The translation wearing the edge whitespace its English wears.
+     *
+     * A trailing space can be structural: "{count} people voted " ends in one
+     * because the deadline is appended right after it, and an answer that
+     * comes back without it glues two sentences into one word. Models rarely
+     * echo edge whitespace, and the punctuation pass trims it besides - so it
+     * is put back from the English, which is the one place it is deliberate.
+     */
+    public static function spacedAsSource(string $english, string $translated): string
+    {
+        preg_match('/^\s*/u', $english, $leading);
+        preg_match('/\s*$/u', $english, $trailing);
+
+        return ($leading[0] ?? '') . trim($translated) . ($trailing[0] ?? '');
+    }
+
+    /**
      * The translation punctuated the way its English is.
      *
      * A model finishes a sentence even when it was handed a label: "Yes"
@@ -964,8 +986,11 @@ class StringTranslator
     {
         // Not every language ends a sentence with a full stop: Urdu closes
         // with one mark, Devanagari with another, and a label that gained
-        // either is as wrong as one that gained a period.
-        $ending = '/[.!?。！？۔।॥]+$/u';
+        // either is as wrong as one that gained a period. The ellipsis is in
+        // the class because English writes labels with it - "Loading…" - and
+        // an answer whose own ellipsis was stripped as an invented full stop
+        // loses the very mark the label was written with.
+        $ending = '/[.!?。！？۔।॥…]+$/u';
 
         if (preg_match($ending, trim($english)) === 1) {
             return $translated;
@@ -1276,7 +1301,10 @@ class StringTranslator
                     }
                 }
 
-                $answer = self::punctuatedAsSource($english, self::numberFirst($english, $answer));
+                $answer = self::spacedAsSource(
+                    $english,
+                    self::punctuatedAsSource($english, self::numberFirst($english, $answer))
+                );
 
                 if (trim($answer) === ''
                     || !self::keepsPlaceholders($english, $answer)

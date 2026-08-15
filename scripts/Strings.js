@@ -95,7 +95,10 @@ export class Strings {
      */
     static plural(forms, count) {
         const category = new Intl.PluralRules(Strings.#locale).select(count);
-        const chosen = forms[category] ?? forms.other ?? '';
+        // The same chain as Strings::plural(), reset() included: a set holding
+        // only a "one" would otherwise say its text on the server and nothing
+        // here, in the same place on the same page.
+        const chosen = forms[category] ?? forms.other ?? Object.values(forms)[0] ?? '';
 
         return chosen.replaceAll('{count}', String(count));
     }

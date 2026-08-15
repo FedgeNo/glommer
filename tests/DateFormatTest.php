@@ -70,11 +70,11 @@ class DateFormatTest extends TestCase
     public function testTheClockIsTheLanguagesToDecide(): void
     {
         $expected = [
-            'en' => 'August 11, 2026 3:04 PM',
-            'de' => '11. August 2026 15:04',
-            'es' => '11 de agosto de 2026 15:04',
-            'fr' => '11 août 2026 15:04',
-            'pt' => '11 de agosto de 2026 15:04',
+            'en' => 'August 11, 2026 at 3:04 PM',
+            'de' => '11. August 2026 um 15:04',
+            'es' => '11 de agosto de 2026, 15:04',
+            'fr' => '11 août 2026 à 15:04',
+            'pt' => '11 de agosto de 2026 às 15:04',
         ];
 
         foreach ($expected as $locale => $written) {

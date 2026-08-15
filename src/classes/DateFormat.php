@@ -38,7 +38,7 @@ class DateFormat
         return self::date($timestamp, 'short', 'shortMonths');
     }
 
-    /** "August 11, 2026 3:04 PM". */
+    /** "August 11, 2026 at 3:04 PM" - joined the way the language joins them. */
     public static function longWithTime(int $timestamp): string
     {
         return str_replace(

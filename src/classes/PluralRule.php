@@ -31,6 +31,18 @@ class PluralRule
     public const CATEGORIES = ['zero', 'one', 'two', 'few', 'many', 'other'];
 
     /**
+     * The counts worth asking about: where CLDR rules change their minds - the
+     * teens and the hundreds for Slavic, and the thousands where a language's
+     * rules turn on the last two digits.
+     */
+    private const RANGE = [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 30, 31, 40, 41, 50, 60, 70, 80, 90,
+        100, 101, 102, 105, 111, 112, 120, 121, 130,
+        200, 201, 1000, 1002, 1005, 1011, 1024,
+    ];
+
+    /**
      * Every category this language actually counts in.
      *
      * Found by counting rather than by looking a list up, over a range that
@@ -41,16 +53,58 @@ class PluralRule
      */
     public static function categoriesFor(string $locale): array
     {
+        static $categories = [];
+
+        if (isset($categories[$locale])) {
+            return $categories[$locale];
+        }
+
         $found = [];
 
-        foreach ([...range(0, 130), 200, 201, 1000, 1002, 1005, 1011, 1024] as $count) {
+        foreach (self::RANGE as $count) {
             $found[self::categoryFor($locale, $count)] = true;
         }
 
-        return array_values(array_filter(
+        return $categories[$locale] = array_values(array_filter(
             self::CATEGORIES,
             static fn (string $category): bool => isset($found[$category])
         ));
+    }
+
+    /**
+     * A count that falls in this category, for asking a question about it.
+     *
+     * A model handed "{count} views" with the number masked out has no sentence
+     * to work with and answers the mask back, and one handed the same English
+     * for every category answers the same phrasing for every category - which
+     * is how Polish would end up with one word where it counts in three. Asked
+     * "5 views" it declines the noun the way five of them wants.
+     *
+     * One is preferred where the category has it, because a category holding 1
+     * is the singular whatever else it holds, and Portuguese counting 0 as a
+     * singular would otherwise be asked about none of them.
+     */
+    public static function exampleFor(string $locale, string $category): ?int
+    {
+        $counts = [];
+
+        foreach (self::RANGE as $count) {
+            if (self::categoryFor($locale, $count) === $category) {
+                $counts[] = $count;
+            }
+        }
+
+        if ($counts === []) {
+            return null;
+        }
+
+        if (in_array(1, $counts, true)) {
+            return 1;
+        }
+
+        $counting = array_filter($counts, static fn (int $count): bool => $count > 1);
+
+        return $counting === [] ? $counts[0] : min($counting);
     }
 
     public static function categoryFor(string $locale, int $count): string
@@ -79,11 +133,35 @@ class PluralRule
         }
 
         try {
-            $formatters[$locale] = new \MessageFormatter($locale, self::BRANCHES);
+            $formatters[$locale] = self::known($locale) ? new \MessageFormatter($locale, self::BRANCHES) : null;
         } catch (\Throwable) {
             $formatters[$locale] = null;
         }
 
         return $formatters[$locale];
+    }
+
+    /**
+     * Whether CLDR has rules for this language at all.
+     *
+     * Asked first, because an unrecognised tag is not refused: ICU answers it
+     * from the root rules, which say "other" to every count - a language with
+     * no singular, which is a real answer for Japanese and a wrong one for
+     * anything else. Nothing is the better answer, because it is the one that
+     * falls back to English's two forms rather than to none.
+     */
+    private static function known(string $locale): bool
+    {
+        static $languages = null;
+
+        if ($languages === null) {
+            $languages = [];
+
+            foreach (\ResourceBundle::getLocales('') as $available) {
+                $languages[\Locale::getPrimaryLanguage($available)] = true;
+            }
+        }
+
+        return isset($languages[\Locale::getPrimaryLanguage($locale)]);
     }
 }

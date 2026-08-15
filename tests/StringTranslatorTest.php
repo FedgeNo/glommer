@@ -261,6 +261,126 @@ class StringTranslatorTest extends TestCase
     }
 
     /**
+     * A counted form is asked as a real sentence about a real number its own
+     * rule puts in that category - "2 votes" for Polish few, "5 votes" for
+     * many - because every form asked the same masked question comes back
+     * with the same answer, which is Polish counting in one word where it
+     * counts in three.
+     */
+    public function testEachCountedFormIsAskedAboutANumberInItsOwnCategory(): void
+    {
+        $forms = ['one' => '1 vote', 'other' => '{count} votes'];
+
+        $this -> assertSame(['2 votes', 2], StringTranslator::sampled('pl', 'few', $forms));
+        $this -> assertSame(['5 votes', 5], StringTranslator::sampled('pl', 'many', $forms));
+        $this -> assertSame(['1 vote', 1], StringTranslator::sampled('pl', 'one', $forms));
+    }
+
+    /**
+     * The number the answer carries becomes the token again - recognised in
+     * the language's own digits too, since a model writing for Arabic answers
+     * in the digits Arabic reads.
+     */
+    public function testTheNumberComesBackOutAsTheToken(): void
+    {
+        $this -> assertSame('{count} głosy', StringTranslator::recounted('2 głosy', 2, 'pl'));
+        $this -> assertSame('{count} أصوات', StringTranslator::recounted('٥ أصوات', 5, 'ar'));
+        $this -> assertNull(StringTranslator::recounted('głosy', 2, 'pl'), 'a lost number is a refusal');
+        $this -> assertNull(StringTranslator::recounted('2 głosy 2', 2, 'pl'), 'a doubled number is a refusal');
+    }
+
+    /**
+     * "{count}m ago" is not translatable - measured, it came back as "five
+     * years ago" and "five metres ago" - so the model is asked the sentence
+     * it stands for while the file keeps the compact form.
+     */
+    public function testACompactTimestampIsAskedSpelledOut(): void
+    {
+        $forms = ['one' => '{count}m ago', 'other' => '{count}m ago'];
+
+        $this -> assertSame(['5 minutes ago', 5], StringTranslator::sampled('pl', 'many', $forms));
+        $this -> assertSame('{count} votes', StringTranslator::spelledOut('{count} votes'));
+    }
+
+    /**
+     * A model with nothing to say hands the question back, and stored that
+     * way the file claims a translation it has not got. Only proof where the
+     * language is written in another script - German for "Video" is "Video".
+     */
+    public function testAnAnswerIdenticalToTheQuestionIsRefusedWhereItIsProof(): void
+    {
+        $this -> assertTrue(StringTranslator::isUntouched('ja', 'Save Draft', 'Save Draft'));
+        $this -> assertFalse(StringTranslator::isUntouched('de', 'Video', 'Video'));
+        $this -> assertFalse(StringTranslator::isUntouched('ja', 'Save Draft', '下書きを保存'));
+        $this -> assertFalse(
+            StringTranslator::isUntouched('ja', '{date} {time}', '{date} {time}'),
+            'a pattern with no words in it comes back unchanged when it is right'
+        );
+    }
+
+    /**
+     * Half a counted set is worse than none: one count in the reader's
+     * language and the next in English, in the same place on the same page.
+     * A set with any words is finished from its own plural; a set with none
+     * falls back to English whole.
+     */
+    public function testAHalfWrittenCountedSetIsFinishedFromItsOwnPlural(): void
+    {
+        $sets = ['Votes.count' => ['one' => '1 vote', 'other' => '{count} votes']];
+
+        $finished = StringTranslator::completed(
+            ['Votes.count.one' => '1 głos', 'Votes.count.other' => '{count} głosów'],
+            'pl',
+            $sets
+        );
+
+        $this -> assertSame('{count} głosów', $finished['Votes.count.few'] ?? null);
+        $this -> assertSame('{count} głosów', $finished['Votes.count.many'] ?? null);
+
+        $this -> assertSame([], StringTranslator::completed([], 'pl', $sets), 'a set with no words stays empty');
+    }
+
+    /**
+     * A form standing in from the plural looks like a translation from then
+     * on, so it is counted on every run - except where English says the same
+     * for both, since there was never a distinction to lose.
+     */
+    public function testAFormReadingAsThePluralIsCountedAsUnfinished(): void
+    {
+        $sets = ['Votes.count' => ['one' => '1 vote', 'other' => '{count} votes']];
+
+        $this -> assertSame(1, StringTranslator::collapsed(
+            ['Votes.count.few' => '{count} głosów', 'Votes.count.other' => '{count} głosów'],
+            $sets
+        ));
+
+        $this -> assertSame(0, StringTranslator::collapsed(
+            ['Votes.count.few' => '{count} głosy', 'Votes.count.other' => '{count} głosów'],
+            $sets
+        ));
+
+        $same = ['Time.minutes' => ['one' => '{count}m ago', 'other' => '{count}m ago']];
+
+        $this -> assertSame(0, StringTranslator::collapsed(
+            ['Time.minutes.one' => '{count} min temu', 'Time.minutes.other' => '{count} min temu'],
+            $same
+        ), 'English does not distinguish these either');
+    }
+
+    /**
+     * How a date and a time go together is the locale's own: French writes
+     * "à" between them, English "at", and a model handed two placeholders and
+     * a joiner has nothing to translate and hands the pattern back.
+     */
+    public function testTheDateAndTimeJoinerComesFromTheCalendar(): void
+    {
+        $this -> assertSame('{date} at {time}', StringTranslator::fromCalendar('en', 'DateFormat.dateAndTime'));
+        $this -> assertSame('{date} à {time}', StringTranslator::fromCalendar('fr', 'DateFormat.dateAndTime'));
+        $this -> assertSame('{date} um {time}', StringTranslator::fromCalendar('de', 'DateFormat.dateAndTime'));
+        $this -> assertTrue(StringTranslator::isCalendar('DateFormat.dateAndTime'));
+    }
+
+    /**
      * A model reads "{count}" as a word and translates what is inside the
      * braces, taking the rest of the sentence with it.
      */
@@ -527,10 +647,9 @@ class StringTranslatorTest extends TestCase
         $this -> assertTrue(StringTranslator::isCalendar('DateFormat.long'));
     }
 
-    /** The rest of a locale's dates are wording, and a model may have them. */
+    /** A locale's wording is a model's to have; only its calendar is not. */
     public function testAKeyThatIsWordingRatherThanCalendarDataIsNotICUs(): void
     {
-        $this -> assertFalse(StringTranslator::isCalendar('DateFormat.dateAndTime'));
         $this -> assertFalse(StringTranslator::isCalendar('LoginForm.submit'));
     }
 }

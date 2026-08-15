@@ -392,7 +392,7 @@
         "long": "{month} {day}, {year}",
         "short": "{month} {day}, {year}",
         "time": "{hour}:{minute} {meridiem}",
-        "dateAndTime": "{date} {time}",
+        "dateAndTime": "{date} at {time}",
         "am": "AM",
         "pm": "PM",
         "clock": 12

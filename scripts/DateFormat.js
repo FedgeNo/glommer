@@ -25,7 +25,7 @@ export class DateFormat {
         long: '{month} {day}, {year}',
         short: '{month} {day}, {year}',
         time: '{hour}:{minute} {meridiem}',
-        dateAndTime: '{date} {time}',
+        dateAndTime: '{date} at {time}',
         am: 'AM',
         pm: 'PM',
         clock: 12,
@@ -45,7 +45,7 @@ export class DateFormat {
         return DateFormat.#date(date, 'short', 'shortMonths');
     }
 
-    /** "August 11, 2026 3:04 PM". */
+    /** "August 11, 2026 at 3:04 PM" - joined the way the language joins them. */
     static longWithTime(date) {
         return DateFormat.#words().dateAndTime
             .replace('{date}', DateFormat.long(date))

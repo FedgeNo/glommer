@@ -400,7 +400,9 @@ SELECT RELEASE_LOCK(?)
         // else, and the message says which - worth the log line, since the fix
         // is one argospm install away.
         if ($status !== 0) {
-            error_log('Translator: ' . $source . ' to ' . $target . ' exited ' . $status . ': ' . substr(trim($errors), 0, 300));
+            // mb_strcut, so a message cut mid-character stays valid UTF-8 in
+            // the log rather than ending in half of one.
+            error_log('Translator: ' . $source . ' to ' . $target . ' exited ' . $status . ': ' . mb_strcut(trim($errors), 0, 300));
 
             return null;
         }

@@ -21,7 +21,7 @@ const LOCALES = {
         long: '{day}. {month} {year}',
         short: '{day}. {month} {year}',
         time: '{hour}:{minute}',
-        dateAndTime: '{date} {time}',
+        dateAndTime: '{date} um {time}',
         clock: 24,
     },
     es: {
@@ -30,7 +30,7 @@ const LOCALES = {
         long: '{day} de {month} de {year}',
         short: '{day} {month} {year}',
         time: '{hour}:{minute}',
-        dateAndTime: '{date} {time}',
+        dateAndTime: '{date}, {time}',
         clock: 24,
     },
     fr: {
@@ -39,7 +39,7 @@ const LOCALES = {
         long: '{day} {month} {year}',
         short: '{day} {month} {year}',
         time: '{hour}:{minute}',
-        dateAndTime: '{date} {time}',
+        dateAndTime: '{date} à {time}',
         clock: 24,
     },
 };
@@ -87,10 +87,10 @@ export default {
         // A meridiem surviving into a 24-hour rendering is the failure here.
         'the clock is the language\'s to decide'() {
             const expected = {
-                en: 'August 11, 2026 3:04 PM',
-                de: '11. August 2026 15:04',
-                es: '11 de agosto de 2026 15:04',
-                fr: '11 août 2026 15:04',
+                en: 'August 11, 2026 at 3:04 PM',
+                de: '11. August 2026 um 15:04',
+                es: '11 de agosto de 2026, 15:04',
+                fr: '11 août 2026 à 15:04',
             };
 
             for (const [locale, written] of Object.entries(expected)) {

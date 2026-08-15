@@ -387,7 +387,7 @@
         "long": "{day} de {month} de {year}",
         "short": "{day} {month} {year}",
         "time": "{hour}:{minute}",
-        "dateAndTime": "{date} {time}",
+        "dateAndTime": "{date} às {time}",
         "am": "AM",
         "pm": "PM",
         "clock": 24

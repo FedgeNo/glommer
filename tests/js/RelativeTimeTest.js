@@ -75,7 +75,7 @@ export default {
             TestCase.assertEquals('July 30, 2026', RelativeTime.date('2026-07-30 23:30:00'));
         },
         'dateAndTime() matches the server\'s date-and-time format, in UTC'() {
-            TestCase.assertEquals('July 30, 2026 3:04 PM', RelativeTime.dateAndTime('2026-07-30 15:04:00'));
+            TestCase.assertEquals('July 30, 2026 at 3:04 PM', RelativeTime.dateAndTime('2026-07-30 15:04:00'));
         },
         /**
          * A date is arranged differently per language, and the month is a word
@@ -108,8 +108,8 @@ export default {
             }
         },
         'a midnight hour reads as 12 on a twelve-hour clock'() {
-            TestCase.assertEquals('July 30, 2026 12:30 AM', RelativeTime.dateAndTime('2026-07-30 00:30:00'));
-            TestCase.assertEquals('July 30, 2026 12:05 PM', RelativeTime.dateAndTime('2026-07-30 12:05:00'));
+            TestCase.assertEquals('July 30, 2026 at 12:30 AM', RelativeTime.dateAndTime('2026-07-30 00:30:00'));
+            TestCase.assertEquals('July 30, 2026 at 12:05 PM', RelativeTime.dateAndTime('2026-07-30 12:05:00'));
         },
     }
 };

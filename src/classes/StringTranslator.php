@@ -132,6 +132,309 @@ class StringTranslator
     }
 
     /**
+     * The counted phrasings among flattened paths, by the path of the set
+     * itself: a set is an entry whose every key names a CLDR category.
+     *
+     * @param array<string, string> $source
+     * @return array<string, array<string, string>>
+     */
+    public static function counted(array $source): array
+    {
+        $sets = [];
+
+        foreach ($source as $path => $english) {
+            $cut = strrpos($path, '.');
+
+            if ($cut === false) {
+                continue;
+            }
+
+            $sets[substr($path, 0, $cut)][substr($path, $cut + 1)] = $english;
+        }
+
+        foreach ($sets as $prefix => $forms) {
+            if (array_diff(array_keys($forms), PluralRule::CATEGORIES) !== []) {
+                unset($sets[$prefix]);
+            }
+        }
+
+        return $sets;
+    }
+
+    /**
+     * The English to ask a model about one form of a counted phrase, and the
+     * number written into it.
+     *
+     * "{count} views" with its number masked is not a sentence: a model hands
+     * the mask straight back, and every category of every language asked the
+     * same question answers it the same way - which is how Polish would finish
+     * with one word where it counts in three. Written out as "5 views", the
+     * model has a sentence to decline, and the number comes back out
+     * afterwards (recounted()).
+     *
+     * The number is one this language's own rule puts in that category, and
+     * the English is English's own form for that count, so the question is a
+     * real sentence rather than one assembled out of pieces.
+     *
+     * @param array<string, string> $forms English's phrasings for this entry
+     * @return array{0: string, 1: int|null} what to ask, and the number in it
+     */
+    public static function sampled(string $locale, string $category, array $forms): array
+    {
+        $count = PluralRule::exampleFor($locale, $category);
+        $english = $forms[$category] ?? $forms['other'] ?? reset($forms);
+
+        if ($count === null || !is_string($english)) {
+            return [is_string($english) ? $english : '', null];
+        }
+
+        $written = $forms[PluralRule::categoryFor(Strings::SOURCE_LOCALE, $count)]
+            ?? $forms['other']
+            ?? $english;
+
+        return [str_replace('{count}', (string) $count, self::spelledOut($written)), $count];
+    }
+
+    /**
+     * What to hand the model for one path, and the number standing in for
+     * {count} where there is one.
+     *
+     * @param array<string, array<string, string>> $sets English's counted entries
+     * @return array{0: string, 1: int|null}
+     */
+    public static function asked(string $locale, string $path, string $english, array $sets): array
+    {
+        $cut = strrpos($path, '.');
+        $prefix = $cut === false ? '' : substr($path, 0, $cut);
+        $category = $cut === false ? '' : substr($path, $cut + 1);
+
+        if (!isset($sets[$prefix]) || !in_array($category, PluralRule::CATEGORIES, true)) {
+            return [self::sourceFor($locale, $path, $english), null];
+        }
+
+        return self::sampled($locale, $category, $sets[$prefix]);
+    }
+
+    /**
+     * A compact timestamp written out as the sentence it stands for, for
+     * asking a model - the file keeps the compact form.
+     *
+     * "{count}m ago" is not translatable: measured, it came back as "five
+     * years ago" in Arabic and Russian and "five metres ago" in Persian -
+     * wrong rather than merely untranslated, and plausible in a script nobody
+     * here can spot-check. "{count} minutes ago" answers correctly in every
+     * language tested.
+     */
+    public static function spelledOut(string $english): string
+    {
+        $units = ['m' => 'minutes', 'h' => 'hours', 'd' => 'days', 'w' => 'weeks', 'y' => 'years'];
+
+        if (preg_match('/^(\{count\}|[0-9]+)([mhdwy]) ago$/', $english, $found) === 1) {
+            return $found[1] . ' ' . $units[$found[2]] . ' ago';
+        }
+
+        return $english;
+    }
+
+    /**
+     * The number put back as the token it stood in for.
+     *
+     * Refused rather than guessed at when it did not survive exactly once: a
+     * phrasing that has lost its number renders a sentence about no particular
+     * quantity, and one that gained a second prints the count twice.
+     */
+    public static function recounted(string $translated, int $count, string $locale): ?string
+    {
+        foreach (self::numerals($count, $locale) as $numeral) {
+            if (substr_count($translated, $numeral) === 1) {
+                return str_replace($numeral, '{count}', $translated);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * The ways this number can be written, Western digits first.
+     *
+     * A model writing for Arabic, Persian or Bengali may answer in the digits
+     * that language reads in, and a number that came back as ٥ is the number
+     * asked about rather than a lost one.
+     *
+     * @return string[]
+     */
+    private static function numerals(int $count, string $locale): array
+    {
+        $numerals = [(string) $count];
+
+        // The locale's own default, and its native digits as well: CLDR gives
+        // Arabic Western digits by default, and a model writing Arabic answers
+        // in the digits Arabic traditionally reads regardless.
+        foreach ([$locale, $locale . '-u-nu-native'] as $tag) {
+            try {
+                $written = (new \NumberFormatter($tag, \NumberFormatter::DECIMAL)) -> format($count);
+            } catch (\Throwable) {
+                continue;
+            }
+
+            if (is_string($written) && $written !== '' && !in_array($written, $numerals, true)) {
+                $numerals[] = $written;
+            }
+        }
+
+        return $numerals;
+    }
+
+    /**
+     * Whether an answer is the question handed back, in a language that cannot
+     * have written it.
+     *
+     * A model that has nothing to say for a string returns it unchanged, and
+     * stored that way the locale file claims a translation it has not got. Only
+     * asked of a language written in another script, because that is where an
+     * unchanged answer is proof rather than suspicion: German for "Video" is
+     * "Video", and refusing that would be refusing a correct translation.
+     */
+    public static function isUntouched(string $locale, string $asked, string $translated): bool
+    {
+        // Judged on the words only. A pattern is placeholders and punctuation,
+        // and the names inside the braces are the code's rather than anything a
+        // language has a word for, so it comes back unchanged when it is right.
+        $words = (string) preg_replace('/\{[a-zA-Z]+\}/', '', $asked);
+
+        if (trim($asked) !== trim($translated) || !preg_match('/\p{L}/u', $words)) {
+            return false;
+        }
+
+        return !self::writesInLatin($locale);
+    }
+
+    /**
+     * Whether a language is written in the same alphabet the source is.
+     *
+     * Read off the name the language calls itself by, which is a sample of the
+     * language written in its own script and one ICU already holds - "Deutsch"
+     * against "русский", "العربية", "日本語". A language tag carries no script
+     * of its own unless somebody wrote one into it.
+     */
+    private static function writesInLatin(string $locale): bool
+    {
+        static $latin = [];
+
+        if (isset($latin[$locale])) {
+            return $latin[$locale];
+        }
+
+        $named = \Locale::getDisplayLanguage($locale, $locale);
+
+        // An unknown language is taken as Latin, which is the answer that
+        // refuses nothing: a guess is not grounds for throwing a translation
+        // away.
+        if (!is_string($named) || $named === '' || $named === $locale) {
+            return $latin[$locale] = true;
+        }
+
+        return $latin[$locale] = preg_match('/\p{L}/u', $named) === 1
+            && preg_match('/[^\p{Latin}\p{Common}\p{Inherited}]/u', $named) === 0;
+    }
+
+    /**
+     * A counted phrasing finished off in the language's own words.
+     *
+     * A locale either writes every form its rule can ask for or writes none:
+     * half a set falls back to English for the rest, so a reader sees one
+     * count in their language and the next in English, in the same place on
+     * the same page. Where a form went untranslated the language's own plural
+     * stands in, which is at worst the wrong case of the right words.
+     *
+     * Nothing is invented for a set the locale has no words for at all - that
+     * one falls back to English whole, which is what a locale nobody has
+     * finished is supposed to do.
+     *
+     * @param array<string, string> $translations
+     * @param array<string, array<string, string>> $sets English's counted entries
+     * @return array<string, string>
+     */
+    public static function completed(array $translations, string $locale, array $sets): array
+    {
+        foreach (array_keys($sets) as $prefix) {
+            $written = [];
+
+            foreach (PluralRule::CATEGORIES as $category) {
+                if (isset($translations[$prefix . '.' . $category])) {
+                    $written[$category] = $translations[$prefix . '.' . $category];
+                }
+            }
+
+            if ($written === []) {
+                continue;
+            }
+
+            $plural = $written['other'] ?? reset($written);
+            $categories = PluralRule::categoriesFor($locale);
+
+            foreach ($categories as $category) {
+                if (!isset($written[$category])) {
+                    $translations[$prefix . '.' . $category] = $plural;
+                }
+            }
+
+            // Exactly the forms this language counts in, so a set carries no
+            // form a reader can never reach. "Other" stays regardless, being
+            // what a missing form falls back to.
+            foreach (array_keys($written) as $category) {
+                if ($category !== 'other' && !in_array($category, $categories, true)) {
+                    unset($translations[$prefix . '.' . $category]);
+                }
+            }
+        }
+
+        return $translations;
+    }
+
+    /**
+     * How many counted forms read the same as this language's plural where
+     * English's did not.
+     *
+     * A form the model would not give stands in from the language's own plural,
+     * and once written it looks like a translation - so the distinction those
+     * forms exist to make is gone and nothing says so. Counted against English
+     * rather than on its own, because a language whose word does not inflect
+     * writes the same form for every count and is right to.
+     *
+     * @param array<string, string> $translations
+     * @param array<string, array<string, string>> $sets English's counted entries
+     */
+    public static function collapsed(array $translations, array $sets): int
+    {
+        $collapsed = 0;
+
+        foreach ($sets as $prefix => $forms) {
+            $plural = $translations[$prefix . '.other'] ?? null;
+
+            if ($plural === null || !isset($forms['other'])) {
+                continue;
+            }
+
+            foreach (PluralRule::CATEGORIES as $category) {
+                if ($category === 'other' || !isset($translations[$prefix . '.' . $category])) {
+                    continue;
+                }
+
+                // Skipped only where English says the same thing for both, so
+                // there was never a distinction to lose here.
+                $same_in_english = isset($forms[$category]) && $forms[$category] === $forms['other'];
+
+                if ($translations[$prefix . '.' . $category] === $plural && !$same_in_english) {
+                    $collapsed++;
+                }
+            }
+        }
+
+        return $collapsed;
+    }
+
+    /**
      * The source's shape with translations in place of its strings, leaving out
      * what has none. Built by walking the source so the file comes out in the
      * order it was written in rather than the order it was translated in.
@@ -264,7 +567,87 @@ class StringTranslator
             return self::placeholders($locale, $patterns[$path][0], $patterns[$path][1]);
         }
 
+        if ($path === 'DateFormat.dateAndTime') {
+            return self::joined($locale);
+        }
+
         return null;
+    }
+
+    /**
+     * How this locale writes a date and a time together.
+     *
+     * Two placeholders and a joiner is all it is, so there is nothing in it for
+     * a model to translate - it hands the pattern straight back - and the
+     * joiner is a fact about the locale anyway: French writes "à" between them
+     * and Chinese writes nothing at all. ICU composes the two patterns itself,
+     * so the answer is the combined pattern with each half put back as its
+     * placeholder.
+     */
+    private static function joined(string $locale): ?string
+    {
+        $both = self::pattern($locale, \IntlDateFormatter::LONG, \IntlDateFormatter::SHORT);
+        $date = self::pattern($locale, \IntlDateFormatter::LONG, \IntlDateFormatter::NONE);
+        $time = self::pattern($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::SHORT);
+
+        if ($both === null || $date === null || $time === null) {
+            return null;
+        }
+
+        $written = str_replace([$date, $time], ['{date}', '{time}'], $both);
+
+        // Only where both halves were found whole: a locale whose combined
+        // pattern is not simply its two patterns with something between them
+        // would otherwise have half a pattern left in it.
+        if (!str_contains($written, '{date}') || !str_contains($written, '{time}')) {
+            return null;
+        }
+
+        return trim(preg_replace('/\s+/u', ' ', self::unquoted($written)) ?? '');
+    }
+
+    /** This locale's raw ICU pattern for a date style, a time style, or both. */
+    private static function pattern(string $locale, int $date, int $time): ?string
+    {
+        try {
+            $pattern = (new \IntlDateFormatter($locale, $date, $time, 'UTC')) -> getPattern();
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return is_string($pattern) && $pattern !== '' ? $pattern : null;
+    }
+
+    /**
+     * ICU's quoting taken off the words between the fields - the "at" in
+     * "{date} 'at' {time}" is a word this language says, not punctuation.
+     */
+    private static function unquoted(string $pattern): string
+    {
+        $written = '';
+        $length = strlen($pattern);
+
+        for ($at = 0; $at < $length;) {
+            if ($pattern[$at] !== "'") {
+                $written .= $pattern[$at];
+                $at++;
+
+                continue;
+            }
+
+            $end = strpos($pattern, "'", $at + 1);
+
+            if ($end === false) {
+                break;
+            }
+
+            // Two together are an apostrophe this language writes, rather than
+            // an empty literal.
+            $written .= $end === $at + 1 ? "'" : substr($pattern, $at + 1, $end - $at - 1);
+            $at = $end + 1;
+        }
+
+        return $written;
     }
 
     /**
@@ -279,7 +662,10 @@ class StringTranslator
     {
         return in_array(
             $path,
-            ['DateFormat.am', 'DateFormat.pm', 'DateFormat.long', 'DateFormat.short', 'DateFormat.time'],
+            [
+                'DateFormat.am', 'DateFormat.pm', 'DateFormat.long',
+                'DateFormat.short', 'DateFormat.time', 'DateFormat.dateAndTime',
+            ],
             true
         ) || preg_match('/^DateFormat\.(months|shortMonths)\.[0-9]{1,2}$/', $path) === 1;
     }
@@ -750,32 +1136,26 @@ class StringTranslator
     /** @param array<string, string> $source */
     private function translate(string $locale, array $source): void
     {
-        $english = $source;
         $source = self::expanded($source, $locale);
-
-        // The forms this language has and English does not, which all start
-        // from the one English plural - so a model gives the same answer for
-        // every one of them, and somebody has to tell "few" from "many" by
-        // hand afterwards. Counted here so the run can say so rather than
-        // leaving a file that looks finished.
-        $widened = array_diff_key($source, $english);
         $existing = self::flatten(self::read($locale), '', true);
-        $fingerprints = $this -> force ? [] : self::fingerprints($locale);
 
-        if (!$this -> force) {
-            $fingerprints = self::adopting($existing, $source, $fingerprints);
+        // What a previous run stored before it could tell a translation from
+        // the question repeated back. Dropped rather than left, so the file
+        // says what it really has and the reader falls back to the English it
+        // was already being shown.
+        foreach ($existing as $path => $translated) {
+            if (isset($source[$path]) && self::isUntouched($locale, $source[$path], $translated)) {
+                unset($existing[$path]);
+            }
         }
 
+        $fingerprints = $this -> force
+            ? []
+            : self::adopting($existing, $source, self::fingerprints($locale));
         $stale = self::stale($source, $existing, $fingerprints);
 
         if ($this -> paths !== []) {
             $stale = array_intersect_key($stale, array_flip($this -> paths));
-        }
-
-        if ($stale === []) {
-            echo $locale . ": up to date\n";
-
-            return;
         }
 
         $translations = $existing;
@@ -819,9 +1199,15 @@ class StringTranslator
             unset($stale[$path]);
         }
 
-        $worker = new TranslationWorker(Strings::SOURCE_LOCALE, $locale);
+        $sets = self::counted($source);
+        $failure = '';
 
-        if ($stale !== [] && !$worker -> isAvailable()) {
+        // Built only where there is something to ask, because a locale can
+        // still have work with nothing stale: a counted set left half written
+        // by an earlier run is finished below without a model.
+        $worker = $stale === [] ? null : new TranslationWorker(Strings::SOURCE_LOCALE, $locale);
+
+        if ($worker !== null && !$worker -> isAvailable()) {
             echo $locale . ": no package installed\n";
 
             return;
@@ -830,12 +1216,15 @@ class StringTranslator
         foreach (array_chunk($stale, TranslationWorker::BATCH, true) as $chunk) {
             $masked = [];
             $sentinels = [];
+            $counts = [];
+            $questions = [];
 
             // Masked from what the model is given, fingerprinted against what
             // en.json says: a locale is stale when the source string changes,
-            // not because the name of its own language was put into it.
+            // not because of what was put into the question for its sake.
             foreach ($chunk as $path => $english) {
-                [$masked[$path], $sentinels[$path]] = self::mask(self::sourceFor($locale, $path, $english));
+                [$questions[$path], $counts[$path]] = self::asked($locale, $path, $english, $sets);
+                [$masked[$path], $sentinels[$path]] = self::mask($questions[$path]);
             }
 
             $answers = $worker -> translate(array_values($masked));
@@ -844,10 +1233,25 @@ class StringTranslator
             foreach ($answers as $index => $answer) {
                 $path = $paths[$index];
                 $english = $chunk[$path];
-                $answer = self::punctuatedAsSource(
-                    $english,
-                    self::numberFirst($english, self::unmask($answer, $sentinels[$path]))
-                );
+                $answer = self::unmask($answer, $sentinels[$path]);
+
+                if (self::isUntouched($locale, $questions[$path], $answer)) {
+                    unset($fingerprints[$path]);
+
+                    continue;
+                }
+
+                if ($counts[$path] !== null) {
+                    $answer = self::recounted($answer, $counts[$path], $locale);
+
+                    if ($answer === null) {
+                        unset($fingerprints[$path]);
+
+                        continue;
+                    }
+                }
+
+                $answer = self::punctuatedAsSource($english, self::numberFirst($english, $answer));
 
                 if (trim($answer) === ''
                     || !self::keepsPlaceholders($english, $answer)
@@ -863,14 +1267,35 @@ class StringTranslator
             }
         }
 
-        $failure = $worker -> error();
-        $worker -> close();
+        if ($worker !== null) {
+            $failure = $worker -> error();
+            $worker -> close();
+        }
 
         // A locale file that exists is a language the site offers, so one with
         // nothing in it would advertise a translation that is entirely English.
-        // Better to write nothing and say why.
-        if ($kept === 0) {
+        // Judged on what the file would hold rather than on what this run
+        // added, because a run whose only work was dropping what an earlier
+        // one should never have written still has to save.
+        if ($translations === []) {
             echo $locale . ': nothing translated' . ($failure === '' ? '' : ' - ' . $failure) . "\n";
+
+            return;
+        }
+
+        $translations = self::completed($translations, $locale, $sets);
+
+        // Said every run rather than only the one that filled them, because a
+        // form standing in from the language's own plural is written to the
+        // file and looks like a translation from then on - which is how a file
+        // that is not finished stops looking unfinished.
+        $collapsed = self::collapsed($translations, $sets);
+        $standing_in = $collapsed === 0
+            ? ''
+            : ' - ' . $collapsed . " read the same as this language's plural, check by hand";
+
+        if ($translations === $existing && $kept === 0) {
+            echo $locale . ': up to date' . $standing_in . "\n";
 
             return;
         }
@@ -884,11 +1309,7 @@ class StringTranslator
         self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations, self::read($locale)));
         self::writeFingerprints($locale, $fingerprints);
 
-        $by_hand = count(array_intersect_key($widened, $translations));
-
-        echo $locale . ': ' . $kept . ' of ' . $wanted . ' translated'
-            . ($by_hand === 0 ? '' : ' - ' . $by_hand . ' widened from English\'s plural, check by hand')
-            . "\n";
+        echo $locale . ': ' . $kept . ' of ' . $wanted . ' translated' . $standing_in . "\n";
     }
 
     /** @return array<string, mixed> */

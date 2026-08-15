@@ -66,6 +66,10 @@
         height: var(--nav-height);
         overflow: hidden;
         padding-block: 0;
+        /* The rows carry this themselves once the nav is a list of them, so
+           that a row reaches both edges and its own padding is the only thing
+           holding the words off them. */
+        padding-inline: 0;
     }
 
     .MainNavigation:has(.NavToggle:checked) {
@@ -99,9 +103,11 @@
         width: 100%;
         box-sizing: border-box;
         margin: 0;
-        padding: 0.5rem !important;
+        padding: 0.5rem var(--content-padding-inline) !important;
         border: none !important;
-        border-radius: 0.5rem !important;
+        /* Square, because a row that reaches both edges has no corners to
+           round without cutting the screen's own. */
+        border-radius: 0 !important;
         background: none !important;
         opacity: 1 !important;
         color: var(--ink) !important;

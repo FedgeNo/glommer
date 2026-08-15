@@ -24,6 +24,13 @@ class Translator
     private const COMMAND = '/opt/glommer-translate/bin/argos-translate';
 
     /**
+     * The environment's own interpreter, for work that drives the models
+     * directly rather than through the argos-translate command - see
+     * TranslationWorker, which holds one model open across a batch.
+     */
+    public const PYTHON = '/opt/glommer-translate/bin/python3';
+
+    /**
      * The OS-level limits a PHP memory_limit cannot provide, the same three
      * the transcoder runs under: wall clock, CPU time, address space.
      *
@@ -112,14 +119,6 @@ class Translator
         return is_executable(self::COMMAND);
     }
 
-    /**
-     * The text in $target, or null where it could not be done - no
-     * environment, no package for the pairing, nothing readable back.
-     *
-     * Both languages are reduced to their base tag: Argos has a package for
-     * Portuguese, not for pt-BR, and asking for a tag it has never heard of
-     * fails where asking for the language would have worked.
-     */
     /**
      * Whether this installation can translate anything at all.
      *
@@ -223,6 +222,14 @@ class Translator
     /** No package installed for one side of the pair. */
     public const UNSUPPORTED_PAIR = 'unsupportedPair';
 
+    /**
+     * The text in $target, or null where it could not be done - no
+     * environment, no package for the pairing, nothing readable back.
+     *
+     * Both languages are reduced to their base tag: Argos has a package for
+     * Portuguese, not for pt-BR, and asking for a tag it has never heard of
+     * fails where asking for the language would have worked.
+     */
     public static function translate(string $text, string $target, ?string $source): ?string
     {
         if (self::refusalFor($text, $target, $source) !== null) {

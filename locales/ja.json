@@ -1,7 +1,6 @@
 {
     "PollOptionVotes": {
         "votes": {
-            "one": "{count}票",
             "other": "{count}票"
         }
     },
@@ -842,7 +841,6 @@
     "PostActionBar": {
         "reply": "返信",
         "replies": {
-            "one": "返信 ({count})",
             "other": "返信 ({count})"
         }
     },
@@ -880,22 +878,18 @@
             "after": "で終了"
         },
         "days": {
-            "one": "{count}日",
             "other": "{count}日"
         },
         "hours": {
-            "one": "{count}時間",
             "other": "{count}時間"
         },
         "minutes": {
-            "one": "{count}分",
             "other": "{count}分"
         },
         "underMinute": "1分未満"
     },
     "PollTally": {
         "voters": {
-            "one": "{count}人が投票・",
             "other": "{count}人が投票・"
         }
     },
@@ -967,11 +961,9 @@
         "windowMode": "その時だけ",
         "rangeLabel": "日付までの投稿を表示",
         "cumulativeLabel": {
-            "one": "{date}までの投稿 {count}件",
             "other": "{date}までの投稿 {count}件"
         },
         "windowLabel": {
-            "one": "{date}ごろの投稿 {count}件",
             "other": "{date}ごろの投稿 {count}件"
         }
     },
@@ -1025,15 +1017,12 @@
     "RelativeTime": {
         "justNow": "たった今",
         "minutes": {
-            "one": "{count}分前",
             "other": "{count}分前"
         },
         "hours": {
-            "one": "{count}時間前",
             "other": "{count}時間前"
         },
         "days": {
-            "one": "{count}日前",
             "other": "{count}日前"
         }
     },

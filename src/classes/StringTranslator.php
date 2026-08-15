@@ -108,9 +108,22 @@ class StringTranslator
                 continue;
             }
 
-            foreach (PluralRule::categoriesFor($locale) as $category) {
-                if (!isset($forms[$category])) {
-                    $source[$parent . '.' . $category] = $plural;
+            $wanted = PluralRule::categoriesFor($locale);
+
+            foreach (PluralRule::CATEGORIES as $category) {
+                if (in_array($category, $wanted, true)) {
+                    $source[$parent . '.' . $category] ??= $plural;
+
+                    continue;
+                }
+
+                // Not asked for what this language never selects: Japanese
+                // counts one way, so English's "one" is a phrasing it can
+                // never reach, and translating it fills the file with lines
+                // no reader will see. "other" stays regardless, because it is
+                // what Strings::plural falls back to.
+                if ($category !== 'other') {
+                    unset($source[$parent . '.' . $category]);
                 }
             }
         }
@@ -737,7 +750,15 @@ class StringTranslator
     /** @param array<string, string> $source */
     private function translate(string $locale, array $source): void
     {
+        $english = $source;
         $source = self::expanded($source, $locale);
+
+        // The forms this language has and English does not, which all start
+        // from the one English plural - so a model gives the same answer for
+        // every one of them, and somebody has to tell "few" from "many" by
+        // hand afterwards. Counted here so the run can say so rather than
+        // leaving a file that looks finished.
+        $widened = array_diff_key($source, $english);
         $existing = self::flatten(self::read($locale), '', true);
         $fingerprints = $this -> force ? [] : self::fingerprints($locale);
 
@@ -863,7 +884,11 @@ class StringTranslator
         self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations, self::read($locale)));
         self::writeFingerprints($locale, $fingerprints);
 
-        echo $locale . ': ' . $kept . ' of ' . $wanted . " translated\n";
+        $by_hand = count(array_intersect_key($widened, $translations));
+
+        echo $locale . ': ' . $kept . ' of ' . $wanted . ' translated'
+            . ($by_hand === 0 ? '' : ' - ' . $by_hand . ' widened from English\'s plural, check by hand')
+            . "\n";
     }
 
     /** @return array<string, mixed> */

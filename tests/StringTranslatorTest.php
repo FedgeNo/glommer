@@ -216,13 +216,35 @@ class StringTranslatorTest extends TestCase
         $this -> assertSame('1 vote', $wide['Votes.count.one'], 'the forms English has are left as they are');
     }
 
-    /** A language counting no more ways than English asks for nothing extra. */
-    public function testALanguageWithNoExtraFormsIsAskedForNothingExtra(): void
+    /** A language counting the same ways English does is asked exactly that. */
+    public function testALanguageCountingLikeEnglishIsAskedForEnglishsForms(): void
     {
         $flat = StringTranslator::flatten(['Votes' => ['count' => ['one' => '1 vote', 'other' => '{count} votes']]]);
 
         $this -> assertSame($flat, StringTranslator::expanded($flat, 'de'));
-        $this -> assertSame($flat, StringTranslator::expanded($flat, 'ja'));
+    }
+
+    /**
+     * Japanese counts one way, so English's "one" is a phrasing it can never
+     * select - translating it fills the file with lines no reader will see.
+     */
+    public function testALanguageIsNotAskedForAFormItNeverSelects(): void
+    {
+        $flat = StringTranslator::flatten(['Votes' => ['count' => ['one' => '1 vote', 'other' => '{count} votes']]]);
+
+        $this -> assertSame(['Votes.count.other' => '{count} votes'], StringTranslator::expanded($flat, 'ja'));
+    }
+
+    /**
+     * Polish selects one, few and many for whole numbers and never "other",
+     * which is still what Strings::plural falls back to - so it is kept where
+     * every other unselected form is dropped.
+     */
+    public function testTheFallbackFormIsKeptEvenWhereNothingSelectsIt(): void
+    {
+        $flat = StringTranslator::flatten(['Votes' => ['count' => ['one' => '1 vote', 'other' => '{count} votes']]]);
+
+        $this -> assertSame('{count} votes', StringTranslator::expanded($flat, 'pl')['Votes.count.other'] ?? null);
     }
 
     /**

@@ -144,14 +144,23 @@ UPDATE `Posts`
             return null;
         }
 
-        fwrite($pipes[0], (string) json_encode(array_values($texts)));
+        $request = json_encode(array_values($texts));
+
+        // Refused rather than sent as nothing: a text that will not encode is
+        // one this cannot ask about, and an empty request reads to the far side
+        // as a batch of no posts and comes back an answer to nothing.
+        if ($request === false) {
+            error_log('LanguageDetector: could not encode ' . count($texts) . ' text(s) to ask about');
+            fclose($pipes[0]);
+            proc_close($process);
+
+            return null;
+        }
+
+        fwrite($pipes[0], $request);
         fclose($pipes[0]);
 
-        $output = stream_get_contents($pipes[1]);
-        $error = stream_get_contents($pipes[2]);
-
-        fclose($pipes[1]);
-        fclose($pipes[2]);
+        [$output, $error] = read_both_pipes($pipes);
 
         $status = proc_close($process);
 

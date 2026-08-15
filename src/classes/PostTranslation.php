@@ -79,17 +79,6 @@ SELECT `body`
     }
 
     /**
-     * Translates and stores, or returns null where it could not be done - no
-     * translation environment, no package for that pairing, nothing readable
-     * back.
-     *
-     * Done on this machine (see Translator). It used to be a free LLM router,
-     * which answered the same request in 1.5 seconds and then in 16.9 because
-     * it picks a different model every call - a reader pressing Translate had
-     * no idea whether to wait a moment or give up. It also sent what somebody
-     * wrote to a third party to do it.
-     */
-    /**
      * What language a post is in, as well as this server knows.
      *
      * What was read off the words wins over what the post says about itself,
@@ -124,6 +113,16 @@ SELECT `detectedLanguage`, `language`
         return (string) ($words[$refusal] ?? $words[Translator::UNAVAILABLE] ?? '');
     }
 
+    /**
+     * Translates and stores, or returns null where it could not be done - no
+     * translation environment, no package for that pairing, nothing readable
+     * back.
+     *
+     * On this machine wherever Argos has the pairing, which is most of them and
+     * answers in a steady few seconds; the model provider stands behind the
+     * rest (see Translator). Stored either way, so the pairing is paid for once
+     * however it was answered.
+     */
     public static function translate(int $post_id, string $language, string $body): ?string
     {
         // A translator has to be told what it is translating from, and this

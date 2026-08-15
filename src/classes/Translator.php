@@ -369,44 +369,10 @@ SELECT RELEASE_LOCK(?)
         fwrite($pipes[0], $text);
         fclose($pipes[0]);
 
-        // Both pipes drained together. Reading one to EOF first can deadlock:
-        // the far side blocks writing a full stderr buffer while this side
-        // blocks reading stdout, and neither moves until the timeout kills it.
-        stream_set_blocking($pipes[1], false);
-        stream_set_blocking($pipes[2], false);
+        // Both pipes drained together, or this deadlocks - see read_both_pipes.
+        [$output, $errors] = read_both_pipes($pipes, self::MAX_OUTPUT_BYTES);
 
-        $output = '';
-        $errors = '';
-        $open = [1 => $pipes[1], 2 => $pipes[2]];
-
-        while ($open !== []) {
-            $read = array_values($open);
-            $write = null;
-            $except = null;
-
-            if (@stream_select($read, $write, $except, null) === false) {
-                break;
-            }
-
-            foreach ($read as $stream) {
-                $chunk = fread($stream, 65536);
-
-                if ($chunk !== false && $chunk !== '') {
-                    if ($stream === $pipes[1]) {
-                        $output .= substr($chunk, 0, max(0, self::MAX_OUTPUT_BYTES - strlen($output)));
-                    } else {
-                        $errors .= $chunk;
-                    }
-                }
-
-                if (feof($stream)) {
-                    fclose($stream);
-                    unset($open[array_search($stream, $open, true)]);
-                }
-            }
-        }
-
-        // The cap above counts bytes and a character is up to four of them, so
+        // The cap counts bytes and a character is up to four of them, so
         // a translation long enough to be cut can end mid-character. Repaired
         // rather than passed on: what readable() does to what goes in, since a
         // half a character coming back is no more decodable than one going.

@@ -30,7 +30,11 @@ require __DIR__ . '/../src/functions.php';
 $path = (string) ($argv[1] ?? '');
 $text = (string) ($argv[2] ?? '');
 
-if ($path === '' || $text === '') {
+// Counted rather than tested for emptiness: "" is a thing to say here. It is
+// how a piece of a split sentence says English has no words at that end of it,
+// which every other language is then free to fill in - see MoreLocationsLink,
+// where English writes "See {link}" and Japanese writes "{link}を見る".
+if ($argc < 3 || $path === '') {
     fwrite(STDERR, "Usage: php bin/add-string.php <Class.key> <English text>\n");
     exit(1);
 }

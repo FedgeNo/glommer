@@ -15,6 +15,7 @@ if (!Translator::canTranslate()) {
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = is_array($payload) ? $payload : [];
 
 $message_id = (int) ($payload['messageId'] ?? 0);
 $language = PostTranslation::normalizeLanguage((string) ($payload['language'] ?? ''));

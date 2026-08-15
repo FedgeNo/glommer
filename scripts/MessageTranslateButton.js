@@ -20,6 +20,17 @@ export class MessageTranslateButton {
     static TRANSLATE = '🌐';
     static SHOW_ORIGINAL = '↩️';
 
+    /**
+     * What each translated message said before, so pressing the button again
+     * can put it back.
+     *
+     * Held here rather than on the element: nothing renders it, nothing reads
+     * it but this, and a message's own words parked in an attribute are one
+     * copy of them nobody expects to find there. Weak, so a message scrolled
+     * out of a conversation and dropped takes its original with it.
+     */
+    static #originals = new WeakMap();
+
     static init() {
         document.addEventListener('click', async (event) => {
             const button = event.target.closest('.MessageTranslateButton');
@@ -38,7 +49,7 @@ export class MessageTranslateButton {
 
             if (!body) return;
 
-            if (body.dataset.originalText !== undefined) {
+            if (MessageTranslateButton.#originals.has(body)) {
                 MessageTranslateButton.#restore(button, body);
 
                 return;
@@ -82,15 +93,15 @@ export class MessageTranslateButton {
 
         if (!result) return;
 
-        body.dataset.originalText = original;
+        MessageTranslateButton.#originals.set(body, original);
         body.textContent = String(result.body);
         body.classList.add('MachineTranslation');
         ToggleButton.select(button, MessageTranslateButton.SHOW_ORIGINAL);
     }
 
     static #restore(button, body) {
-        body.textContent = body.dataset.originalText;
-        delete body.dataset.originalText;
+        body.textContent = MessageTranslateButton.#originals.get(body);
+        MessageTranslateButton.#originals.delete(body);
         body.classList.remove('MachineTranslation');
         ToggleButton.select(button, MessageTranslateButton.TRANSLATE);
     }

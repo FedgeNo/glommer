@@ -55,6 +55,62 @@ function current_url(): string
 }
 
 /**
+ * Everything a subprocess says, from both of its pipes at once.
+ *
+ * Both together, because reading one to EOF first can deadlock: the far side
+ * blocks writing a full stderr buffer while this side blocks reading stdout,
+ * and neither moves until something kills the command. A Python traceback and
+ * a page of library warnings is all it takes to fill a pipe.
+ *
+ * $limit caps what is kept from stdout, in bytes - the far side may go on
+ * talking, and this goes on draining it so the process can finish, but nothing
+ * past the cap is held. It counts bytes rather than characters, so a caller
+ * that cares should expect the tail to need repairing.
+ *
+ * @param array<int, resource> $pipes stdout at 1, stderr at 2
+ * @return array{0: string, 1: string} what each said
+ */
+function read_both_pipes(array $pipes, ?int $limit = null): array
+{
+    $said = [1 => '', 2 => ''];
+    $open = [];
+
+    foreach ([1, 2] as $which) {
+        if (isset($pipes[$which]) && is_resource($pipes[$which])) {
+            stream_set_blocking($pipes[$which], false);
+            $open[$which] = $pipes[$which];
+        }
+    }
+
+    while ($open !== []) {
+        $read = array_values($open);
+        $write = null;
+        $except = null;
+
+        if (@stream_select($read, $write, $except, null) === false) {
+            break;
+        }
+
+        foreach ($read as $stream) {
+            $which = (int) array_search($stream, $open, true);
+            $chunk = fread($stream, 65536);
+
+            if ($chunk !== false && $chunk !== '') {
+                $room = $which === 1 && $limit !== null ? max(0, $limit - strlen($said[1])) : null;
+                $said[$which] .= $room === null ? $chunk : substr($chunk, 0, $room);
+            }
+
+            if (feof($stream)) {
+                fclose($stream);
+                unset($open[$which]);
+            }
+        }
+    }
+
+    return [$said[1], $said[2]];
+}
+
+/**
  * A topic's name as an address segment: lowercased, with every run of anything
  * that is not a letter or a number becoming one hyphen.
  *

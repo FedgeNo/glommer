@@ -145,6 +145,23 @@ class ItemLoaderTest extends TestCase
         $this -> assertSame('ul', $this -> elementFor($filled) -> tagName);
     }
 
+    /**
+     * A list stacked above other sections has to end somewhere: one that grew
+     * on scroll would push everything below it off the page for good.
+     */
+    public function testAListToldNotToPageAdvertisesNoScroll(): void
+    {
+        $feed = new class(['userId' => 7, 'scrolls' => false]) extends ProfileFeedList {
+            protected function rows(): array
+            {
+                return ItemLoaderTest::fullPage();
+            }
+        };
+
+        $this -> assertTrue($feed -> hasMore, 'there is a further page; it is just not fetched by scrolling');
+        $this -> assertFalse($this -> elementFor($feed) -> hasAttribute('data-infinite-scroll'));
+    }
+
     public function testASearchFeedLeavesItsPagingToTheClient(): void
     {
         // The next page depends on what's currently typed, so Search.js owns it;

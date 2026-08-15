@@ -49,6 +49,7 @@ export class InfiniteScroller {
 
     #scrollTimer;
     #onScroll;
+    #onResize;
 
     constructor(list, overrides) {
         this.#list = list;
@@ -113,11 +114,18 @@ export class InfiniteScroller {
             this.#scrollTimer = setTimeout(() => this.#handleScroll(), InfiniteScroller.#SETTLE_MS);
         };
 
+        this.#onResize = () => this.#fill();
+
         window.addEventListener('scroll', this.#onScroll, { passive: true });
+        window.addEventListener('resize', this.#onResize, { passive: true });
+
+        this.#fill();
     }
 
     setActive(active) {
         this.#active = active;
+
+        if (active) this.#fill();
     }
 
     destroy() {
@@ -128,6 +136,11 @@ export class InfiniteScroller {
             window.removeEventListener('scroll', this.#onScroll);
             this.#onScroll = null;
         }
+
+        if (this.#onResize) {
+            window.removeEventListener('resize', this.#onResize);
+            this.#onResize = null;
+        }
     }
 
     #nearEdge() {
@@ -135,10 +148,40 @@ export class InfiniteScroller {
         return window.innerHeight + window.scrollY >= document.body.scrollHeight - InfiniteScroller.#THRESHOLD;
     }
 
+    #scrollable() {
+        return document.body.scrollHeight > window.innerHeight;
+    }
+
+    /**
+     * Keeps asking for pages until the page is long enough to scroll, because
+     * a page that fits the window never fires a scroll event: the reader is
+     * left with one page and no way to ask for the next.
+     *
+     * The stop is a page that made the document no taller, not a try count. A
+     * page that added no height will not add any next time, so nothing spins;
+     * a count would still spend its whole budget on every short list.
+     */
+    async #fill() {
+        while (this.#active && !this.#scrollable()) {
+            const height = document.body.scrollHeight;
+
+            await this.#load();
+
+            if (document.body.scrollHeight <= height) return;
+        }
+    }
+
     async #handleScroll() {
         if (this.#loading) return;
         if (!this.#list || !this.#active) return;
         if (!this.#nearEdge()) return;
+
+        await this.#load();
+    }
+
+    async #load() {
+        if (this.#loading) return;
+        if (!this.#list || !this.#active) return;
 
         this.#loading = true;
 

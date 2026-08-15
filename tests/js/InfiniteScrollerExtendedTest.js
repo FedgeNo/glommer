@@ -48,8 +48,8 @@ export default {
             list.appendWithSpace(post_element());
             document.body.appendWithSpace(list);
 
-            const scroller = new InfiniteScroller(list);
             const requests = capture_requests();
+            const scroller = new InfiniteScroller(list);
 
             window.dispatchEvent(new window.Event('scroll'));
 
@@ -66,6 +66,28 @@ export default {
             TestCase.assertNotNull(sent, 'the profile feed never sent a request');
             TestCase.assertEquals(7, Number(sent.userId), 'the profile being paged was left out of the request');
             TestCase.assertEquals(2, sent.offset, 'the offset should be the number of posts already shown');
+        },
+        // A list that does not fill the window never gets a scroll event, so
+        // without this it would sit at one page however much more there is.
+        async 'a list too short to scroll asks for the next page unprompted'() {
+            const list = document.createElement('ul');
+            list.dataset.infiniteScroll = JSON.stringify({
+                endpoint: '/api/feed',
+                itemType: 'Post',
+                feedType: 'short',
+            });
+            document.body.appendWithSpace(list);
+
+            const requests = capture_requests();
+            const scroller = new InfiniteScroller(list);
+
+            await new Promise((resolve) => setTimeout(resolve, 50));
+
+            requests.restore();
+            scroller.destroy();
+            list.remove();
+
+            TestCase.assertNotNull(requests.forFeedType('short'), 'the short list never asked for more');
         },
     }
 };

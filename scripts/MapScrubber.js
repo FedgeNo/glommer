@@ -1,3 +1,4 @@
+import { DateFormat } from '/scripts/DateFormat.js';
 import { parse_server_date } from '/scripts/utils.js';
 import { Strings } from '/scripts/Strings.js';
 
@@ -180,12 +181,14 @@ export class MapScrubber {
         this.#onChange(visible.map((entry) => entry.post));
     }
 
+    /**
+     * Through DateFormat rather than toLocaleDateString(): that renders in
+     * the browser's own language from the browser's own tables, and this
+     * label sits on a page whose every other date is the site's locale
+     * reading the locale file.
+     */
     static #formatDate(time) {
-        return new Date(time).toLocaleDateString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
+        return DateFormat.short(new Date(time));
     }
 
 }

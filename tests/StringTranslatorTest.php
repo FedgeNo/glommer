@@ -330,6 +330,10 @@ class StringTranslatorTest extends TestCase
         $this -> assertTrue(StringTranslator::isInvariant('https://example.social/users/you'));
         $this -> assertFalse(StringTranslator::isInvariant('Save Draft'));
         $this -> assertFalse(StringTranslator::isInvariant('e.g. a name'));
+        $this -> assertFalse(
+            StringTranslator::isInvariant('See https://example.social for help'),
+            'a sentence carrying a link still has words around it to translate'
+        );
     }
 
     /**

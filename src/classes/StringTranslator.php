@@ -294,7 +294,9 @@ class StringTranslator
     {
         $english = trim($english);
 
-        if (str_contains($english, '://')) {
+        // The whole string, not a string with one in it: a sentence that
+        // carries a link still has words around it to translate.
+        if (preg_match('#^\S+://\S+$#', $english) === 1) {
             return true;
         }
 

@@ -1,7 +1,9 @@
 import { Api } from '/scripts/Api.js';
 import { Strings } from '/scripts/Strings.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { RelativeTime } from '/scripts/RelativeTime.js';
 import { Working } from '/scripts/Working.js';
+import { parse_server_date } from '/scripts/utils.js';
 
 /**
  * Client twin of Poll.php - the same DOM from the same payload, class for
@@ -193,7 +195,7 @@ export class Poll {
         const words = Strings.for('PollDeadline', { closes: { before: 'Closes ', after: '' } });
 
         const remaining = document.createElement('time');
-        remaining.dateTime = new Date(endsAt).toISOString();
+        remaining.dateTime = parse_server_date(endsAt).toISOString();
         remaining.textContent = Poll.remaining(endsAt);
 
         into.append(words.closes.before || '', remaining, words.closes.after || '');
@@ -201,7 +203,11 @@ export class Poll {
 
     /** Mirrors PollDeadline::remaining() - the largest unit that still says something useful. */
     static remaining(endsAt) {
-        const seconds = Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
+        // The house parser and the corrected clock, the same pair every
+        // timestamp on the page counts by: a bare "date time" string read by
+        // new Date() is local time in some browsers, and the machine in front
+        // of the reader is not promised to be set right.
+        const seconds = Math.max(0, Math.floor((parse_server_date(endsAt).getTime() - RelativeTime.now()) / 1000));
         const words = Strings.for('PollDeadline', {
             days: { one: 'in {count} day', other: 'in {count} days' },
             hours: { one: 'in {count} hour', other: 'in {count} hours' },

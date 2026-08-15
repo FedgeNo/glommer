@@ -120,6 +120,17 @@ export class RelativeTime {
         RelativeTime.#running = false;
     }
 
+    /**
+     * The server's clock, near enough: local time plus the offset measured at
+     * page load. Public so everything that counts down or back from now - a
+     * poll's deadline as much as a post's age - counts from the same clock
+     * the timestamps were written by, instead of trusting the machine in
+     * front of the reader to be set correctly.
+     */
+    static now() {
+        return RelativeTime.#correctedNow();
+    }
+
     static #correctedNow() {
         return Date.now() + RelativeTime.#serverTimeOffset;
     }

@@ -32,7 +32,27 @@ class LanguageName
 
     public static function of(string $locale): string
     {
-        return self::NAMES[$locale] ?? $locale;
+        return self::NAMES[$locale] ?? self::endonym($locale) ?? $locale;
+    }
+
+    /**
+     * What ICU says this language calls itself, for a language the list above
+     * has not met - so adding a locale file lists it by its name rather than
+     * by its code until somebody writes it in.
+     *
+     * Title-cased because this is a list entry: French writes "français" in a
+     * sentence and "Français" at the head of a line, and every name in the
+     * list above leads with a capital.
+     */
+    private static function endonym(string $locale): ?string
+    {
+        $named = \Locale::getDisplayLanguage($locale, $locale);
+
+        if (!is_string($named) || $named === '' || $named === $locale) {
+            return null;
+        }
+
+        return mb_ucfirst($named);
     }
 
     /**

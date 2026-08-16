@@ -516,19 +516,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Verschlüsselt",
+            "label": "Verschlüsselt",
             "explanation": "Nachrichten in dieser Unterhaltung sind Ende-zu-Ende-verschlüsselt: Sie werden mit deiner Passphrase entsperrt und in euren Browsern gelesen, und was dieser Server speichert, ist Chiffretext. Vergleiche den Sicherheitscode am Ende des Threads mit der anderen Person, um sicherzugehen, dass niemand zwischen euch steht. Nachrichten, die vor dem Aktivieren der Verschlüsselung gesendet wurden, bleiben lesbar wie zuvor."
         },
         "awaiting-theirs": {
-            "label": "🔓 Nicht verschlüsselt",
+            "label": "Nicht verschlüsselt",
             "explanation": "Nachrichten hier werden Ende-zu-Ende-verschlüsselt, sobald {handle} verschlüsselte Nachrichten in den Einstellungen aktiviert."
         },
         "awaiting-yours": {
-            "label": "🔓 Nicht verschlüsselt",
+            "label": "Nicht verschlüsselt",
             "explanation": "Nachrichten hier sind nicht Ende-zu-Ende-verschlüsselt. Aktiviere verschlüsselte Nachrichten in den Einstellungen, um diese Unterhaltung zu sichern."
         },
         "federated": {
-            "label": "🔓 Nicht verschlüsselt",
+            "label": "Nicht verschlüsselt",
             "explanation": "{handle} ist auf einem anderen Server. Nachrichten in dieser Unterhaltung werden dort ebenso gespeichert wie hier, und die dortige Administration kann sie lesen - das Protokoll zwischen Servern hat keine Möglichkeit, sie zu verschlüsseln. Behalte Sensibles für Unterhaltungen auf dieser Seite."
         }
     },

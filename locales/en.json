@@ -519,19 +519,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Encrypted",
+            "label": "Encrypted",
             "explanation": "Messages in this conversation are end-to-end encrypted: they are unlocked with your passphrase and read in your browsers, and what this server stores is ciphertext. Check the safety code at the bottom of the thread with the other person to be sure nobody is between you. Messages sent before encryption was turned on stay readable as they were."
         },
         "awaiting-theirs": {
-            "label": "🔓 Not encrypted",
+            "label": "Not encrypted",
             "explanation": "Messages here will be end-to-end encrypted once {handle} turns on encrypted messages in their settings."
         },
         "awaiting-yours": {
-            "label": "🔓 Not encrypted",
+            "label": "Not encrypted",
             "explanation": "Messages here are not end-to-end encrypted. Turn on encrypted messages in Settings to secure this conversation."
         },
         "federated": {
-            "label": "🔓 Not encrypted",
+            "label": "Not encrypted",
             "explanation": "{handle} is on another server. Messages in this conversation are stored on that server as well as this one, and its administrator can read them - the protocol between servers has no way to encrypt them. Keep anything sensitive to conversations on this site."
         }
     },

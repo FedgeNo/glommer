@@ -514,19 +514,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Cifrato",
+            "label": "Cifrato",
             "explanation": "I messaggi in questa conversazione sono cifrati end-to-end: vengono sbloccati con la tua passphrase e letti nei vostri browser, e ciò che questo server memorizza è testo cifrato. Controlla il codice di sicurezza in fondo alla conversazione con l'altra persona per avere la certezza che non ci sia nessuno in mezzo. I messaggi inviati prima che la cifratura fosse attivata restano leggibili come erano."
         },
         "awaiting-theirs": {
-            "label": "🔓 Non cifrato",
+            "label": "Non cifrato",
             "explanation": "I messaggi qui saranno cifrati end-to-end non appena {handle} attiverà i messaggi cifrati nelle proprie impostazioni."
         },
         "awaiting-yours": {
-            "label": "🔓 Non cifrato",
+            "label": "Non cifrato",
             "explanation": "I messaggi qui non sono cifrati end-to-end. Attiva i messaggi cifrati nelle Impostazioni per proteggere questa conversazione."
         },
         "federated": {
-            "label": "🔓 Non cifrato",
+            "label": "Non cifrato",
             "explanation": "{handle} si trova su un altro server. I messaggi in questa conversazione sono memorizzati sia su quel server sia su questo, e il suo amministratore può leggerli - il protocollo tra i server non ha modo di cifrarli. Riserva ciò che è delicato alle conversazioni su questo sito."
         }
     },

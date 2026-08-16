@@ -514,19 +514,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Chiffré",
+            "label": "Chiffré",
             "explanation": "Les messages de cette conversation sont chiffrés de bout en bout : ils sont déverrouillés avec votre phrase secrète et lus dans vos navigateurs, et ce que ce serveur stocke est du texte chiffré. Vérifiez le code de sécurité en bas de la conversation avec l'autre personne pour être sûr que personne ne s'est interposé entre vous. Les messages envoyés avant l'activation du chiffrement restent lisibles comme avant."
         },
         "awaiting-theirs": {
-            "label": "🔓 Non chiffré",
+            "label": "Non chiffré",
             "explanation": "Les messages ici seront chiffrés de bout en bout une fois que {handle} aura activé les messages chiffrés dans ses paramètres."
         },
         "awaiting-yours": {
-            "label": "🔓 Non chiffré",
+            "label": "Non chiffré",
             "explanation": "Les messages ici ne sont pas chiffrés de bout en bout. Activez les messages chiffrés dans les paramètres pour sécuriser cette conversation."
         },
         "federated": {
-            "label": "🔓 Non chiffré",
+            "label": "Non chiffré",
             "explanation": "{handle} est sur un autre serveur. Les messages de cette conversation sont stockés sur ce serveur en plus de celui-ci, et son administrateur peut les lire - le protocole entre serveurs n'a aucun moyen de les chiffrer. Réservez tout ce qui est sensible aux conversations sur ce site."
         }
     },

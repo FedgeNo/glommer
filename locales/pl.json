@@ -516,19 +516,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Szyfrowane",
+            "label": "Szyfrowane",
             "explanation": "Wiadomości w tej rozmowie są szyfrowane od końca do końca: są odblokowywane hasłem szyfrującym i odczytywane w waszych przeglądarkach, a to, co przechowuje ten serwer, to zaszyfrowany tekst. Sprawdźcie razem z drugą osobą kod bezpieczeństwa na dole wątku, aby mieć pewność, że nikt nie jest pomiędzy wami. Wiadomości wysłane przed włączeniem szyfrowania pozostają czytelne tak jak wcześniej."
         },
         "awaiting-theirs": {
-            "label": "🔓 Nieszyfrowane",
+            "label": "Nieszyfrowane",
             "explanation": "Wiadomości tutaj będą szyfrowane od końca do końca, gdy {handle} włączy szyfrowane wiadomości w swoich ustawieniach."
         },
         "awaiting-yours": {
-            "label": "🔓 Nieszyfrowane",
+            "label": "Nieszyfrowane",
             "explanation": "Wiadomości tutaj nie są szyfrowane od końca do końca. Włącz szyfrowane wiadomości w Ustawieniach, aby zabezpieczyć tę rozmowę."
         },
         "federated": {
-            "label": "🔓 Nieszyfrowane",
+            "label": "Nieszyfrowane",
             "explanation": "{handle} jest na innym serwerze. Wiadomości w tej rozmowie są przechowywane zarówno na tamtym serwerze, jak i na tym, a jego administrator może je odczytać - protokół między serwerami nie ma sposobu na ich zaszyfrowanie. Wszystko, co wrażliwe, zachowuj na rozmowy w obrębie tej witryny."
         }
     },

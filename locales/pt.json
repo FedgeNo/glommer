@@ -514,19 +514,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Cifrada",
+            "label": "Cifrada",
             "explanation": "As mensagens nesta conversa são cifradas de ponta a ponta: são abertas com a tua frase-passe e lidas nos vossos navegadores, e o que este servidor guarda é texto cifrado. Verifica o código de segurança no fundo da conversa com a outra pessoa para teres a certeza de que ninguém está entre vocês. As mensagens enviadas antes de a cifra ser ativada continuam legíveis como estavam."
         },
         "awaiting-theirs": {
-            "label": "🔓 Não cifrada",
+            "label": "Não cifrada",
             "explanation": "As mensagens aqui ficarão cifradas de ponta a ponta assim que {handle} ativar as mensagens cifradas nas suas definições."
         },
         "awaiting-yours": {
-            "label": "🔓 Não cifrada",
+            "label": "Não cifrada",
             "explanation": "As mensagens aqui não são cifradas de ponta a ponta. Ativa as mensagens cifradas nas Definições para proteger esta conversa."
         },
         "federated": {
-            "label": "🔓 Não cifrada",
+            "label": "Não cifrada",
             "explanation": "{handle} está noutro servidor. As mensagens nesta conversa ficam guardadas nesse servidor além deste, e o respetivo administrador pode lê-las - o protocolo entre servidores não tem forma de as cifrar. Guarda o que for sensível para conversas dentro deste site."
         }
     },

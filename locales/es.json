@@ -514,19 +514,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Cifrado",
+            "label": "Cifrado",
             "explanation": "Los mensajes de esta conversación están cifrados de extremo a extremo: se desbloquean con tu frase de contraseña y se leen en el navegador de cada persona, y lo que este servidor almacena es texto cifrado. Comprueba el código de seguridad al final del hilo con la otra persona para asegurarte de que no hay nadie interponiéndose entre los dos. Los mensajes enviados antes de activar el cifrado siguen siendo legibles como antes."
         },
         "awaiting-theirs": {
-            "label": "🔓 No cifrado",
+            "label": "No cifrado",
             "explanation": "Los mensajes aquí se cifrarán de extremo a extremo en cuanto {handle} active los mensajes cifrados en sus ajustes."
         },
         "awaiting-yours": {
-            "label": "🔓 No cifrado",
+            "label": "No cifrado",
             "explanation": "Los mensajes aquí no están cifrados de extremo a extremo. Activa los mensajes cifrados en Ajustes para proteger esta conversación."
         },
         "federated": {
-            "label": "🔓 No cifrado",
+            "label": "No cifrado",
             "explanation": "{handle} está en otro servidor. Los mensajes de esta conversación se almacenan tanto en ese servidor como en este, y su administrador puede leerlos: el protocolo entre servidores no tiene forma de cifrarlos. Reserva lo sensible para conversaciones dentro de este sitio."
         }
     },

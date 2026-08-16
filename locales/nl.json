@@ -514,19 +514,19 @@
     },
     "MessagePrivacyButton": {
         "encrypted": {
-            "label": "🔒 Versleuteld",
+            "label": "Versleuteld",
             "explanation": "Berichten in dit gesprek zijn end-to-end versleuteld: ze worden ontgrendeld met je wachtwoordzin en gelezen in jullie browsers, en wat deze server opslaat is cijfertekst. Controleer de veiligheidscode onderaan de conversatie samen met de ander om zeker te weten dat niemand zich tussen jullie bevindt. Berichten die zijn verstuurd voordat versleuteling werd ingeschakeld, blijven leesbaar zoals ze waren."
         },
         "awaiting-theirs": {
-            "label": "🔓 Niet versleuteld",
+            "label": "Niet versleuteld",
             "explanation": "Berichten hier worden end-to-end versleuteld zodra {handle} versleutelde berichten inschakelt in hun instellingen."
         },
         "awaiting-yours": {
-            "label": "🔓 Niet versleuteld",
+            "label": "Niet versleuteld",
             "explanation": "Berichten hier zijn niet end-to-end versleuteld. Schakel versleutelde berichten in bij Instellingen om dit gesprek te beveiligen."
         },
         "federated": {
-            "label": "🔓 Niet versleuteld",
+            "label": "Niet versleuteld",
             "explanation": "{handle} zit op een andere server. Berichten in dit gesprek worden zowel op die server als op deze opgeslagen, en de beheerder daarvan kan ze lezen - het protocol tussen servers heeft geen manier om ze te versleutelen. Bewaar gevoelige zaken voor gesprekken op deze site."
         }
     },

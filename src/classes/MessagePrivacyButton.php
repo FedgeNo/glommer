@@ -14,6 +14,14 @@ declare(strict_types=1);
  */
 class MessagePrivacyButton extends ButtonButton
 {
+    /**
+     * The chip's own glyphs, here rather than in the locale strings: an emoji
+     * is not language, and a translator - human or model - has no business
+     * receiving one. The same home MessageTranslateButton gives its globe.
+     */
+    public const LOCKED = '🔒';
+    public const UNLOCKED = '🔓';
+
     public function __construct(private readonly string $state, private readonly string $handle)
     {
         parent::__construct();
@@ -23,15 +31,18 @@ class MessagePrivacyButton extends ButtonButton
     {
         $words = Strings::for(self::class);
         // An unrecognised state still renders something rather than fataling
-        // the composer - the same fallback LoginPrompt uses.
-        $entry = $words[$this -> state] ?? reset($words);
+        // the composer - the same fallback LoginPrompt uses. Resolved to a
+        // key first, so the glyph and the words always tell the same story.
+        $state = isset($words[$this -> state]) ? $this -> state : (string) array_key_first($words);
+        $entry = $words[$state] ?? [];
 
         $this -> attributes['data-privacy-explanation'] = str_replace(
             '{handle}',
             $this -> handle,
             (string) ($entry['explanation'] ?? '')
         );
-        $this -> contents[] = (string) ($entry['label'] ?? '');
+        $this -> contents[] = ($state === 'encrypted' ? self::LOCKED : self::UNLOCKED)
+            . ' ' . (string) ($entry['label'] ?? '');
 
         return parent::toDOM();
     }

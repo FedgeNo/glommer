@@ -1075,6 +1075,13 @@
             "greyscale": "Skala szarości"
         }
     },
+    "PostTranslation": {
+        "unavailable": "Tłumaczenie nie jest skonfigurowane na tym serwerze.",
+        "nothing": "Nie ma tu nic do tłumaczenia.",
+        "unknownSource": "Nikt jeszcze nie ustalił, w jakim języku jest ten post, więc nie można go przetłumaczyć.",
+        "alreadyReadable": "Ten post jest już w tym języku.",
+        "unsupportedPair": "Ten serwer nie może jeszcze przetłumaczyć tego języka."
+    },
     "LanguagePrompt": {
         "question": "Czy chcesz przeglądać stronę w języku polskim?",
         "accept": "Tak",
@@ -1083,12 +1090,5 @@
     "LanguageSelector": {
         "label": "Język",
         "legend": "Język"
-    },
-    "PostTranslation": {
-        "unavailable": "Tłumaczenie nie jest skonfigurowane na tym serwerze.",
-        "nothing": "Nie ma tu nic do tłumaczenia.",
-        "unknownSource": "Nikt jeszcze nie ustalił, w jakim języku jest ten post, więc nie można go przetłumaczyć.",
-        "alreadyReadable": "Ten post jest już w tym języku.",
-        "unsupportedPair": "Ten serwer nie może jeszcze przetłumaczyć tego języka."
     }
 }

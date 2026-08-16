@@ -188,6 +188,7 @@
         "fromAddressLabel": "Адрес отправителя",
         "fromAddressPlaceholder": "Пока адрес не задан, почта не отправляется",
         "fromNameLabel": "Имя отправителя",
+        "hostLabel": "Хост SMTP",
         "portLabel": "Порт SMTP",
         "usernameLabel": "Имя пользователя SMTP",
         "passwordLabel": "SMTP пароль",
@@ -202,8 +203,7 @@
             "none": "Нет"
         },
         "explainer": "Оставьте хост SMTP пустым, чтобы отправлять через mail() PHP (не рекомендуется — см. раздел о доставляемости в README). Пока не задан адрес отправителя, письма не отправляются.",
-        "save": "Сохранить",
-        "hostLabel": "Хост SMTP"
+        "save": "Сохранить"
     },
     "MapSettingsForm": {
         "legend": "Плитки карты",
@@ -797,6 +797,7 @@
         "signup": "Регистрация",
         "tags": "Теги",
         "tagsDescription": "Актуальные и популярные хэштеги на {siteTitle}.",
+        "tagsTagDescription": "Посты с тегом {tag} на {siteTitle}.",
         "terms": "Условия предоставления услуг",
         "topics": "Темы",
         "topicsDescription": "О чём сейчас говорят на {siteTitle}",
@@ -807,8 +808,7 @@
         "userFriendsDescription": "Друзья {name} на {siteTitle}",
         "userSettings": "Настройки пользователя",
         "users": "Пользователи",
-        "verifyEmail": "Подтверждение почты",
-        "tagsTagDescription": "Посты с тегом {tag} на {siteTitle}."
+        "verifyEmail": "Подтверждение почты"
     },
     "PostLikeButton": {
         "like": "Нравится",

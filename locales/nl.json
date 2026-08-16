@@ -1052,6 +1052,13 @@
             "greyscale": "Grijstinten"
         }
     },
+    "PostTranslation": {
+        "unavailable": "Vertaling is niet ingesteld op deze server.",
+        "nothing": "Er valt hier niets te vertalen.",
+        "unknownSource": "Niemand heeft nog uitgezocht in welke taal deze post is, dus hij kan niet worden vertaald.",
+        "alreadyReadable": "Deze post is al in die taal.",
+        "unsupportedPair": "Deze server kan die taal nog niet vertalen."
+    },
     "LanguagePrompt": {
         "question": "Wil je de site in het Nederlands bekijken?",
         "accept": "Ja",
@@ -1060,12 +1067,5 @@
     "LanguageSelector": {
         "label": "Taal",
         "legend": "Taal"
-    },
-    "PostTranslation": {
-        "unavailable": "Vertaling is niet ingesteld op deze server.",
-        "nothing": "Er valt hier niets te vertalen.",
-        "unknownSource": "Niemand heeft nog uitgezocht in welke taal deze post is, dus hij kan niet worden vertaald.",
-        "alreadyReadable": "Deze post is al in die taal.",
-        "unsupportedPair": "Deze server kan die taal nog niet vertalen."
     }
 }

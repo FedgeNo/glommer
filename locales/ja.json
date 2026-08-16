@@ -1050,6 +1050,13 @@
             "greyscale": "グレースケール"
         }
     },
+    "PostTranslation": {
+        "unavailable": "このサーバーでは翻訳が設定されていません。",
+        "nothing": "ここには翻訳するものがありません。",
+        "unknownSource": "この投稿が何語で書かれているかまだ分かっていないため、翻訳できません。",
+        "alreadyReadable": "この投稿は既にその言語です。",
+        "unsupportedPair": "このサーバーはまだその言語を翻訳できません。"
+    },
     "LanguagePrompt": {
         "question": "このサイトを日本語で表示しますか？",
         "accept": "はい",
@@ -1058,12 +1065,5 @@
     "LanguageSelector": {
         "label": "言語",
         "legend": "言語"
-    },
-    "PostTranslation": {
-        "unavailable": "このサーバーでは翻訳が設定されていません。",
-        "nothing": "ここには翻訳するものがありません。",
-        "unknownSource": "この投稿が何語で書かれているかまだ分かっていないため、翻訳できません。",
-        "alreadyReadable": "この投稿は既にその言語です。",
-        "unsupportedPair": "このサーバーはまだその言語を翻訳できません。"
     }
 }

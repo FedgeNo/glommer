@@ -1056,6 +1056,13 @@
             "greyscale": "Graustufen"
         }
     },
+    "PostTranslation": {
+        "unavailable": "Die Übersetzung ist auf diesem Server nicht eingerichtet.",
+        "nothing": "Hier gibt es nichts zu übersetzen.",
+        "unknownSource": "Es hat noch niemand herausgefunden, in welcher Sprache dieser Beitrag verfasst ist, daher kann er nicht übersetzt werden.",
+        "alreadyReadable": "Dieser Beitrag ist bereits in dieser Sprache.",
+        "unsupportedPair": "Dieser Server kann diese Sprache noch nicht übersetzen."
+    },
     "LanguagePrompt": {
         "question": "Möchtest du die Website auf Deutsch ansehen?",
         "accept": "Ja",
@@ -1064,12 +1071,5 @@
     "LanguageSelector": {
         "label": "Sprache",
         "legend": "Sprache"
-    },
-    "PostTranslation": {
-        "unavailable": "Die Übersetzung ist auf diesem Server nicht eingerichtet.",
-        "nothing": "Hier gibt es nichts zu übersetzen.",
-        "unknownSource": "Es hat noch niemand herausgefunden, in welcher Sprache dieser Beitrag verfasst ist, daher kann er nicht übersetzt werden.",
-        "alreadyReadable": "Dieser Beitrag ist bereits in dieser Sprache.",
-        "unsupportedPair": "Dieser Server kann diese Sprache noch nicht übersetzen."
     }
 }

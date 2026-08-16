@@ -1052,6 +1052,13 @@
             "greyscale": "Niveaux de gris"
         }
     },
+    "PostTranslation": {
+        "unavailable": "La traduction n'est pas configurée sur ce serveur.",
+        "nothing": "Il n'y a rien à traduire ici.",
+        "unknownSource": "Personne n'a encore déterminé la langue de cette publication, elle ne peut donc pas être traduite.",
+        "alreadyReadable": "Cette publication est déjà dans cette langue.",
+        "unsupportedPair": "Ce serveur ne peut pas encore traduire cette langue."
+    },
     "LanguagePrompt": {
         "question": "Souhaitez-vous consulter le site en français ?",
         "accept": "Oui",
@@ -1060,12 +1067,5 @@
     "LanguageSelector": {
         "label": "Langue",
         "legend": "Langue"
-    },
-    "PostTranslation": {
-        "unavailable": "La traduction n'est pas configurée sur ce serveur.",
-        "nothing": "Il n'y a rien à traduire ici.",
-        "unknownSource": "Personne n'a encore déterminé la langue de cette publication, elle ne peut donc pas être traduite.",
-        "alreadyReadable": "Cette publication est déjà dans cette langue.",
-        "unsupportedPair": "Ce serveur ne peut pas encore traduire cette langue."
     }
 }

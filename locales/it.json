@@ -1052,6 +1052,13 @@
             "greyscale": "Scala di grigi"
         }
     },
+    "PostTranslation": {
+        "unavailable": "La traduzione non è impostata su questo server.",
+        "nothing": "Qui non c'è nulla da tradurre.",
+        "unknownSource": "Nessuno ha ancora capito in che lingua sia questo post, quindi non può essere tradotto.",
+        "alreadyReadable": "Questo post è già in quella lingua.",
+        "unsupportedPair": "Questo server non può ancora tradurre quella lingua."
+    },
     "LanguagePrompt": {
         "question": "Vuoi vedere il sito in italiano?",
         "accept": "Sì",
@@ -1060,12 +1067,5 @@
     "LanguageSelector": {
         "label": "Lingua",
         "legend": "Lingua"
-    },
-    "PostTranslation": {
-        "unavailable": "La traduzione non è impostata su questo server.",
-        "nothing": "Qui non c'è nulla da tradurre.",
-        "unknownSource": "Nessuno ha ancora capito in che lingua sia questo post, quindi non può essere tradotto.",
-        "alreadyReadable": "Questo post è già in quella lingua.",
-        "unsupportedPair": "Questo server non può ancora tradurre quella lingua."
     }
 }

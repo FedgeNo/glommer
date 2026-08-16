@@ -17,6 +17,12 @@ if (!Auth::check()) {
     exit;
 }
 
+// Being signed in is the whole check, deliberately: any member may load any
+// remote item by id. Glommer has no visibility model to scope it by - every
+// post is public, and remote content is members-only as a whole rather than
+// per-relationship - and a per-user rate limit would have to sit above what
+// scrolling the relay feed legitimately loads (dozens of media in seconds),
+// which is no limit at all. See DECISIONS.md.
 $item_id = (int) ($_GET['item'] ?? 0);
 
 if ($item_id <= 0) {

@@ -1,0 +1,1167 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "zero": "لا أصوات",
+            "one": "صوت واحد",
+            "two": "صوتان",
+            "few": "{count} أصوات",
+            "many": "{count} صوتًا",
+            "other": "{count} صوت"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "سجّل الدخول",
+            "after": " للرد."
+        },
+        "post": {
+            "before": "",
+            "link": "سجّل الدخول",
+            "after": " للنشر."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "الموقع",
+        "siteURLLabel": "رابط الموقع",
+        "siteTitleLabel": "عنوان الموقع",
+        "mailFromAddressLabel": "عنوان المرسل للبريد",
+        "serverNameConfirmedLabel": "لقد ضبطت \"ServerName {host}\" و\"UseCanonicalName On\" في إعدادات خادم الويب لديّ (يُتحقق من هذا فقط إذا تعذّر إكمال الاختبار الحي التلقائي - راجع قسم HTTPS في README.md)",
+        "databaseLegend": "قاعدة البيانات",
+        "databaseHostLabel": "مضيف قاعدة البيانات",
+        "databasePortLabel": "منفذ قاعدة البيانات",
+        "databaseNameLabel": "اسم قاعدة البيانات",
+        "databaseAdminUsernameLabel": "اسم مستخدم مسؤول قاعدة البيانات",
+        "databaseAdminPasswordLabel": "كلمة مرور مسؤول قاعدة البيانات",
+        "webSocketTLSLegend": "TLS لاتصال WebSocket (اختياري)",
+        "certificatePathLabel": "مسار الشهادة",
+        "certificatePathPlaceholder": "اتركه فارغًا للإنشاء تلقائيًا عبر mkcert",
+        "keyPathLabel": "مسار المفتاح",
+        "keyPathPlaceholder": "اتركه فارغًا للإنشاء تلقائيًا عبر mkcert",
+        "botProtectionLegend": "الحماية من الروبوتات (اختياري)",
+        "turnstileSiteKeyLabel": "مفتاح موقع Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "اتركه فارغًا للتخطي",
+        "turnstileSecretKeyLabel": "المفتاح السري لـ Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "اتركه فارغًا للتخطي",
+        "submit": "إعداد"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "عبارة المرور الحالية",
+        "newPassphraseLabel": "عبارة المرور الجديدة",
+        "confirmNewPassphraseLabel": "تأكيد عبارة المرور الجديدة",
+        "accountPasswordLabel": "كلمة مرور الحساب",
+        "submit": "تغيير عبارة المرور"
+    },
+    "PasswordResetForm": {
+        "legend": "اختر كلمة مرور جديدة",
+        "newPasswordLabel": "كلمة المرور الجديدة",
+        "newPasswordPlaceholder": "8 أحرف على الأقل",
+        "confirmPasswordLabel": "تأكيد كلمة المرور الجديدة",
+        "submit": "إعادة تعيين كلمة المرور"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "إعادة تعيين كلمة المرور",
+        "emailLabel": "البريد الإلكتروني",
+        "submit": "إرسال رابط إعادة التعيين"
+    },
+    "EmailRevertForm": {
+        "submit": "التراجع عن تغيير البريد الإلكتروني"
+    },
+    "EmailVerifyForm": {
+        "submit": "تأكيد عنوان البريد الإلكتروني"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "إعادة تفعيلها"
+    },
+    "EmailDigestSetting": {
+        "label": "أرسل لي بريدًا إلكترونيًا بما فاتني عندما أغيب لفترة"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "جهاز غير معروف",
+        "browserOnOS": "{browser} على {os}",
+        "thisDevice": " (هذا الجهاز)",
+        "lastUsed": {
+            "before": "آخر استخدام ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "أنهِ كل جلسة نشطة وانسَ كل جهاز محفوظ. سيتم تسجيل خروجك من جميع المتصفحات، بما في ذلك هذا المتصفح."
+    },
+    "LogoutEverywhereButton": {
+        "label": "تسجيل الخروج من كل مكان"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "التحقق عبر Google للحذف"
+    },
+    "GoogleSignInButton": {
+        "label": "متابعة باستخدام Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "تعديل الملف الشخصي"
+    },
+    "PushNotificationSetting": {
+        "explanation": "احصل على إشعارات على هذا الجهاز حتى عندما لا يكون الموقع مفتوحًا. هذا خيار خاص بكل متصفح - فعّله في كل مكان تريد أن تصلك فيه الإشعارات.",
+        "label": {
+            "off": "تفعيل على هذا الجهاز",
+            "on": "إيقاف على هذا الجهاز"
+        },
+        "unsupported": "الإشعارات الفورية غير مدعومة في هذا المتصفح"
+    },
+    "LoginForm": {
+        "legend": "تسجيل الدخول",
+        "identifier": "اسم المستخدم أو البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "rememberMe": "تذكرني",
+        "submit": "تسجيل الدخول"
+    },
+    "SignupForm": {
+        "legend": "إنشاء حساب",
+        "usernameLabel": "اسم المستخدم",
+        "usernamePlaceholder": "أحرف إنجليزية صغيرة وأرقام و_",
+        "emailLabel": "البريد الإلكتروني",
+        "emailPlaceholder": "عنوان بريد إلكتروني صالح",
+        "displayName": "الاسم المعروض (اختياري)",
+        "bioLabel": "نبذة تعريفية (اختياري)",
+        "bioPlaceholder": "نبذة قصيرة - #الوسوم و@الإشارات والروابط تصبح قابلة للنقر",
+        "passwordLabel": "كلمة المرور",
+        "passwordPlaceholder": "كلمة المرور: 8 أحرف على الأقل",
+        "rememberMe": "تذكرني",
+        "submit": "إنشاء حساب"
+    },
+    "PasswordChangeForm": {
+        "legend": "تغيير كلمة المرور",
+        "currentPassword": "كلمة المرور الحالية",
+        "newPasswordLabel": "كلمة المرور الجديدة",
+        "newPasswordPlaceholder": "8 أحرف على الأقل",
+        "confirmPassword": "تأكيد كلمة المرور الجديدة",
+        "submit": "تغيير كلمة المرور"
+    },
+    "EmailChangeForm": {
+        "legend": "تغيير عنوان بريدك الإلكتروني",
+        "newEmail": "عنوان البريد الإلكتروني الجديد",
+        "currentPassword": "كلمة المرور الحالية",
+        "notice": "ستحتاج إلى تأكيد العنوان الجديد قبل أن تتمكن من الاستمرار في استخدام الموقع.",
+        "submit": "تغيير البريد الإلكتروني"
+    },
+    "AccountDeleteForm": {
+        "legend": "حذف حسابك",
+        "warning": "هذا سيحذف حسابك ومنشوراتك ورسائلك نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+        "currentPassword": "كلمة المرور الحالية",
+        "submit": "حذف الحساب"
+    },
+    "AccountMigrationForm": {
+        "legend": "الانتقال إلى خادم آخر",
+        "movedNotice": "انتقل هذا الحساب إلى {destination}. طُلب من متابعيك متابعتك هناك.",
+        "explanation": "يُطلب من متابعيك متابعتك على الحساب الجديد. تبقى منشوراتك هنا - فعناوين الكائنات ملك للخادم الذي أنشأها، ولذلك لا يمكن نقلها معك.",
+        "addressNotice": "يجب أن يُدرج الحساب الذي تنتقل إليه هذا الحساب أولًا ضمن \"معروف أيضًا باسم\". عنوانك هنا هو {address}.",
+        "movedToLabel": "الانتقال إلى",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "معروف أيضًا باسم",
+        "aliasesExplanation": "حسابات في أماكن أخرى هي أنت أيضًا. إدراج حساب هنا يسمح لذلك الحساب بالانتقال إلى هذا الحساب - فهذا هو الإذن، وليس الانتقال نفسه. عنوان واحد في كل سطر.",
+        "aliasesLabel": "حساباتك الأخرى",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "حفظ"
+    },
+    "TwoFactorForm": {
+        "legend": "أدخل رمز التحقق",
+        "explanation": "أرسلنا إليك رمز تحقق عبر البريد الإلكتروني. أدخله أدناه لإتمام تسجيل الدخول.",
+        "code": "رمز التحقق",
+        "submit": "تحقق"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "التحقق بخطوتين مُفعَّل",
+            "off": "التحقق بخطوتين غير مُفعَّل"
+        },
+        "explanation": {
+            "on": "عند تسجيل الدخول، سنرسل إليك رمز تحقق عبر البريد الإلكتروني يجب إدخاله لإتمام تسجيل الدخول.",
+            "off": "أضف خطوة ثانية عند تسجيل الدخول: سنرسل إليك رمز تحقق عبر البريد الإلكتروني يجب إدخاله، بحيث لا تكفي كلمة المرور وحدها للدخول."
+        },
+        "currentPassword": "كلمة المرور الحالية",
+        "submit": {
+            "on": "إيقاف التحقق بخطوتين",
+            "off": "تفعيل التحقق بخطوتين"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "يُرجى فتح بريدك الوارد والنقر على رابط التحقق الذي أرسلناه لتأكيد عنوان بريدك الإلكتروني. إذا لم تجده، تحقق من مجلد الرسائل غير المرغوب فيها."
+    },
+    "VerificationResendButton": {
+        "label": "إعادة إرسال بريد التحقق"
+    },
+    "MailSettingsForm": {
+        "legend": "البريد الصادر",
+        "fromAddressLabel": "عنوان المرسل",
+        "fromAddressPlaceholder": "لا يمكن إرسال أي بريد إلكتروني حتى يتم ضبط هذا",
+        "fromNameLabel": "اسم المرسل",
+        "hostLabel": "مضيف SMTP",
+        "portLabel": "منفذ SMTP",
+        "usernameLabel": "اسم مستخدم SMTP",
+        "passwordLabel": "كلمة مرور SMTP",
+        "passwordPlaceholder": {
+            "set": "تم تعيين كلمة المرور - اتركها فارغة للاحتفاظ بها",
+            "unset": "كلمة مرور SMTP"
+        },
+        "encryptionLabel": "التشفير",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS، وعادةً على المنفذ 587)",
+            "ssl": "SSL (تشفير TLS ضمني، وعادةً على المنفذ 465)",
+            "none": "بدون"
+        },
+        "explainer": "اترك مضيف SMTP فارغًا للإرسال عبر دالة mail() في PHP بدلًا من ذلك (غير مستحسن - راجع قسم قابلية التسليم في README). لا يمكن إرسال أي بريد إلكتروني إطلاقًا حتى يتم ضبط عنوان \"مرسل\".",
+        "save": "حفظ"
+    },
+    "MapSettingsForm": {
+        "legend": "بلاطات الخريطة",
+        "notice": "اترك الحقل فارغًا لاستخدام OpenStreetMap. لاستخدام مزوّد يتطلب مفتاحًا، الصق قالب الرابط الخاص به مع وضع {apiKey} حرفيًا في مكان المفتاح، ثم أضف المفتاح والإسناد أدناه.",
+        "urlLabel": "قالب رابط البلاطات",
+        "keyLabel": "مفتاح API",
+        "keyPlaceholder": "مفتاح API الخاص بمزوّد البلاطات",
+        "attributionLabel": "الإسناد",
+        "attributionPlaceholder": "© مساهمو OpenStreetMap",
+        "save": "حفظ"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "تسجيل الدخول عبر Google",
+        "clientIdLabel": "معرّف العميل",
+        "clientIdPlaceholder": "معرّف عميل Google OAuth",
+        "secretLabel": "سر العميل",
+        "secretPlaceholder": {
+            "set": "تم تعيين سر العميل - اتركه فارغًا للاحتفاظ به",
+            "unset": "سر عميل Google OAuth"
+        },
+        "explainer": "كلاهما مطلوب لظهور زر \"متابعة باستخدام Google\" عند إنشاء الحساب وتسجيل الدخول. في عميل Google Cloud OAuth الخاص بك، اضبط رابط إعادة التوجيه المعتمد على {url} - امسح معرّف العميل لإيقاف هذه الميزة.",
+        "save": "حفظ"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "مفتاح الموقع",
+        "turnstileSiteKeyPlaceholder": "مفتاح موقع Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "المفتاح السري",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "تم تعيين المفتاح السري - اتركه فارغًا للاحتفاظ به",
+            "unset": "المفتاح السري لـ Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "كلا المفتاحين مطلوبان لظهور اختبار التحقق (CAPTCHA) عند إنشاء الحساب وتسجيل الدخول. امسح مفتاح الموقع لإيقافه.",
+        "recaptchaLegend": "Google reCAPTCHA (استرداد قفل الحساب)",
+        "recaptchaSiteKeyLabel": "مفتاح الموقع",
+        "recaptchaSiteKeyPlaceholder": "مفتاح موقع Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "المفتاح السري",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "تم تعيين المفتاح السري - اتركه فارغًا للاحتفاظ به",
+            "unset": "المفتاح السري لـ Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "كلا المفتاحين مطلوبان. عند ضبطهما، يمكن للحساب الذي بلغ حد محاولات تسجيل الدخول العودة إلى الدخول بتجاوز هذا الاختبار بدلًا من انتظار انتهاء القفل؛ وعند عدم ضبطهما، يكون القفل انتظارًا إلزاميًا. استخدم reCAPTCHA v2 (\"لست روبوتًا\"). امسح مفتاح الموقع لإيقافه.",
+        "save": "حفظ"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "تستخدمه ميزات الذكاء الاصطناعي في الموقع (ملخصات المواضيع الرائجة وغيرها). اترك النموذج فارغًا لاستخدام Free Models Router، الذي يختاره OpenRouter عشوائيًا من بين النماذج المجانية المتاحة حاليًا ولا يمكن أن يترتب عليه أي تكلفة.",
+        "keyLabel": "مفتاح API",
+        "keyPlaceholder": {
+            "set": "تم تعيين مفتاح API - اتركه فارغًا للاحتفاظ به",
+            "unset": "مفتاح API لـ OpenRouter"
+        },
+        "clearKeyLabel": "إزالة مفتاح API المحفوظ (يوقف ميزات الذكاء الاصطناعي)",
+        "modelLabel": "النموذج",
+        "neverSpendLabel": "لا تسمح لهذا بإنفاق أي مال مطلقًا (مستحسن)",
+        "explainer": "عند تفعيل هذا الحاجز، يُحدَّد سعر كل طلب عند الصفر، بحيث يفشل الطلب تمامًا بدلًا من التحول إلى نموذج مدفوع عند عدم توفر مزوّد مجاني. أزل مفتاح API المحفوظ لإيقاف ميزات الذكاء الاصطناعي تمامًا.",
+        "save": "حفظ"
+    },
+    "AboutSettingsForm": {
+        "legend": "حول",
+        "description": "نص عادي - الأسطر الفارغة تفصل بين الفقرات. ستُستخدم الفقرة الأولى كوصف للموقع.",
+        "save": "حفظ"
+    },
+    "TermsSettingsForm": {
+        "legend": "شروط الخدمة",
+        "description": "نص عادي - الأسطر الفارغة تفصل بين الفقرات.",
+        "save": "حفظ"
+    },
+    "PrivacySettingsForm": {
+        "legend": "سياسة الخصوصية",
+        "description": "نص عادي - الأسطر الفارغة تفصل بين الفقرات.",
+        "save": "حفظ"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "ملخص البريد الإلكتروني",
+        "fieldLabel": "الفقرة الختامية",
+        "notice": "تُضاف بالقرب من نهاية كل ملخص، بعد قائمة ما فات العضو. نص عادي. اتركها فارغة للعودة إلى الصياغة المرفقة مع هذا البرنامج.",
+        "save": "حفظ"
+    },
+    "FaviconSettingsForm": {
+        "legend": "أيقونة الموقع",
+        "currentAlt": "الأيقونة الحالية",
+        "save": "رفع الأيقونة"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "صورة الصفحة الرئيسية",
+        "explainer": "تظهر في المواقع الأخرى عند مشاركة رابط لهذا الموقع - بيانات وصفية من نوع Open Graph فقط، ولا تظهر أبدًا داخل الصفحة نفسها. تُقصّ لتصبح بمقاس 1200×630. بدونها، لا تحمل معاينات الروابط أي صورة إطلاقًا.",
+        "currentAlt": "صورة الصفحة الرئيسية الحالية",
+        "save": "رفع الصورة"
+    },
+    "CarouselAutoplayButton": {
+        "name": "التشغيل التلقائي"
+    },
+    "CarouselNextButton": {
+        "name": "التالي"
+    },
+    "CarouselPrevButton": {
+        "name": "السابق"
+    },
+    "MediaFullscreenButton": {
+        "name": "ملء الشاشة"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "إزالة الملفات"
+    },
+    "NotificationDropdown": {
+        "showAll": "عرض الكل"
+    },
+    "HelpSearch": {
+        "placeholder": "ابحث في المساعدة…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "فهمت"
+    },
+    "StagedPostDiscardButton": {
+        "name": "تجاهل"
+    },
+    "StagedPostEditButton": {
+        "name": "تعديل"
+    },
+    "StagedPostPublishButton": {
+        "name": "نشر الآن"
+    },
+    "LogoutButton": {
+        "name": "تسجيل الخروج"
+    },
+    "AvatarUploadForm": {
+        "submit": "تحديث الصورة الرمزية"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "ابحث عن المستخدمين المحظورين…"
+    },
+    "BannedUserSection": {
+        "heading": "المستخدمون المحظورون"
+    },
+    "SentFriendRequestSection": {
+        "heading": "الطلبات المُرسَلة (بانتظار الرد)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "حظره {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "حجبه {name} ",
+            "after": ""
+        },
+        "deletedAccount": "حساب محذوف",
+        "reason": " - {reason}"
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "تعذّر الاتصال بخادم WebSocket على 127.0.0.1:{port}{tls} ({error}). شغّله أولًا: systemctl --user start glommer-websocket (راجع README.md لملف الوحدة). إذا اكتسب أو فقد للتو WS_TLS_CERT/WS_TLS_KEY، أعد تشغيله ليتوافق مع .env.",
+        "wsOverTLS": " عبر TLS",
+        "wsBadHandshake": "الخدمة على 127.0.0.1:{port} لم تُكمل مصافحة WebSocket صالحة - من المحتمل أن هناك شيئًا غير bin/websocket-server.php يستمع على هذا المنفذ.",
+        "wsNoPong": "قَبِل خادم WebSocket المصافحة لكنه لم يستجب لطلب ping - قد يكون عالقًا أو يتصرف بشكل غير سليم. راجع سجلاته.",
+        "wsReachable": "خادم WebSocket قابل للوصول ويستجيب على 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "وسم",
+            "person": "شخص",
+            "org": "منظمة",
+            "gpe": "مكان",
+            "loc": "منطقة",
+            "fac": "معلم",
+            "product": "منتج",
+            "event": "حدث",
+            "work_of_art": "عمل",
+            "law": "قانون",
+            "language": "لغة",
+            "norp": "مجموعة"
+        },
+        "plural": {
+            "hashtag": "الوسوم",
+            "person": "أشخاص",
+            "org": "منظمات",
+            "gpe": "أماكن",
+            "loc": "مناطق",
+            "fac": "معالم",
+            "product": "منتجات",
+            "event": "أحداث",
+            "work_of_art": "أعمال",
+            "law": "قوانين",
+            "language": "لغات",
+            "norp": "مجموعات"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "إزالة صديق"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "قبول"
+    },
+    "FriendRequestDenyButton": {
+        "name": "رفض"
+    },
+    "UserFollowButton": {
+        "follow": "متابعة",
+        "unfollow": "إلغاء المتابعة"
+    },
+    "UserBlockButton": {
+        "name": "حجب"
+    },
+    "UserUnblockButton": {
+        "name": "إلغاء الحجب"
+    },
+    "OtherUser": {
+        "message": "رسالة"
+    },
+    "MainNavigation": {
+        "toggleLabel": "القائمة",
+        "loggedInAs": "مسجّل الدخول باسم {name}",
+        "friendsFeed": "خلاصة الأصدقاء",
+        "relayFeed": "خلاصة المرحّل",
+        "users": "المستخدمون",
+        "tags": "الوسوم",
+        "topics": "المواضيع",
+        "map": "الخريطة",
+        "locations": "المواقع",
+        "search": "البحث",
+        "messages": "الرسائل",
+        "bookmarks": "الإشارات المرجعية",
+        "help": "المساعدة",
+        "about": "حول",
+        "login": "تسجيل الدخول",
+        "signup": "إنشاء حساب",
+        "friends": "الأصدقاء",
+        "drafts": "المسودات والمجدولة",
+        "userSettings": "إعدادات المستخدم",
+        "modSettings": "إعدادات الإشراف",
+        "adminSettings": "إعدادات الإدارة"
+    },
+    "LogoutForm": {
+        "submit": "تسجيل الخروج"
+    },
+    "User": {
+        "joined": "انضم {date}"
+    },
+    "FriendRequestButton": {
+        "add": "إضافة صديق",
+        "cancel": "إلغاء الطلب"
+    },
+    "StagedPostWhen": {
+        "scheduled": "مُجدوَل لـ {when}",
+        "draft": "مسودة - تُنشر فقط عندما تحدد أنت ذلك"
+    },
+    "MessageTranslateButton": {
+        "name": "ترجمة هذه الرسالة"
+    },
+    "MessageTranslationNotice": {
+        "heading": "عن ترجمة الرسائل",
+        "body": "لترجمة رسالة، يُرسَل نصها إلى هذا الخادم وتُترجَم هنا. لا يُحتفَظ بأي شيء: لا تُكتب الترجمة في قاعدة البيانات وتبقى الرسالة نفسها دون تغيير. لكن الرسالة المُترجَمة بهذه الطريقة تكون قد قُرئت من قِبل الخادم، ولذلك فهي ليست مشفّرة من طرف إلى طرف كما هي الرسالة غير المُترجَمة. لا يمكن ترجمة سوى الرسائل التي تستلمها، وفقط عندما تطلب ذلك.",
+        "confirm": "ترجمها",
+        "cancel": "ليس الآن"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "نسيت عبارة المرور؟ إعادة التعيين تُنشئ مفاتيح جديدة تحت عبارة جديدة - لكن الرسائل المشفّرة بالمفاتيح القديمة لن تُقرأ مرة أخرى أبدًا، من قِبل أي أحد.",
+        "requirements": "12 حرفًا على الأقل، وليست كلمة مرور حسابك - فتلك تُرسَل إلى هذا الخادم، ويجب ألا تُرسَل عبارة مرورك أبدًا.",
+        "passphraseLabel": "عبارة المرور",
+        "resetPassphraseLabel": "عبارة المرور الجديدة",
+        "confirmLabel": "تأكيد عبارة المرور",
+        "accountPasswordLabel": "كلمة مرور الحساب",
+        "submitLabel": "تفعيل الرسائل المشفّرة",
+        "resetSubmitLabel": "إعادة تعيين مفاتيح التشفير"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "الرسائل المشفّرة من طرف إلى طرف تُقفَل وتُفتَح في متصفحك: هذا الخادم ينقلها ويخزّنها دون أن يتمكن من قراءتها. مفتاحك محمي بعبارة مرور، وعبارة المرور نفسها تفتح رسائلك من أي متصفح. تُشفَّر المحادثات بمجرد أن يُفعِّل كلا الطرفين هذه الميزة؛ أما الرسائل الموجهة إلى أشخاص على خوادم أخرى فتبقى غير مشفّرة، لأن الفدرالية بخلاف ذلك لا تملك وسيلة لنقلها.",
+        "noRecovery": "لا توجد طريقة لاسترداد عبارة مرور مفقودة - ولا حتى للمسؤول. فقدانها يعني فقدان رسائلك المشفّرة.",
+        "enabledStatus": "الرسائل المشفّرة مُفعَّلة."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "مشفّرة",
+            "explanation": "الرسائل في هذه المحادثة مشفّرة من طرف إلى طرف: تُفتَح بعبارة مرورك وتُقرأ في متصفحيكما، وما يخزّنه هذا الخادم هو نص مشفّر فقط. تحقق من رمز الأمان أسفل المحادثة مع الطرف الآخر للتأكد من عدم وجود أحد بينكما. الرسائل المُرسَلة قبل تفعيل التشفير تبقى قابلة للقراءة كما كانت."
+        },
+        "awaiting-theirs": {
+            "label": "غير مشفّرة",
+            "explanation": "ستُصبح الرسائل هنا مشفّرة من طرف إلى طرف بمجرد أن يُفعِّل {handle} الرسائل المشفّرة في إعداداته."
+        },
+        "awaiting-yours": {
+            "label": "غير مشفّرة",
+            "explanation": "الرسائل هنا غير مشفّرة من طرف إلى طرف. فعّل الرسائل المشفّرة في الإعدادات لتأمين هذه المحادثة."
+        },
+        "federated": {
+            "label": "غير مشفّرة",
+            "explanation": "{handle} على خادم آخر. تُخزَّن الرسائل في هذه المحادثة على ذلك الخادم إضافةً إلى هذا الخادم، ويمكن لمسؤوله قراءتها - فالبروتوكول بين الخوادم لا يملك وسيلة لتشفيرها. اقتصر بأي أمر حساس على محادثات داخل هذا الموقع."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "متابعة حسابات Fediverse",
+        "notice": "الصق مُعرِّفًا واحدًا أو أكثر، مثل @user@example.social - يعمل أي فاصل بينها.",
+        "handlesLabel": "مُعرِّفات Fediverse المراد متابعتها",
+        "submit": "متابعة",
+        "statusPending": "قيد الانتظار",
+        "statusAccepted": "مقبول"
+    },
+    "ServerBlockForm": {
+        "legend": "حجب خادم",
+        "description": "يرفض كل شيء قادم من ذلك الخادم وكل ما يتبعه: لا تسليمات واردة، ولا صادرة، وتُلغى المتابعات القائمة في كلا الاتجاهين.",
+        "serverLabel": "الخادم",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "السبب",
+        "reasonPlaceholder": "سبب حظر هذا الخادم",
+        "submit": "حجب الخادم"
+    },
+    "VideoCallTestPanel": {
+        "intro": "يُشغِّل أجزاء إعداد المكالمة التي يمكن التحقق منها من متصفح واحد. كل شيء حتى الاتصال المباشر بين الطرفين قابل للاختبار هنا؛ أما الاتصال بشخص آخر فيحتاج إلى ذلك الشخص."
+    },
+    "VideoCallTestButton": {
+        "label": "تشغيل الفحص"
+    },
+    "WebSocketStatus": {
+        "ok": "خادم WebSocket: يعمل",
+        "failed": "خادم WebSocket: {detail}",
+        "clientTesting": "اتصال المتصفح: جارٍ الاختبار…",
+        "clientConnecting": "اتصال المتصفح: جارٍ الاتصال…",
+        "clientConnected": "اتصال المتصفح: متصل",
+        "clientDisconnecting": "اتصال المتصفح: جارٍ قطع الاتصال…",
+        "clientNotConnected": "اتصال المتصفح: غير متصل"
+    },
+    "UploadWorkerStatus": {
+        "running": "خدمة العامل: تعمل",
+        "stopped": "خدمة العامل: لا تعمل - لن تُحوَّل الملفات المرفوعة المؤقتة أبدًا حتى تتم إعادة تشغيلها",
+        "unknown": "خدمة العامل: غير معروفة - إما أن systemctl غير متاح على هذا المضيف، أو أن SELinux يرفض استعلام الحالة الخاص بخادم الويب نفسه (شغّل bin/install.php بصلاحيات root لإصلاح ذلك)",
+        "queue": "قائمة الانتظار: {staging} قيد التجهيز، {pending} قيد الانتظار، {processing} قيد المعالجة"
+    },
+    "TrendingTimerStatus": {
+        "running": "مؤقت الرائج: يعمل",
+        "stopped": "مؤقت الرائج: لا يعمل - لن تتحدث المواضيع الرائجة إلا عبر الإصلاح الذاتي لمسار القراءة (Trending::current())، وليس وفق جدول زمني. شغّل bin/install.php بصلاحيات root لإعداده.",
+        "unknown": "مؤقت الرائج: غير معروف - إما أن systemctl غير متاح على هذا المضيف، أو أن SELinux يرفض استعلام الحالة الخاص بخادم الويب نفسه (شغّل bin/install.php بصلاحيات root لإصلاح ذلك)"
+    },
+    "Notification": {
+        "postReady": "انتهت معالجة الوسائط الخاصة بك وأصبحت متاحة الآن",
+        "scheduledPostLive": "أصبح منشورك المجدول متاحًا الآن",
+        "uploadPartlyFailed": "منشورك متاح الآن، لكن تعذّرت معالجة ملف واحد أو أكثر منه",
+        "uploadFailed": "تعذّرت معالجة أحد الملفات التي رفعتها ولم يُنشر",
+        "mailerFailed": "فشل تسليم البريد الإلكتروني - قد يكون برنامج الإرسال متوقفًا. يُرجى التحقق من إعدادات بريدك.",
+        "mailFromNotConfigured": "لم يتم ضبط عنوان \"مرسل\" للبريد، لذا لا يمكن إرسال أي رسائل. اضبط عنوانًا في إعدادات الإدارة (قسم البريد الصادر) أو عبر bin/install.php.",
+        "systemError": "حدث خطأ في الخادم. راجع سجل الأخطاء للاطلاع على التفاصيل.",
+        "passwordRemovedGoogle": "أُزيلت كلمة مرورك عند تسجيل الدخول باستخدام Google. استخدم \"نسيت كلمة المرور\" إذا رغبت في تعيين كلمة مرور جديدة.",
+        "like": "أعجب {name} بمنشورك",
+        "repost": "أعاد {name} نشر منشورك",
+        "reply": "ردّ {name} على منشورك",
+        "friendRequest": "أرسل لك {name} طلب صداقة",
+        "friendAccepted": "قبل {name} طلب صداقتك",
+        "message": "أرسل لك {name} رسالة",
+        "mention": "أشار إليك {name} في منشور",
+        "follow": "تابعك {name} من خادم آخر",
+        "default": "قام {name} بشيء ما"
+    },
+    "NotificationList": {
+        "emptyNotice": "لا توجد إشعارات بعد."
+    },
+    "NotificationsNavLink": {
+        "label": "الإشعارات",
+        "unseen": "إشعارات غير مقروءة"
+    },
+    "NotificationTestPanel": {
+        "intro": "أرسل إشعارًا تجريبيًا إلى نفسك (المسؤول). يجب أن يظهر فورًا كتنبيه منبثق وفي قائمة الإشعارات المنسدلة.",
+        "button": "إرسال إشعار تجريبي",
+        "sending": "جارٍ الإرسال…",
+        "sent": "تم الإرسال!",
+        "failed": "فشل"
+    },
+    "MessageDot": {
+        "label": "رسائل غير مقروءة"
+    },
+    "NavAlertDot": {
+        "label": "هناك جديد في القائمة"
+    },
+    "Message": {
+        "encrypted": "رسالة مشفّرة",
+        "decryptionFailed": "شُفِّرت هذه الرسالة بمفاتيح لم تعد موجودة."
+    },
+    "MessageComposer": {
+        "bodyLabel": "الرسالة",
+        "bodyPlaceholder": "اكتب رسالة",
+        "send": "إرسال"
+    },
+    "MessageList": {
+        "emptyNotice": "لا توجد رسائل بعد."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "اقرآ هذا الرمز لبعضكما بطريقة أخرى - بصوت مسموع، شخصيًا، أو عبر مكالمة. إذا تطابق على الجانبين، فلا يوجد أحد بينكما.",
+        "changed": "تغيّر هذا الرمز منذ أن تحققت منه آخر مرة. يحدث ذلك عندما يعيد أحدكما تعيين مفاتيح التشفير - لكنه أيضًا ما قد يبدو عليه الأمر لو كان أحدهم يقرأ هذه المحادثة. تحقق من الرمز الجديد معه قبل الوثوق به.",
+        "verified": "لقد تحققت من هذا الرمز."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "وضع علامة كمُتحقَّق منه"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "عبارة المرور",
+        "passphrasePlaceholder": "عبارة المرور لفتح هذه المحادثة",
+        "submit": "فتح"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "آخر رسالة ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "وسائط حساسة"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "إظهار الوسائط الحساسة افتراضيًا"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "منشور",
+            "message": "رسالة",
+            "user": "مستخدم"
+        },
+        "summary": {
+            "before": "تم الإبلاغ عن {type} #{id} من قبل ",
+            "after": ""
+        },
+        "reasonLine": "السبب: {reason}",
+        "banReporterLabel": "حظر المُبلِّغ",
+        "banReportedUserLabel": "حظر المستخدم المُبلَّغ عنه",
+        "deleteLabel": "حذف {type}",
+        "reportedImageAlt": "صورة مُبلَّغ عنها",
+        "attachmentUnavailable": "لم يعد المرفق المُبلَّغ عنه متاحًا.",
+        "viewAttachment": "عرض المرفق المُبلَّغ عنه",
+        "missing": {
+            "noSnapshot": "لم يعد المحتوى المُبلَّغ عنه متاحًا.",
+            "unknownType": "نوع محتوى غير معروف."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "لا توجد بلاغات."
+    },
+    "ModQueueLinks": {
+        "intro": "قوائم الانتظار طويلة بما يكفي لتُقرأ صفحة تلو الأخرى، ولذلك لها صفحاتها الخاصة.",
+        "reportsLabel": "البلاغات",
+        "bannedUsersLabel": "المستخدمون المحظورون"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "لم يقم أي مشرف بأي إجراء بعد."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "لا توجد كيانات رائجة محظورة."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "لا توجد خوادم محجوبة."
+    },
+    "RelayCard": {
+        "accepted": "مُشترَك ",
+        "waiting": "بانتظار قبول المرحّل - مُشترَك "
+    },
+    "RelayList": {
+        "emptyNotice": "غير مُشترَك في أي مرحّل. لا يصل إلى هنا شيء سوى ما يتابعه الأعضاء."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "لم يصل شيء عبر مرحّل بعد. تظهر المنشورات هنا فور نشرها من الخوادم على الطرف الآخر."
+    },
+    "RelaySubscribeForm": {
+        "legend": "الاشتراك في مرحّل",
+        "explainerOne": "المرحّل هو مصدر تدفق مشترك: يصل إلى هنا كل منشور عام من كل خادم آخر مُشترِك، وتُرسَل منشورات هذا الخادم إلى جميعها. هذه هي الطريقة التي يجد بها خادم جديد أي أحد على الإطلاق، إذ إن الفدرالية بخلاف ذلك لا تنقل سوى ما يتابعه أحدهم هنا بالفعل.",
+        "explainerTwo": "الحِمل ليس أمرًا يمكنك التنبؤ به - فهو أيًا كان ما تنشره تلك الخوادم، هادئًا أسبوعًا وآلاف المنشورات في الساعة في الأسبوع التالي، ويتحمّله تخزينك وقائمة انتظار التسليم وقائمة انتظار الإشراف. تبقى المنشورات المُرحَّلة خارج الخلاصة الرئيسية وخلاصة الأصدقاء؛ إذ تذهب إلى خلاصة المرحّل، التي يفتحها الناس عن قصد.",
+        "addressLabel": "عنوان المرحّل",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "اشترك"
+    },
+    "RelayFollowObjectField": {
+        "label": "نمط الاشتراك",
+        "options": {
+            "public": "متابعة التدفق العام (ما تتوقعه معظم المرحّلات)",
+            "actor": "متابعة فاعل المرحّل نفسه"
+        },
+        "retryNotice": "إذا لم يقبل المرحّل الاشتراك أبدًا، فاسحب الطلب وجرّب النمط الآخر - فبعض برمجيات المرحّلات تتعرف على نمط واحد منهما فقط."
+    },
+    "SiteCounters": {
+        "members": "الأعضاء: {count} (انضم {joined} خلال آخر {days} يوم)",
+        "activeMembers": "الأعضاء هنا خلال آخر {days} يوم: {count} (نشر منهم {posted})",
+        "posts": "المنشورات المكتوبة هنا: {count} ({recent} خلال آخر {days} يوم)",
+        "deliveries": "عمليات التسليم الفيدرالية خلال آخر {days} يوم: وصل {delivered}، وتم التخلي عن {undeliverable}",
+        "queued": "بانتظار الإرسال: {count} (رُفض {failing} منها مرة واحدة على الأقل)",
+        "pendingReads": "المنشورات بانتظار القراءة من خوادم أخرى: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "شغّل مجموعة اختبارات الموقع واطّلع على النتائج. يستغرق ذلك بضع ثوانٍ، لذا يُفتح في صفحته الخاصة.",
+        "runLabel": "تشغيل الاختبارات"
+    },
+    "HelpArticle": {
+        "backLabel": "العودة إلى كل المساعدة"
+    },
+    "UserSearchList": {
+        "noSuggestions": "لا توجد اقتراحات في الوقت الحالي - تأتي الاقتراحات من أصدقاء الأشخاص الذين أنت صديق لهم بالفعل. ابحث أعلاه للعثور على شخص بالاسم.",
+        "noMatches": "لا يوجد هنا أحد يطابق ذلك."
+    },
+    "UserModButton": {
+        "make": "تعيين مُشرِفًا",
+        "remove": "إلغاء الإشراف"
+    },
+    "UserUnbanButton": {
+        "name": "إلغاء الحظر"
+    },
+    "TrendingEntityBanButton": {
+        "name": "حظر"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "إلغاء الحظر"
+    },
+    "ReportDismissButton": {
+        "name": "تجاهل البلاغ"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "وضع علامة حساس"
+    },
+    "ServerUnblockButton": {
+        "name": "إلغاء الحجب"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "إلغاء الاشتراك"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "إبطال"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: ناجح",
+        "failing": "{suite}: فاشل"
+    },
+    "PageTitle": {
+        "about": "حول",
+        "adminBanned": "المستخدمون المحظورون",
+        "adminModSettings": "إعدادات الإشراف",
+        "adminReports": "البلاغات",
+        "adminSettings": "إعدادات الإدارة",
+        "adminTests": "الاختبارات",
+        "authGoogleCallbackAccountDeleted": "تم حذف الحساب",
+        "authGoogleCallbackDeleteAccount": "حذف الحساب",
+        "authGoogleCallbackLogin": "تسجيل الدخول",
+        "bookmarks": "الإشارات المرجعية",
+        "checkInbox": "تحقق من بريدك الوارد",
+        "drafts": "المسودات والمجدولة",
+        "draftsEditDraft": "تعديل المسودة",
+        "draftsEditScheduled": "تعديل المنشور المجدول",
+        "forgotPassword": "نسيت كلمة المرور",
+        "friendsFeed": "خلاصة الأصدقاء",
+        "help": "المساعدة",
+        "helpDescription": "أدلة وإجابات لاستخدام الموقع.",
+        "locations": "المواقع",
+        "locationsDescription": "منشورات من الأماكن الأقرب إليك.",
+        "locationsPlaceDescription": "منشورات بالقرب من {place}.",
+        "login": "تسجيل الدخول",
+        "loginVerificationCode": "رمز التحقق",
+        "map": "الخريطة",
+        "mapDescription": "خريطة للمنشورات من جميع أنحاء العالم - اعثر على أشخاص وأشياء بالقرب منك.",
+        "messages": "الرسائل",
+        "messagesWithUser": "الرسائل مع {name}",
+        "notifications": "الإشعارات",
+        "privacy": "سياسة الخصوصية",
+        "quote": "اقتباس",
+        "relayFeed": "خلاصة المرحّل",
+        "relayFeedDescription": "منشورات عامة واردة من المرحّلات التي يشترك فيها هذا الخادم.",
+        "resetPassword": "إعادة تعيين كلمة المرور",
+        "revertEmail": "التراجع عن تغيير البريد الإلكتروني",
+        "search": "البحث",
+        "signup": "إنشاء حساب",
+        "tags": "الوسوم",
+        "tagsDescription": "تصفح الوسوم الرائجة والشائعة على {siteTitle}.",
+        "tagsTagDescription": "منشورات موسومة بـ {tag} على {siteTitle}.",
+        "terms": "شروط الخدمة",
+        "topics": "المواضيع",
+        "topicsDescription": "عمّا يتحدث الناس الآن على {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel} - منشورات تذكر {entityTitle} على {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} التي يتحدث عنها الناس الآن على {siteTitle}.",
+        "unsubscribe": "ملخصات البريد الإلكتروني",
+        "userFriends": "أصدقاء {name}",
+        "userFriendsDescription": "أصدقاء {name} على {siteTitle}",
+        "userSettings": "إعدادات المستخدم",
+        "users": "المستخدمون",
+        "verifyEmail": "تأكيد البريد الإلكتروني"
+    },
+    "PostLikeButton": {
+        "like": "إعجاب",
+        "unlike": "إلغاء الإعجاب"
+    },
+    "PostPinButton": {
+        "pin": "تثبيت",
+        "unpin": "إلغاء التثبيت"
+    },
+    "PostQuoteButton": {
+        "name": "اقتباس"
+    },
+    "PostDeleteButton": {
+        "name": "حذف"
+    },
+    "PostEditButton": {
+        "name": "تعديل"
+    },
+    "ReportButton": {
+        "name": "إبلاغ"
+    },
+    "PostActionBar": {
+        "reply": "رد",
+        "replies": {
+            "zero": "الردود ({count})",
+            "one": "الردود ({count})",
+            "two": "الردود ({count})",
+            "few": "الردود ({count})",
+            "many": "الردود ({count})",
+            "other": "الردود ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(تم التعديل)"
+    },
+    "RepliesHeading": {
+        "heading": "الردود"
+    },
+    "PollVoteButton": {
+        "name": "تصويت"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "راجع ",
+            "link": "مزيدًا من المواقع",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "منشورات بالقرب منك",
+        "description": "يعرض هذا المنشورات الأقرب إلى نقطة معينة - أينما وُجد نشاط، مهما كان بعيدًا. شارك موقعك للبدء من مكانك، أو اختر نقطة على الخريطة بدلًا من ذلك.",
+        "useMyLocation": "استخدام موقعي",
+        "pickOnMap": "الاختيار على الخريطة",
+        "searchPlaceholder": "أو اكتب اسم مكان…",
+        "searchLabel": "البحث عن مكان",
+        "locating": "جارٍ تحديد الموقع…",
+        "noGeolocation": "لا يمكن لمتصفحك مشاركة موقع.",
+        "locationError": "تعذّر الحصول على موقعك. تحقق من إذن الموقع في متصفحك."
+    },
+    "PollDeadline": {
+        "final": "النتيجة النهائية",
+        "closes": {
+            "before": "يغلق ",
+            "after": ""
+        },
+        "days": {
+            "zero": "اليوم",
+            "one": "خلال يوم واحد",
+            "two": "خلال يومين",
+            "few": "خلال {count} أيام",
+            "many": "خلال {count} يومًا",
+            "other": "خلال {count} يوم"
+        },
+        "hours": {
+            "zero": "خلال أقل من ساعة",
+            "one": "خلال ساعة واحدة",
+            "two": "خلال ساعتين",
+            "few": "خلال {count} ساعات",
+            "many": "خلال {count} ساعةً",
+            "other": "خلال {count} ساعة"
+        },
+        "minutes": {
+            "zero": "خلال أقل من دقيقة",
+            "one": "خلال دقيقة واحدة",
+            "two": "خلال دقيقتين",
+            "few": "خلال {count} دقائق",
+            "many": "خلال {count} دقيقةً",
+            "other": "خلال {count} دقيقة"
+        },
+        "underMinute": "خلال أقل من دقيقة"
+    },
+    "PollTally": {
+        "voters": {
+            "zero": "لم يصوّت أحد ",
+            "one": "صوّت شخص واحد ",
+            "two": "صوّت شخصان ",
+            "few": "صوّت {count} أشخاص ",
+            "many": "صوّت {count} شخصًا ",
+            "other": "صوّت {count} شخص "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "سجّل الدخول",
+            "after": " للنشر."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "سجّل الدخول",
+            "after": " للرد."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " أعاد النشر"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "ردًا على ",
+            "after": ""
+        },
+        "untitled": "هذا المنشور",
+        "jumpToStart": "الانتقال إلى البداية"
+    },
+    "TopicSummaryCard": {
+        "label": "ملخص مُولَّد بالذكاء الاصطناعي"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "مرحبًا بك في ",
+            "after": ""
+        },
+        "paragraphs": [
+            "اكتب شيئًا في المربع أدناه وسيُنشر في خلاصتك. يمكن لأي شخص الرد، والرد هو مجرد منشور له منشور أصل، ولذلك تتشعّب المحادثات بقدر ما تحتاج.",
+            "أضف أشخاصًا كأصدقاء وستنضم منشوراتهم إلى خلاصتك. تعرض الخلاصة العامة - اسم الموقع أعلى اليمين - كل ما يُكتب هنا، وهي المكان المناسب للعثور على شخص لإضافته.",
+            "هذا الموقع جزء من Fediverse: يمكنك متابعة حسابات على Mastodon وخوادم أخرى عبر مُعرِّفها الكامل، وما تنشره يصل إلى من يتابعونك هناك. ابحث عن مُعرِّف مثل @someone@example.social وسيذهب هذا الخادم للعثور عليهم.",
+            "ضع وسمًا لمنشور باستخدام #الوسوم وسيظهر في صفحة ذلك الوسم، وفي الرائج إذا كان عدد كافٍ من الناس يكتبون عنه.",
+            "الرسائل بين الأعضاء مشفّرة من طرف إلى طرف - يخزّن الخادم نصًا مشفّرًا لا يمكنه قراءته. فعّل ذلك في الإعدادات.",
+            "لا يتوجب عليك النشر فورًا: احفظ مسودة، أو حدد وقتًا وسيُنشر تلقائيًا. كلاهما موجود ضمن المسودات والمجدولة."
+        ],
+        "more": {
+            "before": "هناك المزيد في ",
+            "link": "صفحات المساعدة",
+            "after": "، بما في ذلك كيفية نقل حساب إلى هنا من مكان آخر."
+        },
+        "dontShowAgain": "عدم إظهار هذا مرة أخرى"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "إدراج رمز تعبيري"
+    },
+    "LinkImagePreview": {
+        "alt": "صورة معاينة الرابط"
+    },
+    "LinkImageRemoveButton": {
+        "label": "إزالة الصورة"
+    },
+    "LinkItem": {
+        "alt": "صورة معاينة الرابط"
+    },
+    "MapScrubber": {
+        "play": "تشغيل",
+        "pause": "إيقاف مؤقت",
+        "cumulativeMode": "حتى ذلك الحين",
+        "windowMode": "في ذلك الوقت فقط",
+        "rangeLabel": "عرض المنشورات حتى تاريخ معين",
+        "cumulativeLabel": {
+            "zero": "نُشر حتى {date} — لا منشورات",
+            "one": "نُشر حتى {date} — منشور واحد",
+            "two": "نُشر حتى {date} — منشوران",
+            "few": "نُشر حتى {date} — {count} منشورات",
+            "many": "نُشر حتى {date} — {count} منشورًا",
+            "other": "نُشر حتى {date} — {count} منشور"
+        },
+        "windowLabel": {
+            "zero": "نُشر حوالي {date} — لا منشورات",
+            "one": "نُشر حوالي {date} — منشور واحد",
+            "two": "نُشر حوالي {date} — منشوران",
+            "few": "نُشر حوالي {date} — {count} منشورات",
+            "many": "نُشر حوالي {date} — {count} منشورًا",
+            "other": "نُشر حوالي {date} — {count} منشور"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "منشور {name}",
+        "pageTitleUntitled": "منشور",
+        "imageAltByAuthor": "صورة نشرها {name}",
+        "imageAltUntitled": "صورة"
+    },
+    "PostBookmarkButton": {
+        "remove": "إزالة الإشارة المرجعية",
+        "add": "إضافة إشارة مرجعية"
+    },
+    "PostRepostButton": {
+        "undo": "التراجع عن إعادة النشر",
+        "repost": "إعادة النشر"
+    },
+    "QuotedPost": {
+        "viewLink": "عرض المنشور المُقتبَس"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "الطلبات المعلّقة"
+    },
+    "ScrollToTopButton": {
+        "label": "التمرير إلى الأعلى"
+    },
+    "SearchClearButton": {
+        "label": "مسح البحث"
+    },
+    "SitePolicyLinks": {
+        "terms": "شروط الخدمة",
+        "privacy": "سياسة الخصوصية"
+    },
+    "SkipLink": {
+        "label": "التخطي إلى المحتوى"
+    },
+    "TopicHeading": {
+        "searchLink": "البحث عن هذا",
+        "noPosts": "لا توجد منشورات تذكر هذا حاليًا."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "لم يُكتب بعد أي شيء من هذا النوع."
+    },
+    "TrendingEntitySection": {
+        "heading": "الرائج"
+    },
+    "PostLocationLink": {
+        "title": "إظهار هذا المكان على الخريطة",
+        "between": "، "
+    },
+    "RelativeTime": {
+        "justNow": "الآن",
+        "minutes": {
+            "zero": "منذ أقل من دقيقة",
+            "one": "منذ دقيقة",
+            "two": "منذ دقيقتين",
+            "few": "منذ {count} دقائق",
+            "many": "منذ {count} دقيقةً",
+            "other": "منذ {count} دقيقة"
+        },
+        "hours": {
+            "zero": "منذ أقل من ساعة",
+            "one": "منذ ساعة",
+            "two": "منذ ساعتين",
+            "few": "منذ {count} ساعات",
+            "many": "منذ {count} ساعةً",
+            "other": "منذ {count} ساعة"
+        },
+        "days": {
+            "zero": "منذ أقل من يوم",
+            "one": "منذ يوم",
+            "two": "منذ يومين",
+            "few": "منذ {count} أيام",
+            "many": "منذ {count} يومًا",
+            "other": "منذ {count} يوم"
+        }
+    },
+    "ThemeSelector": {
+        "label": "السمة",
+        "themes": {
+            "system": "مطابقة النظام",
+            "light": "فاتح بسيط",
+            "dark": "داكن بسيط",
+            "sepia": "سيبيا",
+            "midnight": "منتصف الليل",
+            "sunset": "الغروب",
+            "rose": "وردي",
+            "forest": "الغابة",
+            "ocean": "المحيط",
+            "lavender": "خزامى",
+            "gold": "ذهبي",
+            "hacker": "الهاكر",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "تدرج الرمادي"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "الترجمة غير مُعدَّة على هذا الخادم.",
+        "nothing": "لا يوجد هنا ما يمكن ترجمته.",
+        "unknownSource": "لم يتوصل أحد بعد إلى اللغة التي كُتب بها هذا المنشور، لذا لا يمكن ترجمته.",
+        "alreadyReadable": "هذا المنشور مكتوب بالفعل بتلك اللغة.",
+        "unsupportedPair": "لا يستطيع هذا الخادم ترجمة تلك اللغة بعد."
+    },
+    "LanguagePrompt": {
+        "question": "هل تودّ عرض الموقع باللغة العربية؟",
+        "accept": "نعم",
+        "decline": "لا شكرًا"
+    },
+    "LanguageSelector": {
+        "label": "اللغة",
+        "legend": "اللغة"
+    },
+    "EmailDigest": {
+        "subject": "ما فاتك على {site}",
+        "greeting": "مرحبًا {name}،",
+        "whileAway": "خلال فترة غيابك:",
+        "repeatedTimes": {
+            "zero": " (لم يتكرر)",
+            "one": " (مرة واحدة)",
+            "two": " (مرتين)",
+            "few": " ({count} مرات)",
+            "many": " ({count} مرةً)",
+            "other": " ({count} مرة)"
+        },
+        "moreMissed": {
+            "zero": "ولا إشعارات أخرى",
+            "one": "وإشعار واحد آخر",
+            "two": "وإشعاران آخران",
+            "few": "و{count} إشعارات أخرى",
+            "many": "و{count} إشعارًا آخر",
+            "other": "و{count} إشعار آخر"
+        },
+        "messagesWaiting": {
+            "zero": "لا رسائل بانتظارك",
+            "one": "لديك رسالة واحدة بانتظارك",
+            "two": "لديك رسالتان بانتظارك",
+            "few": "لديك {count} رسائل بانتظارك",
+            "many": "لديك {count} رسالةً بانتظارك",
+            "other": "لديك {count} رسالة بانتظارك"
+        },
+        "postsInFeed": {
+            "zero": "لا منشورات جديدة في خلاصتك",
+            "one": "منشور واحد جديد في خلاصتك",
+            "two": "منشوران جديدان في خلاصتك",
+            "few": "{count} منشورات جديدة في خلاصتك",
+            "many": "{count} منشورًا جديدًا في خلاصتك",
+            "other": "{count} منشور جديد في خلاصتك"
+        },
+        "unsubscribeInstructions": "لإيقاف هذه الرسائل، افتح هذا الرابط - يتطلب نقرة واحدة فقط ولا يحتاج إلى كلمة مرور:",
+        "comeSeeWhatIsNew": "تعالَ وشاهد ما هو جديد",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "أوقف إرسال هذه الرسائل لي",
+            "after": " - نقرة واحدة، ولا حاجة لكلمة مرور."
+        }
+    },
+    "EmailVerification": {
+        "subject": "تأكيد عنوان بريدك الإلكتروني",
+        "greeting": "مرحبًا {name}،",
+        "instructions": "يُرجى تأكيد عنوان بريدك الإلكتروني بزيارة هذا الرابط:",
+        "htmlInstructions": "يُرجى تأكيد عنوان بريدك الإلكتروني بالنقر على الرابط أدناه:",
+        "buttonLabel": "تأكيد عنوان البريد الإلكتروني",
+        "expiresIn": {
+            "zero": "تنتهي صلاحية هذا الرابط خلال أقل من ساعة.",
+            "one": "تنتهي صلاحية هذا الرابط خلال ساعة واحدة.",
+            "two": "تنتهي صلاحية هذا الرابط خلال ساعتين.",
+            "few": "تنتهي صلاحية هذا الرابط خلال {count} ساعات.",
+            "many": "تنتهي صلاحية هذا الرابط خلال {count} ساعةً.",
+            "other": "تنتهي صلاحية هذا الرابط خلال {count} ساعة."
+        }
+    },
+    "PasswordReset": {
+        "subject": "إعادة تعيين كلمة مرورك",
+        "greeting": "مرحبًا {name}،",
+        "instructions": "طلب شخص ما (نأمل أن يكون أنت) إعادة تعيين كلمة المرور. تفضل بزيارة هذا الرابط لاختيار كلمة مرور جديدة:",
+        "htmlInstructions": "طلب شخص ما (نأمل أن يكون أنت) إعادة تعيين كلمة المرور. انقر على الرابط أدناه لاختيار كلمة مرور جديدة:",
+        "buttonLabel": "إعادة تعيين كلمة المرور",
+        "expiresIn": {
+            "zero": "تنتهي صلاحية هذا الرابط خلال أقل من ساعة.",
+            "one": "تنتهي صلاحية هذا الرابط خلال ساعة واحدة.",
+            "two": "تنتهي صلاحية هذا الرابط خلال ساعتين.",
+            "few": "تنتهي صلاحية هذا الرابط خلال {count} ساعات.",
+            "many": "تنتهي صلاحية هذا الرابط خلال {count} ساعةً.",
+            "other": "تنتهي صلاحية هذا الرابط خلال {count} ساعة."
+        },
+        "ignoreNotice": "إذا لم تطلب هذا، يمكنك تجاهل هذه الرسالة."
+    }
+}

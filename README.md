@@ -376,19 +376,9 @@ until it is run again without the flag. Everything else installs as normal.
 
 **Translating the interface.** English lives in `locales/en.json` and every
 other locale is made from it, by hand - written and committed like any other
-change, since a whole interface is not something to leave to a model. English
+change, since interface wording is not something to leave to a model. English
 stands in per key for anything untranslated, so a partial locale is a working
-one. The one command left is for adding a single string:
-
-```
-php bin/add-string.php PostCard.replies "{count} replies"
-```
-
-It adds the key to English and machine-translates just that one into every
-locale - CLI-only, and it needs the translation environment above, so run it
-where that is installed. Read what comes back before committing it: the models
-are close enough to be worth it for one string and wrong often enough to need
-an eye.
+one.
 
 **Getting a certificate.** The cert lives in your web server, not in Glommer.
 

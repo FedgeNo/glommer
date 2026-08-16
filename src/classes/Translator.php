@@ -24,13 +24,6 @@ class Translator
     private const COMMAND = '/opt/glommer-translate/bin/argos-translate';
 
     /**
-     * The environment's own interpreter, for work that drives the models
-     * directly rather than through the argos-translate command - see
-     * TranslationWorker, which holds one model open across a batch.
-     */
-    public const PYTHON = '/opt/glommer-translate/bin/python3';
-
-    /**
      * The OS-level limits a PHP memory_limit cannot provide, the same three
      * the transcoder runs under: wall clock, CPU time, address space.
      *

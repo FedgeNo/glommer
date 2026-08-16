@@ -1,0 +1,1080 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count} голос",
+            "other": "{count} голосов",
+            "few": "{count} голоса",
+            "many": "{count} голосов"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "link": "Войдите",
+            "after": ", чтобы ответить."
+        },
+        "post": {
+            "link": "Войдите",
+            "after": ", чтобы опубликовать."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Сайт",
+        "siteURLLabel": "URL сайта",
+        "siteTitleLabel": "Название сайта",
+        "mailFromAddressLabel": "Адрес отправителя",
+        "serverNameConfirmedLabel": "Я установил «ServerName {host}» и «UseCanonicalName On» в конфигурации моего веб-сервера (проверяется только в том случае, если автоматизированный живой тест не может быть завершен - см. раздел HTTPS README.md)",
+        "databaseLegend": "База данных",
+        "databaseHostLabel": "Хост базы данных",
+        "databasePortLabel": "Порт базы данных",
+        "databaseNameLabel": "Имя базы данных",
+        "databaseAdminUsernameLabel": "Имя администратора базы данных",
+        "databaseAdminPasswordLabel": "Пароль администратора базы данных",
+        "webSocketTLSLegend": "WebSocket TLS (необязательно)",
+        "certificatePathLabel": "Путь к сертификату",
+        "certificatePathPlaceholder": "Оставьте пустым — сертификат создаст mkcert",
+        "keyPathLabel": "Путь к ключу",
+        "keyPathPlaceholder": "Оставьте пустым — ключ создаст mkcert",
+        "botProtectionLegend": "Защита от ботов (необязательно)",
+        "turnstileSiteKeyLabel": "Ключ сайта Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Оставьте пустым, чтобы пропустить",
+        "turnstileSecretKeyLabel": "Секретный ключ Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Оставьте пустым, чтобы пропустить",
+        "submit": "Настроить"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Текущая парольная фраза",
+        "newPassphraseLabel": "Новая парольная фраза",
+        "confirmNewPassphraseLabel": "Подтвердите новую парольную фразу",
+        "accountPasswordLabel": "Пароль аккаунта",
+        "submit": "Сменить парольную фразу"
+    },
+    "PasswordResetForm": {
+        "legend": "Выберите новый пароль",
+        "newPasswordLabel": "Новый пароль",
+        "newPasswordPlaceholder": "Не менее 8 символов",
+        "confirmPasswordLabel": "Подтвердите новый пароль",
+        "submit": "Сбросить пароль"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Сброс пароля",
+        "emailLabel": "Электронная почта",
+        "submit": "Отправить ссылку для сброса"
+    },
+    "EmailRevertForm": {
+        "submit": "Отменить смену почты"
+    },
+    "EmailVerifyForm": {
+        "submit": "Подтвердить адрес почты"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Включить снова"
+    },
+    "EmailDigestSetting": {
+        "label": "Присылать мне на почту, что я пропустил, если меня долго не было"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Неизвестное устройство",
+        "browserOnOS": "{browser} на {os}",
+        "thisDevice": " (это устройство)",
+        "lastUsed": {
+            "before": "Последнее использование "
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Завершает все активные сессии и забывает все запомненные устройства. Вы выйдете из всех браузеров, включая этот."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Выйти везде"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Подтвердить через Google и удалить"
+    },
+    "GoogleSignInButton": {
+        "label": "Продолжить с Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Редактировать профиль"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Получайте уведомления на этом устройстве, даже когда сайт не открыт. Настройка действует для каждого браузера отдельно — включите её везде, где хотите получать уведомления.",
+        "label": {
+            "off": "Включить на этом устройстве",
+            "on": "Отключить на этом устройстве"
+        },
+        "unsupported": "Push не поддерживается в этом браузере"
+    },
+    "LoginForm": {
+        "legend": "Войти",
+        "identifier": "Имя пользователя или электронная почта",
+        "password": "Пароль",
+        "rememberMe": "Запомнить меня",
+        "submit": "Войти"
+    },
+    "SignupForm": {
+        "legend": "Создайте аккаунт",
+        "usernameLabel": "Имя пользователя",
+        "usernamePlaceholder": "Строчные буквы, цифры и _",
+        "emailLabel": "Электронная почта",
+        "emailPlaceholder": "Действительный адрес электронной почты",
+        "displayName": "Отображаемое имя (необязательно)",
+        "bioLabel": "О себе (необязательно)",
+        "bioPlaceholder": "Пара слов о себе — #хэштеги, @упоминания и ссылки станут кликабельными",
+        "passwordLabel": "Пароль",
+        "passwordPlaceholder": "Пароль: не менее 8 символов",
+        "rememberMe": "Запомнить меня",
+        "submit": "Зарегистрироваться"
+    },
+    "PasswordChangeForm": {
+        "legend": "Смена пароля",
+        "currentPassword": "Текущий пароль",
+        "newPasswordLabel": "Новый пароль",
+        "newPasswordPlaceholder": "Не менее 8 символов",
+        "confirmPassword": "Подтвердите новый пароль",
+        "submit": "Сменить пароль"
+    },
+    "EmailChangeForm": {
+        "legend": "Смена адреса почты",
+        "newEmail": "Новый адрес электронной почты",
+        "currentPassword": "Текущий пароль",
+        "notice": "Прежде чем пользоваться сайтом дальше, новый адрес нужно будет подтвердить.",
+        "submit": "Сменить почту"
+    },
+    "AccountDeleteForm": {
+        "legend": "Удаление аккаунта",
+        "warning": "Аккаунт, посты и сообщения будут удалены навсегда. Это нельзя отменить.",
+        "currentPassword": "Текущий пароль",
+        "submit": "Удалить аккаунт"
+    },
+    "AccountMigrationForm": {
+        "legend": "Переезд на другой сервер",
+        "movedNotice": "Этот аккаунт переехал на {destination}. Вашим подписчикам предложено подписаться на вас там.",
+        "explanation": "Вашим подписчикам предлагается подписаться на новый аккаунт. Посты остаются здесь: адреса объектов принадлежат создавшему их серверу, забрать их с собой нельзя.",
+        "addressNotice": "Аккаунт, на который вы переезжаете, должен сначала указать этот в списке «также известен как». Ваш адрес здесь — {address}.",
+        "movedToLabel": "Переехать на",
+        "aliasesLegend": "Также известен как",
+        "aliasesExplanation": "Ваши аккаунты на других серверах. Запись здесь разрешает тому аккаунту переехать на этот — это разрешение, а не сам переезд. Один адрес на строку.",
+        "aliasesLabel": "Другие ваши аккаунты",
+        "submit": "Сохранить"
+    },
+    "TwoFactorForm": {
+        "legend": "Введите код подтверждения",
+        "explanation": "Мы отправили код подтверждения на вашу почту. Введите его ниже, чтобы завершить вход.",
+        "code": "Код подтверждения",
+        "submit": "Подтвердить"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Двухфакторная аутентификация включена",
+            "off": "Двухфакторная аутентификация отключена"
+        },
+        "explanation": {
+            "on": "При входе мы присылаем на почту код подтверждения, без которого войти нельзя.",
+            "off": "Добавьте второй шаг при входе: мы будем присылать на почту код подтверждения, так что одного пароля будет недостаточно."
+        },
+        "currentPassword": "Текущий пароль",
+        "submit": {
+            "on": "Отключить двухфакторную аутентификацию",
+            "off": "Включить двухфакторную аутентификацию"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Проверьте входящие и перейдите по присланной ссылке, чтобы подтвердить адрес почты. Если письма не видно, загляните в спам."
+    },
+    "VerificationResendButton": {
+        "label": "Отправить письмо ещё раз"
+    },
+    "MailSettingsForm": {
+        "legend": "Исходящая почта",
+        "fromAddressLabel": "Адрес отправителя",
+        "fromAddressPlaceholder": "Пока адрес не задан, почта не отправляется",
+        "fromNameLabel": "Имя отправителя",
+        "portLabel": "Порт SMTP",
+        "usernameLabel": "Имя пользователя SMTP",
+        "passwordLabel": "SMTP пароль",
+        "passwordPlaceholder": {
+            "set": "Пароль задан — оставьте пустым, чтобы не менять",
+            "unset": "SMTP пароль"
+        },
+        "encryptionLabel": "Шифрование",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, обычно на порту 587)",
+            "ssl": "SSL (неявный TLS, обычно порт 465)",
+            "none": "Нет"
+        },
+        "explainer": "Оставьте хост SMTP пустым, чтобы отправлять через mail() PHP (не рекомендуется — см. раздел о доставляемости в README). Пока не задан адрес отправителя, письма не отправляются.",
+        "save": "Сохранить",
+        "hostLabel": "Хост SMTP"
+    },
+    "MapSettingsForm": {
+        "legend": "Плитки карты",
+        "notice": "Оставьте пустым, чтобы использовать OpenStreetMap. Для провайдера с ключом вставьте шаблон URL с литеральным {apiKey} на месте ключа, а ниже — сам ключ и строку атрибуции.",
+        "urlLabel": "Шаблон URL плиток",
+        "keyLabel": "Ключ API",
+        "keyPlaceholder": "Ключ API вашего провайдера плиток",
+        "attributionLabel": "Атрибуция",
+        "attributionPlaceholder": "© участники OpenStreetMap",
+        "save": "Сохранить"
+    },
+    "GoogleAuthSettingsForm": {
+        "clientIdLabel": "ID клиента",
+        "clientIdPlaceholder": "Идентификатор клиента Google OAuth",
+        "secretLabel": "Секрет клиента",
+        "secretPlaceholder": {
+            "set": "Секрет задан — оставьте пустым, чтобы не менять",
+            "unset": "Секрет клиента Google OAuth"
+        },
+        "explainer": "Оба поля нужны, чтобы кнопка «Продолжить с Google» появилась на входе и регистрации. В клиенте Google Cloud OAuth укажите {url} как authorized redirect URI. Очистите ID клиента, чтобы отключить.",
+        "save": "Сохранить"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Ключ сайта",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile ключ сайта",
+        "turnstileSecretKeyLabel": "Секретный ключ",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Секретный ключ задан — оставьте пустым, чтобы не менять",
+            "unset": "Секретный ключ Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Оба ключа нужны, чтобы CAPTCHA появилась на входе и регистрации. Очистите ключ сайта, чтобы отключить.",
+        "recaptchaSiteKeyLabel": "Ключ сайта",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 ключ сайта",
+        "recaptchaSecretKeyLabel": "Секретный ключ",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Секретный ключ задан — оставьте пустым, чтобы не менять",
+            "unset": "Секретный ключ Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Нужны оба ключа. Тогда аккаунт, упершийся в лимит попыток входа, может вернуться, пройдя проверку, а не пережидая блокировку; без них блокировка — просто ожидание. reCAPTCHA v2 («Я не робот»). Очистите ключ сайта, чтобы отключить.",
+        "save": "Сохранить"
+    },
+    "OpenRouterSettingsForm": {
+        "notice": "Обеспечивает функции ИИ на сайте (сводки в «Актуальном» и т. п.). Оставьте модель пустой — тогда используется маршрутизатор бесплатных моделей OpenRouter: он выбирает из бесплатного и не может потратить деньги.",
+        "keyLabel": "Ключ API",
+        "keyPlaceholder": {
+            "set": "Ключ задан — оставьте пустым, чтобы не менять",
+            "unset": "Ключ API OpenRouter"
+        },
+        "clearKeyLabel": "Удалить сохранённый ключ API (отключает функции ИИ)",
+        "modelLabel": "Модель",
+        "neverSpendLabel": "Никогда не тратить деньги (рекомендуется)",
+        "explainer": "С включённой защитой каждый запрос ограничивает цену нулём и не переключается на платную модель, когда бесплатной нет. Чтобы полностью отключить функции ИИ, удалите сохранённый ключ.",
+        "save": "Сохранить"
+    },
+    "AboutSettingsForm": {
+        "legend": "О сайте",
+        "description": "Обычный текст; абзацы разделяются пустой строкой. Первый абзац используется как описание сайта.",
+        "save": "Сохранить"
+    },
+    "TermsSettingsForm": {
+        "legend": "Условия предоставления услуг",
+        "description": "Обычный текст; абзацы разделяются пустой строкой.",
+        "save": "Сохранить"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Политика конфиденциальности",
+        "description": "Обычный текст; абзацы разделяются пустой строкой.",
+        "save": "Сохранить"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Почтовый дайджест",
+        "fieldLabel": "Подпись в конце",
+        "notice": "Добавляется ближе к концу каждого дайджеста, после списка пропущенного. Обычный текст. Оставьте пустым — будет стандартная формулировка.",
+        "save": "Сохранить"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Фавикон",
+        "currentAlt": "Текущий фавикон",
+        "save": "Загрузить фавикон"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Картинка главной страницы",
+        "explainer": "Показывается другими сайтами, когда кто-то делится ссылкой сюда — только в метаданных Open Graph, на самой странице никогда. Уменьшается до 1200×630. Без неё предпросмотры ссылок идут вовсе без картинки.",
+        "currentAlt": "Текущая картинка главной страницы",
+        "save": "Загрузить изображение"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Автовоспроизведение"
+    },
+    "CarouselNextButton": {
+        "name": "Следующий"
+    },
+    "CarouselPrevButton": {
+        "name": "Предыдущий"
+    },
+    "MediaFullscreenButton": {
+        "name": "Полный экран"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Удалить файлы"
+    },
+    "NotificationDropdown": {
+        "showAll": "Показать все"
+    },
+    "HelpSearch": {
+        "placeholder": "Поиск по справке…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Понятно"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Отбросить"
+    },
+    "StagedPostEditButton": {
+        "name": "Редактировать"
+    },
+    "StagedPostPublishButton": {
+        "name": "Опубликовать сейчас"
+    },
+    "LogoutButton": {
+        "name": "Выйти"
+    },
+    "AvatarUploadForm": {
+        "submit": "Обновить аватар"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Поиск среди заблокированных…"
+    },
+    "BannedUserSection": {
+        "heading": "Заблокированные пользователи"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Отправленные заявки (ждут ответа)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Заблокировано: {name} "
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Заблокировано: {name} "
+        },
+        "deletedAccount": "Удаленный аккаунт",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "января",
+            "2": "февраля",
+            "3": "марта",
+            "4": "апреля",
+            "5": "мая",
+            "6": "июня",
+            "7": "июля",
+            "8": "августа",
+            "9": "сентября",
+            "10": "октября",
+            "11": "ноября",
+            "12": "декабря"
+        },
+        "shortMonths": {
+            "1": "янв.",
+            "2": "февр.",
+            "3": "мар.",
+            "4": "апр.",
+            "5": "мая",
+            "6": "июн.",
+            "7": "июл.",
+            "8": "авг.",
+            "9": "сент.",
+            "10": "окт.",
+            "11": "нояб.",
+            "12": "дек."
+        },
+        "long": "{day} {month} {year} г.",
+        "short": "{day} {month} {year} г.",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} в {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Не удалось подключиться к серверу WebSocket на 127.0.0.1:{port}{tls} ({error}). Запустите его: systemctl --user start glommer-websocket (файл юнита — в README.md). Если WS_TLS_CERT/WS_TLS_KEY только что появились или пропали, перезапустите его, чтобы он соответствовал .env.",
+        "wsOverTLS": " через TLS",
+        "wsBadHandshake": "Служба на 127.0.0.1:{port} не завершила корректное рукопожатие WebSocket — возможно, этот порт слушает что-то, кроме bin/websocket-server.php.",
+        "wsNoPong": "Сервер WebSocket принял рукопожатие, но не ответил на пинг — возможно, он завис. Проверьте его журналы.",
+        "wsReachable": "Сервер WebSocket доступен и отвечает на 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Хэштег",
+            "person": "Человек",
+            "org": "Организация",
+            "gpe": "Место",
+            "loc": "Регион",
+            "fac": "Достопримечательность",
+            "product": "Продукт",
+            "event": "Событие",
+            "work_of_art": "Произведение",
+            "law": "Закон",
+            "language": "Язык",
+            "norp": "Группа"
+        },
+        "plural": {
+            "hashtag": "Хэштеги",
+            "person": "Люди",
+            "org": "Организации",
+            "gpe": "Места",
+            "loc": "Регионы",
+            "fac": "Достопримечательности",
+            "product": "Продукты",
+            "event": "События",
+            "work_of_art": "Произведения",
+            "law": "Законы",
+            "language": "Языки",
+            "norp": "Группы"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Удалить из друзей"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Принять"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Отклонить"
+    },
+    "UserFollowButton": {
+        "follow": "Подписаться",
+        "unfollow": "Отписаться"
+    },
+    "UserBlockButton": {
+        "name": "Заблокировать"
+    },
+    "UserUnblockButton": {
+        "name": "Разблокировать"
+    },
+    "OtherUser": {
+        "message": "Написать"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Меню",
+        "loggedInAs": "Вы вошли как {name}",
+        "friendsFeed": "Лента друзей",
+        "relayFeed": "Лента ретрансляции",
+        "users": "Пользователи",
+        "tags": "Теги",
+        "topics": "Темы",
+        "map": "Карта",
+        "locations": "Места",
+        "search": "Поиск",
+        "messages": "Сообщения",
+        "bookmarks": "Закладки",
+        "help": "Справка",
+        "about": "О нас",
+        "login": "Войти",
+        "signup": "Регистрация",
+        "friends": "Друзья",
+        "drafts": "Черновики и отложенные",
+        "userSettings": "Настройки пользователя",
+        "modSettings": "Настройки модерации",
+        "adminSettings": "Настройки администратора"
+    },
+    "LogoutForm": {
+        "submit": "Выйти"
+    },
+    "User": {
+        "joined": "На сайте с {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Добавить в друзья",
+        "cancel": "Отменить заявку"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Запланировано на {when}",
+        "draft": "Черновик — публикуется только по вашей команде"
+    },
+    "MessageTranslateButton": {
+        "name": "Перевести это сообщение"
+    },
+    "MessageTranslationNotice": {
+        "heading": "О переводе сообщений",
+        "body": "Чтобы перевести сообщение, его текст отправляется на этот сервер и переводится здесь. Ничего не сохраняется: перевод не записывается в базу, а само сообщение не меняется. Но переведённое таким образом сообщение прочитано сервером, то есть уже не защищено сквозным шифрованием, как остальные. Переводятся только полученные вами сообщения, и только когда вы попросите.",
+        "confirm": "Перевести",
+        "cancel": "Не сейчас"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Забыли парольную фразу? Сброс создаёт новые ключи под новой, но сообщения, зашифрованные старыми ключами, больше никто и никогда не прочтёт.",
+        "requirements": "Не менее 12 символов и не пароль от аккаунта — пароль отправляется на сервер, а парольная фраза не должна покидать браузер.",
+        "passphraseLabel": "Парольная фраза",
+        "resetPassphraseLabel": "Новая парольная фраза",
+        "confirmLabel": "Подтвердите парольную фразу",
+        "accountPasswordLabel": "Пароль аккаунта",
+        "submitLabel": "Включить зашифрованные сообщения",
+        "resetSubmitLabel": "Сбросить ключи шифрования"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Сквозные зашифрованные сообщения блокируются и разблокируются в вашем браузере: этот сервер ретранслирует и хранит их, не имея возможности прочитать их. Ваш ключ защищен парольной фразой, и та же самая парольная фраза разблокирует ваши сообщения из любого браузера. Разговоры шифруются после того, как оба человека включили это; сообщения людям на других серверах остаются незашифрованными, потому что федерация не может переносить их иначе.",
+        "noRecovery": "Потерянную парольную фразу восстановить нельзя — даже администратору. Потерять её — значит потерять зашифрованные сообщения.",
+        "enabledStatus": "Зашифрованные сообщения включены."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "🔒 Зашифровано",
+            "explanation": "Сообщения в этой переписке защищены сквозным шифрованием: они разблокируются вашей парольной фразой и читаются в ваших браузерах, а сервер хранит только шифротекст. Сверьте код безопасности внизу переписки с собеседником, чтобы убедиться, что между вами никого нет. Сообщения, отправленные до включения шифрования, остаются читаемыми."
+        },
+        "awaiting-theirs": {
+            "label": "🔓 Не зашифровано",
+            "explanation": "Сообщения здесь будут защищены сквозным шифрованием, как только {handle} включит зашифрованные сообщения в настройках."
+        },
+        "awaiting-yours": {
+            "label": "🔓 Не зашифровано",
+            "explanation": "Сообщения здесь не защищены сквозным шифрованием. Включите зашифрованные сообщения в настройках, чтобы обезопасить переписку."
+        },
+        "federated": {
+            "label": "🔓 Не зашифровано",
+            "explanation": "{handle} находится на другом сервере. Сообщения этой переписки хранятся и там, и здесь, и тамошний администратор может их прочитать — межсерверный протокол не умеет их шифровать. Всё конфиденциальное лучше держать в переписке с участниками этого сайта."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Следите за аккаунтами Fediverse",
+        "notice": "Вставьте один или несколько адресов, например @user@example.social — разделитель любой.",
+        "handlesLabel": "Адреса Fediverse",
+        "submit": "Подписаться",
+        "statusPending": "ожидает",
+        "statusAccepted": "принято"
+    },
+    "ServerBlockForm": {
+        "legend": "Блокировать сервер",
+        "description": "Отклоняет всё с этого сервера и всех его поддоменов: ни подписок, ни доставок, а существующие связи рвутся в обе стороны.",
+        "serverLabel": "Сервер",
+        "reasonLabel": "Причина",
+        "reasonPlaceholder": "Почему этот сервер заблокирован",
+        "submit": "Заблокировать сервер"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Прогоняет те части установления звонка, которые проверяются из одного браузера. Проверить можно всё, кроме самого соединения с собеседником — для него нужен собеседник."
+    },
+    "VideoCallTestButton": {
+        "label": "Запустить проверку"
+    },
+    "WebSocketStatus": {
+        "ok": "Сервер WebSocket: работает",
+        "failed": "Сервер WebSocket: {detail}",
+        "clientTesting": "Подключение из браузера: проверка…",
+        "clientConnecting": "Подключение из браузера: подключение…",
+        "clientConnected": "Подключение из браузера: подключено",
+        "clientDisconnecting": "Подключение из браузера: отключение…",
+        "clientNotConnected": "Подключение из браузера: не подключено"
+    },
+    "UploadWorkerStatus": {
+        "running": "Обработчик загрузок: работает",
+        "stopped": "Обработчик загрузок: не работает — загруженные файлы не будут перекодированы, пока он не запустится",
+        "unknown": "Обработчик загрузок: неизвестно — либо systemd недоступен на этом хосте, либо SELinux запрещает веб-серверу запрос статуса (запустите bin/install.php от root, чтобы исправить)",
+        "queue": "Очередь: загружается {staging}, ожидает {pending}, обрабатывается {processing}"
+    },
+    "TrendingTimerStatus": {
+        "running": "Таймер трендов: работает",
+        "stopped": "Таймер трендов: не работает — темы будут обновляться только самопочинкой на пути чтения (Trending::current()), а не по расписанию. Запустите bin/install.php от root, чтобы настроить.",
+        "unknown": "Таймер трендов: неизвестно — либо systemd недоступен на этом хосте, либо SELinux запрещает веб-серверу запрос статуса (запустите bin/install.php от root, чтобы исправить)"
+    },
+    "Notification": {
+        "postReady": "Ваши файлы обработаны, пост опубликован",
+        "scheduledPostLive": "Ваш отложенный пост опубликован",
+        "uploadPartlyFailed": "Пост опубликован, но один или несколько файлов обработать не удалось",
+        "uploadFailed": "Одну из ваших загрузок не удалось обработать, пост не опубликован",
+        "mailerFailed": "Не удалось отправить почту — возможно, рассылка сломана. Проверьте настройки почты.",
+        "mailFromNotConfigured": "Адрес отправителя не настроен, поэтому письма не отправляются. Задайте его в настройках администратора (раздел исходящей почты) или через bin/install.php.",
+        "systemError": "Произошла ошибка сервера. Подробности — в журнале ошибок.",
+        "passwordRemovedGoogle": "Ваш пароль удалён после входа через Google. Чтобы задать новый, воспользуйтесь «Забыли пароль».",
+        "like": "{name} оценил(а) ваш пост",
+        "repost": "{name} репостнул(а) ваш пост",
+        "reply": "{name} ответил(а) на ваш пост",
+        "friendRequest": "{name} отправил(а) вам заявку в друзья",
+        "friendAccepted": "{name} принял(а) вашу заявку в друзья",
+        "message": "{name} отправил(а) вам сообщение",
+        "mention": "{name} упомянул(а) вас в посте",
+        "follow": "{name} подписался(лась) на вас с другого сервера",
+        "default": "{name} что-то сделал(а)"
+    },
+    "NotificationList": {
+        "emptyNotice": "Уведомлений пока нет."
+    },
+    "NotificationsNavLink": {
+        "label": "Уведомления",
+        "unseen": "Непросмотренные уведомления"
+    },
+    "NotificationTestPanel": {
+        "intro": "Отправьте себе (администратору) тестовое уведомление. Оно должно мгновенно появиться тостом и в списке уведомлений.",
+        "button": "Отправить тестовое уведомление",
+        "sending": "Отправка…",
+        "sent": "Отправлено!",
+        "failed": "Не удалось"
+    },
+    "MessageDot": {
+        "label": "Непрочитанные сообщения"
+    },
+    "NavAlertDot": {
+        "label": "Что-то новое в меню"
+    },
+    "Message": {
+        "encrypted": "Зашифрованное сообщение",
+        "decryptionFailed": "Это сообщение зашифровано ключами, которых больше не существует."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Сообщение",
+        "bodyPlaceholder": "Напишите сообщение",
+        "send": "Отправить"
+    },
+    "MessageList": {
+        "emptyNotice": "Пока нет сообщений."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Прочитайте этот код друг другу любым другим способом — вслух, при встрече, по звонку. Если он совпадает с обеих сторон, между вами никого нет.",
+        "changed": "Код изменился с прошлой проверки. Так бывает, когда один из вас сбрасывает ключи шифрования, — но так же выглядел бы и посторонний, читающий переписку. Прежде чем доверять коду, сверьте его заново.",
+        "verified": "Код сверен."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Отметить сверенным"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Парольная фраза",
+        "passphrasePlaceholder": "Парольная фраза для разблокировки переписки",
+        "submit": "Разблокировать"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Последнее сообщение "
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Деликатное содержимое"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Показывать деликатное содержимое сразу"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Пост",
+            "message": "Сообщение",
+            "user": "Пользователь"
+        },
+        "summary": {
+            "before": "Жалоба на {type} #{id} "
+        },
+        "reasonLine": "Причина: {reason}",
+        "banReporterLabel": "Заблокировать подавшего жалобу",
+        "banReportedUserLabel": "Заблокировать нарушителя",
+        "deleteLabel": "Удалить {type}",
+        "reportedImageAlt": "Изображение из жалобы",
+        "attachmentUnavailable": "Вложение из жалобы больше недоступно.",
+        "viewAttachment": "Открыть вложение из жалобы",
+        "missing": {
+            "noSnapshot": "Обжалованный контент больше недоступен.",
+            "unknownType": "Неизвестный тип контента."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Жалоб нет."
+    },
+    "ModQueueLinks": {
+        "intro": "Каждая очередь достаточно длинна, чтобы читать её постранично, поэтому у них свои страницы.",
+        "reportsLabel": "Жалобы",
+        "bannedUsersLabel": "Заблокированные пользователи"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Модераторы пока ничего не делали."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Запрещённых тем нет."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Заблокированных серверов нет."
+    },
+    "RelayCard": {
+        "accepted": "Подписка принята ",
+        "waiting": "Ожидает согласия ретранслятора — запрошена "
+    },
+    "RelayList": {
+        "emptyNotice": "Подписок на ретрансляторы нет. Без них сюда попадает только то, на что подписаны участники."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Через ретрансляторы пока ничего не пришло. Посты появятся здесь, когда серверы на той стороне их опубликуют."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Подписка на ретранслятор",
+        "explainerOne": "Ретранслятор — это общий поток: каждый публичный пост с любого подписанного сервера приходит сюда, а посты отсюда уходят на все из них. Так новый сервер вообще кого-то находит: иначе федерация приносит только то, на что здесь уже подписаны.",
+        "explainerTwo": "Нагрузку не предсказать — она зависит от того, что публикуют те серверы: неделя тишины, потом тысячи постов в час. И хранение, и доставка, и модерация несут её целиком. Ретранслированные посты не попадают в основную ленту и ленту друзей: они идут в ленту ретрансляции, которую открывают намеренно.",
+        "addressLabel": "Адрес ретранслятора",
+        "submitLabel": "Подписаться"
+    },
+    "RelayFollowObjectField": {
+        "label": "Способ подписки",
+        "options": {
+            "public": "Подписаться на публичный поток (этого ждёт большинство ретрансляторов)",
+            "actor": "Подписаться на актора ретранслятора"
+        },
+        "retryNotice": "Если ретранслятор так и не принимает подписку, отзовите её и попробуйте другой способ — часть программ понимает только один."
+    },
+    "SiteCounters": {
+        "members": "Участников: {count} ({joined} присоединились за последние {days} дн.)",
+        "activeMembers": "Были здесь за последние {days} дн.: {count} ({posted} из них публиковали)",
+        "posts": "Постов написано здесь: {count} ({recent} за последние {days} дн.)",
+        "deliveries": "Федеративные доставки за последние {days} дн.: {delivered} дошло, {undeliverable} брошено",
+        "queued": "Ждут отправки: {count} ({failing} уже сорвались хотя бы раз)",
+        "pendingReads": "Сообщений ждёт чтения с других серверов: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Запускает тесты сайта и показывает результат. Это занимает несколько секунд, поэтому открывается на отдельной странице.",
+        "runLabel": "Запустить тесты"
+    },
+    "HelpArticle": {
+        "backLabel": "Ко всем статьям справки"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Пока некого предложить — предложения берутся из друзей ваших друзей. Ищите по имени в поле выше.",
+        "noMatches": "Никто не подходит под запрос."
+    },
+    "UserModButton": {
+        "make": "Сделать модератором",
+        "remove": "Снять модератора"
+    },
+    "UserUnbanButton": {
+        "name": "Разблокировать"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Запретить"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Разрешить"
+    },
+    "ReportDismissButton": {
+        "name": "Отклонить жалобу"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Пометить как деликатное"
+    },
+    "ServerUnblockButton": {
+        "name": "Разблокировать"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Отписаться"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Отозвать"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: успешно",
+        "failing": "{suite}: провал"
+    },
+    "PageTitle": {
+        "about": "О нас",
+        "adminBanned": "Заблокированные пользователи",
+        "adminModSettings": "Настройки модерации",
+        "adminReports": "Жалобы",
+        "adminSettings": "Настройки администратора",
+        "adminTests": "Тесты",
+        "authGoogleCallbackAccountDeleted": "Аккаунт удален",
+        "authGoogleCallbackDeleteAccount": "Удалить аккаунт",
+        "authGoogleCallbackLogin": "Войти",
+        "bookmarks": "Закладки",
+        "checkInbox": "Проверьте почту",
+        "drafts": "Черновики и отложенные",
+        "draftsEditDraft": "Правка черновика",
+        "draftsEditScheduled": "Правка отложенного поста",
+        "forgotPassword": "Восстановление пароля",
+        "friendsFeed": "Лента друзей",
+        "help": "Справка",
+        "helpDescription": "Инструкции и ответы по использованию сайта.",
+        "locations": "Места",
+        "locationsDescription": "Посты из мест рядом с вами.",
+        "locationsPlaceDescription": "Посты рядом с {place}.",
+        "login": "Войти",
+        "loginVerificationCode": "Код подтверждения",
+        "map": "Карта",
+        "mapDescription": "Карта постов со всего мира — люди и события рядом с вами.",
+        "messages": "Сообщения",
+        "messagesWithUser": "Переписка с {name}",
+        "notifications": "Уведомления",
+        "privacy": "Политика конфиденциальности",
+        "quote": "Цитата",
+        "relayFeed": "Лента ретрансляции",
+        "relayFeedDescription": "Публичные посты с ретрансляторов, на которые подписан этот сервер.",
+        "resetPassword": "Сбросить пароль",
+        "revertEmail": "Отмена смены почты",
+        "search": "Поиск",
+        "signup": "Регистрация",
+        "tags": "Теги",
+        "tagsDescription": "Актуальные и популярные хэштеги на {siteTitle}.",
+        "terms": "Условия предоставления услуг",
+        "topics": "Темы",
+        "topicsDescription": "О чём сейчас говорят на {siteTitle}",
+        "topicsEntityDescription": "{typeLabel} — посты с упоминанием {entityTitle} на {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, о которых сейчас говорят на {siteTitle}.",
+        "unsubscribe": "Почтовые дайджесты",
+        "userFriends": "Друзья {name}",
+        "userFriendsDescription": "Друзья {name} на {siteTitle}",
+        "userSettings": "Настройки пользователя",
+        "users": "Пользователи",
+        "verifyEmail": "Подтверждение почты",
+        "tagsTagDescription": "Посты с тегом {tag} на {siteTitle}."
+    },
+    "PostLikeButton": {
+        "like": "Нравится",
+        "unlike": "Больше не нравится"
+    },
+    "PostPinButton": {
+        "pin": "Закрепить",
+        "unpin": "Открепить"
+    },
+    "PostQuoteButton": {
+        "name": "Цитата"
+    },
+    "PostDeleteButton": {
+        "name": "Удалить"
+    },
+    "PostEditButton": {
+        "name": "Редактировать"
+    },
+    "ReportButton": {
+        "name": "Пожаловаться"
+    },
+    "PostActionBar": {
+        "reply": "Ответить",
+        "replies": {
+            "one": "Ответы ({count})",
+            "other": "Ответы ({count})",
+            "few": "Ответы ({count})",
+            "many": "Ответы ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(изменено)"
+    },
+    "RepliesHeading": {
+        "heading": "Ответы"
+    },
+    "PollVoteButton": {
+        "name": "Голосовать"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Показать ",
+            "link": "больше мест"
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Опубликовано рядом с вами",
+        "description": "Здесь показываются посты, ближайшие к точке, — где есть активность, как бы далеко она ни была. Поделитесь местоположением, чтобы начать с себя, или выберите точку на карте.",
+        "useMyLocation": "Моё местоположение",
+        "pickOnMap": "Выберите на карте",
+        "searchPlaceholder": "Или введите название места...",
+        "searchLabel": "Поиск места",
+        "locating": "Определяем…",
+        "noGeolocation": "Ваш браузер не может передать местоположение.",
+        "locationError": "Не удалось определить местоположение. Проверьте разрешение в браузере."
+    },
+    "PollDeadline": {
+        "final": "Итоговый результат",
+        "closes": {
+            "before": "Закроется "
+        },
+        "days": {
+            "one": "через {count} день",
+            "other": "через {count} дней",
+            "few": "через {count} дня",
+            "many": "через {count} дней"
+        },
+        "hours": {
+            "one": "через {count} час",
+            "other": "через {count} часов",
+            "few": "через {count} часа",
+            "many": "через {count} часов"
+        },
+        "minutes": {
+            "one": "через {count} минуту",
+            "other": "через {count} минут",
+            "few": "через {count} минуты",
+            "many": "через {count} минут"
+        },
+        "underMinute": "меньше чем через минуту"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Проголосовал {count} человек ",
+            "other": "Проголосовали {count} человек ",
+            "few": "Проголосовали {count} человека ",
+            "many": "Проголосовали {count} человек "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "link": "Войдите",
+            "after": ", чтобы опубликовать."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "link": "Войдите",
+            "after": ", чтобы ответить."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "after": " репостнул(а)"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "В ответ на "
+        },
+        "untitled": "Этот пост",
+        "jumpToStart": "К началу треда"
+    },
+    "TopicSummaryCard": {
+        "label": "Сводка, сгенерированная ИИ"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Добро пожаловать в "
+        },
+        "paragraphs": [
+            "Напишите что-нибудь в поле ниже — и это появится в вашей ленте. Ответить может кто угодно, а ответ — это просто пост со ссылкой на родителя, так что обсуждения вкладываются на любую глубину.",
+            "Добавляйте людей в друзья — их посты появятся в вашей ленте друзей. Глобальная лента (название сайта слева вверху) показывает всё, что здесь пишут: там можно найти, кого добавить.",
+            "Этот сайт — часть Федиверса: можно подписываться на аккаунты Mastodon и других серверов по их полному адресу, а ваши посты доходят до тех, кто подписан на вас там. Найдите адрес вида @someone@example.social — и сервер отыщет владельца.",
+            "Отмечайте посты #хэштегами — пост появится на странице тега, а если о теме пишут многие, то и в «Актуальном».",
+            "Личные сообщения между участниками защищены сквозным шифрованием: сервер хранит только шифротекст, который не может прочитать. Включается в настройках.",
+            "Публиковать сразу не обязательно: сохраните черновик или задайте время — пост выйдет сам. И то и другое лежит в «Черновиках и отложенных»."
+        ],
+        "more": {
+            "before": "Подробнее — на ",
+            "link": "страницах справки",
+            "after": ", в том числе о переносе аккаунта с другого сервера."
+        },
+        "dontShowAgain": "Больше не показывать"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Вставить эмодзи"
+    },
+    "LinkImagePreview": {
+        "alt": "Картинка предпросмотра ссылки"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Удалить изображение"
+    },
+    "LinkItem": {
+        "alt": "Картинка предпросмотра ссылки"
+    },
+    "MapScrubber": {
+        "play": "Воспроизвести",
+        "pause": "Пауза",
+        "cumulativeMode": "Всё до этой даты",
+        "windowMode": "Только этот период",
+        "rangeLabel": "Показывать посты по дату",
+        "cumulativeLabel": {
+            "one": "Опубликовано до {date} — {count} пост",
+            "other": "Опубликовано до {date} — {count} постов",
+            "few": "Опубликовано до {date} — {count} поста",
+            "many": "Опубликовано до {date} — {count} постов"
+        },
+        "windowLabel": {
+            "one": "Опубликовано около {date} — {count} пост",
+            "other": "Опубликовано около {date} — {count} постов",
+            "few": "Опубликовано около {date} — {count} поста",
+            "many": "Опубликовано около {date} — {count} постов"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Пост {name}",
+        "pageTitleUntitled": "Пост",
+        "imageAltByAuthor": "Фото, опубликованное {name}",
+        "imageAltUntitled": "Фото"
+    },
+    "PostBookmarkButton": {
+        "remove": "Убрать закладку",
+        "add": "В закладки"
+    },
+    "PostRepostButton": {
+        "undo": "Отменить репост",
+        "repost": "Репост"
+    },
+    "QuotedPost": {
+        "viewLink": "Открыть цитируемый пост"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Входящие заявки"
+    },
+    "SearchClearButton": {
+        "label": "Очистить поиск"
+    },
+    "SitePolicyLinks": {
+        "terms": "Условия предоставления услуг",
+        "privacy": "Политика конфиденциальности"
+    },
+    "TopicHeading": {
+        "searchLink": "Искать по этой теме",
+        "noPosts": "Сейчас об этом никто не пишет."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Ничего подобного еще не было написано."
+    },
+    "TrendingEntitySection": {
+        "heading": "тенденция"
+    },
+    "PostLocationLink": {
+        "title": "Покажите это место на карте",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "только что",
+        "minutes": {
+            "one": "{count} минута назад",
+            "other": "{count} минут назад",
+            "few": "{count} минуты назад",
+            "many": "{count} минут назад"
+        },
+        "hours": {
+            "one": "{count} час назад",
+            "other": "{count} часов назад",
+            "few": "{count} часа назад",
+            "many": "{count} часов назад"
+        },
+        "days": {
+            "one": "{count} день назад",
+            "other": "{count} дней назад",
+            "few": "{count} дня назад",
+            "many": "{count} дней назад"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Тема",
+        "themes": {
+            "system": "Система матчей",
+            "light": "Обычный свет",
+            "dark": "Равнинная темнота",
+            "sepia": "Сепия",
+            "midnight": "Полночь",
+            "sunset": "Закат",
+            "rose": "Роза",
+            "forest": "Лес",
+            "ocean": "океан",
+            "lavender": "лаванда",
+            "gold": "Золото",
+            "hacker": "хакер",
+            "ironbow": "Железный лук",
+            "viridis": "Виридис",
+            "mako": "Мако",
+            "cividis": "Чивидис",
+            "ylgnbu": "ИлГнБу",
+            "cubehelix": "Кубехеликс",
+            "greyscale": "Серая шкала"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Перевод на этом сервере не выполняется.",
+        "nothing": "Здесь нечего переводить.",
+        "unknownSource": "Никто еще не выяснил, на каком языке находится этот пост, поэтому его нельзя перевести.",
+        "alreadyReadable": "Эта статья уже на этом языке.",
+        "unsupportedPair": "Этот сервер пока не может перевести этот язык."
+    },
+    "LanguagePrompt": {
+        "question": "Хотите посмотреть сайт на русском языке?",
+        "accept": "Да",
+        "decline": "Нет, спасибо"
+    },
+    "LanguageSelector": {
+        "label": "Язык языка",
+        "legend": "Язык языка"
+    }
+}

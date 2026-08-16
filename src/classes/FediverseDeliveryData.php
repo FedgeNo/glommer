@@ -11,6 +11,7 @@ class FediverseDeliveryData
     public ?string $activity = null;
     public ?int $attempts = null;
     public ?string $nextAttemptAt = null;
+    public ?string $claimedUntil = null;
     public ?string $lastError = null;
     public ?string $createdAt = null;
 }

@@ -22,6 +22,9 @@ class WebPush
 
     private const MAX_ATTEMPTS = 2;
 
+    /** Same claim lease as FediverseDelivery::CLAIM_SECONDS, same reasoning. */
+    private const CLAIM_SECONDS = 600;
+
     /** Push services cap payloads at 4KB; ours are a title and a URL. */
     private const RECORD_SIZE = 4096;
 
@@ -45,17 +48,36 @@ INSERT INTO `PushDeliveries` (`pushSubscriptionId`, `payload`)
 ', 'si', $payload, $user_id);
     }
 
-    /** Drains due rows - the federation worker's per-pass call. */
+    /**
+     * Drains due rows - the federation worker's per-pass call. The batch is
+     * claimed with the same expiring lease FediverseDelivery::due() stamps,
+     * so overlapping workers never push the same notification twice.
+     */
     public static function deliverDue(int $limit = 20): void
     {
-        $due = DB::rows('
+        $lease_seconds = self::CLAIM_SECONDS;
+
+        $due = DB::transaction(static function () use ($limit, $lease_seconds): array {
+            $rows = DB::rows('
 SELECT `PushDeliveries`.*, `PushSubscriptions`.`endpoint`, `PushSubscriptions`.`p256dh`, `PushSubscriptions`.`auth`
     FROM `PushDeliveries`
     JOIN `PushSubscriptions` ON `PushSubscriptions`.`pushSubscriptionId` = `PushDeliveries`.`pushSubscriptionId`
-    WHERE `PushDeliveries`.`nextAttemptAt` <= NOW()
+    WHERE `PushDeliveries`.`nextAttemptAt` <= NOW() AND (`PushDeliveries`.`claimedUntil` IS NULL OR `PushDeliveries`.`claimedUntil` <= NOW())
     ORDER BY `PushDeliveries`.`nextAttemptAt`, `PushDeliveries`.`pushDeliveryId`
     LIMIT ' . max(1, $limit) . '
+    FOR UPDATE SKIP LOCKED
 ', \stdClass::class);
+
+            foreach ($rows as $row) {
+                DB::run('
+UPDATE `PushDeliveries`
+    SET `claimedUntil` = NOW() + INTERVAL ? SECOND
+    WHERE `pushDeliveryId` = ?
+', 'ii', $lease_seconds, (int) $row -> pushDeliveryId);
+            }
+
+            return $rows;
+        });
 
         foreach ($due as $delivery) {
             self::attempt($delivery);
@@ -98,9 +120,11 @@ DELETE
             return;
         }
 
+        // The claim is released with the reschedule, so the retry is
+        // anyone's to take when it comes due.
         DB::run('
 UPDATE `PushDeliveries`
-    SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND
+    SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND, `claimedUntil` = NULL
     WHERE `pushDeliveryId` = ?
 ', 'ii', self::RETRY_DELAY_SECONDS, (int) $delivery -> pushDeliveryId);
     }

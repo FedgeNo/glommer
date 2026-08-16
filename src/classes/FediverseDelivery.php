@@ -25,6 +25,13 @@ class FediverseDelivery
     public const BATCH_SIZE = 20;
 
     /**
+     * How long a claimed row stays a worker's alone. Comfortably longer than a
+     * whole batch of slow deliveries, and short enough that a worker dying
+     * mid-batch only delays its rows by minutes.
+     */
+    public const CLAIM_SECONDS = 600;
+
+    /**
      * Queues one activity for every inbox given. Encoding happens once, here,
      * so the worker sends the same bytes to every destination and a payload
      * that cannot be encoded fails at the point it was built rather than
@@ -63,23 +70,44 @@ INSERT INTO `FediverseDeliveries` (`actorUserId`, `inboxURL`, `activity`)
     }
 
     /**
-     * The next rows that are due. Ordered by when they became due so a retry
-     * that has waited longest goes first, which keeps one unreachable server
-     * from starving everything queued behind it.
+     * The next rows that are due, claimed for this worker alone. Ordered by
+     * when they became due so a retry that has waited longest goes first,
+     * which keeps one unreachable server from starving everything queued
+     * behind it.
+     *
+     * Claimed, not just read: the batch is stamped with an expiring lease
+     * inside one transaction, with SKIP LOCKED keeping two workers out of
+     * each other's rows, so overlapping workers never send the same activity
+     * twice. The lease lapses on its own, so a worker that dies mid-batch
+     * only delays its rows rather than stranding them.
      *
      * @return FediverseDeliveryData[]
      */
     public static function due(): array
     {
         $limit = self::BATCH_SIZE;
+        $lease_seconds = self::CLAIM_SECONDS;
 
-        return DB::rows('
+        return DB::transaction(static function () use ($limit, $lease_seconds): array {
+            $rows = DB::rows('
 SELECT *
     FROM `FediverseDeliveries`
-    WHERE `nextAttemptAt` <= NOW()
+    WHERE `nextAttemptAt` <= NOW() AND (`claimedUntil` IS NULL OR `claimedUntil` <= NOW())
     ORDER BY `nextAttemptAt`, `deliveryId`
     LIMIT ?
+    FOR UPDATE SKIP LOCKED
 ', 'FediverseDeliveryData', 'i', $limit);
+
+            foreach ($rows as $row) {
+                DB::run('
+UPDATE `FediverseDeliveries`
+    SET `claimedUntil` = NOW() + INTERVAL ? SECOND
+    WHERE `deliveryId` = ?
+', 'ii', $lease_seconds, $row -> deliveryId);
+            }
+
+            return $rows;
+        });
     }
 
     public static function succeeded(int $delivery_id): void
@@ -112,10 +140,11 @@ DELETE FROM `FediverseDeliveries`
 
         // Cut by character rather than by byte: the message is whatever a
         // remote server said, and half a UTF-8 sequence is not storable in a
-        // utf8mb4 column.
+        // utf8mb4 column. The claim is released with the reschedule, so the
+        // retry is anyone's to take when it comes due.
         DB::run('
 UPDATE `FediverseDeliveries`
-    SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND, `lastError` = ?
+    SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND, `lastError` = ?, `claimedUntil` = NULL
     WHERE `deliveryId` = ?
 ', 'isi', $delay_seconds, mb_substr($error, 0, 255), $delivery_id);
 

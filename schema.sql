@@ -710,6 +710,8 @@ CREATE TABLE `RelayFetches` (
   `objectURI` varchar(255) NOT NULL,
   `attempts` int(10) unsigned NOT NULL DEFAULT 0,
   `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  -- Same claim lease as FediverseDeliveries.claimedUntil.
+  `claimedUntil` datetime DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`relayFetchId`),
   UNIQUE KEY `objectURI` (`objectURI`),
@@ -816,6 +818,10 @@ CREATE TABLE `FediverseDeliveries` (
   `activity` mediumtext NOT NULL,
   `attempts` int(10) unsigned NOT NULL DEFAULT 0,
   `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  -- The claim lease: a worker stamps the batch it takes so an overlapping
+  -- worker never delivers the same row, and the stamp expires on its own so a
+  -- worker that died mid-batch only delays its rows.
+  `claimedUntil` datetime DEFAULT NULL,
   `lastError` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`deliveryId`),
@@ -1024,6 +1030,8 @@ CREATE TABLE `PushDeliveries` (
   `payload` text NOT NULL,
   `attempts` int(10) unsigned NOT NULL DEFAULT 0,
   `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  -- Same claim lease as FediverseDeliveries.claimedUntil.
+  `claimedUntil` datetime DEFAULT NULL,
   PRIMARY KEY (`pushDeliveryId`),
   KEY `nextAttemptAt_pushDeliveryId` (`nextAttemptAt`,`pushDeliveryId`),
   KEY `fk_pushdeliveries_subscription` (`pushSubscriptionId`),

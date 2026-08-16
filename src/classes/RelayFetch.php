@@ -35,6 +35,9 @@ class RelayFetch
 
     public const BATCH_SIZE = 20;
 
+    /** Same claim lease as FediverseDelivery::CLAIM_SECONDS, same reasoning. */
+    public const CLAIM_SECONDS = 600;
+
     // Declared so a row fetched via DB::row()/DB::rows() doesn't set them as
     // deprecated dynamic properties.
     public ?int $relayFetchId = null;
@@ -42,6 +45,7 @@ class RelayFetch
     public ?string $objectURI = null;
     public ?int $attempts = null;
     public ?string $nextAttemptAt = null;
+    public ?string $claimedUntil = null;
     public ?string $createdAt = null;
 
     /**
@@ -73,21 +77,37 @@ INSERT INTO `RelayFetches` (`objectURI`, `relayId`)
     }
 
     /**
-     * The next posts due to be read, oldest first.
+     * The next posts due to be read, oldest first, claimed for this worker
+     * alone - the same expiring-lease claim FediverseDelivery::due() makes,
+     * so overlapping workers never read the same post twice.
      *
      * @return self[]
      */
     public static function due(): array
     {
         $limit = self::BATCH_SIZE;
+        $lease_seconds = self::CLAIM_SECONDS;
 
-        return DB::rows('
+        return DB::transaction(static function () use ($limit, $lease_seconds): array {
+            $rows = DB::rows('
 SELECT *
     FROM `RelayFetches`
-    WHERE `nextAttemptAt` <= NOW()
+    WHERE `nextAttemptAt` <= NOW() AND (`claimedUntil` IS NULL OR `claimedUntil` <= NOW())
     ORDER BY `nextAttemptAt`, `relayFetchId`
     LIMIT ?
+    FOR UPDATE SKIP LOCKED
 ', self::class, 'i', $limit);
+
+            foreach ($rows as $row) {
+                DB::run('
+UPDATE `RelayFetches`
+    SET `claimedUntil` = NOW() + INTERVAL ? SECOND
+    WHERE `relayFetchId` = ?
+', 'ii', $lease_seconds, $row -> relayFetchId);
+            }
+
+            return $rows;
+        });
     }
 
     public static function done(int $relay_fetch_id): void
@@ -115,9 +135,11 @@ DELETE
 
         $delay_seconds = 300;
 
+        // The claim is released with the reschedule, so the retry is
+        // anyone's to take when it comes due.
         DB::run('
 UPDATE `RelayFetches`
-    SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND
+    SET `attempts` = `attempts` + 1, `nextAttemptAt` = NOW() + INTERVAL ? SECOND, `claimedUntil` = NULL
     WHERE `relayFetchId` = ?
 ', 'ii', $delay_seconds, $relay_fetch_id);
     }

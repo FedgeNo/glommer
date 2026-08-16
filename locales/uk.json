@@ -2,9 +2,9 @@
     "PollOptionVotes": {
         "votes": {
             "one": "{count} голос",
+            "other": "{count} голосів",
             "few": "{count} голоси",
-            "many": "{count} голосів",
-            "other": "{count} голосів"
+            "many": "{count} голосів"
         }
     },
     "LoginPrompt": {
@@ -361,6 +361,43 @@
         },
         "deletedAccount": "видалений обліковий запис",
         "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "січня",
+            "2": "лютого",
+            "3": "березня",
+            "4": "квітня",
+            "5": "травня",
+            "6": "червня",
+            "7": "липня",
+            "8": "серпня",
+            "9": "вересня",
+            "10": "жовтня",
+            "11": "листопада",
+            "12": "грудня"
+        },
+        "shortMonths": {
+            "1": "січ.",
+            "2": "лют.",
+            "3": "бер.",
+            "4": "квіт.",
+            "5": "трав.",
+            "6": "черв.",
+            "7": "лип.",
+            "8": "серп.",
+            "9": "вер.",
+            "10": "жовт.",
+            "11": "лист.",
+            "12": "груд."
+        },
+        "long": "{day} {month} {year} р.",
+        "short": "{day} {month} {year} р.",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} о {time}",
+        "am": "дп",
+        "pm": "пп",
+        "clock": 24
     },
     "EnvironmentChecker": {
         "wsCannotConnect": "Не вдалося під'єднатися до сервера WebSocket на 127.0.0.1:{port}{tls} ({error}). Запустіть його: systemctl --user start glommer-websocket (файл юніта — у README.md). Якщо WS_TLS_CERT/WS_TLS_KEY щойно з'явилися чи зникли, перезапустіть його, щоб він відповідав .env.",
@@ -811,9 +848,9 @@
         "reply": "Відповісти",
         "replies": {
             "one": "Відповіді ({count})",
+            "other": "Відповіді ({count})",
             "few": "Відповіді ({count})",
-            "many": "Відповіді ({count})",
-            "other": "Відповіді ({count})"
+            "many": "Відповіді ({count})"
         }
     },
     "PostEditedMarker": {
@@ -851,30 +888,30 @@
         },
         "days": {
             "one": "через {count} день",
+            "other": "через {count} днів",
             "few": "через {count} дні",
-            "many": "через {count} днів",
-            "other": "через {count} днів"
+            "many": "через {count} днів"
         },
         "hours": {
             "one": "через {count} годину",
+            "other": "через {count} годин",
             "few": "через {count} години",
-            "many": "через {count} годин",
-            "other": "через {count} годин"
+            "many": "через {count} годин"
         },
         "minutes": {
             "one": "через {count} хвилину",
+            "other": "через {count} хвилин",
             "few": "через {count} хвилини",
-            "many": "через {count} хвилин",
-            "other": "через {count} хвилин"
+            "many": "через {count} хвилин"
         },
         "underMinute": "менш ніж за хвилину"
     },
     "PollTally": {
         "voters": {
             "one": "Проголосувала {count} особа ",
+            "other": "Проголосувало {count} осіб ",
             "few": "Проголосували {count} особи ",
-            "many": "Проголосувало {count} осіб ",
-            "other": "Проголосувало {count} осіб "
+            "many": "Проголосувало {count} осіб "
         }
     },
     "PostComposer": {
@@ -948,15 +985,15 @@
         "rangeLabel": "Показувати дописи по дату",
         "cumulativeLabel": {
             "one": "Опубліковано до {date} — {count} допис",
+            "other": "Опубліковано до {date} — {count} дописів",
             "few": "Опубліковано до {date} — {count} дописи",
-            "many": "Опубліковано до {date} — {count} дописів",
-            "other": "Опубліковано до {date} — {count} дописів"
+            "many": "Опубліковано до {date} — {count} дописів"
         },
         "windowLabel": {
             "one": "Опубліковано близько {date} — {count} допис",
+            "other": "Опубліковано близько {date} — {count} дописів",
             "few": "Опубліковано близько {date} — {count} дописи",
-            "many": "Опубліковано близько {date} — {count} дописів",
-            "other": "Опубліковано близько {date} — {count} дописів"
+            "many": "Опубліковано близько {date} — {count} дописів"
         }
     },
     "Post": {
@@ -1010,21 +1047,21 @@
         "justNow": "щойно",
         "minutes": {
             "one": "{count} хв тому",
+            "other": "{count} хв тому",
             "few": "{count} хв тому",
-            "many": "{count} хв тому",
-            "other": "{count} хв тому"
+            "many": "{count} хв тому"
         },
         "hours": {
             "one": "{count} год тому",
+            "other": "{count} год тому",
             "few": "{count} год тому",
-            "many": "{count} год тому",
-            "other": "{count} год тому"
+            "many": "{count} год тому"
         },
         "days": {
             "one": "{count} дн тому",
+            "other": "{count} дн тому",
             "few": "{count} дн тому",
-            "many": "{count} дн тому",
-            "other": "{count} дн тому"
+            "many": "{count} дн тому"
         }
     },
     "ThemeSelector": {

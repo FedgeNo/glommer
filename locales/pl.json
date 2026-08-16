@@ -160,7 +160,8 @@
     },
     "TwoFactorForm": {
         "legend": "Wpisz kod weryfikacyjny",
-        "explanation": "Wysłaliśmy ci e-mailem kod weryfikacyjny. Wpisz go poniżej, aby dokończyć logowanie.",
+        "explanation": "Wysłaliśmy ci e-mailem kod weryfikacyjny. Wpisz go poniżej lub użyj jednego ze swoich kodów odzyskiwania, aby dokończyć logowanie.",
+        "explanationEmailFailed": "Nie udało nam się teraz wysłać ci kodu weryfikacyjnego e-mailem. Wpisz jeden ze swoich kodów odzyskiwania, aby dokończyć logowanie.",
         "code": "Kod weryfikacyjny",
         "submit": "Zweryfikuj"
     },
@@ -170,13 +171,21 @@
             "off": "Uwierzytelnianie dwuskładnikowe jest wyłączone"
         },
         "explanation": {
-            "on": "Podczas logowania wyślemy ci e-mailem kod weryfikacyjny, który trzeba będzie wpisać, aby dokończyć logowanie.",
-            "off": "Dodaj drugi krok logowania: wyślemy ci e-mailem kod weryfikacyjny, który trzeba będzie wpisać, aby samo hasło nie wystarczało do zalogowania."
+            "on": "Podczas logowania wyślemy ci e-mailem kod weryfikacyjny, który trzeba będzie wpisać, aby dokończyć logowanie. Jeśli e-mail do ciebie nie dotrze, zamiast tego zalogujesz się jednym ze swoich kodów odzyskiwania.",
+            "off": "Dodaj drugi krok logowania: wyślemy ci e-mailem kod weryfikacyjny, który trzeba będzie wpisać, aby samo hasło nie wystarczało do zalogowania. Otrzymasz jednorazowe kody odzyskiwania do zachowania na wypadek, gdyby e-mail do ciebie nie dotarł."
         },
         "currentPassword": "Obecne hasło",
         "submit": {
             "on": "Wyłącz uwierzytelnianie dwuskładnikowe",
             "off": "Włącz uwierzytelnianie dwuskładnikowe"
+        },
+        "regenerate": "Wygeneruj nowe kody odzyskiwania",
+        "recoveryHeading": "Twoje kody odzyskiwania",
+        "recoveryNote": "Zapisz je teraz w bezpiecznym miejscu - nie zostaną pokazane ponownie. Każdy z nich pozwala zalogować się raz, gdy e-mail weryfikacyjny do ciebie nie dotrze, a wygenerowanie nowych kodów zastępuje wszystkie te.",
+        "toast": {
+            "on": "Uwierzytelnianie dwuskładnikowe jest teraz włączone.",
+            "off": "Uwierzytelnianie dwuskładnikowe jest teraz wyłączone.",
+            "regenerated": "Wygenerowano nowe kody odzyskiwania. Stare już nie działają."
         }
     },
     "VerificationNotice": {

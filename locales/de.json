@@ -160,7 +160,8 @@
     },
     "TwoFactorForm": {
         "legend": "Gib deinen Bestätigungscode ein",
-        "explanation": "Wir haben dir einen Bestätigungscode per E-Mail geschickt. Gib ihn unten ein, um die Anmeldung abzuschließen.",
+        "explanation": "Wir haben dir einen Bestätigungscode per E-Mail geschickt. Gib ihn unten ein oder verwende einen deiner Wiederherstellungscodes, um die Anmeldung abzuschließen.",
+        "explanationEmailFailed": "Wir konnten dir deinen Bestätigungscode gerade nicht per E-Mail schicken. Gib einen deiner Wiederherstellungscodes ein, um die Anmeldung abzuschließen.",
         "code": "Bestätigungscode",
         "submit": "Bestätigen"
     },
@@ -170,13 +171,21 @@
             "off": "Zwei-Faktor-Authentifizierung ist deaktiviert"
         },
         "explanation": {
-            "on": "Beim Anmelden schicken wir dir einen Bestätigungscode per E-Mail, den du eingeben musst, um die Anmeldung abzuschließen.",
-            "off": "Füge der Anmeldung einen zweiten Schritt hinzu: Wir schicken dir einen Bestätigungscode per E-Mail, den du eingeben musst, damit dein Passwort allein nicht zum Anmelden reicht."
+            "on": "Beim Anmelden schicken wir dir einen Bestätigungscode per E-Mail, den du eingeben musst, um die Anmeldung abzuschließen. Falls dich die E-Mail nicht erreichen kann, meldet dich stattdessen einer deiner Wiederherstellungscodes an.",
+            "off": "Füge der Anmeldung einen zweiten Schritt hinzu: Wir schicken dir einen Bestätigungscode per E-Mail, den du eingeben musst, damit dein Passwort allein nicht zum Anmelden reicht. Du erhältst Wiederherstellungscodes zum Aufbewahren, falls dich die E-Mail einmal nicht erreichen kann."
         },
         "currentPassword": "Aktuelles Passwort",
         "submit": {
             "on": "Zwei-Faktor-Authentifizierung deaktivieren",
             "off": "Zwei-Faktor-Authentifizierung aktivieren"
+        },
+        "regenerate": "Neue Wiederherstellungscodes generieren",
+        "recoveryHeading": "Deine Wiederherstellungscodes",
+        "recoveryNote": "Speichere diese jetzt an einem sicheren Ort - sie werden nicht noch einmal angezeigt. Jeder meldet dich einmal an, wenn dich die Bestätigungs-E-Mail nicht erreichen kann, und das Generieren neuer Codes ersetzt alle bisherigen.",
+        "toast": {
+            "on": "Die Zwei-Faktor-Authentifizierung ist jetzt aktiviert.",
+            "off": "Die Zwei-Faktor-Authentifizierung ist jetzt deaktiviert.",
+            "regenerated": "Neue Wiederherstellungscodes wurden generiert. Deine alten funktionieren nicht mehr."
         }
     },
     "VerificationNotice": {

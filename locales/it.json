@@ -158,7 +158,8 @@
     },
     "TwoFactorForm": {
         "legend": "Inserisci il tuo codice di verifica",
-        "explanation": "Ti abbiamo inviato via email un codice di verifica. Inseriscilo qui sotto per completare l'accesso.",
+        "explanation": "Ti abbiamo inviato via email un codice di verifica. Inseriscilo qui sotto, oppure usa uno dei tuoi codici di recupero, per completare l'accesso.",
+        "explanationEmailFailed": "Al momento non siamo riusciti a inviarti il codice di verifica via email. Inserisci uno dei tuoi codici di recupero per completare l'accesso.",
         "code": "Codice di verifica",
         "submit": "Verifica"
     },
@@ -168,13 +169,21 @@
             "off": "L'autenticazione a due fattori non è attiva"
         },
         "explanation": {
-            "on": "Quando accedi, ti invieremo via email un codice di verifica che dovrai inserire per completare l'accesso.",
-            "off": "Aggiungi un secondo passaggio all'accesso: ti invieremo via email un codice di verifica che dovrai inserire, così la tua password da sola non basterà per entrare."
+            "on": "Quando accedi, ti invieremo via email un codice di verifica che dovrai inserire per completare l'accesso. Se l'email non riesce a raggiungerti, uno dei tuoi codici di recupero ti farà accedere al suo posto.",
+            "off": "Aggiungi un secondo passaggio all'accesso: ti invieremo via email un codice di verifica che dovrai inserire, così la tua password da sola non basterà per entrare. Riceverai dei codici di recupero monouso da conservare, nel caso l'email non riesca a raggiungerti."
         },
         "currentPassword": "Password attuale",
         "submit": {
             "on": "Disattiva l'autenticazione a due fattori",
             "off": "Attiva l'autenticazione a due fattori"
+        },
+        "regenerate": "Genera nuovi codici di recupero",
+        "recoveryHeading": "I tuoi codici di recupero",
+        "recoveryNote": "Salvali subito in un posto sicuro - non verranno mostrati di nuovo. Ognuno ti fa accedere una sola volta quando l'email di verifica non riesce a raggiungerti, e generarne di nuovi sostituisce tutti questi.",
+        "toast": {
+            "on": "L'autenticazione a due fattori ora è attiva.",
+            "off": "L'autenticazione a due fattori ora non è attiva.",
+            "regenerated": "Nuovi codici di recupero generati. Quelli vecchi non funzionano più."
         }
     },
     "VerificationNotice": {

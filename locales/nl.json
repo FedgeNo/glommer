@@ -158,7 +158,8 @@
     },
     "TwoFactorForm": {
         "legend": "Voer je verificatiecode in",
-        "explanation": "We hebben je een verificatiecode gemaild. Voer deze hieronder in om het inloggen te voltooien.",
+        "explanation": "We hebben je een verificatiecode gemaild. Voer deze hieronder in, of gebruik een van je herstelcodes, om het inloggen te voltooien.",
+        "explanationEmailFailed": "We konden je verificatiecode nu niet per e-mail versturen. Voer een van je herstelcodes in om het inloggen te voltooien.",
         "code": "Verificatiecode",
         "submit": "Verifiëren"
     },
@@ -168,13 +169,21 @@
             "off": "Tweestapsverificatie staat uit"
         },
         "explanation": {
-            "on": "Als je inlogt, mailen we je een verificatiecode die je moet invoeren om het inloggen te voltooien.",
-            "off": "Voeg een tweede stap toe aan het inloggen: we mailen je een verificatiecode die je moet invoeren, zodat je wachtwoord alleen niet genoeg is om binnen te komen."
+            "on": "Als je inlogt, mailen we je een verificatiecode die je moet invoeren om het inloggen te voltooien. Als de e-mail je niet bereikt, kun je in plaats daarvan met een van je herstelcodes inloggen.",
+            "off": "Voeg een tweede stap toe aan het inloggen: we mailen je een verificatiecode die je moet invoeren, zodat je wachtwoord alleen niet genoeg is om binnen te komen. Je krijgt eenmalig te gebruiken herstelcodes om te bewaren, voor het geval de e-mail je niet bereikt."
         },
         "currentPassword": "Huidig wachtwoord",
         "submit": {
             "on": "Tweestapsverificatie uitschakelen",
             "off": "Tweestapsverificatie inschakelen"
+        },
+        "regenerate": "Nieuwe herstelcodes genereren",
+        "recoveryHeading": "Je herstelcodes",
+        "recoveryNote": "Bewaar deze nu ergens veilig - ze worden niet nog een keer getoond. Elke code logt je één keer in wanneer de verificatie-e-mail je niet bereikt, en het genereren van nieuwe codes vervangt al deze codes.",
+        "toast": {
+            "on": "Tweestapsverificatie staat nu aan.",
+            "off": "Tweestapsverificatie staat nu uit.",
+            "regenerated": "Nieuwe herstelcodes gegenereerd. Je oude codes werken niet meer."
         }
     },
     "VerificationNotice": {

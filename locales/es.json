@@ -158,7 +158,8 @@
     },
     "TwoFactorForm": {
         "legend": "Introduce tu código de verificación",
-        "explanation": "Te hemos enviado un código de verificación por correo. Introdúcelo abajo para terminar de iniciar sesión.",
+        "explanation": "Te hemos enviado un código de verificación por correo. Introdúcelo abajo, o usa uno de tus códigos de recuperación, para terminar de iniciar sesión.",
+        "explanationEmailFailed": "No hemos podido enviarte el código de verificación por correo en este momento. Introduce uno de tus códigos de recuperación para terminar de iniciar sesión.",
         "code": "Código de verificación",
         "submit": "Verificar"
     },
@@ -168,13 +169,21 @@
             "off": "La autenticación en dos pasos está desactivada"
         },
         "explanation": {
-            "on": "Cuando inicies sesión, te enviaremos por correo un código de verificación que deberás introducir para terminar de entrar.",
-            "off": "Añade un segundo paso al iniciar sesión: te enviaremos por correo un código de verificación que deberás introducir, de modo que tu contraseña por sí sola no baste para entrar."
+            "on": "Cuando inicies sesión, te enviaremos por correo un código de verificación que deberás introducir para terminar de entrar. Si el correo no logra llegarte, uno de tus códigos de recuperación te permitirá iniciar sesión de todas formas.",
+            "off": "Añade un segundo paso al iniciar sesión: te enviaremos por correo un código de verificación que deberás introducir, de modo que tu contraseña por sí sola no baste para entrar. Recibirás códigos de recuperación de un solo uso para guardarlos por si el correo no logra llegarte."
         },
         "currentPassword": "Contraseña actual",
         "submit": {
             "on": "Desactivar la autenticación en dos pasos",
             "off": "Activar la autenticación en dos pasos"
+        },
+        "regenerate": "Generar nuevos códigos de recuperación",
+        "recoveryHeading": "Tus códigos de recuperación",
+        "recoveryNote": "Guárdalos ahora en un lugar seguro: no volverán a mostrarse. Cada uno te permite iniciar sesión una vez cuando el correo de verificación no pueda llegarte, y generar códigos nuevos sustituye a todos estos.",
+        "toast": {
+            "on": "La autenticación en dos pasos ya está activada.",
+            "off": "La autenticación en dos pasos ya está desactivada.",
+            "regenerated": "Se generaron nuevos códigos de recuperación. Los anteriores ya no funcionan."
         }
     },
     "VerificationNotice": {

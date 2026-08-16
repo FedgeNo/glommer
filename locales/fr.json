@@ -158,7 +158,8 @@
     },
     "TwoFactorForm": {
         "legend": "Saisissez votre code de vérification",
-        "explanation": "Nous vous avons envoyé un code de vérification par e-mail. Saisissez-le ci-dessous pour terminer la connexion.",
+        "explanation": "Nous vous avons envoyé un code de vérification par e-mail. Saisissez-le ci-dessous, ou utilisez l'un de vos codes de récupération, pour terminer la connexion.",
+        "explanationEmailFailed": "Nous n'avons pas pu vous envoyer votre code de vérification par e-mail pour le moment. Saisissez l'un de vos codes de récupération pour terminer la connexion.",
         "code": "Code de vérification",
         "submit": "Vérifier"
     },
@@ -168,13 +169,21 @@
             "off": "L'authentification à deux facteurs est désactivée"
         },
         "explanation": {
-            "on": "Lorsque vous vous connectez, nous vous envoyons par e-mail un code de vérification que vous devez saisir pour terminer la connexion.",
-            "off": "Ajoutez une seconde étape à la connexion : nous vous enverrons par e-mail un code de vérification à saisir, afin que votre mot de passe seul ne suffise pas pour accéder à votre compte."
+            "on": "Lorsque vous vous connectez, nous vous envoyons par e-mail un code de vérification que vous devez saisir pour terminer la connexion. Si l'e-mail ne peut pas vous parvenir, l'un de vos codes de récupération vous connecte à la place.",
+            "off": "Ajoutez une seconde étape à la connexion : nous vous enverrons par e-mail un code de vérification à saisir, afin que votre mot de passe seul ne suffise pas pour accéder à votre compte. Vous recevrez des codes de récupération à usage unique à conserver au cas où l'e-mail ne pourrait pas vous parvenir."
         },
         "currentPassword": "Mot de passe actuel",
         "submit": {
             "on": "Désactiver l'authentification à deux facteurs",
             "off": "Activer l'authentification à deux facteurs"
+        },
+        "regenerate": "Générer de nouveaux codes de récupération",
+        "recoveryHeading": "Vos codes de récupération",
+        "recoveryNote": "Enregistrez-les dès maintenant dans un endroit sûr - ils ne seront plus affichés. Chacun vous permet de vous connecter une seule fois lorsque l'e-mail de vérification ne peut pas vous parvenir, et en générer de nouveaux remplace tous ceux-ci.",
+        "toast": {
+            "on": "L'authentification à deux facteurs est maintenant activée.",
+            "off": "L'authentification à deux facteurs est maintenant désactivée.",
+            "regenerated": "De nouveaux codes de récupération ont été générés. Les anciens ne fonctionnent plus."
         }
     },
     "VerificationNotice": {

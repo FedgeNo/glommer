@@ -158,7 +158,8 @@
     },
     "TwoFactorForm": {
         "legend": "Introduzir o teu código de verificação",
-        "explanation": "Enviámos-te um código de verificação por email. Introduz o código abaixo para terminares o início de sessão.",
+        "explanation": "Enviámos-te um código de verificação por email. Introduz o código abaixo, ou utiliza um dos teus códigos de recuperação, para terminares o início de sessão.",
+        "explanationEmailFailed": "Não conseguimos enviar-te o código de verificação por email neste momento. Introduz um dos teus códigos de recuperação para terminares o início de sessão.",
         "code": "Código de verificação",
         "submit": "Verificar"
     },
@@ -168,13 +169,21 @@
             "off": "A autenticação de dois fatores está desativada"
         },
         "explanation": {
-            "on": "Quando inicias sessão, enviamos-te por email um código de verificação que tens de introduzir para terminares o início de sessão.",
-            "off": "Acrescenta um segundo passo ao início de sessão: enviamos-te por email um código de verificação que tens de introduzir, para que a tua palavra-passe sozinha não seja suficiente para entrar."
+            "on": "Quando inicias sessão, enviamos-te por email um código de verificação que tens de introduzir para terminares o início de sessão. Se o email não te conseguir chegar, um dos teus códigos de recuperação inicia a sessão em vez disso.",
+            "off": "Acrescenta um segundo passo ao início de sessão: enviamos-te por email um código de verificação que tens de introduzir, para que a tua palavra-passe sozinha não seja suficiente para entrar. Vais receber códigos de recuperação de utilização única para guardares, caso o email não te consiga chegar."
         },
         "currentPassword": "Palavra-passe atual",
         "submit": {
             "on": "Desativar a autenticação de dois fatores",
             "off": "Ativar a autenticação de dois fatores"
+        },
+        "regenerate": "Gerar novos códigos de recuperação",
+        "recoveryHeading": "Os teus códigos de recuperação",
+        "recoveryNote": "Guarda-os agora num local seguro - não serão mostrados novamente. Cada um permite-te iniciar sessão uma vez quando o email de verificação não te conseguir chegar, e gerar novos códigos substitui todos estes.",
+        "toast": {
+            "on": "A autenticação de dois fatores está agora ativada.",
+            "off": "A autenticação de dois fatores está agora desativada.",
+            "regenerated": "Novos códigos de recuperação gerados. Os antigos deixaram de funcionar."
         }
     },
     "VerificationNotice": {

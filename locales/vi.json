@@ -160,7 +160,8 @@
     },
     "TwoFactorForm": {
         "legend": "Nhập mã xác minh của bạn",
-        "explanation": "Chúng tôi đã gửi email chứa mã xác minh cho bạn. Nhập mã đó bên dưới để hoàn tất đăng nhập.",
+        "explanation": "Chúng tôi đã gửi email chứa mã xác minh cho bạn. Nhập mã đó bên dưới, hoặc dùng một trong các mã khôi phục của bạn, để hoàn tất đăng nhập.",
+        "explanationEmailFailed": "Hiện chúng tôi không thể gửi email chứa mã xác minh cho bạn. Hãy nhập một trong các mã khôi phục của bạn để hoàn tất đăng nhập.",
         "code": "Mã xác minh",
         "submit": "Xác minh"
     },
@@ -170,13 +171,21 @@
             "off": "Xác thực hai yếu tố đang tắt"
         },
         "explanation": {
-            "on": "Khi bạn đăng nhập, chúng tôi sẽ gửi email chứa mã xác minh mà bạn phải nhập để hoàn tất đăng nhập.",
-            "off": "Thêm một bước nữa khi đăng nhập: chúng tôi sẽ gửi email chứa mã xác minh mà bạn phải nhập, để một mình mật khẩu không đủ để đăng nhập được."
+            "on": "Khi bạn đăng nhập, chúng tôi sẽ gửi email chứa mã xác minh mà bạn phải nhập để hoàn tất đăng nhập. Nếu email không đến được với bạn, một trong các mã khôi phục của bạn sẽ giúp bạn đăng nhập thay vào đó.",
+            "off": "Thêm một bước nữa khi đăng nhập: chúng tôi sẽ gửi email chứa mã xác minh mà bạn phải nhập, để một mình mật khẩu không đủ để đăng nhập được. Bạn sẽ nhận được các mã khôi phục dùng một lần để lưu lại, phòng khi email không đến được với bạn."
         },
         "currentPassword": "Mật khẩu hiện tại",
         "submit": {
             "on": "Tắt xác thực hai yếu tố",
             "off": "Bật xác thực hai yếu tố"
+        },
+        "regenerate": "Tạo mã khôi phục mới",
+        "recoveryHeading": "Mã khôi phục của bạn",
+        "recoveryNote": "Hãy lưu các mã này ở nơi an toàn ngay bây giờ - chúng sẽ không hiển thị lại lần nào nữa. Mỗi mã giúp bạn đăng nhập một lần khi email xác minh không đến được với bạn, và việc tạo mã mới sẽ thay thế toàn bộ các mã này.",
+        "toast": {
+            "on": "Xác thực hai yếu tố hiện đang bật.",
+            "off": "Xác thực hai yếu tố hiện đang tắt.",
+            "regenerated": "Đã tạo mã khôi phục mới. Các mã cũ không còn hoạt động."
         }
     },
     "VerificationNotice": {

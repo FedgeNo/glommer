@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-// Adds one interface string and translates it into every language the site has
-// a locale file for: `php bin/add-string.php PostCard.replyCount "{count}
-// replies"`.
+// Adds one interface string, in English only: `php bin/add-string.php
+// PostCard.replyCount "{count} replies"`.
 //
 // The English goes into locales/en.json, which is what makes the key stale in
-// every other locale; only that key is then translated, so this costs a moment
-// rather than the length of a whole pass. Naming a key that already exists
-// rewrites it, and every language is retranslated from the new wording - which
-// is the same thing editing en.json by hand would do, done in one step.
+// every other locale - naming a key that already exists rewrites it, and
+// every language falls stale from the new wording the same way. Nothing
+// beyond English is written here: a locale's own words for the new key come
+// from a direct, by-hand translation pass, not from this running one.
 
 if (PHP_SAPI !== 'cli') {
     exit(1);
@@ -85,33 +84,9 @@ if ($json === false) {
     exit(1);
 }
 
-// Checked, because everything after this point translates that key into every
-// language from an en.json this was supposed to have written: a refused write
-// would leave the English behind and the translations of it everywhere.
 if (file_put_contents($source, $json . "\n") === false) {
     fwrite(STDERR, 'Could not write ' . $source . ".\n");
     exit(1);
 }
 
 echo ($existing === null ? 'Added ' : 'Rewrote ') . $path . ': ' . $text . "\n";
-
-$translator = new StringTranslator([], false, [$path]);
-$locales = $translator -> locales();
-
-if ($locales === []) {
-    echo "No languages installed to translate it into.\n";
-    exit;
-}
-
-$started_at = microtime(true);
-
-// The English is already written by now, so a failure here is one language
-// short rather than a lost string - said plainly, and the run reruns.
-try {
-    $translator -> run();
-} catch (\Throwable $exception) {
-    fwrite(STDERR, 'The English was saved; translating it failed: ' . $exception -> getMessage() . "\n");
-    exit(1);
-}
-
-echo count($locales) . ' locale(s) in ' . (int) round(microtime(true) - $started_at) . "s.\n";

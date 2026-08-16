@@ -1,0 +1,1099 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "یک رأی",
+            "other": "{count} رأی"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "وارد شوید",
+            "after": " تا پاسخ دهید."
+        },
+        "post": {
+            "before": "",
+            "link": "وارد شوید",
+            "after": " تا پست بگذارید."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "سایت",
+        "siteURLLabel": "نشانی سایت",
+        "siteTitleLabel": "عنوان سایت",
+        "mailFromAddressLabel": "نشانی فرستنده ایمیل",
+        "serverNameConfirmedLabel": "«ServerName {host}» و «UseCanonicalName On» را در پیکربندی وب‌سرورم تنظیم کرده‌ام (فقط زمانی بررسی می‌شود که آزمون خودکار زنده نتواند کامل شود - به بخش HTTPS در README.md مراجعه کنید)",
+        "databaseLegend": "پایگاه داده",
+        "databaseHostLabel": "میزبان پایگاه داده",
+        "databasePortLabel": "درگاه پایگاه داده",
+        "databaseNameLabel": "نام پایگاه داده",
+        "databaseAdminUsernameLabel": "نام کاربری مدیر پایگاه داده",
+        "databaseAdminPasswordLabel": "گذرواژه مدیر پایگاه داده",
+        "webSocketTLSLegend": "WebSocket TLS (اختیاری)",
+        "certificatePathLabel": "مسیر گواهی",
+        "certificatePathPlaceholder": "برای تولید خودکار با mkcert خالی بگذارید",
+        "keyPathLabel": "مسیر کلید",
+        "keyPathPlaceholder": "برای تولید خودکار با mkcert خالی بگذارید",
+        "botProtectionLegend": "محافظت در برابر ربات (اختیاری)",
+        "turnstileSiteKeyLabel": "کلید سایت Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "برای رد شدن از آن خالی بگذارید",
+        "turnstileSecretKeyLabel": "کلید مخفی Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "برای رد شدن از آن خالی بگذارید",
+        "submit": "راه‌اندازی"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "عبارت عبور فعلی",
+        "newPassphraseLabel": "عبارت عبور جدید",
+        "confirmNewPassphraseLabel": "تأیید عبارت عبور جدید",
+        "accountPasswordLabel": "گذرواژه حساب",
+        "submit": "تغییر عبارت عبور"
+    },
+    "PasswordResetForm": {
+        "legend": "گذرواژه جدید انتخاب کنید",
+        "newPasswordLabel": "گذرواژه جدید",
+        "newPasswordPlaceholder": "دست‌کم ۸ نویسه",
+        "confirmPasswordLabel": "تأیید گذرواژه جدید",
+        "submit": "بازنشانی گذرواژه"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "گذرواژه‌تان را بازنشانی کنید",
+        "emailLabel": "ایمیل",
+        "submit": "ارسال پیوند بازنشانی"
+    },
+    "EmailRevertForm": {
+        "submit": "بازگرداندن تغییر ایمیل"
+    },
+    "EmailVerifyForm": {
+        "submit": "تأیید نشانی ایمیل"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "فعال‌سازی دوباره"
+    },
+    "EmailDigestSetting": {
+        "label": "وقتی مدتی دور بوده‌ام، آنچه را از دست داده‌ام برایم ایمیل کن"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "دستگاه ناشناخته",
+        "browserOnOS": "{browser} روی {os}",
+        "thisDevice": " (این دستگاه)",
+        "lastUsed": {
+            "before": "آخرین استفاده ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "با این کار همهٔ نشست‌های فعال پایان می‌یابد و همهٔ دستگاه‌های به‌خاطرسپرده‌شده فراموش می‌شوند. از همهٔ مرورگرها، از جمله همین مرورگر، خارج خواهید شد."
+    },
+    "LogoutEverywhereButton": {
+        "label": "خروج از همه‌جا"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "تأیید با Google برای حذف"
+    },
+    "GoogleSignInButton": {
+        "label": "ادامه با Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "ویرایش نمایه"
+    },
+    "PushNotificationSetting": {
+        "explanation": "حتی وقتی سایت باز نیست، روی این دستگاه اعلان دریافت کنید. این تنظیم مخصوص همین مرورگر است - آن را در هر مرورگری که می‌خواهید به شما اطلاع داده شود روشن کنید.",
+        "label": {
+            "off": "فعال‌سازی روی این دستگاه",
+            "on": "خاموش کردن روی این دستگاه"
+        },
+        "unsupported": "این مرورگر از اعلان فوری پشتیبانی نمی‌کند"
+    },
+    "LoginForm": {
+        "legend": "ورود",
+        "identifier": "نام کاربری یا ایمیل",
+        "password": "گذرواژه",
+        "rememberMe": "مرا به خاطر بسپار",
+        "submit": "ورود"
+    },
+    "SignupForm": {
+        "legend": "ساخت حساب کاربری",
+        "usernameLabel": "نام کاربری",
+        "usernamePlaceholder": "حروف کوچک انگلیسی، اعداد و _",
+        "emailLabel": "ایمیل",
+        "emailPlaceholder": "نشانی ایمیل معتبر",
+        "displayName": "نام نمایشی (اختیاری)",
+        "bioLabel": "بیوگرافی (اختیاری)",
+        "bioPlaceholder": "یک بیوگرافی کوتاه - #هشتگ‌ها، @منشن‌ها و پیوندها قابل‌کلیک می‌شوند",
+        "passwordLabel": "گذرواژه",
+        "passwordPlaceholder": "گذرواژه: دست‌کم ۸ نویسه",
+        "rememberMe": "مرا به خاطر بسپار",
+        "submit": "ثبت‌نام"
+    },
+    "PasswordChangeForm": {
+        "legend": "تغییر گذرواژه‌تان",
+        "currentPassword": "گذرواژه فعلی",
+        "newPasswordLabel": "گذرواژه جدید",
+        "newPasswordPlaceholder": "دست‌کم ۸ نویسه",
+        "confirmPassword": "تأیید گذرواژه جدید",
+        "submit": "تغییر گذرواژه"
+    },
+    "EmailChangeForm": {
+        "legend": "تغییر نشانی ایمیل‌تان",
+        "newEmail": "نشانی ایمیل جدید",
+        "currentPassword": "گذرواژه فعلی",
+        "notice": "پیش از آنکه بتوانید همچنان از سایت استفاده کنید، باید نشانی جدید را تأیید کنید.",
+        "submit": "تغییر ایمیل"
+    },
+    "AccountDeleteForm": {
+        "legend": "حذف حساب‌تان",
+        "warning": "این کار حساب، پست‌ها و پیام‌های شما را برای همیشه حذف می‌کند. این کار قابل بازگشت نیست.",
+        "currentPassword": "گذرواژه فعلی",
+        "submit": "حذف حساب"
+    },
+    "AccountMigrationForm": {
+        "legend": "انتقال به سرور دیگر",
+        "movedNotice": "این حساب به {destination} منتقل شده است. از دنبال‌کنندگان شما خواسته شده در آنجا شما را دنبال کنند.",
+        "explanation": "از دنبال‌کنندگان شما خواسته می‌شود حساب جدید را دنبال کنند. پست‌های شما همین‌جا می‌مانند - نشانی‌های اشیا متعلق به سروری‌اند که آن‌ها را ساخته، پس نمی‌توان آن‌ها را همراه برد.",
+        "addressNotice": "حسابی که به آن منتقل می‌شوید باید ابتدا این حساب را زیر «با نام‌های دیگر» فهرست کند. نشانی شما در اینجا {address} است.",
+        "movedToLabel": "انتقال به",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "با نام‌های دیگر",
+        "aliasesExplanation": "حساب‌هایی در جاهای دیگر که آن‌ها هم شما هستید. فهرست کردن یکی از آن‌ها در اینجا به آن حساب اجازه می‌دهد به این حساب منتقل شود - این خودِ اجازه است، نه خودِ انتقال. هر سطر یک نشانی.",
+        "aliasesLabel": "حساب‌های دیگر شما",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "ذخیره"
+    },
+    "TwoFactorForm": {
+        "legend": "کد تأیید را وارد کنید",
+        "explanation": "یک کد تأیید برایتان ایمیل کردیم. برای پایان دادن به ورود، آن را در زیر وارد کنید.",
+        "code": "کد تأیید",
+        "submit": "تأیید"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "تأیید دومرحله‌ای روشن است",
+            "off": "تأیید دومرحله‌ای خاموش است"
+        },
+        "explanation": {
+            "on": "هر بار که وارد می‌شوید، کد تأییدی برایتان ایمیل می‌کنیم که باید برای پایان دادن به ورود آن را وارد کنید.",
+            "off": "یک مرحله دیگر به ورود اضافه کنید: کد تأییدی برایتان ایمیل می‌کنیم که باید آن را وارد کنید، تا صرفِ گذرواژه‌تان برای ورود کافی نباشد."
+        },
+        "currentPassword": "گذرواژه فعلی",
+        "submit": {
+            "on": "خاموش کردن تأیید دومرحله‌ای",
+            "off": "روشن کردن تأیید دومرحله‌ای"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "لطفاً صندوق ورودی خود را بررسی کنید و برای تأیید نشانی ایمیل‌تان روی پیوند تأییدی که فرستادیم کلیک کنید. اگر آن را نمی‌بینید، پوشه هرزنامه یا جانک را بررسی کنید."
+    },
+    "VerificationResendButton": {
+        "label": "ارسال دوباره ایمیل تأیید"
+    },
+    "MailSettingsForm": {
+        "legend": "ایمیل خروجی",
+        "fromAddressLabel": "نشانی فرستنده",
+        "fromAddressPlaceholder": "تا این تنظیم نشود، ایمیلی فرستاده نمی‌شود",
+        "fromNameLabel": "نام فرستنده",
+        "hostLabel": "میزبان SMTP",
+        "portLabel": "درگاه SMTP",
+        "usernameLabel": "نام کاربری SMTP",
+        "passwordLabel": "گذرواژه SMTP",
+        "passwordPlaceholder": {
+            "set": "گذرواژه تنظیم شده - برای نگه داشتن آن، خالی بگذارید",
+            "unset": "گذرواژه SMTP"
+        },
+        "encryptionLabel": "رمزنگاری",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS، معمولاً روی درگاه 587)",
+            "ssl": "SSL (TLS ضمنی، معمولاً روی درگاه 465)",
+            "none": "هیچ‌کدام"
+        },
+        "explainer": "میزبان SMTP را خالی بگذارید تا ایمیل به‌جای این روش با تابع mail() در PHP فرستاده شود (توصیه نمی‌شود - به بخش قابلیت تحویل در README مراجعه کنید). تا نشانی «فرستنده» تنظیم نشود، اصلاً هیچ ایمیلی فرستاده نمی‌شود.",
+        "save": "ذخیره"
+    },
+    "MapSettingsForm": {
+        "legend": "کاشی‌های نقشه",
+        "notice": "برای استفاده از OpenStreetMap خالی بگذارید. برای استفاده از یک ارائه‌دهندهٔ کلیددار، الگوی نشانی آن را طوری بچسبانید که در جای کلید، عبارت {apiKey} به‌صورت واقعی نوشته شده باشد، به‌علاوه کلید و انتساب در زیر.",
+        "urlLabel": "الگوی نشانی کاشی",
+        "keyLabel": "کلید API",
+        "keyPlaceholder": "کلید API ارائه‌دهنده کاشی شما",
+        "attributionLabel": "انتساب",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "ذخیره"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "ورود با Google",
+        "clientIdLabel": "شناسه کلاینت",
+        "clientIdPlaceholder": "شناسه کلاینت OAuth در Google",
+        "secretLabel": "کلید مخفی کلاینت",
+        "secretPlaceholder": {
+            "set": "کلید مخفی کلاینت تنظیم شده - برای نگه داشتن آن، خالی بگذارید",
+            "unset": "کلید مخفی OAuth در Google"
+        },
+        "explainer": "برای اینکه «ادامه با Google» هنگام ثبت‌نام و ورود نمایش داده شود، هر دو لازم‌اند. در کلاینت OAuth Google خودتان، نشانی بازگشتِ مجاز را {url} تنظیم کنید - برای خاموش کردن آن، شناسه کلاینت را پاک کنید.",
+        "save": "ذخیره"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "کلید سایت",
+        "turnstileSiteKeyPlaceholder": "کلید سایت Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "کلید مخفی",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "کلید مخفی تنظیم شده - برای نگه داشتن آن، خالی بگذارید",
+            "unset": "کلید مخفی Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "برای نمایش CAPTCHA هنگام ثبت‌نام و ورود، هر دو کلید لازم‌اند. برای خاموش کردن آن، کلید سایت را پاک کنید.",
+        "recaptchaLegend": "Google reCAPTCHA (بازیابی حساب قفل‌شده)",
+        "recaptchaSiteKeyLabel": "کلید سایت",
+        "recaptchaSiteKeyPlaceholder": "کلید سایت Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "کلید مخفی",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "کلید مخفی تنظیم شده - برای نگه داشتن آن، خالی بگذارید",
+            "unset": "کلید مخفی Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "هر دو کلید لازم‌اند. وقتی تنظیم شده باشند، حسابی که به محدودیت تلاش‌های ورود برسد می‌تواند به‌جای صبر کردن تا پایان قفل، با گذراندن این آزمون دوباره وارد شود؛ وقتی تنظیم نشده باشند، قفل یک انتظار اجباری است. از reCAPTCHA v2 استفاده کنید («من ربات نیستم»). برای خاموش کردن آن، کلید سایت را پاک کنید.",
+        "save": "ذخیره"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "این سرویس را ویژگی‌های هوش مصنوعی سایت (خلاصه‌های موضوعات داغ و مانند آن) به کار می‌گیرند. مدل را خالی بگذارید تا از Free Models Router استفاده شود، که OpenRouter آن را به‌طور تصادفی از میان مدل‌های رایگانِ فعلی انتخاب می‌کند و هرگز هزینه‌ای در پی ندارد.",
+        "keyLabel": "کلید API",
+        "keyPlaceholder": {
+            "set": "کلید API تنظیم شده - برای نگه داشتن آن، خالی بگذارید",
+            "unset": "کلید API مربوط به OpenRouter"
+        },
+        "clearKeyLabel": "حذف کلید API ذخیره‌شده (ویژگی‌های هوش مصنوعی را خاموش می‌کند)",
+        "modelLabel": "مدل",
+        "neverSpendLabel": "هرگز اجازه نده این هزینه‌ای صرف کند (توصیه‌شده)",
+        "explainer": "با روشن بودن این محافظ، سقف قیمت هر درخواست صفر تعیین می‌شود، بنابراین وقتی هیچ ارائه‌دهنده رایگانی در دسترس نباشد، درخواست کاملاً شکست می‌خورد نه اینکه به مدلی پولی برگردد. برای خاموش کردن کامل ویژگی‌های هوش مصنوعی، کلید API ذخیره‌شده را حذف کنید.",
+        "save": "ذخیره"
+    },
+    "AboutSettingsForm": {
+        "legend": "درباره",
+        "description": "متن ساده - خط‌های خالی پاراگراف‌ها را از هم جدا می‌کنند. پاراگراف اول به‌عنوان توضیح سایت استفاده می‌شود.",
+        "save": "ذخیره"
+    },
+    "TermsSettingsForm": {
+        "legend": "شرایط استفاده از خدمات",
+        "description": "متن ساده - خط‌های خالی پاراگراف‌ها را از هم جدا می‌کنند.",
+        "save": "ذخیره"
+    },
+    "PrivacySettingsForm": {
+        "legend": "سیاست حریم خصوصی",
+        "description": "متن ساده - خط‌های خالی پاراگراف‌ها را از هم جدا می‌کنند.",
+        "save": "ذخیره"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "خلاصه ایمیلی",
+        "fieldLabel": "پاراگراف پایانی",
+        "notice": "نزدیک انتهای هر خلاصه، بعد از فهرست آنچه عضو از دست داده، افزوده می‌شود. متن ساده. برای بازگشت به متنی که این نرم‌افزار همراه خود دارد، آن را خالی بگذارید.",
+        "save": "ذخیره"
+    },
+    "FaviconSettingsForm": {
+        "legend": "فاوآیکون",
+        "currentAlt": "فاوآیکون فعلی",
+        "save": "بارگذاری فاوآیکون"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "تصویر صفحه اصلی",
+        "explainer": "وقتی کسی پیوندی از این سایت را جایی دیگر به‌اشتراک بگذارد نشان داده می‌شود - فقط ابرداده Open Graph است و هرگز در خود صفحه دیده نمی‌شود. با برش به اندازه 1200×630. بدون آن، پیش‌نمایش پیوند اصلاً تصویری ندارد.",
+        "currentAlt": "تصویر صفحه اصلی فعلی",
+        "save": "بارگذاری تصویر"
+    },
+    "CarouselAutoplayButton": {
+        "name": "پخش خودکار"
+    },
+    "CarouselNextButton": {
+        "name": "بعدی"
+    },
+    "CarouselPrevButton": {
+        "name": "قبلی"
+    },
+    "MediaFullscreenButton": {
+        "name": "تمام‌صفحه"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "حذف فایل‌ها"
+    },
+    "NotificationDropdown": {
+        "showAll": "نمایش همه"
+    },
+    "HelpSearch": {
+        "placeholder": "جستجو در راهنما…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "متوجه شدم"
+    },
+    "StagedPostDiscardButton": {
+        "name": "دور انداختن"
+    },
+    "StagedPostEditButton": {
+        "name": "ویرایش"
+    },
+    "StagedPostPublishButton": {
+        "name": "انتشار فوری"
+    },
+    "LogoutButton": {
+        "name": "خروج"
+    },
+    "AvatarUploadForm": {
+        "submit": "به‌روزرسانی آواتار"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "جستجوی کاربران بن‌شده…"
+    },
+    "BannedUserSection": {
+        "heading": "کاربران بن‌شده"
+    },
+    "SentFriendRequestSection": {
+        "heading": "درخواست‌های ارسالی (در انتظار پاسخ)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "بن‌شده توسط {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "مسدود شده توسط {name} ",
+            "after": ""
+        },
+        "deletedAccount": "یک حساب حذف‌شده",
+        "reason": " - {reason}"
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "اتصال به سرور WebSocket روی 127.0.0.1:{port}{tls} ممکن نشد ({error}). ابتدا آن را اجرا کنید: systemctl --user start glommer-websocket (برای فایل واحد آن به README.md مراجعه کنید). اگر همین الان WS_TLS_CERT یا WS_TLS_KEY را به‌دست آورده یا از دست داده، آن را دوباره راه‌اندازی کنید تا با .env هماهنگ شود.",
+        "wsOverTLS": " از طریق TLS",
+        "wsBadHandshake": "سرویس روی 127.0.0.1:{port} یک دست‌دهی WebSocket معتبر را کامل نکرد - شاید چیزی غیر از bin/websocket-server.php روی آن درگاه در حال گوش دادن باشد.",
+        "wsNoPong": "سرور WebSocket دست‌دهی را پذیرفت اما به پینگ پاسخ نداد - ممکن است گیر کرده یا دچار مشکل باشد. گزارش‌های آن را بررسی کنید.",
+        "wsReachable": "سرور WebSocket در دسترس است و روی 127.0.0.1:{port} پاسخ می‌دهد"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "هشتگ",
+            "person": "شخص",
+            "org": "سازمان",
+            "gpe": "مکان",
+            "loc": "منطقه",
+            "fac": "بنا",
+            "product": "محصول",
+            "event": "رویداد",
+            "work_of_art": "اثر",
+            "law": "قانون",
+            "language": "زبان",
+            "norp": "گروه"
+        },
+        "plural": {
+            "hashtag": "هشتگ‌ها",
+            "person": "افراد",
+            "org": "سازمان‌ها",
+            "gpe": "مکان‌ها",
+            "loc": "مناطق",
+            "fac": "بناها",
+            "product": "محصولات",
+            "event": "رویدادها",
+            "work_of_art": "آثار",
+            "law": "قوانین",
+            "language": "زبان‌ها",
+            "norp": "گروه‌ها"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "حذف دوست"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "پذیرفتن"
+    },
+    "FriendRequestDenyButton": {
+        "name": "رد کردن"
+    },
+    "UserFollowButton": {
+        "follow": "دنبال کردن",
+        "unfollow": "لغو دنبال کردن"
+    },
+    "UserBlockButton": {
+        "name": "مسدود کردن"
+    },
+    "UserUnblockButton": {
+        "name": "رفع مسدودیت"
+    },
+    "OtherUser": {
+        "message": "پیام"
+    },
+    "MainNavigation": {
+        "toggleLabel": "منو",
+        "loggedInAs": "واردشده به‌عنوان {name}",
+        "friendsFeed": "فید دوستان",
+        "relayFeed": "فید رله",
+        "users": "کاربران",
+        "tags": "هشتگ‌ها",
+        "topics": "موضوعات",
+        "map": "نقشه",
+        "locations": "مکان‌ها",
+        "search": "جستجو",
+        "messages": "پیام‌ها",
+        "bookmarks": "نشانک‌ها",
+        "help": "راهنما",
+        "about": "درباره",
+        "login": "ورود",
+        "signup": "ثبت‌نام",
+        "friends": "دوستان",
+        "drafts": "پیش‌نویس‌ها و زمان‌بندی‌شده‌ها",
+        "userSettings": "تنظیمات کاربری",
+        "modSettings": "تنظیمات نظارت",
+        "adminSettings": "تنظیمات مدیریت"
+    },
+    "LogoutForm": {
+        "submit": "خروج"
+    },
+    "User": {
+        "joined": "پیوسته در {date}"
+    },
+    "FriendRequestButton": {
+        "add": "افزودن دوست",
+        "cancel": "لغو درخواست"
+    },
+    "StagedPostWhen": {
+        "scheduled": "زمان‌بندی‌شده برای {when}",
+        "draft": "پیش‌نویس - فقط وقتی خودتان بخواهید منتشر می‌شود"
+    },
+    "MessageTranslateButton": {
+        "name": "ترجمه این پیام"
+    },
+    "MessageTranslationNotice": {
+        "heading": "درباره ترجمه پیام‌ها",
+        "body": "برای ترجمه یک پیام، متن آن به این سرور فرستاده و همین‌جا ترجمه می‌شود. چیزی نگه داشته نمی‌شود: ترجمه در پایگاه داده نوشته نمی‌شود و خودِ پیام بدون تغییر می‌ماند. اما پیامی که این‌طور ترجمه شده را سرور خوانده است، پس مثل پیام ترجمه‌نشده رمزنگاری‌شده سرتاسری نیست. فقط پیام‌هایی که دریافت می‌کنید قابل ترجمه‌اند، و فقط وقتی خودتان بخواهید.",
+        "confirm": "ترجمه‌اش کن",
+        "cancel": "نه، الان نه"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "عبارت عبورتان را فراموش کرده‌اید؟ بازنشانی، کلیدهای جدیدی زیر عبارت عبور جدید می‌سازد - اما پیام‌های رمزنگاری‌شده با کلیدهای قدیمی دیگر هرگز، توسط هیچ‌کس، قابل خواندن نخواهند بود.",
+        "requirements": "دست‌کم ۱۲ نویسه، و نه گذرواژه حساب‌تان - آن یکی به این سرور فرستاده می‌شود، و عبارت عبورتان هرگز نباید فرستاده شود.",
+        "passphraseLabel": "عبارت عبور",
+        "resetPassphraseLabel": "عبارت عبور جدید",
+        "confirmLabel": "تأیید عبارت عبور",
+        "accountPasswordLabel": "گذرواژه حساب",
+        "submitLabel": "روشن کردن پیام‌های رمزنگاری‌شده",
+        "resetSubmitLabel": "بازنشانی کلیدهای رمزنگاری"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "پیام‌های رمزنگاری‌شده سرتاسری در مرورگر شما قفل و باز می‌شوند: این سرور آن‌ها را بدون توانایی خواندن، رله و ذخیره می‌کند. کلید شما با یک عبارت عبور محافظت می‌شود، و همان عبارت عبور پیام‌های شما را از هر مرورگری باز می‌کند. گفتگوها زمانی رمزنگاری می‌شوند که هر دو طرف این را روشن کرده باشند؛ پیام‌ها به افرادی در سرورهای دیگر بدون رمزنگاری می‌مانند، چون فدراسیون راهی برای انتقال آن‌ها به‌گونه‌ای دیگر ندارد.",
+        "noRecovery": "هیچ راهی برای بازیابی عبارت عبور گم‌شده وجود ندارد - حتی برای مدیر. گم کردن آن یعنی از دست دادن پیام‌های رمزنگاری‌شده‌تان.",
+        "enabledStatus": "پیام‌های رمزنگاری‌شده روشن هستند."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "رمزنگاری‌شده",
+            "explanation": "پیام‌های این گفتگو رمزنگاری‌شده سرتاسری‌اند: با عبارت عبورتان باز و در مرورگرهایتان خوانده می‌شوند، و آنچه این سرور ذخیره می‌کند متن رمزشده است. کد امنیتی پایین گفتگو را با طرف مقابل بررسی کنید تا مطمئن شوید کسی بین شما نیست. پیام‌های فرستاده‌شده پیش از روشن شدن رمزنگاری، همان‌طور که بودند خواندنی می‌مانند."
+        },
+        "awaiting-theirs": {
+            "label": "رمزنگاری‌نشده",
+            "explanation": "پیام‌های اینجا وقتی {handle} پیام‌های رمزنگاری‌شده را در تنظیماتش روشن کند، رمزنگاری‌شده سرتاسری خواهند شد."
+        },
+        "awaiting-yours": {
+            "label": "رمزنگاری‌نشده",
+            "explanation": "پیام‌های اینجا رمزنگاری‌شده سرتاسری نیستند. برای امن کردن این گفتگو، پیام‌های رمزنگاری‌شده را در تنظیمات روشن کنید."
+        },
+        "federated": {
+            "label": "رمزنگاری‌نشده",
+            "explanation": "{handle} روی سروری دیگر است. پیام‌های این گفتگو هم روی آن سرور و هم روی این یکی ذخیره می‌شوند، و مدیر آن سرور می‌تواند آن‌ها را بخواند - پروتکل بین سرورها راهی برای رمزنگاری آن‌ها ندارد. هرچیز حساس را به گفتگوهای همین سایت محدود کنید."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "دنبال کردن حساب‌های Fediverse",
+        "notice": "یک یا چند شناسه بچسبانید، مثلاً @user@example.social - هر جداکننده‌ای میان آن‌ها کار می‌کند.",
+        "handlesLabel": "شناسه‌های Fediverse برای دنبال کردن",
+        "submit": "دنبال کردن",
+        "statusPending": "در انتظار",
+        "statusAccepted": "پذیرفته‌شده"
+    },
+    "ServerBlockForm": {
+        "legend": "مسدود کردن یک سرور",
+        "description": "هرچیزی از آن سرور و هرچیز زیرمجموعه آن را رد می‌کند: نه چیزی به آن تحویل داده می‌شود، نه از آن، و دنبال‌کردن‌های موجود در هر دو جهت حذف می‌شوند.",
+        "serverLabel": "سرور",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "دلیل",
+        "reasonPlaceholder": "چرا این سرور مسدود شده",
+        "submit": "مسدود کردن سرور"
+    },
+    "VideoCallTestPanel": {
+        "intro": "بخش‌هایی از راه‌اندازی تماس را که از یک مرورگر قابل بررسی‌اند اجرا می‌کند. هر چیزی تا رسیدن به یک اتصال واقعی همتا-به-همتا اینجا قابل آزمایش است؛ اتصال به شخص دیگر به وجود آن شخص نیاز دارد."
+    },
+    "VideoCallTestButton": {
+        "label": "اجرای بررسی"
+    },
+    "WebSocketStatus": {
+        "ok": "سرور WebSocket: در حال اجرا",
+        "failed": "سرور WebSocket: {detail}",
+        "clientTesting": "اتصال مرورگر: در حال آزمایش…",
+        "clientConnecting": "اتصال مرورگر: در حال اتصال…",
+        "clientConnected": "اتصال مرورگر: متصل",
+        "clientDisconnecting": "اتصال مرورگر: در حال قطع اتصال…",
+        "clientNotConnected": "اتصال مرورگر: متصل نیست"
+    },
+    "UploadWorkerStatus": {
+        "running": "سرویس Worker: در حال اجرا",
+        "stopped": "سرویس Worker: در حال اجرا نیست - تا زمانی که دوباره راه‌اندازی نشود، آپلودهای مرحله‌بندی‌شده هرگز ترانسکد نخواهند شد",
+        "unknown": "سرویس Worker: نامشخص - یا systemctl روی این میزبان در دسترس نیست، یا SELinux مانع پرس‌وجوی وضعیت خودِ وب‌سرور می‌شود (برای رفع آن، bin/install.php را به‌عنوان root اجرا کنید)",
+        "queue": "صف: {staging} مرحله‌بندی‌شده، {pending} در انتظار، {processing} در حال پردازش"
+    },
+    "TrendingTimerStatus": {
+        "running": "زمان‌سنج پرطرفدارها: در حال اجرا",
+        "stopped": "زمان‌سنج پرطرفدارها: در حال اجرا نیست - موضوعات داغ فقط از راه خودترمیمی مسیر خواندن (Trending::current()) به‌روز می‌شوند، نه بر پایه زمان‌بندی. برای راه‌اندازی آن، bin/install.php را به‌عنوان root اجرا کنید.",
+        "unknown": "زمان‌سنج پرطرفدارها: نامشخص - یا systemctl روی این میزبان در دسترس نیست، یا SELinux مانع پرس‌وجوی وضعیت خودِ وب‌سرور می‌شود (برای رفع آن، bin/install.php را به‌عنوان root اجرا کنید)"
+    },
+    "Notification": {
+        "postReady": "پردازش رسانه شما تمام شد و اکنون منتشر شده است",
+        "scheduledPostLive": "پست زمان‌بندی‌شده شما اکنون منتشر شده است",
+        "uploadPartlyFailed": "پست شما منتشر شده، اما یک یا چند فایل آن پردازش نشد",
+        "uploadFailed": "پردازش یکی از آپلودهای شما شکست خورد و پست نشد",
+        "mailerFailed": "ارسال ایمیل شکست خورد - ممکن است سرویس‌دهنده ایمیل از کار افتاده باشد. لطفاً پیکربندی ایمیل خود را بررسی کنید.",
+        "mailFromNotConfigured": "هیچ نشانی «فرستنده» ایمیلی تنظیم نشده، پس ایمیلی نمی‌تواند فرستاده شود. یکی را در تنظیمات مدیریت (بخش ایمیل خروجی) یا از طریق bin/install.php تنظیم کنید.",
+        "systemError": "خطایی در سرور رخ داد. برای جزئیات، گزارش خطا را بررسی کنید.",
+        "passwordRemovedGoogle": "وقتی با Google وارد شدید، گذرواژه‌تان حذف شد. اگر می‌خواهید گذرواژه جدیدی تنظیم کنید، از «فراموشی گذرواژه» استفاده کنید.",
+        "like": "{name} پست شما را پسندید",
+        "repost": "{name} پست شما را بازنشر کرد",
+        "reply": "{name} به پست شما پاسخ داد",
+        "friendRequest": "{name} برایتان درخواست دوستی فرستاد",
+        "friendAccepted": "{name} درخواست دوستی شما را پذیرفت",
+        "message": "{name} برایتان پیام فرستاد",
+        "mention": "{name} شما را در پستی منشن کرد",
+        "follow": "{name} از سروری دیگر شما را دنبال کرد",
+        "default": "{name} کاری انجام داد"
+    },
+    "NotificationList": {
+        "emptyNotice": "هنوز اعلانی نیست."
+    },
+    "NotificationsNavLink": {
+        "label": "اعلان‌ها",
+        "unseen": "اعلان‌های دیده‌نشده"
+    },
+    "NotificationTestPanel": {
+        "intro": "یک اعلان آزمایشی برای خودتان (مدیر) بفرستید. باید بلافاصله هم به‌صورت توست و هم در فهرست کشویی اعلان‌ها نمایش داده شود.",
+        "button": "ارسال اعلان آزمایشی",
+        "sending": "در حال ارسال…",
+        "sent": "فرستاده شد!",
+        "failed": "شکست خورد"
+    },
+    "MessageDot": {
+        "label": "پیام‌های نخوانده"
+    },
+    "NavAlertDot": {
+        "label": "چیز جدیدی در منو هست"
+    },
+    "Message": {
+        "encrypted": "پیام رمزنگاری‌شده",
+        "decryptionFailed": "این پیام با کلیدهایی رمزنگاری شده بود که دیگر وجود ندارند."
+    },
+    "MessageComposer": {
+        "bodyLabel": "پیام",
+        "bodyPlaceholder": "پیامی بنویسید",
+        "send": "ارسال"
+    },
+    "MessageList": {
+        "emptyNotice": "هنوز پیامی نیست."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "این کد را از راهی دیگر برای هم بخوانید - با صدای بلند، حضوری، یا در تماس. اگر در هر دو طرف یکسان بود، یعنی کسی بین شما نیست.",
+        "changed": "این کد از وقتی بررسی‌اش کردید تغییر کرده است. این وقتی رخ می‌دهد که یکی از شما کلیدهای رمزنگاری‌اش را بازنشانی کند - اما همین شکل، حالتی است که خواندنِ این گفتگو توسط شخصی دیگر هم به آن شکل دیده می‌شود. پیش از اعتماد کردن، کد جدید را با او بررسی کنید.",
+        "verified": "این کد را بررسی کرده‌اید."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "علامت‌گذاری به‌عنوان بررسی‌شده"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "عبارت عبور",
+        "passphrasePlaceholder": "عبارت عبور برای باز کردن این گفتگو",
+        "submit": "باز کردن"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "آخرین پیام ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "رسانه حساس"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "نمایش پیش‌فرض رسانه حساس"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "پست",
+            "message": "پیام",
+            "user": "کاربر"
+        },
+        "summary": {
+            "before": "{type} شماره {id} گزارش‌شده توسط ",
+            "after": ""
+        },
+        "reasonLine": "دلیل: {reason}",
+        "banReporterLabel": "بن کردن گزارش‌دهنده",
+        "banReportedUserLabel": "بن کردن کاربر گزارش‌شده",
+        "deleteLabel": "حذف {type}",
+        "reportedImageAlt": "تصویر گزارش‌شده",
+        "attachmentUnavailable": "یک پیوست گزارش‌شده دیگر در دسترس نیست.",
+        "viewAttachment": "مشاهده پیوست گزارش‌شده",
+        "missing": {
+            "noSnapshot": "محتوای گزارش‌شده دیگر در دسترس نیست.",
+            "unknownType": "نوع محتوا نامشخص است."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "گزارشی نیست."
+    },
+    "ModQueueLinks": {
+        "intro": "صف‌ها آن‌قدر طولانی‌اند که باید صفحه‌به‌صفحه خواند، پس صفحه‌های خودشان را دارند.",
+        "reportsLabel": "گزارش‌ها",
+        "bannedUsersLabel": "کاربران بن‌شده"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "هیچ ناظری هنوز کاری نکرده است."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "هیچ موجودیت پرطرفدار بن‌شده‌ای نیست."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "هیچ سروری مسدود نشده است."
+    },
+    "RelayCard": {
+        "accepted": "عضو شده ",
+        "waiting": "در انتظار پذیرش رله - عضو شده "
+    },
+    "RelayList": {
+        "emptyNotice": "در هیچ رله‌ای عضو نیستید. جز آنچه اعضا دنبال می‌کنند، چیز دیگری اینجا نمی‌رسد."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "هنوز چیزی از طریق رله نرسیده است. با انتشار پست توسط سرورهای طرف مقابل، پست‌ها اینجا ظاهر می‌شوند."
+    },
+    "RelaySubscribeForm": {
+        "legend": "عضویت در یک رله",
+        "explainerOne": "رله یک جریان مشترک است: هر پست عمومی از هر سرور دیگرِ عضو، اینجا می‌رسد، و پست‌های این سرور هم به همه آن‌ها می‌رود. این‌طوری یک نمونه تازه، اصلاً کسی را پیدا می‌کند، چون در غیر این صورت فدراسیون فقط چیزی را می‌رساند که کسی همین‌جا از قبل دنبال کرده باشد.",
+        "explainerTwo": "بار این کار را شما تعیین نمی‌کنید - هرچه آن سرورها منتشر کنند همان می‌شود، یک هفته ساکت و هفته بعد هزاران پست در ساعت، و فضای ذخیره‌سازی، صف تحویل و صف نظارت شما همه آن را تحمل می‌کنند. پست‌های رله‌شده از فیدهای اصلی و دوستان دور می‌مانند؛ آن‌ها به فید رله می‌روند، که مردم عمداً بازش می‌کنند.",
+        "addressLabel": "نشانی رله",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "عضویت"
+    },
+    "RelayFollowObjectField": {
+        "label": "سبک عضویت",
+        "options": {
+            "public": "دنبال کردن جریان عمومی (آنچه بیشتر رله‌ها انتظار دارند)",
+            "actor": "دنبال کردن اکتور خودِ رله"
+        },
+        "retryNotice": "اگر رله هرگز نپذیرفت، عضویت را پس بگیرید و سبک دیگر را امتحان کنید - برخی نرم‌افزارهای رله فقط یکی از آن‌ها را می‌شناسند."
+    },
+    "SiteCounters": {
+        "members": "اعضا: {count} ({joined} نفر در {days} روز گذشته پیوسته‌اند)",
+        "activeMembers": "اعضای اینجا در {days} روز گذشته: {count} ({posted} نفر از آن‌ها پست گذاشته‌اند)",
+        "posts": "پست‌های نوشته‌شده اینجا: {count} ({recent} تا در {days} روز گذشته)",
+        "deliveries": "تحویل‌های فدراسیونی در {days} روز گذشته: {delivered} رسیده، {undeliverable} که رهایش کرده‌ایم",
+        "queued": "در انتظار ارسال: {count} ({failing} که پیش‌تر دست‌کم یک‌بار رد شده‌اند)",
+        "pendingReads": "پست‌های در انتظار خواندن از سرورهای دیگر: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "مجموعه آزمون‌های سایت را اجرا کن و نتایج را ببین. چند ثانیه طول می‌کشد، پس در صفحه خودش باز می‌شود.",
+        "runLabel": "اجرای آزمون‌ها"
+    },
+    "HelpArticle": {
+        "backLabel": "بازگشت به همه راهنماها"
+    },
+    "UserSearchList": {
+        "noSuggestions": "الان پیشنهادی نیست - پیشنهادها از دوستانِ دوستان شما می‌آیند. برای پیدا کردن کسی با نام، بالا جستجو کنید.",
+        "noMatches": "اینجا کسی با این مشخصات نیست."
+    },
+    "UserModButton": {
+        "make": "ناظر کردن",
+        "remove": "برکناری از نظارت"
+    },
+    "UserUnbanButton": {
+        "name": "رفع بن"
+    },
+    "TrendingEntityBanButton": {
+        "name": "بن کردن"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "رفع بن"
+    },
+    "ReportDismissButton": {
+        "name": "رد کردن"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "علامت‌گذاری به‌عنوان حساس"
+    },
+    "ServerUnblockButton": {
+        "name": "رفع مسدودیت"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "لغو عضویت"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "ابطال"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: موفق",
+        "failing": "{suite}: ناموفق"
+    },
+    "PageTitle": {
+        "about": "درباره",
+        "adminBanned": "کاربران بن‌شده",
+        "adminModSettings": "تنظیمات نظارت",
+        "adminReports": "گزارش‌ها",
+        "adminSettings": "تنظیمات مدیریت",
+        "adminTests": "آزمون‌ها",
+        "authGoogleCallbackAccountDeleted": "حساب حذف شد",
+        "authGoogleCallbackDeleteAccount": "حذف حساب",
+        "authGoogleCallbackLogin": "ورود",
+        "bookmarks": "نشانک‌ها",
+        "checkInbox": "صندوق ورودی‌تان را بررسی کنید",
+        "drafts": "پیش‌نویس‌ها و زمان‌بندی‌شده‌ها",
+        "draftsEditDraft": "ویرایش پیش‌نویس",
+        "draftsEditScheduled": "ویرایش پست زمان‌بندی‌شده",
+        "forgotPassword": "فراموشی گذرواژه",
+        "friendsFeed": "فید دوستان",
+        "help": "راهنما",
+        "helpDescription": "راهنماها و پاسخ‌ها برای استفاده از سایت.",
+        "locations": "مکان‌ها",
+        "locationsDescription": "پست‌هایی از نزدیک‌ترین مکان‌ها به شما.",
+        "locationsPlaceDescription": "پست‌های نزدیک {place}.",
+        "login": "ورود",
+        "loginVerificationCode": "کد تأیید",
+        "map": "نقشه",
+        "mapDescription": "نقشه‌ای از پست‌های سراسر دنیا - افراد و چیزهای نزدیک خود را پیدا کنید.",
+        "messages": "پیام‌ها",
+        "messagesWithUser": "پیام‌ها با {name}",
+        "notifications": "اعلان‌ها",
+        "privacy": "سیاست حریم خصوصی",
+        "quote": "نقل‌قول",
+        "relayFeed": "فید رله",
+        "relayFeedDescription": "پست‌های عمومی رسیده از رله‌هایی که این سرور در آن‌ها عضو است.",
+        "resetPassword": "بازنشانی گذرواژه",
+        "revertEmail": "بازگرداندن تغییر ایمیل",
+        "search": "جستجو",
+        "signup": "ثبت‌نام",
+        "tags": "هشتگ‌ها",
+        "tagsDescription": "هشتگ‌های داغ و محبوب را در {siteTitle} مرور کنید.",
+        "tagsTagDescription": "پست‌های دارای هشتگ {tag} در {siteTitle}.",
+        "terms": "شرایط استفاده از خدمات",
+        "topics": "موضوعات",
+        "topicsDescription": "مردم الان در {siteTitle} درباره چه چیزی صحبت می‌کنند.",
+        "topicsEntityDescription": "{typeLabel} - پست‌هایی که به {entityTitle} در {siteTitle} اشاره می‌کنند.",
+        "topicsTypeDescription": "{typePlural} که مردم الان در {siteTitle} درباره‌شان صحبت می‌کنند.",
+        "unsubscribe": "خلاصه‌های ایمیلی",
+        "userFriends": "دوستان {name}",
+        "userFriendsDescription": "دوستان {name} در {siteTitle}",
+        "userSettings": "تنظیمات کاربری",
+        "users": "کاربران",
+        "verifyEmail": "تأیید ایمیل"
+    },
+    "PostLikeButton": {
+        "like": "پسندیدن",
+        "unlike": "لغو پسند"
+    },
+    "PostPinButton": {
+        "pin": "سنجاق کردن",
+        "unpin": "برداشتن سنجاق"
+    },
+    "PostQuoteButton": {
+        "name": "نقل‌قول"
+    },
+    "PostDeleteButton": {
+        "name": "حذف"
+    },
+    "PostEditButton": {
+        "name": "ویرایش"
+    },
+    "ReportButton": {
+        "name": "گزارش"
+    },
+    "PostActionBar": {
+        "reply": "پاسخ",
+        "replies": {
+            "one": "پاسخ‌ها ({count})",
+            "other": "پاسخ‌ها ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(ویرایش‌شده)"
+    },
+    "RepliesHeading": {
+        "heading": "پاسخ‌ها"
+    },
+    "PollVoteButton": {
+        "name": "رأی دادن"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "دیدن ",
+            "link": "مکان‌های بیشتر",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "پست‌های نزدیک شما",
+        "description": "این پست‌های نزدیک‌ترین به یک نقطه را نشان می‌دهد - هرجا فعالیتی باشد، هرقدر هم دور. از همان‌جایی که هستید شروع کنید و موقعیت‌تان را به اشتراک بگذارید، یا به‌جایش نقطه‌ای را روی نقشه انتخاب کنید.",
+        "useMyLocation": "استفاده از موقعیت من",
+        "pickOnMap": "انتخاب روی نقشه",
+        "searchPlaceholder": "یا نام یک مکان را تایپ کنید…",
+        "searchLabel": "جستجوی یک مکان",
+        "locating": "در حال یافتن موقعیت…",
+        "noGeolocation": "مرورگر شما نمی‌تواند موقعیتی را به اشتراک بگذارد.",
+        "locationError": "موقعیت شما پیدا نشد. مجوز موقعیت‌مکانی مرورگرتان را بررسی کنید."
+    },
+    "PollDeadline": {
+        "final": "نتیجه نهایی",
+        "closes": {
+            "before": "بسته می‌شود ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} روز دیگر",
+            "other": "{count} روز دیگر"
+        },
+        "hours": {
+            "one": "{count} ساعت دیگر",
+            "other": "{count} ساعت دیگر"
+        },
+        "minutes": {
+            "one": "{count} دقیقه دیگر",
+            "other": "{count} دقیقه دیگر"
+        },
+        "underMinute": "کمتر از یک دقیقه دیگر"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "یک نفر رأی داد ",
+            "other": "{count} نفر رأی دادند "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "وارد شوید",
+            "after": " تا پست بگذارید."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "وارد شوید",
+            "after": " تا پاسخ دهید."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " بازنشر کرد"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "در پاسخ به ",
+            "after": ""
+        },
+        "untitled": "این پست",
+        "jumpToStart": "رفتن به ابتدا"
+    },
+    "TopicSummaryCard": {
+        "label": "خلاصه تولیدشده با هوش مصنوعی"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "به ",
+            "after": " خوش آمدید"
+        },
+        "paragraphs": [
+            "چیزی در کادر زیر بنویسید تا به فیدتان برود. هرکسی می‌تواند پاسخ دهد، و یک پاسخ فقط پستی است که والدی دارد، پس گفتگوها هرقدر لازم باشد عمیق می‌شوند.",
+            "افراد را به‌عنوان دوست اضافه کنید تا پست‌هایشان به فید شما بپیوندد. فید عمومی - نام سایت در بالا سمت چپ - همه‌چیزهایی را که اینجا نوشته شده نشان می‌دهد، که جای پیدا کردن کسی برای افزودن است.",
+            "این سایت بخشی از Fediverse است: می‌توانید حساب‌هایی در Mastodon و سرورهای دیگر را با شناسهٔ کامل‌شان دنبال کنید، و آنچه پست می‌کنید به کسانی می‌رسد که آنجا شما را دنبال می‌کنند. شناسه‌ای مثل @someone@example.social را جستجو کنید تا این سرور برود و آن‌ها را پیدا کند.",
+            "پستی را با #هشتگ برچسب بزنید تا در صفحه آن هشتگ ظاهر شود، و اگر افراد کافی درباره‌اش بنویسند، در بخش پرطرفدارها هم.",
+            "پیام‌های میان اعضا رمزنگاری‌شده سرتاسری‌اند - سرور فقط متن رمزشده‌ای را ذخیره می‌کند که نمی‌تواند بخواند. این را در تنظیمات روشن کنید.",
+            "لازم نیست همین حالا پست کنید: پیش‌نویسی ذخیره کنید، یا زمانی تعیین کنید تا خودش منتشر شود. هر دو زیر «پیش‌نویس‌ها و زمان‌بندی‌شده‌ها» هستند."
+        ],
+        "more": {
+            "before": "بیشتر در ",
+            "link": "صفحه‌های راهنما",
+            "after": " هست، از جمله چگونگی انتقال حساب به اینجا از جای دیگر."
+        },
+        "dontShowAgain": "دیگر این را نشان نده"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "افزودن ایموجی"
+    },
+    "LinkImagePreview": {
+        "alt": "تصویر پیش‌نمایش پیوند"
+    },
+    "LinkImageRemoveButton": {
+        "label": "حذف تصویر"
+    },
+    "LinkItem": {
+        "alt": "تصویر پیش‌نمایش پیوند"
+    },
+    "MapScrubber": {
+        "play": "پخش",
+        "pause": "مکث",
+        "cumulativeMode": "تا آن زمان",
+        "windowMode": "فقط همان زمان",
+        "rangeLabel": "نمایش پست‌ها تا یک تاریخ",
+        "cumulativeLabel": {
+            "one": "پست‌شده تا {date} — {count} پست",
+            "other": "پست‌شده تا {date} — {count} پست"
+        },
+        "windowLabel": {
+            "one": "پست‌شده حدود {date} — {count} پست",
+            "other": "پست‌شده حدود {date} — {count} پست"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "پست {name}",
+        "pageTitleUntitled": "پست",
+        "imageAltByAuthor": "عکس پست‌شده توسط {name}",
+        "imageAltUntitled": "عکس"
+    },
+    "PostBookmarkButton": {
+        "remove": "حذف نشانک",
+        "add": "نشانک کردن"
+    },
+    "PostRepostButton": {
+        "undo": "لغو بازنشر",
+        "repost": "بازنشر"
+    },
+    "QuotedPost": {
+        "viewLink": "مشاهده پست نقل‌قول‌شده"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "درخواست‌های در انتظار"
+    },
+    "ScrollToTopButton": {
+        "label": "بازگشت به بالا"
+    },
+    "SearchClearButton": {
+        "label": "پاک کردن جستجو"
+    },
+    "SitePolicyLinks": {
+        "terms": "شرایط استفاده از خدمات",
+        "privacy": "سیاست حریم خصوصی"
+    },
+    "SkipLink": {
+        "label": "پرش به محتوا"
+    },
+    "TopicHeading": {
+        "searchLink": "جستجوی این",
+        "noPosts": "الان هیچ پستی به این اشاره نمی‌کند."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "هنوز چیزی از این نوع نوشته نشده است."
+    },
+    "TrendingEntitySection": {
+        "heading": "پرطرفدار"
+    },
+    "PostLocationLink": {
+        "title": "نمایش این مکان روی نقشه",
+        "between": "، "
+    },
+    "RelativeTime": {
+        "justNow": "همین الان",
+        "minutes": {
+            "one": "{count} دقیقه پیش",
+            "other": "{count} دقیقه پیش"
+        },
+        "hours": {
+            "one": "{count} ساعت پیش",
+            "other": "{count} ساعت پیش"
+        },
+        "days": {
+            "one": "{count} روز پیش",
+            "other": "{count} روز پیش"
+        }
+    },
+    "ThemeSelector": {
+        "label": "تم",
+        "themes": {
+            "system": "هماهنگ با سیستم",
+            "light": "روشن ساده",
+            "dark": "تیره ساده",
+            "sepia": "سپیا",
+            "midnight": "نیمه‌شب",
+            "sunset": "غروب",
+            "rose": "رز",
+            "forest": "جنگل",
+            "ocean": "اقیانوس",
+            "lavender": "لاوندر",
+            "gold": "طلایی",
+            "hacker": "هکر",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "طیف خاکستری"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "ترجمه روی این سرور راه‌اندازی نشده است.",
+        "nothing": "چیزی برای ترجمه اینجا نیست.",
+        "unknownSource": "هنوز کسی مشخص نکرده این پست به چه زبانی است، پس نمی‌توان ترجمه‌اش کرد.",
+        "alreadyReadable": "این پست از قبل به همان زبان است.",
+        "unsupportedPair": "این سرور هنوز نمی‌تواند آن زبان را ترجمه کند."
+    },
+    "LanguagePrompt": {
+        "question": "آیا می‌خواهید سایت را به فارسی ببینید؟",
+        "accept": "بله",
+        "decline": "نه، ممنون"
+    },
+    "LanguageSelector": {
+        "label": "زبان",
+        "legend": "زبان"
+    },
+    "EmailDigest": {
+        "subject": "آنچه در {site} از دست دادید",
+        "greeting": "سلام {name}،",
+        "whileAway": "در غیابتان:",
+        "repeatedTimes": {
+            "one": " (یک بار)",
+            "other": " ({count} بار)"
+        },
+        "moreMissed": {
+            "one": "و یک اعلان دیگر",
+            "other": "و {count} اعلان دیگر"
+        },
+        "messagesWaiting": {
+            "one": "پیامی در انتظار شماست",
+            "other": "{count} پیام در انتظار شماست"
+        },
+        "postsInFeed": {
+            "one": "یک پست جدید در فیدتان",
+            "other": "{count} پست جدید در فیدتان"
+        },
+        "unsubscribeInstructions": "برای متوقف کردن این ایمیل‌ها، این پیوند را باز کنید - فقط یک کلیک است و به گذرواژه نیازی ندارد:",
+        "comeSeeWhatIsNew": "بیایید ببینید چه چیز تازه‌ای هست",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "دیگر این‌ها را برایم نفرست",
+            "after": " - یک کلیک، بدون نیاز به گذرواژه."
+        }
+    },
+    "EmailVerification": {
+        "subject": "نشانی ایمیل خود را تأیید کنید",
+        "greeting": "سلام {name}،",
+        "instructions": "لطفاً با مراجعه به این پیوند، نشانی ایمیل خود را تأیید کنید:",
+        "htmlInstructions": "لطفاً با کلیک روی پیوند زیر، نشانی ایمیل خود را تأیید کنید:",
+        "buttonLabel": "تأیید نشانی ایمیل",
+        "expiresIn": {
+            "one": "این پیوند تا {count} ساعت دیگر منقضی می‌شود.",
+            "other": "این پیوند تا {count} ساعت دیگر منقضی می‌شود."
+        }
+    },
+    "PasswordReset": {
+        "subject": "بازنشانی گذرواژه شما",
+        "greeting": "سلام {name}،",
+        "instructions": "کسی (امیدواریم خودتان) درخواست بازنشانی گذرواژه داده است. برای انتخاب گذرواژه‌ای جدید، این پیوند را باز کنید:",
+        "htmlInstructions": "کسی (امیدواریم خودتان) درخواست بازنشانی گذرواژه داده است. برای انتخاب گذرواژه‌ای جدید، روی پیوند زیر کلیک کنید:",
+        "buttonLabel": "بازنشانی گذرواژه",
+        "expiresIn": {
+            "one": "این پیوند تا {count} ساعت دیگر منقضی می‌شود.",
+            "other": "این پیوند تا {count} ساعت دیگر منقضی می‌شود."
+        },
+        "ignoreNotice": "اگر این درخواست را نداده‌اید، می‌توانید این ایمیل را نادیده بگیرید."
+    }
+}

@@ -143,7 +143,7 @@
 .SkipLink {
     position: absolute;
     top: 0;
-    left: 0;
+    inset-inline-start: 0;
     z-index: 1000;
     padding: 0.75rem 1rem;
     background-color: var(--surface);
@@ -406,7 +406,7 @@ emoji-picker {
     height: min(400px, 70vh);
     z-index: 20;
     border-radius: var(--radius-card);
-    border-bottom-left-radius: var(--glom-corner);
+    border-end-start-radius: var(--glom-corner);
     box-shadow: var(--shadow-pop);
     opacity: 0;
     pointer-events: none;
@@ -524,7 +524,7 @@ emoji-picker.Active {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: auto;
+    margin-inline-start: auto;
     flex-wrap: nowrap;
     flex-shrink: 0;
 }
@@ -657,14 +657,14 @@ label.visually-hidden { margin-bottom: 0; }
 .ql-toolbar.ql-snow {
     background-color: var(--surface);
     border-color: var(--hairline);
-    border-top-left-radius: var(--radius-card);
-    border-top-right-radius: var(--radius-card);
+    border-start-start-radius: var(--radius-card);
+    border-start-end-radius: var(--radius-card);
 }
 
 .ql-container.ql-snow {
     border-color: var(--hairline);
-    border-bottom-left-radius: var(--radius-card);
-    border-bottom-right-radius: var(--radius-card);
+    border-end-start-radius: var(--radius-card);
+    border-end-end-radius: var(--radius-card);
     font-size: 0.9375rem;
 }
 
@@ -672,8 +672,8 @@ label.visually-hidden { margin-bottom: 0; }
     background-color: var(--surface);
     color: var(--ink);
     min-height: 4.5rem;
-    border-bottom-left-radius: var(--radius-card);
-    border-bottom-right-radius: var(--radius-card);
+    border-end-start-radius: var(--radius-card);
+    border-end-end-radius: var(--radius-card);
 }
 
 /* The other way of writing the same post, standing where the editor stands so
@@ -688,7 +688,7 @@ label.visually-hidden { margin-bottom: 0; }
 
 /* The checkbox already reads as a control of its own, so it does not also
    need the button chrome the shared label rule gives one. */
-.WelcomeBannerActions .CheckboxField { margin-left: auto; }
+.WelcomeBannerActions .CheckboxField { margin-inline-start: auto; }
 
 .MarkdownInput {
     /* A textarea is inline by default, so it sits on the text baseline and
@@ -828,9 +828,9 @@ label.visually-hidden { margin-bottom: 0; }
 .PostBody > p:last-child { margin-bottom: 0; }
 
 .PostBody blockquote {
-    border-left: 3px solid var(--accent);
+    border-inline-start: 3px solid var(--accent);
     margin: 0.5rem 0;
-    padding-left: 1rem;
+    padding-inline-start: 1rem;
     color: var(--muted);
 }
 
@@ -879,7 +879,7 @@ label.visually-hidden { margin-bottom: 0; }
 .SeeMore {
     display: block;
     width: fit-content;
-    margin-left: auto;
+    margin-inline-start: auto;
 }
 
 .PostBody a,
@@ -1168,7 +1168,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     width: fit-content;
     max-width: 78%;
     border-radius: var(--radius-card);
-    border-bottom-left-radius: var(--glom-corner);
+    border-end-start-radius: var(--glom-corner);
     padding: 0.5rem 1rem;
 }
 
@@ -1200,7 +1200,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 
 .MessageByline .RelativeTime {
     flex-shrink: 0;
-    margin-left: auto;
+    margin-inline-start: auto;
 }
 
 .MessageLine {
@@ -1218,11 +1218,11 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 }
 
 .Message.Own {
-    margin-left: auto;
+    margin-inline-start: auto;
     background-color: var(--accent-soft);
     border-color: color-mix(in srgb, var(--accent) 22%, transparent);
-    border-bottom-left-radius: var(--radius-card);
-    border-bottom-right-radius: var(--glom-corner);
+    border-end-start-radius: var(--radius-card);
+    border-end-end-radius: var(--glom-corner);
 }
 
 .MessageComposer {
@@ -1289,17 +1289,17 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
    one that stopped the run is findable without reading every line. */
 .VideoCallTestResults {
     list-style: none;
-    padding-left: 0;
+    padding-inline-start: 0;
 }
 
 .VideoCallTestStep {
-    border-left: 3px solid var(--hairline);
-    padding-left: 0.5rem;
+    border-inline-start: 3px solid var(--hairline);
+    padding-inline-start: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
-.VideoCallTestStep.Passed { border-left-color: var(--accent); }
-.VideoCallTestStep.Failed { border-left-color: var(--danger); }
+.VideoCallTestStep.Passed { border-inline-start-color: var(--accent); }
+.VideoCallTestStep.Failed { border-inline-start-color: var(--danger); }
 
 /* Empty until the run finishes, and taking no room while it is - the verdict
    appearing is itself the signal that the check is done. */
@@ -1564,7 +1564,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 .NearbyPlaceSuggestion {
     display: block;
     width: 100%;
-    text-align: left;
+    text-align: start;
     background: none;
     border: none;
     border-radius: var(--radius-ctl);
@@ -2234,7 +2234,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 }
 
 .ReportCard .PostContent {
-    border-left: 3px solid var(--accent);
+    border-inline-start: 3px solid var(--accent);
 
     background-color: var(--surface-2);
     border-radius: var(--radius-ctl);
@@ -2253,7 +2253,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
 .ToastContainer {
     position: fixed;
     bottom: 1rem;
-    right: 1rem;
+    inset-inline-end: 1rem;
     z-index: 30;
     display: flex;
     flex-direction: column;

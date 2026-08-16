@@ -195,6 +195,25 @@ class StringsTest extends TestCase
         }
     }
 
+    /**
+     * Which way a locale's script runs, read off the name the language calls
+     * itself by rather than off a transcribed list of codes - ICU already
+     * holds a sample of every language in its own script.
+     */
+    public function testTheDirectionIsReadOffTheLanguagesOwnName(): void
+    {
+        $locale = new \ReflectionProperty(Strings::class, 'locale');
+
+        try {
+            foreach (['en' => 'ltr', 'ru' => 'ltr', 'ja' => 'ltr', 'ar' => 'rtl', 'he' => 'rtl', 'fa' => 'rtl'] as $tag => $direction) {
+                $locale -> setValue(null, $tag);
+                $this -> assertSame($direction, Strings::direction(), $tag);
+            }
+        } finally {
+            $locale -> setValue(null, null);
+        }
+    }
+
     /** English is the source, so it is always one of the languages on offer. */
     public function testTheSourceLanguageIsAlwaysAvailable(): void
     {

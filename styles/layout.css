@@ -68,7 +68,7 @@ body:has(.MainNavigation) {
    of the letters, which is where the badge on Notifications sits against its
    link. */
 .NavBrand .MessageDot {
-    margin-left: 0.2rem;
+    margin-inline-start: 0.2rem;
     vertical-align: 0.4em;
 }
 
@@ -79,7 +79,7 @@ body:has(.MainNavigation) {
 .NavDropdownMenu a { position: relative; }
 
 .NavDropdownMenu .MessageDot {
-    margin-left: 0.4rem;
+    margin-inline-start: 0.4rem;
     vertical-align: 0.08rem;
 }
 
@@ -173,14 +173,14 @@ body:has(.MainNavigation) {
     display: flex;
     position: absolute;
     top: 100%;
-    left: 0;
+    inset-inline-start: 0;
     flex-direction: column;
     gap: 0.125rem;
     min-width: 11rem;
     z-index: 20;
     padding: 0.5rem;
     border-radius: var(--radius-card);
-    border-top-left-radius: 0;
+    border-start-start-radius: 0;
     box-shadow: var(--shadow-pop);
     opacity: 0;
     transform: translateY(-0.25rem) scale(0.98);
@@ -188,6 +188,10 @@ body:has(.MainNavigation) {
     pointer-events: none;
     transition: opacity 0.15s ease, transform 0.15s ease;
 }
+
+/* transform-origin has no logical keywords, so the growing corner moves by
+   hand where the box itself mirrors. */
+[dir='rtl'] .NavDropdownMenu { transform-origin: top right; }
 
 .NavDropdown:hover .NavDropdownMenu,
 .NavDropdown:focus-within .NavDropdownMenu {
@@ -197,13 +201,15 @@ body:has(.MainNavigation) {
 }
 
 .NavAccount .NavDropdownMenu {
-    left: auto;
-    right: 0;
+    inset-inline-start: auto;
+    inset-inline-end: 0;
     min-width: calc(100% + var(--radius-card));
-    border-top-left-radius: var(--radius-card);
-    border-top-right-radius: 0;
+    border-start-start-radius: var(--radius-card);
+    border-start-end-radius: 0;
     transform-origin: top right;
 }
+
+[dir='rtl'] .NavAccount .NavDropdownMenu { transform-origin: top left; }
 
 .NotificationsNavLink {
     position: relative;
@@ -214,7 +220,7 @@ body:has(.MainNavigation) {
 .NotificationDot {
     position: absolute;
     top: 0.3rem;
-    right: -0.15rem;
+    inset-inline-end: -0.15rem;
 }
 
 .NotificationDot.Active { display: block; }
@@ -223,12 +229,12 @@ body:has(.MainNavigation) {
     display: block;
     position: absolute;
     top: 100%;
-    left: 0;
+    inset-inline-start: 0;
     width: 21rem;
     max-width: calc(100vw - 2rem);
     z-index: 20;
     border-radius: var(--radius-card);
-    border-top-left-radius: 0;
+    border-start-start-radius: 0;
     box-shadow: var(--shadow-pop);
     opacity: 0;
     padding: 0.5rem;
@@ -285,7 +291,7 @@ body:has(.MainNavigation) {
     color: var(--ink);
     font: inherit;
     font-weight: 500;
-    text-align: left;
+    text-align: start;
     cursor: pointer;
 }
 
@@ -299,7 +305,7 @@ body:has(.MainNavigation) {
 .ScrollToTopButton {
     display: none;
     position: fixed;
-    right: 1rem;
+    inset-inline-end: 1rem;
     bottom: 1rem;
     z-index: 20;
     padding: 0.5rem 0.5rem;
@@ -334,7 +340,7 @@ body:has(.MainNavigation) {
 @media (min-width: 72rem) {
     .PageGenerationTime {
         position: fixed;
-        left: 1rem;
+        inset-inline-start: 1rem;
         bottom: 1rem;
         max-width: 13rem;
         margin: 0;

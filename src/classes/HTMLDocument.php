@@ -54,6 +54,13 @@ class HTMLDocument extends Document
         // only by luck, and in an English one otherwise.
         $this -> attributes['lang'] = $this -> documentLanguage();
 
+        // And which way it runs. Only said when it runs rightward, because
+        // ltr is what an undeclared document already is - and the stylesheets
+        // speak in start and end, so declaring rtl here is what mirrors them.
+        if (Strings::direction() === 'rtl') {
+            $this -> attributes['dir'] = 'rtl';
+        }
+
         $this -> applyReaderTheme();
 
         return parent::toDOM();

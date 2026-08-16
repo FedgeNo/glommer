@@ -189,6 +189,33 @@ UPDATE `Users`
     }
 
     /**
+     * Which way the current locale's script runs: 'rtl' or 'ltr'.
+     *
+     * Read off the name the language calls itself by - a sample of the
+     * language in its own script that ICU already holds - rather than off a
+     * transcribed list of language codes, which would be one more locale fact
+     * written down to be wrong in. A language whose endonym ICU does not have
+     * falls to ltr, which refuses nothing: it is the direction the site
+     * already renders in.
+     */
+    public static function direction(): string
+    {
+        static $directions = [];
+
+        $locale = self::locale();
+
+        if (isset($directions[$locale])) {
+            return $directions[$locale];
+        }
+
+        $named = \Locale::getDisplayLanguage($locale, $locale);
+        $rtl = is_string($named)
+            && preg_match('/[\p{Arabic}\p{Hebrew}\p{Thaana}\p{Syriac}\p{Nko}\p{Adlam}]/u', $named) === 1;
+
+        return $directions[$locale] = $rtl ? 'rtl' : 'ltr';
+    }
+
+    /**
      * One of a set of phrasings, chosen by how many of the thing there are.
      *
      * English has two forms and most of the code was written assuming that -

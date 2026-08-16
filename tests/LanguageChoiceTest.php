@@ -87,6 +87,26 @@ class LanguageChoiceTest extends TestCase
         });
     }
 
+    /**
+     * A page in a rightward script says so on the root element, which is what
+     * mirrors the stylesheets' starts and ends; a leftward page says nothing,
+     * because leftward is what an undeclared document already is.
+     */
+    public function testThePageDeclaresItsDirectionOnlyWhenItRunsRightward(): void
+    {
+        $locale = new \ReflectionProperty(Strings::class, 'locale');
+
+        try {
+            $locale -> setValue(null, 'ar');
+            $this -> assertTrue(str_contains((string) new HTMLDocument(), 'dir="rtl"'));
+
+            $locale -> setValue(null, 'en');
+            $this -> assertFalse(str_contains((string) new HTMLDocument(), 'dir='));
+        } finally {
+            $locale -> setValue(null, null);
+        }
+    }
+
     /** Nothing to offer somebody whose language this installation does not have. */
     public function testALanguageThisSiteDoesNotHaveIsNotOffered(): void
     {

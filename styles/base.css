@@ -149,7 +149,13 @@ select {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2368716b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
     background-repeat: no-repeat;
     background-position: right 0.5rem center;
-    padding-right: 2.25rem;
+    padding-inline-end: 2.25rem;
+}
+
+/* background-position has no logical keywords, so the arrow moves by hand
+   where everything else mirrors itself. */
+[dir='rtl'] select {
+    background-position: left 0.5rem center;
 }
 
 input[type='file'] {
@@ -179,5 +185,35 @@ input[type='file']::file-selector-button {
 input[type='file']:hover::file-selector-button {
     background-color: color-mix(in srgb, var(--surface-2) 80%, var(--ink) 8%);
     background-image: var(--button-image-hover, var(--button-image, none));
+}
+
+/* ---------- Text direction ---------- */
+
+/* What somebody wrote runs the way their language runs, whatever language the
+   page around it is in: an Arabic post inside an English page reads rightward
+   and aligns to its own start, and an English post inside an Arabic page does
+   the opposite. Plaintext resolves each block on its own first strong
+   character, which is what dir="auto" would say per element - said here once,
+   where both renderers share it, instead of on every build site in two
+   languages. Inputs included, since what is being typed is also somebody's
+   own words. */
+.PostBody,
+.PostBody p,
+.PostBody li,
+.PostBody blockquote,
+.MessageBody,
+.UserBio,
+.ql-editor p,
+textarea {
+    unicode-bidi: plaintext;
+}
+
+/* Code is written leftward in every language, and a right-to-left page must
+   not fold it around its punctuation. */
+pre,
+code {
+    direction: ltr;
+    unicode-bidi: isolate;
+    text-align: start;
 }
 

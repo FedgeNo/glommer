@@ -56,7 +56,7 @@
         display: flex;
         position: fixed;
         top: 0;
-        right: 1rem;
+        inset-inline-end: 1rem;
         height: var(--nav-height);
         z-index: 30;
     }
@@ -113,7 +113,7 @@
         color: var(--ink) !important;
         font-weight: 500;
         font-size: 1rem;
-        text-align: left;
+        text-align: start;
     }
 
     .MainNavigation a:hover,
@@ -143,7 +143,7 @@
         display: block;
         position: fixed;
         top: calc(var(--nav-height) / 2 - 0.25rem);
-        right: 3.25rem;
+        inset-inline-end: 3.25rem;
         z-index: 30;
     }
 

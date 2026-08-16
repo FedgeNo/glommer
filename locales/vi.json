@@ -359,6 +359,43 @@
         "deletedAccount": "một tài khoản đã bị xóa",
         "reason": " - {reason}"
     },
+    "DateFormat": {
+        "months": {
+            "1": "tháng 1",
+            "2": "tháng 2",
+            "3": "tháng 3",
+            "4": "tháng 4",
+            "5": "tháng 5",
+            "6": "tháng 6",
+            "7": "tháng 7",
+            "8": "tháng 8",
+            "9": "tháng 9",
+            "10": "tháng 10",
+            "11": "tháng 11",
+            "12": "tháng 12"
+        },
+        "shortMonths": {
+            "1": "thg 1",
+            "2": "thg 2",
+            "3": "thg 3",
+            "4": "thg 4",
+            "5": "thg 5",
+            "6": "thg 6",
+            "7": "thg 7",
+            "8": "thg 8",
+            "9": "thg 9",
+            "10": "thg 10",
+            "11": "thg 11",
+            "12": "thg 12"
+        },
+        "long": "{day} {month}, {year}",
+        "short": "{day} {month}, {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "lúc {time} {date}",
+        "am": "SA",
+        "pm": "CH",
+        "clock": 24
+    },
     "EnvironmentChecker": {
         "wsCannotConnect": "Không thể kết nối đến máy chủ WebSocket tại 127.0.0.1:{port}{tls} ({error}). Hãy khởi động nó trước: systemctl --user start glommer-websocket (xem README.md để biết tệp unit). Nếu nó vừa có thêm hoặc mất WS_TLS_CERT/WS_TLS_KEY, hãy khởi động lại để khớp với .env.",
         "wsOverTLS": " qua TLS",

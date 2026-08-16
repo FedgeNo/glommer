@@ -1090,5 +1090,67 @@
     "LanguageSelector": {
         "label": "Język",
         "legend": "Język"
+    },
+    "EmailDigest": {
+        "subject": "Co przegapiłeś na {site}",
+        "greeting": "Cześć {name}",
+        "whileAway": "Kiedy cię nie było:",
+        "repeatedTimes": {
+            "one": " ({count} raz)",
+            "other": " ({count} razy)",
+            "few": " ({count} razy)",
+            "many": " ({count} razy)"
+        },
+        "moreMissed": {
+            "one": "i {count} powiadomienie więcej",
+            "other": "i {count} powiadomień więcej",
+            "few": "i {count} powiadomienia więcej",
+            "many": "i {count} powiadomień więcej"
+        },
+        "messagesWaiting": {
+            "one": "Masz {count} wiadomość czekającą",
+            "other": "Masz {count} wiadomości czekających",
+            "few": "Masz {count} wiadomości czekające",
+            "many": "Masz {count} wiadomości czekających"
+        },
+        "postsInFeed": {
+            "one": "{count} nowy post w Twojej kronice",
+            "other": "{count} nowych postów w Twojej kronice",
+            "few": "{count} nowe posty w Twojej kronice",
+            "many": "{count} nowych postów w Twojej kronice"
+        },
+        "unsubscribeInstructions": "Aby zatrzymać te e-maile, otwórz ten link - wystarczy jedno kliknięcie i nie potrzebuje hasła:",
+        "comeSeeWhatIsNew": "Chodź i zobacz co jest nowe",
+        "unsubscribeLink": {
+            "link": "Przestań mi to wysyłać",
+            "after": " - jedno kliknięcie, hasło nie jest potrzebne."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Sprawdź swój adres e-mail",
+        "greeting": "Cześć {name}",
+        "instructions": "Proszę zweryfikować swój adres e-mail odwiedzając ten link:",
+        "htmlInstructions": "Proszę sprawdzić swój adres e-mail klikając na poniższy link:",
+        "buttonLabel": "Weryfikacja adresu e-mail",
+        "expiresIn": {
+            "one": "Ten link wygasa za {count} godzinę.",
+            "other": "Ten link wygasa za {count} godzin.",
+            "few": "Ten link wygasa za {count} godziny.",
+            "many": "Ten link wygasa za {count} godzin."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Zresetuj hasło",
+        "greeting": "Cześć {name}",
+        "instructions": "Ktoś (miejmy nadzieję, że) poprosił o zresetowanie hasła. Odwiedź ten link, aby wybrać nowe hasło:",
+        "htmlInstructions": "Ktoś (miejmy nadzieję, że) poprosił o zresetowanie hasła. Kliknij poniższy link, aby wybrać nowe hasło:",
+        "buttonLabel": "Zmień hasło",
+        "expiresIn": {
+            "one": "Ten link wygasa za {count} godzinę.",
+            "other": "Ten link wygasa za {count} godzin.",
+            "few": "Ten link wygasa za {count} godziny.",
+            "many": "Ten link wygasa za {count} godzin."
+        },
+        "ignoreNotice": "Jeśli nie zażądałeś tego, możesz zignorować ten e-mail."
     }
 }

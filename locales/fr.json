@@ -1067,5 +1067,55 @@
     "LanguageSelector": {
         "label": "Langue",
         "legend": "Langue"
+    },
+    "EmailDigest": {
+        "subject": "Ce que vous avez manqué sur {site}",
+        "greeting": "Bonjour {name},",
+        "whileAway": "Pendant votre absence :",
+        "repeatedTimes": {
+            "one": " ({count} fois)",
+            "other": " ({count} fois)"
+        },
+        "moreMissed": {
+            "one": "et {count} autre notification",
+            "other": "et {count} notifications supplémentaires"
+        },
+        "messagesWaiting": {
+            "one": "Vous avez un message en attente",
+            "other": "Vous avez {count} messages en attente"
+        },
+        "postsInFeed": {
+            "one": "Une nouvelle publication dans votre fil",
+            "other": "{count} nouvelles publications dans votre fil"
+        },
+        "unsubscribeInstructions": "Pour arrêter ces courriels, ouvrez ce lien - il faut un clic et n'a pas besoin de mot de passe:",
+        "comeSeeWhatIsNew": "Venez voir ce qui est nouveau",
+        "unsubscribeLink": {
+            "link": "Arrête de m'envoyer ça",
+            "after": " - un clic, pas de mot de passe nécessaire."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Vérifiez votre adresse email",
+        "greeting": "Bonjour {name},",
+        "instructions": "Veuillez vérifier votre adresse email en visitant ce lien:",
+        "htmlInstructions": "Veuillez vérifier votre adresse e-mail en cliquant sur le lien ci-dessous:",
+        "buttonLabel": "Vérifier l'adresse électronique",
+        "expiresIn": {
+            "one": "Ce lien expire dans {count} heure.",
+            "other": "Ce lien expire dans {count} heures."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Réinitialiser votre mot de passe",
+        "greeting": "Bonjour {name},",
+        "instructions": "Quelqu'un (espère que vous) a demandé une réinitialisation du mot de passe. Visitez ce lien pour choisir un nouveau mot de passe :",
+        "htmlInstructions": "Quelqu'un (espère que vous) a demandé une réinitialisation du mot de passe. Cliquez sur le lien ci-dessous pour choisir un nouveau mot de passe :",
+        "buttonLabel": "Réinitialiser le mot de passe",
+        "expiresIn": {
+            "one": "Ce lien expire dans {count} heure.",
+            "other": "Ce lien expire dans {count} heures."
+        },
+        "ignoreNotice": "Si vous n'avez pas demandé cela, vous pouvez ignorer ce courriel."
     }
 }

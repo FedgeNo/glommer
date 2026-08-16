@@ -1067,5 +1067,55 @@
     "LanguageSelector": {
         "label": "Taal",
         "legend": "Taal"
+    },
+    "EmailDigest": {
+        "subject": "Wat je gemist hebt op {site}",
+        "greeting": "Hallo, {name}",
+        "whileAway": "Terwijl jij weg was:",
+        "repeatedTimes": {
+            "one": " ({count} keer)",
+            "other": " ({count} keer)"
+        },
+        "moreMissed": {
+            "one": "en nog {count} melding",
+            "other": "en nog {count} meldingen"
+        },
+        "messagesWaiting": {
+            "one": "Er wacht een bericht op u",
+            "other": "Er wachten {count} berichten op u"
+        },
+        "postsInFeed": {
+            "one": "Eén nieuwe post in uw feed",
+            "other": "{count} nieuwe posts in uw feed"
+        },
+        "unsubscribeInstructions": "Om deze e-mails te stoppen, open deze link - het duurt een klik en heeft geen wachtwoord nodig:",
+        "comeSeeWhatIsNew": "Kom eens kijken wat nieuw is",
+        "unsubscribeLink": {
+            "link": "Stuur me deze niet meer",
+            "after": " - één klik, geen wachtwoord nodig."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Controleer uw e-mailadres",
+        "greeting": "Hallo, {name}",
+        "instructions": "Controleer uw e-mailadres door deze link te bezoeken:",
+        "htmlInstructions": "Controleer uw e-mailadres door op onderstaande link te klikken:",
+        "buttonLabel": "E-mailadres verifiëren",
+        "expiresIn": {
+            "one": "Deze link verloopt over {count} uur.",
+            "other": "Deze link verloopt over {count} uur."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Uw wachtwoord resetten",
+        "greeting": "Hallo, {name}",
+        "instructions": "Iemand (hopelijk jij) vroeg om een wachtwoord reset. Bezoek deze link om een nieuw wachtwoord te kiezen:",
+        "htmlInstructions": "Iemand (hopelijk jij) vroeg om een wachtwoord reset. Klik op onderstaande link om een nieuw wachtwoord te kiezen:",
+        "buttonLabel": "Wachtwoord resetten",
+        "expiresIn": {
+            "one": "Deze link verloopt over {count} uur.",
+            "other": "Deze link verloopt over {count} uur."
+        },
+        "ignoreNotice": "Als u dit niet heeft aangevraagd, kunt u deze e-mail negeren."
     }
 }

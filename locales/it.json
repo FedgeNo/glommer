@@ -1067,5 +1067,55 @@
     "LanguageSelector": {
         "label": "Lingua",
         "legend": "Lingua"
+    },
+    "EmailDigest": {
+        "subject": "Cosa ti sei perso su {site}",
+        "greeting": "Ciao {name},",
+        "whileAway": "Mentre eri via:",
+        "repeatedTimes": {
+            "one": " ({count} volta)",
+            "other": " ({count} volte)"
+        },
+        "moreMissed": {
+            "one": "e un'altra notifica",
+            "other": "e altre {count} notifiche"
+        },
+        "messagesWaiting": {
+            "one": "Hai un messaggio in attesa",
+            "other": "Hai {count} messaggi in attesa"
+        },
+        "postsInFeed": {
+            "one": "Un nuovo post nel tuo feed",
+            "other": "{count} nuovi post nel tuo feed"
+        },
+        "unsubscribeInstructions": "Per fermare queste e-mail, aprire questo link - ci vuole un clic e non ha bisogno di password:",
+        "comeSeeWhatIsNew": "Vieni a vedere che cosa è nuovo",
+        "unsubscribeLink": {
+            "link": "Smettila di mandarmi questi",
+            "after": " - un clic, nessuna password necessaria."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifica il tuo indirizzo email",
+        "greeting": "Ciao {name},",
+        "instructions": "Si prega di verificare l'indirizzo e-mail visitando questo link:",
+        "htmlInstructions": "Si prega di verificare l'indirizzo e-mail cliccando sul link qui sotto:",
+        "buttonLabel": "Verificare Indirizzo e-mail",
+        "expiresIn": {
+            "one": "Questo link scade in {count} ora.",
+            "other": "Questo link scade in {count} ore."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Ripristinare la password",
+        "greeting": "Ciao {name},",
+        "instructions": "Qualcuno (si spera che tu) ha richiesto un reset della password. Visita questo link per scegliere una nuova password:",
+        "htmlInstructions": "Qualcuno (si spera che tu) ha richiesto un reset della password. Clicca sul link qui sotto per scegliere una nuova password:",
+        "buttonLabel": "Reimpostare la password",
+        "expiresIn": {
+            "one": "Questo link scade in {count} ora.",
+            "other": "Questo link scade in {count} ore."
+        },
+        "ignoreNotice": "Se non hai richiesto questo, puoi ignorare questa e-mail."
     }
 }

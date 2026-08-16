@@ -1071,5 +1071,55 @@
     "LanguageSelector": {
         "label": "Sprache",
         "legend": "Sprache"
+    },
+    "EmailDigest": {
+        "subject": "Was Sie auf {site} verpasst haben",
+        "greeting": "Hi {name},",
+        "whileAway": "Während du weg warst:",
+        "repeatedTimes": {
+            "one": " ({count} Mal)",
+            "other": " ({count} Mal)"
+        },
+        "moreMissed": {
+            "one": "und {count} weitere Benachrichtigung",
+            "other": "und {count} weitere Benachrichtigungen"
+        },
+        "messagesWaiting": {
+            "one": "Sie haben eine Nachricht, die auf Sie wartet",
+            "other": "Sie haben {count} Nachrichten, die auf Sie warten"
+        },
+        "postsInFeed": {
+            "one": "Ein neuer Post in Ihrem Feed",
+            "other": "{count} neue Posts in Ihrem Feed"
+        },
+        "unsubscribeInstructions": "Um diese E-Mails zu stoppen, öffnen Sie diesen Link - es dauert einen Klick und benötigt kein Passwort:",
+        "comeSeeWhatIsNew": "Kommen Sie und sehen Sie, was neu ist",
+        "unsubscribeLink": {
+            "link": "Hör auf, mir dies zu schicken",
+            "after": " - ein Klick, kein Passwort erforderlich."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Überprüfen Sie Ihre E-Mail-Adresse",
+        "greeting": "Hi {name},",
+        "instructions": "Bitte überprüfen Sie Ihre E-Mail-Adresse, indem Sie diesen Link besuchen:",
+        "htmlInstructions": "Bitte überprüfen Sie Ihre E-Mail-Adresse, indem Sie auf den folgenden Link klicken:",
+        "buttonLabel": "E-Mail-Adresse überprüfen",
+        "expiresIn": {
+            "one": "Dieser Link läuft in {count} Stunde ab.",
+            "other": "Dieser Link läuft in {count} Stunden ab."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Setzen Sie Ihr Passwort zurück",
+        "greeting": "Hi {name},",
+        "instructions": "Jemand (hoffentlich Sie) hat ein Passwort-Reset angefordert. Besuchen Sie diesen Link, um ein neues Passwort auszuwählen:",
+        "htmlInstructions": "Jemand (hoffentlich Sie) hat ein Passwort-Reset angefordert. Klicken Sie auf den Link unten, um ein neues Passwort auszuwählen:",
+        "buttonLabel": "Passwort zurücksetzen",
+        "expiresIn": {
+            "one": "Dieser Link läuft in {count} Stunde ab.",
+            "other": "Dieser Link läuft in {count} Stunden ab."
+        },
+        "ignoreNotice": "Wenn Sie dies nicht angefordert haben, können Sie diese E-Mail ignorieren."
     }
 }

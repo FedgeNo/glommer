@@ -1067,5 +1067,55 @@
     "LanguageSelector": {
         "label": "Idioma",
         "legend": "Idioma"
+    },
+    "EmailDigest": {
+        "subject": "O que perdeu no {site}",
+        "greeting": "Olá, {name}",
+        "whileAway": "Enquanto estiveste fora:",
+        "repeatedTimes": {
+            "one": " ({count} vez)",
+            "other": " ({count} vezes)"
+        },
+        "moreMissed": {
+            "one": "e mais {count} notificação",
+            "other": "e mais {count} notificações"
+        },
+        "messagesWaiting": {
+            "one": "Você tem uma mensagem à espera",
+            "other": "Você tem {count} mensagens à espera"
+        },
+        "postsInFeed": {
+            "one": "Um novo post no seu feed",
+            "other": "{count} novos posts no seu feed"
+        },
+        "unsubscribeInstructions": "Para parar estes e-mails, abra este link - é preciso um clique e não precisa de senha:",
+        "comeSeeWhatIsNew": "Vem ver o que é novo",
+        "unsubscribeLink": {
+            "link": "Pára de me enviar isto",
+            "after": " - um clique, sem senha necessária."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verificar o seu endereço de e- mail",
+        "greeting": "Olá, {name}",
+        "instructions": "Por favor, verifique o seu endereço de e-mail visitando este link:",
+        "htmlInstructions": "Por favor, verifique o seu endereço de e-mail clicando no link abaixo:",
+        "buttonLabel": "Verificar o Endereço de E- mail",
+        "expiresIn": {
+            "one": "Este link expira em {count} hora.",
+            "other": "Este link expira em {count} horas."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Reinicie sua senha",
+        "greeting": "Olá, {name}",
+        "instructions": "Alguém (esperançosamente você) solicitou uma redefinição de senha. Visite este link para escolher uma nova senha:",
+        "htmlInstructions": "Alguém (esperançosamente você) solicitou uma redefinição de senha. Clique no link abaixo para escolher uma nova senha:",
+        "buttonLabel": "Reiniciar senha",
+        "expiresIn": {
+            "one": "Este link expira em {count} hora.",
+            "other": "Este link expira em {count} horas."
+        },
+        "ignoreNotice": "Se você não solicitou isso, você pode ignorar este e-mail."
     }
 }

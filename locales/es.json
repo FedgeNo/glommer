@@ -1067,5 +1067,55 @@
     "LanguageSelector": {
         "label": "Idioma",
         "legend": "Idioma"
+    },
+    "EmailDigest": {
+        "subject": "Lo que te perdiste en {site}",
+        "greeting": "Hola {name},",
+        "whileAway": "Mientras estabas fuera:",
+        "repeatedTimes": {
+            "one": " ({count} vez)",
+            "other": " ({count} veces)"
+        },
+        "moreMissed": {
+            "one": "y {count} notificación más",
+            "other": "y {count} notificaciones más"
+        },
+        "messagesWaiting": {
+            "one": "Tienes un mensaje esperando",
+            "other": "Tienes {count} mensajes esperando"
+        },
+        "postsInFeed": {
+            "one": "Una publicación nueva en tu feed",
+            "other": "{count} publicaciones nuevas en tu feed"
+        },
+        "unsubscribeInstructions": "Para detener estos correos electrónicos, abra este enlace - toma un clic y no necesita ninguna contraseña:",
+        "comeSeeWhatIsNew": "Ven a ver qué es nuevo",
+        "unsubscribeLink": {
+            "link": "Deja de enviarme esto",
+            "after": " - un clic, sin contraseña necesaria."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifique su dirección de correo electrónico",
+        "greeting": "Hola {name},",
+        "instructions": "Por favor, verifique su dirección de correo electrónico visitando este enlace:",
+        "htmlInstructions": "Por favor, compruebe su dirección de correo electrónico haciendo clic en el enlace de abajo:",
+        "buttonLabel": "Verificar dirección de correo electrónico",
+        "expiresIn": {
+            "one": "Este enlace expira en {count} hora.",
+            "other": "Este enlace expira en {count} horas."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Reinicia tu contraseña",
+        "greeting": "Hola {name},",
+        "instructions": "Alguien (afortunadamente usted) pidió un reinicio de contraseña. Visite este enlace para elegir una nueva contraseña:",
+        "htmlInstructions": "Alguien (afortunadamente usted) pidió un reinicio de contraseña. Haga clic en el enlace de abajo para elegir una nueva contraseña:",
+        "buttonLabel": "Reset Password",
+        "expiresIn": {
+            "one": "Este enlace expira en {count} hora.",
+            "other": "Este enlace expira en {count} horas."
+        },
+        "ignoreNotice": "Si no lo solicitó, puede ignorar este correo electrónico."
     }
 }

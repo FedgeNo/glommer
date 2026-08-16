@@ -1,0 +1,1082 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "other": "{count} phiếu bầu"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Đăng nhập",
+            "after": " để trả lời."
+        },
+        "post": {
+            "before": "",
+            "link": "Đăng nhập",
+            "after": " để đăng bài."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Trang web",
+        "siteURLLabel": "URL trang web",
+        "siteTitleLabel": "Tiêu đề trang web",
+        "mailFromAddressLabel": "Địa chỉ email gửi đi",
+        "serverNameConfirmedLabel": "Tôi đã đặt \"ServerName {host}\" và \"UseCanonicalName On\" trong cấu hình máy chủ web của tôi (chỉ được kiểm tra nếu bài kiểm tra tự động trực tiếp không hoàn tất được - xem phần HTTPS trong README.md)",
+        "databaseLegend": "Cơ sở dữ liệu",
+        "databaseHostLabel": "Máy chủ cơ sở dữ liệu",
+        "databasePortLabel": "Cổng cơ sở dữ liệu",
+        "databaseNameLabel": "Tên cơ sở dữ liệu",
+        "databaseAdminUsernameLabel": "Tên đăng nhập quản trị cơ sở dữ liệu",
+        "databaseAdminPasswordLabel": "Mật khẩu quản trị cơ sở dữ liệu",
+        "webSocketTLSLegend": "TLS cho WebSocket (Tùy chọn)",
+        "certificatePathLabel": "Đường dẫn chứng chỉ",
+        "certificatePathPlaceholder": "Để trống để tự động tạo bằng mkcert",
+        "keyPathLabel": "Đường dẫn khóa",
+        "keyPathPlaceholder": "Để trống để tự động tạo bằng mkcert",
+        "botProtectionLegend": "Chống Bot (Tùy chọn)",
+        "turnstileSiteKeyLabel": "Khóa trang Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Để trống để bỏ qua",
+        "turnstileSecretKeyLabel": "Khóa bí mật Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Để trống để bỏ qua",
+        "submit": "Thiết lập"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Cụm mật khẩu hiện tại",
+        "newPassphraseLabel": "Cụm mật khẩu mới",
+        "confirmNewPassphraseLabel": "Xác nhận cụm mật khẩu mới",
+        "accountPasswordLabel": "Mật khẩu tài khoản",
+        "submit": "Đổi cụm mật khẩu"
+    },
+    "PasswordResetForm": {
+        "legend": "Chọn mật khẩu mới",
+        "newPasswordLabel": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Ít nhất 8 ký tự",
+        "confirmPasswordLabel": "Xác nhận mật khẩu mới",
+        "submit": "Đặt lại mật khẩu"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Đặt lại mật khẩu của bạn",
+        "emailLabel": "Email",
+        "submit": "Gửi liên kết đặt lại"
+    },
+    "EmailRevertForm": {
+        "submit": "Hoàn tác thay đổi email"
+    },
+    "EmailVerifyForm": {
+        "submit": "Xác minh địa chỉ email"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Bật lại"
+    },
+    "EmailDigestSetting": {
+        "label": "Gửi email cho tôi những gì tôi đã bỏ lỡ khi tôi vắng mặt một thời gian"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Thiết bị không xác định",
+        "browserOnOS": "{browser} trên {os}",
+        "thisDevice": " (thiết bị này)",
+        "lastUsed": {
+            "before": "Dùng lần cuối ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Kết thúc mọi phiên đang hoạt động và quên mọi thiết bị đã ghi nhớ. Bạn sẽ bị đăng xuất khỏi tất cả trình duyệt, kể cả trình duyệt này."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Đăng xuất khỏi mọi nơi"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Xác minh với Google để xóa"
+    },
+    "GoogleSignInButton": {
+        "label": "Tiếp tục với Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Chỉnh sửa hồ sơ"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Nhận thông báo trên thiết bị này ngay cả khi trang web không mở. Đây là lựa chọn riêng cho từng trình duyệt - hãy bật ở bất cứ nơi nào bạn muốn được liên hệ.",
+        "label": {
+            "off": "Bật trên thiết bị này",
+            "on": "Tắt trên thiết bị này"
+        },
+        "unsupported": "Trình duyệt này không hỗ trợ thông báo đẩy"
+    },
+    "LoginForm": {
+        "legend": "Đăng nhập",
+        "identifier": "Tên đăng nhập hoặc email",
+        "password": "Mật khẩu",
+        "rememberMe": "Ghi nhớ đăng nhập",
+        "submit": "Đăng nhập"
+    },
+    "SignupForm": {
+        "legend": "Tạo tài khoản",
+        "usernameLabel": "Tên đăng nhập",
+        "usernamePlaceholder": "Chữ thường, số và dấu _",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Địa chỉ email hợp lệ",
+        "displayName": "Tên hiển thị (Tùy chọn)",
+        "bioLabel": "Tiểu sử (Tùy chọn)",
+        "bioPlaceholder": "Một tiểu sử ngắn - #hashtag, @tên người dùng và liên kết đều có thể nhấp được",
+        "passwordLabel": "Mật khẩu",
+        "passwordPlaceholder": "Mật khẩu: ít nhất 8 ký tự",
+        "rememberMe": "Ghi nhớ đăng nhập",
+        "submit": "Đăng ký"
+    },
+    "PasswordChangeForm": {
+        "legend": "Đổi mật khẩu của bạn",
+        "currentPassword": "Mật khẩu hiện tại",
+        "newPasswordLabel": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Ít nhất 8 ký tự",
+        "confirmPassword": "Xác nhận mật khẩu mới",
+        "submit": "Đổi mật khẩu"
+    },
+    "EmailChangeForm": {
+        "legend": "Đổi địa chỉ email của bạn",
+        "newEmail": "Địa chỉ email mới",
+        "currentPassword": "Mật khẩu hiện tại",
+        "notice": "Bạn sẽ cần xác minh địa chỉ mới trước khi có thể tiếp tục sử dụng trang web.",
+        "submit": "Đổi email"
+    },
+    "AccountDeleteForm": {
+        "legend": "Xóa tài khoản của bạn",
+        "warning": "Thao tác này sẽ xóa vĩnh viễn tài khoản, bài viết và tin nhắn của bạn. Không thể hoàn tác.",
+        "currentPassword": "Mật khẩu hiện tại",
+        "submit": "Xóa tài khoản"
+    },
+    "AccountMigrationForm": {
+        "legend": "Chuyển sang máy chủ khác",
+        "movedNotice": "Tài khoản này đã chuyển sang {destination}. Người theo dõi bạn đã được yêu cầu theo dõi bạn ở đó.",
+        "explanation": "Người theo dõi bạn sẽ được yêu cầu theo dõi tài khoản mới. Bài viết của bạn vẫn ở lại đây - địa chỉ đối tượng thuộc về máy chủ đã tạo ra chúng, nên không thể mang theo được.",
+        "addressNotice": "Tài khoản bạn chuyển đến phải liệt kê tài khoản này trong mục \"còn được biết đến là\" trước. Địa chỉ của bạn ở đây là {address}.",
+        "movedToLabel": "Chuyển đến",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Còn được biết đến là",
+        "aliasesExplanation": "Các tài khoản ở nơi khác cũng là bạn. Liệt kê một tài khoản ở đây cho phép tài khoản đó chuyển đến tài khoản này - đây là sự cho phép, không phải bản thân việc chuyển. Mỗi dòng một địa chỉ.",
+        "aliasesLabel": "Các tài khoản khác của bạn",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Lưu"
+    },
+    "TwoFactorForm": {
+        "legend": "Nhập mã xác minh của bạn",
+        "explanation": "Chúng tôi đã gửi email chứa mã xác minh cho bạn. Nhập mã đó bên dưới để hoàn tất đăng nhập.",
+        "code": "Mã xác minh",
+        "submit": "Xác minh"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Xác thực hai yếu tố đang bật",
+            "off": "Xác thực hai yếu tố đang tắt"
+        },
+        "explanation": {
+            "on": "Khi bạn đăng nhập, chúng tôi sẽ gửi email chứa mã xác minh mà bạn phải nhập để hoàn tất đăng nhập.",
+            "off": "Thêm một bước nữa khi đăng nhập: chúng tôi sẽ gửi email chứa mã xác minh mà bạn phải nhập, để một mình mật khẩu không đủ để đăng nhập được."
+        },
+        "currentPassword": "Mật khẩu hiện tại",
+        "submit": {
+            "on": "Tắt xác thực hai yếu tố",
+            "off": "Bật xác thực hai yếu tố"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Vui lòng kiểm tra hộp thư đến và nhấp vào liên kết xác minh mà chúng tôi đã gửi để xác nhận địa chỉ email của bạn. Nếu bạn không thấy nó, hãy kiểm tra thư mục rác/spam."
+    },
+    "VerificationResendButton": {
+        "label": "Gửi lại email xác minh"
+    },
+    "MailSettingsForm": {
+        "legend": "Thư gửi đi",
+        "fromAddressLabel": "Địa chỉ gửi",
+        "fromAddressPlaceholder": "Không thể gửi email nào cho đến khi thiết lập mục này",
+        "fromNameLabel": "Tên người gửi",
+        "hostLabel": "Máy chủ SMTP",
+        "portLabel": "Cổng SMTP",
+        "usernameLabel": "Tên đăng nhập SMTP",
+        "passwordLabel": "Mật khẩu SMTP",
+        "passwordPlaceholder": {
+            "set": "Đã thiết lập mật khẩu - để trống để giữ nguyên",
+            "unset": "Mật khẩu SMTP"
+        },
+        "encryptionLabel": "Mã hóa",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, thường dùng ở cổng 587)",
+            "ssl": "SSL (TLS ngầm định, thường dùng ở cổng 465)",
+            "none": "Không có"
+        },
+        "explainer": "Để trống máy chủ SMTP để gửi qua hàm mail() của PHP thay thế (không khuyến nghị - xem phần về khả năng gửi thư trong README). Không thể gửi bất kỳ email nào cho đến khi thiết lập địa chỉ \"gửi từ\".",
+        "save": "Lưu"
+    },
+    "MapSettingsForm": {
+        "legend": "Ô bản đồ",
+        "notice": "Để trống để sử dụng OpenStreetMap. Để dùng một nhà cung cấp yêu cầu khóa, hãy dán mẫu URL của họ với {apiKey} ở đúng vị trí cần đặt khóa, cùng với khóa và ghi công bên dưới.",
+        "urlLabel": "Mẫu URL ô bản đồ",
+        "keyLabel": "Khóa API",
+        "keyPlaceholder": "Khóa API của nhà cung cấp ô bản đồ của bạn",
+        "attributionLabel": "Ghi công",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Lưu"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Đăng nhập bằng Google",
+        "clientIdLabel": "ID ứng dụng khách",
+        "clientIdPlaceholder": "ID ứng dụng khách OAuth của Google",
+        "secretLabel": "Mã bí mật ứng dụng khách",
+        "secretPlaceholder": {
+            "set": "Đã thiết lập mã bí mật ứng dụng khách - để trống để giữ nguyên",
+            "unset": "Mã bí mật ứng dụng khách OAuth của Google"
+        },
+        "explainer": "Cả hai đều bắt buộc để nút \"Tiếp tục với Google\" xuất hiện khi đăng ký và đăng nhập. Trong OAuth client trên Google Cloud của bạn, hãy đặt URI chuyển hướng được ủy quyền thành {url} - xóa ID ứng dụng khách để tắt tính năng này.",
+        "save": "Lưu"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Khóa trang",
+        "turnstileSiteKeyPlaceholder": "Khóa trang Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Khóa bí mật",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Đã thiết lập khóa bí mật - để trống để giữ nguyên",
+            "unset": "Khóa bí mật Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Cả hai khóa đều bắt buộc để CAPTCHA xuất hiện khi đăng ký và đăng nhập. Xóa khóa trang để tắt tính năng này.",
+        "recaptchaLegend": "Google reCAPTCHA (Khôi phục khóa tài khoản)",
+        "recaptchaSiteKeyLabel": "Khóa trang",
+        "recaptchaSiteKeyPlaceholder": "Khóa trang Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Khóa bí mật",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Đã thiết lập khóa bí mật - để trống để giữ nguyên",
+            "unset": "Khóa bí mật Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Cả hai khóa đều bắt buộc. Khi đã thiết lập, một tài khoản đạt đến giới hạn số lần đăng nhập có thể vào lại bằng cách vượt qua thử thách này thay vì phải chờ hết thời gian khóa; khi chưa thiết lập, việc khóa tài khoản là một khoảng chờ bắt buộc. Hãy dùng reCAPTCHA v2 (\"Tôi không phải là người máy\").",
+        "save": "Lưu"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Được các tính năng AI trên trang web sử dụng (tóm tắt chủ đề thịnh hành, v.v.). Để trống mô hình để sử dụng Free Models Router, tính năng mà OpenRouter chọn ngẫu nhiên trong số các mô hình miễn phí hiện có và không bao giờ phát sinh chi phí.",
+        "keyLabel": "Khóa API",
+        "keyPlaceholder": {
+            "set": "Đã thiết lập khóa API - để trống để giữ nguyên",
+            "unset": "Khóa API OpenRouter"
+        },
+        "clearKeyLabel": "Xóa khóa API đã lưu (tắt các tính năng AI)",
+        "modelLabel": "Mô hình",
+        "neverSpendLabel": "Không bao giờ cho phép mục này tiêu tiền (khuyến nghị)",
+        "explainer": "Khi bật chế độ bảo vệ này, mọi yêu cầu đều giới hạn chi phí ở mức 0, nên sẽ thất bại thẳng thay vì chuyển sang dùng mô hình trả phí khi không có nhà cung cấp miễn phí nào khả dụng. Xóa khóa API đã lưu để tắt hoàn toàn các tính năng AI.",
+        "save": "Lưu"
+    },
+    "AboutSettingsForm": {
+        "legend": "Giới thiệu",
+        "description": "Văn bản thuần - dòng trống ngăn cách các đoạn văn. Đoạn đầu tiên sẽ được dùng làm mô tả trang web.",
+        "save": "Lưu"
+    },
+    "TermsSettingsForm": {
+        "legend": "Điều khoản dịch vụ",
+        "description": "Văn bản thuần - dòng trống ngăn cách các đoạn văn.",
+        "save": "Lưu"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Chính sách quyền riêng tư",
+        "description": "Văn bản thuần - dòng trống ngăn cách các đoạn văn.",
+        "save": "Lưu"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Email tổng hợp",
+        "fieldLabel": "Đoạn kết",
+        "notice": "Được thêm vào gần cuối mỗi email tổng hợp, sau danh sách những gì thành viên đã bỏ lỡ. Văn bản thuần. Để trống để quay lại nội dung mặc định đi kèm phần mềm này.",
+        "save": "Lưu"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Favicon hiện tại",
+        "save": "Tải lên favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Ảnh trang chủ",
+        "explainer": "Được các trang khác hiển thị khi có người chia sẻ liên kết đến trang này - chỉ là metadata Open Graph, không bao giờ xuất hiện trên trang. Được cắt còn 1200×630. Nếu không có ảnh, bản xem trước liên kết sẽ không có ảnh nào cả.",
+        "currentAlt": "Ảnh trang chủ hiện tại",
+        "save": "Tải ảnh lên"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Tự động phát"
+    },
+    "CarouselNextButton": {
+        "name": "Tiếp theo"
+    },
+    "CarouselPrevButton": {
+        "name": "Trước"
+    },
+    "MediaFullscreenButton": {
+        "name": "Toàn màn hình"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Xóa tệp"
+    },
+    "NotificationDropdown": {
+        "showAll": "Xem tất cả"
+    },
+    "HelpSearch": {
+        "placeholder": "Tìm trợ giúp…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Đã hiểu"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Hủy bỏ"
+    },
+    "StagedPostEditButton": {
+        "name": "Sửa"
+    },
+    "StagedPostPublishButton": {
+        "name": "Đăng ngay"
+    },
+    "LogoutButton": {
+        "name": "Đăng xuất"
+    },
+    "AvatarUploadForm": {
+        "submit": "Cập nhật ảnh đại diện"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Tìm người dùng bị cấm…"
+    },
+    "BannedUserSection": {
+        "heading": "Người dùng bị cấm"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Lời mời đã gửi (Đang chờ phản hồi)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Bị cấm bởi {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Bị chặn bởi {name} ",
+            "after": ""
+        },
+        "deletedAccount": "một tài khoản đã bị xóa",
+        "reason": " - {reason}"
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Không thể kết nối đến máy chủ WebSocket tại 127.0.0.1:{port}{tls} ({error}). Hãy khởi động nó trước: systemctl --user start glommer-websocket (xem README.md để biết tệp unit). Nếu nó vừa có thêm hoặc mất WS_TLS_CERT/WS_TLS_KEY, hãy khởi động lại để khớp với .env.",
+        "wsOverTLS": " qua TLS",
+        "wsBadHandshake": "Dịch vụ tại 127.0.0.1:{port} đã không hoàn tất bắt tay WebSocket hợp lệ - có thể một chương trình khác không phải bin/websocket-server.php đang lắng nghe ở cổng đó.",
+        "wsNoPong": "Máy chủ WebSocket đã chấp nhận bắt tay nhưng không phản hồi ping - có thể nó đang bị treo hoặc hoạt động sai. Hãy kiểm tra nhật ký của nó.",
+        "wsReachable": "Máy chủ WebSocket có thể truy cập và đang phản hồi tại 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtag",
+            "person": "Người",
+            "org": "Tổ chức",
+            "gpe": "Địa điểm",
+            "loc": "Vùng",
+            "fac": "Địa danh",
+            "product": "Sản phẩm",
+            "event": "Sự kiện",
+            "work_of_art": "Tác phẩm",
+            "law": "Luật",
+            "language": "Ngôn ngữ",
+            "norp": "Nhóm"
+        },
+        "plural": {
+            "hashtag": "Hashtag",
+            "person": "Người",
+            "org": "Tổ chức",
+            "gpe": "Địa điểm",
+            "loc": "Vùng",
+            "fac": "Địa danh",
+            "product": "Sản phẩm",
+            "event": "Sự kiện",
+            "work_of_art": "Tác phẩm",
+            "law": "Luật",
+            "language": "Ngôn ngữ",
+            "norp": "Nhóm"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Hủy kết bạn"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Chấp nhận"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Từ chối"
+    },
+    "UserFollowButton": {
+        "follow": "Theo dõi",
+        "unfollow": "Bỏ theo dõi"
+    },
+    "UserBlockButton": {
+        "name": "Chặn"
+    },
+    "UserUnblockButton": {
+        "name": "Bỏ chặn"
+    },
+    "OtherUser": {
+        "message": "Nhắn tin"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menu",
+        "loggedInAs": "Đã đăng nhập với tên {name}",
+        "friendsFeed": "Bảng tin bạn bè",
+        "relayFeed": "Bảng tin chuyển tiếp",
+        "users": "Người dùng",
+        "tags": "Hashtag",
+        "topics": "Chủ đề",
+        "map": "Bản đồ",
+        "locations": "Địa điểm",
+        "search": "Tìm kiếm",
+        "messages": "Tin nhắn",
+        "bookmarks": "Đã lưu",
+        "help": "Trợ giúp",
+        "about": "Giới thiệu",
+        "login": "Đăng nhập",
+        "signup": "Đăng ký",
+        "friends": "Bạn bè",
+        "drafts": "Bản nháp & Đã lên lịch",
+        "userSettings": "Cài đặt tài khoản",
+        "modSettings": "Cài đặt kiểm duyệt",
+        "adminSettings": "Cài đặt quản trị"
+    },
+    "LogoutForm": {
+        "submit": "Đăng xuất"
+    },
+    "User": {
+        "joined": "Đã tham gia {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Kết bạn",
+        "cancel": "Hủy lời mời"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Đã lên lịch cho {when}",
+        "draft": "Bản nháp - chỉ đăng khi bạn yêu cầu"
+    },
+    "MessageTranslateButton": {
+        "name": "Dịch tin nhắn này"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Về việc dịch tin nhắn",
+        "body": "Để dịch một tin nhắn, văn bản của nó được gửi đến máy chủ này và được dịch tại đây. Không có gì được lưu lại: bản dịch không được ghi vào cơ sở dữ liệu và tin nhắn gốc không thay đổi. Nhưng một tin nhắn được dịch theo cách này đã bị máy chủ đọc, nên nó không còn được mã hóa đầu cuối như một tin nhắn không dịch. Chỉ những tin nhắn bạn nhận được mới có thể được dịch, và chỉ khi bạn yêu cầu.",
+        "confirm": "Dịch",
+        "cancel": "Để sau"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Quên cụm mật khẩu của bạn? Đặt lại sẽ tạo khóa mới dưới một cụm mật khẩu mới - nhưng những tin nhắn đã được mã hóa bằng khóa cũ sẽ không bao giờ có thể đọc lại được nữa, bởi bất kỳ ai.",
+        "requirements": "Ít nhất 12 ký tự, và không được trùng với mật khẩu tài khoản của bạn - mật khẩu đó được gửi đến máy chủ này, còn cụm mật khẩu của bạn thì không bao giờ được gửi.",
+        "passphraseLabel": "Cụm mật khẩu",
+        "resetPassphraseLabel": "Cụm mật khẩu mới",
+        "confirmLabel": "Xác nhận cụm mật khẩu",
+        "accountPasswordLabel": "Mật khẩu tài khoản",
+        "submitLabel": "Bật tin nhắn được mã hóa",
+        "resetSubmitLabel": "Đặt lại khóa mã hóa"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Tin nhắn được mã hóa đầu cuối được khóa và mở khóa ngay trong trình duyệt của bạn: máy chủ này chỉ chuyển tiếp và lưu trữ chúng mà không thể đọc được nội dung. Khóa của bạn được bảo vệ bằng một cụm mật khẩu, và cùng một cụm mật khẩu đó sẽ mở khóa tin nhắn của bạn từ bất kỳ trình duyệt nào. Cuộc trò chuyện chỉ được mã hóa khi cả hai người đã bật tính năng này; tin nhắn gửi đến người trên máy chủ khác vẫn không được mã hóa, vì hệ thống liên hợp không có cách nào khác để truyền tải chúng.",
+        "noRecovery": "Không có cách nào để khôi phục một cụm mật khẩu đã mất - kể cả với quản trị viên. Mất nó nghĩa là mất luôn các tin nhắn đã mã hóa của bạn.",
+        "enabledStatus": "Tin nhắn được mã hóa đang bật."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Đã mã hóa",
+            "explanation": "Tin nhắn trong cuộc trò chuyện này được mã hóa đầu cuối: chúng được mở khóa bằng cụm mật khẩu của bạn và đọc ngay trong trình duyệt của các bạn, còn những gì máy chủ này lưu trữ chỉ là bản mã. Hãy kiểm tra mã an toàn ở cuối cuộc trò chuyện cùng với người kia để chắc chắn không ai đang xen giữa hai bạn. Những tin nhắn gửi trước khi bật mã hóa vẫn đọc được như trước."
+        },
+        "awaiting-theirs": {
+            "label": "Chưa được mã hóa",
+            "explanation": "Tin nhắn ở đây sẽ được mã hóa đầu cuối ngay khi {handle} bật tin nhắn được mã hóa trong cài đặt của họ."
+        },
+        "awaiting-yours": {
+            "label": "Chưa được mã hóa",
+            "explanation": "Tin nhắn ở đây không được mã hóa đầu cuối. Hãy bật tin nhắn được mã hóa trong phần Cài đặt để bảo mật cuộc trò chuyện này."
+        },
+        "federated": {
+            "label": "Chưa được mã hóa",
+            "explanation": "{handle} đang ở một máy chủ khác. Tin nhắn trong cuộc trò chuyện này được lưu trữ trên cả máy chủ đó lẫn máy chủ này, và quản trị viên của máy chủ đó có thể đọc được chúng - giao thức giữa các máy chủ không có cách nào để mã hóa chúng. Hãy giữ những nội dung nhạy cảm cho các cuộc trò chuyện trên trang này."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Theo dõi tài khoản Fediverse",
+        "notice": "Dán một hoặc nhiều địa chỉ, ví dụ: @user@example.social - dùng dấu phân cách nào giữa chúng cũng được.",
+        "handlesLabel": "Địa chỉ Fediverse cần theo dõi",
+        "submit": "Theo dõi",
+        "statusPending": "đang chờ",
+        "statusAccepted": "đã chấp nhận"
+    },
+    "ServerBlockForm": {
+        "legend": "Chặn một máy chủ",
+        "description": "Từ chối mọi thứ từ máy chủ đó và mọi thứ thuộc về nó: không nhận gửi đến, không gửi đi, và các lượt theo dõi hiện có theo cả hai chiều đều bị hủy.",
+        "serverLabel": "Máy chủ",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Lý do",
+        "reasonPlaceholder": "Vì sao máy chủ này bị chặn",
+        "submit": "Chặn máy chủ"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Chạy các phần của thiết lập cuộc gọi có thể kiểm tra được từ một trình duyệt. Mọi thứ cho đến trước khi thực sự kết nối ngang hàng đều có thể kiểm tra ở đây; để kết nối với người khác thì cần chính người đó."
+    },
+    "VideoCallTestButton": {
+        "label": "Chạy kiểm tra"
+    },
+    "WebSocketStatus": {
+        "ok": "Máy chủ WebSocket: Đang chạy",
+        "failed": "Máy chủ WebSocket: {detail}",
+        "clientTesting": "Kết nối trình duyệt: Đang kiểm tra…",
+        "clientConnecting": "Kết nối trình duyệt: Đang kết nối…",
+        "clientConnected": "Kết nối trình duyệt: Đã kết nối",
+        "clientDisconnecting": "Kết nối trình duyệt: Đang ngắt kết nối…",
+        "clientNotConnected": "Kết nối trình duyệt: Chưa kết nối"
+    },
+    "UploadWorkerStatus": {
+        "running": "Dịch vụ worker: Đang chạy",
+        "stopped": "Dịch vụ worker: Không chạy - các tệp tải lên đang chờ sẽ không bao giờ được chuyển mã cho đến khi dịch vụ được khởi động lại",
+        "unknown": "Dịch vụ worker: Không xác định - hoặc systemctl không khả dụng trên máy chủ này, hoặc SELinux đang từ chối truy vấn trạng thái của chính máy chủ web (chạy bin/install.php với quyền root để khắc phục)",
+        "queue": "Hàng đợi: {staging} đang chuẩn bị, {pending} đang chờ, {processing} đang xử lý"
+    },
+    "TrendingTimerStatus": {
+        "running": "Hẹn giờ Xu hướng: Đang chạy",
+        "stopped": "Hẹn giờ Xu hướng: Không chạy - các chủ đề thịnh hành sẽ chỉ được làm mới thông qua cơ chế tự phục hồi khi đọc (Trending::current()), chứ không theo lịch. Chạy bin/install.php với quyền root để thiết lập.",
+        "unknown": "Hẹn giờ Xu hướng: Không xác định - hoặc systemctl không khả dụng trên máy chủ này, hoặc SELinux đang từ chối truy vấn trạng thái của chính máy chủ web (chạy bin/install.php với quyền root để khắc phục)"
+    },
+    "Notification": {
+        "postReady": "Tệp phương tiện của bạn đã xử lý xong và hiện đã được đăng",
+        "scheduledPostLive": "Bài viết đã lên lịch của bạn hiện đã được đăng",
+        "uploadPartlyFailed": "Bài viết của bạn đã được đăng, nhưng một hoặc nhiều tệp trong đó không thể xử lý được",
+        "uploadFailed": "Một trong các tệp bạn tải lên đã xử lý thất bại và không được đăng",
+        "mailerFailed": "Gửi email thất bại - dịch vụ gửi thư có thể đang gặp sự cố. Vui lòng kiểm tra cấu hình thư của bạn.",
+        "mailFromNotConfigured": "Chưa cấu hình địa chỉ \"gửi từ\" cho email, nên không thể gửi email. Hãy thiết lập trong Cài đặt quản trị (phần Thư gửi đi) hoặc thông qua bin/install.php.",
+        "systemError": "Đã xảy ra lỗi máy chủ. Hãy kiểm tra nhật ký lỗi để biết chi tiết.",
+        "passwordRemovedGoogle": "Mật khẩu của bạn đã bị xóa khi bạn đăng nhập bằng Google. Hãy dùng \"Quên mật khẩu\" nếu bạn muốn đặt mật khẩu mới.",
+        "like": "{name} đã thích bài viết của bạn",
+        "repost": "{name} đã đăng lại bài viết của bạn",
+        "reply": "{name} đã trả lời bài viết của bạn",
+        "friendRequest": "{name} đã gửi cho bạn lời mời kết bạn",
+        "friendAccepted": "{name} đã chấp nhận lời mời kết bạn của bạn",
+        "message": "{name} đã gửi cho bạn một tin nhắn",
+        "mention": "{name} đã nhắc đến bạn trong một bài viết",
+        "follow": "{name} đã theo dõi bạn từ một máy chủ khác",
+        "default": "{name} đã làm gì đó"
+    },
+    "NotificationList": {
+        "emptyNotice": "Chưa có thông báo nào."
+    },
+    "NotificationsNavLink": {
+        "label": "Thông báo",
+        "unseen": "Thông báo chưa xem"
+    },
+    "NotificationTestPanel": {
+        "intro": "Gửi một thông báo thử nghiệm cho chính bạn (quản trị viên). Thông báo sẽ xuất hiện ngay lập tức dưới dạng toast và trong danh sách thông báo thả xuống.",
+        "button": "Gửi thông báo thử nghiệm",
+        "sending": "Đang gửi…",
+        "sent": "Đã gửi!",
+        "failed": "Thất bại"
+    },
+    "MessageDot": {
+        "label": "Tin nhắn chưa đọc"
+    },
+    "NavAlertDot": {
+        "label": "Có điều mới trong menu"
+    },
+    "Message": {
+        "encrypted": "Tin nhắn được mã hóa",
+        "decryptionFailed": "Tin nhắn này đã được mã hóa bằng khóa không còn tồn tại nữa."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Tin nhắn",
+        "bodyPlaceholder": "Viết tin nhắn",
+        "send": "Gửi"
+    },
+    "MessageList": {
+        "emptyNotice": "Chưa có tin nhắn nào."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Hãy đọc mã này cho nhau bằng một cách khác - nói to, gặp trực tiếp, hoặc qua cuộc gọi. Nếu mã khớp ở cả hai phía, nghĩa là không ai đang xen giữa hai bạn.",
+        "changed": "Mã này đã thay đổi kể từ lần bạn kiểm tra. Điều đó xảy ra khi một trong hai người đặt lại khóa mã hóa của mình - nhưng đó cũng chính là biểu hiện nếu có ai đó đang đọc trộm cuộc trò chuyện này. Hãy kiểm tra mã mới với người đó trước khi tin tưởng nó.",
+        "verified": "Bạn đã kiểm tra mã này."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Đánh dấu đã xác minh"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Cụm mật khẩu",
+        "passphrasePlaceholder": "Cụm mật khẩu để mở khóa cuộc trò chuyện này",
+        "submit": "Mở khóa"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Tin nhắn cuối ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Nội dung nhạy cảm"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Mặc định hiển thị nội dung nhạy cảm"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Bài viết",
+            "message": "Tin nhắn",
+            "user": "Người dùng"
+        },
+        "summary": {
+            "before": "Báo cáo bởi ",
+            "after": " về {type} #{id}"
+        },
+        "reasonLine": "Lý do: {reason}",
+        "banReporterLabel": "Cấm người báo cáo",
+        "banReportedUserLabel": "Cấm người dùng bị báo cáo",
+        "deleteLabel": "Xóa {type}",
+        "reportedImageAlt": "Ảnh bị báo cáo",
+        "attachmentUnavailable": "Tệp đính kèm bị báo cáo không còn khả dụng nữa.",
+        "viewAttachment": "Xem tệp đính kèm bị báo cáo",
+        "missing": {
+            "noSnapshot": "Nội dung bị báo cáo không còn khả dụng nữa.",
+            "unknownType": "Loại nội dung không xác định."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Không có báo cáo nào."
+    },
+    "ModQueueLinks": {
+        "intro": "Các hàng đợi này đủ dài để đọc từng trang một, nên chúng có các trang riêng.",
+        "reportsLabel": "Báo cáo",
+        "bannedUsersLabel": "Người dùng bị cấm"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Chưa có kiểm duyệt viên nào thực hiện hành động gì."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Không có thực thể thịnh hành nào bị cấm."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Không có máy chủ nào bị chặn."
+    },
+    "RelayCard": {
+        "accepted": "Đã đăng ký ",
+        "waiting": "Đang chờ trạm chuyển tiếp chấp nhận - đã đăng ký "
+    },
+    "RelayList": {
+        "emptyNotice": "Chưa đăng ký trạm chuyển tiếp nào. Không có gì xuất hiện ở đây ngoài những gì thành viên theo dõi."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Chưa có gì đi qua trạm chuyển tiếp nào cả. Bài viết sẽ xuất hiện ở đây khi các máy chủ phía bên kia đăng chúng."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Đăng ký một trạm chuyển tiếp",
+        "explainerOne": "Một trạm chuyển tiếp là một luồng dữ liệu dùng chung: mọi bài viết công khai từ mọi máy chủ khác đã đăng ký đều đến đây, và bài viết của máy chủ này cũng được gửi đến tất cả các máy chủ đó. Đây là cách một máy chủ mới tìm được bất kỳ ai, vì nếu không thì hệ thống liên hợp chỉ mang đến những gì mà người ở đây đã theo dõi sẵn.",
+        "explainerTwo": "Tải lượng không phải do bạn quyết định - nó là bất cứ thứ gì các máy chủ đó đăng, im ắng một tuần rồi hàng nghìn bài viết mỗi giờ vào tuần sau, và kho lưu trữ, hàng đợi gửi đi và hàng đợi kiểm duyệt của bạn đều phải gánh chịu điều đó. Bài viết qua trạm chuyển tiếp không xuất hiện ở bảng tin chính hay bảng tin bạn bè; chúng vào Bảng tin chuyển tiếp, nơi mọi người phải chủ động mở ra xem.",
+        "addressLabel": "Địa chỉ trạm chuyển tiếp",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Đăng ký"
+    },
+    "RelayFollowObjectField": {
+        "label": "Kiểu đăng ký",
+        "options": {
+            "public": "Theo dõi luồng công khai (điều hầu hết trạm chuyển tiếp mong đợi)",
+            "actor": "Theo dõi actor riêng của trạm chuyển tiếp"
+        },
+        "retryNotice": "Nếu trạm chuyển tiếp không bao giờ chấp nhận, hãy rút đăng ký và thử kiểu còn lại - một số phần mềm trạm chuyển tiếp chỉ nhận diện được một trong hai kiểu."
+    },
+    "SiteCounters": {
+        "members": "Thành viên: {count} ({joined} người tham gia trong {days} ngày qua)",
+        "activeMembers": "Thành viên hoạt động trong {days} ngày qua: {count} ({posted} người trong số đó đã đăng bài)",
+        "posts": "Bài viết đã viết ở đây: {count} ({recent} bài trong {days} ngày qua)",
+        "deliveries": "Lượt gửi liên hợp trong {days} ngày qua: {delivered} đã đến, {undeliverable} đã từ bỏ",
+        "queued": "Đang chờ gửi đi: {count} ({failing} đã từng bị từ chối ít nhất một lần)",
+        "pendingReads": "Bài viết đang chờ đọc từ các máy chủ khác: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Chạy bộ kiểm thử của trang web và xem kết quả. Việc này mất vài giây, nên nó mở trên trang riêng.",
+        "runLabel": "Chạy kiểm thử"
+    },
+    "HelpArticle": {
+        "backLabel": "Quay lại tất cả trợ giúp"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Hiện chưa có gợi ý nào - gợi ý đến từ bạn bè của những người bạn đã kết bạn. Hãy tìm kiếm ở trên để tìm ai đó theo tên.",
+        "noMatches": "Không ai ở đây khớp với tìm kiếm đó."
+    },
+    "UserModButton": {
+        "make": "Đặt làm kiểm duyệt viên",
+        "remove": "Gỡ vai trò kiểm duyệt viên"
+    },
+    "UserUnbanButton": {
+        "name": "Bỏ cấm"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Cấm"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Bỏ cấm"
+    },
+    "ReportDismissButton": {
+        "name": "Bỏ qua"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Đánh dấu nhạy cảm"
+    },
+    "ServerUnblockButton": {
+        "name": "Bỏ chặn"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Hủy đăng ký"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Thu hồi"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Đạt",
+        "failing": "{suite}: Thất bại"
+    },
+    "PageTitle": {
+        "about": "Giới thiệu",
+        "adminBanned": "Người dùng bị cấm",
+        "adminModSettings": "Cài đặt kiểm duyệt",
+        "adminReports": "Báo cáo",
+        "adminSettings": "Cài đặt quản trị",
+        "adminTests": "Kiểm thử",
+        "authGoogleCallbackAccountDeleted": "Đã xóa tài khoản",
+        "authGoogleCallbackDeleteAccount": "Xóa tài khoản",
+        "authGoogleCallbackLogin": "Đăng nhập",
+        "bookmarks": "Đã lưu",
+        "checkInbox": "Kiểm tra hộp thư của bạn",
+        "drafts": "Bản nháp & Đã lên lịch",
+        "draftsEditDraft": "Chỉnh sửa bản nháp",
+        "draftsEditScheduled": "Chỉnh sửa bài viết đã lên lịch",
+        "forgotPassword": "Quên mật khẩu",
+        "friendsFeed": "Bảng tin bạn bè",
+        "help": "Trợ giúp",
+        "helpDescription": "Hướng dẫn và giải đáp để sử dụng trang web.",
+        "locations": "Địa điểm",
+        "locationsDescription": "Bài viết từ những nơi gần bạn nhất.",
+        "locationsPlaceDescription": "Bài viết gần {place}.",
+        "login": "Đăng nhập",
+        "loginVerificationCode": "Mã xác minh",
+        "map": "Bản đồ",
+        "mapDescription": "Bản đồ bài viết từ khắp nơi trên thế giới - tìm người và sự việc gần bạn.",
+        "messages": "Tin nhắn",
+        "messagesWithUser": "Tin nhắn với {name}",
+        "notifications": "Thông báo",
+        "privacy": "Chính sách quyền riêng tư",
+        "quote": "Trích dẫn",
+        "relayFeed": "Bảng tin chuyển tiếp",
+        "relayFeedDescription": "Bài viết công khai đến từ các trạm chuyển tiếp mà máy chủ này đã đăng ký.",
+        "resetPassword": "Đặt lại mật khẩu",
+        "revertEmail": "Hoàn tác thay đổi email",
+        "search": "Tìm kiếm",
+        "signup": "Đăng ký",
+        "tags": "Hashtag",
+        "tagsDescription": "Duyệt các hashtag thịnh hành và phổ biến trên {siteTitle}.",
+        "tagsTagDescription": "Bài viết được gắn thẻ {tag} trên {siteTitle}.",
+        "terms": "Điều khoản dịch vụ",
+        "topics": "Chủ đề",
+        "topicsDescription": "Những gì mọi người đang bàn luận trên {siteTitle} ngay lúc này.",
+        "topicsEntityDescription": "{typeLabel} - bài viết nhắc đến {entityTitle} trên {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} mà mọi người đang bàn luận trên {siteTitle} ngay lúc này.",
+        "unsubscribe": "Email tổng hợp",
+        "userFriends": "Bạn bè của {name}",
+        "userFriendsDescription": "Bạn bè của {name} trên {siteTitle}",
+        "userSettings": "Cài đặt tài khoản",
+        "users": "Người dùng",
+        "verifyEmail": "Xác minh email"
+    },
+    "PostLikeButton": {
+        "like": "Thích",
+        "unlike": "Bỏ thích"
+    },
+    "PostPinButton": {
+        "pin": "Ghim",
+        "unpin": "Bỏ ghim"
+    },
+    "PostQuoteButton": {
+        "name": "Trích dẫn"
+    },
+    "PostDeleteButton": {
+        "name": "Xóa"
+    },
+    "PostEditButton": {
+        "name": "Sửa"
+    },
+    "ReportButton": {
+        "name": "Báo cáo"
+    },
+    "PostActionBar": {
+        "reply": "Trả lời",
+        "replies": {
+            "other": "Trả lời ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(đã chỉnh sửa)"
+    },
+    "RepliesHeading": {
+        "heading": "Trả lời"
+    },
+    "PollVoteButton": {
+        "name": "Bình chọn"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Xem ",
+            "link": "thêm địa điểm",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Bài viết gần bạn",
+        "description": "Mục này hiển thị các bài viết gần một điểm nhất - bất cứ nơi nào có hoạt động, dù xa đến đâu. Hãy chia sẻ vị trí của bạn để bắt đầu từ nơi bạn đang ở, hoặc chọn một điểm trên bản đồ thay thế.",
+        "useMyLocation": "Dùng vị trí của tôi",
+        "pickOnMap": "Chọn trên bản đồ",
+        "searchPlaceholder": "Hoặc nhập tên địa điểm…",
+        "searchLabel": "Tìm một địa điểm",
+        "locating": "Đang định vị…",
+        "noGeolocation": "Trình duyệt của bạn không thể chia sẻ vị trí.",
+        "locationError": "Không thể lấy vị trí của bạn. Hãy kiểm tra quyền truy cập vị trí của trình duyệt."
+    },
+    "PollDeadline": {
+        "final": "Kết quả cuối cùng",
+        "closes": {
+            "before": "Đóng trong ",
+            "after": ""
+        },
+        "days": {
+            "other": "{count} ngày nữa"
+        },
+        "hours": {
+            "other": "{count} giờ nữa"
+        },
+        "minutes": {
+            "other": "{count} phút nữa"
+        },
+        "underMinute": "chưa đầy một phút nữa"
+    },
+    "PollTally": {
+        "voters": {
+            "other": "{count} người đã bình chọn "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Đăng nhập",
+            "after": " để đăng bài."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Đăng nhập",
+            "after": " để trả lời."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " đã đăng lại"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Để đáp lại ",
+            "after": ""
+        },
+        "untitled": "bài viết này",
+        "jumpToStart": "Nhảy đến đầu"
+    },
+    "TopicSummaryCard": {
+        "label": "Tóm tắt do AI tạo"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Chào mừng đến với ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Viết điều gì đó vào ô bên dưới và nó sẽ được đăng lên bảng tin của bạn. Bất kỳ ai cũng có thể trả lời, và một trả lời chỉ là một bài viết có bài viết cha, vì vậy các cuộc trò chuyện có thể lồng nhau sâu bao nhiêu tùy ý.",
+            "Thêm mọi người làm bạn bè và bài viết của họ sẽ xuất hiện trong bảng tin của bạn. Bảng tin chung - tên trang web ở góc trên bên trái - hiển thị mọi thứ được viết ở đây, đó là nơi để tìm người mà bạn muốn kết bạn.",
+            "Trang này là một phần của Fediverse: bạn có thể theo dõi các tài khoản trên Mastodon và các máy chủ khác bằng địa chỉ đầy đủ của họ, và những gì bạn đăng sẽ đến được với những người theo dõi bạn ở đó. Hãy tìm một địa chỉ như @someone@example.social và máy chủ này sẽ đi tìm họ.",
+            "Gắn #hashtag cho bài viết và nó sẽ xuất hiện trên trang của hashtag đó, cũng như trong mục Xu hướng nếu đủ nhiều người đang viết về nó.",
+            "Tin nhắn giữa các thành viên được mã hóa đầu cuối - máy chủ chỉ lưu trữ bản mã mà nó không thể đọc được. Hãy bật tính năng này trong phần Cài đặt.",
+            "Bạn không cần phải đăng ngay: hãy lưu bản nháp, hoặc đặt một thời điểm để nó tự động đăng. Cả hai đều nằm trong mục Bản nháp & Đã lên lịch."
+        ],
+        "more": {
+            "before": "Còn nhiều thông tin hơn trong ",
+            "link": "các trang trợ giúp",
+            "after": ", bao gồm cả cách chuyển một tài khoản đến đây từ nơi khác."
+        },
+        "dontShowAgain": "Không hiển thị lại"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Chèn emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Ảnh xem trước liên kết"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Xóa ảnh"
+    },
+    "LinkItem": {
+        "alt": "Ảnh xem trước liên kết"
+    },
+    "MapScrubber": {
+        "play": "Phát",
+        "pause": "Tạm dừng",
+        "cumulativeMode": "Đến thời điểm đó",
+        "windowMode": "Ngay thời điểm đó",
+        "rangeLabel": "Hiển thị bài viết đến một ngày",
+        "cumulativeLabel": {
+            "other": "Đã đăng đến {date} — {count} bài viết"
+        },
+        "windowLabel": {
+            "other": "Đã đăng quanh {date} — {count} bài viết"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Bài viết của {name}",
+        "pageTitleUntitled": "Bài viết",
+        "imageAltByAuthor": "Ảnh do {name} đăng",
+        "imageAltUntitled": "Ảnh"
+    },
+    "PostBookmarkButton": {
+        "remove": "Bỏ lưu",
+        "add": "Lưu"
+    },
+    "PostRepostButton": {
+        "undo": "Hủy đăng lại",
+        "repost": "Đăng lại"
+    },
+    "QuotedPost": {
+        "viewLink": "Xem bài viết được trích dẫn"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Lời mời đang chờ"
+    },
+    "ScrollToTopButton": {
+        "label": "Cuộn lên đầu trang"
+    },
+    "SearchClearButton": {
+        "label": "Xóa tìm kiếm"
+    },
+    "SitePolicyLinks": {
+        "terms": "Điều khoản dịch vụ",
+        "privacy": "Chính sách quyền riêng tư"
+    },
+    "SkipLink": {
+        "label": "Bỏ qua để đến nội dung chính"
+    },
+    "TopicHeading": {
+        "searchLink": "Tìm kiếm mục này",
+        "noPosts": "Hiện chưa có bài viết nào nhắc đến điều này."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Chưa có ai viết về loại này."
+    },
+    "TrendingEntitySection": {
+        "heading": "Xu hướng"
+    },
+    "PostLocationLink": {
+        "title": "Hiển thị địa điểm này trên bản đồ",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "vừa xong",
+        "minutes": {
+            "other": "{count} phút trước"
+        },
+        "hours": {
+            "other": "{count} giờ trước"
+        },
+        "days": {
+            "other": "{count} ngày trước"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Giao diện",
+        "themes": {
+            "system": "Theo hệ thống",
+            "light": "Sáng",
+            "dark": "Tối",
+            "sepia": "Hoài cổ",
+            "midnight": "Nửa đêm",
+            "sunset": "Hoàng hôn",
+            "rose": "Hồng",
+            "forest": "Rừng",
+            "ocean": "Đại dương",
+            "lavender": "Oải hương",
+            "gold": "Vàng",
+            "hacker": "Tin tặc",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Thang xám"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Tính năng dịch chưa được thiết lập trên máy chủ này.",
+        "nothing": "Không có gì ở đây để dịch.",
+        "unknownSource": "Chưa xác định được bài viết này viết bằng ngôn ngữ gì, nên chưa thể dịch được.",
+        "alreadyReadable": "Bài viết này đã ở ngôn ngữ đó rồi.",
+        "unsupportedPair": "Máy chủ này chưa thể dịch ngôn ngữ đó."
+    },
+    "LanguagePrompt": {
+        "question": "Bạn có muốn xem trang web này bằng tiếng Việt không?",
+        "accept": "Có",
+        "decline": "Không, cảm ơn"
+    },
+    "LanguageSelector": {
+        "label": "Ngôn ngữ",
+        "legend": "Ngôn ngữ"
+    },
+    "EmailDigest": {
+        "subject": "Những gì bạn đã bỏ lỡ trên {site}",
+        "greeting": "Chào {name},",
+        "whileAway": "Trong khi bạn vắng mặt:",
+        "repeatedTimes": {
+            "other": " ({count} lần)"
+        },
+        "moreMissed": {
+            "other": "và {count} thông báo khác"
+        },
+        "messagesWaiting": {
+            "other": "Bạn có {count} tin nhắn đang chờ"
+        },
+        "postsInFeed": {
+            "other": "{count} bài viết mới trong bảng tin của bạn"
+        },
+        "unsubscribeInstructions": "Để dừng nhận các email này, hãy mở liên kết sau - chỉ cần một cú nhấp và không cần mật khẩu:",
+        "comeSeeWhatIsNew": "Hãy ghé xem có gì mới",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Ngừng gửi cho tôi những email này",
+            "after": " - chỉ một cú nhấp, không cần mật khẩu."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Xác minh địa chỉ email của bạn",
+        "greeting": "Chào {name},",
+        "instructions": "Vui lòng xác minh địa chỉ email của bạn bằng cách truy cập liên kết này:",
+        "htmlInstructions": "Vui lòng xác minh địa chỉ email của bạn bằng cách nhấp vào liên kết bên dưới:",
+        "buttonLabel": "Xác minh địa chỉ email",
+        "expiresIn": {
+            "other": "Liên kết này sẽ hết hạn sau {count} giờ."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Đặt lại mật khẩu của bạn",
+        "greeting": "Chào {name},",
+        "instructions": "Ai đó (hy vọng là bạn) đã yêu cầu đặt lại mật khẩu. Hãy truy cập liên kết này để chọn mật khẩu mới:",
+        "htmlInstructions": "Ai đó (hy vọng là bạn) đã yêu cầu đặt lại mật khẩu. Hãy nhấp vào liên kết bên dưới để chọn mật khẩu mới:",
+        "buttonLabel": "Đặt lại mật khẩu",
+        "expiresIn": {
+            "other": "Liên kết này sẽ hết hạn sau {count} giờ."
+        },
+        "ignoreNotice": "Nếu bạn không yêu cầu điều này, bạn có thể bỏ qua email này."
+    }
+}

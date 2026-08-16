@@ -361,28 +361,53 @@ class StringTranslatorTest extends TestCase
     /**
      * A form standing in from the plural looks like a translation from then
      * on, so it is counted on every run - except where English says the same
-     * for both, since there was never a distinction to lose.
+     * for both, since there was never a distinction to lose. Judged against
+     * the most plural form the language's integers can reach, so the "other"
+     * completed() copies from it does not flag itself forever.
      */
     public function testAFormReadingAsThePluralIsCountedAsUnfinished(): void
     {
         $sets = ['Votes.count' => ['one' => '1 vote', 'other' => '{count} votes']];
 
         $this -> assertSame(1, StringTranslator::collapsed(
-            ['Votes.count.few' => '{count} głosów', 'Votes.count.other' => '{count} głosów'],
+            [
+                'Votes.count.few' => '{count} głosów',
+                'Votes.count.many' => '{count} głosów',
+                'Votes.count.other' => '{count} głosów',
+            ],
+            'pl',
             $sets
-        ));
+        ), 'few reading as many is the collapse being hunted');
 
         $this -> assertSame(0, StringTranslator::collapsed(
-            ['Votes.count.few' => '{count} głosy', 'Votes.count.other' => '{count} głosów'],
+            [
+                'Votes.count.few' => '{count} głosy',
+                'Votes.count.many' => '{count} głosów',
+                'Votes.count.other' => '{count} głosów',
+            ],
+            'pl',
             $sets
-        ));
+        ), 'a synthetic other copied from many is not a collapse');
 
         $same = ['Time.minutes' => ['one' => '{count}m ago', 'other' => '{count}m ago']];
 
         $this -> assertSame(0, StringTranslator::collapsed(
             ['Time.minutes.one' => '{count} min temu', 'Time.minutes.other' => '{count} min temu'],
+            'nl',
             $same
         ), 'English does not distinguish these either');
+    }
+
+    /**
+     * A locale that has never said which clock it counts on must not inherit
+     * English's twelve: ICU's own time pattern for it already answers.
+     */
+    public function testTheClockIsReadOffTheLocalesOwnTimePattern(): void
+    {
+        $this -> assertSame(24, StringTranslator::clockFor('ru'));
+        $this -> assertSame(24, StringTranslator::clockFor('de'));
+        $this -> assertSame(12, StringTranslator::clockFor('en'));
+        $this -> assertSame(24, StringTranslator::clockFor('fi'), "the k in Finnish's 'klo' literal is a word, not a field");
     }
 
     /**

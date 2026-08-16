@@ -393,10 +393,17 @@ class StringTranslator
                 continue;
             }
 
-            $plural = $written['other'] ?? reset($written);
+            // Most plural first, because the fill stands in for the missing
+            // form and the plural is the least-wrong case of the right words
+            // - a singular standing in for "many" reads wrong at every count.
+            $plural = $written['other'] ?? $written['many'] ?? $written['few'] ?? reset($written);
             $categories = PluralRule::categoriesFor($locale);
 
-            foreach ($categories as $category) {
+            // "other" filled as well where integers cannot reach it: it is
+            // still both renderers' fallback form, so it has to hold the
+            // language's plural rather than whatever a model made of an
+            // unaskable question.
+            foreach (array_unique([...$categories, 'other']) as $category) {
                 if (!isset($written[$category])) {
                     $translations[$prefix . '.' . $category] = $plural;
                 }
@@ -428,25 +435,38 @@ class StringTranslator
      * @param array<string, string> $translations
      * @param array<string, array<string, string>> $sets English's counted entries
      */
-    public static function collapsed(array $translations, array $sets): int
+    public static function collapsed(array $translations, string $locale, array $sets): int
     {
         $collapsed = 0;
 
+        // Compared against the most plural form the language's integers can
+        // actually reach. Where they never reach "other", that form is
+        // completed()'s own copy of this one, and comparing against it would
+        // flag the copy as a collapse on every run forever.
+        $categories = PluralRule::categoriesFor($locale);
+        $reference = PluralRule::exampleFor($locale, 'other') !== null
+            ? 'other'
+            : (end($categories) ?: 'other');
+
         foreach ($sets as $prefix => $forms) {
-            $plural = $translations[$prefix . '.other'] ?? null;
+            $plural = $translations[$prefix . '.' . $reference] ?? null;
 
             if ($plural === null || !isset($forms['other'])) {
                 continue;
             }
 
-            foreach (PluralRule::CATEGORIES as $category) {
-                if ($category === 'other' || !isset($translations[$prefix . '.' . $category])) {
+            foreach ($categories as $category) {
+                if ($category === $reference || !isset($translations[$prefix . '.' . $category])) {
                     continue;
                 }
 
-                // Skipped only where English says the same thing for both, so
-                // there was never a distinction to lose here.
-                $same_in_english = isset($forms[$category]) && $forms[$category] === $forms['other'];
+                // Skipped only where English explicitly says the same thing
+                // for both, so there was never a distinction to lose here. A
+                // category English does not write at all stays flaggable -
+                // that gap is exactly where a language's own distinction
+                // lives, and a collapse there is the loss being hunted.
+                $same_in_english = isset($forms[$category])
+                    && $forms[$category] === ($forms[$reference] ?? $forms['other']);
 
                 if ($translations[$prefix . '.' . $category] === $plural && !$same_in_english) {
                     $collapsed++;
@@ -627,6 +647,30 @@ class StringTranslator
         }
 
         return trim(preg_replace('/\s+/u', ' ', self::unquoted($written)) ?? '');
+    }
+
+    /**
+     * Which clock this locale counts hours on, read off the letters of its
+     * own short time pattern: H and k count to twenty-four, h and K to
+     * twelve. Null where ICU has no pattern to read.
+     */
+    public static function clockFor(string $locale): ?int
+    {
+        $pattern = self::pattern($locale, \IntlDateFormatter::NONE, \IntlDateFormatter::SHORT);
+
+        if ($pattern === null) {
+            return null;
+        }
+
+        // Literals cut out entirely rather than unquoted: Finnish writes
+        // 'klo' into its patterns, and the k in it is a word, not a field.
+        $bare = (string) preg_replace("/'(?:[^']|'')*'/", '', $pattern);
+
+        if (preg_match('/[Hk]/', $bare) === 1) {
+            return 24;
+        }
+
+        return preg_match('/[hK]/', $bare) === 1 ? 12 : null;
     }
 
     /** This locale's raw ICU pattern for a date style, a time style, or both. */
@@ -1250,6 +1294,22 @@ class StringTranslator
         }
 
         $sets = self::counted($source);
+
+        // A form only fractions can reach is not a question for a model:
+        // Russian integers never land in "other", exampleFor() has no number
+        // to put in the sentence, and the unsampled ask came back as
+        // "{count}m когда-то" beside three perfectly declined siblings.
+        // completed() fills it from the language's own plural instead.
+        foreach (array_keys($stale) as $path) {
+            $cut = strrpos($path, '.');
+
+            if ($cut !== false
+                && isset($sets[substr($path, 0, $cut)])
+                && PluralRule::exampleFor($locale, substr($path, $cut + 1)) === null) {
+                unset($stale[$path]);
+            }
+        }
+
         $failure = '';
 
         // Built only where there is something to ask, because a locale can
@@ -1342,7 +1402,7 @@ class StringTranslator
         // form standing in from the language's own plural is written to the
         // file and looks like a translation from then on - which is how a file
         // that is not finished stops looking unfinished.
-        $collapsed = self::collapsed($translations, $sets);
+        $collapsed = self::collapsed($translations, $locale, $sets);
         $standing_in = $collapsed === 0
             ? ''
             : ' - ' . $collapsed . " read the same as this language's plural, check by hand";
@@ -1359,7 +1419,21 @@ class StringTranslator
         // and matching would take every language's filled-in version of it.
         $fingerprints = array_intersect_key($fingerprints, $translations);
 
-        self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations, self::read($locale)));
+        $kept_table = self::read($locale);
+
+        // A locale that has never said which clock it counts on must not
+        // inherit English's: ICU's time pattern for it already answers.
+        // Russian writes HH:mm, and a meridiem-less 24-hour pattern under
+        // English's 12-hour clock renders a quarter past three as 3:04.
+        if (!isset($kept_table['DateFormat']['clock'])) {
+            $clock = self::clockFor($locale);
+
+            if ($clock !== null) {
+                $kept_table['DateFormat']['clock'] = $clock;
+            }
+        }
+
+        self::write($locale, self::merge(self::read(Strings::SOURCE_LOCALE), $translations, $kept_table));
         self::writeFingerprints($locale, $fingerprints);
 
         echo $locale . ': ' . $kept . ' of ' . $wanted . ' translated' . $standing_in . "\n";

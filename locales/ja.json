@@ -76,7 +76,8 @@
         "browserOnOS": "{os}の{browser}",
         "thisDevice": "(このデバイス)",
         "lastUsed": {
-            "before": "最終利用: "
+            "before": "最終利用: ",
+            "after": ""
         }
     },
     "LogoutEverywherePanel": {
@@ -651,7 +652,8 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "最終メッセージ: "
+            "before": "最終メッセージ: ",
+            "after": ""
         }
     },
     "SensitiveMedia": {
@@ -667,7 +669,8 @@
             "user": "ユーザー"
         },
         "summary": {
-            "before": "{type} #{id} の通報者: "
+            "before": "{type} #{id} の通報者: ",
+            "after": ""
         },
         "reasonLine": "理由: {reason}",
         "banReporterLabel": "通報者をBAN",
@@ -918,12 +921,14 @@
     },
     "RepostAttribution": {
         "attribution": {
+            "before": "",
             "after": "がリポスト"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "返信先: "
+            "before": "返信先: ",
+            "after": ""
         },
         "untitled": "この投稿",
         "jumpToStart": "最初の投稿へ"

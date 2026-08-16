@@ -9,10 +9,12 @@
     },
     "LoginPrompt": {
         "reply": {
+            "before": "",
             "link": "Войдите",
             "after": ", чтобы ответить."
         },
         "post": {
+            "before": "",
             "link": "Войдите",
             "after": ", чтобы опубликовать."
         }
@@ -77,7 +79,8 @@
         "browserOnOS": "{browser} на {os}",
         "thisDevice": " (это устройство)",
         "lastUsed": {
-            "before": "Последнее использование "
+            "before": "Последнее использование ",
+            "after": ""
         }
     },
     "LogoutEverywherePanel": {
@@ -151,9 +154,11 @@
         "explanation": "Вашим подписчикам предлагается подписаться на новый аккаунт. Посты остаются здесь: адреса объектов принадлежат создавшему их серверу, забрать их с собой нельзя.",
         "addressNotice": "Аккаунт, на который вы переезжаете, должен сначала указать этот в списке «также известен как». Ваш адрес здесь — {address}.",
         "movedToLabel": "Переехать на",
+        "movedToPlaceholder": "https://example.social/users/you",
         "aliasesLegend": "Также известен как",
         "aliasesExplanation": "Ваши аккаунты на других серверах. Запись здесь разрешает тому аккаунту переехать на этот — это разрешение, а не сам переезд. Один адрес на строку.",
         "aliasesLabel": "Другие ваши аккаунты",
+        "aliasesPlaceholder": "https://example.social/users/you",
         "submit": "Сохранить"
     },
     "TwoFactorForm": {
@@ -225,6 +230,7 @@
         "save": "Сохранить"
     },
     "GoogleAuthSettingsForm": {
+        "legend": "Вход через Google",
         "clientIdLabel": "ID клиента",
         "clientIdPlaceholder": "Идентификатор клиента Google OAuth",
         "secretLabel": "Секрет клиента",
@@ -245,6 +251,7 @@
             "unset": "Секретный ключ Cloudflare Turnstile"
         },
         "turnstileExplainer": "Оба ключа нужны, чтобы CAPTCHA появилась на входе и регистрации. Очистите ключ сайта, чтобы отключить.",
+        "recaptchaLegend": "Google reCAPTCHA (восстановление после блокировки аккаунта)",
         "recaptchaSiteKeyLabel": "Ключ сайта",
         "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 ключ сайта",
         "recaptchaSecretKeyLabel": "Секретный ключ",
@@ -256,6 +263,7 @@
         "save": "Сохранить"
     },
     "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
         "notice": "Обеспечивает функции ИИ на сайте (сводки в «Актуальном» и т. п.). Оставьте модель пустой — тогда используется маршрутизатор бесплатных моделей OpenRouter: он выбирает из бесплатного и не может потратить деньги.",
         "keyLabel": "Ключ API",
         "keyPlaceholder": {
@@ -350,13 +358,15 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Заблокировано: {name} "
+            "before": "Заблокировано: {name} ",
+            "after": ""
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Заблокировано: {name} "
+            "before": "Заблокировано: {name} ",
+            "after": ""
         },
         "deletedAccount": "Удаленный аккаунт",
         "reason": " - {reason}"
@@ -548,6 +558,7 @@
         "legend": "Блокировать сервер",
         "description": "Отклоняет всё с этого сервера и всех его поддоменов: ни подписок, ни доставок, а существующие связи рвутся в обе стороны.",
         "serverLabel": "Сервер",
+        "serverPlaceholder": "example.social",
         "reasonLabel": "Причина",
         "reasonPlaceholder": "Почему этот сервер заблокирован",
         "submit": "Заблокировать сервер"
@@ -644,7 +655,8 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Последнее сообщение "
+            "before": "Последнее сообщение ",
+            "after": ""
         }
     },
     "SensitiveMedia": {
@@ -660,7 +672,8 @@
             "user": "Пользователь"
         },
         "summary": {
-            "before": "Жалоба на {type} #{id} "
+            "before": "Жалоба на {type} #{id} ",
+            "after": ""
         },
         "reasonLine": "Причина: {reason}",
         "banReporterLabel": "Заблокировать подавшего жалобу",
@@ -706,6 +719,7 @@
         "explainerOne": "Ретранслятор — это общий поток: каждый публичный пост с любого подписанного сервера приходит сюда, а посты отсюда уходят на все из них. Так новый сервер вообще кого-то находит: иначе федерация приносит только то, на что здесь уже подписаны.",
         "explainerTwo": "Нагрузку не предсказать — она зависит от того, что публикуют те серверы: неделя тишины, потом тысячи постов в час. И хранение, и доставка, и модерация несут её целиком. Ретранслированные посты не попадают в основную ленту и ленту друзей: они идут в ленту ретрансляции, которую открывают намеренно.",
         "addressLabel": "Адрес ретранслятора",
+        "addressPlaceholder": "https://relay.example/actor",
         "submitLabel": "Подписаться"
     },
     "RelayFollowObjectField": {
@@ -860,7 +874,8 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Показать ",
-            "link": "больше мест"
+            "link": "больше мест",
+            "after": ""
         }
     },
     "NearbyLocationPrompt": {
@@ -868,7 +883,7 @@
         "description": "Здесь показываются посты, ближайшие к точке, — где есть активность, как бы далеко она ни была. Поделитесь местоположением, чтобы начать с себя, или выберите точку на карте.",
         "useMyLocation": "Моё местоположение",
         "pickOnMap": "Выберите на карте",
-        "searchPlaceholder": "Или введите название места...",
+        "searchPlaceholder": "Или введите название места…",
         "searchLabel": "Поиск места",
         "locating": "Определяем…",
         "noGeolocation": "Ваш браузер не может передать местоположение.",
@@ -877,7 +892,8 @@
     "PollDeadline": {
         "final": "Итоговый результат",
         "closes": {
-            "before": "Закроется "
+            "before": "Закроется ",
+            "after": ""
         },
         "days": {
             "one": "через {count} день",
@@ -909,24 +925,28 @@
     },
     "PostComposer": {
         "prompt": {
+            "before": "",
             "link": "Войдите",
             "after": ", чтобы опубликовать."
         }
     },
     "ReplyComposer": {
         "prompt": {
+            "before": "",
             "link": "Войдите",
             "after": ", чтобы ответить."
         }
     },
     "RepostAttribution": {
         "attribution": {
+            "before": "",
             "after": " репостнул(а)"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "В ответ на "
+            "before": "В ответ на ",
+            "after": ""
         },
         "untitled": "Этот пост",
         "jumpToStart": "К началу треда"
@@ -936,7 +956,8 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Добро пожаловать в "
+            "before": "Добро пожаловать в ",
+            "after": ""
         },
         "paragraphs": [
             "Напишите что-нибудь в поле ниже — и это появится в вашей ленте. Ответить может кто угодно, а ответ — это просто пост со ссылкой на родителя, так что обсуждения вкладываются на любую глубину.",
@@ -1004,12 +1025,18 @@
     "ReceivedFriendRequestSection": {
         "heading": "Входящие заявки"
     },
+    "ScrollToTopButton": {
+        "label": "Наверх"
+    },
     "SearchClearButton": {
         "label": "Очистить поиск"
     },
     "SitePolicyLinks": {
         "terms": "Условия предоставления услуг",
         "privacy": "Политика конфиденциальности"
+    },
+    "SkipLink": {
+        "label": "Перейти к содержимому"
     },
     "TopicHeading": {
         "searchLink": "Искать по этой теме",
@@ -1019,7 +1046,7 @@
         "emptyNotice": "Ничего подобного еще не было написано."
     },
     "TrendingEntitySection": {
-        "heading": "тенденция"
+        "heading": "Актуальное"
     },
     "PostLocationLink": {
         "title": "Покажите это место на карте",
@@ -1049,32 +1076,32 @@
     "ThemeSelector": {
         "label": "Тема",
         "themes": {
-            "system": "Система матчей",
-            "light": "Обычный свет",
-            "dark": "Равнинная темнота",
+            "system": "Как в системе",
+            "light": "Простая светлая",
+            "dark": "Простая тёмная",
             "sepia": "Сепия",
             "midnight": "Полночь",
             "sunset": "Закат",
             "rose": "Роза",
             "forest": "Лес",
-            "ocean": "океан",
-            "lavender": "лаванда",
+            "ocean": "Океан",
+            "lavender": "Лаванда",
             "gold": "Золото",
-            "hacker": "хакер",
-            "ironbow": "Железный лук",
-            "viridis": "Виридис",
-            "mako": "Мако",
-            "cividis": "Чивидис",
-            "ylgnbu": "ИлГнБу",
-            "cubehelix": "Кубехеликс",
-            "greyscale": "Серая шкала"
+            "hacker": "Хакер",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Оттенки серого"
         }
     },
     "PostTranslation": {
         "unavailable": "Перевод на этом сервере не выполняется.",
         "nothing": "Здесь нечего переводить.",
         "unknownSource": "Никто еще не выяснил, на каком языке находится этот пост, поэтому его нельзя перевести.",
-        "alreadyReadable": "Эта статья уже на этом языке.",
+        "alreadyReadable": "Этот пост уже на этом языке.",
         "unsupportedPair": "Этот сервер пока не может перевести этот язык."
     },
     "LanguagePrompt": {
@@ -1083,13 +1110,13 @@
         "decline": "Нет, спасибо"
     },
     "LanguageSelector": {
-        "label": "Язык языка",
-        "legend": "Язык языка"
+        "label": "Язык",
+        "legend": "Язык"
     },
     "EmailDigest": {
         "subject": "Что вы пропустили в {site}",
         "greeting": "Привет, {name}",
-        "whileAway": "Пока тебя не было:",
+        "whileAway": "Пока вас не было:",
         "repeatedTimes": {
             "one": " ({count} раз)",
             "other": " ({count} раз)",
@@ -1117,7 +1144,8 @@
         "unsubscribeInstructions": "Чтобы остановить эти электронные письма, откройте эту ссылку - она занимает один клик и не требует пароля:",
         "comeSeeWhatIsNew": "Приходите посмотреть, что нового",
         "unsubscribeLink": {
-            "link": "Прекрати посылать мне эти",
+            "before": "",
+            "link": "Прекратите присылать мне эти письма",
             "after": " - один клик, пароль не нужен."
         }
     },

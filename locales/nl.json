@@ -7,10 +7,12 @@
     },
     "LoginPrompt": {
         "reply": {
+            "before": "",
             "link": "Log in",
             "after": " om te reageren."
         },
         "post": {
+            "before": "",
             "link": "Log in",
             "after": " om te posten."
         }
@@ -75,7 +77,8 @@
         "browserOnOS": "{browser} op {os}",
         "thisDevice": " (dit apparaat)",
         "lastUsed": {
-            "before": "Laatst gebruikt "
+            "before": "Laatst gebruikt ",
+            "after": ""
         }
     },
     "LogoutEverywherePanel": {
@@ -353,13 +356,15 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Verbannen door {name} "
+            "before": "Verbannen door {name} ",
+            "after": ""
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Geblokkeerd door {name} "
+            "before": "Geblokkeerd door {name} ",
+            "after": ""
         },
         "deletedAccount": "een verwijderd account",
         "reason": " - {reason}"
@@ -648,7 +653,8 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Laatste bericht "
+            "before": "Laatste bericht ",
+            "after": ""
         }
     },
     "SensitiveMedia": {
@@ -664,7 +670,8 @@
             "user": "Gebruiker"
         },
         "summary": {
-            "before": "{type} #{id} gerapporteerd door "
+            "before": "{type} #{id} gerapporteerd door ",
+            "after": ""
         },
         "reasonLine": "Reden: {reason}",
         "banReporterLabel": "Melder verbannen",
@@ -863,7 +870,8 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Bekijk ",
-            "link": "meer locaties"
+            "link": "meer locaties",
+            "after": ""
         }
     },
     "NearbyLocationPrompt": {
@@ -880,7 +888,8 @@
     "PollDeadline": {
         "final": "Eindresultaat",
         "closes": {
-            "before": "Sluit "
+            "before": "Sluit ",
+            "after": ""
         },
         "days": {
             "one": "over {count} dag",
@@ -904,24 +913,28 @@
     },
     "PostComposer": {
         "prompt": {
+            "before": "",
             "link": "Log in",
             "after": " om te posten."
         }
     },
     "ReplyComposer": {
         "prompt": {
+            "before": "",
             "link": "Log in",
             "after": " om te reageren."
         }
     },
     "RepostAttribution": {
         "attribution": {
+            "before": "",
             "after": " heeft dit gerepost"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "Als reactie op "
+            "before": "Als reactie op ",
+            "after": ""
         },
         "untitled": "deze post",
         "jumpToStart": "Naar het begin"
@@ -931,7 +944,8 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Welkom bij "
+            "before": "Welkom bij ",
+            "after": ""
         },
         "paragraphs": [
             "Schrijf iets in het vak hieronder en het gaat naar je feed. Iedereen kan reageren, en een reactie is gewoon een post met een bovenliggende post, dus gesprekken nesten zo diep als nodig is.",
@@ -1090,25 +1104,26 @@
             "other": "en nog {count} meldingen"
         },
         "messagesWaiting": {
-            "one": "Er wacht een bericht op u",
-            "other": "Er wachten {count} berichten op u"
+            "one": "Er wacht een bericht op je",
+            "other": "Er wachten {count} berichten op je"
         },
         "postsInFeed": {
-            "one": "Eén nieuwe post in uw feed",
-            "other": "{count} nieuwe posts in uw feed"
+            "one": "Eén nieuwe post in je feed",
+            "other": "{count} nieuwe posts in je feed"
         },
         "unsubscribeInstructions": "Om deze e-mails te stoppen, open deze link - het duurt een klik en heeft geen wachtwoord nodig:",
         "comeSeeWhatIsNew": "Kom eens kijken wat nieuw is",
         "unsubscribeLink": {
+            "before": "",
             "link": "Stuur me deze niet meer",
             "after": " - één klik, geen wachtwoord nodig."
         }
     },
     "EmailVerification": {
-        "subject": "Controleer uw e-mailadres",
+        "subject": "Verifieer je e-mailadres",
         "greeting": "Hallo, {name}",
-        "instructions": "Controleer uw e-mailadres door deze link te bezoeken:",
-        "htmlInstructions": "Controleer uw e-mailadres door op onderstaande link te klikken:",
+        "instructions": "Verifieer je e-mailadres door deze link te bezoeken:",
+        "htmlInstructions": "Verifieer je e-mailadres door op onderstaande link te klikken:",
         "buttonLabel": "E-mailadres verifiëren",
         "expiresIn": {
             "one": "Deze link verloopt over {count} uur.",
@@ -1116,15 +1131,15 @@
         }
     },
     "PasswordReset": {
-        "subject": "Uw wachtwoord resetten",
+        "subject": "Je wachtwoord opnieuw instellen",
         "greeting": "Hallo, {name}",
-        "instructions": "Iemand (hopelijk jij) vroeg om een wachtwoord reset. Bezoek deze link om een nieuw wachtwoord te kiezen:",
-        "htmlInstructions": "Iemand (hopelijk jij) vroeg om een wachtwoord reset. Klik op onderstaande link om een nieuw wachtwoord te kiezen:",
-        "buttonLabel": "Wachtwoord resetten",
+        "instructions": "Iemand (hopelijk jij) heeft gevraagd om je wachtwoord opnieuw in te stellen. Bezoek deze link om een nieuw wachtwoord te kiezen:",
+        "htmlInstructions": "Iemand (hopelijk jij) heeft gevraagd om je wachtwoord opnieuw in te stellen. Klik op onderstaande link om een nieuw wachtwoord te kiezen:",
+        "buttonLabel": "Wachtwoord opnieuw instellen",
         "expiresIn": {
             "one": "Deze link verloopt over {count} uur.",
             "other": "Deze link verloopt over {count} uur."
         },
-        "ignoreNotice": "Als u dit niet heeft aangevraagd, kunt u deze e-mail negeren."
+        "ignoreNotice": "Als jij dit niet hebt aangevraagd, kun je deze e-mail negeren."
     }
 }

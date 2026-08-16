@@ -77,7 +77,8 @@
         "browserOnOS": "{browser} unter {os}",
         "thisDevice": " (dieses Gerät)",
         "lastUsed": {
-            "before": "Zuletzt verwendet "
+            "before": "Zuletzt verwendet ",
+            "after": ""
         }
     },
     "LogoutEverywherePanel": {
@@ -355,13 +356,15 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Gesperrt von {name} "
+            "before": "Gesperrt von {name} ",
+            "after": ""
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Blockiert von {name} "
+            "before": "Blockiert von {name} ",
+            "after": ""
         },
         "deletedAccount": "einem gelöschten Konto",
         "reason": " - {reason}"
@@ -469,7 +472,7 @@
         "relayFeed": "Relay-Feed",
         "users": "Nutzer",
         "tags": "Tags",
-        "topics": "Trends",
+        "topics": "Themen",
         "map": "Karte",
         "locations": "Orte",
         "search": "Suche",
@@ -650,7 +653,8 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Letzte Nachricht "
+            "before": "Letzte Nachricht ",
+            "after": ""
         }
     },
     "SensitiveMedia": {
@@ -666,7 +670,8 @@
             "user": "Nutzer"
         },
         "summary": {
-            "before": "{type} #{id} gemeldet von "
+            "before": "{type} #{id} gemeldet von ",
+            "after": ""
         },
         "reasonLine": "Grund: {reason}",
         "banReporterLabel": "Melder sperren",
@@ -815,7 +820,7 @@
         "tagsDescription": "Entdecke angesagte und beliebte Hashtags auf {siteTitle}.",
         "tagsTagDescription": "Beiträge mit dem Tag {tag} auf {siteTitle}.",
         "terms": "Nutzungsbedingungen",
-        "topics": "Trends",
+        "topics": "Themen",
         "topicsDescription": "Worüber auf {siteTitle} gerade gesprochen wird.",
         "topicsEntityDescription": "{typeLabel} - Beiträge, die {entityTitle} auf {siteTitle} erwähnen.",
         "topicsTypeDescription": "{typePlural}, über die auf {siteTitle} gerade gesprochen wird.",
@@ -832,7 +837,7 @@
     },
     "PostPinButton": {
         "pin": "Anheften",
-        "unpin": "Loslösen"
+        "unpin": "Lösen"
     },
     "PostQuoteButton": {
         "name": "Zitieren"
@@ -865,7 +870,8 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Siehe ",
-            "link": "weitere Orte"
+            "link": "weitere Orte",
+            "after": ""
         }
     },
     "NearbyLocationPrompt": {
@@ -882,7 +888,8 @@
     "PollDeadline": {
         "final": "Endergebnis",
         "closes": {
-            "before": "Endet "
+            "before": "Endet ",
+            "after": ""
         },
         "days": {
             "one": "in {count} Tag",
@@ -920,12 +927,14 @@
     },
     "RepostAttribution": {
         "attribution": {
+            "before": "",
             "after": " hat das geteilt"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "Als Antwort auf "
+            "before": "Als Antwort auf ",
+            "after": ""
         },
         "untitled": "diesen Beitrag",
         "jumpToStart": "Zum Anfang springen"
@@ -935,7 +944,8 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Willkommen bei "
+            "before": "Willkommen bei ",
+            "after": ""
         },
         "paragraphs": [
             "Schreib etwas in das Feld unten, und es geht an deinen Feed. Jeder kann antworten, und eine Antwort ist einfach ein Beitrag mit einem übergeordneten Beitrag, sodass sich Unterhaltungen so tief verschachteln, wie sie müssen.",
@@ -975,8 +985,8 @@
             "other": "Veröffentlicht bis {date} — {count} Beiträge"
         },
         "windowLabel": {
-            "one": "Veröffentlicht um {date} — {count} Beitrag",
-            "other": "Veröffentlicht um {date} — {count} Beiträge"
+            "one": "Veröffentlicht rund um {date} — {count} Beitrag",
+            "other": "Veröffentlicht rund um {date} — {count} Beiträge"
         }
     },
     "Post": {
@@ -1082,7 +1092,7 @@
         "legend": "Sprache"
     },
     "EmailDigest": {
-        "subject": "Was Sie auf {site} verpasst haben",
+        "subject": "Was du auf {site} verpasst hast",
         "greeting": "Hi {name},",
         "whileAway": "Während du weg warst:",
         "repeatedTimes": {
@@ -1094,41 +1104,42 @@
             "other": "und {count} weitere Benachrichtigungen"
         },
         "messagesWaiting": {
-            "one": "Sie haben eine Nachricht, die auf Sie wartet",
-            "other": "Sie haben {count} Nachrichten, die auf Sie warten"
+            "one": "Du hast eine Nachricht, die auf dich wartet",
+            "other": "Du hast {count} Nachrichten, die auf dich warten"
         },
         "postsInFeed": {
-            "one": "Ein neuer Post in Ihrem Feed",
-            "other": "{count} neue Posts in Ihrem Feed"
+            "one": "Ein neuer Beitrag in deinem Feed",
+            "other": "{count} neue Beiträge in deinem Feed"
         },
-        "unsubscribeInstructions": "Um diese E-Mails zu stoppen, öffnen Sie diesen Link - es dauert einen Klick und benötigt kein Passwort:",
-        "comeSeeWhatIsNew": "Kommen Sie und sehen Sie, was neu ist",
+        "unsubscribeInstructions": "Um diese E-Mails zu stoppen, öffne diesen Link - das dauert nur einen Klick und braucht kein Passwort:",
+        "comeSeeWhatIsNew": "Schau vorbei und sieh, was es Neues gibt",
         "unsubscribeLink": {
+            "before": "",
             "link": "Hör auf, mir dies zu schicken",
             "after": " - ein Klick, kein Passwort erforderlich."
         }
     },
     "EmailVerification": {
-        "subject": "Überprüfen Sie Ihre E-Mail-Adresse",
+        "subject": "Bestätige deine E-Mail-Adresse",
         "greeting": "Hi {name},",
-        "instructions": "Bitte überprüfen Sie Ihre E-Mail-Adresse, indem Sie diesen Link besuchen:",
-        "htmlInstructions": "Bitte überprüfen Sie Ihre E-Mail-Adresse, indem Sie auf den folgenden Link klicken:",
-        "buttonLabel": "E-Mail-Adresse überprüfen",
+        "instructions": "Bitte bestätige deine E-Mail-Adresse, indem du diesen Link besuchst:",
+        "htmlInstructions": "Bitte bestätige deine E-Mail-Adresse, indem du auf den folgenden Link klickst:",
+        "buttonLabel": "E-Mail-Adresse bestätigen",
         "expiresIn": {
             "one": "Dieser Link läuft in {count} Stunde ab.",
             "other": "Dieser Link läuft in {count} Stunden ab."
         }
     },
     "PasswordReset": {
-        "subject": "Setzen Sie Ihr Passwort zurück",
+        "subject": "Setze dein Passwort zurück",
         "greeting": "Hi {name},",
-        "instructions": "Jemand (hoffentlich Sie) hat ein Passwort-Reset angefordert. Besuchen Sie diesen Link, um ein neues Passwort auszuwählen:",
-        "htmlInstructions": "Jemand (hoffentlich Sie) hat ein Passwort-Reset angefordert. Klicken Sie auf den Link unten, um ein neues Passwort auszuwählen:",
+        "instructions": "Jemand (hoffentlich du) hat angefordert, dein Passwort zurückzusetzen. Besuche diesen Link, um ein neues Passwort zu wählen:",
+        "htmlInstructions": "Jemand (hoffentlich du) hat angefordert, dein Passwort zurückzusetzen. Klicke auf den Link unten, um ein neues Passwort zu wählen:",
         "buttonLabel": "Passwort zurücksetzen",
         "expiresIn": {
             "one": "Dieser Link läuft in {count} Stunde ab.",
             "other": "Dieser Link läuft in {count} Stunden ab."
         },
-        "ignoreNotice": "Wenn Sie dies nicht angefordert haben, können Sie diese E-Mail ignorieren."
+        "ignoreNotice": "Wenn du das nicht angefordert hast, kannst du diese E-Mail ignorieren."
     }
 }

@@ -7,10 +7,12 @@
     },
     "LoginPrompt": {
         "reply": {
+            "before": "",
             "link": "Iniciar sessão",
             "after": " para responder."
         },
         "post": {
+            "before": "",
             "link": "Iniciar sessão",
             "after": " para publicar."
         }
@@ -75,7 +77,8 @@
         "browserOnOS": "{browser} em {os}",
         "thisDevice": " (este dispositivo)",
         "lastUsed": {
-            "before": "Usado pela última vez "
+            "before": "Usado pela última vez ",
+            "after": ""
         }
     },
     "LogoutEverywherePanel": {
@@ -353,13 +356,15 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Banido por {name} "
+            "before": "Banido por {name} ",
+            "after": ""
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Bloqueado por {name} "
+            "before": "Bloqueado por {name} ",
+            "after": ""
         },
         "deletedAccount": "uma conta eliminada",
         "reason": " - {reason}"
@@ -467,7 +472,7 @@
         "relayFeed": "Feed de Retransmissão",
         "users": "Utilizadores",
         "tags": "Hashtags",
-        "topics": "Tendências",
+        "topics": "Tópicos",
         "map": "Mapa",
         "locations": "Localizações",
         "search": "Pesquisa",
@@ -648,7 +653,8 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Última mensagem "
+            "before": "Última mensagem ",
+            "after": ""
         }
     },
     "SensitiveMedia": {
@@ -664,7 +670,8 @@
             "user": "Utilizador"
         },
         "summary": {
-            "before": "Denúncia de {type} #{id} por "
+            "before": "Denúncia de {type} #{id} por ",
+            "after": ""
         },
         "reasonLine": "Motivo: {reason}",
         "banReporterLabel": "Banir denunciante",
@@ -813,7 +820,7 @@
         "tagsDescription": "Explora as hashtags em tendência e populares em {siteTitle}.",
         "tagsTagDescription": "Publicações marcadas com {tag} em {siteTitle}.",
         "terms": "Termos de Serviço",
-        "topics": "Tendências",
+        "topics": "Tópicos",
         "topicsDescription": "Do que as pessoas estão a falar em {siteTitle} neste momento.",
         "topicsEntityDescription": "{typeLabel} - publicações que mencionam {entityTitle} em {siteTitle}.",
         "topicsTypeDescription": "{typePlural} de que as pessoas estão a falar em {siteTitle} neste momento.",
@@ -863,7 +870,8 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Ver ",
-            "link": "mais localizações"
+            "link": "mais localizações",
+            "after": ""
         }
     },
     "NearbyLocationPrompt": {
@@ -880,7 +888,8 @@
     "PollDeadline": {
         "final": "Resultado final",
         "closes": {
-            "before": "Termina "
+            "before": "Termina ",
+            "after": ""
         },
         "days": {
             "one": "daqui a {count} dia",
@@ -904,24 +913,28 @@
     },
     "PostComposer": {
         "prompt": {
+            "before": "",
             "link": "Iniciar sessão",
             "after": " para publicar."
         }
     },
     "ReplyComposer": {
         "prompt": {
+            "before": "",
             "link": "Iniciar sessão",
             "after": " para responder."
         }
     },
     "RepostAttribution": {
         "attribution": {
+            "before": "",
             "after": " republicou"
         }
     },
     "ThreadContext": {
         "response": {
-            "before": "Em resposta a "
+            "before": "Em resposta a ",
+            "after": ""
         },
         "untitled": "esta publicação",
         "jumpToStart": "Saltar para o início"
@@ -931,7 +944,8 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Boas-vindas a "
+            "before": "Boas-vindas a ",
+            "after": ""
         },
         "paragraphs": [
             "Escreve alguma coisa na caixa abaixo e ela é publicada no teu feed. Qualquer pessoa pode responder, e uma resposta é apenas uma publicação que responde a outra, por isso as conversas ramificam-se tão fundo quanto for preciso.",
@@ -1078,7 +1092,7 @@
         "legend": "Idioma"
     },
     "EmailDigest": {
-        "subject": "O que perdeu no {site}",
+        "subject": "O que perdeste em {site}",
         "greeting": "Olá, {name}",
         "whileAway": "Enquanto estiveste fora:",
         "repeatedTimes": {
@@ -1090,41 +1104,42 @@
             "other": "e mais {count} notificações"
         },
         "messagesWaiting": {
-            "one": "Você tem uma mensagem à espera",
-            "other": "Você tem {count} mensagens à espera"
+            "one": "Tens uma mensagem à espera",
+            "other": "Tens {count} mensagens à espera"
         },
         "postsInFeed": {
-            "one": "Um novo post no seu feed",
-            "other": "{count} novos posts no seu feed"
+            "one": "Uma nova publicação no teu feed",
+            "other": "{count} novas publicações no teu feed"
         },
-        "unsubscribeInstructions": "Para parar estes e-mails, abra este link - é preciso um clique e não precisa de senha:",
-        "comeSeeWhatIsNew": "Vem ver o que é novo",
+        "unsubscribeInstructions": "Para parar estes emails, abre esta ligação - basta um clique e não precisas de palavra-passe:",
+        "comeSeeWhatIsNew": "Vem ver o que há de novo",
         "unsubscribeLink": {
+            "before": "",
             "link": "Pára de me enviar isto",
-            "after": " - um clique, sem senha necessária."
+            "after": " - um clique, sem palavra-passe necessária."
         }
     },
     "EmailVerification": {
-        "subject": "Verificar o seu endereço de e- mail",
+        "subject": "Verifica o teu endereço de email",
         "greeting": "Olá, {name}",
-        "instructions": "Por favor, verifique o seu endereço de e-mail visitando este link:",
-        "htmlInstructions": "Por favor, verifique o seu endereço de e-mail clicando no link abaixo:",
-        "buttonLabel": "Verificar o Endereço de E- mail",
+        "instructions": "Verifica o teu endereço de email visitando esta ligação:",
+        "htmlInstructions": "Verifica o teu endereço de email clicando na ligação abaixo:",
+        "buttonLabel": "Verificar endereço de email",
         "expiresIn": {
-            "one": "Este link expira em {count} hora.",
-            "other": "Este link expira em {count} horas."
+            "one": "Esta ligação expira em {count} hora.",
+            "other": "Esta ligação expira em {count} horas."
         }
     },
     "PasswordReset": {
-        "subject": "Reinicie sua senha",
+        "subject": "Repor a tua palavra-passe",
         "greeting": "Olá, {name}",
-        "instructions": "Alguém (esperançosamente você) solicitou uma redefinição de senha. Visite este link para escolher uma nova senha:",
-        "htmlInstructions": "Alguém (esperançosamente você) solicitou uma redefinição de senha. Clique no link abaixo para escolher uma nova senha:",
-        "buttonLabel": "Reiniciar senha",
+        "instructions": "Alguém (esperamos que tenhas sido tu) pediu a reposição da tua palavra-passe. Visita esta ligação para escolheres uma nova palavra-passe:",
+        "htmlInstructions": "Alguém (esperamos que tenhas sido tu) pediu a reposição da tua palavra-passe. Clica na ligação abaixo para escolheres uma nova palavra-passe:",
+        "buttonLabel": "Repor palavra-passe",
         "expiresIn": {
-            "one": "Este link expira em {count} hora.",
-            "other": "Este link expira em {count} horas."
+            "one": "Esta ligação expira em {count} hora.",
+            "other": "Esta ligação expira em {count} horas."
         },
-        "ignoreNotice": "Se você não solicitou isso, você pode ignorar este e-mail."
+        "ignoreNotice": "Se não pediste isto, podes ignorar este email."
     }
 }

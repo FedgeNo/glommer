@@ -9,10 +9,12 @@
     },
     "LoginPrompt": {
         "reply": {
+            "before": "",
             "link": "Zaloguj się",
             "after": ", aby odpowiedzieć."
         },
         "post": {
+            "before": "",
             "link": "Zaloguj się",
             "after": ", aby opublikować."
         }
@@ -77,7 +79,8 @@
         "browserOnOS": "{browser} na {os}",
         "thisDevice": " (to urządzenie)",
         "lastUsed": {
-            "before": "Ostatnio użyte "
+            "before": "Ostatnio użyte ",
+            "after": ""
         }
     },
     "LogoutEverywherePanel": {
@@ -355,13 +358,15 @@
     },
     "BannedTrendingEntity": {
         "bannedBy": {
-            "before": "Ban wystawiony przez {name} "
+            "before": "Ban wystawiony przez {name} ",
+            "after": ""
         },
         "reason": " - {reason}"
     },
     "BlockedServerCard": {
         "blockedBy": {
-            "before": "Zablokowany przez {name} "
+            "before": "Zablokowany przez {name} ",
+            "after": ""
         },
         "deletedAccount": "usunięte konto",
         "reason": " - {reason}"
@@ -650,7 +655,8 @@
     },
     "Conversation": {
         "lastMessage": {
-            "before": "Ostatnia wiadomość "
+            "before": "Ostatnia wiadomość ",
+            "after": ""
         }
     },
     "SensitiveMedia": {
@@ -666,7 +672,8 @@
             "user": "Użytkownik"
         },
         "summary": {
-            "before": "{type} nr {id} - zgłoszenie od "
+            "before": "{type} nr {id} - zgłoszenie od ",
+            "after": ""
         },
         "reasonLine": "Powód: {reason}",
         "banReporterLabel": "Zbanuj zgłaszającego",
@@ -867,7 +874,8 @@
     "MoreLocationsLink": {
         "moreLocations": {
             "before": "Zobacz ",
-            "link": "więcej lokalizacji"
+            "link": "więcej lokalizacji",
+            "after": ""
         }
     },
     "NearbyLocationPrompt": {
@@ -884,7 +892,8 @@
     "PollDeadline": {
         "final": "Wynik końcowy",
         "closes": {
-            "before": "Kończy się "
+            "before": "Kończy się ",
+            "after": ""
         },
         "days": {
             "one": "za {count} dzień",
@@ -916,12 +925,14 @@
     },
     "PostComposer": {
         "prompt": {
+            "before": "",
             "link": "Zaloguj się",
             "after": ", aby opublikować."
         }
     },
     "ReplyComposer": {
         "prompt": {
+            "before": "",
             "link": "Zaloguj się",
             "after": ", aby odpowiedzieć."
         }
@@ -934,7 +945,8 @@
     },
     "ThreadContext": {
         "response": {
-            "before": "W odpowiedzi na "
+            "before": "W odpowiedzi na ",
+            "after": ""
         },
         "untitled": "ten post",
         "jumpToStart": "Przejdź do początku"
@@ -944,7 +956,8 @@
     },
     "WelcomeBanner": {
         "heading": {
-            "before": "Witamy w "
+            "before": "Witamy w ",
+            "after": ""
         },
         "paragraphs": [
             "Napisz coś w polu poniżej, a trafi to na twój kanał. Każdy może odpowiedzieć, a odpowiedź to po prostu post z postem nadrzędnym, więc rozmowy zagnieżdżają się tak głęboko, jak potrzeba.",
@@ -1131,16 +1144,17 @@
         "unsubscribeInstructions": "Aby zatrzymać te e-maile, otwórz ten link - wystarczy jedno kliknięcie i nie potrzebuje hasła:",
         "comeSeeWhatIsNew": "Chodź i zobacz co jest nowe",
         "unsubscribeLink": {
+            "before": "",
             "link": "Przestań mi to wysyłać",
             "after": " - jedno kliknięcie, hasło nie jest potrzebne."
         }
     },
     "EmailVerification": {
-        "subject": "Sprawdź swój adres e-mail",
+        "subject": "Zweryfikuj swój adres e-mail",
         "greeting": "Cześć {name}",
-        "instructions": "Proszę zweryfikować swój adres e-mail odwiedzając ten link:",
-        "htmlInstructions": "Proszę sprawdzić swój adres e-mail klikając na poniższy link:",
-        "buttonLabel": "Weryfikacja adresu e-mail",
+        "instructions": "Zweryfikuj swój adres e-mail, odwiedzając ten link:",
+        "htmlInstructions": "Zweryfikuj swój adres e-mail, klikając poniższy link:",
+        "buttonLabel": "Zweryfikuj adres e-mail",
         "expiresIn": {
             "one": "Ten link wygasa za {count} godzinę.",
             "other": "Ten link wygasa za {count} godzin.",
@@ -1151,9 +1165,9 @@
     "PasswordReset": {
         "subject": "Zresetuj hasło",
         "greeting": "Cześć {name}",
-        "instructions": "Ktoś (miejmy nadzieję, że) poprosił o zresetowanie hasła. Odwiedź ten link, aby wybrać nowe hasło:",
-        "htmlInstructions": "Ktoś (miejmy nadzieję, że) poprosił o zresetowanie hasła. Kliknij poniższy link, aby wybrać nowe hasło:",
-        "buttonLabel": "Zmień hasło",
+        "instructions": "Ktoś (prawdopodobnie ty) poprosił o zresetowanie hasła. Odwiedź ten link, aby wybrać nowe hasło:",
+        "htmlInstructions": "Ktoś (prawdopodobnie ty) poprosił o zresetowanie hasła. Kliknij poniższy link, aby wybrać nowe hasło:",
+        "buttonLabel": "Zresetuj hasło",
         "expiresIn": {
             "one": "Ten link wygasa za {count} godzinę.",
             "other": "Ten link wygasa za {count} godzin.",

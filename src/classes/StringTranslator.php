@@ -1310,79 +1310,13 @@ class StringTranslator
             }
         }
 
-        $failure = '';
-
-        // Built only where there is something to ask, because a locale can
-        // still have work with nothing stale: a counted set left half written
-        // by an earlier run is finished below without a model.
-        $worker = $stale === [] ? null : new TranslationWorker(Strings::SOURCE_LOCALE, $locale);
-
-        if ($worker !== null && !$worker -> isAvailable()) {
-            echo $locale . ": no package installed\n";
-
-            return;
-        }
-
-        foreach (array_chunk($stale, TranslationWorker::BATCH, true) as $chunk) {
-            $masked = [];
-            $sentinels = [];
-            $counts = [];
-            $questions = [];
-
-            // Masked from what the model is given, fingerprinted against what
-            // en.json says: a locale is stale when the source string changes,
-            // not because of what was put into the question for its sake.
-            foreach ($chunk as $path => $english) {
-                [$questions[$path], $counts[$path]] = self::asked($locale, $path, $english, $sets);
-                [$masked[$path], $sentinels[$path]] = self::mask($questions[$path]);
-            }
-
-            $answers = $worker -> translate(array_values($masked));
-            $paths = array_keys($chunk);
-
-            foreach ($answers as $index => $answer) {
-                $path = $paths[$index];
-                $english = $chunk[$path];
-                $answer = self::unmask($answer, $sentinels[$path]);
-
-                if (self::isUntouched($locale, $questions[$path], $answer)) {
-                    unset($fingerprints[$path]);
-
-                    continue;
-                }
-
-                if ($counts[$path] !== null) {
-                    $answer = self::recounted($answer, $counts[$path], $locale);
-
-                    if ($answer === null) {
-                        unset($fingerprints[$path]);
-
-                        continue;
-                    }
-                }
-
-                $answer = self::spacedAsSource(
-                    $english,
-                    self::punctuatedAsSource($english, self::numberFirst($english, $answer))
-                );
-
-                if (trim($answer) === ''
-                    || !self::keepsPlaceholders($english, $answer)
-                    || self::isDegenerate($english, $answer)) {
-                    unset($fingerprints[$path]);
-
-                    continue;
-                }
-
-                $translations[$path] = $answer;
-                $fingerprints[$path] = self::fingerprint($english);
-                $kept++;
-            }
-        }
-
-        if ($worker !== null) {
-            $failure = $worker -> error();
-            $worker -> close();
+        // A model does not translate the site's own words - that is a person's
+        // job now, done directly and by hand, one locale at a time. Whatever
+        // is still stale past this point is genuine untranslated prose, and it
+        // is left exactly that way: it reads as English until somebody writes
+        // it, the same as any other gap in a locale nobody has finished yet.
+        if ($stale !== []) {
+            echo $locale . ': ' . count($stale) . " string(s) still need a hand translation pass\n";
         }
 
         // A locale file that exists is a language the site offers, so one with
@@ -1391,7 +1325,7 @@ class StringTranslator
         // added, because a run whose only work was dropping what an earlier
         // one should never have written still has to save.
         if ($translations === []) {
-            echo $locale . ': nothing translated' . ($failure === '' ? '' : ' - ' . $failure) . "\n";
+            echo $locale . ": nothing to fill in\n";
 
             return;
         }

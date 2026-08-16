@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-// Translates the interface into every language the site has a locale file for:
-// `php bin/translate-strings.php [--force] [locale ...]`. CLI-only, and safe to
-// rerun - it translates only the strings whose English has changed since the
-// last run, so a rerun with nothing edited does nothing at all. --force
-// retranslates everything, for when the models change rather than the words.
+// Fills each locale's calendar block (month names, date/time patterns, the
+// clock) from ICU: `php bin/translate-strings.php [--force] [locale ...]`.
+// CLI-only, and safe to rerun - it only fills what is stale or missing, so a
+// rerun with nothing new does nothing at all. --force refills everything,
+// for when ICU's own data changes rather than the words.
 //
-// Needs the Argos packages, which are a production-only install (see README) -
-// on a machine without them every locale reports that it has no package.
+// Prose is not translated here. A source string going stale - even from
+// something as small as a decoration coming out of it - is not the same
+// thing as a translation being wrong, and running everything stale back
+// through a model treats the two as if they were: it can just as easily
+// replace a translation that was already correct with one that reads worse.
+// A locale's own words are written directly, by hand, one locale at a time.
 
 if (PHP_SAPI !== 'cli') {
     exit(1);

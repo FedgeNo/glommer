@@ -1,0 +1,1099 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count}টি ভোট",
+            "other": "{count}টি ভোট"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "উত্তর দেওয়ার জন্য ",
+            "link": "লগ ইন করুন",
+            "after": "।"
+        },
+        "post": {
+            "before": "পোস্ট করার জন্য ",
+            "link": "লগ ইন করুন",
+            "after": "।"
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "সাইট",
+        "siteURLLabel": "সাইট URL",
+        "siteTitleLabel": "সাইটের শিরোনাম",
+        "mailFromAddressLabel": "মেইল প্রেরকের ঠিকানা",
+        "serverNameConfirmedLabel": "আমি আমার ওয়েব সার্ভারের কনফিগে \"ServerName {host}\" এবং \"UseCanonicalName On\" সেট করেছি (এটি শুধু তখনই যাচাই করা হয় যখন স্বয়ংক্রিয় লাইভ টেস্ট সম্পূর্ণ হতে পারে না - দেখুন README.md-এর HTTPS বিভাগ)",
+        "databaseLegend": "ডেটাবেস",
+        "databaseHostLabel": "ডেটাবেস হোস্ট",
+        "databasePortLabel": "ডেটাবেস পোর্ট",
+        "databaseNameLabel": "ডেটাবেসের নাম",
+        "databaseAdminUsernameLabel": "ডেটাবেস অ্যাডমিন ইউজারনেম",
+        "databaseAdminPasswordLabel": "ডেটাবেস অ্যাডমিন পাসওয়ার্ড",
+        "webSocketTLSLegend": "WebSocket TLS (ঐচ্ছিক)",
+        "certificatePathLabel": "সার্টিফিকেট পাথ",
+        "certificatePathPlaceholder": "খালি রাখুন, mkcert দিয়ে স্বয়ংক্রিয়ভাবে তৈরি হবে",
+        "keyPathLabel": "কী পাথ",
+        "keyPathPlaceholder": "খালি রাখুন, mkcert দিয়ে স্বয়ংক্রিয়ভাবে তৈরি হবে",
+        "botProtectionLegend": "বট সুরক্ষা (ঐচ্ছিক)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile সাইট কী",
+        "turnstileSiteKeyPlaceholder": "বাদ দিতে খালি রাখুন",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile সিক্রেট কী",
+        "turnstileSecretKeyPlaceholder": "বাদ দিতে খালি রাখুন",
+        "submit": "সেট আপ করুন"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "বর্তমান পাসফ্রেজ",
+        "newPassphraseLabel": "নতুন পাসফ্রেজ",
+        "confirmNewPassphraseLabel": "নতুন পাসফ্রেজ নিশ্চিত করুন",
+        "accountPasswordLabel": "অ্যাকাউন্ট পাসওয়ার্ড",
+        "submit": "পাসফ্রেজ পরিবর্তন করুন"
+    },
+    "PasswordResetForm": {
+        "legend": "নতুন পাসওয়ার্ড বেছে নিন",
+        "newPasswordLabel": "নতুন পাসওয়ার্ড",
+        "newPasswordPlaceholder": "কমপক্ষে 8 অক্ষর",
+        "confirmPasswordLabel": "নতুন পাসওয়ার্ড নিশ্চিত করুন",
+        "submit": "পাসওয়ার্ড রিসেট করুন"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "আপনার পাসওয়ার্ড রিসেট করুন",
+        "emailLabel": "ইমেইল",
+        "submit": "রিসেট লিংক পাঠান"
+    },
+    "EmailRevertForm": {
+        "submit": "ইমেইল পরিবর্তন ফিরিয়ে নিন"
+    },
+    "EmailVerifyForm": {
+        "submit": "ইমেইল ঠিকানা যাচাই করুন"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "সেগুলো আবার চালু করুন"
+    },
+    "EmailDigestSetting": {
+        "label": "আমি কিছু সময় দূরে থাকলে আমি যা মিস করেছি তা আমাকে ইমেইল করুন"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "অজানা ডিভাইস",
+        "browserOnOS": "{os}-এ {browser}",
+        "thisDevice": " (এই ডিভাইস)",
+        "lastUsed": {
+            "before": "সর্বশেষ ব্যবহৃত: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "প্রতিটি সক্রিয় সেশন শেষ করুন এবং প্রতিটি মনে রাখা ডিভাইস ভুলে যান। আপনাকে সব ব্রাউজার থেকে সাইন আউট করে দেওয়া হবে, এটি সহ।"
+    },
+    "LogoutEverywhereButton": {
+        "label": "সব জায়গা থেকে লগ আউট করুন"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "মুছে ফেলতে Google দিয়ে যাচাই করুন"
+    },
+    "GoogleSignInButton": {
+        "label": "Google দিয়ে চালিয়ে যান"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "প্রোফাইল সম্পাদনা করুন"
+    },
+    "PushNotificationSetting": {
+        "explanation": "সাইট খোলা না থাকলেও এই ডিভাইসে বিজ্ঞপ্তি পান। এটি প্রতিটি ব্রাউজারের জন্য আলাদা পছন্দ - যেখানেই যোগাযোগ পেতে চান সেখানে এটি চালু করুন।",
+        "label": {
+            "off": "এই ডিভাইসে চালু করুন",
+            "on": "এই ডিভাইসে বন্ধ করুন"
+        },
+        "unsupported": "এই ব্রাউজারে পুশ সমর্থিত নয়"
+    },
+    "LoginForm": {
+        "legend": "লগ ইন",
+        "identifier": "ইউজারনেম বা ইমেইল",
+        "password": "পাসওয়ার্ড",
+        "rememberMe": "আমাকে মনে রাখুন",
+        "submit": "লগ ইন করুন"
+    },
+    "SignupForm": {
+        "legend": "অ্যাকাউন্ট তৈরি করুন",
+        "usernameLabel": "ইউজারনেম",
+        "usernamePlaceholder": "ছোট হাতের অক্ষর, সংখ্যা এবং _",
+        "emailLabel": "ইমেইল",
+        "emailPlaceholder": "বৈধ ইমেইল ঠিকানা",
+        "displayName": "প্রদর্শিত নাম (ঐচ্ছিক)",
+        "bioLabel": "বায়ো (ঐচ্ছিক)",
+        "bioPlaceholder": "একটি ছোট বায়ো - #হ্যাশট্যাগ, @মেনশন এবং লিংক ক্লিকযোগ্য হয়ে যায়",
+        "passwordLabel": "পাসওয়ার্ড",
+        "passwordPlaceholder": "পাসওয়ার্ড: কমপক্ষে 8 অক্ষর",
+        "rememberMe": "আমাকে মনে রাখুন",
+        "submit": "সাইন আপ করুন"
+    },
+    "PasswordChangeForm": {
+        "legend": "আপনার পাসওয়ার্ড পরিবর্তন করুন",
+        "currentPassword": "বর্তমান পাসওয়ার্ড",
+        "newPasswordLabel": "নতুন পাসওয়ার্ড",
+        "newPasswordPlaceholder": "কমপক্ষে 8 অক্ষর",
+        "confirmPassword": "নতুন পাসওয়ার্ড নিশ্চিত করুন",
+        "submit": "পাসওয়ার্ড পরিবর্তন করুন"
+    },
+    "EmailChangeForm": {
+        "legend": "আপনার ইমেইল ঠিকানা পরিবর্তন করুন",
+        "newEmail": "নতুন ইমেইল ঠিকানা",
+        "currentPassword": "বর্তমান পাসওয়ার্ড",
+        "notice": "সাইট ব্যবহার চালিয়ে যাওয়ার আগে আপনাকে নতুন ঠিকানাটি যাচাই করতে হবে।",
+        "submit": "ইমেইল পরিবর্তন করুন"
+    },
+    "AccountDeleteForm": {
+        "legend": "আপনার অ্যাকাউন্ট মুছে ফেলুন",
+        "warning": "এটি আপনার অ্যাকাউন্ট, পোস্ট এবং মেসেজ স্থায়ীভাবে মুছে দেয়। এটি ফিরিয়ে আনা যায় না।",
+        "currentPassword": "বর্তমান পাসওয়ার্ড",
+        "submit": "অ্যাকাউন্ট মুছে ফেলুন"
+    },
+    "AccountMigrationForm": {
+        "legend": "অন্য সার্ভারে স্থানান্তর করুন",
+        "movedNotice": "এই অ্যাকাউন্টটি {destination}-এ স্থানান্তরিত হয়েছে। আপনার ফলোয়ারদের সেখানে আপনাকে ফলো করতে বলা হয়েছিল।",
+        "explanation": "আপনার ফলোয়ারদের নতুন অ্যাকাউন্টে আপনাকে ফলো করতে বলা হয়। আপনার পোস্ট এখানেই থেকে যায় - অবজেক্ট ঠিকানা সেই সার্ভারের যেটি সেগুলো তৈরি করেছে, তাই সেগুলো সঙ্গে নিয়ে যাওয়া যায় না।",
+        "addressNotice": "আপনি যে অ্যাকাউন্টে স্থানান্তর করছেন, তাকে প্রথমে এটিকে \"এই নামেও পরিচিত\"-এর অধীনে তালিকাভুক্ত করতে হবে। এখানে আপনার ঠিকানা হলো {address}।",
+        "movedToLabel": "এখানে স্থানান্তর করুন",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "এই নামেও পরিচিত",
+        "aliasesExplanation": "অন্য কোথাও থাকা অ্যাকাউন্ট যেগুলোও আপনি। এখানে একটি তালিকাভুক্ত করলে সেই অ্যাকাউন্টটি এতে স্থানান্তরিত হতে পারে - এটি অনুমতি, স্থানান্তর নিজে নয়। প্রতি লাইনে একটি ঠিকানা।",
+        "aliasesLabel": "আপনার অন্যান্য অ্যাকাউন্ট",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "সংরক্ষণ করুন"
+    },
+    "TwoFactorForm": {
+        "legend": "আপনার যাচাইকরণ কোড লিখুন",
+        "explanation": "আমরা আপনাকে ইমেইলে একটি যাচাইকরণ কোড পাঠিয়েছি। লগ ইন সম্পূর্ণ করতে নিচে সেটি লিখুন।",
+        "code": "যাচাইকরণ কোড",
+        "submit": "যাচাই করুন"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "দ্বি-ধাপ যাচাইকরণ চালু আছে",
+            "off": "দ্বি-ধাপ যাচাইকরণ বন্ধ আছে"
+        },
+        "explanation": {
+            "on": "আপনি যখন লগ ইন করবেন, তখন আমরা একটি যাচাইকরণ কোড ইমেইল করব, যা সাইন ইন সম্পূর্ণ করতে আপনাকে লিখতে হবে।",
+            "off": "লগইনে একটি দ্বিতীয় ধাপ যোগ করুন: আমরা একটি যাচাইকরণ কোড ইমেইল করব যা আপনাকে লিখতে হবে, যাতে শুধু পাসওয়ার্ড দিয়েই ঢোকা না যায়।"
+        },
+        "currentPassword": "বর্তমান পাসওয়ার্ড",
+        "submit": {
+            "on": "দ্বি-ধাপ যাচাইকরণ বন্ধ করুন",
+            "off": "দ্বি-ধাপ যাচাইকরণ চালু করুন"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "অনুগ্রহ করে আপনার ইনবক্স দেখুন এবং আপনার ইমেইল ঠিকানা নিশ্চিত করতে আমাদের পাঠানো যাচাইকরণ লিংকে ক্লিক করুন। যদি এটি দেখতে না পান, তাহলে জাঙ্ক/স্প্যাম ফোল্ডার দেখুন।"
+    },
+    "VerificationResendButton": {
+        "label": "যাচাইকরণ ইমেইল আবার পাঠান"
+    },
+    "MailSettingsForm": {
+        "legend": "আউটগোয়িং মেইল",
+        "fromAddressLabel": "প্রেরকের ঠিকানা",
+        "fromAddressPlaceholder": "এটি সেট না হওয়া পর্যন্ত কোনো ইমেইল পাঠানো যাবে না",
+        "fromNameLabel": "প্রেরকের নাম",
+        "hostLabel": "SMTP হোস্ট",
+        "portLabel": "SMTP পোর্ট",
+        "usernameLabel": "SMTP ইউজারনেম",
+        "passwordLabel": "SMTP পাসওয়ার্ড",
+        "passwordPlaceholder": {
+            "set": "পাসওয়ার্ড সেট করা আছে - এটি রাখতে খালি ছাড়ুন",
+            "unset": "SMTP পাসওয়ার্ড"
+        },
+        "encryptionLabel": "এনক্রিপশন",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, সাধারণত পোর্ট 587-এ)",
+            "ssl": "SSL (ইমপ্লিসিট TLS, সাধারণত পোর্ট 465-এ)",
+            "none": "কোনোটিই না"
+        },
+        "explainer": "এর বদলে PHP-এর mail() দিয়ে পাঠাতে SMTP হোস্ট খালি রাখুন (সুপারিশ করা হয় না - README-এর ডেলিভারেবিলিটি বিভাগ দেখুন)। যতক্ষণ না একটি \"প্রেরক\" ঠিকানা সেট করা হচ্ছে, ততক্ষণ কোনো ইমেইলই পাঠানো যাবে না।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "MapSettingsForm": {
+        "legend": "ম্যাপ টাইলস",
+        "notice": "OpenStreetMap ব্যবহার করতে খালি রাখুন। কী-ভিত্তিক কোনো প্রোভাইডার ব্যবহার করতে, যেখানে কী বসবে সেখানে হুবহু {apiKey} সহ এর URL টেমপ্লেট পেস্ট করুন, সঙ্গে নিচে কী এবং অ্যাট্রিবিউশনও দিন।",
+        "urlLabel": "টাইল URL টেমপ্লেট",
+        "keyLabel": "API কী",
+        "keyPlaceholder": "আপনার টাইল প্রোভাইডারের API কী",
+        "attributionLabel": "অ্যাট্রিবিউশন",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "সংরক্ষণ করুন"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google সাইন-ইন",
+        "clientIdLabel": "ক্লায়েন্ট ID",
+        "clientIdPlaceholder": "Google OAuth ক্লায়েন্ট ID",
+        "secretLabel": "ক্লায়েন্ট সিক্রেট",
+        "secretPlaceholder": {
+            "set": "ক্লায়েন্ট সিক্রেট সেট করা আছে - এটি রাখতে খালি ছাড়ুন",
+            "unset": "Google OAuth ক্লায়েন্ট সিক্রেট"
+        },
+        "explainer": "সাইন-আপ এবং সাইন-ইনে \"Google দিয়ে চালিয়ে যান\" দেখাতে দুটোই প্রয়োজন। আপনার Google Cloud OAuth ক্লায়েন্টে, অথরাইজড রিডাইরেক্ট URI {url} সেট করুন - এটি বন্ধ করতে ক্লায়েন্ট ID মুছে দিন।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "সাইট কী",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile সাইট কী",
+        "turnstileSecretKeyLabel": "সিক্রেট কী",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "সিক্রেট কী সেট করা আছে - এটি রাখতে খালি ছাড়ুন",
+            "unset": "Cloudflare Turnstile সিক্রেট কী"
+        },
+        "turnstileExplainer": "সাইন-আপ এবং সাইন-ইনে CAPTCHA দেখাতে দুটো কী-ই প্রয়োজন। এটি বন্ধ করতে সাইট কী মুছে দিন।",
+        "recaptchaLegend": "Google reCAPTCHA (অ্যাকাউন্ট-লক পুনরুদ্ধার)",
+        "recaptchaSiteKeyLabel": "সাইট কী",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 সাইট কী",
+        "recaptchaSecretKeyLabel": "সিক্রেট কী",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "সিক্রেট কী সেট করা আছে - এটি রাখতে খালি ছাড়ুন",
+            "unset": "Google reCAPTCHA v2 সিক্রেট কী"
+        },
+        "recaptchaExplainer": "দুটো কী-ই প্রয়োজন। সেট করা থাকলে, যে অ্যাকাউন্ট তার লগইন-চেষ্টার সীমায় পৌঁছে যায়, সেটি লকআউট শেষ হওয়ার অপেক্ষা না করে এই চ্যালেঞ্জ পার হয়ে আবার ঢুকতে পারে; সেট না থাকলে, লকআউট একটি বাধ্যতামূলক অপেক্ষা। reCAPTCHA v2 (\"I'm not a robot\") ব্যবহার করুন। এটি বন্ধ করতে সাইট কী মুছে দিন।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "সাইটের AI ফিচারগুলো এটি ব্যবহার করে (ট্রেন্ডিং-টপিক সারাংশ, ইত্যাদি)। Free Models Router ব্যবহার করতে মডেল খালি রাখুন, যেখান থেকে OpenRouter এই মুহূর্তে যা কিছু বিনামূল্যে আছে তা থেকে র‍্যান্ডমভাবে বেছে নেয় এবং এতে কখনও কোনো খরচ হতে পারে না।",
+        "keyLabel": "API কী",
+        "keyPlaceholder": {
+            "set": "API কী সেট করা আছে - এটি রাখতে খালি ছাড়ুন",
+            "unset": "OpenRouter API কী"
+        },
+        "clearKeyLabel": "সংরক্ষিত API কী সরান (AI ফিচার বন্ধ হয়ে যাবে)",
+        "modelLabel": "মডেল",
+        "neverSpendLabel": "এটিকে কখনও টাকা খরচ করার অনুমতি দেবেন না (সুপারিশকৃত)",
+        "explainer": "গার্ড চালু থাকলে, প্রতিটি রিকোয়েস্টের সর্বোচ্চ মূল্য শূন্যে বেঁধে দেওয়া হয়, তাই কোনো ফ্রি প্রোভাইডার না থাকলে এটি কোনো পেইড মডেলে না গিয়ে সরাসরি ব্যর্থ হয়। AI ফিচার সম্পূর্ণভাবে বন্ধ করতে সংরক্ষিত API কী সরান।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "AboutSettingsForm": {
+        "legend": "পরিচিতি",
+        "description": "প্লেইন টেক্সট - খালি লাইন অনুচ্ছেদ আলাদা করে। প্রথম অনুচ্ছেদটি সাইটের বিবরণ হিসেবে ব্যবহৃত হবে।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "TermsSettingsForm": {
+        "legend": "পরিষেবার শর্তাবলি",
+        "description": "প্লেইন টেক্সট - খালি লাইন অনুচ্ছেদ আলাদা করে।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "PrivacySettingsForm": {
+        "legend": "গোপনীয়তা নীতি",
+        "description": "প্লেইন টেক্সট - খালি লাইন অনুচ্ছেদ আলাদা করে।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "ইমেইল ডাইজেস্ট",
+        "fieldLabel": "সমাপনী অনুচ্ছেদ",
+        "notice": "প্রতিটি ডাইজেস্টের শেষের দিকে, সদস্য যা মিস করেছেন তার তালিকার পরে যোগ করা হয়। প্লেইন টেক্সট। এই সফটওয়্যারের সঙ্গে আসা মূল লেখায় ফিরে যেতে এটি খালি রাখুন।",
+        "save": "সংরক্ষণ করুন"
+    },
+    "FaviconSettingsForm": {
+        "legend": "ফেভিকন",
+        "currentAlt": "বর্তমান ফেভিকন",
+        "save": "ফেভিকন আপলোড করুন"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "ফ্রন্ট পেজ ইমেজ",
+        "explainer": "কেউ এই সাইটের লিংক শেয়ার করলে অন্য সাইটে এটি দেখানো হয় - শুধুই Open Graph মেটাডেটা, পেজে কখনও নয়। 1200×630-এ ক্রপ করা হয়। এটি না থাকলে, লিংক প্রিভিউতে কোনো ছবিই থাকে না।",
+        "currentAlt": "বর্তমান ফ্রন্ট পেজ ইমেজ",
+        "save": "ইমেজ আপলোড করুন"
+    },
+    "CarouselAutoplayButton": {
+        "name": "অটোপ্লে"
+    },
+    "CarouselNextButton": {
+        "name": "পরবর্তী"
+    },
+    "CarouselPrevButton": {
+        "name": "পূর্ববর্তী"
+    },
+    "MediaFullscreenButton": {
+        "name": "ফুলস্ক্রিন"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "ফাইল সরান"
+    },
+    "NotificationDropdown": {
+        "showAll": "সব দেখান"
+    },
+    "HelpSearch": {
+        "placeholder": "সহায়তা খুঁজুন…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "বুঝেছি"
+    },
+    "StagedPostDiscardButton": {
+        "name": "বাতিল করুন"
+    },
+    "StagedPostEditButton": {
+        "name": "সম্পাদনা করুন"
+    },
+    "StagedPostPublishButton": {
+        "name": "এখনই প্রকাশ করুন"
+    },
+    "LogoutButton": {
+        "name": "লগ আউট"
+    },
+    "AvatarUploadForm": {
+        "submit": "অ্যাভাটার আপডেট করুন"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "নিষিদ্ধ ব্যবহারকারী খুঁজুন…"
+    },
+    "BannedUserSection": {
+        "heading": "নিষিদ্ধ ব্যবহারকারী"
+    },
+    "SentFriendRequestSection": {
+        "heading": "পাঠানো অনুরোধ (উত্তরের অপেক্ষায়)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "{name} কর্তৃক নিষিদ্ধ — ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "{name} কর্তৃক ব্লক করা — ",
+            "after": ""
+        },
+        "deletedAccount": "একটি মুছে ফেলা অ্যাকাউন্ট",
+        "reason": " - {reason}"
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "127.0.0.1:{port}{tls}-এ WebSocket সার্ভারে সংযোগ করা যায়নি ({error})। প্রথমে এটি চালু করুন: systemctl --user start glommer-websocket (ইউনিট ফাইলের জন্য README.md দেখুন)। যদি এটি এইমাত্র WS_TLS_CERT/WS_TLS_KEY পেয়ে থাকে বা হারিয়ে থাকে, তাহলে .env-এর সঙ্গে মেলাতে এটি রিস্টার্ট করুন।",
+        "wsOverTLS": " TLS-এর মাধ্যমে",
+        "wsBadHandshake": "127.0.0.1:{port}-এ থাকা সার্ভিসটি একটি বৈধ WebSocket হ্যান্ডশেক সম্পূর্ণ করেনি - হতে পারে bin/websocket-server.php ছাড়া অন্য কিছু সেই পোর্টে শুনছে।",
+        "wsNoPong": "WebSocket সার্ভার হ্যান্ডশেক গ্রহণ করেছে কিন্তু পিং-এর জবাব দেয়নি - এটি আটকে থাকতে পারে বা ঠিকভাবে কাজ না-ও করতে পারে। এর লগ দেখুন।",
+        "wsReachable": "WebSocket সার্ভার 127.0.0.1:{port}-এ পৌঁছানো যাচ্ছে এবং সাড়া দিচ্ছে"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "হ্যাশট্যাগ",
+            "person": "ব্যক্তি",
+            "org": "প্রতিষ্ঠান",
+            "gpe": "স্থান",
+            "loc": "অঞ্চল",
+            "fac": "স্থাপনা",
+            "product": "পণ্য",
+            "event": "ঘটনা",
+            "work_of_art": "রচনা",
+            "law": "আইন",
+            "language": "ভাষা",
+            "norp": "গোষ্ঠী"
+        },
+        "plural": {
+            "hashtag": "হ্যাশট্যাগ",
+            "person": "মানুষ",
+            "org": "প্রতিষ্ঠান",
+            "gpe": "স্থান",
+            "loc": "অঞ্চল",
+            "fac": "স্থাপনা",
+            "product": "পণ্য",
+            "event": "ঘটনা",
+            "work_of_art": "রচনা",
+            "law": "আইন",
+            "language": "ভাষাসমূহ",
+            "norp": "গোষ্ঠী"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "বন্ধু সরান"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "গ্রহণ করুন"
+    },
+    "FriendRequestDenyButton": {
+        "name": "প্রত্যাখ্যান করুন"
+    },
+    "UserFollowButton": {
+        "follow": "ফলো করুন",
+        "unfollow": "আনফলো করুন"
+    },
+    "UserBlockButton": {
+        "name": "ব্লক করুন"
+    },
+    "UserUnblockButton": {
+        "name": "আনব্লক করুন"
+    },
+    "OtherUser": {
+        "message": "মেসেজ"
+    },
+    "MainNavigation": {
+        "toggleLabel": "মেনু",
+        "loggedInAs": "{name} হিসেবে লগ ইন করা আছেন",
+        "friendsFeed": "ফ্রেন্ডস ফিড",
+        "relayFeed": "রিলে ফিড",
+        "users": "ব্যবহারকারী",
+        "tags": "ট্যাগ",
+        "topics": "বিষয়",
+        "map": "মানচিত্র",
+        "locations": "অবস্থান",
+        "search": "সার্চ",
+        "messages": "মেসেজ",
+        "bookmarks": "বুকমার্ক",
+        "help": "সহায়তা",
+        "about": "পরিচিতি",
+        "login": "লগ ইন",
+        "signup": "সাইন আপ",
+        "friends": "বন্ধু",
+        "drafts": "খসড়া ও নির্ধারিত",
+        "userSettings": "ইউজার সেটিংস",
+        "modSettings": "মড সেটিংস",
+        "adminSettings": "অ্যাডমিন সেটিংস"
+    },
+    "LogoutForm": {
+        "submit": "লগ আউট"
+    },
+    "User": {
+        "joined": "{date}-এ যোগ দিয়েছেন"
+    },
+    "FriendRequestButton": {
+        "add": "বন্ধু যোগ করুন",
+        "cancel": "অনুরোধ বাতিল করুন"
+    },
+    "StagedPostWhen": {
+        "scheduled": "{when}-এর জন্য নির্ধারিত",
+        "draft": "খসড়া - আপনি না বলা পর্যন্ত প্রকাশিত হবে না"
+    },
+    "MessageTranslateButton": {
+        "name": "এই মেসেজ অনুবাদ করুন"
+    },
+    "MessageTranslationNotice": {
+        "heading": "মেসেজ অনুবাদ সম্পর্কে",
+        "body": "একটি মেসেজ অনুবাদ করতে, এর টেক্সট এই সার্ভারে পাঠানো হয় এবং এখানেই অনুবাদ করা হয়। কিছুই সংরক্ষণ করা হয় না: অনুবাদটি ডেটাবেসে লেখা হয় না এবং মেসেজটি নিজে অপরিবর্তিত থাকে। কিন্তু এভাবে অনুবাদ করা একটি মেসেজ সার্ভার দ্বারা পড়া হয়ে গেছে, তাই এটি একটি অনুবাদ না করা মেসেজের মতো এন্ড-টু-এন্ড এনক্রিপ্টেড থাকে না। শুধু আপনার পাওয়া মেসেজই অনুবাদ করা যায়, আর শুধু তখনই যখন আপনি চান।",
+        "confirm": "এটি অনুবাদ করুন",
+        "cancel": "এখন না"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "আপনার পাসফ্রেজ ভুলে গেছেন? রিসেট করলে একটি নতুন পাসফ্রেজের অধীনে নতুন কী তৈরি হয় - কিন্তু পুরোনো কী দিয়ে এনক্রিপ্ট করা মেসেজ আর কখনও, কারও দ্বারা পড়া যাবে না।",
+        "requirements": "কমপক্ষে 12 অক্ষর, এবং আপনার অ্যাকাউন্ট পাসওয়ার্ড নয় - সেটি এই সার্ভারে পাঠানো হয়, আর আপনার পাসফ্রেজ কখনওই পাঠানো উচিত নয়।",
+        "passphraseLabel": "পাসফ্রেজ",
+        "resetPassphraseLabel": "নতুন পাসফ্রেজ",
+        "confirmLabel": "পাসফ্রেজ নিশ্চিত করুন",
+        "accountPasswordLabel": "অ্যাকাউন্ট পাসওয়ার্ড",
+        "submitLabel": "এনক্রিপ্টেড মেসেজ চালু করুন",
+        "resetSubmitLabel": "এনক্রিপশন কী রিসেট করুন"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "এন্ড-টু-এন্ড এনক্রিপ্টেড মেসেজ আপনার ব্রাউজারে লক এবং আনলক হয়: এই সার্ভার সেগুলো পড়তে না পেরেই রিলে ও সংরক্ষণ করে। আপনার কী একটি পাসফ্রেজ দিয়ে সুরক্ষিত, আর সেই একই পাসফ্রেজ যেকোনো ব্রাউজার থেকে আপনার মেসেজ আনলক করে। দুজনেই এটি চালু করলে তবেই কথোপকথন এনক্রিপ্ট হয়; অন্য সার্ভারে থাকা মানুষদের পাঠানো মেসেজ এনক্রিপ্ট ছাড়াই থাকে, কারণ ফেডারেশনের কাছে সেগুলো অন্যভাবে বহন করার কোনো উপায় নেই।",
+        "noRecovery": "হারানো পাসফ্রেজ ফিরে পাওয়ার কোনো উপায় নেই - এমনকি অ্যাডমিনের জন্যও নয়। এটি হারানো মানে আপনার এনক্রিপ্টেড মেসেজ হারানো।",
+        "enabledStatus": "এনক্রিপ্টেড মেসেজ চালু আছে।"
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "এনক্রিপ্টেড",
+            "explanation": "এই কথোপকথনের মেসেজগুলো এন্ড-টু-এন্ড এনক্রিপ্টেড: সেগুলো আপনার পাসফ্রেজ দিয়ে আনলক হয় এবং আপনাদের ব্রাউজারে পড়া হয়, আর এই সার্ভার যা সংরক্ষণ করে তা সাইফারটেক্সট। আপনাদের মাঝে কেউ নেই তা নিশ্চিত হতে থ্রেডের নিচে থাকা সেফটি কোড অন্য ব্যক্তির সঙ্গে মিলিয়ে দেখুন। এনক্রিপশন চালু হওয়ার আগে পাঠানো মেসেজ আগের মতোই পঠনযোগ্য থাকে।"
+        },
+        "awaiting-theirs": {
+            "label": "এনক্রিপ্টেড নয়",
+            "explanation": "{handle} তাদের সেটিংসে এনক্রিপ্টেড মেসেজ চালু করলেই এখানকার মেসেজ এন্ড-টু-এন্ড এনক্রিপ্টেড হয়ে যাবে।"
+        },
+        "awaiting-yours": {
+            "label": "এনক্রিপ্টেড নয়",
+            "explanation": "এখানকার মেসেজ এন্ড-টু-এন্ড এনক্রিপ্টেড নয়। এই কথোপকথন সুরক্ষিত করতে সেটিংসে এনক্রিপ্টেড মেসেজ চালু করুন।"
+        },
+        "federated": {
+            "label": "এনক্রিপ্টেড নয়",
+            "explanation": "{handle} অন্য একটি সার্ভারে আছেন। এই কথোপকথনের মেসেজ এই সার্ভারের পাশাপাশি সেই সার্ভারেও সংরক্ষিত হয়, আর এর অ্যাডমিন সেগুলো পড়তে পারেন - সার্ভারগুলোর মধ্যেকার প্রোটোকলের সেগুলো এনক্রিপ্ট করার কোনো উপায় নেই। স্পর্শকাতর যেকোনো কিছু শুধু এই সাইটের কথোপকথনেই সীমাবদ্ধ রাখুন।"
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "ফেডিভার্স অ্যাকাউন্ট ফলো করুন",
+        "notice": "এক বা একাধিক হ্যান্ডেল পেস্ট করুন, যেমন @user@example.social - এগুলোর মধ্যে যেকোনো সেপারেটর কাজ করবে।",
+        "handlesLabel": "ফলো করার জন্য ফেডিভার্স হ্যান্ডেল",
+        "submit": "ফলো করুন",
+        "statusPending": "মুলতুবি",
+        "statusAccepted": "গৃহীত"
+    },
+    "ServerBlockForm": {
+        "legend": "একটি সার্ভার ব্লক করুন",
+        "description": "সেই সার্ভার এবং এর অধীনের সবকিছু থেকে আসা সবকিছু প্রত্যাখ্যান করে: কিছু ভেতরে আসবে না, কিছু বাইরে যাবে না, এবং দুই দিকের বিদ্যমান ফলো বাতিল হয়ে যায়।",
+        "serverLabel": "সার্ভার",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "কারণ",
+        "reasonPlaceholder": "কেন এই সার্ভারটি ব্লক করা হয়েছে",
+        "submit": "সার্ভার ব্লক করুন"
+    },
+    "VideoCallTestPanel": {
+        "intro": "কল সেটআপের যেসব অংশ একটি ব্রাউজার থেকে যাচাই করা যায়, তা চালায়। প্রকৃত পিয়ার-টু-পিয়ার সংযোগ পর্যন্ত সবকিছু এখানে টেস্ট করা যায়; অন্য কোনো ব্যক্তির সঙ্গে সংযোগের জন্য সেই ব্যক্তিকে প্রয়োজন।"
+    },
+    "VideoCallTestButton": {
+        "label": "যাচাই চালান"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket সার্ভার: চলছে",
+        "failed": "WebSocket সার্ভার: {detail}",
+        "clientTesting": "ব্রাউজার সংযোগ: পরীক্ষা চলছে…",
+        "clientConnecting": "ব্রাউজার সংযোগ: সংযোগ করা হচ্ছে…",
+        "clientConnected": "ব্রাউজার সংযোগ: সংযুক্ত",
+        "clientDisconnecting": "ব্রাউজার সংযোগ: সংযোগ বিচ্ছিন্ন করা হচ্ছে…",
+        "clientNotConnected": "ব্রাউজার সংযোগ: সংযুক্ত নয়"
+    },
+    "UploadWorkerStatus": {
+        "running": "ওয়ার্কার সার্ভিস: চলছে",
+        "stopped": "ওয়ার্কার সার্ভিস: চলছে না - রিস্টার্ট না করা পর্যন্ত স্টেজড আপলোড কখনও ট্রান্সকোড হবে না",
+        "unknown": "ওয়ার্কার সার্ভিস: অজানা - হয় এই হোস্টে systemctl উপলব্ধ নেই, নয়তো SELinux ওয়েব সার্ভারের নিজের স্ট্যাটাস কোয়েরি আটকে দিচ্ছে (এটি ঠিক করতে bin/install.php রুট হিসেবে চালান)",
+        "queue": "কিউ: {staging} স্টেজিং, {pending} মুলতুবি, {processing} প্রসেসিং"
+    },
+    "TrendingTimerStatus": {
+        "running": "ট্রেন্ডিং টাইমার: চলছে",
+        "stopped": "ট্রেন্ডিং টাইমার: চলছে না - ট্রেন্ডিং বিষয় কোনো নির্ধারিত সময়ে নয়, শুধু রিড-পাথ সেলফ-হিল (Trending::current())-এর মাধ্যমে রিফ্রেশ হবে। এটি সেট আপ করতে bin/install.php রুট হিসেবে চালান।",
+        "unknown": "ট্রেন্ডিং টাইমার: অজানা - হয় এই হোস্টে systemctl উপলব্ধ নেই, নয়তো SELinux ওয়েব সার্ভারের নিজের স্ট্যাটাস কোয়েরি আটকে দিচ্ছে (এটি ঠিক করতে bin/install.php রুট হিসেবে চালান)"
+    },
+    "Notification": {
+        "postReady": "আপনার মিডিয়ার প্রসেসিং শেষ হয়েছে এবং এখন লাইভ",
+        "scheduledPostLive": "আপনার নির্ধারিত পোস্ট এখন লাইভ",
+        "uploadPartlyFailed": "আপনার পোস্ট লাইভ আছে, কিন্তু এর এক বা একাধিক ফাইল প্রসেস করা যায়নি",
+        "uploadFailed": "আপনার একটি আপলোড প্রসেস করা যায়নি এবং পোস্ট করা হয়নি",
+        "mailerFailed": "ইমেইল ডেলিভারি ব্যর্থ হয়েছে - মেইলার বন্ধ থাকতে পারে। অনুগ্রহ করে আপনার মেইল কনফিগারেশন যাচাই করুন।",
+        "mailFromNotConfigured": "কোনো মেইল \"প্রেরক\" ঠিকানা কনফিগার করা নেই, তাই ইমেইল পাঠানো যাবে না। অ্যাডমিন সেটিংসে (আউটগোয়িং মেইল বিভাগ) অথবা bin/install.php-এর মাধ্যমে একটি সেট করুন।",
+        "systemError": "একটি সার্ভার এরর ঘটেছে। বিস্তারিত জানতে এরর লগ দেখুন।",
+        "passwordRemovedGoogle": "আপনি Google দিয়ে সাইন ইন করার সময় আপনার পাসওয়ার্ড সরিয়ে ফেলা হয়েছিল। নতুন একটি সেট করতে চাইলে \"পাসওয়ার্ড ভুলে গেছেন\" ব্যবহার করুন।",
+        "like": "{name} আপনার পোস্ট লাইক করেছেন",
+        "repost": "{name} আপনার পোস্ট রিপোস্ট করেছেন",
+        "reply": "{name} আপনার পোস্টে উত্তর দিয়েছেন",
+        "friendRequest": "{name} আপনাকে বন্ধুত্বের অনুরোধ পাঠিয়েছেন",
+        "friendAccepted": "{name} আপনার বন্ধুত্বের অনুরোধ গ্রহণ করেছেন",
+        "message": "{name} আপনাকে মেসেজ পাঠিয়েছেন",
+        "mention": "{name} একটি পোস্টে আপনাকে মেনশন করেছেন",
+        "follow": "{name} অন্য সার্ভার থেকে আপনাকে ফলো করেছেন",
+        "default": "{name} কিছু একটা করেছেন"
+    },
+    "NotificationList": {
+        "emptyNotice": "এখনও কোনো বিজ্ঞপ্তি নেই।"
+    },
+    "NotificationsNavLink": {
+        "label": "বিজ্ঞপ্তি",
+        "unseen": "না দেখা বিজ্ঞপ্তি"
+    },
+    "NotificationTestPanel": {
+        "intro": "নিজেকে (অ্যাডমিনকে) একটি টেস্ট বিজ্ঞপ্তি পাঠান। এটি সঙ্গে সঙ্গে টোস্ট হিসেবে এবং বিজ্ঞপ্তি ড্রপডাউনে দেখা যাওয়া উচিত।",
+        "button": "টেস্ট বিজ্ঞপ্তি পাঠান",
+        "sending": "পাঠানো হচ্ছে…",
+        "sent": "পাঠানো হয়েছে!",
+        "failed": "ব্যর্থ হয়েছে"
+    },
+    "MessageDot": {
+        "label": "না পড়া মেসেজ"
+    },
+    "NavAlertDot": {
+        "label": "মেনুতে নতুন কিছু আছে"
+    },
+    "Message": {
+        "encrypted": "এনক্রিপ্টেড মেসেজ",
+        "decryptionFailed": "এই মেসেজটি এমন কী দিয়ে এনক্রিপ্ট করা হয়েছিল যা আর নেই।"
+    },
+    "MessageComposer": {
+        "bodyLabel": "মেসেজ",
+        "bodyPlaceholder": "একটি মেসেজ লিখুন",
+        "send": "পাঠান"
+    },
+    "MessageList": {
+        "emptyNotice": "এখনও কোনো মেসেজ নেই।"
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "এই কোডটি অন্য কোনো উপায়ে একে অপরকে বলুন - জোরে বলে, সামনাসামনি, বা কলে। দুই দিকে মিলে গেলে, আপনাদের মাঝে কেউ নেই।",
+        "changed": "আপনি এটি যাচাই করার পর থেকে এই কোডটি পরিবর্তিত হয়েছে। এটি তখন ঘটে যখন আপনাদের একজন এনক্রিপশন কী রিসেট করেন - কিন্তু এই কথোপকথন পড়ছে এমন কাউকেও একই রকম দেখাবে। বিশ্বাস করার আগে তাদের সঙ্গে নতুন কোডটি মিলিয়ে নিন।",
+        "verified": "আপনি এই কোডটি যাচাই করেছেন।"
+    },
+    "MessageKeyVerifyButton": {
+        "label": "যাচাইকৃত হিসেবে চিহ্নিত করুন"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "পাসফ্রেজ",
+        "passphrasePlaceholder": "এই কথোপকথন আনলক করার পাসফ্রেজ",
+        "submit": "আনলক করুন"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "সর্বশেষ মেসেজ: ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "স্পর্শকাতর মিডিয়া"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "স্বয়ংক্রিয়ভাবে স্পর্শকাতর মিডিয়া দেখান"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "পোস্ট",
+            "message": "মেসেজ",
+            "user": "ব্যবহারকারী"
+        },
+        "summary": {
+            "before": "{type} #{id} — রিপোর্টকারী: ",
+            "after": ""
+        },
+        "reasonLine": "কারণ: {reason}",
+        "banReporterLabel": "রিপোর্টকারীকে ব্যান করুন",
+        "banReportedUserLabel": "রিপোর্ট করা ব্যবহারকারীকে ব্যান করুন",
+        "deleteLabel": "{type} মুছে ফেলুন",
+        "reportedImageAlt": "রিপোর্ট করা ছবি",
+        "attachmentUnavailable": "রিপোর্ট করা অ্যাটাচমেন্ট আর উপলব্ধ নেই।",
+        "viewAttachment": "রিপোর্ট করা অ্যাটাচমেন্ট দেখুন",
+        "missing": {
+            "noSnapshot": "রিপোর্ট করা কনটেন্ট আর উপলব্ধ নেই।",
+            "unknownType": "অজানা কনটেন্ট ধরন।"
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "কোনো রিপোর্ট নেই।"
+    },
+    "ModQueueLinks": {
+        "intro": "কিউগুলো এতটাই লম্বা যে একবারে এক পেজ করে পড়তে হয়, তাই এগুলোর নিজস্ব পেজ আছে।",
+        "reportsLabel": "রিপোর্ট",
+        "bannedUsersLabel": "নিষিদ্ধ ব্যবহারকারী"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "কোনো মডারেটর এখনও কিছু করেননি।"
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "কোনো নিষিদ্ধ ট্রেন্ডিং এনটিটি নেই।"
+    },
+    "BlockedServerList": {
+        "emptyNotice": "কোনো ব্লক করা সার্ভার নেই।"
+    },
+    "RelayCard": {
+        "accepted": "সাবস্ক্রাইব করা হয়েছে: ",
+        "waiting": "রিলের গ্রহণ করার অপেক্ষায় - সাবস্ক্রাইব করা হয়েছে: "
+    },
+    "RelayList": {
+        "emptyNotice": "কোনো রিলে সাবস্ক্রাইব করা নেই। সদস্যরা যা ফলো করেন তা ছাড়া এখানে আর কিছু আসে না।"
+    },
+    "RelayFeedList": {
+        "emptyNotice": "এখনও কোনো রিলে দিয়ে কিছু আসেনি। ওপাশের সার্ভারগুলো পোস্ট প্রকাশ করার সঙ্গে সঙ্গে সেগুলো এখানে দেখা যায়।"
+    },
+    "RelaySubscribeForm": {
+        "legend": "একটি রিলে সাবস্ক্রাইব করুন",
+        "explainerOne": "একটি রিলে হলো একটি শেয়ার করা ফায়ারহোজ: সাবস্ক্রাইব করা প্রতিটি অন্য সার্ভারের প্রতিটি পাবলিক পোস্ট এখানে আসে, আর এই সার্ভারেরগুলো তাদের সবার কাছে যায়। এভাবেই একটি নতুন ইনস্ট্যান্স আদৌ কাউকে খুঁজে পায়, কারণ এটি ছাড়া ফেডারেশন শুধু তা-ই বহন করে যা এখানে কেউ আগে থেকেই ফলো করছেন।",
+        "explainerTwo": "লোড অনুমান করার কিছু নেই - সেই সার্ভারগুলো যা প্রকাশ করে তা-ই আসে, এক সপ্তাহ শান্ত তো পরের সপ্তাহে ঘণ্টায় হাজার হাজার পোস্ট, আর আপনার স্টোরেজ, ডেলিভারি কিউ এবং মডারেশন কিউ - সবকিছুই তা বহন করে। রিলে করা পোস্ট মূল ও ফ্রেন্ডস ফিডের বাইরে থাকে; সেগুলো রিলে ফিডে যায়, যা মানুষ ইচ্ছা করেই খোলেন।",
+        "addressLabel": "রিলে ঠিকানা",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "সাবস্ক্রাইব করুন"
+    },
+    "RelayFollowObjectField": {
+        "label": "সাবস্ক্রিপশন স্টাইল",
+        "options": {
+            "public": "পাবলিক স্ট্রিম ফলো করুন (বেশিরভাগ রিলে যা আশা করে)",
+            "actor": "রিলের নিজস্ব অ্যাক্টর ফলো করুন"
+        },
+        "retryNotice": "যদি রিলে কখনও গ্রহণ না করে, তাহলে প্রত্যাহার করে অন্য স্টাইলটি চেষ্টা করুন - কিছু রিলে সফটওয়্যার এর মধ্যে শুধু একটিই চেনে।"
+    },
+    "SiteCounters": {
+        "members": "সদস্য: {count} (গত {days} দিনে {joined} জন যোগ দিয়েছেন)",
+        "activeMembers": "গত {days} দিনে এখানে থাকা সদস্য: {count} (তাদের মধ্যে {posted} জন পোস্ট করেছেন)",
+        "posts": "এখানে লেখা পোস্ট: {count} (গত {days} দিনে {recent})",
+        "deliveries": "গত {days} দিনে ফেডারেটেড ডেলিভারি: {delivered} পৌঁছেছে, {undeliverable}-এ চেষ্টা ছেড়ে দেওয়া হয়েছে",
+        "queued": "বাইরে যাওয়ার অপেক্ষায়: {count} ({failing} ইতিমধ্যে অন্তত একবার প্রত্যাখ্যাত)",
+        "pendingReads": "অন্যান্য সার্ভার থেকে পড়ার অপেক্ষায় থাকা পোস্ট: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "সাইটের টেস্ট স্যুট চালান এবং ফলাফল দেখুন। এতে কয়েক সেকেন্ড সময় লাগে, তাই এটি নিজস্ব পেজে খোলে।",
+        "runLabel": "টেস্ট চালান"
+    },
+    "HelpArticle": {
+        "backLabel": "সব সহায়তায় ফিরে যান"
+    },
+    "UserSearchList": {
+        "noSuggestions": "এখন কোনো সাজেশন নেই - সাজেশন আসে তাদের বন্ধুদের থেকে যাদের সঙ্গে আপনি ইতিমধ্যে বন্ধু। নাম দিয়ে কাউকে খুঁজে পেতে ওপরে সার্চ করুন।",
+        "noMatches": "এখানে কেউ এর সঙ্গে মেলে না।"
+    },
+    "UserModButton": {
+        "make": "মড বানান",
+        "remove": "মড সরান"
+    },
+    "UserUnbanButton": {
+        "name": "আনব্যান করুন"
+    },
+    "TrendingEntityBanButton": {
+        "name": "ব্যান করুন"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "আনব্যান করুন"
+    },
+    "ReportDismissButton": {
+        "name": "খারিজ করুন"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "স্পর্শকাতর চিহ্নিত করুন"
+    },
+    "ServerUnblockButton": {
+        "name": "আনব্লক করুন"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "আনসাবস্ক্রাইব করুন"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "প্রত্যাহার করুন"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: পাস",
+        "failing": "{suite}: ফেল"
+    },
+    "PageTitle": {
+        "about": "পরিচিতি",
+        "adminBanned": "নিষিদ্ধ ব্যবহারকারী",
+        "adminModSettings": "মড সেটিংস",
+        "adminReports": "রিপোর্ট",
+        "adminSettings": "অ্যাডমিন সেটিংস",
+        "adminTests": "টেস্ট",
+        "authGoogleCallbackAccountDeleted": "অ্যাকাউন্ট মুছে ফেলা হয়েছে",
+        "authGoogleCallbackDeleteAccount": "অ্যাকাউন্ট মুছে ফেলুন",
+        "authGoogleCallbackLogin": "লগ ইন",
+        "bookmarks": "বুকমার্ক",
+        "checkInbox": "আপনার ইনবক্স দেখুন",
+        "drafts": "খসড়া ও নির্ধারিত",
+        "draftsEditDraft": "খসড়া সম্পাদনা করুন",
+        "draftsEditScheduled": "নির্ধারিত পোস্ট সম্পাদনা করুন",
+        "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন",
+        "friendsFeed": "ফ্রেন্ডস ফিড",
+        "help": "সহায়তা",
+        "helpDescription": "সাইট ব্যবহারের গাইড ও উত্তর।",
+        "locations": "অবস্থান",
+        "locationsDescription": "আপনার সবচেয়ে কাছাকাছি জায়গাগুলোর পোস্ট।",
+        "locationsPlaceDescription": "{place}-এর কাছাকাছি পোস্ট।",
+        "login": "লগ ইন",
+        "loginVerificationCode": "যাচাইকরণ কোড",
+        "map": "মানচিত্র",
+        "mapDescription": "সারা বিশ্বের পোস্টের একটি মানচিত্র - আপনার কাছাকাছি মানুষ ও জিনিস খুঁজুন।",
+        "messages": "মেসেজ",
+        "messagesWithUser": "{name}-এর সঙ্গে মেসেজ",
+        "notifications": "বিজ্ঞপ্তি",
+        "privacy": "গোপনীয়তা নীতি",
+        "quote": "কোট",
+        "relayFeed": "রিলে ফিড",
+        "relayFeedDescription": "এই সার্ভার যেসব রিলে সাবস্ক্রাইব করেছে সেখান থেকে আসা পাবলিক পোস্ট।",
+        "resetPassword": "পাসওয়ার্ড রিসেট করুন",
+        "revertEmail": "ইমেইল পরিবর্তন ফিরিয়ে নিন",
+        "search": "সার্চ",
+        "signup": "সাইন আপ",
+        "tags": "ট্যাগ",
+        "tagsDescription": "{siteTitle}-এ ট্রেন্ডিং ও জনপ্রিয় হ্যাশট্যাগ ব্রাউজ করুন।",
+        "tagsTagDescription": "{siteTitle}-এ {tag} ট্যাগ করা পোস্ট।",
+        "terms": "পরিষেবার শর্তাবলি",
+        "topics": "বিষয়",
+        "topicsDescription": "{siteTitle}-এ এখন মানুষ যা নিয়ে কথা বলছেন।",
+        "topicsEntityDescription": "{typeLabel} - {siteTitle}-এ {entityTitle}-এর উল্লেখ থাকা পোস্ট।",
+        "topicsTypeDescription": "{siteTitle}-এ এখন মানুষ যেসব {typePlural} নিয়ে কথা বলছেন।",
+        "unsubscribe": "ইমেইল ডাইজেস্ট",
+        "userFriends": "{name}-এর বন্ধুরা",
+        "userFriendsDescription": "{siteTitle}-এ {name}-এর বন্ধুরা",
+        "userSettings": "ইউজার সেটিংস",
+        "users": "ব্যবহারকারী",
+        "verifyEmail": "ইমেইল যাচাই করুন"
+    },
+    "PostLikeButton": {
+        "like": "লাইক",
+        "unlike": "আনলাইক"
+    },
+    "PostPinButton": {
+        "pin": "পিন করুন",
+        "unpin": "আনপিন করুন"
+    },
+    "PostQuoteButton": {
+        "name": "কোট"
+    },
+    "PostDeleteButton": {
+        "name": "মুছে ফেলুন"
+    },
+    "PostEditButton": {
+        "name": "সম্পাদনা করুন"
+    },
+    "ReportButton": {
+        "name": "রিপোর্ট করুন"
+    },
+    "PostActionBar": {
+        "reply": "উত্তর",
+        "replies": {
+            "one": "উত্তর ({count})",
+            "other": "উত্তর ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(সম্পাদিত)"
+    },
+    "RepliesHeading": {
+        "heading": "উত্তর"
+    },
+    "PollVoteButton": {
+        "name": "ভোট দিন"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "",
+            "link": "আরও অবস্থান",
+            "after": " দেখুন"
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "আপনার কাছাকাছি পোস্ট",
+        "description": "এটি একটি বিন্দুর সবচেয়ে কাছের পোস্ট দেখায় - যেখানেই কার্যকলাপ থাকুক না কেন, তা যতই দূরে হোক। আপনি যেখানে আছেন সেখান থেকে শুরু করতে আপনার অবস্থান শেয়ার করুন, অথবা এর বদলে মানচিত্রে একটি জায়গা বেছে নিন।",
+        "useMyLocation": "আমার অবস্থান ব্যবহার করুন",
+        "pickOnMap": "মানচিত্রে বেছে নিন",
+        "searchPlaceholder": "অথবা একটি জায়গার নাম লিখুন…",
+        "searchLabel": "একটি জায়গা খুঁজুন",
+        "locating": "অবস্থান খোঁজা হচ্ছে…",
+        "noGeolocation": "আপনার ব্রাউজার অবস্থান শেয়ার করতে পারে না।",
+        "locationError": "আপনার অবস্থান পাওয়া যায়নি। আপনার ব্রাউজারের লোকেশন অনুমতি যাচাই করুন।"
+    },
+    "PollDeadline": {
+        "final": "চূড়ান্ত ফলাফল",
+        "closes": {
+            "before": "",
+            "after": " বন্ধ হবে"
+        },
+        "days": {
+            "one": "{count} দিনে",
+            "other": "{count} দিনে"
+        },
+        "hours": {
+            "one": "{count} ঘণ্টায়",
+            "other": "{count} ঘণ্টায়"
+        },
+        "minutes": {
+            "one": "{count} মিনিটে",
+            "other": "{count} মিনিটে"
+        },
+        "underMinute": "এক মিনিটেরও কম সময়ে"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "{count} জন ভোট দিয়েছেন ",
+            "other": "{count} জন ভোট দিয়েছেন "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "পোস্ট করার জন্য ",
+            "link": "লগ ইন করুন",
+            "after": "।"
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "উত্তর দেওয়ার জন্য ",
+            "link": "লগ ইন করুন",
+            "after": "।"
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " রিপোস্ট করেছেন"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "উত্তরে: ",
+            "after": ""
+        },
+        "untitled": "এই পোস্ট",
+        "jumpToStart": "শুরুতে যান"
+    },
+    "TopicSummaryCard": {
+        "label": "AI দিয়ে তৈরি সারাংশ"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "",
+            "after": "-এ স্বাগতম"
+        },
+        "paragraphs": [
+            "নিচের বক্সে কিছু লিখুন, আর তা আপনার ফিডে চলে যাবে। যে কেউ উত্তর দিতে পারেন, আর একটি উত্তর আসলে একটি প্যারেন্টসহ পোস্টই, তাই কথোপকথন যত গভীর দরকার তত গভীর পর্যন্ত নেস্ট করতে পারে।",
+            "মানুষকে বন্ধু হিসেবে যোগ করুন, আর তাদের পোস্ট আপনার ফিডে যুক্ত হবে। গ্লোবাল ফিড - ওপরে বাঁ দিকে সাইটের নাম - এখানে লেখা সবকিছু দেখায়, যা কাউকে যোগ করার মতো খুঁজে পাওয়ার জায়গা।",
+            "এই সাইটটি ফেডিভার্সের একটি অংশ: আপনি Mastodon এবং অন্যান্য সার্ভারের অ্যাকাউন্ট তাদের সম্পূর্ণ হ্যান্ডেল দিয়ে ফলো করতে পারেন, আর আপনি যা পোস্ট করেন তা সেখানে আপনাকে ফলো করা মানুষদের কাছে পৌঁছায়। @someone@example.social-এর মতো একটি হ্যান্ডেল সার্চ করুন, আর এই সার্ভার গিয়ে তাদের খুঁজে বের করবে।",
+            "একটি পোস্টে #হ্যাশট্যাগ ট্যাগ করুন, আর এটি সেই ট্যাগের পেজে দেখা যাবে, এবং যথেষ্ট মানুষ এ নিয়ে লিখলে ট্রেন্ডিং-এও দেখা যাবে।",
+            "সদস্যদের মধ্যে মেসেজ এন্ড-টু-এন্ড এনক্রিপ্টেড - সার্ভার এমন সাইফারটেক্সট সংরক্ষণ করে যা এটি পড়তে পারে না। সেটিংসে এটি চালু করুন।",
+            "আপনাকে সঙ্গে সঙ্গে পোস্ট করতে হবে না: একটি খসড়া সংরক্ষণ করুন, অথবা একটি সময় নির্ধারণ করুন আর এটি নিজে থেকেই প্রকাশিত হবে। দুটোই থাকে খসড়া ও নির্ধারিতের অধীনে।"
+        ],
+        "more": {
+            "before": "",
+            "link": "সহায়তা পেজে",
+            "after": " আরও অনেক কিছু আছে, যেমন অন্য কোথাও থেকে এখানে অ্যাকাউন্ট কীভাবে স্থানান্তর করবেন তা।"
+        },
+        "dontShowAgain": "এটি আর দেখাবেন না"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "ইমোজি যোগ করুন"
+    },
+    "LinkImagePreview": {
+        "alt": "লিংক প্রিভিউ ছবি"
+    },
+    "LinkImageRemoveButton": {
+        "label": "ছবি সরান"
+    },
+    "LinkItem": {
+        "alt": "লিংক প্রিভিউ ছবি"
+    },
+    "MapScrubber": {
+        "play": "চালান",
+        "pause": "থামান",
+        "cumulativeMode": "তখন পর্যন্ত",
+        "windowMode": "শুধু তখন",
+        "rangeLabel": "একটি তারিখ পর্যন্ত পোস্ট দেখান",
+        "cumulativeLabel": {
+            "one": "{date} পর্যন্ত পোস্ট করা হয়েছে — {count}টি পোস্ট",
+            "other": "{date} পর্যন্ত পোস্ট করা হয়েছে — {count}টি পোস্ট"
+        },
+        "windowLabel": {
+            "one": "{date}-এর আশেপাশে পোস্ট করা হয়েছে — {count}টি পোস্ট",
+            "other": "{date}-এর আশেপাশে পোস্ট করা হয়েছে — {count}টি পোস্ট"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name}-এর পোস্ট",
+        "pageTitleUntitled": "পোস্ট",
+        "imageAltByAuthor": "{name}-এর পোস্ট করা ছবি",
+        "imageAltUntitled": "ছবি"
+    },
+    "PostBookmarkButton": {
+        "remove": "বুকমার্ক সরান",
+        "add": "বুকমার্ক করুন"
+    },
+    "PostRepostButton": {
+        "undo": "রিপোস্ট পূর্বাবস্থায় ফেরান",
+        "repost": "রিপোস্ট করুন"
+    },
+    "QuotedPost": {
+        "viewLink": "কোট করা পোস্ট দেখুন"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "মুলতুবি অনুরোধ"
+    },
+    "ScrollToTopButton": {
+        "label": "ওপরে স্ক্রল করুন"
+    },
+    "SearchClearButton": {
+        "label": "সার্চ মুছুন"
+    },
+    "SitePolicyLinks": {
+        "terms": "পরিষেবার শর্তাবলি",
+        "privacy": "গোপনীয়তা নীতি"
+    },
+    "SkipLink": {
+        "label": "কনটেন্টে যান"
+    },
+    "TopicHeading": {
+        "searchLink": "এটি সার্চ করুন",
+        "noPosts": "এখন কোনো পোস্টে এর উল্লেখ নেই।"
+    },
+    "PopularEntityList": {
+        "emptyNotice": "এই ধরনের কিছু নিয়ে এখনও লেখা হয়নি।"
+    },
+    "TrendingEntitySection": {
+        "heading": "ট্রেন্ডিং"
+    },
+    "PostLocationLink": {
+        "title": "এই জায়গাটি মানচিত্রে দেখান",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "এইমাত্র",
+        "minutes": {
+            "one": "{count} মিনিট আগে",
+            "other": "{count} মিনিট আগে"
+        },
+        "hours": {
+            "one": "{count} ঘণ্টা আগে",
+            "other": "{count} ঘণ্টা আগে"
+        },
+        "days": {
+            "one": "{count} দিন আগে",
+            "other": "{count} দিন আগে"
+        }
+    },
+    "ThemeSelector": {
+        "label": "থিম",
+        "themes": {
+            "system": "সিস্টেমের সঙ্গে মেলান",
+            "light": "সাধারণ লাইট",
+            "dark": "সাধারণ ডার্ক",
+            "sepia": "সেপিয়া",
+            "midnight": "মধ্যরাত",
+            "sunset": "সূর্যাস্ত",
+            "rose": "গোলাপি",
+            "forest": "বন",
+            "ocean": "সমুদ্র",
+            "lavender": "ল্যাভেন্ডার",
+            "gold": "সোনালি",
+            "hacker": "হ্যাকার",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "ধূসর স্কেল"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "এই সার্ভারে অনুবাদ সেট আপ করা নেই।",
+        "nothing": "এখানে অনুবাদ করার মতো কিছু নেই।",
+        "unknownSource": "এই পোস্টটি কোন ভাষায় লেখা তা এখনও কেউ নির্ধারণ করেনি, তাই এটি অনুবাদ করা যাবে না।",
+        "alreadyReadable": "এই পোস্টটি ইতিমধ্যে সেই ভাষায় আছে।",
+        "unsupportedPair": "এই সার্ভার এখনও সেই ভাষা অনুবাদ করতে পারে না।"
+    },
+    "LanguagePrompt": {
+        "question": "আপনি কি সাইটটি বাংলায় দেখতে চান?",
+        "accept": "হ্যাঁ",
+        "decline": "না, ধন্যবাদ"
+    },
+    "LanguageSelector": {
+        "label": "ভাষা",
+        "legend": "ভাষা"
+    },
+    "EmailDigest": {
+        "subject": "{site}-এ আপনি যা মিস করেছেন",
+        "greeting": "হাই {name},",
+        "whileAway": "আপনি যখন দূরে ছিলেন:",
+        "repeatedTimes": {
+            "one": " ({count}বার)",
+            "other": " ({count}বার)"
+        },
+        "moreMissed": {
+            "one": "এবং আরও {count}টি বিজ্ঞপ্তি",
+            "other": "এবং আরও {count}টি বিজ্ঞপ্তি"
+        },
+        "messagesWaiting": {
+            "one": "আপনার একটি মেসেজ অপেক্ষা করছে",
+            "other": "আপনার {count}টি মেসেজ অপেক্ষা করছে"
+        },
+        "postsInFeed": {
+            "one": "আপনার ফিডে একটি নতুন পোস্ট",
+            "other": "আপনার ফিডে {count}টি নতুন পোস্ট"
+        },
+        "unsubscribeInstructions": "এই ইমেইলগুলো বন্ধ করতে, এই লিংকটি খুলুন - এতে একটি ক্লিক লাগে আর কোনো পাসওয়ার্ড লাগে না:",
+        "comeSeeWhatIsNew": "এসে দেখুন কী নতুন আছে",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "এগুলো পাঠানো বন্ধ করুন",
+            "after": " - এক ক্লিক, কোনো পাসওয়ার্ড লাগে না।"
+        }
+    },
+    "EmailVerification": {
+        "subject": "আপনার ইমেইল ঠিকানা যাচাই করুন",
+        "greeting": "হাই {name},",
+        "instructions": "অনুগ্রহ করে এই লিংকে গিয়ে আপনার ইমেইল ঠিকানা যাচাই করুন:",
+        "htmlInstructions": "অনুগ্রহ করে নিচের লিংকে ক্লিক করে আপনার ইমেইল ঠিকানা যাচাই করুন:",
+        "buttonLabel": "ইমেইল ঠিকানা যাচাই করুন",
+        "expiresIn": {
+            "one": "এই লিংকের মেয়াদ {count} ঘণ্টায় শেষ হবে।",
+            "other": "এই লিংকের মেয়াদ {count} ঘণ্টায় শেষ হবে।"
+        }
+    },
+    "PasswordReset": {
+        "subject": "আপনার পাসওয়ার্ড রিসেট করুন",
+        "greeting": "হাই {name},",
+        "instructions": "কেউ একজন (আশা করি আপনি) একটি পাসওয়ার্ড রিসেট অনুরোধ করেছেন। নতুন পাসওয়ার্ড বাছাই করতে এই লিংকে যান:",
+        "htmlInstructions": "কেউ একজন (আশা করি আপনি) একটি পাসওয়ার্ড রিসেট অনুরোধ করেছেন। নতুন পাসওয়ার্ড বাছাই করতে নিচের লিংকে ক্লিক করুন:",
+        "buttonLabel": "পাসওয়ার্ড রিসেট করুন",
+        "expiresIn": {
+            "one": "এই লিংকের মেয়াদ {count} ঘণ্টায় শেষ হবে।",
+            "other": "এই লিংকের মেয়াদ {count} ঘণ্টায় শেষ হবে।"
+        },
+        "ignoreNotice": "যদি আপনি এটি অনুরোধ না করে থাকেন, তাহলে আপনি এই ইমেইলটি উপেক্ষা করতে পারেন।"
+    }
+}

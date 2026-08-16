@@ -1065,5 +1065,50 @@
     "LanguageSelector": {
         "label": "言語",
         "legend": "言語"
+    },
+    "EmailDigest": {
+        "subject": "{site}で見逃したこと",
+        "greeting": "{name}様、",
+        "whileAway": "不在の間にあったこと:",
+        "repeatedTimes": {
+            "other": "（{count}回）"
+        },
+        "moreMissed": {
+            "other": "ほか{count}件の通知があります"
+        },
+        "messagesWaiting": {
+            "other": "{count}件のメッセージが届いています"
+        },
+        "postsInFeed": {
+            "other": "フィードに{count}件の新しい投稿があります"
+        },
+        "unsubscribeInstructions": "このメールの配信を停止するには、こちらのリンクを開いてください。ワンクリックで完了し、パスワードは不要です:",
+        "comeSeeWhatIsNew": "新着情報を見る",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "配信を停止する",
+            "after": " - ワンクリックで完了し、パスワードは不要です。"
+        }
+    },
+    "EmailVerification": {
+        "subject": "メールアドレスの確認",
+        "greeting": "{name}様、",
+        "instructions": "こちらのリンクからメールアドレスを確認してください:",
+        "htmlInstructions": "下のリンクをクリックしてメールアドレスを確認してください:",
+        "buttonLabel": "メールアドレスを確認する",
+        "expiresIn": {
+            "other": "このリンクの有効期限は{count}時間です。"
+        }
+    },
+    "PasswordReset": {
+        "subject": "パスワードの再設定",
+        "greeting": "{name}様、",
+        "instructions": "どなたか（おそらくご本人）がパスワードの再設定を要求しました。新しいパスワードを設定するには、こちらのリンクにアクセスしてください:",
+        "htmlInstructions": "どなたか（おそらくご本人）がパスワードの再設定を要求しました。新しいパスワードを設定するには、下のリンクをクリックしてください:",
+        "buttonLabel": "パスワードを再設定する",
+        "expiresIn": {
+            "other": "このリンクの有効期限は{count}時間です。"
+        },
+        "ignoreNotice": "心当たりがない場合は、このメールを無視していただいて構いません。"
     }
 }

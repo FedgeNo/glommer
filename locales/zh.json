@@ -359,6 +359,43 @@
         "deletedAccount": "已删除的账号",
         "reason": "，原因：{reason}"
     },
+    "DateFormat": {
+        "months": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "10": "10",
+            "11": "11",
+            "12": "12"
+        },
+        "shortMonths": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "10": "10",
+            "11": "11",
+            "12": "12"
+        },
+        "long": "{year}年{month}月{day}日",
+        "short": "{year}年{month}月{day}日",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} {time}",
+        "am": "上午",
+        "pm": "下午",
+        "clock": 24
+    },
     "EnvironmentChecker": {
         "wsCannotConnect": "无法连接到 127.0.0.1:{port}{tls} 上的 WebSocket 服务器（{error}）。请先启动它：systemctl --user start glommer-websocket（unit 文件参见 README.md）。如果它刚获得或失去了 WS_TLS_CERT/WS_TLS_KEY，请重启它以使其与 .env 保持一致。",
         "wsOverTLS": "（TLS）",

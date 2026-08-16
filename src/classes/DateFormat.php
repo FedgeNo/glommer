@@ -14,8 +14,8 @@ declare(strict_types=1);
  * Read rather than asked, even though ICU is installed: this renders and so
  * does its JavaScript twin, and two libraries of locale data - one on each
  * side, at whatever versions each happens to be - would disagree about a date
- * on the same page. bin/translate-strings.php asks ICU once, when the file is
- * written, and both renderers read the answer.
+ * on the same page. A locale file's calendar block is ICU's answer, asked
+ * once when the file is written, and both renderers read it.
  *
  * Everything is rendered in UTC, because the server has no way to know the
  * viewer's timezone and a date that read differently either side of midnight

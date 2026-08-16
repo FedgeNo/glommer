@@ -337,6 +337,17 @@ if ($needs_async) {
 // existed and nothing ever falls back to what an account setting claims.
 $detected_language = LanguageDetector::of($description_value);
 
+// The post and everything that makes it whole - location, hashtags, mentions,
+// media rows, poll, timeline fan-out - go in as one transaction, the same
+// shape UploadBatch::finalize() uses: no feed ever shows a post whose media
+// or poll aren't in place yet, and a failure mid-assembly rolls the whole
+// post back (the request's connection closing discards the open transaction)
+// instead of leaving a partial one. Media files processed onto disk before a
+// rollback are left as invisible orphan files rather than a visibly broken
+// post. Notifications and federation fire only AFTER the commit, so a
+// rolled-back assembly signals nothing.
+mysqli_begin_transaction(DB::connection());
+
 DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `quotedPostId`, `detectedLanguage`)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -353,11 +364,7 @@ INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
 }
 
 Hashtag::indexPost($post_id, $description_ops);
-Mention::notify(Mention::indexPost($post_id, $description_ops), $current_user -> userId, $post_id);
-
-if ($parent_id !== null) {
-    Notification::create((int) $parent_post -> userId, $current_user -> userId, 'reply', $parent_id);
-}
+$mentioned_user_ids = Mention::indexPost($post_id, $description_ops);
 
 // Replies fan out like anything else. A friend's reply is a thing they said,
 // and it was only ever held back because, arriving alone in a feed, it read as
@@ -447,6 +454,15 @@ $post -> author = $current_user;
 // an ordinary Note and the poll would never exist anywhere but here.
 if ($has_poll) {
     $post -> poll = Poll::create($post_id, $poll_options, $poll_multiple, $poll_duration);
+}
+
+mysqli_commit(DB::connection());
+
+// The post is in and whole - now tell people about it.
+Mention::notify($mentioned_user_ids, $current_user -> userId, $post_id);
+
+if ($parent_id !== null) {
+    Notification::create((int) $parent_post -> userId, $current_user -> userId, 'reply', $parent_id);
 }
 
 // Queued, not delivered: the author waits for their post, not for every server

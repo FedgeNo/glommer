@@ -98,13 +98,19 @@ SELECT `userId`
             return null;
         }
 
-        DB::run('
+        // Read off the statement itself, not the connection: a discarded
+        // \mysqli_stmt is closed the moment nothing references it, and that
+        // close sends its own command over the connection - which clobbers
+        // mysqli_affected_rows(DB::connection()) before this line would ever
+        // get to read it, back to its "no info" value of -1. The statement's
+        // own count was captured at execution and outlives its own closing.
+        $deleted = DB::run('
 DELETE
     FROM `PasswordResets`
     WHERE `tokenHash` = ?
 ', 's', $token_hash);
 
-        return mysqli_affected_rows(DB::connection()) === 1 ? (int) $reset -> userId : null;
+        return mysqli_stmt_affected_rows($deleted) === 1 ? (int) $reset -> userId : null;
     }
 
     private static function create(int $user_id): string

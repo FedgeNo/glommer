@@ -1081,5 +1081,56 @@
     "LanguageSelector": {
         "label": "Language",
         "legend": "Language"
+    },
+    "EmailDigest": {
+        "subject": "What you missed on {site}",
+        "greeting": "Hi {name},",
+        "whileAway": "While you were away:",
+        "repeatedTimes": {
+            "one": " ({count} time)",
+            "other": " ({count} times)"
+        },
+        "moreMissed": {
+            "one": "and {count} more notification",
+            "other": "and {count} more notifications"
+        },
+        "messagesWaiting": {
+            "one": "You have a message waiting",
+            "other": "You have {count} messages waiting"
+        },
+        "postsInFeed": {
+            "one": "One new post in your feed",
+            "other": "{count} new posts in your feed"
+        },
+        "unsubscribeInstructions": "To stop these emails, open this link - it takes one click and needs no password:",
+        "comeSeeWhatIsNew": "Come and see what is new",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Stop sending me these",
+            "after": " - one click, no password needed."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verify your email address",
+        "greeting": "Hi {name},",
+        "instructions": "Please verify your email address by visiting this link:",
+        "htmlInstructions": "Please verify your email address by clicking the link below:",
+        "buttonLabel": "Verify Email Address",
+        "expiresIn": {
+            "one": "This link expires in {count} hour.",
+            "other": "This link expires in {count} hours."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Reset your password",
+        "greeting": "Hi {name},",
+        "instructions": "Someone (hopefully you) requested a password reset. Visit this link to choose a new password:",
+        "htmlInstructions": "Someone (hopefully you) requested a password reset. Click the link below to choose a new password:",
+        "buttonLabel": "Reset Password",
+        "expiresIn": {
+            "one": "This link expires in {count} hour.",
+            "other": "This link expires in {count} hours."
+        },
+        "ignoreNotice": "If you did not request this, you can ignore this email."
     }
 }

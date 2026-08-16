@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 class PasswordReset
 {
+    /** How long the link is good for, said in the mail and enforced in the DB row alike. */
+    private const EXPIRY_HOURS = 1;
+
     public static function sendFor(User $user): void
     {
         $token = self::create((int) $user -> userId);
@@ -12,19 +15,31 @@ class PasswordReset
 
         $name = $user -> title ?: $user -> slug;
 
-        $text_body = 'Hi ' . $name . ',
+        // Read in the account's own language, not whoever is sitting at this
+        // browser - a reset is requested while signed out, so the visitor and
+        // the account it names are not reliably the same person.
+        Strings::useLocale($user -> locale ?? Strings::SOURCE_LOCALE);
 
-Someone (hopefully you) requested a password reset. Visit this link to choose a new password:
-' . $reset_url . '
+        try {
+            $words = Strings::for(self::class);
+            $subject = (string) ($words['subject'] ?? '');
+            $expiry = str_replace('{count}', (string) self::EXPIRY_HOURS, Strings::plural(self::class, 'expiresIn', self::EXPIRY_HOURS))
+                . ' ' . (string) ($words['ignoreNotice'] ?? '');
 
-This link expires in 1 hour. If you did not request this, you can ignore this email.';
+            $text_body = str_replace('{name}', $name, (string) ($words['greeting'] ?? '')) . chr(10) . chr(10)
+                . (string) ($words['instructions'] ?? '') . chr(10)
+                . $reset_url . chr(10) . chr(10)
+                . $expiry;
 
-        $html_body = '<p>Hi ' . htmlspecialchars($name) . ',</p>'
-            . '<p>Someone (hopefully you) requested a password reset. Click the link below to choose a new password:</p>'
-            . '<p><a href="' . htmlspecialchars($reset_url) . '">Reset Password</a></p>'
-            . '<p>This link expires in 1 hour. If you did not request this, you can ignore this email.</p>';
+            $html_body = '<p>' . str_replace('{name}', htmlspecialchars($name), (string) ($words['greeting'] ?? '')) . '</p>'
+                . '<p>' . htmlspecialchars((string) ($words['htmlInstructions'] ?? '')) . '</p>'
+                . '<p><a href="' . htmlspecialchars($reset_url) . '">' . htmlspecialchars((string) ($words['buttonLabel'] ?? '')) . '</a></p>'
+                . '<p>' . htmlspecialchars($expiry) . '</p>';
+        } finally {
+            Strings::useLocale(null);
+        }
 
-        $sent = Mailer::send($user -> email, $name, 'Reset your password', $text_body, $html_body);
+        $sent = Mailer::send($user -> email, $name, $subject, $text_body, $html_body);
 
         if (!$sent) {
             // Unlike sign-up, a failed reset can't just proceed - without the
@@ -117,7 +132,6 @@ DELETE
     {
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
-        $expiry_hours = 1;
 
         DB::run('
 DELETE
@@ -128,7 +142,7 @@ DELETE
         DB::run('
 INSERT INTO `PasswordResets` (`userId`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, NOW() + INTERVAL ? HOUR)
-', 'isi', $user_id, $token_hash, $expiry_hours);
+', 'isi', $user_id, $token_hash, self::EXPIRY_HOURS);
 
         return $token;
     }

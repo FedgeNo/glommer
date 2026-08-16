@@ -151,9 +151,13 @@ UPDATE `Users`
     private string $since;
 
     /**
-     * One line per thing they missed, in the site's own wording.
+     * One entry per distinct thing they missed - who, what kind, and how many
+     * times - read out in the site's own wording only once a locale is
+     * settled on, not here: an object built at gather time and read back
+     * later must not fix its words to whatever language happened to be
+     * current when it was constructed.
      *
-     * @var string[]
+     * @var array<int, array{type: string, name: string, count: int}>
      */
     private array $missed = [];
 
@@ -218,7 +222,7 @@ UPDATE `Users`
         return Mailer::send(
             (string) $this -> user -> email,
             $this -> name(),
-            'What you missed on ' . (string) Config::get('siteTitle'),
+            $this -> subject(),
             $this -> textBody(),
             $this -> htmlBody(),
             // The unsubscribe a mail client offers itself, in its own chrome,
@@ -263,23 +267,27 @@ SELECT `Notifications`.`type`, `Users`.`slug` AS `actorUsername`, `Users`.`title
     LIMIT ' . self::SCANNED_NOTIFICATIONS . '
 ', 'Notification', $bindings, $user_id, $this -> since, ...$types);
 
-        // Counted by wording, so the same person liking six posts is one line
-        // saying so rather than six identical ones filling the mail.
+        // Counted by what happened and who did it, so the same person liking
+        // six posts is one entry saying so rather than six identical ones
+        // filling the mail. Keyed on the pair rather than on the rendered
+        // sentence, since the sentence does not exist yet - nothing here has
+        // read a locale.
         $counted = [];
+        $subjects = [];
 
         foreach ($notifications as $notification) {
-            $line = Notification::textFor(
-                (string) $notification -> type,
-                (string) ($notification -> actorDisplayName ?? $notification -> actorUsername)
-            );
+            $type = (string) $notification -> type;
+            $name = (string) ($notification -> actorDisplayName ?? $notification -> actorUsername);
+            $key = $type . "\x00" . $name;
 
-            $counted[$line] = ($counted[$line] ?? 0) + 1;
+            $counted[$key] = ($counted[$key] ?? 0) + 1;
+            $subjects[$key] = ['type' => $type, 'name' => $name];
         }
 
         $shown = array_slice($counted, 0, self::LISTED_NOTIFICATIONS, true);
 
-        foreach ($shown as $line => $count) {
-            $this -> missed[] = $count === 1 ? $line : $line . ' (' . $count . ' times)';
+        foreach ($shown as $key => $count) {
+            $this -> missed[] = $subjects[$key] + ['count' => $count];
         }
 
         $total = DB::row('
@@ -407,31 +415,50 @@ SELECT `Posts`.`title`, `Posts`.`description`
 
     /**
      * The lines under "while you were away", the message count included as one
-     * of them.
+     * of them. Reads the current locale, so the caller must already have one
+     * forced before reaching here.
      *
      * @return string[]
      */
     private function lines(): array
     {
-        $lines = $this -> missed;
+        $lines = [];
+
+        foreach ($this -> missed as $item) {
+            $line = Notification::textFor($item['type'], $item['name']);
+
+            if ($item['count'] > 1) {
+                $line .= str_replace('{count}', (string) $item['count'], Strings::plural(self::class, 'repeatedTimes', $item['count']));
+            }
+
+            $lines[] = $line;
+        }
 
         if ($this -> moreMissed > 0) {
-            $lines[] = 'and ' . number_format($this -> moreMissed) . ' more';
+            $lines[] = str_replace('{count}', number_format($this -> moreMissed), Strings::plural(self::class, 'moreMissed', $this -> moreMissed));
         }
 
         if ($this -> messages > 0) {
-            $lines[] = $this -> messages === 1
-                ? 'You have a message waiting'
-                : 'You have ' . number_format($this -> messages) . ' messages waiting';
+            $lines[] = str_replace('{count}', number_format($this -> messages), Strings::plural(self::class, 'messagesWaiting', $this -> messages));
         }
 
         if ($this -> posts > 0) {
-            $lines[] = $this -> posts === 1
-                ? 'One new post in your feed'
-                : number_format($this -> posts) . ' new posts in your feed';
+            $lines[] = str_replace('{count}', number_format($this -> posts), Strings::plural(self::class, 'postsInFeed', $this -> posts));
         }
 
         return $lines;
+    }
+
+    /** Read in the recipient's own language - the worker sending this has no browser asking in any language at all. */
+    private function subject(): string
+    {
+        Strings::useLocale($this -> user -> locale ?? Strings::SOURCE_LOCALE);
+
+        try {
+            return str_replace('{site}', (string) Config::get('siteTitle'), (string) (Strings::for(self::class)['subject'] ?? ''));
+        } finally {
+            Strings::useLocale(null);
+        }
     }
 
     /**
@@ -441,46 +468,66 @@ SELECT `Posts`.`title`, `Posts`.`description`
      */
     public function textBody(): string
     {
-        $paragraphs = ['Hi ' . $this -> name() . ','];
+        Strings::useLocale($this -> user -> locale ?? Strings::SOURCE_LOCALE);
 
-        if ($this -> prose !== null) {
-            $paragraphs[] = $this -> prose;
+        try {
+            $words = Strings::for(self::class);
+
+            $paragraphs = [str_replace('{name}', $this -> name(), (string) ($words['greeting'] ?? ''))];
+
+            if ($this -> prose !== null) {
+                $paragraphs[] = $this -> prose;
+            }
+
+            $paragraphs[] = (string) ($words['whileAway'] ?? '') . chr(10)
+                . implode(chr(10), array_map(static fn (string $line): string => '  * ' . $line, $this -> lines()));
+
+            $paragraphs[] = self::paragraph();
+            $paragraphs[] = ServerURL::absolute('/');
+            $paragraphs[] = (string) ($words['unsubscribeInstructions'] ?? '')
+                . chr(10) . (string) EmailDigestUnsubscribe::URL((int) $this -> user -> userId);
+
+            return implode(chr(10) . chr(10), $paragraphs);
+        } finally {
+            Strings::useLocale(null);
         }
-
-        $paragraphs[] = 'While you were away:' . chr(10)
-            . implode(chr(10), array_map(static fn (string $line): string => '  * ' . $line, $this -> lines()));
-
-        $paragraphs[] = self::paragraph();
-        $paragraphs[] = ServerURL::absolute('/');
-        $paragraphs[] = 'To stop these emails, open this link - it takes one click and needs no password:'
-            . chr(10) . (string) EmailDigestUnsubscribe::URL((int) $this -> user -> userId);
-
-        return implode(chr(10) . chr(10), $paragraphs);
     }
 
     /** The HTML half, saying the same things. */
     public function htmlBody(): string
     {
-        $site_url = ServerURL::absolute('/');
+        Strings::useLocale($this -> user -> locale ?? Strings::SOURCE_LOCALE);
 
-        $html = '<p>Hi ' . htmlspecialchars($this -> name()) . ',</p>';
+        try {
+            $words = Strings::for(self::class);
+            $site_url = ServerURL::absolute('/');
 
-        if ($this -> prose !== null) {
-            $html .= '<p>' . htmlspecialchars($this -> prose) . '</p>';
+            $html = '<p>' . str_replace('{name}', htmlspecialchars($this -> name()), (string) ($words['greeting'] ?? '')) . '</p>';
+
+            if ($this -> prose !== null) {
+                $html .= '<p>' . htmlspecialchars($this -> prose) . '</p>';
+            }
+
+            $html .= '<p>' . htmlspecialchars((string) ($words['whileAway'] ?? '')) . '</p><ul>';
+
+            foreach ($this -> lines() as $line) {
+                $html .= '<li>' . htmlspecialchars($line) . '</li>';
+            }
+
+            $html .= '</ul>';
+            $html .= '<p>' . htmlspecialchars(self::paragraph()) . '</p>';
+            $html .= '<p><a href="' . htmlspecialchars($site_url) . '">' . htmlspecialchars((string) ($words['comeSeeWhatIsNew'] ?? '')) . '</a></p>';
+
+            $unsubscribe = (array) ($words['unsubscribeLink'] ?? []);
+
+            $html .= '<p>' . htmlspecialchars((string) ($unsubscribe['before'] ?? ''))
+                . '<a href="' . htmlspecialchars((string) EmailDigestUnsubscribe::URL((int) $this -> user -> userId)) . '">'
+                . htmlspecialchars((string) ($unsubscribe['link'] ?? '')) . '</a>'
+                . htmlspecialchars((string) ($unsubscribe['after'] ?? '')) . '</p>';
+
+            return $html;
+        } finally {
+            Strings::useLocale(null);
         }
-
-        $html .= '<p>While you were away:</p><ul>';
-
-        foreach ($this -> lines() as $line) {
-            $html .= '<li>' . htmlspecialchars($line) . '</li>';
-        }
-
-        $html .= '</ul>';
-        $html .= '<p>' . htmlspecialchars(self::paragraph()) . '</p>';
-        $html .= '<p><a href="' . htmlspecialchars($site_url) . '">Come and see what is new</a></p>';
-        $html .= '<p><a href="' . htmlspecialchars((string) EmailDigestUnsubscribe::URL((int) $this -> user -> userId)) . '">Stop sending me these</a>'
-            . ' - one click, no password needed.</p>';
-
-        return $html;
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 class EmailVerification
 {
+    /** How long the link is good for, said in the mail and enforced in the DB row alike. */
+    private const EXPIRY_HOURS = 24;
+
     /**
      * @return bool whether $user ended up verified as a direct result of this
      *   call (i.e. auto-verified because mail delivery itself is broken) -
@@ -21,19 +24,30 @@ class EmailVerification
 
         $name = $user -> title ?: $user -> slug;
 
-        $text_body = 'Hi ' . $name . ',
+        // Read in the recipient's own language, not whoever is currently
+        // browsing - the two are unrelated for a signup or an email change,
+        // and this may run with no browser attached to it at all.
+        Strings::useLocale($user -> locale ?? Strings::SOURCE_LOCALE);
 
-Please verify your email address by visiting this link:
-' . $verify_url . '
+        try {
+            $words = Strings::for(self::class);
+            $subject = (string) ($words['subject'] ?? '');
+            $expiry = str_replace('{count}', (string) self::EXPIRY_HOURS, Strings::plural(self::class, 'expiresIn', self::EXPIRY_HOURS));
 
-This link expires in 24 hours.';
+            $text_body = str_replace('{name}', $name, (string) ($words['greeting'] ?? '')) . chr(10) . chr(10)
+                . (string) ($words['instructions'] ?? '') . chr(10)
+                . $verify_url . chr(10) . chr(10)
+                . $expiry;
 
-        $html_body = '<p>Hi ' . htmlspecialchars($name) . ',</p>'
-            . '<p>Please verify your email address by clicking the link below:</p>'
-            . '<p><a href="' . htmlspecialchars($verify_url) . '">Verify Email Address</a></p>'
-            . '<p>This link expires in 24 hours.</p>';
+            $html_body = '<p>' . str_replace('{name}', htmlspecialchars($name), (string) ($words['greeting'] ?? '')) . '</p>'
+                . '<p>' . htmlspecialchars((string) ($words['htmlInstructions'] ?? '')) . '</p>'
+                . '<p><a href="' . htmlspecialchars($verify_url) . '">' . htmlspecialchars((string) ($words['buttonLabel'] ?? '')) . '</a></p>'
+                . '<p>' . htmlspecialchars($expiry) . '</p>';
+        } finally {
+            Strings::useLocale(null);
+        }
 
-        $sent = Mailer::send($user -> email, $name, 'Verify your email address', $text_body, $html_body);
+        $sent = Mailer::send($user -> email, $name, $subject, $text_body, $html_body);
 
         // Only auto-verify when mail delivery itself is broken/unconfigured -
         // not when this specific address was rejected (Mailer::attempt()
@@ -102,7 +116,6 @@ UPDATE `Users`
     {
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
-        $expiry_hours = 24;
 
         DB::run('
 DELETE
@@ -113,7 +126,7 @@ DELETE
         DB::run('
 INSERT INTO `EmailVerifications` (`userId`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, NOW() + INTERVAL ? HOUR)
-', 'isi', $user_id, $token_hash, $expiry_hours);
+', 'isi', $user_id, $token_hash, self::EXPIRY_HOURS);
 
         return $token;
     }

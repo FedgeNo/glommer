@@ -416,8 +416,18 @@ class UploadProcessor
             return null;
         }
 
-        if ($paths['original'] !== null) {
-            copy($tmp_path, $paths['original']);
+        // The original is the forensic copy a moderator may later need, so
+        // failing to keep it fails the whole upload - succeeding without it
+        // would be a silent gap discovered exactly when the copy matters. A
+        // failed copy() can leave a partial file, so it is cleaned up too.
+        if ($paths['original'] !== null && !copy($tmp_path, $paths['original'])) {
+            foreach (['display', 'thumbnail', 'original'] as $key) {
+                if ($paths[$key] !== null && is_file($paths[$key])) {
+                    unlink($paths[$key]);
+                }
+            }
+
+            return null;
         }
 
         return ['itemType' => 'ImageItem'];
@@ -586,8 +596,13 @@ class UploadProcessor
         $extension = self::safeExtension($original_filename);
         $paths = self::outputPaths($id, 'VideoItem', $extension);
 
-        if ($paths['original'] !== null) {
-            copy($tmp_path, $paths['original']);
+        // Failing to keep the original fails the upload - see processImage.
+        if ($paths['original'] !== null && !copy($tmp_path, $paths['original'])) {
+            if (is_file($paths['original'])) {
+                unlink($paths['original']);
+            }
+
+            return null;
         }
 
         $raw_frame_path = self::UPLOAD_DIR . '/' . self::shard($id) . '/' . $id . '-raw-frame.jpg';
@@ -693,8 +708,13 @@ class UploadProcessor
         $extension = self::safeExtension($original_filename);
         $paths = self::outputPaths($id, 'AudioItem', $extension);
 
-        if ($paths['original'] !== null) {
-            copy($tmp_path, $paths['original']);
+        // Failing to keep the original fails the upload - see processImage.
+        if ($paths['original'] !== null && !copy($tmp_path, $paths['original'])) {
+            if (is_file($paths['original'])) {
+                unlink($paths['original']);
+            }
+
+            return null;
         }
 
         // -map 0:a:0 -vn -sn -dn: take only the first audio stream and drop

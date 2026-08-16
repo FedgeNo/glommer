@@ -1,0 +1,1099 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count} वोट",
+            "other": "{count} वोट"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "जवाब देने के लिए ",
+            "link": "लॉग इन करें",
+            "after": "।"
+        },
+        "post": {
+            "before": "पोस्ट करने के लिए ",
+            "link": "लॉग इन करें",
+            "after": "।"
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "साइट",
+        "siteURLLabel": "साइट URL",
+        "siteTitleLabel": "साइट शीर्षक",
+        "mailFromAddressLabel": "मेल भेजने वाला पता",
+        "serverNameConfirmedLabel": "मैंने अपने वेब सर्वर के कॉन्फ़िग में \"ServerName {host}\" और \"UseCanonicalName On\" सेट कर दिया है (यह सिर्फ़ तब जांचा जाता है जब ऑटोमेटेड लाइव टेस्ट पूरा न हो सके - देखें README.md का HTTPS सेक्शन)",
+        "databaseLegend": "डेटाबेस",
+        "databaseHostLabel": "डेटाबेस होस्ट",
+        "databasePortLabel": "डेटाबेस पोर्ट",
+        "databaseNameLabel": "डेटाबेस का नाम",
+        "databaseAdminUsernameLabel": "डेटाबेस एडमिन यूज़रनेम",
+        "databaseAdminPasswordLabel": "डेटाबेस एडमिन पासवर्ड",
+        "webSocketTLSLegend": "WebSocket TLS (वैकल्पिक)",
+        "certificatePathLabel": "सर्टिफ़िकेट पाथ",
+        "certificatePathPlaceholder": "खाली छोड़ें, mkcert के ज़रिए अपने आप जनरेट होगा",
+        "keyPathLabel": "कुंजी पाथ",
+        "keyPathPlaceholder": "खाली छोड़ें, mkcert के ज़रिए अपने आप जनरेट होगा",
+        "botProtectionLegend": "बॉट सुरक्षा (वैकल्पिक)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile साइट कुंजी",
+        "turnstileSiteKeyPlaceholder": "स्किप करने के लिए खाली छोड़ें",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile सीक्रेट कुंजी",
+        "turnstileSecretKeyPlaceholder": "स्किप करने के लिए खाली छोड़ें",
+        "submit": "सेट अप करें"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "मौजूदा पासफ़्रेज़",
+        "newPassphraseLabel": "नया पासफ़्रेज़",
+        "confirmNewPassphraseLabel": "नए पासफ़्रेज़ की पुष्टि करें",
+        "accountPasswordLabel": "खाते का पासवर्ड",
+        "submit": "पासफ़्रेज़ बदलें"
+    },
+    "PasswordResetForm": {
+        "legend": "नया पासवर्ड चुनें",
+        "newPasswordLabel": "नया पासवर्ड",
+        "newPasswordPlaceholder": "कम से कम 8 अक्षर",
+        "confirmPasswordLabel": "नए पासवर्ड की पुष्टि करें",
+        "submit": "पासवर्ड रीसेट करें"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "अपना पासवर्ड रीसेट करें",
+        "emailLabel": "ईमेल",
+        "submit": "रीसेट लिंक भेजें"
+    },
+    "EmailRevertForm": {
+        "submit": "ईमेल बदलाव वापस लें"
+    },
+    "EmailVerifyForm": {
+        "submit": "ईमेल पता सत्यापित करें"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "उन्हें फिर से चालू करें"
+    },
+    "EmailDigestSetting": {
+        "label": "जब मैं कुछ समय से दूर रहूं, तो मुझे ईमेल करके बताएं कि मैंने क्या मिस किया"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "अज्ञात डिवाइस",
+        "browserOnOS": "{os} पर {browser}",
+        "thisDevice": " (यह डिवाइस)",
+        "lastUsed": {
+            "before": "अंतिम बार उपयोग: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "हर सक्रिय सेशन बंद करें और हर याद रखा गया डिवाइस भुला दें। आपको सभी ब्राउज़र से लॉग आउट कर दिया जाएगा, इसमें यह वाला भी शामिल है।"
+    },
+    "LogoutEverywhereButton": {
+        "label": "हर जगह से लॉग आउट करें"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "खाता हटाने के लिए Google से सत्यापित करें"
+    },
+    "GoogleSignInButton": {
+        "label": "Google के साथ जारी रखें"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "प्रोफ़ाइल संपादित करें"
+    },
+    "PushNotificationSetting": {
+        "explanation": "इस डिवाइस पर नोटिफ़िकेशन पाएं, भले ही साइट खुली न हो। यह हर ब्राउज़र के लिए अलग चुनाव है - जहां भी आपको सूचना चाहिए वहां इसे चालू करें।",
+        "label": {
+            "off": "इस डिवाइस पर चालू करें",
+            "on": "इस डिवाइस पर बंद करें"
+        },
+        "unsupported": "इस ब्राउज़र में पुश सपोर्ट नहीं है"
+    },
+    "LoginForm": {
+        "legend": "लॉग इन",
+        "identifier": "यूज़रनेम या ईमेल",
+        "password": "पासवर्ड",
+        "rememberMe": "मुझे याद रखें",
+        "submit": "लॉग इन करें"
+    },
+    "SignupForm": {
+        "legend": "खाता बनाएं",
+        "usernameLabel": "यूज़रनेम",
+        "usernamePlaceholder": "छोटे अक्षर, अंक, और _",
+        "emailLabel": "ईमेल",
+        "emailPlaceholder": "मान्य ईमेल पता",
+        "displayName": "डिस्प्ले नेम (वैकल्पिक)",
+        "bioLabel": "बायो (वैकल्पिक)",
+        "bioPlaceholder": "एक छोटा बायो - #हैशटैग, @मेंशन, और लिंक क्लिक करने लायक बन जाते हैं",
+        "passwordLabel": "पासवर्ड",
+        "passwordPlaceholder": "पासवर्ड: कम से कम 8 अक्षर",
+        "rememberMe": "मुझे याद रखें",
+        "submit": "साइन अप करें"
+    },
+    "PasswordChangeForm": {
+        "legend": "अपना पासवर्ड बदलें",
+        "currentPassword": "मौजूदा पासवर्ड",
+        "newPasswordLabel": "नया पासवर्ड",
+        "newPasswordPlaceholder": "कम से कम 8 अक्षर",
+        "confirmPassword": "नए पासवर्ड की पुष्टि करें",
+        "submit": "पासवर्ड बदलें"
+    },
+    "EmailChangeForm": {
+        "legend": "अपना ईमेल पता बदलें",
+        "newEmail": "नया ईमेल पता",
+        "currentPassword": "मौजूदा पासवर्ड",
+        "notice": "साइट का उपयोग जारी रखने से पहले आपको नए पते को सत्यापित करना होगा।",
+        "submit": "ईमेल बदलें"
+    },
+    "AccountDeleteForm": {
+        "legend": "अपना खाता हटाएं",
+        "warning": "इससे आपका खाता, पोस्ट, और मैसेज हमेशा के लिए हट जाएंगे। इसे वापस नहीं लिया जा सकता।",
+        "currentPassword": "मौजूदा पासवर्ड",
+        "submit": "खाता हटाएं"
+    },
+    "AccountMigrationForm": {
+        "legend": "किसी दूसरे सर्वर पर जाएं",
+        "movedNotice": "यह खाता {destination} पर जा चुका है। आपके फ़ॉलोअर्स से वहां फ़ॉलो करने का अनुरोध किया गया था।",
+        "explanation": "आपके फ़ॉलोअर्स से नए खाते को फ़ॉलो करने के लिए कहा जाता है। आपकी पोस्ट यहीं रहती हैं - ऑब्जेक्ट पते उस सर्वर के होते हैं जिसने उन्हें बनाया, इसलिए उन्हें साथ नहीं ले जाया जा सकता।",
+        "addressNotice": "जिस खाते में आप जा रहे हैं, उसे पहले इसे \"उपनाम\" के अंतर्गत सूचीबद्ध करना होगा। यहां आपका पता {address} है।",
+        "movedToLabel": "यहां जाएं",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "उपनाम",
+        "aliasesExplanation": "कहीं और के खाते जो आप ही हैं। यहां किसी को सूचीबद्ध करना उस खाते को इसमें आने की अनुमति देता है - यह अनुमति है, खुद स्थानांतरण नहीं। एक पंक्ति में एक पता।",
+        "aliasesLabel": "आपके अन्य खाते",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "सहेजें"
+    },
+    "TwoFactorForm": {
+        "legend": "अपना सत्यापन कोड डालें",
+        "explanation": "हमने आपको एक सत्यापन कोड ईमेल किया है। लॉग इन पूरा करने के लिए इसे नीचे डालें।",
+        "code": "सत्यापन कोड",
+        "submit": "सत्यापित करें"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "टू-फैक्टर ऑथेंटिकेशन चालू है",
+            "off": "टू-फैक्टर ऑथेंटिकेशन बंद है"
+        },
+        "explanation": {
+            "on": "जब आप लॉग इन करेंगे, तो हम एक सत्यापन कोड ईमेल करेंगे जिसे साइन इन पूरा करने के लिए डालना होगा।",
+            "off": "लॉगिन में एक और चरण जोड़ें: हम एक सत्यापन कोड ईमेल करेंगे जिसे आपको डालना होगा, ताकि सिर्फ़ आपका पासवर्ड अंदर आने के लिए काफ़ी न हो।"
+        },
+        "currentPassword": "मौजूदा पासवर्ड",
+        "submit": {
+            "on": "टू-फैक्टर ऑथेंटिकेशन बंद करें",
+            "off": "टू-फैक्टर ऑथेंटिकेशन चालू करें"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "कृपया अपना इनबॉक्स देखें और अपना ईमेल पता कन्फ़र्म करने के लिए हमारे भेजे गए सत्यापन लिंक पर क्लिक करें। अगर वह न दिखे, तो अपना जंक/स्पैम फ़ोल्डर देखें।"
+    },
+    "VerificationResendButton": {
+        "label": "सत्यापन ईमेल फिर से भेजें"
+    },
+    "MailSettingsForm": {
+        "legend": "आउटगोइंग मेल",
+        "fromAddressLabel": "भेजने वाला पता",
+        "fromAddressPlaceholder": "जब तक यह सेट नहीं होता, कोई ईमेल नहीं भेजा जा सकता",
+        "fromNameLabel": "भेजने वाले का नाम",
+        "hostLabel": "SMTP होस्ट",
+        "portLabel": "SMTP पोर्ट",
+        "usernameLabel": "SMTP यूज़रनेम",
+        "passwordLabel": "SMTP पासवर्ड",
+        "passwordPlaceholder": {
+            "set": "पासवर्ड सेट है - इसे वैसे ही रखने के लिए खाली छोड़ें",
+            "unset": "SMTP पासवर्ड"
+        },
+        "encryptionLabel": "एन्क्रिप्शन",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, आमतौर पर पोर्ट 587 पर)",
+            "ssl": "SSL (इम्प्लिसिट TLS, आमतौर पर पोर्ट 465 पर)",
+            "none": "कोई नहीं"
+        },
+        "explainer": "PHP के mail() से भेजने के लिए SMTP होस्ट खाली छोड़ें (सुझाया नहीं जाता - README के डिलिवरेबिलिटी सेक्शन में देखें)। जब तक कोई \"भेजने वाला\" पता सेट न हो, तब तक कोई भी ईमेल नहीं भेजा जा सकता।",
+        "save": "सहेजें"
+    },
+    "MapSettingsForm": {
+        "legend": "मैप टाइल्स",
+        "notice": "OpenStreetMap इस्तेमाल करने के लिए खाली छोड़ें। किसी कुंजी वाले प्रोवाइडर का उपयोग करने के लिए, जहां कुंजी आनी है वहां अक्षरशः {apiKey} के साथ उसका URL टेम्पलेट पेस्ट करें, साथ ही नीचे कुंजी और श्रेय भी डालें।",
+        "urlLabel": "टाइल URL टेम्पलेट",
+        "keyLabel": "API कुंजी",
+        "keyPlaceholder": "आपके टाइल प्रोवाइडर की API कुंजी",
+        "attributionLabel": "श्रेय",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "सहेजें"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google साइन-इन",
+        "clientIdLabel": "क्लाइंट ID",
+        "clientIdPlaceholder": "Google OAuth क्लाइंट ID",
+        "secretLabel": "क्लाइंट सीक्रेट",
+        "secretPlaceholder": {
+            "set": "क्लाइंट सीक्रेट सेट है - इसे वैसे ही रखने के लिए खाली छोड़ें",
+            "unset": "Google OAuth क्लाइंट सीक्रेट"
+        },
+        "explainer": "साइन-अप और साइन-इन पर \"Google के साथ जारी रखें\" दिखाने के लिए दोनों ज़रूरी हैं। अपने Google Cloud OAuth क्लाइंट में, अधिकृत रीडायरेक्ट URI को {url} सेट करें - इसे बंद करने के लिए क्लाइंट ID हटा दें।",
+        "save": "सहेजें"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "साइट कुंजी",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile साइट कुंजी",
+        "turnstileSecretKeyLabel": "सीक्रेट कुंजी",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "सीक्रेट कुंजी सेट है - इसे वैसे ही रखने के लिए खाली छोड़ें",
+            "unset": "Cloudflare Turnstile सीक्रेट कुंजी"
+        },
+        "turnstileExplainer": "साइन-अप और साइन-इन पर CAPTCHA दिखाने के लिए दोनों कुंजियां ज़रूरी हैं। इसे बंद करने के लिए साइट कुंजी हटा दें।",
+        "recaptchaLegend": "Google reCAPTCHA (खाता-लॉक रिकवरी)",
+        "recaptchaSiteKeyLabel": "साइट कुंजी",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 साइट कुंजी",
+        "recaptchaSecretKeyLabel": "सीक्रेट कुंजी",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "सीक्रेट कुंजी सेट है - इसे वैसे ही रखने के लिए खाली छोड़ें",
+            "unset": "Google reCAPTCHA v2 सीक्रेट कुंजी"
+        },
+        "recaptchaExplainer": "दोनों कुंजियां ज़रूरी हैं। सेट होने पर, जो खाता अपनी लॉगिन-प्रयास सीमा तक पहुंच जाता है वह लॉकआउट खत्म होने का इंतज़ार करने के बजाय इस चैलेंज को पास करके वापस अंदर आ सकता है; सेट न होने पर, लॉकआउट एक सख़्त प्रतीक्षा है। reCAPTCHA v2 (\"I'm not a robot\") इस्तेमाल करें। इसे बंद करने के लिए साइट कुंजी हटा दें।",
+        "save": "सहेजें"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "साइट पर मौजूद AI फ़ीचर इसका इस्तेमाल करते हैं (ट्रेंडिंग-टॉपिक सारांश, आदि)। Free Models Router इस्तेमाल करने के लिए मॉडल खाली छोड़ें, जिसे OpenRouter मौजूदा समय में जो भी फ़्री हो उसमें से बेतरतीब चुनता है और इसमें कभी कोई खर्च नहीं आ सकता।",
+        "keyLabel": "API कुंजी",
+        "keyPlaceholder": {
+            "set": "API कुंजी सेट है - इसे वैसे ही रखने के लिए खाली छोड़ें",
+            "unset": "OpenRouter API कुंजी"
+        },
+        "clearKeyLabel": "सेव की गई API कुंजी हटाएं (AI फ़ीचर बंद हो जाएंगे)",
+        "modelLabel": "मॉडल",
+        "neverSpendLabel": "इसे कभी पैसे खर्च करने की अनुमति न दें (सुझाया गया)",
+        "explainer": "गार्ड चालू होने पर, हर रिक्वेस्ट की कीमत की सीमा शून्य पर तय हो जाती है, इसलिए जब कोई फ़्री प्रोवाइडर उपलब्ध नहीं होता तो यह किसी पेड मॉडल पर जाने के बजाय सीधे फेल हो जाता है। AI फ़ीचर पूरी तरह बंद करने के लिए सेव की गई API कुंजी हटाएं।",
+        "save": "सहेजें"
+    },
+    "AboutSettingsForm": {
+        "legend": "परिचय",
+        "description": "सादा टेक्स्ट - खाली लाइनें पैराग्राफ को अलग करती हैं। पहला पैराग्राफ साइट के विवरण के रूप में इस्तेमाल होगा।",
+        "save": "सहेजें"
+    },
+    "TermsSettingsForm": {
+        "legend": "सेवा की शर्तें",
+        "description": "सादा टेक्स्ट - खाली लाइनें पैराग्राफ को अलग करती हैं।",
+        "save": "सहेजें"
+    },
+    "PrivacySettingsForm": {
+        "legend": "गोपनीयता नीति",
+        "description": "सादा टेक्स्ट - खाली लाइनें पैराग्राफ को अलग करती हैं।",
+        "save": "सहेजें"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "ईमेल डाइजेस्ट",
+        "fieldLabel": "समापन पैराग्राफ",
+        "notice": "हर डाइजेस्ट के अंत में, सदस्य ने जो मिस किया उसकी सूची के बाद जोड़ा जाता है। सादा टेक्स्ट। इस सॉफ़्टवेयर के साथ आने वाले शब्दों पर वापस जाने के लिए इसे खाली छोड़ दें।",
+        "save": "सहेजें"
+    },
+    "FaviconSettingsForm": {
+        "legend": "फ़ेविकॉन",
+        "currentAlt": "मौजूदा फ़ेविकॉन",
+        "save": "फ़ेविकॉन अपलोड करें"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "फ़्रंट पेज इमेज",
+        "explainer": "जब कोई इस साइट का लिंक शेयर करता है तो दूसरी साइटें इसे दिखाती हैं - सिर्फ़ Open Graph मेटाडेटा, कभी पेज पर नहीं। 1200×630 पर क्रॉप किया गया। इसके बिना, लिंक प्रीव्यू में कोई इमेज नहीं होगी।",
+        "currentAlt": "मौजूदा फ़्रंट पेज इमेज",
+        "save": "इमेज अपलोड करें"
+    },
+    "CarouselAutoplayButton": {
+        "name": "ऑटोप्ले"
+    },
+    "CarouselNextButton": {
+        "name": "अगला"
+    },
+    "CarouselPrevButton": {
+        "name": "पिछला"
+    },
+    "MediaFullscreenButton": {
+        "name": "फ़ुलस्क्रीन"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "फ़ाइलें हटाएं"
+    },
+    "NotificationDropdown": {
+        "showAll": "सभी दिखाएं"
+    },
+    "HelpSearch": {
+        "placeholder": "सहायता खोजें…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "समझ गया"
+    },
+    "StagedPostDiscardButton": {
+        "name": "रद्द करें"
+    },
+    "StagedPostEditButton": {
+        "name": "संपादित करें"
+    },
+    "StagedPostPublishButton": {
+        "name": "अभी प्रकाशित करें"
+    },
+    "LogoutButton": {
+        "name": "लॉग आउट"
+    },
+    "AvatarUploadForm": {
+        "submit": "अवतार अपडेट करें"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "बैन किए गए उपयोगकर्ता खोजें…"
+    },
+    "BannedUserSection": {
+        "heading": "बैन किए गए उपयोगकर्ता"
+    },
+    "SentFriendRequestSection": {
+        "heading": "भेजे गए अनुरोध (जवाब का इंतज़ार)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "{name} द्वारा बैन किया गया — ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "{name} द्वारा ब्लॉक किया गया — ",
+            "after": ""
+        },
+        "deletedAccount": "एक हटाया गया खाता",
+        "reason": " - {reason}"
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "127.0.0.1:{port}{tls} पर WebSocket सर्वर से कनेक्ट नहीं हो सका ({error})। पहले इसे शुरू करें: systemctl --user start glommer-websocket (यूनिट फ़ाइल के लिए README.md देखें)। अगर इसे अभी-अभी WS_TLS_CERT/WS_TLS_KEY मिला है या हटा है, तो इसे .env से मिलाने के लिए रीस्टार्ट करें।",
+        "wsOverTLS": " TLS पर",
+        "wsBadHandshake": "127.0.0.1:{port} पर मौजूद सर्विस ने सही WebSocket हैंडशेक पूरा नहीं किया - हो सकता है bin/websocket-server.php के अलावा कुछ और उस पोर्ट पर लिसन कर रहा हो।",
+        "wsNoPong": "WebSocket सर्वर ने हैंडशेक स्वीकार किया लेकिन पिंग का जवाब नहीं दिया - हो सकता है यह अटक गया हो या ठीक से काम नहीं कर रहा हो। इसके लॉग देखें।",
+        "wsReachable": "WebSocket सर्वर 127.0.0.1:{port} पर पहुंच योग्य है और जवाब दे रहा है"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "हैशटैग",
+            "person": "व्यक्ति",
+            "org": "संगठन",
+            "gpe": "स्थान",
+            "loc": "क्षेत्र",
+            "fac": "स्थल",
+            "product": "उत्पाद",
+            "event": "इवेंट",
+            "work_of_art": "कृति",
+            "law": "कानून",
+            "language": "भाषा",
+            "norp": "समूह"
+        },
+        "plural": {
+            "hashtag": "हैशटैग",
+            "person": "लोग",
+            "org": "संगठन",
+            "gpe": "स्थान",
+            "loc": "क्षेत्र",
+            "fac": "स्थल",
+            "product": "उत्पाद",
+            "event": "इवेंट",
+            "work_of_art": "कृतियां",
+            "law": "कानून",
+            "language": "भाषाएं",
+            "norp": "समूह"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "मित्र हटाएं"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "स्वीकार करें"
+    },
+    "FriendRequestDenyButton": {
+        "name": "अस्वीकार करें"
+    },
+    "UserFollowButton": {
+        "follow": "फ़ॉलो करें",
+        "unfollow": "अनफ़ॉलो करें"
+    },
+    "UserBlockButton": {
+        "name": "ब्लॉक करें"
+    },
+    "UserUnblockButton": {
+        "name": "अनब्लॉक करें"
+    },
+    "OtherUser": {
+        "message": "मैसेज"
+    },
+    "MainNavigation": {
+        "toggleLabel": "मेनू",
+        "loggedInAs": "{name} के रूप में लॉग इन",
+        "friendsFeed": "फ़्रेंड्स फ़ीड",
+        "relayFeed": "रिले फ़ीड",
+        "users": "उपयोगकर्ता",
+        "tags": "टैग",
+        "topics": "विषय",
+        "map": "मानचित्र",
+        "locations": "स्थान",
+        "search": "खोजें",
+        "messages": "मैसेज",
+        "bookmarks": "बुकमार्क",
+        "help": "सहायता",
+        "about": "परिचय",
+        "login": "लॉग इन",
+        "signup": "साइन अप",
+        "friends": "मित्र",
+        "drafts": "ड्राफ़्ट और शेड्यूल्ड",
+        "userSettings": "यूज़र सेटिंग्स",
+        "modSettings": "मॉड सेटिंग्स",
+        "adminSettings": "एडमिन सेटिंग्स"
+    },
+    "LogoutForm": {
+        "submit": "लॉग आउट"
+    },
+    "User": {
+        "joined": "{date} को शामिल हुए"
+    },
+    "FriendRequestButton": {
+        "add": "मित्र जोड़ें",
+        "cancel": "अनुरोध रद्द करें"
+    },
+    "StagedPostWhen": {
+        "scheduled": "{when} के लिए शेड्यूल्ड",
+        "draft": "ड्राफ़्ट - तभी प्रकाशित होगा जब आप कहेंगे"
+    },
+    "MessageTranslateButton": {
+        "name": "इस मैसेज का अनुवाद करें"
+    },
+    "MessageTranslationNotice": {
+        "heading": "मैसेज अनुवाद के बारे में",
+        "body": "किसी मैसेज का अनुवाद करने के लिए, उसका टेक्स्ट इस सर्वर पर भेजा जाता है और यहीं अनुवादित किया जाता है। कुछ भी सेव नहीं किया जाता: अनुवाद डेटाबेस में नहीं लिखा जाता और मैसेज खुद नहीं बदलता। लेकिन इस तरह अनुवादित किया गया मैसेज सर्वर द्वारा पढ़ा जा चुका होता है, इसलिए यह उतना एंड-टू-एंड एन्क्रिप्टेड नहीं रहता जितना बिना अनुवादित मैसेज होता है। सिर्फ़ वे मैसेज अनुवादित किए जा सकते हैं जो आपको मिले हैं, और सिर्फ़ तब जब आप कहें।",
+        "confirm": "इसका अनुवाद करें",
+        "cancel": "अभी नहीं"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "अपना पासफ़्रेज़ भूल गए? रीसेट करने से नई कुंजियां एक नए पासफ़्रेज़ के तहत बनती हैं - लेकिन पुरानी कुंजियों से एन्क्रिप्ट किए गए मैसेज फिर कभी किसी के द्वारा नहीं पढ़े जा सकते।",
+        "requirements": "कम से कम 12 अक्षर, और आपका खाता पासवर्ड नहीं - वह इस सर्वर को भेजा जाता है, और आपका पासफ़्रेज़ कभी नहीं भेजा जाना चाहिए।",
+        "passphraseLabel": "पासफ़्रेज़",
+        "resetPassphraseLabel": "नया पासफ़्रेज़",
+        "confirmLabel": "पासफ़्रेज़ की पुष्टि करें",
+        "accountPasswordLabel": "खाते का पासवर्ड",
+        "submitLabel": "एन्क्रिप्टेड मैसेज चालू करें",
+        "resetSubmitLabel": "एन्क्रिप्शन कुंजियां रीसेट करें"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "एंड-टू-एंड एन्क्रिप्टेड मैसेज आपके ब्राउज़र में लॉक और अनलॉक होते हैं: यह सर्वर उन्हें बिना पढ़ पाए रिले और स्टोर करता है। आपकी कुंजी एक पासफ़्रेज़ से सुरक्षित है, और वही पासफ़्रेज़ किसी भी ब्राउज़र से आपके मैसेज अनलॉक करता है। बातचीत तभी एन्क्रिप्ट होती है जब दोनों लोग इसे चालू कर चुके हों; दूसरे सर्वर पर मौजूद लोगों को भेजे मैसेज अनएन्क्रिप्टेड रहते हैं, क्योंकि फ़ेडरेशन के पास उन्हें किसी और तरह ले जाने का कोई रास्ता नहीं है।",
+        "noRecovery": "खोए हुए पासफ़्रेज़ को वापस पाने का कोई तरीका नहीं है - एडमिन के लिए भी नहीं। इसे खोने का मतलब है अपने एन्क्रिप्टेड मैसेज खोना।",
+        "enabledStatus": "एन्क्रिप्टेड मैसेज चालू हैं।"
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "एन्क्रिप्टेड",
+            "explanation": "इस बातचीत के मैसेज एंड-टू-एंड एन्क्रिप्टेड हैं: वे आपके पासफ़्रेज़ से अनलॉक होते हैं और आपके ब्राउज़र में पढ़े जाते हैं, और यह सर्वर जो स्टोर करता है वह सिफ़र-टेक्स्ट है। यह पक्का करने के लिए कि आपके बीच कोई नहीं है, दूसरे व्यक्ति के साथ थ्रेड के नीचे मौजूद सेफ़्टी कोड जांचें। एन्क्रिप्शन चालू होने से पहले भेजे गए मैसेज पहले जैसे ही पढ़े जा सकते रहते हैं।"
+        },
+        "awaiting-theirs": {
+            "label": "एन्क्रिप्टेड नहीं",
+            "explanation": "यहां के मैसेज तभी एंड-टू-एंड एन्क्रिप्टेड होंगे जब {handle} अपनी सेटिंग्स में एन्क्रिप्टेड मैसेज चालू करेंगे।"
+        },
+        "awaiting-yours": {
+            "label": "एन्क्रिप्टेड नहीं",
+            "explanation": "यहां के मैसेज एंड-टू-एंड एन्क्रिप्टेड नहीं हैं। इस बातचीत को सुरक्षित करने के लिए सेटिंग्स में एन्क्रिप्टेड मैसेज चालू करें।"
+        },
+        "federated": {
+            "label": "एन्क्रिप्टेड नहीं",
+            "explanation": "{handle} किसी दूसरे सर्वर पर हैं। इस बातचीत के मैसेज उस सर्वर पर भी स्टोर होते हैं और इस पर भी, और उसका एडमिन उन्हें पढ़ सकता है - सर्वरों के बीच के प्रोटोकॉल के पास उन्हें एन्क्रिप्ट करने का कोई तरीका नहीं है। संवेदनशील बातें सिर्फ़ इसी साइट पर होने वाली बातचीत तक सीमित रखें।"
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "फ़ेडिवर्स खाते फ़ॉलो करें",
+        "notice": "एक या ज़्यादा हैंडल पेस्ट करें, जैसे @user@example.social - इनके बीच कोई भी सेपरेटर काम करेगा।",
+        "handlesLabel": "फ़ॉलो करने के लिए फ़ेडिवर्स हैंडल",
+        "submit": "फ़ॉलो करें",
+        "statusPending": "लंबित",
+        "statusAccepted": "स्वीकृत"
+    },
+    "ServerBlockForm": {
+        "legend": "किसी सर्वर को ब्लॉक करें",
+        "description": "उस सर्वर और उसके अंतर्गत आने वाली हर चीज़ से आने वाला सब कुछ अस्वीकार कर देता है: न कुछ अंदर आएगा, न कुछ बाहर जाएगा, और दोनों दिशाओं में मौजूदा फ़ॉलो हटा दिए जाते हैं।",
+        "serverLabel": "सर्वर",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "कारण",
+        "reasonPlaceholder": "यह सर्वर क्यों ब्लॉक किया गया है",
+        "submit": "सर्वर ब्लॉक करें"
+    },
+    "VideoCallTestPanel": {
+        "intro": "कॉल सेटअप के उन हिस्सों को चलाता है जिन्हें एक ब्राउज़र से जांचा जा सकता है। असल पीयर-टू-पीयर कनेक्शन तक की हर चीज़ यहां टेस्ट की जा सकती है; किसी और व्यक्ति से कनेक्ट करने के लिए उस व्यक्ति की ज़रूरत होती है।"
+    },
+    "VideoCallTestButton": {
+        "label": "जांच चलाएं"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket सर्वर: चल रहा है",
+        "failed": "WebSocket सर्वर: {detail}",
+        "clientTesting": "ब्राउज़र कनेक्शन: टेस्ट हो रहा है…",
+        "clientConnecting": "ब्राउज़र कनेक्शन: कनेक्ट हो रहा है…",
+        "clientConnected": "ब्राउज़र कनेक्शन: कनेक्टेड",
+        "clientDisconnecting": "ब्राउज़र कनेक्शन: डिसकनेक्ट हो रहा है…",
+        "clientNotConnected": "ब्राउज़र कनेक्शन: कनेक्टेड नहीं"
+    },
+    "UploadWorkerStatus": {
+        "running": "वर्कर सर्विस: चल रही है",
+        "stopped": "वर्कर सर्विस: नहीं चल रही - जब तक इसे रीस्टार्ट नहीं किया जाता, स्टेज्ड अपलोड कभी ट्रांसकोड नहीं होंगे",
+        "unknown": "वर्कर सर्विस: अज्ञात - या तो इस होस्ट पर systemctl उपलब्ध नहीं है, या SELinux वेब सर्वर की अपनी स्टेटस क्वेरी को रोक रहा है (इसे ठीक करने के लिए bin/install.php को रूट के रूप में चलाएं)",
+        "queue": "क्यू: {staging} स्टेजिंग में, {pending} लंबित, {processing} प्रोसेस हो रहे"
+    },
+    "TrendingTimerStatus": {
+        "running": "ट्रेंडिंग टाइमर: चल रहा है",
+        "stopped": "ट्रेंडिंग टाइमर: नहीं चल रहा - ट्रेंडिंग विषय किसी शेड्यूल पर नहीं, सिर्फ़ रीड-पाथ सेल्फ़-हील (Trending::current()) के ज़रिए रीफ़्रेश होंगे। इसे सेट करने के लिए bin/install.php को रूट के रूप में चलाएं।",
+        "unknown": "ट्रेंडिंग टाइमर: अज्ञात - या तो इस होस्ट पर systemctl उपलब्ध नहीं है, या SELinux वेब सर्वर की अपनी स्टेटस क्वेरी को रोक रहा है (इसे ठीक करने के लिए bin/install.php को रूट के रूप में चलाएं)"
+    },
+    "Notification": {
+        "postReady": "आपका मीडिया प्रोसेस हो चुका है और अब लाइव है",
+        "scheduledPostLive": "आपकी शेड्यूल्ड पोस्ट अब लाइव है",
+        "uploadPartlyFailed": "आपकी पोस्ट लाइव है, लेकिन उसकी एक या ज़्यादा फ़ाइलें प्रोसेस नहीं हो सकीं",
+        "uploadFailed": "आपका एक अपलोड प्रोसेस नहीं हो सका और पोस्ट नहीं किया गया",
+        "mailerFailed": "ईमेल डिलिवरी फेल हो गई - मेलर डाउन हो सकता है। कृपया अपना मेल कॉन्फ़िगरेशन जांचें।",
+        "mailFromNotConfigured": "कोई मेल \"भेजने वाला\" पता कॉन्फ़िगर नहीं है, इसलिए ईमेल नहीं भेजे जा सकते। इसे एडमिन सेटिंग्स (आउटगोइंग मेल सेक्शन) में या bin/install.php के ज़रिए सेट करें।",
+        "systemError": "एक सर्वर एरर हुई। जानकारी के लिए एरर लॉग देखें।",
+        "passwordRemovedGoogle": "जब आपने Google से साइन इन किया, तो आपका पासवर्ड हटा दिया गया था। नया पासवर्ड सेट करने के लिए \"पासवर्ड भूल गए\" का इस्तेमाल करें।",
+        "like": "{name} ने आपकी पोस्ट लाइक की",
+        "repost": "{name} ने आपकी पोस्ट रीपोस्ट की",
+        "reply": "{name} ने आपकी पोस्ट पर जवाब दिया",
+        "friendRequest": "{name} ने आपको मित्र अनुरोध भेजा",
+        "friendAccepted": "{name} ने आपका मित्र अनुरोध स्वीकार किया",
+        "message": "{name} ने आपको मैसेज भेजा",
+        "mention": "{name} ने एक पोस्ट में आपको मेंशन किया",
+        "follow": "{name} ने आपको दूसरे सर्वर से फ़ॉलो किया",
+        "default": "{name} ने कुछ किया"
+    },
+    "NotificationList": {
+        "emptyNotice": "अभी तक कोई नोटिफ़िकेशन नहीं।"
+    },
+    "NotificationsNavLink": {
+        "label": "नोटिफ़िकेशन",
+        "unseen": "बिना देखे नोटिफ़िकेशन"
+    },
+    "NotificationTestPanel": {
+        "intro": "खुद को (एडमिन को) एक टेस्ट नोटिफ़िकेशन भेजें। इसे तुरंत टोस्ट के रूप में और नोटिफ़िकेशन ड्रॉपडाउन में दिखना चाहिए।",
+        "button": "टेस्ट नोटिफ़िकेशन भेजें",
+        "sending": "भेजा जा रहा है…",
+        "sent": "भेज दिया!",
+        "failed": "फेल हो गया"
+    },
+    "MessageDot": {
+        "label": "बिना पढ़े मैसेज"
+    },
+    "NavAlertDot": {
+        "label": "मेनू में कुछ नया है"
+    },
+    "Message": {
+        "encrypted": "एन्क्रिप्टेड मैसेज",
+        "decryptionFailed": "यह मैसेज ऐसी कुंजियों से एन्क्रिप्ट किया गया था जो अब मौजूद नहीं हैं।"
+    },
+    "MessageComposer": {
+        "bodyLabel": "मैसेज",
+        "bodyPlaceholder": "एक मैसेज लिखें",
+        "send": "भेजें"
+    },
+    "MessageList": {
+        "emptyNotice": "अभी तक कोई मैसेज नहीं।"
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "यह कोड एक-दूसरे को किसी और तरीके से बताएं - ज़ुबानी, आमने-सामने, कॉल पर। अगर यह दोनों तरफ़ मेल खाता है, तो आपके बीच कोई नहीं है।",
+        "changed": "आपके आखिरी बार जांचने के बाद से यह कोड बदल गया है। ऐसा तब होता है जब आप में से कोई एक अपनी एन्क्रिप्शन कुंजियां रीसेट करता है - लेकिन यह वैसा ही दिखेगा जैसा इस बातचीत को पढ़ रहा कोई व्यक्ति दिखेगा। भरोसा करने से पहले उनके साथ नया कोड जांच लें।",
+        "verified": "आपने यह कोड जांच लिया है।"
+    },
+    "MessageKeyVerifyButton": {
+        "label": "सत्यापित के रूप में चिह्नित करें"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "पासफ़्रेज़",
+        "passphrasePlaceholder": "इस बातचीत को अनलॉक करने के लिए पासफ़्रेज़",
+        "submit": "अनलॉक करें"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "अंतिम मैसेज: ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "संवेदनशील मीडिया"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "डिफ़ॉल्ट रूप से संवेदनशील मीडिया दिखाएं"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "पोस्ट",
+            "message": "मैसेज",
+            "user": "उपयोगकर्ता"
+        },
+        "summary": {
+            "before": "{type} #{id} की रिपोर्ट ",
+            "after": " ने की"
+        },
+        "reasonLine": "कारण: {reason}",
+        "banReporterLabel": "रिपोर्ट करने वाले को बैन करें",
+        "banReportedUserLabel": "रिपोर्ट किए गए उपयोगकर्ता को बैन करें",
+        "deleteLabel": "{type} हटाएं",
+        "reportedImageAlt": "रिपोर्ट की गई इमेज",
+        "attachmentUnavailable": "रिपोर्ट किया गया अटैचमेंट अब उपलब्ध नहीं है।",
+        "viewAttachment": "रिपोर्ट किया गया अटैचमेंट देखें",
+        "missing": {
+            "noSnapshot": "रिपोर्ट की गई सामग्री अब उपलब्ध नहीं है।",
+            "unknownType": "अज्ञात कंटेंट प्रकार।"
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "कोई रिपोर्ट नहीं।"
+    },
+    "ModQueueLinks": {
+        "intro": "क्यू इतनी लंबी हैं कि एक बार में एक पेज पढ़ा जा सके, इसलिए इनके अपने पेज हैं।",
+        "reportsLabel": "रिपोर्ट",
+        "bannedUsersLabel": "बैन किए गए उपयोगकर्ता"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "किसी मॉडरेटर ने अभी तक कुछ नहीं किया।"
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "कोई बैन की गई ट्रेंडिंग एंटिटी नहीं।"
+    },
+    "BlockedServerList": {
+        "emptyNotice": "कोई ब्लॉक किया गया सर्वर नहीं।"
+    },
+    "RelayCard": {
+        "accepted": "सब्सक्राइब किया: ",
+        "waiting": "रिले के स्वीकार करने का इंतज़ार है - सब्सक्राइब किया: "
+    },
+    "RelayList": {
+        "emptyNotice": "किसी रिले को सब्सक्राइब नहीं किया गया है। सदस्य जो फ़ॉलो करते हैं उसके अलावा यहां कुछ नहीं आता।"
+    },
+    "RelayFeedList": {
+        "emptyNotice": "अभी तक किसी रिले से कुछ नहीं आया है। जैसे-जैसे दूसरी तरफ़ के सर्वर पोस्ट प्रकाशित करते हैं, पोस्ट यहां दिखने लगती हैं।"
+    },
+    "RelaySubscribeForm": {
+        "legend": "किसी रिले को सब्सक्राइब करें",
+        "explainerOne": "रिले एक साझा फ़ायरहोज़ है: हर सब्सक्राइब किए गए दूसरे सर्वर की हर पब्लिक पोस्ट यहां आती है, और इस सर्वर की पोस्ट उन सबके पास जाती हैं। यह किसी नए इंस्टेंस के लिए किसी को भी खोज पाने का तरीका है, क्योंकि इसके बिना फ़ेडरेशन सिर्फ़ वही ले जाता है जिसे यहां कोई पहले से फ़ॉलो करता हो।",
+        "explainerTwo": "लोड आपके अंदाज़े की बात नहीं है - यह वही है जो वे सर्वर पब्लिश करते हैं, कभी एक हफ़्ता शांत तो अगले हफ़्ते हज़ारों पोस्ट प्रति घंटा, और इसे आपका स्टोरेज, डिलिवरी क्यू और मॉडरेशन क्यू, सब उठाते हैं। रिले से आई पोस्ट मुख्य और फ़्रेंड्स फ़ीड से बाहर रहती हैं; वे रिले फ़ीड में जाती हैं, जिसे लोग जान-बूझकर खोलते हैं।",
+        "addressLabel": "रिले पता",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "सब्सक्राइब करें"
+    },
+    "RelayFollowObjectField": {
+        "label": "सब्सक्रिप्शन स्टाइल",
+        "options": {
+            "public": "पब्लिक स्ट्रीम फ़ॉलो करें (ज़्यादातर रिले जो चाहते हैं)",
+            "actor": "रिले के अपने एक्टर को फ़ॉलो करें"
+        },
+        "retryNotice": "अगर रिले कभी स्वीकार नहीं करता, तो वापस लें और दूसरी स्टाइल आज़माएं - कुछ रिले सॉफ़्टवेयर सिर्फ़ इनमें से एक को पहचानता है।"
+    },
+    "SiteCounters": {
+        "members": "सदस्य: {count} (पिछले {days} दिनों में {joined} शामिल हुए)",
+        "activeMembers": "पिछले {days} दिनों में यहां मौजूद सदस्य: {count} ({posted} ने पोस्ट किया)",
+        "posts": "यहां लिखी गई पोस्ट: {count} (पिछले {days} दिनों में {recent})",
+        "deliveries": "पिछले {days} दिनों में फ़ेडरेटेड डिलिवरी: {delivered} पहुंचीं, {undeliverable} पर कम से कम एक बार कोशिश करने के बाद छोड़ दिया गया",
+        "queued": "बाहर जाने का इंतज़ार: {count} ({failing} पहले ही कम से कम एक बार अस्वीकृत)",
+        "pendingReads": "दूसरे सर्वर से पढ़ी जाने का इंतज़ार कर रही पोस्ट: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "साइट का टेस्ट सुइट चलाएं और नतीजे देखें। इसमें कुछ सेकंड लगते हैं, इसलिए यह अपने ही पेज पर खुलता है।",
+        "runLabel": "टेस्ट चलाएं"
+    },
+    "HelpArticle": {
+        "backLabel": "सभी सहायता पर वापस जाएं"
+    },
+    "UserSearchList": {
+        "noSuggestions": "अभी कोई सुझाव नहीं - सुझाव उन लोगों के मित्रों से आते हैं जिनसे आप पहले से मित्र हैं। किसी को नाम से खोजने के लिए ऊपर खोजें।",
+        "noMatches": "यहां कोई इससे मेल नहीं खाता।"
+    },
+    "UserModButton": {
+        "make": "मॉड बनाएं",
+        "remove": "मॉड हटाएं"
+    },
+    "UserUnbanButton": {
+        "name": "अनबैन करें"
+    },
+    "TrendingEntityBanButton": {
+        "name": "बैन करें"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "अनबैन करें"
+    },
+    "ReportDismissButton": {
+        "name": "खारिज करें"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "संवेदनशील चिह्नित करें"
+    },
+    "ServerUnblockButton": {
+        "name": "अनब्लॉक करें"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "अनसब्सक्राइब करें"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "निरस्त करें"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: पास",
+        "failing": "{suite}: फेल"
+    },
+    "PageTitle": {
+        "about": "परिचय",
+        "adminBanned": "बैन किए गए उपयोगकर्ता",
+        "adminModSettings": "मॉड सेटिंग्स",
+        "adminReports": "रिपोर्ट",
+        "adminSettings": "एडमिन सेटिंग्स",
+        "adminTests": "टेस्ट",
+        "authGoogleCallbackAccountDeleted": "खाता हटाया गया",
+        "authGoogleCallbackDeleteAccount": "खाता हटाएं",
+        "authGoogleCallbackLogin": "लॉग इन",
+        "bookmarks": "बुकमार्क",
+        "checkInbox": "अपना इनबॉक्स देखें",
+        "drafts": "ड्राफ़्ट और शेड्यूल्ड",
+        "draftsEditDraft": "ड्राफ़्ट संपादित करें",
+        "draftsEditScheduled": "शेड्यूल्ड पोस्ट संपादित करें",
+        "forgotPassword": "पासवर्ड भूल गए",
+        "friendsFeed": "फ़्रेंड्स फ़ीड",
+        "help": "सहायता",
+        "helpDescription": "साइट इस्तेमाल करने के लिए गाइड और जवाब।",
+        "locations": "स्थान",
+        "locationsDescription": "आपके सबसे नज़दीक की जगहों से पोस्ट।",
+        "locationsPlaceDescription": "{place} के पास से पोस्ट।",
+        "login": "लॉग इन",
+        "loginVerificationCode": "सत्यापन कोड",
+        "map": "मानचित्र",
+        "mapDescription": "दुनिया भर की पोस्ट का एक मानचित्र - अपने आस-पास के लोग और चीज़ें खोजें।",
+        "messages": "मैसेज",
+        "messagesWithUser": "{name} के साथ मैसेज",
+        "notifications": "नोटिफ़िकेशन",
+        "privacy": "गोपनीयता नीति",
+        "quote": "कोट",
+        "relayFeed": "रिले फ़ीड",
+        "relayFeedDescription": "इस सर्वर द्वारा सब्सक्राइब किए गए रिले से आने वाली पब्लिक पोस्ट।",
+        "resetPassword": "पासवर्ड रीसेट करें",
+        "revertEmail": "ईमेल बदलाव वापस लें",
+        "search": "खोजें",
+        "signup": "साइन अप",
+        "tags": "टैग",
+        "tagsDescription": "{siteTitle} पर ट्रेंडिंग और लोकप्रिय हैशटैग ब्राउज़ करें।",
+        "tagsTagDescription": "{siteTitle} पर {tag} टैग की गई पोस्ट।",
+        "terms": "सेवा की शर्तें",
+        "topics": "विषय",
+        "topicsDescription": "{siteTitle} पर अभी लोग किस बारे में बात कर रहे हैं।",
+        "topicsEntityDescription": "{typeLabel} - {siteTitle} पर {entityTitle} का ज़िक्र करने वाली पोस्ट।",
+        "topicsTypeDescription": "{siteTitle} पर अभी लोग जिन {typePlural} की बात कर रहे हैं।",
+        "unsubscribe": "ईमेल डाइजेस्ट",
+        "userFriends": "{name} के मित्र",
+        "userFriendsDescription": "{siteTitle} पर {name} के मित्र",
+        "userSettings": "यूज़र सेटिंग्स",
+        "users": "उपयोगकर्ता",
+        "verifyEmail": "ईमेल सत्यापित करें"
+    },
+    "PostLikeButton": {
+        "like": "लाइक",
+        "unlike": "अनलाइक"
+    },
+    "PostPinButton": {
+        "pin": "पिन करें",
+        "unpin": "अनपिन करें"
+    },
+    "PostQuoteButton": {
+        "name": "कोट"
+    },
+    "PostDeleteButton": {
+        "name": "हटाएं"
+    },
+    "PostEditButton": {
+        "name": "संपादित करें"
+    },
+    "ReportButton": {
+        "name": "रिपोर्ट करें"
+    },
+    "PostActionBar": {
+        "reply": "जवाब",
+        "replies": {
+            "one": "जवाब ({count})",
+            "other": "जवाब ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(संपादित)"
+    },
+    "RepliesHeading": {
+        "heading": "जवाब"
+    },
+    "PollVoteButton": {
+        "name": "वोट करें"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "",
+            "link": "अधिक स्थान",
+            "after": " देखें"
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "आपके आस-पास की पोस्ट",
+        "description": "यह उस बिंदु के सबसे नज़दीक की पोस्ट दिखाता है - जहां भी गतिविधि हो, चाहे वह कितनी भी दूर क्यों न हो। अपनी जगह से शुरू करने के लिए अपना स्थान शेयर करें, या इसके बजाय मानचित्र पर कोई जगह चुनें।",
+        "useMyLocation": "मेरा स्थान इस्तेमाल करें",
+        "pickOnMap": "मानचित्र पर चुनें",
+        "searchPlaceholder": "या किसी जगह का नाम टाइप करें…",
+        "searchLabel": "किसी जगह के लिए खोजें",
+        "locating": "स्थान खोजा जा रहा है…",
+        "noGeolocation": "आपका ब्राउज़र स्थान शेयर नहीं कर सकता।",
+        "locationError": "आपका स्थान नहीं मिल सका। अपने ब्राउज़र की लोकेशन अनुमति जांचें।"
+    },
+    "PollDeadline": {
+        "final": "अंतिम परिणाम",
+        "closes": {
+            "before": "",
+            "after": " बंद होगा"
+        },
+        "days": {
+            "one": "{count} दिन में",
+            "other": "{count} दिनों में"
+        },
+        "hours": {
+            "one": "{count} घंटे में",
+            "other": "{count} घंटों में"
+        },
+        "minutes": {
+            "one": "{count} मिनट में",
+            "other": "{count} मिनटों में"
+        },
+        "underMinute": "एक मिनट से भी कम में"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "{count} व्यक्ति ने वोट किया ",
+            "other": "{count} लोगों ने वोट किया "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "पोस्ट करने के लिए ",
+            "link": "लॉग इन करें",
+            "after": "।"
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "जवाब देने के लिए ",
+            "link": "लॉग इन करें",
+            "after": "।"
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " ने रीपोस्ट किया"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "",
+            "after": " के जवाब में"
+        },
+        "untitled": "इस पोस्ट",
+        "jumpToStart": "शुरुआत पर जाएं"
+    },
+    "TopicSummaryCard": {
+        "label": "AI-जनरेटेड सारांश"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "",
+            "after": " में आपका स्वागत है"
+        },
+        "paragraphs": [
+            "नीचे दिए गए बॉक्स में कुछ लिखें और यह आपकी फ़ीड में चला जाता है। कोई भी जवाब दे सकता है, और जवाब बस एक पैरेंट वाली पोस्ट है, इसलिए बातचीत जितनी गहरी होनी चाहिए उतनी गहरी होती जाती है।",
+            "लोगों को मित्र के रूप में जोड़ें और उनकी पोस्ट आपकी फ़ीड में शामिल हो जाएंगी। ग्लोबल फ़ीड - ऊपर बाईं ओर साइट का नाम - यहां लिखी गई हर चीज़ दिखाती है, जो किसी को जोड़ने के लिए ढूंढने की जगह है।",
+            "यह साइट फ़ेडिवर्स का हिस्सा है: आप Mastodon और दूसरे सर्वर पर मौजूद खातों को उनके पूरे हैंडल से फ़ॉलो कर सकते हैं, और आप जो पोस्ट करते हैं वह वहां आपको फ़ॉलो करने वाले लोगों तक पहुंचता है। @someone@example.social जैसा कोई हैंडल खोजें और यह सर्वर जाकर उन्हें ढूंढ लेगा।",
+            "किसी पोस्ट को #हैशटैग से टैग करें और यह उस टैग के पेज पर दिखने लगती है, और अगर काफ़ी लोग उसके बारे में लिख रहे हों तो ट्रेंडिंग में भी।",
+            "सदस्यों के बीच मैसेज एंड-टू-एंड एन्क्रिप्टेड होते हैं - सर्वर सिर्फ़ सिफ़र-टेक्स्ट स्टोर करता है जिसे वह पढ़ नहीं सकता। इसे सेटिंग्स में चालू करें।",
+            "आपको तुरंत पोस्ट करने की ज़रूरत नहीं है: एक ड्राफ़्ट सेव करें, या कोई समय सेट करें और यह अपने आप प्रकाशित हो जाएगी। दोनों ड्राफ़्ट और शेड्यूल्ड के तहत मिलते हैं।"
+        ],
+        "more": {
+            "before": "",
+            "link": "सहायता पन्नों",
+            "after": " में और भी जानकारी है, जिसमें यह भी शामिल है कि खाता कहीं और से यहां कैसे लाया जाता है।"
+        },
+        "dontShowAgain": "यह दोबारा न दिखाएं"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "इमोजी डालें"
+    },
+    "LinkImagePreview": {
+        "alt": "लिंक प्रीव्यू इमेज"
+    },
+    "LinkImageRemoveButton": {
+        "label": "इमेज हटाएं"
+    },
+    "LinkItem": {
+        "alt": "लिंक प्रीव्यू इमेज"
+    },
+    "MapScrubber": {
+        "play": "चलाएं",
+        "pause": "रोकें",
+        "cumulativeMode": "अब तक",
+        "windowMode": "सिर्फ़ तब",
+        "rangeLabel": "किसी तारीख तक की पोस्ट दिखाएं",
+        "cumulativeLabel": {
+            "one": "{date} तक पोस्ट किया गया — {count} पोस्ट",
+            "other": "{date} तक पोस्ट किया गया — {count} पोस्ट"
+        },
+        "windowLabel": {
+            "one": "{date} के आसपास पोस्ट किया गया — {count} पोस्ट",
+            "other": "{date} के आसपास पोस्ट किया गया — {count} पोस्ट"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} की पोस्ट",
+        "pageTitleUntitled": "पोस्ट",
+        "imageAltByAuthor": "{name} द्वारा पोस्ट की गई फ़ोटो",
+        "imageAltUntitled": "फ़ोटो"
+    },
+    "PostBookmarkButton": {
+        "remove": "बुकमार्क हटाएं",
+        "add": "बुकमार्क करें"
+    },
+    "PostRepostButton": {
+        "undo": "रीपोस्ट पूर्ववत करें",
+        "repost": "रीपोस्ट"
+    },
+    "QuotedPost": {
+        "viewLink": "कोट की गई पोस्ट देखें"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "लंबित अनुरोध"
+    },
+    "ScrollToTopButton": {
+        "label": "ऊपर जाएं"
+    },
+    "SearchClearButton": {
+        "label": "खोज साफ़ करें"
+    },
+    "SitePolicyLinks": {
+        "terms": "सेवा की शर्तें",
+        "privacy": "गोपनीयता नीति"
+    },
+    "SkipLink": {
+        "label": "मुख्य कंटेंट पर जाएं"
+    },
+    "TopicHeading": {
+        "searchLink": "इसके लिए खोजें",
+        "noPosts": "अभी कोई पोस्ट इसका ज़िक्र नहीं करती।"
+    },
+    "PopularEntityList": {
+        "emptyNotice": "इस तरह की अभी तक कोई चीज़ नहीं लिखी गई।"
+    },
+    "TrendingEntitySection": {
+        "heading": "ट्रेंडिंग"
+    },
+    "PostLocationLink": {
+        "title": "इस जगह को मानचित्र पर दिखाएं",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "अभी-अभी",
+        "minutes": {
+            "one": "{count} मिनट पहले",
+            "other": "{count} मिनट पहले"
+        },
+        "hours": {
+            "one": "{count} घंटा पहले",
+            "other": "{count} घंटे पहले"
+        },
+        "days": {
+            "one": "{count} दिन पहले",
+            "other": "{count} दिन पहले"
+        }
+    },
+    "ThemeSelector": {
+        "label": "थीम",
+        "themes": {
+            "system": "सिस्टम जैसा",
+            "light": "सादा लाइट",
+            "dark": "सादा डार्क",
+            "sepia": "सीपिया",
+            "midnight": "मध्यरात्रि",
+            "sunset": "सूर्यास्त",
+            "rose": "गुलाबी",
+            "forest": "वन",
+            "ocean": "सागर",
+            "lavender": "लैवेंडर",
+            "gold": "सुनहरा",
+            "hacker": "हैकर",
+            "ironbow": "ironbow",
+            "viridis": "viridis",
+            "mako": "mako",
+            "cividis": "cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "cubehelix",
+            "greyscale": "ग्रेस्केल"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "इस सर्वर पर अनुवाद सेट नहीं है।",
+        "nothing": "यहां अनुवाद करने के लिए कुछ नहीं है।",
+        "unknownSource": "अभी तक किसी ने पता नहीं लगाया कि यह पोस्ट किस भाषा में है, इसलिए इसका अनुवाद नहीं किया जा सकता।",
+        "alreadyReadable": "यह पोस्ट पहले से उसी भाषा में है।",
+        "unsupportedPair": "यह सर्वर अभी तक उस भाषा का अनुवाद नहीं कर सकता।"
+    },
+    "LanguagePrompt": {
+        "question": "क्या आप साइट को हिन्दी में देखना चाहेंगे?",
+        "accept": "हाँ",
+        "decline": "नहीं धन्यवाद"
+    },
+    "LanguageSelector": {
+        "label": "भाषा",
+        "legend": "भाषा"
+    },
+    "EmailDigest": {
+        "subject": "{site} पर आपने क्या मिस किया",
+        "greeting": "नमस्ते {name},",
+        "whileAway": "जब आप दूर थे:",
+        "repeatedTimes": {
+            "one": " ({count} बार)",
+            "other": " ({count} बार)"
+        },
+        "moreMissed": {
+            "one": "और {count} अधिक नोटिफ़िकेशन",
+            "other": "और {count} अधिक नोटिफ़िकेशन"
+        },
+        "messagesWaiting": {
+            "one": "आपका एक मैसेज इंतज़ार में है",
+            "other": "आपके {count} मैसेज इंतज़ार में हैं"
+        },
+        "postsInFeed": {
+            "one": "आपकी फ़ीड में एक नई पोस्ट",
+            "other": "आपकी फ़ीड में {count} नई पोस्ट"
+        },
+        "unsubscribeInstructions": "ये ईमेल बंद करने के लिए, यह लिंक खोलें - इसमें बस एक क्लिक लगता है और किसी पासवर्ड की ज़रूरत नहीं:",
+        "comeSeeWhatIsNew": "आकर देखें क्या नया है",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "मुझे ये भेजना बंद करें",
+            "after": " - बस एक क्लिक, कोई पासवर्ड नहीं चाहिए।"
+        }
+    },
+    "EmailVerification": {
+        "subject": "अपना ईमेल पता सत्यापित करें",
+        "greeting": "नमस्ते {name},",
+        "instructions": "कृपया इस लिंक पर जाकर अपना ईमेल पता सत्यापित करें:",
+        "htmlInstructions": "कृपया नीचे दिए गए लिंक पर क्लिक करके अपना ईमेल पता सत्यापित करें:",
+        "buttonLabel": "ईमेल पता सत्यापित करें",
+        "expiresIn": {
+            "one": "यह लिंक {count} घंटे में खत्म हो जाएगा।",
+            "other": "यह लिंक {count} घंटों में खत्म हो जाएगा।"
+        }
+    },
+    "PasswordReset": {
+        "subject": "अपना पासवर्ड रीसेट करें",
+        "greeting": "नमस्ते {name},",
+        "instructions": "किसी ने (उम्मीद है आपने) पासवर्ड रीसेट का अनुरोध किया। नया पासवर्ड चुनने के लिए इस लिंक पर जाएं:",
+        "htmlInstructions": "किसी ने (उम्मीद है आपने) पासवर्ड रीसेट का अनुरोध किया। नया पासवर्ड चुनने के लिए नीचे दिए गए लिंक पर क्लिक करें:",
+        "buttonLabel": "पासवर्ड रीसेट करें",
+        "expiresIn": {
+            "one": "यह लिंक {count} घंटे में खत्म हो जाएगा।",
+            "other": "यह लिंक {count} घंटों में खत्म हो जाएगा।"
+        },
+        "ignoreNotice": "अगर आपने यह अनुरोध नहीं किया, तो आप इस ईमेल को नज़रअंदाज़ कर सकते हैं।"
+    }
+}

@@ -360,6 +360,43 @@
         "deletedAccount": "एक हटाया गया खाता",
         "reason": " - {reason}"
     },
+    "DateFormat": {
+        "months": {
+            "1": "जनवरी",
+            "2": "फ़रवरी",
+            "3": "मार्च",
+            "4": "अप्रैल",
+            "5": "मई",
+            "6": "जून",
+            "7": "जुलाई",
+            "8": "अगस्त",
+            "9": "सितंबर",
+            "10": "अक्टूबर",
+            "11": "नवंबर",
+            "12": "दिसंबर"
+        },
+        "shortMonths": {
+            "1": "जन॰",
+            "2": "फ़र॰",
+            "3": "मार्च",
+            "4": "अप्रैल",
+            "5": "मई",
+            "6": "जून",
+            "7": "जुल॰",
+            "8": "अग॰",
+            "9": "सित॰",
+            "10": "अक्टू॰",
+            "11": "नव॰",
+            "12": "दिस॰"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute} {meridiem}",
+        "dateAndTime": "{date} को {time} बजे",
+        "am": "am",
+        "pm": "pm",
+        "clock": 12
+    },
     "EnvironmentChecker": {
         "wsCannotConnect": "127.0.0.1:{port}{tls} पर WebSocket सर्वर से कनेक्ट नहीं हो सका ({error})। पहले इसे शुरू करें: systemctl --user start glommer-websocket (यूनिट फ़ाइल के लिए README.md देखें)। अगर इसे अभी-अभी WS_TLS_CERT/WS_TLS_KEY मिला है या हटा है, तो इसे .env से मिलाने के लिए रीस्टार्ट करें।",
         "wsOverTLS": " TLS पर",

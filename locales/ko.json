@@ -359,6 +359,43 @@
         "deletedAccount": "삭제된 계정",
         "reason": " - {reason}"
     },
+    "DateFormat": {
+        "months": {
+            "1": "1월",
+            "2": "2월",
+            "3": "3월",
+            "4": "4월",
+            "5": "5월",
+            "6": "6월",
+            "7": "7월",
+            "8": "8월",
+            "9": "9월",
+            "10": "10월",
+            "11": "11월",
+            "12": "12월"
+        },
+        "shortMonths": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "10": "10",
+            "11": "11",
+            "12": "12"
+        },
+        "long": "{year}년 {month} {day}일",
+        "short": "{year}. {month}. {day}.",
+        "time": "{meridiem} {hour}:{minute}",
+        "dateAndTime": "{date} {time}",
+        "am": "오전",
+        "pm": "오후",
+        "clock": 12
+    },
     "EnvironmentChecker": {
         "wsCannotConnect": "127.0.0.1:{port}{tls}의 웹소켓 서버에 연결할 수 없습니다 ({error}). 먼저 시작하세요: systemctl --user start glommer-websocket (유닛 파일은 README.md 참고). WS_TLS_CERT/WS_TLS_KEY가 새로 생기거나 없어졌다면, .env와 맞도록 재시작하세요.",
         "wsOverTLS": " (TLS)",

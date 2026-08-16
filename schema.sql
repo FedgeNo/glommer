@@ -619,6 +619,20 @@ CREATE TABLE `TwoFactorCodes` (
   CONSTRAINT `TwoFactorCodes_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Single-use 2FA recovery codes, issued in a batch when a user turns 2FA on
+-- (and on demand from settings). Each row is one unused code, stored only as
+-- a SHA-256 hash; using a code deletes its row. They exist so 2FA can fail
+-- closed: when the code email cannot be sent, a recovery code is the way in.
+CREATE TABLE `TwoFactorRecoveryCodes` (
+  `recoveryCodeId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `codeHash` varchar(64) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`recoveryCodeId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `TwoFactorRecoveryCodes_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `EmailChangeReverts` (
   `revertId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,

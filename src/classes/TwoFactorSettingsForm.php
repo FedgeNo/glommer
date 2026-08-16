@@ -38,10 +38,19 @@ class TwoFactorSettingsForm extends FormForm
         $this -> contents[] = $fields;
 
         // The button's action is fixed by the current state - the endpoint
-        // reads it from data-action so the two can't disagree.
+        // reads it from data-action (via event.submitter, since the form can
+        // carry two buttons) so the two can't disagree.
         $button = new SubmitButton((string) ($words['submit'][$state] ?? ''));
         $button -> attributes['data-action'] = $this -> enabled ? 'disable' : 'enable';
         $this -> contents[] = $button;
+
+        // While 2FA is on, the saved recovery codes can be replaced - the
+        // fresh batch invalidates every code issued before it.
+        if ($this -> enabled) {
+            $regenerate = new SubmitButton((string) ($words['regenerate'] ?? ''));
+            $regenerate -> attributes['data-action'] = 'regenerate-recovery';
+            $this -> contents[] = $regenerate;
+        }
 
         return parent::toDOM();
     }

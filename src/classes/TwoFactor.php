@@ -13,15 +13,18 @@ declare(strict_types=1);
  * brute-forced within a code's lifetime.
  *
  * Deliberately email-only (no TOTP/SMS): it reuses the verified-email
- * channel the site already has, needs no authenticator-app enrollment, and
- * degrades safely - if the site's own mailer is down, api/login.php falls
- * back to a normal login rather than locking every 2FA user out (same
- * philosophy EmailVerification already applies).
+ * channel the site already has and needs no authenticator-app enrollment.
+ * 2FA fails closed - a mail outage never downgrades a login to
+ * password-only. The escape hatch is a batch of single-use recovery codes
+ * issued when 2FA is turned on, any of which finishes a login in place of
+ * the emailed code.
  */
 class TwoFactor
 {
     private const CODE_TTL_MINUTES = 10;
     private const MAX_ATTEMPTS = 5;
+    private const RECOVERY_CODE_COUNT = 10;
+    private const RECOVERY_CODE_BYTES = 5;
 
     public static function isEnabled(User $user): bool
     {
@@ -38,10 +41,99 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'ii', $flag, $user_id);
 
-        // Turning it off leaves no reason to keep a pending code around.
+        // Turning it off leaves no reason to keep a pending code or the
+        // recovery codes around.
         if (!$enabled) {
             self::clear($user_id);
+            self::clearRecoveryCodes($user_id);
         }
+    }
+
+    /**
+     * Issues a fresh batch of single-use recovery codes for the user,
+     * replacing any unused ones, and returns them in plain text - the one and
+     * only time they exist unhashed, so the caller must show them now.
+     *
+     * @return string[]
+     */
+    public static function generateRecoveryCodes(int $user_id): array
+    {
+        self::clearRecoveryCodes($user_id);
+
+        $codes = [];
+
+        for ($i = 0; $i < self::RECOVERY_CODE_COUNT; $i++) {
+            // 40 bits of CSPRNG entropy per code, far beyond guessing within
+            // any rate limit. Hyphenated for readability; verification
+            // strips the hyphen back out.
+            $raw = bin2hex(random_bytes(self::RECOVERY_CODE_BYTES));
+            $code = substr($raw, 0, 5) . '-' . substr($raw, 5);
+            $code_hash = hash('sha256', $raw);
+
+            DB::run('
+INSERT INTO `TwoFactorRecoveryCodes` (`userId`, `codeHash`)
+    VALUES (?, ?)
+', 'is', $user_id, $code_hash);
+
+            $codes[] = $code;
+        }
+
+        return $codes;
+    }
+
+    /**
+     * Checks a submitted recovery code and consumes it (deletes the row) on a
+     * match, so each code works exactly once. Tolerant of the display
+     * formatting: hyphens, spaces, and letter case don't matter.
+     */
+    public static function verifyRecoveryCode(int $user_id, string $code): bool
+    {
+        $normalized = strtolower((string) preg_replace('/[\s-]+/', '', $code));
+
+        if ($normalized === '') {
+            return false;
+        }
+
+        $code_hash = hash('sha256', $normalized);
+
+        $stored_code = DB::row('
+SELECT `recoveryCodeId`
+    FROM `TwoFactorRecoveryCodes`
+    WHERE `userId` = ? AND `codeHash` = ?
+', 'stdClass', 'is', $user_id, $code_hash);
+
+        if ($stored_code === null) {
+            return false;
+        }
+
+        DB::run('
+DELETE
+    FROM `TwoFactorRecoveryCodes`
+    WHERE `recoveryCodeId` = ?
+', 'i', $stored_code -> recoveryCodeId);
+
+        return true;
+    }
+
+    /** How many unused recovery codes the user has left. */
+    public static function recoveryCodesRemaining(int $user_id): int
+    {
+        $row = DB::row('
+SELECT COUNT(*) AS `remaining`
+    FROM `TwoFactorRecoveryCodes`
+    WHERE `userId` = ?
+', 'stdClass', 'i', $user_id);
+
+        return (int) ($row -> remaining ?? 0);
+    }
+
+    private static function clearRecoveryCodes(int $user_id): void
+    {
+        DB::run('
+DELETE
+    FROM `TwoFactorRecoveryCodes`
+    WHERE `userId` = ?
+', 'i', $user_id);
     }
 
     /**

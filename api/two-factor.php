@@ -21,7 +21,7 @@ $payload = is_array($payload) ? $payload : [];
 $action = (string) ($payload['action'] ?? '');
 $current_password = (string) ($payload['currentPassword'] ?? '');
 
-if ($action !== 'enable' && $action !== 'disable') {
+if ($action !== 'enable' && $action !== 'disable' && $action !== 'regenerate-recovery') {
     JSONResponse::error('Invalid action', 422) -> send();
 }
 
@@ -34,16 +34,38 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
     JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
 }
 
-// Both directions require the current password - turning the protection off
-// is at least as security-sensitive as turning it on, so neither can be done
-// from a merely-open session without proving the password again.
+// Every action requires the current password - turning the protection off is
+// at least as security-sensitive as turning it on, and replacing the recovery
+// codes invalidates the ones the user has saved - so none can be done from a
+// merely-open session without proving the password again.
 if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
     JSONResponse::fieldError('currentPassword', 'That is not your current password.') -> send();
 }
 
-TwoFactor::setEnabled((int) $current_user -> userId, $action === 'enable');
+$user_id = (int) $current_user -> userId;
+
+if ($action === 'regenerate-recovery') {
+    if (!TwoFactor::isEnabled($current_user)) {
+        JSONResponse::error('Two-factor authentication is not on.', 422) -> send();
+    }
+
+    JSONResponse::success([
+        'enabled' => true,
+        'recoveryCodes' => TwoFactor::generateRecoveryCodes($user_id),
+    ]) -> send();
+}
+
+TwoFactor::setEnabled($user_id, $action === 'enable');
 Auth::clearUserCache();
 
-JSONResponse::success(['enabled' => $action === 'enable']) -> send();
+// Enabling issues the recovery-code batch in the same response - the only
+// time the codes exist in plain text, so the client shows them right away.
+$response = ['enabled' => $action === 'enable'];
+
+if ($action === 'enable') {
+    $response['recoveryCodes'] = TwoFactor::generateRecoveryCodes($user_id);
+}
+
+JSONResponse::success($response) -> send();

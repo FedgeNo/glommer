@@ -123,22 +123,23 @@ if (!GoogleAuth::isEnabled()) {
                     // password login (api/login.php) - a verified Google
                     // identity alone isn't enough to skip a second factor the
                     // user turned on. Hands off to login.php's pending-state
-                    // code-entry step, same one api/login.php starts.
+                    // code-entry step, same one api/login.php starts, and
+                    // fails closed the same way: a broken mailer means the
+                    // code step asks for a recovery code instead.
                     $code_sent = TwoFactor::sendCode($user);
+                    $email_failed = !$code_sent && !Mailer::recipientWasRejected();
 
-                    if ($code_sent || Mailer::recipientWasRejected()) {
-                        $_SESSION['pending2FAUserId'] = (int) $user -> userId;
-                        // A Google sign-in implies "keep me signed in".
-                        $_SESSION['pending2FARememberMe'] = true;
-
-                        header('Location: ' . ServerURL::absolute('/login'));
-                        exit;
+                    if ($email_failed) {
+                        Notification::warnAdminMailerFailed((int) $user -> userId);
                     }
 
-                    // Mailer itself is down - can't enforce 2FA. Let them in
-                    // and tell the admin their mail is broken, same fallback
-                    // api/login.php uses.
-                    Notification::warnAdminMailerFailed((int) $user -> userId);
+                    $_SESSION['pending2FAUserId'] = (int) $user -> userId;
+                    // A Google sign-in implies "keep me signed in".
+                    $_SESSION['pending2FARememberMe'] = true;
+                    $_SESSION['pending2FAEmailFailed'] = $email_failed;
+
+                    header('Location: ' . ServerURL::absolute('/login'));
+                    exit;
                 }
 
                 Auth::login($user);

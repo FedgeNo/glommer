@@ -45,7 +45,10 @@ if ($code === '') {
     JSONResponse::fieldError('code', 'Enter the code we emailed you.') -> send();
 }
 
-if (!TwoFactor::verifyCode($user_id, $code)) {
+// One field, either credential: the short emailed code or one of the
+// single-use recovery codes (the way in when the code email can't be sent).
+// Emailed code first - it's the common case - then recovery.
+if (!TwoFactor::verifyCode($user_id, $code) && !TwoFactor::verifyRecoveryCode($user_id, $code)) {
     RateLimiter::recordAttempt($rate_key);
 
     JSONResponse::fieldError('code', 'That code is incorrect or has expired.') -> send();
@@ -54,7 +57,7 @@ if (!TwoFactor::verifyCode($user_id, $code)) {
 $user = User::load($user_id);
 
 if ($user === null || $user -> banned) {
-    unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe']);
+    unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
 
     JSONResponse::error('This account can no longer log in.', 403) -> send();
 }
@@ -63,7 +66,7 @@ $remember_me = ($_SESSION['pending2FARememberMe'] ?? false) === true;
 
 // The pending flags must go before Auth::login() regenerates the session,
 // so a completed 2FA can never be replayed against the same pending state.
-unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe']);
+unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
 
 Auth::login($user);
 LoginFingerprint::record((int) $user -> userId);

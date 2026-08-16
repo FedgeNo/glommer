@@ -161,7 +161,8 @@
     },
     "TwoFactorForm": {
         "legend": "Enter Your Verification Code",
-        "explanation": "We emailed you a verification code. Enter it below to finish logging in.",
+        "explanation": "We emailed you a verification code. Enter it below, or use one of your recovery codes, to finish logging in.",
+        "explanationEmailFailed": "We couldn't send your verification code by email right now. Enter one of your recovery codes to finish logging in.",
         "code": "Verification Code",
         "submit": "Verify"
     },
@@ -171,13 +172,21 @@
             "off": "Two-Factor Authentication Is Off"
         },
         "explanation": {
-            "on": "When you log in, we'll email a verification code you have to enter to finish signing in.",
-            "off": "Add a second step at login: we'll email a verification code you have to enter, so your password alone isn't enough to get in."
+            "on": "When you log in, we'll email a verification code you have to enter to finish signing in. If the email can't reach you, one of your recovery codes logs you in instead.",
+            "off": "Add a second step at login: we'll email a verification code you have to enter, so your password alone isn't enough to get in. You'll get single-use recovery codes to save in case the email can't reach you."
         },
         "currentPassword": "Current Password",
         "submit": {
             "on": "Turn Off Two-Factor Authentication",
             "off": "Turn On Two-Factor Authentication"
+        },
+        "regenerate": "Generate New Recovery Codes",
+        "recoveryHeading": "Your Recovery Codes",
+        "recoveryNote": "Save these somewhere safe now — they won't be shown again. Each one logs you in once when the verification email can't reach you, and generating new codes replaces all of these.",
+        "toast": {
+            "on": "Two-factor authentication is now on.",
+            "off": "Two-factor authentication is now off.",
+            "regenerated": "New recovery codes generated. Your old ones no longer work."
         }
     },
     "VerificationNotice": {

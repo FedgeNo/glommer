@@ -115,23 +115,23 @@ $remember_me = ($payload['rememberMe'] ?? false) === true;
 // Opt-in email 2FA: the password was right, but don't log in yet - email a
 // code and hand off to api/verify-2fa.php, carrying who's mid-login (and
 // whether they asked to be remembered) in the session, NOT a logged-in
-// state. The one exception is a broken site mailer: if the code can't be
-// sent because mail delivery itself is down (not this user's address being
-// rejected), fall through to a normal login rather than locking every 2FA
-// user out of their own account - same fallback EmailVerification uses.
+// state. Fails closed: a broken site mailer never downgrades the login to
+// password-only - the code step still happens, told to use one of the
+// recovery codes issued when 2FA was turned on, and the admin is warned
+// their mail is broken (throttled inside the notification).
 if (TwoFactor::isEnabled($user)) {
     $code_sent = TwoFactor::sendCode($user);
+    $email_failed = !$code_sent && !Mailer::recipientWasRejected();
 
-    if ($code_sent || Mailer::recipientWasRejected()) {
-        $_SESSION['pending2FAUserId'] = (int) $user -> userId;
-        $_SESSION['pending2FARememberMe'] = $remember_me;
-
-        JSONResponse::success(['twoFactorRequired' => true]) -> send();
+    if ($email_failed) {
+        Notification::warnAdminMailerFailed((int) $user -> userId);
     }
 
-    // Mailer itself is down - can't enforce 2FA. Let them in and tell the
-    // admin their mail is broken (throttled inside the notification).
-    Notification::warnAdminMailerFailed((int) $user -> userId);
+    $_SESSION['pending2FAUserId'] = (int) $user -> userId;
+    $_SESSION['pending2FARememberMe'] = $remember_me;
+    $_SESSION['pending2FAEmailFailed'] = $email_failed;
+
+    JSONResponse::success(['twoFactorRequired' => true]) -> send();
 }
 
 Auth::login($user);

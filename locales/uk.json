@@ -1,0 +1,1070 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count} голос",
+            "few": "{count} голоси",
+            "many": "{count} голосів",
+            "other": "{count} голосів"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Увійдіть",
+            "after": ", щоб відповісти."
+        },
+        "post": {
+            "before": "",
+            "link": "Увійдіть",
+            "after": ", щоб опублікувати."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Сайт",
+        "siteURLLabel": "URL сайту",
+        "siteTitleLabel": "Назва сайту",
+        "mailFromAddressLabel": "Адреса відправника",
+        "serverNameConfirmedLabel": "Я налаштував «ServerName {host}» і «UseCanonicalName On» у конфігурації свого вебсервера (перевіряється лише тоді, коли автоматична перевірка наживо не може завершитися — див. розділ HTTPS у README.md)",
+        "databaseLegend": "База даних",
+        "databaseHostLabel": "Хост бази даних",
+        "databasePortLabel": "Порт бази даних",
+        "databaseNameLabel": "Назва бази даних",
+        "databaseAdminUsernameLabel": "Ім'я адміністратора бази даних",
+        "databaseAdminPasswordLabel": "Пароль адміністратора бази даних",
+        "webSocketTLSLegend": "TLS для WebSocket (необов'язково)",
+        "certificatePathLabel": "Шлях до сертифіката",
+        "certificatePathPlaceholder": "Залиште порожнім — сертифікат створить mkcert",
+        "keyPathLabel": "Шлях до ключа",
+        "keyPathPlaceholder": "Залиште порожнім — ключ створить mkcert",
+        "botProtectionLegend": "Захист від ботів (необов'язково)",
+        "turnstileSiteKeyLabel": "Ключ сайту Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Залиште порожнім, щоб пропустити",
+        "turnstileSecretKeyLabel": "Секретний ключ Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Залиште порожнім, щоб пропустити",
+        "submit": "Налаштувати"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Поточна парольна фраза",
+        "newPassphraseLabel": "Нова парольна фраза",
+        "confirmNewPassphraseLabel": "Підтвердьте нову парольну фразу",
+        "accountPasswordLabel": "Пароль облікового запису",
+        "submit": "Змінити парольну фразу"
+    },
+    "PasswordResetForm": {
+        "legend": "Оберіть новий пароль",
+        "newPasswordLabel": "Новий пароль",
+        "newPasswordPlaceholder": "Щонайменше 8 символів",
+        "confirmPasswordLabel": "Підтвердьте новий пароль",
+        "submit": "Скинути пароль"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Скидання пароля",
+        "emailLabel": "Пошта",
+        "submit": "Надіслати посилання для скидання"
+    },
+    "EmailRevertForm": {
+        "submit": "Скасувати зміну пошти"
+    },
+    "EmailVerifyForm": {
+        "submit": "Підтвердити адресу пошти"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Увімкнути знову"
+    },
+    "EmailDigestSetting": {
+        "label": "Надсилати мені на пошту, що я пропустив, якщо мене довго не було"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Невідомий пристрій",
+        "browserOnOS": "{browser} на {os}",
+        "thisDevice": " (цей пристрій)",
+        "lastUsed": {
+            "before": "Останнє використання ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Завершує всі активні сесії та забуває всі запам'ятовані пристрої. Ви вийдете з усіх браузерів, включно з цим."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Вийти всюди"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Підтвердити через Google і видалити"
+    },
+    "GoogleSignInButton": {
+        "label": "Продовжити з Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Редагувати профіль"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Отримуйте сповіщення на цьому пристрої, навіть коли сайт не відкритий. Налаштування діє для кожного браузера окремо — увімкніть його всюди, де хочете отримувати сповіщення.",
+        "label": {
+            "off": "Увімкнути на цьому пристрої",
+            "on": "Вимкнути на цьому пристрої"
+        },
+        "unsupported": "Цей браузер не підтримує push-сповіщення"
+    },
+    "LoginForm": {
+        "legend": "Вхід",
+        "identifier": "Ім'я користувача або пошта",
+        "password": "Пароль",
+        "rememberMe": "Запам'ятати мене",
+        "submit": "Увійти"
+    },
+    "SignupForm": {
+        "legend": "Створення облікового запису",
+        "usernameLabel": "Ім'я користувача",
+        "usernamePlaceholder": "Малі літери, цифри та _",
+        "emailLabel": "Пошта",
+        "emailPlaceholder": "Дійсна адреса пошти",
+        "displayName": "Відображуване ім'я (необов'язково)",
+        "bioLabel": "Про себе (необов'язково)",
+        "bioPlaceholder": "Кілька слів про себе — #хештеги, @згадки та посилання стануть клікабельними",
+        "passwordLabel": "Пароль",
+        "passwordPlaceholder": "Пароль: щонайменше 8 символів",
+        "rememberMe": "Запам'ятати мене",
+        "submit": "Зареєструватися"
+    },
+    "PasswordChangeForm": {
+        "legend": "Зміна пароля",
+        "currentPassword": "Поточний пароль",
+        "newPasswordLabel": "Новий пароль",
+        "newPasswordPlaceholder": "Щонайменше 8 символів",
+        "confirmPassword": "Підтвердьте новий пароль",
+        "submit": "Змінити пароль"
+    },
+    "EmailChangeForm": {
+        "legend": "Зміна адреси пошти",
+        "newEmail": "Нова адреса пошти",
+        "currentPassword": "Поточний пароль",
+        "notice": "Перш ніж користуватися сайтом далі, нову адресу треба буде підтвердити.",
+        "submit": "Змінити пошту"
+    },
+    "AccountDeleteForm": {
+        "legend": "Видалення облікового запису",
+        "warning": "Обліковий запис, дописи й повідомлення буде видалено назавжди. Це неможливо скасувати.",
+        "currentPassword": "Поточний пароль",
+        "submit": "Видалити обліковий запис"
+    },
+    "AccountMigrationForm": {
+        "legend": "Переїзд на інший сервер",
+        "movedNotice": "Цей обліковий запис переїхав на {destination}. Вашим підписникам запропоновано підписатися на вас там.",
+        "explanation": "Вашим підписникам пропонується підписатися на новий обліковий запис. Дописи залишаються тут: адреси об'єктів належать серверу, який їх створив, тож забрати їх із собою не можна.",
+        "addressNotice": "Обліковий запис, на який ви переїжджаєте, має спершу вказати цей у списку «також відомий як». Ваша адреса тут — {address}.",
+        "movedToLabel": "Переїхати на",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Також відомий як",
+        "aliasesExplanation": "Ваші облікові записи на інших серверах. Запис тут дозволяє тому обліковому запису переїхати на цей — це дозвіл, а не сам переїзд. Одна адреса на рядок.",
+        "aliasesLabel": "Ваші інші облікові записи",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Зберегти"
+    },
+    "TwoFactorForm": {
+        "legend": "Введіть код підтвердження",
+        "explanation": "Ми надіслали код підтвердження на вашу пошту. Введіть його нижче, щоб завершити вхід.",
+        "code": "Код підтвердження",
+        "submit": "Підтвердити"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Двофакторну автентифікацію ввімкнено",
+            "off": "Двофакторну автентифікацію вимкнено"
+        },
+        "explanation": {
+            "on": "Під час входу ми надсилаємо на пошту код підтвердження, без якого увійти не можна.",
+            "off": "Додайте другий крок при вході: ми надсилатимемо на пошту код підтвердження, тож самого пароля буде недостатньо."
+        },
+        "currentPassword": "Поточний пароль",
+        "submit": {
+            "on": "Вимкнути двофакторну автентифікацію",
+            "off": "Увімкнути двофакторну автентифікацію"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Перевірте вхідні й перейдіть за надісланим посиланням, щоб підтвердити адресу пошти. Якщо листа не видно, загляньте в спам."
+    },
+    "VerificationResendButton": {
+        "label": "Надіслати лист ще раз"
+    },
+    "MailSettingsForm": {
+        "legend": "Вихідна пошта",
+        "fromAddressLabel": "Адреса відправника",
+        "fromAddressPlaceholder": "Поки адресу не задано, пошта не надсилається",
+        "fromNameLabel": "Ім'я відправника",
+        "hostLabel": "Хост SMTP",
+        "portLabel": "Порт SMTP",
+        "usernameLabel": "Ім'я користувача SMTP",
+        "passwordLabel": "Пароль SMTP",
+        "passwordPlaceholder": {
+            "set": "Пароль задано — залиште порожнім, щоб не міняти",
+            "unset": "Пароль SMTP"
+        },
+        "encryptionLabel": "Шифрування",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, зазвичай порт 587)",
+            "ssl": "SSL (неявний TLS, зазвичай порт 465)",
+            "none": "Немає"
+        },
+        "explainer": "Залиште хост SMTP порожнім, щоб надсилати через mail() PHP (не рекомендовано — див. розділ про доставність у README). Поки не задано адресу відправника, листи не надсилаються.",
+        "save": "Зберегти"
+    },
+    "MapSettingsForm": {
+        "legend": "Плитки мапи",
+        "notice": "Залиште порожнім, щоб використовувати OpenStreetMap. Для провайдера з ключем вставте шаблон URL з літеральним {apiKey} на місці ключа, а нижче — сам ключ і рядок атрибуції.",
+        "urlLabel": "Шаблон URL плиток",
+        "keyLabel": "Ключ API",
+        "keyPlaceholder": "Ключ API вашого провайдера плиток",
+        "attributionLabel": "Атрибуція",
+        "attributionPlaceholder": "© учасники OpenStreetMap",
+        "save": "Зберегти"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google Sign-In",
+        "clientIdLabel": "ID клієнта",
+        "clientIdPlaceholder": "ID клієнта Google OAuth",
+        "secretLabel": "Секрет клієнта",
+        "secretPlaceholder": {
+            "set": "Секрет задано — залиште порожнім, щоб не міняти",
+            "unset": "Секрет клієнта Google OAuth"
+        },
+        "explainer": "Обидва поля потрібні, щоб кнопка «Продовжити з Google» з'явилася на вході та реєстрації. У клієнті Google Cloud OAuth вкажіть {url} як authorized redirect URI. Очистіть ID клієнта, щоб вимкнути.",
+        "save": "Зберегти"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Ключ сайту",
+        "turnstileSiteKeyPlaceholder": "Ключ сайту Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Секретний ключ",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Секретний ключ задано — залиште порожнім, щоб не міняти",
+            "unset": "Секретний ключ Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Обидва ключі потрібні, щоб CAPTCHA з'явилася на вході та реєстрації. Очистіть ключ сайту, щоб вимкнути.",
+        "recaptchaLegend": "Google reCAPTCHA (відновлення після блокування входу)",
+        "recaptchaSiteKeyLabel": "Ключ сайту",
+        "recaptchaSiteKeyPlaceholder": "Ключ сайту Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Секретний ключ",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Секретний ключ задано — залиште порожнім, щоб не міняти",
+            "unset": "Секретний ключ Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Потрібні обидва ключі. Тоді обліковий запис, що вперся в ліміт спроб входу, може повернутися, пройшовши перевірку, а не пережидаючи блокування; без них блокування — просто очікування. reCAPTCHA v2 («Я не робот»). Очистіть ключ сайту, щоб вимкнути.",
+        "save": "Зберегти"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Забезпечує функції ШІ на сайті (зведення в «Актуальному» тощо). Залиште модель порожньою — тоді використовується маршрутизатор безкоштовних моделей OpenRouter: він обирає з безкоштовного й не може витратити гроші.",
+        "keyLabel": "Ключ API",
+        "keyPlaceholder": {
+            "set": "Ключ задано — залиште порожнім, щоб не міняти",
+            "unset": "Ключ API OpenRouter"
+        },
+        "clearKeyLabel": "Видалити збережений ключ API (вимикає функції ШІ)",
+        "modelLabel": "Модель",
+        "neverSpendLabel": "Ніколи не витрачати гроші (рекомендовано)",
+        "explainer": "З увімкненим запобіжником кожен запит обмежує ціну нулем і не переходить на платну модель, коли безкоштовної немає. Щоб повністю вимкнути функції ШІ, видаліть збережений ключ.",
+        "save": "Зберегти"
+    },
+    "AboutSettingsForm": {
+        "legend": "Про сайт",
+        "description": "Звичайний текст; абзаци розділяються порожнім рядком. Перший абзац використовується як опис сайту.",
+        "save": "Зберегти"
+    },
+    "TermsSettingsForm": {
+        "legend": "Умови користування",
+        "description": "Звичайний текст; абзаци розділяються порожнім рядком.",
+        "save": "Зберегти"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Політика конфіденційності",
+        "description": "Звичайний текст; абзаци розділяються порожнім рядком.",
+        "save": "Зберегти"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Поштовий дайджест",
+        "fieldLabel": "Підпис наприкінці",
+        "notice": "Додається ближче до кінця кожного дайджесту, після списку пропущеного. Звичайний текст. Залиште порожнім — буде стандартне формулювання.",
+        "save": "Зберегти"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Поточний favicon",
+        "save": "Завантажити favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Зображення головної сторінки",
+        "explainer": "Показується іншими сайтами, коли хтось ділиться посиланням сюди — лише в метаданих Open Graph, на самій сторінці ніколи. Зменшується до 1200×630. Без нього попередній перегляд посилань іде зовсім без зображення.",
+        "currentAlt": "Поточне зображення головної сторінки",
+        "save": "Завантажити зображення"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Автовідтворення"
+    },
+    "CarouselNextButton": {
+        "name": "Далі"
+    },
+    "CarouselPrevButton": {
+        "name": "Назад"
+    },
+    "MediaFullscreenButton": {
+        "name": "На весь екран"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Прибрати файли"
+    },
+    "NotificationDropdown": {
+        "showAll": "Показати всі"
+    },
+    "HelpSearch": {
+        "placeholder": "Пошук у довідці…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Зрозуміло"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Відкинути"
+    },
+    "StagedPostEditButton": {
+        "name": "Редагувати"
+    },
+    "StagedPostPublishButton": {
+        "name": "Опублікувати зараз"
+    },
+    "LogoutButton": {
+        "name": "Вийти"
+    },
+    "AvatarUploadForm": {
+        "submit": "Оновити аватар"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Пошук серед заблокованих…"
+    },
+    "BannedUserSection": {
+        "heading": "Заблоковані користувачі"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Надіслані заявки (чекають на відповідь)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Заблокував(ла) {name} ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Заблокував(ла) {name} ",
+            "after": ""
+        },
+        "deletedAccount": "видалений обліковий запис",
+        "reason": " — {reason}"
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Не вдалося під'єднатися до сервера WebSocket на 127.0.0.1:{port}{tls} ({error}). Запустіть його: systemctl --user start glommer-websocket (файл юніта — у README.md). Якщо WS_TLS_CERT/WS_TLS_KEY щойно з'явилися чи зникли, перезапустіть його, щоб він відповідав .env.",
+        "wsOverTLS": " через TLS",
+        "wsBadHandshake": "Служба на 127.0.0.1:{port} не завершила коректного рукостискання WebSocket — можливо, цей порт слухає щось, крім bin/websocket-server.php.",
+        "wsNoPong": "Сервер WebSocket прийняв рукостискання, але не відповів на пінг — можливо, він завис. Перевірте його журнали.",
+        "wsReachable": "Сервер WebSocket доступний і відповідає на 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Хештег",
+            "person": "Людина",
+            "org": "Організація",
+            "gpe": "Місце",
+            "loc": "Регіон",
+            "fac": "Пам'ятка",
+            "product": "Продукт",
+            "event": "Подія",
+            "work_of_art": "Твір",
+            "law": "Закон",
+            "language": "Мова",
+            "norp": "Група"
+        },
+        "plural": {
+            "hashtag": "Хештеги",
+            "person": "Люди",
+            "org": "Організації",
+            "gpe": "Місця",
+            "loc": "Регіони",
+            "fac": "Пам'ятки",
+            "product": "Продукти",
+            "event": "Події",
+            "work_of_art": "Твори",
+            "law": "Закони",
+            "language": "Мови",
+            "norp": "Групи"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Видалити з друзів"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Прийняти"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Відхилити"
+    },
+    "UserFollowButton": {
+        "follow": "Підписатися",
+        "unfollow": "Відписатися"
+    },
+    "UserBlockButton": {
+        "name": "Заблокувати"
+    },
+    "UserUnblockButton": {
+        "name": "Розблокувати"
+    },
+    "OtherUser": {
+        "message": "Написати"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Меню",
+        "loggedInAs": "Ви увійшли як {name}",
+        "friendsFeed": "Стрічка друзів",
+        "relayFeed": "Стрічка ретрансляції",
+        "users": "Користувачі",
+        "tags": "Теги",
+        "topics": "Теми",
+        "map": "Мапа",
+        "locations": "Місця",
+        "search": "Пошук",
+        "messages": "Повідомлення",
+        "bookmarks": "Закладки",
+        "help": "Довідка",
+        "about": "Про сайт",
+        "login": "Увійти",
+        "signup": "Реєстрація",
+        "friends": "Друзі",
+        "drafts": "Чернетки й відкладені",
+        "userSettings": "Налаштування користувача",
+        "modSettings": "Налаштування модерації",
+        "adminSettings": "Налаштування адміністратора"
+    },
+    "LogoutForm": {
+        "submit": "Вийти"
+    },
+    "User": {
+        "joined": "На сайті з {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Додати в друзі",
+        "cancel": "Скасувати заявку"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Заплановано на {when}",
+        "draft": "Чернетка — публікується лише за вашою командою"
+    },
+    "MessageTranslateButton": {
+        "name": "Перекласти це повідомлення"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Про переклад повідомлень",
+        "body": "Щоб перекласти повідомлення, його текст надсилається на цей сервер і перекладається тут. Нічого не зберігається: переклад не записується в базу, а саме повідомлення не змінюється. Але перекладене в такий спосіб повідомлення прочитане сервером, тобто вже не захищене наскрізним шифруванням, як решта. Перекладаються лише отримані вами повідомлення, і лише коли ви попросите.",
+        "confirm": "Перекласти",
+        "cancel": "Не зараз"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Забули парольну фразу? Скидання створює нові ключі під новою, але повідомлення, зашифровані старими ключами, більше ніхто й ніколи не прочитає.",
+        "requirements": "Щонайменше 12 символів і не пароль від облікового запису — пароль надсилається на сервер, а парольна фраза не повинна покидати браузер.",
+        "passphraseLabel": "Парольна фраза",
+        "resetPassphraseLabel": "Нова парольна фраза",
+        "confirmLabel": "Підтвердьте парольну фразу",
+        "accountPasswordLabel": "Пароль облікового запису",
+        "submitLabel": "Увімкнути зашифровані повідомлення",
+        "resetSubmitLabel": "Скинути ключі шифрування"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Наскрізно зашифровані повідомлення замикаються й відмикаються у вашому браузері: цей сервер передає і зберігає їх, не маючи змоги прочитати. Ваш ключ захищений парольною фразою, і та сама фраза відмикає ваші повідомлення з будь-якого браузера. Розмови шифруються, щойно обоє увімкнули це; повідомлення людям на інших серверах лишаються незашифрованими, бо федерація не вміє переносити їх інакше.",
+        "noRecovery": "Втрачену парольну фразу відновити неможливо — навіть адміністратору. Втратити її — означає втратити зашифровані повідомлення.",
+        "enabledStatus": "Зашифровані повідомлення ввімкнено."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Зашифровано",
+            "explanation": "Повідомлення в цій розмові захищені наскрізним шифруванням: вони відмикаються вашою парольною фразою і читаються у ваших браузерах, а сервер зберігає лише шифротекст. Звірте код безпеки внизу розмови зі співрозмовником, щоб переконатися, що між вами нікого немає. Повідомлення, надіслані до ввімкнення шифрування, лишаються читабельними."
+        },
+        "awaiting-theirs": {
+            "label": "Не зашифровано",
+            "explanation": "Повідомлення тут будуть захищені наскрізним шифруванням, щойно {handle} увімкне зашифровані повідомлення у налаштуваннях."
+        },
+        "awaiting-yours": {
+            "label": "Не зашифровано",
+            "explanation": "Повідомлення тут не захищені наскрізним шифруванням. Увімкніть зашифровані повідомлення в налаштуваннях, щоб убезпечити розмову."
+        },
+        "federated": {
+            "label": "Не зашифровано",
+            "explanation": "{handle} на іншому сервері. Повідомлення цієї розмови зберігаються і там, і тут, і тамтешній адміністратор може їх прочитати — міжсерверний протокол не вміє їх шифрувати. Усе конфіденційне краще тримати в листуванні з учасниками цього сайту."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Підписка на акаунти Федіверсу",
+        "notice": "Вставте одну або кілька адрес, наприклад @user@example.social — роздільник будь-який.",
+        "handlesLabel": "Адреси Федіверсу",
+        "submit": "Підписатися",
+        "statusPending": "очікує",
+        "statusAccepted": "прийнято"
+    },
+    "ServerBlockForm": {
+        "legend": "Блокування сервера",
+        "description": "Відхиляє все з того сервера і всіх його піддоменів: ні доставок сюди, ні звідси, а наявні підписки в обидва боки розриваються.",
+        "serverLabel": "Сервер",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Причина",
+        "reasonPlaceholder": "Чому цей сервер заблоковано",
+        "submit": "Заблокувати сервер"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Проганяє ті частини встановлення дзвінка, які перевіряються з одного браузера. Перевірити можна все, крім самого з'єднання зі співрозмовником — для нього потрібен співрозмовник."
+    },
+    "VideoCallTestButton": {
+        "label": "Запустити перевірку"
+    },
+    "WebSocketStatus": {
+        "ok": "Сервер WebSocket: працює",
+        "failed": "Сервер WebSocket: {detail}",
+        "clientTesting": "З'єднання з браузера: перевірка…",
+        "clientConnecting": "З'єднання з браузера: під'єднання…",
+        "clientConnected": "З'єднання з браузера: під'єднано",
+        "clientDisconnecting": "З'єднання з браузера: від'єднання…",
+        "clientNotConnected": "З'єднання з браузера: не під'єднано"
+    },
+    "UploadWorkerStatus": {
+        "running": "Обробник завантажень: працює",
+        "stopped": "Обробник завантажень: не працює — завантажені файли не буде перекодовано, доки він не запуститься",
+        "unknown": "Обробник завантажень: невідомо — або systemd недоступний на цьому хості, або SELinux забороняє вебсерверу запит статусу (запустіть bin/install.php від root, щоб виправити)",
+        "queue": "Черга: завантажується {staging}, очікує {pending}, обробляється {processing}"
+    },
+    "TrendingTimerStatus": {
+        "running": "Таймер трендів: працює",
+        "stopped": "Таймер трендів: не працює — теми оновлюватимуться лише самолагодженням на шляху читання (Trending::current()), а не за розкладом. Запустіть bin/install.php від root, щоб налаштувати.",
+        "unknown": "Таймер трендів: невідомо — або systemd недоступний на цьому хості, або SELinux забороняє вебсерверу запит статусу (запустіть bin/install.php від root, щоб виправити)"
+    },
+    "Notification": {
+        "postReady": "Ваші файли оброблено, допис опубліковано",
+        "scheduledPostLive": "Ваш відкладений допис опубліковано",
+        "uploadPartlyFailed": "Допис опубліковано, але один чи кілька файлів обробити не вдалося",
+        "uploadFailed": "Одне з ваших завантажень не вдалося обробити, допис не опубліковано",
+        "mailerFailed": "Не вдалося надіслати пошту — можливо, розсилання зламане. Перевірте налаштування пошти.",
+        "mailFromNotConfigured": "Адресу відправника не налаштовано, тому листи не надсилаються. Задайте її в налаштуваннях адміністратора (розділ вихідної пошти) або через bin/install.php.",
+        "systemError": "Сталася помилка сервера. Подробиці — в журналі помилок.",
+        "passwordRemovedGoogle": "Ваш пароль видалено після входу через Google. Щоб задати новий, скористайтеся «Забули пароль».",
+        "like": "{name} вподобав(ла) ваш допис",
+        "repost": "{name} поширив(ла) ваш допис",
+        "reply": "{name} відповів(ла) на ваш допис",
+        "friendRequest": "{name} надіслав(ла) вам заявку в друзі",
+        "friendAccepted": "{name} прийняв(ла) вашу заявку в друзі",
+        "message": "{name} надіслав(ла) вам повідомлення",
+        "mention": "{name} згадав(ла) вас у дописі",
+        "follow": "{name} підписався(лась) на вас з іншого сервера",
+        "default": "{name} щось зробив(ла)"
+    },
+    "NotificationList": {
+        "emptyNotice": "Сповіщень поки немає."
+    },
+    "NotificationsNavLink": {
+        "label": "Сповіщення",
+        "unseen": "Непереглянуті сповіщення"
+    },
+    "NotificationTestPanel": {
+        "intro": "Надішліть собі (адміністратору) тестове сповіщення. Воно має миттєво з'явитися тостом і в списку сповіщень.",
+        "button": "Надіслати тестове сповіщення",
+        "sending": "Надсилання…",
+        "sent": "Надіслано!",
+        "failed": "Не вдалося"
+    },
+    "MessageDot": {
+        "label": "Непрочитані повідомлення"
+    },
+    "NavAlertDot": {
+        "label": "Щось нове в меню"
+    },
+    "Message": {
+        "encrypted": "Зашифроване повідомлення",
+        "decryptionFailed": "Це повідомлення зашифроване ключами, яких більше не існує."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Повідомлення",
+        "bodyPlaceholder": "Напишіть повідомлення",
+        "send": "Надіслати"
+    },
+    "MessageList": {
+        "emptyNotice": "Поки немає повідомлень."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Прочитайте цей код одне одному будь-яким іншим способом — уголос, при зустрічі, у дзвінку. Якщо він збігається з обох боків, між вами нікого немає.",
+        "changed": "Код змінився з минулої перевірки. Так буває, коли хтось із вас скидає ключі шифрування, — але так само виглядав би і сторонній, що читає розмову. Перш ніж довіряти коду, звірте його заново.",
+        "verified": "Код звірено."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Позначити звіреним"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Парольна фраза",
+        "passphrasePlaceholder": "Парольна фраза для розблокування розмови",
+        "submit": "Розблокувати"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Останнє повідомлення ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Делікатний вміст"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Показувати делікатний вміст одразу"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Допис",
+            "message": "Повідомлення",
+            "user": "Користувач"
+        },
+        "summary": {
+            "before": "Скарга на {type} #{id} від ",
+            "after": ""
+        },
+        "reasonLine": "Причина: {reason}",
+        "banReporterLabel": "Заблокувати скаржника",
+        "banReportedUserLabel": "Заблокувати порушника",
+        "deleteLabel": "Видалити {type}",
+        "reportedImageAlt": "Зображення зі скарги",
+        "attachmentUnavailable": "Вкладення зі скарги більше недоступне.",
+        "viewAttachment": "Відкрити вкладення зі скарги",
+        "missing": {
+            "noSnapshot": "Оскаржений вміст більше недоступний.",
+            "unknownType": "Невідомий тип вмісту."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Скарг немає."
+    },
+    "ModQueueLinks": {
+        "intro": "Кожна черга досить довга, щоб читати її посторінково, тому в них свої сторінки.",
+        "reportsLabel": "Скарги",
+        "bannedUsersLabel": "Заблоковані користувачі"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Модератори поки нічого не робили."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Заборонених тем немає."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Заблокованих серверів немає."
+    },
+    "RelayCard": {
+        "accepted": "Підписку прийнято ",
+        "waiting": "Чекає на згоду ретранслятора — запрошено "
+    },
+    "RelayList": {
+        "emptyNotice": "Підписок на ретранслятори немає. Без них сюди потрапляє лише те, на що підписані учасники."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Через ретранслятори поки нічого не прийшло. Дописи з'являться тут, коли сервери з того боку їх опублікують."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Підписка на ретранслятор",
+        "explainerOne": "Ретранслятор — це спільний потік: кожен публічний допис з будь-якого підписаного сервера приходить сюди, а дописи звідси йдуть на всі з них. Так новий сервер узагалі когось знаходить: інакше федерація приносить лише те, на що тут уже підписані.",
+        "explainerTwo": "Навантаження не передбачити — воно залежить від того, що публікують ті сервери: тиждень тиші, потім тисячі дописів на годину. І сховище, і доставка, і модерація несуть його цілком. Ретрансльовані дописи не потрапляють в основну стрічку та стрічку друзів: вони йдуть у стрічку ретрансляції, яку відкривають навмисно.",
+        "addressLabel": "Адреса ретранслятора",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Підписатися"
+    },
+    "RelayFollowObjectField": {
+        "label": "Спосіб підписки",
+        "options": {
+            "public": "Підписатися на публічний потік (цього чекає більшість ретрансляторів)",
+            "actor": "Підписатися на актора ретранслятора"
+        },
+        "retryNotice": "Якщо ретранслятор так і не приймає підписку, відкличте її та спробуйте інший спосіб — частина програм розуміє лише один."
+    },
+    "SiteCounters": {
+        "members": "Учасників: {count} ({joined} приєдналися за останні {days} дн.)",
+        "activeMembers": "Були тут за останні {days} дн.: {count} ({posted} з них публікували)",
+        "posts": "Дописів написано тут: {count} ({recent} за останні {days} дн.)",
+        "deliveries": "Федеративні доставки за останні {days} дн.: {delivered} дійшло, {undeliverable} покинуто",
+        "queued": "Чекають на відправлення: {count} ({failing} вже зірвалися хоча б раз)",
+        "pendingReads": "Дописів чекає на читання з інших серверів: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Запускає тести сайту й показує результат. Це триває кілька секунд, тому відкривається на окремій сторінці.",
+        "runLabel": "Запустити тести"
+    },
+    "HelpArticle": {
+        "backLabel": "До всіх статей довідки"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Поки нікого запропонувати — пропозиції беруться з друзів ваших друзів. Шукайте за іменем у полі вище.",
+        "noMatches": "Ніхто не підходить під запит."
+    },
+    "UserModButton": {
+        "make": "Зробити модератором",
+        "remove": "Зняти модератора"
+    },
+    "UserUnbanButton": {
+        "name": "Розблокувати"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Заборонити"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Дозволити"
+    },
+    "ReportDismissButton": {
+        "name": "Відхилити скаргу"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Позначити як делікатне"
+    },
+    "ServerUnblockButton": {
+        "name": "Розблокувати"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Відписатися"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Відкликати"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: успішно",
+        "failing": "{suite}: провал"
+    },
+    "PageTitle": {
+        "about": "Про сайт",
+        "adminBanned": "Заблоковані користувачі",
+        "adminModSettings": "Налаштування модерації",
+        "adminReports": "Скарги",
+        "adminSettings": "Налаштування адміністратора",
+        "adminTests": "Тести",
+        "authGoogleCallbackAccountDeleted": "Обліковий запис видалено",
+        "authGoogleCallbackDeleteAccount": "Видалення облікового запису",
+        "authGoogleCallbackLogin": "Вхід",
+        "bookmarks": "Закладки",
+        "checkInbox": "Перевірте пошту",
+        "drafts": "Чернетки й відкладені",
+        "draftsEditDraft": "Редагування чернетки",
+        "draftsEditScheduled": "Редагування відкладеного допису",
+        "forgotPassword": "Відновлення пароля",
+        "friendsFeed": "Стрічка друзів",
+        "help": "Довідка",
+        "helpDescription": "Інструкції та відповіді щодо користування сайтом.",
+        "locations": "Місця",
+        "locationsDescription": "Дописи з місць поруч із вами.",
+        "locationsPlaceDescription": "Дописи поблизу {place}.",
+        "login": "Вхід",
+        "loginVerificationCode": "Код підтвердження",
+        "map": "Мапа",
+        "mapDescription": "Мапа дописів з усього світу — люди й події поруч із вами.",
+        "messages": "Повідомлення",
+        "messagesWithUser": "Листування з {name}",
+        "notifications": "Сповіщення",
+        "privacy": "Політика конфіденційності",
+        "quote": "Цитата",
+        "relayFeed": "Стрічка ретрансляції",
+        "relayFeedDescription": "Публічні дописи з ретрансляторів, на які підписаний цей сервер.",
+        "resetPassword": "Скидання пароля",
+        "revertEmail": "Скасування зміни пошти",
+        "search": "Пошук",
+        "signup": "Реєстрація",
+        "tags": "Теги",
+        "tagsDescription": "Актуальні й популярні хештеги на {siteTitle}.",
+        "tagsTagDescription": "Дописи з тегом {tag} на {siteTitle}.",
+        "terms": "Умови користування",
+        "topics": "Теми",
+        "topicsDescription": "Про що зараз говорять на {siteTitle}",
+        "topicsEntityDescription": "{typeLabel} — дописи зі згадкою {entityTitle} на {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, про які зараз говорять на {siteTitle}.",
+        "unsubscribe": "Поштові дайджести",
+        "userFriends": "Друзі {name}",
+        "userFriendsDescription": "Друзі {name} на {siteTitle}",
+        "userSettings": "Налаштування користувача",
+        "users": "Користувачі",
+        "verifyEmail": "Підтвердження пошти"
+    },
+    "PostLikeButton": {
+        "like": "Подобається",
+        "unlike": "Більше не подобається"
+    },
+    "PostPinButton": {
+        "pin": "Закріпити",
+        "unpin": "Відкріпити"
+    },
+    "PostQuoteButton": {
+        "name": "Цитувати"
+    },
+    "PostDeleteButton": {
+        "name": "Видалити"
+    },
+    "PostEditButton": {
+        "name": "Редагувати"
+    },
+    "ReportButton": {
+        "name": "Поскаржитися"
+    },
+    "PostActionBar": {
+        "reply": "Відповісти",
+        "replies": {
+            "one": "Відповіді ({count})",
+            "few": "Відповіді ({count})",
+            "many": "Відповіді ({count})",
+            "other": "Відповіді ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(змінено)"
+    },
+    "RepliesHeading": {
+        "heading": "Відповіді"
+    },
+    "PollVoteButton": {
+        "name": "Проголосувати"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Показати ",
+            "link": "більше місць",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Дописи поруч із вами",
+        "description": "Тут показуються дописи, найближчі до точки, — де є активність, хай як далеко вона відбувається. Поділіться місцеположенням, щоб почати з себе, або оберіть точку на мапі.",
+        "useMyLocation": "Моє місцеположення",
+        "pickOnMap": "Обрати на мапі",
+        "searchPlaceholder": "Або введіть назву місця…",
+        "searchLabel": "Пошук місця",
+        "locating": "Визначаємо…",
+        "noGeolocation": "Ваш браузер не може передати місцеположення.",
+        "locationError": "Не вдалося визначити місцеположення. Перевірте дозвіл у браузері."
+    },
+    "PollDeadline": {
+        "final": "Остаточний результат",
+        "closes": {
+            "before": "Закриється ",
+            "after": ""
+        },
+        "days": {
+            "one": "через {count} день",
+            "few": "через {count} дні",
+            "many": "через {count} днів",
+            "other": "через {count} днів"
+        },
+        "hours": {
+            "one": "через {count} годину",
+            "few": "через {count} години",
+            "many": "через {count} годин",
+            "other": "через {count} годин"
+        },
+        "minutes": {
+            "one": "через {count} хвилину",
+            "few": "через {count} хвилини",
+            "many": "через {count} хвилин",
+            "other": "через {count} хвилин"
+        },
+        "underMinute": "менш ніж за хвилину"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Проголосувала {count} особа ",
+            "few": "Проголосували {count} особи ",
+            "many": "Проголосувало {count} осіб ",
+            "other": "Проголосувало {count} осіб "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Увійдіть",
+            "after": ", щоб опублікувати."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Увійдіть",
+            "after": ", щоб відповісти."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " поширив(ла)"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "У відповідь на ",
+            "after": ""
+        },
+        "untitled": "цей допис",
+        "jumpToStart": "До початку гілки"
+    },
+    "TopicSummaryCard": {
+        "label": "Зведення, згенероване ШІ"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Ласкаво просимо до ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Напишіть щось у полі нижче — і воно з'явиться у вашій стрічці. Відповісти може будь-хто, а відповідь — це просто допис із батьківським, тож обговорення вкладаються на будь-яку глибину.",
+            "Додавайте людей у друзі — їхні дописи з'являться у вашій стрічці друзів. Глобальна стрічка (назва сайту зліва вгорі) показує все, що тут пишуть: там можна знайти, кого додати.",
+            "Цей сайт — частина Федіверсу: можна підписуватися на акаунти Mastodon та інших серверів за їхньою повною адресою, а ваші дописи доходять до тих, хто підписаний на вас там. Знайдіть адресу на кшталт @someone@example.social — і сервер відшукає власника.",
+            "Позначайте дописи #хештегами — допис з'явиться на сторінці тега, а якщо про тему пишуть багато людей, то й в «Актуальному».",
+            "Особисті повідомлення між учасниками захищені наскрізним шифруванням: сервер зберігає лише шифротекст, який не може прочитати. Вмикається в налаштуваннях.",
+            "Публікувати одразу не обов'язково: збережіть чернетку або задайте час — допис вийде сам. І те, й інше лежить у «Чернетках і відкладених»."
+        ],
+        "more": {
+            "before": "Більше — на ",
+            "link": "сторінках довідки",
+            "after": ", зокрема про перенесення облікового запису з іншого сервера."
+        },
+        "dontShowAgain": "Більше не показувати"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Вставити емодзі"
+    },
+    "LinkImagePreview": {
+        "alt": "Зображення попереднього перегляду посилання"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Прибрати зображення"
+    },
+    "LinkItem": {
+        "alt": "Зображення попереднього перегляду посилання"
+    },
+    "MapScrubber": {
+        "play": "Відтворити",
+        "pause": "Пауза",
+        "cumulativeMode": "Усе до цієї дати",
+        "windowMode": "Лише цей період",
+        "rangeLabel": "Показувати дописи по дату",
+        "cumulativeLabel": {
+            "one": "Опубліковано до {date} — {count} допис",
+            "few": "Опубліковано до {date} — {count} дописи",
+            "many": "Опубліковано до {date} — {count} дописів",
+            "other": "Опубліковано до {date} — {count} дописів"
+        },
+        "windowLabel": {
+            "one": "Опубліковано близько {date} — {count} допис",
+            "few": "Опубліковано близько {date} — {count} дописи",
+            "many": "Опубліковано близько {date} — {count} дописів",
+            "other": "Опубліковано близько {date} — {count} дописів"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Допис {name}",
+        "pageTitleUntitled": "Допис",
+        "imageAltByAuthor": "Фото, опубліковане {name}",
+        "imageAltUntitled": "Фото"
+    },
+    "PostBookmarkButton": {
+        "remove": "Прибрати закладку",
+        "add": "У закладки"
+    },
+    "PostRepostButton": {
+        "undo": "Скасувати поширення",
+        "repost": "Поширити"
+    },
+    "QuotedPost": {
+        "viewLink": "Відкрити цитований допис"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Вхідні заявки"
+    },
+    "ScrollToTopButton": {
+        "label": "Догори"
+    },
+    "SearchClearButton": {
+        "label": "Очистити пошук"
+    },
+    "SitePolicyLinks": {
+        "terms": "Умови користування",
+        "privacy": "Політика конфіденційності"
+    },
+    "SkipLink": {
+        "label": "До вмісту"
+    },
+    "TopicHeading": {
+        "searchLink": "Шукати за цією темою",
+        "noPosts": "Зараз про це ніхто не пише."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Про таке ще нічого не написано."
+    },
+    "TrendingEntitySection": {
+        "heading": "Актуальне"
+    },
+    "PostLocationLink": {
+        "title": "Показати це місце на мапі",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "щойно",
+        "minutes": {
+            "one": "{count} хв тому",
+            "few": "{count} хв тому",
+            "many": "{count} хв тому",
+            "other": "{count} хв тому"
+        },
+        "hours": {
+            "one": "{count} год тому",
+            "few": "{count} год тому",
+            "many": "{count} год тому",
+            "other": "{count} год тому"
+        },
+        "days": {
+            "one": "{count} дн тому",
+            "few": "{count} дн тому",
+            "many": "{count} дн тому",
+            "other": "{count} дн тому"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Тема",
+        "themes": {
+            "system": "Як у системи",
+            "light": "Світла",
+            "dark": "Темна",
+            "sepia": "Сепія",
+            "midnight": "Північ",
+            "sunset": "Захід сонця",
+            "rose": "Троянда",
+            "forest": "Ліс",
+            "ocean": "Океан",
+            "lavender": "Лаванда",
+            "gold": "Золото",
+            "hacker": "Хакер",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Відтінки сірого"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Переклад на цьому сервері не налаштований.",
+        "nothing": "Тут немає чого перекладати.",
+        "unknownSource": "Ще ніхто не визначив, якою мовою написаний цей допис, тому перекласти його не можна.",
+        "alreadyReadable": "Цей допис уже цією мовою.",
+        "unsupportedPair": "Цей сервер поки не вміє перекладати цю мову."
+    },
+    "LanguagePrompt": {
+        "question": "Бажаєте переглядати сайт українською?",
+        "accept": "Так",
+        "decline": "Ні, дякую"
+    },
+    "LanguageSelector": {
+        "label": "Мова",
+        "legend": "Мова"
+    }
+}

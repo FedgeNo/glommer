@@ -6,8 +6,9 @@ import { render_math } from '/scripts/MathRenderer.js';
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
+import { PostFields } from '/scripts/PostFields.js';
 
-export class PostEditor {
+export class PostEditor extends PostFields {
     #postElement;
     #postData;
     #form;
@@ -48,6 +49,7 @@ export class PostEditor {
     }
 
     constructor(postElement, postData) {
+        super();
         this.#postElement = postElement;
         this.#postData = postData;
         this.#form = null;
@@ -68,23 +70,13 @@ export class PostEditor {
         const titleRow = document.createElement('div');
         titleRow.className = 'PostComposerFields d-flex gap-2';
 
-        const titleInput = document.createElement('input');
-        titleInput.type = 'text';
-        titleInput.name = 'title';
-        titleInput.placeholder = 'Title (optional)';
-        titleInput.maxLength = 255;
-        titleInput.value = data.title || '';
-        titleInput.setAttribute('aria-label', 'Title (optional)');
+        const [titleLabel, titleInput] = PostEditor.titleField(data.title || '');
+        titleRow.appendWithSpace(titleLabel);
         titleRow.appendWithSpace(titleInput);
 
         if (!data.hasMedia) {
-            const linkInput = document.createElement('input');
-            linkInput.type = 'text';
-            linkInput.name = 'linkURL';
-            linkInput.placeholder = 'Link (optional)';
-            linkInput.maxLength = 255;
-            linkInput.value = data.linkUrl || '';
-            linkInput.setAttribute('aria-label', 'Link (optional)');
+            const [linkLabel, linkInput] = PostEditor.linkField(data.linkUrl || '');
+            titleRow.appendWithSpace(linkLabel);
             titleRow.appendWithSpace(linkInput);
         }
 
@@ -126,13 +118,8 @@ export class PostEditor {
                 thumb.alt = '';
                 row.appendWithSpace(thumb);
 
-                const altInput = document.createElement('input');
-                altInput.type = 'text';
-                altInput.className = 'ComposerAttachmentAltInput';
-                altInput.placeholder = 'Alt text - describe this image';
-                altInput.maxLength = 1000;
-                altInput.value = item.dataset.altText || '';
-                altInput.setAttribute('aria-label', 'Alt text');
+                const [altLabel, altInput] = PostEditor.altTextField('Alt text', item.dataset.altText || '');
+                row.appendWithSpace(altLabel);
                 row.appendWithSpace(altInput);
 
                 this.#altInputs.push({ itemId: item.dataset.itemId, input: altInput });
@@ -146,15 +133,9 @@ export class PostEditor {
         form.appendWithSpace(fields);
 
         // Under what is being written, the same place the composer puts it.
-        const warningInput = document.createElement('input');
-        warningInput.type = 'text';
-        warningInput.className = 'ContentWarningInput';
-        warningInput.name = 'contentWarning';
-        warningInput.maxLength = 255;
-        warningInput.placeholder = 'Content Warning (optional)';
-        warningInput.setAttribute('aria-label', 'Content warning (optional)');
-        warningInput.value = data.contentWarning || '';
+        const [warningLabel, warningInput] = PostEditor.contentWarningField(data.contentWarning || '');
         warningInput.style.display = data.sensitive === '1' ? '' : 'none';
+        form.appendWithSpace(warningLabel);
         form.appendWithSpace(warningInput);
 
         const actions = document.createElement('div');

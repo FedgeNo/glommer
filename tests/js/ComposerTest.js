@@ -67,10 +67,33 @@ export default {
             const composer = mounted();
 
             const markdown = composer.form.querySelector('.MarkdownInput');
+            const label = composer.form.querySelector('label[for="' + markdown.id + '"]');
 
-            TestCase.assertNotNull(markdown.getAttribute('aria-label'));
+            TestCase.assertNotNull(label);
+            TestCase.assertTrue(label.classList.contains('visually-hidden'), 'said, not shown');
             TestCase.assertEquals('ComposerMarkdownHelp', markdown.getAttribute('aria-describedby'));
             TestCase.assertNotNull(composer.form.querySelector('#ComposerMarkdownHelp'));
+
+            composer.remove();
+        },
+        'every writing field is named by a hidden label'() {
+            const composer = mounted();
+
+            for (const input of [
+                composer.form.querySelector('[name="title"]'),
+                composer.form.querySelector('[name="linkURL"]'),
+                composer.form.querySelector('.ContentWarningInput'),
+                composer.form.querySelector('.PollOptionInput'),
+                composer.form.querySelector('.PollDurationSelect'),
+                composer.form.querySelector('.ComposerScheduleDate'),
+                composer.form.querySelector('.ComposerScheduleTime'),
+            ]) {
+                const label = composer.form.querySelector('label[for="' + input.id + '"]');
+
+                TestCase.assertNotNull(label, input.className + ' has a label');
+                TestCase.assertTrue(label.classList.contains('visually-hidden'), input.className + ' label is hidden');
+                TestCase.assertTrue(label.textContent.trim() !== '', input.className + ' label says something');
+            }
 
             composer.remove();
         },

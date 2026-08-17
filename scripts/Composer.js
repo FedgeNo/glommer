@@ -11,8 +11,9 @@ import { EmojiPicker } from '/scripts/EmojiPicker.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { ToggleButton } from '/scripts/ToggleButton.js';
 import { Working } from '/scripts/Working.js';
+import { PostFields } from '/scripts/PostFields.js';
 
-export class Composer {
+export class Composer extends PostFields {
     static PLACEHOLDER = "What's on your mind?";
 
     static #instances = new WeakMap();
@@ -91,6 +92,7 @@ export class Composer {
     #attachments = [];
 
     constructor(form) {
+        super();
         this.#form = form;
         this.editorContainer = form.querySelector('.QuillEditor');
         if (!this.editorContainer) {
@@ -158,7 +160,7 @@ export class Composer {
             option.className = 'PollOptionInput';
             option.name = 'pollOptions[]';
             option.placeholder = 'Option ' + (index + 1);
-            option.setAttribute('aria-label', 'Poll Option ' + (index + 1));
+            poll.appendWithSpace(Composer.fieldLabel(option, 'Poll Option ' + (index + 1)));
             poll.appendWithSpace(option);
         }
 
@@ -177,7 +179,7 @@ export class Composer {
         const duration = document.createElement('select');
         duration.className = 'PollDurationSelect';
         duration.name = 'pollDuration';
-        duration.setAttribute('aria-label', 'How Long the Poll Runs');
+        poll.appendWithSpace(Composer.fieldLabel(duration, 'How Long the Poll Runs'));
 
         for (const [label, minutes] of Object.entries(ClientConfig.get('pollDurations') || {})) {
             const choice = document.createElement('option');
@@ -201,20 +203,12 @@ export class Composer {
         const titleRow = document.createElement('div');
         titleRow.className = 'PostComposerFields d-flex gap-2';
 
-        const titleInput = document.createElement('input');
-        titleInput.type = 'text';
-        titleInput.name = 'title';
-        titleInput.placeholder = 'Title (optional)';
-        titleInput.maxLength = 255;
-        titleInput.setAttribute('aria-label', 'Title (Optional)');
+        const [titleLabel, titleInput] = Composer.titleField();
+        titleRow.appendWithSpace(titleLabel);
         titleRow.appendWithSpace(titleInput);
 
-        const linkInput = document.createElement('input');
-        linkInput.type = 'text';
-        linkInput.name = 'linkURL';
-        linkInput.placeholder = 'Link (optional)';
-        linkInput.maxLength = 255;
-        linkInput.setAttribute('aria-label', 'Link (Optional)');
+        const [linkLabel, linkInput] = Composer.linkField();
+        titleRow.appendWithSpace(linkLabel);
         titleRow.appendWithSpace(linkInput);
 
         fieldset.appendWithSpace(titleRow);
@@ -269,10 +263,10 @@ export class Composer {
         // body comes from.
         const markdownInput = document.createElement('textarea');
         markdownInput.className = 'MarkdownInput';
-        markdownInput.setAttribute('aria-label', 'Post Text, in Markdown');
         markdownInput.setAttribute('aria-describedby', 'ComposerMarkdownHelp');
         markdownInput.placeholder = Composer.PLACEHOLDER;
         markdownInput.style.display = 'none';
+        editorColumn.appendWithSpace(Composer.fieldLabel(markdownInput, 'Post Text, in Markdown'));
         editorColumn.appendWithSpace(markdownInput);
 
         const markdownHelp = document.createElement('p');
@@ -402,13 +396,13 @@ export class Composer {
         const scheduleDate = document.createElement('input');
         scheduleDate.type = 'date';
         scheduleDate.className = 'ComposerScheduleDate';
-        scheduleDate.setAttribute('aria-label', 'Publish Date');
+        scheduleRow.appendWithSpace(Composer.fieldLabel(scheduleDate, 'Publish Date'));
         scheduleRow.appendWithSpace(scheduleDate);
 
         const scheduleTime = document.createElement('input');
         scheduleTime.type = 'time';
         scheduleTime.className = 'ComposerScheduleTime';
-        scheduleTime.setAttribute('aria-label', 'Publish Time (Optional)');
+        scheduleRow.appendWithSpace(Composer.fieldLabel(scheduleTime, 'Publish Time (Optional)'));
         scheduleRow.appendWithSpace(scheduleTime);
 
         form.appendWithSpace(scheduleRow);
@@ -423,14 +417,9 @@ export class Composer {
         // that appear only when asked for. Optional even once asked for:
         // marking a post is a complete answer on its own, and being made to
         // name the thing is a reason not to warn at all.
-        const warningInput = document.createElement('input');
-        warningInput.type = 'text';
-        warningInput.className = 'ContentWarningInput';
-        warningInput.name = 'contentWarning';
-        warningInput.maxLength = 255;
-        warningInput.placeholder = 'Content Warning (optional)';
-        warningInput.setAttribute('aria-label', 'Content Warning (Optional)');
+        const [warningLabel, warningInput] = Composer.contentWarningField();
         warningInput.style.display = 'none';
+        form.appendWithSpace(warningLabel);
         form.appendWithSpace(warningInput);
 
         // EmojiPicker – built and wired by EmojiPicker.setup
@@ -1025,13 +1014,10 @@ export class Composer {
         row.appendWithSpace(name);
 
         if (file.type.startsWith('image/')) {
-            entry.altInput = document.createElement('input');
-            entry.altInput.type = 'text';
-            entry.altInput.className = 'ComposerAttachmentAltInput';
-            entry.altInput.placeholder = 'Alt text - describe this image';
-            entry.altInput.maxLength = 1000;
-            entry.altInput.setAttribute('aria-label', 'Alt Text for ' + file.name);
-            row.appendWithSpace(entry.altInput);
+            const [altLabel, altInput] = Composer.altTextField('Alt Text for ' + file.name);
+            entry.altInput = altInput;
+            row.appendWithSpace(altLabel);
+            row.appendWithSpace(altInput);
         }
 
         const remove = document.createElement('button');

@@ -1,0 +1,1145 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 szavazat",
+            "other": "{count} szavazat"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Jelentkezz be",
+            "after": " a válaszadáshoz."
+        },
+        "post": {
+            "before": "",
+            "link": "Jelentkezz be",
+            "after": " a közzétételhez."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Webhely",
+        "siteURLLabel": "A webhely URL-címe",
+        "siteTitleLabel": "A webhely címe",
+        "mailFromAddressLabel": "Feladó e-mail-címe",
+        "serverNameConfirmedLabel": "Beállítottam a \"ServerName {host}\" és a \"UseCanonicalName On\" értéket a webszerver konfigurációjában (ezt csak akkor ellenőrizzük, ha az automatikus élő teszt nem tud lefutni – lásd a README.md HTTPS-szakaszát)",
+        "databaseLegend": "Adatbázis",
+        "databaseHostLabel": "Adatbázis-kiszolgáló",
+        "databasePortLabel": "Adatbázisport",
+        "databaseNameLabel": "Adatbázis neve",
+        "databaseAdminUsernameLabel": "Adatbázis-adminisztrátor felhasználóneve",
+        "databaseAdminPasswordLabel": "Adatbázis-adminisztrátor jelszava",
+        "webSocketTLSLegend": "WebSocket TLS (nem kötelező)",
+        "certificatePathLabel": "Tanúsítvány elérési útja",
+        "certificatePathPlaceholder": "Hagyd üresen az mkcert segítségével történő automatikus létrehozáshoz",
+        "keyPathLabel": "Kulcs elérési útja",
+        "keyPathPlaceholder": "Hagyd üresen az mkcert segítségével történő automatikus létrehozáshoz",
+        "botProtectionLegend": "Botvédelem (nem kötelező)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile webhelykulcs",
+        "turnstileSiteKeyPlaceholder": "Hagyd üresen a kihagyáshoz",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile titkos kulcs",
+        "turnstileSecretKeyPlaceholder": "Hagyd üresen a kihagyáshoz",
+        "submit": "Beállítás"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Jelenlegi jelmondat",
+        "newPassphraseLabel": "Új jelmondat",
+        "confirmNewPassphraseLabel": "Új jelmondat megerősítése",
+        "accountPasswordLabel": "Fiók jelszava",
+        "submit": "Jelmondat módosítása"
+    },
+    "PasswordResetForm": {
+        "legend": "Válassz új jelszót",
+        "newPasswordLabel": "Új jelszó",
+        "newPasswordPlaceholder": "Legalább 8 karakter",
+        "confirmPasswordLabel": "Új jelszó megerősítése",
+        "submit": "Jelszó visszaállítása"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Jelszó visszaállítása",
+        "emailLabel": "E-mail-cím",
+        "submit": "Visszaállítási hivatkozás küldése"
+    },
+    "EmailRevertForm": {
+        "submit": "E-mail-cím módosításának visszavonása"
+    },
+    "EmailVerifyForm": {
+        "submit": "E-mail-cím ellenőrzése"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Újbóli bekapcsolás"
+    },
+    "EmailDigestSetting": {
+        "label": "Küldj e-mailt arról, miről maradtam le, ha egy ideig távol voltam"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Ismeretlen eszköz",
+        "browserOnOS": "{browser}, {os}",
+        "thisDevice": " (ez az eszköz)",
+        "lastUsed": {
+            "before": "Legutóbb használva: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Minden aktív munkamenet befejezése és minden megjegyzett eszköz elfelejtése. Minden böngészőből kijelentkeztetünk, ebből is."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Kijelentkezés mindenhol"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Törlés megerősítése a Google-lel"
+    },
+    "GoogleSignInButton": {
+        "label": "Folytatás a Google-lel"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Profil szerkesztése"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Értesítések fogadása ezen az eszközön akkor is, ha a webhely nincs megnyitva. Ez böngészőnként külön beállítás – kapcsold be mindenhol, ahol értesítéseket szeretnél kapni.",
+        "label": {
+            "off": "Bekapcsolás ezen az eszközön",
+            "on": "Kikapcsolás ezen az eszközön"
+        },
+        "unsupported": "Ez a böngésző nem támogatja a leküldéses értesítéseket"
+    },
+    "LoginForm": {
+        "legend": "Bejelentkezés",
+        "identifier": "Felhasználónév vagy e-mail-cím",
+        "password": "Jelszó",
+        "rememberMe": "Emlékezz rám",
+        "submit": "Bejelentkezés"
+    },
+    "SignupForm": {
+        "legend": "Fiók létrehozása",
+        "usernameLabel": "Felhasználónév",
+        "usernamePlaceholder": "Kisbetűk, számok és _",
+        "emailLabel": "E-mail-cím",
+        "emailPlaceholder": "Érvényes e-mail-cím",
+        "displayName": "Megjelenítendő név (nem kötelező)",
+        "bioLabel": "Bemutatkozás (nem kötelező)",
+        "bioPlaceholder": "Rövid bemutatkozás – a #címkék, @említések és hivatkozások kattinthatóvá válnak",
+        "passwordLabel": "Jelszó",
+        "passwordPlaceholder": "Jelszó: legalább 8 karakter",
+        "rememberMe": "Emlékezz rám",
+        "submit": "Regisztráció"
+    },
+    "PasswordChangeForm": {
+        "legend": "Jelszó módosítása",
+        "currentPassword": "Jelenlegi jelszó",
+        "newPasswordLabel": "Új jelszó",
+        "newPasswordPlaceholder": "Legalább 8 karakter",
+        "confirmPassword": "Új jelszó megerősítése",
+        "submit": "Jelszó módosítása"
+    },
+    "EmailChangeForm": {
+        "legend": "E-mail-cím módosítása",
+        "newEmail": "Új e-mail-cím",
+        "currentPassword": "Jelenlegi jelszó",
+        "notice": "A webhely további használata előtt ellenőrizned kell az új címet.",
+        "submit": "E-mail-cím módosítása"
+    },
+    "AccountDeleteForm": {
+        "legend": "Fiók törlése",
+        "warning": "Ez végleg törli a fiókodat, a bejegyzéseidet és az üzeneteidet. A művelet nem vonható vissza.",
+        "currentPassword": "Jelenlegi jelszó",
+        "submit": "Fiók törlése"
+    },
+    "AccountMigrationForm": {
+        "legend": "Átköltözés másik kiszolgálóra",
+        "movedNotice": "Ez a fiók ide költözött: {destination}. A követőidet megkértük, hogy ott kövessenek.",
+        "explanation": "A követőidet megkérjük, hogy kövessék az új fiókodat. A bejegyzéseid itt maradnak – az objektumcímek az őket létrehozó kiszolgálóhoz tartoznak, ezért nem vihetők át.",
+        "addressNotice": "A célfióknak először fel kell tüntetnie ezt a fiókot a „más néven” listájában. Az itteni címed: {address}.",
+        "movedToLabel": "Átköltözés ide",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Más néven",
+        "aliasesExplanation": "Máshol lévő fiókok, amelyek szintén hozzád tartoznak. Ha itt felsorolod valamelyiket, engedélyezed annak a fióknak, hogy ide költözzön – ez csak az engedély, nem maga a költözés. Soronként egy cím.",
+        "aliasesLabel": "További fiókjaid",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Mentés"
+    },
+    "TwoFactorForm": {
+        "legend": "Add meg az ellenőrző kódot",
+        "explanation": "E-mailben küldtünk egy ellenőrző kódot. A bejelentkezés befejezéséhez add meg alább, vagy használd valamelyik helyreállítási kódodat.",
+        "explanationEmailFailed": "Jelenleg nem tudtuk e-mailben elküldeni az ellenőrző kódot. A bejelentkezés befejezéséhez add meg valamelyik helyreállítási kódodat.",
+        "code": "Ellenőrző kód",
+        "submit": "Ellenőrzés"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "A kétlépcsős hitelesítés be van kapcsolva",
+            "off": "A kétlépcsős hitelesítés ki van kapcsolva"
+        },
+        "explanation": {
+            "on": "Bejelentkezéskor e-mailben küldünk egy ellenőrző kódot, amelyet meg kell adnod a bejelentkezés befejezéséhez. Ha az e-mail nem ér el hozzád, valamelyik helyreállítási kódoddal jelentkezhetsz be.",
+            "off": "Adj egy második lépést a bejelentkezéshez: e-mailben küldünk egy ellenőrző kódot, amelyet meg kell adnod, így a jelszavad önmagában nem elég a belépéshez. Egyszer használható helyreállítási kódokat kapsz arra az esetre, ha az e-mail nem érne el hozzád."
+        },
+        "currentPassword": "Jelenlegi jelszó",
+        "submit": {
+            "on": "Kétlépcsős hitelesítés kikapcsolása",
+            "off": "Kétlépcsős hitelesítés bekapcsolása"
+        },
+        "regenerate": "Új helyreállítási kódok létrehozása",
+        "recoveryHeading": "Helyreállítási kódjaid",
+        "recoveryNote": "Mentsd el ezeket most biztonságos helyre – később nem jelennek meg újra. Mindegyikkel egyszer jelentkezhetsz be, ha az ellenőrző e-mail nem ér el hozzád; az új kódok létrehozása mindegyiket lecseréli.",
+        "toast": {
+            "on": "A kétlépcsős hitelesítés bekapcsolva.",
+            "off": "A kétlépcsős hitelesítés kikapcsolva.",
+            "regenerated": "Új helyreállítási kódok készültek. A régiek már nem működnek."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Nézd meg a beérkező leveleidet, és az e-mail-címed megerősítéséhez kattints az elküldött ellenőrző hivatkozásra. Ha nem találod, nézd meg a levélszemét mappát is."
+    },
+    "VerificationResendButton": {
+        "label": "Ellenőrző e-mail újraküldése"
+    },
+    "MailSettingsForm": {
+        "legend": "Kimenő levelek",
+        "fromAddressLabel": "Feladó címe",
+        "fromAddressPlaceholder": "Ennek beállításáig nem küldhető e-mail",
+        "fromNameLabel": "Feladó neve",
+        "hostLabel": "SMTP-kiszolgáló",
+        "portLabel": "SMTP-port",
+        "usernameLabel": "SMTP-felhasználónév",
+        "passwordLabel": "SMTP-jelszó",
+        "passwordPlaceholder": {
+            "set": "A jelszó be van állítva – hagyd üresen a megtartásához",
+            "unset": "SMTP-jelszó"
+        },
+        "encryptionLabel": "Titkosítás",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, általában az 587-es porton)",
+            "ssl": "SSL (implicit TLS, általában a 465-ös porton)",
+            "none": "Nincs"
+        },
+        "explainer": "Hagyd üresen az SMTP-kiszolgálót, ha inkább a PHP mail() függvényével küldenél (nem ajánlott – lásd a README kézbesíthetőségi szakaszát). A feladó címének beállításáig egyáltalán nem küldhető e-mail.",
+        "save": "Mentés"
+    },
+    "MapSettingsForm": {
+        "legend": "Térképcsempék",
+        "notice": "Hagyd üresen az OpenStreetMap használatához. Kulcsot igénylő szolgáltatóhoz illeszd be az URL-sablonját úgy, hogy a kulcs helyén szó szerint {apiKey} álljon, majd add meg alább a kulcsot és a forrásmegjelölést.",
+        "urlLabel": "Csempe URL-sablonja",
+        "keyLabel": "API-kulcs",
+        "keyPlaceholder": "A csempeszolgáltató API-kulcsa",
+        "attributionLabel": "Forrásmegjelölés",
+        "attributionPlaceholder": "© OpenStreetMap közreműködők",
+        "save": "Mentés"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google-bejelentkezés",
+        "clientIdLabel": "Ügyfélazonosító",
+        "clientIdPlaceholder": "Google OAuth-ügyfélazonosító",
+        "secretLabel": "Ügyféltitok",
+        "secretPlaceholder": {
+            "set": "Az ügyféltitok be van állítva – hagyd üresen a megtartásához",
+            "unset": "Google OAuth-ügyféltitok"
+        },
+        "explainer": "Mindkettő szükséges ahhoz, hogy a „Folytatás a Google-lel” megjelenjen regisztrációkor és bejelentkezéskor. A Google Cloud OAuth-ügyfélben állítsd az engedélyezett átirányítási URI-t erre: {url}; a kikapcsoláshoz töröld az ügyfélazonosítót.",
+        "save": "Mentés"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Webhelykulcs",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile webhelykulcs",
+        "turnstileSecretKeyLabel": "Titkos kulcs",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "A titkos kulcs be van állítva – hagyd üresen a megtartásához",
+            "unset": "Cloudflare Turnstile titkos kulcs"
+        },
+        "turnstileExplainer": "Mindkét kulcs szükséges ahhoz, hogy a CAPTCHA megjelenjen regisztrációkor és bejelentkezéskor. A kikapcsoláshoz töröld a webhelykulcsot.",
+        "recaptchaLegend": "Google reCAPTCHA (fiókzárolás feloldása)",
+        "recaptchaSiteKeyLabel": "Webhelykulcs",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 webhelykulcs",
+        "recaptchaSecretKeyLabel": "Titkos kulcs",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "A titkos kulcs be van állítva – hagyd üresen a megtartásához",
+            "unset": "Google reCAPTCHA v2 titkos kulcs"
+        },
+        "recaptchaExplainer": "Mindkét kulcs szükséges. Ha be vannak állítva, a bejelentkezési kísérletek korlátját elérő fiók a zárolás kivárása helyett e feladat teljesítésével újra beléphet; nélkülük kötelező kivárni a zárolást. A reCAPTCHA v2 („Nem vagyok robot”) változatát használd. A kikapcsoláshoz töröld a webhelykulcsot.",
+        "save": "Mentés"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "A webhely MI-funkciói használják (felkapott témák összefoglalói stb.). Hagyd üresen a modellt az ingyenes modellek útválasztójának használatához; ekkor az OpenRouter véletlenszerűen választ a jelenleg ingyenes modellek közül, és nem merülhet fel költség.",
+        "keyLabel": "API-kulcs",
+        "keyPlaceholder": {
+            "set": "Az API-kulcs be van állítva – hagyd üresen a megtartásához",
+            "unset": "OpenRouter API-kulcs"
+        },
+        "clearKeyLabel": "A tárolt API-kulcs eltávolítása (kikapcsolja az MI-funkciókat)",
+        "modelLabel": "Modell",
+        "neverSpendLabel": "Soha ne engedélyezzen pénzköltést (ajánlott)",
+        "explainer": "Bekapcsolt védelem mellett minden kérés legnagyobb ára nulla, ezért ingyenes szolgáltató hiányában azonnal meghiúsul, nem vált fizetős modellre. Az MI-funkciók teljes kikapcsolásához távolítsd el a tárolt API-kulcsot.",
+        "save": "Mentés"
+    },
+    "AboutSettingsForm": {
+        "legend": "Névjegy",
+        "description": "Egyszerű szöveg – az üres sorok választják el a bekezdéseket. Az első bekezdés lesz a webhely leírása.",
+        "save": "Mentés"
+    },
+    "TermsSettingsForm": {
+        "legend": "Felhasználási feltételek",
+        "description": "Egyszerű szöveg – az üres sorok választják el a bekezdéseket.",
+        "save": "Mentés"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Adatvédelmi irányelvek",
+        "description": "Egyszerű szöveg – az üres sorok választják el a bekezdéseket.",
+        "save": "Mentés"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-mailes összefoglaló",
+        "fieldLabel": "Záró bekezdés",
+        "notice": "Minden összefoglaló végéhez közel, a tag által elmulasztott események listája után jelenik meg. Egyszerű szöveg. Hagyd üresen a szoftver alapértelmezett szövegének visszaállításához.",
+        "save": "Mentés"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Webhelyikon",
+        "currentAlt": "Jelenlegi webhelyikon",
+        "save": "Webhelyikon feltöltése"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Kezdőlap képe",
+        "explainer": "Más webhelyek jelenítik meg, amikor valaki erre a webhelyre mutató hivatkozást oszt meg – csak Open Graph-metaadatként szerepel, magán az oldalon soha. 1200×630 méretre vágjuk. Nélküle a hivatkozás-előnézetekben egyáltalán nem lesz kép.",
+        "currentAlt": "A kezdőlap jelenlegi képe",
+        "save": "Kép feltöltése"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automatikus lejátszás"
+    },
+    "CarouselNextButton": {
+        "name": "Következő"
+    },
+    "CarouselPrevButton": {
+        "name": "Előző"
+    },
+    "MediaFullscreenButton": {
+        "name": "Teljes képernyő"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Fájlok eltávolítása"
+    },
+    "NotificationDropdown": {
+        "showAll": "Összes megjelenítése"
+    },
+    "HelpSearch": {
+        "placeholder": "Keresés a súgóban…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Értem"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Elvetés"
+    },
+    "StagedPostEditButton": {
+        "name": "Szerkesztés"
+    },
+    "StagedPostPublishButton": {
+        "name": "Közzététel most"
+    },
+    "LogoutButton": {
+        "name": "Kijelentkezés"
+    },
+    "AvatarUploadForm": {
+        "submit": "Profilkép frissítése"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Kitiltott felhasználók keresése…"
+    },
+    "BannedUserSection": {
+        "heading": "Kitiltott felhasználók"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Elküldött kérelmek (válaszra várnak)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Kitiltotta: {name} ",
+            "after": ""
+        },
+        "reason": " – {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Letiltotta: {name} ",
+            "after": ""
+        },
+        "deletedAccount": "egy törölt fiók",
+        "reason": " – {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "január",
+            "2": "február",
+            "3": "március",
+            "4": "április",
+            "5": "május",
+            "6": "június",
+            "7": "július",
+            "8": "augusztus",
+            "9": "szeptember",
+            "10": "október",
+            "11": "november",
+            "12": "december"
+        },
+        "shortMonths": {
+            "1": "jan.",
+            "2": "febr.",
+            "3": "márc.",
+            "4": "ápr.",
+            "5": "máj.",
+            "6": "jún.",
+            "7": "júl.",
+            "8": "aug.",
+            "9": "szept.",
+            "10": "okt.",
+            "11": "nov.",
+            "12": "dec."
+        },
+        "long": "{year}. {month} {day}.",
+        "short": "{year}. {month} {day}.",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Nem sikerült kapcsolódni a WebSocket-kiszolgálóhoz a 127.0.0.1:{port}{tls} címen ({error}). Előbb indítsd el: systemctl --user start glommer-websocket (az egységfájlt lásd a README.md-ben). Ha nemrég kapta meg vagy veszítette el a WS_TLS_CERT/WS_TLS_KEY beállítást, indítsd újra, hogy egyezzen a .env fájllal.",
+        "wsOverTLS": " TLS-en keresztül",
+        "wsBadHandshake": "A 127.0.0.1:{port} címen futó szolgáltatás nem hajtott végre érvényes WebSocket-kézfogást – lehet, hogy a bin/websocket-server.php helyett más figyel azon a porton.",
+        "wsNoPong": "A WebSocket-kiszolgáló elfogadta a kézfogást, de nem válaszolt a pingre – elakadhatott vagy hibásan működhet. Ellenőrizd a naplóit.",
+        "wsReachable": "A WebSocket-kiszolgáló elérhető és válaszol a 127.0.0.1:{port} címen"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Címke",
+            "person": "Személy",
+            "org": "Szervezet",
+            "gpe": "Hely",
+            "loc": "Régió",
+            "fac": "Nevezetesség",
+            "product": "Termék",
+            "event": "Esemény",
+            "work_of_art": "Mű",
+            "law": "Jogszabály",
+            "language": "Nyelv",
+            "norp": "Csoport"
+        },
+        "plural": {
+            "hashtag": "Címkék",
+            "person": "Személyek",
+            "org": "Szervezetek",
+            "gpe": "Helyek",
+            "loc": "Régiók",
+            "fac": "Nevezetességek",
+            "product": "Termékek",
+            "event": "Események",
+            "work_of_art": "Művek",
+            "law": "Jogszabályok",
+            "language": "Nyelvek",
+            "norp": "Csoportok"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Ismerős eltávolítása"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Elfogadás"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Elutasítás"
+    },
+    "UserFollowButton": {
+        "follow": "Követés",
+        "unfollow": "Követés megszüntetése"
+    },
+    "UserBlockButton": {
+        "name": "Letiltás"
+    },
+    "UserUnblockButton": {
+        "name": "Letiltás feloldása"
+    },
+    "OtherUser": {
+        "message": "Üzenet"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menü",
+        "loggedInAs": "Bejelentkezve: {name}",
+        "friendsFeed": "Ismerősök hírfolyama",
+        "relayFeed": "Átjátszó hírfolyama",
+        "users": "Felhasználók",
+        "tags": "Címkék",
+        "topics": "Témák",
+        "map": "Térkép",
+        "locations": "Helyek",
+        "search": "Keresés",
+        "messages": "Üzenetek",
+        "bookmarks": "Könyvjelzők",
+        "help": "Súgó",
+        "about": "Névjegy",
+        "login": "Bejelentkezés",
+        "signup": "Regisztráció",
+        "friends": "Ismerősök",
+        "drafts": "Piszkozatok és ütemezettek",
+        "userSettings": "Felhasználói beállítások",
+        "modSettings": "Moderátori beállítások",
+        "adminSettings": "Rendszergazdai beállítások"
+    },
+    "LogoutForm": {
+        "submit": "Kijelentkezés"
+    },
+    "User": {
+        "joined": "Csatlakozás: {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Ismerős hozzáadása",
+        "cancel": "Kérelem visszavonása"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Ütemezve ekkorra: {when}",
+        "draft": "Piszkozat – csak akkor jelenik meg, amikor kéred"
+    },
+    "MessageTranslateButton": {
+        "name": "Üzenet lefordítása"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Az üzenetek fordításáról",
+        "body": "Az üzenet lefordításához a szövege erre a kiszolgálóra kerül, és itt fordítjuk le. Semmit sem őrzünk meg: a fordítás nem kerül az adatbázisba, maga az üzenet pedig változatlan marad. Az így lefordított üzenetet azonban a kiszolgáló elolvasta, ezért nem ugyanúgy végpontok között titkosított, mint egy le nem fordított üzenet. Csak a kapott üzenetek fordíthatók le, és csak külön kérésre.",
+        "confirm": "Fordítás",
+        "cancel": "Most nem"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Elfelejtetted a jelmondatodat? A visszaállítás új kulcsokat hoz létre egy új jelmondat alatt – a régi kulcsokkal titkosított üzeneteket azonban többé senki sem tudja elolvasni.",
+        "requirements": "Legalább 12 karakter, és nem lehet azonos a fiókod jelszavával – azt elküldjük erre a kiszolgálóra, a jelmondatodat viszont soha.",
+        "passphraseLabel": "Jelmondat",
+        "resetPassphraseLabel": "Új jelmondat",
+        "confirmLabel": "Jelmondat megerősítése",
+        "accountPasswordLabel": "Fiók jelszava",
+        "submitLabel": "Titkosított üzenetek bekapcsolása",
+        "resetSubmitLabel": "Titkosítási kulcsok visszaállítása"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "A végpontok között titkosított üzenetek zárolása és feloldása a böngésződben történik: ez a kiszolgáló úgy továbbítja és tárolja őket, hogy nem tudja elolvasni. A kulcsodat jelmondat védi, és ugyanazzal a jelmondattal bármely böngészőben feloldhatod az üzeneteidet. A beszélgetések akkor lesznek titkosítva, amikor mindkét fél bekapcsolta ezt; a más kiszolgálókon lévő személyeknek küldött üzenetek titkosítatlanok maradnak, mert a föderáció másként nem tudja továbbítani őket.",
+        "noRecovery": "Az elveszett jelmondatot még a rendszergazda sem tudja helyreállítani. Ha elveszíted, a titkosított üzeneteidet is elveszíted.",
+        "enabledStatus": "A titkosított üzenetek be vannak kapcsolva."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Titkosított",
+            "explanation": "A beszélgetés üzenetei végpontok között titkosítottak: a jelmondatoddal oldhatók fel és a böngészőidben olvashatók, a kiszolgáló pedig csak titkosított szöveget tárol. Hasonlítsd össze a beszélgetés alján lévő biztonsági kódot a másik féllel, hogy biztosan senki ne legyen köztetek. A titkosítás bekapcsolása előtt küldött üzenetek továbbra is olvashatók maradnak."
+        },
+        "awaiting-theirs": {
+            "label": "Nem titkosított",
+            "explanation": "Az itteni üzenetek akkor lesznek végpontok között titkosítva, amikor {handle} bekapcsolja a titkosított üzeneteket a beállításaiban."
+        },
+        "awaiting-yours": {
+            "label": "Nem titkosított",
+            "explanation": "Az itteni üzenetek nincsenek végpontok között titkosítva. A beszélgetés védelméhez kapcsold be a titkosított üzeneteket a Beállításokban."
+        },
+        "federated": {
+            "label": "Nem titkosított",
+            "explanation": "{handle} másik kiszolgálón van. A beszélgetés üzeneteit az a kiszolgáló is tárolja, és a rendszergazdája elolvashatja őket – a kiszolgálók közti protokoll nem képes titkosítani őket. Érzékeny dolgokról csak ezen a webhelyen belüli beszélgetésekben írj."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Födiverzumbeli fiókok követése",
+        "notice": "Illessz be egy vagy több azonosítót, például @user@example.social – bármilyen elválasztó használható közöttük.",
+        "handlesLabel": "Követendő födiverzumbeli azonosítók",
+        "submit": "Követés",
+        "statusPending": "függőben",
+        "statusAccepted": "elfogadva"
+    },
+    "ServerBlockForm": {
+        "legend": "Kiszolgáló letiltása",
+        "description": "Mindent elutasít arról a kiszolgálóról és az aldomainjeiről: sem bejövő, sem kimenő kézbesítés nem lesz, és mindkét irányban megszűnnek a meglévő követések.",
+        "serverLabel": "Kiszolgáló",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Indok",
+        "reasonPlaceholder": "Miért van letiltva ez a kiszolgáló?",
+        "submit": "Kiszolgáló letiltása"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Lefuttatja a hívásbeállítás egyetlen böngészőből ellenőrizhető részeit. A tényleges közvetlen kapcsolat létrejöttéig minden tesztelhető itt; a másik személyhez való kapcsolódáshoz ő is szükséges."
+    },
+    "VideoCallTestButton": {
+        "label": "Ellenőrzés futtatása"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket-kiszolgáló: fut",
+        "failed": "WebSocket-kiszolgáló: {detail}",
+        "clientTesting": "Böngészőkapcsolat: tesztelés…",
+        "clientConnecting": "Böngészőkapcsolat: kapcsolódás…",
+        "clientConnected": "Böngészőkapcsolat: kapcsolódva",
+        "clientDisconnecting": "Böngészőkapcsolat: kapcsolat bontása…",
+        "clientNotConnected": "Böngészőkapcsolat: nincs kapcsolat"
+    },
+    "UploadWorkerStatus": {
+        "running": "Feldolgozó szolgáltatás: fut",
+        "stopped": "Feldolgozó szolgáltatás: nem fut – az előkészített feltöltések az újraindításáig nem lesznek átkódolva",
+        "unknown": "Feldolgozó szolgáltatás: ismeretlen – vagy nem érhető el a systemctl ezen a gépen, vagy a SELinux megtagadja a webszerver saját állapotlekérdezését (a javításhoz futtasd a bin/install.php fájlt rootként)",
+        "queue": "Sor: {staging} előkészítés alatt, {pending} függőben, {processing} feldolgozás alatt"
+    },
+    "TrendingTimerStatus": {
+        "running": "Felkapott témák időzítője: fut",
+        "stopped": "Felkapott témák időzítője: nem fut – a felkapott témák csak az olvasási útvonal önjavításakor (Trending::current()) frissülnek, nem ütemezetten. A beállításhoz futtasd a bin/install.php fájlt rootként.",
+        "unknown": "Felkapott témák időzítője: ismeretlen – vagy nem érhető el a systemctl ezen a gépen, vagy a SELinux megtagadja a webszerver saját állapotlekérdezését (a javításhoz futtasd a bin/install.php fájlt rootként)"
+    },
+    "Notification": {
+        "postReady": "A médiafeldolgozás befejeződött, a bejegyzés mostantól elérhető",
+        "scheduledPostLive": "Az ütemezett bejegyzésed megjelent",
+        "uploadPartlyFailed": "A bejegyzésed megjelent, de egy vagy több fájlját nem sikerült feldolgozni",
+        "uploadFailed": "Az egyik feltöltésed feldolgozása meghiúsult, ezért nem tettük közzé",
+        "mailerFailed": "Az e-mail kézbesítése meghiúsult – lehet, hogy a levelezőszolgáltatás nem működik. Ellenőrizd a levelezési beállításokat.",
+        "mailFromNotConfigured": "Nincs beállítva feladói cím, ezért nem küldhetők e-mailek. Állíts be egyet a Rendszergazdai beállítások Kimenő levelek szakaszában vagy a bin/install.php segítségével.",
+        "systemError": "Kiszolgálóhiba történt. A részletekért ellenőrizd a hibanaplót.",
+        "passwordRemovedGoogle": "A jelszavadat eltávolítottuk, amikor a Google-lel jelentkeztél be. Ha újat szeretnél beállítani, használd az „Elfelejtett jelszó” lehetőséget.",
+        "like": "{name} kedvelte a bejegyzésedet",
+        "repost": "{name} újra közzétette a bejegyzésedet",
+        "reply": "{name} válaszolt a bejegyzésedre",
+        "friendRequest": "{name} ismerősnek jelölt",
+        "friendAccepted": "{name} elfogadta az ismerősnek jelölésedet",
+        "message": "{name} üzenetet küldött neked",
+        "mention": "{name} megemlített egy bejegyzésben",
+        "follow": "{name} követni kezdett egy másik kiszolgálóról",
+        "default": "{name} csinált valamit"
+    },
+    "NotificationList": {
+        "emptyNotice": "Még nincsenek értesítések."
+    },
+    "NotificationsNavLink": {
+        "label": "Értesítések",
+        "unseen": "Nem látott értesítések"
+    },
+    "NotificationTestPanel": {
+        "intro": "Küldj próbaértesítést saját magadnak (a rendszergazdának). Azonnal meg kell jelennie felugró értesítésként és az értesítési legördülő menüben.",
+        "button": "Próbaértesítés küldése",
+        "sending": "Küldés…",
+        "sent": "Elküldve!",
+        "failed": "Sikertelen"
+    },
+    "MessageDot": {
+        "label": "Olvasatlan üzenetek"
+    },
+    "NavAlertDot": {
+        "label": "Újdonság van a menüben"
+    },
+    "Message": {
+        "encrypted": "Titkosított üzenet",
+        "decryptionFailed": "Ezt az üzenetet már nem létező kulcsokkal titkosították."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Üzenet",
+        "bodyPlaceholder": "Írj üzenetet",
+        "send": "Küldés"
+    },
+    "MessageList": {
+        "emptyNotice": "Még nincsenek üzenetek."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Olvassátok fel egymásnak ezt a kódot más módon – hangosan, személyesen vagy hívás közben. Ha mindkét oldalon egyezik, senki sincs köztetek.",
+        "changed": "Ez a kód megváltozott az ellenőrzés óta. Ez akkor történik, ha valamelyikőtök visszaállítja a titkosítási kulcsait – de ugyanez látszana akkor is, ha valaki olvasná a beszélgetést. Mielőtt megbízol benne, ellenőrizd vele az új kódot.",
+        "verified": "Ellenőrizted ezt a kódot."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Megjelölés ellenőrzöttként"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Jelmondat",
+        "passphrasePlaceholder": "A beszélgetést feloldó jelmondat",
+        "submit": "Feloldás"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Utolsó üzenet: ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Érzékeny médiatartalom"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Érzékeny médiatartalom alapértelmezett megjelenítése"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Bejegyzés",
+            "message": "Üzenet",
+            "user": "Felhasználó"
+        },
+        "summary": {
+            "before": "{type} #{id}, jelentette: ",
+            "after": ""
+        },
+        "reasonLine": "Indok: {reason}",
+        "banReporterLabel": "Bejelentő kitiltása",
+        "banReportedUserLabel": "Bejelentett felhasználó kitiltása",
+        "deleteLabel": "{type} törlése",
+        "reportedImageAlt": "Bejelentett kép",
+        "attachmentUnavailable": "Egy bejelentett melléklet már nem érhető el.",
+        "viewAttachment": "Bejelentett melléklet megtekintése",
+        "missing": {
+            "noSnapshot": "A bejelentett tartalom már nem érhető el.",
+            "unknownType": "Ismeretlen tartalomtípus."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Nincsenek bejelentések."
+    },
+    "ModQueueLinks": {
+        "intro": "A sorok elég hosszúak ahhoz, hogy oldalanként kelljen olvasni őket, ezért saját oldalaik vannak.",
+        "reportsLabel": "Bejelentések",
+        "bannedUsersLabel": "Kitiltott felhasználók"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Még egyetlen moderátor sem végzett műveletet."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Nincsenek kitiltott felkapott elemek."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Nincsenek letiltott kiszolgálók."
+    },
+    "RelayCard": {
+        "accepted": "Feliratkozva: ",
+        "waiting": "Várakozás az átjátszó elfogadására – feliratkozva: "
+    },
+    "RelayList": {
+        "emptyNotice": "Nincs feliratkozás egyetlen átjátszóra sem. Ide csak az érkezik, amit a tagok követnek."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Még semmi sem érkezett átjátszón keresztül. A bejegyzések akkor jelennek meg itt, amikor a túloldali kiszolgálók közzéteszik őket."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Feliratkozás átjátszóra",
+        "explainerOne": "Az átjátszó közös adatfolyam: minden más feliratkozott kiszolgáló nyilvános bejegyzése ideérkezik, e kiszolgálóéi pedig mindegyikükhöz eljutnak. Egy új példány így talál bárkit is, mert a föderáció egyébként csak azt továbbítja, amit valaki innen már követ.",
+        "explainerTwo": "A terhelés nem jósolható meg – annyi lesz, amennyit azok a kiszolgálók közzétesznek: egyik héten csend, a következőn óránként több ezer bejegyzés, és mindezt a tárhelyed, a kézbesítési sorod és a moderálási sorod viseli. Az átjátszott bejegyzések nem kerülnek a fő vagy az ismerősi hírfolyamba; az Átjátszó hírfolyamába kerülnek, amelyet az emberek szándékosan nyitnak meg.",
+        "addressLabel": "Átjátszó címe",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Feliratkozás"
+    },
+    "RelayFollowObjectField": {
+        "label": "Feliratkozás módja",
+        "options": {
+            "public": "A nyilvános adatfolyam követése (a legtöbb átjátszó ezt várja)",
+            "actor": "Az átjátszó saját szereplőjének követése"
+        },
+        "retryNotice": "Ha az átjátszó soha nem fogadja el, vond vissza, és próbáld a másik módot – egyes átjátszóprogramok csak az egyiket ismerik fel."
+    },
+    "SiteCounters": {
+        "members": "Tagok: {count} (az elmúlt {days} napban csatlakozott: {joined})",
+        "activeMembers": "Az elmúlt {days} napban itt járt tagok: {count} (közülük közzétett: {posted})",
+        "posts": "Itt írt bejegyzések: {count} (az elmúlt {days} napban: {recent})",
+        "deliveries": "Föderált kézbesítések az elmúlt {days} napban: {delivered} megérkezett, {undeliverable} feladva",
+        "queued": "Küldésre vár: {count} (legalább egyszer már elutasított: {failing})",
+        "pendingReads": "Más kiszolgálókról olvasásra váró bejegyzések: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Futtasd a webhely tesztkészletét, és nézd meg az eredményeket. Néhány másodpercig tart, ezért saját oldalon nyílik meg.",
+        "runLabel": "Tesztek futtatása"
+    },
+    "HelpArticle": {
+        "backLabel": "Vissza az összes súgóhoz"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Jelenleg nincs javaslat – a javaslatok a már meglévő ismerőseid ismerőseitől származnak. Keress fent név alapján.",
+        "noMatches": "Itt senki sem felel meg ennek."
+    },
+    "UserModButton": {
+        "make": "Moderátorrá tétel",
+        "remove": "Moderátori jog elvétele"
+    },
+    "UserUnbanButton": {
+        "name": "Kitiltás feloldása"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Kitiltás"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Kitiltás feloldása"
+    },
+    "ReportDismissButton": {
+        "name": "Elvetés"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Megjelölés érzékenyként"
+    },
+    "ServerUnblockButton": {
+        "name": "Letiltás feloldása"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Leiratkozás"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Visszavonás"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: sikeres",
+        "failing": "{suite}: sikertelen"
+    },
+    "PageTitle": {
+        "about": "Névjegy",
+        "adminBanned": "Kitiltott felhasználók",
+        "adminModSettings": "Moderátori beállítások",
+        "adminReports": "Bejelentések",
+        "adminSettings": "Rendszergazdai beállítások",
+        "adminTests": "Tesztek",
+        "authGoogleCallbackAccountDeleted": "Fiók törölve",
+        "authGoogleCallbackDeleteAccount": "Fiók törlése",
+        "authGoogleCallbackLogin": "Bejelentkezés",
+        "bookmarks": "Könyvjelzők",
+        "checkInbox": "Nézd meg a beérkező leveleidet",
+        "drafts": "Piszkozatok és ütemezettek",
+        "draftsEditDraft": "Piszkozat szerkesztése",
+        "draftsEditScheduled": "Ütemezett bejegyzés szerkesztése",
+        "forgotPassword": "Elfelejtett jelszó",
+        "friendsFeed": "Ismerősök hírfolyama",
+        "help": "Súgó",
+        "helpDescription": "Útmutatók és válaszok a webhely használatához.",
+        "locations": "Helyek",
+        "locationsDescription": "Bejegyzések a hozzád legközelebbi helyekről.",
+        "locationsPlaceDescription": "Bejegyzések {place} közelében.",
+        "login": "Bejelentkezés",
+        "loginVerificationCode": "Ellenőrző kód",
+        "map": "Térkép",
+        "mapDescription": "Bejegyzések térképe a világ minden tájáról – találj embereket és dolgokat a közeledben.",
+        "messages": "Üzenetek",
+        "messagesWithUser": "Üzenetek vele: {name}",
+        "notifications": "Értesítések",
+        "privacy": "Adatvédelmi irányelvek",
+        "quote": "Idézés",
+        "relayFeed": "Átjátszó hírfolyama",
+        "relayFeedDescription": "A kiszolgáló által követett átjátszókról érkező nyilvános bejegyzések.",
+        "resetPassword": "Jelszó visszaállítása",
+        "revertEmail": "E-mail-cím módosításának visszavonása",
+        "search": "Keresés",
+        "signup": "Regisztráció",
+        "tags": "Címkék",
+        "tagsDescription": "Felkapott és népszerű címkék böngészése itt: {siteTitle}.",
+        "tagsTagDescription": "{tag} címkével ellátott bejegyzések itt: {siteTitle}.",
+        "terms": "Felhasználási feltételek",
+        "topics": "Témák",
+        "topicsDescription": "Amiről az emberek jelenleg beszélnek itt: {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel} – {entityTitle} említését tartalmazó bejegyzések itt: {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, amelyekről az emberek jelenleg beszélnek itt: {siteTitle}.",
+        "unsubscribe": "E-mailes összefoglalók",
+        "userFriends": "{name} ismerősei",
+        "userFriendsDescription": "{name} ismerősei itt: {siteTitle}",
+        "userSettings": "Felhasználói beállítások",
+        "users": "Felhasználók",
+        "verifyEmail": "E-mail-cím ellenőrzése"
+    },
+    "PostLikeButton": {
+        "like": "Kedvelés",
+        "unlike": "Kedvelés visszavonása"
+    },
+    "PostPinButton": {
+        "pin": "Kitűzés",
+        "unpin": "Kitűzés megszüntetése"
+    },
+    "PostQuoteButton": {
+        "name": "Idézés"
+    },
+    "PostDeleteButton": {
+        "name": "Törlés"
+    },
+    "PostEditButton": {
+        "name": "Szerkesztés"
+    },
+    "ReportButton": {
+        "name": "Bejelentés"
+    },
+    "PostActionBar": {
+        "reply": "Válasz",
+        "replies": {
+            "one": "Válaszok ({count})",
+            "other": "Válaszok ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(szerkesztve)"
+    },
+    "RepliesHeading": {
+        "heading": "Válaszok"
+    },
+    "PollVoteButton": {
+        "name": "Szavazás"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "További ",
+            "link": "helyek megtekintése",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Bejegyzések a közeledben",
+        "description": "Ez egy ponthoz legközelebbi bejegyzéseket mutatja – bárhol is legyen aktivitás, akármilyen messze. Oszd meg a helyzetedet, hogy onnan indulj, ahol vagy, vagy válassz inkább egy pontot a térképen.",
+        "useMyLocation": "Saját helyzetem használata",
+        "pickOnMap": "Kiválasztás a térképen",
+        "searchPlaceholder": "Vagy írj be egy helynevet…",
+        "searchLabel": "Hely keresése",
+        "locating": "Helyzet meghatározása…",
+        "noGeolocation": "A böngésződ nem tud helyzetet megosztani.",
+        "locationError": "Nem sikerült lekérni a helyzetedet. Ellenőrizd a böngésző helymeghatározási engedélyét."
+    },
+    "PollDeadline": {
+        "final": "Végeredmény",
+        "closes": {
+            "before": "Lezárás: ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} nap múlva",
+            "other": "{count} nap múlva"
+        },
+        "hours": {
+            "one": "{count} óra múlva",
+            "other": "{count} óra múlva"
+        },
+        "minutes": {
+            "one": "{count} perc múlva",
+            "other": "{count} perc múlva"
+        },
+        "underMinute": "kevesebb mint egy perc múlva"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 személy szavazott ",
+            "other": "{count} személy szavazott "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Jelentkezz be",
+            "after": " a közzétételhez."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Jelentkezz be",
+            "after": " a válaszadáshoz."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " újra közzétette"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Válasz erre: ",
+            "after": ""
+        },
+        "untitled": "ez a bejegyzés",
+        "jumpToStart": "Ugrás az elejére"
+    },
+    "TopicSummaryCard": {
+        "label": "MI által készített összefoglaló"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Üdvözlünk itt: ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Írj valamit az alábbi mezőbe, és megjelenik a hírfolyamodban. Bárki válaszolhat, a válasz pedig egyszerűen egy szülővel rendelkező bejegyzés, így a beszélgetések olyan mélyre ágazhatnak, amennyire szükséges.",
+            "Jelölj ismerősnek embereket, és a bejegyzéseik bekerülnek a hírfolyamodba. A globális hírfolyam – a webhely neve bal felül – mindent megmutat, amit itt írtak; itt találhatsz hozzáadandó embereket.",
+            "Ez a webhely a Födiverzum része: teljes azonosítójukkal követhetsz Mastodon-fiókokat és más kiszolgálók fiókjait, a bejegyzéseid pedig eljutnak az ottani követőidhez. Keress rá egy olyan azonosítóra, mint @valaki@example.social, és ez a kiszolgáló megkeresi.",
+            "Adj #címkéket egy bejegyzéshez, és megjelenik a címke oldalán, valamint a Felkapottak között, ha elegen írnak róla.",
+            "A tagok közötti üzenetek végpontok között titkosítottak – a kiszolgáló olyan titkosított szöveget tárol, amelyet nem tud elolvasni. Kapcsold be a Beállításokban.",
+            "Nem kell rögtön közzétenned: ments piszkozatot, vagy állíts be időpontot, és magától megjelenik. Mindkettőt a Piszkozatok és ütemezettek alatt találod."
+        ],
+        "more": {
+            "before": "További információt találsz a ",
+            "link": "súgóoldalakon",
+            "after": ", többek között arról, hogyan költöztethetsz ide egy fiókot máshonnan."
+        },
+        "dontShowAgain": "Ne jelenjen meg újra"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Emoji beszúrása"
+    },
+    "LinkImagePreview": {
+        "alt": "Hivatkozás előnézeti képe"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Kép eltávolítása"
+    },
+    "LinkItem": {
+        "alt": "Hivatkozás előnézeti képe"
+    },
+    "MapScrubber": {
+        "play": "Lejátszás",
+        "pause": "Szünet",
+        "cumulativeMode": "Addig bezárólag",
+        "windowMode": "Csak akkor",
+        "rangeLabel": "Bejegyzések megjelenítése egy dátumig",
+        "cumulativeLabel": {
+            "one": "{date} időpontig közzétéve – {count} bejegyzés",
+            "other": "{date} időpontig közzétéve – {count} bejegyzés"
+        },
+        "windowLabel": {
+            "one": "{date} körül közzétéve – {count} bejegyzés",
+            "other": "{date} körül közzétéve – {count} bejegyzés"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} bejegyzése",
+        "pageTitleUntitled": "Bejegyzés",
+        "imageAltByAuthor": "{name} által közzétett fénykép",
+        "imageAltUntitled": "Fénykép"
+    },
+    "PostBookmarkButton": {
+        "remove": "Könyvjelző eltávolítása",
+        "add": "Könyvjelző hozzáadása"
+    },
+    "PostRepostButton": {
+        "undo": "Újraközlés visszavonása",
+        "repost": "Újraközlés"
+    },
+    "QuotedPost": {
+        "viewLink": "Idézett bejegyzés megtekintése"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Függőben lévő kérelmek"
+    },
+    "ScrollToTopButton": {
+        "label": "Görgetés a tetejére"
+    },
+    "SearchClearButton": {
+        "label": "Keresés törlése"
+    },
+    "SitePolicyLinks": {
+        "terms": "Felhasználási feltételek",
+        "privacy": "Adatvédelmi irányelvek"
+    },
+    "SkipLink": {
+        "label": "Ugrás a tartalomhoz"
+    },
+    "TopicHeading": {
+        "searchLink": "Keresés erre",
+        "noPosts": "Jelenleg egy bejegyzés sem említi ezt."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Ilyesmiről még nem írtak."
+    },
+    "TrendingEntitySection": {
+        "heading": "Felkapott"
+    },
+    "PostLocationLink": {
+        "title": "Hely megjelenítése a térképen",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "épp most",
+        "minutes": {
+            "one": "{count} perce",
+            "other": "{count} perce"
+        },
+        "hours": {
+            "one": "{count} órája",
+            "other": "{count} órája"
+        },
+        "days": {
+            "one": "{count} napja",
+            "other": "{count} napja"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Téma",
+        "themes": {
+            "system": "Rendszerbeállítás",
+            "light": "Egyszerű világos",
+            "dark": "Egyszerű sötét",
+            "sepia": "Szépia",
+            "midnight": "Éjfél",
+            "sunset": "Naplemente",
+            "rose": "Rózsa",
+            "forest": "Erdő",
+            "ocean": "Óceán",
+            "lavender": "Levendula",
+            "gold": "Arany",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Szürkeárnyalatos"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "A fordítás nincs beállítva ezen a kiszolgálón.",
+        "nothing": "Itt nincs mit lefordítani.",
+        "unknownSource": "Még nem sikerült megállapítani, milyen nyelvű ez a bejegyzés, ezért nem fordítható le.",
+        "alreadyReadable": "Ez a bejegyzés már azon a nyelven van.",
+        "unsupportedPair": "Ez a kiszolgáló még nem tudja lefordítani azt a nyelvet."
+    },
+    "LanguagePrompt": {
+        "question": "Magyarul szeretnéd megtekinteni a webhelyet?",
+        "accept": "Igen",
+        "decline": "Nem, köszönöm"
+    },
+    "LanguageSelector": {
+        "label": "Nyelv",
+        "legend": "Nyelv"
+    },
+    "EmailDigest": {
+        "subject": "Amiről lemaradtál itt: {site}",
+        "greeting": "Szia {name}!",
+        "whileAway": "Amíg távol voltál:",
+        "repeatedTimes": {
+            "one": " ({count} alkalommal)",
+            "other": " ({count} alkalommal)"
+        },
+        "moreMissed": {
+            "one": "és további {count} értesítés",
+            "other": "és további {count} értesítés"
+        },
+        "messagesWaiting": {
+            "one": "{count} üzenet vár rád",
+            "other": "{count} üzenet vár rád"
+        },
+        "postsInFeed": {
+            "one": "{count} új bejegyzés a hírfolyamodban",
+            "other": "{count} új bejegyzés a hírfolyamodban"
+        },
+        "unsubscribeInstructions": "Az e-mailek leállításához nyisd meg ezt a hivatkozást – egyetlen kattintás, jelszó sem kell:",
+        "comeSeeWhatIsNew": "Nézd meg az újdonságokat",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Ne küldjetek több ilyet",
+            "after": " – egy kattintás, jelszó nélkül."
+        }
+    },
+    "EmailVerification": {
+        "subject": "E-mail-címed ellenőrzése",
+        "greeting": "Szia {name}!",
+        "instructions": "Az e-mail-címed ellenőrzéséhez nyisd meg ezt a hivatkozást:",
+        "htmlInstructions": "Az e-mail-címed ellenőrzéséhez kattints az alábbi hivatkozásra:",
+        "buttonLabel": "E-mail-cím ellenőrzése",
+        "expiresIn": {
+            "one": "Ez a hivatkozás {count} óra múlva lejár.",
+            "other": "Ez a hivatkozás {count} óra múlva lejár."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Jelszavad visszaállítása",
+        "greeting": "Szia {name}!",
+        "instructions": "Valaki (remélhetőleg te) jelszó-visszaállítást kért. Új jelszó választásához nyisd meg ezt a hivatkozást:",
+        "htmlInstructions": "Valaki (remélhetőleg te) jelszó-visszaállítást kért. Új jelszó választásához kattints az alábbi hivatkozásra:",
+        "buttonLabel": "Jelszó visszaállítása",
+        "expiresIn": {
+            "one": "Ez a hivatkozás {count} óra múlva lejár.",
+            "other": "Ez a hivatkozás {count} óra múlva lejár."
+        },
+        "ignoreNotice": "Ha nem te kérted ezt, figyelmen kívül hagyhatod ezt az e-mailt."
+    }
+}

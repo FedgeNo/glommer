@@ -1,0 +1,1179 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count} balsas",
+            "few": "{count} balsai",
+            "many": "{count} balso",
+            "other": "{count} balsų"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Prisijunkite",
+            "after": ", kad atsakytumėte."
+        },
+        "post": {
+            "before": "",
+            "link": "Prisijunkite",
+            "after": ", kad paskelbtumėte."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Svetainė",
+        "siteURLLabel": "Svetainės URL",
+        "siteTitleLabel": "Svetainės pavadinimas",
+        "mailFromAddressLabel": "Siuntėjo el. pašto adresas",
+        "serverNameConfirmedLabel": "Žiniatinklio serverio konfigūracijoje nustačiau „ServerName {host}“ ir „UseCanonicalName On“ (tikrinama tik tada, jei automatinio tiesioginio bandymo nepavyksta užbaigti – žr. README.md HTTPS skyrių)",
+        "databaseLegend": "Duomenų bazė",
+        "databaseHostLabel": "Duomenų bazės serveris",
+        "databasePortLabel": "Duomenų bazės prievadas",
+        "databaseNameLabel": "Duomenų bazės pavadinimas",
+        "databaseAdminUsernameLabel": "Duomenų bazės administratoriaus vardas",
+        "databaseAdminPasswordLabel": "Duomenų bazės administratoriaus slaptažodis",
+        "webSocketTLSLegend": "WebSocket TLS (neprivaloma)",
+        "certificatePathLabel": "Sertifikato kelias",
+        "certificatePathPlaceholder": "Palikite tuščią, kad būtų automatiškai sugeneruota naudojant mkcert",
+        "keyPathLabel": "Rakto kelias",
+        "keyPathPlaceholder": "Palikite tuščią, kad būtų automatiškai sugeneruota naudojant mkcert",
+        "botProtectionLegend": "Apsauga nuo robotų (neprivaloma)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile svetainės raktas",
+        "turnstileSiteKeyPlaceholder": "Palikite tuščią, kad praleistumėte",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile slaptasis raktas",
+        "turnstileSecretKeyPlaceholder": "Palikite tuščią, kad praleistumėte",
+        "submit": "Nustatyti"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Dabartinė slaptafrazė",
+        "newPassphraseLabel": "Nauja slaptafrazė",
+        "confirmNewPassphraseLabel": "Pakartokite naują slaptafrazę",
+        "accountPasswordLabel": "Paskyros slaptažodis",
+        "submit": "Keisti slaptafrazę"
+    },
+    "PasswordResetForm": {
+        "legend": "Pasirinkite naują slaptažodį",
+        "newPasswordLabel": "Naujas slaptažodis",
+        "newPasswordPlaceholder": "Bent 8 simboliai",
+        "confirmPasswordLabel": "Pakartokite naują slaptažodį",
+        "submit": "Atkurti slaptažodį"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Atkurkite slaptažodį",
+        "emailLabel": "El. paštas",
+        "submit": "Siųsti atkūrimo nuorodą"
+    },
+    "EmailRevertForm": {
+        "submit": "Atšaukti el. pašto pakeitimą"
+    },
+    "EmailVerifyForm": {
+        "submit": "Patvirtinti el. pašto adresą"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Vėl įjungti"
+    },
+    "EmailDigestSetting": {
+        "label": "El. paštu pranešti, ką praleidau kurį laiką nebuvęs (-usi)"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Nežinomas įrenginys",
+        "browserOnOS": "{browser}, {os}",
+        "thisDevice": " (šis įrenginys)",
+        "lastUsed": {
+            "before": "Paskutinį kartą naudota: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Užbaigti visus aktyvius seansus ir pamiršti visus įsimintus įrenginius. Būsite atjungti visose naršyklėse, įskaitant šią."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Atsijungti visur"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Patvirtinti per „Google“ ir ištrinti"
+    },
+    "GoogleSignInButton": {
+        "label": "Tęsti su „Google“"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Redaguoti profilį"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Gaukite pranešimus šiame įrenginyje net tada, kai svetainė neatidaryta. Šis pasirinkimas taikomas kiekvienai naršyklei atskirai – įjunkite visur, kur norite gauti pranešimus.",
+        "label": {
+            "off": "Įjungti šiame įrenginyje",
+            "on": "Išjungti šiame įrenginyje"
+        },
+        "unsupported": "Ši naršyklė nepalaiko tiesioginių pranešimų"
+    },
+    "LoginForm": {
+        "legend": "Prisijungimas",
+        "identifier": "Naudotojo vardas arba el. paštas",
+        "password": "Slaptažodis",
+        "rememberMe": "Prisiminti mane",
+        "submit": "Prisijungti"
+    },
+    "SignupForm": {
+        "legend": "Kurti paskyrą",
+        "usernameLabel": "Naudotojo vardas",
+        "usernamePlaceholder": "Mažosios raidės, skaičiai ir _",
+        "emailLabel": "El. paštas",
+        "emailPlaceholder": "Galiojantis el. pašto adresas",
+        "displayName": "Rodomas vardas (neprivaloma)",
+        "bioLabel": "Aprašymas (neprivaloma)",
+        "bioPlaceholder": "Trumpas aprašymas – #saityno_žymės, @paminėjimai ir nuorodos taps spustelėjami",
+        "passwordLabel": "Slaptažodis",
+        "passwordPlaceholder": "Slaptažodis: bent 8 simboliai",
+        "rememberMe": "Prisiminti mane",
+        "submit": "Registruotis"
+    },
+    "PasswordChangeForm": {
+        "legend": "Keisti slaptažodį",
+        "currentPassword": "Dabartinis slaptažodis",
+        "newPasswordLabel": "Naujas slaptažodis",
+        "newPasswordPlaceholder": "Bent 8 simboliai",
+        "confirmPassword": "Pakartokite naują slaptažodį",
+        "submit": "Keisti slaptažodį"
+    },
+    "EmailChangeForm": {
+        "legend": "Keisti el. pašto adresą",
+        "newEmail": "Naujas el. pašto adresas",
+        "currentPassword": "Dabartinis slaptažodis",
+        "notice": "Kad galėtumėte toliau naudotis svetaine, turėsite patvirtinti naują adresą.",
+        "submit": "Keisti el. paštą"
+    },
+    "AccountDeleteForm": {
+        "legend": "Ištrinti paskyrą",
+        "warning": "Paskyra, įrašai ir žinutės bus visam laikui ištrinti. Šio veiksmo atšaukti negalima.",
+        "currentPassword": "Dabartinis slaptažodis",
+        "submit": "Ištrinti paskyrą"
+    },
+    "AccountMigrationForm": {
+        "legend": "Persikelti į kitą serverį",
+        "movedNotice": "Ši paskyra persikėlė į {destination}. Jūsų sekėjų paprašyta sekti jus ten.",
+        "explanation": "Jūsų sekėjų prašoma sekti naująją paskyrą. Įrašai lieka čia – objektų adresai priklauso juos sukūrusiam serveriui, todėl jų perkelti negalima.",
+        "addressNotice": "Paskyra, į kurią keliatės, pirmiausia turi nurodyti šią paskyrą skiltyje „taip pat žinoma kaip“. Jūsų adresas čia yra {address}.",
+        "movedToLabel": "Persikelti į",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Taip pat žinoma kaip",
+        "aliasesExplanation": "Kitos jums priklausančios paskyros. Čia nurodyta paskyra gali persikelti į šią – tai tik leidimas, o ne pats perkėlimas. Vienas adresas eilutėje.",
+        "aliasesLabel": "Kitos jūsų paskyros",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Išsaugoti"
+    },
+    "TwoFactorForm": {
+        "legend": "Įveskite patvirtinimo kodą",
+        "explanation": "Patvirtinimo kodą išsiuntėme el. paštu. Norėdami užbaigti prisijungimą, įveskite jį žemiau arba naudokite vieną iš atkūrimo kodų.",
+        "explanationEmailFailed": "Šiuo metu nepavyko išsiųsti patvirtinimo kodo el. paštu. Norėdami užbaigti prisijungimą, įveskite vieną iš atkūrimo kodų.",
+        "code": "Patvirtinimo kodas",
+        "submit": "Patvirtinti"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Dviejų veiksnių autentifikavimas įjungtas",
+            "off": "Dviejų veiksnių autentifikavimas išjungtas"
+        },
+        "explanation": {
+            "on": "Prisijungiant el. paštu išsiųsime patvirtinimo kodą, kurį turėsite įvesti. Jei laiškas jūsų nepasieks, galėsite prisijungti vienu iš atkūrimo kodų.",
+            "off": "Pridėkite antrą prisijungimo veiksmą: el. paštu išsiųsime patvirtinimo kodą, todėl vien slaptažodžio nepakaks. Taip pat gausite vienkartinius atkūrimo kodus, jei laiškas jūsų nepasiektų."
+        },
+        "currentPassword": "Dabartinis slaptažodis",
+        "submit": {
+            "on": "Išjungti dviejų veiksnių autentifikavimą",
+            "off": "Įjungti dviejų veiksnių autentifikavimą"
+        },
+        "regenerate": "Generuoti naujus atkūrimo kodus",
+        "recoveryHeading": "Jūsų atkūrimo kodai",
+        "recoveryNote": "Dabar išsaugokite juos saugioje vietoje – daugiau jie nebus rodomi. Kiekvienas kodas leidžia prisijungti vieną kartą, jei negaunate patvirtinimo laiško; sugeneravus naujus kodus visi šie bus pakeisti.",
+        "toast": {
+            "on": "Dviejų veiksnių autentifikavimas įjungtas.",
+            "off": "Dviejų veiksnių autentifikavimas išjungtas.",
+            "regenerated": "Sugeneruoti nauji atkūrimo kodai. Senieji nebeveikia."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Patikrinkite gautuosius ir spustelėkite mūsų atsiųstą patvirtinimo nuorodą, kad patvirtintumėte el. pašto adresą. Jei laiško nematote, patikrinkite šlamšto aplanką."
+    },
+    "VerificationResendButton": {
+        "label": "Siųsti patvirtinimo laišką dar kartą"
+    },
+    "MailSettingsForm": {
+        "legend": "Siunčiamas paštas",
+        "fromAddressLabel": "Siuntėjo adresas",
+        "fromAddressPlaceholder": "Kol tai nenustatyta, laiškų siųsti negalima",
+        "fromNameLabel": "Siuntėjo vardas",
+        "hostLabel": "SMTP serveris",
+        "portLabel": "SMTP prievadas",
+        "usernameLabel": "SMTP naudotojo vardas",
+        "passwordLabel": "SMTP slaptažodis",
+        "passwordPlaceholder": {
+            "set": "Slaptažodis nustatytas – palikite tuščią, kad jo nekeistumėte",
+            "unset": "SMTP slaptažodis"
+        },
+        "encryptionLabel": "Šifravimas",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, įprastai 587 prievadas)",
+            "ssl": "SSL (numanomas TLS, įprastai 465 prievadas)",
+            "none": "Nėra"
+        },
+        "explainer": "Palikite SMTP serverį tuščią, kad vietoje jo būtų naudojama PHP funkcija mail() (nerekomenduojama – žr. README pristatomumo skyrių). Kol nenustatytas siuntėjo adresas, negalima siųsti jokių laiškų.",
+        "save": "Išsaugoti"
+    },
+    "MapSettingsForm": {
+        "legend": "Žemėlapio išklotinės",
+        "notice": "Palikite tuščią, kad būtų naudojamas „OpenStreetMap“. Norėdami naudoti raktą turintį teikėją, įklijuokite jo URL šabloną su tekstu {apiKey} rakto vietoje, o žemiau įrašykite raktą ir autorystės nuorodą.",
+        "urlLabel": "Išklotinės URL šablonas",
+        "keyLabel": "API raktas",
+        "keyPlaceholder": "Žemėlapio teikėjo API raktas",
+        "attributionLabel": "Autorystės nuoroda",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Išsaugoti"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Prisijungimas per „Google“",
+        "clientIdLabel": "Kliento ID",
+        "clientIdPlaceholder": "„Google OAuth“ kliento ID",
+        "secretLabel": "Kliento slaptasis raktas",
+        "secretPlaceholder": {
+            "set": "Kliento slaptasis raktas nustatytas – palikite tuščią, kad jo nekeistumėte",
+            "unset": "„Google OAuth“ kliento slaptasis raktas"
+        },
+        "explainer": "Kad registruojantis ir prisijungiant būtų rodoma parinktis „Tęsti su Google“, būtini abu laukai. „Google Cloud OAuth“ kliente nustatykite leidžiamą peradresavimo URI į {url}; išvalę kliento ID šią funkciją išjungsite.",
+        "save": "Išsaugoti"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Svetainės raktas",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile svetainės raktas",
+        "turnstileSecretKeyLabel": "Slaptasis raktas",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Slaptasis raktas nustatytas – palikite tuščią, kad jo nekeistumėte",
+            "unset": "Cloudflare Turnstile slaptasis raktas"
+        },
+        "turnstileExplainer": "Kad CAPTCHA būtų rodoma registruojantis ir prisijungiant, būtini abu raktai. Išvalę svetainės raktą ją išjungsite.",
+        "recaptchaLegend": "Google reCAPTCHA (užblokuotos paskyros atkūrimas)",
+        "recaptchaSiteKeyLabel": "Svetainės raktas",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 svetainės raktas",
+        "recaptchaSecretKeyLabel": "Slaptasis raktas",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Slaptasis raktas nustatytas – palikite tuščią, kad jo nekeistumėte",
+            "unset": "Google reCAPTCHA v2 slaptasis raktas"
+        },
+        "recaptchaExplainer": "Būtini abu raktai. Juos nustačius, prisijungimo bandymų ribą pasiekusi paskyra gali grįžti atlikusi šį patikrinimą, užuot laukusi blokavimo pabaigos; jų nenustačius teks laukti. Naudokite reCAPTCHA v2 („Aš ne robotas“). Išvalę svetainės raktą ją išjungsite.",
+        "save": "Išsaugoti"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Naudojama svetainės DI funkcijoms (populiarių temų santraukoms ir kt.). Palikite modelį tuščią, kad būtų naudojamas nemokamų modelių maršruto parinktuvas: „OpenRouter“ atsitiktinai parinks tuo metu nemokamą modelį, todėl išlaidų niekada nebus.",
+        "keyLabel": "API raktas",
+        "keyPlaceholder": {
+            "set": "API raktas nustatytas – palikite tuščią, kad jo nekeistumėte",
+            "unset": "OpenRouter API raktas"
+        },
+        "clearKeyLabel": "Pašalinti išsaugotą API raktą (išjungia DI funkcijas)",
+        "modelLabel": "Modelis",
+        "neverSpendLabel": "Niekada neleisti leisti pinigų (rekomenduojama)",
+        "explainer": "Įjungus apsaugą, kiekvienos užklausos kainos riba yra nulis, todėl nesant nemokamo teikėjo užklausa nepavyks, o mokamas modelis nebus naudojamas. Norėdami visiškai išjungti DI funkcijas, pašalinkite išsaugotą API raktą.",
+        "save": "Išsaugoti"
+    },
+    "AboutSettingsForm": {
+        "legend": "Apie",
+        "description": "Paprastas tekstas – pastraipos atskiriamos tuščiomis eilutėmis. Pirmoji pastraipa bus naudojama kaip svetainės aprašymas.",
+        "save": "Išsaugoti"
+    },
+    "TermsSettingsForm": {
+        "legend": "Paslaugų teikimo sąlygos",
+        "description": "Paprastas tekstas – pastraipos atskiriamos tuščiomis eilutėmis.",
+        "save": "Išsaugoti"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Privatumo politika",
+        "description": "Paprastas tekstas – pastraipos atskiriamos tuščiomis eilutėmis.",
+        "save": "Išsaugoti"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "El. pašto suvestinė",
+        "fieldLabel": "Baigiamoji pastraipa",
+        "notice": "Pridedama kiekvienos suvestinės pabaigoje, po nario praleistų įvykių sąrašo. Paprastas tekstas. Palikite tuščią, kad būtų naudojamas numatytasis programinės įrangos tekstas.",
+        "save": "Išsaugoti"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Svetainės piktograma",
+        "currentAlt": "Dabartinė svetainės piktograma",
+        "save": "Įkelti svetainės piktogramą"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Pradžios puslapio paveikslas",
+        "explainer": "Rodomas kitose svetainėse, kai kas nors bendrina nuorodą į šią svetainę – tik „Open Graph“ metaduomenyse, pačiame puslapyje nerodomas. Apkarpomas iki 1200×630. Be jo nuorodų peržiūrose paveikslo nebus.",
+        "currentAlt": "Dabartinis pradžios puslapio paveikslas",
+        "save": "Įkelti paveikslą"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automatinis paleidimas"
+    },
+    "CarouselNextButton": {
+        "name": "Kitas"
+    },
+    "CarouselPrevButton": {
+        "name": "Ankstesnis"
+    },
+    "MediaFullscreenButton": {
+        "name": "Visas ekranas"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Pašalinti failus"
+    },
+    "NotificationDropdown": {
+        "showAll": "Rodyti visus"
+    },
+    "HelpSearch": {
+        "placeholder": "Ieškoti žinyne…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Supratau"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Atmesti"
+    },
+    "StagedPostEditButton": {
+        "name": "Redaguoti"
+    },
+    "StagedPostPublishButton": {
+        "name": "Skelbti dabar"
+    },
+    "LogoutButton": {
+        "name": "Atsijungti"
+    },
+    "AvatarUploadForm": {
+        "submit": "Atnaujinti pseudoportretą"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Ieškoti užblokuotų naudotojų…"
+    },
+    "BannedUserSection": {
+        "heading": "Užblokuoti naudotojai"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Išsiųsti prašymai (laukiama atsakymo)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Užblokavo {name} ",
+            "after": ""
+        },
+        "reason": " – {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Užblokavo {name} ",
+            "after": ""
+        },
+        "deletedAccount": "ištrinta paskyra",
+        "reason": " – {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "sausio",
+            "2": "vasario",
+            "3": "kovo",
+            "4": "balandžio",
+            "5": "gegužės",
+            "6": "birželio",
+            "7": "liepos",
+            "8": "rugpjūčio",
+            "9": "rugsėjo",
+            "10": "spalio",
+            "11": "lapkričio",
+            "12": "gruodžio"
+        },
+        "shortMonths": {
+            "1": "01",
+            "2": "02",
+            "3": "03",
+            "4": "04",
+            "5": "05",
+            "6": "06",
+            "7": "07",
+            "8": "08",
+            "9": "09",
+            "10": "10",
+            "11": "11",
+            "12": "12"
+        },
+        "long": "{year} m. {month} {day} d.",
+        "short": "{year}-{month}-{day}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Nepavyko prisijungti prie WebSocket serverio adresu 127.0.0.1:{port}{tls} ({error}). Pirmiausia jį paleiskite: systemctl --user start glommer-websocket (vieneto failą rasite README.md). Jei ką tik pridėjote arba pašalinote WS_TLS_CERT/WS_TLS_KEY, paleiskite iš naujo, kad sutaptų su .env.",
+        "wsOverTLS": " per TLS",
+        "wsBadHandshake": "Paslauga adresu 127.0.0.1:{port} neužbaigė tinkamos WebSocket rankos paspaudimo procedūros – tame prievade gali veikti ne bin/websocket-server.php.",
+        "wsNoPong": "WebSocket serveris priėmė rankos paspaudimą, bet neatsakė į tikrinimo signalą – jis gali būti užstrigęs arba veikti netinkamai. Patikrinkite žurnalus.",
+        "wsReachable": "WebSocket serveris pasiekiamas ir atsako adresu 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Saityno žymė",
+            "person": "Asmuo",
+            "org": "Organizacija",
+            "gpe": "Vieta",
+            "loc": "Regionas",
+            "fac": "Orientyras",
+            "product": "Produktas",
+            "event": "Įvykis",
+            "work_of_art": "Kūrinys",
+            "law": "Įstatymas",
+            "language": "Kalba",
+            "norp": "Grupė"
+        },
+        "plural": {
+            "hashtag": "Saityno žymės",
+            "person": "Žmonės",
+            "org": "Organizacijos",
+            "gpe": "Vietos",
+            "loc": "Regionai",
+            "fac": "Orientyrai",
+            "product": "Produktai",
+            "event": "Įvykiai",
+            "work_of_art": "Kūriniai",
+            "law": "Įstatymai",
+            "language": "Kalbos",
+            "norp": "Grupės"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Pašalinti draugą"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Priimti"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Atmesti"
+    },
+    "UserFollowButton": {
+        "follow": "Sekti",
+        "unfollow": "Nebesekti"
+    },
+    "UserBlockButton": {
+        "name": "Blokuoti"
+    },
+    "UserUnblockButton": {
+        "name": "Atblokuoti"
+    },
+    "OtherUser": {
+        "message": "Žinutė"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Meniu",
+        "loggedInAs": "Prisijungta kaip {name}",
+        "friendsFeed": "Draugų srautas",
+        "relayFeed": "Perdavimo srautas",
+        "users": "Naudotojai",
+        "tags": "Žymės",
+        "topics": "Temos",
+        "map": "Žemėlapis",
+        "locations": "Vietos",
+        "search": "Paieška",
+        "messages": "Žinutės",
+        "bookmarks": "Žymelės",
+        "help": "Žinynas",
+        "about": "Apie",
+        "login": "Prisijungti",
+        "signup": "Registruotis",
+        "friends": "Draugai",
+        "drafts": "Juodraščiai ir suplanuoti",
+        "userSettings": "Naudotojo nuostatos",
+        "modSettings": "Moderavimo nuostatos",
+        "adminSettings": "Administravimo nuostatos"
+    },
+    "LogoutForm": {
+        "submit": "Atsijungti"
+    },
+    "User": {
+        "joined": "Prisijungė {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Pridėti draugą",
+        "cancel": "Atšaukti prašymą"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Suplanuota: {when}",
+        "draft": "Juodraštis – bus paskelbtas tik jums nurodžius"
+    },
+    "MessageTranslateButton": {
+        "name": "Išversti šią žinutę"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Apie žinučių vertimą",
+        "body": "Norint išversti žinutę, jos tekstas siunčiamas į šį serverį ir čia išverčiamas. Niekas neišsaugoma: vertimas neįrašomas į duomenų bazę, o pati žinutė nepakeičiama. Tačiau taip verčiamą žinutę serveris perskaito, todėl ji nebėra visiškai užšifruota taip, kaip neversta žinutė. Galima versti tik gautas žinutes ir tik jums paprašius.",
+        "confirm": "Išversti",
+        "cancel": "Ne dabar"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Pamiršote slaptafrazę? Atkūrus bus sukurti nauji raktai, apsaugoti nauja slaptafraze, tačiau senais raktais užšifruotų žinučių daugiau niekas niekada negalės perskaityti.",
+        "requirements": "Bent 12 simbolių ir ne paskyros slaptažodis – jis siunčiamas į šį serverį, o slaptafrazė niekada neturi būti siunčiama.",
+        "passphraseLabel": "Slaptafrazė",
+        "resetPassphraseLabel": "Nauja slaptafrazė",
+        "confirmLabel": "Pakartokite slaptafrazę",
+        "accountPasswordLabel": "Paskyros slaptažodis",
+        "submitLabel": "Įjungti šifruotas žinutes",
+        "resetSubmitLabel": "Atkurti šifravimo raktus"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Visiškai užšifruotos žinutės užrakinamos ir atrakinamos naršyklėje: šis serveris jas perduoda ir saugo negalėdamas perskaityti. Raktą saugo slaptafrazė, ta pati slaptafrazė atrakina žinutes bet kurioje naršyklėje. Pokalbis šifruojamas, kai abu žmonės tai įjungia; žinutės kitų serverių naudotojams lieka nešifruotos, nes federacijos protokolas kitaip jų perduoti negali.",
+        "noRecovery": "Pamestos slaptafrazės atkurti negalima – to negali net administratorius. Ją pametę prarasite šifruotas žinutes.",
+        "enabledStatus": "Šifruotos žinutės įjungtos."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Užšifruota",
+            "explanation": "Šio pokalbio žinutės visiškai užšifruotos: jos atrakinamos slaptafraze ir skaitomos jūsų naršyklėse, o serveris saugo tik šifruotą tekstą. Kartu su pašnekovu patikrinkite pokalbio apačioje esantį saugos kodą, kad įsitikintumėte, jog niekas nėra įsiterpęs. Iki šifravimo įjungimo išsiųstos žinutės lieka skaitomos kaip anksčiau."
+        },
+        "awaiting-theirs": {
+            "label": "Neužšifruota",
+            "explanation": "Žinutės čia bus visiškai užšifruotos, kai {handle} savo nuostatose įjungs šifruotas žinutes."
+        },
+        "awaiting-yours": {
+            "label": "Neužšifruota",
+            "explanation": "Žinutės čia nėra visiškai užšifruotos. Norėdami apsaugoti pokalbį, Nuostatose įjunkite šifruotas žinutes."
+        },
+        "federated": {
+            "label": "Neužšifruota",
+            "explanation": "{handle} yra kitame serveryje. Šio pokalbio žinutės saugomos ir tame, ir šiame serveryje, o ano serverio administratorius gali jas skaityti – serverių protokolas neturi būdo jų užšifruoti. Jautrią informaciją siųskite tik šios svetainės pokalbiuose."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Sekti Fedivisatos paskyras",
+        "notice": "Įklijuokite vieną ar daugiau naudotojų vardų, pvz., @user@example.social – juos galima atskirti bet kokiu skirtuku.",
+        "handlesLabel": "Sekami Fedivisatos naudotojų vardai",
+        "submit": "Sekti",
+        "statusPending": "laukiama",
+        "statusAccepted": "priimta"
+    },
+    "ServerBlockForm": {
+        "legend": "Blokuoti serverį",
+        "description": "Atmeta viską iš šio serverio ir jo posričių: niekas nepriimama ir neišsiunčiama, o esami sekimo ryšiai abiem kryptimis nutraukiami.",
+        "serverLabel": "Serveris",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Priežastis",
+        "reasonPlaceholder": "Kodėl šis serveris blokuojamas",
+        "submit": "Blokuoti serverį"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Patikrina skambučio nustatymo dalis, kurias galima išbandyti vienoje naršyklėje. Čia galima patikrinti viską iki tiesioginio lygiarangio ryšio; ryšiui su kitu žmogumi reikia jo dalyvavimo."
+    },
+    "VideoCallTestButton": {
+        "label": "Vykdyti patikrą"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket serveris: veikia",
+        "failed": "WebSocket serveris: {detail}",
+        "clientTesting": "Naršyklės ryšys: tikrinama…",
+        "clientConnecting": "Naršyklės ryšys: jungiamasi…",
+        "clientConnected": "Naršyklės ryšys: prisijungta",
+        "clientDisconnecting": "Naršyklės ryšys: atsijungiama…",
+        "clientNotConnected": "Naršyklės ryšys: neprisijungta"
+    },
+    "UploadWorkerStatus": {
+        "running": "Darbinė tarnyba: veikia",
+        "stopped": "Darbinė tarnyba: neveikia – parengti įkėlimai nebus perkoduoti, kol ji nebus paleista iš naujo",
+        "unknown": "Darbinė tarnyba: nežinoma – šiame serveryje nėra systemctl arba SELinux neleidžia žiniatinklio serveriui patikrinti būsenos (norėdami ištaisyti, paleiskite bin/install.php kaip root)",
+        "queue": "Eilė: rengiama {staging}, laukiama {pending}, apdorojama {processing}"
+    },
+    "TrendingTimerStatus": {
+        "running": "Populiarių temų laikmatis: veikia",
+        "stopped": "Populiarių temų laikmatis: neveikia – populiarios temos bus atnaujinamos tik skaitant per savaiminį atkūrimą (Trending::current()), o ne pagal tvarkaraštį. Paleiskite bin/install.php kaip root, kad jį nustatytumėte.",
+        "unknown": "Populiarių temų laikmatis: nežinoma – šiame serveryje nėra systemctl arba SELinux neleidžia žiniatinklio serveriui patikrinti būsenos (norėdami ištaisyti, paleiskite bin/install.php kaip root)"
+    },
+    "Notification": {
+        "postReady": "Jūsų medija apdorota ir dabar paskelbta",
+        "scheduledPostLive": "Jūsų suplanuotas įrašas paskelbtas",
+        "uploadPartlyFailed": "Įrašas paskelbtas, tačiau nepavyko apdoroti vieno ar daugiau jo failų",
+        "uploadFailed": "Nepavyko apdoroti vieno iš įkeltų failų, todėl jis nepaskelbtas",
+        "mailerFailed": "Nepavyko pristatyti el. laiško – pašto tarnyba gali neveikti. Patikrinkite pašto konfigūraciją.",
+        "mailFromNotConfigured": "Nesukonfigūruotas pašto siuntėjo adresas, todėl laiškų siųsti negalima. Nustatykite jį Administravimo nuostatų skiltyje „Siunčiamas paštas“ arba naudodami bin/install.php.",
+        "systemError": "Įvyko serverio klaida. Išsamesnės informacijos ieškokite klaidų žurnale.",
+        "passwordRemovedGoogle": "Prisijungus per „Google“ jūsų slaptažodis buvo pašalintas. Jei norite nustatyti naują, pasirinkite „Pamiršau slaptažodį“.",
+        "like": "{name} pamėgo jūsų įrašą",
+        "repost": "{name} pasidalijo jūsų įrašu",
+        "reply": "{name} atsakė į jūsų įrašą",
+        "friendRequest": "{name} atsiuntė prašymą draugauti",
+        "friendAccepted": "{name} priėmė jūsų prašymą draugauti",
+        "message": "{name} atsiuntė jums žinutę",
+        "mention": "{name} paminėjo jus įraše",
+        "follow": "{name} pradėjo jus sekti iš kito serverio",
+        "default": "{name} atliko veiksmą"
+    },
+    "NotificationList": {
+        "emptyNotice": "Pranešimų dar nėra."
+    },
+    "NotificationsNavLink": {
+        "label": "Pranešimai",
+        "unseen": "Neperžiūrėti pranešimai"
+    },
+    "NotificationTestPanel": {
+        "intro": "Išsiųskite bandomąjį pranešimą sau (administratoriui). Jis turėtų iškart pasirodyti kaip iškylantis pranešimas ir pranešimų meniu.",
+        "button": "Siųsti bandomąjį pranešimą",
+        "sending": "Siunčiama…",
+        "sent": "Išsiųsta!",
+        "failed": "Nepavyko"
+    },
+    "MessageDot": {
+        "label": "Neskaitytos žinutės"
+    },
+    "NavAlertDot": {
+        "label": "Meniu yra naujienų"
+    },
+    "Message": {
+        "encrypted": "Šifruota žinutė",
+        "decryptionFailed": "Ši žinutė buvo užšifruota raktais, kurių nebėra."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Žinutė",
+        "bodyPlaceholder": "Rašykite žinutę",
+        "send": "Siųsti"
+    },
+    "MessageList": {
+        "emptyNotice": "Žinučių dar nėra."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Perduokite šį kodą vienas kitam kitu būdu – balsu, susitikę ar skambučio metu. Jei abiejose pusėse jis sutampa, tarp jūsų niekas nėra įsiterpęs.",
+        "changed": "Šis kodas pasikeitė nuo paskutinio patikrinimo. Taip nutinka vienam iš jūsų atkūrus šifravimo raktus, tačiau taip pat atrodytų ir į pokalbį įsiterpęs skaitytojas. Prieš pasitikėdami patikrinkite naują kodą kartu.",
+        "verified": "Šį kodą patikrinote."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Pažymėti kaip patikrintą"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Slaptafrazė",
+        "passphrasePlaceholder": "Slaptafrazė šiam pokalbiui atrakinti",
+        "submit": "Atrakinti"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Paskutinė žinutė ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Jautri medija"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Numatytai rodyti jautrią mediją"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Įrašas",
+            "message": "Žinutė",
+            "user": "Naudotojas"
+        },
+        "summary": {
+            "before": "Apie {type} #{id} pranešė ",
+            "after": ""
+        },
+        "reasonLine": "Priežastis: {reason}",
+        "banReporterLabel": "Užblokuoti pranešėją",
+        "banReportedUserLabel": "Užblokuoti apskųstą naudotoją",
+        "deleteLabel": "Ištrinti: {type}",
+        "reportedImageAlt": "Apskųstas paveikslas",
+        "attachmentUnavailable": "Apskųstas priedas nebepasiekiamas.",
+        "viewAttachment": "Peržiūrėti apskųstą priedą",
+        "missing": {
+            "noSnapshot": "Apskųstas turinys nebepasiekiamas.",
+            "unknownType": "Nežinomas turinio tipas."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Pranešimų apie pažeidimus nėra."
+    },
+    "ModQueueLinks": {
+        "intro": "Eilės pakankamai ilgos, kad būtų skaitomos po puslapį, todėl jos turi atskirus puslapius.",
+        "reportsLabel": "Pranešimai apie pažeidimus",
+        "bannedUsersLabel": "Užblokuoti naudotojai"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Moderatoriai dar neatliko jokių veiksmų."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Užblokuotų populiarių objektų nėra."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Užblokuotų serverių nėra."
+    },
+    "RelayCard": {
+        "accepted": "Prenumeruojama ",
+        "waiting": "Laukiama, kol retransliatorius priims – užsiprenumeruota "
+    },
+    "RelayList": {
+        "emptyNotice": "Neprenumeruojamas joks retransliatorius. Čia atkeliauja tik tai, ką seka nariai."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Per retransliatorių dar nieko negauta. Įrašai čia pasirodo, kai juos paskelbia kitoje pusėje esantys serveriai."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Prenumeruoti retransliatorių",
+        "explainerOne": "Retransliatorius yra bendras viešų įrašų srautas: čia atkeliauja kiekvienas viešas įrašas iš visų kitų jį prenumeruojančių serverių, o šio serverio įrašai siunčiami jiems visiems. Taip naujas egzempliorius apskritai randa žmonių, nes kitu atveju federacija perduoda tik tai, ką kas nors čia jau seka.",
+        "explainerTwo": "Apkrovos numatyti negalite – ji priklauso nuo to, ką skelbia tie serveriai: vieną savaitę gali būti tylu, kitą – tūkstančiai įrašų per valandą. Visa tai tenka saugyklai, pristatymo ir moderavimo eilėms. Retransliuoti įrašai nepatenka į pagrindinį ar draugų srautą; jie rodomi Retransliavimo sraute, kurį žmonės atidaro sąmoningai.",
+        "addressLabel": "Retransliatoriaus adresas",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Prenumeruoti"
+    },
+    "RelayFollowObjectField": {
+        "label": "Prenumeratos būdas",
+        "options": {
+            "public": "Sekti viešą srautą (to tikisi dauguma retransliatorių)",
+            "actor": "Sekti paties retransliatoriaus veikėją"
+        },
+        "retryNotice": "Jei retransliatorius nepriima, atšaukite ir išbandykite kitą būdą – kai kuri retransliavimo programinė įranga atpažįsta tik vieną iš jų."
+    },
+    "SiteCounters": {
+        "members": "Nariai: {count} (per pastarąsias {days} dienas prisijungė {joined})",
+        "activeMembers": "Nariai čia per pastarąsias {days} dienas: {count} (iš jų skelbė {posted})",
+        "posts": "Čia parašyti įrašai: {count} (per pastarąsias {days} dienas – {recent})",
+        "deliveries": "Federaciniai pristatymai per pastarąsias {days} dienas: gauta {delivered}, atsisakyta pristatyti {undeliverable}",
+        "queued": "Laukia išsiuntimo: {count} (bent kartą jau atmesta {failing})",
+        "pendingReads": "Iš kitų serverių laukia perskaitymo įrašų: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Paleiskite svetainės bandymų rinkinį ir peržiūrėkite rezultatus. Tai užtrunka kelias sekundes, todėl rezultatai atidaromi atskirame puslapyje.",
+        "runLabel": "Vykdyti bandymus"
+    },
+    "HelpArticle": {
+        "backLabel": "Grįžti į visą žinyną"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Šiuo metu pasiūlymų nėra – jie gaunami iš žmonių, su kuriais jau draugaujate, draugų. Norėdami rasti žmogų pagal vardą, ieškokite aukščiau.",
+        "noMatches": "Čia niekas neatitinka paieškos."
+    },
+    "UserModButton": {
+        "make": "Paskirti moderatoriumi",
+        "remove": "Pašalinti moderatoriaus teises"
+    },
+    "UserUnbanButton": {
+        "name": "Atblokuoti"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Blokuoti"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Atblokuoti"
+    },
+    "ReportDismissButton": {
+        "name": "Atmesti"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Pažymėti kaip jautrų"
+    },
+    "ServerUnblockButton": {
+        "name": "Atblokuoti"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Atsisakyti prenumeratos"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Atšaukti"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: pavyko",
+        "failing": "{suite}: nepavyko"
+    },
+    "PageTitle": {
+        "about": "Apie",
+        "adminBanned": "Užblokuoti naudotojai",
+        "adminModSettings": "Moderavimo nuostatos",
+        "adminReports": "Pranešimai apie pažeidimus",
+        "adminSettings": "Administravimo nuostatos",
+        "adminTests": "Bandymai",
+        "authGoogleCallbackAccountDeleted": "Paskyra ištrinta",
+        "authGoogleCallbackDeleteAccount": "Ištrinti paskyrą",
+        "authGoogleCallbackLogin": "Prisijungti",
+        "bookmarks": "Žymelės",
+        "checkInbox": "Patikrinkite gautuosius",
+        "drafts": "Juodraščiai ir suplanuoti",
+        "draftsEditDraft": "Redaguoti juodraštį",
+        "draftsEditScheduled": "Redaguoti suplanuotą įrašą",
+        "forgotPassword": "Pamiršau slaptažodį",
+        "friendsFeed": "Draugų srautas",
+        "help": "Žinynas",
+        "helpDescription": "Svetainės naudojimo vadovai ir atsakymai.",
+        "locations": "Vietos",
+        "locationsDescription": "Įrašai iš arčiausiai jūsų esančių vietų.",
+        "locationsPlaceDescription": "Įrašai netoli {place}.",
+        "login": "Prisijungti",
+        "loginVerificationCode": "Patvirtinimo kodas",
+        "map": "Žemėlapis",
+        "mapDescription": "Įrašų iš viso pasaulio žemėlapis – raskite netoliese esančius žmones ir dalykus.",
+        "messages": "Žinutės",
+        "messagesWithUser": "Žinutės su {name}",
+        "notifications": "Pranešimai",
+        "privacy": "Privatumo politika",
+        "quote": "Cituoti",
+        "relayFeed": "Retransliavimo srautas",
+        "relayFeedDescription": "Vieši įrašai iš šio serverio prenumeruojamų retransliatorių.",
+        "resetPassword": "Atkurti slaptažodį",
+        "revertEmail": "Atšaukti el. pašto pakeitimą",
+        "search": "Paieška",
+        "signup": "Registruotis",
+        "tags": "Žymės",
+        "tagsDescription": "Naršykite populiarias saityno žymes svetainėje {siteTitle}.",
+        "tagsTagDescription": "Įrašai su žyme {tag} svetainėje {siteTitle}.",
+        "terms": "Paslaugų teikimo sąlygos",
+        "topics": "Temos",
+        "topicsDescription": "Apie ką žmonės dabar kalba svetainėje {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel} – įrašai, kuriuose minima {entityTitle}, svetainėje {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, apie kuriuos žmonės dabar kalba svetainėje {siteTitle}.",
+        "unsubscribe": "El. pašto suvestinės",
+        "userFriends": "{name} draugai",
+        "userFriendsDescription": "{name} draugai svetainėje {siteTitle}",
+        "userSettings": "Naudotojo nuostatos",
+        "users": "Naudotojai",
+        "verifyEmail": "Patvirtinti el. paštą"
+    },
+    "PostLikeButton": {
+        "like": "Patinka",
+        "unlike": "Nebepatinka"
+    },
+    "PostPinButton": {
+        "pin": "Prisegti",
+        "unpin": "Atsegti"
+    },
+    "PostQuoteButton": {
+        "name": "Cituoti"
+    },
+    "PostDeleteButton": {
+        "name": "Ištrinti"
+    },
+    "PostEditButton": {
+        "name": "Redaguoti"
+    },
+    "ReportButton": {
+        "name": "Pranešti"
+    },
+    "PostActionBar": {
+        "reply": "Atsakyti",
+        "replies": {
+            "one": "Atsakymas ({count})",
+            "few": "Atsakymai ({count})",
+            "many": "Atsakymo ({count})",
+            "other": "Atsakymų ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(redaguota)"
+    },
+    "RepliesHeading": {
+        "heading": "Atsakymai"
+    },
+    "PollVoteButton": {
+        "name": "Balsuoti"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Rodyti ",
+            "link": "daugiau vietų",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Įrašai netoli jūsų",
+        "description": "Rodomi arčiausiai pasirinkto taško esantys įrašai – kad ir kur vyktų veikla ir kad ir kaip toli ji būtų. Bendrinkite savo vietą, kad pradėtumėte nuo dabartinės vietos, arba pasirinkite tašką žemėlapyje.",
+        "useMyLocation": "Naudoti mano vietą",
+        "pickOnMap": "Pasirinkti žemėlapyje",
+        "searchPlaceholder": "Arba įveskite vietovės pavadinimą…",
+        "searchLabel": "Ieškoti vietos",
+        "locating": "Nustatoma vieta…",
+        "noGeolocation": "Naršyklė negali bendrinti vietos.",
+        "locationError": "Nepavyko nustatyti jūsų vietos. Patikrinkite naršyklės leidimą naudoti vietą."
+    },
+    "PollDeadline": {
+        "final": "Galutinis rezultatas",
+        "closes": {
+            "before": "Baigsis ",
+            "after": ""
+        },
+        "days": {
+            "one": "po {count} dienos",
+            "few": "po {count} dienų",
+            "many": "po {count} dienos",
+            "other": "po {count} dienų"
+        },
+        "hours": {
+            "one": "po {count} valandos",
+            "few": "po {count} valandų",
+            "many": "po {count} valandos",
+            "other": "po {count} valandų"
+        },
+        "minutes": {
+            "one": "po {count} minutės",
+            "few": "po {count} minučių",
+            "many": "po {count} minutės",
+            "other": "po {count} minučių"
+        },
+        "underMinute": "mažiau nei po minutės"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Balsavo {count} žmogus ",
+            "few": "Balsavo {count} žmonės ",
+            "many": "Balsavo {count} žmogaus ",
+            "other": "Balsavo {count} žmonių "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Prisijunkite",
+            "after": ", kad paskelbtumėte."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Prisijunkite",
+            "after": ", kad atsakytumėte."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " pasidalijo"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Atsakant į ",
+            "after": ""
+        },
+        "untitled": "šį įrašą",
+        "jumpToStart": "Pereiti į pradžią"
+    },
+    "TopicSummaryCard": {
+        "label": "DI sukurta santrauka"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Sveiki atvykę į ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Parašykite ką nors žemiau esančiame laukelyje ir tai pateks į jūsų srautą. Atsakyti gali bet kas, o atsakymas yra tiesiog įrašas su pirminiu įrašu, todėl pokalbiai gali šakotis tiek giliai, kiek reikia.",
+            "Pridėkite žmones kaip draugus ir jų įrašai atsiras jūsų sraute. Bendrame sraute, kurio pavadinimas rodomas viršuje kairėje, matoma viskas, kas parašyta čia; ten galite rasti ką pridėti.",
+            "Ši svetainė yra Fedivisatos dalis: galite sekti paskyras „Mastodon“ ir kituose serveriuose pagal visą jų naudotojo vardą, o jūsų įrašai pasieks ten jus sekančius žmones. Ieškokite, pavyzdžiui, @someone@example.social, ir šis serveris paskyrą suras.",
+            "Pažymėkite įrašą #saityno_žymėmis ir jis pasirodys tos žymės puslapyje, o jei apie tai rašys pakankamai žmonių – ir tarp populiarių temų.",
+            "Narių žinutės visiškai užšifruotos – serveris saugo šifruotą tekstą, kurio negali perskaityti. Įjunkite tai Nuostatose.",
+            "Nebūtina skelbti iškart: išsaugokite juodraštį arba nustatykite laiką ir įrašas bus paskelbtas automatiškai. Abu rasite skiltyje „Juodraščiai ir suplanuoti“."
+        ],
+        "more": {
+            "before": "Daugiau informacijos rasite ",
+            "link": "žinyno puslapiuose",
+            "after": ", įskaitant paskyros perkėlimą čia iš kitur."
+        },
+        "dontShowAgain": "Daugiau neberodyti"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Įterpti jaustuką"
+    },
+    "LinkImagePreview": {
+        "alt": "Nuorodos peržiūros paveikslas"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Pašalinti paveikslą"
+    },
+    "LinkItem": {
+        "alt": "Nuorodos peržiūros paveikslas"
+    },
+    "MapScrubber": {
+        "play": "Leisti",
+        "pause": "Pristabdyti",
+        "cumulativeMode": "Iki to laiko",
+        "windowMode": "Apie tą laiką",
+        "rangeLabel": "Rodyti įrašus iki datos",
+        "cumulativeLabel": {
+            "one": "Iki {date} paskelbtas {count} įrašas",
+            "few": "Iki {date} paskelbti {count} įrašai",
+            "many": "Iki {date} paskelbta {count} įrašo",
+            "other": "Iki {date} paskelbta {count} įrašų"
+        },
+        "windowLabel": {
+            "one": "Apie {date} paskelbtas {count} įrašas",
+            "few": "Apie {date} paskelbti {count} įrašai",
+            "many": "Apie {date} paskelbta {count} įrašo",
+            "other": "Apie {date} paskelbta {count} įrašų"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} įrašas",
+        "pageTitleUntitled": "Įrašas",
+        "imageAltByAuthor": "{name} paskelbta nuotrauka",
+        "imageAltUntitled": "Nuotrauka"
+    },
+    "PostBookmarkButton": {
+        "remove": "Pašalinti žymelę",
+        "add": "Pridėti žymelę"
+    },
+    "PostRepostButton": {
+        "undo": "Atšaukti dalijimąsi",
+        "repost": "Bendrinti"
+    },
+    "QuotedPost": {
+        "viewLink": "Peržiūrėti cituojamą įrašą"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Laukiantys prašymai"
+    },
+    "ScrollToTopButton": {
+        "label": "Slinkti į viršų"
+    },
+    "SearchClearButton": {
+        "label": "Išvalyti paiešką"
+    },
+    "SitePolicyLinks": {
+        "terms": "Paslaugų teikimo sąlygos",
+        "privacy": "Privatumo politika"
+    },
+    "SkipLink": {
+        "label": "Pereiti prie turinio"
+    },
+    "TopicHeading": {
+        "searchLink": "Ieškoti šio termino",
+        "noPosts": "Šiuo metu jokiame įraše tai neminima."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Apie tokio pobūdžio dalykus dar nieko neparašyta."
+    },
+    "TrendingEntitySection": {
+        "heading": "Populiaru"
+    },
+    "PostLocationLink": {
+        "title": "Rodyti šią vietą žemėlapyje",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "ką tik",
+        "minutes": {
+            "one": "prieš {count} min.",
+            "few": "prieš {count} min.",
+            "many": "prieš {count} min.",
+            "other": "prieš {count} min."
+        },
+        "hours": {
+            "one": "prieš {count} val.",
+            "few": "prieš {count} val.",
+            "many": "prieš {count} val.",
+            "other": "prieš {count} val."
+        },
+        "days": {
+            "one": "prieš {count} d.",
+            "few": "prieš {count} d.",
+            "many": "prieš {count} d.",
+            "other": "prieš {count} d."
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Kaip sistemoje",
+            "light": "Paprasta šviesi",
+            "dark": "Paprasta tamsi",
+            "sepia": "Sepija",
+            "midnight": "Vidurnaktis",
+            "sunset": "Saulėlydis",
+            "rose": "Rožė",
+            "forest": "Miškas",
+            "ocean": "Vandenynas",
+            "lavender": "Levanda",
+            "gold": "Auksas",
+            "hacker": "Programišius",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Pilki tonai"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Vertimas šiame serveryje nesukonfigūruotas.",
+        "nothing": "Čia nėra ko versti.",
+        "unknownSource": "Šio įrašo kalba dar nenustatyta, todėl jo išversti negalima.",
+        "alreadyReadable": "Šis įrašas jau parašytas ta kalba.",
+        "unsupportedPair": "Šis serveris dar negali išversti tos kalbos."
+    },
+    "LanguagePrompt": {
+        "question": "Ar norėtumėte svetainę matyti lietuvių kalba?",
+        "accept": "Taip",
+        "decline": "Ne, ačiū"
+    },
+    "LanguageSelector": {
+        "label": "Kalba",
+        "legend": "Kalba"
+    },
+    "EmailDigest": {
+        "subject": "Ką praleidote svetainėje {site}",
+        "greeting": "Sveiki, {name},",
+        "whileAway": "Kol jūsų nebuvo:",
+        "repeatedTimes": {
+            "one": " ({count} kartą)",
+            "few": " ({count} kartus)",
+            "many": " ({count} karto)",
+            "other": " ({count} kartų)"
+        },
+        "moreMissed": {
+            "one": "ir dar {count} pranešimas",
+            "few": "ir dar {count} pranešimai",
+            "many": "ir dar {count} pranešimo",
+            "other": "ir dar {count} pranešimų"
+        },
+        "messagesWaiting": {
+            "one": "Jūsų laukia {count} žinutė",
+            "few": "Jūsų laukia {count} žinutės",
+            "many": "Jūsų laukia {count} žinutės",
+            "other": "Jūsų laukia {count} žinučių"
+        },
+        "postsInFeed": {
+            "one": "Jūsų sraute yra {count} naujas įrašas",
+            "few": "Jūsų sraute yra {count} nauji įrašai",
+            "many": "Jūsų sraute yra {count} naujo įrašo",
+            "other": "Jūsų sraute yra {count} naujų įrašų"
+        },
+        "unsubscribeInstructions": "Norėdami nebegauti šių laiškų, atidarykite šią nuorodą – užtenka vieno spustelėjimo, slaptažodžio nereikia:",
+        "comeSeeWhatIsNew": "Ateikite pažiūrėti naujienų",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Nebesiųsti man šių laiškų",
+            "after": " – vienas spustelėjimas, slaptažodžio nereikia."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Patvirtinkite el. pašto adresą",
+        "greeting": "Sveiki, {name},",
+        "instructions": "Patvirtinkite el. pašto adresą atidarę šią nuorodą:",
+        "htmlInstructions": "Patvirtinkite el. pašto adresą spustelėję toliau esančią nuorodą:",
+        "buttonLabel": "Patvirtinti el. pašto adresą",
+        "expiresIn": {
+            "one": "Ši nuoroda nustos galioti po {count} valandos.",
+            "few": "Ši nuoroda nustos galioti po {count} valandų.",
+            "many": "Ši nuoroda nustos galioti po {count} valandos.",
+            "other": "Ši nuoroda nustos galioti po {count} valandų."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Atkurkite slaptažodį",
+        "greeting": "Sveiki, {name},",
+        "instructions": "Kažkas (tikimės, kad jūs) paprašė atkurti slaptažodį. Norėdami pasirinkti naują slaptažodį, atidarykite šią nuorodą:",
+        "htmlInstructions": "Kažkas (tikimės, kad jūs) paprašė atkurti slaptažodį. Norėdami pasirinkti naują slaptažodį, spustelėkite toliau esančią nuorodą:",
+        "buttonLabel": "Atkurti slaptažodį",
+        "expiresIn": {
+            "one": "Ši nuoroda nustos galioti po {count} valandos.",
+            "few": "Ši nuoroda nustos galioti po {count} valandų.",
+            "many": "Ši nuoroda nustos galioti po {count} valandos.",
+            "other": "Ši nuoroda nustos galioti po {count} valandų."
+        },
+        "ignoreNotice": "Jei to neprašėte, šio laiško galite nepaisyti."
+    }
+}

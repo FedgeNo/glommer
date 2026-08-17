@@ -1,0 +1,1162 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "הצבעה אחת",
+            "two": "שתי הצבעות",
+            "other": "{count} הצבעות"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "התחברות",
+            "after": " כדי להגיב."
+        },
+        "post": {
+            "before": "",
+            "link": "התחברות",
+            "after": " כדי לפרסם."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "אתר",
+        "siteURLLabel": "כתובת האתר",
+        "siteTitleLabel": "כותרת האתר",
+        "mailFromAddressLabel": "כתובת השולח לדואר",
+        "serverNameConfirmedLabel": "הגדרתי \"ServerName {host}\" ו־\"UseCanonicalName On\" בתצורת שרת האינטרנט (נבדק רק אם הבדיקה החיה האוטומטית אינה מסתיימת—ראו את פרק HTTPS ב־README.md)",
+        "databaseLegend": "מסד נתונים",
+        "databaseHostLabel": "מארח מסד הנתונים",
+        "databasePortLabel": "יציאת מסד הנתונים",
+        "databaseNameLabel": "שם מסד הנתונים",
+        "databaseAdminUsernameLabel": "שם משתמש של מנהל מסד הנתונים",
+        "databaseAdminPasswordLabel": "סיסמת מנהל מסד הנתונים",
+        "webSocketTLSLegend": "TLS ל־WebSocket (רשות)",
+        "certificatePathLabel": "נתיב האישור",
+        "certificatePathPlaceholder": "יש להשאיר ריק ליצירה אוטומטית באמצעות mkcert",
+        "keyPathLabel": "נתיב המפתח",
+        "keyPathPlaceholder": "יש להשאיר ריק ליצירה אוטומטית באמצעות mkcert",
+        "botProtectionLegend": "הגנה מפני בוטים (רשות)",
+        "turnstileSiteKeyLabel": "מפתח אתר של Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "יש להשאיר ריק כדי לדלג",
+        "turnstileSecretKeyLabel": "מפתח סודי של Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "יש להשאיר ריק כדי לדלג",
+        "submit": "הגדרה"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "משפט הסיסמה הנוכחי",
+        "newPassphraseLabel": "משפט סיסמה חדש",
+        "confirmNewPassphraseLabel": "אישור משפט הסיסמה החדש",
+        "accountPasswordLabel": "סיסמת החשבון",
+        "submit": "שינוי משפט הסיסמה"
+    },
+    "PasswordResetForm": {
+        "legend": "בחירת סיסמה חדשה",
+        "newPasswordLabel": "סיסמה חדשה",
+        "newPasswordPlaceholder": "8 תווים לפחות",
+        "confirmPasswordLabel": "אישור הסיסמה החדשה",
+        "submit": "איפוס הסיסמה"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "איפוס הסיסמה שלך",
+        "emailLabel": "דוא״ל",
+        "submit": "שליחת קישור איפוס"
+    },
+    "EmailRevertForm": {
+        "submit": "ביטול שינוי כתובת הדוא״ל"
+    },
+    "EmailVerifyForm": {
+        "submit": "אימות כתובת הדוא״ל"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "הפעלה מחדש"
+    },
+    "EmailDigestSetting": {
+        "label": "לשלוח לי בדוא״ל את מה שהחמצתי לאחר שלא הייתי כאן זמן מה"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "מכשיר לא ידוע",
+        "browserOnOS": "{browser} ב־{os}",
+        "thisDevice": " (המכשיר הזה)",
+        "lastUsed": {
+            "before": "שימוש אחרון: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "סיום כל ההפעלות הפעילות ושכחת כל המכשירים הזכורים. תתבצע יציאה מכל הדפדפנים, כולל זה."
+    },
+    "LogoutEverywhereButton": {
+        "label": "יציאה מכל מקום"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "אימות באמצעות Google לצורך מחיקה"
+    },
+    "GoogleSignInButton": {
+        "label": "המשך באמצעות Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "עריכת הפרופיל"
+    },
+    "PushNotificationSetting": {
+        "explanation": "קבלת התראות במכשיר הזה גם כשהאתר אינו פתוח. זוהי בחירה נפרדת לכל דפדפן—יש להפעיל אותה בכל מקום שבו ברצונך לקבל התראות.",
+        "label": {
+            "off": "הפעלה במכשיר הזה",
+            "on": "כיבוי במכשיר הזה"
+        },
+        "unsupported": "הדפדפן הזה אינו תומך בהתראות דחיפה"
+    },
+    "LoginForm": {
+        "legend": "התחברות",
+        "identifier": "שם משתמש או דוא״ל",
+        "password": "סיסמה",
+        "rememberMe": "לזכור אותי",
+        "submit": "התחברות"
+    },
+    "SignupForm": {
+        "legend": "יצירת חשבון",
+        "usernameLabel": "שם משתמש",
+        "usernamePlaceholder": "אותיות קטנות, מספרים ו־_",
+        "emailLabel": "דוא״ל",
+        "emailPlaceholder": "כתובת דוא״ל תקינה",
+        "displayName": "שם תצוגה (רשות)",
+        "bioLabel": "אודות (רשות)",
+        "bioPlaceholder": "תיאור קצר—#תגיות, @אזכורים וקישורים יהפכו ללחיצים",
+        "passwordLabel": "סיסמה",
+        "passwordPlaceholder": "סיסמה: 8 תווים לפחות",
+        "rememberMe": "לזכור אותי",
+        "submit": "הרשמה"
+    },
+    "PasswordChangeForm": {
+        "legend": "שינוי הסיסמה שלך",
+        "currentPassword": "הסיסמה הנוכחית",
+        "newPasswordLabel": "סיסמה חדשה",
+        "newPasswordPlaceholder": "8 תווים לפחות",
+        "confirmPassword": "אישור הסיסמה החדשה",
+        "submit": "שינוי הסיסמה"
+    },
+    "EmailChangeForm": {
+        "legend": "שינוי כתובת הדוא״ל שלך",
+        "newEmail": "כתובת דוא״ל חדשה",
+        "currentPassword": "הסיסמה הנוכחית",
+        "notice": "יהיה עליך לאמת את הכתובת החדשה לפני המשך השימוש באתר.",
+        "submit": "שינוי כתובת הדוא״ל"
+    },
+    "AccountDeleteForm": {
+        "legend": "מחיקת החשבון שלך",
+        "warning": "פעולה זו מוחקת לצמיתות את החשבון, הפוסטים וההודעות שלך. לא ניתן לבטל אותה.",
+        "currentPassword": "הסיסמה הנוכחית",
+        "submit": "מחיקת החשבון"
+    },
+    "AccountMigrationForm": {
+        "legend": "מעבר לשרת אחר",
+        "movedNotice": "החשבון הזה עבר אל {destination}. העוקבים שלך התבקשו לעקוב אחריך שם.",
+        "explanation": "העוקבים שלך מתבקשים לעקוב אחר החשבון החדש. הפוסטים שלך נשארים כאן—כתובות העצמים שייכות לשרת שיצר אותם, ולכן אי אפשר להעבירם.",
+        "addressNotice": "החשבון שאליו עוברים חייב קודם לציין את החשבון הזה תחת \"מוכר גם בשם\". הכתובת שלך כאן היא {address}.",
+        "movedToLabel": "מעבר אל",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "מוכר גם בשם",
+        "aliasesExplanation": "חשבונות במקומות אחרים שגם הם שלך. ציון חשבון כאן מאפשר לו לעבור לחשבון הזה—זוהי ההרשאה, לא המעבר עצמו. כתובת אחת בכל שורה.",
+        "aliasesLabel": "החשבונות האחרים שלך",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "שמירה"
+    },
+    "TwoFactorForm": {
+        "legend": "הזנת קוד האימות",
+        "explanation": "שלחנו אליך קוד אימות בדוא״ל. יש להזין אותו למטה, או להשתמש באחד מקודי השחזור, כדי להשלים את ההתחברות.",
+        "explanationEmailFailed": "לא הצלחנו לשלוח כרגע את קוד האימות בדוא״ל. יש להזין אחד מקודי השחזור כדי להשלים את ההתחברות.",
+        "code": "קוד אימות",
+        "submit": "אימות"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "אימות דו־שלבי פעיל",
+            "off": "אימות דו־שלבי כבוי"
+        },
+        "explanation": {
+            "on": "בעת התחברות נשלח אליך בדוא״ל קוד אימות שיש להזין כדי להשלים את ההתחברות. אם הדוא״ל לא יגיע, אפשר להתחבר באמצעות אחד מקודי השחזור.",
+            "off": "הוספת שלב שני להתחברות: נשלח אליך בדוא״ל קוד אימות שיש להזין, כך שהסיסמה לבדה אינה מספיקה. יינתנו לך קודי שחזור חד־פעמיים למקרה שהדוא״ל לא יגיע."
+        },
+        "currentPassword": "הסיסמה הנוכחית",
+        "submit": {
+            "on": "כיבוי אימות דו־שלבי",
+            "off": "הפעלת אימות דו־שלבי"
+        },
+        "regenerate": "יצירת קודי שחזור חדשים",
+        "recoveryHeading": "קודי השחזור שלך",
+        "recoveryNote": "יש לשמור אותם כעת במקום בטוח—הם לא יוצגו שוב. כל קוד מאפשר התחברות אחת כשהודעת האימות אינה מגיעה, ויצירת קודים חדשים מחליפה את כולם.",
+        "toast": {
+            "on": "אימות דו־שלבי הופעל.",
+            "off": "אימות דו־שלבי כובה.",
+            "regenerated": "נוצרו קודי שחזור חדשים. הקודים הישנים אינם תקפים עוד."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "יש לבדוק את תיבת הדואר וללחוץ על קישור האימות ששלחנו כדי לאשר את כתובת הדוא״ל. אם ההודעה אינה מופיעה, יש לבדוק בתיקיית הספאם."
+    },
+    "VerificationResendButton": {
+        "label": "שליחה מחדש של הודעת האימות"
+    },
+    "MailSettingsForm": {
+        "legend": "דואר יוצא",
+        "fromAddressLabel": "כתובת השולח",
+        "fromAddressPlaceholder": "לא ניתן לשלוח דוא״ל עד להגדרת כתובת זו",
+        "fromNameLabel": "שם השולח",
+        "hostLabel": "מארח SMTP",
+        "portLabel": "יציאת SMTP",
+        "usernameLabel": "שם משתמש SMTP",
+        "passwordLabel": "סיסמת SMTP",
+        "passwordPlaceholder": {
+            "set": "הסיסמה מוגדרת—יש להשאיר ריק כדי לשמור עליה",
+            "unset": "סיסמת SMTP"
+        },
+        "encryptionLabel": "הצפנה",
+        "encryptionOptions": {
+            "tls": "TLS‏ (STARTTLS, בדרך כלל ביציאה 587)",
+            "ssl": "SSL‏ (TLS מרומז, בדרך כלל ביציאה 465)",
+            "none": "ללא"
+        },
+        "explainer": "אפשר להשאיר את מארח ה־SMTP ריק כדי לשלוח באמצעות mail() של PHP במקום זאת (לא מומלץ—ראו את פרק עבירות הדואר ב־README). לא ניתן לשלוח דוא״ל כלל עד להגדרת כתובת שולח.",
+        "save": "שמירה"
+    },
+    "MapSettingsForm": {
+        "legend": "אריחי מפה",
+        "notice": "יש להשאיר ריק כדי להשתמש ב־OpenStreetMap. לשימוש בספק שדורש מפתח, יש להדביק את תבנית הכתובת שלו עם {apiKey} במקום המפתח, ולציין למטה את המפתח והייחוס.",
+        "urlLabel": "תבנית כתובת האריחים",
+        "keyLabel": "מפתח API",
+        "keyPlaceholder": "מפתח ה־API של ספק האריחים",
+        "attributionLabel": "ייחוס",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "שמירה"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "התחברות באמצעות Google",
+        "clientIdLabel": "מזהה לקוח",
+        "clientIdPlaceholder": "מזהה לקוח Google OAuth",
+        "secretLabel": "סוד לקוח",
+        "secretPlaceholder": {
+            "set": "סוד הלקוח מוגדר—יש להשאיר ריק כדי לשמור עליו",
+            "unset": "סוד לקוח Google OAuth"
+        },
+        "explainer": "שני הערכים דרושים כדי שהאפשרות \"המשך באמצעות Google\" תופיע בהרשמה ובהתחברות. בלקוח Google Cloud OAuth יש להגדיר את כתובת ההפניה המורשית ל־{url}—מחיקת מזהה הלקוח מכבה את האפשרות.",
+        "save": "שמירה"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "מפתח אתר",
+        "turnstileSiteKeyPlaceholder": "מפתח אתר Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "מפתח סודי",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "המפתח הסודי מוגדר—יש להשאיר ריק כדי לשמור עליו",
+            "unset": "המפתח הסודי של Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "שני המפתחות דרושים כדי שה־CAPTCHA יופיע בהרשמה ובהתחברות. מחיקת מפתח האתר מכבה אותו.",
+        "recaptchaLegend": "Google reCAPTCHA (שחזור מנעילת חשבון)",
+        "recaptchaSiteKeyLabel": "מפתח אתר",
+        "recaptchaSiteKeyPlaceholder": "מפתח אתר Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "מפתח סודי",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "המפתח הסודי מוגדר—יש להשאיר ריק כדי לשמור עליו",
+            "unset": "המפתח הסודי של Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "שני המפתחות דרושים. כשהם מוגדרים, חשבון שהגיע למגבלת ניסיונות ההתחברות יכול להיכנס שוב לאחר השלמת האתגר במקום להמתין לסיום הנעילה; בלעדיהם חובה להמתין. יש להשתמש ב־reCAPTCHA v2 (\"אני לא רובוט\"). מחיקת מפתח האתר מכבה אותו.",
+        "save": "שמירה"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "משמש לתכונות בינה מלאכותית באתר (סיכומי נושאים חמים וכדומה). יש להשאיר את הדגם ריק כדי להשתמש בנתב הדגמים החינמיים, ש־OpenRouter בוחר באקראי מבין הדגמים החינמיים הזמינים ולעולם אינו כרוך בתשלום.",
+        "keyLabel": "מפתח API",
+        "keyPlaceholder": {
+            "set": "מפתח ה־API מוגדר—יש להשאיר ריק כדי לשמור עליו",
+            "unset": "מפתח API של OpenRouter"
+        },
+        "clearKeyLabel": "הסרת מפתח ה־API השמור (מכבה תכונות בינה מלאכותית)",
+        "modelLabel": "דגם",
+        "neverSpendLabel": "לעולם לא לאפשר הוצאה כספית (מומלץ)",
+        "explainer": "כשההגנה פעילה, מחיר כל בקשה מוגבל לאפס, ולכן היא נכשלת במקום לעבור לדגם בתשלום כשאין ספק חינמי. הסרת מפתח ה־API השמור מכבה לחלוטין את תכונות הבינה המלאכותית.",
+        "save": "שמירה"
+    },
+    "AboutSettingsForm": {
+        "legend": "אודות",
+        "description": "טקסט פשוט—שורות ריקות מפרידות בין פסקאות. הפסקה הראשונה תשמש כתיאור האתר.",
+        "save": "שמירה"
+    },
+    "TermsSettingsForm": {
+        "legend": "תנאי שימוש",
+        "description": "טקסט פשוט—שורות ריקות מפרידות בין פסקאות.",
+        "save": "שמירה"
+    },
+    "PrivacySettingsForm": {
+        "legend": "מדיניות פרטיות",
+        "description": "טקסט פשוט—שורות ריקות מפרידות בין פסקאות.",
+        "save": "שמירה"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "תקציר בדוא״ל",
+        "fieldLabel": "פסקת סיום",
+        "notice": "נוספת סמוך לסוף כל תקציר, לאחר רשימת הדברים שהחבר החמיץ. טקסט פשוט. יש להשאיר ריק כדי לחזור לנוסח ברירת המחדל של התוכנה.",
+        "save": "שמירה"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "סמל האתר הנוכחי",
+        "save": "העלאת סמל אתר"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "תמונת העמוד הראשי",
+        "explainer": "מוצגת באתרים אחרים כשמישהו משתף קישור לאתר הזה—במטא־נתונים של Open Graph בלבד, ולעולם לא בעמוד עצמו. נחתכת לגודל 1200×630. בלעדיה, תצוגות מקדימות של קישורים לא יכללו תמונה.",
+        "currentAlt": "תמונת העמוד הראשי הנוכחית",
+        "save": "העלאת תמונה"
+    },
+    "CarouselAutoplayButton": {
+        "name": "הפעלה אוטומטית"
+    },
+    "CarouselNextButton": {
+        "name": "הבא"
+    },
+    "CarouselPrevButton": {
+        "name": "הקודם"
+    },
+    "MediaFullscreenButton": {
+        "name": "מסך מלא"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "הסרת קבצים"
+    },
+    "NotificationDropdown": {
+        "showAll": "הצגת הכול"
+    },
+    "HelpSearch": {
+        "placeholder": "חיפוש בעזרה…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "הבנתי"
+    },
+    "StagedPostDiscardButton": {
+        "name": "השלכה"
+    },
+    "StagedPostEditButton": {
+        "name": "עריכה"
+    },
+    "StagedPostPublishButton": {
+        "name": "פרסום עכשיו"
+    },
+    "LogoutButton": {
+        "name": "יציאה"
+    },
+    "AvatarUploadForm": {
+        "submit": "עדכון תמונת המשתמש"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "חיפוש משתמשים חסומים…"
+    },
+    "BannedUserSection": {
+        "heading": "משתמשים מורחקים"
+    },
+    "SentFriendRequestSection": {
+        "heading": "בקשות שנשלחו (ממתינות לתגובה)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "הורחק על ידי {name} ",
+            "after": ""
+        },
+        "reason": "—{reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "נחסם על ידי {name} ",
+            "after": ""
+        },
+        "deletedAccount": "חשבון שנמחק",
+        "reason": "—{reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "ינואר",
+            "2": "פברואר",
+            "3": "מרץ",
+            "4": "אפריל",
+            "5": "מאי",
+            "6": "יוני",
+            "7": "יולי",
+            "8": "אוגוסט",
+            "9": "ספטמבר",
+            "10": "אוקטובר",
+            "11": "נובמבר",
+            "12": "דצמבר"
+        },
+        "shortMonths": {
+            "1": "ינו׳",
+            "2": "פבר׳",
+            "3": "מרץ",
+            "4": "אפר׳",
+            "5": "מאי",
+            "6": "יוני",
+            "7": "יולי",
+            "8": "אוג׳",
+            "9": "ספט׳",
+            "10": "אוק׳",
+            "11": "נוב׳",
+            "12": "דצמ׳"
+        },
+        "long": "{day} ב{month} {year}",
+        "short": "{day} ב{month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} בשעה {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "לא ניתן להתחבר לשרת WebSocket ב־127.0.0.1:{port}{tls} ({error}). יש להפעיל אותו תחילה: systemctl --user start glommer-websocket (קובץ היחידה מתואר ב־README.md). אם WS_TLS_CERT/WS_TLS_KEY נוספו או הוסרו כעת, יש להפעילו מחדש כדי שיתאים ל־.env.",
+        "wsOverTLS": " דרך TLS",
+        "wsBadHandshake": "השירות ב־127.0.0.1:{port} לא השלים לחיצת יד תקינה של WebSocket—ייתכן שתהליך אחר שאינו bin/websocket-server.php מאזין ליציאה.",
+        "wsNoPong": "שרת WebSocket קיבל את לחיצת היד אך לא השיב ל־ping—ייתכן שהוא תקוע או אינו פועל כראוי. יש לבדוק את היומנים שלו.",
+        "wsReachable": "שרת WebSocket נגיש ומשיב ב־127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "תגית",
+            "person": "אדם",
+            "org": "ארגון",
+            "gpe": "מקום",
+            "loc": "אזור",
+            "fac": "נקודת ציון",
+            "product": "מוצר",
+            "event": "אירוע",
+            "work_of_art": "יצירה",
+            "law": "חוק",
+            "language": "שפה",
+            "norp": "קבוצה"
+        },
+        "plural": {
+            "hashtag": "תגיות",
+            "person": "אנשים",
+            "org": "ארגונים",
+            "gpe": "מקומות",
+            "loc": "אזורים",
+            "fac": "נקודות ציון",
+            "product": "מוצרים",
+            "event": "אירועים",
+            "work_of_art": "יצירות",
+            "law": "חוקים",
+            "language": "שפות",
+            "norp": "קבוצות"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "הסרה מהחברים"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "אישור"
+    },
+    "FriendRequestDenyButton": {
+        "name": "דחייה"
+    },
+    "UserFollowButton": {
+        "follow": "מעקב",
+        "unfollow": "הפסקת מעקב"
+    },
+    "UserBlockButton": {
+        "name": "חסימה"
+    },
+    "UserUnblockButton": {
+        "name": "ביטול חסימה"
+    },
+    "OtherUser": {
+        "message": "הודעה"
+    },
+    "MainNavigation": {
+        "toggleLabel": "תפריט",
+        "loggedInAs": "מחובר בתור {name}",
+        "friendsFeed": "עדכוני חברים",
+        "relayFeed": "עדכוני ממסר",
+        "users": "משתמשים",
+        "tags": "תגיות",
+        "topics": "נושאים",
+        "map": "מפה",
+        "locations": "מיקומים",
+        "search": "חיפוש",
+        "messages": "הודעות",
+        "bookmarks": "סימניות",
+        "help": "עזרה",
+        "about": "אודות",
+        "login": "התחברות",
+        "signup": "הרשמה",
+        "friends": "חברים",
+        "drafts": "טיוטות ומתוזמנים",
+        "userSettings": "הגדרות משתמש",
+        "modSettings": "הגדרות ניהול תוכן",
+        "adminSettings": "הגדרות מנהל"
+    },
+    "LogoutForm": {
+        "submit": "יציאה"
+    },
+    "User": {
+        "joined": "הצטרפות: {date}"
+    },
+    "FriendRequestButton": {
+        "add": "הוספה כחבר",
+        "cancel": "ביטול הבקשה"
+    },
+    "StagedPostWhen": {
+        "scheduled": "מתוזמן ל־{when}",
+        "draft": "טיוטה—תפורסם רק לפי הוראתך"
+    },
+    "MessageTranslateButton": {
+        "name": "תרגום ההודעה"
+    },
+    "MessageTranslationNotice": {
+        "heading": "על תרגום הודעות",
+        "body": "כדי לתרגם הודעה, הטקסט שלה נשלח לשרת הזה ומתורגם כאן. דבר אינו נשמר: התרגום אינו נכתב למסד הנתונים וההודעה עצמה אינה משתנה. עם זאת, הודעה שתורגמה כך נקראה בידי השרת, ולכן אינה מוצפנת מקצה לקצה כפי שהודעה שלא תורגמה מוצפנת. ניתן לתרגם רק הודעות שקיבלת, ורק לבקשתך.",
+        "confirm": "תרגום",
+        "cancel": "לא עכשיו"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "שכחת את משפט הסיסמה? איפוס יוצר מפתחות חדשים תחת משפט חדש—אך איש לא יוכל לקרוא שוב הודעות שהוצפנו במפתחות הישנים.",
+        "requirements": "12 תווים לפחות, ולא סיסמת החשבון—הסיסמה נשלחת לשרת הזה, אך אסור שמשפט הסיסמה יישלח אליו לעולם.",
+        "passphraseLabel": "משפט סיסמה",
+        "resetPassphraseLabel": "משפט סיסמה חדש",
+        "confirmLabel": "אישור משפט הסיסמה",
+        "accountPasswordLabel": "סיסמת החשבון",
+        "submitLabel": "הפעלת הודעות מוצפנות",
+        "resetSubmitLabel": "איפוס מפתחות ההצפנה"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "הודעות מוצפנות מקצה לקצה ננעלות ונפתחות בדפדפן שלך: השרת מעביר ושומר אותן בלי יכולת לקרוא אותן. המפתח שלך מוגן במשפט סיסמה, ואותו משפט פותח את הודעותיך בכל דפדפן. שיחות מוצפנות לאחר ששני המשתתפים מפעילים אפשרות זו; הודעות לאנשים בשרתים אחרים נשארות לא מוצפנות, כי פרוטוקול הפדרציה אינו יכול להעבירן אחרת.",
+        "noRecovery": "אין דרך לשחזר משפט סיסמה שאבד—אפילו למנהל. אובדנו פירושו אובדן ההודעות המוצפנות שלך.",
+        "enabledStatus": "הודעות מוצפנות פעילות."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "מוצפן",
+            "explanation": "ההודעות בשיחה מוצפנות מקצה לקצה: הן נפתחות באמצעות משפט הסיסמה ונקראות בדפדפנים שלך, והשרת שומר רק טקסט מוצפן. יש להשוות עם האדם האחר את קוד הבטיחות שבתחתית השרשור כדי לוודא שאיש אינו מתווך ביניכם. הודעות שנשלחו לפני הפעלת ההצפנה נשארות קריאות כפי שהיו."
+        },
+        "awaiting-theirs": {
+            "label": "לא מוצפן",
+            "explanation": "ההודעות כאן יוצפנו מקצה לקצה לאחר ש־{handle} יפעיל הודעות מוצפנות בהגדרות."
+        },
+        "awaiting-yours": {
+            "label": "לא מוצפן",
+            "explanation": "ההודעות כאן אינן מוצפנות מקצה לקצה. יש להפעיל הודעות מוצפנות בהגדרות כדי לאבטח את השיחה."
+        },
+        "federated": {
+            "label": "לא מוצפן",
+            "explanation": "{handle} נמצא בשרת אחר. ההודעות בשיחה נשמרות גם בשרת ההוא וגם בשרת הזה, ומנהל השרת ההוא יכול לקרוא אותן—הפרוטוקול בין השרתים אינו מאפשר להצפין אותן. מידע רגיש כדאי לשמור לשיחות באתר הזה."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "מעקב אחר חשבונות בפדיברס",
+        "notice": "יש להדביק מזהה אחד או יותר, למשל @user@example.social—כל מפריד ביניהם יתקבל.",
+        "handlesLabel": "מזהי פדיברס למעקב",
+        "submit": "מעקב",
+        "statusPending": "ממתין",
+        "statusAccepted": "אושר"
+    },
+    "ServerBlockForm": {
+        "legend": "חסימת שרת",
+        "description": "דחיית כל דבר מהשרת הזה ומכל מה שתחתיו: אין מסירות נכנסות או יוצאות, ומעקבים קיימים בשני הכיוונים מוסרים.",
+        "serverLabel": "שרת",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "סיבה",
+        "reasonPlaceholder": "מדוע השרת הזה חסום",
+        "submit": "חסימת השרת"
+    },
+    "VideoCallTestPanel": {
+        "intro": "הפעלת חלקי הגדרת השיחה שאפשר לבדוק מדפדפן אחד. כאן ניתן לבדוק הכול עד לחיבור עמית־לעמית בפועל; חיבור לאדם אחר מחייב את השתתפותו."
+    },
+    "VideoCallTestButton": {
+        "label": "הפעלת הבדיקה"
+    },
+    "WebSocketStatus": {
+        "ok": "שרת WebSocket: פועל",
+        "failed": "שרת WebSocket:‏ {detail}",
+        "clientTesting": "חיבור הדפדפן: בבדיקה…",
+        "clientConnecting": "חיבור הדפדפן: מתחבר…",
+        "clientConnected": "חיבור הדפדפן: מחובר",
+        "clientDisconnecting": "חיבור הדפדפן: מתנתק…",
+        "clientNotConnected": "חיבור הדפדפן: לא מחובר"
+    },
+    "UploadWorkerStatus": {
+        "running": "שירות העובד: פועל",
+        "stopped": "שירות העובד: אינו פועל—העלאות מבוימות לא יעברו המרה עד להפעלתו מחדש",
+        "unknown": "שירות העובד: מצב לא ידוע—systemctl אינו זמין במארח, או ש־SELinux מונע משרת האינטרנט לבדוק את מצבו (יש להריץ bin/install.php כ־root לתיקון)",
+        "queue": "תור: {staging} מבוימים, {pending} ממתינים, {processing} בעיבוד"
+    },
+    "TrendingTimerStatus": {
+        "running": "מתזמן הנושאים החמים: פועל",
+        "stopped": "מתזמן הנושאים החמים: אינו פועל—הנושאים החמים יתרעננו רק באמצעות התיקון העצמי בנתיב הקריאה (Trending::current()), ולא לפי לוח זמנים. יש להריץ bin/install.php כ־root כדי להגדירו.",
+        "unknown": "מתזמן הנושאים החמים: מצב לא ידוע—systemctl אינו זמין במארח, או ש־SELinux מונע משרת האינטרנט לבדוק את מצבו (יש להריץ bin/install.php כ־root לתיקון)"
+    },
+    "Notification": {
+        "postReady": "עיבוד המדיה שלך הסתיים והיא פורסמה",
+        "scheduledPostLive": "הפוסט המתוזמן שלך פורסם",
+        "uploadPartlyFailed": "הפוסט שלך פורסם, אך לא ניתן היה לעבד אחד או יותר מהקבצים שלו",
+        "uploadFailed": "עיבוד אחת ההעלאות שלך נכשל והיא לא פורסמה",
+        "mailerFailed": "שליחת הדוא״ל נכשלה—ייתכן ששירות הדואר מושבת. יש לבדוק את תצורת הדואר.",
+        "mailFromNotConfigured": "לא הוגדרה כתובת שולח לדואר, ולכן אי אפשר לשלוח הודעות. יש להגדיר כתובת בהגדרות המנהל (דואר יוצא) או באמצעות bin/install.php.",
+        "systemError": "אירעה שגיאת שרת. פרטים נוספים ביומן השגיאות.",
+        "passwordRemovedGoogle": "הסיסמה שלך הוסרה כשהתחברת באמצעות Google. כדי להגדיר סיסמה חדשה יש להשתמש באפשרות \"שכחתי סיסמה\".",
+        "like": "{name} אהב את הפוסט שלך",
+        "repost": "{name} פרסם מחדש את הפוסט שלך",
+        "reply": "{name} הגיב לפוסט שלך",
+        "friendRequest": "{name} שלח לך בקשת חברות",
+        "friendAccepted": "{name} אישר את בקשת החברות שלך",
+        "message": "{name} שלח לך הודעה",
+        "mention": "{name} הזכיר אותך בפוסט",
+        "follow": "{name} התחיל לעקוב אחריך משרת אחר",
+        "default": "{name} ביצע פעולה"
+    },
+    "NotificationList": {
+        "emptyNotice": "אין התראות עדיין."
+    },
+    "NotificationsNavLink": {
+        "label": "התראות",
+        "unseen": "התראות שלא נצפו"
+    },
+    "NotificationTestPanel": {
+        "intro": "שליחת התראת בדיקה לעצמך (המנהל). היא אמורה להופיע מיד כהודעה קופצת וברשימת ההתראות.",
+        "button": "שליחת התראת בדיקה",
+        "sending": "בשליחה…",
+        "sent": "נשלח!",
+        "failed": "נכשל"
+    },
+    "MessageDot": {
+        "label": "הודעות שלא נקראו"
+    },
+    "NavAlertDot": {
+        "label": "יש משהו חדש בתפריט"
+    },
+    "Message": {
+        "encrypted": "הודעה מוצפנת",
+        "decryptionFailed": "הודעה זו הוצפנה במפתחות שאינם קיימים עוד."
+    },
+    "MessageComposer": {
+        "bodyLabel": "הודעה",
+        "bodyPlaceholder": "כתיבת הודעה",
+        "send": "שליחה"
+    },
+    "MessageList": {
+        "emptyNotice": "אין הודעות עדיין."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "יש להקריא את הקוד זה לזה בדרך אחרת—בקול, פנים אל פנים או בשיחה. אם הוא זהה בשני הצדדים, איש אינו מתווך ביניכם.",
+        "changed": "הקוד השתנה מאז שבדקת אותו. זה קורה כשאחד מכם מאפס את מפתחות ההצפנה—אך כך גם עשוי להיראות מי שקורא את השיחה. יש להשוות את הקוד החדש לפני שנותנים בו אמון.",
+        "verified": "בדקת את הקוד הזה."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "סימון כמאומת"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "משפט סיסמה",
+        "passphrasePlaceholder": "משפט הסיסמה לפתיחת השיחה",
+        "submit": "פתיחה"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "הודעה אחרונה ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "מדיה רגישה"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "הצגת מדיה רגישה כברירת מחדל"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "פוסט",
+            "message": "הודעה",
+            "user": "משתמש"
+        },
+        "summary": {
+            "before": "{type} מס׳ {id} דווח על ידי ",
+            "after": ""
+        },
+        "reasonLine": "סיבה: {reason}",
+        "banReporterLabel": "הרחקת המדווח",
+        "banReportedUserLabel": "הרחקת המשתמש שדווח",
+        "deleteLabel": "מחיקת {type}",
+        "reportedImageAlt": "תמונה שדווחה",
+        "attachmentUnavailable": "קובץ מצורף שדווח אינו זמין עוד.",
+        "viewAttachment": "הצגת הקובץ המצורף שדווח",
+        "missing": {
+            "noSnapshot": "התוכן שדווח אינו זמין עוד.",
+            "unknownType": "סוג תוכן לא ידוע."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "אין דיווחים."
+    },
+    "ModQueueLinks": {
+        "intro": "התורים ארוכים דיים לקריאה עמוד אחר עמוד, ולכן יש להם עמודים משלהם.",
+        "reportsLabel": "דיווחים",
+        "bannedUsersLabel": "משתמשים מורחקים"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "אף מנהל תוכן לא ביצע פעולה עדיין."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "אין ישויות חמות חסומות."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "אין שרתים חסומים."
+    },
+    "RelayCard": {
+        "accepted": "נרשם ",
+        "waiting": "בהמתנה לאישור הממסר—נרשם "
+    },
+    "RelayList": {
+        "emptyNotice": "אין הרשמה לממסרים. לכאן מגיע רק מה שחברי האתר עוקבים אחריו."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "דבר לא הגיע דרך ממסר עדיין. פוסטים יופיעו כאן כשהשרתים בצד השני יפרסמו אותם."
+    },
+    "RelaySubscribeForm": {
+        "legend": "הרשמה לממסר",
+        "explainerOne": "ממסר הוא זרם משותף: כל פוסט ציבורי מכל שרת רשום אחר מגיע לכאן, והפוסטים מהשרת הזה נשלחים לכולם. כך שרת חדש מוצא אנשים, משום שללא ממסר הפדרציה מעבירה רק תוכן שמישהו כאן כבר עוקב אחריו.",
+        "explainerTwo": "אי אפשר לחזות את העומס—הוא תלוי במה שהשרתים מפרסמים: שבוע שקט עשוי להתחלף באלפי פוסטים בשעה, והאחסון, תור המסירה ותור ניהול התוכן שלך נושאים הכול. פוסטים ממוסרים אינם מופיעים בעדכונים הראשיים או בעדכוני החברים; הם מופיעים בעדכוני הממסר, שאליהם נכנסים במכוון.",
+        "addressLabel": "כתובת הממסר",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "הרשמה"
+    },
+    "RelayFollowObjectField": {
+        "label": "סגנון הרשמה",
+        "options": {
+            "public": "מעקב אחר הזרם הציבורי (האפשרות שרוב הממסרים מצפים לה)",
+            "actor": "מעקב אחר השחקן של הממסר"
+        },
+        "retryNotice": "אם הממסר אינו מאשר, יש לבטל ולנסות את הסגנון האחר—חלק מתוכנות הממסר מזהות רק אחד מהם."
+    },
+    "SiteCounters": {
+        "members": "חברים: {count} ({joined} הצטרפו ב־{days} הימים האחרונים)",
+        "activeMembers": "חברים שהיו כאן ב־{days} הימים האחרונים: {count} ({posted} מהם פרסמו)",
+        "posts": "פוסטים שנכתבו כאן: {count} ({recent} ב־{days} הימים האחרונים)",
+        "deliveries": "מסירות פדרטיביות ב־{days} הימים האחרונים: {delivered} הגיעו, על {undeliverable} ויתרנו",
+        "queued": "ממתינים לשליחה: {count} ({failing} כבר נדחו לפחות פעם אחת)",
+        "pendingReads": "פוסטים הממתינים לקריאה משרתים אחרים: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "הפעלת מערך הבדיקות של האתר והצגת התוצאות. הפעולה אורכת כמה שניות ולכן נפתחת בעמוד משלה.",
+        "runLabel": "הפעלת בדיקות"
+    },
+    "HelpArticle": {
+        "backLabel": "חזרה לכל דפי העזרה"
+    },
+    "UserSearchList": {
+        "noSuggestions": "אין הצעות כרגע—הצעות מגיעות מחברים של אנשים שכבר חברים שלך. אפשר לחפש למעלה לפי שם.",
+        "noMatches": "לא נמצא כאן אף אחד מתאים."
+    },
+    "UserModButton": {
+        "make": "מינוי למנהל תוכן",
+        "remove": "הסרה מניהול תוכן"
+    },
+    "UserUnbanButton": {
+        "name": "ביטול הרחקה"
+    },
+    "TrendingEntityBanButton": {
+        "name": "חסימה"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "ביטול חסימה"
+    },
+    "ReportDismissButton": {
+        "name": "דחייה"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "סימון כרגיש"
+    },
+    "ServerUnblockButton": {
+        "name": "ביטול חסימה"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "ביטול הרשמה"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "ביטול הרשאה"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: עובר",
+        "failing": "{suite}: נכשל"
+    },
+    "PageTitle": {
+        "about": "אודות",
+        "adminBanned": "משתמשים מורחקים",
+        "adminModSettings": "הגדרות ניהול תוכן",
+        "adminReports": "דיווחים",
+        "adminSettings": "הגדרות מנהל",
+        "adminTests": "בדיקות",
+        "authGoogleCallbackAccountDeleted": "החשבון נמחק",
+        "authGoogleCallbackDeleteAccount": "מחיקת חשבון",
+        "authGoogleCallbackLogin": "התחברות",
+        "bookmarks": "סימניות",
+        "checkInbox": "יש לבדוק את תיבת הדואר",
+        "drafts": "טיוטות ומתוזמנים",
+        "draftsEditDraft": "עריכת טיוטה",
+        "draftsEditScheduled": "עריכת פוסט מתוזמן",
+        "forgotPassword": "שכחתי סיסמה",
+        "friendsFeed": "עדכוני חברים",
+        "help": "עזרה",
+        "helpDescription": "מדריכים ותשובות לשימוש באתר.",
+        "locations": "מיקומים",
+        "locationsDescription": "פוסטים מהמקומות הקרובים אליך ביותר.",
+        "locationsPlaceDescription": "פוסטים בקרבת {place}.",
+        "login": "התחברות",
+        "loginVerificationCode": "קוד אימות",
+        "map": "מפה",
+        "mapDescription": "מפת פוסטים מרחבי העולם—מציאת אנשים ודברים בקרבתך.",
+        "messages": "הודעות",
+        "messagesWithUser": "הודעות עם {name}",
+        "notifications": "התראות",
+        "privacy": "מדיניות פרטיות",
+        "quote": "ציטוט",
+        "relayFeed": "עדכוני ממסר",
+        "relayFeedDescription": "פוסטים ציבוריים שמגיעים מהממסרים שאליהם השרת רשום.",
+        "resetPassword": "איפוס סיסמה",
+        "revertEmail": "ביטול שינוי כתובת הדוא״ל",
+        "search": "חיפוש",
+        "signup": "הרשמה",
+        "tags": "תגיות",
+        "tagsDescription": "עיון בתגיות חמות ופופולריות ב־{siteTitle}.",
+        "tagsTagDescription": "פוסטים עם התגית {tag} ב־{siteTitle}.",
+        "terms": "תנאי שימוש",
+        "topics": "נושאים",
+        "topicsDescription": "הנושאים שעליהם מדברים כעת ב־{siteTitle}.",
+        "topicsEntityDescription": "{typeLabel}—פוסטים שמזכירים את {entityTitle} ב־{siteTitle}.",
+        "topicsTypeDescription": "{typePlural} שמדברים עליהם כעת ב־{siteTitle}.",
+        "unsubscribe": "תקצירי דוא״ל",
+        "userFriends": "החברים של {name}",
+        "userFriendsDescription": "החברים של {name} ב־{siteTitle}",
+        "userSettings": "הגדרות משתמש",
+        "users": "משתמשים",
+        "verifyEmail": "אימות דוא״ל"
+    },
+    "PostLikeButton": {
+        "like": "אהבתי",
+        "unlike": "ביטול אהבתי"
+    },
+    "PostPinButton": {
+        "pin": "הצמדה",
+        "unpin": "ביטול הצמדה"
+    },
+    "PostQuoteButton": {
+        "name": "ציטוט"
+    },
+    "PostDeleteButton": {
+        "name": "מחיקה"
+    },
+    "PostEditButton": {
+        "name": "עריכה"
+    },
+    "ReportButton": {
+        "name": "דיווח"
+    },
+    "PostActionBar": {
+        "reply": "תגובה",
+        "replies": {
+            "one": "תגובה אחת",
+            "two": "שתי תגובות",
+            "other": "תגובות ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(נערך)"
+    },
+    "RepliesHeading": {
+        "heading": "תגובות"
+    },
+    "PollVoteButton": {
+        "name": "הצבעה"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "הצגת ",
+            "link": "מיקומים נוספים",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "פוסטים בקרבתך",
+        "description": "כאן מוצגים הפוסטים הקרובים ביותר לנקודה—בכל מקום שיש פעילות, גם אם היא רחוקה. אפשר לשתף את מיקומך כדי להתחיל מהמקום שבו אתה נמצא, או לבחור נקודה במפה.",
+        "useMyLocation": "שימוש במיקום שלי",
+        "pickOnMap": "בחירה במפה",
+        "searchPlaceholder": "או להקליד שם מקום…",
+        "searchLabel": "חיפוש מקום",
+        "locating": "באיתור…",
+        "noGeolocation": "הדפדפן שלך אינו יכול לשתף מיקום.",
+        "locationError": "לא ניתן לקבל את מיקומך. יש לבדוק את הרשאת המיקום בדפדפן."
+    },
+    "PollDeadline": {
+        "final": "תוצאה סופית",
+        "closes": {
+            "before": "נסגר ",
+            "after": ""
+        },
+        "days": {
+            "one": "בעוד יום",
+            "two": "בעוד יומיים",
+            "other": "בעוד {count} ימים"
+        },
+        "hours": {
+            "one": "בעוד שעה",
+            "two": "בעוד שעתיים",
+            "other": "בעוד {count} שעות"
+        },
+        "minutes": {
+            "one": "בעוד דקה",
+            "two": "בעוד שתי דקות",
+            "other": "בעוד {count} דקות"
+        },
+        "underMinute": "בעוד פחות מדקה"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "אדם אחד הצביע ",
+            "two": "שני אנשים הצביעו ",
+            "other": "{count} אנשים הצביעו "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "התחברות",
+            "after": " כדי לפרסם."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "התחברות",
+            "after": " כדי להגיב."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " פרסם מחדש"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "בתגובה אל ",
+            "after": ""
+        },
+        "untitled": "הפוסט הזה",
+        "jumpToStart": "מעבר להתחלה"
+    },
+    "TopicSummaryCard": {
+        "label": "סיכום שנוצר באמצעות בינה מלאכותית"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "ברוכים הבאים אל ",
+            "after": ""
+        },
+        "paragraphs": [
+            "כתבו משהו בתיבה למטה והוא יישלח לעדכונים שלכם. כל אחד יכול להגיב, ותגובה היא פשוט פוסט עם פוסט־אב, כך ששיחות יכולות להסתעף לעומק הדרוש.",
+            "הוסיפו אנשים כחברים והפוסטים שלהם יצטרפו לעדכונים שלכם. העדכונים הכלליים—שם האתר בפינה השמאלית העליונה—מציגים את כל מה שנכתב כאן, וזה המקום למצוא אנשים להוסיף.",
+            "האתר הוא חלק מהפדיברס: אפשר לעקוב אחר חשבונות ב־Mastodon ובשרתים אחרים לפי המזהה המלא שלהם, והפוסטים שלכם יגיעו לאנשים שעוקבים אחריכם שם. חפשו מזהה כמו @someone@example.social והשרת ימצא אותו.",
+            "תייגו פוסט ב־#תגיות והוא יופיע בעמוד התגית, וגם בנושאים החמים אם מספיק אנשים כותבים עליו.",
+            "הודעות בין חברי האתר מוצפנות מקצה לקצה—השרת שומר טקסט מוצפן שאינו יכול לקרוא. אפשר להפעיל זאת בהגדרות.",
+            "אין צורך לפרסם מיד: אפשר לשמור טיוטה או לקבוע מועד לפרסום אוטומטי. שתי האפשרויות נמצאות תחת טיוטות ומתוזמנים."
+        ],
+        "more": {
+            "before": "מידע נוסף נמצא ",
+            "link": "בעמודי העזרה",
+            "after": ", כולל הסבר להעברת חשבון לכאן ממקום אחר."
+        },
+        "dontShowAgain": "לא להציג שוב"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "הוספת אמוג׳י"
+    },
+    "LinkImagePreview": {
+        "alt": "תמונת תצוגה מקדימה של קישור"
+    },
+    "LinkImageRemoveButton": {
+        "label": "הסרת תמונה"
+    },
+    "LinkItem": {
+        "alt": "תמונת תצוגה מקדימה של קישור"
+    },
+    "MapScrubber": {
+        "play": "הפעלה",
+        "pause": "השהיה",
+        "cumulativeMode": "עד אז",
+        "windowMode": "רק אז",
+        "rangeLabel": "הצגת פוסטים עד תאריך",
+        "cumulativeLabel": {
+            "one": "פורסם עד {date}—פוסט אחד",
+            "two": "פורסמו עד {date}—שני פוסטים",
+            "other": "פורסמו עד {date}—{count} פוסטים"
+        },
+        "windowLabel": {
+            "one": "פורסם בסביבות {date}—פוסט אחד",
+            "two": "פורסמו בסביבות {date}—שני פוסטים",
+            "other": "פורסמו בסביבות {date}—{count} פוסטים"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "פוסט מאת {name}",
+        "pageTitleUntitled": "פוסט",
+        "imageAltByAuthor": "תמונה שפרסם {name}",
+        "imageAltUntitled": "תמונה"
+    },
+    "PostBookmarkButton": {
+        "remove": "הסרת סימנייה",
+        "add": "הוספת סימנייה"
+    },
+    "PostRepostButton": {
+        "undo": "ביטול פרסום מחדש",
+        "repost": "פרסום מחדש"
+    },
+    "QuotedPost": {
+        "viewLink": "הצגת הפוסט המצוטט"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "בקשות ממתינות"
+    },
+    "ScrollToTopButton": {
+        "label": "גלילה לראש העמוד"
+    },
+    "SearchClearButton": {
+        "label": "ניקוי החיפוש"
+    },
+    "SitePolicyLinks": {
+        "terms": "תנאי שימוש",
+        "privacy": "מדיניות פרטיות"
+    },
+    "SkipLink": {
+        "label": "דילוג לתוכן"
+    },
+    "TopicHeading": {
+        "searchLink": "חיפוש הנושא",
+        "noPosts": "אין כרגע פוסטים שמזכירים זאת."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "עדיין לא נכתב דבר מסוג זה."
+    },
+    "TrendingEntitySection": {
+        "heading": "נושאים חמים"
+    },
+    "PostLocationLink": {
+        "title": "הצגת המקום במפה",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "הרגע",
+        "minutes": {
+            "one": "לפני דקה",
+            "two": "לפני שתי דקות",
+            "other": "לפני {count} דקות"
+        },
+        "hours": {
+            "one": "לפני שעה",
+            "two": "לפני שעתיים",
+            "other": "לפני {count} שעות"
+        },
+        "days": {
+            "one": "לפני יום",
+            "two": "לפני יומיים",
+            "other": "לפני {count} ימים"
+        }
+    },
+    "ThemeSelector": {
+        "label": "ערכת נושא",
+        "themes": {
+            "system": "כמו המערכת",
+            "light": "בהיר פשוט",
+            "dark": "כהה פשוט",
+            "sepia": "Sepia",
+            "midnight": "חצות",
+            "sunset": "שקיעה",
+            "rose": "ורד",
+            "forest": "יער",
+            "ocean": "אוקיינוס",
+            "lavender": "Lavender",
+            "gold": "זהב",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "גווני אפור"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "תרגום אינו מוגדר בשרת הזה.",
+        "nothing": "אין כאן דבר לתרגם.",
+        "unknownSource": "שפת הפוסט עדיין לא זוהתה, ולכן אי אפשר לתרגם אותו.",
+        "alreadyReadable": "הפוסט כבר כתוב בשפה הזאת.",
+        "unsupportedPair": "השרת עדיין אינו יכול לתרגם את השפה הזאת."
+    },
+    "LanguagePrompt": {
+        "question": "האם להציג את האתר בעברית?",
+        "accept": "כן",
+        "decline": "לא, תודה"
+    },
+    "LanguageSelector": {
+        "label": "שפה",
+        "legend": "שפה"
+    },
+    "EmailDigest": {
+        "subject": "מה החמצת ב־{site}",
+        "greeting": "שלום {name},",
+        "whileAway": "בזמן שלא היית כאן:",
+        "repeatedTimes": {
+            "one": " (פעם אחת)",
+            "two": " (פעמיים)",
+            "other": " ({count} פעמים)"
+        },
+        "moreMissed": {
+            "one": "ועוד התראה אחת",
+            "two": "ועוד שתי התראות",
+            "other": "ועוד {count} התראות"
+        },
+        "messagesWaiting": {
+            "one": "ממתינה לך הודעה אחת",
+            "two": "ממתינות לך שתי הודעות",
+            "other": "ממתינות לך {count} הודעות"
+        },
+        "postsInFeed": {
+            "one": "פוסט חדש אחד בעדכונים שלך",
+            "two": "שני פוסטים חדשים בעדכונים שלך",
+            "other": "{count} פוסטים חדשים בעדכונים שלך"
+        },
+        "unsubscribeInstructions": "כדי להפסיק את ההודעות האלה, יש לפתוח את הקישור—לחיצה אחת, ללא צורך בסיסמה:",
+        "comeSeeWhatIsNew": "בואו לראות מה חדש",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "להפסיק לשלוח לי הודעות כאלה",
+            "after": "—לחיצה אחת, ללא צורך בסיסמה."
+        }
+    },
+    "EmailVerification": {
+        "subject": "אימות כתובת הדוא״ל שלך",
+        "greeting": "שלום {name},",
+        "instructions": "יש לאמת את כתובת הדוא״ל באמצעות ביקור בקישור הזה:",
+        "htmlInstructions": "יש לאמת את כתובת הדוא״ל באמצעות לחיצה על הקישור למטה:",
+        "buttonLabel": "אימות כתובת הדוא״ל",
+        "expiresIn": {
+            "one": "תוקף הקישור יפוג בעוד שעה.",
+            "two": "תוקף הקישור יפוג בעוד שעתיים.",
+            "other": "תוקף הקישור יפוג בעוד {count} שעות."
+        }
+    },
+    "PasswordReset": {
+        "subject": "איפוס הסיסמה שלך",
+        "greeting": "שלום {name},",
+        "instructions": "מישהו (בתקווה שזה היית אתה) ביקש לאפס את הסיסמה. יש לבקר בקישור כדי לבחור סיסמה חדשה:",
+        "htmlInstructions": "מישהו (בתקווה שזה היית אתה) ביקש לאפס את הסיסמה. יש ללחוץ על הקישור למטה כדי לבחור סיסמה חדשה:",
+        "buttonLabel": "איפוס הסיסמה",
+        "expiresIn": {
+            "one": "תוקף הקישור יפוג בעוד שעה.",
+            "two": "תוקף הקישור יפוג בעוד שעתיים.",
+            "other": "תוקף הקישור יפוג בעוד {count} שעות."
+        },
+        "ignoreNotice": "אם לא ביקשת זאת, אפשר להתעלם מהודעת הדוא״ל."
+    }
+}

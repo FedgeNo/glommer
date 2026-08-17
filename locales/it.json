@@ -514,7 +514,7 @@
     "MessageKeySetupForm": {
         "resetWarning": "Hai dimenticato la passphrase? Reimpostandola si creano nuove chiavi sotto una nuova passphrase - ma i messaggi cifrati con le vecchie chiavi non potranno mai più essere letti, da nessuno.",
         "requirements": "Almeno 12 caratteri, e non la password del tuo account - quella viene inviata a questo server, mentre la tua passphrase non deve esserlo mai.",
-        "passphraseLabel": "Passphrase",
+        "passphraseLabel": "Frase segreta",
         "resetPassphraseLabel": "Nuova passphrase",
         "confirmLabel": "Conferma passphrase",
         "accountPasswordLabel": "Password dell'account",
@@ -647,7 +647,7 @@
         "label": "Segna come verificato"
     },
     "MessageUnlockForm": {
-        "passphraseLabel": "Passphrase",
+        "passphraseLabel": "Frase segreta",
         "passphrasePlaceholder": "Passphrase per sbloccare questa conversazione",
         "submit": "Sblocca"
     },

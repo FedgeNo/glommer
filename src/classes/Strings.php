@@ -156,11 +156,45 @@ UPDATE `Users`
     {
         $available = self::available();
 
-        foreach (self::preferredLanguages() as $language) {
-            $base = strtolower(explode('-', $language)[0]);
+        // Compared as BCP 47 tags rather than as filenames: tags are
+        // case-insensitive, while the files keep the conventional spelling
+        // (`pt-BR`, `zh-Hant`) that is handed to the browser's Intl APIs.
+        $offered = [];
 
-            if (in_array($base, $available, true)) {
-                return $base;
+        foreach ($available as $locale) {
+            $offered[strtolower(str_replace('_', '-', $locale))] = $locale;
+        }
+
+        foreach (self::preferredLanguages() as $language) {
+            $tag = strtolower(str_replace('_', '-', $language));
+
+            if (isset($offered[$tag])) {
+                return $offered[$tag];
+            }
+
+            // Argos names these variants `pb` and `zt`, but those are not
+            // locale tags ICU or Intl can use. Browsers ask for them by region
+            // or script; match those requests to the standards-based locale
+            // files before falling back to generic Portuguese or Chinese.
+            if (preg_match('/\Apt-br(?:-|\z)/', $tag) === 1 && isset($offered['pt-br'])) {
+                return $offered['pt-br'];
+            }
+
+            if (preg_match('/\Azh-(?:hant|tw|hk|mo)(?:-|\z)/', $tag) === 1 && isset($offered['zh-hant'])) {
+                return $offered['zh-hant'];
+            }
+
+            // `tl` is the retired tag still used by Argos. Browsers and ICU
+            // call the language Filipino (`fil`), but accepting either here
+            // lets an older browser preference reach the same interface.
+            if (preg_match('/\A(?:fil|tl)(?:-|\z)/', $tag) === 1 && isset($offered['fil'])) {
+                return $offered['fil'];
+            }
+
+            $base = explode('-', $tag)[0];
+
+            if (isset($offered[$base])) {
+                return $offered[$base];
             }
         }
 

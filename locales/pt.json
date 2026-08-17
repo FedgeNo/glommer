@@ -1104,11 +1104,11 @@
             "other": "e mais {count} notificações"
         },
         "messagesWaiting": {
-            "one": "Tens uma mensagem à espera",
+            "one": "Tens {count} mensagem à espera",
             "other": "Tens {count} mensagens à espera"
         },
         "postsInFeed": {
-            "one": "Uma nova publicação no teu feed",
+            "one": "{count} nova publicação no teu feed",
             "other": "{count} novas publicações no teu feed"
         },
         "unsubscribeInstructions": "Para parar estes emails, abre esta ligação - basta um clique e não precisas de palavra-passe:",

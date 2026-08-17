@@ -123,8 +123,15 @@ class LocaleIntegrityTest extends TestCase
         $known = \ResourceBundle::getLocales('');
 
         foreach (Strings::available() as $locale) {
+            // Browser Intl requires BCP 47 (`pt-BR`, `zh-Hant`), while ICU's
+            // resource inventory spells the same locales with underscores
+            // (`pt_BR`, `zh_Hant`). Canonicalize before comparing so the test
+            // checks whether ICU knows the locale rather than which syntax
+            // names it.
+            $canonical = \Locale::canonicalize($locale);
+
             $this -> assertTrue(
-                in_array($locale, $known, true),
+                in_array($canonical, $known, true),
                 $locale . '.json is not a locale ICU knows, so it would count in the wrong grammar'
             );
         }
@@ -156,6 +163,46 @@ class LocaleIntegrityTest extends TestCase
                             isset($value[$category]),
                             $locale . ' ' . $class . '.' . $key . ' has no "' . $category
                                 . '" form, which its own plural rule asks for'
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * A form shared by several integers cannot spell one particular integer
+     * into its prose. CLDR puts both 0 and 1 in `one` for languages including
+     * Persian and Portuguese; without {count}, zero silently reads as one.
+     */
+    public function testAPluralFormSharedByCountsPrintsTheCount(): void
+    {
+        foreach (Strings::available() as $locale) {
+            $members = [];
+
+            foreach (range(0, 250) as $count) {
+                $members[PluralRule::categoryFor($locale, $count)][] = $count;
+            }
+
+            foreach (self::table($locale) as $class => $entry) {
+                if (!is_array($entry)) {
+                    continue;
+                }
+
+                foreach ($entry as $key => $value) {
+                    if (!is_array($value) || !self::isCounted($value)) {
+                        continue;
+                    }
+
+                    foreach ($value as $category => $text) {
+                        if (count($members[$category] ?? []) < 2 || !is_string($text)) {
+                            continue;
+                        }
+
+                        $this -> assertTrue(
+                            str_contains($text, '{count}'),
+                            $locale . ' ' . $class . '.' . $key . '.' . $category
+                                . ' serves several counts but does not print {count}'
                         );
                     }
                 }

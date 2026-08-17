@@ -35,9 +35,13 @@ class TranslatorTest extends TestCase
 
     public function testATagIsReducedToTheLanguageItNames(): void
     {
-        $this -> assertSame('pt', Translator::baseLanguage('pt-BR'));
+        $this -> assertSame('pb', Translator::baseLanguage('pt-BR'));
+        $this -> assertSame('pb', Translator::baseLanguage('pb'));
         $this -> assertSame('en', Translator::baseLanguage('en-GB'));
-        $this -> assertSame('zh', Translator::baseLanguage('zh-Hant-TW'));
+        $this -> assertSame('zt', Translator::baseLanguage('zh-Hant-TW'));
+        $this -> assertSame('zt', Translator::baseLanguage('zh-TW'));
+        $this -> assertSame('tl', Translator::baseLanguage('fil-PH'));
+        $this -> assertSame('tl', Translator::baseLanguage('tl'));
         $this -> assertSame('de', Translator::baseLanguage('  DE  '));
     }
 

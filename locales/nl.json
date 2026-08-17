@@ -8,12 +8,12 @@
     "LoginPrompt": {
         "reply": {
             "before": "",
-            "link": "Log in",
+            "link": "Inloggen",
             "after": " om te reageren."
         },
         "post": {
             "before": "",
-            "link": "Log in",
+            "link": "Inloggen",
             "after": " om te posten."
         }
     },
@@ -914,14 +914,14 @@
     "PostComposer": {
         "prompt": {
             "before": "",
-            "link": "Log in",
+            "link": "Inloggen",
             "after": " om te posten."
         }
     },
     "ReplyComposer": {
         "prompt": {
             "before": "",
-            "link": "Log in",
+            "link": "Inloggen",
             "after": " om te reageren."
         }
     },
@@ -1001,7 +1001,7 @@
     },
     "PostRepostButton": {
         "undo": "Repost ongedaan maken",
-        "repost": "Repost"
+        "repost": "Opnieuw plaatsen"
     },
     "QuotedPost": {
         "viewLink": "Bekijk de geciteerde post"

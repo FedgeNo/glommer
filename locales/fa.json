@@ -1,7 +1,7 @@
 {
     "PollOptionVotes": {
         "votes": {
-            "one": "یک رأی",
+            "one": "{count} رأی",
             "other": "{count} رأی"
         }
     },
@@ -907,7 +907,7 @@
     },
     "PollTally": {
         "voters": {
-            "one": "یک نفر رأی داد ",
+            "one": "{count} نفر رأی داد ",
             "other": "{count} نفر رأی دادند "
         }
     },
@@ -1096,19 +1096,19 @@
         "greeting": "سلام {name}،",
         "whileAway": "در غیابتان:",
         "repeatedTimes": {
-            "one": " (یک بار)",
+            "one": " ({count} بار)",
             "other": " ({count} بار)"
         },
         "moreMissed": {
-            "one": "و یک اعلان دیگر",
+            "one": "و {count} اعلان دیگر",
             "other": "و {count} اعلان دیگر"
         },
         "messagesWaiting": {
-            "one": "پیامی در انتظار شماست",
+            "one": "{count} پیام در انتظار شماست",
             "other": "{count} پیام در انتظار شماست"
         },
         "postsInFeed": {
-            "one": "یک پست جدید در فیدتان",
+            "one": "{count} پست جدید در فیدتان",
             "other": "{count} پست جدید در فیدتان"
         },
         "unsubscribeInstructions": "برای متوقف کردن این ایمیل‌ها، این پیوند را باز کنید - فقط یک کلیک است و به گذرواژه نیازی ندارد:",

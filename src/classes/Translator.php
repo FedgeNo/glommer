@@ -463,13 +463,30 @@ SELECT RELEASE_LOCK(?)
     /**
      * The language a tag names, or null where it names none.
      *
-     * Argos packages are per language, so "pt-BR" and "pt" are the same
-     * package and "en-GB" is English. A tag that is not a tag is refused here
-     * rather than reaching a command line.
+     * Most Argos packages use a language's ordinary base code. Three do not:
+     * its package index calls Brazilian Portuguese `pb`, Traditional Chinese
+     * `zt`, and Filipino `tl`. Those are not the standards-based locale tags
+     * the interface and browser use, so translate them at this boundary.
+     * A tag that is not a tag is refused here rather than reaching a command
+     * line.
      */
     public static function baseLanguage(?string $tag): ?string
     {
-        $base = strtolower(explode('-', trim((string) $tag))[0]);
+        $tag = strtolower(str_replace('_', '-', trim((string) $tag)));
+
+        if (preg_match('/\Apt-br(?:-|\z)/', $tag) === 1 || $tag === 'pb') {
+            return 'pb';
+        }
+
+        if (preg_match('/\Azh-(?:hant|tw|hk|mo)(?:-|\z)/', $tag) === 1 || $tag === 'zt') {
+            return 'zt';
+        }
+
+        if (preg_match('/\Afil(?:-|\z)/', $tag) === 1 || preg_match('/\Atl(?:-|\z)/', $tag) === 1) {
+            return 'tl';
+        }
+
+        $base = explode('-', $tag)[0];
 
         return preg_match('/\A[a-z]{2,3}\z/', $base) === 1 ? $base : null;
     }

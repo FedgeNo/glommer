@@ -28,6 +28,9 @@ class LanguageName
         'nl' => 'Nederlands',
         'pl' => 'Polski',
         'pt' => 'Português',
+        'pt-BR' => 'Português (Brasil)',
+        'zh-Hant' => '繁體中文',
+        'fil' => 'Filipino',
     ];
 
     public static function of(string $locale): string

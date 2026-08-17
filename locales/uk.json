@@ -230,7 +230,7 @@
         "save": "Зберегти"
     },
     "GoogleAuthSettingsForm": {
-        "legend": "Google Sign-In",
+        "legend": "Вхід через Google",
         "clientIdLabel": "ID клієнта",
         "clientIdPlaceholder": "ID клієнта Google OAuth",
         "secretLabel": "Секрет клієнта",

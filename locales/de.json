@@ -228,7 +228,7 @@
         "save": "Speichern"
     },
     "GoogleAuthSettingsForm": {
-        "legend": "Google Sign-In",
+        "legend": "Google-Anmeldung",
         "clientIdLabel": "Client-ID",
         "clientIdPlaceholder": "Client-ID für Google OAuth",
         "secretLabel": "Client-Secret",
@@ -307,7 +307,7 @@
         "save": "Bild hochladen"
     },
     "CarouselAutoplayButton": {
-        "name": "Autoplay"
+        "name": "Automatische Wiedergabe"
     },
     "CarouselNextButton": {
         "name": "Weiter"
@@ -1093,7 +1093,7 @@
     },
     "EmailDigest": {
         "subject": "Was du auf {site} verpasst hast",
-        "greeting": "Hi {name},",
+        "greeting": "Hallo {name},",
         "whileAway": "Während du weg warst:",
         "repeatedTimes": {
             "one": " ({count} Mal)",
@@ -1121,7 +1121,7 @@
     },
     "EmailVerification": {
         "subject": "Bestätige deine E-Mail-Adresse",
-        "greeting": "Hi {name},",
+        "greeting": "Hallo {name},",
         "instructions": "Bitte bestätige deine E-Mail-Adresse, indem du diesen Link besuchst:",
         "htmlInstructions": "Bitte bestätige deine E-Mail-Adresse, indem du auf den folgenden Link klickst:",
         "buttonLabel": "E-Mail-Adresse bestätigen",
@@ -1132,7 +1132,7 @@
     },
     "PasswordReset": {
         "subject": "Setze dein Passwort zurück",
-        "greeting": "Hi {name},",
+        "greeting": "Hallo {name},",
         "instructions": "Jemand (hoffentlich du) hat angefordert, dein Passwort zurückzusetzen. Besuche diesen Link, um ein neues Passwort zu wählen:",
         "htmlInstructions": "Jemand (hoffentlich du) hat angefordert, dein Passwort zurückzusetzen. Klicke auf den Link unten, um ein neues Passwort zu wählen:",
         "buttonLabel": "Passwort zurücksetzen",

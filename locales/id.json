@@ -1,0 +1,1128 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "other": "{count} suara"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Masuk",
+            "after": " untuk membalas."
+        },
+        "post": {
+            "before": "",
+            "link": "Masuk",
+            "after": " untuk memposting."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Situs",
+        "siteURLLabel": "URL situs",
+        "siteTitleLabel": "Judul situs",
+        "mailFromAddressLabel": "Alamat pengirim surel",
+        "serverNameConfirmedLabel": "Saya telah mengatur \"ServerName {host}\" dan \"UseCanonicalName On\" dalam konfigurasi server web (hanya diperiksa jika pengujian langsung otomatis tidak dapat selesai—lihat bagian HTTPS di README.md)",
+        "databaseLegend": "Basis data",
+        "databaseHostLabel": "Host basis data",
+        "databasePortLabel": "Port basis data",
+        "databaseNameLabel": "Nama basis data",
+        "databaseAdminUsernameLabel": "Nama pengguna admin basis data",
+        "databaseAdminPasswordLabel": "Kata sandi admin basis data",
+        "webSocketTLSLegend": "TLS WebSocket (opsional)",
+        "certificatePathLabel": "Jalur sertifikat",
+        "certificatePathPlaceholder": "Biarkan kosong untuk membuatnya otomatis melalui mkcert",
+        "keyPathLabel": "Jalur kunci",
+        "keyPathPlaceholder": "Biarkan kosong untuk membuatnya otomatis melalui mkcert",
+        "botProtectionLegend": "Perlindungan bot (opsional)",
+        "turnstileSiteKeyLabel": "Kunci situs Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Biarkan kosong untuk melewati",
+        "turnstileSecretKeyLabel": "Kunci rahasia Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Biarkan kosong untuk melewati",
+        "submit": "Siapkan"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Frasa sandi saat ini",
+        "newPassphraseLabel": "Frasa sandi baru",
+        "confirmNewPassphraseLabel": "Konfirmasi frasa sandi baru",
+        "accountPasswordLabel": "Kata sandi akun",
+        "submit": "Ubah frasa sandi"
+    },
+    "PasswordResetForm": {
+        "legend": "Pilih kata sandi baru",
+        "newPasswordLabel": "Kata sandi baru",
+        "newPasswordPlaceholder": "Setidaknya 8 karakter",
+        "confirmPasswordLabel": "Konfirmasi kata sandi baru",
+        "submit": "Atur ulang kata sandi"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Atur ulang kata sandi Anda",
+        "emailLabel": "Surel",
+        "submit": "Kirim tautan pengaturan ulang"
+    },
+    "EmailRevertForm": {
+        "submit": "Batalkan perubahan surel"
+    },
+    "EmailVerifyForm": {
+        "submit": "Verifikasi alamat surel"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Aktifkan kembali"
+    },
+    "EmailDigestSetting": {
+        "label": "Kirimkan lewat surel hal yang saya lewatkan setelah lama tidak hadir"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Perangkat tidak dikenal",
+        "browserOnOS": "{browser} di {os}",
+        "thisDevice": " (perangkat ini)",
+        "lastUsed": {
+            "before": "Terakhir digunakan ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Akhiri semua sesi aktif dan lupakan semua perangkat yang diingat. Anda akan dikeluarkan dari semua peramban, termasuk yang ini."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Keluar di semua tempat"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Verifikasi dengan Google untuk menghapus"
+    },
+    "GoogleSignInButton": {
+        "label": "Lanjutkan dengan Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Edit profil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Terima notifikasi di perangkat ini meskipun situs tidak dibuka. Pilihan ini berlaku per peramban—aktifkan di setiap tempat Anda ingin dihubungi.",
+        "label": {
+            "off": "Aktifkan di perangkat ini",
+            "on": "Nonaktifkan di perangkat ini"
+        },
+        "unsupported": "Notifikasi push tidak didukung oleh peramban ini"
+    },
+    "LoginForm": {
+        "legend": "Masuk",
+        "identifier": "Nama pengguna atau surel",
+        "password": "Kata sandi",
+        "rememberMe": "Ingat saya",
+        "submit": "Masuk"
+    },
+    "SignupForm": {
+        "legend": "Buat akun",
+        "usernameLabel": "Nama pengguna",
+        "usernamePlaceholder": "Huruf kecil, angka, dan _",
+        "emailLabel": "Surel",
+        "emailPlaceholder": "Alamat surel yang valid",
+        "displayName": "Nama tampilan (opsional)",
+        "bioLabel": "Bio (opsional)",
+        "bioPlaceholder": "Bio singkat—#tagar, @sebutan, dan tautan menjadi dapat diklik",
+        "passwordLabel": "Kata sandi",
+        "passwordPlaceholder": "Kata sandi: setidaknya 8 karakter",
+        "rememberMe": "Ingat saya",
+        "submit": "Daftar"
+    },
+    "PasswordChangeForm": {
+        "legend": "Ubah kata sandi Anda",
+        "currentPassword": "Kata sandi saat ini",
+        "newPasswordLabel": "Kata sandi baru",
+        "newPasswordPlaceholder": "Setidaknya 8 karakter",
+        "confirmPassword": "Konfirmasi kata sandi baru",
+        "submit": "Ubah kata sandi"
+    },
+    "EmailChangeForm": {
+        "legend": "Ubah alamat surel Anda",
+        "newEmail": "Alamat surel baru",
+        "currentPassword": "Kata sandi saat ini",
+        "notice": "Anda harus memverifikasi alamat baru sebelum dapat terus menggunakan situs.",
+        "submit": "Ubah surel"
+    },
+    "AccountDeleteForm": {
+        "legend": "Hapus akun Anda",
+        "warning": "Tindakan ini menghapus akun, postingan, dan pesan Anda secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        "currentPassword": "Kata sandi saat ini",
+        "submit": "Hapus akun"
+    },
+    "AccountMigrationForm": {
+        "legend": "Pindah ke server lain",
+        "movedNotice": "Akun ini telah pindah ke {destination}. Pengikut Anda telah diminta mengikuti Anda di sana.",
+        "explanation": "Pengikut Anda diminta mengikuti akun baru. Postingan Anda tetap di sini—alamat objek dimiliki server yang membuatnya sehingga tidak dapat ikut dipindahkan.",
+        "addressNotice": "Akun tujuan harus terlebih dahulu mencantumkan akun ini sebagai \"juga dikenal sebagai\". Alamat Anda di sini adalah {address}.",
+        "movedToLabel": "Pindah ke",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Juga dikenal sebagai",
+        "aliasesExplanation": "Akun di tempat lain yang juga milik Anda. Mencantumkannya di sini mengizinkan akun tersebut pindah ke akun ini—ini adalah izin, bukan perpindahannya sendiri. Satu alamat per baris.",
+        "aliasesLabel": "Akun Anda yang lain",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Simpan"
+    },
+    "TwoFactorForm": {
+        "legend": "Masukkan kode verifikasi Anda",
+        "explanation": "Kami mengirim kode verifikasi melalui surel. Masukkan di bawah ini atau gunakan salah satu kode pemulihan untuk menyelesaikan proses masuk.",
+        "explanationEmailFailed": "Kami tidak dapat mengirim kode verifikasi melalui surel saat ini. Masukkan salah satu kode pemulihan untuk menyelesaikan proses masuk.",
+        "code": "Kode verifikasi",
+        "submit": "Verifikasi"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Autentikasi dua faktor aktif",
+            "off": "Autentikasi dua faktor nonaktif"
+        },
+        "explanation": {
+            "on": "Saat Anda masuk, kami akan mengirim kode verifikasi melalui surel yang harus dimasukkan untuk menyelesaikan proses masuk. Jika surel tidak sampai, Anda dapat masuk dengan salah satu kode pemulihan.",
+            "off": "Tambahkan langkah kedua saat masuk: kami akan mengirim kode verifikasi melalui surel yang harus dimasukkan sehingga kata sandi saja tidak cukup untuk masuk. Anda akan mendapat kode pemulihan sekali pakai untuk disimpan jika surel tidak sampai."
+        },
+        "currentPassword": "Kata sandi saat ini",
+        "submit": {
+            "on": "Nonaktifkan autentikasi dua faktor",
+            "off": "Aktifkan autentikasi dua faktor"
+        },
+        "regenerate": "Buat kode pemulihan baru",
+        "recoveryHeading": "Kode pemulihan Anda",
+        "recoveryNote": "Simpan sekarang di tempat yang aman—kode tidak akan ditampilkan lagi. Setiap kode dapat digunakan sekali untuk masuk ketika surel verifikasi tidak sampai; membuat kode baru akan mengganti semua kode ini.",
+        "toast": {
+            "on": "Autentikasi dua faktor kini aktif.",
+            "off": "Autentikasi dua faktor kini nonaktif.",
+            "regenerated": "Kode pemulihan baru telah dibuat. Kode lama tidak lagi berfungsi."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Periksa kotak masuk dan klik tautan verifikasi yang kami kirim untuk mengonfirmasi alamat surel Anda. Jika tidak terlihat, periksa folder sampah/spam."
+    },
+    "VerificationResendButton": {
+        "label": "Kirim ulang surel verifikasi"
+    },
+    "MailSettingsForm": {
+        "legend": "Surel keluar",
+        "fromAddressLabel": "Alamat pengirim",
+        "fromAddressPlaceholder": "Surel tidak dapat dikirim sebelum ini diatur",
+        "fromNameLabel": "Nama pengirim",
+        "hostLabel": "Host SMTP",
+        "portLabel": "Port SMTP",
+        "usernameLabel": "Nama pengguna SMTP",
+        "passwordLabel": "Kata sandi SMTP",
+        "passwordPlaceholder": {
+            "set": "Kata sandi telah diatur—biarkan kosong untuk mempertahankannya",
+            "unset": "Kata sandi SMTP"
+        },
+        "encryptionLabel": "Enkripsi",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, biasanya pada port 587)",
+            "ssl": "SSL (TLS implisit, biasanya pada port 465)",
+            "none": "Tidak ada"
+        },
+        "explainer": "Biarkan host SMTP kosong untuk mengirim melalui mail() PHP (tidak disarankan—lihat bagian keterkiriman di README). Surel sama sekali tidak dapat dikirim sebelum alamat pengirim diatur.",
+        "save": "Simpan"
+    },
+    "MapSettingsForm": {
+        "legend": "Ubin peta",
+        "notice": "Biarkan kosong untuk menggunakan OpenStreetMap. Untuk memakai penyedia berkunci, tempel templat URL-nya dengan {apiKey} secara literal di tempat kunci, lalu masukkan kunci dan atribusi di bawah.",
+        "urlLabel": "Templat URL ubin",
+        "keyLabel": "Kunci API",
+        "keyPlaceholder": "Kunci API penyedia ubin Anda",
+        "attributionLabel": "Atribusi",
+        "attributionPlaceholder": "© kontributor OpenStreetMap",
+        "save": "Simpan"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Masuk dengan Google",
+        "clientIdLabel": "ID klien",
+        "clientIdPlaceholder": "ID klien Google OAuth",
+        "secretLabel": "Rahasia klien",
+        "secretPlaceholder": {
+            "set": "Rahasia klien telah diatur—biarkan kosong untuk mempertahankannya",
+            "unset": "Rahasia klien Google OAuth"
+        },
+        "explainer": "Keduanya diperlukan agar \"Lanjutkan dengan Google\" muncul saat mendaftar dan masuk. Di klien Google Cloud OAuth, atur URI pengalihan resmi ke {url}; kosongkan ID klien untuk menonaktifkannya.",
+        "save": "Simpan"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Kunci situs",
+        "turnstileSiteKeyPlaceholder": "Kunci situs Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Kunci rahasia",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Kunci rahasia telah diatur—biarkan kosong untuk mempertahankannya",
+            "unset": "Kunci rahasia Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Kedua kunci diperlukan agar CAPTCHA muncul saat mendaftar dan masuk. Kosongkan kunci situs untuk menonaktifkannya.",
+        "recaptchaLegend": "Google reCAPTCHA (pemulihan penguncian akun)",
+        "recaptchaSiteKeyLabel": "Kunci situs",
+        "recaptchaSiteKeyPlaceholder": "Kunci situs Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Kunci rahasia",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Kunci rahasia telah diatur—biarkan kosong untuk mempertahankannya",
+            "unset": "Kunci rahasia Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Kedua kunci diperlukan. Jika diatur, akun yang mencapai batas percobaan masuk dapat kembali masuk dengan menyelesaikan tantangan ini alih-alih menunggu penguncian berakhir; jika tidak, penguncian harus ditunggu. Gunakan reCAPTCHA v2 (\"Saya bukan robot\"). Kosongkan kunci situs untuk menonaktifkannya.",
+        "save": "Simpan"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Digunakan oleh fitur AI di situs (ringkasan topik tren, dan sebagainya). Biarkan model kosong untuk memakai Perute Model Gratis; OpenRouter memilih secara acak dari model yang saat ini gratis sehingga tidak akan menimbulkan biaya.",
+        "keyLabel": "Kunci API",
+        "keyPlaceholder": {
+            "set": "Kunci API telah diatur—biarkan kosong untuk mempertahankannya",
+            "unset": "Kunci API OpenRouter"
+        },
+        "clearKeyLabel": "Hapus kunci API tersimpan (menonaktifkan fitur AI)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Jangan pernah izinkan penggunaan dana (disarankan)",
+        "explainer": "Saat perlindungan aktif, harga setiap permintaan dibatasi nol sehingga permintaan langsung gagal alih-alih beralih ke model berbayar ketika tidak ada penyedia gratis. Hapus kunci API tersimpan untuk menonaktifkan seluruh fitur AI.",
+        "save": "Simpan"
+    },
+    "AboutSettingsForm": {
+        "legend": "Tentang",
+        "description": "Teks biasa—baris kosong memisahkan paragraf. Paragraf pertama akan digunakan sebagai deskripsi situs.",
+        "save": "Simpan"
+    },
+    "TermsSettingsForm": {
+        "legend": "Ketentuan layanan",
+        "description": "Teks biasa—baris kosong memisahkan paragraf.",
+        "save": "Simpan"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Kebijakan privasi",
+        "description": "Teks biasa—baris kosong memisahkan paragraf.",
+        "save": "Simpan"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Ringkasan surel",
+        "fieldLabel": "Paragraf penutup",
+        "notice": "Ditambahkan menjelang akhir setiap ringkasan setelah daftar hal yang dilewatkan anggota. Teks biasa. Biarkan kosong untuk kembali ke kata-kata bawaan perangkat lunak ini.",
+        "save": "Simpan"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Ikon situs",
+        "currentAlt": "Ikon situs saat ini",
+        "save": "Unggah ikon situs"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Gambar halaman depan",
+        "explainer": "Ditampilkan oleh situs lain ketika seseorang membagikan tautan ke situs ini—hanya metadata Open Graph, tidak pernah tampil di halaman. Dipangkas menjadi 1200×630. Tanpanya, pratinjau tautan tidak memuat gambar sama sekali.",
+        "currentAlt": "Gambar halaman depan saat ini",
+        "save": "Unggah gambar"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Putar otomatis"
+    },
+    "CarouselNextButton": {
+        "name": "Berikutnya"
+    },
+    "CarouselPrevButton": {
+        "name": "Sebelumnya"
+    },
+    "MediaFullscreenButton": {
+        "name": "Layar penuh"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Hapus berkas"
+    },
+    "NotificationDropdown": {
+        "showAll": "Tampilkan semua"
+    },
+    "HelpSearch": {
+        "placeholder": "Cari bantuan…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Mengerti"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Buang"
+    },
+    "StagedPostEditButton": {
+        "name": "Edit"
+    },
+    "StagedPostPublishButton": {
+        "name": "Terbitkan sekarang"
+    },
+    "LogoutButton": {
+        "name": "Keluar"
+    },
+    "AvatarUploadForm": {
+        "submit": "Perbarui avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Cari pengguna yang dicekal…"
+    },
+    "BannedUserSection": {
+        "heading": "Pengguna yang dicekal"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Permintaan terkirim (menunggu tanggapan)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Dicekal oleh {name} ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Diblokir oleh {name} ",
+            "after": ""
+        },
+        "deletedAccount": "akun yang telah dihapus",
+        "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "Januari",
+            "2": "Februari",
+            "3": "Maret",
+            "4": "April",
+            "5": "Mei",
+            "6": "Juni",
+            "7": "Juli",
+            "8": "Agustus",
+            "9": "September",
+            "10": "Oktober",
+            "11": "November",
+            "12": "Desember"
+        },
+        "shortMonths": {
+            "1": "Jan",
+            "2": "Feb",
+            "3": "Mar",
+            "4": "Apr",
+            "5": "Mei",
+            "6": "Jun",
+            "7": "Jul",
+            "8": "Agu",
+            "9": "Sep",
+            "10": "Okt",
+            "11": "Nov",
+            "12": "Des"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}.{minute}",
+        "dateAndTime": "{date} pukul {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Tidak dapat terhubung ke server WebSocket di 127.0.0.1:{port}{tls} ({error}). Jalankan terlebih dahulu: systemctl --user start glommer-websocket (lihat README.md untuk berkas unit). Jika baru saja memperoleh atau kehilangan WS_TLS_CERT/WS_TLS_KEY, mulai ulang agar sesuai dengan .env.",
+        "wsOverTLS": " melalui TLS",
+        "wsBadHandshake": "Layanan di 127.0.0.1:{port} tidak menyelesaikan jabat tangan WebSocket yang valid—mungkin ada sesuatu selain bin/websocket-server.php yang mendengarkan pada port tersebut.",
+        "wsNoPong": "Server WebSocket menerima jabat tangan tetapi tidak menanggapi ping—mungkin macet atau bermasalah. Periksa lognya.",
+        "wsReachable": "Server WebSocket dapat dijangkau dan menanggapi di 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Tagar",
+            "person": "Orang",
+            "org": "Organisasi",
+            "gpe": "Tempat",
+            "loc": "Wilayah",
+            "fac": "Tengara",
+            "product": "Produk",
+            "event": "Acara",
+            "work_of_art": "Karya",
+            "law": "Hukum",
+            "language": "Bahasa",
+            "norp": "Kelompok"
+        },
+        "plural": {
+            "hashtag": "Tagar",
+            "person": "Orang",
+            "org": "Organisasi",
+            "gpe": "Tempat",
+            "loc": "Wilayah",
+            "fac": "Tengara",
+            "product": "Produk",
+            "event": "Acara",
+            "work_of_art": "Karya",
+            "law": "Hukum",
+            "language": "Bahasa",
+            "norp": "Kelompok"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Hapus teman"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Terima"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Tolak"
+    },
+    "UserFollowButton": {
+        "follow": "Ikuti",
+        "unfollow": "Berhenti mengikuti"
+    },
+    "UserBlockButton": {
+        "name": "Blokir"
+    },
+    "UserUnblockButton": {
+        "name": "Buka blokir"
+    },
+    "OtherUser": {
+        "message": "Pesan"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menu",
+        "loggedInAs": "Masuk sebagai {name}",
+        "friendsFeed": "Umpan teman",
+        "relayFeed": "Umpan relai",
+        "users": "Pengguna",
+        "tags": "Tagar",
+        "topics": "Topik",
+        "map": "Peta",
+        "locations": "Lokasi",
+        "search": "Cari",
+        "messages": "Pesan",
+        "bookmarks": "Markah",
+        "help": "Bantuan",
+        "about": "Tentang",
+        "login": "Masuk",
+        "signup": "Daftar",
+        "friends": "Teman",
+        "drafts": "Draf dan terjadwal",
+        "userSettings": "Pengaturan pengguna",
+        "modSettings": "Pengaturan moderator",
+        "adminSettings": "Pengaturan admin"
+    },
+    "LogoutForm": {
+        "submit": "Keluar"
+    },
+    "User": {
+        "joined": "Bergabung {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Tambahkan teman",
+        "cancel": "Batalkan permintaan"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Dijadwalkan untuk {when}",
+        "draft": "Draf—hanya diterbitkan saat Anda memintanya"
+    },
+    "MessageTranslateButton": {
+        "name": "Terjemahkan pesan ini"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Tentang penerjemahan pesan",
+        "body": "Untuk menerjemahkan pesan, teksnya dikirim ke server ini dan diterjemahkan di sini. Tidak ada yang disimpan: terjemahan tidak ditulis ke basis data dan pesan asli tidak berubah. Namun, pesan yang diterjemahkan dengan cara ini telah dibaca server sehingga tidak lagi terenkripsi ujung ke ujung seperti pesan yang tidak diterjemahkan. Hanya pesan yang Anda terima yang dapat diterjemahkan, dan hanya ketika Anda memintanya.",
+        "confirm": "Terjemahkan",
+        "cancel": "Jangan sekarang"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Lupa frasa sandi? Pengaturan ulang membuat kunci baru di bawah frasa sandi baru—tetapi pesan yang dienkripsi dengan kunci lama tidak akan pernah dapat dibaca lagi oleh siapa pun.",
+        "requirements": "Setidaknya 12 karakter dan bukan kata sandi akun Anda—kata sandi akun dikirim ke server ini, sedangkan frasa sandi tidak boleh pernah dikirim.",
+        "passphraseLabel": "Frasa sandi",
+        "resetPassphraseLabel": "Frasa sandi baru",
+        "confirmLabel": "Konfirmasi frasa sandi",
+        "accountPasswordLabel": "Kata sandi akun",
+        "submitLabel": "Aktifkan pesan terenkripsi",
+        "resetSubmitLabel": "Atur ulang kunci enkripsi"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Pesan terenkripsi ujung ke ujung dikunci dan dibuka di peramban Anda: server ini meneruskan dan menyimpannya tanpa dapat membacanya. Kunci Anda dilindungi frasa sandi, dan frasa yang sama membuka pesan dari peramban mana pun. Percakapan dienkripsi setelah kedua orang mengaktifkannya; pesan kepada orang di server lain tetap tidak terenkripsi karena federasi tidak memiliki cara lain untuk membawanya.",
+        "noRecovery": "Frasa sandi yang hilang tidak dapat dipulihkan—bahkan oleh administrator. Kehilangannya berarti kehilangan pesan terenkripsi Anda.",
+        "enabledStatus": "Pesan terenkripsi aktif."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Terenkripsi",
+            "explanation": "Pesan dalam percakapan ini dienkripsi ujung ke ujung: pesan dibuka dengan frasa sandi dan dibaca di peramban Anda, sedangkan server hanya menyimpan teks tersandi. Cocokkan kode keamanan di bagian bawah utas dengan lawan bicara untuk memastikan tidak ada pihak di antara Anda. Pesan yang dikirim sebelum enkripsi diaktifkan tetap dapat dibaca seperti sebelumnya."
+        },
+        "awaiting-theirs": {
+            "label": "Tidak terenkripsi",
+            "explanation": "Pesan di sini akan dienkripsi ujung ke ujung setelah {handle} mengaktifkan pesan terenkripsi di pengaturannya."
+        },
+        "awaiting-yours": {
+            "label": "Tidak terenkripsi",
+            "explanation": "Pesan di sini tidak dienkripsi ujung ke ujung. Aktifkan pesan terenkripsi di Pengaturan untuk mengamankan percakapan ini."
+        },
+        "federated": {
+            "label": "Tidak terenkripsi",
+            "explanation": "{handle} berada di server lain. Pesan dalam percakapan ini disimpan di server tersebut serta di server ini, dan administratornya dapat membacanya—protokol antarpeladen tidak dapat mengenkripsinya. Simpan hal sensitif untuk percakapan di situs ini."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Ikuti akun Fediverse",
+        "notice": "Tempel satu atau beberapa pegangan, misalnya @user@example.social—pemisah apa pun dapat digunakan.",
+        "handlesLabel": "Pegangan Fediverse yang akan diikuti",
+        "submit": "Ikuti",
+        "statusPending": "tertunda",
+        "statusAccepted": "diterima"
+    },
+    "ServerBlockForm": {
+        "legend": "Blokir server",
+        "description": "Menolak segala sesuatu dari server tersebut beserta semua subdomainnya: tidak ada kiriman masuk maupun keluar, dan hubungan mengikuti yang ada di kedua arah diputus.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Alasan",
+        "reasonPlaceholder": "Mengapa server ini diblokir",
+        "submit": "Blokir server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Menjalankan bagian penyiapan panggilan yang dapat diperiksa dari satu peramban. Semua tahap hingga koneksi antarrekan yang sebenarnya dapat diuji di sini; untuk terhubung ke orang lain, orang tersebut diperlukan."
+    },
+    "VideoCallTestButton": {
+        "label": "Jalankan pemeriksaan"
+    },
+    "WebSocketStatus": {
+        "ok": "Server WebSocket: berjalan",
+        "failed": "Server WebSocket: {detail}",
+        "clientTesting": "Koneksi peramban: menguji…",
+        "clientConnecting": "Koneksi peramban: menghubungkan…",
+        "clientConnected": "Koneksi peramban: terhubung",
+        "clientDisconnecting": "Koneksi peramban: memutus…",
+        "clientNotConnected": "Koneksi peramban: tidak terhubung"
+    },
+    "UploadWorkerStatus": {
+        "running": "Layanan pekerja: berjalan",
+        "stopped": "Layanan pekerja: tidak berjalan—unggahan yang disiapkan tidak akan ditranskode sampai layanan dimulai ulang",
+        "unknown": "Layanan pekerja: tidak diketahui—systemctl tidak tersedia pada host ini atau SELinux menolak kueri status milik server web (jalankan bin/install.php sebagai root untuk memperbaikinya)",
+        "queue": "Antrean: {staging} disiapkan, {pending} tertunda, {processing} diproses"
+    },
+    "TrendingTimerStatus": {
+        "running": "Pewaktu tren: berjalan",
+        "stopped": "Pewaktu tren: tidak berjalan—topik tren hanya akan diperbarui lewat pemulihan mandiri jalur baca (Trending::current()), bukan sesuai jadwal. Jalankan bin/install.php sebagai root untuk menyiapkannya.",
+        "unknown": "Pewaktu tren: tidak diketahui—systemctl tidak tersedia pada host ini atau SELinux menolak kueri status milik server web (jalankan bin/install.php sebagai root untuk memperbaikinya)"
+    },
+    "Notification": {
+        "postReady": "Media Anda selesai diproses dan kini telah tayang",
+        "scheduledPostLive": "Postingan terjadwal Anda kini telah tayang",
+        "uploadPartlyFailed": "Postingan Anda telah tayang, tetapi satu atau beberapa berkasnya tidak dapat diproses",
+        "uploadFailed": "Salah satu unggahan Anda gagal diproses dan tidak diposting",
+        "mailerFailed": "Pengiriman surel gagal—layanan surel mungkin tidak aktif. Periksa konfigurasi surel Anda.",
+        "mailFromNotConfigured": "Alamat pengirim surel belum dikonfigurasi sehingga surel tidak dapat dikirim. Atur di Pengaturan Admin (bagian Surel keluar) atau melalui bin/install.php.",
+        "systemError": "Terjadi galat server. Periksa log galat untuk detail.",
+        "passwordRemovedGoogle": "Kata sandi Anda dihapus saat masuk dengan Google. Gunakan \"Lupa kata sandi\" jika ingin mengatur yang baru.",
+        "like": "{name} menyukai postingan Anda",
+        "repost": "{name} memposting ulang postingan Anda",
+        "reply": "{name} membalas postingan Anda",
+        "friendRequest": "{name} mengirim permintaan pertemanan",
+        "friendAccepted": "{name} menerima permintaan pertemanan Anda",
+        "message": "{name} mengirim pesan kepada Anda",
+        "mention": "{name} menyebut Anda dalam sebuah postingan",
+        "follow": "{name} mengikuti Anda dari server lain",
+        "default": "{name} melakukan sesuatu"
+    },
+    "NotificationList": {
+        "emptyNotice": "Belum ada notifikasi."
+    },
+    "NotificationsNavLink": {
+        "label": "Notifikasi",
+        "unseen": "Notifikasi yang belum dilihat"
+    },
+    "NotificationTestPanel": {
+        "intro": "Kirim notifikasi percobaan kepada diri sendiri (admin). Notifikasi seharusnya segera muncul sebagai pesan singkat dan dalam menu tarik-turun notifikasi.",
+        "button": "Kirim notifikasi percobaan",
+        "sending": "Mengirim…",
+        "sent": "Terkirim!",
+        "failed": "Gagal"
+    },
+    "MessageDot": {
+        "label": "Pesan belum dibaca"
+    },
+    "NavAlertDot": {
+        "label": "Ada sesuatu yang baru di menu"
+    },
+    "Message": {
+        "encrypted": "Pesan terenkripsi",
+        "decryptionFailed": "Pesan ini dienkripsi dengan kunci yang sudah tidak ada."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Pesan",
+        "bodyPlaceholder": "Tulis pesan",
+        "send": "Kirim"
+    },
+    "MessageList": {
+        "emptyNotice": "Belum ada pesan."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Bacakan kode ini satu sama lain melalui cara lain—dengan suara keras, secara langsung, atau melalui panggilan. Jika sama di kedua sisi, tidak ada pihak di antara Anda.",
+        "changed": "Kode ini berubah sejak Anda memeriksanya. Hal ini terjadi ketika salah satu dari Anda mengatur ulang kunci enkripsi—namun hal yang sama juga terlihat jika seseorang membaca percakapan ini. Cocokkan kode baru dengan mereka sebelum mempercayainya.",
+        "verified": "Anda telah memeriksa kode ini."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Tandai sebagai terverifikasi"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Frasa sandi",
+        "passphrasePlaceholder": "Frasa sandi untuk membuka percakapan ini",
+        "submit": "Buka"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Pesan terakhir ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Media sensitif"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Tampilkan media sensitif secara default"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Postingan",
+            "message": "Pesan",
+            "user": "Pengguna"
+        },
+        "summary": {
+            "before": "{type} #{id} dilaporkan oleh ",
+            "after": ""
+        },
+        "reasonLine": "Alasan: {reason}",
+        "banReporterLabel": "Cekal pelapor",
+        "banReportedUserLabel": "Cekal pengguna yang dilaporkan",
+        "deleteLabel": "Hapus {type}",
+        "reportedImageAlt": "Gambar yang dilaporkan",
+        "attachmentUnavailable": "Lampiran yang dilaporkan tidak lagi tersedia.",
+        "viewAttachment": "Lihat lampiran yang dilaporkan",
+        "missing": {
+            "noSnapshot": "Konten yang dilaporkan tidak lagi tersedia.",
+            "unknownType": "Jenis konten tidak dikenal."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Tidak ada laporan."
+    },
+    "ModQueueLinks": {
+        "intro": "Antrean cukup panjang untuk dibaca halaman demi halaman sehingga memiliki halaman tersendiri.",
+        "reportsLabel": "Laporan",
+        "bannedUsersLabel": "Pengguna yang dicekal"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Belum ada tindakan moderator."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Tidak ada entitas tren yang dicekal."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Tidak ada server yang diblokir."
+    },
+    "RelayCard": {
+        "accepted": "Berlangganan ",
+        "waiting": "Menunggu relai menerima—berlangganan "
+    },
+    "RelayList": {
+        "emptyNotice": "Tidak berlangganan relai mana pun. Hanya hal yang diikuti anggota yang tiba di sini."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Belum ada yang masuk melalui relai. Postingan muncul di sini saat server di sisi lain menerbitkannya."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Berlangganan relai",
+        "explainerOne": "Relai adalah aliran bersama: setiap postingan publik dari semua server lain yang berlangganan tiba di sini, dan postingan server ini dikirim ke semuanya. Dengan cara inilah instansi baru menemukan orang, karena tanpa relai federasi hanya membawa hal yang sudah diikuti seseorang di sini.",
+        "explainerTwo": "Beban tidak dapat Anda prediksi—bebannya adalah apa pun yang diterbitkan server tersebut, sepi satu minggu lalu ribuan postingan per jam pada minggu berikutnya, dan penyimpanan, antrean pengiriman, serta antrean moderasi Anda menanggung semuanya. Postingan relai tidak masuk umpan utama atau teman; postingan masuk ke Umpan Relai yang dibuka orang dengan sengaja.",
+        "addressLabel": "Alamat relai",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Berlangganan"
+    },
+    "RelayFollowObjectField": {
+        "label": "Gaya langganan",
+        "options": {
+            "public": "Ikuti aliran publik (yang diharapkan sebagian besar relai)",
+            "actor": "Ikuti aktor milik relai"
+        },
+        "retryNotice": "Jika relai tidak pernah menerima, tarik permintaan dan coba gaya lain—beberapa perangkat lunak relai hanya mengenali salah satunya."
+    },
+    "SiteCounters": {
+        "members": "Anggota: {count} ({joined} bergabung dalam {days} hari terakhir)",
+        "activeMembers": "Anggota yang hadir dalam {days} hari terakhir: {count} ({posted} di antaranya memposting)",
+        "posts": "Postingan yang ditulis di sini: {count} ({recent} dalam {days} hari terakhir)",
+        "deliveries": "Pengiriman federasi dalam {days} hari terakhir: {delivered} tiba, {undeliverable} dihentikan",
+        "queued": "Menunggu dikirim: {count} ({failing} telah ditolak setidaknya sekali)",
+        "pendingReads": "Postingan dari server lain yang menunggu dibaca: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Jalankan rangkaian pengujian situs dan lihat hasilnya. Proses memerlukan beberapa detik sehingga dibuka di halaman tersendiri.",
+        "runLabel": "Jalankan pengujian"
+    },
+    "HelpArticle": {
+        "backLabel": "Kembali ke semua bantuan"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Tidak ada saran saat ini—saran berasal dari teman orang yang sudah menjadi teman Anda. Cari di atas untuk menemukan seseorang berdasarkan nama.",
+        "noMatches": "Tidak ada orang di sini yang cocok."
+    },
+    "UserModButton": {
+        "make": "Jadikan moderator",
+        "remove": "Hapus sebagai moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Cabut cekal"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Cekal"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Cabut cekal"
+    },
+    "ReportDismissButton": {
+        "name": "Abaikan"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Tandai sensitif"
+    },
+    "ServerUnblockButton": {
+        "name": "Buka blokir"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Berhenti berlangganan"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Cabut"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: lulus",
+        "failing": "{suite}: gagal"
+    },
+    "PageTitle": {
+        "about": "Tentang",
+        "adminBanned": "Pengguna yang dicekal",
+        "adminModSettings": "Pengaturan moderator",
+        "adminReports": "Laporan",
+        "adminSettings": "Pengaturan admin",
+        "adminTests": "Pengujian",
+        "authGoogleCallbackAccountDeleted": "Akun dihapus",
+        "authGoogleCallbackDeleteAccount": "Hapus akun",
+        "authGoogleCallbackLogin": "Masuk",
+        "bookmarks": "Markah",
+        "checkInbox": "Periksa kotak masuk Anda",
+        "drafts": "Draf dan terjadwal",
+        "draftsEditDraft": "Edit draf",
+        "draftsEditScheduled": "Edit postingan terjadwal",
+        "forgotPassword": "Lupa kata sandi",
+        "friendsFeed": "Umpan teman",
+        "help": "Bantuan",
+        "helpDescription": "Panduan dan jawaban untuk menggunakan situs.",
+        "locations": "Lokasi",
+        "locationsDescription": "Postingan dari tempat yang paling dekat dengan Anda.",
+        "locationsPlaceDescription": "Postingan di dekat {place}.",
+        "login": "Masuk",
+        "loginVerificationCode": "Kode verifikasi",
+        "map": "Peta",
+        "mapDescription": "Peta postingan dari seluruh dunia—temukan orang dan hal di dekat Anda.",
+        "messages": "Pesan",
+        "messagesWithUser": "Pesan dengan {name}",
+        "notifications": "Notifikasi",
+        "privacy": "Kebijakan privasi",
+        "quote": "Kutip",
+        "relayFeed": "Umpan relai",
+        "relayFeedDescription": "Postingan publik yang tiba dari relai langganan server ini.",
+        "resetPassword": "Atur ulang kata sandi",
+        "revertEmail": "Batalkan perubahan surel",
+        "search": "Cari",
+        "signup": "Daftar",
+        "tags": "Tagar",
+        "tagsDescription": "Jelajahi tagar tren dan populer di {siteTitle}.",
+        "tagsTagDescription": "Postingan bertagar {tag} di {siteTitle}.",
+        "terms": "Ketentuan layanan",
+        "topics": "Topik",
+        "topicsDescription": "Hal yang sedang dibicarakan orang di {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel}—postingan yang menyebut {entityTitle} di {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} yang sedang dibicarakan orang di {siteTitle}.",
+        "unsubscribe": "Ringkasan surel",
+        "userFriends": "Teman {name}",
+        "userFriendsDescription": "Teman {name} di {siteTitle}",
+        "userSettings": "Pengaturan pengguna",
+        "users": "Pengguna",
+        "verifyEmail": "Verifikasi surel"
+    },
+    "PostLikeButton": {
+        "like": "Suka",
+        "unlike": "Batal suka"
+    },
+    "PostPinButton": {
+        "pin": "Sematkan",
+        "unpin": "Lepas sematan"
+    },
+    "PostQuoteButton": {
+        "name": "Kutip"
+    },
+    "PostDeleteButton": {
+        "name": "Hapus"
+    },
+    "PostEditButton": {
+        "name": "Edit"
+    },
+    "ReportButton": {
+        "name": "Laporkan"
+    },
+    "PostActionBar": {
+        "reply": "Balas",
+        "replies": {
+            "other": "Balasan ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(diedit)"
+    },
+    "RepliesHeading": {
+        "heading": "Balasan"
+    },
+    "PollVoteButton": {
+        "name": "Pilih"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Lihat ",
+            "link": "lokasi lainnya",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Postingan di dekat Anda",
+        "description": "Ini menampilkan postingan yang paling dekat dengan suatu titik—di mana pun terdapat aktivitas, sejauh apa pun. Bagikan lokasi untuk memulai dari tempat Anda berada atau pilih titik di peta.",
+        "useMyLocation": "Gunakan lokasi saya",
+        "pickOnMap": "Pilih di peta",
+        "searchPlaceholder": "Atau ketik nama tempat…",
+        "searchLabel": "Cari tempat",
+        "locating": "Mencari lokasi…",
+        "noGeolocation": "Peramban Anda tidak dapat membagikan lokasi.",
+        "locationError": "Tidak dapat memperoleh lokasi Anda. Periksa izin lokasi peramban."
+    },
+    "PollDeadline": {
+        "final": "Hasil akhir",
+        "closes": {
+            "before": "Ditutup ",
+            "after": ""
+        },
+        "days": {
+            "other": "dalam {count} hari"
+        },
+        "hours": {
+            "other": "dalam {count} jam"
+        },
+        "minutes": {
+            "other": "dalam {count} menit"
+        },
+        "underMinute": "dalam kurang dari satu menit"
+    },
+    "PollTally": {
+        "voters": {
+            "other": "{count} orang memilih "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Masuk",
+            "after": " untuk memposting."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Masuk",
+            "after": " untuk membalas."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " memposting ulang"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Sebagai tanggapan kepada ",
+            "after": ""
+        },
+        "untitled": "postingan ini",
+        "jumpToStart": "Lompat ke awal"
+    },
+    "TopicSummaryCard": {
+        "label": "Ringkasan buatan AI"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Selamat datang di ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Tulis sesuatu di kotak di bawah dan kiriman akan masuk ke umpan Anda. Siapa pun dapat membalas, dan balasan hanyalah postingan dengan induk sehingga percakapan dapat bersarang sedalam yang diperlukan.",
+            "Tambahkan orang sebagai teman dan postingan mereka akan masuk ke umpan Anda. Umpan Global—nama situs di kiri atas—menampilkan semua yang ditulis di sini dan merupakan tempat untuk menemukan orang yang dapat ditambahkan.",
+            "Situs ini merupakan bagian dari Fediverse: Anda dapat mengikuti akun di Mastodon dan server lain dengan pegangan lengkapnya, dan postingan Anda menjangkau orang yang mengikuti Anda di sana. Cari pegangan seperti @seseorang@example.social dan server ini akan menemukannya.",
+            "Beri #tagar pada postingan agar muncul di halaman tagar tersebut dan di Tren jika cukup banyak orang menulis tentangnya.",
+            "Pesan antaranggota dienkripsi ujung ke ujung—server menyimpan teks tersandi yang tidak dapat dibacanya. Aktifkan di Pengaturan.",
+            "Anda tidak harus langsung memposting: simpan draf atau tentukan waktu agar diterbitkan otomatis. Keduanya berada di Draf dan Terjadwal."
+        ],
+        "more": {
+            "before": "Informasi lainnya tersedia di ",
+            "link": "halaman bantuan",
+            "after": ", termasuk cara memindahkan akun ke sini dari tempat lain."
+        },
+        "dontShowAgain": "Jangan tampilkan lagi"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Sisipkan emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Gambar pratinjau tautan"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Hapus gambar"
+    },
+    "LinkItem": {
+        "alt": "Gambar pratinjau tautan"
+    },
+    "MapScrubber": {
+        "play": "Putar",
+        "pause": "Jeda",
+        "cumulativeMode": "Hingga saat itu",
+        "windowMode": "Hanya saat itu",
+        "rangeLabel": "Tampilkan postingan hingga suatu tanggal",
+        "cumulativeLabel": {
+            "other": "Diposting hingga {date}—{count} postingan"
+        },
+        "windowLabel": {
+            "other": "Diposting sekitar {date}—{count} postingan"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Postingan {name}",
+        "pageTitleUntitled": "Postingan",
+        "imageAltByAuthor": "Foto yang diposting oleh {name}",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Hapus markah",
+        "add": "Tambahkan markah"
+    },
+    "PostRepostButton": {
+        "undo": "Batalkan posting ulang",
+        "repost": "Posting ulang"
+    },
+    "QuotedPost": {
+        "viewLink": "Lihat postingan yang dikutip"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Permintaan tertunda"
+    },
+    "ScrollToTopButton": {
+        "label": "Gulir ke atas"
+    },
+    "SearchClearButton": {
+        "label": "Hapus pencarian"
+    },
+    "SitePolicyLinks": {
+        "terms": "Ketentuan layanan",
+        "privacy": "Kebijakan privasi"
+    },
+    "SkipLink": {
+        "label": "Lewati ke konten"
+    },
+    "TopicHeading": {
+        "searchLink": "Cari ini",
+        "noPosts": "Saat ini tidak ada postingan yang menyebut ini."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Belum ada yang menulis tentang hal semacam ini."
+    },
+    "TrendingEntitySection": {
+        "heading": "Tren"
+    },
+    "PostLocationLink": {
+        "title": "Tampilkan tempat ini di peta",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "baru saja",
+        "minutes": {
+            "other": "{count} mnt lalu"
+        },
+        "hours": {
+            "other": "{count} jam lalu"
+        },
+        "days": {
+            "other": "{count} hari lalu"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Ikuti sistem",
+            "light": "Terang polos",
+            "dark": "Gelap polos",
+            "sepia": "Sepia",
+            "midnight": "Tengah malam",
+            "sunset": "Matahari terbenam",
+            "rose": "Mawar",
+            "forest": "Hutan",
+            "ocean": "Samudra",
+            "lavender": "Lavendel",
+            "gold": "Emas",
+            "hacker": "Peretas",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Skala abu-abu"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Penerjemahan belum disiapkan di server ini.",
+        "nothing": "Tidak ada yang dapat diterjemahkan di sini.",
+        "unknownSource": "Bahasa postingan ini belum diketahui sehingga tidak dapat diterjemahkan.",
+        "alreadyReadable": "Postingan ini sudah menggunakan bahasa tersebut.",
+        "unsupportedPair": "Server ini belum dapat menerjemahkan bahasa tersebut."
+    },
+    "LanguagePrompt": {
+        "question": "Apakah Anda ingin melihat situs dalam bahasa Indonesia?",
+        "accept": "Ya",
+        "decline": "Tidak, terima kasih"
+    },
+    "LanguageSelector": {
+        "label": "Bahasa",
+        "legend": "Bahasa"
+    },
+    "EmailDigest": {
+        "subject": "Hal yang Anda lewatkan di {site}",
+        "greeting": "Halo {name},",
+        "whileAway": "Saat Anda tidak hadir:",
+        "repeatedTimes": {
+            "other": " ({count} kali)"
+        },
+        "moreMissed": {
+            "other": "dan {count} notifikasi lainnya"
+        },
+        "messagesWaiting": {
+            "other": "Ada {count} pesan menunggu Anda"
+        },
+        "postsInFeed": {
+            "other": "{count} postingan baru di umpan Anda"
+        },
+        "unsubscribeInstructions": "Untuk menghentikan surel ini, buka tautan berikut—cukup satu klik dan tidak memerlukan kata sandi:",
+        "comeSeeWhatIsNew": "Lihat apa yang baru",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Berhenti kirimkan ini kepada saya",
+            "after": "—satu klik, tanpa kata sandi."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifikasi alamat surel Anda",
+        "greeting": "Halo {name},",
+        "instructions": "Verifikasi alamat surel Anda dengan mengunjungi tautan berikut:",
+        "htmlInstructions": "Verifikasi alamat surel Anda dengan mengeklik tautan di bawah:",
+        "buttonLabel": "Verifikasi alamat surel",
+        "expiresIn": {
+            "other": "Tautan ini kedaluwarsa dalam {count} jam."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Atur ulang kata sandi Anda",
+        "greeting": "Halo {name},",
+        "instructions": "Seseorang (semoga Anda) meminta pengaturan ulang kata sandi. Kunjungi tautan berikut untuk memilih kata sandi baru:",
+        "htmlInstructions": "Seseorang (semoga Anda) meminta pengaturan ulang kata sandi. Klik tautan di bawah untuk memilih kata sandi baru:",
+        "buttonLabel": "Atur ulang kata sandi",
+        "expiresIn": {
+            "other": "Tautan ini kedaluwarsa dalam {count} jam."
+        },
+        "ignoreNotice": "Jika Anda tidak memintanya, abaikan surel ini."
+    }
+}

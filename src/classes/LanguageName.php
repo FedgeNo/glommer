@@ -40,13 +40,19 @@ class LanguageName
      * has not met - so adding a locale file lists it by its name rather than
      * by its code until somebody writes it in.
      *
+     * The whole display name rather than the bare language, because a
+     * region-tagged locale must stay tellable apart from its base: pt-BR and
+     * pt are both "português" by language alone, and ICU's display name is
+     * what carries the "(Brasil)". For an untagged locale the two are the
+     * same string.
+     *
      * Title-cased because this is a list entry: French writes "français" in a
      * sentence and "Français" at the head of a line, and every name in the
      * list above leads with a capital.
      */
     private static function endonym(string $locale): ?string
     {
-        $named = \Locale::getDisplayLanguage($locale, $locale);
+        $named = \Locale::getDisplayName($locale, $locale);
 
         if (!is_string($named) || $named === '' || $named === $locale) {
             return null;

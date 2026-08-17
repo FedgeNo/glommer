@@ -1,0 +1,1128 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "other": "{count} undi"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Log masuk",
+            "after": " untuk membalas."
+        },
+        "post": {
+            "before": "",
+            "link": "Log masuk",
+            "after": " untuk menyiarkan."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Laman",
+        "siteURLLabel": "URL laman",
+        "siteTitleLabel": "Tajuk laman",
+        "mailFromAddressLabel": "Alamat pengirim mel",
+        "serverNameConfirmedLabel": "Saya telah menetapkan \"ServerName {host}\" dan \"UseCanonicalName On\" dalam konfigurasi pelayan web (hanya disemak jika ujian langsung automatik tidak dapat diselesaikan — lihat bahagian HTTPS dalam README.md)",
+        "databaseLegend": "Pangkalan data",
+        "databaseHostLabel": "Hos pangkalan data",
+        "databasePortLabel": "Port pangkalan data",
+        "databaseNameLabel": "Nama pangkalan data",
+        "databaseAdminUsernameLabel": "Nama pengguna pentadbir pangkalan data",
+        "databaseAdminPasswordLabel": "Kata laluan pentadbir pangkalan data",
+        "webSocketTLSLegend": "TLS WebSocket (pilihan)",
+        "certificatePathLabel": "Laluan sijil",
+        "certificatePathPlaceholder": "Biarkan kosong untuk menjana secara automatik melalui mkcert",
+        "keyPathLabel": "Laluan kunci",
+        "keyPathPlaceholder": "Biarkan kosong untuk menjana secara automatik melalui mkcert",
+        "botProtectionLegend": "Perlindungan bot (pilihan)",
+        "turnstileSiteKeyLabel": "Kunci laman Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Biarkan kosong untuk melangkau",
+        "turnstileSecretKeyLabel": "Kunci rahsia Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Biarkan kosong untuk melangkau",
+        "submit": "Sediakan"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Frasa laluan semasa",
+        "newPassphraseLabel": "Frasa laluan baharu",
+        "confirmNewPassphraseLabel": "Sahkan frasa laluan baharu",
+        "accountPasswordLabel": "Kata laluan akaun",
+        "submit": "Tukar frasa laluan"
+    },
+    "PasswordResetForm": {
+        "legend": "Pilih kata laluan baharu",
+        "newPasswordLabel": "Kata laluan baharu",
+        "newPasswordPlaceholder": "Sekurang-kurangnya 8 aksara",
+        "confirmPasswordLabel": "Sahkan kata laluan baharu",
+        "submit": "Tetapkan semula kata laluan"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Tetapkan semula kata laluan anda",
+        "emailLabel": "E-mel",
+        "submit": "Hantar pautan penetapan semula"
+    },
+    "EmailRevertForm": {
+        "submit": "Batalkan perubahan e-mel"
+    },
+    "EmailVerifyForm": {
+        "submit": "Sahkan alamat e-mel"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Hidupkan semula"
+    },
+    "EmailDigestSetting": {
+        "label": "E-melkan perkara yang saya terlepas setelah lama tiada"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Peranti tidak diketahui",
+        "browserOnOS": "{browser} pada {os}",
+        "thisDevice": " (peranti ini)",
+        "lastUsed": {
+            "before": "Kali terakhir digunakan ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Tamatkan setiap sesi aktif dan lupakan setiap peranti yang diingati. Anda akan dilog keluar daripada semua pelayar, termasuk pelayar ini."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Log keluar di semua tempat"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Sahkan dengan Google untuk memadam"
+    },
+    "GoogleSignInButton": {
+        "label": "Teruskan dengan Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Sunting profil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Terima pemberitahuan pada peranti ini walaupun laman tidak dibuka. Pilihan ini berasingan bagi setiap pelayar — hidupkannya di mana-mana anda mahu dihubungi.",
+        "label": {
+            "off": "Dayakan pada peranti ini",
+            "on": "Matikan pada peranti ini"
+        },
+        "unsupported": "Pemberitahuan tolak tidak disokong dalam pelayar ini"
+    },
+    "LoginForm": {
+        "legend": "Log masuk",
+        "identifier": "Nama pengguna atau e-mel",
+        "password": "Kata laluan",
+        "rememberMe": "Ingat saya",
+        "submit": "Log masuk"
+    },
+    "SignupForm": {
+        "legend": "Cipta akaun",
+        "usernameLabel": "Nama pengguna",
+        "usernamePlaceholder": "Huruf kecil, nombor dan _",
+        "emailLabel": "E-mel",
+        "emailPlaceholder": "Alamat e-mel yang sah",
+        "displayName": "Nama paparan (pilihan)",
+        "bioLabel": "Biografi (pilihan)",
+        "bioPlaceholder": "Biografi ringkas — #tanda_pagar, @sebutan dan pautan menjadi boleh diklik",
+        "passwordLabel": "Kata laluan",
+        "passwordPlaceholder": "Kata laluan: sekurang-kurangnya 8 aksara",
+        "rememberMe": "Ingat saya",
+        "submit": "Daftar"
+    },
+    "PasswordChangeForm": {
+        "legend": "Tukar kata laluan anda",
+        "currentPassword": "Kata laluan semasa",
+        "newPasswordLabel": "Kata laluan baharu",
+        "newPasswordPlaceholder": "Sekurang-kurangnya 8 aksara",
+        "confirmPassword": "Sahkan kata laluan baharu",
+        "submit": "Tukar kata laluan"
+    },
+    "EmailChangeForm": {
+        "legend": "Tukar alamat e-mel anda",
+        "newEmail": "Alamat e-mel baharu",
+        "currentPassword": "Kata laluan semasa",
+        "notice": "Anda perlu mengesahkan alamat baharu sebelum dapat terus menggunakan laman.",
+        "submit": "Tukar e-mel"
+    },
+    "AccountDeleteForm": {
+        "legend": "Padam akaun anda",
+        "warning": "Tindakan ini memadam akaun, siaran dan mesej anda secara kekal. Tindakan ini tidak boleh dibatalkan.",
+        "currentPassword": "Kata laluan semasa",
+        "submit": "Padam akaun"
+    },
+    "AccountMigrationForm": {
+        "legend": "Pindah ke pelayan lain",
+        "movedNotice": "Akaun ini telah berpindah ke {destination}. Pengikut anda telah diminta mengikuti anda di sana.",
+        "explanation": "Pengikut anda diminta mengikuti akaun baharu. Siaran anda kekal di sini — alamat objek milik pelayan yang menciptanya, maka siaran tidak boleh dibawa bersama.",
+        "addressNotice": "Akaun destinasi mesti menyenaraikan akaun ini di bawah \"juga dikenali sebagai\" terlebih dahulu. Alamat anda di sini ialah {address}.",
+        "movedToLabel": "Pindah ke",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Juga dikenali sebagai",
+        "aliasesExplanation": "Akaun lain yang juga milik anda. Menyenaraikan akaun di sini membenarkannya berpindah ke akaun ini — ini ialah kebenaran, bukan perpindahan itu sendiri. Satu alamat setiap baris.",
+        "aliasesLabel": "Akaun anda yang lain",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Simpan"
+    },
+    "TwoFactorForm": {
+        "legend": "Masukkan kod pengesahan anda",
+        "explanation": "Kami menghantar kod pengesahan kepada anda melalui e-mel. Masukkannya di bawah atau gunakan salah satu kod pemulihan untuk menyelesaikan log masuk.",
+        "explanationEmailFailed": "Kami tidak dapat menghantar kod pengesahan melalui e-mel sekarang. Masukkan salah satu kod pemulihan untuk menyelesaikan log masuk.",
+        "code": "Kod pengesahan",
+        "submit": "Sahkan"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Pengesahan dua faktor dihidupkan",
+            "off": "Pengesahan dua faktor dimatikan"
+        },
+        "explanation": {
+            "on": "Apabila anda log masuk, kami akan menghantar kod pengesahan melalui e-mel yang perlu dimasukkan untuk menyelesaikan log masuk. Jika e-mel tidak sampai, anda boleh log masuk dengan salah satu kod pemulihan.",
+            "off": "Tambahkan langkah kedua ketika log masuk: kami akan menghantar kod pengesahan melalui e-mel untuk dimasukkan, supaya kata laluan sahaja tidak mencukupi. Anda akan menerima kod pemulihan sekali guna untuk disimpan sekiranya e-mel tidak sampai."
+        },
+        "currentPassword": "Kata laluan semasa",
+        "submit": {
+            "on": "Matikan pengesahan dua faktor",
+            "off": "Hidupkan pengesahan dua faktor"
+        },
+        "regenerate": "Jana kod pemulihan baharu",
+        "recoveryHeading": "Kod pemulihan anda",
+        "recoveryNote": "Simpan kod ini di tempat yang selamat sekarang — kod tidak akan dipaparkan lagi. Setiap kod membolehkan anda log masuk sekali apabila e-mel pengesahan tidak sampai; menjana kod baharu akan menggantikan semua kod ini.",
+        "toast": {
+            "on": "Pengesahan dua faktor kini dihidupkan.",
+            "off": "Pengesahan dua faktor kini dimatikan.",
+            "regenerated": "Kod pemulihan baharu telah dijana. Kod lama anda tidak lagi berfungsi."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Sila semak peti masuk dan klik pautan pengesahan yang kami hantar untuk mengesahkan alamat e-mel anda. Jika tidak kelihatan, semak folder mel remeh atau spam."
+    },
+    "VerificationResendButton": {
+        "label": "Hantar semula e-mel pengesahan"
+    },
+    "MailSettingsForm": {
+        "legend": "Mel keluar",
+        "fromAddressLabel": "Alamat pengirim",
+        "fromAddressPlaceholder": "E-mel tidak boleh dihantar sehingga ini ditetapkan",
+        "fromNameLabel": "Nama pengirim",
+        "hostLabel": "Hos SMTP",
+        "portLabel": "Port SMTP",
+        "usernameLabel": "Nama pengguna SMTP",
+        "passwordLabel": "Kata laluan SMTP",
+        "passwordPlaceholder": {
+            "set": "Kata laluan telah ditetapkan — biarkan kosong untuk mengekalkannya",
+            "unset": "Kata laluan SMTP"
+        },
+        "encryptionLabel": "Penyulitan",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, biasanya pada port 587)",
+            "ssl": "SSL (TLS tersirat, biasanya pada port 465)",
+            "none": "Tiada"
+        },
+        "explainer": "Biarkan hos SMTP kosong untuk menghantar melalui mail() PHP sebaliknya (tidak disyorkan — lihat bahagian kebolehhantaran dalam README). Tiada e-mel boleh dihantar sehingga alamat pengirim ditetapkan.",
+        "save": "Simpan"
+    },
+    "MapSettingsForm": {
+        "legend": "Jubin peta",
+        "notice": "Biarkan kosong untuk menggunakan OpenStreetMap. Untuk menggunakan penyedia berkunci, tampalkan templat URL dengan teks {apiKey} di tempat kunci, kemudian masukkan kunci dan atribusi di bawah.",
+        "urlLabel": "Templat URL jubin",
+        "keyLabel": "Kunci API",
+        "keyPlaceholder": "Kunci API penyedia jubin anda",
+        "attributionLabel": "Atribusi",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Simpan"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Log masuk Google",
+        "clientIdLabel": "ID klien",
+        "clientIdPlaceholder": "ID klien Google OAuth",
+        "secretLabel": "Rahsia klien",
+        "secretPlaceholder": {
+            "set": "Rahsia klien telah ditetapkan — biarkan kosong untuk mengekalkannya",
+            "unset": "Rahsia klien Google OAuth"
+        },
+        "explainer": "Kedua-duanya diperlukan supaya \"Teruskan dengan Google\" dipaparkan semasa pendaftaran dan log masuk. Dalam klien Google Cloud OAuth, tetapkan URI ubah hala yang dibenarkan kepada {url}; kosongkan ID klien untuk mematikannya.",
+        "save": "Simpan"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Kunci laman",
+        "turnstileSiteKeyPlaceholder": "Kunci laman Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Kunci rahsia",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Kunci rahsia telah ditetapkan — biarkan kosong untuk mengekalkannya",
+            "unset": "Kunci rahsia Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Kedua-dua kunci diperlukan supaya CAPTCHA dipaparkan semasa pendaftaran dan log masuk. Kosongkan kunci laman untuk mematikannya.",
+        "recaptchaLegend": "Google reCAPTCHA (pemulihan akaun terkunci)",
+        "recaptchaSiteKeyLabel": "Kunci laman",
+        "recaptchaSiteKeyPlaceholder": "Kunci laman Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Kunci rahsia",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Kunci rahsia telah ditetapkan — biarkan kosong untuk mengekalkannya",
+            "unset": "Kunci rahsia Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Kedua-dua kunci diperlukan. Apabila ditetapkan, akaun yang mencapai had percubaan log masuk boleh masuk semula dengan melepasi cabaran ini tanpa menunggu tempoh kunci tamat; jika tidak ditetapkan, pengguna mesti menunggu. Gunakan reCAPTCHA v2 (\"Saya bukan robot\"). Kosongkan kunci laman untuk mematikannya.",
+        "save": "Simpan"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Digunakan oleh ciri AI pada laman (ringkasan topik sohor kini dan sebagainya). Biarkan model kosong untuk menggunakan Penghala Model Percuma; OpenRouter memilih secara rawak antara model yang percuma pada masa itu, maka tiada kos boleh dikenakan.",
+        "keyLabel": "Kunci API",
+        "keyPlaceholder": {
+            "set": "Kunci API telah ditetapkan — biarkan kosong untuk mengekalkannya",
+            "unset": "Kunci API OpenRouter"
+        },
+        "clearKeyLabel": "Alih keluar kunci API tersimpan (mematikan ciri AI)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Jangan sekali-kali benarkan perbelanjaan (disyorkan)",
+        "explainer": "Apabila perlindungan dihidupkan, harga setiap permintaan dihadkan kepada sifar. Oleh itu, permintaan akan gagal dan bukannya beralih kepada model berbayar apabila tiada penyedia percuma. Alih keluar kunci API tersimpan untuk mematikan ciri AI sepenuhnya.",
+        "save": "Simpan"
+    },
+    "AboutSettingsForm": {
+        "legend": "Perihal",
+        "description": "Teks biasa — baris kosong memisahkan perenggan. Perenggan pertama akan digunakan sebagai perihalan laman.",
+        "save": "Simpan"
+    },
+    "TermsSettingsForm": {
+        "legend": "Syarat perkhidmatan",
+        "description": "Teks biasa — baris kosong memisahkan perenggan.",
+        "save": "Simpan"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Dasar privasi",
+        "description": "Teks biasa — baris kosong memisahkan perenggan.",
+        "save": "Simpan"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Ringkasan e-mel",
+        "fieldLabel": "Perenggan penutup",
+        "notice": "Ditambahkan berhampiran penghujung setiap ringkasan, selepas senarai perkara yang terlepas oleh ahli. Teks biasa. Biarkan kosong untuk kembali kepada teks lalai perisian ini.",
+        "save": "Simpan"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Favicon semasa",
+        "save": "Muat naik favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Imej halaman hadapan",
+        "explainer": "Dipaparkan oleh laman lain apabila seseorang berkongsi pautan ke laman ini — hanya dalam metadata Open Graph, tidak pernah pada halaman. Dipangkas kepada 1200×630. Tanpanya, pratonton pautan langsung tidak mempunyai imej.",
+        "currentAlt": "Imej halaman hadapan semasa",
+        "save": "Muat naik imej"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Main automatik"
+    },
+    "CarouselNextButton": {
+        "name": "Seterusnya"
+    },
+    "CarouselPrevButton": {
+        "name": "Sebelumnya"
+    },
+    "MediaFullscreenButton": {
+        "name": "Skrin penuh"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Alih keluar fail"
+    },
+    "NotificationDropdown": {
+        "showAll": "Tunjukkan semua"
+    },
+    "HelpSearch": {
+        "placeholder": "Cari bantuan…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Faham"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Buang"
+    },
+    "StagedPostEditButton": {
+        "name": "Sunting"
+    },
+    "StagedPostPublishButton": {
+        "name": "Terbitkan sekarang"
+    },
+    "LogoutButton": {
+        "name": "Log keluar"
+    },
+    "AvatarUploadForm": {
+        "submit": "Kemas kini avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Cari pengguna yang disekat…"
+    },
+    "BannedUserSection": {
+        "heading": "Pengguna yang disekat"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Permintaan dihantar (menunggu jawapan)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Disekat oleh {name} ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Disekat oleh {name} ",
+            "after": ""
+        },
+        "deletedAccount": "akaun yang dipadam",
+        "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "Januari",
+            "2": "Februari",
+            "3": "Mac",
+            "4": "April",
+            "5": "Mei",
+            "6": "Jun",
+            "7": "Julai",
+            "8": "Ogos",
+            "9": "September",
+            "10": "Oktober",
+            "11": "November",
+            "12": "Disember"
+        },
+        "shortMonths": {
+            "1": "Jan",
+            "2": "Feb",
+            "3": "Mac",
+            "4": "Apr",
+            "5": "Mei",
+            "6": "Jun",
+            "7": "Jul",
+            "8": "Ogo",
+            "9": "Sep",
+            "10": "Okt",
+            "11": "Nov",
+            "12": "Dis"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} pada {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Tidak dapat menyambung ke pelayan WebSocket pada 127.0.0.1:{port}{tls} ({error}). Mulakannya dahulu: systemctl --user start glommer-websocket (lihat README.md untuk fail unit). Jika WS_TLS_CERT/WS_TLS_KEY baru sahaja ditambah atau dibuang, mulakan semula supaya sepadan dengan .env.",
+        "wsOverTLS": " melalui TLS",
+        "wsBadHandshake": "Perkhidmatan pada 127.0.0.1:{port} tidak melengkapkan jabat tangan WebSocket yang sah — sesuatu selain bin/websocket-server.php mungkin mendengar pada port itu.",
+        "wsNoPong": "Pelayan WebSocket menerima jabat tangan tetapi tidak membalas ping — pelayan mungkin tersekat atau tidak berfungsi dengan betul. Semak lognya.",
+        "wsReachable": "Pelayan WebSocket boleh dicapai dan membalas pada 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Tanda pagar",
+            "person": "Orang",
+            "org": "Organisasi",
+            "gpe": "Tempat",
+            "loc": "Wilayah",
+            "fac": "Mercu tanda",
+            "product": "Produk",
+            "event": "Acara",
+            "work_of_art": "Karya",
+            "law": "Undang-undang",
+            "language": "Bahasa",
+            "norp": "Kumpulan"
+        },
+        "plural": {
+            "hashtag": "Tanda pagar",
+            "person": "Orang",
+            "org": "Organisasi",
+            "gpe": "Tempat",
+            "loc": "Wilayah",
+            "fac": "Mercu tanda",
+            "product": "Produk",
+            "event": "Acara",
+            "work_of_art": "Karya",
+            "law": "Undang-undang",
+            "language": "Bahasa",
+            "norp": "Kumpulan"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Alih keluar rakan"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Terima"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Tolak"
+    },
+    "UserFollowButton": {
+        "follow": "Ikut",
+        "unfollow": "Berhenti mengikuti"
+    },
+    "UserBlockButton": {
+        "name": "Sekat"
+    },
+    "UserUnblockButton": {
+        "name": "Nyahsekat"
+    },
+    "OtherUser": {
+        "message": "Mesej"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menu",
+        "loggedInAs": "Log masuk sebagai {name}",
+        "friendsFeed": "Suapan rakan",
+        "relayFeed": "Suapan geganti",
+        "users": "Pengguna",
+        "tags": "Tanda pagar",
+        "topics": "Topik",
+        "map": "Peta",
+        "locations": "Lokasi",
+        "search": "Carian",
+        "messages": "Mesej",
+        "bookmarks": "Penanda buku",
+        "help": "Bantuan",
+        "about": "Perihal",
+        "login": "Log masuk",
+        "signup": "Daftar",
+        "friends": "Rakan",
+        "drafts": "Draf dan terjadual",
+        "userSettings": "Tetapan pengguna",
+        "modSettings": "Tetapan moderator",
+        "adminSettings": "Tetapan pentadbir"
+    },
+    "LogoutForm": {
+        "submit": "Log keluar"
+    },
+    "User": {
+        "joined": "Menyertai pada {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Tambah rakan",
+        "cancel": "Batalkan permintaan"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Dijadualkan pada {when}",
+        "draft": "Draf — diterbitkan hanya apabila anda arahkan"
+    },
+    "MessageTranslateButton": {
+        "name": "Terjemahkan mesej ini"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Perihal penterjemahan mesej",
+        "body": "Untuk menterjemahkan mesej, teksnya dihantar ke pelayan ini dan diterjemahkan di sini. Tiada apa-apa disimpan: terjemahan tidak ditulis ke pangkalan data dan mesej asal tidak berubah. Namun, mesej yang diterjemahkan dengan cara ini telah dibaca oleh pelayan, jadi mesej itu tidak lagi disulitkan hujung ke hujung seperti mesej yang tidak diterjemahkan. Hanya mesej yang anda terima boleh diterjemahkan, dan hanya apabila anda meminta.",
+        "confirm": "Terjemahkan",
+        "cancel": "Bukan sekarang"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Terlupa frasa laluan? Penetapan semula mencipta kunci baharu di bawah frasa baharu, tetapi mesej yang disulitkan dengan kunci lama tidak akan dapat dibaca lagi oleh sesiapa pun.",
+        "requirements": "Sekurang-kurangnya 12 aksara dan bukan kata laluan akaun anda — kata laluan dihantar ke pelayan ini, tetapi frasa laluan tidak boleh dihantar sama sekali.",
+        "passphraseLabel": "Frasa laluan",
+        "resetPassphraseLabel": "Frasa laluan baharu",
+        "confirmLabel": "Sahkan frasa laluan",
+        "accountPasswordLabel": "Kata laluan akaun",
+        "submitLabel": "Hidupkan mesej tersulit",
+        "resetSubmitLabel": "Tetapkan semula kunci penyulitan"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Mesej yang disulitkan hujung ke hujung dikunci dan dibuka dalam pelayar anda: pelayan ini menyampaikan dan menyimpannya tanpa dapat membacanya. Kunci anda dilindungi oleh frasa laluan, dan frasa yang sama membuka mesej dalam mana-mana pelayar. Perbualan disulitkan setelah kedua-dua orang menghidupkannya; mesej kepada pengguna di pelayan lain kekal tidak disulitkan kerana protokol persekutuan tidak dapat membawanya dengan cara lain.",
+        "noRecovery": "Frasa laluan yang hilang tidak boleh dipulihkan — pentadbir juga tidak boleh melakukannya. Kehilangannya bermakna kehilangan mesej tersulit anda.",
+        "enabledStatus": "Mesej tersulit dihidupkan."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Disulitkan",
+            "explanation": "Mesej dalam perbualan ini disulitkan hujung ke hujung: mesej dibuka dengan frasa laluan dan dibaca dalam pelayar anda, sementara pelayan hanya menyimpan teks sifer. Semak kod keselamatan di bahagian bawah urutan bersama orang lain untuk memastikan tiada pihak berada di tengah-tengah. Mesej yang dihantar sebelum penyulitan dihidupkan kekal boleh dibaca seperti dahulu."
+        },
+        "awaiting-theirs": {
+            "label": "Tidak disulitkan",
+            "explanation": "Mesej di sini akan disulitkan hujung ke hujung setelah {handle} menghidupkan mesej tersulit dalam tetapan mereka."
+        },
+        "awaiting-yours": {
+            "label": "Tidak disulitkan",
+            "explanation": "Mesej di sini tidak disulitkan hujung ke hujung. Hidupkan mesej tersulit dalam Tetapan untuk melindungi perbualan ini."
+        },
+        "federated": {
+            "label": "Tidak disulitkan",
+            "explanation": "{handle} berada di pelayan lain. Mesej dalam perbualan ini disimpan di pelayan itu dan pelayan ini, dan pentadbirnya boleh membaca mesej tersebut — protokol antara pelayan tidak mempunyai cara untuk menyulitkannya. Simpan perkara sensitif untuk perbualan dalam laman ini."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Ikuti akaun Fediverse",
+        "notice": "Tampalkan satu atau beberapa nama pengguna, contohnya @user@example.social — apa-apa pemisah di antaranya boleh digunakan.",
+        "handlesLabel": "Nama pengguna Fediverse untuk diikuti",
+        "submit": "Ikut",
+        "statusPending": "menunggu",
+        "statusAccepted": "diterima"
+    },
+    "ServerBlockForm": {
+        "legend": "Sekat pelayan",
+        "description": "Menolak segala-galanya daripada pelayan itu dan subdomainnya: tiada penghantaran masuk atau keluar, dan hubungan mengikuti sedia ada dalam kedua-dua arah digugurkan.",
+        "serverLabel": "Pelayan",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Sebab",
+        "reasonPlaceholder": "Sebab pelayan ini disekat",
+        "submit": "Sekat pelayan"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Menjalankan bahagian persediaan panggilan yang boleh diperiksa daripada satu pelayar. Segala-galanya sehingga sambungan rakan ke rakan sebenar boleh diuji di sini; menyambung kepada orang lain memerlukan orang tersebut."
+    },
+    "VideoCallTestButton": {
+        "label": "Jalankan pemeriksaan"
+    },
+    "WebSocketStatus": {
+        "ok": "Pelayan WebSocket: berjalan",
+        "failed": "Pelayan WebSocket: {detail}",
+        "clientTesting": "Sambungan pelayar: menguji…",
+        "clientConnecting": "Sambungan pelayar: menyambung…",
+        "clientConnected": "Sambungan pelayar: tersambung",
+        "clientDisconnecting": "Sambungan pelayar: memutuskan…",
+        "clientNotConnected": "Sambungan pelayar: tidak tersambung"
+    },
+    "UploadWorkerStatus": {
+        "running": "Perkhidmatan pekerja: berjalan",
+        "stopped": "Perkhidmatan pekerja: tidak berjalan — muat naik yang dipentaskan tidak akan ditranskod sehingga perkhidmatan dimulakan semula",
+        "unknown": "Perkhidmatan pekerja: tidak diketahui — sama ada systemctl tidak tersedia pada hos ini atau SELinux menolak pertanyaan status pelayan web (jalankan bin/install.php sebagai root untuk membetulkannya)",
+        "queue": "Baris gilir: {staging} dipentaskan, {pending} menunggu, {processing} diproses"
+    },
+    "TrendingTimerStatus": {
+        "running": "Pemasa sohor kini: berjalan",
+        "stopped": "Pemasa sohor kini: tidak berjalan — topik sohor kini hanya akan dikemas kini melalui pemulihan kendiri laluan bacaan (Trending::current()), bukan mengikut jadual. Jalankan bin/install.php sebagai root untuk menyediakannya.",
+        "unknown": "Pemasa sohor kini: tidak diketahui — sama ada systemctl tidak tersedia pada hos ini atau SELinux menolak pertanyaan status pelayan web (jalankan bin/install.php sebagai root untuk membetulkannya)"
+    },
+    "Notification": {
+        "postReady": "Media anda telah selesai diproses dan kini diterbitkan",
+        "scheduledPostLive": "Siaran terjadual anda kini diterbitkan",
+        "uploadPartlyFailed": "Siaran anda telah diterbitkan, tetapi satu atau beberapa failnya tidak dapat diproses",
+        "uploadFailed": "Salah satu muat naik gagal diproses dan tidak disiarkan",
+        "mailerFailed": "Penghantaran e-mel gagal — perkhidmatan mel mungkin tidak berfungsi. Sila semak konfigurasi mel.",
+        "mailFromNotConfigured": "Tiada alamat pengirim mel dikonfigurasikan, maka e-mel tidak boleh dihantar. Tetapkannya dalam Tetapan Pentadbir (bahagian Mel Keluar) atau melalui bin/install.php.",
+        "systemError": "Ralat pelayan berlaku. Semak log ralat untuk butiran.",
+        "passwordRemovedGoogle": "Kata laluan anda dialih keluar apabila anda log masuk dengan Google. Gunakan \"Lupa Kata Laluan\" jika anda mahu menetapkan kata laluan baharu.",
+        "like": "{name} menyukai siaran anda",
+        "repost": "{name} menyiarkan semula siaran anda",
+        "reply": "{name} membalas siaran anda",
+        "friendRequest": "{name} menghantar permintaan rakan kepada anda",
+        "friendAccepted": "{name} menerima permintaan rakan anda",
+        "message": "{name} menghantar mesej kepada anda",
+        "mention": "{name} menyebut anda dalam siaran",
+        "follow": "{name} mengikuti anda dari pelayan lain",
+        "default": "{name} melakukan sesuatu"
+    },
+    "NotificationList": {
+        "emptyNotice": "Belum ada pemberitahuan."
+    },
+    "NotificationsNavLink": {
+        "label": "Pemberitahuan",
+        "unseen": "Pemberitahuan belum dilihat"
+    },
+    "NotificationTestPanel": {
+        "intro": "Hantar pemberitahuan ujian kepada diri sendiri (pentadbir). Pemberitahuan sepatutnya muncul serta-merta sebagai timbul dan dalam menu pemberitahuan.",
+        "button": "Hantar pemberitahuan ujian",
+        "sending": "Menghantar…",
+        "sent": "Dihantar!",
+        "failed": "Gagal"
+    },
+    "MessageDot": {
+        "label": "Mesej belum dibaca"
+    },
+    "NavAlertDot": {
+        "label": "Ada sesuatu yang baharu dalam menu"
+    },
+    "Message": {
+        "encrypted": "Mesej tersulit",
+        "decryptionFailed": "Mesej ini disulitkan dengan kunci yang tidak lagi wujud."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mesej",
+        "bodyPlaceholder": "Tulis mesej",
+        "send": "Hantar"
+    },
+    "MessageList": {
+        "emptyNotice": "Belum ada mesej."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Sampaikan kod ini antara satu sama lain melalui cara lain — dengan suara, secara bersemuka atau melalui panggilan. Jika kod sepadan pada kedua-dua belah, tiada sesiapa berada di tengah-tengah.",
+        "changed": "Kod ini telah berubah sejak anda menyemaknya. Hal ini berlaku apabila salah seorang menetapkan semula kunci penyulitan, tetapi perubahan yang sama juga boleh menandakan seseorang membaca perbualan ini. Semak kod baharu bersama mereka sebelum mempercayainya.",
+        "verified": "Anda telah menyemak kod ini."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Tandakan sebagai disahkan"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Frasa laluan",
+        "passphrasePlaceholder": "Frasa laluan untuk membuka perbualan ini",
+        "submit": "Buka kunci"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Mesej terakhir ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Media sensitif"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Tunjukkan media sensitif secara lalai"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Siaran",
+            "message": "Mesej",
+            "user": "Pengguna"
+        },
+        "summary": {
+            "before": "{type} #{id} dilaporkan oleh ",
+            "after": ""
+        },
+        "reasonLine": "Sebab: {reason}",
+        "banReporterLabel": "Sekat pelapor",
+        "banReportedUserLabel": "Sekat pengguna yang dilaporkan",
+        "deleteLabel": "Padam {type}",
+        "reportedImageAlt": "Imej yang dilaporkan",
+        "attachmentUnavailable": "Lampiran yang dilaporkan tidak lagi tersedia.",
+        "viewAttachment": "Lihat lampiran yang dilaporkan",
+        "missing": {
+            "noSnapshot": "Kandungan yang dilaporkan tidak lagi tersedia.",
+            "unknownType": "Jenis kandungan tidak diketahui."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Tiada laporan."
+    },
+    "ModQueueLinks": {
+        "intro": "Baris gilir cukup panjang untuk dibaca satu halaman pada satu masa, maka setiap satunya mempunyai halaman sendiri.",
+        "reportsLabel": "Laporan",
+        "bannedUsersLabel": "Pengguna yang disekat"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Belum ada moderator melakukan apa-apa."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Tiada entiti sohor kini yang disekat."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Tiada pelayan yang disekat."
+    },
+    "RelayCard": {
+        "accepted": "Dilanggan ",
+        "waiting": "Menunggu geganti menerima — dilanggan "
+    },
+    "RelayList": {
+        "emptyNotice": "Tiada geganti dilanggan. Hanya kandungan yang diikuti oleh ahli akan tiba di sini."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Belum ada apa-apa tiba melalui geganti. Siaran muncul di sini apabila pelayan di sebelah sana menerbitkannya."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Langgan geganti",
+        "explainerOne": "Geganti ialah aliran awam dikongsi: setiap siaran awam daripada semua pelayan lain yang melanggan tiba di sini, dan siaran pelayan ini dihantar kepada mereka semua. Inilah cara tika baharu menemui orang kerana, tanpa geganti, persekutuan hanya membawa perkara yang sudah diikuti oleh seseorang di sini.",
+        "explainerTwo": "Beban tidak dapat diramalkan — bebannya bergantung pada apa yang diterbitkan oleh pelayan tersebut: mungkin sunyi satu minggu dan ribuan siaran sejam pada minggu berikutnya. Storan, baris gilir penghantaran dan baris gilir penyederhanaan anda semuanya menanggung beban itu. Siaran geganti tidak masuk ke suapan utama atau rakan; siaran itu masuk ke Suapan Geganti yang dibuka secara sengaja oleh pengguna.",
+        "addressLabel": "Alamat geganti",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Langgan"
+    },
+    "RelayFollowObjectField": {
+        "label": "Gaya langganan",
+        "options": {
+            "public": "Ikuti aliran awam (yang dijangkakan oleh kebanyakan geganti)",
+            "actor": "Ikuti pelaku geganti itu sendiri"
+        },
+        "retryNotice": "Jika geganti tidak pernah menerima, tarik balik dan cuba gaya lain — sesetengah perisian geganti hanya mengenali salah satu daripadanya."
+    },
+    "SiteCounters": {
+        "members": "Ahli: {count} ({joined} menyertai dalam {days} hari terakhir)",
+        "activeMembers": "Ahli di sini dalam {days} hari terakhir: {count} ({posted} daripadanya menyiarkan)",
+        "posts": "Siaran yang ditulis di sini: {count} ({recent} dalam {days} hari terakhir)",
+        "deliveries": "Penghantaran bersekutu dalam {days} hari terakhir: {delivered} tiba, {undeliverable} ditinggalkan",
+        "queued": "Menunggu untuk dihantar: {count} ({failing} telah ditolak sekurang-kurangnya sekali)",
+        "pendingReads": "Siaran yang menunggu untuk dibaca daripada pelayan lain: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Jalankan suit ujian laman dan lihat hasilnya. Proses ini mengambil masa beberapa saat, maka hasil dibuka pada halaman tersendiri.",
+        "runLabel": "Jalankan ujian"
+    },
+    "HelpArticle": {
+        "backLabel": "Kembali ke semua bantuan"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Tiada cadangan sekarang — cadangan datang daripada rakan kepada orang yang sudah menjadi rakan anda. Cari di atas untuk menemukan seseorang mengikut nama.",
+        "noMatches": "Tiada sesiapa di sini yang sepadan."
+    },
+    "UserModButton": {
+        "make": "Jadikan moderator",
+        "remove": "Alih keluar moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Nyahsekat"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Sekat"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Nyahsekat"
+    },
+    "ReportDismissButton": {
+        "name": "Tolak"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Tandakan sensitif"
+    },
+    "ServerUnblockButton": {
+        "name": "Nyahsekat"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Nyahlanggan"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Batalkan"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: lulus",
+        "failing": "{suite}: gagal"
+    },
+    "PageTitle": {
+        "about": "Perihal",
+        "adminBanned": "Pengguna yang disekat",
+        "adminModSettings": "Tetapan moderator",
+        "adminReports": "Laporan",
+        "adminSettings": "Tetapan pentadbir",
+        "adminTests": "Ujian",
+        "authGoogleCallbackAccountDeleted": "Akaun dipadam",
+        "authGoogleCallbackDeleteAccount": "Padam akaun",
+        "authGoogleCallbackLogin": "Log masuk",
+        "bookmarks": "Penanda buku",
+        "checkInbox": "Semak peti masuk anda",
+        "drafts": "Draf dan terjadual",
+        "draftsEditDraft": "Sunting draf",
+        "draftsEditScheduled": "Sunting siaran terjadual",
+        "forgotPassword": "Lupa kata laluan",
+        "friendsFeed": "Suapan rakan",
+        "help": "Bantuan",
+        "helpDescription": "Panduan dan jawapan untuk menggunakan laman.",
+        "locations": "Lokasi",
+        "locationsDescription": "Siaran daripada tempat yang paling hampir dengan anda.",
+        "locationsPlaceDescription": "Siaran berhampiran {place}.",
+        "login": "Log masuk",
+        "loginVerificationCode": "Kod pengesahan",
+        "map": "Peta",
+        "mapDescription": "Peta siaran dari seluruh dunia — temukan orang dan perkara berhampiran anda.",
+        "messages": "Mesej",
+        "messagesWithUser": "Mesej dengan {name}",
+        "notifications": "Pemberitahuan",
+        "privacy": "Dasar privasi",
+        "quote": "Petik",
+        "relayFeed": "Suapan geganti",
+        "relayFeedDescription": "Siaran awam yang tiba daripada geganti yang dilanggan oleh pelayan ini.",
+        "resetPassword": "Tetapkan semula kata laluan",
+        "revertEmail": "Batalkan perubahan e-mel",
+        "search": "Carian",
+        "signup": "Daftar",
+        "tags": "Tanda pagar",
+        "tagsDescription": "Layari tanda pagar sohor kini dan popular di {siteTitle}.",
+        "tagsTagDescription": "Siaran bertanda {tag} di {siteTitle}.",
+        "terms": "Syarat perkhidmatan",
+        "topics": "Topik",
+        "topicsDescription": "Perkara yang dibualkan oleh orang ramai di {siteTitle} sekarang.",
+        "topicsEntityDescription": "{typeLabel} — siaran yang menyebut {entityTitle} di {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} yang dibualkan oleh orang ramai di {siteTitle} sekarang.",
+        "unsubscribe": "Ringkasan e-mel",
+        "userFriends": "Rakan {name}",
+        "userFriendsDescription": "Rakan {name} di {siteTitle}",
+        "userSettings": "Tetapan pengguna",
+        "users": "Pengguna",
+        "verifyEmail": "Sahkan e-mel"
+    },
+    "PostLikeButton": {
+        "like": "Suka",
+        "unlike": "Tidak suka lagi"
+    },
+    "PostPinButton": {
+        "pin": "Semat",
+        "unpin": "Nyahsemat"
+    },
+    "PostQuoteButton": {
+        "name": "Petik"
+    },
+    "PostDeleteButton": {
+        "name": "Padam"
+    },
+    "PostEditButton": {
+        "name": "Sunting"
+    },
+    "ReportButton": {
+        "name": "Laporkan"
+    },
+    "PostActionBar": {
+        "reply": "Balas",
+        "replies": {
+            "other": "Balasan ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(disunting)"
+    },
+    "RepliesHeading": {
+        "heading": "Balasan"
+    },
+    "PollVoteButton": {
+        "name": "Undi"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Lihat ",
+            "link": "lebih banyak lokasi",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Siaran berhampiran anda",
+        "description": "Ini menunjukkan siaran yang paling hampir dengan sesuatu titik — di mana sahaja aktiviti berlaku dan sejauh mana pun tempatnya. Kongsi lokasi untuk bermula dari tempat anda berada atau pilih titik pada peta.",
+        "useMyLocation": "Gunakan lokasi saya",
+        "pickOnMap": "Pilih pada peta",
+        "searchPlaceholder": "Atau taip nama tempat…",
+        "searchLabel": "Cari tempat",
+        "locating": "Menentukan lokasi…",
+        "noGeolocation": "Pelayar anda tidak dapat berkongsi lokasi.",
+        "locationError": "Tidak dapat mendapatkan lokasi anda. Semak kebenaran lokasi pelayar."
+    },
+    "PollDeadline": {
+        "final": "Keputusan akhir",
+        "closes": {
+            "before": "Ditutup ",
+            "after": ""
+        },
+        "days": {
+            "other": "dalam {count} hari"
+        },
+        "hours": {
+            "other": "dalam {count} jam"
+        },
+        "minutes": {
+            "other": "dalam {count} minit"
+        },
+        "underMinute": "dalam masa kurang daripada seminit"
+    },
+    "PollTally": {
+        "voters": {
+            "other": "{count} orang mengundi "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Log masuk",
+            "after": " untuk menyiarkan."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Log masuk",
+            "after": " untuk membalas."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " menyiarkan semula"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Sebagai balasan kepada ",
+            "after": ""
+        },
+        "untitled": "siaran ini",
+        "jumpToStart": "Lompat ke permulaan"
+    },
+    "TopicSummaryCard": {
+        "label": "Ringkasan dijana AI"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Selamat datang ke ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Tulis sesuatu dalam kotak di bawah dan kandungan itu akan masuk ke suapan anda. Sesiapa pun boleh membalas, dan balasan hanyalah siaran yang mempunyai induk, maka perbualan boleh bersarang sedalam yang diperlukan.",
+            "Tambahkan orang sebagai rakan dan siaran mereka akan masuk ke suapan anda. Suapan Global — nama laman di sebelah kiri atas — menunjukkan segala-galanya yang ditulis di sini dan merupakan tempat untuk menemukan orang yang boleh ditambahkan.",
+            "Laman ini sebahagian daripada Fediverse: anda boleh mengikuti akaun di Mastodon dan pelayan lain dengan nama pengguna penuh, dan siaran anda akan sampai kepada pengikut anda di sana. Cari nama seperti @someone@example.social dan pelayan ini akan menemukannya.",
+            "Tandai siaran dengan #tanda_pagar dan siaran itu akan muncul pada halaman tanda tersebut, serta dalam Sohor Kini jika cukup ramai orang menulis tentangnya.",
+            "Mesej antara ahli disulitkan hujung ke hujung — pelayan menyimpan teks sifer yang tidak dapat dibacanya. Hidupkan ciri itu dalam Tetapan.",
+            "Anda tidak perlu menyiarkan serta-merta: simpan draf atau tetapkan masa supaya siaran diterbitkan secara automatik. Kedua-duanya berada di bawah Draf dan Terjadual."
+        ],
+        "more": {
+            "before": "Maklumat lanjut terdapat dalam ",
+            "link": "halaman bantuan",
+            "after": ", termasuk cara memindahkan akaun ke sini dari tempat lain."
+        },
+        "dontShowAgain": "Jangan tunjukkan lagi"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Sisip emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Imej pratonton pautan"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Alih keluar imej"
+    },
+    "LinkItem": {
+        "alt": "Imej pratonton pautan"
+    },
+    "MapScrubber": {
+        "play": "Main",
+        "pause": "Jeda",
+        "cumulativeMode": "Sehingga waktu itu",
+        "windowMode": "Sekitar waktu itu",
+        "rangeLabel": "Tunjukkan siaran sehingga tarikh",
+        "cumulativeLabel": {
+            "other": "Disiarkan sehingga {date} — {count} siaran"
+        },
+        "windowLabel": {
+            "other": "Disiarkan sekitar {date} — {count} siaran"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Siaran {name}",
+        "pageTitleUntitled": "Siaran",
+        "imageAltByAuthor": "Foto yang disiarkan oleh {name}",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Alih keluar penanda buku",
+        "add": "Tambah penanda buku"
+    },
+    "PostRepostButton": {
+        "undo": "Batalkan siaran semula",
+        "repost": "Siar semula"
+    },
+    "QuotedPost": {
+        "viewLink": "Lihat siaran yang dipetik"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Permintaan menunggu"
+    },
+    "ScrollToTopButton": {
+        "label": "Tatal ke atas"
+    },
+    "SearchClearButton": {
+        "label": "Kosongkan carian"
+    },
+    "SitePolicyLinks": {
+        "terms": "Syarat perkhidmatan",
+        "privacy": "Dasar privasi"
+    },
+    "SkipLink": {
+        "label": "Langkau ke kandungan"
+    },
+    "TopicHeading": {
+        "searchLink": "Cari perkara ini",
+        "noPosts": "Tiada siaran menyebut perkara ini sekarang."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Belum ada apa-apa ditulis tentang perkara seumpama ini."
+    },
+    "TrendingEntitySection": {
+        "heading": "Sohor kini"
+    },
+    "PostLocationLink": {
+        "title": "Tunjukkan tempat ini pada peta",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "sebentar tadi",
+        "minutes": {
+            "other": "{count} min lalu"
+        },
+        "hours": {
+            "other": "{count} jam lalu"
+        },
+        "days": {
+            "other": "{count} hari lalu"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Ikut sistem",
+            "light": "Cerah biasa",
+            "dark": "Gelap biasa",
+            "sepia": "Sepia",
+            "midnight": "Tengah malam",
+            "sunset": "Matahari terbenam",
+            "rose": "Mawar",
+            "forest": "Hutan",
+            "ocean": "Lautan",
+            "lavender": "Lavender",
+            "gold": "Emas",
+            "hacker": "Penggodam",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Skala kelabu"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Terjemahan tidak disediakan pada pelayan ini.",
+        "nothing": "Tiada apa-apa untuk diterjemahkan di sini.",
+        "unknownSource": "Bahasa siaran ini belum dikenal pasti, maka siaran tidak dapat diterjemahkan.",
+        "alreadyReadable": "Siaran ini sudah pun dalam bahasa tersebut.",
+        "unsupportedPair": "Pelayan ini belum dapat menterjemahkan bahasa tersebut."
+    },
+    "LanguagePrompt": {
+        "question": "Adakah anda mahu melihat laman dalam bahasa Melayu?",
+        "accept": "Ya",
+        "decline": "Tidak, terima kasih"
+    },
+    "LanguageSelector": {
+        "label": "Bahasa",
+        "legend": "Bahasa"
+    },
+    "EmailDigest": {
+        "subject": "Perkara yang anda terlepas di {site}",
+        "greeting": "Hai {name},",
+        "whileAway": "Semasa anda tiada:",
+        "repeatedTimes": {
+            "other": " ({count} kali)"
+        },
+        "moreMissed": {
+            "other": "dan {count} lagi pemberitahuan"
+        },
+        "messagesWaiting": {
+            "other": "Anda mempunyai {count} mesej menunggu"
+        },
+        "postsInFeed": {
+            "other": "{count} siaran baharu dalam suapan anda"
+        },
+        "unsubscribeInstructions": "Untuk menghentikan e-mel ini, buka pautan berikut — satu klik sahaja dan tiada kata laluan diperlukan:",
+        "comeSeeWhatIsNew": "Datang dan lihat perkara baharu",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Berhenti menghantar e-mel ini kepada saya",
+            "after": " — satu klik sahaja, tiada kata laluan diperlukan."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Sahkan alamat e-mel anda",
+        "greeting": "Hai {name},",
+        "instructions": "Sila sahkan alamat e-mel anda dengan membuka pautan ini:",
+        "htmlInstructions": "Sila sahkan alamat e-mel anda dengan mengklik pautan di bawah:",
+        "buttonLabel": "Sahkan alamat e-mel",
+        "expiresIn": {
+            "other": "Pautan ini tamat tempoh dalam {count} jam."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Tetapkan semula kata laluan anda",
+        "greeting": "Hai {name},",
+        "instructions": "Seseorang (mudah-mudahan anda) meminta penetapan semula kata laluan. Buka pautan ini untuk memilih kata laluan baharu:",
+        "htmlInstructions": "Seseorang (mudah-mudahan anda) meminta penetapan semula kata laluan. Klik pautan di bawah untuk memilih kata laluan baharu:",
+        "buttonLabel": "Tetapkan semula kata laluan",
+        "expiresIn": {
+            "other": "Pautan ini tamat tempoh dalam {count} jam."
+        },
+        "ignoreNotice": "Jika anda tidak meminta perkara ini, anda boleh mengabaikan e-mel ini."
+    }
+}

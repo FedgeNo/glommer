@@ -1,0 +1,1162 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "zero": "{count} balsu",
+            "one": "{count} balss",
+            "other": "{count} balsis"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Piesakieties",
+            "after": ", lai atbildētu."
+        },
+        "post": {
+            "before": "",
+            "link": "Piesakieties",
+            "after": ", lai publicētu."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Vietne",
+        "siteURLLabel": "Vietnes URL",
+        "siteTitleLabel": "Vietnes nosaukums",
+        "mailFromAddressLabel": "Pasta sūtītāja adrese",
+        "serverNameConfirmedLabel": "Tīmekļa servera konfigurācijā esmu iestatījis „ServerName {host}” un „UseCanonicalName On” (tiek pārbaudīts tikai tad, ja automātisko tiešsaistes pārbaudi nevar pabeigt — skatiet README.md HTTPS sadaļu)",
+        "databaseLegend": "Datubāze",
+        "databaseHostLabel": "Datubāzes resursdators",
+        "databasePortLabel": "Datubāzes ports",
+        "databaseNameLabel": "Datubāzes nosaukums",
+        "databaseAdminUsernameLabel": "Datubāzes administratora lietotājvārds",
+        "databaseAdminPasswordLabel": "Datubāzes administratora parole",
+        "webSocketTLSLegend": "WebSocket TLS (neobligāti)",
+        "certificatePathLabel": "Sertifikāta ceļš",
+        "certificatePathPlaceholder": "Atstājiet tukšu, lai automātiski ģenerētu ar mkcert",
+        "keyPathLabel": "Atslēgas ceļš",
+        "keyPathPlaceholder": "Atstājiet tukšu, lai automātiski ģenerētu ar mkcert",
+        "botProtectionLegend": "Aizsardzība pret robotiem (neobligāti)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile vietnes atslēga",
+        "turnstileSiteKeyPlaceholder": "Atstājiet tukšu, lai izlaistu",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile slepenā atslēga",
+        "turnstileSecretKeyPlaceholder": "Atstājiet tukšu, lai izlaistu",
+        "submit": "Iestatīt"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Pašreizējā ieejas frāze",
+        "newPassphraseLabel": "Jaunā ieejas frāze",
+        "confirmNewPassphraseLabel": "Apstipriniet jauno ieejas frāzi",
+        "accountPasswordLabel": "Konta parole",
+        "submit": "Mainīt ieejas frāzi"
+    },
+    "PasswordResetForm": {
+        "legend": "Izvēlieties jaunu paroli",
+        "newPasswordLabel": "Jaunā parole",
+        "newPasswordPlaceholder": "Vismaz 8 rakstzīmes",
+        "confirmPasswordLabel": "Apstipriniet jauno paroli",
+        "submit": "Atiestatīt paroli"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Atiestatiet savu paroli",
+        "emailLabel": "E-pasts",
+        "submit": "Sūtīt atiestatīšanas saiti"
+    },
+    "EmailRevertForm": {
+        "submit": "Atsaukt e-pasta maiņu"
+    },
+    "EmailVerifyForm": {
+        "submit": "Apstiprināt e-pasta adresi"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Atkal ieslēgt"
+    },
+    "EmailDigestSetting": {
+        "label": "Sūtīt man e-pastā, ko esmu palaidis garām pēc ilgākas prombūtnes"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Nezināma ierīce",
+        "browserOnOS": "{browser}, {os}",
+        "thisDevice": " (šī ierīce)",
+        "lastUsed": {
+            "before": "Pēdējoreiz izmantota ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Beigt visas aktīvās sesijas un aizmirst visas iegaumētās ierīces. Jūs tiksiet izrakstīts no visām pārlūkprogrammām, arī no šīs."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Izrakstīties visur"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Apstiprināt ar Google, lai dzēstu"
+    },
+    "GoogleSignInButton": {
+        "label": "Turpināt ar Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Rediģēt profilu"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Saņemiet paziņojumus šajā ierīcē arī tad, kad vietne nav atvērta. Šī izvēle attiecas uz katru pārlūkprogrammu atsevišķi — ieslēdziet to visur, kur vēlaties saņemt paziņojumus.",
+        "label": {
+            "off": "Ieslēgt šajā ierīcē",
+            "on": "Izslēgt šajā ierīcē"
+        },
+        "unsupported": "Šī pārlūkprogramma neatbalsta pašpiegādes paziņojumus"
+    },
+    "LoginForm": {
+        "legend": "Pieteikšanās",
+        "identifier": "Lietotājvārds vai e-pasts",
+        "password": "Parole",
+        "rememberMe": "Atcerēties mani",
+        "submit": "Pieteikties"
+    },
+    "SignupForm": {
+        "legend": "Izveidot kontu",
+        "usernameLabel": "Lietotājvārds",
+        "usernamePlaceholder": "Mazie burti, cipari un _",
+        "emailLabel": "E-pasts",
+        "emailPlaceholder": "Derīga e-pasta adrese",
+        "displayName": "Rādāmais vārds (neobligāti)",
+        "bioLabel": "Apraksts (neobligāti)",
+        "bioPlaceholder": "Īss apraksts — #tēmturi, @pieminējumi un saites kļūs klikšķināmi",
+        "passwordLabel": "Parole",
+        "passwordPlaceholder": "Parole: vismaz 8 rakstzīmes",
+        "rememberMe": "Atcerēties mani",
+        "submit": "Reģistrēties"
+    },
+    "PasswordChangeForm": {
+        "legend": "Mainīt paroli",
+        "currentPassword": "Pašreizējā parole",
+        "newPasswordLabel": "Jaunā parole",
+        "newPasswordPlaceholder": "Vismaz 8 rakstzīmes",
+        "confirmPassword": "Apstipriniet jauno paroli",
+        "submit": "Mainīt paroli"
+    },
+    "EmailChangeForm": {
+        "legend": "Mainīt e-pasta adresi",
+        "newEmail": "Jaunā e-pasta adrese",
+        "currentPassword": "Pašreizējā parole",
+        "notice": "Pirms turpināt lietot vietni, jaunā adrese būs jāapstiprina.",
+        "submit": "Mainīt e-pastu"
+    },
+    "AccountDeleteForm": {
+        "legend": "Dzēst kontu",
+        "warning": "Tādējādi jūsu konts, ieraksti un ziņas tiks neatgriezeniski dzēsti. Šo darbību nevar atsaukt.",
+        "currentPassword": "Pašreizējā parole",
+        "submit": "Dzēst kontu"
+    },
+    "AccountMigrationForm": {
+        "legend": "Pārcelties uz citu serveri",
+        "movedNotice": "Šis konts ir pārcelts uz {destination}. Jūsu sekotājiem tika lūgts sekot jums tur.",
+        "explanation": "Jūsu sekotājiem tiek lūgts sekot jaunajam kontam. Ieraksti paliek šeit — objektu adreses pieder serverim, kas tos izveidoja, tāpēc tos nevar paņemt līdzi.",
+        "addressNotice": "Kontā, uz kuru pārceļaties, vispirms šis konts jānorāda sadaļā „zināms arī kā”. Jūsu adrese šeit ir {address}.",
+        "movedToLabel": "Pārcelt uz",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Zināms arī kā",
+        "aliasesExplanation": "Citi jums piederošie konti. Norādot kontu šeit, tam tiek atļauts pārcelties uz šo kontu — tā ir atļauja, nevis pati pārcelšana. Viena adrese katrā rindā.",
+        "aliasesLabel": "Jūsu citi konti",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Saglabāt"
+    },
+    "TwoFactorForm": {
+        "legend": "Ievadiet apstiprinājuma kodu",
+        "explanation": "Apstiprinājuma kodu nosūtījām jums e-pastā. Lai pabeigtu pieteikšanos, ievadiet to zemāk vai izmantojiet kādu no atkopšanas kodiem.",
+        "explanationEmailFailed": "Pašlaik nevarējām nosūtīt apstiprinājuma kodu e-pastā. Lai pabeigtu pieteikšanos, ievadiet kādu no atkopšanas kodiem.",
+        "code": "Apstiprinājuma kods",
+        "submit": "Apstiprināt"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Divfaktoru autentifikācija ir ieslēgta",
+            "off": "Divfaktoru autentifikācija ir izslēgta"
+        },
+        "explanation": {
+            "on": "Piesakoties mēs e-pastā nosūtīsim apstiprinājuma kodu, kas jāievada, lai pabeigtu pieteikšanos. Ja e-pasts jūs nesasniedz, varēsiet pieteikties ar kādu no atkopšanas kodiem.",
+            "off": "Pievienojiet otru pieteikšanās soli: mēs e-pastā nosūtīsim ievadāmu apstiprinājuma kodu, tāpēc ar paroli vien nepietiks. Saņemsiet vienreizlietojamus atkopšanas kodus gadījumam, ja e-pasts jūs nesasniedz."
+        },
+        "currentPassword": "Pašreizējā parole",
+        "submit": {
+            "on": "Izslēgt divfaktoru autentifikāciju",
+            "off": "Ieslēgt divfaktoru autentifikāciju"
+        },
+        "regenerate": "Ģenerēt jaunus atkopšanas kodus",
+        "recoveryHeading": "Jūsu atkopšanas kodi",
+        "recoveryNote": "Saglabājiet tos drošā vietā tagad — tie vairs netiks parādīti. Katrs ļauj vienreiz pieteikties, ja apstiprinājuma e-pasts jūs nesasniedz; ģenerējot jaunus kodus, visi šie tiks aizstāti.",
+        "toast": {
+            "on": "Divfaktoru autentifikācija tagad ir ieslēgta.",
+            "off": "Divfaktoru autentifikācija tagad ir izslēgta.",
+            "regenerated": "Jaunie atkopšanas kodi ir ģenerēti. Vecie vairs nedarbojas."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Pārbaudiet iesūtni un noklikšķiniet uz nosūtītās apstiprinājuma saites, lai apstiprinātu e-pasta adresi. Ja vēstuli neredzat, pārbaudiet surogātpasta mapi."
+    },
+    "VerificationResendButton": {
+        "label": "Nosūtīt apstiprinājuma e-pastu vēlreiz"
+    },
+    "MailSettingsForm": {
+        "legend": "Izejošais pasts",
+        "fromAddressLabel": "Sūtītāja adrese",
+        "fromAddressPlaceholder": "E-pastu nevar nosūtīt, kamēr tas nav iestatīts",
+        "fromNameLabel": "Sūtītāja vārds",
+        "hostLabel": "SMTP resursdators",
+        "portLabel": "SMTP ports",
+        "usernameLabel": "SMTP lietotājvārds",
+        "passwordLabel": "SMTP parole",
+        "passwordPlaceholder": {
+            "set": "Parole ir iestatīta — atstājiet tukšu, lai to paturētu",
+            "unset": "SMTP parole"
+        },
+        "encryptionLabel": "Šifrēšana",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, parasti 587. portā)",
+            "ssl": "SSL (netiešs TLS, parasti 465. portā)",
+            "none": "Nav"
+        },
+        "explainer": "Atstājiet SMTP resursdatoru tukšu, lai tā vietā sūtītu ar PHP mail() (nav ieteicams — skatiet README piegādājamības sadaļu). Kamēr nav iestatīta sūtītāja adrese, e-pastu vispār nevar nosūtīt.",
+        "save": "Saglabāt"
+    },
+    "MapSettingsForm": {
+        "legend": "Kartes flīzes",
+        "notice": "Atstājiet tukšu, lai izmantotu OpenStreetMap. Lai izmantotu pakalpojumu ar atslēgu, ielīmējiet tā URL veidni ar burtisku {apiKey} atslēgas vietā un zemāk norādiet atslēgu un atsauci.",
+        "urlLabel": "Flīžu URL veidne",
+        "keyLabel": "API atslēga",
+        "keyPlaceholder": "Kartes pakalpojuma API atslēga",
+        "attributionLabel": "Atsauce",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Saglabāt"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Pieteikšanās ar Google",
+        "clientIdLabel": "Klienta ID",
+        "clientIdPlaceholder": "Google OAuth klienta ID",
+        "secretLabel": "Klienta noslēpums",
+        "secretPlaceholder": {
+            "set": "Klienta noslēpums ir iestatīts — atstājiet tukšu, lai to paturētu",
+            "unset": "Google OAuth klienta noslēpums"
+        },
+        "explainer": "Abi lauki ir vajadzīgi, lai reģistrējoties un piesakoties būtu redzama poga „Turpināt ar Google”. Google Cloud OAuth klientā iestatiet atļauto novirzīšanas URI uz {url}; notīriet klienta ID, lai to izslēgtu.",
+        "save": "Saglabāt"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Vietnes atslēga",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile vietnes atslēga",
+        "turnstileSecretKeyLabel": "Slepenā atslēga",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Slepenā atslēga ir iestatīta — atstājiet tukšu, lai to paturētu",
+            "unset": "Cloudflare Turnstile slepenā atslēga"
+        },
+        "turnstileExplainer": "Abas atslēgas ir vajadzīgas, lai CAPTCHA būtu redzama reģistrējoties un piesakoties. Notīriet vietnes atslēgu, lai to izslēgtu.",
+        "recaptchaLegend": "Google reCAPTCHA (bloķēta konta atkopšana)",
+        "recaptchaSiteKeyLabel": "Vietnes atslēga",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 vietnes atslēga",
+        "recaptchaSecretKeyLabel": "Slepenā atslēga",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Slepenā atslēga ir iestatīta — atstājiet tukšu, lai to paturētu",
+            "unset": "Google reCAPTCHA v2 slepenā atslēga"
+        },
+        "recaptchaExplainer": "Ir vajadzīgas abas atslēgas. Kad tās ir iestatītas, konts, kas sasniedzis pieteikšanās mēģinājumu ierobežojumu, var atgriezties, izpildot šo pārbaudi, nevis gaidot bloķēšanas beigas; bez tām ir obligāti jāgaida. Izmantojiet reCAPTCHA v2 („Es neesmu robots”). Notīriet vietnes atslēgu, lai to izslēgtu.",
+        "save": "Saglabāt"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Izmanto vietnes MI funkcijas (aktuālo tēmu kopsavilkumi u.c.). Atstājiet modeli tukšu, lai izmantotu bezmaksas modeļu maršrutētāju; OpenRouter nejauši izvēlas kādu pašlaik bezmaksas modeli, tāpēc izmaksas nekad nerodas.",
+        "keyLabel": "API atslēga",
+        "keyPlaceholder": {
+            "set": "API atslēga ir iestatīta — atstājiet tukšu, lai to paturētu",
+            "unset": "OpenRouter API atslēga"
+        },
+        "clearKeyLabel": "Noņemt saglabāto API atslēgu (izslēdz MI funkcijas)",
+        "modelLabel": "Modelis",
+        "neverSpendLabel": "Nekad neļaut tam tērēt naudu (ieteicams)",
+        "explainer": "Kad aizsardzība ir ieslēgta, katra pieprasījuma cenas ierobežojums ir nulle, tāpēc, ja nav bezmaksas pakalpojuma, pieprasījums neizdodas, nevis pāriet uz maksas modeli. Noņemiet saglabāto API atslēgu, lai pilnībā izslēgtu MI funkcijas.",
+        "save": "Saglabāt"
+    },
+    "AboutSettingsForm": {
+        "legend": "Par vietni",
+        "description": "Vienkāršs teksts — rindkopas atdala tukšas rindas. Pirmā rindkopa tiks izmantota kā vietnes apraksts.",
+        "save": "Saglabāt"
+    },
+    "TermsSettingsForm": {
+        "legend": "Pakalpojuma noteikumi",
+        "description": "Vienkāršs teksts — rindkopas atdala tukšas rindas.",
+        "save": "Saglabāt"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Privātuma politika",
+        "description": "Vienkāršs teksts — rindkopas atdala tukšas rindas.",
+        "save": "Saglabāt"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-pasta kopsavilkums",
+        "fieldLabel": "Noslēguma rindkopa",
+        "notice": "Tiek pievienota katra kopsavilkuma beigās pēc dalībnieka palaistā garām saraksta. Vienkāršs teksts. Atstājiet tukšu, lai atgrieztos pie programmatūras noklusējuma teksta.",
+        "save": "Saglabāt"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Vietnes ikona",
+        "currentAlt": "Pašreizējā vietnes ikona",
+        "save": "Augšupielādēt vietnes ikonu"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Sākumlapas attēls",
+        "explainer": "To rāda citas vietnes, kad kāds kopīgo saiti uz šo vietni — tikai Open Graph metadatos, nekad pašā lapā. Tiek apgriezts līdz 1200×630. Bez tā saišu priekšskatījumos attēla nav.",
+        "currentAlt": "Pašreizējais sākumlapas attēls",
+        "save": "Augšupielādēt attēlu"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automātiska atskaņošana"
+    },
+    "CarouselNextButton": {
+        "name": "Nākamais"
+    },
+    "CarouselPrevButton": {
+        "name": "Iepriekšējais"
+    },
+    "MediaFullscreenButton": {
+        "name": "Pilnekrāns"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Noņemt failus"
+    },
+    "NotificationDropdown": {
+        "showAll": "Rādīt visus"
+    },
+    "HelpSearch": {
+        "placeholder": "Meklēt palīdzībā…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Sapratu"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Atmest"
+    },
+    "StagedPostEditButton": {
+        "name": "Rediģēt"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publicēt tagad"
+    },
+    "LogoutButton": {
+        "name": "Izrakstīties"
+    },
+    "AvatarUploadForm": {
+        "submit": "Atjaunināt avatāru"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Meklēt bloķētus lietotājus…"
+    },
+    "BannedUserSection": {
+        "heading": "Bloķētie lietotāji"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Nosūtītie pieprasījumi (gaida atbildi)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Bloķēja {name} ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Bloķēja {name} ",
+            "after": ""
+        },
+        "deletedAccount": "dzēsts konts",
+        "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "janvāris",
+            "2": "februāris",
+            "3": "marts",
+            "4": "aprīlis",
+            "5": "maijs",
+            "6": "jūnijs",
+            "7": "jūlijs",
+            "8": "augusts",
+            "9": "septembris",
+            "10": "oktobris",
+            "11": "novembris",
+            "12": "decembris"
+        },
+        "shortMonths": {
+            "1": "janv.",
+            "2": "febr.",
+            "3": "marts",
+            "4": "apr.",
+            "5": "maijs",
+            "6": "jūn.",
+            "7": "jūl.",
+            "8": "aug.",
+            "9": "sept.",
+            "10": "okt.",
+            "11": "nov.",
+            "12": "dec."
+        },
+        "long": "{year}. gada {day}. {month}",
+        "short": "{year}. gada {day}. {month}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} plkst. {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Neizdevās savienoties ar WebSocket serveri 127.0.0.1:{port}{tls} ({error}). Vispirms to palaidiet: systemctl --user start glommer-websocket (vienības failu skatiet README.md). Ja tikko pievienojāt vai noņēmāt WS_TLS_CERT/WS_TLS_KEY, pārstartējiet to, lai tas atbilstu .env.",
+        "wsOverTLS": " ar TLS",
+        "wsBadHandshake": "Pakalpojums 127.0.0.1:{port} nepabeidza derīgu WebSocket rokasspiedienu — iespējams, šajā portā klausās kas cits, nevis bin/websocket-server.php.",
+        "wsNoPong": "WebSocket serveris pieņēma rokasspiedienu, bet neatbildēja uz pārbaudes signālu — tas var būt iestrēdzis vai darboties nepareizi. Pārbaudiet žurnālus.",
+        "wsReachable": "WebSocket serveris ir sasniedzams un atbild 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Tēmturis",
+            "person": "Persona",
+            "org": "Organizācija",
+            "gpe": "Vieta",
+            "loc": "Reģions",
+            "fac": "Objekts",
+            "product": "Produkts",
+            "event": "Notikums",
+            "work_of_art": "Darbs",
+            "law": "Likums",
+            "language": "Valoda",
+            "norp": "Grupa"
+        },
+        "plural": {
+            "hashtag": "Tēmturi",
+            "person": "Cilvēki",
+            "org": "Organizācijas",
+            "gpe": "Vietas",
+            "loc": "Reģioni",
+            "fac": "Objekti",
+            "product": "Produkti",
+            "event": "Notikumi",
+            "work_of_art": "Darbi",
+            "law": "Likumi",
+            "language": "Valodas",
+            "norp": "Grupas"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Noņemt draugu"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Pieņemt"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Noraidīt"
+    },
+    "UserFollowButton": {
+        "follow": "Sekot",
+        "unfollow": "Pārtraukt sekot"
+    },
+    "UserBlockButton": {
+        "name": "Bloķēt"
+    },
+    "UserUnblockButton": {
+        "name": "Atbloķēt"
+    },
+    "OtherUser": {
+        "message": "Ziņa"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Izvēlne",
+        "loggedInAs": "Pieteicies kā {name}",
+        "friendsFeed": "Draugu plūsma",
+        "relayFeed": "Retranslatora plūsma",
+        "users": "Lietotāji",
+        "tags": "Tēmturi",
+        "topics": "Tēmas",
+        "map": "Karte",
+        "locations": "Vietas",
+        "search": "Meklēšana",
+        "messages": "Ziņas",
+        "bookmarks": "Grāmatzīmes",
+        "help": "Palīdzība",
+        "about": "Par vietni",
+        "login": "Pieteikties",
+        "signup": "Reģistrēties",
+        "friends": "Draugi",
+        "drafts": "Melnraksti un ieplānotie",
+        "userSettings": "Lietotāja iestatījumi",
+        "modSettings": "Moderēšanas iestatījumi",
+        "adminSettings": "Administrēšanas iestatījumi"
+    },
+    "LogoutForm": {
+        "submit": "Izrakstīties"
+    },
+    "User": {
+        "joined": "Pievienojās {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Pievienot draugu",
+        "cancel": "Atcelt pieprasījumu"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Ieplānots uz {when}",
+        "draft": "Melnraksts — tiek publicēts tikai pēc jūsu norādījuma"
+    },
+    "MessageTranslateButton": {
+        "name": "Tulkot šo ziņu"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Par ziņu tulkošanu",
+        "body": "Lai iztulkotu ziņu, tās teksts tiek nosūtīts šim serverim un tulkots šeit. Nekas netiek saglabāts: tulkojums netiek ierakstīts datubāzē, un pati ziņa netiek mainīta. Taču šādi tulkotu ziņu serveris ir izlasījis, tāpēc tā vairs nav pilnīgi šifrēta kā netulkota ziņa. Tulkot var tikai saņemtās ziņas un tikai pēc jūsu pieprasījuma.",
+        "confirm": "Tulkot",
+        "cancel": "Ne tagad"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Aizmirsāt ieejas frāzi? Atiestatīšana izveido jaunas atslēgas ar jaunu frāzi, taču ar vecajām atslēgām šifrētās ziņas neviens vairs nekad nevarēs izlasīt.",
+        "requirements": "Vismaz 12 rakstzīmes, un tā nedrīkst būt konta parole — parole tiek nosūtīta šim serverim, bet ieejas frāze nekad nedrīkst tikt nosūtīta.",
+        "passphraseLabel": "Ieejas frāze",
+        "resetPassphraseLabel": "Jaunā ieejas frāze",
+        "confirmLabel": "Apstipriniet ieejas frāzi",
+        "accountPasswordLabel": "Konta parole",
+        "submitLabel": "Ieslēgt šifrētās ziņas",
+        "resetSubmitLabel": "Atiestatīt šifrēšanas atslēgas"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Pilnīgi šifrētās ziņas tiek aizslēgtas un atslēgtas jūsu pārlūkprogrammā: serveris tās pārsūta un glabā, nespējot izlasīt. Atslēgu aizsargā ieejas frāze, un tā pati frāze atslēdz ziņas jebkurā pārlūkprogrammā. Saruna tiek šifrēta, kad abi cilvēki to ir ieslēguši; ziņas citu serveru lietotājiem paliek nešifrētas, jo federācijas protokols citādi tās nevar pārsūtīt.",
+        "noRecovery": "Pazaudētu ieejas frāzi nevar atgūt — to nevar pat administrators. Tās pazaudēšana nozīmē šifrēto ziņu zaudēšanu.",
+        "enabledStatus": "Šifrētās ziņas ir ieslēgtas."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Šifrēta",
+            "explanation": "Šīs sarunas ziņas ir pilnīgi šifrētas: tās atslēdz ar ieejas frāzi un lasa jūsu pārlūkprogrammās, bet serveris glabā tikai šifrētu tekstu. Kopā ar otru personu pārbaudiet drošības kodu pavediena apakšā, lai pārliecinātos, ka starp jums neviens nav iejaucies. Pirms šifrēšanas ieslēgšanas nosūtītās ziņas paliek lasāmas kā iepriekš."
+        },
+        "awaiting-theirs": {
+            "label": "Nav šifrēta",
+            "explanation": "Ziņas šeit būs pilnīgi šifrētas, kad {handle} savos iestatījumos ieslēgs šifrētās ziņas."
+        },
+        "awaiting-yours": {
+            "label": "Nav šifrēta",
+            "explanation": "Ziņas šeit nav pilnīgi šifrētas. Iestatījumos ieslēdziet šifrētās ziņas, lai aizsargātu šo sarunu."
+        },
+        "federated": {
+            "label": "Nav šifrēta",
+            "explanation": "{handle} atrodas citā serverī. Šīs sarunas ziņas glabājas gan tajā, gan šajā serverī, un tā administrators var tās lasīt — serveru savstarpējais protokols neprot tās šifrēt. Sensitīvu informāciju sūtiet tikai sarunās šajā vietnē."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Sekot Fediversa kontiem",
+        "notice": "Ielīmējiet vienu vai vairākus lietotājvārdus, piemēram, @user@example.social — starp tiem der jebkurš atdalītājs.",
+        "handlesLabel": "Sekojamie Fediversa lietotājvārdi",
+        "submit": "Sekot",
+        "statusPending": "gaida",
+        "statusAccepted": "pieņemts"
+    },
+    "ServerBlockForm": {
+        "legend": "Bloķēt serveri",
+        "description": "Noraida visu no šī servera un tā apakšdomēniem: nekas netiek saņemts vai nosūtīts, un esošie sekošanas sakari abos virzienos tiek pārtraukti.",
+        "serverLabel": "Serveris",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Iemesls",
+        "reasonPlaceholder": "Kāpēc šis serveris ir bloķēts",
+        "submit": "Bloķēt serveri"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Pārbauda zvana iestatīšanas daļas, ko var pārbaudīt vienā pārlūkprogrammā. Šeit var pārbaudīt visu līdz faktiskam vienādranga savienojumam; savienojumam ar otru cilvēku ir vajadzīga viņa dalība."
+    },
+    "VideoCallTestButton": {
+        "label": "Palaist pārbaudi"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket serveris: darbojas",
+        "failed": "WebSocket serveris: {detail}",
+        "clientTesting": "Pārlūkprogrammas savienojums: pārbauda…",
+        "clientConnecting": "Pārlūkprogrammas savienojums: savienojas…",
+        "clientConnected": "Pārlūkprogrammas savienojums: savienots",
+        "clientDisconnecting": "Pārlūkprogrammas savienojums: atvienojas…",
+        "clientNotConnected": "Pārlūkprogrammas savienojums: nav savienots"
+    },
+    "UploadWorkerStatus": {
+        "running": "Darba pakalpojums: darbojas",
+        "stopped": "Darba pakalpojums: nedarbojas — sagatavotās augšupielādes netiks pārkodētas, kamēr tas netiks pārstartēts",
+        "unknown": "Darba pakalpojums: nav zināms — vai nu šajā resursdatorā nav systemctl, vai SELinux liedz tīmekļa serverim pārbaudīt savu statusu (lai labotu, palaidiet bin/install.php kā root)",
+        "queue": "Rinda: sagatavošanā {staging}, gaida {pending}, apstrādē {processing}"
+    },
+    "TrendingTimerStatus": {
+        "running": "Aktuālo tēmu taimeris: darbojas",
+        "stopped": "Aktuālo tēmu taimeris: nedarbojas — aktuālās tēmas tiks atjauninātas tikai lasīšanas ceļa pašatkopšanā (Trending::current()), nevis pēc grafika. Lai to iestatītu, palaidiet bin/install.php kā root.",
+        "unknown": "Aktuālo tēmu taimeris: nav zināms — vai nu šajā resursdatorā nav systemctl, vai SELinux liedz tīmekļa serverim pārbaudīt savu statusu (lai labotu, palaidiet bin/install.php kā root)"
+    },
+    "Notification": {
+        "postReady": "Jūsu multivides fails ir apstrādāts un tagad publicēts",
+        "scheduledPostLive": "Jūsu ieplānotais ieraksts tagad ir publicēts",
+        "uploadPartlyFailed": "Ieraksts ir publicēts, taču vienu vai vairākus tā failus nevarēja apstrādāt",
+        "uploadFailed": "Vienu no augšupielādēm neizdevās apstrādāt, tāpēc tā netika publicēta",
+        "mailerFailed": "E-pasta piegāde neizdevās — pasta pakalpojums var nedarboties. Pārbaudiet pasta konfigurāciju.",
+        "mailFromNotConfigured": "Nav konfigurēta pasta sūtītāja adrese, tāpēc e-pastus nevar nosūtīt. Iestatiet to Administrēšanas iestatījumu sadaļā „Izejošais pasts” vai ar bin/install.php.",
+        "systemError": "Radās servera kļūda. Plašāku informāciju skatiet kļūdu žurnālā.",
+        "passwordRemovedGoogle": "Kad pieteicāties ar Google, jūsu parole tika noņemta. Ja vēlaties iestatīt jaunu, izmantojiet „Aizmirsu paroli”.",
+        "like": "{name} atzīmēja jūsu ierakstu ar Patīk",
+        "repost": "{name} pārpublicēja jūsu ierakstu",
+        "reply": "{name} atbildēja uz jūsu ierakstu",
+        "friendRequest": "{name} nosūtīja jums draudzības pieprasījumu",
+        "friendAccepted": "{name} pieņēma jūsu draudzības pieprasījumu",
+        "message": "{name} nosūtīja jums ziņu",
+        "mention": "{name} pieminēja jūs ierakstā",
+        "follow": "{name} sāka jums sekot no cita servera",
+        "default": "{name} veica kādu darbību"
+    },
+    "NotificationList": {
+        "emptyNotice": "Paziņojumu vēl nav."
+    },
+    "NotificationsNavLink": {
+        "label": "Paziņojumi",
+        "unseen": "Neskatīti paziņojumi"
+    },
+    "NotificationTestPanel": {
+        "intro": "Nosūtiet pārbaudes paziņojumu sev (administratoram). Tam nekavējoties jāparādās kā uznirstošam paziņojumam un paziņojumu izvēlnē.",
+        "button": "Sūtīt pārbaudes paziņojumu",
+        "sending": "Sūta…",
+        "sent": "Nosūtīts!",
+        "failed": "Neizdevās"
+    },
+    "MessageDot": {
+        "label": "Nelasītas ziņas"
+    },
+    "NavAlertDot": {
+        "label": "Izvēlnē ir kas jauns"
+    },
+    "Message": {
+        "encrypted": "Šifrēta ziņa",
+        "decryptionFailed": "Šī ziņa tika šifrēta ar atslēgām, kuru vairs nav."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Ziņa",
+        "bodyPlaceholder": "Rakstiet ziņu",
+        "send": "Sūtīt"
+    },
+    "MessageList": {
+        "emptyNotice": "Ziņu vēl nav."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Nododiet šo kodu viens otram citā veidā — skaļi, klātienē vai zvana laikā. Ja tas abās pusēs sakrīt, starp jums neviens nav iejaucies.",
+        "changed": "Šis kods kopš pārbaudes ir mainījies. Tā notiek, ja viens no jums atiestata šifrēšanas atslēgas, taču tā izskatītos arī sarunā iejaukusies persona. Pirms uzticēšanās kopā pārbaudiet jauno kodu.",
+        "verified": "Jūs esat pārbaudījis šo kodu."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Atzīmēt kā pārbaudītu"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Ieejas frāze",
+        "passphrasePlaceholder": "Ieejas frāze šīs sarunas atslēgšanai",
+        "submit": "Atslēgt"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Pēdējā ziņa ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Sensitīvs multivides saturs"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Pēc noklusējuma rādīt sensitīvu multivides saturu"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Ieraksts",
+            "message": "Ziņa",
+            "user": "Lietotājs"
+        },
+        "summary": {
+            "before": "Par {type} #{id} ziņoja ",
+            "after": ""
+        },
+        "reasonLine": "Iemesls: {reason}",
+        "banReporterLabel": "Bloķēt ziņotāju",
+        "banReportedUserLabel": "Bloķēt lietotāju, par kuru ziņots",
+        "deleteLabel": "Dzēst: {type}",
+        "reportedImageAlt": "Attēls, par kuru ziņots",
+        "attachmentUnavailable": "Pielikums, par kuru ziņots, vairs nav pieejams.",
+        "viewAttachment": "Skatīt pielikumu, par kuru ziņots",
+        "missing": {
+            "noSnapshot": "Saturs, par kuru ziņots, vairs nav pieejams.",
+            "unknownType": "Nezināms satura veids."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Ziņojumu nav."
+    },
+    "ModQueueLinks": {
+        "intro": "Rindas ir pietiekami garas, lai tās lasītu pa lapai, tāpēc tām ir savas lapas.",
+        "reportsLabel": "Ziņojumi",
+        "bannedUsersLabel": "Bloķētie lietotāji"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Neviens moderators vēl neko nav darījis."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Bloķētu aktuālo vienumu nav."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Bloķētu serveru nav."
+    },
+    "RelayCard": {
+        "accepted": "Abonēts ",
+        "waiting": "Gaida retranslatora apstiprinājumu — abonēts "
+    },
+    "RelayList": {
+        "emptyNotice": "Nav abonēts neviens retranslators. Šeit nonāk tikai tas, kam seko dalībnieki."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Caur retranslatori vēl nekas nav saņemts. Ieraksti šeit parādās, kad tos publicē serveri otrā pusē."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Abonēt retranslatori",
+        "explainerOne": "Retranslators ir kopīga publisko ierakstu straume: šeit nonāk katrs publiskais ieraksts no visiem citiem abonējošajiem serveriem, bet šī servera ieraksti tiek nosūtīti tiem visiem. Tā jauns eksemplārs vispār atrod cilvēkus, jo citādi federācija pārsūta tikai to, kam kāds šeit jau seko.",
+        "explainerTwo": "Slodzi nevar paredzēt — tā ir atkarīga no šo serveru publicētā: vienu nedēļu var būt klusums, nākamo — tūkstošiem ierakstu stundā. To visu nes jūsu krātuve, piegādes rinda un moderēšanas rinda. Retranslētie ieraksti nenonāk galvenajā vai draugu plūsmā; tie nonāk Retranslatora plūsmā, ko cilvēki atver apzināti.",
+        "addressLabel": "Retranslatora adrese",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Abonēt"
+    },
+    "RelayFollowObjectField": {
+        "label": "Abonēšanas veids",
+        "options": {
+            "public": "Sekot publiskajai plūsmai (to sagaida vairums retranslatoru)",
+            "actor": "Sekot paša retranslatora aktierim"
+        },
+        "retryNotice": "Ja retranslators nepieņem, atsauciet un izmēģiniet otru veidu — dažas retranslēšanas programmas atpazīst tikai vienu no tiem."
+    },
+    "SiteCounters": {
+        "members": "Dalībnieki: {count} (pēdējās {days} dienās pievienojās {joined})",
+        "activeMembers": "Dalībnieki šeit pēdējās {days} dienās: {count} (no tiem publicēja {posted})",
+        "posts": "Šeit uzrakstītie ieraksti: {count} (pēdējās {days} dienās — {recent})",
+        "deliveries": "Federētās piegādes pēdējās {days} dienās: saņemtas {delivered}, atmestas {undeliverable}",
+        "queued": "Gaida nosūtīšanu: {count} (vismaz vienreiz jau noraidīti {failing})",
+        "pendingReads": "Ieraksti, kas gaida nolasīšanu no citiem serveriem: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Palaidiet vietnes testu kopu un apskatiet rezultātus. Tas aizņem dažas sekundes, tāpēc rezultāti tiek atvērti atsevišķā lapā.",
+        "runLabel": "Palaist testus"
+    },
+    "HelpArticle": {
+        "backLabel": "Atpakaļ uz visu palīdzību"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Pašlaik ieteikumu nav — tie nāk no to cilvēku draugiem, ar kuriem jau draudzējaties. Meklējiet augstāk, lai atrastu kādu pēc vārda.",
+        "noMatches": "Neviens šeit neatbilst meklējumam."
+    },
+    "UserModButton": {
+        "make": "Iecelt par moderatoru",
+        "remove": "Noņemt moderatora tiesības"
+    },
+    "UserUnbanButton": {
+        "name": "Atbloķēt"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Bloķēt"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Atbloķēt"
+    },
+    "ReportDismissButton": {
+        "name": "Noraidīt"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Atzīmēt kā sensitīvu"
+    },
+    "ServerUnblockButton": {
+        "name": "Atbloķēt"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Atteikties no abonementa"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Atsaukt"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: sekmīgs",
+        "failing": "{suite}: nesekmīgs"
+    },
+    "PageTitle": {
+        "about": "Par vietni",
+        "adminBanned": "Bloķētie lietotāji",
+        "adminModSettings": "Moderēšanas iestatījumi",
+        "adminReports": "Ziņojumi",
+        "adminSettings": "Administrēšanas iestatījumi",
+        "adminTests": "Testi",
+        "authGoogleCallbackAccountDeleted": "Konts dzēsts",
+        "authGoogleCallbackDeleteAccount": "Dzēst kontu",
+        "authGoogleCallbackLogin": "Pieteikties",
+        "bookmarks": "Grāmatzīmes",
+        "checkInbox": "Pārbaudiet iesūtni",
+        "drafts": "Melnraksti un ieplānotie",
+        "draftsEditDraft": "Rediģēt melnrakstu",
+        "draftsEditScheduled": "Rediģēt ieplānoto ierakstu",
+        "forgotPassword": "Aizmirsu paroli",
+        "friendsFeed": "Draugu plūsma",
+        "help": "Palīdzība",
+        "helpDescription": "Vietnes lietošanas pamācības un atbildes.",
+        "locations": "Vietas",
+        "locationsDescription": "Ieraksti no jums tuvākajām vietām.",
+        "locationsPlaceDescription": "Ieraksti netālu no {place}.",
+        "login": "Pieteikties",
+        "loginVerificationCode": "Apstiprinājuma kods",
+        "map": "Karte",
+        "mapDescription": "Ierakstu karte no visas pasaules — atrodiet tuvumā cilvēkus un lietas.",
+        "messages": "Ziņas",
+        "messagesWithUser": "Ziņas ar {name}",
+        "notifications": "Paziņojumi",
+        "privacy": "Privātuma politika",
+        "quote": "Citēt",
+        "relayFeed": "Retranslatora plūsma",
+        "relayFeedDescription": "Publiski ieraksti no šī servera abonētajiem retranslatoriem.",
+        "resetPassword": "Atiestatīt paroli",
+        "revertEmail": "Atsaukt e-pasta maiņu",
+        "search": "Meklēšana",
+        "signup": "Reģistrēties",
+        "tags": "Tēmturi",
+        "tagsDescription": "Pārlūkojiet aktuālos un populāros tēmturus vietnē {siteTitle}.",
+        "tagsTagDescription": "Ieraksti ar tēmturi {tag} vietnē {siteTitle}.",
+        "terms": "Pakalpojuma noteikumi",
+        "topics": "Tēmas",
+        "topicsDescription": "Par ko cilvēki pašlaik runā vietnē {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel} — ieraksti, kuros pieminēts {entityTitle}, vietnē {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, par kuriem cilvēki pašlaik runā vietnē {siteTitle}.",
+        "unsubscribe": "E-pasta kopsavilkumi",
+        "userFriends": "{name} draugi",
+        "userFriendsDescription": "{name} draugi vietnē {siteTitle}",
+        "userSettings": "Lietotāja iestatījumi",
+        "users": "Lietotāji",
+        "verifyEmail": "Apstiprināt e-pastu"
+    },
+    "PostLikeButton": {
+        "like": "Patīk",
+        "unlike": "Vairs nepatīk"
+    },
+    "PostPinButton": {
+        "pin": "Piespraust",
+        "unpin": "Atspraust"
+    },
+    "PostQuoteButton": {
+        "name": "Citēt"
+    },
+    "PostDeleteButton": {
+        "name": "Dzēst"
+    },
+    "PostEditButton": {
+        "name": "Rediģēt"
+    },
+    "ReportButton": {
+        "name": "Ziņot"
+    },
+    "PostActionBar": {
+        "reply": "Atbildēt",
+        "replies": {
+            "zero": "Atbilžu ({count})",
+            "one": "Atbilde ({count})",
+            "other": "Atbildes ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(rediģēts)"
+    },
+    "RepliesHeading": {
+        "heading": "Atbildes"
+    },
+    "PollVoteButton": {
+        "name": "Balsot"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Skatīt ",
+            "link": "vairāk vietu",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Ieraksti jūsu tuvumā",
+        "description": "Tiek rādīti izvēlētajam punktam tuvākie ieraksti — lai kur notiktu aktivitāte un cik tālu tā būtu. Kopīgojiet atrašanās vietu, lai sāktu no savas pašreizējās vietas, vai izvēlieties punktu kartē.",
+        "useMyLocation": "Izmantot manu atrašanās vietu",
+        "pickOnMap": "Izvēlēties kartē",
+        "searchPlaceholder": "Vai ierakstiet vietas nosaukumu…",
+        "searchLabel": "Meklēt vietu",
+        "locating": "Nosaka atrašanās vietu…",
+        "noGeolocation": "Pārlūkprogramma nevar kopīgot atrašanās vietu.",
+        "locationError": "Neizdevās iegūt jūsu atrašanās vietu. Pārbaudiet pārlūkprogrammas atrašanās vietas atļauju."
+    },
+    "PollDeadline": {
+        "final": "Galīgais rezultāts",
+        "closes": {
+            "before": "Beidzas ",
+            "after": ""
+        },
+        "days": {
+            "zero": "pēc {count} dienām",
+            "one": "pēc {count} dienas",
+            "other": "pēc {count} dienām"
+        },
+        "hours": {
+            "zero": "pēc {count} stundām",
+            "one": "pēc {count} stundas",
+            "other": "pēc {count} stundām"
+        },
+        "minutes": {
+            "zero": "pēc {count} minūtēm",
+            "one": "pēc {count} minūtes",
+            "other": "pēc {count} minūtēm"
+        },
+        "underMinute": "pēc mazāk nekā minūtes"
+    },
+    "PollTally": {
+        "voters": {
+            "zero": "Nobalsoja {count} cilvēku ",
+            "one": "Nobalsoja {count} cilvēks ",
+            "other": "Nobalsoja {count} cilvēki "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Piesakieties",
+            "after": ", lai publicētu."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Piesakieties",
+            "after": ", lai atbildētu."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " pārpublicēja"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Atbildot uz ",
+            "after": ""
+        },
+        "untitled": "šo ierakstu",
+        "jumpToStart": "Pāriet uz sākumu"
+    },
+    "TopicSummaryCard": {
+        "label": "MI veidots kopsavilkums"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Laipni lūdzam vietnē ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Ierakstiet kaut ko zemāk esošajā laukā, un tas nonāks jūsu plūsmā. Atbildēt var ikviens, un atbilde ir vienkārši ieraksts ar vecāku, tāpēc sarunas var sazaroties tik dziļi, cik vajadzīgs.",
+            "Pievienojiet cilvēkus draugiem, un viņu ieraksti nonāks jūsu plūsmā. Globālā plūsma — vietnes nosaukums augšā pa kreisi — rāda visu šeit rakstīto un ir vieta, kur atrast pievienojamus cilvēkus.",
+            "Šī vietne ir Fediversa daļa: varat sekot kontiem Mastodon un citos serveros pēc pilna lietotājvārda, un jūsu publicētais sasniedz cilvēkus, kas jums tur seko. Meklējiet, piemēram, @someone@example.social, un šis serveris kontu atradīs.",
+            "Atzīmējiet ierakstu ar #tēmturiem, un tas parādīsies attiecīgā tēmtura lapā, kā arī aktuālajās tēmās, ja par to raksta pietiekami daudz cilvēku.",
+            "Dalībnieku ziņas ir pilnīgi šifrētas — serveris glabā šifrētu tekstu, ko nevar izlasīt. Ieslēdziet to Iestatījumos.",
+            "Nav jāpublicē uzreiz: saglabājiet melnrakstu vai iestatiet laiku, un tas tiks publicēts automātiski. Abi ir sadaļā „Melnraksti un ieplānotie”."
+        ],
+        "more": {
+            "before": "Vairāk informācijas ir ",
+            "link": "palīdzības lapās",
+            "after": ", tostarp par konta pārcelšanu šeit no citas vietas."
+        },
+        "dontShowAgain": "Vairs nerādīt"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Ievietot emocijzīmi"
+    },
+    "LinkImagePreview": {
+        "alt": "Saites priekšskatījuma attēls"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Noņemt attēlu"
+    },
+    "LinkItem": {
+        "alt": "Saites priekšskatījuma attēls"
+    },
+    "MapScrubber": {
+        "play": "Atskaņot",
+        "pause": "Pauzēt",
+        "cumulativeMode": "Līdz tam laikam",
+        "windowMode": "Ap to laiku",
+        "rangeLabel": "Rādīt ierakstus līdz datumam",
+        "cumulativeLabel": {
+            "zero": "Līdz {date} publicēti {count} ierakstu",
+            "one": "Līdz {date} publicēts {count} ieraksts",
+            "other": "Līdz {date} publicēti {count} ieraksti"
+        },
+        "windowLabel": {
+            "zero": "Ap {date} publicēti {count} ierakstu",
+            "one": "Ap {date} publicēts {count} ieraksts",
+            "other": "Ap {date} publicēti {count} ieraksti"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} ieraksts",
+        "pageTitleUntitled": "Ieraksts",
+        "imageAltByAuthor": "{name} publicēts fotoattēls",
+        "imageAltUntitled": "Fotoattēls"
+    },
+    "PostBookmarkButton": {
+        "remove": "Noņemt grāmatzīmi",
+        "add": "Pievienot grāmatzīmi"
+    },
+    "PostRepostButton": {
+        "undo": "Atsaukt pārpublicēšanu",
+        "repost": "Pārpublicēt"
+    },
+    "QuotedPost": {
+        "viewLink": "Skatīt citēto ierakstu"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Neizskatītie pieprasījumi"
+    },
+    "ScrollToTopButton": {
+        "label": "Ritināt uz augšu"
+    },
+    "SearchClearButton": {
+        "label": "Notīrīt meklēšanu"
+    },
+    "SitePolicyLinks": {
+        "terms": "Pakalpojuma noteikumi",
+        "privacy": "Privātuma politika"
+    },
+    "SkipLink": {
+        "label": "Pāriet uz saturu"
+    },
+    "TopicHeading": {
+        "searchLink": "Meklēt šo",
+        "noPosts": "Pašlaik neviens ieraksts to nepiemin."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Par šāda veida lietām vēl nekas nav rakstīts."
+    },
+    "TrendingEntitySection": {
+        "heading": "Aktuāls"
+    },
+    "PostLocationLink": {
+        "title": "Rādīt šo vietu kartē",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "tikko",
+        "minutes": {
+            "zero": "pirms {count} min.",
+            "one": "pirms {count} min.",
+            "other": "pirms {count} min."
+        },
+        "hours": {
+            "zero": "pirms {count} st.",
+            "one": "pirms {count} st.",
+            "other": "pirms {count} st."
+        },
+        "days": {
+            "zero": "pirms {count} d.",
+            "one": "pirms {count} d.",
+            "other": "pirms {count} d."
+        }
+    },
+    "ThemeSelector": {
+        "label": "Motīvs",
+        "themes": {
+            "system": "Kā sistēmā",
+            "light": "Vienkāršs gaišais",
+            "dark": "Vienkāršs tumšais",
+            "sepia": "Sēpija",
+            "midnight": "Pusnakts",
+            "sunset": "Saulriets",
+            "rose": "Roze",
+            "forest": "Mežs",
+            "ocean": "Okeāns",
+            "lavender": "Lavanda",
+            "gold": "Zelts",
+            "hacker": "Hakeris",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Pelēktoņu"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Tulkošana šajā serverī nav iestatīta.",
+        "nothing": "Šeit nav nekā tulkojama.",
+        "unknownSource": "Šī ieraksta valoda vēl nav noteikta, tāpēc to nevar iztulkot.",
+        "alreadyReadable": "Šis ieraksts jau ir šajā valodā.",
+        "unsupportedPair": "Šis serveris vēl nevar tulkot šo valodu."
+    },
+    "LanguagePrompt": {
+        "question": "Vai vēlaties skatīt vietni latviešu valodā?",
+        "accept": "Jā",
+        "decline": "Nē, paldies"
+    },
+    "LanguageSelector": {
+        "label": "Valoda",
+        "legend": "Valoda"
+    },
+    "EmailDigest": {
+        "subject": "Ko palaidāt garām vietnē {site}",
+        "greeting": "Sveiki, {name}!",
+        "whileAway": "Kamēr bijāt prom:",
+        "repeatedTimes": {
+            "zero": " ({count} reižu)",
+            "one": " ({count} reizi)",
+            "other": " ({count} reizes)"
+        },
+        "moreMissed": {
+            "zero": "un vēl {count} paziņojumu",
+            "one": "un vēl {count} paziņojums",
+            "other": "un vēl {count} paziņojumi"
+        },
+        "messagesWaiting": {
+            "zero": "Jūs gaida {count} ziņu",
+            "one": "Jūs gaida {count} ziņa",
+            "other": "Jūs gaida {count} ziņas"
+        },
+        "postsInFeed": {
+            "zero": "Jūsu plūsmā ir {count} jaunu ierakstu",
+            "one": "Jūsu plūsmā ir {count} jauns ieraksts",
+            "other": "Jūsu plūsmā ir {count} jauni ieraksti"
+        },
+        "unsubscribeInstructions": "Lai pārtrauktu šo e-pastu saņemšanu, atveriet šo saiti — pietiek ar vienu klikšķi, un parole nav vajadzīga:",
+        "comeSeeWhatIsNew": "Apskatiet jaunumus",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Vairs nesūtīt man šos e-pastus",
+            "after": " — viens klikšķis, parole nav vajadzīga."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Apstipriniet e-pasta adresi",
+        "greeting": "Sveiki, {name}!",
+        "instructions": "Apstipriniet e-pasta adresi, atverot šo saiti:",
+        "htmlInstructions": "Apstipriniet e-pasta adresi, noklikšķinot uz tālāk esošās saites:",
+        "buttonLabel": "Apstiprināt e-pasta adresi",
+        "expiresIn": {
+            "zero": "Šīs saites derīgums beigsies pēc {count} stundām.",
+            "one": "Šīs saites derīgums beigsies pēc {count} stundas.",
+            "other": "Šīs saites derīgums beigsies pēc {count} stundām."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Atiestatiet paroli",
+        "greeting": "Sveiki, {name}!",
+        "instructions": "Kāds (cerams, jūs) pieprasīja paroles atiestatīšanu. Atveriet šo saiti, lai izvēlētos jaunu paroli:",
+        "htmlInstructions": "Kāds (cerams, jūs) pieprasīja paroles atiestatīšanu. Noklikšķiniet uz tālāk esošās saites, lai izvēlētos jaunu paroli:",
+        "buttonLabel": "Atiestatīt paroli",
+        "expiresIn": {
+            "zero": "Šīs saites derīgums beigsies pēc {count} stundām.",
+            "one": "Šīs saites derīgums beigsies pēc {count} stundas.",
+            "other": "Šīs saites derīgums beigsies pēc {count} stundām."
+        },
+        "ignoreNotice": "Ja to nepieprasījāt, varat ignorēt šo e-pastu."
+    }
+}

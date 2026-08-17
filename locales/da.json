@@ -1,0 +1,1145 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 stemme",
+            "other": "{count} stemmer"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Log ind",
+            "after": " for at svare."
+        },
+        "post": {
+            "before": "",
+            "link": "Log ind",
+            "after": " for at skrive et indlæg."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Websted",
+        "siteURLLabel": "Webstedets URL",
+        "siteTitleLabel": "Webstedets titel",
+        "mailFromAddressLabel": "Afsenderadresse",
+        "serverNameConfirmedLabel": "Jeg har indstillet \"ServerName {host}\" og \"UseCanonicalName On\" i min webservers konfiguration (kun kontrolleret, hvis den automatiske livetest ikke kan gennemføres - se README.md's HTTPS-sektion)",
+        "databaseLegend": "Database",
+        "databaseHostLabel": "Databasevært",
+        "databasePortLabel": "Databaseport",
+        "databaseNameLabel": "Databasenavn",
+        "databaseAdminUsernameLabel": "Databaseadministratorens brugernavn",
+        "databaseAdminPasswordLabel": "Databaseadministratorens adgangskode",
+        "webSocketTLSLegend": "WebSocket TLS (valgfrit)",
+        "certificatePathLabel": "Certifikatsti",
+        "certificatePathPlaceholder": "Lad stå tomt for at generere automatisk via mkcert",
+        "keyPathLabel": "Nøglesti",
+        "keyPathPlaceholder": "Lad stå tomt for at generere automatisk via mkcert",
+        "botProtectionLegend": "Botbeskyttelse (valgfrit)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile-webstedsnøgle",
+        "turnstileSiteKeyPlaceholder": "Lad stå tomt for at springe over",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile hemmelig nøgle",
+        "turnstileSecretKeyPlaceholder": "Lad stå tomt for at springe over",
+        "submit": "Opsæt"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Nuværende adgangssætning",
+        "newPassphraseLabel": "Ny adgangssætning",
+        "confirmNewPassphraseLabel": "Bekræft ny adgangssætning",
+        "accountPasswordLabel": "Kontoadgangskode",
+        "submit": "Skift adgangssætning"
+    },
+    "PasswordResetForm": {
+        "legend": "Vælg en ny adgangskode",
+        "newPasswordLabel": "Ny adgangskode",
+        "newPasswordPlaceholder": "Mindst 8 tegn",
+        "confirmPasswordLabel": "Bekræft ny adgangskode",
+        "submit": "Nulstil adgangskode"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Nulstil din adgangskode",
+        "emailLabel": "E-mail",
+        "submit": "Send nulstillingslink"
+    },
+    "EmailRevertForm": {
+        "submit": "Tilbagefør e-mail-ændring"
+    },
+    "EmailVerifyForm": {
+        "submit": "Bekræft e-mail-adresse"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Tænd dem igen"
+    },
+    "EmailDigestSetting": {
+        "label": "Send mig en e-mail om det, jeg er gået glip af, når jeg har været væk et stykke tid"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Ukendt enhed",
+        "browserOnOS": "{browser} på {os}",
+        "thisDevice": " (denne enhed)",
+        "lastUsed": {
+            "before": "Sidst brugt ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Afslut hver aktiv session og glem alle huskede enheder. Du vil blive logget ud af alle browsere, inklusive denne."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Log ud overalt"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Bekræft med Google for at slette"
+    },
+    "GoogleSignInButton": {
+        "label": "Fortsæt med Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Rediger profil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Få notifikationer på denne enhed, selv når webstedet ikke er åbent. Valget gælder for hver browser for sig — slå det til alle de steder, hvor du vil modtage notifikationer.",
+        "label": {
+            "off": "Aktiver på denne enhed",
+            "on": "Sluk på denne enhed"
+        },
+        "unsupported": "Pushnotifikationer understøttes ikke i denne browser"
+    },
+    "LoginForm": {
+        "legend": "Log ind",
+        "identifier": "Brugernavn eller e-mail",
+        "password": "Adgangskode",
+        "rememberMe": "Husk mig",
+        "submit": "Log ind"
+    },
+    "SignupForm": {
+        "legend": "Opret en konto",
+        "usernameLabel": "Brugernavn",
+        "usernamePlaceholder": "Små bogstaver, tal og _",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Gyldig e-mailadresse",
+        "displayName": "Vist navn (valgfrit)",
+        "bioLabel": "Bio (valgfrit)",
+        "bioPlaceholder": "En kort biografi - #hashtags, @omtaler og links bliver klikbare",
+        "passwordLabel": "Adgangskode",
+        "passwordPlaceholder": "Adgangskode: Mindst 8 tegn",
+        "rememberMe": "Husk mig",
+        "submit": "Tilmeld dig"
+    },
+    "PasswordChangeForm": {
+        "legend": "Skift din adgangskode",
+        "currentPassword": "Nuværende adgangskode",
+        "newPasswordLabel": "Ny adgangskode",
+        "newPasswordPlaceholder": "Mindst 8 tegn",
+        "confirmPassword": "Bekræft ny adgangskode",
+        "submit": "Skift adgangskode"
+    },
+    "EmailChangeForm": {
+        "legend": "Skift din e-mail-adresse",
+        "newEmail": "Ny e-mail-adresse",
+        "currentPassword": "Nuværende adgangskode",
+        "notice": "Du skal bekræfte den nye adresse, før du kan fortsætte med at bruge siden.",
+        "submit": "Skift e-mail"
+    },
+    "AccountDeleteForm": {
+        "legend": "Slet din konto",
+        "warning": "Dette sletter permanent din konto, dine indlæg og dine beskeder. Dette kan ikke fortrydes.",
+        "currentPassword": "Nuværende adgangskode",
+        "submit": "Slet konto"
+    },
+    "AccountMigrationForm": {
+        "legend": "Flyt til en anden server",
+        "movedNotice": "Denne konto er flyttet til {destination}. Dine følgere blev bedt om at følge dig der.",
+        "explanation": "Dine følgere bliver bedt om at følge dig på den nye konto. Dine indlæg bliver her - objektadresser tilhører den server, der har lavet dem, så de kan ikke tages med.",
+        "addressNotice": "Den konto, du flytter til, skal først angive denne under \"også kendt som\". Din adresse her er {address}.",
+        "movedToLabel": "Flyt til",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Også kendt som",
+        "aliasesExplanation": "Konti andre steder, der også er dig. Hvis du angiver en her, lader den konto flytte til denne - det er tilladelsen, ikke selve flytningen. En adresse pr. linje.",
+        "aliasesLabel": "Dine andre konti",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Gem"
+    },
+    "TwoFactorForm": {
+        "legend": "Indtast din bekræftelseskode",
+        "explanation": "Vi har sendt dig en bekræftelseskode. Indtast den nedenfor, eller brug en af dine gendannelseskoder for at afslutte login.",
+        "explanationEmailFailed": "Vi kunne ikke sende din bekræftelseskode via e-mail lige nu. Indtast en af ​​dine gendannelseskoder for at afslutte login.",
+        "code": "Bekræftelseskode",
+        "submit": "Bekræft"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "To-faktor-godkendelse er slået til",
+            "off": "To-faktor-godkendelse er slået fra"
+        },
+        "explanation": {
+            "on": "Når du logger ind, sender vi en bekræftelseskode via e-mail, som du skal indtaste for at afslutte dit login. Hvis e-mailen ikke når frem, kan du logge ind med en af dine gendannelseskoder.",
+            "off": "Tilføj et ekstra trin ved login: Vi sender en bekræftelseskode via e-mail, som du skal indtaste, så adgangskoden alene ikke er nok. Du får engangskoder til gendannelse, som du kan gemme, hvis e-mailen ikke når frem."
+        },
+        "currentPassword": "Nuværende adgangskode",
+        "submit": {
+            "on": "Slå to-faktor-godkendelse fra",
+            "off": "Slå tofaktorgodkendelse til"
+        },
+        "regenerate": "Generer nye gendannelseskoder",
+        "recoveryHeading": "Dine gendannelseskoder",
+        "recoveryNote": "Gem disse et sikkert sted nu – de vil ikke blive vist igen. Hver enkelt logger dig ind én gang, når bekræftelses-e-mailen ikke kan nå dig, og generering af nye koder erstatter alle disse.",
+        "toast": {
+            "on": "To-faktor-godkendelse er nu aktiveret.",
+            "off": "To-faktor-godkendelse er nu slået fra.",
+            "regenerated": "Nye gendannelseskoder genereret. Dine gamle virker ikke længere."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Tjek venligst din indbakke og klik på bekræftelseslinket, vi sendte for at bekræfte din e-mailadresse. Hvis du ikke kan se det, så tjek din junk-/spam-mappe."
+    },
+    "VerificationResendButton": {
+        "label": "Send bekræftelses-e-mail igen"
+    },
+    "MailSettingsForm": {
+        "legend": "Udgående post",
+        "fromAddressLabel": "Afsenderadresse",
+        "fromAddressPlaceholder": "Ingen e-mail kan sendes, før dette er indstillet",
+        "fromNameLabel": "Afsendernavn",
+        "hostLabel": "SMTP-vært",
+        "portLabel": "SMTP-port",
+        "usernameLabel": "SMTP-brugernavn",
+        "passwordLabel": "SMTP-adgangskode",
+        "passwordPlaceholder": {
+            "set": "Adgangskoden er angivet - lad den være tom for at beholde den",
+            "unset": "SMTP adgangskode"
+        },
+        "encryptionLabel": "Kryptering",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, sædvanlig på port 587)",
+            "ssl": "SSL (implicit TLS, sædvanlig på port 465)",
+            "none": "Ingen"
+        },
+        "explainer": "Lad SMTP-værten være tom for at sende via PHP's mail() i stedet (anbefales ikke - se README's leveringsafsnit). Der kan ikke sendes nogen e-mail overhovedet, før der er angivet en \"fra\"-adresse.",
+        "save": "Gem"
+    },
+    "MapSettingsForm": {
+        "legend": "Kortfliser",
+        "notice": "Lad feltet stå tomt for at bruge OpenStreetMap. Hvis du vil bruge en udbyder med nøgle, skal du indsætte udbyderens URL-skabelon med den bogstavelige tekst {apiKey}, hvor nøglen skal stå, samt angive nøglen og krediteringen nedenfor.",
+        "urlLabel": "URL-skabelon til kortfliser",
+        "keyLabel": "API-nøgle",
+        "keyPlaceholder": "Din kortudbyders API-nøgle",
+        "attributionLabel": "Tilskrivning",
+        "attributionPlaceholder": "© OpenStreetMap-bidragydere",
+        "save": "Gem"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google-login",
+        "clientIdLabel": "Klient-id",
+        "clientIdPlaceholder": "Google OAuth-klient-id",
+        "secretLabel": "Klientens hemmelighed",
+        "secretPlaceholder": {
+            "set": "Klienthemmeligheden er angivet - lad den være tom for at beholde den",
+            "unset": "Google OAuth-klienthemmelighed"
+        },
+        "explainer": "Begge kræves for at \"Fortsæt med Google\" vises ved tilmelding og login. I din Google Cloud OAuth-klient skal du indstille den autoriserede omdirigerings-URI til {url} - ryd klient-id'et for at slå det fra.",
+        "save": "Gem"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Webstedsnøgle",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile webstedsnøgle",
+        "turnstileSecretKeyLabel": "Hemmelig nøgle",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Den hemmelige nøgle er sat - lad den være tom for at beholde den",
+            "unset": "Cloudflare Turnstile hemmelig nøgle"
+        },
+        "turnstileExplainer": "Begge nøgler kræves for at CAPTCHA'en vises ved tilmelding og login. Ryd webstedsnøglen for at slå den fra.",
+        "recaptchaLegend": "Google reCAPTCHA (gendannelse af låst konto)",
+        "recaptchaSiteKeyLabel": "Webstedsnøgle",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 webstedsnøgle",
+        "recaptchaSecretKeyLabel": "Hemmelig nøgle",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Den hemmelige nøgle er sat - lad den være tom for at beholde den",
+            "unset": "Google reCAPTCHA v2 hemmelig nøgle"
+        },
+        "recaptchaExplainer": "Begge nøgler er påkrævet. Når den er indstillet, kan en konto, der rammer sin login-forsøgsgrænse, komme ind igen ved at bestå denne udfordring i stedet for at vente på lockouten; når den ikke er aktiveret, er lockouten en hård ventetid. Brug reCAPTCHA v2 (\"Jeg er ikke en robot\"). Ryd webstedsnøglen for at slå den fra.",
+        "save": "Gem"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Brugt af AI-funktioner på webstedet (trending-emneoversigter osv.). Lad modellen stå tom for at bruge Free Models Router, som OpenRouter vælger tilfældigt fra det, der i øjeblikket er gratis og aldrig kan medføre omkostninger.",
+        "keyLabel": "API-nøgle",
+        "keyPlaceholder": {
+            "set": "API-nøgle er indstillet - lad tom for at beholde den",
+            "unset": "OpenRouter API nøgle"
+        },
+        "clearKeyLabel": "Fjern den lagrede API-nøgle (deaktiverer AI-funktioner)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Tillad aldrig dette at bruge penge (anbefales)",
+        "explainer": "Med vagten på, begrænser hver anmodning sin pris til nul, så den fejler direkte i stedet for at falde tilbage til en betalt model, når ingen gratis udbyder er tilgængelig. Fjern den lagrede API-nøgle for at slå AI-funktioner helt fra.",
+        "save": "Gem"
+    },
+    "AboutSettingsForm": {
+        "legend": "Om",
+        "description": "Almindelig tekst - tomme linjer adskiller afsnit. Første afsnit vil blive brugt som webstedsbeskrivelse.",
+        "save": "Gem"
+    },
+    "TermsSettingsForm": {
+        "legend": "Servicevilkår",
+        "description": "Almindelig tekst - tomme linjer adskiller afsnit.",
+        "save": "Gem"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Privatlivspolitik",
+        "description": "Almindelig tekst - tomme linjer adskiller afsnit.",
+        "save": "Gem"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-mailoversigt",
+        "fieldLabel": "Afsluttende afsnit",
+        "notice": "Tilføjet nær slutningen af ​​hvert sammendrag efter listen over, hvad medlemmet gik glip af. Almindelig tekst. Lad det stå tomt for at gå tilbage til den formulering, som denne software leveres med.",
+        "save": "Gem"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Nuværende favicon",
+        "save": "Upload favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Forsidebillede",
+        "explainer": "Vises af andre websteder, når nogen deler et link til denne - Kun Open Graph-metadata, aldrig på siden. Beskåret til 1200×630. Uden en har linkforhåndsvisninger overhovedet intet billede.",
+        "currentAlt": "Aktuelt forsidebillede",
+        "save": "Upload billede"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automatisk afspilning"
+    },
+    "CarouselNextButton": {
+        "name": "Næste"
+    },
+    "CarouselPrevButton": {
+        "name": "Forrige"
+    },
+    "MediaFullscreenButton": {
+        "name": "Fuldskærm"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Fjern filer"
+    },
+    "NotificationDropdown": {
+        "showAll": "Vis alle"
+    },
+    "HelpSearch": {
+        "placeholder": "Søg hjælp..."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Fik det"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Kassér"
+    },
+    "StagedPostEditButton": {
+        "name": "Rediger"
+    },
+    "StagedPostPublishButton": {
+        "name": "Udgiv nu"
+    },
+    "LogoutButton": {
+        "name": "Log ud"
+    },
+    "AvatarUploadForm": {
+        "submit": "Opdater profilbillede"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Søg efter udelukkede brugere…"
+    },
+    "BannedUserSection": {
+        "heading": "Udelukkede brugere"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Sendte anmodninger (afventer svar)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Udelukket af {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blokeret af {name} ",
+            "after": ""
+        },
+        "deletedAccount": "en slettet konto",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "januar",
+            "2": "februar",
+            "3": "marts",
+            "4": "april",
+            "5": "maj",
+            "6": "juni",
+            "7": "juli",
+            "8": "august",
+            "9": "september",
+            "10": "oktober",
+            "11": "november",
+            "12": "december"
+        },
+        "shortMonths": {
+            "1": "jan.",
+            "2": "feb.",
+            "3": "mar.",
+            "4": "apr.",
+            "5": "maj",
+            "6": "jun.",
+            "7": "jul.",
+            "8": "aug.",
+            "9": "sep.",
+            "10": "okt.",
+            "11": "nov.",
+            "12": "dec."
+        },
+        "long": "{day}. {month} {year}",
+        "short": "{day}. {month} {year}",
+        "time": "{hour}.{minute}",
+        "dateAndTime": "{date} kl. {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Kunne ikke oprette forbindelse til WebSocket-serveren på 127.0.0.1:{port}{tls} ({error}). Start det først: systemctl --user start glommer-websocket (se README.md for enhedsfilen). Hvis den lige har vundet eller mistet WS_TLS_CERT/WS_TLS_KEY, genstart den, så den matcher .env.",
+        "wsOverTLS": " over TLS",
+        "wsBadHandshake": "Tjenesten på 127.0.0.1:{port} fuldførte ikke et gyldigt WebSocket-håndtryk - noget andet end bin/websocket-server.php lytter muligvis på den port.",
+        "wsNoPong": "WebSocket-serveren accepterede håndtrykket, men svarede ikke på et ping - det kan sidde fast eller opføre sig forkert. Tjek dens logs.",
+        "wsReachable": "WebSocket-server tilgængelig og reagerer på 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtag",
+            "person": "Person",
+            "org": "Organisation",
+            "gpe": "Sted",
+            "loc": "Område",
+            "fac": "Vartegn",
+            "product": "Produkt",
+            "event": "Begivenhed",
+            "work_of_art": "Værk",
+            "law": "Lov",
+            "language": "Sprog",
+            "norp": "Gruppe"
+        },
+        "plural": {
+            "hashtag": "Hashtags",
+            "person": "Mennesker",
+            "org": "Organisationer",
+            "gpe": "Steder",
+            "loc": "Regioner",
+            "fac": "Landemærker",
+            "product": "Produkter",
+            "event": "Begivenheder",
+            "work_of_art": "Værker",
+            "law": "Love",
+            "language": "Sprog",
+            "norp": "Grupper"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Fjern ven"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Acceptér"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Afvis"
+    },
+    "UserFollowButton": {
+        "follow": "Følg",
+        "unfollow": "Følg ikke længere"
+    },
+    "UserBlockButton": {
+        "name": "Bloker"
+    },
+    "UserUnblockButton": {
+        "name": "Fjern blokering"
+    },
+    "OtherUser": {
+        "message": "Besked"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menu",
+        "loggedInAs": "Logget ind som {name}",
+        "friendsFeed": "Vennefeed",
+        "relayFeed": "Relæfeed",
+        "users": "Brugere",
+        "tags": "Tags",
+        "topics": "Emner",
+        "map": "Kort",
+        "locations": "Steder",
+        "search": "Søg",
+        "messages": "Beskeder",
+        "bookmarks": "Bogmærker",
+        "help": "Hjælp",
+        "about": "Om",
+        "login": "Log ind",
+        "signup": "Tilmeld dig",
+        "friends": "Venner",
+        "drafts": "Udkast og planlagt",
+        "userSettings": "Brugerindstillinger",
+        "modSettings": "Moderatorindstillinger",
+        "adminSettings": "Administratorindstillinger"
+    },
+    "LogoutForm": {
+        "submit": "Log ud"
+    },
+    "User": {
+        "joined": "Tilmeldt {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Tilføj ven",
+        "cancel": "Annuller anmodning"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Planlagt til {when}",
+        "draft": "Kladde - udgiver kun, når du siger det"
+    },
+    "MessageTranslateButton": {
+        "name": "Oversæt denne besked"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Om oversættelse af meddelelser",
+        "body": "Når du oversætter en besked, sendes teksten til denne server og oversættes her. Intet gemmes: Oversættelsen skrives ikke til databasen, og selve beskeden ændres ikke. Serveren har dog læst en besked, der oversættes på denne måde, så den har ikke længere samme ende-til-ende-beskyttelse som en uoversat besked. Kun beskeder, du modtager, kan oversættes, og kun når du selv beder om det.",
+        "confirm": "Oversæt det",
+        "cancel": "Ikke nu"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Har du glemt din adgangssætning? En nulstilling opretter nye nøgler beskyttet af en ny adgangssætning — men beskeder, der er krypteret med de gamle nøgler, kan aldrig læses igen af nogen.",
+        "requirements": "Mindst 12 tegn og ikke det samme som adgangskoden til din konto — adgangskoden sendes til serveren, men det må adgangssætningen aldrig gøre.",
+        "passphraseLabel": "Adgangssætning",
+        "resetPassphraseLabel": "Ny adgangssætning",
+        "confirmLabel": "Bekræft adgangssætning",
+        "accountPasswordLabel": "Kontoadgangskode",
+        "submitLabel": "Slå krypterede meddelelser til",
+        "resetSubmitLabel": "Nulstil krypteringsnøgler"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Ende-til-ende-krypterede beskeder låses og låses op i din browser. Serveren videresender og gemmer dem uden at kunne læse dem. Din nøgle beskyttes af en adgangssætning, og den samme adgangssætning låser dine beskeder op i enhver browser. Samtaler krypteres, når begge personer har slået funktionen til. Beskeder til personer på andre servere forbliver ukrypterede, fordi føderationsprotokollen ikke kan transportere dem på anden vis.",
+        "noRecovery": "En mistet adgangssætning kan ikke gendannes — heller ikke af administratoren. Mister du den, mister du også dine krypterede beskeder.",
+        "enabledStatus": "Krypterede beskeder er slået til."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Krypteret",
+            "explanation": "Beskederne i denne samtale er ende-til-ende-krypterede: De låses op med din adgangssætning og læses i dine browsere, mens serveren kun gemmer krypteret tekst. Sammenlign sikkerhedskoden nederst i tråden med den anden person for at sikre, at ingen befinder sig imellem jer. Beskeder fra før krypteringen blev slået til, forbliver læsbare som før."
+        },
+        "awaiting-theirs": {
+            "label": "Ikke krypteret",
+            "explanation": "Beskederne her bliver ende-til-ende-krypterede, når {handle} slår krypterede beskeder til i sine indstillinger."
+        },
+        "awaiting-yours": {
+            "label": "Ikke krypteret",
+            "explanation": "Beskeder her er ikke ende-til-ende-krypteret. Slå krypterede beskeder til i Indstillinger for at sikre denne samtale."
+        },
+        "federated": {
+            "label": "Ikke krypteret",
+            "explanation": "{handle} er på en anden server. Beskederne i samtalen gemmes på både den anden server og denne, og den anden servers administrator kan læse dem — protokollen mellem serverne kan ikke kryptere dem. Del kun følsomme oplysninger i samtaler på dette websted."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Følg Fediverse-konti",
+        "notice": "Indsæt et eller flere fulde brugernavne, f.eks. @bruger@example.social — du kan adskille dem på enhver måde.",
+        "handlesLabel": "Fediverse-konti, der skal følges",
+        "submit": "Følg",
+        "statusPending": "afventer",
+        "statusAccepted": "accepteret"
+    },
+    "ServerBlockForm": {
+        "legend": "Bloker en server",
+        "description": "Afviser alt fra den server og alt under den: ingen leveringer ind, ingen ud, og eksisterende følger i begge retninger droppes.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Årsag",
+        "reasonPlaceholder": "Hvorfor denne server er blokeret",
+        "submit": "Bloker server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Kører de dele af opkaldsopsætningen, der kan kontrolleres fra én browser. Alt frem til en egentlig direkte forbindelse kan testes her; den anden person skal deltage, før forbindelsen kan oprettes."
+    },
+    "VideoCallTestButton": {
+        "label": "Kør kontrollen"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket-server: Kører",
+        "failed": "WebSocket-server: {detail}",
+        "clientTesting": "Browserforbindelse: Tester...",
+        "clientConnecting": "Browserforbindelse: Opretter forbindelse...",
+        "clientConnected": "Browserforbindelse: Tilsluttet",
+        "clientDisconnecting": "Browserforbindelse: Afbryder forbindelsen...",
+        "clientNotConnected": "Browserforbindelse: Ikke forbundet"
+    },
+    "UploadWorkerStatus": {
+        "running": "Arbejdertjeneste: Kører",
+        "stopped": "Arbejdertjeneste: Kører ikke — klargjorte uploads bliver ikke omkodet, før tjenesten genstartes",
+        "unknown": "Arbejdertjeneste: Ukendt — enten er systemctl ikke tilgængelig på denne vært, eller også afviser SELinux webserverens egen statusforespørgsel (kør bin/install.php som root for at rette det)",
+        "queue": "Kø: {staging} klargøres, {pending} afventer, {processing} behandles"
+    },
+    "TrendingTimerStatus": {
+        "running": "Trendtimer: Kører",
+        "stopped": "Trendtimer: Kører ikke - trendemner vil kun opdateres via læsestiens selvhelbredelse (Trending::current()), ikke på en tidsplan. Kør bin/install.php som root for at konfigurere det.",
+        "unknown": "Trendtimer: Ukendt - enten er systemctl ikke tilgængelig på denne vært, eller også afviser SELinux webserverens egen statusforespørgsel (kør bin/install.php som root for at rette det)"
+    },
+    "Notification": {
+        "postReady": "Dit medie er færdigbehandlet og er nu live",
+        "scheduledPostLive": "Dit planlagte indlæg er nu live",
+        "uploadPartlyFailed": "Dit indlæg er live, men en eller flere af dets filer kunne ikke behandles",
+        "uploadFailed": "En af dine uploads kunne ikke behandles og blev ikke udgivet",
+        "mailerFailed": "E-mailen kunne ikke leveres — mailtjenesten er muligvis nede. Kontrollér mailkonfigurationen.",
+        "mailFromNotConfigured": "Der er ikke konfigureret nogen e-mail-\"fra\"-adresse, så e-mails kan ikke sendes. Indstil en i administratorindstillinger (sektionen Udgående post) eller via bin/install.php.",
+        "systemError": "Der opstod en serverfejl. Tjek fejlloggen for detaljer.",
+        "passwordRemovedGoogle": "Din adgangskode blev fjernet, da du loggede ind med Google. Brug \"Glemt adgangskode\", hvis du vil indstille en ny.",
+        "like": "{name} kunne lide dit opslag",
+        "repost": "{name} delte dit indlæg igen",
+        "reply": "{name} svarede på dit indlæg",
+        "friendRequest": "{name} har sendt dig en venneanmodning",
+        "friendAccepted": "{name} accepterede din venneanmodning",
+        "message": "{name} har sendt dig en besked",
+        "mention": "{name} nævnte dig i et opslag",
+        "follow": "{name} fulgte dig fra en anden server",
+        "default": "{name} gjorde noget"
+    },
+    "NotificationList": {
+        "emptyNotice": "Ingen notifikationer endnu."
+    },
+    "NotificationsNavLink": {
+        "label": "Notifikationer",
+        "unseen": "Ulæste notifikationer"
+    },
+    "NotificationTestPanel": {
+        "intro": "Send en testnotifikation til dig selv (administratoren). Den bør straks vises som en midlertidig besked og i notifikationsmenuen.",
+        "button": "Send testmeddelelse",
+        "sending": "Sender...",
+        "sent": "Sendt!",
+        "failed": "Mislykkedes"
+    },
+    "MessageDot": {
+        "label": "Ulæste beskeder"
+    },
+    "NavAlertDot": {
+        "label": "Noget nyt i menuen"
+    },
+    "Message": {
+        "encrypted": "Krypteret besked",
+        "decryptionFailed": "Denne besked blev krypteret med nøgler, der ikke længere eksisterer."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Besked",
+        "bodyPlaceholder": "Skriv en besked",
+        "send": "Send"
+    },
+    "MessageList": {
+        "emptyNotice": "Ingen beskeder endnu."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Læs denne kode for hinanden på en anden måde - højt, personligt, over et opkald. Hvis det passer på begge sider, er der ingen mellem jer.",
+        "changed": "Denne kode er ændret, siden du tjekkede den. Det sker, når en af ​​jer nulstiller dine krypteringsnøgler - men det er også sådan, en person, der læser denne samtale, ville se ud. Tjek den nye kode med dem, før du stoler på den.",
+        "verified": "Du har tjekket denne kode."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Markér som bekræftet"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Adgangssætning",
+        "passphrasePlaceholder": "Adgangssætning for at låse denne samtale op",
+        "submit": "Lås op"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Sidste besked ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Følsomme medier"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Vis følsomme medier som standard"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Indlæg",
+            "message": "Besked",
+            "user": "Bruger"
+        },
+        "summary": {
+            "before": "{type} #{id} rapporteret af ",
+            "after": ""
+        },
+        "reasonLine": "Årsag: {reason}",
+        "banReporterLabel": "Udeluk anmelderen",
+        "banReportedUserLabel": "Udeluk den anmeldte bruger",
+        "deleteLabel": "Slet {type}",
+        "reportedImageAlt": "Rapporteret billede",
+        "attachmentUnavailable": "En rapporteret vedhæftet fil er ikke længere tilgængelig.",
+        "viewAttachment": "Se rapporteret vedhæftet fil",
+        "missing": {
+            "noSnapshot": "Det rapporterede indhold er ikke længere tilgængeligt.",
+            "unknownType": "Ukendt indholdstype."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Ingen rapporter."
+    },
+    "ModQueueLinks": {
+        "intro": "Køerne er lange nok til at læse en side ad gangen, så de har deres egne sider.",
+        "reportsLabel": "Rapporter",
+        "bannedUsersLabel": "Udelukkede brugere"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Ingen moderator har gjort noget endnu."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Ingen forbudte trendenheder."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Ingen blokerede servere."
+    },
+    "RelayCard": {
+        "accepted": "Tilmeldt ",
+        "waiting": "Venter på, at relæet accepterer - tilmeldt "
+    },
+    "RelayList": {
+        "emptyNotice": "Ikke abonneret på nogen relæer. Intet kommer her, undtagen hvad medlemmerne følger."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Der er endnu ikke kommet noget gennem et relæ. Indlæg vises her, når serverne på den anden side udgiver dem."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Abonner på et relæ",
+        "explainerOne": "Et relæ er en fælles strøm: Alle offentlige indlæg fra de øvrige tilmeldte servere ankommer hertil, og denne servers offentlige indlæg sendes til dem alle. På den måde kan en ny instans overhovedet finde nogen, for uden relæet transporterer føderationen kun indhold, som nogen her allerede følger.",
+        "explainerTwo": "Belastningen kan ikke forudsiges — den afhænger af, hvad serverne udgiver. Der kan være stille den ene uge og komme tusindvis af indlæg i timen den næste, og både lageret, leveringskøen og modereringskøen skal håndtere dem. Relæindlæg holdes ude af hovedfeedet og vennefeedet; de vises i Relæfeedet, som brugerne åbner bevidst.",
+        "addressLabel": "Relæadresse",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Abonner"
+    },
+    "RelayFollowObjectField": {
+        "label": "Abonnementstype",
+        "options": {
+            "public": "Følg den offentlige strøm (hvad de fleste relæer forventer)",
+            "actor": "Følg relæets egen aktør"
+        },
+        "retryNotice": "Hvis relæet ikke accepterer anmodningen, skal du trække den tilbage og prøve den anden type — nogle relæprogrammer genkender kun den ene."
+    },
+    "SiteCounters": {
+        "members": "Medlemmer: {count} ({joined} er kommet til inden for de seneste {days} dage)",
+        "activeMembers": "Medlemmer her inden for de seneste {days} dage: {count} ({posted} af dem har skrevet indlæg)",
+        "posts": "Indlæg skrevet her: {count} ({recent} i de sidste {days} dage)",
+        "deliveries": "Fødererede leverancer inden for de seneste {days} dage: {delivered} ankom, {undeliverable} blev opgivet",
+        "queued": "Venter på at blive sendt: {count} ({failing} er allerede blevet afvist mindst én gang)",
+        "pendingReads": "Indlæg, der venter på at blive læst fra andre servere: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Kør webstedets testpakke og se resultaterne. Det tager et par sekunder, så det åbner på sin egen side.",
+        "runLabel": "Kør tests"
+    },
+    "HelpArticle": {
+        "backLabel": "Tilbage til al hjælp"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Ingen forslag lige nu - forslag kommer fra venner af personer, du allerede er venner med. Søg ovenfor for at finde nogen ved navn.",
+        "noMatches": "Ingen her matcher det."
+    },
+    "UserModButton": {
+        "make": "Gør til moderator",
+        "remove": "Fjern som moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Ophæv forbuddet"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Udeluk"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Ophæv forbuddet"
+    },
+    "ReportDismissButton": {
+        "name": "Afvis"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Markér som følsomt"
+    },
+    "ServerUnblockButton": {
+        "name": "Fjern blokering"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Afmeld"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Tilbagekald"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Bestået",
+        "failing": "{suite}: Mislykkedes"
+    },
+    "PageTitle": {
+        "about": "Om",
+        "adminBanned": "Udelukkede brugere",
+        "adminModSettings": "Moderatorindstillinger",
+        "adminReports": "Rapporter",
+        "adminSettings": "Administratorindstillinger",
+        "adminTests": "Tests",
+        "authGoogleCallbackAccountDeleted": "Konto slettet",
+        "authGoogleCallbackDeleteAccount": "Slet konto",
+        "authGoogleCallbackLogin": "Log ind",
+        "bookmarks": "Bogmærker",
+        "checkInbox": "Tjek din indbakke",
+        "drafts": "Udkast og planlagt",
+        "draftsEditDraft": "Rediger udkast",
+        "draftsEditScheduled": "Rediger planlagt indlæg",
+        "forgotPassword": "Glemt adgangskode",
+        "friendsFeed": "Vennefeed",
+        "help": "Hjælp",
+        "helpDescription": "Vejledninger og svar til brug af siden.",
+        "locations": "Steder",
+        "locationsDescription": "Indlæg fra de steder, der er tættest på dig.",
+        "locationsPlaceDescription": "Indlæg nær {place}.",
+        "login": "Log ind",
+        "loginVerificationCode": "Bekræftelseskode",
+        "map": "Kort",
+        "mapDescription": "Et kort over indlæg fra hele verden - find personer og ting i nærheden af ​​dig.",
+        "messages": "Beskeder",
+        "messagesWithUser": "Beskeder med {name}",
+        "notifications": "Notifikationer",
+        "privacy": "Privatlivspolitik",
+        "quote": "Citer",
+        "relayFeed": "Relæfeed",
+        "relayFeedDescription": "Offentlige indlæg, der kommer fra de relæer, denne server abonnerer på.",
+        "resetPassword": "Nulstil adgangskode",
+        "revertEmail": "Tilbagefør e-mail-ændring",
+        "search": "Søg",
+        "signup": "Tilmeld dig",
+        "tags": "Tags",
+        "tagsDescription": "Gennemse aktuelle og populære hashtags på {siteTitle}.",
+        "tagsTagDescription": "Indlæg tagget {tag} på {siteTitle}.",
+        "terms": "Servicevilkår",
+        "topics": "Emner",
+        "topicsDescription": "Hvad folk taler om på {siteTitle} lige nu.",
+        "topicsEntityDescription": "{typeLabel} - indlæg, der omtaler {entityTitle} på {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} folk taler om på {siteTitle} lige nu.",
+        "unsubscribe": "E-mail-sammendrag",
+        "userFriends": "{name}s venner",
+        "userFriendsDescription": "Venner af {name} på {siteTitle}",
+        "userSettings": "Brugerindstillinger",
+        "users": "Brugere",
+        "verifyEmail": "Bekræft e-mail"
+    },
+    "PostLikeButton": {
+        "like": "Synes godt om",
+        "unlike": "Synes ikke længere om"
+    },
+    "PostPinButton": {
+        "pin": "Fastgør",
+        "unpin": "Frigør fra toppen"
+    },
+    "PostQuoteButton": {
+        "name": "Citer"
+    },
+    "PostDeleteButton": {
+        "name": "Slet"
+    },
+    "PostEditButton": {
+        "name": "Rediger"
+    },
+    "ReportButton": {
+        "name": "Anmeld"
+    },
+    "PostActionBar": {
+        "reply": "Svar",
+        "replies": {
+            "one": "Svar ({count})",
+            "other": "Svar ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(redigeret)"
+    },
+    "RepliesHeading": {
+        "heading": "Svar"
+    },
+    "PollVoteButton": {
+        "name": "Stem"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Se ",
+            "link": "flere steder",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Indlæg nær dig",
+        "description": "Dette viser de opslag, der er tættest på et punkt - uanset hvor der er aktivitet, hvor langt væk det end er. Del din placering for at starte fra, hvor du er, eller vælg i stedet et sted på kortet.",
+        "useMyLocation": "Brug min placering",
+        "pickOnMap": "Vælg på kortet",
+        "searchPlaceholder": "Eller skriv et stednavn...",
+        "searchLabel": "Søg efter et sted",
+        "locating": "Finder...",
+        "noGeolocation": "Din browser kan ikke dele en placering.",
+        "locationError": "Kunne ikke hente din placering. Tjek din browsers placeringstilladelse."
+    },
+    "PollDeadline": {
+        "final": "Endeligt resultat",
+        "closes": {
+            "before": "Lukker ",
+            "after": ""
+        },
+        "days": {
+            "one": "i {count} dag",
+            "other": "i {count} dage"
+        },
+        "hours": {
+            "one": "i {count} time",
+            "other": "i {count} timer"
+        },
+        "minutes": {
+            "one": "i {count} minut",
+            "other": "i {count} minutter"
+        },
+        "underMinute": "på under et minut"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 person stemte ",
+            "other": "{count} mennesker stemte "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Log ind",
+            "after": " for at skrive et indlæg."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Log ind",
+            "after": " for at svare."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " delte igen"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Som svar på ",
+            "after": ""
+        },
+        "untitled": "dette indlæg",
+        "jumpToStart": "Gå til starten"
+    },
+    "TopicSummaryCard": {
+        "label": "AI-genereret oversigt"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Velkommen til ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Skriv noget i feltet nedenfor, så bliver det sendt til dit feed. Alle kan svare, og et svar er blot et indlæg, der svarer på et andet, så samtaler kan forgrene sig så langt som nødvendigt.",
+            "Tilføj personer som venner, så vises deres indlæg i dit feed. Det globale feed — webstedets navn øverst til venstre — viser alt, der bliver skrevet her, og er et godt sted at finde nogen at tilføje.",
+            "Dette websted er en del af Fediverset: Du kan følge konti på Mastodon og andre servere ved hjælp af deres fulde brugernavn, og dine indlæg når ud til dem, der følger dig der. Søg efter et brugernavn som @someone@example.social, så finder denne server kontoen.",
+            "Føj #hashtags til et indlæg, så vises det på hashtaggets side og under Populært lige nu, hvis nok personer skriver om det.",
+            "Beskeder mellem medlemmer er ende-til-ende-krypterede — serveren gemmer krypteret tekst, som den ikke kan læse. Slå funktionen til under Indstillinger.",
+            "Du behøver ikke udgive med det samme: Gem en kladde, eller vælg et tidspunkt, hvor indlægget udgives automatisk. Begge dele findes under Kladder og planlagte indlæg."
+        ],
+        "more": {
+            "before": "Der er mere i ",
+            "link": "hjælpesiderne",
+            "after": ", herunder hvordan man flytter en konto hertil fra andre steder."
+        },
+        "dontShowAgain": "Vis ikke dette igen"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Indsæt emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Forhåndsvisning af link"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Fjern billede"
+    },
+    "LinkItem": {
+        "alt": "Forhåndsvisning af link"
+    },
+    "MapScrubber": {
+        "play": "Spil",
+        "pause": "Pause",
+        "cumulativeMode": "Indtil da",
+        "windowMode": "Lige da",
+        "rangeLabel": "Vis indlæg op til en dato",
+        "cumulativeLabel": {
+            "one": "Sendt op til {date} — {count} indlæg",
+            "other": "Sendt op til {date} — {count} indlæg"
+        },
+        "windowLabel": {
+            "one": "Udgivet omkring {date} — {count} indlæg",
+            "other": "Udgivet omkring {date} — {count} indlæg"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Indlæg af {name}",
+        "pageTitleUntitled": "Indlæg",
+        "imageAltByAuthor": "Foto indsendt af {name}",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Fjern bogmærke",
+        "add": "Bogmærke"
+    },
+    "PostRepostButton": {
+        "undo": "Fortryd videredeling",
+        "repost": "Del igen"
+    },
+    "QuotedPost": {
+        "viewLink": "Se det citerede indlæg"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Afventende anmodninger"
+    },
+    "ScrollToTopButton": {
+        "label": "Rul til toppen"
+    },
+    "SearchClearButton": {
+        "label": "Ryd søgning"
+    },
+    "SitePolicyLinks": {
+        "terms": "Servicevilkår",
+        "privacy": "Privatlivspolitik"
+    },
+    "SkipLink": {
+        "label": "Gå til indhold"
+    },
+    "TopicHeading": {
+        "searchLink": "Søg efter denne",
+        "noPosts": "Ingen indlæg nævner dette lige nu."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Der er ikke skrevet noget om den slags endnu."
+    },
+    "TrendingEntitySection": {
+        "heading": "Populært lige nu"
+    },
+    "PostLocationLink": {
+        "title": "Vis dette sted på kortet",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "lige nu",
+        "minutes": {
+            "one": "{count}m siden",
+            "other": "{count}m siden"
+        },
+        "hours": {
+            "one": "{count}h siden",
+            "other": "{count}h siden"
+        },
+        "days": {
+            "one": "{count}d siden",
+            "other": "{count}d siden"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Følg systemet",
+            "light": "Almindeligt lyst",
+            "dark": "Almindelig mørk",
+            "sepia": "Sepia",
+            "midnight": "Midnat",
+            "sunset": "Solnedgang",
+            "rose": "Rose",
+            "forest": "Skov",
+            "ocean": "Ocean",
+            "lavender": "Lavendel",
+            "gold": "Guld",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Gråtoner"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Oversættelse er ikke sat op på denne server.",
+        "nothing": "Der er ikke noget at oversætte her.",
+        "unknownSource": "Ingen har fundet ud af, hvilket sprog dette indlæg er på endnu, så det kan ikke oversættes.",
+        "alreadyReadable": "Dette indlæg er allerede på det sprog.",
+        "unsupportedPair": "Denne server kan ikke oversætte det sprog endnu."
+    },
+    "LanguagePrompt": {
+        "question": "Vil du se siden på dansk?",
+        "accept": "Ja",
+        "decline": "Nej tak"
+    },
+    "LanguageSelector": {
+        "label": "Sprog",
+        "legend": "Sprog"
+    },
+    "EmailDigest": {
+        "subject": "Hvad du gik glip af på {site}",
+        "greeting": "Hej {name},",
+        "whileAway": "Mens du var væk:",
+        "repeatedTimes": {
+            "one": " ({count} gang)",
+            "other": " ({count} gange)"
+        },
+        "moreMissed": {
+            "one": "og {count} notifikation mere",
+            "other": "og {count} notifikationer mere"
+        },
+        "messagesWaiting": {
+            "one": "Du har en besked, der venter",
+            "other": "Du har {count} beskeder, der venter"
+        },
+        "postsInFeed": {
+            "one": "{count} nyt indlæg i dit feed",
+            "other": "{count} nye indlæg i dit feed"
+        },
+        "unsubscribeInstructions": "For at stoppe disse e-mails skal du åbne dette link - det tager et klik og behøver ingen adgangskode:",
+        "comeSeeWhatIsNew": "Kom og se, hvad der er nyt",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Lad være med at sende mig disse",
+            "after": " - et klik, ingen adgangskode nødvendig."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Bekræft din e-mailadresse",
+        "greeting": "Hej {name},",
+        "instructions": "Bekræft venligst din e-mailadresse ved at besøge dette link:",
+        "htmlInstructions": "Bekræft venligst din e-mailadresse ved at klikke på nedenstående link:",
+        "buttonLabel": "Bekræft e-mail-adresse",
+        "expiresIn": {
+            "one": "Dette link udløber om {count} time.",
+            "other": "Dette link udløber om {count} timer."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Nulstil din adgangskode",
+        "greeting": "Hej {name},",
+        "instructions": "Nogen (forhåbentlig du) har anmodet om en nulstilling af adgangskoden. Besøg dette link for at vælge en ny adgangskode:",
+        "htmlInstructions": "Nogen (forhåbentlig du) har anmodet om en nulstilling af adgangskoden. Klik på linket nedenfor for at vælge en ny adgangskode:",
+        "buttonLabel": "Nulstil adgangskode",
+        "expiresIn": {
+            "one": "Dette link udløber om {count} time.",
+            "other": "Dette link udløber om {count} timer."
+        },
+        "ignoreNotice": "Hvis du ikke har anmodet om dette, kan du ignorere denne e-mail."
+    }
+}

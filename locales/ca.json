@@ -1,0 +1,1145 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 vot",
+            "other": "{count} vots"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Inicia la sessió",
+            "after": " per respondre."
+        },
+        "post": {
+            "before": "",
+            "link": "Inicia la sessió",
+            "after": " per publicar."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Lloc",
+        "siteURLLabel": "URL del lloc",
+        "siteTitleLabel": "Títol del lloc",
+        "mailFromAddressLabel": "Adreça del remitent",
+        "serverNameConfirmedLabel": "He definit «ServerName {host}» i «UseCanonicalName On» a la configuració del servidor web (només es comprova si la prova automatitzada en directe no es pot completar; vegeu l'apartat HTTPS del README.md)",
+        "databaseLegend": "Base de dades",
+        "databaseHostLabel": "Servidor de la base de dades",
+        "databasePortLabel": "Port de la base de dades",
+        "databaseNameLabel": "Nom de la base de dades",
+        "databaseAdminUsernameLabel": "Nom d'usuari de l'administrador de la base de dades",
+        "databaseAdminPasswordLabel": "Contrasenya de l'administrador de la base de dades",
+        "webSocketTLSLegend": "TLS de WebSocket (opcional)",
+        "certificatePathLabel": "Camí del certificat",
+        "certificatePathPlaceholder": "Deixeu-ho en blanc per generar-lo automàticament amb mkcert",
+        "keyPathLabel": "Camí de la clau",
+        "keyPathPlaceholder": "Deixeu-ho en blanc per generar-la automàticament amb mkcert",
+        "botProtectionLegend": "Protecció contra bots (opcional)",
+        "turnstileSiteKeyLabel": "Clau de lloc de Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Deixeu-ho en blanc per ometre-la",
+        "turnstileSecretKeyLabel": "Clau secreta de Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Deixeu-ho en blanc per ometre-la",
+        "submit": "Configura"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Frase de contrasenya actual",
+        "newPassphraseLabel": "Frase de contrasenya nova",
+        "confirmNewPassphraseLabel": "Confirmeu la frase de contrasenya nova",
+        "accountPasswordLabel": "Contrasenya del compte",
+        "submit": "Canvia la frase de contrasenya"
+    },
+    "PasswordResetForm": {
+        "legend": "Trieu una contrasenya nova",
+        "newPasswordLabel": "Contrasenya nova",
+        "newPasswordPlaceholder": "Com a mínim 8 caràcters",
+        "confirmPasswordLabel": "Confirmeu la contrasenya nova",
+        "submit": "Restableix la contrasenya"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Restabliu la contrasenya",
+        "emailLabel": "Correu electrònic",
+        "submit": "Envia l'enllaç de restabliment"
+    },
+    "EmailRevertForm": {
+        "submit": "Desfés el canvi de correu"
+    },
+    "EmailVerifyForm": {
+        "submit": "Verifica l'adreça electrònica"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Torna'ls a activar"
+    },
+    "EmailDigestSetting": {
+        "label": "Envia'm per correu el que m'he perdut quan fa temps que no hi entro"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Dispositiu desconegut",
+        "browserOnOS": "{browser} a {os}",
+        "thisDevice": " (aquest dispositiu)",
+        "lastUsed": {
+            "before": "Darrer ús: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Tanca totes les sessions actives i oblida tots els dispositius recordats. Es tancarà la sessió a tots els navegadors, inclòs aquest."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Tanca la sessió a tot arreu"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Verifica amb Google per suprimir"
+    },
+    "GoogleSignInButton": {
+        "label": "Continua amb Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Edita el perfil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Rebeu notificacions en aquest dispositiu encara que el lloc no estigui obert. Aquesta opció és pròpia de cada navegador; activeu-la allà on vulgueu rebre notificacions.",
+        "label": {
+            "off": "Activa en aquest dispositiu",
+            "on": "Desactiva en aquest dispositiu"
+        },
+        "unsupported": "Aquest navegador no admet notificacions automàtiques"
+    },
+    "LoginForm": {
+        "legend": "Inici de sessió",
+        "identifier": "Nom d'usuari o correu electrònic",
+        "password": "Contrasenya",
+        "rememberMe": "Recorda'm",
+        "submit": "Inicia la sessió"
+    },
+    "SignupForm": {
+        "legend": "Crea un compte",
+        "usernameLabel": "Nom d'usuari",
+        "usernamePlaceholder": "Lletres minúscules, nombres i _",
+        "emailLabel": "Correu electrònic",
+        "emailPlaceholder": "Adreça electrònica vàlida",
+        "displayName": "Nom visible (opcional)",
+        "bioLabel": "Biografia (opcional)",
+        "bioPlaceholder": "Una biografia breu; els #hashtags, les @mencions i els enllaços esdevenen clicables",
+        "passwordLabel": "Contrasenya",
+        "passwordPlaceholder": "Contrasenya: com a mínim 8 caràcters",
+        "rememberMe": "Recorda'm",
+        "submit": "Registra't"
+    },
+    "PasswordChangeForm": {
+        "legend": "Canvieu la contrasenya",
+        "currentPassword": "Contrasenya actual",
+        "newPasswordLabel": "Contrasenya nova",
+        "newPasswordPlaceholder": "Com a mínim 8 caràcters",
+        "confirmPassword": "Confirmeu la contrasenya nova",
+        "submit": "Canvia la contrasenya"
+    },
+    "EmailChangeForm": {
+        "legend": "Canvieu l'adreça electrònica",
+        "newEmail": "Adreça electrònica nova",
+        "currentPassword": "Contrasenya actual",
+        "notice": "Haureu de verificar l'adreça nova abans de poder continuar utilitzant el lloc.",
+        "submit": "Canvia el correu"
+    },
+    "AccountDeleteForm": {
+        "legend": "Suprimiu el compte",
+        "warning": "Això suprimeix permanentment el compte, les publicacions i els missatges. No es pot desfer.",
+        "currentPassword": "Contrasenya actual",
+        "submit": "Suprimeix el compte"
+    },
+    "AccountMigrationForm": {
+        "legend": "Mou a un altre servidor",
+        "movedNotice": "Aquest compte s'ha traslladat a {destination}. S'ha demanat als seguidors que us hi segueixin.",
+        "explanation": "Es demana als seguidors que segueixin el compte nou. Les publicacions es queden aquí: les adreces dels objectes pertanyen al servidor que els va crear i no es poden traslladar.",
+        "addressNotice": "El compte al qual us traslladeu primer ha d'incloure aquest a «també conegut com». La vostra adreça aquí és {address}.",
+        "movedToLabel": "Mou a",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "També conegut com",
+        "aliasesExplanation": "Comptes d'altres llocs que també són vostres. Incloure'n un aquí permet que aquell compte es traslladi a aquest; és el permís, no el trasllat mateix. Una adreça per línia.",
+        "aliasesLabel": "Els altres comptes",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Desa"
+    },
+    "TwoFactorForm": {
+        "legend": "Introduïu el codi de verificació",
+        "explanation": "Us hem enviat un codi de verificació per correu. Introduïu-lo a continuació o utilitzeu un dels codis de recuperació per acabar d'iniciar la sessió.",
+        "explanationEmailFailed": "Ara mateix no hem pogut enviar el codi de verificació per correu. Introduïu un dels codis de recuperació per acabar d'iniciar la sessió.",
+        "code": "Codi de verificació",
+        "submit": "Verifica"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "L'autenticació de doble factor està activada",
+            "off": "L'autenticació de doble factor està desactivada"
+        },
+        "explanation": {
+            "on": "Quan inicieu la sessió, us enviarem per correu un codi de verificació que haureu d'introduir. Si el correu no us arriba, podreu entrar amb un dels codis de recuperació.",
+            "off": "Afegiu un segon pas a l'inici de sessió: us enviarem per correu un codi de verificació, de manera que la contrasenya sola no serà suficient. Rebreu codis de recuperació d'un sol ús per desar-los per si el correu no us arriba."
+        },
+        "currentPassword": "Contrasenya actual",
+        "submit": {
+            "on": "Desactiva l'autenticació de doble factor",
+            "off": "Activa l'autenticació de doble factor"
+        },
+        "regenerate": "Genera codis de recuperació nous",
+        "recoveryHeading": "Els vostres codis de recuperació",
+        "recoveryNote": "Deseu-los ara en un lloc segur: no es tornaran a mostrar. Cadascun permet iniciar la sessió una vegada quan no arriba el correu de verificació; generar codis nous substitueix tots aquests.",
+        "toast": {
+            "on": "L'autenticació de doble factor està activada.",
+            "off": "L'autenticació de doble factor està desactivada.",
+            "regenerated": "S'han generat codis de recuperació nous. Els antics ja no funcionen."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Comproveu la safata d'entrada i obriu l'enllaç de verificació que us hem enviat per confirmar l'adreça electrònica. Si no el veieu, comproveu la carpeta de correu brossa."
+    },
+    "VerificationResendButton": {
+        "label": "Torna a enviar el correu de verificació"
+    },
+    "MailSettingsForm": {
+        "legend": "Correu de sortida",
+        "fromAddressLabel": "Adreça del remitent",
+        "fromAddressPlaceholder": "No es pot enviar cap correu fins que es defineixi",
+        "fromNameLabel": "Nom del remitent",
+        "hostLabel": "Servidor SMTP",
+        "portLabel": "Port SMTP",
+        "usernameLabel": "Nom d'usuari SMTP",
+        "passwordLabel": "Contrasenya SMTP",
+        "passwordPlaceholder": {
+            "set": "La contrasenya està definida; deixeu-ho en blanc per conservar-la",
+            "unset": "Contrasenya SMTP"
+        },
+        "encryptionLabel": "Xifratge",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, habitual al port 587)",
+            "ssl": "SSL (TLS implícit, habitual al port 465)",
+            "none": "Cap"
+        },
+        "explainer": "Deixeu el servidor SMTP en blanc per enviar mitjançant mail() de PHP (no recomanat; vegeu l'apartat de lliurabilitat del README). No es pot enviar cap correu fins que es defineixi una adreça de remitent.",
+        "save": "Desa"
+    },
+    "MapSettingsForm": {
+        "legend": "Tessel·les del mapa",
+        "notice": "Deixeu-ho en blanc per utilitzar OpenStreetMap. Per utilitzar un proveïdor amb clau, enganxeu la seva plantilla d'URL amb el text literal {apiKey} on va la clau, i indiqueu a continuació la clau i l'atribució.",
+        "urlLabel": "Plantilla d'URL de les tessel·les",
+        "keyLabel": "Clau de l'API",
+        "keyPlaceholder": "Clau de l'API del proveïdor de mapes",
+        "attributionLabel": "Atribució",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Desa"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Inici de sessió amb Google",
+        "clientIdLabel": "Identificador del client",
+        "clientIdPlaceholder": "Identificador del client OAuth de Google",
+        "secretLabel": "Secret del client",
+        "secretPlaceholder": {
+            "set": "El secret del client està definit; deixeu-ho en blanc per conservar-lo",
+            "unset": "Secret del client OAuth de Google"
+        },
+        "explainer": "Calen tots dos perquè «Continua amb Google» aparegui al registre i a l'inici de sessió. Al client OAuth de Google Cloud, definiu l'URI de redirecció autoritzat com a {url}; esborreu l'identificador del client per desactivar-ho.",
+        "save": "Desa"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Clau del lloc",
+        "turnstileSiteKeyPlaceholder": "Clau de lloc de Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Clau secreta",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "La clau secreta està definida; deixeu-ho en blanc per conservar-la",
+            "unset": "Clau secreta de Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Calen totes dues claus perquè el CAPTCHA aparegui al registre i a l'inici de sessió. Esborreu la clau del lloc per desactivar-lo.",
+        "recaptchaLegend": "Google reCAPTCHA (recuperació d'un compte blocat)",
+        "recaptchaSiteKeyLabel": "Clau del lloc",
+        "recaptchaSiteKeyPlaceholder": "Clau de lloc de Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Clau secreta",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "La clau secreta està definida; deixeu-ho en blanc per conservar-la",
+            "unset": "Clau secreta de Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Calen totes dues claus. Quan estan definides, un compte que arriba al límit d'intents d'inici de sessió pot superar aquesta prova en lloc d'esperar que acabi el bloqueig; si no estan definides, cal esperar. Utilitzeu reCAPTCHA v2 («No soc un robot»). Esborreu la clau del lloc per desactivar-lo.",
+        "save": "Desa"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "L'utilitzen les funcions d'IA del lloc (resums de temes en tendència, etc.). Deixeu el model en blanc per utilitzar l'encaminador de models gratuïts, amb què OpenRouter tria a l'atzar un model disponible gratuït i mai no pot generar cap cost.",
+        "keyLabel": "Clau de l'API",
+        "keyPlaceholder": {
+            "set": "La clau de l'API està definida; deixeu-ho en blanc per conservar-la",
+            "unset": "Clau de l'API d'OpenRouter"
+        },
+        "clearKeyLabel": "Elimina la clau de l'API desada (desactiva les funcions d'IA)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "No permetis mai que això gasti diners (recomanat)",
+        "explainer": "Amb la protecció activada, cada petició limita el preu a zero; per tant, falla en lloc de recórrer a un model de pagament quan no hi ha cap proveïdor gratuït. Elimineu la clau de l'API desada per desactivar completament les funcions d'IA.",
+        "save": "Desa"
+    },
+    "AboutSettingsForm": {
+        "legend": "Quant a",
+        "description": "Text net: les línies en blanc separen paràgrafs. El primer paràgraf s'utilitzarà com a descripció del lloc.",
+        "save": "Desa"
+    },
+    "TermsSettingsForm": {
+        "legend": "Condicions del servei",
+        "description": "Text net: les línies en blanc separen paràgrafs.",
+        "save": "Desa"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Política de privadesa",
+        "description": "Text net: les línies en blanc separen paràgrafs.",
+        "save": "Desa"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Resum per correu",
+        "fieldLabel": "Paràgraf final",
+        "notice": "S'afegeix cap al final de cada resum, després de la llista del que s'ha perdut el membre. Text net. Deixeu-ho en blanc per tornar al text predeterminat del programari.",
+        "save": "Desa"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Favicon actual",
+        "save": "Puja el favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Imatge de portada",
+        "explainer": "Altres llocs la mostren quan algú comparteix un enllaç a aquest: només són metadades Open Graph, mai no apareix a la pàgina. Es retalla a 1200×630. Sense imatge, les previsualitzacions dels enllaços no en mostren cap.",
+        "currentAlt": "Imatge de portada actual",
+        "save": "Puja la imatge"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Reproducció automàtica"
+    },
+    "CarouselNextButton": {
+        "name": "Següent"
+    },
+    "CarouselPrevButton": {
+        "name": "Anterior"
+    },
+    "MediaFullscreenButton": {
+        "name": "Pantalla completa"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Elimina els fitxers"
+    },
+    "NotificationDropdown": {
+        "showAll": "Mostra-ho tot"
+    },
+    "HelpSearch": {
+        "placeholder": "Cerca a l'ajuda…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Entesos"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Descarta"
+    },
+    "StagedPostEditButton": {
+        "name": "Edita"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publica ara"
+    },
+    "LogoutButton": {
+        "name": "Tanca la sessió"
+    },
+    "AvatarUploadForm": {
+        "submit": "Actualitza l'avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Cerca usuaris blocats…"
+    },
+    "BannedUserSection": {
+        "heading": "Usuaris blocats"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Sol·licituds enviades (en espera de resposta)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Blocat per {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blocat per {name} ",
+            "after": ""
+        },
+        "deletedAccount": "un compte suprimit",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "gener",
+            "2": "febrer",
+            "3": "març",
+            "4": "abril",
+            "5": "maig",
+            "6": "juny",
+            "7": "juliol",
+            "8": "agost",
+            "9": "setembre",
+            "10": "octubre",
+            "11": "novembre",
+            "12": "desembre"
+        },
+        "shortMonths": {
+            "1": "gen.",
+            "2": "febr.",
+            "3": "març",
+            "4": "abr.",
+            "5": "maig",
+            "6": "juny",
+            "7": "jul.",
+            "8": "ag.",
+            "9": "set.",
+            "10": "oct.",
+            "11": "nov.",
+            "12": "des."
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date}, {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "No s'ha pogut connectar amb el servidor WebSocket a 127.0.0.1:{port}{tls} ({error}). Inicieu-lo primer: systemctl --user start glommer-websocket (vegeu el fitxer d'unitat al README.md). Si acaba de guanyar o perdre WS_TLS_CERT/WS_TLS_KEY, reinicieu-lo perquè coincideixi amb .env.",
+        "wsOverTLS": " mitjançant TLS",
+        "wsBadHandshake": "El servei a 127.0.0.1:{port} no ha completat una negociació WebSocket vàlida; pot haver-hi alguna cosa diferent de bin/websocket-server.php escoltant en aquest port.",
+        "wsNoPong": "El servidor WebSocket ha acceptat la negociació però no ha respost a un ping; pot estar blocat o funcionar malament. Consulteu-ne els registres.",
+        "wsReachable": "El servidor WebSocket és accessible i respon a 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Etiqueta",
+            "person": "Persona",
+            "org": "Organització",
+            "gpe": "Lloc",
+            "loc": "Regió",
+            "fac": "Punt d'interès",
+            "product": "Producte",
+            "event": "Esdeveniment",
+            "work_of_art": "Obra",
+            "law": "Llei",
+            "language": "Llengua",
+            "norp": "Grup"
+        },
+        "plural": {
+            "hashtag": "Etiquetes",
+            "person": "Persones",
+            "org": "Organitzacions",
+            "gpe": "Llocs",
+            "loc": "Regions",
+            "fac": "Punts d'interès",
+            "product": "Productes",
+            "event": "Esdeveniments",
+            "work_of_art": "Obres",
+            "law": "Lleis",
+            "language": "Llengües",
+            "norp": "Grups"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Elimina l'amistat"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Accepta"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Rebutja"
+    },
+    "UserFollowButton": {
+        "follow": "Segueix",
+        "unfollow": "Deixa de seguir"
+    },
+    "UserBlockButton": {
+        "name": "Bloca"
+    },
+    "UserUnblockButton": {
+        "name": "Desbloca"
+    },
+    "OtherUser": {
+        "message": "Missatge"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menú",
+        "loggedInAs": "Sessió iniciada com a {name}",
+        "friendsFeed": "Canal d'amistats",
+        "relayFeed": "Canal de repetidors",
+        "users": "Usuaris",
+        "tags": "Etiquetes",
+        "topics": "Temes",
+        "map": "Mapa",
+        "locations": "Ubicacions",
+        "search": "Cerca",
+        "messages": "Missatges",
+        "bookmarks": "Marcadors",
+        "help": "Ajuda",
+        "about": "Quant a",
+        "login": "Inicia la sessió",
+        "signup": "Registra't",
+        "friends": "Amistats",
+        "drafts": "Esborranys i programades",
+        "userSettings": "Configuració d'usuari",
+        "modSettings": "Configuració de moderació",
+        "adminSettings": "Configuració d'administració"
+    },
+    "LogoutForm": {
+        "submit": "Tanca la sessió"
+    },
+    "User": {
+        "joined": "S'hi va unir el {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Afegeix una amistat",
+        "cancel": "Cancel·la la sol·licitud"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Programada per a {when}",
+        "draft": "Esborrany: només es publica quan ho decidiu"
+    },
+    "MessageTranslateButton": {
+        "name": "Tradueix aquest missatge"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Quant a la traducció de missatges",
+        "body": "Per traduir un missatge, el text s'envia a aquest servidor i es tradueix aquí. No se'n conserva res: la traducció no s'escriu a la base de dades i el missatge no canvia. Però el servidor ha llegit un missatge traduït d'aquesta manera i, per tant, no està xifrat d'extrem a extrem com un missatge sense traduir. Només es poden traduir els missatges que rebeu i només quan ho demaneu.",
+        "confirm": "Tradueix-lo",
+        "cancel": "Ara no"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Heu oblidat la frase de contrasenya? Restablir-la crea claus noves protegides per una frase nova, però ningú no podrà tornar a llegir els missatges xifrats amb les claus antigues.",
+        "requirements": "Com a mínim 12 caràcters i diferent de la contrasenya del compte: aquesta s'envia al servidor, però la frase de contrasenya no s'hi ha d'enviar mai.",
+        "passphraseLabel": "Frase de contrasenya",
+        "resetPassphraseLabel": "Frase de contrasenya nova",
+        "confirmLabel": "Confirmeu la frase de contrasenya",
+        "accountPasswordLabel": "Contrasenya del compte",
+        "submitLabel": "Activa els missatges xifrats",
+        "resetSubmitLabel": "Restableix les claus de xifratge"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Els missatges xifrats d'extrem a extrem es bloquen i desbloquen al navegador: aquest servidor els retransmet i emmagatzema sense poder-los llegir. La clau està protegida per una frase de contrasenya, que desbloqueja els missatges des de qualsevol navegador. Les converses es xifren quan totes dues persones ho han activat; els missatges a persones d'altres servidors continuen sense xifrar perquè la federació no els pot transportar d'una altra manera.",
+        "noRecovery": "No hi ha cap manera de recuperar una frase de contrasenya perduda, ni tan sols per a l'administrador. Perdre-la significa perdre els missatges xifrats.",
+        "enabledStatus": "Els missatges xifrats estan activats."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Xifrat",
+            "explanation": "Els missatges d'aquesta conversa estan xifrats d'extrem a extrem: es desbloquen amb la frase de contrasenya i es llegeixen als vostres navegadors; el servidor només emmagatzema text xifrat. Compareu amb l'altra persona el codi de seguretat del final del fil per assegurar-vos que no hi ha ningú entremig. Els missatges enviats abans d'activar el xifratge continuen sent llegibles com abans."
+        },
+        "awaiting-theirs": {
+            "label": "Sense xifrar",
+            "explanation": "Els missatges d'aquí es xifraran d'extrem a extrem quan {handle} activi els missatges xifrats a la seva configuració."
+        },
+        "awaiting-yours": {
+            "label": "Sense xifrar",
+            "explanation": "Els missatges d'aquí no estan xifrats d'extrem a extrem. Activeu els missatges xifrats a Configuració per protegir la conversa."
+        },
+        "federated": {
+            "label": "Sense xifrar",
+            "explanation": "{handle} és en un altre servidor. Els missatges d'aquesta conversa s'emmagatzemen en tots dos servidors i l'administrador de l'altre els pot llegir: el protocol entre servidors no els pot xifrar. Reserveu la informació sensible per a converses dins d'aquest lloc."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Segueix comptes del Fedivers",
+        "notice": "Enganxeu un o més noms d'usuari complets, per exemple @user@example.social; podeu separar-los amb qualsevol separador.",
+        "handlesLabel": "Noms d'usuari del Fedivers per seguir",
+        "submit": "Segueix",
+        "statusPending": "pendent",
+        "statusAccepted": "acceptat"
+    },
+    "ServerBlockForm": {
+        "legend": "Bloca un servidor",
+        "description": "Rebutja tot el que prové d'aquest servidor i dels seus subdominis: no hi ha lliuraments d'entrada ni de sortida i s'eliminen els seguiments existents en totes dues direccions.",
+        "serverLabel": "Servidor",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Motiu",
+        "reasonPlaceholder": "Per què està blocat aquest servidor",
+        "submit": "Bloca el servidor"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Executa les parts de la configuració d'una trucada que es poden comprovar des d'un sol navegador. Aquí es pot provar tot fins a la connexió real d'igual a igual; per connectar-se amb una altra persona, cal que hi participi."
+    },
+    "VideoCallTestButton": {
+        "label": "Executa la comprovació"
+    },
+    "WebSocketStatus": {
+        "ok": "Servidor WebSocket: en execució",
+        "failed": "Servidor WebSocket: {detail}",
+        "clientTesting": "Connexió del navegador: s'està provant…",
+        "clientConnecting": "Connexió del navegador: s'està connectant…",
+        "clientConnected": "Connexió del navegador: connectat",
+        "clientDisconnecting": "Connexió del navegador: s'està desconnectant…",
+        "clientNotConnected": "Connexió del navegador: no connectat"
+    },
+    "UploadWorkerStatus": {
+        "running": "Servei de treball: en execució",
+        "stopped": "Servei de treball: aturat; les pujades preparades no es transcodificaran fins que es reiniciï",
+        "unknown": "Servei de treball: desconegut; systemctl no està disponible en aquest servidor o SELinux denega la consulta d'estat del servidor web (executeu bin/install.php com a root per corregir-ho)",
+        "queue": "Cua: {staging} en preparació, {pending} pendents, {processing} en procés"
+    },
+    "TrendingTimerStatus": {
+        "running": "Temporitzador de tendències: en execució",
+        "stopped": "Temporitzador de tendències: aturat; els temes en tendència només s'actualitzaran mitjançant l'autoreparació durant la lectura (Trending::current()), no de manera programada. Executeu bin/install.php com a root per configurar-lo.",
+        "unknown": "Temporitzador de tendències: desconegut; systemctl no està disponible en aquest servidor o SELinux denega la consulta d'estat del servidor web (executeu bin/install.php com a root per corregir-ho)"
+    },
+    "Notification": {
+        "postReady": "S'ha acabat de processar el contingut multimèdia i ja està publicat",
+        "scheduledPostLive": "La publicació programada ja s'ha publicat",
+        "uploadPartlyFailed": "La publicació és visible, però no s'han pogut processar un o més fitxers",
+        "uploadFailed": "No s'ha pogut processar una de les pujades i no s'ha publicat",
+        "mailerFailed": "El lliurament del correu ha fallat; el servei de correu pot estar aturat. Comproveu-ne la configuració.",
+        "mailFromNotConfigured": "No hi ha cap adreça de remitent configurada i no es poden enviar correus. Definiu-la a Configuració d'administració (apartat Correu de sortida) o mitjançant bin/install.php.",
+        "systemError": "S'ha produït un error del servidor. Consulteu el registre d'errors per obtenir-ne detalls.",
+        "passwordRemovedGoogle": "La contrasenya s'ha eliminat en iniciar la sessió amb Google. Utilitzeu «He oblidat la contrasenya» si en voleu definir una de nova.",
+        "like": "A {name} li ha agradat la vostra publicació",
+        "repost": "{name} ha republicat la vostra publicació",
+        "reply": "{name} ha respost a la vostra publicació",
+        "friendRequest": "{name} us ha enviat una sol·licitud d'amistat",
+        "friendAccepted": "{name} ha acceptat la vostra sol·licitud d'amistat",
+        "message": "{name} us ha enviat un missatge",
+        "mention": "{name} us ha esmentat en una publicació",
+        "follow": "{name} us ha seguit des d'un altre servidor",
+        "default": "{name} ha fet alguna cosa"
+    },
+    "NotificationList": {
+        "emptyNotice": "Encara no hi ha notificacions."
+    },
+    "NotificationsNavLink": {
+        "label": "Notificacions",
+        "unseen": "Notificacions no vistes"
+    },
+    "NotificationTestPanel": {
+        "intro": "Envieu-vos una notificació de prova (a l'administrador). Hauria d'aparèixer immediatament com a avís emergent i al desplegable de notificacions.",
+        "button": "Envia una notificació de prova",
+        "sending": "S'està enviant…",
+        "sent": "Enviada!",
+        "failed": "Ha fallat"
+    },
+    "MessageDot": {
+        "label": "Missatges no llegits"
+    },
+    "NavAlertDot": {
+        "label": "Hi ha alguna novetat al menú"
+    },
+    "Message": {
+        "encrypted": "Missatge xifrat",
+        "decryptionFailed": "Aquest missatge es va xifrar amb claus que ja no existeixen."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Missatge",
+        "bodyPlaceholder": "Escriviu un missatge",
+        "send": "Envia"
+    },
+    "MessageList": {
+        "emptyNotice": "Encara no hi ha missatges."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Llegiu-vos aquest codi per una altra via: en veu alta, en persona o durant una trucada. Si coincideix a tots dos costats, no hi ha ningú entremig.",
+        "changed": "Aquest codi ha canviat des que el vau comprovar. Això passa quan una de les persones restableix les claus de xifratge, però també és el que veuríeu si algú llegís la conversa. Compareu el codi nou abans de confiar-hi.",
+        "verified": "Heu comprovat aquest codi."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Marca com a verificat"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Frase de contrasenya",
+        "passphrasePlaceholder": "Frase de contrasenya per desbloquejar la conversa",
+        "submit": "Desbloqueja"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Darrer missatge: ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Contingut multimèdia sensible"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Mostra el contingut multimèdia sensible per defecte"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Publicació",
+            "message": "Missatge",
+            "user": "Usuari"
+        },
+        "summary": {
+            "before": "{type} núm. {id}, denunciat per ",
+            "after": ""
+        },
+        "reasonLine": "Motiu: {reason}",
+        "banReporterLabel": "Bloca qui ha fet la denúncia",
+        "banReportedUserLabel": "Bloca l'usuari denunciat",
+        "deleteLabel": "Suprimeix {type}",
+        "reportedImageAlt": "Imatge denunciada",
+        "attachmentUnavailable": "Un fitxer adjunt denunciat ja no està disponible.",
+        "viewAttachment": "Mostra el fitxer adjunt denunciat",
+        "missing": {
+            "noSnapshot": "El contingut denunciat ja no està disponible.",
+            "unknownType": "Tipus de contingut desconegut."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "No hi ha denúncies."
+    },
+    "ModQueueLinks": {
+        "intro": "Les cues són prou llargues per consultar-les pàgina per pàgina i, per tant, tenen pàgines pròpies.",
+        "reportsLabel": "Denúncies",
+        "bannedUsersLabel": "Usuaris blocats"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Encara no hi ha cap acció de moderació."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "No hi ha entitats en tendència blocades."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "No hi ha servidors blocats."
+    },
+    "RelayCard": {
+        "accepted": "Subscrit el ",
+        "waiting": "En espera que el repetidor ho accepti; subscrit el "
+    },
+    "RelayList": {
+        "emptyNotice": "No hi ha cap subscripció a repetidors. Aquí només arriba allò que segueixen els membres."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Encara no ha arribat res mitjançant cap repetidor. Les publicacions apareixen aquí quan els servidors de l'altra banda les publiquen."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Subscriu-te a un repetidor",
+        "explainerOne": "Un repetidor és un flux compartit: totes les publicacions públiques dels altres servidors subscrits arriben aquí i les d'aquest servidor s'envien a tots ells. Així és com una instància nova troba algú, perquè altrament la federació només transporta allò que ja segueix algú d'aquí.",
+        "explainerTwo": "La càrrega no es pot predir: depèn del que publiquin aquells servidors, pot ser tranquil·la una setmana i de milers de publicacions per hora la següent, i afecta l'emmagatzematge i les cues de lliurament i moderació. Les publicacions retransmeses no apareixen al canal principal ni al d'amistats; van al Canal de repetidors, que la gent obre expressament.",
+        "addressLabel": "Adreça del repetidor",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Subscriu-m'hi"
+    },
+    "RelayFollowObjectField": {
+        "label": "Modalitat de subscripció",
+        "options": {
+            "public": "Segueix el flux públic (el que esperen la majoria de repetidors)",
+            "actor": "Segueix l'actor propi del repetidor"
+        },
+        "retryNotice": "Si el repetidor no ho accepta, retireu la sol·licitud i proveu l'altra modalitat; alguns programes de repetidors només en reconeixen una."
+    },
+    "SiteCounters": {
+        "members": "Membres: {count} ({joined} incorporats els darrers {days} dies)",
+        "activeMembers": "Membres presents els darrers {days} dies: {count} ({posted} han publicat)",
+        "posts": "Publicacions escrites aquí: {count} ({recent} els darrers {days} dies)",
+        "deliveries": "Lliuraments federats els darrers {days} dies: {delivered} arribats, {undeliverable} abandonats",
+        "queued": "En espera de sortir: {count} ({failing} ja s'han rebutjat com a mínim una vegada)",
+        "pendingReads": "Publicacions pendents de llegir d'altres servidors: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Executeu el conjunt de proves del lloc i consulteu-ne els resultats. Triga uns segons i s'obre en una pàgina pròpia.",
+        "runLabel": "Executa les proves"
+    },
+    "HelpArticle": {
+        "backLabel": "Torna a tota l'ajuda"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Ara mateix no hi ha suggeriments; provenen de les amistats de les persones que ja són amigues vostres. Cerqueu més amunt per trobar algú pel nom.",
+        "noMatches": "No hi ha ningú que hi coincideixi."
+    },
+    "UserModButton": {
+        "make": "Fes moderador",
+        "remove": "Retira com a moderador"
+    },
+    "UserUnbanButton": {
+        "name": "Desbloca"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Bloca"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Desbloca"
+    },
+    "ReportDismissButton": {
+        "name": "Descarta"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Marca com a sensible"
+    },
+    "ServerUnblockButton": {
+        "name": "Desbloca"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Cancel·la la subscripció"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Revoca"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: correcte",
+        "failing": "{suite}: amb errors"
+    },
+    "PageTitle": {
+        "about": "Quant a",
+        "adminBanned": "Usuaris blocats",
+        "adminModSettings": "Configuració de moderació",
+        "adminReports": "Denúncies",
+        "adminSettings": "Configuració d'administració",
+        "adminTests": "Proves",
+        "authGoogleCallbackAccountDeleted": "Compte suprimit",
+        "authGoogleCallbackDeleteAccount": "Suprimeix el compte",
+        "authGoogleCallbackLogin": "Inicia la sessió",
+        "bookmarks": "Marcadors",
+        "checkInbox": "Comproveu la safata d'entrada",
+        "drafts": "Esborranys i programades",
+        "draftsEditDraft": "Edita l'esborrany",
+        "draftsEditScheduled": "Edita la publicació programada",
+        "forgotPassword": "Contrasenya oblidada",
+        "friendsFeed": "Canal d'amistats",
+        "help": "Ajuda",
+        "helpDescription": "Guies i respostes per utilitzar el lloc.",
+        "locations": "Ubicacions",
+        "locationsDescription": "Publicacions dels llocs més propers.",
+        "locationsPlaceDescription": "Publicacions a prop de {place}.",
+        "login": "Inicia la sessió",
+        "loginVerificationCode": "Codi de verificació",
+        "map": "Mapa",
+        "mapDescription": "Un mapa de publicacions d'arreu del món; trobeu persones i coses properes.",
+        "messages": "Missatges",
+        "messagesWithUser": "Missatges amb {name}",
+        "notifications": "Notificacions",
+        "privacy": "Política de privadesa",
+        "quote": "Cita",
+        "relayFeed": "Canal de repetidors",
+        "relayFeedDescription": "Publicacions públiques que arriben dels repetidors als quals està subscrit aquest servidor.",
+        "resetPassword": "Restableix la contrasenya",
+        "revertEmail": "Desfés el canvi de correu",
+        "search": "Cerca",
+        "signup": "Registra't",
+        "tags": "Etiquetes",
+        "tagsDescription": "Exploreu les etiquetes populars i en tendència a {siteTitle}.",
+        "tagsTagDescription": "Publicacions amb l'etiqueta {tag} a {siteTitle}.",
+        "terms": "Condicions del servei",
+        "topics": "Temes",
+        "topicsDescription": "De què parla la gent ara mateix a {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel}: publicacions que esmenten {entityTitle} a {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} de què parla la gent ara mateix a {siteTitle}.",
+        "unsubscribe": "Resums per correu",
+        "userFriends": "Amistats de {name}",
+        "userFriendsDescription": "Amistats de {name} a {siteTitle}",
+        "userSettings": "Configuració d'usuari",
+        "users": "Usuaris",
+        "verifyEmail": "Verifica el correu"
+    },
+    "PostLikeButton": {
+        "like": "M'agrada",
+        "unlike": "Ja no m'agrada"
+    },
+    "PostPinButton": {
+        "pin": "Fixa",
+        "unpin": "Desfixa"
+    },
+    "PostQuoteButton": {
+        "name": "Cita"
+    },
+    "PostDeleteButton": {
+        "name": "Suprimeix"
+    },
+    "PostEditButton": {
+        "name": "Edita"
+    },
+    "ReportButton": {
+        "name": "Denuncia"
+    },
+    "PostActionBar": {
+        "reply": "Respon",
+        "replies": {
+            "one": "Respostes ({count})",
+            "other": "Respostes ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(editada)"
+    },
+    "RepliesHeading": {
+        "heading": "Respostes"
+    },
+    "PollVoteButton": {
+        "name": "Vota"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Mostra ",
+            "link": "més ubicacions",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Publicacions a prop vostre",
+        "description": "Mostra les publicacions més properes a un punt, allà on hi hagi activitat, per lluny que sigui. Compartiu la ubicació per començar des d'on sou o trieu un punt al mapa.",
+        "useMyLocation": "Utilitza la meva ubicació",
+        "pickOnMap": "Tria al mapa",
+        "searchPlaceholder": "O escriviu el nom d'un lloc…",
+        "searchLabel": "Cerca un lloc",
+        "locating": "S'està localitzant…",
+        "noGeolocation": "El navegador no pot compartir cap ubicació.",
+        "locationError": "No s'ha pogut obtenir la ubicació. Comproveu el permís d'ubicació del navegador."
+    },
+    "PollDeadline": {
+        "final": "Resultat final",
+        "closes": {
+            "before": "Es tanca ",
+            "after": ""
+        },
+        "days": {
+            "one": "d'aquí a {count} dia",
+            "other": "d'aquí a {count} dies"
+        },
+        "hours": {
+            "one": "d'aquí a {count} hora",
+            "other": "d'aquí a {count} hores"
+        },
+        "minutes": {
+            "one": "d'aquí a {count} minut",
+            "other": "d'aquí a {count} minuts"
+        },
+        "underMinute": "d'aquí a menys d'un minut"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 persona ha votat ",
+            "other": "{count} persones han votat "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Inicia la sessió",
+            "after": " per publicar."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Inicia la sessió",
+            "after": " per respondre."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " ho ha republicat"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "En resposta a ",
+            "after": ""
+        },
+        "untitled": "aquesta publicació",
+        "jumpToStart": "Ves a l'inici"
+    },
+    "TopicSummaryCard": {
+        "label": "Resum generat per IA"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Us donem la benvinguda a ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Escriviu alguna cosa al quadre següent i s'enviarà al vostre canal. Tothom pot respondre; una resposta és simplement una publicació amb una publicació mare, de manera que les converses es poden imbricar tant com calgui.",
+            "Afegiu persones com a amistats i les seves publicacions s'incorporaran al vostre canal. El Canal global —el nom del lloc a dalt a l'esquerra— mostra tot el que s'escriu aquí i és on podeu trobar algú per afegir.",
+            "Aquest lloc forma part del Fedivers: podeu seguir comptes de Mastodon i d'altres servidors mitjançant el nom d'usuari complet, i allò que publiqueu arriba a les persones que us segueixen allà. Cerqueu un nom com @someone@example.social i aquest servidor trobarà el compte.",
+            "Afegiu #etiquetes a una publicació i apareixerà a la pàgina de l'etiqueta i a Tendències si hi escriu prou gent.",
+            "Els missatges entre membres estan xifrats d'extrem a extrem: el servidor emmagatzema text xifrat que no pot llegir. Activeu-ho a Configuració.",
+            "No cal publicar immediatament: deseu un esborrany o programeu una hora i es publicarà automàticament. Totes dues opcions són a «Esborranys i programades»."
+        ],
+        "more": {
+            "before": "Trobareu més informació a ",
+            "link": "les pàgines d'ajuda",
+            "after": ", inclosa la manera de traslladar aquí un compte d'un altre lloc."
+        },
+        "dontShowAgain": "No ho tornis a mostrar"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Insereix un emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Imatge de previsualització de l'enllaç"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Elimina la imatge"
+    },
+    "LinkItem": {
+        "alt": "Imatge de previsualització de l'enllaç"
+    },
+    "MapScrubber": {
+        "play": "Reprodueix",
+        "pause": "Pausa",
+        "cumulativeMode": "Fins aleshores",
+        "windowMode": "Només aleshores",
+        "rangeLabel": "Mostra publicacions fins a una data",
+        "cumulativeLabel": {
+            "one": "Publicades fins a {date} — {count} publicació",
+            "other": "Publicades fins a {date} — {count} publicacions"
+        },
+        "windowLabel": {
+            "one": "Publicades pels volts de {date} — {count} publicació",
+            "other": "Publicades pels volts de {date} — {count} publicacions"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Publicació de {name}",
+        "pageTitleUntitled": "Publicació",
+        "imageAltByAuthor": "Foto publicada per {name}",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Elimina el marcador",
+        "add": "Afegeix un marcador"
+    },
+    "PostRepostButton": {
+        "undo": "Desfés la republicació",
+        "repost": "Republica"
+    },
+    "QuotedPost": {
+        "viewLink": "Mostra la publicació citada"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Sol·licituds pendents"
+    },
+    "ScrollToTopButton": {
+        "label": "Desplaça't a dalt"
+    },
+    "SearchClearButton": {
+        "label": "Esborra la cerca"
+    },
+    "SitePolicyLinks": {
+        "terms": "Condicions del servei",
+        "privacy": "Política de privadesa"
+    },
+    "SkipLink": {
+        "label": "Ves al contingut"
+    },
+    "TopicHeading": {
+        "searchLink": "Cerca-ho",
+        "noPosts": "Ara mateix no hi ha cap publicació que ho esmenti."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Encara no s'ha escrit res d'aquest tipus."
+    },
+    "TrendingEntitySection": {
+        "heading": "Tendències"
+    },
+    "PostLocationLink": {
+        "title": "Mostra aquest lloc al mapa",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "ara mateix",
+        "minutes": {
+            "one": "fa {count} min",
+            "other": "fa {count} min"
+        },
+        "hours": {
+            "one": "fa {count} h",
+            "other": "fa {count} h"
+        },
+        "days": {
+            "one": "fa {count} d",
+            "other": "fa {count} d"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Coincideix amb el sistema",
+            "light": "Clara senzilla",
+            "dark": "Fosca senzilla",
+            "sepia": "Sèpia",
+            "midnight": "Mitjanit",
+            "sunset": "Posta de sol",
+            "rose": "Rosa",
+            "forest": "Bosc",
+            "ocean": "Oceà",
+            "lavender": "Lavanda",
+            "gold": "Or",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Escala de grisos"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "La traducció no està configurada en aquest servidor.",
+        "nothing": "Aquí no hi ha res per traduir.",
+        "unknownSource": "Encara no s'ha determinat la llengua d'aquesta publicació i no es pot traduir.",
+        "alreadyReadable": "Aquesta publicació ja és en aquesta llengua.",
+        "unsupportedPair": "Aquest servidor encara no pot traduir a aquesta llengua."
+    },
+    "LanguagePrompt": {
+        "question": "Voleu veure el lloc en català?",
+        "accept": "Sí",
+        "decline": "No, gràcies"
+    },
+    "LanguageSelector": {
+        "label": "Llengua",
+        "legend": "Llengua"
+    },
+    "EmailDigest": {
+        "subject": "El que us heu perdut a {site}",
+        "greeting": "Hola, {name},",
+        "whileAway": "Mentre no hi éreu:",
+        "repeatedTimes": {
+            "one": " ({count} vegada)",
+            "other": " ({count} vegades)"
+        },
+        "moreMissed": {
+            "one": "i {count} notificació més",
+            "other": "i {count} notificacions més"
+        },
+        "messagesWaiting": {
+            "one": "Teniu un missatge pendent",
+            "other": "Teniu {count} missatges pendents"
+        },
+        "postsInFeed": {
+            "one": "Una publicació nova al vostre canal",
+            "other": "{count} publicacions noves al vostre canal"
+        },
+        "unsubscribeInstructions": "Per deixar de rebre aquests correus, obriu l'enllaç; només cal un clic i no demana contrasenya:",
+        "comeSeeWhatIsNew": "Veniu a veure què hi ha de nou",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Deixa d'enviar-me aquests correus",
+            "after": ": un clic, sense contrasenya."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifiqueu l'adreça electrònica",
+        "greeting": "Hola, {name},",
+        "instructions": "Verifiqueu l'adreça electrònica visitant aquest enllaç:",
+        "htmlInstructions": "Verifiqueu l'adreça electrònica fent clic a l'enllaç següent:",
+        "buttonLabel": "Verifica l'adreça electrònica",
+        "expiresIn": {
+            "one": "Aquest enllaç caduca d'aquí a {count} hora.",
+            "other": "Aquest enllaç caduca d'aquí a {count} hores."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Restabliu la contrasenya",
+        "greeting": "Hola, {name},",
+        "instructions": "Algú (esperem que sigueu vós) ha demanat restablir la contrasenya. Visiteu aquest enllaç per triar-ne una de nova:",
+        "htmlInstructions": "Algú (esperem que sigueu vós) ha demanat restablir la contrasenya. Feu clic a l'enllaç següent per triar-ne una de nova:",
+        "buttonLabel": "Restableix la contrasenya",
+        "expiresIn": {
+            "one": "Aquest enllaç caduca d'aquí a {count} hora.",
+            "other": "Aquest enllaç caduca d'aquí a {count} hores."
+        },
+        "ignoreNotice": "Si no ho heu demanat, podeu ignorar aquest correu."
+    }
+}

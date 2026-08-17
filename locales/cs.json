@@ -1,0 +1,1162 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 hlas",
+            "few": "{count} hlasy",
+            "other": "{count} hlasů"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Přihlaste se",
+            "after": ", chcete-li odpovědět."
+        },
+        "post": {
+            "before": "",
+            "link": "Přihlaste se",
+            "after": ", chcete-li přispět."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Web",
+        "siteURLLabel": "Adresa URL webu",
+        "siteTitleLabel": "Název webu",
+        "mailFromAddressLabel": "Adresa odesílatele",
+        "serverNameConfirmedLabel": "V konfiguraci webového serveru jsem nastavil(a) „ServerName {host}“ a „UseCanonicalName On“ (kontroluje se pouze tehdy, když nelze dokončit automatický živý test – viz část HTTPS v README.md)",
+        "databaseLegend": "Databáze",
+        "databaseHostLabel": "Hostitel databáze",
+        "databasePortLabel": "Port databáze",
+        "databaseNameLabel": "Název databáze",
+        "databaseAdminUsernameLabel": "Uživatelské jméno správce databáze",
+        "databaseAdminPasswordLabel": "Heslo správce databáze",
+        "webSocketTLSLegend": "TLS pro WebSocket (volitelné)",
+        "certificatePathLabel": "Cesta k certifikátu",
+        "certificatePathPlaceholder": "Ponechte prázdné pro automatické vytvoření pomocí mkcert",
+        "keyPathLabel": "Cesta ke klíči",
+        "keyPathPlaceholder": "Ponechte prázdné pro automatické vytvoření pomocí mkcert",
+        "botProtectionLegend": "Ochrana proti botům (volitelné)",
+        "turnstileSiteKeyLabel": "Klíč webu Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Ponechte prázdné, chcete-li přeskočit",
+        "turnstileSecretKeyLabel": "Tajný klíč Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Ponechte prázdné, chcete-li přeskočit",
+        "submit": "Nastavit"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Současná přístupová fráze",
+        "newPassphraseLabel": "Nová přístupová fráze",
+        "confirmNewPassphraseLabel": "Potvrďte novou přístupovou frázi",
+        "accountPasswordLabel": "Heslo k účtu",
+        "submit": "Změnit přístupovou frázi"
+    },
+    "PasswordResetForm": {
+        "legend": "Zvolte nové heslo",
+        "newPasswordLabel": "Nové heslo",
+        "newPasswordPlaceholder": "Alespoň 8 znaků",
+        "confirmPasswordLabel": "Potvrďte nové heslo",
+        "submit": "Obnovit heslo"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Obnovení hesla",
+        "emailLabel": "E-mail",
+        "submit": "Odeslat odkaz pro obnovení"
+    },
+    "EmailRevertForm": {
+        "submit": "Vrátit změnu e-mailu"
+    },
+    "EmailVerifyForm": {
+        "submit": "Ověřit e-mailovou adresu"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Znovu je zapnout"
+    },
+    "EmailDigestSetting": {
+        "label": "Poslat mi e-mailem, co jsem zmeškal(a), když jsem delší dobu pryč"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Neznámé zařízení",
+        "browserOnOS": "{browser} v systému {os}",
+        "thisDevice": " (toto zařízení)",
+        "lastUsed": {
+            "before": "Naposledy použito ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Ukončí všechny aktivní relace a zapomene všechna zapamatovaná zařízení. Budete odhlášeni ze všech prohlížečů včetně tohoto."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Odhlásit se všude"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Ověřit pomocí Googlu a odstranit"
+    },
+    "GoogleSignInButton": {
+        "label": "Pokračovat přes Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Upravit profil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Dostávejte oznámení na tomto zařízení, i když web není otevřený. Volba platí pro každý prohlížeč zvlášť – zapněte ji všude, kde chcete být k zastižení.",
+        "label": {
+            "off": "Zapnout na tomto zařízení",
+            "on": "Vypnout na tomto zařízení"
+        },
+        "unsupported": "Tento prohlížeč nepodporuje nabízená oznámení"
+    },
+    "LoginForm": {
+        "legend": "Přihlášení",
+        "identifier": "Uživatelské jméno nebo e-mail",
+        "password": "Heslo",
+        "rememberMe": "Zapamatovat si mě",
+        "submit": "Přihlásit se"
+    },
+    "SignupForm": {
+        "legend": "Vytvoření účtu",
+        "usernameLabel": "Uživatelské jméno",
+        "usernamePlaceholder": "Malá písmena, číslice a _",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Platná e-mailová adresa",
+        "displayName": "Zobrazované jméno (volitelné)",
+        "bioLabel": "Medailonek (volitelné)",
+        "bioPlaceholder": "Krátký medailonek – #hashtagy, @zmínky a odkazy budou klikatelné",
+        "passwordLabel": "Heslo",
+        "passwordPlaceholder": "Heslo: alespoň 8 znaků",
+        "rememberMe": "Zapamatovat si mě",
+        "submit": "Zaregistrovat se"
+    },
+    "PasswordChangeForm": {
+        "legend": "Změna hesla",
+        "currentPassword": "Současné heslo",
+        "newPasswordLabel": "Nové heslo",
+        "newPasswordPlaceholder": "Alespoň 8 znaků",
+        "confirmPassword": "Potvrďte nové heslo",
+        "submit": "Změnit heslo"
+    },
+    "EmailChangeForm": {
+        "legend": "Změna e-mailové adresy",
+        "newEmail": "Nová e-mailová adresa",
+        "currentPassword": "Současné heslo",
+        "notice": "Než budete moci web dál používat, budete muset novou adresu ověřit.",
+        "submit": "Změnit e-mail"
+    },
+    "AccountDeleteForm": {
+        "legend": "Odstranění účtu",
+        "warning": "Účet, příspěvky a zprávy budou trvale odstraněny. Tento krok nelze vrátit zpět.",
+        "currentPassword": "Současné heslo",
+        "submit": "Odstranit účet"
+    },
+    "AccountMigrationForm": {
+        "legend": "Přesun na jiný server",
+        "movedNotice": "Tento účet se přesunul na {destination}. Vaši sledující byli požádáni, aby vás sledovali tam.",
+        "explanation": "Vaši sledující budou požádáni, aby sledovali nový účet. Příspěvky zůstanou zde – adresy objektů patří serveru, který je vytvořil, a nelze je přenést.",
+        "addressNotice": "Účet, na který se přesouváte, musí tento účet nejprve uvést mezi svými aliasy. Vaše zdejší adresa je {address}.",
+        "movedToLabel": "Přesunout na",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Také známý jako",
+        "aliasesExplanation": "Vaše účty na jiných místech. Uvedením účtu zde mu dovolíte přesunout se na tento účet – jde o povolení, nikoli o samotný přesun. Jedna adresa na řádek.",
+        "aliasesLabel": "Vaše další účty",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Uložit"
+    },
+    "TwoFactorForm": {
+        "legend": "Zadejte ověřovací kód",
+        "explanation": "Ověřovací kód jsme vám poslali e-mailem. Přihlášení dokončíte jeho zadáním níže nebo použitím jednoho ze záložních kódů.",
+        "explanationEmailFailed": "Ověřovací kód se nyní nepodařilo odeslat e-mailem. Přihlášení dokončíte zadáním jednoho ze záložních kódů.",
+        "code": "Ověřovací kód",
+        "submit": "Ověřit"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Dvoufázové ověření je zapnuté",
+            "off": "Dvoufázové ověření je vypnuté"
+        },
+        "explanation": {
+            "on": "Při přihlášení vám e-mailem pošleme ověřovací kód, jehož zadáním přihlášení dokončíte. Pokud vám e-mail nedorazí, můžete se přihlásit jedním ze záložních kódů.",
+            "off": "Přidejte k přihlášení druhý krok: e-mailem vám pošleme ověřovací kód, takže samotné heslo nebude stačit. Dostanete jednorázové záložní kódy pro případ, že vám e-mail nedorazí."
+        },
+        "currentPassword": "Současné heslo",
+        "submit": {
+            "on": "Vypnout dvoufázové ověření",
+            "off": "Zapnout dvoufázové ověření"
+        },
+        "regenerate": "Vytvořit nové záložní kódy",
+        "recoveryHeading": "Vaše záložní kódy",
+        "recoveryNote": "Nyní je uložte na bezpečné místo – znovu se nezobrazí. Každý umožní jedno přihlášení, když ověřovací e-mail nedorazí; vytvořením nových kódů se všechny tyto nahradí.",
+        "toast": {
+            "on": "Dvoufázové ověření je nyní zapnuté.",
+            "off": "Dvoufázové ověření je nyní vypnuté.",
+            "regenerated": "Byly vytvořeny nové záložní kódy. Staré už nefungují."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Zkontrolujte doručenou poštu a kliknutím na zaslaný ověřovací odkaz potvrďte svou e-mailovou adresu. Pokud zprávu nevidíte, zkontrolujte složku s nevyžádanou poštou."
+    },
+    "VerificationResendButton": {
+        "label": "Znovu odeslat ověřovací e-mail"
+    },
+    "MailSettingsForm": {
+        "legend": "Odchozí pošta",
+        "fromAddressLabel": "Adresa odesílatele",
+        "fromAddressPlaceholder": "Dokud není nastavena, nelze odesílat e-maily",
+        "fromNameLabel": "Jméno odesílatele",
+        "hostLabel": "Hostitel SMTP",
+        "portLabel": "Port SMTP",
+        "usernameLabel": "Uživatelské jméno SMTP",
+        "passwordLabel": "Heslo SMTP",
+        "passwordPlaceholder": {
+            "set": "Heslo je nastaveno – ponechte prázdné, chcete-li je zachovat",
+            "unset": "Heslo SMTP"
+        },
+        "encryptionLabel": "Šifrování",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, obvykle na portu 587)",
+            "ssl": "SSL (implicitní TLS, obvykle na portu 465)",
+            "none": "Žádné"
+        },
+        "explainer": "Ponechte hostitele SMTP prázdného, chcete-li místo něj odesílat pomocí funkce mail() v PHP (nedoporučuje se – viz část README o doručitelnosti). Dokud není nastavena adresa odesílatele, nelze odesílat žádné e-maily.",
+        "save": "Uložit"
+    },
+    "MapSettingsForm": {
+        "legend": "Mapové dlaždice",
+        "notice": "Ponechte prázdné pro použití OpenStreetMap. Chcete-li použít poskytovatele s klíčem, vložte jeho šablonu URL s doslovným {apiKey} na místě klíče a níže zadejte klíč a uvedení zdroje.",
+        "urlLabel": "Šablona URL dlaždic",
+        "keyLabel": "Klíč API",
+        "keyPlaceholder": "Klíč API poskytovatele map",
+        "attributionLabel": "Uvedení zdroje",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Uložit"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Přihlášení přes Google",
+        "clientIdLabel": "ID klienta",
+        "clientIdPlaceholder": "ID klienta Google OAuth",
+        "secretLabel": "Tajný klíč klienta",
+        "secretPlaceholder": {
+            "set": "Tajný klíč klienta je nastaven – ponechte prázdné, chcete-li jej zachovat",
+            "unset": "Tajný klíč klienta Google OAuth"
+        },
+        "explainer": "Obě hodnoty jsou nutné, aby se při registraci a přihlášení zobrazila možnost „Pokračovat přes Google“. V klientovi Google Cloud OAuth nastavte autorizovaný identifikátor URI přesměrování na {url}; odstraněním ID klienta funkci vypnete.",
+        "save": "Uložit"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Klíč webu",
+        "turnstileSiteKeyPlaceholder": "Klíč webu Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Tajný klíč",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Tajný klíč je nastaven – ponechte prázdné, chcete-li jej zachovat",
+            "unset": "Tajný klíč Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Oba klíče jsou nutné, aby se při registraci a přihlášení zobrazila CAPTCHA. Odstraněním klíče webu ji vypnete.",
+        "recaptchaLegend": "Google reCAPTCHA (obnovení uzamčeného účtu)",
+        "recaptchaSiteKeyLabel": "Klíč webu",
+        "recaptchaSiteKeyPlaceholder": "Klíč webu Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Tajný klíč",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Tajný klíč je nastaven – ponechte prázdné, chcete-li jej zachovat",
+            "unset": "Tajný klíč Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Oba klíče jsou nutné. Pokud jsou nastavené, může účet po dosažení limitu pokusů o přihlášení splnit tuto výzvu místo čekání na konec uzamčení; bez klíčů musí čekat. Použijte reCAPTCHA v2 („Nejsem robot“). Odstraněním klíče webu ji vypnete.",
+        "save": "Uložit"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Používají jej funkce umělé inteligence na webu (souhrny trendových témat apod.). Ponechte model prázdný pro použití směrovače bezplatných modelů, kdy OpenRouter náhodně vybere právě dostupný bezplatný model a nikdy nevzniknou náklady.",
+        "keyLabel": "Klíč API",
+        "keyPlaceholder": {
+            "set": "Klíč API je nastaven – ponechte prázdné, chcete-li jej zachovat",
+            "unset": "Klíč API OpenRouter"
+        },
+        "clearKeyLabel": "Odstranit uložený klíč API (vypne funkce umělé inteligence)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Nikdy nedovolit utrácení peněz (doporučeno)",
+        "explainer": "Se zapnutou ochranou má každý požadavek cenový limit nula, takže při nedostupnosti bezplatného poskytovatele selže namísto přechodu na placený model. Odstraněním uloženého klíče API funkce umělé inteligence zcela vypnete.",
+        "save": "Uložit"
+    },
+    "AboutSettingsForm": {
+        "legend": "O webu",
+        "description": "Prostý text – prázdné řádky oddělují odstavce. První odstavec bude použit jako popis webu.",
+        "save": "Uložit"
+    },
+    "TermsSettingsForm": {
+        "legend": "Podmínky služby",
+        "description": "Prostý text – prázdné řádky oddělují odstavce.",
+        "save": "Uložit"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Zásady ochrany soukromí",
+        "description": "Prostý text – prázdné řádky oddělují odstavce.",
+        "save": "Uložit"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-mailový přehled",
+        "fieldLabel": "Závěrečný odstavec",
+        "notice": "Přidává se ke konci každého přehledu za seznam toho, co člen zmeškal. Prostý text. Ponechte prázdné pro návrat k výchozímu znění programu.",
+        "save": "Uložit"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Současná ikona webu",
+        "save": "Nahrát ikonu webu"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Obrázek titulní stránky",
+        "explainer": "Zobrazuje se na jiných webech při sdílení odkazu na tento web – pouze jako metadata Open Graph, nikdy přímo na stránce. Ořízne se na 1200×630. Bez něj náhledy odkazů neobsahují žádný obrázek.",
+        "currentAlt": "Současný obrázek titulní stránky",
+        "save": "Nahrát obrázek"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automatické přehrávání"
+    },
+    "CarouselNextButton": {
+        "name": "Další"
+    },
+    "CarouselPrevButton": {
+        "name": "Předchozí"
+    },
+    "MediaFullscreenButton": {
+        "name": "Celá obrazovka"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Odstranit soubory"
+    },
+    "NotificationDropdown": {
+        "showAll": "Zobrazit vše"
+    },
+    "HelpSearch": {
+        "placeholder": "Hledat v nápovědě…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Rozumím"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Zahodit"
+    },
+    "StagedPostEditButton": {
+        "name": "Upravit"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publikovat nyní"
+    },
+    "LogoutButton": {
+        "name": "Odhlásit se"
+    },
+    "AvatarUploadForm": {
+        "submit": "Aktualizovat avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Hledat zablokované uživatele…"
+    },
+    "BannedUserSection": {
+        "heading": "Zablokovaní uživatelé"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Odeslané žádosti (čekají na odpověď)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Zablokoval(a) {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Zablokoval(a) {name} ",
+            "after": ""
+        },
+        "deletedAccount": "odstraněný účet",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "ledna",
+            "2": "února",
+            "3": "března",
+            "4": "dubna",
+            "5": "května",
+            "6": "června",
+            "7": "července",
+            "8": "srpna",
+            "9": "září",
+            "10": "října",
+            "11": "listopadu",
+            "12": "prosince"
+        },
+        "shortMonths": {
+            "1": "led",
+            "2": "úno",
+            "3": "bře",
+            "4": "dub",
+            "5": "kvě",
+            "6": "čer",
+            "7": "čvc",
+            "8": "srp",
+            "9": "zář",
+            "10": "říj",
+            "11": "lis",
+            "12": "pro"
+        },
+        "long": "{day}. {month} {year}",
+        "short": "{day}. {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} v {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "K serveru WebSocket na 127.0.0.1:{port}{tls} se nepodařilo připojit ({error}). Nejprve jej spusťte: systemctl --user start glommer-websocket (soubor jednotky najdete v README.md). Pokud právě získal nebo ztratil WS_TLS_CERT/WS_TLS_KEY, restartujte jej, aby odpovídal souboru .env.",
+        "wsOverTLS": " přes TLS",
+        "wsBadHandshake": "Služba na 127.0.0.1:{port} nedokončila platný handshake WebSocket – na tomto portu může naslouchat něco jiného než bin/websocket-server.php.",
+        "wsNoPong": "Server WebSocket přijal handshake, ale neodpověděl na ping – může být zaseknutý nebo pracovat nesprávně. Zkontrolujte jeho protokoly.",
+        "wsReachable": "Server WebSocket je dostupný a odpovídá na 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtag",
+            "person": "Osoba",
+            "org": "Organizace",
+            "gpe": "Místo",
+            "loc": "Oblast",
+            "fac": "Pamětihodnost",
+            "product": "Produkt",
+            "event": "Událost",
+            "work_of_art": "Dílo",
+            "law": "Zákon",
+            "language": "Jazyk",
+            "norp": "Skupina"
+        },
+        "plural": {
+            "hashtag": "Hashtagy",
+            "person": "Lidé",
+            "org": "Organizace",
+            "gpe": "Místa",
+            "loc": "Oblasti",
+            "fac": "Pamětihodnosti",
+            "product": "Produkty",
+            "event": "Události",
+            "work_of_art": "Díla",
+            "law": "Zákony",
+            "language": "Jazyky",
+            "norp": "Skupiny"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Odebrat přítele"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Přijmout"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Odmítnout"
+    },
+    "UserFollowButton": {
+        "follow": "Sledovat",
+        "unfollow": "Přestat sledovat"
+    },
+    "UserBlockButton": {
+        "name": "Zablokovat"
+    },
+    "UserUnblockButton": {
+        "name": "Odblokovat"
+    },
+    "OtherUser": {
+        "message": "Zpráva"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Nabídka",
+        "loggedInAs": "Přihlášen(a) jako {name}",
+        "friendsFeed": "Kanál přátel",
+        "relayFeed": "Kanál přenosů",
+        "users": "Uživatelé",
+        "tags": "Štítky",
+        "topics": "Témata",
+        "map": "Mapa",
+        "locations": "Místa",
+        "search": "Hledat",
+        "messages": "Zprávy",
+        "bookmarks": "Záložky",
+        "help": "Nápověda",
+        "about": "O webu",
+        "login": "Přihlásit se",
+        "signup": "Zaregistrovat se",
+        "friends": "Přátelé",
+        "drafts": "Koncepty a naplánované",
+        "userSettings": "Uživatelská nastavení",
+        "modSettings": "Nastavení moderování",
+        "adminSettings": "Nastavení správy"
+    },
+    "LogoutForm": {
+        "submit": "Odhlásit se"
+    },
+    "User": {
+        "joined": "Připojil(a) se {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Přidat přítele",
+        "cancel": "Zrušit žádost"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Naplánováno na {when}",
+        "draft": "Koncept – zveřejní se, až jej sami odešlete"
+    },
+    "MessageTranslateButton": {
+        "name": "Přeložit tuto zprávu"
+    },
+    "MessageTranslationNotice": {
+        "heading": "O překládání zpráv",
+        "body": "Při překladu se text zprávy odešle na tento server a zde se přeloží. Nic se neuchovává: překlad se nezapíše do databáze a samotná zpráva se nezmění. Takto přeloženou zprávu však server přečetl, a proto není šifrovaná mezi koncovými body jako nepřeložená zpráva. Přeložit lze pouze přijaté zprávy a jen na vaši žádost.",
+        "confirm": "Přeložit",
+        "cancel": "Teď ne"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Zapomněli jste přístupovou frázi? Obnovením vzniknou nové klíče chráněné novou frází, ale zprávy zašifrované starými klíči už nikdo nikdy nepřečte.",
+        "requirements": "Alespoň 12 znaků a nesmí být stejná jako heslo k účtu – heslo se odesílá na server, ale přístupová fráze se na něj nikdy odeslat nesmí.",
+        "passphraseLabel": "Přístupová fráze",
+        "resetPassphraseLabel": "Nová přístupová fráze",
+        "confirmLabel": "Potvrďte přístupovou frázi",
+        "accountPasswordLabel": "Heslo k účtu",
+        "submitLabel": "Zapnout šifrované zprávy",
+        "resetSubmitLabel": "Obnovit šifrovací klíče"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Zprávy šifrované mezi koncovými body se zamykají a odemykají v prohlížeči: server je předává a ukládá, aniž by je mohl přečíst. Klíč chrání přístupová fráze, která zprávy odemkne v libovolném prohlížeči. Konverzace se zašifruje, jakmile funkci zapnou oba lidé; zprávy lidem na jiných serverech zůstávají nešifrované, protože federace je jinak neumí přenášet.",
+        "noRecovery": "Ztracenou přístupovou frázi nelze nijak obnovit, a to ani správcem. Její ztráta znamená ztrátu šifrovaných zpráv.",
+        "enabledStatus": "Šifrované zprávy jsou zapnuté."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Šifrováno",
+            "explanation": "Zprávy v této konverzaci jsou šifrované mezi koncovými body: odemykají se přístupovou frází a čtou ve vašich prohlížečích, zatímco server ukládá pouze šifrovaný text. Porovnejte s druhou osobou bezpečnostní kód na konci vlákna, abyste se ujistili, že mezi vámi nikdo není. Zprávy odeslané před zapnutím šifrování zůstávají čitelné jako dříve."
+        },
+        "awaiting-theirs": {
+            "label": "Nešifrováno",
+            "explanation": "Zprávy zde budou šifrované mezi koncovými body, jakmile {handle} zapne šifrované zprávy ve svém nastavení."
+        },
+        "awaiting-yours": {
+            "label": "Nešifrováno",
+            "explanation": "Zprávy zde nejsou šifrované mezi koncovými body. Zapnutím šifrovaných zpráv v Nastavení tuto konverzaci zabezpečíte."
+        },
+        "federated": {
+            "label": "Nešifrováno",
+            "explanation": "{handle} je na jiném serveru. Zprávy v této konverzaci se ukládají na obou serverech a správce druhého serveru je může číst – protokol mezi servery je neumí zašifrovat. Citlivé informace sdílejte pouze v konverzacích na tomto webu."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Sledování účtů ve Fediverse",
+        "notice": "Vložte jedno nebo více úplných uživatelských jmen, například @user@example.social – oddělit je můžete libovolným oddělovačem.",
+        "handlesLabel": "Uživatelská jména ve Fediverse ke sledování",
+        "submit": "Sledovat",
+        "statusPending": "čeká",
+        "statusAccepted": "přijato"
+    },
+    "ServerBlockForm": {
+        "legend": "Zablokování serveru",
+        "description": "Odmítne vše z tohoto serveru i jeho poddomén: žádné příchozí ani odchozí doručování a stávající sledování v obou směrech budou zrušena.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Důvod",
+        "reasonPlaceholder": "Proč je tento server zablokován",
+        "submit": "Zablokovat server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Spustí části nastavení hovoru, které lze zkontrolovat z jednoho prohlížeče. Vše až po skutečné přímé spojení lze otestovat zde; ke spojení s druhou osobou je potřeba její účast."
+    },
+    "VideoCallTestButton": {
+        "label": "Spustit kontrolu"
+    },
+    "WebSocketStatus": {
+        "ok": "Server WebSocket: běží",
+        "failed": "Server WebSocket: {detail}",
+        "clientTesting": "Připojení prohlížeče: testuje se…",
+        "clientConnecting": "Připojení prohlížeče: připojuje se…",
+        "clientConnected": "Připojení prohlížeče: připojeno",
+        "clientDisconnecting": "Připojení prohlížeče: odpojuje se…",
+        "clientNotConnected": "Připojení prohlížeče: nepřipojeno"
+    },
+    "UploadWorkerStatus": {
+        "running": "Pracovní služba: běží",
+        "stopped": "Pracovní služba: neběží – připravená nahrávání se nepřevedou, dokud nebude služba restartována",
+        "unknown": "Pracovní služba: neznámý stav – na tomto hostiteli není dostupný systemctl nebo SELinux zamítá dotaz webového serveru na stav (opravíte spuštěním bin/install.php jako root)",
+        "queue": "Fronta: {staging} připravovaných, {pending} čekajících, {processing} zpracovávaných"
+    },
+    "TrendingTimerStatus": {
+        "running": "Časovač trendů: běží",
+        "stopped": "Časovač trendů: neběží – trendová témata se budou obnovovat pouze samoopravou při čtení (Trending::current()), nikoli podle plánu. Nastavíte jej spuštěním bin/install.php jako root.",
+        "unknown": "Časovač trendů: neznámý stav – na tomto hostiteli není dostupný systemctl nebo SELinux zamítá dotaz webového serveru na stav (opravíte spuštěním bin/install.php jako root)"
+    },
+    "Notification": {
+        "postReady": "Vaše média byla zpracována a jsou nyní zveřejněna",
+        "scheduledPostLive": "Váš naplánovaný příspěvek je nyní zveřejněn",
+        "uploadPartlyFailed": "Příspěvek je zveřejněn, ale jeden či více jeho souborů se nepodařilo zpracovat",
+        "uploadFailed": "Jedno z nahrávání se nepodařilo zpracovat a nebylo zveřejněno",
+        "mailerFailed": "Doručení e-mailu selhalo – poštovní služba může být mimo provoz. Zkontrolujte nastavení pošty.",
+        "mailFromNotConfigured": "Není nastavena adresa odesílatele, takže nelze posílat e-maily. Nastavte ji v Nastavení správy (část Odchozí pošta) nebo pomocí bin/install.php.",
+        "systemError": "Došlo k chybě serveru. Podrobnosti najdete v protokolu chyb.",
+        "passwordRemovedGoogle": "Při přihlášení přes Google bylo vaše heslo odstraněno. Chcete-li nastavit nové, použijte „Zapomenuté heslo“.",
+        "like": "Uživateli {name} se líbí váš příspěvek",
+        "repost": "{name} znovu sdílel(a) váš příspěvek",
+        "reply": "{name} odpověděl(a) na váš příspěvek",
+        "friendRequest": "{name} vám poslal(a) žádost o přátelství",
+        "friendAccepted": "{name} přijal(a) vaši žádost o přátelství",
+        "message": "{name} vám poslal(a) zprávu",
+        "mention": "{name} vás zmínil(a) v příspěvku",
+        "follow": "{name} vás začal(a) sledovat z jiného serveru",
+        "default": "{name} něco udělal(a)"
+    },
+    "NotificationList": {
+        "emptyNotice": "Zatím žádná oznámení."
+    },
+    "NotificationsNavLink": {
+        "label": "Oznámení",
+        "unseen": "Nezobrazená oznámení"
+    },
+    "NotificationTestPanel": {
+        "intro": "Pošlete zkušební oznámení sami sobě (správci). Mělo by se ihned zobrazit jako krátká zpráva a v rozevíracím seznamu oznámení.",
+        "button": "Odeslat zkušební oznámení",
+        "sending": "Odesílá se…",
+        "sent": "Odesláno!",
+        "failed": "Selhalo"
+    },
+    "MessageDot": {
+        "label": "Nepřečtené zprávy"
+    },
+    "NavAlertDot": {
+        "label": "Něco nového v nabídce"
+    },
+    "Message": {
+        "encrypted": "Šifrovaná zpráva",
+        "decryptionFailed": "Tato zpráva byla zašifrována klíči, které už neexistují."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Zpráva",
+        "bodyPlaceholder": "Napište zprávu",
+        "send": "Odeslat"
+    },
+    "MessageList": {
+        "emptyNotice": "Zatím žádné zprávy."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Sdělte si tento kód jiným způsobem – nahlas, osobně nebo během hovoru. Pokud se na obou stranách shoduje, nikdo mezi vámi není.",
+        "changed": "Od poslední kontroly se tento kód změnil. Stává se to, když jeden z vás obnoví šifrovací klíče, ale stejně by vypadal i někdo, kdo konverzaci čte. Než novému kódu uvěříte, porovnejte jej s druhou osobou.",
+        "verified": "Tento kód jste zkontrolovali."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Označit jako ověřené"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Přístupová fráze",
+        "passphrasePlaceholder": "Přístupová fráze k odemknutí konverzace",
+        "submit": "Odemknout"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Poslední zpráva ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Citlivá média"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Ve výchozím nastavení zobrazovat citlivá média"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Příspěvek",
+            "message": "Zpráva",
+            "user": "Uživatel"
+        },
+        "summary": {
+            "before": "{type} č. {id}, nahlásil(a) ",
+            "after": ""
+        },
+        "reasonLine": "Důvod: {reason}",
+        "banReporterLabel": "Zablokovat oznamovatele",
+        "banReportedUserLabel": "Zablokovat nahlášeného uživatele",
+        "deleteLabel": "Odstranit {type}",
+        "reportedImageAlt": "Nahlášený obrázek",
+        "attachmentUnavailable": "Nahlášená příloha už není dostupná.",
+        "viewAttachment": "Zobrazit nahlášenou přílohu",
+        "missing": {
+            "noSnapshot": "Nahlášený obsah už není dostupný.",
+            "unknownType": "Neznámý typ obsahu."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Žádná hlášení."
+    },
+    "ModQueueLinks": {
+        "intro": "Fronty jsou dostatečně dlouhé na procházení po stránkách, a proto mají vlastní stránky.",
+        "reportsLabel": "Hlášení",
+        "bannedUsersLabel": "Zablokovaní uživatelé"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Moderátoři zatím nic neprovedli."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Žádné zablokované trendové entity."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Žádné zablokované servery."
+    },
+    "RelayCard": {
+        "accepted": "Přihlášeno k odběru ",
+        "waiting": "Čeká se na přijetí přenosem – přihlášeno k odběru "
+    },
+    "RelayList": {
+        "emptyNotice": "Nejste přihlášeni k žádným přenosům. Přichází sem pouze obsah, který členové sledují."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Přenosem zatím nic nepřišlo. Příspěvky se zde objeví, jakmile je servery na druhé straně zveřejní."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Přihlášení k přenosu",
+        "explainerOne": "Přenos je sdílený proud: každý veřejný příspěvek z ostatních přihlášených serverů dorazí sem a příspěvky tohoto serveru se odešlou všem ostatním. Nová instance tak vůbec někoho najde, protože federace jinak přenáší pouze obsah, který zde už někdo sleduje.",
+        "explainerTwo": "Zatížení nelze předvídat – závisí na tom, co tyto servery zveřejní: jeden týden může být klid a další tisíce příspěvků za hodinu, které zatíží úložiště i fronty doručování a moderování. Přenesené příspěvky se nezobrazují v hlavním kanálu ani v kanálu přátel; míří do Kanálu přenosů, který lidé otevírají záměrně.",
+        "addressLabel": "Adresa přenosu",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Přihlásit k odběru"
+    },
+    "RelayFollowObjectField": {
+        "label": "Způsob odběru",
+        "options": {
+            "public": "Sledovat veřejný proud (očekává většina přenosů)",
+            "actor": "Sledovat vlastního aktéra přenosu"
+        },
+        "retryNotice": "Pokud přenos žádost nepřijme, stáhněte ji a zkuste druhý způsob – některý software rozpoznává pouze jeden z nich."
+    },
+    "SiteCounters": {
+        "members": "Členové: {count} ({joined} se připojilo za posledních {days} dní)",
+        "activeMembers": "Členové přítomní za posledních {days} dní: {count} ({posted} z nich přispělo)",
+        "posts": "Příspěvky napsané zde: {count} ({recent} za posledních {days} dní)",
+        "deliveries": "Federované doručení za posledních {days} dní: {delivered} dorazilo, u {undeliverable} byly pokusy ukončeny",
+        "queued": "Čeká na odeslání: {count} ({failing} už bylo alespoň jednou odmítnuto)",
+        "pendingReads": "Příspěvky čekající na načtení z jiných serverů: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Spusťte sadu testů webu a prohlédněte si výsledky. Trvá to několik sekund, proto se otevře samostatná stránka.",
+        "runLabel": "Spustit testy"
+    },
+    "HelpArticle": {
+        "backLabel": "Zpět na všechnu nápovědu"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Momentálně nejsou žádné návrhy – pocházejí od přátel lidí, se kterými už se přátelíte. Pomocí hledání výše najděte někoho podle jména.",
+        "noMatches": "Tomuto hledání zde nikdo neodpovídá."
+    },
+    "UserModButton": {
+        "make": "Jmenovat moderátorem",
+        "remove": "Odebrat roli moderátora"
+    },
+    "UserUnbanButton": {
+        "name": "Odblokovat"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Zablokovat"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Odblokovat"
+    },
+    "ReportDismissButton": {
+        "name": "Zamítnout"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Označit jako citlivé"
+    },
+    "ServerUnblockButton": {
+        "name": "Odblokovat"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Odhlásit odběr"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Odvolat"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: úspěšné",
+        "failing": "{suite}: neúspěšné"
+    },
+    "PageTitle": {
+        "about": "O webu",
+        "adminBanned": "Zablokovaní uživatelé",
+        "adminModSettings": "Nastavení moderování",
+        "adminReports": "Hlášení",
+        "adminSettings": "Nastavení správy",
+        "adminTests": "Testy",
+        "authGoogleCallbackAccountDeleted": "Účet odstraněn",
+        "authGoogleCallbackDeleteAccount": "Odstranit účet",
+        "authGoogleCallbackLogin": "Přihlásit se",
+        "bookmarks": "Záložky",
+        "checkInbox": "Zkontrolujte doručenou poštu",
+        "drafts": "Koncepty a naplánované",
+        "draftsEditDraft": "Upravit koncept",
+        "draftsEditScheduled": "Upravit naplánovaný příspěvek",
+        "forgotPassword": "Zapomenuté heslo",
+        "friendsFeed": "Kanál přátel",
+        "help": "Nápověda",
+        "helpDescription": "Návody a odpovědi k používání webu.",
+        "locations": "Místa",
+        "locationsDescription": "Příspěvky z míst nejblíže k vám.",
+        "locationsPlaceDescription": "Příspěvky poblíž místa {place}.",
+        "login": "Přihlásit se",
+        "loginVerificationCode": "Ověřovací kód",
+        "map": "Mapa",
+        "mapDescription": "Mapa příspěvků z celého světa – najděte lidi a věci ve svém okolí.",
+        "messages": "Zprávy",
+        "messagesWithUser": "Zprávy s uživatelem {name}",
+        "notifications": "Oznámení",
+        "privacy": "Zásady ochrany soukromí",
+        "quote": "Citace",
+        "relayFeed": "Kanál přenosů",
+        "relayFeedDescription": "Veřejné příspěvky přicházející z přenosů, k nimž je tento server přihlášen.",
+        "resetPassword": "Obnovit heslo",
+        "revertEmail": "Vrátit změnu e-mailu",
+        "search": "Hledat",
+        "signup": "Zaregistrovat se",
+        "tags": "Štítky",
+        "tagsDescription": "Procházejte trendové a oblíbené hashtagy na webu {siteTitle}.",
+        "tagsTagDescription": "Příspěvky označené {tag} na webu {siteTitle}.",
+        "terms": "Podmínky služby",
+        "topics": "Témata",
+        "topicsDescription": "O čem lidé právě mluví na webu {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel} – příspěvky zmiňující {entityTitle} na webu {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, o kterých lidé právě mluví na webu {siteTitle}.",
+        "unsubscribe": "E-mailové přehledy",
+        "userFriends": "Přátelé uživatele {name}",
+        "userFriendsDescription": "Přátelé uživatele {name} na webu {siteTitle}",
+        "userSettings": "Uživatelská nastavení",
+        "users": "Uživatelé",
+        "verifyEmail": "Ověřit e-mail"
+    },
+    "PostLikeButton": {
+        "like": "To se mi líbí",
+        "unlike": "Už se mi to nelíbí"
+    },
+    "PostPinButton": {
+        "pin": "Připnout",
+        "unpin": "Odepnout"
+    },
+    "PostQuoteButton": {
+        "name": "Citovat"
+    },
+    "PostDeleteButton": {
+        "name": "Odstranit"
+    },
+    "PostEditButton": {
+        "name": "Upravit"
+    },
+    "ReportButton": {
+        "name": "Nahlásit"
+    },
+    "PostActionBar": {
+        "reply": "Odpovědět",
+        "replies": {
+            "one": "Odpovědi ({count})",
+            "few": "Odpovědi ({count})",
+            "other": "Odpovědí ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(upraveno)"
+    },
+    "RepliesHeading": {
+        "heading": "Odpovědi"
+    },
+    "PollVoteButton": {
+        "name": "Hlasovat"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Zobrazit ",
+            "link": "další místa",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Příspěvky ve vašem okolí",
+        "description": "Zobrazuje příspěvky nejblíže zvolenému bodu – kdekoli se něco děje, bez ohledu na vzdálenost. Sdílejte svou polohu a začněte tam, kde jste, nebo vyberte bod na mapě.",
+        "useMyLocation": "Použít mou polohu",
+        "pickOnMap": "Vybrat na mapě",
+        "searchPlaceholder": "Nebo napište název místa…",
+        "searchLabel": "Hledat místo",
+        "locating": "Zjišťuje se poloha…",
+        "noGeolocation": "Prohlížeč nemůže sdílet polohu.",
+        "locationError": "Polohu se nepodařilo zjistit. Zkontrolujte oprávnění k poloze v prohlížeči."
+    },
+    "PollDeadline": {
+        "final": "Konečný výsledek",
+        "closes": {
+            "before": "Končí ",
+            "after": ""
+        },
+        "days": {
+            "one": "za {count} den",
+            "few": "za {count} dny",
+            "other": "za {count} dní"
+        },
+        "hours": {
+            "one": "za {count} hodinu",
+            "few": "za {count} hodiny",
+            "other": "za {count} hodin"
+        },
+        "minutes": {
+            "one": "za {count} minutu",
+            "few": "za {count} minuty",
+            "other": "za {count} minut"
+        },
+        "underMinute": "za méně než minutu"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Hlasoval 1 člověk ",
+            "few": "Hlasovali {count} lidé ",
+            "other": "Hlasovalo {count} lidí "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Přihlaste se",
+            "after": ", chcete-li přispět."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Přihlaste se",
+            "after": ", chcete-li odpovědět."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " znovu sdílel(a)"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "V odpovědi na ",
+            "after": ""
+        },
+        "untitled": "tento příspěvek",
+        "jumpToStart": "Přejít na začátek"
+    },
+    "TopicSummaryCard": {
+        "label": "Souhrn vytvořený umělou inteligencí"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Vítejte na ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Napište něco do pole níže a odešle se to do vašeho kanálu. Odpovědět může kdokoli; odpověď je příspěvek s nadřazeným příspěvkem, takže konverzace se mohou větvit tak hluboko, jak je potřeba.",
+            "Přidávejte lidi mezi přátele a jejich příspěvky se objeví ve vašem kanálu. Globální kanál – název webu vlevo nahoře – ukazuje vše, co zde bylo napsáno, a můžete v něm najít někoho k přidání.",
+            "Tento web je součástí Fediverse: účty na Mastodonu a dalších serverech můžete sledovat podle úplného uživatelského jména a vaše příspěvky se dostanou k lidem, kteří vás tam sledují. Vyhledejte jméno jako @someone@example.social a server účet najde.",
+            "Přidejte k příspěvku #hashtagy a zobrazí se na stránce příslušného hashtagu a také v Trendech, pokud o něm píše dost lidí.",
+            "Zprávy mezi členy jsou šifrované mezi koncovými body – server ukládá šifrovaný text, který nemůže přečíst. Funkci zapnete v Nastavení.",
+            "Nemusíte příspěvek zveřejnit hned: uložte koncept nebo nastavte čas automatického zveřejnění. Obojí najdete v části „Koncepty a naplánované“."
+        ],
+        "more": {
+            "before": "Další informace najdete na ",
+            "link": "stránkách nápovědy",
+            "after": ", včetně postupu přesunu účtu sem odjinud."
+        },
+        "dontShowAgain": "Příště nezobrazovat"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Vložit emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Obrázek náhledu odkazu"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Odstranit obrázek"
+    },
+    "LinkItem": {
+        "alt": "Obrázek náhledu odkazu"
+    },
+    "MapScrubber": {
+        "play": "Přehrát",
+        "pause": "Pozastavit",
+        "cumulativeMode": "Do té doby",
+        "windowMode": "Jen v té době",
+        "rangeLabel": "Zobrazit příspěvky do data",
+        "cumulativeLabel": {
+            "one": "Zveřejněno do {date} – {count} příspěvek",
+            "few": "Zveřejněno do {date} – {count} příspěvky",
+            "other": "Zveřejněno do {date} – {count} příspěvků"
+        },
+        "windowLabel": {
+            "one": "Zveřejněno kolem {date} – {count} příspěvek",
+            "few": "Zveřejněno kolem {date} – {count} příspěvky",
+            "other": "Zveřejněno kolem {date} – {count} příspěvků"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Příspěvek uživatele {name}",
+        "pageTitleUntitled": "Příspěvek",
+        "imageAltByAuthor": "Fotografie zveřejněná uživatelem {name}",
+        "imageAltUntitled": "Fotografie"
+    },
+    "PostBookmarkButton": {
+        "remove": "Odstranit záložku",
+        "add": "Přidat záložku"
+    },
+    "PostRepostButton": {
+        "undo": "Vrátit opětovné sdílení",
+        "repost": "Sdílet znovu"
+    },
+    "QuotedPost": {
+        "viewLink": "Zobrazit citovaný příspěvek"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Čekající žádosti"
+    },
+    "ScrollToTopButton": {
+        "label": "Posunout nahoru"
+    },
+    "SearchClearButton": {
+        "label": "Vymazat hledání"
+    },
+    "SitePolicyLinks": {
+        "terms": "Podmínky služby",
+        "privacy": "Zásady ochrany soukromí"
+    },
+    "SkipLink": {
+        "label": "Přejít k obsahu"
+    },
+    "TopicHeading": {
+        "searchLink": "Vyhledat toto",
+        "noPosts": "Momentálně to nezmiňuje žádný příspěvek."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "O ničem tohoto druhu zatím nikdo nepsal."
+    },
+    "TrendingEntitySection": {
+        "heading": "Trendy"
+    },
+    "PostLocationLink": {
+        "title": "Zobrazit toto místo na mapě",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "právě teď",
+        "minutes": {
+            "one": "před {count} min",
+            "few": "před {count} min",
+            "other": "před {count} min"
+        },
+        "hours": {
+            "one": "před {count} h",
+            "few": "před {count} h",
+            "other": "před {count} h"
+        },
+        "days": {
+            "one": "před {count} d",
+            "few": "před {count} d",
+            "other": "před {count} d"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Motiv",
+        "themes": {
+            "system": "Podle systému",
+            "light": "Jednoduchý světlý",
+            "dark": "Jednoduchý tmavý",
+            "sepia": "Sépie",
+            "midnight": "Půlnoc",
+            "sunset": "Západ slunce",
+            "rose": "Růže",
+            "forest": "Les",
+            "ocean": "Oceán",
+            "lavender": "Levandule",
+            "gold": "Zlato",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Stupně šedi"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Překlad není na tomto serveru nastaven.",
+        "nothing": "Není zde nic k překladu.",
+        "unknownSource": "Jazyk tohoto příspěvku zatím nebyl rozpoznán, takže jej nelze přeložit.",
+        "alreadyReadable": "Tento příspěvek už je v daném jazyce.",
+        "unsupportedPair": "Tento server zatím do daného jazyka překládat neumí."
+    },
+    "LanguagePrompt": {
+        "question": "Chcete web zobrazit v češtině?",
+        "accept": "Ano",
+        "decline": "Ne, děkuji"
+    },
+    "LanguageSelector": {
+        "label": "Jazyk",
+        "legend": "Jazyk"
+    },
+    "EmailDigest": {
+        "subject": "Co jste zmeškali na webu {site}",
+        "greeting": "Dobrý den, {name},",
+        "whileAway": "Během vaší nepřítomnosti:",
+        "repeatedTimes": {
+            "one": " ({count}krát)",
+            "few": " ({count}krát)",
+            "other": " ({count}krát)"
+        },
+        "moreMissed": {
+            "one": "a {count} další oznámení",
+            "few": "a {count} další oznámení",
+            "other": "a {count} dalších oznámení"
+        },
+        "messagesWaiting": {
+            "one": "Čeká na vás jedna zpráva",
+            "few": "Čekají na vás {count} zprávy",
+            "other": "Čeká na vás {count} zpráv"
+        },
+        "postsInFeed": {
+            "one": "Jeden nový příspěvek ve vašem kanálu",
+            "few": "{count} nové příspěvky ve vašem kanálu",
+            "other": "{count} nových příspěvků ve vašem kanálu"
+        },
+        "unsubscribeInstructions": "Chcete-li tyto e-maily zastavit, otevřete tento odkaz – stačí jedno kliknutí a není potřeba heslo:",
+        "comeSeeWhatIsNew": "Přijďte se podívat, co je nového",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Přestat mi tyto zprávy posílat",
+            "after": " – jedno kliknutí, bez hesla."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Ověřte svou e-mailovou adresu",
+        "greeting": "Dobrý den, {name},",
+        "instructions": "Navštivte tento odkaz a ověřte svou e-mailovou adresu:",
+        "htmlInstructions": "Klikněte na odkaz níže a ověřte svou e-mailovou adresu:",
+        "buttonLabel": "Ověřit e-mailovou adresu",
+        "expiresIn": {
+            "one": "Platnost odkazu vyprší za {count} hodinu.",
+            "few": "Platnost odkazu vyprší za {count} hodiny.",
+            "other": "Platnost odkazu vyprší za {count} hodin."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Obnovení hesla",
+        "greeting": "Dobrý den, {name},",
+        "instructions": "Někdo (doufejme, že vy) požádal o obnovení hesla. Na tomto odkazu si zvolte nové heslo:",
+        "htmlInstructions": "Někdo (doufejme, že vy) požádal o obnovení hesla. Kliknutím na odkaz níže si zvolte nové heslo:",
+        "buttonLabel": "Obnovit heslo",
+        "expiresIn": {
+            "one": "Platnost odkazu vyprší za {count} hodinu.",
+            "few": "Platnost odkazu vyprší za {count} hodiny.",
+            "other": "Platnost odkazu vyprší za {count} hodin."
+        },
+        "ignoreNotice": "Pokud jste o obnovení nepožádali, můžete tento e-mail ignorovat."
+    }
+}

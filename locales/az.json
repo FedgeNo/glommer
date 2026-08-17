@@ -1,0 +1,1145 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 səs",
+            "other": "{count} səs"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "Cavab vermək üçün ",
+            "link": "daxil olun",
+            "after": "."
+        },
+        "post": {
+            "before": "Yazı dərc etmək üçün ",
+            "link": "daxil olun",
+            "after": "."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Sayt",
+        "siteURLLabel": "Saytın URL-i",
+        "siteTitleLabel": "Saytın Başlığı",
+        "mailFromAddressLabel": "Göndərən ünvanı",
+        "serverNameConfirmedLabel": "Veb serverim konfiqurasiyasında \"ServerName {host}\" və \"UseCanonicalName On\" parametrlərini təyin etdim (yalnız avtomatlaşdırılmış canlı test tamamlana bilmədikdə yoxlanılır - README.md-nin HTTPS bölməsinə baxın)",
+        "databaseLegend": "Verilənlər bazası",
+        "databaseHostLabel": "Verilənlər bazası hostu",
+        "databasePortLabel": "Verilənlər bazası portu",
+        "databaseNameLabel": "Verilənlər Bazasının Adı",
+        "databaseAdminUsernameLabel": "Verilənlər bazası inzibatçısının istifadəçi adı",
+        "databaseAdminPasswordLabel": "Verilənlər bazası inzibatçısının parolu",
+        "webSocketTLSLegend": "WebSocket TLS (Könüllü)",
+        "certificatePathLabel": "Sertifikat yolu",
+        "certificatePathPlaceholder": "Mkcert vasitəsilə avtomatik yaratmaq üçün boş buraxın",
+        "keyPathLabel": "Açar Yol",
+        "keyPathPlaceholder": "Mkcert vasitəsilə avtomatik yaratmaq üçün boş buraxın",
+        "botProtectionLegend": "Bot Qoruma (İstəyə görə)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile sayt açarı",
+        "turnstileSiteKeyPlaceholder": "Keçmək üçün boş buraxın",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile məxfi açarı",
+        "turnstileSecretKeyPlaceholder": "Keçmək üçün boş buraxın",
+        "submit": "Quraşdırın"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Cari parol ifadəsi",
+        "newPassphraseLabel": "Yeni parol ifadəsi",
+        "confirmNewPassphraseLabel": "Yeni parol ifadəsini təsdiqləyin",
+        "accountPasswordLabel": "Hesab parolu",
+        "submit": "Parol ifadəsini dəyişdirin"
+    },
+    "PasswordResetForm": {
+        "legend": "Yeni Parol seçin",
+        "newPasswordLabel": "Yeni Parol",
+        "newPasswordPlaceholder": "Ən azı 8 simvol",
+        "confirmPasswordLabel": "Yeni Şifrəni Təsdiqləyin",
+        "submit": "Parolun sıfırlanması"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Parolunuzu Sıfırlayın",
+        "emailLabel": "E-poçt",
+        "submit": "Sıfırlama Linkini Göndər"
+    },
+    "EmailRevertForm": {
+        "submit": "E-poçt dəyişikliyini geri qaytarın"
+    },
+    "EmailVerifyForm": {
+        "submit": "E-poçt ünvanını yoxlayın"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Onları yenidən yandırın"
+    },
+    "EmailDigestSetting": {
+        "label": "Bir müddət uzaqda olanda qaçırdıqlarımı mənə e-poçtla göndərin"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Naməlum cihaz",
+        "browserOnOS": "{os} üzərində {browser}",
+        "thisDevice": " (bu cihaz)",
+        "lastUsed": {
+            "before": "Son istifadə olunub ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Hər aktiv seansı bitirin və yadda qalan hər cihazı unudun. Siz bu brauzer daxil olmaqla bütün brauzerlərdən çıxacaqsınız."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Bütün cihazlardan çıxın"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Silmək üçün Google ilə doğrulayın"
+    },
+    "GoogleSignInButton": {
+        "label": "Google ilə davam edin"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Profili redaktə edin"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Sayt açıq olmasa belə bu cihazda bildirişlər alın. Bu, hər brauzer üçün seçimdir - onu əldə etmək istədiyiniz yerdə yandırın.",
+        "label": {
+            "off": "Bu Cihazda Aktivləşdirin",
+            "on": "Bu cihazda söndürün"
+        },
+        "unsupported": "Bu brauzer push bildirişlərini dəstəkləmir"
+    },
+    "LoginForm": {
+        "legend": "Daxil ol",
+        "identifier": "İstifadəçi adı və ya E-poçt",
+        "password": "Parol",
+        "rememberMe": "Məni xatırla",
+        "submit": "Daxil ol"
+    },
+    "SignupForm": {
+        "legend": "Hesab yaradın",
+        "usernameLabel": "İstifadəçi adı",
+        "usernamePlaceholder": "Kiçik hərflər, rəqəmlər və _",
+        "emailLabel": "E-poçt",
+        "emailPlaceholder": "Etibarlı e-poçt ünvanı",
+        "displayName": "Görünən ad (İstəyə görə)",
+        "bioLabel": "Bio (İstəyə görə)",
+        "bioPlaceholder": "Qısa bio - #hashtaglar, @qeydlər və keçidlər tıklanabilir olur",
+        "passwordLabel": "Parol",
+        "passwordPlaceholder": "Parol: Ən azı 8 simvol",
+        "rememberMe": "Məni xatırla",
+        "submit": "Qeydiyyatdan keçin"
+    },
+    "PasswordChangeForm": {
+        "legend": "Parolunuzu Dəyişin",
+        "currentPassword": "Cari Parol",
+        "newPasswordLabel": "Yeni Parol",
+        "newPasswordPlaceholder": "Ən azı 8 simvol",
+        "confirmPassword": "Yeni Şifrəni Təsdiqləyin",
+        "submit": "Parolun dəyişdirilməsi"
+    },
+    "EmailChangeForm": {
+        "legend": "E-poçt ünvanınızı dəyişdirin",
+        "newEmail": "Yeni E-poçt ünvanı",
+        "currentPassword": "Cari Parol",
+        "notice": "Saytdan istifadə etməyə davam etməzdən əvvəl yeni ünvanı doğrulamalısınız.",
+        "submit": "E-poçtu dəyişdirin"
+    },
+    "AccountDeleteForm": {
+        "legend": "Hesabınızı Silin",
+        "warning": "Bu, hesabınızı, yazılarınızı və mesajlarınızı həmişəlik silir. Bu geri qaytarıla bilməz.",
+        "currentPassword": "Cari Parol",
+        "submit": "Hesabı Sil"
+    },
+    "AccountMigrationForm": {
+        "legend": "Başqa Serverə keçin",
+        "movedNotice": "Bu hesab {destination}-ə köçürüldü. İzləyicilərinizdən xahiş olundu ki, sizi orada izləsinlər.",
+        "explanation": "İzləyicilərinizdən yeni hesabda sizi izləmələri xahiş olunur. Yazılarınız burada qalır - obyekt ünvanları onları yaradan serverə aiddir, ona görə də onları götürmək olmaz.",
+        "addressNotice": "Köçdüyünüz hesab əvvəlcə bunu \"həmçinin tanınır\" altında qeyd etməlidir. Buradakı ünvanınız {address}-dir.",
+        "movedToLabel": "Köçürün",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Kimi də Tanınır",
+        "aliasesExplanation": "Başqa serverlərdə sizə aid olan hesablar. Hesabı burada göstərmək onun bu hesaba köçməsinə icazə verir — bu, köçürmənin özü deyil. Hər sətirdə bir ünvan yazın.",
+        "aliasesLabel": "Digər Hesablarınız",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Saxla"
+    },
+    "TwoFactorForm": {
+        "legend": "Doğrulama kodunuzu daxil edin",
+        "explanation": "Sizə doğrulama kodunu e-poçt göndərdik. Onu aşağıya daxil edin və ya daxil olmağı başa çatdırmaq üçün bərpa kodlarınızdan birini istifadə edin.",
+        "explanationEmailFailed": "Doğrulama kodunuzu hazırda e-poçtla göndərə bilmədik. Daxil olmağı başa çatdırmaq üçün bərpa kodlarınızdan birini daxil edin.",
+        "code": "Doğrulama kodu",
+        "submit": "Doğrulayın"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "İki Faktorlu Doğrulama Aktivdir",
+            "off": "İki faktorlu Doğrulama Deaktivdir"
+        },
+        "explanation": {
+            "on": "Daxil olduğunuz zaman, daxil olmağı başa çatdırmaq üçün daxil etməli olduğunuz doğrulama kodunu e-poçtla göndərəcəyik. E-poçt sizinlə əlaqə saxlaya bilmirsə, əvəzində bərpa kodlarınızdan biri sizi daxil edəcək.",
+            "off": "Daxil olmaq üçün ikinci addım əlavə edin: daxil etməli olduğunuz doğrulama kodunu e-poçtla göndərəcəyik, ona görə də daxil olmaq üçün yalnız parolunuz kifayət etməyəcək. E-poçt sizə çata bilməyəcəyi halda yadda saxlamaq üçün birdəfəlik bərpa kodları əldə edəcəksiniz."
+        },
+        "currentPassword": "Cari Parol",
+        "submit": {
+            "on": "İki faktorlu identifikasiyanı söndürün",
+            "off": "İki faktorlu identifikasiyanı yandırın"
+        },
+        "regenerate": "Yeni Bərpa Kodları yaradın",
+        "recoveryHeading": "Bərpa Kodlarınız",
+        "recoveryNote": "Bunları indi təhlükəsiz yerdə saxlayın - onlar bir daha göstərilməyəcək. Doğrulama e-poçtu sizə çata bilmədikdə hər biri bir dəfə daxil olur və yeni kodlar yaratmaq bütün bunları əvəz edir.",
+        "toast": {
+            "on": "İki faktorlu autentifikasiya indi aktivdir.",
+            "off": "İki faktorlu autentifikasiya indi deaktivdir.",
+            "regenerated": "Yeni bərpa kodları yaradıldı. Köhnələriniz artıq işləmir."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Zəhmət olmasa, gələnlər qutusunu yoxlayın və e-poçt ünvanınızı təsdiqləmək üçün göndərdiyimiz doğrulama linkinə klikləyin. Əgər onu görmürsünüzsə, lazımsız/spam qovluğunuzu yoxlayın."
+    },
+    "VerificationResendButton": {
+        "label": "Doğrulama E-poçtunu yenidən göndərin"
+    },
+    "MailSettingsForm": {
+        "legend": "Gedən poçt",
+        "fromAddressLabel": "Ünvandan",
+        "fromAddressPlaceholder": "Bu təyin olunana qədər heç bir e-poçt göndərilə bilməz",
+        "fromNameLabel": "Adından",
+        "hostLabel": "SMTP hostu",
+        "portLabel": "SMTP Portu",
+        "usernameLabel": "SMTP İstifadəçi adı",
+        "passwordLabel": "SMTP parolu",
+        "passwordPlaceholder": {
+            "set": "Parol təyin edildi - onu saxlamaq üçün boş buraxın",
+            "unset": "SMTP parolu"
+        },
+        "encryptionLabel": "Şifrələmə",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, adi port 587)",
+            "ssl": "SSL (örtülü TLS, adi port 465)",
+            "none": "Heç biri"
+        },
+        "explainer": "Bunun əvəzinə PHP poçtu() vasitəsilə göndərmək üçün SMTP hostunu boş buraxın (tövsiyə edilmir - README-nin çatdırılma bölməsinə baxın). \"Kimdən\" ünvanı təyin olunmayana qədər heç bir e-poçt göndərilə bilməz.",
+        "save": "Saxla"
+    },
+    "MapSettingsForm": {
+        "legend": "Xəritə Plitələr",
+        "notice": "OpenStreetMap istifadə etmək üçün boş buraxın. Açarlanmış provayderdən istifadə etmək üçün onun URL şablonunu açarın getdiyi yerə hərfi {apiKey}, üstəgəl aşağıdakı açar və atribusiya ilə yapışdırın.",
+        "urlLabel": "Kafel URL Şablonu",
+        "keyLabel": "API Açarı",
+        "keyPlaceholder": "Kafel provayderiniz API açarı",
+        "attributionLabel": "Atribut",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Saxla"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google Giriş",
+        "clientIdLabel": "Müştəri ID",
+        "clientIdPlaceholder": "Google OAuth müştəri ID-si",
+        "secretLabel": "Müştəri sirri",
+        "secretPlaceholder": {
+            "set": "Müştəri sirri təyin edildi - onu saxlamaq üçün boş buraxın",
+            "unset": "Google OAuth müştəri sirri"
+        },
+        "explainer": "Qeydiyyat və daxil olma zamanı \"Google ilə davam et\" yazısının görünməsi üçün hər ikisi tələb olunur. Google Cloud OAuth müştərinizdə səlahiyyətli yönləndirmə URI-ni {url}-ə təyin edin - onu söndürmək üçün Müştəri ID-sini silin.",
+        "save": "Saxla"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Sayt Açarı",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile sayt açarı",
+        "turnstileSecretKeyLabel": "Gizli Açar",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Gizli açar təyin edildi - onu saxlamaq üçün boş buraxın",
+            "unset": "Cloudflare Turnstile məxfi açarı"
+        },
+        "turnstileExplainer": "CAPTCHA-nın qeydiyyatdan keçmə və daxil olma zamanı görünməsi üçün hər iki açar tələb olunur. Onu söndürmək üçün sayt açarını silin.",
+        "recaptchaLegend": "Google reCAPTCHA (Hesab kilidinin bərpası)",
+        "recaptchaSiteKeyLabel": "Sayt Açarı",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 sayt açarı",
+        "recaptchaSecretKeyLabel": "Gizli Açar",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Gizli açar təyin edildi - onu saxlamaq üçün boş buraxın",
+            "unset": "Google reCAPTCHA v2 məxfi açarı"
+        },
+        "recaptchaExplainer": "Hər iki açar tələb olunur. Quraşdırıldıqda, giriş cəhdi limitinə çatan hesab kilidi gözləmək əvəzinə, bu çağırışı keçməklə yenidən daxil ola bilər; təyin edilmədikdə, kilidləmə çətin bir gözləmədir. reCAPTCHA v2 (\"Mən robot deyiləm\") istifadə edin. Onu söndürmək üçün sayt açarını silin.",
+        "save": "Saxla"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Saytda AI xüsusiyyətləri tərəfindən istifadə olunur (trend mövzu xülasələri və s.). OpenRouter-ın hazırda pulsuz olan və heç vaxt xərc çəkə bilməyəcəyindən təsadüfi seçdiyi Pulsuz Modellər Routerindən istifadə etmək üçün modeli boş buraxın.",
+        "keyLabel": "API Açarı",
+        "keyPlaceholder": {
+            "set": "API açarı quraşdırılıb - onu saxlamaq üçün boş buraxın",
+            "unset": "OpenRouter API açarı"
+        },
+        "clearKeyLabel": "Saxlanılan API açarını silin (AI xüsusiyyətlərini söndürür)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Bunun pul xərcləməsinə heç vaxt icazə verməyin (tövsiyə olunur)",
+        "explainer": "Mühafizə funksiyası işə salındıqda, hər sorğu öz qiymətini sıfıra endirir, buna görə də pulsuz provayder olmadıqda ödənişli modelə qayıtmaq əvəzinə birbaşa uğursuz olur. AI xüsusiyyətlərini tamamilə söndürmək üçün saxlanılan API açarını çıxarın.",
+        "save": "Saxla"
+    },
+    "AboutSettingsForm": {
+        "legend": "Haqqında",
+        "description": "Sadə mətn — boş sətirlər abzasları ayırır. Birinci abzas saytın təsviri kimi istifadə olunacaq.",
+        "save": "Saxla"
+    },
+    "TermsSettingsForm": {
+        "legend": "Xidmət Şərtləri",
+        "description": "Sadə mətn — boş sətirlər abzasları ayırır.",
+        "save": "Saxla"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Məxfilik Siyasəti",
+        "description": "Sadə mətn — boş sətirlər abzasları ayırır.",
+        "save": "Saxla"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-poçt icmalı",
+        "fieldLabel": "Yekun abzas",
+        "notice": "Hər icmalın sonuna, üzvün qaçırdıqları siyahısından sonra əlavə olunur. Sadə mətndir. Proqramın standart mətninə qayıtmaq üçün boş buraxın.",
+        "save": "Saxla"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favikon",
+        "currentAlt": "Cari favikon",
+        "save": "Favicon yükləyin"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Ön səhifə şəkli",
+        "explainer": "Kimsə bu sayta keçid paylaşdıqda digər saytların göstərdiyi şəkildir — yalnız Open Graph metadatasında istifadə olunur, səhifənin özündə görünmür. 1200×630 ölçüsünə kəsilir. Şəkil olmadıqda keçid önizləmələrində də şəkil görünmür.",
+        "currentAlt": "Cari ön səhifə şəkli",
+        "save": "Şəkil Yüklə"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Avtomatik oynatma"
+    },
+    "CarouselNextButton": {
+        "name": "Sonrakı"
+    },
+    "CarouselPrevButton": {
+        "name": "Əvvəlki"
+    },
+    "MediaFullscreenButton": {
+        "name": "Tam ekran"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Faylları Sil"
+    },
+    "NotificationDropdown": {
+        "showAll": "Hamısını göstər"
+    },
+    "HelpSearch": {
+        "placeholder": "Yardım axtarın..."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Anladım"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Atın"
+    },
+    "StagedPostEditButton": {
+        "name": "Redaktə et"
+    },
+    "StagedPostPublishButton": {
+        "name": "İndi dərc et"
+    },
+    "LogoutButton": {
+        "name": "Çıxış"
+    },
+    "AvatarUploadForm": {
+        "submit": "Avatarı yeniləyin"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Qadağan edilmiş istifadəçiləri axtarın..."
+    },
+    "BannedUserSection": {
+        "heading": "Qadağan edilmiş İstifadəçilər"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Göndərilən Sorğular (Cavab Gözlənir)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "{name} tərəfindən qadağan edilmişdir ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "{name} tərəfindən bloklanıb ",
+            "after": ""
+        },
+        "deletedAccount": "silinmiş hesab",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "yanvar",
+            "2": "fevral",
+            "3": "mart",
+            "4": "aprel",
+            "5": "may",
+            "6": "iyun",
+            "7": "iyul",
+            "8": "avqust",
+            "9": "sentyabr",
+            "10": "oktyabr",
+            "11": "noyabr",
+            "12": "dekabr"
+        },
+        "shortMonths": {
+            "1": "yan",
+            "2": "fev",
+            "3": "mar",
+            "4": "apr",
+            "5": "may",
+            "6": "iyn",
+            "7": "iyl",
+            "8": "avq",
+            "9": "sen",
+            "10": "okt",
+            "11": "noy",
+            "12": "dek"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date}, {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "127.0.0.1:{port}{tls} ({error}) üzərindəki WebSocket serverinə qoşulmaq mümkün olmadı. Əvvəlcə başlayın: systemctl --user start glommer-websocket (vahid faylı üçün README.md-ə baxın). Əgər o, sadəcə WS_TLS_CERT/WS_TLS_KEY qazanıbsa və ya itiribsə, onu yenidən başladın ki, .env ilə uyğun olsun.",
+        "wsOverTLS": " TLS üzərində",
+        "wsBadHandshake": "127.0.0.1:{port}-dəki xidmət etibarlı WebSocket əl sıxışmasını tamamlamadı - bin/websocket-server.php-dən başqa bir şey həmin portda dinləyir ola bilər.",
+        "wsNoPong": "WebSocket serveri əl sıxmağı qəbul etdi, lakin pingə cavab vermədi - o, ilişib və ya səhv davrana bilər. Onun qeydlərini yoxlayın.",
+        "wsReachable": "WebSocket serveri əlçatandır və 127.0.0.1:{port}-də cavab verir"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtag",
+            "person": "şəxs",
+            "org": "Təşkilat",
+            "gpe": "yer",
+            "loc": "Bölgə",
+            "fac": "Görməli yer",
+            "product": "Məhsul",
+            "event": "Hadisə",
+            "work_of_art": "iş",
+            "law": "Qanun",
+            "language": "Dil",
+            "norp": "Qrup"
+        },
+        "plural": {
+            "hashtag": "Hashtaglar",
+            "person": "İnsanlar",
+            "org": "Təşkilatlar",
+            "gpe": "yerlər",
+            "loc": "Bölgələr",
+            "fac": "Görməli yerlər",
+            "product": "Məhsullar",
+            "event": "Hadisələr",
+            "work_of_art": "işləyir",
+            "law": "Qanunlar",
+            "language": "Dillər",
+            "norp": "Qruplar"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Dostunu Sil"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Qəbul edin"
+    },
+    "FriendRequestDenyButton": {
+        "name": "İnkar et"
+    },
+    "UserFollowButton": {
+        "follow": "İzləyin",
+        "unfollow": "İzləməni dayandır"
+    },
+    "UserBlockButton": {
+        "name": "Blok"
+    },
+    "UserUnblockButton": {
+        "name": "Blokdan çıxarın"
+    },
+    "OtherUser": {
+        "message": "Mesaj"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menyu",
+        "loggedInAs": "{name} kimi daxil olub",
+        "friendsFeed": "Dostlar Lenti",
+        "relayFeed": "Rele lenti",
+        "users": "İstifadəçilər",
+        "tags": "Teqlər",
+        "topics": "Mövzular",
+        "map": "Xəritə",
+        "locations": "Məkanlar",
+        "search": "Axtar",
+        "messages": "Mesajlar",
+        "bookmarks": "Əlfəcinlər",
+        "help": "Kömək",
+        "about": "Haqqında",
+        "login": "Daxil ol",
+        "signup": "Qeydiyyatdan keçin",
+        "friends": "Dostlar",
+        "drafts": "Qaralamalar və Planlaşdırılıb",
+        "userSettings": "İstifadəçi Parametrləri",
+        "modSettings": "Moderator parametrləri",
+        "adminSettings": "İnzibatçı parametrləri"
+    },
+    "LogoutForm": {
+        "submit": "Çıxış"
+    },
+    "User": {
+        "joined": "{date}-ə qoşuldu"
+    },
+    "FriendRequestButton": {
+        "add": "Dost əlavə et",
+        "cancel": "Sorğunu ləğv edin"
+    },
+    "StagedPostWhen": {
+        "scheduled": "{when} üçün planlaşdırılıb",
+        "draft": "Qaralama - yalnız siz dediyiniz zaman dərc olunur"
+    },
+    "MessageTranslateButton": {
+        "name": "Bu Mesajı Tərcümə Edin"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Mesajların Tərcümə Edilməsi Haqqında",
+        "body": "Mesajı tərcümə etmək üçün onun mətni bu serverə göndərilir və buraya tərcümə olunur. Heç bir şey saxlanılmır: tərcümə verilənlər bazasına yazılmır və mesajın özü dəyişməz qalır. Lakin bu şəkildə tərcümə edilmiş mesaj server tərəfindən oxunub, ona görə də o, tərcümə olunmamış mesaj kimi başdan-başa şifrələnmir. Yalnız aldığınız mesajlar və yalnız siz soruşduqda tərcümə oluna bilər.",
+        "confirm": "Tərcümə et",
+        "cancel": "İndi yox"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Parol sözünüzü unutmusunuz? Sıfırlama yeni açarın altında yeni açarlar yaradır - lakin köhnə düymələrlə şifrələnmiş mesajlar heç kim tərəfindən bir daha oxuna bilməz.",
+        "requirements": "Hesab parolunuz deyil, ən azı 12 simvol - həmin simvol bu serverə göndərilir və parolunuz heç vaxt olmamalıdır.",
+        "passphraseLabel": "Parolu söz",
+        "resetPassphraseLabel": "Yeni parol",
+        "confirmLabel": "Parolu təsdiqləyin",
+        "accountPasswordLabel": "Hesab parolu",
+        "submitLabel": "Şifrələnmiş Mesajları yandırın",
+        "resetSubmitLabel": "Şifrələmə Açarlarını Sıfırlayın"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Başdan sona şifrələnmiş mesajlar brauzerinizdə kilidlənir və kiliddən çıxarılır: bu server onları oxuya bilmədən ötürür və saxlayır. Açarınız parol ifadəsi ilə qorunur və eyni parol hər hansı brauzerdən mesajlarınızı açır. Hər iki şəxs bunu aktiv etdikdən sonra söhbətlər şifrələnir; digər serverlərdəki insanlara göndərilən mesajlar şifrələnməmiş qalır, çünki federasiyanın onları başqa cür daşımaq imkanı yoxdur.",
+        "noRecovery": "İtirilmiş parolu bərpa etməyin heç bir yolu yoxdur - hətta administrator üçün də. Onu itirmək şifrələnmiş mesajlarınızı itirmək deməkdir.",
+        "enabledStatus": "Şifrələnmiş mesajlar aktivdir."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Şifrələnmiş",
+            "explanation": "Bu söhbətdəki mesajlar başdan-başa şifrələnir: onlar parol ifadənizlə açılır və brauzerlərinizdə oxunur və bu serverin saxladığı şey şifrəli mətndir. Aranızda heç kimin olmadığından əmin olmaq üçün mövzunun altındakı təhlükəsizlik kodunu digər şəxslə yoxlayın. Şifrələmə aktiv edilməmişdən əvvəl göndərilən mesajlar olduğu kimi oxunaqlı qalır."
+        },
+        "awaiting-theirs": {
+            "label": "Şifrələnməyib",
+            "explanation": "{handle} parametrlərində şifrələnmiş mesajları aktiv etdikdən sonra buradakı mesajlar başdan-başa şifrələnəcək."
+        },
+        "awaiting-yours": {
+            "label": "Şifrələnməyib",
+            "explanation": "Buradakı mesajlar başdan sona şifrələnmir. Bu söhbəti qorumaq üçün Ayarlarda şifrələnmiş mesajları aktiv edin."
+        },
+        "federated": {
+            "label": "Şifrələnməyib",
+            "explanation": "{handle} başqa serverdədir. Bu söhbətdəki mesajlar həm bu serverdə, həm də həmin serverdə saxlanılır və onun administratoru onları oxuya bilər - serverlər arasındakı protokolun onları şifrələmək üçün heç bir yolu yoxdur. Bu saytda söhbətlərə həssas olan hər şeyi saxlayın."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Fediverse Hesablarını izləyin",
+        "notice": "Bir və ya bir neçə tam istifadəçi adı daxil edin, məsələn @user@example.social — onları istənilən ayırıcı ilə ayıra bilərsiniz.",
+        "handlesLabel": "İzlənəcək Fediverse istifadəçi adları",
+        "submit": "İzləyin",
+        "statusPending": "gözləyir",
+        "statusAccepted": "qəbul edildi"
+    },
+    "ServerBlockForm": {
+        "legend": "Serveri bloklayın",
+        "description": "Həmin serverdən və onun altında olan hər şeydən imtina edir: nə daxil olur, nə çıxır və hər iki istiqamətdə mövcud izləyicilər buraxılır.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Səbəb",
+        "reasonPlaceholder": "Bu server niyə bloklanıb",
+        "submit": "Blok Server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Bir brauzerdən yoxlanıla bilən zəng quraşdırma hissələrini işə salır. Faktiki peer-to-peer əlaqəsinə qədər hər şey burada sınaqdan keçirilə bilər; başqa bir insanla əlaqə qurmaq o insana ehtiyac duyur."
+    },
+    "VideoCallTestButton": {
+        "label": "Çeki işə salın"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket serveri: Çalışır",
+        "failed": "WebSocket serveri: {detail}",
+        "clientTesting": "Brauzer bağlantısı: Test edilir...",
+        "clientConnecting": "Brauzer bağlantısı: Qoşulur...",
+        "clientConnected": "Brauzer bağlantısı: Qoşuldu",
+        "clientDisconnecting": "Brauzer bağlantısı: Bağlantı kəsilir...",
+        "clientNotConnected": "Brauzer bağlantısı: Qoşulmayıb"
+    },
+    "UploadWorkerStatus": {
+        "running": "İşçi xidməti: Çalışır",
+        "stopped": "İşçi xidməti: İşləmir — hazırlanmış yükləmələr xidmət yenidən başladılana qədər transkodlaşdırılmayacaq",
+        "unknown": "İşçi xidməti: Naməlum - ya systemctl bu hostda mövcud deyil, ya da SELinux veb-serverin öz status sorğusunu rədd edir (bunu düzəltmək üçün bin/install.php proqramını root kimi işlədin)",
+        "queue": "Növbə: {staging} hazırlanır, {pending} gözləyir, {processing} emal olunur"
+    },
+    "TrendingTimerStatus": {
+        "running": "Trend taymer: Çalışır",
+        "stopped": "Trend taymer: Çalışmır - trend mövzular cədvəl üzrə deyil, yalnız oxunma yolunun özünü sağalması (Trending::current()) vasitəsilə təzələnəcək. Quraşdırmaq üçün bin/install.php-ni root olaraq işə salın.",
+        "unknown": "Trend taymer: Naməlum - ya systemctl bu hostda mövcud deyil, ya da SELinux veb serverin öz status sorğusunu rədd edir (bunu düzəltmək üçün bin/install.php-ni root kimi işlədin)"
+    },
+    "Notification": {
+        "postReady": "Medianız emalını bitirib və indi yayımlanır",
+        "scheduledPostLive": "Planlaşdırılmış yazınız indi yayımlandı",
+        "uploadPartlyFailed": "Yazınız yayımlandı, lakin onun bir və ya bir neçə faylını emal etmək mümkün olmadı",
+        "uploadFailed": "Yükləmələrinizdən birini emal etmək alınmadı və dərc edilmədi",
+        "mailerFailed": "E-poçt çatdırılması uğursuz oldu - poçt göndəricisi işləmir. Zəhmət olmasa, poçt konfiqurasiyanızı yoxlayın.",
+        "mailFromNotConfigured": "Göndərən poçt ünvanı konfiqurasiya edilməyib, ona görə e-poçt göndərmək mümkün deyil. Ünvanı İnzibatçı parametrlərində (Gedən poçt bölməsi) və ya bin/install.php vasitəsilə təyin edin.",
+        "systemError": "Server xətası baş verdi. Təfərrüatlar üçün xəta jurnalını yoxlayın.",
+        "passwordRemovedGoogle": "Google ilə daxil olduqda parolunuz silindi. Yenisini təyin etmək istəyirsinizsə, \"Şifrəni unutmusunuz\" istifadə edin.",
+        "like": "{name} yazınızı bəyəndi",
+        "repost": "{name} yazınızı yenidən paylaşdı",
+        "reply": "{name} yazınıza cavab verdi",
+        "friendRequest": "{name} sizə dostluq sorğusu göndərdi",
+        "friendAccepted": "{name} dostluq sorğunuzu qəbul etdi",
+        "message": "{name} sizə mesaj göndərdi",
+        "mention": "{name} bir yazıda sizi qeyd etdi",
+        "follow": "{name} sizi başqa serverdən izlədi",
+        "default": "{name} nəsə etdi"
+    },
+    "NotificationList": {
+        "emptyNotice": "Hələ bildiriş yoxdur."
+    },
+    "NotificationsNavLink": {
+        "label": "Bildirişlər",
+        "unseen": "Görünməyən bildirişlər"
+    },
+    "NotificationTestPanel": {
+        "intro": "Özünüzə (inzibatçıya) sınaq bildirişi göndərin. O, dərhal ekranda və bildirişlərin açılan siyahısında görünməlidir.",
+        "button": "Test bildirişi göndərin",
+        "sending": "Göndərilir...",
+        "sent": "Göndərildi!",
+        "failed": "Uğursuz oldu"
+    },
+    "MessageDot": {
+        "label": "Oxunmamış mesajlar"
+    },
+    "NavAlertDot": {
+        "label": "Menyuda yeni bir şey"
+    },
+    "Message": {
+        "encrypted": "Şifrələnmiş mesaj",
+        "decryptionFailed": "Bu mesaj artıq mövcud olmayan açarlarla şifrələnib."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mesaj",
+        "bodyPlaceholder": "Mesaj yazın",
+        "send": "Göndər"
+    },
+    "MessageList": {
+        "emptyNotice": "Hələ mesaj yoxdur."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Bu kodu bir-birinizə başqa yolla oxuyun - yüksək səslə, şəxsən, zəng zamanı. Hər iki tərəfə uyğun gəlirsə, aranızda heç kim yoxdur.",
+        "changed": "Siz yoxladıqdan sonra bu kod dəyişdi. Bu, sizlərdən biriniz şifrələmə açarlarınızı sıfırladıqda baş verir - lakin bu söhbəti oxuyan kimsə də belə görünür. Yeni kodu etibar etməzdən əvvəl onlarla yoxlayın.",
+        "verified": "Siz bu kodu yoxladınız."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Doğrulanmış kimi qeyd edin"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Parol ifadəsi",
+        "passphrasePlaceholder": "Bu söhbətin kilidini açmaq üçün parol ifadəsi",
+        "submit": "Kilidi aç"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Son mesaj ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Həssas media"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Defolt olaraq Həssas Medianı göstərin"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Yazı",
+            "message": "Mesaj",
+            "user": "İstifadəçi"
+        },
+        "summary": {
+            "before": "{type} #{id} məlumat verib ",
+            "after": ""
+        },
+        "reasonLine": "Səbəb: {reason}",
+        "banReporterLabel": "Şikayətçini bloklayın",
+        "banReportedUserLabel": "Şikayət edilən istifadəçini bloklayın",
+        "deleteLabel": "{type}-ni silin",
+        "reportedImageAlt": "Şikayət edilmiş şəkil",
+        "attachmentUnavailable": "Bildirilən qoşma artıq mövcud deyil.",
+        "viewAttachment": "Bildirilmiş Qoşmaya Baxın",
+        "missing": {
+            "noSnapshot": "Bildirilən məzmun artıq əlçatan deyil.",
+            "unknownType": "Naməlum məzmun növü."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Şikayət yoxdur."
+    },
+    "ModQueueLinks": {
+        "intro": "Növbələr bir səhifəni oxumaq üçün kifayət qədər uzun olduğundan, onların öz səhifələri var.",
+        "reportsLabel": "Şikayətlər",
+        "bannedUsersLabel": "Qadağan edilmiş İstifadəçilər"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Hələ heç bir moderator heç nə etməyib."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Qadağan edilmiş trend obyektləri yoxdur."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Bloklanmış server yoxdur."
+    },
+    "RelayCard": {
+        "accepted": "Abunə olunub ",
+        "waiting": "Reledən qəbul gözlənilir — abunə olunub "
+    },
+    "RelayList": {
+        "emptyNotice": "Heç bir releyə abunə olunmayıb. Buraya yalnız üzvlərin izlədiyi məzmun gəlir."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Hələ heç bir reledən məzmun gəlməyib. Qarşı tərəfdəki serverlər yazıları dərc etdikcə onlar burada görünəcək."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Releyə abunə olun",
+        "explainerOne": "Rele ortaq ictimai məzmun axınıdır: digər abunə serverlərin bütün ictimai yazıları buraya gəlir, bu serverin ictimai yazıları isə onların hamısına göndərilir. Yeni instansiya insanları bu yolla tapa bilir; əks halda federasiya yalnız burada kiminsə artıq izlədiyi məzmunu daşıyır.",
+        "explainerTwo": "Yükü əvvəlcədən müəyyən etmək mümkün deyil — serverlər bir həftə sakit ola, növbəti həftə isə saatda minlərlə yazı dərc edə bilər. Bütün bunlar saxlama, çatdırılma və moderasiya növbələrinə yük yaradır. Rele ilə gələn yazılar əsas və dost lentlərinə daxil olmur; istifadəçilərin məqsədli şəkildə açdığı Rele lentində görünür.",
+        "addressLabel": "Rele ünvanı",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Abunə ol"
+    },
+    "RelayFollowObjectField": {
+        "label": "Abunə növü",
+        "options": {
+            "public": "İctimai axını izləyin (əksər relelər bunu gözləyir)",
+            "actor": "Relenin öz aktorunu izləyin"
+        },
+        "retryNotice": "Rele sorğunu qəbul etmirsə, onu geri götürüb digər növü sınayın — bəzi rele proqramları yalnız birini tanıyır."
+    },
+    "SiteCounters": {
+        "members": "Üzvlər: {count} ({joined} son {days} günlərdə qoşulub)",
+        "activeMembers": "Son {days} gündə burada olan üzvlər: {count} (onlardan {posted} yazı dərc edib)",
+        "posts": "Burada yazılmış yazılar: {count} (son {days} günlərdə {recent})",
+        "deliveries": "Son {days} gündə federativ çatdırılmalar: {delivered} çatdı, {undeliverable} üçün cəhd dayandırıldı",
+        "queued": "Göndərilməyi gözləyir: {count} ({failing} ən azı bir dəfə rədd edilib)",
+        "pendingReads": "Digər serverlərdən oxunmağı gözləyən yazılar: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Saytın test paketini işə salın və nəticələrə baxın. Bir neçə saniyə çəkir, ona görə də öz səhifəsində açılır.",
+        "runLabel": "Testləri işə salın"
+    },
+    "HelpArticle": {
+        "backLabel": "Hamıya Yardıma Qayıdın"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Hazırda heç bir təklif yoxdur - təkliflər artıq dost olduğunuz insanların dostlarından gəlir. Adı ilə kimisə tapmaq üçün yuxarıda axtarın.",
+        "noMatches": "Burada heç kim buna uyğun gəlmir."
+    },
+    "UserModButton": {
+        "make": "Moderator təyin et",
+        "remove": "Moderator səlahiyyətini götür"
+    },
+    "UserUnbanButton": {
+        "name": "Qadağadan çıxarın"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Qadağa"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Qadağadan çıxarın"
+    },
+    "ReportDismissButton": {
+        "name": "Rədd et"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Həssas kimi işarələ"
+    },
+    "ServerUnblockButton": {
+        "name": "Blokdan çıxarın"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Abunəni dayandırın"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Ləğv et"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Keçdi",
+        "failing": "{suite}: Uğursuzluq"
+    },
+    "PageTitle": {
+        "about": "Haqqında",
+        "adminBanned": "Qadağan edilmiş İstifadəçilər",
+        "adminModSettings": "Moderator parametrləri",
+        "adminReports": "Hesabatlar",
+        "adminSettings": "İnzibatçı parametrləri",
+        "adminTests": "Testlər",
+        "authGoogleCallbackAccountDeleted": "Hesab Silindi",
+        "authGoogleCallbackDeleteAccount": "Hesabı Sil",
+        "authGoogleCallbackLogin": "Daxil ol",
+        "bookmarks": "Əlfəcinlər",
+        "checkInbox": "Gələnlər Qutunuzu yoxlayın",
+        "drafts": "Qaralamalar və Planlaşdırılıb",
+        "draftsEditDraft": "Qaralamanı redaktə edin",
+        "draftsEditScheduled": "Planlaşdırılmış yazını redaktə edin",
+        "forgotPassword": "Şifrəni unutdum",
+        "friendsFeed": "Dostlar Lenti",
+        "help": "Kömək",
+        "helpDescription": "Saytdan istifadə üçün təlimatlar və cavablar.",
+        "locations": "Məkanlar",
+        "locationsDescription": "Sizə ən yaxın yerlərdən yazılar.",
+        "locationsPlaceDescription": "{place} yaxınlığındakı yazılar.",
+        "login": "Daxil ol",
+        "loginVerificationCode": "Doğrulama kodu",
+        "map": "Xəritə",
+        "mapDescription": "Dünyanın hər yerindən yazıların xəritəsi - yaxınlıqdakı insanları və əşyaları tapın.",
+        "messages": "Mesajlar",
+        "messagesWithUser": "{name} ilə mesajlar",
+        "notifications": "Bildirişlər",
+        "privacy": "Məxfilik Siyasəti",
+        "quote": "Sitat",
+        "relayFeed": "Rele lenti",
+        "relayFeedDescription": "Bu serverin abunə olduğu relelərdən gələn ictimai yazılar.",
+        "resetPassword": "Parolun sıfırlanması",
+        "revertEmail": "E-poçt dəyişikliyini geri qaytarın",
+        "search": "Axtar",
+        "signup": "Qeydiyyatdan keçin",
+        "tags": "Teqlər",
+        "tagsDescription": "{siteTitle}-də trend olan və populyar hashtaglara baxın.",
+        "tagsTagDescription": "{siteTitle}-də {tag} etiketli yazılar.",
+        "terms": "Xidmət Şərtləri",
+        "topics": "Mövzular",
+        "topicsDescription": "İnsanlar hazırda {siteTitle}-də nə danışırlar.",
+        "topicsEntityDescription": "{typeLabel} - {siteTitle}-də {entityTitle}-dən bəhs edən yazılar.",
+        "topicsTypeDescription": "{typePlural} insanlar hazırda {siteTitle}-də danışırlar.",
+        "unsubscribe": "E-poçt Həzmləri",
+        "userFriends": "{name}-in Dostları",
+        "userFriendsDescription": "{siteTitle}-də {name} dostları",
+        "userSettings": "İstifadəçi Parametrləri",
+        "users": "İstifadəçilər",
+        "verifyEmail": "E-poçtu təsdiqləyin"
+    },
+    "PostLikeButton": {
+        "like": "Bəyən",
+        "unlike": "Bəyənməni geri götür"
+    },
+    "PostPinButton": {
+        "pin": "Bərkid",
+        "unpin": "Bərkitməni götür"
+    },
+    "PostQuoteButton": {
+        "name": "Sitat gətir"
+    },
+    "PostDeleteButton": {
+        "name": "Sil"
+    },
+    "PostEditButton": {
+        "name": "Redaktə et"
+    },
+    "ReportButton": {
+        "name": "Şikayət et"
+    },
+    "PostActionBar": {
+        "reply": "Cavab ver",
+        "replies": {
+            "one": "Cavablar ({count})",
+            "other": "Cavablar ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(redaktə edilmiş)"
+    },
+    "RepliesHeading": {
+        "heading": "Cavablar"
+    },
+    "PollVoteButton": {
+        "name": "Səs ver"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Bax ",
+            "link": "daha çox yer",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Sizə yaxın yazılar",
+        "description": "Bu, seçilmiş nöqtəyə ən yaxın yazıları göstərir — fəaliyyət haradadırsa, məsafədən asılı olmayaraq. Olduğunuz yerdən başlamaq üçün məkanınızı paylaşın və ya xəritədə bir yer seçin.",
+        "useMyLocation": "Məkanımdan istifadə edin",
+        "pickOnMap": "Xəritədə seçin",
+        "searchPlaceholder": "Və ya yer adı yazın...",
+        "searchLabel": "Yer axtarın",
+        "locating": "Yerləşir...",
+        "noGeolocation": "Brauzeriniz məkan paylaşa bilmir.",
+        "locationError": "Məkanınızı əldə etmək mümkün olmadı. Brauzerinizin məkan icazəsini yoxlayın."
+    },
+    "PollDeadline": {
+        "final": "Yekun nəticə",
+        "closes": {
+            "before": "Bağlanır: ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} gün sonra",
+            "other": "{count} gün sonra"
+        },
+        "hours": {
+            "one": "{count} saat sonra",
+            "other": "{count} saat sonra"
+        },
+        "minutes": {
+            "one": "{count} dəqiqə sonra",
+            "other": "{count} dəqiqə sonra"
+        },
+        "underMinute": "bir dəqiqədən az müddət sonra"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 nəfər səs verdi ",
+            "other": "{count} nəfər səs verib "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "Yazı dərc etmək üçün ",
+            "link": "daxil olun",
+            "after": "."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "Cavab vermək üçün ",
+            "link": "daxil olun",
+            "after": "."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " yenidən paylaşdı"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "cavab olaraq ",
+            "after": ""
+        },
+        "untitled": "bu yazı",
+        "jumpToStart": "Əvvələ keç"
+    },
+    "TopicSummaryCard": {
+        "label": "AI tərəfindən yaradılmış xülasə"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "xoş gəlmisiniz ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Aşağıdakı qutuya bir şey yazın və o, lentinizə keçəcək. Hər kəs cavab verə bilər və cavab yalnız valideynlə göndərilən yazıdır, ona görə də söhbətlər lazım olduğu qədər dərinləşir.",
+            "İnsanları dost kimi əlavə edin və onların yazıları lentinizə qoşulun. Qlobal Lent - yuxarı solda saytın adı - burada yazılan hər şeyi göstərir, əlavə etmək üçün kimsə tapmaq üçün yerdir.",
+            "Bu sayt Fediversenin bir hissəsidir: Mastodon və digər serverlərdəki hesabları tam istifadəçi adları ilə izləyə bilərsiniz; paylaşdıqlarınız sizi orada izləyən insanlara çatır. @someone@example.social kimi bir istifadəçi adı axtarın, server isə həmin hesabı tapacaq.",
+            "Yazıya #haştaq əlavə etdikdə o, həmin haştaqın səhifəsində, kifayət qədər insan bu barədə yazdıqda isə Trendlərdə görünür.",
+            "Üzvlər arasındakı mesajlar başdan-başa şifrələnir - server oxuya bilmədiyi şifrəli mətni saxlayır. Bunu Parametrlərdə aktiv edin.",
+            "Dərhal yerləşdirməli deyilsiniz: qaralamanı yadda saxlayın və ya vaxt təyin edin və o, özünü dərc edir. Hər ikisi Qaralamalar və Planlılar altında yaşayır."
+        ],
+        "more": {
+            "before": "Daha çox var ",
+            "link": "yardım səhifələri",
+            "after": ", o cümlədən hesabı başqa yerdən bura necə köçürmək olar."
+        },
+        "dontShowAgain": "Bunu bir daha göstərməyin"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Emoji daxil edin"
+    },
+    "LinkImagePreview": {
+        "alt": "Linkə baxış şəkli"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Şəkili Sil"
+    },
+    "LinkItem": {
+        "alt": "Linkə baxış şəkli"
+    },
+    "MapScrubber": {
+        "play": "Oyna",
+        "pause": "Fasilə",
+        "cumulativeMode": "O vaxta qədər",
+        "windowMode": "Məhz o zaman",
+        "rangeLabel": "Tarixə qədər yazıları göstərin",
+        "cumulativeLabel": {
+            "one": "{date} — {count} yazısına qədər göndərilib",
+            "other": "{date} — {count} yazılarına qədər göndərilib"
+        },
+        "windowLabel": {
+            "one": "{date} ətrafında yerləşdirildi — {count} post",
+            "other": "{date} ətrafında yerləşdirildi — {count} yazıları"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name}-in yazısı",
+        "pageTitleUntitled": "Yazı",
+        "imageAltByAuthor": "Şəkil {name} tərəfindən yerləşdirilib",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Əlfəcin silin",
+        "add": "Əlfəcin"
+    },
+    "PostRepostButton": {
+        "undo": "Yenidən paylaşmanı ləğv et",
+        "repost": "Yenidən paylaş"
+    },
+    "QuotedPost": {
+        "viewLink": "Sitatlara baxın"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Gözlənilən Sorğular"
+    },
+    "ScrollToTopButton": {
+        "label": "Yuxarıya sürüşdürün"
+    },
+    "SearchClearButton": {
+        "label": "Axtarışı silin"
+    },
+    "SitePolicyLinks": {
+        "terms": "Xidmət Şərtləri",
+        "privacy": "Məxfilik Siyasəti"
+    },
+    "SkipLink": {
+        "label": "Məzmuna keçin"
+    },
+    "TopicHeading": {
+        "searchLink": "Bunu axtarın",
+        "noPosts": "Hazırda heç bir yazı bunu qeyd etmir."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Hələlik bu cür heç nə yazılmayıb."
+    },
+    "TrendingEntitySection": {
+        "heading": "Trend"
+    },
+    "PostLocationLink": {
+        "title": "Bu yeri xəritədə göstərin",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "indi",
+        "minutes": {
+            "one": "{count}m əvvəl",
+            "other": "{count}m əvvəl"
+        },
+        "hours": {
+            "one": "{count}h əvvəl",
+            "other": "{count}h əvvəl"
+        },
+        "days": {
+            "one": "{count}d əvvəl",
+            "other": "{count}d əvvəl"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Mövzu",
+        "themes": {
+            "system": "Sistemə uyğun",
+            "light": "Sadə işıqlı",
+            "dark": "Sadə qaranlıq",
+            "sepia": "Sepiya",
+            "midnight": "Gecə yarısı",
+            "sunset": "Gün batımı",
+            "rose": "Gül",
+            "forest": "Meşə",
+            "ocean": "Okean",
+            "lavender": "Lavanda",
+            "gold": "Qızıl",
+            "hacker": "Haker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Boz rəngi"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Tərcümə bu serverdə qurulmayıb.",
+        "nothing": "Burada tərcümə ediləcək heç nə yoxdur.",
+        "unknownSource": "Bu yazının hansı dildə olduğunu hələ heç kim müəyyən etməyib, ona görə də tərcümə etmək mümkün deyil.",
+        "alreadyReadable": "Bu yazı artıq həmin dildədir.",
+        "unsupportedPair": "Bu server hələ həmin dili tərcümə edə bilmir."
+    },
+    "LanguagePrompt": {
+        "question": "Sayta Azərbaycan dilində baxmaq istərdinizmi?",
+        "accept": "Bəli",
+        "decline": "Xeyr, sağ olun"
+    },
+    "LanguageSelector": {
+        "label": "Dil",
+        "legend": "Dil"
+    },
+    "EmailDigest": {
+        "subject": "{site} saytında qaçırdıqlarınız",
+        "greeting": "Salam {name},",
+        "whileAway": "Siz uzaqda olarkən:",
+        "repeatedTimes": {
+            "one": " ({count} dəfə)",
+            "other": " ({count} dəfə)"
+        },
+        "moreMissed": {
+            "one": "və daha {count} bildiriş",
+            "other": "və daha {count} bildiriş"
+        },
+        "messagesWaiting": {
+            "one": "Gözləyən mesajınız var",
+            "other": "Gözləyən {count} mesajınız var"
+        },
+        "postsInFeed": {
+            "one": "Lentinizdə bir yeni yazı",
+            "other": "Lentinizdə {count} yeni yazı"
+        },
+        "unsubscribeInstructions": "Bu e-poçtları dayandırmaq üçün bu linki açın - bu, bir klik tələb edir və parol tələb etmir:",
+        "comeSeeWhatIsNew": "Yeniliklərə baxın",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Bunları mənə göndərməyi dayandırın",
+            "after": " - bir klik, parol tələb olunmur."
+        }
+    },
+    "EmailVerification": {
+        "subject": "E-poçt ünvanınızı doğrulayın",
+        "greeting": "Salam {name},",
+        "instructions": "Bu linkə daxil olaraq e-poçt ünvanınızı yoxlayın:",
+        "htmlInstructions": "Aşağıdakı linkə klikləməklə e-poçt ünvanınızı təsdiqləyin:",
+        "buttonLabel": "E-poçt ünvanını yoxlayın",
+        "expiresIn": {
+            "one": "Bu linkin vaxtı {count} saat ərzində bitir.",
+            "other": "Bu linkin müddəti {count} saat ərzində bitir."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Parolunuzu sıfırlayın",
+        "greeting": "Salam {name},",
+        "instructions": "Kimsə (inşallah siz) parolun sıfırlanmasını tələb etdi. Yeni parol seçmək üçün bu linkə daxil olun:",
+        "htmlInstructions": "Kimsə (inşallah siz) parolun sıfırlanmasını tələb etdi. Yeni parol seçmək üçün aşağıdakı linkə klikləyin:",
+        "buttonLabel": "Parolun sıfırlanması",
+        "expiresIn": {
+            "one": "Bu linkin vaxtı {count} saat ərzində bitir.",
+            "other": "Bu linkin müddəti {count} saat ərzində bitir."
+        },
+        "ignoreNotice": "Bunu siz istəməmisinizsə, bu e-poçtu nəzərə almaya bilərsiniz."
+    }
+}

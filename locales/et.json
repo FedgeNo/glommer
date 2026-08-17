@@ -1,0 +1,1145 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 hääl",
+            "other": "{count} häält"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Logi sisse",
+            "after": ", et vastata."
+        },
+        "post": {
+            "before": "",
+            "link": "Logi sisse",
+            "after": ", et postitada."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Sait",
+        "siteURLLabel": "Saidi URL",
+        "siteTitleLabel": "Saidi pealkiri",
+        "mailFromAddressLabel": "Kirjade saatja aadress",
+        "serverNameConfirmedLabel": "Olen veebiserveri seadistuses määranud \"ServerName {host}\" ja \"UseCanonicalName On\" (seda kontrollitakse ainult siis, kui automaatne reaalajas test ei lõpe—vaata README.md HTTPS-i jaotist)",
+        "databaseLegend": "Andmebaas",
+        "databaseHostLabel": "Andmebaasi host",
+        "databasePortLabel": "Andmebaasi port",
+        "databaseNameLabel": "Andmebaasi nimi",
+        "databaseAdminUsernameLabel": "Andmebaasi administraatori kasutajanimi",
+        "databaseAdminPasswordLabel": "Andmebaasi administraatori parool",
+        "webSocketTLSLegend": "WebSocket TLS (valikuline)",
+        "certificatePathLabel": "Sertifikaadi asukoht",
+        "certificatePathPlaceholder": "Jäta tühjaks, et luua automaatselt mkcertiga",
+        "keyPathLabel": "Võtme asukoht",
+        "keyPathPlaceholder": "Jäta tühjaks, et luua automaatselt mkcertiga",
+        "botProtectionLegend": "Robotikaitse (valikuline)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile'i saidivõti",
+        "turnstileSiteKeyPlaceholder": "Jäta vahelejätmiseks tühjaks",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile'i salavõti",
+        "turnstileSecretKeyPlaceholder": "Jäta vahelejätmiseks tühjaks",
+        "submit": "Seadista"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Praegune paroolifraas",
+        "newPassphraseLabel": "Uus paroolifraas",
+        "confirmNewPassphraseLabel": "Kinnita uus paroolifraas",
+        "accountPasswordLabel": "Konto parool",
+        "submit": "Muuda paroolifraasi"
+    },
+    "PasswordResetForm": {
+        "legend": "Vali uus parool",
+        "newPasswordLabel": "Uus parool",
+        "newPasswordPlaceholder": "Vähemalt 8 märki",
+        "confirmPasswordLabel": "Kinnita uus parool",
+        "submit": "Lähtesta parool"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Lähtesta oma parool",
+        "emailLabel": "E-post",
+        "submit": "Saada lähtestamislink"
+    },
+    "EmailRevertForm": {
+        "submit": "Tühista e-posti aadressi muutmine"
+    },
+    "EmailVerifyForm": {
+        "submit": "Kinnita e-posti aadress"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Lülita need uuesti sisse"
+    },
+    "EmailDigestSetting": {
+        "label": "Saada mulle e-postiga kokkuvõte sellest, mis pikema eemaloleku ajal toimus"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Tundmatu seade",
+        "browserOnOS": "{browser} operatsioonisüsteemis {os}",
+        "thisDevice": " (see seade)",
+        "lastUsed": {
+            "before": "Viimati kasutatud ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Lõpeta kõik aktiivsed seansid ja unusta kõik meelde jäetud seadmed. Sind logitakse välja kõigis brauserites, sealhulgas selles."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Logi kõikjal välja"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Kinnita kustutamine Google'iga"
+    },
+    "GoogleSignInButton": {
+        "label": "Jätka Google'iga"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Muuda profiili"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Saa selles seadmes teavitusi ka siis, kui sait pole avatud. Valik kehtib brauseripõhiselt—lülita see sisse igas brauseris, kus soovid teavitusi saada.",
+        "label": {
+            "off": "Luba selles seadmes",
+            "on": "Lülita selles seadmes välja"
+        },
+        "unsupported": "See brauser ei toeta tõuketeavitusi"
+    },
+    "LoginForm": {
+        "legend": "Logi sisse",
+        "identifier": "Kasutajanimi või e-post",
+        "password": "Parool",
+        "rememberMe": "Jäta mind meelde",
+        "submit": "Logi sisse"
+    },
+    "SignupForm": {
+        "legend": "Loo konto",
+        "usernameLabel": "Kasutajanimi",
+        "usernamePlaceholder": "Väiketähed, numbrid ja _",
+        "emailLabel": "E-post",
+        "emailPlaceholder": "Kehtiv e-posti aadress",
+        "displayName": "Kuvatav nimi (valikuline)",
+        "bioLabel": "Elulugu (valikuline)",
+        "bioPlaceholder": "Lühike tutvustus—#teemaviited, @mainimised ja lingid muutuvad klõpsatavaks",
+        "passwordLabel": "Parool",
+        "passwordPlaceholder": "Parool: vähemalt 8 märki",
+        "rememberMe": "Jäta mind meelde",
+        "submit": "Registreeru"
+    },
+    "PasswordChangeForm": {
+        "legend": "Muuda oma parooli",
+        "currentPassword": "Praegune parool",
+        "newPasswordLabel": "Uus parool",
+        "newPasswordPlaceholder": "Vähemalt 8 märki",
+        "confirmPassword": "Kinnita uus parool",
+        "submit": "Muuda parooli"
+    },
+    "EmailChangeForm": {
+        "legend": "Muuda oma e-posti aadressi",
+        "newEmail": "Uus e-posti aadress",
+        "currentPassword": "Praegune parool",
+        "notice": "Enne saidi kasutamise jätkamist pead uue aadressi kinnitama.",
+        "submit": "Muuda e-posti aadressi"
+    },
+    "AccountDeleteForm": {
+        "legend": "Kustuta oma konto",
+        "warning": "See kustutab jäädavalt sinu konto, postitused ja sõnumid. Seda ei saa tagasi võtta.",
+        "currentPassword": "Praegune parool",
+        "submit": "Kustuta konto"
+    },
+    "AccountMigrationForm": {
+        "legend": "Koli teise serverisse",
+        "movedNotice": "See konto kolis aadressile {destination}. Sinu jälgijatel paluti sind seal jälgida.",
+        "explanation": "Sinu jälgijatel palutakse jälgida uut kontot. Postitused jäävad siia—objektide aadressid kuuluvad need loonud serverile ja neid ei saa kaasa võtta.",
+        "addressNotice": "Konto, kuhu kolid, peab esmalt lisama selle konto jaotisse \"tuntud ka kui\". Sinu aadress siin on {address}.",
+        "movedToLabel": "Koli kontole",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Tuntud ka kui",
+        "aliasesExplanation": "Mujal asuvad kontod, mis kuuluvad samuti sulle. Konto siia lisamine lubab sellel kontol siia kolida—see on luba, mitte kolimine ise. Üks aadress rea kohta.",
+        "aliasesLabel": "Sinu teised kontod",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Salvesta"
+    },
+    "TwoFactorForm": {
+        "legend": "Sisesta kinnituskood",
+        "explanation": "Saatsime sulle e-postiga kinnituskoodi. Sisselogimise lõpetamiseks sisesta see allpool või kasuta üht taastekoodidest.",
+        "explanationEmailFailed": "Kinnituskoodi ei õnnestunud praegu e-postiga saata. Sisselogimise lõpetamiseks sisesta üks taastekoodidest.",
+        "code": "Kinnituskood",
+        "submit": "Kinnita"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Kaheastmeline autentimine on sisse lülitatud",
+            "off": "Kaheastmeline autentimine on välja lülitatud"
+        },
+        "explanation": {
+            "on": "Sisselogimisel saadame e-postiga kinnituskoodi, mis tuleb sisselogimise lõpetamiseks sisestada. Kui kiri ei jõua sinuni, saad sisse logida taastekoodiga.",
+            "off": "Lisa sisselogimisele teine aste: saadame e-postiga sisestatava kinnituskoodi, nii et paroolist üksi ei piisa. Saad ühekordsed taastekoodid juhuks, kui kiri sinuni ei jõua."
+        },
+        "currentPassword": "Praegune parool",
+        "submit": {
+            "on": "Lülita kaheastmeline autentimine välja",
+            "off": "Lülita kaheastmeline autentimine sisse"
+        },
+        "regenerate": "Loo uued taastekoodid",
+        "recoveryHeading": "Sinu taastekoodid",
+        "recoveryNote": "Salvesta need kohe turvalisse kohta—neid ei näidata uuesti. Iga kood võimaldab ühe sisselogimise, kui kinnituskiri ei jõua sinuni; uute koodide loomine asendab kõik praegused.",
+        "toast": {
+            "on": "Kaheastmeline autentimine on nüüd sisse lülitatud.",
+            "off": "Kaheastmeline autentimine on nüüd välja lülitatud.",
+            "regenerated": "Uued taastekoodid on loodud. Vanad koodid enam ei tööta."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Kontrolli postkasti ja klõpsa e-posti aadressi kinnitamiseks saadetud lingil. Kui kirja ei ole, vaata rämpsposti kausta."
+    },
+    "VerificationResendButton": {
+        "label": "Saada kinnituskiri uuesti"
+    },
+    "MailSettingsForm": {
+        "legend": "Väljuv post",
+        "fromAddressLabel": "Saatja aadress",
+        "fromAddressPlaceholder": "Enne selle määramist ei saa e-kirju saata",
+        "fromNameLabel": "Saatja nimi",
+        "hostLabel": "SMTP Host",
+        "portLabel": "SMTP Port",
+        "usernameLabel": "SMTP Username",
+        "passwordLabel": "SMTP Password",
+        "passwordPlaceholder": {
+            "set": "Parool on määratud—selle säilitamiseks jäta väli tühjaks",
+            "unset": "SMTP parool"
+        },
+        "encryptionLabel": "Krüptimine",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, tavaliselt pordil 587)",
+            "ssl": "SSL (kaudne TLS, tavaliselt pordil 465)",
+            "none": "Puudub"
+        },
+        "explainer": "PHP mail() kaudu saatmiseks jäta SMTP host tühjaks (pole soovitatav—vaata README kirjade kohaletoimetamise jaotist). Enne saatja aadressi määramist ei saa ühtki kirja saata.",
+        "save": "Salvesta"
+    },
+    "MapSettingsForm": {
+        "legend": "Kaardipaanid",
+        "notice": "OpenStreetMapi kasutamiseks jäta tühjaks. Võtmega teenusepakkuja kasutamiseks kleebi selle URL-i mall, kus võtme kohal on täpselt {apiKey}, ning sisesta allpool võti ja omistamine.",
+        "urlLabel": "Paani URL-i mall",
+        "keyLabel": "API võti",
+        "keyPlaceholder": "Paaniteenuse API võti",
+        "attributionLabel": "Omistamine",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Salvesta"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google'iga sisselogimine",
+        "clientIdLabel": "Kliendi ID",
+        "clientIdPlaceholder": "Google OAuth client ID",
+        "secretLabel": "Kliendi salavõti",
+        "secretPlaceholder": {
+            "set": "Kliendi salavõti on määratud—selle säilitamiseks jäta väli tühjaks",
+            "unset": "Google OAuth client secret"
+        },
+        "explainer": "Mõlemad on vajalikud, et registreerumisel ja sisselogimisel kuvataks \"Jätka Google'iga\". Määra Google Cloud OAuthi kliendis lubatud ümbersuunamise URI-ks {url}; väljalülitamiseks kustuta kliendi ID.",
+        "save": "Salvesta"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Saidivõti",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile site key",
+        "turnstileSecretKeyLabel": "Salavõti",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Salavõti on määratud—selle säilitamiseks jäta väli tühjaks",
+            "unset": "Cloudflare Turnstile secret key"
+        },
+        "turnstileExplainer": "CAPTCHA kuvamiseks registreerumisel ja sisselogimisel on vaja mõlemat võtit. Väljalülitamiseks kustuta saidivõti.",
+        "recaptchaLegend": "Google reCAPTCHA (konto lukustuse taastamine)",
+        "recaptchaSiteKeyLabel": "Saidivõti",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 site key",
+        "recaptchaSecretKeyLabel": "Salavõti",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Salavõti on määratud—selle säilitamiseks jäta väli tühjaks",
+            "unset": "Google reCAPTCHA v2 secret key"
+        },
+        "recaptchaExplainer": "Vaja on mõlemat võtit. Nende määramisel saab sisselogimiskatsete piiri ületanud konto ooteaja asemel väljakutse läbida; ilma võtmeteta tuleb lukustuse lõpuni oodata. Kasuta reCAPTCHA v2 (\"Ma ei ole robot\"). Väljalülitamiseks kustuta saidivõti.",
+        "save": "Salvesta"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Kasutatakse saidi tehisintellekti funktsioonides (populaarsete teemade kokkuvõtted jne). Tasuta mudelite ruuteri kasutamiseks jäta mudel tühjaks; OpenRouter valib juhuslikult hetkel tasuta mudeli ja kulusid ei saa tekkida.",
+        "keyLabel": "API võti",
+        "keyPlaceholder": {
+            "set": "API võti on määratud—selle säilitamiseks jäta väli tühjaks",
+            "unset": "OpenRouter API key"
+        },
+        "clearKeyLabel": "Eemalda salvestatud API võti (lülitab tehisintellekti funktsioonid välja)",
+        "modelLabel": "Mudel",
+        "neverSpendLabel": "Ära luba kunagi raha kulutada (soovitatav)",
+        "explainer": "Kaitse sisselülitamisel piiratakse iga päringu hind nulliga, nii et tasuta teenuse puudumisel päring nurjub ega kasuta tasulist mudelit. Tehisintellekti funktsioonide täielikuks väljalülitamiseks eemalda salvestatud API võti.",
+        "save": "Salvesta"
+    },
+    "AboutSettingsForm": {
+        "legend": "Teave",
+        "description": "Lihttekst—tühjad read eraldavad lõike. Esimest lõiku kasutatakse saidi kirjeldusena.",
+        "save": "Salvesta"
+    },
+    "TermsSettingsForm": {
+        "legend": "Kasutustingimused",
+        "description": "Lihttekst—tühjad read eraldavad lõike.",
+        "save": "Salvesta"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Privaatsuspoliitika",
+        "description": "Lihttekst—tühjad read eraldavad lõike.",
+        "save": "Salvesta"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-posti kokkuvõte",
+        "fieldLabel": "Lõpulõik",
+        "notice": "Lisatakse iga kokkuvõtte lõpuossa pärast liikme puudutud sündmuste loendit. Lihttekst. Tarkvara vaikefraasi taastamiseks jäta tühjaks.",
+        "save": "Salvesta"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Praegune saidiikoon",
+        "save": "Laadi saidiikoon üles"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Esilehe pilt",
+        "explainer": "Teised saidid kuvavad seda selle saidi lingi jagamisel—ainult Open Graphi metaandmetes, mitte lehel. Kärbitakse mõõtmeteni 1200×630. Ilma pildita pole lingi eelvaates üldse pilti.",
+        "currentAlt": "Praegune esilehe pilt",
+        "save": "Laadi pilt üles"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automaatne esitus"
+    },
+    "CarouselNextButton": {
+        "name": "Järgmine"
+    },
+    "CarouselPrevButton": {
+        "name": "Eelmine"
+    },
+    "MediaFullscreenButton": {
+        "name": "Täisekraan"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Eemalda failid"
+    },
+    "NotificationDropdown": {
+        "showAll": "Näita kõiki"
+    },
+    "HelpSearch": {
+        "placeholder": "Otsi abist…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Sain aru"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Loobu"
+    },
+    "StagedPostEditButton": {
+        "name": "Muuda"
+    },
+    "StagedPostPublishButton": {
+        "name": "Avalda kohe"
+    },
+    "LogoutButton": {
+        "name": "Logi välja"
+    },
+    "AvatarUploadForm": {
+        "submit": "Uuenda avatari"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Otsi keelatud kasutajaid…"
+    },
+    "BannedUserSection": {
+        "heading": "Keelatud kasutajad"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Saadetud taotlused (ootavad vastust)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Keelustas {name} ",
+            "after": ""
+        },
+        "reason": "—{reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blokeeris {name} ",
+            "after": ""
+        },
+        "deletedAccount": "kustutatud konto",
+        "reason": "—{reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "jaanuar",
+            "2": "veebruar",
+            "3": "märts",
+            "4": "aprill",
+            "5": "mai",
+            "6": "juuni",
+            "7": "juuli",
+            "8": "august",
+            "9": "september",
+            "10": "oktoober",
+            "11": "november",
+            "12": "detsember"
+        },
+        "shortMonths": {
+            "1": "jaan",
+            "2": "veebr",
+            "3": "märts",
+            "4": "apr",
+            "5": "mai",
+            "6": "juuni",
+            "7": "juuli",
+            "8": "aug",
+            "9": "sept",
+            "10": "okt",
+            "11": "nov",
+            "12": "dets"
+        },
+        "long": "{day}. {month} {year}",
+        "short": "{day}. {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} kell {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "WebSocketi serveriga aadressil 127.0.0.1:{port}{tls} ei õnnestunud ühendust luua ({error}). Käivita see esmalt: systemctl --user start glommer-websocket (üksusefaili vaata README.md-st). Kui WS_TLS_CERT/WS_TLS_KEY äsja lisati või eemaldati, taaskäivita server, et see vastaks failile .env.",
+        "wsOverTLS": " TLS-i kaudu",
+        "wsBadHandshake": "Teenus aadressil 127.0.0.1:{port} ei lõpetanud kehtivat WebSocketi käepigistust—sellel pordil võib bin/websocket-server.php asemel kuulata midagi muud.",
+        "wsNoPong": "WebSocketi server võttis käepigistuse vastu, kuid ei vastanud pingile—see võib olla kinni jooksnud või tõrkuda. Kontrolli logisid.",
+        "wsReachable": "WebSocketi server on aadressil 127.0.0.1:{port} kättesaadav ja vastab"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Teemaviide",
+            "person": "Inimene",
+            "org": "Organisatsioon",
+            "gpe": "Koht",
+            "loc": "Piirkond",
+            "fac": "Maamärk",
+            "product": "Toode",
+            "event": "Sündmus",
+            "work_of_art": "Teos",
+            "law": "Seadus",
+            "language": "Keel",
+            "norp": "Rühm"
+        },
+        "plural": {
+            "hashtag": "Teemaviited",
+            "person": "Inimesed",
+            "org": "Organisatsioonid",
+            "gpe": "Kohad",
+            "loc": "Piirkonnad",
+            "fac": "Maamärgid",
+            "product": "Tooted",
+            "event": "Sündmused",
+            "work_of_art": "Teosed",
+            "law": "Seadused",
+            "language": "Keeled",
+            "norp": "Rühmad"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Eemalda sõber"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Võta vastu"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Keeldu"
+    },
+    "UserFollowButton": {
+        "follow": "Jälgi",
+        "unfollow": "Lõpeta jälgimine"
+    },
+    "UserBlockButton": {
+        "name": "Blokeeri"
+    },
+    "UserUnblockButton": {
+        "name": "Tühista blokeering"
+    },
+    "OtherUser": {
+        "message": "Sõnum"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menüü",
+        "loggedInAs": "Sisse logitud kasutajana {name}",
+        "friendsFeed": "Sõprade voog",
+        "relayFeed": "Releevoog",
+        "users": "Kasutajad",
+        "tags": "Teemaviited",
+        "topics": "Teemad",
+        "map": "Kaart",
+        "locations": "Asukohad",
+        "search": "Otsing",
+        "messages": "Sõnumid",
+        "bookmarks": "Järjehoidjad",
+        "help": "Abi",
+        "about": "Teave",
+        "login": "Logi sisse",
+        "signup": "Registreeru",
+        "friends": "Sõbrad",
+        "drafts": "Mustandid ja ajastatud postitused",
+        "userSettings": "Kasutaja seaded",
+        "modSettings": "Moderaatori seaded",
+        "adminSettings": "Administraatori seaded"
+    },
+    "LogoutForm": {
+        "submit": "Logi välja"
+    },
+    "User": {
+        "joined": "Liitus {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Lisa sõbraks",
+        "cancel": "Tühista taotlus"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Ajastatud ajaks {when}",
+        "draft": "Mustand—avaldatakse ainult sinu käsul"
+    },
+    "MessageTranslateButton": {
+        "name": "Tõlgi see sõnum"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Sõnumite tõlkimisest",
+        "body": "Sõnumi tõlkimiseks saadetakse selle tekst sellesse serverisse ja tõlgitakse siin. Midagi ei säilitata: tõlget ei kirjutata andmebaasi ja sõnum ise ei muutu. Selliselt tõlgitud sõnumit on server siiski lugenud, seega pole see läbivalt krüptitud nagu tõlkimata sõnum. Tõlkida saab ainult saadud sõnumeid ja ainult sinu soovil.",
+        "confirm": "Tõlgi",
+        "cancel": "Mitte praegu"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Unustasid paroolifraasi? Lähtestamine loob uue paroolifraasi all uued võtmed, kuid vanade võtmetega krüptitud sõnumeid ei saa enam mitte keegi lugeda.",
+        "requirements": "Vähemalt 12 märki ja mitte sinu konto parool—konto parool saadetakse serverisse, paroolifraasi ei tohi kunagi saata.",
+        "passphraseLabel": "Paroolifraas",
+        "resetPassphraseLabel": "Uus paroolifraas",
+        "confirmLabel": "Kinnita paroolifraas",
+        "accountPasswordLabel": "Konto parool",
+        "submitLabel": "Lülita krüptitud sõnumid sisse",
+        "resetSubmitLabel": "Lähtesta krüptovõtmed"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Läbivalt krüptitud sõnumid lukustatakse ja avatakse sinu brauseris: server edastab ja salvestab neid, kuid ei saa neid lugeda. Võtit kaitseb paroolifraas, millega saad sõnumid avada igas brauseris. Vestlus krüptitakse, kui mõlemad inimesed on selle sisse lülitanud; teiste serverite kasutajatele saadetud sõnumid jäävad krüptimata, sest föderatsioon ei oska neid teisiti edastada.",
+        "noRecovery": "Kaotatud paroolifraasi ei saa taastada isegi administraator. Selle kaotamine tähendab krüptitud sõnumite kaotamist.",
+        "enabledStatus": "Krüptitud sõnumid on sisse lülitatud."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Krüptitud",
+            "explanation": "Selle vestluse sõnumid on läbivalt krüptitud: need avatakse paroolifraasiga ja loetakse sinu brauserites, server salvestab ainult šifreeritud teksti. Veendumaks, et keegi pole teie vahel, võrdle vestluse all olevat turvakoodi teise inimesega. Enne krüptimise sisselülitamist saadetud sõnumid jäävad endiselt loetavaks."
+        },
+        "awaiting-theirs": {
+            "label": "Krüptimata",
+            "explanation": "Siinsed sõnumid krüptitakse läbivalt, kui {handle} lülitab seadetes krüptitud sõnumid sisse."
+        },
+        "awaiting-yours": {
+            "label": "Krüptimata",
+            "explanation": "Siinsed sõnumid pole läbivalt krüptitud. Vestluse kaitsmiseks lülita seadetes krüptitud sõnumid sisse."
+        },
+        "federated": {
+            "label": "Krüptimata",
+            "explanation": "{handle} asub teises serveris. Vestluse sõnumid salvestatakse nii selles kui ka teises serveris ning teise serveri administraator saab neid lugeda—serveritevaheline protokoll ei võimalda neid krüptida. Hoia tundlik teave selle saidi sisestes vestlustes."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Jälgi födiversumi kontosid",
+        "notice": "Kleebi üks või mitu kasutajatunnust, nt @user@example.social—nende vahel sobib mis tahes eraldaja.",
+        "handlesLabel": "Jälgitavad födiversumi kasutajatunnused",
+        "submit": "Jälgi",
+        "statusPending": "ootel",
+        "statusAccepted": "vastu võetud"
+    },
+    "ServerBlockForm": {
+        "legend": "Blokeeri server",
+        "description": "Keeldub kõigest sellest serverist ja selle alamserveritest: sisse ega välja ei toimu edastusi ning mõlemasuunalised olemasolevad jälgimised eemaldatakse.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Põhjus",
+        "reasonPlaceholder": "Miks see server on blokeeritud",
+        "submit": "Blokeeri server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Käivitab kõne seadistuse osad, mida saab kontrollida ühes brauseris. Siin saab testida kõike kuni tegeliku partnerühenduseni; teise inimesega ühendamiseks on vaja tema osalust."
+    },
+    "VideoCallTestButton": {
+        "label": "Käivita kontroll"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocketi server: töötab",
+        "failed": "WebSocketi server: {detail}",
+        "clientTesting": "Brauseri ühendus: testimine…",
+        "clientConnecting": "Brauseri ühendus: ühendamine…",
+        "clientConnected": "Brauseri ühendus: ühendatud",
+        "clientDisconnecting": "Brauseri ühendus: ühenduse katkestamine…",
+        "clientNotConnected": "Brauseri ühendus: ühendamata"
+    },
+    "UploadWorkerStatus": {
+        "running": "Töötlusteenus: töötab",
+        "stopped": "Töötlusteenus: ei tööta—ootel üleslaadimisi ei kodeerita enne teenuse taaskäivitamist",
+        "unknown": "Töötlusteenus: teadmata—systemctl pole selles hostis saadaval või SELinux keelab veebiserveril olekut küsida (parandamiseks käivita bin/install.php juurkasutajana)",
+        "queue": "Järjekord: {staging} ettevalmistamisel, {pending} ootel, {processing} töötlemisel"
+    },
+    "TrendingTimerStatus": {
+        "running": "Populaarsete teemade taimer: töötab",
+        "stopped": "Populaarsete teemade taimer: ei tööta—teemasid värskendatakse ainult lugemistee eneseparanduse kaudu (Trending::current()), mitte ajakava järgi. Seadistamiseks käivita bin/install.php juurkasutajana.",
+        "unknown": "Populaarsete teemade taimer: teadmata—systemctl pole selles hostis saadaval või SELinux keelab veebiserveril olekut küsida (parandamiseks käivita bin/install.php juurkasutajana)"
+    },
+    "Notification": {
+        "postReady": "Sinu meedia töötlemine lõppes ja see on nüüd avaldatud",
+        "scheduledPostLive": "Sinu ajastatud postitus on nüüd avaldatud",
+        "uploadPartlyFailed": "Sinu postitus on avaldatud, kuid üht või mitut faili ei õnnestunud töödelda",
+        "uploadFailed": "Ühe üleslaadimise töötlemine ebaõnnestus ja seda ei postitatud",
+        "mailerFailed": "E-kirja edastamine ebaõnnestus—postiteenus võib olla maas. Kontrolli postiseadeid.",
+        "mailFromNotConfigured": "Kirjade saatja aadress pole seadistatud, seega ei saa e-kirju saata. Määra see administraatori seadetes (Väljuv post) või bin/install.php abil.",
+        "systemError": "Ilmnes serveri viga. Üksikasjad leiad vealogist.",
+        "passwordRemovedGoogle": "Sinu parool eemaldati Google'iga sisselogimisel. Uue määramiseks kasuta valikut \"Unustasid parooli\".",
+        "like": "Kasutajale {name} meeldis sinu postitus",
+        "repost": "{name} jagas sinu postitust",
+        "reply": "{name} vastas sinu postitusele",
+        "friendRequest": "{name} saatis sulle sõbrakutse",
+        "friendAccepted": "{name} võttis sinu sõbrakutse vastu",
+        "message": "{name} saatis sulle sõnumi",
+        "mention": "{name} mainis sind postituses",
+        "follow": "{name} hakkas sind teisest serverist jälgima",
+        "default": "{name} tegi midagi"
+    },
+    "NotificationList": {
+        "emptyNotice": "Teavitusi veel pole."
+    },
+    "NotificationsNavLink": {
+        "label": "Teavitused",
+        "unseen": "Vaatamata teavitused"
+    },
+    "NotificationTestPanel": {
+        "intro": "Saada endale (administraatorile) testteavitus. See peaks kohe ilmuma hüpikteavituse ja teavituste rippmenüüna.",
+        "button": "Saada testteavitus",
+        "sending": "Saatmine…",
+        "sent": "Saadetud!",
+        "failed": "Ebaõnnestus"
+    },
+    "MessageDot": {
+        "label": "Lugemata sõnumid"
+    },
+    "NavAlertDot": {
+        "label": "Menüüs on midagi uut"
+    },
+    "Message": {
+        "encrypted": "Krüptitud sõnum",
+        "decryptionFailed": "See sõnum krüptiti võtmetega, mida enam pole."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Sõnum",
+        "bodyPlaceholder": "Kirjuta sõnum",
+        "send": "Saada"
+    },
+    "MessageList": {
+        "emptyNotice": "Sõnumeid veel pole."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Lugege see kood teineteisele mõnel muul viisil—valjusti, silmast silma või kõne kaudu. Kui kood on mõlemal poolel sama, pole keegi teie vahel.",
+        "changed": "See kood on pärast viimast kontrolli muutunud. See juhtub, kui üks teist lähtestab krüptovõtmed, kuid samamoodi paistaks ka vestluse pealtkuulaja. Enne usaldamist võrrelge uut koodi.",
+        "verified": "Oled selle koodi kontrollinud."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Märgi kontrollituks"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Paroolifraas",
+        "passphrasePlaceholder": "Vestluse avamise paroolifraas",
+        "submit": "Ava"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Viimane sõnum ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Tundlik meedia"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Näita tundlikku meediat vaikimisi"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Postitus",
+            "message": "Sõnum",
+            "user": "Kasutaja"
+        },
+        "summary": {
+            "before": "{type} #{id}, teataja ",
+            "after": ""
+        },
+        "reasonLine": "Põhjus: {reason}",
+        "banReporterLabel": "Keela teataja",
+        "banReportedUserLabel": "Keela teatatud kasutaja",
+        "deleteLabel": "Kustuta {type}",
+        "reportedImageAlt": "Teatatud pilt",
+        "attachmentUnavailable": "Teatatud manus pole enam saadaval.",
+        "viewAttachment": "Vaata teatatud manust",
+        "missing": {
+            "noSnapshot": "Teatatud sisu pole enam saadaval.",
+            "unknownType": "Tundmatu sisutüüp."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Teateid pole."
+    },
+    "ModQueueLinks": {
+        "intro": "Järjekorrad on piisavalt pikad, et neid lehekülgede kaupa lugeda, seega on neil eraldi lehed.",
+        "reportsLabel": "Teated",
+        "bannedUsersLabel": "Keelatud kasutajad"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Ükski moderaator pole veel midagi teinud."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Keelatud populaarseid üksusi pole."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Blokeeritud servereid pole."
+    },
+    "RelayCard": {
+        "accepted": "Tellitud ",
+        "waiting": "Relee kinnituse ootel—tellitud "
+    },
+    "RelayList": {
+        "emptyNotice": "Ühtki releed pole tellitud. Siia jõuab ainult sisu, mida liikmed jälgivad."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Relee kaudu pole veel midagi saabunud. Postitused ilmuvad siia, kui teise poole serverid need avaldavad."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Telli relee",
+        "explainerOne": "Relee on jagatud postitusvoog: siia saabuvad kõigi teiste liitunud serverite avalikud postitused ja selle serveri omad saadetakse neile kõigile. Nii leiab uus server inimesi, sest muidu kannab föderatsioon ainult seda, mida keegi siin juba jälgib.",
+        "explainerTwo": "Koormust ei saa ette ennustada—see sõltub teiste serverite postitustest: üks nädal võib olla vaikne ja järgmine tuua tuhandeid postitusi tunnis. Kõike kannavad sinu salvestusruum, edastusjärjekord ja modereerimisjärjekord. Relee kaudu saabunud postitused ei ilmu põhi- ega sõprade voogu, vaid eraldi releevoogu, mille inimesed avavad teadlikult.",
+        "addressLabel": "Relee aadress",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Telli"
+    },
+    "RelayFollowObjectField": {
+        "label": "Tellimise viis",
+        "options": {
+            "public": "Jälgi avalikku voogu (seda ootab enamik releesid)",
+            "actor": "Jälgi relee enda aktorit"
+        },
+        "retryNotice": "Kui relee ei võta taotlust vastu, tühista see ja proovi teist viisi—mõni releetarkvara tunneb ära ainult ühe neist."
+    },
+    "SiteCounters": {
+        "members": "Liikmeid: {count} (viimase {days} päeva jooksul liitus {joined})",
+        "activeMembers": "Viimase {days} päeva jooksul siin olnud liikmeid: {count} (neist postitas {posted})",
+        "posts": "Siin kirjutatud postitusi: {count} (viimase {days} päeva jooksul {recent})",
+        "deliveries": "Föderatsiooni edastusi viimase {days} päeva jooksul: {delivered} saabus, {undeliverable} edastamisest loobuti",
+        "queued": "Väljasaatmise ootel: {count} (vähemalt korra on juba tagasi lükatud {failing})",
+        "pendingReads": "Teistest serveritest lugemise ootel postitusi: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Käivita saidi testikomplekt ja vaata tulemusi. See võtab mõne sekundi, seega avaneb eraldi lehel.",
+        "runLabel": "Käivita testid"
+    },
+    "HelpArticle": {
+        "backLabel": "Tagasi kogu abi juurde"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Praegu soovitusi pole—need tulevad sinu praeguste sõprade sõpradelt. Kellegi nime järgi leidmiseks otsi ülalt.",
+        "noMatches": "Siin ei vasta sellele keegi."
+    },
+    "UserModButton": {
+        "make": "Määra moderaatoriks",
+        "remove": "Eemalda moderaatori roll"
+    },
+    "UserUnbanButton": {
+        "name": "Tühista keeld"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Keela"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Tühista keeld"
+    },
+    "ReportDismissButton": {
+        "name": "Lükka tagasi"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Märgi tundlikuks"
+    },
+    "ServerUnblockButton": {
+        "name": "Tühista blokeering"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Loobu tellimusest"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Tühista"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: läbitud",
+        "failing": "{suite}: nurjunud"
+    },
+    "PageTitle": {
+        "about": "Teave",
+        "adminBanned": "Keelatud kasutajad",
+        "adminModSettings": "Moderaatori seaded",
+        "adminReports": "Teated",
+        "adminSettings": "Administraatori seaded",
+        "adminTests": "Testid",
+        "authGoogleCallbackAccountDeleted": "Konto kustutatud",
+        "authGoogleCallbackDeleteAccount": "Kustuta konto",
+        "authGoogleCallbackLogin": "Logi sisse",
+        "bookmarks": "Järjehoidjad",
+        "checkInbox": "Kontrolli postkasti",
+        "drafts": "Mustandid ja ajastatud postitused",
+        "draftsEditDraft": "Muuda mustandit",
+        "draftsEditScheduled": "Muuda ajastatud postitust",
+        "forgotPassword": "Unustasid parooli",
+        "friendsFeed": "Sõprade voog",
+        "help": "Abi",
+        "helpDescription": "Juhendid ja vastused saidi kasutamise kohta.",
+        "locations": "Asukohad",
+        "locationsDescription": "Postitused sulle lähimatest kohtadest.",
+        "locationsPlaceDescription": "Postitused koha {place} lähedal.",
+        "login": "Logi sisse",
+        "loginVerificationCode": "Kinnituskood",
+        "map": "Kaart",
+        "mapDescription": "Postituste kaart kogu maailmast—leia enda lähedalt inimesi ja paiku.",
+        "messages": "Sõnumid",
+        "messagesWithUser": "Sõnumid kasutajaga {name}",
+        "notifications": "Teavitused",
+        "privacy": "Privaatsuspoliitika",
+        "quote": "Tsiteeri",
+        "relayFeed": "Releevoog",
+        "relayFeedDescription": "Avalikud postitused releedest, mida see server tellib.",
+        "resetPassword": "Lähtesta parool",
+        "revertEmail": "Tühista e-posti aadressi muutmine",
+        "search": "Otsing",
+        "signup": "Registreeru",
+        "tags": "Teemaviited",
+        "tagsDescription": "Sirvi saidil {siteTitle} populaarseid teemaviiteid.",
+        "tagsTagDescription": "Teemaviitega {tag} postitused saidil {siteTitle}.",
+        "terms": "Kasutustingimused",
+        "topics": "Teemad",
+        "topicsDescription": "Millest inimesed saidil {siteTitle} praegu räägivad.",
+        "topicsEntityDescription": "{typeLabel}—üksust {entityTitle} mainivad postitused saidil {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, millest inimesed saidil {siteTitle} praegu räägivad.",
+        "unsubscribe": "E-posti kokkuvõtted",
+        "userFriends": "Kasutaja {name} sõbrad",
+        "userFriendsDescription": "Kasutaja {name} sõbrad saidil {siteTitle}",
+        "userSettings": "Kasutaja seaded",
+        "users": "Kasutajad",
+        "verifyEmail": "Kinnita e-post"
+    },
+    "PostLikeButton": {
+        "like": "Meeldib",
+        "unlike": "Ei meeldi enam"
+    },
+    "PostPinButton": {
+        "pin": "Kinnita",
+        "unpin": "Vabasta"
+    },
+    "PostQuoteButton": {
+        "name": "Tsiteeri"
+    },
+    "PostDeleteButton": {
+        "name": "Kustuta"
+    },
+    "PostEditButton": {
+        "name": "Muuda"
+    },
+    "ReportButton": {
+        "name": "Teata"
+    },
+    "PostActionBar": {
+        "reply": "Vasta",
+        "replies": {
+            "one": "{count} vastus",
+            "other": "{count} vastust"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(muudetud)"
+    },
+    "RepliesHeading": {
+        "heading": "Vastused"
+    },
+    "PollVoteButton": {
+        "name": "Hääleta"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Vaata ",
+            "link": "rohkem asukohti",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Postitused sinu lähedal",
+        "description": "Siin kuvatakse punktile lähimad postitused—kõige lähem tegevus, ükskõik kui kaugel see on. Alusta oma asukohast seda jagades või vali punkt kaardil.",
+        "useMyLocation": "Kasuta minu asukohta",
+        "pickOnMap": "Vali kaardilt",
+        "searchPlaceholder": "Või sisesta kohanimi…",
+        "searchLabel": "Otsi kohta",
+        "locating": "Asukoha määramine…",
+        "noGeolocation": "Sinu brauser ei saa asukohta jagada.",
+        "locationError": "Sinu asukohta ei õnnestunud hankida. Kontrolli brauseri asukohaluba."
+    },
+    "PollDeadline": {
+        "final": "Lõpptulemus",
+        "closes": {
+            "before": "Sulgemine ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} päeva pärast",
+            "other": "{count} päeva pärast"
+        },
+        "hours": {
+            "one": "{count} tunni pärast",
+            "other": "{count} tunni pärast"
+        },
+        "minutes": {
+            "one": "{count} minuti pärast",
+            "other": "{count} minuti pärast"
+        },
+        "underMinute": "vähem kui minuti pärast"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "{count} inimene hääletas ",
+            "other": "{count} inimest hääletas "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Logi sisse",
+            "after": ", et postitada."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Logi sisse",
+            "after": ", et vastata."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " jagas"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Vastus postitusele ",
+            "after": ""
+        },
+        "untitled": "see postitus",
+        "jumpToStart": "Hüppa algusesse"
+    },
+    "TopicSummaryCard": {
+        "label": "Tehisintellekti loodud kokkuvõte"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Tere tulemast saidile ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Kirjuta midagi allolevasse kasti ja see ilmub sinu voos. Igaüks saab vastata ning vastus on lihtsalt eelneva postitusega seotud postitus, nii et vestlused võivad hargneda nii sügavale kui vaja.",
+            "Lisa inimesi sõpradeks ja nende postitused ilmuvad sinu voos. Üldvoog—saidi nimi vasakus ülanurgas—näitab kõike, mis siin kirjutatakse, ning sealt leiab inimesi, keda lisada.",
+            "See sait kuulub födiversumisse: saad täieliku kasutajatunnuse järgi jälgida Mastodoni ja teiste serverite kontosid ning sinu postitused jõuavad sealsete jälgijateni. Otsi tunnust nagu @someone@example.social ja server leiab kasutaja üles.",
+            "Lisa postitusele #teemaviiteid ja see ilmub nende lehtedel ning piisava huvi korral populaarsete teemade hulgas.",
+            "Liikmetevahelised sõnumid on läbivalt krüptitud—server salvestab šifreeritud teksti, mida ta lugeda ei saa. Lülita see seadetes sisse.",
+            "Sa ei pea kohe postitama: salvesta mustand või määra automaatse avaldamise aeg. Mõlemad asuvad jaotises Mustandid ja ajastatud postitused."
+        ],
+        "more": {
+            "before": "Rohkem teavet leiad ",
+            "link": "abilehtedelt",
+            "after": ", sealhulgas konto mujalt siia kolimise juhised."
+        },
+        "dontShowAgain": "Ära näita seda uuesti"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Lisa emotikon"
+    },
+    "LinkImagePreview": {
+        "alt": "Lingi eelvaate pilt"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Eemalda pilt"
+    },
+    "LinkItem": {
+        "alt": "Lingi eelvaate pilt"
+    },
+    "MapScrubber": {
+        "play": "Esita",
+        "pause": "Peata",
+        "cumulativeMode": "Kuni selle ajani",
+        "windowMode": "Ainult sel ajal",
+        "rangeLabel": "Näita postitusi kuni kuupäevani",
+        "cumulativeLabel": {
+            "one": "Kuni {date} postitatud—{count} postitus",
+            "other": "Kuni {date} postitatud—{count} postitust"
+        },
+        "windowLabel": {
+            "one": "{date} paiku postitatud—{count} postitus",
+            "other": "{date} paiku postitatud—{count} postitust"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Kasutaja {name} postitus",
+        "pageTitleUntitled": "Postitus",
+        "imageAltByAuthor": "Kasutaja {name} postitatud foto",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Eemalda järjehoidja",
+        "add": "Lisa järjehoidja"
+    },
+    "PostRepostButton": {
+        "undo": "Võta jagamine tagasi",
+        "repost": "Jaga"
+    },
+    "QuotedPost": {
+        "viewLink": "Vaata tsiteeritud postitust"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Ootel taotlused"
+    },
+    "ScrollToTopButton": {
+        "label": "Keri üles"
+    },
+    "SearchClearButton": {
+        "label": "Tühjenda otsing"
+    },
+    "SitePolicyLinks": {
+        "terms": "Kasutustingimused",
+        "privacy": "Privaatsuspoliitika"
+    },
+    "SkipLink": {
+        "label": "Liigu sisu juurde"
+    },
+    "TopicHeading": {
+        "searchLink": "Otsi seda",
+        "noPosts": "Praegu ei maini seda ükski postitus."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Sellest pole veel midagi kirjutatud."
+    },
+    "TrendingEntitySection": {
+        "heading": "Populaarne"
+    },
+    "PostLocationLink": {
+        "title": "Näita seda kohta kaardil",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "just praegu",
+        "minutes": {
+            "one": "{count} min tagasi",
+            "other": "{count} min tagasi"
+        },
+        "hours": {
+            "one": "{count} t tagasi",
+            "other": "{count} t tagasi"
+        },
+        "days": {
+            "one": "{count} p tagasi",
+            "other": "{count} p tagasi"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Kujundus",
+        "themes": {
+            "system": "Süsteemi järgi",
+            "light": "Lihtne hele",
+            "dark": "Lihtne tume",
+            "sepia": "Sepia",
+            "midnight": "Kesköö",
+            "sunset": "Päikeseloojang",
+            "rose": "Roos",
+            "forest": "Mets",
+            "ocean": "Ookean",
+            "lavender": "Lavender",
+            "gold": "Kuld",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Halltoonid"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Tõlkimine pole selles serveris seadistatud.",
+        "nothing": "Siin pole midagi tõlkida.",
+        "unknownSource": "Postituse keelt pole veel tuvastatud, seega ei saa seda tõlkida.",
+        "alreadyReadable": "Postitus on juba selles keeles.",
+        "unsupportedPair": "Server ei saa seda keelt veel tõlkida."
+    },
+    "LanguagePrompt": {
+        "question": "Kas soovid vaadata saiti eesti keeles?",
+        "accept": "Jah",
+        "decline": "Ei, aitäh"
+    },
+    "LanguageSelector": {
+        "label": "Keel",
+        "legend": "Keel"
+    },
+    "EmailDigest": {
+        "subject": "Mida sa saidil {site} ei näinud",
+        "greeting": "Tere, {name}!",
+        "whileAway": "Sinu eemaloleku ajal:",
+        "repeatedTimes": {
+            "one": " ({count} kord)",
+            "other": " ({count} korda)"
+        },
+        "moreMissed": {
+            "one": "ja veel {count} teavitus",
+            "other": "ja veel {count} teavitust"
+        },
+        "messagesWaiting": {
+            "one": "Sind ootab {count} sõnum",
+            "other": "Sind ootab {count} sõnumit"
+        },
+        "postsInFeed": {
+            "one": "Sinu voos on {count} uus postitus",
+            "other": "Sinu voos on {count} uut postitust"
+        },
+        "unsubscribeInstructions": "Nende kirjade peatamiseks ava see link—piisab ühest klõpsust ja parooli pole vaja:",
+        "comeSeeWhatIsNew": "Tule vaata, mis on uut",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Ärge saatke mulle neid enam",
+            "after": "—üks klõps, parooli pole vaja."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Kinnita oma e-posti aadress",
+        "greeting": "Tere, {name}!",
+        "instructions": "Kinnita oma e-posti aadress, avades selle lingi:",
+        "htmlInstructions": "Kinnita oma e-posti aadress, klõpsates alloleval lingil:",
+        "buttonLabel": "Kinnita e-posti aadress",
+        "expiresIn": {
+            "one": "Link aegub {count} tunni pärast.",
+            "other": "Link aegub {count} tunni pärast."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Lähtesta oma parool",
+        "greeting": "Tere, {name}!",
+        "instructions": "Keegi (loodetavasti sina) taotles parooli lähtestamist. Uue parooli valimiseks ava see link:",
+        "htmlInstructions": "Keegi (loodetavasti sina) taotles parooli lähtestamist. Uue parooli valimiseks klõpsa alloleval lingil:",
+        "buttonLabel": "Lähtesta parool",
+        "expiresIn": {
+            "one": "Link aegub {count} tunni pärast.",
+            "other": "Link aegub {count} tunni pärast."
+        },
+        "ignoreNotice": "Kui sa seda ei taotlenud, võid kirja eirata."
+    }
+}

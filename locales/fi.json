@@ -1,0 +1,725 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 ääni", "other": "{count} ääntä"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Kirjaudu sisään", "after": " vastataksesi."
+        },
+        "post": {
+            "before": "",
+            "link": "Kirjaudu sisään", "after": " julkaistaksesi."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Sivusto", "siteURLLabel": "Sivuston URL", "siteTitleLabel": "Sivuston nimi", "mailFromAddressLabel": "Sähköpostin lähettäjäosoite", "serverNameConfirmedLabel": "Olen asettanut verkkopalvelimen määrityksiin \"ServerName {host}\" ja \"UseCanonicalName On\" (tarkistetaan vain, jos automaattinen verkkotesti ei valmistu — katso README.md:n HTTPS-osio)", "databaseLegend": "Tietokanta", "databaseHostLabel": "Tietokantapalvelin", "databasePortLabel": "Tietokannan portti", "databaseNameLabel": "Tietokannan nimi", "databaseAdminUsernameLabel": "Tietokannan ylläpitäjän käyttäjätunnus", "databaseAdminPasswordLabel": "Tietokannan ylläpitäjän salasana", "webSocketTLSLegend": "WebSocket TLS (valinnainen)", "certificatePathLabel": "Varmenteen polku", "certificatePathPlaceholder": "Jätä tyhjäksi, jotta mkcert luo sen automaattisesti", "keyPathLabel": "Avaimen polku", "keyPathPlaceholder": "Jätä tyhjäksi, jotta mkcert luo sen automaattisesti", "botProtectionLegend": "Bottisuojaus (valinnainen)", "turnstileSiteKeyLabel": "Cloudflare Turnstilen sivustoavain", "turnstileSiteKeyPlaceholder": "Jätä tyhjäksi ohittaaksesi", "turnstileSecretKeyLabel": "Cloudflare Turnstilen salainen avain", "turnstileSecretKeyPlaceholder": "Jätä tyhjäksi ohittaaksesi", "submit": "Määritä"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Nykyinen tunnuslause", "newPassphraseLabel": "Uusi tunnuslause", "confirmNewPassphraseLabel": "Vahvista uusi tunnuslause", "accountPasswordLabel": "Tilin salasana", "submit": "Vaihda tunnuslause"
+    },
+    "PasswordResetForm": {
+        "legend": "Valitse uusi salasana", "newPasswordLabel": "Uusi salasana", "newPasswordPlaceholder": "Vähintään 8 merkkiä", "confirmPasswordLabel": "Vahvista uusi salasana", "submit": "Palauta salasana"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Palauta salasanasi", "emailLabel": "Sähköposti", "submit": "Lähetä palautuslinkki"
+    },
+    "EmailRevertForm": {
+        "submit": "Kumoa sähköpostiosoitteen vaihto"
+    },
+    "EmailVerifyForm": {
+        "submit": "Vahvista sähköpostiosoite"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Ota ne uudelleen käyttöön"
+    },
+    "EmailDigestSetting": {
+        "label": "Lähetä minulle sähköpostitse, mitä jäi väliin ollessani poissa"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Tuntematon laite", "browserOnOS": "{browser}, käyttöjärjestelmä {os}", "thisDevice": " (tämä laite)",
+        "lastUsed": {
+            "before": "Käytetty viimeksi ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Päätä kaikki aktiiviset istunnot ja unohda kaikki muistetut laitteet. Sinut kirjataan ulos kaikista selaimista, myös tästä."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Kirjaudu ulos kaikkialta"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Vahvista Googlella poistamista varten"
+    },
+    "GoogleSignInButton": {
+        "label": "Jatka Googlella"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Muokkaa profiilia"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Saat ilmoituksia tälle laitteelle myös silloin, kun sivusto ei ole avoinna. Asetus on selainkohtainen — ota se käyttöön kaikissa selaimissa, joissa haluat saada ilmoituksia.",
+        "label": {
+            "off": "Ota käyttöön tällä laitteella", "on": "Poista käytöstä tällä laitteella"
+        },
+        "unsupported": "Tämä selain ei tue push-ilmoituksia"
+    },
+    "LoginForm": {
+        "legend": "Kirjaudu sisään", "identifier": "Käyttäjätunnus tai sähköposti", "password": "Salasana", "rememberMe": "Muista minut", "submit": "Kirjaudu sisään"
+    },
+    "SignupForm": {
+        "legend": "Luo tili", "usernameLabel": "Käyttäjätunnus", "usernamePlaceholder": "Pieniä kirjaimia, numeroita ja _", "emailLabel": "Sähköposti", "emailPlaceholder": "Kelvollinen sähköpostiosoite", "displayName": "Näyttönimi (valinnainen)", "bioLabel": "Esittely (valinnainen)", "bioPlaceholder": "Lyhyt esittely — #aihetunnisteista, @maininnoista ja linkeistä tulee napsautettavia", "passwordLabel": "Salasana", "passwordPlaceholder": "Salasana: vähintään 8 merkkiä", "rememberMe": "Muista minut", "submit": "Rekisteröidy"
+    },
+    "PasswordChangeForm": {
+        "legend": "Vaihda salasanasi", "currentPassword": "Nykyinen salasana", "newPasswordLabel": "Uusi salasana", "newPasswordPlaceholder": "Vähintään 8 merkkiä", "confirmPassword": "Vahvista uusi salasana", "submit": "Vaihda salasana"
+    },
+    "EmailChangeForm": {
+        "legend": "Vaihda sähköpostiosoitteesi", "newEmail": "Uusi sähköpostiosoite", "currentPassword": "Nykyinen salasana", "notice": "Uusi osoite on vahvistettava ennen kuin voit jatkaa sivuston käyttöä.", "submit": "Vaihda sähköposti"
+    },
+    "AccountDeleteForm": {
+        "legend": "Poista tilisi", "warning": "Tämä poistaa pysyvästi tilisi, julkaisusi ja viestisi. Toimintoa ei voi perua.", "currentPassword": "Nykyinen salasana", "submit": "Poista tili"
+    },
+    "AccountMigrationForm": {
+        "legend": "Siirry toiselle palvelimelle", "movedNotice": "Tämä tili on siirtynyt osoitteeseen {destination}. Seuraajiasi pyydettiin seuraamaan sinua siellä.", "explanation": "Seuraajiasi pyydetään seuraamaan uutta tiliäsi. Julkaisusi jäävät tänne — kohteiden osoitteet kuuluvat ne luoneelle palvelimelle, joten niitä ei voi siirtää mukana.", "addressNotice": "Tilin, jolle siirryt, on ensin lueteltava tämä tili kohdassa \"tunnetaan myös nimellä\". Osoitteesi täällä on {address}.", "movedToLabel": "Siirry osoitteeseen",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Tunnetaan myös nimellä", "aliasesExplanation": "Muualla olevat tilit, jotka ovat myös sinun. Tilin lisääminen tähän sallii sen siirtyä tälle tilille — tämä on lupa, ei itse siirto. Yksi osoite riville.", "aliasesLabel": "Muut tilisi",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Tallenna"
+    },
+    "TwoFactorForm": {
+        "legend": "Anna vahvistuskoodi", "explanation": "Lähetimme sinulle vahvistuskoodin sähköpostitse. Viimeistele kirjautuminen antamalla se alle tai käyttämällä palautuskoodia.", "explanationEmailFailed": "Vahvistuskoodia ei voitu lähettää sähköpostitse juuri nyt. Viimeistele kirjautuminen antamalla jokin palautuskoodeistasi.", "code": "Vahvistuskoodi", "submit": "Vahvista"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Kaksivaiheinen tunnistautuminen on käytössä", "off": "Kaksivaiheinen tunnistautuminen ei ole käytössä"
+        },
+        "explanation": {
+            "on": "Kun kirjaudut sisään, lähetämme sähköpostitse vahvistuskoodin, joka sinun on annettava. Jos sähköposti ei tavoita sinua, voit kirjautua palautuskoodilla.", "off": "Lisää kirjautumiseen toinen vaihe: lähetämme sähköpostitse vahvistuskoodin, joten salasana yksin ei riitä. Saat kertakäyttöisiä palautuskoodeja siltä varalta, ettei sähköposti tavoita sinua."
+        },
+        "currentPassword": "Nykyinen salasana",
+        "submit": {
+            "on": "Poista kaksivaiheinen tunnistautuminen käytöstä", "off": "Ota kaksivaiheinen tunnistautuminen käyttöön"
+        },
+        "regenerate": "Luo uudet palautuskoodit", "recoveryHeading": "Palautuskoodisi", "recoveryNote": "Tallenna nämä nyt turvalliseen paikkaan — niitä ei näytetä uudelleen. Jokaisella voi kirjautua kerran, jos vahvistussähköposti ei tavoita sinua. Uusien koodien luominen korvaa kaikki nämä.",
+        "toast": {
+            "on": "Kaksivaiheinen tunnistautuminen on nyt käytössä.", "off": "Kaksivaiheinen tunnistautuminen on nyt poistettu käytöstä.", "regenerated": "Uudet palautuskoodit luotiin. Vanhat eivät enää toimi."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Tarkista saapuneet viestit ja vahvista sähköpostiosoitteesi napsauttamalla lähettämäämme vahvistuslinkkiä. Jos viestiä ei näy, tarkista roskapostikansio."
+    },
+    "VerificationResendButton": {
+        "label": "Lähetä vahvistussähköposti uudelleen"
+    },
+    "MailSettingsForm": {
+        "legend": "Lähtevä sähköposti", "fromAddressLabel": "Lähettäjäosoite", "fromAddressPlaceholder": "Sähköpostia ei voi lähettää ennen kuin tämä on määritetty", "fromNameLabel": "Lähettäjän nimi", "hostLabel": "SMTP-palvelin", "portLabel": "SMTP-portti", "usernameLabel": "SMTP-käyttäjätunnus", "passwordLabel": "SMTP-salasana",
+        "passwordPlaceholder": {
+            "set": "Salasana on asetettu — säilytä se jättämällä kenttä tyhjäksi", "unset": "SMTP-salasana"
+        },
+        "encryptionLabel": "Salaus",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, tavallisesti portissa 587)", "ssl": "SSL (implisiittinen TLS, tavallisesti portissa 465)", "none": "Ei salausta"
+        },
+        "explainer": "Jätä SMTP-palvelin tyhjäksi lähettääksesi PHP:n mail()-toiminnolla (ei suositella — katso README:n toimitettavuusosio). Sähköpostia ei voi lähettää lainkaan ennen kuin lähettäjäosoite on asetettu.", "save": "Tallenna"
+    },
+    "MapSettingsForm": {
+        "legend": "Karttatiilet", "notice": "Käytä OpenStreetMapia jättämällä tyhjäksi. Käyttääksesi avaimellista palveluntarjoajaa liitä sen URL-malli, jossa avaimen kohdalla on täsmälleen {apiKey}, sekä avain ja tekijätieto alle.", "urlLabel": "Tiilen URL-malli", "keyLabel": "API-avain", "keyPlaceholder": "Karttatiilipalvelun API-avain", "attributionLabel": "Tekijätieto", "attributionPlaceholder": "© OpenStreetMapin tekijät", "save": "Tallenna"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google-kirjautuminen", "clientIdLabel": "Asiakastunnus", "clientIdPlaceholder": "Google OAuth -asiakastunnus", "secretLabel": "Asiakassalaisuus",
+        "secretPlaceholder": {
+            "set": "Asiakassalaisuus on asetettu — säilytä se jättämällä tyhjäksi", "unset": "Google OAuth -asiakassalaisuus"
+        },
+        "explainer": "Molemmat tarvitaan, jotta \"Jatka Googlella\" näkyy rekisteröitymisessä ja kirjautumisessa. Aseta Google Cloud OAuth -asiakkaan sallittu uudelleenohjaus-URI arvoon {url} — poista asiakastunnus poistaaksesi toiminnon käytöstä.", "save": "Tallenna"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Sivustoavain", "turnstileSiteKeyPlaceholder": "Cloudflare Turnstilen sivustoavain", "turnstileSecretKeyLabel": "Salainen avain",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Salainen avain on asetettu — säilytä se jättämällä tyhjäksi", "unset": "Cloudflare Turnstilen salainen avain"
+        },
+        "turnstileExplainer": "Molemmat avaimet tarvitaan, jotta CAPTCHA näkyy rekisteröitymisessä ja kirjautumisessa. Poista sivustoavain poistaaksesi toiminnon käytöstä.", "recaptchaLegend": "Google reCAPTCHA (lukitun tilin palautus)", "recaptchaSiteKeyLabel": "Sivustoavain", "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2:n sivustoavain", "recaptchaSecretKeyLabel": "Salainen avain",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Salainen avain on asetettu — säilytä se jättämällä tyhjäksi", "unset": "Google reCAPTCHA v2:n salainen avain"
+        },
+        "recaptchaExplainer": "Molemmat avaimet tarvitaan. Kun ne on asetettu, kirjautumisyritysten rajan saavuttanut tili voi palata suorittamalla tämän tarkistuksen lukituksen odottamisen sijaan; ilman niitä lukitus on odotettava. Käytä reCAPTCHA v2:ta (\"En ole robotti\"). Poista sivustoavain poistaaksesi toiminnon käytöstä.", "save": "Tallenna"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Sivuston tekoälytoiminnot käyttävät tätä (suosittujen aiheiden yhteenvedot ym.). Käytä maksuttomien mallien reititintä jättämällä malli tyhjäksi; OpenRouter valitsee satunnaisesti kulloinkin maksuttoman mallin, joten kustannuksia ei voi syntyä.", "keyLabel": "API-avain",
+        "keyPlaceholder": {
+            "set": "API-avain on asetettu — säilytä se jättämällä tyhjäksi", "unset": "OpenRouterin API-avain"
+        },
+        "clearKeyLabel": "Poista tallennettu API-avain (poistaa tekoälytoiminnot käytöstä)", "modelLabel": "Malli", "neverSpendLabel": "Älä koskaan salli tämän käyttää rahaa (suositus)", "explainer": "Kun suojaus on käytössä, jokaisen pyynnön enimmäishinta on nolla, joten pyyntö epäonnistuu maksulliseen malliin siirtymisen sijaan, jos maksutonta tarjoajaa ei ole. Poista tallennettu API-avain poistaaksesi tekoälytoiminnot kokonaan käytöstä.", "save": "Tallenna"
+    },
+    "AboutSettingsForm": {
+        "legend": "Tietoja", "description": "Pelkkää tekstiä — tyhjät rivit erottavat kappaleet. Ensimmäistä kappaletta käytetään sivuston kuvauksena.", "save": "Tallenna"
+    },
+    "TermsSettingsForm": {
+        "legend": "Käyttöehdot", "description": "Pelkkää tekstiä — tyhjät rivit erottavat kappaleet.", "save": "Tallenna"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Tietosuojakäytäntö", "description": "Pelkkää tekstiä — tyhjät rivit erottavat kappaleet.", "save": "Tallenna"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Sähköpostikooste", "fieldLabel": "Loppukappale", "notice": "Lisätään jokaisen koosteen loppupuolelle sen jälkeen, kun jäsenen ohittamat asiat on lueteltu. Pelkkää tekstiä. Palaa ohjelmiston oletustekstiin jättämällä tyhjäksi.", "save": "Tallenna"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Nykyinen sivustokuvake", "save": "Lataa sivustokuvake"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Etusivun kuva", "explainer": "Muut sivustot näyttävät tämän, kun joku jakaa linkin tänne — vain Open Graph -metatiedoissa, ei koskaan sivulla. Rajataan kokoon 1200×630. Ilman kuvaa linkkien esikatseluissa ei ole kuvaa lainkaan.", "currentAlt": "Nykyinen etusivun kuva", "save": "Lataa kuva"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Automaattinen toisto"
+    },
+    "CarouselNextButton": {
+        "name": "Seuraava"
+    },
+    "CarouselPrevButton": {
+        "name": "Edellinen"
+    },
+    "MediaFullscreenButton": {
+        "name": "Koko näyttö"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Poista tiedostot"
+    },
+    "NotificationDropdown": {
+        "showAll": "Näytä kaikki"
+    },
+    "HelpSearch": {
+        "placeholder": "Hae ohjeista…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Selvä"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Hylkää"
+    },
+    "StagedPostEditButton": {
+        "name": "Muokkaa"
+    },
+    "StagedPostPublishButton": {
+        "name": "Julkaise nyt"
+    },
+    "LogoutButton": {
+        "name": "Kirjaudu ulos"
+    },
+    "AvatarUploadForm": {
+        "submit": "Päivitä profiilikuva"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Hae estettyjä käyttäjiä…"
+    },
+    "BannedUserSection": {
+        "heading": "Estetyt käyttäjät"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Lähetetyt pyynnöt (odottavat vastausta)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Käyttäjän {name} estämä ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Käyttäjän {name} estämä ",
+            "after": ""
+        },
+        "deletedAccount": "poistettu tili", "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "tammikuuta", "2": "helmikuuta", "3": "maaliskuuta", "4": "huhtikuuta", "5": "toukokuuta", "6": "kesäkuuta", "7": "heinäkuuta", "8": "elokuuta", "9": "syyskuuta", "10": "lokakuuta", "11": "marraskuuta", "12": "joulukuuta"
+        },
+        "shortMonths": {
+            "1": "tammi", "2": "helmi", "3": "maalis", "4": "huhti", "5": "touko", "6": "kesä", "7": "heinä", "8": "elo", "9": "syys", "10": "loka", "11": "marras", "12": "joulu"
+        },
+        "long": "{day}. {month} {year}", "short": "{day}. {month} {year}", "time": "{hour}.{minute}", "dateAndTime": "{date} klo {time}", "am": "ap.", "pm": "ip.", "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "WebSocket-palvelimeen 127.0.0.1:{port}{tls} ei voitu muodostaa yhteyttä ({error}). Käynnistä se ensin: systemctl --user start glommer-websocket (katso yksikkötiedosto README.md:stä). Jos WS_TLS_CERT/WS_TLS_KEY juuri lisättiin tai poistettiin, käynnistä palvelin uudelleen vastaamaan .env-tiedostoa.", "wsOverTLS": " TLS:n kautta", "wsBadHandshake": "Palvelu osoitteessa 127.0.0.1:{port} ei suorittanut kelvollista WebSocket-kättelyä — porttia saattaa kuunnella jokin muu kuin bin/websocket-server.php.", "wsNoPong": "WebSocket-palvelin hyväksyi kättelyn mutta ei vastannut ping-pyyntöön — se saattaa olla jumissa tai toimia väärin. Tarkista lokit.", "wsReachable": "WebSocket-palvelin on tavoitettavissa ja vastaa osoitteessa 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Aihetunniste", "person": "Henkilö", "org": "Organisaatio", "gpe": "Paikka", "loc": "Alue", "fac": "Maamerkki", "product": "Tuote", "event": "Tapahtuma", "work_of_art": "Teos", "law": "Laki", "language": "Kieli", "norp": "Ryhmä"
+        },
+        "plural": {
+            "hashtag": "Aihetunnisteet", "person": "Henkilöt", "org": "Organisaatiot", "gpe": "Paikat", "loc": "Alueet", "fac": "Maamerkit", "product": "Tuotteet", "event": "Tapahtumat", "work_of_art": "Teokset", "law": "Lait", "language": "Kielet", "norp": "Ryhmät"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Poista ystävä"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Hyväksy"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Hylkää"
+    },
+    "UserFollowButton": {
+        "follow": "Seuraa", "unfollow": "Lopeta seuraaminen"
+    },
+    "UserBlockButton": {
+        "name": "Estä"
+    },
+    "UserUnblockButton": {
+        "name": "Poista esto"
+    },
+    "OtherUser": {
+        "message": "Viesti"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Valikko", "loggedInAs": "Kirjautuneena käyttäjänä {name}", "friendsFeed": "Ystäväsyöte", "relayFeed": "Välityssyöte", "users": "Käyttäjät", "tags": "Tunnisteet", "topics": "Aiheet", "map": "Kartta", "locations": "Sijainnit", "search": "Haku", "messages": "Viestit", "bookmarks": "Kirjanmerkit", "help": "Ohje", "about": "Tietoja", "login": "Kirjaudu sisään", "signup": "Rekisteröidy", "friends": "Ystävät", "drafts": "Luonnokset ja ajastetut", "userSettings": "Käyttäjäasetukset", "modSettings": "Valvoja-asetukset", "adminSettings": "Ylläpitoasetukset"
+    },
+    "LogoutForm": {
+        "submit": "Kirjaudu ulos"
+    },
+    "User": {
+        "joined": "Liittyi {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Lisää ystävä", "cancel": "Peru pyyntö"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Ajastettu ajankohtaan {when}", "draft": "Luonnos — julkaistaan vain pyynnöstäsi"
+    },
+    "MessageTranslateButton": {
+        "name": "Käännä tämä viesti"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Tietoja viestien kääntämisestä", "body": "Viestin kääntämistä varten sen teksti lähetetään tälle palvelimelle ja käännetään täällä. Mitään ei säilytetä: käännöstä ei kirjoiteta tietokantaan eikä itse viesti muutu. Tällä tavalla käännetyn viestin palvelin on kuitenkin lukenut, joten se ei ole päästä päähän salattu kuten kääntämätön viesti. Vain vastaanottamiasi viestejä voidaan kääntää ja vain pyynnöstäsi.", "confirm": "Käännä", "cancel": "Ei nyt"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Unohditko tunnuslauseesi? Palautus luo uudet avaimet uuden tunnuslauseen alle — mutta vanhoilla avaimilla salattuja viestejä ei voi enää koskaan lukea kukaan.", "requirements": "Vähintään 12 merkkiä, eikä sama kuin tilisi salasana — salasana lähetetään tälle palvelimelle, mutta tunnuslausetta ei saa koskaan lähettää.", "passphraseLabel": "Tunnuslause", "resetPassphraseLabel": "Uusi tunnuslause", "confirmLabel": "Vahvista tunnuslause", "accountPasswordLabel": "Tilin salasana", "submitLabel": "Ota salatut viestit käyttöön", "resetSubmitLabel": "Palauta salausavaimet"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Päästä päähän salatut viestit lukitaan ja avataan selaimessasi: tämä palvelin välittää ja tallentaa ne pystymättä lukemaan niitä. Avaimesi on suojattu tunnuslauseella, ja sama tunnuslause avaa viestisi missä tahansa selaimessa. Keskustelu salataan, kun molemmat ovat ottaneet toiminnon käyttöön; muilla palvelimilla oleville lähetetyt viestit jäävät salaamattomiksi, koska federaatio ei voi välittää niitä muuten.", "noRecovery": "Kadonnutta tunnuslausetta ei voi palauttaa — ei edes ylläpitäjä. Sen menettäminen tarkoittaa salattujen viestiesi menettämistä.", "enabledStatus": "Salatut viestit ovat käytössä."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Salattu", "explanation": "Tämän keskustelun viestit on salattu päästä päähän: ne avataan tunnuslauseellasi ja luetaan selaimissasi, ja palvelin tallentaa vain salatekstiä. Tarkista ketjun lopussa oleva turvakoodi toisen henkilön kanssa varmistaaksesi, ettei välissänne ole ketään. Ennen salauksen käyttöönottoa lähetetyt viestit pysyvät luettavina entiseen tapaan."
+        },
+        "awaiting-theirs": {
+            "label": "Ei salattu", "explanation": "Tämän keskustelun viestit salataan päästä päähän, kun {handle} ottaa salatut viestit käyttöön asetuksissaan."
+        },
+        "awaiting-yours": {
+            "label": "Ei salattu", "explanation": "Tämän keskustelun viestejä ei ole salattu päästä päähän. Suojaa keskustelu ottamalla salatut viestit käyttöön Asetuksissa."
+        },
+        "federated": {
+            "label": "Ei salattu", "explanation": "{handle} on toisella palvelimella. Tämän keskustelun viestit tallennetaan sekä sinne että tänne, ja kyseisen palvelimen ylläpitäjä voi lukea ne — palvelinten välinen protokolla ei pysty salaamaan niitä. Käsittele arkaluonteisia asioita vain tämän sivuston sisäisissä keskusteluissa."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Seuraa fediversumin tilejä", "notice": "Liitä yksi tai useampi käyttäjätunniste, esim. @user@example.social — mikä tahansa erotin niiden välissä toimii.", "handlesLabel": "Seurattavat fediversumin käyttäjätunnisteet", "submit": "Seuraa", "statusPending": "odottaa", "statusAccepted": "hyväksytty"
+    },
+    "ServerBlockForm": {
+        "legend": "Estä palvelin", "description": "Torjuu kaiken kyseiseltä palvelimelta ja sen alaisuudesta: ei saapuvia eikä lähteviä toimituksia, ja nykyiset seuraamissuhteet molempiin suuntiin katkaistaan.", "serverLabel": "Palvelin",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Syy", "reasonPlaceholder": "Miksi tämä palvelin estetään", "submit": "Estä palvelin"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Suorittaa puhelun määrityksen osat, jotka voidaan tarkistaa yhdellä selaimella. Kaikki varsinaiseen vertaisyhteyteen asti voidaan testata täällä; yhteys toiseen henkilöön vaatii kyseisen henkilön."
+    },
+    "VideoCallTestButton": {
+        "label": "Suorita tarkistus"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket-palvelin: käynnissä", "failed": "WebSocket-palvelin: {detail}", "clientTesting": "Selainyhteys: testataan…", "clientConnecting": "Selainyhteys: yhdistetään…", "clientConnected": "Selainyhteys: yhdistetty", "clientDisconnecting": "Selainyhteys: katkaistaan…", "clientNotConnected": "Selainyhteys: ei yhdistetty"
+    },
+    "UploadWorkerStatus": {
+        "running": "Työpalvelu: käynnissä", "stopped": "Työpalvelu: ei käynnissä — valmisteltuja latauksia ei muunneta ennen uudelleenkäynnistystä", "unknown": "Työpalvelu: tuntematon — systemctl ei ole käytettävissä tai SELinux estää verkkopalvelimen tilakyselyn (korjaa suorittamalla bin/install.php root-käyttäjänä)", "queue": "Jono: {staging} valmistelussa, {pending} odottaa, {processing} käsitellään"
+    },
+    "TrendingTimerStatus": {
+        "running": "Suosittujen aiheiden ajastin: käynnissä", "stopped": "Suosittujen aiheiden ajastin: ei käynnissä — aiheet päivittyvät vain lukupolun itsekorjauksella (Trending::current()), eivät ajastetusti. Määritä ajastin suorittamalla bin/install.php root-käyttäjänä.", "unknown": "Suosittujen aiheiden ajastin: tuntematon — systemctl ei ole käytettävissä tai SELinux estää verkkopalvelimen tilakyselyn (korjaa suorittamalla bin/install.php root-käyttäjänä)"
+    },
+    "Notification": {
+        "postReady": "Mediasi käsittely on valmis ja julkaisu näkyy nyt", "scheduledPostLive": "Ajastettu julkaisusi näkyy nyt", "uploadPartlyFailed": "Julkaisusi näkyy, mutta yhtä tai useampaa sen tiedostoa ei voitu käsitellä", "uploadFailed": "Yhden latauksesi käsittely epäonnistui eikä sitä julkaistu", "mailerFailed": "Sähköpostin toimitus epäonnistui — postipalvelu saattaa olla poissa käytöstä. Tarkista sähköpostiasetukset.", "mailFromNotConfigured": "Sähköpostin lähettäjäosoitetta ei ole määritetty, joten viestejä ei voi lähettää. Aseta se Ylläpitoasetusten Lähtevä sähköposti -osiossa tai bin/install.php:n kautta.", "systemError": "Tapahtui palvelinvirhe. Katso lisätiedot virhelokista.", "passwordRemovedGoogle": "Salasanasi poistettiin, kun kirjauduit Googlella. Aseta uusi käyttämällä \"Unohditko salasanan\" -toimintoa.", "like": "{name} tykkäsi julkaisustasi", "repost": "{name} jakoi julkaisusi uudelleen", "reply": "{name} vastasi julkaisuusi", "friendRequest": "{name} lähetti sinulle ystäväpyynnön", "friendAccepted": "{name} hyväksyi ystäväpyyntösi", "message": "{name} lähetti sinulle viestin", "mention": "{name} mainitsi sinut julkaisussa", "follow": "{name} alkoi seurata sinua toiselta palvelimelta", "default": "{name} teki jotakin"
+    },
+    "NotificationList": {
+        "emptyNotice": "Ei ilmoituksia vielä."
+    },
+    "NotificationsNavLink": {
+        "label": "Ilmoitukset", "unseen": "Näkemättömät ilmoitukset"
+    },
+    "NotificationTestPanel": {
+        "intro": "Lähetä testi-ilmoitus itsellesi (ylläpitäjälle). Sen pitäisi ilmestyä heti ponnahdusilmoituksena ja ilmoitusvalikkoon.", "button": "Lähetä testi-ilmoitus", "sending": "Lähetetään…", "sent": "Lähetetty!", "failed": "Epäonnistui"
+    },
+    "MessageDot": {
+        "label": "Lukemattomat viestit"
+    },
+    "NavAlertDot": {
+        "label": "Valikossa on jotakin uutta"
+    },
+    "Message": {
+        "encrypted": "Salattu viesti", "decryptionFailed": "Tämä viesti salattiin avaimilla, joita ei enää ole."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Viesti", "bodyPlaceholder": "Kirjoita viesti", "send": "Lähetä"
+    },
+    "MessageList": {
+        "emptyNotice": "Ei viestejä vielä."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Lukekaa tämä koodi toisillenne muuta kautta — ääneen, kasvotusten tai puhelussa. Jos se täsmää molemmilla, välissänne ei ole ketään.", "changed": "Tämä koodi on muuttunut tarkistuksesi jälkeen. Näin tapahtuu, kun jompikumpi palauttaa salausavaimensa — mutta samalta näyttäisi myös keskustelua lukeva ulkopuolinen. Tarkista uusi koodi toisen henkilön kanssa ennen kuin luotat siihen.", "verified": "Olet tarkistanut tämän koodin."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Merkitse vahvistetuksi"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Tunnuslause", "passphrasePlaceholder": "Tunnuslause keskustelun avaamiseen", "submit": "Avaa"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Viimeisin viesti ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Arkaluonteinen media"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Näytä arkaluonteinen media oletuksena"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Julkaisu", "message": "Viesti", "user": "Käyttäjä"
+        },
+        "summary": {
+            "before": "{type} #{id}, ilmoittaja ",
+            "after": ""
+        },
+        "reasonLine": "Syy: {reason}", "banReporterLabel": "Estä ilmoittaja", "banReportedUserLabel": "Estä ilmoitettu käyttäjä", "deleteLabel": "Poista {type}", "reportedImageAlt": "Ilmoitettu kuva", "attachmentUnavailable": "Ilmoitettu liite ei ole enää saatavilla.", "viewAttachment": "Näytä ilmoitettu liite",
+        "missing": {
+            "noSnapshot": "Ilmoitettu sisältö ei ole enää saatavilla.", "unknownType": "Tuntematon sisältötyyppi."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Ei ilmoituksia."
+    },
+    "ModQueueLinks": {
+        "intro": "Jonot ovat niin pitkiä, että niitä luetaan sivu kerrallaan, joten niillä on omat sivunsa.", "reportsLabel": "Ilmoitukset", "bannedUsersLabel": "Estetyt käyttäjät"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Yksikään valvoja ei ole vielä tehnyt mitään."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Ei estettyjä suosittuja kohteita."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Ei estettyjä palvelimia."
+    },
+    "RelayCard": {
+        "accepted": "Tilattu ", "waiting": "Odotetaan välittimen hyväksyntää — tilattu "
+    },
+    "RelayList": {
+        "emptyNotice": "Välittimiä ei ole tilattu. Tänne saapuu vain jäsenten seuraama sisältö."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Välittimien kautta ei ole vielä tullut mitään. Julkaisut ilmestyvät tänne, kun toisella puolella olevat palvelimet julkaisevat niitä."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Tilaa välitin", "explainerOne": "Välitin on yhteinen julkaisuhana: jokainen julkinen julkaisu kaikilta muilta tilaavilta palvelimilta saapuu tänne, ja tämän palvelimen julkaisut lähtevät niille kaikille. Näin uusi instanssi löytää ihmisiä, sillä federaatio muuten kuljettaa vain sellaista sisältöä, jota joku täällä jo seuraa.", "explainerTwo": "Kuormaa ei voi ennustaa — se on mitä nuo palvelimet julkaisevat, yhtenä viikkona hiljaista ja seuraavana tuhansia julkaisuja tunnissa. Tallennustilasi sekä toimitus- ja valvontajonosi kantavat kaiken. Välitetyt julkaisut eivät tule pää- tai ystäväsyötteisiin vaan Välityssyötteeseen, jonka ihmiset avaavat tarkoituksella.", "addressLabel": "Välittimen osoite",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Tilaa"
+    },
+    "RelayFollowObjectField": {
+        "label": "Tilaustapa",
+        "options": {
+            "public": "Seuraa julkista virtaa (useimpien välittimien odottama tapa)", "actor": "Seuraa välittimen omaa toimijaa"
+        },
+        "retryNotice": "Jos välitin ei koskaan hyväksy tilausta, peru se ja kokeile toista tapaa — jotkin välitinohjelmistot tunnistavat vain toisen."
+    },
+    "SiteCounters": {
+        "members": "Jäseniä: {count} ({joined} liittyi viimeisten {days} päivän aikana)", "activeMembers": "Jäseniä täällä viimeisten {days} päivän aikana: {count} ({posted} julkaisi)", "posts": "Täällä kirjoitettuja julkaisuja: {count} ({recent} viimeisten {days} päivän aikana)", "deliveries": "Federoituja toimituksia viimeisten {days} päivän aikana: {delivered} saapui, {undeliverable} hylättiin", "queued": "Lähtöä odottaa: {count} ({failing} on jo torjuttu vähintään kerran)", "pendingReads": "Muilta palvelimilta lukemista odottavia julkaisuja: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Suorita sivuston testisarja ja katso tulokset. Se kestää muutaman sekunnin, joten se avautuu omalle sivulleen.", "runLabel": "Suorita testit"
+    },
+    "HelpArticle": {
+        "backLabel": "Takaisin kaikkiin ohjeisiin"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Ehdotuksia ei ole juuri nyt — ne tulevat nykyisten ystäviesi ystäviltä. Etsi henkilöä nimellä yllä olevasta hausta.", "noMatches": "Kukaan täällä ei vastaa hakua."
+    },
+    "UserModButton": {
+        "make": "Tee valvojaksi", "remove": "Poista valvojan oikeudet"
+    },
+    "UserUnbanButton": {
+        "name": "Poista esto"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Estä"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Poista esto"
+    },
+    "ReportDismissButton": {
+        "name": "Hylkää"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Merkitse arkaluonteiseksi"
+    },
+    "ServerUnblockButton": {
+        "name": "Poista esto"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Peru tilaus"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Kumoa"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: läpäisee", "failing": "{suite}: epäonnistuu"
+    },
+    "PageTitle": {
+        "about": "Tietoja", "adminBanned": "Estetyt käyttäjät", "adminModSettings": "Valvoja-asetukset", "adminReports": "Ilmoitukset", "adminSettings": "Ylläpitoasetukset", "adminTests": "Testit", "authGoogleCallbackAccountDeleted": "Tili poistettu", "authGoogleCallbackDeleteAccount": "Poista tili", "authGoogleCallbackLogin": "Kirjaudu sisään", "bookmarks": "Kirjanmerkit", "checkInbox": "Tarkista saapuneet viestit", "drafts": "Luonnokset ja ajastetut", "draftsEditDraft": "Muokkaa luonnosta", "draftsEditScheduled": "Muokkaa ajastettua julkaisua", "forgotPassword": "Unohditko salasanan", "friendsFeed": "Ystäväsyöte", "help": "Ohje", "helpDescription": "Oppaita ja vastauksia sivuston käyttöön.", "locations": "Sijainnit", "locationsDescription": "Julkaisuja lähimmistä paikoista.", "locationsPlaceDescription": "Julkaisuja paikan {place} läheltä.", "login": "Kirjaudu sisään", "loginVerificationCode": "Vahvistuskoodi", "map": "Kartta", "mapDescription": "Kartta julkaisuista eri puolilta maailmaa — löydä ihmisiä ja asioita läheltäsi.", "messages": "Viestit", "messagesWithUser": "Viestit käyttäjän {name} kanssa", "notifications": "Ilmoitukset", "privacy": "Tietosuojakäytäntö", "quote": "Lainaus", "relayFeed": "Välityssyöte", "relayFeedDescription": "Julkisia julkaisuja tämän palvelimen tilaamista välittimistä.", "resetPassword": "Palauta salasana", "revertEmail": "Kumoa sähköpostiosoitteen vaihto", "search": "Haku", "signup": "Rekisteröidy", "tags": "Tunnisteet", "tagsDescription": "Selaa sivuston {siteTitle} suosittuja aihetunnisteita.", "tagsTagDescription": "Tunnisteella {tag} merkityt julkaisut sivustolla {siteTitle}.", "terms": "Käyttöehdot", "topics": "Aiheet", "topicsDescription": "Mistä sivustolla {siteTitle} puhutaan juuri nyt.", "topicsEntityDescription": "{typeLabel} — julkaisuja, joissa mainitaan {entityTitle} sivustolla {siteTitle}.", "topicsTypeDescription": "{typePlural}, joista sivustolla {siteTitle} puhutaan juuri nyt.", "unsubscribe": "Sähköpostikoosteet", "userFriends": "Käyttäjän {name} ystävät", "userFriendsDescription": "Käyttäjän {name} ystävät sivustolla {siteTitle}", "userSettings": "Käyttäjäasetukset", "users": "Käyttäjät", "verifyEmail": "Vahvista sähköposti"
+    },
+    "PostLikeButton": {
+        "like": "Tykkää", "unlike": "Poista tykkäys"
+    },
+    "PostPinButton": {
+        "pin": "Kiinnitä", "unpin": "Irrota"
+    },
+    "PostQuoteButton": {
+        "name": "Lainaa"
+    },
+    "PostDeleteButton": {
+        "name": "Poista"
+    },
+    "PostEditButton": {
+        "name": "Muokkaa"
+    },
+    "ReportButton": {
+        "name": "Ilmoita"
+    },
+    "PostActionBar": {
+        "reply": "Vastaa",
+        "replies": {
+            "one": "Vastaukset ({count})", "other": "Vastaukset ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(muokattu)"
+    },
+    "RepliesHeading": {
+        "heading": "Vastaukset"
+    },
+    "PollVoteButton": {
+        "name": "Äänestä"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Näytä ", "link": "lisää sijainteja",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Julkaisuja lähelläsi", "description": "Tämä näyttää pistettä lähimmät julkaisut — missä toimintaa onkin ja kuinka kaukana tahansa. Aloita nykyisestä sijainnistasi jakamalla se tai valitse paikka kartalta.", "useMyLocation": "Käytä sijaintiani", "pickOnMap": "Valitse kartalta", "searchPlaceholder": "Tai kirjoita paikannimi…", "searchLabel": "Hae paikkaa", "locating": "Paikannetaan…", "noGeolocation": "Selaimesi ei voi jakaa sijaintia.", "locationError": "Sijaintiasi ei saatu. Tarkista selaimen sijaintilupa."
+    },
+    "PollDeadline": {
+        "final": "Lopputulos",
+        "closes": {
+            "before": "Sulkeutuu ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} päivän kuluttua", "other": "{count} päivän kuluttua"
+        },
+        "hours": {
+            "one": "{count} tunnin kuluttua", "other": "{count} tunnin kuluttua"
+        },
+        "minutes": {
+            "one": "{count} minuutin kuluttua", "other": "{count} minuutin kuluttua"
+        },
+        "underMinute": "alle minuutin kuluttua"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 henkilö äänesti ", "other": "{count} henkilöä äänesti "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Kirjaudu sisään", "after": " julkaistaksesi."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Kirjaudu sisään", "after": " vastataksesi."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " jakoi uudelleen"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Vastauksena käyttäjälle ",
+            "after": ""
+        },
+        "untitled": "tämä julkaisu", "jumpToStart": "Siirry alkuun"
+    },
+    "TopicSummaryCard": {
+        "label": "Tekoälyn luoma yhteenveto"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Tervetuloa sivustolle ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Kirjoita jotakin alla olevaan kenttään, niin se lähtee syötteeseesi. Kuka tahansa voi vastata, ja vastaus on vain julkaisu, jolla on emojulkaisu, joten keskustelut voivat haarautua niin syvälle kuin tarvitaan.",
+            "Lisää ihmisiä ystäviksi, niin heidän julkaisunsa tulevat syötteeseesi. Yleinen syöte — sivuston nimi ylhäällä vasemmalla — näyttää kaiken täällä kirjoitetun ja on paikka uusien ystävien löytämiseen.",
+            "Tämä sivusto kuuluu fediversumiin: voit seurata Mastodonin ja muiden palvelinten tilejä niiden täydellä käyttäjätunnisteella, ja julkaisusi tavoittavat sinua siellä seuraavat ihmiset. Hae tunnistetta kuten @someone@example.social, niin tämä palvelin etsii tilin.",
+            "Merkitse julkaisu #aihetunnisteilla, niin se näkyy tunnisteen sivulla ja suosituissa aiheissa, jos tarpeeksi moni kirjoittaa siitä.",
+            "Jäsenten väliset viestit salataan päästä päähän — palvelin tallentaa salatekstiä, jota se ei voi lukea. Ota toiminto käyttöön Asetuksissa.",
+            "Sinun ei tarvitse julkaista heti: tallenna luonnos tai aseta aika, jolloin se julkaisee itsensä. Molemmat löytyvät Luonnokset ja ajastetut -osiosta."
+        ],
+        "more": {
+            "before": "Lisätietoja on ", "link": "ohjesivuilla", "after": ", mukaan lukien tilin siirtäminen tänne muualta."
+        },
+        "dontShowAgain": "Älä näytä tätä uudelleen"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Lisää emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Linkin esikatselukuva"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Poista kuva"
+    },
+    "LinkItem": {
+        "alt": "Linkin esikatselukuva"
+    },
+    "MapScrubber": {
+        "play": "Toista", "pause": "Keskeytä", "cumulativeMode": "Siihen asti", "windowMode": "Juuri silloin", "rangeLabel": "Näytä julkaisut päivämäärään asti",
+        "cumulativeLabel": {
+            "one": "Julkaistu {date} mennessä — {count} julkaisu", "other": "Julkaistu {date} mennessä — {count} julkaisua"
+        },
+        "windowLabel": {
+            "one": "Julkaistu ajankohdan {date} tienoilla — {count} julkaisu", "other": "Julkaistu ajankohdan {date} tienoilla — {count} julkaisua"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Käyttäjän {name} julkaisu", "pageTitleUntitled": "Julkaisu", "imageAltByAuthor": "Käyttäjän {name} julkaisema kuva", "imageAltUntitled": "Kuva"
+    },
+    "PostBookmarkButton": {
+        "remove": "Poista kirjanmerkki", "add": "Lisää kirjanmerkki"
+    },
+    "PostRepostButton": {
+        "undo": "Kumoa uudelleenjako", "repost": "Jaa uudelleen"
+    },
+    "QuotedPost": {
+        "viewLink": "Näytä lainattu julkaisu"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Odottavat pyynnöt"
+    },
+    "ScrollToTopButton": {
+        "label": "Vieritä alkuun"
+    },
+    "SearchClearButton": {
+        "label": "Tyhjennä haku"
+    },
+    "SitePolicyLinks": {
+        "terms": "Käyttöehdot", "privacy": "Tietosuojakäytäntö"
+    },
+    "SkipLink": {
+        "label": "Siirry sisältöön"
+    },
+    "TopicHeading": {
+        "searchLink": "Hae tätä", "noPosts": "Mikään julkaisu ei mainitse tätä juuri nyt."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Tällaisesta ei ole vielä kirjoitettu mitään."
+    },
+    "TrendingEntitySection": {
+        "heading": "Suositut"
+    },
+    "PostLocationLink": {
+        "title": "Näytä tämä paikka kartalla",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "juuri nyt",
+        "minutes": {
+            "one": "{count} min sitten", "other": "{count} min sitten"
+        },
+        "hours": {
+            "one": "{count} t sitten", "other": "{count} t sitten"
+        },
+        "days": {
+            "one": "{count} pv sitten", "other": "{count} pv sitten"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Teema",
+        "themes": {
+            "system": "Järjestelmän mukaan", "light": "Vaalea", "dark": "Tumma", "sepia": "Seepia", "midnight": "Keskiyö", "sunset": "Auringonlasku", "rose": "Ruusu", "forest": "Metsä", "ocean": "Valtameri", "lavender": "Laventeli", "gold": "Kulta",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Harmaasävy"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Käännöstä ei ole määritetty tällä palvelimella.", "nothing": "Tässä ei ole mitään käännettävää.", "unknownSource": "Tämän julkaisun kieltä ei ole vielä selvitetty, joten sitä ei voi kääntää.", "alreadyReadable": "Tämä julkaisu on jo kyseisellä kielellä.", "unsupportedPair": "Tämä palvelin ei vielä pysty kääntämään kyseistä kieltä."
+    },
+    "LanguagePrompt": {
+        "question": "Haluatko käyttää sivustoa suomeksi?", "accept": "Kyllä", "decline": "Ei kiitos"
+    },
+    "LanguageSelector": {
+        "label": "Kieli", "legend": "Kieli"
+    },
+    "EmailDigest": {
+        "subject": "Mitä jäi väliin sivustolla {site}", "greeting": "Hei {name},", "whileAway": "Poissa ollessasi:",
+        "repeatedTimes": {
+            "one": " ({count} kerran)", "other": " ({count} kertaa)"
+        },
+        "moreMissed": {
+            "one": "ja {count} muu ilmoitus", "other": "ja {count} muuta ilmoitusta"
+        },
+        "messagesWaiting": {
+            "one": "Sinua odottaa viesti", "other": "Sinua odottaa {count} viestiä"
+        },
+        "postsInFeed": {
+            "one": "Yksi uusi julkaisu syötteessäsi", "other": "{count} uutta julkaisua syötteessäsi"
+        },
+        "unsubscribeInstructions": "Lopeta nämä sähköpostit avaamalla tämä linkki — yksi napsautus, salasanaa ei tarvita:", "comeSeeWhatIsNew": "Tule katsomaan, mitä uutta on",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Älä lähetä näitä enää", "after": " — yksi napsautus, salasanaa ei tarvita."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Vahvista sähköpostiosoitteesi", "greeting": "Hei {name},", "instructions": "Vahvista sähköpostiosoitteesi avaamalla tämä linkki:", "htmlInstructions": "Vahvista sähköpostiosoitteesi napsauttamalla alla olevaa linkkiä:", "buttonLabel": "Vahvista sähköpostiosoite",
+        "expiresIn": {
+            "one": "Tämä linkki vanhenee {count} tunnin kuluttua.", "other": "Tämä linkki vanhenee {count} tunnin kuluttua."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Palauta salasanasi", "greeting": "Hei {name},", "instructions": "Joku (toivottavasti sinä) pyysi salasanan palautusta. Valitse uusi salasana avaamalla tämä linkki:", "htmlInstructions": "Joku (toivottavasti sinä) pyysi salasanan palautusta. Valitse uusi salasana napsauttamalla alla olevaa linkkiä:", "buttonLabel": "Palauta salasana",
+        "expiresIn": {
+            "one": "Tämä linkki vanhenee {count} tunnin kuluttua.", "other": "Tämä linkki vanhenee {count} tunnin kuluttua."
+        },
+        "ignoreNotice": "Jos et pyytänyt tätä, voit jättää tämän sähköpostin huomiotta."
+    }
+}

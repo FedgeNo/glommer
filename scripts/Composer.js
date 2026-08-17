@@ -342,6 +342,13 @@ export class Composer extends PostFields {
 
         actions.appendWithSpace(filePicker);
 
+        // How much of the post's file allowance is spoken for, said before
+        // the cap refuses anybody - empty until something is attached, so a
+        // text post never mentions files at all.
+        const attachmentCount = document.createElement('span');
+        attachmentCount.className = 'ComposerAttachmentCount text-sm muted';
+        actions.appendWithSpace(attachmentCount);
+
         // Marks the post as something to opt into. A real checkbox, so it rides
         // along in the form's own FormData and there is no toggle state to keep
         // anywhere. Offered on every post: words need warning about at least as
@@ -922,6 +929,10 @@ export class Composer extends PostFields {
         this.linkImageThumb.src = image.thumbnailURL;
         this.linkImageSeedInput.value = image.seed;
         this.linkImagePreview.style.display = '';
+
+        // The image arriving beside the editor is silent, and the button that
+        // takes it off is nothing anybody would know to look for.
+        this.#announce('Link preview image attached. The Remove Image button takes it off.');
     }
 
     async #discardStagedImage() {
@@ -931,6 +942,7 @@ export class Composer extends PostFields {
         this.linkImagePreview.style.display = 'none';
         this.linkImageThumb.src = '';
         if (seed) {
+            this.#announce('Link preview image removed.');
             await Api.post('/api/discard-link-image', { seed });
         }
     }
@@ -1029,6 +1041,7 @@ export class Composer extends PostFields {
 
         this.#attachments.push(entry);
         this.#attachmentList().appendWithSpace(row);
+        this.#syncAttachmentCount();
 
         // A file appearing in a list below is silent, and there is an alt text
         // box that came with it which nobody would know to look for.
@@ -1044,6 +1057,7 @@ export class Composer extends PostFields {
 
         entry.row.remove();
         this.#attachments = this.#attachments.filter((candidate) => candidate !== entry);
+        this.#syncAttachmentCount();
 
         this.#announce(this.#attachments.length === 0
             ? 'File removed. Nothing attached now.'
@@ -1160,6 +1174,17 @@ export class Composer extends PostFields {
         const status = this.#form.querySelector('.ComposerStatus');
 
         if (status) status.textContent = text;
+    }
+
+    /** The visible tally against the cap - blank until anything is attached. */
+    #syncAttachmentCount() {
+        const counter = this.#form.querySelector('.ComposerAttachmentCount');
+
+        if (counter) {
+            counter.textContent = this.#attachments.length === 0
+                ? ''
+                : this.#attachments.length + ' / ' + Composer.MAX_FILES + ' files';
+        }
     }
 
     /**

@@ -28,6 +28,10 @@ export class Search {
         this.onBeforeFetch = options.onBeforeFetch || null;
         this._originalOnResponse = options.onResponse || null;
         this._extractItems = options.extractItems || defaultExtractItems;
+        // How many results a response really holds, where the item list
+        // doesn't say (help renders whole in onResponse). Null skips the
+        // announcement for that response.
+        this._countResults = options.countResults || null;
 
         this.abortController = null;
         this.debounceId = null;
@@ -141,6 +145,27 @@ export class Search {
         if (this.scroller && data.hasMore) {
             this.scroller.setActive(true);
         }
+
+        this.#announce(query, this._countResults ? this._countResults(data, items) : items.length);
+    }
+
+    /**
+     * Results swapping in below the box are silent to a screen reader; the
+     * SearchBox's status region says how many landed. Cleared with the query,
+     * so restoring the default view is not announced as a result of anything.
+     */
+    #announce(query, count) {
+        const status = this.input.closest('.SearchBox')?.querySelector('.SearchStatus');
+
+        if (!status || count === null) return;
+
+        if (query === '') {
+            status.textContent = '';
+
+            return;
+        }
+
+        status.textContent = count === 1 ? '1 result' : count + ' results';
     }
 
     // ----------------------------------------------------------------
@@ -294,6 +319,7 @@ export class Search {
             // paints everything and no items are handed back to render.
             extractItems: () => [],
             renderItem: () => null,
+            countResults: data => data.grouped ? null : data.articles.length,
             onResponse: (input, data) => {
                 if (data.articles.length === 0) {
                     const words = Strings.for('HelpSearch', {

@@ -97,6 +97,21 @@ export default {
 
             composer.remove();
         },
+        'the file tally is shown against the cap, and leaves with the files'() {
+            const composer = mounted();
+            const counter = composer.form.querySelector('.ComposerAttachmentCount');
+
+            TestCase.assertNotNull(counter);
+            TestCase.assertEquals('', counter.textContent);
+
+            pick(composer, [imageFile('cat.png'), imageFile('dog.png')]);
+            TestCase.assertTrue(counter.textContent.startsWith('2 / '), 'counts what is attached');
+
+            composer.form.querySelector('.ComposerFilesRemoveButton').click();
+            TestCase.assertEquals('', counter.textContent);
+
+            composer.remove();
+        },
         'attaching a file says so'() {
             const composer = mounted();
 

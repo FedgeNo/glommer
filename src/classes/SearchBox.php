@@ -18,6 +18,7 @@ abstract class SearchBox extends SearchLandmark
     {
         $this -> contents[] = $this -> input();
         $this -> contents[] = new SearchClearButton();
+        $this -> contents[] = new SearchStatus();
 
         return parent::toDOM();
     }

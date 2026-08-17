@@ -1,0 +1,1196 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 vóta",
+            "two": "2 vóta",
+            "few": "{count} vóta",
+            "many": "{count} vóta",
+            "other": "{count} vóta"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Logáil isteach",
+            "after": " chun freagra a thabhairt."
+        },
+        "post": {
+            "before": "",
+            "link": "Logáil isteach",
+            "after": " chun postáil."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Suíomh",
+        "siteURLLabel": "URL an tsuímh",
+        "siteTitleLabel": "Teideal an tsuímh",
+        "mailFromAddressLabel": "Seoladh seoltóra ríomhphoist",
+        "serverNameConfirmedLabel": "Tá \"ServerName {host}\" agus \"UseCanonicalName On\" socraithe agam i gcumraíocht an fhreastalaí gréasáin (ní sheiceáiltear é seo ach mura féidir leis an tástáil bheo uathoibríoch críochnú—féach an rannán HTTPS in README.md)",
+        "databaseLegend": "Bunachar sonraí",
+        "databaseHostLabel": "Óstach an bhunachair sonraí",
+        "databasePortLabel": "Port an bhunachair sonraí",
+        "databaseNameLabel": "Ainm an bhunachair sonraí",
+        "databaseAdminUsernameLabel": "Ainm úsáideora riarthóir an bhunachair sonraí",
+        "databaseAdminPasswordLabel": "Focal faire riarthóir an bhunachair sonraí",
+        "webSocketTLSLegend": "WebSocket TLS (roghnach)",
+        "certificatePathLabel": "Conair an teastais",
+        "certificatePathPlaceholder": "Fág bán lena ghiniúint go huathoibríoch le mkcert",
+        "keyPathLabel": "Conair na heochrach",
+        "keyPathPlaceholder": "Fág bán lena ghiniúint go huathoibríoch le mkcert",
+        "botProtectionLegend": "Cosaint ar róbait (roghnach)",
+        "turnstileSiteKeyLabel": "Eochair suímh Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Fág bán lena scipeáil",
+        "turnstileSecretKeyLabel": "Eochair rúnda Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Fág bán lena scipeáil",
+        "submit": "Socraigh"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Pasfhrása reatha",
+        "newPassphraseLabel": "Pasfhrása nua",
+        "confirmNewPassphraseLabel": "Deimhnigh an pasfhrása nua",
+        "accountPasswordLabel": "Focal faire an chuntais",
+        "submit": "Athraigh an pasfhrása"
+    },
+    "PasswordResetForm": {
+        "legend": "Roghnaigh focal faire nua",
+        "newPasswordLabel": "Focal faire nua",
+        "newPasswordPlaceholder": "8 gcarachtar ar a laghad",
+        "confirmPasswordLabel": "Deimhnigh an focal faire nua",
+        "submit": "Athshocraigh an focal faire"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Athshocraigh d'fhocal faire",
+        "emailLabel": "Ríomhphost",
+        "submit": "Seol nasc athshocraithe"
+    },
+    "EmailRevertForm": {
+        "submit": "Cealaigh athrú ríomhphoist"
+    },
+    "EmailVerifyForm": {
+        "submit": "Fíoraigh an seoladh ríomhphoist"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Cuir ar siúl arís iad"
+    },
+    "EmailDigestSetting": {
+        "label": "Seol ríomhphost chugam faoin méid a chaill mé tar éis dom bheith as láthair ar feadh tamaill"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Gléas anaithnid",
+        "browserOnOS": "{browser} ar {os}",
+        "thisDevice": " (an gléas seo)",
+        "lastUsed": {
+            "before": "Úsáidte go deireanach ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Cuir deireadh le gach seisiún gníomhach agus déan dearmad ar gach gléas a coimeádadh i gcuimhne. Sínfear amach as gach brabhsálaí thú, an ceann seo san áireamh."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Logáil amach i ngach áit"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Fíoraigh le Google lena scriosadh"
+    },
+    "GoogleSignInButton": {
+        "label": "Lean ar aghaidh le Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Cuir an phróifíl in eagar"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Faigh fógraí ar an ngléas seo fiú nuair nach bhfuil an suíomh oscailte. Is rogha ar leith do gach brabhsálaí é—cuir ar siúl é i ngach áit ar mhaith leat fógraí a fháil.",
+        "label": {
+            "off": "Cumasaigh ar an ngléas seo",
+            "on": "Múch ar an ngléas seo"
+        },
+        "unsupported": "Ní thacaíonn an brabhsálaí seo le brúfhógraí"
+    },
+    "LoginForm": {
+        "legend": "Logáil isteach",
+        "identifier": "Ainm úsáideora nó ríomhphost",
+        "password": "Focal faire",
+        "rememberMe": "Cuimhnigh orm",
+        "submit": "Logáil isteach"
+    },
+    "SignupForm": {
+        "legend": "Cruthaigh cuntas",
+        "usernameLabel": "Ainm úsáideora",
+        "usernamePlaceholder": "Litreacha beaga, uimhreacha agus _",
+        "emailLabel": "Ríomhphost",
+        "emailPlaceholder": "Seoladh ríomhphoist bailí",
+        "displayName": "Ainm taispeána (roghnach)",
+        "bioLabel": "Beathaisnéis (roghnach)",
+        "bioPlaceholder": "Beathaisnéis ghearr—beidh #haisclibeanna, @tagairtí agus naisc inchliceáilte",
+        "passwordLabel": "Focal faire",
+        "passwordPlaceholder": "Focal faire: 8 gcarachtar ar a laghad",
+        "rememberMe": "Cuimhnigh orm",
+        "submit": "Cláraigh"
+    },
+    "PasswordChangeForm": {
+        "legend": "Athraigh d'fhocal faire",
+        "currentPassword": "Focal faire reatha",
+        "newPasswordLabel": "Focal faire nua",
+        "newPasswordPlaceholder": "8 gcarachtar ar a laghad",
+        "confirmPassword": "Deimhnigh an focal faire nua",
+        "submit": "Athraigh an focal faire"
+    },
+    "EmailChangeForm": {
+        "legend": "Athraigh do sheoladh ríomhphoist",
+        "newEmail": "Seoladh ríomhphoist nua",
+        "currentPassword": "Focal faire reatha",
+        "notice": "Beidh ort an seoladh nua a fhíorú sula leanfaidh tú den suíomh a úsáid.",
+        "submit": "Athraigh an ríomhphost"
+    },
+    "AccountDeleteForm": {
+        "legend": "Scrios do chuntas",
+        "warning": "Scriosann sé seo do chuntas, do phostálacha agus do theachtaireachtaí go buan. Ní féidir é a chealú.",
+        "currentPassword": "Focal faire reatha",
+        "submit": "Scrios an cuntas"
+    },
+    "AccountMigrationForm": {
+        "legend": "Bog go freastalaí eile",
+        "movedNotice": "Tá an cuntas seo bogtha go {destination}. Iarradh ar do leantóirí tú a leanúint ansin.",
+        "explanation": "Iarrtar ar do leantóirí an cuntas nua a leanúint. Fanann do phostálacha anseo—baineann seoltaí réad leis an bhfreastalaí a chruthaigh iad, mar sin ní féidir iad a thabhairt leat.",
+        "addressNotice": "Caithfidh an cuntas a bhfuil tú ag bogadh chuige an ceann seo a liostú faoi \"ar a dtugtar freisin\" ar dtús. Is é {address} do sheoladh anseo.",
+        "movedToLabel": "Bog go",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Ar a dtugtar freisin",
+        "aliasesExplanation": "Cuntais in áiteanna eile ar leatsa iad freisin. Má liostaítear ceann anseo, tugtar cead don chuntas sin bogadh chuig an gceann seo—an cead atá ann, ní an t-aistriú féin. Seoladh amháin sa líne.",
+        "aliasesLabel": "Do chuntais eile",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Sábháil"
+    },
+    "TwoFactorForm": {
+        "legend": "Cuir isteach do chód fíoraithe",
+        "explanation": "Sheolamar cód fíoraithe chugat trí ríomhphost. Cuir isteach thíos é, nó úsáid ceann de do chóid athshlánaithe, chun an logáil isteach a chríochnú.",
+        "explanationEmailFailed": "Níorbh fhéidir linn do chód fíoraithe a sheoladh trí ríomhphost anois. Cuir isteach ceann de do chóid athshlánaithe chun an logáil isteach a chríochnú.",
+        "code": "Cód fíoraithe",
+        "submit": "Fíoraigh"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Tá fíordheimhniú dhá fhachtóir ar siúl",
+            "off": "Tá fíordheimhniú dhá fhachtóir múchta"
+        },
+        "explanation": {
+            "on": "Nuair a logálann tú isteach, seolfaimid cód fíoraithe chugat trí ríomhphost a chaithfidh tú a chur isteach chun críochnú. Mura sroicheann an ríomhphost thú, logálann ceann de do chóid athshlánaithe isteach thú.",
+            "off": "Cuir dara céim leis an logáil isteach: seolfaimid cód fíoraithe chugat trí ríomhphost, ionas nach leor d'fhocal faire leis féin. Gheobhaidh tú cóid athshlánaithe aonúsáide le sábháil ar eagla nach sroichfidh an ríomhphost thú."
+        },
+        "currentPassword": "Focal faire reatha",
+        "submit": {
+            "on": "Múch fíordheimhniú dhá fhachtóir",
+            "off": "Cuir fíordheimhniú dhá fhachtóir ar siúl"
+        },
+        "regenerate": "Gin cóid athshlánaithe nua",
+        "recoveryHeading": "Do chóid athshlánaithe",
+        "recoveryNote": "Sábháil iad seo in áit shábháilte anois—ní thaispeánfar arís iad. Logálann gach ceann isteach thú uair amháin nuair nach sroicheann an ríomhphost fíoraithe thú; cuirtear cóid nua in ionad gach ceann díobh.",
+        "toast": {
+            "on": "Tá fíordheimhniú dhá fhachtóir ar siúl anois.",
+            "off": "Tá fíordheimhniú dhá fhachtóir múchta anois.",
+            "regenerated": "Gineadh cóid athshlánaithe nua. Ní oibríonn na seanchóid a thuilleadh."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Seiceáil do bhosca isteach agus cliceáil an nasc fíoraithe a sheolamar chun do sheoladh ríomhphoist a dheimhniú. Mura bhfeiceann tú é, seiceáil an fillteán dramhphoist."
+    },
+    "VerificationResendButton": {
+        "label": "Seol an ríomhphost fíoraithe arís"
+    },
+    "MailSettingsForm": {
+        "legend": "Ríomhphost amach",
+        "fromAddressLabel": "Seoladh an tseoltóra",
+        "fromAddressPlaceholder": "Ní féidir ríomhphost a sheoladh go dtí go socraítear é seo",
+        "fromNameLabel": "Ainm an tseoltóra",
+        "hostLabel": "Óstach SMTP",
+        "portLabel": "Port SMTP",
+        "usernameLabel": "Ainm úsáideora SMTP",
+        "passwordLabel": "Focal faire SMTP",
+        "passwordPlaceholder": {
+            "set": "Tá an focal faire socraithe—fág bán lena choinneáil",
+            "unset": "Focal faire SMTP"
+        },
+        "encryptionLabel": "Criptiú",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, de ghnáth ar phort 587)",
+            "ssl": "SSL (TLS intuigthe, de ghnáth ar phort 465)",
+            "none": "Dada"
+        },
+        "explainer": "Fág an t-óstach SMTP bán le seoladh trí mail() PHP ina ionad (ní mholtar—féach an rannán inseachadachta in README). Ní féidir aon ríomhphost a sheoladh go dtí go socraítear seoladh seoltóra.",
+        "save": "Sábháil"
+    },
+    "MapSettingsForm": {
+        "legend": "Tíleanna léarscáile",
+        "notice": "Fág bán chun OpenStreetMap a úsáid. Chun soláthraí le heochair a úsáid, greamaigh a theimpléad URL le {apiKey} go litriúil san áit a dtéann an eochair, agus cuir an eochair agus an sannadh thíos.",
+        "urlLabel": "Teimpléad URL na tíle",
+        "keyLabel": "Eochair API",
+        "keyPlaceholder": "Eochair API do sholáthraí tíleanna",
+        "attributionLabel": "Sannadh",
+        "attributionPlaceholder": "© rannpháirtithe OpenStreetMap",
+        "save": "Sábháil"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Logáil isteach le Google",
+        "clientIdLabel": "Aitheantas cliaint",
+        "clientIdPlaceholder": "Aitheantas cliaint Google OAuth",
+        "secretLabel": "Rún cliaint",
+        "secretPlaceholder": {
+            "set": "Tá rún an chliaint socraithe—fág bán lena choinneáil",
+            "unset": "Rún cliaint Google OAuth"
+        },
+        "explainer": "Tá an dá cheann riachtanach le go mbeidh \"Lean ar aghaidh le Google\" le feiceáil agus tú ag clárú nó ag logáil isteach. I do chliant Google Cloud OAuth, socraigh URI an athdhírithe údaraithe go {url}; glan aitheantas an chliaint lena mhúchadh.",
+        "save": "Sábháil"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Eochair suímh",
+        "turnstileSiteKeyPlaceholder": "Eochair suímh Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Eochair rúnda",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Tá an eochair rúnda socraithe—fág bán lena coinneáil",
+            "unset": "Eochair rúnda Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Tá an dá eochair riachtanach le go mbeidh an CAPTCHA le feiceáil agus tú ag clárú nó ag logáil isteach. Glan eochair an tsuímh lena mhúchadh.",
+        "recaptchaLegend": "Google reCAPTCHA (athshlánú ó ghlas cuntais)",
+        "recaptchaSiteKeyLabel": "Eochair suímh",
+        "recaptchaSiteKeyPlaceholder": "Eochair suímh Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Eochair rúnda",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Tá an eochair rúnda socraithe—fág bán lena coinneáil",
+            "unset": "Eochair rúnda Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Tá an dá eochair riachtanach. Nuair atá siad socraithe, is féidir le cuntas a shroicheann teorainn na n-iarrachtaí logála isteach filleadh trí dhul thar an dúshlán seo seachas fanacht go gcríochnóidh an glas; gan iad, caithfear fanacht. Úsáid reCAPTCHA v2 (\"Ní róbat mé\"). Glan eochair an tsuímh lena mhúchadh.",
+        "save": "Sábháil"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Úsáideann gnéithe intleachta saorga an tsuímh é (achoimrí ar ábhair threochta, srl.). Fág an tsamhail bán chun Ródaire na Samhlacha Saora a úsáid; roghnaíonn OpenRouter samhail atá saor faoi láthair go randamach agus ní féidir costas a thabhú.",
+        "keyLabel": "Eochair API",
+        "keyPlaceholder": {
+            "set": "Tá an eochair API socraithe—fág bán lena coinneáil",
+            "unset": "Eochair API OpenRouter"
+        },
+        "clearKeyLabel": "Bain an eochair API stóráilte (múchann sé gnéithe IS)",
+        "modelLabel": "Samhail",
+        "neverSpendLabel": "Ná lig dó airgead a chaitheamh riamh (molta)",
+        "explainer": "Agus an chosaint ar siúl, cuirtear teorainn nialais ar phraghas gach iarratais, mar sin teipeann sé seachas filleadh ar shamhail íoctha nuair nach bhfuil soláthraí saor ar fáil. Bain an eochair API stóráilte chun gnéithe IS a mhúchadh go hiomlán.",
+        "save": "Sábháil"
+    },
+    "AboutSettingsForm": {
+        "legend": "Maidir leis",
+        "description": "Gnáth-théacs—scarann línte bána ailt. Úsáidfear an chéad alt mar chur síos ar an suíomh.",
+        "save": "Sábháil"
+    },
+    "TermsSettingsForm": {
+        "legend": "Téarmaí seirbhíse",
+        "description": "Gnáth-théacs—scarann línte bána ailt.",
+        "save": "Sábháil"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Polasaí príobháideachais",
+        "description": "Gnáth-théacs—scarann línte bána ailt.",
+        "save": "Sábháil"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Achoimre ríomhphoist",
+        "fieldLabel": "Alt deiridh",
+        "notice": "Cuirtear é seo gar do dheireadh gach achoimre, tar éis liosta an méid a chaill an ball. Gnáth-théacs. Fág bán é chun filleadh ar an bhfoclaíocht a thagann leis na bogearraí seo.",
+        "save": "Sábháil"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Deilbhín suímh",
+        "currentAlt": "Deilbhín reatha an tsuímh",
+        "save": "Uaslódáil deilbhín suímh"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Íomhá an leathanaigh tosaigh",
+        "explainer": "Taispeánann suíomhanna eile í nuair a roinneann duine nasc chuig an suíomh seo—meiteashonraí Open Graph amháin atá inti agus ní bhíonn sí ar an leathanach riamh. Bearrtar go 1200×630 í. Gan í, ní bhíonn aon íomhá ar réamhamhairc nasc.",
+        "currentAlt": "Íomhá reatha an leathanaigh tosaigh",
+        "save": "Uaslódáil íomhá"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Uathsheinm"
+    },
+    "CarouselNextButton": {
+        "name": "Ar aghaidh"
+    },
+    "CarouselPrevButton": {
+        "name": "Siar"
+    },
+    "MediaFullscreenButton": {
+        "name": "Lánscáileán"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Bain comhaid"
+    },
+    "NotificationDropdown": {
+        "showAll": "Taispeáin uile"
+    },
+    "HelpSearch": {
+        "placeholder": "Cuardaigh cabhair…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Tuigim"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Caith uait"
+    },
+    "StagedPostEditButton": {
+        "name": "Cuir in eagar"
+    },
+    "StagedPostPublishButton": {
+        "name": "Foilsigh anois"
+    },
+    "LogoutButton": {
+        "name": "Logáil amach"
+    },
+    "AvatarUploadForm": {
+        "submit": "Nuashonraigh an t-abhatár"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Cuardaigh úsáideoirí coiscthe…"
+    },
+    "BannedUserSection": {
+        "heading": "Úsáideoirí coiscthe"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Iarratais seolta (ag fanacht le freagra)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Coiscthe ag {name} ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blocáilte ag {name} ",
+            "after": ""
+        },
+        "deletedAccount": "cuntas scriosta",
+        "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "Eanáir",
+            "2": "Feabhra",
+            "3": "Márta",
+            "4": "Aibreán",
+            "5": "Bealtaine",
+            "6": "Meitheamh",
+            "7": "Iúil",
+            "8": "Lúnasa",
+            "9": "Meán Fómhair",
+            "10": "Deireadh Fómhair",
+            "11": "Samhain",
+            "12": "Nollaig"
+        },
+        "shortMonths": {
+            "1": "Ean",
+            "2": "Feabh",
+            "3": "Márta",
+            "4": "Aib",
+            "5": "Beal",
+            "6": "Meith",
+            "7": "Iúil",
+            "8": "Lún",
+            "9": "MFómh",
+            "10": "DFómh",
+            "11": "Samh",
+            "12": "Noll"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} ag {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Níorbh fhéidir ceangal leis an bhfreastalaí WebSocket ar 127.0.0.1:{port}{tls} ({error}). Tosaigh ar dtús é: systemctl --user start glommer-websocket (féach README.md don chomhad aonaid). Má fuair nó má chaill sé WS_TLS_CERT/WS_TLS_KEY díreach anois, atosaigh é ionas go mbeidh sé ag teacht le .env.",
+        "wsOverTLS": " thar TLS",
+        "wsBadHandshake": "Níor chríochnaigh an tseirbhís ar 127.0.0.1:{port} croitheadh láimhe bailí WebSocket—seans go bhfuil rud éigin seachas bin/websocket-server.php ag éisteacht ar an bport sin.",
+        "wsNoPong": "Ghlac an freastalaí WebSocket leis an gcroitheadh láimhe ach níor fhreagair sé ping—seans go bhfuil sé sáinnithe nó ag mí-oibriú. Seiceáil a logaí.",
+        "wsReachable": "Tá an freastalaí WebSocket insroichte agus ag freagairt ar 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Haischlib",
+            "person": "Duine",
+            "org": "Eagraíocht",
+            "gpe": "Áit",
+            "loc": "Réigiún",
+            "fac": "Sainchomhartha",
+            "product": "Táirge",
+            "event": "Imeacht",
+            "work_of_art": "Saothar",
+            "law": "Dlí",
+            "language": "Teanga",
+            "norp": "Grúpa"
+        },
+        "plural": {
+            "hashtag": "Haischlibeanna",
+            "person": "Daoine",
+            "org": "Eagraíochtaí",
+            "gpe": "Áiteanna",
+            "loc": "Réigiúin",
+            "fac": "Sainchomharthaí",
+            "product": "Táirgí",
+            "event": "Imeachtaí",
+            "work_of_art": "Saothair",
+            "law": "Dlíthe",
+            "language": "Teangacha",
+            "norp": "Grúpaí"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Bain cara"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Glac leis"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Diúltaigh"
+    },
+    "UserFollowButton": {
+        "follow": "Lean",
+        "unfollow": "Ná lean a thuilleadh"
+    },
+    "UserBlockButton": {
+        "name": "Cuir cosc"
+    },
+    "UserUnblockButton": {
+        "name": "Bain an cosc"
+    },
+    "OtherUser": {
+        "message": "Teachtaireacht"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Roghchlár",
+        "loggedInAs": "Logáilte isteach mar {name}",
+        "friendsFeed": "Fotha cairde",
+        "relayFeed": "Fotha athsheachadáin",
+        "users": "Úsáideoirí",
+        "tags": "Clibeanna",
+        "topics": "Ábhair",
+        "map": "Léarscáil",
+        "locations": "Suíomhanna",
+        "search": "Cuardaigh",
+        "messages": "Teachtaireachtaí",
+        "bookmarks": "Leabharmharcanna",
+        "help": "Cabhair",
+        "about": "Maidir leis",
+        "login": "Logáil isteach",
+        "signup": "Cláraigh",
+        "friends": "Cairde",
+        "drafts": "Dréachtaí agus sceidealaithe",
+        "userSettings": "Socruithe úsáideora",
+        "modSettings": "Socruithe modhnóra",
+        "adminSettings": "Socruithe riarthóra"
+    },
+    "LogoutForm": {
+        "submit": "Logáil amach"
+    },
+    "User": {
+        "joined": "Tháinig isteach {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Cuir mar chara",
+        "cancel": "Cealaigh an t-iarratas"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Sceidealaithe do {when}",
+        "draft": "Dréacht—ní fhoilseofar é go dtí go n-iarrfaidh tú é"
+    },
+    "MessageTranslateButton": {
+        "name": "Aistrigh an teachtaireacht seo"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Maidir le teachtaireachtaí a aistriú",
+        "body": "Chun teachtaireacht a aistriú, seoltar a téacs chuig an bhfreastalaí seo agus aistrítear anseo é. Ní choinnítear rud ar bith: ní scríobhtar an t-aistriúchán sa bhunachar sonraí agus ní athraítear an teachtaireacht. Ach tá teachtaireacht a aistrítear ar an mbealach seo léite ag an bhfreastalaí, mar sin níl sí criptithe ó cheann ceann mar atá teachtaireacht gan aistriú. Ní féidir ach teachtaireachtaí a fhaigheann tú a aistriú, agus sin nuair a iarrann tú é amháin.",
+        "confirm": "Aistrigh í",
+        "cancel": "Ní anois"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "An ndearna tú dearmad ar do phasfhrása? Cruthaíonn athshocrú eochracha nua faoi cheann nua, ach ní bheidh aon duine in ann teachtaireachtaí a criptíodh leis na seaneochracha a léamh arís.",
+        "requirements": "12 charachtar ar a laghad, agus ní focal faire do chuntais—seoltar an ceann sin chuig an bhfreastalaí seo, ach níor cheart do phasfhrása a sheoladh choíche.",
+        "passphraseLabel": "Pasfhrása",
+        "resetPassphraseLabel": "Pasfhrása nua",
+        "confirmLabel": "Deimhnigh an pasfhrása",
+        "accountPasswordLabel": "Focal faire an chuntais",
+        "submitLabel": "Cuir teachtaireachtaí criptithe ar siúl",
+        "resetSubmitLabel": "Athshocraigh na heochracha criptithe"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Glasáiltear agus díghlasáiltear teachtaireachtaí criptithe ó cheann ceann i do bhrabhsálaí: athsheachadann agus stórálann an freastalaí iad gan bheith ábalta iad a léamh. Cosnaítear d'eochair le pasfhrása, agus díghlasálann an pasfhrása céanna do theachtaireachtaí ó aon bhrabhsálaí. Criptítear comhráite nuair a chuireann an bheirt é seo ar siúl; fanann teachtaireachtaí chuig daoine ar fhreastalaithe eile gan chriptiú mar ní féidir leis an gcónaidhm iad a iompar ar shlí eile.",
+        "noRecovery": "Ní féidir pasfhrása caillte a aisghabháil, fiú ag an riarthóir. Má chailltear é, cailltear do theachtaireachtaí criptithe.",
+        "enabledStatus": "Tá teachtaireachtaí criptithe ar siúl."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Criptithe",
+            "explanation": "Tá teachtaireachtaí sa chomhrá seo criptithe ó cheann ceann: díghlasáiltear iad le do phasfhrása agus léitear i do bhrabhsálaithe iad, agus is téacs sifeartha a stórálann an freastalaí. Seiceáil an cód sábháilteachta ag bun an tsnáithe leis an duine eile lena chinntiú nach bhfuil aon duine eadraibh. Fanann teachtaireachtaí a seoladh sular cuireadh criptiú ar siúl inléite mar a bhí siad."
+        },
+        "awaiting-theirs": {
+            "label": "Gan chriptiú",
+            "explanation": "Beidh teachtaireachtaí anseo criptithe ó cheann ceann nuair a chuireann {handle} teachtaireachtaí criptithe ar siúl ina socruithe."
+        },
+        "awaiting-yours": {
+            "label": "Gan chriptiú",
+            "explanation": "Níl teachtaireachtaí anseo criptithe ó cheann ceann. Cuir teachtaireachtaí criptithe ar siúl sna Socruithe chun an comhrá a chosaint."
+        },
+        "federated": {
+            "label": "Gan chriptiú",
+            "explanation": "Tá {handle} ar fhreastalaí eile. Stóráiltear teachtaireachtaí an chomhrá ar an bhfreastalaí sin agus ar an gceann seo, agus is féidir lena riarthóir iad a léamh—ní féidir leis an bprótacal idir freastalaithe iad a chriptiú. Coinnigh ábhar íogair i gcomhráite ar an suíomh seo."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Lean cuntais sa Chruinne Chónasctha",
+        "notice": "Greamaigh hanla amháin nó níos mó, m.sh. @user@example.social—oibríonn aon deighilteoir eatarthu.",
+        "handlesLabel": "Hanlaí sa Chruinne Chónasctha le leanúint",
+        "submit": "Lean",
+        "statusPending": "ar feitheamh",
+        "statusAccepted": "glactha"
+    },
+    "ServerBlockForm": {
+        "legend": "Cuir cosc ar fhreastalaí",
+        "description": "Diúltaíonn sé do gach rud ón bhfreastalaí sin agus faoina bhun: gan seachadtaí isteach ná amach, agus baintear na leanuithe reatha sa dá threo.",
+        "serverLabel": "Freastalaí",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Cúis",
+        "reasonPlaceholder": "An fáth a bhfuil cosc ar an bhfreastalaí seo",
+        "submit": "Cuir cosc ar an bhfreastalaí"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Ritheann sé na codanna de shocrú glao is féidir a sheiceáil ó bhrabhsálaí amháin. Is féidir gach rud suas go dtí fíorcheangal idir piaraí a thástáil anseo; teastaíonn an duine eile chun ceangal leis."
+    },
+    "VideoCallTestButton": {
+        "label": "Rith an tseiceáil"
+    },
+    "WebSocketStatus": {
+        "ok": "Freastalaí WebSocket: ag rith",
+        "failed": "Freastalaí WebSocket: {detail}",
+        "clientTesting": "Ceangal brabhsálaí: á thástáil…",
+        "clientConnecting": "Ceangal brabhsálaí: ag ceangal…",
+        "clientConnected": "Ceangal brabhsálaí: ceangailte",
+        "clientDisconnecting": "Ceangal brabhsálaí: á dhícheangal…",
+        "clientNotConnected": "Ceangal brabhsálaí: gan cheangal"
+    },
+    "UploadWorkerStatus": {
+        "running": "Seirbhís oibrí: ag rith",
+        "stopped": "Seirbhís oibrí: níl sí ag rith—ní thraschódálfar uaslódálacha céimithe go dtí go n-atosófar í",
+        "unknown": "Seirbhís oibrí: anaithnid—níl systemctl ar fáil ar an óstach nó tá SELinux ag diúltú d'fhiosrú stádais an fhreastalaí gréasáin (rith bin/install.php mar root lena dheisiú)",
+        "queue": "Ciú: {staging} á gcéimniú, {pending} ar feitheamh, {processing} á bpróiseáil"
+    },
+    "TrendingTimerStatus": {
+        "running": "Uaineadóir treochta: ag rith",
+        "stopped": "Uaineadóir treochta: níl sé ag rith—ní athnuafar ábhair threochta ach trí fhéinleigheas an chosáin léite (Trending::current()), ní de réir sceidil. Rith bin/install.php mar root lena shocrú.",
+        "unknown": "Uaineadóir treochta: anaithnid—níl systemctl ar fáil ar an óstach nó tá SELinux ag diúltú d'fhiosrú stádais an fhreastalaí gréasáin (rith bin/install.php mar root lena dheisiú)"
+    },
+    "Notification": {
+        "postReady": "Tá próiseáil do mheáin críochnaithe agus tá siad beo anois",
+        "scheduledPostLive": "Tá do phostáil sceidealaithe beo anois",
+        "uploadPartlyFailed": "Tá do phostáil beo, ach níorbh fhéidir comhad amháin nó níos mó a phróiseáil",
+        "uploadFailed": "Theip ar phróiseáil ceann de d'uaslódálacha agus níor postáladh é",
+        "mailerFailed": "Theip ar sheachadadh ríomhphoist—b'fhéidir go bhfuil an seoltóir síos. Seiceáil cumraíocht an ríomhphoist.",
+        "mailFromNotConfigured": "Níl seoladh seoltóra ríomhphoist cumraithe, mar sin ní féidir ríomhphoist a sheoladh. Socraigh ceann i Socruithe Riarthóra (Ríomhphost Amach) nó trí bin/install.php.",
+        "systemError": "Tharla earráid freastalaí. Seiceáil logchomhad na n-earráidí le haghaidh sonraí.",
+        "passwordRemovedGoogle": "Baineadh d'fhocal faire nuair a logáil tú isteach le Google. Úsáid \"Focal Faire Dearmadta\" chun ceann nua a shocrú.",
+        "like": "Thaitin do phostáil le {name}",
+        "repost": "D'athphostáil {name} do phostáil",
+        "reply": "D'fhreagair {name} do phostáil",
+        "friendRequest": "Sheol {name} iarratas cairdis chugat",
+        "friendAccepted": "Ghlac {name} le d'iarratas cairdis",
+        "message": "Sheol {name} teachtaireacht chugat",
+        "mention": "Luaigh {name} thú i bpostáil",
+        "follow": "Lean {name} thú ó fhreastalaí eile",
+        "default": "Rinne {name} rud éigin"
+    },
+    "NotificationList": {
+        "emptyNotice": "Níl aon fhógraí fós."
+    },
+    "NotificationsNavLink": {
+        "label": "Fógraí",
+        "unseen": "Fógraí nach bhfacthas"
+    },
+    "NotificationTestPanel": {
+        "intro": "Seol fógra tástála chugat féin (an riarthóir). Ba cheart dó teacht aníos láithreach agus a bheith sa roghchlár fógraí.",
+        "button": "Seol fógra tástála",
+        "sending": "Á sheoladh…",
+        "sent": "Seolta!",
+        "failed": "Theip air"
+    },
+    "MessageDot": {
+        "label": "Teachtaireachtaí neamhléite"
+    },
+    "NavAlertDot": {
+        "label": "Tá rud nua sa roghchlár"
+    },
+    "Message": {
+        "encrypted": "Teachtaireacht chriptithe",
+        "decryptionFailed": "Criptíodh an teachtaireacht seo le heochracha nach bhfuil ann a thuilleadh."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Teachtaireacht",
+        "bodyPlaceholder": "Scríobh teachtaireacht",
+        "send": "Seol"
+    },
+    "MessageList": {
+        "emptyNotice": "Níl aon teachtaireachtaí fós."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Léigí an cód seo dá chéile ar bhealach eile—os ard, i bpearsa nó thar ghlao. Má mheaitseálann sé ar an dá thaobh, níl aon duine eadraibh.",
+        "changed": "Tá an cód seo athraithe ó sheiceáil tú é. Tarlaíonn sé nuair a athshocraíonn duine agaibh na heochracha criptithe, ach sin an chuma a bheadh ar dhuine ag léamh an chomhrá freisin. Seiceáil an cód nua leis an duine eile sula gcuireann tú muinín ann.",
+        "verified": "Tá an cód seo seiceáilte agat."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Marcáil mar fhíoraithe"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Pasfhrása",
+        "passphrasePlaceholder": "Pasfhrása leis an gcomhrá seo a dhíghlasáil",
+        "submit": "Díghlasáil"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Teachtaireacht dheireanach ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Meáin íogaire"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Taispeáin meáin íogaire de réir réamhshocraithe"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Postáil",
+            "message": "Teachtaireacht",
+            "user": "Úsáideoir"
+        },
+        "summary": {
+            "before": "Thuairiscigh ",
+            "after": " {type} #{id}"
+        },
+        "reasonLine": "Cúis: {reason}",
+        "banReporterLabel": "Cuir cosc ar an tuairisceoir",
+        "banReportedUserLabel": "Cuir cosc ar an úsáideoir tuairiscithe",
+        "deleteLabel": "Scrios {type}",
+        "reportedImageAlt": "Íomhá thuairiscithe",
+        "attachmentUnavailable": "Níl ceangaltán tuairiscithe ar fáil a thuilleadh.",
+        "viewAttachment": "Féach ar an gceangaltán tuairiscithe",
+        "missing": {
+            "noSnapshot": "Níl an t-inneachar tuairiscithe ar fáil a thuilleadh.",
+            "unknownType": "Cineál inneachair anaithnid."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Níl aon tuairisc ann."
+    },
+    "ModQueueLinks": {
+        "intro": "Tá na scuainí fada go leor lena léamh leathanach sa turas, mar sin tá a leathanaigh féin acu.",
+        "reportsLabel": "Tuairiscí",
+        "bannedUsersLabel": "Úsáideoirí coiscthe"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Níl aon rud déanta ag modhnóir fós."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Níl aon ábhar treochta coiscthe ann."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Níl aon fhreastalaí blocáilte ann."
+    },
+    "RelayCard": {
+        "accepted": "Liostáilte ",
+        "waiting": "Ag fanacht leis an athsheachadán glacadh leis—liostáilte "
+    },
+    "RelayList": {
+        "emptyNotice": "Níl liostáil déanta le haon athsheachadán. Ní thagann aon rud anseo ach an méid a leanann baill."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Níor tháinig aon rud trí athsheachadán fós. Beidh postálacha le feiceáil anseo de réir mar a fhoilsíonn na freastalaithe ar an taobh eile iad."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Liostáil le hathsheachadán",
+        "explainerOne": "Sruth comhroinnte is ea athsheachadán: tagann gach postáil phoiblí ó gach freastalaí liostáilte eile anseo, agus téann postálacha an fhreastalaí seo amach chucu uile. Sin mar a aimsíonn ásc nua duine ar bith, mar murach sin ní iompraíonn an chónaidhm ach an méid a leanann duine anseo cheana féin.",
+        "explainerTwo": "Ní féidir leatsa an t-ualach a thuar—is ionann é agus cibé rud a fhoilsíonn na freastalaithe sin, ciúin seachtain amháin agus na mílte postáil san uair an chéad seachtain eile, agus iompraíonn do stóras, do scuaine seachadta agus do scuaine modhnóireachta é ar fad. Ní bhíonn postálacha athsheachadta sna príomhfhothaí ná i bhfothaí cairde; téann siad chuig Fotha an Athsheachadáin, a osclaíonn daoine d'aon ghnó.",
+        "addressLabel": "Seoladh an athsheachadáin",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Liostáil"
+    },
+    "RelayFollowObjectField": {
+        "label": "Cineál liostála",
+        "options": {
+            "public": "Lean an sruth poiblí (is é seo a mbíonn formhór na n-athsheachadán ag súil leis)",
+            "actor": "Lean gníomhaí an athsheachadáin féin"
+        },
+        "retryNotice": "Mura nglacann an t-athsheachadán leis choíche, tarraing siar agus bain triail as an gcineál eile—ní aithníonn roinnt bogearraí athsheachadáin ach ceann amháin acu."
+    },
+    "SiteCounters": {
+        "members": "Baill: {count} (chláraigh {joined} le {days} lá anuas)",
+        "activeMembers": "Baill a bhí anseo le {days} lá anuas: {count} (phostáil {posted} díobh)",
+        "posts": "Postálacha a scríobhadh anseo: {count} ({recent} le {days} lá anuas)",
+        "deliveries": "Seachadtaí cónasctha le {days} lá anuas: tháinig {delivered}, éiríodh as {undeliverable}",
+        "queued": "Ag fanacht le dul amach: {count} (diúltaíodh do {failing} uair amháin ar a laghad cheana)",
+        "pendingReads": "Postálacha ó fhreastalaithe eile atá ag fanacht lena léamh: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Rith sraith tástálacha an tsuímh agus féach ar na torthaí. Tógann sé cúpla soicind, mar sin osclaítear ar a leathanach féin é.",
+        "runLabel": "Rith tástálacha"
+    },
+    "HelpArticle": {
+        "backLabel": "Ar ais chuig an gcabhair uile"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Níl aon mholadh ann faoi láthair—tagann moltaí ó chairde daoine a bhfuil tú cairdiúil leo cheana féin. Cuardaigh thuas chun duine a aimsiú de réir ainm.",
+        "noMatches": "Ní mheaitseálann aon duine anseo é sin."
+    },
+    "UserModButton": {
+        "make": "Déan modhnóir de",
+        "remove": "Bain mar mhodhnóir"
+    },
+    "UserUnbanButton": {
+        "name": "Bain an cosc"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Cuir cosc"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Bain an cosc"
+    },
+    "ReportDismissButton": {
+        "name": "Díbir"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Marcáil mar íogair"
+    },
+    "ServerUnblockButton": {
+        "name": "Díbhlocáil"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Díliostáil"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Cúlghair"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: ag pasáil",
+        "failing": "{suite}: ag teip"
+    },
+    "PageTitle": {
+        "about": "Eolas",
+        "adminBanned": "Úsáideoirí coiscthe",
+        "adminModSettings": "Socruithe modhnóirí",
+        "adminReports": "Tuairiscí",
+        "adminSettings": "Socruithe riarthóra",
+        "adminTests": "Tástálacha",
+        "authGoogleCallbackAccountDeleted": "Cuntas scriosta",
+        "authGoogleCallbackDeleteAccount": "Scrios cuntas",
+        "authGoogleCallbackLogin": "Logáil isteach",
+        "bookmarks": "Leabharmharcanna",
+        "checkInbox": "Seiceáil do bhosca isteach",
+        "drafts": "Dréachtaí agus sceidealaithe",
+        "draftsEditDraft": "Cuir dréacht in eagar",
+        "draftsEditScheduled": "Cuir postáil sceidealaithe in eagar",
+        "forgotPassword": "Focal faire dearmadta",
+        "friendsFeed": "Fotha cairde",
+        "help": "Cabhair",
+        "helpDescription": "Treoracha agus freagraí maidir leis an suíomh a úsáid.",
+        "locations": "Suíomhanna",
+        "locationsDescription": "Postálacha ó na háiteanna is gaire duit.",
+        "locationsPlaceDescription": "Postálacha gar do {place}.",
+        "login": "Logáil isteach",
+        "loginVerificationCode": "Cód fíoraithe",
+        "map": "Léarscáil",
+        "mapDescription": "Léarscáil de phostálacha ó gach cearn den domhan—aimsigh daoine agus rudaí gar duit.",
+        "messages": "Teachtaireachtaí",
+        "messagesWithUser": "Teachtaireachtaí le {name}",
+        "notifications": "Fógraí",
+        "privacy": "Polasaí príobháideachais",
+        "quote": "Luaigh",
+        "relayFeed": "Fotha athsheachadáin",
+        "relayFeedDescription": "Postálacha poiblí ag teacht ó na hathsheachadáin a bhfuil an freastalaí seo liostáilte leo.",
+        "resetPassword": "Athshocraigh focal faire",
+        "revertEmail": "Cealaigh athrú ríomhphoist",
+        "search": "Cuardaigh",
+        "signup": "Cláraigh",
+        "tags": "Clibeanna",
+        "tagsDescription": "Brabhsáil haischlibeanna treochta agus móréilimh ar {siteTitle}.",
+        "tagsTagDescription": "Postálacha a bhfuil {tag} orthu ar {siteTitle}.",
+        "terms": "Téarmaí seirbhíse",
+        "topics": "Ábhair",
+        "topicsDescription": "Na rudaí a bhfuil daoine ag caint fúthu ar {siteTitle} faoi láthair.",
+        "topicsEntityDescription": "{typeLabel}—postálacha ina luaitear {entityTitle} ar {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} a bhfuil daoine ag caint fúthu ar {siteTitle} faoi láthair.",
+        "unsubscribe": "Achoimrí ríomhphoist",
+        "userFriends": "Cairde {name}",
+        "userFriendsDescription": "Cairde {name} ar {siteTitle}",
+        "userSettings": "Socruithe úsáideora",
+        "users": "Úsáideoirí",
+        "verifyEmail": "Fíoraigh ríomhphost"
+    },
+    "PostLikeButton": {
+        "like": "Is maith liom é",
+        "unlike": "Ní maith liom é a thuilleadh"
+    },
+    "PostPinButton": {
+        "pin": "Pionnáil",
+        "unpin": "Díphionnáil"
+    },
+    "PostQuoteButton": {
+        "name": "Luaigh"
+    },
+    "PostDeleteButton": {
+        "name": "Scrios"
+    },
+    "PostEditButton": {
+        "name": "Cuir in eagar"
+    },
+    "ReportButton": {
+        "name": "Tuairiscigh"
+    },
+    "PostActionBar": {
+        "reply": "Freagair",
+        "replies": {
+            "one": "Freagraí (1)",
+            "two": "Freagraí (2)",
+            "few": "Freagraí ({count})",
+            "many": "Freagraí ({count})",
+            "other": "Freagraí ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(curtha in eagar)"
+    },
+    "RepliesHeading": {
+        "heading": "Freagraí"
+    },
+    "PollVoteButton": {
+        "name": "Vótáil"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Féach ar ",
+            "link": "níos mó suíomhanna",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Postálacha gar duit",
+        "description": "Taispeánann sé seo na postálacha is gaire do phointe—cibé áit a bhfuil gníomhaíocht, is cuma cé chomh fada uaidh atá sí. Roinn do shuíomh chun tosú san áit a bhfuil tú, nó roghnaigh áit ar an léarscáil ina ionad.",
+        "useMyLocation": "Úsáid mo shuíomh",
+        "pickOnMap": "Roghnaigh ar an léarscáil",
+        "searchPlaceholder": "Nó clóscríobh logainm…",
+        "searchLabel": "Cuardaigh áit",
+        "locating": "Do shuíomh á aimsiú…",
+        "noGeolocation": "Ní féidir le do bhrabhsálaí suíomh a roinnt.",
+        "locationError": "Níorbh fhéidir do shuíomh a fháil. Seiceáil cead suímh do bhrabhsálaí."
+    },
+    "PollDeadline": {
+        "final": "Toradh deiridh",
+        "closes": {
+            "before": "Dúnann ",
+            "after": ""
+        },
+        "days": {
+            "one": "i gceann 1 lá",
+            "two": "i gceann 2 lá",
+            "few": "i gceann {count} lá",
+            "many": "i gceann {count} lá",
+            "other": "i gceann {count} lá"
+        },
+        "hours": {
+            "one": "i gceann 1 uair",
+            "two": "i gceann 2 uair",
+            "few": "i gceann {count} huaire",
+            "many": "i gceann {count} n-uaire",
+            "other": "i gceann {count} uair"
+        },
+        "minutes": {
+            "one": "i gceann 1 nóiméad",
+            "two": "i gceann 2 nóiméad",
+            "few": "i gceann {count} nóiméad",
+            "many": "i gceann {count} nóiméad",
+            "other": "i gceann {count} nóiméad"
+        },
+        "underMinute": "i gceann níos lú ná nóiméad"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Vótáil 1 duine ",
+            "two": "Vótáil 2 dhuine ",
+            "few": "Vótáil {count} dhuine ",
+            "many": "Vótáil {count} nduine ",
+            "other": "Vótáil {count} duine "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Logáil isteach",
+            "after": " chun postáil."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Logáil isteach",
+            "after": " chun freagra a thabhairt."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " a d'athphostáil"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Mar fhreagra ar ",
+            "after": ""
+        },
+        "untitled": "an phostáil seo",
+        "jumpToStart": "Léim go dtí an tús"
+    },
+    "TopicSummaryCard": {
+        "label": "Achoimre ginte ag intleacht shaorga"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Fáilte chuig ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Scríobh rud éigin sa bhosca thíos agus cuirfear amach chuig d'fhotha é. Is féidir le duine ar bith freagra a thabhairt, agus níl i bhfreagra ach postáil a bhfuil máthairphostáil aici, mar sin neadaíonn comhráite chomh domhain agus is gá.",
+            "Cuir daoine leis mar chairde agus beidh a bpostálacha i d'fhotha. Taispeánann an Fotha Domhanda—ainm an tsuímh ag barr ar chlé—gach rud a scríobhadh anseo, agus is ansin a aimsíonn tú duine le cur leis.",
+            "Tá an suíomh seo mar chuid den Chruinne Chónasctha: is féidir leat cuntais ar Mastodon agus ar fhreastalaithe eile a leanúint lena lánainm úsáideora, agus sroicheann do phostálacha na daoine a leanann thú ansin. Cuardaigh ainm úsáideora ar nós @duine@example.social agus rachaidh an freastalaí seo á aimsiú.",
+            "Cuir #haischlibeanna le postáil agus beidh sí le feiceáil ar leathanach na haischlibe sin, agus i dTreochtaí má tá dóthain daoine ag scríobh fúithi.",
+            "Tá teachtaireachtaí idir baill criptithe ó cheann ceann—stórálann an freastalaí téacs rúnda nach féidir leis a léamh. Cuir é sin ar siúl sna Socruithe.",
+            "Ní gá duit postáil láithreach: sábháil dréacht, nó socraigh am agus foilseoidh sí í féin. Tá an dá rud faoi Dréachtaí agus Sceidealaithe."
+        ],
+        "more": {
+            "before": "Tá tuilleadh eolais ar ",
+            "link": "na leathanaigh chabhrach",
+            "after": ", lena n-áirítear conas cuntas a bhogadh anseo ó áit eile."
+        },
+        "dontShowAgain": "Ná taispeáin é seo arís"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Ionsáigh emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Íomhá réamhamhairc naisc"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Bain íomhá"
+    },
+    "LinkItem": {
+        "alt": "Íomhá réamhamhairc naisc"
+    },
+    "MapScrubber": {
+        "play": "Seinn",
+        "pause": "Cuir ar sos",
+        "cumulativeMode": "Go dtí sin",
+        "windowMode": "Timpeall an ama sin amháin",
+        "rangeLabel": "Taispeáin postálacha suas go dáta",
+        "cumulativeLabel": {
+            "one": "Postáilte suas go {date}—1 phostáil",
+            "two": "Postáilte suas go {date}—2 phostáil",
+            "few": "Postáilte suas go {date}—{count} phostáil",
+            "many": "Postáilte suas go {date}—{count} bpostáil",
+            "other": "Postáilte suas go {date}—{count} postáil"
+        },
+        "windowLabel": {
+            "one": "Postáilte timpeall {date}—1 phostáil",
+            "two": "Postáilte timpeall {date}—2 phostáil",
+            "few": "Postáilte timpeall {date}—{count} phostáil",
+            "many": "Postáilte timpeall {date}—{count} bpostáil",
+            "other": "Postáilte timpeall {date}—{count} postáil"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Postáil {name}",
+        "pageTitleUntitled": "Postáil",
+        "imageAltByAuthor": "Grianghraf a phostáil {name}",
+        "imageAltUntitled": "Grianghraf"
+    },
+    "PostBookmarkButton": {
+        "remove": "Bain leabharmharc",
+        "add": "Cuir leabharmharc leis"
+    },
+    "PostRepostButton": {
+        "undo": "Cealaigh athphostáil",
+        "repost": "Athphostáil"
+    },
+    "QuotedPost": {
+        "viewLink": "Féach ar an bpostáil luaite"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Iarratais ar feitheamh"
+    },
+    "ScrollToTopButton": {
+        "label": "Scrollaigh go dtí an barr"
+    },
+    "SearchClearButton": {
+        "label": "Glan an cuardach"
+    },
+    "SitePolicyLinks": {
+        "terms": "Téarmaí seirbhíse",
+        "privacy": "Polasaí príobháideachais"
+    },
+    "SkipLink": {
+        "label": "Léim chuig an inneachar"
+    },
+    "TopicHeading": {
+        "searchLink": "Cuardaigh é seo",
+        "noPosts": "Ní luann aon phostáil é seo faoi láthair."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Níor scríobhadh faoi aon rud den chineál seo fós."
+    },
+    "TrendingEntitySection": {
+        "heading": "Treochtaí"
+    },
+    "PostLocationLink": {
+        "title": "Taispeáin an áit seo ar an léarscáil",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "díreach anois",
+        "minutes": {
+            "one": "1 nóiméad ó shin",
+            "two": "2 nóiméad ó shin",
+            "few": "{count} nóiméad ó shin",
+            "many": "{count} nóiméad ó shin",
+            "other": "{count} nóiméad ó shin"
+        },
+        "hours": {
+            "one": "1 uair ó shin",
+            "two": "2 uair ó shin",
+            "few": "{count} huaire ó shin",
+            "many": "{count} n-uaire ó shin",
+            "other": "{count} uair ó shin"
+        },
+        "days": {
+            "one": "1 lá ó shin",
+            "two": "2 lá ó shin",
+            "few": "{count} lá ó shin",
+            "many": "{count} lá ó shin",
+            "other": "{count} lá ó shin"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Téama",
+        "themes": {
+            "system": "De réir an chórais",
+            "light": "Geal simplí",
+            "dark": "Dorcha simplí",
+            "sepia": "Seipia",
+            "midnight": "Meán oíche",
+            "sunset": "Luí na gréine",
+            "rose": "Rós",
+            "forest": "Foraois",
+            "ocean": "Aigéan",
+            "lavender": "Labhandar",
+            "gold": "Ór",
+            "hacker": "Haiceálaí",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Liathscála"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Níl aistriúchán socraithe ar an bhfreastalaí seo.",
+        "nothing": "Níl aon rud anseo le haistriú.",
+        "unknownSource": "Níor aimsíodh fós cén teanga atá sa phostáil seo, mar sin ní féidir í a aistriú.",
+        "alreadyReadable": "Tá an phostáil seo sa teanga sin cheana féin.",
+        "unsupportedPair": "Ní féidir leis an bhfreastalaí seo an teanga sin a aistriú fós."
+    },
+    "LanguagePrompt": {
+        "question": "Ar mhaith leat féachaint ar an suíomh i nGaeilge?",
+        "accept": "Ba mhaith",
+        "decline": "Níor mhaith, go raibh maith agat"
+    },
+    "LanguageSelector": {
+        "label": "Teanga",
+        "legend": "Teanga"
+    },
+    "EmailDigest": {
+        "subject": "An méid a chaill tú ar {site}",
+        "greeting": "Dia dhuit, {name},",
+        "whileAway": "Le linn duit a bheith as láthair:",
+        "repeatedTimes": {
+            "one": " (1 uair)",
+            "two": " (2 uair)",
+            "few": " ({count} huaire)",
+            "many": " ({count} n-uaire)",
+            "other": " ({count} uair)"
+        },
+        "moreMissed": {
+            "one": "agus fógra amháin eile",
+            "two": "agus 2 fhógra eile",
+            "few": "agus {count} fhógra eile",
+            "many": "agus {count} bhfógra eile",
+            "other": "agus {count} fógra eile"
+        },
+        "messagesWaiting": {
+            "one": "Tá teachtaireacht ag fanacht leat",
+            "two": "Tá 2 theachtaireacht ag fanacht leat",
+            "few": "Tá {count} theachtaireacht ag fanacht leat",
+            "many": "Tá {count} dteachtaireacht ag fanacht leat",
+            "other": "Tá {count} teachtaireacht ag fanacht leat"
+        },
+        "postsInFeed": {
+            "one": "Postáil nua amháin i d'fhotha",
+            "two": "2 phostáil nua i d'fhotha",
+            "few": "{count} phostáil nua i d'fhotha",
+            "many": "{count} bpostáil nua i d'fhotha",
+            "other": "{count} postáil nua i d'fhotha"
+        },
+        "unsubscribeInstructions": "Chun stop a chur leis na ríomhphoist seo, oscail an nasc seo—ní thógann sé ach cliceáil amháin agus ní gá focal faire:",
+        "comeSeeWhatIsNew": "Tar agus féach cad atá nua",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Ná seol iad seo chugam a thuilleadh",
+            "after": "—cliceáil amháin, gan focal faire."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Fíoraigh do sheoladh ríomhphoist",
+        "greeting": "Dia dhuit, {name},",
+        "instructions": "Fíoraigh do sheoladh ríomhphoist ach cuairt a thabhairt ar an nasc seo:",
+        "htmlInstructions": "Fíoraigh do sheoladh ríomhphoist ach cliceáil ar an nasc thíos:",
+        "buttonLabel": "Fíoraigh an seoladh ríomhphoist",
+        "expiresIn": {
+            "one": "Rachaidh an nasc seo as feidhm i gceann 1 uair.",
+            "two": "Rachaidh an nasc seo as feidhm i gceann 2 uair.",
+            "few": "Rachaidh an nasc seo as feidhm i gceann {count} huaire.",
+            "many": "Rachaidh an nasc seo as feidhm i gceann {count} n-uaire.",
+            "other": "Rachaidh an nasc seo as feidhm i gceann {count} uair."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Athshocraigh d'fhocal faire",
+        "greeting": "Dia dhuit, {name},",
+        "instructions": "D'iarr duine éigin (tusa, tá súil againn) athshocrú focal faire. Tabhair cuairt ar an nasc seo chun focal faire nua a roghnú:",
+        "htmlInstructions": "D'iarr duine éigin (tusa, tá súil againn) athshocrú focal faire. Cliceáil ar an nasc thíos chun focal faire nua a roghnú:",
+        "buttonLabel": "Athshocraigh an focal faire",
+        "expiresIn": {
+            "one": "Rachaidh an nasc seo as feidhm i gceann 1 uair.",
+            "two": "Rachaidh an nasc seo as feidhm i gceann 2 uair.",
+            "few": "Rachaidh an nasc seo as feidhm i gceann {count} huaire.",
+            "many": "Rachaidh an nasc seo as feidhm i gceann {count} n-uaire.",
+            "other": "Rachaidh an nasc seo as feidhm i gceann {count} uair."
+        },
+        "ignoreNotice": "Murar iarr tú é seo, is féidir leat neamhaird a dhéanamh den ríomhphost seo."
+    }
+}

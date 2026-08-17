@@ -45,5 +45,25 @@ export default {
             TestCase.assertTrue(button.classList.contains('ToggleButton'));
             TestCase.assertTrue(button.classList.contains('MarkdownModeButton'));
         },
+        'a fresh toggle says it is not pressed'() {
+            const button = ToggleButton.build(['Translate', 'Show Original'], 'PostTranslateButton');
+
+            TestCase.assertEquals('false', button.getAttribute('aria-pressed'));
+        },
+        'selecting a later wording presses it, and the first releases it'() {
+            const button = ToggleButton.build(['Translate', 'Show Original'], 'PostTranslateButton');
+
+            ToggleButton.select(button, 'Show Original');
+            TestCase.assertEquals('true', button.getAttribute('aria-pressed'));
+
+            ToggleButton.select(button, 'Translate');
+            TestCase.assertEquals('false', button.getAttribute('aria-pressed'));
+        },
+        'a non-pressable button never carries the attribute'() {
+            const button = ToggleButton.build(['Post', 'Schedule Post', 'Save Draft'], 'ComposerSubmitButton', false);
+
+            ToggleButton.select(button, 'Save Draft');
+            TestCase.assertFalse(button.hasAttribute('aria-pressed'));
+        },
     }
 };

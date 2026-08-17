@@ -32,9 +32,22 @@ class ToggleButton extends ButtonButton
     /** Which of them it is showing. Null shows the first. */
     protected ?string $showing = null;
 
+    /**
+     * Whether showing a later wording means the control is ON, said to
+     * assistive tech as aria-pressed. True for the genuine toggles (translate,
+     * add/remove poll); false for a button that merely relabels with a mode
+     * decided elsewhere - the composer's submit says Post or Save Draft, and
+     * neither is a pressed state.
+     */
+    protected bool $pressable = true;
+
     public function toDOM(): \DOMElement
     {
         $showing = $this -> showing ?? ($this -> labels[0] ?? '');
+
+        if ($this -> pressable) {
+            $this -> pressed($showing !== ($this -> labels[0] ?? ''));
+        }
 
         foreach ($this -> labels as $label) {
             $this -> contents[] = self::labelSpan($label, $label !== $showing);

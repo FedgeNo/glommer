@@ -18,11 +18,19 @@ export class ToggleButton {
     /**
      * @param {string[]} labels every wording it can show, the first to start with
      * @param {string} className its own identity, beside Button and ToggleButton
+     * @param {boolean} pressable whether showing a later wording means the
+     *     control is ON, said to assistive tech as aria-pressed - false for a
+     *     button that merely relabels with a mode decided elsewhere, like the
+     *     composer's submit. Mirrors ToggleButton.php's $pressable.
      */
-    static build(labels, className) {
+    static build(labels, className, pressable = true) {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'Button ToggleButton ' + className;
+
+        if (pressable) {
+            button.setAttribute('aria-pressed', 'false');
+        }
 
         for (const text of labels) {
             const label = document.createElement('span');
@@ -40,6 +48,13 @@ export class ToggleButton {
     static select(button, text) {
         for (const label of button.querySelectorAll('.ToggleButtonLabel')) {
             label.classList.toggle('Inactive', label.textContent !== text);
+        }
+
+        // The attribute is the marker for whether this one participates - a
+        // non-pressable button never received it, so it never gains it here.
+        if (button.hasAttribute('aria-pressed')) {
+            const first = button.querySelector('.ToggleButtonLabel');
+            button.setAttribute('aria-pressed', String(first !== null && first.textContent !== text));
         }
     }
 

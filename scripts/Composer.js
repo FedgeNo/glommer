@@ -442,7 +442,7 @@ export class Composer {
         draftButton.textContent = 'Save Draft';
         commitActions.appendWithSpace(draftButton);
 
-        const submitBtn = ToggleButton.build(['Post', 'Schedule Post', 'Save Draft'], 'ComposerSubmitButton');
+        const submitBtn = ToggleButton.build(['Post', 'Schedule Post', 'Save Draft'], 'ComposerSubmitButton', false);
         submitBtn.type = 'submit';
         commitActions.appendWithSpace(submitBtn);
 

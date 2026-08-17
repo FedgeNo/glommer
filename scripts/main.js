@@ -90,7 +90,6 @@ if (document.querySelector('.ThemeSelect'))            import('/scripts/ThemeSel
 if (document.querySelector('.LanguagePrompt, .LanguageSelect')) import('/scripts/LanguagePrompt.js');
 if (document.querySelector('.SignupForm'))             import('/scripts/UsernameValidation.js');
 if (document.querySelector('.HashtagGraphList'))       import('/scripts/HashtagGraphList.js');
-if (document.querySelector('.HelpSearchInput'))        import('/scripts/HelpSearch.js');
 if (document.querySelector('.NotificationTestPanel'))  import('/scripts/NotificationTestPanel.js');
 if (document.querySelector('.VideoCallTestPanel'))     import('/scripts/VideoCallTestPanel.js');
 if (document.querySelector('.RememberedDeviceRevokeButton')) import('/scripts/RememberedDevice.js');

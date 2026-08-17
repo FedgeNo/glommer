@@ -16,7 +16,7 @@
 :is(
     .Card,
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
-    .Form, .SearchBox, .HelpSearchBox, .ThemeSelector, .RememberedDevice,
+    .Form, .SearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
@@ -53,7 +53,7 @@
 :is(
     .Card,
     .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
-    .Form, .SearchBox, .HelpSearchBox, .ThemeSelector, .RememberedDevice,
+    .Form, .SearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
@@ -1093,17 +1093,6 @@ label.visually-hidden { margin-bottom: 0; }
 }
 
 /* ---------- Help ---------- */
-
-.HelpSearchBox { padding: 0.5rem; }
-
-.HelpSearchInput {
-    width: 100%;
-    border: none;
-    background-color: transparent;
-    font-size: 1rem;
-}
-
-.HelpSearchInput:focus { box-shadow: none; }
 
 .HelpSearchResults {
     display: flex;

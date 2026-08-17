@@ -325,7 +325,8 @@
         "showAll": "Show All"
     },
     "HelpSearch": {
-        "placeholder": "Search help…"
+        "placeholder": "Search help…",
+        "noMatches": "No help articles matched your search."
     },
     "WelcomeBannerDismissButton": {
         "name": "Got It"

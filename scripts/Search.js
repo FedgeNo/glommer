@@ -5,6 +5,7 @@ import { InfiniteScroller } from '/scripts/InfiniteScroller.js';
 import { OtherUser } from '/scripts/OtherUser.js';
 import { Post } from '/scripts/Post.js';
 import { BannedUser } from '/scripts/BannedUser.js';
+import { HelpSearch } from '/scripts/HelpSearch.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Strings } from '/scripts/Strings.js';
 
@@ -163,6 +164,7 @@ export class Search {
         const posts = Search.#initPosts();
         Search.#initFriends();
         Search.#initBannedUsers();
+        Search.#initHelp();
 
         Search.#searchFromURL(posts);
     }
@@ -275,6 +277,40 @@ export class Search {
                 document.querySelector('.ReceivedFriendRequestSection')?.classList.toggle('Searching', searching);
                 document.querySelector('.FriendSection')?.classList.toggle('Searching', searching);
                 document.querySelector('.SentFriendRequestSection')?.classList.toggle('Searching', searching);
+            },
+        });
+    }
+
+    static #initHelp() {
+        const input = document.querySelector('.HelpSearchInput');
+        if (!input) return;
+        const container = input.closest('.HelpSearch').querySelector('.HelpSearchResults');
+        new Search(input, {
+            endpoint: '/api/help-search',
+            buildRequest: query => ({ q: query }),
+            resultsContainer: container,
+            // Help results aren't a flat item list - an empty query answers
+            // with the whole browse view, grouped by category - so onResponse
+            // paints everything and no items are handed back to render.
+            extractItems: () => [],
+            renderItem: () => null,
+            onResponse: (input, data) => {
+                if (data.articles.length === 0) {
+                    const words = Strings.for('HelpSearch', {
+                        noMatches: 'No help articles matched your search.',
+                    });
+                    const empty = document.createElement('p');
+                    empty.className = 'muted Notice';
+                    empty.textContent = words.noMatches;
+                    container.appendWithSpace(empty);
+                    return;
+                }
+
+                if (data.grouped) {
+                    HelpSearch.renderBrowse(container, data.articles);
+                } else {
+                    HelpSearch.renderResults(container, data.articles);
+                }
             },
         });
     }

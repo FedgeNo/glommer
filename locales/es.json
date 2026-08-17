@@ -2,6 +2,7 @@
     "PollOptionVotes": {
         "votes": {
             "one": "1 voto",
+            "many": "{count} de votos",
             "other": "{count} votos"
         }
     },
@@ -855,6 +856,7 @@
         "reply": "Responder",
         "replies": {
             "one": "Respuesta ({count})",
+            "many": "Respuestas ({count})",
             "other": "Respuestas ({count})"
         }
     },
@@ -893,14 +895,17 @@
         },
         "days": {
             "one": "en {count} día",
+            "many": "en {count} de días",
             "other": "en {count} días"
         },
         "hours": {
             "one": "en {count} hora",
+            "many": "en {count} de horas",
             "other": "en {count} horas"
         },
         "minutes": {
             "one": "en {count} minuto",
+            "many": "en {count} de minutos",
             "other": "en {count} minutos"
         },
         "underMinute": "en menos de un minuto"
@@ -908,6 +913,7 @@
     "PollTally": {
         "voters": {
             "one": "1 persona votó ",
+            "many": "{count} de personas votaron ",
             "other": "{count} personas votaron "
         }
     },
@@ -982,10 +988,12 @@
         "rangeLabel": "Mostrar publicaciones hasta una fecha",
         "cumulativeLabel": {
             "one": "Publicado hasta {date} — {count} publicación",
+            "many": "Publicado hasta {date} — {count} de publicaciones",
             "other": "Publicado hasta {date} — {count} publicaciones"
         },
         "windowLabel": {
             "one": "Publicado alrededor de {date} — {count} publicación",
+            "many": "Publicado alrededor de {date} — {count} de publicaciones",
             "other": "Publicado alrededor de {date} — {count} publicaciones"
         }
     },
@@ -1040,14 +1048,17 @@
         "justNow": "ahora mismo",
         "minutes": {
             "one": "hace {count} min",
+            "many": "hace {count} min",
             "other": "hace {count} min"
         },
         "hours": {
             "one": "hace {count} h",
+            "many": "hace {count} h",
             "other": "hace {count} h"
         },
         "days": {
             "one": "hace {count} d",
+            "many": "hace {count} d",
             "other": "hace {count} d"
         }
     },
@@ -1097,18 +1108,22 @@
         "whileAway": "Mientras estabas fuera:",
         "repeatedTimes": {
             "one": " ({count} vez)",
+            "many": " ({count} de veces)",
             "other": " ({count} veces)"
         },
         "moreMissed": {
             "one": "y {count} notificación más",
+            "many": "y {count} de notificaciones más",
             "other": "y {count} notificaciones más"
         },
         "messagesWaiting": {
             "one": "Tienes un mensaje esperando",
+            "many": "Tienes {count} de mensajes esperando",
             "other": "Tienes {count} mensajes esperando"
         },
         "postsInFeed": {
             "one": "Una publicación nueva en tu feed",
+            "many": "{count} de publicaciones nuevas en tu feed",
             "other": "{count} publicaciones nuevas en tu feed"
         },
         "unsubscribeInstructions": "Para dejar de recibir estos correos, abre este enlace - no hace falta más que un clic y no se necesita ninguna contraseña:",
@@ -1127,6 +1142,7 @@
         "buttonLabel": "Verificar dirección de correo electrónico",
         "expiresIn": {
             "one": "Este enlace expira en {count} hora.",
+            "many": "Este enlace expira en {count} de horas.",
             "other": "Este enlace expira en {count} horas."
         }
     },
@@ -1138,6 +1154,7 @@
         "buttonLabel": "Restablecer contraseña",
         "expiresIn": {
             "one": "Este enlace expira en {count} hora.",
+            "many": "Este enlace expira en {count} de horas.",
             "other": "Este enlace expira en {count} horas."
         },
         "ignoreNotice": "Si no lo solicitaste, puedes ignorar este correo electrónico."

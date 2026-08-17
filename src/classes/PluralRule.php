@@ -32,14 +32,15 @@ class PluralRule
 
     /**
      * The counts worth asking about: where CLDR rules change their minds - the
-     * teens and the hundreds for Slavic, and the thousands where a language's
-     * rules turn on the last two digits.
+     * teens and the hundreds for Slavic, fractional values for languages such
+     * as Czech, and powers of a million for languages such as Catalan.
      */
     private const RANGE = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 30, 31, 40, 41, 50, 60, 70, 80, 90,
         100, 101, 102, 105, 111, 112, 120, 121, 130,
-        200, 201, 1000, 1002, 1005, 1011, 1024,
+        200, 201, 1000, 1002, 1005, 1011, 1024, 1000000,
+        0.1, 1.1, 1.5, 2.5,
     ];
 
     /**
@@ -84,7 +85,7 @@ class PluralRule
      * is the singular whatever else it holds, and Portuguese counting 0 as a
      * singular would otherwise be asked about none of them.
      */
-    public static function exampleFor(string $locale, string $category): ?int
+    public static function exampleFor(string $locale, string $category): int|float|null
     {
         $counts = [];
 
@@ -102,12 +103,12 @@ class PluralRule
             return 1;
         }
 
-        $counting = array_filter($counts, static fn (int $count): bool => $count > 1);
+        $counting = array_filter($counts, static fn (int|float $count): bool => $count > 1);
 
         return $counting === [] ? $counts[0] : min($counting);
     }
 
-    public static function categoryFor(string $locale, int $count): string
+    public static function categoryFor(string $locale, int|float $count): string
     {
         $formatter = self::formatterFor($locale);
 
@@ -115,7 +116,7 @@ class PluralRule
             // What English does, which is right for a good half of the
             // languages there are and quietly coarse rather than fatal for the
             // rest - see the intl note in the README's requirements.
-            return $count === 1 ? 'one' : 'other';
+            return $count == 1 ? 'one' : 'other';
         }
 
         $category = $formatter -> format(['n' => $count]);

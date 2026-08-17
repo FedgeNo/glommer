@@ -3,6 +3,7 @@
         "votes": {
             "one": "1 hlas",
             "few": "{count} hlasy",
+            "many": "{count} hlasu",
             "other": "{count} hlasů"
         }
     },
@@ -857,6 +858,7 @@
         "replies": {
             "one": "Odpovědi ({count})",
             "few": "Odpovědi ({count})",
+            "many": "Odpovědí ({count})",
             "other": "Odpovědí ({count})"
         }
     },
@@ -896,16 +898,19 @@
         "days": {
             "one": "za {count} den",
             "few": "za {count} dny",
+            "many": "za {count} dne",
             "other": "za {count} dní"
         },
         "hours": {
             "one": "za {count} hodinu",
             "few": "za {count} hodiny",
+            "many": "za {count} hodiny",
             "other": "za {count} hodin"
         },
         "minutes": {
             "one": "za {count} minutu",
             "few": "za {count} minuty",
+            "many": "za {count} minuty",
             "other": "za {count} minut"
         },
         "underMinute": "za méně než minutu"
@@ -914,6 +919,7 @@
         "voters": {
             "one": "Hlasoval 1 člověk ",
             "few": "Hlasovali {count} lidé ",
+            "many": "Hlasovalo {count} člověka ",
             "other": "Hlasovalo {count} lidí "
         }
     },
@@ -989,11 +995,13 @@
         "cumulativeLabel": {
             "one": "Zveřejněno do {date} – {count} příspěvek",
             "few": "Zveřejněno do {date} – {count} příspěvky",
+            "many": "Zveřejněno do {date} – {count} příspěvku",
             "other": "Zveřejněno do {date} – {count} příspěvků"
         },
         "windowLabel": {
             "one": "Zveřejněno kolem {date} – {count} příspěvek",
             "few": "Zveřejněno kolem {date} – {count} příspěvky",
+            "many": "Zveřejněno kolem {date} – {count} příspěvku",
             "other": "Zveřejněno kolem {date} – {count} příspěvků"
         }
     },
@@ -1049,16 +1057,19 @@
         "minutes": {
             "one": "před {count} min",
             "few": "před {count} min",
+            "many": "před {count} min",
             "other": "před {count} min"
         },
         "hours": {
             "one": "před {count} h",
             "few": "před {count} h",
+            "many": "před {count} h",
             "other": "před {count} h"
         },
         "days": {
             "one": "před {count} d",
             "few": "před {count} d",
+            "many": "před {count} d",
             "other": "před {count} d"
         }
     },
@@ -1109,21 +1120,25 @@
         "repeatedTimes": {
             "one": " ({count}krát)",
             "few": " ({count}krát)",
+            "many": " ({count}krát)",
             "other": " ({count}krát)"
         },
         "moreMissed": {
             "one": "a {count} další oznámení",
             "few": "a {count} další oznámení",
+            "many": "a {count} dalšího oznámení",
             "other": "a {count} dalších oznámení"
         },
         "messagesWaiting": {
             "one": "Čeká na vás jedna zpráva",
             "few": "Čekají na vás {count} zprávy",
+            "many": "Čeká na vás {count} zprávy",
             "other": "Čeká na vás {count} zpráv"
         },
         "postsInFeed": {
             "one": "Jeden nový příspěvek ve vašem kanálu",
             "few": "{count} nové příspěvky ve vašem kanálu",
+            "many": "{count} nového příspěvku ve vašem kanálu",
             "other": "{count} nových příspěvků ve vašem kanálu"
         },
         "unsubscribeInstructions": "Chcete-li tyto e-maily zastavit, otevřete tento odkaz – stačí jedno kliknutí a není potřeba heslo:",
@@ -1143,6 +1158,7 @@
         "expiresIn": {
             "one": "Platnost odkazu vyprší za {count} hodinu.",
             "few": "Platnost odkazu vyprší za {count} hodiny.",
+            "many": "Platnost odkazu vyprší za {count} hodiny.",
             "other": "Platnost odkazu vyprší za {count} hodin."
         }
     },
@@ -1155,6 +1171,7 @@
         "expiresIn": {
             "one": "Platnost odkazu vyprší za {count} hodinu.",
             "few": "Platnost odkazu vyprší za {count} hodiny.",
+            "many": "Platnost odkazu vyprší za {count} hodiny.",
             "other": "Platnost odkazu vyprší za {count} hodin."
         },
         "ignoreNotice": "Pokud jste o obnovení nepožádali, můžete tento e-mail ignorovat."

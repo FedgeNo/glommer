@@ -703,5 +703,22 @@
     "EmailDigest.messagesWaiting.few": "4740f2a30a29d0eb2890d3968ca0945488df0bff",
     "EmailDigest.postsInFeed.few": "b8c938825eaa3089461adf8f4c8cfc29c8bd760c",
     "EmailVerification.expiresIn.few": "636efa17a0356ae6e332cab54b053bfbb4cce0fc",
-    "PasswordReset.expiresIn.few": "636efa17a0356ae6e332cab54b053bfbb4cce0fc"
+    "PasswordReset.expiresIn.few": "636efa17a0356ae6e332cab54b053bfbb4cce0fc",
+    "PollOptionVotes.votes.many": "ef53964c38b8aa240133ce7c7577be8eeb3d91f4",
+    "PostActionBar.replies.many": "ad1ca0c243023dd2cc03ed4cfe75cfdec849dc1f",
+    "PollDeadline.days.many": "7bb8ef0fab19df250752151f259eb00923878faa",
+    "PollDeadline.hours.many": "8c7fb9c0a42e957bcdd08c22f5d2f7465a2bd604",
+    "PollDeadline.minutes.many": "9eca0ca7eb1ecdbd2b3043af26d2646494c47abf",
+    "PollTally.voters.many": "c324f407de1b33fdc3f700918b9418f9b6e8e0a0",
+    "MapScrubber.cumulativeLabel.many": "c5d37e685fd933321a378bff1c2c7346c3759749",
+    "MapScrubber.windowLabel.many": "b490d9c8c21a7d84c4d7469726e626670dd820c0",
+    "RelativeTime.minutes.many": "ec8f5f7f40bc4814d82d28fe2f713fcb670a885d",
+    "RelativeTime.hours.many": "c5776bab990893495e6900856e0ad7ba4f5b785f",
+    "RelativeTime.days.many": "b7a37b97f97417f86294d567db69e7e68dd04a59",
+    "EmailDigest.repeatedTimes.many": "0333ef7904dd4ed76d73b2537a98963f9ad3be86",
+    "EmailDigest.moreMissed.many": "74615deeb3a04d6438b080783c163c7d40936b52",
+    "EmailDigest.messagesWaiting.many": "4740f2a30a29d0eb2890d3968ca0945488df0bff",
+    "EmailDigest.postsInFeed.many": "b8c938825eaa3089461adf8f4c8cfc29c8bd760c",
+    "EmailVerification.expiresIn.many": "636efa17a0356ae6e332cab54b053bfbb4cce0fc",
+    "PasswordReset.expiresIn.many": "636efa17a0356ae6e332cab54b053bfbb4cce0fc"
 }

@@ -2,6 +2,7 @@
     "PollOptionVotes": {
         "votes": {
             "one": "{count} voto",
+            "many": "{count} de votos",
             "other": "{count} votos"
         }
     },
@@ -855,6 +856,7 @@
         "reply": "Responder",
         "replies": {
             "one": "Respostas ({count})",
+            "many": "Respostas ({count})",
             "other": "Respostas ({count})"
         }
     },
@@ -893,14 +895,17 @@
         },
         "days": {
             "one": "daqui a {count} dia",
+            "many": "daqui a {count} de dias",
             "other": "daqui a {count} dias"
         },
         "hours": {
             "one": "daqui a {count} hora",
+            "many": "daqui a {count} de horas",
             "other": "daqui a {count} horas"
         },
         "minutes": {
             "one": "daqui a {count} minuto",
+            "many": "daqui a {count} de minutos",
             "other": "daqui a {count} minutos"
         },
         "underMinute": "daqui a menos de um minuto"
@@ -908,6 +913,7 @@
     "PollTally": {
         "voters": {
             "one": "{count} pessoa votou ",
+            "many": "{count} de pessoas votaram ",
             "other": "{count} pessoas votaram "
         }
     },
@@ -982,10 +988,12 @@
         "rangeLabel": "Mostrar publicações até uma data",
         "cumulativeLabel": {
             "one": "Publicado até {date} — {count} publicação",
+            "many": "Publicado até {date} — {count} de publicações",
             "other": "Publicado até {date} — {count} publicações"
         },
         "windowLabel": {
             "one": "Publicado por volta de {date} — {count} publicação",
+            "many": "Publicado por volta de {date} — {count} de publicações",
             "other": "Publicado por volta de {date} — {count} publicações"
         }
     },
@@ -1040,14 +1048,17 @@
         "justNow": "agora mesmo",
         "minutes": {
             "one": "há {count} min",
+            "many": "há {count} min",
             "other": "há {count} min"
         },
         "hours": {
             "one": "há {count} h",
+            "many": "há {count} h",
             "other": "há {count} h"
         },
         "days": {
             "one": "há {count} d",
+            "many": "há {count} d",
             "other": "há {count} d"
         }
     },
@@ -1097,18 +1108,22 @@
         "whileAway": "Enquanto estiveste fora:",
         "repeatedTimes": {
             "one": " ({count} vez)",
+            "many": " ({count} de vezes)",
             "other": " ({count} vezes)"
         },
         "moreMissed": {
             "one": "e mais {count} notificação",
+            "many": "e mais {count} de notificações",
             "other": "e mais {count} notificações"
         },
         "messagesWaiting": {
             "one": "Tens {count} mensagem à espera",
+            "many": "Tens {count} de mensagens à espera",
             "other": "Tens {count} mensagens à espera"
         },
         "postsInFeed": {
             "one": "{count} nova publicação no teu feed",
+            "many": "{count} de novas publicações no teu feed",
             "other": "{count} novas publicações no teu feed"
         },
         "unsubscribeInstructions": "Para parar estes emails, abre esta ligação - basta um clique e não precisas de palavra-passe:",
@@ -1127,6 +1142,7 @@
         "buttonLabel": "Verificar endereço de email",
         "expiresIn": {
             "one": "Esta ligação expira em {count} hora.",
+            "many": "Esta ligação expira em {count} de horas.",
             "other": "Esta ligação expira em {count} horas."
         }
     },
@@ -1138,6 +1154,7 @@
         "buttonLabel": "Repor palavra-passe",
         "expiresIn": {
             "one": "Esta ligação expira em {count} hora.",
+            "many": "Esta ligação expira em {count} de horas.",
             "other": "Esta ligação expira em {count} horas."
         },
         "ignoreNotice": "Se não pediste isto, podes ignorar este email."

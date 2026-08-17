@@ -53,22 +53,15 @@ class LocaleIntegrityTest extends TestCase
     }
 
     /**
-     * Which categories this language can actually produce, found by counting
-     * rather than by looking a list up. The range covers every shape CLDR
-     * rules turn on - the teens and the hundreds are where Slavic and Arabic
-     * rules change their minds.
+     * Which categories this language can actually produce. PluralRule samples
+     * integers, fractions, and powers of a million so categories used only by
+     * Czech decimals or Catalan compact magnitudes are not silently omitted.
      *
      * @return string[]
      */
     private static function categoriesUsedBy(string $locale): array
     {
-        $found = [];
-
-        foreach ([...range(0, 130), 200, 201, 1000, 1002, 1005, 1011, 1024] as $count) {
-            $found[PluralRule::categoryFor($locale, $count)] = true;
-        }
-
-        return array_keys($found);
+        return PluralRule::categoriesFor($locale);
     }
 
     /** The {tokens} in a string, which name a value the code substitutes. @return string[] */

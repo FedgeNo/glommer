@@ -2,6 +2,7 @@
     "PollOptionVotes": {
         "votes": {
             "one": "1 vot",
+            "many": "{count} de vots",
             "other": "{count} vots"
         }
     },
@@ -398,7 +399,7 @@
             "11": "nov.",
             "12": "des."
         },
-        "long": "{day} {month} {year}",
+        "long": "{day} de {month} de {year}",
         "short": "{day} {month} {year}",
         "time": "{hour}:{minute}",
         "dateAndTime": "{date}, {time}",
@@ -855,6 +856,7 @@
         "reply": "Respon",
         "replies": {
             "one": "Respostes ({count})",
+            "many": "Respostes ({count})",
             "other": "Respostes ({count})"
         }
     },
@@ -893,14 +895,17 @@
         },
         "days": {
             "one": "d'aquí a {count} dia",
+            "many": "d'aquí a {count} de dies",
             "other": "d'aquí a {count} dies"
         },
         "hours": {
             "one": "d'aquí a {count} hora",
+            "many": "d'aquí a {count} d'hores",
             "other": "d'aquí a {count} hores"
         },
         "minutes": {
             "one": "d'aquí a {count} minut",
+            "many": "d'aquí a {count} de minuts",
             "other": "d'aquí a {count} minuts"
         },
         "underMinute": "d'aquí a menys d'un minut"
@@ -908,6 +913,7 @@
     "PollTally": {
         "voters": {
             "one": "1 persona ha votat ",
+            "many": "{count} de persones han votat ",
             "other": "{count} persones han votat "
         }
     },
@@ -982,10 +988,12 @@
         "rangeLabel": "Mostra publicacions fins a una data",
         "cumulativeLabel": {
             "one": "Publicades fins a {date} — {count} publicació",
+            "many": "Publicades fins a {date} — {count} de publicacions",
             "other": "Publicades fins a {date} — {count} publicacions"
         },
         "windowLabel": {
             "one": "Publicades pels volts de {date} — {count} publicació",
+            "many": "Publicades pels volts de {date} — {count} de publicacions",
             "other": "Publicades pels volts de {date} — {count} publicacions"
         }
     },
@@ -1040,14 +1048,17 @@
         "justNow": "ara mateix",
         "minutes": {
             "one": "fa {count} min",
+            "many": "fa {count} min",
             "other": "fa {count} min"
         },
         "hours": {
             "one": "fa {count} h",
+            "many": "fa {count} h",
             "other": "fa {count} h"
         },
         "days": {
             "one": "fa {count} d",
+            "many": "fa {count} d",
             "other": "fa {count} d"
         }
     },
@@ -1097,18 +1108,22 @@
         "whileAway": "Mentre no hi éreu:",
         "repeatedTimes": {
             "one": " ({count} vegada)",
+            "many": " ({count} de vegades)",
             "other": " ({count} vegades)"
         },
         "moreMissed": {
             "one": "i {count} notificació més",
+            "many": "i {count} de notificacions més",
             "other": "i {count} notificacions més"
         },
         "messagesWaiting": {
             "one": "Teniu un missatge pendent",
+            "many": "Teniu {count} de missatges pendents",
             "other": "Teniu {count} missatges pendents"
         },
         "postsInFeed": {
             "one": "Una publicació nova al vostre canal",
+            "many": "{count} de publicacions noves al vostre canal",
             "other": "{count} publicacions noves al vostre canal"
         },
         "unsubscribeInstructions": "Per deixar de rebre aquests correus, obriu l'enllaç; només cal un clic i no demana contrasenya:",
@@ -1127,6 +1142,7 @@
         "buttonLabel": "Verifica l'adreça electrònica",
         "expiresIn": {
             "one": "Aquest enllaç caduca d'aquí a {count} hora.",
+            "many": "Aquest enllaç caduca d'aquí a {count} d'hores.",
             "other": "Aquest enllaç caduca d'aquí a {count} hores."
         }
     },
@@ -1138,6 +1154,7 @@
         "buttonLabel": "Restableix la contrasenya",
         "expiresIn": {
             "one": "Aquest enllaç caduca d'aquí a {count} hora.",
+            "many": "Aquest enllaç caduca d'aquí a {count} d'hores.",
             "other": "Aquest enllaç caduca d'aquí a {count} hores."
         },
         "ignoreNotice": "Si no ho heu demanat, podeu ignorar aquest correu."

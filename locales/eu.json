@@ -1,0 +1,1145 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "boto bat",
+            "other": "{count} boto"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Hasi saioa",
+            "after": " erantzuteko."
+        },
+        "post": {
+            "before": "",
+            "link": "Hasi saioa",
+            "after": " argitaratzeko."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Gunea",
+        "siteURLLabel": "Gunearen URLa",
+        "siteTitleLabel": "Gunearen izenburua",
+        "mailFromAddressLabel": "Postaren igorle-helbidea",
+        "serverNameConfirmedLabel": "Web zerbitzariaren konfigurazioan \"ServerName {host}\" eta \"UseCanonicalName On\" ezarri ditut (zuzeneko proba automatikoa ezin bada amaitu soilik egiaztatzen da—ikusi README.md-ko HTTPS atala)",
+        "databaseLegend": "Datu-basea",
+        "databaseHostLabel": "Datu-basearen ostalaria",
+        "databasePortLabel": "Datu-basearen ataka",
+        "databaseNameLabel": "Datu-basearen izena",
+        "databaseAdminUsernameLabel": "Datu-baseko administratzailearen erabiltzaile-izena",
+        "databaseAdminPasswordLabel": "Datu-baseko administratzailearen pasahitza",
+        "webSocketTLSLegend": "WebSocket TLS (aukerakoa)",
+        "certificatePathLabel": "Ziurtagiriaren bidea",
+        "certificatePathPlaceholder": "Utzi hutsik mkcert bidez automatikoki sortzeko",
+        "keyPathLabel": "Gakoaren bidea",
+        "keyPathPlaceholder": "Utzi hutsik mkcert bidez automatikoki sortzeko",
+        "botProtectionLegend": "Bot-en aurkako babesa (aukerakoa)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile gunearen gakoa",
+        "turnstileSiteKeyPlaceholder": "Utzi hutsik saltatzeko",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile gako sekretua",
+        "turnstileSecretKeyPlaceholder": "Utzi hutsik saltatzeko",
+        "submit": "Konfiguratu"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Uneko pasaesaldia",
+        "newPassphraseLabel": "Pasaesaldi berria",
+        "confirmNewPassphraseLabel": "Berretsi pasaesaldi berria",
+        "accountPasswordLabel": "Kontuaren pasahitza",
+        "submit": "Aldatu pasaesaldia"
+    },
+    "PasswordResetForm": {
+        "legend": "Aukeratu pasahitz berria",
+        "newPasswordLabel": "Pasahitz berria",
+        "newPasswordPlaceholder": "Gutxienez 8 karaktere",
+        "confirmPasswordLabel": "Berretsi pasahitz berria",
+        "submit": "Berrezarri pasahitza"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Berrezarri pasahitza",
+        "emailLabel": "Helbide elektronikoa",
+        "submit": "Bidali berrezartzeko esteka"
+    },
+    "EmailRevertForm": {
+        "submit": "Desegin helbide elektronikoaren aldaketa"
+    },
+    "EmailVerifyForm": {
+        "submit": "Egiaztatu helbide elektronikoa"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Aktibatu berriro"
+    },
+    "EmailDigestSetting": {
+        "label": "Bidali posta elektronikoz denbora batez kanpo egon naizenean galdu dudana"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Gailu ezezaguna",
+        "browserOnOS": "{browser}, {os} sisteman",
+        "thisDevice": " (gailu hau)",
+        "lastUsed": {
+            "before": "Azken erabilera: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Amaitu saio aktibo guztiak eta ahaztu gogoratutako gailu guztiak. Arakatzaile guztietatik aterako zara, honetatik ere bai."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Amaitu saioa leku guztietan"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Egiaztatu Google-rekin ezabatzeko"
+    },
+    "GoogleSignInButton": {
+        "label": "Jarraitu Google-rekin"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Editatu profila"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Jaso jakinarazpenak gailu honetan gunea irekita ez dagoenean ere. Aukera hau arakatzaile bakoitzerako da—aktibatu jakinarazpenak jaso nahi dituzun guztietan.",
+        "label": {
+            "off": "Aktibatu gailu honetan",
+            "on": "Desaktibatu gailu honetan"
+        },
+        "unsupported": "Arakatzaile honek ez ditu push jakinarazpenak onartzen"
+    },
+    "LoginForm": {
+        "legend": "Hasi saioa",
+        "identifier": "Erabiltzaile-izena edo helbide elektronikoa",
+        "password": "Pasahitza",
+        "rememberMe": "Gogoratu ni",
+        "submit": "Hasi saioa"
+    },
+    "SignupForm": {
+        "legend": "Sortu kontua",
+        "usernameLabel": "Erabiltzaile-izena",
+        "usernamePlaceholder": "Letra xeheak, zenbakiak eta _",
+        "emailLabel": "Helbide elektronikoa",
+        "emailPlaceholder": "Baliozko helbide elektronikoa",
+        "displayName": "Bistaratzeko izena (aukerakoa)",
+        "bioLabel": "Biografia (aukerakoa)",
+        "bioPlaceholder": "Biografia laburra—#traolak, @aipamenak eta estekak klikagarri bihurtuko dira",
+        "passwordLabel": "Pasahitza",
+        "passwordPlaceholder": "Pasahitza: gutxienez 8 karaktere",
+        "rememberMe": "Gogoratu ni",
+        "submit": "Erregistratu"
+    },
+    "PasswordChangeForm": {
+        "legend": "Aldatu pasahitza",
+        "currentPassword": "Uneko pasahitza",
+        "newPasswordLabel": "Pasahitz berria",
+        "newPasswordPlaceholder": "Gutxienez 8 karaktere",
+        "confirmPassword": "Berretsi pasahitz berria",
+        "submit": "Aldatu pasahitza"
+    },
+    "EmailChangeForm": {
+        "legend": "Aldatu helbide elektronikoa",
+        "newEmail": "Helbide elektroniko berria",
+        "currentPassword": "Uneko pasahitza",
+        "notice": "Helbide berria egiaztatu beharko duzu gunea erabiltzen jarraitu aurretik.",
+        "submit": "Aldatu helbide elektronikoa"
+    },
+    "AccountDeleteForm": {
+        "legend": "Ezabatu kontua",
+        "warning": "Honek zure kontua, argitalpenak eta mezuak behin betiko ezabatuko ditu. Ezin da desegin.",
+        "currentPassword": "Uneko pasahitza",
+        "submit": "Ezabatu kontua"
+    },
+    "AccountMigrationForm": {
+        "legend": "Joan beste zerbitzari batera",
+        "movedNotice": "Kontu hau {destination} helbidera joan da. Zure jarraitzaileei han jarraitzeko eskatu zaie.",
+        "explanation": "Zure jarraitzaileei kontu berrian jarraitzeko eskatuko zaie. Argitalpenak hemen geratuko dira—objektuen helbideak sortu zituen zerbitzariarenak dira eta ezin dira eraman.",
+        "addressNotice": "Joango zaren kontuak hau \"honela ere ezaguna\" atalean zerrendatu behar du lehenik. Hemengo helbidea {address} da.",
+        "movedToLabel": "Joan hona",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Honela ere ezaguna",
+        "aliasesExplanation": "Beste leku batzuetako zure kontuak. Bat hemen zerrendatzeak kontu hari honetara joateko baimena ematen dio—baimena da, ez lekualdaketa bera. Helbide bat lerroko.",
+        "aliasesLabel": "Zure beste kontuak",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Gorde"
+    },
+    "TwoFactorForm": {
+        "legend": "Sartu egiaztapen-kodea",
+        "explanation": "Egiaztapen-kode bat bidali dizugu posta elektronikoz. Sartu behean edo erabili berreskuratze-kodeetako bat saioa amaitzeko.",
+        "explanationEmailFailed": "Ezin izan dugu egiaztapen-kodea posta elektronikoz bidali. Sartu berreskuratze-kodeetako bat saioa amaitzeko.",
+        "code": "Egiaztapen-kodea",
+        "submit": "Egiaztatu"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Bi faktoreko autentifikazioa aktibatuta dago",
+            "off": "Bi faktoreko autentifikazioa desaktibatuta dago"
+        },
+        "explanation": {
+            "on": "Saioa hastean, amaitzeko sartu beharreko egiaztapen-kode bat bidaliko dizugu posta elektronikoz. Mezua iristen ez bazaizu, berreskuratze-kode batekin sar zaitezke.",
+            "off": "Gehitu bigarren urratsa saioa hastean: sartu beharreko egiaztapen-kode bat bidaliko dizugu posta elektronikoz, pasahitza bakarrik nahikoa izan ez dadin. Erabilera bakarreko berreskuratze-kodeak jasoko dituzu mezua iristen ez bada erabiltzeko."
+        },
+        "currentPassword": "Uneko pasahitza",
+        "submit": {
+            "on": "Desaktibatu bi faktoreko autentifikazioa",
+            "off": "Aktibatu bi faktoreko autentifikazioa"
+        },
+        "regenerate": "Sortu berreskuratze-kode berriak",
+        "recoveryHeading": "Zure berreskuratze-kodeak",
+        "recoveryNote": "Gorde orain leku seguruan—ez dira berriro erakutsiko. Bakoitzak saio bat hasteko balio du egiaztapen-mezua iristen ez denean; kode berriak sortzeak guztiak ordezkatuko ditu.",
+        "toast": {
+            "on": "Bi faktoreko autentifikazioa aktibatu da.",
+            "off": "Bi faktoreko autentifikazioa desaktibatu da.",
+            "regenerated": "Berreskuratze-kode berriak sortu dira. Zaharrak ez dira jada baliozkoak."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Begiratu sarrera-ontzia eta egin klik bidali dizugun egiaztapen-estekan helbide elektronikoa baieztatzeko. Ez baduzu ikusten, begiratu spam karpetan."
+    },
+    "VerificationResendButton": {
+        "label": "Bidali egiaztapen-mezua berriro"
+    },
+    "MailSettingsForm": {
+        "legend": "Irteerako posta",
+        "fromAddressLabel": "Igorlearen helbidea",
+        "fromAddressPlaceholder": "Ezin da mezurik bidali hau ezarri arte",
+        "fromNameLabel": "Igorlearen izena",
+        "hostLabel": "SMTP Host",
+        "portLabel": "SMTP Port",
+        "usernameLabel": "SMTP Username",
+        "passwordLabel": "SMTP Password",
+        "passwordPlaceholder": {
+            "set": "Pasahitza ezarrita dago—utzi hutsik mantentzeko",
+            "unset": "SMTP password"
+        },
+        "encryptionLabel": "Zifratzea",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, normalean 587 atakan)",
+            "ssl": "SSL (TLS inplizitua, normalean 465 atakan)",
+            "none": "Bat ere ez"
+        },
+        "explainer": "Utzi SMTP ostalaria hutsik PHPren mail() bidez bidaltzeko (ez da gomendatzen—ikusi READMEko entregagarritasun-atala). Ezin da mezurik bidali igorlearen helbidea ezarri arte.",
+        "save": "Gorde"
+    },
+    "MapSettingsForm": {
+        "legend": "Mapa-lauzak",
+        "notice": "Utzi hutsik OpenStreetMap erabiltzeko. Gakoa behar duen hornitzailea erabiltzeko, itsatsi haren URL txantiloia {apiKey} hitzez hitz gakoaren lekuan, eta gehitu behean gakoa eta aitortza.",
+        "urlLabel": "Lauzaren URL txantiloia",
+        "keyLabel": "API gakoa",
+        "keyPlaceholder": "Lauza-hornitzailearen API gakoa",
+        "attributionLabel": "Aitortza",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Gorde"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google-rekin saioa hastea",
+        "clientIdLabel": "Bezeroaren IDa",
+        "clientIdPlaceholder": "Google OAuth client ID",
+        "secretLabel": "Bezeroaren sekretua",
+        "secretPlaceholder": {
+            "set": "Bezeroaren sekretua ezarrita dago—utzi hutsik mantentzeko",
+            "unset": "Google OAuth client secret"
+        },
+        "explainer": "Biak behar dira \"Jarraitu Google-rekin\" erregistratzean eta saioa hastean agertzeko. Google Cloud OAuth bezeroan, ezarri baimendutako birbideratze-URIa {url} helbidera; ezabatu bezeroaren IDa desaktibatzeko.",
+        "save": "Gorde"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Gunearen gakoa",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile site key",
+        "turnstileSecretKeyLabel": "Gako sekretua",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Gako sekretua ezarrita dago—utzi hutsik mantentzeko",
+            "unset": "Cloudflare Turnstile secret key"
+        },
+        "turnstileExplainer": "Bi gakoak behar dira CAPTCHA erregistratzean eta saioa hastean agertzeko. Ezabatu gunearen gakoa desaktibatzeko.",
+        "recaptchaLegend": "Google reCAPTCHA (kontu-blokeoaren berreskuratzea)",
+        "recaptchaSiteKeyLabel": "Gunearen gakoa",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 site key",
+        "recaptchaSecretKeyLabel": "Gako sekretua",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Gako sekretua ezarrita dago—utzi hutsik mantentzeko",
+            "unset": "Google reCAPTCHA v2 secret key"
+        },
+        "recaptchaExplainer": "Bi gakoak behar dira. Ezarrita daudenean, saio-hasierako saiakera-mugara iritsitako kontuak erronka gaindituta sar daitezke blokeoa amaitu arte itxaron beharrean; ez badaude, itxaron egin behar da. Erabili reCAPTCHA v2 (\"Ez naiz robota\"). Ezabatu gunearen gakoa desaktibatzeko.",
+        "save": "Gorde"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Guneko AA eginbideek erabiltzen dute (joera-gaien laburpenak, etab.). Utzi eredua hutsik Doako Ereduen Bideratzailea erabiltzeko; OpenRouterrek unean doakoa den bat ausaz aukeratzen du eta ezin du kosturik sortu.",
+        "keyLabel": "API gakoa",
+        "keyPlaceholder": {
+            "set": "API gakoa ezarrita dago—utzi hutsik mantentzeko",
+            "unset": "OpenRouter API key"
+        },
+        "clearKeyLabel": "Kendu gordetako API gakoa (AA eginbideak desaktibatzen ditu)",
+        "modelLabel": "Eredua",
+        "neverSpendLabel": "Ez utzi inoiz dirua gastatzen (gomendatua)",
+        "explainer": "Babesa aktibatuta, eskaera bakoitzaren prezioa zeroan mugatzen da; beraz, doako hornitzailerik ez badago huts egingo du, ordainpeko eredura jo beharrean. Kendu gordetako API gakoa AA eginbideak erabat desaktibatzeko.",
+        "save": "Gorde"
+    },
+    "AboutSettingsForm": {
+        "legend": "Honi buruz",
+        "description": "Testu arrunta—lerro hutsek paragrafoak bereizten dituzte. Lehen paragrafoa gunearen deskribapen gisa erabiliko da.",
+        "save": "Gorde"
+    },
+    "TermsSettingsForm": {
+        "legend": "Zerbitzu-baldintzak",
+        "description": "Testu arrunta—lerro hutsek paragrafoak bereizten dituzte.",
+        "save": "Gorde"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Pribatutasun-politika",
+        "description": "Testu arrunta—lerro hutsek paragrafoak bereizten dituzte.",
+        "save": "Gorde"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Posta elektronikoaren laburpena",
+        "fieldLabel": "Amaierako paragrafoa",
+        "notice": "Laburpen bakoitzaren amaiera aldean gehitzen da, kideak galdu duenaren zerrendaren ondoren. Testu arrunta. Utzi hutsik softwarearen testu lehenetsira itzultzeko.",
+        "save": "Gorde"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Uneko favicon-a",
+        "save": "Kargatu favicon-a"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Azaleko irudia",
+        "explainer": "Beste guneek erakusten dute norbaitek honetarako esteka partekatzean—Open Graph metadatuetan soilik, inoiz ez orrian. 1200×630 neurrira mozten da. Irudirik gabe, esteken aurrebistek ez dute irudirik izango.",
+        "currentAlt": "Uneko azaleko irudia",
+        "save": "Kargatu irudia"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Erreprodukzio automatikoa"
+    },
+    "CarouselNextButton": {
+        "name": "Hurrengoa"
+    },
+    "CarouselPrevButton": {
+        "name": "Aurrekoa"
+    },
+    "MediaFullscreenButton": {
+        "name": "Pantaila osoa"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Kendu fitxategiak"
+    },
+    "NotificationDropdown": {
+        "showAll": "Erakutsi guztiak"
+    },
+    "HelpSearch": {
+        "placeholder": "Bilatu laguntzan…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Ulertu dut"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Baztertu"
+    },
+    "StagedPostEditButton": {
+        "name": "Editatu"
+    },
+    "StagedPostPublishButton": {
+        "name": "Argitaratu orain"
+    },
+    "LogoutButton": {
+        "name": "Amaitu saioa"
+    },
+    "AvatarUploadForm": {
+        "submit": "Eguneratu avatarra"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Bilatu debekatutako erabiltzaileak…"
+    },
+    "BannedUserSection": {
+        "heading": "Debekatutako erabiltzaileak"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Bidalitako eskaerak (erantzunaren zain)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "{name} erabiltzaileak debekatua ",
+            "after": ""
+        },
+        "reason": "—{reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "{name} erabiltzaileak blokeatua ",
+            "after": ""
+        },
+        "deletedAccount": "ezabatutako kontu bat",
+        "reason": "—{reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "urtarrilaren",
+            "2": "otsailaren",
+            "3": "martxoaren",
+            "4": "apirilaren",
+            "5": "maiatzaren",
+            "6": "ekainaren",
+            "7": "uztailaren",
+            "8": "abuztuaren",
+            "9": "irailaren",
+            "10": "urriaren",
+            "11": "azaroaren",
+            "12": "abenduaren"
+        },
+        "shortMonths": {
+            "1": "urt.",
+            "2": "ots.",
+            "3": "mar.",
+            "4": "api.",
+            "5": "mai.",
+            "6": "eka.",
+            "7": "uzt.",
+            "8": "abu.",
+            "9": "ira.",
+            "10": "urr.",
+            "11": "aza.",
+            "12": "abe."
+        },
+        "long": "{year}(e)ko {month} {day}(a)",
+        "short": "{year} {month} {day}(a)",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date}, {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Ezin izan da konektatu 127.0.0.1:{port}{tls} helbideko WebSocket zerbitzarira ({error}). Abiarazi lehenik: systemctl --user start glommer-websocket (ikusi README.md unitate-fitxategirako). WS_TLS_CERT/WS_TLS_KEY gehitu edo kendu berriak badira, berrabiarazi .env fitxategiarekin bat etor dadin.",
+        "wsOverTLS": " TLS bidez",
+        "wsBadHandshake": "127.0.0.1:{port} helbideko zerbitzuak ez du baliozko WebSocket esku-ematea amaitu—baliteke bin/websocket-server.php ez den beste zerbait ataka horretan entzuten egotea.",
+        "wsNoPong": "WebSocket zerbitzariak esku-ematea onartu du baina ez dio ping-ari erantzun—blokeatuta edo gaizki ibil daiteke. Egiaztatu erregistroak.",
+        "wsReachable": "WebSocket zerbitzaria eskuragarri dago eta 127.0.0.1:{port} helbidean erantzuten du"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Traola",
+            "person": "Pertsona",
+            "org": "Erakundea",
+            "gpe": "Lekua",
+            "loc": "Eskualdea",
+            "fac": "Mugarria",
+            "product": "Produktua",
+            "event": "Gertaera",
+            "work_of_art": "Lana",
+            "law": "Legea",
+            "language": "Hizkuntza",
+            "norp": "Taldea"
+        },
+        "plural": {
+            "hashtag": "Traolak",
+            "person": "Pertsonak",
+            "org": "Erakundeak",
+            "gpe": "Lekuak",
+            "loc": "Eskualdeak",
+            "fac": "Mugarriak",
+            "product": "Produktuak",
+            "event": "Gertaerak",
+            "work_of_art": "Lanak",
+            "law": "Legeak",
+            "language": "Hizkuntzak",
+            "norp": "Taldeak"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Kendu laguna"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Onartu"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Ukatu"
+    },
+    "UserFollowButton": {
+        "follow": "Jarraitu",
+        "unfollow": "Utzi jarraitzeari"
+    },
+    "UserBlockButton": {
+        "name": "Blokeatu"
+    },
+    "UserUnblockButton": {
+        "name": "Desblokeatu"
+    },
+    "OtherUser": {
+        "message": "Mezua"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menua",
+        "loggedInAs": "Saioa {name} gisa hasita",
+        "friendsFeed": "Lagunen jarioa",
+        "relayFeed": "Errele-jarioa",
+        "users": "Erabiltzaileak",
+        "tags": "Traolak",
+        "topics": "Gaiak",
+        "map": "Mapa",
+        "locations": "Kokalekuak",
+        "search": "Bilatu",
+        "messages": "Mezuak",
+        "bookmarks": "Laster-markak",
+        "help": "Laguntza",
+        "about": "Honi buruz",
+        "login": "Hasi saioa",
+        "signup": "Erregistratu",
+        "friends": "Lagunak",
+        "drafts": "Zirriborroak eta programatuak",
+        "userSettings": "Erabiltzailearen ezarpenak",
+        "modSettings": "Moderatzailearen ezarpenak",
+        "adminSettings": "Administratzailearen ezarpenak"
+    },
+    "LogoutForm": {
+        "submit": "Amaitu saioa"
+    },
+    "User": {
+        "joined": "{date} datan batu zen"
+    },
+    "FriendRequestButton": {
+        "add": "Gehitu lagun gisa",
+        "cancel": "Ezeztatu eskaera"
+    },
+    "StagedPostWhen": {
+        "scheduled": "{when} datarako programatua",
+        "draft": "Zirriborroa—zuk agintzen duzunean soilik argitaratuko da"
+    },
+    "MessageTranslateButton": {
+        "name": "Itzuli mezu hau"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Mezuak itzultzeari buruz",
+        "body": "Mezu bat itzultzeko, haren testua zerbitzari honetara bidaltzen da eta hemen itzultzen da. Ez da ezer gordetzen: itzulpena ez da datu-basean idazten eta mezua ez da aldatzen. Baina horrela itzulitako mezua zerbitzariak irakurri du; beraz, ez dago itzuli gabeko mezua bezala muturretik muturrera zifratuta. Jasotako mezuak soilik itzul daitezke, eta zuk eskatzen duzunean bakarrik.",
+        "confirm": "Itzuli",
+        "cancel": "Orain ez"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Pasaesaldia ahaztu duzu? Berrezartzeak gako berriak sortzen ditu pasaesaldi berri baten pean, baina gako zaharrekin zifratutako mezuak ezin izango ditu inork berriro irakurri.",
+        "requirements": "Gutxienez 12 karaktere, eta ez zure kontuaren pasahitza—hori zerbitzari honetara bidaltzen da, baina pasaesaldia ez da inoiz bidali behar.",
+        "passphraseLabel": "Pasaesaldia",
+        "resetPassphraseLabel": "Pasaesaldi berria",
+        "confirmLabel": "Berretsi pasaesaldia",
+        "accountPasswordLabel": "Kontuaren pasahitza",
+        "submitLabel": "Aktibatu zifratutako mezuak",
+        "resetSubmitLabel": "Berrezarri zifratze-gakoak"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Muturretik muturrera zifratutako mezuak zure arakatzailean blokeatu eta desblokeatzen dira: zerbitzariak irakurri gabe birbidali eta gordetzen ditu. Gakoa pasaesaldi batek babesten du, eta pasaesaldi berak edozein arakatzailetan desblokeatzen ditu mezuak. Bi pertsonek aktibatzen dutenean zifratzen dira elkarrizketak; beste zerbitzarietako pertsonei bidalitako mezuak zifratu gabe geratzen dira, federazioak ezin baititu bestela eraman.",
+        "noRecovery": "Ezin da galdutako pasaesaldia berreskuratu, administratzaileak ere ez. Galtzeak zifratutako mezuak galtzea dakar.",
+        "enabledStatus": "Zifratutako mezuak aktibatuta daude."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Zifratuta",
+            "explanation": "Elkarrizketa honetako mezuak muturretik muturrera zifratuta daude: pasaesaldiarekin desblokeatu eta zure arakatzaileetan irakurtzen dira, eta zerbitzariak testu zifratua gordetzen du. Egiaztatu hariaren beheko segurtasun-kodea beste pertsonarekin, inor zuen artean ez dagoela ziurtatzeko. Zifratzea aktibatu aurretik bidalitako mezuak irakurgarri geratzen dira."
+        },
+        "awaiting-theirs": {
+            "label": "Zifratu gabe",
+            "explanation": "Hemengo mezuak muturretik muturrera zifratuko dira {handle} erabiltzaileak bere ezarpenetan zifratutako mezuak aktibatzen dituenean."
+        },
+        "awaiting-yours": {
+            "label": "Zifratu gabe",
+            "explanation": "Hemengo mezuak ez daude muturretik muturrera zifratuta. Aktibatu zifratutako mezuak Ezarpenetan elkarrizketa babesteko."
+        },
+        "federated": {
+            "label": "Zifratu gabe",
+            "explanation": "{handle} beste zerbitzari batean dago. Elkarrizketako mezuak zerbitzari hartan eta honetan gordetzen dira, eta hango administratzaileak irakur ditzake—zerbitzarien arteko protokoloak ezin ditu zifratu. Gorde eduki sentikorra gune honetako elkarrizketetarako."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Jarraitu fedibertsoko kontuei",
+        "notice": "Itsatsi helduleku bat edo gehiago, adib. @user@example.social—edozein bereizle erabil daiteke.",
+        "handlesLabel": "Jarraitu beharreko fedibertsoko heldulekuak",
+        "submit": "Jarraitu",
+        "statusPending": "zain",
+        "statusAccepted": "onartuta"
+    },
+    "ServerBlockForm": {
+        "legend": "Blokeatu zerbitzaria",
+        "description": "Zerbitzari horretatik eta haren azpitik datorren guztia ukatzen du: ez dago sarrerako edo irteerako bidalketarik, eta bi noranzkoetako jarraipenak kentzen dira.",
+        "serverLabel": "Zerbitzaria",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Arrazoia",
+        "reasonPlaceholder": "Zergatik dago zerbitzari hau blokeatuta",
+        "submit": "Blokeatu zerbitzaria"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Arakatzaile bakarretik egiazta daitezkeen dei-konfigurazioaren zatiak exekutatzen ditu. Berdinen arteko benetako konexiora arteko guztia proba daiteke; beste pertsona batekin konektatzeko haren parte-hartzea behar da."
+    },
+    "VideoCallTestButton": {
+        "label": "Exekutatu egiaztapena"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket zerbitzaria: martxan",
+        "failed": "WebSocket zerbitzaria: {detail}",
+        "clientTesting": "Arakatzailearen konexioa: probatzen…",
+        "clientConnecting": "Arakatzailearen konexioa: konektatzen…",
+        "clientConnected": "Arakatzailearen konexioa: konektatuta",
+        "clientDisconnecting": "Arakatzailearen konexioa: deskonektatzen…",
+        "clientNotConnected": "Arakatzailearen konexioa: konektatu gabe"
+    },
+    "UploadWorkerStatus": {
+        "running": "Langile-zerbitzua: martxan",
+        "stopped": "Langile-zerbitzua: ez dago martxan—prest dauden kargak ez dira transkodetuko berrabiarazi arte",
+        "unknown": "Langile-zerbitzua: ezezaguna—systemctl ez dago ostalarian edo SELinuxek web zerbitzariari egoera galdetzea ukatzen dio (exekutatu bin/install.php root gisa konpontzeko)",
+        "queue": "Ilara: {staging} prestatzen, {pending} zain, {processing} prozesatzen"
+    },
+    "TrendingTimerStatus": {
+        "running": "Joeren tenporizadorea: martxan",
+        "stopped": "Joeren tenporizadorea: ez dago martxan—joera-gaiak irakurketa-bideko autokonponketaren bidez soilik freskatuko dira (Trending::current()), ez programatuta. Exekutatu bin/install.php root gisa konfiguratzeko.",
+        "unknown": "Joeren tenporizadorea: ezezaguna—systemctl ez dago ostalarian edo SELinuxek web zerbitzariari egoera galdetzea ukatzen dio (exekutatu bin/install.php root gisa konpontzeko)"
+    },
+    "Notification": {
+        "postReady": "Zure multimedia prozesatu da eta argitaratuta dago",
+        "scheduledPostLive": "Programatutako argitalpena argitaratu da",
+        "uploadPartlyFailed": "Argitalpena ikusgai dago, baina ezin izan dira fitxategi batzuk prozesatu",
+        "uploadFailed": "Karga bat ezin izan da prozesatu eta ez da argitaratu",
+        "mailerFailed": "Posta elektronikoa bidaltzeak huts egin du—posta-zerbitzua erorita egon daiteke. Egiaztatu posta-konfigurazioa.",
+        "mailFromNotConfigured": "Ez dago igorlearen helbiderik konfiguratuta; beraz, ezin da mezurik bidali. Ezarri Administratzailearen ezarpenetan (Irteerako posta) edo bin/install.php bidez.",
+        "systemError": "Zerbitzari-errore bat gertatu da. Ikusi errore-erregistroa xehetasunetarako.",
+        "passwordRemovedGoogle": "Pasahitza kendu da Google-rekin saioa hastean. Erabili \"Pasahitza ahaztu dut\" berria ezartzeko.",
+        "like": "{name} erabiltzaileari zure argitalpena gustatu zaio",
+        "repost": "{name} erabiltzaileak zure argitalpena birbidali du",
+        "reply": "{name} erabiltzaileak zure argitalpenari erantzun dio",
+        "friendRequest": "{name} erabiltzaileak lagun-eskaera bidali dizu",
+        "friendAccepted": "{name} erabiltzaileak zure lagun-eskaera onartu du",
+        "message": "{name} erabiltzaileak mezua bidali dizu",
+        "mention": "{name} erabiltzaileak argitalpen batean aipatu zaitu",
+        "follow": "{name} erabiltzailea beste zerbitzari batetik jarraitzen hasi zaizu",
+        "default": "{name} erabiltzaileak zerbait egin du"
+    },
+    "NotificationList": {
+        "emptyNotice": "Oraindik ez dago jakinarazpenik."
+    },
+    "NotificationsNavLink": {
+        "label": "Jakinarazpenak",
+        "unseen": "Ikusi gabeko jakinarazpenak"
+    },
+    "NotificationTestPanel": {
+        "intro": "Bidali proba-jakinarazpena zeure buruari (administratzaileari). Berehala agertu beharko litzateke laster-mezu gisa eta jakinarazpenen goitibeherakoan.",
+        "button": "Bidali proba-jakinarazpena",
+        "sending": "Bidaltzen…",
+        "sent": "Bidalita!",
+        "failed": "Huts egin du"
+    },
+    "MessageDot": {
+        "label": "Irakurri gabeko mezuak"
+    },
+    "NavAlertDot": {
+        "label": "Zerbait berria dago menuan"
+    },
+    "Message": {
+        "encrypted": "Zifratutako mezua",
+        "decryptionFailed": "Mezu hau jada existitzen ez diren gakoekin zifratu zen."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mezua",
+        "bodyPlaceholder": "Idatzi mezua",
+        "send": "Bidali"
+    },
+    "MessageList": {
+        "emptyNotice": "Oraindik ez dago mezurik."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Irakurri kode hau elkarri beste bide batetik—ozen, aurrez aurre edo dei batean. Bi aldeetan bat badator, inor ez dago zuen artean.",
+        "changed": "Kode hau aldatu da egiaztatu zenuenetik. Zuetako batek zifratze-gakoak berrezartzean gertatzen da, baina elkarrizketa irakurtzen ari den norbait ere horrela agertuko litzateke. Egiaztatu kode berria beste pertsonarekin fidatu aurretik.",
+        "verified": "Kode hau egiaztatu duzu."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Markatu egiaztatuta"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Pasaesaldia",
+        "passphrasePlaceholder": "Elkarrizketa desblokeatzeko pasaesaldia",
+        "submit": "Desblokeatu"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Azken mezua: ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Multimedia sentikorra"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Erakutsi multimedia sentikorra lehenespenez"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Argitalpena",
+            "message": "Mezua",
+            "user": "Erabiltzailea"
+        },
+        "summary": {
+            "before": "{type} #{id}, salatzailea: ",
+            "after": ""
+        },
+        "reasonLine": "Arrazoia: {reason}",
+        "banReporterLabel": "Debekatu salatzailea",
+        "banReportedUserLabel": "Debekatu salatutako erabiltzailea",
+        "deleteLabel": "Ezabatu {type}",
+        "reportedImageAlt": "Salatutako irudia",
+        "attachmentUnavailable": "Salatutako eranskin bat ez dago jada erabilgarri.",
+        "viewAttachment": "Ikusi salatutako eranskina",
+        "missing": {
+            "noSnapshot": "Salatutako edukia ez dago jada erabilgarri.",
+            "unknownType": "Eduki mota ezezaguna."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Ez dago salaketarik."
+    },
+    "ModQueueLinks": {
+        "intro": "Ilarak nahikoa luzeak dira orrialdeka irakurtzeko; beraz, beren orriak dituzte.",
+        "reportsLabel": "Salaketak",
+        "bannedUsersLabel": "Debekatutako erabiltzaileak"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Moderatzaileek ez dute ezer egin oraindik."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Ez dago debekatutako joera-entitaterik."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Ez dago blokeatutako zerbitzaririk."
+    },
+    "RelayCard": {
+        "accepted": "Harpidetuta ",
+        "waiting": "Erreleak onartzearen zain—harpidetuta "
+    },
+    "RelayList": {
+        "emptyNotice": "Ez dago erreleetara harpidetuta. Kideek jarraitzen dutena baino ez da hona iristen."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Oraindik ez da ezer iritsi errele bidez. Beste aldeko zerbitzariek argitaratu ahala agertuko dira hemen."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Harpidetu errele batera",
+        "explainerOne": "Errelea partekatutako argitalpen-jarioa da: harpidetutako beste zerbitzari guztien argitalpen publikoak hona iristen dira, eta zerbitzari honetakoak guztietara joaten dira. Horrela aurkitzen ditu instantzia berri batek pertsonak, bestela federazioak hemengo norbaitek jada jarraitzen duena baino ez baitu eramaten.",
+        "explainerTwo": "Ezin da karga aurreikusi—zerbitzari horiek argitaratzen dutena izango da: aste batean lasaia eta hurrengoan milaka argitalpen orduko. Zure biltegiratzeak, bidalketa-ilarak eta moderazio-ilarak eramango dute guztia. Errele bidezko argitalpenak ez dira jario nagusian edo lagunen jarioan agertzen; Errele-jariora joaten dira, jendeak nahita irekitzen duenera.",
+        "addressLabel": "Errelearen helbidea",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Harpidetu"
+    },
+    "RelayFollowObjectField": {
+        "label": "Harpidetza mota",
+        "options": {
+            "public": "Jarraitu jario publikoari (errele gehienek espero dutena)",
+            "actor": "Jarraitu errelearen aktoreari"
+        },
+        "retryNotice": "Erreleak inoiz onartzen ez badu, kendu eta saiatu beste motarekin—errele-software batzuek bietako bat bakarrik ezagutzen dute."
+    },
+    "SiteCounters": {
+        "members": "Kideak: {count} ({joined} batu dira azken {days} egunetan)",
+        "activeMembers": "Azken {days} egunetan hemen egondako kideak: {count} ({posted} kidek argitaratu dute)",
+        "posts": "Hemen idatzitako argitalpenak: {count} ({recent} azken {days} egunetan)",
+        "deliveries": "Federazioko bidalketak azken {days} egunetan: {delivered} iritsi dira, {undeliverable} bertan behera utzi dira",
+        "queued": "Bidaltzeko zain: {count} ({failing} gutxienez behin ukatu dira)",
+        "pendingReads": "Beste zerbitzarietatik irakurtzeko zain dauden argitalpenak: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Exekutatu gunearen proba-multzoa eta ikusi emaitzak. Segundo batzuk behar ditu, beraz bere orrian irekitzen da.",
+        "runLabel": "Exekutatu probak"
+    },
+    "HelpArticle": {
+        "backLabel": "Itzuli laguntza guztira"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Ez dago iradokizunik orain—zure lagunen lagunetatik datoz. Bilatu goian norbait izenez aurkitzeko.",
+        "noMatches": "Hemen ez dago bat datorren inor."
+    },
+    "UserModButton": {
+        "make": "Egin moderatzaile",
+        "remove": "Kendu moderatzaile rola"
+    },
+    "UserUnbanButton": {
+        "name": "Kendu debekua"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Debekatu"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Kendu debekua"
+    },
+    "ReportDismissButton": {
+        "name": "Baztertu"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Markatu sentikor gisa"
+    },
+    "ServerUnblockButton": {
+        "name": "Desblokeatu"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Kendu harpidetza"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Ezeztatu"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: gaindituta",
+        "failing": "{suite}: huts eginda"
+    },
+    "PageTitle": {
+        "about": "Honi buruz",
+        "adminBanned": "Debekatutako erabiltzaileak",
+        "adminModSettings": "Moderatzailearen ezarpenak",
+        "adminReports": "Salaketak",
+        "adminSettings": "Administratzailearen ezarpenak",
+        "adminTests": "Probak",
+        "authGoogleCallbackAccountDeleted": "Kontua ezabatu da",
+        "authGoogleCallbackDeleteAccount": "Ezabatu kontua",
+        "authGoogleCallbackLogin": "Hasi saioa",
+        "bookmarks": "Laster-markak",
+        "checkInbox": "Begiratu sarrera-ontzia",
+        "drafts": "Zirriborroak eta programatuak",
+        "draftsEditDraft": "Editatu zirriborroa",
+        "draftsEditScheduled": "Editatu programatutako argitalpena",
+        "forgotPassword": "Pasahitza ahaztu dut",
+        "friendsFeed": "Lagunen jarioa",
+        "help": "Laguntza",
+        "helpDescription": "Gunea erabiltzeko gidak eta erantzunak.",
+        "locations": "Kokalekuak",
+        "locationsDescription": "Zugandik hurbilen dauden lekuetako argitalpenak.",
+        "locationsPlaceDescription": "{place} inguruko argitalpenak.",
+        "login": "Hasi saioa",
+        "loginVerificationCode": "Egiaztapen-kodea",
+        "map": "Mapa",
+        "mapDescription": "Mundu osoko argitalpenen mapa—aurkitu inguruko pertsonak eta lekuak.",
+        "messages": "Mezuak",
+        "messagesWithUser": "{name} erabiltzailearekin mezuak",
+        "notifications": "Jakinarazpenak",
+        "privacy": "Pribatutasun-politika",
+        "quote": "Aipatu",
+        "relayFeed": "Errele-jarioa",
+        "relayFeedDescription": "Zerbitzariak harpidetutako erreleetatik datozen argitalpen publikoak.",
+        "resetPassword": "Berrezarri pasahitza",
+        "revertEmail": "Desegin helbide elektronikoaren aldaketa",
+        "search": "Bilatu",
+        "signup": "Erregistratu",
+        "tags": "Traolak",
+        "tagsDescription": "Arakatu {siteTitle} guneko joerako eta traol ezagunak.",
+        "tagsTagDescription": "{tag} traola duten argitalpenak {siteTitle} gunean.",
+        "terms": "Zerbitzu-baldintzak",
+        "topics": "Gaiak",
+        "topicsDescription": "Jendeak {siteTitle} gunean orain aipatzen dituen gaiak.",
+        "topicsEntityDescription": "{typeLabel}—{entityTitle} aipatzen duten argitalpenak {siteTitle} gunean.",
+        "topicsTypeDescription": "Jendeak {siteTitle} gunean orain aipatzen dituen {typePlural}.",
+        "unsubscribe": "Posta elektronikoaren laburpenak",
+        "userFriends": "{name} erabiltzailearen lagunak",
+        "userFriendsDescription": "{name} erabiltzailearen lagunak {siteTitle} gunean",
+        "userSettings": "Erabiltzailearen ezarpenak",
+        "users": "Erabiltzaileak",
+        "verifyEmail": "Egiaztatu helbide elektronikoa"
+    },
+    "PostLikeButton": {
+        "like": "Atsegin dut",
+        "unlike": "Kendu atsegina"
+    },
+    "PostPinButton": {
+        "pin": "Finkatu",
+        "unpin": "Kendu finkapena"
+    },
+    "PostQuoteButton": {
+        "name": "Aipatu"
+    },
+    "PostDeleteButton": {
+        "name": "Ezabatu"
+    },
+    "PostEditButton": {
+        "name": "Editatu"
+    },
+    "ReportButton": {
+        "name": "Salatu"
+    },
+    "PostActionBar": {
+        "reply": "Erantzun",
+        "replies": {
+            "one": "Erantzun bat",
+            "other": "{count} erantzun"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(editatua)"
+    },
+    "RepliesHeading": {
+        "heading": "Erantzunak"
+    },
+    "PollVoteButton": {
+        "name": "Bozkatu"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Ikusi ",
+            "link": "kokaleku gehiago",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Zure inguruko argitalpenak",
+        "description": "Puntu batetik hurbilen dauden argitalpenak erakusten ditu—jarduera dagoen lekurik hurbilena, urrun egon arren. Partekatu kokalekua zauden lekutik hasteko edo aukeratu puntu bat mapan.",
+        "useMyLocation": "Erabili nire kokalekua",
+        "pickOnMap": "Aukeratu mapan",
+        "searchPlaceholder": "Edo idatzi leku baten izena…",
+        "searchLabel": "Bilatu lekua",
+        "locating": "Kokatzen…",
+        "noGeolocation": "Arakatzaileak ezin du kokalekua partekatu.",
+        "locationError": "Ezin izan da kokalekua lortu. Egiaztatu arakatzailearen kokaleku-baimena."
+    },
+    "PollDeadline": {
+        "final": "Azken emaitza",
+        "closes": {
+            "before": "Itxiera: ",
+            "after": ""
+        },
+        "days": {
+            "one": "egun bat barru",
+            "other": "{count} egun barru"
+        },
+        "hours": {
+            "one": "ordu bat barru",
+            "other": "{count} ordu barru"
+        },
+        "minutes": {
+            "one": "minutu bat barru",
+            "other": "{count} minutu barru"
+        },
+        "underMinute": "minutu bat baino gutxiagoan"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "pertsona batek bozkatu du ",
+            "other": "{count} pertsonak bozkatu dute "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Hasi saioa",
+            "after": " argitaratzeko."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Hasi saioa",
+            "after": " erantzuteko."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " erabiltzaileak birbidalia"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Honi erantzunez: ",
+            "after": ""
+        },
+        "untitled": "argitalpen hau",
+        "jumpToStart": "Joan hasierara"
+    },
+    "TopicSummaryCard": {
+        "label": "AAk sortutako laburpena"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Ongi etorri ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Idatzi zerbait beheko koadroan eta zure jarioan argitaratuko da. Edonork erantzun dezake; erantzuna guraso bat duen argitalpena besterik ez da, eta elkarrizketak behar bezain sakon habiaratu daitezke.",
+            "Gehitu pertsonak lagun gisa eta haien argitalpenak zure jarioan sartuko dira. Jario orokorrak—goiko ezkerreko gunearen izenak—hemen idatzitako guztia erakusten du, eta hortxe aurki dezakezu nor gehitu.",
+            "Gune hau fedibertsoaren parte da: Mastodon eta beste zerbitzarietako kontuak helduleku osoaren bidez jarrai ditzakezu, eta argitaratzen duzuna hango jarraitzaileengana iritsiko da. Bilatu @someone@example.social bezalako helduleku bat eta zerbitzariak aurkituko du.",
+            "Etiketatu argitalpena #traolekin eta traolaren orrian agertuko da, baita Joeran ere nahikoa pertsona horri buruz idazten ari bada.",
+            "Kideen arteko mezuak muturretik muturrera zifratuta daude—zerbitzariak irakurri ezin duen testu zifratua gordetzen du. Aktibatu Ezarpenetan.",
+            "Ez duzu berehala argitaratu behar: gorde zirriborroa edo ezarri automatikoki argitaratzeko ordua. Biak Zirriborroak eta programatuak atalean daude."
+        ],
+        "more": {
+            "before": "Informazio gehiago dago ",
+            "link": "laguntza-orrietan",
+            "after": ", besteak beste kontu bat beste leku batetik hona ekartzeko modua."
+        },
+        "dontShowAgain": "Ez erakutsi berriro"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Txertatu emojia"
+    },
+    "LinkImagePreview": {
+        "alt": "Estekaren aurrebista-irudia"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Kendu irudia"
+    },
+    "LinkItem": {
+        "alt": "Estekaren aurrebista-irudia"
+    },
+    "MapScrubber": {
+        "play": "Erreproduzitu",
+        "pause": "Pausatu",
+        "cumulativeMode": "Ordura arte",
+        "windowMode": "Orduantxe",
+        "rangeLabel": "Erakutsi data baterainoko argitalpenak",
+        "cumulativeLabel": {
+            "one": "{date} arte argitaratua—argitalpen bat",
+            "other": "{date} arte argitaratuak—{count} argitalpen"
+        },
+        "windowLabel": {
+            "one": "{date} inguruan argitaratua—argitalpen bat",
+            "other": "{date} inguruan argitaratuak—{count} argitalpen"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} erabiltzailearen argitalpena",
+        "pageTitleUntitled": "Argitalpena",
+        "imageAltByAuthor": "{name} erabiltzaileak argitaratutako argazkia",
+        "imageAltUntitled": "Argazkia"
+    },
+    "PostBookmarkButton": {
+        "remove": "Kendu laster-marka",
+        "add": "Gehitu laster-marka"
+    },
+    "PostRepostButton": {
+        "undo": "Desegin birbidalketa",
+        "repost": "Birbidali"
+    },
+    "QuotedPost": {
+        "viewLink": "Ikusi aipatutako argitalpena"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Zain dauden eskaerak"
+    },
+    "ScrollToTopButton": {
+        "label": "Korritu gora"
+    },
+    "SearchClearButton": {
+        "label": "Garbitu bilaketa"
+    },
+    "SitePolicyLinks": {
+        "terms": "Zerbitzu-baldintzak",
+        "privacy": "Pribatutasun-politika"
+    },
+    "SkipLink": {
+        "label": "Joan edukira"
+    },
+    "TopicHeading": {
+        "searchLink": "Bilatu hau",
+        "noPosts": "Une honetan ez dago hau aipatzen duen argitalpenik."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Oraindik ez da horrelakorik idatzi."
+    },
+    "TrendingEntitySection": {
+        "heading": "Joera"
+    },
+    "PostLocationLink": {
+        "title": "Erakutsi leku hau mapan",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "orain",
+        "minutes": {
+            "one": "duela minutu bat",
+            "other": "duela {count} min"
+        },
+        "hours": {
+            "one": "duela ordubete",
+            "other": "duela {count} ordu"
+        },
+        "days": {
+            "one": "duela egun bat",
+            "other": "duela {count} egun"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Gaia",
+        "themes": {
+            "system": "Sistemaren arabera",
+            "light": "Argi arrunta",
+            "dark": "Ilun arrunta",
+            "sepia": "Sepia",
+            "midnight": "Gauerdia",
+            "sunset": "Ilunabarra",
+            "rose": "Arrosa",
+            "forest": "Basoa",
+            "ocean": "Ozeanoa",
+            "lavender": "Lavender",
+            "gold": "Urrea",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Gris-eskala"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Itzulpena ez dago zerbitzari honetan konfiguratuta.",
+        "nothing": "Ez dago hemen itzultzeko ezer.",
+        "unknownSource": "Argitalpenaren hizkuntza ez da oraindik identifikatu; beraz, ezin da itzuli.",
+        "alreadyReadable": "Argitalpena hizkuntza horretan dago jada.",
+        "unsupportedPair": "Zerbitzari honek ezin du hizkuntza hori oraindik itzuli."
+    },
+    "LanguagePrompt": {
+        "question": "Gunea euskaraz ikusi nahi duzu?",
+        "accept": "Bai",
+        "decline": "Ez, eskerrik asko"
+    },
+    "LanguageSelector": {
+        "label": "Hizkuntza",
+        "legend": "Hizkuntza"
+    },
+    "EmailDigest": {
+        "subject": "{site} gunean galdu duzuna",
+        "greeting": "Kaixo, {name}:",
+        "whileAway": "Kanpoan egon zaren bitartean:",
+        "repeatedTimes": {
+            "one": " (behin)",
+            "other": " ({count} aldiz)"
+        },
+        "moreMissed": {
+            "one": "eta beste jakinarazpen bat",
+            "other": "eta beste {count} jakinarazpen"
+        },
+        "messagesWaiting": {
+            "one": "Mezu bat duzu zain",
+            "other": "{count} mezu dituzu zain"
+        },
+        "postsInFeed": {
+            "one": "Argitalpen berri bat zure jarioan",
+            "other": "{count} argitalpen berri zure jarioan"
+        },
+        "unsubscribeInstructions": "Mezu hauek gelditzeko, ireki esteka hau—klik bakarra eta pasahitzik ez:",
+        "comeSeeWhatIsNew": "Zatoz berritasunak ikustera",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Ez bidali gehiago",
+            "after": "—klik bakarra, pasahitzik gabe."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Egiaztatu helbide elektronikoa",
+        "greeting": "Kaixo, {name}:",
+        "instructions": "Egiaztatu helbide elektronikoa esteka hau bisitatuz:",
+        "htmlInstructions": "Egiaztatu helbide elektronikoa beheko estekan klik eginez:",
+        "buttonLabel": "Egiaztatu helbide elektronikoa",
+        "expiresIn": {
+            "one": "Esteka hau ordubete barru iraungiko da.",
+            "other": "Esteka hau {count} ordu barru iraungiko da."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Berrezarri pasahitza",
+        "greeting": "Kaixo, {name}:",
+        "instructions": "Norbaitek (zu izatea espero dugu) pasahitza berrezartzeko eskatu du. Bisitatu esteka hau pasahitz berria aukeratzeko:",
+        "htmlInstructions": "Norbaitek (zu izatea espero dugu) pasahitza berrezartzeko eskatu du. Egin klik beheko estekan pasahitz berria aukeratzeko:",
+        "buttonLabel": "Berrezarri pasahitza",
+        "expiresIn": {
+            "one": "Esteka hau ordubete barru iraungiko da.",
+            "other": "Esteka hau {count} ordu barru iraungiko da."
+        },
+        "ignoreNotice": "Ez baduzu hau eskatu, mezuari ez ikusi egin diezaiokezu."
+    }
+}

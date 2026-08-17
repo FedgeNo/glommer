@@ -2,7 +2,7 @@
     "PollOptionVotes": {
         "votes": {
             "one": "1 voto",
-            "many": "{count} di voti",
+            "many": "{count} voti",
             "other": "{count} voti"
         }
     },
@@ -895,17 +895,17 @@
         },
         "days": {
             "one": "tra {count} giorno",
-            "many": "tra {count} di giorni",
+            "many": "tra {count} giorni",
             "other": "tra {count} giorni"
         },
         "hours": {
             "one": "tra {count} ora",
-            "many": "tra {count} di ore",
+            "many": "tra {count} ore",
             "other": "tra {count} ore"
         },
         "minutes": {
             "one": "tra {count} minuto",
-            "many": "tra {count} di minuti",
+            "many": "tra {count} minuti",
             "other": "tra {count} minuti"
         },
         "underMinute": "tra meno di un minuto"
@@ -913,7 +913,7 @@
     "PollTally": {
         "voters": {
             "one": "1 persona ha votato ",
-            "many": "{count} di persone hanno votato ",
+            "many": "{count} persone hanno votato ",
             "other": "{count} persone hanno votato "
         }
     },
@@ -988,12 +988,12 @@
         "rangeLabel": "Mostra post fino a una data",
         "cumulativeLabel": {
             "one": "Pubblicato entro {date} — {count} post",
-            "many": "Pubblicati entro {date} — {count} di post",
+            "many": "Pubblicati entro {date} — {count} post",
             "other": "Pubblicati entro {date} — {count} post"
         },
         "windowLabel": {
             "one": "Pubblicato intorno a {date} — {count} post",
-            "many": "Pubblicati intorno a {date} — {count} di post",
+            "many": "Pubblicati intorno a {date} — {count} post",
             "other": "Pubblicati intorno a {date} — {count} post"
         }
     },
@@ -1108,22 +1108,22 @@
         "whileAway": "Mentre eri via:",
         "repeatedTimes": {
             "one": " ({count} volta)",
-            "many": " ({count} di volte)",
+            "many": " ({count} volte)",
             "other": " ({count} volte)"
         },
         "moreMissed": {
             "one": "e un'altra notifica",
-            "many": "e altri {count} di notifiche",
+            "many": "e altre {count} notifiche",
             "other": "e altre {count} notifiche"
         },
         "messagesWaiting": {
             "one": "Hai un messaggio in attesa",
-            "many": "Hai {count} di messaggi in attesa",
+            "many": "Hai {count} messaggi in attesa",
             "other": "Hai {count} messaggi in attesa"
         },
         "postsInFeed": {
             "one": "Un nuovo post nel tuo feed",
-            "many": "{count} di nuovi post nel tuo feed",
+            "many": "{count} nuovi post nel tuo feed",
             "other": "{count} nuovi post nel tuo feed"
         },
         "unsubscribeInstructions": "Per fermare queste email, apri questo link - basta un clic e non serve alcuna password:",
@@ -1142,7 +1142,7 @@
         "buttonLabel": "Verifica indirizzo email",
         "expiresIn": {
             "one": "Questo link scade in {count} ora.",
-            "many": "Questo link scade tra {count} di ore.",
+            "many": "Questo link scade in {count} ore.",
             "other": "Questo link scade in {count} ore."
         }
     },
@@ -1154,7 +1154,7 @@
         "buttonLabel": "Reimposta password",
         "expiresIn": {
             "one": "Questo link scade in {count} ora.",
-            "many": "Questo link scade tra {count} di ore.",
+            "many": "Questo link scade in {count} ore.",
             "other": "Questo link scade in {count} ore."
         },
         "ignoreNotice": "Se non hai richiesto questo, puoi ignorare questa email."

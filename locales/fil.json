@@ -1,0 +1,743 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count} boto", "other": "{count} boto"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Mag-log in", "after": " para tumugon."
+        },
+        "post": {
+            "before": "",
+            "link": "Mag-log in", "after": " para mag-post."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Site", "siteURLLabel": "URL ng site", "siteTitleLabel": "Pamagat ng site", "mailFromAddressLabel": "Address ng nagpapadalang email", "serverNameConfirmedLabel": "Itinakda ko ang \"ServerName {host}\" at \"UseCanonicalName On\" sa configuration ng web server ko (sinusuri lang kung hindi makumpleto ang awtomatikong live test — tingnan ang seksiyong HTTPS ng README.md)", "databaseLegend": "Database", "databaseHostLabel": "Host ng database", "databasePortLabel": "Port ng database", "databaseNameLabel": "Pangalan ng database", "databaseAdminUsernameLabel": "Username ng administrator ng database", "databaseAdminPasswordLabel": "Password ng administrator ng database", "webSocketTLSLegend": "WebSocket TLS (opsyonal)", "certificatePathLabel": "Path ng certificate", "certificatePathPlaceholder": "Iwang blangko para awtomatikong gawin gamit ang mkcert", "keyPathLabel": "Path ng key", "keyPathPlaceholder": "Iwang blangko para awtomatikong gawin gamit ang mkcert", "botProtectionLegend": "Proteksiyon laban sa bot (opsyonal)", "turnstileSiteKeyLabel": "Site key ng Cloudflare Turnstile", "turnstileSiteKeyPlaceholder": "Iwang blangko para laktawan", "turnstileSecretKeyLabel": "Secret key ng Cloudflare Turnstile", "turnstileSecretKeyPlaceholder": "Iwang blangko para laktawan", "submit": "I-set up"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Kasalukuyang passphrase", "newPassphraseLabel": "Bagong passphrase", "confirmNewPassphraseLabel": "Kumpirmahin ang bagong passphrase", "accountPasswordLabel": "Password ng account", "submit": "Palitan ang passphrase"
+    },
+    "PasswordResetForm": {
+        "legend": "Pumili ng bagong password", "newPasswordLabel": "Bagong password", "newPasswordPlaceholder": "Hindi bababa sa 8 character", "confirmPasswordLabel": "Kumpirmahin ang bagong password", "submit": "I-reset ang password"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "I-reset ang iyong password", "emailLabel": "Email", "submit": "Ipadala ang reset link"
+    },
+    "EmailRevertForm": {
+        "submit": "Ibalik ang pagbabago sa email"
+    },
+    "EmailVerifyForm": {
+        "submit": "Beripikahin ang email address"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "I-on muli ang mga ito"
+    },
+    "EmailDigestSetting": {
+        "label": "I-email sa akin ang mga napalampas ko kapag matagal akong wala"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Hindi kilalang device", "browserOnOS": "{browser} sa {os}", "thisDevice": " (device na ito)",
+        "lastUsed": {
+            "before": "Huling ginamit ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Tapusin ang lahat ng aktibong session at kalimutan ang lahat ng natandaang device. Masa-sign out ka sa lahat ng browser, kasama ang isang ito."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Mag-log out sa lahat"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Magberipika gamit ang Google para mag-delete"
+    },
+    "GoogleSignInButton": {
+        "label": "Magpatuloy gamit ang Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "I-edit ang profile"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Tumanggap ng mga notification sa device na ito kahit hindi bukas ang site. Hiwalay ang pagpili sa bawat browser — i-on ito saanman mo gustong makatanggap.",
+        "label": {
+            "off": "I-enable sa device na ito", "on": "I-off sa device na ito"
+        },
+        "unsupported": "Hindi sinusuportahan ng browser na ito ang push"
+    },
+    "LoginForm": {
+        "legend": "Mag-log in", "identifier": "Username o email", "password": "Password", "rememberMe": "Tandaan ako", "submit": "Mag-log in"
+    },
+    "SignupForm": {
+        "legend": "Gumawa ng account", "usernameLabel": "Username", "usernamePlaceholder": "Maliliit na titik, numero, at _", "emailLabel": "Email", "emailPlaceholder": "Wastong email address", "displayName": "Pangalang ipapakita (opsyonal)", "bioLabel": "Bio (opsyonal)", "bioPlaceholder": "Maikling bio — nagiging naki-click ang #hashtag, @mention, at link", "passwordLabel": "Password", "passwordPlaceholder": "Password: hindi bababa sa 8 character", "rememberMe": "Tandaan ako", "submit": "Mag-sign up"
+    },
+    "PasswordChangeForm": {
+        "legend": "Palitan ang iyong password", "currentPassword": "Kasalukuyang password", "newPasswordLabel": "Bagong password", "newPasswordPlaceholder": "Hindi bababa sa 8 character", "confirmPassword": "Kumpirmahin ang bagong password", "submit": "Palitan ang password"
+    },
+    "EmailChangeForm": {
+        "legend": "Palitan ang iyong email address", "newEmail": "Bagong email address", "currentPassword": "Kasalukuyang password", "notice": "Kailangan mong beripikahin ang bagong address bago magpatuloy sa paggamit ng site.", "submit": "Palitan ang email"
+    },
+    "AccountDeleteForm": {
+        "legend": "I-delete ang iyong account", "warning": "Permanente nitong ide-delete ang iyong account, mga post, at mga mensahe. Hindi ito mababawi.", "currentPassword": "Kasalukuyang password", "submit": "I-delete ang account"
+    },
+    "AccountMigrationForm": {
+        "legend": "Lumipat sa ibang server", "movedNotice": "Lumipat ang account na ito sa {destination}. Hiniling sa mga follower mo na sundan ka roon.", "explanation": "Hinihiling sa mga follower mo na sundan ang bago mong account. Mananatili rito ang mga post mo — pag-aari ng server na gumawa sa mga ito ang kanilang mga address, kaya hindi sila maisasama.", "addressNotice": "Kailangang ilista muna ng lilipatan mong account ang account na ito sa ilalim ng \"kilala rin bilang\". Ang address mo rito ay {address}.", "movedToLabel": "Lumipat sa",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Kilala rin bilang", "aliasesExplanation": "Mga account sa ibang lugar na ikaw rin. Kapag inilista rito ang isa, pinapayagan nitong lumipat ang account na iyon sa account na ito — pahintulot ito, hindi ang mismong paglipat. Isang address bawat linya.", "aliasesLabel": "Iba mo pang account",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "I-save"
+    },
+    "TwoFactorForm": {
+        "legend": "Ilagay ang verification code mo", "explanation": "Nag-email kami sa iyo ng verification code. Ilagay ito sa ibaba o gumamit ng isa sa mga recovery code mo para tapusin ang pag-log in.", "explanationEmailFailed": "Hindi namin ma-email ang verification code mo ngayon. Ilagay ang isa sa mga recovery code mo para tapusin ang pag-log in.", "code": "Verification code", "submit": "Beripikahin"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Naka-on ang two-factor authentication", "off": "Naka-off ang two-factor authentication"
+        },
+        "explanation": {
+            "on": "Kapag nag-log in ka, mag-e-email kami ng verification code na kailangan mong ilagay. Kung hindi makarating ang email, maaari kang mag-log in gamit ang recovery code.", "off": "Magdagdag ng ikalawang hakbang sa pag-log in: mag-e-email kami ng verification code na kailangan mong ilagay, kaya hindi sapat ang password lang. Makakatanggap ka ng mga minsanang recovery code kung hindi makarating ang email."
+        },
+        "currentPassword": "Kasalukuyang password",
+        "submit": {
+            "on": "I-off ang two-factor authentication", "off": "I-on ang two-factor authentication"
+        },
+        "regenerate": "Gumawa ng mga bagong recovery code", "recoveryHeading": "Mga recovery code mo", "recoveryNote": "I-save ang mga ito ngayon sa ligtas na lugar — hindi na sila muling ipapakita. Bawat isa ay makapagla-log in sa iyo nang isang beses kapag hindi makarating ang verification email, at papalitan ng mga bagong code ang lahat ng ito.",
+        "toast": {
+            "on": "Naka-on na ang two-factor authentication.", "off": "Naka-off na ang two-factor authentication.", "regenerated": "Nagawa na ang mga bagong recovery code. Hindi na gumagana ang mga luma."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Tingnan ang iyong inbox at i-click ang verification link na ipinadala namin para kumpirmahin ang email address mo. Kung hindi mo ito makita, tingnan ang junk/spam folder."
+    },
+    "VerificationResendButton": {
+        "label": "Ipadala muli ang verification email"
+    },
+    "MailSettingsForm": {
+        "legend": "Papalabas na email", "fromAddressLabel": "Address ng nagpapadala", "fromAddressPlaceholder": "Walang email na maipapadala hangga't hindi ito nakatakda", "fromNameLabel": "Pangalan ng nagpapadala", "hostLabel": "SMTP host", "portLabel": "SMTP port", "usernameLabel": "SMTP username", "passwordLabel": "SMTP password",
+        "passwordPlaceholder": {
+            "set": "Nakatakda ang password — iwang blangko para panatilihin ito", "unset": "SMTP password"
+        },
+        "encryptionLabel": "Encryption",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, karaniwan sa port 587)", "ssl": "SSL (implicit TLS, karaniwan sa port 465)", "none": "Wala"
+        },
+        "explainer": "Iwang blangko ang SMTP host para magpadala gamit ang mail() ng PHP (hindi inirerekomenda — tingnan ang seksiyon ng README tungkol sa paghahatid). Walang email na maipapadala hangga't walang nakatakdang address ng nagpapadala.", "save": "I-save"
+    },
+    "MapSettingsForm": {
+        "legend": "Mga tile ng mapa", "notice": "Iwang blangko para gamitin ang OpenStreetMap. Para gumamit ng provider na may key, i-paste ang URL template nito na may literal na {apiKey} sa puwesto ng key, kasama ang key at attribution sa ibaba.", "urlLabel": "URL template ng tile", "keyLabel": "API key", "keyPlaceholder": "API key ng tile provider mo", "attributionLabel": "Attribution", "attributionPlaceholder": "© mga contributor ng OpenStreetMap", "save": "I-save"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Pag-sign in gamit ang Google", "clientIdLabel": "Client ID", "clientIdPlaceholder": "Google OAuth client ID", "secretLabel": "Client secret",
+        "secretPlaceholder": {
+            "set": "Nakatakda ang client secret — iwang blangko para panatilihin ito", "unset": "Google OAuth client secret"
+        },
+        "explainer": "Kailangan ang dalawa para lumabas ang \"Magpatuloy gamit ang Google\" sa pag-sign up at pag-sign in. Sa Google Cloud OAuth client mo, itakda ang awtorisadong redirect URI sa {url} — burahin ang Client ID para i-off ito.", "save": "I-save"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Site key", "turnstileSiteKeyPlaceholder": "Site key ng Cloudflare Turnstile", "turnstileSecretKeyLabel": "Secret key",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Nakatakda ang secret key — iwang blangko para panatilihin ito", "unset": "Secret key ng Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Kailangan ang dalawang key para lumabas ang CAPTCHA sa pag-sign up at pag-sign in. Burahin ang site key para i-off ito.", "recaptchaLegend": "Google reCAPTCHA (pagbawi sa naka-lock na account)", "recaptchaSiteKeyLabel": "Site key", "recaptchaSiteKeyPlaceholder": "Site key ng Google reCAPTCHA v2", "recaptchaSecretKeyLabel": "Secret key",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Nakatakda ang secret key — iwang blangko para panatilihin ito", "unset": "Secret key ng Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Kailangan ang dalawang key. Kapag nakatakda, makakabalik ang account na umabot sa limitasyon ng pag-log in sa pamamagitan ng pagpasa sa challenge na ito sa halip na hintayin ang lockout; kung wala, kailangang maghintay. Gamitin ang reCAPTCHA v2 (\"Hindi ako robot\"). Burahin ang site key para i-off ito.", "save": "I-save"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Ginagamit ng mga AI feature sa site (mga buod ng trending na paksa, atbp.). Iwang blangko ang model para gamitin ang Free Models Router, na pumipili nang random ang OpenRouter mula sa kasalukuyang libre at hindi kailanman magkakagastos.", "keyLabel": "API key",
+        "keyPlaceholder": {
+            "set": "Nakatakda ang API key — iwang blangko para panatilihin ito", "unset": "API key ng OpenRouter"
+        },
+        "clearKeyLabel": "Alisin ang naka-save na API key (ino-off ang mga AI feature)", "modelLabel": "Model", "neverSpendLabel": "Huwag kailanman payagang gumastos ito (inirerekomenda)", "explainer": "Kapag naka-on ang guard, nililimitahan sa zero ang presyo ng bawat request, kaya tuluyan itong mabibigo sa halip na gumamit ng bayad na model kapag walang libreng provider. Alisin ang naka-save na API key para tuluyang i-off ang mga AI feature.", "save": "I-save"
+    },
+    "AboutSettingsForm": {
+        "legend": "Tungkol dito", "description": "Plain text — pinaghihiwalay ng mga blangkong linya ang mga talata. Gagamitin ang unang talata bilang paglalarawan ng site.", "save": "I-save"
+    },
+    "TermsSettingsForm": {
+        "legend": "Mga tuntunin ng serbisyo", "description": "Plain text — pinaghihiwalay ng mga blangkong linya ang mga talata.", "save": "I-save"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Patakaran sa privacy", "description": "Plain text — pinaghihiwalay ng mga blangkong linya ang mga talata.", "save": "I-save"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Buod sa email", "fieldLabel": "Pangwakas na talata", "notice": "Idinaragdag malapit sa dulo ng bawat buod, pagkatapos ng listahan ng mga napalampas ng miyembro. Plain text. Iwang blangko para bumalik sa default na pananalita ng software.", "save": "I-save"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Kasalukuyang favicon", "save": "Mag-upload ng favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Larawan sa front page", "explainer": "Ipinapakita ng ibang site kapag may nagbahagi ng link papunta rito — sa Open Graph metadata lang, hindi kailanman sa pahina. Pinuputol sa 1200×630. Kung wala nito, walang anumang larawan ang mga preview ng link.", "currentAlt": "Kasalukuyang larawan sa front page", "save": "Mag-upload ng larawan"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Awtomatikong pag-play"
+    },
+    "CarouselNextButton": {
+        "name": "Susunod"
+    },
+    "CarouselPrevButton": {
+        "name": "Nakaraan"
+    },
+    "MediaFullscreenButton": {
+        "name": "Buong screen"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Alisin ang mga file"
+    },
+    "NotificationDropdown": {
+        "showAll": "Ipakita lahat"
+    },
+    "HelpSearch": {
+        "placeholder": "Maghanap sa tulong…"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Nakuha ko"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Itapon"
+    },
+    "StagedPostEditButton": {
+        "name": "I-edit"
+    },
+    "StagedPostPublishButton": {
+        "name": "I-publish ngayon"
+    },
+    "LogoutButton": {
+        "name": "Mag-log out"
+    },
+    "AvatarUploadForm": {
+        "submit": "I-update ang avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Maghanap ng mga naka-ban na user…"
+    },
+    "BannedUserSection": {
+        "heading": "Mga naka-ban na user"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Mga ipinadalang request (naghihintay ng tugon)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Na-ban ni {name} ",
+            "after": ""
+        },
+        "reason": " — {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Na-block ni {name} ",
+            "after": ""
+        },
+        "deletedAccount": "na-delete na account", "reason": " — {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "Enero", "2": "Pebrero", "3": "Marso", "4": "Abril", "5": "Mayo", "6": "Hunyo", "7": "Hulyo", "8": "Agosto", "9": "Setyembre", "10": "Oktubre", "11": "Nobyembre", "12": "Disyembre"
+        },
+        "shortMonths": {
+            "1": "Ene", "2": "Peb", "3": "Mar", "4": "Abr", "5": "May", "6": "Hun", "7": "Hul", "8": "Ago", "9": "Set", "10": "Okt", "11": "Nob", "12": "Dis"
+        },
+        "long": "{month} {day}, {year}", "short": "{month} {day}, {year}", "time": "{hour}:{minute} {meridiem}", "dateAndTime": "{date} nang {time}", "am": "AM", "pm": "PM", "clock": 12
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Hindi makakonekta sa WebSocket server sa 127.0.0.1:{port}{tls} ({error}). Simulan muna ito: systemctl --user start glommer-websocket (tingnan ang README.md para sa unit file). Kung kakakuha o kawawala lang nito ng WS_TLS_CERT/WS_TLS_KEY, i-restart ito para tumugma sa .env.", "wsOverTLS": " gamit ang TLS", "wsBadHandshake": "Hindi nakumpleto ng serbisyo sa 127.0.0.1:{port} ang wastong WebSocket handshake — maaaring may ibang nakikinig sa port na iyon bukod sa bin/websocket-server.php.", "wsNoPong": "Tinanggap ng WebSocket server ang handshake ngunit hindi tumugon sa ping — maaaring natigil o hindi gumagana nang tama. Tingnan ang mga log nito.", "wsReachable": "Naaabot at tumutugon ang WebSocket server sa 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtag", "person": "Tao", "org": "Organisasyon", "gpe": "Lugar", "loc": "Rehiyon", "fac": "Palatandaan", "product": "Produkto", "event": "Kaganapan", "work_of_art": "Akda", "law": "Batas", "language": "Wika", "norp": "Grupo"
+        },
+        "plural": {
+            "hashtag": "Mga hashtag", "person": "Mga tao", "org": "Mga organisasyon", "gpe": "Mga lugar", "loc": "Mga rehiyon", "fac": "Mga palatandaan", "product": "Mga produkto", "event": "Mga kaganapan", "work_of_art": "Mga akda", "law": "Mga batas", "language": "Mga wika", "norp": "Mga grupo"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Alisin ang kaibigan"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Tanggapin"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Tanggihan"
+    },
+    "UserFollowButton": {
+        "follow": "Sundan", "unfollow": "I-unfollow"
+    },
+    "UserBlockButton": {
+        "name": "I-block"
+    },
+    "UserUnblockButton": {
+        "name": "I-unblock"
+    },
+    "OtherUser": {
+        "message": "Mensahe"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menu", "loggedInAs": "Naka-log in bilang {name}", "friendsFeed": "Feed ng mga kaibigan", "relayFeed": "Relay feed", "users": "Mga user", "tags": "Mga tag", "topics": "Mga paksa", "map": "Mapa", "locations": "Mga lokasyon", "search": "Maghanap", "messages": "Mga mensahe", "bookmarks": "Mga bookmark", "help": "Tulong", "about": "Tungkol dito", "login": "Mag-log in", "signup": "Mag-sign up", "friends": "Mga kaibigan", "drafts": "Mga draft at naka-iskedyul", "userSettings": "Mga setting ng user", "modSettings": "Mga setting ng moderator", "adminSettings": "Mga setting ng administrator"
+    },
+    "LogoutForm": {
+        "submit": "Mag-log out"
+    },
+    "User": {
+        "joined": "Sumali noong {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Magdagdag ng kaibigan", "cancel": "Kanselahin ang request"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Naka-iskedyul para sa {when}", "draft": "Draft — ipa-publish lang kapag sinabi mo"
+    },
+    "MessageTranslateButton": {
+        "name": "Isalin ang mensaheng ito"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Tungkol sa pagsasalin ng mga mensahe", "body": "Para isalin ang isang mensahe, ipinapadala ang teksto nito sa server na ito at isinasalin dito. Walang itinatago: hindi isinusulat ang salin sa database at hindi nagbabago ang mismong mensahe. Ngunit nabasa na ng server ang mensaheng isinalin sa ganitong paraan, kaya hindi ito end-to-end encrypted tulad ng hindi isinaling mensahe. Mga mensaheng natanggap mo lang ang maaaring isalin, at kapag hiniling mo lang.", "confirm": "Isalin", "cancel": "Hindi muna"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Nakalimutan ang passphrase? Gumagawa ang pag-reset ng mga bagong key sa ilalim ng bagong passphrase — ngunit hindi na mababasa kailanman ng sinuman ang mga mensaheng naka-encrypt gamit ang mga lumang key.", "requirements": "Hindi bababa sa 12 character, at hindi ang password ng account mo — ipinapadala sa server na ito ang password, ngunit hindi kailanman dapat ipadala ang passphrase mo.", "passphraseLabel": "Passphrase", "resetPassphraseLabel": "Bagong passphrase", "confirmLabel": "Kumpirmahin ang passphrase", "accountPasswordLabel": "Password ng account", "submitLabel": "I-on ang mga encrypted na mensahe", "resetSubmitLabel": "I-reset ang mga encryption key"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Nila-lock at ina-unlock sa browser mo ang mga end-to-end encrypted na mensahe: ipinapasa at iniimbak ng server na ito ang mga ito nang hindi nababasa. Pinoprotektahan ng passphrase ang key mo, at nabubuksan ng parehong passphrase ang mga mensahe mo mula sa anumang browser. Naka-encrypt ang usapan kapag na-on ito ng dalawang tao; nananatiling hindi naka-encrypt ang mga mensahe sa mga tao sa ibang server dahil walang ibang paraan ang federation para dalhin ang mga ito.", "noRecovery": "Walang paraan para mabawi ang nawalang passphrase — kahit ang administrator ay hindi magagawa ito. Kapag nawala ito, mawawala rin ang mga encrypted mong mensahe.", "enabledStatus": "Naka-on ang mga encrypted na mensahe."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Naka-encrypt", "explanation": "End-to-end encrypted ang mga mensahe sa usapang ito: binubuksan ang mga ito gamit ang passphrase mo at binabasa sa mga browser mo, at ciphertext lang ang iniimbak ng server. Suriin kasama ng kausap mo ang safety code sa ibaba ng thread para matiyak na walang namamagitan. Nananatiling nababasa tulad ng dati ang mga mensaheng ipinadala bago na-on ang encryption."
+        },
+        "awaiting-theirs": {
+            "label": "Hindi naka-encrypt", "explanation": "Magiging end-to-end encrypted ang mga mensahe rito kapag na-on ni {handle} ang mga encrypted na mensahe sa mga setting niya."
+        },
+        "awaiting-yours": {
+            "label": "Hindi naka-encrypt", "explanation": "Hindi end-to-end encrypted ang mga mensahe rito. I-on ang mga encrypted na mensahe sa Mga Setting para protektahan ang usapang ito."
+        },
+        "federated": {
+            "label": "Hindi naka-encrypt", "explanation": "Nasa ibang server si {handle}. Iniimbak ang mga mensahe sa usapang ito sa server na iyon at sa server na ito, at mababasa sila ng administrator doon — walang paraan ang protocol sa pagitan ng mga server para i-encrypt ang mga ito. Sa mga usapan sa site na ito lang magbahagi ng sensitibong bagay."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Sundan ang mga account sa Fediverse", "notice": "I-paste ang isa o higit pang handle, hal. @user@example.social — gagana ang anumang separator sa pagitan ng mga ito.", "handlesLabel": "Mga handle sa Fediverse na susundan", "submit": "Sundan", "statusPending": "nakabinbin", "statusAccepted": "tinanggap"
+    },
+    "ServerBlockForm": {
+        "legend": "I-block ang isang server", "description": "Tinatanggihan ang lahat mula sa server na iyon at lahat ng nasa ilalim nito: walang papasok o lalabas na delivery, at inaalis ang mga kasalukuyang follow sa dalawang direksiyon.", "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Dahilan", "reasonPlaceholder": "Bakit naka-block ang server na ito", "submit": "I-block ang server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Pinapatakbo ang mga bahagi ng pag-set up ng tawag na masusuri mula sa isang browser. Masusubukan dito ang lahat hanggang sa aktuwal na peer-to-peer connection; kailangan ang ibang tao para kumonekta sa kanya."
+    },
+    "VideoCallTestButton": {
+        "label": "Patakbuhin ang pagsusuri"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket server: tumatakbo", "failed": "WebSocket server: {detail}", "clientTesting": "Koneksiyon ng browser: sinusubukan…", "clientConnecting": "Koneksiyon ng browser: kumokonekta…", "clientConnected": "Koneksiyon ng browser: nakakonekta", "clientDisconnecting": "Koneksiyon ng browser: dinidiskonekta…", "clientNotConnected": "Koneksiyon ng browser: hindi nakakonekta"
+    },
+    "UploadWorkerStatus": {
+        "running": "Worker service: tumatakbo", "stopped": "Worker service: hindi tumatakbo — hindi matra-transcode ang mga staged upload hangga't hindi ito nare-restart", "unknown": "Worker service: hindi alam — maaaring walang systemctl sa host na ito o tinatanggihan ng SELinux ang status query ng web server (patakbuhin ang bin/install.php bilang root para ayusin)", "queue": "Queue: {staging} inihahanda, {pending} nakabinbin, {processing} pinoproseso"
+    },
+    "TrendingTimerStatus": {
+        "running": "Trending timer: tumatakbo", "stopped": "Trending timer: hindi tumatakbo — magre-refresh lang ang mga trending na paksa sa pamamagitan ng read-path self-heal (Trending::current()), hindi ayon sa iskedyul. Patakbuhin ang bin/install.php bilang root para i-set up ito.", "unknown": "Trending timer: hindi alam — maaaring walang systemctl sa host na ito o tinatanggihan ng SELinux ang status query ng web server (patakbuhin ang bin/install.php bilang root para ayusin)"
+    },
+    "Notification": {
+        "postReady": "Tapos nang iproseso ang media mo at live na ito", "scheduledPostLive": "Live na ang naka-iskedyul mong post", "uploadPartlyFailed": "Live na ang post mo, ngunit hindi maproseso ang isa o higit pa sa mga file nito", "uploadFailed": "Hindi naproseso at hindi nai-post ang isa sa mga upload mo", "mailerFailed": "Hindi naihatid ang email — maaaring hindi gumagana ang mailer. Tingnan ang mail configuration.", "mailFromNotConfigured": "Walang naka-configure na address ng nagpapadalang email, kaya hindi makapagpadala ng email. Magtakda nito sa Mga Setting ng Administrator (Papalabas na Email) o gamit ang bin/install.php.", "systemError": "Nagkaroon ng error sa server. Tingnan ang error log para sa detalye.", "passwordRemovedGoogle": "Inalis ang password mo nang mag-sign in ka gamit ang Google. Gamitin ang \"Nakalimutan ang Password\" kung gusto mong magtakda ng bago.", "like": "Nagustuhan ni {name} ang post mo", "repost": "Ni-repost ni {name} ang post mo", "reply": "Tumugon si {name} sa post mo", "friendRequest": "Nagpadala sa iyo si {name} ng friend request", "friendAccepted": "Tinanggap ni {name} ang friend request mo", "message": "Nagpadala sa iyo si {name} ng mensahe", "mention": "Binanggit ka ni {name} sa isang post", "follow": "Sinundan ka ni {name} mula sa ibang server", "default": "May ginawa si {name}"
+    },
+    "NotificationList": {
+        "emptyNotice": "Wala pang notification."
+    },
+    "NotificationsNavLink": {
+        "label": "Mga notification", "unseen": "Mga hindi pa nakikitang notification"
+    },
+    "NotificationTestPanel": {
+        "intro": "Magpadala ng test notification sa sarili mo (ang administrator). Dapat agad itong lumitaw bilang toast at sa dropdown ng notification.", "button": "Magpadala ng test notification", "sending": "Ipinapadala…", "sent": "Naipadala!", "failed": "Nabigo"
+    },
+    "MessageDot": {
+        "label": "Mga hindi pa nababasang mensahe"
+    },
+    "NavAlertDot": {
+        "label": "May bago sa menu"
+    },
+    "Message": {
+        "encrypted": "Encrypted na mensahe", "decryptionFailed": "Na-encrypt ang mensaheng ito gamit ang mga key na wala na."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mensahe", "bodyPlaceholder": "Sumulat ng mensahe", "send": "Ipadala"
+    },
+    "MessageList": {
+        "emptyNotice": "Wala pang mensahe."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Basahin ang code na ito sa isa't isa sa ibang paraan — nang malakas, nang personal, o sa tawag. Kung magkatugma ito sa magkabilang panig, walang namamagitan sa inyo.", "changed": "Nagbago ang code na ito mula nang suriin mo. Nangyayari ito kapag ni-reset ng isa sa inyo ang mga encryption key — ngunit ganito rin ang magiging hitsura kung may nagbabasa ng usapan. Suriin sa kanya ang bagong code bago ito pagkatiwalaan.", "verified": "Nasuri mo na ang code na ito."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Markahan bilang beripikado"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Passphrase", "passphrasePlaceholder": "Passphrase para i-unlock ang usapang ito", "submit": "I-unlock"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Huling mensahe ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Sensitibong media"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Ipakita ang sensitibong media bilang default"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Post", "message": "Mensahe", "user": "User"
+        },
+        "summary": {
+            "before": "{type} #{id} iniulat ni ",
+            "after": ""
+        },
+        "reasonLine": "Dahilan: {reason}", "banReporterLabel": "I-ban ang nag-ulat", "banReportedUserLabel": "I-ban ang iniulat na user", "deleteLabel": "I-delete ang {type}", "reportedImageAlt": "Iniulat na larawan", "attachmentUnavailable": "Hindi na available ang isang iniulat na attachment.", "viewAttachment": "Tingnan ang iniulat na attachment",
+        "missing": {
+            "noSnapshot": "Hindi na available ang iniulat na content.", "unknownType": "Hindi kilalang uri ng content."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Walang ulat."
+    },
+    "ModQueueLinks": {
+        "intro": "Sapat ang haba ng mga queue para basahin nang paisang pahina, kaya may sarili silang mga pahina.", "reportsLabel": "Mga ulat", "bannedUsersLabel": "Mga naka-ban na user"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Wala pang ginagawang aksiyon ang moderator."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Walang naka-ban na trending entity."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Walang naka-block na server."
+    },
+    "RelayCard": {
+        "accepted": "Naka-subscribe ", "waiting": "Naghihintay na tanggapin ng relay — naka-subscribe "
+    },
+    "RelayList": {
+        "emptyNotice": "Hindi naka-subscribe sa anumang relay. Ang sinusundan lang ng mga miyembro ang dumarating dito."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Wala pang dumarating sa pamamagitan ng relay. Lumilitaw dito ang mga post habang pino-publish sila ng mga server sa kabilang panig."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Mag-subscribe sa relay", "explainerOne": "Ang relay ay pinagsasaluhang daloy: dumarating dito ang bawat pampublikong post mula sa bawat ibang naka-subscribe na server, at lumalabas papunta sa lahat ng iyon ang mga post ng server na ito. Sa ganitong paraan nakakahanap ng mga tao ang bagong instance, dahil kung hindi ay dinadala lang ng federation ang sinusundan na ng isang tao rito.", "explainerTwo": "Hindi mo mahuhulaan ang load — depende ito sa pino-publish ng mga server na iyon, tahimik sa isang linggo at libu-libong post bawat oras sa susunod, at pasan ito ng storage, delivery queue, at moderation queue mo. Hindi napupunta ang mga relayed post sa main at friends feed; napupunta sila sa Relay Feed na sinasadyang buksan ng mga tao.", "addressLabel": "Address ng relay",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Mag-subscribe"
+    },
+    "RelayFollowObjectField": {
+        "label": "Paraan ng subscription",
+        "options": {
+            "public": "Sundan ang pampublikong stream (inaasahan ng karamihan ng relay)", "actor": "Sundan ang sariling actor ng relay"
+        },
+        "retryNotice": "Kung hindi kailanman tumanggap ang relay, bawiin at subukan ang ibang paraan — isa lang ang kinikilala ng ilang relay software."
+    },
+    "SiteCounters": {
+        "members": "Mga miyembro: {count} ({joined} ang sumali sa nakaraang {days} araw)", "activeMembers": "Mga miyembro rito sa nakaraang {days} araw: {count} ({posted} ang nag-post)", "posts": "Mga post na isinulat dito: {count} ({recent} sa nakaraang {days} araw)", "deliveries": "Mga federated delivery sa nakaraang {days} araw: {delivered} ang dumating, {undeliverable} ang sinukuan", "queued": "Naghihintay lumabas: {count} ({failing} ang natanggihan na kahit minsan)", "pendingReads": "Mga post mula sa ibang server na naghihintay basahin: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Patakbuhin ang test suite ng site at tingnan ang mga resulta. Tumatagal ito nang ilang segundo, kaya bumubukas ito sa sarili nitong pahina.", "runLabel": "Patakbuhin ang mga test"
+    },
+    "HelpArticle": {
+        "backLabel": "Bumalik sa lahat ng tulong"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Walang mungkahi ngayon — nagmumula ang mga mungkahi sa mga kaibigan ng mga kaibigan mo na. Maghanap sa itaas para makakita ng tao ayon sa pangalan.", "noMatches": "Walang tumutugma rito."
+    },
+    "UserModButton": {
+        "make": "Gawing moderator", "remove": "Alisin bilang moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Alisin ang ban"
+    },
+    "TrendingEntityBanButton": {
+        "name": "I-ban"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Alisin ang ban"
+    },
+    "ReportDismissButton": {
+        "name": "I-dismiss"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Markahan bilang sensitibo"
+    },
+    "ServerUnblockButton": {
+        "name": "I-unblock"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Mag-unsubscribe"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Bawiin"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: pumapasa", "failing": "{suite}: bumabagsak"
+    },
+    "PageTitle": {
+        "about": "Tungkol dito", "adminBanned": "Mga naka-ban na user", "adminModSettings": "Mga setting ng moderator", "adminReports": "Mga ulat", "adminSettings": "Mga setting ng administrator", "adminTests": "Mga test", "authGoogleCallbackAccountDeleted": "Na-delete ang account", "authGoogleCallbackDeleteAccount": "I-delete ang account", "authGoogleCallbackLogin": "Mag-log in", "bookmarks": "Mga bookmark", "checkInbox": "Tingnan ang iyong inbox", "drafts": "Mga draft at naka-iskedyul", "draftsEditDraft": "I-edit ang draft", "draftsEditScheduled": "I-edit ang naka-iskedyul na post", "forgotPassword": "Nakalimutan ang password", "friendsFeed": "Feed ng mga kaibigan", "help": "Tulong", "helpDescription": "Mga gabay at sagot sa paggamit ng site.", "locations": "Mga lokasyon", "locationsDescription": "Mga post mula sa mga lugar na pinakamalapit sa iyo.", "locationsPlaceDescription": "Mga post malapit sa {place}.", "login": "Mag-log in", "loginVerificationCode": "Verification code", "map": "Mapa", "mapDescription": "Mapa ng mga post mula sa buong mundo — maghanap ng mga tao at bagay na malapit sa iyo.", "messages": "Mga mensahe", "messagesWithUser": "Mga mensahe kasama si {name}", "notifications": "Mga notification", "privacy": "Patakaran sa privacy", "quote": "Sipi", "relayFeed": "Relay feed", "relayFeedDescription": "Mga pampublikong post na dumarating mula sa mga relay na sinusubscribe-an ng server na ito.", "resetPassword": "I-reset ang password", "revertEmail": "Ibalik ang pagbabago sa email", "search": "Maghanap", "signup": "Mag-sign up", "tags": "Mga tag", "tagsDescription": "I-browse ang mga trending at sikat na hashtag sa {siteTitle}.", "tagsTagDescription": "Mga post na may tag na {tag} sa {siteTitle}.", "terms": "Mga tuntunin ng serbisyo", "topics": "Mga paksa", "topicsDescription": "Mga pinag-uusapan ng mga tao sa {siteTitle} ngayon.", "topicsEntityDescription": "{typeLabel} — mga post na bumabanggit sa {entityTitle} sa {siteTitle}.", "topicsTypeDescription": "{typePlural} na pinag-uusapan ng mga tao sa {siteTitle} ngayon.", "unsubscribe": "Mga buod sa email", "userFriends": "Mga kaibigan ni {name}", "userFriendsDescription": "Mga kaibigan ni {name} sa {siteTitle}", "userSettings": "Mga setting ng user", "users": "Mga user", "verifyEmail": "Beripikahin ang email"
+    },
+    "PostLikeButton": {
+        "like": "Gustuhin", "unlike": "Alisin ang pagkagusto"
+    },
+    "PostPinButton": {
+        "pin": "I-pin", "unpin": "Alisin ang pagkaka-pin"
+    },
+    "PostQuoteButton": {
+        "name": "Sipiin"
+    },
+    "PostDeleteButton": {
+        "name": "I-delete"
+    },
+    "PostEditButton": {
+        "name": "I-edit"
+    },
+    "ReportButton": {
+        "name": "Iulat"
+    },
+    "PostActionBar": {
+        "reply": "Tumugon",
+        "replies": {
+            "one": "Mga tugon ({count})", "other": "Mga tugon ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(na-edit)"
+    },
+    "RepliesHeading": {
+        "heading": "Mga tugon"
+    },
+    "PollVoteButton": {
+        "name": "Bumoto"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Tingnan ang ", "link": "higit pang lokasyon",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Mga post na malapit sa iyo", "description": "Ipinapakita nito ang mga post na pinakamalapit sa isang punto — saanman may aktibidad, gaano man ito kalayo. Ibahagi ang lokasyon mo para magsimula kung nasaan ka, o pumili ng lugar sa mapa.", "useMyLocation": "Gamitin ang lokasyon ko", "pickOnMap": "Pumili sa mapa", "searchPlaceholder": "O mag-type ng pangalan ng lugar…", "searchLabel": "Maghanap ng lugar", "locating": "Hinahanap ang lokasyon…", "noGeolocation": "Hindi maibabahagi ng browser mo ang lokasyon.", "locationError": "Hindi makuha ang lokasyon mo. Tingnan ang pahintulot sa lokasyon ng browser."
+    },
+    "PollDeadline": {
+        "final": "Pinal na resulta",
+        "closes": {
+            "before": "Magsasara ",
+            "after": ""
+        },
+        "days": {
+            "one": "sa loob ng {count} araw", "other": "sa loob ng {count} araw"
+        },
+        "hours": {
+            "one": "sa loob ng {count} oras", "other": "sa loob ng {count} oras"
+        },
+        "minutes": {
+            "one": "sa loob ng {count} minuto", "other": "sa loob ng {count} minuto"
+        },
+        "underMinute": "sa loob ng wala pang isang minuto"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "{count} tao ang bumoto ", "other": "{count} tao ang bumoto "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Mag-log in", "after": " para mag-post."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Mag-log in", "after": " para tumugon."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " ang nag-repost"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Bilang tugon kay ",
+            "after": ""
+        },
+        "untitled": "post na ito", "jumpToStart": "Pumunta sa simula"
+    },
+    "TopicSummaryCard": {
+        "label": "Buod na ginawa ng AI"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Maligayang pagdating sa ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Sumulat sa kahon sa ibaba at mapupunta ito sa feed mo. Maaaring tumugon ang sinuman, at ang tugon ay post lang na may parent, kaya puwedeng lumalim ang mga usapan ayon sa kailangan.",
+            "Magdagdag ng mga tao bilang kaibigan at sasama sa feed mo ang mga post nila. Ipinapakita ng Global Feed — ang pangalan ng site sa kaliwang itaas — ang lahat ng isinulat dito, at doon ka makakahanap ng idadagdag.",
+            "Bahagi ng Fediverse ang site na ito: maaari mong sundan ang mga account sa Mastodon at ibang server gamit ang buong handle nila, at umaabot ang mga post mo sa mga sumusunod sa iyo roon. Maghanap ng handle tulad ng @someone@example.social at hahanapin sila ng server na ito.",
+            "Lagyan ng #hashtag ang post at lilitaw ito sa pahina ng tag na iyon, at sa Trending kung sapat ang dami ng sumusulat tungkol dito.",
+            "End-to-end encrypted ang mga mensahe sa pagitan ng mga miyembro — ciphertext na hindi mabasa ang iniimbak ng server. I-on ito sa Mga Setting.",
+            "Hindi mo kailangang mag-post agad: mag-save ng draft o magtakda ng oras at kusa itong ipa-publish. Parehong nasa Mga Draft at Naka-iskedyul."
+        ],
+        "more": {
+            "before": "May higit pa sa ", "link": "mga pahina ng tulong", "after": ", kabilang ang paglilipat ng account dito mula sa ibang lugar."
+        },
+        "dontShowAgain": "Huwag na itong ipakita muli"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Maglagay ng emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Larawan ng preview ng link"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Alisin ang larawan"
+    },
+    "LinkItem": {
+        "alt": "Larawan ng preview ng link"
+    },
+    "MapScrubber": {
+        "play": "I-play", "pause": "I-pause", "cumulativeMode": "Hanggang noon", "windowMode": "Noong panahong iyon", "rangeLabel": "Ipakita ang mga post hanggang sa isang petsa",
+        "cumulativeLabel": {
+            "one": "Na-post hanggang {date} — {count} post", "other": "Na-post hanggang {date} — {count} post"
+        },
+        "windowLabel": {
+            "one": "Na-post malapit sa {date} — {count} post", "other": "Na-post malapit sa {date} — {count} post"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Post ni {name}", "pageTitleUntitled": "Post", "imageAltByAuthor": "Larawang nai-post ni {name}", "imageAltUntitled": "Larawan"
+    },
+    "PostBookmarkButton": {
+        "remove": "Alisin ang bookmark", "add": "I-bookmark"
+    },
+    "PostRepostButton": {
+        "undo": "I-undo ang repost", "repost": "I-repost"
+    },
+    "QuotedPost": {
+        "viewLink": "Tingnan ang siniping post"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Mga nakabinbing request"
+    },
+    "ScrollToTopButton": {
+        "label": "Mag-scroll sa itaas"
+    },
+    "SearchClearButton": {
+        "label": "Burahin ang paghahanap"
+    },
+    "SitePolicyLinks": {
+        "terms": "Mga tuntunin ng serbisyo", "privacy": "Patakaran sa privacy"
+    },
+    "SkipLink": {
+        "label": "Lumaktaw sa content"
+    },
+    "TopicHeading": {
+        "searchLink": "Hanapin ito", "noPosts": "Walang post na bumabanggit dito ngayon."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Wala pang naisulat tungkol sa ganitong uri."
+    },
+    "TrendingEntitySection": {
+        "heading": "Trending"
+    },
+    "PostLocationLink": {
+        "title": "Ipakita ang lugar na ito sa mapa",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "ngayon lang",
+        "minutes": {
+            "one": "{count} min ang nakalipas", "other": "{count} min ang nakalipas"
+        },
+        "hours": {
+            "one": "{count} oras ang nakalipas", "other": "{count} oras ang nakalipas"
+        },
+        "days": {
+            "one": "{count} araw ang nakalipas", "other": "{count} araw ang nakalipas"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Tulad ng system", "light": "Payak na maliwanag", "dark": "Payak na madilim", "sepia": "Sepia", "midnight": "Hatinggabi", "sunset": "Paglubog ng araw", "rose": "Rosas", "forest": "Kagubatan", "ocean": "Karagatan", "lavender": "Lavender", "gold": "Ginto",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Grayscale"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Hindi naka-set up ang pagsasalin sa server na ito.", "nothing": "Walang maisasalin dito.", "unknownSource": "Hindi pa natutukoy ang wika ng post na ito, kaya hindi ito maisasalin.", "alreadyReadable": "Nasa wikang iyon na ang post na ito.", "unsupportedPair": "Hindi pa maisasalin ng server na ito ang wikang iyon."
+    },
+    "LanguagePrompt": {
+        "question": "Gusto mo bang tingnan ang site sa Filipino?", "accept": "Oo", "decline": "Hindi, salamat"
+    },
+    "LanguageSelector": {
+        "label": "Wika", "legend": "Wika"
+    },
+    "EmailDigest": {
+        "subject": "Ang hindi mo nakita sa {site}",
+        "greeting": "Kumusta {name},",
+        "whileAway": "Habang wala ka:",
+        "repeatedTimes": {
+            "one": " ({count} beses)",
+            "other": " ({count} beses)"
+        },
+        "moreMissed": {
+            "one": "at {count} pang notification",
+            "other": "at {count} pang notification"
+        },
+        "messagesWaiting": {
+            "one": "May {count} mensaheng naghihintay sa iyo",
+            "other": "May {count} mensaheng naghihintay sa iyo"
+        },
+        "postsInFeed": {
+            "one": "May {count} bagong post sa feed mo",
+            "other": "May {count} bagong post sa feed mo"
+        },
+        "unsubscribeInstructions": "Para ihinto ang mga email na ito, buksan ang link na ito—isang click lang at hindi kailangan ng password:",
+        "comeSeeWhatIsNew": "Tingnan kung ano ang bago",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Huwag nang ipadala sa akin ang mga ito",
+            "after": "—isang click lang, walang kailangang password."
+        }
+    },
+    "EmailVerification": {
+        "subject": "I-verify ang iyong email address",
+        "greeting": "Kumusta {name},",
+        "instructions": "Paki-verify ang iyong email address sa pamamagitan ng pagbisita sa link na ito:",
+        "htmlInstructions": "Paki-verify ang iyong email address sa pamamagitan ng pag-click sa link sa ibaba:",
+        "buttonLabel": "I-verify ang Email Address",
+        "expiresIn": {
+            "one": "Mag-e-expire ang link na ito pagkalipas ng {count} oras.",
+            "other": "Mag-e-expire ang link na ito pagkalipas ng {count} oras."
+        }
+    },
+    "PasswordReset": {
+        "subject": "I-reset ang iyong password",
+        "greeting": "Kumusta {name},",
+        "instructions": "May humiling (sana ikaw iyon) na i-reset ang password. Bisitahin ang link na ito para pumili ng bagong password:",
+        "htmlInstructions": "May humiling (sana ikaw iyon) na i-reset ang password. I-click ang link sa ibaba para pumili ng bagong password:",
+        "buttonLabel": "I-reset ang Password",
+        "expiresIn": {
+            "one": "Mag-e-expire ang link na ito pagkalipas ng {count} oras.",
+            "other": "Mag-e-expire ang link na ito pagkalipas ng {count} oras."
+        },
+        "ignoreNotice": "Kung hindi mo ito hiniling, maaari mong balewalain ang email na ito."
+    }
+}

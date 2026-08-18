@@ -504,7 +504,6 @@ class Post extends Article
     {
         $byline = new Header();
         $byline -> class = 'PostByline';
-        $byline -> mixins = ['d-flex', 'align-items-start', 'gap-2'];
 
         $byline -> addContent($this -> author -> header());
         $byline -> addContent(new PostMeta($this));

@@ -42,25 +42,9 @@ class FormFormTest extends TestCase
      * look itself - one that starts doing so again would be styled twice, and by
      * two different rules.
      */
-    public function testNoSharedFormComposesTheCardLookItself(): void
+    public function testHTMLObjectsHaveNoSharedStyleProperty(): void
     {
-        $offenders = [];
-
-        foreach (glob(__DIR__ . '/../src/classes/*.php') ?: [] as $file) {
-            $class = basename($file, '.php');
-
-            if (!class_exists($class) || !is_subclass_of($class, FormForm::class)) {
-                continue;
-            }
-
-            $mixins = (new \ReflectionClass($class)) -> getDefaultProperties()['mixins'] ?? [];
-
-            if (in_array('Card', $mixins, true)) {
-                $offenders[] = $class;
-            }
-        }
-
-        $this -> assertSame([], $offenders, 'these forms compose Card on top of the shared .Form look');
+        $this -> assertFalse(property_exists(HTMLObject::class, 'mixins'));
     }
 
     /**

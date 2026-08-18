@@ -9,8 +9,7 @@ declare(strict_types=1);
  */
 class StagedPostEditButton extends Anchor
 {
-    public ?string $class = 'StagedPostEditButton';
-    public array $mixins = ['Button'];
+    public ?string $class = 'Button StagedPostEditButton';
 
     public function __construct(int $staged_post_id)
     {

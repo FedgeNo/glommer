@@ -14,7 +14,6 @@ declare(strict_types=1);
 class RememberedDevice extends Div
 {
     public ?string $class = 'RememberedDevice';
-    public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?int $tokenId = null;
     public ?string $selector = null;
@@ -30,8 +29,7 @@ class RememberedDevice extends Div
 
         $this -> attributes['data-token-id'] = (string) $this -> tokenId;
 
-        $info = new Div();
-        $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
+        $info = new RememberedDeviceInfo();
 
         $label = self::describe($this -> userAgent, $words);
 
@@ -41,8 +39,7 @@ class RememberedDevice extends Div
 
         $info -> addContent(new Paragraph($label));
 
-        $detail_line = new Paragraph($this -> ipAddress !== null ? $this -> ipAddress . ' - ' : null);
-        $detail_line -> mixins = ['muted'];
+        $detail_line = new RememberedDeviceDetail($this -> ipAddress !== null ? $this -> ipAddress . ' - ' : null);
         $detail_line -> addContent((string) ($words['lastUsed']['before'] ?? ''));
         $detail_line -> addContent(new RelativeTime($this -> lastUsedAt));
         $detail_line -> addContent((string) ($words['lastUsed']['after'] ?? ''));

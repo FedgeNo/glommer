@@ -274,7 +274,7 @@ export class VideoCallTestPanel {
         line.appendWithSpace(label);
 
         const detail = document.createElement('div');
-        detail.className = 'VideoCallTestDetail muted';
+        detail.className = 'VideoCallTestDetail';
         detail.textContent = 'Checking…';
         line.appendWithSpace(detail);
 
@@ -288,7 +288,7 @@ export class VideoCallTestPanel {
 
     static #note(text) {
         const note = document.createElement('li');
-        note.className = 'VideoCallTestNote muted';
+        note.className = 'VideoCallTestNote';
         note.textContent = text;
 
         return note;

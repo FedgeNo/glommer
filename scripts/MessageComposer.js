@@ -111,7 +111,7 @@ export class MessageComposer {
 
                 if (result === null) return;
 
-                const list = list_in(document.querySelector('main'), 'MessageList d-flex flex-column');
+                const list = list_in(document.querySelector('main'), 'MessageList');
 
                 const message = Message.fromData(result);
                 const element = message.toElement();

@@ -201,7 +201,7 @@ export class Composer extends PostFields {
         fieldset.appendWithSpace(legend);
 
         const titleRow = document.createElement('div');
-        titleRow.className = 'PostComposerFields d-flex gap-2';
+        titleRow.className = 'PostComposerFields';
 
         const [titleLabel, titleInput] = Composer.titleField();
         titleRow.appendWithSpace(titleLabel);
@@ -214,7 +214,7 @@ export class Composer extends PostFields {
         fieldset.appendWithSpace(titleRow);
 
         const editorRow = document.createElement('div');
-        editorRow.className = 'EditorRow d-flex gap-2 align-items-start';
+        editorRow.className = 'EditorRow';
 
         const linkImagePreview = document.createElement('div');
         linkImagePreview.className = 'LinkImagePreview';
@@ -346,7 +346,7 @@ export class Composer extends PostFields {
         // the cap refuses anybody - empty until something is attached, so a
         // text post never mentions files at all.
         const attachmentCount = document.createElement('span');
-        attachmentCount.className = 'ComposerAttachmentCount text-sm muted';
+        attachmentCount.className = 'ComposerAttachmentCount';
         actions.appendWithSpace(attachmentCount);
 
         // Marks the post as something to opt into. A real checkbox, so it rides
@@ -394,8 +394,8 @@ export class Composer extends PostFields {
         // fields do. A date input and a separate, optional time -
         // datetime-local can't say "this day, whenever", and a day alone is
         // a perfectly good schedule (it publishes as the day starts).
-        // No d-flex utility: its !important display would overpower the
-        // inline display:none that keeps the row away until asked for.
+        // The component selector supplies the flex layout while the inline
+        // display:none keeps the row away until asked for.
         const scheduleRow = document.createElement('div');
         scheduleRow.className = 'ComposerSchedule';
         scheduleRow.style.display = 'none';
@@ -991,7 +991,7 @@ export class Composer extends PostFields {
 
         if (!list) {
             list = document.createElement('ul');
-            list.className = 'ComposerAttachmentList d-flex flex-column gap-2';
+            list.className = 'ComposerAttachmentList';
             this.#form.querySelector('.ComposerActions').before(list);
         }
 
@@ -1000,7 +1000,7 @@ export class Composer extends PostFields {
 
     #addAttachment(file) {
         const row = document.createElement('li');
-        row.className = 'ComposerAttachment d-flex align-items-center gap-2';
+            row.className = 'ComposerAttachment';
 
         const entry = { file, row, altInput: null, thumbURL: null };
 
@@ -1021,7 +1021,7 @@ export class Composer extends PostFields {
         }
 
         const name = document.createElement('span');
-        name.className = 'ComposerAttachmentName text-sm';
+            name.className = 'ComposerAttachmentName';
         name.textContent = file.name;
         row.appendWithSpace(name);
 
@@ -1034,7 +1034,7 @@ export class Composer extends PostFields {
 
         const remove = document.createElement('button');
         remove.type = 'button';
-        remove.className = 'Button ComposerAttachmentRemoveButton Removing ms-auto';
+            remove.className = 'Button ComposerAttachmentRemoveButton Removing';
         remove.textContent = 'Remove';
         remove.addEventListener('click', () => this.#removeAttachment(entry));
         row.appendWithSpace(remove);

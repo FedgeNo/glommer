@@ -13,7 +13,6 @@ declare(strict_types=1);
 class BannedTrendingEntity extends Div
 {
     public ?string $class = 'BannedTrendingEntity';
-    public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?string $type = null;
     public ?string $title = null;
@@ -26,15 +25,13 @@ class BannedTrendingEntity extends Div
         $this -> attributes['data-entity-type'] = (string) $this -> type;
         $this -> attributes['data-entity-value'] = (string) $this -> title;
 
-        $info = new Div();
-        $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
+        $info = new BannedTrendingEntityInfo();
         $info -> addContent(new Paragraph($this -> title . ' (' . $this -> type . ')'));
 
         $words = Strings::for(self::class);
         $sentence = $words['bannedBy'] ?? [];
 
-        $detail = new Paragraph();
-        $detail -> mixins = ['muted'];
+        $detail = new BannedTrendingEntityDetail();
         // The time is an element of its own between two text nodes, so a
         // language can put it anywhere in the sentence - the same shape an
         // inline link takes.
@@ -54,7 +51,6 @@ class BannedTrendingEntity extends Div
         $this -> addContent($info);
 
         $unban = new TrendingEntityUnbanButton((string) $this -> type, (string) $this -> title);
-        $unban -> mixins[] = 'ms-auto';
         $this -> addContent($unban);
 
         return parent::toDOM();

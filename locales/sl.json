@@ -1,0 +1,1180 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "{count} glas",
+            "two": "{count} glasova",
+            "few": "{count} glasovi",
+            "other": "{count} glasov"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Prijavite se",
+            "after": " za odgovor."
+        },
+        "post": {
+            "before": "",
+            "link": "Prijavite se",
+            "after": " za objavo."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Site",
+        "siteURLLabel": "URL spletnega mesta",
+        "siteTitleLabel": "Naslov spletnega mesta",
+        "mailFromAddressLabel": "Naslov pošiljatelja pošte",
+        "serverNameConfirmedLabel": "V nastavitvah spletnega strežnika sem določil \"ServerName {host}\" in \"UseCanonicalName On\" (preveri se le, če samodejnega preizkusa v živo ni mogoče dokončati - glejte razdelek HTTPS v README.md)",
+        "databaseLegend": "Podatkovna zbirka",
+        "databaseHostLabel": "Gostitelj podatkovne zbirke",
+        "databasePortLabel": "Vrata podatkovne zbirke",
+        "databaseNameLabel": "Ime podatkovne zbirke",
+        "databaseAdminUsernameLabel": "Uporabniško ime skrbnika podatkovne zbirke",
+        "databaseAdminPasswordLabel": "Geslo skrbnika podatkovne zbirke",
+        "webSocketTLSLegend": "WebSocket TLS (izbirno)",
+        "certificatePathLabel": "Pot do potrdila",
+        "certificatePathPlaceholder": "Pustite prazno za samodejno ustvarjanje z mkcert",
+        "keyPathLabel": "Pot do ključa",
+        "keyPathPlaceholder": "Pustite prazno za samodejno ustvarjanje z mkcert",
+        "botProtectionLegend": "Zaščita pred roboti (izbirno)",
+        "turnstileSiteKeyLabel": "Ključ spletnega mesta Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Pustite prazno, če želite preskočiti",
+        "turnstileSecretKeyLabel": "Skrivni ključ Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Pustite prazno, če želite preskočiti",
+        "submit": "Nastavi"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Trenutna geselska fraza",
+        "newPassphraseLabel": "Nova geselska fraza",
+        "confirmNewPassphraseLabel": "Potrdite novo geselsko frazo",
+        "accountPasswordLabel": "Geslo računa",
+        "submit": "Spremeni geselsko frazo"
+    },
+    "PasswordResetForm": {
+        "legend": "Izberite novo geslo",
+        "newPasswordLabel": "Novo geslo",
+        "newPasswordPlaceholder": "Vsaj 8 znakov",
+        "confirmPasswordLabel": "Potrdite novo geslo",
+        "submit": "Ponastavi geslo"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Ponastavite geslo",
+        "emailLabel": "E-pošta",
+        "submit": "Pošlji povezavo za ponastavitev"
+    },
+    "EmailRevertForm": {
+        "submit": "Razveljavi spremembo e-pošte"
+    },
+    "EmailVerifyForm": {
+        "submit": "Potrdi e-poštni naslov"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Znova jih vklopi"
+    },
+    "EmailDigestSetting": {
+        "label": "Po e-pošti mi pošlji, kaj sem zamudil med daljšo odsotnostjo"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Neznana naprava",
+        "browserOnOS": "{browser} v sistemu {os}",
+        "thisDevice": " (ta naprava)",
+        "lastUsed": {
+            "before": "Nazadnje uporabljeno ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Končajte vse dejavne seje in pozabite vse shranjene naprave. Odjavljeni boste iz vseh brskalnikov, tudi iz tega."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Odjavi se povsod"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Potrdi z Googlom za izbris"
+    },
+    "GoogleSignInButton": {
+        "label": "Nadaljuj z Googlom"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Uredi profil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Prejemajte obvestila v tej napravi, tudi ko spletno mesto ni odprto. Ta izbira velja za vsak brskalnik posebej - vklopite jo povsod, kjer želite biti dosegljivi.",
+        "label": {
+            "off": "Omogoči v tej napravi",
+            "on": "Izklopi v tej napravi"
+        },
+        "unsupported": "Ta brskalnik ne podpira potisnih obvestil"
+    },
+    "LoginForm": {
+        "legend": "Prijava",
+        "identifier": "Uporabniško ime ali e-pošta",
+        "password": "Geslo",
+        "rememberMe": "Zapomni si me",
+        "submit": "Prijavi se"
+    },
+    "SignupForm": {
+        "legend": "Ustvarite račun",
+        "usernameLabel": "Uporabniško ime",
+        "usernamePlaceholder": "Male črke, številke in _",
+        "emailLabel": "E-pošta",
+        "emailPlaceholder": "Veljaven e-poštni naslov",
+        "displayName": "Prikazno ime (izbirno)",
+        "bioLabel": "Predstavitev (izbirno)",
+        "bioPlaceholder": "Kratka predstavitev - #oznake, @omembe in povezave postanejo klikljive",
+        "passwordLabel": "Geslo",
+        "passwordPlaceholder": "Geslo: Vsaj 8 znakov",
+        "rememberMe": "Zapomni si me",
+        "submit": "Registriraj se"
+    },
+    "PasswordChangeForm": {
+        "legend": "Spremenite geslo",
+        "currentPassword": "Trenutno geslo",
+        "newPasswordLabel": "Novo geslo",
+        "newPasswordPlaceholder": "Vsaj 8 znakov",
+        "confirmPassword": "Potrdite novo geslo",
+        "submit": "Spremeni geslo"
+    },
+    "EmailChangeForm": {
+        "legend": "Spremenite e-poštni naslov",
+        "newEmail": "Nov e-poštni naslov",
+        "currentPassword": "Trenutno geslo",
+        "notice": "Pred nadaljnjo uporabo spletnega mesta boste morali potrditi novi naslov.",
+        "submit": "Spremeni e-pošto"
+    },
+    "AccountDeleteForm": {
+        "legend": "Izbrišite račun",
+        "warning": "S tem trajno izbrišete račun, objave in sporočila. Dejanja ni mogoče razveljaviti.",
+        "currentPassword": "Trenutno geslo",
+        "submit": "Izbriši račun"
+    },
+    "AccountMigrationForm": {
+        "legend": "Preselitev na drug strežnik",
+        "movedNotice": "Ta račun se je preselil na {destination}. Vaši sledilci so bili pozvani, naj vam sledijo tam.",
+        "explanation": "Vaši sledilci bodo pozvani, naj sledijo novemu računu. Vaše objave ostanejo tukaj - naslovi predmetov pripadajo strežniku, ki jih je ustvaril, zato jih ni mogoče odnesti.",
+        "addressNotice": "Račun, na katerega se selite, mora tega najprej navesti pod \"znan tudi kot\". Vaš tukajšnji naslov je {address}.",
+        "movedToLabel": "Preseli na",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Znan tudi kot",
+        "aliasesExplanation": "Računi drugje, ki so prav tako vaši. Če enega navedete tukaj, se lahko ta račun preseli na tega - to je dovoljenje, ne sama selitev. En naslov na vrstico.",
+        "aliasesLabel": "Vaši drugi računi",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Shrani"
+    },
+    "TwoFactorForm": {
+        "legend": "Vnesite potrditveno kodo",
+        "explanation": "Potrditveno kodo smo vam poslali po e-pošti. Vnesite jo spodaj ali uporabite eno od obnovitvenih kod, da dokončate prijavo.",
+        "explanationEmailFailed": "Potrditvene kode trenutno ni bilo mogoče poslati po e-pošti. Za dokončanje prijave vnesite eno od obnovitvenih kod.",
+        "code": "Potrditvena koda",
+        "submit": "Potrdi"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Dvostopenjsko preverjanje je vklopljeno",
+            "off": "Dvostopenjsko preverjanje je izklopljeno"
+        },
+        "explanation": {
+            "on": "Ob prijavi vam bomo po e-pošti poslali potrditveno kodo, ki jo morate vnesti za dokončanje prijave. Če e-pošta ne pride do vas, se lahko prijavite z eno od obnovitvenih kod.",
+            "off": "Prijavi dodajte drugi korak: po e-pošti vam bomo poslali potrditveno kodo, ki jo morate vnesti, zato samo geslo ne bo dovolj za dostop. Prejeli boste obnovitvene kode za enkratno uporabo, ki jih shranite za primer, ko e-pošta ne pride do vas."
+        },
+        "currentPassword": "Trenutno geslo",
+        "submit": {
+            "on": "Izklopi dvostopenjsko preverjanje",
+            "off": "Vklopi dvostopenjsko preverjanje"
+        },
+        "regenerate": "Ustvari nove obnovitvene kode",
+        "recoveryHeading": "Vaše obnovitvene kode",
+        "recoveryNote": "Zdaj jih shranite na varno mesto — ne bodo več prikazane. Vsaka vas enkrat prijavi, ko potrditvena e-pošta ne pride do vas, ustvarjanje novih kod pa zamenja vse te kode.",
+        "toast": {
+            "on": "Dvostopenjsko preverjanje je zdaj vklopljeno.",
+            "off": "Dvostopenjsko preverjanje je zdaj izklopljeno.",
+            "regenerated": "Ustvarjene so bile nove obnovitvene kode. Stare ne delujejo več."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Preverite prejeto pošto in kliknite poslano potrditveno povezavo, da potrdite e-poštni naslov. Če je ne vidite, preverite mapo z neželeno pošto."
+    },
+    "VerificationResendButton": {
+        "label": "Znova pošlji potrditveno e-pošto"
+    },
+    "MailSettingsForm": {
+        "legend": "Odhodna pošta",
+        "fromAddressLabel": "Naslov pošiljatelja",
+        "fromAddressPlaceholder": "Dokler to ni nastavljeno, ni mogoče poslati e-pošte",
+        "fromNameLabel": "Ime pošiljatelja",
+        "hostLabel": "Gostitelj SMTP",
+        "portLabel": "Vrata SMTP",
+        "usernameLabel": "Uporabniško ime SMTP",
+        "passwordLabel": "Geslo SMTP",
+        "passwordPlaceholder": {
+            "set": "Geslo je nastavljeno - pustite prazno, če ga želite ohraniti",
+            "unset": "Geslo SMTP"
+        },
+        "encryptionLabel": "Šifriranje",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, običajno na vratih 587)",
+            "ssl": "SSL (implicitni TLS, običajno na vratih 465)",
+            "none": "Brez"
+        },
+        "explainer": "Gostitelja SMTP pustite praznega, če želite namesto tega pošiljati s PHP-jevo funkcijo mail() (ni priporočeno - glejte razdelek README o dostavljivosti). Dokler ni nastavljen naslov \"pošiljatelja\", ni mogoče poslati nobene e-pošte.",
+        "save": "Shrani"
+    },
+    "MapSettingsForm": {
+        "legend": "Ploščice zemljevida",
+        "notice": "Pustite prazno za uporabo OpenStreetMap. Za ponudnika s ključem prilepite njegovo predlogo URL z dobesednim {apiKey} na mestu ključa ter spodaj dodajte ključ in navedbo vira.",
+        "urlLabel": "Predloga URL ploščice",
+        "keyLabel": "Ključ API",
+        "keyPlaceholder": "Ključ API ponudnika ploščic",
+        "attributionLabel": "Navedba vira",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Shrani"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Prijava z Googlom",
+        "clientIdLabel": "ID odjemalca",
+        "clientIdPlaceholder": "ID odjemalca Google OAuth",
+        "secretLabel": "Skrivnost odjemalca",
+        "secretPlaceholder": {
+            "set": "Skrivnost odjemalca je nastavljena - pustite prazno, če jo želite ohraniti",
+            "unset": "Skrivnost odjemalca Google OAuth"
+        },
+        "explainer": "Obe vrednosti sta potrebni, da se pri registraciji in prijavi prikaže \"Nadaljuj z Googlom\". V odjemalcu Google Cloud OAuth nastavite pooblaščeni URI preusmeritve na {url} - funkcijo izklopite tako, da izbrišete ID odjemalca.",
+        "save": "Shrani"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Ključ spletnega mesta",
+        "turnstileSiteKeyPlaceholder": "Ključ spletnega mesta Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Skrivni ključ",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Skrivni ključ je nastavljen - pustite prazno, če ga želite ohraniti",
+            "unset": "Skrivni ključ Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Oba ključa sta potrebna, da se pri registraciji in prijavi prikaže CAPTCHA. Funkcijo izklopite tako, da izbrišete ključ spletnega mesta.",
+        "recaptchaLegend": "Google reCAPTCHA (obnovitev zaklenjenega računa)",
+        "recaptchaSiteKeyLabel": "Ključ spletnega mesta",
+        "recaptchaSiteKeyPlaceholder": "Ključ spletnega mesta Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Skrivni ključ",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Skrivni ključ je nastavljen - pustite prazno, če ga želite ohraniti",
+            "unset": "Skrivni ključ Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Oba ključa sta obvezna. Ko sta nastavljena, lahko račun, ki doseže omejitev poskusov prijave, znova vstopi z uspešno opravljeno preizkušnjo namesto čakanja na konec zaklepa; brez njiju je treba počakati ves čas. Uporabite reCAPTCHA v2 (\"Nisem robot\"). Funkcijo izklopite tako, da izbrišete ključ spletnega mesta.",
+        "save": "Shrani"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Uporabljajo ga funkcije umetne inteligence na spletnem mestu (povzetki priljubljenih tem itd.). Model pustite prazen za uporabo usmerjevalnika brezplačnih modelov, pri katerem OpenRouter naključno izbere med trenutno brezplačnimi modeli in nikoli ne more povzročiti stroškov.",
+        "keyLabel": "Ključ API",
+        "keyPlaceholder": {
+            "set": "Ključ API je nastavljen - pustite prazno, če ga želite ohraniti",
+            "unset": "Ključ API OpenRouter"
+        },
+        "clearKeyLabel": "Odstrani shranjeni ključ API (izklopi funkcije umetne inteligence)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Nikoli ne dovoli porabe denarja (priporočeno)",
+        "explainer": "Ko je zaščita vklopljena, vsaka zahteva omeji ceno na nič, zato ob odsotnosti brezplačnega ponudnika popolnoma spodleti, namesto da bi prešla na plačljiv model. Odstranite shranjeni ključ API, da povsem izklopite funkcije umetne inteligence.",
+        "save": "Shrani"
+    },
+    "AboutSettingsForm": {
+        "legend": "O spletnem mestu",
+        "description": "Navadno besedilo - prazne vrstice ločujejo odstavke. Prvi odstavek bo uporabljen kot opis spletnega mesta.",
+        "save": "Shrani"
+    },
+    "TermsSettingsForm": {
+        "legend": "Pogoji uporabe",
+        "description": "Navadno besedilo - prazne vrstice ločujejo odstavke.",
+        "save": "Shrani"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Pravilnik o zasebnosti",
+        "description": "Navadno besedilo - prazne vrstice ločujejo odstavke.",
+        "save": "Shrani"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-poštni povzetek",
+        "fieldLabel": "Zaključni odstavek",
+        "notice": "Doda se blizu konca vsakega povzetka, za seznamom zamujenega. Navadno besedilo. Pustite prazno za vrnitev na privzeto besedilo programa.",
+        "save": "Shrani"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Trenutna ikona spletnega mesta",
+        "save": "Naloži ikono spletnega mesta"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Slika naslovne strani",
+        "explainer": "Druga spletna mesta jo prikažejo, ko nekdo deli povezavo do tega mesta - samo v metapodatkih Open Graph, nikoli na strani. Obreže se na 1200×630. Brez nje predogledi povezav nimajo slike.",
+        "currentAlt": "Trenutna slika naslovne strani",
+        "save": "Naloži sliko"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Samodejno predvajanje"
+    },
+    "CarouselNextButton": {
+        "name": "Naslednje"
+    },
+    "CarouselPrevButton": {
+        "name": "Prejšnje"
+    },
+    "MediaFullscreenButton": {
+        "name": "Celoten zaslon"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Odstrani datoteke"
+    },
+    "NotificationDropdown": {
+        "showAll": "Prikaži vse"
+    },
+    "HelpSearch": {
+        "placeholder": "Išči v pomoči…",
+        "noMatches": "Noben članek pomoči se ne ujema z iskanjem."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Razumem"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Zavrzi"
+    },
+    "StagedPostEditButton": {
+        "name": "Uredi"
+    },
+    "StagedPostPublishButton": {
+        "name": "Objavi zdaj"
+    },
+    "LogoutButton": {
+        "name": "Odjavi se"
+    },
+    "AvatarUploadForm": {
+        "submit": "Posodobi avatar"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Išči med prepovedanimi uporabniki…"
+    },
+    "BannedUserSection": {
+        "heading": "Prepovedani uporabniki"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Poslane zahteve (čakajo na odgovor)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Prepovedal uporabnik {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blokiral uporabnik {name} ",
+            "after": ""
+        },
+        "deletedAccount": "izbrisan račun",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "januar",
+            "2": "februar",
+            "3": "marec",
+            "4": "april",
+            "5": "maj",
+            "6": "junij",
+            "7": "julij",
+            "8": "avgust",
+            "9": "september",
+            "10": "oktober",
+            "11": "november",
+            "12": "december"
+        },
+        "shortMonths": {
+            "1": "jan.",
+            "2": "feb.",
+            "3": "mar.",
+            "4": "apr.",
+            "5": "maj",
+            "6": "jun.",
+            "7": "jul.",
+            "8": "avg.",
+            "9": "sep.",
+            "10": "okt.",
+            "11": "nov.",
+            "12": "dec."
+        },
+        "long": "{day}. {month} {year}",
+        "short": "{day}. {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} ob {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Povezava s strežnikom WebSocket na 127.0.0.1:{port}{tls} ni uspela ({error}). Najprej ga zaženite: systemctl --user start glommer-websocket (datoteko enote poiščite v README.md). Če je pravkar dobil ali izgubil WS_TLS_CERT/WS_TLS_KEY, ga znova zaženite, da se ujema z .env.",
+        "wsOverTLS": " prek TLS",
+        "wsBadHandshake": "Storitev na 127.0.0.1:{port} ni dokončala veljavnega rokovanja WebSocket - na teh vratih morda posluša nekaj drugega kot bin/websocket-server.php.",
+        "wsNoPong": "Strežnik WebSocket je sprejel rokovanje, vendar se ni odzval na ping - morda je obtičal ali ne deluje pravilno. Preverite njegove dnevnike.",
+        "wsReachable": "Strežnik WebSocket je dosegljiv in se odziva na 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Oznaka",
+            "person": "Oseba",
+            "org": "Organizacija",
+            "gpe": "Kraj",
+            "loc": "Območje",
+            "fac": "Znamenitost",
+            "product": "Izdelek",
+            "event": "Dogodek",
+            "work_of_art": "Delo",
+            "law": "Zakon",
+            "language": "Jezik",
+            "norp": "Skupina"
+        },
+        "plural": {
+            "hashtag": "Oznake",
+            "person": "Ljudje",
+            "org": "Organizacije",
+            "gpe": "Kraji",
+            "loc": "Območja",
+            "fac": "Znamenitosti",
+            "product": "Izdelki",
+            "event": "Dogodki",
+            "work_of_art": "Dela",
+            "law": "Zakoni",
+            "language": "Jeziki",
+            "norp": "Skupine"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Odstrani prijatelja"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Sprejmi"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Zavrni"
+    },
+    "UserFollowButton": {
+        "follow": "Sledi",
+        "unfollow": "Nehaj slediti"
+    },
+    "UserBlockButton": {
+        "name": "Blokiraj"
+    },
+    "UserUnblockButton": {
+        "name": "Odblokiraj"
+    },
+    "OtherUser": {
+        "message": "Sporočilo"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Meni",
+        "loggedInAs": "Prijavljeni kot {name}",
+        "friendsFeed": "Tok prijateljev",
+        "relayFeed": "Tok posrednika",
+        "users": "Uporabniki",
+        "tags": "Oznake",
+        "topics": "Teme",
+        "map": "Zemljevid",
+        "locations": "Lokacije",
+        "search": "Iskanje",
+        "messages": "Sporočila",
+        "bookmarks": "Zaznamki",
+        "help": "Pomoč",
+        "about": "O spletnem mestu",
+        "login": "Prijava",
+        "signup": "Registracija",
+        "friends": "Prijatelji",
+        "drafts": "Osnutki in načrtovano",
+        "userSettings": "Uporabniške nastavitve",
+        "modSettings": "Nastavitve moderatorja",
+        "adminSettings": "Nastavitve skrbnika"
+    },
+    "LogoutForm": {
+        "submit": "Odjavi se"
+    },
+    "User": {
+        "joined": "Pridružil se je {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Dodaj prijatelja",
+        "cancel": "Prekliči zahtevo"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Načrtovano za {when}",
+        "draft": "Osnutek - objavi se šele, ko tako določite"
+    },
+    "MessageTranslateButton": {
+        "name": "Prevedi to sporočilo"
+    },
+    "MessageTranslationNotice": {
+        "heading": "O prevajanju sporočil",
+        "body": "Za prevod sporočila se njegovo besedilo pošlje temu strežniku in prevede tukaj. Nič se ne shrani: prevod se ne zapiše v podatkovno zbirko, sporočilo pa ostane nespremenjeno. Tako prevedeno sporočilo je strežnik prebral, zato ni šifrirano od konca do konca kot neprevedeno sporočilo. Prevesti je mogoče samo prejeta sporočila in samo na vašo zahtevo.",
+        "confirm": "Prevedi",
+        "cancel": "Ne zdaj"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Ste pozabili geselsko frazo? Ponastavitev ustvari nove ključe pod novo frazo - sporočil, šifriranih s starimi ključi, pa ne bo mogel nikoli več prebrati nihče.",
+        "requirements": "Vsaj 12 znakov in ne sme biti geslo računa - to se pošlje temu strežniku, geselska fraza pa se nikoli ne sme.",
+        "passphraseLabel": "Geselska fraza",
+        "resetPassphraseLabel": "Nova geselska fraza",
+        "confirmLabel": "Potrdite geselsko frazo",
+        "accountPasswordLabel": "Geslo računa",
+        "submitLabel": "Vklopi šifrirana sporočila",
+        "resetSubmitLabel": "Ponastavi šifrirne ključe"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Sporočila, šifrirana od konca do konca, se zaklepajo in odklepajo v vašem brskalniku: ta strežnik jih posreduje in hrani, ne da bi jih lahko prebral. Vaš ključ varuje geselska fraza, ista fraza pa odklene sporočila v katerem koli brskalniku. Pogovori se šifrirajo, ko oba uporabnika vklopita to možnost; sporočila uporabnikom na drugih strežnikih ostanejo nešifrirana, ker jih federacija drugače ne more prenašati.",
+        "noRecovery": "Izgubljene geselske fraze ni mogoče obnoviti - niti skrbnik je ne more. Izguba fraze pomeni izgubo šifriranih sporočil.",
+        "enabledStatus": "Šifrirana sporočila so vklopljena."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Šifrirano",
+            "explanation": "Sporočila v tem pogovoru so šifrirana od konca do konca: odklenejo se z vašo geselsko frazo in berejo v vaših brskalnikih, ta strežnik pa hrani šifrirano besedilo. Z drugo osebo preverite varnostno kodo na dnu niti, da se prepričate, da ni nikogar med vama. Sporočila, poslana pred vklopom šifriranja, ostanejo berljiva kot prej."
+        },
+        "awaiting-theirs": {
+            "label": "Ni šifrirano",
+            "explanation": "Sporočila tukaj bodo šifrirana od konca do konca, ko uporabnik {handle} v nastavitvah vklopi šifrirana sporočila."
+        },
+        "awaiting-yours": {
+            "label": "Ni šifrirano",
+            "explanation": "Sporočila tukaj niso šifrirana od konca do konca. Za zaščito tega pogovora v Nastavitvah vklopite šifrirana sporočila."
+        },
+        "federated": {
+            "label": "Ni šifrirano",
+            "explanation": "Uporabnik {handle} je na drugem strežniku. Sporočila v tem pogovoru so shranjena tako na tistem kot na tem strežniku, njegov skrbnik pa jih lahko bere - protokol med strežniki jih ne more šifrirati. Občutljive vsebine ohranite za pogovore na tem spletnem mestu."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Sledenje računom v Fediverse",
+        "notice": "Prilepite enega ali več identifikatorjev, npr. @uporabnik@example.social - med njimi deluje kateri koli ločilni znak.",
+        "handlesLabel": "Identifikatorji Fediverse za sledenje",
+        "submit": "Sledi",
+        "statusPending": "čaka",
+        "statusAccepted": "sprejeto"
+    },
+    "ServerBlockForm": {
+        "legend": "Blokiraj strežnik",
+        "description": "Zavrne vse s tega strežnika in vseh njegovih podrejenih naslovov: dostava ne poteka ne noter ne ven, obstoječa sledenja v obe smeri pa se odstranijo.",
+        "serverLabel": "Strežnik",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Razlog",
+        "reasonPlaceholder": "Zakaj je ta strežnik blokiran",
+        "submit": "Blokiraj strežnik"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Zažene dele nastavitve klica, ki jih je mogoče preveriti iz enega brskalnika. Tukaj je mogoče preizkusiti vse do dejanske neposredne povezave; za povezavo z drugo osebo je potrebna tudi ta oseba."
+    },
+    "VideoCallTestButton": {
+        "label": "Zaženi preverjanje"
+    },
+    "WebSocketStatus": {
+        "ok": "Strežnik WebSocket: deluje",
+        "failed": "Strežnik WebSocket: {detail}",
+        "clientTesting": "Povezava brskalnika: preizkušanje…",
+        "clientConnecting": "Povezava brskalnika: povezovanje…",
+        "clientConnected": "Povezava brskalnika: povezano",
+        "clientDisconnecting": "Povezava brskalnika: prekinjanje…",
+        "clientNotConnected": "Povezava brskalnika: ni povezano"
+    },
+    "UploadWorkerStatus": {
+        "running": "Delovna storitev: deluje",
+        "stopped": "Delovna storitev: ne deluje - pripravljene naložene datoteke ne bodo prekodirane, dokler se storitev znova ne zažene",
+        "unknown": "Delovna storitev: neznano - systemctl morda ni na voljo na tem gostitelju ali pa SELinux zavrača poizvedbo spletnega strežnika o lastnem stanju (za popravek zaženite bin/install.php kot root)",
+        "queue": "Čakalna vrsta: {staging} v pripravi, {pending} čaka, {processing} v obdelavi"
+    },
+    "TrendingTimerStatus": {
+        "running": "Časovnik priljubljenih vsebin: deluje",
+        "stopped": "Časovnik priljubljenih vsebin: ne deluje - priljubljene teme se bodo osvežile samo s samopopravilom ob branju (Trending::current()), ne po urniku. Za nastavitev zaženite bin/install.php kot root.",
+        "unknown": "Časovnik priljubljenih vsebin: neznano - systemctl morda ni na voljo na tem gostitelju ali pa SELinux zavrača poizvedbo spletnega strežnika o lastnem stanju (za popravek zaženite bin/install.php kot root)"
+    },
+    "Notification": {
+        "postReady": "Obdelava vaše predstavnosti je končana in objava je zdaj javna",
+        "scheduledPostLive": "Vaša načrtovana objava je zdaj javna",
+        "uploadPartlyFailed": "Objava je javna, vendar ene ali več datotek ni bilo mogoče obdelati",
+        "uploadFailed": "Enega od vaših prenosov ni bilo mogoče obdelati in ni bil objavljen",
+        "mailerFailed": "Dostava e-pošte ni uspela - poštna storitev morda ne deluje. Preverite nastavitve pošte.",
+        "mailFromNotConfigured": "Naslov pošiljatelja pošte ni nastavljen, zato e-pošte ni mogoče pošiljati. Nastavite ga v Nastavitvah skrbnika (razdelek Odhodna pošta) ali z bin/install.php.",
+        "systemError": "Prišlo je do napake strežnika. Podrobnosti poiščite v dnevniku napak.",
+        "passwordRemovedGoogle": "Ko ste se prijavili z Googlom, je bilo vaše geslo odstranjeno. Če želite nastaviti novo, uporabite \"Pozabljeno geslo\".",
+        "like": "Uporabniku {name} je bila všeč vaša objava",
+        "repost": "Uporabnik {name} je znova objavil vašo objavo",
+        "reply": "Uporabnik {name} je odgovoril na vašo objavo",
+        "friendRequest": "Uporabnik {name} vam je poslal prošnjo za prijateljstvo",
+        "friendAccepted": "Uporabnik {name} je sprejel vašo prošnjo za prijateljstvo",
+        "message": "Uporabnik {name} vam je poslal sporočilo",
+        "mention": "Uporabnik {name} vas je omenil v objavi",
+        "follow": "Uporabnik {name} vam je začel slediti z drugega strežnika",
+        "default": "Uporabnik {name} je nekaj naredil"
+    },
+    "NotificationList": {
+        "emptyNotice": "Zaenkrat ni obvestil."
+    },
+    "NotificationsNavLink": {
+        "label": "Obvestila",
+        "unseen": "Nevidena obvestila"
+    },
+    "NotificationTestPanel": {
+        "intro": "Pošljite sebi (skrbniku) preizkusno obvestilo. Takoj bi se moralo prikazati kot kratko obvestilo in v spustnem seznamu obvestil.",
+        "button": "Pošlji preizkusno obvestilo",
+        "sending": "Pošiljanje…",
+        "sent": "Poslano!",
+        "failed": "Ni uspelo"
+    },
+    "MessageDot": {
+        "label": "Neprebrana sporočila"
+    },
+    "NavAlertDot": {
+        "label": "Nekaj novega v meniju"
+    },
+    "Message": {
+        "encrypted": "Šifrirano sporočilo",
+        "decryptionFailed": "To sporočilo je bilo šifrirano s ključi, ki ne obstajajo več."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Sporočilo",
+        "bodyPlaceholder": "Napišite sporočilo",
+        "send": "Pošlji"
+    },
+    "MessageList": {
+        "emptyNotice": "Zaenkrat ni sporočil."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "To kodo si preberita na drug način - na glas, osebno ali med klicem. Če se na obeh straneh ujema, ni nikogar med vama.",
+        "changed": "Ta koda se je od vašega preverjanja spremenila. To se zgodi, ko eden od vaju ponastavi šifrirne ključe - enako pa bi bilo videti tudi, če bi nekdo bral ta pogovor. Preden ji zaupate, preverite novo kodo z drugo osebo.",
+        "verified": "To kodo ste preverili."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Označi kot potrjeno"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Geselska fraza",
+        "passphrasePlaceholder": "Geselska fraza za odklep tega pogovora",
+        "submit": "Odkleni"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Zadnje sporočilo ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Občutljiva predstavnost"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Privzeto prikaži občutljivo predstavnost"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Objava",
+            "message": "Sporočilo",
+            "user": "Uporabnik"
+        },
+        "summary": {
+            "before": "{type} #{id}, prijavil uporabnik ",
+            "after": ""
+        },
+        "reasonLine": "Razlog: {reason}",
+        "banReporterLabel": "Prepovej prijavitelja",
+        "banReportedUserLabel": "Prepovej prijavljenega uporabnika",
+        "deleteLabel": "Izbriši {type}",
+        "reportedImageAlt": "Prijavljena slika",
+        "attachmentUnavailable": "Prijavljena priloga ni več na voljo.",
+        "viewAttachment": "Prikaži prijavljeno prilogo",
+        "missing": {
+            "noSnapshot": "Prijavljena vsebina ni več na voljo.",
+            "unknownType": "Neznana vrsta vsebine."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Ni prijav."
+    },
+    "ModQueueLinks": {
+        "intro": "Čakalne vrste so dovolj dolge, da jih beremo po eno stran, zato imajo lastne strani.",
+        "reportsLabel": "Prijave",
+        "bannedUsersLabel": "Prepovedani uporabniki"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Noben moderator še ni ničesar naredil."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Ni prepovedanih priljubljenih entitet."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Ni blokiranih strežnikov."
+    },
+    "RelayCard": {
+        "accepted": "Naročeno ",
+        "waiting": "Čakanje na sprejem posrednika - naročeno "
+    },
+    "RelayList": {
+        "emptyNotice": "Ni naročnine na nobenega posrednika. Sem prihaja samo tisto, čemur sledijo člani."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Prek posrednika še ni prišlo nič. Objave se tukaj pojavijo, ko jih strežniki na drugi strani objavijo."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Naroči se na posrednika",
+        "explainerOne": "Posrednik je skupni tok: vsaka javna objava z vseh drugih naročenih strežnikov prispe sem, objave tega strežnika pa gredo vsem njim. Tako nova instanca sploh najde ljudi, saj federacija sicer prenaša le tisto, čemur nekdo tukaj že sledi.",
+        "explainerTwo": "Obremenitve ne morete napovedati - je vse, kar ti strežniki objavijo, en teden mir in naslednji tisoče objav na uro, vaše shrambe ter čakalne vrste dostave in moderiranja pa nosijo vse. Posredovane objave ne pridejo v glavni tok ali tok prijateljev; gredo v Tok posrednika, ki ga ljudje odprejo namenoma.",
+        "addressLabel": "Naslov posrednika",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Naroči se"
+    },
+    "RelayFollowObjectField": {
+        "label": "Način naročnine",
+        "options": {
+            "public": "Sledi javnemu toku (kar pričakuje večina posrednikov)",
+            "actor": "Sledi lastnemu akterju posrednika"
+        },
+        "retryNotice": "Če posrednik nikoli ne sprejme, umaknite naročnino in poskusite drugi način - nekatera programska oprema posrednikov prepozna le enega."
+    },
+    "SiteCounters": {
+        "members": "Člani: {count} ({joined} se jih je pridružilo v zadnjih {days} dneh)",
+        "activeMembers": "Člani tukaj v zadnjih {days} dneh: {count} ({posted} jih je objavljalo)",
+        "posts": "Tukaj napisane objave: {count} ({recent} v zadnjih {days} dneh)",
+        "deliveries": "Federirane dostave v zadnjih {days} dneh: {delivered} jih je prispelo, nad {undeliverable} smo obupali",
+        "queued": "Čaka na odhod: {count} ({failing} jih je bilo vsaj enkrat zavrnjenih)",
+        "pendingReads": "Objave, ki čakajo na branje z drugih strežnikov: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Zaženite zbirko preizkusov spletnega mesta in si oglejte rezultate. Traja nekaj sekund, zato se odpre na lastni strani.",
+        "runLabel": "Zaženi preizkuse"
+    },
+    "HelpArticle": {
+        "backLabel": "Nazaj na vso pomoč"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Trenutno ni predlogov - prihajajo od prijateljev ljudi, s katerimi ste že prijatelji. Zgoraj poiščite nekoga po imenu.",
+        "noMatches": "Nihče tukaj se ne ujema."
+    },
+    "UserModButton": {
+        "make": "Naredi za moderatorja",
+        "remove": "Odstrani vlogo moderatorja"
+    },
+    "UserUnbanButton": {
+        "name": "Odpravi prepoved"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Prepovej"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Odpravi prepoved"
+    },
+    "ReportDismissButton": {
+        "name": "Zavrni"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Označi kot občutljivo"
+    },
+    "ServerUnblockButton": {
+        "name": "Odblokiraj"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Odjavi naročnino"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Prekliči"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: uspešno",
+        "failing": "{suite}: neuspešno"
+    },
+    "PageTitle": {
+        "about": "O spletnem mestu",
+        "adminBanned": "Prepovedani uporabniki",
+        "adminModSettings": "Nastavitve moderatorja",
+        "adminReports": "Prijave",
+        "adminSettings": "Nastavitve skrbnika",
+        "adminTests": "Preizkusi",
+        "authGoogleCallbackAccountDeleted": "Račun izbrisan",
+        "authGoogleCallbackDeleteAccount": "Izbriši račun",
+        "authGoogleCallbackLogin": "Prijava",
+        "bookmarks": "Zaznamki",
+        "checkInbox": "Preverite prejeto pošto",
+        "drafts": "Osnutki in načrtovano",
+        "draftsEditDraft": "Uredi osnutek",
+        "draftsEditScheduled": "Uredi načrtovano objavo",
+        "forgotPassword": "Pozabljeno geslo",
+        "friendsFeed": "Tok prijateljev",
+        "help": "Pomoč",
+        "helpDescription": "Navodila in odgovori za uporabo spletnega mesta.",
+        "locations": "Lokacije",
+        "locationsDescription": "Objave iz krajev najbližje vam.",
+        "locationsPlaceDescription": "Objave v bližini kraja {place}.",
+        "login": "Prijava",
+        "loginVerificationCode": "Potrditvena koda",
+        "map": "Zemljevid",
+        "mapDescription": "Zemljevid objav z vsega sveta - poiščite ljudi in stvari v bližini.",
+        "messages": "Sporočila",
+        "messagesWithUser": "Sporočila z uporabnikom {name}",
+        "notifications": "Obvestila",
+        "privacy": "Pravilnik o zasebnosti",
+        "quote": "Navedek",
+        "relayFeed": "Tok posrednika",
+        "relayFeedDescription": "Javne objave, ki prihajajo od posrednikov, na katere je naročen ta strežnik.",
+        "resetPassword": "Ponastavitev gesla",
+        "revertEmail": "Razveljavi spremembo e-pošte",
+        "search": "Iskanje",
+        "signup": "Registracija",
+        "tags": "Oznake",
+        "tagsDescription": "Brskajte po priljubljenih oznakah na spletnem mestu {siteTitle}.",
+        "tagsTagDescription": "Objave z oznako {tag} na spletnem mestu {siteTitle}.",
+        "terms": "Pogoji uporabe",
+        "topics": "Teme",
+        "topicsDescription": "O čem ljudje trenutno govorijo na spletnem mestu {siteTitle}.",
+        "topicsEntityDescription": "{typeLabel} - objave, ki omenjajo {entityTitle} na spletnem mestu {siteTitle}.",
+        "topicsTypeDescription": "{typePlural}, o katerih ljudje trenutno govorijo na spletnem mestu {siteTitle}.",
+        "unsubscribe": "E-poštni povzetki",
+        "userFriends": "Prijatelji uporabnika {name}",
+        "userFriendsDescription": "Prijatelji uporabnika {name} na spletnem mestu {siteTitle}",
+        "userSettings": "Uporabniške nastavitve",
+        "users": "Uporabniki",
+        "verifyEmail": "Potrdi e-pošto"
+    },
+    "PostLikeButton": {
+        "like": "Všeč mi je",
+        "unlike": "Ni mi več všeč"
+    },
+    "PostPinButton": {
+        "pin": "Pripni",
+        "unpin": "Odpni"
+    },
+    "PostQuoteButton": {
+        "name": "Navedi"
+    },
+    "PostDeleteButton": {
+        "name": "Izbriši"
+    },
+    "PostEditButton": {
+        "name": "Uredi"
+    },
+    "ReportButton": {
+        "name": "Prijavi"
+    },
+    "PostActionBar": {
+        "reply": "Odgovori",
+        "replies": {
+            "one": "Odgovor ({count})",
+            "two": "Odgovora ({count})",
+            "few": "Odgovori ({count})",
+            "other": "Odgovorov ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(urejeno)"
+    },
+    "RepliesHeading": {
+        "heading": "Odgovori"
+    },
+    "PollVoteButton": {
+        "name": "Glasuj"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Prikaži ",
+            "link": "več lokacij",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Objave v vaši bližini",
+        "description": "To prikaže objave najbližje določeni točki - kjer koli je dejavnost, ne glede na oddaljenost. Delite svojo lokacijo, da začnete tam, kjer ste, ali pa izberite točko na zemljevidu.",
+        "useMyLocation": "Uporabi mojo lokacijo",
+        "pickOnMap": "Izberi na zemljevidu",
+        "searchPlaceholder": "Ali vnesite ime kraja…",
+        "searchLabel": "Poišči kraj",
+        "locating": "Iskanje lokacije…",
+        "noGeolocation": "Vaš brskalnik ne more deliti lokacije.",
+        "locationError": "Vaše lokacije ni bilo mogoče pridobiti. Preverite dovoljenje za lokacijo v brskalniku."
+    },
+    "PollDeadline": {
+        "final": "Končni rezultat",
+        "closes": {
+            "before": "Konča se ",
+            "after": ""
+        },
+        "days": {
+            "one": "čez {count} dan",
+            "two": "čez {count} dneva",
+            "few": "čez {count} dni",
+            "other": "čez {count} dni"
+        },
+        "hours": {
+            "one": "čez {count} uro",
+            "two": "čez {count} uri",
+            "few": "čez {count} ure",
+            "other": "čez {count} ur"
+        },
+        "minutes": {
+            "one": "čez {count} minuto",
+            "two": "čez {count} minuti",
+            "few": "čez {count} minute",
+            "other": "čez {count} minut"
+        },
+        "underMinute": "čez manj kot minuto"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Glasovala je {count} oseba ",
+            "two": "Glasovali sta {count} osebi ",
+            "few": "Glasovale so {count} osebe ",
+            "other": "Glasovalo je {count} oseb "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Prijavite se",
+            "after": " za objavo."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Prijavite se",
+            "after": " za odgovor."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " je znova objavil"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "V odgovor na ",
+            "after": ""
+        },
+        "untitled": "to objavo",
+        "jumpToStart": "Pojdi na začetek"
+    },
+    "TopicSummaryCard": {
+        "label": "Povzetek, ustvarjen z umetno inteligenco"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Dobrodošli na ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Napišite nekaj v spodnje polje in poslano bo v vaš tok. Odgovori lahko kdorkoli, odgovor pa je le objava z nadrejeno objavo, zato se pogovori gnezdijo tako globoko, kot je potrebno.",
+            "Dodajte ljudi med prijatelje in njihove objave se pridružijo vašemu toku. Globalni tok - ime spletnega mesta zgoraj levo - prikazuje vse, kar je napisano tukaj, in je kraj, kjer najdete nekoga za dodajanje.",
+            "To spletno mesto je del Fediverse: računom na Mastodonu in drugih strežnikih lahko sledite s celotnim identifikatorjem, vaše objave pa dosežejo ljudi, ki vam tam sledijo. Poiščite identifikator, kot je @nekdo@example.social, in ta strežnik ga bo našel.",
+            "Objavo označite z #oznakami in pojavila se bo na strani oznake ter med priljubljenimi, če o njej piše dovolj ljudi.",
+            "Sporočila med člani so šifrirana od konca do konca - strežnik hrani šifrirano besedilo, ki ga ne more prebrati. To vklopite v Nastavitvah.",
+            "Ni vam treba objaviti takoj: shranite osnutek ali določite čas in objava se objavi sama. Oboje je v razdelku Osnutki in načrtovano."
+        ],
+        "more": {
+            "before": "Več informacij je na ",
+            "link": "straneh pomoči",
+            "after": ", tudi kako sem preseliti račun od drugod."
+        },
+        "dontShowAgain": "Ne prikaži več"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Vstavi emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Slika predogleda povezave"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Odstrani sliko"
+    },
+    "LinkItem": {
+        "alt": "Slika predogleda povezave"
+    },
+    "MapScrubber": {
+        "play": "Predvajaj",
+        "pause": "Premor",
+        "cumulativeMode": "Do takrat",
+        "windowMode": "Samo takrat",
+        "rangeLabel": "Prikaži objave do datuma",
+        "cumulativeLabel": {
+            "one": "Objavljeno do {date} — {count} objava",
+            "two": "Objavljeno do {date} — {count} objavi",
+            "few": "Objavljeno do {date} — {count} objave",
+            "other": "Objavljeno do {date} — {count} objav"
+        },
+        "windowLabel": {
+            "one": "Objavljeno okoli {date} — {count} objava",
+            "two": "Objavljeno okoli {date} — {count} objavi",
+            "few": "Objavljeno okoli {date} — {count} objave",
+            "other": "Objavljeno okoli {date} — {count} objav"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Objava uporabnika {name}",
+        "pageTitleUntitled": "Objava",
+        "imageAltByAuthor": "Fotografija, ki jo je objavil uporabnik {name}",
+        "imageAltUntitled": "Fotografija"
+    },
+    "PostBookmarkButton": {
+        "remove": "Odstrani zaznamek",
+        "add": "Dodaj zaznamek"
+    },
+    "PostRepostButton": {
+        "undo": "Razveljavi ponovno objavo",
+        "repost": "Znova objavi"
+    },
+    "QuotedPost": {
+        "viewLink": "Prikaži navedeno objavo"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Čakajoče zahteve"
+    },
+    "ScrollToTopButton": {
+        "label": "Pomakni na vrh"
+    },
+    "SearchClearButton": {
+        "label": "Počisti iskanje"
+    },
+    "SitePolicyLinks": {
+        "terms": "Pogoji uporabe",
+        "privacy": "Pravilnik o zasebnosti"
+    },
+    "SkipLink": {
+        "label": "Preskoči na vsebino"
+    },
+    "TopicHeading": {
+        "searchLink": "Poišči to",
+        "noPosts": "Tega trenutno ne omenja nobena objava."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "O ničemer te vrste še ni bilo pisano."
+    },
+    "TrendingEntitySection": {
+        "heading": "Priljubljeno"
+    },
+    "PostLocationLink": {
+        "title": "Prikaži ta kraj na zemljevidu",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "pravkar",
+        "minutes": {
+            "one": "pred {count} min",
+            "two": "pred {count} min",
+            "few": "pred {count} min",
+            "other": "pred {count} min"
+        },
+        "hours": {
+            "one": "pred {count} h",
+            "two": "pred {count} h",
+            "few": "pred {count} h",
+            "other": "pred {count} h"
+        },
+        "days": {
+            "one": "pred {count} dnem",
+            "two": "pred {count} dnevoma",
+            "few": "pred {count} dnevi",
+            "other": "pred {count} dnevi"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Uskladi s sistemom",
+            "light": "Preprosta svetla",
+            "dark": "Preprosta temna",
+            "sepia": "Sepia",
+            "midnight": "Polnoč",
+            "sunset": "Sončni zahod",
+            "rose": "Vrtnica",
+            "forest": "Gozd",
+            "ocean": "Ocean",
+            "lavender": "Sivka",
+            "gold": "Zlato",
+            "hacker": "Hacker",
+            "ironbow": "Železni lok",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Kockasta vijačnica",
+            "greyscale": "Sivine"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Prevajanje na tem strežniku ni nastavljeno.",
+        "nothing": "Tukaj ni ničesar za prevod.",
+        "unknownSource": "Jezik te objave še ni določen, zato je ni mogoče prevesti.",
+        "alreadyReadable": "Ta objava je že v tem jeziku.",
+        "unsupportedPair": "Ta strežnik tega jezika še ne more prevesti."
+    },
+    "LanguagePrompt": {
+        "question": "Ali si želite spletno mesto ogledati v slovenščini?",
+        "accept": "Da",
+        "decline": "Ne, hvala"
+    },
+    "LanguageSelector": {
+        "label": "Jezik",
+        "legend": "Jezik"
+    },
+    "EmailDigest": {
+        "subject": "Kaj ste zamudili na {site}",
+        "greeting": "Pozdravljeni, {name},",
+        "whileAway": "Med vašo odsotnostjo:",
+        "repeatedTimes": {
+            "one": " ({count}-krat)",
+            "two": " ({count}-krat)",
+            "few": " ({count}-krat)",
+            "other": " ({count}-krat)"
+        },
+        "moreMissed": {
+            "one": "in še {count} obvestilo",
+            "two": "in še {count} obvestili",
+            "few": "in še {count} obvestila",
+            "other": "in še {count} obvestil"
+        },
+        "messagesWaiting": {
+            "one": "Čaka vas {count} sporočilo",
+            "two": "Čakata vas {count} sporočili",
+            "few": "Čakajo vas {count} sporočila",
+            "other": "Čaka vas {count} sporočil"
+        },
+        "postsInFeed": {
+            "one": "{count} nova objava v vašem toku",
+            "two": "{count} novi objavi v vašem toku",
+            "few": "{count} nove objave v vašem toku",
+            "other": "{count} novih objav v vašem toku"
+        },
+        "unsubscribeInstructions": "Če želite ustaviti ta e-poštna sporočila, odprite to povezavo - potreben je en klik in nobeno geslo:",
+        "comeSeeWhatIsNew": "Pridite pogledat, kaj je novega",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Ne pošiljaj mi jih več",
+            "after": " - en klik, brez gesla."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Potrdite svoj e-poštni naslov",
+        "greeting": "Pozdravljeni, {name},",
+        "instructions": "Potrdite svoj e-poštni naslov tako, da obiščete to povezavo:",
+        "htmlInstructions": "Potrdite svoj e-poštni naslov tako, da kliknete spodnjo povezavo:",
+        "buttonLabel": "Potrdi e-poštni naslov",
+        "expiresIn": {
+            "one": "Ta povezava poteče čez {count} uro.",
+            "two": "Ta povezava poteče čez {count} uri.",
+            "few": "Ta povezava poteče čez {count} ure.",
+            "other": "Ta povezava poteče čez {count} ur."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Ponastavite geslo",
+        "greeting": "Pozdravljeni, {name},",
+        "instructions": "Nekdo (upamo, da vi) je zahteval ponastavitev gesla. Obiščite to povezavo in izberite novo geslo:",
+        "htmlInstructions": "Nekdo (upamo, da vi) je zahteval ponastavitev gesla. Kliknite spodnjo povezavo in izberite novo geslo:",
+        "buttonLabel": "Ponastavi geslo",
+        "expiresIn": {
+            "one": "Ta povezava poteče čez {count} uro.",
+            "two": "Ta povezava poteče čez {count} uri.",
+            "few": "Ta povezava poteče čez {count} ure.",
+            "other": "Ta povezava poteče čez {count} ur."
+        },
+        "ignoreNotice": "Če tega niste zahtevali, lahko to e-pošto prezrete."
+    }
+}

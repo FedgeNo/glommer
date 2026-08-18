@@ -19,7 +19,7 @@ function mounted() {
     });
 
     const form = document.createElement('form');
-    form.className = 'Card d-flex flex-column Composer PostComposer';
+    form.className = 'Card Composer PostComposer';
     document.body.appendChild(form);
     Composer.mount(form);
 
@@ -128,7 +128,7 @@ export default {
 
         'init runs without error when PostComposer is present'() {
             const form = document.createElement('form');
-            form.className = 'Card d-flex flex-column Composer PostComposer';
+            form.className = 'Card Composer PostComposer';
             document.body.appendChild(form);
             Composer.init();
             // The full render chain is browser‑dependent (EmojiPicker, Quill, etc.).

@@ -12,7 +12,6 @@ declare(strict_types=1);
 class BookmarkList extends ItemList
 {
     public ?string $class = 'BookmarkList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     public ?int $userId = null;
 
@@ -47,4 +46,3 @@ SELECT `Posts`.*,
         ])];
     }
 }
-

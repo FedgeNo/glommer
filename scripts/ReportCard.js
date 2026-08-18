@@ -51,7 +51,7 @@ export class ReportCard {
             // via the mod-only passthrough (mediaType already resolved server-side).
             if (Array.isArray(target.attachments) && target.attachments.length > 0) {
                 const media = document.createElement('div');
-                media.className = 'ReportedAttachments d-flex flex-column gap-2';
+                media.className = 'ReportedAttachments';
                 target.attachments.forEach((attachment) => media.appendWithSpace(forensic_attachment_element(attachment, words)));
                 post.appendWithSpace(media);
             }
@@ -74,7 +74,7 @@ export class ReportCard {
         // The server already resolved and localized target.message; the
         // fallback here is only for a payload that somehow carries neither.
         const notice = document.createElement('p');
-        notice.className = 'muted Notice';
+        notice.className = 'Notice';
         notice.textContent = target.message || words.missing.unknownType;
         return notice;
     }
@@ -98,10 +98,10 @@ export class ReportCard {
         const type_label = words.targetTypes[this.targetType] || capitalize(this.targetType);
 
         const card = document.createElement('article');
-        card.className = 'ReportCard d-flex gap-3 align-items-start';
+        card.className = 'ReportCard';
 
         const details = document.createElement('div');
-        details.className = 'ReportDetails d-flex flex-column gap-2';
+        details.className = 'ReportDetails';
 
         const summary = document.createElement('div');
         summary.appendWithSpace(document.createTextNode(
@@ -125,7 +125,7 @@ export class ReportCard {
 
         if (this.createdAt) {
             const meta = document.createElement('time');
-            meta.className = 'muted text-sm RelativeTime';
+        meta.className = 'RelativeTime ReportMeta';
             meta.dateTime = parse_server_date(this.createdAt).toISOString();
             meta.textContent = RelativeTime.format(this.createdAt);
             details.appendWithSpace(meta);
@@ -134,7 +134,7 @@ export class ReportCard {
         card.appendWithSpace(details);
 
         const actions = document.createElement('div');
-        actions.className = 'ReportActions d-flex flex-column gap-2 ms-auto';
+        actions.className = 'ReportActions';
 
         // The admin (userId 1) can't be banned, so no Ban Reporter when the
         // admin filed the report. (The reported user is never the admin - the
@@ -291,7 +291,7 @@ function forensic_attachment_element(attachment, words) {
 
     if (attachment.mediaType === null || attachment.mediaType === undefined) {
         const notice = document.createElement('p');
-        notice.className = 'muted Notice';
+        notice.className = 'Notice';
         notice.textContent = words.attachmentUnavailable;
         return notice;
     }
@@ -305,4 +305,3 @@ function forensic_attachment_element(attachment, words) {
 }
 
 ReadyHandler.add(ReportCard.init);
-

@@ -14,7 +14,6 @@ declare(strict_types=1);
 class RememberedDeviceList extends ItemList
 {
     public ?string $class = 'RememberedDeviceList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     protected string $emptyNotice = 'No remembered devices. Devices where you check "Remember me" at login appear here.';
 

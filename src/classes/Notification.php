@@ -26,8 +26,7 @@ class Notification extends Article
 
         // A notification links to its subject when it has one; a targetless one
         // (a system error, say) is a plain block, never a link to nowhere.
-        $container = $target !== null ? new Anchor($target) : new Div();
-        $container -> mixins = ['d-flex', 'align-items-center', 'gap-3'];
+        $container = $target !== null ? new NotificationLink($target) : new NotificationContainer();
 
         $avatar_url = $this -> actorHasAvatar
             ? ServerURL::absolute(User::avatarPath((int) $this -> actorId))
@@ -41,8 +40,8 @@ class Notification extends Article
         $text -> contents[] = $this -> text();
         $info -> addContent($text);
 
-        $meta = new RelativeTime($this -> createdAt);
-        $meta -> mixins = ['muted', 'text-sm'];
+        $meta = new NotificationMeta();
+        $meta -> addContent(new RelativeTime($this -> createdAt));
         $info -> addContent($meta);
 
         $container -> addContent($info);

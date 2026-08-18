@@ -9,7 +9,6 @@ declare(strict_types=1);
 class StagedPostWhen extends Paragraph
 {
     public ?string $class = 'StagedPostWhen';
-    public array $mixins = ['muted', 'text-sm'];
 
     public function __construct(?string $publish_at)
     {

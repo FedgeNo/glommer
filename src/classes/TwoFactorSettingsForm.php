@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 class TwoFactorSettingsForm extends FormForm
 {
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public bool $enabled;
 

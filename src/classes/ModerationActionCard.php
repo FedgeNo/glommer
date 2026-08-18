@@ -16,7 +16,6 @@ declare(strict_types=1);
 class ModerationActionCard extends Article
 {
     public ?string $class = 'ModerationActionCard';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-1'];
 
     public ?int $actionId = null;
     public ?string $action = null;
@@ -80,7 +79,6 @@ class ModerationActionCard extends Article
 
         $when = new Paragraph();
         $when -> class = 'ModerationActionWhen';
-        $when -> mixins = ['muted', 'text-sm'];
         $when -> addContent(new RelativeTime((string) $this -> createdAt));
 
         $this -> addContent($when);

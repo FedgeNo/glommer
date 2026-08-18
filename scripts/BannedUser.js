@@ -23,13 +23,13 @@ export class BannedUser extends User {
         div.dataset.userId = this.userId;
 
         const row = document.createElement('div');
-        row.className = 'd-flex align-items-center gap-3';
+        row.className = 'BannedUserRow';
 
         row.appendWithSpace(this.header());
 
         const unban = document.createElement('button');
         unban.type = 'button';
-        unban.className = 'ms-auto Button UserUnbanButton';
+        unban.className = 'Button UserUnbanButton';
         unban.dataset.userId = this.userId;
         unban.textContent = Strings.for('UserUnbanButton', { name: 'Unban' }).name;
         row.appendWithSpace(unban);

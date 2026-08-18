@@ -1,0 +1,1146 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 oy",
+            "other": "{count} oy"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Giriş yap",
+            "after": " ve yanıtla."
+        },
+        "post": {
+            "before": "",
+            "link": "Giriş yap",
+            "after": " ve paylaş."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Site",
+        "siteURLLabel": "Site URL'si",
+        "siteTitleLabel": "Site Başlığı",
+        "mailFromAddressLabel": "E-posta Gönderen Adresi",
+        "serverNameConfirmedLabel": "Web sunucusu yapılandırmamda \"ServerName {host}\" ve \"UseCanonicalName On\" ayarlarını yaptım (yalnızca otomatik canlı test tamamlanamazsa denetlenir - README.md dosyasının HTTPS bölümüne bakın)",
+        "databaseLegend": "Veritabanı",
+        "databaseHostLabel": "Veritabanı Sunucusu",
+        "databasePortLabel": "Veritabanı Bağlantı Noktası",
+        "databaseNameLabel": "Veritabanı Adı",
+        "databaseAdminUsernameLabel": "Veritabanı Yöneticisi Kullanıcı Adı",
+        "databaseAdminPasswordLabel": "Veritabanı Yöneticisi Parolası",
+        "webSocketTLSLegend": "WebSocket TLS (İsteğe Bağlı)",
+        "certificatePathLabel": "Sertifika Yolu",
+        "certificatePathPlaceholder": "mkcert ile otomatik oluşturmak için boş bırakın",
+        "keyPathLabel": "Anahtar Yolu",
+        "keyPathPlaceholder": "mkcert ile otomatik oluşturmak için boş bırakın",
+        "botProtectionLegend": "Bot Koruması (İsteğe Bağlı)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile Site Anahtarı",
+        "turnstileSiteKeyPlaceholder": "Atlamak için boş bırakın",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile Gizli Anahtarı",
+        "turnstileSecretKeyPlaceholder": "Atlamak için boş bırakın",
+        "submit": "Kur"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Geçerli Parola Cümlesi",
+        "newPassphraseLabel": "Yeni Parola Cümlesi",
+        "confirmNewPassphraseLabel": "Yeni Parola Cümlesini Doğrula",
+        "accountPasswordLabel": "Hesap Parolası",
+        "submit": "Parola Cümlesini Değiştir"
+    },
+    "PasswordResetForm": {
+        "legend": "Yeni Bir Parola Seç",
+        "newPasswordLabel": "Yeni Parola",
+        "newPasswordPlaceholder": "En az 8 karakter",
+        "confirmPasswordLabel": "Yeni Parolayı Doğrula",
+        "submit": "Parolayı Sıfırla"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Parolanı Sıfırla",
+        "emailLabel": "E-posta",
+        "submit": "Sıfırlama Bağlantısı Gönder"
+    },
+    "EmailRevertForm": {
+        "submit": "E-posta Değişikliğini Geri Al"
+    },
+    "EmailVerifyForm": {
+        "submit": "E-posta Adresini Doğrula"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Yeniden Aç"
+    },
+    "EmailDigestSetting": {
+        "label": "Bir süre uzakta kaldığımda kaçırdıklarımı e-postayla bildir"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Bilinmeyen cihaz",
+        "browserOnOS": "{os} üzerinde {browser}",
+        "thisDevice": " (bu cihaz)",
+        "lastUsed": {
+            "before": "Son kullanım: ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Tüm etkin oturumları sonlandır ve hatırlanan tüm cihazları unut. Bu tarayıcı dahil tüm tarayıcılardaki oturumların kapatılır."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Her Yerden Çıkış Yap"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Silmek İçin Google ile Doğrula"
+    },
+    "GoogleSignInButton": {
+        "label": "Google ile Devam Et"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Profili Düzenle"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Site açık değilken bile bu cihazda bildirim al. Bu seçim her tarayıcı için ayrıdır; bildirim almak istediğin her yerde aç.",
+        "label": {
+            "off": "Bu Cihazda Etkinleştir",
+            "on": "Bu Cihazda Kapat"
+        },
+        "unsupported": "Bu tarayıcı anlık bildirimleri desteklemiyor"
+    },
+    "LoginForm": {
+        "legend": "Giriş Yap",
+        "identifier": "Kullanıcı Adı veya E-posta",
+        "password": "Parola",
+        "rememberMe": "Beni Hatırla",
+        "submit": "Giriş Yap"
+    },
+    "SignupForm": {
+        "legend": "Hesap Oluştur",
+        "usernameLabel": "Kullanıcı Adı",
+        "usernamePlaceholder": "Küçük harfler, rakamlar ve _",
+        "emailLabel": "E-posta",
+        "emailPlaceholder": "Geçerli e-posta adresi",
+        "displayName": "Görünen Ad (İsteğe Bağlı)",
+        "bioLabel": "Hakkında (İsteğe Bağlı)",
+        "bioPlaceholder": "Kısa bir tanıtım - #etiketler, @bahsetmeler ve bağlantılar tıklanabilir olur",
+        "passwordLabel": "Parola",
+        "passwordPlaceholder": "Parola: En az 8 karakter",
+        "rememberMe": "Beni Hatırla",
+        "submit": "Kaydol"
+    },
+    "PasswordChangeForm": {
+        "legend": "Parolanı Değiştir",
+        "currentPassword": "Geçerli Parola",
+        "newPasswordLabel": "Yeni Parola",
+        "newPasswordPlaceholder": "En az 8 karakter",
+        "confirmPassword": "Yeni Parolayı Doğrula",
+        "submit": "Parolayı Değiştir"
+    },
+    "EmailChangeForm": {
+        "legend": "E-posta Adresini Değiştir",
+        "newEmail": "Yeni E-posta Adresi",
+        "currentPassword": "Geçerli Parola",
+        "notice": "Siteyi kullanmaya devam etmeden önce yeni adresi doğrulaman gerekir.",
+        "submit": "E-postayı Değiştir"
+    },
+    "AccountDeleteForm": {
+        "legend": "Hesabını Sil",
+        "warning": "Bu işlem hesabını, paylaşımlarını ve mesajlarını kalıcı olarak siler. Geri alınamaz.",
+        "currentPassword": "Geçerli Parola",
+        "submit": "Hesabı Sil"
+    },
+    "AccountMigrationForm": {
+        "legend": "Başka Bir Sunucuya Taşın",
+        "movedNotice": "Bu hesap {destination} adresine taşındı. Takipçilerinden seni orada takip etmeleri istendi.",
+        "explanation": "Takipçilerinden yeni hesabını takip etmeleri istenir. Paylaşımların burada kalır; nesne adresleri onları oluşturan sunucuya aittir, dolayısıyla taşınamazlar.",
+        "addressNotice": "Taşındığın hesap önce bu hesabı \"diğer adı\" olarak listelemelidir. Buradaki adresin {address}.",
+        "movedToLabel": "Şuraya Taşın",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Diğer Adları",
+        "aliasesExplanation": "Başka yerlerdeki sana ait hesaplar. Bir hesabı burada listelemek, o hesabın buna taşınmasına izin verir; bu yalnızca izindir, taşıma işleminin kendisi değildir. Her satıra bir adres yaz.",
+        "aliasesLabel": "Diğer Hesapların",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Kaydet"
+    },
+    "TwoFactorForm": {
+        "legend": "Doğrulama Kodunu Gir",
+        "explanation": "Sana e-postayla bir doğrulama kodu gönderdik. Girişi tamamlamak için kodu aşağıya gir veya kurtarma kodlarından birini kullan.",
+        "explanationEmailFailed": "Doğrulama kodunu şu anda e-postayla gönderemedik. Girişi tamamlamak için kurtarma kodlarından birini gir.",
+        "code": "Doğrulama Kodu",
+        "submit": "Doğrula"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "İki Faktörlü Kimlik Doğrulama Açık",
+            "off": "İki Faktörlü Kimlik Doğrulama Kapalı"
+        },
+        "explanation": {
+            "on": "Giriş yaptığında sana e-postayla bir doğrulama kodu göndeririz ve girişi tamamlamak için bu kodu girmen gerekir. E-posta sana ulaşamazsa kurtarma kodlarından biriyle giriş yapabilirsin.",
+            "off": "Girişe ikinci bir adım ekle: e-postayla girmen gereken bir doğrulama kodu göndeririz, böylece yalnızca parolan giriş için yeterli olmaz. E-postanın ulaşmaması durumunda kullanmak üzere tek kullanımlık kurtarma kodları alırsın."
+        },
+        "currentPassword": "Geçerli Parola",
+        "submit": {
+            "on": "İki Faktörlü Kimlik Doğrulamayı Kapat",
+            "off": "İki Faktörlü Kimlik Doğrulamayı Aç"
+        },
+        "regenerate": "Yeni Kurtarma Kodları Oluştur",
+        "recoveryHeading": "Kurtarma Kodların",
+        "recoveryNote": "Bunları şimdi güvenli bir yere kaydet; bir daha gösterilmeyecekler. Doğrulama e-postası sana ulaşamadığında her biri bir kez giriş yapmanı sağlar ve yeni kodlar oluşturmak bunların tümünü geçersiz kılar.",
+        "toast": {
+            "on": "İki faktörlü kimlik doğrulama artık açık.",
+            "off": "İki faktörlü kimlik doğrulama artık kapalı.",
+            "regenerated": "Yeni kurtarma kodları oluşturuldu. Eski kodların artık çalışmıyor."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Lütfen gelen kutunu kontrol et ve e-posta adresini doğrulamak için gönderdiğimiz doğrulama bağlantısına tıkla. Göremiyorsan gereksiz/spam klasörünü kontrol et."
+    },
+    "VerificationResendButton": {
+        "label": "Doğrulama E-postasını Yeniden Gönder"
+    },
+    "MailSettingsForm": {
+        "legend": "Giden E-posta",
+        "fromAddressLabel": "Gönderen Adresi",
+        "fromAddressPlaceholder": "Bu ayarlanana kadar e-posta gönderilemez",
+        "fromNameLabel": "Gönderen Adı",
+        "hostLabel": "SMTP Sunucusu",
+        "portLabel": "SMTP Bağlantı Noktası",
+        "usernameLabel": "SMTP Kullanıcı Adı",
+        "passwordLabel": "SMTP Parolası",
+        "passwordPlaceholder": {
+            "set": "Parola ayarlı - korumak için boş bırakın",
+            "unset": "SMTP parolası"
+        },
+        "encryptionLabel": "Şifreleme",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, genellikle 587 numaralı bağlantı noktası)",
+            "ssl": "SSL (örtük TLS, genellikle 465 numaralı bağlantı noktası)",
+            "none": "Yok"
+        },
+        "explainer": "Bunun yerine PHP'nin mail() işleviyle göndermek için SMTP sunucusunu boş bırakın (önerilmez; README'nin teslim edilebilirlik bölümüne bakın). Bir \"gönderen\" adresi ayarlanana kadar hiçbir e-posta gönderilemez.",
+        "save": "Kaydet"
+    },
+    "MapSettingsForm": {
+        "legend": "Harita Döşemeleri",
+        "notice": "OpenStreetMap kullanmak için boş bırakın. Anahtar gerektiren bir sağlayıcı kullanmak için URL şablonunu, anahtarın geleceği yerde aynen {apiKey} olacak şekilde yapıştırın; anahtarı ve atfı da aşağıya girin.",
+        "urlLabel": "Döşeme URL Şablonu",
+        "keyLabel": "API Anahtarı",
+        "keyPlaceholder": "Döşeme sağlayıcınızın API anahtarı",
+        "attributionLabel": "Atıf",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Kaydet"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google ile Giriş",
+        "clientIdLabel": "İstemci Kimliği",
+        "clientIdPlaceholder": "Google OAuth istemci kimliği",
+        "secretLabel": "İstemci Gizli Anahtarı",
+        "secretPlaceholder": {
+            "set": "İstemci gizli anahtarı ayarlı - korumak için boş bırakın",
+            "unset": "Google OAuth istemci gizli anahtarı"
+        },
+        "explainer": "Kayıt ve giriş ekranında \"Google ile Devam Et\" seçeneğinin görünmesi için ikisi de gereklidir. Google Cloud OAuth istemcinizde yetkili yönlendirme URI'sini {url} olarak ayarlayın; kapatmak için İstemci Kimliğini temizleyin.",
+        "save": "Kaydet"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Site Anahtarı",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile site anahtarı",
+        "turnstileSecretKeyLabel": "Gizli Anahtar",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Gizli anahtar ayarlı - korumak için boş bırakın",
+            "unset": "Cloudflare Turnstile gizli anahtarı"
+        },
+        "turnstileExplainer": "CAPTCHA'nın kayıt ve giriş ekranında görünmesi için iki anahtar da gereklidir. Kapatmak için site anahtarını temizleyin.",
+        "recaptchaLegend": "Google reCAPTCHA (Hesap Kilidi Kurtarma)",
+        "recaptchaSiteKeyLabel": "Site Anahtarı",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 site anahtarı",
+        "recaptchaSecretKeyLabel": "Gizli Anahtar",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Gizli anahtar ayarlı - korumak için boş bırakın",
+            "unset": "Google reCAPTCHA v2 gizli anahtarı"
+        },
+        "recaptchaExplainer": "İki anahtar da gereklidir. Ayarlandığında, giriş denemesi sınırına ulaşan bir hesap kilidin bitmesini beklemek yerine bu doğrulamayı geçerek yeniden girebilir; ayarlanmadığında kilit süresinin tamamı beklenir. reCAPTCHA v2 (\"Ben robot değilim\") kullanın. Kapatmak için site anahtarını temizleyin.",
+        "save": "Kaydet"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Sitedeki yapay zekâ özellikleri (gündemdeki konu özetleri vb.) tarafından kullanılır. OpenRouter'ın o sırada ücretsiz olan modeller arasından rastgele seçim yaptığı ve hiçbir zaman ücret oluşturamayan Ücretsiz Modeller Yönlendiricisini kullanmak için model alanını boş bırakın.",
+        "keyLabel": "API Anahtarı",
+        "keyPlaceholder": {
+            "set": "API anahtarı ayarlı - korumak için boş bırakın",
+            "unset": "OpenRouter API anahtarı"
+        },
+        "clearKeyLabel": "Kayıtlı API anahtarını kaldır (yapay zekâ özelliklerini kapatır)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Asla para harcamasına izin verme (önerilir)",
+        "explainer": "Koruma açıkken her isteğin azami fiyatı sıfır olur; ücretsiz sağlayıcı bulunmadığında ücretli bir modele geçmek yerine istek tamamen başarısız olur. Yapay zekâ özelliklerini bütünüyle kapatmak için kayıtlı API anahtarını kaldırın.",
+        "save": "Kaydet"
+    },
+    "AboutSettingsForm": {
+        "legend": "Hakkında",
+        "description": "Düz metin - boş satırlar paragrafları ayırır. İlk paragraf site açıklaması olarak kullanılır.",
+        "save": "Kaydet"
+    },
+    "TermsSettingsForm": {
+        "legend": "Hizmet Koşulları",
+        "description": "Düz metin - boş satırlar paragrafları ayırır.",
+        "save": "Kaydet"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Gizlilik Politikası",
+        "description": "Düz metin - boş satırlar paragrafları ayırır.",
+        "save": "Kaydet"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-posta Özeti",
+        "fieldLabel": "Kapanış Paragrafı",
+        "notice": "Her özetin sonlarına doğru, üyenin kaçırdıkları listesinden sonra eklenir. Düz metindir. Yazılımla gelen varsayılan ifadeye dönmek için boş bırakın.",
+        "save": "Kaydet"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Geçerli site simgesi",
+        "save": "Site Simgesi Yükle"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Ön Sayfa Görseli",
+        "explainer": "Birisi bu siteye bağlantı paylaştığında diğer siteler tarafından gösterilir; yalnızca Open Graph üst verisinde yer alır, sayfada asla görünmez. 1200×630 boyutuna kırpılır. Olmadığında bağlantı önizlemelerinde hiç görsel bulunmaz.",
+        "currentAlt": "Geçerli ön sayfa görseli",
+        "save": "Görsel Yükle"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Otomatik Oynat"
+    },
+    "CarouselNextButton": {
+        "name": "Sonraki"
+    },
+    "CarouselPrevButton": {
+        "name": "Önceki"
+    },
+    "MediaFullscreenButton": {
+        "name": "Tam Ekran"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Dosyaları Kaldır"
+    },
+    "NotificationDropdown": {
+        "showAll": "Tümünü Göster"
+    },
+    "HelpSearch": {
+        "placeholder": "Yardımda ara…",
+        "noMatches": "Aramanla eşleşen yardım makalesi bulunamadı."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Anladım"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Vazgeç"
+    },
+    "StagedPostEditButton": {
+        "name": "Düzenle"
+    },
+    "StagedPostPublishButton": {
+        "name": "Şimdi Yayımla"
+    },
+    "LogoutButton": {
+        "name": "Çıkış Yap"
+    },
+    "AvatarUploadForm": {
+        "submit": "Avatarı Güncelle"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Yasaklı kullanıcılarda ara…"
+    },
+    "BannedUserSection": {
+        "heading": "Yasaklı Kullanıcılar"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Gönderilen İstekler (Yanıt Bekleniyor)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "{name} tarafından yasaklandı ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "{name} tarafından engellendi ",
+            "after": ""
+        },
+        "deletedAccount": "silinmiş bir hesap",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "Ocak",
+            "2": "Şubat",
+            "3": "Mart",
+            "4": "Nisan",
+            "5": "Mayıs",
+            "6": "Haziran",
+            "7": "Temmuz",
+            "8": "Ağustos",
+            "9": "Eylül",
+            "10": "Ekim",
+            "11": "Kasım",
+            "12": "Aralık"
+        },
+        "shortMonths": {
+            "1": "Oca",
+            "2": "Şub",
+            "3": "Mar",
+            "4": "Nis",
+            "5": "May",
+            "6": "Haz",
+            "7": "Tem",
+            "8": "Ağu",
+            "9": "Eyl",
+            "10": "Eki",
+            "11": "Kas",
+            "12": "Ara"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "127.0.0.1:{port}{tls} adresindeki WebSocket sunucusuna bağlanılamadı ({error}). Önce sunucuyu başlatın: systemctl --user start glommer-websocket (birim dosyası için README.md'ye bakın). WS_TLS_CERT/WS_TLS_KEY ayarları yeni eklendiyse veya kaldırıldıysa .env ile eşleşmesi için sunucuyu yeniden başlatın.",
+        "wsOverTLS": " TLS üzerinden",
+        "wsBadHandshake": "127.0.0.1:{port} adresindeki hizmet geçerli bir WebSocket el sıkışmasını tamamlamadı; bu bağlantı noktasını bin/websocket-server.php dışında bir şey dinliyor olabilir.",
+        "wsNoPong": "WebSocket sunucusu el sıkışmasını kabul etti ancak ping isteğine yanıt vermedi; takılmış veya hatalı çalışıyor olabilir. Günlüklerini kontrol edin.",
+        "wsReachable": "WebSocket sunucusuna 127.0.0.1:{port} üzerinden erişiliyor ve sunucu yanıt veriyor"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Etiket",
+            "person": "Kişi",
+            "org": "Kuruluş",
+            "gpe": "Yer",
+            "loc": "Bölge",
+            "fac": "Önemli Yer",
+            "product": "Ürün",
+            "event": "Etkinlik",
+            "work_of_art": "Eser",
+            "law": "Yasa",
+            "language": "Dil",
+            "norp": "Grup"
+        },
+        "plural": {
+            "hashtag": "Etiketler",
+            "person": "Kişiler",
+            "org": "Kuruluşlar",
+            "gpe": "Yerler",
+            "loc": "Bölgeler",
+            "fac": "Önemli Yerler",
+            "product": "Ürünler",
+            "event": "Etkinlikler",
+            "work_of_art": "Eserler",
+            "law": "Yasalar",
+            "language": "Diller",
+            "norp": "Gruplar"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Arkadaşlıktan Çıkar"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Kabul Et"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Reddet"
+    },
+    "UserFollowButton": {
+        "follow": "Takip Et",
+        "unfollow": "Takibi Bırak"
+    },
+    "UserBlockButton": {
+        "name": "Engelle"
+    },
+    "UserUnblockButton": {
+        "name": "Engeli Kaldır"
+    },
+    "OtherUser": {
+        "message": "Mesaj"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menü",
+        "loggedInAs": "{name} Olarak Giriş Yapıldı",
+        "friendsFeed": "Arkadaş Akışı",
+        "relayFeed": "Aktarıcı Akışı",
+        "users": "Kullanıcılar",
+        "tags": "Etiketler",
+        "topics": "Konular",
+        "map": "Harita",
+        "locations": "Konumlar",
+        "search": "Ara",
+        "messages": "Mesajlar",
+        "bookmarks": "Yer İmleri",
+        "help": "Yardım",
+        "about": "Hakkında",
+        "login": "Giriş Yap",
+        "signup": "Kaydol",
+        "friends": "Arkadaşlar",
+        "drafts": "Taslaklar ve Zamanlananlar",
+        "userSettings": "Kullanıcı Ayarları",
+        "modSettings": "Moderatör Ayarları",
+        "adminSettings": "Yönetici Ayarları"
+    },
+    "LogoutForm": {
+        "submit": "Çıkış Yap"
+    },
+    "User": {
+        "joined": "{date} tarihinde katıldı"
+    },
+    "FriendRequestButton": {
+        "add": "Arkadaş Ekle",
+        "cancel": "İsteği İptal Et"
+    },
+    "StagedPostWhen": {
+        "scheduled": "{when} için zamanlandı",
+        "draft": "Taslak - yalnızca sen istediğinde yayımlanır"
+    },
+    "MessageTranslateButton": {
+        "name": "Bu Mesajı Çevir"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Mesaj Çevirisi Hakkında",
+        "body": "Bir mesajı çevirmek için metni bu sunucuya gönderilir ve burada çevrilir. Hiçbir şey saklanmaz: çeviri veritabanına yazılmaz ve mesajın kendisi değişmez. Ancak bu şekilde çevrilen bir mesaj sunucu tarafından okunmuş olur, dolayısıyla çevrilmemiş bir mesaj gibi uçtan uca şifreli değildir. Yalnızca aldığın mesajlar ve yalnızca sen istediğinde çevrilebilir.",
+        "confirm": "Çevir",
+        "cancel": "Şimdi Değil"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Parola cümleni mi unuttun? Sıfırlama, yeni bir parola cümlesi altında yeni anahtarlar oluşturur; ancak eski anahtarlarla şifrelenmiş mesajlar bir daha hiç kimse tarafından okunamaz.",
+        "requirements": "En az 12 karakter olmalı ve hesap parolanla aynı olmamalıdır; hesap parolan bu sunucuya gönderilir, parola cümlen ise asla gönderilmemelidir.",
+        "passphraseLabel": "Parola Cümlesi",
+        "resetPassphraseLabel": "Yeni Parola Cümlesi",
+        "confirmLabel": "Parola Cümlesini Doğrula",
+        "accountPasswordLabel": "Hesap Parolası",
+        "submitLabel": "Şifreli Mesajları Aç",
+        "resetSubmitLabel": "Şifreleme Anahtarlarını Sıfırla"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Uçtan uca şifreli mesajlar tarayıcında kilitlenir ve açılır: bu sunucu onları okuyamadan aktarır ve saklar. Anahtarın bir parola cümlesiyle korunur ve aynı parola cümlesi mesajlarını her tarayıcıdan açar. Her iki kişi de bu özelliği açtığında konuşmalar şifrelenir; federasyonun bunları başka türlü taşıma yolu olmadığından diğer sunuculardaki kişilere gönderilen mesajlar şifresiz kalır.",
+        "noRecovery": "Kaybedilen parola cümlesini kurtarmanın hiçbir yolu yoktur; yönetici bile kurtaramaz. Onu kaybetmek, şifreli mesajlarını kaybetmek demektir.",
+        "enabledStatus": "Şifreli mesajlar açık."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Şifreli",
+            "explanation": "Bu konuşmadaki mesajlar uçtan uca şifrelidir: parola cümlenle açılır ve tarayıcılarında okunur; bu sunucunun sakladığı şey şifreli metindir. Aranızda kimsenin olmadığından emin olmak için konu dizisinin altındaki güvenlik kodunu diğer kişiyle kontrol et. Şifreleme açılmadan önce gönderilen mesajlar eskisi gibi okunabilir kalır."
+        },
+        "awaiting-theirs": {
+            "label": "Şifreli değil",
+            "explanation": "{handle}, ayarlarında şifreli mesajları açtığında buradaki mesajlar uçtan uca şifrelenecek."
+        },
+        "awaiting-yours": {
+            "label": "Şifreli değil",
+            "explanation": "Buradaki mesajlar uçtan uca şifreli değil. Bu konuşmayı güvenceye almak için Ayarlar'dan şifreli mesajları aç."
+        },
+        "federated": {
+            "label": "Şifreli değil",
+            "explanation": "{handle} başka bir sunucuda. Bu konuşmadaki mesajlar hem o sunucuda hem de bu sunucuda saklanır ve o sunucunun yöneticisi bunları okuyabilir; sunucular arasındaki protokolün mesajları şifreleme yolu yoktur. Hassas içerikleri bu sitedeki konuşmalarda tut."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Fediverse Hesaplarını Takip Et",
+        "notice": "Bir veya daha fazla kullanıcı tanıtıcısı yapıştır, örneğin @kullanici@example.social; aralarında herhangi bir ayırıcı kullanılabilir.",
+        "handlesLabel": "Takip Edilecek Fediverse Tanıtıcıları",
+        "submit": "Takip Et",
+        "statusPending": "bekliyor",
+        "statusAccepted": "kabul edildi"
+    },
+    "ServerBlockForm": {
+        "legend": "Bir Sunucuyu Engelle",
+        "description": "O sunucudan ve altındaki her yerden gelen her şeyi reddeder: ne içeri ne dışarı teslimat yapılır ve iki yöndeki mevcut takipler kaldırılır.",
+        "serverLabel": "Sunucu",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Neden",
+        "reasonPlaceholder": "Bu sunucunun neden engellendiği",
+        "submit": "Sunucuyu Engelle"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Arama kurulumunun tek bir tarayıcıdan denetlenebilen bölümlerini çalıştırır. Gerçek eşler arası bağlantıya kadar her şey burada sınanabilir; başka bir kişiye bağlanmak için o kişi de gereklidir."
+    },
+    "VideoCallTestButton": {
+        "label": "Denetimi Çalıştır"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket sunucusu: Çalışıyor",
+        "failed": "WebSocket sunucusu: {detail}",
+        "clientTesting": "Tarayıcı bağlantısı: Sınanıyor…",
+        "clientConnecting": "Tarayıcı bağlantısı: Bağlanıyor…",
+        "clientConnected": "Tarayıcı bağlantısı: Bağlandı",
+        "clientDisconnecting": "Tarayıcı bağlantısı: Bağlantı kesiliyor…",
+        "clientNotConnected": "Tarayıcı bağlantısı: Bağlı değil"
+    },
+    "UploadWorkerStatus": {
+        "running": "İşçi hizmeti: Çalışıyor",
+        "stopped": "İşçi hizmeti: Çalışmıyor - yeniden başlatılana kadar hazırlanan yüklemeler dönüştürülmeyecek",
+        "unknown": "İşçi hizmeti: Bilinmiyor - systemctl bu sunucuda kullanılamıyor olabilir veya SELinux web sunucusunun kendi durum sorgusunu engelliyor olabilir (düzeltmek için bin/install.php dosyasını root olarak çalıştırın)",
+        "queue": "Kuyruk: {staging} hazırlanıyor, {pending} bekliyor, {processing} işleniyor"
+    },
+    "TrendingTimerStatus": {
+        "running": "Gündem zamanlayıcısı: Çalışıyor",
+        "stopped": "Gündem zamanlayıcısı: Çalışmıyor - gündemdeki konular zamanlanmış olarak değil, yalnızca okuma yolunun kendini onarmasıyla (Trending::current()) yenilenecek. Kurmak için bin/install.php dosyasını root olarak çalıştırın.",
+        "unknown": "Gündem zamanlayıcısı: Bilinmiyor - systemctl bu sunucuda kullanılamıyor olabilir veya SELinux web sunucusunun kendi durum sorgusunu engelliyor olabilir (düzeltmek için bin/install.php dosyasını root olarak çalıştırın)"
+    },
+    "Notification": {
+        "postReady": "Medyanın işlenmesi tamamlandı ve paylaşımın artık yayında",
+        "scheduledPostLive": "Zamanlanan paylaşımın artık yayında",
+        "uploadPartlyFailed": "Paylaşımın yayında, ancak bir veya daha fazla dosyası işlenemedi",
+        "uploadFailed": "Yüklemelerinden biri işlenemedi ve yayımlanmadı",
+        "mailerFailed": "E-posta teslimatı başarısız oldu; e-posta hizmeti çalışmıyor olabilir. E-posta yapılandırmasını kontrol edin.",
+        "mailFromNotConfigured": "E-posta \"gönderen\" adresi yapılandırılmadığından e-posta gönderilemiyor. Yönetici Ayarları'ndan (Giden E-posta bölümü) veya bin/install.php aracılığıyla bir adres ayarlayın.",
+        "systemError": "Bir sunucu hatası oluştu. Ayrıntılar için hata günlüğünü kontrol edin.",
+        "passwordRemovedGoogle": "Google ile giriş yaptığında parolan kaldırıldı. Yeni bir parola belirlemek istiyorsan \"Parolamı Unuttum\" seçeneğini kullan.",
+        "like": "{name} paylaşımını beğendi",
+        "repost": "{name} paylaşımını yeniden paylaştı",
+        "reply": "{name} paylaşımına yanıt verdi",
+        "friendRequest": "{name} sana arkadaşlık isteği gönderdi",
+        "friendAccepted": "{name} arkadaşlık isteğini kabul etti",
+        "message": "{name} sana bir mesaj gönderdi",
+        "mention": "{name} bir paylaşımda senden bahsetti",
+        "follow": "{name} seni başka bir sunucudan takip etti",
+        "default": "{name} bir şey yaptı"
+    },
+    "NotificationList": {
+        "emptyNotice": "Henüz bildirim yok."
+    },
+    "NotificationsNavLink": {
+        "label": "Bildirimler",
+        "unseen": "Görülmemiş bildirimler"
+    },
+    "NotificationTestPanel": {
+        "intro": "Kendine (yöneticiye) bir sınama bildirimi gönder. Anında geçici bildirim olarak ve bildirim açılır listesinde görünmelidir.",
+        "button": "Sınama Bildirimi Gönder",
+        "sending": "Gönderiliyor…",
+        "sent": "Gönderildi!",
+        "failed": "Başarısız"
+    },
+    "MessageDot": {
+        "label": "Okunmamış mesajlar"
+    },
+    "NavAlertDot": {
+        "label": "Menüde yeni bir şey var"
+    },
+    "Message": {
+        "encrypted": "Şifreli mesaj",
+        "decryptionFailed": "Bu mesaj artık var olmayan anahtarlarla şifrelenmiş."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mesaj",
+        "bodyPlaceholder": "Bir mesaj yaz",
+        "send": "Gönder"
+    },
+    "MessageList": {
+        "emptyNotice": "Henüz mesaj yok."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Bu kodu başka bir yoldan birbirinize okuyun; sesli olarak, yüz yüze veya bir aramada. İki tarafta da eşleşiyorsa aranızda kimse yoktur.",
+        "changed": "Bu kod, kontrol ettiğinden beri değişti. Bu, biriniz şifreleme anahtarlarını sıfırladığında olur; ancak konuşmayı okuyan biri olduğunda da böyle görünür. Güvenmeden önce yeni kodu diğer kişiyle kontrol et.",
+        "verified": "Bu kodu kontrol ettin."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Doğrulandı Olarak İşaretle"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Parola Cümlesi",
+        "passphrasePlaceholder": "Bu konuşmanın kilidini açacak parola cümlesi",
+        "submit": "Kilidi Aç"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Son mesaj ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Hassas medya"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Hassas Medyayı Varsayılan Olarak Göster"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Paylaşım",
+            "message": "Mesaj",
+            "user": "Kullanıcı"
+        },
+        "summary": {
+            "before": "{type} #{id}, bildiren: ",
+            "after": ""
+        },
+        "reasonLine": "Neden: {reason}",
+        "banReporterLabel": "Bildiren Kişiyi Yasakla",
+        "banReportedUserLabel": "Bildirilen Kullanıcıyı Yasakla",
+        "deleteLabel": "{type} Sil",
+        "reportedImageAlt": "Bildirilen görsel",
+        "attachmentUnavailable": "Bildirilen bir ek artık kullanılamıyor.",
+        "viewAttachment": "Bildirilen Eki Görüntüle",
+        "missing": {
+            "noSnapshot": "Bildirilen içerik artık kullanılamıyor.",
+            "unknownType": "Bilinmeyen içerik türü."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Bildirim yok."
+    },
+    "ModQueueLinks": {
+        "intro": "Kuyruklar bir seferde bir sayfa okunacak kadar uzun olduğundan kendi sayfaları vardır.",
+        "reportsLabel": "Bildirimler",
+        "bannedUsersLabel": "Yasaklı Kullanıcılar"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Henüz hiçbir moderatör işlem yapmadı."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Yasaklanmış gündem varlığı yok."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Engellenmiş sunucu yok."
+    },
+    "RelayCard": {
+        "accepted": "Abone olundu ",
+        "waiting": "Aktarıcının kabul etmesi bekleniyor - abone olundu "
+    },
+    "RelayList": {
+        "emptyNotice": "Hiçbir aktarıcıya abone olunmadı. Buraya yalnızca üyelerin takip ettikleri ulaşır."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Henüz bir aktarıcı üzerinden hiçbir şey gelmedi. Karşı taraftaki sunucular yayımladıkça paylaşımlar burada görünür."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Bir Aktarıcıya Abone Ol",
+        "explainerOne": "Aktarıcı ortak bir ana akıştır: abone olan diğer tüm sunucuların her herkese açık paylaşımı buraya gelir ve bu sunucudakiler de hepsine gider. Federasyon normalde yalnızca buradaki birinin zaten takip ettiklerini taşıdığından, yeni bir örneğin herhangi birini bulma yolu budur.",
+        "explainerTwo": "Yükü önceden tahmin edemezsin; bu sunucuların yayımladığı her şeydir, bir hafta sessizken ertesi hafta saatte binlerce paylaşım olabilir ve depolama alanın, teslimat kuyruğun ve moderasyon kuyruğun bunların tümünü taşır. Aktarılan paylaşımlar ana akışa ve arkadaş akışına girmez; insanların bilerek açtığı Aktarıcı Akışına gider.",
+        "addressLabel": "Aktarıcı Adresi",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Abone Ol"
+    },
+    "RelayFollowObjectField": {
+        "label": "Abonelik Biçimi",
+        "options": {
+            "public": "Herkese açık akışı takip et (çoğu aktarıcının beklediği)",
+            "actor": "Aktarıcının kendi aktörünü takip et"
+        },
+        "retryNotice": "Aktarıcı hiç kabul etmezse geri çek ve diğer biçimi dene; bazı aktarıcı yazılımları bunlardan yalnızca birini tanır."
+    },
+    "SiteCounters": {
+        "members": "Üyeler: {count} (son {days} günde {joined} kişi katıldı)",
+        "activeMembers": "Son {days} günde buradaki üyeler: {count} ({posted} kişi paylaşım yaptı)",
+        "posts": "Burada yazılan paylaşımlar: {count} (son {days} günde {recent})",
+        "deliveries": "Son {days} gündeki federasyon teslimatları: {delivered} ulaştı, {undeliverable} için vazgeçildi",
+        "queued": "Gönderilmeyi bekleyen: {count} ({failing} en az bir kez reddedildi)",
+        "pendingReads": "Diğer sunuculardan okunmayı bekleyen paylaşımlar: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Sitenin sınama paketini çalıştır ve sonuçları gör. Birkaç saniye sürdüğünden kendi sayfasında açılır.",
+        "runLabel": "Sınamaları Çalıştır"
+    },
+    "HelpArticle": {
+        "backLabel": "Tüm Yardıma Dön"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Şu anda öneri yok; öneriler zaten arkadaş olduğun kişilerin arkadaşlarından gelir. Birini adıyla bulmak için yukarıda ara.",
+        "noMatches": "Burada eşleşen kimse yok."
+    },
+    "UserModButton": {
+        "make": "Moderatör Yap",
+        "remove": "Moderatörlüğü Kaldır"
+    },
+    "UserUnbanButton": {
+        "name": "Yasağı Kaldır"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Yasakla"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Yasağı Kaldır"
+    },
+    "ReportDismissButton": {
+        "name": "Reddet"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Hassas Olarak İşaretle"
+    },
+    "ServerUnblockButton": {
+        "name": "Engeli Kaldır"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Abonelikten Çık"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "İptal Et"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Başarılı",
+        "failing": "{suite}: Başarısız"
+    },
+    "PageTitle": {
+        "about": "Hakkında",
+        "adminBanned": "Yasaklı Kullanıcılar",
+        "adminModSettings": "Moderatör Ayarları",
+        "adminReports": "Bildirimler",
+        "adminSettings": "Yönetici Ayarları",
+        "adminTests": "Sınamalar",
+        "authGoogleCallbackAccountDeleted": "Hesap Silindi",
+        "authGoogleCallbackDeleteAccount": "Hesabı Sil",
+        "authGoogleCallbackLogin": "Giriş Yap",
+        "bookmarks": "Yer İmleri",
+        "checkInbox": "Gelen Kutunu Kontrol Et",
+        "drafts": "Taslaklar ve Zamanlananlar",
+        "draftsEditDraft": "Taslağı Düzenle",
+        "draftsEditScheduled": "Zamanlanan Paylaşımı Düzenle",
+        "forgotPassword": "Parolamı Unuttum",
+        "friendsFeed": "Arkadaş Akışı",
+        "help": "Yardım",
+        "helpDescription": "Siteyi kullanmaya yönelik kılavuzlar ve yanıtlar.",
+        "locations": "Konumlar",
+        "locationsDescription": "Sana en yakın yerlerden paylaşımlar.",
+        "locationsPlaceDescription": "{place} yakınındaki paylaşımlar.",
+        "login": "Giriş Yap",
+        "loginVerificationCode": "Doğrulama Kodu",
+        "map": "Harita",
+        "mapDescription": "Dünyanın dört bir yanındaki paylaşımların haritası; yakınındaki kişileri ve şeyleri bul.",
+        "messages": "Mesajlar",
+        "messagesWithUser": "{name} ile Mesajlar",
+        "notifications": "Bildirimler",
+        "privacy": "Gizlilik Politikası",
+        "quote": "Alıntı",
+        "relayFeed": "Aktarıcı Akışı",
+        "relayFeedDescription": "Bu sunucunun abone olduğu aktarıcılardan gelen herkese açık paylaşımlar.",
+        "resetPassword": "Parolayı Sıfırla",
+        "revertEmail": "E-posta Değişikliğini Geri Al",
+        "search": "Ara",
+        "signup": "Kaydol",
+        "tags": "Etiketler",
+        "tagsDescription": "{siteTitle} üzerindeki gündemdeki ve popüler etiketlere göz at.",
+        "tagsTagDescription": "{siteTitle} üzerinde {tag} etiketiyle paylaşılanlar.",
+        "terms": "Hizmet Koşulları",
+        "topics": "Konular",
+        "topicsDescription": "İnsanların şu anda {siteTitle} üzerinde konuştukları.",
+        "topicsEntityDescription": "{typeLabel} - {siteTitle} üzerinde {entityTitle} konusundan bahseden paylaşımlar.",
+        "topicsTypeDescription": "İnsanların şu anda {siteTitle} üzerinde konuştuğu {typePlural}.",
+        "unsubscribe": "E-posta Özetleri",
+        "userFriends": "{name} Adlı Kullanıcının Arkadaşları",
+        "userFriendsDescription": "{siteTitle} üzerinde {name} adlı kullanıcının arkadaşları",
+        "userSettings": "Kullanıcı Ayarları",
+        "users": "Kullanıcılar",
+        "verifyEmail": "E-postayı Doğrula"
+    },
+    "PostLikeButton": {
+        "like": "Beğen",
+        "unlike": "Beğeniyi Geri Al"
+    },
+    "PostPinButton": {
+        "pin": "Sabitle",
+        "unpin": "Sabitlemeyi Kaldır"
+    },
+    "PostQuoteButton": {
+        "name": "Alıntıla"
+    },
+    "PostDeleteButton": {
+        "name": "Sil"
+    },
+    "PostEditButton": {
+        "name": "Düzenle"
+    },
+    "ReportButton": {
+        "name": "Bildir"
+    },
+    "PostActionBar": {
+        "reply": "Yanıtla",
+        "replies": {
+            "one": "Yanıtlar ({count})",
+            "other": "Yanıtlar ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(düzenlendi)"
+    },
+    "RepliesHeading": {
+        "heading": "Yanıtlar"
+    },
+    "PollVoteButton": {
+        "name": "Oy Ver"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Daha fazla ",
+            "link": "konum gör",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Yakınındaki Paylaşımlar",
+        "description": "Bu, bir noktaya en yakın paylaşımları gösterir; etkinlik nerede olursa olsun ve ne kadar uzakta bulunursa bulunsun. Bulunduğun yerden başlamak için konumunu paylaş veya haritada bir nokta seç.",
+        "useMyLocation": "Konumumu Kullan",
+        "pickOnMap": "Haritadan Seç",
+        "searchPlaceholder": "Veya bir yer adı yaz…",
+        "searchLabel": "Bir Yer Ara",
+        "locating": "Konum bulunuyor…",
+        "noGeolocation": "Tarayıcın konum paylaşamıyor.",
+        "locationError": "Konumun alınamadı. Tarayıcının konum iznini kontrol et."
+    },
+    "PollDeadline": {
+        "final": "Kesin sonuç",
+        "closes": {
+            "before": "Kapanış: ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} gün içinde",
+            "other": "{count} gün içinde"
+        },
+        "hours": {
+            "one": "{count} saat içinde",
+            "other": "{count} saat içinde"
+        },
+        "minutes": {
+            "one": "{count} dakika içinde",
+            "other": "{count} dakika içinde"
+        },
+        "underMinute": "bir dakikadan kısa süre içinde"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 kişi oy verdi ",
+            "other": "{count} kişi oy verdi "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Giriş yap",
+            "after": " ve paylaş."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Giriş yap",
+            "after": " ve yanıtla."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " yeniden paylaştı"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Şuna yanıt olarak: ",
+            "after": ""
+        },
+        "untitled": "bu paylaşım",
+        "jumpToStart": "Başlangıca Git"
+    },
+    "TopicSummaryCard": {
+        "label": "Yapay zekâ tarafından oluşturulan özet"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Hoş geldin: ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Aşağıdaki kutuya bir şey yazdığında akışında yayımlanır. Herkes yanıt verebilir ve yanıt yalnızca bir üst paylaşımı olan başka bir paylaşım olduğundan konuşmalar gerektiği kadar iç içe geçebilir.",
+            "Kişileri arkadaş olarak eklediğinde paylaşımları akışına katılır. Sol üstteki site adıyla açılan Genel Akış burada yazılan her şeyi gösterir ve ekleyecek birini bulacağın yerdir.",
+            "Bu site Fediverse'ün bir parçasıdır: Mastodon ve diğer sunuculardaki hesapları tam tanıtıcılarıyla takip edebilirsin ve paylaştıkların seni orada takip eden kişilere ulaşır. @birisi@example.social gibi bir tanıtıcı ara, bu sunucu gidip onu bulur.",
+            "Bir paylaşımı #etiketlerle etiketlediğinde etiketin sayfasında ve yeterince kişi hakkında yazıyorsa Gündemde görünür.",
+            "Üyeler arasındaki mesajlar uçtan uca şifrelidir; sunucu okuyamadığı şifreli metni saklar. Bunu Ayarlar'dan aç.",
+            "Hemen paylaşmak zorunda değilsin: bir taslak kaydet veya bir zaman belirle, kendiliğinden yayımlansın. İkisi de Taslaklar ve Zamanlananlar altında bulunur."
+        ],
+        "more": {
+            "before": "Başka bir yerdeki hesabı buraya taşıma da dahil olmak üzere daha fazlasını ",
+            "link": "yardım sayfalarında",
+            "after": " bulabilirsin."
+        },
+        "dontShowAgain": "Bunu Bir Daha Gösterme"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Emoji Ekle"
+    },
+    "LinkImagePreview": {
+        "alt": "Bağlantı önizleme görseli"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Görseli Kaldır"
+    },
+    "LinkItem": {
+        "alt": "Bağlantı önizleme görseli"
+    },
+    "MapScrubber": {
+        "play": "Oynat",
+        "pause": "Duraklat",
+        "cumulativeMode": "O Zamana Kadar",
+        "windowMode": "Yalnızca O Zaman",
+        "rangeLabel": "Bir Tarihe Kadarki Paylaşımları Göster",
+        "cumulativeLabel": {
+            "one": "{date} tarihine kadar paylaşılan — {count} paylaşım",
+            "other": "{date} tarihine kadar paylaşılan — {count} paylaşım"
+        },
+        "windowLabel": {
+            "one": "{date} civarında paylaşılan — {count} paylaşım",
+            "other": "{date} civarında paylaşılan — {count} paylaşım"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} Adlı Kullanıcının Paylaşımı",
+        "pageTitleUntitled": "Paylaşım",
+        "imageAltByAuthor": "{name} tarafından paylaşılan fotoğraf",
+        "imageAltUntitled": "Fotoğraf"
+    },
+    "PostBookmarkButton": {
+        "remove": "Yer İmini Kaldır",
+        "add": "Yer İmi Ekle"
+    },
+    "PostRepostButton": {
+        "undo": "Yeniden Paylaşımı Geri Al",
+        "repost": "Yeniden Paylaş"
+    },
+    "QuotedPost": {
+        "viewLink": "Alıntılanan Paylaşımı Görüntüle"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Bekleyen İstekler"
+    },
+    "ScrollToTopButton": {
+        "label": "Başa Kaydır"
+    },
+    "SearchClearButton": {
+        "label": "Aramayı Temizle"
+    },
+    "SitePolicyLinks": {
+        "terms": "Hizmet Koşulları",
+        "privacy": "Gizlilik Politikası"
+    },
+    "SkipLink": {
+        "label": "İçeriğe Atla"
+    },
+    "TopicHeading": {
+        "searchLink": "Bunu Ara",
+        "noPosts": "Şu anda bundan bahseden paylaşım yok."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Henüz bu tür hiçbir şey hakkında yazılmadı."
+    },
+    "TrendingEntitySection": {
+        "heading": "Gündemde"
+    },
+    "PostLocationLink": {
+        "title": "Bu Yeri Haritada Göster",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "az önce",
+        "minutes": {
+            "one": "{count} dk önce",
+            "other": "{count} dk önce"
+        },
+        "hours": {
+            "one": "{count} sa önce",
+            "other": "{count} sa önce"
+        },
+        "days": {
+            "one": "{count} gün önce",
+            "other": "{count} gün önce"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Sistemle Eşleştir",
+            "light": "Düz Açık",
+            "dark": "Düz Koyu",
+            "sepia": "Sepia",
+            "midnight": "Gece Yarısı",
+            "sunset": "Gün Batımı",
+            "rose": "Gül",
+            "forest": "Orman",
+            "ocean": "Okyanus",
+            "lavender": "Lavanta",
+            "gold": "Altın",
+            "hacker": "Hacker",
+            "ironbow": "Demir Yay",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Küp Sarmalı",
+            "greyscale": "Gri Tonlama"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Bu sunucuda çeviri kurulmamış.",
+        "nothing": "Burada çevrilecek bir şey yok.",
+        "unknownSource": "Bu paylaşımın hangi dilde olduğu henüz belirlenemediğinden çevrilemiyor.",
+        "alreadyReadable": "Bu paylaşım zaten o dilde.",
+        "unsupportedPair": "Bu sunucu henüz o dili çeviremiyor."
+    },
+    "LanguagePrompt": {
+        "question": "Siteyi Türkçe görüntülemek ister misin?",
+        "accept": "Evet",
+        "decline": "Hayır, teşekkürler"
+    },
+    "LanguageSelector": {
+        "label": "Dil",
+        "legend": "Dil"
+    },
+    "EmailDigest": {
+        "subject": "{site} üzerinde kaçırdıkların",
+        "greeting": "Merhaba {name},",
+        "whileAway": "Sen uzaktayken:",
+        "repeatedTimes": {
+            "one": " ({count} kez)",
+            "other": " ({count} kez)"
+        },
+        "moreMissed": {
+            "one": "ve {count} bildirim daha",
+            "other": "ve {count} bildirim daha"
+        },
+        "messagesWaiting": {
+            "one": "Bekleyen bir mesajın var",
+            "other": "Bekleyen {count} mesajın var"
+        },
+        "postsInFeed": {
+            "one": "Akışında bir yeni paylaşım var",
+            "other": "Akışında {count} yeni paylaşım var"
+        },
+        "unsubscribeInstructions": "Bu e-postaları durdurmak için bu bağlantıyı aç; tek tıklama yeterlidir ve parola gerekmez:",
+        "comeSeeWhatIsNew": "Gel ve yenilikleri gör",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Bunları göndermeyi durdur",
+            "after": " - tek tıklama, parola gerekmez."
+        }
+    },
+    "EmailVerification": {
+        "subject": "E-posta adresini doğrula",
+        "greeting": "Merhaba {name},",
+        "instructions": "Lütfen bu bağlantıyı ziyaret ederek e-posta adresini doğrula:",
+        "htmlInstructions": "Lütfen aşağıdaki bağlantıya tıklayarak e-posta adresini doğrula:",
+        "buttonLabel": "E-posta Adresini Doğrula",
+        "expiresIn": {
+            "one": "Bu bağlantının süresi {count} saat içinde dolar.",
+            "other": "Bu bağlantının süresi {count} saat içinde dolar."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Parolanı sıfırla",
+        "greeting": "Merhaba {name},",
+        "instructions": "Birisi (umarız sen) parola sıfırlama isteğinde bulundu. Yeni bir parola seçmek için bu bağlantıyı ziyaret et:",
+        "htmlInstructions": "Birisi (umarız sen) parola sıfırlama isteğinde bulundu. Yeni bir parola seçmek için aşağıdaki bağlantıya tıkla:",
+        "buttonLabel": "Parolayı Sıfırla",
+        "expiresIn": {
+            "one": "Bu bağlantının süresi {count} saat içinde dolar.",
+            "other": "Bu bağlantının süresi {count} saat içinde dolar."
+        },
+        "ignoreNotice": "Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin."
+    }
+}

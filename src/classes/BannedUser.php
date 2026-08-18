@@ -13,13 +13,11 @@ class BannedUser extends User
     {
         $this -> attributes['data-user-id'] = (string) $this -> userId;
 
-        $row = new Div();
-        $row -> mixins = ['d-flex', 'align-items-center', 'gap-3'];
+        $row = new BannedUserRow();
 
         $row -> addContent($this -> header());
 
         $unban = new UserUnbanButton((int) $this -> userId);
-        $unban -> mixins[] = 'ms-auto';
         $row -> addContent($unban);
 
         $this -> contents[] = $row;

@@ -15,7 +15,6 @@ declare(strict_types=1);
 class TrendingEntityList extends ItemList
 {
     public ?string $class = 'TrendingEntityList';
-    public array $mixins = ['d-flex', 'flex-wrap', 'gap-2'];
 
     /**
      * This list shows this many and stops: what is trending is a top, and a

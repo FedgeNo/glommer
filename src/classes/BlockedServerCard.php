@@ -13,7 +13,6 @@ declare(strict_types=1);
 class BlockedServerCard extends Div
 {
     public ?string $class = 'BlockedServerCard';
-    public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?string $domain = null;
     public ?string $reason = null;
@@ -24,16 +23,14 @@ class BlockedServerCard extends Div
     {
         $this -> attributes['data-domain'] = (string) $this -> domain;
 
-        $info = new Div();
-        $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
+        $info = new BlockedServerCardInfo();
         $info -> addContent(new Paragraph((string) $this -> domain));
 
         $words = Strings::for(self::class);
         $sentence = $words['blockedBy'] ?? [];
         $who = $this -> blockedByUsername ?? (string) ($words['deletedAccount'] ?? '');
 
-        $detail = new Paragraph();
-        $detail -> mixins = ['muted'];
+        $detail = new BlockedServerCardDetail();
         // See BannedTrendingEntity: the time is its own element between two
         // text nodes rather than glued to the end of one.
         $detail -> addContent(str_replace('{name}', $who, (string) ($sentence['before'] ?? '')));
@@ -48,7 +45,6 @@ class BlockedServerCard extends Div
         $this -> addContent($info);
 
         $unblock = new ServerUnblockButton((string) $this -> domain);
-        $unblock -> mixins[] = 'ms-auto';
         $this -> addContent($unblock);
 
         return parent::toDOM();

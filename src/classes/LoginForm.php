@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 class LoginForm extends FormForm
 {
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {
@@ -33,7 +32,7 @@ class LoginForm extends FormForm
             // trailing edge, which in this row bottom-aligns it against the
             // reserved Turnstile box - the same corner it always stuck to,
             // just beside the box rather than under it.
-            $footer -> mixins = ['d-flex', 'justify-content-between'];
+            $footer = new LoginFormFooter();
             $footer -> addContent(new TurnstileWidget());
             $footer -> addContent(new SubmitButton($submit));
             $this -> contents[] = $footer;

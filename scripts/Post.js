@@ -164,16 +164,16 @@ export class Post {
 
     authorBylineToElement() {
         const byline = document.createElement('header');
-        byline.className = 'PostByline d-flex align-items-start gap-2';
+        byline.className = 'PostByline';
 
         byline.appendWithSpace(User.fromData(this.author).header());
 
         const meta = document.createElement('div');
-        meta.className = 'PostMeta d-flex flex-column align-items-end ms-auto';
+        meta.className = 'PostMeta';
 
         if (this.createdAt) {
             const timestamp_link = document.createElement('a');
-            timestamp_link.className = 'TimestampLink muted text-sm';
+        timestamp_link.className = 'TimestampLink';
             timestamp_link.href = ClientConfig.siteURL() + '/users/' + this.author.slug + '/' + this.postId;
 
             const timestamp = document.createElement('time');
@@ -198,7 +198,7 @@ export class Post {
 
         if (this.editedAt) {
             const edited_marker = document.createElement('span');
-            edited_marker.className = 'PostEditedMarker muted text-sm';
+        edited_marker.className = 'PostEditedMarker';
             edited_marker.title = RelativeTime.dateAndTime(this.editedAt);
             edited_marker.textContent = Strings.for('PostEditedMarker', { label: '(edited)' }).label;
             meta.appendWithSpace(edited_marker);
@@ -522,7 +522,7 @@ export class Post {
             quoted.className = 'QuotedPost';
 
             const byline = document.createElement('p');
-            byline.className = 'QuotedPostByline muted text-sm';
+            byline.className = 'QuotedPostByline';
             byline.textContent = (this.quotedPost.authorTitle || this.quotedPost.slug) + ' · @' + this.quotedPost.slug;
             quoted.appendWithSpace(byline);
 
@@ -543,7 +543,7 @@ export class Post {
             }
 
             const link = document.createElement('a');
-            link.className = 'QuotedPostLink text-sm';
+            link.className = 'QuotedPostLink';
             link.href = ClientConfig.siteURL() + '/users/' + this.quotedPost.slug + '/' + this.quotedPost.postId;
             link.textContent = Strings.for('QuotedPost', { viewLink: 'View the Quoted Post' }).viewLink;
             quoted.appendWithSpace(link);
@@ -595,11 +595,11 @@ export class Post {
         card.appendWithSpace(this.postElement());
 
         const meta = document.createElement('footer');
-        meta.className = 'PostActionBar d-flex align-items-center gap-3';
+        meta.className = 'PostActionBar';
 
         const actions = document.createElement('div');
         // Mirrors PostActionBar.php - anchored at the start, not the end.
-        actions.className = 'd-flex align-items-center gap-2 flex-wrap';
+        actions.className = 'PostActionBarActions';
 
         const logged_in = ClientConfig.get('currentUserId') !== null;
 
@@ -849,7 +849,7 @@ export class Post {
             }
 
             const label = document.createElement('p');
-            label.className = 'MachineTranslationLabel muted text-sm';
+        label.className = 'MachineTranslationLabel';
             label.textContent = 'Machine translation';
             translated.appendWithSpace(label);
 

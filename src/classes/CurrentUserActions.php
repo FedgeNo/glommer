@@ -11,5 +11,4 @@ declare(strict_types=1);
 class CurrentUserActions extends Div
 {
     public ?string $class = 'CurrentUserActions';
-    public array $mixins = ['ms-auto'];
 }

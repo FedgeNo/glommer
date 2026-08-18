@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 class FrontPageImageSettingsForm extends FormForm
 {
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {
@@ -19,7 +18,6 @@ class FrontPageImageSettingsForm extends FormForm
         $fields = new Fieldset((string) ($words['legend'] ?? ''));
 
         $explainer = new Paragraph((string) ($words['explainer'] ?? ''));
-        $explainer -> mixins = ['muted', 'text-sm'];
         $fields -> addContent($explainer);
 
         $current_url = FrontPageImage::URL();

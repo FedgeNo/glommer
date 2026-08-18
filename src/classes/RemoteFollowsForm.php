@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 class RemoteFollowsForm extends FormForm
 {
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     /** @param array<int, array{displayName: string, slug: string, status: string}> $currentFollows */
     public function __construct(private readonly array $currentFollows)
@@ -28,11 +27,9 @@ class RemoteFollowsForm extends FormForm
 
         if ($this -> currentFollows !== []) {
             $list = new RemoteFollowsList();
-            $list -> mixins = ['d-flex', 'flex-column', 'gap-1'];
 
             foreach ($this -> currentFollows as $follow) {
-                $item = new Div();
-                $item -> mixins = ['d-flex', 'gap-2', 'align-items-center'];
+                $item = new RemoteFollowsItem();
 
                 // Their profile here, which is where the Unfollow button is -
                 // otherwise the only way back to someone already followed is
@@ -42,8 +39,7 @@ class RemoteFollowsForm extends FormForm
                     $follow['displayName']
                 );
 
-                $status = new Span();
-                $status -> mixins = ['muted', 'text-sm'];
+                $status = new RemoteFollowsStatus();
                 // RemoteFollows.status is only ever 'pending' or 'accepted' -
                 // a rejected follow is deleted rather than parked (see
                 // ActivityPubInbox::handleReject()) - but a stray value falls

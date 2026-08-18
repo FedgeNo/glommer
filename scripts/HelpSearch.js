@@ -41,7 +41,7 @@ export class HelpSearch {
         card.appendWithSpace(title);
 
         const summary = document.createElement('p');
-        summary.className = 'muted';
+        summary.className = 'HelpArticleSummaryText';
         summary.textContent = article.summary;
         card.appendWithSpace(summary);
 

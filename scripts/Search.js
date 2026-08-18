@@ -234,7 +234,7 @@ export class Search {
         new Search(input, {
             endpoint: '/api/search-users',
             buildRequest: query => ({ q: query }),
-            resultsContainer: () => list_in(section, 'UserList UserSearchList d-flex flex-column'),
+            resultsContainer: () => list_in(section, 'UserList UserSearchList'),
             renderItem: userData => OtherUser.fromData(userData).toElement(),
             enableInfiniteScroll: true,
             countOffset: list => list.querySelectorAll('.OtherUser').length,
@@ -251,7 +251,7 @@ export class Search {
                         noMatches: 'Nobody here matches that.',
                     });
                     const notice = document.createElement('p');
-                    notice.className = 'muted Notice';
+                    notice.className = 'Notice';
                     notice.textContent = searching ? words.noMatches : words.noSuggestions;
                     section.querySelector('.UserList')?.appendWithSpace(list_item(notice));
                 }
@@ -326,7 +326,7 @@ export class Search {
                         noMatches: 'No help articles matched your search.',
                     });
                     const empty = document.createElement('p');
-                    empty.className = 'muted Notice';
+            empty.className = 'Notice';
                     empty.textContent = words.noMatches;
                     container.appendWithSpace(empty);
                     return;
@@ -355,7 +355,7 @@ export class Search {
             onResponse: (input, data, items) => {
                 if (items.length === 0) {
                     const notice = document.createElement('p');
-                    notice.className = 'muted Notice';
+            notice.className = 'Notice';
                     notice.textContent = input.value.trim() === '' ? 'No banned users.' : 'No banned users match that search.';
                     container.appendWithSpace(list_item(notice));
                 }

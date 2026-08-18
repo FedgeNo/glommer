@@ -15,7 +15,6 @@ declare(strict_types=1);
  */
 class HiddenLabel extends Span
 {
-    public array $mixins = ['visually-hidden'];
 
     public function __construct(string $text)
     {

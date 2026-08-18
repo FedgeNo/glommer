@@ -1,0 +1,1146 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 röst",
+            "other": "{count} röster"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Logga in",
+            "after": " för att svara."
+        },
+        "post": {
+            "before": "",
+            "link": "Logga in",
+            "after": " för att publicera."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Webbplats",
+        "siteURLLabel": "Webbplatsens URL",
+        "siteTitleLabel": "Webbplatsens namn",
+        "mailFromAddressLabel": "Avsändaradress för e-post",
+        "serverNameConfirmedLabel": "Jag har ställt in \"ServerName {host}\" och \"UseCanonicalName On\" i webbserverns konfiguration (kontrolleras endast om det automatiska livetestet inte kan slutföras – se avsnittet om HTTPS i README.md)",
+        "databaseLegend": "Databas",
+        "databaseHostLabel": "Databasvärd",
+        "databasePortLabel": "Databasport",
+        "databaseNameLabel": "Databasnamn",
+        "databaseAdminUsernameLabel": "Administratörens användarnamn för databasen",
+        "databaseAdminPasswordLabel": "Administratörens lösenord för databasen",
+        "webSocketTLSLegend": "WebSocket TLS (valfritt)",
+        "certificatePathLabel": "Sökväg till certifikat",
+        "certificatePathPlaceholder": "Lämna tomt för att skapa automatiskt med mkcert",
+        "keyPathLabel": "Sökväg till nyckel",
+        "keyPathPlaceholder": "Lämna tomt för att skapa automatiskt med mkcert",
+        "botProtectionLegend": "Botskydd (valfritt)",
+        "turnstileSiteKeyLabel": "Webbplatsnyckel för Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Lämna tomt för att hoppa över",
+        "turnstileSecretKeyLabel": "Hemlig nyckel för Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Lämna tomt för att hoppa över",
+        "submit": "Konfigurera"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Nuvarande lösenfras",
+        "newPassphraseLabel": "Ny lösenfras",
+        "confirmNewPassphraseLabel": "Bekräfta den nya lösenfrasen",
+        "accountPasswordLabel": "Kontots lösenord",
+        "submit": "Ändra lösenfras"
+    },
+    "PasswordResetForm": {
+        "legend": "Välj ett nytt lösenord",
+        "newPasswordLabel": "Nytt lösenord",
+        "newPasswordPlaceholder": "Minst 8 tecken",
+        "confirmPasswordLabel": "Bekräfta det nya lösenordet",
+        "submit": "Återställ lösenord"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Återställ ditt lösenord",
+        "emailLabel": "E-post",
+        "submit": "Skicka återställningslänk"
+    },
+    "EmailRevertForm": {
+        "submit": "Ångra ändring av e-postadress"
+    },
+    "EmailVerifyForm": {
+        "submit": "Verifiera e-postadress"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Aktivera dem igen"
+    },
+    "EmailDigestSetting": {
+        "label": "Skicka e-post om det jag har missat när jag varit borta ett tag"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Okänd enhet",
+        "browserOnOS": "{browser} på {os}",
+        "thisDevice": " (den här enheten)",
+        "lastUsed": {
+            "before": "Senast använd ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Avsluta alla aktiva sessioner och glöm alla ihågkomna enheter. Du loggas ut från alla webbläsare, även den här."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Logga ut överallt"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Verifiera med Google för att ta bort"
+    },
+    "GoogleSignInButton": {
+        "label": "Fortsätt med Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Redigera profil"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Få aviseringar på den här enheten även när webbplatsen inte är öppen. Valet gäller per webbläsare – aktivera det överallt där du vill kunna nås.",
+        "label": {
+            "off": "Aktivera på den här enheten",
+            "on": "Stäng av på den här enheten"
+        },
+        "unsupported": "Push-aviseringar stöds inte i den här webbläsaren"
+    },
+    "LoginForm": {
+        "legend": "Logga in",
+        "identifier": "Användarnamn eller e-post",
+        "password": "Lösenord",
+        "rememberMe": "Kom ihåg mig",
+        "submit": "Logga in"
+    },
+    "SignupForm": {
+        "legend": "Skapa ett konto",
+        "usernameLabel": "Användarnamn",
+        "usernamePlaceholder": "Små bokstäver, siffror och _",
+        "emailLabel": "E-post",
+        "emailPlaceholder": "Giltig e-postadress",
+        "displayName": "Visningsnamn (valfritt)",
+        "bioLabel": "Presentation (valfritt)",
+        "bioPlaceholder": "En kort presentation – #hashtaggar, @omnämnanden och länkar blir klickbara",
+        "passwordLabel": "Lösenord",
+        "passwordPlaceholder": "Lösenord: minst 8 tecken",
+        "rememberMe": "Kom ihåg mig",
+        "submit": "Registrera dig"
+    },
+    "PasswordChangeForm": {
+        "legend": "Ändra ditt lösenord",
+        "currentPassword": "Nuvarande lösenord",
+        "newPasswordLabel": "Nytt lösenord",
+        "newPasswordPlaceholder": "Minst 8 tecken",
+        "confirmPassword": "Bekräfta det nya lösenordet",
+        "submit": "Ändra lösenord"
+    },
+    "EmailChangeForm": {
+        "legend": "Ändra din e-postadress",
+        "newEmail": "Ny e-postadress",
+        "currentPassword": "Nuvarande lösenord",
+        "notice": "Du måste verifiera den nya adressen innan du kan fortsätta använda webbplatsen.",
+        "submit": "Ändra e-postadress"
+    },
+    "AccountDeleteForm": {
+        "legend": "Ta bort ditt konto",
+        "warning": "Detta tar permanent bort ditt konto, dina inlägg och dina meddelanden. Det går inte att ångra.",
+        "currentPassword": "Nuvarande lösenord",
+        "submit": "Ta bort konto"
+    },
+    "AccountMigrationForm": {
+        "legend": "Flytta till en annan server",
+        "movedNotice": "Det här kontot har flyttat till {destination}. Dina följare har ombetts att följa dig där.",
+        "explanation": "Dina följare ombeds att följa det nya kontot. Dina inlägg stannar här – objektadresser tillhör servern som skapade dem och kan därför inte tas med.",
+        "addressNotice": "Kontot du flyttar till måste först ange det här kontot under \"även känt som\". Din adress här är {address}.",
+        "movedToLabel": "Flytta till",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Även känd som",
+        "aliasesExplanation": "Konton på andra platser som också är du. Om du anger ett konto här får det kontot flytta till det här – det är behörigheten, inte själva flytten. En adress per rad.",
+        "aliasesLabel": "Dina andra konton",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Spara"
+    },
+    "TwoFactorForm": {
+        "legend": "Ange din verifieringskod",
+        "explanation": "Vi skickade en verifieringskod till dig via e-post. Ange den nedan eller använd en av dina återställningskoder för att slutföra inloggningen.",
+        "explanationEmailFailed": "Vi kunde inte skicka verifieringskoden via e-post just nu. Ange en av dina återställningskoder för att slutföra inloggningen.",
+        "code": "Verifieringskod",
+        "submit": "Verifiera"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Tvåfaktorsautentisering är aktiverad",
+            "off": "Tvåfaktorsautentisering är inaktiverad"
+        },
+        "explanation": {
+            "on": "När du loggar in skickar vi en verifieringskod via e-post som du måste ange för att slutföra inloggningen. Om e-postmeddelandet inte når dig kan du logga in med en av dina återställningskoder i stället.",
+            "off": "Lägg till ett andra steg vid inloggning: vi skickar en verifieringskod via e-post som du måste ange, så lösenordet ensamt räcker inte för att logga in. Du får återställningskoder för engångsbruk att spara om e-postmeddelandet inte når dig."
+        },
+        "currentPassword": "Nuvarande lösenord",
+        "submit": {
+            "on": "Stäng av tvåfaktorsautentisering",
+            "off": "Aktivera tvåfaktorsautentisering"
+        },
+        "regenerate": "Skapa nya återställningskoder",
+        "recoveryHeading": "Dina återställningskoder",
+        "recoveryNote": "Spara dem på en säker plats nu – de visas inte igen. Varje kod kan logga in dig en gång när verifieringsmeddelandet inte når dig, och om du skapar nya koder ersätts alla dessa.",
+        "toast": {
+            "on": "Tvåfaktorsautentisering är nu aktiverad.",
+            "off": "Tvåfaktorsautentisering är nu inaktiverad.",
+            "regenerated": "Nya återställningskoder har skapats. De gamla fungerar inte längre."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Kontrollera din inkorg och klicka på verifieringslänken vi skickade för att bekräfta din e-postadress. Om du inte ser meddelandet, kontrollera skräppostmappen."
+    },
+    "VerificationResendButton": {
+        "label": "Skicka verifieringsmeddelandet igen"
+    },
+    "MailSettingsForm": {
+        "legend": "Utgående e-post",
+        "fromAddressLabel": "Avsändaradress",
+        "fromAddressPlaceholder": "Ingen e-post kan skickas innan detta har ställts in",
+        "fromNameLabel": "Avsändarnamn",
+        "hostLabel": "SMTP-värd",
+        "portLabel": "SMTP-port",
+        "usernameLabel": "SMTP-användarnamn",
+        "passwordLabel": "SMTP-lösenord",
+        "passwordPlaceholder": {
+            "set": "Lösenordet är inställt – lämna tomt för att behålla det",
+            "unset": "SMTP-lösenord"
+        },
+        "encryptionLabel": "Kryptering",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, vanligtvis på port 587)",
+            "ssl": "SSL (implicit TLS, vanligtvis på port 465)",
+            "none": "Ingen"
+        },
+        "explainer": "Lämna SMTP-värden tom för att i stället skicka via PHP:s mail() (rekommenderas inte – se avsnittet om leveransbarhet i README). Ingen e-post kan skickas alls förrän en avsändaradress har angetts.",
+        "save": "Spara"
+    },
+    "MapSettingsForm": {
+        "legend": "Kartplattor",
+        "notice": "Lämna tomt för att använda OpenStreetMap. Om du vill använda en leverantör med nyckel klistrar du in dess URL-mall med den exakta texten {apiKey} där nyckeln ska stå, samt nyckeln och källangivelsen nedan.",
+        "urlLabel": "URL-mall för kartplattor",
+        "keyLabel": "API-nyckel",
+        "keyPlaceholder": "Kartleverantörens API-nyckel",
+        "attributionLabel": "Källangivelse",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Spara"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google-inloggning",
+        "clientIdLabel": "Klient-ID",
+        "clientIdPlaceholder": "Klient-ID för Google OAuth",
+        "secretLabel": "Klienthemlighet",
+        "secretPlaceholder": {
+            "set": "Klienthemligheten är inställd – lämna tomt för att behålla den",
+            "unset": "Klienthemlighet för Google OAuth"
+        },
+        "explainer": "Båda krävs för att \"Fortsätt med Google\" ska visas vid registrering och inloggning. Ställ in den auktoriserade omdirigerings-URI:n till {url} i Google Cloud OAuth-klienten – töm klient-ID:t för att stänga av funktionen.",
+        "save": "Spara"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Webbplatsnyckel",
+        "turnstileSiteKeyPlaceholder": "Webbplatsnyckel för Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Hemlig nyckel",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Den hemliga nyckeln är inställd – lämna tomt för att behålla den",
+            "unset": "Hemlig nyckel för Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Båda nycklarna krävs för att CAPTCHA-kontrollen ska visas vid registrering och inloggning. Töm webbplatsnyckeln för att stänga av den.",
+        "recaptchaLegend": "Google reCAPTCHA (återställning av låst konto)",
+        "recaptchaSiteKeyLabel": "Webbplatsnyckel",
+        "recaptchaSiteKeyPlaceholder": "Webbplatsnyckel för Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Hemlig nyckel",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Den hemliga nyckeln är inställd – lämna tomt för att behålla den",
+            "unset": "Hemlig nyckel för Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Båda nycklarna krävs. När de är inställda kan ett konto som når gränsen för inloggningsförsök komma in igen genom att klara kontrollen i stället för att vänta ut låsningen. Utan nycklar måste hela spärrtiden gå. Använd reCAPTCHA v2 (\"Jag är inte en robot\"). Töm webbplatsnyckeln för att stänga av funktionen.",
+        "save": "Spara"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Används av webbplatsens AI-funktioner (sammanfattningar av trendämnen med mera). Lämna modellen tom för att använda Free Models Router, där OpenRouter slumpmässigt väljer bland de modeller som för tillfället är kostnadsfria och aldrig kan medföra en kostnad.",
+        "keyLabel": "API-nyckel",
+        "keyPlaceholder": {
+            "set": "API-nyckeln är inställd – lämna tomt för att behålla den",
+            "unset": "API-nyckel för OpenRouter"
+        },
+        "clearKeyLabel": "Ta bort den sparade API-nyckeln (stänger av AI-funktionerna)",
+        "modelLabel": "Modell",
+        "neverSpendLabel": "Tillåt aldrig att detta kostar pengar (rekommenderas)",
+        "explainer": "När spärren är aktiverad begränsas priset för varje begäran till noll, så begäran misslyckas helt i stället för att använda en betalmodell när ingen kostnadsfri leverantör finns. Ta bort den sparade API-nyckeln för att stänga av AI-funktionerna helt.",
+        "save": "Spara"
+    },
+    "AboutSettingsForm": {
+        "legend": "Om",
+        "description": "Oformaterad text – tomma rader skiljer stycken åt. Det första stycket används som webbplatsbeskrivning.",
+        "save": "Spara"
+    },
+    "TermsSettingsForm": {
+        "legend": "Användarvillkor",
+        "description": "Oformaterad text – tomma rader skiljer stycken åt.",
+        "save": "Spara"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Integritetspolicy",
+        "description": "Oformaterad text – tomma rader skiljer stycken åt.",
+        "save": "Spara"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "E-postsammandrag",
+        "fieldLabel": "Avslutande stycke",
+        "notice": "Läggs till nära slutet av varje sammandrag, efter listan över det medlemmen missade. Oformaterad text. Lämna tomt för att återgå till texten som följer med programvaran.",
+        "save": "Spara"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Nuvarande favicon",
+        "save": "Ladda upp favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Bild för förstasidan",
+        "explainer": "Visas av andra webbplatser när någon delar en länk hit – endast som Open Graph-metadata, aldrig på själva sidan. Beskärs till 1200×630. Utan en bild innehåller länkförhandsvisningar ingen bild alls.",
+        "currentAlt": "Nuvarande bild för förstasidan",
+        "save": "Ladda upp bild"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Spela upp automatiskt"
+    },
+    "CarouselNextButton": {
+        "name": "Nästa"
+    },
+    "CarouselPrevButton": {
+        "name": "Föregående"
+    },
+    "MediaFullscreenButton": {
+        "name": "Helskärm"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Ta bort filer"
+    },
+    "NotificationDropdown": {
+        "showAll": "Visa alla"
+    },
+    "HelpSearch": {
+        "placeholder": "Sök i hjälpen…",
+        "noMatches": "Inga hjälpartiklar matchade din sökning."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Jag förstår"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Kasta"
+    },
+    "StagedPostEditButton": {
+        "name": "Redigera"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publicera nu"
+    },
+    "LogoutButton": {
+        "name": "Logga ut"
+    },
+    "AvatarUploadForm": {
+        "submit": "Uppdatera profilbild"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Sök efter blockerade användare…"
+    },
+    "BannedUserSection": {
+        "heading": "Blockerade användare"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Skickade förfrågningar (väntar på svar)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Blockerad av {name} ",
+            "after": ""
+        },
+        "reason": " – {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blockerad av {name} ",
+            "after": ""
+        },
+        "deletedAccount": "ett borttaget konto",
+        "reason": " – {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "januari",
+            "2": "februari",
+            "3": "mars",
+            "4": "april",
+            "5": "maj",
+            "6": "juni",
+            "7": "juli",
+            "8": "augusti",
+            "9": "september",
+            "10": "oktober",
+            "11": "november",
+            "12": "december"
+        },
+        "shortMonths": {
+            "1": "jan.",
+            "2": "feb.",
+            "3": "mars",
+            "4": "apr.",
+            "5": "maj",
+            "6": "juni",
+            "7": "juli",
+            "8": "aug.",
+            "9": "sep.",
+            "10": "okt.",
+            "11": "nov.",
+            "12": "dec."
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} kl. {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Det gick inte att ansluta till WebSocket-servern på 127.0.0.1:{port}{tls} ({error}). Starta den först: systemctl --user start glommer-websocket (se README.md för enhetsfilen). Om den nyligen fick eller förlorade WS_TLS_CERT/WS_TLS_KEY måste den startas om så att den stämmer med .env.",
+        "wsOverTLS": " över TLS",
+        "wsBadHandshake": "Tjänsten på 127.0.0.1:{port} slutförde inte en giltig WebSocket-handskakning – något annat än bin/websocket-server.php kan lyssna på porten.",
+        "wsNoPong": "WebSocket-servern accepterade handskakningen men svarade inte på en ping – den kan ha fastnat eller fungera felaktigt. Kontrollera loggarna.",
+        "wsReachable": "WebSocket-servern kan nås och svarar på 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtagg",
+            "person": "Person",
+            "org": "Organisation",
+            "gpe": "Plats",
+            "loc": "Region",
+            "fac": "Landmärke",
+            "product": "Produkt",
+            "event": "Händelse",
+            "work_of_art": "Verk",
+            "law": "Lag",
+            "language": "Språk",
+            "norp": "Grupp"
+        },
+        "plural": {
+            "hashtag": "Hashtaggar",
+            "person": "Personer",
+            "org": "Organisationer",
+            "gpe": "Platser",
+            "loc": "Regioner",
+            "fac": "Landmärken",
+            "product": "Produkter",
+            "event": "Händelser",
+            "work_of_art": "Verk",
+            "law": "Lagar",
+            "language": "Språk",
+            "norp": "Grupper"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Ta bort vän"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Godkänn"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Avslå"
+    },
+    "UserFollowButton": {
+        "follow": "Följ",
+        "unfollow": "Sluta följa"
+    },
+    "UserBlockButton": {
+        "name": "Blockera"
+    },
+    "UserUnblockButton": {
+        "name": "Avblockera"
+    },
+    "OtherUser": {
+        "message": "Meddelande"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Meny",
+        "loggedInAs": "Inloggad som {name}",
+        "friendsFeed": "Vänflöde",
+        "relayFeed": "Reläflöde",
+        "users": "Användare",
+        "tags": "Taggar",
+        "topics": "Ämnen",
+        "map": "Karta",
+        "locations": "Platser",
+        "search": "Sök",
+        "messages": "Meddelanden",
+        "bookmarks": "Bokmärken",
+        "help": "Hjälp",
+        "about": "Om",
+        "login": "Logga in",
+        "signup": "Registrera dig",
+        "friends": "Vänner",
+        "drafts": "Utkast och schemalagda",
+        "userSettings": "Användarinställningar",
+        "modSettings": "Moderatorinställningar",
+        "adminSettings": "Administratörsinställningar"
+    },
+    "LogoutForm": {
+        "submit": "Logga ut"
+    },
+    "User": {
+        "joined": "Gick med {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Lägg till vän",
+        "cancel": "Avbryt förfrågan"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Schemalagd till {when}",
+        "draft": "Utkast – publiceras bara när du säger till"
+    },
+    "MessageTranslateButton": {
+        "name": "Översätt det här meddelandet"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Om att översätta meddelanden",
+        "body": "När ett meddelande översätts skickas texten till den här servern och översätts här. Ingenting sparas: översättningen skrivs inte till databasen och själva meddelandet ändras inte. Men ett meddelande som översätts på detta sätt har lästs av servern och är därför inte totalsträckskrypterat på samma sätt som ett oöversatt meddelande. Endast meddelanden du tar emot kan översättas, och bara när du ber om det.",
+        "confirm": "Översätt",
+        "cancel": "Inte nu"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Har du glömt lösenfrasen? En återställning skapar nya nycklar under en ny lösenfras – men meddelanden som krypterats med de gamla nycklarna kan aldrig läsas igen av någon.",
+        "requirements": "Minst 12 tecken och inte samma som kontots lösenord – lösenordet skickas till servern, men lösenfrasen får aldrig göra det.",
+        "passphraseLabel": "Lösenfras",
+        "resetPassphraseLabel": "Ny lösenfras",
+        "confirmLabel": "Bekräfta lösenfras",
+        "accountPasswordLabel": "Kontots lösenord",
+        "submitLabel": "Aktivera krypterade meddelanden",
+        "resetSubmitLabel": "Återställ krypteringsnycklar"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Totalsträckskrypterade meddelanden låses och låses upp i din webbläsare: servern vidarebefordrar och lagrar dem utan att kunna läsa dem. Din nyckel skyddas av en lösenfras, och samma lösenfras låser upp meddelandena i vilken webbläsare som helst. Konversationer krypteras när båda har aktiverat funktionen. Meddelanden till personer på andra servrar förblir okrypterade eftersom federationen inte kan överföra dem på något annat sätt.",
+        "noRecovery": "Det går inte att återställa en förlorad lösenfras – inte ens för administratören. Om du förlorar den förlorar du dina krypterade meddelanden.",
+        "enabledStatus": "Krypterade meddelanden är aktiverade."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Krypterad",
+            "explanation": "Meddelandena i den här konversationen är totalsträckskrypterade: de låses upp med din lösenfras och läses i dina webbläsare, medan servern endast lagrar chiffertext. Kontrollera säkerhetskoden längst ned i tråden tillsammans med den andra personen för att försäkra er om att ingen finns mellan er. Meddelanden som skickades innan krypteringen aktiverades förblir läsbara som tidigare."
+        },
+        "awaiting-theirs": {
+            "label": "Inte krypterad",
+            "explanation": "Meddelandena här blir totalsträckskrypterade när {handle} aktiverar krypterade meddelanden i sina inställningar."
+        },
+        "awaiting-yours": {
+            "label": "Inte krypterad",
+            "explanation": "Meddelandena här är inte totalsträckskrypterade. Aktivera krypterade meddelanden i Inställningar för att skydda konversationen."
+        },
+        "federated": {
+            "label": "Inte krypterad",
+            "explanation": "{handle} finns på en annan server. Meddelandena i den här konversationen lagras både på den servern och på den här, och dess administratör kan läsa dem – protokollet mellan servrar kan inte kryptera dem. Håll känsligt innehåll till konversationer på den här webbplatsen."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Följ konton i fediversum",
+        "notice": "Klistra in ett eller flera användarnamn, till exempel @user@example.social – valfri avgränsare mellan dem fungerar.",
+        "handlesLabel": "Fediversumkonton att följa",
+        "submit": "Följ",
+        "statusPending": "väntar",
+        "statusAccepted": "godkänd"
+    },
+    "ServerBlockForm": {
+        "legend": "Blockera en server",
+        "description": "Avvisar allt från servern och allt under den: inga leveranser in, inga ut, och befintliga följningar i båda riktningarna tas bort.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Orsak",
+        "reasonPlaceholder": "Varför servern blockeras",
+        "submit": "Blockera server"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Kör de delar av samtalskonfigurationen som kan kontrolleras från en webbläsare. Allt fram till en faktisk direktanslutning kan testas här; för att ansluta till en annan person behövs den personen."
+    },
+    "VideoCallTestButton": {
+        "label": "Kör kontrollen"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket-server: körs",
+        "failed": "WebSocket-server: {detail}",
+        "clientTesting": "Webbläsaranslutning: testar…",
+        "clientConnecting": "Webbläsaranslutning: ansluter…",
+        "clientConnected": "Webbläsaranslutning: ansluten",
+        "clientDisconnecting": "Webbläsaranslutning: kopplar från…",
+        "clientNotConnected": "Webbläsaranslutning: inte ansluten"
+    },
+    "UploadWorkerStatus": {
+        "running": "Arbetstjänst: körs",
+        "stopped": "Arbetstjänst: körs inte – förberedda uppladdningar omkodas aldrig förrän tjänsten startas om",
+        "unknown": "Arbetstjänst: okänd – antingen saknas systemctl på värden eller så nekar SELinux webbserverns egen statusfråga (kör bin/install.php som root för att åtgärda det)",
+        "queue": "Kö: {staging} förbereds, {pending} väntar, {processing} bearbetas"
+    },
+    "TrendingTimerStatus": {
+        "running": "Trendtimer: körs",
+        "stopped": "Trendtimer: körs inte – trendämnen uppdateras endast genom läsvägens självläkning (Trending::current()), inte enligt schema. Kör bin/install.php som root för att konfigurera den.",
+        "unknown": "Trendtimer: okänd – antingen saknas systemctl på värden eller så nekar SELinux webbserverns egen statusfråga (kör bin/install.php som root för att åtgärda det)"
+    },
+    "Notification": {
+        "postReady": "Dina medier har bearbetats klart och är nu publicerade",
+        "scheduledPostLive": "Ditt schemalagda inlägg är nu publicerat",
+        "uploadPartlyFailed": "Ditt inlägg är publicerat, men en eller flera filer kunde inte bearbetas",
+        "uploadFailed": "En av dina uppladdningar kunde inte bearbetas och publicerades inte",
+        "mailerFailed": "E-postleveransen misslyckades – e-posttjänsten kan vara nere. Kontrollera e-postkonfigurationen.",
+        "mailFromNotConfigured": "Ingen avsändaradress för e-post har konfigurerats, så e-post kan inte skickas. Ange en i Administratörsinställningar (avsnittet Utgående e-post) eller via bin/install.php.",
+        "systemError": "Ett serverfel inträffade. Mer information finns i felloggen.",
+        "passwordRemovedGoogle": "Ditt lösenord togs bort när du loggade in med Google. Använd \"Glömt lösenord\" om du vill ange ett nytt.",
+        "like": "{name} gillade ditt inlägg",
+        "repost": "{name} återpublicerade ditt inlägg",
+        "reply": "{name} svarade på ditt inlägg",
+        "friendRequest": "{name} skickade en vänförfrågan",
+        "friendAccepted": "{name} accepterade din vänförfrågan",
+        "message": "{name} skickade ett meddelande till dig",
+        "mention": "{name} nämnde dig i ett inlägg",
+        "follow": "{name} följde dig från en annan server",
+        "default": "{name} gjorde något"
+    },
+    "NotificationList": {
+        "emptyNotice": "Inga aviseringar ännu."
+    },
+    "NotificationsNavLink": {
+        "label": "Aviseringar",
+        "unseen": "Olästa aviseringar"
+    },
+    "NotificationTestPanel": {
+        "intro": "Skicka en testavisering till dig själv (administratören). Den ska genast visas som ett meddelande och i aviseringsmenyn.",
+        "button": "Skicka testavisering",
+        "sending": "Skickar…",
+        "sent": "Skickad!",
+        "failed": "Misslyckades"
+    },
+    "MessageDot": {
+        "label": "Olästa meddelanden"
+    },
+    "NavAlertDot": {
+        "label": "Något nytt i menyn"
+    },
+    "Message": {
+        "encrypted": "Krypterat meddelande",
+        "decryptionFailed": "Meddelandet krypterades med nycklar som inte längre finns."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Meddelande",
+        "bodyPlaceholder": "Skriv ett meddelande",
+        "send": "Skicka"
+    },
+    "MessageList": {
+        "emptyNotice": "Inga meddelanden ännu."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Läs upp koden för varandra på något annat sätt – högt, personligen eller under ett samtal. Om den stämmer på båda sidor finns ingen mellan er.",
+        "changed": "Koden har ändrats sedan du kontrollerade den. Det händer när någon av er återställer sina krypteringsnycklar – men det är också så det skulle se ut om någon läste konversationen. Kontrollera den nya koden med personen innan du litar på den.",
+        "verified": "Du har kontrollerat koden."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Markera som verifierad"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Lösenfras",
+        "passphrasePlaceholder": "Lösenfras för att låsa upp konversationen",
+        "submit": "Lås upp"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Senaste meddelandet ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Känsligt medieinnehåll"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Visa känsligt medieinnehåll som standard"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Inlägg",
+            "message": "Meddelande",
+            "user": "Användare"
+        },
+        "summary": {
+            "before": "{type} #{id} rapporterad av ",
+            "after": ""
+        },
+        "reasonLine": "Orsak: {reason}",
+        "banReporterLabel": "Blockera anmälaren",
+        "banReportedUserLabel": "Blockera den anmälda användaren",
+        "deleteLabel": "Ta bort {type}",
+        "reportedImageAlt": "Anmäld bild",
+        "attachmentUnavailable": "En anmäld bilaga är inte längre tillgänglig.",
+        "viewAttachment": "Visa anmäld bilaga",
+        "missing": {
+            "noSnapshot": "Det anmälda innehållet är inte längre tillgängligt.",
+            "unknownType": "Okänd innehållstyp."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Inga anmälningar."
+    },
+    "ModQueueLinks": {
+        "intro": "Köerna är tillräckligt långa för att läsas en sida i taget och har därför egna sidor.",
+        "reportsLabel": "Anmälningar",
+        "bannedUsersLabel": "Blockerade användare"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Ingen moderator har gjort något ännu."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Inga blockerade trendobjekt."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Inga blockerade servrar."
+    },
+    "RelayCard": {
+        "accepted": "Prenumererar ",
+        "waiting": "Väntar på att reläet ska godkänna – prenumererar "
+    },
+    "RelayList": {
+        "emptyNotice": "Prenumererar inte på några reläer. Inget kommer hit utöver det som medlemmarna följer."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Inget har kommit via ett relä ännu. Inlägg visas här när servrarna på andra sidan publicerar dem."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Prenumerera på ett relä",
+        "explainerOne": "Ett relä är ett gemensamt flöde: varje offentligt inlägg från alla andra anslutna servrar kommer hit, och den här serverns inlägg skickas till dem alla. Det är så en ny instans över huvud taget hittar någon, eftersom federationen annars bara överför sådant som någon här redan följer.",
+        "explainerTwo": "Belastningen går inte att förutse – den motsvarar vad servrarna publicerar, lugnt ena veckan och tusentals inlägg i timmen nästa, och din lagring, leveranskö och modereringskö får bära allt. Reläinlägg hålls borta från huvud- och vänflödena; de hamnar i Reläflödet, som användare öppnar medvetet.",
+        "addressLabel": "Reläadress",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Prenumerera"
+    },
+    "RelayFollowObjectField": {
+        "label": "Prenumerationssätt",
+        "options": {
+            "public": "Följ det offentliga flödet (det som de flesta reläer förväntar sig)",
+            "actor": "Följ reläets egen aktör"
+        },
+        "retryNotice": "Om reläet aldrig godkänner, dra tillbaka och prova det andra sättet – vissa reläprogram känner bara igen ett av dem."
+    },
+    "SiteCounters": {
+        "members": "Medlemmar: {count} ({joined} gick med under de senaste {days} dagarna)",
+        "activeMembers": "Medlemmar här under de senaste {days} dagarna: {count} ({posted} av dem publicerade inlägg)",
+        "posts": "Inlägg skrivna här: {count} ({recent} under de senaste {days} dagarna)",
+        "deliveries": "Federerade leveranser under de senaste {days} dagarna: {delivered} kom fram, {undeliverable} övergavs",
+        "queued": "Väntar på att skickas: {count} ({failing} har redan avvisats minst en gång)",
+        "pendingReads": "Inlägg som väntar på att hämtas från andra servrar: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Kör webbplatsens testsvit och se resultaten. Det tar några sekunder, så den öppnas på en egen sida.",
+        "runLabel": "Kör tester"
+    },
+    "HelpArticle": {
+        "backLabel": "Tillbaka till all hjälp"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Inga förslag just nu – förslag kommer från vänner till personer du redan är vän med. Sök ovan för att hitta någon efter namn.",
+        "noMatches": "Ingen här matchar det."
+    },
+    "UserModButton": {
+        "make": "Gör till moderator",
+        "remove": "Ta bort som moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Häv blockering"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Blockera"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Häv blockering"
+    },
+    "ReportDismissButton": {
+        "name": "Avfärda"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Markera som känsligt"
+    },
+    "ServerUnblockButton": {
+        "name": "Avblockera"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Avsluta prenumeration"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Återkalla"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: godkänd",
+        "failing": "{suite}: underkänd"
+    },
+    "PageTitle": {
+        "about": "Om",
+        "adminBanned": "Blockerade användare",
+        "adminModSettings": "Moderatorinställningar",
+        "adminReports": "Anmälningar",
+        "adminSettings": "Administratörsinställningar",
+        "adminTests": "Tester",
+        "authGoogleCallbackAccountDeleted": "Kontot har tagits bort",
+        "authGoogleCallbackDeleteAccount": "Ta bort konto",
+        "authGoogleCallbackLogin": "Logga in",
+        "bookmarks": "Bokmärken",
+        "checkInbox": "Kontrollera din inkorg",
+        "drafts": "Utkast och schemalagda",
+        "draftsEditDraft": "Redigera utkast",
+        "draftsEditScheduled": "Redigera schemalagt inlägg",
+        "forgotPassword": "Glömt lösenord",
+        "friendsFeed": "Vänflöde",
+        "help": "Hjälp",
+        "helpDescription": "Guider och svar om hur webbplatsen används.",
+        "locations": "Platser",
+        "locationsDescription": "Inlägg från platserna närmast dig.",
+        "locationsPlaceDescription": "Inlägg nära {place}.",
+        "login": "Logga in",
+        "loginVerificationCode": "Verifieringskod",
+        "map": "Karta",
+        "mapDescription": "En karta över inlägg från hela världen – hitta personer och saker nära dig.",
+        "messages": "Meddelanden",
+        "messagesWithUser": "Meddelanden med {name}",
+        "notifications": "Aviseringar",
+        "privacy": "Integritetspolicy",
+        "quote": "Citera",
+        "relayFeed": "Reläflöde",
+        "relayFeedDescription": "Offentliga inlägg som kommer från reläerna servern prenumererar på.",
+        "resetPassword": "Återställ lösenord",
+        "revertEmail": "Ångra ändring av e-postadress",
+        "search": "Sök",
+        "signup": "Registrera dig",
+        "tags": "Taggar",
+        "tagsDescription": "Bläddra bland trendande och populära hashtaggar på {siteTitle}.",
+        "tagsTagDescription": "Inlägg märkta med {tag} på {siteTitle}.",
+        "terms": "Användarvillkor",
+        "topics": "Ämnen",
+        "topicsDescription": "Det människor pratar om på {siteTitle} just nu.",
+        "topicsEntityDescription": "{typeLabel} – inlägg som nämner {entityTitle} på {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} som människor pratar om på {siteTitle} just nu.",
+        "unsubscribe": "E-postsammandrag",
+        "userFriends": "{name}s vänner",
+        "userFriendsDescription": "Vänner till {name} på {siteTitle}",
+        "userSettings": "Användarinställningar",
+        "users": "Användare",
+        "verifyEmail": "Verifiera e-post"
+    },
+    "PostLikeButton": {
+        "like": "Gilla",
+        "unlike": "Sluta gilla"
+    },
+    "PostPinButton": {
+        "pin": "Fäst",
+        "unpin": "Lossa"
+    },
+    "PostQuoteButton": {
+        "name": "Citera"
+    },
+    "PostDeleteButton": {
+        "name": "Ta bort"
+    },
+    "PostEditButton": {
+        "name": "Redigera"
+    },
+    "ReportButton": {
+        "name": "Anmäl"
+    },
+    "PostActionBar": {
+        "reply": "Svara",
+        "replies": {
+            "one": "Svar ({count})",
+            "other": "Svar ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(redigerat)"
+    },
+    "RepliesHeading": {
+        "heading": "Svar"
+    },
+    "PollVoteButton": {
+        "name": "Rösta"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Se ",
+            "link": "fler platser",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Inlägg nära dig",
+        "description": "Här visas inläggen närmast en punkt – där det finns aktivitet, oavsett hur långt bort den råkar vara. Dela din plats för att börja där du befinner dig eller välj i stället en punkt på kartan.",
+        "useMyLocation": "Använd min plats",
+        "pickOnMap": "Välj på kartan",
+        "searchPlaceholder": "Eller skriv ett ortnamn…",
+        "searchLabel": "Sök efter en plats",
+        "locating": "Söker position…",
+        "noGeolocation": "Din webbläsare kan inte dela en plats.",
+        "locationError": "Det gick inte att hämta din plats. Kontrollera webbläsarens platsbehörighet."
+    },
+    "PollDeadline": {
+        "final": "Slutresultat",
+        "closes": {
+            "before": "Stänger ",
+            "after": ""
+        },
+        "days": {
+            "one": "om {count} dag",
+            "other": "om {count} dagar"
+        },
+        "hours": {
+            "one": "om {count} timme",
+            "other": "om {count} timmar"
+        },
+        "minutes": {
+            "one": "om {count} minut",
+            "other": "om {count} minuter"
+        },
+        "underMinute": "om mindre än en minut"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 person röstade ",
+            "other": "{count} personer röstade "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Logga in",
+            "after": " för att publicera."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Logga in",
+            "after": " för att svara."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " återpublicerade"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Som svar på ",
+            "after": ""
+        },
+        "untitled": "det här inlägget",
+        "jumpToStart": "Hoppa till början"
+    },
+    "TopicSummaryCard": {
+        "label": "AI-genererad sammanfattning"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Välkommen till ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Skriv något i rutan nedan så skickas det till ditt flöde. Vem som helst kan svara, och ett svar är bara ett inlägg med en förälder, så konversationer kan nästlas så djupt som behövs.",
+            "Lägg till personer som vänner så hamnar deras inlägg i ditt flöde. Det globala flödet – webbplatsens namn längst upp till vänster – visar allt som skrivs här och är platsen där du hittar någon att lägga till.",
+            "Webbplatsen är en del av fediversum: du kan följa konton på Mastodon och andra servrar med deras fullständiga användarnamn, och det du publicerar når personerna som följer dig där. Sök efter ett användarnamn som @someone@example.social så hämtar den här servern kontot.",
+            "Märk ett inlägg med #hashtaggar så visas det på taggens sida och bland trender om tillräckligt många skriver om det.",
+            "Meddelanden mellan medlemmar är totalsträckskrypterade – servern lagrar chiffertext som den inte kan läsa. Aktivera det i Inställningar.",
+            "Du behöver inte publicera direkt: spara ett utkast eller ange en tid så publiceras det automatiskt. Båda finns under Utkast och schemalagda."
+        ],
+        "more": {
+            "before": "Det finns mer på ",
+            "link": "hjälpsidorna",
+            "after": ", bland annat hur du flyttar hit ett konto från en annan plats."
+        },
+        "dontShowAgain": "Visa inte detta igen"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Infoga emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Bild för länkförhandsvisning"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Ta bort bild"
+    },
+    "LinkItem": {
+        "alt": "Bild för länkförhandsvisning"
+    },
+    "MapScrubber": {
+        "play": "Spela",
+        "pause": "Pausa",
+        "cumulativeMode": "Fram till dess",
+        "windowMode": "Just då",
+        "rangeLabel": "Visa inlägg fram till ett datum",
+        "cumulativeLabel": {
+            "one": "Publicerat fram till {date} – {count} inlägg",
+            "other": "Publicerat fram till {date} – {count} inlägg"
+        },
+        "windowLabel": {
+            "one": "Publicerat omkring {date} – {count} inlägg",
+            "other": "Publicerat omkring {date} – {count} inlägg"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Inlägg av {name}",
+        "pageTitleUntitled": "Inlägg",
+        "imageAltByAuthor": "Foto publicerat av {name}",
+        "imageAltUntitled": "Foto"
+    },
+    "PostBookmarkButton": {
+        "remove": "Ta bort bokmärke",
+        "add": "Bokmärk"
+    },
+    "PostRepostButton": {
+        "undo": "Ångra återpublicering",
+        "repost": "Återpublicera"
+    },
+    "QuotedPost": {
+        "viewLink": "Visa det citerade inlägget"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Väntande förfrågningar"
+    },
+    "ScrollToTopButton": {
+        "label": "Rulla högst upp"
+    },
+    "SearchClearButton": {
+        "label": "Rensa sökning"
+    },
+    "SitePolicyLinks": {
+        "terms": "Användarvillkor",
+        "privacy": "Integritetspolicy"
+    },
+    "SkipLink": {
+        "label": "Hoppa till innehållet"
+    },
+    "TopicHeading": {
+        "searchLink": "Sök efter detta",
+        "noPosts": "Inga inlägg nämner detta just nu."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Inget av det här slaget har skrivits om ännu."
+    },
+    "TrendingEntitySection": {
+        "heading": "Trendar"
+    },
+    "PostLocationLink": {
+        "title": "Visa platsen på kartan",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "nyss",
+        "minutes": {
+            "one": "för {count} min sedan",
+            "other": "för {count} min sedan"
+        },
+        "hours": {
+            "one": "för {count} tim sedan",
+            "other": "för {count} tim sedan"
+        },
+        "days": {
+            "one": "för {count} d sedan",
+            "other": "för {count} d sedan"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Följ systemet",
+            "light": "Enkelt ljust",
+            "dark": "Enkelt mörkt",
+            "sepia": "Sepia",
+            "midnight": "Midnatt",
+            "sunset": "Solnedgång",
+            "rose": "Ros",
+            "forest": "Skog",
+            "ocean": "Hav",
+            "lavender": "Lavendel",
+            "gold": "Guld",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Gråskala"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Översättning har inte konfigurerats på den här servern.",
+        "nothing": "Det finns inget här att översätta.",
+        "unknownSource": "Ingen har ännu fastställt vilket språk inlägget är skrivet på, så det kan inte översättas.",
+        "alreadyReadable": "Inlägget är redan skrivet på det språket.",
+        "unsupportedPair": "Servern kan inte översätta det språket ännu."
+    },
+    "LanguagePrompt": {
+        "question": "Vill du visa webbplatsen på svenska?",
+        "accept": "Ja",
+        "decline": "Nej tack"
+    },
+    "LanguageSelector": {
+        "label": "Språk",
+        "legend": "Språk"
+    },
+    "EmailDigest": {
+        "subject": "Det du missade på {site}",
+        "greeting": "Hej {name},",
+        "whileAway": "Medan du var borta:",
+        "repeatedTimes": {
+            "one": " ({count} gång)",
+            "other": " ({count} gånger)"
+        },
+        "moreMissed": {
+            "one": "och ytterligare {count} avisering",
+            "other": "och ytterligare {count} aviseringar"
+        },
+        "messagesWaiting": {
+            "one": "Du har ett meddelande som väntar",
+            "other": "Du har {count} meddelanden som väntar"
+        },
+        "postsInFeed": {
+            "one": "Ett nytt inlägg i ditt flöde",
+            "other": "{count} nya inlägg i ditt flöde"
+        },
+        "unsubscribeInstructions": "Öppna den här länken för att sluta få dessa e-postmeddelanden – det kräver ett klick och inget lösenord:",
+        "comeSeeWhatIsNew": "Kom och se vad som är nytt",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Sluta skicka dessa till mig",
+            "after": " – ett klick, inget lösenord behövs."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifiera din e-postadress",
+        "greeting": "Hej {name},",
+        "instructions": "Verifiera din e-postadress genom att öppna den här länken:",
+        "htmlInstructions": "Verifiera din e-postadress genom att klicka på länken nedan:",
+        "buttonLabel": "Verifiera e-postadress",
+        "expiresIn": {
+            "one": "Länken upphör att gälla om {count} timme.",
+            "other": "Länken upphör att gälla om {count} timmar."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Återställ ditt lösenord",
+        "greeting": "Hej {name},",
+        "instructions": "Någon (förhoppningsvis du) begärde en lösenordsåterställning. Öppna den här länken för att välja ett nytt lösenord:",
+        "htmlInstructions": "Någon (förhoppningsvis du) begärde en lösenordsåterställning. Klicka på länken nedan för att välja ett nytt lösenord:",
+        "buttonLabel": "Återställ lösenord",
+        "expiresIn": {
+            "one": "Länken upphör att gälla om {count} timme.",
+            "other": "Länken upphör att gälla om {count} timmar."
+        },
+        "ignoreNotice": "Om du inte begärde detta kan du bortse från e-postmeddelandet."
+    }
+}

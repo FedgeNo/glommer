@@ -11,7 +11,6 @@ declare(strict_types=1);
 class ReplyList extends ItemList
 {
     public ?string $class = 'ReplyList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     public ?int $parentId = null;
 
@@ -46,4 +45,3 @@ SELECT `Posts`.*,
         ])];
     }
 }
-

@@ -63,12 +63,12 @@ export class PostEditor extends PostFields {
         post.style.display = 'none';
 
         const form = document.createElement('form');
-        form.className = 'Form PostEditForm d-flex flex-column gap-2';
+        form.className = 'Form PostEditForm';
 
         const fields = document.createElement('fieldset');
 
         const titleRow = document.createElement('div');
-        titleRow.className = 'PostComposerFields d-flex gap-2';
+        titleRow.className = 'PostComposerFields';
 
         const [titleLabel, titleInput] = PostEditor.titleField(data.title || '');
         titleRow.appendWithSpace(titleLabel);
@@ -105,11 +105,11 @@ export class PostEditor extends PostFields {
 
         if (imageItems.length > 0) {
             const altList = document.createElement('ul');
-            altList.className = 'PostEditAltList d-flex flex-column gap-2';
+        altList.className = 'PostEditAltList';
 
             for (const item of imageItems) {
                 const row = document.createElement('li');
-                row.className = 'PostEditAltRow d-flex align-items-center gap-2';
+        row.className = 'PostEditAltRow';
 
                 const sourceImage = item.querySelector('img');
                 const thumb = document.createElement('img');
@@ -139,7 +139,7 @@ export class PostEditor extends PostFields {
         form.appendWithSpace(warningInput);
 
         const actions = document.createElement('div');
-        actions.className = 'd-flex align-items-center gap-2 ms-auto';
+        actions.className = 'PostEditActions';
 
         // How the post is classified can be revised even though the media
         // cannot - opened with whatever it already carries, so saving an
@@ -274,4 +274,3 @@ export class PostEditor extends PostFields {
 }
 
 ReadyHandler.add(PostEditor.init);
-

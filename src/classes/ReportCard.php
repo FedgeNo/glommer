@@ -5,7 +5,6 @@ declare(strict_types=1);
 class ReportCard extends Article
 {
     public ?string $class = 'ReportCard';
-    public array $mixins = ['d-flex', 'gap-3', 'align-items-start'];
 
     public ?int $reportId = null;
     public ?int $reporterId = null;
@@ -42,7 +41,6 @@ class ReportCard extends Article
 
         // Left: who reported what, the content in question, the reason, and when.
         $details = new ReportDetails();
-        $details -> mixins = ['d-flex', 'flex-column', 'gap-2'];
 
         $summary_words = is_array($words['summary'] ?? null) ? $words['summary'] : [];
 
@@ -69,7 +67,6 @@ class ReportCard extends Article
         }
 
         $meta = new RelativeTime((string) $this -> createdAt);
-        $meta -> mixins = ['muted', 'text-sm'];
         $details -> addContent($meta);
 
         $this -> contents[] = $details;
@@ -80,7 +77,6 @@ class ReportCard extends Article
         // api/report.php rejects reports about admin content - so that side
         // needs no such guard.)
         $actions = new ReportActions();
-        $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
 
         if ($this -> reporterId !== 1) {
             $actions -> addContent(new UserBanButton($this -> reporterId, (string) ($words['banReporterLabel'] ?? '')));
@@ -170,7 +166,6 @@ class ReportCard extends Article
     private function forensicAttachmentsElement(): HTMLObject
     {
         $wrap = new ReportedAttachments();
-        $wrap -> mixins = ['d-flex', 'flex-column', 'gap-2'];
 
         foreach ($this -> forensicAttachmentIds as $item_id) {
             $wrap -> addContent(self::forensicAttachmentElement($item_id));

@@ -38,7 +38,7 @@ export class TopicSummaryCard {
         paragraph.textContent = text;
 
         const label = document.createElement('p');
-        label.className = 'TopicSummaryLabel muted text-sm';
+        label.className = 'TopicSummaryLabel';
         label.textContent = Strings.for('TopicSummaryCard', { label: 'AI-generated summary' }).label;
 
         card.appendWithSpace(paragraph);

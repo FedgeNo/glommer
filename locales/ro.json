@@ -1,0 +1,1163 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 vot",
+            "few": "{count} voturi",
+            "other": "{count} de voturi"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Autentifică-te",
+            "after": " pentru a răspunde."
+        },
+        "post": {
+            "before": "",
+            "link": "Autentifică-te",
+            "after": " pentru a publica."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Site",
+        "siteURLLabel": "Adresa URL a site-ului",
+        "siteTitleLabel": "Titlul site-ului",
+        "mailFromAddressLabel": "Adresa expeditorului de e-mail",
+        "serverNameConfirmedLabel": "Am configurat \"ServerName {host}\" și \"UseCanonicalName On\" în configurația serverului web (se verifică numai dacă testul automat în timp real nu se poate încheia – consultă secțiunea HTTPS din README.md)",
+        "databaseLegend": "Bază de date",
+        "databaseHostLabel": "Gazda bazei de date",
+        "databasePortLabel": "Portul bazei de date",
+        "databaseNameLabel": "Numele bazei de date",
+        "databaseAdminUsernameLabel": "Numele de utilizator al administratorului bazei de date",
+        "databaseAdminPasswordLabel": "Parola administratorului bazei de date",
+        "webSocketTLSLegend": "TLS WebSocket (opțional)",
+        "certificatePathLabel": "Calea certificatului",
+        "certificatePathPlaceholder": "Lasă necompletat pentru generare automată cu mkcert",
+        "keyPathLabel": "Calea cheii",
+        "keyPathPlaceholder": "Lasă necompletat pentru generare automată cu mkcert",
+        "botProtectionLegend": "Protecție împotriva boților (opțional)",
+        "turnstileSiteKeyLabel": "Cheia de site Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Lasă necompletat pentru a omite",
+        "turnstileSecretKeyLabel": "Cheia secretă Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Lasă necompletat pentru a omite",
+        "submit": "Configurează"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Fraza de acces actuală",
+        "newPassphraseLabel": "Fraza de acces nouă",
+        "confirmNewPassphraseLabel": "Confirmă fraza de acces nouă",
+        "accountPasswordLabel": "Parola contului",
+        "submit": "Schimbă fraza de acces"
+    },
+    "PasswordResetForm": {
+        "legend": "Alege o parolă nouă",
+        "newPasswordLabel": "Parolă nouă",
+        "newPasswordPlaceholder": "Cel puțin 8 caractere",
+        "confirmPasswordLabel": "Confirmă parola nouă",
+        "submit": "Resetează parola"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Resetează-ți parola",
+        "emailLabel": "E-mail",
+        "submit": "Trimite linkul de resetare"
+    },
+    "EmailRevertForm": {
+        "submit": "Anulează schimbarea adresei de e-mail"
+    },
+    "EmailVerifyForm": {
+        "submit": "Verifică adresa de e-mail"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Reactivează-le"
+    },
+    "EmailDigestSetting": {
+        "label": "Trimite-mi prin e-mail ce am ratat după ce am lipsit o vreme"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Dispozitiv necunoscut",
+        "browserOnOS": "{browser} pe {os}",
+        "thisDevice": " (acest dispozitiv)",
+        "lastUsed": {
+            "before": "Folosit ultima dată ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Încheie toate sesiunile active și uită toate dispozitivele memorate. Vei fi deconectat din toate browserele, inclusiv din acesta."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Deconectează-te de peste tot"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Verifică prin Google pentru a șterge"
+    },
+    "GoogleSignInButton": {
+        "label": "Continuă cu Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Editează profilul"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Primește notificări pe acest dispozitiv chiar și când site-ul nu este deschis. Alegerea se face pentru fiecare browser – activeaz-o oriunde dorești să fii contactat.",
+        "label": {
+            "off": "Activează pe acest dispozitiv",
+            "on": "Dezactivează pe acest dispozitiv"
+        },
+        "unsupported": "Notificările push nu sunt acceptate de acest browser"
+    },
+    "LoginForm": {
+        "legend": "Autentificare",
+        "identifier": "Nume de utilizator sau e-mail",
+        "password": "Parolă",
+        "rememberMe": "Ține-mă minte",
+        "submit": "Autentifică-te"
+    },
+    "SignupForm": {
+        "legend": "Creează un cont",
+        "usernameLabel": "Nume de utilizator",
+        "usernamePlaceholder": "Litere mici, cifre și _",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Adresă de e-mail validă",
+        "displayName": "Nume afișat (opțional)",
+        "bioLabel": "Biografie (opțional)",
+        "bioPlaceholder": "O scurtă biografie – #hashtagurile, @mențiunile și linkurile devin accesibile prin clic",
+        "passwordLabel": "Parolă",
+        "passwordPlaceholder": "Parolă: cel puțin 8 caractere",
+        "rememberMe": "Ține-mă minte",
+        "submit": "Înregistrează-te"
+    },
+    "PasswordChangeForm": {
+        "legend": "Schimbă-ți parola",
+        "currentPassword": "Parola actuală",
+        "newPasswordLabel": "Parolă nouă",
+        "newPasswordPlaceholder": "Cel puțin 8 caractere",
+        "confirmPassword": "Confirmă parola nouă",
+        "submit": "Schimbă parola"
+    },
+    "EmailChangeForm": {
+        "legend": "Schimbă-ți adresa de e-mail",
+        "newEmail": "Adresă de e-mail nouă",
+        "currentPassword": "Parola actuală",
+        "notice": "Trebuie să verifici noua adresă înainte de a putea continua să folosești site-ul.",
+        "submit": "Schimbă adresa de e-mail"
+    },
+    "AccountDeleteForm": {
+        "legend": "Șterge-ți contul",
+        "warning": "Aceasta îți șterge definitiv contul, postările și mesajele. Acțiunea nu poate fi anulată.",
+        "currentPassword": "Parola actuală",
+        "submit": "Șterge contul"
+    },
+    "AccountMigrationForm": {
+        "legend": "Mută-te pe alt server",
+        "movedNotice": "Acest cont s-a mutat la {destination}. Urmăritorilor tăi li s-a cerut să te urmărească acolo.",
+        "explanation": "Urmăritorilor tăi li se cere să urmărească noul cont. Postările tale rămân aici – adresele obiectelor aparțin serverului care le-a creat, deci nu pot fi luate cu tine.",
+        "addressNotice": "Contul la care te muți trebuie să îl enumere mai întâi pe acesta la \"cunoscut și ca\". Adresa ta de aici este {address}.",
+        "movedToLabel": "Mută la",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Cunoscut și ca",
+        "aliasesExplanation": "Conturi din alte locuri care îți aparțin tot ție. Enumerarea unuia aici permite acelui cont să se mute la acesta – este permisiunea, nu mutarea propriu-zisă. O adresă pe rând.",
+        "aliasesLabel": "Celelalte conturi ale tale",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Salvează"
+    },
+    "TwoFactorForm": {
+        "legend": "Introdu codul de verificare",
+        "explanation": "Ți-am trimis prin e-mail un cod de verificare. Introdu-l mai jos sau folosește unul dintre codurile de recuperare pentru a încheia autentificarea.",
+        "explanationEmailFailed": "Nu am putut trimite acum codul de verificare prin e-mail. Introdu unul dintre codurile de recuperare pentru a încheia autentificarea.",
+        "code": "Cod de verificare",
+        "submit": "Verifică"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Autentificarea cu doi factori este activată",
+            "off": "Autentificarea cu doi factori este dezactivată"
+        },
+        "explanation": {
+            "on": "Când te autentifici, îți trimitem prin e-mail un cod de verificare pe care trebuie să îl introduci pentru a încheia autentificarea. Dacă e-mailul nu ajunge la tine, te poți autentifica în schimb cu unul dintre codurile de recuperare.",
+            "off": "Adaugă un al doilea pas la autentificare: îți trimitem prin e-mail un cod de verificare pe care trebuie să îl introduci, astfel încât parola singură să nu fie suficientă. Vei primi coduri de recuperare de unică folosință pe care să le păstrezi în cazul în care e-mailul nu ajunge la tine."
+        },
+        "currentPassword": "Parola actuală",
+        "submit": {
+            "on": "Dezactivează autentificarea cu doi factori",
+            "off": "Activează autentificarea cu doi factori"
+        },
+        "regenerate": "Generează coduri de recuperare noi",
+        "recoveryHeading": "Codurile tale de recuperare",
+        "recoveryNote": "Salvează-le acum într-un loc sigur – nu vor mai fi afișate. Fiecare te autentifică o singură dată când e-mailul de verificare nu ajunge la tine, iar generarea unor coduri noi le înlocuiește pe toate acestea.",
+        "toast": {
+            "on": "Autentificarea cu doi factori este acum activată.",
+            "off": "Autentificarea cu doi factori este acum dezactivată.",
+            "regenerated": "Au fost generate coduri de recuperare noi. Cele vechi nu mai funcționează."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Verifică-ți inboxul și accesează linkul de verificare pe care l-am trimis pentru a-ți confirma adresa de e-mail. Dacă nu îl vezi, verifică dosarul de mesaje nedorite."
+    },
+    "VerificationResendButton": {
+        "label": "Retrimite e-mailul de verificare"
+    },
+    "MailSettingsForm": {
+        "legend": "E-mail trimis",
+        "fromAddressLabel": "Adresa expeditorului",
+        "fromAddressPlaceholder": "Nu se poate trimite niciun e-mail până la configurarea acesteia",
+        "fromNameLabel": "Numele expeditorului",
+        "hostLabel": "Gazdă SMTP",
+        "portLabel": "Port SMTP",
+        "usernameLabel": "Nume de utilizator SMTP",
+        "passwordLabel": "Parolă SMTP",
+        "passwordPlaceholder": {
+            "set": "Parola este configurată – lasă necompletat pentru a o păstra",
+            "unset": "Parolă SMTP"
+        },
+        "encryptionLabel": "Criptare",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, de obicei pe portul 587)",
+            "ssl": "SSL (TLS implicit, de obicei pe portul 465)",
+            "none": "Niciuna"
+        },
+        "explainer": "Lasă gazda SMTP necompletată pentru a trimite în schimb prin mail() din PHP (nerecomandat – consultă secțiunea despre livrabilitate din README). Nu se poate trimite niciun e-mail până când nu este configurată o adresă de expeditor.",
+        "save": "Salvează"
+    },
+    "MapSettingsForm": {
+        "legend": "Dale de hartă",
+        "notice": "Lasă necompletat pentru a folosi OpenStreetMap. Pentru un furnizor care necesită cheie, inserează șablonul URL cu textul literal {apiKey} în locul cheii, apoi cheia și atribuirea mai jos.",
+        "urlLabel": "Șablonul URL al dalelor",
+        "keyLabel": "Cheie API",
+        "keyPlaceholder": "Cheia API a furnizorului de hărți",
+        "attributionLabel": "Atribuire",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Salvează"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Autentificare cu Google",
+        "clientIdLabel": "ID client",
+        "clientIdPlaceholder": "ID client Google OAuth",
+        "secretLabel": "Secret client",
+        "secretPlaceholder": {
+            "set": "Secretul clientului este configurat – lasă necompletat pentru a-l păstra",
+            "unset": "Secret client Google OAuth"
+        },
+        "explainer": "Ambele sunt necesare pentru ca \"Continuă cu Google\" să apară la înregistrare și autentificare. În clientul Google Cloud OAuth, configurează URI-ul de redirecționare autorizat la {url} – șterge ID-ul clientului pentru a dezactiva funcția.",
+        "save": "Salvează"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Cheie de site",
+        "turnstileSiteKeyPlaceholder": "Cheie de site Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Cheie secretă",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Cheia secretă este configurată – lasă necompletat pentru a o păstra",
+            "unset": "Cheie secretă Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Ambele chei sunt necesare pentru afișarea verificării CAPTCHA la înregistrare și autentificare. Șterge cheia de site pentru a o dezactiva.",
+        "recaptchaLegend": "Google reCAPTCHA (recuperarea unui cont blocat)",
+        "recaptchaSiteKeyLabel": "Cheie de site",
+        "recaptchaSiteKeyPlaceholder": "Cheie de site Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Cheie secretă",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Cheia secretă este configurată – lasă necompletat pentru a o păstra",
+            "unset": "Cheie secretă Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Ambele chei sunt necesare. Când sunt configurate, un cont care atinge limita încercărilor de autentificare poate reintra trecând această verificare în loc să aștepte expirarea blocării; când lipsesc, blocarea trebuie așteptată integral. Folosește reCAPTCHA v2 (\"Nu sunt robot\"). Șterge cheia de site pentru a o dezactiva.",
+        "save": "Salvează"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Folosit de funcțiile AI ale site-ului (rezumate ale subiectelor populare etc.). Lasă modelul necompletat pentru a folosi Free Models Router, prin care OpenRouter alege aleatoriu dintre modelele gratuite în acel moment și care nu poate genera niciodată costuri.",
+        "keyLabel": "Cheie API",
+        "keyPlaceholder": {
+            "set": "Cheia API este configurată – lasă necompletat pentru a o păstra",
+            "unset": "Cheie API OpenRouter"
+        },
+        "clearKeyLabel": "Elimină cheia API salvată (dezactivează funcțiile AI)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Nu permite niciodată cheltuirea banilor (recomandat)",
+        "explainer": "Cu protecția activată, fiecare cerere are prețul maxim zero, deci eșuează complet în loc să treacă la un model plătit când nu este disponibil niciun furnizor gratuit. Elimină cheia API salvată pentru a dezactiva complet funcțiile AI.",
+        "save": "Salvează"
+    },
+    "AboutSettingsForm": {
+        "legend": "Despre",
+        "description": "Text simplu – rândurile goale separă paragrafele. Primul paragraf va fi folosit ca descriere a site-ului.",
+        "save": "Salvează"
+    },
+    "TermsSettingsForm": {
+        "legend": "Condiții de utilizare",
+        "description": "Text simplu – rândurile goale separă paragrafele.",
+        "save": "Salvează"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Politică de confidențialitate",
+        "description": "Text simplu – rândurile goale separă paragrafele.",
+        "save": "Salvează"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Rezumat prin e-mail",
+        "fieldLabel": "Paragraf de încheiere",
+        "notice": "Adăugat aproape de sfârșitul fiecărui rezumat, după lista celor ratate de membru. Text simplu. Lasă necompletat pentru a reveni la formularea inclusă în program.",
+        "save": "Salvează"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Favicon actual",
+        "save": "Încarcă faviconul"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Imaginea paginii principale",
+        "explainer": "Afișată de alte site-uri când cineva distribuie un link către acesta – numai în metadatele Open Graph, niciodată pe pagină. Decupată la 1200×630. Fără ea, previzualizările linkurilor nu conțin nicio imagine.",
+        "currentAlt": "Imaginea actuală a paginii principale",
+        "save": "Încarcă imaginea"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Redare automată"
+    },
+    "CarouselNextButton": {
+        "name": "Următorul"
+    },
+    "CarouselPrevButton": {
+        "name": "Anteriorul"
+    },
+    "MediaFullscreenButton": {
+        "name": "Ecran complet"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Elimină fișierele"
+    },
+    "NotificationDropdown": {
+        "showAll": "Arată tot"
+    },
+    "HelpSearch": {
+        "placeholder": "Caută în ajutor…",
+        "noMatches": "Niciun articol de ajutor nu corespunde căutării tale."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Am înțeles"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Renunță"
+    },
+    "StagedPostEditButton": {
+        "name": "Editează"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publică acum"
+    },
+    "LogoutButton": {
+        "name": "Deconectare"
+    },
+    "AvatarUploadForm": {
+        "submit": "Actualizează avatarul"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Caută utilizatori interziși…"
+    },
+    "BannedUserSection": {
+        "heading": "Utilizatori interziși"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Cereri trimise (în așteptarea răspunsului)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Interzis de {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Blocat de {name} ",
+            "after": ""
+        },
+        "deletedAccount": "un cont șters",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "ianuarie",
+            "2": "februarie",
+            "3": "martie",
+            "4": "aprilie",
+            "5": "mai",
+            "6": "iunie",
+            "7": "iulie",
+            "8": "august",
+            "9": "septembrie",
+            "10": "octombrie",
+            "11": "noiembrie",
+            "12": "decembrie"
+        },
+        "shortMonths": {
+            "1": "ian.",
+            "2": "feb.",
+            "3": "mar.",
+            "4": "apr.",
+            "5": "mai",
+            "6": "iun.",
+            "7": "iul.",
+            "8": "aug.",
+            "9": "sept.",
+            "10": "oct.",
+            "11": "nov.",
+            "12": "dec."
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date}, {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Nu s-a putut realiza conexiunea la serverul WebSocket de la 127.0.0.1:{port}{tls} ({error}). Pornește-l mai întâi: systemctl --user start glommer-websocket (consultă README.md pentru fișierul unității). Dacă tocmai a primit sau a pierdut WS_TLS_CERT/WS_TLS_KEY, repornește-l pentru a corespunde cu .env.",
+        "wsOverTLS": " prin TLS",
+        "wsBadHandshake": "Serviciul de la 127.0.0.1:{port} nu a finalizat un handshake WebSocket valid - este posibil ca altceva decât bin/websocket-server.php să asculte pe acel port.",
+        "wsNoPong": "Serverul WebSocket a acceptat handshake-ul, dar nu a răspuns la ping - este posibil să fie blocat sau să funcționeze defectuos. Verifică-i jurnalele.",
+        "wsReachable": "Serverul WebSocket este accesibil și răspunde la 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Hashtag",
+            "person": "Persoană",
+            "org": "Organizație",
+            "gpe": "Loc",
+            "loc": "Regiune",
+            "fac": "Reper",
+            "product": "Produs",
+            "event": "Eveniment",
+            "work_of_art": "Operă",
+            "law": "Lege",
+            "language": "Limbă",
+            "norp": "Grup"
+        },
+        "plural": {
+            "hashtag": "Hashtaguri",
+            "person": "Persoane",
+            "org": "Organizații",
+            "gpe": "Locuri",
+            "loc": "Regiuni",
+            "fac": "Repere",
+            "product": "Produse",
+            "event": "Evenimente",
+            "work_of_art": "Opere",
+            "law": "Legi",
+            "language": "Limbi",
+            "norp": "Grupuri"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Elimină prietenul"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Acceptă"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Refuză"
+    },
+    "UserFollowButton": {
+        "follow": "Urmărește",
+        "unfollow": "Nu mai urmări"
+    },
+    "UserBlockButton": {
+        "name": "Blochează"
+    },
+    "UserUnblockButton": {
+        "name": "Deblochează"
+    },
+    "OtherUser": {
+        "message": "Mesaj"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Meniu",
+        "loggedInAs": "Conectat ca {name}",
+        "friendsFeed": "Fluxul prietenilor",
+        "relayFeed": "Fluxul releului",
+        "users": "Utilizatori",
+        "tags": "Etichete",
+        "topics": "Subiecte",
+        "map": "Hartă",
+        "locations": "Locații",
+        "search": "Căutare",
+        "messages": "Mesaje",
+        "bookmarks": "Marcaje",
+        "help": "Ajutor",
+        "about": "Despre",
+        "login": "Autentificare",
+        "signup": "Înregistrare",
+        "friends": "Prieteni",
+        "drafts": "Ciorne și programate",
+        "userSettings": "Setări utilizator",
+        "modSettings": "Setări moderator",
+        "adminSettings": "Setări administrator"
+    },
+    "LogoutForm": {
+        "submit": "Deconectare"
+    },
+    "User": {
+        "joined": "S-a alăturat la {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Adaugă prieten",
+        "cancel": "Anulează cererea"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Programată pentru {when}",
+        "draft": "Ciornă - se publică numai când hotărăști"
+    },
+    "MessageTranslateButton": {
+        "name": "Tradu acest mesaj"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Despre traducerea mesajelor",
+        "body": "Pentru a traduce un mesaj, textul său este trimis acestui server și tradus aici. Nu se păstrează nimic: traducerea nu este scrisă în baza de date, iar mesajul rămâne neschimbat. Însă un mesaj tradus astfel a fost citit de server, deci nu mai beneficiază de criptare integrală precum unul netradus. Pot fi traduse numai mesajele primite și numai când soliciți acest lucru.",
+        "confirm": "Tradu-l",
+        "cancel": "Nu acum"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Ai uitat fraza secretă? Resetarea creează chei noi protejate de una nouă, însă mesajele criptate cu vechile chei nu vor mai putea fi citite niciodată de nimeni.",
+        "requirements": "Cel puțin 12 caractere și diferită de parola contului - aceea este trimisă acestui server, iar fraza secretă nu trebuie trimisă niciodată.",
+        "passphraseLabel": "Frază secretă",
+        "resetPassphraseLabel": "Frază secretă nouă",
+        "confirmLabel": "Confirmă fraza secretă",
+        "accountPasswordLabel": "Parola contului",
+        "submitLabel": "Activează mesajele criptate",
+        "resetSubmitLabel": "Resetează cheile de criptare"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Mesajele criptate integral sunt încuiate și descuiate în browserul tău: acest server le retransmite și le stochează fără a le putea citi. Cheia ta este protejată de o frază secretă, iar aceeași frază îți descuie mesajele din orice browser. Conversațiile sunt criptate după ce ambele persoane activează opțiunea; mesajele către persoane de pe alte servere rămân necriptate, deoarece federația nu le poate transporta altfel.",
+        "noRecovery": "O frază secretă pierdută nu poate fi recuperată, nici măcar de administrator. Pierderea ei înseamnă pierderea mesajelor criptate.",
+        "enabledStatus": "Mesajele criptate sunt active."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Criptată",
+            "explanation": "Mesajele din această conversație sunt criptate integral: sunt descuiate cu fraza ta secretă și citite în browserele tale, iar serverul stochează numai text cifrat. Verifică împreună cu cealaltă persoană codul de siguranță de la sfârșitul firului pentru a te asigura că nimeni nu se află între voi. Mesajele trimise înainte de activarea criptării rămân lizibile ca înainte."
+        },
+        "awaiting-theirs": {
+            "label": "Necriptată",
+            "explanation": "Mesajele de aici vor fi criptate integral după ce {handle} activează mesajele criptate în setări."
+        },
+        "awaiting-yours": {
+            "label": "Necriptată",
+            "explanation": "Mesajele de aici nu sunt criptate integral. Activează mesajele criptate în Setări pentru a securiza conversația."
+        },
+        "federated": {
+            "label": "Necriptată",
+            "explanation": "{handle} se află pe alt server. Mesajele acestei conversații sunt stocate atât pe acel server, cât și pe acesta, iar administratorul lui le poate citi - protocolul dintre servere nu le poate cripta. Păstrează informațiile sensibile pentru conversațiile de pe acest site."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Urmărește conturi din Fediverse",
+        "notice": "Lipește unul sau mai multe identificatoare, de exemplu @utilizator@example.social - poate fi folosit orice separator între ele.",
+        "handlesLabel": "Identificatoare Fediverse de urmărit",
+        "submit": "Urmărește",
+        "statusPending": "în așteptare",
+        "statusAccepted": "acceptat"
+    },
+    "ServerBlockForm": {
+        "legend": "Blochează un server",
+        "description": "Refuză tot ce provine de pe acel server și de sub el: nicio livrare nu intră sau iese, iar urmăririle existente în ambele direcții sunt eliminate.",
+        "serverLabel": "Server",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Motiv",
+        "reasonPlaceholder": "De ce este blocat acest server",
+        "submit": "Blochează serverul"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Execută părțile configurării apelului care pot fi verificate dintr-un singur browser. Aici poate fi testat totul până la conexiunea efectivă directă; conectarea la altă persoană necesită participarea ei."
+    },
+    "VideoCallTestButton": {
+        "label": "Execută verificarea"
+    },
+    "WebSocketStatus": {
+        "ok": "Server WebSocket: rulează",
+        "failed": "Server WebSocket: {detail}",
+        "clientTesting": "Conexiune browser: se testează…",
+        "clientConnecting": "Conexiune browser: se conectează…",
+        "clientConnected": "Conexiune browser: conectată",
+        "clientDisconnecting": "Conexiune browser: se deconectează…",
+        "clientNotConnected": "Conexiune browser: neconectată"
+    },
+    "UploadWorkerStatus": {
+        "running": "Serviciu worker: rulează",
+        "stopped": "Serviciu worker: nu rulează - încărcările pregătite nu vor fi transcodate până la repornirea lui",
+        "unknown": "Serviciu worker: stare necunoscută - fie systemctl nu este disponibil pe această gazdă, fie SELinux refuză interogarea de stare a serverului web (execută bin/install.php ca root pentru remediere)",
+        "queue": "Coadă: {staging} în pregătire, {pending} în așteptare, {processing} în procesare"
+    },
+    "TrendingTimerStatus": {
+        "running": "Temporizator tendințe: rulează",
+        "stopped": "Temporizator tendințe: nu rulează - subiectele populare se vor actualiza numai prin autorepararea căii de citire (Trending::current()), nu conform unui program. Execută bin/install.php ca root pentru a-l configura.",
+        "unknown": "Temporizator tendințe: stare necunoscută - fie systemctl nu este disponibil pe această gazdă, fie SELinux refuză interogarea de stare a serverului web (execută bin/install.php ca root pentru remediere)"
+    },
+    "Notification": {
+        "postReady": "Procesarea conținutului media s-a încheiat, iar postarea este acum publică",
+        "scheduledPostLive": "Postarea programată este acum publică",
+        "uploadPartlyFailed": "Postarea este publică, dar unul sau mai multe fișiere nu au putut fi procesate",
+        "uploadFailed": "Una dintre încărcări nu a putut fi procesată și nu a fost publicată",
+        "mailerFailed": "Livrarea e-mailului a eșuat - serviciul de e-mail poate fi oprit. Verifică configurația de e-mail.",
+        "mailFromNotConfigured": "Nu este configurată nicio adresă de expeditor, deci e-mailurile nu pot fi trimise. Configurează una în Setări administrator (secțiunea E-mail trimis) sau prin bin/install.php.",
+        "systemError": "A apărut o eroare de server. Consultă jurnalul de erori pentru detalii.",
+        "passwordRemovedGoogle": "Parola a fost eliminată când te-ai autentificat cu Google. Folosește „Am uitat parola” dacă dorești să setezi una nouă.",
+        "like": "{name} a apreciat postarea ta",
+        "repost": "{name} a redistribuit postarea ta",
+        "reply": "{name} a răspuns la postarea ta",
+        "friendRequest": "{name} ți-a trimis o cerere de prietenie",
+        "friendAccepted": "{name} ți-a acceptat cererea de prietenie",
+        "message": "{name} ți-a trimis un mesaj",
+        "mention": "{name} te-a menționat într-o postare",
+        "follow": "{name} te-a urmărit de pe alt server",
+        "default": "{name} a făcut ceva"
+    },
+    "NotificationList": {
+        "emptyNotice": "Nicio notificare deocamdată."
+    },
+    "NotificationsNavLink": {
+        "label": "Notificări",
+        "unseen": "Notificări nevăzute"
+    },
+    "NotificationTestPanel": {
+        "intro": "Trimite-ți o notificare de test (administratorului). Ar trebui să apară imediat ca mesaj temporar și în meniul derulant al notificărilor.",
+        "button": "Trimite notificarea de test",
+        "sending": "Se trimite…",
+        "sent": "Trimisă!",
+        "failed": "Eșuat"
+    },
+    "MessageDot": {
+        "label": "Mesaje necitite"
+    },
+    "NavAlertDot": {
+        "label": "Ceva nou în meniu"
+    },
+    "Message": {
+        "encrypted": "Mesaj criptat",
+        "decryptionFailed": "Acest mesaj a fost criptat cu chei care nu mai există."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mesaj",
+        "bodyPlaceholder": "Scrie un mesaj",
+        "send": "Trimite"
+    },
+    "MessageList": {
+        "emptyNotice": "Niciun mesaj deocamdată."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Citiți-vă reciproc acest cod prin alt mijloc - cu voce tare, față în față sau într-un apel. Dacă este identic la amândoi, nimeni nu se află între voi.",
+        "changed": "Acest cod s-a schimbat de la ultima verificare. Se întâmplă când unul dintre voi își resetează cheile de criptare, dar la fel ar arăta și dacă cineva ar citi conversația. Verifică noul cod împreună cu cealaltă persoană înainte de a avea încredere în el.",
+        "verified": "Ai verificat acest cod."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Marchează ca verificat"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Frază secretă",
+        "passphrasePlaceholder": "Fraza secretă pentru descuierea conversației",
+        "submit": "Descuie"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Ultimul mesaj ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Conținut media sensibil"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Arată implicit conținutul media sensibil"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Postare",
+            "message": "Mesaj",
+            "user": "Utilizator"
+        },
+        "summary": {
+            "before": "{type} #{id}, raportat de ",
+            "after": ""
+        },
+        "reasonLine": "Motiv: {reason}",
+        "banReporterLabel": "Interzice autorul raportării",
+        "banReportedUserLabel": "Interzice utilizatorul raportat",
+        "deleteLabel": "Șterge {type}",
+        "reportedImageAlt": "Imagine raportată",
+        "attachmentUnavailable": "Un atașament raportat nu mai este disponibil.",
+        "viewAttachment": "Vezi atașamentul raportat",
+        "missing": {
+            "noSnapshot": "Conținutul raportat nu mai este disponibil.",
+            "unknownType": "Tip de conținut necunoscut."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Niciun raport."
+    },
+    "ModQueueLinks": {
+        "intro": "Cozile sunt suficient de lungi pentru a fi citite câte o pagină, așa că au pagini proprii.",
+        "reportsLabel": "Raportări",
+        "bannedUsersLabel": "Utilizatori interziși"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Niciun moderator nu a făcut încă nimic."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Nicio entitate populară interzisă."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Niciun server blocat."
+    },
+    "RelayCard": {
+        "accepted": "Abonat ",
+        "waiting": "Se așteaptă acceptarea de către releu - abonat "
+    },
+    "RelayList": {
+        "emptyNotice": "Nu există abonamente la relee. Aici sosește numai ceea ce urmăresc membrii."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Nu a sosit încă nimic printr-un releu. Postările apar aici pe măsură ce serverele de la celălalt capăt le publică."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Abonare la un releu",
+        "explainerOne": "Un releu este un flux comun: fiecare postare publică de pe fiecare alt server abonat ajunge aici, iar cele ale acestui server ajung la toate celelalte. Așa poate o instanță nouă să descopere pe cineva, deoarece altfel federația transportă numai ceea ce urmărește deja cineva de aici.",
+        "explainerTwo": "Încărcarea nu poate fi anticipată de tine - este tot ceea ce publică acele servere, poate fi liniște într-o săptămână și mii de postări pe oră în următoarea, iar spațiul de stocare, coada de livrare și coada de moderare trebuie să le suporte. Postările retransmise nu intră în fluxul principal sau în cel al prietenilor; ele ajung în Fluxul releului, pe care oamenii îl deschid intenționat.",
+        "addressLabel": "Adresa releului",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Abonează-te"
+    },
+    "RelayFollowObjectField": {
+        "label": "Stilul abonamentului",
+        "options": {
+            "public": "Urmărește fluxul public (ceea ce așteaptă majoritatea releelor)",
+            "actor": "Urmărește actorul propriu al releului"
+        },
+        "retryNotice": "Dacă releul nu acceptă niciodată, retrage abonamentul și încearcă celălalt stil - unele programe de releu recunosc numai unul dintre ele."
+    },
+    "SiteCounters": {
+        "members": "Membri: {count} ({joined} s-au alăturat în ultimele {days} zile)",
+        "activeMembers": "Membri prezenți în ultimele {days} zile: {count} ({posted} dintre ei au publicat)",
+        "posts": "Postări scrise aici: {count} ({recent} în ultimele {days} zile)",
+        "deliveries": "Livrări federate în ultimele {days} zile: {delivered} au sosit, la {undeliverable} s-a renunțat",
+        "queued": "În așteptarea trimiterii: {count} ({failing} au fost deja refuzate cel puțin o dată)",
+        "pendingReads": "Postări care așteaptă să fie citite de pe alte servere: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Execută suita de teste a site-ului și vezi rezultatele. Durează câteva secunde, așa că se deschide într-o pagină separată.",
+        "runLabel": "Execută testele"
+    },
+    "HelpArticle": {
+        "backLabel": "Înapoi la tot ajutorul"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Nu există sugestii momentan - sugestiile provin de la prietenii persoanelor cu care ești deja prieten. Caută mai sus pentru a găsi pe cineva după nume.",
+        "noMatches": "Nimeni de aici nu corespunde."
+    },
+    "UserModButton": {
+        "make": "Numește moderator",
+        "remove": "Retrage rolul de moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Ridică interdicția"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Interzice"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Ridică interdicția"
+    },
+    "ReportDismissButton": {
+        "name": "Respinge"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Marchează ca sensibil"
+    },
+    "ServerUnblockButton": {
+        "name": "Deblochează"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Dezabonează"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Revocă"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: reușită",
+        "failing": "{suite}: eșuată"
+    },
+    "PageTitle": {
+        "about": "Despre",
+        "adminBanned": "Utilizatori interziși",
+        "adminModSettings": "Setări moderator",
+        "adminReports": "Raportări",
+        "adminSettings": "Setări administrator",
+        "adminTests": "Teste",
+        "authGoogleCallbackAccountDeleted": "Cont șters",
+        "authGoogleCallbackDeleteAccount": "Șterge contul",
+        "authGoogleCallbackLogin": "Autentificare",
+        "bookmarks": "Marcaje",
+        "checkInbox": "Verifică-ți căsuța de e-mail",
+        "drafts": "Ciorne și programate",
+        "draftsEditDraft": "Editează ciorna",
+        "draftsEditScheduled": "Editează postarea programată",
+        "forgotPassword": "Am uitat parola",
+        "friendsFeed": "Fluxul prietenilor",
+        "help": "Ajutor",
+        "helpDescription": "Ghiduri și răspunsuri despre folosirea site-ului.",
+        "locations": "Locații",
+        "locationsDescription": "Postări din locurile cele mai apropiate de tine.",
+        "locationsPlaceDescription": "Postări din apropiere de {place}.",
+        "login": "Autentificare",
+        "loginVerificationCode": "Cod de verificare",
+        "map": "Hartă",
+        "mapDescription": "O hartă a postărilor din întreaga lume - găsește persoane și lucruri din apropiere.",
+        "messages": "Mesaje",
+        "messagesWithUser": "Mesaje cu {name}",
+        "notifications": "Notificări",
+        "privacy": "Politică de confidențialitate",
+        "quote": "Citează",
+        "relayFeed": "Fluxul releului",
+        "relayFeedDescription": "Postări publice sosite prin releele la care este abonat acest server.",
+        "resetPassword": "Resetează parola",
+        "revertEmail": "Anulează schimbarea adresei de e-mail",
+        "search": "Căutare",
+        "signup": "Înregistrare",
+        "tags": "Etichete",
+        "tagsDescription": "Răsfoiește hashtagurile populare și în tendințe de pe {siteTitle}.",
+        "tagsTagDescription": "Postări etichetate cu {tag} pe {siteTitle}.",
+        "terms": "Condiții de utilizare",
+        "topics": "Subiecte",
+        "topicsDescription": "Despre ce vorbesc oamenii pe {siteTitle} chiar acum.",
+        "topicsEntityDescription": "{typeLabel} - postări care menționează {entityTitle} pe {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} despre care vorbesc oamenii pe {siteTitle} chiar acum.",
+        "unsubscribe": "Rezumate prin e-mail",
+        "userFriends": "Prietenii lui {name}",
+        "userFriendsDescription": "Prietenii lui {name} pe {siteTitle}",
+        "userSettings": "Setări utilizator",
+        "users": "Utilizatori",
+        "verifyEmail": "Verifică adresa de e-mail"
+    },
+    "PostLikeButton": {
+        "like": "Apreciază",
+        "unlike": "Retrage aprecierea"
+    },
+    "PostPinButton": {
+        "pin": "Fixează",
+        "unpin": "Anulează fixarea"
+    },
+    "PostQuoteButton": {
+        "name": "Citează"
+    },
+    "PostDeleteButton": {
+        "name": "Șterge"
+    },
+    "PostEditButton": {
+        "name": "Editează"
+    },
+    "ReportButton": {
+        "name": "Raportează"
+    },
+    "PostActionBar": {
+        "reply": "Răspunde",
+        "replies": {
+            "one": "Răspunsuri ({count})",
+            "few": "Răspunsuri ({count})",
+            "other": "Răspunsuri ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(editată)"
+    },
+    "RepliesHeading": {
+        "heading": "Răspunsuri"
+    },
+    "PollVoteButton": {
+        "name": "Votează"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Vezi ",
+            "link": "mai multe locații",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Postări din apropiere",
+        "description": "Aici sunt afișate postările cele mai apropiate de un punct - oriunde există activitate, indiferent cât de departe se află. Permite accesul la locația ta pentru a porni de unde te afli sau alege în schimb un punct pe hartă.",
+        "useMyLocation": "Folosește locația mea",
+        "pickOnMap": "Alege pe hartă",
+        "searchPlaceholder": "Sau scrie numele unui loc…",
+        "searchLabel": "Caută un loc",
+        "locating": "Se localizează…",
+        "noGeolocation": "Browserul tău nu poate furniza o locație.",
+        "locationError": "Locația ta nu a putut fi obținută. Verifică permisiunea de localizare a browserului."
+    },
+    "PollDeadline": {
+        "final": "Rezultat final",
+        "closes": {
+            "before": "Se încheie ",
+            "after": ""
+        },
+        "days": {
+            "one": "peste {count} zi",
+            "few": "peste {count} zile",
+            "other": "peste {count} de zile"
+        },
+        "hours": {
+            "one": "peste {count} oră",
+            "few": "peste {count} ore",
+            "other": "peste {count} de ore"
+        },
+        "minutes": {
+            "one": "peste {count} minut",
+            "few": "peste {count} minute",
+            "other": "peste {count} de minute"
+        },
+        "underMinute": "în mai puțin de un minut"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "A votat 1 persoană ",
+            "few": "Au votat {count} persoane ",
+            "other": "Au votat {count} de persoane "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Autentifică-te",
+            "after": " pentru a publica."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Autentifică-te",
+            "after": " pentru a răspunde."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " a redistribuit"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Ca răspuns la ",
+            "after": ""
+        },
+        "untitled": "această postare",
+        "jumpToStart": "Mergi la început"
+    },
+    "TopicSummaryCard": {
+        "label": "Rezumat generat de AI"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Bine ai venit la ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Scrie ceva în caseta de mai jos și va ajunge în fluxul tău. Oricine poate răspunde, iar un răspuns este pur și simplu o postare care are o postare părinte, astfel încât conversațiile se pot ramifica atât de mult cât este nevoie.",
+            "Adaugă persoane ca prieteni, iar postările lor vor intra în fluxul tău. Fluxul global - numele site-ului din stânga sus - arată tot ce se scrie aici și este locul în care poți găsi pe cineva de adăugat.",
+            "Acest site face parte din Fediverse: poți urmări conturi de pe Mastodon și alte servere folosind identificatorul complet, iar ceea ce publici ajunge la persoanele care te urmăresc acolo. Caută un identificator precum @cineva@example.social, iar serverul îl va găsi.",
+            "Etichetează o postare cu #hashtaguri și va apărea pe pagina etichetei, precum și la Tendințe dacă suficient de multe persoane scriu despre ea.",
+            "Mesajele dintre membri sunt criptate integral - serverul stochează text cifrat pe care nu îl poate citi. Activează opțiunea în Setări.",
+            "Nu trebuie să publici imediat: salvează o ciornă sau stabilește o oră și se va publica singură. Ambele se află la Ciorne și programate."
+        ],
+        "more": {
+            "before": "Mai multe informații se află în ",
+            "link": "paginile de ajutor",
+            "after": ", inclusiv despre mutarea aici a unui cont din altă parte."
+        },
+        "dontShowAgain": "Nu mai afișa"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Inserează un emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Imagine de previzualizare a linkului"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Elimină imaginea"
+    },
+    "LinkItem": {
+        "alt": "Imagine de previzualizare a linkului"
+    },
+    "MapScrubber": {
+        "play": "Redă",
+        "pause": "Pauză",
+        "cumulativeMode": "Până atunci",
+        "windowMode": "Doar atunci",
+        "rangeLabel": "Arată postările până la o dată",
+        "cumulativeLabel": {
+            "one": "Publicate până la {date} — {count} postare",
+            "few": "Publicate până la {date} — {count} postări",
+            "other": "Publicate până la {date} — {count} de postări"
+        },
+        "windowLabel": {
+            "one": "Publicate în jurul datei de {date} — {count} postare",
+            "few": "Publicate în jurul datei de {date} — {count} postări",
+            "other": "Publicate în jurul datei de {date} — {count} de postări"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Postarea lui {name}",
+        "pageTitleUntitled": "Postare",
+        "imageAltByAuthor": "Fotografie publicată de {name}",
+        "imageAltUntitled": "Fotografie"
+    },
+    "PostBookmarkButton": {
+        "remove": "Elimină marcajul",
+        "add": "Adaugă marcaj"
+    },
+    "PostRepostButton": {
+        "undo": "Anulează redistribuirea",
+        "repost": "Redistribuie"
+    },
+    "QuotedPost": {
+        "viewLink": "Vezi postarea citată"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Cereri în așteptare"
+    },
+    "ScrollToTopButton": {
+        "label": "Derulează la început"
+    },
+    "SearchClearButton": {
+        "label": "Șterge căutarea"
+    },
+    "SitePolicyLinks": {
+        "terms": "Condiții de utilizare",
+        "privacy": "Politică de confidențialitate"
+    },
+    "SkipLink": {
+        "label": "Sari la conținut"
+    },
+    "TopicHeading": {
+        "searchLink": "Caută aceasta",
+        "noPosts": "Nicio postare nu menționează aceasta momentan."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Nu s-a scris încă despre nimic de acest fel."
+    },
+    "TrendingEntitySection": {
+        "heading": "În tendințe"
+    },
+    "PostLocationLink": {
+        "title": "Arată acest loc pe hartă",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "chiar acum",
+        "minutes": {
+            "one": "acum {count} min",
+            "few": "acum {count} min",
+            "other": "acum {count} min"
+        },
+        "hours": {
+            "one": "acum {count} h",
+            "few": "acum {count} h",
+            "other": "acum {count} h"
+        },
+        "days": {
+            "one": "acum {count} zi",
+            "few": "acum {count} zile",
+            "other": "acum {count} de zile"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Temă",
+        "themes": {
+            "system": "Ca sistemul",
+            "light": "Luminoasă simplă",
+            "dark": "Întunecată simplă",
+            "sepia": "Sepia",
+            "midnight": "Miezul nopții",
+            "sunset": "Apus",
+            "rose": "Trandafir",
+            "forest": "Pădure",
+            "ocean": "Ocean",
+            "lavender": "Lavandă",
+            "gold": "Aur",
+            "hacker": "Hacker",
+            "ironbow": "Arc de fier",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Elice cubică",
+            "greyscale": "Tonuri de gri"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Traducerea nu este configurată pe acest server.",
+        "nothing": "Nu este nimic de tradus aici.",
+        "unknownSource": "Limba acestei postări nu a fost încă identificată, deci nu poate fi tradusă.",
+        "alreadyReadable": "Această postare este deja în limba respectivă.",
+        "unsupportedPair": "Acest server nu poate traduce încă limba respectivă."
+    },
+    "LanguagePrompt": {
+        "question": "Dorești să vezi site-ul în română?",
+        "accept": "Da",
+        "decline": "Nu, mulțumesc"
+    },
+    "LanguageSelector": {
+        "label": "Limbă",
+        "legend": "Limbă"
+    },
+    "EmailDigest": {
+        "subject": "Ce ai ratat pe {site}",
+        "greeting": "Salut, {name},",
+        "whileAway": "Cât timp ai lipsit:",
+        "repeatedTimes": {
+            "one": " ({count} dată)",
+            "few": " (de {count} ori)",
+            "other": " (de {count} de ori)"
+        },
+        "moreMissed": {
+            "one": "și încă {count} notificare",
+            "few": "și încă {count} notificări",
+            "other": "și încă {count} de notificări"
+        },
+        "messagesWaiting": {
+            "one": "Ai un mesaj în așteptare",
+            "few": "Ai {count} mesaje în așteptare",
+            "other": "Ai {count} de mesaje în așteptare"
+        },
+        "postsInFeed": {
+            "one": "O postare nouă în fluxul tău",
+            "few": "{count} postări noi în fluxul tău",
+            "other": "{count} de postări noi în fluxul tău"
+        },
+        "unsubscribeInstructions": "Pentru a opri aceste e-mailuri, deschide acest link - este nevoie de un singur clic și nicio parolă:",
+        "comeSeeWhatIsNew": "Vino să vezi noutățile",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Nu-mi mai trimite acestea",
+            "after": " - un singur clic, fără parolă."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifică-ți adresa de e-mail",
+        "greeting": "Salut, {name},",
+        "instructions": "Te rugăm să îți verifici adresa de e-mail accesând acest link:",
+        "htmlInstructions": "Te rugăm să îți verifici adresa de e-mail făcând clic pe linkul de mai jos:",
+        "buttonLabel": "Verifică adresa de e-mail",
+        "expiresIn": {
+            "one": "Acest link expiră peste {count} oră.",
+            "few": "Acest link expiră peste {count} ore.",
+            "other": "Acest link expiră peste {count} de ore."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Resetează-ți parola",
+        "greeting": "Salut, {name},",
+        "instructions": "Cineva (sperăm că tu) a solicitat resetarea parolei. Accesează acest link pentru a alege o parolă nouă:",
+        "htmlInstructions": "Cineva (sperăm că tu) a solicitat resetarea parolei. Fă clic pe linkul de mai jos pentru a alege o parolă nouă:",
+        "buttonLabel": "Resetează parola",
+        "expiresIn": {
+            "one": "Acest link expiră peste {count} oră.",
+            "few": "Acest link expiră peste {count} ore.",
+            "other": "Acest link expiră peste {count} de ore."
+        },
+        "ignoreNotice": "Dacă nu ai solicitat acest lucru, poți ignora e-mailul."
+    }
+}

@@ -13,7 +13,6 @@ declare(strict_types=1);
 class PushNotificationSetting extends Div
 {
     public ?string $class = 'PushNotificationSetting';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

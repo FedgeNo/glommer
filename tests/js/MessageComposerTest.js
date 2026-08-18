@@ -36,7 +36,7 @@ function mounted(height) {
     document.body.style.removeProperty('--composer-height');
 
     const form = document.createElement('form');
-    form.className = 'Card d-flex flex-column MessageComposer';
+    form.className = 'Card MessageComposer';
     // jsdom lays nothing out, so the height it would have measured is stated.
     Object.defineProperty(form, 'offsetHeight', { value: height, configurable: true });
     document.body.appendChild(form);

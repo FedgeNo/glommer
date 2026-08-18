@@ -9,7 +9,6 @@ class UserUnblockButton extends ButtonButton
         parent::__construct();
 
         $this -> type = 'button';
-        $this -> mixins = ['ms-auto'];
         $this -> attributes['data-user-id'] = (string) $user_id;
         $this -> contents[] = (string) (Strings::for(self::class)['name'] ?? '');
     }

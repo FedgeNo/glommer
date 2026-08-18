@@ -86,7 +86,6 @@ SELECT *
     protected function nameElement(): HTMLObject
     {
         $row = new DisplayNameRow();
-        $row -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
 
         $heading = new DisplayName();
         $heading -> contents[] = $this -> title ?: $this -> slug;

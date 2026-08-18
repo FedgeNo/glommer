@@ -66,7 +66,7 @@ export class OtherUser extends User {
         if (this.blockedByViewer) {
             const unblock_button = document.createElement('button');
             unblock_button.type = 'button';
-            unblock_button.className = 'Button UserUnblockButton ms-auto';
+        unblock_button.className = 'Button UserUnblockButton';
             unblock_button.dataset.userId = this.userId;
             unblock_button.textContent = Strings.for('UserUnblockButton', { name: 'Unblock' }).name;
             div.appendWithSpace(unblock_button);
@@ -74,7 +74,7 @@ export class OtherUser extends User {
             const sent_by_viewer = this.friendshipStatus === 'pending' && this.friendshipSentByViewer;
 
             const actions = document.createElement('div');
-            actions.className = 'd-flex flex-column gap-2 ms-auto';
+        actions.className = 'OtherUserActions';
 
             this.beforeActions().forEach((button) => actions.appendWithSpace(button));
 
@@ -378,4 +378,3 @@ export class OtherUser extends User {
 
 
 ReadyHandler.add(OtherUser.init);
-

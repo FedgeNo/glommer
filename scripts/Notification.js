@@ -95,7 +95,7 @@ export class Notification {
 
         const target = this.targetURL();
         const container = document.createElement(target === null ? 'div' : 'a');
-        container.className = 'd-flex align-items-center gap-3';
+        container.className = target === null ? 'NotificationContainer' : 'NotificationLink';
         if (target !== null) {
             container.href = target;
         }
@@ -111,7 +111,7 @@ export class Notification {
         const created_at = parse_server_date(this.createdAt);
 
         const meta = document.createElement('time');
-        meta.className = 'muted text-sm RelativeTime';
+        meta.className = 'NotificationMeta RelativeTime';
         meta.dateTime = created_at.toISOString();
         meta.textContent = RelativeTime.format(this.createdAt);
         info.appendWithSpace(meta);
@@ -124,4 +124,3 @@ export class Notification {
         return div;
     }
 }
-

@@ -15,7 +15,6 @@ declare(strict_types=1);
 class EntityTypeLinks extends Div
 {
     public ?string $class = 'EntityTypeLinks';
-    public array $mixins = ['d-flex', 'flex-wrap', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

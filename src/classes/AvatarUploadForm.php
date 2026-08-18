@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 class AvatarUploadForm extends Form
 {
-    // No d-flex utility: its !important display would overpower the grid
-    // the actions column lays this out with (see .CurrentUserActions).
+    // Keep this component independent from the grid used by the surrounding
+    // actions column (see .CurrentUserActions).
     public ?string $class = 'AvatarUploadForm';
 
     public function toDOM(): \DOMElement

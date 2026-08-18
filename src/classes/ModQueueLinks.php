@@ -13,7 +13,6 @@ declare(strict_types=1);
 class ModQueueLinks extends Div
 {
     public ?string $class = 'ModQueueLinks';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2', 'align-items-start'];
 
     public function toDOM(): \DOMElement
     {

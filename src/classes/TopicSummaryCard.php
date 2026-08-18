@@ -36,7 +36,6 @@ class TopicSummaryCard extends Card
 
         $label = new Paragraph((string) (Strings::for(self::class)['label'] ?? ''));
         $label -> class = 'TopicSummaryLabel';
-        $label -> mixins = ['muted', 'text-sm'];
         $this -> addContent($label);
 
         return parent::toDOM();

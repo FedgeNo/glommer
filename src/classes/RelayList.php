@@ -8,7 +8,6 @@ declare(strict_types=1);
 class RelayList extends ItemList
 {
     public ?string $class = 'RelayList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     protected function rows(): array
     {

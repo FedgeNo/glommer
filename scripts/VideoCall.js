@@ -406,7 +406,7 @@ export class VideoCall {
         VideoCall.#panel?.remove();
 
         VideoCall.#panel = document.createElement('div');
-        VideoCall.#panel.className = 'VideoCallPanel d-flex align-items-center gap-2';
+        VideoCall.#panel.className = 'VideoCallPanel';
 
         const text = document.createElement('span');
         text.className = 'VideoCallStatus';
@@ -416,7 +416,7 @@ export class VideoCall {
         if (end_label !== null) {
             const end = document.createElement('button');
             end.type = 'button';
-            end.className = 'VideoCallEndButton Button ms-auto';
+        end.className = 'VideoCallEndButton Button';
             end.textContent = end_label;
             VideoCall.#panel.appendWithSpace(end);
         }
@@ -434,7 +434,7 @@ export class VideoCall {
 
         const accept = document.createElement('button');
         accept.type = 'button';
-        accept.className = 'VideoCallAcceptButton Button ms-auto';
+        accept.className = 'VideoCallAcceptButton Button';
         accept.textContent = 'Accept';
         VideoCall.#panel.appendWithSpace(accept);
 

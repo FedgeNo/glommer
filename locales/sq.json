@@ -1,0 +1,1146 @@
+{
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 votë",
+            "other": "{count} vota"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Hyni",
+            "after": " për t'u përgjigjur."
+        },
+        "post": {
+            "before": "",
+            "link": "Hyni",
+            "after": " për të publikuar."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Site",
+        "siteURLLabel": "URL-ja e sajtit",
+        "siteTitleLabel": "Titulli i sajtit",
+        "mailFromAddressLabel": "Adresa e dërguesit të postës",
+        "serverNameConfirmedLabel": "Kam vendosur \"ServerName {host}\" dhe \"UseCanonicalName On\" në konfigurimin e serverit tim të uebit (kontrollohet vetëm nëse testi automatik drejtpërdrejt nuk mund të përfundojë - shihni seksionin HTTPS të README.md)",
+        "databaseLegend": "Baza e të dhënave",
+        "databaseHostLabel": "Pritësi i bazës së të dhënave",
+        "databasePortLabel": "Porta e bazës së të dhënave",
+        "databaseNameLabel": "Emri i bazës së të dhënave",
+        "databaseAdminUsernameLabel": "Emri i përdoruesit të administratorit të bazës së të dhënave",
+        "databaseAdminPasswordLabel": "Fjalëkalimi i administratorit të bazës së të dhënave",
+        "webSocketTLSLegend": "TLS për WebSocket (Me zgjedhje)",
+        "certificatePathLabel": "Shtegu i certifikatës",
+        "certificatePathPlaceholder": "Lëreni bosh për ta krijuar automatikisht me mkcert",
+        "keyPathLabel": "Shtegu i çelësit",
+        "keyPathPlaceholder": "Lëreni bosh për ta krijuar automatikisht me mkcert",
+        "botProtectionLegend": "Mbrojtja nga robotët (Me zgjedhje)",
+        "turnstileSiteKeyLabel": "Çelësi i sajtit Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Lëreni bosh për ta kapërcyer",
+        "turnstileSecretKeyLabel": "Çelësi sekret Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Lëreni bosh për ta kapërcyer",
+        "submit": "Konfiguro"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Fraza e tanishme e kalimit",
+        "newPassphraseLabel": "Fraza e re e kalimit",
+        "confirmNewPassphraseLabel": "Konfirmoni frazën e re të kalimit",
+        "accountPasswordLabel": "Fjalëkalimi i llogarisë",
+        "submit": "Ndrysho frazën e kalimit"
+    },
+    "PasswordResetForm": {
+        "legend": "Zgjidhni një fjalëkalim të ri",
+        "newPasswordLabel": "Fjalëkalimi i ri",
+        "newPasswordPlaceholder": "Të paktën 8 shenja",
+        "confirmPasswordLabel": "Konfirmoni fjalëkalimin e ri",
+        "submit": "Rivendos fjalëkalimin"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Rivendosni fjalëkalimin",
+        "emailLabel": "Email-i",
+        "submit": "Dërgo lidhjen e rivendosjes"
+    },
+    "EmailRevertForm": {
+        "submit": "Kthe ndryshimin e email-it"
+    },
+    "EmailVerifyForm": {
+        "submit": "Verifiko adresën e email-it"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Aktivizoji përsëri"
+    },
+    "EmailDigestSetting": {
+        "label": "Më dërgo me email çfarë kam humbur kur kam munguar për njëfarë kohe"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Pajisje e panjohur",
+        "browserOnOS": "{browser} në {os}",
+        "thisDevice": " (kjo pajisje)",
+        "lastUsed": {
+            "before": "Përdorur së fundi ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Përfundoni çdo seancë aktive dhe harroni çdo pajisje të mbajtur mend. Do të dilni nga të gjithë shfletuesit, përfshirë këtë."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Dilni nga kudo"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Verifikoni me Google për ta fshirë"
+    },
+    "GoogleSignInButton": {
+        "label": "Vazhdo me Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Ndrysho profilin"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Merrni njoftime në këtë pajisje edhe kur sajti nuk është i hapur. Kjo zgjedhje bëhet për secilin shfletues - aktivizojeni kudo ku dëshironi të merrni njoftime.",
+        "label": {
+            "off": "Aktivizoje në këtë pajisje",
+            "on": "Çaktivizoje në këtë pajisje"
+        },
+        "unsupported": "Njoftimet shtytëse nuk mbështeten në këtë shfletues"
+    },
+    "LoginForm": {
+        "legend": "Hyni",
+        "identifier": "Emri i përdoruesit ose email-i",
+        "password": "Fjalëkalimi",
+        "rememberMe": "Më mbaj mend",
+        "submit": "Hyni"
+    },
+    "SignupForm": {
+        "legend": "Krijoni një llogari",
+        "usernameLabel": "Emri i përdoruesit",
+        "usernamePlaceholder": "Shkronja të vogla, numra dhe _",
+        "emailLabel": "Email-i",
+        "emailPlaceholder": "Adresë e vlefshme email-i",
+        "displayName": "Emri i shfaqur (Me zgjedhje)",
+        "bioLabel": "Biografia (Me zgjedhje)",
+        "bioPlaceholder": "Një biografi e shkurtër - #etiketat, @përmendjet dhe lidhjet bëhen të klikueshme",
+        "passwordLabel": "Fjalëkalimi",
+        "passwordPlaceholder": "Fjalëkalimi: Të paktën 8 shenja",
+        "rememberMe": "Më mbaj mend",
+        "submit": "Regjistrohu"
+    },
+    "PasswordChangeForm": {
+        "legend": "Ndryshoni fjalëkalimin",
+        "currentPassword": "Fjalëkalimi i tanishëm",
+        "newPasswordLabel": "Fjalëkalimi i ri",
+        "newPasswordPlaceholder": "Të paktën 8 shenja",
+        "confirmPassword": "Konfirmoni fjalëkalimin e ri",
+        "submit": "Ndrysho fjalëkalimin"
+    },
+    "EmailChangeForm": {
+        "legend": "Ndryshoni adresën e email-it",
+        "newEmail": "Adresa e re e email-it",
+        "currentPassword": "Fjalëkalimi i tanishëm",
+        "notice": "Duhet ta verifikoni adresën e re para se të vazhdoni të përdorni sajtin.",
+        "submit": "Ndrysho email-in"
+    },
+    "AccountDeleteForm": {
+        "legend": "Fshini llogarinë",
+        "warning": "Kjo fshin përgjithmonë llogarinë, publikimet dhe mesazhet tuaja. Nuk mund të zhbëhet.",
+        "currentPassword": "Fjalëkalimi i tanishëm",
+        "submit": "Fshi llogarinë"
+    },
+    "AccountMigrationForm": {
+        "legend": "Kaloni në një server tjetër",
+        "movedNotice": "Kjo llogari është zhvendosur te {destination}. Ndjekësve tuaj iu kërkua t'ju ndjekin atje.",
+        "explanation": "Ndjekësve tuaj u kërkohet t'ju ndjekin te llogaria e re. Publikimet tuaja mbeten këtu - adresat e objekteve i përkasin serverit që i krijoi, ndaj nuk mund të merren me vete.",
+        "addressNotice": "Llogaria ku po zhvendoseni duhet ta rendisë fillimisht këtë te \"njihet edhe si\". Adresa juaj këtu është {address}.",
+        "movedToLabel": "Zhvendosu te",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Njihet edhe si",
+        "aliasesExplanation": "Llogari të tjera që janë gjithashtu tuajat. Renditja e njërës këtu e lejon atë llogari të zhvendoset te kjo - kjo është leja, jo vetë zhvendosja. Një adresë për rresht.",
+        "aliasesLabel": "Llogaritë tuaja të tjera",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Ruaj"
+    },
+    "TwoFactorForm": {
+        "legend": "Vendosni kodin e verifikimit",
+        "explanation": "Ju dërguam me email një kod verifikimi. Vendoseni më poshtë ose përdorni një nga kodet e rikuperimit për të përfunduar hyrjen.",
+        "explanationEmailFailed": "Nuk mundëm ta dërgonim tani kodin e verifikimit me email. Vendosni një nga kodet e rikuperimit për të përfunduar hyrjen.",
+        "code": "Kodi i verifikimit",
+        "submit": "Verifiko"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Vërtetimi me dy faktorë është aktiv",
+            "off": "Vërtetimi me dy faktorë është joaktiv"
+        },
+        "explanation": {
+            "on": "Kur hyni, do t'ju dërgojmë me email një kod verifikimi që duhet ta vendosni për të përfunduar hyrjen. Nëse email-i nuk ju arrin, mund të hyni me një nga kodet e rikuperimit.",
+            "off": "Shtoni një hap të dytë gjatë hyrjes: do t'ju dërgojmë me email një kod verifikimi që duhet ta vendosni, kështu që vetëm fjalëkalimi nuk mjafton për të hyrë. Do të merrni kode rikuperimi njëpërdorimëshe për t'i ruajtur në rast se email-i nuk ju arrin."
+        },
+        "currentPassword": "Fjalëkalimi i tanishëm",
+        "submit": {
+            "on": "Çaktivizo vërtetimin me dy faktorë",
+            "off": "Aktivizo vërtetimin me dy faktorë"
+        },
+        "regenerate": "Krijo kode të reja rikuperimi",
+        "recoveryHeading": "Kodet tuaja të rikuperimit",
+        "recoveryNote": "Ruajini tani në një vend të sigurt — nuk do të shfaqen përsëri. Secili ju lejon të hyni një herë kur email-i i verifikimit nuk ju arrin dhe krijimi i kodeve të reja i zëvendëson të gjitha këto.",
+        "toast": {
+            "on": "Vërtetimi me dy faktorë tani është aktiv.",
+            "off": "Vërtetimi me dy faktorë tani është joaktiv.",
+            "regenerated": "U krijuan kode të reja rikuperimi. Kodet e vjetra nuk funksionojnë më."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Kontrolloni kutinë hyrëse dhe klikoni lidhjen e verifikimit që dërguam për të konfirmuar adresën tuaj të email-it. Nëse nuk e shihni, kontrolloni dosjen e padëshiruar/spam."
+    },
+    "VerificationResendButton": {
+        "label": "Ridërgo email-in e verifikimit"
+    },
+    "MailSettingsForm": {
+        "legend": "Posta dalëse",
+        "fromAddressLabel": "Adresa e dërguesit",
+        "fromAddressPlaceholder": "Nuk mund të dërgohet email pa e vendosur këtë",
+        "fromNameLabel": "Emri i dërguesit",
+        "hostLabel": "Pritësi SMTP",
+        "portLabel": "Porta SMTP",
+        "usernameLabel": "Emri i përdoruesit SMTP",
+        "passwordLabel": "Fjalëkalimi SMTP",
+        "passwordPlaceholder": {
+            "set": "Fjalëkalimi është vendosur - lëreni bosh për ta mbajtur",
+            "unset": "Fjalëkalimi SMTP"
+        },
+        "encryptionLabel": "Fshehtëzimi",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, zakonisht në portën 587)",
+            "ssl": "SSL (TLS i nënkuptuar, zakonisht në portën 465)",
+            "none": "Asnjë"
+        },
+        "explainer": "Lëreni pritësin SMTP bosh për të dërguar në vend të tij me mail() të PHP-së (nuk rekomandohet - shihni seksionin e dorëzimit te README). Asnjë email nuk mund të dërgohet pa vendosur një adresë \"dërguesi\".",
+        "save": "Ruaj"
+    },
+    "MapSettingsForm": {
+        "legend": "Pllakat e hartës",
+        "notice": "Lëreni bosh për të përdorur OpenStreetMap. Për të përdorur një ofrues me çelës, ngjitni modelin e URL-së me tekstin e pandryshuar {apiKey} aty ku vendoset çelësi, si dhe çelësin e atribuimin më poshtë.",
+        "urlLabel": "Modeli i URL-së së pllakave",
+        "keyLabel": "Çelësi API",
+        "keyPlaceholder": "Çelësi API i ofruesit të pllakave",
+        "attributionLabel": "Atribuimi",
+        "attributionPlaceholder": "© OpenStreetMap contributors",
+        "save": "Ruaj"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Hyrja me Google",
+        "clientIdLabel": "ID-ja e klientit",
+        "clientIdPlaceholder": "ID-ja e klientit Google OAuth",
+        "secretLabel": "Sekreti i klientit",
+        "secretPlaceholder": {
+            "set": "Sekreti i klientit është vendosur - lëreni bosh për ta mbajtur",
+            "unset": "Sekreti i klientit Google OAuth"
+        },
+        "explainer": "Të dy kërkohen që \"Vazhdo me Google\" të shfaqet gjatë regjistrimit dhe hyrjes. Në klientin Google Cloud OAuth, vendosni URI-në e autorizuar të ridrejtimit në {url} - pastroni ID-në e klientit për ta çaktivizuar.",
+        "save": "Ruaj"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Çelësi i sajtit",
+        "turnstileSiteKeyPlaceholder": "Çelësi i sajtit Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Çelësi sekret",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Çelësi sekret është vendosur - lëreni bosh për ta mbajtur",
+            "unset": "Çelësi sekret Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Të dy çelësat kërkohen që CAPTCHA të shfaqet gjatë regjistrimit dhe hyrjes. Pastroni çelësin e sajtit për ta çaktivizuar.",
+        "recaptchaLegend": "Google reCAPTCHA (Rikuperimi nga bllokimi i llogarisë)",
+        "recaptchaSiteKeyLabel": "Çelësi i sajtit",
+        "recaptchaSiteKeyPlaceholder": "Çelësi i sajtit Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Çelësi sekret",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Çelësi sekret është vendosur - lëreni bosh për ta mbajtur",
+            "unset": "Çelësi sekret Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Të dy çelësat kërkohen. Kur vendosen, një llogari që arrin kufirin e përpjekjeve për hyrje mund të hyjë përsëri duke kaluar këtë provë në vend që të presë përfundimin e bllokimit; kur nuk vendosen, duhet pritur i gjithë bllokimi. Përdorni reCAPTCHA v2 (\"Nuk jam robot\"). Pastroni çelësin e sajtit për ta çaktivizuar.",
+        "save": "Ruaj"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Përdoret nga veçoritë e inteligjencës artificiale në sajt (përmbledhjet e temave në trend etj.). Lëreni modelin bosh për të përdorur Drejtuesin e Modeleve Falas, ku OpenRouter zgjedh rastësisht nga modelet që janë falas në atë çast dhe që nuk mund të sjellë kurrë kosto.",
+        "keyLabel": "Çelësi API",
+        "keyPlaceholder": {
+            "set": "Çelësi API është vendosur - lëreni bosh për ta mbajtur",
+            "unset": "Çelësi API i OpenRouter"
+        },
+        "clearKeyLabel": "Hiq çelësin API të ruajtur (çaktivizon veçoritë e IA-së)",
+        "modelLabel": "Model",
+        "neverSpendLabel": "Mos e lejo kurrë të shpenzojë para (rekomandohet)",
+        "explainer": "Me mbrojtjen aktive, çdo kërkesë e kufizon çmimin në zero, ndaj dështon plotësisht në vend që të kalojë te një model me pagesë kur nuk ka ofrues falas. Hiqni çelësin API të ruajtur për t'i çaktivizuar plotësisht veçoritë e IA-së.",
+        "save": "Ruaj"
+    },
+    "AboutSettingsForm": {
+        "legend": "Rreth sajtit",
+        "description": "Tekst i thjeshtë - rreshtat bosh ndajnë paragrafët. Paragrafi i parë do të përdoret si përshkrim i sajtit.",
+        "save": "Ruaj"
+    },
+    "TermsSettingsForm": {
+        "legend": "Kushtet e shërbimit",
+        "description": "Tekst i thjeshtë - rreshtat bosh ndajnë paragrafët.",
+        "save": "Ruaj"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Politika e privatësisë",
+        "description": "Tekst i thjeshtë - rreshtat bosh ndajnë paragrafët.",
+        "save": "Ruaj"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Përmbledhja me email",
+        "fieldLabel": "Paragrafi përmbyllës",
+        "notice": "Shtohet pranë fundit të çdo përmbledhjeje, pas listës së gjërave që anëtari ka humbur. Tekst i thjeshtë. Lëreni bosh për t'u kthyer te formulimi i përfshirë në këtë program.",
+        "save": "Ruaj"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Ikona e tanishme e sajtit",
+        "save": "Ngarko ikonën e sajtit"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Figura e faqes kryesore",
+        "explainer": "Shfaqet nga sajte të tjera kur dikush ndan një lidhje drejt këtij sajti - vetëm në tejtëdhënat Open Graph, kurrë në faqe. Pritet në 1200×630. Pa të, pamjet paraprake të lidhjeve nuk përmbajnë fare figurë.",
+        "currentAlt": "Figura e tanishme e faqes kryesore",
+        "save": "Ngarko figurën"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Luajtje automatike"
+    },
+    "CarouselNextButton": {
+        "name": "Tjetra"
+    },
+    "CarouselPrevButton": {
+        "name": "E mëparshmja"
+    },
+    "MediaFullscreenButton": {
+        "name": "Ekran i plotë"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Hiq skedarët"
+    },
+    "NotificationDropdown": {
+        "showAll": "Shfaqi të gjitha"
+    },
+    "HelpSearch": {
+        "placeholder": "Kërko te ndihma…",
+        "noMatches": "Asnjë artikull ndihme nuk përputhet me kërkimin tuaj."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "E kuptova"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Hidh poshtë"
+    },
+    "StagedPostEditButton": {
+        "name": "Ndrysho"
+    },
+    "StagedPostPublishButton": {
+        "name": "Publiko tani"
+    },
+    "LogoutButton": {
+        "name": "Dil"
+    },
+    "AvatarUploadForm": {
+        "submit": "Përditëso avatarin"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Kërko përdorues të ndaluar…"
+    },
+    "BannedUserSection": {
+        "heading": "Përdoruesit e ndaluar"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Kërkesat e dërguara (Në pritje të përgjigjes)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Ndaluar nga {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Bllokuar nga {name} ",
+            "after": ""
+        },
+        "deletedAccount": "një llogari e fshirë",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "janar",
+            "2": "shkurt",
+            "3": "mars",
+            "4": "prill",
+            "5": "maj",
+            "6": "qershor",
+            "7": "korrik",
+            "8": "gusht",
+            "9": "shtator",
+            "10": "tetor",
+            "11": "nëntor",
+            "12": "dhjetor"
+        },
+        "shortMonths": {
+            "1": "jan",
+            "2": "shk",
+            "3": "mar",
+            "4": "pri",
+            "5": "maj",
+            "6": "qer",
+            "7": "korr",
+            "8": "gush",
+            "9": "sht",
+            "10": "tet",
+            "11": "nën",
+            "12": "dhj"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute} {meridiem}",
+        "dateAndTime": "{date} në {time}",
+        "am": "e paradites",
+        "pm": "e pasdites",
+        "clock": 12
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Nuk mund të lidhej me serverin WebSocket në 127.0.0.1:{port}{tls} ({error}). Niseni fillimisht: systemctl --user start glommer-websocket (shihni README.md për skedarin e njësisë). Nëse sapo mori ose humbi WS_TLS_CERT/WS_TLS_KEY, riniseni që të përputhet me .env.",
+        "wsOverTLS": " përmes TLS-së",
+        "wsBadHandshake": "Shërbimi në 127.0.0.1:{port} nuk përfundoi një shtrëngim duarsh të vlefshëm WebSocket - diçka tjetër përveç bin/websocket-server.php mund të jetë duke dëgjuar në atë portë.",
+        "wsNoPong": "Serveri WebSocket e pranoi shtrëngimin e duarve, por nuk iu përgjigj një ping-u - mund të jetë ngecur ose të sillet gabimisht. Kontrolloni regjistrat e tij.",
+        "wsReachable": "Serveri WebSocket është i arritshëm dhe përgjigjet në 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Etiketë",
+            "person": "Person",
+            "org": "Organizatë",
+            "gpe": "Vend",
+            "loc": "Rajon",
+            "fac": "Pikë referimi",
+            "product": "Produkt",
+            "event": "Ngjarje",
+            "work_of_art": "Vepër",
+            "law": "Ligj",
+            "language": "Gjuhë",
+            "norp": "Grup"
+        },
+        "plural": {
+            "hashtag": "Etiketa",
+            "person": "Njerëz",
+            "org": "Organizata",
+            "gpe": "Vende",
+            "loc": "Rajone",
+            "fac": "Pika referimi",
+            "product": "Produkte",
+            "event": "Ngjarje",
+            "work_of_art": "Vepra",
+            "law": "Ligje",
+            "language": "Gjuhë",
+            "norp": "Grupe"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Hiq mikun"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Prano"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Refuzo"
+    },
+    "UserFollowButton": {
+        "follow": "Ndiq",
+        "unfollow": "Mos e ndiq më"
+    },
+    "UserBlockButton": {
+        "name": "Blloko"
+    },
+    "UserUnblockButton": {
+        "name": "Zhblloko"
+    },
+    "OtherUser": {
+        "message": "Mesazh"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menyja",
+        "loggedInAs": "Hyrë si {name}",
+        "friendsFeed": "Rrjedha e miqve",
+        "relayFeed": "Rrjedha e transmetuesit",
+        "users": "Përdoruesit",
+        "tags": "Etiketat",
+        "topics": "Temat",
+        "map": "Harta",
+        "locations": "Vendndodhjet",
+        "search": "Kërko",
+        "messages": "Mesazhet",
+        "bookmarks": "Faqerojtësit",
+        "help": "Ndihma",
+        "about": "Rreth sajtit",
+        "login": "Hyni",
+        "signup": "Regjistrohu",
+        "friends": "Miqtë",
+        "drafts": "Skicat dhe të planifikuarat",
+        "userSettings": "Cilësimet e përdoruesit",
+        "modSettings": "Cilësimet e moderatorit",
+        "adminSettings": "Cilësimet e administratorit"
+    },
+    "LogoutForm": {
+        "submit": "Dil"
+    },
+    "User": {
+        "joined": "U bashkua më {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Shto mik",
+        "cancel": "Anulo kërkesën"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Planifikuar për {when}",
+        "draft": "Skicë - publikohet vetëm kur ta thoni ju"
+    },
+    "MessageTranslateButton": {
+        "name": "Përkthe këtë mesazh"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Rreth përkthimit të mesazheve",
+        "body": "Për të përkthyer një mesazh, teksti i tij dërgohet te ky server dhe përkthehet këtu. Asgjë nuk ruhet: përkthimi nuk shkruhet në bazën e të dhënave dhe vetë mesazhi mbetet i pandryshuar. Por një mesazh i përkthyer kështu është lexuar nga serveri, ndaj nuk është i fshehtëzuar skaj më skaj si një mesazh i papërkthyer. Mund të përkthehen vetëm mesazhet që merrni dhe vetëm kur e kërkoni.",
+        "confirm": "Përktheje",
+        "cancel": "Jo tani"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "E harruat frazën e kalimit? Rivendosja krijon çelësa të rinj nën një frazë të re - por mesazhet e fshehtëzuara me çelësat e vjetër nuk mund të lexohen më kurrë nga askush.",
+        "requirements": "Të paktën 12 shenja dhe jo fjalëkalimi i llogarisë - ai dërgohet te ky server, ndërsa fraza juaj e kalimit nuk duhet të dërgohet kurrë.",
+        "passphraseLabel": "Fraza e kalimit",
+        "resetPassphraseLabel": "Fraza e re e kalimit",
+        "confirmLabel": "Konfirmoni frazën e kalimit",
+        "accountPasswordLabel": "Fjalëkalimi i llogarisë",
+        "submitLabel": "Aktivizo mesazhet e fshehtëzuara",
+        "resetSubmitLabel": "Rivendos çelësat e fshehtëzimit"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Mesazhet e fshehtëzuara skaj më skaj kyçen dhe shkyçen në shfletuesin tuaj: ky server i transmeton dhe i ruan pa mundur t'i lexojë. Çelësi juaj mbrohet nga një frazë kalimi dhe e njëjta frazë i shkyç mesazhet nga çdo shfletues. Bisedat fshehtëzohen pasi të dy personat ta kenë aktivizuar këtë; mesazhet për njerëzit në serverë të tjerë mbeten të pafshehtëzuara, sepse federata nuk ka mënyrë tjetër për t'i bartur.",
+        "noRecovery": "Nuk ka asnjë mënyrë për të rikuperuar një frazë kalimi të humbur - as administratori nuk mundet. Humbja e saj do të thotë humbje e mesazheve të fshehtëzuara.",
+        "enabledStatus": "Mesazhet e fshehtëzuara janë aktive."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "E fshehtëzuar",
+            "explanation": "Mesazhet në këtë bisedë janë të fshehtëzuara skaj më skaj: shkyçen me frazën tuaj të kalimit dhe lexohen në shfletuesit tuaj, ndërsa ky server ruan tekst të fshehtëzuar. Kontrolloni kodin e sigurisë në fund të vargut me personin tjetër për t'u siguruar se askush nuk është mes jush. Mesazhet e dërguara para aktivizimit të fshehtëzimit mbeten të lexueshme si më parë."
+        },
+        "awaiting-theirs": {
+            "label": "E pafshehtëzuar",
+            "explanation": "Mesazhet këtu do të fshehtëzohen skaj më skaj pasi {handle} të aktivizojë mesazhet e fshehtëzuara në cilësimet e veta."
+        },
+        "awaiting-yours": {
+            "label": "E pafshehtëzuar",
+            "explanation": "Mesazhet këtu nuk janë të fshehtëzuara skaj më skaj. Aktivizoni mesazhet e fshehtëzuara te Cilësimet për ta siguruar këtë bisedë."
+        },
+        "federated": {
+            "label": "E pafshehtëzuar",
+            "explanation": "{handle} ndodhet në një server tjetër. Mesazhet në këtë bisedë ruhen si në atë server, ashtu edhe në këtë, dhe administratori i tij mund t'i lexojë - protokolli mes serverëve nuk ka mënyrë për t'i fshehtëzuar. Mbajini gjërat e ndjeshme në bisedat e këtij sajti."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Ndiqni llogari në Fediverse",
+        "notice": "Ngjitni një ose më shumë identifikues, p.sh. @perdorues@example.social - funksionon çdo ndarës mes tyre.",
+        "handlesLabel": "Identifikuesit e Fediverse për t'u ndjekur",
+        "submit": "Ndiq",
+        "statusPending": "në pritje",
+        "statusAccepted": "pranuar"
+    },
+    "ServerBlockForm": {
+        "legend": "Bllokoni një server",
+        "description": "Refuzon gjithçka nga ai server dhe gjithçka nën të: asnjë dërgesë nuk hyn ose del dhe ndjekjet ekzistuese në të dy drejtimet hiqen.",
+        "serverLabel": "Serveri",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Arsyeja",
+        "reasonPlaceholder": "Pse është bllokuar ky server",
+        "submit": "Blloko serverin"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Ekzekuton pjesët e konfigurimit të thirrjes që mund të kontrollohen nga një shfletues. Gjithçka deri te një lidhje e mirëfilltë mes pjesëmarrësve mund të testohet këtu; lidhja me një person tjetër kërkon praninë e atij personi."
+    },
+    "VideoCallTestButton": {
+        "label": "Kryej kontrollin"
+    },
+    "WebSocketStatus": {
+        "ok": "Serveri WebSocket: Në punë",
+        "failed": "Serveri WebSocket: {detail}",
+        "clientTesting": "Lidhja e shfletuesit: Po testohet…",
+        "clientConnecting": "Lidhja e shfletuesit: Po lidhet…",
+        "clientConnected": "Lidhja e shfletuesit: E lidhur",
+        "clientDisconnecting": "Lidhja e shfletuesit: Po shkëputet…",
+        "clientNotConnected": "Lidhja e shfletuesit: E palidhur"
+    },
+    "UploadWorkerStatus": {
+        "running": "Shërbimi punëtor: Në punë",
+        "stopped": "Shërbimi punëtor: Nuk është në punë - ngarkimet e përgatitura nuk do të transkodohen derisa të riniset",
+        "unknown": "Shërbimi punëtor: I panjohur - ose systemctl nuk është i disponueshëm në këtë pritës, ose SELinux po mohon kërkesën e statusit nga vetë serveri i uebit (ekzekutoni bin/install.php si root për ta rregulluar)",
+        "queue": "Radha: {staging} në përgatitje, {pending} në pritje, {processing} në përpunim"
+    },
+    "TrendingTimerStatus": {
+        "running": "Kohëmatësi i prirjeve: Në punë",
+        "stopped": "Kohëmatësi i prirjeve: Nuk është në punë - temat në trend do të rifreskohen vetëm përmes vetëriparimit të shtegut të leximit (Trending::current()), jo sipas një plani. Ekzekutoni bin/install.php si root për ta konfiguruar.",
+        "unknown": "Kohëmatësi i prirjeve: I panjohur - ose systemctl nuk është i disponueshëm në këtë pritës, ose SELinux po mohon kërkesën e statusit nga vetë serveri i uebit (ekzekutoni bin/install.php si root për ta rregulluar)"
+    },
+    "Notification": {
+        "postReady": "Përpunimi i medias suaj përfundoi dhe publikimi tani është aktiv",
+        "scheduledPostLive": "Publikimi juaj i planifikuar tani është aktiv",
+        "uploadPartlyFailed": "Publikimi juaj është aktiv, por një ose më shumë skedarë nuk mundën të përpunoheshin",
+        "uploadFailed": "Një nga ngarkimet tuaja nuk u përpunua dhe nuk u publikua",
+        "mailerFailed": "Dërgimi i email-it dështoi - shërbimi i postës mund të jetë ndalur. Kontrolloni konfigurimin e postës.",
+        "mailFromNotConfigured": "Nuk është konfiguruar asnjë adresë \"dërguesi\", prandaj email-et nuk mund të dërgohen. Vendoseni te Cilësimet e administratorit (seksioni Posta dalëse) ose përmes bin/install.php.",
+        "systemError": "Ndodhi një gabim i serverit. Kontrolloni regjistrin e gabimeve për hollësi.",
+        "passwordRemovedGoogle": "Fjalëkalimi juaj u hoq kur hytë me Google. Përdorni \"Harrova fjalëkalimin\" nëse dëshironi të vendosni një të ri.",
+        "like": "{name} pëlqeu publikimin tuaj",
+        "repost": "{name} ripublikoi publikimin tuaj",
+        "reply": "{name} iu përgjigj publikimit tuaj",
+        "friendRequest": "{name} ju dërgoi një kërkesë miqësie",
+        "friendAccepted": "{name} pranoi kërkesën tuaj të miqësisë",
+        "message": "{name} ju dërgoi një mesazh",
+        "mention": "{name} ju përmendi në një publikim",
+        "follow": "{name} ju ndoqi nga një server tjetër",
+        "default": "{name} bëri diçka"
+    },
+    "NotificationList": {
+        "emptyNotice": "Ende nuk ka njoftime."
+    },
+    "NotificationsNavLink": {
+        "label": "Njoftimet",
+        "unseen": "Njoftime të pashikuara"
+    },
+    "NotificationTestPanel": {
+        "intro": "Dërgojini vetes (administratorit) një njoftim prove. Duhet të shfaqet menjëherë si njoftim i përkohshëm dhe në listën hapëse të njoftimeve.",
+        "button": "Dërgo njoftim prove",
+        "sending": "Po dërgohet…",
+        "sent": "U dërgua!",
+        "failed": "Dështoi"
+    },
+    "MessageDot": {
+        "label": "Mesazhe të palexuara"
+    },
+    "NavAlertDot": {
+        "label": "Diçka e re në meny"
+    },
+    "Message": {
+        "encrypted": "Mesazh i fshehtëzuar",
+        "decryptionFailed": "Ky mesazh u fshehtëzua me çelësa që nuk ekzistojnë më."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Mesazhi",
+        "bodyPlaceholder": "Shkruani një mesazh",
+        "send": "Dërgo"
+    },
+    "MessageList": {
+        "emptyNotice": "Ende nuk ka mesazhe."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Lexojani këtë kod njëri-tjetrit me një mënyrë tjetër - me zë, personalisht ose gjatë një thirrjeje. Nëse përputhet në të dy anët, askush nuk është mes jush.",
+        "changed": "Ky kod ka ndryshuar që kur e kontrolluat. Kjo ndodh kur njëri prej jush rivendos çelësat e fshehtëzimit - por kështu do të dukej edhe dikush që lexon këtë bisedë. Kontrolloni kodin e ri me personin tjetër para se t'i besoni.",
+        "verified": "E keni kontrolluar këtë kod."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Shëno si të verifikuar"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Fraza e kalimit",
+        "passphrasePlaceholder": "Fraza e kalimit për të shkyçur këtë bisedë",
+        "submit": "Shkyç"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Mesazhi i fundit ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Media e ndjeshme"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Shfaq median e ndjeshme si parazgjedhje"
+    },
+    "ReportCard": {
+        "targetTypes": {
+            "post": "Publikim",
+            "message": "Mesazh",
+            "user": "Përdorues"
+        },
+        "summary": {
+            "before": "{type} #{id}, raportuar nga ",
+            "after": ""
+        },
+        "reasonLine": "Arsyeja: {reason}",
+        "banReporterLabel": "Ndalo raportuesin",
+        "banReportedUserLabel": "Ndalo përdoruesin e raportuar",
+        "deleteLabel": "Fshi {type}",
+        "reportedImageAlt": "Figura e raportuar",
+        "attachmentUnavailable": "Një bashkëngjitje e raportuar nuk është më e disponueshme.",
+        "viewAttachment": "Shiko bashkëngjitjen e raportuar",
+        "missing": {
+            "noSnapshot": "Përmbajtja e raportuar nuk është më e disponueshme.",
+            "unknownType": "Lloj i panjohur përmbajtjeje."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Nuk ka raportime."
+    },
+    "ModQueueLinks": {
+        "intro": "Radhët janë mjaft të gjata për t'u lexuar nga një faqe për herë, ndaj kanë faqet e tyre.",
+        "reportsLabel": "Raportimet",
+        "bannedUsersLabel": "Përdoruesit e ndaluar"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Asnjë moderator nuk ka bërë ende asgjë."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Nuk ka entitete në trend të ndaluara."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Nuk ka serverë të bllokuar."
+    },
+    "RelayCard": {
+        "accepted": "Abonuar ",
+        "waiting": "Në pritje të pranimit nga transmetuesi - abonuar "
+    },
+    "RelayList": {
+        "emptyNotice": "Nuk ka abonime te transmetuesit. Këtu nuk mbërrin asgjë përveç asaj që ndjekin anëtarët."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Ende nuk ka ardhur asgjë përmes një transmetuesi. Publikimet shfaqen këtu ndërsa serverët në anën tjetër i publikojnë."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Abonohuni te një transmetues",
+        "explainerOne": "Një transmetues është një rrjedhë e përbashkët: çdo publikim publik nga çdo server tjetër i abonuar mbërrin këtu dhe publikimet e këtij serveri shkojnë te të gjithë ata. Kështu një instancë e re gjen këdo, sepse përndryshe federata bart vetëm atë që dikush këtu ndjek tashmë.",
+        "explainerTwo": "Ngarkesa nuk mund të parashikohet nga ju - është gjithçka që publikojnë ata serverë, qetësi një javë dhe mijëra publikime në orë javën tjetër, dhe hapësira juaj, radha e dërgesave dhe radha e moderimit i mbajnë të gjitha. Publikimet e transmetuara qëndrojnë jashtë rrjedhave kryesore dhe të miqve; ato shkojnë te Rrjedha e transmetuesit, të cilën njerëzit e hapin me qëllim.",
+        "addressLabel": "Adresa e transmetuesit",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Abonohu"
+    },
+    "RelayFollowObjectField": {
+        "label": "Mënyra e abonimit",
+        "options": {
+            "public": "Ndiq rrjedhën publike (atë që presin shumica e transmetuesve)",
+            "actor": "Ndiq aktorin e vetë transmetuesit"
+        },
+        "retryNotice": "Nëse transmetuesi nuk pranon kurrë, tërhiquni dhe provoni mënyrën tjetër - disa programe transmetuesish njohin vetëm njërën prej tyre."
+    },
+    "SiteCounters": {
+        "members": "Anëtarë: {count} ({joined} u bashkuan në {days} ditët e fundit)",
+        "activeMembers": "Anëtarë këtu në {days} ditët e fundit: {count} ({posted} prej tyre publikuan)",
+        "posts": "Publikime të shkruara këtu: {count} ({recent} në {days} ditët e fundit)",
+        "deliveries": "Dërgesa të federuara në {days} ditët e fundit: {delivered} mbërritën, u hoq dorë nga {undeliverable}",
+        "queued": "Në pritje për t'u dërguar: {count} ({failing} janë refuzuar tashmë të paktën një herë)",
+        "pendingReads": "Publikime në pritje për t'u lexuar nga serverë të tjerë: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Ekzekutoni paketën e testeve të sajtit dhe shikoni rezultatet. Zgjat disa sekonda, ndaj hapet në faqen e vet.",
+        "runLabel": "Ekzekuto testet"
+    },
+    "HelpArticle": {
+        "backLabel": "Kthehu te e gjithë ndihma"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Nuk ka sugjerime tani - sugjerimet vijnë nga miqtë e njerëzve me të cilët jeni tashmë miq. Kërkoni më sipër për të gjetur dikë sipas emrit.",
+        "noMatches": "Askush këtu nuk përputhet."
+    },
+    "UserModButton": {
+        "make": "Bëje moderator",
+        "remove": "Hiqe si moderator"
+    },
+    "UserUnbanButton": {
+        "name": "Hiq ndalimin"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Ndalo"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Hiq ndalimin"
+    },
+    "ReportDismissButton": {
+        "name": "Hidh poshtë"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Shëno si të ndjeshme"
+    },
+    "ServerUnblockButton": {
+        "name": "Zhblloko"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Çabonohu"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Shfuqizo"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Kalon",
+        "failing": "{suite}: Dështon"
+    },
+    "PageTitle": {
+        "about": "Rreth sajtit",
+        "adminBanned": "Përdoruesit e ndaluar",
+        "adminModSettings": "Cilësimet e moderatorit",
+        "adminReports": "Raportimet",
+        "adminSettings": "Cilësimet e administratorit",
+        "adminTests": "Testet",
+        "authGoogleCallbackAccountDeleted": "Llogaria u fshi",
+        "authGoogleCallbackDeleteAccount": "Fshi llogarinë",
+        "authGoogleCallbackLogin": "Hyni",
+        "bookmarks": "Faqerojtësit",
+        "checkInbox": "Kontrolloni kutinë hyrëse",
+        "drafts": "Skicat dhe të planifikuarat",
+        "draftsEditDraft": "Ndrysho skicën",
+        "draftsEditScheduled": "Ndrysho publikimin e planifikuar",
+        "forgotPassword": "Harrova fjalëkalimin",
+        "friendsFeed": "Rrjedha e miqve",
+        "help": "Ndihma",
+        "helpDescription": "Udhëzime dhe përgjigje për përdorimin e sajtit.",
+        "locations": "Vendndodhjet",
+        "locationsDescription": "Publikime nga vendet më pranë jush.",
+        "locationsPlaceDescription": "Publikime pranë {place}.",
+        "login": "Hyni",
+        "loginVerificationCode": "Kodi i verifikimit",
+        "map": "Harta",
+        "mapDescription": "Një hartë e publikimeve nga mbarë bota - gjeni njerëz dhe gjëra pranë jush.",
+        "messages": "Mesazhet",
+        "messagesWithUser": "Mesazhet me {name}",
+        "notifications": "Njoftimet",
+        "privacy": "Politika e privatësisë",
+        "quote": "Citim",
+        "relayFeed": "Rrjedha e transmetuesit",
+        "relayFeedDescription": "Publikime publike që mbërrijnë nga transmetuesit ku ky server është abonuar.",
+        "resetPassword": "Rivendos fjalëkalimin",
+        "revertEmail": "Kthe ndryshimin e email-it",
+        "search": "Kërko",
+        "signup": "Regjistrohu",
+        "tags": "Etiketat",
+        "tagsDescription": "Shfletoni etiketat në trend dhe të njohura në {siteTitle}.",
+        "tagsTagDescription": "Publikime me etiketën {tag} në {siteTitle}.",
+        "terms": "Kushtet e shërbimit",
+        "topics": "Temat",
+        "topicsDescription": "Për çfarë po flasin njerëzit në {siteTitle} tani.",
+        "topicsEntityDescription": "{typeLabel} - publikime që përmendin {entityTitle} në {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} për të cilat po flasin njerëzit në {siteTitle} tani.",
+        "unsubscribe": "Përmbledhjet me email",
+        "userFriends": "Miqtë e {name}",
+        "userFriendsDescription": "Miqtë e {name} në {siteTitle}",
+        "userSettings": "Cilësimet e përdoruesit",
+        "users": "Përdoruesit",
+        "verifyEmail": "Verifiko email-in"
+    },
+    "PostLikeButton": {
+        "like": "Pëlqe",
+        "unlike": "Hiq pëlqimin"
+    },
+    "PostPinButton": {
+        "pin": "Fikso",
+        "unpin": "Hiq fiksimin"
+    },
+    "PostQuoteButton": {
+        "name": "Cito"
+    },
+    "PostDeleteButton": {
+        "name": "Fshi"
+    },
+    "PostEditButton": {
+        "name": "Ndrysho"
+    },
+    "ReportButton": {
+        "name": "Raporto"
+    },
+    "PostActionBar": {
+        "reply": "Përgjigju",
+        "replies": {
+            "one": "Përgjigje ({count})",
+            "other": "Përgjigje ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(ndryshuar)"
+    },
+    "RepliesHeading": {
+        "heading": "Përgjigjet"
+    },
+    "PollVoteButton": {
+        "name": "Voto"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Shihni ",
+            "link": "më shumë vendndodhje",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Publikime pranë jush",
+        "description": "Kjo tregon publikimet më pranë një pike - kudo që ka veprimtari, pavarësisht sa larg ndodhet. Ndani vendndodhjen tuaj për të nisur nga aty ku jeni ose zgjidhni një pikë në hartë.",
+        "useMyLocation": "Përdor vendndodhjen time",
+        "pickOnMap": "Zgjidh në hartë",
+        "searchPlaceholder": "Ose shkruani emrin e një vendi…",
+        "searchLabel": "Kërko një vend",
+        "locating": "Po gjendet vendndodhja…",
+        "noGeolocation": "Shfletuesi juaj nuk mund të ndajë vendndodhjen.",
+        "locationError": "Nuk mund të merrej vendndodhja juaj. Kontrolloni lejen e vendndodhjes në shfletues."
+    },
+    "PollDeadline": {
+        "final": "Rezultati përfundimtar",
+        "closes": {
+            "before": "Mbyllet ",
+            "after": ""
+        },
+        "days": {
+            "one": "pas {count} dite",
+            "other": "pas {count} ditësh"
+        },
+        "hours": {
+            "one": "pas {count} ore",
+            "other": "pas {count} orësh"
+        },
+        "minutes": {
+            "one": "pas {count} minute",
+            "other": "pas {count} minutash"
+        },
+        "underMinute": "pas më pak se një minute"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "Votoi 1 person ",
+            "other": "Votuan {count} persona "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Hyni",
+            "after": " për të publikuar."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Hyni",
+            "after": " për t'u përgjigjur."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " ripublikoi"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Në përgjigje të ",
+            "after": ""
+        },
+        "untitled": "këtij publikimi",
+        "jumpToStart": "Shko në fillim"
+    },
+    "TopicSummaryCard": {
+        "label": "Përmbledhje e krijuar nga IA-ja"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Mirë se vini në ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Shkruani diçka në kutinë më poshtë dhe ajo del në rrjedhën tuaj. Çdokush mund të përgjigjet dhe një përgjigje është thjesht një publikim me një prind, ndaj bisedat mund të degëzohen aq thellë sa duhet.",
+            "Shtoni njerëz si miq dhe publikimet e tyre futen në rrjedhën tuaj. Rrjedha globale - emri i sajtit lart majtas - tregon gjithçka të shkruar këtu dhe është vendi ku mund të gjeni dikë për ta shtuar.",
+            "Ky sajt është pjesë e Fediverse: mund të ndiqni llogari në Mastodon dhe serverë të tjerë me identifikuesin e plotë dhe ajo që publikoni u arrin njerëzve që ju ndjekin atje. Kërkoni një identifikues si @dikush@example.social dhe ky server do ta gjejë.",
+            "Etiketoni një publikim me #etiketa dhe ai shfaqet në faqen e asaj etikete, si dhe te Në trend nëse mjaft njerëz shkruajnë për të.",
+            "Mesazhet mes anëtarëve fshehtëzohen skaj më skaj - serveri ruan tekst të fshehtëzuar që nuk mund ta lexojë. Aktivizojeni te Cilësimet.",
+            "Nuk duhet të publikoni menjëherë: ruani një skicë ose caktoni një kohë dhe ajo publikohet vetë. Të dyja gjenden te Skicat dhe të planifikuarat."
+        ],
+        "more": {
+            "before": "Ka më shumë te ",
+            "link": "faqet e ndihmës",
+            "after": ", përfshirë mënyrën e zhvendosjes së një llogarie këtu nga një vend tjetër."
+        },
+        "dontShowAgain": "Mos e shfaq përsëri"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Fut emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Figura e pamjes paraprake të lidhjes"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Hiq figurën"
+    },
+    "LinkItem": {
+        "alt": "Figura e pamjes paraprake të lidhjes"
+    },
+    "MapScrubber": {
+        "play": "Luaj",
+        "pause": "Ndalo",
+        "cumulativeMode": "Deri atëherë",
+        "windowMode": "Vetëm atëherë",
+        "rangeLabel": "Shfaq publikimet deri në një datë",
+        "cumulativeLabel": {
+            "one": "Publikuar deri më {date} — {count} publikim",
+            "other": "Publikuar deri më {date} — {count} publikime"
+        },
+        "windowLabel": {
+            "one": "Publikuar rreth {date} — {count} publikim",
+            "other": "Publikuar rreth {date} — {count} publikime"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Publikimi i {name}",
+        "pageTitleUntitled": "Publikim",
+        "imageAltByAuthor": "Fotografi e publikuar nga {name}",
+        "imageAltUntitled": "Fotografi"
+    },
+    "PostBookmarkButton": {
+        "remove": "Hiq faqerojtësin",
+        "add": "Shto faqerojtës"
+    },
+    "PostRepostButton": {
+        "undo": "Zhbëj ripublikimin",
+        "repost": "Ripubliko"
+    },
+    "QuotedPost": {
+        "viewLink": "Shiko publikimin e cituar"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Kërkesat në pritje"
+    },
+    "ScrollToTopButton": {
+        "label": "Shko në krye"
+    },
+    "SearchClearButton": {
+        "label": "Pastro kërkimin"
+    },
+    "SitePolicyLinks": {
+        "terms": "Kushtet e shërbimit",
+        "privacy": "Politika e privatësisë"
+    },
+    "SkipLink": {
+        "label": "Kalo te përmbajtja"
+    },
+    "TopicHeading": {
+        "searchLink": "Kërko këtë",
+        "noPosts": "Asnjë publikim nuk e përmend këtë tani."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Ende nuk është shkruar për asgjë të këtij lloji."
+    },
+    "TrendingEntitySection": {
+        "heading": "Në trend"
+    },
+    "PostLocationLink": {
+        "title": "Shfaq këtë vend në hartë",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "tani",
+        "minutes": {
+            "one": "{count} min më parë",
+            "other": "{count} min më parë"
+        },
+        "hours": {
+            "one": "{count} orë më parë",
+            "other": "{count} orë më parë"
+        },
+        "days": {
+            "one": "{count} ditë më parë",
+            "other": "{count} ditë më parë"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Tema",
+        "themes": {
+            "system": "Njësoj si sistemi",
+            "light": "E çelët e thjeshtë",
+            "dark": "E errët e thjeshtë",
+            "sepia": "Sepia",
+            "midnight": "Mesnatë",
+            "sunset": "Perëndim dielli",
+            "rose": "Trëndafil",
+            "forest": "Pyll",
+            "ocean": "Oqean",
+            "lavender": "Livandë",
+            "gold": "Ar",
+            "hacker": "Hacker",
+            "ironbow": "Hark hekuri",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Helikë kubike",
+            "greyscale": "Shkallë gri"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Përkthimi nuk është konfiguruar në këtë server.",
+        "nothing": "Nuk ka asgjë për t'u përkthyer këtu.",
+        "unknownSource": "Ende nuk është përcaktuar gjuha e këtij publikimi, ndaj nuk mund të përkthehet.",
+        "alreadyReadable": "Ky publikim është tashmë në atë gjuhë.",
+        "unsupportedPair": "Ky server nuk mund ta përkthejë ende atë gjuhë."
+    },
+    "LanguagePrompt": {
+        "question": "Dëshironi ta shikoni sajtin në shqip?",
+        "accept": "Po",
+        "decline": "Jo, faleminderit"
+    },
+    "LanguageSelector": {
+        "label": "Gjuha",
+        "legend": "Gjuha"
+    },
+    "EmailDigest": {
+        "subject": "Çfarë humbët në {site}",
+        "greeting": "Përshëndetje {name},",
+        "whileAway": "Ndërsa mungonit:",
+        "repeatedTimes": {
+            "one": " ({count} herë)",
+            "other": " ({count} herë)"
+        },
+        "moreMissed": {
+            "one": "dhe {count} njoftim tjetër",
+            "other": "dhe {count} njoftime të tjera"
+        },
+        "messagesWaiting": {
+            "one": "Keni një mesazh në pritje",
+            "other": "Keni {count} mesazhe në pritje"
+        },
+        "postsInFeed": {
+            "one": "Një publikim i ri në rrjedhën tuaj",
+            "other": "{count} publikime të reja në rrjedhën tuaj"
+        },
+        "unsubscribeInstructions": "Për t'i ndalur këto email-e, hapni këtë lidhje - mjafton një klikim dhe nuk kërkohet fjalëkalim:",
+        "comeSeeWhatIsNew": "Ejani të shihni çfarë ka të re",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Mos m'i dërgo më këto",
+            "after": " - një klikim, pa fjalëkalim."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Verifikoni adresën e email-it",
+        "greeting": "Përshëndetje {name},",
+        "instructions": "Ju lutemi verifikoni adresën e email-it duke vizituar këtë lidhje:",
+        "htmlInstructions": "Ju lutemi verifikoni adresën e email-it duke klikuar lidhjen më poshtë:",
+        "buttonLabel": "Verifiko adresën e email-it",
+        "expiresIn": {
+            "one": "Kjo lidhje skadon pas {count} ore.",
+            "other": "Kjo lidhje skadon pas {count} orësh."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Rivendosni fjalëkalimin",
+        "greeting": "Përshëndetje {name},",
+        "instructions": "Dikush (shpresojmë ju) kërkoi rivendosjen e fjalëkalimit. Vizitoni këtë lidhje për të zgjedhur një fjalëkalim të ri:",
+        "htmlInstructions": "Dikush (shpresojmë ju) kërkoi rivendosjen e fjalëkalimit. Klikoni lidhjen më poshtë për të zgjedhur një fjalëkalim të ri:",
+        "buttonLabel": "Rivendos fjalëkalimin",
+        "expiresIn": {
+            "one": "Kjo lidhje skadon pas {count} ore.",
+            "other": "Kjo lidhje skadon pas {count} orësh."
+        },
+        "ignoreNotice": "Nëse nuk e kërkuat këtë, mund ta shpërfillni email-in."
+    }
+}

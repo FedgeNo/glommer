@@ -31,7 +31,7 @@ export class User {
     header() {
         const header = document.createElement('a');
         header.href = ClientConfig.siteURL() + '/users/' + this.slug + '/';
-        header.className = 'UserHeader d-flex align-items-center gap-3';
+        header.className = 'UserHeaderLink';
 
         header.appendWithSpace(Avatar.forUser(this));
 
@@ -44,7 +44,7 @@ export class User {
         info.appendWithSpace(name_line);
 
         const username_line = document.createElement('div');
-        username_line.className = 'muted text-sm';
+        username_line.className = 'UserHeaderUsername';
         username_line.textContent = '@' + this.slug;
         info.appendWithSpace(username_line);
 
@@ -84,13 +84,13 @@ export class User {
         info.appendWithSpace(name_heading);
 
         const username_line = document.createElement('div');
-        username_line.className = 'muted text-sm';
+        username_line.className = 'UserUsername';
         username_line.textContent = '@' + this.slug;
         info.appendWithSpace(username_line);
 
         if (this.createdAt) {
             const joined = document.createElement('div');
-            joined.className = 'muted text-sm';
+        joined.className = 'UserJoined';
             joined.textContent = 'Joined ' + RelativeTime.date(this.createdAt);
             info.appendWithSpace(joined);
         }
@@ -237,4 +237,3 @@ export class User {
 }
 
 ReadyHandler.add(User.init);
-

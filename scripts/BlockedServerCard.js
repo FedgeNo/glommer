@@ -61,7 +61,7 @@ export class BlockedServerCard {
             // renders for one. The cascade the confirmation warned about
             // (severed follows, dropped deliveries) has no rendering on this
             // page, so the list is the whole picture here.
-            const list = list_in(document.querySelector('.BlockedServersSetting'), 'BlockedServerList d-flex flex-column');
+            const list = list_in(document.querySelector('.BlockedServersSetting'), 'BlockedServerList');
 
             if (list) {
                 list.prepend(list_item(BlockedServerCard.#card(result.domain, reason)));
@@ -76,11 +76,11 @@ export class BlockedServerCard {
 
     static #card(domain, reason) {
         const card = document.createElement('div');
-        card.className = 'BlockedServerCard d-flex align-items-center gap-3';
+        card.className = 'BlockedServerCard';
         card.dataset.domain = domain;
 
         const info = document.createElement('div');
-        info.className = 'd-flex flex-column gap-1';
+        info.className = 'BlockedServerCardInfo';
 
         const name = document.createElement('p');
         name.textContent = domain;
@@ -95,7 +95,7 @@ export class BlockedServerCard {
         });
 
         const detail = document.createElement('p');
-        detail.className = 'muted';
+        detail.className = 'BlockedServerCardDetail';
         detail.appendWithSpace(document.createTextNode(
             (words.blockedBy.before || '').replace('{name}', ClientConfig.get('currentUserUsername') || '')
         ));
@@ -116,7 +116,7 @@ export class BlockedServerCard {
 
         const unblock = document.createElement('button');
         unblock.type = 'button';
-        unblock.className = 'Button ServerUnblockButton ms-auto';
+        unblock.className = 'Button ServerUnblockButton';
         unblock.dataset.domain = domain;
         unblock.textContent = Strings.for('ServerUnblockButton', { name: 'Unblock' }).name;
         card.appendWithSpace(unblock);

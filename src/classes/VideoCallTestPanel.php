@@ -30,7 +30,6 @@ declare(strict_types=1);
 class VideoCallTestPanel extends Div
 {
     public ?string $class = 'VideoCallTestPanel';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {

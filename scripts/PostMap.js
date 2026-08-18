@@ -176,10 +176,10 @@ export class PostMap {
      */
     static #pinMenu(Composer, map, form, latitude, longitude) {
         const menu = document.createElement('div');
-        menu.className = 'MapPinMenu d-flex flex-column gap-1';
+        menu.className = 'MapPinMenu';
 
         const position = document.createElement('div');
-        position.className = 'muted';
+        position.className = 'MapPinPosition';
         position.textContent = latitude.toFixed(4) + ', ' + longitude.toFixed(4);
         menu.appendWithSpace(position);
 
@@ -375,7 +375,7 @@ export class PostMap {
         wrapper.appendWithSpace(link);
 
         const author = document.createElement('div');
-        author.className = 'muted';
+        author.className = 'MapPinAuthor';
         author.textContent = 'by ' + post.authorName;
         wrapper.appendWithSpace(author);
 

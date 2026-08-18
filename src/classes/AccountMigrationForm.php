@@ -13,7 +13,6 @@ declare(strict_types=1);
  */
 class AccountMigrationForm extends FormForm
 {
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     // Defaults to the signed-in member, so the page that actually shows this
     // form (user-settings.php) needs no change; a test can hand in a

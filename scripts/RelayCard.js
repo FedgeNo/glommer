@@ -51,7 +51,7 @@ export class RelayCard {
 
             if (!result) return;
 
-            const list = list_in(document.querySelector('.RelaysSetting'), 'RelayList d-flex flex-column');
+            const list = list_in(document.querySelector('.RelaysSetting'), 'RelayList');
 
             if (list) {
                 list.prepend(list_item(RelayCard.#card(result.actorURI)));
@@ -88,18 +88,18 @@ export class RelayCard {
         const words = Strings.for('RelayCard', { waiting: 'Waiting for the relay to accept - subscribed ' });
 
         const card = document.createElement('div');
-        card.className = 'RelayCard d-flex align-items-center gap-3';
+        card.className = 'RelayCard';
         card.dataset.actorUri = actor_uri;
 
         const info = document.createElement('div');
-        info.className = 'd-flex flex-column gap-1';
+        info.className = 'RelayCardInfo';
 
         const name = document.createElement('p');
         name.textContent = actor_uri;
         info.appendWithSpace(name);
 
         const detail = document.createElement('p');
-        detail.className = 'muted';
+        detail.className = 'RelayCardDetail';
         // A freshly submitted subscription always starts pending, never
         // accepted - see RelayCard.php for the counterpart of both phrasings.
         detail.appendWithSpace(document.createTextNode(words.waiting));
@@ -115,7 +115,7 @@ export class RelayCard {
 
         const unsubscribe = document.createElement('button');
         unsubscribe.type = 'button';
-        unsubscribe.className = 'Button RelayUnsubscribeButton ms-auto';
+        unsubscribe.className = 'Button RelayUnsubscribeButton';
         unsubscribe.dataset.actorUri = actor_uri;
         unsubscribe.textContent = Strings.for('RelayUnsubscribeButton', { name: 'Unsubscribe' }).name;
         card.appendWithSpace(unsubscribe);

@@ -9,7 +9,6 @@ declare(strict_types=1);
 class BannedTrendingEntityList extends ItemList
 {
     public ?string $class = 'BannedTrendingEntityList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     protected function rows(): array
     {

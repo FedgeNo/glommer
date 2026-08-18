@@ -5,7 +5,6 @@ declare(strict_types=1);
 class Conversation extends Anchor
 {
     public ?string $class = 'Conversation';
-    public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?int $userId = null;
     public ?string $slug = null;
@@ -32,16 +31,14 @@ class Conversation extends Anchor
         $name_heading -> contents[] = $name;
         $info -> addContent($name_heading);
 
-        $username_line = new Div();
-        $username_line -> mixins = ['muted', 'text-sm'];
+        $username_line = new ConversationUsername();
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> lastMessageAt !== null) {
             $words = Strings::for(self::class)['lastMessage'] ?? [];
 
-            $meta = new Div();
-            $meta -> mixins = ['muted', 'text-sm'];
+            $meta = new ConversationMeta();
             $meta -> contents[] = (string) ($words['before'] ?? '');
 
             $meta -> addContent(new RelativeTime($this -> lastMessageAt));

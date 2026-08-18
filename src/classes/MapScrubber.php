@@ -19,7 +19,6 @@ declare(strict_types=1);
 class MapScrubber extends Div
 {
     public ?string $class = 'MapScrubber';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {
@@ -27,28 +26,24 @@ class MapScrubber extends Div
 
         $header = new Div;
         $header -> class = 'MapScrubberHeader';
-        $header -> mixins = ['d-flex', 'align-items-center', 'gap-2'];
 
         $label = new Div;
         $label -> class = 'MapScrubberLabel';
         $header -> addContent($label);
 
         $play = new Button;
-        $play -> class = 'MapScrubberPlay';
-        $play -> mixins = ['Button', 'ms-auto'];
+        $play -> class = 'Button MapScrubberPlay';
         $play -> addContent((string) ($words['play'] ?? ''));
         $header -> addContent($play);
 
         $mode = new Div;
         $mode -> class = 'MapScrubberMode';
-        $mode -> mixins = ['d-flex', 'gap-1'];
 
         $mode_labels = ['cumulative' => (string) ($words['cumulativeMode'] ?? ''), 'window' => (string) ($words['windowMode'] ?? '')];
 
         foreach ($mode_labels as $value => $text) {
             $button = new Button;
-            $button -> class = 'MapScrubberModeButton' . ($value === 'cumulative' ? ' Active' : '');
-            $button -> mixins = ['Button'];
+            $button -> class = 'Button MapScrubberModeButton' . ($value === 'cumulative' ? ' Active' : '');
             $button -> attributes['data-mode'] = $value;
             $button -> addContent($text);
             $mode -> addContent($button);
@@ -69,16 +64,13 @@ class MapScrubber extends Div
 
         $bounds = new Div;
         $bounds -> class = 'MapScrubberBounds';
-        $bounds -> mixins = ['d-flex', 'justify-content-between'];
 
         $first = new Div;
         $first -> class = 'MapScrubberFirst';
-        $first -> mixins = ['muted'];
         $bounds -> addContent($first);
 
         $last = new Div;
         $last -> class = 'MapScrubberLast';
-        $last -> mixins = ['muted'];
         $bounds -> addContent($last);
 
         $this -> addContent($bounds);

@@ -16,7 +16,7 @@ export class TrendingEntityChip {
 
     toElement() {
         const chip = document.createElement('div');
-        chip.className = 'TrendingEntityChip d-flex align-items-center gap-1';
+        chip.className = 'TrendingEntityChip';
 
         const link = document.createElement('a');
         link.className = 'TrendingEntityLink';

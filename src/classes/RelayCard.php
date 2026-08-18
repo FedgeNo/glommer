@@ -12,7 +12,6 @@ declare(strict_types=1);
 class RelayCard extends Div
 {
     public ?string $class = 'RelayCard';
-    public array $mixins = ['d-flex', 'align-items-center', 'gap-3'];
 
     public ?string $actorURI = null;
     public ?string $status = null;
@@ -24,12 +23,10 @@ class RelayCard extends Div
 
         $this -> attributes['data-actor-uri'] = (string) $this -> actorURI;
 
-        $info = new Div();
-        $info -> mixins = ['d-flex', 'flex-column', 'gap-1'];
+        $info = new RelayCardInfo();
         $info -> addContent(new Paragraph((string) $this -> actorURI));
 
-        $detail = new Paragraph();
-        $detail -> mixins = ['muted'];
+        $detail = new RelayCardDetail();
 
         // A relay that has not answered is not yet delivering anything, and
         // saying so is the difference between "waiting" and "broken" - see
@@ -47,7 +44,6 @@ class RelayCard extends Div
         $this -> addContent($info);
 
         $unsubscribe = new RelayUnsubscribeButton((string) $this -> actorURI);
-        $unsubscribe -> mixins[] = 'ms-auto';
         $this -> addContent($unsubscribe);
 
         return parent::toDOM();

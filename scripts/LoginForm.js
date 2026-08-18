@@ -82,7 +82,7 @@ export class LoginForm {
         }
 
         const notice = document.createElement('p');
-        notice.className = 'muted text-sm LoginRecaptchaNotice';
+        notice.className = 'LoginRecaptchaNotice';
         notice.textContent = 'Too many attempts on this account. Please complete the verification to continue.';
 
         const container = document.createElement('div');

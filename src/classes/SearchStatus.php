@@ -11,7 +11,6 @@ class SearchStatus extends Div
 {
     public ?string $class = 'SearchStatus';
 
-    public array $mixins = ['visually-hidden'];
 
     public function toDOM(): \DOMElement
     {

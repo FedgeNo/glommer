@@ -9,8 +9,7 @@ declare(strict_types=1);
  */
 class PostQuoteButton extends Anchor
 {
-    public ?string $class = 'PostQuoteButton';
-    public array $mixins = ['Button'];
+    public ?string $class = 'Button PostQuoteButton';
 
     public const GLYPH = '✍️';
 

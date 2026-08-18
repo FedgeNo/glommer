@@ -81,7 +81,7 @@ class AccessibilityTest extends DatabaseTestCase
     public function testEveryUnreadMarkSaysSomething(): void
     {
         foreach ([new MessageDot(true), new NavAlertDot(true)] as $dot) {
-            $said = trim((string) $this -> xpathOver($dot) -> query('//span[contains(@class, "visually-hidden")]') -> item(0) ?-> textContent);
+            $said = trim((string) $this -> xpathOver($dot) -> query('//span[contains(@class, "HiddenLabel")]') -> item(0) ?-> textContent);
 
             $this -> assertFalse($said === '', 'the dot has words');
         }

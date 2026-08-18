@@ -93,7 +93,8 @@
     .MainNavigation .NavAccount,
     .MainNavigation .NotificationsNavLink,
     .MainNavigation .LogoutForm,
-    .MainNavigation > .d-flex {
+    .MainNavigation > .MainNavigationSiteLinks,
+    .MainNavigation > .MainNavigationAccountLinks {
         display: contents !important;
     }
 

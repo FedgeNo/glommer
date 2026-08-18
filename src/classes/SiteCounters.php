@@ -19,7 +19,6 @@ declare(strict_types=1);
 class SiteCounters extends Div
 {
     public ?string $class = 'SiteCounters';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-1'];
 
     /** What counts as recent, for every figure that says "this week". */
     private const RECENT_DAYS = 7;

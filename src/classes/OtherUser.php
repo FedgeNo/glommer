@@ -30,8 +30,7 @@ class OtherUser extends User
             && $friendship -> status === 'pending'
             && (int) $friendship -> requesterId === $viewer_id;
 
-        $actions = new Div();
-        $actions -> mixins = ['d-flex', 'flex-column', 'gap-2', 'ms-auto'];
+        $actions = new OtherUserActions();
 
         foreach ($this -> beforeActions() as $item) {
             $actions -> addContent($item);

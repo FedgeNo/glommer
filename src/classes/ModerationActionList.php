@@ -18,7 +18,6 @@ declare(strict_types=1);
 class ModerationActionList extends ItemList
 {
     public ?string $class = 'ModerationActionList';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     protected function rows(): array
     {

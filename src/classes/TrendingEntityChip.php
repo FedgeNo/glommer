@@ -14,7 +14,6 @@ declare(strict_types=1);
 class TrendingEntityChip extends Div
 {
     public ?string $class = 'TrendingEntityChip';
-    public array $mixins = ['d-flex', 'align-items-center', 'gap-1'];
 
     public ?int $entityId = null;
     public ?string $type = null;

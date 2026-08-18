@@ -9,7 +9,6 @@ declare(strict_types=1);
 class ReportList extends ItemList
 {
     public ?string $class = 'ReportList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     protected function rows(): array
     {
@@ -41,4 +40,3 @@ SELECT `r`.*, `u`.`slug` AS `reporterUsername`
         ])];
     }
 }
-

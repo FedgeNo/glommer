@@ -86,7 +86,6 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
     {
         $byline = new Paragraph(($this -> authorTitle ?: $this -> slug) . ' · @' . $this -> slug);
         $byline -> class = 'QuotedPostByline';
-        $byline -> mixins = ['muted', 'text-sm'];
         $this -> contents[] = $byline;
 
         if ((string) $this -> title !== '') {
@@ -104,7 +103,6 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
             (string) (Strings::for(self::class)['viewLink'] ?? '')
         );
         $link -> class = 'QuotedPostLink';
-        $link -> mixins = ['text-sm'];
         $this -> contents[] = $link;
 
         return parent::toDOM();

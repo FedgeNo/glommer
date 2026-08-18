@@ -12,7 +12,6 @@ declare(strict_types=1);
 class NearbyLocationPrompt extends Div
 {
     public ?string $class = 'NearbyLocationPrompt';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public function toDOM(): \DOMElement
     {
@@ -24,12 +23,10 @@ class NearbyLocationPrompt extends Div
 
         $this -> addContent(new Paragraph((string) ($words['description'] ?? '')));
 
-        $actions = new Div;
-        $actions -> mixins = ['d-flex', 'gap-2', 'align-items-center', 'flex-wrap'];
+        $actions = new NearbyLocationPromptActions;
 
         $button = new Button;
-        $button -> class = 'NearbyLocationButton';
-        $button -> mixins = ['Button'];
+        $button -> class = 'Button NearbyLocationButton';
         $button -> addContent((string) ($words['useMyLocation'] ?? ''));
         $actions -> addContent($button);
 

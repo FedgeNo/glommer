@@ -173,14 +173,12 @@ class User extends Div implements \JsonSerializable
 
         $info -> addContent($this -> nameElement());
 
-        $username_line = new Div();
-        $username_line -> mixins = ['muted', 'text-sm'];
+        $username_line = new UserUsername();
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 
         if ($this -> createdAt !== null) {
-            $joined = new Div();
-            $joined -> mixins = ['muted', 'text-sm'];
+            $joined = new UserJoined();
             // {date} rather than concatenation: the date does not have to come
             // last, and in several languages it does not.
             $joined -> contents[] = str_replace(
@@ -240,21 +238,17 @@ class User extends Div implements \JsonSerializable
     {
         $name = $this -> title ?: $this -> slug;
 
-        $header = new Anchor(ServerURL::absolute('/users/' . $this -> slug . '/'));
-        $header -> class = 'UserHeader';
-        $header -> mixins = ['d-flex', 'align-items-center', 'gap-3'];
+        $header = new UserHeaderLink(ServerURL::absolute('/users/' . $this -> slug . '/'));
 
         $header -> addContent(Avatar::forUser($this));
 
         $info = new UserHeaderInfo();
 
         $name_line = new UserHeaderName();
-        $name_line -> mixins = ['fw-semibold'];
         $name_line -> contents[] = $name;
         $info -> addContent($name_line);
 
-        $username_line = new Div();
-        $username_line -> mixins = ['muted', 'text-sm'];
+        $username_line = new UserHeaderUsername();
         $username_line -> contents[] = '@' . $this -> slug;
         $info -> addContent($username_line);
 

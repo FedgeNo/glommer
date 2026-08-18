@@ -11,7 +11,6 @@ declare(strict_types=1);
 class PostMeta extends Div
 {
     public ?string $class = 'PostMeta';
-    public array $mixins = ['d-flex', 'flex-column', 'align-items-end', 'ms-auto'];
 
     public ?int $postId = null;
     public ?string $createdAt = null;

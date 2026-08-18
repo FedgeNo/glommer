@@ -9,7 +9,6 @@ declare(strict_types=1);
 class PostEditedMarker extends Span
 {
     public ?string $class = 'PostEditedMarker';
-    public array $mixins = ['muted', 'text-sm'];
 
     public ?string $editedAt = null;
 

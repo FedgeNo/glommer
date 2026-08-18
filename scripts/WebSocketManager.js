@@ -144,7 +144,7 @@ export class WebSocketManager {
         toastContent.textContent = notification.text();
         Toast.show(toastContent);
 
-        const dropdownList = list_in(document.querySelector('.NotificationDropdown'), 'NotificationList RecentNotificationList d-flex flex-column gap-1');
+            const dropdownList = list_in(document.querySelector('.NotificationDropdown'), 'NotificationList RecentNotificationList');
         if (dropdownList) {
             const existing = dropdownList.querySelectorAll('.Notification');
             if (existing.length >= 5) {
@@ -154,7 +154,7 @@ export class WebSocketManager {
             dropdownList.insertBeforeWithSpace(list_item(notification.toElement()), dropdownList.firstChild);
         }
 
-        const pageList = list_in(document.querySelector('.NotificationsPage main'), 'NotificationList d-flex flex-column gap-1');
+            const pageList = list_in(document.querySelector('.NotificationsPage main'), 'NotificationList');
         if (pageList) {
             pageList.insertBeforeWithSpace(list_item(notification.toElement()), pageList.firstChild);
         }

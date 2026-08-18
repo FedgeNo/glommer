@@ -11,7 +11,6 @@ declare(strict_types=1);
 abstract class FeedList extends ItemList
 {
     public ?string $class = 'FeedList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     /** Names this feed to api/feed.php, which picks its query from it. */
     protected string $feedType = '';

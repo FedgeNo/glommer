@@ -34,14 +34,14 @@ export class Message {
         }
 
         const byline = document.createElement('div');
-        byline.className = 'MessageByline d-flex align-items-start gap-2';
+        byline.className = 'MessageByline';
 
         if (this.sender) {
             byline.appendWithSpace(this.senderHeader(this.sender, this.senderId));
         }
 
         const meta = document.createElement('time');
-        meta.className = 'muted text-sm RelativeTime';
+        meta.className = 'NotificationMeta RelativeTime';
         meta.dateTime = parse_server_date(this.createdAt).toISOString();
         meta.textContent = RelativeTime.format(this.createdAt);
         byline.appendWithSpace(meta);
@@ -163,7 +163,7 @@ document.addEventListener('ws:message', (event) => {
     }
 
     const was_near_bottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 150;
-    const list = list_in(document.querySelector('main'), 'MessageList d-flex flex-column');
+    const list = list_in(document.querySelector('main'), 'MessageList');
 
     if (!list) return;
 
@@ -178,4 +178,3 @@ document.addEventListener('ws:message', (event) => {
 });
 
 ReadyHandler.add(Message.init);
-

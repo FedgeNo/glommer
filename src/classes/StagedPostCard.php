@@ -11,7 +11,6 @@ declare(strict_types=1);
 class StagedPostCard extends Card
 {
     public ?string $class = 'StagedPostCard';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     public ?int $stagedPostId = null;
     public ?int $userId = null;
@@ -57,15 +56,13 @@ class StagedPostCard extends Card
         }
 
         if ((string) $this -> linkURL !== '') {
-            $link = new Paragraph((string) $this -> linkURL);
-            $link -> mixins = ['muted', 'text-sm'];
+            $link = new StagedPostLink((string) $this -> linkURL);
             $this -> contents[] = $link;
         }
 
         $this -> contents[] = new StagedPostWhen($this -> publishAt);
 
-        $actions = new Div();
-        $actions -> mixins = ['d-flex', 'gap-2'];
+        $actions = new StagedPostActions();
         $actions -> addContent(new StagedPostPublishButton());
         $actions -> addContent(new StagedPostEditButton((int) $this -> stagedPostId));
         $actions -> addContent(new StagedPostDiscardButton());

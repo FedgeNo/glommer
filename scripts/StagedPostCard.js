@@ -36,7 +36,7 @@ export class StagedPostCard {
     /** Mirrors StagedPostCard.php, rebuilt from what the server saved. */
     static #card(data) {
         const card = document.createElement('div');
-        card.className = 'Card StagedPostCard d-flex flex-column gap-2';
+        card.className = 'Card StagedPostCard';
         card.setAttribute('data-staged-post-id', data.stagedPostId);
         card.setAttribute('data-title', data.title || '');
         card.setAttribute('data-description-delta', data.descriptionDelta || '');
@@ -66,7 +66,7 @@ export class StagedPostCard {
 
         if (data.linkURL) {
             const link = document.createElement('p');
-            link.className = 'muted text-sm';
+        link.className = 'StagedPostLink';
             link.textContent = data.linkURL;
             card.appendWithSpace(link);
         }
@@ -77,14 +77,14 @@ export class StagedPostCard {
         });
 
         const when = document.createElement('p');
-        when.className = 'StagedPostWhen muted text-sm';
+        when.className = 'StagedPostWhen';
         when.textContent = data.publishAt !== null
             ? when_words.scheduled.replace('{when}', data.publishAt)
             : when_words.draft;
         card.appendWithSpace(when);
 
         const actions = document.createElement('div');
-        actions.className = 'd-flex gap-2';
+        actions.className = 'StagedPostActions';
 
         for (const [className, label] of [
             ['StagedPostPublishButton', Strings.for('StagedPostPublishButton', { name: 'Publish Now' }).name],

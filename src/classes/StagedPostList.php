@@ -9,7 +9,6 @@ declare(strict_types=1);
 class StagedPostList extends ItemList
 {
     public ?string $class = 'StagedPostList';
-    public array $mixins = ['d-flex', 'flex-column', 'gap-2'];
 
     protected string $emptyNotice = 'No drafts or scheduled posts. The composer\'s Save Draft and Schedule controls put them here.';
 

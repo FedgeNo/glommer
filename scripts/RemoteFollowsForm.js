@@ -41,13 +41,13 @@ export class RemoteFollowsForm {
 
                 if (!list) {
                     list = document.createElement('div');
-                    list.className = 'RemoteFollowsList d-flex flex-column gap-1';
+                    list.className = 'RemoteFollowsList';
                     form.appendWithSpace(list);
                 }
 
                 for (const result of followed) {
                     const item = document.createElement('div');
-                    item.className = 'd-flex gap-2 align-items-center';
+                    item.className = 'RemoteFollowsItem';
                     item.appendWithSpace(document.createTextNode(result.handle));
 
                     // A follow just submitted is always freshly pending - the
@@ -55,7 +55,7 @@ export class RemoteFollowsForm {
                     // so a follow accepted before the next reload doesn't
                     // read differently from one the server rendered.
                     const status = document.createElement('span');
-                    status.className = 'muted text-sm';
+                    status.className = 'RemoteFollowsStatus';
                     status.textContent = Strings.for('RemoteFollowsForm', { statusPending: 'pending' }).statusPending;
                     item.appendWithSpace(status);
 

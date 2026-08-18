@@ -9,7 +9,6 @@ declare(strict_types=1);
 class MoreLocationsLink extends Paragraph
 {
     public ?string $class = 'MoreLocationsLink';
-    public array $mixins = ['muted', 'text-sm'];
 
     public function toDOM(): \DOMElement
     {

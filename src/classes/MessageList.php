@@ -11,7 +11,6 @@ declare(strict_types=1);
 class MessageList extends ItemList
 {
     public ?string $class = 'MessageList';
-    public array $mixins = ['d-flex', 'flex-column'];
 
     // English, so anything that never calls rows() below still says something
     // sensible (ItemLoaderTest builds a MessageList whose rows() is replaced

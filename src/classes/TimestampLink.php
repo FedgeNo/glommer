@@ -9,7 +9,6 @@ declare(strict_types=1);
 class TimestampLink extends Anchor
 {
     public ?string $class = 'TimestampLink';
-    public array $mixins = ['muted', 'text-sm'];
 
     public ?string $dateTime = null;
 

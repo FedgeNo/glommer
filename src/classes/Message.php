@@ -58,14 +58,12 @@ class Message extends Article implements \JsonSerializable
 
         // Byline row: header + time (mirrors PostByline)
         $byline = new MessageByline();
-        $byline -> mixins = ['d-flex', 'align-items-start', 'gap-2'];
 
         if ($this -> sender !== null) {
             $byline -> addContent($this -> senderHeader());
         }
 
         $meta = new RelativeTime($this -> createdAt);
-        $meta -> mixins = ['muted', 'text-sm'];
         $byline -> addContent($meta);
 
         $this -> contents[] = $byline;

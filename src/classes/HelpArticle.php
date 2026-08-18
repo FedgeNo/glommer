@@ -32,7 +32,6 @@ class HelpArticle extends Article
 
         $category_link = new Anchor(ServerURL::absolute('/help/'), $this -> category);
         $category_link -> class = 'HelpArticleCategory';
-        $category_link -> mixins = ['muted', 'text-sm'];
         $this -> contents[] = $category_link;
 
         $this -> contents[] = new Heading3($this -> title);

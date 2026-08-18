@@ -18,15 +18,13 @@ class ReportList extends ItemList
         // plain property already set by the time it runs).
         $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
 
-        $rows = DB::rows('
+        return DB::rows('
 SELECT `r`.*, `u`.`slug` AS `reporterUsername`
     FROM `Reports` `r`
     JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
     LIMIT ? OFFSET ?
-', 'ReportData', 'ii', static::PAGE_SIZE + 1, $this -> offset);
-
-        return array_map(static fn (ReportData $row): ReportCard => ReportCard::fromRow($row), $rows);
+', Report::class, 'ii', static::PAGE_SIZE + 1, $this -> offset);
     }
 
     /**
@@ -36,7 +34,7 @@ SELECT `r`.*, `u`.`slug` AS `reporterUsername`
     {
         return ['data-infinite-scroll' => (string) json_encode([
             'endpoint' => '/api/report-history',
-            'itemType' => 'ReportCard',
+            'itemType' => 'Report',
         ])];
     }
 }

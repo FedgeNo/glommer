@@ -13,6 +13,13 @@ declare(strict_types=1);
  */
 class EmailChangeRevert
 {
+    public ?int $revertId = null;
+    public ?int $userId = null;
+    public ?string $previousEmail = null;
+    public ?string $tokenHash = null;
+    public ?string $expiresAt = null;
+    public ?string $createdAt = null;
+
     public static function sendFor(User $user, string $previous_email): void
     {
         // Under the address's lock, so this reservation cannot land between

@@ -23,17 +23,17 @@ declare(strict_types=1);
  * spread across posts that are merely newest-by-id but days old, which
  * happens whenever posting is slow).
  *
- * Materialized into TrendingEntities, recomputed by bin/compute-trending.php
+ * Materialized into Entities, recomputed by bin/compute-trending.php
  * on a timer (~10-15 min, mirroring bin/backup.php's systemd-timer
  * precedent) rather than at read time - trending is read-often and
- * expensive-to-derive, and it's fine being minutes-stale. current() has a
- * lottery fallback (matches the codebase's lottery-sweep instinct elsewhere -
- * RateLimiter's pruning, LinkPreviewFetcher's staged-image sweep) that kicks
+ * expensive-to-derive, and it's fine being minutes-stale. refreshIfStale() has
+ * a lottery fallback (matches the codebase's lottery-sweep instinct elsewhere
+ * - RateLimiter's pruning, LinkPreviewFetcher's staged-image sweep) that kicks
  * a synchronous recompute when the data is stale AND the timer apparently
  * isn't installed, so this degrades to "stale but self-healing" instead of
  * silently going dark.
  */
-class Trending
+class EntityRanker
 {
     // The window: newest N top-level posts, not a time span - see class docblock.
     private const WINDOW_SIZE = 5000;
@@ -50,14 +50,14 @@ class Trending
     // recent post (score close to 1.0) from qualifying on its own.
     private const MIN_DISTINCT_AUTHORS = 3;
 
-    // current() self-heals via the lottery below once the freshest row is
+    // A list read self-heals via the lottery below once the freshest row is
     // older than this - matches the "still useful, just not brand new"
     // tolerance the class docblock describes.
     private const STALE_MINUTES = 30;
 
     // Settings key recompute() stamps on every run, whether or not any
     // entity actually qualified - isStale() reads this instead of
-    // MAX(TrendingEntities.computedAt) so a quiet window that clears every
+    // MAX(Entities.computedAt) so a quiet window that clears every
     // entity (nothing meets MIN_DISTINCT_AUTHORS) still counts as "just ran"
     // rather than looking like it never ran and re-triggering a synchronous
     // recompute on every near-future request.
@@ -79,86 +79,13 @@ class Trending
     // normal traffic.
     private const RECOMPUTE_LOTTERY_ODDS = 20;
 
-    /**
-     * The current top trending entities, freshest-first by score.
-     *
-     * Rows outlive the run that produced them, so "trending" is the ones this
-     * last run stamped rather than everything in the table - what is being
-     * talked about now, not everything ever kept.
-     *
-     * @return TrendingEntityChip[]
-     */
-    public static function current(int $limit): array
-    {
-        self::refreshIfStale();
-
-        return DB::rows('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
-    FROM `TrendingEntities`
-    WHERE `computedAt` = ?
-    ORDER BY `score` DESC
-    LIMIT ?
-', 'TrendingEntityChip', 'si', self::lastRun(), $limit);
-    }
-
-    /**
-     * The same, of one kind only.
-     *
-     * @return TrendingEntityChip[]
-     */
-    public static function ofType(string $type, int $limit): array
-    {
-        self::refreshIfStale();
-
-        return DB::rows('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
-    FROM `TrendingEntities`
-    WHERE `type` = ? AND `computedAt` = ?
-    ORDER BY `score` DESC
-    LIMIT ?
-', 'TrendingEntityChip', 'ssi', $type, self::lastRun(), $limit);
-    }
-
-    /**
-     * Every topic of one kind that is still kept, most talked about first -
-     * what /topics/{type}/ lists.
-     *
-     * Popularity, not score: score says what is spiking, which is a different
-     * question and the one the front page already answers. This is the standing
-     * list, so it is ordered by how much has been said.
-     *
-     * @return TrendingEntityChip[]
-     */
-    public static function popularOfType(string $type, int $limit, int $offset): array
-    {
-        self::refreshIfStale();
-
-        return DB::rows('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
-    FROM `TrendingEntities`
-    WHERE `type` = ?
-    ORDER BY `popularity` DESC, `entityId` ASC
-    LIMIT ? OFFSET ?
-', 'TrendingEntityChip', 'sii', $type, $limit, $offset);
-    }
-
     /** When the last completed run stamped its rows. */
-    private static function lastRun(): string
+    public static function lastRun(): string
     {
         return (string) (Settings::get(self::LAST_RUN_SETTING) ?? '');
     }
 
-    /** One topic, or null where nothing by that name has trended. */
-    public static function entity(string $type, string $slug): ?TrendingEntityChip
-    {
-        return DB::row('
-SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`
-    FROM `TrendingEntities`
-    WHERE `type` = ? AND `slug` = ?
-', 'TrendingEntityChip', 'ss', $type, $slug);
-    }
-
-    private static function refreshIfStale(): void
+    public static function refreshIfStale(): void
     {
         if (self::isStale() && mt_rand(1, self::RECOMPUTE_LOTTERY_ODDS) === 1) {
             self::recompute();
@@ -179,12 +106,9 @@ SELECT `entityId`, `type`, `slug`, `title`, `score`, `postCount`, `userCount`, `
     }
 
     /**
-     * Pulls the window, extracts + scores entities, and replaces
-     * TrendingEntities with whatever currently qualifies. Every qualifying
-     * entity is stamped with the same $computed_at for this run, and
-     * anything NOT refreshed this run (fell out of the trending set
-     * entirely) is deleted after - not a blind TRUNCATE-then-insert, so a
-     * reader never sees a momentarily-empty table.
+     * Pulls the window, extracts and scores entities. Every qualifying entity
+     * is stamped with the same $computed_at for this run; older rows remain as
+     * the bounded popularity catalog used by the type pages.
      */
     /**
      * The recent window of top-level posts the extractor reads: just the
@@ -363,7 +287,7 @@ UPDATE `Posts`
             // counted against this topic, where the three beside it describe
             // the window this run just read.
             DB::run('
-INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`, `computedAt`)
+INSERT INTO `Entities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `popularity`, `computedAt`)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `title` = VALUES(`title`), `score` = VALUES(`score`), `postCount` = VALUES(`postCount`), `userCount` = VALUES(`userCount`), `popularity` = `popularity` + VALUES(`popularity`), `computedAt` = VALUES(`computedAt`)
 ', 'sssdiiis', $entity['type'], $slug, $entity['value'], $entity['score'], $entity['postCount'], $user_count, $entity['freshCount'], $computed_at);
@@ -399,7 +323,7 @@ INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `
             // from.
             $waterline = DB::row('
 SELECT `popularity`
-    FROM `TrendingEntities`
+    FROM `Entities`
     WHERE `type` = ?
     ORDER BY `popularity` DESC
     LIMIT 1 OFFSET ?
@@ -411,18 +335,17 @@ SELECT `popularity`
 
             DB::run('
 DELETE
-    FROM `TrendingEntities`
+    FROM `Entities`
     WHERE `type` = ? AND `popularity` < ? AND `computedAt` < ?
 ', 'sis', $type, (int) $waterline -> popularity, $computed_at);
         }
     }
 
     /**
-     * Bans an entity from trending: a standing rule (BannedTrendingEntities),
-     * not just a recomputed-away row, so it stays excluded even after
-     * TrendingEntities is fully replaced on the next run. Also removes it
-     * from TrendingEntities immediately, rather than waiting for the next
-     * recompute, so the ban is visibly in effect right away.
+     * Bans an entity from ranking: a standing rule (BannedTrendingEntities),
+     * not just a deleted catalog row, so it stays excluded from later runs.
+     * Also removes it from Entities immediately, rather than waiting for the
+     * next recompute, so the ban is visibly in effect right away.
      */
     public static function ban(string $entity_type, string $entity_value, int $moderator_id, ?string $reason): void
     {
@@ -436,16 +359,16 @@ INSERT INTO `BannedTrendingEntities` (`type`, `slug`, `title`, `bannedBy`, `reas
 
         DB::run('
 DELETE
-    FROM `TrendingEntities`
+    FROM `Entities`
     WHERE `type` = ? AND `slug` = ?
 ', 'ss', $entity_type, $slug);
 
         // The durable, queryable record of who banned this entity (and the
         // reason) is the BannedTrendingEntities row itself - bannedBy plus
         // createdAt. The ModerationActions entry carries no targetId: a
-        // trending entity is identified by a type+value string pair, not a
-        // stable row id (TrendingEntities ids are regenerated every recompute,
-        // so any id stored here would dangle within minutes).
+        // entity is identified by a type+value string pair, not a row id. Its
+        // catalog row can be pruned and recreated, so an id stored here could
+        // eventually point nowhere or at an unrelated later row.
         ModerationAction::log('banTrendingEntity', null, $entity_type, null);
     }
 

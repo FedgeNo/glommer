@@ -21,6 +21,7 @@ class Message extends Article implements \JsonSerializable
     // body or a ciphertext, never both.
     public ?string $bodyCiphertext = null;
     public ?string $frankingTag = null;
+    public ?string $remoteObjectURI = null;
     public ?string $createdAt = null;
     // Set once a moderator dismisses a report on this message - blocks it from
     // being reported again (see api/report.php).

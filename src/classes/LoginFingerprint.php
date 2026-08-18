@@ -12,6 +12,26 @@ declare(strict_types=1);
  */
 class LoginFingerprint
 {
+    public ?int $fingerprintId = null;
+    public ?int $userId = null;
+    public ?string $ipAddress = null;
+    public ?string $userAgent = null;
+    public ?string $acceptLanguage = null;
+    public ?string $acceptEncoding = null;
+    public ?string $referer = null;
+    public ?string $secChUa = null;
+    public ?string $secChUaMobile = null;
+    public ?string $secChUaPlatform = null;
+    public ?string $secFetchSite = null;
+    public ?string $secFetchMode = null;
+    public ?string $secFetchDest = null;
+    public ?string $secFetchUser = null;
+    public ?string $dnt = null;
+    public ?string $httpProtocol = null;
+    public ?string $tlsCipher = null;
+    public ?string $tlsProtocol = null;
+    public ?string $createdAt = null;
+
     public static function record(int $user_id): void
     {
         DB::run('

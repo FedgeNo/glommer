@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Temporitzador de tendències: en execució",
-        "stopped": "Temporitzador de tendències: aturat; els temes en tendència només s'actualitzaran mitjançant l'autoreparació durant la lectura (Trending::current()), no de manera programada. Executeu bin/install.php com a root per configurar-lo.",
+        "stopped": "Temporitzador de tendències: aturat; els temes en tendència només s'actualitzaran mitjançant l'autoreparació durant la lectura (EntityRanker::refreshIfStale()), no de manera programada. Executeu bin/install.php com a root per configurar-lo.",
         "unknown": "Temporitzador de tendències: desconegut; systemctl no està disponible en aquest servidor o SELinux denega la consulta d'estat del servidor web (executeu bin/install.php com a root per corregir-ho)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Mostra el contingut multimèdia sensible per defecte"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Publicació",
             "message": "Missatge",

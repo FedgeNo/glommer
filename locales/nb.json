@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Timer for populære emner: kjører",
-        "stopped": "Timer for populære emner: kjører ikke – populære emner oppdateres bare gjennom lesebanens selvreparasjon (Trending::current()), ikke etter en tidsplan. Kjør bin/install.php som root for å sette den opp.",
+        "stopped": "Timer for populære emner: kjører ikke – populære emner oppdateres bare gjennom lesebanens selvreparasjon (EntityRanker::refreshIfStale()), ikke etter en tidsplan. Kjør bin/install.php som root for å sette den opp.",
         "unknown": "Timer for populære emner: ukjent – enten er systemctl utilgjengelig på denne verten, eller så nekter SELinux webserverens egen statusforespørsel (kjør bin/install.php som root for å rette det)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Vis sensitivt medieinnhold som standard"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Innlegg",
             "message": "Melding",

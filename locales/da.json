@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Trendtimer: Kører",
-        "stopped": "Trendtimer: Kører ikke - trendemner vil kun opdateres via læsestiens selvhelbredelse (Trending::current()), ikke på en tidsplan. Kør bin/install.php som root for at konfigurere det.",
+        "stopped": "Trendtimer: Kører ikke - trendemner vil kun opdateres via læsestiens selvhelbredelse (EntityRanker::refreshIfStale()), ikke på en tidsplan. Kør bin/install.php som root for at konfigurere det.",
         "unknown": "Trendtimer: Ukendt - enten er systemctl ikke tilgængelig på denne vært, eller også afviser SELinux webserverens egen statusforespørgsel (kør bin/install.php som root for at rette det)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Vis følsomme medier som standard"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Indlæg",
             "message": "Besked",

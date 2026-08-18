@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Trending-Timer: Läuft",
-        "stopped": "Trending-Timer: Läuft nicht - Trendthemen aktualisieren sich nur über die Selbstheilung beim Lesezugriff (Trending::current()), nicht nach Zeitplan. Führe bin/install.php als root aus, um ihn einzurichten.",
+        "stopped": "Trending-Timer: Läuft nicht - Trendthemen aktualisieren sich nur über die Selbstheilung beim Lesezugriff (EntityRanker::refreshIfStale()), nicht nach Zeitplan. Führe bin/install.php als root aus, um ihn einzurichten.",
         "unknown": "Trending-Timer: Unbekannt - entweder ist systemctl auf diesem Host nicht verfügbar, oder SELinux blockiert die eigene Statusabfrage des Webservers (führe bin/install.php als root aus, um das zu beheben)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Sensible Medien standardmäßig anzeigen"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Beitrag",
             "message": "Nachricht",

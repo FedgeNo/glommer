@@ -13,6 +13,16 @@ declare(strict_types=1);
  */
 class RememberToken
 {
+    public ?int $tokenId = null;
+    public ?int $userId = null;
+    public ?string $selector = null;
+    public ?string $validatorHash = null;
+    public ?string $expiresAt = null;
+    public ?string $createdAt = null;
+    public ?string $lastUsedAt = null;
+    public ?string $userAgent = null;
+    public ?string $ipAddress = null;
+
     private const COOKIE_NAME = 'rememberToken';
     private const TTL_DAYS = 30;
 

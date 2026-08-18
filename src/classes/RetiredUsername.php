@@ -22,6 +22,9 @@ declare(strict_types=1);
  */
 class RetiredUsername
 {
+    public ?string $slug = null;
+    public ?string $retiredAt = null;
+
     /** Retires a name at the moment its account goes. */
     public static function retire(string $slug): void
     {

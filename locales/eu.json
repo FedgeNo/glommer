@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Joeren tenporizadorea: martxan",
-        "stopped": "Joeren tenporizadorea: ez dago martxan—joera-gaiak irakurketa-bideko autokonponketaren bidez soilik freskatuko dira (Trending::current()), ez programatuta. Exekutatu bin/install.php root gisa konfiguratzeko.",
+        "stopped": "Joeren tenporizadorea: ez dago martxan—joera-gaiak irakurketa-bideko autokonponketaren bidez soilik freskatuko dira (EntityRanker::refreshIfStale()), ez programatuta. Exekutatu bin/install.php root gisa konfiguratzeko.",
         "unknown": "Joeren tenporizadorea: ezezaguna—systemctl ez dago ostalarian edo SELinuxek web zerbitzariari egoera galdetzea ukatzen dio (exekutatu bin/install.php root gisa konpontzeko)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Erakutsi multimedia sentikorra lehenespenez"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Argitalpena",
             "message": "Mezua",

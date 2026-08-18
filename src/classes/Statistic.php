@@ -18,6 +18,10 @@ declare(strict_types=1);
  */
 class Statistic
 {
+    public ?string $name = null;
+    public ?string $day = null;
+    public int $total = 0;
+
     /** A federated activity that reached the server it was addressed to. */
     public const DELIVERED = 'delivered';
 

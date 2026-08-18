@@ -339,7 +339,7 @@
         "running": "Työpalvelu: käynnissä", "stopped": "Työpalvelu: ei käynnissä — valmisteltuja latauksia ei muunneta ennen uudelleenkäynnistystä", "unknown": "Työpalvelu: tuntematon — systemctl ei ole käytettävissä tai SELinux estää verkkopalvelimen tilakyselyn (korjaa suorittamalla bin/install.php root-käyttäjänä)", "queue": "Jono: {staging} valmistelussa, {pending} odottaa, {processing} käsitellään"
     },
     "TrendingTimerStatus": {
-        "running": "Suosittujen aiheiden ajastin: käynnissä", "stopped": "Suosittujen aiheiden ajastin: ei käynnissä — aiheet päivittyvät vain lukupolun itsekorjauksella (Trending::current()), eivät ajastetusti. Määritä ajastin suorittamalla bin/install.php root-käyttäjänä.", "unknown": "Suosittujen aiheiden ajastin: tuntematon — systemctl ei ole käytettävissä tai SELinux estää verkkopalvelimen tilakyselyn (korjaa suorittamalla bin/install.php root-käyttäjänä)"
+        "running": "Suosittujen aiheiden ajastin: käynnissä", "stopped": "Suosittujen aiheiden ajastin: ei käynnissä — aiheet päivittyvät vain lukupolun itsekorjauksella (EntityRanker::refreshIfStale()), eivät ajastetusti. Määritä ajastin suorittamalla bin/install.php root-käyttäjänä.", "unknown": "Suosittujen aiheiden ajastin: tuntematon — systemctl ei ole käytettävissä tai SELinux estää verkkopalvelimen tilakyselyn (korjaa suorittamalla bin/install.php root-käyttäjänä)"
     },
     "Notification": {
         "postReady": "Mediasi käsittely on valmis ja julkaisu näkyy nyt", "scheduledPostLive": "Ajastettu julkaisusi näkyy nyt", "uploadPartlyFailed": "Julkaisusi näkyy, mutta yhtä tai useampaa sen tiedostoa ei voitu käsitellä", "uploadFailed": "Yhden latauksesi käsittely epäonnistui eikä sitä julkaistu", "mailerFailed": "Sähköpostin toimitus epäonnistui — postipalvelu saattaa olla poissa käytöstä. Tarkista sähköpostiasetukset.", "mailFromNotConfigured": "Sähköpostin lähettäjäosoitetta ei ole määritetty, joten viestejä ei voi lähettää. Aseta se Ylläpitoasetusten Lähtevä sähköposti -osiossa tai bin/install.php:n kautta.", "systemError": "Tapahtui palvelinvirhe. Katso lisätiedot virhelokista.", "passwordRemovedGoogle": "Salasanasi poistettiin, kun kirjauduit Googlella. Aseta uusi käyttämällä \"Unohditko salasanan\" -toimintoa.", "like": "{name} tykkäsi julkaisustasi", "repost": "{name} jakoi julkaisusi uudelleen", "reply": "{name} vastasi julkaisuusi", "friendRequest": "{name} lähetti sinulle ystäväpyynnön", "friendAccepted": "{name} hyväksyi ystäväpyyntösi", "message": "{name} lähetti sinulle viestin", "mention": "{name} mainitsi sinut julkaisussa", "follow": "{name} alkoi seurata sinua toiselta palvelimelta", "default": "{name} teki jotakin"
@@ -389,7 +389,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Näytä arkaluonteinen media oletuksena"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Julkaisu", "message": "Viesti", "user": "Käyttäjä"
         },

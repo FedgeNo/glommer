@@ -9,6 +9,11 @@ declare(strict_types=1);
  */
 class Bookmark
 {
+    public ?int $bookmarkId = null;
+    public ?int $userId = null;
+    public ?int $postId = null;
+    public ?string $createdAt = null;
+
     /**
      * Toggles the bookmark and returns the new state.
      */

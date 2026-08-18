@@ -120,7 +120,10 @@ SELECT `TABLE_NAME`
      */
     private static function tableRenames(): array
     {
-        return ['BlockedDomains' => 'BlockedServers'];
+        return [
+            'BlockedDomains' => 'BlockedServers',
+            'TrendingEntities' => 'Entities',
+        ];
     }
 
     /**
@@ -263,12 +266,12 @@ SELECT `TABLE_NAME`
             'UPDATE `Hashtags` SET `title` = `slug` WHERE `title` = \'\'',
             'ALTER TABLE `FeedItems` CHANGE COLUMN IF EXISTS `itemType` `type` varchar(50) NOT NULL',
             'ALTER TABLE `Reports` CHANGE COLUMN IF EXISTS `targetType` `type` varchar(16) NOT NULL',
-            'ALTER TABLE `TrendingEntities` CHANGE COLUMN IF EXISTS `entityType` `type` varchar(16) NOT NULL',
-            'ALTER TABLE `TrendingEntities` CHANGE COLUMN IF EXISTS `entityValue` `title` varchar(255) NOT NULL',
-            'ALTER TABLE `TrendingEntities` ADD COLUMN IF NOT EXISTS `slug` varchar(255) NOT NULL DEFAULT \'\' AFTER `type`',
-            'UPDATE `TrendingEntities` SET `slug` = LOWER(`title`) WHERE `slug` = \'\'',
-            'ALTER TABLE `TrendingEntities` DROP INDEX IF EXISTS `entityType_entityValue`',
-            'ALTER TABLE `TrendingEntities` ADD UNIQUE INDEX IF NOT EXISTS `type_slug` (`type`, `slug`)',
+            'ALTER TABLE `Entities` CHANGE COLUMN IF EXISTS `entityType` `type` varchar(16) NOT NULL',
+            'ALTER TABLE `Entities` CHANGE COLUMN IF EXISTS `entityValue` `title` varchar(255) NOT NULL',
+            'ALTER TABLE `Entities` ADD COLUMN IF NOT EXISTS `slug` varchar(255) NOT NULL DEFAULT \'\' AFTER `type`',
+            'UPDATE `Entities` SET `slug` = LOWER(`title`) WHERE `slug` = \'\'',
+            'ALTER TABLE `Entities` DROP INDEX IF EXISTS `entityType_entityValue`',
+            'ALTER TABLE `Entities` ADD UNIQUE INDEX IF NOT EXISTS `type_slug` (`type`, `slug`)',
             'ALTER TABLE `BannedTrendingEntities` CHANGE COLUMN IF EXISTS `entityType` `type` varchar(16) NOT NULL',
             'ALTER TABLE `BannedTrendingEntities` CHANGE COLUMN IF EXISTS `entityValue` `title` varchar(255) NOT NULL',
             'ALTER TABLE `BannedTrendingEntities` ADD COLUMN IF NOT EXISTS `slug` varchar(255) NOT NULL DEFAULT \'\' AFTER `type`',
@@ -281,7 +284,7 @@ SELECT `TABLE_NAME`
             // declares these plainly NOT NULL). Drift detection compares column
             // existence, not defaults, so it wouldn't reconcile this otherwise.
             'ALTER TABLE `Hashtags` MODIFY COLUMN IF EXISTS `title` varchar(64) NOT NULL',
-            'ALTER TABLE `TrendingEntities` MODIFY COLUMN IF EXISTS `slug` varchar(255) NOT NULL',
+            'ALTER TABLE `Entities` MODIFY COLUMN IF EXISTS `slug` varchar(255) NOT NULL',
             'ALTER TABLE `BannedTrendingEntities` MODIFY COLUMN IF EXISTS `slug` varchar(255) NOT NULL',
         ];
     }

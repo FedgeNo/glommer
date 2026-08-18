@@ -12,7 +12,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.60';
+const GLOMMER_VERSION = '0.9.61';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -347,4 +347,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$csrf_exempt) {
         exit;
     }
 }
-

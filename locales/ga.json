@@ -587,7 +587,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Uaineadóir treochta: ag rith",
-        "stopped": "Uaineadóir treochta: níl sé ag rith—ní athnuafar ábhair threochta ach trí fhéinleigheas an chosáin léite (Trending::current()), ní de réir sceidil. Rith bin/install.php mar root lena shocrú.",
+        "stopped": "Uaineadóir treochta: níl sé ag rith—ní athnuafar ábhair threochta ach trí fhéinleigheas an chosáin léite (EntityRanker::refreshIfStale()), ní de réir sceidil. Rith bin/install.php mar root lena shocrú.",
         "unknown": "Uaineadóir treochta: anaithnid—níl systemctl ar fáil ar an óstach nó tá SELinux ag diúltú d'fhiosrú stádais an fhreastalaí gréasáin (rith bin/install.php mar root lena dheisiú)"
     },
     "Notification": {
@@ -666,7 +666,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Taispeáin meáin íogaire de réir réamhshocraithe"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Postáil",
             "message": "Teachtaireacht",

@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Aktuālo tēmu taimeris: darbojas",
-        "stopped": "Aktuālo tēmu taimeris: nedarbojas — aktuālās tēmas tiks atjauninātas tikai lasīšanas ceļa pašatkopšanā (Trending::current()), nevis pēc grafika. Lai to iestatītu, palaidiet bin/install.php kā root.",
+        "stopped": "Aktuālo tēmu taimeris: nedarbojas — aktuālās tēmas tiks atjauninātas tikai lasīšanas ceļa pašatkopšanā (EntityRanker::refreshIfStale()), nevis pēc grafika. Lai to iestatītu, palaidiet bin/install.php kā root.",
         "unknown": "Aktuālo tēmu taimeris: nav zināms — vai nu šajā resursdatorā nav systemctl, vai SELinux liedz tīmekļa serverim pārbaudīt savu statusu (lai labotu, palaidiet bin/install.php kā root)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Pēc noklusējuma rādīt sensitīvu multivides saturu"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Ieraksts",
             "message": "Ziņa",

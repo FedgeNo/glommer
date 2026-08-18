@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Minuteur des tendances : actif",
-        "stopped": "Minuteur des tendances : à l'arrêt - les sujets tendance ne seront actualisés que par l'auto-réparation du chemin de lecture (Trending::current()), pas selon un horaire. Exécutez bin/install.php en tant que root pour le configurer.",
+        "stopped": "Minuteur des tendances : à l'arrêt - les sujets tendance ne seront actualisés que par l'auto-réparation du chemin de lecture (EntityRanker::refreshIfStale()), pas selon un horaire. Exécutez bin/install.php en tant que root pour le configurer.",
         "unknown": "Minuteur des tendances : inconnu - soit systemctl n'est pas disponible sur cet hôte, soit SELinux refuse la requête de statut du serveur web lui-même (exécutez bin/install.php en tant que root pour corriger cela)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Afficher les médias sensibles par défaut"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Publication",
             "message": "Message",

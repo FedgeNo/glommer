@@ -15,7 +15,7 @@ class TrendingTimerStatus extends Div
     public function toDOM(): \DOMElement
     {
         $words = Strings::for(self::class);
-        $is_active = Trending::timerIsActive();
+        $is_active = EntityRanker::timerIsActive();
 
         // One whole phrase per state - see UploadWorkerStatus, which has the
         // same three states for the same reason.

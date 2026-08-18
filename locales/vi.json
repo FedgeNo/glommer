@@ -583,7 +583,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Hẹn giờ Xu hướng: Đang chạy",
-        "stopped": "Hẹn giờ Xu hướng: Không chạy - các chủ đề thịnh hành sẽ chỉ được làm mới thông qua cơ chế tự phục hồi khi đọc (Trending::current()), chứ không theo lịch. Chạy bin/install.php với quyền root để thiết lập.",
+        "stopped": "Hẹn giờ Xu hướng: Không chạy - các chủ đề thịnh hành sẽ chỉ được làm mới thông qua cơ chế tự phục hồi khi đọc (EntityRanker::refreshIfStale()), chứ không theo lịch. Chạy bin/install.php với quyền root để thiết lập.",
         "unknown": "Hẹn giờ Xu hướng: Không xác định - hoặc systemctl không khả dụng trên máy chủ này, hoặc SELinux đang từ chối truy vấn trạng thái của chính máy chủ web (chạy bin/install.php với quyền root để khắc phục)"
     },
     "Notification": {
@@ -662,7 +662,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Mặc định hiển thị nội dung nhạy cảm"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Bài viết",
             "message": "Tin nhắn",

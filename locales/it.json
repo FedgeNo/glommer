@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Timer delle tendenze: attivo",
-        "stopped": "Timer delle tendenze: non attivo - gli argomenti di tendenza si aggiorneranno solo tramite l'autoripristino nel percorso di lettura (Trending::current()), non secondo una pianificazione. Esegui bin/install.php come root per configurarlo.",
+        "stopped": "Timer delle tendenze: non attivo - gli argomenti di tendenza si aggiorneranno solo tramite l'autoripristino nel percorso di lettura (EntityRanker::refreshIfStale()), non secondo una pianificazione. Esegui bin/install.php come root per configurarlo.",
         "unknown": "Timer delle tendenze: sconosciuto - systemctl potrebbe non essere disponibile su questo host, oppure SELinux sta negando la query di stato del server web stesso (esegui bin/install.php come root per risolverlo)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Mostra i contenuti sensibili per impostazione predefinita"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Post",
             "message": "Messaggio",

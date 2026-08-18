@@ -25,7 +25,7 @@ class TopicRouteTest extends DatabaseTestCase
         Settings::set('trendingLastRecomputedAt', $computed_at);
 
         DB::run('
-INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `computedAt`)
+INSERT INTO `Entities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`, `computedAt`)
     VALUES (?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE `score` = VALUES(`score`), `computedAt` = VALUES(`computedAt`)
 ', 'sssdiis', $type, mb_strtolower($value), $value, $score, 3, 3, $computed_at);
@@ -101,11 +101,11 @@ INSERT INTO `BannedTrendingEntities` (`type`, `slug`, `title`, `bannedBy`, `reas
     VALUES (?, ?, ?, ?, ?)
 ', 'sssis', 'org', mb_strtolower($name), $name, $moderator, 'test');
 
-        $this -> assertFalse(Trending::isBanned('org', $name), 'the old spelling matches nothing');
+        $this -> assertFalse(EntityRanker::isBanned('org', $name), 'the old spelling matches nothing');
 
         BannedTrendingEntitySlugs::run();
 
-        $this -> assertTrue(Trending::isBanned('org', $name), 'and the rebuilt one bans it again');
+        $this -> assertTrue(EntityRanker::isBanned('org', $name), 'and the rebuilt one bans it again');
 
         DB::run('
 DELETE
@@ -130,14 +130,14 @@ DELETE
         self::trend('person', 'RouteTestPerson' . bin2hex(random_bytes(3)));
         self::trend('org', 'RouteTestOrg' . bin2hex(random_bytes(3)));
 
-        $people = Trending::ofType('person', 200);
-        $orgs = Trending::ofType('org', 200);
+        $people = (new TrendingEntityList(['type' => 'person'])) -> items;
+        $orgs = (new TrendingEntityList(['type' => 'org'])) -> items;
 
         $this -> assertTrue($people !== [], 'the people are there');
         $this -> assertTrue($orgs !== [], 'and so are the organizations');
 
-        foreach ($people as $chip) {
-            $this -> assertSame('person', $chip -> type);
+        foreach ($people as $entity) {
+            $this -> assertSame('person', $entity -> type);
         }
     }
 
@@ -147,13 +147,13 @@ DELETE
         $name = 'RouteTestTopic' . bin2hex(random_bytes(3));
         self::trend('org', $name);
 
-        $found = Trending::entity('org', mb_strtolower($name));
+        $found = Entity::load('org', mb_strtolower($name));
 
         $this -> assertNotNull($found);
         $this -> assertSame($name, $found -> title);
 
         // The same name under a kind it was never filed under is nothing.
-        $this -> assertNull(Trending::entity('person', mb_strtolower($name)));
+        $this -> assertNull(Entity::load('person', mb_strtolower($name)));
     }
 
     /**
@@ -162,7 +162,7 @@ DELETE
      */
     public function testAChipLinksAtThePageItsTopicLivesOn(): void
     {
-        $chip = new TrendingEntityChip();
+        $chip = new Entity();
         $chip -> type = 'work_of_art';
         $chip -> slug = 'a thing';
         $chip -> title = 'A Thing';
@@ -226,7 +226,7 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`, `remoteObjectU
         $name = 'RouteTestSlug' . bin2hex(random_bytes(3));
         self::trend('gpe', $name);
 
-        $found = Trending::entity('gpe', mb_strtolower($name));
+        $found = Entity::load('gpe', mb_strtolower($name));
 
         $this -> assertSame(mb_strtolower($name), $found -> slug);
     }

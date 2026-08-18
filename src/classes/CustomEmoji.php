@@ -21,6 +21,12 @@ declare(strict_types=1);
  */
 class CustomEmoji
 {
+    public ?int $customEmojiId = null;
+    public ?string $domain = null;
+    public ?string $shortcode = null;
+    public ?string $imageURL = null;
+    public ?string $createdAt = null;
+
     /** Matches the shortcode column, and far above any real name. */
     private const MAX_SHORTCODE_LENGTH = 64;
 

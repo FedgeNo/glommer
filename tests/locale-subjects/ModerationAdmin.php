@@ -20,7 +20,7 @@ return [
     // English words, so a rendered fixture value can never coincidentally
     // contain a phrase the locale file also happens to use - the failure
     // that check would produce blames the class for what the fixture said.
-    ReportCard::class => static fn (): HTMLObject => new ReportCard([
+    Report::class => static fn (): HTMLObject => new Report([
         'reportId' => 1,
         'reporterId' => 2,
         'reporterUsername' => 'zzreporter',

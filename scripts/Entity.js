@@ -1,14 +1,14 @@
 /**
- * The client twin of TrendingEntityChip.php - one topic in a list of them,
+ * The client twin of Entity.php - one topic in a list of them,
  * rebuilt from the payload as /topics/{type}/ pages in more of itself.
  *
  * The address and the ban control's name arrive already worked out rather than
  * being rebuilt here: which words a kind's address uses is the server's table,
  * and a second copy of it in the browser is a second thing to keep right.
  */
-export class TrendingEntityChip {
+export class Entity {
     static fromData(data) {
-        const chip = new TrendingEntityChip();
+        const chip = new Entity();
         Object.assign(chip, data);
 
         return chip;
@@ -16,7 +16,7 @@ export class TrendingEntityChip {
 
     toElement() {
         const chip = document.createElement('div');
-        chip.className = 'TrendingEntityChip';
+        chip.className = 'Entity';
 
         const link = document.createElement('a');
         link.className = 'TrendingEntityLink';

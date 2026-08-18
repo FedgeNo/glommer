@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "מתזמן הנושאים החמים: פועל",
-        "stopped": "מתזמן הנושאים החמים: אינו פועל—הנושאים החמים יתרעננו רק באמצעות התיקון העצמי בנתיב הקריאה (Trending::current()), ולא לפי לוח זמנים. יש להריץ bin/install.php כ־root כדי להגדירו.",
+        "stopped": "מתזמן הנושאים החמים: אינו פועל—הנושאים החמים יתרעננו רק באמצעות התיקון העצמי בנתיב הקריאה (EntityRanker::refreshIfStale()), ולא לפי לוח זמנים. יש להריץ bin/install.php כ־root כדי להגדירו.",
         "unknown": "מתזמן הנושאים החמים: מצב לא ידוע—systemctl אינו זמין במארח, או ש־SELinux מונע משרת האינטרנט לבדוק את מצבו (יש להריץ bin/install.php כ־root לתיקון)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "הצגת מדיה רגישה כברירת מחדל"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "פוסט",
             "message": "הודעה",

@@ -12,7 +12,7 @@ import { Working } from '/scripts/Working.js';
 import { Strings } from '/scripts/Strings.js';
 
 /**
- * Client-side mirror of the PHP ReportCard (src/classes/ReportCard.php) - the
+ * Client-side mirror of the PHP Report (src/classes/Report.php) - the
  * moderation card the admin reports page appends on scroll from the data
  * api/report-history.php returns. Left column: who reported what, the reported
  * content itself (a bare post, a message body, a user's profile card, or a
@@ -20,7 +20,7 @@ import { Strings } from '/scripts/Strings.js';
  * / delete / dismiss buttons the server renders, whose delegated handlers live
  * in main.js.
  */
-export class ReportCard {
+export class Report {
     reportId = null;
     reporterId = null;
     reporterUsername = null;
@@ -35,12 +35,12 @@ export class ReportCard {
     element = null;
 
     static fromData(data) {
-        const card = new ReportCard();
+        const card = new Report();
         Object.assign(card, data);
         return card;
     }
 
-    /** Mirrors ReportCard::targetContentElement - the reported item itself. */
+    /** Mirrors Report::targetContentElement - the reported item itself. */
     targetContentElement(words) {
         const target = this.target || { kind: 'missing' };
 
@@ -80,7 +80,7 @@ export class ReportCard {
     }
 
     toElement() {
-        const words = Strings.for('ReportCard', {
+        const words = Strings.for('Report', {
             targetTypes: { post: 'Post', message: 'Message', user: 'User' },
             summary: { before: '{type} #{id} reported by ', after: '' },
             reasonLine: 'Reason: {reason}',
@@ -98,7 +98,7 @@ export class ReportCard {
         const type_label = words.targetTypes[this.targetType] || capitalize(this.targetType);
 
         const card = document.createElement('article');
-        card.className = 'ReportCard';
+        card.className = 'Report';
 
         const details = document.createElement('div');
         details.className = 'ReportDetails';
@@ -202,19 +202,19 @@ export class ReportCard {
         document.addEventListener('click', async (event) => {
             const dismissBtn = event.target.closest('.ReportDismissButton');
             if (dismissBtn) {
-                ReportCard.#dismiss(dismissBtn);
+                Report.#dismiss(dismissBtn);
                 return;
             }
 
             const deleteBtn = event.target.closest('.ReportedContentDeleteButton');
             if (deleteBtn) {
-                ReportCard.#deleteContent(deleteBtn);
+                Report.#deleteContent(deleteBtn);
                 return;
             }
 
             const classifyBtn = event.target.closest('.ReportedContentClassifyButton');
             if (classifyBtn) {
-                ReportCard.#classifyContent(classifyBtn);
+                Report.#classifyContent(classifyBtn);
             }
         });
     }
@@ -224,7 +224,7 @@ export class ReportCard {
         try {
             const result = await Api.post('/api/classify-reported-content', { reportId: button.dataset.reportId });
             if (!result) return;
-            DOMUtils.slideOut(button.closest('.ReportCard'));
+            DOMUtils.slideOut(button.closest('.Report'));
         } finally {
             Working.stop(button);
         }
@@ -235,7 +235,7 @@ export class ReportCard {
         try {
             const result = await Api.post('/api/dismiss-report', { reportId: button.dataset.reportId });
             if (!result) return;
-            DOMUtils.slideOut(button.closest('.ReportCard'));
+            DOMUtils.slideOut(button.closest('.Report'));
         } finally {
             Working.stop(button);
         }
@@ -247,7 +247,7 @@ export class ReportCard {
         try {
             const result = await Api.post('/api/delete-reported-content', { reportId: button.dataset.reportId });
             if (!result) return;
-            DOMUtils.slideOut(button.closest('.ReportCard'));
+            DOMUtils.slideOut(button.closest('.Report'));
         } finally {
             Working.stop(button);
         }
@@ -261,7 +261,7 @@ function capitalize(text) {
 }
 
 /**
- * One reported attachment of a deleted post (mirrors ReportCard::forensicAttachmentElement):
+ * One reported attachment of a deleted post (mirrors Report::forensicAttachmentElement):
  * an img/video/audio pointed at the mod-only passthrough, a notice when the
  * original is gone, or a link for any other type. mediaType is resolved server-side.
  */
@@ -304,4 +304,4 @@ function forensic_attachment_element(attachment, words) {
     return link;
 }
 
-ReadyHandler.add(ReportCard.init);
+ReadyHandler.add(Report.init);

@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 class HiddenLabel extends Span
 {
+    public ?string $class = 'HiddenLabel';
 
     public function __construct(string $text)
     {

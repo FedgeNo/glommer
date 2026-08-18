@@ -52,7 +52,7 @@ class ActivityPubFlag
                 continue;
             }
 
-            Report::create($reporter_id, $type, $id, self::describe($reason, $reporter));
+            ReportManager::create($reporter_id, $type, $id, self::describe($reason, $reporter));
         }
     }
 

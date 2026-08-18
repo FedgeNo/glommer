@@ -48,8 +48,8 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`, `remoteObjectU
     /** Whether the recompute put this tag in the trending list. */
     private static function isTrending(string $tag): bool
     {
-        foreach (Trending::current(500) as $chip) {
-            if ($chip -> type === 'hashtag' && mb_strtolower((string) $chip -> title) === $tag) {
+        foreach ((new TrendingEntityList()) -> items as $entity) {
+            if ($entity -> type === 'hashtag' && mb_strtolower((string) $entity -> title) === $tag) {
                 return true;
             }
         }
@@ -93,7 +93,7 @@ UPDATE `Users`
 ', 'i', $banned_id);
         }
 
-        Trending::recompute();
+        EntityRanker::recompute();
 
         $this -> assertTrue(self::isTrending($from_elsewhere), 'posts from other servers are the conversation this server can hear');
         $this -> assertFalse(self::isTrending($too_few_voices), 'two voices is not a trend');
@@ -105,7 +105,7 @@ UPDATE `Users`
     {
         return DB::row('
 SELECT `popularity`, `postCount`, `computedAt`
-    FROM `TrendingEntities`
+    FROM `Entities`
     WHERE `type` = ? AND `slug` = ?
 ', 'stdClass', 'ss', $type, $slug);
     }
@@ -126,21 +126,21 @@ SELECT `popularity`, `postCount`, `computedAt`
             self::postTagged(self::createUser(), $tag, false);
         }
 
-        Trending::recompute();
+        EntityRanker::recompute();
         $after_one = self::row('hashtag', $tag);
 
         $this -> assertNotNull($after_one, 'the topic qualified');
         $this -> assertSame(3, (int) $after_one -> popularity, 'three posts, counted once each');
 
         // Nothing new written, and the same three posts still in the window.
-        Trending::recompute();
+        EntityRanker::recompute();
         $after_two = self::row('hashtag', $tag);
 
         $this -> assertSame(3, (int) $after_two -> popularity, 'and still three after reading them again');
 
         // One more post, which is the only thing that should move it.
         self::postTagged(self::createUser(), $tag, false);
-        Trending::recompute();
+        EntityRanker::recompute();
 
         $this -> assertSame(4, (int) self::row('hashtag', $tag) -> popularity, 'a new post counts, once');
     }
@@ -160,7 +160,7 @@ SELECT `popularity`, `postCount`, `computedAt`
             self::postTagged(self::createUser(), $tag, false);
         }
 
-        Trending::recompute();
+        EntityRanker::recompute();
         $this -> assertTrue(self::isTrending($tag), 'trending on the run that found it');
 
         // The posts go, so the next run genuinely does not find this topic -
@@ -172,15 +172,15 @@ DELETE
     WHERE `description` = ?
 ', 's', 'a post about #' . $tag);
 
-        Trending::recompute();
+        EntityRanker::recompute();
 
         $this -> assertFalse(self::isTrending($tag), 'no longer trending');
         $this -> assertNotNull(self::row('hashtag', $tag), 'but still kept');
 
         $listed = false;
 
-        foreach (Trending::popularOfType('hashtag', 500, 0) as $chip) {
-            $listed = $listed || mb_strtolower((string) $chip -> title) === $tag;
+        foreach ((new PopularEntityList(['type' => 'hashtag'])) -> items as $entity) {
+            $listed = $listed || mb_strtolower((string) $entity -> title) === $tag;
         }
 
         $this -> assertTrue($listed, 'and still on the standing list of its kind');

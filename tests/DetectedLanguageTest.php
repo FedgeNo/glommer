@@ -162,7 +162,7 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
 
         $post_id = (int) mysqli_insert_id(DB::connection());
 
-        Trending::recompute();
+        EntityRanker::recompute();
 
         $stored = DB::row('
 SELECT `detectedLanguage`

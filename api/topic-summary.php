@@ -31,7 +31,7 @@ if (!EntityType::isKnown($type) || $slug === '') {
 // Only for something that has actually trended - the same thing the page
 // itself requires, so this cannot be used to write a paragraph about any
 // string somebody cares to post.
-$entity = Trending::entity($type, $slug);
+$entity = Entity::load($type, $slug);
 
 if ($entity === null) {
     JSONResponse::error('Not a topic', 404) -> send();

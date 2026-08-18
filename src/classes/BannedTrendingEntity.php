@@ -15,7 +15,9 @@ class BannedTrendingEntity extends Div
     public ?string $class = 'BannedTrendingEntity';
 
     public ?string $type = null;
+    public ?string $slug = null;
     public ?string $title = null;
+    public ?int $bannedBy = null;
     public ?string $reason = null;
     public ?string $bannedByUsername = null;
     public ?string $createdAt = null;

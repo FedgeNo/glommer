@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Kohëmatësi i prirjeve: Në punë",
-        "stopped": "Kohëmatësi i prirjeve: Nuk është në punë - temat në trend do të rifreskohen vetëm përmes vetëriparimit të shtegut të leximit (Trending::current()), jo sipas një plani. Ekzekutoni bin/install.php si root për ta konfiguruar.",
+        "stopped": "Kohëmatësi i prirjeve: Nuk është në punë - temat në trend do të rifreskohen vetëm përmes vetëriparimit të shtegut të leximit (EntityRanker::refreshIfStale()), jo sipas një plani. Ekzekutoni bin/install.php si root për ta konfiguruar.",
         "unknown": "Kohëmatësi i prirjeve: I panjohur - ose systemctl nuk është i disponueshëm në këtë pritës, ose SELinux po mohon kërkesën e statusit nga vetë serveri i uebit (ekzekutoni bin/install.php si root për ta rregulluar)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Shfaq median e ndjeshme si parazgjedhje"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Publikim",
             "message": "Mesazh",

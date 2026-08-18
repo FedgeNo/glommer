@@ -583,7 +583,7 @@
     },
     "TrendingTimerStatus": {
         "running": "热门趋势定时器：运行中",
-        "stopped": "热门趋势定时器：未运行——热门话题将只能通过读取路径的自我修复（Trending::current()）刷新，而不会按计划刷新。以 root 身份运行 bin/install.php 可完成设置。",
+        "stopped": "热门趋势定时器：未运行——热门话题将只能通过读取路径的自我修复（EntityRanker::refreshIfStale()）刷新，而不会按计划刷新。以 root 身份运行 bin/install.php 可完成设置。",
         "unknown": "热门趋势定时器：未知——可能是此主机上没有 systemctl，也可能是 SELinux 拒绝了 Web 服务器自身的状态查询（以 root 身份运行 bin/install.php 可修复此问题）"
     },
     "Notification": {
@@ -662,7 +662,7 @@
     "SensitiveMediaSetting": {
         "toggle": "默认显示敏感媒体内容"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "帖子",
             "message": "消息",

@@ -18,6 +18,16 @@ declare(strict_types=1);
  */
 class FediverseDelivery
 {
+    public ?int $deliveryId = null;
+    public ?int $actorUserId = null;
+    public ?string $inboxURL = null;
+    public ?string $activity = null;
+    public ?int $attempts = null;
+    public ?string $nextAttemptAt = null;
+    public ?string $claimedUntil = null;
+    public ?string $lastError = null;
+    public ?string $createdAt = null;
+
     /** After this many failures the row is dropped rather than retried again. */
     public const MAX_ATTEMPTS = 12;
 

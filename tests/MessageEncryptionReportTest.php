@@ -22,7 +22,7 @@ INSERT INTO `Messages` (`senderId`, `recipientId`, `bodyCiphertext`, `frankingTa
         $envelope = '{"v":1,"iv":"' . base64_encode(random_bytes(12)) . '"}';
         $message_id = $this -> createEncryptedMessage($sender, $recipient, $envelope, str_repeat('a', 64));
 
-        $this -> assertTrue(Report::create($recipient, 'message', $message_id, 'harassment', 'the decrypted body'));
+        $this -> assertTrue(ReportManager::create($recipient, 'message', $message_id, 'harassment', 'the decrypted body'));
 
         $result = mysqli_stmt_get_result(DB::run('
 SELECT `snapshot`
@@ -44,7 +44,7 @@ SELECT `snapshot`
         $recipient = self::createUser();
         $message_id = self::createMessage($sender, $recipient);
 
-        $this -> assertTrue(Report::create($recipient, 'message', $message_id, null));
+        $this -> assertTrue(ReportManager::create($recipient, 'message', $message_id, null));
 
         $result = mysqli_stmt_get_result(DB::run('
 SELECT `snapshot`

@@ -583,7 +583,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Pewaktu tren: berjalan",
-        "stopped": "Pewaktu tren: tidak berjalan—topik tren hanya akan diperbarui lewat pemulihan mandiri jalur baca (Trending::current()), bukan sesuai jadwal. Jalankan bin/install.php sebagai root untuk menyiapkannya.",
+        "stopped": "Pewaktu tren: tidak berjalan—topik tren hanya akan diperbarui lewat pemulihan mandiri jalur baca (EntityRanker::refreshIfStale()), bukan sesuai jadwal. Jalankan bin/install.php sebagai root untuk menyiapkannya.",
         "unknown": "Pewaktu tren: tidak diketahui—systemctl tidak tersedia pada host ini atau SELinux menolak kueri status milik server web (jalankan bin/install.php sebagai root untuk memperbaikinya)"
     },
     "Notification": {
@@ -662,7 +662,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Tampilkan media sensitif secara default"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Postingan",
             "message": "Pesan",

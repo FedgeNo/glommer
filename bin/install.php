@@ -848,7 +848,7 @@ function trending_timer_contents(): string
         'Description=Periodic Glommer trending recompute',
         '',
         '[Timer]',
-        // Matches Trending.php's own docblock (~10-15 min) - Trending::current()'s
+        // Matches EntityRanker.php's own docblock (~10-15 min) - EntityRanker::refreshIfStale()'s
         // lottery self-heal still covers the case where this timer isn't installed.
         'OnBootSec=5min',
         'OnUnitActiveSec=15min',

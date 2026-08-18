@@ -19,6 +19,11 @@ declare(strict_types=1);
  */
 class TopicSummary
 {
+    public ?string $type = null;
+    public ?string $slug = null;
+    public ?string $summary = null;
+    public ?string $createdAt = null;
+
     /** The floor between two model calls, whatever cadence the caller runs at. */
     private const MIN_SECONDS_BETWEEN_CALLS = 300;
 
@@ -91,13 +96,13 @@ SELECT `summary`
     public static function nextDue(): ?object
     {
         return DB::row('
-SELECT `TrendingEntities`.`type`, `TrendingEntities`.`slug`, `TrendingEntities`.`title`
-    FROM `TrendingEntities`
+SELECT `Entities`.`type`, `Entities`.`slug`, `Entities`.`title`
+    FROM `Entities`
     LEFT JOIN `TopicSummaries`
-        ON `TopicSummaries`.`type` = `TrendingEntities`.`type`
-        AND `TopicSummaries`.`slug` = `TrendingEntities`.`slug`
+        ON `TopicSummaries`.`type` = `Entities`.`type`
+        AND `TopicSummaries`.`slug` = `Entities`.`slug`
     WHERE `TopicSummaries`.`slug` IS NULL OR `TopicSummaries`.`createdAt` < NOW() - INTERVAL ? SECOND
-    ORDER BY `TrendingEntities`.`score` DESC
+    ORDER BY `Entities`.`score` DESC
     LIMIT 1
 ', \stdClass::class, 'i', self::STALE_AFTER_SECONDS);
     }

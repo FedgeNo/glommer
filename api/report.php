@@ -32,7 +32,7 @@ if (strlen($reason) > 65535) {
     JSONResponse::error('Reason is too long', 422) -> send();
 }
 
-$target_user_id = Report::resolveTargetUserId($target_type, $target_id);
+$target_user_id = ReportManager::resolveTargetUserId($target_type, $target_id);
 
 if ($target_user_id === null) {
     JSONResponse::error('Invalid report', 422) -> send();
@@ -41,7 +41,7 @@ if ($target_user_id === null) {
 // A message can only be reported by the person it was sent to. Without this,
 // any guessed messageId could be reported, snapshotting a private conversation
 // between two other people into the moderation queue.
-if ($target_type === 'message' && !Report::messageWasSentTo($target_id, $current_user -> userId)) {
+if ($target_type === 'message' && !ReportManager::messageWasSentTo($target_id, $current_user -> userId)) {
     JSONResponse::error('Invalid report', 422) -> send();
 }
 
@@ -98,11 +98,11 @@ if ($target_user_id === 1) {
 
 // A moderator already reviewed and dismissed a report on this content - it
 // can't be reported again (posts/messages only; a user carries no such flag).
-if (Report::isContentDismissed($target_type, $target_id)) {
+if (ReportManager::isContentDismissed($target_type, $target_id)) {
     JSONResponse::error('This content has already been reviewed by a moderator.', 422) -> send();
 }
 
-if (!Report::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null, $decrypted_body)) {
+if (!ReportManager::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null, $decrypted_body)) {
     JSONResponse::error('You\'ve already reported this.', 422) -> send();
 }
 

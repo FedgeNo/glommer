@@ -19,6 +19,14 @@ declare(strict_types=1);
  */
 class FediverseFollower
 {
+    public ?int $fediverseFollowerId = null;
+    public ?int $localUserId = null;
+    public ?string $remoteActorURI = null;
+    public ?string $inboxURL = null;
+    public ?string $sharedInboxURL = null;
+    public ?string $followActivityId = null;
+    public ?string $createdAt = null;
+
     /**
      * Records a follow, or refreshes the inbox on one already held. A remote
      * server re-sending Follow is normal - it is how they recover after losing

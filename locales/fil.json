@@ -339,7 +339,7 @@
         "running": "Worker service: tumatakbo", "stopped": "Worker service: hindi tumatakbo — hindi matra-transcode ang mga staged upload hangga't hindi ito nare-restart", "unknown": "Worker service: hindi alam — maaaring walang systemctl sa host na ito o tinatanggihan ng SELinux ang status query ng web server (patakbuhin ang bin/install.php bilang root para ayusin)", "queue": "Queue: {staging} inihahanda, {pending} nakabinbin, {processing} pinoproseso"
     },
     "TrendingTimerStatus": {
-        "running": "Trending timer: tumatakbo", "stopped": "Trending timer: hindi tumatakbo — magre-refresh lang ang mga trending na paksa sa pamamagitan ng read-path self-heal (Trending::current()), hindi ayon sa iskedyul. Patakbuhin ang bin/install.php bilang root para i-set up ito.", "unknown": "Trending timer: hindi alam — maaaring walang systemctl sa host na ito o tinatanggihan ng SELinux ang status query ng web server (patakbuhin ang bin/install.php bilang root para ayusin)"
+        "running": "Trending timer: tumatakbo", "stopped": "Trending timer: hindi tumatakbo — magre-refresh lang ang mga trending na paksa sa pamamagitan ng read-path self-heal (EntityRanker::refreshIfStale()), hindi ayon sa iskedyul. Patakbuhin ang bin/install.php bilang root para i-set up ito.", "unknown": "Trending timer: hindi alam — maaaring walang systemctl sa host na ito o tinatanggihan ng SELinux ang status query ng web server (patakbuhin ang bin/install.php bilang root para ayusin)"
     },
     "Notification": {
         "postReady": "Tapos nang iproseso ang media mo at live na ito", "scheduledPostLive": "Live na ang naka-iskedyul mong post", "uploadPartlyFailed": "Live na ang post mo, ngunit hindi maproseso ang isa o higit pa sa mga file nito", "uploadFailed": "Hindi naproseso at hindi nai-post ang isa sa mga upload mo", "mailerFailed": "Hindi naihatid ang email — maaaring hindi gumagana ang mailer. Tingnan ang mail configuration.", "mailFromNotConfigured": "Walang naka-configure na address ng nagpapadalang email, kaya hindi makapagpadala ng email. Magtakda nito sa Mga Setting ng Administrator (Papalabas na Email) o gamit ang bin/install.php.", "systemError": "Nagkaroon ng error sa server. Tingnan ang error log para sa detalye.", "passwordRemovedGoogle": "Inalis ang password mo nang mag-sign in ka gamit ang Google. Gamitin ang \"Nakalimutan ang Password\" kung gusto mong magtakda ng bago.", "like": "Nagustuhan ni {name} ang post mo", "repost": "Ni-repost ni {name} ang post mo", "reply": "Tumugon si {name} sa post mo", "friendRequest": "Nagpadala sa iyo si {name} ng friend request", "friendAccepted": "Tinanggap ni {name} ang friend request mo", "message": "Nagpadala sa iyo si {name} ng mensahe", "mention": "Binanggit ka ni {name} sa isang post", "follow": "Sinundan ka ni {name} mula sa ibang server", "default": "May ginawa si {name}"
@@ -389,7 +389,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Ipakita ang sensitibong media bilang default"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Post", "message": "Mensahe", "user": "User"
         },

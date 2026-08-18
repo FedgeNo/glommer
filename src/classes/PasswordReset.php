@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 class PasswordReset
 {
+    public ?int $resetId = null;
+    public ?int $userId = null;
+    public ?string $tokenHash = null;
+    public ?string $expiresAt = null;
+    public ?string $createdAt = null;
+
     /** How long the link is good for, said in the mail and enforced in the DB row alike. */
     private const EXPIRY_HOURS = 1;
 

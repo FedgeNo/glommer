@@ -12,6 +12,11 @@ declare(strict_types=1);
  */
 class Timeline
 {
+    public ?int $userId = null;
+    public ?int $postId = null;
+    public ?int $reposterId = null;
+    public ?string $sortAt = null;
+
     /**
      * Fans a newly created post out to everyone who should see it in their
      * friends feed: the author themselves, and every accepted friend of the

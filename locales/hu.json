@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Felkapott témák időzítője: fut",
-        "stopped": "Felkapott témák időzítője: nem fut – a felkapott témák csak az olvasási útvonal önjavításakor (Trending::current()) frissülnek, nem ütemezetten. A beállításhoz futtasd a bin/install.php fájlt rootként.",
+        "stopped": "Felkapott témák időzítője: nem fut – a felkapott témák csak az olvasási útvonal önjavításakor (EntityRanker::refreshIfStale()) frissülnek, nem ütemezetten. A beállításhoz futtasd a bin/install.php fájlt rootként.",
         "unknown": "Felkapott témák időzítője: ismeretlen – vagy nem érhető el a systemctl ezen a gépen, vagy a SELinux megtagadja a webszerver saját állapotlekérdezését (a javításhoz futtasd a bin/install.php fájlt rootként)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Érzékeny médiatartalom alapértelmezett megjelenítése"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Bejegyzés",
             "message": "Üzenet",

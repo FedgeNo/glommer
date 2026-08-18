@@ -54,7 +54,7 @@ return [
     // TopicHeading reads entity -> title/type as plain properties; the chip
     // itself is never rendered, so it needs nothing beyond that.
     TopicHeading::class => static function (): HTMLObject {
-        $entity = new TrendingEntityChip();
+        $entity = new Entity();
         $entity -> type = 'hashtag';
         $entity -> title = 'example';
 

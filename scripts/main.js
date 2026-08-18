@@ -50,8 +50,8 @@ if (document.querySelector('.EncryptedMessagesSetting')) import('/scripts/Encryp
 // but the first message to arrive live brings one.
 if (document.querySelector('.ReportButton, .MessageComposer')) import('/scripts/ReportButton.js');
 if (document.querySelector('.NotificationList, .NotificationDropdown')) import('/scripts/Notification.js');
-if (document.querySelector('.ReportList'))             import('/scripts/ReportCard.js');
-if (document.querySelector('.TrendingEntityChip'))     import('/scripts/TrendingEntity.js');
+if (document.querySelector('.ReportList'))             import('/scripts/Report.js');
+if (document.querySelector('.Entity'))                 import('/scripts/EntityModerator.js');
 if (document.querySelector('.BlockedServersSetting'))  import('/scripts/BlockedServerCard.js');
 if (document.querySelector('.RelaysSetting'))          import('/scripts/RelayCard.js');
 if (document.querySelector('.StagedPostCard'))         import('/scripts/StagedPostCard.js');
@@ -124,4 +124,3 @@ if ('serviceWorker' in navigator && ClientConfig.get('currentUserId') !== null) 
 }
 
 if (document.querySelector('.PushSubscribeButton')) import('/scripts/PushNotificationSetting.js');
-

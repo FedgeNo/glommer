@@ -21,13 +21,12 @@ if (!Auth::canModerate()) {
     JSONResponse::error('Forbidden', 403) -> send();
 }
 
-// How many report cards the client already shows - the next page starts
-// there.
+// How many reports the client already shows - the next page starts there.
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 
 $page = new ReportList(['offset' => $offset]) -> toJSON();
 
 JSONResponse::success([
-    'reports' => array_map(static fn (ReportCard $card): array => $card -> toPayload(), $page['items']),
+    'reports' => array_map(static fn (Report $report): array => $report -> toPayload(), $page['items']),
     'hasMore' => $page['hasMore'],
 ]) -> send();

@@ -44,7 +44,7 @@ class Mention
 
         if (count($usernames) > self::MAX_MENTIONS) {
             if ($auto_report) {
-                Report::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . count($usernames) . ')');
+                ReportManager::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . count($usernames) . ')');
             }
 
             return [];
@@ -73,7 +73,7 @@ class Mention
 
         if (count($usernames) > self::MAX_MENTIONS) {
             if ($auto_report) {
-                Report::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . count($usernames) . ')');
+                ReportManager::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . count($usernames) . ')');
             }
 
             self::clear($post_id);

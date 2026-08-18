@@ -57,7 +57,7 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`, `remoteObjectU
      */
     private static function corpusIds(): array
     {
-        $corpus = new \ReflectionMethod(Trending::class, 'corpus');
+        $corpus = new \ReflectionMethod(EntityRanker::class, 'corpus');
         $corpus -> setAccessible(true);
 
         return array_map(static fn (Post $row): int => (int) $row -> postId, $corpus -> invoke(null));

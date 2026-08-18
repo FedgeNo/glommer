@@ -586,7 +586,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Harmonogram tendencji: działa",
-        "stopped": "Harmonogram tendencji: nie działa - popularne tematy będą odświeżane tylko przez samonaprawę przy odczycie (Trending::current()), a nie według harmonogramu. Uruchom bin/install.php jako root, aby go skonfigurować.",
+        "stopped": "Harmonogram tendencji: nie działa - popularne tematy będą odświeżane tylko przez samonaprawę przy odczycie (EntityRanker::refreshIfStale()), a nie według harmonogramu. Uruchom bin/install.php jako root, aby go skonfigurować.",
         "unknown": "Harmonogram tendencji: nieznany stan - albo systemctl jest niedostępny na tym hoście, albo SELinux odrzuca zapytanie serwera WWW o własny status (uruchom bin/install.php jako root, aby to naprawić)"
     },
     "Notification": {
@@ -665,7 +665,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Domyślnie pokazuj wrażliwe media"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Post",
             "message": "Wiadomość",

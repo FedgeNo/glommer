@@ -14,6 +14,10 @@ declare(strict_types=1);
  */
 class PinnedPost
 {
+    public ?int $userId = null;
+    public ?int $postId = null;
+    public ?string $createdAt = null;
+
     /** Mastodon's limit too, so a federated profile carries the same shape. */
     public const MAX_PINNED = 5;
 

@@ -583,7 +583,7 @@
     },
     "TrendingTimerStatus": {
         "running": "트렌드 타이머: 실행 중",
-        "stopped": "트렌드 타이머: 실행되지 않음 - 트렌드 항목은 예약된 일정이 아니라 읽기 경로의 자체 복구(Trending::current())를 통해서만 갱신됩니다. 설정하려면 관리자 권한으로 bin/install.php를 실행하세요.",
+        "stopped": "트렌드 타이머: 실행되지 않음 - 트렌드 항목은 예약된 일정이 아니라 읽기 경로의 자체 복구(EntityRanker::refreshIfStale())를 통해서만 갱신됩니다. 설정하려면 관리자 권한으로 bin/install.php를 실행하세요.",
         "unknown": "트렌드 타이머: 알 수 없음 - 이 호스트에서 systemctl을 사용할 수 없거나, SELinux가 웹 서버 자체의 상태 조회를 거부하고 있습니다 (해결하려면 관리자 권한으로 bin/install.php를 실행하세요)"
     },
     "Notification": {
@@ -662,7 +662,7 @@
     "SensitiveMediaSetting": {
         "toggle": "민감한 미디어 기본으로 표시"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "게시물",
             "message": "메시지",

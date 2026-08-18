@@ -586,7 +586,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Populiarių temų laikmatis: veikia",
-        "stopped": "Populiarių temų laikmatis: neveikia – populiarios temos bus atnaujinamos tik skaitant per savaiminį atkūrimą (Trending::current()), o ne pagal tvarkaraštį. Paleiskite bin/install.php kaip root, kad jį nustatytumėte.",
+        "stopped": "Populiarių temų laikmatis: neveikia – populiarios temos bus atnaujinamos tik skaitant per savaiminį atkūrimą (EntityRanker::refreshIfStale()), o ne pagal tvarkaraštį. Paleiskite bin/install.php kaip root, kad jį nustatytumėte.",
         "unknown": "Populiarių temų laikmatis: nežinoma – šiame serveryje nėra systemctl arba SELinux neleidžia žiniatinklio serveriui patikrinti būsenos (norėdami ištaisyti, paleiskite bin/install.php kaip root)"
     },
     "Notification": {
@@ -665,7 +665,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Numatytai rodyti jautrią mediją"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Įrašas",
             "message": "Žinutė",

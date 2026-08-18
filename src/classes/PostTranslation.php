@@ -13,6 +13,11 @@ declare(strict_types=1);
  */
 class PostTranslation
 {
+    public ?int $postId = null;
+    public ?string $language = null;
+    public ?string $body = null;
+    public ?string $createdAt = null;
+
     /**
      * Longer than this and a free-tier model starts truncating mid-thought;
      * a reader is better served by no translation than by half of one.

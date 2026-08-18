@@ -51,6 +51,7 @@ class User extends Div implements \JsonSerializable
     public int $verified = 0;
     public int $twoFactorEnabled = 0;
     public string $theme = 'system';
+    public ?string $locale = null;
     public ?string $skinTone = null;
     public int $showSensitiveMedia = 0;
     public int $welcomeDismissed = 0;
@@ -63,12 +64,18 @@ class User extends Div implements \JsonSerializable
     public int $sessionVersion = 0;
     public ?string $remoteActorURI = null;
     public ?string $remoteActorPublicKeyPem = null;
+    public ?string $remoteActorInboxURL = null;
+    public ?string $remoteActorSharedInboxURL = null;
     // What kind of account the far side says this is - Person for somebody
     // typing, Service for a bot. Null on a row recorded before it was kept,
     // which is a different answer from "not a bot" and is read as such.
     public ?string $remoteActorType = null;
     public ?string $remoteActorIconURL = null;
     public ?string $remoteActorFields = null;
+    public ?string $actorPublicKeyPem = null;
+    public ?string $actorEncryptedPrivateKey = null;
+    public ?string $movedToURI = null;
+    public ?string $alsoKnownAs = null;
 
     /**
      * Who this user currently has a message thread open with, and when they
@@ -78,6 +85,8 @@ class User extends Div implements \JsonSerializable
      */
     public ?int $chatOtherUserId = null;
     public ?string $chatLastSeen = null;
+    public ?string $messagePublicKey = null;
+    public ?string $messageWrappedPrivateKey = null;
 
     public function verifyPassword(string $password): bool
     {

@@ -77,7 +77,7 @@ if ($summary !== null) {
 // for a tag that is actually trending, since that is all the summariser will
 // write about and an empty slot would otherwise ask for one on every tag page
 // on the site.
-if ($summary !== null || Trending::entity('hashtag', $tag) !== null) {
+if ($summary !== null || Entity::load('hashtag', $tag) !== null) {
     $page -> addContent(new TopicSummaryCard($summary, 'hashtag', $tag));
 }
 

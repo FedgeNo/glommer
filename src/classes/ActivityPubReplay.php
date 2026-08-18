@@ -20,6 +20,9 @@ declare(strict_types=1);
  */
 class ActivityPubReplay
 {
+    public ?string $signatureHash = null;
+    public ?string $createdAt = null;
+
     /** Matches HTTPSignature's date-skew window, which is what bounds a replay. */
     private const RETENTION_SECONDS = 3600;
 

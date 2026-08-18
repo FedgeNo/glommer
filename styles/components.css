@@ -15,7 +15,7 @@
    same set - keep the two lists in step. */
 :is(
     .Card,
-    .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
+    .Post, .Message, .User, .Report, .Conversation, .HelpArticleSummary,
     .Form, .SearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
@@ -52,7 +52,7 @@
 
 :is(
     .Card,
-    .Post, .Message, .User, .ReportCard, .Conversation, .HelpArticleSummary,
+    .Post, .Message, .User, .Report, .Conversation, .HelpArticleSummary,
     .Form, .SearchBox, .ThemeSelector, .RememberedDevice,
     .NavDropdownMenu, .NotificationDropdown, .ConfirmDialogCard,
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
@@ -1862,7 +1862,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
    between the rows, not above the first one. */
 .HashtagChip,
 .HashtagNode,
-.TrendingEntityChip {
+.Entity {
     margin-block: 0 0.5rem;
 }
 
@@ -2221,7 +2221,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     flex-shrink: 0;
 }
 
-.ReportCard .PostContent {
+.Report .PostContent {
     border-inline-start: 3px solid var(--accent);
 
     background-color: var(--surface-2);
@@ -2507,7 +2507,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     font-weight: 700;
 }
 
-:is(.ReportCard) {
+:is(.Report) {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
@@ -2518,7 +2518,7 @@ body.MessagesPage { padding-bottom: calc(var(--composer-height, 7rem) + 2rem); }
     gap: 1rem;
 }
 
-:is(.TrendingEntityChip) {
+:is(.Entity) {
     display: flex;
     align-items: center;
     gap: 0.25rem;

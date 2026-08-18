@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Trending timer: Running",
-        "stopped": "Trending timer: Not running - trending topics will only refresh via the read-path self-heal (Trending::current()), not on a schedule. Run bin/install.php as root to set it up.",
+        "stopped": "Trending timer: Not running - trending topics will only refresh via the read-path self-heal (EntityRanker::refreshIfStale()), not on a schedule. Run bin/install.php as root to set it up.",
         "unknown": "Trending timer: Unknown - either systemctl isn't available on this host, or SELinux is denying the web server's own status query (run bin/install.php as root to fix that)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Show Sensitive Media by Default"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Post",
             "message": "Message",

@@ -27,10 +27,10 @@ if (
     JSONResponse::error('Invalid target', 422) -> send();
 }
 
-if (!Trending::isBanned($entity_type, $entity_value)) {
+if (!EntityRanker::isBanned($entity_type, $entity_value)) {
     JSONResponse::error('That entity is not banned', 422) -> send();
 }
 
-Trending::unban($entity_type, $entity_value);
+EntityRanker::unban($entity_type, $entity_value);
 
 JSONResponse::success(['unbanned' => true]) -> send();

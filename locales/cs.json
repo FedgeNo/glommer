@@ -586,7 +586,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Časovač trendů: běží",
-        "stopped": "Časovač trendů: neběží – trendová témata se budou obnovovat pouze samoopravou při čtení (Trending::current()), nikoli podle plánu. Nastavíte jej spuštěním bin/install.php jako root.",
+        "stopped": "Časovač trendů: neběží – trendová témata se budou obnovovat pouze samoopravou při čtení (EntityRanker::refreshIfStale()), nikoli podle plánu. Nastavíte jej spuštěním bin/install.php jako root.",
         "unknown": "Časovač trendů: neznámý stav – na tomto hostiteli není dostupný systemctl nebo SELinux zamítá dotaz webového serveru na stav (opravíte spuštěním bin/install.php jako root)"
     },
     "Notification": {
@@ -665,7 +665,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Ve výchozím nastavení zobrazovat citlivá média"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Příspěvek",
             "message": "Zpráva",

@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Gündem zamanlayıcısı: Çalışıyor",
-        "stopped": "Gündem zamanlayıcısı: Çalışmıyor - gündemdeki konular zamanlanmış olarak değil, yalnızca okuma yolunun kendini onarmasıyla (Trending::current()) yenilenecek. Kurmak için bin/install.php dosyasını root olarak çalıştırın.",
+        "stopped": "Gündem zamanlayıcısı: Çalışmıyor - gündemdeki konular zamanlanmış olarak değil, yalnızca okuma yolunun kendini onarmasıyla (EntityRanker::refreshIfStale()) yenilenecek. Kurmak için bin/install.php dosyasını root olarak çalıştırın.",
         "unknown": "Gündem zamanlayıcısı: Bilinmiyor - systemctl bu sunucuda kullanılamıyor olabilir veya SELinux web sunucusunun kendi durum sorgusunu engelliyor olabilir (düzeltmek için bin/install.php dosyasını root olarak çalıştırın)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Hassas Medyayı Varsayılan Olarak Göster"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Paylaşım",
             "message": "Mesaj",

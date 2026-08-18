@@ -15,7 +15,7 @@ class TopicHeading extends Div
 {
     public ?string $class = 'TopicHeading';
 
-    public function __construct(private TrendingEntityChip $entity)
+    public function __construct(private Entity $entity)
     {
         parent::__construct();
     }

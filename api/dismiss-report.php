@@ -24,7 +24,7 @@ if ($report_id === 0) {
 
 // Load the report before deleting it so the audit log records what was
 // dismissed, not just an id that no longer resolves to anything.
-$report = Report::find($report_id);
+$report = ReportManager::find($report_id);
 
 if ($report === null) {
     JSONResponse::error('Report not found', 404) -> send();
@@ -32,9 +32,9 @@ if ($report === null) {
 
 // Flag the content so it can't just be reported again the moment the report
 // leaves the queue (posts/messages only - a user has no such flag).
-Report::markContentDismissed((string) $report -> type, (int) $report -> targetId);
+ReportManager::markContentDismissed((string) $report -> type, (int) $report -> targetId);
 
-Report::delete($report_id);
+ReportManager::delete($report_id);
 
 ModerationAction::log('dismissReport', null, $report -> type, (int) $report -> targetId, $report_id);
 

@@ -2,325 +2,357 @@
 
 declare(strict_types=1);
 
-class Report
+class Report extends Article
 {
-    /**
-     * Files a report. Returns false if this reporter already has a report on
-     * this exact target (the reporter_target unique key rejects the duplicate)
-     * so the caller can report that back rather than 500.
-     */
-    public static function create(int $reporter_id, string $target_type, int $target_id, ?string $reason, ?string $decrypted_body = null): bool
+    public ?string $class = 'Report';
+
+    public ?int $reportId = null;
+    public ?int $reporterId = null;
+    public ?string $reporterUsername = null;
+    public ?string $type = null;
+    public ?int $targetId = null;
+    public ?string $reason = null;
+    public ?string $snapshot = null;
+    public ?string $createdAt = null;
+    public ?int $targetUserId = null;
+    public ?string $targetUsername = null;
+
+    // The reported item, resolved once (resolveFromSnapshot) into a kind plus
+    // its raw data, so the server render (toDOM) and the AJAX payload
+    // (toPayload) build from one source and can't diverge. kind is
+    // 'message'|'post'|'user'|'missing'; data is the message body, a Post, a
+    // User, or a locale key naming the missing-content notice.
+    public ?string $targetKind = null;
+    public User|Post|string|null $targetData = null;
+
+    // Whether the live post/message still exists - a deleted one still shows
+    // from its snapshot, but its card drops the (now pointless) Delete button.
+    public bool $targetLive = false;
+
+    // For a deleted post, the reported attachment (FeedItem) ids, whose kept
+    // originals are streamed by the mod-only api/report-attachment.php - the live
+    // display copies are gone, so this is the only way to see the media.
+    /** @var int[] */
+    public array $forensicAttachmentIds = [];
+
+    private bool $prepared = false;
+
+    public function toDOM(): \DOMElement
     {
-        // Snapshot the reported content at report time so the moderator judges
-        // what was actually reported, not whatever it's since been edited to (or
-        // deleted). See buildSnapshot. For an encrypted message the caller has
-        // already verified and opened the envelope (api/report.php), and hands
-        // the plaintext in - the row alone holds only ciphertext.
-        $snapshot = self::buildSnapshot($target_type, $target_id, $decrypted_body);
-        $snapshot_json = $snapshot !== null ? json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
+        $this -> prepare();
 
-        try {
-            DB::run('
-INSERT INTO `Reports` (`reporterId`, `type`, `targetId`, `reason`, `snapshot`)
-    VALUES (?, ?, ?, ?, ?)
-', 'isiss', $reporter_id, $target_type, $target_id, $reason, $snapshot_json);
-        } catch (\mysqli_sql_exception $exception) {
-            // 1062 = the reporter_target unique key rejected a duplicate report
-            // from the same reporter for the same target. Anything else is a
-            // real failure.
-            if ($exception -> getCode() === 1062) {
-                return false;
-            }
+        $words = Strings::for(self::class);
+        $type_label = (string) ($words['targetTypes'][$this -> type] ?? ucfirst((string) $this -> type));
 
-            throw $exception;
+        // Left: who reported what, the content in question, the reason, and when.
+        $details = new ReportDetails();
+
+        $summary_words = is_array($words['summary'] ?? null) ? $words['summary'] : [];
+
+        $summary = new Div();
+        $summary -> contents[] = str_replace(
+            ['{type}', '{id}'],
+            [$type_label, (string) $this -> targetId],
+            (string) ($summary_words['before'] ?? '')
+        );
+        $summary -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
+        $summary -> contents[] = (string) ($summary_words['after'] ?? '');
+        $details -> addContent($summary);
+
+        $details -> addContent($this -> targetContentElement());
+
+        if ($this -> forensicAttachmentIds !== []) {
+            $details -> addContent($this -> forensicAttachmentsElement());
         }
 
-        return true;
-    }
-
-    /**
-     * Whether this content has already had a report dismissed by a moderator,
-     * in which case it can't be reported again. Only posts and messages carry
-     * the flag (a user isn't a single piece of reviewable content); anything
-     * else is never "dismissed" this way.
-     */
-    public static function isContentDismissed(string $target_type, int $target_id): bool
-    {
-        $table = match ($target_type) {
-            'post' => 'Posts',
-            'message' => 'Messages',
-            default => null,
-        };
-
-        if ($table === null) {
-            return false;
+        if ($this -> reason !== null) {
+            $reason_line = new Paragraph();
+            $reason_line -> contents[] = str_replace('{reason}', $this -> reason, (string) ($words['reasonLine'] ?? ''));
+            $details -> addContent($reason_line);
         }
 
-        $id_column = $target_type === 'post' ? 'postId' : 'messageId';
-        $class = $target_type === 'post' ? 'Post' : 'Message';
+        $meta = new RelativeTime((string) $this -> createdAt);
+        $details -> addContent($meta);
 
-        $content = DB::row('
-SELECT `reportsDismissed`
-    FROM `' . $table . '`
-    WHERE `' . $id_column . '` = ?
-', $class, 'i', $target_id);
+        $this -> contents[] = $details;
 
-        return $content !== null && $content -> reportsDismissed === 1;
+        // Right: the moderation actions, stacked. The admin (userId 1) can't
+        // be banned, so never offer a Ban Reporter button when the admin is
+        // the one who filed the report. (The reported user is never the admin -
+        // api/report.php rejects reports about admin content - so that side
+        // needs no such guard.)
+        $actions = new ReportActions();
+
+        if ($this -> reporterId !== 1) {
+            $actions -> addContent(new UserBanButton($this -> reporterId, (string) ($words['banReporterLabel'] ?? '')));
+        }
+
+        if ($this -> targetUserId !== null && $this -> targetUsername !== null && $this -> targetUserId !== $this -> reporterId) {
+            $actions -> addContent(new UserBanButton($this -> targetUserId, (string) ($words['banReportedUserLabel'] ?? '')));
+        }
+
+        // Only offer Delete when the live post/message still exists (a snapshot
+        // of already-deleted content still shows, but has nothing to delete).
+        if ($this -> targetLive && ($this -> type === 'post' || $this -> type === 'message')) {
+            $delete_label = str_replace('{type}', $type_label, (string) ($words['deleteLabel'] ?? ''));
+            $actions -> addContent(new ReportedContentDeleteButton((int) $this -> reportId, $delete_label));
+        }
+
+        // Only a post has media to put behind a cover.
+        if ($this -> targetLive && $this -> type === 'post') {
+            $actions -> addContent(new ReportedContentClassifyButton((int) $this -> reportId));
+        }
+
+        $actions -> addContent(new ReportDismissButton((int) $this -> reportId));
+
+        $this -> contents[] = $actions;
+
+        return parent::toDOM();
     }
 
-    /**
-     * Marks a post/message as reviewed-and-dismissed so it can't be reported
-     * again. A no-op for a user target (no flag column).
-     */
-    public static function markContentDismissed(string $target_type, int $target_id): void
+    private function prepare(): void
     {
-        $table = match ($target_type) {
-            'post' => 'Posts',
-            'message' => 'Messages',
-            default => null,
-        };
-
-        if ($table === null) {
+        if ($this -> prepared) {
             return;
         }
 
-        $id_column = $target_type === 'post' ? 'postId' : 'messageId';
-        $dismissed = 1;
+        $this -> prepared = true;
 
-        DB::run('
-UPDATE `' . $table . '`
-    SET `reportsDismissed` = ?
-    WHERE `' . $id_column . '` = ?
-', 'ii', $dismissed, $target_id);
+        // A hand-built presentation fixture may already carry its resolved
+        // target. Database-hydrated reports carry the raw snapshot instead.
+        if ($this -> targetKind !== null) {
+            return;
+        }
+
+        $snapshot = $this -> snapshot !== null ? json_decode($this -> snapshot, true) : null;
+        $snapshot = is_array($snapshot) ? $snapshot : null;
+
+        // A live existence check, not the snapshot: only live post/message content
+        // is deletable, and a deleted post renders its reported media forensically.
+        $this -> targetLive = ReportManager::contentExists((string) $this -> type, (int) $this -> targetId);
+
+        ['userId' => $this -> targetUserId, 'kind' => $this -> targetKind, 'data' => $this -> targetData] = self::resolveFromSnapshot((string) $this -> type, $snapshot, $this -> targetLive);
+
+        if ($this -> targetKind === 'post' && !$this -> targetLive && $snapshot !== null) {
+            $this -> forensicAttachmentIds = array_map('intval', $snapshot['attachmentIds'] ?? []);
+        }
+
+        // The target user must still exist to be bannable.
+        if ($this -> targetUserId !== null) {
+            $this -> targetUsername = User::load($this -> targetUserId) ?-> slug;
+        }
     }
 
     /**
-     * The forensic snapshot of a report's target at report time. A post or
-     * message is captured as its whole row plus, for a post, an array of its
-     * attachment (FeedItem) ids - enough to recover the originals later from
-     * uploads/private/originals, which are kept rather than deleted for exactly
-     * this. A user is captured from an explicit allowlist, never the whole row
-     * (that carries passwordHash and email). Null when the target's already gone.
-     *
-     * Public so ReportSnapshotBackfiller can build one for a pre-snapshot
-     * report, using the exact same logic create() uses for a new one.
-     *
-     * @return array<string, mixed>|null
+     * The JSON payload for one report, used by api/report-history.php to feed
+     * the client-side Report on scroll. Mirrors the fields toDOM() renders;
+     * the reported item rides under `target` as a small kind-tagged union the
+     * client rebuilds (a bare Post payload, a message body, an allowlisted user
+     * card, or a missing-notice message) - never rendered HTML.
      */
-    public static function buildSnapshot(string $target_type, int $target_id, ?string $decrypted_body = null): ?array
+    public function toPayload(): array
     {
-        if ($target_type === 'post') {
-            $row = self::snapshotRow('Posts', 'postId', $target_id);
+        $this -> prepare();
 
-            if ($row === null) {
-                return null;
+        return [
+            'reportId' => $this -> reportId,
+            'reporterId' => $this -> reporterId,
+            'reporterUsername' => $this -> reporterUsername,
+            'targetType' => $this -> type,
+            'targetId' => $this -> targetId,
+            'reason' => $this -> reason,
+            'createdAt' => $this -> createdAt,
+            'targetUserId' => $this -> targetUserId,
+            'targetUsername' => $this -> targetUsername,
+            'targetLive' => $this -> targetLive,
+            'target' => $this -> targetPayload(),
+        ];
+    }
+
+
+    /** The reported media of a deleted post, streamed from the kept originals. */
+    private function forensicAttachmentsElement(): HTMLObject
+    {
+        $wrap = new ReportedAttachments();
+
+        foreach ($this -> forensicAttachmentIds as $item_id) {
+            $wrap -> addContent(self::forensicAttachmentElement($item_id));
+        }
+
+        return $wrap;
+    }
+
+    private static function forensicAttachmentElement(int $item_id): HTMLObject
+    {
+        $words = Strings::for(self::class);
+        $url = ServerURL::absolute('/api/report-attachment?itemId=' . $item_id);
+        $original = UploadProcessor::originalForItem($item_id);
+        $media_type = $original['mediaType'] ?? null;
+
+        if ($media_type === 'image') {
+            $image = new ReportedMedia();
+            $image -> src = $url;
+            $image -> alt = (string) ($words['reportedImageAlt'] ?? '');
+
+            return $image;
+        }
+
+        if ($media_type === 'video') {
+            $video = new Video();
+            $video -> class = 'ReportedMedia';
+            $video -> attributes['controls'] = 'controls';
+            $video -> src = $url;
+
+            return $video;
+        }
+
+        if ($media_type === 'audio') {
+            $audio = new Audio();
+            $audio -> attributes['controls'] = 'controls';
+            $audio -> src = $url;
+
+            return $audio;
+        }
+
+        // No original on disk (deleted before originals were kept), or an
+        // unrecognised type - a plain note, and a link if the file is there.
+        if ($media_type === null) {
+            return new Notice((string) ($words['attachmentUnavailable'] ?? ''));
+        }
+
+        $link = new Anchor($url, (string) ($words['viewAttachment'] ?? ''));
+        $link -> attributes['target'] = '_blank';
+        $link -> attributes['rel'] = 'noopener';
+
+        return $link;
+    }
+
+    /** The reported item rendered so a moderator can assess it (see resolveFromSnapshot). */
+    private function targetContentElement(): HTMLObject
+    {
+        if ($this -> targetKind === 'message') {
+            $quote = new Blockquote((string) $this -> targetData);
+            $quote -> class = 'ReportedContent';
+
+            return $quote;
+        }
+
+        // A reported post is embedded as its bare content (no card, no action
+        // bar) - a moderator reviews it, they don't like/reply/bookmark from
+        // the report queue.
+        if ($this -> targetData instanceof Post) {
+            return $this -> targetData -> contentElement();
+        }
+
+        if ($this -> targetData instanceof HTMLObject) {
+            return $this -> targetData;
+        }
+
+        // Only reachable when targetKind is 'missing': resolveFromSnapshot
+        // leaves one of its two keys in targetData rather than English, so
+        // this follows the reader's language like everything else here.
+        $words = Strings::for(self::class);
+
+        return new Notice((string) ($words['missing'][$this -> targetData] ?? ''));
+    }
+
+    /**
+     * @return array<string, mixed> the kind-tagged target union for toPayload()
+     */
+    private function targetPayload(): array
+    {
+        if ($this -> targetKind === 'message') {
+            return ['kind' => 'message', 'body' => (string) $this -> targetData];
+        }
+
+        if ($this -> targetKind === 'post' && $this -> targetData instanceof Post) {
+            // A bare post on the client (no action bar) - the 0/0/false/false
+            // counts its payload carries go unused there.
+            $payload = ['kind' => 'post', 'post' => $this -> targetData -> toPayload(0, 0, false, false)];
+
+            if ($this -> forensicAttachmentIds !== []) {
+                // Media type is resolved here (one lookup) so the client just
+                // builds the element and points it at the passthrough.
+                $payload['attachments'] = array_map(fn ($item_id) => [
+                    'itemId' => $item_id,
+                    'mediaType' => UploadProcessor::originalForItem($item_id)['mediaType'] ?? null,
+                    'url' => ServerURL::absolute('/api/report-attachment?itemId=' . $item_id),
+                ], $this -> forensicAttachmentIds);
             }
 
-            $row['attachmentIds'] = self::attachmentIds($target_id);
+            return $payload;
+        }
 
-            return $row;
+        if ($this -> targetKind === 'user' && $this -> targetData instanceof User) {
+            // Explicit allowlist - a User object also carries email and
+            // passwordHash, which must never reach a moderator's console.
+            return ['kind' => 'user', 'user' => [
+                'userId' => (int) $this -> targetData -> userId,
+                'slug' => $this -> targetData -> slug,
+                'title' => $this -> targetData -> title,
+                'image' => $this -> targetData -> avatarURL(),
+                'createdAt' => $this -> targetData -> createdAt,
+            ]];
+        }
+
+        // Only reachable when targetKind is 'missing' - see targetContentElement.
+        // Resolved here rather than sent as a bare key: toPayload() is the AJAX
+        // counterpart of toDOM(), so this is this response's one render step,
+        // in whatever locale is serving the request.
+        $words = Strings::for(self::class);
+
+        return ['kind' => 'missing', 'message' => (string) ($words['missing'][$this -> targetData] ?? '')];
+    }
+
+    /**
+     * Builds the reported item from its report-time snapshot (ReportManager::buildSnapshot)
+     * so a moderator sees what was reported, not what it's since become: a
+     * message's body, a post as the post itself (byline + text + media, no action
+     * bar - the post's own text/Delta comes from the snapshot, its author and any
+     * surviving media are resolved live), a user as their profile card. A report
+     * with no snapshot (created before snapshots, target already gone) resolves to
+     * a 'missing' notice.
+     *
+     * @param array<string, mixed>|null $snapshot
+     * @return array{userId: ?int, kind: string, data: User|Post|string}
+     */
+    private static function resolveFromSnapshot(string $target_type, ?array $snapshot, bool $live): array
+    {
+        if ($snapshot === null) {
+            return ['userId' => null, 'kind' => 'missing', 'data' => 'noSnapshot'];
         }
 
         if ($target_type === 'message') {
-            $row = self::snapshotRow('Messages', 'messageId', $target_id);
+            $sender_id = isset($snapshot['senderId']) ? (int) $snapshot['senderId'] : null;
 
-            // The verified plaintext of an encrypted message, decrypted with
-            // the key the reporter revealed. The ciphertext and franking tag
-            // stay in the row for forensics; body is what the moderator reads.
-            if ($row !== null && $decrypted_body !== null) {
-                $row['body'] = $decrypted_body;
+            return ['userId' => $sender_id, 'kind' => 'message', 'data' => (string) ($snapshot['body'] ?? '')];
+        }
+
+        if ($target_type === 'post') {
+            $user_id = isset($snapshot['userId']) ? (int) $snapshot['userId'] : null;
+
+            // attachmentIds is snapshot metadata, not a Post property.
+            unset($snapshot['attachmentIds']);
+
+            if ($live) {
+                // The post still exists: show its current media (live items).
+                return ['userId' => $user_id, 'kind' => 'post', 'data' => Post::fromRowWithItems(Post::fromRow($snapshot))];
             }
 
-            return $row;
+            // Deleted: text/byline from the snapshot, media rendered forensically
+            // from the kept originals (see forensicAttachmentsElement).
+            $post = Post::fromRow($snapshot);
+            $post -> author = $user_id !== null ? User::load($user_id) : null;
+
+            return ['userId' => $user_id, 'kind' => 'post', 'data' => $post];
         }
 
         if ($target_type === 'user') {
-            $user = User::load($target_id);
+            $user_id = isset($snapshot['userId']) ? (int) $snapshot['userId'] : null;
 
-            if ($user === null) {
-                return null;
-            }
-
-            // Row-named keys (slug/title, not username/displayName) so the
-            // snapshot round-trips straight back through User::fromRow when the
-            // card renders a since-deleted account. Explicit allowlist - a
-            // Users row also carries email and passwordHash, which must never
-            // be copied into a snapshot.
-            return [
-                'userId' => (int) $user -> userId,
-                'slug' => $user -> slug,
-                'title' => $user -> title,
-                'hasAvatar' => (int) $user -> hasAvatar,
-                'createdAt' => $user -> createdAt,
-            ];
+            return ['userId' => $user_id, 'kind' => 'user', 'data' => User::fromRow($snapshot)];
         }
 
-        return null;
-    }
-
-    /**
-     * The whole row of $table by primary key. Fetched via a native-typed result
-     * (mysqlnd) so ints stay ints through json_encode/json_decode and rebuild
-     * cleanly into typed model properties.
-     *
-     * @return array<string, mixed>|null
-     */
-    private static function snapshotRow(string $table, string $id_column, int $id): ?array
-    {
-        $stmt = DB::run('
-SELECT *
-    FROM `' . $table . '`
-    WHERE `' . $id_column . '` = ?
-', 'i', $id);
-
-        return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: null;
-    }
-
-    /**
-     * Whether any report holds this attachment in its snapshot.
-     *
-     * What makes an upload's kept original readable by a moderator: it was
-     * attached to a post somebody reported, and the snapshot taken at that
-     * moment listed it. Read out of the snapshots rather than off the post,
-     * because the case this exists for is a post that has since been deleted -
-     * its rows are gone and the snapshot is all that remembers what was on it.
-     *
-     * The snapshot is JSON in a text column, so this is a scan of the reports
-     * table. It runs once per piece of forensic media a moderator looks at,
-     * against a table the size of a moderation queue.
-     */
-    public static function capturedAttachment(int $item_id): bool
-    {
-        $wanted = (string) $item_id;
-
-        $result = mysqli_stmt_get_result(DB::run('
-SELECT 1
-    FROM `Reports`
-    WHERE JSON_CONTAINS(`snapshot`, ?, \'$.attachmentIds\')
-    LIMIT 1
-', 's', $wanted));
-
-        return $result !== false && mysqli_fetch_row($result) !== null;
-    }
-
-    /**
-     * @return int[] the FeedItem ids attached to a post, in id order
-     */
-    private static function attachmentIds(int $post_id): array
-    {
-        $stmt = DB::run('
-SELECT `itemId`
-    FROM `FeedItems`
-    WHERE `postId` = ?
-    ORDER BY `itemId`
-', 'i', $post_id);
-        $result = mysqli_stmt_get_result($stmt);
-
-        $ids = [];
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $ids[] = (int) $row['itemId'];
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Whether the live post or message a report targets still exists - a
-     * deleted one still shows (from its snapshot) but has nothing left to delete,
-     * so its card drops the Delete button. Only posts and messages are deletable.
-     */
-    public static function contentExists(string $target_type, int $target_id): bool
-    {
-        $table = match ($target_type) {
-            'post' => 'Posts',
-            'message' => 'Messages',
-            default => null,
-        };
-
-        if ($table === null) {
-            return false;
-        }
-
-        $id_column = $target_type === 'post' ? 'postId' : 'messageId';
-
-        $stmt = DB::run('
-SELECT 1
-    FROM `' . $table . '`
-    WHERE `' . $id_column . '` = ?
-', 'i', $target_id);
-
-        return mysqli_fetch_row(mysqli_stmt_get_result($stmt)) !== null;
-    }
-
-
-    public static function find(int $report_id): ?ReportData
-    {
-        return DB::row('
-SELECT `type`, `targetId`
-    FROM `Reports`
-    WHERE `reportId` = ?
-', 'ReportData', 'i', $report_id);
-    }
-
-    public static function delete(int $report_id): void
-    {
-        DB::run('
-DELETE
-    FROM `Reports`
-    WHERE `reportId` = ?
-', 'i', $report_id);
-    }
-
-    /**
-     * The userId a report target resolves to, or null if $target_type is
-     * unrecognized or $target_id doesn't actually exist - api/report.php
-     * relies on that null to reject reports filed against nonexistent ids.
-     */
-    public static function resolveTargetUserId(string $target_type, int $target_id): ?int
-    {
-        return match ($target_type) {
-            'user' => User::load($target_id) !== null ? $target_id : null,
-            'post' => self::postAuthorId($target_id),
-            'message' => self::messageAuthorId($target_id),
-            default => null,
-        };
-    }
-
-    protected static function postAuthorId(int $post_id): ?int
-    {
-        $post = DB::row('
-SELECT `userId`
-    FROM `Posts`
-    WHERE `postId` = ?
-', 'Post', 'i', $post_id);
-
-        return $post !== null ? (int) $post -> userId : null;
-    }
-
-    protected static function messageAuthorId(int $message_id): ?int
-    {
-        $message = DB::row('
-SELECT `senderId`
-    FROM `Messages`
-    WHERE `messageId` = ?
-', 'Message', 'i', $message_id);
-
-        return $message !== null ? (int) $message -> senderId : null;
-    }
-
-    /**
-     * Whether this message was sent to this user - the authorization gate for
-     * reporting one. Only the recipient legitimately holds a message; without
-     * this check, any guessed messageId would snapshot a private conversation
-     * between two other people into the moderation queue.
-     */
-    public static function messageWasSentTo(int $message_id, int $recipient_id): bool
-    {
-        return DB::row('
-SELECT `messageId`
-    FROM `Messages`
-    WHERE `messageId` = ? AND `recipientId` = ?
-', 'Message', 'ii', $message_id, $recipient_id) !== null;
+        return ['userId' => null, 'kind' => 'missing', 'data' => 'unknownType'];
     }
 }

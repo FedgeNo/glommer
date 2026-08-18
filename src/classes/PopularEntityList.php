@@ -11,7 +11,7 @@ declare(strict_types=1);
  * list of the kind, ordered by how much has been said about each - so a topic
  * that has not been mentioned in weeks still has its place in it.
  *
- * Its items are TrendingEntityChips, since that is the row: the difference
+ * Its items are Entities, since that is the row: the difference
  * between this list and TrendingEntityList is which topics and in what order,
  * not what one looks like.
  */
@@ -23,14 +23,22 @@ class PopularEntityList extends TrendingEntityList
 
     protected function rows(): array
     {
-        return Trending::popularOfType((string) $this -> type, static::PAGE_SIZE + 1, $this -> offset);
+        EntityRanker::refreshIfStale();
+
+        return DB::rows('
+SELECT *
+    FROM `Entities`
+    WHERE `type` = ?
+    ORDER BY `popularity` DESC, `entityId` ASC
+    LIMIT ? OFFSET ?
+', Entity::class, 'sii', (string) $this -> type, static::PAGE_SIZE + 1, $this -> offset);
     }
 
-    /** @param TrendingEntityChip[] $items @return TrendingEntityChip[] */
+    /** @param Entity[] $items @return Entity[] */
     protected function arrange(array $items): array
     {
-        foreach ($items as $chip) {
-            $chip -> countsAllTime = true;
+        foreach ($items as $entity) {
+            $entity -> countsAllTime = true;
         }
 
         return $items;
@@ -39,7 +47,7 @@ class PopularEntityList extends TrendingEntityList
     public function toJSON(): array
     {
         $page = parent::toJSON();
-        $page['items'] = array_map(static fn (TrendingEntityChip $chip): array => $chip -> payload(), $page['items']);
+        $page['items'] = array_map(static fn (Entity $entity): array => $entity -> payload(), $page['items']);
 
         return $page;
     }
@@ -49,7 +57,7 @@ class PopularEntityList extends TrendingEntityList
     {
         return ['data-infinite-scroll' => (string) json_encode([
             'endpoint' => '/api/topic-history',
-            'itemType' => 'TrendingEntityChip',
+            'itemType' => 'Entity',
             // Everything else named here rides along in the request, which is
             // how the next page knows which of the twelve lists it continues.
             'entityType' => EntityType::slug((string) $this -> type),

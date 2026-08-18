@@ -31,7 +31,7 @@ if ($item_id <= 0) {
 // one guessed id away, reported or not, and the kept originals are the copies
 // that outlive a deletion. A report card only ever asks for ids out of a
 // snapshot, so nothing that should be reachable stops being.
-if (!Report::capturedAttachment($item_id)) {
+if (!ReportManager::capturedAttachment($item_id)) {
     http_response_code(404);
     exit;
 }

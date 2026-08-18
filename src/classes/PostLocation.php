@@ -9,6 +9,10 @@ declare(strict_types=1);
  */
 class PostLocation
 {
+    public ?int $postId = null;
+    public ?float $latitude = null;
+    public ?float $longitude = null;
+
     /**
      * Coordinates for a page of posts, keyed by postId. Posts without a
      * location are simply absent, so a caller reads it as "?? null".

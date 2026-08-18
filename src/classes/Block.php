@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 class Block
 {
+    public ?int $blockId = null;
+    public ?int $blockerId = null;
+    public ?int $blockedId = null;
+    public ?string $createdAt = null;
+
     /**
      * True if either user has blocked the other.
      */

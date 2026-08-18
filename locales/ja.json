@@ -583,7 +583,7 @@
     },
     "TrendingTimerStatus": {
         "running": "トレンドタイマー: 稼働中",
-        "stopped": "トレンドタイマー: 停止中 - トレンドトピックは読み取り時の自己修復(Trending::current())によってのみ更新され、定期更新は行われません。設定するにはrootでbin/install.phpを実行してください。",
+        "stopped": "トレンドタイマー: 停止中 - トレンドトピックは読み取り時の自己修復(EntityRanker::refreshIfStale())によってのみ更新され、定期更新は行われません。設定するにはrootでbin/install.phpを実行してください。",
         "unknown": "トレンドタイマー: 不明 - このホストでsystemctlが使えないか、SELinuxがウェブサーバー自身のステータス確認を拒否しています(rootでbin/install.phpを実行すると解決します)"
     },
     "Notification": {
@@ -662,7 +662,7 @@
     "SensitiveMediaSetting": {
         "toggle": "閲覧注意のメディアを常に表示する"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "投稿",
             "message": "メッセージ",

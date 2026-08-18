@@ -15,6 +15,14 @@ declare(strict_types=1);
  */
 class FediverseDeliveryRefusal
 {
+    public ?int $refusalId = null;
+    public ?string $inboxURL = null;
+    public ?string $activityType = null;
+    public ?string $activityURI = null;
+    public ?int $status = null;
+    public ?string $body = null;
+    public ?string $createdAt = null;
+
     /** Long enough to find a pattern, short enough that a diagnostic log is not a data store. */
     public const KEEP_DAYS = 30;
 

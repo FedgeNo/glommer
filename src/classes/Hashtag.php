@@ -10,6 +10,11 @@ declare(strict_types=1);
  */
 class Hashtag
 {
+    public ?int $hashtagId = null;
+    public ?string $slug = null;
+    public ?string $title = null;
+    public ?string $description = null;
+
     // At most this many of a post's distinct hashtags are stored (in Hashtags/
     // PostHashtags and the flat keywords copy) and so count toward tag pages
     // and trending. A post may contain any number of #tags - they all still

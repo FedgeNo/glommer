@@ -15,6 +15,7 @@ declare(strict_types=1);
 class TrendingEntityList extends ItemList
 {
     public ?string $class = 'TrendingEntityList';
+    public ?string $type = null;
 
     /**
      * This list shows this many and stops: what is trending is a top, and a
@@ -25,6 +26,24 @@ class TrendingEntityList extends ItemList
 
     protected function rows(): array
     {
-        return Trending::current(static::PAGE_SIZE);
+        EntityRanker::refreshIfStale();
+
+        if ($this -> type !== null) {
+            return DB::rows('
+SELECT *
+    FROM `Entities`
+    WHERE `type` = ? AND `computedAt` = ?
+    ORDER BY `score` DESC
+    LIMIT ?
+', Entity::class, 'ssi', $this -> type, EntityRanker::lastRun(), static::PAGE_SIZE);
+        }
+
+        return DB::rows('
+SELECT *
+    FROM `Entities`
+    WHERE `computedAt` = ?
+    ORDER BY `score` DESC
+    LIMIT ?
+', Entity::class, 'si', EntityRanker::lastRun(), static::PAGE_SIZE);
     }
 }

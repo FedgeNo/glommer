@@ -955,13 +955,11 @@ CREATE TABLE `ModerationActions` (
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Materialized, recomputed on a timer by bin/compute-trending.php (or lazily,
--- lottery-triggered, from Trending::current() if that timer isn't installed) -
--- never computed at read time. See Trending.php for the scoring/window/abuse-
--- guard design. entityId is a real surrogate key (not just entityType+
--- entityValue, unlike this app's pure join tables) so moderation tooling has
--- a stable single id to act on a trending row by.
-CREATE TABLE `TrendingEntities` (
+-- The retained entity catalog. EntityRanker refreshes current-window scores
+-- on a timer and keeps older popular entities for the standing topic pages,
+-- so only rows stamped by the latest run are actually trending. entityId is
+-- a real surrogate key because these are domain objects, not a pure join.
+CREATE TABLE `Entities` (
   `entityId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(16) NOT NULL,
   `slug` varchar(255) NOT NULL,
@@ -985,8 +983,8 @@ CREATE TABLE `TrendingEntities` (
   KEY `computedAt_score` (`computedAt`,`score`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- A standing moderation rule, not a recomputed row - survives TrendingEntities
--- being fully replaced every run (a banned entity is excluded from scoring
+-- A standing moderation rule, not a recomputed row - survives Entities being
+-- refreshed (a banned entity is excluded from scoring
 -- entirely, not just hidden after the fact) and survives falling out of the
 -- trending window too (still banned if it becomes active again later).
 -- A post's body rendered into another language, cached forever per (post,
@@ -1064,7 +1062,7 @@ CREATE TABLE `StagedPosts` (
 
 -- One AI-written paragraph per topic - "what people are posting about under
 -- #x" - shown atop the topic's tag page. Its own table rather than a column
--- on TrendingEntities, whose rows are rewritten by every rescore: a summary
+-- on Entities, whose current scores are rewritten by every rescore: a summary
 -- outlives the scoring run that prompted it and keeps serving the tag page
 -- after the topic falls off trending. Written by the trending timer, at most
 -- one topic per pass (the model call is rate-limited by design); rows are
@@ -1127,7 +1125,7 @@ ALTER TABLE `Places` DROP INDEX IF EXISTS `title`;
 -- separating local accounts from the shadow rows federation creates.
 ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_banned` (`remoteActorURI`, `banned`);
 ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_lastSeen` (`remoteActorURI`, `lastSeen`);
--- TrendingEntities: rows now outlive the run that produced them, so what is
+-- Entities: rows outlive the run that produced them, so what is
 -- trending is the newest computedAt rather than everything in the table, and
 -- the type page reads all of one kind ordered by how much has been said.
 -- Users: a remote account's profile is more than a name - the bio, the labelled
@@ -1137,9 +1135,9 @@ ALTER TABLE `Users` ADD INDEX IF NOT EXISTS `remoteActorURI_lastSeen` (`remoteAc
 ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `locale` varchar(5) DEFAULT NULL AFTER `theme`;
 ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorIconURL` varchar(500) DEFAULT NULL AFTER `remoteActorType`;
 ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorFields` text DEFAULT NULL AFTER `remoteActorIconURL`;
-ALTER TABLE `TrendingEntities` ADD COLUMN IF NOT EXISTS `popularity` int(10) unsigned NOT NULL DEFAULT 0 AFTER `userCount`;
-ALTER TABLE `TrendingEntities` ADD INDEX IF NOT EXISTS `type_popularity` (`type`, `popularity`);
-ALTER TABLE `TrendingEntities` ADD INDEX IF NOT EXISTS `computedAt_score` (`computedAt`, `score`);
+ALTER TABLE `Entities` ADD COLUMN IF NOT EXISTS `popularity` int(10) unsigned NOT NULL DEFAULT 0 AFTER `userCount`;
+ALTER TABLE `Entities` ADD INDEX IF NOT EXISTS `type_popularity` (`type`, `popularity`);
+ALTER TABLE `Entities` ADD INDEX IF NOT EXISTS `computedAt_score` (`computedAt`, `score`);
 
 -- Column-type migrations (safe to re-run): these six tables were originally
 -- created with signed int(11) id/userId columns, unlike every other table's

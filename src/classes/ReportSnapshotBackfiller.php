@@ -22,7 +22,7 @@ SELECT `reportId`, `type`, `targetId`
 ', 'ReportData');
 
         foreach ($pending as $row) {
-            $snapshot = Report::buildSnapshot((string) $row -> type, (int) $row -> targetId);
+            $snapshot = ReportManager::buildSnapshot((string) $row -> type, (int) $row -> targetId);
 
             if ($snapshot === null) {
                 continue;

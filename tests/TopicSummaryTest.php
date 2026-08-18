@@ -18,14 +18,14 @@ DELETE
 ');
         DB::run('
 DELETE
-    FROM `TrendingEntities`
+    FROM `Entities`
 ');
     }
 
     private function trending(string $type, string $slug, float $score): void
     {
         DB::run('
-INSERT INTO `TrendingEntities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`)
+INSERT INTO `Entities` (`type`, `slug`, `title`, `score`, `postCount`, `userCount`)
     VALUES (?, ?, ?, ?, ?, ?)
 ', 'sssdii', $type, $slug, $slug, $score, 3, 2);
     }

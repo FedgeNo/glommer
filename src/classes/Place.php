@@ -12,7 +12,6 @@ declare(strict_types=1);
  * null, and the caller shows coordinates instead. A name is only ever offered
  * when somewhere real is genuinely close.
  */
-#[\AllowDynamicProperties]
 class Place
 {
     /**
@@ -35,6 +34,10 @@ class Place
     public ?string $country = null;
     public ?float $latitude = null;
     public ?float $longitude = null;
+    public int $population = 0;
+
+    /** Great-circle distance supplied by nearestInBox(), not a Places column. */
+    public ?float $distance = null;
 
     /**
      * The nearest place to a point that is close enough to name it, or null.

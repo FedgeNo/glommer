@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Trendtimer: körs",
-        "stopped": "Trendtimer: körs inte – trendämnen uppdateras endast genom läsvägens självläkning (Trending::current()), inte enligt schema. Kör bin/install.php som root för att konfigurera den.",
+        "stopped": "Trendtimer: körs inte – trendämnen uppdateras endast genom läsvägens självläkning (EntityRanker::refreshIfStale()), inte enligt schema. Kör bin/install.php som root för att konfigurera den.",
         "unknown": "Trendtimer: okänd – antingen saknas systemctl på värden eller så nekar SELinux webbserverns egen statusfråga (kör bin/install.php som root för att åtgärda det)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Visa känsligt medieinnehåll som standard"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Inlägg",
             "message": "Meddelande",

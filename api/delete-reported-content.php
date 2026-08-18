@@ -25,7 +25,7 @@ if ($report_id === 0) {
 // Resolve what to delete from the report row itself, so a moderator can only
 // ever delete content something was actually reported for - never arbitrary
 // client-supplied ids.
-$report = Report::find($report_id);
+$report = ReportManager::find($report_id);
 
 if ($report === null) {
     JSONResponse::error('Report not found', 404) -> send();
@@ -51,7 +51,7 @@ if ($report -> type === 'post') {
 }
 
 // Removing the content resolves the report, so clear it from the queue too.
-Report::delete($report_id);
+ReportManager::delete($report_id);
 
 ModerationAction::log('deleteReportedContent', null, $report -> type, (int) $report -> targetId, $report_id);
 

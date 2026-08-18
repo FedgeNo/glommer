@@ -4,18 +4,18 @@ import { DOMUtils } from '/scripts/DOMUtils.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
 
-export class TrendingEntity {
+export class EntityModerator {
     static init() {
         document.addEventListener('click', async (event) => {
             const banBtn = event.target.closest('.TrendingEntityBanButton');
             if (banBtn) {
-                TrendingEntity.#ban(banBtn);
+                EntityModerator.#ban(banBtn);
                 return;
             }
 
             const unbanBtn = event.target.closest('.TrendingEntityUnbanButton');
             if (unbanBtn) {
-                TrendingEntity.#unban(unbanBtn);
+                EntityModerator.#unban(unbanBtn);
             }
         });
     }
@@ -32,7 +32,7 @@ export class TrendingEntity {
         try {
             const result = await Api.post('/api/ban-trending-entity', { entityType, entityValue, reason });
             if (!result) return;
-            DOMUtils.slideOut(button.closest('.TrendingEntityChip'));
+            DOMUtils.slideOut(button.closest('.Entity'));
         } finally {
             Working.stop(button);
         }
@@ -53,4 +53,4 @@ export class TrendingEntity {
     }
 }
 
-ReadyHandler.add(TrendingEntity.init);
+ReadyHandler.add(EntityModerator.init);

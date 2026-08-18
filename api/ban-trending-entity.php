@@ -38,6 +38,6 @@ if ($reason === '') {
 
 $reason = mb_substr($reason, 0, 1000);
 
-Trending::ban($entity_type, $entity_value, (int) Auth::id(), $reason);
+EntityRanker::ban($entity_type, $entity_value, (int) Auth::id(), $reason);
 
 JSONResponse::success(['banned' => true]) -> send();

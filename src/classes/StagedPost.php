@@ -13,7 +13,6 @@ declare(strict_types=1);
  * fan-out, and the federation announce. Text, link and location only - a post
  * with attached media still publishes immediately through the composer.
  */
-#[\AllowDynamicProperties]
 class StagedPost
 {
     /** How far ahead a post may be scheduled. A year is a typo, not a plan. */

@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Populaarsete teemade taimer: töötab",
-        "stopped": "Populaarsete teemade taimer: ei tööta—teemasid värskendatakse ainult lugemistee eneseparanduse kaudu (Trending::current()), mitte ajakava järgi. Seadistamiseks käivita bin/install.php juurkasutajana.",
+        "stopped": "Populaarsete teemade taimer: ei tööta—teemasid värskendatakse ainult lugemistee eneseparanduse kaudu (EntityRanker::refreshIfStale()), mitte ajakava järgi. Seadistamiseks käivita bin/install.php juurkasutajana.",
         "unknown": "Populaarsete teemade taimer: teadmata—systemctl pole selles hostis saadaval või SELinux keelab veebiserveril olekut küsida (parandamiseks käivita bin/install.php juurkasutajana)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Näita tundlikku meediat vaikimisi"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Postitus",
             "message": "Sõnum",

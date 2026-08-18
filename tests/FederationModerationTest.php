@@ -121,7 +121,7 @@ SELECT `reason`
 
         ActivityPubFlag::received(['type' => 'Flag', 'object' => $objects], $them);
 
-        // Report::create dedupes per reporter, so the cap shows as the queue
+        // ReportManager::create dedupes per reporter, so the cap shows as the queue
         // simply not exploding rather than as a count of 20.
         $this -> assertTrue(self::reportCount('post', $post_id) <= 1);
     }

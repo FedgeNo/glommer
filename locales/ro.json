@@ -586,7 +586,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Temporizator tendințe: rulează",
-        "stopped": "Temporizator tendințe: nu rulează - subiectele populare se vor actualiza numai prin autorepararea căii de citire (Trending::current()), nu conform unui program. Execută bin/install.php ca root pentru a-l configura.",
+        "stopped": "Temporizator tendințe: nu rulează - subiectele populare se vor actualiza numai prin autorepararea căii de citire (EntityRanker::refreshIfStale()), nu conform unui program. Execută bin/install.php ca root pentru a-l configura.",
         "unknown": "Temporizator tendințe: stare necunoscută - fie systemctl nu este disponibil pe această gazdă, fie SELinux refuză interogarea de stare a serverului web (execută bin/install.php ca root pentru remediere)"
     },
     "Notification": {
@@ -665,7 +665,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Arată implicit conținutul media sensibil"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Postare",
             "message": "Mesaj",

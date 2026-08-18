@@ -583,7 +583,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Pemasa sohor kini: berjalan",
-        "stopped": "Pemasa sohor kini: tidak berjalan — topik sohor kini hanya akan dikemas kini melalui pemulihan kendiri laluan bacaan (Trending::current()), bukan mengikut jadual. Jalankan bin/install.php sebagai root untuk menyediakannya.",
+        "stopped": "Pemasa sohor kini: tidak berjalan — topik sohor kini hanya akan dikemas kini melalui pemulihan kendiri laluan bacaan (EntityRanker::refreshIfStale()), bukan mengikut jadual. Jalankan bin/install.php sebagai root untuk menyediakannya.",
         "unknown": "Pemasa sohor kini: tidak diketahui — sama ada systemctl tidak tersedia pada hos ini atau SELinux menolak pertanyaan status pelayan web (jalankan bin/install.php sebagai root untuk membetulkannya)"
     },
     "Notification": {
@@ -662,7 +662,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Tunjukkan media sensitif secara lalai"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Siaran",
             "message": "Mesej",

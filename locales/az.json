@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Trend taymer: Çalışır",
-        "stopped": "Trend taymer: Çalışmır - trend mövzular cədvəl üzrə deyil, yalnız oxunma yolunun özünü sağalması (Trending::current()) vasitəsilə təzələnəcək. Quraşdırmaq üçün bin/install.php-ni root olaraq işə salın.",
+        "stopped": "Trend taymer: Çalışmır - trend mövzular cədvəl üzrə deyil, yalnız oxunma yolunun özünü sağalması (EntityRanker::refreshIfStale()) vasitəsilə təzələnəcək. Quraşdırmaq üçün bin/install.php-ni root olaraq işə salın.",
         "unknown": "Trend taymer: Naməlum - ya systemctl bu hostda mövcud deyil, ya da SELinux veb serverin öz status sorğusunu rədd edir (bunu düzəltmək üçün bin/install.php-ni root kimi işlədin)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Defolt olaraq Həssas Medianı göstərin"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Yazı",
             "message": "Mesaj",

@@ -25,7 +25,7 @@ if ($report_id === 0) {
 // Which post this is comes from the report row, never from the request - the
 // same rule deletion follows, for the same reason: a moderator acts on what
 // was reported, not on anything they can name.
-$report = Report::find($report_id);
+$report = ReportManager::find($report_id);
 
 if ($report === null) {
     JSONResponse::error('Report not found', 404) -> send();
@@ -59,7 +59,7 @@ SELECT *
 }
 
 // The moderator has acted on it, so it leaves the queue - same as a deletion.
-Report::delete($report_id);
+ReportManager::delete($report_id);
 
 ModerationAction::log('classifyReportedContent', null, $report -> type, (int) $report -> targetId, $report_id);
 

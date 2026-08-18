@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Rewrites banned-topic slugs into the form an address uses.
  *
- * A ban is keyed on (type, slug), and Trending::isBanned() asks with the slug
+ * A ban is keyed on (type, slug), and EntityRanker::isBanned() asks with the slug
  * built from the topic's name. A row whose slug was built by a different rule
  * answers "not banned" to every question, which reads exactly like no ban - so
  * this runs from the installer rather than being left to notice itself.

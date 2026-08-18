@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Temporizador de tendencias: en execución",
-        "stopped": "Temporizador de tendencias: detido; os temas en tendencia só se actualizarán coa autorreparación durante a lectura (Trending::current()), non cunha programación. Executa bin/install.php como root para configuralo.",
+        "stopped": "Temporizador de tendencias: detido; os temas en tendencia só se actualizarán coa autorreparación durante a lectura (EntityRanker::refreshIfStale()), non cunha programación. Executa bin/install.php como root para configuralo.",
         "unknown": "Temporizador de tendencias: descoñecido; ou systemctl non está dispoñible neste servidor ou SELinux impide que o servidor web consulte o seu propio estado (executa bin/install.php como root para corrixilo)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Mostrar por defecto o contido multimedia sensible"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Publicación",
             "message": "Mensaxe",

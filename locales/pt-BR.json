@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Temporizador de assuntos em alta: em execução",
-        "stopped": "Temporizador de assuntos em alta: parado — os assuntos em alta só serão atualizados pela autorrecuperação do caminho de leitura (Trending::current()), não por agendamento. Execute bin/install.php como root para configurá-lo.",
+        "stopped": "Temporizador de assuntos em alta: parado — os assuntos em alta só serão atualizados pela autorrecuperação do caminho de leitura (EntityRanker::refreshIfStale()), não por agendamento. Execute bin/install.php como root para configurá-lo.",
         "unknown": "Temporizador de assuntos em alta: desconhecido — o systemctl pode não estar disponível neste host ou o SELinux pode estar negando a consulta de status do servidor web (execute bin/install.php como root para corrigir)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Mostrar mídia sensível por padrão"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Publicação",
             "message": "Mensagem",

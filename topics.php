@@ -56,7 +56,7 @@ if ($slug === '') {
 
 // /topics/{type}/{slug} - one topic. Nothing by that name having trended is a
 // 404: there is nothing to show, and it keeps empty pages out of search.
-$entity = Trending::entity($type, $slug);
+$entity = Entity::load($type, $slug);
 
 if ($entity === null) {
     require __DIR__ . '/404.php';

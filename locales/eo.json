@@ -454,7 +454,7 @@
         "running": "Laborila servo: funkcias", "stopped": "Laborila servo: ne funkcias — preparitaj alŝutoj ne estos transkoditaj ĝis ĝi estos relanĉita", "unknown": "Laborila servo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)", "queue": "Vico: {staging} preparataj, {pending} atendantaj, {processing} prilaborataj"
     },
     "TrendingTimerStatus": {
-        "running": "Aktualaĵa tempigilo: funkcias", "stopped": "Aktualaĵa tempigilo: ne funkcias — aktualaj temoj refreŝiĝos nur per la memriparo de la legvojo (Trending::current()), ne laŭ horaro. Rulu bin/install.php kiel root por agordi ĝin.", "unknown": "Aktualaĵa tempigilo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)"
+        "running": "Aktualaĵa tempigilo: funkcias", "stopped": "Aktualaĵa tempigilo: ne funkcias — aktualaj temoj refreŝiĝos nur per la memriparo de la legvojo (EntityRanker::refreshIfStale()), ne laŭ horaro. Rulu bin/install.php kiel root por agordi ĝin.", "unknown": "Aktualaĵa tempigilo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)"
     },
     "Notification": {
         "postReady": "La prilaborado de via aŭdvidaĵo finiĝis kaj ĝi nun estas publikigita", "scheduledPostLive": "Via planita afiŝo nun estas publikigita", "uploadPartlyFailed": "Via afiŝo estas publikigita, sed unu aŭ pluraj dosieroj ne povis esti prilaboritaj", "uploadFailed": "Unu el viaj alŝutoj ne estis prilaborita kaj ne estis afiŝita", "mailerFailed": "Retpoŝta livero malsukcesis — la poŝtilo eble ne funkcias. Bonvolu kontroli viajn retpoŝtajn agordojn.", "mailFromNotConfigured": "Neniu retpoŝta sendinto-adreso estas agordita, do retpoŝtoj ne povas esti senditaj. Agordu ĝin en Administraj agordoj (sekcio Elira retpoŝto) aŭ per bin/install.php.", "systemError": "Okazis servila eraro. Kontrolu la erarprotokolon por detaloj.", "passwordRemovedGoogle": "Via pasvorto estis forigita kiam vi ensalutis per Google. Uzu \"Forgesis pasvorton\" se vi volas agordi novan.", "like": "{name} ŝatis vian afiŝon", "repost": "{name} republikigis vian afiŝon", "reply": "{name} respondis al via afiŝo", "friendRequest": "{name} sendis al vi amikpeton", "friendAccepted": "{name} akceptis vian amikpeton", "message": "{name} sendis al vi mesaĝon", "mention": "{name} menciis vin en afiŝo", "follow": "{name} eksekvis vin de alia servilo", "default": "{name} faris ion"
@@ -504,7 +504,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Defaŭlte montri sentemajn aŭdvidaĵojn"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Afiŝo", "message": "Mesaĝo", "user": "Uzanto"
         },

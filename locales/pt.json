@@ -585,7 +585,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Cronómetro de tendências: A funcionar",
-        "stopped": "Cronómetro de tendências: Não está a funcionar - os tópicos em tendência só serão atualizados pela autorregeneração no caminho de leitura (Trending::current()), não por agendamento. Executa bin/install.php como root para o configurar.",
+        "stopped": "Cronómetro de tendências: Não está a funcionar - os tópicos em tendência só serão atualizados pela autorregeneração no caminho de leitura (EntityRanker::refreshIfStale()), não por agendamento. Executa bin/install.php como root para o configurar.",
         "unknown": "Cronómetro de tendências: Desconhecido - ou o systemctl não está disponível neste anfitrião, ou o SELinux está a negar a própria consulta de estado do servidor web (executa bin/install.php como root para corrigir isso)"
     },
     "Notification": {
@@ -664,7 +664,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Mostrar conteúdo sensível por predefinição"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Publicação",
             "message": "Mensagem",

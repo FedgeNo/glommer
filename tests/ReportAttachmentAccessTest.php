@@ -41,8 +41,8 @@ INSERT INTO `FeedItems` (`postId`, `type`)
         $post_id = $this -> createPost($author);
         $item_id = $this -> attach($post_id);
 
-        $this -> assertTrue(Report::create($reporter, 'post', $post_id, 'harassment', null));
-        $this -> assertTrue(Report::capturedAttachment($item_id));
+        $this -> assertTrue(ReportManager::create($reporter, 'post', $post_id, 'harassment', null));
+        $this -> assertTrue(ReportManager::capturedAttachment($item_id));
     }
 
     /**
@@ -57,7 +57,7 @@ INSERT INTO `FeedItems` (`postId`, `type`)
         $unreported_post = $this -> createPost($author);
         $unreported_item = $this -> attach($unreported_post);
 
-        $this -> assertFalse(Report::capturedAttachment($unreported_item));
+        $this -> assertFalse(ReportManager::capturedAttachment($unreported_item));
     }
 
     /**
@@ -73,7 +73,7 @@ INSERT INTO `FeedItems` (`postId`, `type`)
         $post_id = $this -> createPost($author);
         $item_id = $this -> attach($post_id);
 
-        $this -> assertTrue(Report::create($reporter, 'post', $post_id, 'harassment', null));
+        $this -> assertTrue(ReportManager::create($reporter, 'post', $post_id, 'harassment', null));
 
         DB::run('
 DELETE FROM `FeedItems`
@@ -85,7 +85,7 @@ DELETE FROM `Posts`
     WHERE `postId` = ?
 ', 'i', $post_id);
 
-        $this -> assertTrue(Report::capturedAttachment($item_id), 'the snapshot still remembers it');
+        $this -> assertTrue(ReportManager::capturedAttachment($item_id), 'the snapshot still remembers it');
     }
 
     /** An id that shares digits with a captured one is a different id. */
@@ -97,14 +97,14 @@ DELETE FROM `Posts`
         $post_id = $this -> createPost($author);
         $item_id = $this -> attach($post_id);
 
-        $this -> assertTrue(Report::create($reporter, 'post', $post_id, 'harassment', null));
+        $this -> assertTrue(ReportManager::create($reporter, 'post', $post_id, 'harassment', null));
 
         $shorter = (int) substr((string) $item_id, 0, -1);
 
-        $this -> assertFalse(Report::capturedAttachment((int) ((string) $item_id . '0')), 'a longer id');
+        $this -> assertFalse(ReportManager::capturedAttachment((int) ((string) $item_id . '0')), 'a longer id');
 
         if ($shorter > 0) {
-            $this -> assertFalse(Report::capturedAttachment($shorter), 'a shorter one');
+            $this -> assertFalse(ReportManager::capturedAttachment($shorter), 'a shorter one');
         }
     }
 }

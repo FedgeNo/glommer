@@ -10,9 +10,9 @@ declare(strict_types=1);
 // this almost as-is. Document (the base of HTMLDocument and XMLDocument) also
 // extends this, so a document is itself the element it renders.
 //
-// AllowDynamicProperties because an object is routinely hydrated straight off a
-// query (mysqli_fetch_object sets a property per column before the constructor
-// runs), so a class needn't pre-declare every column a query might select.
+// Some DOM-backed rows are hydrated from joins and computed projections that
+// add view-specific fields beyond the corresponding table. Base-table columns
+// still belong as declared properties on their singular table object.
 #[\AllowDynamicProperties]
 abstract class DOMObject
 {

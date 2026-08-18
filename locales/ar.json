@@ -588,7 +588,7 @@
     },
     "TrendingTimerStatus": {
         "running": "مؤقت الرائج: يعمل",
-        "stopped": "مؤقت الرائج: لا يعمل - لن تتحدث المواضيع الرائجة إلا عبر الإصلاح الذاتي لمسار القراءة (Trending::current())، وليس وفق جدول زمني. شغّل bin/install.php بصلاحيات root لإعداده.",
+        "stopped": "مؤقت الرائج: لا يعمل - لن تتحدث المواضيع الرائجة إلا عبر الإصلاح الذاتي لمسار القراءة (EntityRanker::refreshIfStale())، وليس وفق جدول زمني. شغّل bin/install.php بصلاحيات root لإعداده.",
         "unknown": "مؤقت الرائج: غير معروف - إما أن systemctl غير متاح على هذا المضيف، أو أن SELinux يرفض استعلام الحالة الخاص بخادم الويب نفسه (شغّل bin/install.php بصلاحيات root لإصلاح ذلك)"
     },
     "Notification": {
@@ -667,7 +667,7 @@
     "SensitiveMediaSetting": {
         "toggle": "إظهار الوسائط الحساسة افتراضيًا"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "منشور",
             "message": "رسالة",

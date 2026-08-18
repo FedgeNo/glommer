@@ -584,7 +584,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Trendingtimer: actief",
-        "stopped": "Trendingtimer: niet actief - trending topics worden alleen ververst via het zelfherstel van het leespad (Trending::current()), niet volgens een schema. Voer bin/install.php uit als root om dit in te stellen.",
+        "stopped": "Trendingtimer: niet actief - trending topics worden alleen ververst via het zelfherstel van het leespad (EntityRanker::refreshIfStale()), niet volgens een schema. Voer bin/install.php uit als root om dit in te stellen.",
         "unknown": "Trendingtimer: onbekend - systemctl is niet beschikbaar op deze host, of SELinux weigert de eigen statusquery van de webserver (voer bin/install.php uit als root om dit op te lossen)"
     },
     "Notification": {
@@ -663,7 +663,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Gevoelige media standaard tonen"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Post",
             "message": "Bericht",

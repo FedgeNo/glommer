@@ -587,7 +587,7 @@
     },
     "TrendingTimerStatus": {
         "running": "Časovnik priljubljenih vsebin: deluje",
-        "stopped": "Časovnik priljubljenih vsebin: ne deluje - priljubljene teme se bodo osvežile samo s samopopravilom ob branju (Trending::current()), ne po urniku. Za nastavitev zaženite bin/install.php kot root.",
+        "stopped": "Časovnik priljubljenih vsebin: ne deluje - priljubljene teme se bodo osvežile samo s samopopravilom ob branju (EntityRanker::refreshIfStale()), ne po urniku. Za nastavitev zaženite bin/install.php kot root.",
         "unknown": "Časovnik priljubljenih vsebin: neznano - systemctl morda ni na voljo na tem gostitelju ali pa SELinux zavrača poizvedbo spletnega strežnika o lastnem stanju (za popravek zaženite bin/install.php kot root)"
     },
     "Notification": {
@@ -666,7 +666,7 @@
     "SensitiveMediaSetting": {
         "toggle": "Privzeto prikaži občutljivo predstavnost"
     },
-    "ReportCard": {
+    "Report": {
         "targetTypes": {
             "post": "Objava",
             "message": "Sporočilo",

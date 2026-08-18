@@ -11,6 +11,15 @@ declare(strict_types=1);
  */
 class ModerationAction
 {
+    public ?int $actionId = null;
+    public ?int $moderatorId = null;
+    public ?string $action = null;
+    public ?int $targetUserId = null;
+    public ?string $type = null;
+    public ?int $targetId = null;
+    public ?int $reportId = null;
+    public ?string $createdAt = null;
+
     public static function log(string $action, ?int $target_user_id = null, ?string $target_type = null, ?int $target_id = null, ?int $report_id = null): void
     {
         $moderator_id = (int) Auth::id();

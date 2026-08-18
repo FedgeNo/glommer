@@ -325,7 +325,8 @@
         "showAll": "Erakutsi guztiak"
     },
     "HelpSearch": {
-        "placeholder": "Bilatu laguntzan…"
+        "placeholder": "Bilatu laguntzan…",
+        "noMatches": "Ez dago zure bilaketarekin bat datorren laguntza-artikulurik."
     },
     "WelcomeBannerDismissButton": {
         "name": "Ulertu dut"

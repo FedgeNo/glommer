@@ -327,7 +327,8 @@
         "showAll": "Показати всі"
     },
     "HelpSearch": {
-        "placeholder": "Пошук у довідці…"
+        "placeholder": "Пошук у довідці…",
+        "noMatches": "Жодна стаття довідки не відповідає вашому пошуку."
     },
     "WelcomeBannerDismissButton": {
         "name": "Зрозуміло"

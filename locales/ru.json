@@ -327,7 +327,8 @@
         "showAll": "Показать все"
     },
     "HelpSearch": {
-        "placeholder": "Поиск по справке…"
+        "placeholder": "Поиск по справке…",
+        "noMatches": "Ни одна статья справки не соответствует вашему поиску."
     },
     "WelcomeBannerDismissButton": {
         "name": "Понятно"

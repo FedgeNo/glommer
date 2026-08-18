@@ -326,7 +326,8 @@
         "showAll": "Mostra-ho tot"
     },
     "HelpSearch": {
-        "placeholder": "Cerca a l'ajuda…"
+        "placeholder": "Cerca a l'ajuda…",
+        "noMatches": "Cap article d'ajuda no coincideix amb la teva cerca."
     },
     "WelcomeBannerDismissButton": {
         "name": "Entesos"

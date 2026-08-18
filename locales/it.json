@@ -326,7 +326,8 @@
         "showAll": "Mostra tutte"
     },
     "HelpSearch": {
-        "placeholder": "Cerca nella guida…"
+        "placeholder": "Cerca nella guida…",
+        "noMatches": "Nessun articolo della guida corrisponde alla tua ricerca."
     },
     "WelcomeBannerDismissButton": {
         "name": "Ho capito"

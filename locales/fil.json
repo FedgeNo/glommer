@@ -193,7 +193,8 @@
         "showAll": "Ipakita lahat"
     },
     "HelpSearch": {
-        "placeholder": "Maghanap sa tulong…"
+        "placeholder": "Maghanap sa tulong…",
+        "noMatches": "Walang artikulo ng tulong na tumugma sa iyong paghahanap."
     },
     "WelcomeBannerDismissButton": {
         "name": "Nakuha ko"

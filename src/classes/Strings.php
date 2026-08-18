@@ -36,6 +36,12 @@ class Strings
     /** @var array<string, array<string, mixed>> loaded tables by locale */
     private static array $tables = [];
 
+    /** Where the shared PHP and JavaScript locale files live. */
+    public static function directory(): string
+    {
+        return self::DIRECTORY;
+    }
+
     /**
      * The locales this installation has words for, source first.
      *

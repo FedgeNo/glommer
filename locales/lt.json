@@ -327,7 +327,8 @@
         "showAll": "Rodyti visus"
     },
     "HelpSearch": {
-        "placeholder": "Ieškoti žinyne…"
+        "placeholder": "Ieškoti žinyne…",
+        "noMatches": "Nė vienas žinyno straipsnis neatitiko jūsų paieškos."
     },
     "WelcomeBannerDismissButton": {
         "name": "Supratau"

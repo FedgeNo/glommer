@@ -325,7 +325,8 @@
         "showAll": "Εμφάνιση όλων"
     },
     "HelpSearch": {
-        "placeholder": "Αναζήτηση στη βοήθεια…"
+        "placeholder": "Αναζήτηση στη βοήθεια…",
+        "noMatches": "Κανένα άρθρο βοήθειας δεν αντιστοιχεί στην αναζήτησή σας."
     },
     "WelcomeBannerDismissButton": {
         "name": "Κατάλαβα"
@@ -400,11 +401,11 @@
         },
         "long": "{day} {month} {year}",
         "short": "{day} {month} {year}",
-        "time": "{hour}:{minute}",
+        "time": "{hour}:{minute} {meridiem}",
         "dateAndTime": "{date} στις {time}",
         "am": "π.μ.",
         "pm": "μ.μ.",
-        "clock": 24
+        "clock": 12
     },
     "EnvironmentChecker": {
         "wsCannotConnect": "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή WebSocket στο 127.0.0.1:{port}{tls} ({error}). Εκκινήστε τον πρώτα: systemctl --user start glommer-websocket (δείτε το README.md για το αρχείο μονάδας). Αν μόλις προστέθηκαν ή αφαιρέθηκαν τα WS_TLS_CERT/WS_TLS_KEY, επανεκκινήστε τον ώστε να συμφωνεί με το .env.",

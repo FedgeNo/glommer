@@ -326,7 +326,8 @@
         "showAll": "Rādīt visus"
     },
     "HelpSearch": {
-        "placeholder": "Meklēt palīdzībā…"
+        "placeholder": "Meklēt palīdzībā…",
+        "noMatches": "Neviens palīdzības raksts neatbilda jūsu meklējumam."
     },
     "WelcomeBannerDismissButton": {
         "name": "Sapratu"

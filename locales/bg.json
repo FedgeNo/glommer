@@ -325,7 +325,8 @@
         "showAll": "Показване на всички"
     },
     "HelpSearch": {
-        "placeholder": "Търсене в помощта…"
+        "placeholder": "Търсене в помощта…",
+        "noMatches": "Няма помощни статии, съответстващи на търсенето ви."
     },
     "WelcomeBannerDismissButton": {
         "name": "Разбрах"

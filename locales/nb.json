@@ -325,7 +325,8 @@
         "showAll": "Vis alle"
     },
     "HelpSearch": {
-        "placeholder": "Søk i hjelpen…"
+        "placeholder": "Søk i hjelpen…",
+        "noMatches": "Ingen hjelpeartikler samsvarte med søket ditt."
     },
     "WelcomeBannerDismissButton": {
         "name": "Skjønner"

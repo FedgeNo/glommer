@@ -325,7 +325,8 @@
         "showAll": "Hamısını göstər"
     },
     "HelpSearch": {
-        "placeholder": "Yardım axtarın..."
+        "placeholder": "Yardım axtarın...",
+        "noMatches": "Heç bir yardım məqaləsi axtarışınıza uyğun gəlmədi."
     },
     "WelcomeBannerDismissButton": {
         "name": "Anladım"

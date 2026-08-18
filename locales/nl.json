@@ -325,7 +325,8 @@
         "showAll": "Alles tonen"
     },
     "HelpSearch": {
-        "placeholder": "Help doorzoeken…"
+        "placeholder": "Help doorzoeken…",
+        "noMatches": "Geen hulpartikelen kwamen overeen met je zoekopdracht."
     },
     "WelcomeBannerDismissButton": {
         "name": "Begrepen"

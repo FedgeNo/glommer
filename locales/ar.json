@@ -329,7 +329,8 @@
         "showAll": "عرض الكل"
     },
     "HelpSearch": {
-        "placeholder": "ابحث في المساعدة…"
+        "placeholder": "ابحث في المساعدة…",
+        "noMatches": "لم تتطابق أي مقالات مساعدة مع بحثك."
     },
     "WelcomeBannerDismissButton": {
         "name": "فهمت"

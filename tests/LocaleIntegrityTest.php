@@ -12,9 +12,9 @@ declare(strict_types=1);
  * own language can ask for falls back to a form that reads wrong in exactly
  * the cases the extra form existed for.
  *
- * A locale is allowed to be unfinished - that is the whole point of the
- * per-piece fallback - so nothing here fails for a missing entry. It fails for
- * an entry that is present and broken.
+ * Runtime fallback remains a useful last defense for a damaged installation,
+ * but a repository locale is complete: every English path has a translation
+ * and a fingerprint proving which exact English source it translated.
  */
 class LocaleIntegrityTest extends TestCase
 {
@@ -83,19 +83,38 @@ class LocaleIntegrityTest extends TestCase
      */
     private static function leaves(array $table, string $prefix = ''): array
     {
-        $found = [];
+        return StringTranslator::flatten($table, $prefix, true);
+    }
 
-        foreach ($table as $key => $value) {
-            $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
+    private static function valueAtPath(array $table, string $path): mixed
+    {
+        $value = $table;
 
-            if (is_array($value)) {
-                $found += self::leaves($value, $path);
-            } elseif (is_string($value)) {
-                $found[$path] = $value;
+        foreach (explode('.', $path) as $step) {
+            if (!is_array($value) || !array_key_exists($step, $value)) {
+                return null;
             }
+
+            $value = $value[$step];
         }
 
-        return $found;
+        return $value;
+    }
+
+    /** @param string[] $expected @param string[] $actual */
+    private function assertSamePaths(array $expected, array $actual, string $locale, string $kind): void
+    {
+        sort($expected);
+        sort($actual);
+        $missing = array_values(array_diff($expected, $actual));
+        $extra = array_values(array_diff($actual, $expected));
+
+        $this -> assertTrue(
+            $missing === [] && $extra === [],
+            $locale . ' has the wrong ' . $kind . ' paths; missing: '
+                . implode(', ', array_slice($missing, 0, 10)) . '; extra: '
+                . implode(', ', array_slice($extra, 0, 10))
+        );
     }
 
     /**
@@ -113,20 +132,116 @@ class LocaleIntegrityTest extends TestCase
             throw new TestSkippedException('needs the intl extension - see the README requirements');
         }
 
-        $known = \ResourceBundle::getLocales('');
-
         foreach (Strings::available() as $locale) {
-            // Browser Intl requires BCP 47 (`pt-BR`, `zh-Hant`), while ICU's
-            // resource inventory spells the same locales with underscores
-            // (`pt_BR`, `zh_Hant`). Canonicalize before comparing so the test
-            // checks whether ICU knows the locale rather than which syntax
-            // names it.
-            $canonical = \Locale::canonicalize($locale);
+            $language = \Locale::getPrimaryLanguage($locale);
 
             $this -> assertTrue(
-                in_array($canonical, $known, true),
+                $language !== ''
+                    && \Locale::getDisplayLanguage($language, Strings::SOURCE_LOCALE) !== $language,
                 $locale . '.json is not a locale ICU knows, so it would count in the wrong grammar'
             );
+
+            $calendar = new \IntlDateFormatter(
+                $locale,
+                \IntlDateFormatter::NONE,
+                \IntlDateFormatter::SHORT,
+                'UTC'
+            );
+            $this -> assertTrue(is_string($calendar -> getPattern()), $locale . ' has no ICU calendar pattern');
+        }
+    }
+
+    /** Every locale contains exactly the source paths its own plural rules require. */
+    public function testEveryLocaleContainsTheCompleteExpandedEnglishSchema(): void
+    {
+        $source = StringTranslator::flatten(self::table(Strings::SOURCE_LOCALE), '', true);
+
+        foreach (Strings::available() as $locale) {
+            if ($locale === Strings::SOURCE_LOCALE) {
+                continue;
+            }
+
+            $expected = StringTranslator::expanded($source, $locale);
+            $actual = StringTranslator::flatten(self::table($locale), '', true);
+
+            $this -> assertSamePaths(array_keys($expected), array_keys($actual), $locale, 'translation');
+        }
+    }
+
+    /** Every translated path records the exact current English source it translated. */
+    public function testEveryTranslationHasACurrentSourceFingerprint(): void
+    {
+        $source = StringTranslator::flatten(self::table(Strings::SOURCE_LOCALE), '', true);
+
+        foreach (Strings::available() as $locale) {
+            if ($locale === Strings::SOURCE_LOCALE) {
+                continue;
+            }
+
+            $expected_source = StringTranslator::expanded($source, $locale);
+            $path = Strings::directory() . '/sources/' . $locale . '.json';
+            $contents = is_file($path) ? file_get_contents($path) : false;
+            $fingerprints = $contents === false ? null : json_decode($contents, true);
+
+            $this -> assertTrue(is_array($fingerprints), $locale . ' has no readable source-fingerprint file');
+            $this -> assertSamePaths(
+                array_keys($expected_source),
+                array_keys((array) $fingerprints),
+                $locale,
+                'source-fingerprint'
+            );
+
+            foreach ($expected_source as $string_path => $english) {
+                $this -> assertSame(
+                    StringTranslator::fingerprint($english),
+                    $fingerprints[$string_path] ?? null,
+                    $locale . ' ' . $string_path . ' was translated from different English wording'
+                );
+            }
+        }
+    }
+
+    /** ICU independently selects a branch and Strings returns that real stored branch. */
+    public function testPluralSelectionMatchesICUThroughTheRealLocaleTables(): void
+    {
+        if (!extension_loaded('intl')) {
+            throw new TestSkippedException('needs the intl extension - see the README requirements');
+        }
+
+        $pattern = '{n, plural, zero{zero} one{one} two{two} few{few} many{many} other{other}}';
+        $counts = array_merge(range(0, 130), [200, 201, 1000, 1002, 1005, 1011, 1024]);
+        $source = StringTranslator::flatten(self::table(Strings::SOURCE_LOCALE), '', true);
+        $counted = StringTranslator::counted($source);
+
+        foreach (Strings::available() as $locale) {
+            $formatter = new \MessageFormatter($locale, $pattern);
+            $table = self::table($locale);
+            Strings::useLocale($locale);
+
+            try {
+                foreach ($counted as $entry_path => $_forms) {
+                    [$class, $key] = explode('.', $entry_path, 2);
+
+                    foreach ($counts as $count) {
+                        $category = $formatter -> format(['n' => $count]);
+                        $expected = is_string($category)
+                            ? self::valueAtPath($table, $entry_path . '.' . $category)
+                            : null;
+
+                        $this -> assertTrue(
+                            is_string($expected),
+                            $locale . ' ' . $entry_path . ' has no ICU-selected branch for ' . $count
+                        );
+                        $this -> assertSame(
+                            $expected,
+                            Strings::plural($class, $key, $count),
+                            $locale . ' ' . $entry_path . ' at ' . $count
+                        );
+                    }
+                }
+            } finally {
+                Strings::useLocale(null);
+            }
         }
     }
 

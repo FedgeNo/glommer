@@ -193,7 +193,8 @@
         "showAll": "Näytä kaikki"
     },
     "HelpSearch": {
-        "placeholder": "Hae ohjeista…"
+        "placeholder": "Hae ohjeista…",
+        "noMatches": "Yksikään ohjeartikkeli ei vastannut hakuasi."
     },
     "WelcomeBannerDismissButton": {
         "name": "Selvä"

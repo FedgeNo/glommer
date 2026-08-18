@@ -325,7 +325,8 @@
         "showAll": "সব দেখান"
     },
     "HelpSearch": {
-        "placeholder": "সহায়তা খুঁজুন…"
+        "placeholder": "সহায়তা খুঁজুন…",
+        "noMatches": "আপনার অনুসন্ধানের সাথে কোনো সহায়তা নিবন্ধ মেলেনি।"
     },
     "WelcomeBannerDismissButton": {
         "name": "বুঝেছি"

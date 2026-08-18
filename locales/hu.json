@@ -325,7 +325,8 @@
         "showAll": "Összes megjelenítése"
     },
     "HelpSearch": {
-        "placeholder": "Keresés a súgóban…"
+        "placeholder": "Keresés a súgóban…",
+        "noMatches": "Egy súgócikk sem felelt meg a keresésednek."
     },
     "WelcomeBannerDismissButton": {
         "name": "Értem"

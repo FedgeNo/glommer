@@ -325,7 +325,8 @@
         "showAll": "Mostrar todo"
     },
     "HelpSearch": {
-        "placeholder": "Buscar na axuda…"
+        "placeholder": "Buscar na axuda…",
+        "noMatches": "Ningún artigo de axuda coincide coa túa busca."
     },
     "WelcomeBannerDismissButton": {
         "name": "Entendido"

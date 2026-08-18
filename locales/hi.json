@@ -325,7 +325,8 @@
         "showAll": "सभी दिखाएं"
     },
     "HelpSearch": {
-        "placeholder": "सहायता खोजें…"
+        "placeholder": "सहायता खोजें…",
+        "noMatches": "आपकी खोज से कोई सहायता लेख मेल नहीं खाता।"
     },
     "WelcomeBannerDismissButton": {
         "name": "समझ गया"

@@ -325,7 +325,8 @@
         "showAll": "Баарын көрсөтүү"
     },
     "HelpSearch": {
-        "placeholder": "Жардамдан издөө…"
+        "placeholder": "Жардамдан издөө…",
+        "noMatches": "Издөөңүзгө дал келген жардам макалалары жок."
     },
     "WelcomeBannerDismissButton": {
         "name": "Түшүндүм"

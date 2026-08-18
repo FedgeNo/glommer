@@ -12,6 +12,25 @@ declare(strict_types=1);
  */
 class DateFormatTest extends TestCase
 {
+    /** @return array<string, mixed> */
+    private static function words(string $locale): array
+    {
+        $path = Strings::directory() . '/' . $locale . '.json';
+        $table = json_decode((string) file_get_contents($path), true);
+
+        return is_array($table['DateFormat'] ?? null) ? $table['DateFormat'] : [];
+    }
+
+    /** @return string[] */
+    private static function tokens(string $pattern): array
+    {
+        preg_match_all('/\{[a-zA-Z]+\}/', $pattern, $matches);
+        $tokens = $matches[0];
+        sort($tokens);
+
+        return $tokens;
+    }
+
     /** 11 August 2026, 15:04 UTC - a date whose day, month and hour all differ
      *  in shape between the languages here. */
     private static function moment(): int
@@ -129,6 +148,56 @@ class DateFormatTest extends TestCase
                     );
                 }
             }
+        }
+    }
+
+    /** Every stored calendar has the complete shape both renderers require. */
+    public function testEveryLocaleHasACompleteCalendarShape(): void
+    {
+        foreach (Strings::available() as $locale) {
+            $words = self::words($locale);
+
+            foreach (['months', 'shortMonths'] as $list) {
+                $months = $words[$list] ?? null;
+                $this -> assertTrue(is_array($months), $locale . ' has no ' . $list);
+                $this -> assertSame(range(1, 12), array_keys((array) $months), $locale . ' ' . $list . ' keys');
+
+                foreach ((array) $months as $month => $name) {
+                    $this -> assertTrue(
+                        is_string($name) && trim($name) !== '',
+                        $locale . ' ' . $list . ' month ' . $month . ' is empty'
+                    );
+                }
+            }
+
+            $this -> assertSame(
+                ['{day}', '{month}', '{year}'],
+                self::tokens((string) ($words['long'] ?? '')),
+                $locale . ' long date tokens'
+            );
+            $this -> assertSame(
+                ['{day}', '{month}', '{year}'],
+                self::tokens((string) ($words['short'] ?? '')),
+                $locale . ' short date tokens'
+            );
+            $this -> assertSame(
+                ['{date}', '{time}'],
+                self::tokens((string) ($words['dateAndTime'] ?? '')),
+                $locale . ' combined date/time tokens'
+            );
+
+            $clock = $words['clock'] ?? null;
+            $expected_time_tokens = $clock === 12
+                ? ['{hour}', '{meridiem}', '{minute}']
+                : ['{hour}', '{minute}'];
+            sort($expected_time_tokens);
+
+            $this -> assertSame($expected_time_tokens, self::tokens((string) ($words['time'] ?? '')), $locale . ' time tokens');
+            $this -> assertSame(
+                StringTranslator::clockFromCalendar($locale),
+                $clock,
+                $locale . ' clock differs from ICU short-time data'
+            );
         }
     }
 }

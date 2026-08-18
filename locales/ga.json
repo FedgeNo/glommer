@@ -328,7 +328,8 @@
         "showAll": "Taispeáin uile"
     },
     "HelpSearch": {
-        "placeholder": "Cuardaigh cabhair…"
+        "placeholder": "Cuardaigh cabhair…",
+        "noMatches": "Níor mheaitseáil aon alt cabhrach do chuardach."
     },
     "WelcomeBannerDismissButton": {
         "name": "Tuigim"

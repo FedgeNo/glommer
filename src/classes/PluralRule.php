@@ -153,16 +153,9 @@ class PluralRule
      */
     private static function known(string $locale): bool
     {
-        static $languages = null;
+        $language = \Locale::getPrimaryLanguage($locale);
 
-        if ($languages === null) {
-            $languages = [];
-
-            foreach (\ResourceBundle::getLocales('') as $available) {
-                $languages[\Locale::getPrimaryLanguage($available)] = true;
-            }
-        }
-
-        return isset($languages[\Locale::getPrimaryLanguage($locale)]);
+        return $language !== ''
+            && \Locale::getDisplayLanguage($language, Strings::SOURCE_LOCALE) !== $language;
     }
 }

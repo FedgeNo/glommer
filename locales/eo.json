@@ -279,7 +279,8 @@
         "showAll": "Montri ĉiujn"
     },
     "HelpSearch": {
-        "placeholder": "Serĉi helpon…"
+        "placeholder": "Serĉi helpon…",
+        "noMatches": "Neniu helpartikolo kongruis kun via serĉo."
     },
     "WelcomeBannerDismissButton": {
         "name": "Komprenite"

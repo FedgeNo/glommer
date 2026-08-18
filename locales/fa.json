@@ -325,7 +325,8 @@
         "showAll": "نمایش همه"
     },
     "HelpSearch": {
-        "placeholder": "جستجو در راهنما…"
+        "placeholder": "جستجو در راهنما…",
+        "noMatches": "هیچ مقالهٔ راهنمایی با جستجوی شما مطابقت نداشت."
     },
     "WelcomeBannerDismissButton": {
         "name": "متوجه شدم"

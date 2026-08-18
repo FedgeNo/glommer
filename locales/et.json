@@ -325,7 +325,8 @@
         "showAll": "Näita kõiki"
     },
     "HelpSearch": {
-        "placeholder": "Otsi abist…"
+        "placeholder": "Otsi abist…",
+        "noMatches": "Ükski abiartikkel ei vastanud sinu otsingule."
     },
     "WelcomeBannerDismissButton": {
         "name": "Sain aru"

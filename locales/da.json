@@ -325,7 +325,8 @@
         "showAll": "Vis alle"
     },
     "HelpSearch": {
-        "placeholder": "Søg hjælp..."
+        "placeholder": "Søg hjælp...",
+        "noMatches": "Ingen hjælpeartikler matchede din søgning."
     },
     "WelcomeBannerDismissButton": {
         "name": "Fik det"

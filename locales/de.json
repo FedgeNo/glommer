@@ -325,7 +325,8 @@
         "showAll": "Alle anzeigen"
     },
     "HelpSearch": {
-        "placeholder": "Hilfe durchsuchen…"
+        "placeholder": "Hilfe durchsuchen…",
+        "noMatches": "Keine Hilfeartikel entsprachen deiner Suche."
     },
     "WelcomeBannerDismissButton": {
         "name": "Verstanden"

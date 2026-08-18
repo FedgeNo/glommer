@@ -327,7 +327,8 @@
         "showAll": "Zobrazit vše"
     },
     "HelpSearch": {
-        "placeholder": "Hledat v nápovědě…"
+        "placeholder": "Hledat v nápovědě…",
+        "noMatches": "Vašemu vyhledávání neodpovídají žádné články nápovědy."
     },
     "WelcomeBannerDismissButton": {
         "name": "Rozumím"

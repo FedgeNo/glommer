@@ -326,7 +326,8 @@
         "showAll": "הצגת הכול"
     },
     "HelpSearch": {
-        "placeholder": "חיפוש בעזרה…"
+        "placeholder": "חיפוש בעזרה…",
+        "noMatches": "לא נמצאו מאמרי עזרה התואמים לחיפוש שלך."
     },
     "WelcomeBannerDismissButton": {
         "name": "הבנתי"

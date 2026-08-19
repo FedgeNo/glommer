@@ -13,9 +13,14 @@ declare(strict_types=1);
  */
 class TopicRouteTest extends DatabaseTestCase
 {
-    private static function trend(string $type, string $value, float $score = 1.0): void
+    private static function trend(
+        string $type,
+        string $value,
+        float $score = 1.0,
+        ?string $computed_at = null
+    ): void
     {
-        $computed_at = date('Y-m-d H:i:s');
+        $computed_at ??= date('Y-m-d H:i:s');
 
         // Reading the trending list draws a lottery that recomputes it when it
         // looks stale, and a recompute deletes everything the current pass did
@@ -127,8 +132,9 @@ DELETE
 
     public function testOneKindIsListedWithoutTheOthers(): void
     {
-        self::trend('person', 'RouteTestPerson' . bin2hex(random_bytes(3)));
-        self::trend('org', 'RouteTestOrg' . bin2hex(random_bytes(3)));
+        $computed_at = date('Y-m-d H:i:s');
+        self::trend('person', 'RouteTestPerson' . bin2hex(random_bytes(3)), 1.0, $computed_at);
+        self::trend('org', 'RouteTestOrg' . bin2hex(random_bytes(3)), 1.0, $computed_at);
 
         $people = (new TrendingEntityList(['type' => 'person'])) -> items;
         $orgs = (new TrendingEntityList(['type' => 'org'])) -> items;

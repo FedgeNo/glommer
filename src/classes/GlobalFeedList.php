@@ -34,10 +34,21 @@ class GlobalFeedList extends FeedList
 {
     protected string $feedType = 'global';
 
+    public ?int $beforePostId = null;
+
     protected function rows(): array
     {
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+        $boundary = $this -> beforePostId === null ? '' : ' AND `Posts`.`postId` < ?';
+        $types = $this -> beforePostId === null ? 'iiii' : 'iiiii';
+        $parameters = [$viewer_id, $viewer_id, $not_banned];
+
+        if ($this -> beforePostId !== null) {
+            $parameters[] = $this -> beforePostId;
+        }
+
+        $parameters[] = static::PAGE_SIZE + 1;
 
         return Post::fromRowsWithItems(DB::rows('
 SELECT STRAIGHT_JOIN `Posts`.*,
@@ -47,9 +58,16 @@ SELECT STRAIGHT_JOIN `Posts`.*,
     EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `Posts` FORCE INDEX (`parentId_remoteObjectURI_postId`)
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL
+    WHERE `Posts`.`parentId` IS NULL AND `Users`.`banned` = ? AND `Posts`.`remoteObjectURI` IS NULL' . $boundary . '
     ORDER BY `Posts`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'iiiii', $viewer_id, $viewer_id, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
+    LIMIT ?
+', 'Post', $types, ...$parameters));
+    }
+
+    protected function cursor(): ?array
+    {
+        $last = end($this -> items);
+
+        return $last instanceof Post ? ['postId' => (int) $last -> postId] : null;
     }
 }

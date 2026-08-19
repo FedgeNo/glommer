@@ -22,14 +22,14 @@ class NearbyFeedTest extends DatabaseTestCase
      */
     public const TEST_LIMIT = 3;
 
-    private static function locatedPost(float $latitude, float $longitude): int
+    private static function locatedPost(float $latitude, float $longitude, ?string $remote_object_uri = null): int
     {
         $user_id = self::createUser();
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`)
-    VALUES (?, ?, ?)
-', 'iss', $user_id, 'located', json_encode([['insert' => "located\n"]]));
+INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`, `remoteObjectURI`)
+    VALUES (?, ?, ?, ?)
+', 'isss', $user_id, 'located', json_encode([['insert' => "located\n"]]), $remote_object_uri);
 
         $post_id = (int) mysqli_insert_id(DB::connection());
 
@@ -61,9 +61,13 @@ INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
      */
     private function referenceResults(float $latitude, float $longitude): array
     {
+        $local_only = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL';
         $rows = DB::rows('
-SELECT `postId`, `latitude`, `longitude`
+SELECT `PostLocations`.`postId`, `PostLocations`.`latitude`, `PostLocations`.`longitude`
     FROM `PostLocations`
+    JOIN `Posts` ON `Posts`.`postId` = `PostLocations`.`postId`' . $local_only . '
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
+    WHERE `Users`.`banned` = 0
 ', \stdClass::class);
 
         $distances = [];
@@ -117,6 +121,33 @@ SELECT `postId`, `latitude`, `longitude`
 
         $this -> assertSame([], $this -> feedResults(-75.0, -100.0));
         $this -> assertSame([], $this -> referenceResults(-75.0, -100.0), 'the reference must agree that nothing qualifies');
+    }
+
+    public function testRemotePostsAreMembersOnlyNearby(): void
+    {
+        $latitude = -20.0;
+        $longitude = 130.0;
+        $remote_id = self::locatedPost($latitude, $longitude, 'https://remote.example/posts/' . bin2hex(random_bytes(4)));
+        $previous_user_id = $_SESSION['userId'] ?? null;
+        unset($_SESSION['userId']);
+        Auth::clearUserCache();
+
+        try {
+            $this -> assertFalse(in_array($remote_id, $this -> feedResults($latitude, $longitude), true));
+
+            $_SESSION['userId'] = self::createUser();
+            Auth::clearUserCache();
+
+            $this -> assertTrue(in_array($remote_id, $this -> feedResults($latitude, $longitude), true));
+        } finally {
+            if ($previous_user_id === null) {
+                unset($_SESSION['userId']);
+            } else {
+                $_SESSION['userId'] = $previous_user_id;
+            }
+
+            Auth::clearUserCache();
+        }
     }
 
     public function testTheHeadingNamesWhereNearbyIs(): void

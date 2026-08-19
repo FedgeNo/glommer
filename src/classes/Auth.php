@@ -158,6 +158,10 @@ UPDATE `Users`
     public static function requireLogin(): void
     {
         if (!self::check()) {
+            if (defined('IS_API_REQUEST')) {
+                JSONResponse::error('Not logged in', 401) -> send();
+            }
+
             header('Location: ' . ServerURL::absolute('/login'));
             exit;
         }

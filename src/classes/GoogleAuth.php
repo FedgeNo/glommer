@@ -163,7 +163,20 @@ class GoogleAuth
      */
     public static function resolveUser(string $email, ?string $name): ?User
     {
+        // The address remains one indivisible claim from the reservation check
+        // through account creation, matching password signup and email change.
+        $rate_key = EmailChangeRevert::addressLock($email);
+        RateLimiter::acquireLock($rate_key);
 
+        try {
+            return self::resolveUserWhileLocked($email, $name);
+        } finally {
+            RateLimiter::releaseLock($rate_key);
+        }
+    }
+
+    private static function resolveUserWhileLocked(string $email, ?string $name): ?User
+    {
         $existing = DB::row('
 SELECT *
     FROM `Users`

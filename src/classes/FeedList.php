@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 /**
  * A page of feed posts, grown by infinite scroll off the scroll config here -
- * the client asks for the next page by saying how many posts it already shows.
- * Each kind of feed is its own subclass with its own query; feedType names it
- * for api/feed.php so it knows which query to run.
+ * the client asks for the next page. Each kind of feed is its own subclass
+ * with its own query; feedType names it for api/feed.php so it knows which
+ * query to run.
  */
 abstract class FeedList extends ItemList
 {
@@ -27,11 +27,26 @@ abstract class FeedList extends ItemList
      */
     protected function scrollConfig(): ?array
     {
-        return [
+        $config = [
             'endpoint' => '/api/feed',
             'itemType' => 'Post',
             'feedType' => $this -> feedType,
         ];
+
+        $cursor = $this -> cursor();
+
+        return $cursor === null ? $config : $config + ['cursor' => $cursor];
+    }
+
+    /** @return array<string, int|string>|null */
+    protected function cursor(): ?array
+    {
+        return null;
+    }
+
+    public function toJSON(): array
+    {
+        return parent::toJSON() + ['cursor' => $this -> cursor()];
     }
 
     /**

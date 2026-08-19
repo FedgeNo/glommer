@@ -19,13 +19,9 @@ if (!Auth::check()) {
 
 // The most expensive search here - full text across every post - and the one
 // with an offset the caller chooses, so a loop walks the whole corpus.
-$rate_key = 'search-posts:' . Auth::id();
-
-if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+if (SearchRateLimiter::tooManyAttempts('posts', (int) Auth::id())) {
     JSONResponse::error('Too many searches. Please slow down.', 429) -> send();
 }
-
-RateLimiter::recordAttempt($rate_key);
 
 $query = trim((string) ($payload['q'] ?? ''));
 // How many results the client already shows - the next page starts there.

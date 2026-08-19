@@ -18,6 +18,28 @@ $feed_type = (string) ($payload['feedType'] ?? 'global');
 $offset = max(0, (int) ($payload['offset'] ?? 0));
 $profile_user_id = (int) ($payload['userId'] ?? 0);
 $tag = strtolower(trim((string) ($payload['tag'] ?? '')));
+$cursor = is_array($payload['cursor'] ?? null) ? $payload['cursor'] : [];
+$before_post_id = (int) ($cursor['postId'] ?? 0);
+$before_sort_at = (string) ($cursor['sortAt'] ?? '');
+
+if ($before_sort_at !== '' && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $before_sort_at) !== 1) {
+    JSONResponse::error('Invalid request', 422) -> send();
+}
+
+if (!Auth::check()) {
+    $rate_keys = [
+        'feed-ip:' . (ServerURL::clientIP() ?? 'unknown'),
+        'feed-client:' . hash('sha256', session_id()),
+    ];
+
+    foreach ($rate_keys as $rate_key) {
+        if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
+            JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+        }
+
+        RateLimiter::recordAttempt($rate_key);
+    }
+}
 
 if (!in_array($feed_type, ['global', 'friends', 'user', 'tag', 'relay'], true)) {
     JSONResponse::error('Invalid request', 422) -> send();
@@ -52,11 +74,15 @@ if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
 // Each feed owns its query and loads one page of hydrated posts (items,
 // author, the viewer's like/bookmark counts).
 $feed = match ($feed_type) {
-    'friends' => new FriendsFeedList(['userId' => (int) Auth::user() -> userId, 'offset' => $offset]),
+    'friends' => new FriendsFeedList([
+        'userId' => (int) Auth::user() -> userId,
+        'beforeSortAt' => $before_sort_at !== '' && $before_post_id > 0 ? $before_sort_at : null,
+        'beforePostId' => $before_sort_at !== '' && $before_post_id > 0 ? $before_post_id : null,
+    ]),
     'user' => new ProfileFeedList(['userId' => $profile_user_id, 'offset' => $offset]),
     'tag' => new TagFeedList(['tag' => $tag, 'offset' => $offset]),
     'relay' => new RelayFeedList(['offset' => $offset]),
-    default => new GlobalFeedList(['offset' => $offset]),
+    default => new GlobalFeedList(['beforePostId' => $before_post_id > 0 ? $before_post_id : null]),
 };
 
 $page = $feed -> toJSON();
@@ -75,4 +101,5 @@ foreach ($page['items'] as $post) {
 JSONResponse::success([
     'posts' => $post_payloads,
     'hasMore' => $page['hasMore'],
+    'cursor' => $page['cursor'],
 ]) -> send();

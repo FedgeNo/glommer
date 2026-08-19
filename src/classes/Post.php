@@ -65,6 +65,9 @@ class Post extends Article
     // null everywhere else.
     public ?string $repostedBySlug = null;
     public ?string $repostedByTitle = null;
+    // The moment a friends/profile feed row entered that feed, selected from
+    // Timelines or Announces for stable ordering and pagination.
+    public ?string $sortAt = null;
 
     // Hydrated for a whole page at once by fromRowsWithItems, so the action
     // bar can be built without asking anything of its own. Null means nobody

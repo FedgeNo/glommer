@@ -660,8 +660,9 @@ bumps a session version that invalidates every other session on the account.
 
 **"Remember me" cookies** are a selector plus a validator, and only a SHA-256
 of the validator is stored - the database cannot be read for a working cookie.
-Each one is single-use and rotates as it is spent, so a cookie arriving with a
-known selector and the wrong validator means a copy is in circulation, and
+Each one is single-use and rotates as it is spent. The spent selector remains
+as a tombstone until its original expiry, so either reuse of that selector or a
+known selector with the wrong validator means a copy is in circulation, and
 every token on that account is revoked.
 
 **CSRF** is checked in one place, `init.php`, on every POST. Two endpoints are

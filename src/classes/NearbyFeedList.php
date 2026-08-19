@@ -69,6 +69,7 @@ SELECT COUNT(*) AS `total`
 
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+        $local_only = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL';
         $placeholders = implode(', ', array_fill(0, count($nearest_ids), '?'));
 
         return Post::fromRowsWithItems(DB::rows('
@@ -79,7 +80,7 @@ SELECT `Posts`.*,
     EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`postId` IN (' . $placeholders . ') AND `Users`.`banned` = ?
+    WHERE `Posts`.`postId` IN (' . $placeholders . ') AND `Users`.`banned` = ?' . $local_only . '
     ORDER BY `Posts`.`postId` DESC
     LIMIT ? OFFSET ?
 ', 'Post', 'ii' . str_repeat('i', count($nearest_ids)) . 'iii', $viewer_id, $viewer_id, ...[...$nearest_ids, $not_banned, static::PAGE_SIZE + 1, $this -> offset]));
@@ -132,15 +133,21 @@ SELECT `Posts`.*,
         // so the box never narrows below the range it stands for, and near a
         // pole (or once it spans the globe) the predicate is simply dropped -
         // every longitude is close there.
-        $where = ' WHERE `latitude` BETWEEN ? AND ?';
-        $types = 'ddddd';
+        $where = ' WHERE `PostLocations`.`latitude` BETWEEN ? AND ?
+            AND `Users`.`banned` = ?';
+        $types = 'dddddi';
         $parameters = [
             $this -> latitude,
             $this -> longitude,
             $this -> latitude,
             max(-90.0, $this -> latitude - $half_width),
             min(90.0, $this -> latitude + $half_width),
+            0,
         ];
+
+        if (!Auth::check()) {
+            $where .= ' AND `Posts`.`remoteObjectURI` IS NULL';
+        }
 
         $lng_half_width = $half_width / max(cos(deg2rad($this -> latitude)), 1e-9);
 
@@ -170,8 +177,10 @@ SELECT `Posts`.*,
         }
 
         return DB::rows('
-SELECT `postId`, ' . $distance . ' AS `distance`
-    FROM `PostLocations`' . $where . '
+SELECT `PostLocations`.`postId`, ' . $distance . ' AS `distance`
+    FROM `PostLocations`
+    JOIN `Posts` ON `Posts`.`postId` = `PostLocations`.`postId`
+    JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`' . $where . '
     ORDER BY `distance`
     LIMIT ' . $limit . '
 ', \stdClass::class, $types, ...$parameters);

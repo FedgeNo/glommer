@@ -17,6 +17,7 @@ class ProfileFeedList extends FeedList
     {
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+        $local_only = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL';
 
         // Two index-served halves - the member's own posts newest-first, and
         // their reposts by when they reposted - merged by sorting only the
@@ -37,7 +38,7 @@ SELECT * FROM (
         EXISTS(SELECT 1 FROM `Bookmarks` WHERE `Bookmarks`.`postId` = `Posts`.`postId` AND `Bookmarks`.`userId` = ?) AS `bookmarked`
         FROM `Posts`
         JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-        WHERE `Posts`.`userId` = ? AND `Users`.`banned` = ?
+        WHERE `Posts`.`userId` = ? AND `Posts`.`parentId` IS NULL AND `Users`.`banned` = ?' . $local_only . '
         ORDER BY `Posts`.`postId` DESC
         LIMIT ?)
     UNION ALL
@@ -53,7 +54,7 @@ SELECT * FROM (
         JOIN `Posts` ON `Posts`.`postId` = `Announces`.`postId`
         JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
         JOIN `Users` `reposter` ON `reposter`.`userId` = `Announces`.`userId`
-        WHERE `Announces`.`userId` = ? AND `Users`.`banned` = ?
+        WHERE `Announces`.`userId` = ? AND `Users`.`banned` = ?' . $local_only . '
         ORDER BY `Announces`.`createdAt` DESC
         LIMIT ?)
 ) `feed`

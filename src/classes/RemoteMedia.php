@@ -101,12 +101,18 @@ SELECT `itemId`, `type`, `remoteURL`
         }
 
         $started = false;
+        $range = self::requestedRange((string) $item -> type);
+        $headers = ['Accept: ' . implode(', ', $allowed)];
+
+        if ($range !== null) {
+            $headers[] = 'Range: ' . $range;
+        }
 
         $delivered = SafeHTTPFetcher::stream(
             (string) $item -> remoteURL,
-            ['Accept: ' . implode(', ', $allowed)],
+            $headers,
             self::MAX_BYTES,
-            static function (string $chunk, string $content_type) use ($allowed, &$started): bool {
+            static function (string $chunk, string $content_type, array $response) use ($allowed, $range, &$started): bool {
                 if (!$started) {
                     // Decided on the first chunk, before a single byte is
                     // written, so a refusal can still be a clean status code.
@@ -116,7 +122,13 @@ SELECT `itemId`, `type`, `remoteURL`
                         return false;
                     }
 
-                    self::sendHeaders($type);
+                    $partial = self::partialResponse($range, $response);
+
+                    if (($response['status'] ?? 0) === 206 && $partial === null) {
+                        return false;
+                    }
+
+                    self::sendHeaders($type, $partial);
                     $started = true;
                 }
 
@@ -134,8 +146,88 @@ SELECT `itemId`, `type`, `remoteURL`
         }
     }
 
-    private static function sendHeaders(string $content_type): void
+    /** Returns one safe single byte range, or null when the header is ignored. */
+    private static function requestedRange(string $item_type): ?string
     {
+        if (!in_array($item_type, ['VideoItem', 'AudioItem'], true)) {
+            return null;
+        }
+
+        $range = trim((string) ($_SERVER['HTTP_RANGE'] ?? ''));
+
+        return self::normalizeRange($range);
+    }
+
+    private static function normalizeRange(string $range): ?string
+    {
+        if (preg_match('/^bytes=(\d*)-(\d*)$/', $range, $match) !== 1 || ($match[1] === '' && $match[2] === '')) {
+            return null;
+        }
+
+        if ($match[1] === '') {
+            return (int) $match[2] > 0 ? $range : null;
+        }
+
+        if ($match[2] !== '' && (int) $match[2] < (int) $match[1]) {
+            return null;
+        }
+
+        return $range;
+    }
+
+    /**
+     * @param array{status?: int, headers?: array<string, string>} $response
+     * @return array{acceptRanges: string, contentRange: string}|null
+     */
+    private static function partialResponse(?string $requested_range, array $response): ?array
+    {
+        if ($requested_range === null || ($response['status'] ?? 0) !== 206) {
+            return null;
+        }
+
+        $headers = $response['headers'] ?? [];
+        $accept_ranges = strtolower((string) ($headers['accept-ranges'] ?? ''));
+        $content_range = (string) ($headers['content-range'] ?? '');
+
+        if ($accept_ranges !== 'bytes' || preg_match('/^bytes (\d+)-(\d+)\/(\d+)$/', $content_range, $match) !== 1) {
+            return null;
+        }
+
+        $start = (int) $match[1];
+        $end = (int) $match[2];
+        $total = (int) $match[3];
+
+        if ($start > $end || $end >= $total) {
+            return null;
+        }
+
+        $requested = substr($requested_range, strlen('bytes='));
+
+        if (str_starts_with($requested, '-')) {
+            $suffix_length = (int) substr($requested, 1);
+            $matches_request = $suffix_length > 0 && $end === $total - 1 && $end - $start + 1 <= $suffix_length;
+        } else {
+            [$requested_start, $requested_end] = explode('-', $requested, 2);
+            $matches_request = $start === (int) $requested_start
+                && ($requested_end === '' || $end <= (int) $requested_end);
+        }
+
+        if (!$matches_request) {
+            return null;
+        }
+
+        return ['acceptRanges' => 'bytes', 'contentRange' => $content_range];
+    }
+
+    /** @param array{acceptRanges: string, contentRange: string}|null $partial */
+    private static function sendHeaders(string $content_type, ?array $partial): void
+    {
+        if ($partial !== null) {
+            http_response_code(206);
+            header('Accept-Ranges: ' . $partial['acceptRanges']);
+            header('Content-Range: ' . $partial['contentRange']);
+        }
+
         header('Content-Type: ' . $content_type);
 
         // The file is another server's, and it is being served from this

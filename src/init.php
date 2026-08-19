@@ -12,7 +12,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.61';
+const GLOMMER_VERSION = '0.9.62';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -90,13 +90,7 @@ session_start();
 setcookie(
     'CSRF-TOKEN',
     CSRF::token(),
-    [
-        'expires'  => 0,              // session cookie
-        'path'     => '/',
-        'secure'   => true,           // omit if local dev without HTTPS
-        'httponly' => false,          // must be false for JS to read it
-        'samesite' => 'Strict'
-    ]
+    CSRF::cookieOptions()
 );
 
 SecurityHeaders::send();

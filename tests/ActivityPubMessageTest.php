@@ -145,6 +145,27 @@ SELECT `body`
         $this -> assertTrue(str_contains((string) $row -> body, 'second'));
     }
 
+    public function testAnOversizedBodyIsCutAtAValidUTF8Boundary(): void
+    {
+        $member = self::localUser();
+        $them = self::remoteUser();
+        $body = str_repeat('a', 65534) . "\u{1F642}";
+
+        ActivityPubMessage::received(self::note($member, $body), [], $them);
+
+        $row = DB::row('
+SELECT `body`
+    FROM `Messages`
+    WHERE `senderId` = ? AND `recipientId` = ?
+    ORDER BY `messageId` DESC
+    LIMIT 1
+', 'Message', 'ii', (int) $them -> userId, (int) $member -> userId);
+
+        $this -> assertNotNull($row);
+        $this -> assertTrue(strlen((string) $row -> body) <= 65535);
+        $this -> assertTrue(mb_check_encoding((string) $row -> body, 'UTF-8'));
+    }
+
     public function testAMessageForNobodyHereIsDropped(): void
     {
         $them = self::remoteUser();

@@ -214,6 +214,54 @@ SELECT *
         $this -> assertSame($reposter -> slug, $reposted[0] -> repostedBySlug);
     }
 
+    public function testARemoteRepostOnAProfileIsMembersOnly(): void
+    {
+        $author = self::localUser();
+        $reposter = self::localUser();
+        $remote_id = self::post((int) $author -> userId, 'https://remote.example/posts/' . bin2hex(random_bytes(4)));
+        Repost::create((int) $reposter -> userId, $remote_id);
+
+        $previous_user_id = $_SESSION['userId'] ?? null;
+        unset($_SESSION['userId']);
+        Auth::clearUserCache();
+
+        try {
+            $public_ids = array_map(static fn (Post $post): int => (int) $post -> postId, new ProfileFeedList(['userId' => (int) $reposter -> userId]) -> items);
+            $this -> assertFalse(in_array($remote_id, $public_ids, true));
+
+            $_SESSION['userId'] = (int) $reposter -> userId;
+            Auth::clearUserCache();
+
+            $member_ids = array_map(static fn (Post $post): int => (int) $post -> postId, new ProfileFeedList(['userId' => (int) $reposter -> userId]) -> items);
+            $this -> assertTrue(in_array($remote_id, $member_ids, true));
+        } finally {
+            if ($previous_user_id === null) {
+                unset($_SESSION['userId']);
+            } else {
+                $_SESSION['userId'] = $previous_user_id;
+            }
+
+            Auth::clearUserCache();
+        }
+    }
+
+    public function testAuthoredRepliesDoNotAppearOnAProfile(): void
+    {
+        $author = self::localUser();
+        $parent_id = self::post((int) $author -> userId);
+
+        DB::run('
+INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`)
+    VALUES (?, ?, ?, ?)
+', 'iiss', $author -> userId, $parent_id, 'reply', json_encode([['insert' => "reply\n"]]));
+
+        $reply_id = (int) mysqli_insert_id(DB::connection());
+        $profile_ids = array_map(static fn (Post $post): int => (int) $post -> postId, new ProfileFeedList(['userId' => (int) $author -> userId]) -> items);
+
+        $this -> assertFalse(in_array($reply_id, $profile_ids, true));
+        $this -> assertTrue(in_array($parent_id, $profile_ids, true));
+    }
+
     public function testAFreshRepostOfAnOldPostLeadsTheFriendsFeed(): void
     {
         // Ordered by the post alone, a repost of anything older than a page

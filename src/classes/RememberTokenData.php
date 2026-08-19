@@ -15,6 +15,7 @@ class RememberTokenData
     public ?string $validatorHash = null;
     public ?string $createdAt = null;
     public ?string $lastUsedAt = null;
+    public ?string $consumedAt = null;
     public ?string $userAgent = null;
     public ?string $ipAddress = null;
 }

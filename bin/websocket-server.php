@@ -597,26 +597,13 @@ function handle_push_request(int $id): void
     // further bytes on this connection re-process it from the top, delivering
     // the same payload again.
     $connections[$id]['recvBuffer'] = substr($connections[$id]['recvBuffer'], $newline_pos + 1);
-    $request = json_decode($line, true);
+    $request = WebSocketPushRequest::fromJSON($line, is_string($ws_secret) ? $ws_secret : null);
 
     $delivered = 0;
 
-    if (
-        is_array($request)
-        && isset($request['secret'], $request['userId'], $request['payload'])
-        && is_string($request['secret'])
-        // No secret configured (null) - reject every push rather than let
-        // hash_equals be called with a null expected value.
-        && is_string($ws_secret) && $ws_secret !== ''
-        && hash_equals($ws_secret, $request['secret'])
-        // A whole number and nothing else. Casting whatever arrived turns an
-        // array into 1 and a word into 0, so a caller that got its own
-        // argument wrong would deliver somebody's notification to userId 1 -
-        // the admin - rather than to nobody.
-        && (is_int($request['userId']) || (is_string($request['userId']) && ctype_digit($request['userId'])))
-    ) {
-        $target_user_id = (int) $request['userId'];
-        $encoded_payload = json_encode($request['payload']);
+    if ($request !== null) {
+        $target_user_id = $request -> userId;
+        $encoded_payload = json_encode($request -> payload);
     } else {
         $encoded_payload = false;
     }

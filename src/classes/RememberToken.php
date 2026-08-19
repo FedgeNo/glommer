@@ -7,9 +7,10 @@ declare(strict_types=1);
  * lookup key) and a validator (the secret, stored only as a SHA-256 hash - a
  * database leak alone can't forge a cookie). The pair travels in one cookie as
  * "selector:validator". Tokens are single-use: every successful cookie login
- * deletes the used row and issues a fresh pair, so a copied cookie stops
- * working the next time either copy is used - and a validator mismatch on a
- * known selector (one copy already rotated) revokes every token the user has.
+ * marks the used row consumed and issues a fresh pair in the same transaction.
+ * Keeping the consumed selector until its original expiry lets a stale copied
+ * cookie be recognised as reuse, at which point every token for the user is
+ * revoked rather than guessing which browser holds the legitimate copy.
  */
 class RememberToken
 {
@@ -20,6 +21,7 @@ class RememberToken
     public ?string $expiresAt = null;
     public ?string $createdAt = null;
     public ?string $lastUsedAt = null;
+    public ?string $consumedAt = null;
     public ?string $userAgent = null;
     public ?string $ipAddress = null;
 
@@ -35,6 +37,15 @@ class RememberToken
      * gets NOW(), same as before this existed.
      */
     public static function issue(int $user_id, ?string $carried_created_at = null): void
+    {
+        $cookie = self::create($user_id, $carried_created_at);
+
+        self::sweepExpired();
+        self::setCookie($cookie, time() + self::TTL_DAYS * 86400);
+    }
+
+    /** Creates the database row and returns the selector/validator cookie value. */
+    private static function create(int $user_id, ?string $carried_created_at = null): string
     {
         $validator = bin2hex(random_bytes(32));
         $validator_hash = hash('sha256', $validator);
@@ -68,23 +79,13 @@ INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`
             }
         }
 
-        // Occasionally sweep out expired rows (same lottery approach as
-        // RateLimiter) so the table doesn't grow forever.
-        if (mt_rand(1, 100) === 1) {
-            DB::run('
-DELETE
-    FROM `RememberTokens`
-    WHERE `expiresAt` <= NOW()
-');
-        }
-
-        self::setCookie($selector . ':' . $validator, time() + $ttl_days * 86400);
+        return $selector . ':' . $validator;
     }
 
     /**
      * Re-establishes a session from the remember-me cookie, if a valid one is
      * present. Called from init.php for requests that arrive without a
-     * session. The used token is rotated (deleted and reissued) on success.
+     * session. The used token is marked consumed and replaced on success.
      */
     public static function loginFromCookie(): void
     {
@@ -97,7 +98,7 @@ DELETE
         [$selector, $validator] = explode(':', $cookie, 2);
 
         $token = DB::row('
-SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
+SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`, `consumedAt`
     FROM `RememberTokens`
     WHERE `selector` = ? AND `expiresAt` > NOW()
 ', 'RememberTokenData', 's', $selector);
@@ -108,12 +109,10 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
             return;
         }
 
-        if (!hash_equals((string) $token -> validatorHash, hash('sha256', $validator))) {
-            // The selector matched but the secret didn't - this cookie is a
-            // stale copy of a token that was already rotated, which is what a
-            // theft looks like (the thief's copy logged in and rotated it, or
-            // this is the thief holding the stale copy). Revoke everything
-            // rather than guess which side is legitimate.
+        if ($token -> consumedAt !== null || !hash_equals((string) $token -> validatorHash, hash('sha256', $validator))) {
+            // A consumed selector or a known selector with the wrong secret is
+            // a stale copy. Revoke everything rather than guess which browser
+            // holds the legitimate copy.
             self::purgeForUser((int) $token -> userId);
             self::clearCookie();
 
@@ -129,10 +128,21 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
             return;
         }
 
-        self::deleteToken((int) $token -> tokenId);
+        $replacement = self::consumeAndReplace($token);
+
+        if ($replacement === null) {
+            // Another request consumed this token after our read. Treat the
+            // concurrent reuse exactly like a stale cookie discovered above.
+            self::purgeForUser((int) $token -> userId);
+            self::clearCookie();
+
+            return;
+        }
+
         Auth::login($user);
         LoginFingerprint::record((int) $user -> userId);
-        self::issue((int) $user -> userId, (string) $token -> createdAt);
+        self::sweepExpired();
+        self::setCookie($replacement, time() + self::TTL_DAYS * 86400);
     }
 
     /**
@@ -149,7 +159,7 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`
             DB::run('
 DELETE
     FROM `RememberTokens`
-    WHERE `selector` = ?
+    WHERE `selector` = ? AND `consumedAt` IS NULL
 ', 's', $selector);
         }
 
@@ -210,6 +220,39 @@ DELETE
     FROM `RememberTokens`
     WHERE `tokenId` = ?
 ', 'i', $token_id);
+    }
+
+    /** Atomically spends one token and creates the only valid successor. */
+    private static function consumeAndReplace(RememberTokenData $token): ?string
+    {
+        return DB::transaction(static function () use ($token): ?string {
+            $consumed = DB::run('
+UPDATE `RememberTokens`
+    SET `consumedAt` = NOW(), `lastUsedAt` = NOW()
+    WHERE `tokenId` = ? AND `consumedAt` IS NULL
+', 'i', $token -> tokenId);
+
+            if (mysqli_stmt_affected_rows($consumed) !== 1) {
+                return null;
+            }
+
+            return self::create((int) $token -> userId, (string) $token -> createdAt);
+        });
+    }
+
+    private static function sweepExpired(): void
+    {
+        // Same lottery approach as RateLimiter keeps tombstones around for
+        // theft detection without letting expired rows accumulate forever.
+        if (mt_rand(1, 100) !== 1) {
+            return;
+        }
+
+        DB::run('
+DELETE
+    FROM `RememberTokens`
+    WHERE `expiresAt` <= NOW()
+');
     }
 
     private static function setCookie(string $value, int $expires): void

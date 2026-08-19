@@ -24,7 +24,7 @@ class RememberedDeviceList extends ItemList
         return DB::rows('
 SELECT `tokenId`, `selector`, `createdAt`, `lastUsedAt`, `userAgent`, `ipAddress`
     FROM `RememberTokens`
-    WHERE `userId` = ? AND `expiresAt` > NOW()
+    WHERE `userId` = ? AND `expiresAt` > NOW() AND `consumedAt` IS NULL
     ORDER BY `lastUsedAt` DESC
     LIMIT ? OFFSET ?
 ', 'RememberedDevice', 'iii', $this -> userId, static::PAGE_SIZE + 1, $this -> offset);

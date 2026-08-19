@@ -146,12 +146,13 @@ if ($link_url_value !== null && $media_count > 0 && !$was_link_post) {
 }
 
 $edited_at = date('Y-m-d H:i:s');
+$detected_language = LanguageDetector::of((string) $description_value);
 
 DB::run('
 UPDATE `Posts`
-    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `sensitive` = ?, `contentWarning` = ?, `editedAt` = ?
+    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `sensitive` = ?, `contentWarning` = ?, `editedAt` = ?, `detectedLanguage` = ?
     WHERE `postId` = ?
-', 'ssssissi', $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $content_warning, $edited_at, $post_id);
+', 'ssssisssi', $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive, $content_warning, $edited_at, $detected_language, $post_id);
 
 // Each alt text lands only on a row that is this post's own image - the
 // WHERE re-checks both, so an itemId belonging to someone else's post (or to

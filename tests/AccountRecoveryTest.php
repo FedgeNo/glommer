@@ -105,6 +105,51 @@ SELECT `email`
         return (string) $create -> invoke(null, $user_id, $previous_email);
     }
 
+    private function lockResult(\mysqli $connection, string $lock_name): int
+    {
+        $stmt = mysqli_prepare($connection, 'SELECT GET_LOCK(?, 0)');
+        mysqli_stmt_bind_param($stmt, 's', $lock_name);
+        mysqli_stmt_execute($stmt);
+
+        return (int) mysqli_fetch_row(mysqli_stmt_get_result($stmt))[0];
+    }
+
+    private function releaseLock(\mysqli $connection, string $lock_name): void
+    {
+        $stmt = mysqli_prepare($connection, 'SELECT RELEASE_LOCK(?)');
+        mysqli_stmt_bind_param($stmt, 's', $lock_name);
+        mysqli_stmt_execute($stmt);
+    }
+
+    public function testTheAddressLockExcludesASecondDatabaseConnection(): void
+    {
+        $email = 'lock-' . bin2hex(random_bytes(4)) . '@example.test';
+        $rate_key = EmailChangeRevert::addressLock($email);
+        $lock_name = 'ratelimit:' . md5($rate_key);
+        $second_connection = mysqli_connect(
+            (string) Config::get('host'),
+            (string) Config::get('username'),
+            (string) Config::get('password'),
+            (string) Config::get('database'),
+            (int) Config::get('port')
+        );
+
+        RateLimiter::acquireLock($rate_key);
+
+        try {
+            $this -> assertSame(0, $this -> lockResult($second_connection, $lock_name), 'the second connection cannot enter the address claim');
+        } finally {
+            RateLimiter::releaseLock($rate_key);
+        }
+
+        try {
+            $this -> assertSame(1, $this -> lockResult($second_connection, $lock_name), 'the next claimant enters after release');
+        } finally {
+            $this -> releaseLock($second_connection, $lock_name);
+            mysqli_close($second_connection);
+        }
+    }
+
     public function testARevertPutsTheAddressBackAndEndsTheSessions(): void
     {
         $user_id = self::createUser();
@@ -175,5 +220,46 @@ UPDATE `Users`
         $this -> assertFalse(EmailChangeRevert::consume($token));
         $this -> assertSame($before, $this -> emailOf($user_id), 'nothing moved');
         $this -> assertSame($original, $this -> emailOf($other_id), 'and the other account kept it');
+    }
+
+    public function testALaterRevertFailureRollsTheAddressBackAndPreservesTheToken(): void
+    {
+        $user_id = self::createUser();
+        $original = $this -> emailOf($user_id);
+        $taken_over = 'late-failure-' . bin2hex(random_bytes(4)) . '@example.test';
+        $token = $this -> revertToken($user_id, $original);
+
+        DB::run('
+UPDATE `Users`
+    SET `email` = ?
+    WHERE `userId` = ?
+', 'si', $taken_over, $user_id);
+
+        mysqli_query(DB::connection(), '
+CREATE TRIGGER `AccountRecoveryTestFailSessionBump`
+    BEFORE UPDATE ON `Users`
+    FOR EACH ROW
+    BEGIN
+        IF NEW.`sessionVersion` <> OLD.`sessionVersion` THEN
+            SIGNAL SQLSTATE \'45000\' SET MESSAGE_TEXT = \'forced late recovery failure\';
+        END IF;
+    END
+');
+
+        try {
+            try {
+                EmailChangeRevert::consume($token);
+                $this -> assertTrue(false, 'the forced late failure must escape');
+            } catch (\mysqli_sql_exception $exception) {
+                $this -> assertTrue(str_contains($exception -> getMessage(), 'forced late recovery failure'));
+            }
+
+            $this -> assertSame($taken_over, $this -> emailOf($user_id), 'the earlier address update rolled back');
+        } finally {
+            mysqli_query(DB::connection(), 'DROP TRIGGER IF EXISTS `AccountRecoveryTestFailSessionBump`');
+        }
+
+        $this -> assertTrue(EmailChangeRevert::consume($token), 'rollback left the recovery token usable');
+        $this -> assertSame($original, $this -> emailOf($user_id));
     }
 }

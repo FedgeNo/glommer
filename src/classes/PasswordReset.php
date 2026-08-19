@@ -71,26 +71,28 @@ SELECT `userId`
 
     public static function consume(string $token, string $new_password): bool
     {
-        $user_id = self::claim($token);
-
-        if ($user_id === null) {
-            return false;
-        }
-
         $hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-        DB::run('
+        return DB::transaction(static function () use ($token, $hash): bool {
+            $user_id = self::claim($token);
+
+            if ($user_id === null) {
+                return false;
+            }
+
+            DB::run('
 UPDATE `Users`
     SET `passwordHash` = ?
     WHERE `userId` = ?
 ', 'si', $hash, $user_id);
 
-        // The old password's sessions and remember-me tokens die with it -
-        // whoever prompted the reset may not be the only one logged in.
-        User::bumpSessionVersion($user_id);
-        RememberToken::purgeForUser($user_id);
+            // The old password's sessions and remember-me tokens die with it -
+            // whoever prompted the reset may not be the only one logged in.
+            User::bumpSessionVersion($user_id);
+            RememberToken::purgeForUser($user_id);
 
-        return true;
+            return true;
+        });
     }
 
     /**

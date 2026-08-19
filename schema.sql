@@ -907,6 +907,7 @@ CREATE TABLE `RememberTokens` (
   `expiresAt` datetime NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `lastUsedAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `consumedAt` datetime DEFAULT NULL,
   `userAgent` varchar(255) DEFAULT NULL,
   `ipAddress` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`tokenId`),

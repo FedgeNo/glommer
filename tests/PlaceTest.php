@@ -117,4 +117,19 @@ INSERT INTO `Places` (`placeId`, `title`, `region`, `country`, `latitude`, `long
             rmdir($directory);
         }
     }
+
+    public function testTheNearestCacheStaysBoundedAndStillAnswersAfterItsCap(): void
+    {
+        self::place('Cacheville', 'Test', 'Canada', 20.0, 20.0);
+        (new \ReflectionProperty(Place::class, 'nearestByPoint')) -> setValue(null, []);
+
+        for ($index = 0; $index <= 200; $index++) {
+            $answer = Place::nearest(20.0 + $index / 100000, 20.0);
+        }
+
+        $cache = (new \ReflectionProperty(Place::class, 'nearestByPoint')) -> getValue();
+
+        $this -> assertSame('Cacheville', $answer ?-> title);
+        $this -> assertSame(200, count($cache));
+    }
 }

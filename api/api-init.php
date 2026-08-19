@@ -10,3 +10,5 @@ declare(strict_types=1);
 const IS_API_REQUEST = true;
 
 require __DIR__ . '/../src/init.php';
+
+APIRequest::guardJSONBodySize();

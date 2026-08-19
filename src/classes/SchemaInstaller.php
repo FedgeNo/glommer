@@ -6,11 +6,10 @@ class SchemaInstaller
 {
     /**
      * Every CREATE TABLE in schema.sql, keyed by table name, boundaries found
-     * on comment-stripped text. The statements are split on semicolons, and a
-     * semicolon inside a `--` comment ("the public key is a P-256 ECDH JWK;")
-     * would otherwise truncate its statement mid-column-list - executing that
-     * fragment is a syntax error, so a fresh install of the table would fail.
-     * MariaDB doesn't need the comments; whoever reads schema.sql does.
+     * on comment-stripped text. The statement splitter understands quoted SQL
+     * values, so neither prose comments nor a semicolon in a column default can
+     * truncate a table mid-definition. MariaDB doesn't need the comments;
+     * whoever reads schema.sql does.
      *
      * @return array<string, string> table name => its CREATE TABLE statement
      */
@@ -22,28 +21,79 @@ class SchemaInstaller
             throw new \RuntimeException('schema.sql not found at ' . $schema_path . '.');
         }
 
+        return self::parseCreateTableStatements((string) file_get_contents($schema_path));
+    }
+
+    /** @return array<string, string> table name => its CREATE TABLE statement */
+    public static function parseCreateTableStatements(string $schema): array
+    {
         $code_lines = array_filter(
-            explode("\n", (string) file_get_contents($schema_path)),
+            explode("\n", $schema),
             static fn (string $line): bool => !str_starts_with(trim($line), '--')
         );
 
-        // Up to the closing bracket and the terminator after it, rather than
-        // up to the first semicolon anywhere. A semicolon inside a column's
-        // default would otherwise end the statement in the middle of itself
-        // and hand the installer half a table to create. The options between
-        // the bracket and the terminator (ENGINE, CHARSET, COLLATE) carry
-        // neither brackets nor semicolons, which is what keeps the
-        // non-greedy body from stopping at the first nested bracket.
-        preg_match_all('/CREATE TABLE `(\w+)` \(.+?\)[^;()]*;/s', implode("\n", $code_lines), $matches, PREG_SET_ORDER);
+        $statements = [];
 
-        if ($matches === []) {
+        foreach (self::splitStatements(implode("\n", $code_lines)) as $statement) {
+            if (preg_match('/^CREATE TABLE `(\w+)` /', $statement, $match) === 1) {
+                $statements[$match[1]] = $statement;
+            }
+        }
+
+        if ($statements === []) {
             throw new \RuntimeException('Could not parse any CREATE TABLE statements out of schema.sql.');
         }
 
-        $statements = [];
+        return $statements;
+    }
 
-        foreach ($matches as $match) {
-            $statements[$match[1]] = $match[0];
+    /** @return string[] */
+    private static function splitStatements(string $schema): array
+    {
+        $statements = [];
+        $statement = '';
+        $quote = null;
+        $length = strlen($schema);
+
+        for ($index = 0; $index < $length; $index++) {
+            $character = $schema[$index];
+            $statement .= $character;
+
+            if ($quote !== null) {
+                if ($character === '\\') {
+                    if ($index + 1 < $length) {
+                        $statement .= $schema[++$index];
+                    }
+
+                    continue;
+                }
+
+                if ($character === $quote) {
+                    if ($index + 1 < $length && $schema[$index + 1] === $quote) {
+                        $statement .= $schema[++$index];
+                    } else {
+                        $quote = null;
+                    }
+                }
+
+                continue;
+            }
+
+            if (in_array($character, ["'", '"', '`'], true)) {
+                $quote = $character;
+
+                continue;
+            }
+
+            if ($character === ';') {
+                $complete = trim($statement);
+
+                if ($complete !== '') {
+                    $statements[] = $complete;
+                }
+
+                $statement = '';
+            }
         }
 
         return $statements;
@@ -486,20 +536,10 @@ SELECT `DELETE_RULE`
             }
         }
 
-        // Remove the CREATE TABLE blocks (created separately).
-        $without_tables = (string) preg_replace('/CREATE TABLE `\w+` \([^;]+;/s', '', implode("\n", $code_lines));
-
-        $statements = [];
-
-        foreach (explode(';', $without_tables) as $chunk) {
-            $statement = trim($chunk);
-
-            if ($statement !== '') {
-                $statements[] = $statement;
-            }
-        }
-
-        return $statements;
+        return array_values(array_filter(
+            self::splitStatements(implode("\n", $code_lines)),
+            static fn (string $statement): bool => !str_starts_with($statement, 'CREATE TABLE')
+        ));
     }
 
     /**

@@ -11,11 +11,27 @@ class FriendsFeedList extends FeedList
     protected string $feedType = 'friends';
 
     public ?int $userId = null;
+    public ?string $beforeSortAt = null;
+    public ?int $beforePostId = null;
 
     protected function rows(): array
     {
         $not_banned = 0;
         $viewer_id = (int) Auth::id();
+        $has_cursor = $this -> beforeSortAt !== null && $this -> beforePostId !== null;
+        $boundary = $has_cursor
+            ? ' AND (`Timelines`.`sortAt` < ? OR (`Timelines`.`sortAt` = ? AND `Timelines`.`postId` < ?))'
+            : '';
+        $types = $has_cursor ? 'iiiissii' : 'iiiii';
+        $parameters = [$viewer_id, $viewer_id, (int) $this -> userId, $not_banned];
+
+        if ($has_cursor) {
+            $parameters[] = $this -> beforeSortAt;
+            $parameters[] = $this -> beforeSortAt;
+            $parameters[] = $this -> beforePostId;
+        }
+
+        $parameters[] = static::PAGE_SIZE + 1;
 
         // A row sorts by the moment it entered this feed - a repost by when it
         // was reposted, a post by when it was posted - which sortAt carries so
@@ -29,6 +45,7 @@ class FriendsFeedList extends FeedList
         // stopping at the page.
         return Post::fromRowsWithItems(DB::rows('
 SELECT STRAIGHT_JOIN `Posts`.*,
+    `Timelines`.`sortAt` AS `sortAt`,
     `reposter`.`slug` AS `repostedBySlug`,
     `reposter`.`title` AS `repostedByTitle`,
     (SELECT COUNT(*) FROM `Posts` `replies` WHERE `replies`.`parentId` = `Posts`.`postId`) AS `replyCount`,
@@ -39,9 +56,18 @@ SELECT STRAIGHT_JOIN `Posts`.*,
     JOIN `Posts` ON `Posts`.`postId` = `Timelines`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     LEFT JOIN `Users` `reposter` ON `reposter`.`userId` = `Timelines`.`reposterId`
-    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?
+    WHERE `Timelines`.`userId` = ? AND `Users`.`banned` = ?' . $boundary . '
     ORDER BY `Timelines`.`sortAt` DESC, `Timelines`.`postId` DESC
-    LIMIT ? OFFSET ?
-', 'Post', 'iiiiii', $viewer_id, $viewer_id, (int) $this -> userId, $not_banned, static::PAGE_SIZE + 1, $this -> offset));
+    LIMIT ?
+', 'Post', $types, ...$parameters));
+    }
+
+    protected function cursor(): ?array
+    {
+        $last = end($this -> items);
+
+        return $last instanceof Post && is_string($last -> sortAt)
+            ? ['sortAt' => $last -> sortAt, 'postId' => (int) $last -> postId]
+            : null;
     }
 }

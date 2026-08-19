@@ -68,6 +68,8 @@ if ($user -> verifyPassword($new_password)) {
     JSONResponse::success(['reset' => false]) -> send();
 }
 
-PasswordReset::consume($token, $new_password);
+if (!PasswordReset::consume($token, $new_password)) {
+    JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
+}
 
 JSONResponse::success(['reset' => true]) -> send();

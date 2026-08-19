@@ -30,19 +30,7 @@ RateLimiter::recordAttempt($rate_key);
 // post in a town, not enough to place it at a door.
 $exact_locations = Auth::check();
 $rounding = 2;
-// Driven from PostLocations: it holds only the posts that actually have a
-// location, so this reads a small table and looks each post and author up by
-// primary key, rather than filtering the whole Posts table. Ordered by postId
-// (auto-increment, so newest-first) to ride the primary key instead of sorting.
-$rows = DB::rows('
-SELECT `l`.`postId`, `l`.`latitude`, `l`.`longitude`, `p`.`title`, `p`.`createdAt`, `u`.`slug`, `u`.`title` AS `authorName`
-    FROM `PostLocations` `l`
-    JOIN `Posts` `p` ON `p`.`postId` = `l`.`postId`
-    JOIN `Users` `u` ON `u`.`userId` = `p`.`userId`
-    WHERE `u`.`banned` = ?
-    ORDER BY `l`.`postId` DESC
-    LIMIT 1000
-', \stdClass::class, 'i', 0);
+$rows = new MapPostList($exact_locations) -> items;
 
 $posts = [];
 

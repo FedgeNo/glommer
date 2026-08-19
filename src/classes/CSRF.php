@@ -4,6 +4,18 @@ declare(strict_types=1);
 
 class CSRF
 {
+    /** @return array{expires: int, path: string, secure: bool, httponly: bool, samesite: string} */
+    public static function cookieOptions(): array
+    {
+        return [
+            'expires' => 0,
+            'path' => '/',
+            'secure' => ServerURL::isHTTPS(),
+            'httponly' => false,
+            'samesite' => 'Strict',
+        ];
+    }
+
     public static function token(): string
     {
         if (!isset($_SESSION['CSRFToken'])) {

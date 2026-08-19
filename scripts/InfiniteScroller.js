@@ -89,8 +89,14 @@ export class InfiniteScroller {
             delete extraFields.endpoint;
             delete extraFields.itemType;
             delete extraFields.direction;
+            delete extraFields.cursor;
 
-            buildReq = offset => ({ ...extraFields, offset });
+            this._cursor = config.cursor ?? null;
+            buildReq = offset => ({
+                ...extraFields,
+                offset,
+                ...(this._cursor ? { cursor: this._cursor } : {}),
+            });
 
             renderItem  = entry.renderItem;
             countOffset = entry.countOffset;
@@ -297,6 +303,11 @@ export class InfiniteScroller {
     #extractItems(data) {
         const resp = data.response || data;
         this.#lastResponse = resp;
+
+        if (Object.hasOwn(resp, 'cursor')) {
+            this._cursor = resp.cursor;
+        }
+
         const items = resp.items || resp.posts || resp.messages ||
                       resp.notifications || resp.reports || resp.users || [];
         return { hasMore: resp.hasMore, items };
@@ -343,4 +354,3 @@ InfiniteScroller.register('Entity',
 );
 
 ReadyHandler.add(InfiniteScroller.init);
-

@@ -4,6 +4,25 @@ declare(strict_types=1);
 
 class CSRFTest extends TestCase
 {
+    public function testTheReadableCookieUsesTheActualTransport(): void
+    {
+        $previous_https = $_SERVER['HTTPS'] ?? null;
+
+        try {
+            unset($_SERVER['HTTPS']);
+            $this -> assertFalse(CSRF::cookieOptions()['secure']);
+
+            $_SERVER['HTTPS'] = 'on';
+            $this -> assertTrue(CSRF::cookieOptions()['secure']);
+        } finally {
+            if ($previous_https === null) {
+                unset($_SERVER['HTTPS']);
+            } else {
+                $_SERVER['HTTPS'] = $previous_https;
+            }
+        }
+    }
+
     protected function setUp(): void
     {
         $_SESSION = [];

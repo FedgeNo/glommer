@@ -103,13 +103,13 @@ class SafeHTTPFetcher
      * into a string - for proxying a file far too big to want in memory, where
      * every byte is going straight back out to the client anyway.
      *
-     * $sink receives each chunk along with the response's content type, and
-     * returns false to abort the transfer (a type we won't serve, a client
-     * that has gone away). It is only ever called for a 2xx, so a redirect
-     * body is never mistaken for the file.
+     * $sink receives each chunk, the response's content type, and the status
+     * and headers curl received. It returns false to abort the transfer (a
+     * type we won't serve, a client that has gone away). It is only ever
+     * called for a 2xx, so a redirect body is never mistaken for the file.
      *
      * @param string[] $headers
-     * @param callable(string, string): bool $sink
+     * @param callable(string, string, array{status: int, headers: array<string, string>}): bool $sink
      */
     public static function stream(string $url, array $headers, int $max_bytes, callable $sink): bool
     {
@@ -172,6 +172,7 @@ class SafeHTTPFetcher
         $streamed = 0;
         $exceeded_cap = false;
         $sink_refused = false;
+        $response_headers = [];
 
         $curl = curl_init();
         $options = [
@@ -187,7 +188,24 @@ class SafeHTTPFetcher
             CURLOPT_ENCODING => '',
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_WRITEFUNCTION => function ($handle, string $chunk) use (&$downloaded, &$streamed, &$exceeded_cap, &$sink_refused, $max_bytes, $sink) {
+            CURLOPT_HEADERFUNCTION => static function ($handle, string $line) use (&$response_headers): int {
+                $length = strlen($line);
+                $trimmed = trim($line);
+
+                if (str_starts_with($trimmed, 'HTTP/')) {
+                    $response_headers = [];
+
+                    return $length;
+                }
+
+                if (str_contains($trimmed, ':')) {
+                    [$name, $value] = explode(':', $trimmed, 2);
+                    $response_headers[strtolower(trim($name))] = trim($value);
+                }
+
+                return $length;
+            },
+            CURLOPT_WRITEFUNCTION => function ($handle, string $chunk) use (&$downloaded, &$streamed, &$exceeded_cap, &$sink_refused, &$response_headers, $max_bytes, $sink) {
                 // A sink is only ever handed the body of a success. A redirect's
                 // own body, or an error page, is collected the ordinary way
                 // instead so the redirect handling below still works on it.
@@ -202,7 +220,10 @@ class SafeHTTPFetcher
                         return -1;
                     }
 
-                    if (!$sink($chunk, (string) curl_getinfo($handle, CURLINFO_CONTENT_TYPE))) {
+                    if (!$sink($chunk, (string) curl_getinfo($handle, CURLINFO_CONTENT_TYPE), [
+                        'status' => $status,
+                        'headers' => $response_headers,
+                    ])) {
                         $sink_refused = true;
 
                         return -1;

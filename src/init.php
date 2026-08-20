@@ -12,7 +12,7 @@ ob_start();
 // installed/upgraded to (the appVersion setting, written by bin/install.php and
 // the web setup wizard); a mismatch means "run the upgrade" and locks the site
 // to a maintenance page below until the two agree.
-const GLOMMER_VERSION = '0.9.62';
+const GLOMMER_VERSION = '0.9.63';
 
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/classes/' . $class . '.php';
@@ -310,8 +310,8 @@ if (Auth::check()) {
     User::seen($current_user);
 }
 
-// The two POSTs that cannot carry a CSRF token and were never meant to, each
-// proving itself another way instead.
+// The three POSTs that cannot carry a CSRF token and were never meant to,
+// each proving itself another way instead.
 //
 // The ActivityPub inbox is a legitimate cross-origin, cross-server endpoint -
 // a same-origin browser session (what CSRF protects) never applies to a
@@ -324,9 +324,15 @@ if (Auth::check()) {
 // either. The signed token in the URL is its authority, and it can do one
 // thing with it. Recognised by the exact body the RFC specifies, so an
 // ordinary forged POST at that same page is still refused.
+//
+// A CSP violation report is POSTed by the browser itself acting on the
+// report-uri directive, outside any page context that could attach a token.
+// The endpoint can only ever append a bounded row to a diagnostic table, and
+// guards itself with a size cap, shape checks and a rate limit.
 $script = basename((string) $_SERVER['SCRIPT_FILENAME']);
 
 $csrf_exempt = $script === 'activitypub-inbox.php'
+    || $script === 'csp-report.php'
     || ($script === 'unsubscribe.php' && ($_POST['List-Unsubscribe'] ?? '') === 'One-Click');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$csrf_exempt) {

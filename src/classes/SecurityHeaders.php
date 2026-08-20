@@ -57,6 +57,10 @@ class SecurityHeaders
             'base-uri \'self\'',
             'form-action \'self\'',
             'frame-ancestors \'none\'',
+            // report-uri is nominally deprecated but is the one reporting
+            // mechanism every browser speaks without the Reporting-Endpoints
+            // header machinery. Violations land in the CSPReports table.
+            'report-uri /api/csp-report',
         ]);
 
         header('Content-Security-Policy: ' . $csp);
@@ -65,7 +69,10 @@ class SecurityHeaders
         header('Referrer-Policy: strict-origin-when-cross-origin');
 
         if ($is_https) {
-            header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+            // preload commits the domain to the browsers' baked-in HSTS lists
+            // permanently: nothing on it or any subdomain can ever be served
+            // over plain HTTP again. A deliberate operator decision.
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         }
     }
 }

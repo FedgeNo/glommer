@@ -856,6 +856,29 @@ CREATE TABLE `FediverseDeliveryRefusals` (
   KEY `activityType_createdAt` (`activityType`,`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- What a visitor's browser reported the Content-Security-Policy blocked. The
+-- report is verbatim JSON; the directive and URI are lifted out so review can
+-- group without opening every body. Pruned after CSPReport::KEEP_DAYS by the
+-- same in-request lottery RateLimiter uses.
+CREATE TABLE `CSPReports` (
+  `reportId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `violatedDirective` varchar(64) NOT NULL DEFAULT '',
+  `blockedURI` varchar(255) NOT NULL DEFAULT '',
+  -- The report JSON never names the browser; the request header does.
+  `userAgent` varchar(255) NOT NULL DEFAULT '',
+  `report` text NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`reportId`),
+  KEY `createdAt` (`createdAt`),
+  KEY `violatedDirective_createdAt` (`violatedDirective`,`createdAt`),
+  -- Review groups repeat offenders by blocked address.
+  KEY `blockedURI` (`blockedURI`),
+  -- Search inside the verbatim report body itself - what the endpoint
+  -- self-test uses to find its marker, and what answers any question the
+  -- lifted columns don't.
+  FULLTEXT KEY `report` (`report`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `RemoteObjectTombstones` (
   `remoteObjectURI` varchar(255) NOT NULL,
   `reason` varchar(255) DEFAULT NULL,
@@ -1139,6 +1162,8 @@ ALTER TABLE `Users` ADD COLUMN IF NOT EXISTS `remoteActorFields` text DEFAULT NU
 ALTER TABLE `Entities` ADD COLUMN IF NOT EXISTS `popularity` int(10) unsigned NOT NULL DEFAULT 0 AFTER `userCount`;
 ALTER TABLE `Entities` ADD INDEX IF NOT EXISTS `type_popularity` (`type`, `popularity`);
 ALTER TABLE `Entities` ADD INDEX IF NOT EXISTS `computedAt_score` (`computedAt`, `score`);
+ALTER TABLE `CSPReports` ADD INDEX IF NOT EXISTS `blockedURI` (`blockedURI`);
+ALTER TABLE `CSPReports` ADD FULLTEXT INDEX IF NOT EXISTS `report` (`report`);
 
 -- Column-type migrations (safe to re-run): these six tables were originally
 -- created with signed int(11) id/userId columns, unlike every other table's

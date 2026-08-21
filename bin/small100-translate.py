@@ -28,6 +28,13 @@ import ctranslate2
 # only matters for running the script by hand.
 DEFAULT_MODEL_DIR = '/opt/glommer-translate/models/small100'
 
+# SMaLL-100's own sequence length limit is 1024 tokens, well under
+# Translator.php's 8KB byte cap on a post (sized for what Argos can take) -
+# a post near that byte cap can tokenize past 1024, which CTranslate2
+# refuses outright rather than truncating for itself. Leaves room for the
+# target token in front and </s> behind.
+MAX_SOURCE_TOKENS = 1020
+
 
 def fail(message: str) -> None:
     print(message, file=sys.stderr)
@@ -82,6 +89,12 @@ def main() -> None:
     # placed at the front of the source sequence by hand instead, and the
     # source's own </s> follows it, per the note above.
     source_tokens = tokenizer.convert_ids_to_tokens(tokenizer.encode(text, add_special_tokens=False))
+
+    # Cut here instead of crashing - the same way every other cap in this
+    # pipeline is a truncation rather than a refusal.
+    if len(source_tokens) > MAX_SOURCE_TOKENS:
+        source_tokens = source_tokens[:MAX_SOURCE_TOKENS]
+
     input_tokens = [target_token] + source_tokens + ['</s>']
 
     try:

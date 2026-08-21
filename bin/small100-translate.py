@@ -65,11 +65,16 @@ def main() -> None:
         fail('small100-translate: could not load the model at ' + args.model_dir + ': ' + str(error))
         return
 
-    target_token = '__' + args.to_lang + '__'
-
-    if target_token not in tokenizer.lang_code_to_id:
+    # lang_code_to_id keys on the bare code ("es"); lang_token_to_id keys on
+    # the wrapped form ("__es__") that actually goes in the token sequence.
+    # Checked against the bare form - the one Translator.php's own
+    # SMALL100_LANGUAGES list uses - so this and that list can never disagree
+    # about what "supported" means.
+    if args.to_lang not in tokenizer.lang_code_to_id:
         fail('small100-translate: ' + args.to_lang + ' is not one of the languages this model has')
         return
+
+    target_token = tokenizer.get_lang_token(args.to_lang)
 
     # Encoded without the tokenizer's own language handling - tgt_lang is not
     # set here, because SMALL100Tokenizer.encode() would otherwise apply the

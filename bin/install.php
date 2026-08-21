@@ -2793,6 +2793,8 @@ function ensure_translate_environment(): void
         }
     }
 
+    ensure_small100_environment();
+
     // Every argospm call is told where the packages go, because it otherwise
     // uses the invoking user's home - and the installer runs as root while the
     // thing that has to read them is the web server. In the literal command
@@ -2885,6 +2887,93 @@ function ensure_translate_environment(): void
         run('restorecon -R :dir 2>&1', ['dir' => TRANSLATE_VENV_DIR]);
 
         ok('SELinux context set for ' . TRANSLATE_VENV_DIR . '\'s .so files (textrel_shlib_t, persists across relabels)');
+    }
+}
+
+/**
+ * Installs CTranslate2, transformers and sentencepiece into the same venv
+ * ensure_translate_environment() just built, and downloads the SMaLL-100
+ * model into Translator::SMALL100_MODEL_DIR - about 1.35GB, one file (model.bin) doing
+ * almost all of it.
+ *
+ * SMaLL-100 becomes the primary local translator once this succeeds; Argos
+ * remains for the six locales it does not cover (see
+ * Translator::SMALL100_LANGUAGES) and as the fallback if this step is
+ * skipped or fails. Nothing here is resident: see Translator's own class
+ * comment for why a resident model was not chosen on this box.
+ */
+function ensure_small100_environment(): void
+{
+    if (Env::get('SKIP_TRANSLATE', '') === '1') {
+        return;
+    }
+
+    $pip = TRANSLATE_VENV_DIR . '/bin/pip';
+    $python = TRANSLATE_VENV_DIR . '/bin/python';
+
+    // Checked by import rather than by a pip-freeze grep: a partially failed
+    // install can leave the package name in pip's metadata without the
+    // module actually importing, which would tell this everything is fine
+    // and then fail at the first translation instead.
+    $probe = run(':python -c "import ctranslate2, transformers, sentencepiece" 2>&1', ['python' => $python]);
+
+    if ($probe['exitCode'] !== 0) {
+        echo "Installing CTranslate2, transformers and sentencepiece...\n";
+
+        $pip_result = run(':pip install --no-cache-dir ctranslate2 transformers sentencepiece 2>&1', ['pip' => $pip]);
+
+        if ($pip_result['exitCode'] !== 0) {
+            warn('Failed to install ctranslate2/transformers/sentencepiece into ' . TRANSLATE_VENV_DIR . ' - install them by hand (' . $pip . ' install ctranslate2 transformers sentencepiece), then re-run. SMaLL-100 stays unavailable and Argos alone serves translation until this succeeds.', $pip_result);
+
+            return;
+        }
+
+        ok('CTranslate2, transformers and sentencepiece installed at ' . TRANSLATE_VENV_DIR);
+    } else {
+        ok('CTranslate2, transformers and sentencepiece already installed at ' . TRANSLATE_VENV_DIR);
+    }
+
+    $model_marker = Translator::SMALL100_MODEL_DIR . '/model.bin';
+
+    if (is_file($model_marker)) {
+        ok('SMaLL-100 model already downloaded at ' . Translator::SMALL100_MODEL_DIR);
+    } else {
+        echo "Downloading the SMaLL-100 model (about 1.35GB)...\n";
+
+        if (!is_dir(Translator::SMALL100_MODEL_DIR)) {
+            mkdir(Translator::SMALL100_MODEL_DIR, 0755, true);
+        }
+
+        // huggingface-cli ships with huggingface_hub, which transformers
+        // already pulled in above - nothing new to install for this step.
+        $download_result = run(
+            ':python -m huggingface_hub.commands.huggingface_cli download rex099/small100-ctranslate2 --local-dir :dir 2>&1',
+            ['python' => $python, 'dir' => Translator::SMALL100_MODEL_DIR]
+        );
+
+        if ($download_result['exitCode'] !== 0 || !is_file($model_marker)) {
+            warn('Failed to download the SMaLL-100 model to ' . Translator::SMALL100_MODEL_DIR . ' - download it by hand (huggingface-cli download rex099/small100-ctranslate2 --local-dir ' . Translator::SMALL100_MODEL_DIR . '), then re-run. Argos alone serves translation until this succeeds.', $download_result);
+
+            return;
+        }
+
+        ok('SMaLL-100 model downloaded to ' . Translator::SMALL100_MODEL_DIR);
+    }
+
+    run('find :dir -type d -exec chmod 755 {} \;', ['dir' => Translator::SMALL100_MODEL_DIR]);
+    run('find :dir -type f -exec chmod 644 {} \;', ['dir' => Translator::SMALL100_MODEL_DIR]);
+
+    $web_account = web_server_account();
+
+    if ($web_account !== null) {
+        run('chown -R :owner :dir', [
+            'owner' => $web_account['user'] . ':' . ($web_account['group'] ?? $web_account['user']),
+            'dir' => Translator::SMALL100_MODEL_DIR,
+        ]);
+
+        ok('SMaLL-100 model readable by ' . $web_account['user']);
+    } else {
+        warn('Could not tell which account the web server runs as - make ' . Translator::SMALL100_MODEL_DIR . ' readable by it, or every translation falls through to Argos.');
     }
 }
 

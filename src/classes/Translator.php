@@ -5,13 +5,17 @@ declare(strict_types=1);
 /**
  * Turning a post into another language, on this machine.
  *
- * Runs the argos-translate command the way the upload pipeline runs ffmpeg: a
- * program that happens to be written in Python, invoked as a program. Nothing
- * here is written in Python and there is no bridge script between the two.
+ * SMaLL-100 (CTranslate2) is tried first: one model, 101 languages, run
+ * through bin/small100-translate.py - the one bridge script here, needed
+ * because CTranslate2 has no CLI of its own the way argos-translate does.
+ * Argos Translate covers what SMaLL-100 does not (Esperanto, Basque, Kyrgyz,
+ * Norwegian Bokmål, Brazilian Portuguese, Traditional Chinese - see
+ * SMALL100_LANGUAGES) the way the upload pipeline runs ffmpeg: a program that
+ * happens to be written in Python, invoked as a program.
  *
- * A model is loaded for the length of one call and nothing is held between
- * them. A resident translation server wants a gigabyte or two, and this box
- * has about that much spare in total.
+ * Both are loaded fresh for the length of one call and release everything
+ * when the process exits. A resident model wants a gigabyte or two on its
+ * own, and this box has about that much spare in total.
  *
  * It replaced asking a free LLM router, which answered the same request in 1.5
  * seconds and then in 16.9 - the router picks a different model every call, so
@@ -22,6 +26,36 @@ class Translator
 {
     // Matches bin/install.php's TRANSLATE_VENV_DIR.
     private const COMMAND = '/opt/glommer-translate/bin/argos-translate';
+
+    // The venv's own interpreter, not the system one - the one CTranslate2,
+    // transformers and sentencepiece are installed into.
+    private const SMALL100_PYTHON = '/opt/glommer-translate/bin/python';
+
+    private const SMALL100_SCRIPT = __DIR__ . '/../../bin/small100-translate.py';
+
+    // Public: bin/install.php downloads the model here directly by this name.
+    public const SMALL100_MODEL_DIR = '/opt/glommer-translate/models/small100';
+
+    /**
+     * Every language SMaLL-100 was trained on, read off its tokenizer's own
+     * special tokens rather than transcribed from a paper - the model
+     * publishes the list it will actually answer to. Six of this site's
+     * locales are not on it: Esperanto, Basque and Kyrgyz are not in M2M-100
+     * at all, and Norwegian Bokmål, Brazilian Portuguese and Traditional
+     * Chinese collapse to a generic "no"/"pt"/"zh" the model has no way to
+     * ask for specifically. Argos covers all six.
+     *
+     * @var string[]
+     */
+    private const SMALL100_LANGUAGES = [
+        'af', 'am', 'ar', 'ast', 'az', 'ba', 'be', 'bg', 'bn', 'br', 'bs', 'ca', 'ceb', 'cs', 'cy', 'da',
+        'de', 'el', 'en', 'es', 'et', 'fa', 'ff', 'fi', 'fr', 'fy', 'ga', 'gd', 'gl', 'gu', 'ha', 'he',
+        'hi', 'hr', 'ht', 'hu', 'hy', 'id', 'ig', 'ilo', 'is', 'it', 'ja', 'jv', 'ka', 'kk', 'km', 'kn',
+        'ko', 'lb', 'lg', 'ln', 'lo', 'lt', 'lv', 'mg', 'mk', 'ml', 'mn', 'mr', 'ms', 'my', 'ne', 'nl',
+        'no', 'ns', 'oc', 'or', 'pa', 'pl', 'ps', 'pt', 'ro', 'ru', 'sd', 'si', 'sk', 'sl', 'so', 'sq',
+        'sr', 'ss', 'su', 'sv', 'sw', 'ta', 'th', 'tl', 'tn', 'tr', 'uk', 'ur', 'uz', 'vi', 'wo', 'xh',
+        'yi', 'yo', 'zh', 'zu',
+    ];
 
     /**
      * The OS-level limits a PHP memory_limit cannot provide, the same three
@@ -126,17 +160,33 @@ class Translator
         return is_executable(self::COMMAND);
     }
 
+    public static function isSmall100Available(): bool
+    {
+        return is_executable(self::SMALL100_PYTHON)
+            && is_file(self::SMALL100_SCRIPT)
+            && is_dir(self::SMALL100_MODEL_DIR);
+    }
+
+    /** Whether SMaLL-100 was trained on this language at all. */
+    public static function isSmall100Supported(?string $language): bool
+    {
+        $base = self::baseLanguage($language);
+
+        return $base !== null && in_array($base, self::SMALL100_LANGUAGES, true);
+    }
+
     /**
      * Whether this installation can translate anything at all.
      *
-     * Either does: Argos where its packages are installed, and the model
-     * provider for whatever they do not cover - or for the whole job on a
-     * server with no Argos. Both are optional, so both being absent is a real
-     * state and the one case where there is nothing to offer a reader.
+     * Any of three does: SMaLL-100, Argos where its packages are installed,
+     * and the model provider for whatever neither covers - or for the whole
+     * job on a server with none of the others. All three are optional, so
+     * all being absent is a real state and the one case where there is
+     * nothing to offer a reader.
      */
     public static function canTranslate(): bool
     {
-        return self::isAvailable() || OpenRouter::isEnabled();
+        return self::isSmall100Available() || self::isAvailable() || OpenRouter::isEnabled();
     }
 
     /**
@@ -166,6 +216,10 @@ class Translator
 
         if ($target === null || $source === $target) {
             return self::ALREADY_READABLE;
+        }
+
+        if (self::isSmall100Available() && self::isSmall100Supported($source) && self::isSmall100Supported($target)) {
+            return null;
         }
 
         if (self::isAvailable() && self::isSupported($source) && self::isSupported($target)) {
@@ -247,14 +301,39 @@ class Translator
         $target = (string) self::baseLanguage($target);
         $text = self::readable($text);
 
-        // Argos first where it can do the job: it runs here, costs nothing and
-        // answers in seconds rather than depending on somebody else's service
-        // being up. The model is the backup, and it stands behind every way
-        // Argos can come back with nothing - no package for the pair, every
-        // slot busy, the command failing or answering with nothing at all. A
-        // reader asked for the words in their language; which of those went
-        // wrong is not their problem.
-        return self::byArgos($text, $source, $target) ?? self::byModel($text, $source, $target);
+        // SMaLL-100 first where it covers the pair: one model for 101
+        // languages rather than a package per pairing, still on this
+        // machine and still free. Argos stands behind it for the six
+        // locales SMaLL-100 was never trained on, and the model behind
+        // both - every local way of coming back with nothing (unsupported
+        // pair, every slot busy, the command failing or answering with
+        // nothing at all) ends up there. A reader asked for the words in
+        // their language; which of those went wrong is not their problem.
+        return self::bySmall100($text, $source, $target)
+            ?? self::byArgos($text, $source, $target)
+            ?? self::byModel($text, $source, $target);
+    }
+
+    /** What SMaLL-100 makes of it, or null however it failed to. */
+    private static function bySmall100(string $text, string $source, string $target): ?string
+    {
+        if (!self::isSmall100Available() || !self::isSmall100Supported($source) || !self::isSmall100Supported($target)) {
+            return null;
+        }
+
+        $slot = self::takeSlot();
+
+        if ($slot === null) {
+            error_log('Translator: all ' . self::CONCURRENT . ' slots busy, going to Argos instead');
+
+            return null;
+        }
+
+        try {
+            return self::runSmall100($text, $source, $target);
+        } finally {
+            self::releaseSlot($slot);
+        }
     }
 
     /** What Argos makes of it, or null however it failed to. */
@@ -341,6 +420,74 @@ SELECT RELEASE_LOCK(?)
         }
 
         return trim(mb_strcut($text, 0, self::MAX_INPUT_BYTES));
+    }
+
+    /**
+     * The environment bin/small100-translate.py runs under: one thread for
+     * the same reason Argos gets one, a home of its own for the same reason
+     * (transformers resolves a cache directory even reading a local model),
+     * and offline because the model is already on disk - nothing here should
+     * ever reach out to Hugging Face's hub mid-request.
+     *
+     * @return array<string, string>
+     */
+    private static function small100Environment(): array
+    {
+        return [
+            'OMP_NUM_THREADS' => '1',
+            'HOME' => self::STATE_DIR,
+            'HF_HUB_OFFLINE' => '1',
+            'TRANSFORMERS_OFFLINE' => '1',
+        ];
+    }
+
+    private static function runSmall100(string $text, string $source, string $target): ?string
+    {
+        $settings = '';
+
+        foreach (self::small100Environment() as $name => $value) {
+            $settings .= $name . '=' . escapeshellarg($value) . ' ';
+        }
+
+        $inner = sprintf(
+            'env %snice -n 10 %s %s --from-lang %s --to-lang %s --model-dir %s',
+            $settings,
+            escapeshellarg(self::SMALL100_PYTHON),
+            escapeshellarg(self::SMALL100_SCRIPT),
+            escapeshellarg($source),
+            escapeshellarg($target),
+            escapeshellarg(self::SMALL100_MODEL_DIR)
+        );
+
+        $preamble = 'ulimit -v ' . self::MAX_ADDRESS_SPACE_KB . ' -t ' . self::CPU_TIMELIMIT . '; exec ' . $inner;
+        $command = sprintf('timeout -k 10 %d bash -c %s', self::WALL_TIMEOUT, escapeshellarg($preamble));
+
+        $process = proc_open($command, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+
+        if (!is_resource($process)) {
+            return null;
+        }
+
+        fwrite($pipes[0], $text);
+        fclose($pipes[0]);
+
+        [$output, $errors] = read_both_pipes($pipes, self::MAX_OUTPUT_BYTES);
+
+        if (!mb_check_encoding($output, 'UTF-8')) {
+            $output = (string) mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+        }
+
+        $status = proc_close($process);
+
+        if ($status !== 0) {
+            error_log('Translator: SMaLL-100 ' . $source . ' to ' . $target . ' exited ' . $status . ': ' . mb_strcut(trim($errors), 0, 300));
+
+            return null;
+        }
+
+        $translated = trim($output);
+
+        return $translated === '' ? null : $translated;
     }
 
     private static function run(string $text, string $source, string $target): ?string

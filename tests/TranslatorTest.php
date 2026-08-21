@@ -129,6 +129,26 @@ class TranslatorTest extends TestCase
         }
     }
 
+    /**
+     * The six site locales SMaLL-100 was never trained to answer to, so
+     * Argos has to cover them - either they collapse to a generic code the
+     * model cannot ask for specifically (Norwegian, Portuguese, Chinese), or
+     * they are not in M2M-100 at all (Esperanto, Basque, Kyrgyz).
+     */
+    public function testSMaLL100DoesNotClaimTheSixLanguagesArgosCovers(): void
+    {
+        foreach (['eo', 'eu', 'ky', 'nb', 'pt-BR', 'zh-Hant'] as $gap) {
+            $this -> assertFalse(Translator::isSmall100Supported($gap), $gap);
+        }
+
+        foreach (['de', 'es', 'fr', 'ja', 'zh', 'pt'] as $covered) {
+            $this -> assertTrue(Translator::isSmall100Supported($covered), $covered);
+        }
+
+        $this -> assertFalse(Translator::isSmall100Supported(null));
+        $this -> assertFalse(Translator::isSmall100Supported('not-a-language'));
+    }
+
     // ---- The text itself ----
 
     /**

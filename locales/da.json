@@ -489,9 +489,6 @@
         "modSettings": "Moderatorindstillinger",
         "adminSettings": "Administratorindstillinger"
     },
-    "LogoutForm": {
-        "submit": "Log ud"
-    },
     "User": {
         "joined": "Tilmeldt {date}"
     },

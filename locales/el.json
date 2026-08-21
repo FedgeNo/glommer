@@ -489,9 +489,6 @@
         "modSettings": "Ρυθμίσεις συντονιστή",
         "adminSettings": "Ρυθμίσεις διαχειριστή"
     },
-    "LogoutForm": {
-        "submit": "Αποσύνδεση"
-    },
     "User": {
         "joined": "Εγγράφηκε στις {date}"
     },

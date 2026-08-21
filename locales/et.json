@@ -680,9 +680,6 @@
         "modSettings": "Moderaatori seaded",
         "adminSettings": "Administraatori seaded"
     },
-    "LogoutForm": {
-        "submit": "Logi välja"
-    },
     "User": {
         "joined": "Liitus {date}"
     },

@@ -1055,9 +1055,6 @@
         "modSettings": "Mod Settings",
         "adminSettings": "Admin Settings"
     },
-    "LogoutForm": {
-        "submit": "Log Out"
-    },
     "User": {
         "joined": "Joined {date}"
     },

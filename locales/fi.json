@@ -489,9 +489,6 @@
         "modSettings": "Valvoja-asetukset",
         "adminSettings": "Ylläpitoasetukset"
     },
-    "LogoutForm": {
-        "submit": "Kirjaudu ulos"
-    },
     "User": {
         "joined": "Liittyi {date}"
     },

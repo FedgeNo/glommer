@@ -489,9 +489,6 @@
         "modSettings": "Configuración da moderación",
         "adminSettings": "Configuración da administración"
     },
-    "LogoutForm": {
-        "submit": "Pechar sesión"
-    },
     "User": {
         "joined": "Uniuse o {date}"
     },

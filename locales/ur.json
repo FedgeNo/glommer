@@ -489,9 +489,6 @@
         "modSettings": "نگران کی ترتیبات",
         "adminSettings": "منتظم کی ترتیبات"
     },
-    "LogoutForm": {
-        "submit": "لاگ آؤٹ"
-    },
     "User": {
         "joined": "{date} کو شامل ہوئے"
     },

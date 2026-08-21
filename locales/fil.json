@@ -489,9 +489,6 @@
         "modSettings": "Mga setting ng moderator",
         "adminSettings": "Mga setting ng administrator"
     },
-    "LogoutForm": {
-        "submit": "Mag-log out"
-    },
     "User": {
         "joined": "Sumali noong {date}"
     },

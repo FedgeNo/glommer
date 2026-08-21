@@ -1057,9 +1057,6 @@
         "modSettings": "Configurações da moderação",
         "adminSettings": "Configurações administrativas"
     },
-    "LogoutForm": {
-        "submit": "Sair"
-    },
     "User": {
         "joined": "Entrou em {date}"
     },

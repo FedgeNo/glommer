@@ -488,9 +488,6 @@
         "modSettings": "Tetapan moderator",
         "adminSettings": "Tetapan pentadbir"
     },
-    "LogoutForm": {
-        "submit": "Log keluar"
-    },
     "User": {
         "joined": "Menyertai pada {date}"
     },

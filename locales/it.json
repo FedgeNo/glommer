@@ -490,9 +490,6 @@
         "modSettings": "Impostazioni moderazione",
         "adminSettings": "Impostazioni amministratore"
     },
-    "LogoutForm": {
-        "submit": "Esci"
-    },
     "User": {
         "joined": "Data di iscrizione: {date}"
     },

@@ -489,9 +489,6 @@
         "modSettings": "Moderatorinställningar",
         "adminSettings": "Administratörsinställningar"
     },
-    "LogoutForm": {
-        "submit": "Logga ut"
-    },
     "User": {
         "joined": "Gick med {date}"
     },

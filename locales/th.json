@@ -488,9 +488,6 @@
         "modSettings": "การตั้งค่าผู้ดูแล",
         "adminSettings": "การตั้งค่าผู้ดูแลระบบ"
     },
-    "LogoutForm": {
-        "submit": "ออกจากระบบ"
-    },
     "User": {
         "joined": "เข้าร่วมเมื่อ {date}"
     },

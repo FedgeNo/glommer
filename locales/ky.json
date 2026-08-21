@@ -489,9 +489,6 @@
         "modSettings": "Модератор жөндөөлөрү",
         "adminSettings": "Администратор жөндөөлөрү"
     },
-    "LogoutForm": {
-        "submit": "Чыгуу"
-    },
     "User": {
         "joined": "Кошулган күнү: {date}"
     },

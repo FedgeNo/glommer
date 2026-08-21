@@ -489,9 +489,6 @@
         "modSettings": "Moderatör Ayarları",
         "adminSettings": "Yönetici Ayarları"
     },
-    "LogoutForm": {
-        "submit": "Çıkış Yap"
-    },
     "User": {
         "joined": "{date} tarihinde katıldı"
     },

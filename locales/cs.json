@@ -491,9 +491,6 @@
         "modSettings": "Nastavení moderování",
         "adminSettings": "Nastavení správy"
     },
-    "LogoutForm": {
-        "submit": "Odhlásit se"
-    },
     "User": {
         "joined": "Připojil(a) se {date}"
     },

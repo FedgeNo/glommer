@@ -17,16 +17,12 @@ class LogoutForm extends Form
         $this -> action = ServerURL::absolute('/logout');
         $this -> method = 'POST';
 
-        $button = new Button();
-        $button -> type = 'submit';
-        $button -> class = 'LogoutButton';
-        $button -> contents[] = (string) (Strings::for(self::class)['submit'] ?? '');
         // Overwrite, not append - toDOM() can run more than once on the same
         // instance now (MainNavigation reuses it for both the desktop
         // account dropdown and the mobile nav panel), and contents[] is
         // instance state that would otherwise accumulate a duplicate button
         // on every additional call.
-        $this -> contents = [$button];
+        $this -> contents = [new LogoutButton()];
 
         return parent::toDOM();
     }

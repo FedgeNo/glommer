@@ -491,9 +491,6 @@
         "modSettings": "Ustawienia moderacji",
         "adminSettings": "Ustawienia administracyjne"
     },
-    "LogoutForm": {
-        "submit": "Wyloguj się"
-    },
     "User": {
         "joined": "W serwisie od {date}"
     },

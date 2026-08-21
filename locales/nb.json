@@ -886,9 +886,6 @@
         "modSettings": "Moderatorinnstillinger",
         "adminSettings": "Administratorinnstillinger"
     },
-    "LogoutForm": {
-        "submit": "Logg ut"
-    },
     "User": {
         "joined": "Ble med {date}"
     },

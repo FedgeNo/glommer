@@ -489,9 +489,6 @@
         "modSettings": "Moderationseinstellungen",
         "adminSettings": "Admin-Einstellungen"
     },
-    "LogoutForm": {
-        "submit": "Abmelden"
-    },
     "User": {
         "joined": "Mitglied seit {date}"
     },

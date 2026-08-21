@@ -488,9 +488,6 @@
         "modSettings": "모더레이터 설정",
         "adminSettings": "관리자 설정"
     },
-    "LogoutForm": {
-        "submit": "로그아웃"
-    },
     "User": {
         "joined": "{date}에 가입함"
     },

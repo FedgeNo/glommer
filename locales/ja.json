@@ -1094,9 +1094,6 @@
         "modSettings": "モデレーター設定",
         "adminSettings": "管理者設定"
     },
-    "LogoutForm": {
-        "submit": "ログアウト"
-    },
     "User": {
         "joined": "{date}に参加"
     },

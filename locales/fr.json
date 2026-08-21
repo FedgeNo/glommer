@@ -832,9 +832,6 @@
         "modSettings": "Paramètres de modération",
         "adminSettings": "Paramètres d'administration"
     },
-    "LogoutForm": {
-        "submit": "Se déconnecter"
-    },
     "User": {
         "joined": "Membre depuis {date}"
     },

@@ -1059,9 +1059,6 @@
         "modSettings": "Moderavimo nuostatos",
         "adminSettings": "Administravimo nuostatos"
     },
-    "LogoutForm": {
-        "submit": "Atsijungti"
-    },
     "User": {
         "joined": "Prisijungė {date}"
     },

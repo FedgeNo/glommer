@@ -489,9 +489,6 @@
         "modSettings": "मॉड सेटिंग्स",
         "adminSettings": "एडमिन सेटिंग्स"
     },
-    "LogoutForm": {
-        "submit": "लॉग आउट"
-    },
     "User": {
         "joined": "{date} को शामिल हुए"
     },

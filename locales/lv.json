@@ -490,9 +490,6 @@
         "modSettings": "Moderēšanas iestatījumi",
         "adminSettings": "Administrēšanas iestatījumi"
     },
-    "LogoutForm": {
-        "submit": "Izrakstīties"
-    },
     "User": {
         "joined": "Pievienojās {date}"
     },

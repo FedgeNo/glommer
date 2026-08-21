@@ -489,9 +489,6 @@
         "modSettings": "Kontrolantaj agordoj",
         "adminSettings": "Administraj agordoj"
     },
-    "LogoutForm": {
-        "submit": "Elsaluti"
-    },
     "User": {
         "joined": "Aliĝis {date}"
     },

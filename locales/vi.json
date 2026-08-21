@@ -488,9 +488,6 @@
         "modSettings": "Cài đặt kiểm duyệt",
         "adminSettings": "Cài đặt quản trị"
     },
-    "LogoutForm": {
-        "submit": "Đăng xuất"
-    },
     "User": {
         "joined": "Đã tham gia {date}"
     },

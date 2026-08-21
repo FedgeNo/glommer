@@ -488,9 +488,6 @@
         "modSettings": "版主设置",
         "adminSettings": "管理员设置"
     },
-    "LogoutForm": {
-        "submit": "退出登录"
-    },
     "User": {
         "joined": "加入于{date}"
     },

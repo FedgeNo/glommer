@@ -490,9 +490,6 @@
         "modSettings": "Configuració de moderació",
         "adminSettings": "Configuració d'administració"
     },
-    "LogoutForm": {
-        "submit": "Tanca la sessió"
-    },
     "User": {
         "joined": "S'hi va unir el {date}"
     },

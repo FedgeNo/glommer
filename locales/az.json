@@ -489,9 +489,6 @@
         "modSettings": "Moderator parametrləri",
         "adminSettings": "İnzibatçı parametrləri"
     },
-    "LogoutForm": {
-        "submit": "Çıxış"
-    },
     "User": {
         "joined": "{date}-ə qoşuldu"
     },

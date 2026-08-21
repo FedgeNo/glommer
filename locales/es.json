@@ -1098,9 +1098,6 @@
         "modSettings": "Ajustes de moderación",
         "adminSettings": "Ajustes de administración"
     },
-    "LogoutForm": {
-        "submit": "Cerrar sesión"
-    },
     "User": {
         "joined": "Se unió el {date}"
     },

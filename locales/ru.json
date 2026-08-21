@@ -491,9 +491,6 @@
         "modSettings": "Настройки модерации",
         "adminSettings": "Настройки администратора"
     },
-    "LogoutForm": {
-        "submit": "Выйти"
-    },
     "User": {
         "joined": "На сайте с {date}"
     },

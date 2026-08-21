@@ -1134,9 +1134,6 @@
         "modSettings": "Nastavitve moderatorja",
         "adminSettings": "Nastavitve skrbnika"
     },
-    "LogoutForm": {
-        "submit": "Odjavi se"
-    },
     "User": {
         "joined": "Pridružil se je {date}"
     },

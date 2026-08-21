@@ -901,9 +901,6 @@
         "modSettings": "Moderatzailearen ezarpenak",
         "adminSettings": "Administratzailearen ezarpenak"
     },
-    "LogoutForm": {
-        "submit": "Amaitu saioa"
-    },
     "User": {
         "joined": "{date} datan batu zen"
     },

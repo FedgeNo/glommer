@@ -488,9 +488,6 @@
         "modSettings": "Pengaturan moderator",
         "adminSettings": "Pengaturan admin"
     },
-    "LogoutForm": {
-        "submit": "Keluar"
-    },
     "User": {
         "joined": "Bergabung {date}"
     },

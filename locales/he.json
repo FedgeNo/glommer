@@ -1057,9 +1057,6 @@
         "modSettings": "הגדרות ניהול תוכן",
         "adminSettings": "הגדרות מנהל"
     },
-    "LogoutForm": {
-        "submit": "יציאה"
-    },
     "User": {
         "joined": "הצטרפות: {date}"
     },

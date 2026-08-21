@@ -489,9 +489,6 @@
         "modSettings": "Moderátori beállítások",
         "adminSettings": "Rendszergazdai beállítások"
     },
-    "LogoutForm": {
-        "submit": "Kijelentkezés"
-    },
     "User": {
         "joined": "Csatlakozás: {date}"
     },

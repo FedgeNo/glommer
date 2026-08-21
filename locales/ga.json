@@ -492,9 +492,6 @@
         "modSettings": "Socruithe modhnóra",
         "adminSettings": "Socruithe riarthóra"
     },
-    "LogoutForm": {
-        "submit": "Logáil amach"
-    },
     "User": {
         "joined": "Tháinig isteach {date}"
     },

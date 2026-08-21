@@ -1134,9 +1134,6 @@
         "modSettings": "Налаштування модерації",
         "adminSettings": "Налаштування адміністратора"
     },
-    "LogoutForm": {
-        "submit": "Вийти"
-    },
     "User": {
         "joined": "На сайті з {date}"
     },

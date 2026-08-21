@@ -489,9 +489,6 @@
         "modSettings": "تنظیمات نظارت",
         "adminSettings": "تنظیمات مدیریت"
     },
-    "LogoutForm": {
-        "submit": "خروج"
-    },
     "User": {
         "joined": "پیوسته در {date}"
     },

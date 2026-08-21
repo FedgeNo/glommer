@@ -1104,9 +1104,6 @@
         "modSettings": "إعدادات الإشراف",
         "adminSettings": "إعدادات الإدارة"
     },
-    "LogoutForm": {
-        "submit": "تسجيل الخروج"
-    },
     "User": {
         "joined": "انضم {date}"
     },

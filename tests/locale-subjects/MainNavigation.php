@@ -16,5 +16,4 @@ declare(strict_types=1);
 
 return [
     MainNavigation::class => static fn (): HTMLObject => new MainNavigation(),
-    LogoutForm::class => static fn (): HTMLObject => new LogoutForm(),
 ];

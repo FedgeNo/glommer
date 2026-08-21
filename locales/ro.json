@@ -490,9 +490,6 @@
         "modSettings": "Setări moderator",
         "adminSettings": "Setări administrator"
     },
-    "LogoutForm": {
-        "submit": "Deconectare"
-    },
     "User": {
         "joined": "S-a alăturat la {date}"
     },

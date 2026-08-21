@@ -489,9 +489,6 @@
         "modSettings": "Cilësimet e moderatorit",
         "adminSettings": "Cilësimet e administratorit"
     },
-    "LogoutForm": {
-        "submit": "Dil"
-    },
     "User": {
         "joined": "U bashkua më {date}"
     },

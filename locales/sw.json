@@ -489,9 +489,6 @@
         "modSettings": "Mipangilio ya Wasimamizi",
         "adminSettings": "Mipangilio ya Msimamizi"
     },
-    "LogoutForm": {
-        "submit": "Ondoka"
-    },
     "User": {
         "joined": "Alijiunga {date}"
     },

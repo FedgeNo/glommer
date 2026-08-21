@@ -1100,9 +1100,6 @@
         "modSettings": "Nastavenia moderátora",
         "adminSettings": "Nastavenia správcu"
     },
-    "LogoutForm": {
-        "submit": "Odhlásiť sa"
-    },
     "User": {
         "joined": "Pridal sa {date}"
     },

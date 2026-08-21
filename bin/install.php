@@ -2944,11 +2944,15 @@ function ensure_small100_environment(): void
             mkdir(Translator::SMALL100_MODEL_DIR, 0755, true);
         }
 
-        // huggingface-cli ships with huggingface_hub, which transformers
-        // already pulled in above - nothing new to install for this step.
+        // The `hf` console script, not a `python -m` invocation: huggingface_hub
+        // 1.x moved its CLI (huggingface_hub.commands.huggingface_cli no longer
+        // exists) and installs `hf` as the entry point, in the venv's own bin/
+        // alongside python - not on PATH, so named by its full path here too.
+        $hf = TRANSLATE_VENV_DIR . '/bin/hf';
+
         $download_result = run(
-            ':python -m huggingface_hub.commands.huggingface_cli download rex099/small100-ctranslate2 --local-dir :dir 2>&1',
-            ['python' => $python, 'dir' => Translator::SMALL100_MODEL_DIR]
+            ':hf download rex099/small100-ctranslate2 --local-dir :dir 2>&1',
+            ['hf' => $hf, 'dir' => Translator::SMALL100_MODEL_DIR]
         );
 
         if ($download_result['exitCode'] !== 0 || !is_file($model_marker)) {

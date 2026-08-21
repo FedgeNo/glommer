@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Pagsisimula",
+        "posting": "Pagpo-post",
+        "connecting": "Pakikipag-ugnayan",
+        "stayingSafe": "Pananatiling Ligtas",
+        "yourAccount": "Iyong Account"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Paggawa ng account",
+            "category": "gettingStarted",
+            "summary": "Mag-sign up gamit ang username, email, at password upang makapagsimulang mag-post.",
+            "body": "\n<p>Upang sumali, buksan ang <strong>Mag-sign up</strong> sa kanang itaas, pumili ng username, at ilagay ang email at password mo. Sa username ka hahanapin at babanggitin ng iba, kaya pumili ng pangalang gusto mong makilala.</p>\n<p>Opsyonal ang <strong>pangalang ipapakita</strong> at maikling bio; maaari mong idagdag ang mga ito ngayon o sa <a href=\"/help/your-profile\">iyong profile</a> sa ibang pagkakataon. Kapag walang pangalang ipapakita, username mo ang makikita.</p>\n<p>Pagkatapos mag-sign up, maaari ka nang magbasa at mag-post. Kung nagbeberipika ng email ang site, kailangan mo munang sundin ang <a href=\"/help/verifying-your-email\">pagberipika ng email</a>. Ang pinakaunang account sa bagong site ang awtomatikong nagiging administrator.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Pagberipika ng iyong email",
+            "category": "gettingStarted",
+            "summary": "Kumpirmahin ang address mo gamit ang link na ipinadala namin sa email, kung naka-on ang email.",
+            "body": "\n<p>Kung nakatakdang magpadala ng email ang site, padadalhan ka namin ng verification link pagkatapos mong mag-sign up. Hangga't hindi mo ito binubuksan, dadalhin ka ng bawat pahina sa paalalang tingnan ang inbox. Kinukumpirma ng link ang account mo at tinitiyak na sa iyo ang address para makarating ang mga reset at notification.</p>\n<p>Kung wala ito, tingnan muna ang spam folder. Maaari kang humiling ng bagong link sa pahinang <strong>Tingnan ang iyong inbox</strong>. Kung hindi talaga nagpapadala ng email ang site, walang kailangang beripikahin at magagamit mo agad ang lahat.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Paglilibot sa site",
+            "category": "gettingStarted",
+            "summary": "Mabilis na paglilibot sa menu: mga feed, kaibigan, user, mensahe, at account mo.",
+            "body": "\n<p>Ang bar sa itaas ang daan patungo sa buong site. Ibinabalik ka ng <strong>pangalan ng site</strong> sa pangunahing feed. Nasa menu rin ang <strong>Friends Feed</strong>, <strong>Mga User</strong>, <strong>Mga Tag</strong>, <strong>Mga Paksa</strong>, <strong>Mapa</strong>, <strong>Mga Lokasyon</strong>, <strong>Paghahanap</strong>, <strong>Mga Mensahe</strong>, <strong>Mga Bookmark</strong>, <strong>Mga Notification</strong>, <strong>Tulong</strong>, at <strong>Tungkol Dito</strong>.</p>\n<p>Nasa kanang itaas ang pangalan mo. Papunta ito sa profile mo at nagbubukas ng menu para sa mga kaibigan, draft at naka-iskedyul na post, <strong>Mga Setting ng User</strong>, at pag-log out.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Pagsulat ng post",
+            "category": "posting",
+            "summary": "Sumulat at maglathala mula sa kahon sa itaas ng feed.",
+            "body": "\n<p>Nasa itaas ng pangunahing feed ang composer. Isulat ang post at pindutin ang button ng pag-post. Agad itong makikita sa pampublikong feed, kaya tandaan na pampubliko ang lahat sa site.</p>\n<p>Maaari kang magdagdag ng <strong>pamagat</strong>, <strong>link</strong>, <strong>poll</strong>, o markang <strong>Sensitibo</strong>. Maaari mo ring i-format ang teksto at maglakip ng larawan, video, o audio. Isang post ay maaaring may link, nakalakip na media, <em>o</em> poll—hindi pinagsasama ang tatlo.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Pag-format ng iyong sulat",
+            "category": "posting",
+            "summary": "Gumamit ng bold, italic, listahan, sipi, code, emoji, at math sa post.",
+            "body": "\n<p>Rich editor ang lugar ng pagsusulat. May mga tool ito para sa <strong>bold</strong>, <em>italic</em>, salungguhit, guhit sa gitna, mga listahan, siping talata, at mga bloke ng code.</p>\n<h2>Emoji</h2><p>Buksan ang emoji picker sa composer. Natatandaan nito ang pinili mong kulay ng balat.</p>\n<h2>Math</h2><p>Gumamit ng LaTeX: <code>$$ ... $$</code> o <code>\\[ ... \\]</code> para sa nakahiwalay na equation, at <code>\\( ... \\)</code> o <code>$ ... $</code> para sa math sa linya. Kung may dalawang dollar sign na presyo, mas ligtas ang <code>\\( ... \\)</code> upang hindi mapagkamalang formula.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Pagdaragdag ng larawan, video, at audio",
+            "category": "posting",
+            "summary": "Maglakip ng isa o higit pang larawan, video, o audio sa post.",
+            "body": "\n<p>Gamitin ang control sa paglakip sa composer upang magdagdag ng <strong>larawan, video, o audio</strong>. Nagiging gallery na nasu-swipe ang maraming larawan. Hanggang 100 file ang maaaring ilakip sa isang post.</p>\n<p>Pinoproseso pagkatapos mag-post ang malalaking video at audio; makakatanggap ka ng notification kapag handa na ang mga ito. Bago mag-post, maaari mong alisin ang attachment sa tabi ng file picker. Hindi maaaring sabay na may media at link ang isang post.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Pagbabahagi ng link",
+            "category": "posting",
+            "summary": "Mag-paste ng URL sa field ng link upang magbahagi ng pahinang may preview.",
+            "body": "\n<p>Ilagay ang address ng web page sa field na <strong>Link</strong>. Kukunin namin ang pamagat, maikling paglalarawan, at larawan kung mayroon, upang makita ng mga tao kung ano ang bubuksan nila.</p>\n<p>Maaari ka pa ring magsulat kung bakit mo ito ibinabahagi at alisin ang preview image. Isang post ay maaaring may link, media, o poll—isa lamang sa mga iyon.</p>\n"
+        },
+        "polls": {
+            "title": "Pagtatanong gamit ang poll",
+            "category": "posting",
+            "summary": "Maglakip ng poll sa post at hayaang sumagot ang mga tao rito at sa Fediverse.",
+            "body": "\n<p>Pindutin ang <strong>Magdagdag ng Poll</strong>. Hanggang apat na opsyon ang maaari, at ang teksto ng post ang tanong. Piliin kung maaaring higit sa isang sagot at kung tatakbo ito mula limang minuto hanggang pitong araw. Hindi maaaring magkapareho ang dalawang opsyon.</p>\n<p>Pinapalitan ng poll ang media o link. Upang sumagot, pumili at pindutin ang <strong>Bumoto</strong>. Pinal ang sagot. Pagkatapos bumoto o magsara ang poll, makikita ang bahagi at bilang ng boto, ang pinili mo, at natitirang oras.</p>\n<h2>Sa buong Fediverse</h2><p>Makakaboto ang mga tao sa ibang server sa poll mo, at makakaboto ka rin sa kanila. Maaaring bahagyang mahuli ang kabuuang ipinapakita habang hinihintay ang bilang mula sa pinanggalingang server.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Mga babala sa content at sensitibong media",
+            "category": "posting",
+            "summary": "Markahang sensitibo ang post o magdagdag ng babalang nagtatago sa buong post hanggang buksan.",
+            "body": "\n<p>May markang <strong>Sensitibo</strong> ang bawat post. Kapag pinili ito, natatakpan ang nakalakip na media hanggang buksan ng mambabasa, habang nananatiling nakikita ang mga salita.</p>\n<p>Kung ang sulat mismo ang nangangailangan ng babala, idagdag ang teksto ng babala na lumilitaw kapag pinili ang Sensitibo. Itatago nito ang buong post—teksto, media, at poll. Maaaring piliin sa <a href=\"/user-settings\">Mga Setting ng User</a> na palaging ipakita ang sensitibong media.</p>\n<h2>Sa buong Fediverse</h2><p>Naipapadala sa magkabilang direksiyon ang mga babala at takip sa pagitan ng mga server.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Mga tugon at thread",
+            "category": "posting",
+            "summary": "Tumugon sa post upang magsimula ng thread ng usapan sa ilalim nito.",
+            "body": "\n<p>May aksiyong <strong>tumugon</strong> ang bawat post. Nagbubukas ito ng composer at inilalagay ang tugon sa thread sa ilalim ng orihinal. Maaari ring i-format at lagyan ng media ang tugon.</p>\n<p>Buksan ang sariling pahina ng post upang makita ang buong usapan. Lumalabas din ang mga tugon sa Friends Feed at mga profile, na may linyang <strong>Bilang tugon sa</strong>. Sa malalim na thread, dadalhin ka ng <strong>Pumunta sa Simula</strong> sa unang post.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Pag-like ng mga post",
+            "category": "posting",
+            "summary": "Magpakita ng pagkagusto sa post sa isang pindot ng like button.",
+            "body": "\n<p>May button na <strong>like</strong> at bilang ang bawat post. Pindutin upang mag-like at pindutin ulit upang bawiin. Agad nagbabago ang bilang.</p>\n<p>Makakatanggap ng notification ang may-akda—mabilis itong paraan upang ipaalam na nagustuhan mo ang ibinahagi niya.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Pag-delete ng post",
+            "category": "posting",
+            "summary": "Alisin ang sarili mong post at alamin kung ano ang mangyayari sa mga tugon.",
+            "body": "\n<p>Sa sarili mong post, may aksiyong <strong>i-delete</strong> sa halip na iulat. Inaalis nito ang post para sa lahat.</p>\n<p>Permanente ang pag-delete at may kumpirmasyon muna. Kasama ring mawawala ang lahat ng tugon sa ilalim nito. Sarili mong post lamang ang maaari mong i-delete; kung may problema sa post ng iba, <a href=\"/help/reporting-abuse\">iulat ito</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Pagsasalin ng post o mensahe",
+            "category": "posting",
+            "summary": "Basahin ang nakasulat sa ibang wika at unawain kung ano ang ginagawa ng pagsasalin sa mga salita.",
+            "body": "\n<p>May button na <strong>isalin</strong> ang mga post na may teksto. Pinapalitan nito ang body ng salin at maaari mong ibalik ang orihinal. Dito sa server ginagawa at iniimbak ang salin ng post para sa susunod na mambabasa.</p>\n<p>May parehong button ang mga natanggap mong mensahe, ngunit wala nito ang sarili mong mensahe at walang isinasalin hangga't hindi mo hinihiling.</p>\n<p>Kapag nagsalin ng <a href=\"/help/encrypted-messages\">naka-encrypt na mensahe</a>, pinipili mong ipabasa ang teksto sa server. Hindi sine-save ang salin o binabago ang mensahe, pero hindi na end-to-end encrypted ang pagbasa na iyon. Lumilitaw lamang ang button kung may naka-install na translator.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Pag-edit ng post",
+            "category": "posting",
+            "summary": "Ayusin ang typo o baguhin ang sarili mong post pagkatapos ilathala.",
+            "body": "\n<p>May aksiyong <strong>i-edit</strong> ang bawat post na isinulat mo. Binubuksan nitong muli ang editor upang ayusin ang typo, mga salita, o format at i-save ang pagbabago.</p>\n<p>Pinapalitan ng edit ang post para sa lahat at naglalagay ng maliit na tandang <strong>(na-edit)</strong>. Maaari mong baguhin ang pamagat, teksto, format, at link, ngunit hindi ang nakalakip na media. Para roon, <a href=\"/help/deleting-a-post\">i-delete</a> at gumawa ng bago. Sarili mong post lamang ang mae-edit mo.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Pag-repost at pagsipi",
+            "category": "posting",
+            "summary": "Ipasa ang post sa mga kaibigan at follower, nang walang pagbabago o may sarili mong salita.",
+            "body": "\n<p>Pindutin ang <strong>I-repost</strong> upang ipasa ang post nang walang pagbabago. Lalabas ito sa mga feed at profile mo, at ipaaalam din sa mga follower mo sa Fediverse. Nagiging <strong>I-undo ang Repost</strong> ang button. Hindi mo maaaring i-repost ang sarili mong post.</p>\n<h2>Pagsipi</h2><p>Pindutin ang <strong>Sipiin</strong> upang magdagdag ng sarili mong sasabihin sa naka-embed na orihinal. Kailangan nito ng sarili mong mga salita; maaari kang maglakip ng mga larawan ngunit hindi video o audio. Tulad ng ibang post, maaari itong tugunan, i-like, iulat, at ipadala sa Fediverse.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Pag-bookmark ng mga post",
+            "category": "posting",
+            "summary": "I-save ang mga post sa pribado mong listahan ng Mga Bookmark upang balikan.",
+            "body": "\n<p>May aksiyong <strong>bookmark</strong> ang bawat post. Pindutin upang i-save sa <strong>Mga Bookmark</strong> at pindutin ulit upang alisin. Pribado ito at hindi inaabisuhan ang may-akda.</p>\n<p>Buksan ang Mga Bookmark sa menu upang makita ang mga na-save mo, pinakabago muna. Kung i-delete ng may-akda ang post, mawawala rin ito sa listahan mo.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Mga hashtag at mention",
+            "category": "posting",
+            "summary": "Lagyan ng #hashtag ang mga post at tawagin ang mga tao gamit ang @mention.",
+            "body": "\n<p>Awtomatikong nagiging link ang dalawang uri ng shortcut.</p>\n<h2>Mga hashtag</h2><p>Ang <strong>#hashtag</strong> gaya ng <code>#musika</code> ay papunta sa pahina ng lahat ng post na gumagamit nito. Ang unang sampung natatanging hashtag lamang ang ini-index at binibilang sa trending; link pa rin ang iba.</p>\n<h2>Mga mention</h2><p>Gamitin ang <strong>@username</strong> upang banggitin ang isang tao at abisuhan siya. Kapag higit sa sampung natatanging tao ang binanggit sa isang post, walang inaabisuhan ngunit gumagana pa rin ang mga link. Para sa Fediverse, gamitin ang buong <code>@user@server</code>.</p>\n"
+        },
+        "finding-people": {
+            "title": "Paghahanap ng mga tao",
+            "category": "connecting",
+            "summary": "Maghanap ng user ayon sa pangalan o tingnan ang mga mungkahi sa pahina ng Mga User.",
+            "body": "\n<p>Buksan ang <strong>Mga User</strong> at magsimulang mag-type ng pangalan o username. Unang nakalista ang mga miyembro ng site, kasunod ang mga kilala mula sa Fediverse.</p>\n<p>Bago ka mag-type, makikita ang mga mungkahi—mga kaibigan ng mga kaibigan mo, inayos ayon sa dami ng magkakakilala. Kung walang laman, wala lang maimumungkahi. Mula sa card, maaari mo silang idagdag bilang kaibigan, padalhan ng mensahe, o buksan ang profile.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Mga kaibigan at friend request",
+            "category": "connecting",
+            "summary": "Magpadala, tumanggap, at mamahala ng mga friend request at mag-alis ng kaibigan.",
+            "body": "\n<p>Mutuwal ang pagkakaibigan sa {site} at nagsisimula sa request. Gamitin ang <strong>Idagdag bilang Kaibigan</strong>; habang nakabinbin, maaari mo itong kanselahin.</p>\n<p>Sa pahina ng <strong>Mga Kaibigan</strong>, makikita mo ang mga request na naghihintay sa iyo, kasalukuyang mga kaibigan, at mga request na ipinadala mo. Ikaw lamang ang nakakakita sa mga request; pampubliko ang listahan ng mga kaibigan.</p>\n<p>Gamitin ang <strong>Alisin ang Kaibigan</strong> upang tapusin ang koneksiyon. Lumalabas ang mga post ng kaibigan sa <a href=\"/help/your-feeds\">Friends Feed</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Pagmemensahe",
+            "category": "connecting",
+            "summary": "Magpadala ng pribadong mensahe at subaybayan ang mga usapan.",
+            "body": "\n<p>Gamitin ang <strong>Mensahe</strong> sa card o profile, o buksan ang <strong>Mga Mensahe</strong>. Mag-type sa ibaba at ipadala; maaabisuhan ang kausap at live na lalabas ang bagong mensahe.</p>\n<p>Pribado sa ibang miyembro ang mga mensahe. Ang <strong>end-to-end encrypted</strong> ay nababasa lamang sa inyong browser; ang <strong>plain</strong> ay nababasang iniimbak ng server; at ang <strong>federated</strong> ay iniimbak din sa server ng kausap at hindi maaaring end-to-end encrypted.</p>\n<p>Kung ginugulo ka, maaari mo siyang <a href=\"/help/blocking-someone\">i-block</a> o <a href=\"/help/reporting-abuse\">iulat</a> ang mensahe, kahit naka-encrypt.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Mga naka-encrypt na mensahe",
+            "category": "connecting",
+            "summary": "I-on ang end-to-end encryption sa mga usapan at unawain ang kahulugan ng passphrase.",
+            "body": "\n<p>I-on ang <strong>Mga Naka-encrypt na Mensahe</strong> sa <a href=\"/user-settings\">Mga Setting ng User</a> at pumili ng passphrase. Gumagawa ang browser ng key, nilala-lock ito sa passphrase, at naka-lock na kopya lamang ang sine-save sa server. Hindi umaalis sa device ang passphrase.</p>\n<p>Nagiging end-to-end encrypted ang usapan kapag <em>pareho</em> kayong naka-on nito. Sa browser lamang nababasa ang mga bagong mensahe; hindi kasama ang luma. Hindi maaaring i-encrypt ang usapan sa ibang Fediverse server.</p>\n<p><strong>Pumili nang maingat.</strong> Gumamit ng mahabang parirala na hindi bababa sa labindalawang character at huwag gamitin ang password ng account. Walang makakabawi ng nawalang passphrase. Gumagawa ang reset ng bagong key, ngunit permanenteng mawawala ang mensaheng naka-encrypt sa luma.</p>\n<p>Ihambing sa ibang paraan ang safety code na ipinapakita sa inyong dalawa. Kapag pareho, walang nasa pagitan ninyo. Maaari mo pa ring <a href=\"/help/reporting-abuse\">iulat</a> ang isang naka-encrypt na mensahe; mensaheng iyon lamang ang mababasa ng moderator.</p>\n"
+        },
+        "notifications": {
+            "title": "Mga notification",
+            "category": "connecting",
+            "summary": "Paano mo malalaman ang mga like, tugon, friend request, at mensahe.",
+            "body": "\n<p>Umiilaw ang <strong>Mga Notification</strong> kapag may nag-like, nag-repost, tumugon, nagbanggit sa iyo, nagpadala o tumanggap ng friend request, nagmensahe, o natapos ang media. Gayundin ang mga pangyayari mula sa Fediverse.</p>\n<p>Live ang mga notification. Buksan ang menu para sa pinakabago o ang buong pahina para sa kasaysayan. Direktang papunta ang bawat isa sa kaugnay na post, usapan, o profile.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Ang Relay Feed",
+            "category": "connecting",
+            "summary": "Dito dumarating ang mga post mula sa mas malawak na Fediverse kapag naka-subscribe ang server sa relay.",
+            "body": "\n<p>Kung may <strong>Relay Feed</strong> sa menu, naka-subscribe ang server sa isang relay—daluyan ng pampublikong post ng mga kasaling server. Sa ganitong paraan, may makikita agad ang maliit o bagong site.</p>\n<p>Hiwalay ito sa ibang feed dahil walang pumili sa mga post na iyon. Kamakailang bahagi lamang ang iniingatan; mananatili ang post kung nakipag-ugnayan ka rito.</p>\n<p>Maaari mong gamitin ang karaniwang mga aksiyon at <a href=\"/help/following-on-the-fediverse\">sundan</a> ang isang account. Administrator lamang ang nagpapasya kung gagamit ng relay.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Iyong mga feed",
+            "category": "connecting",
+            "summary": "Ang pagkakaiba ng Global Feed at Friends Feed.",
+            "body": "\n<p>Dalawang feed ang pinakamadalas gamitin:</p>\n<ul><li><strong>Global Feed</strong>—ang home page—ay may mga post mula sa buong site.</li><li><strong>Friends Feed</strong> ay may mga post lamang ng mga kaibigan mo.</li></ul>\n<p>Parehong naglo-load habang nag-scroll. Punuin ang Friends Feed sa <a href=\"/help/finding-people\">paghahanap ng tao</a> at <a href=\"/help/friends-and-friend-requests\">pagdaragdag sa kanila</a>. Kasama rito ang mga <a href=\"/help/replies-and-threads\">tugon</a>; panimulang post lamang ang nasa pangunahing feed.</p>\n"
+        },
+        "video-calling": {
+            "title": "Video call",
+            "category": "connecting",
+            "summary": "Magsimula ng pribadong video call habang pareho ninyong bukas ang usapan.",
+            "body": "\n<p>Maaari kayong magkaroon ng one-to-one video call mula sa message thread. <strong>Peer-to-peer</strong> ito: direktang dumadaloy ang video at audio sa dalawang browser.</p>\n<h2>Pagsisimula</h2><p>Lumalabas ang <strong>Video call</strong> kapag pareho ninyong bukas ang thread at kayang mag-abot ng mga browser. Maaaring tanggapin o tanggihan ng kausap.</p>\n<h2>Habang tumatawag</h2><p>Pinapalitan ng tawag ang thread. Tinatapos ito ng <strong>Tapusin ang tawag</strong>, pagtanggi, pag-alis, o pag-hang up.</p>\n<h2>Kung walang button</h2><p>Maaaring walang WebRTC o bina-block ng firewall ang koneksiyon. May pagsusuri sa <a href=\"/user-settings\">Mga Setting ng User</a>.</p>\n<h2>Privacy</h2><p>Walang video o audio na dumadaan sa site; setup message lamang ang ipinapasa at walang nire-record.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Mga trending na paksa",
+            "category": "connecting",
+            "summary": "Tingnan ang mga paksa at pangalang pinakamadalas pag-usapan ngayon.",
+            "body": "\n<p>Buksan ang <strong>Mga Paksa</strong> upang makita ang mga hashtag, pangalan, at paksang madalas lumitaw. May sariling pahina ang bawat item.</p>\n<p>Pinapangkat ang mga ito bilang tao, organisasyon, lugar, hashtag, at iba pa. Kasama ang mga post mula sa ibang server, lalo na sa <a href=\"/help/the-relay-feed\">relay</a>. Kailangan itong banggitin ng ilang tao bago lumitaw, at maaaring ipagbawal ng moderator ang mapang-abuso o maingay na paksa.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Pagsunod sa mga tao sa Fediverse",
+            "category": "connecting",
+            "summary": "Sundan ang mga account sa Mastodon at iba pang Fediverse server.",
+            "body": "\n<p>Gumagamit ang {site} ng <strong>ActivityPub</strong>. Sa seksiyong <strong>Fediverse</strong> ng Mga Setting, mag-paste ng handle gaya ng <code>@user@example.social</code> at pindutin ang <strong>Sundan</strong>.</p>\n<p>Makikita roon ang mga sinusundan at kung tinanggap na o nakabinbin. Maaari ka ring gumamit ng buong <code>@user@server</code> sa mention.</p>\n<h2>Kapag sinusundan ka mula sa labas</h2><p>Ang address mo ay <strong>@iyong-username@domain-ng-site</strong>. Naglalakbay ang iyong teksto, media, <a href=\"/help/polls\">poll</a>, babala, pin, at profile; bumabalik din ang like, boost, at tugon.</p>\n"
+        },
+        "searching": {
+            "title": "Paghahanap",
+            "category": "connecting",
+            "summary": "Maghanap sa mga post ng site mula sa pahina ng Paghahanap.",
+            "body": "\n<p>Hinahanap ng <strong>Paghahanap</strong> sa menu ang mga <strong>post</strong> sa site habang nagta-type ka.</p>\n<p>Kung tao ang hanap mo, gamitin ang <a href=\"/help/finding-people\">pahina ng Mga User</a>, na may sariling paghahanap at mungkahi.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Pag-block sa isang tao",
+            "category": "stayingSafe",
+            "summary": "Putulin ang pakikipag-ugnayan sa user at itago siya sa sarili mong pagtingin.",
+            "body": "\n<p>Gamitin ang <strong>I-block</strong> sa card o profile. Tinatapos nito ang pagkakaibigan at nililimitahan ang mensahe, like, tugon, at repost.</p>\n<p>Personal na setting ito at hindi ginagawang lihim ang pampublikong site. Maaari mong <strong>I-unblock</strong> anumang oras. Kung mapang-abuso siya, <a href=\"/help/reporting-abuse\">iulat din ang content</a>.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Pag-uulat ng pang-aabuso",
+            "category": "stayingSafe",
+            "summary": "Iulat ang partikular na mapang-abusong post, mensahe, o user upang maaksyunan ng moderator.",
+            "body": "\n<p><strong>Iulat ang mismong content na mapang-abuso.</strong> Gamitin ang <strong>Iulat</strong> sa partikular na post o mensahe upang makita ng moderator ang nakita mo.</p>\n<h2>Paano mag-ulat</h2><ul><li><strong>Post:</strong> gamitin ang Iulat sa post.</li><li><strong>Mensahe:</strong> gamitin ito sa mensahe.</li><li><strong>User:</strong> gamitin ito sa profile o card kung buong account ang problema.</li></ul>\n<p>Magdagdag ng maikling dahilan. Pribado ang pag-uulat. Maaari mo rin siyang <a href=\"/help/blocking-someone\">i-block</a>.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Two-factor authentication",
+            "category": "stayingSafe",
+            "summary": "Magdagdag ng login code na ipinapadala sa email para sa dagdag na seguridad.",
+            "body": "\n<p>Nagdaragdag ang 2FA ng ikalawang hakbang upang hindi sapat ang password lamang. I-on ito sa <strong>Two-Factor Authentication</strong> sa Mga Setting.</p>\n<p>Sa bawat pag-log in, mag-e-email kami ng numerong code. Walang authenticator app; kailangan ng <a href=\"/help/verifying-your-email\">beripikadong email</a>. Maaari mo itong i-off sa parehong lugar.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Mga naka-sign in na device at session",
+            "category": "stayingSafe",
+            "summary": "Suriin kung saan ka naka-log in at mag-sign out sa lahat nang sabay-sabay.",
+            "body": "\n<p>May dalawang tool sa <strong>Mga Setting ng User</strong>.</p>\n<h2>Mga natandaang device</h2><p>Kapag nanatili kang naka-sign in, naaalala ang device. Maaari mong bawiin ang alinman maliban sa kasalukuyan; para roon, mag-log out.</p>\n<h2>Mga session</h2><p><strong>Nagsa-sign out sa lahat</strong> ang button ng Mga Session. Gamitin ito kung may ibang posibleng nakaka-access, saka <a href=\"/help/settings-and-appearance\">palitan ang password</a>.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Mga setting at hitsura",
+            "category": "yourAccount",
+            "summary": "Paglilibot sa Mga Setting ng User—password, email, seguridad, tema, at iba pa.",
+            "body": "\n<p>Nasa <strong>Mga Setting ng User</strong> ang password, email, 2FA, tema, sensitibong media, encryption, email digest, push, mga session, video call, Fediverse, paglipat, at pag-delete.</p>\n<h2>Mga tema</h2><p>Binabago ng <strong>Tema</strong> ang hitsura at naaalala ang pinili. Maaaring tumugma sa system o pumili sa mga nakahanda.</p>\n<h2>Mga buod sa email</h2><p>Kung isang linggo kang wala at may nangyari, isang email ang ipapadala—hindi hihigit sa isa kada linggo. I-off sa Setting o unsubscribe link.</p>\n<p>Kung nakalimutan ang password, gamitin ang <strong>Nakalimutan ang Password?</strong>.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Pagsunod gamit ang RSS",
+            "category": "yourAccount",
+            "summary": "Mag-subscribe sa site o isang tao gamit ang anumang RSS reader.",
+            "body": "\n<p>May mga <strong>RSS feed</strong> ang {site}:</p>\n<ul><li>Nasa <code>/feed.xml</code> ang site.</li><li>Nasa <code>/users/kanilang-username/feed.xml</code> ang bawat tao.</li></ul>\n<p>Awtomatikong natutuklasan ng karamihan sa reader ang mga ito, kaya madalas ay sapat nang i-paste ang address ng site o profile.</p>\n"
+        },
+        "your-profile": {
+            "title": "Iyong profile",
+            "category": "yourAccount",
+            "summary": "Itakda ang pangalang ipapakita, bio, at avatar upang makilala ka ng mga tao.",
+            "body": "\n<p>Buksan ang sarili mong profile at gamitin ang <strong>i-edit</strong>.</p>\n<ul><li>Ang <strong>pangalang ipapakita</strong> ay nasa itaas ng username.</li><li>Ang <strong>bio</strong> ay maikling paglalarawan; naki-click ang link, #hashtag, at @mention.</li></ul>\n<p>Maaari ka ring mag-upload ng <strong>avatar</strong>. Hindi na mababago ang username, ngunit mababago ang iba.</p>\n<h2>Mga naka-pin na post</h2><p>Gamitin ang <strong>I-pin</strong> upang ilagay ang hanggang limang post sa itaas ng profile at <strong>Alisin sa pagka-pin</strong> upang palitan. Naglalakbay din sa Fediverse ang mga pin.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Pagpapalit ng iyong email",
+            "category": "yourAccount",
+            "summary": "I-update ang email address ng account at beripikahin itong muli.",
+            "body": "\n<p>Sa Mga Setting, ilagay ang bagong address sa <strong>Palitan ang Email</strong> at kumpirmahin sa kasalukuyang password. Magpapadala kami ng verification link sa <strong>bagong</strong> address.</p>\n<p>Magpapadala rin kami sa <strong>lumang</strong> address ng link upang ibalik ang pagbabago. Hindi nito kailangan ng password at isa-sign out nito ang lahat ng device. Beripikahin agad ang bago dahil umaasa rito ang pag-reset ng password.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Pag-delete ng iyong account",
+            "category": "yourAccount",
+            "summary": "Permanenteng isara ang account at alisin ang content mo.",
+            "body": "\n<p>Sa Mga Setting, gamitin ang <strong>I-delete ang Account</strong> at kumpirmahin sa password.</p>\n<p><strong>Permanente</strong> ito. Mawawala ang mga post, tugon, mensahe, like, koneksiyon, at tugon ng iba sa mga post mo. Ireretiro ang username at hindi na muling magagamit.</p>\n<p>Hindi mababawi ang account. Hindi maaaring i-delete ang administrator account dahil kailangan ng site ng kahit isang admin.</p>\n"
+        }
+    }
+}

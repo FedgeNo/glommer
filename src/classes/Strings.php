@@ -31,10 +31,16 @@ class Strings
      */
     private const DIRECTORY = __DIR__ . '/../../locales';
 
+    /** The Help corpus, kept out of the file the browser fetches on every page. */
+    private const HELP_DIRECTORY = __DIR__ . '/../../locales/help';
+
     private static ?string $locale = null;
 
     /** @var array<string, array<string, mixed>> loaded tables by locale */
     private static array $tables = [];
+
+    /** @var array<string, array<string, mixed>> loaded Help tables by locale */
+    private static array $help_tables = [];
 
     /** Where the shared PHP and JavaScript locale files live. */
     public static function directory(): string
@@ -352,6 +358,45 @@ UPDATE `Users`
         }
 
         return self::$tables[$locale] = is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * The Help corpus for the current locale, English underneath it - the
+     * same shape HelpContent used to read out of table()['HelpContent']
+     * before the corpus moved to its own file so the browser never fetches
+     * it. Server-rendered only: nothing here reaches the client.
+     *
+     * @return array<string, mixed>
+     */
+    public static function help(): array
+    {
+        return array_replace_recursive(
+            self::helpTable(self::SOURCE_LOCALE),
+            self::helpTable(self::locale())
+        );
+    }
+
+    /** @return array<string, mixed> */
+    private static function helpTable(string $locale): array
+    {
+        if (isset(self::$help_tables[$locale])) {
+            return self::$help_tables[$locale];
+        }
+
+        if (!in_array($locale, self::available(), true)) {
+            return self::$help_tables[$locale] = [];
+        }
+
+        $path = self::HELP_DIRECTORY . '/' . $locale . '.json';
+        $contents = @file_get_contents($path);
+        $decoded = $contents === false ? null : json_decode($contents, true);
+
+        if (!is_array($decoded)) {
+            error_log('Strings: ' . $path . ' could not be read as JSON; falling back to '
+                . self::SOURCE_LOCALE . '. ' . ($contents === false ? 'Unreadable.' : json_last_error_msg()));
+        }
+
+        return self::$help_tables[$locale] = is_array($decoded) ? $decoded : [];
     }
 
     /**

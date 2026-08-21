@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Memulai",
+        "posting": "Memposting",
+        "connecting": "Terhubung",
+        "stayingSafe": "Tetap Aman",
+        "yourAccount": "Akun Anda"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Membuat akun",
+            "category": "gettingStarted",
+            "summary": "Daftar dengan nama pengguna, surel, dan kata sandi untuk mulai memposting.",
+            "body": "\n<p>Untuk bergabung, buka tautan <strong>Daftar</strong> di sudut kanan atas, pilih nama pengguna, masukkan alamat surel, dan tentukan kata sandi. Nama pengguna adalah cara orang lain menemukan dan menyebut Anda, jadi pilih nama yang ingin Anda gunakan.</p>\n<p>Formulir ini juga menyediakan tempat untuk <strong>nama tampilan</strong> dan bio singkat jika Anda ingin mengisinya sekarang. Keduanya opsional dan dapat diatur nanti dengan menyunting <a href=\"/help/your-profile\">profil Anda</a>. Nama tampilan adalah nama yang lebih ramah yang muncul di atas nama pengguna pada postingan dan profil; jika dikosongkan, nama pengguna akan ditampilkan.</p>\n<p>Setelah mendaftar, Anda dapat langsung membaca dan memposting—kecuali situs ini memverifikasi alamat surel, yang harus Anda lakukan terlebih dahulu (lihat <a href=\"/help/verifying-your-email\">memverifikasi surel</a>). Akun pertama yang dibuat di situs baru otomatis menjadi administratornya.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Memverifikasi surel Anda",
+            "category": "gettingStarted",
+            "summary": "Konfirmasikan alamat melalui tautan yang kami kirim jika surel diaktifkan.",
+            "body": "\n<p>Jika situs ini diatur untuk mengirim surel, kami akan mengirim tautan verifikasi segera setelah Anda mendaftar. Sampai Anda membukanya, setiap halaman akan mengarahkan Anda ke pemberitahuan Periksa kotak masuk. Membuka tautan akan mengonfirmasi akun dan memberi Anda akses penuh. Dengan begitu kami juga tahu alamat tersebut benar-benar milik Anda agar pengaturan ulang kata sandi dan notifikasi dapat sampai.</p>\n<p>Belum menerimanya? Periksa folder spam dahulu. Anda dapat meminta tautan baru dari halaman <strong>Periksa kotak masuk</strong> yang muncul sampai verifikasi selesai.</p>\n<p>Sebagian situs tidak mengirim surel sama sekali. Jika demikian, tidak ada yang perlu diverifikasi dan Anda dapat langsung menggunakan semuanya.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Mengenal navigasi",
+            "category": "gettingStarted",
+            "summary": "Tur singkat menu: umpan, teman, pengguna, pesan, dan akun Anda.",
+            "body": "\n<p>Bilah di bagian atas membawa Anda ke mana pun:</p>\n<ul>\n<li><strong>Nama situs</strong> di kiri selalu membawa Anda pulang ke umpan utama dan membuka menu untuk bagian lain situs.</li>\n<li><strong>Umpan Teman</strong> menampilkan postingan hanya dari orang-orang yang berteman dengan Anda.</li>\n<li><strong>Pengguna</strong> memungkinkan Anda mencari orang dan melihat saran orang untuk dihubungi.</li>\n<li><strong>Tag</strong> dan <strong>Topik</strong> membantu menemukan postingan berdasarkan topik serta melihat yang sedang populer.</li>\n<li><strong>Peta</strong> dan <strong>Lokasi</strong> menampilkan postingan berdasarkan tempat asalnya, pada peta atau dalam daftar tempat.</li>\n<li><strong>Pencarian</strong> mencari di seluruh postingan situs.</li>\n<li><strong>Pesan</strong> menyimpan percakapan pribadi dan memberi tanda saat ada pesan menunggu.</li>\n<li><strong>Markah</strong> adalah daftar pribadi postingan yang Anda simpan.</li>\n<li><strong>Notifikasi</strong> menyala saat seseorang berinteraksi dengan Anda.</li>\n<li><strong>Bantuan</strong> (artikel-artikel ini) dan <strong>Tentang</strong> tersedia baik saat Anda masuk maupun tidak.</li>\n</ul>\n<p>Nama Anda sendiri berada di kanan atas. Tautan itu membuka profil dan menu berisi <strong>Teman</strong> (untuk menerima permintaan dan mengelola hubungan), draf serta postingan terjadwal, <strong>Pengaturan Pengguna</strong>, dan pilihan <strong>keluar</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Menyusun postingan",
+            "category": "posting",
+            "summary": "Tulis dan terbitkan postingan dari kotak di bagian atas umpan.",
+            "body": "\n<p>Komposer berada di bagian atas umpan utama. Ketik postingan di area penulisan lalu tekan tombol posting untuk menerbitkannya. Postingan langsung muncul di umpan publik—semua yang ada di situs bersifat publik, jadi ingatlah hal itu saat menulis.</p>\n<p>Beberapa tambahan opsional tersedia di samping area penulisan:</p>\n<ul>\n<li><strong>Judul</strong>, jika Anda ingin memberi tajuk pada postingan.</li>\n<li><strong>Tautan</strong>, jika Anda membagikan halaman web (lihat <a href=\"/help/sharing-a-link\">Membagikan tautan</a>).</li>\n<li><strong>Jajak pendapat</strong>, jika Anda mengajukan pertanyaan alih-alih membuat pernyataan (lihat <a href=\"/help/polls\">Mengajukan pertanyaan dengan jajak pendapat</a>).</li>\n<li>Tanda <strong>Sensitif</strong>, untuk postingan yang sebaiknya dibuka alih-alih langsung ditampilkan (lihat <a href=\"/help/content-warnings\">Peringatan konten dan media sensitif</a>).</li>\n</ul>\n<p>Anda dapat memformat tulisan, menambahkan emoji dan matematika, serta melampirkan foto, video, atau audio. Masing-masing dijelaskan dalam artikelnya sendiri. Satu postingan hanya dapat memuat tautan, media terlampir, <em>atau</em> jajak pendapat—salah satu dari ketiganya, tidak pernah gabungan.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Memformat tulisan",
+            "category": "posting",
+            "summary": "Gunakan cetak tebal, miring, daftar, kutipan, kode, emoji, dan matematika dalam postingan.",
+            "body": "\n<p>Area penulisan adalah editor teks kaya. Bilah alat menyediakan perkakas biasa—<strong>tebal</strong>, <em>miring</em>, garis bawah, coret, daftar berpoin dan bernomor, kutipan blok, serta blok kode—agar postingan tersusun jelas.</p>\n<h2>Emoji</h2>\n<p>Buka pemilih emoji dari komposer untuk memasukkan emoji ke teks. Pemilih mengingat warna kulit pilihan Anda; setelah diatur, pilihan itu akan tetap digunakan.</p>\n<h2>Matematika</h2>\n<p>Anda dapat menulis notasi matematika dengan LaTeX. Apit matematika tampilan dengan <code>$$ ... $$</code> atau <code>\\[ ... \\]</code>, dan matematika sebaris dengan <code>\\( ... \\)</code> atau <code>$ ... $</code>. Notasi akan dirender sebagai persamaan saat postingan ditampilkan. Karena satu tanda dolar juga menjadi pembatas, dua harga dalam postingan yang sama dapat terbaca sebagai awal dan akhir rumus; gunakan <code>\\( ... \\)</code> jika itu mungkin terjadi.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Menambahkan foto, video, dan audio",
+            "category": "posting",
+            "summary": "Lampirkan satu atau beberapa gambar, video, atau audio ke postingan.",
+            "body": "\n<p>Gunakan kontrol lampiran di komposer untuk menambahkan <strong>gambar, video, atau audio</strong> ke postingan. Anda dapat melampirkan lebih dari satu berkas; beberapa gambar menjadi galeri yang dapat digeser pada postingan akhir. Satu postingan dapat memuat hingga 100 berkas; selebihnya tidak akan ditambahkan.</p>\n<p>Berkas video dan audio besar diproses setelah Anda memposting, jadi mungkin perlu menunggu sebentar sebelum dapat diputar. Anda akan menerima notifikasi setelah media selesai diproses dan tersedia.</p>\n<p>Jika berubah pikiran sebelum memposting, gunakan kontrol batal di samping pemilih berkas untuk membuang lampiran. Ingat, postingan bermedia tidak dapat sekaligus memuat tautan; pilih yang sesuai dengan hal yang Anda bagikan.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Membagikan tautan",
+            "category": "posting",
+            "summary": "Tempel URL ke kolom tautan untuk membagikan halaman dengan pratinjau.",
+            "body": "\n<p>Untuk membagikan halaman web, masukkan alamatnya ke kolom <strong>Tautan</strong> di atas area penulisan. Kami akan mengambil halaman dan menawarkan pratinjau—judul, deskripsi singkat, dan gambar jika tersedia—yang muncul pada postingan agar orang tahu apa yang akan dibuka.</p>\n<p>Anda tetap dapat menambahkan kata-kata sendiri di area penulisan untuk menjelaskan alasan membagikannya. Jika tidak menginginkan gambar pratinjau, Anda dapat menghapusnya sebelum memposting.</p>\n<p>Satu postingan dapat memuat tautan, media terlampir, atau jajak pendapat—salah satu, bukan beberapa.</p>\n"
+        },
+        "polls": {
+            "title": "Mengajukan pertanyaan dengan jajak pendapat",
+            "category": "posting",
+            "summary": "Lampirkan jajak pendapat dan biarkan orang menjawabnya di sini maupun di seluruh Fediverse.",
+            "body": "\n<p>Tekan <strong>Tambah Jajak Pendapat</strong> di komposer untuk mengubah postingan menjadi pertanyaan. Tersedia hingga empat opsi dan tulisan postingan menjadi pertanyaannya; jajak pendapat tanpa kata-kata tidak menanyakan apa pun sehingga tidak dapat diterbitkan.</p>\n<p>Dua pilihan perlu dibuat sebelum memposting:</p>\n<ul>\n<li><strong>Izinkan lebih dari satu pilihan</strong>—centang agar orang dapat memilih beberapa opsi; biarkan kosong agar tepat satu.</li>\n<li><strong>Lama berlangsung</strong>—dari lima menit hingga tujuh hari. Setiap jajak pendapat berakhir agar hasilnya dapat disebut final.</li>\n</ul>\n<p>Dua opsi tidak boleh berbunyi sama, bahkan dengan kapitalisasi berbeda. Jawaban mengenali opsi dari teksnya, bukan posisinya, sehingga dua opsi serupa tidak dapat dibedakan ketika jawaban kembali.</p>\n<p>Jajak pendapat menggantikan media atau tautan, bukan berdampingan dengannya; opsi itulah yang diinteraksikan.</p>\n<h2>Menjawab</h2>\n<p>Pilih satu atau beberapa opsi lalu tekan <strong>Pilih</strong>. Jawaban bersifat final dan tidak dapat diubah setelah melihat jumlah sementara.</p>\n<p>Setelah menjawab atau jajak pendapat ditutup, opsi diganti hasil: bagian suara tiap opsi beserta jumlahnya dan pilihan Anda ditandai. Di bawahnya terdapat jumlah orang yang menjawab dan waktu tersisa. Pada jajak pendapat multipilihan, jumlah orang dan suara berbeda, sehingga yang dihitung adalah orang.</p>\n<p>Saat keluar, hasil terlihat sejak awal karena Anda tidak dapat memilih. Saat masuk dan belum menjawab, opsi tetap tersedia sampai jajak pendapat ditutup.</p>\n<h2>Di seluruh Fediverse</h2>\n<p>Jajak pendapat dapat bepergian. Orang di server lain dapat menjawab milik Anda dan suaranya dihitung di sini; Anda juga dapat menjawab milik akun yang diikuti di tempat lain. Untuk jajak pendapat dari server lain, kami menampilkan angka terakhir yang diberikannya sehingga total mungkin sedikit tertinggal.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Peringatan konten dan media sensitif",
+            "category": "posting",
+            "summary": "Tandai postingan sebagai sensitif atau tambahkan peringatan yang menyembunyikan seluruhnya sampai dibuka.",
+            "body": "\n<p>Setiap postingan memiliki tanda <strong>Sensitif</strong>, baik ada gambar, video, atau audio maupun tidak; kata-kata juga dapat memerlukan peringatan.</p>\n<p>Jika hanya dicentang, media terlampir ditutupi sampai pembaca membukanya sementara kata-kata tetap terlihat. Pada postingan tanpa lampiran, tidak ada media yang disembunyikan; jika tulisannya yang memerlukan peringatan, gunakan kolom <strong>teks peringatan</strong> yang muncul.</p>\n<p>Dengan teks peringatan, seluruh postingan berada di balik peringatan—kata-kata, jajak pendapat, dan semuanya. Peringatan yang paling umum adalah spoiler, dan biasanya kata-katalah yang membocorkannya.</p>\n<p>Isi peringatan konten tidak terlihat secara bawaan karena peringatan khusus untuk setiap postingan. Media sensitif berbeda: bagian <strong>Media Sensitif</strong> di <a href=\"/user-settings\">Pengaturan Pengguna</a> dapat menampilkannya tanpa membuka penutup.</p>\n<h2>Di seluruh Fediverse</h2>\n<p>Keduanya berjalan dua arah: penutup dan peringatan Anda tampak sama bagi pengikut di tempat lain, dan postingan dari server lain yang ditandai serupa juga ditutupi di sini.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Balasan dan utas",
+            "category": "posting",
+            "summary": "Balas postingan untuk memulai utas percakapan di bawahnya.",
+            "body": "\n<p>Setiap postingan memiliki tindakan <strong>balas</strong>. Tindakan itu membuka komposer di tempatnya dan melampirkan balasan di bawah postingan asli sebagai bagian dari utas. Balasan berfungsi seperti postingan: dapat diformat, diberi emoji, dan dilampiri media.</p>\n<p>Buka halaman mandiri postingan untuk membaca seluruh percakapan, dengan postingan asli di atas dan balasan di bawah. Ini cara terbaik mengikuti percakapan panjang.</p>\n<h2>Balasan dalam umpan</h2>\n<p>Balasan muncul di Umpan Teman dan profil bersama yang lain, sehingga percakapan terlihat saat berlangsung. Di atas balasan ada baris <strong>Menanggapi</strong> yang menunjukkan jawabannya; untuk utas yang lebih dalam, tautan <strong>Lompat ke Awal</strong> membawa Anda ke postingan yang memulai semuanya.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Menyukai postingan",
+            "category": "posting",
+            "summary": "Tunjukkan penghargaan dengan sekali mengetuk tombol suka.",
+            "body": "\n<p>Setiap postingan memiliki tombol <strong>suka</strong> yang menunjukkan jumlah suka. Ketuk untuk menyukai; ketuk lagi untuk membatalkannya. Jumlah langsung diperbarui.</p>\n<p>Saat Anda menyukai postingan seseorang, mereka mendapat notifikasi—cara cepat dan mudah untuk menunjukkan bahwa Anda menikmati yang mereka bagikan.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Menghapus postingan",
+            "category": "posting",
+            "summary": "Hapus postingan Anda sendiri dan pahami yang terjadi pada balasannya.",
+            "body": "\n<p>Pada postingan yang Anda tulis, tindakan <strong>hapus</strong> menggantikan tindakan laporan yang terlihat pada postingan orang lain. Penghapusan menghilangkan postingan bagi semua orang.</p>\n<p>Penghapusan bersifat permanen sehingga harus dikonfirmasi. Balasan di bawah postingan ikut terhapus; menghapus postingan yang memulai utas ramai berarti mengakhiri seluruh percakapan.</p>\n<p>Anda hanya dapat menghapus postingan sendiri. Jika postingan orang lain bermasalah, <a href=\"/help/reporting-abuse\">laporkan</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Menerjemahkan postingan atau pesan",
+            "category": "posting",
+            "summary": "Baca tulisan dalam bahasa lain dan pahami apa yang terjadi saat diterjemahkan.",
+            "body": "\n<p>Postingan datang dari server di seluruh Fediverse dalam berbagai bahasa. Jika berisi tulisan, bilah tindakannya memiliki tombol <strong>terjemahkan</strong>; tekan untuk mengganti isi dengan terjemahan, lalu gunakan tombol yang sama untuk kembali ke aslinya.</p>\n<p>Terjemahan dilakukan di server ini, bukan layanan luar, dan terjemahan postingan disimpan agar permintaan berikutnya langsung tersedia.</p>\n<p>Pesan yang Anda terima memiliki tombol sama. Pesan Anda sendiri tidak memilikinya, dan tidak ada yang diterjemahkan sebelum Anda meminta sehingga percakapan tidak diam-diam dikirim ke penerjemah.</p>\n<p>Menerjemahkan pesan menyerahkan teksnya kepada server ini. Ini penting bagi <a href=\"/help/encrypted-messages\">pesan terenkripsi</a>: server semula tidak dapat membacanya, dan menerjemahkan berarti Anda memilih untuk mengizinkannya. Terjemahan tidak disimpan dan pesan tidak berubah, tetapi pada saat itu sifat enkripsi ujung-ke-ujungnya hilang. Anda diperingatkan sekali sebelum terjemahan pesan pertama.</p>\n<p>Tombol hanya muncul jika server memiliki penerjemah, jadi mungkin tidak tersedia di sebagian situs.</p>\n"
+        },
+        "finding-people": {
+            "title": "Menemukan orang",
+            "category": "connecting",
+            "summary": "Cari pengguna berdasarkan nama atau jelajahi saran di halaman Pengguna.",
+            "body": "\n<p>Buka <strong>Pengguna</strong> dari menu. Mulailah mengetik nama atau nama pengguna; hasil yang cocok muncul saat Anda mengetik, dengan anggota situs ini lebih dahulu lalu orang yang hanya dikenal dari Fediverse.</p>\n<p>Sebelum Anda mengetik, halaman menampilkan <strong>saran</strong>—orang yang mungkin Anda kenal. Mereka adalah teman dari teman, diurutkan menurut jumlah teman bersama.</p>\n<p>Jika kosong, itu bukan kesalahan: mungkin Anda belum menambahkan siapa pun atau sudah menambahkan semua kenalan teman. Cari berdasarkan nama untuk menemukan orang lain; pencarian mencakup semua orang.</p>\n<p>Dari kartu seseorang, Anda dapat menambahkannya sebagai teman, mengirim pesan, atau membuka profil untuk melihat postingannya.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Teman dan permintaan pertemanan",
+            "category": "connecting",
+            "summary": "Kirim, terima, kelola permintaan pertemanan, dan hapus teman.",
+            "body": "\n<p>Pertemanan di {site} bersifat timbal balik dan dimulai dengan permintaan. Gunakan <strong>Tambah Teman</strong> pada kartu atau profil seseorang. Selagi menunggu, Anda dapat <strong>Membatalkan Permintaan</strong>; setelah diterima, Anda berteman.</p>\n<p>Halaman <strong>Teman</strong> menjadi pusatnya:</p>\n<ul>\n<li>Permintaan untuk Anda muncul di atas dengan <strong>Terima</strong> dan <strong>Tolak</strong>, hanya terlihat oleh Anda.</li>\n<li>Di bawahnya terdapat teman saat ini. Bagian ini bersifat publik.</li>\n<li>Permintaan terkirim yang belum dijawab juga dicantumkan dan hanya terlihat oleh Anda.</li>\n</ul>\n<p>Kartu teman memiliki tombol <strong>Hapus Teman</strong>. Setelah berteman, postingan mereka muncul di <a href=\"/help/your-feeds\">Umpan Teman</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Berkirim pesan",
+            "category": "connecting",
+            "summary": "Kirim pesan pribadi dan ikuti percakapan Anda.",
+            "body": "\n<p>Untuk mengirim pesan, gunakan tombol <strong>Pesan</strong> pada kartu atau profil seseorang, atau buka <strong>Pesan</strong> dari menu dan pilih percakapan. Ketik di kotak bawah lalu kirim; penerima mendapat notifikasi dan pesan baru muncul langsung tanpa memuat ulang halaman.</p>\n<p>Halaman Pesan mencantumkan percakapan terbaru di atas agar mudah melanjutkan.</p>\n<p>Pesan bersifat pribadi dari anggota lain. Privasi terhadap server bergantung pada percakapan:</p>\n<ul>\n<li><strong>Terenkripsi ujung ke ujung</strong>—setelah Anda berdua mengaktifkan <a href=\"/help/encrypted-messages\">pesan terenkripsi</a>, pesan baru dikunci dan dibuka di peramban; server dan cadangannya hanya menyimpan teks sandi.</li>\n<li><strong>Biasa</strong>—server menyimpan pesan dalam bentuk terbaca sehingga operator secara teknis dapat mengaksesnya.</li>\n<li><strong>Terfederasi</strong>—percakapan dengan orang di server Fediverse lain juga disimpan di server mereka dan tidak dapat dienkripsi ujung ke ujung karena protokolnya tidak mendukung itu. Jangan kirim rahasia melalui pesan terfederasi.</li>\n</ul>\n<p>Jika seseorang mengganggu, Anda dapat <a href=\"/help/blocking-someone\">memblokir</a> atau <a href=\"/help/reporting-abuse\">melaporkan</a> pesan tertentu, termasuk yang terenkripsi.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Umpan Relai",
+            "category": "connecting",
+            "summary": "Tempat postingan dari Fediverse yang lebih luas tiba ketika server berlangganan relai.",
+            "body": "\n<p>Jika menu memiliki <strong>Umpan Relai</strong>, server ini berlangganan relai—arus bersama postingan publik dari server-server yang bergabung. Dengan itu situs kecil dapat melihat Fediverse sebelum anggotanya menemukan orang untuk diikuti; biasanya server hanya menerima konten yang sudah diikuti seseorang di sini.</p>\n<p>Umpan ini sengaja dipisahkan. Tidak ada orang di sini yang memilih postingan tersebut; itu sekadar semua yang diterbitkan server-server itu, jadi tidak bercampur dengan umpan utama atau <a href=\"/help/your-feeds\">Umpan Teman</a>.</p>\n<p>Hanya rentang terbaru yang disimpan. Postingan yang keluar dari rentang ikut hilang kecuali Anda membalas, menyukai, menandai, memposting ulang, menyematkan, atau melaporkannya.</p>\n<p>Anda dapat berinteraksi seperti pada postingan lain dan <a href=\"/help/following-on-the-fediverse\">mengikuti</a> penulis yang menarik agar postingannya masuk Umpan Teman.</p>\n<p>Hanya administrator menentukan penggunaan relai. Jika Umpan Relai tidak ada di menu, server ini tidak menggunakannya.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Umpan Anda",
+            "category": "connecting",
+            "summary": "Perbedaan antara Umpan Global dan Umpan Teman.",
+            "body": "\n<p>Ada dua umpan utama:</p>\n<ul>\n<li><strong>Umpan Global</strong>—halaman beranda—menampilkan postingan dari seluruh situs. Umpan ini publik dan berguna untuk menemukan orang serta hal baru.</li>\n<li><strong>Umpan Teman</strong> hanya menampilkan postingan teman untuk mengikuti lingkaran Anda.</li>\n</ul>\n<p>Keduanya memuat lebih banyak saat digulir. Isi Umpan Teman dengan <a href=\"/help/finding-people\">menemukan orang</a> dan <a href=\"/help/friends-and-friend-requests\">menambahkan teman</a>.</p>\n<p>Umpan Teman juga memuat <a href=\"/help/replies-and-threads\">balasan</a> dengan keterangan postingan yang dijawab. Umpan utama hanya menampilkan postingan awal agar mudah dibaca pengunjung yang belum masuk.</p>\n"
+        },
+        "notifications": {
+            "title": "Notifikasi",
+            "category": "connecting",
+            "summary": "Cara Anda mengetahui suka, balasan, permintaan pertemanan, dan pesan.",
+            "body": "\n<p>Item <strong>Notifikasi</strong> menyala ketika seseorang menyukai, memposting ulang, membalas, atau menyebut Anda; mengirim atau menerima permintaan pertemanan; mengirim pesan; atau media Anda selesai diproses. Interaksi dari Fediverse memberi tahu Anda dengan cara yang sama.</p>\n<p>Notifikasi tiba <strong>langsung</strong> tanpa perlu menyegarkan halaman. Buka area notifikasi untuk daftar terbaru atau halaman lengkap untuk seluruh riwayat yang terus dimuat saat digulir.</p>\n<p>Setiap notifikasi menaut langsung ke postingan, percakapan, atau profil terkait.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Pesan terenkripsi",
+            "category": "connecting",
+            "summary": "Aktifkan enkripsi ujung ke ujung dan pahami arti frasa sandinya.",
+            "body": "\n<p>Aktifkan <strong>Pesan Terenkripsi</strong> di <a href=\"/user-settings\">Pengaturan Pengguna</a> dengan memilih frasa sandi. Peramban membuat kunci, menguncinya dengan frasa itu, dan hanya salinan terkunci yang disimpan server. Frasa sandi tidak pernah meninggalkan perangkat.</p>\n<p>Percakapan terenkripsi setelah <em>kedua</em> orang mengaktifkannya. Pesan baru dibuka hanya di peramban; pesan lama tetap seperti semula. Percakapan lintas server Fediverse tidak dapat dienkripsi oleh protokolnya.</p>\n<p>Frasa sandi yang sama membuka kunci dari perangkat mana pun. Pilih frasa panjang sekurangnya dua belas karakter dan jangan gunakan kata sandi akun. Kehilangan frasa berarti pesan lama tidak dapat dipulihkan; pengaturan ulang membuat kunci baru. Memeriksa kode keamanan bersama lewat jalur lain memastikan tidak ada penyusup. Melaporkan satu pesan terenkripsi hanya mengungkap pesan tersebut kepada moderator, bukan kunci atau percakapan lain.</p>\n"
+        },
+        "video-calling": {
+            "title": "Panggilan video",
+            "category": "connecting",
+            "summary": "Mulai panggilan video pribadi saat Anda berdua membuka percakapan.",
+            "body": "\n<p>Panggilan video satu lawan satu dari utas pesan bersifat <strong>rekan ke rekan</strong>; audio dan video langsung antarperamban.</p>\n<h2>Memulai panggilan</h2><p>Tombol muncul saat Anda berdua membuka utas dan peramban dapat saling menjangkau. Penerima dapat menerima atau menolak.</p>\n<h2>Selama panggilan</h2><p>Panggilan menggantikan utas sementara; <strong>Akhiri panggilan</strong> menutupnya dan percakapan kembali.</p>\n<h2>Jika tombol tidak muncul</h2><p>Biasanya peramban atau jaringan tidak mendukung koneksi. Pemeriksaan <strong>Panggilan Video</strong> di <a href=\"/user-settings\">Pengaturan Pengguna</a> menunjukkan langkah yang gagal.</p>\n<h2>Privasi</h2><p>Video dan audio tidak melewati situs dan tidak direkam; hanya pesan penyiapan singkat yang direlai.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Memblokir seseorang",
+            "category": "stayingSafe",
+            "summary": "Hentikan kontak dengan pengguna dan sembunyikan mereka dari pandangan Anda.",
+            "body": "\n<p>Gunakan tombol <strong>Blokir</strong> pada kartu atau profil seseorang. Pertemanan berakhir dan interaksi langsung dibatasi. Karena situs sepenuhnya publik, blokir mengubah pengalaman Anda, bukan visibilitas umum.</p>\n<p>Anda dapat membatalkannya dengan <strong>Buka Blokir</strong>. Untuk penyalahgunaan, <a href=\"/help/reporting-abuse\">laporkan kontennya</a> juga.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Melaporkan penyalahgunaan",
+            "category": "stayingSafe",
+            "summary": "Laporkan postingan, pesan, atau pengguna tertentu agar moderator dapat bertindak.",
+            "body": "\n<p><strong>Laporkan bagian konten tertentu yang menyalahgunakan.</strong> Gunakan <strong>Laporkan</strong> pada postingan atau pesan itu agar moderator melihat tepat yang Anda lihat. Laporkan akun hanya jika seluruh akun bermasalah.</p>\n<p>Anda dapat menambahkan alasan singkat. Laporan bersifat pribadi dan orang tersebut tidak diberi tahu siapa pelapornya. Anda juga dapat <a href=\"/help/blocking-someone\">memblokir</a> mereka.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Pengaturan dan tampilan",
+            "category": "yourAccount",
+            "summary": "Tur Pengaturan Pengguna: kata sandi, surel, keamanan, tema, dan lainnya.",
+            "body": "\n<p>Buka <strong>Pengaturan Pengguna</strong> dari nama Anda. Di sana Anda dapat mengubah kata sandi dan surel, mengatur autentikasi dua faktor, tema, media sensitif, pesan terenkripsi, ringkasan surel, notifikasi push, perangkat dan sesi, panggilan video, Fediverse, pemindahan server, dan penghapusan akun.</p>\n<h2>Tema</h2><p>Pemilih <strong>Tema</strong> mengubah seluruh tampilan dan mengingat pilihan. Pilih Cocokkan Sistem atau salah satu tema bawaan.</p>\n<h2>Ringkasan surel</h2><p>Setelah Anda tidak berkunjung selama seminggu, ringkasan dapat dikirim jika ada aktivitas—tidak lebih dari sekali seminggu. Nonaktifkan di pengaturan atau lewat tautan berhenti berlangganan. Gunakan <strong>Lupa Kata Sandi?</strong> untuk meminta tautan pengaturan ulang.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Mengikuti lewat RSS",
+            "category": "connecting",
+            "summary": "Berlangganan situs atau seseorang melalui pembaca RSS.",
+            "body": "\n<p>{site} menyediakan <strong>umpan RSS</strong>: postingan terbaru seluruh situs di <code>/feed.xml</code>, dan postingan seseorang di <code>/users/nama-pengguna/feed.xml</code>.</p>\n<p>Peramban dan pembaca umpan biasanya menemukannya otomatis dari alamat situs atau profil.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Menyunting postingan",
+            "category": "posting",
+            "summary": "Perbaiki kesalahan atau ubah kata-kata setelah diterbitkan.",
+            "body": "\n<p>Gunakan tindakan <strong>edit</strong> pada postingan Anda untuk memperbaiki teks atau pemformatan lalu simpan. Perubahan menggantikan postingan bagi semua orang dan tanda <strong>(disunting)</strong> akan muncul.</p>\n<p>Judul, tulisan, pemformatan, dan tautan dapat diubah, tetapi media tidak. Untuk mengganti media, <a href=\"/help/deleting-a-post\">hapus</a> lalu buat postingan baru. Anda hanya dapat menyunting postingan sendiri.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Memposting ulang dan mengutip",
+            "category": "posting",
+            "summary": "Teruskan postingan seseorang apa adanya atau dengan kata-kata Anda sendiri.",
+            "body": "\n<p>Tekan <strong>Posting Ulang</strong> untuk meneruskan postingan tanpa perubahan ke umpan teman, profil, dan pengikut Fediverse. <strong>Batalkan Posting Ulang</strong> menariknya kembali. Anda tidak dapat memposting ulang milik sendiri.</p>\n<h2>Mengutip</h2><p><strong>Kutip</strong> membuka komposer dengan postingan asli tertanam dan memerlukan kata-kata Anda sendiri. Gambar dapat dilampirkan, tetapi video atau audio tidak. Kutipan berfungsi seperti postingan lain dan ikut berjalan ke Fediverse.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Menandai postingan",
+            "category": "posting",
+            "summary": "Simpan postingan ke daftar Markah pribadi untuk ditemukan lagi.",
+            "body": "\n<p>Ketuk tindakan <strong>markah</strong> untuk menyimpan postingan ke <strong>Markah</strong>; ketuk lagi untuk menghapusnya. Tindakan ini pribadi dan penulis tidak diberi tahu.</p>\n<p>Buka <strong>Markah</strong> dari menu untuk melihat simpanan terbaru. Postingan yang kemudian dihapus penulis akan hilang dari daftar.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Tagar dan sebutan",
+            "category": "posting",
+            "summary": "Tandai postingan dengan #tagar dan libatkan orang dengan @sebutan.",
+            "body": "\n<p>Dua jenis pintasan otomatis menjadi tautan saat diposting.</p>\n<h2>Tagar</h2><p>Tulis <strong>#tagar</strong> seperti <code>#musik</code> untuk menaut ke halaman semua postingan bertagar itu. Jelajahi tag aktif dari <strong>Tag</strong> dan yang populer di <a href=\"/help/trending-topics\">Topik</a>. Hanya sepuluh tagar berbeda pertama yang diindeks dan dihitung untuk tren; selebihnya tetap menjadi tautan dalam teks.</p>\n<h2>Sebutan</h2><p>Tulis <strong>@namapengguna</strong> untuk menautkan profil dan memberi orang itu notifikasi. Jika lebih dari sepuluh orang berbeda disebut dalam satu postingan, tautannya tetap berfungsi tetapi tidak ada notifikasi. Akun Fediverse lain dapat disebut dengan pegangan lengkap <code>@pengguna@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Topik tren",
+            "category": "connecting",
+            "summary": "Lihat topik dan nama yang paling banyak dibicarakan saat ini.",
+            "body": "\n<p>Buka <strong>Topik</strong> untuk melihat tagar, nama, dan topik yang sering muncul dalam postingan terbaru. Setiap item memiliki halaman berisi postingan terkait dan daftar terus dihitung ulang.</p>\n<p>Topik dikelompokkan menurut jenisnya—orang, organisasi, tempat, tagar, dan lain-lain. Daftar mendengarkan semua yang dapat didengar server, termasuk server lain dan <a href=\"/help/the-relay-feed\">relai</a>. Beberapa orang berbeda harus membicarakan topik sebelum muncul, jadi satu penulis tidak dapat mendorongnya sendiri. Moderator dapat melarang topik yang menyalahgunakan atau mengganggu.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Mengikuti orang di Fediverse",
+            "category": "connecting",
+            "summary": "Ikuti akun Mastodon dan server Fediverse lain.",
+            "body": "\n<p>{site} menggunakan <strong>ActivityPub</strong>. Di bagian <strong>Fediverse</strong> dalam Pengaturan Pengguna, tempel satu atau beberapa pegangan seperti <code>@pengguna@example.social</code> lalu tekan <strong>Ikuti</strong>. Daftar menunjukkan akun yang diikuti serta apakah permintaannya diterima atau masih menunggu. Pegangan lengkap juga dapat disebut dalam postingan.</p>\n<h2>Diikuti dari luar</h2><p>Alamat Fediverse Anda adalah <strong>@nama-pengguna@domain-situs-ini</strong>. Orang di server ActivityPub lain dapat mengikuti Anda tanpa persetujuan karena semua yang ada di sini publik.</p>\n<p>Postingan, media, <a href=\"/help/polls\">jajak pendapat</a>, peringatan, postingan tersemat, dan perubahan profil berjalan ke pengikut; interaksi mereka kembali ke sini. Jika pindah server, bagian <strong>Pindah Server</strong> dapat membawa pengikut Anda.</p>\n"
+        },
+        "searching": {
+            "title": "Mencari",
+            "category": "gettingStarted",
+            "summary": "Cari postingan situs dari halaman Pencarian.",
+            "body": "\n<p><strong>Pencarian</strong> di menu mencari di antara <strong>postingan</strong> situs. Ketik dan hasil yang cocok muncul saat Anda menulis.</p>\n<p>Untuk mencari <em>orang</em>, gunakan <a href=\"/help/finding-people\">halaman Pengguna</a> dengan pencarian dan saran tersendiri.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Autentikasi dua faktor",
+            "category": "yourAccount",
+            "summary": "Tambahkan kode masuk yang dikirim melalui surel untuk keamanan tambahan.",
+            "body": "\n<p>Autentikasi dua faktor (2FA) menambahkan langkah kedua agar kata sandi saja tidak cukup. Aktifkan di bagian <strong>Autentikasi Dua Faktor</strong> dalam Pengaturan Pengguna.</p>\n<p>Setiap kali masuk, kami mengirim kode angka singkat ke surel untuk Anda masukkan. Tidak diperlukan aplikasi autentikator, tetapi alamat harus <a href=\"/help/verifying-your-email\">terverifikasi</a>. 2FA dapat dinonaktifkan lagi dari tempat yang sama.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Perangkat dan sesi yang masuk",
+            "category": "yourAccount",
+            "summary": "Tinjau tempat Anda masuk dan keluarkan semuanya sekaligus.",
+            "body": "\n<p>Pengaturan Pengguna memiliki dua perkakas untuk mengelola tempat Anda masuk.</p>\n<h2>Perangkat yang diingat</h2><p>Perangkat yang dipilih agar tetap masuk dicantumkan di <strong>Perangkat yang Diingat</strong>. Anda dapat mencabut semua kecuali perangkat yang sedang digunakan; untuk melupakan perangkat saat ini, keluarlah.</p>\n<h2>Sesi</h2><p>Bagian <strong>Sesi</strong> dapat <strong>mengeluarkan Anda di semua tempat sekaligus</strong>, mengakhiri setiap sesi dan perangkat yang diingat. Gunakan jika menduga orang lain mengakses akun, lalu <a href=\"/help/settings-and-appearance\">ubah kata sandi</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Profil Anda",
+            "category": "yourAccount",
+            "summary": "Atur nama tampilan, bio, dan avatar agar orang mengenal Anda.",
+            "body": "\n<p>Profil menampilkan postingan dan sedikit informasi tentang Anda. Buka profil sendiri dari nama di kanan atas lalu gunakan kontrol <strong>edit</strong>, atau klik nama maupun bio.</p>\n<ul><li><strong>Nama tampilan</strong> muncul di atas nama pengguna; jika kosong, nama pengguna ditampilkan.</li><li><strong>Bio</strong> adalah baris singkat; tautan, #tagar, dan @sebutan menjadi dapat diklik.</li></ul>\n<p>Anda juga dapat mengunggah <strong>avatar</strong>. Nama pengguna tidak dapat diubah setelah mendaftar, tetapi nama tampilan, bio, dan avatar dapat diubah kapan saja.</p>\n<h2>Postingan tersemat</h2><p>Tombol <strong>Sematkan</strong> mengangkat hingga lima postingan Anda ke bagian <strong>Disematkan</strong> di atas profil; gunakan <strong>Lepaskan</strong> untuk menggantinya. Sematan juga berjalan ke Fediverse.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Mengubah surel",
+            "category": "yourAccount",
+            "summary": "Perbarui alamat surel akun dengan verifikasi ulang.",
+            "body": "\n<p>Di bagian <strong>Ubah Surel</strong> dalam Pengaturan Pengguna, masukkan alamat baru dan kata sandi saat ini. Tautan verifikasi dikirim ke alamat <strong>baru</strong>; buka untuk mengonfirmasi perubahan.</p>\n<p>Sebagai pengaman, alamat <strong>lama</strong> menerima pemberitahuan dengan tautan pembatalan tanpa kata sandi. Membukanya mengembalikan alamat dan mengeluarkan semua perangkat, sehingga perubahan yang bukan Anda dapat dibatalkan dalam satu langkah. Verifikasikan alamat baru segera karena pengaturan ulang kata sandi memerlukan alamat terverifikasi.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Menghapus akun",
+            "category": "yourAccount",
+            "summary": "Tutup akun secara permanen dan hapus kontennya.",
+            "body": "\n<p>Buka bagian <strong>Hapus Akun</strong> dalam Pengaturan Pengguna dan konfirmasikan dengan kata sandi. Tindakan ini tidak dapat dibatalkan.</p>\n<p>Postingan, balasan, pesan, suka, koneksi, dan balasan orang lain di bawah postingan Anda dihapus. Nama pengguna dipensiunkan dan tidak pernah dapat didaftarkan lagi agar tautan atau sebutan lama tidak mencapai orang asing.</p>\n<p>Akun tidak dapat dipulihkan. Akun administrator situs tidak dapat dihapus karena situs memerlukan setidaknya satu admin.</p>\n"
+        }
+    }
+}

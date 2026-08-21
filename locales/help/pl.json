@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Pierwsze kroki",
+        "posting": "Publikowanie",
+        "connecting": "Kontakty",
+        "stayingSafe": "Bezpieczeństwo",
+        "yourAccount": "Twoje konto"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Tworzenie konta",
+            "category": "gettingStarted",
+            "summary": "Zarejestruj się, podając nazwę użytkownika, e-mail i hasło, aby zacząć publikować.",
+            "body": "\n<p>Aby dołączyć, otwórz odnośnik <strong>Zarejestruj się</strong> w prawym górnym rogu, wybierz nazwę użytkownika, wpisz adres e-mail i ustal hasło. Inni będą Cię znajdować i oznaczać za pomocą nazwy użytkownika, więc wybierz ją rozważnie.</p>\n<p>Możesz też od razu podać <strong>wyświetlaną nazwę</strong> i krótki biogram. Oba pola są opcjonalne i można je później uzupełnić podczas edycji <a href=\"/help/your-profile\">profilu</a>. Pusta wyświetlana nazwa zostanie zastąpiona nazwą użytkownika.</p>\n<p>Po rejestracji możesz od razu czytać i publikować, chyba że witryna wymaga <a href=\"/help/verifying-your-email\">weryfikacji e-maila</a>. Pierwsze konto utworzone w nowej witrynie automatycznie zostaje kontem administratora.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Weryfikowanie adresu e-mail",
+            "category": "gettingStarted",
+            "summary": "Potwierdź adres za pomocą odnośnika wysłanego e-mailem, jeśli poczta jest włączona.",
+            "body": "\n<p>Jeśli witryna wysyła pocztę, zaraz po rejestracji otrzymasz odnośnik weryfikacyjny. Do czasu jego otwarcia strony będą kierować Cię do komunikatu o sprawdzeniu skrzynki. Otwarcie odnośnika potwierdza konto i pozwala korzystać z niego w pełni.</p>\n<p>Wiadomość nie dotarła? Najpierw sprawdź spam. Na stronie <strong>Sprawdź skrzynkę odbiorczą</strong> możesz poprosić o nowy odnośnik.</p>\n<p>Niektóre witryny w ogóle nie wysyłają poczty. Wtedy weryfikacja nie jest potrzebna i wszystko działa od razu.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Poruszanie się po witrynie",
+            "category": "gettingStarted",
+            "summary": "Krótki przewodnik po menu: aktualności, znajomi, użytkownicy, wiadomości i konto.",
+            "body": "\n<p>Górny pasek prowadzi do wszystkich części witryny:</p>\n<ul><li><strong>Nazwa witryny</strong> otwiera główne aktualności i menu.</li><li><strong>Aktualności znajomych</strong> pokazują posty znajomych.</li><li><strong>Użytkownicy</strong> służą do wyszukiwania osób.</li><li><strong>Tagi</strong> i <strong>Tematy</strong> pomagają odkrywać popularne treści.</li><li><strong>Mapa</strong> i <strong>Lokalizacje</strong> pokazują miejsca publikacji.</li><li><strong>Wyszukiwanie</strong> przeszukuje posty.</li><li><strong>Wiadomości</strong>, <strong>Zakładki</strong> i <strong>Powiadomienia</strong> dają dostęp do prywatnych rozmów, zapisanych postów i nowych zdarzeń.</li><li><strong>Pomoc</strong> oraz <strong>O witrynie</strong> są dostępne również bez logowania.</li></ul>\n<p>Twoja nazwa w prawym górnym rogu prowadzi do profilu i menu znajomych, szkiców, zaplanowanych postów, ustawień oraz wylogowania.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Tworzenie posta",
+            "category": "posting",
+            "summary": "Napisz i opublikuj post w polu na górze aktualności.",
+            "body": "\n<p>Edytor znajduje się nad głównymi aktualnościami. Wpisz treść i naciśnij przycisk publikacji. Post natychmiast pojawi się publicznie, więc pamiętaj, że wszystko w tej witrynie jest publiczne.</p>\n<p>Możesz dodać <strong>tytuł</strong>, <strong>odnośnik</strong>, <strong>ankietę</strong> albo oznaczyć treść jako <strong>wrażliwą</strong>.</p>\n<p>Tekst można formatować oraz uzupełnić emoji, matematyką, zdjęciami, filmem lub dźwiękiem. Jeden post może zawierać odnośnik, multimedia albo ankietę — nigdy kilka z tych elementów jednocześnie.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Formatowanie tekstu",
+            "category": "posting",
+            "summary": "Używaj w poście pogrubienia, kursywy, list, cytatów, kodu, emoji i matematyki.",
+            "body": "\n<p>Pasek narzędzi edytora udostępnia <strong>pogrubienie</strong>, <em>kursywę</em>, podkreślenie, przekreślenie, listy, cytaty i bloki kodu.</p>\n<h2>Emoji</h2><p>Selektor emoji zapamiętuje preferowany odcień skóry.</p>\n<h2>Matematyka</h2><p>Zapis LaTeX umieszczaj między <code>$$ ... $$</code> lub <code>\\[ ... \\]</code>, a wzory w wierszu między <code>\\( ... \\)</code> albo <code>$ ... $</code>. Dwa znaki dolara, na przykład przy cenach, mogą zostać odczytane jako wzór — wtedy bezpieczniej użyć <code>\\( ... \\)</code>.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Dodawanie zdjęć, filmu i dźwięku",
+            "category": "posting",
+            "summary": "Dołącz do posta jeden lub więcej obrazów, film albo plik dźwiękowy.",
+            "body": "\n<p>Przycisk załącznika pozwala dodać <strong>obrazy, film lub dźwięk</strong>. Kilka obrazów tworzy galerię; do jednego posta można dołączyć maksymalnie 100 plików.</p>\n<p>Większe filmy i pliki dźwiękowe są przetwarzane po publikacji. Po zakończeniu otrzymasz powiadomienie.</p>\n<p>Przed publikacją załącznik można anulować. Post z multimediami nie może jednocześnie zawierać odnośnika.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Udostępnianie odnośnika",
+            "category": "posting",
+            "summary": "Wklej adres URL w polu odnośnika, aby udostępnić stronę z podglądem.",
+            "body": "\n<p>Wklej adres strony w polu <strong>Odnośnik</strong>. Witryna pobierze tytuł, opis i dostępny obraz, tworząc podgląd dla czytelników.</p>\n<p>Możesz dopisać własny komentarz i przed publikacją usunąć obraz podglądu.</p>\n<p>Post może zawierać odnośnik, multimedia albo ankietę — tylko jeden z tych elementów.</p>\n"
+        },
+        "polls": {
+            "title": "Zadawanie pytania w ankiecie",
+            "category": "posting",
+            "summary": "Dołącz ankietę i zbieraj odpowiedzi tutaj oraz w całym Fediwersum.",
+            "body": "\n<p>Naciśnij <strong>Dodaj ankietę</strong>. Możesz podać do czterech odpowiedzi, a tekst posta jest pytaniem.</p>\n<p>Wybierz, czy wolno zaznaczyć więcej niż jedną odpowiedź, oraz czas trwania od pięciu minut do siedmiu dni. Odpowiedzi nie mogą być identyczne nawet przy różnej wielkości liter. Ankieta zastępuje multimedia lub odnośnik.</p>\n<h2>Głosowanie</h2><p>Wybierz odpowiedź i naciśnij <strong>Głosuj</strong>. Głosu nie można zmienić. Po oddaniu głosu lub zakończeniu ankiety zobaczysz wyniki, liczbę uczestników i pozostały czas. Osoby niezalogowane widzą wyniki od początku.</p>\n<h2>W Fediwersum</h2><p>Ankiety i głosy wędrują między serwerami. Wynik ankiety z innego serwera może pojawić się z niewielkim opóźnieniem.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Ostrzeżenia o treści i wrażliwe multimedia",
+            "category": "posting",
+            "summary": "Oznacz post jako wrażliwy lub ukryj całość za tekstem ostrzeżenia.",
+            "body": "\n<p>Każdy post można oznaczyć jako <strong>Wrażliwy</strong>. Samo oznaczenie zasłania załączone multimedia, pozostawiając tekst widoczny.</p>\n<p>Dodanie tekstu ostrzeżenia ukrywa za nim cały post — słowa, multimedia i ankietę. Ostrzeżenie powinno opisywać konkretną treść.</p>\n<h2>W Fediwersum</h2><p>Oznaczenia i ostrzeżenia działają w obie strony również na innych serwerach.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Odpowiedzi i wątki",
+            "category": "posting",
+            "summary": "Odpowiedz na post, aby rozpocząć pod nim wątek rozmowy.",
+            "body": "\n<p>Każdy post ma przycisk <strong>odpowiedzi</strong>. Otwórz post na osobnej stronie, aby przeczytać całą rozmowę z pierwotnym postem u góry.</p>\n<h2>Odpowiedzi w aktualnościach</h2><p>Odpowiedzi pojawiają się w aktualnościach znajomych i na profilach, dzięki czemu rozmowę widać na bieżąco.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Lubienie postów",
+            "category": "posting",
+            "summary": "Okaż uznanie jednym naciśnięciem przycisku polubienia.",
+            "body": "\n<p>Przycisk <strong>polubienia</strong> przy każdym poście pokazuje liczbę polubień. Naciśnij go, aby dodać lub cofnąć własne polubienie.</p>\n<p>Autor otrzyma powiadomienie, a polubienia z innych serwerów również są wliczane.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Usuwanie posta",
+            "category": "posting",
+            "summary": "Usuń własny post i sprawdź, co stanie się z odpowiedziami.",
+            "body": "\n<p>Własny post możesz usunąć za pomocą jego przycisku <strong>usuń</strong>. Operacji nie można cofnąć.</p>\n<p>Usunięcie posta usuwa również całą rozmowę znajdującą się pod nim, w tym odpowiedzi innych osób. Żądanie usunięcia jest wysyłane także do Fediwersum, choć nie można zagwarantować skasowania każdej zdalnej kopii.</p>\n"
+        },
+        "translating": {
+            "title": "Tłumaczenie posta lub wiadomości",
+            "category": "posting",
+            "summary": "Czytaj tekst w innym języku i dowiedz się, co dzieje się z nim podczas tłumaczenia.",
+            "body": "\n<p>Użyj przycisku <strong>Przetłumacz</strong> przy poście lub wiadomości napisanej w innym języku. Tłumaczenie zastępuje tekst tylko w Twoim widoku i można wrócić do oryginału.</p>\n<p>Treść jest wysyłana do usługi tłumaczeniowej skonfigurowanej przez administratora. Szyfrowaną wiadomość trzeba najpierw odblokować; dostępność i jakość zależą od używanej usługi.</p>\n"
+        },
+        "finding-people": {
+            "title": "Znajdowanie osób",
+            "category": "connecting",
+            "summary": "Wyszukuj użytkowników według nazwy lub przeglądaj propozycje na stronie Użytkownicy.",
+            "body": "\n<p>Strona <strong>Użytkownicy</strong> pozwala wyszukiwać nazwy użytkowników i wyświetlane nazwy. Wyniki pojawiają się podczas pisania.</p>\n<p>Znajdziesz tam także propozycje osób powiązanych ze znajomymi. Konta z innych serwerów obserwuje się przez ustawienia Fediwersum.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Znajomi i prośby o dodanie do znajomych",
+            "category": "connecting",
+            "summary": "Wysyłaj i przyjmuj prośby, zarządzaj nimi oraz usuwaj znajomych.",
+            "body": "\n<p>Na profilu osoby w {site} naciśnij <strong>Dodaj do znajomych</strong>. Po przyjęciu jej posty pojawią się w aktualnościach znajomych, a obie strony będą mogły łatwo pisać prywatnie.</p>\n<p>Menu <strong>Znajomi</strong> pokazuje prośby przychodzące i wysłane. Możesz je przyjąć, odrzucić lub anulować, a istniejącą znajomość zakończyć. Usunięcie znajomego nie wysyła powiadomienia.</p>\n"
+        },
+        "messaging": {
+            "title": "Wiadomości",
+            "category": "connecting",
+            "summary": "Wysyłaj prywatne wiadomości i śledź swoje rozmowy.",
+            "body": "\n<p><strong>Wiadomości</strong> zawierają prywatne rozmowy. Rozpocznij rozmowę z profilu znajomego lub wybierz istniejącą z listy.</p>\n<p>Nowe wiadomości oznaczają rozmowę i pozycję menu. Wiadomości są prywatne, ale bez włączonego szyfrowania przechowuje je serwer.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Szyfrowane wiadomości",
+            "category": "stayingSafe",
+            "summary": "Włącz szyfrowanie kompleksowe rozmów i poznaj znaczenie hasła szyfrującego.",
+            "body": "\n<p>Szyfrowanie kompleksowe sprawia, że treść rozmowy mogą odczytać tylko jej uczestnicy. Włącz je w rozmowie i ustaw osobne <strong>hasło szyfrujące</strong>.</p>\n<p>Hasło chroni kopię kluczy i nie jest hasłem do konta. Zachowaj je bezpiecznie: bez niego nie odblokujesz historii na nowym urządzeniu. Szyfrowanie dotyczy nowych wiadomości i wymaga obsługi po obu stronach.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Aktualności z przekaźnika",
+            "category": "connecting",
+            "summary": "Miejsce, do którego trafiają posty z Fediwersum po zasubskrybowaniu przekaźnika.",
+            "body": "\n<p>Przekaźnik przekazuje temu serwerowi publiczne posty z szerszego Fediwersum. Administrator może go zasubskrybować, a otrzymane posty pojawiają się w <strong>Aktualnościach z przekaźnika</strong>.</p>\n<p>Nie oznacza to obserwowania ich autorów. To wspólny strumień do odkrywania rozmów, zależny od zasad i zawartości danego przekaźnika.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Twoje aktualności",
+            "category": "connecting",
+            "summary": "Różnica między aktualnościami globalnymi a aktualnościami znajomych.",
+            "body": "\n<p><strong>Aktualności globalne</strong> zawierają publiczne posty znane witrynie. <strong>Aktualności znajomych</strong> ograniczają widok do postów Twoich znajomych i ich rozmów.</p>\n<p>Nazwa witryny prowadzi do głównego strumienia, a między pozostałymi możesz przechodzić z menu.</p>\n"
+        },
+        "notifications": {
+            "title": "Powiadomienia",
+            "category": "connecting",
+            "summary": "Jak dowiadujesz się o polubieniach, odpowiedziach, prośbach i wiadomościach.",
+            "body": "\n<p><strong>Powiadomienia</strong> informują o polubieniach, odpowiedziach, wzmiankach, prośbach o dodanie do znajomych i innych zdarzeniach. Nieprzeczytane elementy wyróżniają pozycję menu.</p>\n<p>Wiadomości mają własny wskaźnik. Jeśli administrator skonfigurował powiadomienia push, możesz włączyć je dla tego urządzenia w ustawieniach.</p>\n"
+        },
+        "video-calling": {
+            "title": "Połączenia wideo",
+            "category": "connecting",
+            "summary": "Rozpocznij prywatną rozmowę wideo, gdy obie osoby mają otwartą konwersację.",
+            "body": "\n<p>W prywatnej rozmowie naciśnij przycisk połączenia. Druga osoba musi mieć otwartą tę samą rozmowę, aby odebrać.</p>\n<p>Przeglądarka poprosi o dostęp do kamery i mikrofonu. Połączenie jest bezpośrednie, a jego powodzenie zależy od sieci. Panel testowy w ustawieniach pozwala wcześniej sprawdzić urządzenie i łączność.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Blokowanie osoby",
+            "category": "stayingSafe",
+            "summary": "Przerwij kontakt z użytkownikiem i ukryj go w swoim widoku.",
+            "body": "\n<p>Opcja <strong>Zablokuj</strong> na profilu uniemożliwia wzajemny kontakt i ukrywa treści tej osoby w Twoim widoku. Istniejąca znajomość zostaje zakończona.</p>\n<p>Listą blokad można zarządzać w ustawieniach. Odblokowanie nie przywraca wcześniejszej znajomości. W przypadku nadużycia warto również wysłać zgłoszenie moderatorom.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Zgłaszanie nadużyć",
+            "category": "stayingSafe",
+            "summary": "Zgłoś konkretny obraźliwy post, wiadomość lub konto, aby moderatorzy mogli zareagować.",
+            "body": "\n<p>Użyj opcji <strong>Zgłoś</strong> przy konkretnym poście, wiadomości albo profilu i opisz powód. Wybór konkretnej treści daje moderatorom potrzebny kontekst.</p>\n<p>Zgłoszenie trafia do moderatorów tej witryny i nie jest widoczne dla zgłaszanej osoby. Zaszyfrowaną wiadomość trzeba odblokować, aby można było dołączyć jej treść.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Ustawienia i wygląd",
+            "category": "yourAccount",
+            "summary": "Przewodnik po ustawieniach użytkownika: hasło, e-mail, bezpieczeństwo, motywy i inne opcje.",
+            "body": "\n<p>Otwórz <strong>Ustawienia użytkownika</strong> z menu pod swoją nazwą. Możesz tam zmienić hasło i e-mail, ustawić uwierzytelnianie dwuskładnikowe, hasło szyfrujące, powiadomienia, Fediwersum i przenoszenie konta, sprawdzić urządzenia oraz usunąć konto.</p>\n<h2>Motywy</h2><p>Selektor <strong>Motyw</strong> zmienia wygląd całej witryny i zapamiętuje wybór.</p>\n<h2>Podsumowania e-mail</h2><p>Po tygodniu nieobecności witryna może jednorazowo wysłać opis przegapionych zdarzeń. Zapomniane hasło zresetujesz odnośnikiem na stronie logowania.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Śledzenie przez RSS",
+            "category": "connecting",
+            "summary": "Subskrybuj witrynę lub wybraną osobę w dowolnym czytniku RSS.",
+            "body": "\n<p>{site} udostępnia kanały <strong>RSS</strong>:</p>\n<ul><li>Najnowsze posty całej witryny: <code>/feed.xml</code>.</li><li>Posty użytkownika: <code>/users/nazwa-użytkownika/feed.xml</code>.</li></ul>\n<p>Przeglądarki i czytniki często wykrywają je automatycznie, więc zwykle wystarczy wkleić adres witryny lub profilu.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Edytowanie posta",
+            "category": "posting",
+            "summary": "Popraw literówkę lub zmień treść własnego posta po publikacji.",
+            "body": "\n<p>Przy własnym poście użyj opcji <strong>edytuj</strong>, popraw treść i zapisz zmiany.</p>\n<p>Edycja zastępuje post w tym samym miejscu. Nie powstaje osobna kopia, ale po zmianie pojawia się oznaczenie <strong>(edytowano)</strong>. Możesz edytować wyłącznie własne posty.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Udostępnianie i cytowanie",
+            "category": "posting",
+            "summary": "Przekaż cudzy post znajomym i obserwującym bez zmian albo z własnym komentarzem.",
+            "body": "\n<p>Naciśnij <strong>Udostępnij</strong>, aby przekazać post bez zmian. Licznik obejmuje lokalne udostępnienia i podbicia z innych serwerów.</p>\n<h2>Cytowanie</h2><p>Opcja <strong>Cytuj</strong> tworzy nowy post z własnym komentarzem i dołączonym oryginałem. Taki post można komentować, lubić i zgłaszać, a także przesyłać do Fediwersum.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Dodawanie postów do zakładek",
+            "category": "posting",
+            "summary": "Zapisuj posty na prywatnej liście Zakładki, aby wrócić do nich później.",
+            "body": "\n<p>Każdy post ma opcję <strong>zakładki</strong>. Tylko Ty widzisz, co zapisujesz.</p>\n<p>Menu <strong>Zakładki</strong> pokazuje zapisane posty od najnowszych. Post usunięty później przez autora po prostu znika z tej listy.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hasztagi i wzmianki",
+            "category": "posting",
+            "summary": "Oznaczaj posty #hasztagami i przywołuj osoby za pomocą @wzmianek.",
+            "body": "\n<p>Dwa rodzaje skrótów automatycznie stają się odnośnikami.</p>\n<h2>Hasztagi</h2><p>Wpisz <strong>#hasztag</strong>, na przykład <code>#muzyka</code>. Pierwszych dziesięć różnych hasztagów trafia do indeksu i rankingu popularności; pozostałe nadal są odnośnikami.</p>\n<h2>Wzmianki</h2><p><strong>@nazwa</strong> prowadzi do profilu i wysyła tej osobie powiadomienie. Powyżej dziesięciu różnych osób powiadomienia nie są wysyłane. Konta z Fediwersum oznaczaj pełnym identyfikatorem <code>@użytkownik@serwer</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Popularne tematy",
+            "category": "connecting",
+            "summary": "Zobacz, o jakich tematach i nazwach mówi się teraz najwięcej.",
+            "body": "\n<p>Menu <strong>Tematy</strong> zbiera popularne ostatnio hasztagi, nazwy i zagadnienia oraz porządkuje je według zainteresowania.</p>\n<p>Każdy element ma stronę z powiązanymi postami i kategorię, taką jak osoba, organizacja lub miejsce. Lista uwzględnia również posty z innych serwerów, które docierają przez przekaźnik.</p>\n<p>Temat musi być poruszany przez kilka osób. Moderator może usunąć nadużycie lub szum z listy do czasu cofnięcia blokady.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Obserwowanie osób w Fediwersum",
+            "category": "connecting",
+            "summary": "Obserwuj konta z Mastodona i innych serwerów Fediwersum.",
+            "body": "\n<p>{site} obsługuje <strong>ActivityPub</strong>, standard używany przez Mastodona i Fediwersum.</p>\n<p>W sekcji <strong>Fediwersum</strong> ustawień wklej identyfikatory takie jak <code>@użytkownik@example.social</code> i naciśnij <strong>Obserwuj</strong>. Lista pokazuje konta przyjęte i oczekujące.</p>\n<h2>Obserwowanie Ciebie z zewnątrz</h2><p>Twój adres ma postać <strong>@twoja-nazwa@domena-tej-witryny</strong>. Publiczne posty, multimedia, ankiety, ostrzeżenia, przypięcia i zmiany profilu docierają do obserwujących na innych serwerach, a ich reakcje wracają tutaj. Przy zmianie serwera ustawienie przenoszenia konta może przekazać obserwujących.</p>\n"
+        },
+        "searching": {
+            "title": "Wyszukiwanie",
+            "category": "connecting",
+            "summary": "Przeszukuj posty witryny na stronie Wyszukiwanie.",
+            "body": "\n<p><strong>Wyszukiwanie</strong> w menu przeszukuje <strong>posty</strong>, a wyniki pojawiają się podczas wpisywania.</p>\n<p>Osób szukaj na stronie <a href=\"/help/finding-people\">Użytkownicy</a>, która ma własną wyszukiwarkę i propozycje kontaktów.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Uwierzytelnianie dwuskładnikowe",
+            "category": "stayingSafe",
+            "summary": "Dodaj kod logowania wysyłany e-mailem, aby zwiększyć bezpieczeństwo.",
+            "body": "\n<p>Uwierzytelnianie dwuskładnikowe (2FA) dodaje drugi krok logowania, więc samo hasło nie wystarczy. Włącz je w <strong>Ustawieniach użytkownika</strong>.</p>\n<p>Przy każdym logowaniu otrzymasz e-mailem krótki kod liczbowy. Nie potrzeba aplikacji uwierzytelniającej, ale adres e-mail musi być zweryfikowany. 2FA można później wyłączyć w tym samym miejscu.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Zalogowane urządzenia i sesje",
+            "category": "stayingSafe",
+            "summary": "Sprawdź miejsca logowania i wyloguj się wszędzie naraz.",
+            "body": "\n<p><strong>Ustawienia użytkownika</strong> zawierają dwa narzędzia do zarządzania logowaniem.</p>\n<h2>Zapamiętane urządzenia</h2><p>Urządzenie zapamiętane przy logowaniu nie wymaga logowania przy każdej wizycie. Możesz cofnąć dostęp każdemu urządzeniu poza obecnym; na obecnym użyj wylogowania.</p>\n<h2>Sesje</h2><p>Przycisk <strong>wyloguj wszędzie</strong> kończy wszystkie sesje i usuwa zapamiętane urządzenia. Użyj go, jeśli podejrzewasz przejęcie konta, a potem zmień hasło.</p>\n"
+        },
+        "your-profile": {
+            "title": "Twój profil",
+            "category": "yourAccount",
+            "summary": "Ustaw wyświetlaną nazwę, biogram i awatar, aby inni mogli Cię poznać.",
+            "body": "\n<p>Profil pokazuje Twoje posty oraz informacje o Tobie. Otwórz własny profil i użyj opcji <strong>edytuj</strong>.</p>\n<ul><li><strong>Wyświetlana nazwa</strong> pojawia się nad nazwą użytkownika; gdy jest pusta, widać nazwę użytkownika.</li><li><strong>Biogram</strong> to krótki opis, w którym odnośniki, hasztagi i wzmianki są klikalne.</li></ul>\n<p>Możesz przesłać także <strong>awatar</strong>. Nazwy użytkownika nie da się zmienić.</p>\n<h2>Przypięte posty</h2><p>Przycisk <strong>Przypnij</strong> umieszcza do pięciu własnych postów na górze profilu. Przypięcia są widoczne również w Fediwersum.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Zmiana adresu e-mail",
+            "category": "yourAccount",
+            "summary": "Zaktualizuj adres e-mail konta i ponownie go zweryfikuj.",
+            "body": "\n<p>W sekcji <strong>Zmiana adresu e-mail</strong> ustawień podaj nowy adres i obecne hasło. Na nowy adres zostanie wysłany odnośnik weryfikacyjny.</p>\n<p>Na stary adres trafi również wiadomość z odnośnikiem cofającym zmianę. Nie wymaga on hasła, przywraca adres i wylogowuje wszystkie urządzenia, chroniąc konto przed nieuprawnioną zmianą.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Usuwanie konta",
+            "category": "yourAccount",
+            "summary": "Trwale zamknij konto i usuń swoje treści.",
+            "body": "\n<p>W <strong>Ustawieniach użytkownika</strong> otwórz sekcję <strong>Usuń konto</strong> i potwierdź operację hasłem.</p>\n<p>Usunięcie jest <strong>trwałe</strong>. Znikną posty, odpowiedzi, wiadomości, polubienia i kontakty, a także odpowiedzi innych osób pod Twoimi postami. Nazwa użytkownika zostaje wycofana i nie będzie mogła zostać ponownie użyta.</p>\n<p>Konta nie da się odzyskać. Konta administratora witryny nie można usunąć, ponieważ witryna musi mieć co najmniej jednego administratora.</p>\n"
+        }
+    }
+}

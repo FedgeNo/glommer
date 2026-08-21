@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Erste Schritte",
+        "posting": "Beiträge",
+        "connecting": "Kontakte",
+        "stayingSafe": "Sicherheit",
+        "yourAccount": "Dein Konto"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Ein Konto erstellen",
+            "category": "gettingStarted",
+            "summary": "Registriere dich mit Benutzername, E-Mail-Adresse und Passwort, um Beiträge zu veröffentlichen.",
+            "body": "\n<p>Um beizutreten, öffne oben rechts den Link <strong>Registrieren</strong>. Wähle einen Benutzernamen, gib deine E-Mail-Adresse ein und lege ein Passwort fest. Über deinen Benutzernamen können andere dich finden und erwähnen; wähle also einen Namen, unter dem du gerne bekannt sein möchtest.</p>\n<p>Das Formular bietet außerdem Platz für einen <strong>Anzeigenamen</strong> und eine kurze Biografie. Beides ist optional: Du kannst die Felder leer lassen und später unter <a href=\"/help/your-profile\">Dein Profil</a> ausfüllen. Der Anzeigename ist der freundlichere Name, der über deinem Benutzernamen in Beiträgen und deinem Profil erscheint. Bleibt er leer, wird stattdessen dein Benutzername angezeigt.</p>\n<p>Nach der Registrierung kannst du sofort lesen und Beiträge veröffentlichen. Falls diese Website E-Mail-Adressen überprüft, musst du zunächst deine Adresse bestätigen (siehe <a href=\"/help/verifying-your-email\">E-Mail-Adresse bestätigen</a>). Das allererste Konto auf einer neuen Website wird automatisch zu deren Administratorkonto.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Deine E-Mail-Adresse bestätigen",
+            "category": "gettingStarted",
+            "summary": "Bestätige deine Adresse über den Link in unserer E-Mail, sofern E-Mail aktiviert ist.",
+            "body": "\n<p>Wenn diese Website E-Mails versenden kann, schicken wir dir gleich nach der Registrierung einen Bestätigungslink. Bis du ihn öffnest, führt dich jede Seite stattdessen zu einem Hinweis, dein Postfach zu prüfen. Der Link bestätigt dein Konto und gibt dir vollständigen Zugriff. So wissen wir außerdem, dass die Adresse wirklich dir gehört und Passwort-Zurücksetzungen sowie Benachrichtigungen dich erreichen können.</p>\n<p>Nichts erhalten? Prüfe zuerst deinen Spam-Ordner. Auf der Seite <strong>Postfach prüfen</strong>, die bis zur Bestätigung erscheint, kannst du einen neuen Link anfordern.</p>\n<p>Manche Websites versenden überhaupt keine E-Mails. Ist das hier der Fall, gibt es nichts zu bestätigen und du kannst sofort alles verwenden.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Dich auf der Website zurechtfinden",
+            "category": "gettingStarted",
+            "summary": "Ein kurzer Rundgang durch Menü, Feeds, Freunde, Benutzer, Nachrichten und Konto.",
+            "body": "\n<p>Über die Leiste am oberen Rand erreichst du alles:</p>\n<ul>\n<li><strong>Der Name der Website</strong> links führt immer zum Hauptfeed und öffnet ein Menü mit allen anderen Bereichen.</li>\n<li><strong>Freunde-Feed</strong> zeigt nur Beiträge deiner Freunde.</li>\n<li><strong>Benutzer</strong> dient zur Personensuche und schlägt mögliche Kontakte vor.</li>\n<li><strong>Tags</strong> und <strong>Themen</strong> helfen, Beiträge nach Thema und aktuelle Beliebtheit zu entdecken.</li>\n<li><strong>Karte</strong> und <strong>Orte</strong> zeigen Beiträge nach Veröffentlichungsort auf einer Karte oder als Ortsliste.</li>\n<li><strong>Suche</strong> durchsucht die Beiträge der Website.</li>\n<li><strong>Nachrichten</strong> enthält deine privaten Unterhaltungen und markiert sich, wenn etwas auf dich wartet.</li>\n<li><strong>Lesezeichen</strong> ist deine private Liste gespeicherter Beiträge.</li>\n<li><strong>Benachrichtigungen</strong> leuchtet auf, wenn jemand mit dir interagiert.</li>\n<li><strong>Hilfe</strong> (diese Artikel) und <strong>Über</strong> sind auch ohne Anmeldung verfügbar.</li>\n</ul>\n<p>Dein eigener Name steht oben rechts. Er führt zu deinem Profil und öffnet ein Menü mit <strong>Freunden</strong> (zum Annehmen von Anfragen und Verwalten deiner Kontakte), deinen Entwürfen und geplanten Beiträgen, den <strong>Benutzereinstellungen</strong> und der Option zum <strong>Abmelden</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Einen Beitrag verfassen",
+            "category": "posting",
+            "summary": "Schreibe und veröffentliche einen Beitrag im Feld über dem Feed.",
+            "body": "\n<p>Der Editor befindet sich oben im Hauptfeed. Schreibe deinen Beitrag in den Textbereich und drücke die Schaltfläche zum Veröffentlichen. Beiträge erscheinen sofort im öffentlichen Feed. Alles auf der Website ist öffentlich; behalte das beim Schreiben im Hinterkopf.</p>\n<p>Neben dem Textbereich gibt es einige optionale Ergänzungen:</p>\n<ul>\n<li>Einen <strong>Titel</strong>, wenn dein Beitrag eine Überschrift haben soll.</li>\n<li>Einen <strong>Link</strong>, wenn du eine Webseite teilst (siehe <a href=\"/help/sharing-a-link\">Einen Link teilen</a>).</li>\n<li>Eine <strong>Umfrage</strong>, wenn du eine Frage stellst (siehe <a href=\"/help/polls\">Eine Frage mit einer Umfrage stellen</a>).</li>\n<li>Die Kennzeichnung <strong>Sensibel</strong>, wenn ein Beitrag erst nach dem Öffnen gezeigt werden soll (siehe <a href=\"/help/content-warnings\">Inhaltswarnungen und sensible Medien</a>).</li>\n</ul>\n<p>Du kannst Text formatieren, Emojis und sogar Mathematik verwenden sowie Fotos, Video oder Audio anhängen. Für all das gibt es eigene Artikel. Ein einzelner Beitrag enthält entweder einen Link, angehängte Medien <em>oder</em> eine Umfrage – eines von dreien, nie eine Kombination.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Deinen Text formatieren",
+            "category": "posting",
+            "summary": "Verwende Fett, Kursiv, Listen, Zitate, Code, Emojis und Mathematik in einem Beitrag.",
+            "body": "\n<p>Der Schreibbereich ist ein Rich-Text-Editor. Seine Werkzeugleiste enthält die üblichen Mittel – <strong>Fett</strong>, <em>Kursiv</em>, Unterstreichen, Durchstreichen, Aufzählungen und nummerierte Listen, Blockzitate und Codeblöcke –, damit du einen Beitrag übersichtlich gestalten kannst.</p>\n<h2>Emojis</h2>\n<p>Öffne die Emoji-Auswahl im Editor, um Emojis in deinen Text einzufügen. Sie merkt sich deinen bevorzugten Hautton; sobald du ihn eingestellt hast, bleibt er erhalten.</p>\n<h2>Mathematik</h2>\n<p>Mathematische Notation kannst du mit LaTeX schreiben. Umschließe abgesetzte Formeln mit <code>$$ ... $$</code> oder <code>\\[ ... \\]</code> und Formeln im Fließtext mit <code>\\( ... \\)</code> oder schlicht <code>$ ... $</code>. Bei der Anzeige werden daraus richtige Gleichungen. Da auch ein einzelnes Dollarzeichen als Begrenzung zählt, können zwei Preisangaben im selben Beitrag als Anfang und Ende einer Formel gelesen werden. Verwende bei diesem Risiko stattdessen <code>\\( ... \\)</code>.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Fotos, Video und Audio hinzufügen",
+            "category": "posting",
+            "summary": "Hänge einem Beitrag ein oder mehrere Bilder, ein Video oder Audio an.",
+            "body": "\n<p>Mit der Anhangsfunktion im Editor fügst du einem Beitrag <strong>Bilder, Video oder Audio</strong> hinzu. Du kannst mehrere Dateien anhängen; mehrere Bilder werden im fertigen Beitrag zu einer durchwischbaren Galerie. Bis zu 100 Dateien sind pro Beitrag möglich, weitere werden nicht hinzugefügt.</p>\n<p>Größere Video- und Audiodateien werden nach dem Veröffentlichen verarbeitet, daher kann es kurz dauern, bis sie abspielbar sind. Du erhältst eine Benachrichtigung, sobald die Verarbeitung abgeschlossen und das Medium verfügbar ist.</p>\n<p>Wenn du es dir vor dem Veröffentlichen anders überlegst, entferne den Anhang über die Abbrechen-Funktion neben der Dateiauswahl. Ein Beitrag mit Medien kann nicht zugleich einen Link enthalten; wähle, was am besten zu deinem Inhalt passt.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Einen Link teilen",
+            "category": "posting",
+            "summary": "Füge eine URL in das Linkfeld ein, um eine Seite mit Vorschau zu teilen.",
+            "body": "\n<p>Um eine Webseite zu teilen, trage ihre Adresse in das Feld <strong>Link</strong> über dem Schreibbereich ein. Wir rufen die Seite ab und bieten eine Vorschau mit Titel, kurzer Beschreibung und – falls vorhanden – Bild an. Sie erscheint im veröffentlichten Beitrag, damit andere sehen, was sie öffnen werden.</p>\n<p>Im Schreibbereich kannst du weiterhin eigene Worte hinzufügen und erklären, warum du die Seite teilst. Das Vorschaubild lässt sich vor dem Veröffentlichen entfernen.</p>\n<p>Ein Beitrag kann einen Link, angehängte Medien oder eine Umfrage enthalten – eines davon, nicht mehrere.</p>\n"
+        },
+        "polls": {
+            "title": "Eine Frage mit einer Umfrage stellen",
+            "category": "posting",
+            "summary": "Hänge einem Beitrag eine Umfrage an und lass Menschen hier und im Fediverse antworten.",
+            "body": "\n<p>Drücke im Editor <strong>Umfrage hinzufügen</strong>, um einen Beitrag in eine Frage zu verwandeln. Du erhältst bis zu vier Optionen; der Text des Beitrags ist die Frage. Eine Umfrage ohne Worte fragt nichts und kann daher nicht veröffentlicht werden.</p>\n<p>Vor dem Veröffentlichen triffst du zwei Entscheidungen:</p>\n<ul>\n<li><strong>Mehr als eine Auswahl erlauben</strong> – aktiviert dürfen mehrere Optionen gewählt werden, sonst genau eine.</li>\n<li><strong>Laufzeit</strong> – von fünf Minuten bis sieben Tagen. Jede Umfrage endet, denn ein Ergebnis, das nie endgültig wird, ist kein Ergebnis.</li>\n</ul>\n<p>Zwei Optionen dürfen auch bei unterschiedlicher Großschreibung nicht gleich lauten. Eine Antwort benennt die Option über ihren Text statt ihre Position; gleich aussehende Optionen wären bei einer zurückkehrenden Antwort nicht zu unterscheiden.</p>\n<p>Eine Umfrage ersetzt Medien oder einen Link und steht nicht daneben – mit ihren Optionen wird interagiert.</p>\n<h2>Antworten</h2>\n<p>Wähle eine oder mehrere Optionen und drücke <strong>Abstimmen</strong>. Deine Antwort ist endgültig. Könntest du sie nach Ansicht des Zwischenstands ändern, würde über den Zwischenstand statt über die Frage abgestimmt.</p>\n<p>Nach deiner Antwort oder dem Ende der Umfrage werden die Optionen durch Ergebnisse ersetzt: der Stimmenanteil jeder Option samt Zahl und deine markierte Auswahl. Darunter stehen die Zahl der teilnehmenden Personen und die verbleibende Zeit. Bei Mehrfachauswahl unterscheiden sich Personen- und Stimmenzahl; deshalb werden Personen gezählt.</p>\n<p>Ohne Anmeldung siehst du die Ergebnisse von Anfang an, da du keine Stimme abgeben kannst. Angemeldet und noch ohne Antwort siehst du bis zum Ende die Optionen und kannst abstimmen.</p>\n<h2>Im Fediverse</h2>\n<p>Umfragen reisen zwischen Servern. Menschen auf anderen Servern können an deinen teilnehmen, und du kannst Umfragen von Konten beantworten, denen du anderswo folgst. Bei fremden Umfragen verwaltet der andere Server die Zahlen; wir zeigen seine letzte Mitteilung, daher kann die Summe deiner gerade abgegebenen Stimme etwas hinterherhinken.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Inhaltswarnungen und sensible Medien",
+            "category": "posting",
+            "summary": "Kennzeichne einen Beitrag als sensibel oder verstecke ihn mit einem Warntext bis zum Öffnen.",
+            "body": "\n<p>Jeder Beitrag hat die Kennzeichnung <strong>Sensibel</strong>, unabhängig davon, ob Bild, Video oder Audio angehängt ist – Worte brauchen ebenso oft Warnungen wie Bilder.</p>\n<p>Allein aktiviert legt sie eine Abdeckung über angehängte Medien, die Leser erst öffnen müssen; der Text bleibt sichtbar. Ohne Anhang gibt es nichts zu verdecken. Braucht der Text selbst eine Warnung, verwende das Feld <strong>Warntext</strong>, das nach Aktivierung erscheint.</p>\n<p>Mit Warntext ändert sich die Wirkung: Der gesamte Beitrag – Worte, Umfrage und alles Weitere – liegt hinter der Warnung, nicht nur die Medien. Die häufigste Warnung ist ein Spoiler, und Spoiler betreffen meist die Worte.</p>\n<p>Der Inhalt einer Inhaltswarnung wird standardmäßig niemandem gezeigt; sie gilt für diesen einen Beitrag. Bei sensiblen Medien ist es anders: Unter <strong>Sensible Medien</strong> in den <a href=\"/user-settings\">Benutzereinstellungen</a> können sie ohne vorheriges Öffnen angezeigt werden.</p>\n<h2>Im Fediverse</h2>\n<p>Beides reist in beide Richtungen: Deine Abdeckungen und Warnungen erscheinen bei Followern anderswo genauso, und entsprechend markierte Beiträge anderer Server werden auch hier verdeckt.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Antworten und Unterhaltungsfäden",
+            "category": "posting",
+            "summary": "Antworte auf einen Beitrag, um darunter einen Unterhaltungsfaden zu beginnen.",
+            "body": "\n<p>Jeder Beitrag hat eine <strong>Antworten</strong>-Funktion. Sie öffnet direkt dort einen Editor; deine Antwort wird unter dem ursprünglichen Beitrag Teil seines Fadens. Antworten funktionieren wie Beiträge: Du kannst sie formatieren, Emojis und Medien hinzufügen.</p>\n<p>Öffne einen Beitrag auf seiner eigenen Seite, um die gesamte Unterhaltung mit dem Original oben und den Antworten darunter zu lesen. Längere Wechsel lassen sich so am besten verfolgen.</p>\n<h2>Antworten im Feed</h2>\n<p>Antworten erscheinen neben allem anderen im Freunde-Feed und auf Profilen. So siehst du Unterhaltungen während sie entstehen. Über einer Antwort nennt <strong>Als Antwort auf</strong> den beantworteten Beitrag. Geht der Faden über einen einzelnen Wechsel hinaus, führt <strong>Zum Anfang</strong> daneben zum ursprünglichen Beitrag.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Beiträge mit „Gefällt mir“ markieren",
+            "category": "posting",
+            "summary": "Zeige deine Wertschätzung mit einem Tipp auf die Gefällt-mir-Schaltfläche.",
+            "body": "\n<p>Jeder Beitrag hat eine <strong>Gefällt mir</strong>-Schaltfläche mit der Anzahl. Tippe darauf, um den Beitrag zu mögen, und erneut, um dies zurückzunehmen. Die Zahl wird sofort aktualisiert.</p>\n<p>Wenn dir ein Beitrag gefällt, erhält sein Autor eine Benachrichtigung – eine schnelle, unkomplizierte Art zu zeigen, dass dir das Geteilte gefallen hat.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Einen Beitrag löschen",
+            "category": "posting",
+            "summary": "Entferne einen eigenen Beitrag und erfahre, was mit seinen Antworten geschieht.",
+            "body": "\n<p>Bei jedem eigenen Beitrag steht anstelle der Meldefunktion fremder Beiträge die Funktion <strong>Löschen</strong>. Sie entfernt den Beitrag für alle.</p>\n<p>Das Löschen ist endgültig und muss daher bestätigt werden. Antworten unter dem Beitrag werden ebenfalls entfernt. Einen Beitrag zu löschen, der einen lebhaften Faden begann, beendet also die gesamte Unterhaltung.</p>\n<p>Du kannst nur eigene Beiträge löschen. Ist ein fremder Beitrag problematisch, <a href=\"/help/reporting-abuse\">melde ihn</a> stattdessen.</p>\n"
+        },
+        "translating": {
+            "title": "Einen Beitrag oder eine Nachricht übersetzen",
+            "category": "posting",
+            "summary": "Lies Inhalte in anderen Sprachen und erfahre, was beim Übersetzen mit den Worten geschieht.",
+            "body": "\n<p>Beiträge kommen aus dem gesamten Fediverse in allen Sprachen. Enthält ein Beitrag Text, gibt es in seiner Aktionsleiste die Schaltfläche <strong>Übersetzen</strong>. Sie ersetzt den Inhalt durch eine Übersetzung und wird anschließend zur Schaltfläche für das Original.</p>\n<p>Die Übersetzung geschieht auf diesem Server, nicht bei einem externen Dienst. Die Übersetzung eines Beitrags wird gespeichert, damit die nächste Person sie sofort erhält.</p>\n<p>Empfangene Nachrichten haben dieselbe Schaltfläche, mit zwei bewussten Unterschieden: Deine eigenen Nachrichten haben keine, denn es geht um das Lesen des Empfangenen. Außerdem wird erst auf deinen Wunsch übersetzt; eine Unterhaltung gelangt nie stillschweigend in einen Übersetzer.</p>\n<p>Beim Übersetzen einer Nachricht wird ihr Text diesem Server übergeben. Das ist bei <a href=\"/help/encrypted-messages\">verschlüsselten Nachrichten</a> wichtig: Normalerweise kann der Server sie nicht lesen, und mit der Übersetzung erlaubst du es ihm. Es wird nichts aufgezeichnet, die Übersetzung nicht gespeichert und die Nachricht nicht verändert. Sie wurde hier jedoch gelesen und ist daher nicht mehr so Ende-zu-Ende-verschlüsselt wie eine unübersetzte Nachricht. Darauf wirst du vor der ersten Übersetzung einmal hingewiesen.</p>\n<p>Die Schaltfläche erscheint nur, wenn auf dem Server ein Übersetzer installiert ist. Auf manchen Websites fehlt sie vollständig.</p>\n"
+        },
+        "finding-people": {
+            "title": "Menschen finden",
+            "category": "connecting",
+            "summary": "Suche Benutzer nach Namen oder durchsuche Vorschläge auf der Benutzerseite.",
+            "body": "\n<p>Öffne <strong>Benutzer</strong> im Menü und tippe einen Namen oder Benutzernamen in das Suchfeld. Treffer erscheinen während der Eingabe: zuerst Mitglieder dieser Website, danach Personen, die nur aus dem Fediverse bekannt sind.</p>\n<p>Vor der Eingabe zeigt die Seite <strong>Vorschläge</strong>: Freunde deiner Freunde, nach der Zahl gemeinsamer Freunde geordnet. Je stärker du verbunden bist, desto passender werden sie.</p>\n<p>Eine leere Liste ist kein Fehler. Entweder hast du noch niemanden hinzugefügt oder kennst bereits alle Kontakte deiner Freunde. Die Namenssuche findet alle, unabhängig von Vorschlägen.</p>\n<p>Über eine Personenkarte kannst du jemanden als Freund hinzufügen, eine Nachricht senden oder das Profil mit den Beiträgen öffnen.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Freunde und Freundschaftsanfragen",
+            "category": "connecting",
+            "summary": "Sende, akzeptiere und verwalte Freundschaftsanfragen und entferne Freunde.",
+            "body": "\n<p>Freundschaft auf {site} ist gegenseitig und beginnt mit einer Anfrage. Sende sie über <strong>Freund hinzufügen</strong> auf einer Karte oder einem Profil. Solange sie offen ist, kannst du sie <strong>abbrechen</strong>; nach der Annahme seid ihr Freunde.</p>\n<p>Die Seite <strong>Freunde</strong> bündelt alles:</p>\n<ul>\n<li>Auf dich wartende Anfragen stehen oben mit <strong>Annehmen</strong> und <strong>Ablehnen</strong> und sind nur für dich sichtbar.</li>\n<li>Darunter stehen deine aktuellen Freunde. Dieser Teil ist öffentlich, auch ohne Anmeldung.</li>\n<li>Von dir gesendete, noch unbeantwortete Anfragen werden ebenfalls nur dir gezeigt.</li>\n</ul>\n<p>Mit <strong>Freund entfernen</strong> auf einer Freundeskarte beendest du die Verbindung. Beiträge deiner Freunde erscheinen in deinem <a href=\"/help/your-feeds\">Freunde-Feed</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Nachrichten",
+            "category": "connecting",
+            "summary": "Sende private Nachrichten und behalte deine Unterhaltungen im Blick.",
+            "body": "\n<p>Verwende <strong>Nachricht</strong> auf einer Personenkarte oder einem Profil oder wähle unter <strong>Nachrichten</strong> eine Unterhaltung. Schreibe unten und sende; die andere Person wird benachrichtigt und neue Nachrichten erscheinen ohne Neuladen.</p>\n<p>Die neuesten Unterhaltungen stehen oben.</p>\n<p>Andere Mitglieder sehen deine Nachrichten nicht. Gegenüber Servern gibt es drei Fälle, die der Faden nennt:</p>\n<ul>\n<li><strong>Ende-zu-Ende-verschlüsselt</strong>: Haben beide <a href=\"/help/encrypted-messages\">verschlüsselte Nachrichten</a> aktiviert, ver- und entschlüsseln die Browser neue Nachrichten; Server und Sicherungen speichern nur Geheimtext.</li>\n<li><strong>Unverschlüsselt</strong>: Sonst speichert der Server sie wie die meisten sozialen Websites lesbar; Betreiber könnten technisch darauf zugreifen.</li>\n<li><strong>Föderiert</strong>: Bei Personen anderer Fediverse-Server liegt die Unterhaltung auch auf deren Server und kann wegen des Protokolls nie Ende-zu-Ende-verschlüsselt sein. Sende dort nichts, das ausschließlich der Empfänger kennen darf.</li>\n</ul>\n<p>Bei Belästigung kannst du die Person <a href=\"/help/blocking-someone\">blockieren</a> oder eine konkrete Nachricht <a href=\"/help/reporting-abuse\">melden</a>, auch eine verschlüsselte.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Verschlüsselte Nachrichten",
+            "category": "connecting",
+            "summary": "Aktiviere Ende-zu-Ende-Verschlüsselung und erfahre, was die Passphrase bedeutet.",
+            "body": "\n<p>Aktiviere <strong>Verschlüsselte Nachrichten</strong> in den <a href=\"/user-settings\">Benutzereinstellungen</a> mit einer Passphrase. Dein Browser erzeugt einen Schlüssel, sperrt ihn mit dieser Passphrase und speichert auf dem Server nur die gesperrte Kopie. Passphrase und lesbarer Schlüssel verlassen dein Gerät nie.</p>\n<p>Eine Unterhaltung wird verschlüsselt, sobald <em>beide</em> Personen dies aktiviert haben. Neue Nachrichten werden nur in euren Browsern gelesen; ältere bleiben unverändert. Unterhaltungen mit anderen Fediverse-Servern können wegen des Serverprotokolls nie so verschlüsselt werden.</p>\n<p>Eine verschlüsselte Unterhaltung fragt einmal pro Browser-Tab nach der Passphrase. Da der gesperrte Schlüssel auf dem Server liegt, funktioniert dieselbe Passphrase auf jedem Gerät.</p>\n<p><strong>Wähle sie sorgfältig.</strong> Sie schützt alle verschlüsselten Nachrichten ohne zweiten Schritt oder Sperre. Eine lange Wortfolge ist besser als eine kurze komplizierte und muss mindestens zwölf Zeichen haben. Verwende nicht dein Kontopasswort: Dieses wird beim Anmelden an den Server gesendet, die Passphrase niemals.</p>\n<p>Das System vergisst nicht: Damit deine Vergangenheit auf jedem Gerät lesbar bleibt, existieren alte Schlüssel weiter. Wer später die Passphrase erfährt, kann daher alles lesen. Systeme wie Signal verwerfen alte Schlüssel, weshalb neue Geräte dort mit leeren Unterhaltungen beginnen. Soll die Vergangenheit einen künftigen Fehler nicht überleben, lösche die Unterhaltung.</p>\n<p><strong>Eine verlorene Passphrase kann niemand wiederherstellen.</strong> Zurücksetzen erzeugt neue Schlüssel, alte Nachrichten sind dann endgültig verloren. Solange du die aktuelle Passphrase kennst, kannst du sie ohne Verlust ändern.</p>\n<p><strong>Prüft den Sicherheitscode.</strong> Jede verschlüsselte Unterhaltung zeigt einen kurzen Code für beide Schlüssel. Vergleicht ihn über einen anderen Weg. Stimmen beide Seiten überein, sitzt niemand dazwischen. Markiere ihn danach als bestätigt; bei Schlüsselrücksetzung oder möglichem Abfangen wirst du vor einer Änderung gewarnt.</p>\n<p>Der Code wird von der geladenen Seite berechnet und bestätigt Schlüssel, nicht die Software. Datenbank-, Sicherungs- und Netzwerkleser können die Nachrichten dennoch nicht lesen.</p>\n<p>Eine verschlüsselte Nachricht kann <a href=\"/help/reporting-abuse\">gemeldet</a> werden. Dabei wird Moderatoren nur diese Nachricht offenbart, nie Schlüssel oder restliche Unterhaltung; ein beim Weiterleiten erzeugtes Siegel verhindert gefälschte Meldungen.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Der Relay-Feed",
+            "category": "connecting",
+            "summary": "Hier erscheinen Beiträge aus dem weiteren Fediverse, wenn der Server ein Relay abonniert.",
+            "body": "\n<p>Siehst du einen <strong>Relay-Feed</strong>, abonniert der Server einen gemeinsamen Strom öffentlicher Beiträge teilnehmender Server. So sieht eine kleine neue Website Inhalte aus dem Fediverse, bevor ihre Mitglieder Konten folgen.</p>\n<p>Er bleibt bewusst von anderen Feeds getrennt: Niemand hier hat diese Beiträge oder Autoren gewählt. Sie mischen sich weder in den Haupt- noch den <a href=\"/help/your-feeds\">Freunde-Feed</a>. Du öffnest ihn nur bei Bedarf.</p>\n<p>Nur ein aktuelles Zeitfenster wird behalten. Ältere Beiträge verschwinden, außer du hast geantwortet, sie gemocht, gespeichert, erneut gepostet, angeheftet oder gemeldet.</p>\n<p>Du kannst wie sonst antworten, mögen und melden und interessante Personen <a href=\"/help/following-on-the-fediverse\">folgen</a>. Ihre Beiträge erscheinen dann unabhängig vom Relay im Freunde-Feed.</p>\n<p>Nur die Administration entscheidet über ein Relay. Fehlt der Feed im Menü, verwendet dieser Server keines.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Deine Feeds",
+            "category": "connecting",
+            "summary": "Der Unterschied zwischen globalem Feed und Freunde-Feed.",
+            "body": "\n<p>Zwei Feeds sind besonders wichtig:</p>\n<ul>\n<li><strong>Der globale Feed</strong> auf der Startseite zeigt öffentliche Beiträge der gesamten Website und hilft, Neues zu entdecken.</li>\n<li>Der <strong>Freunde-Feed</strong> zeigt nur Beiträge deiner Freunde.</li>\n</ul>\n<p>Beide laden beim Scrollen ältere Beiträge nach. <a href=\"/help/finding-people\">Finde Menschen</a> und <a href=\"/help/friends-and-friend-requests\">füge Freunde hinzu</a>, um deinen Freunde-Feed zu füllen.</p>\n<p>Der Freunde-Feed enthält auch <a href=\"/help/replies-and-threads\">Antworten</a> und nennt den beantworteten Beitrag. Der Hauptfeed zeigt nur Beiträge, die etwas beginnen, damit er für unangemeldete Besucher lesbar bleibt.</p>\n"
+        },
+        "notifications": {
+            "title": "Benachrichtigungen",
+            "category": "connecting",
+            "summary": "So erfährst du von Likes, Antworten, Freundschaftsanfragen und Nachrichten.",
+            "body": "\n<p><strong>Benachrichtigungen</strong> leuchtet auf, wenn dich etwas betrifft: Likes, Reposts, Antworten, Erwähnungen, Freundschaftsanfragen, Nachrichten oder fertig verarbeitete Medien. Likes, Boosts, Antworten, Erwähnungen und neue Follower aus dem Fediverse funktionieren genauso.</p>\n<p>Sie erscheinen <strong>sofort</strong> ohne Neuladen. Der Bereich zeigt die neuesten, die vollständige Seite deine ganze beim Scrollen nachladende Geschichte.</p>\n<p>Jede Benachrichtigung führt direkt zum betreffenden Beitrag, Gespräch oder Profil.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videoanrufe",
+            "category": "connecting",
+            "summary": "Rufe Freunde direkt im Browser mit Kamera und Mikrofon an.",
+            "body": "\n<p>Bei Freunden erscheint eine <strong>Anrufen</strong>-Schaltfläche, wenn Videoanrufe auf dem Server eingerichtet sind. Sie bittet den Browser um Kamera- und Mikrofonzugriff und ruft die andere Person. Eingehende Anrufe kannst du annehmen oder ablehnen; mit <strong>Anruf beenden</strong> legst du auf.</p>\n<p>Bild und Ton laufen direkt zwischen euren Browsern, während der Server nur die Verbindungsdaten vermittelt. Browserberechtigungen, Firewalls und manche Netzwerke können Anrufe verhindern.</p>\n<p>Unter <strong>Videoanrufe</strong> in den Benutzereinstellungen kannst du Kamera, Mikrofon, Netzwerkverbindung und Wiedergabe vorab prüfen. Erlaubt der Browser den Zugriff nicht, ändere die Websiteberechtigungen und lade neu.</p>\n<p>Ein Anruf ist kein Ersatz für verschlüsselte Nachrichten: Sprich nur über Dinge, die du auch über diese Verbindung teilen möchtest, und beende unerwünschte Anrufe jederzeit.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Jemanden blockieren",
+            "category": "stayingSafe",
+            "summary": "Blende eine Person und ihre Inhalte aus und verhindere weitere Kontakte.",
+            "body": "\n<p>Verwende <strong>Blockieren</strong> auf dem Profil oder der Karte einer Person. Eine bestehende Freundschaft wird beendet, ihre Beiträge verschwinden für dich und sie kann dir keine Nachrichten oder Freundschaftsanfragen mehr senden.</p>\n<p>Die Person wird über die Blockierung nicht benachrichtigt. Du kannst sie später wieder aufheben, doch eine frühere Freundschaft wird nicht automatisch wiederhergestellt.</p>\n<p>Blockieren schützt deine eigene Ansicht. Bei Missbrauch solltest du den konkreten Inhalt zusätzlich <a href=\"/help/reporting-abuse\">melden</a>, damit Moderatoren handeln können.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Missbrauch melden",
+            "category": "stayingSafe",
+            "summary": "Melde den konkreten missbräuchlichen Beitrag, die Nachricht oder das Konto, damit Moderatoren handeln können.",
+            "body": "\n<p>Missbräuchliche Inhalte kannst du zur Moderation melden. Das Wichtigste: <strong>Melde den konkreten Inhalt.</strong> Ist ein Beitrag das Problem, verwende dessen Meldefunktion; bei einer Nachricht melde genau diese. So sehen Moderatoren exakt, was du gesehen hast.</p>\n<h2>So meldest du</h2>\n<ul>\n<li><strong>Beitrag:</strong> die Meldefunktion am Beitrag.</li>\n<li><strong>Nachricht:</strong> die Meldefunktion dieser Nachricht in der Unterhaltung.</li>\n<li><strong>Benutzer:</strong> bei einem insgesamt problematischen Konto die Schaltfläche auf Profil oder Karte; bei einem einzelnen Verstoß besser direkt diesen Inhalt.</li>\n</ul>\n<p>Ein kurzer Grund hilft bei der Prüfung. Konkrete Inhalte lassen sich schneller beurteilen als allgemeine Beschwerden.</p>\n<p>Meldungen sind privat; die gemeldete Person erfährt nicht, wer sie eingereicht hat. Du kannst sie zusätzlich <a href=\"/help/blocking-someone\">blockieren</a>.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Einstellungen und Erscheinungsbild",
+            "category": "yourAccount",
+            "summary": "Ein Rundgang durch Passwort, E-Mail, Sicherheit, Designs und weitere Benutzereinstellungen.",
+            "body": "\n<p>Öffne <strong>Benutzereinstellungen</strong> über deinen Namen oben rechts. Dort findest du:</p>\n<ul>\n<li><strong>Passwort ändern</strong> und <a href=\"/help/changing-your-email\">E-Mail-Adresse ändern</a>, jeweils mit aktuellem Passwort.</li>\n<li><a href=\"/help/two-factor-authentication\">Zwei-Faktor-Authentifizierung</a> für einen zusätzlichen Anmeldeschritt.</li>\n<li><strong>Design</strong> für das Aussehen der Website.</li>\n<li><strong>Sensible Medien</strong>, um markierte Medien stets ohne Abdeckung zu zeigen.</li>\n<li><a href=\"/help/encrypted-messages\">Verschlüsselte Nachrichten</a> mit Passphrase.</li>\n<li><strong>E-Mail-Zusammenfassungen</strong> über Verpasstes nach längerer Abwesenheit.</li>\n<li><strong>Push-Benachrichtigungen</strong> auf diesem Gerät, sofern eingerichtet.</li>\n<li><a href=\"/help/signed-in-devices\">Gespeicherte Geräte und Sitzungen</a>.</li>\n<li><a href=\"/help/video-calling\">Videoanrufe</a> samt Funktionstest.</li>\n<li><a href=\"/help/following-on-the-fediverse\">Fediverse</a> zum Folgen anderer Server.</li>\n<li><strong>Server wechseln</strong>, um Follower mitzunehmen.</li>\n<li><a href=\"/help/deleting-your-account\">Konto löschen</a>.</li>\n</ul>\n<h2>Designs</h2>\n<p>Die Auswahl gestaltet die gesamte Website um und wird gespeichert. <strong>Systemeinstellung</strong> folgt deinem Gerät; alternativ stehen die eingebauten hellen, dunklen und farbigen Designs zur Wahl.</p>\n<h2>E-Mail-Zusammenfassungen</h2>\n<p>Warst du eine Woche abwesend und ist etwas passiert, erhältst du höchstens einmal pro Woche eine E-Mail, nie ohne Neuigkeiten. Deaktiviere sie in den Einstellungen oder über den Abmeldelink ohne Anmeldung.</p>\n<p>Bei vergessenem Passwort sendet <strong>Passwort vergessen?</strong> auf der Anmeldeseite einen Rücksetzlink per E-Mail.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Mit RSS folgen",
+            "category": "yourAccount",
+            "summary": "Abonniere die Website oder eine Person in einem beliebigen RSS-Reader.",
+            "body": "\n<p>{site} stellt <strong>RSS-Feeds</strong> bereit:</p>\n<ul>\n<li>Aktuelle Beiträge der ganzen Website unter <code>/feed.xml</code>.</li>\n<li>Beiträge einer Person unter <code>/users/ihr-benutzername/feed.xml</code>.</li>\n</ul>\n<p>Browser und Feedreader entdecken diese Feeds über die Links der Website und Profile meist automatisch; häufig genügt es, deren Seitenadresse in den Reader einzufügen.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Einen Beitrag bearbeiten",
+            "category": "posting",
+            "summary": "Korrigiere Tippfehler oder formuliere einen eigenen veröffentlichten Beitrag um.",
+            "body": "\n<p>Bei eigenen Beiträgen öffnet <strong>Bearbeiten</strong> den Editor erneut. Dort kannst du Tippfehler, Formulierung und Formatierung ändern und speichern.</p>\n<p>Die Änderung ersetzt den Beitrag für alle. Es bleibt keine separate alte Kopie, aber der Hinweis <strong>(bearbeitet)</strong> zeigt die Änderung. Titel, Text, Formatierung und Link lassen sich ändern; angehängte Medien nicht. Dafür ist es übersichtlicher, den Beitrag zu <a href=\"/help/deleting-a-post\">löschen</a> und neu zu veröffentlichen.</p>\n<p>Du kannst nur eigene Beiträge bearbeiten.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Erneut posten und zitieren",
+            "category": "posting",
+            "summary": "Gib Beiträge unverändert oder mit eigenen Worten an Freunde und Follower weiter.",
+            "body": "\n<p>Mit <strong>Erneut posten</strong> gibst du einen Beitrag unverändert weiter. Er erscheint in Feeds und deinem Profil, mit deinem Namen und nach dem Zeitpunkt der Weitergabe sortiert; auch Fediverse-Follower werden informiert. <strong>Repost rückgängig</strong> nimmt ihn zurück.</p>\n<p>Die Zahl vereint lokale Reposts und Boosts anderer Server. Eigene Beiträge kannst du nicht erneut posten, da sie bereits auf deinem Profil stehen.</p>\n<h2>Zitieren</h2>\n<p><strong>Zitieren</strong> öffnet einen Editor mit eingebettetem Original und verlangt eigene Worte. Ohne Zusatz ist die Repost-Funktion gedacht. Bilder dürfen angehängt werden, Video und Audio nicht.</p>\n<p>Ein Zitatbeitrag ist ein normaler Beitrag: Man kann antworten, ihn mögen und melden; er reist ebenso ins Fediverse.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Beiträge als Lesezeichen speichern",
+            "category": "posting",
+            "summary": "Speichere Beiträge privat, um sie später wiederzufinden.",
+            "body": "\n<p>Die <strong>Lesezeichen</strong>-Funktion eines Beitrags speichert ihn in deiner privaten Liste; erneutes Tippen entfernt ihn. Niemand sieht deine Lesezeichen und der Autor wird nicht benachrichtigt.</p>\n<p>Im Menü zeigt <strong>Lesezeichen</strong> alles Gespeicherte, das Neueste zuerst – praktisch zum späteren Lesen oder Wiederfinden.</p>\n<p>Wird ein gespeicherter Beitrag später gelöscht, verschwindet er einfach aus der Liste.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hashtags und Erwähnungen",
+            "category": "posting",
+            "summary": "Kennzeichne Beiträge mit #Hashtags und hole Personen mit @Erwähnungen hinzu.",
+            "body": "\n<p>Zwei Arten von Kürzeln werden beim Veröffentlichen automatisch zu Links.</p>\n<h2>Hashtags</h2>\n<p>Ein <strong>#Hashtag</strong> wie <code>#musik</code> führt zu allen Beiträgen mit diesem Tag. Aktive Tags stehen unter <strong>Tags</strong>, beliebte unter <a href=\"/help/trending-topics\">Themen</a>.</p>\n<p>Nur die ersten zehn unterschiedlichen Hashtags werden indexiert und für Trends gezählt. Weitere bleiben anklickbar, erscheinen aber nicht auf der Tagseite.</p>\n<h2>Erwähnungen</h2>\n<p>Mit <strong>@benutzername</strong> erwähnst du jemanden, verlinkst das Profil und sendest eine Benachrichtigung. Bei mehr als zehn verschiedenen Personen in einem Beitrag werden keine Benachrichtigungen gesendet, die Links bleiben. Fediverse-Konten erwähnst du vollständig als <code>@benutzer@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Beliebte Themen",
+            "category": "connecting",
+            "summary": "Sieh, über welche Themen und Namen gerade am meisten gesprochen wird.",
+            "body": "\n<p><strong>Themen</strong> zeigt häufige Hashtags, Namen und Begriffe aus aktuellen Beiträgen in einer Rangliste.</p>\n<p>Jeder Eintrag führt zu den zugrunde liegenden Beiträgen. Die Liste wird bei veränderter Aktivität neu berechnet.</p>\n<p>Themen sind nach Art gruppiert, etwa Personen, Organisationen, Orte oder Hashtags. Die Art auf einer Themenseite führt zu anderen derzeit besprochenen Einträgen derselben Art.</p>\n<p>Berücksichtigt wird alles, was der Server hört, einschließlich fremder Beiträge und <a href=\"/help/the-relay-feed\">Relays</a>. Mehrere verschiedene Personen müssen ein Thema erwähnen; eine einzelne kann es nicht hochdrücken.</p>\n<p>Moderatoren können missbräuchliche oder störende Einträge sperren, bis die Sperre aufgehoben wird.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Menschen im Fediverse folgen",
+            "category": "connecting",
+            "summary": "Folge Konten auf Mastodon und anderen Fediverse-Servern.",
+            "body": "\n<p>{site} verwendet <strong>ActivityPub</strong>, den Standard hinter Mastodon und dem Fediverse, sodass du Menschen anderer Server folgen und ihre Beiträge hier lesen kannst.</p>\n<p>Füge unter <strong>Fediverse</strong> in den Benutzereinstellungen Kennungen wie <code>@benutzer@beispiel.social</code> ein und drücke <strong>Folgen</strong>. Mehrere Kennungen können mit beliebigen Trennzeichen auf einmal eingefügt werden.</p>\n<p>Die Liste zeigt gefolgte Konten und ob sie angenommen haben oder noch warten. Vollständige Kennungen funktionieren auch in Beiträgen als Erwähnungen.</p>\n<h2>Von außen gefolgt werden</h2>\n<p>Deine eigene Adresse lautet <strong>@dein-benutzername@domain-dieser-website</strong>. Menschen anderer ActivityPub-Dienste können sie suchen und dir ohne Genehmigung folgen, da hier alles öffentlich ist.</p>\n<p>Text, Bilder, Video, <a href=\"/help/polls\">Umfragen</a>, Warnungen, angeheftete Beiträge und Profiländerungen reisen zu deinen Followern. Ihre Likes, Boosts und Antworten kommen zurück.</p>\n<p>Beim Wechsel zu einem anderen Server nimmt <strong>Server wechseln</strong> deine Follower nach der erforderlichen Bestätigung mit.</p>\n"
+        },
+        "searching": {
+            "title": "Suchen",
+            "category": "connecting",
+            "summary": "Durchsuche die Beiträge der Website auf der Suchseite.",
+            "body": "\n<p><strong>Suche</strong> im Menü durchsucht die <strong>Beiträge</strong> der Website. Treffer erscheinen während der Eingabe, um einen halb erinnerten oder früher gelesenen Beitrag schnell zu finden.</p>\n<p>Suchst du Personen? Dafür bietet die <a href=\"/help/finding-people\">Benutzerseite</a> eine eigene Suche und Kontaktvorschläge.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Zwei-Faktor-Authentifizierung",
+            "category": "stayingSafe",
+            "summary": "Schütze die Anmeldung zusätzlich mit einem per E-Mail zugesandten Code.",
+            "body": "\n<p>Die Zwei-Faktor-Authentifizierung (2FA) ergänzt die Anmeldung, sodass das Passwort allein nicht genügt. Aktiviere sie in den <strong>Benutzereinstellungen</strong>.</p>\n<p>Hier funktioniert sie per <strong>E-Mail</strong>: Bei jeder Anmeldung senden wir einen kurzen Zahlencode an deine bestätigte Adresse, den du zum Abschluss eingibst. Eine Authenticator-App ist nicht nötig; Voraussetzung ist eine <a href=\"/help/verifying-your-email\">bestätigte E-Mail-Adresse</a>.</p>\n<p>Du kannst 2FA dort jederzeit wieder deaktivieren.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Angemeldete Geräte und Sitzungen",
+            "category": "stayingSafe",
+            "summary": "Prüfe deine Anmeldungen und melde dich überall gleichzeitig ab.",
+            "body": "\n<p>Die <strong>Benutzereinstellungen</strong> enthalten zwei Werkzeuge für deine Anmeldungen.</p>\n<h2>Gespeicherte Geräte</h2>\n<p>Wenn du angemeldet bleiben möchtest, wird das Gerät gespeichert. Die Liste erlaubt, allen außer dem gerade verwendeten den Zugriff zu entziehen – nützlich bei gemeinsam genutzten oder verlorenen Geräten. Das aktuelle Gerät entfernst du durch Abmelden.</p>\n<h2>Sitzungen</h2>\n<p>Unter <strong>Sitzungen</strong> meldet eine Schaltfläche dich <strong>überall gleichzeitig ab</strong> und beendet aktive Sitzungen sowie gespeicherte Geräte. Nutze sie bei Verdacht auf fremden Zugriff und <a href=\"/help/settings-and-appearance\">ändere danach dein Passwort</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Dein Profil",
+            "category": "yourAccount",
+            "summary": "Lege Anzeigenamen, Biografie und Avatar fest, damit andere wissen, wer du bist.",
+            "body": "\n<p>Dein Profil zeigt deine Beiträge und Informationen über dich. Öffne über deinen Namen oben rechts dein <strong>eigenes Profil</strong> und bearbeite die Profilkarte; Name und Biografie sind direkt anklickbar.</p>\n<ul>\n<li>Der <strong>Anzeigename</strong> steht über dem Benutzernamen. Bleibt er leer, wird der Benutzername gezeigt.</li>\n<li>Die <strong>Biografie</strong> ist eine kurze Zeile über dich; Links, #Hashtags und @Erwähnungen werden anklickbar.</li>\n</ul>\n<p>Du kannst ein <strong>Avatarbild</strong> hochladen. Der Benutzername bleibt nach der Registrierung fest, Anzeigename, Biografie und Avatar sind jederzeit änderbar.</p>\n<h2>Angeheftete Beiträge</h2>\n<p>Mit <strong>Anheften</strong> verschiebst du bis zu fünf eigene Beiträge in den Bereich <strong>Angeheftet</strong> oben im Profil; <strong>Lösen</strong> entfernt sie. Diese Auswahl reist auch ins Fediverse.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Deine E-Mail-Adresse ändern",
+            "category": "yourAccount",
+            "summary": "Aktualisiere die E-Mail-Adresse deines Kontos mit erneuter Bestätigung.",
+            "body": "\n<p>Gib unter <strong>E-Mail-Adresse ändern</strong> in den Benutzereinstellungen die neue Adresse und dein aktuelles Passwort ein. An die <strong>neue</strong> Adresse geht ein Bestätigungslink, den du wie bei der Registrierung öffnen musst.</p>\n<p>Zur Sicherheit erhält auch die <strong>alte</strong> Adresse einen Hinweis mit einem Link zum Rückgängigmachen. Er benötigt kein Passwort, setzt die Adresse zurück und meldet alle Geräte ab. So kannst du eine fremde Änderung mit einem Schritt rückgängig machen. Bestätige die neue Adresse zeitnah, da Passwort-Zurücksetzungen eine bestätigte Adresse benötigen.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Dein Konto löschen",
+            "category": "yourAccount",
+            "summary": "Schließe dein Konto endgültig und entferne deine Inhalte.",
+            "body": "\n<p>Verwende <strong>Konto löschen</strong> in den Benutzereinstellungen und bestätige mit deinem Passwort. Dies kann nicht rückgängig gemacht werden.</p>\n<p>Die Löschung ist <strong>endgültig</strong>. Beiträge, Antworten, Nachrichten, Likes und Verbindungen werden entfernt, ebenso Antworten anderer unter deinen Beiträgen. Dein Benutzername wird stillgelegt und nie wieder vergeben, damit alte Links, Erwähnungen oder Fediverse-Follows niemals eine fremde Person unter deinem Namen erreichen.</p>\n<p>Ein gelöschtes Konto kann nicht wiederhergestellt werden.</p>\n<p>Das Administratorkonto der Website kann nicht gelöscht werden, da zum Betrieb mindestens eine Administration nötig ist.</p>\n"
+        }
+    }
+}

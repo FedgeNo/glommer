@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Primers passos",
+        "posting": "Publicacions",
+        "connecting": "Connexions",
+        "stayingSafe": "Seguretat",
+        "yourAccount": "El vostre compte"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Creeu un compte",
+            "category": "gettingStarted",
+            "summary": "Registreu-vos amb nom d'usuari, correu i contrasenya per començar a publicar.",
+            "body": "\n<p>Obriu <strong>Registra't</strong> a dalt a la dreta, trieu un nom d'usuari i introduïu el correu i una contrasenya. El nom d'usuari permet que altres persones us trobin i us esmentin.</p>\n<p>El <strong>nom visible</strong> i la biografia són opcionals i es poden afegir després a <a href=\"/help/your-profile\">El vostre perfil</a>. Si el nom visible és buit, es mostra el nom d'usuari.</p>\n<p>Després del registre podeu llegir i publicar immediatament, tret que calgui <a href=\"/help/verifying-your-email\">verificar el correu</a>. El primer compte d'un lloc nou esdevé administrador.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Verifiqueu el correu",
+            "category": "gettingStarted",
+            "summary": "Confirmeu l'adreça amb l'enllaç que us enviem, si el correu està activat.",
+            "body": "\n<p>Si el lloc envia correu, rebreu un enllaç després del registre. Fins que l'obriu, les pàgines us duran a l'avís de revisar la bústia. Això confirma el compte i permet rebre restabliments i notificacions.</p>\n<p>Si no arriba, reviseu el correu brossa i demaneu un enllaç nou a <strong>Reviseu la bústia</strong>.</p>\n<p>Alguns llocs no envien correu; aleshores no cal verificar res.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Orienteu-vos pel lloc",
+            "category": "gettingStarted",
+            "summary": "Un recorregut ràpid pel menú, els canals, amistats, persones, missatges i compte.",
+            "body": "\n<p>La barra superior porta a tot arreu:</p>\n<ul>\n<li><strong>El nom del lloc</strong> obre el canal principal i el menú.</li>\n<li><strong>Canal d'amistats</strong> mostra publicacions de les amistats.</li>\n<li><strong>Persones</strong> cerca gent i suggereix connexions.</li>\n<li><strong>Etiquetes</strong> i <strong>Temes</strong> descobreixen contingut.</li>\n<li><strong>Mapa</strong> i <strong>Ubicacions</strong> agrupen per lloc.</li>\n<li><strong>Cerca</strong> consulta les publicacions.</li>\n<li><strong>Missatges</strong> conté converses privades.</li>\n<li><strong>Marcadors</strong> desa publicacions en privat.</li>\n<li><strong>Notificacions</strong> avisa d'interaccions.</li>\n<li><strong>Ajuda</strong> i <strong>Quant a</strong> sempre són disponibles.</li>\n</ul>\n<p>El vostre nom a dalt a la dreta obre el perfil i un menú amb amistats, esborranys, publicacions programades, paràmetres i tancament de sessió.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Escriviu una publicació",
+            "category": "posting",
+            "summary": "Escriviu i publiqueu des del quadre de dalt del canal.",
+            "body": "\n<p>L'editor és a dalt del canal principal. Escriviu i premeu Publica. El resultat apareix immediatament al canal públic; tot el lloc és públic.</p>\n<p>Podeu afegir un <strong>títol</strong>, un <strong>enllaç</strong>, una <strong>enquesta</strong> o la marca <strong>Sensible</strong>.</p>\n<p>També hi ha format, emojis, matemàtiques i fitxers multimèdia. Una publicació conté un enllaç, mitjans <em>o</em> una enquesta, mai una combinació.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Formateu el text",
+            "category": "posting",
+            "summary": "Utilitzeu negreta, cursiva, llistes, citacions, codi, emojis i matemàtiques.",
+            "body": "\n<p>La barra de text enriquit inclou <strong>negreta</strong>, <em>cursiva</em>, subratllat, ratllat, llistes, citacions i blocs de codi.</p>\n<h2>Emojis</h2>\n<p>El selector recorda el vostre to de pell preferit.</p>\n<h2>Matemàtiques</h2>\n<p>Escriviu LaTeX amb <code>$$ ... $$</code> o <code>\\[ ... \\]</code> en bloc i <code>\\( ... \\)</code> o <code>$ ... $</code> en línia. Dos símbols de dòlar poden interpretar-se com una fórmula; en aquest cas utilitzeu parèntesis.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Afegiu fotos, vídeo i àudio",
+            "category": "posting",
+            "summary": "Adjunteu una o més imatges, un vídeo o àudio.",
+            "body": "\n<p>La funció d'adjuntar permet <strong>imatges, vídeo o àudio</strong>. Diverses imatges formen una galeria i s'admeten fins a 100 fitxers.</p>\n<p>Els vídeos i àudios grans es processen després; rebreu una notificació quan estiguin a punt.</p>\n<p>Podeu eliminar l'adjunt abans de publicar. Una publicació amb mitjans no pot contenir també un enllaç.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Compartiu un enllaç",
+            "category": "posting",
+            "summary": "Enganxeu una URL al camp d'enllaç per compartir una pàgina amb previsualització.",
+            "body": "\n<p>Poseu l'adreça al camp <strong>Enllaç</strong>. N'obtindrem el títol, una descripció i, si n'hi ha, una imatge.</p>\n<p>Podeu afegir text propi i eliminar la imatge abans de publicar.</p>\n<p>Una publicació conté enllaç, mitjans o enquesta, només una opció.</p>\n"
+        },
+        "polls": {
+            "title": "Feu una pregunta amb una enquesta",
+            "category": "posting",
+            "summary": "Afegiu una enquesta i deixeu que hi responguin aquí i al Fedivers.",
+            "body": "\n<p>Premeu <strong>Afegeix una enquesta</strong>. Hi ha fins a quatre opcions i el text de la publicació és la pregunta.</p>\n<p>Trieu si es permeten diverses respostes i una durada de cinc minuts a set dies. Les opcions no poden tenir el mateix text.</p>\n<h2>Respondre</h2>\n<p>Trieu i premeu <strong>Vota</strong>. El vot és definitiu. Després es mostren percentatges, quantitats, la vostra tria, participants i temps restant.</p>\n<p>Sense sessió oberta, els resultats es veuen des del principi.</p>\n<h2>Al Fedivers</h2>\n<p>Els vots viatgen entre servidors. Les xifres d'una enquesta remota poden trigar una mica a actualitzar-se.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Avisos de contingut i mitjans sensibles",
+            "category": "posting",
+            "summary": "Marqueu una publicació com a sensible o amagueu-la rere un avís.",
+            "body": "\n<p>Totes les publicacions tenen la marca <strong>Sensible</strong>.</p>\n<p>Sense text d'avís, cobreix només els mitjans. Per amagar també el text, empleneu el camp d'avís.</p>\n<p>Amb avís s'amaga tota la publicació, inclosa l'enquesta. Els espòilers en són un exemple.</p>\n<p>Els paràmetres poden mostrar automàticament els mitjans sensibles, però no el contingut d'un avís.</p>\n<h2>Al Fedivers</h2>\n<p>Les marques i els avisos viatgen en totes dues direccions.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Respostes i fils",
+            "category": "posting",
+            "summary": "Responeu a una publicació per iniciar-hi un fil de conversa.",
+            "body": "\n<p><strong>Respon</strong> obre un editor i afegeix la resposta sota l'original. S'hi pot donar format i adjuntar mitjans.</p>\n<p>Obriu la pàgina pròpia d'una publicació per veure tota la conversa.</p>\n<h2>Respostes en un canal</h2>\n<p>Les respostes apareixen al canal d'amistats i perfils amb «En resposta a» i, en fils llargs, «Ves a l'inici».</p>\n"
+        },
+        "liking-posts": {
+            "title": "Marqueu que us agrada",
+            "category": "posting",
+            "summary": "Mostreu agraïment amb un toc al botó M'agrada.",
+            "body": "\n<p>El botó <strong>M'agrada</strong> mostra el recompte. Premeu-lo per afegir o retirar la reacció.</p>\n<p>L'autor rep una notificació.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Suprimiu una publicació",
+            "category": "posting",
+            "summary": "Elimineu una publicació pròpia i les respostes que en depenen.",
+            "body": "\n<p>Les publicacions pròpies tenen <strong>Suprimeix</strong> en lloc de Denuncia.</p>\n<p>La supressió és permanent, demana confirmació i també elimina totes les respostes.</p>\n<p>Només podeu suprimir les vostres. <a href=\"/help/reporting-abuse\">Denuncieu</a> les problemàtiques d'altres persones.</p>\n"
+        },
+        "translating": {
+            "title": "Traduïu una publicació o missatge",
+            "category": "posting",
+            "summary": "Llegiu contingut en un altre idioma i enteneu què implica traduir-lo.",
+            "body": "\n<p><strong>Tradueix</strong> substitueix el text per la traducció i després permet recuperar l'original.</p>\n<p>La traducció passa en aquest servidor i la d'una publicació es desa.</p>\n<p>Els missatges rebuts només es tradueixen quan ho demaneu; els propis no tenen botó.</p>\n<p>Traduir un <a href=\"/help/encrypted-messages\">missatge xifrat</a> revela aquell text al servidor. No es desa, però deixa de ser secret per al servidor; se us avisa abans.</p>\n<p>El botó només apareix si el servidor té traductor.</p>\n"
+        },
+        "finding-people": {
+            "title": "Trobeu persones",
+            "category": "connecting",
+            "summary": "Cerqueu per nom o exploreu suggeriments.",
+            "body": "\n<p>Obriu <strong>Persones</strong> i escriviu un nom. Primer apareixen membres locals i després comptes coneguts del Fedivers.</p>\n<p>Abans d'escriure hi ha suggeriments d'amistats d'amistats, ordenats per contactes comuns.</p>\n<p>Una llista buida no és cap error; la cerca encara cobreix tothom.</p>\n<p>Des d'una targeta podeu afegir amistat, enviar un missatge o obrir el perfil.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Amistats i sol·licituds",
+            "category": "connecting",
+            "summary": "Envieu, accepteu i gestioneu sol·licituds i elimineu amistats.",
+            "body": "\n<p>L'amistat a {site} és mútua i comença amb <strong>Afegeix una amistat</strong>. Podeu cancel·lar-la mentre espera.</p>\n<p>La pàgina <strong>Amistats</strong> mostra en privat les sol·licituds rebudes i enviades, i públicament les amistats actuals.</p>\n<p><strong>Elimina l'amistat</strong> acaba la connexió. Les seves publicacions apareixen al <a href=\"/help/your-feeds\">canal d'amistats</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Missatgeria",
+            "category": "connecting",
+            "summary": "Envieu missatges privats i seguiu les converses.",
+            "body": "\n<p>Utilitzeu <strong>Missatge</strong> en un perfil o obriu <strong>Missatges</strong>. Els missatges nous apareixen en directe.</p>\n<p>Les converses recents són a dalt.</p>\n<p>Poden ser <strong>xifrades d'extrem a extrem</strong> si tots dos ho activeu, <strong>en clar</strong> i llegibles pel servidor, o <strong>federades</strong> i també desades al servidor remot, que no admet xifrat d'extrem a extrem.</p>\n<p>Podeu <a href=\"/help/blocking-someone\">bloquejar</a> algú o <a href=\"/help/reporting-abuse\">denunciar</a> un missatge concret.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Missatges xifrats",
+            "category": "connecting",
+            "summary": "Activeu el xifrat d'extrem a extrem i enteneu la frase de pas.",
+            "body": "\n<p>Trieu una frase de pas. El navegador crea una clau, la protegeix i només desa la còpia blocada al servidor.</p>\n<p>Quan tots dos ho activeu, els missatges nous es xifren; els antics no canvien i les converses federades no ho admeten.</p>\n<p>La frase funciona a tots els dispositius i es demana una vegada per pestanya.</p>\n<p><strong>Trieu-la bé:</strong> almenys dotze caràcters, preferiblement diverses paraules, i diferent de la contrasenya.</p>\n<p>Les claus antigues es conserven per poder llegir l'historial. Si algú aprèn la frase, pot llegir-lo tot; suprimiu converses que no hagin de sobreviure.</p>\n<p><strong>Una frase perduda no es pot recuperar.</strong> Restablir-la fa claus noves i perd els missatges antics.</p>\n<p><strong>Compareu el codi de seguretat</strong> per un altre canal i marqueu-lo verificat. Un canvi pot indicar claus restablertes o intercepció.</p>\n<p>El codi verifica les claus, no el programari, però base de dades, còpies i trànsit no revelen els missatges.</p>\n<p>Una denúncia revela només el missatge concret i un segell n'impedeix la falsificació.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "El canal del repetidor",
+            "category": "connecting",
+            "summary": "Publicacions del Fedivers ampli quan el servidor se subscriu a un repetidor.",
+            "body": "\n<p>Un <strong>canal de repetidor</strong> és un flux compartit de publicacions públiques que ajuda llocs petits a descobrir el Fedivers.</p>\n<p>Es manté separat dels altres canals perquè ningú no n'ha triat els autors.</p>\n<p>Només se'n conserva una finestra recent, excepte el contingut amb què heu interactuat.</p>\n<p>Podeu respondre, reaccionar, denunciar i <a href=\"/help/following-on-the-fediverse\">seguir</a> persones.</p>\n<p>Només l'administració decideix si n'hi ha.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Els vostres canals",
+            "category": "connecting",
+            "summary": "La diferència entre el canal global i el d'amistats.",
+            "body": "\n<p>El <strong>canal global</strong> mostra publicacions públiques de tot el lloc; el <strong>canal d'amistats</strong>, només de les vostres amistats.</p>\n<p>Tots dos carreguen contingut antic en desplaçar-vos.</p>\n<p>El canal d'amistats inclou respostes amb context; el principal només publicacions que inicien alguna cosa.</p>\n"
+        },
+        "notifications": {
+            "title": "Notificacions",
+            "category": "connecting",
+            "summary": "Com sabeu de reaccions, respostes, sol·licituds i missatges.",
+            "body": "\n<p><strong>Notificacions</strong> s'il·lumina per reaccions, republicacions, respostes, mencions, amistats, missatges, mitjans processats i esdeveniments del Fedivers.</p>\n<p>Arriben <strong>en directe</strong>. L'àrea mostra les recents i la pàgina completa carrega l'historial.</p>\n<p>Cada avís enllaça al contingut corresponent.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videotrucades",
+            "category": "connecting",
+            "summary": "Truqueu a amistats amb càmera i micròfon des del navegador.",
+            "body": "\n<p><strong>Truca</strong> apareix per a amistats quan el servidor ho admet. El navegador demana accés a càmera i micròfon; podeu acceptar o rebutjar trucades entrants.</p>\n<p>L'àudio i el vídeo van directament entre navegadors; el servidor només prepara la connexió. Permisos, tallafocs i xarxes poden impedir-la.</p>\n<p>Als paràmetres podeu provar càmera, micròfon i xarxa. Corregiu els permisos del navegador si cal.</p>\n<p>Finalitzeu qualsevol trucada no desitjada i compartiu-hi només el que vulgueu.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Bloquegeu algú",
+            "category": "stayingSafe",
+            "summary": "Amagueu una persona i el seu contingut i atureu-ne el contacte.",
+            "body": "\n<p><strong>Bloqueja</strong> elimina una amistat, amaga les publicacions i impedeix missatges i sol·licituds.</p>\n<p>La persona no rep cap avís. Podeu desfer-ho, però l'amistat no torna automàticament.</p>\n<p>Per a abusos, <a href=\"/help/reporting-abuse\">denuncieu també</a> el contingut concret.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Denuncieu abusos",
+            "category": "stayingSafe",
+            "summary": "Denuncieu la publicació, missatge o compte concret perquè es pugui actuar.",
+            "body": "\n<p><strong>Denuncieu el contingut concret.</strong> Utilitzeu el botó de la publicació o missatge problemàtic perquè els moderadors vegin exactament què ha passat.</p>\n<h2>Com denunciar</h2>\n<ul>\n<li><strong>Publicació:</strong> el botó de la publicació.</li>\n<li><strong>Missatge:</strong> el botó del missatge.</li>\n<li><strong>Persona:</strong> el perfil si tot el compte és el problema.</li>\n</ul>\n<p>Un motiu breu ajuda. Les denúncies concretes són més ràpides de resoldre.</p>\n<p>Són privades. També podeu <a href=\"/help/blocking-someone\">bloquejar</a> la persona.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Paràmetres i aparença",
+            "category": "yourAccount",
+            "summary": "Contrasenya, correu, seguretat, temes i altres paràmetres.",
+            "body": "\n<p><strong>Paràmetres d'usuari</strong> reuneix contrasenya, correu, doble factor, tema, mitjans sensibles, xifrat, resums, push, dispositius, sessions, videotrucades, Fedivers, trasllat i supressió.</p>\n<p>Les accions sensibles demanen confirmació i els apartats enllacen a l'ajuda corresponent.</p>\n<h2>Temes</h2>\n<p>Trieu <strong>Coincideix amb el sistema</strong> o un dels temes clars, foscos i de colors; la tria es recorda.</p>\n<h2>Resums per correu</h2>\n<p>Després d'una setmana fora, rebreu com a màxim un resum setmanal i només si hi ha novetats. Desactiveu-lo als paràmetres o amb l'enllaç de baixa.</p>\n<p>«Heu oblidat la contrasenya?» envia un enllaç de restabliment.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Seguiu amb RSS",
+            "category": "yourAccount",
+            "summary": "Subscriviu-vos al lloc o a una persona en qualsevol lector RSS.",
+            "body": "\n<p>{site} publica <strong>canals RSS</strong>:</p>\n<ul>\n<li>Tot el lloc a <code>/feed.xml</code>.</li>\n<li>Una persona a <code>/users/el-seu-usuari/feed.xml</code>.</li>\n</ul>\n<p>Els lectors sovint els descobreixen automàticament en enganxar l'adreça del lloc o perfil.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Editeu una publicació",
+            "category": "posting",
+            "summary": "Corregiu una errada o reformuleu una publicació pròpia.",
+            "body": "\n<p><strong>Edita</strong> torna a obrir una publicació pròpia per corregir text i format.</p>\n<p>La versió nova substitueix l'anterior i mostra «(editat)». Es poden canviar títol, text i enllaç, però no els adjunts; si cal, <a href=\"/help/deleting-a-post\">suprimiu-la</a> i publiqueu-ne una altra.</p>\n<p>Només podeu editar publicacions pròpies.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Republicacions i citacions",
+            "category": "posting",
+            "summary": "Compartiu una publicació intacta o amb paraules pròpies.",
+            "body": "\n<p><strong>Republica</strong> comparteix la publicació sense canvis als canals, perfil i Fedivers. «Desfés la republicació» la retira.</p>\n<p>El recompte suma republicacions locals i impulsos remots. No podeu republicar contingut propi.</p>\n<h2>Citacions</h2>\n<p><strong>Cita</strong> incrusta l'original i requereix text propi. S'hi poden adjuntar imatges, però no vídeo ni àudio.</p>\n<p>Una citació és una publicació normal.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Deseu publicacions als marcadors",
+            "category": "posting",
+            "summary": "Deseu publicacions en privat per trobar-les després.",
+            "body": "\n<p><strong>Marcador</strong> desa una publicació a la llista privada; torneu-lo a prémer per treure-la. Ningú no rep cap avís.</p>\n<p>Obriu <strong>Marcadors</strong> al menú per veure el més recent primer.</p>\n<p>Si l'autor la suprimeix, desapareix de la llista.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Etiquetes i mencions",
+            "category": "posting",
+            "summary": "Etiqueteu amb # i incloeu persones amb @.",
+            "body": "\n<p>Dues dreceres es converteixen automàticament en enllaços.</p>\n<h2>Etiquetes</h2>\n<p><strong>#música</strong> enllaça a totes les publicacions amb la mateixa etiqueta. Només les deu primeres s'indexen i compten a les tendències.</p>\n<h2>Mencions</h2>\n<p><strong>@usuari</strong> enllaça al perfil i envia un avís. Amb més de deu persones no s'envien avisos. Per al Fedivers utilitzeu <code>@usuari@servidor</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Temes en tendència",
+            "category": "connecting",
+            "summary": "Vegeu de quins temes i noms es parla més ara.",
+            "body": "\n<p><strong>Temes</strong> classifica etiquetes, noms i assumptes freqüents.</p>\n<p>Cada element enllaça a les publicacions que l'han fet aparèixer i la llista es recalcula.</p>\n<p>S'agrupen en persones, organitzacions, llocs, etiquetes i altres tipus.</p>\n<p>Compta tot el que sent el servidor, inclosos <a href=\"/help/the-relay-feed\">repetidors</a>, però cal que diverses persones en parlin.</p>\n<p>La moderació pot vetar abusos o soroll.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Seguiu persones al Fedivers",
+            "category": "connecting",
+            "summary": "Seguiu comptes de Mastodon i altres servidors.",
+            "body": "\n<p>{site} utilitza <strong>ActivityPub</strong> per seguir comptes d'altres servidors.</p>\n<p>Enganxeu identificadors com <code>@usuari@exemple.social</code> a l'apartat Fedivers i premeu <strong>Segueix</strong>. Podeu enganxar-ne diversos.</p>\n<p>La llista mostra seguiments acceptats i pendents; l'identificador complet també funciona en mencions.</p>\n<h2>Que us segueixin des de fora</h2>\n<p>La vostra adreça és <strong>@el-vostre-usuari@domini-del-lloc</strong>. Altres serveis us poden trobar i seguir sense aprovació perquè aquí tot és públic.</p>\n<p>Text, mitjans, enquestes, avisos, publicacions fixades i canvis de perfil viatgen als seguidors i les seves interaccions tornen.</p>\n<p>«Trasllat entre servidors» pot endur-se els seguidors a un compte nou.</p>\n"
+        },
+        "searching": {
+            "title": "Cerca",
+            "category": "connecting",
+            "summary": "Cerqueu les publicacions del lloc.",
+            "body": "\n<p><strong>Cerca</strong> consulta les <strong>publicacions</strong> i mostra resultats mentre escriviu.</p>\n<p>Per trobar persones, utilitzeu la <a href=\"/help/finding-people\">pàgina Persones</a>.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Autenticació de doble factor",
+            "category": "stayingSafe",
+            "summary": "Afegiu un codi per correu a l'inici de sessió.",
+            "body": "\n<p>El doble factor (2FA) afegeix un segon pas perquè la contrasenya sola no basti.</p>\n<p>Aquí funciona per <strong>correu</strong>: rebreu un codi numèric a l'adreça <a href=\"/help/verifying-your-email\">verificada</a>. No cal cap aplicació.</p>\n<p>Es pot desactivar al mateix lloc.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Dispositius i sessions obertes",
+            "category": "stayingSafe",
+            "summary": "Reviseu on heu iniciat sessió i tanqueu-la a tot arreu.",
+            "body": "\n<p>Els paràmetres inclouen dues eines.</p>\n<h2>Dispositius recordats</h2>\n<p>Revoca qualsevol dispositiu excepte l'actual. Per oblidar l'actual, tanqueu la sessió.</p>\n<h2>Sessions</h2>\n<p>Un botó <strong>tanca la sessió a tot arreu</strong>. Utilitzeu-lo si sospiteu accés aliè i <a href=\"/help/settings-and-appearance\">canvieu després la contrasenya</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "El vostre perfil",
+            "category": "yourAccount",
+            "summary": "Definiu el nom visible, la biografia i l'avatar.",
+            "body": "\n<p>El perfil mostra les publicacions i informació personal. Obriu el perfil propi i editeu-ne la targeta.</p>\n<ul>\n<li>El <strong>nom visible</strong> apareix sobre el nom d'usuari.</li>\n<li>La <strong>biografia</strong> admet enllaços, etiquetes i mencions.</li>\n</ul>\n<p>Podeu pujar un <strong>avatar</strong>. El nom d'usuari és fix; la resta es pot canviar.</p>\n<h2>Publicacions fixades</h2>\n<p><strong>Fixa</strong> col·loca fins a cinc publicacions a dalt del perfil; «Desfixa» les retira. També viatgen al Fedivers.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Canvieu el correu",
+            "category": "yourAccount",
+            "summary": "Actualitzeu l'adreça i torneu-la a verificar.",
+            "body": "\n<p>Introduïu l'adreça nova i la contrasenya actual. Obriu l'enllaç enviat a l'adreça <strong>nova</strong>.</p>\n<p>L'adreça <strong>antiga</strong> rep un enllaç per desfer el canvi sense contrasenya, recuperar-la i tancar totes les sessions. Confirmeu la nova aviat.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Suprimiu el compte",
+            "category": "yourAccount",
+            "summary": "Tanqueu el compte permanentment i elimineu-ne el contingut.",
+            "body": "\n<p>Utilitzeu <strong>Suprimeix el compte</strong> i confirmeu-ho amb la contrasenya.</p>\n<p>És <strong>permanent</strong>: elimina publicacions, respostes, missatges, reaccions i connexions, també respostes d'altres sota les vostres publicacions. El nom d'usuari no es reutilitza mai.</p>\n<p>No es pot recuperar el compte.</p>\n<p>El compte administrador no es pot suprimir perquè el lloc en necessita un.</p>\n"
+        }
+    }
+}

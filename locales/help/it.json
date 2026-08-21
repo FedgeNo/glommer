@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Per iniziare",
+        "posting": "Pubblicare",
+        "connecting": "Connettersi",
+        "stayingSafe": "Sicurezza",
+        "yourAccount": "Il tuo account"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Creare un account",
+            "category": "gettingStarted",
+            "summary": "Registrati con nome utente, email e password per iniziare a pubblicare.",
+            "body": "\n<p>Per unirti, apri <strong>Registrati</strong> nell'angolo in alto a destra, scegli un nome utente, inserisci l'indirizzo email e una password. Il nome utente è il modo in cui gli altri ti trovano e ti menzionano, quindi scegline uno con cui ti fa piacere essere conosciuto.</p>\n<p>Puoi anche inserire un <strong>nome visualizzato</strong> e una breve biografia. Sono facoltativi e puoi aggiungerli in seguito modificando <a href=\"/help/your-profile\">il tuo profilo</a>. Il nome visualizzato appare sopra il nome utente nei post e nel profilo; se lo lasci vuoto, verrà mostrato il nome utente.</p>\n<p>Dopo la registrazione puoi leggere e pubblicare subito, salvo che il sito richieda la verifica dell'email (vedi <a href=\"/help/verifying-your-email\">Verificare l'email</a>). Il primo account creato su un sito nuovo diventa automaticamente amministratore.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Verificare l'email",
+            "category": "gettingStarted",
+            "summary": "Conferma l'indirizzo dal collegamento inviato via email, se l'email è attiva.",
+            "body": "\n<p>Se il sito invia email, subito dopo la registrazione riceverai un collegamento di verifica. Finché non lo apri, le pagine ti rimandano all'avviso Controlla la posta. Il collegamento conferma l'account e permette l'accesso completo, oltre a garantire che reimpostazioni della password e notifiche possano raggiungerti.</p>\n<p>Non è arrivato? Controlla lo spam e chiedi un nuovo collegamento dalla pagina <strong>Controlla la posta</strong>.</p>\n<p>Alcuni siti non inviano email: in tal caso non c'è nulla da verificare e puoi usare tutto immediatamente.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Orientarsi nel sito",
+            "category": "gettingStarted",
+            "summary": "Una breve visita al menu: feed, amici, utenti, messaggi e account.",
+            "body": "\n<p>La barra superiore porta ovunque:</p>\n<ul><li><strong>Il nome del sito</strong> riporta al feed principale e apre il menu.</li><li><strong>Feed degli amici</strong> mostra i post dei tuoi amici.</li><li><strong>Utenti</strong> cerca persone e propone contatti.</li><li><strong>Tag</strong> e <strong>Argomenti</strong> aiutano a scoprire ciò di cui si parla.</li><li><strong>Mappa</strong> e <strong>Luoghi</strong> mostrano i post per posizione.</li><li><strong>Cerca</strong> cerca tra i post.</li><li><strong>Messaggi</strong> contiene le conversazioni private.</li><li><strong>Segnalibri</strong> raccoglie privatamente i post salvati.</li><li><strong>Notifiche</strong> segnala le interazioni.</li><li><strong>Aiuto</strong> e <strong>Informazioni</strong> sono sempre disponibili.</li></ul>\n<p>Il tuo nome in alto a destra apre il profilo e il menu con <strong>Amici</strong>, bozze e post programmati, <strong>Impostazioni utente</strong> e <strong>Esci</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Comporre un post",
+            "category": "posting",
+            "summary": "Scrivi e pubblica un post dalla casella in cima al feed.",
+            "body": "\n<p>Il compositore è in cima al feed principale. Scrivi nell'area di testo e premi il pulsante di pubblicazione. I post appaiono subito nel feed pubblico: tutto il sito è pubblico, quindi tienilo presente.</p>\n<p>Puoi aggiungere:</p>\n<ul><li>Un <strong>titolo</strong>.</li><li>Un <strong>collegamento</strong> (vedi <a href=\"/help/sharing-a-link\">Condividere un collegamento</a>).</li><li>Un <strong>sondaggio</strong> (vedi <a href=\"/help/polls\">Fare una domanda con un sondaggio</a>).</li><li>Il contrassegno <strong>Sensibile</strong> (vedi <a href=\"/help/content-warnings\">Avvisi sui contenuti e media sensibili</a>).</li></ul>\n<p>Puoi formattare il testo, inserire emoji e matematica e allegare foto, video o audio. Un singolo post contiene un collegamento, contenuti multimediali <em>oppure</em> un sondaggio, mai una combinazione.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Formattare il testo",
+            "category": "posting",
+            "summary": "Usa grassetto, corsivo, elenchi, citazioni, codice, emoji e matematica.",
+            "body": "\n<p>L'area di scrittura è un editor formattato con <strong>grassetto</strong>, <em>corsivo</em>, sottolineato, barrato, elenchi, citazioni e blocchi di codice.</p>\n<h2>Emoji</h2><p>Apri il selettore di emoji; ricorda la tonalità della pelle preferita.</p>\n<h2>Matematica</h2><p>Scrivi LaTeX tra <code>$$ ... $$</code> o <code>\\[ ... \\]</code> per le formule in blocco e tra <code>\\( ... \\)</code> o <code>$ ... $</code> per quelle in linea. Due simboli del dollaro nello stesso post possono essere interpretati come delimitatori; usa <code>\\( ... \\)</code> se c'è questo rischio.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Aggiungere foto, video e audio",
+            "category": "posting",
+            "summary": "Allega una o più immagini, un video o un audio a un post.",
+            "body": "\n<p>Usa il comando allegati per aggiungere <strong>immagini, video o audio</strong>. Più immagini diventano una galleria scorrevole; puoi allegare fino a 100 file.</p>\n<p>I video e gli audio più grandi vengono elaborati dopo la pubblicazione. Riceverai una notifica quando saranno pronti.</p>\n<p>Prima di pubblicare puoi annullare l'allegato. Un post con contenuti multimediali non può contenere anche un collegamento.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Condividere un collegamento",
+            "category": "posting",
+            "summary": "Incolla un URL nel campo del collegamento per condividere una pagina con anteprima.",
+            "body": "\n<p>Inserisci l'indirizzo nel campo <strong>Collegamento</strong>. Il sito recupera titolo, descrizione e immagine, se disponibili, e li mostra in anteprima nel post.</p>\n<p>Puoi aggiungere le tue parole e rimuovere l'immagine di anteprima. Un post può contenere un collegamento, media allegati o un sondaggio, uno solo dei tre.</p>\n"
+        },
+        "polls": {
+            "title": "Fare una domanda con un sondaggio",
+            "category": "posting",
+            "summary": "Allega un sondaggio e lascia rispondere le persone qui e nel Fediverse.",
+            "body": "\n<p>Premi <strong>Aggiungi sondaggio</strong>. Puoi inserire fino a quattro opzioni e il testo del post costituisce la domanda.</p>\n<ul><li><strong>Consenti più di una scelta</strong> permette di selezionare più opzioni.</li><li>La <strong>durata</strong> va da cinque minuti a sette giorni.</li></ul>\n<p>Due opzioni non possono avere lo stesso testo. Il sondaggio sostituisce media e collegamenti.</p>\n<h2>Rispondere</h2><p>Scegli e premi <strong>Vota</strong>. Il voto è definitivo. Dopo il voto o la chiusura compaiono percentuali, conteggi, scelta personale e tempo rimanente.</p>\n<h2>Nel Fediverse</h2><p>I sondaggi viaggiano tra server: i voti remoti contano qui e puoi votare quelli esterni. I totali remoti possono aggiornarsi con un leggero ritardo.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Avvisi sui contenuti e media sensibili",
+            "category": "posting",
+            "summary": "Contrassegna un post come sensibile o nascondilo dietro un avviso.",
+            "body": "\n<p>Ogni post può essere contrassegnato <strong>Sensibile</strong>, con o senza allegati. Da solo, il contrassegno copre i media mentre il testo resta visibile. Se è il testo a richiedere cautela, aggiungi il <strong>testo dell'avviso</strong>.</p>\n<p>Con un avviso, l'intero post—testo, sondaggio e media—rimane nascosto finché non viene aperto. In <a href=\"/user-settings\">Impostazioni utente</a>, la sezione <strong>Media sensibili</strong> può mostrarli sempre.</p>\n<h2>Nel Fediverse</h2><p>Contrassegni e avvisi viaggiano in entrambe le direzioni tra server.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Risposte e discussioni",
+            "category": "posting",
+            "summary": "Rispondi a un post per iniziare una discussione sotto di esso.",
+            "body": "\n<p>L'azione <strong>Rispondi</strong> apre un compositore e collega la risposta sotto il post originale. Le risposte possono essere formattate e contenere emoji e media.</p>\n<p>Apri un post nella sua pagina per leggere l'intera conversazione.</p>\n<h2>Risposte nel feed</h2><p>Le risposte compaiono nel Feed degli amici e nei profili, precedute da <strong>In risposta a</strong>. Nelle discussioni profonde, <strong>Vai all'inizio</strong> porta al primo post.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Mettere Mi piace ai post",
+            "category": "posting",
+            "summary": "Mostra apprezzamento con un tocco sul pulsante Mi piace.",
+            "body": "\n<p>Ogni post ha un pulsante <strong>Mi piace</strong> con il conteggio. Premilo per aggiungere il tuo Mi piace e di nuovo per rimuoverlo.</p>\n<p>L'autore riceve una notifica: è un modo rapido per dire che hai apprezzato.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Eliminare un post",
+            "category": "posting",
+            "summary": "Rimuovi un tuo post e scopri cosa accade alle risposte.",
+            "body": "\n<p>Sui tuoi post, l'azione <strong>Elimina</strong> sostituisce Segnala e rimuove il post per tutti.</p>\n<p>L'eliminazione è permanente e richiede conferma. Anche tutte le risposte sottostanti vengono eliminate.</p>\n<p>Puoi eliminare solo i tuoi post; per quelli altrui usa <a href=\"/help/reporting-abuse\">Segnala</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Tradurre un post o un messaggio",
+            "category": "posting",
+            "summary": "Leggi contenuti in un'altra lingua e comprendi cosa comporta tradurli.",
+            "body": "\n<p>Nei post con testo, premi <strong>Traduci</strong> per sostituire il corpo con la traduzione e torna poi all'originale. La traduzione avviene su questo server e quella dei post viene conservata.</p>\n<p>Anche i messaggi ricevuti hanno il pulsante; i tuoi no e nulla viene tradotto senza richiesta.</p>\n<p>Tradurre un <a href=\"/help/encrypted-messages\">messaggio cifrato</a> permette al server di leggerne il testo. La traduzione non viene salvata, ma in quel momento il messaggio non gode più della riservatezza end-to-end; vieni avvisato prima della prima volta.</p>\n<p>Il pulsante appare solo sui server dotati di traduttore.</p>\n"
+        },
+        "finding-people": {
+            "title": "Trovare persone",
+            "category": "connecting",
+            "summary": "Cerca utenti per nome o consulta i suggerimenti nella pagina Utenti.",
+            "body": "\n<p>Apri <strong>Utenti</strong> e digita un nome o un nome utente. I membri del sito compaiono prima degli account conosciuti dal Fediverse.</p>\n<p>Prima di digitare vedi suggerimenti basati sugli amici in comune. Se sono vuoti, cerca direttamente: non è un errore.</p>\n<p>Dalla scheda di una persona puoi aggiungerla come amico, inviarle un messaggio o aprirne il profilo.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Amici e richieste di amicizia",
+            "category": "connecting",
+            "summary": "Invia, accetta e gestisci richieste di amicizia.",
+            "body": "\n<p>L'amicizia su {site} è reciproca. Usa <strong>Aggiungi amico</strong>; finché la richiesta è in attesa puoi annullarla.</p>\n<p>La pagina <strong>Amici</strong> mostra le richieste ricevute con Accetta e Rifiuta, gli amici attuali pubblicamente e le richieste inviate solo a te.</p>\n<p><strong>Rimuovi amico</strong> termina il rapporto. I post degli amici appaiono nel <a href=\"/help/your-feeds\">Feed degli amici</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Messaggi",
+            "category": "connecting",
+            "summary": "Invia messaggi privati e segui le conversazioni.",
+            "body": "\n<p>Usa <strong>Messaggio</strong> su una scheda o un profilo, oppure apri <strong>Messaggi</strong>. I nuovi messaggi arrivano in tempo reale e la conversazione più recente appare per prima.</p>\n<ul><li><strong>Cifrata end-to-end</strong>: quando entrambi avete attivato <a href=\"/help/encrypted-messages\">i messaggi cifrati</a>, il server conserva solo testo cifrato.</li><li><strong>In chiaro</strong>: il server li conserva in forma leggibile.</li><li><strong>Federata</strong>: è conservata anche sul server remoto e non può essere cifrata end-to-end.</li></ul>\n<p>Puoi <a href=\"/help/blocking-someone\">bloccare</a> qualcuno o <a href=\"/help/reporting-abuse\">segnalare</a> un messaggio.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Messaggi cifrati",
+            "category": "connecting",
+            "summary": "Attiva la cifratura end-to-end e comprendi la frase segreta.",
+            "body": "\n<p>In <a href=\"/user-settings\">Impostazioni utente</a>, scegli una frase segreta. Il browser crea e cifra una chiave; il server conserva soltanto la copia bloccata e non riceve mai la frase.</p>\n<p>La conversazione diventa end-to-end quando entrambi attivate la funzione. I messaggi precedenti restano com'erano e quelli federati non possono essere cifrati dal protocollo.</p>\n<p>La stessa frase funziona su ogni dispositivo. Scegline una lunga almeno dodici caratteri e diversa dalla password. Se la perdi, i vecchi messaggi non sono recuperabili; il ripristino crea nuove chiavi.</p>\n<p>Confronta il codice di sicurezza con l'altra persona tramite un altro canale e verificalo. Segnalare un messaggio rivela ai moderatori solo quel messaggio, mai le chiavi o il resto della conversazione.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Il Feed relay",
+            "category": "connecting",
+            "summary": "Dove arrivano i post del Fediverse quando il server si iscrive a un relay.",
+            "body": "\n<p>Il <strong>Feed relay</strong> è un flusso condiviso di post pubblici tra server. Aiuta un sito piccolo a vedere il Fediverse prima che gli utenti seguano qualcuno.</p>\n<p>Resta separato dagli altri feed perché nessuno qui ha scelto quei post. Conserva solo una finestra recente, salvo i post con cui interagisci.</p>\n<p>Puoi rispondere, mettere Mi piace, segnalare e <a href=\"/help/following-on-the-fediverse\">seguire</a> gli autori. Solo l'amministratore decide se usare un relay.</p>\n"
+        },
+        "your-feeds": {
+            "title": "I tuoi feed",
+            "category": "connecting",
+            "summary": "La differenza tra Feed globale e Feed degli amici.",
+            "body": "\n<ul><li><strong>Feed globale</strong>, la pagina iniziale, mostra i post di tutto il sito.</li><li><strong>Feed degli amici</strong> mostra solo i post degli amici.</li></ul>\n<p>Entrambi caricano altri post scorrendo. <a href=\"/help/finding-people\">Trova persone</a> e <a href=\"/help/friends-and-friend-requests\">aggiungile</a> per riempire il feed.</p>\n<p>Il Feed degli amici include le risposte; quello principale mostra solo i post che iniziano una discussione.</p>\n"
+        },
+        "notifications": {
+            "title": "Notifiche",
+            "category": "connecting",
+            "summary": "Come vieni informato di Mi piace, risposte, amicizie e messaggi.",
+            "body": "\n<p><strong>Notifiche</strong> si illumina per Mi piace, ripubblicazioni, risposte, menzioni, richieste di amicizia, messaggi e media elaborati, anche dal Fediverse.</p>\n<p>Arrivano <strong>in tempo reale</strong>. Apri l'area recente o la pagina completa; ogni elemento porta direttamente al contenuto relativo.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videochiamate",
+            "category": "connecting",
+            "summary": "Avvia una videochiamata privata mentre entrambi avete aperto la conversazione.",
+            "body": "\n<p>Le videochiamate individuali sono <strong>peer-to-peer</strong>: audio e video viaggiano direttamente tra i browser.</p>\n<h2>Avviare</h2><p>Il pulsante appare quando entrambi avete aperto la conversazione e i browser possono raggiungersi. L'altra persona può accettare o rifiutare.</p>\n<h2>Durante la chiamata</h2><p>La chiamata sostituisce temporaneamente la conversazione; <strong>Termina chiamata</strong> la ripristina.</p>\n<h2>Se il pulsante non appare</h2><p>Controlla <strong>Videochiamate</strong> in <a href=\"/user-settings\">Impostazioni utente</a> per distinguere problemi del browser e della rete.</p>\n<h2>Privacy</h2><p>Il sito non riceve né registra audio o video; inoltra solo i brevi messaggi di configurazione.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Bloccare qualcuno",
+            "category": "stayingSafe",
+            "summary": "Interrompi i contatti con un utente e nascondilo dalla tua vista.",
+            "body": "\n<p>Usa <strong>Blocca</strong> sulla scheda o sul profilo. L'amicizia termina e le interazioni dirette vengono limitate. Poiché il sito è pubblico, il blocco modifica la tua esperienza, non la visibilità generale.</p>\n<p>Puoi annullarlo con <strong>Sblocca</strong>. In caso di abuso, <a href=\"/help/reporting-abuse\">segnala anche il contenuto</a>.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Segnalare abusi",
+            "category": "stayingSafe",
+            "summary": "Segnala il post, messaggio o utente specifico perché i moderatori intervengano.",
+            "body": "\n<p><strong>Segnala il contenuto preciso che costituisce abuso.</strong> Usa Segnala sul post o messaggio specifico; segnala l'intero utente solo se il problema riguarda tutto l'account.</p>\n<p>Puoi aggiungere un motivo. La segnalazione è privata e la persona non conosce l'autore. Puoi anche <a href=\"/help/blocking-someone\">bloccarla</a>.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Impostazioni e aspetto",
+            "category": "yourAccount",
+            "summary": "Password, email, sicurezza, temi e altro nelle Impostazioni utente.",
+            "body": "\n<p><strong>Impostazioni utente</strong> raccoglie password, email, autenticazione a due fattori, tema, media sensibili, messaggi cifrati, riepiloghi email, push, dispositivi, sessioni, videochiamate, Fediverse, trasferimento e cancellazione.</p>\n<h2>Temi</h2><p>Il selettore cambia l'intero aspetto e ricorda la scelta; può seguire il sistema o usare un tema incorporato.</p>\n<h2>Riepiloghi email</h2><p>Dopo una settimana di assenza, se è accaduto qualcosa, ricevi al massimo un riepilogo settimanale. Disattivalo nelle impostazioni o dal collegamento nell'email. Per una password dimenticata usa <strong>Password dimenticata?</strong>.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Seguire con RSS",
+            "category": "connecting",
+            "summary": "Iscriviti al sito o a una persona con qualsiasi lettore RSS.",
+            "body": "\n<p>{site} pubblica <strong>feed RSS</strong>: tutti i post recenti in <code>/feed.xml</code> e quelli di una persona in <code>/users/nome-utente/feed.xml</code>.</p>\n<p>Browser e lettori spesso li rilevano automaticamente dall'indirizzo del sito o del profilo.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Modificare un post",
+            "category": "posting",
+            "summary": "Correggi o riscrivi un tuo post dopo la pubblicazione.",
+            "body": "\n<p>L'azione <strong>Modifica</strong> riapre un tuo post nell'editor. La modifica sostituisce il post per tutti e aggiunge la nota <strong>(modificato)</strong>.</p>\n<p>Puoi cambiare titolo, testo, formattazione e collegamento, ma non i media: per quelli <a href=\"/help/deleting-a-post\">elimina</a> e ripubblica. Puoi modificare solo i tuoi post.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Ripubblicare e citare",
+            "category": "posting",
+            "summary": "Condividi il post di qualcuno invariato o con parole tue.",
+            "body": "\n<p><strong>Ripubblica</strong> passa il post agli amici, al profilo e ai follower Fediverse; <strong>Annulla ripubblicazione</strong> lo ritira. Non puoi ripubblicare un tuo post.</p>\n<h2>Citare</h2><p><strong>Cita</strong> apre un compositore con l'originale incorporato e richiede parole tue. Puoi allegare immagini ma non video o audio. La citazione si comporta come qualsiasi altro post.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Salvare post nei segnalibri",
+            "category": "posting",
+            "summary": "Salva post nel tuo elenco privato per ritrovarli in seguito.",
+            "body": "\n<p>Ogni post ha un'azione <strong>Segnalibro</strong>. Premila per salvare il post in <strong>Segnalibri</strong> e di nuovo per rimuoverlo. È un'azione privata: nessun altro vede ciò che salvi e l'autore non riceve notifiche.</p>\n<p>Apri <strong>Segnalibri</strong> dal menu per vedere gli elementi più recenti. Se l'autore elimina un post salvato, questo scompare dall'elenco.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hashtag e menzioni",
+            "category": "posting",
+            "summary": "Etichetta i post con #hashtag e coinvolgi persone con @menzioni.",
+            "body": "\n<p>Due tipi di scorciatoia diventano automaticamente collegamenti.</p>\n<h2>Hashtag</h2><p>Scrivi un <strong>#hashtag</strong>, come <code>#musica</code>, per collegare la pagina di tutti i post che lo usano. Sfoglia i tag attivi da <strong>Tag</strong> e quelli popolari in <a href=\"/help/trending-topics\">Argomenti</a>. Solo i primi dieci hashtag distinti vengono indicizzati e contano nelle tendenze; gli altri restano collegamenti nel testo.</p>\n<h2>Menzioni</h2><p>Scrivi <strong>@nomeutente</strong> per collegare un profilo e notificare quella persona. Se menzioni più di dieci persone distinte, i collegamenti funzionano ma nessuno viene notificato. Per il Fediverse usa l'indirizzo completo <code>@utente@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Argomenti di tendenza",
+            "category": "connecting",
+            "summary": "Scopri gli argomenti e i nomi più discussi in questo momento.",
+            "body": "\n<p>Apri <strong>Argomenti</strong> per vedere hashtag, nomi e temi frequenti nei post recenti. Ogni elemento ha una pagina con i post relativi e l'elenco viene ricalcolato con l'attività.</p>\n<p>Gli elementi sono raggruppati per tipo: persone, organizzazioni, luoghi, hashtag e altro. Il sistema ascolta anche i post di altri server e del <a href=\"/help/the-relay-feed\">relay</a>. Servono più persone diverse prima che un argomento appaia, così un solo autore non può imporlo. I moderatori possono escludere gli elementi abusivi o inutili.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Seguire persone nel Fediverse",
+            "category": "connecting",
+            "summary": "Segui account Mastodon e di altri server Fediverse.",
+            "body": "\n<p>{site} usa <strong>ActivityPub</strong>. Nella sezione <strong>Fediverse</strong> delle Impostazioni utente incolla uno o più indirizzi come <code>@utente@example.social</code> e premi <strong>Segui</strong>. L'elenco mostra gli account seguiti e le richieste ancora in attesa.</p>\n<h2>Essere seguiti dall'esterno</h2><p>Il tuo indirizzo è <strong>@nome-utente@dominio-del-sito</strong>. Gli utenti di altri server ActivityPub possono cercarlo e seguirti senza approvazione, poiché qui tutto è pubblico.</p>\n<p>Post, media, <a href=\"/help/polls\">sondaggi</a>, avvisi, post fissati e modifiche del profilo raggiungono i follower, e le loro interazioni tornano qui. Se cambi server, <strong>Trasferimento tra server</strong> può portare con te i follower.</p>\n"
+        },
+        "searching": {
+            "title": "Cercare",
+            "category": "gettingStarted",
+            "summary": "Cerca tra i post del sito dalla pagina Cerca.",
+            "body": "\n<p><strong>Cerca</strong> nel menu esamina i <strong>post</strong> del sito e mostra i risultati mentre digiti.</p>\n<p>Per cercare <em>persone</em>, usa <a href=\"/help/finding-people\">la pagina Utenti</a>, con ricerca e suggerimenti dedicati.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Autenticazione a due fattori",
+            "category": "yourAccount",
+            "summary": "Aggiungi un codice inviato via email come ulteriore livello di sicurezza.",
+            "body": "\n<p>L'autenticazione a due fattori (2FA) aggiunge un secondo passaggio, così la sola password non basta. Attivala nella relativa sezione delle <strong>Impostazioni utente</strong>.</p>\n<p>A ogni accesso ricevi via <strong>email</strong> un breve codice numerico da inserire. Non serve un'app di autenticazione, ma è necessaria un'<a href=\"/help/verifying-your-email\">email verificata</a>. Puoi disattivare la 2FA dalla stessa sezione.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Dispositivi e sessioni connessi",
+            "category": "yourAccount",
+            "summary": "Controlla dove hai effettuato l'accesso e disconnetti tutto insieme.",
+            "body": "\n<p>Le Impostazioni utente offrono due strumenti.</p>\n<h2>Dispositivi ricordati</h2><p>I dispositivi su cui scegli di restare connesso compaiono in <strong>Dispositivi ricordati</strong>. Puoi revocarli tutti tranne quello in uso; per dimenticare quello attuale, esci.</p>\n<h2>Sessioni</h2><p>La sezione <strong>Sessioni</strong> può <strong>disconnetterti ovunque contemporaneamente</strong>, terminando sessioni e dispositivi ricordati. Usala se sospetti un accesso altrui, quindi <a href=\"/help/settings-and-appearance\">cambia la password</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Il tuo profilo",
+            "category": "yourAccount",
+            "summary": "Imposta nome visualizzato, biografia e avatar per presentarti.",
+            "body": "\n<p>Il profilo mostra i tuoi post e alcune informazioni. Aprilo dal nome in alto a destra e usa <strong>Modifica</strong>, oppure fai clic direttamente sul nome o sulla biografia.</p>\n<ul><li>Il <strong>nome visualizzato</strong> appare sopra il nome utente; se è vuoto viene mostrato quest'ultimo.</li><li>La <strong>biografia</strong> è una breve descrizione in cui collegamenti, #hashtag e @menzioni diventano cliccabili.</li></ul>\n<p>Puoi caricare un <strong>avatar</strong>. Il nome utente resta fisso, mentre nome visualizzato, biografia e avatar sono sempre modificabili.</p>\n<h2>Post fissati</h2><p><strong>Fissa</strong> porta fino a cinque tuoi post nella sezione <strong>In evidenza</strong> del profilo; <strong>Rimuovi</strong> li sostituisce. I post fissati viaggiano anche nel Fediverse.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Cambiare l'email",
+            "category": "yourAccount",
+            "summary": "Aggiorna l'indirizzo email dell'account con una nuova verifica.",
+            "body": "\n<p>In <strong>Cambia email</strong> nelle Impostazioni utente inserisci il nuovo indirizzo e la password attuale. Al nuovo indirizzo viene inviato un collegamento di verifica da aprire per confermare.</p>\n<p>Per sicurezza, il vecchio indirizzo riceve un avviso con un collegamento senza password che annulla la modifica e disconnette tutti i dispositivi. Conferma presto il nuovo indirizzo, perché funzioni come la reimpostazione della password richiedono un'email verificata.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Eliminare l'account",
+            "category": "yourAccount",
+            "summary": "Chiudi definitivamente l'account e rimuovi i contenuti.",
+            "body": "\n<p>Apri <strong>Elimina account</strong> nelle Impostazioni utente e conferma con la password. L'operazione non può essere annullata.</p>\n<p>Post, risposte, messaggi, Mi piace, connessioni e le risposte altrui sotto i tuoi post vengono rimossi. Il nome utente viene ritirato e non potrà più essere registrato, affinché vecchi collegamenti e menzioni non raggiungano un estraneo.</p>\n<p>Un account eliminato non può essere recuperato. L'account amministratore non può essere eliminato perché il sito deve avere almeno un amministratore.</p>\n"
+        }
+    }
+}

@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Aan de slag",
+        "posting": "Berichten plaatsen",
+        "connecting": "Contact maken",
+        "stayingSafe": "Veilig blijven",
+        "yourAccount": "Uw account"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Een account aanmaken",
+            "category": "gettingStarted",
+            "summary": "Registreer u met een gebruikersnaam, e-mailadres en wachtwoord om berichten te plaatsen.",
+            "body": "\n<p>Open de link <strong>Registreren</strong> rechtsboven, kies een gebruikersnaam en vul uw e-mailadres en een wachtwoord in. Via uw gebruikersnaam kunnen anderen u vinden en noemen.</p>\n<p>Een <strong>weergavenaam</strong> en korte biografie zijn optioneel. U kunt ze nu invullen of later via <a href=\"/help/your-profile\">uw profiel</a>. Na registratie kunt u meteen lezen en plaatsen, tenzij deze site eerst uw e-mailadres verifieert; zie <a href=\"/help/verifying-your-email\">uw e-mailadres verifiëren</a>. Het allereerste account op een nieuwe site wordt automatisch beheerder.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Uw e-mailadres verifiëren",
+            "category": "gettingStarted",
+            "summary": "Bevestig uw adres via de link in onze e-mail, als e-mail is ingeschakeld.",
+            "body": "\n<p>Als deze site e-mail verstuurt, ontvangt u na registratie een verificatielink. Tot u die opent, wordt u naar de melding Controleer uw inbox geleid. De link bevestigt dat het adres van u is, zodat wachtwoordherstel en meldingen u kunnen bereiken.</p>\n<p>Niets ontvangen? Kijk in uw spammap of vraag via <strong>Controleer uw inbox</strong> een nieuwe link aan. Verstuurt deze site geen e-mail, dan hoeft u niets te verifiëren.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "De weg vinden",
+            "category": "gettingStarted",
+            "summary": "Een korte rondleiding langs feeds, vrienden, gebruikers, berichten en uw account.",
+            "body": "\n<p>Via de balk bovenaan komt u overal. De <strong>sitenaam</strong> opent de hoofdfeed; verder vindt u Vriendenfeed, Gebruikers, Tags, Onderwerpen, Kaart, Locaties, Zoeken, Berichten, Bladwijzers, Meldingen, Help en Over.</p>\n<p>Uw naam rechtsboven opent uw profiel en een menu met <strong>Vrienden</strong>, concepten en geplande berichten, <strong>Gebruikersinstellingen</strong> en <strong>Uitloggen</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Een bericht schrijven",
+            "category": "posting",
+            "summary": "Schrijf en publiceer een bericht vanuit het vak bovenaan de feed.",
+            "body": "\n<p>De editor staat bovenaan de hoofdfeed. Schrijf uw tekst en druk op Plaatsen. Berichten verschijnen direct in de openbare feed: alles op de site is openbaar.</p>\n<p>U kunt optioneel een titel, <a href=\"/help/sharing-a-link\">link</a>, <a href=\"/help/polls\">peiling</a> of <a href=\"/help/content-warnings\">waarschuwing</a> toevoegen, tekst opmaken en foto's, video of audio bijvoegen. Eén bericht bevat óf een link, óf media, óf een peiling; nooit een combinatie.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Uw tekst opmaken",
+            "category": "posting",
+            "summary": "Gebruik vet, cursief, lijsten, citaten, code, emoji en wiskunde.",
+            "body": "\n<p>De werkbalk biedt <strong>vet</strong>, <em>cursief</em>, onderstrepen, doorhalen, lijsten, blokcitaten en codeblokken.</p>\n<h2>Emoji</h2>\n<p>Voeg emoji toe met de kiezer; uw gekozen huidskleur wordt onthouden.</p>\n<h2>Wiskunde</h2>\n<p>Schrijf LaTeX tussen <code>$$ ... $$</code> of <code>\\[ ... \\]</code> voor een losse formule, en tussen <code>\\( ... \\)</code> of <code>$ ... $</code> in een regel. Gebruik bij meerdere dollartekens liever <code>\\( ... \\)</code> om verwarring te voorkomen.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Foto's, video en audio toevoegen",
+            "category": "posting",
+            "summary": "Voeg een of meer afbeeldingen, een video of audio aan een bericht toe.",
+            "body": "\n<p>Gebruik de bijlageknop voor <strong>afbeeldingen, video of audio</strong>. Meerdere afbeeldingen vormen een veegbare galerij; één bericht kan maximaal 100 bestanden bevatten.</p>\n<p>Grote video- en audiobestanden worden na het plaatsen verwerkt. U ontvangt een melding zodra ze klaarstaan. U kunt een bijlage vóór publicatie verwijderen. Een bericht met media kan niet ook een link bevatten.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Een link delen",
+            "category": "posting",
+            "summary": "Plak een URL in het linkveld om een pagina met voorbeeld te delen.",
+            "body": "\n<p>Zet het adres in het veld <strong>Link</strong>. We halen titel, korte beschrijving en eventuele afbeelding op als voorbeeld bij uw gepubliceerde bericht.</p>\n<p>U kunt eigen tekst toevoegen en de voorbeeldafbeelding verwijderen. Een bericht bevat een link, media of een peiling, niet meerdere daarvan.</p>\n"
+        },
+        "polls": {
+            "title": "Een vraag stellen met een peiling",
+            "category": "posting",
+            "summary": "Voeg een peiling toe en laat mensen hier en op het Fediverse antwoorden.",
+            "body": "\n<p>Druk op <strong>Peiling toevoegen</strong>. De berichttekst is de vraag en u kunt maximaal vier verschillende opties geven. Kies of meerdere antwoorden zijn toegestaan en een looptijd van vijf minuten tot zeven dagen.</p>\n<h2>Stemmen</h2>\n<p>Kies een optie en druk op <strong>Stemmen</strong>. Een stem is definitief. Na uw stem of na sluiting ziet u de uitslag en het aantal deelnemers.</p>\n<h2>Op het Fediverse</h2>\n<p>Gebruikers op andere servers kunnen meestemmen en u kunt op hun peilingen stemmen. Uitslagen van een andere server kunnen iets achterlopen.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Inhoudswaarschuwingen en gevoelige media",
+            "category": "posting",
+            "summary": "Markeer media als gevoelig of verberg het hele bericht achter een waarschuwing.",
+            "body": "\n<p>Met <strong>Gevoelig</strong> worden bijgevoegde media afgedekt tot de lezer ze opent. De tekst blijft zichtbaar.</p>\n<p>Voegt u waarschuwingstekst toe, dan verdwijnt het hele bericht erachter, inclusief tekst en peiling. Via <a href=\"/user-settings\">Gebruikersinstellingen</a> kan iemand gevoelige media standaard tonen.</p>\n<h2>Op het Fediverse</h2>\n<p>Waarschuwingen en afdekkingen reizen in beide richtingen mee tussen servers.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Reacties en gesprekken",
+            "category": "posting",
+            "summary": "Reageer op een bericht om eronder een gesprek te beginnen.",
+            "body": "\n<p>Elk bericht heeft een actie <strong>Reageren</strong>. Uw reactie komt onder het oorspronkelijke bericht en kan net als elk bericht opmaak, emoji en media bevatten.</p>\n<p>Open een bericht op zijn eigen pagina om het hele gesprek te lezen. In feeds staat boven een reactie waarop ze antwoordt; bij een dieper gesprek brengt <strong>Naar begin</strong> u naar het eerste bericht.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Berichten leuk vinden",
+            "category": "posting",
+            "summary": "Toon met één tik op de vind-ik-leukknop uw waardering.",
+            "body": "\n<p>Elk bericht heeft een <strong>Vind ik leuk</strong>-knop met een teller. Tik om een like te geven en nogmaals om hem in te trekken.</p>\n<p>De auteur ontvangt een melding wanneer u diens bericht leuk vindt.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Een bericht verwijderen",
+            "category": "posting",
+            "summary": "Verwijder een eigen bericht en lees wat er met reacties gebeurt.",
+            "body": "\n<p>Bij een eigen bericht staat een actie <strong>Verwijderen</strong>. Na bevestiging verdwijnt het voor iedereen. Dit is definitief en ook alle onderliggende reacties worden verwijderd.</p>\n<p>U kunt alleen eigen berichten verwijderen. Meld een problematisch bericht van iemand anders via <a href=\"/help/reporting-abuse\">misbruik melden</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Een bericht of privébericht vertalen",
+            "category": "posting",
+            "summary": "Lees tekst in een andere taal en begrijp wat vertalen met die tekst doet.",
+            "body": "\n<p>Bij geschreven berichten kan een knop <strong>Vertalen</strong> staan. Die vervangt de inhoud door een lokale vertaling; de knop kan daarna het origineel terugzetten. Vertalingen van openbare berichten worden op deze server bewaard.</p>\n<p>Ook ontvangen privéberichten kunnen worden vertaald. Bij <a href=\"/help/encrypted-messages\">versleutelde berichten</a> geeft u daarmee bewust de tekst aan deze server: de vertaling wordt niet opgeslagen, maar is tijdens het vertalen niet meer volledig end-to-end geheim. De knop verschijnt alleen als de server een vertaler heeft.</p>\n"
+        },
+        "finding-people": {
+            "title": "Mensen vinden",
+            "category": "connecting",
+            "summary": "Zoek gebruikers op naam of bekijk suggesties op de pagina Gebruikers.",
+            "body": "\n<p>Open <strong>Gebruikers</strong> en typ een naam of gebruikersnaam. Lokale leden staan vóór bekende mensen uit het Fediverse.</p>\n<p>Zonder zoektekst ziet u suggesties: vrienden van vrienden, gerangschikt op gezamenlijke vrienden. Een lege lijst betekent eenvoudigweg dat er niemand te suggereren is. Vanaf een kaart kunt u iemand toevoegen, een bericht sturen of het profiel openen.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Vrienden en vriendschapsverzoeken",
+            "category": "connecting",
+            "summary": "Verstuur, accepteer en beheer verzoeken en verwijder vrienden.",
+            "body": "\n<p>Vriendschap op {site} is wederzijds. Gebruik <strong>Vriend toevoegen</strong>; zolang het verzoek openstaat kunt u het annuleren.</p>\n<p>Op <strong>Vrienden</strong> staan ontvangen verzoeken met Accepteren en Weigeren, uw openbare vriendenlijst en uw alleen voor u zichtbare verzonden verzoeken. Met <strong>Vriend verwijderen</strong> beëindigt u de verbinding. Hun berichten verschijnen in uw <a href=\"/help/your-feeds\">Vriendenfeed</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Privéberichten",
+            "category": "connecting",
+            "summary": "Stuur privéberichten en volg uw gesprekken.",
+            "body": "\n<p>Gebruik <strong>Bericht</strong> op iemands kaart of profiel, of open <strong>Berichten</strong>. Nieuwe berichten verschijnen live en de ontvanger krijgt een melding.</p>\n<p>Lokale gesprekken zijn gewoon leesbaar voor de server, of <a href=\"/help/encrypted-messages\">end-to-end versleuteld</a> als beiden dat inschakelen. Federatieve gesprekken staan ook leesbaar op de andere server en kunnen niet end-to-end worden versleuteld. Deel daarin niets wat uitsluitend de ontvanger mag kennen.</p>\n<p>U kunt iemand <a href=\"/help/blocking-someone\">blokkeren</a> of een specifiek bericht <a href=\"/help/reporting-abuse\">melden</a>.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Versleutelde berichten",
+            "category": "connecting",
+            "summary": "Schakel end-to-endversleuteling in en begrijp wat de wachtwoordzin betekent.",
+            "body": "\n<p>Schakel <strong>Versleutelde berichten</strong> in via <a href=\"/user-settings\">Gebruikersinstellingen</a>. Uw browser maakt een sleutel, beveiligt die met uw wachtwoordzin en bewaart alleen de vergrendelde kopie op de server. De zin verlaat uw apparaat nooit.</p>\n<p>Een lokaal gesprek wordt versleuteld zodra <em>beide</em> personen dit aanzetten. Federatieve gesprekken kunnen niet worden versleuteld. Kies een lange, unieke zin van minstens twaalf tekens. Een vergeten zin kan niemand herstellen; opnieuw instellen maakt oude berichten onleesbaar.</p>\n<p>Vergelijk de veiligheidscode via een ander kanaal en markeer hem als geverifieerd. Een wijziging kan betekenen dat sleutels zijn hersteld of dat iemand onderschept. U kunt een versleuteld bericht nog steeds <a href=\"/help/reporting-abuse\">melden</a>; alleen dat ene bericht wordt aan moderators onthuld.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "De relayfeed",
+            "category": "connecting",
+            "summary": "Hier komen berichten uit het bredere Fediverse binnen als de server een relay gebruikt.",
+            "body": "\n<p>Een <strong>Relayfeed</strong> bevat openbare berichten die een gedeelde relay tussen servers verspreidt. Zo ziet een kleine site al Fediverse-inhoud voordat leden accounts volgen.</p>\n<p>De feed blijft gescheiden van andere feeds en bewaart slechts een recent venster, behalve als u op een bericht reageerde, het leuk vond, opsloeg, opnieuw plaatste, vastzette of meldde. U kunt een interessante auteur <a href=\"/help/following-on-the-fediverse\">volgen</a>. Alleen de beheerder bepaalt of de site een relay gebruikt.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Uw feeds",
+            "category": "connecting",
+            "summary": "Het verschil tussen de algemene feed en uw Vriendenfeed.",
+            "body": "\n<p>De openbare <strong>Algemene feed</strong> toont nieuwe startberichten van de hele site. De <strong>Vriendenfeed</strong> toont berichten en <a href=\"/help/replies-and-threads\">reacties</a> van uw vrienden.</p>\n<p>Beide laden verder terwijl u scrolt. <a href=\"/help/finding-people\">Vind mensen</a> en <a href=\"/help/friends-and-friend-requests\">voeg ze als vriend toe</a> om uw Vriendenfeed te vullen.</p>\n"
+        },
+        "notifications": {
+            "title": "Meldingen",
+            "category": "connecting",
+            "summary": "Zo hoort u over likes, reacties, vriendschapsverzoeken en berichten.",
+            "body": "\n<p><strong>Meldingen</strong> licht op bij likes, reposts, reacties, vermeldingen, vriendschapsverzoeken, privéberichten en verwerkte media, ook vanuit het Fediverse.</p>\n<p>Ze verschijnen live zonder de pagina te vernieuwen. Open het menu voor recente meldingen of de volledige pagina voor uw geschiedenis. Elke melding verwijst direct naar het betreffende bericht, gesprek of profiel.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videobellen",
+            "category": "connecting",
+            "summary": "Begin een privévideogesprek terwijl u beiden het gesprek open hebt.",
+            "body": "\n<p>Vanuit een privégesprek kunt u één-op-één videobellen. Audio en video gaan <strong>peer-to-peer</strong> rechtstreeks tussen browsers en worden niet opgenomen.</p>\n<h2>Een gesprek beginnen</h2>\n<p>De knop verschijnt als u beiden het gesprek open hebt en bereikbaar bent. De ander kan accepteren of weigeren. Verlaten van de pagina beëindigt het gesprek.</p>\n<h2>Als de knop ontbreekt</h2>\n<p>WebRTC of het netwerk blokkeert waarschijnlijk de verbinding. De controle <strong>Videobellen</strong> in <a href=\"/user-settings\">Gebruikersinstellingen</a> laat zien welke stap mislukt.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Iemand blokkeren",
+            "category": "stayingSafe",
+            "summary": "Verbreek het contact met een gebruiker en verberg die uit uw zicht.",
+            "body": "\n<p>Gebruik <strong>Blokkeren</strong> op iemands kaart of profiel. Een bestaande vriendschap eindigt en rechtstreekse interactie wordt beperkt. Omdat de site openbaar is, maakt blokkeren inhoud niet onzichtbaar voor een uitgelogde bezoeker.</p>\n<p>U kunt altijd deblokkeren. Meld bij misbruik ook de <a href=\"/help/reporting-abuse\">misbruikende inhoud</a>.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Misbruik melden",
+            "category": "stayingSafe",
+            "summary": "Meld het specifieke bericht, privébericht of account zodat moderators kunnen handelen.",
+            "body": "\n<p><strong>Meld het specifieke misbruikende item.</strong> Gebruik Melden op het betreffende bericht of privébericht, zodat een moderator precies ziet wat u zag. Meld een account via profiel of kaart alleen als het hele account het probleem is.</p>\n<p>Voeg een korte reden toe. Een melding is privé; de gemelde persoon hoort niet wie haar deed. U kunt die persoon daarnaast <a href=\"/help/blocking-someone\">blokkeren</a>.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Instellingen en uiterlijk",
+            "category": "yourAccount",
+            "summary": "Een rondleiding langs wachtwoord, e-mail, beveiliging, thema's en meer.",
+            "body": "\n<p><strong>Gebruikersinstellingen</strong> bevat wachtwoord en e-mail, tweefactorauthenticatie, thema, gevoelige media, versleutelde berichten, e-mailoverzichten, pushmeldingen, apparaten en sessies, videobellen, Fediverse, serververhuizing en accountverwijdering.</p>\n<h2>Thema's</h2>\n<p>Kies Systeem volgen of een ingebouwd licht, donker of kleurrijk thema; uw keuze wordt onthouden.</p>\n<h2>E-mailoverzichten</h2>\n<p>Na een week afwezigheid ontvangt u hoogstens wekelijks een overzicht, en alleen als er iets gebeurde. Schakel het uit in Instellingen of via de afmeldlink. Gebruik <strong>Wachtwoord vergeten?</strong> om per e-mail een herstellink te krijgen.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Volgen met RSS",
+            "category": "yourAccount",
+            "summary": "Abonneer u in een RSS-lezer op de site of een persoon.",
+            "body": "\n<p>{site} publiceert <strong>RSS-feeds</strong>. Recente berichten van de hele site staan op <code>/feed.xml</code>; die van een gebruiker op <code>/users/hun-gebruikersnaam/feed.xml</code>.</p>\n<p>Browsers en feedlezers herkennen deze vaak automatisch, zodat u ook gewoon het adres van de site of het profiel kunt plakken.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Een bericht bewerken",
+            "category": "posting",
+            "summary": "Herstel na publicatie een typefout of herschrijf een eigen bericht.",
+            "body": "\n<p>Gebruik <strong>Bewerken</strong> op een eigen bericht om tekst, titel, opmaak of link te wijzigen en sla het daarna op.</p>\n<p>De wijziging vervangt het bericht en krijgt de aanduiding <strong>(bewerkt)</strong>. Bijlagen kunt u niet vervangen; <a href=\"/help/deleting-a-post\">verwijder</a> dan het bericht en plaats een nieuw. U kunt alleen uw eigen berichten bewerken.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Opnieuw plaatsen en citeren",
+            "category": "posting",
+            "summary": "Deel iemands bericht ongewijzigd of met uw eigen woorden.",
+            "body": "\n<p>Met <strong>Opnieuw plaatsen</strong> deelt u een bericht ongewijzigd in vriendenfeeds, op uw profiel en met Fediverse-volgers. Ongedaan maken trekt het terug. U kunt uw eigen bericht niet opnieuw plaatsen.</p>\n<h2>Citeren</h2>\n<p>Met <strong>Citeren</strong> opent u een editor met het origineel ingebed. Voeg eigen woorden toe; afbeeldingen zijn toegestaan, video en audio niet. Een citaat kan zoals elk bericht reacties, likes en meldingen krijgen.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Bladwijzers voor berichten",
+            "category": "posting",
+            "summary": "Bewaar berichten privé om ze later terug te vinden.",
+            "body": "\n<p>Gebruik <strong>Bladwijzer</strong> om een bericht privé te bewaren en nogmaals om het te verwijderen. De auteur krijgt geen melding.</p>\n<p>Via <strong>Bladwijzers</strong> in het menu ziet u alles, nieuwste eerst. Een later door de auteur verwijderd bericht verdwijnt vanzelf.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hashtags en vermeldingen",
+            "category": "posting",
+            "summary": "Label berichten met #hashtags en betrek mensen met @vermeldingen.",
+            "body": "\n<p>Hashtags en vermeldingen worden automatisch links.</p>\n<h2>Hashtags</h2>\n<p>Een <strong>#hashtag</strong> opent alle berichten met dat label. Alleen de eerste tien verschillende hashtags worden geïndexeerd en tellen voor <a href=\"/help/trending-topics\">Onderwerpen</a>.</p>\n<h2>Vermeldingen</h2>\n<p>Met <strong>@gebruikersnaam</strong> linkt u naar een profiel en ontvangt die persoon een melding. Bij meer dan tien verschillende personen wordt niemand gemeld. Gebruik voor het Fediverse <code>@gebruiker@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Trending onderwerpen",
+            "category": "connecting",
+            "summary": "Bekijk waarover momenteel het meest wordt gesproken.",
+            "body": "\n<p><strong>Onderwerpen</strong> rangschikt hashtags, namen, plaatsen en andere onderwerpen uit recente berichten. Elk item opent de bijbehorende berichten en het type linkt naar andere onderwerpen van hetzelfde soort.</p>\n<p>Ook berichten van andere servers tellen mee. Meerdere verschillende personen moeten iets bespreken voordat het verschijnt. Een moderator kan ongewenste ruis verbannen.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Mensen volgen op het Fediverse",
+            "category": "connecting",
+            "summary": "Volg accounts op Mastodon en andere Fediverse-servers.",
+            "body": "\n<p>{site} gebruikt <strong>ActivityPub</strong>. Plak in Gebruikersinstellingen bij Fediverse een of meer adressen zoals <code>@gebruiker@example.social</code> en druk op <strong>Volgen</strong>.</p>\n<p>Uw eigen adres is <strong>@uw-gebruikersnaam@domein-van-deze-site</strong>. Mensen op andere servers kunnen u daarmee volgen. Uw tekst, media, <a href=\"/help/polls\">peilingen</a>, <a href=\"/help/content-warnings\">waarschuwingen</a> en <a href=\"/help/your-profile\">profielwijzigingen</a> reizen mee. Via Server verhuizen kunt u volgers meenemen.</p>\n"
+        },
+        "searching": {
+            "title": "Zoeken",
+            "category": "connecting",
+            "summary": "Doorzoek de berichten van de site via de zoekpagina.",
+            "body": "\n<p><strong>Zoeken</strong> doorzoekt terwijl u typt alle berichten op de site.</p>\n<p>Zoekt u mensen? Gebruik dan <a href=\"/help/finding-people\">de pagina Gebruikers</a>, met een eigen zoekvak en suggesties.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Tweefactorauthenticatie",
+            "category": "stayingSafe",
+            "summary": "Voeg voor extra veiligheid een per e-mail verzonden inlogcode toe.",
+            "body": "\n<p>Tweefactorauthenticatie (2FA) voegt een tweede aanmeldstap toe. Schakel haar in bij <strong>Tweefactorauthenticatie</strong> in Gebruikersinstellingen.</p>\n<p>Na uw wachtwoord mailen we een korte cijfercode die u moet invoeren. Hiervoor is een <a href=\"/help/verifying-your-email\">geverifieerd e-mailadres</a> nodig. U kunt 2FA daar ook weer uitschakelen.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Aangemelde apparaten en sessies",
+            "category": "stayingSafe",
+            "summary": "Bekijk waar u bent ingelogd en log overal tegelijk uit.",
+            "body": "\n<p>Gebruikersinstellingen biedt twee hulpmiddelen.</p>\n<h2>Onthouden apparaten</h2>\n<p>Hier staan apparaten waarop u aangemeld blijft. Trek elk apparaat behalve het huidige in; log uit om het huidige te vergeten.</p>\n<h2>Sessies</h2>\n<p>Met <strong>overal uitloggen</strong> beëindigt u alle sessies en onthouden apparaten. Doe dit bij vermoedelijke toegang door een ander en <a href=\"/help/settings-and-appearance\">wijzig daarna uw wachtwoord</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Uw profiel",
+            "category": "yourAccount",
+            "summary": "Stel weergavenaam, biografie en avatar in.",
+            "body": "\n<p>Uw profiel toont uw berichten en informatie over u. Open uw eigen profiel en gebruik Bewerken. De <strong>weergavenaam</strong> staat boven uw vaste gebruikersnaam; de <strong>biografie</strong> kan links, hashtags en vermeldingen bevatten. Upload ook een <strong>avatar</strong>.</p>\n<h2>Vastgezette berichten</h2>\n<p>Met <strong>Vastzetten</strong> plaatst u maximaal vijf eigen berichten bovenaan uw profiel. Losmaken verwijdert ze daar. Vastgezette berichten reizen mee naar het Fediverse.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Uw e-mailadres wijzigen",
+            "category": "yourAccount",
+            "summary": "Werk het e-mailadres van uw account bij en verifieer het opnieuw.",
+            "body": "\n<p>Open Gebruikersinstellingen en vul bij <strong>E-mailadres wijzigen</strong> het nieuwe adres en uw huidige wachtwoord in. Open de verificatielink die naar het nieuwe adres wordt gestuurd.</p>\n<p>Het oude adres ontvangt uit veiligheid een link om de wijziging terug te draaien. Die herstelt het adres en logt elk apparaat uit. Bevestig het nieuwe adres snel, want wachtwoordherstel vereist een geverifieerd adres.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Uw account verwijderen",
+            "category": "yourAccount",
+            "summary": "Sluit uw account definitief en verwijder uw inhoud.",
+            "body": "\n<p>Gebruik <strong>Account verwijderen</strong> in Gebruikersinstellingen en bevestig met uw wachtwoord.</p>\n<p>Dit is <strong>definitief</strong>: berichten, reacties, privéberichten, likes en verbindingen verdwijnen, evenals reacties onder uw berichten. Uw gebruikersnaam blijft gereserveerd zodat niemand hem ooit kan overnemen. Een verwijderd account kan niet worden hersteld.</p>\n<p>Het beheerdersaccount kan niet worden verwijderd, omdat de site altijd een beheerder nodig heeft.</p>\n"
+        }
+    }
+}

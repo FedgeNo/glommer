@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Alustamine",
+        "posting": "Postitamine",
+        "connecting": "Suhtlemine",
+        "stayingSafe": "Turvalisus",
+        "yourAccount": "Sinu konto"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Konto loomine",
+            "category": "gettingStarted",
+            "summary": "Postitamise alustamiseks registreeru kasutajanime, e-posti aadressi ja parooliga.",
+            "body": "\n<p>Vali lingi <strong>Registreeru</strong> kaudu kasutajanimi, sisesta e-posti aadress ja parool. Soovi korral lisa kuvatav nimi ja elulugu; neid saab hiljem <a href=\"/help/your-profile\">profiilil</a> muuta.</p>\n<p>Pärast registreerumist saad kohe lugeda ja postitada. Kui sait kontrollib e-posti aadresse, pead esmalt aadressi <a href=\"/help/verifying-your-email\">kinnitama</a>. Uue saidi esimene konto saab administraatoriks.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "E-posti aadressi kinnitamine",
+            "category": "gettingStarted",
+            "summary": "Kui e-post on sisse lülitatud, kinnita aadress sulle saadetud lingi kaudu.",
+            "body": "\n<p>Pärast registreerumist saadetakse sulle kinnituslink. Selle avamine kinnitab konto ning võimaldab parooli lähtestamise ja teavituste kirju saada.</p>\n<p>Kui kiri ei saabu, vaata rämpsposti kausta või küsi uus link. Kui sait e-kirju ei saada, pole kinnitamine vajalik.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Saidil liikumine",
+            "category": "gettingStarted",
+            "summary": "Lühiülevaade voogude, sõprade, kasutajate, sõnumite ja konto menüüst.",
+            "body": "\n<p>Ülariba viib põhivoogu ja saidi menüüsse. Sealt leiad sõprade voo, kasutajad, sildid, teemad, kaardi, asukohad, otsingu, sõnumid, järjehoidjad, teavitused, abi ja saidi teabe.</p>\n<p>Ülal paremal olev nimi avab sinu profiili ning sõprade, mustandite, seadete ja väljalogimise menüü.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Postituse koostamine",
+            "category": "posting",
+            "summary": "Kirjuta ja avalda postitus voo ülaosas olevast kastist.",
+            "body": "\n<p>Kirjuta põhivoo ülaosas koostajasse ja vajuta avaldamisnuppu. Kõik postitused on avalikud.</p>\n<p>Võid lisada pealkirja, lingi, küsitluse, tundliku sisu märgi või meedia. Ühes postituses saab olla kas link, meedia või küsitlus, mitte mitu neist korraga.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Teksti vormindamine",
+            "category": "posting",
+            "summary": "Kasuta postituses rasvast ja kaldkirja, loendeid, tsitaate, koodi, emodžisid ja matemaatikat.",
+            "body": "\n<p>Vormindusribal on rasvane ja kaldkiri, allajoonimine, läbikriipsutus, loendid, tsitaadid ja kood. Emodživalija jätab meelde sinu nahatooni.</p>\n<p>LaTeXi kuvavalemid pane märkide <code>$$ ... $$</code> või <code>\\[ ... \\]</code> vahele ning reavalemid märkide <code>\\( ... \\)</code> vahele.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Fotode, video ja heli lisamine",
+            "category": "posting",
+            "summary": "Lisa postitusele üks või mitu pilti, video- või helifail.",
+            "body": "\n<p>Koostaja manustamisnupuga saad lisada pilte, videot või heli. Mitu pilti kuvatakse galeriina; ühes postituses võib olla kuni 100 faili.</p>\n<p>Suurema video ja heli töötlemine võib võtta aega. Enne avaldamist saad manuse eemaldada. Meediaga postitus ei saa sisaldada ka linki.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Lingi jagamine",
+            "category": "posting",
+            "summary": "Kleebi URL lingiväljale, et jagada lehte koos eelvaatega.",
+            "body": "\n<p>Pane veebiaadress väljale <strong>Link</strong>. Sait hangib võimaluse korral pealkirja, kirjelduse ja eelvaatepildi. Võid lisada oma teksti või eelvaatepildi eemaldada.</p>\n<p>Postitus võib sisaldada kas linki, meediat või küsitlust.</p>\n"
+        },
+        "polls": {
+            "title": "Küsitlusega küsimuse esitamine",
+            "category": "posting",
+            "summary": "Lisa postitusele küsitlus, millele saavad vastata inimesed siin ja födiversumis.",
+            "body": "\n<p>Vali <strong>Lisa küsitlus</strong>, kirjuta postitusse küsimus ja kuni neli erinevat vastust. Määra, kas valida saab mitu vastust, ning kestus viiest minutist seitsme päevani.</p>\n<p>Häält ei saa hiljem muuta. Pärast hääletamist või küsitluse lõppu näed tulemusi. Ka teiste födiversumi serverite hääled lähevad arvesse.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Sisuhoiatused ja tundlik meedia",
+            "category": "posting",
+            "summary": "Märgi postitus tundlikuks või lisa hoiatus, mis peidab kogu sisu avamiseni.",
+            "body": "\n<p>Märge <strong>Tundlik</strong> katab lisatud meedia. Hoiatusteksti lisamisel peidetakse avamiseni kogu postitus.</p>\n<p>Kasutaja võib seadetes lubada tundliku meedia alati kuvamise. Hoiatused ja tundlikkuse märgid liiguvad födiversumis mõlemas suunas.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Vastused ja lõimed",
+            "category": "posting",
+            "summary": "Alusta postitusele vastates selle all vestluslõime.",
+            "body": "\n<p>Postituse vastamisnupp avab koostaja ning seob vastuse algse postituse lõimega. Vastuseid saab vormindada ja neile meediat lisada.</p>\n<p>Postituse eraldi lehel näed kogu vestlust. Vastused ilmuvad ka voogudes ja profiilidel.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Postituste meeldivaks märkimine",
+            "category": "posting",
+            "summary": "Näita ühe nupuvajutusega, et postitus meeldib sulle.",
+            "body": "\n<p>Vajuta postituse meeldimisnuppu, et lisada oma meeldimine; uuesti vajutades eemaldad selle. Autor saab sinu meeldimisest teavituse.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Postituse kustutamine",
+            "category": "posting",
+            "summary": "Kustuta oma postitus ja vaata, mis juhtub selle vastustega.",
+            "body": "\n<p>Oma postituse kustutamisnupp eemaldab selle kõigi jaoks jäädavalt. Koos postitusega kustutatakse ka kõik selle vastused.</p>\n<p>Teise inimese probleemse postituse saad <a href=\"/help/reporting-abuse\">teatada</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Postituse või sõnumi tõlkimine",
+            "category": "posting",
+            "summary": "Loe teises keeles kirjutatut tõlke abil.",
+            "body": "\n<p>Tekstiga postituse või sõnumi tõlkenupp asendab sisu tõlkega ning lubab algteksti taastada. Tõlkimine toimub selles serveris.</p>\n<p>Vormindus ja lingid säilivad, kuid tõlge võib eksida. Väga pikka või juba arusaadavat teksti ei tõlgita.</p>\n"
+        },
+        "finding-people": {
+            "title": "Inimeste leidmine",
+            "category": "connecting",
+            "summary": "Otsi kasutajaid nime järgi või sirvi kasutajate lehe soovitusi.",
+            "body": "\n<p>Lehel <strong>Kasutajad</strong> saad otsida nime või kasutajanime järgi ja sirvida soovitusi. Profiililt saad saata sõbrakutse või avada ühised sõbrad.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Sõbrad ja sõbrakutsed",
+            "category": "connecting",
+            "summary": "Saada, võta vastu ja halda sõbrakutseid ning eemalda sõpru.",
+            "body": "\n<p>Saada profiililt sõbrakutse. Pärast vastuvõtmist näete teineteise postitusi sõprade voos ning saate sõnumeid vahetada.</p>\n<p>Sõprade lehel saad kutseid vastu võtta, tagasi lükata või tühistada ja sõpru eemaldada. Saidil {site} on sõprus vastastikune.</p>\n"
+        },
+        "messaging": {
+            "title": "Sõnumid",
+            "category": "connecting",
+            "summary": "Saada erasõnumeid ja jälgi oma vestlusi.",
+            "body": "\n<p>Menüü <strong>Sõnumid</strong> sisaldab sinu eravestlusi. Ava vestlus, kirjuta sõnum ning lisa soovi korral meediat.</p>\n<p>Sõnumid pole avalikud. Uuest sõnumist antakse teavitusega märku ning kasutaja blokeerimine katkestab suhtluse.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Krüptitud sõnumid",
+            "category": "connecting",
+            "summary": "Lülita vestlustes sisse läbivkrüptimine ja mõista paroolifraasi tähendust.",
+            "body": "\n<p>Seadetes saad luua paroolifraasi, millega krüptitakse sõnumivõtmed sinu seadmes. Server ei saa lukustatud sõnumeid lugeda.</p>\n<p>Paroolifraasi ei saa taastada. Sisesta see igas uues seadmes; selle muutmine ei tohi olla sama mis konto parool.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Releevoog",
+            "category": "connecting",
+            "summary": "Siia jõuavad laiema födiversumi postitused, kui server liitub releega.",
+            "body": "\n<p>Relee jagab osalevate serverite avalikke postitusi. Kui administraator liitub releega, ilmuvad selle postitused üldvoogu ning aitavad leida uusi teemasid ja inimesi.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Sinu vood",
+            "category": "connecting",
+            "summary": "Üldvoo ja sõprade voo erinevus.",
+            "body": "\n<p><strong>Üldvoog</strong> näitab saidile teadaolevaid avalikke postitusi. <strong>Sõprade voog</strong> näitab sinu sõprade postitusi ja vestlusi.</p>\n<p>Profiilidel ja teemadel on oma vood ning järjekord põhineb avaldamisajal.</p>\n"
+        },
+        "notifications": {
+            "title": "Teavitused",
+            "category": "connecting",
+            "summary": "Kuidas saad teada meeldimistest, vastustest, sõbrakutsetest ja sõnumitest.",
+            "body": "\n<p>Teavitused annavad märku meeldimistest, vastustest, mainimistest, sõbrakutsetest, sõnumitest ja valmis meediast. Ava teavitus, et minna seotud sisu juurde.</p>\n<p>Kui server seda toetab, saad seadmes lubada ka tõuketeavitused.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videokõned",
+            "category": "connecting",
+            "summary": "Alusta privaatset videokõnet, kui mõlemal on vestlus avatud.",
+            "body": "\n<p>Kui mõlemal inimesel on sama vestlus avatud, võib ilmuda kõnenupp. Kõne loob brauserite vahel otsese WebRTC-ühenduse; server vahendab ainult seadistussõnumeid.</p>\n<p>Kaamera ja mikrofon vajavad luba ning HTTPS-i. Seadete test aitab ühendusprobleeme leida.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Kasutaja blokeerimine",
+            "category": "stayingSafe",
+            "summary": "Lõpeta kasutajaga suhtlus ja peida ta oma vaatest.",
+            "body": "\n<p>Blokeerimine eemaldab sõpruse, takistab sõnumeid ja peidab kasutaja sisu sinu vaatest. Blokeeringu saab hiljem eemaldada.</p>\n<p>Reegleid rikkuvast sisust <a href=\"/help/reporting-abuse\">teata</a> eraldi, et moderaator saaks tegutseda.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Väärkasutusest teatamine",
+            "category": "stayingSafe",
+            "summary": "Teata konkreetsest kuritahtlikust postitusest, sõnumist või kasutajast.",
+            "body": "\n<p>Kasuta probleemse postituse või sõnumi enda nuppu <strong>Teata</strong>. Konkreetne sisu aitab moderaatoril näha juhtunut ja kiiresti tegutseda.</p>\n<p>Lisa lühike põhjus. Teatamine on privaatne; soovi korral võid kasutaja ka <a href=\"/help/blocking-someone\">blokeerida</a>.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Seaded ja välimus",
+            "category": "yourAccount",
+            "summary": "Ülevaade parooli, e-posti, turvalisuse, kujunduse ja muudest kasutajaseadetest.",
+            "body": "\n<p><strong>Kasutaja seadetes</strong> saad muuta parooli ja e-posti aadressi, hallata kaheastmelist autentimist, kujundust, tundlikku meediat, krüptitud sõnumeid, kokkuvõtteid, teavitusi, seadmeid, kõnesid, födiversumit ja konto kustutamist.</p>\n<p>Kujunduse valik jääb meelde. E-posti kokkuvõtted saad välja lülitada seadetes või kirjas oleva loobumislingiga.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "RSS-i kaudu jälgimine",
+            "category": "yourAccount",
+            "summary": "Telli sait või kasutaja mis tahes RSS-lugejas.",
+            "body": "\n<p>Saidil {site} on RSS-vood: kogu saidi postitused aadressil <code>/feed.xml</code> ja kasutaja postitused aadressil <code>/users/their-username/feed.xml</code>.</p>\n<p>Paljud lugejad leiavad voo automaatselt, kui annad neile saidi või profiili aadressi.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Postituse muutmine",
+            "category": "posting",
+            "summary": "Paranda pärast avaldamist oma postituse viga või sõnastust.",
+            "body": "\n<p>Oma postituse muutmisnupp avab selle redaktoris. Saad muuta pealkirja, teksti, vormindust ja linki; postitusele lisatakse märge, et seda on muudetud.</p>\n<p>Meediat muuta ei saa. Selleks <a href=\"/help/deleting-a-post\">kustuta</a> postitus ja loo uus.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Taaspostitamine ja tsiteerimine",
+            "category": "posting",
+            "summary": "Jaga kellegi postitust muutmata või lisa sellele oma sõnad.",
+            "body": "\n<p><strong>Taaspostita</strong> jagab postituse muutmata sinu jälgijatele; sama nupp võtab jagamise tagasi. Oma postitust taaspostitada ei saa.</p>\n<p><strong>Tsiteeri</strong> loob uue postituse, milles on algne postitus ja sinu tekst. Tsitaadile saab lisada pilte, kuid mitte videot ega heli.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Postituste järjehoidjatesse lisamine",
+            "category": "posting",
+            "summary": "Salvesta postitused privaatsesse järjehoidjate loendisse.",
+            "body": "\n<p>Järjehoidjanupp lisab postituse sinu privaatsesse loendisse; uuesti vajutades eemaldab selle. Autor teavitust ei saa.</p>\n<p>Kui autor postituse kustutab, kaob see ka järjehoidjatest.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Teemaviited ja mainimised",
+            "category": "posting",
+            "summary": "Märgi postitusi #teemaviidetega ja kaasa inimesi @mainimistega.",
+            "body": "\n<p><strong>#teemaviide</strong> muutub lingiks sama sildiga postituste lehele. Populaarsuse ja sildilehtede jaoks arvestatakse postituse kümmet esimest erinevat viidet.</p>\n<p><strong>@kasutajanimi</strong> viib profiilile ja teavitab mainitud inimest. Födiversumi kontot maini täieliku kujuga <code>@kasutaja@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Populaarsed teemad",
+            "category": "connecting",
+            "summary": "Vaata, millistest teemadest ja nimedest praegu enim räägitakse.",
+            "body": "\n<p>Menüü <strong>Teemad</strong> järjestab hiljutistes postitustes korduvad viited, nimed ja teemad. Iga üksuse lehel näed selle taga olevaid postitusi.</p>\n<p>Loend muutub tegevuse järgi. Moderaator võib sobimatu üksuse sealt keelata.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Inimeste jälgimine födiversumis",
+            "category": "connecting",
+            "summary": "Jälgi Mastodoni ja teiste födiversumi serverite kontosid.",
+            "body": "\n<p>{site} kasutab ActivityPubi. Lisa kasutaja seadete födiversumi jaotisse tunnus kujul <code>@kasutaja@example.social</code> ning vajuta <strong>Jälgi</strong>.</p>\n<p>Sinu enda födiversumi aadress on kujul <strong>@sinu-kasutajanimi@saidi-domeen</strong>. Postitused, meedia, küsitlused ja profiilimuudatused liiguvad serverite vahel.</p>\n"
+        },
+        "searching": {
+            "title": "Otsimine",
+            "category": "connecting",
+            "summary": "Otsi otsingulehel saidi postitusi.",
+            "body": "\n<p>Menüü <strong>Otsing</strong> otsib saidi postitustest ja näitab kirjutamise ajal vasteid. Inimeste leidmiseks kasuta <a href=\"/help/finding-people\">kasutajate lehte</a>.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Kaheastmeline autentimine",
+            "category": "stayingSafe",
+            "summary": "Lisa turvalisuse suurendamiseks e-postiga saadetav sisselogimiskood.",
+            "body": "\n<p>Kaheastmeline autentimine lisab paroolile e-postiga saadetava numbrikoodi. Lülita see sisse kasutaja seadetes; selleks on vaja <a href=\"/help/verifying-your-email\">kinnitatud e-posti aadressi</a>.</p>\n<p>Samas kohas saad selle uuesti välja lülitada.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Sisselogitud seadmed ja seansid",
+            "category": "stayingSafe",
+            "summary": "Vaata sisselogimiskohti ja logi kõigist korraga välja.",
+            "body": "\n<p><strong>Meelde jäetud seadmed</strong> loetleb seadmed, kus jäid sisse logituks, ning lubab nende õiguse tühistada.</p>\n<p><strong>Seansid</strong> logib konto korraga kõikjalt välja. Kahtluse korral tee seda ja <a href=\"/help/settings-and-appearance\">muuda parooli</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Sinu profiil",
+            "category": "yourAccount",
+            "summary": "Määra kuvatav nimi, elulugu ja avatar.",
+            "body": "\n<p>Profiilil kuvatakse sinu postitused, kuvatav nimi, elulugu ja avatar. Muutmiseks ava oma profiil ning vali muutmine; kasutajanimi ise ei muutu.</p>\n<p>Oma postituse kinnitamine tõstab selle profiili jaotisse <strong>Kinnitatud</strong>. Korraga saab kinnitada kuni viis postitust.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "E-posti aadressi muutmine",
+            "category": "yourAccount",
+            "summary": "Uuenda konto e-posti aadressi ja kinnita see uuesti.",
+            "body": "\n<p>Sisesta kasutaja seadetes uus aadress ja praegune parool. Muudatuse kinnitamiseks saadetakse uuele aadressile link.</p>\n<p>Vanale aadressile saadetakse turvalink muudatuse tühistamiseks. Selle avamine taastab aadressi ja logib konto kõigist seadmetest välja.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Konto kustutamine",
+            "category": "yourAccount",
+            "summary": "Sulge konto ja eemalda selle sisu jäädavalt.",
+            "body": "\n<p>Kasutaja seadete konto kustutamise jaotis küsib kinnituseks parooli. Kustutamine eemaldab jäädavalt postitused, vastused, sõnumid, meeldimised ja ühendused.</p>\n<p>Kasutajanime ei vabastata ning kontot ei saa taastada. Saidi administraatori kontot ei saa kustutada.</p>\n"
+        }
+    }
+}

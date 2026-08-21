@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Kom godt i gang",
+        "posting": "Opslag",
+        "connecting": "Forbindelser",
+        "stayingSafe": "Sikkerhed",
+        "yourAccount": "Din konto"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Opret en konto",
+            "category": "gettingStarted",
+            "summary": "Tilmeld dig med brugernavn, e-mail og adgangskode for at begynde at slå op.",
+            "body": "\n<p>Åbn <strong>Tilmeld dig</strong> øverst til højre, vælg et brugernavn, angiv din e-mailadresse og en adgangskode. Brugernavnet er sådan, andre finder og nævner dig, så vælg noget, du gerne vil kendes som.</p>\n<p>Formularen har også plads til et <strong>vist navn</strong> og en kort biografi. Begge er valgfrie og kan udfyldes senere under <a href=\"/help/your-profile\">din profil</a>. Det viste navn står over brugernavnet; er det tomt, vises brugernavnet.</p>\n<p>Efter tilmeldingen kan du straks læse og slå op, medmindre siden kræver e-mailbekræftelse (se <a href=\"/help/verifying-your-email\">bekræftelse af e-mail</a>). Den allerførste konto på en ny side bliver automatisk administrator.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Bekræft din e-mail",
+            "category": "gettingStarted",
+            "summary": "Bekræft adressen via linket i vores e-mail, hvis e-mail er slået til.",
+            "body": "\n<p>Hvis siden kan sende e-mail, får du et bekræftelseslink efter tilmeldingen. Indtil du åbner det, sender alle sider dig til en besked om at kontrollere indbakken. Linket bekræfter kontoen og viser, at adressen er din, så nulstillinger og notifikationer kan nå dig.</p>\n<p>Har du ikke modtaget det? Se først i spam-mappen. På siden <strong>Kontrollér din indbakke</strong> kan du bede om et nyt link.</p>\n<p>Nogle sider sender slet ikke e-mail. Så er der intet at bekræfte, og alt kan bruges med det samme.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Find rundt",
+            "category": "gettingStarted",
+            "summary": "En hurtig rundtur i menuen: feeds, venner, brugere, beskeder og din konto.",
+            "body": "\n<p>Linjen øverst fører dig overalt:</p>\n<ul>\n<li><strong>Sidens navn</strong> går til hovedfeedet og åbner menuen.</li>\n<li><strong>Vennefeed</strong> viser kun venners opslag.</li>\n<li><strong>Brugere</strong> søger efter personer og foreslår forbindelser.</li>\n<li><strong>Tags</strong> og <strong>Emner</strong> finder opslag efter emne og popularitet.</li>\n<li><strong>Kort</strong> og <strong>Placeringer</strong> viser opslag efter sted.</li>\n<li><strong>Søg</strong> gennemgår sidens opslag.</li>\n<li><strong>Beskeder</strong> rummer private samtaler og markerer nye beskeder.</li>\n<li><strong>Bogmærker</strong> er din private liste over gemte opslag.</li>\n<li><strong>Notifikationer</strong> lyser op ved interaktioner.</li>\n<li><strong>Hjælp</strong> og <strong>Om</strong> er altid tilgængelige.</li>\n</ul>\n<p>Dit navn øverst til højre fører til profilen og en menu med <strong>Venner</strong>, kladder og planlagte opslag, <strong>Brugerindstillinger</strong> og <strong>Log ud</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Skriv et opslag",
+            "category": "posting",
+            "summary": "Skriv og udgiv et opslag i feltet øverst i feedet.",
+            "body": "\n<p>Editoren står øverst i hovedfeedet. Skriv i tekstfeltet, og tryk på knappen for at udgive. Opslag vises straks i det offentlige feed; alt på siden er offentligt.</p>\n<p>Du kan også tilføje:</p>\n<ul>\n<li>En <strong>titel</strong>.</li>\n<li>Et <strong>link</strong> (se <a href=\"/help/sharing-a-link\">Del et link</a>).</li>\n<li>En <strong>afstemning</strong> (se <a href=\"/help/polls\">Stil et spørgsmål</a>).</li>\n<li>Mærket <strong>Følsomt</strong> (se <a href=\"/help/content-warnings\">Indholdsadvarsler</a>).</li>\n</ul>\n<p>Tekst kan formateres med emoji og matematik, og billeder, video eller lyd kan vedhæftes. Ét opslag har enten link, medier <em>eller</em> afstemning, aldrig en kombination.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Formatér din tekst",
+            "category": "posting",
+            "summary": "Brug fed, kursiv, lister, citater, kode, emoji og matematik.",
+            "body": "\n<p>Rich text-editorens værktøjslinje har <strong>fed</strong>, <em>kursiv</em>, understregning, gennemstregning, punkt- og nummerlister, blokcitater og kodeblokke.</p>\n<h2>Emoji</h2>\n<p>Åbn emojivælgeren i editoren. Den husker din foretrukne hudtone.</p>\n<h2>Matematik</h2>\n<p>Skriv LaTeX med <code>$$ ... $$</code> eller <code>\\[ ... \\]</code> til en separat formel og <code>\\( ... \\)</code> eller <code>$ ... $</code> i en linje. To enkelte dollartegn kan fejlagtigt læses som en formel; brug da <code>\\( ... \\)</code>.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Tilføj billeder, video og lyd",
+            "category": "posting",
+            "summary": "Vedhæft et eller flere billeder, en video eller lyd til et opslag.",
+            "body": "\n<p>Brug vedhæftningsfunktionen til <strong>billeder, video eller lyd</strong>. Flere billeder bliver til et galleri, og et opslag kan have op til 100 filer.</p>\n<p>Store video- og lydfiler behandles efter udgivelsen. Du får en notifikation, når de er klar.</p>\n<p>Fjern en fil før udgivelsen med annulleringsfunktionen. Et opslag med medier kan ikke også have et link.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Del et link",
+            "category": "posting",
+            "summary": "Indsæt en URL i linkfeltet for at dele en side med forhåndsvisning.",
+            "body": "\n<p>Indsæt webadressen i feltet <strong>Link</strong>. Vi henter titel, en kort beskrivelse og eventuelt et billede til en forhåndsvisning i opslaget.</p>\n<p>Du kan stadig skrive egne ord om, hvorfor du deler siden, og fjerne forhåndsvisningsbilledet før udgivelse.</p>\n<p>Et opslag kan have et link, medier eller en afstemning – én af delene.</p>\n"
+        },
+        "polls": {
+            "title": "Stil et spørgsmål med en afstemning",
+            "category": "posting",
+            "summary": "Føj en afstemning til et opslag, og lad folk her og i Fediverse svare.",
+            "body": "\n<p>Tryk <strong>Tilføj afstemning</strong>. Du får op til fire valgmuligheder, og opslagets tekst er spørgsmålet; uden tekst kan det ikke udgives.</p>\n<p>Vælg, om flere svar er tilladt, og en varighed fra fem minutter til syv dage.</p>\n<p>To muligheder må ikke have samme tekst, heller ikke med forskellig brug af store bogstaver. En afstemning erstatter medier eller link.</p>\n<h2>Besvar en afstemning</h2>\n<p>Vælg, og tryk <strong>Stem</strong>. Svaret er endeligt, så man ikke kan skifte efter at have set resultatet.</p>\n<p>Efter svar eller lukning vises hver valgmuligheds andel og antal, dit valg, antal deltagere og resterende tid.</p>\n<p>Uden login ser du resultaterne straks; med login kan du stemme indtil lukning.</p>\n<h2>I Fediverse</h2>\n<p>Personer på andre servere kan stemme her, og du kan besvare deres afstemninger. Fremmede servere ejer deres tal, så visningen kan være lidt forsinket.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Indholdsadvarsler og følsomme medier",
+            "category": "posting",
+            "summary": "Markér et opslag som følsomt, eller skjul det hele bag en advarsel.",
+            "body": "\n<p>Alle opslag har mærket <strong>Følsomt</strong>, også uden medier.</p>\n<p>Alene dækker mærket vedhæftede medier, mens teksten forbliver synlig. Skal teksten skjules, brug feltet <strong>advarselstekst</strong>, der kommer frem.</p>\n<p>Med en advarsel skjules hele opslaget, inklusive tekst og afstemning. Spoilere er et almindeligt eksempel.</p>\n<p>Indholdsadvarsler åbnes altid bevidst. Følsomme medier kan vises automatisk under <a href=\"/user-settings\">Brugerindstillinger</a>.</p>\n<h2>I Fediverse</h2>\n<p>Mærker og advarsler rejser begge veje og vises på samme måde på andre servere.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Svar og tråde",
+            "category": "posting",
+            "summary": "Svar på et opslag for at begynde en samtaletråd under det.",
+            "body": "\n<p><strong>Svar</strong> åbner en editor ved opslaget og vedhæfter svaret under originalen. Svar kan formateres og have emoji og medier.</p>\n<p>Åbn opslagets egen side for at læse hele samtalen med originalen øverst.</p>\n<h2>Svar i et feed</h2>\n<p>Svar vises i vennefeed og profiler. Linjen <strong>Som svar på</strong> viser målet, og <strong>Gå til start</strong> fører til trådens første opslag.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Synes godt om opslag",
+            "category": "posting",
+            "summary": "Vis påskønnelse med ét tryk på synes godt om-knappen.",
+            "body": "\n<p>Hvert opslag har en <strong>synes godt om</strong>-knap og et antal. Tryk for at tilføje eller fjerne dit like; tallet ændres straks.</p>\n<p>Forfatteren får en notifikation, en hurtig måde at vise, at du nød opslaget.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Slet et opslag",
+            "category": "posting",
+            "summary": "Fjern et af dine opslag, og se hvad der sker med svarene.",
+            "body": "\n<p>Dine opslag har handlingen <strong>Slet</strong> i stedet for Anmeld. Den fjerner opslaget for alle.</p>\n<p>Sletning er permanent og skal bekræftes. Alle svar under opslaget forsvinder også.</p>\n<p>Kun egne opslag kan slettes. <a href=\"/help/reporting-abuse\">Anmeld</a> i stedet problemer i andres opslag.</p>\n"
+        },
+        "translating": {
+            "title": "Oversæt et opslag eller en besked",
+            "category": "posting",
+            "summary": "Læs noget på et andet sprog, og forstå hvad oversættelsen gør.",
+            "body": "\n<p>Tekstopslag har knappen <strong>Oversæt</strong>, som erstatter teksten med en oversættelse og derefter kan vise originalen igen.</p>\n<p>Oversættelsen sker på denne server, ikke en ekstern tjeneste, og opslagets resultat gemmes til næste læser.</p>\n<p>Modtagne beskeder har samme knap; egne har ikke, og intet oversættes uden dit valg.</p>\n<p>Ved oversættelse af en <a href=\"/help/encrypted-messages\">krypteret besked</a> giver du denne server lov til at læse netop teksten. Resultatet gemmes ikke, men den er ikke længere hemmelig for serveren. Du advares før første gang.</p>\n<p>Knappen findes kun på servere med en oversætter installeret.</p>\n"
+        },
+        "finding-people": {
+            "title": "Find personer",
+            "category": "connecting",
+            "summary": "Søg efter brugere med navn, eller gennemse forslag på Brugere-siden.",
+            "body": "\n<p>Åbn <strong>Brugere</strong>, og skriv et navn eller brugernavn. Lokale medlemmer vises før personer, der kun kendes fra Fediverse.</p>\n<p>Før søgning vises venner af venner som <strong>forslag</strong>, ordnet efter fælles venner.</p>\n<p>En tom liste er ikke en fejl; søgningen dækker stadig alle.</p>\n<p>Fra en persons kort kan du tilføje som ven, sende en besked eller åbne profilen.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Venner og venneanmodninger",
+            "category": "connecting",
+            "summary": "Send, accepter og administrer venneanmodninger, og fjern venner.",
+            "body": "\n<p>Venskab på {site} er gensidigt og starter med <strong>Tilføj ven</strong>. En ventende anmodning kan annulleres; efter accept er I venner.</p>\n<p>På siden <strong>Venner</strong> står modtagne anmodninger med Accepter/Afvis, dine offentligt synlige venner og dine private ventende, sendte anmodninger.</p>\n<p><strong>Fjern ven</strong> afslutter forbindelsen. Venners opslag vises i <a href=\"/help/your-feeds\">Vennefeedet</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Beskeder",
+            "category": "connecting",
+            "summary": "Send private beskeder, og følg med i dine samtaler.",
+            "body": "\n<p>Brug <strong>Besked</strong> på en profil, eller åbn <strong>Beskeder</strong>. Nye beskeder og notifikationer vises straks uden genindlæsning.</p>\n<p>De nyeste samtaler står øverst.</p>\n<p>Andre medlemmer kan ikke se dem. Over for serveren findes tre tilfælde:</p>\n<ul>\n<li><strong>End-to-end-krypteret</strong>, når begge har aktiveret <a href=\"/help/encrypted-messages\">kryptering</a>; serveren gemmer kun chiffertekst.</li>\n<li><strong>Ukrypteret</strong>, hvor serveroperatøren teknisk kan læse dem.</li>\n<li><strong>Fødereret</strong> med en anden server, som også gemmer dem, og som protokollen ikke kan end-to-end-kryptere.</li>\n</ul>\n<p>Du kan <a href=\"/help/blocking-someone\">blokere</a> nogen eller <a href=\"/help/reporting-abuse\">anmelde</a> en bestemt besked.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Krypterede beskeder",
+            "category": "connecting",
+            "summary": "Slå end-to-end-kryptering til, og forstå adgangssætningen.",
+            "body": "\n<p>Vælg en adgangssætning under <strong>Krypterede beskeder</strong>. Browseren skaber en nøgle, låser den med sætningen og gemmer kun den låste kopi på serveren.</p>\n<p>Nye beskeder krypteres, når begge har slået funktionen til. Ældre beskeder ændres ikke, og samtaler på tværs af Fediverse-servere kan ikke krypteres sådan.</p>\n<p>Adgangssætningen kræves én gang pr. browserfane og virker på alle enheder.</p>\n<p><strong>Vælg den omhyggeligt.</strong> Brug mindst tolv tegn, gerne flere ord, og ikke kontoens adgangskode.</p>\n<p>Gamle nøgler bevares, så historikken kan læses på nye enheder. Får nogen senere sætningen, kan de læse alt; slet følsom historik, hvis den ikke må overleve en fremtidig fejl.</p>\n<p><strong>En mistet adgangssætning kan ikke gendannes.</strong> Nulstilling laver nye nøgler og gør gamle beskeder ulæselige; en kendt sætning kan ændres uden tab.</p>\n<p><strong>Sammenlign sikkerhedskoden</strong> via en anden kanal. Ens koder viser, at ingen står imellem jer; markér den bekræftet, og reager på ændringer.</p>\n<p>Koden bekræfter nøglerne, ikke selve sidens software, men database, sikkerhedskopier og netværkstrafik afslører ikke teksten.</p>\n<p>En krypteret besked kan <a href=\"/help/reporting-abuse\">anmeldes</a>; kun den ene besked afsløres, og et segl forhindrer falske anmeldelser.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Relayfeedet",
+            "category": "connecting",
+            "summary": "Her kommer opslag fra det bredere Fediverse, når serveren abonnerer på et relay.",
+            "body": "\n<p>Et <strong>Relayfeed</strong> er en fælles strøm af offentlige opslag fra tilmeldte servere, så en lille side kan opdage Fediverse før nogen følger konti.</p>\n<p>Det holdes adskilt fra hoved- og <a href=\"/help/your-feeds\">vennefeed</a>, fordi ingen her valgte indholdet.</p>\n<p>Kun et nyt tidsvindue gemmes; opslag, du har reageret på, bogmærket, genopslået, fastgjort eller anmeldt, bevares.</p>\n<p>Du kan interagere normalt og <a href=\"/help/following-on-the-fediverse\">følge</a> interessante personer.</p>\n<p>Kun administratoren vælger relay. Uden menupunkt bruges intet.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Dine feeds",
+            "category": "connecting",
+            "summary": "Forskellen på det globale feed og dit vennefeed.",
+            "body": "\n<p><strong>Det globale feed</strong> viser offentlige opslag fra hele siden. <strong>Vennefeedet</strong> viser kun dine venners opslag.</p>\n<p>Begge indlæser ældre opslag under rulning. <a href=\"/help/finding-people\">Find personer</a>, og <a href=\"/help/friends-and-friend-requests\">tilføj venner</a>.</p>\n<p>Vennefeedet indeholder også svar med deres sammenhæng; hovedfeedet viser kun opslag, der starter noget.</p>\n"
+        },
+        "notifications": {
+            "title": "Notifikationer",
+            "category": "connecting",
+            "summary": "Sådan hører du om likes, svar, venneanmodninger og beskeder.",
+            "body": "\n<p><strong>Notifikationer</strong> lyser ved likes, genopslag, svar, omtaler, venneanmodninger, beskeder, færdige medieuploads og tilsvarende Fediverse-hændelser.</p>\n<p>De kommer <strong>direkte</strong> uden genindlæsning. Området viser de nyeste, mens hele siden indlæser historikken ved rulning.</p>\n<p>Hver notifikation linker direkte til sit opslag, sin samtale eller profil.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videoopkald",
+            "category": "connecting",
+            "summary": "Ring til venner med kamera og mikrofon direkte i browseren.",
+            "body": "\n<p>Knappen <strong>Ring op</strong> vises for venner, når serveren understøtter videoopkald. Browseren beder om kamera og mikrofon; indgående opkald kan besvares eller afvises.</p>\n<p>Lyd og billede går direkte mellem browserne, mens serveren kun formidler forbindelsen. Tilladelser, firewalls og netværk kan forhindre opkald.</p>\n<p>Under <strong>Videoopkald</strong> i indstillingerne kan du teste kamera, mikrofon, netværk og afspilning. Ret browserens tilladelser og genindlæs ved afslag.</p>\n<p>Afslut altid uønskede opkald, og del kun det, du ønsker over forbindelsen.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Bloker nogen",
+            "category": "stayingSafe",
+            "summary": "Skjul en person og personens indhold, og stop yderligere kontakt.",
+            "body": "\n<p>Brug <strong>Bloker</strong> på en profil eller et kort. Et venskab afsluttes, opslag skjules, og personen kan ikke sende beskeder eller venneanmodninger.</p>\n<p>Personen får ingen besked. Blokeringen kan ophæves senere, men venskabet gendannes ikke automatisk.</p>\n<p>Blokering beskytter din visning; <a href=\"/help/reporting-abuse\">anmeld også</a> konkret misbrug, så moderatorer kan handle.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Anmeld misbrug",
+            "category": "stayingSafe",
+            "summary": "Anmeld det konkrete opslag, den besked eller bruger, så moderatorer kan handle.",
+            "body": "\n<p>Du kan anmelde misbrug. Vigtigst: <strong>Anmeld det konkrete indhold.</strong> Brug knappen på netop opslaget eller beskeden, så moderatorer ser præcis det samme.</p>\n<h2>Sådan anmelder du</h2>\n<ul>\n<li><strong>Opslag:</strong> brug Anmeld på opslaget.</li>\n<li><strong>Besked:</strong> brug Anmeld på beskeden.</li>\n<li><strong>Bruger:</strong> anmeld profilen, hvis hele kontoen er problemet; ellers det enkelte indhold.</li>\n</ul>\n<p>En kort årsag hjælper. Konkrete anmeldelser er hurtigere at behandle end generelle klager.</p>\n<p>Anmeldelser er private. Du kan også <a href=\"/help/blocking-someone\">blokere</a> personen.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Indstillinger og udseende",
+            "category": "yourAccount",
+            "summary": "En rundtur i adgangskode, e-mail, sikkerhed, temaer og flere indstillinger.",
+            "body": "\n<p><strong>Brugerindstillinger</strong> samler ændring af adgangskode og e-mail, tofaktorgodkendelse, tema, følsomme medier, krypterede beskeder, e-mailoversigter, pushnotifikationer, enheder og sessioner, videoopkald, Fediverse, serverflytning og sletning af konto.</p>\n<p>De enkelte områder linker til relevante hjælpesider og kræver bekræftelse, hvor handlingen er følsom.</p>\n<h2>Temaer</h2>\n<p>Vælg <strong>Følg systemet</strong> eller et af de indbyggede lyse, mørke og farvede temaer. Valget huskes.</p>\n<h2>E-mailoversigter</h2>\n<p>Efter en uges fravær sendes højst én ugentlig oversigt, kun når noget er sket. Slå den fra i indstillingerne eller med afmeldingslinket.</p>\n<p>Brug <strong>Glemt adgangskode?</strong> på login-siden til en nulstillingsmail.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Følg med RSS",
+            "category": "yourAccount",
+            "summary": "Abonnér på siden eller en person i enhver RSS-læser.",
+            "body": "\n<p>{site} udgiver <strong>RSS-feeds</strong>:</p>\n<ul>\n<li>Hele sidens nye opslag på <code>/feed.xml</code>.</li>\n<li>En persons opslag på <code>/users/deres-brugernavn/feed.xml</code>.</li>\n</ul>\n<p>Browsere og læsere finder ofte feedet automatisk, når du indsætter adressen til siden eller profilen.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Rediger et opslag",
+            "category": "posting",
+            "summary": "Ret en fejl eller omformuler et af dine opslag efter udgivelsen.",
+            "body": "\n<p><strong>Rediger</strong> på egne opslag åbner editoren igen til rettelser og formatering.</p>\n<p>Ændringen erstatter opslaget for alle. Der gemmes ingen gammel kopi, men <strong>(redigeret)</strong> vises. Titel, tekst og link kan ændres, men ikke vedhæftede medier; <a href=\"/help/deleting-a-post\">slet</a> og opret et nyt opslag ved behov.</p>\n<p>Kun egne opslag kan redigeres.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Genopslag og citater",
+            "category": "posting",
+            "summary": "Send en andens opslag videre uændret eller med dine egne ord.",
+            "body": "\n<p><strong>Genopslag</strong> sender et opslag uændret til venners feeds, din profil og Fediverse-følgere. <strong>Fortryd genopslag</strong> tager det tilbage.</p>\n<p>Antallet samler lokale genopslag og boosts. Egne opslag kan ikke genopslås.</p>\n<h2>Citater</h2>\n<p><strong>Citér</strong> åbner en editor med originalen indlejret og kræver egne ord. Billeder kan vedhæftes, men ikke video eller lyd.</p>\n<p>Et citat er et almindeligt opslag, der kan besvares, likes og anmeldes.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Bogmærk opslag",
+            "category": "posting",
+            "summary": "Gem opslag privat, så du kan finde dem igen senere.",
+            "body": "\n<p><strong>Bogmærke</strong> gemmer opslaget på din private liste; tryk igen for at fjerne det. Ingen andre kan se det, og forfatteren får ingen besked.</p>\n<p>Åbn <strong>Bogmærker</strong> fra menuen for at se det nyeste først.</p>\n<p>Et opslag, som forfatteren sletter, forsvinder fra listen.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hashtags og omtaler",
+            "category": "posting",
+            "summary": "Mærk opslag med #hashtags, og inddrag personer med @omtaler.",
+            "body": "\n<p>To genveje bliver automatisk til links.</p>\n<h2>Hashtags</h2>\n<p>Et <strong>#hashtag</strong> som <code>#musik</code> linker til opslag med samme tag. Find aktive tags i menuen og populære under <a href=\"/help/trending-topics\">Emner</a>.</p>\n<p>Kun de første ti forskellige hashtags indekseres og tæller i trends; resten er stadig links.</p>\n<h2>Omtaler</h2>\n<p><strong>@brugernavn</strong> linker til profilen og sender en notifikation. Ved mere end ti forskellige omtaler sendes ingen notifikationer. Fjernkonti skrives <code>@bruger@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Populære emner",
+            "category": "connecting",
+            "summary": "Se hvilke emner og navne der omtales mest lige nu.",
+            "body": "\n<p><strong>Emner</strong> rangerer hyppige hashtags, navne og emner fra nye opslag.</p>\n<p>Hvert element linker til opslagene bag det, og listen genberegnes med aktiviteten.</p>\n<p>Emner grupperes som personer, organisationer, steder, hashtags med mere; typen linker til andre af samme slags.</p>\n<p>Alt, serveren hører, inklusive <a href=\"/help/the-relay-feed\">relays</a>, tæller. Flere forskellige personer skal omtale et emne.</p>\n<p>Moderatorer kan udelukke misbrug eller støj fra listen.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Følg personer i Fediverse",
+            "category": "connecting",
+            "summary": "Følg konti på Mastodon og andre Fediverse-servere.",
+            "body": "\n<p>{site} bruger <strong>ActivityPub</strong>, så du kan følge personer på andre servere.</p>\n<p>Indsæt identifikatorer som <code>@bruger@eksempel.social</code> under <strong>Fediverse</strong> i indstillingerne, og tryk <strong>Følg</strong>. Flere kan indsættes på én gang.</p>\n<p>Listen viser accepterede og ventende følgninger. Den fulde identifikator virker også i omtaler.</p>\n<h2>Bliv fulgt udefra</h2>\n<p>Din adresse er <strong>@dit-brugernavn@sidens-domæne</strong>. Andre ActivityPub-tjenester kan finde og følge den uden godkendelse, fordi alt her er offentligt.</p>\n<p>Tekst, medier, <a href=\"/help/polls\">afstemninger</a>, advarsler, fastgjorte opslag og profilændringer rejser til følgerne; deres reaktioner kommer tilbage.</p>\n<p><strong>Flytning mellem servere</strong> kan tage følgerne med til en ny konto.</p>\n"
+        },
+        "searching": {
+            "title": "Søgning",
+            "category": "connecting",
+            "summary": "Søg i sidens opslag fra søgesiden.",
+            "body": "\n<p><strong>Søg</strong> gennemgår sidens <strong>opslag</strong> og viser resultater under indtastning.</p>\n<p>Vil du finde personer, har <a href=\"/help/finding-people\">Brugere-siden</a> sin egen søgning og forslag.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Tofaktorgodkendelse",
+            "category": "stayingSafe",
+            "summary": "Tilføj en login-kode via e-mail som ekstra sikkerhed.",
+            "body": "\n<p>Tofaktorgodkendelse (2FA) betyder, at adgangskoden ikke er nok. Slå den til i <strong>Brugerindstillinger</strong>.</p>\n<p>Ved hvert login sender vi en kort talkode til din <a href=\"/help/verifying-your-email\">bekræftede e-mail</a>. Ingen godkendelsesapp er nødvendig.</p>\n<p>2FA kan slås fra samme sted.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Indloggede enheder og sessioner",
+            "category": "stayingSafe",
+            "summary": "Se hvor du er logget ind, og log ud overalt på én gang.",
+            "body": "\n<p><strong>Brugerindstillinger</strong> har to værktøjer.</p>\n<h2>Huskede enheder</h2>\n<p>Enheder, hvor du forbliver logget ind, vises her. Tilbagekald alle undtagen den aktuelle; log ud for at glemme den, du bruger.</p>\n<h2>Sessioner</h2>\n<p>En knap <strong>logger ud overalt</strong> og afslutter alle sessioner og huskede enheder. Brug den ved mistanke om adgang, og <a href=\"/help/settings-and-appearance\">skift derefter adgangskoden</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Din profil",
+            "category": "yourAccount",
+            "summary": "Indstil vist navn, biografi og avatar, så folk ved hvem du er.",
+            "body": "\n<p>Din profil viser opslag og lidt om dig. Åbn din <strong>egen profil</strong> via navnet øverst, og rediger profilkortet.</p>\n<ul>\n<li>Det <strong>viste navn</strong> står over brugernavnet; tomt betyder, at brugernavnet vises.</li>\n<li><strong>Biografien</strong> er en kort linje, hvor links, #hashtags og @omtaler kan klikkes.</li>\n</ul>\n<p>Upload en <strong>avatar</strong>. Brugernavnet er fast, mens vist navn, biografi og avatar kan ændres.</p>\n<h2>Fastgjorte opslag</h2>\n<p><strong>Fastgør</strong> flytter op til fem opslag øverst på profilen; <strong>Frigør</strong> fjerner dem. De vises også i Fediverse.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Skift din e-mail",
+            "category": "yourAccount",
+            "summary": "Opdatér kontoens e-mailadresse med ny bekræftelse.",
+            "body": "\n<p>Under <strong>Skift e-mail</strong> angiver du den nye adresse og nuværende adgangskode. Åbn bekræftelseslinket sendt til den <strong>nye</strong> adresse.</p>\n<p>Den <strong>gamle</strong> adresse får også et link til at fortryde uden adgangskode. Det fører adressen tilbage og logger alle enheder ud. Bekræft hurtigt, da nulstilling kræver en bekræftet adresse.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Slet din konto",
+            "category": "yourAccount",
+            "summary": "Luk kontoen permanent, og fjern dit indhold.",
+            "body": "\n<p>Brug <strong>Slet konto</strong> i indstillingerne, og bekræft med adgangskoden. Det kan ikke fortrydes.</p>\n<p>Sletning er <strong>permanent</strong>. Opslag, svar, beskeder, likes og forbindelser fjernes, også andres svar under dine opslag. Brugernavnet pensioneres og kan aldrig tildeles en fremmed.</p>\n<p>En slettet konto kan ikke gendannes.</p>\n<p>Administratorens konto kan ikke slettes, fordi siden skal have mindst én administrator.</p>\n"
+        }
+    }
+}

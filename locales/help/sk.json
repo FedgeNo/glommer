@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Začíname",
+        "posting": "Prispievanie",
+        "connecting": "Spojenie s ľuďmi",
+        "stayingSafe": "Bezpečnosť",
+        "yourAccount": "Váš účet"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Vytvorenie účtu",
+            "category": "gettingStarted",
+            "summary": "Zaregistrujte sa pomocou používateľského mena, e-mailu a hesla a začnite prispievať.",
+            "body": "\n<p>Otvorte odkaz <strong>Zaregistrovať sa</strong>, zvoľte si používateľské meno a zadajte e-mail a heslo. Používateľské meno slúži na vyhľadávanie a zmienky.</p>\n<p>Zobrazované meno a krátky životopis sú voliteľné a môžete ich doplniť neskôr v <a href=\"/help/your-profile\">profile</a>. Po registrácii môžete stránku používať ihneď; ak stránka overuje e-mailové adresy, najprv potvrďte odkaz v e-maile.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Overenie e-mailu",
+            "category": "gettingStarted",
+            "summary": "Ak je odosielanie e-mailov zapnuté, potvrďte svoju adresu pomocou odkazu, ktorý vám pošleme.",
+            "body": "\n<p>Po registrácii vám stránka môže poslať overovací odkaz. Jeho otvorením potvrdíte účet a zabezpečíte, že vám budú môcť prísť obnovenia hesla aj upozornenia.</p>\n<p>Ak správu nevidíte, skontrolujte nevyžiadanú poštu alebo požiadajte o nový odkaz. Ak stránka e-maily neposiela, overenie nie je potrebné.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Orientácia na stránke",
+            "category": "gettingStarted",
+            "summary": "Stručná prehliadka ponuky: kanály, priatelia, používatelia, správy a váš účet.",
+            "body": "\n<p>Horná ponuka vedie na hlavný kanál, kanál priateľov, používateľov, značky, témy, mapu, vyhľadávanie, správy, záložky, upozornenia, pomoc a informácie o stránke.</p>\n<p>Vaše meno vpravo hore otvorí profil a ponuku priateľov, konceptov, naplánovaných príspevkov, používateľských nastavení a odhlásenia.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Vytvorenie príspevku",
+            "category": "posting",
+            "summary": "Napíšte a zverejnite príspevok v poli navrchu kanála.",
+            "body": "\n<p>Napíšte text v editore navrchu hlavného kanála a stlačte tlačidlo na zverejnenie. Obsah stránky je verejný.</p>\n<p>Voliteľne môžete pridať názov, odkaz, anketu, označenie citlivého obsahu alebo mediálne súbory. Jeden príspevok môže obsahovať odkaz, médiá alebo anketu, nie ich kombináciu.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Formátovanie textu",
+            "category": "posting",
+            "summary": "Použite v príspevku tučné písmo, kurzívu, zoznamy, citácie, kód, emoji a matematiku.",
+            "body": "\n<p>Panel editora ponúka tučné písmo, kurzívu, podčiarknutie, prečiarknutie, zoznamy, citácie a bloky kódu. Emoji pridáte cez výber emoji.</p>\n<p>Matematiku zapíšte v LaTeXu: samostatný vzorec medzi <code>$$ ... $$</code> alebo <code>\\[ ... \\]</code> a vzorec v riadku medzi <code>\\( ... \\)</code>.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Pridávanie fotografií, videa a zvuku",
+            "category": "posting",
+            "summary": "Priložte k príspevku jeden či viac obrázkov, video alebo zvuk.",
+            "body": "\n<p>Ovládacím prvkom príloh pridajte obrázky, video alebo zvuk. Viaceré obrázky vytvoria galériu; k jednému príspevku možno priložiť najviac 100 súborov.</p>\n<p>Spracovanie väčších súborov môže chvíľu trvať. Príspevok s médiami nemôže zároveň obsahovať odkaz.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Zdieľanie odkazu",
+            "category": "posting",
+            "summary": "Vložte adresu URL do poľa odkazu a zdieľajte stránku s náhľadom.",
+            "body": "\n<p>Adresu webovej stránky vložte do poľa <strong>Odkaz</strong>. Stránka načíta názov, opis a dostupný obrázok náhľadu. Môžete pridať vlastný komentár alebo obrázok náhľadu odstrániť.</p>\n<p>Príspevok môže obsahovať odkaz, médiá alebo anketu, vždy iba jednu z týchto možností.</p>\n"
+        },
+        "polls": {
+            "title": "Položenie otázky pomocou ankety",
+            "category": "posting",
+            "summary": "Pridajte k príspevku anketu a nechajte ľudí odpovedať tu aj vo Fediverse.",
+            "body": "\n<p>Tlačidlom <strong>Pridať anketu</strong> vytvoríte otázku s najviac štyrmi rôznymi možnosťami. Môžete povoliť viac odpovedí a zvoliť trvanie od piatich minút do siedmich dní.</p>\n<p>Po hlasovaní už odpoveď nemožno zmeniť. Po hlasovaní alebo skončení ankety sa zobrazia výsledky. Ankety fungujú aj medzi servermi Fediverse.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Upozornenia na obsah a citlivé médiá",
+            "category": "posting",
+            "summary": "Označte príspevok ako citlivý alebo pridajte varovanie, ktoré ho skryje, kým ho čitateľ neotvorí.",
+            "body": "\n<p>Označenie <strong>Citlivé</strong> zakryje priložené médiá. Ak pridáte text upozornenia, skryje sa zaň celý príspevok vrátane textu a ankety.</p>\n<p>Používatelia si môžu v nastaveniach zvoliť automatické zobrazovanie citlivých médií. Označenia aj upozornenia sa prenášajú cez Fediverse.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Odpovede a vlákna",
+            "category": "posting",
+            "summary": "Odpovedzte na príspevok a začnite pod ním konverzačné vlákno.",
+            "body": "\n<p>Akcia <strong>Odpovedať</strong> otvorí editor a pripojí odpoveď pod pôvodný príspevok. Odpovede možno formátovať a doplniť médiami rovnako ako príspevky.</p>\n<p>Samostatná stránka príspevku zobrazuje celé vlákno. Odpovede sa objavujú aj v kanáloch a na profiloch s odkazom na začiatok vlákna.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Označenie príspevkov, ktoré sa vám páčia",
+            "category": "posting",
+            "summary": "Jedným stlačením tlačidla vyjadrite, že sa vám príspevok páči.",
+            "body": "\n<p>Stlačením tlačidla páči sa mi príspevok označíte; ďalším stlačením označenie zrušíte. Počet sa aktualizuje ihneď a autor dostane upozornenie.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Odstránenie príspevku",
+            "category": "posting",
+            "summary": "Odstráňte vlastný príspevok a zistite, čo sa stane s jeho odpoveďami.",
+            "body": "\n<p>Pri vlastných príspevkoch nájdete akciu <strong>Odstrániť</strong>. Odstránenie je trvalé a spolu s príspevkom odstráni aj všetky odpovede pod ním.</p>\n<p>Odstrániť môžete iba vlastné príspevky. Problém s cudzím príspevkom radšej <a href=\"/help/reporting-abuse\">nahláste</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Preklad príspevku alebo správy",
+            "category": "posting",
+            "summary": "Prečítajte si obsah v inom jazyku a zistite, čo sa pri preklade deje s textom.",
+            "body": "\n<p>Tlačidlo prekladu nahradí text príspevku prekladom a umožní vrátiť originál. Preklad prebieha na tomto serveri.</p>\n<p>Preložiť možno aj prijaté správy. Pri šifrovanej správe tým vedome sprístupníte jej text serveru; preklad správy sa neukladá. Tlačidlo sa zobrazuje iba na serveroch s nainštalovaným prekladačom.</p>\n"
+        },
+        "finding-people": {
+            "title": "Hľadanie ľudí",
+            "category": "connecting",
+            "summary": "Vyhľadajte používateľov podľa mena alebo si pozrite návrhy na stránke Používatelia.",
+            "body": "\n<p>Na stránke <strong>Používatelia</strong> píšte meno alebo používateľské meno; výsledky sa zobrazujú priebežne. Pred vyhľadávaním uvidíte návrhy založené na spoločných priateľoch.</p>\n<p>Z karty osoby môžete pridať priateľa, poslať správu alebo otvoriť profil.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Priatelia a žiadosti o priateľstvo",
+            "category": "connecting",
+            "summary": "Posielajte, prijímajte a spravujte žiadosti o priateľstvo a odstraňujte priateľov.",
+            "body": "\n<p>Priateľstvo na {site} je vzájomné. Tlačidlom <strong>Pridať priateľa</strong> odošlete žiadosť, ktorú možno pred prijatím zrušiť.</p>\n<p>Stránka <strong>Priatelia</strong> zobrazuje prijaté a odoslané žiadosti aj súčasných priateľov. Priateľstvo môžete kedykoľvek ukončiť.</p>\n"
+        },
+        "messaging": {
+            "title": "Správy",
+            "category": "connecting",
+            "summary": "Posielajte súkromné správy a sledujte svoje konverzácie.",
+            "body": "\n<p>Tlačidlom <strong>Správa</strong> na profile alebo karte osoby otvoríte konverzáciu. Nové správy prichádzajú naživo a druhá osoba dostane upozornenie.</p>\n<p>Konverzácie sú zoradené od najnovšej. Správy sú súkromné pre ostatných členov; voliteľné koncové šifrovanie ich skryje aj pred serverom.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Šifrované správy",
+            "category": "connecting",
+            "summary": "Zapnite koncové šifrovanie konverzácií a zistite, na čo slúži prístupová fráza.",
+            "body": "\n<p>V používateľských nastaveniach zapnite šifrované správy a vytvorte si prístupovú frázu. Kľúče vznikajú vo vašom prehliadači a server nepozná obsah správ ani frázu.</p>\n<p>Frázu si bezpečne zapamätajte; bez nej správy neodomknete. Používajte ju iba na dôveryhodných zariadeniach a odlišne od hesla účtu.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Kanál relé",
+            "category": "connecting",
+            "summary": "Miesto, kam prichádzajú príspevky zo širšieho Fediverse, keď server odoberá relé.",
+            "body": "\n<p>Relé prepája servery Fediverse a dodáva verejné príspevky do kanála relé. Správca vyberá relé a spôsob odberu.</p>\n<p>Obsah relé rozširuje objavovanie tém, no neznamená, že automaticky sledujete jeho autorov.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Vaše kanály",
+            "category": "connecting",
+            "summary": "Rozdiel medzi globálnym kanálom a kanálom vašich priateľov.",
+            "body": "\n<p><strong>Globálny kanál</strong> zobrazuje verejné príspevky dostupné na stránke. <strong>Kanál priateľov</strong> sa sústreďuje na príspevky vašich priateľov a sledovaných účtov.</p>\n<p>Oba kanály sa priebežne aktualizujú a príspevky možno otvoriť samostatne aj s celým vláknom.</p>\n"
+        },
+        "notifications": {
+            "title": "Upozornenia",
+            "category": "connecting",
+            "summary": "Ako sa dozviete o označeniach páči sa mi, odpovediach, žiadostiach o priateľstvo a správach.",
+            "body": "\n<p>Upozornenia vás informujú o reakciách, odpovediach, zmienkach, žiadostiach o priateľstvo, správach a spracovaných médiách. Nové položky označí bodka v ponuke.</p>\n<p>Ak ich server podporuje, v nastaveniach môžete pre toto zariadenie zapnúť push upozornenia.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videohovory",
+            "category": "connecting",
+            "summary": "Začnite súkromný videohovor s osobou, keď máte obaja otvorenú konverzáciu.",
+            "body": "\n<p>Keď máte obaja otvorenú konverzáciu, tlačidlom hovoru môžete vytvoriť priame spojenie WebRTC. Prehliadač si vyžiada povolenie kamery a mikrofónu.</p>\n<p>Server sprostredkuje iba dohodnutie spojenia; obraz a zvuk medzi účastníkmi neprenáša. Test v nastaveniach overí prehliadač, HTTPS, STUN a signalizáciu.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Zablokovanie osoby",
+            "category": "stayingSafe",
+            "summary": "Prerušte kontakt s používateľom a skryte ho zo svojho zobrazenia.",
+            "body": "\n<p>Zablokovaním používateľa ukončíte priateľstvo, zabránite správam a skryjete jeho obsah vo svojom zobrazení. Blokovanie možno neskôr zrušiť.</p>\n<p>Ak používateľ porušuje pravidlá, konkrétny obsah zároveň <a href=\"/help/reporting-abuse\">nahláste</a> moderátorom.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Nahlásenie zneužitia",
+            "category": "stayingSafe",
+            "summary": "Nahláste konkrétny nevhodný príspevok, správu alebo používateľa, aby moderátori mohli konať.",
+            "body": "\n<p>Použite akciu <strong>Nahlásiť</strong> priamo na problematickom príspevku, správe alebo profile. Uveďte krátky dôvod, aby moderátor presne vedel, čo má skontrolovať.</p>\n<p>Hlásenie je súkromné a nahlásená osoba sa nedozvie, kto ho odoslal. Ak obsah nechcete vidieť, môžete používateľa aj zablokovať.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Nastavenia a vzhľad",
+            "category": "yourAccount",
+            "summary": "Prehliadka používateľských nastavení – heslo, e-mail, bezpečnosť, motívy a ďalšie možnosti.",
+            "body": "\n<p>V <strong>Používateľských nastaveniach</strong> môžete meniť heslo a e-mail, zapnúť dvojfaktorové overenie, zvoliť motív, spravovať citlivé médiá, šifrované správy, e-mailové súhrny, push upozornenia, zariadenia, videohovory a Fediverse.</p>\n<p>Motív môže sledovať systém alebo použiť jeden zo vstavaných vzhľadov. E-mailové súhrny sa posielajú najviac raz týždenne po dlhšej neprítomnosti a možno ich vypnúť.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Sledovanie cez RSS",
+            "category": "yourAccount",
+            "summary": "Odoberajte stránku alebo konkrétnu osobu v ľubovoľnej čítačke RSS.",
+            "body": "\n<p>{site} poskytuje kanály RSS. Najnovšie príspevky celej stránky sú na <code>/feed.xml</code> a príspevky osoby na <code>/users/pouzivatelske-meno/feed.xml</code>.</p>\n<p>Prehliadače a čítačky ich často nájdu automaticky po vložení adresy stránky alebo profilu.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Úprava príspevku",
+            "category": "posting",
+            "summary": "Po zverejnení opravte preklep alebo preformulujte vlastný príspevok.",
+            "body": "\n<p>Akcia <strong>Upraviť</strong> pri vašom príspevku ho znova otvorí v editore. Môžete zmeniť názov, text, formátovanie a odkaz.</p>\n<p>Upravený príspevok nahradí pôvodný a označí sa poznámkou o úprave. Priložené médiá nemožno vymeniť; v takom prípade príspevok odstráňte a vytvorte nový.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Opätovné zdieľanie a citovanie",
+            "category": "posting",
+            "summary": "Odovzdajte príspevok priateľom a sledujúcim bez zmeny alebo s vlastným komentárom.",
+            "body": "\n<p><strong>Opätovne zdieľať</strong> odošle cudzí príspevok bez zmeny do kanálov vašich priateľov a sledujúcim. Akciu možno zrušiť; vlastný príspevok opätovne zdieľať nemožno.</p>\n<p><strong>Citovať</strong> vytvorí nový príspevok s vloženým originálom a vyžaduje vlastný text. K citácii možno priložiť obrázky, nie video ani zvuk.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Ukladanie príspevkov do záložiek",
+            "category": "posting",
+            "summary": "Uložte príspevky do súkromného zoznamu záložiek a nájdite ich neskôr.",
+            "body": "\n<p>Akcia <strong>Záložka</strong> uloží príspevok do vášho súkromného zoznamu a ďalším stlačením ho odstráni. Autor nedostane upozornenie.</p>\n<p>Záložky sú zoradené od najnovšej. Ak autor príspevok odstráni, zmizne aj zo zoznamu.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hashtagy a zmienky",
+            "category": "posting",
+            "summary": "Označujte príspevky pomocou #hashtagov a zapájajte ľudí pomocou @zmienok.",
+            "body": "\n<p><strong>#Hashtag</strong> sa zmení na odkaz na príspevky s rovnakou značkou. Do stránok značiek a populárnych tém sa započítava prvých desať rôznych hashtagov.</p>\n<p><strong>@pouzivatel</strong> odkazuje na profil a odošle danej osobe upozornenie. Účty z iných serverov spomeniete úplným identifikátorom <code>@pouzivatel@server</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Populárne témy",
+            "category": "connecting",
+            "summary": "Pozrite si témy a názvy, o ktorých sa práve najviac hovorí.",
+            "body": "\n<p>Stránka <strong>Témy</strong> zoskupuje a hodnotí hashtagy, mená, miesta a ďalšie položky z nedávnych príspevkov. Každá položka vedie na súvisiace príspevky.</p>\n<p>Zoznam zahŕňa aj dostupné príspevky z iných serverov a vyžaduje aktivitu viacerých ľudí. Moderátori môžu nevhodnú položku zakázať.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Sledovanie ľudí vo Fediverse",
+            "category": "connecting",
+            "summary": "Sledujte účty na Mastodone a iných serveroch Fediverse.",
+            "body": "\n<p>{site} používa ActivityPub. V časti <strong>Fediverse</strong> používateľských nastavení vložte identifikátory ako <code>@pouzivatel@example.social</code> a stlačte <strong>Sledovať</strong>.</p>\n<p>Aj vy máte adresu Fediverse, cez ktorú vás môžu sledovať ľudia na iných serveroch. Vaše príspevky, ankety, médiá a profilové zmeny sa doručujú sledujúcim a ich reakcie sa vracajú sem.</p>\n"
+        },
+        "searching": {
+            "title": "Vyhľadávanie",
+            "category": "connecting",
+            "summary": "Vyhľadávajte príspevky stránky na stránke Vyhľadávanie.",
+            "body": "\n<p>Položka <strong>Vyhľadávanie</strong> v ponuke prehľadáva príspevky a zobrazuje výsledky počas písania. Ľudí hľadajte na <a href=\"/help/finding-people\">stránke Používatelia</a>.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Dvojfaktorové overenie",
+            "category": "stayingSafe",
+            "summary": "Pridajte e-mailový prihlasovací kód ako ďalšiu vrstvu zabezpečenia.",
+            "body": "\n<p>Dvojfaktorové overenie pridá k heslu ďalší krok. Zapnete ho v používateľských nastaveniach.</p>\n<p>Pri každom prihlásení dostanete e-mailom krátky číselný kód. Funkcia preto vyžaduje overenú e-mailovú adresu a možno ju kedykoľvek znova vypnúť.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Prihlásené zariadenia a relácie",
+            "category": "stayingSafe",
+            "summary": "Skontrolujte, kde ste prihlásení, a odhláste sa všade naraz.",
+            "body": "\n<p><strong>Zapamätané zariadenia</strong> uvádzajú zariadenia s trvalým prihlásením. Každé okrem práve používaného môžete odvolať.</p>\n<p>V časti <strong>Relácie</strong> sa môžete odhlásiť všade naraz. Ak máte podozrenie na cudzí prístup, potom si zmeňte heslo.</p>\n"
+        },
+        "your-profile": {
+            "title": "Váš profil",
+            "category": "yourAccount",
+            "summary": "Nastavte zobrazované meno, životopis a avatar, aby ľudia vedeli, kto ste.",
+            "body": "\n<p>Na vlastnom profile upravíte zobrazované meno a krátky životopis; odkazy, hashtagy a zmienky v ňom sú klikateľné. Môžete tiež nahrať avatar.</p>\n<p>Používateľské meno sa po registrácii nemení. Tlačidlom <strong>Pripnúť</strong> môžete navrchu profilu zvýrazniť najviac päť vlastných príspevkov.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Zmena e-mailu",
+            "category": "yourAccount",
+            "summary": "Aktualizujte e-mailovú adresu účtu a znova ju overte.",
+            "body": "\n<p>V časti <strong>Zmena e-mailu</strong> zadajte novú adresu a aktuálne heslo. Zmenu potvrďte overovacím odkazom zaslaným na novú adresu.</p>\n<p>Na starú adresu príde bezpečnostná správa s odkazom na vrátenie zmeny. Ten obnoví pôvodnú adresu a odhlási všetky zariadenia.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Odstránenie účtu",
+            "category": "yourAccount",
+            "summary": "Natrvalo zatvorte účet a odstráňte svoj obsah.",
+            "body": "\n<p>V používateľských nastaveniach otvorte časť <strong>Odstránenie účtu</strong> a potvrďte heslom. Odstránenie je trvalé.</p>\n<p>Odstránia sa príspevky, odpovede, správy, označenia páči sa mi aj spojenia. Používateľské meno zostane vyradené a účet nemožno obnoviť. Účet správcu stránky nemožno odstrániť.</p>\n"
+        }
+    }
+}

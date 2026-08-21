@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Primeros pasos",
+        "posting": "Publicaciones",
+        "connecting": "Conexiones",
+        "stayingSafe": "Seguridad",
+        "yourAccount": "Tu cuenta"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Crear una cuenta",
+            "category": "gettingStarted",
+            "summary": "Regístrate con un nombre de usuario, correo electrónico y contraseña para empezar a publicar.",
+            "body": "\n<p>Para unirte, abre el enlace <strong>Registrarse</strong> de la esquina superior derecha, elige un nombre de usuario, introduce tu correo electrónico y crea una contraseña. El nombre de usuario es la forma en que otras personas te encuentran y mencionan, así que elige uno por el que quieras que te conozcan.</p>\n<p>El formulario también permite indicar un <strong>nombre mostrado</strong> y una breve biografía. Ambos son opcionales: puedes dejarlos vacíos y definirlos después al editar <a href=\"/help/your-profile\">tu perfil</a>. El nombre mostrado es el nombre más cercano que aparece sobre tu nombre de usuario en las publicaciones y el perfil; si lo dejas vacío, se mostrará el nombre de usuario.</p>\n<p>Después de registrarte podrás leer y publicar de inmediato, salvo que este sitio verifique las direcciones de correo; en ese caso tendrás que hacerlo primero (consulta <a href=\"/help/verifying-your-email\">Verificar tu correo electrónico</a>). La primera cuenta creada en un sitio nuevo se convierte automáticamente en su administradora.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Verificar tu correo electrónico",
+            "category": "gettingStarted",
+            "summary": "Confirma tu dirección mediante el enlace que te enviamos, si el correo está activado.",
+            "body": "\n<p>Si este sitio está configurado para enviar correo, recibirás un enlace de verificación justo después de registrarte. Hasta que lo abras, todas las páginas te llevarán a un aviso para que revises tu bandeja de entrada. Al abrirlo se confirma la cuenta y puedes entrar con normalidad. También demuestra que la dirección es tuya, para que te lleguen los restablecimientos de contraseña y las notificaciones.</p>\n<p>¿No llegó? Revisa primero la carpeta de correo no deseado. Puedes pedir un enlace nuevo desde la página <strong>Revisa tu bandeja de entrada</strong>, que aparece hasta que completes la verificación.</p>\n<p>Algunos sitios no envían correo. Si este es uno de ellos, no hay nada que verificar y puedes usarlo todo inmediatamente.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Orientarte por el sitio",
+            "category": "gettingStarted",
+            "summary": "Un recorrido rápido por el menú: fuentes, amistades, usuarios, mensajes y tu cuenta.",
+            "body": "\n<p>La barra superior permite llegar a todas partes:</p>\n<ul>\n<li><strong>El nombre del sitio</strong>, a la izquierda, siempre te lleva a la fuente principal y abre el menú del resto del sitio.</li>\n<li><strong>Fuente de amistades</strong> muestra únicamente las publicaciones de tus amistades.</li>\n<li><strong>Usuarios</strong> permite buscar personas y ver sugerencias de contactos.</li>\n<li><strong>Etiquetas</strong> y <strong>Temas</strong> ayudan a descubrir publicaciones y lo que es popular.</li>\n<li><strong>Mapa</strong> y <strong>Ubicaciones</strong> muestran las publicaciones según el lugar desde el que se enviaron.</li>\n<li><strong>Buscar</strong> examina las publicaciones del sitio.</li>\n<li><strong>Mensajes</strong> contiene tus conversaciones privadas y se marca cuando hay uno pendiente.</li>\n<li><strong>Marcadores</strong> es tu lista privada de publicaciones guardadas.</li>\n<li><strong>Notificaciones</strong> se ilumina cuando alguien interactúa contigo.</li>\n<li><strong>Ayuda</strong> y <strong>Acerca de</strong> están disponibles con o sin sesión.</li>\n</ul>\n<p>Tu nombre aparece arriba a la derecha, enlaza a tu perfil y abre un menú con <strong>Amistades</strong>, tus borradores y publicaciones programadas, los <strong>Ajustes de usuario</strong> y la opción de <strong>cerrar sesión</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Redactar una publicación",
+            "category": "posting",
+            "summary": "Escribe y publica desde el cuadro situado al principio de la fuente.",
+            "body": "\n<p>El editor está al principio de la fuente principal. Escribe en el área de texto y pulsa el botón para publicar. Las publicaciones aparecen inmediatamente en la fuente pública; todo el sitio es público, así que escribe teniendo esto en cuenta.</p>\n<p>El área ofrece algunas opciones:</p>\n<ul>\n<li>Un <strong>título</strong>, si quieres añadir un encabezado.</li>\n<li>Un <strong>enlace</strong>, si compartes una página web (consulta <a href=\"/help/sharing-a-link\">Compartir un enlace</a>).</li>\n<li>Una <strong>encuesta</strong>, si quieres preguntar algo (consulta <a href=\"/help/polls\">Preguntar con una encuesta</a>).</li>\n<li>La marca <strong>Sensible</strong>, si el contenido debe abrirse antes de mostrarse (consulta <a href=\"/help/content-warnings\">Advertencias de contenido y medios sensibles</a>).</li>\n</ul>\n<p>Puedes dar formato al texto, usar emojis y fórmulas, y adjuntar fotos, vídeo o audio. Cada función tiene su propio artículo. Una publicación solo puede contener un enlace, archivos adjuntos <em>o</em> una encuesta; nunca una combinación.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Dar formato al texto",
+            "category": "posting",
+            "summary": "Usa negrita, cursiva, listas, citas, código, emojis y matemáticas.",
+            "body": "\n<p>El área de escritura es un editor enriquecido. Su barra ofrece <strong>negrita</strong>, <em>cursiva</em>, subrayado, tachado, listas numeradas y con viñetas, citas y bloques de código para presentar claramente el texto.</p>\n<h2>Emojis</h2>\n<p>Abre el selector de emojis del editor para insertarlos. El selector recuerda el tono de piel que prefieras.</p>\n<h2>Matemáticas</h2>\n<p>Puedes escribir notación matemática con LaTeX. Encierra las fórmulas separadas entre <code>$$ ... $$</code> o <code>\\[ ... \\]</code>, y las fórmulas en línea entre <code>\\( ... \\)</code> o <code>$ ... $</code>. Se mostrarán como ecuaciones. Como un solo dólar también es un delimitador, dos precios pueden confundirse con los extremos de una fórmula; usa <code>\\( ... \\)</code> si existe ese riesgo.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Añadir fotos, vídeo y audio",
+            "category": "posting",
+            "summary": "Adjunta una o varias imágenes, un vídeo o audio a una publicación.",
+            "body": "\n<p>Usa el control de adjuntos del editor para añadir <strong>imágenes, vídeo o audio</strong>. Puedes adjuntar varios archivos; varias imágenes forman una galería deslizable en la publicación terminada. Se admiten hasta 100 archivos por publicación; los restantes no se añaden.</p>\n<p>Los archivos grandes de vídeo y audio se procesan después de publicar, por lo que quizá tardes un poco en poder reproducirlos. Recibirás una notificación cuando el contenido termine de procesarse y esté disponible.</p>\n<p>Si cambias de idea antes de publicar, usa el control de cancelación junto al selector para quitar el adjunto. Recuerda que una publicación con archivos no puede contener también un enlace; elige lo que corresponda a lo que compartes.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Compartir un enlace",
+            "category": "posting",
+            "summary": "Pega una URL en el campo del enlace para compartir una página con vista previa.",
+            "body": "\n<p>Para compartir una página web, escribe su dirección en el campo <strong>Enlace</strong> sobre el área de texto. Obtendremos la página y ofreceremos una vista previa —título, descripción breve y una imagen cuando exista— que aparecerá en tu publicación para que los demás sepan qué van a abrir.</p>\n<p>Puedes añadir tus propias palabras para explicar por qué la compartes. Si no quieres la imagen de vista previa, quítala antes de publicar.</p>\n<p>Una publicación puede contener un enlace, archivos adjuntos o una encuesta: solo una de las tres cosas.</p>\n"
+        },
+        "polls": {
+            "title": "Preguntar con una encuesta",
+            "category": "posting",
+            "summary": "Adjunta una encuesta y permite que respondan aquí y en todo el Fediverso.",
+            "body": "\n<p>Pulsa <strong>Añadir encuesta</strong> para convertir una publicación en una pregunta. Dispones de hasta cuatro opciones y el propio texto de la publicación es la pregunta; una encuesta sin palabras no pregunta nada y no se publicará.</p>\n<p>Debes decidir dos cosas:</p>\n<ul>\n<li><strong>Permitir más de una opción</strong>: márcalo para que puedan elegirse varias; déjalo vacío para exigir exactamente una.</li>\n<li><strong>Duración</strong>: desde cinco minutos hasta siete días. Todas las encuestas terminan, porque un resultado que nunca es definitivo no es un resultado.</li>\n</ul>\n<p>Dos opciones no pueden tener el mismo texto, ni siquiera con mayúsculas diferentes. Las respuestas identifican la opción por el texto, no por la posición, y dos iguales no se podrían distinguir.</p>\n<p>La encuesta sustituye a los archivos o al enlace; no los acompaña.</p>\n<h2>Responder</h2>\n<p>Elige una o varias opciones y pulsa <strong>Votar</strong>. La respuesta es definitiva: no se puede cambiar después, pues hacerlo tras ver el total provisional convertiría ese total en el objeto del voto.</p>\n<p>Tras responder, o cuando se cierre la encuesta, las opciones se sustituyen por los resultados: el porcentaje de cada una y su cifra, con tu elección marcada. Debajo figuran cuántas personas respondieron y el tiempo restante. En una encuesta de selección múltiple, personas y votos son cantidades distintas; por eso se cuentan personas.</p>\n<p>Sin iniciar sesión se muestran los resultados desde el principio, pues no puedes votar. Con sesión y sin respuesta, verás las opciones y podrás votar hasta el cierre.</p>\n<h2>En el Fediverso</h2>\n<p>Las encuestas viajan. Personas de otros servidores pueden responder a las tuyas y sus votos cuentan aquí; tú puedes responder a encuestas de cuentas remotas. En una encuesta ajena, los números pertenecen a su servidor: mostramos los últimos datos recibidos y el total puede retrasarse ligeramente respecto a tu voto.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Advertencias de contenido y medios sensibles",
+            "category": "posting",
+            "summary": "Marca una publicación como sensible o añade una advertencia que la oculte hasta abrirla.",
+            "body": "\n<p>Toda publicación incluye una marca <strong>Sensible</strong>, tenga o no imagen, vídeo o audio: las palabras necesitan advertencias tan a menudo como las imágenes.</p>\n<p>Por sí sola, la marca cubre cualquier archivo adjunto con una tapa que el lector debe abrir; las palabras siguen visibles. En una publicación sin adjuntos no cubre nada. Si el texto necesita la advertencia, usa el campo <strong>texto de advertencia</strong> que aparece al marcar Sensible.</p>\n<p>Al añadir texto de advertencia cambia el efecto: toda la publicación queda detrás de él —palabras, encuesta y demás— en vez de ocultarse solo el contenido multimedia. La advertencia más común es la de destripe, y lo que revela suele estar en las palabras.</p>\n<p>Nadie muestra por defecto el contenido de una advertencia, pues describe una publicación concreta. Los medios sensibles son distintos: la sección <strong>Contenido multimedia sensible</strong> de los <a href=\"/user-settings\">Ajustes de usuario</a> permite mostrarlos sin abrir la cubierta.</p>\n<h2>En el Fediverso</h2>\n<p>Ambas cosas viajan en las dos direcciones: tus cubiertas y advertencias aparecen igual para seguidores remotos, y las publicaciones remotas con la misma marca también se cubren aquí.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Respuestas e hilos",
+            "category": "posting",
+            "summary": "Responde a una publicación para iniciar un hilo de conversación debajo.",
+            "body": "\n<p>Toda publicación tiene una acción <strong>Responder</strong>. Abre allí mismo un editor y adjunta tu respuesta bajo la publicación original como parte del hilo. Las respuestas funcionan como las publicaciones: admiten formato, emojis y archivos.</p>\n<p>Abre cualquier publicación en su propia página para leer toda la conversación, con el original arriba y las respuestas debajo. Es la mejor forma de seguir un intercambio largo.</p>\n<h2>Respuestas en una fuente</h2>\n<p>Las respuestas aparecen en tu Fuente de amistades y en los perfiles junto con lo demás, para que veas la conversación mientras ocurre. Una línea <strong>En respuesta a</strong> indica a qué contestan; cuando el hilo es más profundo, el enlace <strong>Ir al inicio</strong> lleva a la publicación que comenzó todo.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Indicar que te gusta una publicación",
+            "category": "posting",
+            "summary": "Muestra tu aprecio con una pulsación del botón Me gusta.",
+            "body": "\n<p>Toda publicación tiene un botón <strong>Me gusta</strong> con su cifra. Púlsalo para indicar que te gusta y vuelve a pulsarlo para retirar la reacción. La cifra cambia de inmediato.</p>\n<p>Al indicar que te gusta una publicación, su autor recibe una notificación: una forma rápida y sencilla de mostrar que disfrutaste lo compartido.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Eliminar una publicación",
+            "category": "posting",
+            "summary": "Quita una publicación propia y descubre qué ocurre con sus respuestas.",
+            "body": "\n<p>En tus publicaciones verás una acción <strong>Eliminar</strong> donde en las ajenas aparece Denunciar. Al eliminarla desaparece para todos.</p>\n<p>La eliminación es permanente, por lo que se pide confirmación. Si tenía respuestas debajo, también desaparecen; eliminar una publicación que inició un hilo activo termina toda la conversación.</p>\n<p>Solo puedes eliminar tus publicaciones. Si otra publicación es problemática, <a href=\"/help/reporting-abuse\">denúnciala</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Traducir una publicación o un mensaje",
+            "category": "posting",
+            "summary": "Lee contenido escrito en otro idioma y entiende qué implica traducirlo.",
+            "body": "\n<p>Llegan publicaciones de servidores de todo el Fediverso y en todos los idiomas. Cuando contienen texto, su barra ofrece <strong>Traducir</strong>: al pulsarlo, el cuerpo se sustituye por la traducción y el botón permite recuperar el original.</p>\n<p>La traducción ocurre en este servidor, no en un servicio externo, y la de una publicación se conserva para responder de inmediato a la próxima persona que la solicite.</p>\n<p>Los mensajes recibidos tienen el mismo botón, con dos diferencias deliberadas. Tus propios mensajes nunca lo tienen, pues el objetivo es leer lo recibido, y nada se traduce hasta que lo pides; una conversación nunca se envía silenciosamente al traductor.</p>\n<p>Traducir un mensaje sí entrega su texto a este servidor, algo importante con los <a href=\"/help/encrypted-messages\">mensajes cifrados</a>: un mensaje cifrado es ilegible para el servidor y traducirlo es elegir revelárselo. No se guarda nada —ni la traducción, y el mensaje no cambia—, pero el servidor lo ha leído, así que ya no mantiene el cifrado de extremo a extremo de uno sin traducir. Se te advierte una vez antes de la primera traducción.</p>\n<p>El botón solo aparece si el servidor tiene instalado un traductor; algunos sitios no lo muestran.</p>\n"
+        },
+        "finding-people": {
+            "title": "Encontrar personas",
+            "category": "connecting",
+            "summary": "Busca usuarios por nombre o consulta las sugerencias de la página Usuarios.",
+            "body": "\n<p>Abre <strong>Usuarios</strong> en el menú. Al escribir un nombre o usuario, aparecen coincidencias: primero los miembros de este sitio y después las personas conocidas del Fediverso.</p>\n<p>Antes de escribir, la página muestra <strong>sugerencias</strong>: amistades de tus amistades, ordenadas por el número de contactos comunes. Cuantas más conexiones tengas, más pertinentes serán.</p>\n<p>Si está vacío, no es un error: no queda nadie que sugerir, porque aún no añadiste a nadie o ya añadiste a todas las personas conocidas por tus amistades. Busca por nombre para encontrar a cualquiera, aparezca o no entre las sugerencias.</p>\n<p>Desde cada tarjeta puedes añadir una amistad, enviar un mensaje o abrir el perfil y ver sus publicaciones.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Amistades y solicitudes",
+            "category": "connecting",
+            "summary": "Envía, acepta y gestiona solicitudes de amistad, y elimina amistades.",
+            "body": "\n<p>La amistad en {site} es mutua y comienza con una solicitud. Usa <strong>Añadir amistad</strong> en una tarjeta o perfil. Mientras está pendiente puedes <strong>Cancelar la solicitud</strong>; cuando la acepten, seréis amistades.</p>\n<p>La página <strong>Amistades</strong> centraliza todo:</p>\n<ul>\n<li>Las solicitudes recibidas aparecen arriba con <strong>Aceptar</strong> y <strong>Rechazar</strong>, visibles solo para ti.</li>\n<li>Debajo figuran tus amistades actuales; esta parte es pública.</li>\n<li>También aparecen, solo para ti, las solicitudes enviadas sin respuesta.</li>\n</ul>\n<p>Cada tarjeta de amistad tiene <strong>Eliminar amistad</strong> para terminar la conexión. Sus publicaciones aparecen en tu <a href=\"/help/your-feeds\">Fuente de amistades</a>.</p>\n"
+        },
+        "messaging": {
+            "title": "Mensajería",
+            "category": "connecting",
+            "summary": "Envía mensajes privados y sigue tus conversaciones.",
+            "body": "\n<p>Para escribir a alguien, usa <strong>Mensaje</strong> en su tarjeta o perfil, o abre <strong>Mensajes</strong> y elige una conversación. Escribe en el cuadro inferior y envía: la otra persona recibe una notificación y los mensajes nuevos aparecen en directo sin recargar.</p>\n<p>La página ordena las conversaciones desde la más reciente, para que puedas retomarlas fácilmente.</p>\n<p>Los mensajes son privados para otros miembros. Su privacidad respecto al servidor depende de la conversación y el hilo siempre indica el caso:</p>\n<ul>\n<li><strong>Cifrado de extremo a extremo</strong>: cuando ambos activan los <a href=\"/help/encrypted-messages\">mensajes cifrados</a>, los nuevos mensajes se bloquean y desbloquean en los navegadores; el servidor y sus copias solo guardan texto cifrado.</li>\n<li><strong>Sin cifrar</strong>: como en la mayoría de sitios sociales, el servidor los almacena de forma legible y su operador podría acceder técnicamente a ellos.</li>\n<li><strong>Federada</strong>: una conversación con otro servidor también se almacena allí, bajo su operador, y nunca puede cifrarse de extremo a extremo porque el protocolo del Fediverso no lo transporta. No incluyas nada que deba permanecer secreto para todos salvo el destinatario.</li>\n</ul>\n<p>Si alguien te molesta, puedes <a href=\"/help/blocking-someone\">bloquearlo</a> o <a href=\"/help/reporting-abuse\">denunciar</a> un mensaje concreto, incluidos los cifrados.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Mensajes cifrados",
+            "category": "connecting",
+            "summary": "Activa el cifrado de extremo a extremo y entiende qué significa la frase secreta.",
+            "body": "\n<p>Activa <strong>Mensajes cifrados</strong> en los <a href=\"/user-settings\">Ajustes de usuario</a> eligiendo una frase secreta. El navegador crea una clave, la bloquea con esa frase y solo almacena en el servidor la copia bloqueada. La frase nunca sale del dispositivo y el servidor nunca posee una clave capaz de leer tus mensajes.</p>\n<p>Una conversación se cifra de extremo a extremo cuando <em>ambas</em> personas lo activan: hacen falta las dos claves. Desde entonces, los mensajes nuevos solo se desbloquean y leen en los navegadores; los anteriores permanecen como estaban. Las conversaciones con otros servidores nunca se cifran porque el protocolo no sabe transportarlo, y esos hilos lo indican.</p>\n<p>Al abrir una conversación cifrada se pide la frase una vez por pestaña. Como la copia bloqueada de la clave reside en el servidor, la misma frase funciona en cualquier navegador o dispositivo.</p>\n<p><strong>Elige la frase con cuidado.</strong> Es la única protección de todos tus mensajes cifrados en todos los dispositivos: no hay segundo paso, bloqueo ni restablecimiento que conserve los mensajes. Una frase larga de varias palabras supera a una corta y complicada, y debe tener doce caracteres como mínimo. No puede ser la contraseña de la cuenta: esa se envía al servidor al iniciar sesión y la frase nunca debe hacerlo.</p>\n<p>Este diseño no olvida. Como la frase desbloquea el historial desde cualquier navegador, siguen existiendo las claves antiguas. Si alguien descubre la frase, podrá abrir todo, no solo lo posterior. Las aplicaciones que evitan esto desechan claves antiguas; por eso un teléfono nuevo empieza con conversaciones vacías. Conservar el historial y desechar claves son opciones opuestas; este sitio conserva el historial. Si el pasado de una conversación no debe sobrevivir a un error futuro, elimínala.</p>\n<p><strong>No se puede recuperar una frase perdida</strong>, ni por ti ni por el administrador: ese es el propósito del diseño. El restablecimiento crea claves nuevas, pero los mensajes cifrados con las anteriores se pierden. Puedes cambiar la frase sin perder nada mientras conozcas la actual.</p>\n<p><strong>Comprueba el código de seguridad.</strong> Cada conversación cifrada muestra un código corto que representa sus dos claves. Comparadlo por otra vía —en persona, en voz alta o durante una llamada—; si coincide, nadie se interpone. El servidor comunica a cada navegador la clave del otro y uno deshonesto podría entregar una propia, pero no puede hacer coincidir ambos códigos. Márcalo como verificado y recibirás un aviso si cambia, ya sea por un restablecimiento o por una interceptación.</p>\n<p>Esto no cubre el propio software: el código lo calcula la página y solo informa sobre las claves. Nadie que lea la base de datos, las copias o el tráfico puede leer los mensajes; esa parte es incondicional.</p>\n<p>Puedes <a href=\"/help/reporting-abuse\">denunciar</a> un mensaje cifrado. La denuncia revela a los moderadores únicamente ese mensaje, nunca la clave ni el resto de la conversación, y el servidor lo compara con un sello creado al retransmitirlo para impedir falsificaciones.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "La fuente del relé",
+            "category": "connecting",
+            "summary": "Donde llegan publicaciones del Fediverso cuando el servidor se suscribe a un relé.",
+            "body": "\n<p>Si ves una <strong>Fuente del relé</strong>, este servidor está suscrito a un relé: un caudal compartido de publicaciones públicas entre los servidores unidos. Así un sitio pequeño ve el Fediverso antes de que sus miembros encuentren cuentas, pues normalmente solo recibe aquello que alguien local ya sigue.</p>\n<p>Se mantiene separado deliberadamente. Nadie aquí eligió estas publicaciones ni sigue a sus autores; es todo lo que publicaron esos servidores. Nunca se mezcla con la fuente principal ni con tu <a href=\"/help/your-feeds\">Fuente de amistades</a>. Lo abres cuando quieres explorar y, si no, no interfiere.</p>\n<p>Solo se conserva un periodo reciente. Cuando una publicación sale de esa ventana desaparece, salvo que hayas respondido, indicado que te gusta, guardado, republicado, fijado o denunciado.</p>\n<p>Puedes interactuar como con cualquier publicación y <a href=\"/help/following-on-the-fediverse\">seguir</a> a alguien interesante; sus publicaciones llegarán a tu Fuente de amistades incluso si se abandona el relé.</p>\n<p>Solo el administrador decide si se usa un relé. Si no aparece la Fuente del relé, este servidor no usa ninguno.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Tus fuentes",
+            "category": "connecting",
+            "summary": "La diferencia entre la Fuente global y tu Fuente de amistades.",
+            "body": "\n<p>Usarás sobre todo dos fuentes:</p>\n<ul>\n<li><strong>La Fuente global</strong>, tu inicio, muestra publicaciones de todo el sitio. Es pública y ayuda a descubrir personas y asuntos nuevos.</li>\n<li><strong>Fuente de amistades</strong> solo muestra publicaciones de tus amistades, para ponerte al día con tu círculo.</li>\n</ul>\n<p>Ambas cargan más al desplazarte. Para llenar la de amistades, <a href=\"/help/finding-people\">encuentra personas</a> y <a href=\"/help/friends-and-friend-requests\">añádelas como amistades</a>.</p>\n<p>La Fuente de amistades incluye <a href=\"/help/replies-and-threads\">respuestas</a> y señala a qué contestan. La principal solo muestra publicaciones que inician algo, para resultar legible a visitantes sin sesión.</p>\n"
+        },
+        "notifications": {
+            "title": "Notificaciones",
+            "category": "connecting",
+            "summary": "Cómo te enteras de reacciones, respuestas, solicitudes y mensajes.",
+            "body": "\n<p><strong>Notificaciones</strong> se ilumina cuando algo te afecta: alguien reacciona, republica o responde, te menciona, envía o acepta una solicitud, te escribe o termina de procesarse un archivo. Las interacciones del Fediverso avisan exactamente igual.</p>\n<p>Llegan <strong>en directo</strong>, sin actualizar la página. Abre el área para ver rápidamente las recientes o la página completa para consultar todo el historial mientras se carga al desplazarte.</p>\n<p>Cada notificación enlaza directamente con la publicación, conversación o perfil correspondiente.</p>\n"
+        },
+        "video-calling": {
+            "title": "Videollamadas",
+            "category": "connecting",
+            "summary": "Inicia una videollamada privada mientras ambos tenéis abierta la conversación.",
+            "body": "\n<p>Puedes mantener una videollamada individual desde un hilo de mensajes. Es <strong>entre pares</strong>: el vídeo y el audio van directamente entre los navegadores, por lo que nadie más, incluido el sitio, puede verlos ni oírlos.</p>\n<h2>Iniciar una llamada</h2>\n<p>El botón <strong>Videollamada</strong> aparece mientras ambos tenéis abierto el hilo. Antes, el sitio comprueba discretamente que los navegadores pueden alcanzarse; si no, no se ofrece la llamada en vez de desviarla por otro medio. La otra persona puede aceptar o rechazar.</p>\n<h2>Durante la llamada</h2>\n<p>Al responder, la llamada sustituye al hilo: la otra persona ocupa el espacio de los mensajes y tu cámara aparece en un recuadro. <strong>Finalizar llamada</strong> cuelga. Rechazar, colgar o abandonar la página termina la llamada y restaura la conversación.</p>\n<h2>Si nunca aparece el botón</h2>\n<p>Uno de los navegadores no es accesible, normalmente por la red: quizá carezca de WebRTC o un cortafuegos bloquee el puerto. Los <a href=\"/user-settings\">Ajustes de usuario</a> incluyen una comprobación de <strong>Videollamadas</strong> que identifica el paso fallido.</p>\n<h2>Privacidad</h2>\n<p>Ningún vídeo ni audio atraviesa el sitio. Solo se retransmite el breve mensaje de configuración con el que los navegadores se encuentran, y nada se graba.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Bloquear a alguien",
+            "category": "stayingSafe",
+            "summary": "Corta el contacto con un usuario y ocúltalo de tu vista.",
+            "body": "\n<p>El bloqueo sirve cuando no quieres volver a tratar con alguien. Usa <strong>Bloquear</strong> en su tarjeta o perfil.</p>\n<p>Al bloquear, termina cualquier amistad y se restringen los mensajes, reacciones, respuestas y republicaciones. No afecta a la visibilidad porque el sitio es público y bastaría cerrar sesión para eludirla. Es un ajuste personal que cambia tu experiencia sin castigar a la otra persona.</p>\n<p>Puedes revertirlo: su tarjeta mostrará <strong>Desbloquear</strong>.</p>\n<p>El bloqueo busca tu comodidad. Si hay abuso y no solo molestia, <a href=\"/help/reporting-abuse\">denuncia el contenido</a> para que pueda tratarse.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Denunciar abusos",
+            "category": "stayingSafe",
+            "summary": "Denuncia la publicación, mensaje o usuario concreto para que actúen los moderadores.",
+            "body": "\n<p>Si encuentras algo abusivo, puedes denunciarlo para que lo revise un moderador. Lo más importante es:</p>\n<p><strong>Denuncia el contenido abusivo concreto.</strong> Si el problema es una publicación, usa <strong>Denunciar</strong> en <em>esa publicación</em>. Si es un mensaje, denuncia <em>ese mensaje</em>. Señalar el elemento exacto permite al moderador ver lo mismo que tú y actuar deprisa.</p>\n<h2>Cómo denunciar</h2>\n<ul>\n<li><strong>Una publicación:</strong> usa Denunciar en ella.</li>\n<li><strong>Un mensaje:</strong> usa Denunciar en ese mensaje de la conversación.</li>\n<li><strong>Un usuario:</strong> si el problema es toda la cuenta, usa el botón de su perfil o tarjeta; si una publicación o mensaje cruzó la línea, denuncia directamente ese elemento.</li>\n</ul>\n<p>Puedes añadir un motivo breve que ayude a quien lo revise. Siempre que puedas, dirige la denuncia al <strong>contenido abusivo concreto</strong>: resulta mucho más fácil actuar sobre él que sobre una queja general.</p>\n<p>La denuncia es privada y la persona no sabe quién la envió. Para quitarla también de tu vista, puedes <a href=\"/help/blocking-someone\">bloquearla</a>.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Seguir mediante RSS",
+            "category": "yourAccount",
+            "summary": "Suscríbete al sitio o a una persona con cualquier lector RSS.",
+            "body": "\n<p>¿Prefieres un lector de fuentes? {site} publica <strong>fuentes RSS</strong>:</p>\n<ul>\n<li>Las publicaciones recientes del sitio están en <code>/feed.xml</code>.</li>\n<li>Las de cada persona tienen su fuente en <code>/users/su-nombre-de-usuario/feed.xml</code>.</li>\n</ul>\n<p>La mayoría de navegadores y lectores las detectan automáticamente mediante los enlaces de descubrimiento de cada página; a menudo basta con pegar la dirección de la página en el lector.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Editar una publicación",
+            "category": "posting",
+            "summary": "Corrige una errata o reformula una publicación propia después de publicarla.",
+            "body": "\n<p>¿Te equivocaste? Tus publicaciones tienen <strong>Editar</strong>, que las reabre para corregir una errata, reformular o ajustar el formato y guardar los cambios.</p>\n<p>La edición sustituye la publicación para todos; no se conserva una copia distinta, aunque después aparece <strong>(editado)</strong>. Puedes cambiar título, texto, formato y enlace. Los archivos adjuntos no se pueden sustituir así; para ello es mejor <a href=\"/help/deleting-a-post\">eliminar</a> y publicar de nuevo.</p>\n<p>Solo puedes editar tus publicaciones.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Republicar y citar",
+            "category": "posting",
+            "summary": "Comparte una publicación con tus amistades y seguidores, sin cambios o con tus palabras.",
+            "body": "\n<p>Pulsa <strong>Republicar</strong> para compartirla sin cambios. Aparece en las fuentes de tus amistades y tu perfil, marcada con tu nombre y ordenada por el momento en que la compartiste; también se avisa a tus seguidores del Fediverso. El botón pasa a ser <strong>Deshacer republicación</strong>.</p>\n<p>La cifra combina las republicaciones locales y los impulsos de otros servidores. No puedes republicar lo tuyo porque ya aparece en tu perfil.</p>\n<h2>Citar</h2>\n<p>Pulsa <strong>Citar</strong> para compartir añadiendo algo. Se abre un editor con el original incrustado y exige palabras propias; para compartir sin añadir nada está Republicar. Puedes adjuntar imágenes, pero no vídeo ni audio.</p>\n<p>Una cita es una publicación normal: admite respuestas, reacciones y denuncias, y viaja al Fediverso.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Ajustes y apariencia",
+            "category": "yourAccount",
+            "summary": "Un recorrido por los Ajustes de usuario: contraseña, correo, seguridad, temas y más.",
+            "body": "\n<p>Abre <strong>Ajustes de usuario</strong> desde tu nombre arriba a la derecha. Allí se reúne todo lo relacionado con la cuenta:</p>\n<ul>\n<li><strong>Cambiar contraseña</strong> y <a href=\"/help/changing-your-email\">Cambiar correo electrónico</a>; ambos piden tu contraseña actual.</li>\n<li><a href=\"/help/two-factor-authentication\">Autenticación de dos factores</a>, un paso adicional de seguridad.</li>\n<li><strong>Tema</strong>, para cambiar el aspecto del sitio.</li>\n<li><strong>Contenido multimedia sensible</strong>, para mostrarlo siempre sin abrir la cubierta (consulta <a href=\"/help/content-warnings\">Advertencias de contenido y medios sensibles</a>).</li>\n<li><a href=\"/help/encrypted-messages\">Mensajes cifrados</a>, que protegen las conversaciones con una frase secreta.</li>\n<li><strong>Resúmenes por correo</strong>, para decidir si te escribimos sobre lo ocurrido durante tu ausencia. Están activados hasta que los desactives.</li>\n<li><strong>Notificaciones push</strong>, si el servidor las admite, incluso con la página cerrada.</li>\n<li><a href=\"/help/signed-in-devices\">Dispositivos recordados y sesiones</a>, para revisar las conexiones y cerrar sesión en todas partes.</li>\n<li><a href=\"/help/video-calling\">Videollamadas</a>, para comprobar este navegador y red.</li>\n<li><a href=\"/help/following-on-the-fediverse\">Fediverso</a>, para seguir cuentas de otros servidores.</li>\n<li><strong>Cambiar de servidor</strong>, para llevar tus seguidores a otra cuenta.</li>\n<li><a href=\"/help/deleting-your-account\">Eliminar cuenta</a>, para cerrarla definitivamente.</li>\n</ul>\n<h2>Temas</h2>\n<p>El selector <strong>Tema</strong> cambia todo el sitio y recuerda tu elección. Elige <strong>Coincidir con el sistema</strong> o fija uno de los diseños incluidos: Claro sencillo, Oscuro sencillo, Sepia, Medianoche, Atardecer, Rosa, Bosque, Océano, Lavanda, Oro, Hacker, Ironbow, Viridis, Mako, Cividis, YlGnBu, Cubehelix y Escala de grises.</p>\n<h2>Resúmenes por correo</h2>\n<p>Si llevas una semana sin visitar y ha ocurrido algo, te escribiremos una vez. Nunca más de uno por semana ni cuando no haya novedades. Desactívalos en Ajustes o usa el enlace de cancelación de cualquiera, con un solo clic y sin iniciar sesión.</p>\n<p>¿Olvidaste la contraseña? Usa <strong>¿Olvidaste la contraseña?</strong> en la página de acceso para recibir un enlace de restablecimiento.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Guardar publicaciones",
+            "category": "posting",
+            "summary": "Guarda publicaciones en tu lista privada de Marcadores para encontrarlas después.",
+            "body": "\n<p>Toda publicación tiene <strong>Guardar</strong>. Púlsalo para añadirla a tus <strong>Marcadores</strong> y vuelve a pulsarlo para quitarla. Es privado: nadie ve lo guardado y el autor no recibe avisos.</p>\n<p>Abre <strong>Marcadores</strong> para ver todo, empezando por lo más reciente. Es el lugar donde conservar algo que quieras leer después o volver a encontrar.</p>\n<p>Si el autor elimina una publicación guardada, simplemente desaparece de la lista.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Etiquetas y menciones",
+            "category": "posting",
+            "summary": "Etiqueta publicaciones con #etiquetas e invita a personas mediante @menciones.",
+            "body": "\n<p>Dos tipos de atajo se convierten automáticamente en enlaces al publicar.</p>\n<h2>Etiquetas</h2>\n<p>Escribe una <strong>#etiqueta</strong>, como <code>#música</code>, y se convertirá en enlace. Al pulsarla se abre su página con todas las publicaciones que la usan. Consulta las activas en <strong>Etiquetas</strong> y las populares en <a href=\"/help/trending-topics\">Temas</a>.</p>\n<p>Solo las primeras diez etiquetas distintas se indexan y cuentan para las tendencias. Las demás siguen siendo enlaces en el texto, pero no aparecen en la página de la etiqueta.</p>\n<h2>Menciones</h2>\n<p>Escribe <strong>@usuario</strong> para mencionar a alguien. Enlaza a su perfil y le envía una notificación. Si mencionas a más de diez personas distintas, nadie recibe aviso, aunque los enlaces siguen funcionando. También puedes mencionar cuentas remotas con su identificador completo <code>@usuario@servidor</code>.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Temas de tendencia",
+            "category": "connecting",
+            "summary": "Descubre los temas y nombres de los que más se habla ahora.",
+            "body": "\n<p>Abre <strong>Temas</strong> para ver lo que está ganando popularidad. Reúne y clasifica etiquetas, nombres y asuntos que aparecen en muchas publicaciones recientes.</p>\n<p>Cada elemento tiene una página con las publicaciones que lo impulsan, una forma sencilla de entrar en una conversación o descubrir algo. La lista se recalcula cuando cambia la actividad.</p>\n<p>Los temas se agrupan por tipo: personas, organizaciones, lugares, etiquetas y otros. La página nombra el tipo y enlaza a los demás elementos de esa clase.</p>\n<p>Escucha todo lo que recibe el servidor, incluidas publicaciones remotas. Si hay un <a href=\"/help/the-relay-feed\">relé</a>, refleja una conversación más amplia. Varias personas distintas deben hablar de algo antes de que aparezca, por lo que una sola no puede imponerlo.</p>\n<p>Si algo es abusivo o mero ruido, un moderador puede bloquearlo hasta que otro moderador retire el bloqueo.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Seguir personas en el Fediverso",
+            "category": "connecting",
+            "summary": "Sigue cuentas de Mastodon y otros servidores del Fediverso.",
+            "body": "\n<p>{site} utiliza <strong>ActivityPub</strong>, el estándar de Mastodon y el Fediverso, así que puedes seguir cuentas de otros servidores y leerlas aquí.</p>\n<p>Abre <strong>Ajustes de usuario</strong>, busca <strong>Fediverso</strong>, pega uno o varios identificadores como <code>@usuario@example.social</code> y pulsa <strong>Seguir</strong>. Cualquier separador sirve para pegar una lista completa.</p>\n<p>La misma sección muestra las cuentas seguidas y si aceptaron o siguen pendientes, pues algunas aprueban seguidores manualmente. También puedes mencionarlas con <code>@usuario@servidor</code>; consulta <a href=\"/help/hashtags-and-mentions\">Etiquetas y menciones</a>.</p>\n<h2>Recibir seguidores remotos</h2>\n<p>Tienes tu propia dirección: <strong>@tu-usuario@dominio-de-este-sitio</strong>. Cualquiera en Mastodon, Threads u otro servidor ActivityPub puede buscarla y seguirte sin aprobación, pues aquí todo ya es público.</p>\n<p>Tus publicaciones viajan a tus seguidores: texto, imágenes, vídeo, <a href=\"/help/polls\">encuestas</a>, <a href=\"/help/content-warnings\">marcas sensibles y advertencias</a>, incluso <a href=\"/help/your-profile\">publicaciones fijadas</a> y cambios de perfil. Sus reacciones, impulsos y respuestas vuelven aquí. Republicar algo remoto también informa a tus seguidores.</p>\n<p>Si te mudas, <strong>Cambiar de servidor</strong> en Ajustes envía allí a tus seguidores; consulta en esa sección el procedimiento necesario.</p>\n"
+        },
+        "searching": {
+            "title": "Buscar",
+            "category": "connecting",
+            "summary": "Busca las publicaciones del sitio desde la página Buscar.",
+            "body": "\n<p><strong>Buscar</strong> examina las <strong>publicaciones</strong>. Escribe y los resultados aparecerán al instante, la forma más rápida de recuperar una publicación medio recordada.</p>\n<p>¿Buscas <em>personas</em>? <a href=\"/help/finding-people\">La página Usuarios</a> tiene su propia búsqueda y sugerencias de contactos.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Autenticación de dos factores",
+            "category": "stayingSafe",
+            "summary": "Añade un código de acceso por correo para reforzar la seguridad.",
+            "body": "\n<p>La autenticación de dos factores (2FA) añade un segundo paso, de modo que la contraseña sola no basta. Actívala en <strong>Autenticación de dos factores</strong> dentro de <strong>Ajustes de usuario</strong>.</p>\n<p>Aquí funciona por <strong>correo electrónico</strong>: al iniciar sesión enviamos un código numérico breve que debes introducir. No hay una aplicación autenticadora; usa la dirección ya confirmada, por lo que necesitas un <a href=\"/help/verifying-your-email\">correo verificado</a>.</p>\n<p>Puedes desactivar la 2FA en el mismo lugar cuando quieras.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Dispositivos conectados y sesiones",
+            "category": "stayingSafe",
+            "summary": "Revisa dónde has iniciado sesión y ciérrala en todas partes a la vez.",
+            "body": "\n<p><strong>Ajustes de usuario</strong> ofrece dos herramientas para gestionar tus conexiones.</p>\n<h2>Dispositivos recordados</h2>\n<p>Al elegir mantener la sesión, el dispositivo se recuerda para no volver a acceder en cada visita. <strong>Dispositivos recordados</strong> los enumera y permite revocar cualquiera salvo el actual, útil tras usar un ordenador compartido o perder un dispositivo. Para olvidar el actual, cierra sesión.</p>\n<h2>Sesiones</h2>\n<p><strong>Sesiones</strong> contiene un botón que <strong>cierra la sesión en todas partes</strong>, terminando todas las sesiones y dispositivos recordados. Úsalo si alguien podría acceder a tu cuenta y después <a href=\"/help/settings-and-appearance\">cambia la contraseña</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Tu perfil",
+            "category": "yourAccount",
+            "summary": "Define tu nombre mostrado, biografía y avatar para que sepan quién eres.",
+            "body": "\n<p>Tu perfil es tu página, con tus publicaciones y algunos datos. Abre <strong>tu perfil</strong> desde el nombre arriba a la derecha y usa <strong>Editar</strong> en la tarjeta. También puedes pulsar directamente el nombre o la biografía.</p>\n<ul>\n<li>El <strong>nombre mostrado</strong> es el nombre cercano situado sobre el usuario. Si está vacío, aparece el usuario.</li>\n<li>La <strong>biografía</strong> es una línea breve. Sus enlaces, #etiquetas y @menciones se vuelven interactivos.</li>\n</ul>\n<p>Puedes subir un <strong>avatar</strong>, la imagen pequeña junto al nombre. El usuario queda fijo al registrarte, pero puedes cambiar nombre mostrado, biografía y avatar cuando quieras.</p>\n<h2>Publicaciones fijadas</h2>\n<p>Tus publicaciones tienen <strong>Fijar</strong>, que las eleva a la sección <strong>Fijadas</strong> del perfil, hasta cinco a la vez. <strong>Desfijar</strong> permite sustituirlas. También viajan al Fediverso y otros servidores las muestran en tu perfil.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Cambiar tu correo electrónico",
+            "category": "yourAccount",
+            "summary": "Actualiza el correo de la cuenta y vuelve a verificarlo.",
+            "body": "\n<p>Abre <strong>Ajustes de usuario</strong> y usa <strong>Cambiar correo electrónico</strong>. Introduce la dirección nueva y confirma con tu contraseña. Enviaremos un enlace de verificación a la dirección <strong>nueva</strong>; ábrelo como al registrarte.</p>\n<p>Como protección, también escribimos a la dirección <strong>anterior</strong> con un enlace para revertir el cambio. No pide contraseña: restaura la dirección y cierra sesión en todos los dispositivos, de modo que un cambio ajeno se deshace y expulsa a su autor en un paso. Confirma pronto la dirección nueva, pues funciones como restablecer la contraseña dependen de ella.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Eliminar tu cuenta",
+            "category": "yourAccount",
+            "summary": "Cierra permanentemente tu cuenta y elimina su contenido.",
+            "body": "\n<p>Para marcharte, abre <strong>Ajustes de usuario</strong> y usa <strong>Eliminar cuenta</strong>. Confirmarás con la contraseña porque no puede deshacerse.</p>\n<p>La eliminación es <strong>permanente</strong>. Desaparecen publicaciones, respuestas, mensajes, reacciones y conexiones, y, como al <a href=\"/help/deleting-a-post\">eliminar una publicación</a>, todo lo escrito debajo de las tuyas. El nombre de usuario se retira en vez de liberarse: nadie, ni tú, podrá registrarlo otra vez, para que ningún enlace, mención o seguimiento remoto termine apuntando a un extraño con tu antiguo nombre.</p>\n<p>Una cuenta eliminada no se puede recuperar; asegúrate de querer hacerlo.</p>\n<p>La cuenta administradora no puede eliminarse, pues el sitio necesita al menos una para funcionar.</p>\n"
+        }
+    }
+}

@@ -27,13 +27,24 @@ class LocaleIntegrityTest extends TestCase
      */
     private const CATEGORIES = ['zero', 'one', 'two', 'few', 'many', 'other'];
 
-    /** @return array<string, mixed> */
+    /**
+     * The full locale table plus the Help corpus, reassembled under
+     * "HelpContent" the way it read before the corpus moved to its own
+     * server-only file - so every check below still covers it.
+     *
+     * @return array<string, mixed>
+     */
     private static function table(string $locale): array
     {
         $method = new \ReflectionMethod(Strings::class, 'table');
         $method -> setAccessible(true);
+        $table = (array) $method -> invoke(null, $locale);
 
-        return (array) $method -> invoke(null, $locale);
+        $help_method = new \ReflectionMethod(Strings::class, 'helpTable');
+        $help_method -> setAccessible(true);
+        $table['HelpContent'] = (array) $help_method -> invoke(null, $locale);
+
+        return $table;
     }
 
     /** @param array<mixed> $entry */

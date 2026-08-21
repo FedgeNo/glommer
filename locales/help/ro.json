@@ -1,0 +1,233 @@
+{
+    "categories": {
+        "gettingStarted": "Primii pași",
+        "posting": "Publicarea",
+        "connecting": "Conectarea",
+        "stayingSafe": "Siguranța",
+        "yourAccount": "Contul tău"
+    },
+    "articles": {
+        "creating-an-account": {
+            "title": "Crearea unui cont",
+            "category": "gettingStarted",
+            "summary": "Înregistrează-te cu un nume de utilizator, o adresă de e-mail și o parolă pentru a începe să publici.",
+            "body": "\n<p>Pentru a te alătura, deschide linkul <strong>Înregistrare</strong> din colțul din dreapta sus, alege un nume de utilizator, introdu adresa de e-mail și alege o parolă. Numele de utilizator este cel după care te găsesc și te menționează ceilalți, așa că alege unul cu care îți place să fii cunoscut.</p>\n<p>Formularul are și câmpuri pentru un <strong>nume afișat</strong> și o scurtă biografie, dacă preferi să le completezi acum. Ambele sunt opționale și le poți lăsa la fel de bine pentru mai târziu, editând <a href=\"/help/your-profile\">profilul tău</a>. Numele afișat este numele mai prietenos care apare deasupra numelui de utilizator în postări și pe profil; dacă îl lași necompletat, va fi afișat numele de utilizator.</p>\n<p>După înregistrare poți citi și publica imediat, cu excepția cazului în care acest site verifică adresele de e-mail; atunci va trebui să faci mai întâi verificarea (vezi <a href=\"/help/verifying-your-email\">verificarea adresei de e-mail</a>). Primul cont creat pe un site nou devine automat administratorul acestuia.</p>\n"
+        },
+        "verifying-your-email": {
+            "title": "Verificarea adresei de e-mail",
+            "category": "gettingStarted",
+            "summary": "Confirmă-ți adresa folosind linkul trimis prin e-mail, dacă trimiterea e-mailurilor este activată.",
+            "body": "\n<p>Dacă acest site este configurat să trimită e-mailuri, îți vom trimite un link de verificare imediat după înregistrare. Până când îl deschizi, fiecare pagină te va redirecționa la mesajul Verifică-ți căsuța poștală. Deschiderea linkului îți confirmă contul și îți oferă acces deplin. Tot astfel știm că adresa îți aparține cu adevărat, pentru ca mesajele de resetare a parolei și notificările să poată ajunge la tine.</p>\n<p>Nu l-ai primit? Verifică mai întâi dosarul de mesaje nedorite. Poți cere un link nou din pagina <strong>Verifică-ți căsuța poștală</strong>, afișată până când finalizezi verificarea.</p>\n<p>Unele site-uri nu trimit deloc e-mailuri. Dacă acesta este unul dintre ele, nu ai nimic de verificat și poți începe imediat să folosești toate funcțiile.</p>\n"
+        },
+        "finding-your-way-around": {
+            "title": "Orientarea pe site",
+            "category": "gettingStarted",
+            "summary": "Un tur rapid al meniului: fluxuri, prieteni, utilizatori, mesaje și contul tău.",
+            "body": "\n<p>Bara din partea de sus te duce oriunde ai nevoie:</p>\n<ul>\n<li><strong>Numele site-ului</strong> din stânga te duce întotdeauna la fluxul principal și deschide un meniu cu toate celelalte secțiuni.</li>\n<li><strong>Fluxul prietenilor</strong> arată doar postările persoanelor cu care ești prieten.</li>\n<li><strong>Utilizatori</strong> îți permite să cauți persoane și să vezi sugestii de conexiuni.</li>\n<li><strong>Etichete</strong> și <strong>Subiecte</strong> te ajută să descoperi postări după temă și să vezi ce este popular acum.</li>\n<li><strong>Hartă</strong> și <strong>Locuri</strong> arată postările în funcție de locul publicării, pe hartă sau într-o listă de locuri.</li>\n<li><strong>Căutare</strong> caută în postările site-ului.</li>\n<li><strong>Mesaje</strong> conține conversațiile tale private și se marchează când te așteaptă un mesaj.</li>\n<li><strong>Semne de carte</strong> este lista ta privată de postări salvate.</li>\n<li><strong>Notificări</strong> se aprinde când cineva interacționează cu tine.</li>\n<li><strong>Ajutor</strong> (aceste articole) și <strong>Despre</strong> sunt disponibile indiferent dacă ești autentificat.</li>\n</ul>\n<p>Numele tău apare în dreapta sus: duce la profil și deschide un meniu cu <strong>Prieteni</strong> (unde accepți cereri și gestionezi conexiunile), ciornele și postările programate, <strong>Setările utilizatorului</strong> și opțiunea de <strong>deconectare</strong>.</p>\n"
+        },
+        "composing-a-post": {
+            "title": "Compunerea unei postări",
+            "category": "posting",
+            "summary": "Scrie și publică o postare din caseta aflată deasupra fluxului.",
+            "body": "\n<p>Editorul se află în partea de sus a fluxului principal. Scrie postarea în zona de redactare și apasă butonul de publicare. Postările apar imediat în fluxul public; tot ce se află pe site este public, așa că scrie ținând cont de acest lucru.</p>\n<p>Lângă zona de redactare se află câteva opțiuni suplimentare:</p>\n<ul>\n<li>Un <strong>titlu</strong>, dacă vrei să dai postării un antet.</li>\n<li>Un <strong>link</strong>, dacă distribui o pagină web (vezi <a href=\"/help/sharing-a-link\">Distribuirea unui link</a>).</li>\n<li>Un <strong>sondaj</strong>, dacă pui o întrebare în loc să faci o afirmație (vezi <a href=\"/help/polls\">O întrebare sub forma unui sondaj</a>).</li>\n<li>Marcajul <strong>Sensibil</strong>, pentru o postare care trebuie deschisă înainte de a fi afișată (vezi <a href=\"/help/content-warnings\">Avertismente de conținut și materiale sensibile</a>).</li>\n</ul>\n<p>Îți poți îmbogăți textul cu formatare, emoji și chiar formule matematice și poți atașa fotografii, materiale video sau audio. Fiecare are propriul articol de ajutor. Reține că o singură postare poate conține un link, fișiere atașate <em>sau</em> un sondaj: una dintre cele trei variante, niciodată o combinație.</p>\n"
+        },
+        "formatting-your-writing": {
+            "title": "Formatarea textului",
+            "category": "posting",
+            "summary": "Folosește aldine, cursive, liste, citate, cod, emoji și formule matematice într-o postare.",
+            "body": "\n<p>Zona de redactare este un editor de text îmbogățit. Bara sa de instrumente îți oferă opțiunile obișnuite: <strong>aldine</strong>, <em>cursive</em>, subliniere, tăiere, liste cu marcatori și numerotate, citate bloc și blocuri de cod, astfel încât să poți structura clar o postare.</p>\n<h2>Emoji</h2>\n<p>Deschide selectorul de emoji din editor pentru a introduce emoji în text. Selectorul reține nuanța de piele preferată, așa că, odată aleasă, aceasta rămâne setată.</p>\n<h2>Matematică</h2>\n<p>Poți scrie notații matematice folosind LaTeX. Încadrează formulele afișate separat în <code>$$ ... $$</code> sau <code>\\[ ... \\]</code>, iar formulele din rând în <code>\\( ... \\)</code> sau în simplele <code>$ ... $</code>. La afișarea postării, acestea sunt redate ca ecuații propriu-zise. Deoarece și un singur semn dolar este considerat delimitator, două astfel de semne în aceeași postare, de exemplu două prețuri, pot fi interpretate ca începutul și sfârșitul unei formule; folosește <code>\\( ... \\)</code> dacă există acest risc.</p>\n"
+        },
+        "adding-photos-video-and-audio": {
+            "title": "Adăugarea fotografiilor, materialelor video și audio",
+            "category": "posting",
+            "summary": "Atașează unei postări una sau mai multe imagini ori un material video sau audio.",
+            "body": "\n<p>Folosește controlul de atașare din editor pentru a adăuga unei postări <strong>imagini, materiale video sau audio</strong>. Poți atașa mai multe fișiere; mai multe imagini devin o galerie care poate fi răsfoită în postarea finală. Poți atașa cel mult 100 de fișiere unei singure postări; fișierele care depășesc limita nu sunt adăugate.</p>\n<p>Fișierele video și audio mai mari sunt procesate după publicare, deci poate exista o scurtă așteptare înainte de a putea fi redate. Vei primi o notificare când procesarea s-a încheiat și materialele sunt disponibile.</p>\n<p>Dacă te răzgândești înainte de publicare, folosește controlul de anulare de lângă selectorul de fișiere pentru a elimina atașamentul. Reține că o postare cu fișiere media nu poate conține și un link; alege varianta potrivită pentru ceea ce distribui.</p>\n"
+        },
+        "sharing-a-link": {
+            "title": "Distribuirea unui link",
+            "category": "posting",
+            "summary": "Lipește un URL în câmpul pentru link pentru a distribui o pagină cu previzualizare.",
+            "body": "\n<p>Pentru a distribui o pagină web, introdu adresa ei în câmpul <strong>Link</strong>. Site-ul preia titlul, o scurtă descriere și, dacă există, o imagine, apoi le afișează în postare ca previzualizare.</p>\n<p>Poți adăuga propriul text și poți elimina imaginea previzualizării. O postare poate conține un link, fișiere media sau un sondaj, nu mai multe dintre acestea.</p>\n"
+        },
+        "polls": {
+            "title": "O întrebare sub forma unui sondaj",
+            "category": "posting",
+            "summary": "Atașează un sondaj unei postări și permite răspunsuri aici și în Fedivers.",
+            "body": "\n<p>Apasă <strong>Adaugă un sondaj</strong>, scrie întrebarea în textul postării și adaugă până la patru opțiuni distincte. Poți permite mai multe alegeri și poți stabili o durată între cinci minute și șapte zile.</p>\n<p>Alege opțiunea și apasă <strong>Votează</strong>. Votul este definitiv; după votare sau închiderea sondajului apar rezultatele. Sondajele circulă și în Fedivers, iar voturile de pe alte servere sunt incluse.</p>\n"
+        },
+        "content-warnings": {
+            "title": "Avertismente de conținut și materiale sensibile",
+            "category": "posting",
+            "summary": "Marchează o postare drept sensibilă sau ascunde-o sub un avertisment până când este deschisă.",
+            "body": "\n<p>Marcajul <strong>Sensibil</strong> acoperă fișierele media până când cititorul le deschide. Dacă adaugi și text de avertizare, întreaga postare, inclusiv textul și sondajul, rămâne ascunsă în spatele avertismentului.</p>\n<p>Preferința pentru afișarea directă a materialelor sensibile se află în <a href=\"/user-settings\">Setările utilizatorului</a>. Avertismentele și marcajele circulă în ambele direcții prin Fedivers.</p>\n"
+        },
+        "replies-and-threads": {
+            "title": "Răspunsuri și fire de discuție",
+            "category": "posting",
+            "summary": "Răspunde unei postări pentru a începe un fir de conversație sub ea.",
+            "body": "\n<p>Acțiunea <strong>Răspunde</strong> deschide un editor, iar răspunsul este atașat sub postarea inițială. Poate fi formatat și poate conține emoji sau fișiere media la fel ca orice postare.</p>\n<p>Deschide pagina postării pentru întreaga conversație. În flux, răspunsurile indică postarea la care răspund, iar linkul <strong>Sari la început</strong> duce la începutul firului.</p>\n"
+        },
+        "liking-posts": {
+            "title": "Aprecierea postărilor",
+            "category": "posting",
+            "summary": "Arată că apreciezi o postare printr-o singură apăsare a butonului de apreciere.",
+            "body": "\n<p>Apasă butonul <strong>Apreciază</strong> pentru a aprecia o postare și apasă-l din nou pentru a retrage aprecierea. Numărul se actualizează imediat, iar autorul primește o notificare.</p>\n"
+        },
+        "deleting-a-post": {
+            "title": "Ștergerea unei postări",
+            "category": "posting",
+            "summary": "Elimină una dintre postările tale și află ce se întâmplă cu răspunsurile ei.",
+            "body": "\n<p>Acțiunea <strong>Șterge</strong> apare la propriile postări și le elimină pentru toată lumea după confirmare. Ștergerea este permanentă și elimină și răspunsurile de sub postare.</p>\n<p>Poți șterge doar postările tale; pentru conținutul problematic al altcuiva folosește <a href=\"/help/reporting-abuse\">raportarea</a>.</p>\n"
+        },
+        "translating": {
+            "title": "Traducerea unei postări sau a unui mesaj",
+            "category": "posting",
+            "summary": "Citește un text scris în altă limbă și află cum este folosit conținutul la traducere.",
+            "body": "\n<p>Butonul <strong>Tradu</strong> înlocuiește textul unei postări cu traducerea și îți permite apoi să revii la original. Traducerea se face pe acest server și este păstrată pentru cererile viitoare.</p>\n<p>Mesajele primite pot fi traduse numai la cerere. În cazul unui mesaj criptat, alegerea traducerii permite serverului să îi citească textul; traducerea nu este salvată, dar în acel moment mesajul nu mai rămâne secret față de server.</p>\n"
+        },
+        "finding-people": {
+            "title": "Găsirea persoanelor",
+            "category": "connecting",
+            "summary": "Caută utilizatori după nume sau răsfoiește sugestiile din pagina Utilizatori.",
+            "body": "\n<p>Deschide <strong>Utilizatori</strong> și începe să scrii un nume. Membrii locali apar înaintea conturilor cunoscute din Fedivers. Sugestiile sunt prieteni ai prietenilor, ordonați după numărul conexiunilor comune.</p>\n<p>De pe cardul unei persoane îi poți trimite o cerere de prietenie sau un mesaj ori îi poți deschide profilul.</p>\n"
+        },
+        "friends-and-friend-requests": {
+            "title": "Prieteni și cereri de prietenie",
+            "category": "connecting",
+            "summary": "Trimite, acceptă și gestionează cereri de prietenie și elimină prieteni.",
+            "body": "\n<p>Prietenia pe {site} este reciprocă. Folosește <strong>Adaugă prieten</strong> pentru a trimite o cerere, pe care o poți anula până la acceptare.</p>\n<p>Pagina <strong>Prieteni</strong> conține cererile primite, prietenii actuali și cererile trimise. Lista prietenilor este publică; cererile sunt vizibile numai pentru tine. Poți încheia oricând o conexiune cu <strong>Elimină prietenul</strong>.</p>\n"
+        },
+        "messaging": {
+            "title": "Mesagerie",
+            "category": "connecting",
+            "summary": "Trimite mesaje private și urmărește-ți conversațiile.",
+            "body": "\n<p>Folosește butonul <strong>Mesaj</strong> de pe cardul sau profilul unei persoane ori deschide <strong>Mesaje</strong> din meniu. Conversațiile sunt ordonate după cea mai recentă activitate, iar mesajele noi apar fără reîncărcarea paginii.</p>\n<p>Mesajele nu sunt vizibile altor membri. Firul precizează dacă sunt criptate integral sau doar stocate privat pe server.</p>\n"
+        },
+        "encrypted-messages": {
+            "title": "Mesaje criptate",
+            "category": "connecting",
+            "summary": "Activează criptarea integrală a conversațiilor și află ce rol are fraza secretă.",
+            "body": "\n<p>Activează <strong>Mesaje criptate</strong> în Setările utilizatorului și alege o frază secretă. Mesajele sunt criptate în browser și pot fi citite numai pe dispozitivele pe care le deblochezi cu această frază.</p>\n<p>Fraza secretă nu este trimisă serverului și nu poate fi recuperată. Păstreaz-o în siguranță și nu folosi parola contului. Criptarea începe într-o conversație după ce ambii participanți au activat-o.</p>\n"
+        },
+        "the-relay-feed": {
+            "title": "Fluxul releului",
+            "category": "connecting",
+            "summary": "Locul în care sosesc postări din Fedivers când serverul este abonat la un releu.",
+            "body": "\n<p>Un releu distribuie postări publice între serverele abonate. Dacă administratorul a conectat acest site la unul, <strong>Fluxul releului</strong> arată conversația mai largă din Fedivers.</p>\n<p>Postările rămân găzduite pe serverele autorilor; releul doar ajută serverul să le descopere.</p>\n"
+        },
+        "your-feeds": {
+            "title": "Fluxurile tale",
+            "category": "connecting",
+            "summary": "Diferența dintre Fluxul global și Fluxul prietenilor.",
+            "body": "\n<p><strong>Fluxul global</strong> conține postările publice cunoscute de site, inclusiv cele sosite prin Fedivers. <strong>Fluxul prietenilor</strong> restrânge lista la persoanele cu care ești prieten.</p>\n<p>Ambele sunt ordonate cronologic, cu cele mai noi postări primele.</p>\n"
+        },
+        "notifications": {
+            "title": "Notificări",
+            "category": "connecting",
+            "summary": "Cum afli despre aprecieri, răspunsuri, cereri de prietenie și mesaje.",
+            "body": "\n<p>Primești notificări când cineva îți apreciază postarea, îți răspunde, te menționează, îți trimite o cerere sau un mesaj și pentru alte evenimente importante.</p>\n<p>Deschide <strong>Notificări</strong> pentru istoricul lor. Dacă serverul permite, poți activa notificările push pentru acest dispozitiv din Setările utilizatorului.</p>\n"
+        },
+        "video-calling": {
+            "title": "Apeluri video",
+            "category": "connecting",
+            "summary": "Începe un apel video privat când amândoi aveți conversația deschisă.",
+            "body": "\n<p>Într-o conversație deschisă de ambii participanți, butonul <strong>Apel</strong> pornește un apel video privat. Browserul îți va cere acces la cameră și microfon.</p>\n<p>Conexiunea media este directă între dispozitive și nu este transmisă prin server. Secțiunea Apeluri video din Setări poate verifica browserul, HTTPS, semnalizarea și accesul la STUN.</p>\n"
+        },
+        "blocking-someone": {
+            "title": "Blocarea unei persoane",
+            "category": "stayingSafe",
+            "summary": "Oprește contactul cu un utilizator și ascunde-l din experiența ta.",
+            "body": "\n<p>Folosește <strong>Blochează</strong> de pe cardul sau profilul unei persoane. Prietenia existentă se încheie, iar mesajele, aprecierile, răspunsurile și redistribuirile directe sunt restricționate.</p>\n<p>Blocarea este o preferință personală și poate fi anulată oricând. Pentru abuz, <a href=\"/help/reporting-abuse\">raportează și conținutul concret</a>.</p>\n"
+        },
+        "reporting-abuse": {
+            "title": "Raportarea abuzului",
+            "category": "stayingSafe",
+            "summary": "Raportează postarea, mesajul sau utilizatorul abuziv concret pentru ca moderatorii să poată interveni.",
+            "body": "\n<p>Folosește acțiunea <strong>Raportează</strong> chiar pe postarea sau mesajul abuziv. Dacă problema este întregul cont, raportează profilul sau cardul persoanei.</p>\n<p>Adaugă un motiv scurt; indicarea conținutului exact îi ajută pe moderatori să vadă ce ai văzut și să acționeze rapid. Raportarea este privată, iar persoanei raportate nu i se spune cine a trimis-o.</p>\n"
+        },
+        "settings-and-appearance": {
+            "title": "Setări și aspect",
+            "category": "yourAccount",
+            "summary": "Un tur al Setărilor utilizatorului: parolă, e-mail, securitate, teme și altele.",
+            "body": "\n<p><strong>Setările utilizatorului</strong> reunesc schimbarea parolei și adresei de e-mail, autentificarea în doi pași, tema, materialele sensibile, mesajele criptate, rezumatele prin e-mail, notificările push, dispozitivele și sesiunile, apelurile video, Fediversul, mutarea pe alt server și ștergerea contului.</p>\n<p>Selectorul de teme schimbă aspectul întregului site. Rezumatele prin e-mail pot fi dezactivate din această pagină sau prin linkul de dezabonare din orice rezumat.</p>\n"
+        },
+        "following-with-rss": {
+            "title": "Urmărirea prin RSS",
+            "category": "yourAccount",
+            "summary": "Abonează-te la site sau la o persoană în orice cititor RSS.",
+            "body": "\n<p>{site} publică fluxuri <strong>RSS</strong>. Postările recente ale întregului site sunt la <code>/feed.xml</code>, iar ale unei persoane la <code>/users/numele-său/feed.xml</code>.</p>\n<p>Cititoarele de fluxuri pot descoperi automat aceste adrese când le oferi adresa site-ului sau a profilului.</p>\n"
+        },
+        "editing-a-post": {
+            "title": "Editarea unei postări",
+            "category": "posting",
+            "summary": "Corectează o greșeală sau reformulează o postare proprie după publicare.",
+            "body": "\n<p>Acțiunea <strong>Editează</strong> redeschide propria postare în editor, unde poți schimba titlul, textul, formatarea și linkul. După salvare, versiunea existentă este înlocuită și marcată drept editată.</p>\n<p>Fișierele media atașate nu pot fi schimbate prin editare; pentru aceasta șterge postarea și publică una nouă.</p>\n"
+        },
+        "reposting-posts": {
+            "title": "Redistribuirea și citarea",
+            "category": "posting",
+            "summary": "Transmite postarea cuiva prietenilor și urmăritorilor, simplu sau cu propriile cuvinte.",
+            "body": "\n<p><strong>Redistribuie</strong> transmite postarea neschimbată în fluxurile prietenilor și pe profilul tău; <strong>Anulează redistribuirea</strong> o retrage. Nu îți poți redistribui propria postare.</p>\n<p><strong>Citează</strong> deschide un editor cu originalul încorporat și necesită un comentariu propriu. Postarea citată se comportă ca orice altă postare și circulă în Fedivers.</p>\n"
+        },
+        "bookmarking-posts": {
+            "title": "Marcarea postărilor",
+            "category": "posting",
+            "summary": "Salvează postări în lista privată de Semne de carte pentru a le regăsi mai târziu.",
+            "body": "\n<p>Acțiunea <strong>Semn de carte</strong> salvează postarea în lista ta privată; o a doua apăsare o elimină. Autorul nu este notificat.</p>\n<p>Deschide <strong>Semne de carte</strong> din meniu pentru lista ordonată de la cea mai recentă. O postare ștearsă de autor dispare și din această listă.</p>\n"
+        },
+        "hashtags-and-mentions": {
+            "title": "Hashtaguri și mențiuni",
+            "category": "posting",
+            "summary": "Etichetează postări cu #hashtaguri și atrage persoane în conversație cu @mențiuni.",
+            "body": "\n<p>Un <strong>#hashtag</strong> devine automat link spre toate postările etichetate astfel. Primele zece hashtaguri distincte sunt indexate și luate în calcul pentru subiectele populare.</p>\n<p>Scrie <strong>@nume</strong> pentru a menționa o persoană și a o notifica. Pentru un cont din Fedivers folosește forma completă <code>@utilizator@server</code>. La peste zece mențiuni distincte, linkurile funcționează, dar nu se trimit notificări.</p>\n"
+        },
+        "trending-topics": {
+            "title": "Subiecte populare",
+            "category": "connecting",
+            "summary": "Vezi despre ce subiecte și nume se vorbește cel mai mult acum.",
+            "body": "\n<p>Pagina <strong>Subiecte</strong> grupează și ordonează hashtagurile, numele, locurile și alte teme apărute în multe postări recente. Fiecare element duce la postările care l-au făcut popular.</p>\n<p>Lista se recalculează odată cu activitatea și include postările din Fedivers cunoscute de server. Sunt necesare mai multe persoane distincte, iar moderatorii pot exclude elementele abuzive sau zgomotoase.</p>\n"
+        },
+        "following-on-the-fediverse": {
+            "title": "Urmărirea persoanelor din Fedivers",
+            "category": "connecting",
+            "summary": "Urmărește conturi de pe Mastodon și alte servere din Fedivers.",
+            "body": "\n<p>{site} folosește <strong>ActivityPub</strong>. În secțiunea Fedivers din Setările utilizatorului, lipește adrese precum <code>@utilizator@exemplu.social</code> și apasă <strong>Urmărește</strong>.</p>\n<p>Și tu ai o adresă în Fedivers, iar persoane de pe alte servere te pot urmări. Postările, sondajele, avertismentele, redistribuirile și actualizările profilului circulă între servere, la fel ca aprecierile și răspunsurile.</p>\n"
+        },
+        "searching": {
+            "title": "Căutarea",
+            "category": "connecting",
+            "summary": "Caută postările site-ului din pagina Căutare.",
+            "body": "\n<p><strong>Căutare</strong> caută în postările site-ului și afișează rezultatele pe măsură ce scrii. Pentru persoane, folosește <a href=\"/help/finding-people\">pagina Utilizatori</a>, care are propria căutare și sugestii.</p>\n"
+        },
+        "two-factor-authentication": {
+            "title": "Autentificarea în doi pași",
+            "category": "stayingSafe",
+            "summary": "Adaugă la autentificare un cod primit prin e-mail pentru mai multă siguranță.",
+            "body": "\n<p>Autentificarea în doi pași (2FA) cere, pe lângă parolă, un scurt cod numeric trimis prin e-mail la fiecare conectare. Activeaz-o în <strong>Setările utilizatorului</strong>.</p>\n<p>Ai nevoie de o <a href=\"/help/verifying-your-email\">adresă de e-mail verificată</a>. Nu este necesară o aplicație de autentificare și poți dezactiva ulterior opțiunea din același loc.</p>\n"
+        },
+        "signed-in-devices": {
+            "title": "Dispozitive conectate și sesiuni",
+            "category": "stayingSafe",
+            "summary": "Verifică unde ești conectat și deconectează-te simultan de peste tot.",
+            "body": "\n<p><strong>Dispozitive memorate</strong> enumeră dispozitivele pe care ai ales să rămâi conectat și îți permite să le revoci, cu excepția celui folosit acum.</p>\n<p>Secțiunea <strong>Sesiuni</strong> te poate deconecta simultan de pe toate dispozitivele. Folosește-o dacă bănuiești că altcineva are acces, apoi <a href=\"/help/settings-and-appearance\">schimbă parola</a>.</p>\n"
+        },
+        "your-profile": {
+            "title": "Profilul tău",
+            "category": "yourAccount",
+            "summary": "Alege numele afișat, biografia și avatarul pentru ca ceilalți să știe cine ești.",
+            "body": "\n<p>Profilul arată postările și informațiile tale. Deschide propriul profil și folosește editarea pentru a schimba <strong>numele afișat</strong>, <strong>biografia</strong> și <strong>avatarul</strong>. Numele de utilizator nu se poate schimba.</p>\n<p>Poți fixa până la cinci postări în secțiunea <strong>Fixate</strong> din partea de sus a profilului. Fixările și modificările profilului sunt transmise și în Fedivers.</p>\n"
+        },
+        "changing-your-email": {
+            "title": "Schimbarea adresei de e-mail",
+            "category": "yourAccount",
+            "summary": "Actualizează adresa de e-mail a contului și verific-o din nou.",
+            "body": "\n<p>În <strong>Setările utilizatorului</strong>, deschide <strong>Schimbă adresa de e-mail</strong>, introdu noua adresă și parola actuală, apoi deschide linkul de verificare trimis la noua adresă.</p>\n<p>Vechea adresă primește un link de anulare. Acesta restabilește adresa și deconectează toate dispozitivele, protejând contul dacă schimbarea nu a fost făcută de tine.</p>\n"
+        },
+        "deleting-your-account": {
+            "title": "Ștergerea contului",
+            "category": "yourAccount",
+            "summary": "Închide definitiv contul și elimină-ți conținutul.",
+            "body": "\n<p>În <strong>Setările utilizatorului</strong>, secțiunea <strong>Șterge contul</strong> cere parola pentru confirmare. Ștergerea este definitivă: elimină postările, răspunsurile, mesajele, aprecierile și conexiunile, inclusiv răspunsurile altora aflate sub postările tale.</p>\n<p>Numele de utilizator este retras și nu va putea fi înregistrat din nou. Contul administratorului site-ului nu poate fi șters.</p>\n"
+        }
+    }
+}

@@ -330,10 +330,52 @@ class Translator
         }
 
         try {
-            return self::runSmall100($text, $source, $target);
+            $translated = self::runSmall100($text, $source, $target);
         } finally {
             self::releaseSlot($slot);
         }
+
+        // A small distilled model can loop on longer or unusual input rather
+        // than fail outright - the words it already said become the most
+        // likely next words, and it starts saying them again. That reads as
+        // a translation, not an error, so it has to be caught here rather
+        // than by exit status: falling through to Argos is a real answer
+        // where this would otherwise be shown as one.
+        if ($translated !== null && self::isRepetitive($translated)) {
+            error_log('Translator: SMaLL-100 ' . $source . ' to ' . $target . ' looped, going to Argos instead');
+
+            return null;
+        }
+
+        return $translated;
+    }
+
+    /**
+     * Whether the same run of words repeats often enough that this reads as
+     * a model stuck in a loop rather than a translation - four consecutive
+     * words, four times over, which ordinary prose does not produce by
+     * accident.
+     */
+    private static function isRepetitive(string $text): bool
+    {
+        $words = preg_split('/\s+/u', trim($text)) ?: [];
+
+        if (count($words) < 12) {
+            return false;
+        }
+
+        $counts = [];
+
+        for ($i = 0; $i <= count($words) - 4; $i++) {
+            $phrase = mb_strtolower(implode(' ', array_slice($words, $i, 4)));
+            $counts[$phrase] = ($counts[$phrase] ?? 0) + 1;
+
+            if ($counts[$phrase] >= 4) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** What Argos makes of it, or null however it failed to. */

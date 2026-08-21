@@ -149,6 +149,39 @@ class TranslatorTest extends TestCase
         $this -> assertFalse(Translator::isSmall100Supported('not-a-language'));
     }
 
+    /**
+     * Found live on prod: SMaLL-100 can loop on longer or unusual input
+     * rather than fail outright, and a loop reads as a translation, not an
+     * error - "You can find the best way you can find the best way..." came
+     * back with exit 0. Caught on the words, not the exit status.
+     */
+    private function isSmall100Repetitive(string $text): bool
+    {
+        $method = new \ReflectionMethod(Translator::class, 'isRepetitive');
+        $method -> setAccessible(true);
+
+        return (bool) $method -> invoke(null, $text);
+    }
+
+    public function testALoopingTranslationIsRecognisedAsOne(): void
+    {
+        $this -> assertTrue($this -> isSmall100Repetitive(
+            'You can find the best way you can find the best way you can find the best way you can find the best way'
+        ));
+    }
+
+    public function testOrdinaryProseIsNotMistakenForALoop(): void
+    {
+        $this -> assertFalse($this -> isSmall100Repetitive(
+            'The weather report predicts rain for tomorrow, but it is expected to be sunny again on the weekend.'
+        ));
+
+        // Short answers repeat a handful of words by nature ("thank you very
+        // much, thank you") without being stuck - the length guard is what
+        // keeps these from false-positiving, not the phrase count alone.
+        $this -> assertFalse($this -> isSmall100Repetitive('Thank you very much, thank you'));
+    }
+
     // ---- The text itself ----
 
     /**

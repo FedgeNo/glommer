@@ -1,67 +1,1763 @@
 {
-    "PollOptionVotes":{"votes":{"other":"{count} คะแนนเสียง"}},
-    "LoginPrompt":{"reply":{"before":"","link":"เข้าสู่ระบบ","after":"เพื่อตอบกลับ"},"post":{"before":"","link":"เข้าสู่ระบบ","after":"เพื่อโพสต์"}},
-    "SetupForm":{"siteLegend":"เว็บไซต์","siteURLLabel":"URL เว็บไซต์","siteTitleLabel":"ชื่อเว็บไซต์","mailFromAddressLabel":"ที่อยู่อีเมลผู้ส่ง","serverNameConfirmedLabel":"ฉันได้ตั้งค่า \"ServerName {host}\" และ \"UseCanonicalName On\" ในการกำหนดค่าเว็บเซิร์ฟเวอร์แล้ว (ตรวจสอบเฉพาะเมื่อการทดสอบสดอัตโนมัติไม่สำเร็จ โปรดดูหัวข้อ HTTPS ใน README.md)","databaseLegend":"ฐานข้อมูล","databaseHostLabel":"โฮสต์ฐานข้อมูล","databasePortLabel":"พอร์ตฐานข้อมูล","databaseNameLabel":"ชื่อฐานข้อมูล","databaseAdminUsernameLabel":"ชื่อผู้ใช้ผู้ดูแลฐานข้อมูล","databaseAdminPasswordLabel":"รหัสผ่านผู้ดูแลฐานข้อมูล","webSocketTLSLegend":"TLS ของ WebSocket (ไม่บังคับ)","certificatePathLabel":"พาธใบรับรอง","certificatePathPlaceholder":"เว้นว่างเพื่อสร้างอัตโนมัติด้วย mkcert","keyPathLabel":"พาธคีย์","keyPathPlaceholder":"เว้นว่างเพื่อสร้างอัตโนมัติด้วย mkcert","botProtectionLegend":"การป้องกันบอต (ไม่บังคับ)","turnstileSiteKeyLabel":"คีย์เว็บไซต์ Cloudflare Turnstile","turnstileSiteKeyPlaceholder":"เว้นว่างเพื่อข้าม","turnstileSecretKeyLabel":"คีย์ลับ Cloudflare Turnstile","turnstileSecretKeyPlaceholder":"เว้นว่างเพื่อข้าม","submit":"ตั้งค่า"},
-    "MessageKeyPassphraseForm":{"currentPassphraseLabel":"วลีรหัสผ่านปัจจุบัน","newPassphraseLabel":"วลีรหัสผ่านใหม่","confirmNewPassphraseLabel":"ยืนยันวลีรหัสผ่านใหม่","accountPasswordLabel":"รหัสผ่านบัญชี","submit":"เปลี่ยนวลีรหัสผ่าน"},
-    "PasswordResetForm":{"legend":"เลือกรหัสผ่านใหม่","newPasswordLabel":"รหัสผ่านใหม่","newPasswordPlaceholder":"อย่างน้อย 8 ตัวอักษร","confirmPasswordLabel":"ยืนยันรหัสผ่านใหม่","submit":"ตั้งรหัสผ่านใหม่"},
-    "PasswordResetRequestForm":{"legend":"ตั้งรหัสผ่านของคุณใหม่","emailLabel":"อีเมล","submit":"ส่งลิงก์ตั้งรหัสผ่านใหม่"},
-    "EmailRevertForm":{"submit":"ย้อนกลับการเปลี่ยนอีเมล"},"EmailVerifyForm":{"submit":"ยืนยันที่อยู่อีเมล"},"EmailDigestResubscribeForm":{"submit":"เปิดอีกครั้ง"},"EmailDigestSetting":{"label":"ส่งอีเมลบอกสิ่งที่ฉันพลาดเมื่อไม่ได้เข้ามาระยะหนึ่ง"},
-    "RememberedDevice":{"unknownDevice":"อุปกรณ์ที่ไม่รู้จัก","browserOnOS":"{browser} บน {os}","thisDevice":" (อุปกรณ์นี้)","lastUsed":{"before":"ใช้ล่าสุด ","after":""}},
-    "LogoutEverywherePanel":{"explanation":"สิ้นสุดเซสชันที่ใช้งานอยู่ทั้งหมดและลืมอุปกรณ์ที่จดจำไว้ทุกเครื่อง คุณจะออกจากระบบในทุกเบราว์เซอร์ รวมถึงเบราว์เซอร์นี้"},
-    "LogoutEverywhereButton":{"label":"ออกจากระบบทุกที่"},"GoogleAccountDeleteButton":{"label":"ยืนยันด้วย Google เพื่อลบ"},"GoogleSignInButton":{"label":"ดำเนินการต่อด้วย Google"},"ProfileEditButton":{"ariaLabel":"แก้ไขโปรไฟล์"},
-    "PushNotificationSetting":{"explanation":"รับการแจ้งเตือนบนอุปกรณ์นี้แม้ไม่ได้เปิดเว็บไซต์ นี่เป็นตัวเลือกเฉพาะแต่ละเบราว์เซอร์ โปรดเปิดในทุกที่ที่คุณต้องการรับการติดต่อ","label":{"off":"เปิดบนอุปกรณ์นี้","on":"ปิดบนอุปกรณ์นี้"},"unsupported":"เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนแบบพุช"},
-    "LoginForm":{"legend":"เข้าสู่ระบบ","identifier":"ชื่อผู้ใช้หรืออีเมล","password":"รหัสผ่าน","rememberMe":"จดจำฉัน","submit":"เข้าสู่ระบบ"},
-    "SignupForm":{"legend":"สร้างบัญชี","usernameLabel":"ชื่อผู้ใช้","usernamePlaceholder":"ตัวอักษรพิมพ์เล็ก ตัวเลข และ _","emailLabel":"อีเมล","emailPlaceholder":"ที่อยู่อีเมลที่ถูกต้อง","displayName":"ชื่อที่แสดง (ไม่บังคับ)","bioLabel":"ประวัติย่อ (ไม่บังคับ)","bioPlaceholder":"ประวัติสั้น ๆ โดย #แฮชแท็ก @การกล่าวถึง และลิงก์จะคลิกได้","passwordLabel":"รหัสผ่าน","passwordPlaceholder":"รหัสผ่าน: อย่างน้อย 8 ตัวอักษร","rememberMe":"จดจำฉัน","submit":"สมัคร"},
-    "PasswordChangeForm":{"legend":"เปลี่ยนรหัสผ่านของคุณ","currentPassword":"รหัสผ่านปัจจุบัน","newPasswordLabel":"รหัสผ่านใหม่","newPasswordPlaceholder":"อย่างน้อย 8 ตัวอักษร","confirmPassword":"ยืนยันรหัสผ่านใหม่","submit":"เปลี่ยนรหัสผ่าน"},
-    "EmailChangeForm":{"legend":"เปลี่ยนที่อยู่อีเมลของคุณ","newEmail":"ที่อยู่อีเมลใหม่","currentPassword":"รหัสผ่านปัจจุบัน","notice":"คุณต้องยืนยันที่อยู่ใหม่ก่อนจึงจะใช้เว็บไซต์ต่อได้","submit":"เปลี่ยนอีเมล"},
-    "AccountDeleteForm":{"legend":"ลบบัญชีของคุณ","warning":"การดำเนินการนี้จะลบบัญชี โพสต์ และข้อความของคุณอย่างถาวร และไม่สามารถย้อนกลับได้","currentPassword":"รหัสผ่านปัจจุบัน","submit":"ลบบัญชี"},
-    "AccountMigrationForm":{"legend":"ย้ายไปเซิร์ฟเวอร์อื่น","movedNotice":"บัญชีนี้ย้ายไปยัง {destination} แล้ว ผู้ติดตามของคุณได้รับคำขอให้ติดตามคุณที่นั่น","explanation":"ผู้ติดตามของคุณจะได้รับคำขอให้ติดตามบัญชีใหม่ โพสต์ของคุณยังอยู่ที่นี่ เพราะที่อยู่วัตถุเป็นของเซิร์ฟเวอร์ที่สร้าง จึงย้ายตามไปไม่ได้","addressNotice":"บัญชีที่คุณจะย้ายไปต้องระบุบัญชีนี้ไว้ใน \"หรือเรียกอีกอย่างว่า\" ก่อน ที่อยู่ของคุณที่นี่คือ {address}","movedToLabel":"ย้ายไป","movedToPlaceholder":"https://example.social/users/you","aliasesLegend":"หรือเรียกอีกอย่างว่า","aliasesExplanation":"บัญชีที่อื่นซึ่งเป็นของคุณเช่นกัน การระบุบัญชีไว้ที่นี่อนุญาตให้บัญชีนั้นย้ายมายังบัญชีนี้ นี่คือการให้สิทธิ์ ไม่ใช่การย้ายจริง ระบุหนึ่งที่อยู่ต่อบรรทัด","aliasesLabel":"บัญชีอื่นของคุณ","aliasesPlaceholder":"https://example.social/users/you","submit":"บันทึก"},
-    "TwoFactorForm":{"legend":"ป้อนรหัสยืนยันของคุณ","explanation":"เราได้ส่งรหัสยืนยันให้คุณทางอีเมล ป้อนด้านล่างหรือใช้รหัสกู้คืนรหัสใดรหัสหนึ่งเพื่อเข้าสู่ระบบให้เสร็จสิ้น","explanationEmailFailed":"ขณะนี้เราไม่สามารถส่งรหัสยืนยันทางอีเมลได้ โปรดป้อนรหัสกู้คืนรหัสใดรหัสหนึ่งเพื่อเข้าสู่ระบบให้เสร็จสิ้น","code":"รหัสยืนยัน","submit":"ยืนยัน"},
-    "TwoFactorSettingsForm":{"legend":{"on":"เปิดการยืนยันตัวตนแบบสองขั้นตอนอยู่","off":"ปิดการยืนยันตัวตนแบบสองขั้นตอนอยู่"},"explanation":{"on":"เมื่อคุณเข้าสู่ระบบ เราจะส่งรหัสยืนยันทางอีเมลซึ่งคุณต้องป้อนเพื่อเข้าสู่ระบบให้เสร็จสิ้น หากอีเมลไปไม่ถึงคุณ ให้ใช้รหัสกู้คืนรหัสใดรหัสหนึ่งแทน","off":"เพิ่มขั้นตอนที่สองเมื่อเข้าสู่ระบบ เราจะส่งรหัสยืนยันทางอีเมลให้คุณป้อน เพื่อให้รหัสผ่านเพียงอย่างเดียวไม่พอสำหรับการเข้าสู่ระบบ คุณจะได้รับรหัสกู้คืนแบบใช้ครั้งเดียวเพื่อเก็บไว้ในกรณีที่อีเมลไปไม่ถึง"},"currentPassword":"รหัสผ่านปัจจุบัน","submit":{"on":"ปิดการยืนยันตัวตนแบบสองขั้นตอน","off":"เปิดการยืนยันตัวตนแบบสองขั้นตอน"},"regenerate":"สร้างรหัสกู้คืนใหม่","recoveryHeading":"รหัสกู้คืนของคุณ","recoveryNote":"เก็บรหัสเหล่านี้ไว้ในที่ปลอดภัยตอนนี้ เพราะจะไม่แสดงอีก แต่ละรหัสใช้เข้าสู่ระบบได้หนึ่งครั้งเมื่ออีเมลยืนยันไปไม่ถึง และการสร้างรหัสใหม่จะแทนที่รหัสทั้งหมดนี้","toast":{"on":"เปิดการยืนยันตัวตนแบบสองขั้นตอนแล้ว","off":"ปิดการยืนยันตัวตนแบบสองขั้นตอนแล้ว","regenerated":"สร้างรหัสกู้คืนใหม่แล้ว รหัสเดิมใช้ไม่ได้อีกต่อไป"}},
-    "VerificationNotice":{"instructions":"โปรดตรวจกล่องขาเข้าและคลิกลิงก์ยืนยันที่เราส่งไปเพื่อยืนยันที่อยู่อีเมล หากไม่พบ โปรดตรวจโฟลเดอร์ขยะหรือสแปม"},"VerificationResendButton":{"label":"ส่งอีเมลยืนยันอีกครั้ง"},
-    "MailSettingsForm":{"legend":"อีเมลขาออก","fromAddressLabel":"ที่อยู่ผู้ส่ง","fromAddressPlaceholder":"ส่งอีเมลไม่ได้จนกว่าจะตั้งค่านี้","fromNameLabel":"ชื่อผู้ส่ง","hostLabel":"โฮสต์ SMTP","portLabel":"พอร์ต SMTP","usernameLabel":"ชื่อผู้ใช้ SMTP","passwordLabel":"รหัสผ่าน SMTP","passwordPlaceholder":{"set":"ตั้งรหัสผ่านแล้ว เว้นว่างเพื่อเก็บรหัสเดิม","unset":"รหัสผ่าน SMTP"},"encryptionLabel":"การเข้ารหัส","encryptionOptions":{"tls":"TLS (STARTTLS โดยทั่วไปใช้พอร์ต 587)","ssl":"SSL (TLS โดยปริยาย โดยทั่วไปใช้พอร์ต 465)","none":"ไม่มี"},"explainer":"เว้นโฮสต์ SMTP ว่างเพื่อส่งผ่าน mail() ของ PHP แทน (ไม่แนะนำ โปรดดูหัวข้อการส่งถึงใน README) จะส่งอีเมลไม่ได้เลยจนกว่าจะตั้งค่าที่อยู่ \"ผู้ส่ง\"","save":"บันทึก"},
-    "MapSettingsForm":{"legend":"ไทล์แผนที่","notice":"เว้นว่างเพื่อใช้ OpenStreetMap หากต้องการใช้ผู้ให้บริการที่มีคีย์ ให้วางแม่แบบ URL ซึ่งมี {apiKey} ตามตัวอักษรในตำแหน่งของคีย์ พร้อมระบุคีย์และเครดิตด้านล่าง","urlLabel":"แม่แบบ URL ไทล์","keyLabel":"คีย์ API","keyPlaceholder":"คีย์ API ของผู้ให้บริการไทล์","attributionLabel":"เครดิต","attributionPlaceholder":"© ผู้ร่วมสร้าง OpenStreetMap","save":"บันทึก"},
-    "GoogleAuthSettingsForm":{"legend":"การเข้าสู่ระบบด้วย Google","clientIdLabel":"รหัสไคลเอนต์","clientIdPlaceholder":"รหัสไคลเอนต์ Google OAuth","secretLabel":"ข้อมูลลับไคลเอนต์","secretPlaceholder":{"set":"ตั้งข้อมูลลับไคลเอนต์แล้ว เว้นว่างเพื่อเก็บค่าเดิม","unset":"ข้อมูลลับไคลเอนต์ Google OAuth"},"explainer":"ต้องมีทั้งสองค่าเพื่อให้ \"ดำเนินการต่อด้วย Google\" ปรากฏตอนสมัครและเข้าสู่ระบบ ในไคลเอนต์ Google Cloud OAuth ให้ตั้ง URI เปลี่ยนเส้นทางที่อนุญาตเป็น {url} และล้างรหัสไคลเอนต์เพื่อปิด","save":"บันทึก"},
-    "BotProtectionSettingsForm":{"turnstileLegend":"Cloudflare Turnstile","turnstileSiteKeyLabel":"คีย์เว็บไซต์","turnstileSiteKeyPlaceholder":"คีย์เว็บไซต์ Cloudflare Turnstile","turnstileSecretKeyLabel":"คีย์ลับ","turnstileSecretKeyPlaceholder":{"set":"ตั้งคีย์ลับแล้ว เว้นว่างเพื่อเก็บค่าเดิม","unset":"คีย์ลับ Cloudflare Turnstile"},"turnstileExplainer":"ต้องมีทั้งสองคีย์เพื่อให้ CAPTCHA ปรากฏตอนสมัครและเข้าสู่ระบบ ล้างคีย์เว็บไซต์เพื่อปิด","recaptchaLegend":"Google reCAPTCHA (การกู้คืนบัญชีที่ถูกล็อก)","recaptchaSiteKeyLabel":"คีย์เว็บไซต์","recaptchaSiteKeyPlaceholder":"คีย์เว็บไซต์ Google reCAPTCHA v2","recaptchaSecretKeyLabel":"คีย์ลับ","recaptchaSecretKeyPlaceholder":{"set":"ตั้งคีย์ลับแล้ว เว้นว่างเพื่อเก็บค่าเดิม","unset":"คีย์ลับ Google reCAPTCHA v2"},"recaptchaExplainer":"ต้องมีทั้งสองคีย์ เมื่อตั้งค่าแล้ว บัญชีที่ถึงขีดจำกัดการพยายามเข้าสู่ระบบจะกลับเข้าได้ด้วยการผ่านคำท้านี้แทนการรอปลดล็อก หากไม่ตั้งค่าต้องรอเท่านั้น ใช้ reCAPTCHA v2 (\"ฉันไม่ใช่หุ่นยนต์\") ล้างคีย์เว็บไซต์เพื่อปิด","save":"บันทึก"},
-    "OpenRouterSettingsForm":{"legend":"OpenRouter","notice":"ใช้โดยคุณสมบัติ AI บนเว็บไซต์ เช่น สรุปหัวข้อยอดนิยม เว้นโมเดลว่างเพื่อใช้ Free Models Router ซึ่ง OpenRouter จะสุ่มเลือกจากโมเดลที่ใช้งานฟรีในขณะนั้นและไม่มีค่าใช้จ่าย","keyLabel":"คีย์ API","keyPlaceholder":{"set":"ตั้งคีย์ API แล้ว เว้นว่างเพื่อเก็บค่าเดิม","unset":"คีย์ API ของ OpenRouter"},"clearKeyLabel":"นำคีย์ API ที่เก็บไว้ออก (ปิดคุณสมบัติ AI)","modelLabel":"โมเดล","neverSpendLabel":"ห้ามใช้เงินโดยเด็ดขาด (แนะนำ)","explainer":"เมื่อเปิดการป้องกัน ทุกคำขอจะจำกัดราคาไว้ที่ศูนย์ จึงล้มเหลวทันทีแทนการเปลี่ยนไปใช้โมเดลแบบเสียเงินเมื่อไม่มีผู้ให้บริการฟรี นำคีย์ API ที่เก็บไว้ออกเพื่อปิดคุณสมบัติ AI ทั้งหมด","save":"บันทึก"},
-    "AboutSettingsForm":{"legend":"เกี่ยวกับ","description":"ข้อความล้วน บรรทัดว่างใช้แบ่งย่อหน้า ย่อหน้าแรกจะใช้เป็นคำอธิบายเว็บไซต์","save":"บันทึก"},"TermsSettingsForm":{"legend":"ข้อกำหนดการให้บริการ","description":"ข้อความล้วน บรรทัดว่างใช้แบ่งย่อหน้า","save":"บันทึก"},"PrivacySettingsForm":{"legend":"นโยบายความเป็นส่วนตัว","description":"ข้อความล้วน บรรทัดว่างใช้แบ่งย่อหน้า","save":"บันทึก"},"EmailDigestSettingsForm":{"legend":"สรุปทางอีเมล","fieldLabel":"ย่อหน้าปิดท้าย","notice":"เพิ่มใกล้ท้ายสรุปแต่ละฉบับ หลังรายการสิ่งที่สมาชิกพลาด เป็นข้อความล้วน เว้นว่างเพื่อกลับไปใช้ถ้อยคำที่มาพร้อมซอฟต์แวร์","save":"บันทึก"},"FaviconSettingsForm":{"legend":"ไอคอนเว็บไซต์","currentAlt":"ไอคอนเว็บไซต์ปัจจุบัน","save":"อัปโหลดไอคอนเว็บไซต์"},"FrontPageImageSettingsForm":{"legend":"ภาพหน้าแรก","explainer":"เว็บไซต์อื่นจะแสดงภาพนี้เมื่อมีคนแชร์ลิงก์มายังเว็บไซต์นี้ ใช้เฉพาะข้อมูลเมตา Open Graph และไม่แสดงบนหน้า ภาพจะครอบเป็น 1200×630 หากไม่มีภาพ ตัวอย่างลิงก์จะไม่มีภาพเลย","currentAlt":"ภาพหน้าแรกปัจจุบัน","save":"อัปโหลดภาพ"},
-    "CarouselAutoplayButton":{"name":"เล่นอัตโนมัติ"},"CarouselNextButton":{"name":"ถัดไป"},"CarouselPrevButton":{"name":"ก่อนหน้า"},"MediaFullscreenButton":{"name":"เต็มหน้าจอ"},"ComposerFilesRemoveButton":{"name":"นำไฟล์ออก"},"NotificationDropdown":{"showAll":"แสดงทั้งหมด"},"HelpSearch":{"placeholder":"ค้นหาความช่วยเหลือ…","noMatches":"ไม่มีบทความช่วยเหลือตรงกับการค้นหาของคุณ"},"WelcomeBannerDismissButton":{"name":"เข้าใจแล้ว"},"StagedPostDiscardButton":{"name":"ทิ้ง"},"StagedPostEditButton":{"name":"แก้ไข"},"StagedPostPublishButton":{"name":"เผยแพร่ตอนนี้"},"LogoutButton":{"name":"ออกจากระบบ"},"AvatarUploadForm":{"submit":"อัปเดตรูปประจำตัว"},"BannedUserSearchBox":{"placeholder":"ค้นหาผู้ใช้ที่ถูกแบน…"},"BannedUserSection":{"heading":"ผู้ใช้ที่ถูกแบน"},"SentFriendRequestSection":{"heading":"คำขอที่ส่งแล้ว (รอการตอบรับ)"},
-    "BannedTrendingEntity":{"bannedBy":{"before":"แบนโดย {name} ","after":""},"reason":" - {reason}"},"BlockedServerCard":{"blockedBy":{"before":"บล็อกโดย {name} ","after":""},"deletedAccount":"บัญชีที่ถูกลบ","reason":" - {reason}"},
-    "DateFormat":{"months":{"1":"มกราคม","2":"กุมภาพันธ์","3":"มีนาคม","4":"เมษายน","5":"พฤษภาคม","6":"มิถุนายน","7":"กรกฎาคม","8":"สิงหาคม","9":"กันยายน","10":"ตุลาคม","11":"พฤศจิกายน","12":"ธันวาคม"},"shortMonths":{"1":"ม.ค.","2":"ก.พ.","3":"มี.ค.","4":"เม.ย.","5":"พ.ค.","6":"มิ.ย.","7":"ก.ค.","8":"ส.ค.","9":"ก.ย.","10":"ต.ค.","11":"พ.ย.","12":"ธ.ค."},"long":"{day} {month} {year}","short":"{day} {month} {year}","time":"{hour}:{minute}","dateAndTime":"{date} เวลา {time}","am":"","pm":"","clock":24},
-    "EnvironmentChecker":{"wsCannotConnect":"เชื่อมต่อเซิร์ฟเวอร์ WebSocket ที่ 127.0.0.1:{port}{tls} ไม่ได้ ({error}) โปรดเริ่มก่อน: systemctl --user start glommer-websocket (ดูไฟล์หน่วยใน README.md) หากเพิ่งเพิ่มหรือนำ WS_TLS_CERT/WS_TLS_KEY ออก ให้เริ่มใหม่เพื่อให้ตรงกับ .env","wsOverTLS":" ผ่าน TLS","wsBadHandshake":"บริการที่ 127.0.0.1:{port} ไม่ดำเนินการจับมือ WebSocket ที่ถูกต้อง อาจมีสิ่งอื่นนอกจาก bin/websocket-server.php กำลังรับฟังพอร์ตนั้น","wsNoPong":"เซิร์ฟเวอร์ WebSocket ยอมรับการจับมือแต่ไม่ตอบ ping อาจค้างหรือทำงานผิดปกติ โปรดตรวจบันทึก","wsReachable":"เข้าถึงเซิร์ฟเวอร์ WebSocket และได้รับการตอบกลับที่ 127.0.0.1:{port}"},
-    "EntityType":{"singular":{"hashtag":"แฮชแท็ก","person":"บุคคล","org":"องค์กร","gpe":"สถานที่","loc":"ภูมิภาค","fac":"จุดสังเกต","product":"ผลิตภัณฑ์","event":"เหตุการณ์","work_of_art":"ผลงาน","law":"กฎหมาย","language":"ภาษา","norp":"กลุ่ม"},"plural":{"hashtag":"แฮชแท็ก","person":"ผู้คน","org":"องค์กร","gpe":"สถานที่","loc":"ภูมิภาค","fac":"จุดสังเกต","product":"ผลิตภัณฑ์","event":"เหตุการณ์","work_of_art":"ผลงาน","law":"กฎหมาย","language":"ภาษา","norp":"กลุ่ม"}},
-    "FriendRemoveButton":{"name":"เลิกเป็นเพื่อน"},"FriendRequestAcceptButton":{"name":"ยอมรับ"},"FriendRequestDenyButton":{"name":"ปฏิเสธ"},"UserFollowButton":{"follow":"ติดตาม","unfollow":"เลิกติดตาม"},"UserBlockButton":{"name":"บล็อก"},"UserUnblockButton":{"name":"เลิกบล็อก"},"OtherUser":{"message":"ส่งข้อความ"},
-    "MainNavigation":{"toggleLabel":"เมนู","loggedInAs":"เข้าสู่ระบบเป็น {name}","friendsFeed":"ฟีดเพื่อน","relayFeed":"ฟีดรีเลย์","users":"ผู้ใช้","tags":"แท็ก","topics":"หัวข้อ","map":"แผนที่","locations":"สถานที่","search":"ค้นหา","messages":"ข้อความ","bookmarks":"บุ๊กมาร์ก","help":"ช่วยเหลือ","about":"เกี่ยวกับ","login":"เข้าสู่ระบบ","signup":"สมัคร","friends":"เพื่อน","drafts":"ฉบับร่างและกำหนดเวลา","userSettings":"การตั้งค่าผู้ใช้","modSettings":"การตั้งค่าผู้ดูแล","adminSettings":"การตั้งค่าผู้ดูแลระบบ"},
-    "LogoutForm":{"submit":"ออกจากระบบ"},"User":{"joined":"เข้าร่วมเมื่อ {date}"},"FriendRequestButton":{"add":"เพิ่มเพื่อน","cancel":"ยกเลิกคำขอ"},"StagedPostWhen":{"scheduled":"กำหนดไว้สำหรับ {when}","draft":"ฉบับร่าง จะเผยแพร่เมื่อคุณสั่งเท่านั้น"},
-    "MessageTranslateButton":{"name":"แปลข้อความนี้"},"MessageTranslationNotice":{"heading":"เกี่ยวกับการแปลข้อความ","body":"ในการแปลข้อความ เนื้อหาจะถูกส่งมายังเซิร์ฟเวอร์นี้และแปลที่นี่ โดยไม่มีสิ่งใดถูกเก็บไว้ คำแปลจะไม่เขียนลงฐานข้อมูลและข้อความเดิมไม่เปลี่ยนแปลง แต่ข้อความที่แปลด้วยวิธีนี้ถูกเซิร์ฟเวอร์อ่านแล้ว จึงไม่เข้ารหัสจากต้นทางถึงปลายทางเหมือนข้อความที่ไม่ได้แปล แปลได้เฉพาะข้อความที่คุณได้รับและเมื่อคุณร้องขอเท่านั้น","confirm":"แปล","cancel":"ไว้ภายหลัง"},
-    "MessageKeySetupForm":{"resetWarning":"ลืมวลีรหัสผ่านหรือ การตั้งค่าใหม่จะสร้างคีย์ใหม่ภายใต้วลีรหัสผ่านใหม่ แต่ข้อความที่เข้ารหัสด้วยคีย์เก่าจะไม่มีใครอ่านได้อีก","requirements":"อย่างน้อย 12 ตัวอักษร และต้องไม่ใช่รหัสผ่านบัญชี เพราะรหัสผ่านนั้นถูกส่งมายังเซิร์ฟเวอร์นี้ แต่วลีรหัสผ่านต้องไม่ถูกส่งมา","passphraseLabel":"วลีรหัสผ่าน","resetPassphraseLabel":"วลีรหัสผ่านใหม่","confirmLabel":"ยืนยันวลีรหัสผ่าน","accountPasswordLabel":"รหัสผ่านบัญชี","submitLabel":"เปิดข้อความเข้ารหัส","resetSubmitLabel":"ตั้งคีย์เข้ารหัสใหม่"},
-    "EncryptedMessagesSetting":{"explanation":"ข้อความที่เข้ารหัสจากต้นทางถึงปลายทางจะถูกล็อกและปลดล็อกในเบราว์เซอร์ของคุณ เซิร์ฟเวอร์นี้ส่งต่อและเก็บข้อความโดยอ่านไม่ได้ คีย์ของคุณป้องกันด้วยวลีรหัสผ่าน และวลีเดียวกันปลดล็อกข้อความจากทุกเบราว์เซอร์ การสนทนาจะเข้ารหัสเมื่อทั้งสองคนเปิดใช้งานแล้ว ข้อความถึงคนบนเซิร์ฟเวอร์อื่นยังไม่เข้ารหัส เพราะสหพันธ์ไม่มีวิธีส่งแบบเข้ารหัส","noRecovery":"ไม่มีวิธีกู้วลีรหัสผ่านที่หายไป แม้แต่ผู้ดูแลระบบ การทำหายหมายถึงเสียข้อความเข้ารหัสของคุณ","enabledStatus":"เปิดข้อความเข้ารหัสแล้ว"},
-    "MessagePrivacyButton":{"encrypted":{"label":"เข้ารหัส","explanation":"ข้อความในการสนทนานี้เข้ารหัสจากต้นทางถึงปลายทาง โดยปลดล็อกด้วยวลีรหัสผ่านและอ่านในเบราว์เซอร์ของคุณ สิ่งที่เซิร์ฟเวอร์เก็บคือข้อความเข้ารหัส ตรวจรหัสความปลอดภัยด้านล่างของเธรดกับอีกฝ่ายเพื่อให้แน่ใจว่าไม่มีใครคั่นกลาง ข้อความที่ส่งก่อนเปิดการเข้ารหัสยังอ่านได้เหมือนเดิม"},"awaiting-theirs":{"label":"ไม่ได้เข้ารหัส","explanation":"ข้อความที่นี่จะเข้ารหัสจากต้นทางถึงปลายทางเมื่อ {handle} เปิดข้อความเข้ารหัสในการตั้งค่า"},"awaiting-yours":{"label":"ไม่ได้เข้ารหัส","explanation":"ข้อความที่นี่ยังไม่เข้ารหัสจากต้นทางถึงปลายทาง เปิดข้อความเข้ารหัสในการตั้งค่าเพื่อปกป้องการสนทนานี้"},"federated":{"label":"ไม่ได้เข้ารหัส","explanation":"{handle} อยู่บนเซิร์ฟเวอร์อื่น ข้อความในการสนทนานี้เก็บไว้ทั้งบนเซิร์ฟเวอร์นั้นและเซิร์ฟเวอร์นี้ และผู้ดูแลของเซิร์ฟเวอร์นั้นอ่านได้ เพราะโพรโทคอลระหว่างเซิร์ฟเวอร์ไม่มีวิธีเข้ารหัส โปรดเก็บเรื่องละเอียดอ่อนไว้ในการสนทนาบนเว็บไซต์นี้"}},
-    "RemoteFollowsForm":{"legend":"ติดตามบัญชี Fediverse","notice":"วางแฮนเดิลอย่างน้อยหนึ่งรายการ เช่น @user@example.social ตัวคั่นแบบใดก็ใช้ได้","handlesLabel":"แฮนเดิล Fediverse ที่จะติดตาม","submit":"ติดตาม","statusPending":"รอดำเนินการ","statusAccepted":"ยอมรับแล้ว"},
-    "ServerBlockForm":{"legend":"บล็อกเซิร์ฟเวอร์","description":"ปฏิเสธทุกอย่างจากเซิร์ฟเวอร์นั้นและทุกอย่างที่อยู่ใต้เซิร์ฟเวอร์ ไม่มีการส่งเข้าหรือออก และยกเลิกการติดตามที่มีอยู่ทั้งสองทิศทาง","serverLabel":"เซิร์ฟเวอร์","serverPlaceholder":"example.social","reasonLabel":"เหตุผล","reasonPlaceholder":"เหตุใดจึงบล็อกเซิร์ฟเวอร์นี้","submit":"บล็อกเซิร์ฟเวอร์"},
-    "VideoCallTestPanel":{"intro":"ทดสอบส่วนของการตั้งค่าการโทรที่ตรวจได้จากเบราว์เซอร์เดียว ทุกอย่างจนถึงการเชื่อมต่อแบบเพียร์ทูเพียร์จริงทดสอบได้ที่นี่ แต่การเชื่อมต่อกับอีกคนต้องมีคนนั้น"},"VideoCallTestButton":{"label":"เรียกใช้การตรวจสอบ"},
-    "WebSocketStatus":{"ok":"เซิร์ฟเวอร์ WebSocket: ทำงานอยู่","failed":"เซิร์ฟเวอร์ WebSocket: {detail}","clientTesting":"การเชื่อมต่อเบราว์เซอร์: กำลังทดสอบ…","clientConnecting":"การเชื่อมต่อเบราว์เซอร์: กำลังเชื่อมต่อ…","clientConnected":"การเชื่อมต่อเบราว์เซอร์: เชื่อมต่อแล้ว","clientDisconnecting":"การเชื่อมต่อเบราว์เซอร์: กำลังตัดการเชื่อมต่อ…","clientNotConnected":"การเชื่อมต่อเบราว์เซอร์: ไม่ได้เชื่อมต่อ"},
-    "UploadWorkerStatus":{"running":"บริการตัวทำงาน: ทำงานอยู่","stopped":"บริการตัวทำงาน: ไม่ทำงาน ไฟล์อัปโหลดที่พักไว้จะไม่ถูกแปลงจนกว่าจะเริ่มใหม่","unknown":"บริการตัวทำงาน: ไม่ทราบ อาจไม่มี systemctl บนโฮสต์นี้ หรือ SELinux ปฏิเสธการสอบถามสถานะของเว็บเซิร์ฟเวอร์ (เรียก bin/install.php เป็น root เพื่อแก้ไข)","queue":"คิว: พักไว้ {staging}, รอดำเนินการ {pending}, กำลังประมวลผล {processing}"},
-    "TrendingTimerStatus":{"running":"ตัวจับเวลาหัวข้อยอดนิยม: ทำงานอยู่","stopped":"ตัวจับเวลาหัวข้อยอดนิยม: ไม่ทำงาน หัวข้อยอดนิยมจะรีเฟรชผ่านการซ่อมตัวเองในเส้นทางอ่าน (EntityRanker::refreshIfStale()) เท่านั้น ไม่ใช่ตามกำหนด เรียก bin/install.php เป็น root เพื่อตั้งค่า","unknown":"ตัวจับเวลาหัวข้อยอดนิยม: ไม่ทราบ อาจไม่มี systemctl บนโฮสต์นี้ หรือ SELinux ปฏิเสธการสอบถามสถานะของเว็บเซิร์ฟเวอร์ (เรียก bin/install.php เป็น root เพื่อแก้ไข)"},
-    "Notification":{"postReady":"สื่อของคุณประมวลผลเสร็จและเผยแพร่แล้ว","scheduledPostLive":"โพสต์ที่กำหนดเวลาไว้เผยแพร่แล้ว","uploadPartlyFailed":"โพสต์ของคุณเผยแพร่แล้ว แต่ประมวลผลไฟล์อย่างน้อยหนึ่งไฟล์ไม่ได้","uploadFailed":"ประมวลผลไฟล์อัปโหลดหนึ่งรายการไม่ได้และไม่ได้โพสต์","mailerFailed":"ส่งอีเมลไม่สำเร็จ ระบบส่งเมลอาจหยุดทำงาน โปรดตรวจการกำหนดค่าอีเมล","mailFromNotConfigured":"ไม่ได้กำหนดที่อยู่ \"ผู้ส่ง\" จึงส่งอีเมลไม่ได้ โปรดตั้งค่าในหน้าการตั้งค่าผู้ดูแลระบบ (หัวข้ออีเมลขาออก) หรือผ่าน bin/install.php","systemError":"เกิดข้อผิดพลาดของเซิร์ฟเวอร์ โปรดตรวจบันทึกข้อผิดพลาด","passwordRemovedGoogle":"รหัสผ่านของคุณถูกนำออกเมื่อเข้าสู่ระบบด้วย Google ใช้ \"ลืมรหัสผ่าน\" หากต้องการตั้งรหัสใหม่","like":"{name} ถูกใจโพสต์ของคุณ","repost":"{name} โพสต์โพสต์ของคุณซ้ำ","reply":"{name} ตอบกลับโพสต์ของคุณ","friendRequest":"{name} ส่งคำขอเป็นเพื่อนถึงคุณ","friendAccepted":"{name} ยอมรับคำขอเป็นเพื่อนของคุณ","message":"{name} ส่งข้อความถึงคุณ","mention":"{name} กล่าวถึงคุณในโพสต์","follow":"{name} ติดตามคุณจากเซิร์ฟเวอร์อื่น","default":"{name} ทำบางอย่าง"},
-    "NotificationList":{"emptyNotice":"ยังไม่มีการแจ้งเตือน"},"NotificationsNavLink":{"label":"การแจ้งเตือน","unseen":"การแจ้งเตือนที่ยังไม่เห็น"},"NotificationTestPanel":{"intro":"ส่งการแจ้งเตือนทดสอบถึงตัวคุณเอง (ผู้ดูแลระบบ) ควรปรากฏทันทีเป็นข้อความป๊อปอัปและในรายการการแจ้งเตือน","button":"ส่งการแจ้งเตือนทดสอบ","sending":"กำลังส่ง…","sent":"ส่งแล้ว!","failed":"ล้มเหลว"},"MessageDot":{"label":"ข้อความที่ยังไม่ได้อ่าน"},"NavAlertDot":{"label":"มีสิ่งใหม่ในเมนู"},"Message":{"encrypted":"ข้อความเข้ารหัส","decryptionFailed":"ข้อความนี้เข้ารหัสด้วยคีย์ที่ไม่มีอยู่อีกแล้ว"},"MessageComposer":{"bodyLabel":"ข้อความ","bodyPlaceholder":"เขียนข้อความ","send":"ส่ง"},"MessageList":{"emptyNotice":"ยังไม่มีข้อความ"},
-    "MessageKeyFingerprint":{"explanation":"อ่านรหัสนี้ให้อีกฝ่ายฟังด้วยวิธีอื่น เช่น พูดต่อหน้า หรือผ่านสาย หากตรงกันทั้งสองฝ่าย แสดงว่าไม่มีใครคั่นกลาง","changed":"รหัสนี้เปลี่ยนไปตั้งแต่คุณตรวจครั้งล่าสุด ซึ่งเกิดขึ้นเมื่อฝ่ายใดฝ่ายหนึ่งตั้งคีย์เข้ารหัสใหม่ แต่ก็เป็นลักษณะเดียวกับเมื่อมีคนอ่านการสนทนานี้ โปรดตรวจรหัสใหม่กับอีกฝ่ายก่อนเชื่อถือ","verified":"คุณตรวจรหัสนี้แล้ว"},"MessageKeyVerifyButton":{"label":"ทำเครื่องหมายว่ายืนยันแล้ว"},"MessageUnlockForm":{"passphraseLabel":"วลีรหัสผ่าน","passphrasePlaceholder":"วลีรหัสผ่านเพื่อปลดล็อกการสนทนานี้","submit":"ปลดล็อก"},"Conversation":{"lastMessage":{"before":"ข้อความล่าสุด ","after":""}},"SensitiveMedia":{"summary":"สื่อที่ละเอียดอ่อน"},"SensitiveMediaSetting":{"toggle":"แสดงสื่อที่ละเอียดอ่อนโดยค่าเริ่มต้น"},
-    "Report":{"targetTypes":{"post":"โพสต์","message":"ข้อความ","user":"ผู้ใช้"},"summary":{"before":"{type} #{id} รายงานโดย ","after":""},"reasonLine":"เหตุผล: {reason}","banReporterLabel":"แบนผู้รายงาน","banReportedUserLabel":"แบนผู้ใช้ที่ถูกรายงาน","deleteLabel":"ลบ {type}","reportedImageAlt":"ภาพที่ถูกรายงาน","attachmentUnavailable":"ไฟล์แนบที่ถูกรายงานไม่มีอยู่อีกแล้ว","viewAttachment":"ดูไฟล์แนบที่ถูกรายงาน","missing":{"noSnapshot":"เนื้อหาที่ถูกรายงานไม่มีอยู่อีกแล้ว","unknownType":"ไม่ทราบประเภทเนื้อหา"}},
-    "ReportList":{"emptyNotice":"ไม่มีรายงาน"},"ModQueueLinks":{"intro":"คิวยาวพอที่จะอ่านทีละหน้า จึงมีหน้าแยกของตัวเอง","reportsLabel":"รายงาน","bannedUsersLabel":"ผู้ใช้ที่ถูกแบน"},"ModerationActionList":{"emptyNotice":"ยังไม่มีผู้ดูแลดำเนินการใด"},"BannedTrendingEntityList":{"emptyNotice":"ไม่มีรายการยอดนิยมที่ถูกแบน"},"BlockedServerList":{"emptyNotice":"ไม่มีเซิร์ฟเวอร์ที่ถูกบล็อก"},"RelayCard":{"accepted":"สมัครแล้ว ","waiting":"กำลังรอรีเลย์ยอมรับ สมัครแล้ว "},"RelayList":{"emptyNotice":"ไม่ได้สมัครรีเลย์ใด ไม่มีสิ่งใดมาถึงที่นี่ยกเว้นสิ่งที่สมาชิกติดตาม"},"RelayFeedList":{"emptyNotice":"ยังไม่มีสิ่งใดผ่านรีเลย์ โพสต์จะปรากฏที่นี่เมื่อเซิร์ฟเวอร์อีกฝั่งเผยแพร่"},
-    "RelaySubscribeForm":{"legend":"สมัครรีเลย์","explainerOne":"รีเลย์คือกระแสข้อมูลร่วม โพสต์สาธารณะทุกโพสต์จากทุกเซิร์ฟเวอร์ที่สมัครจะมาถึงที่นี่ และโพสต์ของเซิร์ฟเวอร์นี้จะออกไปยังทั้งหมด นี่คือวิธีที่อินสแตนซ์ใหม่ค้นพบผู้คน เพราะปกติสหพันธ์จะส่งเฉพาะสิ่งที่คนที่นี่ติดตามอยู่แล้ว","explainerTwo":"คุณคาดเดาภาระไม่ได้ เพราะขึ้นอยู่กับสิ่งที่เซิร์ฟเวอร์เหล่านั้นเผยแพร่ สัปดาห์หนึ่งอาจเงียบ แต่อีกสัปดาห์อาจมีหลายพันโพสต์ต่อชั่วโมง ทั้งพื้นที่เก็บข้อมูล คิวส่ง และคิวตรวจสอบของคุณต้องรองรับ โพสต์จากรีเลย์จะไม่อยู่ในฟีดหลักและฟีดเพื่อน แต่จะไปยังฟีดรีเลย์ซึ่งผู้ใช้ตั้งใจเปิดดู","addressLabel":"ที่อยู่รีเลย์","addressPlaceholder":"https://relay.example/actor","submitLabel":"สมัคร"},
-    "RelayFollowObjectField":{"label":"รูปแบบการสมัคร","options":{"public":"ติดตามกระแสสาธารณะ (รีเลย์ส่วนใหญ่คาดหวังแบบนี้)","actor":"ติดตามแอ็กเตอร์ของรีเลย์เอง"},"retryNotice":"หากรีเลย์ไม่ยอมรับ ให้ถอนแล้วลองอีกรูปแบบ ซอฟต์แวร์รีเลย์บางชนิดรู้จักเพียงแบบเดียว"},
-    "SiteCounters":{"members":"สมาชิก: {count} (เข้าร่วมใน {days} วันที่ผ่านมา {joined})","activeMembers":"สมาชิกที่อยู่ที่นี่ใน {days} วันที่ผ่านมา: {count} (โพสต์แล้ว {posted})","posts":"โพสต์ที่เขียนที่นี่: {count} ({recent} โพสต์ใน {days} วันที่ผ่านมา)","deliveries":"การส่งแบบสหพันธ์ใน {days} วันที่ผ่านมา: มาถึง {delivered}, เลิกล้ม {undeliverable}","queued":"รอส่งออก: {count} (ถูกปฏิเสธอย่างน้อยหนึ่งครั้งแล้ว {failing})","pendingReads":"โพสต์ที่รออ่านจากเซิร์ฟเวอร์อื่น: {count}"},
-    "TestSuitePanel":{"intro":"เรียกใช้ชุดการทดสอบของเว็บไซต์และดูผลลัพธ์ ใช้เวลาสองสามวินาทีจึงเปิดในหน้าแยก","runLabel":"เรียกใช้การทดสอบ"},"HelpArticle":{"backLabel":"กลับไปความช่วยเหลือทั้งหมด"},"UserSearchList":{"noSuggestions":"ขณะนี้ไม่มีคำแนะนำ คำแนะนำมาจากเพื่อนของคนที่เป็นเพื่อนกับคุณอยู่แล้ว ค้นหาด้านบนเพื่อหาคนตามชื่อ","noMatches":"ไม่มีใครที่นี่ตรงกับสิ่งนั้น"},"UserModButton":{"make":"แต่งตั้งเป็นผู้ดูแล","remove":"ถอนผู้ดูแล"},"UserUnbanButton":{"name":"ยกเลิกการแบน"},"TrendingEntityBanButton":{"name":"แบน"},"TrendingEntityUnbanButton":{"name":"ยกเลิกการแบน"},"ReportDismissButton":{"name":"ยกเลิก"},"ReportedContentClassifyButton":{"name":"ทำเครื่องหมายว่าละเอียดอ่อน"},"ServerUnblockButton":{"name":"เลิกบล็อก"},"RelayUnsubscribeButton":{"name":"ยกเลิกการสมัคร"},"RememberedDeviceRevokeButton":{"name":"เพิกถอน"},"TestResultsBadge":{"passing":"{suite}: ผ่าน","failing":"{suite}: ไม่ผ่าน"},
-    "PageTitle":{"about":"เกี่ยวกับ","adminBanned":"ผู้ใช้ที่ถูกแบน","adminModSettings":"การตั้งค่าผู้ดูแล","adminReports":"รายงาน","adminSettings":"การตั้งค่าผู้ดูแลระบบ","adminTests":"การทดสอบ","authGoogleCallbackAccountDeleted":"ลบบัญชีแล้ว","authGoogleCallbackDeleteAccount":"ลบบัญชี","authGoogleCallbackLogin":"เข้าสู่ระบบ","bookmarks":"บุ๊กมาร์ก","checkInbox":"ตรวจกล่องขาเข้าของคุณ","drafts":"ฉบับร่างและกำหนดเวลา","draftsEditDraft":"แก้ไขฉบับร่าง","draftsEditScheduled":"แก้ไขโพสต์ที่กำหนดเวลา","forgotPassword":"ลืมรหัสผ่าน","friendsFeed":"ฟีดเพื่อน","help":"ช่วยเหลือ","helpDescription":"คู่มือและคำตอบสำหรับการใช้เว็บไซต์","locations":"สถานที่","locationsDescription":"โพสต์จากสถานที่ที่ใกล้คุณที่สุด","locationsPlaceDescription":"โพสต์ใกล้ {place}","login":"เข้าสู่ระบบ","loginVerificationCode":"รหัสยืนยัน","map":"แผนที่","mapDescription":"แผนที่โพสต์จากทั่วโลก ค้นหาผู้คนและสิ่งต่าง ๆ ใกล้คุณ","messages":"ข้อความ","messagesWithUser":"ข้อความกับ {name}","notifications":"การแจ้งเตือน","privacy":"นโยบายความเป็นส่วนตัว","quote":"อ้างอิง","relayFeed":"ฟีดรีเลย์","relayFeedDescription":"โพสต์สาธารณะที่มาจากรีเลย์ซึ่งเซิร์ฟเวอร์นี้สมัครไว้","resetPassword":"ตั้งรหัสผ่านใหม่","revertEmail":"ย้อนกลับการเปลี่ยนอีเมล","search":"ค้นหา","signup":"สมัคร","tags":"แท็ก","tagsDescription":"เรียกดูแฮชแท็กยอดนิยมและที่กำลังมาแรงบน {siteTitle}","tagsTagDescription":"โพสต์ที่ติดแท็ก {tag} บน {siteTitle}","terms":"ข้อกำหนดการให้บริการ","topics":"หัวข้อ","topicsDescription":"สิ่งที่ผู้คนกำลังพูดถึงบน {siteTitle} ตอนนี้","topicsEntityDescription":"{typeLabel} - โพสต์ที่กล่าวถึง {entityTitle} บน {siteTitle}","topicsTypeDescription":"{typePlural} ที่ผู้คนกำลังพูดถึงบน {siteTitle} ตอนนี้","unsubscribe":"สรุปทางอีเมล","userFriends":"เพื่อนของ {name}","userFriendsDescription":"เพื่อนของ {name} บน {siteTitle}","userSettings":"การตั้งค่าผู้ใช้","users":"ผู้ใช้","verifyEmail":"ยืนยันอีเมล"},
-    "PostLikeButton":{"like":"ถูกใจ","unlike":"เลิกถูกใจ"},"PostPinButton":{"pin":"ปักหมุด","unpin":"เลิกปักหมุด"},"PostQuoteButton":{"name":"อ้างอิง"},"PostDeleteButton":{"name":"ลบ"},"PostEditButton":{"name":"แก้ไข"},"ReportButton":{"name":"รายงาน"},"PostActionBar":{"reply":"ตอบกลับ","replies":{"other":"การตอบกลับ ({count})"}},"PostEditedMarker":{"label":"(แก้ไขแล้ว)"},"RepliesHeading":{"heading":"การตอบกลับ"},"PollVoteButton":{"name":"ลงคะแนน"},"MoreLocationsLink":{"moreLocations":{"before":"ดู","link":"สถานที่เพิ่มเติม","after":""}},
-    "NearbyLocationPrompt":{"heading":"โพสต์ใกล้คุณ","description":"หน้านี้แสดงโพสต์ที่ใกล้จุดหนึ่งมากที่สุด ไม่ว่ากิจกรรมจะอยู่ไกลเพียงใด แชร์ตำแหน่งของคุณเพื่อเริ่มจากจุดที่คุณอยู่ หรือเลือกจุดบนแผนที่แทน","useMyLocation":"ใช้ตำแหน่งของฉัน","pickOnMap":"เลือกบนแผนที่","searchPlaceholder":"หรือพิมพ์ชื่อสถานที่…","searchLabel":"ค้นหาสถานที่","locating":"กำลังหาตำแหน่ง…","noGeolocation":"เบราว์เซอร์ของคุณแชร์ตำแหน่งไม่ได้","locationError":"รับตำแหน่งของคุณไม่ได้ โปรดตรวจสิทธิ์ตำแหน่งของเบราว์เซอร์"},
-    "PollDeadline":{"final":"ผลลัพธ์สุดท้าย","closes":{"before":"ปิด ","after":""},"days":{"other":"ในอีก {count} วัน"},"hours":{"other":"ในอีก {count} ชั่วโมง"},"minutes":{"other":"ในอีก {count} นาที"},"underMinute":"ในเวลาไม่ถึงหนึ่งนาที"},"PollTally":{"voters":{"other":"มีผู้ลงคะแนน {count} คน "}},"PostComposer":{"prompt":{"before":"","link":"เข้าสู่ระบบ","after":"เพื่อโพสต์"}},"ReplyComposer":{"prompt":{"before":"","link":"เข้าสู่ระบบ","after":"เพื่อตอบกลับ"}},"RepostAttribution":{"attribution":{"before":"","after":" โพสต์ซ้ำ"}},"ThreadContext":{"response":{"before":"ตอบกลับ ","after":""},"untitled":"โพสต์นี้","jumpToStart":"ไปที่จุดเริ่มต้น"},"TopicSummaryCard":{"label":"สรุปที่สร้างโดย AI"},
-    "WelcomeBanner":{"heading":{"before":"ยินดีต้อนรับสู่ ","after":""},"paragraphs":["เขียนบางอย่างในช่องด้านล่างแล้วสิ่งนั้นจะไปยังฟีดของคุณ ทุกคนตอบกลับได้ และคำตอบก็คือโพสต์ที่มีโพสต์แม่ ดังนั้นบทสนทนาจึงซ้อนลึกได้เท่าที่ต้องการ","เพิ่มคนเป็นเพื่อนแล้วโพสต์ของพวกเขาจะเข้าฟีดของคุณ ฟีดทั่วโลก ซึ่งเป็นชื่อเว็บไซต์ที่มุมซ้ายบน จะแสดงทุกอย่างที่เขียนที่นี่ และเป็นที่สำหรับหาคนที่จะเพิ่ม","เว็บไซต์นี้เป็นส่วนหนึ่งของ Fediverse คุณสามารถติดตามบัญชีบน Mastodon และเซิร์ฟเวอร์อื่นด้วยแฮนเดิลเต็ม และสิ่งที่คุณโพสต์จะไปถึงผู้ติดตามที่นั่น ค้นหาแฮนเดิลเช่น @someone@example.social แล้วเซิร์ฟเวอร์นี้จะไปค้นหาให้","ติด #แฮชแท็กในโพสต์แล้วโพสต์จะปรากฏในหน้าแท็กนั้น และปรากฏในหัวข้อยอดนิยมหากมีคนเขียนถึงมากพอ","ข้อความระหว่างสมาชิกเข้ารหัสจากต้นทางถึงปลายทาง เซิร์ฟเวอร์เก็บข้อความเข้ารหัสที่อ่านไม่ได้ เปิดคุณสมบัตินี้ในการตั้งค่า","คุณไม่จำเป็นต้องโพสต์ทันที บันทึกฉบับร่างหรือกำหนดเวลาให้เผยแพร่เอง ทั้งสองอยู่ใต้ฉบับร่างและกำหนดเวลา"],"more":{"before":"มีข้อมูลเพิ่มเติมใน","link":"หน้าความช่วยเหลือ","after":" รวมถึงวิธีย้ายบัญชีจากที่อื่นมายังที่นี่"},"dontShowAgain":"ไม่ต้องแสดงอีก"},
-    "EmojiPickerTriggerButton":{"label":"แทรกอีโมจิ"},"LinkImagePreview":{"alt":"ภาพตัวอย่างลิงก์"},"LinkImageRemoveButton":{"label":"นำภาพออก"},"LinkItem":{"alt":"ภาพตัวอย่างลิงก์"},"MapScrubber":{"play":"เล่น","pause":"หยุดชั่วคราว","cumulativeMode":"จนถึงเวลานั้น","windowMode":"เฉพาะเวลานั้น","rangeLabel":"แสดงโพสต์ถึงวันที่","cumulativeLabel":{"other":"โพสต์ถึง {date} — {count} โพสต์"},"windowLabel":{"other":"โพสต์ช่วง {date} — {count} โพสต์"}},"Post":{"pageTitleByAuthor":"โพสต์ของ {name}","pageTitleUntitled":"โพสต์","imageAltByAuthor":"ภาพที่โพสต์โดย {name}","imageAltUntitled":"ภาพ"},"PostBookmarkButton":{"remove":"นำบุ๊กมาร์กออก","add":"บุ๊กมาร์ก"},"PostRepostButton":{"undo":"เลิกโพสต์ซ้ำ","repost":"โพสต์ซ้ำ"},"QuotedPost":{"viewLink":"ดูโพสต์ที่อ้างอิง"},"ReceivedFriendRequestSection":{"heading":"คำขอที่รอดำเนินการ"},"ScrollToTopButton":{"label":"เลื่อนไปด้านบน"},"SearchClearButton":{"label":"ล้างการค้นหา"},"SitePolicyLinks":{"terms":"ข้อกำหนดการให้บริการ","privacy":"นโยบายความเป็นส่วนตัว"},"SkipLink":{"label":"ข้ามไปยังเนื้อหา"},"TopicHeading":{"searchLink":"ค้นหาสิ่งนี้","noPosts":"ขณะนี้ไม่มีโพสต์กล่าวถึงสิ่งนี้"},"PopularEntityList":{"emptyNotice":"ยังไม่มีการเขียนถึงสิ่งประเภทนี้"},"TrendingEntitySection":{"heading":"กำลังมาแรง"},"PostLocationLink":{"title":"แสดงสถานที่นี้บนแผนที่","between":", "},
-    "RelativeTime":{"justNow":"เมื่อสักครู่","minutes":{"other":"{count} นาทีที่แล้ว"},"hours":{"other":"{count} ชั่วโมงที่แล้ว"},"days":{"other":"{count} วันที่แล้ว"}},
-    "ThemeSelector":{"label":"ธีม","themes":{"system":"ตรงกับระบบ","light":"สว่างเรียบง่าย","dark":"มืดเรียบง่าย","sepia":"ซีเปีย","midnight":"เที่ยงคืน","sunset":"พระอาทิตย์ตก","rose":"กุหลาบ","forest":"ป่า","ocean":"มหาสมุทร","lavender":"ลาเวนเดอร์","gold":"ทอง","hacker":"แฮ็กเกอร์","ironbow":"Ironbow","viridis":"Viridis","mako":"Mako","cividis":"Cividis","ylgnbu":"YlGnBu","cubehelix":"Cubehelix","greyscale":"ระดับสีเทา"}},
-    "PostTranslation":{"unavailable":"ไม่ได้ตั้งค่าการแปลบนเซิร์ฟเวอร์นี้","nothing":"ไม่มีสิ่งใดที่นี่ให้แปล","unknownSource":"ยังไม่มีใครทราบว่าโพสต์นี้ใช้ภาษาอะไร จึงแปลไม่ได้","alreadyReadable":"โพสต์นี้เป็นภาษานั้นอยู่แล้ว","unsupportedPair":"เซิร์ฟเวอร์นี้ยังแปลภาษานั้นไม่ได้"},"LanguagePrompt":{"question":"คุณต้องการดูเว็บไซต์เป็นภาษาไทยหรือไม่","accept":"ใช่","decline":"ไม่ ขอบคุณ"},"LanguageSelector":{"label":"ภาษา","legend":"ภาษา"},
-    "EmailDigest":{"subject":"สิ่งที่คุณพลาดบน {site}","greeting":"สวัสดี {name}","whileAway":"ระหว่างที่คุณไม่อยู่:","repeatedTimes":{"other":" ({count} ครั้ง)"},"moreMissed":{"other":"และการแจ้งเตือนอีก {count} รายการ"},"messagesWaiting":{"other":"คุณมีข้อความรออยู่ {count} ข้อความ"},"postsInFeed":{"other":"มีโพสต์ใหม่ {count} โพสต์ในฟีดของคุณ"},"unsubscribeInstructions":"หากต้องการหยุดอีเมลเหล่านี้ ให้เปิดลิงก์นี้ ใช้เพียงคลิกเดียวและไม่ต้องใช้รหัสผ่าน:","comeSeeWhatIsNew":"มาดูว่ามีอะไรใหม่","unsubscribeLink":{"before":"","link":"หยุดส่งอีเมลเหล่านี้ให้ฉัน","after":" คลิกเดียว ไม่ต้องใช้รหัสผ่าน"}},
-    "EmailVerification":{"subject":"ยืนยันที่อยู่อีเมลของคุณ","greeting":"สวัสดี {name}","instructions":"โปรดยืนยันที่อยู่อีเมลโดยไปที่ลิงก์นี้:","htmlInstructions":"โปรดยืนยันที่อยู่อีเมลโดยคลิกลิงก์ด้านล่าง:","buttonLabel":"ยืนยันที่อยู่อีเมล","expiresIn":{"other":"ลิงก์นี้หมดอายุใน {count} ชั่วโมง"}},
-    "PasswordReset":{"subject":"ตั้งรหัสผ่านของคุณใหม่","greeting":"สวัสดี {name}","instructions":"มีคนหนึ่ง (หวังว่าจะเป็นคุณ) ขอให้ตั้งรหัสผ่านใหม่ ไปที่ลิงก์นี้เพื่อเลือกรหัสผ่านใหม่:","htmlInstructions":"มีคนหนึ่ง (หวังว่าจะเป็นคุณ) ขอให้ตั้งรหัสผ่านใหม่ คลิกลิงก์ด้านล่างเพื่อเลือกรหัสผ่านใหม่:","buttonLabel":"ตั้งรหัสผ่านใหม่","expiresIn":{"other":"ลิงก์นี้หมดอายุใน {count} ชั่วโมง"},"ignoreNotice":"หากคุณไม่ได้ขอ คุณสามารถเพิกเฉยต่ออีเมลนี้ได้"}
+    "PollOptionVotes": {
+        "votes": {
+            "other": "{count} คะแนนเสียง"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "เข้าสู่ระบบ",
+            "after": "เพื่อตอบกลับ"
+        },
+        "post": {
+            "before": "",
+            "link": "เข้าสู่ระบบ",
+            "after": "เพื่อโพสต์"
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "เว็บไซต์",
+        "siteURLLabel": "URL เว็บไซต์",
+        "siteTitleLabel": "ชื่อเว็บไซต์",
+        "mailFromAddressLabel": "ที่อยู่อีเมลผู้ส่ง",
+        "serverNameConfirmedLabel": "ฉันได้ตั้งค่า \"ServerName {host}\" และ \"UseCanonicalName On\" ในการกำหนดค่าเว็บเซิร์ฟเวอร์แล้ว (ตรวจสอบเฉพาะเมื่อการทดสอบสดอัตโนมัติไม่สำเร็จ โปรดดูหัวข้อ HTTPS ใน README.md)",
+        "databaseLegend": "ฐานข้อมูล",
+        "databaseHostLabel": "โฮสต์ฐานข้อมูล",
+        "databasePortLabel": "พอร์ตฐานข้อมูล",
+        "databaseNameLabel": "ชื่อฐานข้อมูล",
+        "databaseAdminUsernameLabel": "ชื่อผู้ใช้ผู้ดูแลฐานข้อมูล",
+        "databaseAdminPasswordLabel": "รหัสผ่านผู้ดูแลฐานข้อมูล",
+        "webSocketTLSLegend": "TLS ของ WebSocket (ไม่บังคับ)",
+        "certificatePathLabel": "พาธใบรับรอง",
+        "certificatePathPlaceholder": "เว้นว่างเพื่อสร้างอัตโนมัติด้วย mkcert",
+        "keyPathLabel": "พาธคีย์",
+        "keyPathPlaceholder": "เว้นว่างเพื่อสร้างอัตโนมัติด้วย mkcert",
+        "botProtectionLegend": "การป้องกันบอต (ไม่บังคับ)",
+        "turnstileSiteKeyLabel": "คีย์เว็บไซต์ Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "เว้นว่างเพื่อข้าม",
+        "turnstileSecretKeyLabel": "คีย์ลับ Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "เว้นว่างเพื่อข้าม",
+        "submit": "ตั้งค่า"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "วลีรหัสผ่านปัจจุบัน",
+        "newPassphraseLabel": "วลีรหัสผ่านใหม่",
+        "confirmNewPassphraseLabel": "ยืนยันวลีรหัสผ่านใหม่",
+        "accountPasswordLabel": "รหัสผ่านบัญชี",
+        "submit": "เปลี่ยนวลีรหัสผ่าน"
+    },
+    "PasswordResetForm": {
+        "legend": "เลือกรหัสผ่านใหม่",
+        "newPasswordLabel": "รหัสผ่านใหม่",
+        "newPasswordPlaceholder": "อย่างน้อย 8 ตัวอักษร",
+        "confirmPasswordLabel": "ยืนยันรหัสผ่านใหม่",
+        "submit": "ตั้งรหัสผ่านใหม่"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "ตั้งรหัสผ่านของคุณใหม่",
+        "emailLabel": "อีเมล",
+        "submit": "ส่งลิงก์ตั้งรหัสผ่านใหม่"
+    },
+    "EmailRevertForm": {
+        "submit": "ย้อนกลับการเปลี่ยนอีเมล"
+    },
+    "EmailVerifyForm": {
+        "submit": "ยืนยันที่อยู่อีเมล"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "เปิดอีกครั้ง"
+    },
+    "EmailDigestSetting": {
+        "label": "ส่งอีเมลบอกสิ่งที่ฉันพลาดเมื่อไม่ได้เข้ามาระยะหนึ่ง"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "อุปกรณ์ที่ไม่รู้จัก",
+        "browserOnOS": "{browser} บน {os}",
+        "thisDevice": " (อุปกรณ์นี้)",
+        "lastUsed": {
+            "before": "ใช้ล่าสุด ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "สิ้นสุดเซสชันที่ใช้งานอยู่ทั้งหมดและลืมอุปกรณ์ที่จดจำไว้ทุกเครื่อง คุณจะออกจากระบบในทุกเบราว์เซอร์ รวมถึงเบราว์เซอร์นี้"
+    },
+    "LogoutEverywhereButton": {
+        "label": "ออกจากระบบทุกที่"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "ยืนยันด้วย Google เพื่อลบ"
+    },
+    "GoogleSignInButton": {
+        "label": "ดำเนินการต่อด้วย Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "แก้ไขโปรไฟล์"
+    },
+    "PushNotificationSetting": {
+        "explanation": "รับการแจ้งเตือนบนอุปกรณ์นี้แม้ไม่ได้เปิดเว็บไซต์ นี่เป็นตัวเลือกเฉพาะแต่ละเบราว์เซอร์ โปรดเปิดในทุกที่ที่คุณต้องการรับการติดต่อ",
+        "label": {
+            "off": "เปิดบนอุปกรณ์นี้",
+            "on": "ปิดบนอุปกรณ์นี้"
+        },
+        "unsupported": "เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนแบบพุช"
+    },
+    "LoginForm": {
+        "legend": "เข้าสู่ระบบ",
+        "identifier": "ชื่อผู้ใช้หรืออีเมล",
+        "password": "รหัสผ่าน",
+        "rememberMe": "จดจำฉัน",
+        "submit": "เข้าสู่ระบบ"
+    },
+    "SignupForm": {
+        "legend": "สร้างบัญชี",
+        "usernameLabel": "ชื่อผู้ใช้",
+        "usernamePlaceholder": "ตัวอักษรพิมพ์เล็ก ตัวเลข และ _",
+        "emailLabel": "อีเมล",
+        "emailPlaceholder": "ที่อยู่อีเมลที่ถูกต้อง",
+        "displayName": "ชื่อที่แสดง (ไม่บังคับ)",
+        "bioLabel": "ประวัติย่อ (ไม่บังคับ)",
+        "bioPlaceholder": "ประวัติสั้น ๆ โดย #แฮชแท็ก @การกล่าวถึง และลิงก์จะคลิกได้",
+        "passwordLabel": "รหัสผ่าน",
+        "passwordPlaceholder": "รหัสผ่าน: อย่างน้อย 8 ตัวอักษร",
+        "rememberMe": "จดจำฉัน",
+        "submit": "สมัคร"
+    },
+    "PasswordChangeForm": {
+        "legend": "เปลี่ยนรหัสผ่านของคุณ",
+        "currentPassword": "รหัสผ่านปัจจุบัน",
+        "newPasswordLabel": "รหัสผ่านใหม่",
+        "newPasswordPlaceholder": "อย่างน้อย 8 ตัวอักษร",
+        "confirmPassword": "ยืนยันรหัสผ่านใหม่",
+        "submit": "เปลี่ยนรหัสผ่าน"
+    },
+    "EmailChangeForm": {
+        "legend": "เปลี่ยนที่อยู่อีเมลของคุณ",
+        "newEmail": "ที่อยู่อีเมลใหม่",
+        "currentPassword": "รหัสผ่านปัจจุบัน",
+        "notice": "คุณต้องยืนยันที่อยู่ใหม่ก่อนจึงจะใช้เว็บไซต์ต่อได้",
+        "submit": "เปลี่ยนอีเมล"
+    },
+    "AccountDeleteForm": {
+        "legend": "ลบบัญชีของคุณ",
+        "warning": "การดำเนินการนี้จะลบบัญชี โพสต์ และข้อความของคุณอย่างถาวร และไม่สามารถย้อนกลับได้",
+        "currentPassword": "รหัสผ่านปัจจุบัน",
+        "submit": "ลบบัญชี"
+    },
+    "AccountMigrationForm": {
+        "legend": "ย้ายไปเซิร์ฟเวอร์อื่น",
+        "movedNotice": "บัญชีนี้ย้ายไปยัง {destination} แล้ว ผู้ติดตามของคุณได้รับคำขอให้ติดตามคุณที่นั่น",
+        "explanation": "ผู้ติดตามของคุณจะได้รับคำขอให้ติดตามบัญชีใหม่ โพสต์ของคุณยังอยู่ที่นี่ เพราะที่อยู่วัตถุเป็นของเซิร์ฟเวอร์ที่สร้าง จึงย้ายตามไปไม่ได้",
+        "addressNotice": "บัญชีที่คุณจะย้ายไปต้องระบุบัญชีนี้ไว้ใน \"หรือเรียกอีกอย่างว่า\" ก่อน ที่อยู่ของคุณที่นี่คือ {address}",
+        "movedToLabel": "ย้ายไป",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "หรือเรียกอีกอย่างว่า",
+        "aliasesExplanation": "บัญชีที่อื่นซึ่งเป็นของคุณเช่นกัน การระบุบัญชีไว้ที่นี่อนุญาตให้บัญชีนั้นย้ายมายังบัญชีนี้ นี่คือการให้สิทธิ์ ไม่ใช่การย้ายจริง ระบุหนึ่งที่อยู่ต่อบรรทัด",
+        "aliasesLabel": "บัญชีอื่นของคุณ",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "บันทึก"
+    },
+    "TwoFactorForm": {
+        "legend": "ป้อนรหัสยืนยันของคุณ",
+        "explanation": "เราได้ส่งรหัสยืนยันให้คุณทางอีเมล ป้อนด้านล่างหรือใช้รหัสกู้คืนรหัสใดรหัสหนึ่งเพื่อเข้าสู่ระบบให้เสร็จสิ้น",
+        "explanationEmailFailed": "ขณะนี้เราไม่สามารถส่งรหัสยืนยันทางอีเมลได้ โปรดป้อนรหัสกู้คืนรหัสใดรหัสหนึ่งเพื่อเข้าสู่ระบบให้เสร็จสิ้น",
+        "code": "รหัสยืนยัน",
+        "submit": "ยืนยัน"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "เปิดการยืนยันตัวตนแบบสองขั้นตอนอยู่",
+            "off": "ปิดการยืนยันตัวตนแบบสองขั้นตอนอยู่"
+        },
+        "explanation": {
+            "on": "เมื่อคุณเข้าสู่ระบบ เราจะส่งรหัสยืนยันทางอีเมลซึ่งคุณต้องป้อนเพื่อเข้าสู่ระบบให้เสร็จสิ้น หากอีเมลไปไม่ถึงคุณ ให้ใช้รหัสกู้คืนรหัสใดรหัสหนึ่งแทน",
+            "off": "เพิ่มขั้นตอนที่สองเมื่อเข้าสู่ระบบ เราจะส่งรหัสยืนยันทางอีเมลให้คุณป้อน เพื่อให้รหัสผ่านเพียงอย่างเดียวไม่พอสำหรับการเข้าสู่ระบบ คุณจะได้รับรหัสกู้คืนแบบใช้ครั้งเดียวเพื่อเก็บไว้ในกรณีที่อีเมลไปไม่ถึง"
+        },
+        "currentPassword": "รหัสผ่านปัจจุบัน",
+        "submit": {
+            "on": "ปิดการยืนยันตัวตนแบบสองขั้นตอน",
+            "off": "เปิดการยืนยันตัวตนแบบสองขั้นตอน"
+        },
+        "regenerate": "สร้างรหัสกู้คืนใหม่",
+        "recoveryHeading": "รหัสกู้คืนของคุณ",
+        "recoveryNote": "เก็บรหัสเหล่านี้ไว้ในที่ปลอดภัยตอนนี้ เพราะจะไม่แสดงอีก แต่ละรหัสใช้เข้าสู่ระบบได้หนึ่งครั้งเมื่ออีเมลยืนยันไปไม่ถึง และการสร้างรหัสใหม่จะแทนที่รหัสทั้งหมดนี้",
+        "toast": {
+            "on": "เปิดการยืนยันตัวตนแบบสองขั้นตอนแล้ว",
+            "off": "ปิดการยืนยันตัวตนแบบสองขั้นตอนแล้ว",
+            "regenerated": "สร้างรหัสกู้คืนใหม่แล้ว รหัสเดิมใช้ไม่ได้อีกต่อไป"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "โปรดตรวจกล่องขาเข้าและคลิกลิงก์ยืนยันที่เราส่งไปเพื่อยืนยันที่อยู่อีเมล หากไม่พบ โปรดตรวจโฟลเดอร์ขยะหรือสแปม"
+    },
+    "VerificationResendButton": {
+        "label": "ส่งอีเมลยืนยันอีกครั้ง"
+    },
+    "MailSettingsForm": {
+        "legend": "อีเมลขาออก",
+        "fromAddressLabel": "ที่อยู่ผู้ส่ง",
+        "fromAddressPlaceholder": "ส่งอีเมลไม่ได้จนกว่าจะตั้งค่านี้",
+        "fromNameLabel": "ชื่อผู้ส่ง",
+        "hostLabel": "โฮสต์ SMTP",
+        "portLabel": "พอร์ต SMTP",
+        "usernameLabel": "ชื่อผู้ใช้ SMTP",
+        "passwordLabel": "รหัสผ่าน SMTP",
+        "passwordPlaceholder": {
+            "set": "ตั้งรหัสผ่านแล้ว เว้นว่างเพื่อเก็บรหัสเดิม",
+            "unset": "รหัสผ่าน SMTP"
+        },
+        "encryptionLabel": "การเข้ารหัส",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS โดยทั่วไปใช้พอร์ต 587)",
+            "ssl": "SSL (TLS โดยปริยาย โดยทั่วไปใช้พอร์ต 465)",
+            "none": "ไม่มี"
+        },
+        "explainer": "เว้นโฮสต์ SMTP ว่างเพื่อส่งผ่าน mail() ของ PHP แทน (ไม่แนะนำ โปรดดูหัวข้อการส่งถึงใน README) จะส่งอีเมลไม่ได้เลยจนกว่าจะตั้งค่าที่อยู่ \"ผู้ส่ง\"",
+        "save": "บันทึก"
+    },
+    "MapSettingsForm": {
+        "legend": "ไทล์แผนที่",
+        "notice": "เว้นว่างเพื่อใช้ OpenStreetMap หากต้องการใช้ผู้ให้บริการที่มีคีย์ ให้วางแม่แบบ URL ซึ่งมี {apiKey} ตามตัวอักษรในตำแหน่งของคีย์ พร้อมระบุคีย์และเครดิตด้านล่าง",
+        "urlLabel": "แม่แบบ URL ไทล์",
+        "keyLabel": "คีย์ API",
+        "keyPlaceholder": "คีย์ API ของผู้ให้บริการไทล์",
+        "attributionLabel": "เครดิต",
+        "attributionPlaceholder": "© ผู้ร่วมสร้าง OpenStreetMap",
+        "save": "บันทึก"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "การเข้าสู่ระบบด้วย Google",
+        "clientIdLabel": "รหัสไคลเอนต์",
+        "clientIdPlaceholder": "รหัสไคลเอนต์ Google OAuth",
+        "secretLabel": "ข้อมูลลับไคลเอนต์",
+        "secretPlaceholder": {
+            "set": "ตั้งข้อมูลลับไคลเอนต์แล้ว เว้นว่างเพื่อเก็บค่าเดิม",
+            "unset": "ข้อมูลลับไคลเอนต์ Google OAuth"
+        },
+        "explainer": "ต้องมีทั้งสองค่าเพื่อให้ \"ดำเนินการต่อด้วย Google\" ปรากฏตอนสมัครและเข้าสู่ระบบ ในไคลเอนต์ Google Cloud OAuth ให้ตั้ง URI เปลี่ยนเส้นทางที่อนุญาตเป็น {url} และล้างรหัสไคลเอนต์เพื่อปิด",
+        "save": "บันทึก"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "คีย์เว็บไซต์",
+        "turnstileSiteKeyPlaceholder": "คีย์เว็บไซต์ Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "คีย์ลับ",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "ตั้งคีย์ลับแล้ว เว้นว่างเพื่อเก็บค่าเดิม",
+            "unset": "คีย์ลับ Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "ต้องมีทั้งสองคีย์เพื่อให้ CAPTCHA ปรากฏตอนสมัครและเข้าสู่ระบบ ล้างคีย์เว็บไซต์เพื่อปิด",
+        "recaptchaLegend": "Google reCAPTCHA (การกู้คืนบัญชีที่ถูกล็อก)",
+        "recaptchaSiteKeyLabel": "คีย์เว็บไซต์",
+        "recaptchaSiteKeyPlaceholder": "คีย์เว็บไซต์ Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "คีย์ลับ",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "ตั้งคีย์ลับแล้ว เว้นว่างเพื่อเก็บค่าเดิม",
+            "unset": "คีย์ลับ Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "ต้องมีทั้งสองคีย์ เมื่อตั้งค่าแล้ว บัญชีที่ถึงขีดจำกัดการพยายามเข้าสู่ระบบจะกลับเข้าได้ด้วยการผ่านคำท้านี้แทนการรอปลดล็อก หากไม่ตั้งค่าต้องรอเท่านั้น ใช้ reCAPTCHA v2 (\"ฉันไม่ใช่หุ่นยนต์\") ล้างคีย์เว็บไซต์เพื่อปิด",
+        "save": "บันทึก"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "ใช้โดยคุณสมบัติ AI บนเว็บไซต์ เช่น สรุปหัวข้อยอดนิยม เว้นโมเดลว่างเพื่อใช้ Free Models Router ซึ่ง OpenRouter จะสุ่มเลือกจากโมเดลที่ใช้งานฟรีในขณะนั้นและไม่มีค่าใช้จ่าย",
+        "keyLabel": "คีย์ API",
+        "keyPlaceholder": {
+            "set": "ตั้งคีย์ API แล้ว เว้นว่างเพื่อเก็บค่าเดิม",
+            "unset": "คีย์ API ของ OpenRouter"
+        },
+        "clearKeyLabel": "นำคีย์ API ที่เก็บไว้ออก (ปิดคุณสมบัติ AI)",
+        "modelLabel": "โมเดล",
+        "neverSpendLabel": "ห้ามใช้เงินโดยเด็ดขาด (แนะนำ)",
+        "explainer": "เมื่อเปิดการป้องกัน ทุกคำขอจะจำกัดราคาไว้ที่ศูนย์ จึงล้มเหลวทันทีแทนการเปลี่ยนไปใช้โมเดลแบบเสียเงินเมื่อไม่มีผู้ให้บริการฟรี นำคีย์ API ที่เก็บไว้ออกเพื่อปิดคุณสมบัติ AI ทั้งหมด",
+        "save": "บันทึก"
+    },
+    "AboutSettingsForm": {
+        "legend": "เกี่ยวกับ",
+        "description": "ข้อความล้วน บรรทัดว่างใช้แบ่งย่อหน้า ย่อหน้าแรกจะใช้เป็นคำอธิบายเว็บไซต์",
+        "save": "บันทึก"
+    },
+    "TermsSettingsForm": {
+        "legend": "ข้อกำหนดการให้บริการ",
+        "description": "ข้อความล้วน บรรทัดว่างใช้แบ่งย่อหน้า",
+        "save": "บันทึก"
+    },
+    "PrivacySettingsForm": {
+        "legend": "นโยบายความเป็นส่วนตัว",
+        "description": "ข้อความล้วน บรรทัดว่างใช้แบ่งย่อหน้า",
+        "save": "บันทึก"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "สรุปทางอีเมล",
+        "fieldLabel": "ย่อหน้าปิดท้าย",
+        "notice": "เพิ่มใกล้ท้ายสรุปแต่ละฉบับ หลังรายการสิ่งที่สมาชิกพลาด เป็นข้อความล้วน เว้นว่างเพื่อกลับไปใช้ถ้อยคำที่มาพร้อมซอฟต์แวร์",
+        "save": "บันทึก"
+    },
+    "FaviconSettingsForm": {
+        "legend": "ไอคอนเว็บไซต์",
+        "currentAlt": "ไอคอนเว็บไซต์ปัจจุบัน",
+        "save": "อัปโหลดไอคอนเว็บไซต์"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "ภาพหน้าแรก",
+        "explainer": "เว็บไซต์อื่นจะแสดงภาพนี้เมื่อมีคนแชร์ลิงก์มายังเว็บไซต์นี้ ใช้เฉพาะข้อมูลเมตา Open Graph และไม่แสดงบนหน้า ภาพจะครอบเป็น 1200×630 หากไม่มีภาพ ตัวอย่างลิงก์จะไม่มีภาพเลย",
+        "currentAlt": "ภาพหน้าแรกปัจจุบัน",
+        "save": "อัปโหลดภาพ"
+    },
+    "CarouselAutoplayButton": {
+        "name": "เล่นอัตโนมัติ"
+    },
+    "CarouselNextButton": {
+        "name": "ถัดไป"
+    },
+    "CarouselPrevButton": {
+        "name": "ก่อนหน้า"
+    },
+    "MediaFullscreenButton": {
+        "name": "เต็มหน้าจอ"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "นำไฟล์ออก"
+    },
+    "NotificationDropdown": {
+        "showAll": "แสดงทั้งหมด"
+    },
+    "HelpSearch": {
+        "placeholder": "ค้นหาความช่วยเหลือ…",
+        "noMatches": "ไม่มีบทความช่วยเหลือตรงกับการค้นหาของคุณ"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "เข้าใจแล้ว"
+    },
+    "StagedPostDiscardButton": {
+        "name": "ทิ้ง"
+    },
+    "StagedPostEditButton": {
+        "name": "แก้ไข"
+    },
+    "StagedPostPublishButton": {
+        "name": "เผยแพร่ตอนนี้"
+    },
+    "LogoutButton": {
+        "name": "ออกจากระบบ"
+    },
+    "AvatarUploadForm": {
+        "submit": "อัปเดตรูปประจำตัว"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "ค้นหาผู้ใช้ที่ถูกแบน…"
+    },
+    "BannedUserSection": {
+        "heading": "ผู้ใช้ที่ถูกแบน"
+    },
+    "SentFriendRequestSection": {
+        "heading": "คำขอที่ส่งแล้ว (รอการตอบรับ)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "แบนโดย {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "บล็อกโดย {name} ",
+            "after": ""
+        },
+        "deletedAccount": "บัญชีที่ถูกลบ",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "มกราคม",
+            "2": "กุมภาพันธ์",
+            "3": "มีนาคม",
+            "4": "เมษายน",
+            "5": "พฤษภาคม",
+            "6": "มิถุนายน",
+            "7": "กรกฎาคม",
+            "8": "สิงหาคม",
+            "9": "กันยายน",
+            "10": "ตุลาคม",
+            "11": "พฤศจิกายน",
+            "12": "ธันวาคม"
+        },
+        "shortMonths": {
+            "1": "ม.ค.",
+            "2": "ก.พ.",
+            "3": "มี.ค.",
+            "4": "เม.ย.",
+            "5": "พ.ค.",
+            "6": "มิ.ย.",
+            "7": "ก.ค.",
+            "8": "ส.ค.",
+            "9": "ก.ย.",
+            "10": "ต.ค.",
+            "11": "พ.ย.",
+            "12": "ธ.ค."
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} เวลา {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "เชื่อมต่อเซิร์ฟเวอร์ WebSocket ที่ 127.0.0.1:{port}{tls} ไม่ได้ ({error}) โปรดเริ่มก่อน: systemctl --user start glommer-websocket (ดูไฟล์หน่วยใน README.md) หากเพิ่งเพิ่มหรือนำ WS_TLS_CERT/WS_TLS_KEY ออก ให้เริ่มใหม่เพื่อให้ตรงกับ .env",
+        "wsOverTLS": " ผ่าน TLS",
+        "wsBadHandshake": "บริการที่ 127.0.0.1:{port} ไม่ดำเนินการจับมือ WebSocket ที่ถูกต้อง อาจมีสิ่งอื่นนอกจาก bin/websocket-server.php กำลังรับฟังพอร์ตนั้น",
+        "wsNoPong": "เซิร์ฟเวอร์ WebSocket ยอมรับการจับมือแต่ไม่ตอบ ping อาจค้างหรือทำงานผิดปกติ โปรดตรวจบันทึก",
+        "wsReachable": "เข้าถึงเซิร์ฟเวอร์ WebSocket และได้รับการตอบกลับที่ 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "แฮชแท็ก",
+            "person": "บุคคล",
+            "org": "องค์กร",
+            "gpe": "สถานที่",
+            "loc": "ภูมิภาค",
+            "fac": "จุดสังเกต",
+            "product": "ผลิตภัณฑ์",
+            "event": "เหตุการณ์",
+            "work_of_art": "ผลงาน",
+            "law": "กฎหมาย",
+            "language": "ภาษา",
+            "norp": "กลุ่ม"
+        },
+        "plural": {
+            "hashtag": "แฮชแท็ก",
+            "person": "ผู้คน",
+            "org": "องค์กร",
+            "gpe": "สถานที่",
+            "loc": "ภูมิภาค",
+            "fac": "จุดสังเกต",
+            "product": "ผลิตภัณฑ์",
+            "event": "เหตุการณ์",
+            "work_of_art": "ผลงาน",
+            "law": "กฎหมาย",
+            "language": "ภาษา",
+            "norp": "กลุ่ม"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "เลิกเป็นเพื่อน"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "ยอมรับ"
+    },
+    "FriendRequestDenyButton": {
+        "name": "ปฏิเสธ"
+    },
+    "UserFollowButton": {
+        "follow": "ติดตาม",
+        "unfollow": "เลิกติดตาม"
+    },
+    "UserBlockButton": {
+        "name": "บล็อก"
+    },
+    "UserUnblockButton": {
+        "name": "เลิกบล็อก"
+    },
+    "OtherUser": {
+        "message": "ส่งข้อความ"
+    },
+    "MainNavigation": {
+        "toggleLabel": "เมนู",
+        "loggedInAs": "เข้าสู่ระบบเป็น {name}",
+        "friendsFeed": "ฟีดเพื่อน",
+        "relayFeed": "ฟีดรีเลย์",
+        "users": "ผู้ใช้",
+        "tags": "แท็ก",
+        "topics": "หัวข้อ",
+        "map": "แผนที่",
+        "locations": "สถานที่",
+        "search": "ค้นหา",
+        "messages": "ข้อความ",
+        "bookmarks": "บุ๊กมาร์ก",
+        "help": "ช่วยเหลือ",
+        "about": "เกี่ยวกับ",
+        "login": "เข้าสู่ระบบ",
+        "signup": "สมัคร",
+        "friends": "เพื่อน",
+        "drafts": "ฉบับร่างและกำหนดเวลา",
+        "userSettings": "การตั้งค่าผู้ใช้",
+        "modSettings": "การตั้งค่าผู้ดูแล",
+        "adminSettings": "การตั้งค่าผู้ดูแลระบบ"
+    },
+    "LogoutForm": {
+        "submit": "ออกจากระบบ"
+    },
+    "User": {
+        "joined": "เข้าร่วมเมื่อ {date}"
+    },
+    "FriendRequestButton": {
+        "add": "เพิ่มเพื่อน",
+        "cancel": "ยกเลิกคำขอ"
+    },
+    "StagedPostWhen": {
+        "scheduled": "กำหนดไว้สำหรับ {when}",
+        "draft": "ฉบับร่าง จะเผยแพร่เมื่อคุณสั่งเท่านั้น"
+    },
+    "MessageTranslateButton": {
+        "name": "แปลข้อความนี้"
+    },
+    "MessageTranslationNotice": {
+        "heading": "เกี่ยวกับการแปลข้อความ",
+        "body": "ในการแปลข้อความ เนื้อหาจะถูกส่งมายังเซิร์ฟเวอร์นี้และแปลที่นี่ โดยไม่มีสิ่งใดถูกเก็บไว้ คำแปลจะไม่เขียนลงฐานข้อมูลและข้อความเดิมไม่เปลี่ยนแปลง แต่ข้อความที่แปลด้วยวิธีนี้ถูกเซิร์ฟเวอร์อ่านแล้ว จึงไม่เข้ารหัสจากต้นทางถึงปลายทางเหมือนข้อความที่ไม่ได้แปล แปลได้เฉพาะข้อความที่คุณได้รับและเมื่อคุณร้องขอเท่านั้น",
+        "confirm": "แปล",
+        "cancel": "ไว้ภายหลัง"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "ลืมวลีรหัสผ่านหรือ การตั้งค่าใหม่จะสร้างคีย์ใหม่ภายใต้วลีรหัสผ่านใหม่ แต่ข้อความที่เข้ารหัสด้วยคีย์เก่าจะไม่มีใครอ่านได้อีก",
+        "requirements": "อย่างน้อย 12 ตัวอักษร และต้องไม่ใช่รหัสผ่านบัญชี เพราะรหัสผ่านนั้นถูกส่งมายังเซิร์ฟเวอร์นี้ แต่วลีรหัสผ่านต้องไม่ถูกส่งมา",
+        "passphraseLabel": "วลีรหัสผ่าน",
+        "resetPassphraseLabel": "วลีรหัสผ่านใหม่",
+        "confirmLabel": "ยืนยันวลีรหัสผ่าน",
+        "accountPasswordLabel": "รหัสผ่านบัญชี",
+        "submitLabel": "เปิดข้อความเข้ารหัส",
+        "resetSubmitLabel": "ตั้งคีย์เข้ารหัสใหม่"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "ข้อความที่เข้ารหัสจากต้นทางถึงปลายทางจะถูกล็อกและปลดล็อกในเบราว์เซอร์ของคุณ เซิร์ฟเวอร์นี้ส่งต่อและเก็บข้อความโดยอ่านไม่ได้ คีย์ของคุณป้องกันด้วยวลีรหัสผ่าน และวลีเดียวกันปลดล็อกข้อความจากทุกเบราว์เซอร์ การสนทนาจะเข้ารหัสเมื่อทั้งสองคนเปิดใช้งานแล้ว ข้อความถึงคนบนเซิร์ฟเวอร์อื่นยังไม่เข้ารหัส เพราะสหพันธ์ไม่มีวิธีส่งแบบเข้ารหัส",
+        "noRecovery": "ไม่มีวิธีกู้วลีรหัสผ่านที่หายไป แม้แต่ผู้ดูแลระบบ การทำหายหมายถึงเสียข้อความเข้ารหัสของคุณ",
+        "enabledStatus": "เปิดข้อความเข้ารหัสแล้ว"
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "เข้ารหัส",
+            "explanation": "ข้อความในการสนทนานี้เข้ารหัสจากต้นทางถึงปลายทาง โดยปลดล็อกด้วยวลีรหัสผ่านและอ่านในเบราว์เซอร์ของคุณ สิ่งที่เซิร์ฟเวอร์เก็บคือข้อความเข้ารหัส ตรวจรหัสความปลอดภัยด้านล่างของเธรดกับอีกฝ่ายเพื่อให้แน่ใจว่าไม่มีใครคั่นกลาง ข้อความที่ส่งก่อนเปิดการเข้ารหัสยังอ่านได้เหมือนเดิม"
+        },
+        "awaiting-theirs": {
+            "label": "ไม่ได้เข้ารหัส",
+            "explanation": "ข้อความที่นี่จะเข้ารหัสจากต้นทางถึงปลายทางเมื่อ {handle} เปิดข้อความเข้ารหัสในการตั้งค่า"
+        },
+        "awaiting-yours": {
+            "label": "ไม่ได้เข้ารหัส",
+            "explanation": "ข้อความที่นี่ยังไม่เข้ารหัสจากต้นทางถึงปลายทาง เปิดข้อความเข้ารหัสในการตั้งค่าเพื่อปกป้องการสนทนานี้"
+        },
+        "federated": {
+            "label": "ไม่ได้เข้ารหัส",
+            "explanation": "{handle} อยู่บนเซิร์ฟเวอร์อื่น ข้อความในการสนทนานี้เก็บไว้ทั้งบนเซิร์ฟเวอร์นั้นและเซิร์ฟเวอร์นี้ และผู้ดูแลของเซิร์ฟเวอร์นั้นอ่านได้ เพราะโพรโทคอลระหว่างเซิร์ฟเวอร์ไม่มีวิธีเข้ารหัส โปรดเก็บเรื่องละเอียดอ่อนไว้ในการสนทนาบนเว็บไซต์นี้"
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "ติดตามบัญชี Fediverse",
+        "notice": "วางแฮนเดิลอย่างน้อยหนึ่งรายการ เช่น @user@example.social ตัวคั่นแบบใดก็ใช้ได้",
+        "handlesLabel": "แฮนเดิล Fediverse ที่จะติดตาม",
+        "submit": "ติดตาม",
+        "statusPending": "รอดำเนินการ",
+        "statusAccepted": "ยอมรับแล้ว"
+    },
+    "ServerBlockForm": {
+        "legend": "บล็อกเซิร์ฟเวอร์",
+        "description": "ปฏิเสธทุกอย่างจากเซิร์ฟเวอร์นั้นและทุกอย่างที่อยู่ใต้เซิร์ฟเวอร์ ไม่มีการส่งเข้าหรือออก และยกเลิกการติดตามที่มีอยู่ทั้งสองทิศทาง",
+        "serverLabel": "เซิร์ฟเวอร์",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "เหตุผล",
+        "reasonPlaceholder": "เหตุใดจึงบล็อกเซิร์ฟเวอร์นี้",
+        "submit": "บล็อกเซิร์ฟเวอร์"
+    },
+    "VideoCallTestPanel": {
+        "intro": "ทดสอบส่วนของการตั้งค่าการโทรที่ตรวจได้จากเบราว์เซอร์เดียว ทุกอย่างจนถึงการเชื่อมต่อแบบเพียร์ทูเพียร์จริงทดสอบได้ที่นี่ แต่การเชื่อมต่อกับอีกคนต้องมีคนนั้น",
+        "checkFailed": "การตรวจสอบเองล้มเหลว: {error}",
+        "loopbackFail": "การเชื่อมต่อสองรายการในหน้าเดียวกันนี้ไม่สามารถเชื่อมถึงกันได้ ซึ่งตัดปัญหาเครือข่ายออกไป - สแต็ก WebRTC ของเบราว์เซอร์กำลังถูกบล็อก ซึ่งน่าจะเกิดจากส่วนขยายหรือการตั้งค่าความเป็นส่วนตัวที่เข้มงวด",
+        "loopbackName": "การเจรจาสำเร็จภายในเครื่อง",
+        "loopbackPass": "การเชื่อมต่อสองรายการในหน้านี้เจรจาและเปิดช่องข้อมูลได้ ดังนั้นสแต็ก WebRTC เองทำงานได้",
+        "loopbackVerdict": "ไม่ - การโทรวิดีโอไม่สามารถทำงานได้จากเบราว์เซอร์นี้ สแต็ก WebRTC ของเบราว์เซอร์เองไม่สามารถเชื่อมต่อสองฝ่ายภายในหน้าเดียวกันนี้ได้ ซึ่งตัดปัญหาเครือข่ายออกไปทั้งหมด มีบางอย่างในเครื่องที่กำลังบล็อกอยู่ ซึ่งน่าจะเป็นส่วนขยายหรือการตั้งค่าความเป็นส่วนตัวที่เข้มงวด",
+        "noStun": "ไม่มีการตั้งค่าปลายทาง STUN ดังนั้นการโทรจะทำงานได้เฉพาะระหว่างคนในเครือข่ายเดียวกันเท่านั้น",
+        "passVerdict": "ใช่ - การโทรวิดีโอควรทำงานได้จากการเชื่อมต่อนี้ ทุกส่วนของการตั้งค่าการโทรที่เครื่องนี้รับผิดชอบสำเร็จแล้ว รวมถึงการเข้าถึง STUN ดังนั้นจึงสามารถค้นหาและเจรจาเส้นทางตรงไปยังบุคคลอื่นได้ สิ่งเดียวที่ยังไม่ได้ทดสอบคือฝั่งของอีกฝ่าย ซึ่งต้องการบุคคลนั้น",
+        "secureFail": "ไม่ใช่บริบทที่ปลอดภัย เบราว์เซอร์ปฏิเสธทั้งกล้องและ WebRTC นอกเหนือจาก HTTPS ดังนั้นจึงไม่สามารถตั้งค่าการโทรจากที่นี่ได้",
+        "secureName": "หน้านี้เป็นบริบทที่ปลอดภัย",
+        "securePass": "ให้บริการผ่าน HTTPS ดังนั้นเบราว์เซอร์จะอนุญาตให้ใช้กล้องและการเชื่อมต่อแบบเพียร์ทูเพียร์",
+        "secureVerdict": "ไม่ - การโทรวิดีโอไม่สามารถทำงานได้จากที่นี่ หน้านี้ไม่ใช่บริบทที่ปลอดภัย และเบราว์เซอร์ปฏิเสธทั้งกล้องและ WebRTC นอกเหนือจาก HTTPS ไม่มีสิ่งใดสำคัญจนกว่าจะแก้ไขปัญหานั้น",
+        "signallingAuthFail": "ปลายทางปฏิเสธคำขอว่าไม่ได้รับการยืนยันตัวตน ({status}) สัญญาณระหว่างคนจริงสองคนจะถูกปฏิเสธในลักษณะเดียวกัน ดังนั้นจึงไม่สามารถตั้งค่าการโทรได้",
+        "signallingName": "ปลายทางส่งสัญญาณตอบสนอง",
+        "signallingPass": "ปลายทางสามารถเข้าถึงได้และยอมรับคำขอว่าได้รับการยืนยันตัวตนก่อนที่จะปฏิเสธเนื้อหาของคำขอ ซึ่งเป็นทุกสิ่งที่สัญญาณจริงต้องการ",
+        "signallingUnexpected": "ปลายทางตอบกลับด้วย {status} ซึ่งไม่ใช่สิ่งที่ควรตอบกลับสำหรับคำขอนี้ - มีบางอย่างอยู่ด้านหน้ากำลังรบกวน",
+        "signallingVerdict": "ไม่ - ไม่สามารถตั้งค่าการโทรวิดีโอจากที่นี่ได้ เบราว์เซอร์นี้สามารถโทรได้ แต่ทั้งสองฝ่ายไม่สามารถแลกเปลี่ยนข้อความที่จัดการการโทรได้ ดังนั้นปุ่มโทรจะไม่ปรากฏขึ้นเลย",
+        "stopped": "หยุดที่นี่ - ขั้นตอนหลังจากนี้ขึ้นอยู่กับขั้นตอนนี้",
+        "stunFail": "ไม่มีการตอบกลับจาก STUN - UDP ไปยัง STUN น่าจะถูกไฟร์วอลล์บล็อก การโทรจะยังคงทำงานได้ระหว่างคนสองคนในเครือข่ายเดียวกัน แต่ไม่ได้ข้ามอินเทอร์เน็ต และไม่มีการโทรใดถูกรีเลย์เลย",
+        "stunName": "สามารถเข้าถึง STUN ได้จากเครือข่ายนี้",
+        "stunPass": "STUN ตอบกลับและเบราว์เซอร์ได้เรียนรู้ที่อยู่สาธารณะของตัวเอง ดังนั้นจึงสามารถค้นหาเส้นทางตรงไปยังบุคคลในเครือข่ายอื่นได้",
+        "stunVerdict": "เฉพาะในเครือข่ายนี้เท่านั้น การโทรระหว่างคนสองคนในเครือข่ายท้องถิ่นเดียวกันควรทำงานได้จากที่นี่ แต่การเชื่อมต่อนี้ไม่สามารถค้นพบที่อยู่สาธารณะของตัวเองได้ ดังนั้นจึงไม่มีทางค้นหาเส้นทางไปยังบุคคลที่อยู่หลังเราเตอร์อื่น เนื่องจากไม่มีการโทรใดถูกรีเลย์ผ่านเซิร์ฟเวอร์เลย จึงจะไม่มีการเสนอการโทรเลย",
+        "webrtcFail": "เบราว์เซอร์นี้ไม่มี RTCPeerConnection จึงไม่สามารถโทรออกหรือรับสายได้เลย",
+        "webrtcName": "เบราว์เซอร์รองรับ WebRTC",
+        "webrtcPass": "มี RTCPeerConnection พร้อมใช้งาน",
+        "webrtcVerdict": "ไม่ - การโทรวิดีโอไม่สามารถทำงานได้จากเบราว์เซอร์นี้ เบราว์เซอร์นี้ไม่รองรับ WebRTC เลย จึงไม่สามารถโทรออกหรือรับสายได้ เบราว์เซอร์อื่นบนเครื่องเดียวกันนี้อาจใช้งานได้ตามปกติ"
+    },
+    "VideoCallTestButton": {
+        "label": "เรียกใช้การตรวจสอบ"
+    },
+    "WebSocketStatus": {
+        "ok": "เซิร์ฟเวอร์ WebSocket: ทำงานอยู่",
+        "failed": "เซิร์ฟเวอร์ WebSocket: {detail}",
+        "clientTesting": "การเชื่อมต่อเบราว์เซอร์: กำลังทดสอบ…",
+        "clientConnecting": "การเชื่อมต่อเบราว์เซอร์: กำลังเชื่อมต่อ…",
+        "clientConnected": "การเชื่อมต่อเบราว์เซอร์: เชื่อมต่อแล้ว",
+        "clientDisconnecting": "การเชื่อมต่อเบราว์เซอร์: กำลังตัดการเชื่อมต่อ…",
+        "clientNotConnected": "การเชื่อมต่อเบราว์เซอร์: ไม่ได้เชื่อมต่อ"
+    },
+    "UploadWorkerStatus": {
+        "running": "บริการตัวทำงาน: ทำงานอยู่",
+        "stopped": "บริการตัวทำงาน: ไม่ทำงาน ไฟล์อัปโหลดที่พักไว้จะไม่ถูกแปลงจนกว่าจะเริ่มใหม่",
+        "unknown": "บริการตัวทำงาน: ไม่ทราบ อาจไม่มี systemctl บนโฮสต์นี้ หรือ SELinux ปฏิเสธการสอบถามสถานะของเว็บเซิร์ฟเวอร์ (เรียก bin/install.php เป็น root เพื่อแก้ไข)",
+        "queue": "คิว: พักไว้ {staging}, รอดำเนินการ {pending}, กำลังประมวลผล {processing}"
+    },
+    "TrendingTimerStatus": {
+        "running": "ตัวจับเวลาหัวข้อยอดนิยม: ทำงานอยู่",
+        "stopped": "ตัวจับเวลาหัวข้อยอดนิยม: ไม่ทำงาน หัวข้อยอดนิยมจะรีเฟรชผ่านการซ่อมตัวเองในเส้นทางอ่าน (EntityRanker::refreshIfStale()) เท่านั้น ไม่ใช่ตามกำหนด เรียก bin/install.php เป็น root เพื่อตั้งค่า",
+        "unknown": "ตัวจับเวลาหัวข้อยอดนิยม: ไม่ทราบ อาจไม่มี systemctl บนโฮสต์นี้ หรือ SELinux ปฏิเสธการสอบถามสถานะของเว็บเซิร์ฟเวอร์ (เรียก bin/install.php เป็น root เพื่อแก้ไข)"
+    },
+    "Notification": {
+        "postReady": "สื่อของคุณประมวลผลเสร็จและเผยแพร่แล้ว",
+        "scheduledPostLive": "โพสต์ที่กำหนดเวลาไว้เผยแพร่แล้ว",
+        "uploadPartlyFailed": "โพสต์ของคุณเผยแพร่แล้ว แต่ประมวลผลไฟล์อย่างน้อยหนึ่งไฟล์ไม่ได้",
+        "uploadFailed": "ประมวลผลไฟล์อัปโหลดหนึ่งรายการไม่ได้และไม่ได้โพสต์",
+        "mailerFailed": "ส่งอีเมลไม่สำเร็จ ระบบส่งเมลอาจหยุดทำงาน โปรดตรวจการกำหนดค่าอีเมล",
+        "mailFromNotConfigured": "ไม่ได้กำหนดที่อยู่ \"ผู้ส่ง\" จึงส่งอีเมลไม่ได้ โปรดตั้งค่าในหน้าการตั้งค่าผู้ดูแลระบบ (หัวข้ออีเมลขาออก) หรือผ่าน bin/install.php",
+        "systemError": "เกิดข้อผิดพลาดของเซิร์ฟเวอร์ โปรดตรวจบันทึกข้อผิดพลาด",
+        "passwordRemovedGoogle": "รหัสผ่านของคุณถูกนำออกเมื่อเข้าสู่ระบบด้วย Google ใช้ \"ลืมรหัสผ่าน\" หากต้องการตั้งรหัสใหม่",
+        "like": "{name} ถูกใจโพสต์ของคุณ",
+        "repost": "{name} โพสต์โพสต์ของคุณซ้ำ",
+        "reply": "{name} ตอบกลับโพสต์ของคุณ",
+        "friendRequest": "{name} ส่งคำขอเป็นเพื่อนถึงคุณ",
+        "friendAccepted": "{name} ยอมรับคำขอเป็นเพื่อนของคุณ",
+        "message": "{name} ส่งข้อความถึงคุณ",
+        "mention": "{name} กล่าวถึงคุณในโพสต์",
+        "follow": "{name} ติดตามคุณจากเซิร์ฟเวอร์อื่น",
+        "default": "{name} ทำบางอย่าง"
+    },
+    "NotificationList": {
+        "emptyNotice": "ยังไม่มีการแจ้งเตือน"
+    },
+    "NotificationsNavLink": {
+        "label": "การแจ้งเตือน",
+        "unseen": "การแจ้งเตือนที่ยังไม่เห็น"
+    },
+    "NotificationTestPanel": {
+        "intro": "ส่งการแจ้งเตือนทดสอบถึงตัวคุณเอง (ผู้ดูแลระบบ) ควรปรากฏทันทีเป็นข้อความป๊อปอัปและในรายการการแจ้งเตือน",
+        "button": "ส่งการแจ้งเตือนทดสอบ",
+        "sending": "กำลังส่ง…",
+        "sent": "ส่งแล้ว!",
+        "failed": "ล้มเหลว"
+    },
+    "MessageDot": {
+        "label": "ข้อความที่ยังไม่ได้อ่าน"
+    },
+    "NavAlertDot": {
+        "label": "มีสิ่งใหม่ในเมนู"
+    },
+    "Message": {
+        "encrypted": "ข้อความเข้ารหัส",
+        "decryptionFailed": "ข้อความนี้เข้ารหัสด้วยคีย์ที่ไม่มีอยู่อีกแล้ว"
+    },
+    "MessageComposer": {
+        "bodyLabel": "ข้อความ",
+        "bodyPlaceholder": "เขียนข้อความ",
+        "send": "ส่ง"
+    },
+    "MessageList": {
+        "emptyNotice": "ยังไม่มีข้อความ"
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "อ่านรหัสนี้ให้อีกฝ่ายฟังด้วยวิธีอื่น เช่น พูดต่อหน้า หรือผ่านสาย หากตรงกันทั้งสองฝ่าย แสดงว่าไม่มีใครคั่นกลาง",
+        "changed": "รหัสนี้เปลี่ยนไปตั้งแต่คุณตรวจครั้งล่าสุด ซึ่งเกิดขึ้นเมื่อฝ่ายใดฝ่ายหนึ่งตั้งคีย์เข้ารหัสใหม่ แต่ก็เป็นลักษณะเดียวกับเมื่อมีคนอ่านการสนทนานี้ โปรดตรวจรหัสใหม่กับอีกฝ่ายก่อนเชื่อถือ",
+        "verified": "คุณตรวจรหัสนี้แล้ว"
+    },
+    "MessageKeyVerifyButton": {
+        "label": "ทำเครื่องหมายว่ายืนยันแล้ว"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "วลีรหัสผ่าน",
+        "passphrasePlaceholder": "วลีรหัสผ่านเพื่อปลดล็อกการสนทนานี้",
+        "submit": "ปลดล็อก"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "ข้อความล่าสุด ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "สื่อที่ละเอียดอ่อน"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "แสดงสื่อที่ละเอียดอ่อนโดยค่าเริ่มต้น"
+    },
+    "Report": {
+        "targetTypes": {
+            "post": "โพสต์",
+            "message": "ข้อความ",
+            "user": "ผู้ใช้"
+        },
+        "summary": {
+            "before": "{type} #{id} รายงานโดย ",
+            "after": ""
+        },
+        "reasonLine": "เหตุผล: {reason}",
+        "banReporterLabel": "แบนผู้รายงาน",
+        "banReportedUserLabel": "แบนผู้ใช้ที่ถูกรายงาน",
+        "deleteLabel": "ลบ {type}",
+        "reportedImageAlt": "ภาพที่ถูกรายงาน",
+        "attachmentUnavailable": "ไฟล์แนบที่ถูกรายงานไม่มีอยู่อีกแล้ว",
+        "viewAttachment": "ดูไฟล์แนบที่ถูกรายงาน",
+        "missing": {
+            "noSnapshot": "เนื้อหาที่ถูกรายงานไม่มีอยู่อีกแล้ว",
+            "unknownType": "ไม่ทราบประเภทเนื้อหา"
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "ไม่มีรายงาน"
+    },
+    "ModQueueLinks": {
+        "intro": "คิวยาวพอที่จะอ่านทีละหน้า จึงมีหน้าแยกของตัวเอง",
+        "reportsLabel": "รายงาน",
+        "bannedUsersLabel": "ผู้ใช้ที่ถูกแบน"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "ยังไม่มีผู้ดูแลดำเนินการใด"
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "ไม่มีรายการยอดนิยมที่ถูกแบน"
+    },
+    "BlockedServerList": {
+        "emptyNotice": "ไม่มีเซิร์ฟเวอร์ที่ถูกบล็อก"
+    },
+    "RelayCard": {
+        "accepted": "สมัครแล้ว ",
+        "waiting": "กำลังรอรีเลย์ยอมรับ สมัครแล้ว "
+    },
+    "RelayList": {
+        "emptyNotice": "ไม่ได้สมัครรีเลย์ใด ไม่มีสิ่งใดมาถึงที่นี่ยกเว้นสิ่งที่สมาชิกติดตาม"
+    },
+    "RelayFeedList": {
+        "emptyNotice": "ยังไม่มีสิ่งใดผ่านรีเลย์ โพสต์จะปรากฏที่นี่เมื่อเซิร์ฟเวอร์อีกฝั่งเผยแพร่"
+    },
+    "RelaySubscribeForm": {
+        "legend": "สมัครรีเลย์",
+        "explainerOne": "รีเลย์คือกระแสข้อมูลร่วม โพสต์สาธารณะทุกโพสต์จากทุกเซิร์ฟเวอร์ที่สมัครจะมาถึงที่นี่ และโพสต์ของเซิร์ฟเวอร์นี้จะออกไปยังทั้งหมด นี่คือวิธีที่อินสแตนซ์ใหม่ค้นพบผู้คน เพราะปกติสหพันธ์จะส่งเฉพาะสิ่งที่คนที่นี่ติดตามอยู่แล้ว",
+        "explainerTwo": "คุณคาดเดาภาระไม่ได้ เพราะขึ้นอยู่กับสิ่งที่เซิร์ฟเวอร์เหล่านั้นเผยแพร่ สัปดาห์หนึ่งอาจเงียบ แต่อีกสัปดาห์อาจมีหลายพันโพสต์ต่อชั่วโมง ทั้งพื้นที่เก็บข้อมูล คิวส่ง และคิวตรวจสอบของคุณต้องรองรับ โพสต์จากรีเลย์จะไม่อยู่ในฟีดหลักและฟีดเพื่อน แต่จะไปยังฟีดรีเลย์ซึ่งผู้ใช้ตั้งใจเปิดดู",
+        "addressLabel": "ที่อยู่รีเลย์",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "สมัคร"
+    },
+    "RelayFollowObjectField": {
+        "label": "รูปแบบการสมัคร",
+        "options": {
+            "public": "ติดตามกระแสสาธารณะ (รีเลย์ส่วนใหญ่คาดหวังแบบนี้)",
+            "actor": "ติดตามแอ็กเตอร์ของรีเลย์เอง"
+        },
+        "retryNotice": "หากรีเลย์ไม่ยอมรับ ให้ถอนแล้วลองอีกรูปแบบ ซอฟต์แวร์รีเลย์บางชนิดรู้จักเพียงแบบเดียว"
+    },
+    "SiteCounters": {
+        "members": "สมาชิก: {count} (เข้าร่วมใน {days} วันที่ผ่านมา {joined})",
+        "activeMembers": "สมาชิกที่อยู่ที่นี่ใน {days} วันที่ผ่านมา: {count} (โพสต์แล้ว {posted})",
+        "posts": "โพสต์ที่เขียนที่นี่: {count} ({recent} โพสต์ใน {days} วันที่ผ่านมา)",
+        "deliveries": "การส่งแบบสหพันธ์ใน {days} วันที่ผ่านมา: มาถึง {delivered}, เลิกล้ม {undeliverable}",
+        "queued": "รอส่งออก: {count} (ถูกปฏิเสธอย่างน้อยหนึ่งครั้งแล้ว {failing})",
+        "pendingReads": "โพสต์ที่รออ่านจากเซิร์ฟเวอร์อื่น: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "เรียกใช้ชุดการทดสอบของเว็บไซต์และดูผลลัพธ์ ใช้เวลาสองสามวินาทีจึงเปิดในหน้าแยก",
+        "runLabel": "เรียกใช้การทดสอบ"
+    },
+    "HelpArticle": {
+        "backLabel": "กลับไปความช่วยเหลือทั้งหมด"
+    },
+    "UserSearchList": {
+        "noSuggestions": "ขณะนี้ไม่มีคำแนะนำ คำแนะนำมาจากเพื่อนของคนที่เป็นเพื่อนกับคุณอยู่แล้ว ค้นหาด้านบนเพื่อหาคนตามชื่อ",
+        "noMatches": "ไม่มีใครที่นี่ตรงกับสิ่งนั้น"
+    },
+    "UserModButton": {
+        "make": "แต่งตั้งเป็นผู้ดูแล",
+        "remove": "ถอนผู้ดูแล"
+    },
+    "UserUnbanButton": {
+        "name": "ยกเลิกการแบน"
+    },
+    "TrendingEntityBanButton": {
+        "name": "แบน"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "ยกเลิกการแบน"
+    },
+    "ReportDismissButton": {
+        "name": "ยกเลิก"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "ทำเครื่องหมายว่าละเอียดอ่อน"
+    },
+    "ServerUnblockButton": {
+        "name": "เลิกบล็อก"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "ยกเลิกการสมัคร"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "เพิกถอน"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: ผ่าน",
+        "failing": "{suite}: ไม่ผ่าน"
+    },
+    "PageTitle": {
+        "about": "เกี่ยวกับ",
+        "adminBanned": "ผู้ใช้ที่ถูกแบน",
+        "adminModSettings": "การตั้งค่าผู้ดูแล",
+        "adminReports": "รายงาน",
+        "adminSettings": "การตั้งค่าผู้ดูแลระบบ",
+        "adminTests": "การทดสอบ",
+        "authGoogleCallbackAccountDeleted": "ลบบัญชีแล้ว",
+        "authGoogleCallbackDeleteAccount": "ลบบัญชี",
+        "authGoogleCallbackLogin": "เข้าสู่ระบบ",
+        "bookmarks": "บุ๊กมาร์ก",
+        "checkInbox": "ตรวจกล่องขาเข้าของคุณ",
+        "drafts": "ฉบับร่างและกำหนดเวลา",
+        "draftsEditDraft": "แก้ไขฉบับร่าง",
+        "draftsEditScheduled": "แก้ไขโพสต์ที่กำหนดเวลา",
+        "forgotPassword": "ลืมรหัสผ่าน",
+        "friendsFeed": "ฟีดเพื่อน",
+        "help": "ช่วยเหลือ",
+        "helpDescription": "คู่มือและคำตอบสำหรับการใช้เว็บไซต์",
+        "locations": "สถานที่",
+        "locationsDescription": "โพสต์จากสถานที่ที่ใกล้คุณที่สุด",
+        "locationsPlaceDescription": "โพสต์ใกล้ {place}",
+        "login": "เข้าสู่ระบบ",
+        "loginVerificationCode": "รหัสยืนยัน",
+        "map": "แผนที่",
+        "mapDescription": "แผนที่โพสต์จากทั่วโลก ค้นหาผู้คนและสิ่งต่าง ๆ ใกล้คุณ",
+        "messages": "ข้อความ",
+        "messagesWithUser": "ข้อความกับ {name}",
+        "notifications": "การแจ้งเตือน",
+        "privacy": "นโยบายความเป็นส่วนตัว",
+        "quote": "อ้างอิง",
+        "relayFeed": "ฟีดรีเลย์",
+        "relayFeedDescription": "โพสต์สาธารณะที่มาจากรีเลย์ซึ่งเซิร์ฟเวอร์นี้สมัครไว้",
+        "resetPassword": "ตั้งรหัสผ่านใหม่",
+        "revertEmail": "ย้อนกลับการเปลี่ยนอีเมล",
+        "search": "ค้นหา",
+        "signup": "สมัคร",
+        "tags": "แท็ก",
+        "tagsDescription": "เรียกดูแฮชแท็กยอดนิยมและที่กำลังมาแรงบน {siteTitle}",
+        "tagsTagDescription": "โพสต์ที่ติดแท็ก {tag} บน {siteTitle}",
+        "terms": "ข้อกำหนดการให้บริการ",
+        "topics": "หัวข้อ",
+        "topicsDescription": "สิ่งที่ผู้คนกำลังพูดถึงบน {siteTitle} ตอนนี้",
+        "topicsEntityDescription": "{typeLabel} - โพสต์ที่กล่าวถึง {entityTitle} บน {siteTitle}",
+        "topicsTypeDescription": "{typePlural} ที่ผู้คนกำลังพูดถึงบน {siteTitle} ตอนนี้",
+        "unsubscribe": "สรุปทางอีเมล",
+        "userFriends": "เพื่อนของ {name}",
+        "userFriendsDescription": "เพื่อนของ {name} บน {siteTitle}",
+        "userSettings": "การตั้งค่าผู้ใช้",
+        "users": "ผู้ใช้",
+        "verifyEmail": "ยืนยันอีเมล"
+    },
+    "PostLikeButton": {
+        "like": "ถูกใจ",
+        "unlike": "เลิกถูกใจ"
+    },
+    "PostPinButton": {
+        "pin": "ปักหมุด",
+        "unpin": "เลิกปักหมุด"
+    },
+    "PostQuoteButton": {
+        "name": "อ้างอิง"
+    },
+    "PostDeleteButton": {
+        "name": "ลบ"
+    },
+    "PostEditButton": {
+        "name": "แก้ไข"
+    },
+    "ReportButton": {
+        "name": "รายงาน",
+        "prompt": "ทำไมคุณจึงรายงานสิ่งนี้?",
+        "unlockFirst": "กรุณาปลดล็อกการสนทนาก่อนรายงานข้อความที่เข้ารหัส",
+        "unverifiable": "ข้อความนี้ถูกเข้ารหัสด้วยคีย์ที่ไม่มีอยู่แล้ว จึงไม่สามารถยืนยันหรือรายงานได้"
+    },
+    "PostActionBar": {
+        "reply": "ตอบกลับ",
+        "replies": {
+            "other": "การตอบกลับ ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(แก้ไขแล้ว)"
+    },
+    "RepliesHeading": {
+        "heading": "การตอบกลับ"
+    },
+    "PollVoteButton": {
+        "name": "ลงคะแนน"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "ดู",
+            "link": "สถานที่เพิ่มเติม",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "โพสต์ใกล้คุณ",
+        "description": "หน้านี้แสดงโพสต์ที่ใกล้จุดหนึ่งมากที่สุด ไม่ว่ากิจกรรมจะอยู่ไกลเพียงใด แชร์ตำแหน่งของคุณเพื่อเริ่มจากจุดที่คุณอยู่ หรือเลือกจุดบนแผนที่แทน",
+        "useMyLocation": "ใช้ตำแหน่งของฉัน",
+        "pickOnMap": "เลือกบนแผนที่",
+        "searchPlaceholder": "หรือพิมพ์ชื่อสถานที่…",
+        "searchLabel": "ค้นหาสถานที่",
+        "locating": "กำลังหาตำแหน่ง…",
+        "noGeolocation": "เบราว์เซอร์ของคุณแชร์ตำแหน่งไม่ได้",
+        "locationError": "รับตำแหน่งของคุณไม่ได้ โปรดตรวจสิทธิ์ตำแหน่งของเบราว์เซอร์"
+    },
+    "PollDeadline": {
+        "final": "ผลลัพธ์สุดท้าย",
+        "closes": {
+            "before": "ปิด ",
+            "after": ""
+        },
+        "days": {
+            "other": "ในอีก {count} วัน"
+        },
+        "hours": {
+            "other": "ในอีก {count} ชั่วโมง"
+        },
+        "minutes": {
+            "other": "ในอีก {count} นาที"
+        },
+        "underMinute": "ในเวลาไม่ถึงหนึ่งนาที"
+    },
+    "PollTally": {
+        "voters": {
+            "other": "มีผู้ลงคะแนน {count} คน "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "เข้าสู่ระบบ",
+            "after": "เพื่อโพสต์"
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "เข้าสู่ระบบ",
+            "after": "เพื่อตอบกลับ"
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " โพสต์ซ้ำ"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "ตอบกลับ ",
+            "after": ""
+        },
+        "untitled": "โพสต์นี้",
+        "jumpToStart": "ไปที่จุดเริ่มต้น"
+    },
+    "TopicSummaryCard": {
+        "label": "สรุปที่สร้างโดย AI"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "ยินดีต้อนรับสู่ ",
+            "after": ""
+        },
+        "paragraphs": [
+            "เขียนบางอย่างในช่องด้านล่างแล้วสิ่งนั้นจะไปยังฟีดของคุณ ทุกคนตอบกลับได้ และคำตอบก็คือโพสต์ที่มีโพสต์แม่ ดังนั้นบทสนทนาจึงซ้อนลึกได้เท่าที่ต้องการ",
+            "เพิ่มคนเป็นเพื่อนแล้วโพสต์ของพวกเขาจะเข้าฟีดของคุณ ฟีดทั่วโลก ซึ่งเป็นชื่อเว็บไซต์ที่มุมซ้ายบน จะแสดงทุกอย่างที่เขียนที่นี่ และเป็นที่สำหรับหาคนที่จะเพิ่ม",
+            "เว็บไซต์นี้เป็นส่วนหนึ่งของ Fediverse คุณสามารถติดตามบัญชีบน Mastodon และเซิร์ฟเวอร์อื่นด้วยแฮนเดิลเต็ม และสิ่งที่คุณโพสต์จะไปถึงผู้ติดตามที่นั่น ค้นหาแฮนเดิลเช่น @someone@example.social แล้วเซิร์ฟเวอร์นี้จะไปค้นหาให้",
+            "ติด #แฮชแท็กในโพสต์แล้วโพสต์จะปรากฏในหน้าแท็กนั้น และปรากฏในหัวข้อยอดนิยมหากมีคนเขียนถึงมากพอ",
+            "ข้อความระหว่างสมาชิกเข้ารหัสจากต้นทางถึงปลายทาง เซิร์ฟเวอร์เก็บข้อความเข้ารหัสที่อ่านไม่ได้ เปิดคุณสมบัตินี้ในการตั้งค่า",
+            "คุณไม่จำเป็นต้องโพสต์ทันที บันทึกฉบับร่างหรือกำหนดเวลาให้เผยแพร่เอง ทั้งสองอยู่ใต้ฉบับร่างและกำหนดเวลา"
+        ],
+        "more": {
+            "before": "มีข้อมูลเพิ่มเติมใน",
+            "link": "หน้าความช่วยเหลือ",
+            "after": " รวมถึงวิธีย้ายบัญชีจากที่อื่นมายังที่นี่"
+        },
+        "dontShowAgain": "ไม่ต้องแสดงอีก"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "แทรกอีโมจิ"
+    },
+    "LinkImagePreview": {
+        "alt": "ภาพตัวอย่างลิงก์"
+    },
+    "LinkImageRemoveButton": {
+        "label": "นำภาพออก"
+    },
+    "LinkItem": {
+        "alt": "ภาพตัวอย่างลิงก์"
+    },
+    "MapScrubber": {
+        "play": "เล่น",
+        "pause": "หยุดชั่วคราว",
+        "cumulativeMode": "จนถึงเวลานั้น",
+        "windowMode": "เฉพาะเวลานั้น",
+        "rangeLabel": "แสดงโพสต์ถึงวันที่",
+        "cumulativeLabel": {
+            "other": "โพสต์ถึง {date} — {count} โพสต์"
+        },
+        "windowLabel": {
+            "other": "โพสต์ช่วง {date} — {count} โพสต์"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "โพสต์ของ {name}",
+        "pageTitleUntitled": "โพสต์",
+        "imageAltByAuthor": "ภาพที่โพสต์โดย {name}",
+        "imageAltUntitled": "ภาพ"
+    },
+    "PostBookmarkButton": {
+        "remove": "นำบุ๊กมาร์กออก",
+        "add": "บุ๊กมาร์ก"
+    },
+    "PostRepostButton": {
+        "undo": "เลิกโพสต์ซ้ำ",
+        "repost": "โพสต์ซ้ำ"
+    },
+    "QuotedPost": {
+        "viewLink": "ดูโพสต์ที่อ้างอิง"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "คำขอที่รอดำเนินการ"
+    },
+    "ScrollToTopButton": {
+        "label": "เลื่อนไปด้านบน"
+    },
+    "SearchClearButton": {
+        "label": "ล้างการค้นหา"
+    },
+    "SitePolicyLinks": {
+        "terms": "ข้อกำหนดการให้บริการ",
+        "privacy": "นโยบายความเป็นส่วนตัว"
+    },
+    "SkipLink": {
+        "label": "ข้ามไปยังเนื้อหา"
+    },
+    "TopicHeading": {
+        "searchLink": "ค้นหาสิ่งนี้",
+        "noPosts": "ขณะนี้ไม่มีโพสต์กล่าวถึงสิ่งนี้"
+    },
+    "PopularEntityList": {
+        "emptyNotice": "ยังไม่มีการเขียนถึงสิ่งประเภทนี้"
+    },
+    "TrendingEntitySection": {
+        "heading": "กำลังมาแรง"
+    },
+    "PostLocationLink": {
+        "title": "แสดงสถานที่นี้บนแผนที่",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "เมื่อสักครู่",
+        "minutes": {
+            "other": "{count} นาทีที่แล้ว"
+        },
+        "hours": {
+            "other": "{count} ชั่วโมงที่แล้ว"
+        },
+        "days": {
+            "other": "{count} วันที่แล้ว"
+        }
+    },
+    "ThemeSelector": {
+        "label": "ธีม",
+        "themes": {
+            "system": "ตรงกับระบบ",
+            "light": "สว่างเรียบง่าย",
+            "dark": "มืดเรียบง่าย",
+            "sepia": "ซีเปีย",
+            "midnight": "เที่ยงคืน",
+            "sunset": "พระอาทิตย์ตก",
+            "rose": "กุหลาบ",
+            "forest": "ป่า",
+            "ocean": "มหาสมุทร",
+            "lavender": "ลาเวนเดอร์",
+            "gold": "ทอง",
+            "hacker": "แฮ็กเกอร์",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "ระดับสีเทา"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "ไม่ได้ตั้งค่าการแปลบนเซิร์ฟเวอร์นี้",
+        "nothing": "ไม่มีสิ่งใดที่นี่ให้แปล",
+        "unknownSource": "ยังไม่มีใครทราบว่าโพสต์นี้ใช้ภาษาอะไร จึงแปลไม่ได้",
+        "alreadyReadable": "โพสต์นี้เป็นภาษานั้นอยู่แล้ว",
+        "unsupportedPair": "เซิร์ฟเวอร์นี้ยังแปลภาษานั้นไม่ได้"
+    },
+    "LanguagePrompt": {
+        "question": "คุณต้องการดูเว็บไซต์เป็นภาษาไทยหรือไม่",
+        "accept": "ใช่",
+        "decline": "ไม่ ขอบคุณ"
+    },
+    "LanguageSelector": {
+        "label": "ภาษา",
+        "legend": "ภาษา"
+    },
+    "EmailDigest": {
+        "subject": "สิ่งที่คุณพลาดบน {site}",
+        "greeting": "สวัสดี {name}",
+        "whileAway": "ระหว่างที่คุณไม่อยู่:",
+        "repeatedTimes": {
+            "other": " ({count} ครั้ง)"
+        },
+        "moreMissed": {
+            "other": "และการแจ้งเตือนอีก {count} รายการ"
+        },
+        "messagesWaiting": {
+            "other": "คุณมีข้อความรออยู่ {count} ข้อความ"
+        },
+        "postsInFeed": {
+            "other": "มีโพสต์ใหม่ {count} โพสต์ในฟีดของคุณ"
+        },
+        "unsubscribeInstructions": "หากต้องการหยุดอีเมลเหล่านี้ ให้เปิดลิงก์นี้ ใช้เพียงคลิกเดียวและไม่ต้องใช้รหัสผ่าน:",
+        "comeSeeWhatIsNew": "มาดูว่ามีอะไรใหม่",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "หยุดส่งอีเมลเหล่านี้ให้ฉัน",
+            "after": " คลิกเดียว ไม่ต้องใช้รหัสผ่าน"
+        }
+    },
+    "EmailVerification": {
+        "subject": "ยืนยันที่อยู่อีเมลของคุณ",
+        "greeting": "สวัสดี {name}",
+        "instructions": "โปรดยืนยันที่อยู่อีเมลโดยไปที่ลิงก์นี้:",
+        "htmlInstructions": "โปรดยืนยันที่อยู่อีเมลโดยคลิกลิงก์ด้านล่าง:",
+        "buttonLabel": "ยืนยันที่อยู่อีเมล",
+        "expiresIn": {
+            "other": "ลิงก์นี้หมดอายุใน {count} ชั่วโมง"
+        }
+    },
+    "PasswordReset": {
+        "subject": "ตั้งรหัสผ่านของคุณใหม่",
+        "greeting": "สวัสดี {name}",
+        "instructions": "มีคนหนึ่ง (หวังว่าจะเป็นคุณ) ขอให้ตั้งรหัสผ่านใหม่ ไปที่ลิงก์นี้เพื่อเลือกรหัสผ่านใหม่:",
+        "htmlInstructions": "มีคนหนึ่ง (หวังว่าจะเป็นคุณ) ขอให้ตั้งรหัสผ่านใหม่ คลิกลิงก์ด้านล่างเพื่อเลือกรหัสผ่านใหม่:",
+        "buttonLabel": "ตั้งรหัสผ่านใหม่",
+        "expiresIn": {
+            "other": "ลิงก์นี้หมดอายุใน {count} ชั่วโมง"
+        },
+        "ignoreNotice": "หากคุณไม่ได้ขอ คุณสามารถเพิกเฉยต่ออีเมลนี้ได้"
+    },
+    "AboutPage": {
+        "mapAfter": "",
+        "mapBefore": "ภาพแผนที่จาก ",
+        "placesAfter": "",
+        "placesBefore": "ชื่อสถานที่จาก ",
+        "placesBetween": " ภายใต้สัญญาอนุญาต ",
+        "softwareAfter": " เวอร์ชัน {version}",
+        "softwareBefore": "เว็บไซต์นี้ทำงานด้วย ",
+        "translationAfter": " ซึ่งทำงานอยู่ที่นี่แทนที่จะเป็นที่อื่น",
+        "translationBefore": "แปลโดย "
+    },
+    "ActivityPubMove": {
+        "aliasMissing": "บัญชีนั้นยังไม่ได้ระบุบัญชีนี้เป็นชื่อสำรอง ให้เพิ่ม {uri} ใน \"หรือรู้จักกันในชื่อ\" ของบัญชีนั้นก่อน แล้วลองใหม่",
+        "fetchFailed": "ไม่สามารถดึงข้อมูลบัญชีนั้นได้",
+        "localOnly": "ย้ายได้เฉพาะบัญชีในเครื่องเท่านั้น",
+        "sameServer": "บัญชีนั้นอยู่บนเซิร์ฟเวอร์นี้แล้ว การย้ายจะเกิดขึ้นระหว่างเซิร์ฟเวอร์เท่านั้น"
+    },
+    "AdminModSettings": {
+        "bannedTrendingEntities": "รายการที่กำลังมาแรงที่ถูกแบน",
+        "blockedServers": "เซิร์ฟเวอร์ที่ถูกบล็อก",
+        "queues": "คิวงาน"
+    },
+    "AdminSettings": {
+        "about": "เกี่ยวกับ",
+        "botProtection": "การป้องกันบอท",
+        "emailDigest": "สรุปข่าวทางอีเมล",
+        "favicon": "ไอคอนเว็บไซต์",
+        "frontPageImage": "รูปภาพหน้าแรก",
+        "googleAuth": "การยืนยันตัวตนของ Google",
+        "mail": "อีเมล",
+        "map": "แผนที่",
+        "moderationLog": "บันทึกการกลั่นกรอง",
+        "notificationTest": "ทดสอบการแจ้งเตือน",
+        "openRouter": "AI (OpenRouter)",
+        "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+        "relays": "รีเลย์",
+        "services": "บริการ",
+        "statistics": "สถิติ",
+        "termsOfService": "ข้อกำหนดการใช้บริการ",
+        "tests": "การทดสอบ"
+    },
+    "Api": {
+        "genericError": "เกิดข้อผิดพลาด กรุณาลองใหม่",
+        "networkError": "ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อของคุณแล้วลองใหม่"
+    },
+    "AuthDivider": {
+        "label": "หรือ"
+    },
+    "CarouselController": {
+        "autoplay": "เล่นอัตโนมัติ",
+        "exitFullscreen": "ออกจากเต็มจอ",
+        "fullscreen": "เต็มจอ",
+        "stopAutoplay": "หยุดเล่นอัตโนมัติ"
+    },
+    "ClientStatus": {
+        "avatarAlt": "รูปประจำตัวของคุณ",
+        "chooseFile": "กรุณาเลือกไฟล์ก่อน",
+        "deleteAccount": "ลบบัญชีของคุณหรือไม่? โพสต์ การตอบกลับ และข้อความของคุณจะหายไปอย่างถาวร - ไม่สามารถย้อนกลับได้",
+        "done": "เสร็จสิ้น",
+        "emailUnchanged": "นั่นเป็นอีเมลของคุณอยู่แล้ว",
+        "failed": "ล้มเหลว",
+        "faviconSaved": "บันทึกการตั้งค่าแล้ว",
+        "followersNotified": "ผู้ติดตามของคุณได้รับการแจ้งให้ติดตามคุณที่บัญชีใหม่แล้ว",
+        "linkCopied": "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว",
+        "linkCopyFailed": "ไม่สามารถคัดลอกลิงก์ได้",
+        "login": "เข้าสู่ระบบ",
+        "mapSaved": "บันทึกการตั้งค่าแผนที่แล้ว",
+        "markedVerified": "ทำเครื่องหมายว่ายืนยันแล้ว",
+        "notificationsBlocked": "การแจ้งเตือนถูกบล็อกสำหรับเว็บไซต์นี้ในการตั้งค่าเบราว์เซอร์ของคุณ",
+        "notificationsEnableFailed": "ไม่สามารถเปิดใช้งานการแจ้งเตือนได้",
+        "notificationsOff": "ปิดการแจ้งเตือนสำหรับอุปกรณ์นี้",
+        "notificationsOn": "เปิดการแจ้งเตือนสำหรับอุปกรณ์นี้",
+        "openRouterSaved": "บันทึกการตั้งค่า OpenRouter แล้ว",
+        "passwordChanged": "เปลี่ยนรหัสผ่านแล้ว!",
+        "passwordReset": "รีเซ็ตรหัสผ่านของคุณแล้ว ตอนนี้คุณสามารถเข้าสู่ระบบได้",
+        "passwordUnchanged": "นั่นเป็นรหัสผ่านของคุณอยู่แล้ว - ไม่มีการเปลี่ยนแปลง",
+        "pinSaved": "ปักหมุดไปยังโปรไฟล์ของคุณแล้ว",
+        "profileSaved": "บันทึกโปรไฟล์แล้ว",
+        "pushUnavailable": "การแจ้งเตือนพุชไม่พร้อมใช้งานบนเซิร์ฟเวอร์นี้",
+        "reported": "รายงานแล้ว",
+        "resetSent": "หากมีอีเมลนั้นอยู่ในระบบ ลิงก์รีเซ็ตรหัสผ่านได้ถูกส่งไปแล้ว หากคุณไม่เห็น กรุณาตรวจสอบโฟลเดอร์สแปม/ขยะ",
+        "revokeDevice": "เพิกถอนอุปกรณ์นี้หรือไม่? อุปกรณ์จะถูกออกจากระบบและต้องเข้าสู่ระบบใหม่",
+        "revoking": "กำลังเพิกถอน…",
+        "saved": "บันทึกแล้ว",
+        "sent": "ส่งแล้ว!",
+        "settingsSaved": "บันทึกการตั้งค่าแล้ว",
+        "signOutEverywhere": "การดำเนินการนี้จะออกจากระบบทุกอุปกรณ์ รวมถึงอุปกรณ์นี้ด้วย ดำเนินการต่อหรือไม่?",
+        "signingOut": "กำลังออกจากระบบ…",
+        "unlockConversation": "กรุณาปลดล็อกการสนทนาก่อน",
+        "unlockFailed": "รหัสผ่านนั้นไม่สามารถปลดล็อกข้อความของคุณได้",
+        "unpinSaved": "ยกเลิกการปักหมุดแล้ว"
+    },
+    "CodeBlockCopy": {
+        "copied": "คัดลอกแล้ว!",
+        "copy": "คัดลอก",
+        "copyLabel": "คัดลอกโค้ดไปยังคลิปบอร์ด"
+    },
+    "ConversationList": {
+        "emptyNotice": "คุณยังไม่มีการสนทนาใดๆ"
+    },
+    "Dialog": {
+        "cancel": "ยกเลิก",
+        "confirm": "ตกลง"
+    },
+    "EncryptedMessagesClient": {
+        "enabled": "เปิดใช้งานข้อความเข้ารหัสแล้ว",
+        "minimumPassphrase": "ใช้รหัสผ่านที่มีความยาวอย่างน้อย {count} ตัวอักษร",
+        "newKeys": "สร้างคีย์ใหม่แล้ว",
+        "passphraseChanged": "เปลี่ยนรหัสผ่านแล้ว",
+        "passphraseIsPassword": "รหัสผ่านของคุณต้องไม่ใช่รหัสผ่านบัญชีของคุณ - รหัสผ่านบัญชีจะถูกส่งไปยังเซิร์ฟเวอร์ ในขณะที่รหัสผ่านนี้ต้องไม่ถูกส่งเด็ดขาด",
+        "passphraseTooRepetitive": "รหัสผ่านนั้นใช้ตัวอักษรที่แตกต่างกันน้อยเกินไปจนไม่มีค่าความปลอดภัย กรุณาใช้วลีที่ยาวขึ้น",
+        "passphrasesMismatch": "รหัสผ่านไม่ตรงกัน",
+        "wrongPassphrase": "นั่นไม่ใช่รหัสผ่านปัจจุบันของคุณ"
+    },
+    "EntityModerator": {
+        "ban": "แบน",
+        "banPlaceholder": "เหตุผลในการแบน (จำเป็น)",
+        "unban": "ยกเลิกการแบน \"{entity}\" หรือไม่? รายการนี้จะสามารถกลับมาเป็นที่นิยมได้อีกครั้ง"
+    },
+    "ErrorDocument": {
+        "notFoundMessage": "ไม่พบหน้าที่คุณกำลังค้นหา",
+        "notFoundTitle": "ไม่พบหน้า",
+        "profileLookupRateLimit": "มีการค้นหาโปรไฟล์มากเกินไปในขณะนี้ กรุณารอสักครู่แล้วลองใหม่",
+        "tooManyRequestsTitle": "คำขอมากเกินไป"
+    },
+    "FriendSearchBox": {
+        "placeholder": "ค้นหาเพื่อน…"
+    },
+    "GoogleAuthCallbackPage": {
+        "accountCannotBeDeleted": "ไม่สามารถลบบัญชีนี้ได้",
+        "banned": "บัญชีของคุณถูกแบนแล้ว",
+        "bannedWithReason": "บัญชีของคุณถูกแบนแล้ว เหตุผล: {reason}",
+        "deleted": "บัญชีของคุณถูกลบอย่างถาวรแล้ว",
+        "deletionCancelled": "ยกเลิกการลบบัญชีแล้ว",
+        "deletionFailed": "ไม่สามารถลบบัญชีให้เสร็จสมบูรณ์ได้ กรุณาลองใหม่",
+        "emailMismatch": "บัญชี Google นั้นไม่ตรงกับที่อยู่อีเมลของบัญชีคุณ",
+        "emailUnavailable": "ที่อยู่อีเมลนี้ไม่สามารถใช้เข้าสู่ระบบได้",
+        "home": "กลับสู่หน้าแรก",
+        "identityFailed": "ไม่สามารถยืนยันตัวตน Google ของคุณได้ กรุณาลองใหม่",
+        "notConfigured": "ยังไม่ได้ตั้งค่าการเข้าสู่ระบบด้วย Google",
+        "rateLimited": "มีความพยายามเข้าสู่ระบบมากเกินไปจากเครือข่ายของคุณ กรุณาลองใหม่ภายหลัง",
+        "signin": "กลับสู่การเข้าสู่ระบบ",
+        "signinCancelled": "ยกเลิกการเข้าสู่ระบบด้วย Google แล้ว",
+        "signinFailed": "ไม่สามารถเข้าสู่ระบบด้วย Google ให้เสร็จสมบูรณ์ได้ กรุณาลองใหม่",
+        "userSettings": "กลับสู่การตั้งค่าผู้ใช้",
+        "verificationFailed": "ไม่สามารถยืนยันการเข้าสู่ระบบด้วย Google ได้ กรุณาลองใหม่"
+    },
+    "ImageItem": {
+        "alt": "รูปภาพ"
+    },
+    "IndexPage": {
+        "rssFeed": "ฟีด RSS"
+    },
+    "InfiniteScroller": {
+        "end": "คุณมาถึงจุดสิ้นสุดแล้ว",
+        "failed": "ไม่สามารถโหลดเพิ่มเติมได้ กรุณาโหลดหน้านี้ใหม่",
+        "loading": "กำลังโหลด"
+    },
+    "LocationsPage": {
+        "postsNear": "โพสต์ใกล้ {place}"
+    },
+    "LoginClient": {
+        "verificationFailed": "ไม่สามารถโหลดการยืนยันได้ กรุณาลองใหม่อีกครั้งในอีกสักครู่",
+        "verificationRequired": "มีความพยายามมากเกินไปสำหรับบัญชีนี้ กรุณาทำการยืนยันให้เสร็จสมบูรณ์เพื่อดำเนินการต่อ"
+    },
+    "LoginPage": {
+        "forgotPassword": "ลืมรหัสผ่าน?",
+        "signup": "ยังไม่มีบัญชี? สมัครสมาชิก",
+        "startOver": "เริ่มต้นใหม่"
+    },
+    "MiscellaneousClient": {
+        "checking": "กำลังตรวจสอบ…",
+        "deleteReportedContent": "ลบเนื้อหานี้อย่างถาวรหรือไม่? การลบโพสต์ยังลบการตอบกลับทั้งหมดของโพสต์นั้นด้วย",
+        "justNow": "เมื่อสักครู่",
+        "reloadError": "เกิดข้อผิดพลาด ลองโหลดหน้านี้ใหม่",
+        "report": "รายงาน",
+        "seeMore": "ดูเพิ่มเติม…",
+        "unbanUser": "ยกเลิกการแบนผู้ใช้นี้หรือไม่? เนื้อหาและการเข้าสู่ระบบของผู้ใช้จะกลับมาใช้งานได้อีกครั้ง"
+    },
+    "OtherUserClient": {
+        "addFriend": "เพิ่มเพื่อน",
+        "ban": "แบน",
+        "banConfirm": "แบนผู้ใช้นี้หรือไม่? การดำเนินการนี้จะซ่อนเนื้อหาทั้งหมดของผู้ใช้และปิดกั้นการเข้าสู่ระบบ ผู้ใช้จะเห็นเหตุผลนี้บนแบบฟอร์มเข้าสู่ระบบ",
+        "banPlaceholder": "เหตุผลในการแบน (จำเป็น)",
+        "banned": "ถูกแบนแล้ว",
+        "blockConfirm": "บล็อกผู้ใช้นี้หรือไม่? การดำเนินการนี้จะลบความเป็นเพื่อนที่มีอยู่",
+        "cancelRequest": "ยกเลิกคำขอ",
+        "removeFriendConfirm": "ลบเพื่อนคนนี้หรือไม่?",
+        "viewFriends": "ดูเพื่อน"
+    },
+    "PinnedPostSection": {
+        "heading": "ปักหมุดไว้"
+    },
+    "Poll": {
+        "vote": "โหวต",
+        "votes": {
+            "other": "{count} โหวต"
+        }
+    },
+    "PostClient": {
+        "autoplay": "เล่นอัตโนมัติ",
+        "deleteConfirm": "ลบโพสต์นี้หรือไม่?",
+        "fullscreen": "เต็มจอ",
+        "image": "รูปภาพ",
+        "machineTranslation": "การแปลด้วยเครื่อง",
+        "mapTitle": "แสดงสถานที่นี้บนแผนที่",
+        "next": "ถัดไป",
+        "previous": "ก่อนหน้า",
+        "sensitiveMedia": "สื่อที่ละเอียดอ่อน"
+    },
+    "PostEditor": {
+        "altText": "ข้อความอธิบายภาพ",
+        "cancel": "ยกเลิก",
+        "save": "บันทึก",
+        "saved": "บันทึกการเปลี่ยนแปลงแล้ว",
+        "sensitive": "ละเอียดอ่อน"
+    },
+    "PostFields": {
+        "altText": "ข้อความอธิบายภาพ - อธิบายรูปภาพนี้",
+        "contentWarning": "คำเตือนเนื้อหา (ไม่บังคับ)",
+        "link": "ลิงก์ (ไม่บังคับ)",
+        "title": "หัวข้อ (ไม่บังคับ)"
+    },
+    "PostMapClient": {
+        "byAuthor": "โดย {name}",
+        "clearPin": "ล้างหมุด",
+        "postHere": "โพสต์ที่นี่",
+        "postsNearby": "โพสต์ใกล้เคียง",
+        "viewPost": "ดูโพสต์"
+    },
+    "PostSearchBox": {
+        "placeholder": "ค้นหาโพสต์…"
+    },
+    "QuillEditor": {
+        "blockquote": "ข้อความอ้างอิง",
+        "bold": "ตัวหนา",
+        "bulletList": "รายการหัวข้อย่อย",
+        "clearFormatting": "ล้างการจัดรูปแบบ",
+        "codeBlock": "บล็อกโค้ด",
+        "formula": "สูตร",
+        "heading": "หัวข้อ {count}",
+        "inlineCode": "โค้ดในบรรทัด",
+        "italic": "ตัวเอียง",
+        "link": "ลิงก์",
+        "list": "รายการ",
+        "numberedList": "รายการลำดับเลข",
+        "postText": "ข้อความโพสต์",
+        "strikethrough": "ขีดฆ่า",
+        "underline": "ขีดเส้นใต้"
+    },
+    "Relay": {
+        "alreadySubscribed": "สมัครสมาชิกรีเลย์นั้นอยู่แล้ว",
+        "blocked": "เซิร์ฟเวอร์นั้นถูกบล็อก กรุณายกเลิกการบล็อกก่อนหากคุณตั้งใจจะสมัครสมาชิกกับเซิร์ฟเวอร์นั้น",
+        "invalidAddress": "นั่นไม่ใช่ที่อยู่รีเลย์",
+        "noSigningKey": "เซิร์ฟเวอร์นี้ไม่มีคีย์การลงนาม ActivityPub จึงไม่สามารถสมัครสมาชิกกับสิ่งใดได้",
+        "notActor": "ที่อยู่นั้นไม่ได้ตอบกลับด้วยแอคเตอร์ของ Fediverse",
+        "unknownStyle": "รูปแบบการสมัครสมาชิกที่ไม่รู้จัก"
+    },
+    "RememberedDeviceList": {
+        "emptyNotice": "ไม่มีอุปกรณ์ที่จดจำไว้ อุปกรณ์ที่คุณเลือก \"จดจำฉันไว้\" เมื่อเข้าสู่ระบบจะปรากฏที่นี่"
+    },
+    "RevertEmailPage": {
+        "confirm": "ย้อนกลับการเปลี่ยนที่อยู่อีเมลล่าสุดในบัญชีของคุณหรือไม่? การดำเนินการนี้ยังออกจากระบบทุกอุปกรณ์จากบัญชีของคุณด้วย",
+        "forgotPassword": "ลืมรหัสผ่าน?",
+        "invalid": "ลิงก์ย้อนกลับนั้นไม่ถูกต้องหรือหมดอายุแล้ว",
+        "login": "เข้าสู่ระบบ",
+        "reverted": "ที่อยู่อีเมลของคุณถูกย้อนกลับแล้ว และทุกอุปกรณ์ถูกออกจากระบบจากบัญชีของคุณแล้ว",
+        "securityAdvice": "หากคุณไม่แน่ใจว่าสิ่งนี้เกิดขึ้นได้อย่างไร ให้เปลี่ยนรหัสผ่านของคุณทันทีที่คุณเข้าสู่ระบบอีกครั้ง"
+    },
+    "RouteNotices": {
+        "cannotMessage": "คุณไม่สามารถส่งข้อความถึงผู้ใช้นี้ได้",
+        "noHashtags": "ยังไม่มีแฮชแท็ก",
+        "passwordResetInvalid": "ลิงก์รีเซ็ตรหัสผ่านนั้นไม่ถูกต้องหรือหมดอายุแล้ว"
+    },
+    "SearchClient": {
+        "noBannedUsers": "ไม่มีผู้ใช้ที่ถูกแบน",
+        "noBannedUsersMatch": "ไม่มีผู้ใช้ที่ถูกแบนตรงกับการค้นหานั้น"
+    },
+    "SetupPage": {
+        "databaseAdminNotice": "หากคุณเป็นผู้ดูแลเว็บไซต์นี้: การเชื่อมต่อฐานข้อมูลโดยใช้ข้อมูลรับรองใน .env กำลังล้มเหลว - ตรวจสอบว่าเซิร์ฟเวอร์ฐานข้อมูลกำลังทำงานอยู่และข้อมูลรับรองนั้นยังใช้ได้ หน้านี้แสดงขึ้นแทนตัวช่วยตั้งค่าเพื่อป้องกันไม่ให้การหยุดทำงานของฐานข้อมูลถูกใช้ในการตั้งค่าเว็บไซต์ใหม่",
+        "databaseUnavailable": "เว็บไซต์ไม่สามารถเข้าถึงฐานข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้งในอีกไม่กี่นาที",
+        "finished": "การตั้งค่าเสร็จสมบูรณ์แล้ว - ฐานข้อมูล บัญชีรันไทม์ที่มีสิทธิ์น้อยที่สุด และ .env พร้อมแล้วทั้งหมด เหลืออีกสามขั้นตอนเล็กๆ:",
+        "fixPrerequisites": "แก้ไขสิ่งเหล่านี้บนเซิร์ฟเวอร์ แล้วโหลดหน้านี้ใหม่เพื่อตรวจสอบอีกครั้ง",
+        "missingPrerequisites": "ยินดีต้อนรับ! ก่อนที่การตั้งค่าจะดำเนินต่อได้ เซิร์ฟเวอร์นี้ขาดข้อกำหนดเบื้องต้นบางอย่าง:",
+        "welcome": "ยินดีต้อนรับ! การตรวจสอบสภาพแวดล้อมทั้งหมดผ่านแล้ว การส่งแบบฟอร์มนี้จะสร้างฐานข้อมูล (หากยังไม่มี) บัญชีฐานข้อมูลรันไทม์ที่มีสิทธิ์น้อยที่สุดพร้อมรหัสผ่านสุ่ม และโครงสร้างฐานข้อมูล จากนั้นเขียนทั้งหมดลงใน .env ข้อมูลรับรองผู้ดูแลระบบใช้เพียงครั้งเดียวสำหรับการติดตั้งและจะไม่ถูกเก็บไว้เลย"
+    },
+    "StagedPostClient": {
+        "discardConfirm": "ทิ้งสิ่งนี้หรือไม่? ยังไม่เคยเผยแพร่ และการดำเนินการนี้จะไม่เก็บสำเนาไว้",
+        "discarded": "ทิ้งแล้ว",
+        "edit": "แก้ไข",
+        "published": "เผยแพร่แล้ว"
+    },
+    "StagedPostList": {
+        "emptyNotice": "ไม่มีฉบับร่างหรือโพสต์ที่กำหนดเวลาไว้ ปุ่มบันทึกฉบับร่างและกำหนดเวลาในตัวเขียนจะนำโพสต์มาไว้ที่นี่"
+    },
+    "TestResults": {
+        "installJavaScriptDependencies": "รัน `npm install` ในไดเรกทอรีรากของเอกสารเพื่อเปิดใช้งานการทดสอบ JavaScript",
+        "nodeFatal": "ไม่สามารถเริ่มการทดสอบ JavaScript ได้ Node.js พบข้อผิดพลาดร้ายแรง ซึ่งน่าจะเกิดจากข้อจำกัดของ SELinux บนเว็บเซิร์ฟเวอร์",
+        "nodeUnavailable": "ไม่มี Node.js ที่เว็บเซิร์ฟเวอร์สามารถใช้ได้ ติดตั้งแบบทั่วทั้งระบบ (เช่น dnf install nodejs) เพื่อเปิดใช้งานการทดสอบ JavaScript - ตัวจัดการเวอร์ชันภายในโฟลเดอร์ผู้ใช้ (nvm) จะมองไม่เห็นที่นี่"
+    },
+    "Toast": {
+        "dismiss": "ปิด"
+    },
+    "UnsubscribePage": {
+        "continue": "ดำเนินการต่อ",
+        "invalid": "ลิงก์ยกเลิกการสมัครนั้นไม่ใช่ลิงก์ที่เว็บไซต์นี้ออกให้",
+        "resubscribed": "เปิดสรุปข่าวของคุณกลับมาแล้ว คุณจะได้ยินจากเราเมื่อคุณไม่ได้เข้ามาสักระยะและมีสิ่งที่จะบอกคุณ",
+        "unsubscribed": "เสร็จสิ้น - ไม่มีสรุปข่าวอีกต่อไป คุณจะยังคงได้รับอีเมลที่เว็บไซต์นี้ต้องส่งให้คุณ เช่น การรีเซ็ตรหัสผ่าน"
+    },
+    "UserClient": {
+        "bio": "เพิ่มประวัติย่อ…",
+        "deleteGoogleConfirm": "ลบบัญชีของคุณหรือไม่? โพสต์ การตอบกลับ และข้อความของคุณจะหายไปอย่างถาวร - ไม่สามารถย้อนกลับได้ คุณจะยืนยันโดยการเข้าสู่ระบบด้วย Google",
+        "displayName": "ชื่อที่แสดง",
+        "joined": "เข้าร่วมเมื่อ {date}",
+        "save": "บันทึก"
+    },
+    "UserRSSFeed": {
+        "title": "โพสต์โดย {name} บน {site}"
+    },
+    "UserSearchBox": {
+        "placeholder": "ค้นหาผู้ใช้…"
+    },
+    "UserSettings": {
+        "changeEmail": "เปลี่ยนอีเมล",
+        "changePassword": "เปลี่ยนรหัสผ่าน",
+        "deleteAccount": "ลบบัญชี",
+        "emailDigests": "สรุปข่าวทางอีเมล",
+        "encryptedMessages": "ข้อความเข้ารหัส",
+        "fediverse": "Fediverse",
+        "movingServers": "การย้ายเซิร์ฟเวอร์",
+        "pushNotifications": "การแจ้งเตือนพุช",
+        "rememberedDevices": "อุปกรณ์ที่จดจำไว้",
+        "sensitiveMedia": "สื่อที่ละเอียดอ่อน",
+        "sessions": "เซสชัน",
+        "theme": "ธีม",
+        "twoFactorAuthentication": "การยืนยันตัวตนสองขั้นตอน",
+        "videoCalling": "การโทรวิดีโอ"
+    },
+    "UsersPage": {
+        "fediverseAfter": "",
+        "fediverseBefore": "คุณสามารถติดตามรายชื่อผู้ใช้ Fediverse ได้ที่ ",
+        "settingsLink": "การตั้งค่าผู้ใช้"
+    },
+    "VerifyEmailPage": {
+        "confirm": "ยืนยันว่าคุณต้องการยืนยันที่อยู่อีเมลนี้",
+        "continue": "ดำเนินการต่อ",
+        "invalid": "ลิงก์ยืนยันนั้นไม่ถูกต้องหรือหมดอายุแล้ว",
+        "verified": "อีเมลของคุณได้รับการยืนยันแล้ว ตอนนี้คุณสามารถใช้ {site} ได้"
+    },
+    "VideoCall": {
+        "accept": "รับสาย",
+        "call": "โทร",
+        "calling": "กำลังโทร…",
+        "cancel": "ยกเลิก",
+        "connected": "เชื่อมต่อแล้ว",
+        "connecting": "กำลังเชื่อมต่อ…",
+        "decline": "ปฏิเสธ",
+        "declined": "สายของคุณถูกปฏิเสธ",
+        "end": "วางสาย",
+        "incoming": "สายวิดีโอเข้า",
+        "permissionError": "ไม่สามารถใช้กล้องหรือไมโครโฟนของคุณได้ ตรวจสอบสิทธิ์ของเบราว์เซอร์สำหรับเว็บไซต์นี้"
+    },
+    "ComposerClient": {
+        "addFiles": "เพิ่มไฟล์",
+        "addFilesLabel": "เพิ่มไฟล์ - รูปภาพ วิดีโอ หรือเสียง",
+        "addLocation": "เพิ่มสถานที่",
+        "addPoll": "เพิ่มโพล",
+        "addSchedule": "เพิ่มกำหนดการ",
+        "allowMultiple": "อนุญาตให้เลือกได้มากกว่าหนึ่งตัวเลือก",
+        "altTextFor": "ข้อความอธิบายภาพสำหรับ {name}",
+        "attachmentCount": "{count} / {maximum} ไฟล์",
+        "createLegend": "สร้างโพสต์",
+        "fileRemovedEmpty": "ลบไฟล์แล้ว ตอนนี้ไม่มีไฟล์แนบ",
+        "filesAttached": "แนบไฟล์แล้ว {count} ไฟล์",
+        "filesLeft": "ลบไฟล์แล้ว เหลือ {count} ไฟล์",
+        "futurePublish": "เวลาเผยแพร่ต้องเป็นเวลาในอนาคต",
+        "genericError": "เกิดข้อผิดพลาด กรุณาลองใหม่",
+        "linkPreviewAttached": "แนบรูปภาพตัวอย่างลิงก์แล้ว ปุ่มลบรูปภาพจะนำออก",
+        "linkPreviewRemoved": "ลบรูปภาพตัวอย่างลิงก์แล้ว",
+        "locating": "กำลังค้นหาตำแหน่ง…",
+        "locationError": "ไม่สามารถรับตำแหน่งของคุณได้ ตรวจสอบสิทธิ์ตำแหน่งของเบราว์เซอร์",
+        "markdownActive": "ตอนนี้กำลังเขียนในกล่องข้อความธรรมดา Markdown",
+        "markdownPostText": "ข้อความโพสต์ แบบ Markdown",
+        "noGeolocation": "เบราว์เซอร์ของคุณไม่สามารถแชร์ตำแหน่งได้",
+        "oneFileAttached": "แนบไฟล์แล้ว 1 ไฟล์ แต่ละรูปภาพมีกล่องสำหรับอธิบาย",
+        "option": "ตัวเลือก {count}",
+        "placeholder": "คุณกำลังคิดอะไรอยู่?",
+        "plainTextHelp": "ข้อความธรรมดา Markdown ใช้งานได้ที่นี่: เครื่องหมายดอกจันรอบคำจะทำให้เป็นตัวหนาหรือตัวเอียง เครื่องหมายแฮชที่จุดเริ่มต้นบรรทัดจะสร้างหัวข้อ ใช้ปุ่ม \"ใช้ข้อความสมบูรณ์แบบ\" ด้านล่างเพื่อกลับไปยังแถบเครื่องมือจัดรูปแบบ",
+        "poll": "โพล",
+        "pollDuration": "ระยะเวลาที่โพลจะดำเนินการ",
+        "pollOption": "ตัวเลือกโพล {count}",
+        "post": "โพสต์",
+        "processing": "ไฟล์สื่อของคุณกำลังประมวลผล และคุณจะได้รับการแจ้งเตือนเมื่อพร้อมให้ดู ปลอดภัยที่จะออกจากหน้านี้",
+        "publishDate": "วันที่เผยแพร่",
+        "publishTime": "เวลาเผยแพร่ (ไม่บังคับ)",
+        "remove": "นำออก",
+        "removeFiles": "นำไฟล์ออก",
+        "removeLocation": "นำสถานที่ออก",
+        "removePoll": "นำโพลออก",
+        "removeSchedule": "นำกำหนดการออก",
+        "replies": "การตอบกลับ",
+        "replyLegend": "ตอบกลับโพสต์นี้",
+        "richTextActive": "ตอนนี้กำลังเขียนในตัวแก้ไขข้อความสมบูรณ์แบบ",
+        "richTextHelp": "ตัวแก้ไขข้อความสมบูรณ์แบบ หากคุณต้องการเขียนแบบข้อความธรรมดา ใช้ปุ่ม \"ใช้ Markdown\" ด้านล่างเพื่อเปลี่ยนเป็นกล่องข้อความธรรมดา - โพสต์เดียวกัน เขียนด้วย markdown สำหรับการจัดรูปแบบใดๆ ที่คุณต้องการ",
+        "saveDraft": "บันทึกฉบับร่าง",
+        "savedDraft": "บันทึกลงฉบับร่างแล้ว",
+        "schedulePost": "กำหนดเวลาโพสต์",
+        "scheduledDraft": "กำหนดเวลาแล้ว - ดูฉบับร่างและที่กำหนดเวลาในเมนู",
+        "sensitive": "ละเอียดอ่อน",
+        "submitFailed": "ไม่สามารถส่งโพสต์ได้ กรุณาลองใหม่",
+        "tooManyFiles": "โพสต์สามารถบรรจุไฟล์ได้สูงสุด {count} ไฟล์ - ไฟล์ที่เหลือไม่ถูกเพิ่ม",
+        "useMarkdown": "ใช้ Markdown",
+        "useRichText": "ใช้ข้อความสมบูรณ์แบบ",
+        "writeFirst": "เขียนอะไรบางอย่างก่อน - ยังไม่มีอะไรให้บันทึก"
+    },
+    "JSONResponse": {
+        "aBanReasonIsRequired": "จำเป็นต้องมีเหตุผลในการแบน",
+        "aBodyIsRequired": "จำเป็นต้องมีเนื้อหา",
+        "aFriendRequestOrFriendshipAlreadyExistsWithThatUser": "มีคำขอเป็นเพื่อนหรือความเป็นเพื่อนกับผู้ใช้นั้นอยู่แล้ว",
+        "aMessageAndALanguageAreRequired": "จำเป็นต้องมีข้อความและภาษา",
+        "aMessageIsEitherPlaintextOrEncryptedNotBoth": "ข้อความต้องเป็นข้อความธรรมดาหรือเข้ารหัสอย่างใดอย่างหนึ่ง ไม่ใช่ทั้งสองอย่าง",
+        "aPollNeedsAQuestionInThePost": "โพลต้องมีคำถามอยู่ในโพสต์",
+        "aPostAndALanguageAreRequired": "จำเป็นต้องมีโพสต์และภาษา",
+        "aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne": "โพสต์สามารถมีโพล ไฟล์แนบ หรือลิงก์ - ไม่เกินหนึ่งอย่าง",
+        "aPostCanHaveEitherAttachedFilesOrALinkNotBoth": "โพสต์สามารถมีไฟล์แนบหรือลิงก์อย่างใดอย่างหนึ่ง ไม่ใช่ทั้งสองอย่าง",
+        "aQuotePostCanCarryImagesButNotVideoOrAudio": "โพสต์อ้างอิงสามารถบรรจุรูปภาพได้ แต่ไม่ใช่วิดีโอหรือเสียง",
+        "aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost": "โพสต์อ้างอิงต้องมีคำพูดของตัวเอง - หากต้องการส่งต่อโพสต์โดยไม่เปลี่ยนแปลง ให้ใช้การรีโพสต์",
+        "addressInUse": "ที่อยู่นั้นถูกใช้งานอยู่แล้ว",
+        "alreadyLoggedIn": "เข้าสู่ระบบอยู่แล้ว",
+        "alreadyVerified": "ยืนยันแล้ว",
+        "altTextTooLong": "ข้อความอธิบายภาพยาวเกินไป (สูงสุด {count} ตัวอักษร)",
+        "altTextsDoNotMatchTheUploadedFiles": "ข้อความอธิบายภาพไม่ตรงกับไฟล์ที่อัปโหลด",
+        "altTextsMustMapItemsToText": "ข้อความอธิบายภาพต้องจับคู่รายการกับข้อความ",
+        "banned": "บัญชีของคุณถูกแบนแล้ว",
+        "bannedWithReason": "บัญชีของคุณถูกแบนแล้ว เหตุผล: {reason}",
+        "bioMustBe500CharactersOrFewer": "ประวัติย่อต้องมี 500 ตัวอักษรหรือน้อยกว่า",
+        "captchaVerificationFailedPleaseTryAgain": "การยืนยัน captcha ล้มเหลว กรุณาลองใหม่",
+        "chooseFileFirst": "กรุณาเลือกไฟล์ก่อน",
+        "chooseHowLongThePollShouldRun": "เลือกระยะเวลาที่โพลควรดำเนินการ",
+        "chooseImageFirst": "กรุณาเลือกรูปภาพก่อน",
+        "chooseMailTransport": "เลือกหนึ่งในสามช่องทางการส่งที่ระบุไว้",
+        "chooseUsername": "กรุณาเลือกชื่อผู้ใช้",
+        "couldNotDeliverTheFollowRequestToThatServer": "ไม่สามารถส่งคำขอติดตามไปยังเซิร์ฟเวอร์นั้นได้",
+        "credentialsRequired": "จำเป็นต้องมีชื่อผู้ใช้/อีเมลและรหัสผ่าน",
+        "currentPasswordIsIncorrect": "รหัสผ่านปัจจุบันไม่ถูกต้อง",
+        "deviceNotFound": "ไม่พบอุปกรณ์",
+        "displayNameMustBe50CharactersOrFewer": "ชื่อที่แสดงต้องมี 50 ตัวอักษรหรือน้อยกว่า",
+        "domainNotIp": "ชี้สิ่งนี้ไปที่ชื่อโดเมน ไม่ใช่ที่อยู่ IP",
+        "emailVerificationRequired": "จำเป็นต้องยืนยันอีเมล",
+        "encryptedMessagingIsNotAvailableOnThisServer": "การส่งข้อความเข้ารหัสไม่พร้อมใช้งานบนเซิร์ฟเวอร์นี้",
+        "enterEmailedCode": "กรอกรหัสที่เราส่งให้คุณทางอีเมล",
+        "fediverseSupportIsNotSetUpOnThisServerYet": "ยังไม่มีการตั้งค่ารองรับ Fediverse บนเซิร์ฟเวอร์นี้",
+        "fileTooLarge": "ไฟล์หนึ่งของคุณมีขนาดใหญ่กว่าขีดจำกัดการอัปโหลด {size}B",
+        "forbidden": "ต้องห้าม",
+        "givePassword": "กรุณาระบุรหัสผ่านของคุณ",
+        "giveThatAMoment": "รอสักครู่",
+        "giveUsernameOrEmail": "กรุณาระบุชื่อผู้ใช้หรืออีเมลของคุณ",
+        "giveValidEmail": "กรุณาระบุที่อยู่อีเมลที่ถูกต้อง",
+        "httpsMisconfigured": "เว็บไซต์นี้ต้องใช้ HTTPS และมีการตั้งค่าผิดพลาด ผู้ดูแลระบบต้องตั้งค่า SITE_URL เป็น URL แบบ https://",
+        "imageProcessingFailed": "ไม่สามารถประมวลผลรูปภาพนั้นได้ ลองอีกรูปหนึ่ง",
+        "imageUnreadable": "ไม่สามารถอ่านไฟล์นั้นเป็นรูปภาพได้",
+        "incorrectOrExpiredCode": "รหัสนั้นไม่ถูกต้องหรือหมดอายุแล้ว",
+        "incorrectUsernameEmailOrPassword": "ชื่อผู้ใช้/อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+        "invalidAction": "การกระทำไม่ถูกต้อง",
+        "invalidCsrfToken": "โทเค็น CSRF ไม่ถูกต้อง",
+        "invalidDevice": "อุปกรณ์ไม่ถูกต้อง",
+        "invalidEmail": "นั่นไม่ใช่ที่อยู่อีเมลที่ถูกต้อง",
+        "invalidLocation": "สถานที่ไม่ถูกต้อง",
+        "invalidReport": "รายงานไม่ถูกต้อง",
+        "invalidRequest": "คำขอไม่ถูกต้อง",
+        "invalidSeed": "ซีดไม่ถูกต้อง",
+        "invalidSkinTone": "โทนสีผิวไม่ถูกต้อง",
+        "invalidTarget": "เป้าหมายไม่ถูกต้อง",
+        "invalidTheme": "ธีมไม่ถูกต้อง",
+        "invalidUrl": "URL ไม่ถูกต้อง",
+        "linkTooLong": "ลิงก์นั้นยาวเกินไป",
+        "listTooLong": "รายการนั้นยาวเกินไป",
+        "malformedEncryptedMessage": "ข้อความเข้ารหัสมีรูปแบบผิดพลาด",
+        "malformedKeyBackup": "การสำรองคีย์มีรูปแบบผิดพลาด",
+        "malformedLocation": "สถานที่มีรูปแบบผิดพลาด",
+        "malformedPublicKey": "คีย์สาธารณะมีรูปแบบผิดพลาด",
+        "malformedRequest": "คำขอมีรูปแบบผิดพลาด",
+        "malformedSubscription": "การสมัครสมาชิกมีรูปแบบผิดพลาด",
+        "maximumFriends": "คุณมีเพื่อนถึงจำนวนสูงสุด {count} คนแล้ว",
+        "maximumPinnedPosts": "คุณสามารถปักหมุดโพสต์ของคุณเองได้สูงสุด {count} โพสต์",
+        "maximumScheduledDays": "โพสต์สามารถกำหนดเวลาล่วงหน้าได้สูงสุด {count} วัน",
+        "messageTooLong": "ข้อความนั้นยาวเกินไป",
+        "methodNotAllowed": "ไม่อนุญาตวิธีนี้",
+        "missingQuery": "ไม่มีคำค้นหา",
+        "noLoginInProgressPleaseStartAgain": "ไม่มีการเข้าสู่ระบบที่กำลังดำเนินการอยู่ กรุณาเริ่มใหม่",
+        "noSuchMessage": "ไม่มีข้อความดังกล่าว",
+        "noValidHandles": "ไม่พบชื่อผู้ใช้ที่ถูกต้องที่นี่ - ต้องมีรูปแบบเหมือน user@domain",
+        "notATopic": "ไม่ใช่หัวข้อ",
+        "notAccountPassword": "นั่นไม่ใช่รหัสผ่านบัญชีของคุณ",
+        "notAllowed": "ไม่อนุญาต",
+        "notAuthorized": "ไม่ได้รับอนุญาต",
+        "notCurrentPassword": "นั่นไม่ใช่รหัสผ่านปัจจุบันของคุณ",
+        "notFound": "ไม่พบ",
+        "notFriendsWithThatUser": "ไม่ได้เป็นเพื่อนกับผู้ใช้นั้น",
+        "notLoggedIn": "ยังไม่ได้เข้าสู่ระบบ",
+        "notSubscribedToThatRelay": "ยังไม่ได้สมัครสมาชิกรีเลย์นั้น",
+        "notYourPost": "ไม่ใช่โพสต์ของคุณ",
+        "notYourRequest": "ไม่ใช่คำขอของคุณ",
+        "nothingToTranslate": "ไม่มีอะไรให้แปล",
+        "oneOfYourFilesFailedToUploadPleaseTryAgain": "ไฟล์หนึ่งของคุณอัปโหลดล้มเหลว กรุณาลองใหม่",
+        "onlyAPostCarriesMediaToClassify": "มีเพียงโพสต์เท่านั้นที่บรรจุสื่อให้จัดประเภท",
+        "passwordMaximum": "ใช้ตัวอักษรได้สูงสุด 72 ตัว",
+        "passwordMinimum": "ใช้ตัวอักษรอย่างน้อย 8 ตัว",
+        "pollNeedsOptions": "โพลต้องมีตัวเลือกที่แตกต่างกันอย่างน้อย {count} ตัวเลือก",
+        "pollNotFound": "ไม่พบโพล",
+        "postHasNoContent": "โพสต์ไม่มีเนื้อหา",
+        "postNotFound": "ไม่พบโพสต์",
+        "postTextIsTooLong": "ข้อความโพสต์ยาวเกินไป",
+        "pushIsNotConfiguredOnThisServer": "ยังไม่ได้ตั้งค่าการแจ้งเตือนพุชบนเซิร์ฟเวอร์นี้",
+        "realDomain": "ชี้สิ่งนี้ไปที่ชื่อโดเมนจริง",
+        "reasonIsTooLong": "เหตุผลยาวเกินไป",
+        "reportNotFound": "ไม่พบรายงาน",
+        "requestBodyTooLarge": "เนื้อหาคำขอมีขนาดใหญ่เกินไป",
+        "serverError": "ข้อผิดพลาดของเซิร์ฟเวอร์",
+        "signalTooLarge": "สัญญาณใหญ่เกินไป",
+        "siteUpgrading": "เว็บไซต์กำลังปรับปรุง กรุณาลองใหม่อีกครั้งในอีกไม่กี่นาที",
+        "thatAccountIsOnAnotherServerSoItCannotModerateThisOne": "บัญชีนั้นอยู่บนเซิร์ฟเวอร์อื่น จึงไม่สามารถกลั่นกรองเซิร์ฟเวอร์นี้ได้",
+        "thatAddressIsTooLong": "ที่อยู่นั้นยาวเกินไป",
+        "thatDoesNotLookLikeAServerName": "นั่นดูไม่เหมือนชื่อเซิร์ฟเวอร์",
+        "thatEntityIsNotBanned": "รายการนั้นไม่ได้ถูกแบน",
+        "thatIsAFediverseAccountFollowItInstead": "นั่นคือบัญชี Fediverse - ให้ติดตามแทน",
+        "thatIsNotAFediverseAccount": "นั่นไม่ใช่บัญชี Fediverse",
+        "thatIsNotALanguageThisSiteHas": "นั่นไม่ใช่ภาษาที่เว็บไซต์นี้มี",
+        "thatIsThisServer": "นั่นคือเซิร์ฟเวอร์นี้",
+        "thatIsTooLongToConvert": "นั่นยาวเกินไปที่จะแปลง",
+        "thatPasswordResetLinkIsInvalidOrHasExpired": "ลิงก์รีเซ็ตรหัสผ่านนั้นไม่ถูกต้องหรือหมดอายุแล้ว",
+        "thatReportHasNoDeletableContent": "รายงานนั้นไม่มีเนื้อหาที่ลบได้",
+        "thatUserHasAlreadySentYouAFriendRequestAcceptItInstead": "ผู้ใช้นั้นได้ส่งคำขอเป็นเพื่อนถึงคุณแล้ว - ให้ยอมรับแทน",
+        "thatUserHasReachedTheirFriendLimit": "ผู้ใช้นั้นมีเพื่อนถึงขีดจำกัดแล้ว",
+        "thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted": "ผู้ใช้นั้นมีเพื่อนถึงขีดจำกัดแล้ว จึงไม่สามารถยอมรับคำขอนี้ได้",
+        "thatUserIsAlreadyBanned": "ผู้ใช้นั้นถูกแบนอยู่แล้ว",
+        "thatUserIsNotBanned": "ผู้ใช้นั้นไม่ได้ถูกแบน",
+        "thatVoteCouldNotBeRecorded": "ไม่สามารถบันทึกโหวตนั้นได้",
+        "thePostBeingQuotedNoLongerExists": "โพสต์ที่ถูกอ้างอิงไม่มีอยู่แล้ว",
+        "thePublishTimeHasToBeInTheFuture": "เวลาเผยแพร่ต้องเป็นเวลาในอนาคต",
+        "theyAreNoLongerInThisConversation": "พวกเขาไม่ได้อยู่ในการสนทนานี้แล้ว",
+        "thisAccountCanNoLongerLogIn": "บัญชีนี้ไม่สามารถเข้าสู่ระบบได้อีกต่อไป",
+        "thisAccountCanTBeDeleted": "ไม่สามารถลบบัญชีนี้ได้",
+        "thisContentCanTBeReported": "ไม่สามารถรายงานเนื้อหานี้ได้",
+        "thisContentHasAlreadyBeenReviewedByAModerator": "เนื้อหานี้ได้รับการตรวจสอบโดยผู้กลั่นกรองแล้ว",
+        "thisConversationCanTTakeEncryptedMessages": "การสนทนานี้ไม่สามารถรับข้อความเข้ารหัสได้",
+        "thisMessageCouldNotBeVerified": "ไม่สามารถยืนยันข้อความนี้ได้",
+        "thisMessageIsTooLongToTranslate": "ข้อความนี้ยาวเกินไปที่จะแปล",
+        "thisPostIsTooLongToTranslate": "โพสต์นี้ยาวเกินไปที่จะแปล",
+        "tooManyAttemptsPleaseTryAgainLater": "มีความพยายามมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManyAttemptsPleaseWaitAMoment": "มีความพยายามมากเกินไป กรุณารอสักครู่",
+        "tooManyAvatarChangesInAShortTimePleaseTryAgainLater": "มีการเปลี่ยนรูปประจำตัวมากเกินไปในเวลาอันสั้น กรุณาลองใหม่ภายหลัง",
+        "tooManyChangesAtOncePleaseWaitAMoment": "มีการเปลี่ยนแปลงมากเกินไปในครั้งเดียว กรุณารอสักครู่",
+        "tooManyChecksPleaseWaitAMoment": "มีการตรวจสอบมากเกินไป กรุณารอสักครู่",
+        "tooManyEmailChangesInAShortTimePleaseTryAgainLater": "มีการเปลี่ยนอีเมลมากเกินไปในเวลาอันสั้น กรุณาลองใหม่ภายหลัง",
+        "tooManyFollowRequestsPleaseWaitABitAndTryAgain": "มีคำขอติดตามมากเกินไป กรุณารอสักครู่แล้วลองใหม่",
+        "tooManyFollowsPleaseWaitABitAndTryAgain": "มีการติดตามมากเกินไป กรุณารอสักครู่แล้วลองใหม่",
+        "tooManyLoginAttemptsForThisAccountPleaseTryAgainLater": "มีความพยายามเข้าสู่ระบบมากเกินไปสำหรับบัญชีนี้ กรุณาลองใหม่ภายหลัง",
+        "tooManyLoginAttemptsPleaseTryAgainLater": "มีความพยายามเข้าสู่ระบบมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain": "มีการส่งข้อความมากเกินไปในเวลาอันสั้น กรุณารอสักครู่แล้วลองใหม่",
+        "tooManyPasswordResetAttemptsPleaseTryAgainLater": "มีความพยายามรีเซ็ตรหัสผ่านมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManyPasswordResetRequestsPleaseTryAgainLater": "มีคำขอรีเซ็ตรหัสผ่านมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManyReportsPleaseTryAgainLater": "มีรายงานมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManyRequestsPleaseSlowDown": "มีคำขอมากเกินไป กรุณาชะลอลง",
+        "tooManyRequestsPleaseTryAgainLater": "มีคำขอมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManySearchesInAShortTime": "มีการค้นหามากเกินไปในเวลาอันสั้น",
+        "tooManySearchesPleaseSlowDown": "มีการค้นหามากเกินไป กรุณาชะลอลง",
+        "tooManySignups": "มีการสมัครสมาชิกมากเกินไปจากเครือข่ายของคุณ กรุณาลองใหม่ภายหลัง",
+        "tooManyTranslationsInAShortTimePleaseWaitABitAndTryAgain": "มีการแปลมากเกินไปในเวลาอันสั้น กรุณารอสักครู่แล้วลองใหม่",
+        "tooManyVerificationEmailsSentPleaseTryAgainLater": "มีการส่งอีเมลยืนยันมากเกินไป กรุณาลองใหม่ภายหลัง",
+        "tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain": "มีการอัปโหลดวิดีโอ/เสียงมากเกินไปในเวลาอันสั้น กรุณารอสักครู่แล้วลองใหม่",
+        "translationIsNotAvailableOnThisServer": "การแปลไม่พร้อมใช้งานบนเซิร์ฟเวอร์นี้",
+        "translationIsNotAvailableRightNowPleaseTryAgainLater": "การแปลไม่พร้อมใช้งานในขณะนี้ กรุณาลองใหม่ภายหลัง",
+        "twoFactorAuthenticationIsNotOn": "ยังไม่ได้เปิดการยืนยันตัวตนสองขั้นตอน",
+        "unableToCallThisUser": "ไม่สามารถโทรหาผู้ใช้นี้ได้",
+        "unableToFollowThatAccount": "ไม่สามารถติดตามบัญชีนั้นได้",
+        "unableToLikeThisPost": "ไม่สามารถถูกใจโพสต์นี้ได้",
+        "unableToOpenThisConversation": "ไม่สามารถเปิดการสนทนานี้ได้",
+        "unableToReplyToThisPost": "ไม่สามารถตอบกลับโพสต์นี้ได้",
+        "unableToRepostThis": "ไม่สามารถรีโพสต์สิ่งนี้ได้",
+        "unableToSendFriendRequest": "ไม่สามารถส่งคำขอเป็นเพื่อนได้",
+        "unableToSendMessage": "ไม่สามารถส่งข้อความได้",
+        "unableToVoteOnThisPoll": "ไม่สามารถโหวตในโพลนี้ได้",
+        "unknownConversion": "การแปลงที่ไม่รู้จัก",
+        "unknownTopicType": "ประเภทหัวข้อที่ไม่รู้จัก",
+        "unlockTheConversationToReportAnEncryptedMessage": "ปลดล็อกการสนทนาเพื่อรายงานข้อความที่เข้ารหัส",
+        "uploadMissing": "การอัปโหลดนั้นไม่มาถึง กรุณาลองใหม่",
+        "uploadTooLarge": "การอัปโหลดของคุณใหญ่เกินไป ขนาดอัปโหลดรวมสูงสุดคือ {size}B",
+        "uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater": "การอัปโหลดไม่พร้อมใช้งานชั่วคราว - เซิร์ฟเวอร์มีพื้นที่จัดเก็บเหลือน้อย กรุณาลองใหม่ภายหลัง",
+        "userNotFound": "ไม่พบผู้ใช้",
+        "usernameOrEmailTaken": "ชื่อผู้ใช้หรืออีเมลนั้นถูกใช้ไปแล้ว",
+        "validHttpLink": "ระบุลิงก์แบบ http:// หรือ https://",
+        "writeSomethingFirst": "เขียนอะไรบางอย่างก่อน",
+        "youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst": "คุณมีฉบับร่างและโพสต์ที่กำหนดเวลาแล้ว 50 รายการ - กรุณาเผยแพร่หรือทิ้งบางส่วนก่อน",
+        "youCanTBlockYourself": "คุณไม่สามารถบล็อกตัวเองได้",
+        "youCanTMessageThisUser": "คุณไม่สามารถส่งข้อความถึงผู้ใช้นี้ได้",
+        "youCanTMessageYourself": "คุณไม่สามารถส่งข้อความถึงตัวเองได้",
+        "youCanTRepostYourOwnPost": "คุณไม่สามารถรีโพสต์โพสต์ของตัวเองได้",
+        "youCanTSendAFriendRequestToYourself": "คุณไม่สามารถส่งคำขอเป็นเพื่อนถึงตัวเองได้",
+        "youReAlreadyFriendsWithThatUser": "คุณเป็นเพื่อนกับผู้ใช้นั้นอยู่แล้ว",
+        "youReDoingThatVeryQuicklyPleaseWaitAMoment": "คุณกำลังทำสิ่งนั้นเร็วมาก กรุณารอสักครู่",
+        "youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain": "คุณกำลังโพสต์เร็วมาก กรุณารอสักครู่แล้วลองใหม่",
+        "youVeAlreadyReportedThis": "คุณได้รายงานสิ่งนี้แล้ว",
+        "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "คุณส่งข้อความไปมากแล้วโดยไม่มีการตอบกลับ - รอให้พวกเขาตอบก่อนที่จะส่งเพิ่มเติม",
+        "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "ตัวแก้ไขของคุณล้าสมัยแล้ว กรุณารีเฟรชหน้านี้แล้วลองใหม่"
+    }
 }

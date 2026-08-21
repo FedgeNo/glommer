@@ -1,79 +1,1781 @@
 {
-    "PollOptionVotes":{"votes":{"one":"kura 1","other":"kura {count}"}},
-    "LoginPrompt":{"reply":{"before":"","link":"Ingia","after":" ili kujibu."},"post":{"before":"","link":"Ingia","after":" ili kuchapisha."}},
-    "SetupForm":{"siteLegend":"Tovuti","siteURLLabel":"URL ya Tovuti","siteTitleLabel":"Jina la Tovuti","mailFromAddressLabel":"Anwani ya Mtumaji wa Barua","serverNameConfirmedLabel":"Nimeweka \"ServerName {host}\" na \"UseCanonicalName On\" katika usanidi wa seva yangu ya wavuti (huangaliwa tu ikiwa jaribio la moja kwa moja haliwezi kukamilika - tazama sehemu ya HTTPS katika README.md)","databaseLegend":"Hifadhidata","databaseHostLabel":"Mwenyeji wa Hifadhidata","databasePortLabel":"Mlango wa Hifadhidata","databaseNameLabel":"Jina la Hifadhidata","databaseAdminUsernameLabel":"Jina la Mtumiaji la Msimamizi wa Hifadhidata","databaseAdminPasswordLabel":"Nenosiri la Msimamizi wa Hifadhidata","webSocketTLSLegend":"TLS ya WebSocket (Si Lazima)","certificatePathLabel":"Njia ya Cheti","certificatePathPlaceholder":"Acha wazi ili itengenezwe kiotomatiki kwa mkcert","keyPathLabel":"Njia ya Ufunguo","keyPathPlaceholder":"Acha wazi ili utengenezwe kiotomatiki kwa mkcert","botProtectionLegend":"Ulinzi Dhidi ya Roboti (Si Lazima)","turnstileSiteKeyLabel":"Ufunguo wa Tovuti wa Cloudflare Turnstile","turnstileSiteKeyPlaceholder":"Acha wazi ili kuruka","turnstileSecretKeyLabel":"Ufunguo wa Siri wa Cloudflare Turnstile","turnstileSecretKeyPlaceholder":"Acha wazi ili kuruka","submit":"Sanidi"},
-    "MessageKeyPassphraseForm":{"currentPassphraseLabel":"Kaulisiri ya Sasa","newPassphraseLabel":"Kaulisiri Mpya","confirmNewPassphraseLabel":"Thibitisha Kaulisiri Mpya","accountPasswordLabel":"Nenosiri la Akaunti","submit":"Badilisha Kaulisiri"},
-    "PasswordResetForm":{"legend":"Chagua Nenosiri Jipya","newPasswordLabel":"Nenosiri Jipya","newPasswordPlaceholder":"Angalau herufi 8","confirmPasswordLabel":"Thibitisha Nenosiri Jipya","submit":"Weka Upya Nenosiri"},
-    "PasswordResetRequestForm":{"legend":"Weka Upya Nenosiri Lako","emailLabel":"Barua Pepe","submit":"Tuma Kiungo cha Kuweka Upya"},
-    "EmailRevertForm":{"submit":"Rudisha Mabadiliko ya Barua Pepe"},
-    "EmailVerifyForm":{"submit":"Thibitisha Anwani ya Barua Pepe"},
-    "EmailDigestResubscribeForm":{"submit":"Washa Tena"},
-    "EmailDigestSetting":{"label":"Nitumie kwa barua pepe nilichokosa ninapokuwa mbali kwa muda"},
-    "RememberedDevice":{"unknownDevice":"Kifaa kisichojulikana","browserOnOS":"{browser} kwenye {os}","thisDevice":" (kifaa hiki)","lastUsed":{"before":"Kilichotumika mwisho ","after":""}},
-    "LogoutEverywherePanel":{"explanation":"Maliza kila kipindi kinachotumika na usahau kila kifaa kilichokumbukwa. Utaondolewa kwenye vivinjari vyote, pamoja na hiki."},
-    "LogoutEverywhereButton":{"label":"Ondoka Kila Mahali"},
-    "GoogleAccountDeleteButton":{"label":"Thibitisha kwa Google ili Kufuta"},
-    "GoogleSignInButton":{"label":"Endelea kwa Google"},
-    "ProfileEditButton":{"ariaLabel":"Hariri Wasifu"},
-    "PushNotificationSetting":{"explanation":"Pata arifa kwenye kifaa hiki hata tovuti ikiwa haijafunguliwa. Hili ni chaguo la kila kivinjari - liwashe popote unapotaka kufikiwa.","label":{"off":"Washa kwenye Kifaa Hiki","on":"Zima kwenye Kifaa Hiki"},"unsupported":"Arifa za moja kwa moja hazitumiki katika kivinjari hiki"},
-    "LoginForm":{"legend":"Ingia","identifier":"Jina la Mtumiaji au Barua Pepe","password":"Nenosiri","rememberMe":"Nikumbuke","submit":"Ingia"},
-    "SignupForm":{"legend":"Fungua Akaunti","usernameLabel":"Jina la Mtumiaji","usernamePlaceholder":"Herufi ndogo, nambari, na _","emailLabel":"Barua Pepe","emailPlaceholder":"Anwani halali ya barua pepe","displayName":"Jina la Kuonyeshwa (Si Lazima)","bioLabel":"Wasifu Mfupi (Si Lazima)","bioPlaceholder":"Wasifu mfupi - #lebo, @marejeo, na viungo vitabofya","passwordLabel":"Nenosiri","passwordPlaceholder":"Nenosiri: Angalau herufi 8","rememberMe":"Nikumbuke","submit":"Jisajili"},
-    "PasswordChangeForm":{"legend":"Badilisha Nenosiri Lako","currentPassword":"Nenosiri la Sasa","newPasswordLabel":"Nenosiri Jipya","newPasswordPlaceholder":"Angalau herufi 8","confirmPassword":"Thibitisha Nenosiri Jipya","submit":"Badilisha Nenosiri"},
-    "EmailChangeForm":{"legend":"Badilisha Anwani Yako ya Barua Pepe","newEmail":"Anwani Mpya ya Barua Pepe","currentPassword":"Nenosiri la Sasa","notice":"Utahitaji kuthibitisha anwani mpya kabla ya kuendelea kutumia tovuti.","submit":"Badilisha Barua Pepe"},
-    "AccountDeleteForm":{"legend":"Futa Akaunti Yako","warning":"Hii itafuta kabisa akaunti, machapisho, na ujumbe wako. Haiwezi kutenduliwa.","currentPassword":"Nenosiri la Sasa","submit":"Futa Akaunti"},
-    "AccountMigrationForm":{"legend":"Hamia Seva Nyingine","movedNotice":"Akaunti hii imehamia {destination}. Wafuasi wako waliombwa wakufuate huko.","explanation":"Wafuasi wako wanaombwa wakufuate kwenye akaunti mpya. Machapisho yako yanabaki hapa - anwani za vitu ni za seva iliyovitengeneza, kwa hiyo haziwezi kuhamishwa.","addressNotice":"Akaunti unayohamia lazima kwanza iorodheshe hii chini ya \"pia inajulikana kama\". Anwani yako hapa ni {address}.","movedToLabel":"Hamia","movedToPlaceholder":"https://example.social/users/you","aliasesLegend":"Pia Inajulikana Kama","aliasesExplanation":"Akaunti za kwingine ambazo pia ni zako. Kuorodhesha moja hapa huruhusu akaunti hiyo kuhamia hii - hii ni ruhusa, si uhamisho wenyewe. Anwani moja kwa kila mstari.","aliasesLabel":"Akaunti Zako Nyingine","aliasesPlaceholder":"https://example.social/users/you","submit":"Hifadhi"},
-    "TwoFactorForm":{"legend":"Weka Msimbo Wako wa Uthibitishaji","explanation":"Tumekutumia msimbo wa uthibitishaji kwa barua pepe. Uweke hapa chini, au tumia mmoja wa misimbo yako ya urejeshaji, ili kukamilisha kuingia.","explanationEmailFailed":"Hatukuweza kutuma msimbo wako wa uthibitishaji kwa barua pepe sasa. Weka mmoja wa misimbo yako ya urejeshaji ili kukamilisha kuingia.","code":"Msimbo wa Uthibitishaji","submit":"Thibitisha"},
-    "TwoFactorSettingsForm":{"legend":{"on":"Uthibitishaji wa Hatua Mbili Umewashwa","off":"Uthibitishaji wa Hatua Mbili Umezimwa"},"explanation":{"on":"Unapoingia, tutakutumia kwa barua pepe msimbo wa uthibitishaji ambao lazima uweke ili kukamilisha kuingia. Ikiwa barua haikufikii, mmoja wa misimbo yako ya urejeshaji utakuingiza badala yake.","off":"Ongeza hatua ya pili wakati wa kuingia: tutakutumia kwa barua pepe msimbo wa uthibitishaji ambao lazima uweke, hivyo nenosiri pekee halitoshi kuingia. Utapata misimbo ya urejeshaji ya matumizi moja ya kuhifadhi iwapo barua haikufikii."},"currentPassword":"Nenosiri la Sasa","submit":{"on":"Zima Uthibitishaji wa Hatua Mbili","off":"Washa Uthibitishaji wa Hatua Mbili"},"regenerate":"Tengeneza Misimbo Mipya ya Urejeshaji","recoveryHeading":"Misimbo Yako ya Urejeshaji","recoveryNote":"Hifadhi hii mahali salama sasa - haitaonyeshwa tena. Kila mmoja unakuingiza mara moja wakati barua ya uthibitishaji haikufikii, na kutengeneza misimbo mipya hubadilisha hii yote.","toast":{"on":"Uthibitishaji wa hatua mbili sasa umewashwa.","off":"Uthibitishaji wa hatua mbili sasa umezimwa.","regenerated":"Misimbo mipya ya urejeshaji imetengenezwa. Ya zamani haifanyi kazi tena."}},
-    "VerificationNotice":{"instructions":"Tafadhali angalia kikasha chako na ubofye kiungo cha uthibitishaji tulichotuma ili kuthibitisha anwani yako ya barua pepe. Usipokiona, angalia folda ya taka."},
-    "VerificationResendButton":{"label":"Tuma Tena Barua ya Uthibitishaji"},
-    "MailSettingsForm":{"legend":"Barua Zinazotumwa","fromAddressLabel":"Anwani ya Kutoka","fromAddressPlaceholder":"Hakuna barua inayoweza kutumwa mpaka hii iwekwe","fromNameLabel":"Jina la Mtumaji","hostLabel":"Mwenyeji wa SMTP","portLabel":"Mlango wa SMTP","usernameLabel":"Jina la Mtumiaji la SMTP","passwordLabel":"Nenosiri la SMTP","passwordPlaceholder":{"set":"Nenosiri limewekwa - acha wazi ili kulihifadhi","unset":"Nenosiri la SMTP"},"encryptionLabel":"Usimbaji Fiche","encryptionOptions":{"tls":"TLS (STARTTLS, kwa kawaida mlango 587)","ssl":"SSL (TLS isiyo wazi, kwa kawaida mlango 465)","none":"Hakuna"},"explainer":"Acha mwenyeji wa SMTP wazi ili utume kwa mail() ya PHP badala yake (haipendekezwi - tazama sehemu ya ufikishaji katika README). Hakuna barua inayoweza kutumwa mpaka anwani ya \"kutoka\" iwekwe.","save":"Hifadhi"},
-    "MapSettingsForm":{"legend":"Vigae vya Ramani","notice":"Acha wazi kutumia OpenStreetMap. Kutumia mtoa huduma mwenye ufunguo, bandika kiolezo chake cha URL chenye {apiKey} halisi mahali ufunguo unapowekwa, pamoja na ufunguo na sifa hapa chini.","urlLabel":"Kiolezo cha URL ya Kigae","keyLabel":"Ufunguo wa API","keyPlaceholder":"Ufunguo wa API wa mtoa huduma wa vigae","attributionLabel":"Sifa","attributionPlaceholder":"© wachangiaji wa OpenStreetMap","save":"Hifadhi"},
-    "GoogleAuthSettingsForm":{"legend":"Kuingia kwa Google","clientIdLabel":"Kitambulisho cha Mteja","clientIdPlaceholder":"Kitambulisho cha mteja wa Google OAuth","secretLabel":"Siri ya Mteja","secretPlaceholder":{"set":"Siri ya mteja imewekwa - acha wazi ili kuihifadhi","unset":"Siri ya mteja wa Google OAuth"},"explainer":"Vyote vinahitajika ili \"Endelea kwa Google\" ionekane wakati wa kujisajili na kuingia. Katika mteja wako wa Google Cloud OAuth, weka URI iliyoidhinishwa ya kurejesha kuwa {url} - futa Kitambulisho cha Mteja ili kuizima.","save":"Hifadhi"},
-    "BotProtectionSettingsForm":{"turnstileLegend":"Cloudflare Turnstile","turnstileSiteKeyLabel":"Ufunguo wa Tovuti","turnstileSiteKeyPlaceholder":"Ufunguo wa tovuti wa Cloudflare Turnstile","turnstileSecretKeyLabel":"Ufunguo wa Siri","turnstileSecretKeyPlaceholder":{"set":"Ufunguo wa siri umewekwa - acha wazi ili kuuhifadhi","unset":"Ufunguo wa siri wa Cloudflare Turnstile"},"turnstileExplainer":"Funguo zote mbili zinahitajika ili CAPTCHA ionekane wakati wa kujisajili na kuingia. Futa ufunguo wa tovuti ili kuizima.","recaptchaLegend":"Google reCAPTCHA (Urejeshaji wa Akaunti Iliyofungwa)","recaptchaSiteKeyLabel":"Ufunguo wa Tovuti","recaptchaSiteKeyPlaceholder":"Ufunguo wa tovuti wa Google reCAPTCHA v2","recaptchaSecretKeyLabel":"Ufunguo wa Siri","recaptchaSecretKeyPlaceholder":{"set":"Ufunguo wa siri umewekwa - acha wazi ili kuuhifadhi","unset":"Ufunguo wa siri wa Google reCAPTCHA v2"},"recaptchaExplainer":"Funguo zote mbili zinahitajika. Zikiwekwa, akaunti inayofikia kikomo cha majaribio ya kuingia inaweza kurudi kwa kupita changamoto hii badala ya kusubiri kufunguliwa; zisipowekwa, ni lazima isubiri. Tumia reCAPTCHA v2 (\"Mimi si roboti\"). Futa ufunguo wa tovuti ili kuizima.","save":"Hifadhi"},
-    "OpenRouterSettingsForm":{"legend":"OpenRouter","notice":"Hutumiwa na vipengele vya AI kwenye tovuti (muhtasari wa mada zinazovuma, n.k.). Acha modeli wazi kutumia Free Models Router, ambayo OpenRouter huchagua bila mpangilio kutoka kwa zilizo bure wakati huo na haiwezi kamwe kusababisha gharama.","keyLabel":"Ufunguo wa API","keyPlaceholder":{"set":"Ufunguo wa API umewekwa - acha wazi ili kuuhifadhi","unset":"Ufunguo wa API wa OpenRouter"},"clearKeyLabel":"Ondoa ufunguo wa API uliohifadhiwa (huzima vipengele vya AI)","modelLabel":"Modeli","neverSpendLabel":"Usiruhusu kamwe hii kutumia pesa (inapendekezwa)","explainer":"Ulinzi ukiwashwa, kila ombi huweka bei yake kuwa sifuri, hivyo hushindwa kabisa badala ya kutumia modeli ya kulipia wakati hakuna mtoa huduma wa bure. Ondoa ufunguo wa API uliohifadhiwa ili kuzima kabisa vipengele vya AI.","save":"Hifadhi"},
-    "AboutSettingsForm":{"legend":"Kuhusu","description":"Maandishi wazi - mistari tupu hutenganisha aya. Aya ya kwanza itatumika kama maelezo ya tovuti.","save":"Hifadhi"},
-    "TermsSettingsForm":{"legend":"Masharti ya Huduma","description":"Maandishi wazi - mistari tupu hutenganisha aya.","save":"Hifadhi"},
-    "PrivacySettingsForm":{"legend":"Sera ya Faragha","description":"Maandishi wazi - mistari tupu hutenganisha aya.","save":"Hifadhi"},
-    "EmailDigestSettingsForm":{"legend":"Muhtasari wa Barua Pepe","fieldLabel":"Aya ya Kufunga","notice":"Huongezwa karibu na mwisho wa kila muhtasari, baada ya orodha ya alichokosa mwanachama. Maandishi wazi. Acha wazi ili kurudi kwenye maneno yanayokuja na programu hii.","save":"Hifadhi"},
-    "FaviconSettingsForm":{"legend":"Favicon","currentAlt":"Favicon ya sasa","save":"Pakia Favicon"},
-    "FrontPageImageSettingsForm":{"legend":"Picha ya Ukurasa wa Mbele","explainer":"Huonyeshwa na tovuti nyingine mtu anaposhiriki kiungo cha hii - metadata ya Open Graph pekee, kamwe si kwenye ukurasa. Hupunguzwa kuwa 1200×630. Bila picha, hakikisho la kiungo halitakuwa na picha.","currentAlt":"Picha ya sasa ya ukurasa wa mbele","save":"Pakia Picha"},
-    "CarouselAutoplayButton":{"name":"Cheza Kiotomatiki"},"CarouselNextButton":{"name":"Inayofuata"},"CarouselPrevButton":{"name":"Iliyotangulia"},"MediaFullscreenButton":{"name":"Skrini Nzima"},"ComposerFilesRemoveButton":{"name":"Ondoa Faili"},"NotificationDropdown":{"showAll":"Onyesha Zote"},"HelpSearch":{"placeholder":"Tafuta msaada…","noMatches":"Hakuna makala ya msaada iliyolingana na utafutaji wako."},"WelcomeBannerDismissButton":{"name":"Nimeelewa"},"StagedPostDiscardButton":{"name":"Tupa"},"StagedPostEditButton":{"name":"Hariri"},"StagedPostPublishButton":{"name":"Chapisha Sasa"},"LogoutButton":{"name":"Ondoka"},"AvatarUploadForm":{"submit":"Sasisha Picha ya Wasifu"},"BannedUserSearchBox":{"placeholder":"Tafuta watumiaji waliopigwa marufuku…"},"BannedUserSection":{"heading":"Watumiaji Waliopigwa Marufuku"},"SentFriendRequestSection":{"heading":"Maombi Yaliyotumwa (Yanasubiri Jibu)"},
-    "BannedTrendingEntity":{"bannedBy":{"before":"Imepigwa marufuku na {name} ","after":""},"reason":" - {reason}"},"BlockedServerCard":{"blockedBy":{"before":"Imezuiwa na {name} ","after":""},"deletedAccount":"akaunti iliyofutwa","reason":" - {reason}"},
-    "DateFormat":{"months":{"1":"Januari","2":"Februari","3":"Machi","4":"Aprili","5":"Mei","6":"Juni","7":"Julai","8":"Agosti","9":"Septemba","10":"Oktoba","11":"Novemba","12":"Desemba"},"shortMonths":{"1":"Jan","2":"Feb","3":"Mac","4":"Apr","5":"Mei","6":"Jun","7":"Jul","8":"Ago","9":"Sep","10":"Okt","11":"Nov","12":"Des"},"long":"{day} {month} {year}","short":"{day} {month} {year}","time":"{hour}:{minute}","dateAndTime":"{date} saa {time}","am":"","pm":"","clock":24},
-    "EnvironmentChecker":{"wsCannotConnect":"Haikuweza kuunganisha kwenye seva ya WebSocket katika 127.0.0.1:{port}{tls} ({error}). Iwashe kwanza: systemctl --user start glommer-websocket (tazama README.md kwa faili ya kitengo). Ikiwa imepata au kupoteza WS_TLS_CERT/WS_TLS_KEY, iwashe upya ili ilingane na .env.","wsOverTLS":" kupitia TLS","wsBadHandshake":"Huduma katika 127.0.0.1:{port} haikukamilisha salamu halali ya WebSocket - huenda kitu kingine badala ya bin/websocket-server.php kinasikiliza mlango huo.","wsNoPong":"Seva ya WebSocket ilikubali salamu lakini haikujibu ping - huenda imekwama au haifanyi kazi vizuri. Angalia kumbukumbu zake.","wsReachable":"Seva ya WebSocket inafikika na inajibu katika 127.0.0.1:{port}"},
-    "EntityType":{"singular":{"hashtag":"Lebo","person":"Mtu","org":"Shirika","gpe":"Mahali","loc":"Eneo","fac":"Alama ya Mahali","product":"Bidhaa","event":"Tukio","work_of_art":"Kazi","law":"Sheria","language":"Lugha","norp":"Kundi"},"plural":{"hashtag":"Lebo","person":"Watu","org":"Mashirika","gpe":"Maeneo","loc":"Maeneo","fac":"Alama za Mahali","product":"Bidhaa","event":"Matukio","work_of_art":"Kazi","law":"Sheria","language":"Lugha","norp":"Makundi"}},
-    "FriendRemoveButton":{"name":"Ondoa Rafiki"},"FriendRequestAcceptButton":{"name":"Kubali"},"FriendRequestDenyButton":{"name":"Kataa"},"UserFollowButton":{"follow":"Fuata","unfollow":"Acha Kufuata"},"UserBlockButton":{"name":"Zuia"},"UserUnblockButton":{"name":"Ondoa Kizuizi"},"OtherUser":{"message":"Ujumbe"},
-    "MainNavigation":{"toggleLabel":"Menyu","loggedInAs":"Umeingia kama {name}","friendsFeed":"Mlisho wa Marafiki","relayFeed":"Mlisho wa Relay","users":"Watumiaji","tags":"Lebo","topics":"Mada","map":"Ramani","locations":"Maeneo","search":"Tafuta","messages":"Ujumbe","bookmarks":"Alamisho","help":"Msaada","about":"Kuhusu","login":"Ingia","signup":"Jisajili","friends":"Marafiki","drafts":"Rasimu na Yaliyopangwa","userSettings":"Mipangilio ya Mtumiaji","modSettings":"Mipangilio ya Wasimamizi","adminSettings":"Mipangilio ya Msimamizi"},
-    "LogoutForm":{"submit":"Ondoka"},"User":{"joined":"Alijiunga {date}"},"FriendRequestButton":{"add":"Ongeza Rafiki","cancel":"Ghairi Ombi"},"StagedPostWhen":{"scheduled":"Imepangwa kwa {when}","draft":"Rasimu - huchapishwa tu unaposema"},
-    "MessageTranslateButton":{"name":"Tafsiri Ujumbe Huu"},"MessageTranslationNotice":{"heading":"Kuhusu Kutafsiri Ujumbe","body":"Ili kutafsiri ujumbe, maandishi yake hutumwa kwenye seva hii na kutafsiriwa hapa. Hakuna kinachohifadhiwa: tafsiri haiandikwi kwenye hifadhidata na ujumbe wenyewe haubadiliki. Lakini ujumbe uliotafsiriwa hivi umesomwa na seva, kwa hiyo haujasimbwa kutoka mwisho hadi mwisho kama ujumbe usiotafsiriwa. Ujumbe unaopokea pekee unaweza kutafsiriwa, na ni unapouliza tu.","confirm":"Tafsiri","cancel":"Si Sasa"},
-    "MessageKeySetupForm":{"resetWarning":"Umesahau kaulisiri yako? Kuweka upya hutengeneza funguo mpya chini ya kaulisiri mpya - lakini ujumbe uliosimbwa kwa funguo za zamani hautaweza kusomwa tena na mtu yeyote.","requirements":"Angalau herufi 12, na si nenosiri la akaunti yako - hilo hutumwa kwa seva hii, na kaulisiri yako haipaswi kamwe kutumwa.","passphraseLabel":"Kaulisiri","resetPassphraseLabel":"Kaulisiri Mpya","confirmLabel":"Thibitisha Kaulisiri","accountPasswordLabel":"Nenosiri la Akaunti","submitLabel":"Washa Ujumbe Uliosimbwa","resetSubmitLabel":"Weka Upya Funguo za Usimbaji"},
-    "EncryptedMessagesSetting":{"explanation":"Ujumbe uliosimbwa kutoka mwisho hadi mwisho hufungwa na kufunguliwa katika kivinjari chako: seva hii huupitisha na kuuhifadhi bila kuweza kuusoma. Ufunguo wako unalindwa na kaulisiri, na kaulisiri hiyo hiyo hufungua ujumbe wako kutoka kivinjari chochote. Mazungumzo husimbwa wote wawili wakishawasha kipengele hiki; ujumbe kwa watu wa seva nyingine hubaki bila usimbaji, kwa sababu shirikisho haliwezi kuubeba vinginevyo.","noRecovery":"Hakuna njia ya kurejesha kaulisiri iliyopotea - hata kwa msimamizi. Kuipoteza kunamaanisha kupoteza ujumbe wako uliosimbwa.","enabledStatus":"Ujumbe uliosimbwa umewashwa."},
-    "MessagePrivacyButton":{"encrypted":{"label":"Umesimbwa","explanation":"Ujumbe katika mazungumzo haya umesimbwa kutoka mwisho hadi mwisho: hufunguliwa kwa kaulisiri yako na kusomwa katika vivinjari vyako, na seva hii huhifadhi maandishi yaliyosimbwa. Linganisha msimbo wa usalama chini ya mazungumzo na mtu mwingine kuhakikisha hakuna aliye kati yenu. Ujumbe uliotumwa kabla ya usimbaji kuwashwa hubaki ukisomeka kama ulivyokuwa."},"awaiting-theirs":{"label":"Haujasimbwa","explanation":"Ujumbe hapa utasimbwa kutoka mwisho hadi mwisho mara {handle} atakapowasha ujumbe uliosimbwa katika mipangilio yake."},"awaiting-yours":{"label":"Haujasimbwa","explanation":"Ujumbe hapa haujasimbwa kutoka mwisho hadi mwisho. Washa ujumbe uliosimbwa katika Mipangilio ili kulinda mazungumzo haya."},"federated":{"label":"Haujasimbwa","explanation":"{handle} yuko kwenye seva nyingine. Ujumbe katika mazungumzo haya huhifadhiwa kwenye seva hiyo pamoja na hii, na msimamizi wake anaweza kuusoma - itifaki kati ya seva haina njia ya kuusimba. Weka mambo nyeti katika mazungumzo ya tovuti hii."}},
-    "RemoteFollowsForm":{"legend":"Fuata Akaunti za Fediverse","notice":"Bandika jina moja au zaidi, kwa mfano @user@example.social - kitenganishi chochote kinafanya kazi.","handlesLabel":"Majina ya Fediverse ya Kufuata","submit":"Fuata","statusPending":"inasubiri","statusAccepted":"imekubaliwa"},
-    "ServerBlockForm":{"legend":"Zuia Seva","description":"Hukataa kila kitu kutoka seva hiyo na kila kilicho chini yake: hakuna uwasilishaji unaoingia wala kutoka, na ufuatiliaji uliopo pande zote mbili huondolewa.","serverLabel":"Seva","serverPlaceholder":"example.social","reasonLabel":"Sababu","reasonPlaceholder":"Kwa nini seva hii imezuiwa","submit":"Zuia Seva"},
-    "VideoCallTestPanel":{"intro":"Huendesha sehemu za usanidi wa simu zinazoweza kuangaliwa kutoka kivinjari kimoja. Kila kitu hadi muunganisho halisi wa moja kwa moja kinaweza kujaribiwa hapa; kuunganisha na mtu mwingine kunamhitaji mtu huyo."},"VideoCallTestButton":{"label":"Endesha Ukaguzi"},
-    "WebSocketStatus":{"ok":"Seva ya WebSocket: Inaendesha","failed":"Seva ya WebSocket: {detail}","clientTesting":"Muunganisho wa kivinjari: Unajaribiwa…","clientConnecting":"Muunganisho wa kivinjari: Unaunganishwa…","clientConnected":"Muunganisho wa kivinjari: Umeunganishwa","clientDisconnecting":"Muunganisho wa kivinjari: Unakatwa…","clientNotConnected":"Muunganisho wa kivinjari: Haujaunganishwa"},
-    "UploadWorkerStatus":{"running":"Huduma ya mfanyakazi: Inaendesha","stopped":"Huduma ya mfanyakazi: Haifanyi kazi - vipakizi vilivyoandaliwa havitageuzwa mpaka iwashwe upya","unknown":"Huduma ya mfanyakazi: Haijulikani - ama systemctl haipatikani kwenye mwenyeji huyu, au SELinux inakataa swali la hali la seva ya wavuti (endesha bin/install.php kama root kurekebisha)","queue":"Foleni: {staging} zinaandaliwa, {pending} zinasubiri, {processing} zinachakatwa"},
-    "TrendingTimerStatus":{"running":"Kipima muda cha zinazovuma: Kinaendesha","stopped":"Kipima muda cha zinazovuma: Hakifanyi kazi - mada zinazovuma zitasasishwa tu kupitia kujirekebisha wakati wa kusoma (EntityRanker::refreshIfStale()), si kwa ratiba. Endesha bin/install.php kama root kukisanidi.","unknown":"Kipima muda cha zinazovuma: Hakijulikani - ama systemctl haipatikani kwenye mwenyeji huyu, au SELinux inakataa swali la hali la seva ya wavuti (endesha bin/install.php kama root kurekebisha)"},
-    "Notification":{"postReady":"Midia yako imemaliza kuchakatwa na sasa imechapishwa","scheduledPostLive":"Chapisho lako lililopangwa sasa limechapishwa","uploadPartlyFailed":"Chapisho lako limechapishwa, lakini faili moja au zaidi hazikuweza kuchakatwa","uploadFailed":"Moja ya vipakizi vyako haikuweza kuchakatwa na haikuchapishwa","mailerFailed":"Uwasilishaji wa barua pepe umeshindwa - huduma ya barua huenda haifanyi kazi. Angalia usanidi wako wa barua.","mailFromNotConfigured":"Hakuna anwani ya \"kutoka\" iliyosanidiwa, hivyo barua pepe haziwezi kutumwa. Weka moja katika Mipangilio ya Msimamizi (sehemu ya Barua Zinazotumwa) au kupitia bin/install.php.","systemError":"Hitilafu ya seva imetokea. Angalia kumbukumbu ya hitilafu kwa maelezo.","passwordRemovedGoogle":"Nenosiri lako liliondolewa ulipoingia kwa Google. Tumia \"Umesahau Nenosiri\" ukitaka kuweka jipya.","like":"{name} alipenda chapisho lako","repost":"{name} alichapisha upya chapisho lako","reply":"{name} alijibu chapisho lako","friendRequest":"{name} alikutumia ombi la urafiki","friendAccepted":"{name} alikubali ombi lako la urafiki","message":"{name} alikutumia ujumbe","mention":"{name} alikutaja katika chapisho","follow":"{name} alikufuata kutoka seva nyingine","default":"{name} alifanya jambo"},
-    "NotificationList":{"emptyNotice":"Bado hakuna arifa."},"NotificationsNavLink":{"label":"Arifa","unseen":"Arifa ambazo hazijaonekana"},"NotificationTestPanel":{"intro":"Jitumie arifa ya majaribio (msimamizi). Inapaswa kuonekana mara moja kama ujumbe mfupi na katika orodha ya arifa.","button":"Tuma Arifa ya Majaribio","sending":"Inatuma…","sent":"Imetumwa!","failed":"Imeshindwa"},"MessageDot":{"label":"Ujumbe ambao haujasomwa"},"NavAlertDot":{"label":"Kuna jambo jipya kwenye menyu"},"Message":{"encrypted":"Ujumbe uliosimbwa","decryptionFailed":"Ujumbe huu ulisimbwa kwa funguo ambazo hazipo tena."},"MessageComposer":{"bodyLabel":"Ujumbe","bodyPlaceholder":"Andika ujumbe","send":"Tuma"},"MessageList":{"emptyNotice":"Bado hakuna ujumbe."},
-    "MessageKeyFingerprint":{"explanation":"Someaneni msimbo huu kwa njia nyingine - kwa sauti, ana kwa ana, au kwenye simu. Ukilingana pande zote mbili, hakuna aliye kati yenu.","changed":"Msimbo huu umebadilika tangu ulipouangalia. Hii hutokea mmoja wenu anapoweka upya funguo za usimbaji - lakini pia ndivyo mtu anayesoma mazungumzo haya angeonekana. Linganisha msimbo mpya naye kabla ya kuuamini.","verified":"Umeangalia msimbo huu."},"MessageKeyVerifyButton":{"label":"Weka kuwa Umethibitishwa"},"MessageUnlockForm":{"passphraseLabel":"Kaulisiri","passphrasePlaceholder":"Kaulisiri ya kufungua mazungumzo haya","submit":"Fungua"},"Conversation":{"lastMessage":{"before":"Ujumbe wa mwisho ","after":""}},"SensitiveMedia":{"summary":"Midia nyeti"},"SensitiveMediaSetting":{"toggle":"Onyesha Midia Nyeti kwa Chaguo-msingi"},
-    "Report":{"targetTypes":{"post":"Chapisho","message":"Ujumbe","user":"Mtumiaji"},"summary":{"before":"{type} #{id} imeripotiwa na ","after":""},"reasonLine":"Sababu: {reason}","banReporterLabel":"Mpige Marufuku Mtoa Ripoti","banReportedUserLabel":"Mpige Marufuku Mtumiaji Aliyeripotiwa","deleteLabel":"Futa {type}","reportedImageAlt":"Picha iliyoripotiwa","attachmentUnavailable":"Kiambatisho kilichoripotiwa hakipatikani tena.","viewAttachment":"Tazama Kiambatisho Kilichoripotiwa","missing":{"noSnapshot":"Maudhui yaliyoripotiwa hayapatikani tena.","unknownType":"Aina ya maudhui haijulikani."}},
-    "ReportList":{"emptyNotice":"Hakuna ripoti."},"ModQueueLinks":{"intro":"Foleni ni ndefu kiasi cha kusomwa ukurasa mmoja kwa wakati, hivyo zina kurasa zake.","reportsLabel":"Ripoti","bannedUsersLabel":"Watumiaji Waliopigwa Marufuku"},"ModerationActionList":{"emptyNotice":"Bado hakuna msimamizi aliyefanya chochote."},"BannedTrendingEntityList":{"emptyNotice":"Hakuna vipengele vinavyovuma vilivyopigwa marufuku."},"BlockedServerList":{"emptyNotice":"Hakuna seva zilizozuiwa."},"RelayCard":{"accepted":"Umejisajili ","waiting":"Inasubiri relay ikubali - umejisajili "},"RelayList":{"emptyNotice":"Hujajisajili kwa relay yoyote. Hakuna kinachofika hapa isipokuwa kile wanachama wanafuata."},"RelayFeedList":{"emptyNotice":"Bado hakuna kilichopita kwenye relay. Machapisho huonekana hapa seva za upande mwingine zinapoyachapisha."},
-    "RelaySubscribeForm":{"legend":"Jisajili kwa Relay","explainerOne":"Relay ni mkondo wa pamoja: kila chapisho la umma kutoka kila seva nyingine iliyojisajili hufika hapa, na ya seva hii hutoka kwenda kwa zote. Hivi ndivyo seva mpya inavyopata watu, kwa kuwa shirikisho kwa kawaida hubeba tu kile ambacho mtu hapa tayari anafuata.","explainerTwo":"Mzigo si wako kutabiri - ni chochote seva hizo zinachochapisha, wiki moja kimya na inayofuata maelfu ya machapisho kwa saa, na hifadhi, foleni ya uwasilishaji na foleni ya usimamizi vyote vinaubeba. Machapisho ya relay hayaingii katika milisho mikuu na ya marafiki; huenda kwenye Mlisho wa Relay, ambao watu hufungua kwa makusudi.","addressLabel":"Anwani ya Relay","addressPlaceholder":"https://relay.example/actor","submitLabel":"Jisajili"},
-    "RelayFollowObjectField":{"label":"Mtindo wa Usajili","options":{"public":"Fuata mkondo wa umma (relay nyingi zinatarajia hivi)","actor":"Fuata mhusika wa relay yenyewe"},"retryNotice":"Ikiwa relay haikubali kamwe, jiondoe na ujaribu mtindo mwingine - baadhi ya programu za relay hutambua mmoja tu."},
-    "SiteCounters":{"members":"Wanachama: {count} ({joined} walijiunga katika siku {days} zilizopita)","activeMembers":"Wanachama waliokuwa hapa katika siku {days} zilizopita: {count} ({posted} walichapisha)","posts":"Machapisho yaliyoandikwa hapa: {count} ({recent} katika siku {days} zilizopita)","deliveries":"Uwasilishaji wa shirikisho katika siku {days} zilizopita: {delivered} ulifika, {undeliverable} umekatiwa tamaa","queued":"Yanasubiri kutoka: {count} ({failing} tayari yamekataliwa angalau mara moja)","pendingReads":"Machapisho yanayosubiri kusomwa kutoka seva nyingine: {count}"},
-    "TestSuitePanel":{"intro":"Endesha majaribio ya tovuti na uone matokeo. Huchukua sekunde chache, hivyo hufunguka kwenye ukurasa wake.","runLabel":"Endesha Majaribio"},"HelpArticle":{"backLabel":"Rudi kwenye Msaada Wote"},"UserSearchList":{"noSuggestions":"Hakuna mapendekezo sasa - mapendekezo hutoka kwa marafiki wa watu ambao tayari ni marafiki zako. Tafuta hapo juu kumpata mtu kwa jina.","noMatches":"Hakuna mtu hapa anayelingana na hilo."},"UserModButton":{"make":"Fanya Msimamizi","remove":"Ondoa Usimamizi"},"UserUnbanButton":{"name":"Ondoa Marufuku"},"TrendingEntityBanButton":{"name":"Piga Marufuku"},"TrendingEntityUnbanButton":{"name":"Ondoa Marufuku"},"ReportDismissButton":{"name":"Ondoa"},"ReportedContentClassifyButton":{"name":"Weka kuwa Nyeti"},"ServerUnblockButton":{"name":"Ondoa Kizuizi"},"RelayUnsubscribeButton":{"name":"Jiondoe"},"RememberedDeviceRevokeButton":{"name":"Batilisha"},"TestResultsBadge":{"passing":"{suite}: Yanapita","failing":"{suite}: Yanashindwa"},
-    "PageTitle":{"about":"Kuhusu","adminBanned":"Watumiaji Waliopigwa Marufuku","adminModSettings":"Mipangilio ya Wasimamizi","adminReports":"Ripoti","adminSettings":"Mipangilio ya Msimamizi","adminTests":"Majaribio","authGoogleCallbackAccountDeleted":"Akaunti Imefutwa","authGoogleCallbackDeleteAccount":"Futa Akaunti","authGoogleCallbackLogin":"Ingia","bookmarks":"Alamisho","checkInbox":"Angalia Kikasha Chako","drafts":"Rasimu na Yaliyopangwa","draftsEditDraft":"Hariri Rasimu","draftsEditScheduled":"Hariri Chapisho Lililopangwa","forgotPassword":"Umesahau Nenosiri","friendsFeed":"Mlisho wa Marafiki","help":"Msaada","helpDescription":"Miongozo na majibu ya kutumia tovuti.","locations":"Maeneo","locationsDescription":"Machapisho kutoka maeneo yaliyo karibu nawe.","locationsPlaceDescription":"Machapisho karibu na {place}.","login":"Ingia","loginVerificationCode":"Msimbo wa Uthibitishaji","map":"Ramani","mapDescription":"Ramani ya machapisho kutoka duniani kote - pata watu na vitu karibu nawe.","messages":"Ujumbe","messagesWithUser":"Ujumbe na {name}","notifications":"Arifa","privacy":"Sera ya Faragha","quote":"Nukuu","relayFeed":"Mlisho wa Relay","relayFeedDescription":"Machapisho ya umma yanayofika kutoka relay ambazo seva hii imejisajili.","resetPassword":"Weka Upya Nenosiri","revertEmail":"Rudisha Mabadiliko ya Barua Pepe","search":"Tafuta","signup":"Jisajili","tags":"Lebo","tagsDescription":"Vinjari lebo zinazovuma na maarufu kwenye {siteTitle}.","tagsTagDescription":"Machapisho yenye lebo {tag} kwenye {siteTitle}.","terms":"Masharti ya Huduma","topics":"Mada","topicsDescription":"Mambo ambayo watu wanazungumzia kwenye {siteTitle} sasa.","topicsEntityDescription":"{typeLabel} - machapisho yanayotaja {entityTitle} kwenye {siteTitle}.","topicsTypeDescription":"{typePlural} ambazo watu wanazungumzia kwenye {siteTitle} sasa.","unsubscribe":"Muhtasari wa Barua Pepe","userFriends":"Marafiki wa {name}","userFriendsDescription":"Marafiki wa {name} kwenye {siteTitle}","userSettings":"Mipangilio ya Mtumiaji","users":"Watumiaji","verifyEmail":"Thibitisha Barua Pepe"},
-    "PostLikeButton":{"like":"Penda","unlike":"Ondoa Kupenda"},"PostPinButton":{"pin":"Bandika","unpin":"Ondoa Bandiko"},"PostQuoteButton":{"name":"Nukuu"},"PostDeleteButton":{"name":"Futa"},"PostEditButton":{"name":"Hariri"},"ReportButton":{"name":"Ripoti"},"PostActionBar":{"reply":"Jibu","replies":{"one":"Majibu ({count})","other":"Majibu ({count})"}},"PostEditedMarker":{"label":"(imehaririwa)"},"RepliesHeading":{"heading":"Majibu"},"PollVoteButton":{"name":"Piga Kura"},"MoreLocationsLink":{"moreLocations":{"before":"Tazama ","link":"maeneo zaidi","after":""}},
-    "NearbyLocationPrompt":{"heading":"Machapisho Karibu Nawe","description":"Hii huonyesha machapisho yaliyo karibu zaidi na sehemu fulani - popote palipo na shughuli, hata kama ni mbali. Shiriki eneo lako kuanzia ulipo, au chagua sehemu kwenye ramani.","useMyLocation":"Tumia Eneo Langu","pickOnMap":"Chagua kwenye Ramani","searchPlaceholder":"Au andika jina la mahali…","searchLabel":"Tafuta Mahali","locating":"Inatafuta eneo…","noGeolocation":"Kivinjari chako hakiwezi kushiriki eneo.","locationError":"Haikuweza kupata eneo lako. Angalia ruhusa ya eneo ya kivinjari chako."},
-    "PollDeadline":{"final":"Matokeo ya mwisho","closes":{"before":"Inafungwa ","after":""},"days":{"one":"baada ya siku {count}","other":"baada ya siku {count}"},"hours":{"one":"baada ya saa {count}","other":"baada ya saa {count}"},"minutes":{"one":"baada ya dakika {count}","other":"baada ya dakika {count}"},"underMinute":"chini ya dakika moja"},"PollTally":{"voters":{"one":"mtu 1 alipiga kura ","other":"watu {count} walipiga kura "}},"PostComposer":{"prompt":{"before":"","link":"Ingia","after":" ili kuchapisha."}},"ReplyComposer":{"prompt":{"before":"","link":"Ingia","after":" ili kujibu."}},"RepostAttribution":{"attribution":{"before":"","after":" alichapisha upya"}},"ThreadContext":{"response":{"before":"Kwa kujibu ","after":""},"untitled":"chapisho hili","jumpToStart":"Ruka hadi Mwanzo"},"TopicSummaryCard":{"label":"Muhtasari uliotengenezwa na AI"},
-    "WelcomeBanner":{"heading":{"before":"Karibu ","after":""},"paragraphs":["Andika kitu kwenye kisanduku hapa chini na kitaenda kwenye mlisho wako. Mtu yeyote anaweza kujibu, na jibu ni chapisho lenye mzazi, hivyo mazungumzo yanaweza kuingia ndani kadiri yanavyohitaji.","Ongeza watu kuwa marafiki na machapisho yao yataingia kwenye mlisho wako. Mlisho wa Ulimwengu - jina la tovuti juu kushoto - huonyesha kila kitu kilichoandikwa hapa, na hapo ndipo pa kumpata mtu wa kuongeza.","Tovuti hii ni sehemu ya Fediverse: unaweza kufuata akaunti za Mastodon na seva nyingine kwa majina yao kamili, na unachochapisha huwafikia wanaokufuata huko. Tafuta jina kama @someone@example.social na seva hii itaenda kuwatafuta.","Weka #lebo kwenye chapisho na litaonekana kwenye ukurasa wa lebo hiyo, na katika Zinazovuma ikiwa watu wa kutosha wanaiandika.","Ujumbe kati ya wanachama umesimbwa kutoka mwisho hadi mwisho - seva huhifadhi maandishi yaliyosimbwa ambayo haiwezi kusoma. Washa hilo katika Mipangilio.","Si lazima uchapishe mara moja: hifadhi rasimu, au weka wakati na itajichapisha. Vyote vinapatikana chini ya Rasimu na Yaliyopangwa."],"more":{"before":"Kuna mengi zaidi katika ","link":"kurasa za msaada","after":", pamoja na jinsi ya kuhamisha akaunti hapa kutoka kwingine."},"dontShowAgain":"Usionyeshe Tena"},
-    "EmojiPickerTriggerButton":{"label":"Weka Emoji"},"LinkImagePreview":{"alt":"Picha ya hakikisho la kiungo"},"LinkImageRemoveButton":{"label":"Ondoa Picha"},"LinkItem":{"alt":"Picha ya hakikisho la kiungo"},"MapScrubber":{"play":"Cheza","pause":"Sitisha","cumulativeMode":"Hadi Wakati Huo","windowMode":"Wakati Huo Tu","rangeLabel":"Onyesha Machapisho hadi Tarehe","cumulativeLabel":{"one":"Yamechapishwa hadi {date} — chapisho {count}","other":"Yamechapishwa hadi {date} — machapisho {count}"},"windowLabel":{"one":"Yamechapishwa karibu na {date} — chapisho {count}","other":"Yamechapishwa karibu na {date} — machapisho {count}"}},"Post":{"pageTitleByAuthor":"Chapisho la {name}","pageTitleUntitled":"Chapisho","imageAltByAuthor":"Picha iliyochapishwa na {name}","imageAltUntitled":"Picha"},"PostBookmarkButton":{"remove":"Ondoa Alamisho","add":"Weka Alamisho"},"PostRepostButton":{"undo":"Tendua Uchapishaji Upya","repost":"Chapisha Upya"},"QuotedPost":{"viewLink":"Tazama Chapisho Lililonukuliwa"},"ReceivedFriendRequestSection":{"heading":"Maombi Yanayosubiri"},"ScrollToTopButton":{"label":"Rudi Juu"},"SearchClearButton":{"label":"Futa Utafutaji"},"SitePolicyLinks":{"terms":"Masharti ya Huduma","privacy":"Sera ya Faragha"},"SkipLink":{"label":"Ruka hadi Maudhui"},"TopicHeading":{"searchLink":"Tafuta Hiki","noPosts":"Hakuna machapisho yanayotaja hiki sasa."},"PopularEntityList":{"emptyNotice":"Bado hakuna chochote cha aina hii kilichoandikwa."},"TrendingEntitySection":{"heading":"Zinazovuma"},"PostLocationLink":{"title":"Onyesha Mahali Hapa kwenye Ramani","between":", "},
-    "RelativeTime":{"justNow":"sasa hivi","minutes":{"one":"dakika {count} iliyopita","other":"dakika {count} zilizopita"},"hours":{"one":"saa {count} iliyopita","other":"saa {count} zilizopita"},"days":{"one":"siku {count} iliyopita","other":"siku {count} zilizopita"}},
-    "ThemeSelector":{"label":"Mandhari","themes":{"system":"Lingana na Mfumo","light":"Nyeupe Rahisi","dark":"Nyeusi Rahisi","sepia":"Sepia","midnight":"Usiku wa Manane","sunset":"Machweo","rose":"Waridi","forest":"Msitu","ocean":"Bahari","lavender":"Lavenda","gold":"Dhahabu","hacker":"Hacker","ironbow":"Ironbow","viridis":"Viridis","mako":"Mako","cividis":"Cividis","ylgnbu":"YlGnBu","cubehelix":"Cubehelix","greyscale":"Kijivu"}},
-    "PostTranslation":{"unavailable":"Tafsiri haijasanidiwa kwenye seva hii.","nothing":"Hakuna chochote hapa cha kutafsiri.","unknownSource":"Bado hakuna aliyejua chapisho hili liko katika lugha gani, hivyo haliwezi kutafsiriwa.","alreadyReadable":"Chapisho hili tayari liko katika lugha hiyo.","unsupportedPair":"Seva hii bado haiwezi kutafsiri lugha hiyo."},"LanguagePrompt":{"question":"Ungependa kutazama tovuti kwa Kiswahili?","accept":"Ndiyo","decline":"La, asante"},"LanguageSelector":{"label":"Lugha","legend":"Lugha"},
-    "EmailDigest":{"subject":"Ulichokosa kwenye {site}","greeting":"Habari {name},","whileAway":"Ulipokuwa mbali:","repeatedTimes":{"one":" (mara {count})","other":" (mara {count})"},"moreMissed":{"one":"na arifa {count} zaidi","other":"na arifa {count} zaidi"},"messagesWaiting":{"one":"Una ujumbe unaokusubiri","other":"Una ujumbe {count} unaokusubiri"},"postsInFeed":{"one":"Chapisho moja jipya kwenye mlisho wako","other":"Machapisho {count} mapya kwenye mlisho wako"},"unsubscribeInstructions":"Ili kusimamisha barua hizi, fungua kiungo hiki - ni bofyo moja na halihitaji nenosiri:","comeSeeWhatIsNew":"Njoo uone kilicho kipya","unsubscribeLink":{"before":"","link":"Acha kunitumia hizi","after":" - bofyo moja, hakuna nenosiri linalohitajika."}},
-    "EmailVerification":{"subject":"Thibitisha anwani yako ya barua pepe","greeting":"Habari {name},","instructions":"Tafadhali thibitisha anwani yako ya barua pepe kwa kutembelea kiungo hiki:","htmlInstructions":"Tafadhali thibitisha anwani yako ya barua pepe kwa kubofya kiungo hapa chini:","buttonLabel":"Thibitisha Anwani ya Barua Pepe","expiresIn":{"one":"Kiungo hiki kinaisha baada ya saa {count}.","other":"Kiungo hiki kinaisha baada ya saa {count}."}},
-    "PasswordReset":{"subject":"Weka upya nenosiri lako","greeting":"Habari {name},","instructions":"Mtu (tunatumaini ni wewe) aliomba nenosiri liwekwe upya. Tembelea kiungo hiki kuchagua nenosiri jipya:","htmlInstructions":"Mtu (tunatumaini ni wewe) aliomba nenosiri liwekwe upya. Bofya kiungo hapa chini kuchagua nenosiri jipya:","buttonLabel":"Weka Upya Nenosiri","expiresIn":{"one":"Kiungo hiki kinaisha baada ya saa {count}.","other":"Kiungo hiki kinaisha baada ya saa {count}."},"ignoreNotice":"Ikiwa hukuomba hili, unaweza kupuuza barua pepe hii."}
+    "PollOptionVotes": {
+        "votes": {
+            "one": "kura 1",
+            "other": "kura {count}"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "Ingia",
+            "after": " ili kujibu."
+        },
+        "post": {
+            "before": "",
+            "link": "Ingia",
+            "after": " ili kuchapisha."
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "Tovuti",
+        "siteURLLabel": "URL ya Tovuti",
+        "siteTitleLabel": "Jina la Tovuti",
+        "mailFromAddressLabel": "Anwani ya Mtumaji wa Barua",
+        "serverNameConfirmedLabel": "Nimeweka \"ServerName {host}\" na \"UseCanonicalName On\" katika usanidi wa seva yangu ya wavuti (huangaliwa tu ikiwa jaribio la moja kwa moja haliwezi kukamilika - tazama sehemu ya HTTPS katika README.md)",
+        "databaseLegend": "Hifadhidata",
+        "databaseHostLabel": "Mwenyeji wa Hifadhidata",
+        "databasePortLabel": "Mlango wa Hifadhidata",
+        "databaseNameLabel": "Jina la Hifadhidata",
+        "databaseAdminUsernameLabel": "Jina la Mtumiaji la Msimamizi wa Hifadhidata",
+        "databaseAdminPasswordLabel": "Nenosiri la Msimamizi wa Hifadhidata",
+        "webSocketTLSLegend": "TLS ya WebSocket (Si Lazima)",
+        "certificatePathLabel": "Njia ya Cheti",
+        "certificatePathPlaceholder": "Acha wazi ili itengenezwe kiotomatiki kwa mkcert",
+        "keyPathLabel": "Njia ya Ufunguo",
+        "keyPathPlaceholder": "Acha wazi ili utengenezwe kiotomatiki kwa mkcert",
+        "botProtectionLegend": "Ulinzi Dhidi ya Roboti (Si Lazima)",
+        "turnstileSiteKeyLabel": "Ufunguo wa Tovuti wa Cloudflare Turnstile",
+        "turnstileSiteKeyPlaceholder": "Acha wazi ili kuruka",
+        "turnstileSecretKeyLabel": "Ufunguo wa Siri wa Cloudflare Turnstile",
+        "turnstileSecretKeyPlaceholder": "Acha wazi ili kuruka",
+        "submit": "Sanidi"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "Kaulisiri ya Sasa",
+        "newPassphraseLabel": "Kaulisiri Mpya",
+        "confirmNewPassphraseLabel": "Thibitisha Kaulisiri Mpya",
+        "accountPasswordLabel": "Nenosiri la Akaunti",
+        "submit": "Badilisha Kaulisiri"
+    },
+    "PasswordResetForm": {
+        "legend": "Chagua Nenosiri Jipya",
+        "newPasswordLabel": "Nenosiri Jipya",
+        "newPasswordPlaceholder": "Angalau herufi 8",
+        "confirmPasswordLabel": "Thibitisha Nenosiri Jipya",
+        "submit": "Weka Upya Nenosiri"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "Weka Upya Nenosiri Lako",
+        "emailLabel": "Barua Pepe",
+        "submit": "Tuma Kiungo cha Kuweka Upya"
+    },
+    "EmailRevertForm": {
+        "submit": "Rudisha Mabadiliko ya Barua Pepe"
+    },
+    "EmailVerifyForm": {
+        "submit": "Thibitisha Anwani ya Barua Pepe"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "Washa Tena"
+    },
+    "EmailDigestSetting": {
+        "label": "Nitumie kwa barua pepe nilichokosa ninapokuwa mbali kwa muda"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "Kifaa kisichojulikana",
+        "browserOnOS": "{browser} kwenye {os}",
+        "thisDevice": " (kifaa hiki)",
+        "lastUsed": {
+            "before": "Kilichotumika mwisho ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "Maliza kila kipindi kinachotumika na usahau kila kifaa kilichokumbukwa. Utaondolewa kwenye vivinjari vyote, pamoja na hiki."
+    },
+    "LogoutEverywhereButton": {
+        "label": "Ondoka Kila Mahali"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "Thibitisha kwa Google ili Kufuta"
+    },
+    "GoogleSignInButton": {
+        "label": "Endelea kwa Google"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "Hariri Wasifu"
+    },
+    "PushNotificationSetting": {
+        "explanation": "Pata arifa kwenye kifaa hiki hata tovuti ikiwa haijafunguliwa. Hili ni chaguo la kila kivinjari - liwashe popote unapotaka kufikiwa.",
+        "label": {
+            "off": "Washa kwenye Kifaa Hiki",
+            "on": "Zima kwenye Kifaa Hiki"
+        },
+        "unsupported": "Arifa za moja kwa moja hazitumiki katika kivinjari hiki"
+    },
+    "LoginForm": {
+        "legend": "Ingia",
+        "identifier": "Jina la Mtumiaji au Barua Pepe",
+        "password": "Nenosiri",
+        "rememberMe": "Nikumbuke",
+        "submit": "Ingia"
+    },
+    "SignupForm": {
+        "legend": "Fungua Akaunti",
+        "usernameLabel": "Jina la Mtumiaji",
+        "usernamePlaceholder": "Herufi ndogo, nambari, na _",
+        "emailLabel": "Barua Pepe",
+        "emailPlaceholder": "Anwani halali ya barua pepe",
+        "displayName": "Jina la Kuonyeshwa (Si Lazima)",
+        "bioLabel": "Wasifu Mfupi (Si Lazima)",
+        "bioPlaceholder": "Wasifu mfupi - #lebo, @marejeo, na viungo vitabofya",
+        "passwordLabel": "Nenosiri",
+        "passwordPlaceholder": "Nenosiri: Angalau herufi 8",
+        "rememberMe": "Nikumbuke",
+        "submit": "Jisajili"
+    },
+    "PasswordChangeForm": {
+        "legend": "Badilisha Nenosiri Lako",
+        "currentPassword": "Nenosiri la Sasa",
+        "newPasswordLabel": "Nenosiri Jipya",
+        "newPasswordPlaceholder": "Angalau herufi 8",
+        "confirmPassword": "Thibitisha Nenosiri Jipya",
+        "submit": "Badilisha Nenosiri"
+    },
+    "EmailChangeForm": {
+        "legend": "Badilisha Anwani Yako ya Barua Pepe",
+        "newEmail": "Anwani Mpya ya Barua Pepe",
+        "currentPassword": "Nenosiri la Sasa",
+        "notice": "Utahitaji kuthibitisha anwani mpya kabla ya kuendelea kutumia tovuti.",
+        "submit": "Badilisha Barua Pepe"
+    },
+    "AccountDeleteForm": {
+        "legend": "Futa Akaunti Yako",
+        "warning": "Hii itafuta kabisa akaunti, machapisho, na ujumbe wako. Haiwezi kutenduliwa.",
+        "currentPassword": "Nenosiri la Sasa",
+        "submit": "Futa Akaunti"
+    },
+    "AccountMigrationForm": {
+        "legend": "Hamia Seva Nyingine",
+        "movedNotice": "Akaunti hii imehamia {destination}. Wafuasi wako waliombwa wakufuate huko.",
+        "explanation": "Wafuasi wako wanaombwa wakufuate kwenye akaunti mpya. Machapisho yako yanabaki hapa - anwani za vitu ni za seva iliyovitengeneza, kwa hiyo haziwezi kuhamishwa.",
+        "addressNotice": "Akaunti unayohamia lazima kwanza iorodheshe hii chini ya \"pia inajulikana kama\". Anwani yako hapa ni {address}.",
+        "movedToLabel": "Hamia",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "Pia Inajulikana Kama",
+        "aliasesExplanation": "Akaunti za kwingine ambazo pia ni zako. Kuorodhesha moja hapa huruhusu akaunti hiyo kuhamia hii - hii ni ruhusa, si uhamisho wenyewe. Anwani moja kwa kila mstari.",
+        "aliasesLabel": "Akaunti Zako Nyingine",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "Hifadhi"
+    },
+    "TwoFactorForm": {
+        "legend": "Weka Msimbo Wako wa Uthibitishaji",
+        "explanation": "Tumekutumia msimbo wa uthibitishaji kwa barua pepe. Uweke hapa chini, au tumia mmoja wa misimbo yako ya urejeshaji, ili kukamilisha kuingia.",
+        "explanationEmailFailed": "Hatukuweza kutuma msimbo wako wa uthibitishaji kwa barua pepe sasa. Weka mmoja wa misimbo yako ya urejeshaji ili kukamilisha kuingia.",
+        "code": "Msimbo wa Uthibitishaji",
+        "submit": "Thibitisha"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "Uthibitishaji wa Hatua Mbili Umewashwa",
+            "off": "Uthibitishaji wa Hatua Mbili Umezimwa"
+        },
+        "explanation": {
+            "on": "Unapoingia, tutakutumia kwa barua pepe msimbo wa uthibitishaji ambao lazima uweke ili kukamilisha kuingia. Ikiwa barua haikufikii, mmoja wa misimbo yako ya urejeshaji utakuingiza badala yake.",
+            "off": "Ongeza hatua ya pili wakati wa kuingia: tutakutumia kwa barua pepe msimbo wa uthibitishaji ambao lazima uweke, hivyo nenosiri pekee halitoshi kuingia. Utapata misimbo ya urejeshaji ya matumizi moja ya kuhifadhi iwapo barua haikufikii."
+        },
+        "currentPassword": "Nenosiri la Sasa",
+        "submit": {
+            "on": "Zima Uthibitishaji wa Hatua Mbili",
+            "off": "Washa Uthibitishaji wa Hatua Mbili"
+        },
+        "regenerate": "Tengeneza Misimbo Mipya ya Urejeshaji",
+        "recoveryHeading": "Misimbo Yako ya Urejeshaji",
+        "recoveryNote": "Hifadhi hii mahali salama sasa - haitaonyeshwa tena. Kila mmoja unakuingiza mara moja wakati barua ya uthibitishaji haikufikii, na kutengeneza misimbo mipya hubadilisha hii yote.",
+        "toast": {
+            "on": "Uthibitishaji wa hatua mbili sasa umewashwa.",
+            "off": "Uthibitishaji wa hatua mbili sasa umezimwa.",
+            "regenerated": "Misimbo mipya ya urejeshaji imetengenezwa. Ya zamani haifanyi kazi tena."
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "Tafadhali angalia kikasha chako na ubofye kiungo cha uthibitishaji tulichotuma ili kuthibitisha anwani yako ya barua pepe. Usipokiona, angalia folda ya taka."
+    },
+    "VerificationResendButton": {
+        "label": "Tuma Tena Barua ya Uthibitishaji"
+    },
+    "MailSettingsForm": {
+        "legend": "Barua Zinazotumwa",
+        "fromAddressLabel": "Anwani ya Kutoka",
+        "fromAddressPlaceholder": "Hakuna barua inayoweza kutumwa mpaka hii iwekwe",
+        "fromNameLabel": "Jina la Mtumaji",
+        "hostLabel": "Mwenyeji wa SMTP",
+        "portLabel": "Mlango wa SMTP",
+        "usernameLabel": "Jina la Mtumiaji la SMTP",
+        "passwordLabel": "Nenosiri la SMTP",
+        "passwordPlaceholder": {
+            "set": "Nenosiri limewekwa - acha wazi ili kulihifadhi",
+            "unset": "Nenosiri la SMTP"
+        },
+        "encryptionLabel": "Usimbaji Fiche",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS, kwa kawaida mlango 587)",
+            "ssl": "SSL (TLS isiyo wazi, kwa kawaida mlango 465)",
+            "none": "Hakuna"
+        },
+        "explainer": "Acha mwenyeji wa SMTP wazi ili utume kwa mail() ya PHP badala yake (haipendekezwi - tazama sehemu ya ufikishaji katika README). Hakuna barua inayoweza kutumwa mpaka anwani ya \"kutoka\" iwekwe.",
+        "save": "Hifadhi"
+    },
+    "MapSettingsForm": {
+        "legend": "Vigae vya Ramani",
+        "notice": "Acha wazi kutumia OpenStreetMap. Kutumia mtoa huduma mwenye ufunguo, bandika kiolezo chake cha URL chenye {apiKey} halisi mahali ufunguo unapowekwa, pamoja na ufunguo na sifa hapa chini.",
+        "urlLabel": "Kiolezo cha URL ya Kigae",
+        "keyLabel": "Ufunguo wa API",
+        "keyPlaceholder": "Ufunguo wa API wa mtoa huduma wa vigae",
+        "attributionLabel": "Sifa",
+        "attributionPlaceholder": "© wachangiaji wa OpenStreetMap",
+        "save": "Hifadhi"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Kuingia kwa Google",
+        "clientIdLabel": "Kitambulisho cha Mteja",
+        "clientIdPlaceholder": "Kitambulisho cha mteja wa Google OAuth",
+        "secretLabel": "Siri ya Mteja",
+        "secretPlaceholder": {
+            "set": "Siri ya mteja imewekwa - acha wazi ili kuihifadhi",
+            "unset": "Siri ya mteja wa Google OAuth"
+        },
+        "explainer": "Vyote vinahitajika ili \"Endelea kwa Google\" ionekane wakati wa kujisajili na kuingia. Katika mteja wako wa Google Cloud OAuth, weka URI iliyoidhinishwa ya kurejesha kuwa {url} - futa Kitambulisho cha Mteja ili kuizima.",
+        "save": "Hifadhi"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "Ufunguo wa Tovuti",
+        "turnstileSiteKeyPlaceholder": "Ufunguo wa tovuti wa Cloudflare Turnstile",
+        "turnstileSecretKeyLabel": "Ufunguo wa Siri",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "Ufunguo wa siri umewekwa - acha wazi ili kuuhifadhi",
+            "unset": "Ufunguo wa siri wa Cloudflare Turnstile"
+        },
+        "turnstileExplainer": "Funguo zote mbili zinahitajika ili CAPTCHA ionekane wakati wa kujisajili na kuingia. Futa ufunguo wa tovuti ili kuizima.",
+        "recaptchaLegend": "Google reCAPTCHA (Urejeshaji wa Akaunti Iliyofungwa)",
+        "recaptchaSiteKeyLabel": "Ufunguo wa Tovuti",
+        "recaptchaSiteKeyPlaceholder": "Ufunguo wa tovuti wa Google reCAPTCHA v2",
+        "recaptchaSecretKeyLabel": "Ufunguo wa Siri",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "Ufunguo wa siri umewekwa - acha wazi ili kuuhifadhi",
+            "unset": "Ufunguo wa siri wa Google reCAPTCHA v2"
+        },
+        "recaptchaExplainer": "Funguo zote mbili zinahitajika. Zikiwekwa, akaunti inayofikia kikomo cha majaribio ya kuingia inaweza kurudi kwa kupita changamoto hii badala ya kusubiri kufunguliwa; zisipowekwa, ni lazima isubiri. Tumia reCAPTCHA v2 (\"Mimi si roboti\"). Futa ufunguo wa tovuti ili kuizima.",
+        "save": "Hifadhi"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "Hutumiwa na vipengele vya AI kwenye tovuti (muhtasari wa mada zinazovuma, n.k.). Acha modeli wazi kutumia Free Models Router, ambayo OpenRouter huchagua bila mpangilio kutoka kwa zilizo bure wakati huo na haiwezi kamwe kusababisha gharama.",
+        "keyLabel": "Ufunguo wa API",
+        "keyPlaceholder": {
+            "set": "Ufunguo wa API umewekwa - acha wazi ili kuuhifadhi",
+            "unset": "Ufunguo wa API wa OpenRouter"
+        },
+        "clearKeyLabel": "Ondoa ufunguo wa API uliohifadhiwa (huzima vipengele vya AI)",
+        "modelLabel": "Modeli",
+        "neverSpendLabel": "Usiruhusu kamwe hii kutumia pesa (inapendekezwa)",
+        "explainer": "Ulinzi ukiwashwa, kila ombi huweka bei yake kuwa sifuri, hivyo hushindwa kabisa badala ya kutumia modeli ya kulipia wakati hakuna mtoa huduma wa bure. Ondoa ufunguo wa API uliohifadhiwa ili kuzima kabisa vipengele vya AI.",
+        "save": "Hifadhi"
+    },
+    "AboutSettingsForm": {
+        "legend": "Kuhusu",
+        "description": "Maandishi wazi - mistari tupu hutenganisha aya. Aya ya kwanza itatumika kama maelezo ya tovuti.",
+        "save": "Hifadhi"
+    },
+    "TermsSettingsForm": {
+        "legend": "Masharti ya Huduma",
+        "description": "Maandishi wazi - mistari tupu hutenganisha aya.",
+        "save": "Hifadhi"
+    },
+    "PrivacySettingsForm": {
+        "legend": "Sera ya Faragha",
+        "description": "Maandishi wazi - mistari tupu hutenganisha aya.",
+        "save": "Hifadhi"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "Muhtasari wa Barua Pepe",
+        "fieldLabel": "Aya ya Kufunga",
+        "notice": "Huongezwa karibu na mwisho wa kila muhtasari, baada ya orodha ya alichokosa mwanachama. Maandishi wazi. Acha wazi ili kurudi kwenye maneno yanayokuja na programu hii.",
+        "save": "Hifadhi"
+    },
+    "FaviconSettingsForm": {
+        "legend": "Favicon",
+        "currentAlt": "Favicon ya sasa",
+        "save": "Pakia Favicon"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "Picha ya Ukurasa wa Mbele",
+        "explainer": "Huonyeshwa na tovuti nyingine mtu anaposhiriki kiungo cha hii - metadata ya Open Graph pekee, kamwe si kwenye ukurasa. Hupunguzwa kuwa 1200×630. Bila picha, hakikisho la kiungo halitakuwa na picha.",
+        "currentAlt": "Picha ya sasa ya ukurasa wa mbele",
+        "save": "Pakia Picha"
+    },
+    "CarouselAutoplayButton": {
+        "name": "Cheza Kiotomatiki"
+    },
+    "CarouselNextButton": {
+        "name": "Inayofuata"
+    },
+    "CarouselPrevButton": {
+        "name": "Iliyotangulia"
+    },
+    "MediaFullscreenButton": {
+        "name": "Skrini Nzima"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "Ondoa Faili"
+    },
+    "NotificationDropdown": {
+        "showAll": "Onyesha Zote"
+    },
+    "HelpSearch": {
+        "placeholder": "Tafuta msaada…",
+        "noMatches": "Hakuna makala ya msaada iliyolingana na utafutaji wako."
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "Nimeelewa"
+    },
+    "StagedPostDiscardButton": {
+        "name": "Tupa"
+    },
+    "StagedPostEditButton": {
+        "name": "Hariri"
+    },
+    "StagedPostPublishButton": {
+        "name": "Chapisha Sasa"
+    },
+    "LogoutButton": {
+        "name": "Ondoka"
+    },
+    "AvatarUploadForm": {
+        "submit": "Sasisha Picha ya Wasifu"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "Tafuta watumiaji waliopigwa marufuku…"
+    },
+    "BannedUserSection": {
+        "heading": "Watumiaji Waliopigwa Marufuku"
+    },
+    "SentFriendRequestSection": {
+        "heading": "Maombi Yaliyotumwa (Yanasubiri Jibu)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "Imepigwa marufuku na {name} ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "Imezuiwa na {name} ",
+            "after": ""
+        },
+        "deletedAccount": "akaunti iliyofutwa",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "Januari",
+            "2": "Februari",
+            "3": "Machi",
+            "4": "Aprili",
+            "5": "Mei",
+            "6": "Juni",
+            "7": "Julai",
+            "8": "Agosti",
+            "9": "Septemba",
+            "10": "Oktoba",
+            "11": "Novemba",
+            "12": "Desemba"
+        },
+        "shortMonths": {
+            "1": "Jan",
+            "2": "Feb",
+            "3": "Mac",
+            "4": "Apr",
+            "5": "Mei",
+            "6": "Jun",
+            "7": "Jul",
+            "8": "Ago",
+            "9": "Sep",
+            "10": "Okt",
+            "11": "Nov",
+            "12": "Des"
+        },
+        "long": "{day} {month} {year}",
+        "short": "{day} {month} {year}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} saa {time}",
+        "am": "",
+        "pm": "",
+        "clock": 24
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "Haikuweza kuunganisha kwenye seva ya WebSocket katika 127.0.0.1:{port}{tls} ({error}). Iwashe kwanza: systemctl --user start glommer-websocket (tazama README.md kwa faili ya kitengo). Ikiwa imepata au kupoteza WS_TLS_CERT/WS_TLS_KEY, iwashe upya ili ilingane na .env.",
+        "wsOverTLS": " kupitia TLS",
+        "wsBadHandshake": "Huduma katika 127.0.0.1:{port} haikukamilisha salamu halali ya WebSocket - huenda kitu kingine badala ya bin/websocket-server.php kinasikiliza mlango huo.",
+        "wsNoPong": "Seva ya WebSocket ilikubali salamu lakini haikujibu ping - huenda imekwama au haifanyi kazi vizuri. Angalia kumbukumbu zake.",
+        "wsReachable": "Seva ya WebSocket inafikika na inajibu katika 127.0.0.1:{port}"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "Lebo",
+            "person": "Mtu",
+            "org": "Shirika",
+            "gpe": "Mahali",
+            "loc": "Eneo",
+            "fac": "Alama ya Mahali",
+            "product": "Bidhaa",
+            "event": "Tukio",
+            "work_of_art": "Kazi",
+            "law": "Sheria",
+            "language": "Lugha",
+            "norp": "Kundi"
+        },
+        "plural": {
+            "hashtag": "Lebo",
+            "person": "Watu",
+            "org": "Mashirika",
+            "gpe": "Maeneo",
+            "loc": "Maeneo",
+            "fac": "Alama za Mahali",
+            "product": "Bidhaa",
+            "event": "Matukio",
+            "work_of_art": "Kazi",
+            "law": "Sheria",
+            "language": "Lugha",
+            "norp": "Makundi"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "Ondoa Rafiki"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "Kubali"
+    },
+    "FriendRequestDenyButton": {
+        "name": "Kataa"
+    },
+    "UserFollowButton": {
+        "follow": "Fuata",
+        "unfollow": "Acha Kufuata"
+    },
+    "UserBlockButton": {
+        "name": "Zuia"
+    },
+    "UserUnblockButton": {
+        "name": "Ondoa Kizuizi"
+    },
+    "OtherUser": {
+        "message": "Ujumbe"
+    },
+    "MainNavigation": {
+        "toggleLabel": "Menyu",
+        "loggedInAs": "Umeingia kama {name}",
+        "friendsFeed": "Mlisho wa Marafiki",
+        "relayFeed": "Mlisho wa Relay",
+        "users": "Watumiaji",
+        "tags": "Lebo",
+        "topics": "Mada",
+        "map": "Ramani",
+        "locations": "Maeneo",
+        "search": "Tafuta",
+        "messages": "Ujumbe",
+        "bookmarks": "Alamisho",
+        "help": "Msaada",
+        "about": "Kuhusu",
+        "login": "Ingia",
+        "signup": "Jisajili",
+        "friends": "Marafiki",
+        "drafts": "Rasimu na Yaliyopangwa",
+        "userSettings": "Mipangilio ya Mtumiaji",
+        "modSettings": "Mipangilio ya Wasimamizi",
+        "adminSettings": "Mipangilio ya Msimamizi"
+    },
+    "LogoutForm": {
+        "submit": "Ondoka"
+    },
+    "User": {
+        "joined": "Alijiunga {date}"
+    },
+    "FriendRequestButton": {
+        "add": "Ongeza Rafiki",
+        "cancel": "Ghairi Ombi"
+    },
+    "StagedPostWhen": {
+        "scheduled": "Imepangwa kwa {when}",
+        "draft": "Rasimu - huchapishwa tu unaposema"
+    },
+    "MessageTranslateButton": {
+        "name": "Tafsiri Ujumbe Huu"
+    },
+    "MessageTranslationNotice": {
+        "heading": "Kuhusu Kutafsiri Ujumbe",
+        "body": "Ili kutafsiri ujumbe, maandishi yake hutumwa kwenye seva hii na kutafsiriwa hapa. Hakuna kinachohifadhiwa: tafsiri haiandikwi kwenye hifadhidata na ujumbe wenyewe haubadiliki. Lakini ujumbe uliotafsiriwa hivi umesomwa na seva, kwa hiyo haujasimbwa kutoka mwisho hadi mwisho kama ujumbe usiotafsiriwa. Ujumbe unaopokea pekee unaweza kutafsiriwa, na ni unapouliza tu.",
+        "confirm": "Tafsiri",
+        "cancel": "Si Sasa"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "Umesahau kaulisiri yako? Kuweka upya hutengeneza funguo mpya chini ya kaulisiri mpya - lakini ujumbe uliosimbwa kwa funguo za zamani hautaweza kusomwa tena na mtu yeyote.",
+        "requirements": "Angalau herufi 12, na si nenosiri la akaunti yako - hilo hutumwa kwa seva hii, na kaulisiri yako haipaswi kamwe kutumwa.",
+        "passphraseLabel": "Kaulisiri",
+        "resetPassphraseLabel": "Kaulisiri Mpya",
+        "confirmLabel": "Thibitisha Kaulisiri",
+        "accountPasswordLabel": "Nenosiri la Akaunti",
+        "submitLabel": "Washa Ujumbe Uliosimbwa",
+        "resetSubmitLabel": "Weka Upya Funguo za Usimbaji"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "Ujumbe uliosimbwa kutoka mwisho hadi mwisho hufungwa na kufunguliwa katika kivinjari chako: seva hii huupitisha na kuuhifadhi bila kuweza kuusoma. Ufunguo wako unalindwa na kaulisiri, na kaulisiri hiyo hiyo hufungua ujumbe wako kutoka kivinjari chochote. Mazungumzo husimbwa wote wawili wakishawasha kipengele hiki; ujumbe kwa watu wa seva nyingine hubaki bila usimbaji, kwa sababu shirikisho haliwezi kuubeba vinginevyo.",
+        "noRecovery": "Hakuna njia ya kurejesha kaulisiri iliyopotea - hata kwa msimamizi. Kuipoteza kunamaanisha kupoteza ujumbe wako uliosimbwa.",
+        "enabledStatus": "Ujumbe uliosimbwa umewashwa."
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "Umesimbwa",
+            "explanation": "Ujumbe katika mazungumzo haya umesimbwa kutoka mwisho hadi mwisho: hufunguliwa kwa kaulisiri yako na kusomwa katika vivinjari vyako, na seva hii huhifadhi maandishi yaliyosimbwa. Linganisha msimbo wa usalama chini ya mazungumzo na mtu mwingine kuhakikisha hakuna aliye kati yenu. Ujumbe uliotumwa kabla ya usimbaji kuwashwa hubaki ukisomeka kama ulivyokuwa."
+        },
+        "awaiting-theirs": {
+            "label": "Haujasimbwa",
+            "explanation": "Ujumbe hapa utasimbwa kutoka mwisho hadi mwisho mara {handle} atakapowasha ujumbe uliosimbwa katika mipangilio yake."
+        },
+        "awaiting-yours": {
+            "label": "Haujasimbwa",
+            "explanation": "Ujumbe hapa haujasimbwa kutoka mwisho hadi mwisho. Washa ujumbe uliosimbwa katika Mipangilio ili kulinda mazungumzo haya."
+        },
+        "federated": {
+            "label": "Haujasimbwa",
+            "explanation": "{handle} yuko kwenye seva nyingine. Ujumbe katika mazungumzo haya huhifadhiwa kwenye seva hiyo pamoja na hii, na msimamizi wake anaweza kuusoma - itifaki kati ya seva haina njia ya kuusimba. Weka mambo nyeti katika mazungumzo ya tovuti hii."
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Fuata Akaunti za Fediverse",
+        "notice": "Bandika jina moja au zaidi, kwa mfano @user@example.social - kitenganishi chochote kinafanya kazi.",
+        "handlesLabel": "Majina ya Fediverse ya Kufuata",
+        "submit": "Fuata",
+        "statusPending": "inasubiri",
+        "statusAccepted": "imekubaliwa"
+    },
+    "ServerBlockForm": {
+        "legend": "Zuia Seva",
+        "description": "Hukataa kila kitu kutoka seva hiyo na kila kilicho chini yake: hakuna uwasilishaji unaoingia wala kutoka, na ufuatiliaji uliopo pande zote mbili huondolewa.",
+        "serverLabel": "Seva",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "Sababu",
+        "reasonPlaceholder": "Kwa nini seva hii imezuiwa",
+        "submit": "Zuia Seva"
+    },
+    "VideoCallTestPanel": {
+        "intro": "Huendesha sehemu za usanidi wa simu zinazoweza kuangaliwa kutoka kivinjari kimoja. Kila kitu hadi muunganisho halisi wa moja kwa moja kinaweza kujaribiwa hapa; kuunganisha na mtu mwingine kunamhitaji mtu huyo.",
+        "checkFailed": "Ukaguzi wenyewe umeshindwa: {error}",
+        "loopbackFail": "Miunganisho miwili katika ukurasa huu huu haikuweza kufikiana, jambo linaloondoa mtandao - stack ya WebRTC ya kivinjari inazuiliwa, uwezekano mkubwa na kiendelezi au mpangilio mkali wa faragha.",
+        "loopbackName": "Mazungumzo yanakamilika ndani ya nchi",
+        "loopbackPass": "Miunganisho miwili katika ukurasa huu ilifanya mazungumzo na kufungua kituo cha data, hivyo stack ya WebRTC yenyewe inafanya kazi.",
+        "loopbackVerdict": "Hapana - kupiga simu ya video hakuwezi kufanya kazi kutoka kwa kivinjari hiki. Stack yake ya WebRTC yenyewe haikuweza kuunganisha wenzao wawili ndani ya ukurasa huu huu, jambo linaloondoa mtandao kabisa; kitu cha ndani kinakizuia, uwezekano mkubwa kiendelezi au mpangilio mkali wa faragha.",
+        "noStun": "Hakuna sehemu ya STUN iliyosanidiwa, hivyo simu zinaweza kufanya kazi tu kati ya watu kwenye mtandao mmoja.",
+        "passVerdict": "Ndiyo - kupiga simu ya video kunapaswa kufanya kazi kutoka kwa muunganisho huu. Kila sehemu ya usanidi wa simu ambayo mashine hii inawajibika nayo imefaulu, ikiwa ni pamoja na kufikia STUN, hivyo njia ya moja kwa moja kwenda kwa mtu mwingine inaweza kupatikana na kufanyiwa mazungumzo. Kitu pekee ambacho hakijajaribiwa ni upande wa mtu mwingine, ambao unahitaji mtu huyo.",
+        "secureFail": "Si muktadha salama. Vivinjari hukataa kamera na WebRTC nje ya HTTPS, hivyo hakuna simu inayoweza kusanidiwa kutoka hapa.",
+        "secureName": "Ukurasa huu ni muktadha salama",
+        "securePass": "Umetolewa kupitia HTTPS, hivyo kivinjari kitaruhusu kamera na muunganisho wa wenzao.",
+        "secureVerdict": "Hapana - kupiga simu ya video hakuwezi kufanya kazi kutoka hapa. Ukurasa huu si muktadha salama, na vivinjari hukataa kamera na WebRTC nje ya HTTPS. Hakuna kitu kingine kinachojalisha hadi hilo litarekebishwa.",
+        "signallingAuthFail": "Sehemu hiyo ilikataa ombi kama lisilo na uthibitisho ({status}). Ishara kati ya watu wawili halisi zingekataliwa kwa njia hiyo hiyo, hivyo hakuna simu ambayo ingeweza kusanidiwa.",
+        "signallingName": "Sehemu ya ishara inajibu",
+        "signallingPass": "Sehemu hiyo inafikika na ilikubali ombi kama lililothibitishwa kabla ya kukataa maudhui yake, ambayo ndiyo kila kitu ambacho ishara halisi inahitaji.",
+        "signallingUnexpected": "Sehemu hiyo ilijibu {status}, ambayo si kile inachopaswa kusema kwa ombi hili - kitu mbele yake kinaingilia.",
+        "signallingVerdict": "Hapana - kupiga simu ya video hakuwezi kusanidiwa kutoka hapa. Kivinjari hiki kinaweza kufanya simu, lakini pande mbili haziwezi kubadilishana ujumbe unaopanga moja, hivyo kitufe cha simu hakingeonekana kamwe.",
+        "stopped": "Imesimama hapa - hatua zinazofuata baada ya hii zinategemea hii.",
+        "stunFail": "Hakuna jibu kutoka STUN - UDP kwake uwezekano mkubwa umezuiwa na ukuta wa moto. Simu bado zitafanya kazi kati ya watu wawili kwenye mtandao mmoja, lakini si kwenye mtandao mzima, na hakuna simu inayowahi kupitishwa.",
+        "stunName": "STUN inafikika kutoka kwa mtandao huu",
+        "stunPass": "STUN ilijibu na kivinjari kilijifunza anwani yake ya umma, hivyo kinaweza kupata njia ya moja kwa moja kwenda kwa mtu kwenye mtandao mwingine.",
+        "stunVerdict": "Kwenye mtandao huu pekee. Simu kati ya watu wawili kwenye mtandao mmoja wa ndani zinapaswa kufanya kazi kutoka hapa, lakini muunganisho huu hauwezi kugundua anwani yake ya umma, hivyo hauna njia ya kupata njia kwenda kwa mtu aliye nyuma ya router tofauti. Kwa kuwa hakuna simu inayowahi kupitishwa kupitia seva, moja isingetolewa tu.",
+        "webrtcFail": "Kivinjari hiki hakina RTCPeerConnection, hivyo hakiwezi kufanya au kupokea simu kabisa.",
+        "webrtcName": "Kivinjari kinaunga mkono WebRTC",
+        "webrtcPass": "RTCPeerConnection inapatikana.",
+        "webrtcVerdict": "Hapana - kupiga simu ya video hakuwezi kufanya kazi kutoka kwa kivinjari hiki. Hakina msaada wowote wa WebRTC, hivyo hakiwezi kufanya wala kupokea simu. Kivinjari kingine kwenye mashine hii hii huenda kikafanya kazi vizuri."
+    },
+    "VideoCallTestButton": {
+        "label": "Endesha Ukaguzi"
+    },
+    "WebSocketStatus": {
+        "ok": "Seva ya WebSocket: Inaendesha",
+        "failed": "Seva ya WebSocket: {detail}",
+        "clientTesting": "Muunganisho wa kivinjari: Unajaribiwa…",
+        "clientConnecting": "Muunganisho wa kivinjari: Unaunganishwa…",
+        "clientConnected": "Muunganisho wa kivinjari: Umeunganishwa",
+        "clientDisconnecting": "Muunganisho wa kivinjari: Unakatwa…",
+        "clientNotConnected": "Muunganisho wa kivinjari: Haujaunganishwa"
+    },
+    "UploadWorkerStatus": {
+        "running": "Huduma ya mfanyakazi: Inaendesha",
+        "stopped": "Huduma ya mfanyakazi: Haifanyi kazi - vipakizi vilivyoandaliwa havitageuzwa mpaka iwashwe upya",
+        "unknown": "Huduma ya mfanyakazi: Haijulikani - ama systemctl haipatikani kwenye mwenyeji huyu, au SELinux inakataa swali la hali la seva ya wavuti (endesha bin/install.php kama root kurekebisha)",
+        "queue": "Foleni: {staging} zinaandaliwa, {pending} zinasubiri, {processing} zinachakatwa"
+    },
+    "TrendingTimerStatus": {
+        "running": "Kipima muda cha zinazovuma: Kinaendesha",
+        "stopped": "Kipima muda cha zinazovuma: Hakifanyi kazi - mada zinazovuma zitasasishwa tu kupitia kujirekebisha wakati wa kusoma (EntityRanker::refreshIfStale()), si kwa ratiba. Endesha bin/install.php kama root kukisanidi.",
+        "unknown": "Kipima muda cha zinazovuma: Hakijulikani - ama systemctl haipatikani kwenye mwenyeji huyu, au SELinux inakataa swali la hali la seva ya wavuti (endesha bin/install.php kama root kurekebisha)"
+    },
+    "Notification": {
+        "postReady": "Midia yako imemaliza kuchakatwa na sasa imechapishwa",
+        "scheduledPostLive": "Chapisho lako lililopangwa sasa limechapishwa",
+        "uploadPartlyFailed": "Chapisho lako limechapishwa, lakini faili moja au zaidi hazikuweza kuchakatwa",
+        "uploadFailed": "Moja ya vipakizi vyako haikuweza kuchakatwa na haikuchapishwa",
+        "mailerFailed": "Uwasilishaji wa barua pepe umeshindwa - huduma ya barua huenda haifanyi kazi. Angalia usanidi wako wa barua.",
+        "mailFromNotConfigured": "Hakuna anwani ya \"kutoka\" iliyosanidiwa, hivyo barua pepe haziwezi kutumwa. Weka moja katika Mipangilio ya Msimamizi (sehemu ya Barua Zinazotumwa) au kupitia bin/install.php.",
+        "systemError": "Hitilafu ya seva imetokea. Angalia kumbukumbu ya hitilafu kwa maelezo.",
+        "passwordRemovedGoogle": "Nenosiri lako liliondolewa ulipoingia kwa Google. Tumia \"Umesahau Nenosiri\" ukitaka kuweka jipya.",
+        "like": "{name} alipenda chapisho lako",
+        "repost": "{name} alichapisha upya chapisho lako",
+        "reply": "{name} alijibu chapisho lako",
+        "friendRequest": "{name} alikutumia ombi la urafiki",
+        "friendAccepted": "{name} alikubali ombi lako la urafiki",
+        "message": "{name} alikutumia ujumbe",
+        "mention": "{name} alikutaja katika chapisho",
+        "follow": "{name} alikufuata kutoka seva nyingine",
+        "default": "{name} alifanya jambo"
+    },
+    "NotificationList": {
+        "emptyNotice": "Bado hakuna arifa."
+    },
+    "NotificationsNavLink": {
+        "label": "Arifa",
+        "unseen": "Arifa ambazo hazijaonekana"
+    },
+    "NotificationTestPanel": {
+        "intro": "Jitumie arifa ya majaribio (msimamizi). Inapaswa kuonekana mara moja kama ujumbe mfupi na katika orodha ya arifa.",
+        "button": "Tuma Arifa ya Majaribio",
+        "sending": "Inatuma…",
+        "sent": "Imetumwa!",
+        "failed": "Imeshindwa"
+    },
+    "MessageDot": {
+        "label": "Ujumbe ambao haujasomwa"
+    },
+    "NavAlertDot": {
+        "label": "Kuna jambo jipya kwenye menyu"
+    },
+    "Message": {
+        "encrypted": "Ujumbe uliosimbwa",
+        "decryptionFailed": "Ujumbe huu ulisimbwa kwa funguo ambazo hazipo tena."
+    },
+    "MessageComposer": {
+        "bodyLabel": "Ujumbe",
+        "bodyPlaceholder": "Andika ujumbe",
+        "send": "Tuma"
+    },
+    "MessageList": {
+        "emptyNotice": "Bado hakuna ujumbe."
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "Someaneni msimbo huu kwa njia nyingine - kwa sauti, ana kwa ana, au kwenye simu. Ukilingana pande zote mbili, hakuna aliye kati yenu.",
+        "changed": "Msimbo huu umebadilika tangu ulipouangalia. Hii hutokea mmoja wenu anapoweka upya funguo za usimbaji - lakini pia ndivyo mtu anayesoma mazungumzo haya angeonekana. Linganisha msimbo mpya naye kabla ya kuuamini.",
+        "verified": "Umeangalia msimbo huu."
+    },
+    "MessageKeyVerifyButton": {
+        "label": "Weka kuwa Umethibitishwa"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "Kaulisiri",
+        "passphrasePlaceholder": "Kaulisiri ya kufungua mazungumzo haya",
+        "submit": "Fungua"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "Ujumbe wa mwisho ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "Midia nyeti"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "Onyesha Midia Nyeti kwa Chaguo-msingi"
+    },
+    "Report": {
+        "targetTypes": {
+            "post": "Chapisho",
+            "message": "Ujumbe",
+            "user": "Mtumiaji"
+        },
+        "summary": {
+            "before": "{type} #{id} imeripotiwa na ",
+            "after": ""
+        },
+        "reasonLine": "Sababu: {reason}",
+        "banReporterLabel": "Mpige Marufuku Mtoa Ripoti",
+        "banReportedUserLabel": "Mpige Marufuku Mtumiaji Aliyeripotiwa",
+        "deleteLabel": "Futa {type}",
+        "reportedImageAlt": "Picha iliyoripotiwa",
+        "attachmentUnavailable": "Kiambatisho kilichoripotiwa hakipatikani tena.",
+        "viewAttachment": "Tazama Kiambatisho Kilichoripotiwa",
+        "missing": {
+            "noSnapshot": "Maudhui yaliyoripotiwa hayapatikani tena.",
+            "unknownType": "Aina ya maudhui haijulikani."
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "Hakuna ripoti."
+    },
+    "ModQueueLinks": {
+        "intro": "Foleni ni ndefu kiasi cha kusomwa ukurasa mmoja kwa wakati, hivyo zina kurasa zake.",
+        "reportsLabel": "Ripoti",
+        "bannedUsersLabel": "Watumiaji Waliopigwa Marufuku"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "Bado hakuna msimamizi aliyefanya chochote."
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "Hakuna vipengele vinavyovuma vilivyopigwa marufuku."
+    },
+    "BlockedServerList": {
+        "emptyNotice": "Hakuna seva zilizozuiwa."
+    },
+    "RelayCard": {
+        "accepted": "Umejisajili ",
+        "waiting": "Inasubiri relay ikubali - umejisajili "
+    },
+    "RelayList": {
+        "emptyNotice": "Hujajisajili kwa relay yoyote. Hakuna kinachofika hapa isipokuwa kile wanachama wanafuata."
+    },
+    "RelayFeedList": {
+        "emptyNotice": "Bado hakuna kilichopita kwenye relay. Machapisho huonekana hapa seva za upande mwingine zinapoyachapisha."
+    },
+    "RelaySubscribeForm": {
+        "legend": "Jisajili kwa Relay",
+        "explainerOne": "Relay ni mkondo wa pamoja: kila chapisho la umma kutoka kila seva nyingine iliyojisajili hufika hapa, na ya seva hii hutoka kwenda kwa zote. Hivi ndivyo seva mpya inavyopata watu, kwa kuwa shirikisho kwa kawaida hubeba tu kile ambacho mtu hapa tayari anafuata.",
+        "explainerTwo": "Mzigo si wako kutabiri - ni chochote seva hizo zinachochapisha, wiki moja kimya na inayofuata maelfu ya machapisho kwa saa, na hifadhi, foleni ya uwasilishaji na foleni ya usimamizi vyote vinaubeba. Machapisho ya relay hayaingii katika milisho mikuu na ya marafiki; huenda kwenye Mlisho wa Relay, ambao watu hufungua kwa makusudi.",
+        "addressLabel": "Anwani ya Relay",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "Jisajili"
+    },
+    "RelayFollowObjectField": {
+        "label": "Mtindo wa Usajili",
+        "options": {
+            "public": "Fuata mkondo wa umma (relay nyingi zinatarajia hivi)",
+            "actor": "Fuata mhusika wa relay yenyewe"
+        },
+        "retryNotice": "Ikiwa relay haikubali kamwe, jiondoe na ujaribu mtindo mwingine - baadhi ya programu za relay hutambua mmoja tu."
+    },
+    "SiteCounters": {
+        "members": "Wanachama: {count} ({joined} walijiunga katika siku {days} zilizopita)",
+        "activeMembers": "Wanachama waliokuwa hapa katika siku {days} zilizopita: {count} ({posted} walichapisha)",
+        "posts": "Machapisho yaliyoandikwa hapa: {count} ({recent} katika siku {days} zilizopita)",
+        "deliveries": "Uwasilishaji wa shirikisho katika siku {days} zilizopita: {delivered} ulifika, {undeliverable} umekatiwa tamaa",
+        "queued": "Yanasubiri kutoka: {count} ({failing} tayari yamekataliwa angalau mara moja)",
+        "pendingReads": "Machapisho yanayosubiri kusomwa kutoka seva nyingine: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "Endesha majaribio ya tovuti na uone matokeo. Huchukua sekunde chache, hivyo hufunguka kwenye ukurasa wake.",
+        "runLabel": "Endesha Majaribio"
+    },
+    "HelpArticle": {
+        "backLabel": "Rudi kwenye Msaada Wote"
+    },
+    "UserSearchList": {
+        "noSuggestions": "Hakuna mapendekezo sasa - mapendekezo hutoka kwa marafiki wa watu ambao tayari ni marafiki zako. Tafuta hapo juu kumpata mtu kwa jina.",
+        "noMatches": "Hakuna mtu hapa anayelingana na hilo."
+    },
+    "UserModButton": {
+        "make": "Fanya Msimamizi",
+        "remove": "Ondoa Usimamizi"
+    },
+    "UserUnbanButton": {
+        "name": "Ondoa Marufuku"
+    },
+    "TrendingEntityBanButton": {
+        "name": "Piga Marufuku"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "Ondoa Marufuku"
+    },
+    "ReportDismissButton": {
+        "name": "Ondoa"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "Weka kuwa Nyeti"
+    },
+    "ServerUnblockButton": {
+        "name": "Ondoa Kizuizi"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "Jiondoe"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "Batilisha"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: Yanapita",
+        "failing": "{suite}: Yanashindwa"
+    },
+    "PageTitle": {
+        "about": "Kuhusu",
+        "adminBanned": "Watumiaji Waliopigwa Marufuku",
+        "adminModSettings": "Mipangilio ya Wasimamizi",
+        "adminReports": "Ripoti",
+        "adminSettings": "Mipangilio ya Msimamizi",
+        "adminTests": "Majaribio",
+        "authGoogleCallbackAccountDeleted": "Akaunti Imefutwa",
+        "authGoogleCallbackDeleteAccount": "Futa Akaunti",
+        "authGoogleCallbackLogin": "Ingia",
+        "bookmarks": "Alamisho",
+        "checkInbox": "Angalia Kikasha Chako",
+        "drafts": "Rasimu na Yaliyopangwa",
+        "draftsEditDraft": "Hariri Rasimu",
+        "draftsEditScheduled": "Hariri Chapisho Lililopangwa",
+        "forgotPassword": "Umesahau Nenosiri",
+        "friendsFeed": "Mlisho wa Marafiki",
+        "help": "Msaada",
+        "helpDescription": "Miongozo na majibu ya kutumia tovuti.",
+        "locations": "Maeneo",
+        "locationsDescription": "Machapisho kutoka maeneo yaliyo karibu nawe.",
+        "locationsPlaceDescription": "Machapisho karibu na {place}.",
+        "login": "Ingia",
+        "loginVerificationCode": "Msimbo wa Uthibitishaji",
+        "map": "Ramani",
+        "mapDescription": "Ramani ya machapisho kutoka duniani kote - pata watu na vitu karibu nawe.",
+        "messages": "Ujumbe",
+        "messagesWithUser": "Ujumbe na {name}",
+        "notifications": "Arifa",
+        "privacy": "Sera ya Faragha",
+        "quote": "Nukuu",
+        "relayFeed": "Mlisho wa Relay",
+        "relayFeedDescription": "Machapisho ya umma yanayofika kutoka relay ambazo seva hii imejisajili.",
+        "resetPassword": "Weka Upya Nenosiri",
+        "revertEmail": "Rudisha Mabadiliko ya Barua Pepe",
+        "search": "Tafuta",
+        "signup": "Jisajili",
+        "tags": "Lebo",
+        "tagsDescription": "Vinjari lebo zinazovuma na maarufu kwenye {siteTitle}.",
+        "tagsTagDescription": "Machapisho yenye lebo {tag} kwenye {siteTitle}.",
+        "terms": "Masharti ya Huduma",
+        "topics": "Mada",
+        "topicsDescription": "Mambo ambayo watu wanazungumzia kwenye {siteTitle} sasa.",
+        "topicsEntityDescription": "{typeLabel} - machapisho yanayotaja {entityTitle} kwenye {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} ambazo watu wanazungumzia kwenye {siteTitle} sasa.",
+        "unsubscribe": "Muhtasari wa Barua Pepe",
+        "userFriends": "Marafiki wa {name}",
+        "userFriendsDescription": "Marafiki wa {name} kwenye {siteTitle}",
+        "userSettings": "Mipangilio ya Mtumiaji",
+        "users": "Watumiaji",
+        "verifyEmail": "Thibitisha Barua Pepe"
+    },
+    "PostLikeButton": {
+        "like": "Penda",
+        "unlike": "Ondoa Kupenda"
+    },
+    "PostPinButton": {
+        "pin": "Bandika",
+        "unpin": "Ondoa Bandiko"
+    },
+    "PostQuoteButton": {
+        "name": "Nukuu"
+    },
+    "PostDeleteButton": {
+        "name": "Futa"
+    },
+    "PostEditButton": {
+        "name": "Hariri"
+    },
+    "ReportButton": {
+        "name": "Ripoti",
+        "prompt": "Kwa nini unaripoti hili?",
+        "unlockFirst": "Fungua mazungumzo kabla ya kuripoti ujumbe uliosimbwa.",
+        "unverifiable": "Ujumbe huu ulisimbwa kwa funguo ambazo hazipo tena, hivyo hauwezi kuthibitishwa au kuripotiwa."
+    },
+    "PostActionBar": {
+        "reply": "Jibu",
+        "replies": {
+            "one": "Majibu ({count})",
+            "other": "Majibu ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(imehaririwa)"
+    },
+    "RepliesHeading": {
+        "heading": "Majibu"
+    },
+    "PollVoteButton": {
+        "name": "Piga Kura"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "Tazama ",
+            "link": "maeneo zaidi",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "Machapisho Karibu Nawe",
+        "description": "Hii huonyesha machapisho yaliyo karibu zaidi na sehemu fulani - popote palipo na shughuli, hata kama ni mbali. Shiriki eneo lako kuanzia ulipo, au chagua sehemu kwenye ramani.",
+        "useMyLocation": "Tumia Eneo Langu",
+        "pickOnMap": "Chagua kwenye Ramani",
+        "searchPlaceholder": "Au andika jina la mahali…",
+        "searchLabel": "Tafuta Mahali",
+        "locating": "Inatafuta eneo…",
+        "noGeolocation": "Kivinjari chako hakiwezi kushiriki eneo.",
+        "locationError": "Haikuweza kupata eneo lako. Angalia ruhusa ya eneo ya kivinjari chako."
+    },
+    "PollDeadline": {
+        "final": "Matokeo ya mwisho",
+        "closes": {
+            "before": "Inafungwa ",
+            "after": ""
+        },
+        "days": {
+            "one": "baada ya siku {count}",
+            "other": "baada ya siku {count}"
+        },
+        "hours": {
+            "one": "baada ya saa {count}",
+            "other": "baada ya saa {count}"
+        },
+        "minutes": {
+            "one": "baada ya dakika {count}",
+            "other": "baada ya dakika {count}"
+        },
+        "underMinute": "chini ya dakika moja"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "mtu 1 alipiga kura ",
+            "other": "watu {count} walipiga kura "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Ingia",
+            "after": " ili kuchapisha."
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "Ingia",
+            "after": " ili kujibu."
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " alichapisha upya"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "Kwa kujibu ",
+            "after": ""
+        },
+        "untitled": "chapisho hili",
+        "jumpToStart": "Ruka hadi Mwanzo"
+    },
+    "TopicSummaryCard": {
+        "label": "Muhtasari uliotengenezwa na AI"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "Karibu ",
+            "after": ""
+        },
+        "paragraphs": [
+            "Andika kitu kwenye kisanduku hapa chini na kitaenda kwenye mlisho wako. Mtu yeyote anaweza kujibu, na jibu ni chapisho lenye mzazi, hivyo mazungumzo yanaweza kuingia ndani kadiri yanavyohitaji.",
+            "Ongeza watu kuwa marafiki na machapisho yao yataingia kwenye mlisho wako. Mlisho wa Ulimwengu - jina la tovuti juu kushoto - huonyesha kila kitu kilichoandikwa hapa, na hapo ndipo pa kumpata mtu wa kuongeza.",
+            "Tovuti hii ni sehemu ya Fediverse: unaweza kufuata akaunti za Mastodon na seva nyingine kwa majina yao kamili, na unachochapisha huwafikia wanaokufuata huko. Tafuta jina kama @someone@example.social na seva hii itaenda kuwatafuta.",
+            "Weka #lebo kwenye chapisho na litaonekana kwenye ukurasa wa lebo hiyo, na katika Zinazovuma ikiwa watu wa kutosha wanaiandika.",
+            "Ujumbe kati ya wanachama umesimbwa kutoka mwisho hadi mwisho - seva huhifadhi maandishi yaliyosimbwa ambayo haiwezi kusoma. Washa hilo katika Mipangilio.",
+            "Si lazima uchapishe mara moja: hifadhi rasimu, au weka wakati na itajichapisha. Vyote vinapatikana chini ya Rasimu na Yaliyopangwa."
+        ],
+        "more": {
+            "before": "Kuna mengi zaidi katika ",
+            "link": "kurasa za msaada",
+            "after": ", pamoja na jinsi ya kuhamisha akaunti hapa kutoka kwingine."
+        },
+        "dontShowAgain": "Usionyeshe Tena"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "Weka Emoji"
+    },
+    "LinkImagePreview": {
+        "alt": "Picha ya hakikisho la kiungo"
+    },
+    "LinkImageRemoveButton": {
+        "label": "Ondoa Picha"
+    },
+    "LinkItem": {
+        "alt": "Picha ya hakikisho la kiungo"
+    },
+    "MapScrubber": {
+        "play": "Cheza",
+        "pause": "Sitisha",
+        "cumulativeMode": "Hadi Wakati Huo",
+        "windowMode": "Wakati Huo Tu",
+        "rangeLabel": "Onyesha Machapisho hadi Tarehe",
+        "cumulativeLabel": {
+            "one": "Yamechapishwa hadi {date} — chapisho {count}",
+            "other": "Yamechapishwa hadi {date} — machapisho {count}"
+        },
+        "windowLabel": {
+            "one": "Yamechapishwa karibu na {date} — chapisho {count}",
+            "other": "Yamechapishwa karibu na {date} — machapisho {count}"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "Chapisho la {name}",
+        "pageTitleUntitled": "Chapisho",
+        "imageAltByAuthor": "Picha iliyochapishwa na {name}",
+        "imageAltUntitled": "Picha"
+    },
+    "PostBookmarkButton": {
+        "remove": "Ondoa Alamisho",
+        "add": "Weka Alamisho"
+    },
+    "PostRepostButton": {
+        "undo": "Tendua Uchapishaji Upya",
+        "repost": "Chapisha Upya"
+    },
+    "QuotedPost": {
+        "viewLink": "Tazama Chapisho Lililonukuliwa"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "Maombi Yanayosubiri"
+    },
+    "ScrollToTopButton": {
+        "label": "Rudi Juu"
+    },
+    "SearchClearButton": {
+        "label": "Futa Utafutaji"
+    },
+    "SitePolicyLinks": {
+        "terms": "Masharti ya Huduma",
+        "privacy": "Sera ya Faragha"
+    },
+    "SkipLink": {
+        "label": "Ruka hadi Maudhui"
+    },
+    "TopicHeading": {
+        "searchLink": "Tafuta Hiki",
+        "noPosts": "Hakuna machapisho yanayotaja hiki sasa."
+    },
+    "PopularEntityList": {
+        "emptyNotice": "Bado hakuna chochote cha aina hii kilichoandikwa."
+    },
+    "TrendingEntitySection": {
+        "heading": "Zinazovuma"
+    },
+    "PostLocationLink": {
+        "title": "Onyesha Mahali Hapa kwenye Ramani",
+        "between": ", "
+    },
+    "RelativeTime": {
+        "justNow": "sasa hivi",
+        "minutes": {
+            "one": "dakika {count} iliyopita",
+            "other": "dakika {count} zilizopita"
+        },
+        "hours": {
+            "one": "saa {count} iliyopita",
+            "other": "saa {count} zilizopita"
+        },
+        "days": {
+            "one": "siku {count} iliyopita",
+            "other": "siku {count} zilizopita"
+        }
+    },
+    "ThemeSelector": {
+        "label": "Mandhari",
+        "themes": {
+            "system": "Lingana na Mfumo",
+            "light": "Nyeupe Rahisi",
+            "dark": "Nyeusi Rahisi",
+            "sepia": "Sepia",
+            "midnight": "Usiku wa Manane",
+            "sunset": "Machweo",
+            "rose": "Waridi",
+            "forest": "Msitu",
+            "ocean": "Bahari",
+            "lavender": "Lavenda",
+            "gold": "Dhahabu",
+            "hacker": "Hacker",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "Kijivu"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "Tafsiri haijasanidiwa kwenye seva hii.",
+        "nothing": "Hakuna chochote hapa cha kutafsiri.",
+        "unknownSource": "Bado hakuna aliyejua chapisho hili liko katika lugha gani, hivyo haliwezi kutafsiriwa.",
+        "alreadyReadable": "Chapisho hili tayari liko katika lugha hiyo.",
+        "unsupportedPair": "Seva hii bado haiwezi kutafsiri lugha hiyo."
+    },
+    "LanguagePrompt": {
+        "question": "Ungependa kutazama tovuti kwa Kiswahili?",
+        "accept": "Ndiyo",
+        "decline": "La, asante"
+    },
+    "LanguageSelector": {
+        "label": "Lugha",
+        "legend": "Lugha"
+    },
+    "EmailDigest": {
+        "subject": "Ulichokosa kwenye {site}",
+        "greeting": "Habari {name},",
+        "whileAway": "Ulipokuwa mbali:",
+        "repeatedTimes": {
+            "one": " (mara {count})",
+            "other": " (mara {count})"
+        },
+        "moreMissed": {
+            "one": "na arifa {count} zaidi",
+            "other": "na arifa {count} zaidi"
+        },
+        "messagesWaiting": {
+            "one": "Una ujumbe unaokusubiri",
+            "other": "Una ujumbe {count} unaokusubiri"
+        },
+        "postsInFeed": {
+            "one": "Chapisho moja jipya kwenye mlisho wako",
+            "other": "Machapisho {count} mapya kwenye mlisho wako"
+        },
+        "unsubscribeInstructions": "Ili kusimamisha barua hizi, fungua kiungo hiki - ni bofyo moja na halihitaji nenosiri:",
+        "comeSeeWhatIsNew": "Njoo uone kilicho kipya",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "Acha kunitumia hizi",
+            "after": " - bofyo moja, hakuna nenosiri linalohitajika."
+        }
+    },
+    "EmailVerification": {
+        "subject": "Thibitisha anwani yako ya barua pepe",
+        "greeting": "Habari {name},",
+        "instructions": "Tafadhali thibitisha anwani yako ya barua pepe kwa kutembelea kiungo hiki:",
+        "htmlInstructions": "Tafadhali thibitisha anwani yako ya barua pepe kwa kubofya kiungo hapa chini:",
+        "buttonLabel": "Thibitisha Anwani ya Barua Pepe",
+        "expiresIn": {
+            "one": "Kiungo hiki kinaisha baada ya saa {count}.",
+            "other": "Kiungo hiki kinaisha baada ya saa {count}."
+        }
+    },
+    "PasswordReset": {
+        "subject": "Weka upya nenosiri lako",
+        "greeting": "Habari {name},",
+        "instructions": "Mtu (tunatumaini ni wewe) aliomba nenosiri liwekwe upya. Tembelea kiungo hiki kuchagua nenosiri jipya:",
+        "htmlInstructions": "Mtu (tunatumaini ni wewe) aliomba nenosiri liwekwe upya. Bofya kiungo hapa chini kuchagua nenosiri jipya:",
+        "buttonLabel": "Weka Upya Nenosiri",
+        "expiresIn": {
+            "one": "Kiungo hiki kinaisha baada ya saa {count}.",
+            "other": "Kiungo hiki kinaisha baada ya saa {count}."
+        },
+        "ignoreNotice": "Ikiwa hukuomba hili, unaweza kupuuza barua pepe hii."
+    },
+    "AboutPage": {
+        "mapAfter": ".",
+        "mapBefore": "Vigae vya ramani kutoka ",
+        "placesAfter": ".",
+        "placesBefore": "Majina ya mahali kutoka ",
+        "placesBetween": ", yenye leseni ",
+        "softwareAfter": " toleo {version}",
+        "softwareBefore": "Tovuti hii inaendesha ",
+        "translationAfter": ", ambayo inaendeshwa hapa badala ya mahali pengine popote.",
+        "translationBefore": "Tafsiri na "
+    },
+    "ActivityPubMove": {
+        "aliasMissing": "Akaunti hiyo bado haijaorodhesha hii kama jina mbadala. Ongeza {uri} kwenye \"pia inajulikana kama\" yake kwanza, kisha jaribu tena.",
+        "fetchFailed": "Imeshindwa kupata akaunti hiyo.",
+        "localOnly": "Akaunti ya ndani pekee ndiyo inayoweza kuhamishwa.",
+        "sameServer": "Akaunti hiyo iko kwenye seva hii. Kuhamisha daima huenda kati ya seva."
+    },
+    "AdminModSettings": {
+        "bannedTrendingEntities": "Vitu Vinavyoendelea Vilivyopigwa Marufuku",
+        "blockedServers": "Seva Zilizozuiwa",
+        "queues": "Foleni"
+    },
+    "AdminSettings": {
+        "about": "Kuhusu",
+        "botProtection": "Ulinzi dhidi ya Boti",
+        "emailDigest": "Muhtasari wa Barua Pepe",
+        "favicon": "Favicon",
+        "frontPageImage": "Picha ya Ukurasa wa Mbele",
+        "googleAuth": "Uthibitishaji wa Google",
+        "mail": "Barua Pepe",
+        "map": "Ramani",
+        "moderationLog": "Kumbukumbu ya Usimamizi",
+        "notificationTest": "Jaribio la Arifa",
+        "openRouter": "AI (OpenRouter)",
+        "privacyPolicy": "Sera ya Faragha",
+        "relays": "Relay",
+        "services": "Huduma",
+        "statistics": "Takwimu",
+        "termsOfService": "Masharti ya Huduma",
+        "tests": "Vipimo"
+    },
+    "Api": {
+        "genericError": "Hitilafu imetokea. Tafadhali jaribu tena.",
+        "networkError": "Hitilafu ya mtandao. Tafadhali angalia muunganisho wako na ujaribu tena."
+    },
+    "AuthDivider": {
+        "label": "au"
+    },
+    "CarouselController": {
+        "autoplay": "Uchezaji Kiotomatiki",
+        "exitFullscreen": "Ondoka Skrini Nzima",
+        "fullscreen": "Skrini Nzima",
+        "stopAutoplay": "Simamisha Uchezaji Kiotomatiki"
+    },
+    "ClientStatus": {
+        "avatarAlt": "Picha yako ya wasifu",
+        "chooseFile": "Chagua faili kwanza.",
+        "deleteAccount": "Futa akaunti yako? Machapisho, majibu, na ujumbe wako vitapotea kabisa - hili haliwezi kutenduliwa.",
+        "done": "Imekamilika",
+        "emailUnchanged": "Hiyo tayari ni barua pepe yako.",
+        "failed": "Imeshindwa",
+        "faviconSaved": "Mipangilio imehifadhiwa.",
+        "followersNotified": "Wafuasi wako wameombwa kukufuata kwenye akaunti mpya.",
+        "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
+        "linkCopyFailed": "Imeshindwa kunakili kiungo",
+        "login": "Ingia",
+        "mapSaved": "Mipangilio ya ramani imehifadhiwa.",
+        "markedVerified": "Imetiwa alama kama iliyothibitishwa.",
+        "notificationsBlocked": "Arifa zimezuiwa kwa tovuti hii katika mipangilio ya kivinjari chako.",
+        "notificationsEnableFailed": "Imeshindwa kuwezesha arifa.",
+        "notificationsOff": "Arifa zimezimwa kwa kifaa hiki.",
+        "notificationsOn": "Arifa zimewashwa kwa kifaa hiki.",
+        "openRouterSaved": "Mipangilio ya OpenRouter imehifadhiwa.",
+        "passwordChanged": "Nenosiri limebadilishwa!",
+        "passwordReset": "Nenosiri lako limewekwa upya. Sasa unaweza kuingia.",
+        "passwordUnchanged": "Hilo tayari ni nenosiri lako - hakuna kilichobadilishwa.",
+        "pinSaved": "Imebandikwa kwenye wasifu wako.",
+        "profileSaved": "Wasifu umehifadhiwa.",
+        "pushUnavailable": "Push haipatikani kwenye seva hii.",
+        "reported": "Imeripotiwa",
+        "resetSent": "Ikiwa anwani hiyo ya barua pepe ipo kwenye rekodi, kiungo cha kuweka upya nenosiri kimetumwa. Kama hukioni, angalia folda yako ya taka/spam.",
+        "revokeDevice": "Batilisha kifaa hiki? Kitatolewa nje na italazimika kuingia tena.",
+        "revoking": "Inabatilisha…",
+        "saved": "Imehifadhiwa.",
+        "sent": "Imetumwa!",
+        "settingsSaved": "Mipangilio imehifadhiwa.",
+        "signOutEverywhere": "Hii itakutoa kwenye kila kifaa, ikiwa ni pamoja na hiki. Endelea?",
+        "signingOut": "Inatoka…",
+        "unlockConversation": "Fungua mazungumzo kwanza.",
+        "unlockFailed": "Nenosiri hilo halifungui ujumbe wako.",
+        "unpinSaved": "Imeondolewa kwenye kubandika."
+    },
+    "CodeBlockCopy": {
+        "copied": "Imenakiliwa!",
+        "copy": "Nakili",
+        "copyLabel": "Nakili Msimbo kwenye Ubao wa Kunakili"
+    },
+    "ConversationList": {
+        "emptyNotice": "Bado huna mazungumzo yoyote."
+    },
+    "Dialog": {
+        "cancel": "Ghairi",
+        "confirm": "Sawa"
+    },
+    "EncryptedMessagesClient": {
+        "enabled": "Ujumbe uliosimbwa umewashwa.",
+        "minimumPassphrase": "Tumia nenosiri lenye angalau herufi {count}.",
+        "newKeys": "Funguo mpya zimeundwa.",
+        "passphraseChanged": "Nenosiri limebadilishwa.",
+        "passphraseIsPassword": "Nenosiri lako haliwezi kuwa nenosiri la akaunti yako - lile linatumwa kwa seva, na hili halipaswi kutumwa kamwe.",
+        "passphraseTooRepetitive": "Nenosiri hilo linarudia herufi chache tofauti mno kuwa na thamani. Tumia kirai kirefu zaidi.",
+        "passphrasesMismatch": "Manenosiri hayalingani.",
+        "wrongPassphrase": "Hilo si nenosiri lako la sasa."
+    },
+    "EntityModerator": {
+        "ban": "Piga Marufuku",
+        "banPlaceholder": "Sababu ya marufuku (inahitajika)",
+        "unban": "Ondoa marufuku kwa \"{entity}\"? Itaweza kuendelea tena."
+    },
+    "ErrorDocument": {
+        "notFoundMessage": "Ukurasa unaoutafuta haupo.",
+        "notFoundTitle": "Haikupatikana",
+        "profileLookupRateLimit": "Wasifu wengi mno wametazamwa sasa hivi. Tafadhali subiri kidogo na ujaribu tena.",
+        "tooManyRequestsTitle": "Maombi Mengi Mno"
+    },
+    "FriendSearchBox": {
+        "placeholder": "Tafuta Marafiki…"
+    },
+    "GoogleAuthCallbackPage": {
+        "accountCannotBeDeleted": "Akaunti hii haiwezi kufutwa.",
+        "banned": "Akaunti yako imepigwa marufuku.",
+        "bannedWithReason": "Akaunti yako imepigwa marufuku. Sababu: {reason}",
+        "deleted": "Akaunti yako imefutwa kabisa.",
+        "deletionCancelled": "Ufutaji wa akaunti umeghairiwa.",
+        "deletionFailed": "Ufutaji wa akaunti haukuweza kukamilika. Tafadhali jaribu tena.",
+        "emailMismatch": "Akaunti hiyo ya Google haiendani na anwani ya barua pepe ya akaunti yako.",
+        "emailUnavailable": "Anwani hii ya barua pepe haipatikani kwa kuingia.",
+        "home": "Rudi Nyumbani",
+        "identityFailed": "Utambulisho wako wa Google haukuweza kuthibitishwa. Tafadhali jaribu tena.",
+        "notConfigured": "Kuingia kwa Google hakujasanidiwa.",
+        "rateLimited": "Majaribio mengi mno ya kuingia kutoka kwa mtandao wako. Tafadhali jaribu tena baadaye.",
+        "signin": "Rudi kwa Kuingia",
+        "signinCancelled": "Kuingia kwa Google kumeghairiwa.",
+        "signinFailed": "Kuingia kwa Google hakukukamilika. Tafadhali jaribu tena.",
+        "userSettings": "Rudi kwa Mipangilio ya Mtumiaji",
+        "verificationFailed": "Kuingia kwa Google hakukuweza kuthibitishwa. Tafadhali jaribu tena."
+    },
+    "ImageItem": {
+        "alt": "Picha"
+    },
+    "IndexPage": {
+        "rssFeed": "Mlisho wa RSS"
+    },
+    "InfiniteScroller": {
+        "end": "Umefika mwisho.",
+        "failed": "Imeshindwa kupakia zaidi. Tafadhali pakia upya ukurasa.",
+        "loading": "Inapakia"
+    },
+    "LocationsPage": {
+        "postsNear": "Machapisho karibu na {place}"
+    },
+    "LoginClient": {
+        "verificationFailed": "Imeshindwa kupakia uthibitishaji. Tafadhali jaribu tena baada ya muda mfupi.",
+        "verificationRequired": "Majaribio mengi mno kwenye akaunti hii. Tafadhali kamilisha uthibitishaji ili kuendelea."
+    },
+    "LoginPage": {
+        "forgotPassword": "Umesahau Nenosiri?",
+        "signup": "Unahitaji akaunti? Jisajili",
+        "startOver": "Anza Upya"
+    },
+    "MiscellaneousClient": {
+        "checking": "Inaangalia…",
+        "deleteReportedContent": "Futa maudhui haya kabisa? Kufuta chapisho pia huondoa majibu yake yote.",
+        "justNow": "sasa hivi",
+        "reloadError": "Hitilafu imetokea. Jaribu kupakia upya ukurasa.",
+        "report": "Ripoti",
+        "seeMore": "Ona Zaidi…",
+        "unbanUser": "Ondoa marufuku kwa mtumiaji huyu? Maudhui yao na kuingia kwao kutafanya kazi tena."
+    },
+    "OtherUserClient": {
+        "addFriend": "Ongeza Rafiki",
+        "ban": "Piga Marufuku",
+        "banConfirm": "Piga marufuku mtumiaji huyu? Hii itaficha maudhui yao yote na kuzuia kuingia kwao. Wataona sababu hii kwenye fomu ya kuingia.",
+        "banPlaceholder": "Sababu ya marufuku (inahitajika)",
+        "banned": "Amepigwa Marufuku",
+        "blockConfirm": "Zuia mtumiaji huyu? Hii itaondoa urafiki wowote uliopo.",
+        "cancelRequest": "Ghairi Ombi",
+        "removeFriendConfirm": "Ondoa rafiki huyu?",
+        "viewFriends": "Ona Marafiki"
+    },
+    "PinnedPostSection": {
+        "heading": "Yaliyobandikwa"
+    },
+    "Poll": {
+        "vote": "Piga Kura",
+        "votes": {
+            "one": "kura 1",
+            "other": "kura {count}"
+        }
+    },
+    "PostClient": {
+        "autoplay": "Uchezaji Kiotomatiki",
+        "deleteConfirm": "Futa chapisho hili?",
+        "fullscreen": "Skrini Nzima",
+        "image": "Picha",
+        "machineTranslation": "Tafsiri ya mashine",
+        "mapTitle": "Onyesha mahali hapa kwenye ramani",
+        "next": "Ijayo",
+        "previous": "Iliyotangulia",
+        "sensitiveMedia": "Maudhui nyeti"
+    },
+    "PostEditor": {
+        "altText": "Maandishi Mbadala",
+        "cancel": "Ghairi",
+        "save": "Hifadhi",
+        "saved": "Mabadiliko yamehifadhiwa.",
+        "sensitive": "Nyeti"
+    },
+    "PostFields": {
+        "altText": "Maandishi mbadala - eleza picha hii",
+        "contentWarning": "Onyo la Maudhui (si lazima)",
+        "link": "Kiungo (si lazima)",
+        "title": "Kichwa (si lazima)"
+    },
+    "PostMapClient": {
+        "byAuthor": "na {name}",
+        "clearPin": "Ondoa Alama",
+        "postHere": "Chapisha Hapa",
+        "postsNearby": "Machapisho Karibu",
+        "viewPost": "Ona Chapisho"
+    },
+    "PostSearchBox": {
+        "placeholder": "Tafuta Machapisho…"
+    },
+    "QuillEditor": {
+        "blockquote": "Dondoo",
+        "bold": "Nzito",
+        "bulletList": "Orodha ya Vitone",
+        "clearFormatting": "Futa Uumbizaji",
+        "codeBlock": "Kizuizi cha Msimbo",
+        "formula": "Fomula",
+        "heading": "Kichwa {count}",
+        "inlineCode": "Msimbo wa Ndani",
+        "italic": "Mlalo",
+        "link": "Kiungo",
+        "list": "Orodha",
+        "numberedList": "Orodha yenye Namba",
+        "postText": "Maandishi ya Chapisho",
+        "strikethrough": "Mkwaruzo",
+        "underline": "Mstari wa Chini"
+    },
+    "Relay": {
+        "alreadySubscribed": "Tayari umejisajili kwenye relay hiyo.",
+        "blocked": "Seva hiyo imezuiwa. Iondolee kizuizi kwanza ikiwa unakusudia kujisajili nayo.",
+        "invalidAddress": "Hiyo si anwani ya relay.",
+        "noSigningKey": "Seva hii haina funguo ya kusaini ya ActivityPub, hivyo haiwezi kujisajili kwa chochote.",
+        "notActor": "Anwani hiyo haikujibu kwa muigizaji wa Fediverse.",
+        "unknownStyle": "Mtindo wa usajili usiojulikana."
+    },
+    "RememberedDeviceList": {
+        "emptyNotice": "Hakuna vifaa vilivyokumbukwa. Vifaa ambapo unachagua \"Nikumbuke\" wakati wa kuingia vinaonekana hapa."
+    },
+    "RevertEmailPage": {
+        "confirm": "Rejesha mabadiliko ya hivi karibuni ya anwani ya barua pepe kwenye akaunti yako? Hii pia hutoa kila kifaa nje ya akaunti yako.",
+        "forgotPassword": "Umesahau Nenosiri?",
+        "invalid": "Kiungo hicho cha kurejesha si sahihi au kimeisha muda wake.",
+        "login": "Ingia",
+        "reverted": "Anwani yako ya barua pepe imerejeshwa na kila kifaa kimetolewa nje ya akaunti yako.",
+        "securityAdvice": "Ikiwa hujui jinsi hili lilivyotokea, badilisha nenosiri lako mara tu utakapoingia tena."
+    },
+    "RouteNotices": {
+        "cannotMessage": "Huwezi kutuma ujumbe kwa mtumiaji huyu.",
+        "noHashtags": "Bado hakuna hashtagi.",
+        "passwordResetInvalid": "Kiungo hicho cha kuweka upya nenosiri si sahihi au kimeisha muda wake."
+    },
+    "SearchClient": {
+        "noBannedUsers": "Hakuna watumiaji waliopigwa marufuku.",
+        "noBannedUsersMatch": "Hakuna mtumiaji aliyepigwa marufuku anayelingana na utafutaji huo."
+    },
+    "SetupPage": {
+        "databaseAdminNotice": "Ikiwa unaendesha tovuti hii: muunganisho wa hifadhidata ukitumia vitambulisho vilivyo kwenye .env unashindwa - hakikisha seva ya hifadhidata inaendesha na kwamba vitambulisho hivyo bado ni halali. Ukurasa huu unaonyeshwa badala ya mchawi wa usanidi hasa ili kukatika kwa hifadhidata kusiweze kutumika kusanidi upya tovuti.",
+        "databaseUnavailable": "Tovuti haiwezi kufikia hifadhidata yake sasa hivi. Tafadhali jaribu tena baada ya dakika chache.",
+        "finished": "Usanidi umekamilika - hifadhidata, akaunti ya utekelezaji yenye ruhusa ndogo zaidi, na .env vyote vipo. Hatua tatu ndogo zimebaki:",
+        "fixPrerequisites": "Rekebisha haya kwenye seva, kisha pakia upya ukurasa huu ili kuangalia tena.",
+        "missingPrerequisites": "Karibu! Kabla usanidi haujaendelea, seva hii inakosa baadhi ya mahitaji ya awali:",
+        "welcome": "Karibu! Ukaguzi wote wa mazingira umepita. Kuwasilisha fomu hii kunaunda hifadhidata (kama haipo bado), akaunti ya hifadhidata ya utekelezaji yenye ruhusa ndogo zaidi na nenosiri la nasibu, na muundo, kisha kuandika yote kwenye .env. Vitambulisho vya msimamizi vinatumika mara moja tu kwa ajili ya usanidi na havihifadhiwi kamwe."
+    },
+    "StagedPostClient": {
+        "discardConfirm": "Tupa hii? Haikuchapishwa kamwe, na hii haihifadhi nakala.",
+        "discarded": "Imetupwa.",
+        "edit": "Hariri",
+        "published": "Imechapishwa."
+    },
+    "StagedPostList": {
+        "emptyNotice": "Hakuna rasimu au machapisho yaliyoratibiwa. Vidhibiti vya Hifadhi Rasimu na Ratibu vya kitunzi huweka machapisho hapa."
+    },
+    "TestResults": {
+        "installJavaScriptDependencies": "Endesha `npm install` kwenye mzizi wa hati ili kuwezesha vipimo vya JavaScript.",
+        "nodeFatal": "Vipimo vya JavaScript havikuweza kuanzishwa. Node.js ilipata hitilafu mbaya, uwezekano mkubwa kutokana na vizuizi vya SELinux kwenye seva ya wavuti.",
+        "nodeUnavailable": "Hakuna Node.js ambayo seva ya wavuti inaweza kutumia. Isakinishe kwa mfumo mzima (mfano dnf install nodejs) ili kuwezesha vipimo vya JavaScript - kidhibiti cha toleo ndani ya saraka ya nyumbani ya mtu (nvm) hakionekani hapa."
+    },
+    "Toast": {
+        "dismiss": "Ondoa"
+    },
+    "UnsubscribePage": {
+        "continue": "Endelea",
+        "invalid": "Kiungo hicho cha kujiondoa si kimoja kilichotolewa na tovuti hii.",
+        "resubscribed": "Muhtasari wako umerudi. Utasikia kutoka kwetu ukikosa muda na kuna kitu cha kukuambia.",
+        "unsubscribed": "Imekamilika - hakuna muhtasari mwingine. Bado utapata barua pepe ambazo tovuti hii inapaswa kukutumia, kama kuweka upya nenosiri."
+    },
+    "UserClient": {
+        "bio": "Ongeza wasifu mfupi…",
+        "deleteGoogleConfirm": "Futa akaunti yako? Machapisho, majibu, na ujumbe wako vitapotea kabisa - hili haliwezi kutenduliwa. Utathibitisha kwa kuingia kwa Google.",
+        "displayName": "Jina la Kuonyesha",
+        "joined": "Alijiunga {date}",
+        "save": "Hifadhi"
+    },
+    "UserRSSFeed": {
+        "title": "Machapisho ya {name} kwenye {site}"
+    },
+    "UserSearchBox": {
+        "placeholder": "Tafuta Mtumiaji…"
+    },
+    "UserSettings": {
+        "changeEmail": "Badilisha Barua Pepe",
+        "changePassword": "Badilisha Nenosiri",
+        "deleteAccount": "Futa Akaunti",
+        "emailDigests": "Muhtasari wa Barua Pepe",
+        "encryptedMessages": "Ujumbe Uliosimbwa",
+        "fediverse": "Fediverse",
+        "movingServers": "Kuhamisha Seva",
+        "pushNotifications": "Arifa za Push",
+        "rememberedDevices": "Vifaa Vilivyokumbukwa",
+        "sensitiveMedia": "Maudhui Nyeti",
+        "sessions": "Vipindi",
+        "theme": "Mandhari",
+        "twoFactorAuthentication": "Uthibitishaji wa Hatua Mbili",
+        "videoCalling": "Kupiga Simu ya Video"
+    },
+    "UsersPage": {
+        "fediverseAfter": ".",
+        "fediverseBefore": "Unaweza kufuata orodha ya watumiaji wa Fediverse kwenye ",
+        "settingsLink": "Mipangilio ya Mtumiaji"
+    },
+    "VerifyEmailPage": {
+        "confirm": "Thibitisha kwamba unataka kuthibitisha anwani hii ya barua pepe.",
+        "continue": "Endelea",
+        "invalid": "Kiungo hicho cha uthibitisho si sahihi au kimeisha muda wake.",
+        "verified": "Barua pepe yako imethibitishwa. Sasa unaweza kutumia {site}."
+    },
+    "VideoCall": {
+        "accept": "Kubali",
+        "call": "Piga Simu",
+        "calling": "Inapiga…",
+        "cancel": "Ghairi",
+        "connected": "Imeunganishwa",
+        "connecting": "Inaunganisha…",
+        "decline": "Kataa",
+        "declined": "Simu yako imekataliwa.",
+        "end": "Maliza Simu",
+        "incoming": "Simu ya Video Inayoingia",
+        "permissionError": "Imeshindwa kutumia kamera au kipaza sauti chako. Angalia ruhusa ya kivinjari kwa tovuti hii."
+    },
+    "ComposerClient": {
+        "addFiles": "Ongeza Faili",
+        "addFilesLabel": "Ongeza Faili - Picha, Video, au Sauti",
+        "addLocation": "Ongeza Mahali",
+        "addPoll": "Ongeza Kura",
+        "addSchedule": "Ongeza Ratiba",
+        "allowMultiple": "Ruhusu Chaguo Zaidi ya Moja",
+        "altTextFor": "Maandishi Mbadala ya {name}",
+        "attachmentCount": "faili {count} / {maximum}",
+        "createLegend": "Unda Chapisho",
+        "fileRemovedEmpty": "Faili imeondolewa. Hakuna kilichoambatishwa sasa.",
+        "filesAttached": "faili {count} zimeambatishwa.",
+        "filesLeft": "Faili imeondolewa. {count} zimebaki.",
+        "futurePublish": "Muda wa kuchapisha lazima uwe wa baadaye.",
+        "genericError": "Hitilafu imetokea. Tafadhali jaribu tena.",
+        "linkPreviewAttached": "Picha ya hakikisho la kiungo imeambatishwa. Kitufe cha Ondoa Picha kinaiondoa.",
+        "linkPreviewRemoved": "Picha ya hakikisho la kiungo imeondolewa.",
+        "locating": "Inatafuta mahali…",
+        "locationError": "Imeshindwa kupata mahali ulipo. Angalia ruhusa ya mahali ya kivinjari chako.",
+        "markdownActive": "Sasa unaandika kwenye kisanduku cha maandishi wazi cha Markdown.",
+        "markdownPostText": "Maandishi ya Chapisho, kwa Markdown",
+        "noGeolocation": "Kivinjari chako hakiwezi kushiriki mahali.",
+        "oneFileAttached": "Faili 1 imeambatishwa. Kila picha ina kisanduku cha kuieleza.",
+        "option": "Chaguo {count}",
+        "placeholder": "Nini kilicho akilini mwako?",
+        "plainTextHelp": "Maandishi wazi. Markdown inafanya kazi hapa: nyota kuzunguka neno huifanya nzito au mlalo, alama ya hashi mwanzoni mwa mstari huunda kichwa. Tumia kitufe cha \"Tumia Maandishi Kaka\" hapa chini kurudi kwenye upau wa vidhibiti vya uumbizaji.",
+        "poll": "Kura",
+        "pollDuration": "Muda Gani Kura Itaendelea",
+        "pollOption": "Chaguo la Kura {count}",
+        "post": "Chapisha",
+        "processing": "Faili zako za maudhui zinachakatwa na utajulishwa zitakapokuwa tayari kutazamwa. Ni salama kuondoka kwenye ukurasa huu.",
+        "publishDate": "Tarehe ya Kuchapisha",
+        "publishTime": "Muda wa Kuchapisha (Si Lazima)",
+        "remove": "Ondoa",
+        "removeFiles": "Ondoa Faili",
+        "removeLocation": "Ondoa Mahali",
+        "removePoll": "Ondoa Kura",
+        "removeSchedule": "Ondoa Ratiba",
+        "replies": "Majibu",
+        "replyLegend": "Jibu Chapisho Hili",
+        "richTextActive": "Sasa unaandika kwenye kihariri cha maandishi kaka.",
+        "richTextHelp": "Kihariri cha maandishi kaka. Ikiwa ungependa kuandika kwa maandishi wazi, tumia kitufe cha \"Tumia Markdown\" hapa chini kubadilisha hii kuwa kisanduku cha maandishi cha kawaida - chapisho lile lile, lililoandikwa kwa markdown kwa uumbizaji wowote unaotaka.",
+        "saveDraft": "Hifadhi Rasimu",
+        "savedDraft": "Imehifadhiwa kwenye Rasimu.",
+        "schedulePost": "Ratibu Chapisho",
+        "scheduledDraft": "Limeratibiwa - ona Rasimu na Zilizoratibiwa kwenye menyu.",
+        "sensitive": "Nyeti",
+        "submitFailed": "Imeshindwa kuwasilisha chapisho. Tafadhali jaribu tena.",
+        "tooManyFiles": "Chapisho linaweza kubeba faili {count} kwa upeo - zilizobaki hazikuongezwa.",
+        "useMarkdown": "Tumia Markdown",
+        "useRichText": "Tumia Maandishi Kaka",
+        "writeFirst": "Andika kitu kwanza - hakuna cha kuhifadhi bado."
+    },
+    "JSONResponse": {
+        "aBanReasonIsRequired": "Sababu ya marufuku inahitajika.",
+        "aBodyIsRequired": "Kandarasi inahitajika",
+        "aFriendRequestOrFriendshipAlreadyExistsWithThatUser": "Ombi la urafiki au urafiki tayari upo na mtumiaji huyo.",
+        "aMessageAndALanguageAreRequired": "Ujumbe na lugha vinahitajika",
+        "aMessageIsEitherPlaintextOrEncryptedNotBoth": "Ujumbe ni ama maandishi wazi au uliosimbwa, si vyote viwili.",
+        "aPollNeedsAQuestionInThePost": "Kura inahitaji swali kwenye chapisho.",
+        "aPostAndALanguageAreRequired": "Chapisho na lugha vinahitajika",
+        "aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne": "Chapisho linaweza kuwa na kura, faili zilizoambatishwa, au kiungo - si zaidi ya kimoja",
+        "aPostCanHaveEitherAttachedFilesOrALinkNotBoth": "Chapisho linaweza kuwa na ama faili zilizoambatishwa au kiungo, si vyote viwili",
+        "aQuotePostCanCarryImagesButNotVideoOrAudio": "Chapisho la dondoo linaweza kubeba picha, lakini si video au sauti.",
+        "aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost": "Chapisho la dondoo linahitaji maneno yake yenyewe - ili kupitisha chapisho bila mabadiliko, tumia Chapisha Tena.",
+        "addressInUse": "Anwani hiyo tayari inatumika.",
+        "alreadyLoggedIn": "Umeshaingia",
+        "alreadyVerified": "Imeshathibitishwa",
+        "altTextTooLong": "Maandishi mbadala ni marefu mno (upeo herufi {count})",
+        "altTextsDoNotMatchTheUploadedFiles": "Maandishi mbadala hayalingani na faili zilizopakiwa",
+        "altTextsMustMapItemsToText": "Maandishi mbadala lazima yalinganishe vitu na maandishi",
+        "banned": "Akaunti yako imepigwa marufuku.",
+        "bannedWithReason": "Akaunti yako imepigwa marufuku. Sababu: {reason}",
+        "bioMustBe500CharactersOrFewer": "Wasifu mfupi lazima uwe herufi 500 au chache.",
+        "captchaVerificationFailedPleaseTryAgain": "Uthibitisho wa captcha umeshindwa. Tafadhali jaribu tena.",
+        "chooseFileFirst": "Chagua faili kwanza.",
+        "chooseHowLongThePollShouldRun": "Chagua muda gani kura inapaswa kuendelea.",
+        "chooseImageFirst": "Chagua picha kwanza.",
+        "chooseMailTransport": "Chagua moja kati ya usafirishaji watatu walioorodheshwa.",
+        "chooseUsername": "Tafadhali chagua jina la mtumiaji.",
+        "couldNotDeliverTheFollowRequestToThatServer": "Imeshindwa kupeleka ombi la kufuata kwa seva hiyo.",
+        "credentialsRequired": "Jina la mtumiaji/barua pepe na nenosiri vinahitajika.",
+        "currentPasswordIsIncorrect": "Nenosiri la sasa si sahihi",
+        "deviceNotFound": "Kifaa hakikupatikana",
+        "displayNameMustBe50CharactersOrFewer": "Jina la kuonyesha lazima liwe herufi 50 au chache.",
+        "domainNotIp": "Elekeza hili kwenye jina la kikoa, si anwani ya IP.",
+        "emailVerificationRequired": "Uthibitisho wa barua pepe unahitajika",
+        "encryptedMessagingIsNotAvailableOnThisServer": "Ujumbe uliosimbwa haupatikani kwenye seva hii.",
+        "enterEmailedCode": "Ingiza msimbo tuliokupelekea kwa barua pepe.",
+        "fediverseSupportIsNotSetUpOnThisServerYet": "Msaada wa Fediverse haujasanidiwa kwenye seva hii bado.",
+        "fileTooLarge": "Moja ya faili zako ni kubwa kuliko upeo wa upakiaji wa {size}B.",
+        "forbidden": "Imekatazwa",
+        "givePassword": "Tafadhali toa nenosiri lako.",
+        "giveThatAMoment": "Ipe hilo muda kidogo.",
+        "giveUsernameOrEmail": "Tafadhali toa jina lako la mtumiaji au barua pepe.",
+        "giveValidEmail": "Tafadhali toa anwani sahihi ya barua pepe.",
+        "httpsMisconfigured": "Tovuti hii inahitaji HTTPS na imesanidiwa vibaya. Msimamizi lazima aweke SITE_URL kwa URL ya https://.",
+        "imageProcessingFailed": "Picha hiyo haikuweza kuchakatwa. Jaribu nyingine.",
+        "imageUnreadable": "Faili hiyo haikuweza kusomwa kama picha.",
+        "incorrectOrExpiredCode": "Msimbo huo si sahihi au umeisha muda wake.",
+        "incorrectUsernameEmailOrPassword": "Jina la mtumiaji/barua pepe au nenosiri si sahihi.",
+        "invalidAction": "Kitendo si sahihi",
+        "invalidCsrfToken": "Tokeni ya CSRF si sahihi",
+        "invalidDevice": "Kifaa si sahihi",
+        "invalidEmail": "Hiyo si anwani sahihi ya barua pepe.",
+        "invalidLocation": "Mahali si sahihi",
+        "invalidReport": "Ripoti si sahihi",
+        "invalidRequest": "Ombi si sahihi",
+        "invalidSeed": "Mbegu si sahihi",
+        "invalidSkinTone": "Rangi ya ngozi si sahihi",
+        "invalidTarget": "Lengo si sahihi",
+        "invalidTheme": "Mandhari si sahihi",
+        "invalidUrl": "URL si sahihi",
+        "linkTooLong": "Kiungo hicho ni kirefu mno.",
+        "listTooLong": "Orodha hiyo ni ndefu mno.",
+        "malformedEncryptedMessage": "Ujumbe uliosimbwa usio sahihi.",
+        "malformedKeyBackup": "Nakala ya funguo isiyo sahihi.",
+        "malformedLocation": "Mahali pasipo sahihi",
+        "malformedPublicKey": "Funguo ya umma isiyo sahihi.",
+        "malformedRequest": "Ombi lisilo sahihi",
+        "malformedSubscription": "Usajili usio sahihi",
+        "maximumFriends": "Umefikia upeo wa marafiki {count}.",
+        "maximumPinnedPosts": "Unaweza kubandika hadi machapisho {count} yako mwenyewe.",
+        "maximumScheduledDays": "Chapisho linaweza kuratibiwa kwa mbali zaidi ya siku {count}.",
+        "messageTooLong": "Ujumbe huo ni mrefu mno.",
+        "methodNotAllowed": "Njia haijaruhusiwa",
+        "missingQuery": "Hoja imekosekana",
+        "noLoginInProgressPleaseStartAgain": "Hakuna kuingia kunakoendelea. Tafadhali anza upya.",
+        "noSuchMessage": "Hakuna ujumbe kama huo",
+        "noValidHandles": "Hakuna majina sahihi ya mtumiaji yaliyopatikana hapa - lazima yaonekane kama mtumiaji@kikoa.",
+        "notATopic": "Si mada",
+        "notAccountPassword": "Hilo si nenosiri la akaunti yako.",
+        "notAllowed": "Haijaruhusiwa",
+        "notAuthorized": "Haijaidhinishwa",
+        "notCurrentPassword": "Hilo si nenosiri lako la sasa.",
+        "notFound": "Haikupatikana",
+        "notFriendsWithThatUser": "Si rafiki na mtumiaji huyo",
+        "notLoggedIn": "Haujaingia",
+        "notSubscribedToThatRelay": "Haujajisajili kwenye relay hiyo.",
+        "notYourPost": "Si chapisho lako",
+        "notYourRequest": "Si ombi lako",
+        "nothingToTranslate": "Hakuna cha kutafsiri",
+        "oneOfYourFilesFailedToUploadPleaseTryAgain": "Moja ya faili zako imeshindwa kupakiwa. Tafadhali jaribu tena.",
+        "onlyAPostCarriesMediaToClassify": "Ni chapisho pekee linalobeba maudhui ya kuainisha.",
+        "passwordMaximum": "Tumia herufi 72 kwa upeo.",
+        "passwordMinimum": "Tumia angalau herufi 8.",
+        "pollNeedsOptions": "Kura inahitaji angalau chaguo {count} tofauti.",
+        "pollNotFound": "Kura haikupatikana",
+        "postHasNoContent": "Chapisho halina maudhui",
+        "postNotFound": "Chapisho halikupatikana",
+        "postTextIsTooLong": "Maandishi ya chapisho ni marefu mno",
+        "pushIsNotConfiguredOnThisServer": "Push haijasanidiwa kwenye seva hii.",
+        "realDomain": "Elekeza hili kwenye jina halisi la kikoa.",
+        "reasonIsTooLong": "Sababu ni ndefu mno",
+        "reportNotFound": "Ripoti haikupatikana",
+        "requestBodyTooLarge": "Kandarasi ya ombi ni kubwa mno.",
+        "serverError": "Hitilafu ya seva",
+        "signalTooLarge": "Ishara ni kubwa mno",
+        "siteUpgrading": "Tovuti inaboreshwa. Tafadhali jaribu tena baada ya dakika chache.",
+        "thatAccountIsOnAnotherServerSoItCannotModerateThisOne": "Akaunti hiyo iko kwenye seva nyingine, hivyo haiwezi kusimamia hii.",
+        "thatAddressIsTooLong": "Anwani hiyo ni ndefu mno.",
+        "thatDoesNotLookLikeAServerName": "Hiyo haionekani kama jina la seva.",
+        "thatEntityIsNotBanned": "Kitu hicho hakijapigwa marufuku",
+        "thatIsAFediverseAccountFollowItInstead": "Hiyo ni akaunti ya Fediverse - ifuate badala yake.",
+        "thatIsNotAFediverseAccount": "Hiyo si akaunti ya Fediverse.",
+        "thatIsNotALanguageThisSiteHas": "Hiyo si lugha ambayo tovuti hii inayo.",
+        "thatIsThisServer": "Hiyo ni seva hii.",
+        "thatIsTooLongToConvert": "Hiyo ni ndefu mno kubadilishwa.",
+        "thatPasswordResetLinkIsInvalidOrHasExpired": "Kiungo hicho cha kuweka upya nenosiri si sahihi au kimeisha muda wake.",
+        "thatReportHasNoDeletableContent": "Ripoti hiyo haina maudhui yanayoweza kufutwa.",
+        "thatUserHasAlreadySentYouAFriendRequestAcceptItInstead": "Mtumiaji huyo tayari amekutumia ombi la urafiki - likubali badala yake.",
+        "thatUserHasReachedTheirFriendLimit": "Mtumiaji huyo amefikia kikomo chake cha marafiki.",
+        "thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted": "Mtumiaji huyo amefikia kikomo chake cha marafiki, hivyo ombi hili haliwezi kukubaliwa.",
+        "thatUserIsAlreadyBanned": "Mtumiaji huyo tayari amepigwa marufuku",
+        "thatUserIsNotBanned": "Mtumiaji huyo hajapigwa marufuku",
+        "thatVoteCouldNotBeRecorded": "Kura hiyo haikuweza kurekodiwa.",
+        "thePostBeingQuotedNoLongerExists": "Chapisho linalodondolewa halipo tena.",
+        "thePublishTimeHasToBeInTheFuture": "Muda wa kuchapisha lazima uwe wa baadaye.",
+        "theyAreNoLongerInThisConversation": "Hawapo tena kwenye mazungumzo haya.",
+        "thisAccountCanNoLongerLogIn": "Akaunti hii haiwezi kuingia tena.",
+        "thisAccountCanTBeDeleted": "Akaunti hii haiwezi kufutwa.",
+        "thisContentCanTBeReported": "Maudhui haya hayawezi kuripotiwa.",
+        "thisContentHasAlreadyBeenReviewedByAModerator": "Maudhui haya tayari yamekaguliwa na msimamizi.",
+        "thisConversationCanTTakeEncryptedMessages": "Mazungumzo haya hayawezi kupokea ujumbe uliosimbwa.",
+        "thisMessageCouldNotBeVerified": "Ujumbe huu haukuweza kuthibitishwa.",
+        "thisMessageIsTooLongToTranslate": "Ujumbe huu ni mrefu mno kutafsiriwa.",
+        "thisPostIsTooLongToTranslate": "Chapisho hili ni refu mno kutafsiriwa.",
+        "tooManyAttemptsPleaseTryAgainLater": "Majaribio mengi mno. Tafadhali jaribu tena baadaye.",
+        "tooManyAttemptsPleaseWaitAMoment": "Majaribio mengi mno. Tafadhali subiri kidogo.",
+        "tooManyAvatarChangesInAShortTimePleaseTryAgainLater": "Mabadiliko mengi mno ya picha ya wasifu kwa muda mfupi. Tafadhali jaribu tena baadaye.",
+        "tooManyChangesAtOncePleaseWaitAMoment": "Mabadiliko mengi mno kwa wakati mmoja. Tafadhali subiri kidogo.",
+        "tooManyChecksPleaseWaitAMoment": "Ukaguzi mwingi mno. Tafadhali subiri kidogo.",
+        "tooManyEmailChangesInAShortTimePleaseTryAgainLater": "Mabadiliko mengi mno ya barua pepe kwa muda mfupi. Tafadhali jaribu tena baadaye.",
+        "tooManyFollowRequestsPleaseWaitABitAndTryAgain": "Maombi mengi mno ya kufuata. Tafadhali subiri kidogo na ujaribu tena.",
+        "tooManyFollowsPleaseWaitABitAndTryAgain": "Ufuataji mwingi mno. Tafadhali subiri kidogo na ujaribu tena.",
+        "tooManyLoginAttemptsForThisAccountPleaseTryAgainLater": "Majaribio mengi mno ya kuingia kwa akaunti hii. Tafadhali jaribu tena baadaye.",
+        "tooManyLoginAttemptsPleaseTryAgainLater": "Majaribio mengi mno ya kuingia. Tafadhali jaribu tena baadaye.",
+        "tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain": "Ujumbe mwingi mno umetumwa kwa muda mfupi. Tafadhali subiri kidogo na ujaribu tena.",
+        "tooManyPasswordResetAttemptsPleaseTryAgainLater": "Majaribio mengi mno ya kuweka upya nenosiri. Tafadhali jaribu tena baadaye.",
+        "tooManyPasswordResetRequestsPleaseTryAgainLater": "Maombi mengi mno ya kuweka upya nenosiri. Tafadhali jaribu tena baadaye.",
+        "tooManyReportsPleaseTryAgainLater": "Ripoti nyingi mno. Tafadhali jaribu tena baadaye.",
+        "tooManyRequestsPleaseSlowDown": "Maombi mengi mno. Tafadhali punguza kasi.",
+        "tooManyRequestsPleaseTryAgainLater": "Maombi mengi mno. Tafadhali jaribu tena baadaye.",
+        "tooManySearchesInAShortTime": "Utafutaji mwingi mno kwa muda mfupi.",
+        "tooManySearchesPleaseSlowDown": "Utafutaji mwingi mno. Tafadhali punguza kasi.",
+        "tooManySignups": "Usajili mwingi mno kutoka kwa mtandao wako. Tafadhali jaribu tena baadaye.",
+        "tooManyTranslationsInAShortTimePleaseWaitABitAndTryAgain": "Tafsiri nyingi mno kwa muda mfupi. Tafadhali subiri kidogo na ujaribu tena.",
+        "tooManyVerificationEmailsSentPleaseTryAgainLater": "Barua pepe nyingi mno za uthibitisho zimetumwa. Tafadhali jaribu tena baadaye.",
+        "tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain": "Upakiaji mwingi mno wa video/sauti kwa muda mfupi. Tafadhali subiri kidogo na ujaribu tena.",
+        "translationIsNotAvailableOnThisServer": "Tafsiri haipatikani kwenye seva hii.",
+        "translationIsNotAvailableRightNowPleaseTryAgainLater": "Tafsiri haipatikani sasa hivi. Tafadhali jaribu tena baadaye.",
+        "twoFactorAuthenticationIsNotOn": "Uthibitishaji wa hatua mbili haujawashwa.",
+        "unableToCallThisUser": "Imeshindwa kupiga simu mtumiaji huyu.",
+        "unableToFollowThatAccount": "Imeshindwa kufuata akaunti hiyo.",
+        "unableToLikeThisPost": "Imeshindwa kupenda chapisho hili",
+        "unableToOpenThisConversation": "Imeshindwa kufungua mazungumzo haya.",
+        "unableToReplyToThisPost": "Imeshindwa kujibu chapisho hili",
+        "unableToRepostThis": "Imeshindwa kuchapisha tena hii.",
+        "unableToSendFriendRequest": "Imeshindwa kutuma ombi la urafiki.",
+        "unableToSendMessage": "Imeshindwa kutuma ujumbe.",
+        "unableToVoteOnThisPoll": "Imeshindwa kupiga kura kwenye kura hii",
+        "unknownConversion": "Ubadilishaji usiojulikana",
+        "unknownTopicType": "Aina ya mada isiyojulikana",
+        "unlockTheConversationToReportAnEncryptedMessage": "Fungua mazungumzo ili kuripoti ujumbe uliosimbwa.",
+        "uploadMissing": "Upakiaji huo haukufika. Tafadhali jaribu tena.",
+        "uploadTooLarge": "Upakiaji wako ni mkubwa mno. Ukubwa wa juu wa upakiaji jumla ni {size}B.",
+        "uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater": "Upakiaji haupatikani kwa muda - seva ina uhifadhi mdogo. Tafadhali jaribu tena baadaye.",
+        "userNotFound": "Mtumiaji hakupatikana",
+        "usernameOrEmailTaken": "Jina hilo la mtumiaji au barua pepe tayari limechukuliwa.",
+        "validHttpLink": "Toa kiungo cha http:// au https://.",
+        "writeSomethingFirst": "Andika kitu kwanza.",
+        "youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst": "Tayari una rasimu 50 na machapisho yaliyoratibiwa - chapisha au tupa baadhi kwanza.",
+        "youCanTBlockYourself": "Huwezi kujizuia mwenyewe.",
+        "youCanTMessageThisUser": "Huwezi kutuma ujumbe kwa mtumiaji huyu.",
+        "youCanTMessageYourself": "Huwezi kutuma ujumbe kwako mwenyewe.",
+        "youCanTRepostYourOwnPost": "Huwezi kuchapisha tena chapisho lako mwenyewe.",
+        "youCanTSendAFriendRequestToYourself": "Huwezi kutuma ombi la urafiki kwako mwenyewe.",
+        "youReAlreadyFriendsWithThatUser": "Tayari uko rafiki na mtumiaji huyo.",
+        "youReDoingThatVeryQuicklyPleaseWaitAMoment": "Unafanya hivyo haraka sana. Tafadhali subiri kidogo.",
+        "youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain": "Unachapisha haraka sana. Tafadhali subiri kidogo na ujaribu tena.",
+        "youVeAlreadyReportedThis": "Tayari umeripoti hili.",
+        "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Umetuma ujumbe mwingi bila jibu - subiri wajibu kabla ya kutuma zaidi.",
+        "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Kihariri chako kimepitwa na wakati. Tafadhali pakia upya ukurasa na ujaribu tena."
+    }
 }

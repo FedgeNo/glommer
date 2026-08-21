@@ -1,4 +1,195 @@
 {
+    "JSONResponse": {
+        "giveUsernameOrEmail": "Palun sisesta oma kasutajanimi või e-posti aadress.",
+        "givePassword": "Palun sisesta oma parool.",
+        "credentialsRequired": "Kasutajanimi või e-posti aadress ja parool on kohustuslikud.",
+        "chooseUsername": "Palun vali kasutajanimi.",
+        "giveValidEmail": "Palun sisesta kehtiv e-posti aadress.",
+        "passwordMinimum": "Kasuta vähemalt 8 märki.",
+        "passwordMaximum": "Kasuta kuni 72 märki.",
+        "tooManySignups": "Sinu võrgust on tehtud liiga palju registreerumisi. Proovi hiljem uuesti.",
+        "usernameOrEmailTaken": "See kasutajanimi või e-posti aadress on juba kasutusel.",
+        "bannedWithReason": "Sinu konto on blokeeritud. Põhjus: {reason}",
+        "banned": "Sinu konto on blokeeritud.",
+        "serverError": "Serveri viga",
+        "httpsMisconfigured": "See sait nõuab HTTPS-i, kuid on valesti seadistatud. Haldur peab määrama SITE_URL-iks https:// URL-i.",
+        "siteUpgrading": "Saiti uuendatakse. Proovi mõne minuti pärast uuesti.",
+        "emailVerificationRequired": "E-posti aadress tuleb kinnitada",
+        "invalidCsrfToken": "Vigane CSRF-i tunnus",
+        "requestBodyTooLarge": "Päringu sisu on liiga suur.",
+        "validHttpLink": "Sisesta http:// või https:// link.",
+        "linkTooLong": "See link on liiga pikk.",
+        "domainNotIp": "Sisesta domeeninimi, mitte IP-aadress.",
+        "realDomain": "Sisesta siia tegelik domeeninimi.",
+        "listTooLong": "See loend on liiga pikk.",
+        "noValidHandles": "Siit ei leitud ühtegi kehtivat kasutajatunnust – need peaksid olema kujul kasutaja@domeen.",
+        "notCurrentPassword": "See ei ole sinu praegune parool.",
+        "enterEmailedCode": "Sisesta sulle e-postiga saadetud kood.",
+        "incorrectOrExpiredCode": "See kood on vale või aegunud.",
+        "addressInUse": "See aadress on juba kasutusel.",
+        "writeSomethingFirst": "Kirjuta esmalt midagi.",
+        "messageTooLong": "See sõnum on liiga pikk.",
+        "chooseFileFirst": "Vali esmalt fail.",
+        "uploadMissing": "Üleslaaditud fail ei jõudnud kohale. Proovi uuesti.",
+        "imageUnreadable": "Seda faili ei õnnestunud pildina lugeda.",
+        "notAccountPassword": "See ei ole sinu konto parool.",
+        "chooseMailTransport": "Vali üks kolmest loetletud edastusviisist.",
+        "invalidEmail": "See ei ole kehtiv e-posti aadress.",
+        "chooseImageFirst": "Vali esmalt pilt.",
+        "imageProcessingFailed": "Seda pilti ei õnnestunud töödelda. Proovi mõnda teist.",
+        "aBanReasonIsRequired": "Blokeerimise põhjus on kohustuslik.",
+        "aBodyIsRequired": "Sisu on kohustuslik",
+        "aFriendRequestOrFriendshipAlreadyExistsWithThatUser": "Selle kasutajaga on sõbrakutse või sõprussuhe juba olemas.",
+        "aMessageAndALanguageAreRequired": "Sõnum ja keel on kohustuslikud",
+        "aMessageIsEitherPlaintextOrEncryptedNotBoth": "Sõnum on kas lihttekst või krüptitud, mitte mõlemat.",
+        "aPollNeedsAQuestionInThePost": "Küsitluse küsimus peab olema postituses.",
+        "aPostAndALanguageAreRequired": "Postitus ja keel on kohustuslikud",
+        "aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne": "Postitusel võib olla küsitlus, manustatud failid või link – mitte rohkem kui üks neist",
+        "aPostCanHaveEitherAttachedFilesOrALinkNotBoth": "Postitusel võivad olla kas manustatud failid või link, mitte mõlemad",
+        "aQuotePostCanCarryImagesButNotVideoOrAudio": "Tsitaatpostitus võib sisaldada pilte, kuid mitte videot ega heli.",
+        "aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost": "Tsitaatpostitus vajab oma teksti – muutmata postituse jagamiseks kasuta taaspostitamist.",
+        "alreadyLoggedIn": "Oled juba sisse logitud",
+        "alreadyVerified": "Juba kinnitatud",
+        "altTextsDoNotMatchTheUploadedFiles": "Asendustekstid ei vasta üleslaaditud failidele",
+        "altTextsMustMapItemsToText": "Asendustekstid peavad siduma üksused tekstiga",
+        "bioMustBe500CharactersOrFewer": "Elulugu võib olla kuni 500 märki.",
+        "captchaVerificationFailedPleaseTryAgain": "CAPTCHA kontroll ebaõnnestus. Proovi uuesti.",
+        "chooseHowLongThePollShouldRun": "Vali küsitluse kestus.",
+        "couldNotDeliverTheFollowRequestToThatServer": "Jälgimistaotlust ei õnnestunud sellele serverile edastada.",
+        "currentPasswordIsIncorrect": "Praegune parool on vale",
+        "deviceNotFound": "Seadet ei leitud",
+        "displayNameMustBe50CharactersOrFewer": "Kuvatav nimi võib olla kuni 50 märki.",
+        "encryptedMessagingIsNotAvailableOnThisServer": "Krüptitud sõnumside pole selles serveris saadaval.",
+        "fediverseSupportIsNotSetUpOnThisServerYet": "Födiversumi tugi pole selles serveris veel seadistatud.",
+        "forbidden": "Keelatud",
+        "giveThatAMoment": "Anna sellele hetk aega.",
+        "incorrectUsernameEmailOrPassword": "Vale kasutajanimi, e-posti aadress või parool.",
+        "invalidUrl": "Vigane URL",
+        "invalidAction": "Vigane toiming",
+        "invalidDevice": "Vigane seade",
+        "invalidLocation": "Vigane asukoht",
+        "invalidReport": "Vigane teade",
+        "invalidRequest": "Vigane päring",
+        "invalidSeed": "Vigane algväärtus",
+        "invalidSkinTone": "Vigane nahatoon",
+        "invalidTarget": "Vigane sihtmärk",
+        "invalidTheme": "Vigane kujundus",
+        "malformedEncryptedMessage": "Vigase vorminguga krüptitud sõnum.",
+        "malformedKeyBackup": "Vigase vorminguga võtmete varukoopia.",
+        "malformedLocation": "Vigase vorminguga asukoht",
+        "malformedPublicKey": "Vigase vorminguga avalik võti.",
+        "malformedRequest": "Vigase vorminguga päring",
+        "malformedSubscription": "Vigase vorminguga tellimus",
+        "methodNotAllowed": "Meetod pole lubatud",
+        "missingQuery": "Päring puudub",
+        "noLoginInProgressPleaseStartAgain": "Sisselogimine pole pooleli. Alusta uuesti.",
+        "noSuchMessage": "Sellist sõnumit pole",
+        "notATopic": "See pole teema",
+        "notAllowed": "Pole lubatud",
+        "notAuthorized": "Puudub õigus",
+        "notFound": "Ei leitud",
+        "notFriendsWithThatUser": "Sa pole selle kasutajaga sõber",
+        "notLoggedIn": "Pole sisse logitud",
+        "notSubscribedToThatRelay": "Sa pole selle releega liitunud.",
+        "notYourPost": "See pole sinu postitus",
+        "notYourRequest": "See pole sinu taotlus",
+        "nothingToTranslate": "Pole midagi tõlkida",
+        "oneOfYourFilesFailedToUploadPleaseTryAgain": "Ühe faili üleslaadimine ebaõnnestus. Proovi uuesti.",
+        "onlyAPostCarriesMediaToClassify": "Ainult postitus sisaldab liigitamiseks meediat.",
+        "pollNotFound": "Küsitlust ei leitud",
+        "postHasNoContent": "Postitusel pole sisu",
+        "postNotFound": "Postitust ei leitud",
+        "postTextIsTooLong": "Postituse tekst on liiga pikk",
+        "pushIsNotConfiguredOnThisServer": "Tõuketeavitused pole selles serveris seadistatud.",
+        "reasonIsTooLong": "Põhjus on liiga pikk",
+        "reportNotFound": "Teadet ei leitud",
+        "signalTooLarge": "Signaal on liiga suur",
+        "thatAccountIsOnAnotherServerSoItCannotModerateThisOne": "See konto asub teises serveris ega saa seetõttu seda serverit modereerida.",
+        "thatAddressIsTooLong": "See aadress on liiga pikk.",
+        "thatDoesNotLookLikeAServerName": "See ei näi olevat serveri nimi.",
+        "thatEntityIsNotBanned": "See üksus pole blokeeritud",
+        "thatIsAFediverseAccountFollowItInstead": "See on födiversumi konto – jälgi seda hoopis.",
+        "thatIsNotAFediverseAccount": "See pole födiversumi konto.",
+        "thatIsNotALanguageThisSiteHas": "Seda keelt sellel saidil pole.",
+        "thatIsThisServer": "See on seesama server.",
+        "thatIsTooLongToConvert": "See on teisendamiseks liiga pikk.",
+        "thatPasswordResetLinkIsInvalidOrHasExpired": "See parooli lähtestamise link on vigane või aegunud.",
+        "thatReportHasNoDeletableContent": "Selles teates pole kustutatavat sisu.",
+        "thatUserHasAlreadySentYouAFriendRequestAcceptItInstead": "See kasutaja on sulle juba sõbrakutse saatnud – võta see hoopis vastu.",
+        "thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted": "See kasutaja on jõudnud sõprade piirini, seega ei saa seda kutset vastu võtta.",
+        "thatUserHasReachedTheirFriendLimit": "See kasutaja on jõudnud sõprade piirini.",
+        "thatUserIsAlreadyBanned": "See kasutaja on juba blokeeritud",
+        "thatUserIsNotBanned": "See kasutaja pole blokeeritud",
+        "thatVoteCouldNotBeRecorded": "Seda häält ei õnnestunud salvestada.",
+        "thePostBeingQuotedNoLongerExists": "Tsiteeritavat postitust pole enam olemas.",
+        "thePublishTimeHasToBeInTheFuture": "Avaldamisaeg peab olema tulevikus.",
+        "theyAreNoLongerInThisConversation": "Ta ei osale enam selles vestluses.",
+        "thisAccountCanNoLongerLogIn": "Selle kontoga ei saa enam sisse logida.",
+        "thisAccountCanTBeDeleted": "Seda kontot ei saa kustutada.",
+        "thisContentCanTBeReported": "Sellest sisust ei saa teatada.",
+        "thisContentHasAlreadyBeenReviewedByAModerator": "Moderaator on selle sisu juba üle vaadanud.",
+        "thisConversationCanTTakeEncryptedMessages": "Sellesse vestlusse ei saa saata krüptitud sõnumeid.",
+        "thisMessageCouldNotBeVerified": "Seda sõnumit ei õnnestunud kontrollida.",
+        "thisMessageIsTooLongToTranslate": "See sõnum on tõlkimiseks liiga pikk.",
+        "thisPostIsTooLongToTranslate": "See postitus on tõlkimiseks liiga pikk.",
+        "tooManyAttemptsPleaseTryAgainLater": "Liiga palju katseid. Proovi hiljem uuesti.",
+        "tooManyAttemptsPleaseWaitAMoment": "Liiga palju katseid. Oota hetk.",
+        "tooManyAvatarChangesInAShortTimePleaseTryAgainLater": "Lühikese aja jooksul on avatari liiga palju muudetud. Proovi hiljem uuesti.",
+        "tooManyChangesAtOncePleaseWaitAMoment": "Liiga palju muudatusi korraga. Oota hetk.",
+        "tooManyChecksPleaseWaitAMoment": "Liiga palju kontrolle. Oota hetk.",
+        "tooManyEmailChangesInAShortTimePleaseTryAgainLater": "Lühikese aja jooksul on e-posti aadressi liiga palju muudetud. Proovi hiljem uuesti.",
+        "tooManyFollowRequestsPleaseWaitABitAndTryAgain": "Liiga palju jälgimistaotlusi. Oota veidi ja proovi uuesti.",
+        "tooManyFollowsPleaseWaitABitAndTryAgain": "Liiga palju jälgimisi. Oota veidi ja proovi uuesti.",
+        "tooManyLoginAttemptsForThisAccountPleaseTryAgainLater": "Selle konto jaoks on tehtud liiga palju sisselogimiskatseid. Proovi hiljem uuesti.",
+        "tooManyLoginAttemptsPleaseTryAgainLater": "Liiga palju sisselogimiskatseid. Proovi hiljem uuesti.",
+        "tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain": "Lühikese aja jooksul on saadetud liiga palju sõnumeid. Oota veidi ja proovi uuesti.",
+        "tooManyPasswordResetAttemptsPleaseTryAgainLater": "Liiga palju parooli lähtestamise katseid. Proovi hiljem uuesti.",
+        "tooManyPasswordResetRequestsPleaseTryAgainLater": "Liiga palju parooli lähtestamise taotlusi. Proovi hiljem uuesti.",
+        "tooManyReportsPleaseTryAgainLater": "Liiga palju teateid. Proovi hiljem uuesti.",
+        "tooManyRequestsPleaseSlowDown": "Liiga palju päringuid. Võta hoogu maha.",
+        "tooManyRequestsPleaseTryAgainLater": "Liiga palju päringuid. Proovi hiljem uuesti.",
+        "tooManySearchesInAShortTime": "Lühikese aja jooksul on tehtud liiga palju otsinguid.",
+        "tooManySearchesPleaseSlowDown": "Liiga palju otsinguid. Võta hoogu maha.",
+        "tooManyTranslationsInAShortTimePleaseWaitABitAndTryAgain": "Lühikese aja jooksul on tehtud liiga palju tõlkeid. Oota veidi ja proovi uuesti.",
+        "tooManyVerificationEmailsSentPleaseTryAgainLater": "Saadetud on liiga palju kinnituskirju. Proovi hiljem uuesti.",
+        "tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain": "Lühikese aja jooksul on üles laaditud liiga palju video- või helifaile. Oota veidi ja proovi uuesti.",
+        "translationIsNotAvailableOnThisServer": "Tõlkimine pole selles serveris saadaval.",
+        "translationIsNotAvailableRightNowPleaseTryAgainLater": "Tõlkimine pole praegu saadaval. Proovi hiljem uuesti.",
+        "twoFactorAuthenticationIsNotOn": "Kaheastmeline autentimine pole sisse lülitatud.",
+        "unableToCallThisUser": "Sellele kasutajale ei saa helistada.",
+        "unableToFollowThatAccount": "Seda kontot ei saa jälgida.",
+        "unableToLikeThisPost": "Seda postitust ei saa meeldivaks märkida",
+        "unableToOpenThisConversation": "Seda vestlust ei saa avada.",
+        "unableToReplyToThisPost": "Sellele postitusele ei saa vastata",
+        "unableToRepostThis": "Seda ei saa taaspostitada.",
+        "unableToSendFriendRequest": "Sõbrakutset ei saa saata.",
+        "unableToSendMessage": "Sõnumit ei saa saata.",
+        "unableToVoteOnThisPoll": "Selles küsitluses ei saa hääletada",
+        "unknownConversion": "Tundmatu teisendus",
+        "unknownTopicType": "Tundmatu teematüüp",
+        "unlockTheConversationToReportAnEncryptedMessage": "Krüptitud sõnumist teatamiseks ava esmalt vestlus.",
+        "uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater": "Üleslaadimine pole ajutiselt saadaval – serveris on vähe salvestusruumi. Proovi hiljem uuesti.",
+        "userNotFound": "Kasutajat ei leitud",
+        "youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst": "Sul on juba 50 mustandit ja ajastatud postitust – avalda või kustuta esmalt mõni neist.",
+        "youCanTBlockYourself": "Sa ei saa iseennast blokeerida.",
+        "youCanTMessageThisUser": "Sa ei saa sellele kasutajale sõnumit saata.",
+        "youCanTMessageYourself": "Sa ei saa iseendale sõnumit saata.",
+        "youCanTRepostYourOwnPost": "Sa ei saa oma postitust taaspostitada.",
+        "youCanTSendAFriendRequestToYourself": "Sa ei saa iseendale sõbrakutset saata.",
+        "youReAlreadyFriendsWithThatUser": "Oled selle kasutajaga juba sõber.",
+        "youReDoingThatVeryQuicklyPleaseWaitAMoment": "Teed seda väga kiiresti. Oota hetk.",
+        "youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain": "Postitad väga kiiresti. Oota hetk ja proovi uuesti.",
+        "youVeAlreadyReportedThis": "Oled sellest juba teatanud.",
+        "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Oled saatnud palju sõnumeid ilma vastuseta – oota enne järgmiste saatmist vastust.",
+        "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Sinu redaktor on aegunud. Värskenda lehte ja proovi uuesti.",
+        "maximumFriends": "Oled jõudnud {count} sõbra ülempiirini.",
+        "altTextTooLong": "Asendustekst on liiga pikk (kuni {count} märki)",
+        "maximumPinnedPosts": "Saad oma postitustest kinnitada kuni {count}.",
+        "maximumScheduledDays": "Postitusi saab ajastada kuni {count} päeva ette.",
+        "uploadTooLarge": "Üleslaaditav sisu on liiga suur. Suurim lubatud kogumaht on {size} B.",
+        "fileTooLarge": "Üks failidest ületab üleslaadimise {size} B mahupiirangu.",
+        "pollNeedsOptions": "Küsitlus vajab vähemalt {count} erinevat vastusevarianti."
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 hääl",
@@ -563,7 +754,32 @@
         "submit": "Blokeeri server"
     },
     "VideoCallTestPanel": {
-        "intro": "Käivitab kõne seadistuse osad, mida saab kontrollida ühes brauseris. Siin saab testida kõike kuni tegeliku partnerühenduseni; teise inimesega ühendamiseks on vaja tema osalust."
+        "intro": "Käivitab kõne seadistuse osad, mida saab kontrollida ühes brauseris. Siin saab testida kõike kuni tegeliku partnerühenduseni; teise inimesega ühendamiseks on vaja tema osalust.",
+        "checkFailed": "Kontroll ise ebaõnnestus: {error}",
+        "stopped": "Peatuti siin – järgmised sammud sõltuvad sellest.",
+        "secureName": "See leht on turvalises kontekstis",
+        "securePass": "Lehte pakutakse HTTPS-i kaudu, seega lubab brauser kasutada kaamerat ja partnerühendust.",
+        "secureFail": "Kontekst pole turvaline. Brauserid keelduvad väljaspool HTTPS-i nii kaamerast kui ka WebRTC-st, seega ei saa siin kõnet luua.",
+        "webrtcName": "Brauser toetab WebRTC-d",
+        "webrtcPass": "RTCPeerConnection on saadaval.",
+        "webrtcFail": "Selles brauseris pole RTCPeerConnectionit, seega ei saa see kõnesid teha ega vastu võtta.",
+        "loopbackName": "Kohalik läbirääkimine lõpeb edukalt",
+        "stunName": "STUN on sellest võrgust kättesaadav",
+        "signallingName": "Signaliseerimise lõpp-punkt vastab",
+        "secureVerdict": "Ei – videokõned ei saa siit töötada. Leht pole turvalises kontekstis ning brauserid keelduvad väljaspool HTTPS-i nii kaamerast kui ka WebRTC-st. Enne selle parandamist pole muul tähtsust.",
+        "webrtcVerdict": "Ei – videokõned ei saa selles brauseris töötada. Sellel puudub täielikult WebRTC tugi, seega ei saa see kõnesid teha ega vastu võtta. Teine brauser samas arvutis võib töötada.",
+        "loopbackVerdict": "Ei – videokõned ei saa selles brauseris töötada. Selle WebRTC ei suutnud ühendada kahte partnerit sama lehe sees, mis välistab võrgu; miski kohalik, tõenäoliselt laiendus või range privaatsusseade, blokeerib seda.",
+        "stunVerdict": "Ainult selles võrgus. Kahe samas kohalikus võrgus oleva inimese kõned peaksid töötama, kuid ühendus ei suuda tuvastada oma avalikku aadressi ega leida teed teise ruuteri taga oleva inimeseni. Kuna server kõnesid ei vahenda, ei pakuta kõnet üldse.",
+        "signallingVerdict": "Ei – videokõnet ei saa siit seadistada. Brauser suudab kõnet pidada, kuid pooled ei saa vahetada kõne korraldamiseks vajalikke sõnumeid, seega kõnenuppu ei ilmuks.",
+        "passVerdict": "Jah – videokõned peaksid selle ühenduse kaudu töötama. Kõik selle arvuti vastutusel olevad seadistuse osad õnnestusid, sealhulgas STUN-iga ühendumine. Kontrollimata jäi ainult teise inimese pool.",
+        "loopbackPass": "Kaks selle lehe ühendust pidasid läbirääkimised ja avasid andmekanali, seega WebRTC ise töötab.",
+        "loopbackFail": "Kaks sama lehe ühendust ei saanud teineteisega ühendust, mis välistab võrgu – brauseri WebRTC-d blokeerib tõenäoliselt laiendus või range privaatsusseade.",
+        "noStun": "STUN-i lõpp-punkti pole seadistatud, seega töötavad kõned ainult samas võrgus olevate inimeste vahel.",
+        "stunPass": "STUN vastas ja brauser sai teada oma avaliku aadressi, seega leiab see otsetee teises võrgus oleva inimeseni.",
+        "stunFail": "STUN ei vastanud – tulemüür blokeerib tõenäoliselt sinna suunduva UDP. Kõned töötavad samas võrgus, kuid mitte interneti kaudu, ning kõnesid ei vahendata.",
+        "signallingPass": "Lõpp-punkt on kättesaadav ja tunnistas päringu autendituks enne selle sisu tagasilükkamist – see on kõik, mida tegelik signaal vajab.",
+        "signallingAuthFail": "Lõpp-punkt lükkas päringu autentimata jätmise tõttu tagasi ({status}). Ka kahe päris inimese signaalidest keeldutaks ning kõnet ei saaks luua.",
+        "signallingUnexpected": "Lõpp-punkt vastas olekuga {status}, mis pole selle päringu puhul õige – miski selle ees segab."
     },
     "VideoCallTestButton": {
         "label": "Käivita kontroll"
@@ -850,7 +1066,10 @@
         "name": "Muuda"
     },
     "ReportButton": {
-        "name": "Teata"
+        "name": "Teata",
+        "prompt": "Miks sa sellest teatad?",
+        "unverifiable": "See sõnum krüptiti võtmetega, mida enam pole, seega ei saa seda kontrollida ega sellest teatada.",
+        "unlockFirst": "Enne krüptitud sõnumist teatamist ava vestlus."
     },
     "PostActionBar": {
         "reply": "Vasta",
@@ -908,7 +1127,7 @@
     },
     "PollTally": {
         "voters": {
-            "one": "{count} inimene hääletas ",
+            "one": "1 inimene hääletas ",
             "other": "{count} inimest hääletas "
         }
     },
@@ -1105,11 +1324,11 @@
             "other": "ja veel {count} teavitust"
         },
         "messagesWaiting": {
-            "one": "Sind ootab {count} sõnum",
+            "one": "Sind ootab üks sõnum",
             "other": "Sind ootab {count} sõnumit"
         },
         "postsInFeed": {
-            "one": "Sinu voos on {count} uus postitus",
+            "one": "Sinu voos on üks uus postitus",
             "other": "Sinu voos on {count} uut postitust"
         },
         "unsubscribeInstructions": "Nende kirjade peatamiseks ava see link—piisab ühest klõpsust ja parooli pole vaja:",
@@ -1130,6 +1349,422 @@
             "one": "Link aegub {count} tunni pärast.",
             "other": "Link aegub {count} tunni pärast."
         }
+    },
+    "ActivityPubMove": {
+        "localOnly": "Kolida saab ainult kohalikku kontot.",
+        "sameServer": "See konto asub selles serveris. Kolimine toimub alati serverite vahel.",
+        "fetchFailed": "Seda kontot ei õnnestunud hankida.",
+        "aliasMissing": "See konto ei nimeta seda kontot veel oma varjunimena. Lisa {uri} esmalt selle jaotisse \"tuntud ka kui\" ja proovi uuesti."
+    },
+    "Relay": {
+        "invalidAddress": "See pole relee aadress.",
+        "unknownStyle": "Tundmatu tellimisviis.",
+        "blocked": "See server on blokeeritud. Kui soovid sellega liituda, eemalda esmalt blokeering.",
+        "alreadySubscribed": "Oled selle releega juba liitunud.",
+        "noSigningKey": "Sellel serveril pole ActivityPubi allkirjastamisvõtit, seega ei saa see millegagi liituda.",
+        "notActor": "See aadress ei vastanud födiversumi osalisena."
+    },
+    "UserSettings": {
+        "changePassword": "Parooli muutmine",
+        "changeEmail": "E-posti aadressi muutmine",
+        "twoFactorAuthentication": "Kaheastmeline autentimine",
+        "sensitiveMedia": "Tundlik meedia",
+        "encryptedMessages": "Krüptitud sõnumid",
+        "emailDigests": "E-posti kokkuvõtted",
+        "pushNotifications": "Tõuketeavitused",
+        "rememberedDevices": "Meelde jäetud seadmed",
+        "videoCalling": "Videokõned",
+        "movingServers": "Serveri vahetamine",
+        "deleteAccount": "Konto kustutamine",
+        "theme": "Kujundus",
+        "sessions": "Seansid",
+        "fediverse": "Födiversum"
+    },
+    "AdminModSettings": {
+        "queues": "Järjekorrad",
+        "blockedServers": "Blokeeritud serverid",
+        "bannedTrendingEntities": "Keelatud populaarsed üksused"
+    },
+    "AdminSettings": {
+        "services": "Teenused",
+        "statistics": "Statistika",
+        "relays": "Releed",
+        "tests": "Testid",
+        "map": "Kaart",
+        "openRouter": "TI (OpenRouter)",
+        "mail": "E-post",
+        "favicon": "Tunnuspilt",
+        "about": "Teave",
+        "moderationLog": "Modereerimislogi",
+        "notificationTest": "Teavituste test",
+        "botProtection": "Robotikaitse",
+        "googleAuth": "Google'i autentimine",
+        "emailDigest": "E-posti kokkuvõte",
+        "frontPageImage": "Esilehe pilt",
+        "termsOfService": "Kasutustingimused",
+        "privacyPolicy": "Privaatsuspõhimõtted"
+    },
+    "ErrorDocument": {
+        "notFoundTitle": "Ei leitud",
+        "notFoundMessage": "Otsitavat lehte pole olemas.",
+        "tooManyRequestsTitle": "Liiga palju päringuid",
+        "profileLookupRateLimit": "Praegu vaadati liiga palju profiile. Oota hetk ja proovi uuesti."
+    },
+    "IndexPage": {
+        "rssFeed": "RSS-voog"
+    },
+    "SetupPage": {
+        "databaseUnavailable": "Sait ei saa praegu andmebaasiga ühendust. Proovi mõne minuti pärast uuesti.",
+        "databaseAdminNotice": "Kui haldad seda saiti: ühendus andmebaasiga .env failis olevate tunnuste abil ebaõnnestub – kontrolli, kas andmebaasiserver töötab ja tunnused kehtivad. Seda lehte näidatakse seadistusviisardi asemel, et andmebaasi katkestust ei saaks kasutada saidi ümberseadistamiseks.",
+        "finished": "Seadistamine on lõpetatud – andmebaas, vähimate õigustega käituskonto ja .env on paigas. Jäänud on kolm väikest sammu:",
+        "missingPrerequisites": "Tere tulemast! Enne seadistamise jätkamist puuduvad serverist mõned eeltingimused:",
+        "fixPrerequisites": "Paranda need serveris ja laadi leht kontrollimiseks uuesti.",
+        "welcome": "Tere tulemast! Kõik keskkonnakontrollid õnnestusid. Vormi saatmine loob andmebaasi (kui seda veel pole), juhusliku parooliga vähimate õigustega käituskonto ja skeemi ning kirjutab kõik faili .env. Administraatori tunnuseid kasutatakse seadistamisel üks kord ja neid ei salvestata."
+    },
+    "PinnedPostSection": {
+        "heading": "Kinnitatud"
+    },
+    "ImageItem": {
+        "alt": "Pilt"
+    },
+    "TestResults": {
+        "installJavaScriptDependencies": "JavaScripti testide lubamiseks käivita dokumendijuures `npm install`.",
+        "nodeUnavailable": "Veebiserverile kasutatav Node.js puudub. JavaScripti testide lubamiseks paigalda see süsteemselt (nt dnf install nodejs) – kellegi kodukataloogis olev versioonihaldur (nvm) pole siin nähtav.",
+        "nodeFatal": "JavaScripti teste ei saanud käivitada. Node.js-il tekkis fataalne viga, tõenäoliselt veebiserveri SELinuxi piirangute tõttu."
+    },
+    "CodeBlockCopy": {
+        "copy": "Kopeeri",
+        "copyLabel": "Kopeeri kood lõikelauale",
+        "copied": "Kopeeritud!"
+    },
+    "Api": {
+        "networkError": "Võrguviga. Kontrolli ühendust ja proovi uuesti.",
+        "genericError": "Midagi läks valesti. Proovi uuesti."
+    },
+    "Dialog": {
+        "confirm": "OK",
+        "cancel": "Tühista"
+    },
+    "EntityModerator": {
+        "ban": "Keela",
+        "banPlaceholder": "Keelamise põhjus (kohustuslik)",
+        "unban": "Kas lubada \"{entity}\" uuesti? See võib taas populaarseks muutuda."
+    },
+    "InfiniteScroller": {
+        "loading": "Laadimine",
+        "failed": "Rohkem ei õnnestunud laadida. Laadi leht uuesti.",
+        "end": "Oled jõudnud lõppu."
+    },
+    "PostFields": {
+        "title": "Pealkiri (valikuline)",
+        "link": "Link (valikuline)",
+        "altText": "Asendustekst – kirjelda seda pilti",
+        "contentWarning": "Sisuhoiatus (valikuline)"
+    },
+    "Poll": {
+        "votes": {
+            "one": "1 hääl",
+            "other": "{count} häält"
+        },
+        "vote": "Hääleta"
+    },
+    "PostEditor": {
+        "altText": "Asendustekst",
+        "sensitive": "Tundlik",
+        "cancel": "Tühista",
+        "save": "Salvesta",
+        "saved": "Muudatused salvestatud."
+    },
+    "Toast": {
+        "dismiss": "Sulge"
+    },
+    "CarouselController": {
+        "stopAutoplay": "Peata automaatesitus",
+        "autoplay": "Automaatesitus",
+        "exitFullscreen": "Välju täisekraanilt",
+        "fullscreen": "Täisekraan"
+    },
+    "VideoCall": {
+        "calling": "Helistamine…",
+        "connecting": "Ühendamine…",
+        "connected": "Ühendatud",
+        "cancel": "Tühista",
+        "end": "Lõpeta kõne",
+        "permissionError": "Kaamerat või mikrofoni ei saanud kasutada. Kontrolli brauseris selle saidi õigusi.",
+        "declined": "Sinu kõnest keelduti.",
+        "call": "Helista",
+        "incoming": "Sissetulev videokõne",
+        "accept": "Võta vastu",
+        "decline": "Keeldu"
+    },
+    "ClientStatus": {
+        "settingsSaved": "Seaded salvestatud.",
+        "emailUnchanged": "See on juba sinu e-posti aadress.",
+        "followersNotified": "Sinu jälgijatel paluti sind uuel kontol jälgida.",
+        "saved": "Salvestatud.",
+        "chooseFile": "Vali esmalt fail.",
+        "markedVerified": "Märgitud kinnitatuks.",
+        "signOutEverywhere": "See logib sind välja kõigist seadmetest, sealhulgas sellest. Kas jätkata?",
+        "signingOut": "Väljalogimine…",
+        "failed": "Ebaõnnestus",
+        "done": "Valmis",
+        "mapSaved": "Kaardiseaded salvestatud.",
+        "openRouterSaved": "OpenRouteri seaded salvestatud.",
+        "linkCopied": "Link kopeeritud lõikelauale",
+        "linkCopyFailed": "Linki ei õnnestunud kopeerida",
+        "notificationsBlocked": "Teavitused on selle saidi jaoks brauseri seadetes blokeeritud.",
+        "pushUnavailable": "Tõuketeavitused pole selles serveris saadaval.",
+        "notificationsEnableFailed": "Teavitusi ei õnnestunud lubada.",
+        "notificationsOn": "Teavitused on selles seadmes sees.",
+        "notificationsOff": "Teavitused on selles seadmes väljas.",
+        "unlockConversation": "Ava esmalt vestlus.",
+        "unlockFailed": "See paroolifraas ei ava sinu sõnumeid.",
+        "resetSent": "Kui see e-posti aadress on registreeritud, saadeti sellele parooli lähtestamise link. Kui sa kirja ei näe, kontrolli rämpsposti kausta.",
+        "passwordUnchanged": "See on juba sinu parool – midagi ei muudetud.",
+        "passwordReset": "Sinu parool on lähtestatud. Nüüd saad sisse logida.",
+        "login": "Logi sisse",
+        "revokeDevice": "Kas tühistada selle seadme õigus? See logitakse välja ja peab uuesti sisse logima.",
+        "revoking": "Tühistamine…",
+        "passwordChanged": "Parool muudetud!",
+        "deleteAccount": "Kas kustutada sinu konto? Sinu postitused, vastused ja sõnumid kaovad jäädavalt – seda ei saa tagasi võtta.",
+        "avatarAlt": "Sinu avatar",
+        "faviconSaved": "Seaded salvestatud.",
+        "profileSaved": "Profiil salvestatud.",
+        "pinSaved": "Profiilile kinnitatud.",
+        "unpinSaved": "Kinnitus eemaldatud.",
+        "reported": "Teatatud",
+        "sent": "Saadetud!"
+    },
+    "OtherUserClient": {
+        "cancelRequest": "Tühista kutse",
+        "addFriend": "Lisa sõbraks",
+        "ban": "Blokeeri",
+        "viewFriends": "Vaata sõpru",
+        "blockConfirm": "Kas blokeerida see kasutaja? Olemasolev sõprussuhe eemaldatakse.",
+        "removeFriendConfirm": "Kas eemaldada see sõber?",
+        "banConfirm": "Kas blokeerida see kasutaja? See peidab kogu tema sisu ja takistab sisselogimist. Põhjust näidatakse talle sisselogimisvormil.",
+        "banPlaceholder": "Blokeerimise põhjus (kohustuslik)",
+        "banned": "Blokeeritud"
+    },
+    "PostMapClient": {
+        "postHere": "Postita siia",
+        "postsNearby": "Läheduses olevad postitused",
+        "clearPin": "Eemalda märk",
+        "viewPost": "Vaata postitust",
+        "byAuthor": "autor {name}"
+    },
+    "SearchClient": {
+        "noBannedUsers": "Blokeeritud kasutajaid pole.",
+        "noBannedUsersMatch": "Ükski blokeeritud kasutaja ei vasta otsingule."
+    },
+    "EncryptedMessagesClient": {
+        "newKeys": "Uued võtmed loodud.",
+        "enabled": "Krüptitud sõnumid on sisse lülitatud.",
+        "wrongPassphrase": "See pole sinu praegune paroolifraas.",
+        "passphraseChanged": "Paroolifraas muudetud.",
+        "minimumPassphrase": "Kasuta vähemalt {count} märgi pikkust paroolifraasi.",
+        "passphrasesMismatch": "Paroolifraasid ei ühti.",
+        "passphraseIsPassword": "Paroolifraas ei tohi olla konto parool – konto parool saadetakse serverisse, paroolifraasi ei tohi sinna kunagi saata.",
+        "passphraseTooRepetitive": "Selles paroolifraasis kordub liiga vähe erinevaid märke. Kasuta pikemat fraasi."
+    },
+    "LoginClient": {
+        "verificationRequired": "Selle kontoga on tehtud liiga palju katseid. Jätkamiseks lõpeta kontroll.",
+        "verificationFailed": "Kontrolli ei õnnestunud laadida. Proovi hetke pärast uuesti."
+    },
+    "PostClient": {
+        "mapTitle": "Näita seda kohta kaardil",
+        "fullscreen": "Täisekraan",
+        "sensitiveMedia": "Tundlik meedia",
+        "previous": "Eelmine",
+        "next": "Järgmine",
+        "autoplay": "Automaatesitus",
+        "machineTranslation": "Masintõlge",
+        "deleteConfirm": "Kas kustutada see postitus?",
+        "image": "Pilt"
+    },
+    "StagedPostClient": {
+        "discardConfirm": "Kas loobuda sellest? Seda ei avaldatud ja koopiat ei säilitata.",
+        "edit": "Muuda",
+        "published": "Avaldatud.",
+        "discarded": "Kõrvale jäetud."
+    },
+    "ComposerClient": {
+        "placeholder": "Millest mõtled?",
+        "replyLegend": "Vasta sellele postitusele",
+        "createLegend": "Loo postitus",
+        "poll": "Küsitlus",
+        "option": "Vastus {count}",
+        "pollOption": "Küsitluse vastus {count}",
+        "allowMultiple": "Luba valida mitu vastust",
+        "pollDuration": "Küsitluse kestus",
+        "richTextHelp": "Vormindatud teksti redaktor. Kui eelistad lihtteksti, kasuta all nuppu \"Kasuta Markdowni\", et vahetada see tavalise tekstikasti vastu – sama postitus Markdowni vormindusega.",
+        "plainTextHelp": "Lihttekst. Siin töötab Markdown: tärnid sõna ümber muudavad selle rasvaseks või kaldkirjaks, trellid rea alguses teevad pealkirja. Vormindusribale naasmiseks kasuta all nuppu \"Kasuta vormindatud teksti\".",
+        "useMarkdown": "Kasuta Markdowni",
+        "useRichText": "Kasuta vormindatud teksti",
+        "removeFiles": "Eemalda failid",
+        "addFiles": "Lisa failid",
+        "addFilesLabel": "Lisa faile – pilte, videot või heli",
+        "sensitive": "Tundlik",
+        "markdownPostText": "Postituse tekst Markdownis",
+        "addLocation": "Lisa asukoht",
+        "removeLocation": "Eemalda asukoht",
+        "locating": "Asukoha määramine…",
+        "saveDraft": "Salvesta mustand",
+        "post": "Postita",
+        "schedulePost": "Ajasta postitus",
+        "addSchedule": "Lisa ajastus",
+        "removeSchedule": "Eemalda ajastus",
+        "addPoll": "Lisa küsitlus",
+        "removePoll": "Eemalda küsitlus",
+        "publishDate": "Avaldamiskuupäev",
+        "publishTime": "Avaldamisaeg (valikuline)",
+        "writeFirst": "Kirjuta esmalt midagi – praegu pole midagi salvestada.",
+        "tooManyFiles": "Postitus võib sisaldada kuni {count} faili – ülejäänuid ei lisatud.",
+        "remove": "Eemalda",
+        "savedDraft": "Salvestatud mustanditesse.",
+        "scheduledDraft": "Ajastatud – vaata menüüst mustandeid ja ajastatud postitusi.",
+        "linkPreviewAttached": "Lingi eelvaatepilt lisatud. Nupp Eemalda pilt võtab selle maha.",
+        "linkPreviewRemoved": "Lingi eelvaatepilt eemaldatud.",
+        "altTextFor": "Faili {name} asendustekst",
+        "oneFileAttached": "Lisatud on 1 fail. Igal pildil on kirjelduskast.",
+        "filesAttached": "Lisatud on {count} faili.",
+        "fileRemovedEmpty": "Fail eemaldatud. Nüüd pole midagi lisatud.",
+        "filesLeft": "Fail eemaldatud. Alles on {count}.",
+        "attachmentCount": "{count}/{maximum} faili",
+        "markdownActive": "Kirjutad nüüd lihtteksti Markdowni kastis.",
+        "richTextActive": "Kirjutad nüüd vormindatud teksti redaktoris.",
+        "noGeolocation": "Sinu brauser ei saa asukohta jagada.",
+        "locationError": "Sinu asukohta ei õnnestunud saada. Kontrolli brauseri asukohaõigust.",
+        "futurePublish": "Avaldamisaeg peab olema tulevikus.",
+        "genericError": "Midagi läks valesti. Proovi uuesti.",
+        "submitFailed": "Postitust ei õnnestunud saata. Proovi uuesti.",
+        "processing": "Sinu meediafaile töödeldakse ja saad teavituse, kui need on vaatamiseks valmis. Võid sellelt lehelt lahkuda.",
+        "replies": "Vastused"
+    },
+    "UserClient": {
+        "joined": "Liitus {date}",
+        "displayName": "Kuvatav nimi",
+        "bio": "Lisa elulugu…",
+        "save": "Salvesta",
+        "deleteGoogleConfirm": "Kas kustutada sinu konto? Sinu postitused, vastused ja sõnumid kaovad jäädavalt – seda ei saa tagasi võtta. Kinnitamiseks logid Google'iga sisse."
+    },
+    "MiscellaneousClient": {
+        "deleteReportedContent": "Kas kustutada see sisu jäädavalt? Postituse kustutamine eemaldab ka kõik selle vastused.",
+        "unbanUser": "Kas eemaldada selle kasutaja blokeering? Tema sisu ja sisselogimine hakkavad uuesti tööle.",
+        "seeMore": "Vaata veel…",
+        "reloadError": "Midagi läks valesti. Proovi leht uuesti laadida.",
+        "checking": "Kontrollimine…",
+        "justNow": "just praegu",
+        "report": "Teata"
+    },
+    "AboutPage": {
+        "softwareBefore": "See sait kasutab tarkvara ",
+        "softwareAfter": " versiooni {version}",
+        "placesBefore": "Kohanimede allikas: ",
+        "placesBetween": ", litsents ",
+        "placesAfter": ".",
+        "mapBefore": "Kaardipaanide allikas: ",
+        "mapAfter": ".",
+        "translationBefore": "Tõlke pakkuja: ",
+        "translationAfter": ", mis töötab siin, mitte kusagil mujal."
+    },
+    "LoginPage": {
+        "startOver": "Alusta uuesti",
+        "forgotPassword": "Unustasid parooli?",
+        "signup": "Vajad kontot? Registreeru"
+    },
+    "VerifyEmailPage": {
+        "verified": "Sinu e-posti aadress on kinnitatud. Nüüd saad saiti {site} kasutada.",
+        "invalid": "See kinnituslink on vigane või aegunud.",
+        "confirm": "Kinnita, et soovid selle e-posti aadressi kinnitada.",
+        "continue": "Jätka"
+    },
+    "RevertEmailPage": {
+        "reverted": "Sinu e-posti aadress taastati ja konto logiti kõigist seadmetest välja.",
+        "securityAdvice": "Kui sa ei tea, kuidas see juhtus, muuda parooli kohe pärast uuesti sisselogimist.",
+        "login": "Logi sisse",
+        "forgotPassword": "Unustasid parooli?",
+        "invalid": "See taastamislink on vigane või aegunud.",
+        "confirm": "Kas tühistada sinu konto hiljutine e-posti aadressi muudatus? See logib konto ka kõigist seadmetest välja."
+    },
+    "UnsubscribePage": {
+        "invalid": "Seda loobumislinki pole see sait väljastanud.",
+        "continue": "Jätka",
+        "resubscribed": "Kokkuvõtted on uuesti sisse lülitatud. Kirjutame sulle, kui oled mõnda aega eemal olnud ja meil on millestki teatada.",
+        "unsubscribed": "Valmis – rohkem kokkuvõtteid ei saadeta. Saad endiselt saidi vajalikke kirju, näiteks parooli lähtestamise kirja."
+    },
+    "UsersPage": {
+        "fediverseBefore": "Födiversumi kasutajate loendit saad jälgida jaotises ",
+        "settingsLink": "Kasutaja seaded",
+        "fediverseAfter": "."
+    },
+    "LocationsPage": {
+        "postsNear": "Postitused koha {place} lähedal"
+    },
+    "RouteNotices": {
+        "cannotMessage": "Sa ei saa sellele kasutajale sõnumit saata.",
+        "noHashtags": "Teemaviiteid veel pole.",
+        "passwordResetInvalid": "See parooli lähtestamise link on vigane või aegunud."
+    },
+    "GoogleAuthCallbackPage": {
+        "accountCannotBeDeleted": "Seda kontot ei saa kustutada.",
+        "notConfigured": "Google'iga sisselogimine pole seadistatud.",
+        "deletionCancelled": "Konto kustutamine tühistati.",
+        "deletionFailed": "Kontot ei õnnestunud kustutada. Proovi uuesti.",
+        "identityFailed": "Sinu Google'i isikut ei õnnestunud kontrollida. Proovi uuesti.",
+        "emailMismatch": "See Google'i konto ei vasta sinu konto e-posti aadressile.",
+        "deleted": "Sinu konto on jäädavalt kustutatud.",
+        "home": "Tagasi avalehele",
+        "userSettings": "Tagasi kasutaja seadetesse",
+        "signinCancelled": "Google'iga sisselogimine tühistati.",
+        "signinFailed": "Google'iga sisselogimist ei õnnestunud lõpetada. Proovi uuesti.",
+        "rateLimited": "Sinu võrgust on tehtud liiga palju sisselogimiskatseid. Proovi hiljem uuesti.",
+        "verificationFailed": "Google'iga sisselogimist ei õnnestunud kontrollida. Proovi uuesti.",
+        "emailUnavailable": "Selle e-posti aadressiga ei saa sisse logida.",
+        "bannedWithReason": "Sinu konto on blokeeritud. Põhjus: {reason}",
+        "banned": "Sinu konto on blokeeritud.",
+        "signin": "Tagasi sisselogimise juurde"
+    },
+    "QuillEditor": {
+        "postText": "Postituse tekst",
+        "bold": "Rasvane",
+        "italic": "Kaldkiri",
+        "underline": "Allajoonitud",
+        "strikethrough": "Läbikriipsutatud",
+        "blockquote": "Plokktsitaat",
+        "codeBlock": "Koodiplokk",
+        "inlineCode": "Reasisene kood",
+        "link": "Link",
+        "formula": "Valem",
+        "clearFormatting": "Eemalda vormindus",
+        "heading": "Pealkiri {count}",
+        "numberedList": "Nummerdatud loend",
+        "bulletList": "Täpploend",
+        "list": "Loend"
+    },
+    "UserSearchBox": {
+        "placeholder": "Otsi kasutajat…"
+    },
+    "PostSearchBox": {
+        "placeholder": "Otsi postitusi…"
+    },
+    "FriendSearchBox": {
+        "placeholder": "Otsi sõpru…"
+    },
+    "ConversationList": {
+        "emptyNotice": "Sul pole veel ühtegi vestlust."
+    },
+    "RememberedDeviceList": {
+        "emptyNotice": "Meelde jäetud seadmeid pole. Siia ilmuvad seadmed, milles märgid sisselogimisel valiku \"Jäta mind meelde\"."
+    },
+    "StagedPostList": {
+        "emptyNotice": "Mustandeid ega ajastatud postitusi pole. Koostaja nupud Salvesta mustand ja Ajasta lisavad need siia."
+    },
+    "AuthDivider": {
+        "label": "või"
+    },
+    "UserRSSFeed": {
+        "title": "Kasutaja {name} postitused saidil {site}"
     },
     "PasswordReset": {
         "subject": "Lähtesta oma parool",

@@ -1,4 +1,571 @@
 {
+    "JSONResponse": {
+        "giveUsernameOrEmail": "Informe seu nome de usuário ou e-mail.",
+        "givePassword": "Informe sua senha.",
+        "credentialsRequired": "O nome de usuário/e-mail e a senha são obrigatórios.",
+        "chooseUsername": "Escolha um nome de usuário.",
+        "giveValidEmail": "Informe um endereço de e-mail válido.",
+        "passwordMinimum": "Use pelo menos 8 caracteres.",
+        "passwordMaximum": "Use no máximo 72 caracteres.",
+        "tooManySignups": "Muitos cadastros na sua rede. Tente novamente mais tarde.",
+        "usernameOrEmailTaken": "Esse nome de usuário ou e-mail já já está em uso.",
+        "bannedWithReason": "Sua conta foi banida. Motivo: {reason}",
+        "banned": "Sua conta foi banida.",
+        "serverError": "Erro do servidor",
+        "httpsMisconfigured": "Este site requer HTTPS e está mal configurado. O administrador deve definir SITE_URL como uma URL https://.",
+        "siteUpgrading": "O site está sendo atualizado. Tente novamente dentro de alguns minutos.",
+        "emailVerificationRequired": "É necessário verificar o e-mail",
+        "invalidCsrfToken": "Token CSRF inválido",
+        "requestBodyTooLarge": "O corpo do solicitação é grande demais.",
+        "validHttpLink": "Informe um link http:// ou https://.",
+        "linkTooLong": "Esse link é longa demais.",
+        "domainNotIp": "Informe um nome de domínio, não um endereço IP.",
+        "realDomain": "Informe um nome de domínio real.",
+        "listTooLong": "Essa lista é longa demais.",
+        "noValidHandles": "Não foram encontrados identificadores válidos — devem ter o formato usuário@domínio.",
+        "notCurrentPassword": "Essa não é sua senha atual.",
+        "enterEmailedCode": "Digite o código que enviamos a você por e-mail.",
+        "incorrectOrExpiredCode": "Esse código está incorreto ou expirou.",
+        "addressInUse": "Esse endereço já já está em uso.",
+        "writeSomethingFirst": "Escreva primeiro alguma coisa.",
+        "messageTooLong": "Essa mensagem é longa demais.",
+        "chooseFileFirst": "Escolha primeiro um arquivo.",
+        "uploadMissing": "Esse upload não chegou. Tente novamente.",
+        "imageUnreadable": "Não foi possível ler esse arquivo como uma imagem.",
+        "notAccountPassword": "Essa não é a senha da sua conta.",
+        "chooseMailTransport": "Escolha um dos três meios de transporte indicados.",
+        "invalidEmail": "Esse endereço de e-mail não é válido.",
+        "chooseImageFirst": "Escolha primeiro uma imagem.",
+        "imageProcessingFailed": "Não foi possível processar essa imagem. Tente outra.",
+        "aBanReasonIsRequired": "É necessário indicar um motivo para o banimento.",
+        "aBodyIsRequired": "É necessário um corpo",
+        "aFriendRequestOrFriendshipAlreadyExistsWithThatUser": "Já existe um solicitação de amizade ou uma amizade com esse usuário.",
+        "aMessageAndALanguageAreRequired": "São necessários uma mensagem e um idioma",
+        "aMessageIsEitherPlaintextOrEncryptedNotBoth": "Uma mensagem pode estar em texto simples ou criptografada, mas não das duas formas.",
+        "aPollNeedsAQuestionInThePost": "Uma enquete precisa de uma pergunta na publiqueção.",
+        "aPostAndALanguageAreRequired": "São necessários uma publiqueção e um idioma",
+        "aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne": "Uma publiqueção pode ter uma enquete, arquivos anexados ou um link, mas não mais do que um destes elementos",
+        "aPostCanHaveEitherAttachedFilesOrALinkNotBoth": "Uma publiqueção pode ter arquivos anexados ou um link, mas não ambos",
+        "aQuotePostCanCarryImagesButNotVideoOrAudio": "Uma publiqueção com citação pode incluir imagens, mas não vídeo nem áudio.",
+        "aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost": "Uma publiqueção com citação precisa de texto próprio — para compartilhar uma publiqueção sem alterações, use Repostar.",
+        "alreadyLoggedIn": "A sessão já foi iniciada",
+        "alreadyVerified": "Já foi verificado",
+        "altTextsDoNotMatchTheUploadedFiles": "Os textos alternativos não correspondem aos arquivos carregados",
+        "altTextsMustMapItemsToText": "Os textos alternativos devem associar os elementos a texto",
+        "bioMustBe500CharactersOrFewer": "A biografia deve ter 500 caracteres ou menos.",
+        "captchaVerificationFailedPleaseTryAgain": "A verificação CAPTCHA falhou. Tente novamente.",
+        "chooseHowLongThePollShouldRun": "Escolha durante quanto tempo a enquete deve decorrer.",
+        "couldNotDeliverTheFollowRequestToThatServer": "Não foi possível entregar o solicitação para seguir a esse servidor.",
+        "currentPasswordIsIncorrect": "A senha atual está incorreta",
+        "deviceNotFound": "Dispositivo não encontrado",
+        "displayNameMustBe50CharactersOrFewer": "O nome de apresentação deve ter 50 caracteres ou menos.",
+        "encryptedMessagingIsNotAvailableOnThisServer": "As mensagens criptografadas não estão disponíveis neste servidor.",
+        "fediverseSupportIsNotSetUpOnThisServerYet": "O suporte para o Fediverso ainda não está configurado neste servidor.",
+        "forbidden": "Proibido",
+        "giveThatAMoment": "Aguarde um momento.",
+        "incorrectUsernameEmailOrPassword": "Nome de usuário/e-mail ou senha incorretos.",
+        "invalidUrl": "URL inválido",
+        "invalidAction": "Ação inválida",
+        "invalidDevice": "Dispositivo inválido",
+        "invalidLocation": "Localização inválida",
+        "invalidReport": "Denúncia inválida",
+        "invalidRequest": "Solicitação inválido",
+        "invalidSeed": "Valor de inicialização inválido",
+        "invalidSkinTone": "Tom de pele inválido",
+        "invalidTarget": "Destino inválido",
+        "invalidTheme": "Tema inválido",
+        "malformedEncryptedMessage": "Mensagem criptografada malformada.",
+        "malformedKeyBackup": "Backup das chaves malformada.",
+        "malformedLocation": "Localização malformada",
+        "malformedPublicKey": "Chave pública malformada.",
+        "malformedRequest": "Solicitação malformado",
+        "malformedSubscription": "Assinatura malformada",
+        "methodNotAllowed": "Método não permitido",
+        "missingQuery": "Termo de busca ausente",
+        "noLoginInProgressPleaseStartAgain": "Não existe nenhum login em andamento. Comece novamente.",
+        "noSuchMessage": "Essa mensagem não existe",
+        "notATopic": "Não é um tópico",
+        "notAllowed": "Não permitido",
+        "notAuthorized": "Não autorizado",
+        "notFound": "Não encontrado",
+        "notFriendsWithThatUser": "Você não tem amizade com esse usuário",
+        "notLoggedIn": "A sessão não foi iniciada",
+        "notSubscribedToThatRelay": "Não existe assinatura desse retransmissor.",
+        "notYourPost": "Essa publiqueção não é sua",
+        "notYourRequest": "Esse solicitação não é seu",
+        "nothingToTranslate": "Não há nada para traduzir",
+        "oneOfYourFilesFailedToUploadPleaseTryAgain": "Não foi possível carregar um dos seus arquivos. Tente novamente.",
+        "onlyAPostCarriesMediaToClassify": "Apenas uma publiqueção inclui mídia para classificar.",
+        "pollNotFound": "Enquete não encontrada",
+        "postHasNoContent": "A publiqueção não tem conteúdo",
+        "postNotFound": "Publicação não encontrada",
+        "postTextIsTooLong": "O texto da publiqueção é longo demais",
+        "pushIsNotConfiguredOnThisServer": "As notificações push não estão configuradas neste servidor.",
+        "reasonIsTooLong": "O motivo é longo demais",
+        "reportNotFound": "Denúncia não encontrada",
+        "signalTooLarge": "O sinal é grande demais",
+        "thatAccountIsOnAnotherServerSoItCannotModerateThisOne": "Essa conta está em outro servidor, por isso não pode moderar este servidor.",
+        "thatAddressIsTooLong": "Esse endereço é longo demais.",
+        "thatDoesNotLookLikeAServerName": "Isso não parece ser um nome de servidor.",
+        "thatEntityIsNotBanned": "Essa entidade não está banida",
+        "thatIsAFediverseAccountFollowItInstead": "Essa é uma conta do Fediverso — siga-a no lugar disso.",
+        "thatIsNotAFediverseAccount": "Essa não é uma conta do Fediverso.",
+        "thatIsNotALanguageThisSiteHas": "Esse idioma não está disponível neste site.",
+        "thatIsThisServer": "Esse é este servidor.",
+        "thatIsTooLongToConvert": "Isso é longo demais para converter.",
+        "thatPasswordResetLinkIsInvalidOrHasExpired": "Esse link para redefinir a senha é inválida ou expirou.",
+        "thatReportHasNoDeletableContent": "Essa denúncia não tem conteúdo que possa ser excluído.",
+        "thatUserHasAlreadySentYouAFriendRequestAcceptItInstead": "Esse usuário já enviou a você um solicitação de amizade — aceite a solicitação.",
+        "thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted": "Esse usuário atingiu o limite de amigos, por isso este solicitação não pode ser aceita.",
+        "thatUserHasReachedTheirFriendLimit": "Esse usuário atingiu o limite de amigos.",
+        "thatUserIsAlreadyBanned": "Esse usuário já está banido",
+        "thatUserIsNotBanned": "Esse usuário não está banido",
+        "thatVoteCouldNotBeRecorded": "Não foi possível registrar esse voto.",
+        "thePostBeingQuotedNoLongerExists": "A publiqueção citada não existe mais.",
+        "thePublishTimeHasToBeInTheFuture": "A hora de publiqueção deve ser no futuro.",
+        "theyAreNoLongerInThisConversation": "Essa pessoa não está mais nesta conversa.",
+        "thisAccountCanNoLongerLogIn": "Esta conta não pode mais fazer login.",
+        "thisAccountCanTBeDeleted": "Esta conta não pode ser excluída.",
+        "thisContentCanTBeReported": "Este conteúdo não pode ser denunciado.",
+        "thisContentHasAlreadyBeenReviewedByAModerator": "Este conteúdo já foi analisado por um moderador.",
+        "thisConversationCanTTakeEncryptedMessages": "Esta conversa não pode receber mensagens criptografadas.",
+        "thisMessageCouldNotBeVerified": "Não foi possível verificar esta mensagem.",
+        "thisMessageIsTooLongToTranslate": "Esta mensagem é longa demais para traduzir.",
+        "thisPostIsTooLongToTranslate": "Esta publiqueção é longa demais para traduzir.",
+        "tooManyAttemptsPleaseTryAgainLater": "Muitas tentativas. Tente novamente mais tarde.",
+        "tooManyAttemptsPleaseWaitAMoment": "Muitas tentativas. Aguarde um momento.",
+        "tooManyAvatarChangesInAShortTimePleaseTryAgainLater": "Muitas alterações de avatar em pouco tempo. Tente novamente mais tarde.",
+        "tooManyChangesAtOncePleaseWaitAMoment": "Muitas alterações de uma só vez. Aguarde um momento.",
+        "tooManyChecksPleaseWaitAMoment": "Muitas verificações. Aguarde um momento.",
+        "tooManyEmailChangesInAShortTimePleaseTryAgainLater": "Muitas alterações de e-mail em pouco tempo. Tente novamente mais tarde.",
+        "tooManyFollowRequestsPleaseWaitABitAndTryAgain": "Muitos solicitações para seguir. Aguarde um pouco e tente novamente.",
+        "tooManyFollowsPleaseWaitABitAndTryAgain": "Começaste a seguir contas demais. Aguarde um pouco e tente novamente.",
+        "tooManyLoginAttemptsForThisAccountPleaseTryAgainLater": "Muitas tentativas de login nesta conta. Tente novamente mais tarde.",
+        "tooManyLoginAttemptsPleaseTryAgainLater": "Muitas tentativas de login. Tente novamente mais tarde.",
+        "tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain": "Muitas mensagens enviadas em pouco tempo. Aguarde um pouco e tente novamente.",
+        "tooManyPasswordResetAttemptsPleaseTryAgainLater": "Muitas tentativas de redefinição de senha. Tente novamente mais tarde.",
+        "tooManyPasswordResetRequestsPleaseTryAgainLater": "Muitos solicitações de redefinição de senha. Tente novamente mais tarde.",
+        "tooManyReportsPleaseTryAgainLater": "Muitas denúncias. Tente novamente mais tarde.",
+        "tooManyRequestsPleaseSlowDown": "Muitos solicitações. Vá mais devagar.",
+        "tooManyRequestsPleaseTryAgainLater": "Muitos solicitações. Tente novamente mais tarde.",
+        "tooManySearchesInAShortTime": "Muitas pesquisas em pouco tempo.",
+        "tooManySearchesPleaseSlowDown": "Muitas pesquisas. Vá mais devagar.",
+        "tooManyTranslationsInAShortTimePleaseWaitABitAndTryAgain": "Muitas traduções em pouco tempo. Aguarde um pouco e tente novamente.",
+        "tooManyVerificationEmailsSentPleaseTryAgainLater": "Muitos e-mails de verificação foram enviados. Tente novamente mais tarde.",
+        "tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain": "Muitos uploads de vídeo/áudio em pouco tempo. Aguarde um pouco e tente novamente.",
+        "translationIsNotAvailableOnThisServer": "A tradução não está disponível neste servidor.",
+        "translationIsNotAvailableRightNowPleaseTryAgainLater": "A tradução não está disponível neste momento. Tente novamente mais tarde.",
+        "twoFactorAuthenticationIsNotOn": "A autenticação de dois fatores não está ativada.",
+        "unableToCallThisUser": "Não é possível ligar a este usuário.",
+        "unableToFollowThatAccount": "Não é possível seguir essa conta.",
+        "unableToLikeThisPost": "Não é possível curtir esta publicação",
+        "unableToOpenThisConversation": "Não é possível abrir esta conversa.",
+        "unableToReplyToThisPost": "Não é possível responder a esta publiqueção",
+        "unableToRepostThis": "Não é possível repostar este conteúdo.",
+        "unableToSendFriendRequest": "Não é possível enviar o solicitação de amizade.",
+        "unableToSendMessage": "Não é possível enviar a mensagem.",
+        "unableToVoteOnThisPoll": "Não é possível votar nesta enquete",
+        "unknownConversion": "Conversão desconhecida",
+        "unknownTopicType": "Tipo de tópico desconhecido",
+        "unlockTheConversationToReportAnEncryptedMessage": "Desbloqueie a conversa para denunciar uma mensagem criptografada.",
+        "uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater": "Os uploads estão temporariamente indisponíveis — o servidor tem pouco espaço de armazenamento. Tente novamente mais tarde.",
+        "userNotFound": "Usuário não encontrado",
+        "youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst": "Você já tem 50 rascunhos e publiqueções agendadas — publique ou descarte primeiro alguns.",
+        "youCanTBlockYourself": "Você não pode bloquear a si mesmo.",
+        "youCanTMessageThisUser": "Você não pode enviar mensagens a este usuário.",
+        "youCanTMessageYourself": "Você não pode enviar mensagens a si mesmo.",
+        "youCanTRepostYourOwnPost": "Você não pode repostar sua própria publiqueção.",
+        "youCanTSendAFriendRequestToYourself": "Você não pode enviar um solicitação de amizade a si mesmo.",
+        "youReAlreadyFriendsWithThatUser": "Você já tem amizade com esse usuário.",
+        "youReDoingThatVeryQuicklyPleaseWaitAMoment": "Você está fazendo isso rápido demais. Aguarde um momento.",
+        "youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain": "Você está publicando rápido demais. Aguarde um momento e tente novamente.",
+        "youVeAlreadyReportedThis": "Você já denunciou este conteúdo.",
+        "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Você enviou muitas mensagens sem resposta — aguarde uma resposta antes de enviar mais.",
+        "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Seu editor está desatualizado. Atualize a página e tente novamente.",
+        "maximumFriends": "Você atingiu o máximo de {count} amigos.",
+        "altTextTooLong": "O texto alternativo é longo demais (máximo de {count} caracteres)",
+        "maximumPinnedPosts": "Você pode fixar até {count} das suas próprias publiqueções.",
+        "maximumScheduledDays": "As publiqueções podem ser agendadas com uma antecedência máxima de {count} dias.",
+        "uploadTooLarge": "O upload é grande demais. O tamanho total máximo é {size} B.",
+        "fileTooLarge": "Um dos seus arquivos excede o limite de upload de {size} B.",
+        "pollNeedsOptions": "Uma enquete precisa de pelo menos {count} opções diferentes."
+    },
+    "ActivityPubMove": {
+        "localOnly": "Apenas uma conta local pode ser movida.",
+        "sameServer": "Essa conta está neste servidor. Uma mudança ocorre sempre entre servidores.",
+        "fetchFailed": "Não foi possível obter essa conta.",
+        "aliasMissing": "Essa conta ainda não indica esta como um alias. Adiciona primeiro {uri} à respectiva lista \"também conhecido como\" e tente novamente."
+    },
+    "Relay": {
+        "invalidAddress": "Esse não é um endereço de retransmissor.",
+        "unknownStyle": "Tipo de assinatura desconhecido.",
+        "blocked": "Esse servidor está bloqueado. Para assiná-lo, desbloqueie-o primeiro.",
+        "alreadySubscribed": "Já existe uma assinatura desse retransmissor.",
+        "noSigningKey": "Este servidor não tem uma chave de assinatura ActivityPub e não pode assinar retransmissores.",
+        "notActor": "Esse endereço não respondeu com um ator do Fediverso."
+    },
+    "UserSettings": {
+        "changePassword": "Alterar senha",
+        "changeEmail": "Alterar e-mail",
+        "twoFactorAuthentication": "Autenticação de dois fatores",
+        "sensitiveMedia": "Mídia sensível",
+        "encryptedMessages": "Mensagens criptografadas",
+        "emailDigests": "Resumos por e-mail",
+        "pushNotifications": "Notificações push",
+        "rememberedDevices": "Dispositivos memorizados",
+        "videoCalling": "Videochamadas",
+        "movingServers": "Mudar de servidor",
+        "deleteAccount": "Excluir conta",
+        "theme": "Tema",
+        "sessions": "Sessões",
+        "fediverse": "Fediverso"
+    },
+    "AdminModSettings": {
+        "queues": "Filas",
+        "blockedServers": "Servidores bloqueados",
+        "bannedTrendingEntities": "Entidades banidas das tendências"
+    },
+    "AdminSettings": {
+        "services": "Serviços",
+        "statistics": "Estatísticas",
+        "relays": "Retransmissores",
+        "tests": "Testes",
+        "map": "Mapa",
+        "openRouter": "IA (OpenRouter)",
+        "mail": "Correio",
+        "favicon": "Favicon",
+        "about": "Sobre",
+        "moderationLog": "Cadastro de moderação",
+        "notificationTest": "Teste de notificações",
+        "botProtection": "Proteção contra bots",
+        "googleAuth": "Autenticação Google",
+        "emailDigest": "Resumo por e-mail",
+        "frontPageImage": "Imagem da página inicial",
+        "termsOfService": "Termos de Serviço",
+        "privacyPolicy": "Política de Privacidade"
+    },
+    "ErrorDocument": {
+        "notFoundTitle": "Não encontrado",
+        "notFoundMessage": "A página que procuras não existe.",
+        "tooManyRequestsTitle": "Muitas solicitações",
+        "profileLookupRateLimit": "Muitos perfis foram consultados em pouco tempo. Aguarde um momento e tente novamente."
+    },
+    "IndexPage": {
+        "rssFeed": "Feed RSS"
+    },
+    "SetupPage": {
+        "databaseUnavailable": "O site não consegue acesser à banco de dados neste momento. Tente novamente dentro de alguns minutos.",
+        "databaseAdminNotice": "Se você administra este site: o link à banco de dados com as credenciais de .env está a falhar — verifique se o servidor da banco de dados está em execução e se as credenciais continuam válidas. Esta página é apresentada em vez do assistente de configuração precisamente para que uma indisponibilidade da banco de dados não possa ser usada para reconfigurar o site.",
+        "finished": "Configuração concluída — a banco de dados, uma conta de execução com privilégios mínimos e o arquivo .env estão prontos. Faltam três pequenos passos:",
+        "missingPrerequisites": "Bem-vindo! Antes de prosseguir com a configuração, faltam alguns pré-requisitos neste servidor:",
+        "fixPrerequisites": "Corrija-os no servidor e recarregue esta página para verificar novamente.",
+        "welcome": "Bem-vindo! Todas as verificações do ambiente foram aprovadas. O envio deste formulário cria a banco de dados (caso ainda não exista), uma conta de execução da banco de dados com privilégios mínimos e uma senha aleatória, bem como o esquema, e depois grava tudo no arquivo .env. As credenciais de administrador são usadas uma única vez para o aprovisionamento e nunca são salvas."
+    },
+    "PinnedPostSection": {
+        "heading": "Fixadas"
+    },
+    "ImageItem": {
+        "alt": "Imagem"
+    },
+    "TestResults": {
+        "installJavaScriptDependencies": "Execute `npm install` na raiz de documentos para ativar os testes de JavaScript.",
+        "nodeUnavailable": "Não existe uma instalação do Node.js que o servidor Web possa usar. Instale-o para todo o sistema (por exemplo, dnf install nodejs) para ativar os testes de JavaScript — um gestor de versões no diretório pessoal de alguém (nvm) não é visível aqui.",
+        "nodeFatal": "Não foi possível iniciar os testes de JavaScript. O Node.js encontrou um erro fatal, muito provavelmente devido a restrições do SELinux no servidor Web."
+    },
+    "CodeBlockCopy": {
+        "copy": "Copiar",
+        "copyLabel": "Copiar código para a área de transferência",
+        "copied": "Copiado!"
+    },
+    "Api": {
+        "networkError": "Erro de rede. Verifica o link e tente novamente.",
+        "genericError": "Ocorreu um erro. Tente novamente."
+    },
+    "Dialog": {
+        "confirm": "OK",
+        "cancel": "Cancelar"
+    },
+    "EntityModerator": {
+        "ban": "Banir",
+        "banPlaceholder": "Motivo do banimento (obrigatório)",
+        "unban": "Retirar o banimento de \"{entity}\"? Poderá voltar a aparecer nas tendências."
+    },
+    "InfiniteScroller": {
+        "loading": "Carregando",
+        "failed": "Não foi possível carregar mais. Volta a carregar a página.",
+        "end": "Você chegou ao fim."
+    },
+    "PostFields": {
+        "title": "Título (opcional)",
+        "link": "Link (opcional)",
+        "altText": "Texto alternativo — descreve esta imagem",
+        "contentWarning": "Aviso de conteúdo (opcional)"
+    },
+    "Poll": {
+        "votes": {
+            "one": "{count} voto",
+            "many": "{count} votos",
+            "other": "{count} votos"
+        },
+        "vote": "Votar"
+    },
+    "PostEditor": {
+        "altText": "Texto alternativo",
+        "sensitive": "Sensível",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "saved": "Alterações salvas."
+    },
+    "Toast": {
+        "dismiss": "Fechar"
+    },
+    "CarouselController": {
+        "stopAutoplay": "Parar reprodução automática",
+        "autoplay": "Reprodução automática",
+        "exitFullscreen": "Sair do tela inteira",
+        "fullscreen": "Tela inteiro"
+    },
+    "VideoCall": {
+        "calling": "A ligar…",
+        "connecting": "A estabelecer link…",
+        "connected": "Conexão estabelecida",
+        "cancel": "Cancelar",
+        "end": "Terminar chamada",
+        "permissionError": "Não foi possível usar a câmera ou o microfone. Verifica a permissão do navegador para este site.",
+        "declined": "Sua chamada foi recusada.",
+        "call": "Ligar",
+        "incoming": "Videochamada recebida",
+        "accept": "Aceitar",
+        "decline": "Recusar"
+    },
+    "ClientStatus": {
+        "settingsSaved": "Configurações salvas.",
+        "emailUnchanged": "Esse já é seu endereço de e-mail.",
+        "followersNotified": "Solicitamos que seus seguidores sigam você na nova conta.",
+        "saved": "Salvo.",
+        "chooseFile": "Escolha primeiro um arquivo.",
+        "markedVerified": "Marcado como verificado.",
+        "signOutEverywhere": "Isso vai terminar a sessão em todos os dispositivos, incluindo este. Continuar?",
+        "signingOut": "A terminar sessão…",
+        "failed": "Falhou",
+        "done": "Concluído",
+        "mapSaved": "Configurações do mapa salvas.",
+        "openRouterSaved": "Configurações do OpenRouter salvas.",
+        "linkCopied": "Link copiado para a área de transferência",
+        "linkCopyFailed": "Não foi possível copiar o link",
+        "notificationsBlocked": "As notificações deste site estão bloqueadas nas configurações do navegador.",
+        "pushUnavailable": "As notificações push não estão disponíveis neste servidor.",
+        "notificationsEnableFailed": "Não foi possível ativar as notificações.",
+        "notificationsOn": "Notificações ativadas neste dispositivo.",
+        "notificationsOff": "Notificações desativadas neste dispositivo.",
+        "unlockConversation": "Desbloqueia primeiro a conversa.",
+        "unlockFailed": "Essa senha de criptografia não desbloqueia suas mensagens.",
+        "resetSent": "Se esse endereço de e-mail estiver cadastrado, foi enviado um link para redefinir a senha. Se não a encontrares, verifique a pasta de spam.",
+        "passwordUnchanged": "Essa já é sua senha — nada foi alterado.",
+        "passwordReset": "Sua senha foi redefinida. Agora você pode fazer login.",
+        "login": "Iniciar sessão",
+        "revokeDevice": "Revogar este dispositivo? A sessão será terminada e será necessário iniciá-la novamente.",
+        "revoking": "A revogar…",
+        "passwordChanged": "Senha alterada!",
+        "deleteAccount": "Excluir sua conta? Suas publicações, respostas e mensagens serão excluídas permanentemente — não é possível anular esta ação.",
+        "avatarAlt": "Seu avatar",
+        "faviconSaved": "Configurações salvas.",
+        "profileSaved": "Perfil salvo.",
+        "pinSaved": "Fixada no seu perfil.",
+        "unpinSaved": "Desafixada.",
+        "reported": "Denunciado",
+        "sent": "Enviado!"
+    },
+    "OtherUserClient": {
+        "cancelRequest": "Cancelar solicitação",
+        "addFriend": "Adicionar amigo",
+        "ban": "Banir",
+        "viewFriends": "Ver amigos",
+        "blockConfirm": "Bloquear este usuário? Isto excluirá qualquer amizade existente.",
+        "removeFriendConfirm": "Remover este amigo?",
+        "banConfirm": "Banir este usuário? Todo o conteúdo ficará oculto e o início de sessão será bloqueado. O usuário verá este motivo no formulário de início de sessão.",
+        "banPlaceholder": "Motivo do banimento (obrigatório)",
+        "banned": "Banido"
+    },
+    "PostMapClient": {
+        "postHere": "Publicar aqui",
+        "postsNearby": "Publicações nas proximidades",
+        "clearPin": "Remover marcador",
+        "viewPost": "Ver publicação",
+        "byAuthor": "por {name}"
+    },
+    "SearchClient": {
+        "noBannedUsers": "Não há usuários banidos.",
+        "noBannedUsersMatch": "Nenhum usuário banido corresponde a essa pesquisa."
+    },
+    "EncryptedMessagesClient": {
+        "newKeys": "Novas chaves criadas.",
+        "enabled": "As mensagens criptografadas estão ativadas.",
+        "wrongPassphrase": "Essa não é sua senha de criptografia atual.",
+        "passphraseChanged": "Senha de criptografia alterada.",
+        "minimumPassphrase": "Use uma senha de criptografia com pelo menos {count} caracteres.",
+        "passphrasesMismatch": "As senhas de criptografia não correspondem.",
+        "passphraseIsPassword": "A senha de criptografia não pode ser a senha da conta — esta é enviada ao servidor e aquela nunca o pode ser.",
+        "passphraseTooRepetitive": "Essa senha de criptografia usa poucos caracteres diferentes e não é segura. Use uma frase mais longa."
+    },
+    "LoginClient": {
+        "verificationRequired": "Muitas tentativas nesta conta. Conclui a verificação para continuar.",
+        "verificationFailed": "Não foi possível carregar a verificação. Tente novamente dentro de momentos."
+    },
+    "PostClient": {
+        "mapTitle": "Mostrar este local no mapa",
+        "fullscreen": "Tela inteiro",
+        "sensitiveMedia": "Mídia sensível",
+        "previous": "Anterior",
+        "next": "Próximo",
+        "autoplay": "Reprodução automática",
+        "machineTranslation": "Tradução automática",
+        "deleteConfirm": "Excluir esta publicação?",
+        "image": "Imagem"
+    },
+    "StagedPostClient": {
+        "discardConfirm": "Excluir isto? Nunca foi publicado e não será salva nenhuma cópia.",
+        "edit": "Editar",
+        "published": "Publicado.",
+        "discarded": "Excluído."
+    },
+    "ComposerClient": {
+        "placeholder": "No que você está pensando?",
+        "replyLegend": "Responder a esta publicação",
+        "createLegend": "Criar uma publicação",
+        "poll": "Enquete",
+        "option": "Opção {count}",
+        "pollOption": "Opção da enquete {count}",
+        "allowMultiple": "Permitir mais do que uma escolha",
+        "pollDuration": "Duração da enquete",
+        "richTextHelp": "Editor de texto formatado. Se preferir escrever em texto simples, use o botão \"User Markdown\" abaixo para mudar para uma caixa de texto normal — a mesma publicação, escrita com Markdown para a formatação que quiser.",
+        "plainTextHelp": "Texto simples. Você pode usar Markdown aqui: asteriscos à volta de uma palavra colocam o texto a negrito ou itálico e um cardinal no início de uma linha cria um título. Use o botão \"User texto formatado\" abaixo para voltar à barra de formatação.",
+        "useMarkdown": "User Markdown",
+        "useRichText": "User texto formatado",
+        "removeFiles": "Remover arquivos",
+        "addFiles": "Adicionar arquivos",
+        "addFilesLabel": "Adicionar arquivos — imagens, vídeo ou áudio",
+        "sensitive": "Sensível",
+        "markdownPostText": "Texto da publicação, em Markdown",
+        "addLocation": "Adicionar localização",
+        "removeLocation": "Remover localização",
+        "locating": "A localizar…",
+        "saveDraft": "Salvar rascunho",
+        "post": "Publicar",
+        "schedulePost": "Agendar publicação",
+        "addSchedule": "Adicionar agendamento",
+        "removeSchedule": "Remover agendamento",
+        "addPoll": "Adicionar enquete",
+        "removePoll": "Remover enquete",
+        "publishDate": "Data de publicação",
+        "publishTime": "Hora de publicação (opcional)",
+        "writeFirst": "Escreva primeiro alguma coisa — ainda não há nada para guardar.",
+        "tooManyFiles": "Uma publicação pode incluir no máximo {count} arquivos — os demais não foram adicionados.",
+        "remove": "Remover",
+        "savedDraft": "Salvo nos Rascunhos.",
+        "scheduledDraft": "Agendado — consulte Rascunhos e agendados no menu.",
+        "linkPreviewAttached": "Imagem de prévia do link anexada. O botão Remover imagem retira-a.",
+        "linkPreviewRemoved": "Imagem de prévia do link removida.",
+        "altTextFor": "Texto alternativo de {name}",
+        "oneFileAttached": "1 arquivo anexado. Cada imagem tem uma caixa para descrevê-la.",
+        "filesAttached": "{count} arquivos anexados.",
+        "fileRemovedEmpty": "Arquivo removido. Agora não há nada anexado.",
+        "filesLeft": "Arquivo removido. Restam {count}.",
+        "attachmentCount": "{count} / {maximum} arquivos",
+        "markdownActive": "Estás agora a escrever na caixa de texto simples Markdown.",
+        "richTextActive": "Estás agora a escrever no editor de texto formatado.",
+        "noGeolocation": "Seu navegador não consegue compartilhar uma localização.",
+        "locationError": "Não foi possível obter sua localização. Verifica a permissão de localização do navegador.",
+        "futurePublish": "A hora de publicação deve ser no futuro.",
+        "genericError": "Ocorreu um erro. Tente novamente.",
+        "submitFailed": "Não foi possível enviar a publicação. Tente novamente.",
+        "processing": "Seus arquivos de mídia estão sendo processados. Você receberá uma notificação quando estiverem prontos e pode sair desta página com segurança.",
+        "replies": "Respostas"
+    },
+    "UserClient": {
+        "joined": "Entrou em {date}",
+        "displayName": "Nome de apresentação",
+        "bio": "Adicionar uma biografia…",
+        "save": "Salvar",
+        "deleteGoogleConfirm": "Excluir sua conta? Suas publicações, respostas e mensagens serão excluídas permanentemente — não é possível anular esta ação. Confirmarás ao iniciar sessão com o Google."
+    },
+    "MiscellaneousClient": {
+        "deleteReportedContent": "Excluir este conteúdo permanentemente? Excluir uma publicação também remove todas as respostas.",
+        "unbanUser": "Retirar o banimento deste usuário? O conteúdo e o início de sessão voltarão a funcionar.",
+        "seeMore": "Ver mais…",
+        "reloadError": "Ocorreu um erro. Tente voltar a carregar a página.",
+        "checking": "A verificar…",
+        "justNow": "agora mesmo",
+        "report": "Denunciar"
+    },
+    "AboutPage": {
+        "softwareBefore": "Este site usa ",
+        "softwareAfter": " versão {version}",
+        "placesBefore": "Nomes de locais de ",
+        "placesBetween": ", sob a licença ",
+        "placesAfter": ".",
+        "mapBefore": "Mosaicos do mapa de ",
+        "mapAfter": ".",
+        "translationBefore": "Tradução por ",
+        "translationAfter": ", executada aqui e não em outro local."
+    },
+    "LoginPage": {
+        "startOver": "Recomeçar",
+        "forgotPassword": "Esqueceu a senha?",
+        "signup": "Precisa de uma conta? Cadastre-se"
+    },
+    "VerifyEmailPage": {
+        "verified": "Seu e-mail foi verificado. Agora você pode usar {site}.",
+        "invalid": "Esse link de verificação é inválida ou expirou.",
+        "confirm": "Confirme que deseja verificar este endereço de e-mail.",
+        "continue": "Continuar"
+    },
+    "RevertEmailPage": {
+        "reverted": "Seu endereço de e-mail foi reposto e a sessão da sua conta foi terminada em todos os dispositivos.",
+        "securityAdvice": "Se não sabes ao certo como isto aconteceu, alterar a senha assim que voltares a iniciar sessão.",
+        "login": "Iniciar sessão",
+        "forgotPassword": "Esqueceu a senha?",
+        "invalid": "Esse link de reversão é inválida ou expirou.",
+        "confirm": "Reverter a alteração recente do endereço de e-mail da sua conta? Isto também termina a sessão em todos os dispositivos."
+    },
+    "UnsubscribePage": {
+        "invalid": "Esse link para cancelar a assinatura não foi emitida por este site.",
+        "continue": "Continuar",
+        "resubscribed": "Seus resumos foram reativados. Voltaremos a entrar em contato com você quando você estiver ausente há algum tempo e houver novidades.",
+        "unsubscribed": "Concluído — você não receberá mais resumos. Os e-mails necessários, como os de redefinição de senha, continuarão sendo enviados."
+    },
+    "UsersPage": {
+        "fediverseBefore": "Você pode seguir uma lista de usuários do Fediverso nas ",
+        "settingsLink": "Configurações do usuário",
+        "fediverseAfter": "."
+    },
+    "LocationsPage": {
+        "postsNear": "Publicações perto de {place}"
+    },
+    "RouteNotices": {
+        "cannotMessage": "Você não pode enviar mensagens a este usuário.",
+        "noHashtags": "Ainda não há hashtags.",
+        "passwordResetInvalid": "Esse link para redefinir a senha é inválida ou expirou."
+    },
+    "GoogleAuthCallbackPage": {
+        "accountCannotBeDeleted": "Esta conta não pode ser excluída.",
+        "notConfigured": "O início de sessão com o Google não está configurado.",
+        "deletionCancelled": "A exclusão da conta foi cancelada.",
+        "deletionFailed": "Não foi possível concluir a exclusão da conta. Tente novamente.",
+        "identityFailed": "Não foi possível verificar sua identidade Google. Tente novamente.",
+        "emailMismatch": "Essa conta Google não corresponde ao endereço de e-mail da sua conta.",
+        "deleted": "Sua conta foi excluída permanentemente.",
+        "home": "Voltar ao início",
+        "userSettings": "Voltar às configurações do usuário",
+        "signinCancelled": "O início de sessão com o Google foi cancelado.",
+        "signinFailed": "Não foi possível concluir o início de sessão com o Google. Tente novamente.",
+        "rateLimited": "Muitas tentativas de início de sessão na sua rede. Tente novamente mais tarde.",
+        "verificationFailed": "Não foi possível verificar o início de sessão com o Google. Tente novamente.",
+        "emailUnavailable": "Este endereço de e-mail não está disponível para iniciar sessão.",
+        "bannedWithReason": "Sua conta foi banida. Motivo: {reason}",
+        "banned": "Sua conta foi banida.",
+        "signin": "Voltar ao início de sessão"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "{count} voto",
@@ -409,7 +976,7 @@
         "clock": 24
     },
     "EnvironmentChecker": {
-        "wsCannotConnect": "Não foi possível conectar ao servidor WebSocket em 127.0.0.1:{port}{tls} ({error}). Inicie-o primeiro: systemctl --user start glommer-websocket (consulte o README.md para obter o arquivo da unidade). Se ele acabou de ganhar ou perder WS_TLS_CERT/WS_TLS_KEY, reinicie-o para corresponder ao .env.",
+        "wsCannotConnect": "Não foi possível conectar ao servidor WebSocket em 127.0.0.1:{port}{tls} ({error}). Inicie-o primeiro: systemctl --usar start glommer-websocket (consulte o README.md para obter o arquivo da unidade). Se ele acabou de ganhar ou perder WS_TLS_CERT/WS_TLS_KEY, reinicie-o para corresponder ao .env.",
         "wsOverTLS": " por TLS",
         "wsBadHandshake": "O serviço em 127.0.0.1:{port} não concluiu um handshake WebSocket válido — algo diferente de bin/websocket-server.php pode estar escutando nessa porta.",
         "wsNoPong": "O servidor WebSocket aceitou o handshake, mas não respondeu a um ping — pode estar travado ou funcionando incorretamente. Verifique os logs.",
@@ -548,7 +1115,7 @@
     },
     "RemoteFollowsForm": {
         "legend": "Seguir contas do Fediverso",
-        "notice": "Cole um ou mais nomes de usuário, por exemplo, @user@example.social — qualquer separador entre eles funciona.",
+        "notice": "Cole um ou mais nomes de usuário, por exemplo, @usar@example.social — qualquer separador entre eles funciona.",
         "handlesLabel": "Nomes de usuário do Fediverso a seguir",
         "submit": "Seguir",
         "statusPending": "pendente",
@@ -564,7 +1131,32 @@
         "submit": "Bloquear servidor"
     },
     "VideoCallTestPanel": {
-        "intro": "Executa as partes da configuração de chamada que podem ser verificadas em um único navegador. Tudo até uma conexão ponto a ponto real pode ser testado aqui; a conexão com outra pessoa exige a participação dela."
+        "intro": "Execute as partes da configuração de chamada que podem ser verificadas em um único navegador. Tudo até uma conexão ponto a ponto real pode ser testado aqui; a conexão com outra pessoa exige a participação dela.",
+        "checkFailed": "A própria verificação falhou: {error}",
+        "stopped": "Interrompido aqui — os passos seguintes dependem deste.",
+        "secureName": "Esta página é um contexto seguro",
+        "securePass": "É servida por HTTPS, por isso o navegador permite usar uma câmera e um link entre pares.",
+        "secureFail": "Não é um contexto seguro. Os navegadores recusam a câmera e o WebRTC fora de HTTPS, por isso não é possível configurar uma chamada a partir daqui.",
+        "webrtcName": "O navegador suporta WebRTC",
+        "webrtcPass": "RTCPeerConnection está disponível.",
+        "webrtcFail": "Este navegador não tem RTCPeerConnection, por isso não pode fazer nem receber chamadas.",
+        "loopbackName": "É concluída uma negociação local",
+        "stunName": "O STUN está acessível a partir desta rede",
+        "signallingName": "O endpoint de sinalização responde",
+        "secureVerdict": "Não — as videochamadas não podem funcionar aqui. Esta página não é um contexto seguro e os navegadores recusam a câmera e o WebRTC fora de HTTPS. Nada mais importa até isto ser corrigido.",
+        "webrtcVerdict": "Não — as videochamadas não podem funcionar neste navegador. Não tem qualquer suporte para WebRTC, por isso não pode fazer nem receber chamadas. Outro navegador nesta máquina poderá funcionar.",
+        "loopbackVerdict": "Não — as videochamadas não podem funcionar neste navegador. A sua própria implementação de WebRTC não conseguiu ligar dois pares dentro desta página, o que exclui totalmente a rede; algo local está a bloqueá-la, provavelmente uma extensão ou uma definição de privacidade reforçada.",
+        "stunVerdict": "Apenas nesta rede. As chamadas entre duas pessoas na mesma rede local deverão funcionar, mas esto link não consegue descobrir o próprio endereço público, por isso não consegue encontrar um caminho para alguém por detrás de outro roteador. Como nenhuma chamada é retransmitida pelo servidor, nem sequer seria disponibilizada.",
+        "signallingVerdict": "Não — não é possível configurar videochamadas a partir daqui. Este navegador consegue fazer uma chamada, mas os dois lados não conseguem trocar as mensagens que a estabelecem, por isso o botão de chamada nunca apareceria.",
+        "passVerdict": "Sim — as videochamadas deverão funcionar nesto link. Todos os passos da configuração pelos quais esta máquina é responsável foram concluídos, incluindo o acesso ao STUN, pelo que é possível encontrar e negociar um caminho direto para outra pessoa. Falta apenas testar o lado da outra pessoa, o que exige a sua participação.",
+        "loopbackPass": "Duas conexões nesta página negociaram e abriram um canal de dados, por isso a própria implementação de WebRTC funciona.",
+        "loopbackFail": "Duas conexões nesta página não conseguiram alcançar-se, o que exclui a rede — a implementação de WebRTC do navegador está a ser bloqueada, provavelmente por uma extensão ou uma definição de privacidade reforçada.",
+        "noStun": "Não está configurado nenhum endpoint STUN, por isso as chamadas só podem funcionar entre pessoas na mesma rede.",
+        "stunPass": "O STUN respondeu e o navegador obteve o seu endereço público, por isso consegue encontrar um caminho direto para alguém em outra rede.",
+        "stunFail": "O STUN não respondeu — é provável que o UDP esteja bloqueado por uma firewall. As chamadas continuarão a funcionar entre duas pessoas na mesma rede, mas não através da Internet, e nenhuma chamada é retransmitida.",
+        "signallingPass": "O endpoint está acessível e aceitou o solicitação como autenticado antes de rejeitar o conteúdo, que é tudo o que um sinal real precisa.",
+        "signallingAuthFail": "O endpoint recusou o solicitação por não estar autenticado ({status}). Os sinais entre duas pessoas reais seriam recusados da mesma forma, por isso não seria possível configurar nenhuma chamada.",
+        "signallingUnexpected": "O endpoint respondeu com {status}, o que não é a resposta esperada a este solicitação — algo à frente dele está a interferir."
     },
     "VideoCallTestButton": {
         "label": "Executar verificação"
@@ -739,7 +1331,7 @@
         "pendingReads": "Publicações aguardando leitura de outros servidores: {count}"
     },
     "TestSuitePanel": {
-        "intro": "Execute a suíte de testes do site e veja os resultados. Isso leva alguns segundos, por isso abre em uma página própria.",
+        "intro": "Execute a suíte de testes do site e veja os resultados. O processo leva alguns segundos e é aberto em uma página própria.",
         "runLabel": "Executar testes"
     },
     "HelpArticle": {
@@ -763,7 +1355,7 @@
         "name": "Desbanir"
     },
     "ReportDismissButton": {
-        "name": "Dispensar"
+        "name": "Fechar"
     },
     "ReportedContentClassifyButton": {
         "name": "Marcar como sensível"
@@ -851,7 +1443,51 @@
         "name": "Editar"
     },
     "ReportButton": {
-        "name": "Denunciar"
+        "name": "Denunciar",
+        "prompt": "Por que você está denunciando este conteúdo?",
+        "unverifiable": "Esta mensagem foi criptografada com chaves que já não existem, por isso não pode ser verificada nem denunciada.",
+        "unlockFirst": "Desbloqueie a conversa antes de denunciar uma mensagem criptografada."
+    },
+    "QuillEditor": {
+        "postText": "Texto da publicação",
+        "bold": "Negrito",
+        "italic": "Itálico",
+        "underline": "Sublinhado",
+        "strikethrough": "Tachado",
+        "blockquote": "Citação em bloco",
+        "codeBlock": "Bloco de código",
+        "inlineCode": "Código em linha",
+        "link": "Link",
+        "formula": "Fórmula",
+        "clearFormatting": "Limpar formatação",
+        "heading": "Título {count}",
+        "numberedList": "Lista numerada",
+        "bulletList": "Lista com marcadores",
+        "list": "Lista"
+    },
+    "UserSearchBox": {
+        "placeholder": "Pesquisar um usuário…"
+    },
+    "PostSearchBox": {
+        "placeholder": "Pesquisar publicações…"
+    },
+    "FriendSearchBox": {
+        "placeholder": "Pesquisar amigos…"
+    },
+    "ConversationList": {
+        "emptyNotice": "Ainda não você tem conversas."
+    },
+    "RememberedDeviceList": {
+        "emptyNotice": "Não há dispositivos memorizados. Os dispositivos nos quais selecionar \"Memorizar-me\" ao iniciar sessão aparecem aqui."
+    },
+    "StagedPostList": {
+        "emptyNotice": "Não há rascunhos nem publicações agendadas. Os controles Salvar rascunho e Agendar do compositor adicionam esses itens aqui."
+    },
+    "AuthDivider": {
+        "label": "ou"
+    },
+    "UserRSSFeed": {
+        "title": "Publicações de {name} em {site}"
     },
     "PostActionBar": {
         "reply": "Responder",

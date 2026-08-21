@@ -112,26 +112,59 @@
         "submit": "Ensaluti"
     },
     "SignupForm": {
-        "legend": "Krei konton", "usernameLabel": "Uzantnomo", "usernamePlaceholder": "Minusklaj literoj, ciferoj kaj _", "emailLabel": "Retpoŝto", "emailPlaceholder": "Valida retpoŝtadreso", "displayName": "Montrata nomo (nedeviga)", "bioLabel": "Biografio (nedeviga)", "bioPlaceholder": "Mallonga biografio — #kradvortoj, @mencioj kaj ligiloj fariĝas alklakeblaj", "passwordLabel": "Pasvorto", "passwordPlaceholder": "Pasvorto: almenaŭ 8 signoj", "rememberMe": "Memoru min", "submit": "Registriĝi"
+        "legend": "Krei konton",
+        "usernameLabel": "Uzantnomo",
+        "usernamePlaceholder": "Minusklaj literoj, ciferoj kaj _",
+        "emailLabel": "Retpoŝto",
+        "emailPlaceholder": "Valida retpoŝtadreso",
+        "displayName": "Montrata nomo (nedeviga)",
+        "bioLabel": "Biografio (nedeviga)",
+        "bioPlaceholder": "Mallonga biografio — #kradvortoj, @mencioj kaj ligiloj fariĝas alklakeblaj",
+        "passwordLabel": "Pasvorto",
+        "passwordPlaceholder": "Pasvorto: almenaŭ 8 signoj",
+        "rememberMe": "Memoru min",
+        "submit": "Registriĝi"
     },
     "PasswordChangeForm": {
-        "legend": "Ŝanĝu vian pasvorton", "currentPassword": "Nuna pasvorto", "newPasswordLabel": "Nova pasvorto", "newPasswordPlaceholder": "Almenaŭ 8 signoj", "confirmPassword": "Konfirmu novan pasvorton", "submit": "Ŝanĝi pasvorton"
+        "legend": "Ŝanĝu vian pasvorton",
+        "currentPassword": "Nuna pasvorto",
+        "newPasswordLabel": "Nova pasvorto",
+        "newPasswordPlaceholder": "Almenaŭ 8 signoj",
+        "confirmPassword": "Konfirmu novan pasvorton",
+        "submit": "Ŝanĝi pasvorton"
     },
     "EmailChangeForm": {
-        "legend": "Ŝanĝu vian retpoŝtadreson", "newEmail": "Nova retpoŝtadreso", "currentPassword": "Nuna pasvorto", "notice": "Vi devos kontroli la novan adreson antaŭ ol daŭre uzi la retejon.", "submit": "Ŝanĝi retpoŝtadreson"
+        "legend": "Ŝanĝu vian retpoŝtadreson",
+        "newEmail": "Nova retpoŝtadreso",
+        "currentPassword": "Nuna pasvorto",
+        "notice": "Vi devos kontroli la novan adreson antaŭ ol daŭre uzi la retejon.",
+        "submit": "Ŝanĝi retpoŝtadreson"
     },
     "AccountDeleteForm": {
-        "legend": "Forigi vian konton", "warning": "Tio porĉiame forigas vian konton, afiŝojn kaj mesaĝojn. Tion oni ne povas malfari.", "currentPassword": "Nuna pasvorto", "submit": "Forigi konton"
+        "legend": "Forigi vian konton",
+        "warning": "Tio porĉiame forigas vian konton, afiŝojn kaj mesaĝojn. Tion oni ne povas malfari.",
+        "currentPassword": "Nuna pasvorto",
+        "submit": "Forigi konton"
     },
     "AccountMigrationForm": {
-        "legend": "Translokiĝi al alia servilo", "movedNotice": "Ĉi tiu konto translokiĝis al {destination}. Viaj sekvantoj estis petitaj sekvi vin tie.", "explanation": "Viaj sekvantoj estas petataj sekvi vin ĉe la nova konto. Viaj afiŝoj restas ĉi tie — objektadresoj apartenas al la servilo kiu kreis ilin, do ili ne povas esti kunportitaj.", "addressNotice": "La konto al kiu vi translokiĝas devas unue listigi ĉi tiun sub \"ankaŭ konata kiel\". Via adreso ĉi tie estas {address}.", "movedToLabel": "Translokiĝi al",
+        "legend": "Translokiĝi al alia servilo",
+        "movedNotice": "Ĉi tiu konto translokiĝis al {destination}. Viaj sekvantoj estis petitaj sekvi vin tie.",
+        "explanation": "Viaj sekvantoj estas petataj sekvi vin ĉe la nova konto. Viaj afiŝoj restas ĉi tie — objektadresoj apartenas al la servilo kiu kreis ilin, do ili ne povas esti kunportitaj.",
+        "addressNotice": "La konto al kiu vi translokiĝas devas unue listigi ĉi tiun sub \"ankaŭ konata kiel\". Via adreso ĉi tie estas {address}.",
+        "movedToLabel": "Translokiĝi al",
         "movedToPlaceholder": "https://example.social/users/you",
-        "aliasesLegend": "Ankaŭ konata kiel", "aliasesExplanation": "Kontoj aliloke kiuj ankaŭ estas vi. Listigi unu ĉi tie permesas al tiu konto translokiĝi al ĉi tiu — tio estas la permeso, ne la translokiĝo mem. Unu adreso en ĉiu linio.", "aliasesLabel": "Viaj aliaj kontoj",
+        "aliasesLegend": "Ankaŭ konata kiel",
+        "aliasesExplanation": "Kontoj aliloke kiuj ankaŭ estas vi. Listigi unu ĉi tie permesas al tiu konto translokiĝi al ĉi tiu — tio estas la permeso, ne la translokiĝo mem. Unu adreso en ĉiu linio.",
+        "aliasesLabel": "Viaj aliaj kontoj",
         "aliasesPlaceholder": "https://example.social/users/you",
         "submit": "Konservi"
     },
     "TwoFactorForm": {
-        "legend": "Enigu vian kontrolkodon", "explanation": "Ni retpoŝtis al vi kontrolkodon. Enigu ĝin sube aŭ uzu unu el viaj reakiraj kodoj por fini la ensaluton.", "explanationEmailFailed": "Ni ne povis nun retpoŝti vian kontrolkodon. Enigu unu el viaj reakiraj kodoj por fini la ensaluton.", "code": "Kontrolkodo", "submit": "Kontroli"
+        "legend": "Enigu vian kontrolkodon",
+        "explanation": "Ni retpoŝtis al vi kontrolkodon. Enigu ĝin sube aŭ uzu unu el viaj reakiraj kodoj por fini la ensaluton.",
+        "explanationEmailFailed": "Ni ne povis nun retpoŝti vian kontrolkodon. Enigu unu el viaj reakiraj kodoj por fini la ensaluton.",
+        "code": "Kontrolkodo",
+        "submit": "Kontroli"
     },
     "TwoFactorSettingsForm": {
         "legend": {
@@ -242,23 +275,36 @@
         "save": "Konservi"
     },
     "AboutSettingsForm": {
-        "legend": "Pri", "description": "Plata teksto — malplenaj linioj apartigas alineojn. La unua alineo estos uzata kiel reteja priskribo.", "save": "Konservi"
+        "legend": "Pri",
+        "description": "Plata teksto — malplenaj linioj apartigas alineojn. La unua alineo estos uzata kiel reteja priskribo.",
+        "save": "Konservi"
     },
     "TermsSettingsForm": {
-        "legend": "Kondiĉoj de servo", "description": "Plata teksto — malplenaj linioj apartigas alineojn.", "save": "Konservi"
+        "legend": "Kondiĉoj de servo",
+        "description": "Plata teksto — malplenaj linioj apartigas alineojn.",
+        "save": "Konservi"
     },
     "PrivacySettingsForm": {
-        "legend": "Privateca politiko", "description": "Plata teksto — malplenaj linioj apartigas alineojn.", "save": "Konservi"
+        "legend": "Privateca politiko",
+        "description": "Plata teksto — malplenaj linioj apartigas alineojn.",
+        "save": "Konservi"
     },
     "EmailDigestSettingsForm": {
-        "legend": "Retpoŝta resumo", "fieldLabel": "Fina alineo", "notice": "Aldonata proksime al la fino de ĉiu resumo, post la listo de tio, kion la membro maltrafis. Plata teksto. Lasu ĝin malplena por reveni al la defaŭlta vortumo de la programo.", "save": "Konservi"
+        "legend": "Retpoŝta resumo",
+        "fieldLabel": "Fina alineo",
+        "notice": "Aldonata proksime al la fino de ĉiu resumo, post la listo de tio, kion la membro maltrafis. Plata teksto. Lasu ĝin malplena por reveni al la defaŭlta vortumo de la programo.",
+        "save": "Konservi"
     },
     "FaviconSettingsForm": {
         "legend": "Favicon",
-        "currentAlt": "Nuna retpaĝsimbolo", "save": "Alŝuti retpaĝsimbolon"
+        "currentAlt": "Nuna retpaĝsimbolo",
+        "save": "Alŝuti retpaĝsimbolon"
     },
     "FrontPageImageSettingsForm": {
-        "legend": "Ĉefpaĝa bildo", "explainer": "Montrata de aliaj retejoj kiam iu dividas ligilon al ĉi tiu — nur en Open Graph-metadatumoj, neniam sur la paĝo. Tondita al 1200×630. Sen ĝi, ligilaj antaŭrigardoj tute ne havas bildon.", "currentAlt": "Nuna ĉefpaĝa bildo", "save": "Alŝuti bildon"
+        "legend": "Ĉefpaĝa bildo",
+        "explainer": "Montrata de aliaj retejoj kiam iu dividas ligilon al ĉi tiu — nur en Open Graph-metadatumoj, neniam sur la paĝo. Tondita al 1200×630. Sen ĝi, ligilaj antaŭrigardoj tute ne havas bildon.",
+        "currentAlt": "Nuna ĉefpaĝa bildo",
+        "save": "Alŝuti bildon"
     },
     "CarouselAutoplayButton": {
         "name": "Aŭtomata ludado"
@@ -321,16 +367,45 @@
             "before": "Blokita de {name} ",
             "after": ""
         },
-        "deletedAccount": "forigita konto", "reason": " — {reason}"
+        "deletedAccount": "forigita konto",
+        "reason": " — {reason}"
     },
     "DateFormat": {
         "months": {
-            "1": "Januaro", "2": "Februaro", "3": "Marto", "4": "Aprilo", "5": "Majo", "6": "Junio", "7": "Julio", "8": "Aŭgusto", "9": "Septembro", "10": "Oktobro", "11": "Novembro", "12": "Decembro"
+            "1": "Januaro",
+            "2": "Februaro",
+            "3": "Marto",
+            "4": "Aprilo",
+            "5": "Majo",
+            "6": "Junio",
+            "7": "Julio",
+            "8": "Aŭgusto",
+            "9": "Septembro",
+            "10": "Oktobro",
+            "11": "Novembro",
+            "12": "Decembro"
         },
         "shortMonths": {
-            "1": "Jan", "2": "Feb", "3": "Mar", "4": "Apr", "5": "Maj", "6": "Jun", "7": "Jul", "8": "Aŭg", "9": "Sep", "10": "Okt", "11": "Nov", "12": "Dec"
+            "1": "Jan",
+            "2": "Feb",
+            "3": "Mar",
+            "4": "Apr",
+            "5": "Maj",
+            "6": "Jun",
+            "7": "Jul",
+            "8": "Aŭg",
+            "9": "Sep",
+            "10": "Okt",
+            "11": "Nov",
+            "12": "Dec"
         },
-        "long": "{year}-{month}-{day}", "short": "{year}-{month}-{day}", "time": "{hour}:{minute}", "dateAndTime": "{date} je {time}", "am": "atm", "pm": "ptm", "clock": 24
+        "long": "{year}-{month}-{day}",
+        "short": "{year}-{month}-{day}",
+        "time": "{hour}:{minute}",
+        "dateAndTime": "{date} je {time}",
+        "am": "atm",
+        "pm": "ptm",
+        "clock": 24
     },
     "EnvironmentChecker": {
         "wsCannotConnect": "Ne eblis konektiĝi al la WebSocket-servilo ĉe 127.0.0.1:{port}{tls} ({error}). Unue lanĉu ĝin: systemctl --user start glommer-websocket (vidu README.md pri la unuodosiero). Se ĝi ĵus ricevis aŭ perdis WS_TLS_CERT/WS_TLS_KEY, relanĉu ĝin por kongrui kun .env.",
@@ -341,10 +416,32 @@
     },
     "EntityType": {
         "singular": {
-            "hashtag": "Kradvorto", "person": "Persono", "org": "Organizaĵo", "gpe": "Loko", "loc": "Regiono", "fac": "Vidindaĵo", "product": "Produkto", "event": "Evento", "work_of_art": "Verko", "law": "Leĝo", "language": "Lingvo", "norp": "Grupo"
+            "hashtag": "Kradvorto",
+            "person": "Persono",
+            "org": "Organizaĵo",
+            "gpe": "Loko",
+            "loc": "Regiono",
+            "fac": "Vidindaĵo",
+            "product": "Produkto",
+            "event": "Evento",
+            "work_of_art": "Verko",
+            "law": "Leĝo",
+            "language": "Lingvo",
+            "norp": "Grupo"
         },
         "plural": {
-            "hashtag": "Kradvortoj", "person": "Personoj", "org": "Organizaĵoj", "gpe": "Lokoj", "loc": "Regionoj", "fac": "Vidindaĵoj", "product": "Produktoj", "event": "Eventoj", "work_of_art": "Verkoj", "law": "Leĝoj", "language": "Lingvoj", "norp": "Grupoj"
+            "hashtag": "Kradvortoj",
+            "person": "Personoj",
+            "org": "Organizaĵoj",
+            "gpe": "Lokoj",
+            "loc": "Regionoj",
+            "fac": "Vidindaĵoj",
+            "product": "Produktoj",
+            "event": "Eventoj",
+            "work_of_art": "Verkoj",
+            "law": "Leĝoj",
+            "language": "Lingvoj",
+            "norp": "Grupoj"
         }
     },
     "FriendRemoveButton": {
@@ -357,7 +454,8 @@
         "name": "Rifuzi"
     },
     "UserFollowButton": {
-        "follow": "Sekvi", "unfollow": "Ĉesi sekvi"
+        "follow": "Sekvi",
+        "unfollow": "Ĉesi sekvi"
     },
     "UserBlockButton": {
         "name": "Bloki"
@@ -369,7 +467,27 @@
         "message": "Mesaĝo"
     },
     "MainNavigation": {
-        "toggleLabel": "Menuo", "loggedInAs": "Ensalutinta kiel {name}", "friendsFeed": "Amika fluo", "relayFeed": "Relajsa fluo", "users": "Uzantoj", "tags": "Etikedoj", "topics": "Temoj", "map": "Mapo", "locations": "Lokoj", "search": "Serĉi", "messages": "Mesaĝoj", "bookmarks": "Legosignoj", "help": "Helpo", "about": "Pri", "login": "Ensaluti", "signup": "Registriĝi", "friends": "Amikoj", "drafts": "Malnetoj kaj planitaj", "userSettings": "Uzantaj agordoj", "modSettings": "Kontrolantaj agordoj", "adminSettings": "Administraj agordoj"
+        "toggleLabel": "Menuo",
+        "loggedInAs": "Ensalutinta kiel {name}",
+        "friendsFeed": "Amika fluo",
+        "relayFeed": "Relajsa fluo",
+        "users": "Uzantoj",
+        "tags": "Etikedoj",
+        "topics": "Temoj",
+        "map": "Mapo",
+        "locations": "Lokoj",
+        "search": "Serĉi",
+        "messages": "Mesaĝoj",
+        "bookmarks": "Legosignoj",
+        "help": "Helpo",
+        "about": "Pri",
+        "login": "Ensaluti",
+        "signup": "Registriĝi",
+        "friends": "Amikoj",
+        "drafts": "Malnetoj kaj planitaj",
+        "userSettings": "Uzantaj agordoj",
+        "modSettings": "Kontrolantaj agordoj",
+        "adminSettings": "Administraj agordoj"
     },
     "LogoutForm": {
         "submit": "Elsaluti"
@@ -378,10 +496,12 @@
         "joined": "Aliĝis {date}"
     },
     "FriendRequestButton": {
-        "add": "Aldoni amikon", "cancel": "Nuligi peton"
+        "add": "Aldoni amikon",
+        "cancel": "Nuligi peton"
     },
     "StagedPostWhen": {
-        "scheduled": "Planita por {when}", "draft": "Malneto — publikiĝas nur kiam vi ordonas"
+        "scheduled": "Planita por {when}",
+        "draft": "Malneto — publikiĝas nur kiam vi ordonas"
     },
     "MessageTranslateButton": {
         "name": "Traduki ĉi tiun mesaĝon"
@@ -443,31 +563,88 @@
         "submit": "Bloki servilon"
     },
     "VideoCallTestPanel": {
-        "intro": "Rulas la partojn de voka agordo kontroleblajn el unu retumilo. Ĉio ĝis efektiva samtavola konekto estas testebla ĉi tie; konektiĝi al alia persono bezonas tiun personon."
+        "intro": "Rulas la partojn de voka agordo kontroleblajn el unu retumilo. Ĉio ĝis efektiva samtavola konekto estas testebla ĉi tie; konektiĝi al alia persono bezonas tiun personon.",
+        "checkFailed": "Mem la kontrolo malsukcesis: {error}",
+        "stopped": "Haltis ĉi tie — la postaj paŝoj dependas de ĉi tio.",
+        "secureName": "Ĉi tiu paĝo estas sekura kunteksto",
+        "securePass": "Servata per HTTPS, do la retumilo permesos kameraon kaj samtavolan konekton.",
+        "secureFail": "Ne sekura kunteksto. Retumiloj rifuzas kaj la kameraon kaj WebRTC ekster HTTPS, do neniu voko estas aranĝebla de ĉi tie.",
+        "webrtcName": "La retumilo subtenas WebRTC",
+        "webrtcPass": "RTCPeerConnection disponeblas.",
+        "webrtcFail": "Ĉi tiu retumilo havas neniun RTCPeerConnection, do ĝi tute ne povas fari aŭ ricevi vokojn.",
+        "loopbackName": "Interkonsento kompletiĝas loke",
+        "stunName": "STUN estas atingebla el ĉi tiu reto",
+        "signallingName": "La signaliga finpunkto respondas",
+        "secureVerdict": "Ne — videovokado ne povas funkcii de ĉi tie. Ĉi tiu paĝo ne estas sekura kunteksto, kaj retumiloj rifuzas kaj la kameraon kaj WebRTC ekster HTTPS. Nenio alia gravas antaŭ ol tio estas riparita.",
+        "webrtcVerdict": "Ne — videovokado ne povas funkcii el ĉi tiu retumilo. Ĝi havas neniun WebRTC-subtenon entute, do ĝi povas nek fari nek ricevi vokon. Alia retumilo en la sama maŝino povus tute funkcii bone.",
+        "loopbackVerdict": "Ne — videovokado ne povas funkcii el ĉi tiu retumilo. Ĝia propra WebRTC-stako ne povis konekti du samtavolanojn en ĉi tiu sola paĝo, kio tute ekskludas la reton; io loka blokas ĝin, plej verŝajne kromprogramo aŭ strikta privateca agordo.",
+        "stunVerdict": "Nur en ĉi tiu reto. Vokoj inter du homoj en la sama loka reto devus funkcii de ĉi tie, sed ĉi tiu konekto ne povas malkovri sian propran publikan adreson, do ĝi ne havas manieron trovi vojon al iu malantaŭ alia enkursigilo. Ĉar neniu voko estas iam relajsata tra la servilo, unu simple ne estus proponata.",
+        "signallingVerdict": "Ne — videovokado ne estas aranĝebla de ĉi tie. Ĉi tiu retumilo kapablas fari vokon, sed la du flankoj ne povas interŝanĝi la mesaĝojn, kiuj aranĝas ĝin, do la voka butono neniam aperus.",
+        "passVerdict": "Jes — videovokado devus funkcii el ĉi tiu konekto. Ĉiu parto de la vokagordo, pri kiu ĉi tiu maŝino respondecas, sukcesis, inkluzive de atingo de STUN, do rekta vojo al alia persono estas trovebla kaj interkonsentebla. La sola netestita afero estas la flanko de la alia persono, kiu bezonas tiun personon.",
+        "loopbackPass": "Du konektoj en ĉi tiu paĝo interkonsentis kaj malfermis datumkanalon, do mem la WebRTC-stako funkcias.",
+        "loopbackFail": "Du konektoj en la sama paĝo ne povis atingi unu la alian, kio ekskludas la reton — la WebRTC-stako de la retumilo estas blokata, plej verŝajne de kromprogramo aŭ strikta privateca agordo.",
+        "noStun": "Neniu STUN-finpunkto estas agordita, do vokoj povas funkcii nur inter homoj en la sama reto.",
+        "stunPass": "STUN respondis kaj la retumilo eksciis sian publikan adreson, do ĝi povas trovi rektan vojon al iu en alia reto.",
+        "stunFail": "Neniu respondo de STUN — UDP al ĝi plej verŝajne estas blokata de fajroŝirmilo. Vokoj ankoraŭ funkcios inter du homoj en la sama reto, sed ne trans la interreto, kaj neniu voko estas iam relajsata.",
+        "signallingPass": "La finpunkto estas atingebla kaj akceptis la peton kiel aŭtentigitan antaŭ ol malakcepti ĝian enhavon, kio estas ĉio, kion reala signalo bezonas.",
+        "signallingAuthFail": "La finpunkto rifuzis la peton kiel neaŭtentigitan ({status}). Signaloj inter du realaj homoj estus rifuzitaj same, do neniu voko estus aranĝebla.",
+        "signallingUnexpected": "La finpunkto respondis {status}, kio ne estas la ĝusta respondo al ĉi tiu peto — io antaŭ ĝi interferas."
     },
     "VideoCallTestButton": {
         "label": "Ruli la kontrolon"
     },
     "WebSocketStatus": {
-        "ok": "WebSocket-servilo: funkcias", "failed": "WebSocket-servilo: {detail}", "clientTesting": "Retumila konekto: testado…", "clientConnecting": "Retumila konekto: konektado…", "clientConnected": "Retumila konekto: konektita", "clientDisconnecting": "Retumila konekto: malkonektado…", "clientNotConnected": "Retumila konekto: ne konektita"
+        "ok": "WebSocket-servilo: funkcias",
+        "failed": "WebSocket-servilo: {detail}",
+        "clientTesting": "Retumila konekto: testado…",
+        "clientConnecting": "Retumila konekto: konektado…",
+        "clientConnected": "Retumila konekto: konektita",
+        "clientDisconnecting": "Retumila konekto: malkonektado…",
+        "clientNotConnected": "Retumila konekto: ne konektita"
     },
     "UploadWorkerStatus": {
-        "running": "Laborila servo: funkcias", "stopped": "Laborila servo: ne funkcias — preparitaj alŝutoj ne estos transkoditaj ĝis ĝi estos relanĉita", "unknown": "Laborila servo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)", "queue": "Vico: {staging} preparataj, {pending} atendantaj, {processing} prilaborataj"
+        "running": "Laborila servo: funkcias",
+        "stopped": "Laborila servo: ne funkcias — preparitaj alŝutoj ne estos transkoditaj ĝis ĝi estos relanĉita",
+        "unknown": "Laborila servo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)",
+        "queue": "Vico: {staging} preparataj, {pending} atendantaj, {processing} prilaborataj"
     },
     "TrendingTimerStatus": {
-        "running": "Aktualaĵa tempigilo: funkcias", "stopped": "Aktualaĵa tempigilo: ne funkcias — aktualaj temoj refreŝiĝos nur per la memriparo de la legvojo (EntityRanker::refreshIfStale()), ne laŭ horaro. Rulu bin/install.php kiel root por agordi ĝin.", "unknown": "Aktualaĵa tempigilo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)"
+        "running": "Aktualaĵa tempigilo: funkcias",
+        "stopped": "Aktualaĵa tempigilo: ne funkcias — aktualaj temoj refreŝiĝos nur per la memriparo de la legvojo (EntityRanker::refreshIfStale()), ne laŭ horaro. Rulu bin/install.php kiel root por agordi ĝin.",
+        "unknown": "Aktualaĵa tempigilo: nekonata — aŭ systemctl ne disponeblas en ĉi tiu gastiganto, aŭ SELinux rifuzas la propran statuspeton de la retservilo (rulu bin/install.php kiel root por ripari tion)"
     },
     "Notification": {
-        "postReady": "La prilaborado de via aŭdvidaĵo finiĝis kaj ĝi nun estas publikigita", "scheduledPostLive": "Via planita afiŝo nun estas publikigita", "uploadPartlyFailed": "Via afiŝo estas publikigita, sed unu aŭ pluraj dosieroj ne povis esti prilaboritaj", "uploadFailed": "Unu el viaj alŝutoj ne estis prilaborita kaj ne estis afiŝita", "mailerFailed": "Retpoŝta livero malsukcesis — la poŝtilo eble ne funkcias. Bonvolu kontroli viajn retpoŝtajn agordojn.", "mailFromNotConfigured": "Neniu retpoŝta sendinto-adreso estas agordita, do retpoŝtoj ne povas esti senditaj. Agordu ĝin en Administraj agordoj (sekcio Elira retpoŝto) aŭ per bin/install.php.", "systemError": "Okazis servila eraro. Kontrolu la erarprotokolon por detaloj.", "passwordRemovedGoogle": "Via pasvorto estis forigita kiam vi ensalutis per Google. Uzu \"Forgesis pasvorton\" se vi volas agordi novan.", "like": "{name} ŝatis vian afiŝon", "repost": "{name} republikigis vian afiŝon", "reply": "{name} respondis al via afiŝo", "friendRequest": "{name} sendis al vi amikpeton", "friendAccepted": "{name} akceptis vian amikpeton", "message": "{name} sendis al vi mesaĝon", "mention": "{name} menciis vin en afiŝo", "follow": "{name} eksekvis vin de alia servilo", "default": "{name} faris ion"
+        "postReady": "La prilaborado de via aŭdvidaĵo finiĝis kaj ĝi nun estas publikigita",
+        "scheduledPostLive": "Via planita afiŝo nun estas publikigita",
+        "uploadPartlyFailed": "Via afiŝo estas publikigita, sed unu aŭ pluraj dosieroj ne povis esti prilaboritaj",
+        "uploadFailed": "Unu el viaj alŝutoj ne estis prilaborita kaj ne estis afiŝita",
+        "mailerFailed": "Retpoŝta livero malsukcesis — la poŝtilo eble ne funkcias. Bonvolu kontroli viajn retpoŝtajn agordojn.",
+        "mailFromNotConfigured": "Neniu retpoŝta sendinto-adreso estas agordita, do retpoŝtoj ne povas esti senditaj. Agordu ĝin en Administraj agordoj (sekcio Elira retpoŝto) aŭ per bin/install.php.",
+        "systemError": "Okazis servila eraro. Kontrolu la erarprotokolon por detaloj.",
+        "passwordRemovedGoogle": "Via pasvorto estis forigita kiam vi ensalutis per Google. Uzu \"Forgesis pasvorton\" se vi volas agordi novan.",
+        "like": "{name} ŝatis vian afiŝon",
+        "repost": "{name} republikigis vian afiŝon",
+        "reply": "{name} respondis al via afiŝo",
+        "friendRequest": "{name} sendis al vi amikpeton",
+        "friendAccepted": "{name} akceptis vian amikpeton",
+        "message": "{name} sendis al vi mesaĝon",
+        "mention": "{name} menciis vin en afiŝo",
+        "follow": "{name} eksekvis vin de alia servilo",
+        "default": "{name} faris ion"
     },
     "NotificationList": {
         "emptyNotice": "Ankoraŭ neniuj sciigoj."
     },
     "NotificationsNavLink": {
-        "label": "Sciigoj", "unseen": "Neviditaj sciigoj"
+        "label": "Sciigoj",
+        "unseen": "Neviditaj sciigoj"
     },
     "NotificationTestPanel": {
-        "intro": "Sendu testan sciigon al vi mem (la administranto). Ĝi devus tuj aperi kiel ŝpruca sciigo kaj en la sciiga menuo.", "button": "Sendi testan sciigon", "sending": "Sendado…", "sent": "Sendita!", "failed": "Malsukcesis"
+        "intro": "Sendu testan sciigon al vi mem (la administranto). Ĝi devus tuj aperi kiel ŝpruca sciigo kaj en la sciiga menuo.",
+        "button": "Sendi testan sciigon",
+        "sending": "Sendado…",
+        "sent": "Sendita!",
+        "failed": "Malsukcesis"
     },
     "MessageDot": {
         "label": "Nelegitaj mesaĝoj"
@@ -476,22 +653,29 @@
         "label": "Io nova en la menuo"
     },
     "Message": {
-        "encrypted": "Ĉifrita mesaĝo", "decryptionFailed": "Ĉi tiu mesaĝo estis ĉifrita per ŝlosiloj kiuj ne plu ekzistas."
+        "encrypted": "Ĉifrita mesaĝo",
+        "decryptionFailed": "Ĉi tiu mesaĝo estis ĉifrita per ŝlosiloj kiuj ne plu ekzistas."
     },
     "MessageComposer": {
-        "bodyLabel": "Mesaĝo", "bodyPlaceholder": "Skribu mesaĝon", "send": "Sendi"
+        "bodyLabel": "Mesaĝo",
+        "bodyPlaceholder": "Skribu mesaĝon",
+        "send": "Sendi"
     },
     "MessageList": {
         "emptyNotice": "Ankoraŭ neniuj mesaĝoj."
     },
     "MessageKeyFingerprint": {
-        "explanation": "Legu ĉi tiun kodon unu al la alia alimaniere — laŭte, persone aŭ dum voko. Se ĝi kongruas ambaŭflanke, neniu estas inter vi.", "changed": "Ĉi tiu kodo ŝanĝiĝis post via kontrolo. Tio okazas kiam unu el vi restarigas siajn ĉifrajn ŝlosilojn — sed ankaŭ tiel aspektus iu leganta ĉi tiun konversacion. Kontrolu la novan kodon kun tiu persono antaŭ ol fidi ĝin.", "verified": "Vi kontrolis ĉi tiun kodon."
+        "explanation": "Legu ĉi tiun kodon unu al la alia alimaniere — laŭte, persone aŭ dum voko. Se ĝi kongruas ambaŭflanke, neniu estas inter vi.",
+        "changed": "Ĉi tiu kodo ŝanĝiĝis post via kontrolo. Tio okazas kiam unu el vi restarigas siajn ĉifrajn ŝlosilojn — sed ankaŭ tiel aspektus iu leganta ĉi tiun konversacion. Kontrolu la novan kodon kun tiu persono antaŭ ol fidi ĝin.",
+        "verified": "Vi kontrolis ĉi tiun kodon."
     },
     "MessageKeyVerifyButton": {
         "label": "Marki kiel kontrolita"
     },
     "MessageUnlockForm": {
-        "passphraseLabel": "Pasfrazo", "passphrasePlaceholder": "Pasfrazo por malŝlosi ĉi tiun konversacion", "submit": "Malŝlosi"
+        "passphraseLabel": "Pasfrazo",
+        "passphrasePlaceholder": "Pasfrazo por malŝlosi ĉi tiun konversacion",
+        "submit": "Malŝlosi"
     },
     "Conversation": {
         "lastMessage": {
@@ -507,22 +691,33 @@
     },
     "Report": {
         "targetTypes": {
-            "post": "Afiŝo", "message": "Mesaĝo", "user": "Uzanto"
+            "post": "Afiŝo",
+            "message": "Mesaĝo",
+            "user": "Uzanto"
         },
         "summary": {
             "before": "{type} #{id} raportita de ",
             "after": ""
         },
-        "reasonLine": "Kialo: {reason}", "banReporterLabel": "Forbari raportinton", "banReportedUserLabel": "Forbari raportitan uzanton", "deleteLabel": "Forigi {type}", "reportedImageAlt": "Raportita bildo", "attachmentUnavailable": "Raportita aldonaĵo ne plu disponeblas.", "viewAttachment": "Vidi raportitan aldonaĵon",
+        "reasonLine": "Kialo: {reason}",
+        "banReporterLabel": "Forbari raportinton",
+        "banReportedUserLabel": "Forbari raportitan uzanton",
+        "deleteLabel": "Forigi {type}",
+        "reportedImageAlt": "Raportita bildo",
+        "attachmentUnavailable": "Raportita aldonaĵo ne plu disponeblas.",
+        "viewAttachment": "Vidi raportitan aldonaĵon",
         "missing": {
-            "noSnapshot": "La raportita enhavo ne plu disponeblas.", "unknownType": "Nekonata enhavtipo."
+            "noSnapshot": "La raportita enhavo ne plu disponeblas.",
+            "unknownType": "Nekonata enhavtipo."
         }
     },
     "ReportList": {
         "emptyNotice": "Neniuj raportoj."
     },
     "ModQueueLinks": {
-        "intro": "La vicoj estas sufiĉe longaj por esti legataj po unu paĝo, do ili havas proprajn paĝojn.", "reportsLabel": "Raportoj", "bannedUsersLabel": "Forbaritaj uzantoj"
+        "intro": "La vicoj estas sufiĉe longaj por esti legataj po unu paĝo, do ili havas proprajn paĝojn.",
+        "reportsLabel": "Raportoj",
+        "bannedUsersLabel": "Forbaritaj uzantoj"
     },
     "ModerationActionList": {
         "emptyNotice": "Neniu kontrolanto ankoraŭ faris ion."
@@ -534,7 +729,8 @@
         "emptyNotice": "Neniuj blokitaj serviloj."
     },
     "RelayCard": {
-        "accepted": "Abonita ", "waiting": "Atendas akcepton de la relajso — abonita "
+        "accepted": "Abonita ",
+        "waiting": "Atendas akcepton de la relajso — abonita "
     },
     "RelayList": {
         "emptyNotice": "Neniu relajso estas abonita. Ĉi tien alvenas nur tio, kion membroj sekvas."
@@ -543,31 +739,43 @@
         "emptyNotice": "Nenio ankoraŭ alvenis tra relajso. Afiŝoj aperas ĉi tie dum la aliaj serviloj publikigas ilin."
     },
     "RelaySubscribeForm": {
-        "legend": "Aboni relajson", "explainerOne": "Relajso estas komuna torento: ĉiu publika afiŝo de ĉiu alia abonita servilo alvenas ĉi tien, kaj la afiŝoj de ĉi tiu servilo iras al ĉiuj. Tiel nova nodo trovas homojn, ĉar federacio alie portas nur tion, kion iu ĉi tie jam sekvas.", "explainerTwo": "La ŝarĝo dependas de tio, kion tiuj serviloj publikigas — kvieta unu semajnon kaj miloj da afiŝoj hore la sekvan — kaj ĝin portas viaj konservejo, livera vico kaj kontrola vico. Relajsitaj afiŝoj restas ekster la ĉefa kaj amika fluoj; ili iras al la Relajsa fluo, kiun homoj intence malfermas.", "addressLabel": "Relajsa adreso",
+        "legend": "Aboni relajson",
+        "explainerOne": "Relajso estas komuna torento: ĉiu publika afiŝo de ĉiu alia abonita servilo alvenas ĉi tien, kaj la afiŝoj de ĉi tiu servilo iras al ĉiuj. Tiel nova nodo trovas homojn, ĉar federacio alie portas nur tion, kion iu ĉi tie jam sekvas.",
+        "explainerTwo": "La ŝarĝo dependas de tio, kion tiuj serviloj publikigas — kvieta unu semajnon kaj miloj da afiŝoj hore la sekvan — kaj ĝin portas viaj konservejo, livera vico kaj kontrola vico. Relajsitaj afiŝoj restas ekster la ĉefa kaj amika fluoj; ili iras al la Relajsa fluo, kiun homoj intence malfermas.",
+        "addressLabel": "Relajsa adreso",
         "addressPlaceholder": "https://relay.example/actor",
         "submitLabel": "Aboni"
     },
     "RelayFollowObjectField": {
         "label": "Abonmaniero",
         "options": {
-            "public": "Sekvi la publikan fluon (kion plej multaj relajsoj atendas)", "actor": "Sekvi la propran aganton de la relajso"
+            "public": "Sekvi la publikan fluon (kion plej multaj relajsoj atendas)",
+            "actor": "Sekvi la propran aganton de la relajso"
         },
         "retryNotice": "Se la relajso neniam akceptas, retiru kaj provu la alian manieron — iuj relajsaj programoj rekonas nur unu el ili."
     },
     "SiteCounters": {
-        "members": "Membroj: {count} ({joined} aliĝis dum la lastaj {days} tagoj)", "activeMembers": "Membroj ĉi tie dum la lastaj {days} tagoj: {count} ({posted} el ili afiŝis)", "posts": "Afiŝoj verkitaj ĉi tie: {count} ({recent} dum la lastaj {days} tagoj)", "deliveries": "Federaciaj liveroj dum la lastaj {days} tagoj: {delivered} alvenis, pri {undeliverable} oni rezignis", "queued": "Atendas eliron: {count} ({failing} jam rifuzitaj almenaŭ unufoje)", "pendingReads": "Afiŝoj el aliaj serviloj atendantaj legadon: {count}"
+        "members": "Membroj: {count} ({joined} aliĝis dum la lastaj {days} tagoj)",
+        "activeMembers": "Membroj ĉi tie dum la lastaj {days} tagoj: {count} ({posted} el ili afiŝis)",
+        "posts": "Afiŝoj verkitaj ĉi tie: {count} ({recent} dum la lastaj {days} tagoj)",
+        "deliveries": "Federaciaj liveroj dum la lastaj {days} tagoj: {delivered} alvenis, pri {undeliverable} oni rezignis",
+        "queued": "Atendas eliron: {count} ({failing} jam rifuzitaj almenaŭ unufoje)",
+        "pendingReads": "Afiŝoj el aliaj serviloj atendantaj legadon: {count}"
     },
     "TestSuitePanel": {
-        "intro": "Rulu la testaron de la retejo kaj vidu la rezultojn. Ĝi bezonas kelkajn sekundojn, do ĝi malfermiĝas en propra paĝo.", "runLabel": "Ruli testojn"
+        "intro": "Rulu la testaron de la retejo kaj vidu la rezultojn. Ĝi bezonas kelkajn sekundojn, do ĝi malfermiĝas en propra paĝo.",
+        "runLabel": "Ruli testojn"
     },
     "HelpArticle": {
         "backLabel": "Reen al la tuta helpo"
     },
     "UserSearchList": {
-        "noSuggestions": "Nun ne estas proponoj — proponoj venas de la amikoj de homoj kun kiuj vi jam amikiĝis. Serĉu supre por trovi iun laŭ nomo.", "noMatches": "Neniu ĉi tie kongruas."
+        "noSuggestions": "Nun ne estas proponoj — proponoj venas de la amikoj de homoj kun kiuj vi jam amikiĝis. Serĉu supre por trovi iun laŭ nomo.",
+        "noMatches": "Neniu ĉi tie kongruas."
     },
     "UserModButton": {
-        "make": "Fari kontrolanto", "remove": "Forigi kontrolan rolon"
+        "make": "Fari kontrolanto",
+        "remove": "Forigi kontrolan rolon"
     },
     "UserUnbanButton": {
         "name": "Malforbari"
@@ -594,16 +802,68 @@
         "name": "Nuligi"
     },
     "TestResultsBadge": {
-        "passing": "{suite}: sukcesas", "failing": "{suite}: malsukcesas"
+        "passing": "{suite}: sukcesas",
+        "failing": "{suite}: malsukcesas"
     },
     "PageTitle": {
-        "about": "Pri", "adminBanned": "Forbaritaj uzantoj", "adminModSettings": "Kontrolantaj agordoj", "adminReports": "Raportoj", "adminSettings": "Administraj agordoj", "adminTests": "Testoj", "authGoogleCallbackAccountDeleted": "Konto forigita", "authGoogleCallbackDeleteAccount": "Forigi konton", "authGoogleCallbackLogin": "Ensaluti", "bookmarks": "Legosignoj", "checkInbox": "Kontrolu vian enirkeston", "drafts": "Malnetoj kaj planitaj", "draftsEditDraft": "Redakti malneton", "draftsEditScheduled": "Redakti planitan afiŝon", "forgotPassword": "Forgesis pasvorton", "friendsFeed": "Amika fluo", "help": "Helpo", "helpDescription": "Gvidiloj kaj respondoj pri uzado de la retejo.", "locations": "Lokoj", "locationsDescription": "Afiŝoj el la plej proksimaj lokoj.", "locationsPlaceDescription": "Afiŝoj proksime al {place}.", "login": "Ensaluti", "loginVerificationCode": "Kontrolkodo", "map": "Mapo", "mapDescription": "Mapo de afiŝoj el la tuta mondo — trovu homojn kaj aferojn proksime al vi.", "messages": "Mesaĝoj", "messagesWithUser": "Mesaĝoj kun {name}", "notifications": "Sciigoj", "privacy": "Privateca politiko", "quote": "Citi", "relayFeed": "Relajsa fluo", "relayFeedDescription": "Publikaj afiŝoj alvenantaj de la relajsoj abonataj de ĉi tiu servilo.", "resetPassword": "Restarigi pasvorton", "revertEmail": "Malfari retpoŝtadresan ŝanĝon", "search": "Serĉi", "signup": "Registriĝi", "tags": "Etikedoj", "tagsDescription": "Foliumu aktualajn kaj popularajn kradvortojn en {siteTitle}.", "tagsTagDescription": "Afiŝoj etikeditaj {tag} en {siteTitle}.", "terms": "Kondiĉoj de servo", "topics": "Temoj", "topicsDescription": "Pri kio homoj parolas en {siteTitle} nun.", "topicsEntityDescription": "{typeLabel} — afiŝoj menciantaj {entityTitle} en {siteTitle}.", "topicsTypeDescription": "{typePlural} pri kiuj homoj parolas en {siteTitle} nun.", "unsubscribe": "Retpoŝtaj resumoj", "userFriends": "Amikoj de {name}", "userFriendsDescription": "Amikoj de {name} en {siteTitle}", "userSettings": "Uzantaj agordoj", "users": "Uzantoj", "verifyEmail": "Kontroli retpoŝton"
+        "about": "Pri",
+        "adminBanned": "Forbaritaj uzantoj",
+        "adminModSettings": "Kontrolantaj agordoj",
+        "adminReports": "Raportoj",
+        "adminSettings": "Administraj agordoj",
+        "adminTests": "Testoj",
+        "authGoogleCallbackAccountDeleted": "Konto forigita",
+        "authGoogleCallbackDeleteAccount": "Forigi konton",
+        "authGoogleCallbackLogin": "Ensaluti",
+        "bookmarks": "Legosignoj",
+        "checkInbox": "Kontrolu vian enirkeston",
+        "drafts": "Malnetoj kaj planitaj",
+        "draftsEditDraft": "Redakti malneton",
+        "draftsEditScheduled": "Redakti planitan afiŝon",
+        "forgotPassword": "Forgesis pasvorton",
+        "friendsFeed": "Amika fluo",
+        "help": "Helpo",
+        "helpDescription": "Gvidiloj kaj respondoj pri uzado de la retejo.",
+        "locations": "Lokoj",
+        "locationsDescription": "Afiŝoj el la plej proksimaj lokoj.",
+        "locationsPlaceDescription": "Afiŝoj proksime al {place}.",
+        "login": "Ensaluti",
+        "loginVerificationCode": "Kontrolkodo",
+        "map": "Mapo",
+        "mapDescription": "Mapo de afiŝoj el la tuta mondo — trovu homojn kaj aferojn proksime al vi.",
+        "messages": "Mesaĝoj",
+        "messagesWithUser": "Mesaĝoj kun {name}",
+        "notifications": "Sciigoj",
+        "privacy": "Privateca politiko",
+        "quote": "Citi",
+        "relayFeed": "Relajsa fluo",
+        "relayFeedDescription": "Publikaj afiŝoj alvenantaj de la relajsoj abonataj de ĉi tiu servilo.",
+        "resetPassword": "Restarigi pasvorton",
+        "revertEmail": "Malfari retpoŝtadresan ŝanĝon",
+        "search": "Serĉi",
+        "signup": "Registriĝi",
+        "tags": "Etikedoj",
+        "tagsDescription": "Foliumu aktualajn kaj popularajn kradvortojn en {siteTitle}.",
+        "tagsTagDescription": "Afiŝoj etikeditaj {tag} en {siteTitle}.",
+        "terms": "Kondiĉoj de servo",
+        "topics": "Temoj",
+        "topicsDescription": "Pri kio homoj parolas en {siteTitle} nun.",
+        "topicsEntityDescription": "{typeLabel} — afiŝoj menciantaj {entityTitle} en {siteTitle}.",
+        "topicsTypeDescription": "{typePlural} pri kiuj homoj parolas en {siteTitle} nun.",
+        "unsubscribe": "Retpoŝtaj resumoj",
+        "userFriends": "Amikoj de {name}",
+        "userFriendsDescription": "Amikoj de {name} en {siteTitle}",
+        "userSettings": "Uzantaj agordoj",
+        "users": "Uzantoj",
+        "verifyEmail": "Kontroli retpoŝton"
     },
     "PostLikeButton": {
-        "like": "Ŝati", "unlike": "Malŝati"
+        "like": "Ŝati",
+        "unlike": "Malŝati"
     },
     "PostPinButton": {
-        "pin": "Alpingli", "unpin": "Depingli"
+        "pin": "Alpingli",
+        "unpin": "Depingli"
     },
     "PostQuoteButton": {
         "name": "Citi"
@@ -614,13 +874,11 @@
     "PostEditButton": {
         "name": "Redakti"
     },
-    "ReportButton": {
-        "name": "Raporti"
-    },
     "PostActionBar": {
         "reply": "Respondi",
         "replies": {
-            "one": "Respondoj ({count})", "other": "Respondoj ({count})"
+            "one": "Respondoj ({count})",
+            "other": "Respondoj ({count})"
         }
     },
     "PostEditedMarker": {
@@ -634,12 +892,21 @@
     },
     "MoreLocationsLink": {
         "moreLocations": {
-            "before": "Vidi ", "link": "pliajn lokojn",
+            "before": "Vidi ",
+            "link": "pliajn lokojn",
             "after": ""
         }
     },
     "NearbyLocationPrompt": {
-        "heading": "Afiŝoj proksime al vi", "description": "Tio montras la afiŝojn plej proksimajn al punkto — kie ajn estas aktiveco, kiom ajn malproksima ĝi estas. Kunhavigu vian lokon por komenci de kie vi estas, aŭ elektu lokon sur la mapo.", "useMyLocation": "Uzi mian lokon", "pickOnMap": "Elekti sur la mapo", "searchPlaceholder": "Aŭ tajpu loknomon…", "searchLabel": "Serĉi lokon", "locating": "Lokado…", "noGeolocation": "Via retumilo ne povas kunhavigi lokon.", "locationError": "Ne eblis akiri vian lokon. Kontrolu la lokpermeson de via retumilo."
+        "heading": "Afiŝoj proksime al vi",
+        "description": "Tio montras la afiŝojn plej proksimajn al punkto — kie ajn estas aktiveco, kiom ajn malproksima ĝi estas. Kunhavigu vian lokon por komenci de kie vi estas, aŭ elektu lokon sur la mapo.",
+        "useMyLocation": "Uzi mian lokon",
+        "pickOnMap": "Elekti sur la mapo",
+        "searchPlaceholder": "Aŭ tajpu loknomon…",
+        "searchLabel": "Serĉi lokon",
+        "locating": "Lokado…",
+        "noGeolocation": "Via retumilo ne povas kunhavigi lokon.",
+        "locationError": "Ne eblis akiri vian lokon. Kontrolu la lokpermeson de via retumilo."
     },
     "PollDeadline": {
         "final": "Fina rezulto",
@@ -648,31 +915,37 @@
             "after": ""
         },
         "days": {
-            "one": "post {count} tago", "other": "post {count} tagoj"
+            "one": "post {count} tago",
+            "other": "post {count} tagoj"
         },
         "hours": {
-            "one": "post {count} horo", "other": "post {count} horoj"
+            "one": "post {count} horo",
+            "other": "post {count} horoj"
         },
         "minutes": {
-            "one": "post {count} minuto", "other": "post {count} minutoj"
+            "one": "post {count} minuto",
+            "other": "post {count} minutoj"
         },
         "underMinute": "post malpli ol minuto"
     },
     "PollTally": {
         "voters": {
-            "one": "1 persono voĉdonis ", "other": "{count} personoj voĉdonis "
+            "one": "1 persono voĉdonis ",
+            "other": "{count} personoj voĉdonis "
         }
     },
     "PostComposer": {
         "prompt": {
             "before": "",
-            "link": "Ensalutu", "after": " por afiŝi."
+            "link": "Ensalutu",
+            "after": " por afiŝi."
         }
     },
     "ReplyComposer": {
         "prompt": {
             "before": "",
-            "link": "Ensalutu", "after": " por respondi."
+            "link": "Ensalutu",
+            "after": " por respondi."
         }
     },
     "RepostAttribution": {
@@ -686,7 +959,8 @@
             "before": "Responde al ",
             "after": ""
         },
-        "untitled": "ĉi tiu afiŝo", "jumpToStart": "Salti al la komenco"
+        "untitled": "ĉi tiu afiŝo",
+        "jumpToStart": "Salti al la komenco"
     },
     "TopicSummaryCard": {
         "label": "Resumo kreita de AI"
@@ -705,7 +979,9 @@
             "Vi ne devas tuj afiŝi: konservu malneton aŭ elektu tempon kaj ĝi publikigos sin. Ambaŭ troviĝas sub Malnetoj kaj planitaj."
         ],
         "more": {
-            "before": "Estas pli en ", "link": "la helppaĝoj", "after": ", inkluzive kiel transloki konton ĉi tien de aliloke."
+            "before": "Estas pli en ",
+            "link": "la helppaĝoj",
+            "after": ", inkluzive kiel transloki konton ĉi tien de aliloke."
         },
         "dontShowAgain": "Ne montri ĉi tion denove"
     },
@@ -722,22 +998,33 @@
         "alt": "Bildo de ligila antaŭrigardo"
     },
     "MapScrubber": {
-        "play": "Ludi", "pause": "Paŭzi", "cumulativeMode": "Ĝis tiam", "windowMode": "Ĝuste tiam", "rangeLabel": "Montri afiŝojn ĝis dato",
+        "play": "Ludi",
+        "pause": "Paŭzi",
+        "cumulativeMode": "Ĝis tiam",
+        "windowMode": "Ĝuste tiam",
+        "rangeLabel": "Montri afiŝojn ĝis dato",
         "cumulativeLabel": {
-            "one": "Afiŝita ĝis {date} — {count} afiŝo", "other": "Afiŝitaj ĝis {date} — {count} afiŝoj"
+            "one": "Afiŝita ĝis {date} — {count} afiŝo",
+            "other": "Afiŝitaj ĝis {date} — {count} afiŝoj"
         },
         "windowLabel": {
-            "one": "Afiŝita ĉirkaŭ {date} — {count} afiŝo", "other": "Afiŝitaj ĉirkaŭ {date} — {count} afiŝoj"
+            "one": "Afiŝita ĉirkaŭ {date} — {count} afiŝo",
+            "other": "Afiŝitaj ĉirkaŭ {date} — {count} afiŝoj"
         }
     },
     "Post": {
-        "pageTitleByAuthor": "Afiŝo de {name}", "pageTitleUntitled": "Afiŝo", "imageAltByAuthor": "Foto afiŝita de {name}", "imageAltUntitled": "Foto"
+        "pageTitleByAuthor": "Afiŝo de {name}",
+        "pageTitleUntitled": "Afiŝo",
+        "imageAltByAuthor": "Foto afiŝita de {name}",
+        "imageAltUntitled": "Foto"
     },
     "PostBookmarkButton": {
-        "remove": "Forigi legosignon", "add": "Legosigni"
+        "remove": "Forigi legosignon",
+        "add": "Legosigni"
     },
     "PostRepostButton": {
-        "undo": "Malfari republikigon", "repost": "Republikigi"
+        "undo": "Malfari republikigon",
+        "repost": "Republikigi"
     },
     "QuotedPost": {
         "viewLink": "Vidi la cititan afiŝon"
@@ -752,13 +1039,15 @@
         "label": "Vakigi serĉon"
     },
     "SitePolicyLinks": {
-        "terms": "Kondiĉoj de servo", "privacy": "Privateca politiko"
+        "terms": "Kondiĉoj de servo",
+        "privacy": "Privateca politiko"
     },
     "SkipLink": {
         "label": "Salti al enhavo"
     },
     "TopicHeading": {
-        "searchLink": "Serĉi ĉi tion", "noPosts": "Neniu afiŝo mencias ĉi tion nun."
+        "searchLink": "Serĉi ĉi tion",
+        "noPosts": "Neniu afiŝo mencias ĉi tion nun."
     },
     "PopularEntityList": {
         "emptyNotice": "Nenio tia ankoraŭ estis priparolita."
@@ -773,19 +1062,32 @@
     "RelativeTime": {
         "justNow": "ĵus",
         "minutes": {
-            "one": "antaŭ {count} min", "other": "antaŭ {count} min"
+            "one": "antaŭ {count} min",
+            "other": "antaŭ {count} min"
         },
         "hours": {
-            "one": "antaŭ {count} h", "other": "antaŭ {count} h"
+            "one": "antaŭ {count} h",
+            "other": "antaŭ {count} h"
         },
         "days": {
-            "one": "antaŭ {count} t", "other": "antaŭ {count} t"
+            "one": "antaŭ {count} t",
+            "other": "antaŭ {count} t"
         }
     },
     "ThemeSelector": {
         "label": "Etoso",
         "themes": {
-            "system": "Laŭ la sistemo", "light": "Simpla hela", "dark": "Simpla malhela", "sepia": "Sepia", "midnight": "Noktomezo", "sunset": "Sunsubiro", "rose": "Roza", "forest": "Arbaro", "ocean": "Oceano", "lavender": "Lavendo", "gold": "Ora",
+            "system": "Laŭ la sistemo",
+            "light": "Simpla hela",
+            "dark": "Simpla malhela",
+            "sepia": "Sepia",
+            "midnight": "Noktomezo",
+            "sunset": "Sunsubiro",
+            "rose": "Roza",
+            "forest": "Arbaro",
+            "ocean": "Oceano",
+            "lavender": "Lavendo",
+            "gold": "Ora",
             "hacker": "Hacker",
             "ironbow": "Ironbow",
             "viridis": "Viridis",
@@ -797,45 +1099,683 @@
         }
     },
     "PostTranslation": {
-        "unavailable": "Tradukado ne estas agordita en ĉi tiu servilo.", "nothing": "Estas nenio tradukenda ĉi tie.", "unknownSource": "La lingvo de ĉi tiu afiŝo ankoraŭ ne estas konata, do ĝi ne povas esti tradukita.", "alreadyReadable": "Ĉi tiu afiŝo jam estas en tiu lingvo.", "unsupportedPair": "Ĉi tiu servilo ankoraŭ ne povas traduki tiun lingvon."
+        "unavailable": "Tradukado ne estas agordita en ĉi tiu servilo.",
+        "nothing": "Estas nenio tradukenda ĉi tie.",
+        "unknownSource": "La lingvo de ĉi tiu afiŝo ankoraŭ ne estas konata, do ĝi ne povas esti tradukita.",
+        "alreadyReadable": "Ĉi tiu afiŝo jam estas en tiu lingvo.",
+        "unsupportedPair": "Ĉi tiu servilo ankoraŭ ne povas traduki tiun lingvon."
     },
     "LanguagePrompt": {
-        "question": "Ĉu vi volas vidi la retejon en Esperanto?", "accept": "Jes", "decline": "Ne, dankon"
+        "question": "Ĉu vi volas vidi la retejon en Esperanto?",
+        "accept": "Jes",
+        "decline": "Ne, dankon"
     },
     "LanguageSelector": {
-        "label": "Lingvo", "legend": "Lingvo"
+        "label": "Lingvo",
+        "legend": "Lingvo"
     },
     "EmailDigest": {
-        "subject": "Kion vi maltrafis ĉe {site}", "greeting": "Saluton {name},", "whileAway": "Dum vi forestis:",
+        "subject": "Kion vi maltrafis ĉe {site}",
+        "greeting": "Saluton {name},",
+        "whileAway": "Dum vi forestis:",
         "repeatedTimes": {
-            "one": " ({count} fojon)", "other": " ({count} fojojn)"
+            "one": " ({count} fojon)",
+            "other": " ({count} fojojn)"
         },
         "moreMissed": {
-            "one": "kaj {count} plia sciigo", "other": "kaj {count} pliaj sciigoj"
+            "one": "kaj {count} plia sciigo",
+            "other": "kaj {count} pliaj sciigoj"
         },
         "messagesWaiting": {
-            "one": "Vi havas mesaĝon atendantan", "other": "Vi havas {count} mesaĝojn atendantajn"
+            "one": "Vi havas mesaĝon atendantan",
+            "other": "Vi havas {count} mesaĝojn atendantajn"
         },
         "postsInFeed": {
-            "one": "Unu nova afiŝo en via fluo", "other": "{count} novaj afiŝoj en via fluo"
+            "one": "Unu nova afiŝo en via fluo",
+            "other": "{count} novaj afiŝoj en via fluo"
         },
-        "unsubscribeInstructions": "Por ĉesigi ĉi tiujn retpoŝtojn, malfermu ĉi tiun ligilon — necesas unu klako kaj neniu pasvorto:", "comeSeeWhatIsNew": "Venu vidi kio estas nova",
+        "unsubscribeInstructions": "Por ĉesigi ĉi tiujn retpoŝtojn, malfermu ĉi tiun ligilon — necesas unu klako kaj neniu pasvorto:",
+        "comeSeeWhatIsNew": "Venu vidi kio estas nova",
         "unsubscribeLink": {
             "before": "",
-            "link": "Ĉesu sendi ĉi tiujn al mi", "after": " — unu klako, sen pasvorto."
+            "link": "Ĉesu sendi ĉi tiujn al mi",
+            "after": " — unu klako, sen pasvorto."
         }
     },
     "EmailVerification": {
-        "subject": "Kontrolu vian retpoŝtadreson", "greeting": "Saluton {name},", "instructions": "Bonvolu kontroli vian retpoŝtadreson vizitante ĉi tiun ligilon:", "htmlInstructions": "Bonvolu kontroli vian retpoŝtadreson alklakante la suban ligilon:", "buttonLabel": "Kontroli retpoŝtadreson",
+        "subject": "Kontrolu vian retpoŝtadreson",
+        "greeting": "Saluton {name},",
+        "instructions": "Bonvolu kontroli vian retpoŝtadreson vizitante ĉi tiun ligilon:",
+        "htmlInstructions": "Bonvolu kontroli vian retpoŝtadreson alklakante la suban ligilon:",
+        "buttonLabel": "Kontroli retpoŝtadreson",
         "expiresIn": {
-            "one": "Ĉi tiu ligilo eksvalidiĝas post {count} horo.", "other": "Ĉi tiu ligilo eksvalidiĝas post {count} horoj."
+            "one": "Ĉi tiu ligilo eksvalidiĝas post {count} horo.",
+            "other": "Ĉi tiu ligilo eksvalidiĝas post {count} horoj."
         }
     },
     "PasswordReset": {
-        "subject": "Restarigu vian pasvorton", "greeting": "Saluton {name},", "instructions": "Iu (espereble vi) petis restarigon de pasvorto. Vizitu ĉi tiun ligilon por elekti novan pasvorton:", "htmlInstructions": "Iu (espereble vi) petis restarigon de pasvorto. Alklaku la suban ligilon por elekti novan pasvorton:", "buttonLabel": "Restarigi pasvorton",
+        "subject": "Restarigu vian pasvorton",
+        "greeting": "Saluton {name},",
+        "instructions": "Iu (espereble vi) petis restarigon de pasvorto. Vizitu ĉi tiun ligilon por elekti novan pasvorton:",
+        "htmlInstructions": "Iu (espereble vi) petis restarigon de pasvorto. Alklaku la suban ligilon por elekti novan pasvorton:",
+        "buttonLabel": "Restarigi pasvorton",
         "expiresIn": {
-            "one": "Ĉi tiu ligilo eksvalidiĝas post {count} horo.", "other": "Ĉi tiu ligilo eksvalidiĝas post {count} horoj."
+            "one": "Ĉi tiu ligilo eksvalidiĝas post {count} horo.",
+            "other": "Ĉi tiu ligilo eksvalidiĝas post {count} horoj."
         },
         "ignoreNotice": "Se vi ne petis tion, vi povas ignori ĉi tiun retpoŝton."
+    },
+    "AdminModSettings": {
+        "bannedTrendingEntities": "Malpermesitaj tendencaj eroj",
+        "blockedServers": "Blokitaj serviloj",
+        "queues": "Atendovicoj"
+    },
+    "AdminSettings": {
+        "about": "Pri la retejo",
+        "botProtection": "Protekto kontraŭ robotoj",
+        "emailDigest": "Retpoŝta resumo",
+        "favicon": "Retpaĝa piktogramo",
+        "frontPageImage": "Bildo de la ĉefpaĝo",
+        "googleAuth": "Aŭtentigo per Google",
+        "mail": "Retpoŝto",
+        "map": "Mapo",
+        "moderationLog": "Protokolo de moderigo",
+        "notificationTest": "Testo de sciigoj",
+        "openRouter": "AI (OpenRouter)",
+        "privacyPolicy": "Privateca politiko",
+        "relays": "Relajsoj",
+        "services": "Servoj",
+        "statistics": "Statistikoj",
+        "termsOfService": "Kondiĉoj de uzado",
+        "tests": "Testoj"
+    },
+    "Api": {
+        "genericError": "Io misfunkciis. Bonvolu reprovi.",
+        "networkError": "Reta eraro. Bonvolu kontroli vian konekton kaj reprovi."
+    },
+    "AuthDivider": {
+        "label": "aŭ"
+    },
+    "CarouselController": {
+        "autoplay": "Aŭtomata ludado",
+        "exitFullscreen": "Forlasi plenekranan reĝimon",
+        "fullscreen": "Plenekrana reĝimo",
+        "stopAutoplay": "Ĉesigi aŭtomatan ludadon"
+    },
+    "CodeBlockCopy": {
+        "copied": "Kopiite!",
+        "copy": "Kopii",
+        "copyLabel": "Kopii kodon al la tondujo"
+    },
+    "Dialog": {
+        "cancel": "Nuligi",
+        "confirm": "Bone"
+    },
+    "EntityModerator": {
+        "ban": "Malpermesi",
+        "banPlaceholder": "Kialo de la malpermeso (deviga)",
+        "unban": "Ĉu ĉesigi la malpermeson de \"{entity}\"? Ĝi povos denove tendenci."
+    },
+    "ErrorDocument": {
+        "notFoundMessage": "La paĝo, kiun vi serĉas, ne ekzistas.",
+        "notFoundTitle": "Ne trovita",
+        "profileLookupRateLimit": "Tro multaj profiloj estis ĵus serĉitaj. Bonvolu atendi momenton kaj reprovi.",
+        "tooManyRequestsTitle": "Tro multaj petoj"
+    },
+    "FriendSearchBox": {
+        "placeholder": "Serĉi amikojn…"
+    },
+    "ImageItem": {
+        "alt": "Bildo"
+    },
+    "IndexPage": {
+        "rssFeed": "RSS-fluo"
+    },
+    "InfiniteScroller": {
+        "end": "Vi atingis la finon.",
+        "failed": "Ne eblis ŝargi pliaĵojn. Bonvolu reŝargi la paĝon.",
+        "loading": "Ŝargado"
+    },
+    "LocationsPage": {
+        "postsNear": "Afiŝoj proksime al {place}"
+    },
+    "LoginPage": {
+        "forgotPassword": "Ĉu vi forgesis la pasvorton?",
+        "signup": "Ĉu vi bezonas konton? Registriĝu",
+        "startOver": "Rekomenci"
+    },
+    "PinnedPostSection": {
+        "heading": "Alpinglita"
+    },
+    "Poll": {
+        "vote": "Voĉdoni",
+        "votes": {
+            "one": "1 voĉdono",
+            "other": "{count} voĉdonoj"
+        }
+    },
+    "PostEditor": {
+        "altText": "Alternativa teksto",
+        "cancel": "Nuligi",
+        "save": "Konservi",
+        "saved": "Ŝanĝoj konservitaj.",
+        "sensitive": "Tikla"
+    },
+    "PostFields": {
+        "altText": "Alternativa teksto — priskribu ĉi tiun bildon",
+        "contentWarning": "Averto pri enhavo (nedeviga)",
+        "link": "Ligilo (nedeviga)",
+        "title": "Titolo (nedeviga)"
+    },
+    "PostMapClient": {
+        "byAuthor": "de {name}",
+        "clearPin": "Forigi la markilon",
+        "postHere": "Afiŝi ĉi tie",
+        "postsNearby": "Proksimaj afiŝoj",
+        "viewPost": "Vidi afiŝon"
+    },
+    "PostSearchBox": {
+        "placeholder": "Serĉi afiŝojn…"
+    },
+    "QuillEditor": {
+        "blockquote": "Blokcitaĵo",
+        "bold": "Grasa",
+        "bulletList": "Bula listo",
+        "clearFormatting": "Forigi formatadon",
+        "codeBlock": "Kodbloko",
+        "formula": "Formulo",
+        "heading": "Titolo {count}",
+        "inlineCode": "Enlinia kodo",
+        "italic": "Kursiva",
+        "link": "Ligilo",
+        "list": "Listo",
+        "numberedList": "Numerita listo",
+        "postText": "Teksto de la afiŝo",
+        "strikethrough": "Trastrekita",
+        "underline": "Substrekita"
+    },
+    "SearchClient": {
+        "noBannedUsers": "Neniuj malpermesitaj uzantoj.",
+        "noBannedUsersMatch": "Neniu malpermesita uzanto kongruas kun tiu serĉo."
+    },
+    "Toast": {
+        "dismiss": "Fermi"
+    },
+    "UserRSSFeed": {
+        "title": "Afiŝoj de {name} en {site}"
+    },
+    "UserSearchBox": {
+        "placeholder": "Serĉi uzanton…"
+    },
+    "ClientStatus": {
+        "avatarAlt": "Via profilbildo",
+        "chooseFile": "Unue elektu dosieron.",
+        "deleteAccount": "Ĉu forigi vian konton? Viaj afiŝoj, respondoj kaj mesaĝoj estos por ĉiam for — tio ne estas malfarebla.",
+        "done": "Farite",
+        "emailUnchanged": "Tio jam estas via retpoŝtadreso.",
+        "failed": "Malsukcesis",
+        "faviconSaved": "Agordoj konservitaj.",
+        "followersNotified": "Viaj sekvantoj estis petitaj sekvi vin ĉe la nova konto.",
+        "linkCopied": "Ligilo kopiita al la tondujo",
+        "linkCopyFailed": "Ne eblis kopii la ligilon",
+        "login": "Ensaluti",
+        "mapSaved": "Mapaj agordoj konservitaj.",
+        "markedVerified": "Markita kiel kontrolita.",
+        "notificationsBlocked": "Sciigoj por ĉi tiu retejo estas blokitaj en la agordoj de via retumilo.",
+        "notificationsEnableFailed": "Ne eblis ŝalti sciigojn.",
+        "notificationsOff": "Sciigoj estas malŝaltitaj por ĉi tiu aparato.",
+        "notificationsOn": "Sciigoj estas ŝaltitaj por ĉi tiu aparato.",
+        "openRouterSaved": "Agordoj de OpenRouter konservitaj.",
+        "passwordChanged": "Pasvorto ŝanĝita!",
+        "passwordReset": "Via pasvorto estis restarigita. Vi nun povas ensaluti.",
+        "passwordUnchanged": "Tio jam estas via pasvorto — nenio estis ŝanĝita.",
+        "pinSaved": "Alpinglita al via profilo.",
+        "profileSaved": "Profilo konservita.",
+        "pushUnavailable": "Puŝaj sciigoj ne disponeblas en ĉi tiu servilo.",
+        "reported": "Raportita",
+        "resetSent": "Se tiu retpoŝtadreso estas registrita, ligilo por restarigi la pasvorton estis sendita. Se vi ne vidas ĝin, kontrolu vian trudmesaĝan dosierujon.",
+        "revokeDevice": "Ĉu nuligi ĉi tiun aparaton? Ĝi estos elsalutita kaj devos denove ensaluti.",
+        "revoking": "Nuligado…",
+        "saved": "Konservite.",
+        "sent": "Sendite!",
+        "settingsSaved": "Agordoj konservitaj.",
+        "signOutEverywhere": "Tio elsalutos vin de ĉiu aparato, inkluzive de ĉi tiu. Ĉu daŭrigi?",
+        "signingOut": "Elsalutado…",
+        "unlockConversation": "Unue malŝlosu la konversacion.",
+        "unlockFailed": "Tiu pasfrazo ne malŝlosas viajn mesaĝojn.",
+        "unpinSaved": "Malalpinglita."
+    },
+    "EncryptedMessagesClient": {
+        "enabled": "Ĉifritaj mesaĝoj estas ŝaltitaj.",
+        "minimumPassphrase": "Uzu pasfrazon de almenaŭ {count} signoj.",
+        "newKeys": "Novaj ŝlosiloj kreitaj.",
+        "passphraseChanged": "Pasfrazo ŝanĝita.",
+        "passphraseIsPassword": "Via pasfrazo ne povas esti la pasvorto de via konto — tiu estas sendata al la servilo, sed ĉi tiu neniam devas esti sendata.",
+        "passphraseTooRepetitive": "Tiu pasfrazo ripetas tro malmultajn malsamajn signojn por esti sufiĉe sekura. Uzu pli longan frazon.",
+        "passphrasesMismatch": "La pasfrazoj ne kongruas.",
+        "wrongPassphrase": "Tio ne estas via nuna pasfrazo."
+    },
+    "MiscellaneousClient": {
+        "checking": "Kontrolado…",
+        "deleteReportedContent": "Ĉu por ĉiam forigi ĉi tiun enhavon? Forigo de afiŝo ankaŭ forigas ĉiujn ĝiajn respondojn.",
+        "justNow": "ĵus",
+        "reloadError": "Io misfunkciis. Provu reŝargi la paĝon.",
+        "report": "Raporti",
+        "seeMore": "Vidi pli…",
+        "unbanUser": "Ĉu ĉesigi la malpermeson de ĉi tiu uzanto? Ties enhavo kaj ensaluto denove funkcios."
+    },
+    "OtherUserClient": {
+        "addFriend": "Aldoni amikon",
+        "ban": "Malpermesi",
+        "banConfirm": "Ĉu malpermesi ĉi tiun uzanton? Tio kaŝos ties tutan enhavon kaj blokos ties ensaluton. La uzanto vidos ĉi tiun kialon en la ensalutilo.",
+        "banPlaceholder": "Kialo de la malpermeso (deviga)",
+        "banned": "Malpermesita",
+        "blockConfirm": "Ĉu bloki ĉi tiun uzanton? Tio ĉesigos ajnan ekzistantan amikecon.",
+        "cancelRequest": "Nuligi peton",
+        "removeFriendConfirm": "Ĉu forigi ĉi tiun amikon?",
+        "viewFriends": "Vidi amikojn"
+    },
+    "PostClient": {
+        "autoplay": "Aŭtomata ludado",
+        "deleteConfirm": "Ĉu forigi ĉi tiun afiŝon?",
+        "fullscreen": "Plenekrana reĝimo",
+        "image": "Bildo",
+        "machineTranslation": "Maŝintraduko",
+        "mapTitle": "Montri ĉi tiun lokon sur la mapo",
+        "next": "Sekva",
+        "previous": "Antaŭa",
+        "sensitiveMedia": "Tikla aŭdvidaĵo"
+    },
+    "JSONResponse": {
+        "aBanReasonIsRequired": "Kialo de la malpermeso estas deviga.",
+        "aBodyIsRequired": "Enhavo estas deviga",
+        "aFriendRequestOrFriendshipAlreadyExistsWithThatUser": "Amikpeto aŭ amikeco kun tiu uzanto jam ekzistas.",
+        "aMessageAndALanguageAreRequired": "Mesaĝo kaj lingvo estas devigaj",
+        "aMessageIsEitherPlaintextOrEncryptedNotBoth": "Mesaĝo estas aŭ neĉifrita aŭ ĉifrita, ne ambaŭ.",
+        "aPollNeedsAQuestionInThePost": "Enketo bezonas demandon en la afiŝo.",
+        "aPostAndALanguageAreRequired": "Afiŝo kaj lingvo estas devigaj",
+        "aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne": "Afiŝo povas havi enketon, kunsenditajn dosierojn aŭ ligilon — ne pli ol unu el ili",
+        "aPostCanHaveEitherAttachedFilesOrALinkNotBoth": "Afiŝo povas havi aŭ kunsenditajn dosierojn aŭ ligilon, ne ambaŭ",
+        "aQuotePostCanCarryImagesButNotVideoOrAudio": "Cita afiŝo povas porti bildojn, sed ne videon aŭ sonon.",
+        "aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost": "Cita afiŝo bezonas proprajn vortojn — por plusendi afiŝon senŝanĝe, uzu Reafiŝi.",
+        "addressInUse": "Tiu adreso jam estas uzata.",
+        "alreadyLoggedIn": "Jam ensalutinta",
+        "alreadyVerified": "Jam kontrolita",
+        "altTextTooLong": "La alternativa teksto estas tro longa (maksimume {count} signoj)",
+        "altTextsDoNotMatchTheUploadedFiles": "La alternativaj tekstoj ne kongruas kun la alŝutitaj dosieroj",
+        "altTextsMustMapItemsToText": "Alternativaj tekstoj devas asocii erojn kun teksto",
+        "banned": "Via konto estas malpermesita.",
+        "bannedWithReason": "Via konto estas malpermesita. Kialo: {reason}",
+        "bioMustBe500CharactersOrFewer": "La biografio devas havi ne pli ol 500 signojn.",
+        "captchaVerificationFailedPleaseTryAgain": "La CAPTCHA-kontrolo malsukcesis. Bonvolu reprovi.",
+        "chooseFileFirst": "Unue elektu dosieron.",
+        "chooseHowLongThePollShouldRun": "Elektu kiom longe daŭru la enketo.",
+        "chooseImageFirst": "Unue elektu bildon.",
+        "chooseMailTransport": "Elektu unu el la tri listigitaj transportoj.",
+        "chooseUsername": "Bonvolu elekti uzantnomon.",
+        "couldNotDeliverTheFollowRequestToThatServer": "Ne eblis liveri la sekvopeton al tiu servilo.",
+        "credentialsRequired": "Uzantnomo/retpoŝtadreso kaj pasvorto estas devigaj.",
+        "currentPasswordIsIncorrect": "La nuna pasvorto estas malĝusta",
+        "deviceNotFound": "Aparato ne trovita",
+        "displayNameMustBe50CharactersOrFewer": "La montra nomo devas havi ne pli ol 50 signojn.",
+        "domainNotIp": "Direktu ĉi tion al domajna nomo, ne al IP-adreso.",
+        "emailVerificationRequired": "Kontrolo de retpoŝtadreso estas deviga",
+        "encryptedMessagingIsNotAvailableOnThisServer": "Ĉifrita mesaĝado ne disponeblas en ĉi tiu servilo.",
+        "enterEmailedCode": "Enigu la kodon, kiun ni sendis al vi retpoŝte.",
+        "fediverseSupportIsNotSetUpOnThisServerYet": "Subteno de la Fediverso ankoraŭ ne estas agordita en ĉi tiu servilo.",
+        "fileTooLarge": "Unu el viaj dosieroj superas la alŝutan limon de {size} B.",
+        "forbidden": "Malpermesite",
+        "givePassword": "Bonvolu doni vian pasvorton.",
+        "giveThatAMoment": "Atendu momenton.",
+        "giveUsernameOrEmail": "Bonvolu doni vian uzantnomon aŭ retpoŝtadreson.",
+        "giveValidEmail": "Bonvolu doni validan retpoŝtadreson.",
+        "httpsMisconfigured": "Ĉi tiu retejo postulas HTTPS kaj estas misagordita. La administranto devas agordi SITE_URL al adreso kun https://.",
+        "imageProcessingFailed": "Tiu bildo ne estis prilaborebla. Provu alian.",
+        "imageUnreadable": "Tiu dosiero ne estis legebla kiel bildo.",
+        "incorrectOrExpiredCode": "Tiu kodo estas malĝusta aŭ eksvalidiĝis.",
+        "incorrectUsernameEmailOrPassword": "Malĝusta uzantnomo/retpoŝtadreso aŭ pasvorto.",
+        "invalidAction": "Nevalida ago",
+        "invalidCsrfToken": "Nevalida CSRF-ĵetono",
+        "invalidDevice": "Nevalida aparato",
+        "invalidEmail": "Tio ne estas valida retpoŝtadreso.",
+        "invalidLocation": "Nevalida loko",
+        "invalidReport": "Nevalida raporto",
+        "invalidRequest": "Nevalida peto",
+        "invalidSeed": "Nevalida semo",
+        "invalidSkinTone": "Nevalida haŭtnuanco",
+        "invalidTarget": "Nevalida celo",
+        "invalidTheme": "Nevalida etoso",
+        "invalidUrl": "Nevalida URL",
+        "linkTooLong": "Tiu ligilo estas tro longa.",
+        "listTooLong": "Tiu listo estas tro longa.",
+        "malformedEncryptedMessage": "Misformita ĉifrita mesaĝo.",
+        "malformedKeyBackup": "Misformita sekurkopio de ŝlosiloj.",
+        "malformedLocation": "Misformita loko",
+        "malformedPublicKey": "Misformita publika ŝlosilo.",
+        "malformedRequest": "Misformita peto",
+        "malformedSubscription": "Misformita abono",
+        "maximumFriends": "Vi atingis la maksimumon de {count} amikoj.",
+        "maximumPinnedPosts": "Vi povas alpingli ĝis {count} proprajn afiŝojn.",
+        "maximumScheduledDays": "Afiŝoj povas esti planitaj maksimume {count} tagojn antaŭe.",
+        "messageTooLong": "Tiu mesaĝo estas tro longa.",
+        "methodNotAllowed": "Metodo ne permesita",
+        "missingQuery": "Demando mankas",
+        "noLoginInProgressPleaseStartAgain": "Neniu ensaluto estas farata. Bonvolu rekomenci.",
+        "noSuchMessage": "Tia mesaĝo ne ekzistas",
+        "noValidHandles": "Neniu valida uzantindiko troviĝis ĉi tie — ili aspektas kiel uzanto@domajno.",
+        "notATopic": "Ne estas temo",
+        "notAccountPassword": "Tio ne estas la pasvorto de via konto.",
+        "notAllowed": "Ne permesite",
+        "notAuthorized": "Ne rajtigita",
+        "notCurrentPassword": "Tio ne estas via nuna pasvorto.",
+        "notFound": "Ne trovita",
+        "notFriendsWithThatUser": "Vi ne estas amiko de tiu uzanto",
+        "notLoggedIn": "Ne ensalutinta",
+        "notSubscribedToThatRelay": "Ne aboninta tiun relajson.",
+        "notYourPost": "Ne estas via afiŝo",
+        "notYourRequest": "Ne estas via peto",
+        "nothingToTranslate": "Nenio tradukenda",
+        "oneOfYourFilesFailedToUploadPleaseTryAgain": "Unu el viaj dosieroj ne estis alŝutita. Bonvolu reprovi.",
+        "onlyAPostCarriesMediaToClassify": "Nur afiŝo portas klasifikendajn aŭdvidaĵojn.",
+        "passwordMaximum": "Uzu maksimume 72 signojn.",
+        "passwordMinimum": "Uzu almenaŭ 8 signojn.",
+        "pollNeedsOptions": "Enketo bezonas almenaŭ {count} malsamajn elektojn.",
+        "pollNotFound": "Enketo ne trovita",
+        "postHasNoContent": "La afiŝo havas neniun enhavon",
+        "postNotFound": "Afiŝo ne trovita",
+        "postTextIsTooLong": "La teksto de la afiŝo estas tro longa",
+        "pushIsNotConfiguredOnThisServer": "Puŝaj sciigoj ne estas agorditaj en ĉi tiu servilo.",
+        "realDomain": "Direktu ĉi tion al vera domajna nomo.",
+        "reasonIsTooLong": "La kialo estas tro longa",
+        "reportNotFound": "Raporto ne trovita",
+        "requestBodyTooLarge": "La korpo de la peto estas tro granda.",
+        "serverError": "Servila eraro",
+        "signalTooLarge": "La signalo estas tro granda",
+        "siteUpgrading": "La retejo estas ĝisdatigata. Bonvolu reprovi post kelkaj minutoj.",
+        "thatAccountIsOnAnotherServerSoItCannotModerateThisOne": "Tiu konto estas en alia servilo, do ĝi ne povas moderigi ĉi tiun.",
+        "thatAddressIsTooLong": "Tiu adreso estas tro longa.",
+        "thatDoesNotLookLikeAServerName": "Tio ne aspektas kiel servila nomo.",
+        "thatEntityIsNotBanned": "Tiu ero ne estas malpermesita",
+        "thatIsAFediverseAccountFollowItInstead": "Tio estas konto en la Fediverso — sekvu ĝin anstataŭe.",
+        "thatIsNotAFediverseAccount": "Tio ne estas konto en la Fediverso.",
+        "thatIsNotALanguageThisSiteHas": "Tio ne estas lingvo disponebla en ĉi tiu retejo.",
+        "thatIsThisServer": "Tio estas ĉi tiu servilo.",
+        "thatIsTooLongToConvert": "Tio estas tro longa por konverti.",
+        "thatPasswordResetLinkIsInvalidOrHasExpired": "Tiu ligilo por restarigi pasvorton estas nevalida aŭ eksvalidiĝis.",
+        "thatReportHasNoDeletableContent": "Tiu raporto havas neniun forigeblan enhavon.",
+        "thatUserHasAlreadySentYouAFriendRequestAcceptItInstead": "Tiu uzanto jam sendis al vi amikpeton — akceptu ĝin anstataŭe.",
+        "thatUserHasReachedTheirFriendLimit": "Tiu uzanto atingis sian limon de amikoj.",
+        "thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted": "Tiu uzanto atingis sian limon de amikoj, do ĉi tiu peto ne estas akceptebla.",
+        "thatUserIsAlreadyBanned": "Tiu uzanto jam estas malpermesita",
+        "thatUserIsNotBanned": "Tiu uzanto ne estas malpermesita",
+        "thatVoteCouldNotBeRecorded": "Tiu voĉdono ne estis registrebla.",
+        "thePostBeingQuotedNoLongerExists": "La citata afiŝo ne plu ekzistas.",
+        "thePublishTimeHasToBeInTheFuture": "La publikiga tempo devas esti estonta.",
+        "theyAreNoLongerInThisConversation": "Tiu persono ne plu estas en ĉi tiu konversacio.",
+        "thisAccountCanNoLongerLogIn": "Ĉi tiu konto ne plu povas ensaluti.",
+        "thisAccountCanTBeDeleted": "Ĉi tiu konto ne povas esti forigita.",
+        "thisContentCanTBeReported": "Ĉi tiu enhavo ne povas esti raportita.",
+        "thisContentHasAlreadyBeenReviewedByAModerator": "Ĉi tiu enhavo jam estis kontrolita de moderiganto.",
+        "thisConversationCanTTakeEncryptedMessages": "Ĉi tiu konversacio ne povas ricevi ĉifritajn mesaĝojn.",
+        "thisMessageCouldNotBeVerified": "Ĉi tiu mesaĝo ne estis kontrolebla.",
+        "thisMessageIsTooLongToTranslate": "Ĉi tiu mesaĝo estas tro longa por traduki.",
+        "thisPostIsTooLongToTranslate": "Ĉi tiu afiŝo estas tro longa por traduki.",
+        "tooManyAttemptsPleaseTryAgainLater": "Tro multaj provoj. Bonvolu reprovi poste.",
+        "tooManyAttemptsPleaseWaitAMoment": "Tro multaj provoj. Bonvolu atendi momenton.",
+        "tooManyAvatarChangesInAShortTimePleaseTryAgainLater": "Tro multaj ŝanĝoj de profilbildo en mallonga tempo. Bonvolu reprovi poste.",
+        "tooManyChangesAtOncePleaseWaitAMoment": "Tro multaj ŝanĝoj samtempe. Bonvolu atendi momenton.",
+        "tooManyChecksPleaseWaitAMoment": "Tro multaj kontroloj. Bonvolu atendi momenton.",
+        "tooManyEmailChangesInAShortTimePleaseTryAgainLater": "Tro multaj ŝanĝoj de retpoŝtadreso en mallonga tempo. Bonvolu reprovi poste.",
+        "tooManyFollowRequestsPleaseWaitABitAndTryAgain": "Tro multaj sekvopetoj. Bonvolu iom atendi kaj reprovi.",
+        "tooManyFollowsPleaseWaitABitAndTryAgain": "Tro multaj sekvoj. Bonvolu iom atendi kaj reprovi.",
+        "tooManyLoginAttemptsForThisAccountPleaseTryAgainLater": "Tro multaj ensalutprovoj por ĉi tiu konto. Bonvolu reprovi poste.",
+        "tooManyLoginAttemptsPleaseTryAgainLater": "Tro multaj ensalutprovoj. Bonvolu reprovi poste.",
+        "tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain": "Tro multaj mesaĝoj senditaj en mallonga tempo. Bonvolu iom atendi kaj reprovi.",
+        "tooManyPasswordResetAttemptsPleaseTryAgainLater": "Tro multaj provoj restarigi pasvorton. Bonvolu reprovi poste.",
+        "tooManyPasswordResetRequestsPleaseTryAgainLater": "Tro multaj petoj restarigi pasvorton. Bonvolu reprovi poste.",
+        "tooManyReportsPleaseTryAgainLater": "Tro multaj raportoj. Bonvolu reprovi poste.",
+        "tooManyRequestsPleaseSlowDown": "Tro multaj petoj. Bonvolu malrapidiĝi.",
+        "tooManyRequestsPleaseTryAgainLater": "Tro multaj petoj. Bonvolu reprovi poste.",
+        "tooManySearchesInAShortTime": "Tro multaj serĉoj en mallonga tempo.",
+        "tooManySearchesPleaseSlowDown": "Tro multaj serĉoj. Bonvolu malrapidiĝi.",
+        "tooManySignups": "Tro multaj registriĝoj el via reto. Bonvolu reprovi poste.",
+        "tooManyTranslationsInAShortTimePleaseWaitABitAndTryAgain": "Tro multaj tradukoj en mallonga tempo. Bonvolu iom atendi kaj reprovi.",
+        "tooManyVerificationEmailsSentPleaseTryAgainLater": "Tro multaj kontrolaj retpoŝtaĵoj senditaj. Bonvolu reprovi poste.",
+        "tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain": "Tro multaj alŝutoj de videoj aŭ sonaĵoj en mallonga tempo. Bonvolu iom atendi kaj reprovi.",
+        "translationIsNotAvailableOnThisServer": "Tradukado ne disponeblas en ĉi tiu servilo.",
+        "translationIsNotAvailableRightNowPleaseTryAgainLater": "Tradukado nun ne disponeblas. Bonvolu reprovi poste.",
+        "twoFactorAuthenticationIsNotOn": "Dufaktora aŭtentigo ne estas ŝaltita.",
+        "unableToCallThisUser": "Ne eblas voki ĉi tiun uzanton.",
+        "unableToFollowThatAccount": "Ne eblas sekvi tiun konton.",
+        "unableToLikeThisPost": "Ne eblas ŝati ĉi tiun afiŝon",
+        "unableToOpenThisConversation": "Ne eblas malfermi ĉi tiun konversacion.",
+        "unableToReplyToThisPost": "Ne eblas respondi al ĉi tiu afiŝo",
+        "unableToRepostThis": "Ne eblas reafiŝi ĉi tion.",
+        "unableToSendFriendRequest": "Ne eblas sendi amikpeton.",
+        "unableToSendMessage": "Ne eblas sendi mesaĝon.",
+        "unableToVoteOnThisPoll": "Ne eblas voĉdoni en ĉi tiu enketo",
+        "unknownConversion": "Nekonata konverto",
+        "unknownTopicType": "Nekonata speco de temo",
+        "unlockTheConversationToReportAnEncryptedMessage": "Malŝlosu la konversacion por raporti ĉifritan mesaĝon.",
+        "uploadMissing": "Tiu alŝutaĵo ne alvenis. Bonvolu reprovi.",
+        "uploadTooLarge": "Via alŝutaĵo estas tro granda. La maksimuma suma alŝuta grando estas {size} B.",
+        "uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater": "Alŝutoj provizore ne disponeblas — la servilo havas malmulte da konservejo. Bonvolu reprovi poste.",
+        "userNotFound": "Uzanto ne trovita",
+        "usernameOrEmailTaken": "Tiu uzantnomo aŭ retpoŝtadreso jam estas okupita.",
+        "validHttpLink": "Donu ligilon kun http:// aŭ https://.",
+        "writeSomethingFirst": "Unue skribu ion.",
+        "youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst": "Vi jam havas 50 malnetojn kaj planitajn afiŝojn — unue publikigu aŭ forĵetu kelkajn.",
+        "youCanTBlockYourself": "Vi ne povas bloki vin mem.",
+        "youCanTMessageThisUser": "Vi ne povas mesaĝi al ĉi tiu uzanto.",
+        "youCanTMessageYourself": "Vi ne povas mesaĝi al vi mem.",
+        "youCanTRepostYourOwnPost": "Vi ne povas reafiŝi vian propran afiŝon.",
+        "youCanTSendAFriendRequestToYourself": "Vi ne povas sendi amikpeton al vi mem.",
+        "youReAlreadyFriendsWithThatUser": "Vi jam estas amiko de tiu uzanto.",
+        "youReDoingThatVeryQuicklyPleaseWaitAMoment": "Vi faras tion tre rapide. Bonvolu atendi momenton.",
+        "youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain": "Vi afiŝas tre rapide. Bonvolu atendi momenton kaj reprovi.",
+        "youVeAlreadyReportedThis": "Vi jam raportis ĉi tion.",
+        "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "Vi sendis multajn mesaĝojn sen respondo — atendu ilian respondon antaŭ ol sendi pliajn.",
+        "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "Via redaktilo estas eksdata. Bonvolu reŝargi la paĝon kaj reprovi."
+    },
+    "AboutPage": {
+        "mapAfter": ".",
+        "mapBefore": "Mapkaheloj de ",
+        "placesAfter": ".",
+        "placesBefore": "Loknomoj de ",
+        "placesBetween": ", laŭ permesilo ",
+        "softwareAfter": " versio {version}",
+        "softwareBefore": "Ĉi tiu retejo funkcias per ",
+        "translationAfter": ", kiu funkcias ĉi tie kaj ne aliloke.",
+        "translationBefore": "Tradukado per "
+    },
+    "ActivityPubMove": {
+        "aliasMissing": "Tiu konto ankoraŭ ne listigas ĉi tiun kiel kromnomon. Unue aldonu {uri} al ĝia listo «ankaŭ konata kiel», poste reprovu.",
+        "fetchFailed": "Ne eblis venigi tiun konton.",
+        "localOnly": "Nur loka konto povas esti translokita.",
+        "sameServer": "Tiu konto estas en ĉi tiu servilo. Transloko ĉiam okazas inter serviloj."
+    },
+    "ComposerClient": {
+        "addFiles": "Aldoni dosierojn",
+        "addFilesLabel": "Aldoni dosierojn — bildojn, videon aŭ sonon",
+        "addLocation": "Aldoni lokon",
+        "addPoll": "Aldoni enketon",
+        "addSchedule": "Aldoni planon",
+        "allowMultiple": "Permesi pli ol unu elekton",
+        "altTextFor": "Alternativa teksto por {name}",
+        "attachmentCount": "{count} / {maximum} dosieroj",
+        "createLegend": "Krei afiŝon",
+        "fileRemovedEmpty": "Dosiero forigita. Nun nenio estas kunsendita.",
+        "filesAttached": "{count} dosieroj kunsenditaj.",
+        "filesLeft": "Dosiero forigita. {count} restas.",
+        "futurePublish": "La publikiga tempo devas esti estonta.",
+        "genericError": "Io misfunkciis. Bonvolu reprovi.",
+        "linkPreviewAttached": "Bildo de la ligila antaŭrigardo estas kunsendita. La butono Forigi bildon forprenas ĝin.",
+        "linkPreviewRemoved": "Bildo de la ligila antaŭrigardo forigita.",
+        "locating": "Loktrovado…",
+        "locationError": "Ne eblis trovi vian lokon. Kontrolu la lokan permeson de via retumilo.",
+        "markdownActive": "Vi nun skribas en la simpla Markdown-tekstujo.",
+        "markdownPostText": "Teksto de la afiŝo, en Markdown",
+        "noGeolocation": "Via retumilo ne povas dividi lokon.",
+        "oneFileAttached": "1 dosiero kunsendita. Ĉiu bildo havas kampon por priskribi ĝin.",
+        "option": "Elekto {count}",
+        "placeholder": "Pri kio vi pensas?",
+        "plainTextHelp": "Simpla teksto. Markdown funkcias ĉi tie: steletoj ĉirkaŭ vorto grasigas aŭ kursivigas ĝin, kaj krado komence de linio faras titolon. Uzu la suban butonon «Uzi riĉan tekston» por reveni al la formatada ilobreto.",
+        "poll": "Enketo",
+        "pollDuration": "Kiom longe daŭras la enketo",
+        "pollOption": "Enketa elekto {count}",
+        "post": "Afiŝi",
+        "processing": "Viaj aŭdvidaĵaj dosieroj estas prilaborataj, kaj vi ricevos sciigon kiam ili estos videblaj. Vi povas sekure forlasi ĉi tiun paĝon.",
+        "publishDate": "Publikiga dato",
+        "publishTime": "Publikiga tempo (nedeviga)",
+        "remove": "Forigi",
+        "removeFiles": "Forigi dosierojn",
+        "removeLocation": "Forigi lokon",
+        "removePoll": "Forigi enketon",
+        "removeSchedule": "Forigi planon",
+        "replies": "Respondoj",
+        "replyLegend": "Respondi al ĉi tiu afiŝo",
+        "richTextActive": "Vi nun skribas en la riĉteksta redaktilo.",
+        "richTextHelp": "Riĉteksta redaktilo. Se vi preferas skribi simplan tekston, uzu la suban butonon «Uzi Markdown» por anstataŭigi ĝin per ordinara tekstujo — la sama afiŝo, verkita per Markdown por ajna dezirata formatado.",
+        "saveDraft": "Konservi malneton",
+        "savedDraft": "Konservita en Malnetoj.",
+        "schedulePost": "Plani afiŝon",
+        "scheduledDraft": "Planita — vidu Malnetojn kaj planitaĵojn en la menuo.",
+        "sensitive": "Tikla",
+        "submitFailed": "Ne eblis sendi la afiŝon. Bonvolu reprovi.",
+        "tooManyFiles": "Afiŝo povas porti maksimume {count} dosierojn — la ceteraj ne estis aldonitaj.",
+        "useMarkdown": "Uzi Markdown",
+        "useRichText": "Uzi riĉan tekston",
+        "writeFirst": "Unue skribu ion — ankoraŭ estas nenio konservenda."
+    },
+    "ConversationList": {
+        "emptyNotice": "Vi ankoraŭ havas neniujn konversaciojn."
+    },
+    "GoogleAuthCallbackPage": {
+        "accountCannotBeDeleted": "Ĉi tiu konto ne povas esti forigita.",
+        "banned": "Via konto estas malpermesita.",
+        "bannedWithReason": "Via konto estas malpermesita. Kialo: {reason}",
+        "deleted": "Via konto estas por ĉiam forigita.",
+        "deletionCancelled": "Forigo de la konto estis nuligita.",
+        "deletionFailed": "Forigo de la konto ne estis plenumebla. Bonvolu reprovi.",
+        "emailMismatch": "Tiu Google-konto ne kongruas kun la retpoŝtadreso de via konto.",
+        "emailUnavailable": "Ĉi tiu retpoŝtadreso ne disponeblas por ensaluto.",
+        "home": "Reen al la ĉefpaĝo",
+        "identityFailed": "Via Google-identeco ne estis kontrolebla. Bonvolu reprovi.",
+        "notConfigured": "Ensaluto per Google ne estas agordita.",
+        "rateLimited": "Tro multaj ensalutprovoj el via reto. Bonvolu reprovi poste.",
+        "signin": "Reen al ensaluto",
+        "signinCancelled": "Ensaluto per Google estis nuligita.",
+        "signinFailed": "Ensaluto per Google ne estis plenumebla. Bonvolu reprovi.",
+        "userSettings": "Reen al uzantaj agordoj",
+        "verificationFailed": "Ensaluto per Google ne estis kontrolebla. Bonvolu reprovi."
+    },
+    "LoginClient": {
+        "verificationFailed": "Ne eblis ŝargi la kontrolon. Bonvolu reprovi post momento.",
+        "verificationRequired": "Tro multaj provoj por ĉi tiu konto. Bonvolu plenumi la kontrolon por daŭrigi."
+    },
+    "Relay": {
+        "alreadySubscribed": "Jam aboninta tiun relajson.",
+        "blocked": "Tiu servilo estas blokita. Unue malbloku ĝin, se vi volas aboni ĝin.",
+        "invalidAddress": "Tio ne estas relajsadreso.",
+        "noSigningKey": "Ĉi tiu servilo havas neniun subskriban ŝlosilon de ActivityPub, do ĝi povas aboni nenion.",
+        "notActor": "Tiu adreso ne respondis per Fediversa aktoro.",
+        "unknownStyle": "Nekonata abonmaniero."
+    },
+    "RememberedDeviceList": {
+        "emptyNotice": "Neniuj memorataj aparatoj. Aparatoj, ĉe kiuj vi markas «Memoru min» dum ensaluto, aperas ĉi tie."
+    },
+    "ReportButton": {
+        "name": "Raporti",
+        "prompt": "Kial vi raportas ĉi tion?",
+        "unlockFirst": "Malŝlosu la konversacion antaŭ ol raporti ĉifritan mesaĝon.",
+        "unverifiable": "Ĉi tiu mesaĝo estis ĉifrita per ŝlosiloj, kiuj ne plu ekzistas, do ĝi ne povas esti kontrolita aŭ raportita."
+    },
+    "RevertEmailPage": {
+        "confirm": "Ĉu malfari la lastatempan ŝanĝon de retpoŝtadreso en via konto? Tio ankaŭ elsalutos ĉiun aparaton el via konto.",
+        "forgotPassword": "Ĉu vi forgesis la pasvorton?",
+        "invalid": "Tiu malfara ligilo estas nevalida aŭ eksvalidiĝis.",
+        "login": "Ensaluti",
+        "reverted": "Via retpoŝtadreso estis remetita kaj ĉiu aparato estis elsalutita el via konto.",
+        "securityAdvice": "Se vi ne certas, kiel tio okazis, ŝanĝu vian pasvorton tuj post via reensaluto."
+    },
+    "RouteNotices": {
+        "cannotMessage": "Vi ne povas mesaĝi al ĉi tiu uzanto.",
+        "noHashtags": "Ankoraŭ neniuj kradvortoj.",
+        "passwordResetInvalid": "Tiu ligilo por restarigi pasvorton estas nevalida aŭ eksvalidiĝis."
+    },
+    "SetupPage": {
+        "databaseAdminNotice": "Se vi administras ĉi tiun retejon: la datumbaza konekto per la ensalutiloj en .env malsukcesas — kontrolu, ke la datumbaza servilo funkcias kaj ke tiuj ensalutiloj ankoraŭ validas. Ĉi tiu paĝo aperas anstataŭ la agorda asistanto ĝuste por ke datumbaza paneo ne ebligu reagordi la retejon.",
+        "databaseUnavailable": "La retejo nun ne povas atingi sian datumbazon. Bonvolu reprovi post kelkaj minutoj.",
+        "finished": "Agordado finiĝis — la datumbazo, rultempa konto kun minimumaj privilegioj kaj .env estas pretaj. Restas tri etaj paŝoj:",
+        "fixPrerequisites": "Riparu ĉi tiujn en la servilo, poste reŝargu ĉi tiun paĝon por rekontroli.",
+        "missingPrerequisites": "Bonvenon! Antaŭ ol la agordado povas daŭri, al ĉi tiu servilo mankas kelkaj antaŭkondiĉoj:",
+        "welcome": "Bonvenon! Ĉiuj kontroloj de la medio sukcesis. Sendo de ĉi tiu formularo kreas la datumbazon (se ĝi ankoraŭ ne ekzistas), rultempan datumbazan konton kun minimumaj privilegioj kaj hazarda pasvorto, kaj la skemon, poste skribas ĉion en .env. La administraj ensalutiloj estas uzataj unufoje por provizado kaj neniam konservataj."
+    },
+    "StagedPostClient": {
+        "discardConfirm": "Ĉu forĵeti ĉi tion? Ĝi neniam estis publikigita, kaj kopio ne estos konservita.",
+        "discarded": "Forĵetite.",
+        "edit": "Redakti",
+        "published": "Publikigita."
+    },
+    "StagedPostList": {
+        "emptyNotice": "Neniuj malnetoj aŭ planitaj afiŝoj. La regiloj Konservi malneton kaj Plani de la verkilo metas ilin ĉi tien."
+    },
+    "TestResults": {
+        "installJavaScriptDependencies": "Rulu `npm install` en la dokumenta radiko por ŝalti JavaScript-testojn.",
+        "nodeFatal": "JavaScript-testoj ne estis starteblaj. Node.js renkontis neripareblan eraron, plej verŝajne pro limigoj de SELinux en la retservilo.",
+        "nodeUnavailable": "La retservilo ne havas uzeblan Node.js. Instalu ĝin tutsisteme (ekz. dnf install nodejs) por ŝalti JavaScript-testojn — versiadministrilo en la hejma dosierujo de iu (nvm) estas nevidebla ĉi tie."
+    },
+    "UnsubscribePage": {
+        "continue": "Daŭrigi",
+        "invalid": "Tiu malabona ligilo ne estis eldonita de ĉi tiu retejo.",
+        "resubscribed": "Viaj resumoj estas denove ŝaltitaj. Ni sciigos vin, kiam vi forestos dum iom da tempo kaj estos io dirinda.",
+        "unsubscribed": "Farite — neniuj pluaj resumoj. Vi ankoraŭ ricevos la retpoŝtaĵojn, kiujn ĉi tiu retejo devas sendi, ekzemple restarigon de pasvorto."
+    },
+    "UserClient": {
+        "bio": "Aldoni biografion…",
+        "deleteGoogleConfirm": "Ĉu forigi vian konton? Viaj afiŝoj, respondoj kaj mesaĝoj estos por ĉiam for — tio ne estas malfarebla. Vi konfirmos per ensaluto ĉe Google.",
+        "displayName": "Montra nomo",
+        "joined": "Aliĝis {date}",
+        "save": "Konservi"
+    },
+    "UserSettings": {
+        "changeEmail": "Ŝanĝi retpoŝtadreson",
+        "changePassword": "Ŝanĝi pasvorton",
+        "deleteAccount": "Forigi konton",
+        "emailDigests": "Retpoŝtaj resumoj",
+        "encryptedMessages": "Ĉifritaj mesaĝoj",
+        "fediverse": "Fediverso",
+        "movingServers": "Translokiĝo inter serviloj",
+        "pushNotifications": "Puŝaj sciigoj",
+        "rememberedDevices": "Memorataj aparatoj",
+        "sensitiveMedia": "Tikla aŭdvidaĵo",
+        "sessions": "Seancoj",
+        "theme": "Etoso",
+        "twoFactorAuthentication": "Dufaktora aŭtentigo",
+        "videoCalling": "Videovokado"
+    },
+    "UsersPage": {
+        "fediverseAfter": ".",
+        "fediverseBefore": "Vi povas sekvi liston de Fediversaj uzantoj en ",
+        "settingsLink": "Uzantaj agordoj"
+    },
+    "VerifyEmailPage": {
+        "confirm": "Konfirmu, ke vi volas kontroli ĉi tiun retpoŝtadreson.",
+        "continue": "Daŭrigi",
+        "invalid": "Tiu kontrola ligilo estas nevalida aŭ eksvalidiĝis.",
+        "verified": "Via retpoŝtadreso estas kontrolita. Vi nun povas uzi {site}."
+    },
+    "VideoCall": {
+        "accept": "Akcepti",
+        "call": "Voki",
+        "calling": "Vokado…",
+        "cancel": "Nuligi",
+        "connected": "Konektita",
+        "connecting": "Konektado…",
+        "decline": "Rifuzi",
+        "declined": "Via voko estis rifuzita.",
+        "end": "Fini la vokon",
+        "incoming": "Alvenanta videovoko",
+        "permissionError": "Ne eblis uzi vian kameraon aŭ mikrofonon. Kontrolu la permeson por ĉi tiu retejo en la retumilo."
     }
 }

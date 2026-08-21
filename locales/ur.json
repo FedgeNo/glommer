@@ -1,66 +1,1781 @@
 {
-    "PollOptionVotes":{"votes":{"one":"1 ووٹ","other":"{count} ووٹ"}},
-    "LoginPrompt":{"reply":{"before":"","link":"لاگ اِن کریں","after":" جواب دینے کے لیے۔"},"post":{"before":"","link":"لاگ اِن کریں","after":" پوسٹ کرنے کے لیے۔"}},
-    "SetupForm":{"siteLegend":"سائٹ","siteURLLabel":"سائٹ URL","siteTitleLabel":"سائٹ کا عنوان","mailFromAddressLabel":"بھیجنے والے کا ای میل پتہ","serverNameConfirmedLabel":"میں نے اپنے ویب سرور کی ترتیب میں \"ServerName {host}\" اور \"UseCanonicalName On\" مقرر کر دیے ہیں (صرف اس وقت جانچا جاتا ہے جب خودکار براہ راست آزمائش مکمل نہ ہو سکے - README.md کا HTTPS حصہ دیکھیں)","databaseLegend":"ڈیٹابیس","databaseHostLabel":"ڈیٹابیس ہوسٹ","databasePortLabel":"ڈیٹابیس پورٹ","databaseNameLabel":"ڈیٹابیس کا نام","databaseAdminUsernameLabel":"ڈیٹابیس منتظم کا صارف نام","databaseAdminPasswordLabel":"ڈیٹابیس منتظم کا پاس ورڈ","webSocketTLSLegend":"WebSocket TLS (اختیاری)","certificatePathLabel":"سرٹیفکیٹ کا راستہ","certificatePathPlaceholder":"mkcert سے خودکار طور پر بنانے کے لیے خالی چھوڑیں","keyPathLabel":"کلید کا راستہ","keyPathPlaceholder":"mkcert سے خودکار طور پر بنانے کے لیے خالی چھوڑیں","botProtectionLegend":"بوٹ سے تحفظ (اختیاری)","turnstileSiteKeyLabel":"Cloudflare Turnstile سائٹ کلید","turnstileSiteKeyPlaceholder":"چھوڑنے کے لیے خالی رکھیں","turnstileSecretKeyLabel":"Cloudflare Turnstile خفیہ کلید","turnstileSecretKeyPlaceholder":"چھوڑنے کے لیے خالی رکھیں","submit":"ترتیب دیں"},
-    "MessageKeyPassphraseForm":{"currentPassphraseLabel":"موجودہ پاس فریز","newPassphraseLabel":"نیا پاس فریز","confirmNewPassphraseLabel":"نئے پاس فریز کی تصدیق","accountPasswordLabel":"اکاؤنٹ کا پاس ورڈ","submit":"پاس فریز بدلیں"},
-    "PasswordResetForm":{"legend":"نیا پاس ورڈ منتخب کریں","newPasswordLabel":"نیا پاس ورڈ","newPasswordPlaceholder":"کم از کم 8 حروف","confirmPasswordLabel":"نئے پاس ورڈ کی تصدیق","submit":"پاس ورڈ دوبارہ مقرر کریں"},
-    "PasswordResetRequestForm":{"legend":"اپنا پاس ورڈ دوبارہ مقرر کریں","emailLabel":"ای میل","submit":"دوبارہ مقرر کرنے کا لنک بھیجیں"},
-    "EmailRevertForm":{"submit":"ای میل کی تبدیلی واپس کریں"},"EmailVerifyForm":{"submit":"ای میل پتے کی تصدیق کریں"},"EmailDigestResubscribeForm":{"submit":"انہیں دوبارہ چالو کریں"},"EmailDigestSetting":{"label":"کچھ عرصہ دور رہنے پر جو کچھ رہ گیا ہو وہ مجھے ای میل کریں"},
-    "RememberedDevice":{"unknownDevice":"نامعلوم آلہ","browserOnOS":"{os} پر {browser}","thisDevice":" (یہ آلہ)","lastUsed":{"before":"آخری استعمال ","after":""}},
-    "LogoutEverywherePanel":{"explanation":"ہر فعال نشست ختم کریں اور ہر یاد رکھا ہوا آلہ بھول جائیں۔ آپ اس براؤزر سمیت تمام براؤزروں سے لاگ آؤٹ ہو جائیں گے۔"},"LogoutEverywhereButton":{"label":"ہر جگہ سے لاگ آؤٹ"},"GoogleAccountDeleteButton":{"label":"حذف کرنے کے لیے Google سے تصدیق"},"GoogleSignInButton":{"label":"Google کے ساتھ جاری رکھیں"},"ProfileEditButton":{"ariaLabel":"پروفائل میں ترمیم"},
-    "PushNotificationSetting":{"explanation":"سائٹ بند ہونے پر بھی اس آلے پر اطلاعات حاصل کریں۔ یہ ہر براؤزر کی الگ پسند ہے - جہاں بھی اطلاع پانا چاہیں اسے چالو کریں۔","label":{"off":"اس آلے پر چالو کریں","on":"اس آلے پر بند کریں"},"unsupported":"یہ براؤزر پُش اطلاعات کی معاونت نہیں کرتا"},
-    "LoginForm":{"legend":"لاگ اِن","identifier":"صارف نام یا ای میل","password":"پاس ورڈ","rememberMe":"مجھے یاد رکھیں","submit":"لاگ اِن"},
-    "SignupForm":{"legend":"اکاؤنٹ بنائیں","usernameLabel":"صارف نام","usernamePlaceholder":"چھوٹے انگریزی حروف، اعداد، اور _","emailLabel":"ای میل","emailPlaceholder":"درست ای میل پتہ","displayName":"ظاہری نام (اختیاری)","bioLabel":"تعارف (اختیاری)","bioPlaceholder":"مختصر تعارف - #ہیش ٹیگ، @تذکرے، اور لنکس قابل کلک بن جاتے ہیں","passwordLabel":"پاس ورڈ","passwordPlaceholder":"پاس ورڈ: کم از کم 8 حروف","rememberMe":"مجھے یاد رکھیں","submit":"سائن اَپ"},
-    "PasswordChangeForm":{"legend":"اپنا پاس ورڈ بدلیں","currentPassword":"موجودہ پاس ورڈ","newPasswordLabel":"نیا پاس ورڈ","newPasswordPlaceholder":"کم از کم 8 حروف","confirmPassword":"نئے پاس ورڈ کی تصدیق","submit":"پاس ورڈ بدلیں"},
-    "EmailChangeForm":{"legend":"اپنا ای میل پتہ بدلیں","newEmail":"نیا ای میل پتہ","currentPassword":"موجودہ پاس ورڈ","notice":"سائٹ کا استعمال جاری رکھنے سے پہلے آپ کو نئے پتے کی تصدیق کرنا ہو گی۔","submit":"ای میل بدلیں"},
-    "AccountDeleteForm":{"legend":"اپنا اکاؤنٹ حذف کریں","warning":"یہ آپ کا اکاؤنٹ، پوسٹس، اور پیغامات مستقل طور پر حذف کر دیتا ہے۔ اسے واپس نہیں کیا جا سکتا۔","currentPassword":"موجودہ پاس ورڈ","submit":"اکاؤنٹ حذف کریں"},
-    "AccountMigrationForm":{"legend":"دوسرے سرور پر منتقل ہوں","movedNotice":"یہ اکاؤنٹ {destination} پر منتقل ہو گیا ہے۔ آپ کے پیروکاروں سے وہاں آپ کی پیروی کرنے کو کہا گیا ہے۔","explanation":"آپ کے پیروکاروں سے نئے اکاؤنٹ پر آپ کی پیروی کرنے کو کہا جاتا ہے۔ آپ کی پوسٹس یہیں رہتی ہیں - اشیا کے پتے انہیں بنانے والے سرور کے ہوتے ہیں، اس لیے انہیں ساتھ نہیں لے جایا جا سکتا۔","addressNotice":"جس اکاؤنٹ پر آپ منتقل ہو رہے ہیں اسے پہلے اس اکاؤنٹ کو \"اس نام سے بھی معروف\" میں درج کرنا ہو گا۔ یہاں آپ کا پتہ {address} ہے۔","movedToLabel":"یہاں منتقل ہوں","movedToPlaceholder":"https://example.social/users/you","aliasesLegend":"اس نام سے بھی معروف","aliasesExplanation":"دوسری جگہوں کے وہ اکاؤنٹس جو آپ ہی کے ہیں۔ کسی کو یہاں درج کرنے سے وہ اکاؤنٹ اس اکاؤنٹ پر منتقل ہو سکتا ہے - یہ اجازت ہے، خود منتقلی نہیں۔ ہر سطر میں ایک پتہ۔","aliasesLabel":"آپ کے دوسرے اکاؤنٹس","aliasesPlaceholder":"https://example.social/users/you","submit":"محفوظ کریں"},
-    "TwoFactorForm":{"legend":"اپنا تصدیقی کوڈ درج کریں","explanation":"ہم نے آپ کو تصدیقی کوڈ ای میل کیا ہے۔ لاگ اِن مکمل کرنے کے لیے اسے نیچے درج کریں، یا اپنے بازیابی کوڈز میں سے ایک استعمال کریں۔","explanationEmailFailed":"ہم ابھی آپ کا تصدیقی کوڈ ای میل نہیں کر سکے۔ لاگ اِن مکمل کرنے کے لیے اپنے بازیابی کوڈز میں سے ایک درج کریں۔","code":"تصدیقی کوڈ","submit":"تصدیق کریں"},
-    "TwoFactorSettingsForm":{"legend":{"on":"دو مرحلہ تصدیق چالو ہے","off":"دو مرحلہ تصدیق بند ہے"},"explanation":{"on":"لاگ اِن کرتے وقت ہم ایک تصدیقی کوڈ ای میل کریں گے جسے داخل کر کے آپ کو لاگ اِن مکمل کرنا ہو گا۔ اگر ای میل نہ پہنچے تو بازیابی کوڈز میں سے ایک آپ کو لاگ اِن کر دے گا۔","off":"لاگ اِن میں دوسرا مرحلہ شامل کریں: ہم ایک تصدیقی کوڈ ای میل کریں گے جسے داخل کرنا ہو گا، اس لیے صرف پاس ورڈ داخلے کے لیے کافی نہیں ہو گا۔ ای میل نہ پہنچنے کی صورت کے لیے آپ کو ایک بار استعمال ہونے والے بازیابی کوڈ ملیں گے۔"},"currentPassword":"موجودہ پاس ورڈ","submit":{"on":"دو مرحلہ تصدیق بند کریں","off":"دو مرحلہ تصدیق چالو کریں"},"regenerate":"نئے بازیابی کوڈ بنائیں","recoveryHeading":"آپ کے بازیابی کوڈ","recoveryNote":"انہیں ابھی کسی محفوظ جگہ رکھیں - یہ دوبارہ نہیں دکھائے جائیں گے۔ تصدیقی ای میل نہ پہنچنے پر ہر کوڈ ایک بار لاگ اِن کرتا ہے، اور نئے کوڈ بنانے سے یہ سب بدل جاتے ہیں۔","toast":{"on":"دو مرحلہ تصدیق اب چالو ہے۔","off":"دو مرحلہ تصدیق اب بند ہے۔","regenerated":"نئے بازیابی کوڈ بن گئے۔ پرانے کوڈ اب کام نہیں کرتے۔"}},
-    "VerificationNotice":{"instructions":"اپنا اِن باکس دیکھیں اور ای میل پتے کی تصدیق کے لیے بھیجے گئے تصدیقی لنک پر کلک کریں۔ اگر نظر نہ آئے تو فضول یا اسپیم فولڈر دیکھیں۔"},"VerificationResendButton":{"label":"تصدیقی ای میل دوبارہ بھیجیں"},
-    "MailSettingsForm":{"legend":"باہر جانے والی ڈاک","fromAddressLabel":"بھیجنے والے کا پتہ","fromAddressPlaceholder":"یہ مقرر ہونے تک کوئی ای میل نہیں بھیجی جا سکتی","fromNameLabel":"بھیجنے والے کا نام","hostLabel":"SMTP ہوسٹ","portLabel":"SMTP پورٹ","usernameLabel":"SMTP صارف نام","passwordLabel":"SMTP پاس ورڈ","passwordPlaceholder":{"set":"پاس ورڈ مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں","unset":"SMTP پاس ورڈ"},"encryptionLabel":"رمز کاری","encryptionOptions":{"tls":"TLS (STARTTLS، عموماً پورٹ 587 پر)","ssl":"SSL (ضمنی TLS، عموماً پورٹ 465 پر)","none":"کوئی نہیں"},"explainer":"PHP کے mail() سے بھیجنے کے لیے SMTP ہوسٹ خالی چھوڑیں (تجویز نہیں کیا جاتا - README کا ترسیل والا حصہ دیکھیں)۔ \"بھیجنے والے\" کا پتہ مقرر ہونے تک کوئی ای میل نہیں بھیجی جا سکتی۔","save":"محفوظ کریں"},
-    "MapSettingsForm":{"legend":"نقشے کی ٹائلیں","notice":"OpenStreetMap استعمال کرنے کے لیے خالی چھوڑیں۔ کلید والے فراہم کنندہ کے لیے اس کا URL سانچہ چسپاں کریں، جس میں کلید کی جگہ بعینہٖ {apiKey} ہو، اور نیچے کلید اور انتساب درج کریں۔","urlLabel":"ٹائل URL سانچہ","keyLabel":"API کلید","keyPlaceholder":"ٹائل فراہم کنندہ کی API کلید","attributionLabel":"انتساب","attributionPlaceholder":"© OpenStreetMap کے معاونین","save":"محفوظ کریں"},
-    "GoogleAuthSettingsForm":{"legend":"Google سے لاگ اِن","clientIdLabel":"کلائنٹ ID","clientIdPlaceholder":"Google OAuth کلائنٹ ID","secretLabel":"کلائنٹ راز","secretPlaceholder":{"set":"کلائنٹ راز مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں","unset":"Google OAuth کلائنٹ راز"},"explainer":"سائن اَپ اور لاگ اِن پر \"Google کے ساتھ جاری رکھیں\" دکھانے کے لیے دونوں درکار ہیں۔ اپنے Google Cloud OAuth کلائنٹ میں مجاز ری ڈائریکٹ URI کو {url} مقرر کریں - بند کرنے کے لیے کلائنٹ ID صاف کریں۔","save":"محفوظ کریں"},
-    "BotProtectionSettingsForm":{"turnstileLegend":"Cloudflare Turnstile","turnstileSiteKeyLabel":"سائٹ کلید","turnstileSiteKeyPlaceholder":"Cloudflare Turnstile سائٹ کلید","turnstileSecretKeyLabel":"خفیہ کلید","turnstileSecretKeyPlaceholder":{"set":"خفیہ کلید مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں","unset":"Cloudflare Turnstile خفیہ کلید"},"turnstileExplainer":"سائن اَپ اور لاگ اِن پر CAPTCHA دکھانے کے لیے دونوں کلیدیں درکار ہیں۔ بند کرنے کے لیے سائٹ کلید صاف کریں۔","recaptchaLegend":"Google reCAPTCHA (مقفل اکاؤنٹ کی بازیابی)","recaptchaSiteKeyLabel":"سائٹ کلید","recaptchaSiteKeyPlaceholder":"Google reCAPTCHA v2 سائٹ کلید","recaptchaSecretKeyLabel":"خفیہ کلید","recaptchaSecretKeyPlaceholder":{"set":"خفیہ کلید مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں","unset":"Google reCAPTCHA v2 خفیہ کلید"},"recaptchaExplainer":"دونوں کلیدیں درکار ہیں۔ مقرر ہونے پر لاگ اِن کوششوں کی حد تک پہنچنے والا اکاؤنٹ تالا ختم ہونے کا انتظار کرنے کے بجائے یہ آزمائش مکمل کر کے واپس آ سکتا ہے؛ مقرر نہ ہونے پر انتظار لازم ہے۔ reCAPTCHA v2 (\"میں روبوٹ نہیں ہوں\") استعمال کریں۔ بند کرنے کے لیے سائٹ کلید صاف کریں۔","save":"محفوظ کریں"},
-    "OpenRouterSettingsForm":{"legend":"OpenRouter","notice":"سائٹ کی AI خصوصیات (جیسے مقبول موضوعات کے خلاصے) استعمال کرتی ہیں۔ مفت ماڈلز راؤٹر استعمال کرنے کے لیے ماڈل خالی چھوڑیں، جس میں OpenRouter اس وقت دستیاب مفت ماڈلز میں سے اتفاقاً چنتا ہے اور کبھی خرچ نہیں ہو سکتا۔","keyLabel":"API کلید","keyPlaceholder":{"set":"API کلید مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں","unset":"OpenRouter API کلید"},"clearKeyLabel":"محفوظ API کلید ہٹائیں (AI خصوصیات بند ہو جائیں گی)","modelLabel":"ماڈل","neverSpendLabel":"اسے کبھی رقم خرچ کرنے کی اجازت نہ دیں (تجویز کردہ)","explainer":"تحفظ چالو ہو تو ہر درخواست کی قیمت صفر تک محدود رہتی ہے، لہٰذا مفت فراہم کنندہ نہ ہونے پر ادائیگی والے ماڈل پر جانے کے بجائے مکمل طور پر ناکام ہوتی ہے۔ AI خصوصیات مکمل بند کرنے کے لیے محفوظ API کلید ہٹائیں۔","save":"محفوظ کریں"},
-    "AboutSettingsForm":{"legend":"تعارف","description":"سادہ متن - خالی سطریں پیراگراف الگ کرتی ہیں۔ پہلا پیراگراف سائٹ کی وضاحت کے طور پر استعمال ہو گا۔","save":"محفوظ کریں"},"TermsSettingsForm":{"legend":"استعمال کی شرائط","description":"سادہ متن - خالی سطریں پیراگراف الگ کرتی ہیں۔","save":"محفوظ کریں"},"PrivacySettingsForm":{"legend":"رازداری کی پالیسی","description":"سادہ متن - خالی سطریں پیراگراف الگ کرتی ہیں۔","save":"محفوظ کریں"},"EmailDigestSettingsForm":{"legend":"ای میل خلاصہ","fieldLabel":"اختتامی پیراگراف","notice":"ہر خلاصے کے آخر کے قریب، رکن کی چھوٹی ہوئی چیزوں کی فہرست کے بعد شامل کیا جاتا ہے۔ سادہ متن۔ سافٹ ویئر کے اصل متن پر واپس جانے کے لیے خالی چھوڑیں۔","save":"محفوظ کریں"},"FaviconSettingsForm":{"legend":"فیوی آئیکن","currentAlt":"موجودہ فیوی آئیکن","save":"فیوی آئیکن اپ لوڈ کریں"},"FrontPageImageSettingsForm":{"legend":"صفحۂ اول کی تصویر","explainer":"دوسری سائٹس اس وقت دکھاتی ہیں جب کوئی اس سائٹ کا لنک شیئر کرے - صرف Open Graph میٹا ڈیٹا، صفحے پر کبھی نہیں۔ 1200×630 میں تراشی جاتی ہے۔ تصویر نہ ہو تو لنک پیش منظر میں کوئی تصویر نہیں ہوتی۔","currentAlt":"صفحۂ اول کی موجودہ تصویر","save":"تصویر اپ لوڈ کریں"},
-    "CarouselAutoplayButton":{"name":"خودکار چلائیں"},"CarouselNextButton":{"name":"اگلا"},"CarouselPrevButton":{"name":"پچھلا"},"MediaFullscreenButton":{"name":"پوری اسکرین"},"ComposerFilesRemoveButton":{"name":"فائلیں ہٹائیں"},"NotificationDropdown":{"showAll":"سب دکھائیں"},"HelpSearch":{"placeholder":"مدد تلاش کریں…","noMatches":"کوئی مدد کا مضمون آپ کی تلاش سے نہیں ملا۔"},"WelcomeBannerDismissButton":{"name":"سمجھ گیا"},"StagedPostDiscardButton":{"name":"ضائع کریں"},"StagedPostEditButton":{"name":"ترمیم"},"StagedPostPublishButton":{"name":"ابھی شائع کریں"},"LogoutButton":{"name":"لاگ آؤٹ"},"AvatarUploadForm":{"submit":"اوتار تازہ کریں"},"BannedUserSearchBox":{"placeholder":"ممنوع صارفین تلاش کریں…"},"BannedUserSection":{"heading":"ممنوع صارفین"},"SentFriendRequestSection":{"heading":"بھیجی گئی درخواستیں (جواب کی منتظر)"},
-    "BannedTrendingEntity":{"bannedBy":{"before":"{name} نے ممنوع کیا ","after":""},"reason":" - {reason}"},"BlockedServerCard":{"blockedBy":{"before":"{name} نے مسدود کیا ","after":""},"deletedAccount":"حذف شدہ اکاؤنٹ","reason":" - {reason}"},
-    "DateFormat":{"months":{"1":"جنوری","2":"فروری","3":"مارچ","4":"اپریل","5":"مئی","6":"جون","7":"جولائی","8":"اگست","9":"ستمبر","10":"اکتوبر","11":"نومبر","12":"دسمبر"},"shortMonths":{"1":"جنوری","2":"فروری","3":"مارچ","4":"اپریل","5":"مئی","6":"جون","7":"جولائی","8":"اگست","9":"ستمبر","10":"اکتوبر","11":"نومبر","12":"دسمبر"},"long":"{day} {month}، {year}","short":"{day} {month}، {year}","time":"{hour}:{minute} {meridiem}","dateAndTime":"{date}، {time}","am":"AM","pm":"PM","clock":12},
-    "EnvironmentChecker":{"wsCannotConnect":"127.0.0.1:{port}{tls} پر WebSocket سرور سے رابطہ نہیں ہو سکا ({error})۔ پہلے اسے شروع کریں: systemctl --user start glommer-websocket (یونٹ فائل کے لیے README.md دیکھیں)۔ اگر ابھی WS_TLS_CERT/WS_TLS_KEY ملا یا ختم ہوا ہے تو .env سے ملانے کے لیے دوبارہ شروع کریں۔","wsOverTLS":" TLS پر","wsBadHandshake":"127.0.0.1:{port} کی خدمت نے درست WebSocket مصافحہ مکمل نہیں کیا - ممکن ہے bin/websocket-server.php کے علاوہ کچھ اور اس پورٹ کو سن رہا ہو۔","wsNoPong":"WebSocket سرور نے مصافحہ قبول کیا مگر ping کا جواب نہیں دیا - شاید پھنس گیا یا غلط چل رہا ہے۔ اس کے لاگز دیکھیں۔","wsReachable":"WebSocket سرور 127.0.0.1:{port} پر قابل رسائی اور جواب دے رہا ہے"},
-    "EntityType":{"singular":{"hashtag":"ہیش ٹیگ","person":"شخص","org":"تنظیم","gpe":"جگہ","loc":"خطہ","fac":"نمایاں مقام","product":"مصنوعہ","event":"تقریب","work_of_art":"کام","law":"قانون","language":"زبان","norp":"گروہ"},"plural":{"hashtag":"ہیش ٹیگ","person":"لوگ","org":"تنظیمیں","gpe":"جگہیں","loc":"خطے","fac":"نمایاں مقامات","product":"مصنوعات","event":"تقریبات","work_of_art":"کام","law":"قوانین","language":"زبانیں","norp":"گروہ"}},
-    "FriendRemoveButton":{"name":"دوست ہٹائیں"},"FriendRequestAcceptButton":{"name":"قبول کریں"},"FriendRequestDenyButton":{"name":"انکار کریں"},"UserFollowButton":{"follow":"پیروی کریں","unfollow":"پیروی چھوڑیں"},"UserBlockButton":{"name":"مسدود کریں"},"UserUnblockButton":{"name":"مسدودی ختم کریں"},"OtherUser":{"message":"پیغام"},
-    "MainNavigation":{"toggleLabel":"مینو","loggedInAs":"{name} کے طور پر لاگ اِن","friendsFeed":"دوستوں کی فیڈ","relayFeed":"ریلے فیڈ","users":"صارفین","tags":"ٹیگز","topics":"موضوعات","map":"نقشہ","locations":"مقامات","search":"تلاش","messages":"پیغامات","bookmarks":"بک مارکس","help":"مدد","about":"تعارف","login":"لاگ اِن","signup":"سائن اَپ","friends":"دوست","drafts":"مسودے اور طے شدہ","userSettings":"صارف کی ترتیبات","modSettings":"نگران کی ترتیبات","adminSettings":"منتظم کی ترتیبات"},
-    "LogoutForm":{"submit":"لاگ آؤٹ"},"User":{"joined":"{date} کو شامل ہوئے"},"FriendRequestButton":{"add":"دوست بنائیں","cancel":"درخواست منسوخ کریں"},"StagedPostWhen":{"scheduled":"{when} کے لیے طے شدہ","draft":"مسودہ - صرف آپ کے کہنے پر شائع ہو گا"},
-    "MessageTranslateButton":{"name":"یہ پیغام ترجمہ کریں"},"MessageTranslationNotice":{"heading":"پیغامات کے ترجمے کے بارے میں","body":"پیغام کا ترجمہ کرنے کے لیے اس کا متن اس سرور کو بھیجا اور یہیں ترجمہ کیا جاتا ہے۔ کچھ محفوظ نہیں ہوتا: ترجمہ ڈیٹابیس میں نہیں لکھا جاتا اور پیغام نہیں بدلتا۔ مگر اس طرح ترجمہ شدہ پیغام سرور نے پڑھا ہے، اس لیے غیر ترجمہ شدہ پیغام کی طرح ابتدا سے انتہا تک مرموز نہیں رہتا۔ صرف موصول شدہ پیغامات، اور صرف آپ کے کہنے پر، ترجمہ ہو سکتے ہیں۔","confirm":"ترجمہ کریں","cancel":"ابھی نہیں"},
-    "MessageKeySetupForm":{"resetWarning":"پاس فریز بھول گئے؟ دوبارہ مقرر کرنے سے نئے پاس فریز کے تحت نئی کلیدیں بنتی ہیں - مگر پرانی کلیدوں سے مرموز پیغامات کوئی بھی دوبارہ نہیں پڑھ سکے گا۔","requirements":"کم از کم 12 حروف، اور اکاؤنٹ کا پاس ورڈ نہیں - وہ اس سرور کو بھیجا جاتا ہے، جبکہ پاس فریز کبھی نہیں بھیجا جانا چاہیے۔","passphraseLabel":"پاس فریز","resetPassphraseLabel":"نیا پاس فریز","confirmLabel":"پاس فریز کی تصدیق","accountPasswordLabel":"اکاؤنٹ کا پاس ورڈ","submitLabel":"مرموز پیغامات چالو کریں","resetSubmitLabel":"رمز کاری کی کلیدیں دوبارہ مقرر کریں"},
-    "EncryptedMessagesSetting":{"explanation":"ابتدا سے انتہا تک مرموز پیغامات آپ کے براؤزر میں مقفل اور غیر مقفل ہوتے ہیں: یہ سرور انہیں پڑھے بغیر پہنچاتا اور محفوظ کرتا ہے۔ آپ کی کلید پاس فریز سے محفوظ ہے، اور وہی پاس فریز کسی بھی براؤزر میں پیغامات کھولتا ہے۔ دونوں افراد کے چالو کرنے پر گفتگو مرموز ہوتی ہے؛ دوسرے سرور کے افراد کو پیغامات غیر مرموز رہتے ہیں کیونکہ وفاق انہیں کسی اور طرح لے نہیں جا سکتا۔","noRecovery":"گم شدہ پاس فریز واپس پانے کا کوئی طریقہ نہیں - منتظم کے لیے بھی نہیں۔ اسے کھونا مرموز پیغامات کھونا ہے۔","enabledStatus":"مرموز پیغامات چالو ہیں۔"},
-    "MessagePrivacyButton":{"encrypted":{"label":"مرموز","explanation":"اس گفتگو کے پیغامات ابتدا سے انتہا تک مرموز ہیں: آپ کے براؤزر میں پاس فریز سے کھلتے اور پڑھے جاتے ہیں، اور سرور مرموز متن محفوظ کرتا ہے۔ یہ یقینی بنانے کے لیے کہ درمیان میں کوئی نہیں، سلسلے کے نیچے حفاظتی کوڈ دوسرے شخص سے ملائیں۔ رمز کاری چالو ہونے سے پہلے بھیجے گئے پیغامات پہلے کی طرح قابل مطالعہ رہتے ہیں۔"},"awaiting-theirs":{"label":"غیر مرموز","explanation":"{handle} اپنی ترتیبات میں مرموز پیغامات چالو کرے گا تو یہاں کے پیغامات ابتدا سے انتہا تک مرموز ہوں گے۔"},"awaiting-yours":{"label":"غیر مرموز","explanation":"یہاں کے پیغامات ابتدا سے انتہا تک مرموز نہیں ہیں۔ اس گفتگو کو محفوظ کرنے کے لیے ترتیبات میں مرموز پیغامات چالو کریں۔"},"federated":{"label":"غیر مرموز","explanation":"{handle} دوسرے سرور پر ہے۔ اس گفتگو کے پیغامات اس سرور کے ساتھ اس سرور پر بھی محفوظ ہوتے ہیں، اور اس کا منتظم انہیں پڑھ سکتا ہے - سروروں کے درمیان پروٹوکول میں رمز کاری کا طریقہ نہیں۔ حساس باتیں اسی سائٹ کی گفتگو تک رکھیں۔"}},
-    "RemoteFollowsForm":{"legend":"Fediverse اکاؤنٹس کی پیروی","notice":"ایک یا زیادہ ہینڈل چسپاں کریں، مثلاً @user@example.social - ان کے درمیان کوئی بھی جداکار چلتا ہے۔","handlesLabel":"پیروی کے لیے Fediverse ہینڈل","submit":"پیروی کریں","statusPending":"زیر التوا","statusAccepted":"قبول شدہ"},
-    "ServerBlockForm":{"legend":"سرور مسدود کریں","description":"اس سرور اور اس کے ماتحت ہر چیز کو رد کرتا ہے: نہ ترسیل اندر، نہ باہر، اور دونوں سمتوں میں موجود پیروی ختم ہو جاتی ہے۔","serverLabel":"سرور","serverPlaceholder":"example.social","reasonLabel":"وجہ","reasonPlaceholder":"یہ سرور کیوں مسدود ہے","submit":"سرور مسدود کریں"},
-    "VideoCallTestPanel":{"intro":"کال کی ترتیب کے وہ حصے چلاتا ہے جو ایک براؤزر سے جانچے جا سکتے ہیں۔ اصل براہ راست رابطے تک سب کچھ یہاں قابل آزمائش ہے؛ دوسرے شخص سے جڑنے کے لیے اس شخص کی ضرورت ہے۔"},"VideoCallTestButton":{"label":"جانچ چلائیں"},
-    "WebSocketStatus":{"ok":"WebSocket سرور: چل رہا ہے","failed":"WebSocket سرور: {detail}","clientTesting":"براؤزر رابطہ: جانچ جاری…","clientConnecting":"براؤزر رابطہ: جڑ رہا ہے…","clientConnected":"براؤزر رابطہ: جڑ گیا","clientDisconnecting":"براؤزر رابطہ: منقطع ہو رہا ہے…","clientNotConnected":"براؤزر رابطہ: منسلک نہیں"},
-    "UploadWorkerStatus":{"running":"ورکر خدمت: چل رہی ہے","stopped":"ورکر خدمت: بند ہے - دوبارہ شروع ہونے تک مرحلہ وار اپ لوڈ کبھی تبدیل نہیں ہوں گے","unknown":"ورکر خدمت: نامعلوم - یا اس ہوسٹ پر systemctl دستیاب نہیں، یا SELinux ویب سرور کی اپنی حالت کی درخواست روک رہا ہے (درست کرنے کے لیے bin/install.php کو root کے طور پر چلائیں)","queue":"قطار: {staging} تیاری میں، {pending} زیر التوا، {processing} زیر عمل"},
-    "TrendingTimerStatus":{"running":"مقبولیت ٹائمر: چل رہا ہے","stopped":"مقبولیت ٹائمر: بند ہے - مقبول موضوعات صرف پڑھنے کے راستے کی خود مرمت (EntityRanker::refreshIfStale()) سے تازہ ہوں گے، شیڈول پر نہیں۔ ترتیب کے لیے bin/install.php کو root کے طور پر چلائیں۔","unknown":"مقبولیت ٹائمر: نامعلوم - یا اس ہوسٹ پر systemctl دستیاب نہیں، یا SELinux ویب سرور کی اپنی حالت کی درخواست روک رہا ہے (درست کرنے کے لیے bin/install.php کو root کے طور پر چلائیں)"},
-    "Notification":{"postReady":"آپ کا میڈیا پراسیس ہو چکا اور اب شائع ہے","scheduledPostLive":"آپ کی طے شدہ پوسٹ اب شائع ہے","uploadPartlyFailed":"آپ کی پوسٹ شائع ہے، مگر اس کی ایک یا زیادہ فائلیں پراسیس نہیں ہو سکیں","uploadFailed":"آپ کی اپ لوڈز میں سے ایک پراسیس نہیں ہوئی اور پوسٹ نہیں کی گئی","mailerFailed":"ای میل ترسیل ناکام - میلر شاید بند ہے۔ اپنی ڈاک کی ترتیب دیکھیں۔","mailFromNotConfigured":"ڈاک کا کوئی \"بھیجنے والا\" پتہ مقرر نہیں، اس لیے ای میل نہیں بھیجی جا سکتی۔ منتظم کی ترتیبات (باہر جانے والی ڈاک) میں یا bin/install.php سے مقرر کریں۔","systemError":"سرور کی خرابی ہوئی۔ تفصیل کے لیے خرابی کا لاگ دیکھیں۔","passwordRemovedGoogle":"Google سے لاگ اِن کرتے وقت آپ کا پاس ورڈ ہٹا دیا گیا تھا۔ نیا مقرر کرنے کے لیے \"پاس ورڈ بھول گئے\" استعمال کریں۔","like":"{name} نے آپ کی پوسٹ پسند کی","repost":"{name} نے آپ کی پوسٹ دوبارہ شائع کی","reply":"{name} نے آپ کی پوسٹ کا جواب دیا","friendRequest":"{name} نے دوستی کی درخواست بھیجی","friendAccepted":"{name} نے آپ کی دوستی کی درخواست قبول کی","message":"{name} نے آپ کو پیغام بھیجا","mention":"{name} نے پوسٹ میں آپ کا ذکر کیا","follow":"{name} نے دوسرے سرور سے آپ کی پیروی کی","default":"{name} نے کچھ کیا"},
-    "NotificationList":{"emptyNotice":"ابھی کوئی اطلاع نہیں۔"},"NotificationsNavLink":{"label":"اطلاعات","unseen":"نہ دیکھی اطلاعات"},"NotificationTestPanel":{"intro":"خود کو (منتظم کو) آزمائشی اطلاع بھیجیں۔ اسے فوراً عارضی پیغام اور اطلاعات کی فہرست میں آنا چاہیے۔","button":"آزمائشی اطلاع بھیجیں","sending":"بھیجی جا رہی ہے…","sent":"بھیج دی!","failed":"ناکام"},"MessageDot":{"label":"نہ پڑھے پیغامات"},"NavAlertDot":{"label":"مینو میں کچھ نیا"},"Message":{"encrypted":"مرموز پیغام","decryptionFailed":"یہ پیغام ایسی کلیدوں سے مرموز تھا جو اب موجود نہیں۔"},"MessageComposer":{"bodyLabel":"پیغام","bodyPlaceholder":"پیغام لکھیں","send":"بھیجیں"},"MessageList":{"emptyNotice":"ابھی کوئی پیغام نہیں۔"},
-    "MessageKeyFingerprint":{"explanation":"یہ کوڈ کسی دوسرے طریقے سے ایک دوسرے کو پڑھ کر سنائیں - بلند آواز سے، بالمشافہ، یا کال پر۔ دونوں طرف یکساں ہو تو درمیان میں کوئی نہیں۔","changed":"آپ کی جانچ کے بعد یہ کوڈ بدل گیا ہے۔ ایسا اس وقت ہوتا ہے جب آپ میں سے کوئی رمز کاری کی کلیدیں دوبارہ مقرر کرے - مگر گفتگو پڑھنے والا شخص بھی یوں ہی نظر آئے گا۔ اعتماد سے پہلے نیا کوڈ دوسرے شخص سے ملائیں۔","verified":"آپ نے یہ کوڈ جانچ لیا ہے۔"},"MessageKeyVerifyButton":{"label":"تصدیق شدہ نشان لگائیں"},"MessageUnlockForm":{"passphraseLabel":"پاس فریز","passphrasePlaceholder":"اس گفتگو کو کھولنے کا پاس فریز","submit":"کھولیں"},"Conversation":{"lastMessage":{"before":"آخری پیغام ","after":""}},"SensitiveMedia":{"summary":"حساس میڈیا"},"SensitiveMediaSetting":{"toggle":"حساس میڈیا بطور طے شدہ دکھائیں"},
-    "Report":{"targetTypes":{"post":"پوسٹ","message":"پیغام","user":"صارف"},"summary":{"before":"{type} #{id} کی رپورٹ از ","after":""},"reasonLine":"وجہ: {reason}","banReporterLabel":"رپورٹ کرنے والے کو ممنوع کریں","banReportedUserLabel":"رپورٹ شدہ صارف کو ممنوع کریں","deleteLabel":"{type} حذف کریں","reportedImageAlt":"رپورٹ شدہ تصویر","attachmentUnavailable":"رپورٹ شدہ منسلکہ اب دستیاب نہیں۔","viewAttachment":"رپورٹ شدہ منسلکہ دیکھیں","missing":{"noSnapshot":"رپورٹ شدہ مواد اب دستیاب نہیں۔","unknownType":"مواد کی نامعلوم قسم۔"}},
-    "ReportList":{"emptyNotice":"کوئی رپورٹ نہیں۔"},"ModQueueLinks":{"intro":"قطاریں اتنی طویل ہیں کہ ایک وقت میں ایک صفحہ پڑھا جائے، اس لیے ان کے اپنے صفحات ہیں۔","reportsLabel":"رپورٹس","bannedUsersLabel":"ممنوع صارفین"},"ModerationActionList":{"emptyNotice":"ابھی کسی نگران نے کچھ نہیں کیا۔"},"BannedTrendingEntityList":{"emptyNotice":"کوئی ممنوع مقبول عنصر نہیں۔"},"BlockedServerList":{"emptyNotice":"کوئی مسدود سرور نہیں۔"},"RelayCard":{"accepted":"رکنیت لی ","waiting":"ریلے کی منظوری کا انتظار - رکنیت لی "},"RelayList":{"emptyNotice":"کسی ریلے کی رکنیت نہیں۔ یہاں اراکین کی پیروی کے سوا کچھ نہیں آتا۔"},"RelayFeedList":{"emptyNotice":"ابھی ریلے سے کچھ نہیں آیا۔ دوسری طرف کے سرور شائع کریں گے تو پوسٹس یہاں آئیں گی۔"},
-    "RelaySubscribeForm":{"legend":"ریلے کی رکنیت لیں","explainerOne":"ریلے ایک مشترکہ تیز دھارا ہے: ہر دوسرے رکن سرور کی ہر عوامی پوسٹ یہاں آتی ہے، اور اس سرور کی پوسٹس ان سب کو جاتی ہیں۔ نیا انسٹنس اسی طرح لوگوں کو ڈھونڈتا ہے، کیونکہ وفاق بصورت دیگر صرف وہی لاتا ہے جس کی یہاں کوئی پہلے ہی پیروی کرتا ہو۔","explainerTwo":"بوجھ کی پیش گوئی آپ نہیں کر سکتے - یہ ان سروروں کی اشاعت ہے، ایک ہفتہ خاموش اور اگلے ہفتے فی گھنٹہ ہزاروں پوسٹس، اور آپ کا ذخیرہ، ترسیلی قطار اور نگرانی کی قطار سب اسے اٹھاتے ہیں۔ ریلے پوسٹس مرکزی اور دوستوں کی فیڈ سے باہر رہتی ہیں؛ وہ ریلے فیڈ میں جاتی ہیں، جسے لوگ جان بوجھ کر کھولتے ہیں۔","addressLabel":"ریلے پتہ","addressPlaceholder":"https://relay.example/actor","submitLabel":"رکنیت لیں"},
-    "RelayFollowObjectField":{"label":"رکنیت کا انداز","options":{"public":"عوامی دھارے کی پیروی کریں (زیادہ تر ریلے یہی چاہتے ہیں)","actor":"ریلے کے اپنے کردار کی پیروی کریں"},"retryNotice":"اگر ریلے کبھی قبول نہ کرے تو واپس لے کر دوسرا انداز آزمائیں - بعض ریلے سافٹ ویئر صرف ایک کو پہچانتے ہیں۔"},
-    "SiteCounters":{"members":"اراکین: {count} (گزشتہ {days} دن میں {joined} شامل ہوئے)","activeMembers":"گزشتہ {days} دن میں یہاں موجود اراکین: {count} (ان میں {posted} نے پوسٹ کی)","posts":"یہاں لکھی پوسٹس: {count} (گزشتہ {days} دن میں {recent})","deliveries":"گزشتہ {days} دن کی وفاقی ترسیلات: {delivered} پہنچیں، {undeliverable} ترک ہوئیں","queued":"باہر جانے کی منتظر: {count} ({failing} کم از کم ایک بار پہلے رد ہوئیں)","pendingReads":"دوسرے سروروں سے پڑھنے کی منتظر پوسٹس: {count}"},
-    "TestSuitePanel":{"intro":"سائٹ کا آزمائشی مجموعہ چلائیں اور نتائج دیکھیں۔ چند سیکنڈ لگتے ہیں، اس لیے اپنے صفحے پر کھلتا ہے۔","runLabel":"آزمائشیں چلائیں"},"HelpArticle":{"backLabel":"تمام مدد پر واپس"},"UserSearchList":{"noSuggestions":"ابھی کوئی تجویز نہیں - تجاویز ان لوگوں کے دوستوں سے آتی ہیں جو پہلے ہی آپ کے دوست ہیں۔ کسی کو نام سے ڈھونڈنے کے لیے اوپر تلاش کریں۔","noMatches":"یہاں کوئی اس سے نہیں ملتا۔"},"UserModButton":{"make":"نگران بنائیں","remove":"نگران ہٹائیں"},"UserUnbanButton":{"name":"ممانعت ہٹائیں"},"TrendingEntityBanButton":{"name":"ممنوع کریں"},"TrendingEntityUnbanButton":{"name":"ممانعت ہٹائیں"},"ReportDismissButton":{"name":"خارج کریں"},"ReportedContentClassifyButton":{"name":"حساس نشان لگائیں"},"ServerUnblockButton":{"name":"مسدودی ختم کریں"},"RelayUnsubscribeButton":{"name":"رکنیت ختم کریں"},"RememberedDeviceRevokeButton":{"name":"منسوخ کریں"},"TestResultsBadge":{"passing":"{suite}: کامیاب","failing":"{suite}: ناکام"},
-    "PageTitle":{"about":"تعارف","adminBanned":"ممنوع صارفین","adminModSettings":"نگران کی ترتیبات","adminReports":"رپورٹس","adminSettings":"منتظم کی ترتیبات","adminTests":"آزمائشیں","authGoogleCallbackAccountDeleted":"اکاؤنٹ حذف ہو گیا","authGoogleCallbackDeleteAccount":"اکاؤنٹ حذف کریں","authGoogleCallbackLogin":"لاگ اِن","bookmarks":"بک مارکس","checkInbox":"اپنا اِن باکس دیکھیں","drafts":"مسودے اور طے شدہ","draftsEditDraft":"مسودہ ترمیم کریں","draftsEditScheduled":"طے شدہ پوسٹ ترمیم کریں","forgotPassword":"پاس ورڈ بھول گئے","friendsFeed":"دوستوں کی فیڈ","help":"مدد","helpDescription":"سائٹ کے استعمال کے لیے رہنما اور جوابات۔","locations":"مقامات","locationsDescription":"آپ کے قریب ترین جگہوں کی پوسٹس۔","locationsPlaceDescription":"{place} کے قریب پوسٹس۔","login":"لاگ اِن","loginVerificationCode":"تصدیقی کوڈ","map":"نقشہ","mapDescription":"دنیا بھر کی پوسٹس کا نقشہ - اپنے قریب لوگ اور چیزیں تلاش کریں۔","messages":"پیغامات","messagesWithUser":"{name} کے ساتھ پیغامات","notifications":"اطلاعات","privacy":"رازداری کی پالیسی","quote":"اقتباس","relayFeed":"ریلے فیڈ","relayFeedDescription":"اس سرور کے رکن ریلے سے آنے والی عوامی پوسٹس۔","resetPassword":"پاس ورڈ دوبارہ مقرر کریں","revertEmail":"ای میل تبدیلی واپس کریں","search":"تلاش","signup":"سائن اَپ","tags":"ٹیگز","tagsDescription":"{siteTitle} پر مقبول اور معروف ہیش ٹیگ دیکھیں۔","tagsTagDescription":"{siteTitle} پر {tag} ٹیگ والی پوسٹس۔","terms":"استعمال کی شرائط","topics":"موضوعات","topicsDescription":"لوگ اس وقت {siteTitle} پر کیا بات کر رہے ہیں۔","topicsEntityDescription":"{typeLabel} - {siteTitle} پر {entityTitle} کا ذکر کرنے والی پوسٹس۔","topicsTypeDescription":"{typePlural} جن کی لوگ اس وقت {siteTitle} پر بات کر رہے ہیں۔","unsubscribe":"ای میل خلاصے","userFriends":"{name} کے دوست","userFriendsDescription":"{siteTitle} پر {name} کے دوست","userSettings":"صارف کی ترتیبات","users":"صارفین","verifyEmail":"ای میل کی تصدیق"},
-    "PostLikeButton":{"like":"پسند","unlike":"پسند ہٹائیں"},"PostPinButton":{"pin":"چسپاں کریں","unpin":"چسپانی ہٹائیں"},"PostQuoteButton":{"name":"اقتباس"},"PostDeleteButton":{"name":"حذف کریں"},"PostEditButton":{"name":"ترمیم"},"ReportButton":{"name":"رپورٹ"},"PostActionBar":{"reply":"جواب","replies":{"one":"جوابات ({count})","other":"جوابات ({count})"}},"PostEditedMarker":{"label":"(ترمیم شدہ)"},"RepliesHeading":{"heading":"جوابات"},"PollVoteButton":{"name":"ووٹ دیں"},"MoreLocationsLink":{"moreLocations":{"before":"","link":"مزید مقامات دیکھیں","after":""}},
-    "NearbyLocationPrompt":{"heading":"آپ کے قریب پوسٹس","description":"یہ کسی نقطے کے قریب ترین پوسٹس دکھاتا ہے - سرگرمی جہاں بھی ہو، چاہے کتنی دور ہو۔ اپنی جگہ سے شروع کرنے کے لیے مقام شیئر کریں، یا نقشے پر جگہ منتخب کریں۔","useMyLocation":"میرا مقام استعمال کریں","pickOnMap":"نقشے پر منتخب کریں","searchPlaceholder":"یا جگہ کا نام لکھیں…","searchLabel":"جگہ تلاش کریں","locating":"مقام تلاش ہو رہا ہے…","noGeolocation":"آپ کا براؤزر مقام شیئر نہیں کر سکتا۔","locationError":"آپ کا مقام نہیں ملا۔ براؤزر کی مقام اجازت دیکھیں۔"},
-    "PollDeadline":{"final":"حتمی نتیجہ","closes":{"before":"اختتام ","after":""},"days":{"one":"{count} دن میں","other":"{count} دنوں میں"},"hours":{"one":"{count} گھنٹے میں","other":"{count} گھنٹوں میں"},"minutes":{"one":"{count} منٹ میں","other":"{count} منٹوں میں"},"underMinute":"ایک منٹ سے کم میں"},"PollTally":{"voters":{"one":"1 شخص نے ووٹ دیا ","other":"{count} افراد نے ووٹ دیا "}},"PostComposer":{"prompt":{"before":"","link":"لاگ اِن کریں","after":" پوسٹ کرنے کے لیے۔"}},"ReplyComposer":{"prompt":{"before":"","link":"لاگ اِن کریں","after":" جواب دینے کے لیے۔"}},"RepostAttribution":{"attribution":{"before":"","after":" نے دوبارہ شائع کیا"}},"ThreadContext":{"response":{"before":"جواب برائے ","after":""},"untitled":"یہ پوسٹ","jumpToStart":"آغاز پر جائیں"},"TopicSummaryCard":{"label":"AI کا تیار کردہ خلاصہ"},
-    "WelcomeBanner":{"heading":{"before":"خوش آمدید ","after":""},"paragraphs":["نیچے خانے میں کچھ لکھیں اور وہ آپ کی فیڈ میں چلا جاتا ہے۔ کوئی بھی جواب دے سکتا ہے، اور جواب صرف والد پوسٹ والی پوسٹ ہے، اس لیے گفتگو ضرورت کے مطابق گہری ہو سکتی ہے۔","لوگوں کو دوست بنائیں اور ان کی پوسٹس آپ کی فیڈ میں شامل ہو جائیں گی۔ عالمی فیڈ - اوپر بائیں سائٹ کا نام - یہاں لکھی ہر چیز دکھاتی ہے، اور کسی کو شامل کرنے کے لیے وہیں تلاش کریں۔","یہ سائٹ Fediverse کا حصہ ہے: آپ Mastodon اور دوسرے سروروں کے اکاؤنٹس کی مکمل ہینڈل سے پیروی کر سکتے ہیں، اور آپ کی پوسٹ وہاں آپ کے پیروکاروں تک پہنچتی ہے۔ @someone@example.social جیسا ہینڈل تلاش کریں اور یہ سرور اسے ڈھونڈ لے گا۔","#ہیش ٹیگ سے پوسٹ ٹیگ کریں تو وہ اس ٹیگ کے صفحے پر، اور کافی لوگ لکھیں تو مقبول فہرست میں آتی ہے۔","اراکین کے درمیان پیغامات ابتدا سے انتہا تک مرموز ہیں - سرور ایسا مرموز متن محفوظ کرتا ہے جسے پڑھ نہیں سکتا۔ اسے ترتیبات میں چالو کریں۔","فوراً پوسٹ کرنا ضروری نہیں: مسودہ محفوظ کریں، یا وقت مقرر کریں اور وہ خود شائع ہو جائے گی۔ دونوں مسودے اور طے شدہ کے تحت ہیں۔"],"more":{"before":"مزید معلومات ","link":"مدد کے صفحات","after":" میں ہیں، جن میں اکاؤنٹ کو دوسری جگہ سے یہاں منتقل کرنا بھی شامل ہے۔"},"dontShowAgain":"دوبارہ نہ دکھائیں"},
-    "EmojiPickerTriggerButton":{"label":"ایموجی داخل کریں"},"LinkImagePreview":{"alt":"لنک پیش منظر تصویر"},"LinkImageRemoveButton":{"label":"تصویر ہٹائیں"},"LinkItem":{"alt":"لنک پیش منظر تصویر"},"MapScrubber":{"play":"چلائیں","pause":"روکیں","cumulativeMode":"اس وقت تک","windowMode":"صرف اس وقت","rangeLabel":"تاریخ تک پوسٹس دکھائیں","cumulativeLabel":{"one":"{date} تک شائع — {count} پوسٹ","other":"{date} تک شائع — {count} پوسٹس"},"windowLabel":{"one":"{date} کے آس پاس شائع — {count} پوسٹ","other":"{date} کے آس پاس شائع — {count} پوسٹس"}},"Post":{"pageTitleByAuthor":"{name} کی پوسٹ","pageTitleUntitled":"پوسٹ","imageAltByAuthor":"{name} کی شائع کردہ تصویر","imageAltUntitled":"تصویر"},"PostBookmarkButton":{"remove":"بک مارک ہٹائیں","add":"بک مارک"},"PostRepostButton":{"undo":"دوبارہ اشاعت واپس لیں","repost":"دوبارہ شائع کریں"},"QuotedPost":{"viewLink":"اقتباس شدہ پوسٹ دیکھیں"},"ReceivedFriendRequestSection":{"heading":"زیر التوا درخواستیں"},"ScrollToTopButton":{"label":"اوپر جائیں"},"SearchClearButton":{"label":"تلاش صاف کریں"},"SitePolicyLinks":{"terms":"استعمال کی شرائط","privacy":"رازداری کی پالیسی"},"SkipLink":{"label":"مواد پر جائیں"},"TopicHeading":{"searchLink":"اسے تلاش کریں","noPosts":"ابھی کوئی پوسٹ اس کا ذکر نہیں کرتی۔"},"PopularEntityList":{"emptyNotice":"اس قسم کے بارے میں ابھی کچھ نہیں لکھا گیا۔"},"TrendingEntitySection":{"heading":"مقبول"},"PostLocationLink":{"title":"یہ جگہ نقشے پر دکھائیں","between":"، "},
-    "RelativeTime":{"justNow":"ابھی","minutes":{"one":"{count} منٹ پہلے","other":"{count} منٹ پہلے"},"hours":{"one":"{count} گھنٹہ پہلے","other":"{count} گھنٹے پہلے"},"days":{"one":"{count} دن پہلے","other":"{count} دن پہلے"}},
-    "ThemeSelector":{"label":"تھیم","themes":{"system":"نظام کے مطابق","light":"سادہ روشن","dark":"سادہ تاریک","sepia":"سیپیا","midnight":"آدھی رات","sunset":"غروب","rose":"گلاب","forest":"جنگل","ocean":"سمندر","lavender":"لیونڈر","gold":"سنہری","hacker":"ہیکر","ironbow":"Ironbow","viridis":"Viridis","mako":"Mako","cividis":"Cividis","ylgnbu":"YlGnBu","cubehelix":"Cubehelix","greyscale":"خاکستری"}},
-    "PostTranslation":{"unavailable":"اس سرور پر ترجمہ مرتب نہیں۔","nothing":"یہاں ترجمہ کرنے کو کچھ نہیں۔","unknownSource":"ابھی کسی نے معلوم نہیں کیا کہ یہ پوسٹ کس زبان میں ہے، اس لیے ترجمہ نہیں ہو سکتی۔","alreadyReadable":"یہ پوسٹ پہلے ہی اس زبان میں ہے۔","unsupportedPair":"یہ سرور ابھی اس زبان کا ترجمہ نہیں کر سکتا۔"},"LanguagePrompt":{"question":"کیا آپ سائٹ اردو میں دیکھنا چاہیں گے؟","accept":"ہاں","decline":"نہیں، شکریہ"},"LanguageSelector":{"label":"زبان","legend":"زبان"},
-    "EmailDigest":{"subject":"{site} پر آپ سے کیا رہ گیا","greeting":"سلام {name}،","whileAway":"آپ کی غیر موجودگی میں:","repeatedTimes":{"one":" ({count} بار)","other":" ({count} بار)"},"moreMissed":{"one":"اور {count} مزید اطلاع","other":"اور {count} مزید اطلاعات"},"messagesWaiting":{"one":"ایک پیغام آپ کا منتظر ہے","other":"{count} پیغامات آپ کے منتظر ہیں"},"postsInFeed":{"one":"آپ کی فیڈ میں ایک نئی پوسٹ","other":"آپ کی فیڈ میں {count} نئی پوسٹس"},"unsubscribeInstructions":"یہ ای میل روکنے کے لیے یہ لنک کھولیں - ایک کلک درکار ہے اور پاس ورڈ نہیں:","comeSeeWhatIsNew":"آئیں اور دیکھیں کیا نیا ہے","unsubscribeLink":{"before":"","link":"مجھے یہ بھیجنا بند کریں","after":" - ایک کلک، پاس ورڈ درکار نہیں۔"}},
-    "EmailVerification":{"subject":"اپنے ای میل پتے کی تصدیق کریں","greeting":"سلام {name}،","instructions":"اس لنک پر جا کر اپنے ای میل پتے کی تصدیق کریں:","htmlInstructions":"نیچے لنک پر کلک کر کے اپنے ای میل پتے کی تصدیق کریں:","buttonLabel":"ای میل پتے کی تصدیق","expiresIn":{"one":"یہ لنک {count} گھنٹے میں ختم ہو گا۔","other":"یہ لنک {count} گھنٹوں میں ختم ہو گا۔"}},
-    "PasswordReset":{"subject":"اپنا پاس ورڈ دوبارہ مقرر کریں","greeting":"سلام {name}،","instructions":"کسی نے (امید ہے آپ نے) پاس ورڈ دوبارہ مقرر کرنے کی درخواست کی۔ نیا پاس ورڈ منتخب کرنے کے لیے اس لنک پر جائیں:","htmlInstructions":"کسی نے (امید ہے آپ نے) پاس ورڈ دوبارہ مقرر کرنے کی درخواست کی۔ نیا پاس ورڈ منتخب کرنے کے لیے نیچے لنک پر کلک کریں:","buttonLabel":"پاس ورڈ دوبارہ مقرر کریں","expiresIn":{"one":"یہ لنک {count} گھنٹے میں ختم ہو گا۔","other":"یہ لنک {count} گھنٹوں میں ختم ہو گا۔"},"ignoreNotice":"اگر آپ نے یہ درخواست نہیں کی تو اس ای میل کو نظر انداز کر سکتے ہیں۔"}
+    "PollOptionVotes": {
+        "votes": {
+            "one": "1 ووٹ",
+            "other": "{count} ووٹ"
+        }
+    },
+    "LoginPrompt": {
+        "reply": {
+            "before": "",
+            "link": "لاگ اِن کریں",
+            "after": " جواب دینے کے لیے۔"
+        },
+        "post": {
+            "before": "",
+            "link": "لاگ اِن کریں",
+            "after": " پوسٹ کرنے کے لیے۔"
+        }
+    },
+    "SetupForm": {
+        "siteLegend": "سائٹ",
+        "siteURLLabel": "سائٹ URL",
+        "siteTitleLabel": "سائٹ کا عنوان",
+        "mailFromAddressLabel": "بھیجنے والے کا ای میل پتہ",
+        "serverNameConfirmedLabel": "میں نے اپنے ویب سرور کی ترتیب میں \"ServerName {host}\" اور \"UseCanonicalName On\" مقرر کر دیے ہیں (صرف اس وقت جانچا جاتا ہے جب خودکار براہ راست آزمائش مکمل نہ ہو سکے - README.md کا HTTPS حصہ دیکھیں)",
+        "databaseLegend": "ڈیٹابیس",
+        "databaseHostLabel": "ڈیٹابیس ہوسٹ",
+        "databasePortLabel": "ڈیٹابیس پورٹ",
+        "databaseNameLabel": "ڈیٹابیس کا نام",
+        "databaseAdminUsernameLabel": "ڈیٹابیس منتظم کا صارف نام",
+        "databaseAdminPasswordLabel": "ڈیٹابیس منتظم کا پاس ورڈ",
+        "webSocketTLSLegend": "WebSocket TLS (اختیاری)",
+        "certificatePathLabel": "سرٹیفکیٹ کا راستہ",
+        "certificatePathPlaceholder": "mkcert سے خودکار طور پر بنانے کے لیے خالی چھوڑیں",
+        "keyPathLabel": "کلید کا راستہ",
+        "keyPathPlaceholder": "mkcert سے خودکار طور پر بنانے کے لیے خالی چھوڑیں",
+        "botProtectionLegend": "بوٹ سے تحفظ (اختیاری)",
+        "turnstileSiteKeyLabel": "Cloudflare Turnstile سائٹ کلید",
+        "turnstileSiteKeyPlaceholder": "چھوڑنے کے لیے خالی رکھیں",
+        "turnstileSecretKeyLabel": "Cloudflare Turnstile خفیہ کلید",
+        "turnstileSecretKeyPlaceholder": "چھوڑنے کے لیے خالی رکھیں",
+        "submit": "ترتیب دیں"
+    },
+    "MessageKeyPassphraseForm": {
+        "currentPassphraseLabel": "موجودہ پاس فریز",
+        "newPassphraseLabel": "نیا پاس فریز",
+        "confirmNewPassphraseLabel": "نئے پاس فریز کی تصدیق",
+        "accountPasswordLabel": "اکاؤنٹ کا پاس ورڈ",
+        "submit": "پاس فریز بدلیں"
+    },
+    "PasswordResetForm": {
+        "legend": "نیا پاس ورڈ منتخب کریں",
+        "newPasswordLabel": "نیا پاس ورڈ",
+        "newPasswordPlaceholder": "کم از کم 8 حروف",
+        "confirmPasswordLabel": "نئے پاس ورڈ کی تصدیق",
+        "submit": "پاس ورڈ دوبارہ مقرر کریں"
+    },
+    "PasswordResetRequestForm": {
+        "legend": "اپنا پاس ورڈ دوبارہ مقرر کریں",
+        "emailLabel": "ای میل",
+        "submit": "دوبارہ مقرر کرنے کا لنک بھیجیں"
+    },
+    "EmailRevertForm": {
+        "submit": "ای میل کی تبدیلی واپس کریں"
+    },
+    "EmailVerifyForm": {
+        "submit": "ای میل پتے کی تصدیق کریں"
+    },
+    "EmailDigestResubscribeForm": {
+        "submit": "انہیں دوبارہ چالو کریں"
+    },
+    "EmailDigestSetting": {
+        "label": "کچھ عرصہ دور رہنے پر جو کچھ رہ گیا ہو وہ مجھے ای میل کریں"
+    },
+    "RememberedDevice": {
+        "unknownDevice": "نامعلوم آلہ",
+        "browserOnOS": "{os} پر {browser}",
+        "thisDevice": " (یہ آلہ)",
+        "lastUsed": {
+            "before": "آخری استعمال ",
+            "after": ""
+        }
+    },
+    "LogoutEverywherePanel": {
+        "explanation": "ہر فعال نشست ختم کریں اور ہر یاد رکھا ہوا آلہ بھول جائیں۔ آپ اس براؤزر سمیت تمام براؤزروں سے لاگ آؤٹ ہو جائیں گے۔"
+    },
+    "LogoutEverywhereButton": {
+        "label": "ہر جگہ سے لاگ آؤٹ"
+    },
+    "GoogleAccountDeleteButton": {
+        "label": "حذف کرنے کے لیے Google سے تصدیق"
+    },
+    "GoogleSignInButton": {
+        "label": "Google کے ساتھ جاری رکھیں"
+    },
+    "ProfileEditButton": {
+        "ariaLabel": "پروفائل میں ترمیم"
+    },
+    "PushNotificationSetting": {
+        "explanation": "سائٹ بند ہونے پر بھی اس آلے پر اطلاعات حاصل کریں۔ یہ ہر براؤزر کی الگ پسند ہے - جہاں بھی اطلاع پانا چاہیں اسے چالو کریں۔",
+        "label": {
+            "off": "اس آلے پر چالو کریں",
+            "on": "اس آلے پر بند کریں"
+        },
+        "unsupported": "یہ براؤزر پُش اطلاعات کی معاونت نہیں کرتا"
+    },
+    "LoginForm": {
+        "legend": "لاگ اِن",
+        "identifier": "صارف نام یا ای میل",
+        "password": "پاس ورڈ",
+        "rememberMe": "مجھے یاد رکھیں",
+        "submit": "لاگ اِن"
+    },
+    "SignupForm": {
+        "legend": "اکاؤنٹ بنائیں",
+        "usernameLabel": "صارف نام",
+        "usernamePlaceholder": "چھوٹے انگریزی حروف، اعداد، اور _",
+        "emailLabel": "ای میل",
+        "emailPlaceholder": "درست ای میل پتہ",
+        "displayName": "ظاہری نام (اختیاری)",
+        "bioLabel": "تعارف (اختیاری)",
+        "bioPlaceholder": "مختصر تعارف - #ہیش ٹیگ، @تذکرے، اور لنکس قابل کلک بن جاتے ہیں",
+        "passwordLabel": "پاس ورڈ",
+        "passwordPlaceholder": "پاس ورڈ: کم از کم 8 حروف",
+        "rememberMe": "مجھے یاد رکھیں",
+        "submit": "سائن اَپ"
+    },
+    "PasswordChangeForm": {
+        "legend": "اپنا پاس ورڈ بدلیں",
+        "currentPassword": "موجودہ پاس ورڈ",
+        "newPasswordLabel": "نیا پاس ورڈ",
+        "newPasswordPlaceholder": "کم از کم 8 حروف",
+        "confirmPassword": "نئے پاس ورڈ کی تصدیق",
+        "submit": "پاس ورڈ بدلیں"
+    },
+    "EmailChangeForm": {
+        "legend": "اپنا ای میل پتہ بدلیں",
+        "newEmail": "نیا ای میل پتہ",
+        "currentPassword": "موجودہ پاس ورڈ",
+        "notice": "سائٹ کا استعمال جاری رکھنے سے پہلے آپ کو نئے پتے کی تصدیق کرنا ہو گی۔",
+        "submit": "ای میل بدلیں"
+    },
+    "AccountDeleteForm": {
+        "legend": "اپنا اکاؤنٹ حذف کریں",
+        "warning": "یہ آپ کا اکاؤنٹ، پوسٹس، اور پیغامات مستقل طور پر حذف کر دیتا ہے۔ اسے واپس نہیں کیا جا سکتا۔",
+        "currentPassword": "موجودہ پاس ورڈ",
+        "submit": "اکاؤنٹ حذف کریں"
+    },
+    "AccountMigrationForm": {
+        "legend": "دوسرے سرور پر منتقل ہوں",
+        "movedNotice": "یہ اکاؤنٹ {destination} پر منتقل ہو گیا ہے۔ آپ کے پیروکاروں سے وہاں آپ کی پیروی کرنے کو کہا گیا ہے۔",
+        "explanation": "آپ کے پیروکاروں سے نئے اکاؤنٹ پر آپ کی پیروی کرنے کو کہا جاتا ہے۔ آپ کی پوسٹس یہیں رہتی ہیں - اشیا کے پتے انہیں بنانے والے سرور کے ہوتے ہیں، اس لیے انہیں ساتھ نہیں لے جایا جا سکتا۔",
+        "addressNotice": "جس اکاؤنٹ پر آپ منتقل ہو رہے ہیں اسے پہلے اس اکاؤنٹ کو \"اس نام سے بھی معروف\" میں درج کرنا ہو گا۔ یہاں آپ کا پتہ {address} ہے۔",
+        "movedToLabel": "یہاں منتقل ہوں",
+        "movedToPlaceholder": "https://example.social/users/you",
+        "aliasesLegend": "اس نام سے بھی معروف",
+        "aliasesExplanation": "دوسری جگہوں کے وہ اکاؤنٹس جو آپ ہی کے ہیں۔ کسی کو یہاں درج کرنے سے وہ اکاؤنٹ اس اکاؤنٹ پر منتقل ہو سکتا ہے - یہ اجازت ہے، خود منتقلی نہیں۔ ہر سطر میں ایک پتہ۔",
+        "aliasesLabel": "آپ کے دوسرے اکاؤنٹس",
+        "aliasesPlaceholder": "https://example.social/users/you",
+        "submit": "محفوظ کریں"
+    },
+    "TwoFactorForm": {
+        "legend": "اپنا تصدیقی کوڈ درج کریں",
+        "explanation": "ہم نے آپ کو تصدیقی کوڈ ای میل کیا ہے۔ لاگ اِن مکمل کرنے کے لیے اسے نیچے درج کریں، یا اپنے بازیابی کوڈز میں سے ایک استعمال کریں۔",
+        "explanationEmailFailed": "ہم ابھی آپ کا تصدیقی کوڈ ای میل نہیں کر سکے۔ لاگ اِن مکمل کرنے کے لیے اپنے بازیابی کوڈز میں سے ایک درج کریں۔",
+        "code": "تصدیقی کوڈ",
+        "submit": "تصدیق کریں"
+    },
+    "TwoFactorSettingsForm": {
+        "legend": {
+            "on": "دو مرحلہ تصدیق چالو ہے",
+            "off": "دو مرحلہ تصدیق بند ہے"
+        },
+        "explanation": {
+            "on": "لاگ اِن کرتے وقت ہم ایک تصدیقی کوڈ ای میل کریں گے جسے داخل کر کے آپ کو لاگ اِن مکمل کرنا ہو گا۔ اگر ای میل نہ پہنچے تو بازیابی کوڈز میں سے ایک آپ کو لاگ اِن کر دے گا۔",
+            "off": "لاگ اِن میں دوسرا مرحلہ شامل کریں: ہم ایک تصدیقی کوڈ ای میل کریں گے جسے داخل کرنا ہو گا، اس لیے صرف پاس ورڈ داخلے کے لیے کافی نہیں ہو گا۔ ای میل نہ پہنچنے کی صورت کے لیے آپ کو ایک بار استعمال ہونے والے بازیابی کوڈ ملیں گے۔"
+        },
+        "currentPassword": "موجودہ پاس ورڈ",
+        "submit": {
+            "on": "دو مرحلہ تصدیق بند کریں",
+            "off": "دو مرحلہ تصدیق چالو کریں"
+        },
+        "regenerate": "نئے بازیابی کوڈ بنائیں",
+        "recoveryHeading": "آپ کے بازیابی کوڈ",
+        "recoveryNote": "انہیں ابھی کسی محفوظ جگہ رکھیں - یہ دوبارہ نہیں دکھائے جائیں گے۔ تصدیقی ای میل نہ پہنچنے پر ہر کوڈ ایک بار لاگ اِن کرتا ہے، اور نئے کوڈ بنانے سے یہ سب بدل جاتے ہیں۔",
+        "toast": {
+            "on": "دو مرحلہ تصدیق اب چالو ہے۔",
+            "off": "دو مرحلہ تصدیق اب بند ہے۔",
+            "regenerated": "نئے بازیابی کوڈ بن گئے۔ پرانے کوڈ اب کام نہیں کرتے۔"
+        }
+    },
+    "VerificationNotice": {
+        "instructions": "اپنا اِن باکس دیکھیں اور ای میل پتے کی تصدیق کے لیے بھیجے گئے تصدیقی لنک پر کلک کریں۔ اگر نظر نہ آئے تو فضول یا اسپیم فولڈر دیکھیں۔"
+    },
+    "VerificationResendButton": {
+        "label": "تصدیقی ای میل دوبارہ بھیجیں"
+    },
+    "MailSettingsForm": {
+        "legend": "باہر جانے والی ڈاک",
+        "fromAddressLabel": "بھیجنے والے کا پتہ",
+        "fromAddressPlaceholder": "یہ مقرر ہونے تک کوئی ای میل نہیں بھیجی جا سکتی",
+        "fromNameLabel": "بھیجنے والے کا نام",
+        "hostLabel": "SMTP ہوسٹ",
+        "portLabel": "SMTP پورٹ",
+        "usernameLabel": "SMTP صارف نام",
+        "passwordLabel": "SMTP پاس ورڈ",
+        "passwordPlaceholder": {
+            "set": "پاس ورڈ مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں",
+            "unset": "SMTP پاس ورڈ"
+        },
+        "encryptionLabel": "رمز کاری",
+        "encryptionOptions": {
+            "tls": "TLS (STARTTLS، عموماً پورٹ 587 پر)",
+            "ssl": "SSL (ضمنی TLS، عموماً پورٹ 465 پر)",
+            "none": "کوئی نہیں"
+        },
+        "explainer": "PHP کے mail() سے بھیجنے کے لیے SMTP ہوسٹ خالی چھوڑیں (تجویز نہیں کیا جاتا - README کا ترسیل والا حصہ دیکھیں)۔ \"بھیجنے والے\" کا پتہ مقرر ہونے تک کوئی ای میل نہیں بھیجی جا سکتی۔",
+        "save": "محفوظ کریں"
+    },
+    "MapSettingsForm": {
+        "legend": "نقشے کی ٹائلیں",
+        "notice": "OpenStreetMap استعمال کرنے کے لیے خالی چھوڑیں۔ کلید والے فراہم کنندہ کے لیے اس کا URL سانچہ چسپاں کریں، جس میں کلید کی جگہ بعینہٖ {apiKey} ہو، اور نیچے کلید اور انتساب درج کریں۔",
+        "urlLabel": "ٹائل URL سانچہ",
+        "keyLabel": "API کلید",
+        "keyPlaceholder": "ٹائل فراہم کنندہ کی API کلید",
+        "attributionLabel": "انتساب",
+        "attributionPlaceholder": "© OpenStreetMap کے معاونین",
+        "save": "محفوظ کریں"
+    },
+    "GoogleAuthSettingsForm": {
+        "legend": "Google سے لاگ اِن",
+        "clientIdLabel": "کلائنٹ ID",
+        "clientIdPlaceholder": "Google OAuth کلائنٹ ID",
+        "secretLabel": "کلائنٹ راز",
+        "secretPlaceholder": {
+            "set": "کلائنٹ راز مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں",
+            "unset": "Google OAuth کلائنٹ راز"
+        },
+        "explainer": "سائن اَپ اور لاگ اِن پر \"Google کے ساتھ جاری رکھیں\" دکھانے کے لیے دونوں درکار ہیں۔ اپنے Google Cloud OAuth کلائنٹ میں مجاز ری ڈائریکٹ URI کو {url} مقرر کریں - بند کرنے کے لیے کلائنٹ ID صاف کریں۔",
+        "save": "محفوظ کریں"
+    },
+    "BotProtectionSettingsForm": {
+        "turnstileLegend": "Cloudflare Turnstile",
+        "turnstileSiteKeyLabel": "سائٹ کلید",
+        "turnstileSiteKeyPlaceholder": "Cloudflare Turnstile سائٹ کلید",
+        "turnstileSecretKeyLabel": "خفیہ کلید",
+        "turnstileSecretKeyPlaceholder": {
+            "set": "خفیہ کلید مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں",
+            "unset": "Cloudflare Turnstile خفیہ کلید"
+        },
+        "turnstileExplainer": "سائن اَپ اور لاگ اِن پر CAPTCHA دکھانے کے لیے دونوں کلیدیں درکار ہیں۔ بند کرنے کے لیے سائٹ کلید صاف کریں۔",
+        "recaptchaLegend": "Google reCAPTCHA (مقفل اکاؤنٹ کی بازیابی)",
+        "recaptchaSiteKeyLabel": "سائٹ کلید",
+        "recaptchaSiteKeyPlaceholder": "Google reCAPTCHA v2 سائٹ کلید",
+        "recaptchaSecretKeyLabel": "خفیہ کلید",
+        "recaptchaSecretKeyPlaceholder": {
+            "set": "خفیہ کلید مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں",
+            "unset": "Google reCAPTCHA v2 خفیہ کلید"
+        },
+        "recaptchaExplainer": "دونوں کلیدیں درکار ہیں۔ مقرر ہونے پر لاگ اِن کوششوں کی حد تک پہنچنے والا اکاؤنٹ تالا ختم ہونے کا انتظار کرنے کے بجائے یہ آزمائش مکمل کر کے واپس آ سکتا ہے؛ مقرر نہ ہونے پر انتظار لازم ہے۔ reCAPTCHA v2 (\"میں روبوٹ نہیں ہوں\") استعمال کریں۔ بند کرنے کے لیے سائٹ کلید صاف کریں۔",
+        "save": "محفوظ کریں"
+    },
+    "OpenRouterSettingsForm": {
+        "legend": "OpenRouter",
+        "notice": "سائٹ کی AI خصوصیات (جیسے مقبول موضوعات کے خلاصے) استعمال کرتی ہیں۔ مفت ماڈلز راؤٹر استعمال کرنے کے لیے ماڈل خالی چھوڑیں، جس میں OpenRouter اس وقت دستیاب مفت ماڈلز میں سے اتفاقاً چنتا ہے اور کبھی خرچ نہیں ہو سکتا۔",
+        "keyLabel": "API کلید",
+        "keyPlaceholder": {
+            "set": "API کلید مقرر ہے - اسے برقرار رکھنے کے لیے خالی چھوڑیں",
+            "unset": "OpenRouter API کلید"
+        },
+        "clearKeyLabel": "محفوظ API کلید ہٹائیں (AI خصوصیات بند ہو جائیں گی)",
+        "modelLabel": "ماڈل",
+        "neverSpendLabel": "اسے کبھی رقم خرچ کرنے کی اجازت نہ دیں (تجویز کردہ)",
+        "explainer": "تحفظ چالو ہو تو ہر درخواست کی قیمت صفر تک محدود رہتی ہے، لہٰذا مفت فراہم کنندہ نہ ہونے پر ادائیگی والے ماڈل پر جانے کے بجائے مکمل طور پر ناکام ہوتی ہے۔ AI خصوصیات مکمل بند کرنے کے لیے محفوظ API کلید ہٹائیں۔",
+        "save": "محفوظ کریں"
+    },
+    "AboutSettingsForm": {
+        "legend": "تعارف",
+        "description": "سادہ متن - خالی سطریں پیراگراف الگ کرتی ہیں۔ پہلا پیراگراف سائٹ کی وضاحت کے طور پر استعمال ہو گا۔",
+        "save": "محفوظ کریں"
+    },
+    "TermsSettingsForm": {
+        "legend": "استعمال کی شرائط",
+        "description": "سادہ متن - خالی سطریں پیراگراف الگ کرتی ہیں۔",
+        "save": "محفوظ کریں"
+    },
+    "PrivacySettingsForm": {
+        "legend": "رازداری کی پالیسی",
+        "description": "سادہ متن - خالی سطریں پیراگراف الگ کرتی ہیں۔",
+        "save": "محفوظ کریں"
+    },
+    "EmailDigestSettingsForm": {
+        "legend": "ای میل خلاصہ",
+        "fieldLabel": "اختتامی پیراگراف",
+        "notice": "ہر خلاصے کے آخر کے قریب، رکن کی چھوٹی ہوئی چیزوں کی فہرست کے بعد شامل کیا جاتا ہے۔ سادہ متن۔ سافٹ ویئر کے اصل متن پر واپس جانے کے لیے خالی چھوڑیں۔",
+        "save": "محفوظ کریں"
+    },
+    "FaviconSettingsForm": {
+        "legend": "فیوی آئیکن",
+        "currentAlt": "موجودہ فیوی آئیکن",
+        "save": "فیوی آئیکن اپ لوڈ کریں"
+    },
+    "FrontPageImageSettingsForm": {
+        "legend": "صفحۂ اول کی تصویر",
+        "explainer": "دوسری سائٹس اس وقت دکھاتی ہیں جب کوئی اس سائٹ کا لنک شیئر کرے - صرف Open Graph میٹا ڈیٹا، صفحے پر کبھی نہیں۔ 1200×630 میں تراشی جاتی ہے۔ تصویر نہ ہو تو لنک پیش منظر میں کوئی تصویر نہیں ہوتی۔",
+        "currentAlt": "صفحۂ اول کی موجودہ تصویر",
+        "save": "تصویر اپ لوڈ کریں"
+    },
+    "CarouselAutoplayButton": {
+        "name": "خودکار چلائیں"
+    },
+    "CarouselNextButton": {
+        "name": "اگلا"
+    },
+    "CarouselPrevButton": {
+        "name": "پچھلا"
+    },
+    "MediaFullscreenButton": {
+        "name": "پوری اسکرین"
+    },
+    "ComposerFilesRemoveButton": {
+        "name": "فائلیں ہٹائیں"
+    },
+    "NotificationDropdown": {
+        "showAll": "سب دکھائیں"
+    },
+    "HelpSearch": {
+        "placeholder": "مدد تلاش کریں…",
+        "noMatches": "کوئی مدد کا مضمون آپ کی تلاش سے نہیں ملا۔"
+    },
+    "WelcomeBannerDismissButton": {
+        "name": "سمجھ گیا"
+    },
+    "StagedPostDiscardButton": {
+        "name": "ضائع کریں"
+    },
+    "StagedPostEditButton": {
+        "name": "ترمیم"
+    },
+    "StagedPostPublishButton": {
+        "name": "ابھی شائع کریں"
+    },
+    "LogoutButton": {
+        "name": "لاگ آؤٹ"
+    },
+    "AvatarUploadForm": {
+        "submit": "اوتار تازہ کریں"
+    },
+    "BannedUserSearchBox": {
+        "placeholder": "ممنوع صارفین تلاش کریں…"
+    },
+    "BannedUserSection": {
+        "heading": "ممنوع صارفین"
+    },
+    "SentFriendRequestSection": {
+        "heading": "بھیجی گئی درخواستیں (جواب کی منتظر)"
+    },
+    "BannedTrendingEntity": {
+        "bannedBy": {
+            "before": "{name} نے ممنوع کیا ",
+            "after": ""
+        },
+        "reason": " - {reason}"
+    },
+    "BlockedServerCard": {
+        "blockedBy": {
+            "before": "{name} نے مسدود کیا ",
+            "after": ""
+        },
+        "deletedAccount": "حذف شدہ اکاؤنٹ",
+        "reason": " - {reason}"
+    },
+    "DateFormat": {
+        "months": {
+            "1": "جنوری",
+            "2": "فروری",
+            "3": "مارچ",
+            "4": "اپریل",
+            "5": "مئی",
+            "6": "جون",
+            "7": "جولائی",
+            "8": "اگست",
+            "9": "ستمبر",
+            "10": "اکتوبر",
+            "11": "نومبر",
+            "12": "دسمبر"
+        },
+        "shortMonths": {
+            "1": "جنوری",
+            "2": "فروری",
+            "3": "مارچ",
+            "4": "اپریل",
+            "5": "مئی",
+            "6": "جون",
+            "7": "جولائی",
+            "8": "اگست",
+            "9": "ستمبر",
+            "10": "اکتوبر",
+            "11": "نومبر",
+            "12": "دسمبر"
+        },
+        "long": "{day} {month}، {year}",
+        "short": "{day} {month}، {year}",
+        "time": "{hour}:{minute} {meridiem}",
+        "dateAndTime": "{date}، {time}",
+        "am": "AM",
+        "pm": "PM",
+        "clock": 12
+    },
+    "EnvironmentChecker": {
+        "wsCannotConnect": "127.0.0.1:{port}{tls} پر WebSocket سرور سے رابطہ نہیں ہو سکا ({error})۔ پہلے اسے شروع کریں: systemctl --user start glommer-websocket (یونٹ فائل کے لیے README.md دیکھیں)۔ اگر ابھی WS_TLS_CERT/WS_TLS_KEY ملا یا ختم ہوا ہے تو .env سے ملانے کے لیے دوبارہ شروع کریں۔",
+        "wsOverTLS": " TLS پر",
+        "wsBadHandshake": "127.0.0.1:{port} کی خدمت نے درست WebSocket مصافحہ مکمل نہیں کیا - ممکن ہے bin/websocket-server.php کے علاوہ کچھ اور اس پورٹ کو سن رہا ہو۔",
+        "wsNoPong": "WebSocket سرور نے مصافحہ قبول کیا مگر ping کا جواب نہیں دیا - شاید پھنس گیا یا غلط چل رہا ہے۔ اس کے لاگز دیکھیں۔",
+        "wsReachable": "WebSocket سرور 127.0.0.1:{port} پر قابل رسائی اور جواب دے رہا ہے"
+    },
+    "EntityType": {
+        "singular": {
+            "hashtag": "ہیش ٹیگ",
+            "person": "شخص",
+            "org": "تنظیم",
+            "gpe": "جگہ",
+            "loc": "خطہ",
+            "fac": "نمایاں مقام",
+            "product": "مصنوعہ",
+            "event": "تقریب",
+            "work_of_art": "کام",
+            "law": "قانون",
+            "language": "زبان",
+            "norp": "گروہ"
+        },
+        "plural": {
+            "hashtag": "ہیش ٹیگ",
+            "person": "لوگ",
+            "org": "تنظیمیں",
+            "gpe": "جگہیں",
+            "loc": "خطے",
+            "fac": "نمایاں مقامات",
+            "product": "مصنوعات",
+            "event": "تقریبات",
+            "work_of_art": "کام",
+            "law": "قوانین",
+            "language": "زبانیں",
+            "norp": "گروہ"
+        }
+    },
+    "FriendRemoveButton": {
+        "name": "دوست ہٹائیں"
+    },
+    "FriendRequestAcceptButton": {
+        "name": "قبول کریں"
+    },
+    "FriendRequestDenyButton": {
+        "name": "انکار کریں"
+    },
+    "UserFollowButton": {
+        "follow": "پیروی کریں",
+        "unfollow": "پیروی چھوڑیں"
+    },
+    "UserBlockButton": {
+        "name": "مسدود کریں"
+    },
+    "UserUnblockButton": {
+        "name": "مسدودی ختم کریں"
+    },
+    "OtherUser": {
+        "message": "پیغام"
+    },
+    "MainNavigation": {
+        "toggleLabel": "مینو",
+        "loggedInAs": "{name} کے طور پر لاگ اِن",
+        "friendsFeed": "دوستوں کی فیڈ",
+        "relayFeed": "ریلے فیڈ",
+        "users": "صارفین",
+        "tags": "ٹیگز",
+        "topics": "موضوعات",
+        "map": "نقشہ",
+        "locations": "مقامات",
+        "search": "تلاش",
+        "messages": "پیغامات",
+        "bookmarks": "بک مارکس",
+        "help": "مدد",
+        "about": "تعارف",
+        "login": "لاگ اِن",
+        "signup": "سائن اَپ",
+        "friends": "دوست",
+        "drafts": "مسودے اور طے شدہ",
+        "userSettings": "صارف کی ترتیبات",
+        "modSettings": "نگران کی ترتیبات",
+        "adminSettings": "منتظم کی ترتیبات"
+    },
+    "LogoutForm": {
+        "submit": "لاگ آؤٹ"
+    },
+    "User": {
+        "joined": "{date} کو شامل ہوئے"
+    },
+    "FriendRequestButton": {
+        "add": "دوست بنائیں",
+        "cancel": "درخواست منسوخ کریں"
+    },
+    "StagedPostWhen": {
+        "scheduled": "{when} کے لیے طے شدہ",
+        "draft": "مسودہ - صرف آپ کے کہنے پر شائع ہو گا"
+    },
+    "MessageTranslateButton": {
+        "name": "یہ پیغام ترجمہ کریں"
+    },
+    "MessageTranslationNotice": {
+        "heading": "پیغامات کے ترجمے کے بارے میں",
+        "body": "پیغام کا ترجمہ کرنے کے لیے اس کا متن اس سرور کو بھیجا اور یہیں ترجمہ کیا جاتا ہے۔ کچھ محفوظ نہیں ہوتا: ترجمہ ڈیٹابیس میں نہیں لکھا جاتا اور پیغام نہیں بدلتا۔ مگر اس طرح ترجمہ شدہ پیغام سرور نے پڑھا ہے، اس لیے غیر ترجمہ شدہ پیغام کی طرح ابتدا سے انتہا تک مرموز نہیں رہتا۔ صرف موصول شدہ پیغامات، اور صرف آپ کے کہنے پر، ترجمہ ہو سکتے ہیں۔",
+        "confirm": "ترجمہ کریں",
+        "cancel": "ابھی نہیں"
+    },
+    "MessageKeySetupForm": {
+        "resetWarning": "پاس فریز بھول گئے؟ دوبارہ مقرر کرنے سے نئے پاس فریز کے تحت نئی کلیدیں بنتی ہیں - مگر پرانی کلیدوں سے مرموز پیغامات کوئی بھی دوبارہ نہیں پڑھ سکے گا۔",
+        "requirements": "کم از کم 12 حروف، اور اکاؤنٹ کا پاس ورڈ نہیں - وہ اس سرور کو بھیجا جاتا ہے، جبکہ پاس فریز کبھی نہیں بھیجا جانا چاہیے۔",
+        "passphraseLabel": "پاس فریز",
+        "resetPassphraseLabel": "نیا پاس فریز",
+        "confirmLabel": "پاس فریز کی تصدیق",
+        "accountPasswordLabel": "اکاؤنٹ کا پاس ورڈ",
+        "submitLabel": "مرموز پیغامات چالو کریں",
+        "resetSubmitLabel": "رمز کاری کی کلیدیں دوبارہ مقرر کریں"
+    },
+    "EncryptedMessagesSetting": {
+        "explanation": "ابتدا سے انتہا تک مرموز پیغامات آپ کے براؤزر میں مقفل اور غیر مقفل ہوتے ہیں: یہ سرور انہیں پڑھے بغیر پہنچاتا اور محفوظ کرتا ہے۔ آپ کی کلید پاس فریز سے محفوظ ہے، اور وہی پاس فریز کسی بھی براؤزر میں پیغامات کھولتا ہے۔ دونوں افراد کے چالو کرنے پر گفتگو مرموز ہوتی ہے؛ دوسرے سرور کے افراد کو پیغامات غیر مرموز رہتے ہیں کیونکہ وفاق انہیں کسی اور طرح لے نہیں جا سکتا۔",
+        "noRecovery": "گم شدہ پاس فریز واپس پانے کا کوئی طریقہ نہیں - منتظم کے لیے بھی نہیں۔ اسے کھونا مرموز پیغامات کھونا ہے۔",
+        "enabledStatus": "مرموز پیغامات چالو ہیں۔"
+    },
+    "MessagePrivacyButton": {
+        "encrypted": {
+            "label": "مرموز",
+            "explanation": "اس گفتگو کے پیغامات ابتدا سے انتہا تک مرموز ہیں: آپ کے براؤزر میں پاس فریز سے کھلتے اور پڑھے جاتے ہیں، اور سرور مرموز متن محفوظ کرتا ہے۔ یہ یقینی بنانے کے لیے کہ درمیان میں کوئی نہیں، سلسلے کے نیچے حفاظتی کوڈ دوسرے شخص سے ملائیں۔ رمز کاری چالو ہونے سے پہلے بھیجے گئے پیغامات پہلے کی طرح قابل مطالعہ رہتے ہیں۔"
+        },
+        "awaiting-theirs": {
+            "label": "غیر مرموز",
+            "explanation": "{handle} اپنی ترتیبات میں مرموز پیغامات چالو کرے گا تو یہاں کے پیغامات ابتدا سے انتہا تک مرموز ہوں گے۔"
+        },
+        "awaiting-yours": {
+            "label": "غیر مرموز",
+            "explanation": "یہاں کے پیغامات ابتدا سے انتہا تک مرموز نہیں ہیں۔ اس گفتگو کو محفوظ کرنے کے لیے ترتیبات میں مرموز پیغامات چالو کریں۔"
+        },
+        "federated": {
+            "label": "غیر مرموز",
+            "explanation": "{handle} دوسرے سرور پر ہے۔ اس گفتگو کے پیغامات اس سرور کے ساتھ اس سرور پر بھی محفوظ ہوتے ہیں، اور اس کا منتظم انہیں پڑھ سکتا ہے - سروروں کے درمیان پروٹوکول میں رمز کاری کا طریقہ نہیں۔ حساس باتیں اسی سائٹ کی گفتگو تک رکھیں۔"
+        }
+    },
+    "RemoteFollowsForm": {
+        "legend": "Fediverse اکاؤنٹس کی پیروی",
+        "notice": "ایک یا زیادہ ہینڈل چسپاں کریں، مثلاً @user@example.social - ان کے درمیان کوئی بھی جداکار چلتا ہے۔",
+        "handlesLabel": "پیروی کے لیے Fediverse ہینڈل",
+        "submit": "پیروی کریں",
+        "statusPending": "زیر التوا",
+        "statusAccepted": "قبول شدہ"
+    },
+    "ServerBlockForm": {
+        "legend": "سرور مسدود کریں",
+        "description": "اس سرور اور اس کے ماتحت ہر چیز کو رد کرتا ہے: نہ ترسیل اندر، نہ باہر، اور دونوں سمتوں میں موجود پیروی ختم ہو جاتی ہے۔",
+        "serverLabel": "سرور",
+        "serverPlaceholder": "example.social",
+        "reasonLabel": "وجہ",
+        "reasonPlaceholder": "یہ سرور کیوں مسدود ہے",
+        "submit": "سرور مسدود کریں"
+    },
+    "VideoCallTestPanel": {
+        "intro": "کال کی ترتیب کے وہ حصے چلاتا ہے جو ایک براؤزر سے جانچے جا سکتے ہیں۔ اصل براہ راست رابطے تک سب کچھ یہاں قابل آزمائش ہے؛ دوسرے شخص سے جڑنے کے لیے اس شخص کی ضرورت ہے۔",
+        "checkFailed": "جانچ خود ناکام ہو گئی: {error}",
+        "loopbackFail": "اسی صفحے میں دو کنکشن ایک دوسرے تک نہیں پہنچ سکے، جو نیٹ ورک کو خارج کر دیتا ہے - براؤزر کا WebRTC اسٹیک بلاک ہو رہا ہے، غالباً کسی ایکسٹینشن یا سخت رازداری کی ترتیب سے۔",
+        "loopbackName": "مقامی طور پر بات چیت مکمل ہوتی ہے",
+        "loopbackPass": "اس صفحے میں دو کنکشنز نے بات چیت کی اور ڈیٹا چینل کھولا، اس لیے WebRTC اسٹیک خود کام کرتا ہے۔",
+        "loopbackVerdict": "نہیں - اس براؤزر سے ویڈیو کالنگ کام نہیں کر سکتی۔ اس کا اپنا WebRTC اسٹیک اس ایک صفحے کے اندر دو ساتھیوں کو نہیں جوڑ سکا، جو نیٹ ورک کو مکمل طور پر خارج کر دیتا ہے؛ کوئی مقامی چیز اسے بلاک کر رہی ہے، غالباً کوئی ایکسٹینشن یا سخت رازداری کی ترتیب۔",
+        "noStun": "کوئی STUN اینڈ پوائنٹ ترتیب نہیں دیا گیا، اس لیے کالز صرف ایک ہی نیٹ ورک پر موجود لوگوں کے درمیان کام کر سکتی ہیں۔",
+        "passVerdict": "ہاں - اس کنکشن سے ویڈیو کالنگ کام کرنی چاہیے۔ کال سیٹ اپ کا ہر حصہ جس کی یہ مشین ذمہ دار ہے کامیاب ہوا، بشمول STUN تک پہنچنا، اس لیے کسی اور شخص تک براہ راست راستہ تلاش اور طے کیا جا سکتا ہے۔ صرف چیز جو غیر آزمائشی رہ گئی ہے وہ دوسرے شخص کا حصہ ہے، جسے اس شخص کی ضرورت ہے۔",
+        "secureFail": "ایک محفوظ سیاق و سباق نہیں ہے۔ براؤزرز HTTPS کے باہر کیمرہ اور WebRTC دونوں سے انکار کرتے ہیں، اس لیے یہاں سے کوئی کال سیٹ اپ نہیں ہو سکتی۔",
+        "secureName": "یہ صفحہ ایک محفوظ سیاق و سباق ہے",
+        "securePass": "HTTPS پر پیش کیا گیا، اس لیے براؤزر کیمرہ اور پیئر کنکشن کی اجازت دے گا۔",
+        "secureVerdict": "نہیں - یہاں سے ویڈیو کالنگ کام نہیں کر سکتی۔ یہ صفحہ محفوظ سیاق و سباق نہیں ہے، اور براؤزرز HTTPS کے باہر کیمرہ اور WebRTC دونوں سے انکار کرتے ہیں۔ جب تک وہ ٹھیک نہیں ہوتا کچھ اور معنی نہیں رکھتا۔",
+        "signallingAuthFail": "اینڈ پوائنٹ نے درخواست کو غیر مصدقہ سمجھ کر مسترد کر دیا ({status})۔ دو حقیقی لوگوں کے درمیان سگنلز کو اسی طرح مسترد کیا جاتا، اس لیے کوئی کال سیٹ اپ نہیں ہو سکتی تھی۔",
+        "signallingName": "سگنلنگ اینڈ پوائنٹ جواب دیتا ہے",
+        "signallingPass": "اینڈ پوائنٹ قابل رسائی ہے اور اس کے مواد کو مسترد کرنے سے پہلے درخواست کو مصدقہ کے طور پر قبول کیا، جو کہ ایک حقیقی سگنل کو درکار ہر چیز ہے۔",
+        "signallingUnexpected": "اینڈ پوائنٹ نے {status} کے ساتھ جواب دیا، جو اس درخواست کے لیے کہنا نہیں چاہیے تھا - اس کے سامنے کچھ مداخلت کر رہا ہے۔",
+        "signallingVerdict": "نہیں - یہاں سے ویڈیو کال سیٹ اپ نہیں کی جا سکتی۔ یہ براؤزر کال کرنے کے قابل ہے، لیکن دونوں طرف وہ پیغامات تبادلہ نہیں کر سکتے جو ایک ترتیب دیتے ہیں، اس لیے کال بٹن کبھی ظاہر نہیں ہوگا۔",
+        "stopped": "یہاں رک گیا - اس کے بعد کے مراحل اس پر منحصر ہیں۔",
+        "stunFail": "STUN سے کوئی جواب نہیں - اس تک UDP غالباً فائر وال سے بلاک ہے۔ کالز اب بھی ایک ہی نیٹ ورک پر دو لوگوں کے درمیان کام کریں گی، لیکن انٹرنیٹ پر نہیں، اور کوئی کال کبھی ریلے نہیں کی جاتی۔",
+        "stunName": "STUN اس نیٹ ورک سے قابل رسائی ہے",
+        "stunPass": "STUN نے جواب دیا اور براؤزر نے اپنا عوامی ایڈریس سیکھا، اس لیے یہ کسی دوسرے نیٹ ورک پر کسی تک براہ راست راستہ تلاش کر سکتا ہے۔",
+        "stunVerdict": "صرف اس نیٹ ورک پر۔ ایک ہی مقامی نیٹ ورک پر دو لوگوں کے درمیان کالز کو یہاں سے کام کرنا چاہیے، لیکن یہ کنکشن اپنا عوامی ایڈریس دریافت نہیں کر سکتا، اس لیے اس کے پاس کسی دوسرے روٹر کے پیچھے کسی تک راستہ تلاش کرنے کا کوئی طریقہ نہیں ہے۔ چونکہ کوئی کال کبھی سرور کے ذریعے ریلے نہیں کی جاتی، ایک پیش نہیں کی جائے گی۔",
+        "webrtcFail": "اس براؤزر میں RTCPeerConnection نہیں ہے، اس لیے یہ بالکل کال نہیں کر سکتا یا وصول نہیں کر سکتا۔",
+        "webrtcName": "براؤزر WebRTC کی حمایت کرتا ہے",
+        "webrtcPass": "RTCPeerConnection دستیاب ہے۔",
+        "webrtcVerdict": "نہیں - اس براؤزر سے ویڈیو کالنگ کام نہیں کر سکتی۔ اس میں بالکل WebRTC سپورٹ نہیں ہے، اس لیے یہ نہ کال کر سکتا ہے نہ وصول کر سکتا ہے۔ اسی مشین پر ایک اور براؤزر شاید ٹھیک ہو۔"
+    },
+    "VideoCallTestButton": {
+        "label": "جانچ چلائیں"
+    },
+    "WebSocketStatus": {
+        "ok": "WebSocket سرور: چل رہا ہے",
+        "failed": "WebSocket سرور: {detail}",
+        "clientTesting": "براؤزر رابطہ: جانچ جاری…",
+        "clientConnecting": "براؤزر رابطہ: جڑ رہا ہے…",
+        "clientConnected": "براؤزر رابطہ: جڑ گیا",
+        "clientDisconnecting": "براؤزر رابطہ: منقطع ہو رہا ہے…",
+        "clientNotConnected": "براؤزر رابطہ: منسلک نہیں"
+    },
+    "UploadWorkerStatus": {
+        "running": "ورکر خدمت: چل رہی ہے",
+        "stopped": "ورکر خدمت: بند ہے - دوبارہ شروع ہونے تک مرحلہ وار اپ لوڈ کبھی تبدیل نہیں ہوں گے",
+        "unknown": "ورکر خدمت: نامعلوم - یا اس ہوسٹ پر systemctl دستیاب نہیں، یا SELinux ویب سرور کی اپنی حالت کی درخواست روک رہا ہے (درست کرنے کے لیے bin/install.php کو root کے طور پر چلائیں)",
+        "queue": "قطار: {staging} تیاری میں، {pending} زیر التوا، {processing} زیر عمل"
+    },
+    "TrendingTimerStatus": {
+        "running": "مقبولیت ٹائمر: چل رہا ہے",
+        "stopped": "مقبولیت ٹائمر: بند ہے - مقبول موضوعات صرف پڑھنے کے راستے کی خود مرمت (EntityRanker::refreshIfStale()) سے تازہ ہوں گے، شیڈول پر نہیں۔ ترتیب کے لیے bin/install.php کو root کے طور پر چلائیں۔",
+        "unknown": "مقبولیت ٹائمر: نامعلوم - یا اس ہوسٹ پر systemctl دستیاب نہیں، یا SELinux ویب سرور کی اپنی حالت کی درخواست روک رہا ہے (درست کرنے کے لیے bin/install.php کو root کے طور پر چلائیں)"
+    },
+    "Notification": {
+        "postReady": "آپ کا میڈیا پراسیس ہو چکا اور اب شائع ہے",
+        "scheduledPostLive": "آپ کی طے شدہ پوسٹ اب شائع ہے",
+        "uploadPartlyFailed": "آپ کی پوسٹ شائع ہے، مگر اس کی ایک یا زیادہ فائلیں پراسیس نہیں ہو سکیں",
+        "uploadFailed": "آپ کی اپ لوڈز میں سے ایک پراسیس نہیں ہوئی اور پوسٹ نہیں کی گئی",
+        "mailerFailed": "ای میل ترسیل ناکام - میلر شاید بند ہے۔ اپنی ڈاک کی ترتیب دیکھیں۔",
+        "mailFromNotConfigured": "ڈاک کا کوئی \"بھیجنے والا\" پتہ مقرر نہیں، اس لیے ای میل نہیں بھیجی جا سکتی۔ منتظم کی ترتیبات (باہر جانے والی ڈاک) میں یا bin/install.php سے مقرر کریں۔",
+        "systemError": "سرور کی خرابی ہوئی۔ تفصیل کے لیے خرابی کا لاگ دیکھیں۔",
+        "passwordRemovedGoogle": "Google سے لاگ اِن کرتے وقت آپ کا پاس ورڈ ہٹا دیا گیا تھا۔ نیا مقرر کرنے کے لیے \"پاس ورڈ بھول گئے\" استعمال کریں۔",
+        "like": "{name} نے آپ کی پوسٹ پسند کی",
+        "repost": "{name} نے آپ کی پوسٹ دوبارہ شائع کی",
+        "reply": "{name} نے آپ کی پوسٹ کا جواب دیا",
+        "friendRequest": "{name} نے دوستی کی درخواست بھیجی",
+        "friendAccepted": "{name} نے آپ کی دوستی کی درخواست قبول کی",
+        "message": "{name} نے آپ کو پیغام بھیجا",
+        "mention": "{name} نے پوسٹ میں آپ کا ذکر کیا",
+        "follow": "{name} نے دوسرے سرور سے آپ کی پیروی کی",
+        "default": "{name} نے کچھ کیا"
+    },
+    "NotificationList": {
+        "emptyNotice": "ابھی کوئی اطلاع نہیں۔"
+    },
+    "NotificationsNavLink": {
+        "label": "اطلاعات",
+        "unseen": "نہ دیکھی اطلاعات"
+    },
+    "NotificationTestPanel": {
+        "intro": "خود کو (منتظم کو) آزمائشی اطلاع بھیجیں۔ اسے فوراً عارضی پیغام اور اطلاعات کی فہرست میں آنا چاہیے۔",
+        "button": "آزمائشی اطلاع بھیجیں",
+        "sending": "بھیجی جا رہی ہے…",
+        "sent": "بھیج دی!",
+        "failed": "ناکام"
+    },
+    "MessageDot": {
+        "label": "نہ پڑھے پیغامات"
+    },
+    "NavAlertDot": {
+        "label": "مینو میں کچھ نیا"
+    },
+    "Message": {
+        "encrypted": "مرموز پیغام",
+        "decryptionFailed": "یہ پیغام ایسی کلیدوں سے مرموز تھا جو اب موجود نہیں۔"
+    },
+    "MessageComposer": {
+        "bodyLabel": "پیغام",
+        "bodyPlaceholder": "پیغام لکھیں",
+        "send": "بھیجیں"
+    },
+    "MessageList": {
+        "emptyNotice": "ابھی کوئی پیغام نہیں۔"
+    },
+    "MessageKeyFingerprint": {
+        "explanation": "یہ کوڈ کسی دوسرے طریقے سے ایک دوسرے کو پڑھ کر سنائیں - بلند آواز سے، بالمشافہ، یا کال پر۔ دونوں طرف یکساں ہو تو درمیان میں کوئی نہیں۔",
+        "changed": "آپ کی جانچ کے بعد یہ کوڈ بدل گیا ہے۔ ایسا اس وقت ہوتا ہے جب آپ میں سے کوئی رمز کاری کی کلیدیں دوبارہ مقرر کرے - مگر گفتگو پڑھنے والا شخص بھی یوں ہی نظر آئے گا۔ اعتماد سے پہلے نیا کوڈ دوسرے شخص سے ملائیں۔",
+        "verified": "آپ نے یہ کوڈ جانچ لیا ہے۔"
+    },
+    "MessageKeyVerifyButton": {
+        "label": "تصدیق شدہ نشان لگائیں"
+    },
+    "MessageUnlockForm": {
+        "passphraseLabel": "پاس فریز",
+        "passphrasePlaceholder": "اس گفتگو کو کھولنے کا پاس فریز",
+        "submit": "کھولیں"
+    },
+    "Conversation": {
+        "lastMessage": {
+            "before": "آخری پیغام ",
+            "after": ""
+        }
+    },
+    "SensitiveMedia": {
+        "summary": "حساس میڈیا"
+    },
+    "SensitiveMediaSetting": {
+        "toggle": "حساس میڈیا بطور طے شدہ دکھائیں"
+    },
+    "Report": {
+        "targetTypes": {
+            "post": "پوسٹ",
+            "message": "پیغام",
+            "user": "صارف"
+        },
+        "summary": {
+            "before": "{type} #{id} کی رپورٹ از ",
+            "after": ""
+        },
+        "reasonLine": "وجہ: {reason}",
+        "banReporterLabel": "رپورٹ کرنے والے کو ممنوع کریں",
+        "banReportedUserLabel": "رپورٹ شدہ صارف کو ممنوع کریں",
+        "deleteLabel": "{type} حذف کریں",
+        "reportedImageAlt": "رپورٹ شدہ تصویر",
+        "attachmentUnavailable": "رپورٹ شدہ منسلکہ اب دستیاب نہیں۔",
+        "viewAttachment": "رپورٹ شدہ منسلکہ دیکھیں",
+        "missing": {
+            "noSnapshot": "رپورٹ شدہ مواد اب دستیاب نہیں۔",
+            "unknownType": "مواد کی نامعلوم قسم۔"
+        }
+    },
+    "ReportList": {
+        "emptyNotice": "کوئی رپورٹ نہیں۔"
+    },
+    "ModQueueLinks": {
+        "intro": "قطاریں اتنی طویل ہیں کہ ایک وقت میں ایک صفحہ پڑھا جائے، اس لیے ان کے اپنے صفحات ہیں۔",
+        "reportsLabel": "رپورٹس",
+        "bannedUsersLabel": "ممنوع صارفین"
+    },
+    "ModerationActionList": {
+        "emptyNotice": "ابھی کسی نگران نے کچھ نہیں کیا۔"
+    },
+    "BannedTrendingEntityList": {
+        "emptyNotice": "کوئی ممنوع مقبول عنصر نہیں۔"
+    },
+    "BlockedServerList": {
+        "emptyNotice": "کوئی مسدود سرور نہیں۔"
+    },
+    "RelayCard": {
+        "accepted": "رکنیت لی ",
+        "waiting": "ریلے کی منظوری کا انتظار - رکنیت لی "
+    },
+    "RelayList": {
+        "emptyNotice": "کسی ریلے کی رکنیت نہیں۔ یہاں اراکین کی پیروی کے سوا کچھ نہیں آتا۔"
+    },
+    "RelayFeedList": {
+        "emptyNotice": "ابھی ریلے سے کچھ نہیں آیا۔ دوسری طرف کے سرور شائع کریں گے تو پوسٹس یہاں آئیں گی۔"
+    },
+    "RelaySubscribeForm": {
+        "legend": "ریلے کی رکنیت لیں",
+        "explainerOne": "ریلے ایک مشترکہ تیز دھارا ہے: ہر دوسرے رکن سرور کی ہر عوامی پوسٹ یہاں آتی ہے، اور اس سرور کی پوسٹس ان سب کو جاتی ہیں۔ نیا انسٹنس اسی طرح لوگوں کو ڈھونڈتا ہے، کیونکہ وفاق بصورت دیگر صرف وہی لاتا ہے جس کی یہاں کوئی پہلے ہی پیروی کرتا ہو۔",
+        "explainerTwo": "بوجھ کی پیش گوئی آپ نہیں کر سکتے - یہ ان سروروں کی اشاعت ہے، ایک ہفتہ خاموش اور اگلے ہفتے فی گھنٹہ ہزاروں پوسٹس، اور آپ کا ذخیرہ، ترسیلی قطار اور نگرانی کی قطار سب اسے اٹھاتے ہیں۔ ریلے پوسٹس مرکزی اور دوستوں کی فیڈ سے باہر رہتی ہیں؛ وہ ریلے فیڈ میں جاتی ہیں، جسے لوگ جان بوجھ کر کھولتے ہیں۔",
+        "addressLabel": "ریلے پتہ",
+        "addressPlaceholder": "https://relay.example/actor",
+        "submitLabel": "رکنیت لیں"
+    },
+    "RelayFollowObjectField": {
+        "label": "رکنیت کا انداز",
+        "options": {
+            "public": "عوامی دھارے کی پیروی کریں (زیادہ تر ریلے یہی چاہتے ہیں)",
+            "actor": "ریلے کے اپنے کردار کی پیروی کریں"
+        },
+        "retryNotice": "اگر ریلے کبھی قبول نہ کرے تو واپس لے کر دوسرا انداز آزمائیں - بعض ریلے سافٹ ویئر صرف ایک کو پہچانتے ہیں۔"
+    },
+    "SiteCounters": {
+        "members": "اراکین: {count} (گزشتہ {days} دن میں {joined} شامل ہوئے)",
+        "activeMembers": "گزشتہ {days} دن میں یہاں موجود اراکین: {count} (ان میں {posted} نے پوسٹ کی)",
+        "posts": "یہاں لکھی پوسٹس: {count} (گزشتہ {days} دن میں {recent})",
+        "deliveries": "گزشتہ {days} دن کی وفاقی ترسیلات: {delivered} پہنچیں، {undeliverable} ترک ہوئیں",
+        "queued": "باہر جانے کی منتظر: {count} ({failing} کم از کم ایک بار پہلے رد ہوئیں)",
+        "pendingReads": "دوسرے سروروں سے پڑھنے کی منتظر پوسٹس: {count}"
+    },
+    "TestSuitePanel": {
+        "intro": "سائٹ کا آزمائشی مجموعہ چلائیں اور نتائج دیکھیں۔ چند سیکنڈ لگتے ہیں، اس لیے اپنے صفحے پر کھلتا ہے۔",
+        "runLabel": "آزمائشیں چلائیں"
+    },
+    "HelpArticle": {
+        "backLabel": "تمام مدد پر واپس"
+    },
+    "UserSearchList": {
+        "noSuggestions": "ابھی کوئی تجویز نہیں - تجاویز ان لوگوں کے دوستوں سے آتی ہیں جو پہلے ہی آپ کے دوست ہیں۔ کسی کو نام سے ڈھونڈنے کے لیے اوپر تلاش کریں۔",
+        "noMatches": "یہاں کوئی اس سے نہیں ملتا۔"
+    },
+    "UserModButton": {
+        "make": "نگران بنائیں",
+        "remove": "نگران ہٹائیں"
+    },
+    "UserUnbanButton": {
+        "name": "ممانعت ہٹائیں"
+    },
+    "TrendingEntityBanButton": {
+        "name": "ممنوع کریں"
+    },
+    "TrendingEntityUnbanButton": {
+        "name": "ممانعت ہٹائیں"
+    },
+    "ReportDismissButton": {
+        "name": "خارج کریں"
+    },
+    "ReportedContentClassifyButton": {
+        "name": "حساس نشان لگائیں"
+    },
+    "ServerUnblockButton": {
+        "name": "مسدودی ختم کریں"
+    },
+    "RelayUnsubscribeButton": {
+        "name": "رکنیت ختم کریں"
+    },
+    "RememberedDeviceRevokeButton": {
+        "name": "منسوخ کریں"
+    },
+    "TestResultsBadge": {
+        "passing": "{suite}: کامیاب",
+        "failing": "{suite}: ناکام"
+    },
+    "PageTitle": {
+        "about": "تعارف",
+        "adminBanned": "ممنوع صارفین",
+        "adminModSettings": "نگران کی ترتیبات",
+        "adminReports": "رپورٹس",
+        "adminSettings": "منتظم کی ترتیبات",
+        "adminTests": "آزمائشیں",
+        "authGoogleCallbackAccountDeleted": "اکاؤنٹ حذف ہو گیا",
+        "authGoogleCallbackDeleteAccount": "اکاؤنٹ حذف کریں",
+        "authGoogleCallbackLogin": "لاگ اِن",
+        "bookmarks": "بک مارکس",
+        "checkInbox": "اپنا اِن باکس دیکھیں",
+        "drafts": "مسودے اور طے شدہ",
+        "draftsEditDraft": "مسودہ ترمیم کریں",
+        "draftsEditScheduled": "طے شدہ پوسٹ ترمیم کریں",
+        "forgotPassword": "پاس ورڈ بھول گئے",
+        "friendsFeed": "دوستوں کی فیڈ",
+        "help": "مدد",
+        "helpDescription": "سائٹ کے استعمال کے لیے رہنما اور جوابات۔",
+        "locations": "مقامات",
+        "locationsDescription": "آپ کے قریب ترین جگہوں کی پوسٹس۔",
+        "locationsPlaceDescription": "{place} کے قریب پوسٹس۔",
+        "login": "لاگ اِن",
+        "loginVerificationCode": "تصدیقی کوڈ",
+        "map": "نقشہ",
+        "mapDescription": "دنیا بھر کی پوسٹس کا نقشہ - اپنے قریب لوگ اور چیزیں تلاش کریں۔",
+        "messages": "پیغامات",
+        "messagesWithUser": "{name} کے ساتھ پیغامات",
+        "notifications": "اطلاعات",
+        "privacy": "رازداری کی پالیسی",
+        "quote": "اقتباس",
+        "relayFeed": "ریلے فیڈ",
+        "relayFeedDescription": "اس سرور کے رکن ریلے سے آنے والی عوامی پوسٹس۔",
+        "resetPassword": "پاس ورڈ دوبارہ مقرر کریں",
+        "revertEmail": "ای میل تبدیلی واپس کریں",
+        "search": "تلاش",
+        "signup": "سائن اَپ",
+        "tags": "ٹیگز",
+        "tagsDescription": "{siteTitle} پر مقبول اور معروف ہیش ٹیگ دیکھیں۔",
+        "tagsTagDescription": "{siteTitle} پر {tag} ٹیگ والی پوسٹس۔",
+        "terms": "استعمال کی شرائط",
+        "topics": "موضوعات",
+        "topicsDescription": "لوگ اس وقت {siteTitle} پر کیا بات کر رہے ہیں۔",
+        "topicsEntityDescription": "{typeLabel} - {siteTitle} پر {entityTitle} کا ذکر کرنے والی پوسٹس۔",
+        "topicsTypeDescription": "{typePlural} جن کی لوگ اس وقت {siteTitle} پر بات کر رہے ہیں۔",
+        "unsubscribe": "ای میل خلاصے",
+        "userFriends": "{name} کے دوست",
+        "userFriendsDescription": "{siteTitle} پر {name} کے دوست",
+        "userSettings": "صارف کی ترتیبات",
+        "users": "صارفین",
+        "verifyEmail": "ای میل کی تصدیق"
+    },
+    "PostLikeButton": {
+        "like": "پسند",
+        "unlike": "پسند ہٹائیں"
+    },
+    "PostPinButton": {
+        "pin": "چسپاں کریں",
+        "unpin": "چسپانی ہٹائیں"
+    },
+    "PostQuoteButton": {
+        "name": "اقتباس"
+    },
+    "PostDeleteButton": {
+        "name": "حذف کریں"
+    },
+    "PostEditButton": {
+        "name": "ترمیم"
+    },
+    "ReportButton": {
+        "name": "رپورٹ",
+        "prompt": "آپ اس کی رپورٹ کیوں کر رہے ہیں؟",
+        "unlockFirst": "خفیہ کردہ پیغام کی رپورٹ کرنے سے پہلے گفتگو کو غیر مقفل کریں۔",
+        "unverifiable": "یہ پیغام ان کنجیوں سے خفیہ کیا گیا تھا جو اب موجود نہیں ہیں، اس لیے اس کی تصدیق یا رپورٹ نہیں کی جا سکتی۔"
+    },
+    "PostActionBar": {
+        "reply": "جواب",
+        "replies": {
+            "one": "جوابات ({count})",
+            "other": "جوابات ({count})"
+        }
+    },
+    "PostEditedMarker": {
+        "label": "(ترمیم شدہ)"
+    },
+    "RepliesHeading": {
+        "heading": "جوابات"
+    },
+    "PollVoteButton": {
+        "name": "ووٹ دیں"
+    },
+    "MoreLocationsLink": {
+        "moreLocations": {
+            "before": "",
+            "link": "مزید مقامات دیکھیں",
+            "after": ""
+        }
+    },
+    "NearbyLocationPrompt": {
+        "heading": "آپ کے قریب پوسٹس",
+        "description": "یہ کسی نقطے کے قریب ترین پوسٹس دکھاتا ہے - سرگرمی جہاں بھی ہو، چاہے کتنی دور ہو۔ اپنی جگہ سے شروع کرنے کے لیے مقام شیئر کریں، یا نقشے پر جگہ منتخب کریں۔",
+        "useMyLocation": "میرا مقام استعمال کریں",
+        "pickOnMap": "نقشے پر منتخب کریں",
+        "searchPlaceholder": "یا جگہ کا نام لکھیں…",
+        "searchLabel": "جگہ تلاش کریں",
+        "locating": "مقام تلاش ہو رہا ہے…",
+        "noGeolocation": "آپ کا براؤزر مقام شیئر نہیں کر سکتا۔",
+        "locationError": "آپ کا مقام نہیں ملا۔ براؤزر کی مقام اجازت دیکھیں۔"
+    },
+    "PollDeadline": {
+        "final": "حتمی نتیجہ",
+        "closes": {
+            "before": "اختتام ",
+            "after": ""
+        },
+        "days": {
+            "one": "{count} دن میں",
+            "other": "{count} دنوں میں"
+        },
+        "hours": {
+            "one": "{count} گھنٹے میں",
+            "other": "{count} گھنٹوں میں"
+        },
+        "minutes": {
+            "one": "{count} منٹ میں",
+            "other": "{count} منٹوں میں"
+        },
+        "underMinute": "ایک منٹ سے کم میں"
+    },
+    "PollTally": {
+        "voters": {
+            "one": "1 شخص نے ووٹ دیا ",
+            "other": "{count} افراد نے ووٹ دیا "
+        }
+    },
+    "PostComposer": {
+        "prompt": {
+            "before": "",
+            "link": "لاگ اِن کریں",
+            "after": " پوسٹ کرنے کے لیے۔"
+        }
+    },
+    "ReplyComposer": {
+        "prompt": {
+            "before": "",
+            "link": "لاگ اِن کریں",
+            "after": " جواب دینے کے لیے۔"
+        }
+    },
+    "RepostAttribution": {
+        "attribution": {
+            "before": "",
+            "after": " نے دوبارہ شائع کیا"
+        }
+    },
+    "ThreadContext": {
+        "response": {
+            "before": "جواب برائے ",
+            "after": ""
+        },
+        "untitled": "یہ پوسٹ",
+        "jumpToStart": "آغاز پر جائیں"
+    },
+    "TopicSummaryCard": {
+        "label": "AI کا تیار کردہ خلاصہ"
+    },
+    "WelcomeBanner": {
+        "heading": {
+            "before": "خوش آمدید ",
+            "after": ""
+        },
+        "paragraphs": [
+            "نیچے خانے میں کچھ لکھیں اور وہ آپ کی فیڈ میں چلا جاتا ہے۔ کوئی بھی جواب دے سکتا ہے، اور جواب صرف والد پوسٹ والی پوسٹ ہے، اس لیے گفتگو ضرورت کے مطابق گہری ہو سکتی ہے۔",
+            "لوگوں کو دوست بنائیں اور ان کی پوسٹس آپ کی فیڈ میں شامل ہو جائیں گی۔ عالمی فیڈ - اوپر بائیں سائٹ کا نام - یہاں لکھی ہر چیز دکھاتی ہے، اور کسی کو شامل کرنے کے لیے وہیں تلاش کریں۔",
+            "یہ سائٹ Fediverse کا حصہ ہے: آپ Mastodon اور دوسرے سروروں کے اکاؤنٹس کی مکمل ہینڈل سے پیروی کر سکتے ہیں، اور آپ کی پوسٹ وہاں آپ کے پیروکاروں تک پہنچتی ہے۔ @someone@example.social جیسا ہینڈل تلاش کریں اور یہ سرور اسے ڈھونڈ لے گا۔",
+            "#ہیش ٹیگ سے پوسٹ ٹیگ کریں تو وہ اس ٹیگ کے صفحے پر، اور کافی لوگ لکھیں تو مقبول فہرست میں آتی ہے۔",
+            "اراکین کے درمیان پیغامات ابتدا سے انتہا تک مرموز ہیں - سرور ایسا مرموز متن محفوظ کرتا ہے جسے پڑھ نہیں سکتا۔ اسے ترتیبات میں چالو کریں۔",
+            "فوراً پوسٹ کرنا ضروری نہیں: مسودہ محفوظ کریں، یا وقت مقرر کریں اور وہ خود شائع ہو جائے گی۔ دونوں مسودے اور طے شدہ کے تحت ہیں۔"
+        ],
+        "more": {
+            "before": "مزید معلومات ",
+            "link": "مدد کے صفحات",
+            "after": " میں ہیں، جن میں اکاؤنٹ کو دوسری جگہ سے یہاں منتقل کرنا بھی شامل ہے۔"
+        },
+        "dontShowAgain": "دوبارہ نہ دکھائیں"
+    },
+    "EmojiPickerTriggerButton": {
+        "label": "ایموجی داخل کریں"
+    },
+    "LinkImagePreview": {
+        "alt": "لنک پیش منظر تصویر"
+    },
+    "LinkImageRemoveButton": {
+        "label": "تصویر ہٹائیں"
+    },
+    "LinkItem": {
+        "alt": "لنک پیش منظر تصویر"
+    },
+    "MapScrubber": {
+        "play": "چلائیں",
+        "pause": "روکیں",
+        "cumulativeMode": "اس وقت تک",
+        "windowMode": "صرف اس وقت",
+        "rangeLabel": "تاریخ تک پوسٹس دکھائیں",
+        "cumulativeLabel": {
+            "one": "{date} تک شائع — {count} پوسٹ",
+            "other": "{date} تک شائع — {count} پوسٹس"
+        },
+        "windowLabel": {
+            "one": "{date} کے آس پاس شائع — {count} پوسٹ",
+            "other": "{date} کے آس پاس شائع — {count} پوسٹس"
+        }
+    },
+    "Post": {
+        "pageTitleByAuthor": "{name} کی پوسٹ",
+        "pageTitleUntitled": "پوسٹ",
+        "imageAltByAuthor": "{name} کی شائع کردہ تصویر",
+        "imageAltUntitled": "تصویر"
+    },
+    "PostBookmarkButton": {
+        "remove": "بک مارک ہٹائیں",
+        "add": "بک مارک"
+    },
+    "PostRepostButton": {
+        "undo": "دوبارہ اشاعت واپس لیں",
+        "repost": "دوبارہ شائع کریں"
+    },
+    "QuotedPost": {
+        "viewLink": "اقتباس شدہ پوسٹ دیکھیں"
+    },
+    "ReceivedFriendRequestSection": {
+        "heading": "زیر التوا درخواستیں"
+    },
+    "ScrollToTopButton": {
+        "label": "اوپر جائیں"
+    },
+    "SearchClearButton": {
+        "label": "تلاش صاف کریں"
+    },
+    "SitePolicyLinks": {
+        "terms": "استعمال کی شرائط",
+        "privacy": "رازداری کی پالیسی"
+    },
+    "SkipLink": {
+        "label": "مواد پر جائیں"
+    },
+    "TopicHeading": {
+        "searchLink": "اسے تلاش کریں",
+        "noPosts": "ابھی کوئی پوسٹ اس کا ذکر نہیں کرتی۔"
+    },
+    "PopularEntityList": {
+        "emptyNotice": "اس قسم کے بارے میں ابھی کچھ نہیں لکھا گیا۔"
+    },
+    "TrendingEntitySection": {
+        "heading": "مقبول"
+    },
+    "PostLocationLink": {
+        "title": "یہ جگہ نقشے پر دکھائیں",
+        "between": "، "
+    },
+    "RelativeTime": {
+        "justNow": "ابھی",
+        "minutes": {
+            "one": "{count} منٹ پہلے",
+            "other": "{count} منٹ پہلے"
+        },
+        "hours": {
+            "one": "{count} گھنٹہ پہلے",
+            "other": "{count} گھنٹے پہلے"
+        },
+        "days": {
+            "one": "{count} دن پہلے",
+            "other": "{count} دن پہلے"
+        }
+    },
+    "ThemeSelector": {
+        "label": "تھیم",
+        "themes": {
+            "system": "نظام کے مطابق",
+            "light": "سادہ روشن",
+            "dark": "سادہ تاریک",
+            "sepia": "سیپیا",
+            "midnight": "آدھی رات",
+            "sunset": "غروب",
+            "rose": "گلاب",
+            "forest": "جنگل",
+            "ocean": "سمندر",
+            "lavender": "لیونڈر",
+            "gold": "سنہری",
+            "hacker": "ہیکر",
+            "ironbow": "Ironbow",
+            "viridis": "Viridis",
+            "mako": "Mako",
+            "cividis": "Cividis",
+            "ylgnbu": "YlGnBu",
+            "cubehelix": "Cubehelix",
+            "greyscale": "خاکستری"
+        }
+    },
+    "PostTranslation": {
+        "unavailable": "اس سرور پر ترجمہ مرتب نہیں۔",
+        "nothing": "یہاں ترجمہ کرنے کو کچھ نہیں۔",
+        "unknownSource": "ابھی کسی نے معلوم نہیں کیا کہ یہ پوسٹ کس زبان میں ہے، اس لیے ترجمہ نہیں ہو سکتی۔",
+        "alreadyReadable": "یہ پوسٹ پہلے ہی اس زبان میں ہے۔",
+        "unsupportedPair": "یہ سرور ابھی اس زبان کا ترجمہ نہیں کر سکتا۔"
+    },
+    "LanguagePrompt": {
+        "question": "کیا آپ سائٹ اردو میں دیکھنا چاہیں گے؟",
+        "accept": "ہاں",
+        "decline": "نہیں، شکریہ"
+    },
+    "LanguageSelector": {
+        "label": "زبان",
+        "legend": "زبان"
+    },
+    "EmailDigest": {
+        "subject": "{site} پر آپ سے کیا رہ گیا",
+        "greeting": "سلام {name}،",
+        "whileAway": "آپ کی غیر موجودگی میں:",
+        "repeatedTimes": {
+            "one": " ({count} بار)",
+            "other": " ({count} بار)"
+        },
+        "moreMissed": {
+            "one": "اور {count} مزید اطلاع",
+            "other": "اور {count} مزید اطلاعات"
+        },
+        "messagesWaiting": {
+            "one": "ایک پیغام آپ کا منتظر ہے",
+            "other": "{count} پیغامات آپ کے منتظر ہیں"
+        },
+        "postsInFeed": {
+            "one": "آپ کی فیڈ میں ایک نئی پوسٹ",
+            "other": "آپ کی فیڈ میں {count} نئی پوسٹس"
+        },
+        "unsubscribeInstructions": "یہ ای میل روکنے کے لیے یہ لنک کھولیں - ایک کلک درکار ہے اور پاس ورڈ نہیں:",
+        "comeSeeWhatIsNew": "آئیں اور دیکھیں کیا نیا ہے",
+        "unsubscribeLink": {
+            "before": "",
+            "link": "مجھے یہ بھیجنا بند کریں",
+            "after": " - ایک کلک، پاس ورڈ درکار نہیں۔"
+        }
+    },
+    "EmailVerification": {
+        "subject": "اپنے ای میل پتے کی تصدیق کریں",
+        "greeting": "سلام {name}،",
+        "instructions": "اس لنک پر جا کر اپنے ای میل پتے کی تصدیق کریں:",
+        "htmlInstructions": "نیچے لنک پر کلک کر کے اپنے ای میل پتے کی تصدیق کریں:",
+        "buttonLabel": "ای میل پتے کی تصدیق",
+        "expiresIn": {
+            "one": "یہ لنک {count} گھنٹے میں ختم ہو گا۔",
+            "other": "یہ لنک {count} گھنٹوں میں ختم ہو گا۔"
+        }
+    },
+    "PasswordReset": {
+        "subject": "اپنا پاس ورڈ دوبارہ مقرر کریں",
+        "greeting": "سلام {name}،",
+        "instructions": "کسی نے (امید ہے آپ نے) پاس ورڈ دوبارہ مقرر کرنے کی درخواست کی۔ نیا پاس ورڈ منتخب کرنے کے لیے اس لنک پر جائیں:",
+        "htmlInstructions": "کسی نے (امید ہے آپ نے) پاس ورڈ دوبارہ مقرر کرنے کی درخواست کی۔ نیا پاس ورڈ منتخب کرنے کے لیے نیچے لنک پر کلک کریں:",
+        "buttonLabel": "پاس ورڈ دوبارہ مقرر کریں",
+        "expiresIn": {
+            "one": "یہ لنک {count} گھنٹے میں ختم ہو گا۔",
+            "other": "یہ لنک {count} گھنٹوں میں ختم ہو گا۔"
+        },
+        "ignoreNotice": "اگر آپ نے یہ درخواست نہیں کی تو اس ای میل کو نظر انداز کر سکتے ہیں۔"
+    },
+    "AboutPage": {
+        "mapAfter": "",
+        "mapBefore": "نقشے کے ٹائلز از ",
+        "placesAfter": "",
+        "placesBefore": "مقامات کے نام از ",
+        "placesBetween": "، لائسنس یافتہ ",
+        "softwareAfter": " ورژن {version}",
+        "softwareBefore": "یہ سائٹ چلاتی ہے ",
+        "translationAfter": "، جو یہاں چلتا ہے کہیں اور کے بجائے۔",
+        "translationBefore": "ترجمہ از "
+    },
+    "ActivityPubMove": {
+        "aliasMissing": "اس اکاؤنٹ نے ابھی تک اسے عرف کے طور پر درج نہیں کیا۔ پہلے {uri} کو اس کے \"اس نام سے بھی جانا جاتا ہے\" میں شامل کریں، پھر دوبارہ کوشش کریں۔",
+        "fetchFailed": "وہ اکاؤنٹ حاصل نہیں کیا جا سکا۔",
+        "localOnly": "صرف مقامی اکاؤنٹ منتقل کیا جا سکتا ہے۔",
+        "sameServer": "وہ اکاؤنٹ اس سرور پر ہے۔ منتقلی ہمیشہ سرورز کے درمیان ہوتی ہے۔"
+    },
+    "AdminModSettings": {
+        "bannedTrendingEntities": "پابندی شدہ ٹرینڈنگ اندراجات",
+        "blockedServers": "بلاک شدہ سرورز",
+        "queues": "قطاریں"
+    },
+    "AdminSettings": {
+        "about": "کے بارے میں",
+        "botProtection": "بوٹ کی حفاظت",
+        "emailDigest": "ای میل ڈائجسٹ",
+        "favicon": "فیوی آئیکن",
+        "frontPageImage": "فرنٹ پیج تصویر",
+        "googleAuth": "گوگل تصدیق",
+        "mail": "میل",
+        "map": "نقشہ",
+        "moderationLog": "نگرانی کا لاگ",
+        "notificationTest": "اطلاع کی جانچ",
+        "openRouter": "AI (OpenRouter)",
+        "privacyPolicy": "رازداری کی پالیسی",
+        "relays": "ریلے",
+        "services": "خدمات",
+        "statistics": "اعداد و شمار",
+        "termsOfService": "خدمت کی شرائط",
+        "tests": "ٹیسٹ"
+    },
+    "Api": {
+        "genericError": "کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
+        "networkError": "نیٹ ورک کی خرابی۔ براہ کرم اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔"
+    },
+    "AuthDivider": {
+        "label": "یا"
+    },
+    "CarouselController": {
+        "autoplay": "خودکار چلائیں",
+        "exitFullscreen": "مکمل اسکرین سے باہر نکلیں",
+        "fullscreen": "مکمل اسکرین",
+        "stopAutoplay": "خودکار چلانا روکیں"
+    },
+    "ClientStatus": {
+        "avatarAlt": "آپ کا اوتار",
+        "chooseFile": "پہلے ایک فائل منتخب کریں۔",
+        "deleteAccount": "اپنا اکاؤنٹ حذف کریں؟ آپ کی پوسٹس، جوابات، اور پیغامات ہمیشہ کے لیے چلے جائیں گے - یہ واپس نہیں کیا جا سکتا۔",
+        "done": "مکمل",
+        "emailUnchanged": "یہ پہلے سے ہی آپ کا ای میل ایڈریس ہے۔",
+        "failed": "ناکام",
+        "faviconSaved": "ترتیبات محفوظ ہو گئیں۔",
+        "followersNotified": "آپ کے فالوورز سے نئے اکاؤنٹ پر آپ کو فالو کرنے کی درخواست کی گئی ہے۔",
+        "linkCopied": "لنک کلپ بورڈ پر کاپی ہو گیا",
+        "linkCopyFailed": "لنک کاپی نہیں ہو سکا",
+        "login": "لاگ ان کریں",
+        "mapSaved": "نقشے کی ترتیبات محفوظ ہو گئیں۔",
+        "markedVerified": "تصدیق شدہ کے طور پر نشان زد کیا گیا۔",
+        "notificationsBlocked": "آپ کی براؤزر کی ترتیبات میں اس سائٹ کے لیے اطلاعات بلاک ہیں۔",
+        "notificationsEnableFailed": "اطلاعات فعال نہیں ہو سکیں۔",
+        "notificationsOff": "اس آلے کے لیے اطلاعات بند ہیں۔",
+        "notificationsOn": "اس آلے کے لیے اطلاعات آن ہیں۔",
+        "openRouterSaved": "OpenRouter ترتیبات محفوظ ہو گئیں۔",
+        "passwordChanged": "پاس ورڈ تبدیل ہو گیا!",
+        "passwordReset": "آپ کا پاس ورڈ ری سیٹ ہو گیا ہے۔ اب آپ لاگ ان کر سکتے ہیں۔",
+        "passwordUnchanged": "یہ پہلے سے ہی آپ کا پاس ورڈ ہے - کچھ تبدیل نہیں ہوا۔",
+        "pinSaved": "آپ کے پروفائل پر پن کر دیا گیا۔",
+        "profileSaved": "پروفائل محفوظ ہو گئی۔",
+        "pushUnavailable": "اس سرور پر پش دستیاب نہیں ہے۔",
+        "reported": "رپورٹ کر دیا گیا",
+        "resetSent": "اگر وہ ای میل ایڈریس ریکارڈ میں ہے تو پاس ورڈ ری سیٹ لنک بھیج دیا گیا ہے۔ اگر آپ کو نظر نہ آئے تو اپنا جنک/سپیم فولڈر چیک کریں۔",
+        "revokeDevice": "اس آلے کو منسوخ کریں؟ یہ سائن آؤٹ ہو جائے گا اور دوبارہ لاگ ان کرنا ہوگا۔",
+        "revoking": "منسوخ کیا جا رہا ہے…",
+        "saved": "محفوظ ہو گیا۔",
+        "sent": "بھیج دیا گیا!",
+        "settingsSaved": "ترتیبات محفوظ ہو گئیں۔",
+        "signOutEverywhere": "یہ آپ کو ہر آلے سے سائن آؤٹ کر دے گا، بشمول یہ آلہ۔ جاری رکھیں؟",
+        "signingOut": "سائن آؤٹ ہو رہا ہے…",
+        "unlockConversation": "پہلے گفتگو کو غیر مقفل کریں۔",
+        "unlockFailed": "وہ پاس فریز آپ کے پیغامات کو غیر مقفل نہیں کرتا۔",
+        "unpinSaved": "پن ہٹا دیا گیا۔"
+    },
+    "CodeBlockCopy": {
+        "copied": "کاپی ہو گیا!",
+        "copy": "کاپی کریں",
+        "copyLabel": "کوڈ کو کلپ بورڈ پر کاپی کریں"
+    },
+    "ConversationList": {
+        "emptyNotice": "ابھی آپ کی کوئی گفتگو نہیں ہے۔"
+    },
+    "Dialog": {
+        "cancel": "منسوخ کریں",
+        "confirm": "ٹھیک ہے"
+    },
+    "EncryptedMessagesClient": {
+        "enabled": "خفیہ کردہ پیغامات آن ہیں۔",
+        "minimumPassphrase": "کم از کم {count} حروف کا پاس فریز استعمال کریں۔",
+        "newKeys": "نئی کنجیاں بنا دی گئیں۔",
+        "passphraseChanged": "پاس فریز تبدیل ہو گیا۔",
+        "passphraseIsPassword": "آپ کا پاس فریز آپ کے اکاؤنٹ کا پاس ورڈ نہیں ہو سکتا - وہ سرور کو بھیجا جاتا ہے، اور یہ کبھی نہیں بھیجا جانا چاہیے۔",
+        "passphraseTooRepetitive": "وہ پاس فریز بہت کم مختلف حروف دہراتا ہے کہ کوئی قیمت رکھے۔ ایک لمبا فقرہ استعمال کریں۔",
+        "passphrasesMismatch": "پاس فریزز میل نہیں کھاتے۔",
+        "wrongPassphrase": "یہ آپ کا موجودہ پاس فریز نہیں ہے۔"
+    },
+    "EntityModerator": {
+        "ban": "پابندی لگائیں",
+        "banPlaceholder": "پابندی کی وجہ (ضروری)",
+        "unban": "\"{entity}\" سے پابندی ہٹائیں؟ یہ دوبارہ ٹرینڈ کر سکے گا۔"
+    },
+    "ErrorDocument": {
+        "notFoundMessage": "جس صفحے کی آپ تلاش کر رہے ہیں وہ موجود نہیں ہے۔",
+        "notFoundTitle": "نہیں ملا",
+        "profileLookupRateLimit": "ابھی بہت زیادہ پروفائلز تلاش کی گئیں۔ براہ کرم ایک لمحہ انتظار کریں اور دوبارہ کوشش کریں۔",
+        "tooManyRequestsTitle": "بہت زیادہ درخواستیں"
+    },
+    "FriendSearchBox": {
+        "placeholder": "دوست تلاش کریں…"
+    },
+    "GoogleAuthCallbackPage": {
+        "accountCannotBeDeleted": "یہ اکاؤنٹ حذف نہیں کیا جا سکتا۔",
+        "banned": "آپ کے اکاؤنٹ پر پابندی لگا دی گئی ہے۔",
+        "bannedWithReason": "آپ کے اکاؤنٹ پر پابندی لگا دی گئی ہے۔ وجہ: {reason}",
+        "deleted": "آپ کا اکاؤنٹ ہمیشہ کے لیے حذف کر دیا گیا ہے۔",
+        "deletionCancelled": "اکاؤنٹ حذف کرنا منسوخ کر دیا گیا۔",
+        "deletionFailed": "اکاؤنٹ حذف نہیں کیا جا سکا۔ براہ کرم دوبارہ کوشش کریں۔",
+        "emailMismatch": "وہ گوگل اکاؤنٹ آپ کے اکاؤنٹ کے ای میل ایڈریس سے میل نہیں کھاتا۔",
+        "emailUnavailable": "یہ ای میل ایڈریس سائن ان کے لیے دستیاب نہیں ہے۔",
+        "home": "گھر واپس جائیں",
+        "identityFailed": "آپ کی گوگل شناخت کی تصدیق نہیں ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔",
+        "notConfigured": "گوگل سائن ان ترتیب نہیں دیا گیا ہے۔",
+        "rateLimited": "آپ کے نیٹ ورک سے بہت زیادہ سائن ان کوششیں ہوئیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "signin": "سائن ان پر واپس جائیں",
+        "signinCancelled": "گوگل سائن ان منسوخ کر دیا گیا۔",
+        "signinFailed": "گوگل سائن ان مکمل نہیں ہو سکا۔ براہ کرم دوبارہ کوشش کریں۔",
+        "userSettings": "صارف کی ترتیبات پر واپس جائیں",
+        "verificationFailed": "گوگل سائن ان کی تصدیق نہیں ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔"
+    },
+    "ImageItem": {
+        "alt": "تصویر"
+    },
+    "IndexPage": {
+        "rssFeed": "RSS فیڈ"
+    },
+    "InfiniteScroller": {
+        "end": "آپ اختتام تک پہنچ گئے ہیں۔",
+        "failed": "مزید لوڈ نہیں ہو سکا۔ براہ کرم صفحہ دوبارہ لوڈ کریں۔",
+        "loading": "لوڈ ہو رہا ہے"
+    },
+    "LocationsPage": {
+        "postsNear": "{place} کے قریب پوسٹس"
+    },
+    "LoginClient": {
+        "verificationFailed": "تصدیق لوڈ نہیں ہو سکی۔ براہ کرم ایک لمحے میں دوبارہ کوشش کریں۔",
+        "verificationRequired": "اس اکاؤنٹ پر بہت زیادہ کوششیں۔ جاری رکھنے کے لیے براہ کرم تصدیق مکمل کریں۔"
+    },
+    "LoginPage": {
+        "forgotPassword": "پاس ورڈ بھول گئے؟",
+        "signup": "اکاؤنٹ کی ضرورت ہے؟ سائن اپ کریں",
+        "startOver": "دوبارہ شروع کریں"
+    },
+    "MiscellaneousClient": {
+        "checking": "جانچ ہو رہی ہے…",
+        "deleteReportedContent": "اس مواد کو ہمیشہ کے لیے حذف کریں؟ پوسٹ حذف کرنے سے اس کے تمام جوابات بھی ہٹ جاتے ہیں۔",
+        "justNow": "ابھی ابھی",
+        "reloadError": "کچھ غلط ہو گیا۔ صفحہ دوبارہ لوڈ کرنے کی کوشش کریں۔",
+        "report": "رپورٹ کریں",
+        "seeMore": "مزید دیکھیں…",
+        "unbanUser": "اس صارف سے پابندی ہٹائیں؟ ان کا مواد اور لاگ ان دوبارہ کام کریں گے۔"
+    },
+    "OtherUserClient": {
+        "addFriend": "دوست شامل کریں",
+        "ban": "پابندی لگائیں",
+        "banConfirm": "اس صارف پر پابندی لگائیں؟ یہ ان کے تمام مواد کو چھپا دے گا اور ان کا لاگ ان بلاک کر دے گا۔ وہ لاگ ان فارم پر یہ وجہ دیکھیں گے۔",
+        "banPlaceholder": "پابندی کی وجہ (ضروری)",
+        "banned": "پابندی لگی ہوئی",
+        "blockConfirm": "اس صارف کو بلاک کریں؟ اس سے موجودہ دوستی ختم ہو جائے گی۔",
+        "cancelRequest": "درخواست منسوخ کریں",
+        "removeFriendConfirm": "اس دوست کو ہٹائیں؟",
+        "viewFriends": "دوست دیکھیں"
+    },
+    "PinnedPostSection": {
+        "heading": "پن کیا گیا"
+    },
+    "Poll": {
+        "vote": "ووٹ دیں",
+        "votes": {
+            "one": "1 ووٹ",
+            "other": "{count} ووٹ"
+        }
+    },
+    "PostClient": {
+        "autoplay": "خودکار چلائیں",
+        "deleteConfirm": "اس پوسٹ کو حذف کریں؟",
+        "fullscreen": "مکمل اسکرین",
+        "image": "تصویر",
+        "machineTranslation": "مشینی ترجمہ",
+        "mapTitle": "اس جگہ کو نقشے پر دکھائیں",
+        "next": "اگلا",
+        "previous": "پچھلا",
+        "sensitiveMedia": "حساس میڈیا"
+    },
+    "PostEditor": {
+        "altText": "متبادل متن",
+        "cancel": "منسوخ کریں",
+        "save": "محفوظ کریں",
+        "saved": "تبدیلیاں محفوظ ہو گئیں۔",
+        "sensitive": "حساس"
+    },
+    "PostFields": {
+        "altText": "متبادل متن - اس تصویر کو بیان کریں",
+        "contentWarning": "مواد کی وارننگ (اختیاری)",
+        "link": "لنک (اختیاری)",
+        "title": "عنوان (اختیاری)"
+    },
+    "PostMapClient": {
+        "byAuthor": "بذریعہ {name}",
+        "clearPin": "پن صاف کریں",
+        "postHere": "یہاں پوسٹ کریں",
+        "postsNearby": "قریبی پوسٹس",
+        "viewPost": "پوسٹ دیکھیں"
+    },
+    "PostSearchBox": {
+        "placeholder": "پوسٹس تلاش کریں…"
+    },
+    "QuillEditor": {
+        "blockquote": "اقتباس",
+        "bold": "بولڈ",
+        "bulletList": "بلٹ لسٹ",
+        "clearFormatting": "فارمیٹنگ صاف کریں",
+        "codeBlock": "کوڈ بلاک",
+        "formula": "فارمولا",
+        "heading": "عنوان {count}",
+        "inlineCode": "ان لائن کوڈ",
+        "italic": "ترچھا",
+        "link": "لنک",
+        "list": "فہرست",
+        "numberedList": "نمبر شدہ فہرست",
+        "postText": "پوسٹ متن",
+        "strikethrough": "کاٹا ہوا",
+        "underline": "زیر خط"
+    },
+    "Relay": {
+        "alreadySubscribed": "اس ریلے کی پہلے سے ہی رکنیت ہے۔",
+        "blocked": "وہ سرور بلاک ہے۔ اگر آپ اس کی رکنیت لینا چاہتے ہیں تو پہلے بلاک ہٹائیں۔",
+        "invalidAddress": "یہ ریلے ایڈریس نہیں ہے۔",
+        "noSigningKey": "اس سرور کے پاس ActivityPub سائننگ کنجی نہیں ہے، اس لیے یہ کسی چیز کی رکنیت نہیں لے سکتا۔",
+        "notActor": "اس ایڈریس نے Fediverse ایکٹر کے ساتھ جواب نہیں دیا۔",
+        "unknownStyle": "نامعلوم رکنیت کا انداز۔"
+    },
+    "RememberedDeviceList": {
+        "emptyNotice": "کوئی یاد رکھا گیا آلہ نہیں۔ وہ آلات جہاں آپ لاگ ان پر \"مجھے یاد رکھیں\" چیک کرتے ہیں یہاں ظاہر ہوتے ہیں۔"
+    },
+    "RevertEmailPage": {
+        "confirm": "اپنے اکاؤنٹ پر حالیہ ای میل ایڈریس تبدیلی کو واپس کریں؟ یہ آپ کے اکاؤنٹ سے ہر آلے کو بھی سائن آؤٹ کر دیتا ہے۔",
+        "forgotPassword": "پاس ورڈ بھول گئے؟",
+        "invalid": "وہ واپسی لنک غلط ہے یا ختم ہو چکا ہے۔",
+        "login": "لاگ ان کریں",
+        "reverted": "آپ کا ای میل ایڈریس واپس کر دیا گیا ہے اور آپ کے اکاؤنٹ سے ہر آلہ سائن آؤٹ ہو گیا ہے۔",
+        "securityAdvice": "اگر آپ کو یقین نہیں ہے کہ یہ کیسے ہوا، تو دوبارہ لاگ ان کرتے ہی اپنا پاس ورڈ تبدیل کریں۔"
+    },
+    "RouteNotices": {
+        "cannotMessage": "آپ اس صارف کو پیغام نہیں بھیج سکتے۔",
+        "noHashtags": "ابھی تک کوئی ہیش ٹیگ نہیں۔",
+        "passwordResetInvalid": "وہ پاس ورڈ ری سیٹ لنک غلط ہے یا ختم ہو چکا ہے۔"
+    },
+    "SearchClient": {
+        "noBannedUsers": "کوئی پابندی شدہ صارف نہیں۔",
+        "noBannedUsersMatch": "کوئی پابندی شدہ صارف اس تلاش سے میل نہیں کھاتا۔"
+    },
+    "SetupPage": {
+        "databaseAdminNotice": "اگر آپ اس سائٹ کو چلاتے ہیں: .env میں موجود اسناد کا استعمال کرتے ہوئے ڈیٹا بیس کنکشن ناکام ہو رہا ہے - چیک کریں کہ ڈیٹا بیس سرور چل رہا ہے اور وہ اسناد ابھی بھی درست ہیں۔ یہ صفحہ سیٹ اپ وزرڈ کی بجائے اس لیے دکھایا گیا ہے تاکہ ڈیٹا بیس کی بندش کو سائٹ کو دوبارہ ترتیب دینے کے لیے استعمال نہ کیا جا سکے۔",
+        "databaseUnavailable": "سائٹ ابھی اپنے ڈیٹا بیس تک نہیں پہنچ سکتی۔ براہ کرم چند منٹوں میں دوبارہ کوشش کریں۔",
+        "finished": "سیٹ اپ مکمل ہو گیا - ڈیٹا بیس، کم سے کم مراعات یافتہ رن ٹائم اکاؤنٹ، اور .env سب موجود ہیں۔ تین چھوٹے مراحل باقی ہیں:",
+        "fixPrerequisites": "سرور پر ان کو ٹھیک کریں، پھر دوبارہ جانچنے کے لیے اس صفحے کو دوبارہ لوڈ کریں۔",
+        "missingPrerequisites": "خوش آمدید! سیٹ اپ جاری رہنے سے پہلے، اس سرور میں کچھ ضروری چیزیں غائب ہیں:",
+        "welcome": "خوش آمدید! تمام ماحولیاتی جانچیں پاس ہو گئیں۔ اس فارم کو جمع کرانے سے ڈیٹا بیس بنے گا (اگر ابھی موجود نہیں ہے)، بے ترتیب پاس ورڈ کے ساتھ کم سے کم مراعات یافتہ رن ٹائم ڈیٹا بیس اکاؤنٹ، اور اسکیما، پھر یہ سب .env میں لکھ دے گا۔ ایڈمن اسناد صرف پروویژننگ کے لیے ایک بار استعمال ہوتی ہیں اور کبھی محفوظ نہیں کی جاتیں۔"
+    },
+    "StagedPostClient": {
+        "discardConfirm": "اسے ضائع کریں؟ یہ کبھی شائع نہیں ہوئی، اور یہ کوئی کاپی نہیں رکھتا۔",
+        "discarded": "ضائع کر دیا گیا۔",
+        "edit": "ترمیم کریں",
+        "published": "شائع ہو گیا۔"
+    },
+    "StagedPostList": {
+        "emptyNotice": "کوئی ڈرافٹس یا شیڈول شدہ پوسٹس نہیں۔ کمپوزر کے سیو ڈرافٹ اور شیڈول کنٹرول انہیں یہاں رکھتے ہیں۔"
+    },
+    "TestResults": {
+        "installJavaScriptDependencies": "JavaScript ٹیسٹ فعال کرنے کے لیے دستاویز کی جڑ میں `npm install` چلائیں۔",
+        "nodeFatal": "JavaScript ٹیسٹ شروع نہیں ہو سکے۔ Node.js کو ایک مہلک خرابی کا سامنا کرنا پڑا، غالباً ویب سرور پر SELinux پابندیوں کی وجہ سے۔",
+        "nodeUnavailable": "کوئی Node.js نہیں جسے ویب سرور استعمال کر سکے۔ JavaScript ٹیسٹ فعال کرنے کے لیے اسے سسٹم وائیڈ انسٹال کریں (مثلاً dnf install nodejs) - کسی کے ہوم ڈائریکٹری کے اندر ایک ورژن مینیجر (nvm) یہاں نظر نہیں آتا۔"
+    },
+    "Toast": {
+        "dismiss": "برخاست کریں"
+    },
+    "UnsubscribePage": {
+        "continue": "جاری رکھیں",
+        "invalid": "وہ ان سبسکرائب لنک اس سائٹ کا جاری کردہ نہیں ہے۔",
+        "resubscribed": "آپ کے ڈائجسٹ واپس آن ہیں۔ جب آپ کچھ عرصے سے دور ہوں گے اور کچھ بتانے کے لیے ہوگا تو آپ ہم سے سنیں گے۔",
+        "unsubscribed": "مکمل - مزید ڈائجسٹ نہیں۔ آپ کو اب بھی وہ میل ملے گی جو اس سائٹ کو آپ کو بھیجنی ہے، جیسے پاس ورڈ ری سیٹ۔"
+    },
+    "UserClient": {
+        "bio": "ایک بائیو شامل کریں…",
+        "deleteGoogleConfirm": "اپنا اکاؤنٹ حذف کریں؟ آپ کی پوسٹس، جوابات، اور پیغامات ہمیشہ کے لیے چلے جائیں گے - یہ واپس نہیں کیا جا سکتا۔ آپ گوگل سے سائن ان کرکے تصدیق کریں گے۔",
+        "displayName": "ڈسپلے نام",
+        "joined": "{date} کو شامل ہوئے",
+        "save": "محفوظ کریں"
+    },
+    "UserRSSFeed": {
+        "title": "{name} کی پوسٹس بذریعہ {site}"
+    },
+    "UserSearchBox": {
+        "placeholder": "کسی صارف کو تلاش کریں…"
+    },
+    "UserSettings": {
+        "changeEmail": "ای میل تبدیل کریں",
+        "changePassword": "پاس ورڈ تبدیل کریں",
+        "deleteAccount": "اکاؤنٹ حذف کریں",
+        "emailDigests": "ای میل ڈائجسٹ",
+        "encryptedMessages": "خفیہ کردہ پیغامات",
+        "fediverse": "Fediverse",
+        "movingServers": "سرورز منتقل کرنا",
+        "pushNotifications": "پش اطلاعات",
+        "rememberedDevices": "یاد رکھے گئے آلات",
+        "sensitiveMedia": "حساس میڈیا",
+        "sessions": "سیشنز",
+        "theme": "تھیم",
+        "twoFactorAuthentication": "دو مرحلہ تصدیق",
+        "videoCalling": "ویڈیو کالنگ"
+    },
+    "UsersPage": {
+        "fediverseAfter": "",
+        "fediverseBefore": "آپ Fediverse صارفین کی فہرست کو فالو کر سکتے ہیں ",
+        "settingsLink": "صارف کی ترتیبات"
+    },
+    "VerifyEmailPage": {
+        "confirm": "تصدیق کریں کہ آپ اس ای میل ایڈریس کی تصدیق کرنا چاہتے ہیں۔",
+        "continue": "جاری رکھیں",
+        "invalid": "وہ تصدیقی لنک غلط ہے یا ختم ہو چکا ہے۔",
+        "verified": "آپ کے ای میل کی تصدیق ہو گئی ہے۔ اب آپ {site} استعمال کر سکتے ہیں۔"
+    },
+    "VideoCall": {
+        "accept": "قبول کریں",
+        "call": "کال کریں",
+        "calling": "کال ہو رہی ہے…",
+        "cancel": "منسوخ کریں",
+        "connected": "منسلک",
+        "connecting": "منسلک ہو رہا ہے…",
+        "decline": "مسترد کریں",
+        "declined": "آپ کی کال مسترد کر دی گئی۔",
+        "end": "کال ختم کریں",
+        "incoming": "آنے والی ویڈیو کال",
+        "permissionError": "آپ کا کیمرہ یا مائیکروفون استعمال نہیں ہو سکا۔ اس سائٹ کے لیے براؤزر کی اجازت چیک کریں۔"
+    },
+    "ComposerClient": {
+        "addFiles": "فائلیں شامل کریں",
+        "addFilesLabel": "فائلیں شامل کریں - تصاویر، ویڈیو، یا آڈیو",
+        "addLocation": "مقام شامل کریں",
+        "addPoll": "پول شامل کریں",
+        "addSchedule": "شیڈول شامل کریں",
+        "allowMultiple": "ایک سے زیادہ انتخاب کی اجازت دیں",
+        "altTextFor": "{name} کے لیے متبادل متن",
+        "attachmentCount": "{count} / {maximum} فائلیں",
+        "createLegend": "پوسٹ بنائیں",
+        "fileRemovedEmpty": "فائل ہٹا دی گئی۔ اب کچھ منسلک نہیں ہے۔",
+        "filesAttached": "{count} فائلیں منسلک ہیں۔",
+        "filesLeft": "فائل ہٹا دی گئی۔ {count} باقی ہیں۔",
+        "futurePublish": "اشاعت کا وقت مستقبل میں ہونا چاہیے۔",
+        "genericError": "کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
+        "linkPreviewAttached": "لنک پیش منظر تصویر منسلک ہے۔ تصویر ہٹائیں بٹن اسے اتار دیتا ہے۔",
+        "linkPreviewRemoved": "لنک پیش منظر تصویر ہٹا دی گئی۔",
+        "locating": "مقام تلاش ہو رہا ہے…",
+        "locationError": "آپ کا مقام حاصل نہیں ہو سکا۔ اپنے براؤزر کی مقام کی اجازت چیک کریں۔",
+        "markdownActive": "اب سادہ متن Markdown باکس میں لکھ رہے ہیں۔",
+        "markdownPostText": "پوسٹ متن، Markdown میں",
+        "noGeolocation": "آپ کا براؤزر مقام شیئر نہیں کر سکتا۔",
+        "oneFileAttached": "1 فائل منسلک ہے۔ ہر تصویر کے لیے اسے بیان کرنے کا باکس ہے۔",
+        "option": "انتخاب {count}",
+        "placeholder": "آپ کے ذہن میں کیا ہے؟",
+        "plainTextHelp": "سادہ متن۔ Markdown یہاں کام کرتا ہے: لفظ کے گرد ستارے اسے بولڈ یا ترچھا بنا دیتے ہیں، سطر کے شروع میں ہیش عنوان بناتا ہے۔ فارمیٹنگ ٹول بار پر واپس جانے کے لیے نیچے \"رچ ٹیکسٹ استعمال کریں\" بٹن استعمال کریں۔",
+        "poll": "پول",
+        "pollDuration": "پول کتنی دیر چلتا ہے",
+        "pollOption": "پول انتخاب {count}",
+        "post": "پوسٹ کریں",
+        "processing": "آپ کی میڈیا فائلیں پروسیس ہو رہی ہیں اور جب وہ دیکھنے کے لیے تیار ہوں گی تو آپ کو مطلع کیا جائے گا۔ اس صفحے کو چھوڑنا محفوظ ہے۔",
+        "publishDate": "اشاعت کی تاریخ",
+        "publishTime": "اشاعت کا وقت (اختیاری)",
+        "remove": "ہٹائیں",
+        "removeFiles": "فائلیں ہٹائیں",
+        "removeLocation": "مقام ہٹائیں",
+        "removePoll": "پول ہٹائیں",
+        "removeSchedule": "شیڈول ہٹائیں",
+        "replies": "جوابات",
+        "replyLegend": "اس پوسٹ کا جواب دیں",
+        "richTextActive": "اب رچ ٹیکسٹ ایڈیٹر میں لکھ رہے ہیں۔",
+        "richTextHelp": "رچ ٹیکسٹ ایڈیٹر۔ اگر آپ سادہ متن میں لکھنا پسند کریں گے، تو اسے عام ٹیکسٹ باکس میں تبدیل کرنے کے لیے نیچے \"Markdown استعمال کریں\" بٹن استعمال کریں - وہی پوسٹ، جو بھی فارمیٹنگ آپ چاہیں اس کے لیے markdown کے ساتھ لکھی گئی۔",
+        "saveDraft": "ڈرافٹ محفوظ کریں",
+        "savedDraft": "ڈرافٹس میں محفوظ ہو گیا۔",
+        "schedulePost": "پوسٹ شیڈول کریں",
+        "scheduledDraft": "شیڈول ہو گیا - مینو میں ڈرافٹس اور شیڈول شدہ دیکھیں۔",
+        "sensitive": "حساس",
+        "submitFailed": "پوسٹ جمع نہیں ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔",
+        "tooManyFiles": "ایک پوسٹ زیادہ سے زیادہ {count} فائلیں لے جا سکتی ہے - باقی شامل نہیں کی گئیں۔",
+        "useMarkdown": "Markdown استعمال کریں",
+        "useRichText": "رچ ٹیکسٹ استعمال کریں",
+        "writeFirst": "پہلے کچھ لکھیں - ابھی محفوظ کرنے کے لیے کچھ نہیں ہے۔"
+    },
+    "JSONResponse": {
+        "aBanReasonIsRequired": "پابندی کی وجہ درکار ہے۔",
+        "aBodyIsRequired": "ایک باڈی درکار ہے",
+        "aFriendRequestOrFriendshipAlreadyExistsWithThatUser": "اس صارف کے ساتھ دوستی کی درخواست یا دوستی پہلے سے موجود ہے۔",
+        "aMessageAndALanguageAreRequired": "ایک پیغام اور ایک زبان درکار ہیں",
+        "aMessageIsEitherPlaintextOrEncryptedNotBoth": "ایک پیغام یا تو سادہ متن ہے یا خفیہ کردہ، دونوں نہیں۔",
+        "aPollNeedsAQuestionInThePost": "ایک پول کو پوسٹ میں سوال کی ضرورت ہے۔",
+        "aPostAndALanguageAreRequired": "ایک پوسٹ اور زبان درکار ہیں",
+        "aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne": "ایک پوسٹ میں پول، منسلک فائلیں، یا لنک ہو سکتا ہے - ایک سے زیادہ نہیں",
+        "aPostCanHaveEitherAttachedFilesOrALinkNotBoth": "ایک پوسٹ میں یا تو منسلک فائلیں ہو سکتی ہیں یا لنک، دونوں نہیں",
+        "aQuotePostCanCarryImagesButNotVideoOrAudio": "ایک اقتباس پوسٹ تصاویر لے جا سکتی ہے، لیکن ویڈیو یا آڈیو نہیں۔",
+        "aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost": "ایک اقتباس پوسٹ کو اپنے الفاظ کی ضرورت ہے - بغیر تبدیلی کے پوسٹ آگے بھیجنے کے لیے، ری پوسٹ استعمال کریں۔",
+        "addressInUse": "وہ ایڈریس پہلے سے استعمال میں ہے۔",
+        "alreadyLoggedIn": "پہلے سے لاگ ان",
+        "alreadyVerified": "پہلے سے تصدیق شدہ",
+        "altTextTooLong": "متبادل متن بہت لمبا ہے (زیادہ سے زیادہ {count} حروف)",
+        "altTextsDoNotMatchTheUploadedFiles": "متبادل متن اپ لوڈ کردہ فائلوں سے میل نہیں کھاتا",
+        "altTextsMustMapItemsToText": "متبادل متن کو اشیاء کو متن سے جوڑنا چاہیے",
+        "banned": "آپ کے اکاؤنٹ پر پابندی لگا دی گئی ہے۔",
+        "bannedWithReason": "آپ کے اکاؤنٹ پر پابندی لگا دی گئی ہے۔ وجہ: {reason}",
+        "bioMustBe500CharactersOrFewer": "بائیو 500 حروف یا اس سے کم ہونی چاہیے۔",
+        "captchaVerificationFailedPleaseTryAgain": "کیپچا تصدیق ناکام ہو گئی۔ براہ کرم دوبارہ کوشش کریں۔",
+        "chooseFileFirst": "پہلے ایک فائل منتخب کریں۔",
+        "chooseHowLongThePollShouldRun": "منتخب کریں کہ پول کتنی دیر چلنا چاہیے۔",
+        "chooseImageFirst": "پہلے ایک تصویر منتخب کریں۔",
+        "chooseMailTransport": "درج تین ٹرانسپورٹس میں سے ایک منتخب کریں۔",
+        "chooseUsername": "براہ کرم صارف نام منتخب کریں۔",
+        "couldNotDeliverTheFollowRequestToThatServer": "فالو کی درخواست اس سرور تک نہیں پہنچائی جا سکی۔",
+        "credentialsRequired": "صارف نام/ای میل اور پاس ورڈ درکار ہیں۔",
+        "currentPasswordIsIncorrect": "موجودہ پاس ورڈ غلط ہے",
+        "deviceNotFound": "آلہ نہیں ملا",
+        "displayNameMustBe50CharactersOrFewer": "ڈسپلے نام 50 حروف یا اس سے کم ہونا چاہیے۔",
+        "domainNotIp": "اسے IP ایڈریس کی بجائے ڈومین نام کی طرف اشارہ کریں۔",
+        "emailVerificationRequired": "ای میل کی تصدیق درکار ہے",
+        "encryptedMessagingIsNotAvailableOnThisServer": "اس سرور پر خفیہ کردہ پیغام رسانی دستیاب نہیں ہے۔",
+        "enterEmailedCode": "ہم نے آپ کو ای میل کیا کوڈ درج کریں۔",
+        "fediverseSupportIsNotSetUpOnThisServerYet": "اس سرور پر Fediverse سپورٹ ابھی تک ترتیب نہیں دی گئی۔",
+        "fileTooLarge": "آپ کی ایک فائل {size}B اپ لوڈ حد سے بڑی ہے۔",
+        "forbidden": "ممنوع",
+        "givePassword": "براہ کرم اپنا پاس ورڈ دیں۔",
+        "giveThatAMoment": "اسے ایک لمحہ دیں۔",
+        "giveUsernameOrEmail": "براہ کرم اپنا صارف نام یا ای میل دیں۔",
+        "giveValidEmail": "براہ کرم درست ای میل ایڈریس دیں۔",
+        "httpsMisconfigured": "اس سائٹ کو HTTPS کی ضرورت ہے اور یہ غلط ترتیب دی گئی ہے۔ ایڈمنسٹریٹر کو SITE_URL کو https:// URL پر سیٹ کرنا ہوگا۔",
+        "imageProcessingFailed": "وہ تصویر پروسیس نہیں ہو سکی۔ کوئی اور آزمائیں۔",
+        "imageUnreadable": "وہ فائل تصویر کے طور پر نہیں پڑھی جا سکی۔",
+        "incorrectOrExpiredCode": "وہ کوڈ غلط ہے یا ختم ہو چکا ہے۔",
+        "incorrectUsernameEmailOrPassword": "غلط صارف نام/ای میل یا پاس ورڈ۔",
+        "invalidAction": "غلط عمل",
+        "invalidCsrfToken": "غلط CSRF ٹوکن",
+        "invalidDevice": "غلط آلہ",
+        "invalidEmail": "یہ درست ای میل ایڈریس نہیں ہے۔",
+        "invalidLocation": "غلط مقام",
+        "invalidReport": "غلط رپورٹ",
+        "invalidRequest": "غلط درخواست",
+        "invalidSeed": "غلط سیڈ",
+        "invalidSkinTone": "غلط جلد کا رنگ",
+        "invalidTarget": "غلط ہدف",
+        "invalidTheme": "غلط تھیم",
+        "invalidUrl": "غلط URL",
+        "linkTooLong": "وہ لنک بہت لمبا ہے۔",
+        "listTooLong": "وہ فہرست بہت لمبی ہے۔",
+        "malformedEncryptedMessage": "خراب خفیہ کردہ پیغام۔",
+        "malformedKeyBackup": "خراب کنجی بیک اپ۔",
+        "malformedLocation": "خراب مقام",
+        "malformedPublicKey": "خراب عوامی کنجی۔",
+        "malformedRequest": "خراب درخواست",
+        "malformedSubscription": "خراب رکنیت",
+        "maximumFriends": "آپ {count} دوستوں کی زیادہ سے زیادہ حد تک پہنچ گئے ہیں۔",
+        "maximumPinnedPosts": "آپ اپنی زیادہ سے زیادہ {count} پوسٹس پن کر سکتے ہیں۔",
+        "maximumScheduledDays": "پوسٹس زیادہ سے زیادہ {count} دن پہلے شیڈول کی جا سکتی ہیں۔",
+        "messageTooLong": "وہ پیغام بہت لمبا ہے۔",
+        "methodNotAllowed": "طریقہ اجازت شدہ نہیں",
+        "missingQuery": "غائب کیوری",
+        "noLoginInProgressPleaseStartAgain": "کوئی لاگ ان جاری نہیں۔ براہ کرم دوبارہ شروع کریں۔",
+        "noSuchMessage": "ایسا کوئی پیغام نہیں",
+        "noValidHandles": "یہاں کوئی درست ہینڈل نہیں ملے - وہ user@domain کی طرح نظر آنے چاہئیں۔",
+        "notATopic": "موضوع نہیں",
+        "notAccountPassword": "یہ آپ کے اکاؤنٹ کا پاس ورڈ نہیں ہے۔",
+        "notAllowed": "اجازت نہیں",
+        "notAuthorized": "اختیار نہیں",
+        "notCurrentPassword": "یہ آپ کا موجودہ پاس ورڈ نہیں ہے۔",
+        "notFound": "نہیں ملا",
+        "notFriendsWithThatUser": "اس صارف کے ساتھ دوست نہیں",
+        "notLoggedIn": "لاگ ان نہیں",
+        "notSubscribedToThatRelay": "اس ریلے کی رکنیت نہیں لی گئی۔",
+        "notYourPost": "یہ آپ کی پوسٹ نہیں",
+        "notYourRequest": "یہ آپ کی درخواست نہیں",
+        "nothingToTranslate": "ترجمہ کرنے کے لیے کچھ نہیں",
+        "oneOfYourFilesFailedToUploadPleaseTryAgain": "آپ کی ایک فائل اپ لوڈ نہیں ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔",
+        "onlyAPostCarriesMediaToClassify": "صرف ایک پوسٹ درجہ بندی کے لیے میڈیا لے جاتی ہے۔",
+        "passwordMaximum": "زیادہ سے زیادہ 72 حروف استعمال کریں۔",
+        "passwordMinimum": "کم از کم 8 حروف استعمال کریں۔",
+        "pollNeedsOptions": "ایک پول کو کم از کم {count} مختلف انتخاب کی ضرورت ہے۔",
+        "pollNotFound": "پول نہیں ملا",
+        "postHasNoContent": "پوسٹ میں کوئی مواد نہیں",
+        "postNotFound": "پوسٹ نہیں ملی",
+        "postTextIsTooLong": "پوسٹ کا متن بہت لمبا ہے",
+        "pushIsNotConfiguredOnThisServer": "اس سرور پر پش ترتیب نہیں دیا گیا۔",
+        "realDomain": "اسے ایک حقیقی ڈومین نام کی طرف اشارہ کریں۔",
+        "reasonIsTooLong": "وجہ بہت لمبی ہے",
+        "reportNotFound": "رپورٹ نہیں ملی",
+        "requestBodyTooLarge": "درخواست کا باڈی بہت بڑا ہے۔",
+        "serverError": "سرور کی خرابی",
+        "signalTooLarge": "سگنل بہت بڑا",
+        "siteUpgrading": "سائٹ اپ گریڈ ہو رہی ہے۔ براہ کرم چند منٹوں میں دوبارہ کوشش کریں۔",
+        "thatAccountIsOnAnotherServerSoItCannotModerateThisOne": "وہ اکاؤنٹ کسی اور سرور پر ہے، اس لیے یہ اس کی نگرانی نہیں کر سکتا۔",
+        "thatAddressIsTooLong": "وہ ایڈریس بہت لمبا ہے۔",
+        "thatDoesNotLookLikeAServerName": "یہ سرور نام جیسا نہیں لگتا۔",
+        "thatEntityIsNotBanned": "اس اندراج پر پابندی نہیں ہے",
+        "thatIsAFediverseAccountFollowItInstead": "یہ ایک Fediverse اکاؤنٹ ہے - اس کے بجائے اسے فالو کریں۔",
+        "thatIsNotAFediverseAccount": "یہ Fediverse اکاؤنٹ نہیں ہے۔",
+        "thatIsNotALanguageThisSiteHas": "یہ زبان اس سائٹ کے پاس نہیں ہے۔",
+        "thatIsThisServer": "یہ یہی سرور ہے۔",
+        "thatIsTooLongToConvert": "یہ تبدیل کرنے کے لیے بہت لمبا ہے۔",
+        "thatPasswordResetLinkIsInvalidOrHasExpired": "وہ پاس ورڈ ری سیٹ لنک غلط ہے یا ختم ہو چکا ہے۔",
+        "thatReportHasNoDeletableContent": "اس رپورٹ میں کوئی قابل حذف مواد نہیں ہے۔",
+        "thatUserHasAlreadySentYouAFriendRequestAcceptItInstead": "اس صارف نے پہلے ہی آپ کو دوستی کی درخواست بھیجی ہے - اس کے بجائے اسے قبول کریں۔",
+        "thatUserHasReachedTheirFriendLimit": "وہ صارف اپنی دوستوں کی حد تک پہنچ گیا ہے۔",
+        "thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted": "وہ صارف اپنی دوستوں کی حد تک پہنچ گیا ہے، اس لیے یہ درخواست قبول نہیں کی جا سکتی۔",
+        "thatUserIsAlreadyBanned": "اس صارف پر پہلے سے پابندی ہے",
+        "thatUserIsNotBanned": "اس صارف پر پابندی نہیں ہے",
+        "thatVoteCouldNotBeRecorded": "وہ ووٹ ریکارڈ نہیں ہو سکا۔",
+        "thePostBeingQuotedNoLongerExists": "جو پوسٹ اقتباس کی جا رہی ہے وہ اب موجود نہیں ہے۔",
+        "thePublishTimeHasToBeInTheFuture": "اشاعت کا وقت مستقبل میں ہونا چاہیے۔",
+        "theyAreNoLongerInThisConversation": "وہ اب اس گفتگو میں نہیں ہیں۔",
+        "thisAccountCanNoLongerLogIn": "یہ اکاؤنٹ اب لاگ ان نہیں کر سکتا۔",
+        "thisAccountCanTBeDeleted": "یہ اکاؤنٹ حذف نہیں کیا جا سکتا۔",
+        "thisContentCanTBeReported": "اس مواد کی رپورٹ نہیں کی جا سکتی۔",
+        "thisContentHasAlreadyBeenReviewedByAModerator": "اس مواد کا پہلے ہی ایک نگران نے جائزہ لیا ہے۔",
+        "thisConversationCanTTakeEncryptedMessages": "یہ گفتگو خفیہ کردہ پیغامات نہیں لے سکتی۔",
+        "thisMessageCouldNotBeVerified": "اس پیغام کی تصدیق نہیں ہو سکی۔",
+        "thisMessageIsTooLongToTranslate": "یہ پیغام ترجمہ کے لیے بہت لمبا ہے۔",
+        "thisPostIsTooLongToTranslate": "یہ پوسٹ ترجمہ کے لیے بہت لمبی ہے۔",
+        "tooManyAttemptsPleaseTryAgainLater": "بہت زیادہ کوششیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyAttemptsPleaseWaitAMoment": "بہت زیادہ کوششیں۔ براہ کرم ایک لمحہ انتظار کریں۔",
+        "tooManyAvatarChangesInAShortTimePleaseTryAgainLater": "مختصر وقت میں بہت زیادہ اوتار تبدیلیاں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyChangesAtOncePleaseWaitAMoment": "ایک ساتھ بہت زیادہ تبدیلیاں۔ براہ کرم ایک لمحہ انتظار کریں۔",
+        "tooManyChecksPleaseWaitAMoment": "بہت زیادہ جانچیں۔ براہ کرم ایک لمحہ انتظار کریں۔",
+        "tooManyEmailChangesInAShortTimePleaseTryAgainLater": "مختصر وقت میں بہت زیادہ ای میل تبدیلیاں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyFollowRequestsPleaseWaitABitAndTryAgain": "بہت زیادہ فالو کی درخواستیں۔ براہ کرم تھوڑا انتظار کریں اور دوبارہ کوشش کریں۔",
+        "tooManyFollowsPleaseWaitABitAndTryAgain": "بہت زیادہ فالوز۔ براہ کرم تھوڑا انتظار کریں اور دوبارہ کوشش کریں۔",
+        "tooManyLoginAttemptsForThisAccountPleaseTryAgainLater": "اس اکاؤنٹ کے لیے بہت زیادہ لاگ ان کوششیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyLoginAttemptsPleaseTryAgainLater": "بہت زیادہ لاگ ان کوششیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain": "مختصر وقت میں بہت زیادہ پیغامات بھیجے گئے۔ براہ کرم تھوڑا انتظار کریں اور دوبارہ کوشش کریں۔",
+        "tooManyPasswordResetAttemptsPleaseTryAgainLater": "بہت زیادہ پاس ورڈ ری سیٹ کوششیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyPasswordResetRequestsPleaseTryAgainLater": "بہت زیادہ پاس ورڈ ری سیٹ درخواستیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyReportsPleaseTryAgainLater": "بہت زیادہ رپورٹس۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyRequestsPleaseSlowDown": "بہت زیادہ درخواستیں۔ براہ کرم سست ہو جائیں۔",
+        "tooManyRequestsPleaseTryAgainLater": "بہت زیادہ درخواستیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManySearchesInAShortTime": "مختصر وقت میں بہت زیادہ تلاش۔",
+        "tooManySearchesPleaseSlowDown": "بہت زیادہ تلاش۔ براہ کرم سست ہو جائیں۔",
+        "tooManySignups": "آپ کے نیٹ ورک سے بہت زیادہ سائن اپ۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyTranslationsInAShortTimePleaseWaitABitAndTryAgain": "مختصر وقت میں بہت زیادہ تراجم۔ براہ کرم تھوڑا انتظار کریں اور دوبارہ کوشش کریں۔",
+        "tooManyVerificationEmailsSentPleaseTryAgainLater": "بہت زیادہ تصدیقی ای میلز بھیجی گئیں۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain": "مختصر وقت میں بہت زیادہ ویڈیو/آڈیو اپ لوڈز۔ براہ کرم تھوڑا انتظار کریں اور دوبارہ کوشش کریں۔",
+        "translationIsNotAvailableOnThisServer": "اس سرور پر ترجمہ دستیاب نہیں ہے۔",
+        "translationIsNotAvailableRightNowPleaseTryAgainLater": "ابھی ترجمہ دستیاب نہیں ہے۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "twoFactorAuthenticationIsNotOn": "دو مرحلہ تصدیق آن نہیں ہے۔",
+        "unableToCallThisUser": "اس صارف کو کال نہیں کی جا سکتی۔",
+        "unableToFollowThatAccount": "اس اکاؤنٹ کو فالو نہیں کیا جا سکتا۔",
+        "unableToLikeThisPost": "اس پوسٹ کو پسند نہیں کیا جا سکتا",
+        "unableToOpenThisConversation": "یہ گفتگو نہیں کھولی جا سکتی۔",
+        "unableToReplyToThisPost": "اس پوسٹ کا جواب نہیں دیا جا سکتا",
+        "unableToRepostThis": "اسے ری پوسٹ نہیں کیا جا سکتا۔",
+        "unableToSendFriendRequest": "دوستی کی درخواست نہیں بھیجی جا سکتی۔",
+        "unableToSendMessage": "پیغام نہیں بھیجا جا سکتا۔",
+        "unableToVoteOnThisPoll": "اس پول پر ووٹ نہیں دیا جا سکتا",
+        "unknownConversion": "نامعلوم تبدیلی",
+        "unknownTopicType": "نامعلوم موضوع کی قسم",
+        "unlockTheConversationToReportAnEncryptedMessage": "خفیہ کردہ پیغام کی رپورٹ کرنے کے لیے گفتگو کو غیر مقفل کریں۔",
+        "uploadMissing": "وہ اپ لوڈ نہیں پہنچا۔ براہ کرم دوبارہ کوشش کریں۔",
+        "uploadTooLarge": "آپ کا اپ لوڈ بہت بڑا ہے۔ زیادہ سے زیادہ کل اپ لوڈ سائز {size}B ہے۔",
+        "uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater": "اپ لوڈز عارضی طور پر دستیاب نہیں ہیں - سرور میں اسٹوریج کم ہے۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+        "userNotFound": "صارف نہیں ملا",
+        "usernameOrEmailTaken": "وہ صارف نام یا ای میل پہلے سے لیا جا چکا ہے۔",
+        "validHttpLink": "http:// یا https:// لنک دیں۔",
+        "writeSomethingFirst": "پہلے کچھ لکھیں۔",
+        "youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst": "آپ کے پاس پہلے سے ہی 50 ڈرافٹس اور شیڈول شدہ پوسٹس ہیں - پہلے کچھ شائع کریں یا ضائع کریں۔",
+        "youCanTBlockYourself": "آپ خود کو بلاک نہیں کر سکتے۔",
+        "youCanTMessageThisUser": "آپ اس صارف کو پیغام نہیں بھیج سکتے۔",
+        "youCanTMessageYourself": "آپ خود کو پیغام نہیں بھیج سکتے۔",
+        "youCanTRepostYourOwnPost": "آپ اپنی پوسٹ کو ری پوسٹ نہیں کر سکتے۔",
+        "youCanTSendAFriendRequestToYourself": "آپ خود کو دوستی کی درخواست نہیں بھیج سکتے۔",
+        "youReAlreadyFriendsWithThatUser": "آپ پہلے سے ہی اس صارف کے دوست ہیں۔",
+        "youReDoingThatVeryQuicklyPleaseWaitAMoment": "آپ یہ بہت جلدی کر رہے ہیں۔ براہ کرم ایک لمحہ انتظار کریں۔",
+        "youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain": "آپ بہت جلدی پوسٹ کر رہے ہیں۔ براہ کرم ایک لمحہ انتظار کریں اور دوبارہ کوشش کریں۔",
+        "youVeAlreadyReportedThis": "آپ نے پہلے ہی اس کی رپورٹ کر دی ہے۔",
+        "youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore": "آپ نے بغیر جواب کے بہت سارے پیغامات بھیجے ہیں - مزید بھیجنے سے پہلے ان کے جواب کا انتظار کریں۔",
+        "yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain": "آپ کا ایڈیٹر پرانا ہے۔ براہ کرم صفحہ ریفریش کریں اور دوبارہ کوشش کریں۔"
+    }
 }

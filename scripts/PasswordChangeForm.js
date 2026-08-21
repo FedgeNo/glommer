@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -30,7 +31,7 @@ export class PasswordChangeForm {
                 if (!data) return;
 
                 form.reset();
-                Toast.show('Password changed!');
+                Toast.show(Strings.for('ClientStatus').passwordChanged || '');
             } finally {
                 Working.stop(submit_button);
             }

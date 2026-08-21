@@ -1,4 +1,5 @@
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Avatar } from '/scripts/Avatar.js';
 import { UserBio } from '/scripts/UserBio.js';
@@ -91,7 +92,7 @@ export class User {
         if (this.createdAt) {
             const joined = document.createElement('div');
         joined.className = 'UserJoined';
-            joined.textContent = 'Joined ' + RelativeTime.date(this.createdAt);
+            joined.textContent = (Strings.for('UserClient').joined || '').replace('{date}', RelativeTime.date(this.createdAt));
             info.appendWithSpace(joined);
         }
 
@@ -166,21 +167,21 @@ export class User {
         nameInput.className = 'DisplayNameInput';
         nameInput.maxLength = 50;
         nameInput.value = card.dataset.title;
-        nameInput.placeholder = 'Display name';
+        nameInput.placeholder = Strings.for('UserClient').displayName || '';
         card.querySelector('.DisplayName').replaceWith(nameInput);
 
         const bioInput = document.createElement('textarea');
         bioInput.className = 'UserBioInput';
         bioInput.maxLength = 500;
         bioInput.value = card.dataset.description;
-        bioInput.placeholder = 'Add a bio…';
+        bioInput.placeholder = Strings.for('UserClient').bio || '';
         const bio = card.querySelector('.UserBio');
         bio.replaceWith(bioInput);
 
         const save = document.createElement('button');
         save.type = 'button';
         save.className = 'Button ProfileSaveButton';
-        save.textContent = 'Save';
+        save.textContent = Strings.for('UserClient').save || '';
         bioInput.after(save);
 
         nameInput.focus();
@@ -214,11 +215,11 @@ export class User {
 
         save.remove();
         card.classList.remove('Editing');
-        Toast.show('Profile saved.');
+        Toast.show(Strings.for('ClientStatus').profileSaved || '');
     }
 
     static async #confirmGoogleDelete(button) {
-        if (!await Dialog.confirm("Delete your account? Your posts, replies, and messages are gone permanently - this can't be undone. You'll confirm by signing in with Google.")) {
+        if (!await Dialog.confirm(Strings.for('UserClient').deleteGoogleConfirm || '')) {
             return;
         }
         window.location = ClientConfig.siteURL() + '/auth-google?intent=delete';
@@ -231,7 +232,7 @@ export class User {
             Working.stop(button);
             return;
         }
-        button.textContent = 'Sent!';
+        button.textContent = Strings.for('ClientStatus').sent || '';
     }
 
 }

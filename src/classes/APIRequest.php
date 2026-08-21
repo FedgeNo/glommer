@@ -18,13 +18,13 @@ class APIRequest
         $content_length = filter_var($_SERVER['CONTENT_LENGTH'] ?? null, FILTER_VALIDATE_INT);
 
         if (self::JSONBodyTooLarge(is_int($content_length) ? $content_length : null, '')) {
-            JSONResponse::error('Request body is too large.', 413) -> send();
+            JSONResponse::localizedError('requestBodyTooLarge', 413) -> send();
         }
 
         $body = file_get_contents('php://input', false, null, 0, self::MAX_JSON_BODY_BYTES + 1);
 
         if ($body !== false && self::JSONBodyTooLarge(null, $body)) {
-            JSONResponse::error('Request body is too large.', 413) -> send();
+            JSONResponse::localizedError('requestBodyTooLarge', 413) -> send();
         }
     }
 

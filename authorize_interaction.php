@@ -24,7 +24,8 @@ $uri = trim((string) ($_GET['uri'] ?? ''));
 $rate_key = 'authorize-interaction:' . Auth::id();
 
 if (RateLimiter::tooManyAttempts($rate_key, 20, 300)) {
-    ErrorDocument::send(429, 'Too Many Requests', 'Too many profiles looked up just now. Please wait a moment and try again.');
+    $words = Strings::for(ErrorDocument::class);
+    ErrorDocument::send(429, (string) ($words['tooManyRequestsTitle'] ?? ''), (string) ($words['profileLookupRateLimit'] ?? ''));
     exit;
 }
 

@@ -7,23 +7,23 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check() || Auth::id() !== 1) {
-    JSONResponse::error('Not authorized', 403) -> send();
+    JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
 if (!isset($_FILES['frontPageImage'])) {
-    JSONResponse::fieldError('frontPageImage', 'Choose a file first.') -> send();
+    JSONResponse::fieldError('frontPageImage', JSONResponse::localized('chooseFileFirst')) -> send();
 }
 
 if ($_FILES['frontPageImage']['error'] !== UPLOAD_ERR_OK) {
-    JSONResponse::fieldError('frontPageImage', 'That upload did not arrive. Please try again.') -> send();
+    JSONResponse::fieldError('frontPageImage', JSONResponse::localized('uploadMissing')) -> send();
 }
 
 if (!FrontPageImage::updateFromUpload($_FILES['frontPageImage']['tmp_name'])) {
-    JSONResponse::fieldError('frontPageImage', 'That file could not be read as an image.') -> send();
+    JSONResponse::fieldError('frontPageImage', JSONResponse::localized('imageUnreadable')) -> send();
 }
 
 JSONResponse::success(['saved' => true, 'url' => FrontPageImage::URL()]) -> send();

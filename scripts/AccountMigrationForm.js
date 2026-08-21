@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
@@ -35,7 +36,8 @@ export class AccountMigrationForm {
 
                 if (!result) return;
 
-                Toast.show(result.moved ? 'Your followers have been asked to follow you at the new account.' : 'Saved.');
+                const words = Strings.for('ClientStatus');
+                Toast.show(result.moved ? words.followersNotified || '' : words.saved || '');
             } finally {
                 Working.stop(submit);
             }

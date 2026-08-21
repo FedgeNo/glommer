@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { Toast } from '/scripts/Toast.js';
@@ -23,7 +24,8 @@ export class ReportButton {
     }
 
     static async #report(button) {
-        const reason = await Dialog.prompt('Why are you reporting this?', { confirmLabel: 'Report' });
+        const words = Strings.for('ReportButton');
+        const reason = await Dialog.prompt(words.prompt || '', { confirmLabel: words.name || '' });
         if (reason === null) return;
 
         const payload = {
@@ -41,8 +43,8 @@ export class ReportButton {
             // could verify.
             if (button.closest('.Message').classList.contains('Locked')) {
                 Toast.show(MessageCrypto.threadKey() !== null
-                    ? 'This message was encrypted with keys that no longer exist, so it can\'t be verified or reported.'
-                    : 'Unlock the conversation before reporting an encrypted message.');
+                    ? words.unverifiable || ''
+                    : words.unlockFirst || '');
                 return;
             }
 
@@ -54,7 +56,7 @@ export class ReportButton {
         try {
             const result = await Api.post('/api/report', payload);
             if (!result) return;
-            button.textContent = 'Reported';
+            button.textContent = Strings.for('ClientStatus').reported || '';
         } finally {
             Working.stop(button);
         }

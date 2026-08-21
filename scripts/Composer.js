@@ -14,8 +14,6 @@ import { Working } from '/scripts/Working.js';
 import { PostFields } from '/scripts/PostFields.js';
 
 export class Composer extends PostFields {
-    static PLACEHOLDER = "What's on your mind?";
-
     static #instances = new WeakMap();
     #slot = 'main';
     #quill = null;
@@ -40,7 +38,8 @@ export class Composer extends PostFields {
     static mount(form, slot = 'main') {
         if (ClientConfig.get('currentUserId') === null) return;
 
-        const legendText = slot === 'reply' ? 'Reply to this post' : 'Create a post';
+        const words = Strings.for('ComposerClient');
+        const legendText = slot === 'reply' ? words.replyLegend || '' : words.createLegend || '';
 
         form.replaceChildren();
         Composer.#buildEditor(form, legendText);
@@ -146,12 +145,13 @@ export class Composer extends PostFields {
      * file would only be a way for the two to disagree.
      */
     static pollFieldsToElement() {
+        const words = Strings.for('ComposerClient');
         const poll = document.createElement('fieldset');
         poll.className = 'ComposerPoll';
         poll.style.display = 'none';
 
         const legend = document.createElement('legend');
-        legend.textContent = 'Poll';
+        legend.textContent = words.poll || '';
         poll.appendWithSpace(legend);
 
         for (let index = 0; index < ClientConfig.get('pollMaxOptions'); index++) {
@@ -159,8 +159,8 @@ export class Composer extends PostFields {
             option.type = 'text';
             option.className = 'PollOptionInput';
             option.name = 'pollOptions[]';
-            option.placeholder = 'Option ' + (index + 1);
-            poll.appendWithSpace(Composer.fieldLabel(option, 'Poll Option ' + (index + 1)));
+            option.placeholder = (words.option || '').replace('{count}', String(index + 1));
+            poll.appendWithSpace(Composer.fieldLabel(option, (words.pollOption || '').replace('{count}', String(index + 1))));
             poll.appendWithSpace(option);
         }
 
@@ -172,14 +172,14 @@ export class Composer extends PostFields {
         multipleInput.name = 'pollMultiple';
         multipleInput.value = '1';
         multiple.appendWithSpace(multipleInput);
-        multiple.appendWithSpace(document.createTextNode('Allow more than one choice'));
+        multiple.appendWithSpace(document.createTextNode(words.allowMultiple || ''));
 
         poll.appendWithSpace(multiple);
 
         const duration = document.createElement('select');
         duration.className = 'PollDurationSelect';
         duration.name = 'pollDuration';
-        poll.appendWithSpace(Composer.fieldLabel(duration, 'How Long the Poll Runs'));
+        poll.appendWithSpace(Composer.fieldLabel(duration, words.pollDuration || ''));
 
         for (const [label, minutes] of Object.entries(ClientConfig.get('pollDurations') || {})) {
             const choice = document.createElement('option');
@@ -194,6 +194,7 @@ export class Composer extends PostFields {
     }
 
     static #buildEditor(form, legendText) {
+        const words = Strings.for('ComposerClient');
         const fieldset = document.createElement('fieldset');
         fieldset.className = 'ComposerFieldset';
         const legend = document.createElement('legend');
@@ -249,9 +250,7 @@ export class Composer extends PostFields {
         const editorHelp = document.createElement('p');
         editorHelp.className = 'ComposerEditorHelp visually-hidden';
         editorHelp.id = 'ComposerEditorHelp';
-        editorHelp.textContent = 'Rich text editor. If you would rather write in plain text, '
-            + 'use the "Use Markdown" button below to swap this for an ordinary text box - '
-            + 'the same post, written with markdown for any formatting you want.';
+        editorHelp.textContent = words.richTextHelp || '';
         editorColumn.appendWithSpace(editorHelp);
 
         const editorContainer = document.createElement('div');
@@ -264,17 +263,15 @@ export class Composer extends PostFields {
         const markdownInput = document.createElement('textarea');
         markdownInput.className = 'MarkdownInput';
         markdownInput.setAttribute('aria-describedby', 'ComposerMarkdownHelp');
-        markdownInput.placeholder = Composer.PLACEHOLDER;
+        markdownInput.placeholder = words.placeholder || '';
         markdownInput.style.display = 'none';
-        editorColumn.appendWithSpace(Composer.fieldLabel(markdownInput, 'Post Text, in Markdown'));
+        editorColumn.appendWithSpace(Composer.fieldLabel(markdownInput, words.markdownPostText || ''));
         editorColumn.appendWithSpace(markdownInput);
 
         const markdownHelp = document.createElement('p');
         markdownHelp.className = 'ComposerMarkdownHelp visually-hidden';
         markdownHelp.id = 'ComposerMarkdownHelp';
-        markdownHelp.textContent = 'Plain text. Markdown works here: '
-            + 'asterisks around a word make it bold or italic, a hash at the start of a line makes a heading. '
-            + 'Use the "Use Rich Text" button below to go back to the formatting toolbar.';
+        markdownHelp.textContent = words.plainTextHelp || '';
         editorColumn.appendWithSpace(markdownHelp);
 
         // Says what changed, for anybody who cannot see it change: the mode
@@ -305,14 +302,14 @@ export class Composer extends PostFields {
         const commitActions = document.createElement('div');
         commitActions.className = 'ComposerCommitActions';
 
-        const markdownBtn = ToggleButton.build(['Use Markdown', 'Use Rich Text'], 'MarkdownModeButton');
+        const markdownBtn = ToggleButton.build([words.useMarkdown || '', words.useRichText || ''], 'MarkdownModeButton');
         actions.appendWithSpace(markdownBtn);
 
         const removeFilesBtn = document.createElement('button');
         removeFilesBtn.type = 'button';
         removeFilesBtn.className = 'Button ComposerFilesRemoveButton Removing';
         removeFilesBtn.style.display = 'none';
-        removeFilesBtn.textContent = 'Remove Files';
+        removeFilesBtn.textContent = words.removeFiles || '';
         actions.appendWithSpace(removeFilesBtn);
 
         // Named by its class rather than a field name, because it is a picker
@@ -328,7 +325,7 @@ export class Composer extends PostFields {
         // nothing about the keyboard path changes.
         const filePicker = document.createElement('label');
         filePicker.className = 'Button ComposerFilePicker';
-        filePicker.appendWithSpace(document.createTextNode('Add Files'));
+        filePicker.appendWithSpace(document.createTextNode(words.addFiles || ''));
 
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -337,7 +334,7 @@ export class Composer extends PostFields {
         fileInput.accept = 'image/*,video/*,audio/*';
         // Contains the words on the button, so what is announced and what is
         // read are the same control rather than two names for one thing.
-        fileInput.setAttribute('aria-label', 'Add Files - Images, Video, or Audio');
+        fileInput.setAttribute('aria-label', words.addFilesLabel || '');
         filePicker.appendWithSpace(fileInput);
 
         actions.appendWithSpace(filePicker);
@@ -361,7 +358,7 @@ export class Composer extends PostFields {
         sensitiveInput.name = 'sensitive';
         sensitiveInput.value = '1';
         sensitiveToggle.appendWithSpace(sensitiveInput);
-        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+        sensitiveToggle.appendWithSpace(document.createTextNode(words.sensitive || ''));
 
         actions.appendWithSpace(sensitiveToggle);
 
@@ -378,16 +375,16 @@ export class Composer extends PostFields {
         longitudeInput.name = 'longitude';
         form.appendWithSpace(longitudeInput);
 
-        const locationButton = ToggleButton.build(['Add Location', 'Remove Location', 'Locating…'], 'LocationButton');
+        const locationButton = ToggleButton.build([words.addLocation || '', words.removeLocation || '', words.locating || ''], 'LocationButton');
         actions.appendWithSpace(locationButton);
 
-        const pollButton = ToggleButton.build(['Add Poll', 'Remove Poll'], 'ComposerPollButton');
+        const pollButton = ToggleButton.build([words.addPoll || '', words.removePoll || ''], 'ComposerPollButton');
         actions.appendWithSpace(pollButton);
 
         // Drafts and scheduling - text/link posts only; #syncFields puts both
         // away when files or a poll are in play, since those publish through
         // paths a StagedPosts row can't carry.
-        const scheduleButton = ToggleButton.build(['Add Schedule', 'Remove Schedule'], 'ComposerScheduleButton');
+        const scheduleButton = ToggleButton.build([words.addSchedule || '', words.removeSchedule || ''], 'ComposerScheduleButton');
         actions.appendWithSpace(scheduleButton);
 
         // The clock lives in its own row above the buttons, the way the poll
@@ -403,13 +400,13 @@ export class Composer extends PostFields {
         const scheduleDate = document.createElement('input');
         scheduleDate.type = 'date';
         scheduleDate.className = 'ComposerScheduleDate';
-        scheduleRow.appendWithSpace(Composer.fieldLabel(scheduleDate, 'Publish Date'));
+        scheduleRow.appendWithSpace(Composer.fieldLabel(scheduleDate, words.publishDate || ''));
         scheduleRow.appendWithSpace(scheduleDate);
 
         const scheduleTime = document.createElement('input');
         scheduleTime.type = 'time';
         scheduleTime.className = 'ComposerScheduleTime';
-        scheduleRow.appendWithSpace(Composer.fieldLabel(scheduleTime, 'Publish Time (Optional)'));
+        scheduleRow.appendWithSpace(Composer.fieldLabel(scheduleTime, words.publishTime || ''));
         scheduleRow.appendWithSpace(scheduleTime);
 
         form.appendWithSpace(scheduleRow);
@@ -435,10 +432,10 @@ export class Composer extends PostFields {
         const draftButton = document.createElement('button');
         draftButton.type = 'button';
         draftButton.className = 'Button ComposerDraftButton';
-        draftButton.textContent = 'Save Draft';
+        draftButton.textContent = words.saveDraft || '';
         commitActions.appendWithSpace(draftButton);
 
-        const submitBtn = ToggleButton.build(['Post', 'Schedule Post', 'Save Draft'], 'ComposerSubmitButton', false);
+        const submitBtn = ToggleButton.build([words.post || '', words.schedulePost || '', words.saveDraft || ''], 'ComposerSubmitButton', false);
         submitBtn.type = 'submit';
         commitActions.appendWithSpace(submitBtn);
 
@@ -511,7 +508,7 @@ export class Composer extends PostFields {
             this.scheduleTime.value = pad(when.getHours()) + ':' + pad(when.getMinutes());
         }
 
-        ToggleButton.select(this.submitButton, 'Save Draft');
+        ToggleButton.select(this.submitButton, Strings.for('ComposerClient').saveDraft || '');
         this.draftButton.remove();
         this.draftButton = null;
     }
@@ -535,7 +532,8 @@ export class Composer extends PostFields {
         this.scheduleButton.addEventListener('click', () => {
             const hidden = this.scheduleRow.style.display === 'none';
             this.scheduleRow.style.display = hidden ? '' : 'none';
-            ToggleButton.select(this.scheduleButton, hidden ? 'Remove Schedule' : 'Add Schedule');
+            const words = Strings.for('ComposerClient');
+            ToggleButton.select(this.scheduleButton, hidden ? words.removeSchedule || '' : words.addSchedule || '');
             this.scheduleButton.classList.toggle('Removing', hidden);
 
             if (hidden) {
@@ -607,7 +605,7 @@ export class Composer extends PostFields {
         // Editing one, the button only ever saves it - whether it stays a
         // draft or keeps a time is the clock's business, not the button's.
         if (this.#editingDraft()) {
-            ToggleButton.select(this.submitButton, 'Save Draft');
+            ToggleButton.select(this.submitButton, Strings.for('ComposerClient').saveDraft || '');
             this.submitButton.disabled = !this.#formHasContent()
                 || (this.#isScheduling() && !this.#scheduleIsValid());
 
@@ -615,10 +613,10 @@ export class Composer extends PostFields {
         }
 
         if (this.#isScheduling()) {
-            ToggleButton.select(this.submitButton, 'Schedule Post');
+            ToggleButton.select(this.submitButton, Strings.for('ComposerClient').schedulePost || '');
             this.submitButton.disabled = !(this.#scheduleIsValid() && this.#formHasContent());
         } else {
-            ToggleButton.select(this.submitButton, 'Post');
+            ToggleButton.select(this.submitButton, Strings.for('ComposerClient').post || '');
             this.submitButton.disabled = !has_anything;
         }
 
@@ -640,7 +638,7 @@ export class Composer extends PostFields {
         this.scheduleDate.value = '';
         this.scheduleTime.value = '';
         this.scheduleRow.style.display = 'none';
-        ToggleButton.select(this.scheduleButton, 'Add Schedule');
+        ToggleButton.select(this.scheduleButton, Strings.for('ComposerClient').addSchedule || '');
         this.scheduleButton.classList.remove('Removing');
         this.#syncSubmitState();
         this.#syncFields();
@@ -659,7 +657,7 @@ export class Composer extends PostFields {
         if (this.#quill.getText().trim() === ''
             && (this.titleInput?.value.trim() ?? '') === ''
             && (this.linkInput?.value.trim() ?? '') === '') {
-            Toast.show('Write something first - there is nothing to save yet.');
+            Toast.show(Strings.for('ComposerClient').writeFirst || '');
             return;
         }
 
@@ -700,9 +698,8 @@ export class Composer extends PostFields {
                 return;
             }
 
-            Toast.show(publish_at_epoch === null
-                ? 'Saved to Drafts.'
-                : 'Scheduled - see Drafts & Scheduled in the menu.');
+            const words = Strings.for('ComposerClient');
+            Toast.show(publish_at_epoch === null ? words.savedDraft || '' : words.scheduledDraft || '');
 
             this.#form.reset();
             this.#quill.setText('');
@@ -724,7 +721,7 @@ export class Composer extends PostFields {
     }
 
     #createQuill() {
-        const editor = new QuillEditor(this.editorContainer, { placeholder: Composer.PLACEHOLDER });
+        const editor = new QuillEditor(this.editorContainer, { placeholder: Strings.for('ComposerClient').placeholder || '' });
         this.#quill = editor.instance;
 
         // While scheduling, the submit button tracks whether there is
@@ -838,7 +835,7 @@ export class Composer extends PostFields {
                 this.#closePoll();
             } else {
                 this.pollFields.style.display = '';
-                ToggleButton.select(this.pollButton, 'Remove Poll');
+                ToggleButton.select(this.pollButton, Strings.for('ComposerClient').removePoll || '');
                 this.pollButton.classList.add('Removing');
             }
 
@@ -856,7 +853,7 @@ export class Composer extends PostFields {
         if (!this.pollButton || !this.pollFields) return;
 
         this.pollFields.style.display = 'none';
-        ToggleButton.select(this.pollButton, 'Add Poll');
+        ToggleButton.select(this.pollButton, Strings.for('ComposerClient').addPoll || '');
         this.pollButton.classList.remove('Removing');
 
         for (const option of this.pollFields.querySelectorAll('[name="pollOptions[]"]')) {
@@ -932,7 +929,7 @@ export class Composer extends PostFields {
 
         // The image arriving beside the editor is silent, and the button that
         // takes it off is nothing anybody would know to look for.
-        this.#announce('Link preview image attached. The Remove Image button takes it off.');
+        this.#announce(Strings.for('ComposerClient').linkPreviewAttached || '');
     }
 
     async #discardStagedImage() {
@@ -942,7 +939,7 @@ export class Composer extends PostFields {
         this.linkImagePreview.style.display = 'none';
         this.linkImageThumb.src = '';
         if (seed) {
-            this.#announce('Link preview image removed.');
+            this.#announce(Strings.for('ComposerClient').linkPreviewRemoved || '');
             await Api.post('/api/discard-link-image', { seed });
         }
     }
@@ -961,7 +958,8 @@ export class Composer extends PostFields {
         this.fileInput.addEventListener('change', () => {
             for (const file of this.fileInput.files) {
                 if (this.#attachments.length >= Composer.MAX_FILES) {
-                    Toast.show('A post can carry at most ' + Composer.MAX_FILES + ' files - the rest were not added.');
+                    const message = (Strings.for('ComposerClient').tooManyFiles || '').replace('{count}', String(Composer.MAX_FILES));
+                    Toast.show(message);
                     break;
                 }
 
@@ -1026,7 +1024,8 @@ export class Composer extends PostFields {
         row.appendWithSpace(name);
 
         if (file.type.startsWith('image/')) {
-            const [altLabel, altInput] = Composer.altTextField('Alt Text for ' + file.name);
+            const label = (Strings.for('ComposerClient').altTextFor || '').replace('{name}', file.name);
+            const [altLabel, altInput] = Composer.altTextField(label);
             entry.altInput = altInput;
             row.appendWithSpace(altLabel);
             row.appendWithSpace(altInput);
@@ -1035,7 +1034,7 @@ export class Composer extends PostFields {
         const remove = document.createElement('button');
         remove.type = 'button';
             remove.className = 'Button ComposerAttachmentRemoveButton Removing';
-        remove.textContent = 'Remove';
+        remove.textContent = Strings.for('ComposerClient').remove || '';
         remove.addEventListener('click', () => this.#removeAttachment(entry));
         row.appendWithSpace(remove);
 
@@ -1045,9 +1044,10 @@ export class Composer extends PostFields {
 
         // A file appearing in a list below is silent, and there is an alt text
         // box that came with it which nobody would know to look for.
+        const words = Strings.for('ComposerClient');
         this.#announce(this.#attachments.length === 1
-            ? '1 file attached. Each image has a box for describing it.'
-            : this.#attachments.length + ' files attached.');
+            ? words.oneFileAttached || ''
+            : (words.filesAttached || '').replace('{count}', String(this.#attachments.length)));
     }
 
     #removeAttachment(entry) {
@@ -1059,9 +1059,10 @@ export class Composer extends PostFields {
         this.#attachments = this.#attachments.filter((candidate) => candidate !== entry);
         this.#syncAttachmentCount();
 
+        const words = Strings.for('ComposerClient');
         this.#announce(this.#attachments.length === 0
-            ? 'File removed. Nothing attached now.'
-            : 'File removed. ' + this.#attachments.length + ' left.');
+            ? words.fileRemovedEmpty || ''
+            : (words.filesLeft || '').replace('{count}', String(this.#attachments.length)));
 
         if (this.#attachments.length === 0) {
             this.#form.querySelector('.ComposerAttachmentList')?.remove();
@@ -1105,18 +1106,18 @@ export class Composer extends PostFields {
         }
 
         if (!navigator.geolocation) {
-            Toast.show('Your browser can\'t share a location.');
+            Toast.show(Strings.for('ComposerClient').noGeolocation || '');
             return;
         }
 
         Working.start(this.locationButton);
-        ToggleButton.select(this.locationButton, 'Locating…');
+        ToggleButton.select(this.locationButton, Strings.for('ComposerClient').locating || '');
 
         navigator.geolocation.getCurrentPosition(
             (position) => this.#setLocation(position.coords.latitude, position.coords.longitude),
             () => {
                 this.#setLocation(null, null);
-                Toast.show('Could not get your location. Check your browser\'s location permission.');
+                Toast.show(Strings.for('ComposerClient').locationError || '');
             },
             { enableHighAccuracy: true, timeout: 10000 }
         );
@@ -1127,7 +1128,8 @@ export class Composer extends PostFields {
         this.latitudeInput.value = active ? latitude : '';
         this.longitudeInput.value = active ? longitude : '';
         Working.stop(this.locationButton);
-        ToggleButton.select(this.locationButton, active ? 'Remove Location' : 'Add Location');
+        const words = Strings.for('ComposerClient');
+        ToggleButton.select(this.locationButton, active ? words.removeLocation || '' : words.addLocation || '');
         this.locationButton.classList.toggle('Removing', active);
 
         // Announced however the location changed - the button, the map, or a
@@ -1181,9 +1183,12 @@ export class Composer extends PostFields {
         const counter = this.#form.querySelector('.ComposerAttachmentCount');
 
         if (counter) {
+            const template = Strings.for('ComposerClient').attachmentCount || '';
             counter.textContent = this.#attachments.length === 0
                 ? ''
-                : this.#attachments.length + ' / ' + Composer.MAX_FILES + ' files';
+                : template
+                    .replace('{count}', String(this.#attachments.length))
+                    .replace('{maximum}', String(Composer.MAX_FILES));
         }
     }
 
@@ -1222,7 +1227,8 @@ export class Composer extends PostFields {
         this.markdownMode = !this.markdownMode;
         this.markdownInput.style.display = this.markdownMode ? '' : 'none';
         this.editorContainer.style.display = this.markdownMode ? 'none' : '';
-        ToggleButton.select(this.markdownButton, this.markdownMode ? 'Use Rich Text' : 'Use Markdown');
+        const words = Strings.for('ComposerClient');
+        ToggleButton.select(this.markdownButton, this.markdownMode ? words.useRichText || '' : words.useMarkdown || '');
 
         // Quill's toolbar is its own element beside the editor, and it means
         // nothing while the textarea is the one being written in.
@@ -1232,9 +1238,7 @@ export class Composer extends PostFields {
             toolbar.style.display = this.markdownMode ? 'none' : '';
         }
 
-        this.#announce(this.markdownMode
-            ? 'Now writing in plain text with markdown.'
-            : 'Now writing in the rich text editor.');
+        this.#announce(this.markdownMode ? words.markdownActive || '' : words.richTextActive || '');
 
         // The box they were in has just been hidden, which leaves focus
         // nowhere. Put it in the one that replaced it, at the same job.
@@ -1256,7 +1260,7 @@ export class Composer extends PostFields {
 
         if (scheduled_epoch !== null) {
             if (scheduled_epoch * 1000 <= Date.now() + 60000) {
-                Toast.show('The publish time has to be in the future.');
+                Toast.show(Strings.for('ComposerClient').futurePublish || '');
                 return;
             }
 
@@ -1306,7 +1310,7 @@ export class Composer extends PostFields {
             };
 
             if (xhr.status < 200 || xhr.status >= 300) {
-                const msg = getErrorMsg(xhr.responseText) || 'Could not submit the post. Please try again.';
+                const msg = getErrorMsg(xhr.responseText) || Strings.for('ComposerClient').submitFailed || '';
                 Toast.show(msg);
                 return;
             }
@@ -1316,7 +1320,7 @@ export class Composer extends PostFields {
                 data = JSON.parse(xhr.responseText);
             } catch (error) {
                 console.error('Composer: invalid JSON response', xhr.responseText);
-                Toast.show('Something went wrong. Please try again.');
+                Toast.show(Strings.for('ComposerClient').genericError || '');
                 return;
             }
 
@@ -1374,7 +1378,7 @@ export class Composer extends PostFields {
         }));
 
         if (data.response.processing) {
-            Toast.show("Your media files are processing and you will be notified when they're ready to view. It's safe to leave this page.");
+            Toast.show(Strings.for('ComposerClient').processing || '');
             return;
         }
 
@@ -1387,7 +1391,7 @@ export class Composer extends PostFields {
                 if (!document.querySelector('.RepliesHeading')) {
                     const heading = document.createElement('h2');
                     heading.className = 'RepliesHeading fw-bold text-lg';
-                    heading.textContent = 'Replies';
+                    heading.textContent = Strings.for('ComposerClient').replies || '';
                     replyList.insertAdjacentElement('beforebegin', heading);
                 }
                 replyList.insertBeforeWithSpace(list_item(element), replyList.firstChild);

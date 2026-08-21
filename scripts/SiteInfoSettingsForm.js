@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -16,10 +17,9 @@ export class SiteInfoSettingsForm {
             const path = '/api/' + field_name.replace(/Text$/, '') + '-settings';
             const data = await Api.post(path, { [field_name]: field.value });
             Working.stop(submit_button);
-            if (data) Toast.show('Settings saved.');
+            if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
 }
 
 ReadyHandler.add(SiteInfoSettingsForm.init);
-

@@ -13,7 +13,7 @@ $page = new Page(['needsEditor' => $current_user !== null, 'needsMath' => true, 
 // than letting a crawler elect a random feed picture to stand for the site.
 $page -> image = FrontPageImage::URL();
 
-$page -> rssLink = new RSSLink(ServerURL::absolute('/feed.xml'), 'RSS Feed');
+$page -> rssLink = new RSSLink(ServerURL::absolute('/feed.xml'), (string) (Strings::for('IndexPage')['rssFeed'] ?? ''));
 
 // Above the composer, because it explains the composer. Gone for good once
 // its checkbox says so.

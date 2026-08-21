@@ -37,7 +37,7 @@ if ($place_id !== null) {
     $page -> addContent(new NearbyFeedSection([
         'latitude' => (float) $place -> latitude,
         'longitude' => (float) $place -> longitude,
-        'heading' => 'Posts near ' . $place -> label(),
+        'heading' => str_replace('{place}', $place -> label(), (string) (Strings::for('LocationsPage')['postsNear'] ?? '')),
     ]));
 
     $page -> send();

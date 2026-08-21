@@ -1,5 +1,6 @@
 import { expandInDOM } from '/scripts/EmojiShortcode.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { Linkifier } from '/scripts/Linkifier.js';
 
 export class DeltaRenderer {
@@ -334,7 +335,7 @@ export class DeltaRenderer {
         const anchor = document.createElement('a');
         anchor.className = 'SeeMore';
         anchor.href = url;
-        anchor.textContent = 'See More…';
+        anchor.textContent = Strings.for('MiscellaneousClient').seeMore || '';
         return anchor;
     }
 

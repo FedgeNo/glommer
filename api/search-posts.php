@@ -7,20 +7,20 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 // The most expensive search here - full text across every post - and the one
 // with an offset the caller chooses, so a loop walks the whole corpus.
 if (SearchRateLimiter::tooManyAttempts('posts', (int) Auth::id())) {
-    JSONResponse::error('Too many searches. Please slow down.', 429) -> send();
+    JSONResponse::localizedError('tooManySearchesPleaseSlowDown', 429) -> send();
 }
 
 $query = trim((string) ($payload['q'] ?? ''));

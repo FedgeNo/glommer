@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 // Already logged in: there's nothing to verify, and honoring a leftover
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // account by guessing that account's code. A completed login clears the
 // pending state (Auth::login), so this only catches a stale/crossed request.
 if (Auth::check()) {
-    JSONResponse::error('Already logged in', 403) -> send();
+    JSONResponse::localizedError('alreadyLoggedIn', 403) -> send();
 }
 
 // Who's mid-login is carried in the session by api/login.php - a pending
@@ -25,7 +25,7 @@ if (Auth::check()) {
 $user_id = $_SESSION['pending2FAUserId'] ?? null;
 
 if (!is_int($user_id)) {
-    JSONResponse::error('No login in progress. Please start again.', 401) -> send();
+    JSONResponse::localizedError('noLoginInProgressPleaseStartAgain', 401) -> send();
 }
 
 // Rate-limit code guesses per account, on top of TwoFactor's own per-code
@@ -34,7 +34,7 @@ if (!is_int($user_id)) {
 $rate_key = 'verify-2fa:' . $user_id;
 
 if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
-    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -42,7 +42,7 @@ $payload = is_array($payload) ? $payload : [];
 $code = trim((string) ($payload['code'] ?? ''));
 
 if ($code === '') {
-    JSONResponse::fieldError('code', 'Enter the code we emailed you.') -> send();
+    JSONResponse::fieldError('code', JSONResponse::localized('enterEmailedCode')) -> send();
 }
 
 // One field, either credential: the short emailed code or one of the
@@ -51,7 +51,7 @@ if ($code === '') {
 if (!TwoFactor::verifyCode($user_id, $code) && !TwoFactor::verifyRecoveryCode($user_id, $code)) {
     RateLimiter::recordAttempt($rate_key);
 
-    JSONResponse::fieldError('code', 'That code is incorrect or has expired.') -> send();
+    JSONResponse::fieldError('code', JSONResponse::localized('incorrectOrExpiredCode')) -> send();
 }
 
 $user = User::load($user_id);
@@ -59,7 +59,7 @@ $user = User::load($user_id);
 if ($user === null || $user -> banned) {
     unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
 
-    JSONResponse::error('This account can no longer log in.', 403) -> send();
+    JSONResponse::localizedError('thisAccountCanNoLongerLogIn', 403) -> send();
 }
 
 $remember_me = ($_SESSION['pending2FARememberMe'] ?? false) === true;

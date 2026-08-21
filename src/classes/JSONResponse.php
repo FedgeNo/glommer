@@ -40,6 +40,25 @@ class JSONResponse
     }
 
     /**
+     * A translated refusal named by the stable key shared by every endpoint.
+     *
+     * @param array<string, string|int|float> $values
+     */
+    public static function localizedError(string $key, int $status_code = 400, array $values = []): self
+    {
+        return self::error(self::localized($key, $values), $status_code);
+    }
+
+    public static function localized(string $key, array $values = []): string
+    {
+        $message = (string) (Strings::for(self::class)[$key] ?? '');
+        foreach ($values as $name => $value) {
+            $message = str_replace('{' . $name . '}', (string) $value, $message);
+        }
+        return $message;
+    }
+
+    /**
      * A refusal that knows which inputs caused it.
      *
      * The summary is what a client with no form to mark up falls back to, and

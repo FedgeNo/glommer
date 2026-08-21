@@ -16,22 +16,24 @@ $page = new Page(['title' => (string) (Strings::for('PageTitle')['verifyEmail'] 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $token !== '' ? EmailVerification::verify($token) : null;
 
-    $page -> addContent(new Paragraph($user_id !== null
-        ? 'Your email has been verified. You can now use ' . Config::get('siteTitle') . '.'
-        : 'That verification link is invalid or has expired.'));
-    $page -> addContent(new Anchor(ServerURL::absolute('/'), 'Continue'));
+    $words = Strings::for('VerifyEmailPage');
+    $message = $user_id !== null
+        ? str_replace('{site}', (string) Config::get('siteTitle'), (string) ($words['verified'] ?? ''))
+        : (string) ($words['invalid'] ?? '');
+    $page -> addContent(new Paragraph($message));
+    $page -> addContent(new Anchor(ServerURL::absolute('/'), (string) ($words['continue'] ?? '')));
 
     $page -> send();
     exit;
 }
 
 if ($token === '') {
-    $page -> addContent(new Paragraph('That verification link is invalid or has expired.'));
+    $page -> addContent(new Paragraph((string) (Strings::for('VerifyEmailPage')['invalid'] ?? '')));
     $page -> send();
     exit;
 }
 
-$page -> addContent(new Paragraph('Confirm that you want to verify this email address.'));
+$page -> addContent(new Paragraph((string) (Strings::for('VerifyEmailPage')['confirm'] ?? '')));
 $page -> addContent(new EmailVerifyForm($token));
 
 $page -> send();

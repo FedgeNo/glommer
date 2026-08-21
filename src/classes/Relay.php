@@ -111,30 +111,31 @@ SELECT `inboxURL`
      */
     public static function subscribe(string $actor_uri, string $follow_object): ?string
     {
+        $words = Strings::for(self::class);
         if (!URL::isValidHTTPURL($actor_uri)) {
-            return 'That is not a relay address.';
+            return (string) ($words['invalidAddress'] ?? '');
         }
 
         if (!in_array($follow_object, [self::FOLLOW_PUBLIC, self::FOLLOW_ACTOR], true)) {
-            return 'Unknown subscription style.';
+            return (string) ($words['unknownStyle'] ?? '');
         }
 
         if (RemoteServer::isBlockedURL($actor_uri)) {
-            return 'That server is blocked. Unblock it first if you mean to subscribe to it.';
+            return (string) ($words['blocked'] ?? '');
         }
 
         if (self::byActorURI($actor_uri) !== null) {
-            return 'Already subscribed to that relay.';
+            return (string) ($words['alreadySubscribed'] ?? '');
         }
 
         if (ActivityPubKeys::privateKeyPem() === null) {
-            return 'This server has no ActivityPub signing key, so it cannot subscribe to anything.';
+            return (string) ($words['noSigningKey'] ?? '');
         }
 
         $actor = RemoteActor::fetch($actor_uri);
 
         if ($actor === null) {
-            return 'That address did not answer with a Fediverse actor.';
+            return (string) ($words['notActor'] ?? '');
         }
 
         $instance_actor = ServerURL::absolute('/activitypub/actor');

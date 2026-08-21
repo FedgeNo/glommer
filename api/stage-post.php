@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/api-init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 Auth::requireLogin();
@@ -14,7 +14,7 @@ $current_user = Auth::user();
 $payload = json_decode((string) file_get_contents('php://input'), true);
 
 if (!is_array($payload)) {
-    JSONResponse::error('Malformed request', 422) -> send();
+    JSONResponse::localizedError('malformedRequest', 422) -> send();
 }
 
 // A hoard of staged posts is a hoard of future publishes; fifty is a queue,
@@ -26,7 +26,7 @@ SELECT COUNT(*) AS `total`
 ', 'PostCountData', 'i', (int) $current_user -> userId);
 
 if ((int) $existing -> total >= 50) {
-    JSONResponse::error('You already have 50 drafts and scheduled posts - publish or discard some first.', 422) -> send();
+    JSONResponse::localizedError('youAlreadyHave50DraftsAndScheduledPostsPublishOrDiscardSomeFirst', 422) -> send();
 }
 
 // Mirrors api/create-post.php's rules for the fields a staged post can carry.
@@ -43,18 +43,18 @@ $description_delta_value = null;
 
 if ($description_raw !== '') {
     if (strlen($description_raw) > 262144) {
-        JSONResponse::error('Post text is too long', 422) -> send();
+        JSONResponse::localizedError('postTextIsTooLong', 422) -> send();
     }
 
     if (!is_array(json_decode($description_raw, true))) {
-        JSONResponse::error('Your editor is out of date. Please refresh the page and try again.', 426) -> send();
+        JSONResponse::localizedError('yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain', 426) -> send();
     }
 
     $description_ops = Delta::sanitize(Delta::decode($description_raw));
     $description_plaintext = Delta::plainText($description_ops);
 
     if (strlen($description_plaintext) > 65535) {
-        JSONResponse::error('Post text is too long', 422) -> send();
+        JSONResponse::localizedError('postTextIsTooLong', 422) -> send();
     }
 
     if ($description_plaintext !== '') {
@@ -71,7 +71,7 @@ if ($link_url !== '') {
     }
 
     if (!preg_match('/^https?:\/\//i', $link_url) || strlen($link_url) > 255 || !URL::isValidHTTPURL($link_url)) {
-        JSONResponse::fieldError('linkURL', 'Point this at a real domain name.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('realDomain')) -> send();
     }
 
     $link_url_value = $link_url;
@@ -80,7 +80,7 @@ if ($link_url !== '') {
 $title_value = $title !== '' ? $title : null;
 
 if ($title_value === null && $description_value === null && $link_url_value === null) {
-    JSONResponse::error('Post has no content', 422) -> send();
+    JSONResponse::localizedError('postHasNoContent', 422) -> send();
 }
 
 $latitude = isset($payload['latitude']) && $payload['latitude'] !== '' ? (float) $payload['latitude'] : null;
@@ -88,7 +88,7 @@ $longitude = isset($payload['longitude']) && $payload['longitude'] !== '' ? (flo
 
 if (($latitude === null) !== ($longitude === null)
     || ($latitude !== null && (abs($latitude) > 90 || abs($longitude) > 180))) {
-    JSONResponse::error('Malformed location', 422) -> send();
+    JSONResponse::localizedError('malformedLocation', 422) -> send();
 }
 
 // The clock, when there is one: seconds since the epoch, converted here to
@@ -100,11 +100,11 @@ if (isset($payload['publishAtEpoch']) && $payload['publishAtEpoch'] !== '' && $p
     $epoch = (int) $payload['publishAtEpoch'];
 
     if ($epoch <= time() + 60) {
-        JSONResponse::error('The publish time has to be in the future.', 422) -> send();
+        JSONResponse::localizedError('thePublishTimeHasToBeInTheFuture', 422) -> send();
     }
 
     if ($epoch > time() + StagedPost::MAX_DAYS_AHEAD * 86400) {
-        JSONResponse::error('Posts can be scheduled at most ' . StagedPost::MAX_DAYS_AHEAD . ' days ahead.', 422) -> send();
+        JSONResponse::localizedError('maximumScheduledDays', 422, ['count' => StagedPost::MAX_DAYS_AHEAD]) -> send();
     }
 
     $publish_at_value = date('Y-m-d H:i:s', $epoch);

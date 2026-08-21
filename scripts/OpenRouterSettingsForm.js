@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -32,7 +33,7 @@ export class OpenRouterSettingsForm {
             }
 
             if (data !== null) {
-                Toast.show('OpenRouter settings saved.');
+                Toast.show(Strings.for('ClientStatus').openRouterSaved || '');
             }
         });
     }

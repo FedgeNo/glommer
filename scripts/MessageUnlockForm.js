@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { MessageCrypto } from '/scripts/MessageCrypto.js';
 import { Message } from '/scripts/Message.js';
 import { Toast } from '/scripts/Toast.js';
@@ -28,7 +29,7 @@ export class MessageUnlockForm {
             const private_jwk = await MessageCrypto.unwrapPrivateKey(wrapped, passphrase_input.value);
 
             if (private_jwk === null) {
-                Toast.show('That passphrase doesn\'t unlock your messages.');
+                Toast.show(Strings.for('ClientStatus').unlockFailed || '');
                 passphrase_input.focus();
                 return;
             }

@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -40,7 +40,7 @@ SELECT `requesterId`
 
 if ($friendship === null) {
     mysqli_rollback(DB::connection());
-    JSONResponse::error('Not your request', 403) -> send();
+    JSONResponse::localizedError('notYourRequest', 403) -> send();
 }
 
 $requester_id = (int) $friendship -> requesterId;
@@ -61,12 +61,12 @@ foreach ($counted_users as $counted_user) {
 
 if (($friend_counts[$current_user_id] ?? 0) >= $max_friends) {
     mysqli_rollback(DB::connection());
-    JSONResponse::error('You\'ve reached the maximum of ' . $max_friends . ' friends.', 422) -> send();
+    JSONResponse::localizedError('maximumFriends', 422, ['count' => $max_friends]) -> send();
 }
 
 if (($friend_counts[$requester_id] ?? 0) >= $max_friends) {
     mysqli_rollback(DB::connection());
-    JSONResponse::error('That user has reached their friend limit, so this request can\'t be accepted.', 422) -> send();
+    JSONResponse::localizedError('thatUserHasReachedTheirFriendLimitSoThisRequestCanTBeAccepted', 422) -> send();
 }
 
 $accept_stmt = DB::run('
@@ -77,7 +77,7 @@ UPDATE `Friendships`
 
 if (mysqli_stmt_affected_rows($accept_stmt) === 0) {
     mysqli_rollback(DB::connection());
-    JSONResponse::error('Not your request', 403) -> send();
+    JSONResponse::localizedError('notYourRequest', 403) -> send();
 }
 
 DB::run('

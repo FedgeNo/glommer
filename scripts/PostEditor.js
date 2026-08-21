@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Post } from '/scripts/Post.js';
@@ -118,7 +119,7 @@ export class PostEditor extends PostFields {
                 thumb.alt = '';
                 row.appendWithSpace(thumb);
 
-                const [altLabel, altInput] = PostEditor.altTextField('Alt text', item.dataset.altText || '');
+                const [altLabel, altInput] = PostEditor.altTextField(Strings.for('PostEditor').altText || '', item.dataset.altText || '');
                 row.appendWithSpace(altLabel);
                 row.appendWithSpace(altInput);
 
@@ -153,7 +154,7 @@ export class PostEditor extends PostFields {
         sensitiveInput.name = 'sensitive';
         sensitiveInput.checked = data.sensitive === '1';
         sensitiveToggle.appendWithSpace(sensitiveInput);
-        sensitiveToggle.appendWithSpace(document.createTextNode('Sensitive'));
+        sensitiveToggle.appendWithSpace(document.createTextNode(Strings.for('PostEditor').sensitive || ''));
 
         actions.appendWithSpace(sensitiveToggle);
 
@@ -168,14 +169,14 @@ export class PostEditor extends PostFields {
         const cancelButton = document.createElement('button');
         cancelButton.type = 'button';
         cancelButton.className = 'Button EditFormCancelButton';
-        cancelButton.textContent = 'Cancel';
+        cancelButton.textContent = Strings.for('PostEditor').cancel || '';
         cancelButton.addEventListener('click', () => this.#cancel());
         actions.appendWithSpace(cancelButton);
 
         const saveButton = document.createElement('button');
         saveButton.type = 'submit';
         saveButton.className = 'Button';
-        saveButton.textContent = 'Save';
+        saveButton.textContent = Strings.for('PostEditor').save || '';
         actions.appendWithSpace(saveButton);
 
         form.appendWithSpace(actions);
@@ -269,7 +270,7 @@ export class PostEditor extends PostFields {
         this.#form = null;
         this.#quillEditor = null;
 
-        Toast.show('Changes saved.');
+        Toast.show(Strings.for('PostEditor').saved || '');
     }
 }
 

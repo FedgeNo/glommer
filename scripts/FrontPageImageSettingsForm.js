@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -13,7 +14,7 @@ export class FrontPageImageSettingsForm {
             const file_input = form.querySelector('input[type="file"][name="frontPageImage"]');
 
             if (!file_input.files.length) {
-                Toast.show('Choose a file first.');
+                Toast.show(Strings.for('ClientStatus').chooseFile || '');
 
                 return;
             }
@@ -29,7 +30,7 @@ export class FrontPageImageSettingsForm {
 
                 if (!data) return;
 
-                Toast.show('Settings saved.');
+                Toast.show(Strings.for('ClientStatus').settingsSaved || '');
 
                 // First upload has no preview element yet; a reload-free page
                 // gets one the next time the form renders, and the cache-bust

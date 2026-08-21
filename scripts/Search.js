@@ -246,10 +246,7 @@ export class Search {
                 // list just empties and the heading is the only thing left,
                 // which reads as the page having failed rather than answered.
                 if (items.length === 0) {
-                    const words = Strings.for('UserSearchList', {
-                        noSuggestions: 'No suggestions right now - suggestions come from the friends of people you are already friends with. Search above to find someone by name.',
-                        noMatches: 'Nobody here matches that.',
-                    });
+                    const words = Strings.for('UserSearchList');
                     const notice = document.createElement('p');
                     notice.className = 'Notice';
                     notice.textContent = searching ? words.noMatches : words.noSuggestions;
@@ -322,9 +319,7 @@ export class Search {
             countResults: data => data.grouped ? null : data.articles.length,
             onResponse: (input, data) => {
                 if (data.articles.length === 0) {
-                    const words = Strings.for('HelpSearch', {
-                        noMatches: 'No help articles matched your search.',
-                    });
+                    const words = Strings.for('HelpSearch');
                     const empty = document.createElement('p');
             empty.className = 'Notice';
                     empty.textContent = words.noMatches;
@@ -356,7 +351,8 @@ export class Search {
                 if (items.length === 0) {
                     const notice = document.createElement('p');
             notice.className = 'Notice';
-                    notice.textContent = input.value.trim() === '' ? 'No banned users.' : 'No banned users match that search.';
+                    const words = Strings.for('SearchClient');
+                    notice.textContent = input.value.trim() === '' ? words.noBannedUsers || '' : words.noBannedUsersMatch || '';
                     container.appendWithSpace(list_item(notice));
                 }
             }

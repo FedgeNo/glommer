@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
@@ -25,7 +26,10 @@ export class EntityModerator {
         const entityValue = button.dataset.entityValue;
         const reason = await Dialog.prompt(
             `Ban "${entityValue}" from trending? It won't be able to trend again until unbanned.`,
-            { confirmLabel: 'Ban', placeholder: 'Reason for ban (required)' }
+            {
+                confirmLabel: Strings.for('EntityModerator').ban || '',
+                placeholder: Strings.for('EntityModerator').banPlaceholder || '',
+            }
         );
         if (reason === null) return;
         Working.start(button);
@@ -41,7 +45,8 @@ export class EntityModerator {
     static async #unban(button) {
         const entityType = button.dataset.entityType;
         const entityValue = button.dataset.entityValue;
-        if (!await Dialog.confirm(`Unban "${entityValue}"? It will be able to trend again.`)) return;
+        const message = (Strings.for('EntityModerator').unban || '').replace('{entity}', entityValue);
+        if (!await Dialog.confirm(message)) return;
         Working.start(button);
         try {
             const result = await Api.post('/api/unban-trending-entity', { entityType, entityValue });

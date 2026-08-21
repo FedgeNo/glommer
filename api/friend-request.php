@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -21,7 +21,7 @@ $current_user = Auth::user();
 $friend_request_rate_key = 'friend-request:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($friend_request_rate_key, 60, 600)) {
-    JSONResponse::error('You\'re doing that very quickly. Please wait a moment.', 429) -> send();
+    JSONResponse::localizedError('youReDoingThatVeryQuicklyPleaseWaitAMoment', 429) -> send();
 }
 
 RateLimiter::recordAttempt($friend_request_rate_key);
@@ -31,20 +31,20 @@ $payload = is_array($payload) ? $payload : [];
 $target_user_id = (int) ($payload['userId'] ?? 0);
 
 if ($target_user_id === $current_user -> userId) {
-    JSONResponse::error('You can\'t send a friend request to yourself.', 422) -> send();
+    JSONResponse::localizedError('youCanTSendAFriendRequestToYourself', 422) -> send();
 }
 
 $target_user = User::load($target_user_id);
 
 if ($target_user === null || $target_user -> banned) {
-    JSONResponse::error('User not found', 404) -> send();
+    JSONResponse::localizedError('userNotFound', 404) -> send();
 }
 
 // Friendship is mutual and needs the other side to accept; a Fediverse
 // account can only be followed, which is the one-way link api/follow-user.php
 // creates.
 if ($target_user -> remoteActorURI !== null) {
-    JSONResponse::error('That is a Fediverse account - follow it instead.', 422) -> send();
+    JSONResponse::localizedError('thatIsAFediverseAccountFollowItInstead', 422) -> send();
 }
 
 // Look at the relationship in BOTH directions - the Friendships unique key is
@@ -68,24 +68,24 @@ DELETE
     }
 
     if ($existing -> status === 'accepted') {
-        JSONResponse::error('You\'re already friends with that user.', 422) -> send();
+        JSONResponse::localizedError('youReAlreadyFriendsWithThatUser', 422) -> send();
     }
 
     // A pending request the other way round - they asked first.
-    JSONResponse::error('That user has already sent you a friend request - accept it instead.', 422) -> send();
+    JSONResponse::localizedError('thatUserHasAlreadySentYouAFriendRequestAcceptItInstead', 422) -> send();
 }
 
 if (Block::exists($current_user -> userId, $target_user_id)) {
-    JSONResponse::error('Unable to send friend request.', 403) -> send();
+    JSONResponse::localizedError('unableToSendFriendRequest', 403) -> send();
 }
 
 // A user at the friend cap can neither send requests nor receive them.
 if (User::atFriendCap($current_user -> userId)) {
-    JSONResponse::error('You\'ve reached the maximum of ' . User::MAX_FRIENDS . ' friends.', 422) -> send();
+    JSONResponse::localizedError('maximumFriends', 422, ['count' => User::MAX_FRIENDS]) -> send();
 }
 
 if (User::atFriendCap($target_user_id)) {
-    JSONResponse::error('That user has reached their friend limit.', 422) -> send();
+    JSONResponse::localizedError('thatUserHasReachedTheirFriendLimit', 422) -> send();
 }
 
 try {
@@ -105,7 +105,7 @@ INSERT INTO `Friendships` (`requesterId`, `addresseeId`)
         throw $exception;
     }
 
-    JSONResponse::error('A friend request or friendship already exists with that user.', 422) -> send();
+    JSONResponse::localizedError('aFriendRequestOrFriendshipAlreadyExistsWithThatUser', 422) -> send();
 }
 
 Notification::create($target_user_id, $current_user -> userId, 'friendRequest');

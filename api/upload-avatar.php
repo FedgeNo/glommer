@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -22,7 +22,7 @@ $current_user = Auth::user();
 $rate_key = 'upload-avatar:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 15, 3600)) {
-    JSONResponse::error('Too many avatar changes in a short time. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAvatarChangesInAShortTimePleaseTryAgainLater', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -30,13 +30,13 @@ RateLimiter::recordAttempt($rate_key);
 $uploaded_file = $_FILES['avatar'] ?? null;
 
 if ($uploaded_file === null || $uploaded_file['error'] !== UPLOAD_ERR_OK) {
-    JSONResponse::fieldError('avatar', 'Choose an image first.') -> send();
+    JSONResponse::fieldError('avatar', JSONResponse::localized('chooseImageFirst')) -> send();
 }
 
 // Refuse uploads outright when the disk is nearly full - the database (on the
 // same host) needs the remaining headroom far more than a new avatar does.
 if (!UploadProcessor::hasFreeDiskSpace((int) $uploaded_file['size'])) {
-    JSONResponse::error('Uploads are temporarily unavailable - the server is low on storage. Please try again later.', 507) -> send();
+    JSONResponse::localizedError('uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater', 507) -> send();
 }
 
 // The shard bucket this user's avatar lives in - same 256-way sharding as
@@ -53,7 +53,7 @@ if (!is_dir($avatar_dir)) {
 $image = ImageProcessor::load($uploaded_file['tmp_name']);
 
 if ($image === false) {
-    JSONResponse::fieldError('avatar', 'That file could not be read as an image.') -> send();
+    JSONResponse::fieldError('avatar', JSONResponse::localized('imageUnreadable')) -> send();
 }
 
 $thumbnail_path = $avatar_dir . '/' . $current_user -> userId . '-thumb.jpg';
@@ -67,7 +67,7 @@ $thumbnail_ok = ImageProcessor::resizeAndSave($image, $thumbnail_path, ImageProc
 imagedestroy($image);
 
 if (!$thumbnail_ok) {
-    JSONResponse::fieldError('avatar', 'That image could not be processed. Try another.') -> send();
+    JSONResponse::fieldError('avatar', JSONResponse::localized('imageProcessingFailed')) -> send();
 }
 
 $has_avatar = 1;

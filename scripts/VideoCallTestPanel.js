@@ -1,4 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
@@ -26,6 +27,7 @@ export class VideoCallTestPanel {
     }
 
     static async #run(button) {
+        const words = Strings.for('VideoCallTestPanel');
         const results = document.querySelector('.VideoCallTestResults');
         const verdict = document.querySelector('.VideoCallTestVerdict');
         results.replaceChildren();
@@ -47,7 +49,7 @@ export class VideoCallTestPanel {
             try {
                 outcome = await step.run();
             } catch (error) {
-                outcome = { ok: false, detail: 'The check itself failed: ' + error.message };
+                outcome = { ok: false, detail: (words.checkFailed || '').replace('{error}', error.message) };
             }
 
             VideoCallTestPanel.#settle(line, outcome);
@@ -55,7 +57,7 @@ export class VideoCallTestPanel {
             // A failed step invalidates everything after it - reporting those as
             // failures too would just be noise pointing away from the real cause.
             if (!outcome.ok) {
-                results.appendWithSpace(VideoCallTestPanel.#note('Stopped here - the steps after this one depend on it.'));
+                results.appendWithSpace(VideoCallTestPanel.#note(words.stopped || ''));
                 stopped_at = step.id;
                 break;
             }
@@ -67,34 +69,35 @@ export class VideoCallTestPanel {
     }
 
     static #steps() {
+        const words = Strings.for('VideoCallTestPanel');
         return [
             {
                 id: 'secure',
-                name: 'This page is a secure context',
+                name: words.secureName || '',
                 run: async () => window.isSecureContext
-                    ? { ok: true, detail: 'Served over HTTPS, so the browser will allow a camera and a peer connection.' }
-                    : { ok: false, detail: 'Not a secure context. Browsers refuse both the camera and WebRTC outside HTTPS, so no call can be set up from here.' },
+                    ? { ok: true, detail: words.securePass || '' }
+                    : { ok: false, detail: words.secureFail || '' },
             },
             {
                 id: 'webrtc',
-                name: 'The browser supports WebRTC',
+                name: words.webrtcName || '',
                 run: async () => typeof RTCPeerConnection === 'function'
-                    ? { ok: true, detail: 'RTCPeerConnection is available.' }
-                    : { ok: false, detail: 'This browser has no RTCPeerConnection, so it cannot make or receive calls at all.' },
+                    ? { ok: true, detail: words.webrtcPass || '' }
+                    : { ok: false, detail: words.webrtcFail || '' },
             },
             {
                 id: 'loopback',
-                name: 'A negotiation completes locally',
+                name: words.loopbackName || '',
                 run: () => VideoCallTestPanel.#loopback(),
             },
             {
                 id: 'stun',
-                name: 'STUN is reachable from this network',
+                name: words.stunName || '',
                 run: () => VideoCallTestPanel.#stun(),
             },
             {
                 id: 'signalling',
-                name: 'The signalling endpoint answers',
+                name: words.signallingName || '',
                 run: () => VideoCallTestPanel.#signalling(),
             },
         ];
@@ -106,34 +109,16 @@ export class VideoCallTestPanel {
      * between two people on the same network, which is a real and quite
      * different answer from "no".
      */
-    static #VERDICTS = {
-        secure: {
-            state: 'Failed',
-            text: 'No - video calling cannot work from here. This page is not a secure context, and browsers refuse both the camera and WebRTC outside HTTPS. Nothing else matters until that is fixed.',
-        },
-        webrtc: {
-            state: 'Failed',
-            text: 'No - video calling cannot work from this browser. It has no WebRTC support at all, so it can neither make nor receive a call. Another browser on this same machine may well be fine.',
-        },
-        loopback: {
-            state: 'Failed',
-            text: 'No - video calling cannot work from this browser. Its own WebRTC stack could not connect two peers inside this one page, which rules the network out entirely; something local is blocking it, most likely an extension or a hardened privacy setting.',
-        },
-        stun: {
-            state: 'Partial',
-            text: 'Only on this network. Calls between two people on the same local network should work from here, but this connection cannot discover its own public address, so it has no way to find a path to someone behind a different router. Because no call is ever relayed through the server, one simply would not be offered.',
-        },
-        signalling: {
-            state: 'Failed',
-            text: 'No - video calling cannot be set up from here. This browser is capable of a call, but the two sides cannot exchange the messages that arrange one, so the call button would never appear.',
-        },
-    };
-
     static #declare(verdict, stopped_at) {
-        const outcome = VideoCallTestPanel.#VERDICTS[stopped_at] ?? {
-            state: 'Passed',
-            text: 'Yes - video calling should work from this connection. Every part of call setup this machine is responsible for succeeded, including reaching STUN, so a direct path to another person can be found and negotiated. The only thing left untested is the other person\'s side, which needs that person.',
+        const words = Strings.for('VideoCallTestPanel');
+        const outcomes = {
+            secure: { state: 'Failed', text: words.secureVerdict },
+            webrtc: { state: 'Failed', text: words.webrtcVerdict },
+            loopback: { state: 'Failed', text: words.loopbackVerdict },
+            stun: { state: 'Partial', text: words.stunVerdict },
+            signalling: { state: 'Failed', text: words.signallingVerdict },
         };
+        const outcome = outcomes[stopped_at] ?? { state: 'Passed', text: words.passVerdict };
 
         verdict.className = 'VideoCallTestVerdict ' + outcome.state;
         verdict.textContent = outcome.text;
@@ -145,6 +130,7 @@ export class VideoCallTestPanel {
      * before anything blames the network for a failure further along.
      */
     static async #loopback() {
+        const words = Strings.for('VideoCallTestPanel');
         const caller = new RTCPeerConnection();
         const callee = new RTCPeerConnection();
 
@@ -174,8 +160,8 @@ export class VideoCallTestPanel {
             const connected = await VideoCallTestPanel.#within(opened);
 
             return connected
-                ? { ok: true, detail: 'Two connections in this page negotiated and opened a data channel, so the WebRTC stack itself works.' }
-                : { ok: false, detail: 'Two connections in this same page could not reach each other, which rules out the network - the browser\'s WebRTC stack is being blocked, most likely by an extension or a hardened privacy setting.' };
+                ? { ok: true, detail: words.loopbackPass || '' }
+                : { ok: false, detail: words.loopbackFail || '' };
         } finally {
             caller.close();
             callee.close();
@@ -198,10 +184,11 @@ export class VideoCallTestPanel {
      * one, two people behind different routers have no way to find each other.
      */
     static async #stun() {
+        const words = Strings.for('VideoCallTestPanel');
         const ice_servers = VideoCallTestPanel.#iceServers();
 
         if (ice_servers.length === 0) {
-            return { ok: false, detail: 'No STUN endpoint is configured, so calls can only work between people on the same network.' };
+            return { ok: false, detail: words.noStun || '' };
         }
 
         const connection = new RTCPeerConnection({ iceServers: ice_servers });
@@ -223,8 +210,8 @@ export class VideoCallTestPanel {
             const found = await VideoCallTestPanel.#within(reflexive);
 
             return found
-                ? { ok: true, detail: 'STUN answered and the browser learned its public address, so it can find a direct path to someone on another network.' }
-                : { ok: false, detail: 'No reply from STUN - UDP to it is most likely blocked by a firewall. Calls will still work between two people on the same network, but not across the internet, and no call is ever relayed.' };
+                ? { ok: true, detail: words.stunPass || '' }
+                : { ok: false, detail: words.stunFail || '' };
         } finally {
             connection.close();
         }
@@ -237,6 +224,7 @@ export class VideoCallTestPanel {
      * worked, and nothing is left behind.
      */
     static async #signalling() {
+        const words = Strings.for('VideoCallTestPanel');
         // request() rather than post(): the status IS the result here, and a
         // refusal is what this step is hoping for rather than something to
         // announce.
@@ -247,14 +235,14 @@ export class VideoCallTestPanel {
         });
 
         if (status === 422) {
-            return { ok: true, detail: 'The endpoint is reachable and accepted the request as authenticated before rejecting its content, which is everything a real signal needs.' };
+            return { ok: true, detail: words.signallingPass || '' };
         }
 
         if (status === 401 || status === 403) {
-            return { ok: false, detail: 'The endpoint refused the request as unauthenticated (' + status + '). Signals between two real people would be refused the same way, so no call could be set up.' };
+            return { ok: false, detail: (words.signallingAuthFail || '').replace('{status}', String(status)) };
         }
 
-        return { ok: false, detail: 'The endpoint answered ' + status + ', which is not what it should say to this request - something in front of it is interfering.' };
+        return { ok: false, detail: (words.signallingUnexpected || '').replace('{status}', String(status)) };
     }
 
     /** Resolves false if the promise has not settled before the step timeout. */
@@ -275,7 +263,7 @@ export class VideoCallTestPanel {
 
         const detail = document.createElement('div');
         detail.className = 'VideoCallTestDetail';
-        detail.textContent = 'Checking…';
+        detail.textContent = Strings.for('MiscellaneousClient').checking || '';
         line.appendWithSpace(detail);
 
         return line;

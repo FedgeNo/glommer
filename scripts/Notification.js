@@ -38,25 +38,7 @@ export class Notification {
 
     /** Mirrors Notification::textFor() - see MessagingExtras.php for the words. */
     text() {
-        const words = Strings.for('Notification', {
-            postReady: 'Your media has finished processing and is now live',
-            scheduledPostLive: 'Your scheduled post is now live',
-            uploadPartlyFailed: 'Your post is live, but one or more of its files couldn\'t be processed',
-            uploadFailed: 'One of your uploads failed to process and was not posted',
-            mailerFailed: 'Email delivery failed - the mailer may be down. Please check your mail configuration.',
-            mailFromNotConfigured: 'No mail "from" address is configured, so emails can\'t be sent. Set one in Admin Settings (Outgoing Mail section) or via bin/install.php.',
-            systemError: 'A server error occurred. Check the error log for details.',
-            passwordRemovedGoogle: 'Your password was removed when you signed in with Google. Use "Forgot Password" if you want to set a new one.',
-            like: '{name} liked your post',
-            repost: '{name} reposted your post',
-            reply: '{name} replied to your post',
-            friendRequest: '{name} sent you a friend request',
-            friendAccepted: '{name} accepted your friend request',
-            message: '{name} sent you a message',
-            mention: '{name} mentioned you in a post',
-            follow: '{name} followed you from another server',
-            default: '{name} did something',
-        });
+        const words = Strings.for('Notification');
 
         const phrase = words[this.type] ?? words.default;
 

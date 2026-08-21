@@ -107,7 +107,7 @@ export class RelayCard {
         const time = document.createElement('time');
         time.className = 'RelativeTime';
         time.dateTime = new Date().toISOString();
-        time.textContent = 'just now';
+        time.textContent = Strings.for('MiscellaneousClient').justNow || '';
         detail.appendWithSpace(time);
 
         info.appendWithSpace(detail);

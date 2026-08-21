@@ -79,11 +79,11 @@ export class EncryptedMessagesSetting {
             // The same form serves first-time setup and the reset an enabled
             // account offers; only the former changes the section's shape.
             if (form.closest('.EncryptedMessagesSetting').querySelector('.MessageKeyPassphraseForm') !== null) {
-                Toast.show('New keys created.');
+                Toast.show(Strings.for('EncryptedMessagesClient').newKeys || '');
                 form.reset();
             } else {
                 EncryptedMessagesSetting.#showEnabled(form);
-                Toast.show('Encrypted messages are on.');
+                Toast.show(Strings.for('EncryptedMessagesClient').enabled || '');
             }
         } finally {
             Working.stop(submit_button);
@@ -101,7 +101,7 @@ export class EncryptedMessagesSetting {
         const private_jwk = await MessageCrypto.unwrapPrivateKey(keys.wrappedPrivateKey, form.querySelector('[name="currentPassphrase"]').value);
 
         if (private_jwk === null) {
-            Toast.show('That isn\'t your current passphrase.');
+            Toast.show(Strings.for('EncryptedMessagesClient').wrongPassphrase || '');
             return;
         }
 
@@ -120,7 +120,7 @@ export class EncryptedMessagesSetting {
 
             EncryptedMessagesSetting.#keys = { publicKey: keys.publicKey, wrappedPrivateKey: wrapped };
 
-            Toast.show('Passphrase changed.');
+            Toast.show(Strings.for('EncryptedMessagesClient').passphraseChanged || '');
             form.reset();
         } finally {
             Working.stop(submit_button);
@@ -138,16 +138,11 @@ export class EncryptedMessagesSetting {
 
         // Same keys MessageKeySetupForm.php reads, so the rebuilt reset form
         // says what the server would have said for the same element.
-        const setup_words = Strings.for('MessageKeySetupForm', {
-            resetWarning: 'Forgotten your passphrase? Resetting creates new keys under a new one - but messages encrypted with the old keys can never be read again, by anyone.',
-            resetPassphraseLabel: 'New passphrase',
-            confirmLabel: 'Confirm passphrase',
-            accountPasswordLabel: 'Account password',
-            resetSubmitLabel: 'Reset Encryption Keys',
-        });
+        const setup_words = Strings.for('MessageKeySetupForm');
+        const passphrase_words = Strings.for('MessageKeyPassphraseForm');
 
         const status = document.createElement('p');
-        status.textContent = Strings.for('EncryptedMessagesSetting', { enabledStatus: 'Encrypted messages are on.' }).enabledStatus;
+        status.textContent = Strings.for('EncryptedMessagesSetting').enabledStatus || '';
         section.appendWithSpace(status);
 
         // MessageKeyPassphraseForm's own labels - not sourced from Strings
@@ -155,11 +150,11 @@ export class EncryptedMessagesSetting {
         // to read them from.
         const passphrase_form = document.createElement('form');
         passphrase_form.className = 'Form MessageKeyPassphraseForm';
-        passphrase_form.appendWithSpace(input_field('currentPassphrase', 'Current passphrase', 'current-password'));
-        passphrase_form.appendWithSpace(input_field('newPassphrase', 'New passphrase', 'new-password'));
-        passphrase_form.appendWithSpace(input_field('newPassphraseConfirm', 'Confirm new passphrase', 'new-password'));
-        passphrase_form.appendWithSpace(input_field('rewrapAccountPassword', 'Account password', 'current-password'));
-        passphrase_form.appendWithSpace(submit_button('Change passphrase'));
+        passphrase_form.appendWithSpace(input_field('currentPassphrase', passphrase_words.currentPassphraseLabel || '', 'current-password'));
+        passphrase_form.appendWithSpace(input_field('newPassphrase', passphrase_words.newPassphraseLabel || '', 'new-password'));
+        passphrase_form.appendWithSpace(input_field('newPassphraseConfirm', passphrase_words.confirmNewPassphraseLabel || '', 'new-password'));
+        passphrase_form.appendWithSpace(input_field('rewrapAccountPassword', passphrase_words.accountPasswordLabel || '', 'current-password'));
+        passphrase_form.appendWithSpace(submit_button(passphrase_words.submit || ''));
         section.appendWithSpace(passphrase_form);
 
         const reset_form = document.createElement('form');
@@ -191,20 +186,21 @@ export class EncryptedMessagesSetting {
      * not supposed to have, and the encryption stops meaning anything.
      */
     static passphraseProblem(passphrase, confirmation, account_password) {
+        const words = Strings.for('EncryptedMessagesClient');
         if (passphrase.length < EncryptedMessagesSetting.MIN_PASSPHRASE_LENGTH) {
-            return 'Use a passphrase of at least ' + EncryptedMessagesSetting.MIN_PASSPHRASE_LENGTH + ' characters.';
+            return (words.minimumPassphrase || '').replace('{count}', String(EncryptedMessagesSetting.MIN_PASSPHRASE_LENGTH));
         }
 
         if (passphrase !== confirmation) {
-            return 'The passphrases don\'t match.';
+            return words.passphrasesMismatch || '';
         }
 
         if (account_password !== '' && passphrase === account_password) {
-            return 'Your passphrase can\'t be your account password - that one is sent to the server, and this one must never be.';
+            return words.passphraseIsPassword || '';
         }
 
         if (new Set(passphrase).size < 5) {
-            return 'That passphrase repeats too few different characters to be worth much. Use a longer phrase.';
+            return words.passphraseTooRepetitive || '';
         }
 
         return null;

@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -20,7 +20,7 @@ $current_user = Auth::user();
 // reports, settings) - the same immunity every other admin-targeting action
 // (ban, report) already gives userId 1.
 if ((int) $current_user -> userId === 1) {
-    JSONResponse::error('This account can\'t be deleted.', 422) -> send();
+    JSONResponse::localizedError('thisAccountCanTBeDeleted', 422) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -33,13 +33,13 @@ $current_password = (string) ($payload['currentPassword'] ?? '');
 $password_rate_key = 'password-verify:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
-    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
-    JSONResponse::error('Current password is incorrect', 422) -> send();
+    JSONResponse::localizedError('currentPasswordIsIncorrect', 422) -> send();
 }
 
 // Queued before the row goes: the delivery rows hang off this member and are

@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Working } from '/scripts/Working.js';
@@ -19,7 +20,7 @@ export class AvatarUploadForm {
 
                 const avatar = document.createElement('img');
                 avatar.className = 'Avatar';
-                avatar.alt = 'Your avatar';
+                avatar.alt = Strings.for('ClientStatus').avatarAlt || '';
                 avatar.src = data.image;
                 form.closest('.User').querySelector('.UserLink .Avatar').replaceWith(avatar);
             } finally {

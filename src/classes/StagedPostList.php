@@ -10,7 +10,13 @@ class StagedPostList extends ItemList
 {
     public ?string $class = 'StagedPostList';
 
-    protected string $emptyNotice = 'No drafts or scheduled posts. The composer\'s Save Draft and Schedule controls put them here.';
+    protected string $emptyNotice = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+        parent::__construct($properties);
+    }
 
     public ?int $userId = null;
 

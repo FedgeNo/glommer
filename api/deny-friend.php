@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -32,7 +32,7 @@ DELETE
 ', 'iis', $friendship_id, $current_user -> userId, $pending_status);
 
 if (mysqli_stmt_affected_rows($stmt) === 0) {
-    JSONResponse::error('Not your request', 403) -> send();
+    JSONResponse::localizedError('notYourRequest', 403) -> send();
 }
 
 JSONResponse::success(['denied' => true]) -> send();

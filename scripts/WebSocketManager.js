@@ -124,7 +124,7 @@ export class WebSocketManager {
         this.reconnecting = true;
 
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            Toast.show('Something went wrong. Try reloading the page.');
+            Toast.show(Strings.for('MiscellaneousClient').reloadError || '');
             return;
         }
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/api-init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 // Auth-gated like every other DB-backed search - an open LIKE endpoint over
@@ -15,7 +15,7 @@ Auth::requireLogin();
 $rate_key = 'search-places:' . Auth::id();
 
 if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
-    JSONResponse::error('Too many searches in a short time.', 429) -> send();
+    JSONResponse::localizedError('tooManySearchesInAShortTime', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);

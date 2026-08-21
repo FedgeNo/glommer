@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -22,7 +23,7 @@ export class PasswordResetRequestForm {
             if (!data) return;
 
             const notice = document.createElement('p');
-            notice.textContent = 'If that email address is on file, a password reset link has been sent. If you don\'t see it, check your junk/spam folder.';
+            notice.textContent = Strings.for('ClientStatus').resetSent || '';
             form.replaceWith(notice);
         });
     }

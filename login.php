@@ -26,7 +26,7 @@ if (isset($_GET['restart'])) {
 if (isset($_SESSION['pending2FAUserId'])) {
     $page = new Page(['title' => (string) (Strings::for('PageTitle')['loginVerificationCode'] ?? '')]);
     $page -> addContent(new TwoFactorForm(($_SESSION['pending2FAEmailFailed'] ?? false) === true));
-    $page -> addContent(new Anchor(ServerURL::absolute('/login?restart=1'), 'Start over'));
+    $page -> addContent(new Anchor(ServerURL::absolute('/login?restart=1'), (string) (Strings::for('LoginPage')['startOver'] ?? '')));
     $page -> send();
     exit;
 }
@@ -40,8 +40,9 @@ if (GoogleAuth::isEnabled()) {
 
 $page -> addContent(new LoginForm());
 
-$page -> addContent(new Anchor(ServerURL::absolute('/forgot-password'), 'Forgot Password?'));
+$words = Strings::for('LoginPage');
+$page -> addContent(new Anchor(ServerURL::absolute('/forgot-password'), (string) ($words['forgotPassword'] ?? '')));
 
-$page -> addContent(new Anchor(ServerURL::absolute('/signup'), 'Need an account? Sign Up'));
+$page -> addContent(new Anchor(ServerURL::absolute('/signup'), (string) ($words['signup'] ?? '')));
 
 $page -> send();

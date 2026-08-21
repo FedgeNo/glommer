@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 Auth::requireLogin();
@@ -19,7 +19,7 @@ $current_user = Auth::user();
 $repost_rate_key = 'repost:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($repost_rate_key, 60, 600)) {
-    JSONResponse::error('You\'re doing that very quickly. Please wait a moment.', 429) -> send();
+    JSONResponse::localizedError('youReDoingThatVeryQuicklyPleaseWaitAMoment', 429) -> send();
 }
 
 RateLimiter::recordAttempt($repost_rate_key);
@@ -30,7 +30,7 @@ $payload = is_array($payload) ? $payload : [];
 $post_id = (int) ($payload['postId'] ?? 0);
 
 if ($post_id === 0) {
-    JSONResponse::error('Invalid request', 422) -> send();
+    JSONResponse::localizedError('invalidRequest', 422) -> send();
 }
 
 $owner = DB::row('
@@ -40,11 +40,11 @@ SELECT `userId`
 ', 'Post', 'i', $post_id);
 
 if ($owner === null) {
-    JSONResponse::error('Post not found', 404) -> send();
+    JSONResponse::localizedError('postNotFound', 404) -> send();
 }
 
 if (Block::exists((int) $current_user -> userId, (int) $owner -> userId)) {
-    JSONResponse::error('Unable to repost this.', 403) -> send();
+    JSONResponse::localizedError('unableToRepostThis', 403) -> send();
 }
 
 $user_id = (int) $current_user -> userId;
@@ -58,7 +58,7 @@ if (Repost::exists($user_id, $post_id)) {
     // unless the user has a modified client because the button doesn't show
     // on your own posts.
     if (!Repost::create($user_id, $post_id)) {
-        JSONResponse::error('You can\'t repost your own post.', 422) -> send();
+        JSONResponse::localizedError('youCanTRepostYourOwnPost', 422) -> send();
     }
 
     $reposted = true;

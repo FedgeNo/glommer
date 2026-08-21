@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -22,7 +22,7 @@ $action = (string) ($payload['action'] ?? '');
 $current_password = (string) ($payload['currentPassword'] ?? '');
 
 if ($action !== 'enable' && $action !== 'disable' && $action !== 'regenerate-recovery') {
-    JSONResponse::error('Invalid action', 422) -> send();
+    JSONResponse::localizedError('invalidAction', 422) -> send();
 }
 
 // Throttle current-password guessing here too - see change-password.php.
@@ -31,7 +31,7 @@ if ($action !== 'enable' && $action !== 'disable' && $action !== 'regenerate-rec
 $password_rate_key = 'password-verify:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
-    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 // Every action requires the current password - turning the protection off is
@@ -41,14 +41,14 @@ if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
 if (!$current_user -> verifyPassword($current_password)) {
     RateLimiter::recordAttempt($password_rate_key);
 
-    JSONResponse::fieldError('currentPassword', 'That is not your current password.') -> send();
+    JSONResponse::fieldError('currentPassword', JSONResponse::localized('notCurrentPassword')) -> send();
 }
 
 $user_id = (int) $current_user -> userId;
 
 if ($action === 'regenerate-recovery') {
     if (!TwoFactor::isEnabled($current_user)) {
-        JSONResponse::error('Two-factor authentication is not on.', 422) -> send();
+        JSONResponse::localizedError('twoFactorAuthenticationIsNotOn', 422) -> send();
     }
 
     JSONResponse::success([

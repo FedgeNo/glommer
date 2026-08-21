@@ -53,7 +53,7 @@ export class BannedUser extends User {
     }
 
     static async #unban(button) {
-        if (!await Dialog.confirm('Unban this user? Their content and login work again.')) return;
+        if (!await Dialog.confirm(Strings.for('MiscellaneousClient').unbanUser || '')) return;
         Working.start(button);
         try {
             const result = await Api.post('/api/unban', { userId: button.dataset.userId });

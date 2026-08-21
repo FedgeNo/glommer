@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -26,25 +26,25 @@ $captcha_token = is_string($payload['captchaToken'] ?? null) ? $payload['captcha
 $errors = [];
 
 if ($username === '') {
-    $errors['username'] = 'Please choose a username.';
+    $errors['username'] = JSONResponse::localized('chooseUsername');
 }
 
 if ($email === '' || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-    $errors['email'] = 'Please give a valid email address.';
+    $errors['email'] = JSONResponse::localized('giveValidEmail');
 }
 
 if (strlen($password) < 8) {
-    $errors['password'] = 'Use at least 8 characters.';
+    $errors['password'] = JSONResponse::localized('passwordMinimum');
 } elseif (strlen($password) > 72) {
     // bcrypt (password_hash's default) only uses the first 72 bytes and rejects longer input outright.
-    $errors['password'] = 'Use at most 72 characters.';
+    $errors['password'] = JSONResponse::localized('passwordMaximum');
 }
 
 $rate_key = 'signup:' . (ServerURL::clientIP() ?? 'unknown');
 
 if ($errors === []) {
     if (RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
-        $errors[] = 'Too many signups from your network. Please try again later.';
+        $errors[] = JSONResponse::localized('tooManySignups');
     } else {
         // Count every well-formed attempt, not just a successful signup -
         // otherwise a probe for which emails already exist (via the
@@ -59,7 +59,7 @@ if ($errors === []) {
 // configured. Fail closed: if Cloudflare can't be reached, reject rather
 // than open a bot window on sign-up.
 if ($errors === [] && !Turnstile::verify($captcha_token, ServerURL::clientIP())) {
-    $errors[] = 'Captcha verification failed. Please try again.';
+    $errors[] = JSONResponse::localized('captchaVerificationFailedPleaseTryAgain');
 }
 
 if ($errors === []) {
@@ -86,7 +86,7 @@ SELECT `userId`
         // Deliberately not said of one or the other: which of the two is taken
         // is what an account-enumeration probe is asking, and the rate limit
         // above only slows that down rather than answering it differently.
-        $errors['username'] = 'That username or email is already taken.';
+        $errors['username'] = JSONResponse::localized('usernameOrEmailTaken');
     }
 }
 
@@ -120,7 +120,7 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `v
         throw $exception;
     }
 
-    JSONResponse::fieldError('username', 'That username or email is already taken.') -> send();
+    JSONResponse::fieldError('username', JSONResponse::localized('usernameOrEmailTaken')) -> send();
 }
 
 $new_user_id = (int) mysqli_insert_id(DB::connection());

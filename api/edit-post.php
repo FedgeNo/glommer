@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -30,7 +30,7 @@ SELECT `userId`, `linkURL`
 ', 'Post', 'i', $post_id);
 
 if ($owner === null || (int) $owner -> userId !== $current_user -> userId) {
-    JSONResponse::error('Not your post', 403) -> send();
+    JSONResponse::localizedError('notYourPost', 403) -> send();
 }
 
 // Editing is text/title/link only - attached media (images/video/audio)
@@ -61,12 +61,12 @@ $content_warning = $content_warning === '' ? null : $content_warning;
 $alt_texts = $payload['altTexts'] ?? [];
 
 if (!is_array($alt_texts)) {
-    JSONResponse::error('Alt texts must map items to text', 422) -> send();
+    JSONResponse::localizedError('altTextsMustMapItemsToText', 422) -> send();
 }
 
 foreach ($alt_texts as $alt_text) {
     if (mb_strlen(trim((string) $alt_text)) > FeedItem::MAX_ALT_TEXT_LENGTH) {
-        JSONResponse::error('Alt text is too long (max ' . FeedItem::MAX_ALT_TEXT_LENGTH . ' characters)', 422) -> send();
+        JSONResponse::localizedError('altTextTooLong', 422, ['count' => FeedItem::MAX_ALT_TEXT_LENGTH]) -> send();
     }
 }
 
@@ -79,18 +79,18 @@ $description_ops = [];
 
 if ($description_raw !== '') {
     if (strlen($description_raw) > 262144) {
-        JSONResponse::error('Post text is too long', 422) -> send();
+        JSONResponse::localizedError('postTextIsTooLong', 422) -> send();
     }
 
     if (!is_array(json_decode($description_raw, true))) {
-        JSONResponse::error('Your editor is out of date. Please refresh the page and try again.', 426) -> send();
+        JSONResponse::localizedError('yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain', 426) -> send();
     }
 
     $description_ops = Delta::sanitize(Delta::decode($description_raw));
     $description_plaintext = Delta::plainText($description_ops);
 
     if (strlen($description_plaintext) > 65535) {
-        JSONResponse::error('Post text is too long', 422) -> send();
+        JSONResponse::localizedError('postTextIsTooLong', 422) -> send();
     }
 
     if ($description_plaintext !== '') {
@@ -105,15 +105,15 @@ if ($link_url !== '') {
     }
 
     if (!preg_match('/^https?:\/\//i', $link_url)) {
-        JSONResponse::fieldError('linkURL', 'Give an http:// or https:// link.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('validHttpLink')) -> send();
     }
 
     if (strlen($link_url) > 255) {
-        JSONResponse::fieldError('linkURL', 'That link is too long.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('linkTooLong')) -> send();
     }
 
     if (!URL::isValidHTTPURL($link_url)) {
-        JSONResponse::fieldError('linkURL', 'Point this at a domain name, not an IP address.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('domainNotIp')) -> send();
     }
 }
 
@@ -131,7 +131,7 @@ $media_count = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($media_count_stmt
 // isn't editable here), so "no content" only means no title/link/body AND
 // no pre-existing media to fall back on.
 if ($title_value === null && $link_url_value === null && $description_value === null && $media_count === 0) {
-    JSONResponse::error('Post has no content', 422) -> send();
+    JSONResponse::localizedError('postHasNoContent', 422) -> send();
 }
 
 // Same "media post XOR link post" rule create-post enforces, and it turns on
@@ -142,7 +142,7 @@ if ($title_value === null && $link_url_value === null && $description_value === 
 $was_link_post = $owner -> linkURL !== null;
 
 if ($link_url_value !== null && $media_count > 0 && !$was_link_post) {
-    JSONResponse::error('A post can have either attached files or a link, not both', 422) -> send();
+    JSONResponse::localizedError('aPostCanHaveEitherAttachedFilesOrALinkNotBoth', 422) -> send();
 }
 
 $edited_at = date('Y-m-d H:i:s');

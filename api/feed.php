@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -23,7 +23,7 @@ $before_post_id = (int) ($cursor['postId'] ?? 0);
 $before_sort_at = (string) ($cursor['sortAt'] ?? '');
 
 if ($before_sort_at !== '' && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $before_sort_at) !== 1) {
-    JSONResponse::error('Invalid request', 422) -> send();
+    JSONResponse::localizedError('invalidRequest', 422) -> send();
 }
 
 if (!Auth::check()) {
@@ -34,7 +34,7 @@ if (!Auth::check()) {
 
     foreach ($rate_keys as $rate_key) {
         if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
-            JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+            JSONResponse::localizedError('tooManyRequestsPleaseSlowDown', 429) -> send();
         }
 
         RateLimiter::recordAttempt($rate_key);
@@ -42,21 +42,21 @@ if (!Auth::check()) {
 }
 
 if (!in_array($feed_type, ['global', 'friends', 'user', 'tag', 'relay'], true)) {
-    JSONResponse::error('Invalid request', 422) -> send();
+    JSONResponse::localizedError('invalidRequest', 422) -> send();
 }
 
 if ($feed_type === 'friends' && !Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 // The firehose is other servers' writing, held to the same members-only rule
 // as every other remote-origin listing.
 if ($feed_type === 'relay' && !Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 if ($feed_type === 'user' && $profile_user_id === 0) {
-    JSONResponse::error('Invalid request', 422) -> send();
+    JSONResponse::localizedError('invalidRequest', 422) -> send();
 }
 
 // A remote account's posts are members-only - the same rule its profile page
@@ -64,11 +64,11 @@ if ($feed_type === 'user' && $profile_user_id === 0) {
 // Without this, paging the profile feed by userId would hand a logged-out
 // caller the very posts those gates withhold.
 if ($feed_type === 'user' && !Auth::check() && User::load($profile_user_id) ?-> remoteActorURI !== null) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 if ($feed_type === 'tag' && !preg_match('/^[a-z0-9_]{1,50}$/', $tag)) {
-    JSONResponse::error('Invalid request', 422) -> send();
+    JSONResponse::localizedError('invalidRequest', 422) -> send();
 }
 
 // Each feed owns its query and loads one page of hydrated posts (items,

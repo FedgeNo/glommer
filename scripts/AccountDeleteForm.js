@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
@@ -17,7 +18,7 @@ export class AccountDeleteForm {
             if (!form) return;
             event.preventDefault();
 
-            if (!await Dialog.confirm('Delete your account? Your posts, replies, and messages are gone permanently - this can\'t be undone.')) return;
+            if (!await Dialog.confirm(Strings.for('ClientStatus').deleteAccount || '')) return;
 
             const submit_button = form.querySelector('button[type="submit"]');
             Working.start(submit_button);

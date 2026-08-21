@@ -8,11 +8,11 @@ require __DIR__ . '/api-init.php';
 // explicit method requirement a plain GET link would trigger it - and
 // init.php's centralized CSRF check only covers POST requests.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 Notification::markSeen((int) Auth::id());

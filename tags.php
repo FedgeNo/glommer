@@ -19,7 +19,7 @@ if ($tag === '') {
     ]);
 
     if (!$popular -> hasItems() && !$trending -> hasItems()) {
-        $page -> addContent(new Notice('No hashtags yet.'));
+        $page -> addContent(new Notice((string) (Strings::for('RouteNotices')['noHashtags'] ?? '')));
     } else {
         if ($popular -> hasItems()) {
             $page -> addContent($popular);

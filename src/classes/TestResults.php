@@ -24,16 +24,13 @@ class TestResults extends Div
         $node = self::nodeBinary();
 
         if ($node === null) {
-            $this -> addContent(new Paragraph(
-                'No Node.js the web server can use. Install it system-wide (e.g. dnf install nodejs) to enable '
-                . 'JavaScript tests - a version manager inside someone\'s home directory (nvm) is invisible here.'
-            ));
+            $this -> addContent(new Paragraph((string) (Strings::for(self::class)['nodeUnavailable'] ?? '')));
 
             return parent::toDOM();
         }
 
         if (!is_dir(__DIR__ . '/../../node_modules')) {
-            $this -> addContent(new Paragraph('Run `npm install` in the document root to enable JavaScript tests.'));
+            $this -> addContent(new Paragraph((string) (Strings::for(self::class)['installJavaScriptDependencies'] ?? '')));
 
             return parent::toDOM();
         }
@@ -58,10 +55,7 @@ class TestResults extends Div
         $output = self::withoutColour(implode("\n", $lines));
 
         if ($exit_code !== 0 && str_contains($output, 'V8_Fatal')) {
-            $this -> addContent(new Paragraph(
-                'JavaScript tests could not be started. Node.js encountered a fatal error, '
-                . 'most likely due to SELinux restrictions on the web server.'
-            ));
+            $this -> addContent(new Paragraph((string) (Strings::for(self::class)['nodeFatal'] ?? '')));
 
             return;
         }

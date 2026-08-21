@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check() || !Auth::canModerate()) {
-    JSONResponse::error('Not authorized', 403) -> send();
+    JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -28,12 +28,12 @@ if (
     || mb_strlen($entity_value) > 255
     || !in_array($entity_type, EntityExtractor::ENTITY_TYPES, true)
 ) {
-    JSONResponse::error('Invalid target', 422) -> send();
+    JSONResponse::localizedError('invalidTarget', 422) -> send();
 }
 
 // A ban always carries a reason, same rule api/ban.php enforces for user bans.
 if ($reason === '') {
-    JSONResponse::error('A ban reason is required.', 422) -> send();
+    JSONResponse::localizedError('aBanReasonIsRequired', 422) -> send();
 }
 
 $reason = mb_substr($reason, 0, 1000);

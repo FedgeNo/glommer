@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { Message } from '/scripts/Message.js';
@@ -92,7 +93,7 @@ export class MessageComposer {
 
             if (unlock_form !== null) {
                 if (MessageCrypto.threadKey() === null) {
-                    Toast.show('Unlock the conversation first.');
+                    Toast.show(Strings.for('ClientStatus').unlockConversation || '');
                     document.querySelector('.MessageUnlockForm [name="messagePassphrase"]')?.focus();
                     return;
                 }

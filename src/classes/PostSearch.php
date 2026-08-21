@@ -12,7 +12,13 @@ class PostSearch extends Div
      */
     public int $userId = 0;
 
-    public string $placeholder = 'Search posts…';
+    public string $placeholder = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> placeholder = (string) (Strings::for(PostSearchBox::class)['placeholder'] ?? '');
+        parent::__construct($properties);
+    }
 
     public function toDOM(): \DOMElement
     {

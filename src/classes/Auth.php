@@ -159,7 +159,7 @@ UPDATE `Users`
     {
         if (!self::check()) {
             if (defined('IS_API_REQUEST')) {
-                JSONResponse::error('Not logged in', 401) -> send();
+                JSONResponse::localizedError('notLoggedIn', 401) -> send();
             }
 
             header('Location: ' . ServerURL::absolute('/login'));

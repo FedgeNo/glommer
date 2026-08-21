@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
@@ -27,16 +28,17 @@ export class PasswordResetForm {
 
             if (!data.reset) {
                 Working.stop(submit_button);
-                Toast.show('That\'s already your password - nothing was changed.');
+                Toast.show(Strings.for('ClientStatus').passwordUnchanged || '');
                 return;
             }
 
             const notice = document.createElement('p');
-            notice.textContent = 'Your password has been reset. You can now log in.';
+            const words = Strings.for('ClientStatus');
+            notice.textContent = words.passwordReset || '';
 
             const login_link = document.createElement('a');
             login_link.href = ClientConfig.siteURL() + '/login';
-            login_link.textContent = 'Log In';
+            login_link.textContent = words.login || '';
 
             form.replaceWith(notice, login_link);
         });

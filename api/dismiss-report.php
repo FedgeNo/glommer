@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check() || !Auth::canModerate()) {
-    JSONResponse::error('Not authorized', 403) -> send();
+    JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -19,7 +19,7 @@ $payload = is_array($payload) ? $payload : [];
 $report_id = (int) ($payload['reportId'] ?? 0);
 
 if ($report_id === 0) {
-    JSONResponse::error('Invalid report', 422) -> send();
+    JSONResponse::localizedError('invalidReport', 422) -> send();
 }
 
 // Load the report before deleting it so the audit log records what was
@@ -27,7 +27,7 @@ if ($report_id === 0) {
 $report = ReportManager::find($report_id);
 
 if ($report === null) {
-    JSONResponse::error('Report not found', 404) -> send();
+    JSONResponse::localizedError('reportNotFound', 404) -> send();
 }
 
 // Flag the content so it can't just be reported again the moment the report

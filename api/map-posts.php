@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 // Public, read-only: the map shows everyone's geotagged posts. The listing is
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $rate_key = 'map-posts:' . (ServerURL::clientIP() ?? 'unknown');
 
 if (RateLimiter::tooManyAttempts($rate_key, 20, 60)) {
-    JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+    JSONResponse::localizedError('tooManyRequestsPleaseSlowDown', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);

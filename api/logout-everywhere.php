@@ -9,11 +9,11 @@ require __DIR__ . '/api-init.php';
 // a victim out of all their devices with a plain cross-site GET. Same guard
 // the other GET-reachable mutators (logout, resend-verification) carry.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $user_id = (int) Auth::user() -> userId;

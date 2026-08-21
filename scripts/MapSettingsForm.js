@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -31,7 +32,7 @@ export class MapSettingsForm {
             }
 
             if (data !== null) {
-                Toast.show('Map settings saved.');
+                Toast.show(Strings.for('ClientStatus').mapSaved || '');
             }
         });
     }

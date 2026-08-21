@@ -1,4 +1,5 @@
 // StagedPostCard.js
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
@@ -18,17 +19,17 @@ export class StagedPostCard {
         document.addEventListener('click', async (event) => {
             const publish = event.target.closest('.StagedPostPublishButton');
             if (publish) {
-                await StagedPostCard.#act(publish, '/api/publish-staged', 'Published.');
+                await StagedPostCard.#act(publish, '/api/publish-staged', Strings.for('StagedPostClient').published || '');
                 return;
             }
 
             const discard = event.target.closest('.StagedPostDiscardButton');
             if (discard) {
-                if (!await Dialog.confirm('Discard this? It was never published, and this does not keep a copy.')) {
+                if (!await Dialog.confirm(Strings.for('StagedPostClient').discardConfirm || '')) {
                     return;
                 }
 
-                await StagedPostCard.#act(discard, '/api/discard-staged', 'Discarded.');
+                await StagedPostCard.#act(discard, '/api/discard-staged', Strings.for('StagedPostClient').discarded || '');
             }
         });
     }
@@ -102,7 +103,7 @@ export class StagedPostCard {
         const edit = document.createElement('a');
         edit.className = 'Button StagedPostEditButton';
         edit.href = ClientConfig.siteURL() + '/drafts/' + data.stagedPostId;
-        edit.textContent = 'Edit';
+        edit.textContent = Strings.for('StagedPostClient').edit || '';
         actions.appendWithSpace(edit);
 
         card.appendWithSpace(actions);

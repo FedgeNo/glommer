@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { DOMUtils } from '/scripts/DOMUtils.js';
@@ -26,11 +27,11 @@ export class RememberedDevice {
             // Asked first: revoking is not undoable, and the row says only
             // where and when the device last appeared, so it is quite possible
             // to be about to sign out the phone in your own pocket.
-            if (!await Dialog.confirm('Revoke this device? It will be signed out and have to log in again.')) {
+            if (!await Dialog.confirm(Strings.for('ClientStatus').revokeDevice || '')) {
                 return;
             }
 
-            button.textContent = 'Revoking…';
+            button.textContent = Strings.for('ClientStatus').revoking || '';
             Working.start(button);
 
             // Api.post answers null rather than throwing. Taking the card away
@@ -40,7 +41,7 @@ export class RememberedDevice {
             const revoked = await Api.post('/api/revoke-session', { tokenId: button.dataset.tokenId });
 
             if (!revoked) {
-                button.textContent = 'Failed';
+                button.textContent = Strings.for('ClientStatus').failed || '';
                 Working.stop(button);
 
                 return;

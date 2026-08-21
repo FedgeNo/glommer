@@ -16,8 +16,9 @@ if (is_file(__DIR__ . '/../.env')) {
     http_response_code(503);
 
     $page = Page::create('Site Unavailable');
-    $page -> addContent(new Paragraph('The site can\'t reach its database right now. Please try again in a few minutes.'));
-    $page -> addContent(new Notice('If you run this site: the database connection using the credentials in .env is failing - check that the database server is running and that those credentials are still valid. This page is shown instead of the setup wizard precisely so a database outage can\'t be used to reconfigure the site.'));
+    $words = Strings::for('SetupPage');
+    $page -> addContent(new Paragraph((string) ($words['databaseUnavailable'] ?? '')));
+    $page -> addContent(new Notice((string) ($words['databaseAdminNotice'] ?? '')));
     $page -> send();
     exit;
 }
@@ -241,14 +242,14 @@ if ($environment_errors === [] && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($success) {
     $page = Page::create('Setup Complete');
 
-    $page -> addContent(new Paragraph('Setup finished - the database, a least-privilege runtime account, and .env are all in place. Three small steps remain:'));
+    $page -> addContent(new Paragraph((string) (Strings::for('SetupPage')['finished'] ?? '')));
     $page -> addContent(new SetupNextSteps());
 } elseif ($environment_errors !== []) {
     $page = Page::create('Set Up');
 
-    $page -> addContent(new Paragraph('Welcome! Before setup can continue, this server is missing some prerequisites:'));
+    $page -> addContent(new Paragraph((string) (Strings::for('SetupPage')['missingPrerequisites'] ?? '')));
     $page -> addContent(new ErrorList($environment_errors));
-    $page -> addContent(new Notice('Fix these on the server, then reload this page to re-check.'));
+    $page -> addContent(new Notice((string) (Strings::for('SetupPage')['fixPrerequisites'] ?? '')));
 } else {
     $page = Page::create('Set Up');
 
@@ -256,7 +257,7 @@ if ($success) {
         $page -> addContent(new ErrorList($errors));
     }
 
-    $page -> addContent(new Paragraph('Welcome! All environment checks passed. Submitting this form creates the database (if it doesn\'t exist yet), a least-privilege runtime database account with a random password, and the schema, then writes it all to .env. The admin credentials are used once for provisioning and are never stored.'));
+    $page -> addContent(new Paragraph((string) (Strings::for('SetupPage')['welcome'] ?? '')));
     $page -> addContent(new SetupForm());
 }
 

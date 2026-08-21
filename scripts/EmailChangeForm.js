@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
@@ -30,7 +31,7 @@ export class EmailChangeForm {
                 if (!data) return;
 
                 if (!data.changed) {
-                    Toast.show('That is already your email address.');
+                    Toast.show(Strings.for('ClientStatus').emailUnchanged || '');
                     return;
                 }
 

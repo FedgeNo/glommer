@@ -81,24 +81,25 @@ UPDATE `Users`
      */
     public static function publish(User $mover, string $destination_uri): array
     {
+        $words = Strings::for(self::class);
         if ($mover -> remoteActorURI !== null || $mover -> userId === null) {
-            return ['ok' => false, 'error' => 'Only a local account can be moved.'];
+            return ['ok' => false, 'error' => (string) ($words['localOnly'] ?? '')];
         }
 
         if (ActivityPubActor::isLocalActorURI($destination_uri)) {
-            return ['ok' => false, 'error' => 'That account is on this server. A move only ever goes between servers.'];
+            return ['ok' => false, 'error' => (string) ($words['sameServer'] ?? '')];
         }
 
         $destination = RemoteActor::fetch($destination_uri);
 
         if ($destination === null) {
-            return ['ok' => false, 'error' => 'Could not fetch that account.'];
+            return ['ok' => false, 'error' => (string) ($words['fetchFailed'] ?? '')];
         }
 
         $mover_uri = ActivityPubActor::uriFor($mover);
 
         if (!in_array($mover_uri, $destination['alsoKnownAs'], true)) {
-            return ['ok' => false, 'error' => 'That account does not list this one as an alias yet. Add ' . $mover_uri . ' to its "also known as" first, then try again.'];
+            return ['ok' => false, 'error' => str_replace('{uri}', $mover_uri, (string) ($words['aliasMissing'] ?? ''))];
         }
 
         DB::run('

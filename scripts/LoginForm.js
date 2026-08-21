@@ -1,4 +1,5 @@
 import { ClientConfig } from '/scripts/ClientConfig.js';
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -83,7 +84,7 @@ export class LoginForm {
 
         const notice = document.createElement('p');
         notice.className = 'LoginRecaptchaNotice';
-        notice.textContent = 'Too many attempts on this account. Please complete the verification to continue.';
+        notice.textContent = Strings.for('LoginClient').verificationRequired || '';
 
         const container = document.createElement('div');
         container.className = 'LoginRecaptcha';
@@ -96,7 +97,7 @@ export class LoginForm {
             await LoginForm.#loadRecaptchaApi();
             form.recaptchaWidgetId = window.grecaptcha.render(container, { sitekey: site_key });
         } catch (error) {
-            Toast.show('Could not load the verification. Please try again in a moment.');
+            Toast.show(Strings.for('LoginClient').verificationFailed || '');
         }
     }
 

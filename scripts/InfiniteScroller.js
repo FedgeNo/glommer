@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { list_item } from '/scripts/utils.js';
@@ -193,7 +194,7 @@ export class InfiniteScroller {
 
         const spinner = document.createElement('li');
         spinner.className = 'LoadingSpinner';
-        spinner.setAttribute('aria-label', 'Loading');
+        spinner.setAttribute('aria-label', Strings.for('InfiniteScroller').loading || '');
 
         if (this._direction === 'up') {
             this.#list.insertBeforeWithSpace(spinner, this.#list.firstChild);
@@ -218,7 +219,7 @@ export class InfiniteScroller {
             if (!result.ok) {
                 if (result.status !== 429) {
                     this.#active = false;
-                    Toast.show('Could not load more. Please reload the page.');
+                    Toast.show(Strings.for('InfiniteScroller').failed || '');
                 }
 
                 return;
@@ -254,7 +255,7 @@ export class InfiniteScroller {
             if (items?.length) {
                 this.#announce(items.length + ' more ' + this.#noun(items.length) + ' loaded.');
             } else if (!hasMore) {
-                this.#announce('You have reached the end.');
+                this.#announce(Strings.for('InfiniteScroller').end || '');
             }
         } catch (e) {
             console.error('InfiniteScroller error:', e);

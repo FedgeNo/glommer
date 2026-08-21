@@ -73,7 +73,7 @@ export class Message {
             report_button.className = 'Button ReportButton';
             report_button.dataset.targetType = 'message';
             report_button.dataset.targetId = this.messageId;
-            report_button.textContent = 'Report';
+            report_button.textContent = Strings.for('MiscellaneousClient').report || '';
             line.appendWithSpace(report_button);
         }
 
@@ -121,9 +121,7 @@ export class Message {
         if (text === null) {
             // An envelope the current keys don't open - sent under keys that
             // have since been reset. Honest and final; nothing can read it now.
-            body.textContent = Strings.for('Message', {
-                decryptionFailed: 'This message was encrypted with keys that no longer exist.',
-            }).decryptionFailed;
+            body.textContent = Strings.for('Message').decryptionFailed || '';
             return;
         }
 

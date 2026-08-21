@@ -21,12 +21,16 @@ class NotificationList extends ItemList
     // actually runs, the same as UserSearchList::rows() overwrites it
     // dynamically for a reason of its own - a class-level default is fixed
     // the moment the object exists, before this class can ask Strings anything.
-    protected string $emptyNotice = 'No notifications yet.';
+    protected string $emptyNotice = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+        parent::__construct($properties);
+    }
 
     protected function rows(): array
     {
-        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? $this -> emptyNotice);
-
         return DB::rows('
 SELECT `n`.*, `u`.`slug` AS `actorUsername`, `u`.`title` AS `actorDisplayName`, `u`.`hasAvatar` AS `actorHasAvatar`
     FROM `Notifications` `n`

@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check() || Auth::id() !== 1) {
-    JSONResponse::error('Not authorized', 403) -> send();
+    JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -28,7 +28,7 @@ $smtp_encryption = (string) ($payload['smtpEncryption'] ?? 'tls');
 // Exactly the three transports sendViaSMTP() understands - anything else
 // silently degrades to a plaintext AUTH, so reject it rather than store it.
 if (!in_array($smtp_encryption, ['tls', 'ssl', 'none'], true)) {
-    JSONResponse::fieldError('smtpEncryption', 'Choose one of the three listed transports.') -> send();
+    JSONResponse::fieldError('smtpEncryption', JSONResponse::localized('chooseMailTransport')) -> send();
 }
 
 // Blank leaves the stored address unchanged - not write-only like the
@@ -36,7 +36,7 @@ if (!in_array($smtp_encryption, ['tls', 'ssl', 'none'], true)) {
 // must never silently apply (see MailSettingsForm's docblock).
 if ($mail_from_address !== '') {
     if (filter_var($mail_from_address, FILTER_VALIDATE_EMAIL) === false) {
-        JSONResponse::fieldError('mailFromAddress', 'That is not a valid email address.') -> send();
+        JSONResponse::fieldError('mailFromAddress', JSONResponse::localized('invalidEmail')) -> send();
     }
 
     Settings::set(Mailer::FROM_ADDRESS_SETTING, $mail_from_address);

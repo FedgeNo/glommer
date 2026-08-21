@@ -16,10 +16,11 @@ $policy_card = new Card();
 $policy_card -> addContent(new SitePolicyLinks());
 $page -> addContent($policy_card);
 
-$version = new Paragraph('This site runs ');
+$words = Strings::for('AboutPage');
+$version = new Paragraph((string) ($words['softwareBefore'] ?? ''));
 $version -> class = 'muted text-sm';
 $version -> addContent(new Anchor('https://github.com/FedgeNo/glommer', 'Glommer'));
-$version -> addContent(' version ' . GLOMMER_VERSION);
+$version -> addContent(str_replace('{version}', GLOMMER_VERSION, (string) ($words['softwareAfter'] ?? '')));
 
 $version_card = new Card();
 $version_card -> addContent($version);
@@ -29,12 +30,12 @@ $version_card -> addContent($version);
 // ships with the software - on every install whose place directory is
 // actually loaded - instead of depending on each admin remembering it.
 if (Place::any()) {
-    $credit = new Paragraph('Place names from ');
+    $credit = new Paragraph((string) ($words['placesBefore'] ?? ''));
     $credit -> class = 'muted text-sm';
     $credit -> addContent(new Anchor('https://www.geonames.org/', 'GeoNames'));
-    $credit -> addContent(', licensed ');
+    $credit -> addContent((string) ($words['placesBetween'] ?? ''));
     $credit -> addContent(new Anchor('https://creativecommons.org/licenses/by/4.0/', 'CC BY 4.0'));
-    $credit -> addContent('.');
+    $credit -> addContent((string) ($words['placesAfter'] ?? ''));
 
     $version_card -> addContent($credit);
 }
@@ -48,10 +49,10 @@ if (Place::any()) {
 $tiles = trim(strip_tags(MapTiles::attribution()));
 
 if ($tiles !== '') {
-    $map_credit = new Paragraph('Map tiles from ');
+    $map_credit = new Paragraph((string) ($words['mapBefore'] ?? ''));
     $map_credit -> class = 'muted text-sm';
     $map_credit -> addContent($tiles);
-    $map_credit -> addContent('.');
+    $map_credit -> addContent((string) ($words['mapAfter'] ?? ''));
 
     $version_card -> addContent($map_credit);
 }
@@ -61,10 +62,10 @@ if ($tiles !== '') {
 // this machine instead of somebody's API is the reason a post never leaves the
 // server to be read in another language, which seems worth saying out loud.
 if (Translator::isAvailable()) {
-    $translation = new Paragraph('Translation by ');
+    $translation = new Paragraph((string) ($words['translationBefore'] ?? ''));
     $translation -> class = 'muted text-sm';
     $translation -> addContent(new Anchor('https://www.argosopentech.com/', 'Argos Translate'));
-    $translation -> addContent(', which runs here rather than anywhere else.');
+    $translation -> addContent((string) ($words['translationAfter'] ?? ''));
 
     $version_card -> addContent($translation);
 }

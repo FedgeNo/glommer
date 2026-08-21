@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { csrf_headers } from '/scripts/utils.js';
@@ -62,7 +63,7 @@ export class Api {
                 ok: false,
                 status: 0,
                 data: null,
-                error: aborted ? null : 'Network error. Please check your connection and try again.',
+                error: aborted ? null : Strings.for('Api').networkError || '',
                 aborted,
             };
         }
@@ -80,7 +81,7 @@ export class Api {
             ok: response.ok && body !== null,
             status: response.status,
             data: body,
-            error: body?.error ?? (response.ok ? null : 'Something went wrong. Please try again.'),
+            error: body?.error ?? (response.ok ? null : Strings.for('Api').genericError || ''),
             aborted: false,
         };
     }
@@ -120,7 +121,7 @@ export class Api {
             return null;
         }
 
-        Toast.show(result.error || 'Something went wrong. Please try again.');
+        Toast.show(result.error || Strings.for('Api').genericError || '');
 
         return null;
     }

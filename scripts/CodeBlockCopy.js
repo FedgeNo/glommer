@@ -16,17 +16,18 @@ function addCopyButton(pre) {
 
   const button = document.createElement('button');
   button.className = 'CodeCopyButton';
-  button.textContent = 'Copy';
-  button.setAttribute('aria-label', 'Copy Code to Clipboard');
+  const words = Strings.for('CodeBlockCopy');
+  button.textContent = words.copy || '';
+  button.setAttribute('aria-label', words.copyLabel || '');
   button.setAttribute('type', 'button');
 
   button.addEventListener('click', () => {
     navigator.clipboard.writeText(pre.textContent)
       .then(() => {
-        button.textContent = 'Copied!';
+        button.textContent = words.copied || '';
         button.classList.add('copied');
         setTimeout(() => {
-          button.textContent = 'Copy';
+          button.textContent = words.copy || '';
           button.classList.remove('copied');
         }, COPIED_TIMEOUT);
       })
@@ -45,4 +46,4 @@ export function enhanceCodeBlocks(container) {
   if (!container) return;
   container.querySelectorAll('.PostBody pre').forEach(pre => addCopyButton(pre));
 }
-
+import { Strings } from '/scripts/Strings.js';

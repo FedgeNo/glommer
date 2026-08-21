@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/api-init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -26,7 +26,7 @@ if ($username === '') {
 $rate_key = 'username-available:' . (ServerURL::clientIP() ?? 'unknown');
 
 if (RateLimiter::tooManyAttempts($rate_key, 120, 600)) {
-    JSONResponse::error('Too many checks. Please wait a moment.', 429) -> send();
+    JSONResponse::localizedError('tooManyChecksPleaseWaitAMoment', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);

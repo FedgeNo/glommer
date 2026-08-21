@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -16,7 +16,7 @@ $payload = is_array($payload) ? $payload : [];
 $rate_key = 'login:' . (ServerURL::clientIP() ?? 'unknown');
 
 if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
-    JSONResponse::error('Too many login attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyLoginAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 $identifier = trim((string) ($payload['identifier'] ?? ''));
@@ -31,14 +31,14 @@ if ($identifier === '' || $password === '') {
     $refused = [];
 
     if (trim($identifier) === '') {
-        $refused['identifier'] = 'Please give your username or email.';
+        $refused['identifier'] = JSONResponse::localized('giveUsernameOrEmail');
     }
 
     if ($password === '') {
-        $refused['password'] = 'Please give your password.';
+        $refused['password'] = JSONResponse::localized('givePassword');
     }
 
-    JSONResponse::fieldErrors($refused, 'Username/email and password are required.') -> send();
+    JSONResponse::fieldErrors($refused, JSONResponse::localized('credentialsRequired')) -> send();
 }
 
 // A second limit keyed on the account, not the address - the IP limit alone
@@ -66,7 +66,7 @@ if (RateLimiter::tooManyAttempts($account_rate_key, 10, 900)) {
     // reCAPTCHA set up there's nothing to prove humanity with, so it stays a
     // hard block rather than leave the account open to unthrottled guessing.
     if (!ReCaptcha::isEnabled()) {
-        JSONResponse::error('Too many login attempts for this account. Please try again later.', 429) -> send();
+        JSONResponse::localizedError('tooManyLoginAttemptsForThisAccountPleaseTryAgainLater', 429) -> send();
     }
 
     // Missing/unsolved token, or Google unreachable (verify fails closed): tell
@@ -86,7 +86,7 @@ if (RateLimiter::tooManyAttempts($account_rate_key, 10, 900)) {
 // Cloudflare mustn't lock every user out of an account they can already
 // prove with a password (which is rate-limited too).
 if (!Turnstile::verify($captcha_token, ServerURL::clientIP(), fail_open_on_error: true)) {
-    JSONResponse::error('Captcha verification failed. Please try again.', 422) -> send();
+    JSONResponse::localizedError('captchaVerificationFailedPleaseTryAgain', 422) -> send();
 }
 
 $user = Auth::verifyCredentials($identifier, $password);
@@ -97,15 +97,15 @@ if ($user === null) {
     RateLimiter::recordAttempt($rate_key);
     RateLimiter::recordAttempt($account_rate_key);
 
-    JSONResponse::error('Incorrect username/email or password.', 422) -> send();
+    JSONResponse::localizedError('incorrectUsernameEmailOrPassword', 422) -> send();
 }
 
 if ($user -> banned) {
     // Correct password but banned: show the reason a moderator gave, rather
     // than logging them in.
     $message = $user -> banReason !== null && $user -> banReason !== ''
-        ? 'Your account has been banned. Reason: ' . $user -> banReason
-        : 'Your account has been banned.';
+        ? JSONResponse::localized('bannedWithReason', ['reason' => $user -> banReason])
+        : JSONResponse::localized('banned');
 
     JSONResponse::error($message, 403) -> send();
 }

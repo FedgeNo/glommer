@@ -69,9 +69,7 @@ export class MessageTranslateButton {
     static async #agreed() {
         if (localStorage.getItem(MessageTranslateButton.NOTICE_KEY) === '1') return true;
 
-        const words = Strings.for('MessageTranslationNotice', {
-            body: 'To translate a message, its text is sent to this server and translated here. Nothing is kept, but a message translated this way has been read by the server, so it is not end-to-end encrypted the way an untranslated message is.',
-        });
+        const words = Strings.for('MessageTranslationNotice');
 
         if (!await Dialog.confirm(words.body)) return false;
 

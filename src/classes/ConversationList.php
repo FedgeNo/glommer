@@ -13,7 +13,13 @@ class ConversationList extends ItemList
 
     public ?int $userId = null;
 
-    protected string $emptyNotice = 'You don\'t have any conversations yet.';
+    protected string $emptyNotice = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+        parent::__construct($properties);
+    }
 
     protected function rows(): array
     {

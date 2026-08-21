@@ -81,7 +81,10 @@ export class Dialog {
      * @param {{ confirmText?: string, cancelText?: string }} labels
      * @returns {Promise<boolean>} – resolves true for OK, false for Cancel/Escape
      */
-    static confirm(message, { confirmText = 'OK', cancelText = 'Cancel' } = {}) {
+    static confirm(message, { confirmText = null, cancelText = null } = {}) {
+        const words = Strings.for('Dialog');
+        confirmText ??= words.confirm || '';
+        cancelText ??= words.cancel || '';
         Dialog.#activeCancel?.();
 
         return new Promise((resolve) => {
@@ -172,7 +175,7 @@ export class Dialog {
             const confirmButton = document.createElement('button');
             confirmButton.type = 'button';
             confirmButton.className = 'Button ConfirmDialogConfirmButton';
-            confirmButton.textContent = 'OK';
+            confirmButton.textContent = Strings.for('Dialog').confirm || '';
 
             actions.appendWithSpace(confirmButton);
             card.appendWithSpace(actions);
@@ -248,12 +251,12 @@ export class Dialog {
             const cancelButton = document.createElement('button');
             cancelButton.type = 'button';
             cancelButton.className = 'Button ConfirmDialogCancelButton';
-            cancelButton.textContent = 'Cancel';
+            cancelButton.textContent = Strings.for('Dialog').cancel || '';
 
             const confirmButton = document.createElement('button');
             confirmButton.type = 'button';
             confirmButton.className = 'Button ConfirmDialogConfirmButton';
-            confirmButton.textContent = options.confirmLabel || 'OK';
+            confirmButton.textContent = options.confirmLabel || Strings.for('Dialog').confirm || '';
             // Off until the box has something in it - a rule about the input,
             // not a wait, so it does not throb.
             confirmButton.disabled = true;
@@ -308,3 +311,4 @@ export class Dialog {
         });
     }
 }
+import { Strings } from '/scripts/Strings.js';

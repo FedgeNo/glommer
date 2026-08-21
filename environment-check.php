@@ -41,7 +41,7 @@ if (
     !in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
     || isset($_SERVER['HTTP_X_FORWARDED_FOR'])
 ) {
-    JSONResponse::error('Not found', 404) -> send();
+    JSONResponse::localizedError('notFound', 404) -> send();
 }
 
 $disabled_functions = array_map('trim', explode(',', (string) ini_get('disable_functions')));

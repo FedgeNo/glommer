@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 // No login required. Somebody signed out is exactly who the prompt asks, and
@@ -20,7 +20,7 @@ $payload = is_array($payload) ? $payload : [];
 // same list the selector is built from - so nothing can be chosen that has no
 // words behind it.
 if (!Strings::choose((string) ($payload['locale'] ?? ''))) {
-    JSONResponse::error('That is not a language this site has.', 422) -> send();
+    JSONResponse::localizedError('thatIsNotALanguageThisSiteHas', 422) -> send();
 }
 
 JSONResponse::success(['locale' => Strings::locale()]) -> send();

@@ -37,7 +37,7 @@ export class MessageKeyFingerprint {
 
             localStorage.setItem(MessageKeyFingerprint.#storageKey(thread.dataset.otherUserId), code);
             MessageKeyFingerprint.#markVerified(block);
-            Toast.show('Marked as verified.');
+            Toast.show(Strings.for('ClientStatus').markedVerified || '');
         });
     }
 
@@ -65,9 +65,7 @@ export class MessageKeyFingerprint {
 
         const warning = document.createElement('p');
         warning.className = 'MessageKeyFingerprintWarning';
-        warning.textContent = Strings.for('MessageKeyFingerprint', {
-            changed: 'This code has changed since you checked it. That happens when one of you resets your encryption keys - but it is also what someone reading this conversation would look like. Check the new code with them before trusting it.',
-        }).changed;
+        warning.textContent = Strings.for('MessageKeyFingerprint').changed || '';
         block.prepend(warning);
     }
 

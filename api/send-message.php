@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -27,38 +27,38 @@ $envelope = null;
 // two are exclusive: a message is one or the other.
 if (isset($payload['envelope'])) {
     if ($body !== '') {
-        JSONResponse::error('A message is either plaintext or encrypted, not both.', 422) -> send();
+        JSONResponse::localizedError('aMessageIsEitherPlaintextOrEncryptedNotBoth', 422) -> send();
     }
 
     $envelope = MessageEnvelope::normalize((string) $payload['envelope']);
 
     if ($envelope === null) {
-        JSONResponse::error('Malformed encrypted message.', 422) -> send();
+        JSONResponse::localizedError('malformedEncryptedMessage', 422) -> send();
     }
 
     if (!MessageFranking::isConfigured()) {
-        JSONResponse::error('Encrypted messaging is not available on this server.', 422) -> send();
+        JSONResponse::localizedError('encryptedMessagingIsNotAvailableOnThisServer', 422) -> send();
     }
 } elseif ($body === '') {
-    JSONResponse::fieldError('body', 'Write something first.') -> send();
+    JSONResponse::fieldError('body', JSONResponse::localized('writeSomethingFirst')) -> send();
 }
 
 if (strlen($body) > 65535) {
-    JSONResponse::fieldError('body', 'That message is too long.') -> send();
+    JSONResponse::fieldError('body', JSONResponse::localized('messageTooLong')) -> send();
 }
 
 if ($recipient_id === $current_user -> userId) {
-    JSONResponse::error('You can\'t message yourself.', 422) -> send();
+    JSONResponse::localizedError('youCanTMessageYourself', 422) -> send();
 }
 
 $recipient = User::load($recipient_id);
 
 if ($recipient === null || $recipient -> banned) {
-    JSONResponse::error('User not found', 404) -> send();
+    JSONResponse::localizedError('userNotFound', 404) -> send();
 }
 
 if (Block::exists($current_user -> userId, $recipient_id)) {
-    JSONResponse::error('Unable to send message.', 403) -> send();
+    JSONResponse::localizedError('unableToSendMessage', 403) -> send();
 }
 
 // Encryption is a property of the pair, not the sender: the envelope's
@@ -67,7 +67,7 @@ if (Block::exists($current_user -> userId, $recipient_id)) {
 // and a remote recipient can never take one at all, because a federated
 // message leaves here as ActivityPub, which has no encryption to speak.
 if ($envelope !== null && ($recipient -> remoteActorURI !== null || $recipient -> messagePublicKey === null || $current_user -> messagePublicKey === null)) {
-    JSONResponse::error('This conversation can\'t take encrypted messages.', 422) -> send();
+    JSONResponse::localizedError('thisConversationCanTTakeEncryptedMessages', 422) -> send();
 }
 
 // Independent of the per-recipient throttle below - this one catches a
@@ -79,7 +79,7 @@ if ($envelope !== null && ($recipient -> remoteActorURI !== null || $recipient -
 $spam_rate_key = 'send-message:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($spam_rate_key, 100, 600)) {
-    JSONResponse::error('Too many messages sent in a short time. Please wait a bit and try again.', 429) -> send();
+    JSONResponse::localizedError('tooManyMessagesSentInAShortTimePleaseWaitABitAndTryAgain', 429) -> send();
 }
 
 // Locked around the check and the insert together - otherwise two requests
@@ -92,7 +92,7 @@ RateLimiter::acquireLock($throttle_key);
 
 if (Message::unansweredCount($current_user -> userId, $recipient_id) >= Message::MAX_UNANSWERED) {
     RateLimiter::releaseLock($throttle_key);
-    JSONResponse::error('You\'ve sent a lot of messages without a reply - wait for them to respond before sending more.', 429) -> send();
+    JSONResponse::localizedError('youVeSentALotOfMessagesWithoutAReplyWaitForThemToRespondBeforeSendingMore', 429) -> send();
 }
 
 // The franking tag is the server's commitment, made at relay time, that this

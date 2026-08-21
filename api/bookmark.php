@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -28,7 +28,7 @@ SELECT 1
 mysqli_stmt_store_result($owner_stmt);
 
 if (mysqli_stmt_num_rows($owner_stmt) === 0) {
-    JSONResponse::error('Post not found', 404) -> send();
+    JSONResponse::localizedError('postNotFound', 404) -> send();
 }
 
 $bookmarked = Bookmark::toggle($current_user -> userId, $post_id);

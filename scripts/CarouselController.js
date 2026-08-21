@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 
 export class CarouselController {
@@ -134,7 +135,7 @@ export class CarouselController {
         this._autoplayMap.set(carousel, null);
         this._scheduleAutoplayAdvance(carousel);
         const toggle = carousel.querySelector('.CarouselAutoplayButton');
-        if (toggle) toggle.textContent = 'Stop Autoplay';
+        if (toggle) toggle.textContent = Strings.for('CarouselController').stopAutoplay || '';
     }
 
     _stopAutoplay(carousel) {
@@ -143,7 +144,7 @@ export class CarouselController {
         if (pendingTimeout) clearTimeout(pendingTimeout);
         this._autoplayMap.delete(carousel);
         const toggle = carousel.querySelector('.CarouselAutoplayButton');
-        if (toggle) toggle.textContent = 'Autoplay';
+        if (toggle) toggle.textContent = Strings.for('CarouselController').autoplay || '';
     }
 
     _enterFullscreen(container) {
@@ -168,7 +169,7 @@ export class CarouselController {
         const button = container.querySelector(':scope > .MediaFullscreenButton');
         if (button) {
             button.textContent = '×';
-            button.setAttribute('aria-label', 'Exit Fullscreen');
+            button.setAttribute('aria-label', Strings.for('CarouselController').exitFullscreen || '');
         }
 
         this._fullscreenState = { container, overlay, originalParent, originalNextSibling };
@@ -183,7 +184,7 @@ export class CarouselController {
         const button = container.querySelector(':scope > .MediaFullscreenButton');
         if (button) {
             button.textContent = '⛶';
-            button.setAttribute('aria-label', 'Fullscreen');
+            button.setAttribute('aria-label', Strings.for('CarouselController').fullscreen || '');
         }
         this._fullscreenState = null;
     }
@@ -270,4 +271,3 @@ export class CarouselController {
         this._scheduleAutoplayAdvance(carousel);
     }
 }
-

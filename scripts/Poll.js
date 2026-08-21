@@ -137,7 +137,7 @@ export class Poll {
 
         const votes = document.createElement('span');
         votes.className = 'PollOptionVotes';
-        votes.textContent = option.voteCount === 1 ? '1 vote' : option.voteCount + ' votes';
+        votes.textContent = Strings.plural(Strings.for('Poll').votes || {}, option.voteCount);
         share.appendChild(votes);
 
         result.appendWithSpace(share);
@@ -158,7 +158,7 @@ export class Poll {
         button.type = 'button';
         button.className = 'Button PollVoteButton';
         button.dataset.pollId = String(this.pollId);
-        button.textContent = 'Vote';
+        button.textContent = Strings.for('Poll').vote || '';
 
         return button;
     }

@@ -101,7 +101,8 @@ export class OtherUser extends User {
                     : 'Button FriendRequestButton';
                 friend_button.dataset.userId = this.userId;
                 friend_button.dataset.sent = sent_by_viewer ? '1' : '0';
-                friend_button.textContent = sent_by_viewer ? 'Cancel Request' : 'Add Friend';
+                const words = Strings.for('OtherUserClient');
+                friend_button.textContent = sent_by_viewer ? words.cancelRequest || '' : words.addFriend || '';
                 actions.appendWithSpace(friend_button);
             }
 
@@ -124,7 +125,7 @@ export class OtherUser extends User {
                     report_or_ban_button.type = 'button';
                     report_or_ban_button.className = 'Button UserBanButton';
                     report_or_ban_button.dataset.userId = this.userId;
-                    report_or_ban_button.textContent = 'Ban';
+                    report_or_ban_button.textContent = Strings.for('OtherUserClient').ban || '';
                 } else {
                     report_or_ban_button = document.createElement('button');
                     report_or_ban_button.type = 'button';
@@ -144,7 +145,7 @@ export class OtherUser extends User {
                 const friends_link = document.createElement('a');
                 friends_link.className = 'Button';
                 friends_link.href = ClientConfig.siteURL() + '/users/' + this.slug + '/friends';
-                friends_link.textContent = 'View Friends';
+                friends_link.textContent = Strings.for('OtherUserClient').viewFriends || '';
                 actions.appendWithSpace(friends_link);
             }
 
@@ -249,7 +250,8 @@ export class OtherUser extends User {
             const result = await Api.post('/api/friend-request', { userId: button.dataset.userId });
             if (!result) return;
             button.dataset.sent = result.sent ? '1' : '0';
-            button.textContent = result.sent ? 'Cancel Request' : 'Add Friend';
+            const words = Strings.for('OtherUserClient');
+            button.textContent = result.sent ? words.cancelRequest || '' : words.addFriend || '';
             button.classList.toggle('Removing', result.sent);
         } finally {
             Working.stop(button);
@@ -272,7 +274,7 @@ export class OtherUser extends User {
     }
 
     static async #block(button) {
-        if (!await Dialog.confirm('Block this user? This will remove any existing friendship.')) return;
+        if (!await Dialog.confirm(Strings.for('OtherUserClient').blockConfirm || '')) return;
         Working.start(button);
         try {
             const result = await Api.post('/api/block', { userId: button.dataset.userId });
@@ -284,7 +286,7 @@ export class OtherUser extends User {
     }
 
     static async #removeFriend(button) {
-        if (!await Dialog.confirm('Remove this friend?')) return;
+        if (!await Dialog.confirm(Strings.for('OtherUserClient').removeFriendConfirm || '')) return;
         Working.start(button);
         try {
             const result = await Api.post('/api/remove-friend', { userId: button.dataset.userId });
@@ -361,15 +363,18 @@ export class OtherUser extends User {
 
     static async #ban(button) {
         const reason = await Dialog.prompt(
-            'Ban this user? This hides all their content and blocks their login. They\'ll see this reason on the login form.',
-            { confirmLabel: 'Ban', placeholder: 'Reason for ban (required)' }
+            Strings.for('OtherUserClient').banConfirm || '',
+            {
+                confirmLabel: Strings.for('OtherUserClient').ban || '',
+                placeholder: Strings.for('OtherUserClient').banPlaceholder || '',
+            }
         );
         if (reason === null) return;
         Working.start(button);
         try {
             const result = await Api.post('/api/ban', { userId: button.dataset.userId, reason });
             if (!result) return;
-            button.textContent = 'Banned';
+            button.textContent = Strings.for('OtherUserClient').banned || '';
         } finally {
             Working.stop(button);
         }

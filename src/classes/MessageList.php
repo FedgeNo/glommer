@@ -18,15 +18,19 @@ class MessageList extends ItemList
     // rows() actually runs, the same as UserSearchList::rows() overwrites it
     // dynamically for a reason of its own - a class-level default is fixed
     // the moment the object exists, before this class can ask Strings anything.
-    protected string $emptyNotice = 'No messages yet.';
+    protected string $emptyNotice = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+        parent::__construct($properties);
+    }
 
     public ?int $userId = null;
     public ?int $otherUserId = null;
 
     protected function rows(): array
     {
-        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? $this -> emptyNotice);
-
         // The two directions run as separate UNION ALL halves rather than one
         // OR: each half walks its (senderId, recipientId, messageId) index
         // backward and stops at its limit, so only the merged rows ever get

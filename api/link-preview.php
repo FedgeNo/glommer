@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -19,7 +19,7 @@ $current_user = Auth::user();
 $rate_key = 'link-preview:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 15, 60)) {
-    JSONResponse::error('Too many requests. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyRequestsPleaseTryAgainLater', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -29,7 +29,7 @@ $payload = is_array($payload) ? $payload : [];
 $url = trim((string) ($payload['url'] ?? ''));
 
 if ($url === '' || strlen($url) > 255 || !preg_match('/^https?:\/\//i', $url)) {
-    JSONResponse::error('Invalid URL', 422) -> send();
+    JSONResponse::localizedError('invalidUrl', 422) -> send();
 }
 
 $preview = LinkPreviewFetcher::fetch($url);

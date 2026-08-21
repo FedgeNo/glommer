@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -23,7 +23,7 @@ $current_user = Auth::user();
 $post_rate_key = 'create-post:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($post_rate_key, 60, 600)) {
-    JSONResponse::error('You\'re posting very quickly. Please wait a moment and try again.', 429) -> send();
+    JSONResponse::localizedError('youRePostingVeryQuicklyPleaseWaitAMomentAndTryAgain', 429) -> send();
 }
 
 RateLimiter::recordAttempt($post_rate_key);
@@ -32,7 +32,7 @@ RateLimiter::recordAttempt($post_rate_key);
 // $_POST and $_FILES before this script ran. Catch that here so an oversized
 // upload gets a clear "too large" error instead of a misleading "no content" one.
 if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0 && $_POST === [] && $_FILES === []) {
-    JSONResponse::error('Your upload is too large. The maximum total upload size is ' . ini_get('post_max_size') . 'B.', 413) -> send();
+    JSONResponse::localizedError('uploadTooLarge', 413, ['size' => (string) ini_get('post_max_size')]) -> send();
 }
 
 $title = ControlCharacters::strip(mb_substr(trim((string) ($_POST['title'] ?? '')), 0, 255));
@@ -92,18 +92,18 @@ $description_ops = [];
 
 if ($description_raw !== '') {
     if (strlen($description_raw) > 262144) {
-        JSONResponse::error('Post text is too long', 422) -> send();
+        JSONResponse::localizedError('postTextIsTooLong', 422) -> send();
     }
 
     if (!is_array(json_decode($description_raw, true))) {
-        JSONResponse::error('Your editor is out of date. Please refresh the page and try again.', 426) -> send();
+        JSONResponse::localizedError('yourEditorIsOutOfDatePleaseRefreshThePageAndTryAgain', 426) -> send();
     }
 
     $description_ops = Delta::sanitize(Delta::decode($description_raw));
     $description_plaintext = Delta::plainText($description_ops);
 
     if (strlen($description_plaintext) > 65535) {
-        JSONResponse::error('Post text is too long', 422) -> send();
+        JSONResponse::localizedError('postTextIsTooLong', 422) -> send();
     }
 
     if ($description_plaintext !== '') {
@@ -118,15 +118,15 @@ if ($link_url !== '') {
     }
 
     if (!preg_match('/^https?:\/\//i', $link_url)) {
-        JSONResponse::fieldError('linkURL', 'Give an http:// or https:// link.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('validHttpLink')) -> send();
     }
 
     if (strlen($link_url) > 255) {
-        JSONResponse::fieldError('linkURL', 'That link is too long.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('linkTooLong')) -> send();
     }
 
     if (!URL::isValidHTTPURL($link_url)) {
-        JSONResponse::fieldError('linkURL', 'Point this at a domain name, not an IP address.') -> send();
+        JSONResponse::fieldError('linkURL', JSONResponse::localized('domainNotIp')) -> send();
     }
 }
 
@@ -140,11 +140,11 @@ $uploaded_files = $_FILES['files'] ?? null;
 if ($uploaded_files !== null) {
     foreach ($uploaded_files['error'] as $error) {
         if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
-            JSONResponse::error('One of your files is larger than the ' . ini_get('upload_max_filesize') . 'B upload limit.', 413) -> send();
+            JSONResponse::localizedError('fileTooLarge', 413, ['size' => (string) ini_get('upload_max_filesize')]) -> send();
         }
 
         if ($error !== UPLOAD_ERR_OK && $error !== UPLOAD_ERR_NO_FILE) {
-            JSONResponse::error('One of your files failed to upload. Please try again.', 400) -> send();
+            JSONResponse::localizedError('oneOfYourFilesFailedToUploadPleaseTryAgain', 400) -> send();
         }
     }
 }
@@ -153,7 +153,7 @@ if ($uploaded_files !== null) {
 // same host) needs the remaining headroom far more than the feed needs
 // another upload.
 if ($uploaded_files !== null && !UploadProcessor::hasFreeDiskSpace((int) array_sum($uploaded_files['size']))) {
-    JSONResponse::error('Uploads are temporarily unavailable - the server is low on storage. Please try again later.', 507) -> send();
+    JSONResponse::localizedError('uploadsAreTemporarilyUnavailableTheServerIsLowOnStoragePleaseTryAgainLater', 507) -> send();
 }
 
 $has_files = $uploaded_files !== null && count(array_filter($uploaded_files['error'], fn ($error) => $error === UPLOAD_ERR_OK)) > 0;
@@ -164,7 +164,7 @@ $has_text = $description_value !== null || $link_url !== '';
 // rule has to hold here too or a direct API call could create a combined
 // post - which the renderers deliberately have no layout for.
 if ($has_files && $link_url !== '') {
-    JSONResponse::error('A post can have either attached files or a link, not both', 422) -> send();
+    JSONResponse::localizedError('aPostCanHaveEitherAttachedFilesOrALinkNotBoth', 422) -> send();
 }
 
 $has_poll = $poll_options !== [];
@@ -173,20 +173,20 @@ $has_poll = $poll_options !== [];
 // reason they are with each other: its options are the thing to interact with,
 // and there is no layout that sets them beside a gallery or a link preview.
 if ($has_poll && ($has_files || $link_url !== '')) {
-    JSONResponse::error('A post can have a poll, attached files, or a link - not more than one', 422) -> send();
+    JSONResponse::localizedError('aPostCanHaveAPollAttachedFilesOrALinkNotMoreThanOne', 422) -> send();
 }
 
 // Counted after Poll::cleanOptions has dropped blanks and duplicates, so this
 // is about how many distinct choices there really are rather than how many
 // boxes were submitted.
 if ($has_poll && count($poll_options) < Poll::MIN_OPTIONS) {
-    JSONResponse::error('A poll needs at least ' . Poll::MIN_OPTIONS . ' different options.', 422) -> send();
+    JSONResponse::localizedError('pollNeedsOptions', 422, ['count' => Poll::MIN_OPTIONS]) -> send();
 }
 
 // The question is the post itself - there is nowhere else for it to go, and a
 // poll that is only buttons asks nothing.
 if ($has_poll && !$has_text) {
-    JSONResponse::error('A poll needs a question in the post.', 422) -> send();
+    JSONResponse::localizedError('aPollNeedsAQuestionInThePost', 422) -> send();
 }
 
 // A quote post: this one carries a reference to the post it comments on.
@@ -197,7 +197,7 @@ $quoted_post_id = isset($_POST['quotedPostId']) && $_POST['quotedPostId'] !== ''
 
 if ($quoted_post_id !== null) {
     if (!$has_text) {
-        JSONResponse::error('A quote post needs words of its own - to pass a post on unchanged, use Repost.', 422) -> send();
+        JSONResponse::localizedError('aQuotePostNeedsWordsOfItsOwnToPassAPostOnUnchangedUseRepost', 422) -> send();
     }
 
     $quoted_exists = DB::row('
@@ -208,7 +208,7 @@ SELECT `Posts`.`postId`
 ', \stdClass::class, 'i', $quoted_post_id);
 
     if ($quoted_exists === null) {
-        JSONResponse::error('The post being quoted no longer exists.', 404) -> send();
+        JSONResponse::localizedError('thePostBeingQuotedNoLongerExists', 404) -> send();
     }
 }
 
@@ -216,7 +216,7 @@ SELECT `Posts`.`postId`
 // with null. Left to that, a mistyped duration would publish the post with its
 // poll quietly missing rather than telling anyone.
 if ($has_poll && !in_array($poll_duration, Poll::DURATIONS, true)) {
-    JSONResponse::error('Choose how long the poll should run.', 422) -> send();
+    JSONResponse::localizedError('chooseHowLongThePollShouldRun', 422) -> send();
 }
 
 // The staged image is the link's preview thumbnail, not standalone media -
@@ -227,7 +227,7 @@ if ($link_image_seed !== '' && $link_url === '') {
 }
 
 if (!$has_text && !$has_files) {
-    JSONResponse::error('Post has no content', 422) -> send();
+    JSONResponse::localizedError('postHasNoContent', 422) -> send();
 }
 
 if ($parent_id !== null) {
@@ -238,11 +238,11 @@ SELECT `userId`
 ', 'Post', 'i', $parent_id);
 
     if ($parent_post === null) {
-        JSONResponse::error('Post not found', 404) -> send();
+        JSONResponse::localizedError('postNotFound', 404) -> send();
     }
 
     if (Block::exists($current_user -> userId, (int) $parent_post -> userId)) {
-        JSONResponse::error('Unable to reply to this post', 403) -> send();
+        JSONResponse::localizedError('unableToReplyToThisPost', 403) -> send();
     }
 }
 
@@ -262,7 +262,7 @@ if ($has_files) {
     $alt_texts = $_POST['altTexts'] ?? array_fill(0, $file_count, '');
 
     if (!is_array($alt_texts) || count($alt_texts) !== $file_count) {
-        JSONResponse::error('Alt texts do not match the uploaded files', 422) -> send();
+        JSONResponse::localizedError('altTextsDoNotMatchTheUploadedFiles', 422) -> send();
     }
 
     for ($i = 0; $i < $file_count; $i++) {
@@ -279,7 +279,7 @@ if ($has_files) {
         $alt_text = trim((string) ($alt_texts[$i] ?? ''));
 
         if (mb_strlen($alt_text) > FeedItem::MAX_ALT_TEXT_LENGTH) {
-            JSONResponse::error('Alt text is too long (max ' . FeedItem::MAX_ALT_TEXT_LENGTH . ' characters)', 422) -> send();
+            JSONResponse::localizedError('altTextTooLong', 422, ['count' => FeedItem::MAX_ALT_TEXT_LENGTH]) -> send();
         }
 
         $valid_files[] = [
@@ -298,7 +298,7 @@ if ($has_files) {
 // plain-text file that classify() rejected) can't slip through as a
 // completely contentless post.
 if (!$has_text && $valid_files === []) {
-    JSONResponse::error('Post has no content', 422) -> send();
+    JSONResponse::localizedError('postHasNoContent', 422) -> send();
 }
 
 $needs_async = count(array_filter($valid_files, fn ($file) => $file['type'] !== 'image')) > 0;
@@ -307,7 +307,7 @@ $needs_async = count(array_filter($valid_files, fn ($file) => $file['type'] !== 
 // the first point at which what was attached is known - video and audio
 // publish through the worker, whose staged batches carry no quoted reference.
 if ($needs_async && $quoted_post_id !== null) {
-    JSONResponse::error('A quote post can carry images, but not video or audio.', 422) -> send();
+    JSONResponse::localizedError('aQuotePostCanCarryImagesButNotVideoOrAudio', 422) -> send();
 }
 
 if ($needs_async) {
@@ -318,7 +318,7 @@ if ($needs_async) {
     $async_upload_rate_key = 'async-upload:' . $current_user -> userId;
 
     if (RateLimiter::tooManyAttempts($async_upload_rate_key, 5, 600)) {
-        JSONResponse::error('Too many video/audio uploads in a short time. Please wait a bit and try again.', 429) -> send();
+        JSONResponse::localizedError('tooManyVideoAudioUploadsInAShortTimePleaseWaitABitAndTryAgain', 429) -> send();
     }
 
     RateLimiter::recordAttempt($async_upload_rate_key);

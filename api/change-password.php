@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -30,7 +30,7 @@ $confirm_password = (string) ($payload['confirmPassword'] ?? '');
 $password_rate_key = 'password-verify:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
-    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 // Gathered rather than answered one at a time: a form that refuses the first

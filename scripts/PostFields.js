@@ -30,11 +30,12 @@ export class PostFields {
         const input = document.createElement('input');
         input.type = 'text';
         input.name = 'title';
-        input.placeholder = 'Title (optional)';
+        const words = Strings.for('PostFields');
+        input.placeholder = words.title || '';
         input.maxLength = 255;
         input.value = value;
 
-        return [PostFields.fieldLabel(input, 'Title (optional)'), input];
+        return [PostFields.fieldLabel(input, words.title || ''), input];
     }
 
     /** The link box. @returns {[HTMLLabelElement, HTMLInputElement]} */
@@ -42,11 +43,12 @@ export class PostFields {
         const input = document.createElement('input');
         input.type = 'text';
         input.name = 'linkURL';
-        input.placeholder = 'Link (optional)';
+        const words = Strings.for('PostFields');
+        input.placeholder = words.link || '';
         input.maxLength = 255;
         input.value = value;
 
-        return [PostFields.fieldLabel(input, 'Link (optional)'), input];
+        return [PostFields.fieldLabel(input, words.link || ''), input];
     }
 
     /**
@@ -59,7 +61,7 @@ export class PostFields {
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'ComposerAttachmentAltInput';
-        input.placeholder = 'Alt text - describe this image';
+        input.placeholder = Strings.for('PostFields').altText || '';
         input.maxLength = 1000;
         input.value = value;
 
@@ -72,10 +74,12 @@ export class PostFields {
         input.type = 'text';
         input.className = 'ContentWarningInput';
         input.name = 'contentWarning';
-        input.placeholder = 'Content Warning (optional)';
+        const words = Strings.for('PostFields');
+        input.placeholder = words.contentWarning || '';
         input.maxLength = 255;
         input.value = value;
 
-        return [PostFields.fieldLabel(input, 'Content Warning (optional)'), input];
+        return [PostFields.fieldLabel(input, words.contentWarning || ''), input];
     }
 }
+import { Strings } from '/scripts/Strings.js';

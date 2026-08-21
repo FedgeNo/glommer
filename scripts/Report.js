@@ -80,21 +80,7 @@ export class Report {
     }
 
     toElement() {
-        const words = Strings.for('Report', {
-            targetTypes: { post: 'Post', message: 'Message', user: 'User' },
-            summary: { before: '{type} #{id} reported by ', after: '' },
-            reasonLine: 'Reason: {reason}',
-            banReporterLabel: 'Ban Reporter',
-            banReportedUserLabel: 'Ban Reported User',
-            deleteLabel: 'Delete {type}',
-            reportedImageAlt: 'Reported image',
-            attachmentUnavailable: 'A reported attachment is no longer available.',
-            viewAttachment: 'View reported attachment',
-            missing: {
-                noSnapshot: 'The reported content is no longer available.',
-                unknownType: 'Unknown content type.',
-            },
-        });
+        const words = Strings.for('Report');
         const type_label = words.targetTypes[this.targetType] || capitalize(this.targetType);
 
         const card = document.createElement('article');
@@ -242,7 +228,7 @@ export class Report {
     }
 
     static async #deleteContent(button) {
-        if (!await Dialog.confirm('Delete this content permanently? Deleting a post also removes all its replies.')) return;
+        if (!await Dialog.confirm(Strings.for('MiscellaneousClient').deleteReportedContent || '')) return;
         Working.start(button);
         try {
             const result = await Api.post('/api/delete-reported-content', { reportId: button.dataset.reportId });

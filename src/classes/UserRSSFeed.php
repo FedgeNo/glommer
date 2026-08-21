@@ -16,7 +16,10 @@ class UserRSSFeed extends RSSFeed
     {
         $name = $this -> user -> title ?: $this -> user -> slug;
 
-        $this -> title = 'Posts by ' . $name . ' on ' . Config::get('siteTitle');
+        $this -> title = strtr((string) (Strings::for(self::class)['title'] ?? ''), [
+            '{name}' => $name,
+            '{site}' => (string) Config::get('siteTitle'),
+        ]);
         $this -> link = ServerURL::absolute('/users/' . $this -> user -> slug . '/');
         $this -> description = $this -> title;
 

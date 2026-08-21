@@ -191,7 +191,7 @@ export class Post {
             const location_link = document.createElement('a');
             location_link.className = 'PostLocationLink';
             location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
-            location_link.title = 'Show this place on the map';
+            location_link.title = Strings.for('PostClient').mapTitle || '';
             location_link.textContent = this.placeLabel || (this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4));
             meta.appendWithSpace(location_link);
         }
@@ -322,7 +322,7 @@ export class Post {
 
             // A remote attachment describes itself; ours is described by the
             // post it belongs to. Same order of preference as FeedItem's.
-            img.alt = item.altText || this.imageAltText || 'Image';
+            img.alt = item.altText || this.imageAltText || Strings.for('PostClient').image || '';
 
             // The feed shows the thumbnail and carries the display-size URL for
             // fullscreen to swap in, exactly as ImageItem.php renders it.
@@ -346,7 +346,7 @@ export class Post {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'Button MediaFullscreenButton';
-        button.setAttribute('aria-label', 'Fullscreen');
+        button.setAttribute('aria-label', Strings.for('PostClient').fullscreen || '');
         button.textContent = '⛶';
         return button;
     }
@@ -361,7 +361,7 @@ export class Post {
 
         const summary = document.createElement('summary');
         summary.className = 'SensitiveMediaSummary';
-        summary.textContent = 'Sensitive media';
+        summary.textContent = Strings.for('PostClient').sensitiveMedia || '';
 
         cover.appendWithSpace(summary);
         cover.appendWithSpace(media);
@@ -410,14 +410,14 @@ export class Post {
             const prev_button = document.createElement('button');
             prev_button.type = 'button';
             prev_button.className = 'Button CarouselPrevButton';
-            prev_button.setAttribute('aria-label', 'Previous');
+            prev_button.setAttribute('aria-label', Strings.for('PostClient').previous || '');
             prev_button.textContent = '‹';
             carousel.appendWithSpace(prev_button);
 
             const next_button = document.createElement('button');
             next_button.type = 'button';
             next_button.className = 'Button CarouselNextButton';
-            next_button.setAttribute('aria-label', 'Next');
+            next_button.setAttribute('aria-label', Strings.for('PostClient').next || '');
             next_button.textContent = '›';
             carousel.appendWithSpace(next_button);
 
@@ -429,7 +429,7 @@ export class Post {
             const autoplay_button = document.createElement('button');
             autoplay_button.type = 'button';
             autoplay_button.className = 'Button CarouselAutoplayButton';
-            autoplay_button.textContent = 'Autoplay';
+            autoplay_button.textContent = Strings.for('PostClient').autoplay || '';
             carousel.appendWithSpace(autoplay_button);
         }
 
@@ -850,7 +850,7 @@ export class Post {
 
             const label = document.createElement('p');
         label.className = 'MachineTranslationLabel';
-            label.textContent = 'Machine translation';
+            label.textContent = Strings.for('PostClient').machineTranslation || '';
             translated.appendWithSpace(label);
 
             Post.#originalBodies.set(post, body);
@@ -898,7 +898,7 @@ export class Post {
     }
 
     static async #delete(button) {
-        if (!await Dialog.confirm('Delete this post?')) return;
+        if (!await Dialog.confirm(Strings.for('PostClient').deleteConfirm || '')) return;
         const postData = button.closest('.Post').dataset;
         Working.start(button);
         try {

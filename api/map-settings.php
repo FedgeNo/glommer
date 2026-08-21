@@ -5,13 +5,13 @@ declare(strict_types=1);
 require __DIR__ . '/api-init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 // Site-wide settings are the primary admin's alone, the same gate as every other
 // admin-only write.
 if (Auth::id() !== 1) {
-    JSONResponse::error('Forbidden', 403) -> send();
+    JSONResponse::localizedError('forbidden', 403) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);

@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -19,7 +19,7 @@ $payload = is_array($payload) ? $payload : [];
 $rate_key = 'topic-history:' . (ServerURL::clientIP() ?? 'unknown');
 
 if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
-    JSONResponse::error('Too many requests. Please slow down.', 429) -> send();
+    JSONResponse::localizedError('tooManyRequestsPleaseSlowDown', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -30,7 +30,7 @@ RateLimiter::recordAttempt($rate_key);
 $type = EntityType::fromSlug(strtolower(trim((string) ($payload['entityType'] ?? ''))));
 
 if ($type === null) {
-    JSONResponse::error('Unknown topic type', 404) -> send();
+    JSONResponse::localizedError('unknownTopicType', 404) -> send();
 }
 
 // How many chips the client already shows - the next page starts there.

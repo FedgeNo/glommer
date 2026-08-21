@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -28,7 +28,7 @@ SELECT *
 ', 'Poll', 'i', $poll_id);
 
 if ($poll === null) {
-    JSONResponse::error('Poll not found', 404) -> send();
+    JSONResponse::localizedError('pollNotFound', 404) -> send();
 }
 
 $author = DB::row('
@@ -40,14 +40,14 @@ SELECT `userId`
 // The same wall a reply hits. Answering someone's poll is interacting with
 // them, which is exactly what a block is for.
 if ($author !== null && Block::exists((int) $current_user -> userId, (int) $author -> userId)) {
-    JSONResponse::error('Unable to vote on this poll', 403) -> send();
+    JSONResponse::localizedError('unableToVoteOnThisPoll', 403) -> send();
 }
 
 if (!Poll::vote($poll_id, (int) $current_user -> userId, $option_ids)) {
     // One refusal for every reason it can be refused - closed, already
     // answered, or options that are not this poll's. Telling them apart would
     // only tell a caller which guard to try next.
-    JSONResponse::error('That vote could not be recorded.', 422) -> send();
+    JSONResponse::localizedError('thatVoteCouldNotBeRecorded', 422) -> send();
 }
 
 // Only says anything when the poll came from elsewhere: answering a local one

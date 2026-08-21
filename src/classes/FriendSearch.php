@@ -9,7 +9,13 @@ class FriendSearch extends Div
     /** Whose friends are searched. The client reads data-user-id to pass it on. */
     public ?User $user = null;
 
-    public string $placeholder = 'Search friends…';
+    public string $placeholder = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> placeholder = (string) (Strings::for(FriendSearchBox::class)['placeholder'] ?? '');
+        parent::__construct($properties);
+    }
 
     public function toDOM(): \DOMElement
     {

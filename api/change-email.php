@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -28,7 +28,7 @@ $current_password = (string) ($payload['currentPassword'] ?? '');
 $password_rate_key = 'password-verify:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($password_rate_key, 10, 900)) {
-    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 // Gathered rather than answered one at a time - see api/change-password.php.
@@ -57,7 +57,7 @@ if (strcasecmp($new_email, (string) $current_user -> email) === 0) {
 $rate_key = 'change-email:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 5, 3600)) {
-    JSONResponse::error('Too many email changes in a short time. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyEmailChangesInAShortTimePleaseTryAgainLater', 429) -> send();
 }
 
 // Held from the check below through the UPDATE, so a reservation for this
@@ -74,7 +74,7 @@ SELECT `userId`
 mysqli_stmt_store_result($taken_stmt);
 
 if (mysqli_stmt_num_rows($taken_stmt) > 0 || EmailChangeRevert::isReserved($new_email)) {
-    JSONResponse::fieldError('newEmail', 'That address is already in use.') -> send();
+    JSONResponse::fieldError('newEmail', JSONResponse::localized('addressInUse')) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -104,7 +104,7 @@ UPDATE `Users`
         throw $exception;
     }
 
-    JSONResponse::fieldError('newEmail', 'That address is already in use.') -> send();
+    JSONResponse::fieldError('newEmail', JSONResponse::localized('addressInUse')) -> send();
 }
 
 Auth::clearUserCache();

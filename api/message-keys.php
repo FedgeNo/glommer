@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -29,7 +29,7 @@ $wrapped = is_array($payload['wrappedPrivateKey'] ?? null) ? $payload['wrappedPr
 $password_rate_key = 'password-verify:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($password_rate_key, 10, 600)) {
-    JSONResponse::error('Too many attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 if (!$current_user -> verifyPassword((string) ($payload['password'] ?? ''))) {
@@ -38,7 +38,7 @@ if (!$current_user -> verifyPassword((string) ($payload['password'] ?? ''))) {
     // Named for the box it is typed into rather than for the payload key -
     // the form calls it setupAccountPassword, and the message goes under the
     // box, not under the key.
-    JSONResponse::fieldError('setupAccountPassword', 'That is not your account password.', 403) -> send();
+    JSONResponse::fieldError('setupAccountPassword', JSONResponse::localized('notAccountPassword'), 403) -> send();
 }
 
 // Both blobs are rebuilt from allowlisted fields rather than stored as
@@ -51,7 +51,7 @@ $coordinate_pattern = '/\A[A-Za-z0-9_-]{43}\z/';
 if (($public_key['kty'] ?? null) !== 'EC' || ($public_key['crv'] ?? null) !== 'P-256'
     || preg_match($coordinate_pattern, (string) ($public_key['x'] ?? '')) !== 1
     || preg_match($coordinate_pattern, (string) ($public_key['y'] ?? '')) !== 1) {
-    JSONResponse::error('Malformed public key.', 422) -> send();
+    JSONResponse::localizedError('malformedPublicKey', 422) -> send();
 }
 
 $stored_public_key = json_encode([
@@ -74,7 +74,7 @@ if ($salt === false || strlen($salt) !== 16
     || $iterations < 100000 || $iterations > 10000000
     || $iv === false || strlen($iv) !== 12
     || $ciphertext === false || strlen($ciphertext) < 17 || strlen($ciphertext) > 4096) {
-    JSONResponse::error('Malformed key backup.', 422) -> send();
+    JSONResponse::localizedError('malformedKeyBackup', 422) -> send();
 }
 
 $stored_wrapped_key = json_encode([

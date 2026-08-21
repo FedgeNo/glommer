@@ -18,13 +18,15 @@ $page = new Page(['title' => (string) (Strings::for('PageTitle')['revertEmail'] 
 // revert would let a blind scanner fetch silently undo a legitimate change
 // and sign the user out of every device.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $words = Strings::for('RevertEmailPage');
+
     if ($token !== '' && EmailChangeRevert::consume($token)) {
-        $page -> addContent(new Paragraph('Your email address has been reverted and every device has been signed out of your account.'));
-        $page -> addContent(new Paragraph('If you\'re not sure how this happened, change your password as soon as you log back in.'));
-        $page -> addContent(new Anchor(ServerURL::absolute('/login'), 'Log In'));
-        $page -> addContent(new Anchor(ServerURL::absolute('/forgot-password'), 'Forgot Password?'));
+        $page -> addContent(new Paragraph((string) ($words['reverted'] ?? '')));
+        $page -> addContent(new Paragraph((string) ($words['securityAdvice'] ?? '')));
+        $page -> addContent(new Anchor(ServerURL::absolute('/login'), (string) ($words['login'] ?? '')));
+        $page -> addContent(new Anchor(ServerURL::absolute('/forgot-password'), (string) ($words['forgotPassword'] ?? '')));
     } else {
-        $page -> addContent(new Paragraph('That revert link is invalid or has expired.'));
+        $page -> addContent(new Paragraph((string) ($words['invalid'] ?? '')));
     }
 
     $page -> send();
@@ -32,12 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($token === '') {
-    $page -> addContent(new Paragraph('That revert link is invalid or has expired.'));
+    $page -> addContent(new Paragraph((string) (Strings::for('RevertEmailPage')['invalid'] ?? '')));
     $page -> send();
     exit;
 }
 
-$page -> addContent(new Paragraph('Revert the recent email address change on your account? This also signs every device out of your account.'));
+$page -> addContent(new Paragraph((string) (Strings::for('RevertEmailPage')['confirm'] ?? '')));
 $page -> addContent(new EmailRevertForm($token));
 
 $page -> send();

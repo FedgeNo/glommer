@@ -15,7 +15,13 @@ class RememberedDeviceList extends ItemList
 {
     public ?string $class = 'RememberedDeviceList';
 
-    protected string $emptyNotice = 'No remembered devices. Devices where you check "Remember me" at login appear here.';
+    protected string $emptyNotice = '';
+
+    public function __construct(array|object|null $properties = null)
+    {
+        $this -> emptyNotice = (string) (Strings::for(self::class)['emptyNotice'] ?? '');
+        parent::__construct($properties);
+    }
 
     public int $userId = 0;
 

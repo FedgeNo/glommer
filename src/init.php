@@ -111,7 +111,7 @@ try {
 // is left alone rather than being clobbered.
 $send_server_error = function (): void {
     if (defined('IS_API_REQUEST')) {
-        JSONResponse::error('Server error', 500) -> send();
+        JSONResponse::localizedError('serverError', 500) -> send();
     } else {
         ErrorDocument::send(500, 'Something Went Wrong', 'An unexpected error occurred. Please try again, and let us know if it keeps happening.');
     }
@@ -199,7 +199,7 @@ register_shutdown_function(function () use ($send_server_error, $warn_admin): vo
 // safely render.)
 if ($site_is_installed && !str_starts_with((string) Config::get('siteURL'), 'https://')) {
     if (defined('IS_API_REQUEST')) {
-        JSONResponse::error('This site requires HTTPS and is misconfigured. The administrator must set SITE_URL to an https:// URL.', 503) -> send();
+        JSONResponse::localizedError('httpsMisconfigured', 503) -> send();
     }
 
     ErrorDocument::send(503, 'HTTPS Required', 'This site requires HTTPS, but its SITE_URL is configured as plain http. The administrator must set SITE_URL in .env to an https:// URL - see the README\'s HTTPS section for how to get a certificate (including for localhost).');
@@ -223,7 +223,7 @@ try {
     error_log('Version gate could not read the recorded version: ' . $exception);
 
     if (defined('IS_API_REQUEST')) {
-        JSONResponse::error('Server error', 500) -> send();
+        JSONResponse::localizedError('serverError', 500) -> send();
     }
 
     // Not the maintenance page: a database that answers nothing is not a
@@ -235,7 +235,7 @@ try {
 
 if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
     if (defined('IS_API_REQUEST')) {
-        JSONResponse::error('The site is being upgraded. Please try again in a few minutes.', 503) -> send();
+        JSONResponse::localizedError('siteUpgrading', 503) -> send();
     }
 
     $maintenance_message = Auth::id() === 1
@@ -285,7 +285,7 @@ if (Auth::check()) {
         Auth::logout();
 
         if (defined('IS_API_REQUEST')) {
-            JSONResponse::error('Not logged in', 401) -> send();
+            JSONResponse::localizedError('notLoggedIn', 401) -> send();
         }
 
         header('Location: ' . ServerURL::absolute('/'));
@@ -296,7 +296,7 @@ if (Auth::check()) {
 
     if (!$current_user -> verified && !in_array(basename($_SERVER['SCRIPT_FILENAME']), $exempt_scripts, true)) {
         if (defined('IS_API_REQUEST')) {
-            JSONResponse::error('Email verification required', 403) -> send();
+            JSONResponse::localizedError('emailVerificationRequired', 403) -> send();
         }
 
         header('Location: ' . ServerURL::absolute('/check-inbox'));
@@ -340,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$csrf_exempt) {
 
     if (!CSRF::verify(is_string($csrf_token) ? $csrf_token : null)) {
         if (defined('IS_API_REQUEST')) {
-            JSONResponse::error('Invalid CSRF token', 403) -> send();
+            JSONResponse::localizedError('invalidCsrfToken', 403) -> send();
         }
 
         ErrorDocument::send(403, 'Forbidden', 'Your session expired or the form was tampered with. Please go back and try again.');

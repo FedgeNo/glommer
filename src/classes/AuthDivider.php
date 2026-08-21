@@ -11,10 +11,13 @@ class AuthDivider extends Div
 {
     public ?string $class = 'AuthDivider';
 
-    public function __construct(private readonly string $label = 'or')
+    public function __construct(?string $label = null)
     {
+        $this -> label = $label ?? (string) (Strings::for(self::class)['label'] ?? '');
         parent::__construct();
     }
+
+    private readonly string $label;
 
     public function toDOM(): \DOMElement
     {

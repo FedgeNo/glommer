@@ -37,14 +37,15 @@ export class PostPinButton {
 
             if (!result) return;
 
-            const words = Strings.for('PostPinButton', { pin: 'Pin', unpin: 'Unpin' });
+            const words = Strings.for('PostPinButton');
             const name = result.pinned ? words.unpin : words.pin;
 
             button.setAttribute('aria-pressed', result.pinned ? 'true' : 'false');
             button.setAttribute('aria-label', name);
             button.setAttribute('title', name);
             button.classList.toggle('Removing', result.pinned);
-            Toast.show(result.pinned ? 'Pinned to your profile.' : 'Unpinned.');
+            const statusWords = Strings.for('ClientStatus');
+            Toast.show(result.pinned ? statusWords.pinSaved || '' : statusWords.unpinSaved || '');
         } finally {
             Working.stop(button);
         }

@@ -27,7 +27,7 @@ if (($_POST['List-Unsubscribe'] ?? '') === 'One-Click') {
 
     if ($user_id === null) {
         http_response_code(400);
-        echo 'That unsubscribe link is not one this site issued.' . chr(10);
+        echo (string) (Strings::for('UnsubscribePage')['invalid'] ?? '') . chr(10);
         exit;
     }
 
@@ -39,8 +39,9 @@ if (($_POST['List-Unsubscribe'] ?? '') === 'One-Click') {
 $page = new Page(['title' => (string) (Strings::for('PageTitle')['unsubscribe'] ?? '')]);
 
 if ($user_id === null) {
-    $page -> addContent(new Paragraph('That unsubscribe link is not one this site issued.'));
-    $page -> addContent(new Anchor(ServerURL::absolute('/'), 'Continue'));
+    $words = Strings::for('UnsubscribePage');
+    $page -> addContent(new Paragraph((string) ($words['invalid'] ?? '')));
+    $page -> addContent(new Anchor(ServerURL::absolute('/'), (string) ($words['continue'] ?? '')));
 
     $page -> send();
     exit;
@@ -52,9 +53,8 @@ $resubscribing = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 EmailDigest::setEnabled($user_id, $resubscribing);
 
-$page -> addContent(new Paragraph($resubscribing
-    ? 'Your digests are back on. You will hear from us when you have been away a while and there is something to tell you.'
-    : 'Done - no more digests. You will still get the mail this site has to send you, like a password reset.'));
+$words = Strings::for('UnsubscribePage');
+$page -> addContent(new Paragraph((string) ($words[$resubscribing ? 'resubscribed' : 'unsubscribed'] ?? '')));
 
 if (!$resubscribing) {
     $page -> addContent(new EmailDigestResubscribeForm($token));

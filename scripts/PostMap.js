@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Api } from '/scripts/Api.js';
 import { DeltaRenderer } from '/scripts/DeltaRenderer.js';
@@ -189,7 +190,7 @@ export class PostMap {
             const post_here = document.createElement('button');
             post_here.type = 'button';
             post_here.className = 'Button';
-            post_here.textContent = 'Post here';
+            post_here.textContent = Strings.for('PostMapClient').postHere || '';
             post_here.addEventListener('click', () => {
                 form.classList.add('Active');
                 form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -200,13 +201,13 @@ export class PostMap {
         const nearby = document.createElement('a');
         nearby.className = 'Button';
         nearby.href = ClientConfig.siteURL() + '/locations/?lat=' + encodeURIComponent(latitude) + '&lng=' + encodeURIComponent(longitude);
-        nearby.textContent = 'Posts nearby';
+        nearby.textContent = Strings.for('PostMapClient').postsNearby || '';
         menu.appendWithSpace(nearby);
 
         const clear = document.createElement('button');
         clear.type = 'button';
         clear.className = 'Button';
-        clear.textContent = 'Clear pin';
+        clear.textContent = Strings.for('PostMapClient').clearPin || '';
         clear.addEventListener('click', () => {
             const composer = form ? Composer.getInstance(form) : null;
 
@@ -366,7 +367,7 @@ export class PostMap {
         // being a thing somebody has to remember when the map one day carries
         // a post from somewhere else.
         const link = document.createElement('a');
-        link.textContent = post.title || 'View post';
+        link.textContent = post.title || Strings.for('PostMapClient').viewPost || '';
 
         if (DeltaRenderer.isSafeLink(post.url, DeltaRenderer.ALLOWED_LINK_SCHEMES)) {
             link.href = post.url;
@@ -376,7 +377,7 @@ export class PostMap {
 
         const author = document.createElement('div');
         author.className = 'MapPinAuthor';
-        author.textContent = 'by ' + post.authorName;
+        author.textContent = (Strings.for('PostMapClient').byAuthor || '').replace('{name}', post.authorName);
         wrapper.appendWithSpace(author);
 
         return wrapper;

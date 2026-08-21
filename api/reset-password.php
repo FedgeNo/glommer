@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -24,7 +24,7 @@ $confirm_password = (string) ($payload['confirmPassword'] ?? '');
 $rate_key = 'reset-password:' . (ServerURL::clientIP() ?? 'unknown');
 
 if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
-    JSONResponse::error('Too many password reset attempts. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyPasswordResetAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -32,7 +32,7 @@ RateLimiter::recordAttempt($rate_key);
 $user_id = $token !== '' ? PasswordReset::verify($token) : null;
 
 if ($user_id === null) {
-    JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
+    JSONResponse::localizedError('thatPasswordResetLinkIsInvalidOrHasExpired', 422) -> send();
 }
 
 // Gathered rather than answered one at a time - see api/change-password.php.
@@ -58,7 +58,7 @@ $user = User::load($user_id);
 // The account can vanish between the token being issued and used (deleted,
 // admin-removed) - the token points at nobody, same outcome as an invalid one.
 if ($user === null) {
-    JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
+    JSONResponse::localizedError('thatPasswordResetLinkIsInvalidOrHasExpired', 422) -> send();
 }
 
 // A no-op, same treatment as resubmitting your current email in
@@ -69,7 +69,7 @@ if ($user -> verifyPassword($new_password)) {
 }
 
 if (!PasswordReset::consume($token, $new_password)) {
-    JSONResponse::error('That password reset link is invalid or has expired.', 422) -> send();
+    JSONResponse::localizedError('thatPasswordResetLinkIsInvalidOrHasExpired', 422) -> send();
 }
 
 JSONResponse::success(['reset' => true]) -> send();

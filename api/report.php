@@ -7,11 +7,11 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -25,30 +25,30 @@ $reason = trim((string) ($payload['reason'] ?? ''));
 $valid_types = ['post', 'user', 'message'];
 
 if (!in_array($target_type, $valid_types, true) || $target_id === 0) {
-    JSONResponse::error('Invalid report', 422) -> send();
+    JSONResponse::localizedError('invalidReport', 422) -> send();
 }
 
 if (strlen($reason) > 65535) {
-    JSONResponse::error('Reason is too long', 422) -> send();
+    JSONResponse::localizedError('reasonIsTooLong', 422) -> send();
 }
 
 $target_user_id = ReportManager::resolveTargetUserId($target_type, $target_id);
 
 if ($target_user_id === null) {
-    JSONResponse::error('Invalid report', 422) -> send();
+    JSONResponse::localizedError('invalidReport', 422) -> send();
 }
 
 // A message can only be reported by the person it was sent to. Without this,
 // any guessed messageId could be reported, snapshotting a private conversation
 // between two other people into the moderation queue.
 if ($target_type === 'message' && !ReportManager::messageWasSentTo($target_id, $current_user -> userId)) {
-    JSONResponse::error('Invalid report', 422) -> send();
+    JSONResponse::localizedError('invalidReport', 422) -> send();
 }
 
 $rate_key = 'report:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
-    JSONResponse::error('Too many reports. Please try again later.', 429) -> send();
+    JSONResponse::localizedError('tooManyReportsPleaseTryAgainLater', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);
@@ -73,17 +73,17 @@ SELECT *
         $revealed_key = base64_decode((string) ($payload['revealedKey'] ?? ''), true);
 
         if ($revealed_key === false || strlen($revealed_key) !== 32) {
-            JSONResponse::error('Unlock the conversation to report an encrypted message.', 422) -> send();
+            JSONResponse::localizedError('unlockTheConversationToReportAnEncryptedMessage', 422) -> send();
         }
 
         if (!MessageFranking::verify((int) $message -> senderId, (int) $message -> recipientId, $message -> bodyCiphertext, (string) $message -> frankingTag)) {
-            JSONResponse::error('This message could not be verified.', 422) -> send();
+            JSONResponse::localizedError('thisMessageCouldNotBeVerified', 422) -> send();
         }
 
         $decrypted_body = MessageEnvelope::decryptWithKey($message -> bodyCiphertext, $revealed_key);
 
         if ($decrypted_body === null) {
-            JSONResponse::error('This message could not be verified.', 422) -> send();
+            JSONResponse::localizedError('thisMessageCouldNotBeVerified', 422) -> send();
         }
     }
 }
@@ -93,17 +93,17 @@ SELECT *
 // can't be banned, so nobody could ever act on one. Rejected here (not
 // just hidden in the UI) so a hand-crafted request can't file one either.
 if ($target_user_id === 1) {
-    JSONResponse::error('This content can\'t be reported.', 422) -> send();
+    JSONResponse::localizedError('thisContentCanTBeReported', 422) -> send();
 }
 
 // A moderator already reviewed and dismissed a report on this content - it
 // can't be reported again (posts/messages only; a user carries no such flag).
 if (ReportManager::isContentDismissed($target_type, $target_id)) {
-    JSONResponse::error('This content has already been reviewed by a moderator.', 422) -> send();
+    JSONResponse::localizedError('thisContentHasAlreadyBeenReviewedByAModerator', 422) -> send();
 }
 
 if (!ReportManager::create($current_user -> userId, $target_type, $target_id, $reason !== '' ? $reason : null, $decrypted_body)) {
-    JSONResponse::error('You\'ve already reported this.', 422) -> send();
+    JSONResponse::localizedError('youVeAlreadyReportedThis', 422) -> send();
 }
 
 // Tell the post's own moderators too, when it came from another server -

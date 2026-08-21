@@ -1,6 +1,6 @@
 import { register } from 'node:module';
 import { execFileSync } from 'node:child_process';
-import { writeFileSync, mkdtempSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join as joinPath, resolve as resolvePath, dirname as dirnameOf } from 'node:path';
 import { fileURLToPath as fileURLToPathFn } from 'node:url';
@@ -49,6 +49,12 @@ globalThis.NodeFilter = dom.window.NodeFilter;
 
 await import('../scripts/dom.js');
 
+// Browser components read the same canonical English catalog production does.
+// Loading it here keeps tests from inventing a second set of fallback strings.
+const { Strings } = await import('../scripts/Strings.js');
+const englishStrings = JSON.parse(readFileSync(resolve(projectRoot, 'locales/en.json'), 'utf8'));
+Strings.useLocale(englishStrings, 'en');
+
 // Mocks for modules that need them
 globalThis.Quill = class {
     constructor() {}
@@ -91,6 +97,9 @@ for (const file of files) {
     for (const [name, fn] of Object.entries(tests)) {
         total++;
         try {
+            // Tests that exercise locale switching must not leak their table
+            // into whichever component happens to run after them.
+            Strings.useLocale(englishStrings, 'en');
             await fn();
             console.log(`  \x1b[32mPASS\x1b[0m  ${suite} :: ${name}`);
             passed++;

@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ClientConfig } from '/scripts/ClientConfig.js';
 import { Toast } from '/scripts/Toast.js';
 import { Api } from '/scripts/Api.js';
@@ -208,7 +209,8 @@ export class VideoCall {
             return;
         }
 
-        VideoCall.#showStage('Calling…', 'Cancel');
+        const words = Strings.for('VideoCall');
+        VideoCall.#showStage(words.calling || '', words.cancel || '');
         VideoCall.#connection = VideoCall.#buildCall();
 
         const offer = await VideoCall.#describe(VideoCall.#connection, () => VideoCall.#connection.createOffer());
@@ -223,7 +225,8 @@ export class VideoCall {
             return;
         }
 
-        VideoCall.#showStage('Connecting…', 'End call');
+        const words = Strings.for('VideoCall');
+        VideoCall.#showStage(words.connecting || '', words.end || '');
         VideoCall.#connection = VideoCall.#buildCall();
 
         await VideoCall.#connection.setRemoteDescription(VideoCall.#offer);
@@ -245,8 +248,9 @@ export class VideoCall {
 
         connection.onconnectionstatechange = () => {
             if (connection.connectionState === 'connected') {
-                VideoCall.#setStatus('Connected');
-                VideoCall.#setEndLabel('End call');
+                const words = Strings.for('VideoCall');
+                VideoCall.#setStatus(words.connected || '');
+                VideoCall.#setEndLabel(words.end || '');
             } else if (['failed', 'disconnected', 'closed'].includes(connection.connectionState)) {
                 // Includes the other person simply leaving the page - their side
                 // goes away and this is how it is noticed.
@@ -263,7 +267,7 @@ export class VideoCall {
 
             return true;
         } catch (error) {
-            Toast.show('Could not use your camera or microphone. Check the browser\'s permission for this site.');
+            Toast.show(Strings.for('VideoCall').permissionError || '');
 
             return false;
         }
@@ -321,7 +325,7 @@ export class VideoCall {
         } else if (call.type === 'answer') {
             VideoCall.#connection?.setRemoteDescription(call.signal);
         } else if (call.type === 'decline') {
-            Toast.show('Your call was declined.');
+            Toast.show(Strings.for('VideoCall').declined || '');
             VideoCall.#hangUp(false);
         } else if (call.type === 'hangup') {
             VideoCall.#hangUp(false);
@@ -361,7 +365,7 @@ export class VideoCall {
         VideoCall.#callButton = document.createElement('button');
         VideoCall.#callButton.type = 'button';
         VideoCall.#callButton.className = 'VideoCallStartButton Button';
-        VideoCall.#callButton.textContent = '📹 Call';
+        VideoCall.#callButton.textContent = '📹 ' + (Strings.for('VideoCall').call || '');
         VideoCall.#composer.appendWithSpace(VideoCall.#callButton);
     }
 
@@ -430,18 +434,18 @@ export class VideoCall {
     /** An offer arriving is the one case with no stage yet - just a choice. */
     static #showIncoming() {
         VideoCall.#showCallButton(false);
-        VideoCall.#showPanel('Incoming video call', null);
+        VideoCall.#showPanel(Strings.for('VideoCall').incoming || '', null);
 
         const accept = document.createElement('button');
         accept.type = 'button';
         accept.className = 'VideoCallAcceptButton Button';
-        accept.textContent = 'Accept';
+        accept.textContent = Strings.for('VideoCall').accept || '';
         VideoCall.#panel.appendWithSpace(accept);
 
         const decline = document.createElement('button');
         decline.type = 'button';
         decline.className = 'VideoCallDeclineButton Button';
-        decline.textContent = 'Decline';
+        decline.textContent = Strings.for('VideoCall').decline || '';
         VideoCall.#panel.appendWithSpace(decline);
     }
 

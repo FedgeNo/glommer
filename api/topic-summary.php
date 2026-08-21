@@ -7,7 +7,7 @@ require __DIR__ . '/api-init.php';
 // Every /api/ endpoint requires POST - init.php's centralized CSRF check only
 // covers POST requests, so a GET-reachable endpoint would bypass it.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 // A topic page is public but this is not: it spends a model call, and an
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // by a crawler walking every topic on the site. Somebody signed in reading a
 // page is the case it exists for.
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -25,7 +25,7 @@ $type = strtolower(trim((string) ($payload['type'] ?? '')));
 $slug = mb_strtolower(trim((string) ($payload['slug'] ?? '')));
 
 if (!EntityType::isKnown($type) || $slug === '') {
-    JSONResponse::error('Not a topic', 404) -> send();
+    JSONResponse::localizedError('notATopic', 404) -> send();
 }
 
 // Only for something that has actually trended - the same thing the page
@@ -34,7 +34,7 @@ if (!EntityType::isKnown($type) || $slug === '') {
 $entity = Entity::load($type, $slug);
 
 if ($entity === null) {
-    JSONResponse::error('Not a topic', 404) -> send();
+    JSONResponse::localizedError('notATopic', 404) -> send();
 }
 
 // Already written while this reader was on their way here - another tab, the
@@ -51,7 +51,7 @@ if ($existing !== null) {
 $rate_key = 'topic-summary:' . Auth::id();
 
 if (RateLimiter::tooManyAttempts($rate_key, 10, 600)) {
-    JSONResponse::error('Give that a moment.', 429) -> send();
+    JSONResponse::localizedError('giveThatAMoment', 429) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);

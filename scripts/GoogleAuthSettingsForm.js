@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -16,7 +17,7 @@ export class GoogleAuthSettingsForm {
                 googleAuthSecret: form.querySelector('[name="googleAuthSecret"]').value,
             });
             Working.stop(submit_button);
-            if (data) Toast.show('Settings saved.');
+            if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
 }

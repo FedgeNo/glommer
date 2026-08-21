@@ -31,7 +31,7 @@ export class Toast {
         const closeButton = document.createElement('button');
         closeButton.type = 'button';
         closeButton.className = 'ToastCloseButton';
-        closeButton.setAttribute('aria-label', 'Dismiss');
+        closeButton.setAttribute('aria-label', Strings.for('Toast').dismiss || '');
         closeButton.textContent = '×';
         // Bind directly – no delegation needed
         closeButton.addEventListener('click', () => Toast.dismiss(toast));
@@ -57,3 +57,4 @@ export class Toast {
         setTimeout(() => toast.remove(), 300);
     }
 }
+import { Strings } from '/scripts/Strings.js';

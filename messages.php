@@ -37,7 +37,7 @@ $name = $other_user -> title ?: $other_user -> slug;
 $page = new Page(['title' => str_replace('{name}', $name, (string) (Strings::for('PageTitle')['messagesWithUser'] ?? '')), 'needsMath' => true, 'needsEmoji' => true, 'bodyClass' => 'MessagesPage']);
 
 if (Block::exists($current_user -> userId, $other_user -> userId)) {
-    $page -> addContent(new Notice('You can\'t message this user.'));
+    $page -> addContent(new Notice((string) (Strings::for('RouteNotices')['cannotMessage'] ?? '')));
     $page -> send();
     exit;
 }

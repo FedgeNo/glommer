@@ -5,11 +5,11 @@ declare(strict_types=1);
 require __DIR__ . '/api-init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -21,7 +21,7 @@ $target_user_id = (int) ($payload['userId'] ?? 0);
 $target_user = User::load($target_user_id);
 
 if ($target_user === null || $target_user -> remoteActorURI === null) {
-    JSONResponse::error('That is not a Fediverse account.', 404) -> send();
+    JSONResponse::localizedError('thatIsNotAFediverseAccount', 404) -> send();
 }
 
 RemoteFollow::remove((int) $current_user -> userId, $target_user -> remoteActorURI);

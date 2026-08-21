@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Toast } from '/scripts/Toast.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -18,7 +19,7 @@ export class EmailDigestSettingsForm {
             const field = form.querySelector('textarea');
             const data = await Api.post('/api/email-digest-settings', { [field.name]: field.value });
             Working.stop(submit_button);
-            if (data) Toast.show('Settings saved.');
+            if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
 }

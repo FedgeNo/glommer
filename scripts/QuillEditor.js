@@ -1,3 +1,5 @@
+import { Strings } from '/scripts/Strings.js';
+
 export class QuillEditor {
     #quill = null;
     #container = null;
@@ -47,7 +49,7 @@ export class QuillEditor {
 
         if (!area) return;
 
-        area.setAttribute('aria-label', this.#container.dataset.editorLabel || 'Post text');
+        area.setAttribute('aria-label', this.#container.dataset.editorLabel || Strings.for('QuillEditor').postText || '');
 
         const help = this.#container
             .closest('form')
@@ -77,17 +79,18 @@ export class QuillEditor {
         const toolbar = this.#quill.getModule('toolbar')?.container;
         if (!toolbar) return;
 
+        const words = Strings.for('QuillEditor');
         const titles = {
-            'ql-bold': 'Bold',
-            'ql-italic': 'Italic',
-            'ql-underline': 'Underline',
-            'ql-strike': 'Strikethrough',
-            'ql-blockquote': 'Blockquote',
-            'ql-code-block': 'Code block',
-            'ql-code': 'Inline code',
-            'ql-link': 'Link',
-            'ql-formula': 'Formula',
-            'ql-clean': 'Clear formatting',
+            'ql-bold': words.bold,
+            'ql-italic': words.italic,
+            'ql-underline': words.underline,
+            'ql-strike': words.strikethrough,
+            'ql-blockquote': words.blockquote,
+            'ql-code-block': words.codeBlock,
+            'ql-code': words.inlineCode,
+            'ql-link': words.link,
+            'ql-formula': words.formula,
+            'ql-clean': words.clearFormatting,
         };
 
         Object.entries(titles).forEach(([cls, title]) => {
@@ -96,12 +99,12 @@ export class QuillEditor {
         });
 
         toolbar.querySelectorAll('button.ql-header[value]').forEach(btn => {
-            btn.title = 'Heading ' + btn.getAttribute('value');
+            btn.title = (words.heading || '').replace('{count}', btn.getAttribute('value'));
         });
 
-        const listTitles = { ordered: 'Numbered list', bullet: 'Bullet list' };
+        const listTitles = { ordered: words.numberedList, bullet: words.bulletList };
         toolbar.querySelectorAll('button.ql-list[value]').forEach(btn => {
-            btn.title = listTitles[btn.getAttribute('value')] || 'List';
+            btn.title = listTitles[btn.getAttribute('value')] || words.list || '';
         });
     }
 }

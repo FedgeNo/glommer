@@ -61,13 +61,13 @@ export class PushNotificationSetting {
 
     static async #enable(registration) {
         if (Notification.permission === 'denied') {
-            Toast.show('Notifications are blocked for this site in your browser settings.');
+            Toast.show(Strings.for('ClientStatus').notificationsBlocked || '');
             return false;
         }
 
         const applicationServerKey = ClientConfig.get('vapidPublicKey');
         if (!applicationServerKey) {
-            Toast.show('Push isn\'t available on this server.');
+            Toast.show(Strings.for('ClientStatus').pushUnavailable || '');
             return false;
         }
 
@@ -78,7 +78,7 @@ export class PushNotificationSetting {
                 applicationServerKey,
             });
         } catch (_) {
-            Toast.show('Could not enable notifications.');
+            Toast.show(Strings.for('ClientStatus').notificationsEnableFailed || '');
             return false;
         }
 
@@ -96,14 +96,14 @@ export class PushNotificationSetting {
             return false;
         }
 
-        Toast.show('Notifications on for this device.');
+        Toast.show(Strings.for('ClientStatus').notificationsOn || '');
         return true;
     }
 
     static async #disable(subscription) {
         await Api.post('/api/push-unsubscribe', { endpoint: subscription.endpoint });
         await subscription.unsubscribe();
-        Toast.show('Notifications off for this device.');
+        Toast.show(Strings.for('ClientStatus').notificationsOff || '');
     }
 }
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 require __DIR__ . '/api-init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    JSONResponse::error('Method not allowed', 405) -> send();
+    JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
 if (!Auth::check()) {
-    JSONResponse::error('Not logged in', 401) -> send();
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
 $current_user = Auth::user();
@@ -17,7 +17,7 @@ $current_user = Auth::user();
 $rate_key = 'follow-remote:' . $current_user -> userId;
 
 if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
-    JSONResponse::error('Too many follow requests. Please wait a bit and try again.', 429) -> send();
+    JSONResponse::localizedError('tooManyFollowRequestsPleaseWaitABitAndTryAgain', 429) -> send();
 }
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -25,19 +25,19 @@ $payload = is_array($payload) ? $payload : [];
 $raw = (string) ($payload['handles'] ?? '');
 
 if (strlen($raw) > 8192) {
-    JSONResponse::fieldError('handles', 'That list is too long.') -> send();
+    JSONResponse::fieldError('handles', JSONResponse::localized('listTooLong')) -> send();
 }
 
 // Checked once up front rather than per handle, which would otherwise repeat
 // the same setup error back for every entry in the list.
 if (!ActivityPubKeys::isConfigured()) {
-    JSONResponse::error('Fediverse support is not set up on this server yet.', 503) -> send();
+    JSONResponse::localizedError('fediverseSupportIsNotSetUpOnThisServerYet', 503) -> send();
 }
 
 $handles = FediverseHandle::parseAll($raw);
 
 if ($handles === []) {
-    JSONResponse::fieldError('handles', 'No valid handles found here - they look like user@domain.') -> send();
+    JSONResponse::fieldError('handles', JSONResponse::localized('noValidHandles')) -> send();
 }
 
 RateLimiter::recordAttempt($rate_key);

@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { Api } from '/scripts/Api.js';
 import { Dialog } from '/scripts/Dialog.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
@@ -19,12 +20,12 @@ export class LogoutEverywherePanel {
             event.preventDefault();
 
             if (!(await Dialog.confirm(
-                'This will sign you out of every device, including this one. Continue?'
+                Strings.for('ClientStatus').signOutEverywhere || ''
             ))) {
                 return;
             }
 
-            button.textContent = 'Signing out…';
+            button.textContent = Strings.for('ClientStatus').signingOut || '';
             Working.start(button);
 
             // Api.post answers null rather than throwing, so this is a check
@@ -35,13 +36,13 @@ export class LogoutEverywherePanel {
             const signed_out = await Api.post('/api/logout-everywhere', {});
 
             if (!signed_out) {
-                button.textContent = 'Failed';
+                button.textContent = Strings.for('ClientStatus').failed || '';
                 Working.stop(button);
 
                 return;
             }
 
-            button.textContent = 'Done';
+            button.textContent = Strings.for('ClientStatus').done || '';
             window.location.href = '/';
         });
     }

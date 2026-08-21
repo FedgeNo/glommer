@@ -18,7 +18,7 @@ class PinnedPostSection extends Section
             return parent::toDOM();
         }
 
-        $this -> contents[] = new Heading2('Pinned');
+        $this -> contents[] = new Heading2((string) (Strings::for(self::class)['heading'] ?? ''));
         $this -> contents[] = new PinnedPostList(['userId' => $this -> userId]);
 
         return parent::toDOM();

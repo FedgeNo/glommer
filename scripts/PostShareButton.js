@@ -1,3 +1,4 @@
+import { Strings } from '/scripts/Strings.js';
 import { ReadyHandler } from '/scripts/ReadyHandler.js';
 import { Toast } from '/scripts/Toast.js';
 
@@ -33,13 +34,12 @@ export class PostShareButton {
             // Fallback: copy URL to clipboard
             try {
                 await navigator.clipboard.writeText(url);
-                Toast.show('Link copied to clipboard');
+                Toast.show(Strings.for('ClientStatus').linkCopied || '');
             } catch {
-                Toast.show('Could not copy link');
+                Toast.show(Strings.for('ClientStatus').linkCopyFailed || '');
             }
         });
     }
 }
 
 ReadyHandler.add(PostShareButton.init);
-

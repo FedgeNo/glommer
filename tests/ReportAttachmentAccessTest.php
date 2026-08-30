@@ -6,8 +6,9 @@ declare(strict_types=1);
  * Which preserved originals a moderator may read.
  *
  * The kept originals outlive the post they belong to - that is what makes a
- * report about deleted media answerable at all - and they sit outside the web
- * root, reachable only through api/report-attachment.php. Being mod-gated is
+ * report about deleted media answerable at all - and direct access is denied
+ * by uploads/private/.htaccess, leaving api/report-attachment.php as the
+ * application path to them. Being mod-gated is
  * not the same as being scoped: what a moderator may open is what a report
  * captured, not every upload on the server that has an id.
  */

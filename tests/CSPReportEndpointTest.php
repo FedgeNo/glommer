@@ -24,9 +24,8 @@ class CSPReportEndpointTest extends TestCase
             throw new TestSkippedException('siteURL is not configured, so there is no live endpoint to submit to');
         }
 
-        // The token is what the fulltext lookup below searches for. Fulltext
-        // tokenizes on punctuation, so inside the URL it survives as one word
-        // and the search must use the bare token, not the whole address.
+        // A unique marker makes the exact indexed blockedURI lookup below
+        // unambiguous without waiting for InnoDB's full-text index to catch up.
         $token = bin2hex(random_bytes(16));
         $marker = 'https://csp-selftest.invalid/' . $token;
         $report = (string) json_encode([
@@ -68,9 +67,9 @@ class CSPReportEndpointTest extends TestCase
             $select = mysqli_prepare($live, '
 SELECT `reportId`, `report`, `userAgent`
     FROM `CSPReports`
-    WHERE MATCH(`report`) AGAINST(? IN BOOLEAN MODE)
+    WHERE `blockedURI` = ?
 ');
-            mysqli_stmt_bind_param($select, 's', $token);
+            mysqli_stmt_bind_param($select, 's', $marker);
             mysqli_stmt_execute($select);
             $rows = mysqli_fetch_all(mysqli_stmt_get_result($select), MYSQLI_ASSOC);
 

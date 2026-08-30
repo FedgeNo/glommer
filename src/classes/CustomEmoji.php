@@ -96,7 +96,7 @@ INSERT INTO `CustomEmojis` (`domain`, `shortcode`, `imageURL`)
         }
 
         $rows = DB::rows('
-SELECT `shortcode`, `imageURL`
+SELECT `customEmojiId`, `shortcode`
     FROM `CustomEmojis`
     WHERE `domain` = ?
 ', 'CustomEmojiData', 's', $domain);
@@ -104,7 +104,7 @@ SELECT `shortcode`, `imageURL`
         $map = [];
 
         foreach ($rows as $row) {
-            $map[(string) $row -> shortcode] = (string) $row -> imageURL;
+            $map[(string) $row -> shortcode] = RemoteEmoji::proxyURL((int) $row -> customEmojiId);
         }
 
         return $map;

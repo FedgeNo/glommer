@@ -12,6 +12,25 @@ class PasswordReset
 
     /** How long the link is good for, said in the mail and enforced in the DB row alike. */
     private const EXPIRY_HOURS = 1;
+    private const REQUEST_LIMIT = 5;
+    private const REQUEST_WINDOW_SECONDS = 900;
+
+    /**
+     * Spends one request from an address-wide budget. The address is hashed so
+     * the shared limiter table never becomes another store of account data.
+     */
+    public static function allowRequestFor(string $email): bool
+    {
+        $rate_key = 'forgot-password-account:' . hash('sha256', strtolower(trim($email)));
+
+        if (RateLimiter::tooManyAttempts($rate_key, self::REQUEST_LIMIT, self::REQUEST_WINDOW_SECONDS)) {
+            return false;
+        }
+
+        RateLimiter::recordAttempt($rate_key);
+
+        return true;
+    }
 
     public static function sendFor(User $user): void
     {

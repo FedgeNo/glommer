@@ -75,4 +75,21 @@ SELECT COUNT(*) AS `total`
 
         $this -> assertSame('1', (string) $active['total'], 'reuse did not mint a second active token');
     }
+
+    public function testEnablingTwoFactorRevokesEveryRememberedDevice(): void
+    {
+        $user_id = self::createUser();
+        $this -> createToken($user_id);
+        $this -> createToken($user_id);
+
+        TwoFactor::setEnabled($user_id, true);
+
+        $remaining = DB::row('
+SELECT COUNT(*) AS `total`
+    FROM `RememberTokens`
+    WHERE `userId` = ?
+', 'PostCountData', 'i', $user_id);
+
+        $this -> assertSame(0, (int) $remaining -> total);
+    }
 }

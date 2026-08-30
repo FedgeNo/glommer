@@ -12,7 +12,7 @@ class ActivityPubReplayTest extends DatabaseTestCase
 {
     private function signature(): string
     {
-        return 'keyId="https://remote.example/actor#main-key",signature="' . base64_encode(random_bytes(32)) . '"';
+        return 'keyId="https://remote.example/actor#main-key",algorithm="rsa-sha256",headers="(request-target) host date digest",signature="' . base64_encode(random_bytes(32)) . '"';
     }
 
     public function testTheFirstDeliveryIsNotAReplay(): void
@@ -33,5 +33,14 @@ class ActivityPubReplayTest extends DatabaseTestCase
     {
         $this -> assertFalse(ActivityPubReplay::seenBefore($this -> signature()));
         $this -> assertFalse(ActivityPubReplay::seenBefore($this -> signature()));
+    }
+
+    public function testReserializingTheSameSignatureIsStillAReplay(): void
+    {
+        $signature = 'keyId="https://remote.example/actor#main-key",algorithm="rsa-sha256",headers="(request-target) host date digest",signature="YWJj"';
+        $reserialized = 'signature="YWJj" , headers="(request-target)   host date digest" , keyId="https://remote.example/actor#main-key" , algorithm="RSA-SHA256"';
+
+        $this -> assertFalse(ActivityPubReplay::seenBefore($signature));
+        $this -> assertTrue(ActivityPubReplay::seenBefore($reserialized));
     }
 }

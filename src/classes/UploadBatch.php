@@ -606,15 +606,10 @@ SELECT *
     private static function ensureDir(string $dir): void
     {
         if (!is_dir($dir)) {
-            // 0777 so the dir is writable by BOTH the web-server user (which
-            // stages batches) and the worker-service user (which claims and
-            // renames them) - commonly different Unix accounts, and neither can
-            // chmod a dir the other created, so it must be world-writable from
-            // creation (mkdir's mode is umask-masked, hence the explicit chmod).
-            // The private/ tree is already blocked from web reads by its
-            // .htaccess; this matches the rest of the uploads/ tree.
-            mkdir($dir, 0777, true);
-            @chmod($dir, 0777);
+            // The installer runs the web and upload worker as the same account,
+            // so no cross-account or world-write permission is needed.
+            mkdir($dir, 0755, true);
+            @chmod($dir, 0755);
         }
     }
 

@@ -38,7 +38,8 @@ class SecurityHeaders
             'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net https://fonts.googleapis.com',
             // This origin only. Every picture from anywhere else is fetched by
             // the server and served from here - remote media through
-            // /media-N, a remote account's avatar through /remote-avatar/N -
+            // /media-N, a remote account's avatar through /remote-avatar/N,
+            // custom emoji through /remote-emoji/N -
             // so nothing on a page needs to reach another host for an image,
             // and a scheme-wide https: would have let a post carry a beacon
             // that reports who read it and from where. data: serves inline
@@ -52,7 +53,7 @@ class SecurityHeaders
             // that address from window.location.hostname and can reach nowhere
             // else. Naming the host rather than wildcarding it keeps connect-src
             // from being a way to talk to somebody else's server on that port.
-            'connect-src \'self\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com wss://' . ServerURL::host() . ':' . Config::get('WSPort'),
+            'connect-src \'self\' https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com wss://' . ServerURL::host() . ':' . Config::get('WSPort'),
             'object-src \'none\'',
             'base-uri \'self\'',
             'form-action \'self\'',

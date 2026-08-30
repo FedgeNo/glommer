@@ -43,12 +43,23 @@ if ($original === null) {
     exit;
 }
 
-// nosniff so the browser honours the finfo-derived type; private/no-store keeps
-// reported media out of shared caches. Streamed inline so an <img>/<video>/
-// <audio> in the report card can render it directly.
-header('Content-Type: ' . $original['mimeType']);
+// Known-safe media renders in the report card. Everything else is forced to an
+// inert download, and every response is sandboxed in case a browser disagrees
+// with the MIME decision. private/no-store keeps evidence out of shared caches.
 header('Content-Length: ' . (string) filesize($original['path']));
-header('Content-Disposition: inline');
+header('Content-Security-Policy: default-src \'none\'; sandbox');
+
+if ($original['mediaType'] === 'file') {
+    // Unknown originals are evidence to download, never documents to execute
+    // in this origin. Override finfo as well as disposition so a browser has
+    // no executable media type to work with.
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="reported-attachment.bin"');
+} else {
+    header('Content-Type: ' . $original['mimeType']);
+    header('Content-Disposition: inline');
+}
+
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: private, no-store');
 

@@ -33,7 +33,24 @@ class ActivityPubReplay
      */
     public static function seenBefore(string $signature_header): bool
     {
-        $hash = hash('sha256', $signature_header);
+        $signature = HTTPSignature::parseSignatureHeader($signature_header);
+
+        // Verification has already parsed and accepted this header before the
+        // replay check runs. Hash its meaning rather than its wire formatting:
+        // parameter order and insignificant separators can change without
+        // changing the signature and must not create a fresh replay identity.
+        // Keep a raw-header fallback so this class still fails safely if a
+        // caller ever invokes it before verification.
+        $identity = $signature === null
+            ? $signature_header
+            : json_encode([
+                'keyId' => $signature['keyId'],
+                'algorithm' => strtolower($signature['algorithm']),
+                'headers' => strtolower(implode(' ', preg_split('/\\s+/', trim($signature['headers'])) ?: [])),
+                'signature' => $signature['signature'],
+            ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+
+        $hash = hash('sha256', $identity);
 
         try {
             DB::run('

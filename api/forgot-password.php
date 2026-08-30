@@ -15,14 +15,22 @@ $payload = is_array($payload) ? $payload : [];
 
 $email = trim((string) ($payload['email'] ?? ''));
 
-$rate_key = 'forgot-password:' . (ServerURL::clientIP() ?? 'unknown');
+$ip_rate_key = 'forgot-password-ip:' . (ServerURL::clientIP() ?? 'unknown');
 
-if (RateLimiter::tooManyAttempts($rate_key, 5, 900)) {
+if (RateLimiter::tooManyAttempts($ip_rate_key, 5, 900)) {
     JSONResponse::localizedError('tooManyPasswordResetRequestsPleaseTryAgainLater', 429) -> send();
 }
 
 if ($email !== '') {
-    RateLimiter::recordAttempt($rate_key);
+    RateLimiter::recordAttempt($ip_rate_key);
+
+    // The IP budget stops one client spraying accounts; this address budget
+    // stops distributed clients repeatedly targeting one account. It is
+    // applied whether the submitted address exists or not, so the outward
+    // behaviour does not become an account-existence oracle.
+    if (!PasswordReset::allowRequestFor($email)) {
+        JSONResponse::localizedError('tooManyPasswordResetRequestsPleaseTryAgainLater', 429) -> send();
+    }
 
     $user = DB::row('
 SELECT *

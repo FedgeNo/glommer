@@ -86,6 +86,22 @@ SELECT `sessionVersion`
         $this -> assertTrue($after > $before, 'the session version moved');
     }
 
+    public function testResetRequestsHaveAnAddressWideBudget(): void
+    {
+        $email = 'reset-budget-' . bin2hex(random_bytes(5)) . '@example.test';
+        $rate_key = 'forgot-password-account:' . hash('sha256', strtolower($email));
+
+        try {
+            for ($attempt = 0; $attempt < 5; $attempt++) {
+                $this -> assertTrue(PasswordReset::allowRequestFor($email));
+            }
+
+            $this -> assertFalse(PasswordReset::allowRequestFor(strtoupper($email)), 'case variants share the same account budget');
+        } finally {
+            DB::run('DELETE FROM `RateLimitAttempts` WHERE `rateKey` = ?', 's', $rate_key);
+        }
+    }
+
     // ---- The revert link ----
 
     private function emailOf(int $user_id): string

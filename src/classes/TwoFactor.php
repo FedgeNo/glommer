@@ -41,6 +41,15 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'ii', $flag, $user_id);
 
+        // A remembered browser is a persistent authentication credential. Any
+        // one issued before 2FA was enabled has never completed the new factor,
+        // so enabling it revokes every remembered device. The current session
+        // remains signed in and can issue a fresh token only through the normal
+        // password-plus-2FA login flow.
+        if ($enabled) {
+            RememberToken::purgeForUser($user_id);
+        }
+
         // Turning it off leaves no reason to keep a pending code or the
         // recovery codes around.
         if (!$enabled) {

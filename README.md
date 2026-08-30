@@ -146,7 +146,8 @@ band).
   address); account deletion; a **"Remembered devices"** view in Settings that
   lists each persistent login and lets you revoke one.
 - **Two-factor authentication** - opt-in, email-based: when enabled, login
-  emails a short-lived code that must be entered to finish signing in.
+  emails a short-lived code that must be entered to finish signing in. Enabling
+  it revokes remembered-device credentials issued before the second factor.
 - **Google Sign-In** - optional OAuth, admin-configured.
 - **Geotagged posts** - optionally attach your location to a post; a site map
   clusters every located post, each card links to the spot, and a **Nearby**
@@ -665,10 +666,10 @@ as a tombstone until its original expiry, so either reuse of that selector or a
 known selector with the wrong validator means a copy is in circulation, and
 every token on that account is revoked.
 
-**CSRF** is checked in one place, `init.php`, on every POST. Two endpoints are
-exempt because they cannot carry a token and were never meant to, and each
-proves itself another way instead: the ActivityPub inbox (HTTP signature) and
-one-click unsubscribe (the RFC 8058 body token).
+**CSRF** is checked in one place, `init.php`, on every POST. Three endpoints are
+exempt because they cannot carry a token and were never meant to: the
+ActivityPub inbox proves itself by HTTP signature, one-click unsubscribe by
+the RFC 8058 body token, and the bounded CSP-report endpoint is rate-limited.
 
 **Cross-site scripting** has no route in through content. The browser code
 never assigns `innerHTML` - every node is built with `createElement` and
@@ -686,8 +687,9 @@ extension. Transcoding runs `ffmpeg` behind a protocol allowlist so it cannot
 be talked into reading local files, under a wall-clock timeout, a CPU limit and
 an address-space cap. Source dimensions are checked before decode, so a
 decode bomb is refused rather than expanded, and metadata is stripped from
-what gets published. The original is kept privately, out of the web root, so a
-report about deleted media still has something to show a moderator.
+what gets published. The original is kept with a fixed inert filename under
+the access-denied `uploads/private/` tree; moderators receive safe media types
+through a sandboxed viewer and every other type as a download.
 
 **Outbound fetches** - link previews, remote avatars, federation - resolve the
 hostname first, refuse every private and reserved address, and pin curl to the
@@ -706,7 +708,8 @@ a report can be checked against what was really sent rather than against what
 a client claims was sent. The tag records which key made it, so the key can be
 rotated without orphaning old messages.
 
-**Rate limits** cover logging in, signing up, resetting a password, posting,
+**Rate limits** cover logging in, signing up, resetting a password (by both
+client address and target account), posting,
 messaging, reporting, translating and federated delivery. Login is limited by
 IP and by account at once, so neither a spread-out attempt nor a targeted one
 gets a free run.

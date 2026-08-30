@@ -126,6 +126,36 @@ SELECT `reason`
         $this -> assertTrue(self::reportCount('post', $post_id) <= 1);
     }
 
+    public function testOneRemoteHostCannotFillTheQueueAcrossActors(): void
+    {
+        $host = 'flag-' . bin2hex(random_bytes(5)) . '.invalid';
+        $author = self::localUser();
+        $post_id = self::post((int) $author -> userId);
+        $remote_ids = [];
+
+        try {
+            for ($i = 0; $i < 21; $i++) {
+                $reporter = self::remoteUser($host);
+                $remote_ids[] = (int) $reporter -> userId;
+
+                ActivityPubFlag::received([
+                    'type' => 'Flag',
+                    'object' => ServerURL::absolute('/users/' . $author -> slug . '/' . $post_id),
+                ], $reporter);
+            }
+
+            $this -> assertSame(20, self::reportCount('post', $post_id));
+        } finally {
+            DB::run('DELETE FROM `Posts` WHERE `postId` = ?', 'i', $post_id);
+
+            foreach ($remote_ids as $remote_id) {
+                DB::run('DELETE FROM `Users` WHERE `userId` = ?', 'i', $remote_id);
+            }
+
+            DB::run('DELETE FROM `RateLimitAttempts` WHERE `rateKey` = ?', 's', 'activitypub-flag-host:' . hash('sha256', $host));
+        }
+    }
+
     // ----------------------------------------------------------------
     // Defederation
     // ----------------------------------------------------------------

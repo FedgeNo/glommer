@@ -29,7 +29,11 @@ class CustomEmojiTest extends DatabaseTestCase
         $learned = CustomEmoji::learnFrom([self::tag(':blobcat:', 'https://remote.invalid/blobcat.png')], $uri);
 
         $this -> assertSame(['blobcat' => 'https://remote.invalid/blobcat.png'], $learned);
-        $this -> assertSame('https://remote.invalid/blobcat.png', CustomEmoji::forObject($uri)['blobcat']);
+        $proxy = CustomEmoji::forObject($uri)['blobcat'];
+        $this -> assertTrue(str_contains($proxy, '/remote-emoji/'));
+
+        $emoji_id = (int) basename((string) parse_url($proxy, PHP_URL_PATH));
+        $this -> assertSame('https://remote.invalid/blobcat.png', RemoteEmoji::sourceFor($emoji_id) -> imageURL);
     }
 
     public function testTheSameNameOnTwoServersIsTwoDifferentPictures(): void
@@ -42,8 +46,9 @@ class CustomEmojiTest extends DatabaseTestCase
         CustomEmoji::learnFrom([self::tag(':blobcat:', 'https://one.invalid/a.png')], $first);
         CustomEmoji::learnFrom([self::tag(':blobcat:', 'https://two.invalid/b.png')], $second);
 
-        $this -> assertSame('https://one.invalid/a.png', CustomEmoji::forObject($first)['blobcat']);
-        $this -> assertSame('https://two.invalid/b.png', CustomEmoji::forObject($second)['blobcat']);
+        $this -> assertTrue(str_contains(CustomEmoji::forObject($first)['blobcat'], '/remote-emoji/'));
+        $this -> assertTrue(str_contains(CustomEmoji::forObject($second)['blobcat'], '/remote-emoji/'));
+        $this -> assertFalse(CustomEmoji::forObject($first)['blobcat'] === CustomEmoji::forObject($second)['blobcat']);
     }
 
     public function testASecondTagForTheSameNameUpdatesIt(): void
@@ -53,7 +58,9 @@ class CustomEmojiTest extends DatabaseTestCase
         CustomEmoji::learnFrom([self::tag(':pic:', 'https://update.invalid/old.png')], $uri);
         CustomEmoji::learnFrom([self::tag(':pic:', 'https://update.invalid/new.png')], $uri);
 
-        $this -> assertSame('https://update.invalid/new.png', CustomEmoji::forObject($uri)['pic']);
+        $proxy = CustomEmoji::forObject($uri)['pic'];
+        $emoji_id = (int) basename((string) parse_url($proxy, PHP_URL_PATH));
+        $this -> assertSame('https://update.invalid/new.png', RemoteEmoji::sourceFor($emoji_id) -> imageURL);
     }
 
     public function testANonHTTPSImageIsRefused(): void

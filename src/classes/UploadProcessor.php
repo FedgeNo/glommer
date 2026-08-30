@@ -26,6 +26,26 @@ class UploadProcessor
         'AudioItem' => 'mp3',
     ];
 
+    /** MIME types safe to render inline from a preserved, untrusted original. */
+    private const INLINE_ORIGINAL_TYPES = [
+        'image/jpeg' => 'image',
+        'image/png' => 'image',
+        'image/gif' => 'image',
+        'image/webp' => 'image',
+        'image/avif' => 'image',
+        'video/mp4' => 'video',
+        'video/webm' => 'video',
+        'video/ogg' => 'video',
+        'video/quicktime' => 'video',
+        'audio/mpeg' => 'audio',
+        'audio/mp4' => 'audio',
+        'audio/ogg' => 'audio',
+        'audio/aac' => 'audio',
+        'audio/flac' => 'audio',
+        'audio/wav' => 'audio',
+        'audio/x-wav' => 'audio',
+    ];
+
     // --- Hardening for every ffmpeg/ffprobe run against an untrusted upload ---
     // A PHP memory_limit does NOT bound these child processes (see
     // bin/process-upload.php), and ffmpeg's real attack surface is its
@@ -168,7 +188,7 @@ class UploadProcessor
      * will later be renamed once their real itemId is known - see rename()). The original
      * upload is preserved under uploads/private/originals, which is not web-served.
      */
-    public static function process(string $tmp_path, int|string $id, string $original_filename = ''): ?array
+    public static function process(string $tmp_path, int|string $id, ?string $original_filename = null): ?array
     {
         self::ensureDir(self::UPLOAD_DIR . '/' . self::shard($id));
         self::ensureDir(self::ORIGINALS_DIR . '/' . self::shard($id));
@@ -214,26 +234,27 @@ class UploadProcessor
         self::ensureDir(self::UPLOAD_DIR . '/' . self::shard($new_id));
         self::ensureDir(self::ORIGINALS_DIR . '/' . self::shard($new_id));
 
-        foreach (['display', 'thumbnail', 'original'] as $key) {
+        foreach (['display', 'thumbnail'] as $key) {
             if ($old_paths[$key] !== null && is_file($old_paths[$key])) {
                 rename($old_paths[$key], $new_paths[$key]);
             }
         }
+
+        // Accept old staged originals whose filename still carried the upload
+        // extension, but every newly finalized name uses the inert .bin suffix.
+        $old_original = self::originalMatches($old_id)[0] ?? null;
+
+        if ($old_original !== null && $new_paths['original'] !== null) {
+            rename($old_original, $new_paths['original']);
+        }
     }
 
-    /**
-     * Creates a shard directory writable by BOTH the web-server user and the
-     * worker-service user - commonly different Unix accounts, and neither can
-     * chmod a dir the other created, so it must be world-writable from
-     * creation (mkdir's mode is umask-masked, hence the explicit chmod). A
-     * root install tightens the whole tree to one owning account afterward
-     * (bin/install.php's fix_upload_ownership), same as the rest of uploads/.
-     */
+    /** Creates a shard owned and writable by the shared web/worker account. */
     private static function ensureDir(string $dir): void
     {
         if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-            @chmod($dir, 0777);
+            mkdir($dir, 0755, true);
+            @chmod($dir, 0755);
         }
     }
 
@@ -247,6 +268,14 @@ class UploadProcessor
 
         foreach ($paths as $path) {
             if ($path !== null && is_file($path)) {
+                unlink($path);
+            }
+        }
+
+        // Compatibility cleanup for originals created before filenames were
+        // changed to the fixed .bin suffix.
+        foreach (self::originalMatches($id) as $path) {
+            if (is_file($path)) {
                 unlink($path);
             }
         }
@@ -334,7 +363,7 @@ class UploadProcessor
      */
     public static function originalForItem(int $item_id): ?array
     {
-        $matches = glob(self::ORIGINALS_DIR . '/' . self::shard($item_id) . '/' . $item_id . '-original.*') ?: [];
+        $matches = self::originalMatches($item_id);
 
         if ($matches === []) {
             return null;
@@ -343,12 +372,7 @@ class UploadProcessor
         $path = $matches[0];
         $mime = self::mimeType($path);
 
-        $media_type = match (true) {
-            str_starts_with($mime, 'image/') => 'image',
-            str_starts_with($mime, 'video/') => 'video',
-            str_starts_with($mime, 'audio/') => 'audio',
-            default => 'file',
-        };
+        $media_type = self::INLINE_ORIGINAL_TYPES[strtolower($mime)] ?? 'file';
 
         return ['path' => $path, 'mimeType' => $mime, 'mediaType' => $media_type];
     }
@@ -367,12 +391,22 @@ class UploadProcessor
         return $mime !== false ? $mime : 'application/octet-stream';
     }
 
+    /** @return string[] */
+    private static function originalMatches(int|string $id): array
+    {
+        return glob(self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-original.*') ?: [];
+    }
+
     private static function outputPaths(int|string $id, string $item_type, ?string $original_extension): array
     {
         $display_dir = self::UPLOAD_DIR . '/' . self::shard($id);
 
-        $original = $original_extension !== null && $original_extension !== ''
-            ? self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-original.' . $original_extension
+        // MIME is detected from bytes when a moderator requests the original;
+        // its attacker-supplied extension has no operational value. A fixed
+        // inert suffix keeps a web-server configuration mistake from turning a
+        // preserved upload into executable source.
+        $original = $original_extension !== null
+            ? self::ORIGINALS_DIR . '/' . self::shard($id) . '/' . $id . '-original.bin'
             : null;
 
         return match ($item_type) {
@@ -394,9 +428,9 @@ class UploadProcessor
         };
     }
 
-    private static function processImage(\GdImage $image, int|string $id, string $tmp_path, string $original_filename): ?array
+    private static function processImage(\GdImage $image, int|string $id, string $tmp_path, ?string $original_filename): ?array
     {
-        $paths = self::outputPaths($id, 'ImageItem', self::safeExtension($original_filename));
+        $paths = self::outputPaths($id, 'ImageItem', $original_filename === null ? null : self::safeExtension($original_filename));
 
         $display_ok = ImageProcessor::resizeAndSave($image, $paths['display'], ImageProcessor::DISPLAY_MAX_DIMENSION);
         $thumbnail_ok = ImageProcessor::resizeAndSave($image, $paths['thumbnail'], ImageProcessor::THUMBNAIL_MAX_DIMENSION);
@@ -463,8 +497,62 @@ class UploadProcessor
             self::ffprobePrefix() . ' -show_entries format=format_name -of default=noprint_wrappers=1:nokey=1 ' . escapeshellarg($path) . ' 2>&1'
         );
 
-        foreach (explode(',', trim($output)) as $format_name) {
-            if (in_array($format_name, self::SAFE_CONTAINER_FORMATS, true)) {
+        $formats = array_values(array_filter(array_map('trim', explode(',', trim($output)))));
+
+        if (!array_intersect($formats, self::SAFE_CONTAINER_FORMATS)) {
+            return false;
+        }
+
+        $prefix = file_get_contents($path, false, null, 0, 512);
+
+        return is_string($prefix) && self::containerMagicMatches($prefix, $formats);
+    }
+
+    /**
+     * Requires the claimed demuxer to have its signature at the container's
+     * real start. ffprobe deliberately scans through leading junk, which is
+     * useful for damaged media but would let an HTML/script prefix survive in
+     * the preserved original while the tail is treated as audio or video.
+     *
+     * @param string[] $formats
+     */
+    private static function containerMagicMatches(string $prefix, array $formats): bool
+    {
+        $starts = static fn (string $magic): bool => str_starts_with($prefix, $magic);
+        $bytes = static fn (int $offset, string $magic): bool => substr($prefix, $offset, strlen($magic)) === $magic;
+        $frame_sync = strlen($prefix) >= 2 && ord($prefix[0]) === 0xff && (ord($prefix[1]) & 0xe0) === 0xe0;
+        $iso_size = strlen($prefix) >= 8 ? (unpack('Nsize', substr($prefix, 0, 4))['size'] ?? 0) : 0;
+        $iso_atom = $iso_size >= 8 && in_array(substr($prefix, 4, 4), ['ftyp', 'moov', 'mdat', 'free', 'wide'], true);
+
+        foreach ($formats as $format) {
+            $matches = match ($format) {
+                'mp3', 'mp2' => $starts('ID3') || $frame_sync,
+                'wav' => $starts('RIFF') && $bytes(8, 'WAVE'),
+                'w64' => $starts('riff'),
+                'flac' => $starts('fLaC'),
+                'ogg' => $starts('OggS'),
+                'aac' => $starts('ADIF') || $frame_sync,
+                'aiff', 'aif' => $starts('FORM') && ($bytes(8, 'AIFF') || $bytes(8, 'AIFC')),
+                'ac3' => $starts("\x0b\x77"),
+                'amr' => $starts('#!AMR'),
+                'caf' => $starts('caff'),
+                'au' => $starts('.snd'),
+                'wv' => $starts('wvpk'),
+                'ape' => $starts('MAC '),
+                'tta' => $starts('TTA1'),
+                'mpc' => $starts('MPCK') || $starts('MP+'),
+                'mov', 'mp4', 'm4a', 'm4v', '3gp', '3g2', 'mj2' => $iso_atom,
+                'matroska', 'webm' => $starts("\x1a\x45\xdf\xa3"),
+                'avi' => $starts('RIFF') && $bytes(8, 'AVI '),
+                'flv' => $starts('FLV'),
+                'asf' => $starts("\x30\x26\xb2\x75\x8e\x66\xcf\x11"),
+                'mpeg', 'mpegvideo' => $starts("\x00\x00\x01\xba") || $starts("\x00\x00\x01\xb3") || $starts("\x00\x00\x01\xb0"),
+                'mpegts' => (strlen($prefix) > 188 && ord($prefix[0]) === 0x47 && ord($prefix[188]) === 0x47)
+                    || (strlen($prefix) > 196 && ord($prefix[4]) === 0x47 && ord($prefix[196]) === 0x47),
+                default => false,
+            };
+
+            if ($matches) {
                 return true;
             }
         }
@@ -586,14 +674,14 @@ class UploadProcessor
         return ((int) $parts[0]) * ((int) $parts[1]) > self::VIDEO_MAX_SOURCE_PIXELS;
     }
 
-    private static function processVideo(string $tmp_path, int|string $id, string $original_filename): ?array
+    private static function processVideo(string $tmp_path, int|string $id, ?string $original_filename): ?array
     {
         // Reject an oversized source frame before decoding anything (decode bomb).
         if (self::sourceVideoTooLarge($tmp_path)) {
             return null;
         }
 
-        $extension = self::safeExtension($original_filename);
+        $extension = $original_filename === null ? null : self::safeExtension($original_filename);
         $paths = self::outputPaths($id, 'VideoItem', $extension);
 
         // Failing to keep the original fails the upload - see processImage.
@@ -703,9 +791,9 @@ class UploadProcessor
         return ['itemType' => 'VideoItem'];
     }
 
-    private static function processAudio(string $tmp_path, int|string $id, string $original_filename): ?array
+    private static function processAudio(string $tmp_path, int|string $id, ?string $original_filename): ?array
     {
-        $extension = self::safeExtension($original_filename);
+        $extension = $original_filename === null ? null : self::safeExtension($original_filename);
         $paths = self::outputPaths($id, 'AudioItem', $extension);
 
         // Failing to keep the original fails the upload - see processImage.

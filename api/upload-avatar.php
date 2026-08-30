@@ -41,13 +41,13 @@ if (!UploadProcessor::hasFreeDiskSpace((int) $uploaded_file['size'])) {
 
 // The shard bucket this user's avatar lives in - same 256-way sharding as
 // every other upload path, so avatars/ never accumulates one entry per user
-// in a single directory. 0777 like every other on-demand upload dir (see
-// UploadProcessor::ensureDir); a root install tightens the tree afterward.
+// in a single directory. The web and upload worker share one account, so the
+// shard needs no group- or world-write permission.
 $avatar_dir = dirname(__DIR__) . '/uploads/avatars/' . UploadProcessor::shard((int) $current_user -> userId);
 
 if (!is_dir($avatar_dir)) {
-    mkdir($avatar_dir, 0777, true);
-    @chmod($avatar_dir, 0777);
+    mkdir($avatar_dir, 0755, true);
+    @chmod($avatar_dir, 0755);
 }
 
 $image = ImageProcessor::load($uploaded_file['tmp_name']);

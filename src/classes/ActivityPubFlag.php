@@ -19,6 +19,8 @@ class ActivityPubFlag
 {
     /** Reports are filed against this account, which is the site itself. */
     private const SYSTEM_REPORTER_ID = 1;
+    private const MAX_REPORTS_PER_HOST = 20;
+    private const REPORT_WINDOW_SECONDS = 3600;
 
     /**
      * A report from another server about something here. Raised in the ordinary
@@ -36,6 +38,9 @@ class ActivityPubFlag
         // abuse. Falls back to the site account when the reporter is somehow
         // not on file.
         $reporter_id = $reporter -> userId === null ? self::SYSTEM_REPORTER_ID : (int) $reporter -> userId;
+        $reporter_host = strtolower((string) parse_url((string) $reporter -> remoteActorURI, PHP_URL_HOST));
+        $reporter_scope = $reporter_host !== '' ? $reporter_host : 'user-' . $reporter_id;
+        $rate_key = 'activitypub-flag-host:' . hash('sha256', $reporter_scope);
 
         // A remote server can name several things in one report. Capped so a
         // hostile one cannot fill the queue from a single delivery.
@@ -51,6 +56,16 @@ class ActivityPubFlag
             if ($type === null || $id === null) {
                 continue;
             }
+
+            // The inbox's IP limit controls delivery volume, not moderation
+            // queue growth: one hostile server can mint many actors and report
+            // many local objects. Budget reports by the signing server's host,
+            // across all of its actors and deliveries.
+            if (RateLimiter::tooManyAttempts($rate_key, self::MAX_REPORTS_PER_HOST, self::REPORT_WINDOW_SECONDS)) {
+                break;
+            }
+
+            RateLimiter::recordAttempt($rate_key);
 
             ReportManager::create($reporter_id, $type, $id, self::describe($reason, $reporter));
         }

@@ -1,6 +1,6 @@
 import { TestCase, write_client_config } from './TestCase.js';
-import { ToggleButton } from '../../scripts/ToggleButton.js';
-import { Composer } from '../../scripts/Composer.js';
+import { ToggleButton } from '../../scripts/HTMLObjects.js';
+import { Composer } from '../../scripts/Controllers.js';
 
 /**
  * A post carries a link, attached media, or a poll - one of the three, and

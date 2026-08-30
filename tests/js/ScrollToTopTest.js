@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { ScrollToTop } from '../../scripts/ScrollToTop.js';
+import { ScrollToTop } from '../../scripts/Controllers.js';
 
 /**
  * How the button gets back to the top, which is two different journeys.

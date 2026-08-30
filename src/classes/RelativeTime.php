@@ -5,8 +5,9 @@ declare(strict_types=1);
 /**
  * A timestamp, written out until the browser can say how long ago it was.
  *
- * What this renders is the absolute date; RelativeTime.js replaces it with "3h
- * ago" on load and once a minute after, since how long ago something was
+ * What this renders is the absolute date; the RelativeTime twin in
+ * HTMLObjects.js replaces it with "3h ago" on load and once a minute after,
+ * since how long ago something was
  * depends on when somebody looks. A reader without JavaScript keeps this.
  */
 class RelativeTime extends Time

@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import '../../scripts/MailSettingsForm.js';
+import '../../scripts/Controllers.js';
 
 /**
  * Saving the mail settings.

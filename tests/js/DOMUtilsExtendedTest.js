@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { DOMUtils } from '../../scripts/DOMUtils.js';
+import { DOMUtils } from '../../scripts/Runtime.js';
 
 export default {
     suite: 'DOMUtilsExtended',

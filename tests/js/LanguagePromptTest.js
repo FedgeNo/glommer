@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { LanguagePrompt } from '../../scripts/LanguagePrompt.js';
+import { LanguagePrompt } from '../../scripts/Controllers.js';
 
 /** Runs `body` with fetch replaced, collecting what was posted where. */
 async function withFetch(body) {

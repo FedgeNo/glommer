@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Cookie } from '../../scripts/Cookie.js';
+import { Cookie } from '../../scripts/Runtime.js';
 
 export default {
     suite: 'Cookie',

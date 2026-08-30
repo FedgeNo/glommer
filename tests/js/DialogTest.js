@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Dialog } from '../../scripts/Dialog.js';
+import { Dialog } from '../../scripts/HTMLObjects.js';
 
 export default {
     suite: 'Dialog',

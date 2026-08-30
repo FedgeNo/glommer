@@ -2,7 +2,7 @@ import { TestCase, write_client_config } from './TestCase.js';
 
 write_client_config({ currentUserId: 1, siteURL: 'https://example.test' });
 
-const { OtherUser } = await import('../../scripts/OtherUser.js');
+const { OtherUser } = await import('../../scripts/HTMLObjects.js');
 
 /**
  * A Fediverse account cannot hold up its end of a friendship - there is nobody

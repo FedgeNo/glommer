@@ -1,7 +1,7 @@
 import { TestCase } from './TestCase.js';
-import { Dialog } from '../../scripts/Dialog.js';
-import { RememberedDevice } from '../../scripts/RememberedDevice.js';
-import { LogoutEverywherePanel } from '../../scripts/LogoutEverywherePanel.js';
+import { Dialog } from '../../scripts/HTMLObjects.js';
+import { RememberedDevice } from '../../scripts/Controllers.js';
+import { LogoutEverywherePanel } from '../../scripts/Controllers.js';
 
 /**
  * The two buttons that end a session somewhere else, and what they say when

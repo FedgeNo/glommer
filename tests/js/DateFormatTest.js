@@ -1,6 +1,6 @@
 import { TestCase } from './TestCase.js';
-import { DateFormat } from '../../scripts/DateFormat.js';
-import { Strings } from '../../scripts/Strings.js';
+import { DateFormat } from '../../scripts/Runtime.js';
+import { Strings } from '../../scripts/Runtime.js';
 
 /**
  * The client twin of DateFormat.php, asserted against the same strings

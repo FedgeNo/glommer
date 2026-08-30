@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { MessageComposer } from '../../scripts/MessageComposer.js';
+import { MessageComposer } from '../../scripts/Controllers.js';
 
 /**
  * The composer is fixed to the bottom of the window, so nothing in the flow

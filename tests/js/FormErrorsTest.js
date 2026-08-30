@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { FormErrors } from '../../scripts/FormErrors.js';
+import { FormErrors } from '../../scripts/Runtime.js';
 
 /**
  * A refusal put under the input it is about.

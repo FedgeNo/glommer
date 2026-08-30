@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Toast } from '../../scripts/Toast.js';
+import { Toast } from '../../scripts/Runtime.js';
 
 export default {
     suite: 'Toast',

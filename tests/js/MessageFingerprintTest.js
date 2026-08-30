@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { MessageCrypto } from '../../scripts/MessageCrypto.js';
+import { MessageCrypto } from '../../scripts/HTMLObjects.js';
 
 /**
  * The safety code is the only check on the one thing encryption here cannot

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the like button - it should be the hand they chose, not the one this code
  * happened to type.
  *
- * The mirror of scripts/SkinTone.js, since a card can be rendered by either
+ * The mirror in scripts/HTMLObjects.js, since a card can be rendered by either
  * side and the same thumb has to come out of both.
  */
 class SkinTone

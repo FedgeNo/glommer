@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { ClientConfig } from '../../scripts/ClientConfig.js';
+import { ClientConfig } from '../../scripts/Runtime.js';
 
 /**
  * The floor under the config cookie.

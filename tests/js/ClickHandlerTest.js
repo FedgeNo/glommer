@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { ClickHandler } from '../../scripts/ClickHandler.js';
+import { ClickHandler } from '../../scripts/Runtime.js';
 
 export default {
     suite: 'ClickHandler',

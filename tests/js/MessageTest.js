@@ -2,7 +2,7 @@ import { TestCase, write_client_config } from './TestCase.js';
 
 write_client_config({ currentUserId: 1 });
 
-const { Message } = await import('../../scripts/Message.js');
+const { Message } = await import('../../scripts/HTMLObjects.js');
 
 export default {
     suite: 'Message',

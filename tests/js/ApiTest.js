@@ -1,6 +1,6 @@
 import { TestCase } from './TestCase.js';
-import { Api } from '../../scripts/Api.js';
-import { Toast } from '../../scripts/Toast.js';
+import { Api } from '../../scripts/Runtime.js';
+import { Toast } from '../../scripts/Runtime.js';
 
 /** Runs `body` with fetch replaced, counting what got toasted while it ran. */
 async function withFetch(fake, body) {

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * server has one worth passing on, and it is not this server's copy - so those
  * carry no share button, and everything else does, signed in or not.
  *
- * The client rebuilds the same bar from JSON (scripts/Post.js), so the rule
+ * The client rebuilds the same bar from JSON (scripts/HTMLObjects.js), so the rule
  * lives in two places and has to agree in both; tests/js/PostTest.js covers
  * the other half.
  */

@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Strings } from '../../scripts/Strings.js';
+import { Strings } from '../../scripts/Runtime.js';
 
 /**
  * The browser half of the string table, held to the same fall-back behaviour

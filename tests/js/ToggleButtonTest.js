@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { ToggleButton } from '../../scripts/ToggleButton.js';
+import { ToggleButton } from '../../scripts/HTMLObjects.js';
 
 /**
  * The point of the thing is a width that does not move. That rests on every

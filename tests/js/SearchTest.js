@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Search } from '../../scripts/Search.js';
+import { Search } from '../../scripts/Controllers.js';
 
 // The search page as Search.init() expects to find it, plus a stand-in for the
 // network so a test can see what was actually searched for.

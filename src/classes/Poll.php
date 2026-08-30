@@ -132,13 +132,7 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
     {
         $this -> markRendered();
 
-        $options = new PollOptionList([
-            'pollId' => (int) $this -> pollId,
-            'viewerId' => $this -> viewerId,
-            'showResults' => $this -> showResultsTo($this -> viewerId),
-            'multiple' => (int) $this -> multiple === 1,
-            'totalVotes' => $this -> voterCount(),
-        ]);
+        $options = $this -> optionList($this -> showResultsTo($this -> viewerId), $this -> voterCount());
 
         return [
             'pollId' => (int) $this -> pollId,
@@ -158,13 +152,7 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
     {
         $show_results = $this -> showResultsTo($this -> viewerId);
 
-        $options = new PollOptionList([
-            'pollId' => (int) $this -> pollId,
-            'viewerId' => $this -> viewerId,
-            'showResults' => $show_results,
-            'multiple' => (int) $this -> multiple === 1,
-            'totalVotes' => $this -> voterCount(),
-        ]);
+        $options = $this -> optionList($show_results, $this -> voterCount());
 
         $this -> addContent($options);
 
@@ -177,6 +165,21 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
         $this -> addContent(new PollTally($this -> voterCount(), (string) $this -> endsAt, $this -> isClosed()));
 
         return parent::toDOM();
+    }
+
+    /**
+     * Builds the option loader shared by payload and DOM rendering. Kept as a
+     * seam so database-free parity fixtures can supply stable option rows.
+     */
+    protected function optionList(bool $show_results, int $total_votes): PollOptionList
+    {
+        return new PollOptionList([
+            'pollId' => (int) $this -> pollId,
+            'viewerId' => $this -> viewerId,
+            'showResults' => $show_results,
+            'multiple' => (int) $this -> multiple === 1,
+            'totalVotes' => $total_votes,
+        ]);
     }
 
     /**

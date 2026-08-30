@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { VideoCallTestPanel } from '../../scripts/VideoCallTestPanel.js';
+import { VideoCallTestPanel } from '../../scripts/Controllers.js';
 
 /**
  * The admin check's verdict. Each case breaks call setup at a different link in

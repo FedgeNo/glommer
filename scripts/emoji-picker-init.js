@@ -1,4 +1,4 @@
-import { ClientConfig } from '/scripts/ClientConfig.js';
+import { ClientConfig } from '/scripts/Runtime.js';
 
 import Database from '/scripts/vendor/emoji-picker-element/database.js';
 

@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Post } from '../../scripts/Post.js';
+import { Post } from '../../scripts/HTMLObjects.js';
 
 /**
  * A post the client builds has to come out as the same DOM the server renders

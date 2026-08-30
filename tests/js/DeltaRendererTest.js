@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { DeltaRenderer } from '../../scripts/DeltaRenderer.js';
+import { DeltaRenderer } from '../../scripts/HTMLObjects.js';
 
 /**
  * The client twin of DeltaRenderer.php, which rebuilds a post body from the

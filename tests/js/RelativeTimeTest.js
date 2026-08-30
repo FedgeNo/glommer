@@ -1,6 +1,6 @@
 import { TestCase } from './TestCase.js';
-import { RelativeTime } from '../../scripts/RelativeTime.js';
-import { Strings } from '../../scripts/Strings.js';
+import { RelativeTime } from '../../scripts/HTMLObjects.js';
+import { Strings } from '../../scripts/Runtime.js';
 
 /** A moment the given number of seconds in the past, as the server writes them. */
 function ago(seconds) {

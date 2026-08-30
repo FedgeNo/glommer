@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Working } from '../../scripts/Working.js';
+import { Working } from '../../scripts/Runtime.js';
 
 /**
  * A control waiting on the server.

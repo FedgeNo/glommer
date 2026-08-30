@@ -292,7 +292,7 @@ class LinkifierTest extends TestCase
             // expression rather than one literal, so the language's own way of
             // naming and joining the parts is normalised away first.
             $php = (string) file_get_contents(__DIR__ . '/../src/classes/Linkifier.php');
-            $js = (string) file_get_contents(__DIR__ . '/../scripts/Linkifier.js');
+            $js = (string) file_get_contents(__DIR__ . '/../scripts/HTMLObjects.js');
 
             preg_match('/private const TAG_CHARS = "(.*)";/', $php, $php_tag_chars);
             preg_match('/static TAG_CHARS = "(.*)";/', $js, $js_tag_chars);
@@ -317,7 +317,7 @@ class LinkifierTest extends TestCase
     }
 
     /**
-     * Runs Linkifier.js's Linkifier.tokenize over each input under node. Null when
+     * Runs HTMLObjects.js's Linkifier.tokenize over each input under node. Null when
      * node isn't installed, so the suite still runs on a box without it.
      *
      * @param string[] $cases
@@ -330,8 +330,9 @@ class LinkifierTest extends TestCase
         }
 
         $script = 'const fs = require("fs");'
-            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../scripts/Linkifier.js') . ', "utf8");'
-            . 'const tokenize = new Function(src.replace(/^export /gm, "") + "; return Linkifier.tokenize;")();'
+            . 'const src = fs.readFileSync(' . json_encode(__DIR__ . '/../scripts/HTMLObjects.js') . ', "utf8");'
+            . 'const body = src.match(/\\/\\/ Linkifier\\.js\\nconst LinkifierModule = \\(\\(\\) => \\{\\n([\\s\\S]*?)\\n\\s*return \\{ Linkifier \\};/)[1];'
+            . 'const tokenize = new Function(body + "; return Linkifier.tokenize;")();'
             . 'const cases = ' . json_encode($cases) . ';'
             . 'process.stdout.write(JSON.stringify(cases.map((t) => tokenize(t))));';
 
@@ -350,7 +351,7 @@ class LinkifierTest extends TestCase
     {
         $this -> assertSame(255, Linkifier::MAX_MENTION_LENGTH);
 
-        $js = (string) file_get_contents(__DIR__ . '/../scripts/Linkifier.js');
+        $js = (string) file_get_contents(__DIR__ . '/../scripts/HTMLObjects.js');
         preg_match('/static MAX_MENTION_LENGTH = (\\d+);/', $js, $match);
 
         $this -> assertSame((string) Linkifier::MAX_MENTION_LENGTH, $match[1]);

@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { expand, expandInDOM } from '../../scripts/EmojiShortcode.js';
+import { expand, expandInDOM } from '../../scripts/HTMLObjects.js';
 
 /**
  * The client half of shortcode expansion. It has to agree with the server's,

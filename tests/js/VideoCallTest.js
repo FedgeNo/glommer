@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { VideoCall } from '../../scripts/VideoCall.js';
+import { VideoCall } from '../../scripts/Controllers.js';
 
 export default {
     suite: 'VideoCall',

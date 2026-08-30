@@ -13,7 +13,7 @@ declare(strict_types=1);
  * decoded ahead of it.
  *
  * Empty markup: it is a canvas, and everything in it is drawn by
- * scripts/SpectrumAnalyser.js once the reader presses play. A page where that
+ * scripts/Controllers.js once the reader presses play. A page where that
  * never runs shows nothing rather than a broken frame, which is why the height
  * belongs to the canvas and not to a wrapper.
  */

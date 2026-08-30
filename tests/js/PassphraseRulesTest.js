@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { EncryptedMessagesSetting } from '../../scripts/EncryptedMessagesSetting.js';
+import { EncryptedMessagesSetting } from '../../scripts/Controllers.js';
 
 /**
  * The passphrase is the only secret guarding every encrypted message an

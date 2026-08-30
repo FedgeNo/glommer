@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { MessageCrypto } from '../../scripts/MessageCrypto.js';
+import { MessageCrypto } from '../../scripts/HTMLObjects.js';
 
 function from_base64(text) {
     return Uint8Array.from(atob(text), (character) => character.charCodeAt(0));

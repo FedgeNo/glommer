@@ -15,7 +15,7 @@ declare(strict_types=1);
  * width: a common width has to fit the longest label anywhere in the row,
  * which turns "Pin" into a slab.
  *
- * The mirror of scripts/ToggleButton.js, which builds the same markup for a
+ * The mirror in scripts/HTMLObjects.js builds the same markup for a
  * card the client rendered - the two have to agree, since a feed holds both.
  */
 class ToggleButton extends ButtonButton

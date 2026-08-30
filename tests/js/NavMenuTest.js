@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { NavMenu } from '../../scripts/NavMenu.js';
+import { NavMenu } from '../../scripts/Controllers.js';
 
 /**
  * The mobile menu saying whether it is open.

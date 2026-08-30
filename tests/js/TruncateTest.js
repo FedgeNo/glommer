@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { truncate } from '../../scripts/utils.js';
+import { truncate } from '../../scripts/Runtime.js';
 
 /**
  * The browser half of truncate(), held to the same answers as PHP's in

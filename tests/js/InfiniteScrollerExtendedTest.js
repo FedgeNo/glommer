@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { InfiniteScroller } from '../../scripts/InfiniteScroller.js';
+import { InfiniteScroller } from '../../scripts/Controllers.js';
 
 export default {
     suite: 'InfiniteScroller',

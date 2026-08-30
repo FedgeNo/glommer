@@ -20,7 +20,7 @@ declare(strict_types=1);
  * Everything is rendered in UTC, because the server has no way to know the
  * viewer's timezone and a date that read differently either side of midnight
  * depending on which renderer built it would be worse than one that is plainly
- * UTC everywhere. The client twin (scripts/DateFormat.js) does the same.
+ * UTC everywhere. The client twin in scripts/Runtime.js does the same.
  *
  * Not an HTMLObject - it renders nothing, it hands a string to whatever does.
  */

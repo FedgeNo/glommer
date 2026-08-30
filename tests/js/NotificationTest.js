@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Notification } from '../../scripts/Notification.js';
+import { Notification } from '../../scripts/HTMLObjects.js';
 
 /**
  * The client twin of Notification.php, which builds the same line from the

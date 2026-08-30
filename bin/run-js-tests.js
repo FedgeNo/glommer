@@ -46,12 +46,16 @@ globalThis.Node = dom.window.Node;
 globalThis.HTMLElement = dom.window.HTMLElement;
 globalThis.CustomEvent = dom.window.CustomEvent;
 globalThis.NodeFilter = dom.window.NodeFilter;
+globalThis.localStorage = dom.window.localStorage;
+globalThis.sessionStorage = dom.window.sessionStorage;
+globalThis.HTMLImageElement = dom.window.HTMLImageElement;
+globalThis.HTMLMediaElement = dom.window.HTMLMediaElement;
 
-await import('../scripts/dom.js');
+await import('../scripts/Runtime.js');
 
 // Browser components read the same canonical English catalog production does.
 // Loading it here keeps tests from inventing a second set of fallback strings.
-const { Strings } = await import('../scripts/Strings.js');
+const { Strings } = await import('../scripts/Runtime.js');
 const englishStrings = JSON.parse(readFileSync(resolve(projectRoot, 'locales/en.json'), 'utf8'));
 Strings.useLocale(englishStrings, 'en');
 
@@ -85,6 +89,11 @@ globalThis.fetch = async () => new Response(
 );
 globalThis.requestAnimationFrame = (cb) => cb();
 dom.window.requestAnimationFrame = (cb) => cb();
+dom.window.matchMedia = () => ({
+    matches: false,
+    addEventListener() {},
+    removeEventListener() {},
+});
 
 let total = 0, passed = 0;
 const failures = [];

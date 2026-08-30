@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Linkifier } from '../../scripts/Linkifier.js';
+import { Linkifier } from '../../scripts/HTMLObjects.js';
 
 /**
  * The browser half of the tokenizer, held to the same answers as

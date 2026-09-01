@@ -22,7 +22,7 @@ class TimestampLink extends Anchor
     public function toDOM(): \DOMElement
     {
         // The time it shows is the post's own createdAt, carried on the .Post
-        // card - main.js stamps the datetime attribute from there.
+        // card - HTMLObjects.js stamps the datetime attribute from there.
         $time = new RelativeTime($this -> dateTime, RelativeTime::DATE_ONLY);
         $time -> datetime = null;
 

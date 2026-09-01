@@ -23,7 +23,7 @@ class ItemList extends UnorderedList
         // "No blocked servers" is not a blocked server, so it is not a row -
         // and with no rows there is no list to put one in. The notice stands
         // where the list would, and the client builds a list over it if
-        // something ever arrives to go in one (list_in, utils.js).
+        // something ever arrives to go in one (list_in, Runtime.js).
         if ($this -> contents === [] && $this -> emptyNotice !== '') {
             $this -> markRendered();
 

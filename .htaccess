@@ -36,10 +36,14 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-    # A page is around forty ES modules, each imported by name from the last.
-    # Revalidating every one of them before use costs no bytes and a round
-    # trip apiece - which is nothing on a fast connection and seconds on a
-    # slow one, on every visit, forever. So a cached copy is used at once and
+    # Static modules need this as much as PHP responses do: a JavaScript URL
+    # that is rewritten to an HTML error page must be rejected as the type it
+    # actually is, never guessed into executable code.
+    Header always set X-Content-Type-Options "nosniff"
+
+    # The application and its locally served libraries are ES modules.
+    # Revalidating every module before use costs no bytes but does cost a round
+    # trip apiece. So a cached copy is used at once and
     # checked afterwards: stale-while-revalidate serves what the browser has
     # and refreshes it in the background, leaving a reader waiting on the
     # network only the first time they ever see the file.

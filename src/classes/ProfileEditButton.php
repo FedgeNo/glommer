@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * The pencil beside your own display name. It doesn't submit anything on its
  * own - clicking it (or the name, or the bio) flips the card into edit mode
- * client-side (see main.js). It's the visible "you can edit this" affordance.
+ * client-side (see Controllers.js). It's the visible "you can edit this" affordance.
  */
 class ProfileEditButton extends ButtonButton
 {

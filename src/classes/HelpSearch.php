@@ -6,7 +6,7 @@ declare(strict_types=1);
  * The Help index: a search box over a results area that starts out showing
  * every article grouped by category (the browse view). Typing swaps the area
  * for ranked matches, clearing it restores the browse view - the same
- * SearchBox/Search.js machinery every other search on the site runs on,
+ * SearchBox/Controllers.js Search machinery every other search on the site runs on,
  * against /api/help-search.
  */
 class HelpSearch extends Div

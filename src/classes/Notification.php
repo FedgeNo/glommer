@@ -151,7 +151,7 @@ class Notification extends Article
             'type' => $notification -> type,
             'postId' => $notification -> postId,
             'createdAt' => $notification -> createdAt,
-            // A nested user object with row-named keys so Notification.js reads
+            // A nested user object with row-named keys so HTMLObjects.js's Notification reads
             // the actor straight through (Avatar.forUser, actor.slug/title).
             'actor' => [
                 'userId' => (int) $notification -> actorId,

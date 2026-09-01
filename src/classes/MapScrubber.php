@@ -14,7 +14,7 @@ declare(strict_types=1);
  * on it is just a map of pins.
  *
  * Rendered empty and hidden: the range depends on posts the client fetches, so
- * PostMap.js fills in the dates and reveals it once it knows there are any.
+ * Controllers.js's PostMap fills in the dates and reveals it once it knows there are any.
  */
 class MapScrubber extends Div
 {

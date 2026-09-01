@@ -7,7 +7,7 @@ declare(strict_types=1);
  * the opposite action - both enabling and disabling require the current
  * password (a security-sensitive change, same guard change-password uses),
  * so someone at an already-open session can't silently flip it. Submits to
- * api/two-factor (handled in main.js).
+ * api/two-factor (handled in Controllers.js).
  */
 class TwoFactorSettingsForm extends FormForm
 {

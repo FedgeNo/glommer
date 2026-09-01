@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The client-rendered map on /map. A bare container carrying the tile source as
- * data attributes; PostMap.js (loaded on .PostMap) initialises Leaflet, fetches
+ * data attributes; Controllers.js's PostMap (loaded on .PostMap) initialises Leaflet, fetches
  * the geotagged posts from /api/map-posts, and clusters them. The server only
  * ships this empty container - there is no post data in the initial markup.
  */

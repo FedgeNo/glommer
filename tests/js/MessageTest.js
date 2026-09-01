@@ -4,6 +4,30 @@ write_client_config({ currentUserId: 1 });
 
 const { Message } = await import('../../scripts/HTMLObjects.js');
 
+function withLoadingPage(readyState, run) {
+    const realScrollTo = window.scrollTo;
+    const scrolls = [];
+
+    Object.defineProperty(document, 'readyState', { value: readyState, configurable: true });
+    Object.defineProperty(document.body, 'scrollHeight', { value: 1234, configurable: true });
+    window.scrollTo = options => scrolls.push(options);
+
+    const composer = document.createElement('form');
+    composer.className = 'MessageComposer';
+    const textarea = document.createElement('textarea');
+    composer.appendChild(textarea);
+    document.body.appendChild(composer);
+
+    try {
+        run({ scrolls, textarea });
+    } finally {
+        composer.remove();
+        window.scrollTo = realScrollTo;
+        delete document.readyState;
+        delete document.body.scrollHeight;
+    }
+}
+
 export default {
     suite: 'Message',
     tests: {
@@ -60,6 +84,30 @@ export default {
 
             TestCase.assertEquals('PRE', body.tagName);
             TestCase.assertEquals(written, body.textContent);
+        },
+
+        'a thread waits for page load before scrolling to the bottom'() {
+            withLoadingPage('loading', ({ scrolls, textarea }) => {
+                Message.init();
+
+                TestCase.assertEquals(0, scrolls.length);
+
+                window.dispatchEvent(new window.Event('load'));
+
+                TestCase.assertEquals(1, scrolls.length);
+                TestCase.assertEquals(1234, scrolls[0].top);
+                TestCase.assertTrue(document.activeElement === textarea);
+            });
+        },
+
+        'a thread still scrolls when its module arrives after page load'() {
+            withLoadingPage('complete', ({ scrolls, textarea }) => {
+                Message.init();
+
+                TestCase.assertEquals(1, scrolls.length);
+                TestCase.assertEquals(1234, scrolls[0].top);
+                TestCase.assertTrue(document.activeElement === textarea);
+            });
         },
     }
 };

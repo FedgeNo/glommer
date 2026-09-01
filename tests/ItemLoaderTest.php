@@ -164,7 +164,7 @@ class ItemLoaderTest extends TestCase
 
     public function testASearchFeedLeavesItsPagingToTheClient(): void
     {
-        // The next page depends on what's currently typed, so Search.js owns it;
+        // The next page depends on what's currently typed, so Controllers.js's Search owns it;
         // a server-side config here would bind a second scroller to the list.
         $feed = new class() extends SearchFeedList {
             protected function rows(): array

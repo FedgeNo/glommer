@@ -28,4 +28,19 @@ class SecurityHeadersTest extends TestCase
     {
         $this -> assertTrue(strlen(SecurityHeaders::nonce()) > 0);
     }
+
+    public function testOrdinaryPagesDoNotPermitExternalImages()
+    {
+        $policy = SecurityHeaders::contentSecurityPolicy();
+
+        $this -> assertTrue(str_contains($policy, 'img-src \'self\' data: blob:'));
+        $this -> assertFalse(str_contains($policy, 'img-src \'self\' data: blob: https:'));
+    }
+
+    public function testMapPagesPermitTheirExternalTileAndMarkerImages()
+    {
+        $policy = SecurityHeaders::contentSecurityPolicy(true);
+
+        $this -> assertTrue(str_contains($policy, 'img-src \'self\' data: blob: https:'));
+    }
 }

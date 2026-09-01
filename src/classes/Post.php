@@ -806,7 +806,7 @@ DELETE
             'likeCount' => $like_count,
             'liked' => $liked,
             'bookmarked' => $bookmarked,
-            // A nested user object with row-named keys so Post.js builds the
+            // A nested user object with row-named keys so HTMLObjects.js's Post builds the
             // byline straight through User.fromData, no field-by-field transcode.
             'author' => $this -> author !== null ? [
                 'userId' => (int) $this -> author -> userId,

@@ -19,8 +19,6 @@ echo json_encode([
     'icons' => [
         [
             'src' => Favicon::URL(),
-            'sizes' => '512x512',
-            'type' => 'image/png',
             'purpose' => 'any',
         ],
     ],

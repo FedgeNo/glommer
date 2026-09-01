@@ -9,6 +9,7 @@ import {
     Working,
     list_in,
     list_item,
+    page_language,
     parse_server_date,
     truncate,
 } from '/scripts/Runtime.js';
@@ -3336,7 +3337,7 @@ class Post {
             wrapper.appendWithSpace(video);
         } else if (item.itemType === 'AudioItem') {
             // Mirrors AudioItem.php: the spectrum goes above the controls, and
-            // SpectrumAnalyser.js finds it by sitting beside the player.
+            // Controllers.js's SpectrumAnalyser finds it by sitting beside the player.
             const spectrum = document.createElement('canvas');
             spectrum.className = 'SpectrumAnalyser';
             spectrum.width = 600;
@@ -3861,11 +3862,11 @@ class Post {
         Working.start(button);
 
         try {
-            // The reader's own interface language today; the parameter is
-            // what lets a translated interface ask for its language later.
+            // The language this page was rendered in. It may be different from
+            // the browser preference that originally prompted the reader.
             const result = await Api.post('/api/translate-post', {
                 postId: Number(post.dataset.postId),
-                language: navigator.language || 'en',
+                language: page_language(),
             });
 
             if (!result) return;
@@ -4000,7 +4001,7 @@ function from_base64(text) {
 }
 
 class MessageCrypto {
-    /** The open conversation's derived AES key, set by MessageUnlockForm.js. */
+    /** The open conversation's derived AES key, set by Controllers.js's MessageUnlockForm. */
     static #threadKey = null;
 
     /** messageId -> envelope JSON, so a report can reveal that message's key. */
@@ -4304,8 +4305,8 @@ class Message {
 
     /**
      * Opens one rendered message's envelope in place, once the thread key is
-     * available (MessageUnlockForm.js). Registering the envelope first is what
-     * lets a report of this message reveal its key later - see ReportButton.js.
+     * available (Controllers.js's MessageUnlockForm). Registering the envelope first is what
+     * lets a report of this message reveal its key later - see Controllers.js's ReportButton.
      */
     static async decryptInto(article) {
         const envelope = article.dataset.cipherEnvelope;
@@ -4340,12 +4341,20 @@ class Message {
      * Scroll the message list to the bottom on page load.
      */
     static init() {
-        if (document.querySelector('.MessageComposer')) {
-            window.addEventListener('load', () => {
-                window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
-                const composerTextarea = document.querySelector('.MessageComposer textarea');
-                if (composerTextarea) composerTextarea.focus();
-            });
+        if (!document.querySelector('.MessageComposer')) {
+            return;
+        }
+
+        const finishLoading = () => {
+            window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
+            const composerTextarea = document.querySelector('.MessageComposer textarea');
+            if (composerTextarea) composerTextarea.focus();
+        };
+
+        if (document.readyState === 'complete') {
+            finishLoading();
+        } else {
+            window.addEventListener('load', finishLoading, { once: true });
         }
     }
 }
@@ -4498,7 +4507,7 @@ const ReportModule = (() => {
  * content itself (a bare post, a message body, a user's profile card, or a
  * "no longer exists" notice), the reason, and when. Right column: the same ban
  * / delete / dismiss buttons the server renders, whose delegated handlers live
- * in main.js.
+ * in Controllers.js.
  */
 class Report {
     reportId = null;

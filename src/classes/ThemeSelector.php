@@ -8,7 +8,7 @@ class ThemeSelector extends Div
 
     /**
      * The stored identifiers, in the order the menu offers them. What each is
-     * called is the locale's to say - see src/locales/en/ThemeSelector.php -
+     * called is the locale's to say - see locales/en.json -
      * so this is the list of themes and not a second copy of their names.
      *
      * 'light' and 'dark' keep their identifiers although their labels say

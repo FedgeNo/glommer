@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The Settings section for end-to-end encrypted messaging. Everything
- * cryptographic happens in the browser (EncryptedMessagesSetting.js): the
+ * cryptographic happens in the browser (Controllers.js's EncryptedMessagesSetting): the
  * keypair is generated there, the private key is wrapped under a passphrase
  * there, and only the public key and the wrapped blob are ever sent up - which
  * is why the same passphrase unlocks the messages from any browser, and why

@@ -19,7 +19,7 @@ class SignupForm extends FormForm
         $username -> autocomplete = 'username';
         $fields -> addContent($username);
 
-        // Filled in by main.js as the name is typed. Empty (and so invisible)
+        // Filled in by Controllers.js as the name is typed. Empty (and so invisible)
         // until there's something to report, and announced politely so a
         // screen reader hears the verdict without it interrupting typing.
         $availability = new UsernameAvailability();

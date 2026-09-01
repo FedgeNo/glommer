@@ -4,7 +4,7 @@ import { VideoCall } from '../../scripts/Controllers.js';
 export default {
     suite: 'VideoCall',
     tests: {
-        // Every page loads main.js, and the module is only imported on a thread -
+        // Every page loads main.js, and the controller is only initialized on a thread -
         // but init() still has to be safe when there is no thread to attach to,
         // since that is also what a signed-out reader gets.
         'init() does nothing when there is no message thread'() {

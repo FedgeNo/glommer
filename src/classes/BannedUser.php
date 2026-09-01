@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * One entry on the admin Banned Users page: the banned account's identity
- * plus an Unban button. Mirrored client-side in BannedUser.js for entries
+ * plus an Unban button. Mirrored client-side by BannedUser in HTMLObjects.js for entries
  * loaded by infinite scroll and search.
  */
 class BannedUser extends User
@@ -26,7 +26,7 @@ class BannedUser extends User
     }
 
     /**
-     * The JSON shape BannedUser.js builds an entry from.
+     * The JSON shape HTMLObjects.js's BannedUser builds an entry from.
      */
     public static function payloadFor(User $user): array
     {

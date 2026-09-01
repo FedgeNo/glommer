@@ -5,7 +5,7 @@ declare(strict_types=1);
 class MessageEncryptionTest extends TestCase
 {
     /**
-     * Builds a valid envelope the way MessageCrypto.js does: the body under a
+     * Builds a valid envelope the way HTMLObjects.js's MessageCrypto does: the body under a
      * random per-message key, that key wrapped under a conversation key, GCM
      * tags appended to both ciphertexts.
      *

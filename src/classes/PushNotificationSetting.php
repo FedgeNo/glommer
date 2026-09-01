@@ -7,7 +7,7 @@ declare(strict_types=1);
  * preference: whether this browser is subscribed is the browser's own fact
  * (its Notification permission, its PushManager subscription), not something
  * the server can set - so the toggle acts on the browser and reflects it,
- * and PushNotificationSetting.js wires it. Absent entirely when the server
+ * and Controllers.js's PushNotificationSetting wires it. Absent entirely when the server
  * has no VAPID keypair, since there is nothing to subscribe to.
  */
 class PushNotificationSetting extends Div

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * mid-2FA keeps the user on this step rather than dropping them back to the
  * password form. When the code email couldn't be sent (2FA fails closed
  * rather than skipping the step), the explanation asks for a recovery code
- * outright. Submits to api/verify-2fa (handled in main.js).
+ * outright. Submits to api/verify-2fa (handled in Controllers.js).
  */
 class TwoFactorForm extends FormForm
 {

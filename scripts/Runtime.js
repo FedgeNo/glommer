@@ -403,6 +403,11 @@ export class Strings {
     }
 }
 
+/** The language the server says this rendered page is written in. */
+export function page_language() {
+    return document.documentElement.lang || 'en';
+}
+
 // DateFormat.js
 /**
  * A date, written the way the reader's language writes one - the twin of

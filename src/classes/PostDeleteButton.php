@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Deletes your own post. On a permalink page there is no card left to remove
- * once it is gone, so data-standalone tells Post.js to send the reader home
+ * once it is gone, so data-standalone tells HTMLObjects.js's Post to send the reader home
  * instead of animating away the page they are on.
  */
 class PostDeleteButton extends ButtonButton

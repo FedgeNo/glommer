@@ -27,7 +27,7 @@ class SearchFeedList extends FeedList
 
     /**
      * No server-side scroll config: a search's next page depends on what's
-     * currently typed, so Search.js builds the request (against
+     * currently typed, so Controllers.js's Search builds the request (against
      * api/search-posts.php) and drives this list's paging itself. Advertising
      * one here would bind a second scroller to the same list, asking api/feed.php
      * for a feed type it doesn't serve.

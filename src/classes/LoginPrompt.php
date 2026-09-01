@@ -9,7 +9,7 @@ declare(strict_types=1);
  * Holds the shape of the sentence and nothing anybody reads: a slot, the link,
  * a slot. Which slot carries the words is the translation's business, so a
  * language that ends on the control fills the first and empties the last, and
- * the link's own label travels with them - see src/locales/de.php, which does
+ * the link's own label travels with them - see locales/de.json, which does
  * exactly that.
  *
  * The words are read in toDOM() rather than in the constructor, like every

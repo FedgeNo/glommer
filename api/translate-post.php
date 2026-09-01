@@ -20,7 +20,7 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
 $post_id = (int) ($payload['postId'] ?? 0);
-$language = PostTranslation::normalizeLanguage((string) ($payload['language'] ?? ''));
+$language = PostTranslation::normalizeOfferedLanguage((string) ($payload['language'] ?? ''));
 
 if ($post_id < 1 || $language === null) {
     JSONResponse::localizedError('aPostAndALanguageAreRequired', 422) -> send();

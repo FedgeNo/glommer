@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The admin moderation queue, newest report first, grown by infinite scroll
- * (main.js) off the data-* attributes here.
+ * (Controllers.js) off the data-* attributes here.
  */
 class ReportList extends ItemList
 {

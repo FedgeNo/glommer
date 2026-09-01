@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Empty/hidden by default - populated by main.js once a link preview fetch
+ * Empty/hidden by default - populated by Controllers.js once a link preview fetch
  * stages an image, so the user can see what would be attached and remove it
  * before posting. The seed input is what actually gets submitted; removing
  * the preview clears it and tells the server to discard the staged files.

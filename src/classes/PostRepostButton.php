@@ -35,7 +35,7 @@ class PostRepostButton extends ButtonButton
         return parent::toDOM();
     }
 
-    /** PostRepostButton.js builds the same label after a click. */
+    /** HTMLObjects.js's PostRepostButton builds the same label after a click. */
     public static function label(bool $reposted, int $count): string
     {
         return $count > 0 ? self::GLYPH . ' ' . $count : self::GLYPH;

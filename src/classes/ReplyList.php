@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The replies under a post. main.js locates it by its class name to insert
+ * The replies under a post. Controllers.js locates it by its class name to insert
  * newly posted replies at the top, and grows it by infinite scroll off the
  * data-* attributes. Build with the post whose replies these are:
  * new ReplyList(['parentId' => 5]).

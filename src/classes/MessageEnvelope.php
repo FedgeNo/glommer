@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The stored form of an end-to-end encrypted message: a JSON envelope built
- * client-side (MessageCrypto.js) that this server relays and stores but cannot
+ * client-side (HTMLObjects.js's MessageCrypto) that this server relays and stores but cannot
  * open. Fields, all base64:
  *
  *   v   - format version (1)

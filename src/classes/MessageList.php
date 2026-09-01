@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * One conversation's messages, oldest last so the newest sits at the bottom of
- * the thread. Grown upward by infinite scroll (main.js) off the data-*
+ * the thread. Grown upward by infinite scroll (Controllers.js) off the data-*
  * attributes here. Build with new MessageList(['userId' => 5,
  * 'otherUserId' => 9]).
  */

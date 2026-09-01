@@ -31,7 +31,7 @@ class MessageComposer extends FormForm
         // It needs both people present in the same thread at once, which this
         // server can only know about its own, and a direct browser-to-browser
         // path there is no way to negotiate with someone elsewhere. Omitting
-        // the attribute is what turns it off - VideoCall.js keys on it.
+        // the attribute is what turns it off - Controllers.js's VideoCall keys on it.
         //
         // Carried here rather than on the list because the composer is the one
         // element a thread always has: a thread nobody has written in yet

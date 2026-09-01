@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Helpers for the Quill Delta a post's rich text is stored as: decoding the
  * stored/submitted JSON to an ops array, sanitizing user-submitted ops down to
- * the formats this app actually renders (DeltaRenderer.php / DeltaRenderer.js), and
+ * the formats this app actually renders (DeltaRenderer.php / HTMLObjects.js), and
  * deriving the flat plaintext that Posts.description now holds (the "document"
  * form used for the <meta>/OG description, the RSS summary, and the FULLTEXT
  * search index). The ops array is the one shape both renderers consume.

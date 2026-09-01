@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The titled results area of a FriendSearch. It stands even while empty so the
- * client has somewhere to put the matches for the current query (see main.js).
+ * client has somewhere to put the matches for the current query (see Controllers.js).
  */
 class FriendSearchSection extends UserSection
 {

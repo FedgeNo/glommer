@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The shared link/hashtag logic for the render pass, kept byte-for-byte in step
- * with the JS mirror in Linkifier.js (the two renderers must produce identical DOM).
+ * with the JS mirror in HTMLObjects.js (the two renderers must produce identical DOM).
  *
  * Everything here is pinned for PHP/JS parity: ASCII-only character classes (no
  * \s/\w/\b, which differ between PCRE and JS), no /u or /i flag (also divergent),
@@ -56,7 +56,7 @@ class Linkifier
     // "bob@site.com" the @ is preceded by a word character, so it never starts
     // a mention. Only an explicit leading @ does.
     //
-    // Shared verbatim with Linkifier.js via the same string; only the delimiter
+    // Shared verbatim with HTMLObjects.js's Linkifier via the same string; only the delimiter
     // differs (PHP {} vs JS new RegExp). No {} in the body so the {} delimiter
     // is safe.
     // What a #tag may be made of, stated as the ASCII it may NOT be made of:
@@ -112,7 +112,7 @@ class Linkifier
     // domain.tld/ (with a path slash) - the shapes a human reads as a link.
     private const LOOKS_URL = 'https?://|www\\.[A-Za-z0-9-]|[A-Za-z0-9-]+\\.[A-Za-z][A-Za-z]+/';
 
-    // Extracts a URL's authority (userinfo@host:port). Shared with Linkifier.js so
+    // Extracts a URL's authority (userinfo@host:port). Shared with HTMLObjects.js's Linkifier so
     // internal-vs-external is decided identically without PHP parse_url / JS URL
     // differences (default-port, scheme-relative, userinfo all handled here).
     private const AUTHORITY = '^(?:[A-Za-z][A-Za-z0-9+.-]*:)?//([^/?#]*)';
@@ -203,7 +203,7 @@ class Linkifier
 
     /**
      * A tag with any punctuation it collected off its end removed - see
-     * TAG_TRAILING_PUNCTUATION. Mirrored in Linkifier.js.
+     * TAG_TRAILING_PUNCTUATION. Mirrored by Linkifier in HTMLObjects.js.
      */
     private static function withoutTrailingPunctuation(string $tag): string
     {
@@ -275,7 +275,7 @@ class Linkifier
 
             // Lowercased for both display and the link - unlike a hashtag
             // (an arbitrary, casing-optional user-chosen tag), a username is
-            // always stored lowercase (signup.php/main.js's signup form both
+            // always stored lowercase (signup.php/Controllers.js's signup form both
             // enforce it), so there's no legitimate original casing to keep.
             $lowercased = strtolower($username);
 

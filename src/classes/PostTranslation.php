@@ -72,6 +72,30 @@ class PostTranslation
         return $base;
     }
 
+    /**
+     * A normalized target language this interface actually offers, or null.
+     *
+     * Request data ends here before it becomes a translator option or part of
+     * a model prompt. Comparing normalized values preserves the deliberate
+     * cache aliases above while keeping the accepted set rooted in locales/.
+     */
+    public static function normalizeOfferedLanguage(string $language): ?string
+    {
+        $normalized = self::normalizeLanguage($language);
+
+        if ($normalized === null) {
+            return null;
+        }
+
+        foreach (Strings::available() as $offered) {
+            if (self::normalizeLanguage($offered) === $normalized) {
+                return $normalized;
+            }
+        }
+
+        return null;
+    }
+
     public static function cached(int $post_id, string $language): ?string
     {
         $row = DB::row('

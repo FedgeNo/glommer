@@ -12,7 +12,7 @@ declare(strict_types=1);
  *
  * On the server this runs only for output that leaves the building: the
  * ActivityPub copy of a post and of a message. The page itself is left to
- * EmojiRenderer.js, which is already walking those text nodes to wrap emoji and
+ * HTMLObjects.js's EmojiRenderer, which is already walking those text nodes to wrap emoji and
  * can substitute in the same pass.
  *
  * Which matters more than it sounds. A shortcode is a local convenience, not a
@@ -40,7 +40,7 @@ class EmojiShortcode
      * A walk rather than a substitution while the tree is being built: a code
      * block is marked on the line that ends it, not on the text inside it, so
      * at build time there is no way to know you are in one. Afterwards there
-     * is - and it is the same rule EmojiRenderer.js applies on the client, so
+     * is - and it is the same rule HTMLObjects.js's EmojiRenderer applies on the client, so
      * the two agree about what is left alone.
      */
     public static function expandInDOM(\DOMElement $root, array $custom = []): void

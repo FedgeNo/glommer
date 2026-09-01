@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The like toggle on a post's action bar. Carries the current state as
- * data-liked, which is what Post.js reads before it flips it.
+ * data-liked, which is what HTMLObjects.js's Post reads before it flips it.
  *
  * A thumb rather than the word, since this is the most-pressed thing on the
  * page and a row of nine worded buttons was bigger than the posts it sat
@@ -40,7 +40,7 @@ class PostLikeButton extends ButtonButton
 
     /**
      * The count only appears once there is one, so a post nobody has liked is
-     * the thumb alone. Post.js builds the same label after a click, and the
+     * the thumb alone. HTMLObjects.js's Post builds the same label after a click, and the
      * two have to agree or the button changes shape when it is pressed.
      *
      * The thumb is the same either way - a thumbs-up has no emptied form the

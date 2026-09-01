@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * The bottom-right "Autoplay" toggle on a multi-item carousel. CarouselController.js
+ * The bottom-right "Autoplay" toggle on a multi-item carousel. Controllers.js's CarouselController
  * starts
  * auto-advancing when it's clicked and flips the label to "Stop Autoplay":
  * an image slide holds for a few seconds before moving on, a video/audio

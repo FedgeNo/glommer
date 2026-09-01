@@ -249,6 +249,14 @@ class Page extends HTMLDocument
 
     public function send(): void
     {
+        // init.php sent the restrictive site-wide policy before the database
+        // was available. A map page replaces it here, before output, with the
+        // one variant that permits its configured HTTPS tile source and
+        // Leaflet's external marker images.
+        if ($this -> needsMap) {
+            SecurityHeaders::send(true);
+        }
+
         ClientConfig::send(array_merge($this -> clientConfig, [
             'needsMath' => $this -> needsMath,
         ]));

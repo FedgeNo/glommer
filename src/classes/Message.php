@@ -29,7 +29,7 @@ class Message extends Article implements \JsonSerializable
     public ?User $sender = null;
 
     /**
-     * What a Message is when it's encoded as JSON - the fields Message.js
+     * What a Message is when it's encoded as JSON - the fields HTMLObjects.js's Message
      * reads, and nothing about who reported it or how it renders.
      */
     public function jsonSerialize(): array
@@ -78,7 +78,7 @@ class Message extends Article implements \JsonSerializable
 
         if ($this -> bodyCiphertext !== null) {
             // The server can't read this one - it ships the envelope on the
-            // element for MessageUnlockForm.js to open in the browser, and
+            // element for Controllers.js's MessageUnlockForm to open in the browser, and
             // renders as a locked placeholder until it does.
             $this -> class .= ' Encrypted Locked';
             $this -> attributes['data-cipher-envelope'] = $this -> bodyCiphertext;

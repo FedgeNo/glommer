@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Changes the passphrase the messaging private key is wrapped under. The key
- * itself doesn't change - EncryptedMessagesSetting.js unwraps it with the
+ * itself doesn't change - Controllers.js's EncryptedMessagesSetting unwraps it with the
  * current passphrase and rewraps it with the new one, all in the browser -
  * so every encrypted message stays readable.
  */

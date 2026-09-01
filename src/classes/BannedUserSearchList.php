@@ -6,7 +6,7 @@ declare(strict_types=1);
  * The banned accounts matching a moderator's search: the same selection as
  * BannedUserList, narrowed to a username or display-name match. The Banned
  * Users page's search box repopulates the shared container with these and grows
- * them by infinite scroll through api/search-banned-users.php (see main.js);
+ * them by infinite scroll through api/search-banned-users.php (see Controllers.js);
  * the query and offset are seeded through the constructor.
  */
 class BannedUserSearchList extends BannedUserList

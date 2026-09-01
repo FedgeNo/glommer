@@ -20,7 +20,7 @@ class InputField extends Div
      *
      * Set where the server already knows before the page is drawn. The client
      * puts the same element in the same place when an endpoint answers with a
-     * field it would not accept - see FormErrors.js, which has to agree with
+     * field it would not accept - see Runtime.js's FormErrors, which has to agree with
      * what is built here.
      */
     public ?string $error = null;

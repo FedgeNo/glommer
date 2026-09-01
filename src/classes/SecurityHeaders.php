@@ -15,12 +15,21 @@ class SecurityHeaders
         return self::$nonce;
     }
 
-    public static function send(): void
+    /**
+     * The policy used for ordinary pages, with one deliberate relaxation for
+     * map pages. Maps necessarily fetch images from the administrator's tile
+     * provider, and Leaflet's own marker images come from its pinned CDN.
+     */
+    public static function contentSecurityPolicy(bool $allows_map_images = false): string
     {
-        $is_https = ServerURL::isHTTPS();
         $nonce = self::nonce();
+        $image_sources = '\'self\' data: blob:';
 
-        $csp = implode('; ', [
+        if ($allows_map_images) {
+            $image_sources .= ' https:';
+        }
+
+        return implode('; ', [
             'default-src \'self\'',
             'script-src \'self\' \'nonce-' . $nonce . '\' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.google.com https://www.gstatic.com',
             // 'unsafe-inline' is here for emoji-picker-element, which builds its
@@ -36,7 +45,8 @@ class SecurityHeaders
             // setting el.style.* is CSSOM and isn't governed by this at all, so
             // Leaflet's tile positioning doesn't depend on it.
             'style-src \'self\' \'unsafe-inline\' https://cdn.jsdelivr.net https://fonts.googleapis.com',
-            // This origin only. Every picture from anywhere else is fetched by
+            // This origin only on ordinary pages. Every picture from anywhere
+            // else is fetched by
             // the server and served from here - remote media through
             // /media-N, a remote account's avatar through /remote-avatar/N,
             // custom emoji through /remote-emoji/N -
@@ -45,7 +55,9 @@ class SecurityHeaders
             // that reports who read it and from where. data: serves inline
             // placeholders; blob: serves attachment previews still in the
             // browser's memory.
-            'img-src \'self\' data: blob:',
+            // Map pages add https: because the configured tile provider and
+            // Leaflet's pinned marker images are external by design.
+            'img-src ' . $image_sources,
             'font-src \'self\' https://cdn.jsdelivr.net https://fonts.gstatic.com',
             'media-src \'self\'',
             'frame-src https://challenges.cloudflare.com https://www.google.com',
@@ -63,8 +75,13 @@ class SecurityHeaders
             // header machinery. Violations land in the CSPReports table.
             'report-uri /api/csp-report',
         ]);
+    }
 
-        header('Content-Security-Policy: ' . $csp);
+    public static function send(bool $allows_map_images = false): void
+    {
+        $is_https = ServerURL::isHTTPS();
+
+        header('Content-Security-Policy: ' . self::contentSecurityPolicy($allows_map_images));
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: DENY');
         header('Referrer-Policy: strict-origin-when-cross-origin');

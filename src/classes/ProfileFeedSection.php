@@ -7,7 +7,7 @@ declare(strict_types=1);
  * results of searching them.
  *
  * Both lists live under the one heading, which names whichever is showing (see
- * main.js). The search list starts empty; the client fills it from
+ * Controllers.js). The search list starts empty; the client fills it from
  * api/search-posts.php as the person types, and the posts give way to it.
  */
 class ProfileFeedSection extends ListSection

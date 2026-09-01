@@ -151,7 +151,7 @@ SELECT `Ancestry`.`origin`, `Ancestry`.`depth`, `Posts`.`postId`, `Posts`.`paren
      * build one from. Null rather than a fallback phrase here: this runs at
      * fetch time and ships to the client in toPayloadArray(), and the words
      * for "nothing to call it" belong to whichever side renders - toDOM()
-     * here, threadContextToElement() in Post.js - not to this query.
+     * here, threadContextToElement() in HTMLObjects.js's Post - not to this query.
      */
     private static function labelFor(object $row): ?string
     {

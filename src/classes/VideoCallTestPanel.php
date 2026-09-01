@@ -44,7 +44,7 @@ class VideoCallTestPanel extends Div
 
         $this -> contents[] = new VideoCallTestButton();
 
-        // Filled in by VideoCallTestPanel.js, a step at a time as each finishes,
+        // Filled in by Controllers.js's VideoCallTestPanel, a step at a time as each finishes,
         // so a step that hangs is visibly the one that hung.
         $results = new VideoCallTestResults();
         $this -> contents[] = $results;

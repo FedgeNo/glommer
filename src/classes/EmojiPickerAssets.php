@@ -23,8 +23,8 @@ class EmojiPickerAssets
      * sits in the document, so this can safely load from <head> - it still
      * runs after the whole document has parsed, with the config block it
      * reads the skin tone from long since in place. The pinned picker modules
-     * and emoji data are vendored under scripts/vendor so the executable module
-     * graph never bypasses subresource integrity through a dynamic CDN import.
+     * and emoji data live beside the other files under scripts so the executable
+     * module graph never bypasses subresource integrity through a dynamic CDN import.
      */
     public static function initScript(): Script
     {

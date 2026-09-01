@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The passphrase prompt at the top of an encrypted conversation. Submitting it
- * never leaves the page: MessageUnlockForm.js unwraps the private key in the
+ * never leaves the page: Controllers.js's MessageUnlockForm unwraps the private key in the
  * browser, remembers it for the tab, and opens every envelope in the thread.
  * Hidden by that script the moment the tab already holds the unlocked key.
  */

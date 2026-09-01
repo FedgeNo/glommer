@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Creates (or, as the reset variant, replaces) the messaging keypair: pick a
- * passphrase, and EncryptedMessagesSetting.js does the rest in the browser.
+ * passphrase, and Controllers.js's EncryptedMessagesSetting does the rest in the browser.
  * The two variants are one form because they are one operation - the only
  * difference is what replacing an existing key costs, which the reset variant
  * says out loud.

@@ -10,7 +10,7 @@ declare(strict_types=1);
  *
  * The code is computed in the browser, never here, and that is the whole point
  * - the server is what tells each side the other's key, so a code it calculated
- * would agree with whatever it had handed out. MessageKeyFingerprint.js fills
+ * would agree with whatever it had handed out. Controllers.js's MessageKeyFingerprint fills
  * this in from the keys the browser is actually encrypting with, and remembers
  * a code the reader has confirmed so a later change is called out rather than
  * passing unnoticed.

@@ -10,7 +10,7 @@ export function resolve(specifier, context, nextResolve) {
         return nextResolve(pathToFileURL(process.env.GLOMMER_EMOJI_MODULE).href, context);
     }
 
-    // Only remap bare absolute imports like '/ClientConfig.js'
+    // Only remap bare absolute imports like '/scripts/Runtime.js'
     // (specifiers that start with a single '/' and don't already
     // point to a file inside the project root).
     if (specifier.startsWith('/') && !specifier.startsWith(projectRoot + '/')) {
@@ -19,4 +19,3 @@ export function resolve(specifier, context, nextResolve) {
     }
     return nextResolve(specifier, context);
 }
-

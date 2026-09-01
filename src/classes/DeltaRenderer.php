@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Server-side mirror of DeltaRenderer.render() in DeltaRenderer.js: turns a Quill Delta (its
+ * Server-side mirror of DeltaRenderer.render() in HTMLObjects.js: turns a Quill Delta (its
  * decoded ops array) into a .PostBody DOM subtree, for the initial page /
  * permalink render. The rendered HTML is byte-for-byte the shape the client
  * builds from the same ops, so a post looks identical whether it came in the
@@ -11,7 +11,7 @@ declare(strict_types=1);
  * source (KaTeX is JS-only) for the client render_formulas() pass.
  *
  * The render runs the "honest links" pass (see Linkifier), kept identical to
- * DeltaRenderer.js: pass 1 strips the href off any link whose visible text reads as a
+ * HTMLObjects.js's DeltaRenderer: pass 1 strips the href off any link whose visible text reads as a
  * URL (anti-phishing), pass 2 linkifies bare URLs (self-links) and #hashtags in
  * plain text. External links open in a new tab; internal/hashtag links open in
  * place.

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * "the twenty accounts to show here" is a property of the list being built, not
  * of any account in it.
  *
- * The scroll handlers in main.js grow every one of them generically, off the
+ * The scroll handlers in Controllers.js grow every one of them generically, off the
  * data-* attributes and the shared .UserList marker.
  */
 abstract class UserList extends ItemList

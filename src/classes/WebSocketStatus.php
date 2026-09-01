@@ -14,7 +14,7 @@ declare(strict_types=1);
  *     live socket connect needs no shell-out, so there's no policy query to
  *     deny).
  *   - Client-side: a real `wss://` connection attempt from the ADMIN'S OWN
- *     BROWSER, run by main.js against the .WebSocketClientStatus placeholder
+ *     BROWSER, run by Controllers.js against the .WebSocketClientStatus placeholder
  *     below. The server-side check alone can't catch a problem that only
  *     bites an actual outside client - a firewall/security-group rule that
  *     blocks WSPort from the public internet while allowing localhost, or a

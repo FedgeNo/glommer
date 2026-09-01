@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The bookmark toggle on a post's action bar. Carries the current state as
- * data-bookmarked, which is what Post.js reads before it flips it.
+ * data-bookmarked, which is what HTMLObjects.js's Post reads before it flips it.
  *
  * One glyph in both states - a bookmark has no emptied form the way a heart
  * does - so the colour says whether it is on, and aria-pressed says so to

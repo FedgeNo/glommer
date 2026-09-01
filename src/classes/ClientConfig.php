@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Builds the client-side configuration and sends it as a JSON cookie, read back
- * by ClientConfig.js. Call ClientConfig::send() before the response body is sent
+ * by Runtime.js's ClientConfig. Call ClientConfig::send() before the response body is sent
  * (Page::send() does). This is the only channel server-side values reach the
  * client by: a value every page wants is listed here, and a value one page
  * needs rides through Page::$clientConfig as an override.

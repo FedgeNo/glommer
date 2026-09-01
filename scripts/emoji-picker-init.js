@@ -1,6 +1,6 @@
 import { ClientConfig } from '/scripts/Runtime.js';
 
-import Database from '/scripts/vendor/emoji-picker-element/database.js';
+import Database from '/scripts/database.js';
 
 const skin_tone = parseInt(ClientConfig.get('currentUserSkinTone'), 10);
 
@@ -14,7 +14,7 @@ if ([0, 1, 2, 3, 4, 5].includes(skin_tone)) {
     }
 }
 
-await import('/scripts/vendor/emoji-picker-element/index.js');
+await import('/scripts/index.js');
 
 document.querySelectorAll('.EmojiPicker').forEach(function (wrapper) {
     wrapper.appendChild(document.createElement('emoji-picker'));

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * The results area of a UserSearch: the ranked suggestions until something is
  * typed, then the accounts matching the current query. The client rebuilds it
- * from api/search-users.php as you type (see main.js).
+ * from api/search-users.php as you type (see Controllers.js).
  *
  * The suggestions are friends-of-friends, ranked by how many of the viewer's
  * friends each one is already friends with, then filtered to the accounts they

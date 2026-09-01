@@ -13,6 +13,7 @@ import {
     csrf_headers,
     list_in,
     list_item,
+    page_language,
     parse_server_date,
     sync_theme_color,
     truncate,
@@ -2330,20 +2331,18 @@ class CarouselController {
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            this._observeOffScreen(document.body);
+        this._observeOffScreen(document.body);
 
-            new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.nodeType === 1) this._observeOffScreen(node);
-                    });
-                    mutation.removedNodes.forEach((node) => {
-                        if (node.nodeType === 1) this._unobserveOffScreen(node);
-                    });
+        new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) this._observeOffScreen(node);
                 });
-            }).observe(document.body, { childList: true, subtree: true });
-        });
+                mutation.removedNodes.forEach((node) => {
+                    if (node.nodeType === 1) this._unobserveOffScreen(node);
+                });
+            });
+        }).observe(document.body, { childList: true, subtree: true });
     }
 
     _loadSlide(slide) {
@@ -3807,7 +3806,7 @@ const HelpSearchModule = (() => {
 /**
  * The client render of Help results - the twin of HelpCategory and
  * HelpArticleSummary, rebuilding the same cards from /api/help-search's JSON.
- * The searching itself is driven by Search.js, the same machinery as every
+ * The searching itself is driven by the Search section below, the same machinery as every
  * other search box on the site; this module only knows how the results look.
  */
 class HelpSearch {
@@ -5076,7 +5075,7 @@ class MessageTranslateButton {
 
         const result = await Api.post('/api/translate-message', {
             messageId: Number(button.dataset.messageId),
-            language: navigator.language || 'en',
+            language: page_language(),
             // Only ever read for a message the server cannot open itself; for
             // every other one it reads its own copy and ignores this.
             text: message.classList.contains('Encrypted') ? original : '',
@@ -5108,7 +5107,7 @@ export const MessageTranslateButton = MessageTranslateButtonModule.MessageTransl
 const MessageUnlockFormModule = (() => {
 /**
  * Opens an encrypted conversation: unwraps the viewer's private key with
- * their passphrase (all in the browser - see MessageCrypto.js), derives the
+ * their passphrase (all in the browser - see HTMLObjects.js's MessageCrypto), derives the
  * conversation key, and decrypts every envelope on the page. Once the tab
  * holds the unlocked key, the form hides itself and later page loads unlock
  * silently.
@@ -6285,7 +6284,7 @@ const RememberedDeviceModule = (() => {
  * Signing one remembered device out - a browser somebody once ticked "remember
  * me" in, which can log in as them without a password until it is revoked.
  *
- * The only place this is done. User.js carried a second copy for a while,
+ * The only place this is done. The HTMLObjects.js User component carried a second copy for a while,
  * reached from a page the device list is not on, so the one that ran was the
  * one with no confirmation and no check that the request landed.
  */
@@ -6416,7 +6415,7 @@ const ReportButtonModule = (() => {
  * no Post on the page to have loaded a handler.
  *
  * Reporting an encrypted message carries that one message's revealed key
- * (see MessageCrypto.js) so the server can verify and open exactly what was
+ * (see HTMLObjects.js's MessageCrypto) so the server can verify and open exactly what was
  * reported - one message, never the conversation.
  */
 class ReportButton {

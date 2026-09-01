@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * A category section on the Help index: a heading followed by the summary
- * cards of the articles in it. Mirrored client-side in HelpSearch.js (the browse
+ * cards of the articles in it. Mirrored client-side by HelpSearch in Controllers.js (the browse
  * view shown when the search box is empty).
  */
 class HelpCategory extends Section

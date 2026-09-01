@@ -1581,7 +1581,7 @@ function createRoot (shadowRoot, props) {
   }
 }
 
-const DEFAULT_DATA_SOURCE = '/scripts/vendor/emoji-picker-element/data.json';
+const DEFAULT_DATA_SOURCE = '/scripts/data.json';
 const DEFAULT_LOCALE = 'en';
 
 var enI18n = {

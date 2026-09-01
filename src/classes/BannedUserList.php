@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The Banned Users page's results area: 20 banned accounts at a time (newest
- * accounts first), grown by infinite scroll in main.js off the data-*
+ * accounts first), grown by infinite scroll in Controllers.js off the data-*
  * attributes here - the next page is fetched by offset, how many accounts
  * are already shown. The search box (BannedUserSearch) repopulates this same
  * container with matches.

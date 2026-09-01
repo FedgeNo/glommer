@@ -4,10 +4,10 @@
 /claude/
 /.claude/
 /CLAUDE.md
+/AGENTS.md
 node_modules/
 
 # A repository of its own, kept here so it can be run against this server
 # without being part of it: it tests any Fediverse server from the outside and
 # belongs to none of them.
 /FediverseTests/
-

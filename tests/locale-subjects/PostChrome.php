@@ -24,7 +24,25 @@ declare(strict_types=1);
 return [
     EmojiPickerTriggerButton::class => static fn (): HTMLObject => new EmojiPickerTriggerButton(),
 
+    ImageItem::class => static function (): HTMLObject {
+        $item = new ImageItem();
+        $item -> itemId = 1;
+        $item -> type = ImageItem::class;
+
+        return $item;
+    },
+
     LinkImageRemoveButton::class => static fn (): HTMLObject => new LinkImageRemoveButton(),
+
+    LinkImagePreview::class => static fn (): HTMLObject => new LinkImagePreview(),
+
+    LinkItem::class => static function (): HTMLObject {
+        $image = new ImageItem();
+        $image -> itemId = 1;
+        $image -> type = ImageItem::class;
+
+        return new LinkItem('https://example.social/', 'Example title', 'Example description', $image);
+    },
 
     PostBookmarkButton::class => static fn (): HTMLObject => new PostBookmarkButton(false),
 

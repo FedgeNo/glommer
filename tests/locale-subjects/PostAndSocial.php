@@ -22,6 +22,10 @@ return [
     PollDeadline::class => static fn (): HTMLObject => new PollDeadline(gmdate('Y-m-d H:i:s', time() + (3 * 86400)), false),
     PollTally::class => static fn (): HTMLObject => new PollTally(3, gmdate('Y-m-d H:i:s', time() + (3 * 86400)), false),
 
+    // The singular and plural read from the same key by count - one vote is
+    // exactly the boundary between the two branches.
+    PollOptionVotes::class => static fn (): HTMLObject => new PollOptionVotes(1),
+
     // Auth::check() is false under this runner, so both composers render
     // their signed-out prompt - the only branch either one has words for.
     PostComposer::class => static fn (): HTMLObject => new PostComposer(),

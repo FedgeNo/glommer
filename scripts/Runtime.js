@@ -256,13 +256,15 @@ export class ReadyHandler {
 
     /**
      * Register a function to be called when the DOM is ready.
-     * If the DOM is already ready, the function is invoked immediately.
+     * If the DOM is already ready, defer it until the current module has
+     * finished evaluating. Compounded modules register initializers before
+     * some classes they use are declared later in the same file.
      *
      * @param {() => void} fn
      */
     static add(fn) {
         if (ReadyHandler.#fired) {
-            fn();
+            queueMicrotask(fn);
         } else {
             ReadyHandler.#tasks.push(fn);
         }

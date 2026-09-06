@@ -2511,9 +2511,16 @@ class CarouselController {
             return;
         }
 
-        const img = event.target.closest('.Carousel .ImageItem img');
+        const img = event.target.closest('.Carousel .ImageItem img, .FeedItem .ImageItem img');
         if (img) {
-            this._stopAutoplay(img.closest('.Carousel'));
+            const carousel = img.closest('.Carousel');
+            this._stopAutoplay(carousel);
+
+            if (!this._fullscreenState) {
+                const container = img.closest('.Carousel, .FeedItem');
+                if (container) this._enterFullscreen(container);
+            }
+
             return;
         }
 

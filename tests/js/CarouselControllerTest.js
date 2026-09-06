@@ -40,5 +40,40 @@ export default {
                 globalThis.MutationObserver = realMutationObserver;
             }
         },
+        'clicking an image enters the same fullscreen overlay as its button'() {
+            const realIntersectionObserver = globalThis.IntersectionObserver;
+            const realMutationObserver = globalThis.MutationObserver;
+            globalThis.IntersectionObserver = class {
+                observe() {}
+                unobserve() {}
+            };
+            globalThis.MutationObserver = class {
+                observe() {}
+            };
+
+            const item = document.createElement('div');
+            item.className = 'FeedItem';
+            const imageItem = document.createElement('div');
+            imageItem.className = 'ImageItem';
+            const image = document.createElement('img');
+            imageItem.appendChild(image);
+            item.appendChild(imageItem);
+            document.body.appendChild(item);
+
+            try {
+                new CarouselController().init();
+                const click = image.ownerDocument.createEvent('Event');
+                click.initEvent('click', true, true);
+                image.dispatchEvent(click);
+
+                TestCase.assertTrue(item.classList.contains('InFullscreen'));
+                TestCase.assertEquals('MediaFullscreenOverlay', item.parentElement.className);
+            } finally {
+                item.closest('.MediaFullscreenOverlay')?.remove();
+                item.remove();
+                globalThis.IntersectionObserver = realIntersectionObserver;
+                globalThis.MutationObserver = realMutationObserver;
+            }
+        },
     }
 };

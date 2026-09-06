@@ -2511,7 +2511,7 @@ class CarouselController {
             return;
         }
 
-        const img = event.target.closest('.Carousel .ImageItem img, .FeedItem .ImageItem img');
+        const img = event.target.closest('.Carousel .ImageItem img, .FeedItem.ImageItem img');
         if (img) {
             const carousel = img.closest('.Carousel');
             this._stopAutoplay(carousel);

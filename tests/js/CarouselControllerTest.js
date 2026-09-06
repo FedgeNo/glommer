@@ -52,12 +52,9 @@ export default {
             };
 
             const item = document.createElement('div');
-            item.className = 'FeedItem';
-            const imageItem = document.createElement('div');
-            imageItem.className = 'ImageItem';
+            item.className = 'FeedItem ImageItem';
             const image = document.createElement('img');
-            imageItem.appendChild(image);
-            item.appendChild(imageItem);
+            item.appendChild(image);
             document.body.appendChild(item);
 
             try {

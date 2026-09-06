@@ -149,9 +149,14 @@ SELECT `actorEncryptedPrivateKey`
     {
         $this -> assertTrue(ActivityPubActor::wantsActivityJSON('application/activity+json'));
         $this -> assertTrue(ActivityPubActor::wantsActivityJSON('application/ld+json; profile="https://www.w3.org/ns/activitystreams"'));
-        $this -> assertTrue(ActivityPubActor::wantsActivityJSON('text/html, application/activity+json;q=0.9'));
+        $this -> assertTrue(ActivityPubActor::wantsActivityJSON('application/activity+json, text/html'));
 
         $this -> assertFalse(ActivityPubActor::wantsActivityJSON('text/html'));
+        $this -> assertFalse(ActivityPubActor::wantsActivityJSON('text/html, application/activity+json;q=0.9'));
+        $this -> assertFalse(ActivityPubActor::wantsActivityJSON('application/activity+json;q=0, text/html'));
+        $this -> assertFalse(ActivityPubActor::wantsActivityJSON('application/activity+json;q=0.5, text/html;q=0.9'));
+        $this -> assertTrue(ActivityPubActor::wantsActivityJSON('text/html;q=0.2, application/activity+json;q=0.9'));
+        $this -> assertFalse(ActivityPubActor::wantsActivityJSON('text/html, application/activity+json'));
         $this -> assertFalse(ActivityPubActor::wantsActivityJSON('*/*'));
         $this -> assertFalse(ActivityPubActor::wantsActivityJSON(''));
     }

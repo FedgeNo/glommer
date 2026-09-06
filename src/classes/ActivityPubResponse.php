@@ -27,12 +27,42 @@ class ActivityPubResponse
      */
     public const JRD_CONTENT_TYPE = 'application/jrd+json';
 
-    /** Drops the session a cookieless server-to-server request opened. */
+    /** Drops the session and cookies a cookieless server-to-server request opened. */
     public static function discardAnonymousSession(): void
     {
-        if (!isset($_COOKIE[session_name()])) {
+        if (!isset($_COOKIE[session_name()]) && session_status() === PHP_SESSION_ACTIVE) {
             session_destroy();
+            header_remove('Set-Cookie');
         }
+    }
+
+    /**
+     * Rejects every HTTP method except the ones an endpoint implements.
+     *
+     * @param string[] $allowed
+     */
+    public static function requireMethod(array $allowed): void
+    {
+        $method = (string) ($_SERVER['REQUEST_METHOD'] ?? 'GET');
+
+        if (in_array($method, $allowed, true)) {
+            return;
+        }
+
+        self::discardAnonymousSession();
+        header('Allow: ' . implode(', ', $allowed));
+        http_response_code(405);
+        exit;
+    }
+
+    /** @param array<string, mixed> $document */
+    public static function standaloneDocument(array $document): array
+    {
+        if (!isset($document['@context'])) {
+            $document = ['@context' => 'https://www.w3.org/ns/activitystreams'] + $document;
+        }
+
+        return $document;
     }
 
     /**
@@ -45,6 +75,11 @@ class ActivityPubResponse
     public static function send(array $document, string $content_type = self::CONTENT_TYPE): never
     {
         self::discardAnonymousSession();
+
+        if ($content_type === self::CONTENT_TYPE) {
+            $document = self::standaloneDocument($document);
+            header('Vary: Accept');
+        }
 
         header('Content-Type: ' . $content_type);
 

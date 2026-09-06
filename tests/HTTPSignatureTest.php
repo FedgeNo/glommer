@@ -30,6 +30,42 @@ class HTTPSignatureTest extends TestCase
         $this -> assertTrue(HTTPSignature::verify('POST', '/inbox', $headers, $header, $keypair['publicKeyPem']));
     }
 
+    public function testDigestMatchesTheExactBody(): void
+    {
+        $body = '{"type":"Follow"}';
+
+        $this -> assertTrue(HTTPSignature::bodyMatchesDigest($body, HTTPSignature::digest($body)));
+        $this -> assertFalse(HTTPSignature::bodyMatchesDigest($body . ' ', HTTPSignature::digest($body)));
+    }
+
+    public function testDigestAlgorithmNamesAreCaseInsensitiveAndPaddingSurvives(): void
+    {
+        $body = 'body whose hash ends in base64 padding';
+        $header = strtolower(substr(HTTPSignature::digest($body), 0, 7)) . substr(HTTPSignature::digest($body), 7);
+
+        $this -> assertTrue(HTTPSignature::bodyMatchesDigest($body, $header));
+    }
+
+    public function testDigestCanFollowAnotherAlgorithm(): void
+    {
+        $body = 'body';
+
+        $this -> assertTrue(HTTPSignature::bodyMatchesDigest($body, 'SHA-512=unused, ' . HTTPSignature::digest($body)));
+    }
+
+    public function testDigestRefusesHeadersWithNoSHA256Claim(): void
+    {
+        $this -> assertFalse(HTTPSignature::bodyMatchesDigest('body', 'SHA-512=unused'));
+        $this -> assertFalse(HTTPSignature::bodyMatchesDigest('body', 'malformed'));
+    }
+
+    public function testDigestDoesNotLookPastAFalseSHA256Claim(): void
+    {
+        $body = 'body';
+
+        $this -> assertFalse(HTTPSignature::bodyMatchesDigest($body, 'SHA-256=false, ' . HTTPSignature::digest($body)));
+    }
+
     public function testVerifyFailsWithTheWrongPublicKey(): void
     {
         $keypair = $this -> keypair();

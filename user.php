@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
+// This address varies between a human profile and an ActivityPub actor.
+// Shared caches must never reuse one representation for a request for the
+// other.
+header('Vary: Accept');
+
 $username = (string) ($_GET['username'] ?? '');
 
 $profile_user = User::byUsername($username);

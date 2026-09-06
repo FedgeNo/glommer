@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
+
+ActivityPubResponse::requireMethod(['GET']);
 
 // Public - the posts this member has pinned to their profile, which is where
 // the rest of the network looks for exactly that.

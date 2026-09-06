@@ -79,19 +79,28 @@ if ($site_is_installed && $request_host !== '' && $request_host !== ServerURL::h
     exit;
 }
 
-session_set_cookie_params([
-    'httponly' => true,
-    'samesite' => 'Lax',
-    'secure' => ServerURL::isHTTPS(),
-]);
-session_start();
+$stateful_request = !defined('IS_STATELESS_REQUEST');
 
-// Set the CSRF token as a readable cookie for JavaScript
-setcookie(
-    'CSRF-TOKEN',
-    CSRF::token(),
-    CSRF::cookieOptions()
-);
+// Federation and discovery documents are machine-to-machine resources. They
+// neither authenticate a browser nor accept a browser form, so opening a PHP
+// session for them only creates a session file and sends meaningless cookies
+// to crawlers and remote servers. Their entry points opt out before loading
+// this bootstrap; ordinary pages and API requests remain stateful.
+if ($stateful_request) {
+    session_set_cookie_params([
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => ServerURL::isHTTPS(),
+    ]);
+    session_start();
+
+    // Set the CSRF token as a readable cookie for JavaScript.
+    setcookie(
+        'CSRF-TOKEN',
+        CSRF::token(),
+        CSRF::cookieOptions()
+    );
+}
 
 SecurityHeaders::send();
 
@@ -249,7 +258,7 @@ if ($db_app_version !== GLOMMER_VERSION && !Installer::attemptSilentUpgrade()) {
 // Persistent "Remember me" login: a request arriving without a session but
 // with a valid remember-me cookie gets its session re-established (and the
 // used token rotated) before anything below asks who's logged in.
-if (!Auth::check()) {
+if ($stateful_request && !Auth::check()) {
     RememberToken::loginFromCookie();
 }
 
@@ -273,7 +282,7 @@ SELECT COUNT(*) AS `count`
     }
 }
 
-if (Auth::check()) {
+if ($stateful_request && Auth::check()) {
     $current_user = Auth::user();
 
     // A session can outlive its account (user deleted or banned since login)
@@ -335,7 +344,7 @@ $csrf_exempt = $script === 'activitypub-inbox.php'
     || $script === 'csp-report.php'
     || ($script === 'unsubscribe.php' && ($_POST['List-Unsubscribe'] ?? '') === 'One-Click');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$csrf_exempt) {
+if ($stateful_request && $_SERVER['REQUEST_METHOD'] === 'POST' && !$csrf_exempt) {
     $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['CSRFToken'] ?? null;
 
     if (!CSRF::verify(is_string($csrf_token) ? $csrf_token : null)) {

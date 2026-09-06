@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
+
+ActivityPubResponse::requireMethod(['GET']);
 
 // Public - who out on the Fediverse follows this member. Remote servers read it
 // to reconcile their own state, and people read it to see who is listening

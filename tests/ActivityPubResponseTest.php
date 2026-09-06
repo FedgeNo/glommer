@@ -30,6 +30,28 @@ SELECT *
         ], $document['orderedItems']);
     }
 
+    public function testAStandaloneDocumentGetsTheActivityStreamsContext(): void
+    {
+        $document = ActivityPubResponse::standaloneDocument([
+            'id' => 'https://local.invalid/posts/1',
+            'type' => 'Note',
+        ]);
+
+        $this -> assertSame('https://www.w3.org/ns/activitystreams', $document['@context']);
+        $this -> assertSame('https://local.invalid/posts/1', $document['id']);
+    }
+
+    public function testAStandaloneDocumentKeepsItsExistingContext(): void
+    {
+        $context = ['https://www.w3.org/ns/activitystreams', 'https://example.invalid/context'];
+        $document = ActivityPubResponse::standaloneDocument([
+            '@context' => $context,
+            'type' => 'Person',
+        ]);
+
+        $this -> assertSame($context, $document['@context']);
+    }
+
     public function testALocalMemberCanBePublishedAsAnActor(): void
     {
         $user = self::user();

@@ -358,14 +358,55 @@ SELECT `actorPublicKeyPem`, `actorEncryptedPrivateKey`
      */
     public static function wantsActivityJSON(string $accept_header): bool
     {
-        $accept = strtolower($accept_header);
+        $activity = null;
+        $html = null;
 
-        foreach (['application/activity+json', 'application/ld+json'] as $type) {
-            if (str_contains($accept, $type)) {
-                return true;
+        foreach (explode(',', strtolower($accept_header)) as $position => $range) {
+            $parts = array_map('trim', explode(';', $range));
+            $type = array_shift($parts);
+            $quality = 1.0;
+
+            foreach ($parts as $parameter) {
+                if (preg_match('/\Aq\s*=\s*([0-9.]+)\z/', $parameter, $matches) === 1) {
+                    $quality = max(0.0, min(1.0, (float) $matches[1]));
+                    break;
+                }
+            }
+
+            if (in_array($type, ['application/activity+json', 'application/ld+json'], true)) {
+                if ($activity === null || $quality > $activity['quality']) {
+                    $activity = ['quality' => $quality, 'position' => $position];
+                }
+            }
+
+            $html_specificity = match ($type) {
+                'text/html' => 2,
+                'text/*' => 1,
+                '*/*' => 0,
+                default => null,
+            };
+
+            if ($html_specificity !== null) {
+                if ($html === null
+                    || $html_specificity > $html['specificity']
+                    || ($html_specificity === $html['specificity'] && $quality > $html['quality'])) {
+                    $html = ['quality' => $quality, 'position' => $position, 'specificity' => $html_specificity];
+                }
             }
         }
 
-        return false;
+        if ($activity === null || $activity['quality'] <= 0) {
+            return false;
+        }
+
+        if ($html === null || $html['quality'] <= 0) {
+            return true;
+        }
+
+        if ($activity['quality'] !== $html['quality']) {
+            return $activity['quality'] > $html['quality'];
+        }
+
+        return $activity['position'] < $html['position'];
     }
 }

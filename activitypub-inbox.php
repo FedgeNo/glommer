@@ -2,20 +2,30 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
 
-// Server-to-server deliveries never carry or reuse a session cookie, so the
-// session init.php opens for every request is dead weight here - one
-// orphaned session file per delivery, which on an active instance is
-// thousands a day. Nothing below this point reads session state.
-//
-// Gated on the request actually having presented a cookie: without that
-// check this would destroy a real browser session, and since this endpoint
-// is necessarily exempt from the CSRF check, any page could then log a
-// signed-in visitor out by making their browser POST here.
-if (!isset($_COOKIE[session_name()])) {
-    session_destroy();
+$username = is_string($_GET['username'] ?? null) ? $_GET['username'] : null;
+
+// A member inbox is a collection as well as its delivery target. Nothing in
+// it is public, so an anonymous read gets the valid empty view after filtering
+// rather than either exposing deliveries or making the advertised collection
+// impossible to retrieve. The shared inbox is only a delivery target.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && $username !== null) {
+    $user = ActivityPubResponse::localUser($username);
+
+    if ($user === null) {
+        ActivityPubResponse::notFound();
+    }
+
+    ActivityPubResponse::send(ActivityPubResponse::orderedCollection(
+        ActivityPubActor::inboxFor($user),
+        []
+    ));
 }
+
+ActivityPubResponse::requireMethod($username === null ? ['POST'] : ['GET', 'POST']);
 
 // Public - remote Fediverse servers deliver activities here. Every request is
 // signature-verified before anything it claims is acted on; an unauthenticated
@@ -74,23 +84,7 @@ if (!HTTPSignature::dateIsFresh($date_header)) {
 // nothing else - a sender offering "sha-256=...,sha-512=..." is making a
 // perfectly ordinary claim. Split on the first = only, since base64 padding is
 // itself made of them.
-$digest_verified = false;
-
-foreach (explode(',', $digest_header) as $digest_entry) {
-    [$digest_algorithm, $digest_value] = array_pad(explode('=', trim($digest_entry), 2), 2, '');
-
-    if (strtolower($digest_algorithm) !== 'sha-256') {
-        continue;
-    }
-
-    // The first sha-256 claim settles it either way: one that doesn't match is
-    // a failed body check, not something to look past in the hope of a second.
-    $digest_verified = hash_equals(base64_encode(hash('sha256', $body, true)), $digest_value);
-
-    break;
-}
-
-if (!$digest_verified) {
+if (!HTTPSignature::bodyMatchesDigest($body, $digest_header)) {
     http_response_code(401);
     exit;
 }

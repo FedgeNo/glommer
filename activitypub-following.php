@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
+
+ActivityPubResponse::requireMethod(['GET']);
 
 // Public - the remote accounts this member follows. Only accepted follows
 // appear: one still pending is a request the far side has not answered, and

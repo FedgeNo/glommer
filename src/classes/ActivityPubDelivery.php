@@ -23,32 +23,13 @@ class ActivityPubDelivery
      */
     public static function post(string $inbox_url, array $activity, string $key_id, string $private_key_pem): bool
     {
-        $body = json_encode($activity, JSON_UNESCAPED_SLASHES);
-        $parts = parse_url($inbox_url);
+        $request = self::signedRequest($inbox_url, $activity, $key_id, $private_key_pem);
 
-        // An actor id inside the activity came from a remote document, so
-        // encoding can genuinely fail on invalid UTF-8 - signing false here
-        // would be a TypeError rather than a failed delivery.
-        if ($body === false || $parts === false || !isset($parts['host'], $parts['path'])) {
+        if ($request === null) {
             return false;
         }
 
-        $path = $parts['path'] . (isset($parts['query']) ? '?' . $parts['query'] : '');
-        $date = gmdate('D, d M Y H:i:s') . ' GMT';
-        $digest = HTTPSignature::digest($body);
-
-        $signature = HTTPSignature::sign('POST', $path, $parts['host'], $date, $digest, $key_id, $private_key_pem);
-
-        $headers = [
-            'Host: ' . $parts['host'],
-            'Date: ' . $date,
-            'Digest: ' . $digest,
-            'Signature: ' . $signature,
-            'Content-Type: application/activity+json',
-            'Accept: application/activity+json',
-        ];
-
-        $delivered = SafeHTTPFetcher::postJSON($inbox_url, $body, $headers, self::MAX_RESPONSE_BYTES) !== null;
+        $delivered = SafeHTTPFetcher::postJSON($inbox_url, $request['body'], $request['headers'], self::MAX_RESPONSE_BYTES) !== null;
 
         // Recorded here rather than by the worker, because this is the only
         // place that holds the inbox, the activity and the response at once -
@@ -63,6 +44,43 @@ class ActivityPubDelivery
         }
 
         return $delivered;
+    }
+
+    /**
+     * Builds the exact bytes and headers handed to the guarded HTTP client.
+     * Kept separate so their agreement can be tested without sending a real
+     * activity or adding a test-only transport to production code.
+     *
+     * @param array<string, mixed> $activity
+     * @return null|array{body: string, headers: string[]}
+     */
+    private static function signedRequest(string $inbox_url, array $activity, string $key_id, string $private_key_pem): ?array
+    {
+        $body = json_encode($activity, JSON_UNESCAPED_SLASHES);
+        $parts = parse_url($inbox_url);
+
+        // An actor id inside the activity came from a remote document, so
+        // encoding can genuinely fail on invalid UTF-8 - signing false here
+        // would be a TypeError rather than a failed delivery.
+        if ($body === false || $parts === false || !isset($parts['host'], $parts['path'])) {
+            return null;
+        }
+
+        $path = $parts['path'] . (isset($parts['query']) ? '?' . $parts['query'] : '');
+        $date = gmdate('D, d M Y H:i:s') . ' GMT';
+        $digest = HTTPSignature::digest($body);
+
+        return [
+            'body' => $body,
+            'headers' => [
+                'Host: ' . $parts['host'],
+                'Date: ' . $date,
+                'Digest: ' . $digest,
+                'Signature: ' . HTTPSignature::sign('POST', $path, $parts['host'], $date, $digest, $key_id, $private_key_pem),
+                'Content-Type: application/activity+json',
+                'Accept: application/activity+json',
+            ],
+        ];
     }
 
     /**

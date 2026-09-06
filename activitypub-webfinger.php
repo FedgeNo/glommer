@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
+
+ActivityPubResponse::requireMethod(['GET']);
 
 // Public - WebFinger (RFC 7033). This is how the rest of the network turns a
 // handle someone typed into an actor URI it can dereference, so every local

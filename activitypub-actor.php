@@ -2,15 +2,11 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
 
-// Remote servers dereference this on every signature check and never carry a
-// cookie, so the session init.php opened is discarded rather than left as an
-// orphaned file. Only when no cookie was presented, so a signed-in person
-// opening this URL in a browser keeps their session.
-if (!isset($_COOKIE[session_name()])) {
-    session_destroy();
-}
+ActivityPubResponse::requireMethod(['GET']);
 
 // Public - the one site-wide ActivityPub actor identity (see ActivityPubKeys):
 // what a remote server dereferences to get this instance's inbox URL and
@@ -23,7 +19,6 @@ if (!ActivityPubKeys::isConfigured()) {
 
 $actor_url = ServerURL::absolute('/activitypub/actor');
 
-header('Content-Type: application/activity+json');
 // The extra fields beyond what our own verification needs - url, outbox, the
 // shared inbox, manuallyApprovesFollowers - are what other implementations'
 // verifiers expect to find on any actor they dereference. Threads in
@@ -31,7 +26,7 @@ header('Content-Type: application/activity+json');
 // document, and a minimal Application actor is the standing suspect: Mastodon
 // serves all of these on its instance actor, and Mastodon is what everyone
 // tests against.
-echo json_encode([
+ActivityPubResponse::send([
     '@context' => ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'],
     'id' => $actor_url,
     'type' => 'Application',
@@ -47,4 +42,4 @@ echo json_encode([
         'owner' => $actor_url,
         'publicKeyPem' => ActivityPubKeys::publicKeyPem(),
     ],
-], JSON_UNESCAPED_SLASHES);
+]);

@@ -57,6 +57,24 @@ class HTTPSignature
         return 'SHA-256=' . base64_encode(hash('sha256', $body, true));
     }
 
+    /** Whether a Digest header contains the one SHA-256 claim this body earns. */
+    public static function bodyMatchesDigest(string $body, string $digest_header): bool
+    {
+        foreach (explode(',', $digest_header) as $digest_entry) {
+            [$algorithm, $value] = array_pad(explode('=', trim($digest_entry), 2), 2, '');
+
+            if (strtolower($algorithm) !== 'sha-256') {
+                continue;
+            }
+
+            // The first SHA-256 claim settles it. A false claim must not be
+            // rescued by appending a second, correct one to the same header.
+            return hash_equals(base64_encode(hash('sha256', $body, true)), $value);
+        }
+
+        return false;
+    }
+
     /**
      * Whether a delivery's Date header is close enough to now to be accepted.
      * Rejects an unparseable date outright rather than treating it as 0 (the

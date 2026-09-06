@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/init.php';
 
+// This address varies between a human post page and its ActivityPub object.
+// Shared caches must never reuse one representation for a request for the
+// other.
+header('Vary: Accept');
+
 $current_user = Auth::user();
 $username = (string) ($_GET['username'] ?? '');
 $post_id = (int) ($_GET['id'] ?? 0);

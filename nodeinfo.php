@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+define('IS_STATELESS_REQUEST', true);
+
 require __DIR__ . '/src/init.php';
+
+ActivityPubResponse::requireMethod(['GET']);
 
 // Public - NodeInfo discovery. Relay and directory software reads this to find
 // out what a server runs before deciding how to talk to it, and the Fediverse's
@@ -41,4 +45,4 @@ ActivityPubResponse::send([
             'href' => ServerURL::absolute('/nodeinfo/2.0'),
         ],
     ],
-]);
+], 'application/json');

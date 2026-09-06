@@ -13,6 +13,16 @@ if (PHP_SAPI !== 'cli') {
     exit(1);
 }
 
+$options = getopt('', ['activitypub-username:', 'activitypub-insecure']);
+
+if (isset($options['activitypub-username']) && is_string($options['activitypub-username'])) {
+    putenv('ACTIVITYPUB_TEST_USERNAME=' . $options['activitypub-username']);
+}
+
+if (array_key_exists('activitypub-insecure', $options)) {
+    putenv('ACTIVITYPUB_TEST_INSECURE=1');
+}
+
 spl_autoload_register(function (string $class): void {
     $file = __DIR__ . '/../src/classes/' . $class . '.php';
 

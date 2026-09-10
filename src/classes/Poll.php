@@ -55,6 +55,7 @@ class Poll extends Section
     public ?int $multiple = null;
     public ?string $endsAt = null;
     public ?int $remoteVotersCount = null;
+    public int $localVoterCount = 0;
 
     /** Who is looking, so the render can show their own choices back to them. */
     public ?int $viewerId = null;
@@ -90,21 +91,19 @@ SELECT `pollOptionId`
             return (int) $this -> remoteVotersCount;
         }
 
-        // Counted with the poll when it was loaded for a page. Asked for here
-        // only by a poll somebody built rather than selected, or one this
-        // request has voted on since - the number arrived with the row and
-        // does not know about that.
-        if (isset($this -> localVoterCount) && !isset(self::$votedThisRequest[(int) $this -> pollId])) {
+        // Reads use the stored total. An object loaded before this request's
+        // vote or account deletion refreshes that column, without recounting.
+        if (!isset(self::$votedThisRequest[(int) $this -> pollId])) {
             return (int) $this -> localVoterCount;
         }
 
         $row = DB::row('
-SELECT COUNT(DISTINCT `userId`) AS `total`
-    FROM `PollVotes`
+SELECT `localVoterCount`
+    FROM `Polls`
     WHERE `pollId` = ?
-', 'PostCountData', 'i', (int) $this -> pollId);
+', self::class, 'i', (int) $this -> pollId);
 
-        return $row === null ? 0 : (int) $row -> total;
+        return $row ?-> localVoterCount ?? 0;
     }
 
     /**
@@ -182,23 +181,11 @@ SELECT COUNT(DISTINCT `userId`) AS `total`
         ]);
     }
 
-    /**
-     * How many people have answered, counted alongside the poll rather than
-     * asked for afterwards - see voterCount(), which reads this where it is
-     * here. Distinct voters, not votes: a multiple-choice poll takes several
-     * rows from one person.
-     */
-    private const VOTER_COUNT = '(
-        SELECT COUNT(DISTINCT `PollVotes`.`userId`)
-            FROM `PollVotes`
-            WHERE `PollVotes`.`pollId` = `Polls`.`pollId`
-    ) AS `localVoterCount`';
-
     /** The poll on a post, or null when it hasn't got one. */
     public static function forPost(int $post_id): ?Poll
     {
         return DB::row('
-SELECT `Polls`.*, ' . self::VOTER_COUNT . '
+SELECT `Polls`.*
     FROM `Polls`
     WHERE `postId` = ?
 ', self::class, 'i', $post_id);
@@ -222,7 +209,7 @@ SELECT `Polls`.*, ' . self::VOTER_COUNT . '
         $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
 
         $polls = DB::rows('
-SELECT `Polls`.*, ' . self::VOTER_COUNT . '
+SELECT `Polls`.*
     FROM `Polls`
     WHERE `postId` IN (' . $placeholders . ')
 ', self::class, str_repeat('i', count($post_ids)), ...$post_ids);
@@ -392,7 +379,7 @@ UPDATE `PollOptions`
      *
      * @param int[] $option_ids
      */
-    public static function vote(int $poll_id, int $user_id, array $option_ids): bool
+    public static function vote(int $poll_id, int $user_id, array $option_ids, bool $append = false): bool
     {
         // Serialized per voter per poll, and held across the insert below.
         // PollVotes is keyed on (option, user), so it stops the same option
@@ -404,12 +391,10 @@ UPDATE `PollOptions`
         RateLimiter::acquireLock($vote_lock_key);
 
         try {
-            $recorded = self::recordVote($poll_id, $user_id, $option_ids);
+            $recorded = DB::transaction(static fn (): bool => self::recordVote($poll_id, $user_id, $option_ids, $append));
 
             if ($recorded) {
-                // The count that came with this poll described the moment it
-                // was selected, and this request has just moved it. Any object
-                // holding that number counts again rather than repeating it.
+                // Objects already loaded refresh the stored total.
                 self::$votedThisRequest[$poll_id] = true;
             }
 
@@ -425,15 +410,29 @@ UPDATE `PollOptions`
     /**
      * @param int[] $option_ids
      */
-    private static function recordVote(int $poll_id, int $user_id, array $option_ids): bool
+    private static function recordVote(int $poll_id, int $user_id, array $option_ids, bool $append): bool
     {
+        // Account deletion owns this same lock before subtracting its votes.
+        if (DB::row('SELECT `userId` FROM `Users` WHERE `userId` = ? FOR UPDATE', 'User', 'i', $user_id) === null) {
+            return false;
+        }
+
         $poll = DB::row('
 SELECT *
     FROM `Polls`
     WHERE `pollId` = ?
+    FOR UPDATE
 ', self::class, 'i', $poll_id);
 
-        if ($poll === null || $poll -> isClosed() || $poll -> hasVoted($user_id)) {
+        if ($poll === null || $poll -> isClosed()) {
+            return false;
+        }
+
+        $has_voted = $poll -> hasVoted($user_id);
+
+        // Federation delivers a multiple-choice answer one option at a time.
+        // Local submissions and single-choice answers are always final.
+        if ($has_voted && (!$append || (int) $poll -> multiple !== 1)) {
             return false;
         }
 
@@ -441,6 +440,11 @@ SELECT *
         // poll with another's options - which would otherwise be a way to move
         // a number on a poll they were never shown.
         $chosen = self::ownOptionIds($poll_id, $option_ids);
+
+        if ($has_voted) {
+            $previous = DB::rows('SELECT `pollOptionId` FROM `PollVotes` WHERE `pollId` = ? AND `userId` = ?', 'PollVoteData', 'ii', $poll_id, $user_id);
+            $chosen = array_values(array_diff($chosen, array_map(static fn (PollVoteData $vote): int => (int) $vote -> pollOptionId, $previous)));
+        }
 
         if ($chosen === []) {
             return false;
@@ -454,15 +458,55 @@ SELECT *
         }
 
         foreach ($chosen as $option_id) {
-            // INSERT IGNORE for the same reason Likes uses it: a double-submit
-            // is a duplicate row, not an error worth failing the whole vote on.
             DB::run('
-INSERT IGNORE INTO `PollVotes` (`pollId`, `pollOptionId`, `userId`)
+INSERT INTO `PollVotes` (`pollId`, `pollOptionId`, `userId`)
     VALUES (?, ?, ?)
 ', 'iii', $poll_id, $option_id, $user_id);
+            DB::run('
+UPDATE `PollOptions`
+    SET `localVoteCount` = `localVoteCount` + 1
+    WHERE `pollOptionId` = ?
+', 'i', $option_id);
+        }
+
+        if (!$has_voted) {
+            DB::run('
+UPDATE `Polls`
+    SET `localVoterCount` = `localVoterCount` + 1
+    WHERE `pollId` = ?
+', 'i', $poll_id);
         }
 
         return true;
+    }
+
+    /** Subtract an account's votes before its FK cascade, in the deletion transaction. */
+    public static function removeVotesForUser(int $user_id): void
+    {
+        $polls = DB::rows('
+SELECT `p`.`pollId`
+    FROM `PollVotes` `v`
+    JOIN `Polls` `p` ON `p`.`pollId` = `v`.`pollId`
+    WHERE `v`.`userId` = ?
+    ORDER BY `p`.`pollId`
+    FOR UPDATE
+', self::class, 'i', $user_id);
+
+        foreach (array_unique(array_map(static fn (self $poll): int => $poll -> pollId, $polls)) as $poll_id) {
+            DB::run('
+UPDATE `Polls`
+    SET `localVoterCount` = GREATEST(0, CAST(`localVoterCount` AS SIGNED) - 1)
+    WHERE `pollId` = ?
+', 'i', $poll_id);
+            self::$votedThisRequest[$poll_id] = true;
+        }
+
+        DB::run('
+UPDATE `PollOptions` `o`
+    JOIN `PollVotes` `v` ON `v`.`pollOptionId` = `o`.`pollOptionId`
+    SET `o`.`localVoteCount` = GREATEST(0, CAST(`o`.`localVoteCount` AS SIGNED) - 1)
+    WHERE `v`.`userId` = ?
+', 'i', $user_id);
     }
 
     /**

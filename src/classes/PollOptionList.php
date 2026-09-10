@@ -6,9 +6,8 @@ declare(strict_types=1);
  * The choices on one poll, in the order they were written - an ordinary loader
  * whose page is never full, since a poll holds at most Poll::MAX_OPTIONS.
  *
- * The tally and the reader's own choice ride along on each row as correlated
- * subqueries rather than being fetched per option, so a poll costs one query
- * however many choices it offers.
+ * Totals are stored on the options. The viewer's own choice is checked against
+ * the retained votes in the same query that loads the choices.
  */
 class PollOptionList extends ItemList
 {
@@ -33,13 +32,8 @@ class PollOptionList extends ItemList
 
         return DB::rows('
 SELECT `o`.*,
-        (
-            SELECT COUNT(*)
-                FROM `PollVotes` `v`
-                WHERE `v`.`pollOptionId` = `o`.`pollOptionId`
-        ) AS `localVoteCount`,
-        (
-            SELECT COUNT(*)
+        EXISTS(
+            SELECT 1
                 FROM `PollVotes` `v`
                 WHERE `v`.`pollOptionId` = `o`.`pollOptionId` AND `v`.`userId` = ?
         ) AS `chosen`

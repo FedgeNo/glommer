@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Sláinte an Fhreastalaí",
+        "ip": "IP: {address}",
+        "load": "Meánualach: {one} / {five} / {fifteen} ar {cpus} LAP",
+        "memory": "Cuimhne: {available} as {total} saor",
+        "disk": "Diosca: {free} as {total} saor ar {path}",
+        "database": "Bunachar sonraí: {running} iarratas ar siúl, {connected} nasc, {lockWaits} feitheamh glais, ar bun le {uptime}",
+        "longQueries": "Iarratais atá ar siúl níos faide ná cúig soicind: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stádas",
+        "unavailable": "Níorbh fhéidir tuairisciú"
+    },
+    "AdminDashboard": {
+        "members": "Baill",
+        "posts": "Postálacha",
+        "federation": "Cónascadh",
+        "uploads": "Uaslódálacha",
+        "notifications": "Fógraí beo",
+        "trending": "Ag treochtáil",
+        "backups": "Cúltacaí",
+        "moderation": "Modhnóireacht",
+        "running": "Ag rith",
+        "stopped": "Stoptha",
+        "scheduled": "Sceidealaithe",
+        "none": "Dada",
+        "lastRun": "Athnuachan is déanaí: {time}",
+        "lastBackup": "Comhaid chúltaca: {time}",
+        "reports": "Tuairiscí oscailte: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 vóta",

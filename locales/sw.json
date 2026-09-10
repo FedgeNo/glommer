@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Afya ya Seva",
+        "ip": "IP: {address}",
+        "load": "Wastani wa mzigo: {one} / {five} / {fifteen} kwenye CPU {cpus}",
+        "memory": "Kumbukumbu: nafasi iliyo wazi ni {available} kati ya {total}",
+        "disk": "Diski: nafasi iliyo wazi ni {free} kati ya {total} kwenye {path}",
+        "database": "Hifadhidata — hoja zinazoendeshwa: {running}; miunganisho: {connected}; wanaosubiri kufunguliwa kwa kufuli: {lockWaits}; muda wa uendeshaji: {uptime}",
+        "longQueries": "Hoja zinazoendeshwa zaidi ya sekunde tano: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Hali",
+        "unavailable": "Haikuweza kuripoti"
+    },
+    "AdminDashboard": {
+        "members": "Wanachama",
+        "posts": "Machapisho",
+        "federation": "Shirikisho",
+        "uploads": "Upakiaji",
+        "notifications": "Arifa za moja kwa moja",
+        "trending": "Yanayovuma",
+        "backups": "Nakala rudufu",
+        "moderation": "Usimamizi wa maudhui",
+        "running": "Inaendeshwa",
+        "stopped": "Imesimamishwa",
+        "scheduled": "Imepangwa",
+        "none": "Hakuna",
+        "lastRun": "Sasisho la mwisho: {time}",
+        "lastBackup": "Faili za nakala rudufu: {time}",
+        "reports": "Ripoti zilizo wazi: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "kura 1",

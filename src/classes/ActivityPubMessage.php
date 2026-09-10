@@ -136,12 +136,15 @@ class ActivityPubMessage
             return;
         }
 
-        DB::run('
-INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `remoteObjectURI`)
-    VALUES (?, ?, ?, ?)
-', 'iiss', (int) $sender -> userId, (int) $recipient -> userId, $body, $object_uri);
+        try {
+            $message_id = Message::create((int) $sender -> userId, (int) $recipient -> userId, $body, remote_uri: $object_uri);
+        } catch (\mysqli_sql_exception $exception) {
+            if ($exception -> getCode() === 1062) {
+                return;
+            }
 
-        $message_id = (int) mysqli_insert_id(DB::connection());
+            throw $exception;
+        }
 
         Notification::create((int) $recipient -> userId, (int) $sender -> userId, 'message');
 

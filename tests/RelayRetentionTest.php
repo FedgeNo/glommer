@@ -126,6 +126,33 @@ SELECT COUNT(*) AS `count`
         $this -> clearRelayPosts();
     }
 
+    public function testPruningARelayedReplyUpdatesTheSurvivingParent(): void
+    {
+        $this -> clearRelayPosts();
+        $relay = $this -> relay();
+        $author = $this -> remoteAuthor();
+        $parent = $this -> relayedPost($relay, $author);
+        $uri = 'https://remote.example/notes/' . bin2hex(random_bytes(6));
+        $reply = (new \ReflectionMethod(ActivityPubInbox::class, 'storeNote')) -> invoke(
+            null, [], $uri, User::load($author), $parent
+        );
+
+        try {
+            DB::run('INSERT INTO `RelayPosts` (`postId`, `relayId`) VALUES (?, ?)', 'ii', $reply, $relay);
+            $this -> relayedPost($relay, $author);
+            $this -> assertSame(1, DB::row('SELECT `replyCount` FROM `Posts` WHERE `postId` = ?', 'Post', 'i', $parent) -> replyCount);
+
+            $this -> assertSame(1, RelayRetention::prunePosts(1));
+            $this -> assertTrue($this -> postExists($parent));
+            $this -> assertFalse($this -> postExists($reply));
+            $this -> assertSame(0, DB::row('SELECT `replyCount` FROM `Posts` WHERE `postId` = ?', 'Post', 'i', $parent) -> replyCount);
+            $this -> assertFalse(RemoteObjectTombstone::isTombstoned($uri));
+        } finally {
+            $this -> clearRelayPosts();
+            User::delete($author);
+        }
+    }
+
     /**
      * A reply is somebody here writing, and the Posts cascade would take it
      * with the post it answered.

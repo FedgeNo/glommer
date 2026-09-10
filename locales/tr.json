@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Sunucu Sağlığı",
+        "ip": "IP: {address}",
+        "load": "Ortalama yük: {cpus} CPU üzerinde {one} / {five} / {fifteen}",
+        "memory": "Bellek: {total} içinde {available} boş",
+        "disk": "Disk: {path} üzerinde {total} içinde {free} boş",
+        "database": "Veritabanı: {running} çalışan sorgu, {connected} bağlantı, {lockWaits} kilit bekleme, {uptime} süredir açık",
+        "longQueries": "Beş saniyeden uzun süredir çalışan sorgular: {count}",
+        "longQuery": "{seconds}sn: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Durum",
+        "unavailable": "Durum bildirilemedi"
+    },
+    "AdminDashboard": {
+        "members": "Üyeler",
+        "posts": "Gönderiler",
+        "federation": "Federasyon",
+        "uploads": "Yüklemeler",
+        "notifications": "Canlı bildirimler",
+        "trending": "Gündem",
+        "backups": "Yedekler",
+        "moderation": "Moderasyon",
+        "running": "Çalışıyor",
+        "stopped": "Durduruldu",
+        "scheduled": "Planlandı",
+        "none": "Yok",
+        "lastRun": "Son yenileme: {time}",
+        "lastBackup": "Yedek dosyaları: {time}",
+        "reports": "Açık şikayetler: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 oy",

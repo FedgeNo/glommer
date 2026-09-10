@@ -256,6 +256,88 @@ export class Div extends HTMLObject {
     static tagName = 'div';
 }
 
+export class ServerHealth extends Div {
+    static className = 'ServerHealth';
+    static properties = { readings: [] };
+
+    toDOM() {
+        this.id ??= 'ServerHealth';
+        const heading = document.createElement('h2');
+        heading.textContent = Strings.for('ServerHealth').heading ?? '';
+        this.addContent(heading);
+
+        for (const reading of this.readings ?? []) {
+            const line = document.createElement('p');
+            line.dataset.reading = reading.id;
+            line.dataset.state = reading.state;
+            line.textContent = reading.text;
+            this.addContent(line);
+        }
+
+        return super.toDOM();
+    }
+}
+
+export class StatusTile extends Anchor {
+    static className = 'StatusTile';
+    static properties = { view: {} };
+
+    constructor(view) {
+        super(view.href);
+        this.view = view;
+    }
+
+    toDOM() {
+        this.attributes['data-tile'] = this.view.id;
+        this.attributes['data-state'] = this.view.state;
+        const symbol = document.createElement('span');
+        symbol.setAttribute('aria-hidden', 'true');
+        symbol.textContent = this.view.symbol;
+        this.addContent(symbol);
+
+        for (const field of ['label', 'value', 'detail']) {
+            const text = document.createElement('span');
+            text.dataset.field = field;
+            text.textContent = this.view[field];
+            this.addContent(text);
+        }
+
+        return super.toDOM();
+    }
+}
+
+export class StatusBoard extends HTMLObject {
+    static tagName = 'section';
+    static className = 'StatusBoard';
+    static properties = { tiles: [] };
+
+    toDOM() {
+        const heading = document.createElement('h2');
+        heading.textContent = Strings.for('StatusBoard').heading ?? '';
+        this.addContent(heading);
+        this.tiles.forEach(tile => this.addContent(new StatusTile(tile)));
+
+        return super.toDOM();
+    }
+}
+
+export class AdminDashboard extends HTMLObject {
+    static tagName = 'section';
+    static className = 'AdminDashboard';
+    static properties = { snapshot: { health: [], tiles: [] } };
+
+    toDOM() {
+        this.addContent(new ServerHealth({ readings: this.snapshot.health }));
+        this.addContent(new StatusBoard({ tiles: this.snapshot.tiles }));
+        const status = document.createElement('p');
+        status.dataset.refreshStatus = '';
+        status.setAttribute('role', 'status');
+        this.addContent(status);
+
+        return super.toDOM();
+    }
+}
+
 export class Image extends HTMLObject {
     static tagName = 'img';
     static properties = {

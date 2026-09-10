@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Υγεία Διακομιστή",
+        "ip": "IP: {address}",
+        "load": "Μέσος φόρτος: {one} / {five} / {fifteen} σε {cpus} CPU",
+        "memory": "Μνήμη: {available} από {total} ελεύθερα",
+        "disk": "Δίσκος: {free} από {total} ελεύθερα στο {path}",
+        "database": "Βάση δεδομένων: {running} ερωτήματα σε εξέλιξη, {connected} συνδέσεις, {lockWaits} αναμονές κλειδώματος, σε λειτουργία {uptime}",
+        "longQueries": "Ερωτήματα που τρέχουν πάνω από πέντε δευτερόλεπτα: {count}",
+        "longQuery": "{seconds} δευτ.: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Κατάσταση",
+        "unavailable": "Δεν ήταν δυνατή η ανάκτηση της κατάστασης"
+    },
+    "AdminDashboard": {
+        "members": "Μέλη",
+        "posts": "Αναρτήσεις",
+        "federation": "Ομοσπονδία",
+        "uploads": "Μεταφορτώσεις",
+        "notifications": "Ζωντανές ειδοποιήσεις",
+        "trending": "Τάσεις",
+        "backups": "Αντίγραφα ασφαλείας",
+        "moderation": "Συντονισμός",
+        "running": "Σε λειτουργία",
+        "stopped": "Σταματημένο",
+        "scheduled": "Προγραμματισμένο",
+        "none": "Κανένα",
+        "lastRun": "Τελευταία ανανέωση: {time}",
+        "lastBackup": "Αρχεία αντιγράφου ασφαλείας: {time}",
+        "reports": "Ανοιχτές αναφορές: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 ψήφος",

@@ -45,7 +45,7 @@ class ActivityPubPlace
         // enough to name it. A Place has a name in the vocabulary, and a
         // reader is being told where this was written - which a town answers
         // and two decimal figures do not.
-        $named = Place::nearest($coordinates['latitude'], $coordinates['longitude']) ?-> label();
+        $named = $coordinates['placeLabel'];
 
         if ($named !== null && $named !== '') {
             $place['name'] = $named;

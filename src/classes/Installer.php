@@ -350,6 +350,7 @@ SELECT `value`
                     // Move post coordinates off Posts into PostLocations now
                     // that the table exists (idempotent, see the class).
                     PostLocationBackfill::run();
+                    PostLocation::resolvePending();
                     // Materialize the /tags/ Popular and Trending lists so they
                     // aren't blank until the first lottery-picked read.
                     HashtagGraphList::recompute();

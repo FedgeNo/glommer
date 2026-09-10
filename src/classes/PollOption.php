@@ -26,10 +26,8 @@ class PollOption extends Div
     public ?string $title = null;
     public ?int $remoteVoteCount = null;
 
-    // Hydrated alongside the row by PollOptionList's query rather than fetched
-    // per option: a count and a flag each cost a correlated subquery there, and
-    // one query per option here.
-    public ?int $localVoteCount = null;
+    // The tally is stored; only the viewer's choice is resolved by the loader.
+    public int $localVoteCount = 0;
     public ?int $chosen = null;
 
     /** Set by the poll, since an option cannot know these on its own. */

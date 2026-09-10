@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Състояние на Сървъра",
+        "ip": "IP: {address}",
+        "load": "Средно натоварване: {one} / {five} / {fifteen} на {cpus} процесора",
+        "memory": "Памет: свободни {available} от {total}",
+        "disk": "Диск: свободни {free} от {total} на {path}",
+        "database": "База данни: {running} изпълнявани заявки, {connected} връзки, {lockWaits} изчаквания за заключване, работи от {uptime}",
+        "longQueries": "Заявки, изпълнявани повече от пет секунди: {count}",
+        "longQuery": "{seconds} с: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Състояние",
+        "unavailable": "Състоянието не може да бъде отчетено"
+    },
+    "AdminDashboard": {
+        "members": "Членове",
+        "posts": "Публикации",
+        "federation": "Федерация",
+        "uploads": "Качвания",
+        "notifications": "Известия на живо",
+        "trending": "Популярно",
+        "backups": "Резервни копия",
+        "moderation": "Модерация",
+        "running": "Работи",
+        "stopped": "Спряно",
+        "scheduled": "Планирано",
+        "none": "Няма",
+        "lastRun": "Последно обновяване: {time}",
+        "lastBackup": "Файлове на резервното копие: {time}",
+        "reports": "Отворени сигнали: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Моля, въведете потребителското си име или имейл адрес.",
         "givePassword": "Моля, въведете паролата си.",

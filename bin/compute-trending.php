@@ -5,10 +5,10 @@ declare(strict_types=1);
 // Recomputes Entities from the current window of posts - see
 // EntityRanker.php for the scoring/window/abuse-guard design. Intended to run
 // every ~10-15 min from a systemd user timer, mirroring bin/backup.php - see
-// README's "Trending" section. EntityRanker::refreshIfStale() also self-heals via a
-// lottery-triggered recompute if this timer isn't installed, so running it
-// is an optimization (fresher data, no read-path latency spike on the
-// unlucky request that draws the lottery), not a hard requirement.
+// README's "Trending" section. This pass caches extraction for missing or
+// changed posts before rescoring. EntityRanker::refreshIfStale() can rescore
+// cached results and fresh hashtags on a page; named-entity extraction needs
+// this background job or an explicit installer run.
 
 if (PHP_SAPI !== 'cli') {
     exit(1);

@@ -116,6 +116,8 @@ CREATE TABLE `Users` (
   -- creates, which is what leads these two.
   KEY `remoteActorURI_banned` (`remoteActorURI`,`banned`),
   KEY `remoteActorURI_lastSeen` (`remoteActorURI`,`lastSeen`),
+  -- New local signups are a date range within the local-account group.
+  KEY `remoteActorURI_createdAt` (`remoteActorURI`,`createdAt`),
   -- Two full-text indexes because user search asks two questions: the wide one
   -- answers "does this account match at all" and drives the WHERE; the narrow
   -- one answers "was that a hit on the name" and orders name matches ahead of
@@ -128,6 +130,10 @@ CREATE TABLE `Posts` (
   `postId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userId` int(10) unsigned NOT NULL,
   `parentId` int(10) unsigned DEFAULT NULL,
+  -- Maintained with the interaction records; feeds read these totals directly.
+  `replyCount` int(10) unsigned NOT NULL DEFAULT 0,
+  `likeCount` int(10) unsigned NOT NULL DEFAULT 0,
+  `repostCount` int(10) unsigned NOT NULL DEFAULT 0,
   `title` varchar(255) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `descriptionDelta` mediumtext DEFAULT NULL,
@@ -183,21 +189,15 @@ CREATE TABLE `Posts` (
   -- NULL group, so the feed is read backward off the index and stops when the
   -- page is full.
   KEY `remoteObjectURI_postId` (`remoteObjectURI`,`postId`),
+  -- Dashboard date windows use covering ranges instead of reading post bodies.
+  KEY `remoteObjectURI_createdAt` (`remoteObjectURI`,`createdAt`),
+  KEY `createdAt_userId` (`createdAt`,`userId`),
   KEY `quotedPostId` (`quotedPostId`),
   UNIQUE KEY `remoteObjectURI` (`remoteObjectURI`),
   FULLTEXT KEY `title_description_keywords` (`title`,`description`,`keywords`),
   CONSTRAINT `Posts_ibfk_1` FOREIGN KEY (`parentId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
   CONSTRAINT `Posts_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `fk_posts_quoted` FOREIGN KEY (`quotedPostId`) REFERENCES `Posts` (`postId`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE `PostLocations` (
-  `postId` int(10) unsigned NOT NULL,
-  `latitude` decimal(10,7) NOT NULL,
-  `longitude` decimal(10,7) NOT NULL,
-  PRIMARY KEY (`postId`),
-  KEY `latitude_longitude` (`latitude`,`longitude`),
-  CONSTRAINT `fk_postlocations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- The world's towns and cities, from the GeoNames gazetteer (geonames.org,
@@ -227,6 +227,21 @@ CREATE TABLE `Places` (
   KEY `title_population` (`title`,`population`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `PostLocations` (
+  `postId` int(10) unsigned NOT NULL,
+  `latitude` decimal(10,7) NOT NULL,
+  `longitude` decimal(10,7) NOT NULL,
+  `placeId` int(10) unsigned DEFAULT NULL,
+  -- A resolved NULL means no nearby town, rather than work to repeat on reads.
+  `placeResolved` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`postId`),
+  KEY `latitude_longitude` (`latitude`,`longitude`),
+  KEY `placeResolved_postId` (`placeResolved`,`postId`),
+  KEY `fk_postlocations_place` (`placeId`),
+  CONSTRAINT `fk_postlocations_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_postlocations_place` FOREIGN KEY (`placeId`) REFERENCES `Places` (`placeId`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- A poll attached to a post. Its own table rather than columns on Posts, the
 -- same shape PostLocations uses: most posts are not polls, and the options are
 -- a list that could never be columns anyway.
@@ -250,6 +265,7 @@ CREATE TABLE `Polls` (
   -- count of our own rows. A multiple-choice poll needs it because the votes
   -- across its options cannot be added up into a number of voters.
   `remoteVotersCount` int(10) unsigned DEFAULT NULL,
+  `localVoterCount` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`pollId`),
   UNIQUE KEY `postId` (`postId`),
   CONSTRAINT `fk_polls_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
@@ -272,6 +288,7 @@ CREATE TABLE `PollOptions` (
   `position` tinyint(3) unsigned NOT NULL,
   `title` varchar(255) NOT NULL,
   `remoteVoteCount` int(10) unsigned DEFAULT NULL,
+  `localVoteCount` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`pollOptionId`),
   UNIQUE KEY `pollId_title` (`pollId`,`title`),
   KEY `pollId_position` (`pollId`,`position`),
@@ -340,6 +357,31 @@ CREATE TABLE `PopularHashtags` (
   `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`hashtagId`),
   KEY `postCount` (`postCount`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Rebuilt atomically with PopularHashtags; endpoints use the same tag IDs.
+CREATE TABLE `PopularHashtagEdges` (
+  `aId` int(10) unsigned NOT NULL,
+  `bId` int(10) unsigned NOT NULL,
+  `weight` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`aId`,`bId`),
+  KEY `fk_popular_edge_b` (`bId`),
+  CONSTRAINT `fk_popular_edge_a` FOREIGN KEY (`aId`) REFERENCES `PopularHashtags` (`hashtagId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_popular_edge_b` FOREIGN KEY (`bId`) REFERENCES `PopularHashtags` (`hashtagId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- One reusable extraction per post. Empty entities is a completed result too.
+-- Failed optional NER runs keep their hashtag fallback with a retry deadline.
+CREATE TABLE `PostEntityExtractions` (
+  `postId` int(10) unsigned NOT NULL,
+  `contentHash` char(64) NOT NULL,
+  `extractorVersion` char(64) NOT NULL,
+  `entities` mediumtext NOT NULL,
+  `detectedLanguage` varchar(20) DEFAULT NULL,
+  `complete` tinyint(1) NOT NULL DEFAULT 1,
+  `retryAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`postId`),
+  CONSTRAINT `fk_extraction_post` FOREIGN KEY (`postId`) REFERENCES `Posts` (`postId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `TrendingHashtags` (
@@ -546,6 +588,20 @@ CREATE TABLE `Messages` (
   KEY `recipientId_createdAt` (`recipientId`,`createdAt`),
   CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`senderId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
   CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`recipientId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Two entries per pair: each participant's inbox is an indexed ordered read.
+CREATE TABLE `Conversations` (
+  `userId` int(10) unsigned NOT NULL,
+  `partnerId` int(10) unsigned NOT NULL,
+  `lastMessageId` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`userId`,`partnerId`),
+  KEY `userId_lastMessageId` (`userId`,`lastMessageId`),
+  KEY `fk_conversation_partner` (`partnerId`),
+  KEY `fk_conversation_message` (`lastMessageId`),
+  CONSTRAINT `fk_conversation_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_conversation_partner` FOREIGN KEY (`partnerId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE,
+  CONSTRAINT `fk_conversation_message` FOREIGN KEY (`lastMessageId`) REFERENCES `Messages` (`messageId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Notifications` (
@@ -826,6 +882,8 @@ CREATE TABLE `FediverseDeliveries` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`deliveryId`),
   KEY `nextAttemptAt_deliveryId` (`nextAttemptAt`,`deliveryId`),
+  -- The admin's retry count must stay cheap when the delivery queue backs up.
+  KEY `attempts` (`attempts`),
   CONSTRAINT `FediverseDeliveries_ibfk_1` FOREIGN KEY (`actorUserId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1253,3 +1311,56 @@ UPDATE `Users` `u`
             FROM `Friendships` `f`
             WHERE `f`.`status` = 'accepted' AND (`f`.`requesterId` = `u`.`userId` OR `f`.`addresseeId` = `u`.`userId`)
     );
+
+-- Backfill new engagement columns and repair existing totals on upgrade.
+-- Group each source once; a post's replies are its direct children only.
+UPDATE `Posts` `p`
+    LEFT JOIN (
+        SELECT `parentId`, COUNT(*) AS `total`
+            FROM `Posts`
+            WHERE `parentId` IS NOT NULL
+            GROUP BY `parentId`
+    ) `r` ON `r`.`parentId` = `p`.`postId`
+    LEFT JOIN (
+        SELECT `postId`, COUNT(*) AS `total`
+            FROM `Likes`
+            GROUP BY `postId`
+    ) `l` ON `l`.`postId` = `p`.`postId`
+    LEFT JOIN (
+        SELECT `postId`, COUNT(*) AS `total`
+            FROM `Announces`
+            GROUP BY `postId`
+    ) `a` ON `a`.`postId` = `p`.`postId`
+    SET `p`.`replyCount` = COALESCE(`r`.`total`, 0),
+        `p`.`likeCount` = COALESCE(`l`.`total`, 0),
+        `p`.`repostCount` = COALESCE(`a`.`total`, 0);
+
+-- Backfill and repair local poll counts without altering the origin's totals.
+UPDATE `Polls` `p`
+    LEFT JOIN (
+        SELECT `pollId`, COUNT(DISTINCT `userId`) AS `total`
+            FROM `PollVotes`
+            GROUP BY `pollId`
+    ) `v` ON `v`.`pollId` = `p`.`pollId`
+    SET `p`.`localVoterCount` = COALESCE(`v`.`total`, 0);
+
+UPDATE `PollOptions` `o`
+    LEFT JOIN (
+        SELECT `pollOptionId`, COUNT(*) AS `total`
+            FROM `PollVotes`
+            GROUP BY `pollOptionId`
+    ) `v` ON `v`.`pollOptionId` = `o`.`pollOptionId`
+    SET `o`.`localVoteCount` = COALESCE(`v`.`total`, 0);
+
+-- Group message history once on upgrade, rather than on every inbox opening.
+INSERT INTO `Conversations` (`userId`, `partnerId`, `lastMessageId`)
+    SELECT `userId`, `partnerId`, MAX(`lastMessageId`)
+        FROM (
+            SELECT `senderId` AS `userId`, `recipientId` AS `partnerId`, MAX(`messageId`) AS `lastMessageId`
+                FROM `Messages` GROUP BY `senderId`, `recipientId`
+            UNION ALL
+            SELECT `recipientId`, `senderId`, MAX(`messageId`)
+                FROM `Messages` GROUP BY `recipientId`, `senderId`
+        ) `directions`
+        GROUP BY `userId`, `partnerId`
+    ON DUPLICATE KEY UPDATE `lastMessageId` = VALUES(`lastMessageId`);

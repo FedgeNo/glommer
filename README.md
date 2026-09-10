@@ -476,6 +476,15 @@ places, ...) extracted from post text, Glommer shells into a
 [spaCy](https://spacy.io) model. This is optional: without it, trending simply
 uses hashtags, and `EntityExtractor` fails closed to that.
 
+`PostEntityExtractions` remembers each post's extracted entities and language,
+keyed by its content hash and extractor/model version. The trending job extracts
+only missing or changed posts, in bounded batches, then recalculates time decay
+and distinct-author scores from the current window. Failed batches retain a
+hashtag fallback and retry after ten minutes. Page requests use the cache and
+fresh hashtags without launching the model. The installer warms the cache;
+keep `glommer-trending.timer` running, or schedule `bin/compute-trending.php`,
+to extract new posts and edits.
+
 Run as root, the installer builds an isolated virtualenv at
 **`/opt/glommer-ner`** - installing `python3`/`pip`/`venv`/dev-headers and a
 C++ compiler, then `spacy` + `click` + `langdetect`, plus one small spaCy
@@ -612,6 +621,18 @@ users, ban trending entities, and defederate whole domains from the
 **Blocked Servers** section of Mod Settings - a domain block refuses that
 server's deliveries, stops all fetches to it, and severs existing follows in
 both directions.
+
+**Admin Settings** opens with server health (load, memory, disk space, database
+activity and queries running at least five seconds) and linked status tiles for
+local members and posts, federation deliveries, uploads, live notifications,
+trending, backups and moderation reports. Server health and the queue/service
+tiles refresh ten seconds after each completed request while the tab is visible;
+the full overview refreshes once a minute. Failed readings are shown as
+unavailable, and a failed refresh retains the previous values. Backup dates
+come from the two nonempty archive files; they do not verify that a restore
+will succeed. Detailed service checks and settings remain in the panels below.
+The status API uses the same primary-admin restriction and CSRF protection as
+the settings page. It reports a count of long queries, never their SQL text.
 
 **Relays** (Admin Settings, admin only) subscribe this server to a shared
 firehose. Weigh it before subscribing: the volume is whatever the servers on

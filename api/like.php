@@ -44,51 +44,24 @@ if (Block::exists($current_user -> userId, (int) $owner -> userId)) {
     JSONResponse::localizedError('unableToLikeThisPost', 403) -> send();
 }
 
-$check_stmt = DB::run('
-SELECT 1
-    FROM `Likes`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $post_id, $current_user -> userId);
-mysqli_stmt_store_result($check_stmt);
-
-if (mysqli_stmt_num_rows($check_stmt) > 0) {
-    DB::run('
-DELETE
-    FROM `Likes`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $post_id, $current_user -> userId);
+if (Like::exists($current_user -> userId, $post_id)) {
+    Like::remove($current_user -> userId, $post_id);
     $liked = false;
 } else {
-    $insert_stmt = DB::prepare('
-INSERT INTO `Likes` (`postId`, `userId`)
-    VALUES (?, ?)
-');
-    DB::bind($insert_stmt, 'ii', $post_id, $current_user -> userId);
     $liked = true;
 
-    try {
-        mysqli_stmt_execute($insert_stmt);
-
+    // A duplicate request still answers "liked", but adds nothing twice.
+    if (Like::create($current_user -> userId, $post_id)) {
         Notification::create((int) $owner -> userId, $current_user -> userId, 'like', $post_id);
-    } catch (\mysqli_sql_exception $exception) {
-        // Check-then-insert race (a double-submit or two concurrent requests
-        // both passing the existence check): the Likes PK (userId, postId)
-        // rejects the second INSERT. 1062 means the like already exists -
-        // treat it as the already-liked state (no duplicate notification),
-        // not a 500. Anything else is a real failure.
-        if ($exception -> getCode() !== 1062) {
-            throw $exception;
-        }
     }
 }
 
-$count_stmt = DB::run('
-SELECT COUNT(*) AS `likeCount`
-    FROM `Likes`
+$post = DB::row('
+SELECT `likeCount`
+    FROM `Posts`
     WHERE `postId` = ?
-', 'i', $post_id);
-$count_result = mysqli_stmt_get_result($count_stmt);
-$count = (int) mysqli_fetch_assoc($count_result)['likeCount'];
+', 'Post', 'i', $post_id);
+$count = $post?-> likeCount ?? 0;
 
 // Only says anything when the post came from elsewhere - liking a local post is
 // this server's own business and there is nobody to tell.

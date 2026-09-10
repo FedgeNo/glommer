@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Stato del Server",
+        "ip": "IP: {address}",
+        "load": "Carico medio: {one} / {five} / {fifteen} su {cpus} CPU",
+        "memory": "Memoria: {available} liberi su {total}",
+        "disk": "Disco: {free} liberi su {total} in {path}",
+        "database": "Database: {running} query in corso, {connected} connessioni, {lockWaits} attese di lock, attivo da {uptime}",
+        "longQueries": "Query in corso da più di cinque secondi: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stato",
+        "unavailable": "Impossibile rilevare lo stato"
+    },
+    "AdminDashboard": {
+        "members": "Membri",
+        "posts": "Post",
+        "federation": "Federazione",
+        "uploads": "Caricamenti",
+        "notifications": "Notifiche in tempo reale",
+        "trending": "Tendenze",
+        "backups": "Backup",
+        "moderation": "Moderazione",
+        "running": "In esecuzione",
+        "stopped": "Arrestato",
+        "scheduled": "Pianificato",
+        "none": "Nessuno",
+        "lastRun": "Ultimo aggiornamento: {time}",
+        "lastBackup": "File di backup: {time}",
+        "reports": "Segnalazioni aperte: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 voto",

@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Stato de la Servilo",
+        "ip": "IP: {address}",
+        "load": "Meza ŝarĝo: {one} / {five} / {fifteen} sur {cpus} CPU-oj",
+        "memory": "Memoro: {available} el {total} liberaj",
+        "disk": "Disko: {free} el {total} liberaj ĉe {path}",
+        "database": "Datumbazo: {running} ruliĝantaj informpetoj, {connected} konektoj, {lockWaits} atendoj je ŝlosoj, funkciada tempo: {uptime}",
+        "longQueries": "Informpetoj ruliĝantaj dum pli ol kvin sekundoj: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stato",
+        "unavailable": "Ne eblis ricevi la staton"
+    },
+    "AdminDashboard": {
+        "members": "Membroj",
+        "posts": "Afiŝoj",
+        "federation": "Federacio",
+        "uploads": "Alŝutoj",
+        "notifications": "Vivaj sciigoj",
+        "trending": "Tendencoj",
+        "backups": "Sekurkopioj",
+        "moderation": "Moderado",
+        "running": "Funkcias",
+        "stopped": "Haltigita",
+        "scheduled": "Planita",
+        "none": "Neniu",
+        "lastRun": "Lasta ĝisdatigo: {time}",
+        "lastBackup": "Sekurkopiaj dosieroj: {time}",
+        "reports": "Malfermitaj raportoj: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 voĉdono",

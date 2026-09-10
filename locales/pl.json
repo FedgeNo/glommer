@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Stan Serwera",
+        "ip": "IP: {address}",
+        "load": "Obciążenie: {one} / {five} / {fifteen} na {cpus} CPU",
+        "memory": "Pamięć: wolne {available} z {total}",
+        "disk": "Dysk {path}: wolne {free} z {total}",
+        "database": "Baza danych: zapytania w toku: {running}; połączenia: {connected}; oczekiwania na blokadę: {lockWaits}; czas działania: {uptime}",
+        "longQueries": "Zapytania trwające dłużej niż pięć sekund: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stan",
+        "unavailable": "Nie udało się odczytać stanu"
+    },
+    "AdminDashboard": {
+        "members": "Członkowie",
+        "posts": "Wpisy",
+        "federation": "Federacja",
+        "uploads": "Przesyłanie",
+        "notifications": "Powiadomienia na żywo",
+        "trending": "Trendy",
+        "backups": "Kopie zapasowe",
+        "moderation": "Moderacja",
+        "running": "Działa",
+        "stopped": "Zatrzymano",
+        "scheduled": "Zaplanowano",
+        "none": "Brak",
+        "lastRun": "Ostatnie odświeżenie: {time}",
+        "lastBackup": "Pliki kopii zapasowej: {time}",
+        "reports": "Otwarte zgłoszenia: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 głos",

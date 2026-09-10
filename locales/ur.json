@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "سرور کی صحت",
+        "ip": "IP: {address}",
+        "load": "اوسط لوڈ: {cpus} CPU پر {one} / {five} / {fifteen}",
+        "memory": "میموری: {total} میں سے {available} خالی",
+        "disk": "ڈسک: {path} پر {total} میں سے {free} خالی",
+        "database": "ڈیٹا بیس: جاری کوئریز: {running}، کنکشن: {connected}، لاک کے انتظار میں: {lockWaits}، چلنے کا دورانیہ: {uptime}",
+        "longQueries": "پانچ سیکنڈ سے زیادہ چلنے والی کوئریز: {count}",
+        "longQuery": "{seconds} سیکنڈ: {query}"
+    },
+    "StatusBoard": {
+        "heading": "حالت",
+        "unavailable": "حالت کی معلومات نہیں مل سکیں"
+    },
+    "AdminDashboard": {
+        "members": "اراکین",
+        "posts": "پوسٹس",
+        "federation": "فیڈریشن",
+        "uploads": "اپ لوڈز",
+        "notifications": "براہ راست اطلاعات",
+        "trending": "رجحانات",
+        "backups": "بیک اپ",
+        "moderation": "نگرانی",
+        "running": "چل رہا ہے",
+        "stopped": "رکا ہوا",
+        "scheduled": "طے شدہ",
+        "none": "کوئی نہیں",
+        "lastRun": "آخری تجدید: {time}",
+        "lastBackup": "بیک اپ فائلیں: {time}",
+        "reports": "کھلی رپورٹس: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 ووٹ",

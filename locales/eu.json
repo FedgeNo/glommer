@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Zerbitzariaren Egoera",
+        "ip": "IP: {address}",
+        "load": "Karga: {one} / {five} / {fifteen} {cpus} CPUtan",
+        "memory": "Memoria: {available} libre {total}etik",
+        "disk": "Diskoa: {free} libre {total}etik {path} bidean",
+        "database": "Datu-basea: {running} kontsulta martxan, {connected} konexio, {lockWaits} blokeo-itxaronaldi, {uptime} martxan",
+        "longQueries": "Bost segundo baino gehiago daramaten kontsultak: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Egoera",
+        "unavailable": "Ezin izan da egoera eskuratu"
+    },
+    "AdminDashboard": {
+        "members": "Kideak",
+        "posts": "Argitalpenak",
+        "federation": "Federazioa",
+        "uploads": "Igoerak",
+        "notifications": "Zuzeneko jakinarazpenak",
+        "trending": "Joerak",
+        "backups": "Babeskopiak",
+        "moderation": "Moderazioa",
+        "running": "Martxan",
+        "stopped": "Geldituta",
+        "scheduled": "Programatuta",
+        "none": "Bat ere ez",
+        "lastRun": "Azken eguneratzea: {time}",
+        "lastBackup": "Babeskopia-fitxategiak: {time}",
+        "reports": "Irekitako salaketak: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Idatzi zure erabiltzaile-izena edo helbide elektronikoa.",
         "givePassword": "Idatzi zure pasahitza.",

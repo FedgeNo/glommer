@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serverhälsa",
+        "ip": "IP: {address}",
+        "load": "Genomsnittlig belastning: {one} / {five} / {fifteen} på {cpus} CPU:er",
+        "memory": "Minne: {available} av {total} ledigt",
+        "disk": "Disk: {free} av {total} ledigt på {path}",
+        "database": "Databas — pågående frågor: {running}; anslutningar: {connected}; väntan på lås: {lockWaits}; drifttid: {uptime}",
+        "longQueries": "Frågor som kört längre än fem sekunder: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Kunde inte rapportera"
+    },
+    "AdminDashboard": {
+        "members": "Medlemmar",
+        "posts": "Inlägg",
+        "federation": "Federation",
+        "uploads": "Uppladdningar",
+        "notifications": "Liveaviseringar",
+        "trending": "Trender",
+        "backups": "Säkerhetskopior",
+        "moderation": "Moderering",
+        "running": "Körs",
+        "stopped": "Stoppad",
+        "scheduled": "Schemalagd",
+        "none": "Inga",
+        "lastRun": "Senaste uppdatering: {time}",
+        "lastBackup": "Säkerhetskopiefiler: {time}",
+        "reports": "Öppna anmälningar: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 röst",

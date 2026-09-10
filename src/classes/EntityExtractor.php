@@ -17,9 +17,9 @@ declare(strict_types=1);
  * anything there).
  *
  * Batched, not one post at a time: spaCy's model load dominates the runtime
- * of a single invocation, so extractBatch() runs the whole trending window
- * through one subprocess via nlp.pipe() rather than spawning a process per
- * post.
+ * of a single invocation. PostEntityCache batches only missing or changed
+ * posts, and extractBatch() runs each batch through one subprocess via
+ * nlp.pipe(). Completed batches survive a later batch's failure.
  */
 class EntityExtractor
 {
@@ -37,6 +37,27 @@ class EntityExtractor
     private const NER_PYTHON = '/opt/glommer-ner/bin/python';
     private const NER_SCRIPT = __DIR__ . '/../../bin/ner-extract.py';
     private const NER_TIMEOUT_SECONDS = 60;
+
+    private static bool $complete = false;
+
+    /** A failed optional subprocess must be retried rather than cached forever. */
+    public static function completed(): bool
+    {
+        return self::$complete;
+    }
+
+    /** Code, extraction rules and installed model versions define reusable results. */
+    public static function cacheVersion(): string
+    {
+        $packages = glob(dirname(self::NER_PYTHON) . '/../lib/python*/site-packages/{spacy,langdetect,*_core_*}-*.dist-info', GLOB_BRACE) ?: [];
+        sort($packages);
+
+        return hash('sha256', (string) hash_file('sha256', __FILE__)
+            . hash_file('sha256', __DIR__ . '/Delta.php')
+            . (is_file(self::NER_SCRIPT) ? hash_file('sha256', self::NER_SCRIPT) : '')
+            . (is_executable(self::NER_PYTHON) ? 'ner' : 'hashtags')
+            . implode('\n', array_map('basename', $packages)));
+    }
 
     /**
      * What language each text of the last extractBatch() turned out to be
@@ -61,7 +82,7 @@ class EntityExtractor
      * @return array<int, array<int, array{type: string, value: string}>> Same
      *   length and order as $description_deltas.
      */
-    public static function extractBatch(array $description_deltas): array
+    public static function extractBatch(array $description_deltas, bool $include_ner = true): array
     {
         $description_deltas = array_values($description_deltas);
 
@@ -85,13 +106,21 @@ class EntityExtractor
             $plain_texts[] = Delta::plainText($ops);
         }
 
-        $read = self::runNER($plain_texts);
+        $has_text = array_filter($plain_texts, static fn (string $text): bool => trim($text) !== '') !== [];
+        $available = is_executable(self::NER_PYTHON) && is_file(self::NER_SCRIPT);
+        $read = $include_ner && $has_text ? self::runNER($plain_texts) : [];
+        self::$complete = !$has_text || !$available || ($include_ner && count($read) === count($plain_texts));
 
         $ner_entities = [];
         self::$detectedLanguages = [];
 
         foreach ($plain_texts as $i => $plain_text) {
-            $ner_entities[$i] = is_array($read[$i]['entities'] ?? null) ? $read[$i]['entities'] : [];
+            $raw = is_array($read[$i]['entities'] ?? null) ? $read[$i]['entities'] : [];
+            $ner_entities[$i] = array_values(array_filter($raw, static fn (mixed $entity): bool => is_array($entity)
+                && is_string($entity['type'] ?? null) && is_string($entity['value'] ?? null)));
+            if ($available && $has_text && (!is_array($read[$i]['entities'] ?? null) || count($raw) !== count($ner_entities[$i]))) {
+                self::$complete = false;
+            }
             $language = $read[$i]['language'] ?? null;
             self::$detectedLanguages[$i] = is_string($language) && $language !== '' ? $language : null;
         }

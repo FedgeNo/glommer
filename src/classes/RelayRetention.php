@@ -73,11 +73,22 @@ class RelayRetention
         // server), so there is nothing on disk to go with it.
         $placeholders = implode(', ', array_fill(0, count($doomed), '?'));
 
-        DB::run('
+        DB::transaction(static function () use ($doomed, $placeholders): void {
+            DB::run('
+SELECT `postId`
+    FROM `Posts`
+    WHERE `postId` IN (' . $placeholders . ')
+    FOR UPDATE
+', str_repeat('i', count($doomed)), ...$doomed);
+
+            Post::removeReplyCountsFor($doomed);
+
+            DB::run('
 DELETE
     FROM `Posts`
     WHERE `postId` IN (' . $placeholders . ')
 ', str_repeat('i', count($doomed)), ...$doomed);
+        });
 
         return count($doomed);
     }

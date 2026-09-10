@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "伺服器健康狀況",
+        "ip": "IP: {address}",
+        "load": "平均負載：{one} / {five} / {fifteen}（{cpus} 個 CPU）",
+        "memory": "記憶體：{total} 中剩餘 {available}",
+        "disk": "磁碟：{path} 上 {total} 中剩餘 {free}",
+        "database": "資料庫：{running} 個查詢執行中，{connected} 個連線，{lockWaits} 個鎖定等待，已運作 {uptime}",
+        "longQueries": "執行超過五秒的查詢：{count}",
+        "longQuery": "{seconds}秒：{query}"
+    },
+    "StatusBoard": {
+        "heading": "狀態",
+        "unavailable": "無法取得狀態"
+    },
+    "AdminDashboard": {
+        "members": "成員",
+        "posts": "貼文",
+        "federation": "聯邦",
+        "uploads": "上傳",
+        "notifications": "即時通知",
+        "trending": "熱門",
+        "backups": "備份",
+        "moderation": "內容審核",
+        "running": "執行中",
+        "stopped": "已停止",
+        "scheduled": "已排程",
+        "none": "無",
+        "lastRun": "上次重新整理：{time}",
+        "lastBackup": "備份檔案：{time}",
+        "reports": "待處理檢舉：{count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "other": "{count} 票"

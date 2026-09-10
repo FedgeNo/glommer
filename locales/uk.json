@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Стан Сервера",
+        "ip": "IP: {address}",
+        "load": "Середнє навантаження: {one} / {five} / {fifteen}; процесорів: {cpus}",
+        "memory": "Пам’ять: вільно {available} з {total}",
+        "disk": "Диск: вільно {free} з {total} на {path}",
+        "database": "База даних: активних запитів: {running}; з’єднань: {connected}; очікувань блокування: {lockWaits}; час роботи: {uptime}",
+        "longQueries": "Запити, що виконуються довше п’яти секунд: {count}",
+        "longQuery": "{seconds} с: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Стан",
+        "unavailable": "Не вдалося отримати дані"
+    },
+    "AdminDashboard": {
+        "members": "Учасники",
+        "posts": "Дописи",
+        "federation": "Федерація",
+        "uploads": "Завантаження",
+        "notifications": "Сповіщення в реальному часі",
+        "trending": "Популярне",
+        "backups": "Резервні копії",
+        "moderation": "Модерація",
+        "running": "Працює",
+        "stopped": "Зупинено",
+        "scheduled": "Заплановано",
+        "none": "Немає",
+        "lastRun": "Останнє оновлення: {time}",
+        "lastBackup": "Файли резервної копії: {time}",
+        "reports": "Відкриті скарги: {count}"
+    },
     "ActivityPubMove": {
         "localOnly": "Перенести можна лише локальний обліковий запис.",
         "sameServer": "Цей обліковий запис розміщено на цьому сервері. Перенесення завжди відбувається між серверами.",

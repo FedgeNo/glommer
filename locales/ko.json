@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "서버 상태",
+        "ip": "IP: {address}",
+        "load": "평균 부하: CPU {cpus}개에서 {one} / {five} / {fifteen}",
+        "memory": "메모리: {total} 중 {available} 여유",
+        "disk": "디스크: {path}에서 {total} 중 {free} 여유",
+        "database": "데이터베이스: 실행 중 쿼리 {running}개, 연결 {connected}개, 잠금 대기 {lockWaits}개, 가동 {uptime}",
+        "longQueries": "5초 넘게 실행 중인 쿼리: {count}",
+        "longQuery": "{seconds}초: {query}"
+    },
+    "StatusBoard": {
+        "heading": "상태",
+        "unavailable": "상태를 확인할 수 없음"
+    },
+    "AdminDashboard": {
+        "members": "회원",
+        "posts": "게시물",
+        "federation": "연합",
+        "uploads": "업로드",
+        "notifications": "실시간 알림",
+        "trending": "인기 주제",
+        "backups": "백업",
+        "moderation": "콘텐츠 관리",
+        "running": "실행 중",
+        "stopped": "중지됨",
+        "scheduled": "예약됨",
+        "none": "없음",
+        "lastRun": "마지막 갱신: {time}",
+        "lastBackup": "백업 파일: {time}",
+        "reports": "미처리 신고: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "other": "{count}표"

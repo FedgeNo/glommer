@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serverhelse",
+        "ip": "IP: {address}",
+        "load": "Belastning: {one} / {five} / {fifteen} på {cpus} CPU-er",
+        "memory": "Minne: {available} av {total} ledig",
+        "disk": "Disk: {free} av {total} ledig på {path}",
+        "database": "Database: aktive spørringer: {running}, tilkoblinger: {connected}, venting på låser: {lockWaits}, oppetid: {uptime}",
+        "longQueries": "Spørringer som har kjørt lenger enn fem sekunder: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Kunne ikke hente status"
+    },
+    "AdminDashboard": {
+        "members": "Medlemmer",
+        "posts": "Innlegg",
+        "federation": "Føderasjon",
+        "uploads": "Opplastinger",
+        "notifications": "Sanntidsvarsler",
+        "trending": "Trender",
+        "backups": "Sikkerhetskopier",
+        "moderation": "Moderering",
+        "running": "Kjører",
+        "stopped": "Stoppet",
+        "scheduled": "Planlagt",
+        "none": "Ingen",
+        "lastRun": "Siste oppdatering: {time}",
+        "lastBackup": "Sikkerhetskopifiler: {time}",
+        "reports": "Åpne rapporter: {count}"
+    },
     "ClientStatus": {
         "settingsSaved": "Innstillingene er lagret.",
         "emailUnchanged": "Dette er allerede e-postadressen din.",

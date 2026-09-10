@@ -43,7 +43,7 @@ INSERT INTO `Posts` (`userId`, `description`, `descriptionDelta`, `remoteObjectU
         return (int) mysqli_insert_id(DB::connection());
     }
 
-    private static function likeCount(int $post_id): int
+    private function likeCount(int $post_id): int
     {
         $row = DB::row('
 SELECT COUNT(*) AS `total`
@@ -51,7 +51,10 @@ SELECT COUNT(*) AS `total`
     WHERE `postId` = ?
 ', 'PostCountData', 'i', $post_id);
 
-        return (int) $row -> total;
+        $post = DB::row('SELECT `likeCount` FROM `Posts` WHERE `postId` = ?', 'Post', 'i', $post_id);
+        $this -> assertSame((int) $row -> total, $post -> likeCount, 'stored total matches the retained like records');
+
+        return $post -> likeCount;
     }
 
     public function testALikeFromElsewhereCountsTheSameAsALocalOne(): void

@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "サーバーの状態",
+        "ip": "IP: {address}",
+        "load": "負荷平均: {one} / {five} / {fifteen}（CPU {cpus} 基）",
+        "memory": "メモリ: {total} 中 {available} 空き",
+        "disk": "ディスク: {path} で {total} 中 {free} 空き",
+        "database": "データベース: 実行中クエリ {running}、接続 {connected}、ロック待ち {lockWaits}、稼働 {uptime}",
+        "longQueries": "実行時間が5秒を超えているクエリ: {count}",
+        "longQuery": "{seconds}秒: {query}"
+    },
+    "StatusBoard": {
+        "heading": "状態",
+        "unavailable": "状態を取得できませんでした"
+    },
+    "AdminDashboard": {
+        "members": "メンバー",
+        "posts": "投稿",
+        "federation": "連合",
+        "uploads": "アップロード",
+        "notifications": "リアルタイム通知",
+        "trending": "トレンド",
+        "backups": "バックアップ",
+        "moderation": "モデレーション",
+        "running": "稼働中",
+        "stopped": "停止中",
+        "scheduled": "スケジュール済み",
+        "none": "なし",
+        "lastRun": "最終更新: {time}",
+        "lastBackup": "バックアップファイル: {time}",
+        "reports": "未処理の通報: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "ユーザー名またはメールアドレスを入力してください。",
         "givePassword": "パスワードを入力してください。",

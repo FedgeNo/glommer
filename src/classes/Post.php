@@ -73,7 +73,6 @@ class Post extends Article
     // bar can be built without asking anything of its own. Null means nobody
     // filled them in - a lone Post built by hand, which asks for itself.
     public ?bool $reposted = null;
-    public ?int $repostCount = null;
     public ?bool $pinned = null;
     // Set once a moderator dismisses a report on this post - blocks it from
     // being reported again (see api/report.php).
@@ -107,14 +106,10 @@ class Post extends Article
 
     public ?User $author = null;
 
-    // The engagement counts the action bar shows, hydrated as correlated
-    // subqueries by the feed-list query that loads the page. Null on a bare
-    // Post (e.g. a report snapshot) rendered with showActions off, where the
-    // bar - and these - are never used; the action bar falls back to its own
-    // per-post lookups when a count is null but a bar is still shown (a
-    // standalone PostPage, which loads the post without them).
-    public ?int $replyCount = null;
-    public ?int $likeCount = null;
+    // Stored on Posts and maintained with the records they summarize.
+    public int $replyCount = 0;
+    public int $likeCount = 0;
+    public int $repostCount = 0;
     public ?bool $liked = null;
     public ?bool $bookmarked = null;
 
@@ -584,8 +579,73 @@ UPDATE `Posts`
         return (string) $this -> description !== '' && Translator::canTranslate();
     }
 
+    /** Lock before changing an interaction; the caller owns the transaction. */
+    public static function lockForUpdate(int $post_id): ?self
+    {
+        return DB::row('
+SELECT `postId`, `parentId`
+    FROM `Posts`
+    WHERE `postId` = ?
+    FOR UPDATE
+', self::class, 'i', $post_id);
+    }
+
+    /** Apply only the change actually made to the records, in their transaction. */
+    public static function adjustCounts(int $post_id, int $replies = 0, int $likes = 0, int $reposts = 0): void
+    {
+        DB::run('
+UPDATE `Posts`
+    SET `replyCount` = GREATEST(0, CAST(`replyCount` AS SIGNED) + ?),
+        `likeCount` = GREATEST(0, CAST(`likeCount` AS SIGNED) + ?),
+        `repostCount` = GREATEST(0, CAST(`repostCount` AS SIGNED) + ?)
+    WHERE `postId` = ?
+', 'iiii', $replies, $likes, $reposts, $post_id);
+    }
+
+    /**
+     * Subtract replies about to be deleted, including an account's cascaded
+     * posts. The caller locks the doomed rows and deletes them in this same
+     * transaction. Parents also being deleted need no special case.
+     *
+     * @param int[] $post_ids
+     */
+    public static function removeReplyCountsFor(array $post_ids): void
+    {
+        if ($post_ids === []) {
+            return;
+        }
+
+        $placeholders = implode(', ', array_fill(0, count($post_ids), '?'));
+
+        DB::run('
+UPDATE `Posts` `parent`
+    JOIN (
+        SELECT `parentId`, COUNT(*) AS `total`
+            FROM `Posts`
+            WHERE `postId` IN (' . $placeholders . ') AND `parentId` IS NOT NULL
+            GROUP BY `parentId`
+    ) `removed` ON `removed`.`parentId` = `parent`.`postId`
+    SET `parent`.`replyCount` = GREATEST(0, CAST(`parent`.`replyCount` AS SIGNED) - CAST(`removed`.`total` AS SIGNED))
+', str_repeat('i', count($post_ids)), ...$post_ids);
+    }
+
     public static function delete(int $post_id): void
     {
+        $doomed_items = DB::transaction(static fn (): array => self::deleteRecords($post_id));
+
+        // Only remove files once the rows and their counter changes commit.
+        foreach ($doomed_items as $item) {
+            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
+        }
+    }
+
+    /** @return FeedItem[] media to remove after the transaction commits */
+    private static function deleteRecords(int $post_id): array
+    {
+        if (self::lockForUpdate($post_id) === null) {
+            return [];
+        }
+
         // Collect the post plus all descendant replies, since the row DELETE
         // cascades through them and their media files would otherwise be
         // orphaned on disk.
@@ -599,6 +659,7 @@ UPDATE `Posts`
 SELECT `postId`
     FROM `Posts`
     WHERE `parentId` IN (' . $placeholders . ')
+    FOR UPDATE
 ', str_repeat('i', count($frontier)), ...$frontier);
             $children_result = mysqli_stmt_get_result($children_stmt);
 
@@ -647,16 +708,15 @@ SELECT `remoteObjectURI`
             RemoteObjectTombstone::tombstone((string) $row['remoteObjectURI'], 'post deleted on this site');
         }
 
+        self::removeReplyCountsFor($all_post_ids);
+
         DB::run('
 DELETE
     FROM `Posts`
     WHERE `postId` = ?
 ', 'i', $post_id);
 
-        // Only remove files once the rows are actually gone.
-        foreach ($doomed_items as $item) {
-            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
-        }
+        return $doomed_items;
     }
 
     /**
@@ -681,12 +741,10 @@ DELETE
         $locations = PostLocation::forPosts($post_ids);
         $polls = Poll::forPosts($post_ids);
 
-        // The action bar's own state, gathered for the page rather than per
-        // card: whether the viewer reposted it, how many times it has been
-        // passed on, and whether it is pinned are three questions each, and a
-        // feed would otherwise ask all of them once per post.
+        // Viewer-specific state is gathered for the whole page. The totals
+        // already arrived with each Posts row.
         $viewer_id = Auth::id();
-        $repost_state = Repost::stateForPosts($post_ids, $viewer_id);
+        $reposted = Repost::repostedForPosts($post_ids, $viewer_id);
         $pinned = $viewer_id === null ? [] : PinnedPost::pinnedForPosts($post_ids, $viewer_id);
         $quoted = QuotedPost::forPosts($posts);
         $thread_context = ThreadContext::forPosts($posts);
@@ -701,14 +759,11 @@ DELETE
             $post -> latitude = $location['latitude'] ?? null;
             $post -> longitude = $location['longitude'] ?? null;
 
-            if ($location !== null) {
-                $post -> placeLabel = Place::nearest($location['latitude'], $location['longitude']) ?-> label();
-            }
+            $post -> placeLabel = $location['placeLabel'] ?? null;
 
             $post -> poll = $polls[(int) $post -> postId] ?? null;
 
-            $post -> reposted = $repost_state[(int) $post -> postId]['reposted'] ?? false;
-            $post -> repostCount = $repost_state[(int) $post -> postId]['count'] ?? 0;
+            $post -> reposted = isset($reposted[(int) $post -> postId]);
             $post -> pinned = isset($pinned[(int) $post -> postId]);
         }
 
@@ -720,7 +775,7 @@ DELETE
      * that feed the client-side Post class, which rebuilds the body from the
      * Delta ops via DeltaRenderer.render() - no HTML crosses the wire.
      */
-    public function toPayload(int $reply_count, int $like_count, bool $liked, bool $bookmarked): array
+    public function toPayload(bool $liked, bool $bookmarked): array
     {
         $description_delta = null;
         $description_truncated = false;
@@ -791,19 +846,16 @@ DELETE
                 'slug' => $this -> repostedBySlug,
                 'title' => $this -> repostedByTitle,
             ],
-            // Both come with the page where the post was loaded for one -
-            // Repost::stateForPosts answers a screen of them in two queries,
-            // and asking again here made it two per post again on every list
-            // that goes out as JSON. Asked only by a post built rather than
-            // selected.
+            // Viewer state arrives batched for a page, with a fallback for a
+            // single post built by the create/edit endpoints.
             'reposted' => $this -> reposted ?? (Auth::check() && Repost::exists((int) Auth::id(), (int) $this -> postId)),
-            'repostCount' => $this -> repostCount ?? ActivityPubReaction::announceCount((int) $this -> postId),
+            'repostCount' => $this -> repostCount,
             'items' => $items,
             'sensitive' => $this -> sensitive === 1,
             'contentWarning' => $this -> contentWarning,
             'imageAltText' => $this -> imageAltText(),
-            'replyCount' => $reply_count,
-            'likeCount' => $like_count,
+            'replyCount' => $this -> replyCount,
+            'likeCount' => $this -> likeCount,
             'liked' => $liked,
             'bookmarked' => $bookmarked,
             // A nested user object with row-named keys so HTMLObjects.js's Post builds the

@@ -593,6 +593,26 @@ UPDATE `Users`
      */
     public static function delete(int $user_id): void
     {
+        $doomed_items = DB::transaction(static fn (): array => self::deleteRecords($user_id));
+
+        foreach ($doomed_items as $item) {
+            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
+        }
+
+        $avatar_dir = __DIR__ . '/../../uploads/avatars/' . UploadProcessor::shard($user_id);
+
+        foreach ([$user_id . '.jpg', $user_id . '-thumb.jpg'] as $filename) {
+            $path = $avatar_dir . '/' . $filename;
+
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
+
+    /** @return FeedItem[] media to remove after the transaction commits */
+    private static function deleteRecords(int $user_id): array
+    {
         // Retired before the row goes, since the name is read off it. A local
         // member only: a shadow row's slug is a remote handle this server does
         // not own and has no business reserving.
@@ -600,6 +620,7 @@ UPDATE `Users`
 SELECT `slug`, `remoteActorURI`
     FROM `Users`
     WHERE `userId` = ?
+    FOR UPDATE
 ', 'User', 'i', $user_id);
 
         if ($account !== null && $account -> remoteActorURI === null) {
@@ -613,6 +634,7 @@ SELECT `slug`, `remoteActorURI`
 SELECT `postId`
     FROM `Posts`
     WHERE `userId` = ?
+    FOR UPDATE
 ', 'i', $user_id);
         $own_posts_result = mysqli_stmt_get_result($own_posts_stmt);
 
@@ -631,6 +653,7 @@ SELECT `postId`
 SELECT `postId`
     FROM `Posts`
     WHERE `parentId` IN (' . $placeholders . ')
+    FOR UPDATE
 ', str_repeat('i', count($frontier)), ...$frontier);
             $children_result = mysqli_stmt_get_result($children_stmt);
 
@@ -674,25 +697,30 @@ DELETE
 ', str_repeat('i', count($all_post_ids)), ...$all_post_ids);
         }
 
+        // The FK cascades remove these records; subtract their contributions
+        // while they can still identify the surviving posts they belong to.
+        Poll::removeVotesForUser($user_id);
+        Post::removeReplyCountsFor($all_post_ids);
+
+        DB::run('
+UPDATE `Posts` `p`
+    JOIN `Likes` `l` ON `l`.`postId` = `p`.`postId`
+    SET `p`.`likeCount` = GREATEST(0, CAST(`p`.`likeCount` AS SIGNED) - 1)
+    WHERE `l`.`userId` = ?
+', 'i', $user_id);
+        DB::run('
+UPDATE `Posts` `p`
+    JOIN `Announces` `a` ON `a`.`postId` = `p`.`postId`
+    SET `p`.`repostCount` = GREATEST(0, CAST(`p`.`repostCount` AS SIGNED) - 1)
+    WHERE `a`.`userId` = ?
+', 'i', $user_id);
+
         DB::run('
 DELETE
     FROM `Users`
     WHERE `userId` = ?
 ', 'i', $user_id);
 
-        // Only remove files once the rows are actually gone.
-        foreach ($doomed_items as $item) {
-            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
-        }
-
-        $avatar_dir = __DIR__ . '/../../uploads/avatars/' . UploadProcessor::shard($user_id);
-
-        foreach ([$user_id . '.jpg', $user_id . '-thumb.jpg'] as $filename) {
-            $path = $avatar_dir . '/' . $filename;
-
-            if (is_file($path)) {
-                unlink($path);
-            }
-        }
+        return $doomed_items;
     }
 }

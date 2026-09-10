@@ -101,11 +101,7 @@ if (Message::unansweredCount($current_user -> userId, $recipient_id) >= Message:
 $franking_tag = $envelope !== null ? MessageFranking::tag($current_user -> userId, $recipient_id, $envelope) : null;
 $stored_body = $envelope !== null ? null : $body;
 
-DB::run('
-INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `bodyCiphertext`, `frankingTag`)
-    VALUES (?, ?, ?, ?, ?)
-', 'iisss', $current_user -> userId, $recipient_id, $stored_body, $envelope, $franking_tag);
-$message_id = (int) mysqli_insert_id(DB::connection());
+$message_id = Message::create($current_user -> userId, $recipient_id, $stored_body, $envelope, $franking_tag);
 RateLimiter::releaseLock($throttle_key);
 RateLimiter::recordAttempt($spam_rate_key);
 

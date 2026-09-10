@@ -194,18 +194,81 @@ UPDATE `Users`
         Auth::clearUserCache();
     }
 
+    /** Store the message and both inbox entries together, for local and remote sends. */
+    public static function create(int $sender_id, int $recipient_id, ?string $body, ?string $ciphertext = null, ?string $franking_tag = null, ?string $remote_uri = null): int
+    {
+        return DB::transaction(static function () use ($sender_id, $recipient_id, $body, $ciphertext, $franking_tag, $remote_uri): int {
+            self::lockParticipants($sender_id, $recipient_id);
+
+            DB::run('
+INSERT INTO `Messages` (`senderId`, `recipientId`, `body`, `bodyCiphertext`, `frankingTag`, `remoteObjectURI`)
+    VALUES (?, ?, ?, ?, ?, ?)
+', 'iissss', $sender_id, $recipient_id, $body, $ciphertext, $franking_tag, $remote_uri);
+            $message_id = (int) mysqli_insert_id(DB::connection());
+            self::recordConversation($sender_id, $recipient_id, $message_id);
+
+            return $message_id;
+        });
+    }
+
+    /** Lock in a fixed order before inserting/deleting, including a new pair. */
+    private static function lockParticipants(int $sender_id, int $recipient_id): void
+    {
+        DB::rows('
+SELECT `userId`
+    FROM `Users`
+    WHERE `userId` IN (?, ?)
+    ORDER BY `userId`
+    FOR UPDATE
+', 'User', 'ii', $sender_id, $recipient_id);
+    }
+
+    /** Called only while the participants are locked in the message transaction. */
+    private static function recordConversation(int $sender_id, int $recipient_id, int $message_id): void
+    {
+        DB::run('
+INSERT INTO `Conversations` (`userId`, `partnerId`, `lastMessageId`)
+    VALUES (?, ?, ?), (?, ?, ?)
+    ON DUPLICATE KEY UPDATE `lastMessageId` = VALUES(`lastMessageId`)
+', 'iiiiii', $sender_id, $recipient_id, $message_id, $recipient_id, $sender_id, $message_id);
+    }
+
     /**
-     * Deletes a single message. Messages have no child rows or media, so this
-     * is a plain one-row delete. Caller is responsible for authorization
-     * (used by a moderator removing reported content).
+     * Deletes one message and restores the preceding inbox entry if needed.
+     * Caller is responsible for authorization (moderator content removal).
      */
     public static function delete(int $message_id): void
     {
-        DB::run('
+        $message = DB::row('SELECT `senderId`, `recipientId` FROM `Messages` WHERE `messageId` = ?', self::class, 'i', $message_id);
+
+        if ($message === null) {
+            return;
+        }
+
+        DB::transaction(static function () use ($message_id, $message): void {
+            $sender_id = (int) $message -> senderId;
+            $recipient_id = (int) $message -> recipientId;
+            self::lockParticipants($sender_id, $recipient_id);
+
+            DB::run('
 DELETE
     FROM `Messages`
     WHERE `messageId` = ?
 ', 'i', $message_id);
+
+            // Deleting a last message cascades its two summary rows. Restore
+            // them from the two covering indexes while new sends are locked.
+            $latest = DB::row('
+SELECT GREATEST(
+    COALESCE((SELECT MAX(`messageId`) FROM `Messages` WHERE `senderId` = ? AND `recipientId` = ?), 0),
+    COALESCE((SELECT MAX(`messageId`) FROM `Messages` WHERE `senderId` = ? AND `recipientId` = ?), 0)
+) AS `messageId`
+', self::class, 'iiii', $sender_id, $recipient_id, $recipient_id, $sender_id);
+
+            if ($latest -> messageId > 0) {
+                self::recordConversation($sender_id, $recipient_id, $latest -> messageId);
+            }
+        });
     }
 
 }

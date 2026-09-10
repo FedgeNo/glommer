@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Servera Stāvoklis",
+        "ip": "IP: {address}",
+        "load": "Slodze: {one} / {five} / {fifteen} uz {cpus} CPU",
+        "memory": "Atmiņa: brīvi {available} no {total}",
+        "disk": "Disks: brīvi {free} no {total} ceļā {path}",
+        "database": "Datubāze: pašlaik izpildē esošo vaicājumu skaits: {running}, savienojumu skaits: {connected}, bloķējumu gaidīšanas gadījumu skaits: {lockWaits}, darbojas {uptime}",
+        "longQueries": "Vaicājumi, kas izpildās ilgāk par piecām sekundēm: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stāvoklis",
+        "unavailable": "Neizdevās iegūt stāvokli"
+    },
+    "AdminDashboard": {
+        "members": "Dalībnieki",
+        "posts": "Ieraksti",
+        "federation": "Federācija",
+        "uploads": "Augšupielādes",
+        "notifications": "Reāllaika paziņojumi",
+        "trending": "Tendences",
+        "backups": "Dublējumkopijas",
+        "moderation": "Moderēšana",
+        "running": "Darbojas",
+        "stopped": "Apturēts",
+        "scheduled": "Ieplānots",
+        "none": "Nav",
+        "lastRun": "Pēdējā atjaunināšana: {time}",
+        "lastBackup": "Dublējumkopijas faili: {time}",
+        "reports": "Atvērtie ziņojumi: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "zero": "{count} balsu",

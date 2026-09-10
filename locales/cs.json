@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Stav Serveru",
+        "ip": "IP: {address}",
+        "load": "Průměrná zátěž: {one} / {five} / {fifteen} na {cpus} CPU",
+        "memory": "Paměť: {available} z {total} volné",
+        "disk": "Disk: {free} z {total} volné na {path}",
+        "database": "Databáze: {running} běžících dotazů, {connected} připojení, {lockWaits} čekání na zámek, běží {uptime}",
+        "longQueries": "Dotazy běžící déle než pět sekund: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stav",
+        "unavailable": "Stav se nepodařilo zjistit"
+    },
+    "AdminDashboard": {
+        "members": "Členové",
+        "posts": "Příspěvky",
+        "federation": "Federace",
+        "uploads": "Nahrávání",
+        "notifications": "Živá oznámení",
+        "trending": "Trendy",
+        "backups": "Zálohy",
+        "moderation": "Moderování",
+        "running": "Běží",
+        "stopped": "Zastaveno",
+        "scheduled": "Naplánováno",
+        "none": "Žádné",
+        "lastRun": "Poslední aktualizace: {time}",
+        "lastBackup": "Soubory zálohy: {time}",
+        "reports": "Otevřená hlášení: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 hlas",

@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Szerver Állapota",
+        "ip": "IP: {address}",
+        "load": "Átlagos terhelés: {one} / {five} / {fifteen}, {cpus} CPU-n",
+        "memory": "Memória: {available} szabad, összesen: {total}",
+        "disk": "Lemez: {free} szabad, összesen: {total}, hely: {path}",
+        "database": "Adatbázis: {running} futó lekérdezés, {connected} kapcsolat, {lockWaits} zárolásra várakozás, futási idő: {uptime}",
+        "longQueries": "Öt másodpercnél régebb óta futó lekérdezések: {count}",
+        "longQuery": "{seconds}mp: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Állapot",
+        "unavailable": "Nem sikerült lekérni az állapotot"
+    },
+    "AdminDashboard": {
+        "members": "Tagok",
+        "posts": "Bejegyzések",
+        "federation": "Föderáció",
+        "uploads": "Feltöltések",
+        "notifications": "Élő értesítések",
+        "trending": "Felkapott",
+        "backups": "Biztonsági mentések",
+        "moderation": "Moderálás",
+        "running": "Fut",
+        "stopped": "Leállítva",
+        "scheduled": "Ütemezve",
+        "none": "Nincs",
+        "lastRun": "Utolsó frissítés: {time}",
+        "lastBackup": "Biztonsági mentés fájljai: {time}",
+        "reports": "Nyitott jelentések: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 szavazat",

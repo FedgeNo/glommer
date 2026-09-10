@@ -268,6 +268,8 @@ class UploadBatch
             }
         }
 
+        $detected_language = LanguageDetector::of((string) $description_value);
+
         // The post, its timeline fan-out, and its FeedItem rows go in as one
         // transaction: a crash during this DB-only assembly (see the finalizing
         // note in process()) then rolls back cleanly rather than leaving a
@@ -277,17 +279,18 @@ class UploadBatch
         // commit, so a rolled-back assembly signals nothing.
         mysqli_begin_transaction(DB::connection());
 
+        if ($parent_id !== null) {
+            Post::adjustCounts($parent_id, replies: 1);
+        }
+
         DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `detectedLanguage`)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'iissssiss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value, $content_warning_value, LanguageDetector::of((string) $description_value));
+', 'iissssiss', $metadata['userId'], $parent_id, $title_value, $description_value, $description_delta_value, $link_url_value, $sensitive_value, $content_warning_value, $detected_language);
         $post_id = (int) mysqli_insert_id(DB::connection());
 
         if ($latitude_value !== null && $longitude_value !== null) {
-            DB::run('
-INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
-    VALUES (?, ?, ?)
-', 'idd', $post_id, $latitude_value, $longitude_value);
+            PostLocation::save($post_id, $latitude_value, $longitude_value);
         }
 
         $mentioned_user_ids = [];

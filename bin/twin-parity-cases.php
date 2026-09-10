@@ -428,7 +428,19 @@ $definitions = [
     'Post' => [
         'class' => Post::class,
         'build' => static fn (): HTMLObject => parityPost(),
-        'payload' => static fn (Post $post): array => $post -> toPayload(0, 0, false, false),
+        'payload' => static fn (Post $post): array => $post -> toPayload(false, false),
+    ],
+    'PostWithEngagement' => [
+        'class' => Post::class,
+        'build' => static function (): HTMLObject {
+            $post = parityPost();
+            $post -> replyCount = 12;
+            $post -> likeCount = 34;
+            $post -> repostCount = 56;
+
+            return $post;
+        },
+        'payload' => static fn (Post $post): array => $post -> toPayload(false, false),
     ],
     'Message' => [
         'class' => Message::class,
@@ -490,6 +502,32 @@ $definitions = [
         ],
     ],
 ];
+
+$dashboard_tile = [
+    'id' => 'federation', 'symbol' => '🌐', 'href' => '#AdminRelays', 'label' => 'Federation',
+    'value' => 'Running', 'detail' => "Queued: 12\nFailure: <b>untrusted</b>", 'state' => 'warning',
+];
+$dashboard_health = [
+    ['id' => 'ip', 'text' => 'IP: 127.0.0.1', 'state' => 'neutral'],
+    ['id' => 'memory', 'text' => 'Memory: — · Could not report', 'state' => 'unknown'],
+];
+
+foreach ([
+    'ServerHealth' => [ServerHealth::class, ['readings' => $dashboard_health]],
+    'ServerHealthEmpty' => [ServerHealth::class, ['readings' => []]],
+    'StatusTile' => [StatusTile::class, $dashboard_tile],
+    'StatusTileUnknown' => [StatusTile::class, array_replace($dashboard_tile, ['state' => 'unknown', 'value' => 'Could not report', 'detail' => ''])],
+    'StatusBoard' => [StatusBoard::class, ['tiles' => [$dashboard_tile]]],
+    'StatusBoardEmpty' => [StatusBoard::class, ['tiles' => []]],
+    'AdminDashboard' => [AdminDashboard::class, ['snapshot' => ['health' => $dashboard_health, 'tiles' => [$dashboard_tile]]]],
+    'AdminDashboardEmpty' => [AdminDashboard::class, ['snapshot' => ['health' => [], 'tiles' => []]]],
+] as $name => [$class, $properties]) {
+    $definitions[$name] = [
+        'class' => $class,
+        'build' => static fn (): HTMLObject => new $class($properties),
+        'payload' => static fn (): array => $properties,
+    ];
+}
 
 $cases = [];
 

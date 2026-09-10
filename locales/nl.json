@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Servergezondheid",
+        "ip": "IP: {address}",
+        "load": "Belasting: {one} / {five} / {fifteen} op {cpus} CPU’s",
+        "memory": "Geheugen: {available} van {total} vrij",
+        "disk": "Schijf: {free} van {total} vrij op {path}",
+        "database": "Database: actieve query's: {running}, verbindingen: {connected}, wachtende vergrendelingsaanvragen: {lockWaits}, actief gedurende {uptime}",
+        "longQueries": "Query’s die langer dan vijf seconden lopen: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Kon de status niet ophalen"
+    },
+    "AdminDashboard": {
+        "members": "Leden",
+        "posts": "Berichten",
+        "federation": "Federatie",
+        "uploads": "Uploads",
+        "notifications": "Live meldingen",
+        "trending": "Trending",
+        "backups": "Back-ups",
+        "moderation": "Moderatie",
+        "running": "Actief",
+        "stopped": "Gestopt",
+        "scheduled": "Gepland",
+        "none": "Geen",
+        "lastRun": "Laatste verversing: {time}",
+        "lastBackup": "Back-upbestanden: {time}",
+        "reports": "Openstaande meldingen: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Vul uw gebruikersnaam of e-mailadres in.",
         "givePassword": "Vul uw wachtwoord in.",

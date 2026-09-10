@@ -5228,8 +5228,8 @@ if ($fresh_install) {
 
 // ---------- 6. Maintenance ----------
 
-// Idempotent DML upkeep defined alongside the DDL in schema.sql (currently
-// the friendCount recompute) - run on the runtime connection, which has the
+// Idempotent DML upkeep defined alongside the DDL in schema.sql (stored
+// counts and conversation pointers) - run on the runtime connection, which has the
 // UPDATE it needs, now that the tables are known-good.
 SchemaInstaller::runMaintenance($mysqli);
 ok('schema.sql maintenance applied (denormalized counts recomputed)');
@@ -5308,7 +5308,13 @@ HashtagGraphList::recompute();
 TrendingHashtagList::recompute();
 ok('popular/trending tag lists materialized');
 
+// Warm/reuse extraction results here in CLI; the web upgrade never runs NER.
+PostEntityCache::retryFailed();
+EntityRanker::recompute();
+ok('post entity extractions cached and topic rankings refreshed');
+
 ensure_places_loaded();
+ok('post place names resolved (' . PostLocation::resolvePending() . ' location(s) backfilled)');
 
 /**
  * Loads the GeoNames place directory (geonames.org, CC BY 4.0) into the

@@ -21,7 +21,7 @@
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
-    .SiteCounters, .ModerationActionCard,
+    .SiteCounters, .ServerHealth, .ModerationActionCard,
     .VideoCallTestPanel
 ) {
     background-color: var(--surface);
@@ -58,10 +58,110 @@
     .PostMap, .MapScrubber, .NearbyLocationPrompt, .NotificationList, .WelcomeBanner,
     .TestResults, .TestSuitePanel, .NotificationTestPanel, .LogoutEverywherePanel,
     .UploadWorkerStatus, .TrendingTimerStatus, .WebSocketStatus, .BannedTrendingEntity,
-    .SiteCounters, .ModerationActionCard,
+    .SiteCounters, .ServerHealth, .ModerationActionCard,
     .VideoCallTestPanel
 ) > *:last-child {
     margin-bottom: 0;
+}
+
+/* ---------- Admin overview ---------- */
+
+.AdminDashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ServerHealth {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+}
+
+.ServerHealth > *, .StatusBoard > h2 {
+    margin: 0;
+}
+
+.StatusBoard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1rem;
+}
+
+.StatusBoard > h2 {
+    grid-column: 1 / -1;
+}
+
+.StatusTile {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: start;
+    gap: 0.25rem 0.75rem;
+    padding: 1rem;
+    color: var(--ink);
+    background-color: var(--surface);
+    background-image: var(--surface-image, none);
+    border: 1px solid var(--hairline);
+    border-inline-start: 4px solid var(--hairline);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.StatusTile:hover {
+    text-decoration: none;
+    box-shadow: var(--shadow-pop);
+}
+
+.StatusTile > [aria-hidden] {
+    grid-row: 1 / 4;
+    font-size: 1.6rem;
+}
+
+.StatusTile > [data-field] {
+    grid-column: 2;
+}
+
+.StatusTile > [data-field="label"] {
+    color: var(--muted);
+}
+
+.StatusTile > [data-field="value"] {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.StatusTile > [data-field="detail"] {
+    font-size: 0.9rem;
+    white-space: pre-line;
+}
+
+.StatusTile[data-state="good"] {
+    border-inline-start-color: var(--accent);
+}
+
+.StatusTile:is([data-state="warning"], [data-state="bad"]) {
+    border-inline-start-color: var(--danger);
+}
+
+.ServerHealth > :is([data-state="warning"], [data-state="bad"]),
+.AdminDashboard > [data-refresh-status] {
+    color: var(--danger);
+}
+
+.AdminDashboard > [data-refresh-status]:empty {
+    display: none;
+}
+
+.AdminLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 /* ---------- Animations ---------- */

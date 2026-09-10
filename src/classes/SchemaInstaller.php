@@ -259,8 +259,8 @@ SELECT `TABLE_NAME`
     /**
      * The non-CREATE-TABLE, non-ALTER-TABLE statements in schema.sql -
      * idempotent DML maintenance the installer runs after tables are ensured,
-     * on every install and upgrade (currently just the Users.friendCount
-     * recompute). Kept in schema.sql so the whole schema, data-maintenance
+     * on every install and upgrade, including stored counts and conversation
+     * pointers. Kept in schema.sql so the whole schema, data-maintenance
      * included, has one source of truth. Same one-statement-per-`;`
      * assumption as the CREATE TABLE parsing (no semicolons inside a
      * statement). ALTER TABLE statements are excluded here - they're DDL

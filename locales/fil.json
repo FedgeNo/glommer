@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Kalusugan ng Server",
+        "ip": "IP: {address}",
+        "load": "Average na load: {one} / {five} / {fifteen} sa {cpus} CPU",
+        "memory": "Memory: {available} sa {total} ang libre",
+        "disk": "Disk: {free} sa {total} ang libre sa {path}",
+        "database": "Database: {running} tumatakbong query, {connected} koneksyon, {lockWaits} paghihintay sa lock, {uptime} nang nakabukas",
+        "longQueries": "Mga query na tumatakbo nang mahigit limang segundo: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Katayuan",
+        "unavailable": "Hindi nakapag-ulat"
+    },
+    "AdminDashboard": {
+        "members": "Mga miyembro",
+        "posts": "Mga post",
+        "federation": "Pederasyon",
+        "uploads": "Mga upload",
+        "notifications": "Mga live na abiso",
+        "trending": "Trending",
+        "backups": "Mga backup",
+        "moderation": "Moderasyon",
+        "running": "Tumatakbo",
+        "stopped": "Nakahinto",
+        "scheduled": "Naka-iskedyul",
+        "none": "Wala",
+        "lastRun": "Huling pag-update: {time}",
+        "lastBackup": "Mga backup file: {time}",
+        "reports": "Mga bukas na ulat: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "{count} boto",

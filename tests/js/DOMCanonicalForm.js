@@ -30,6 +30,10 @@ export function canonical_lines(node, depth = 0) {
 }
 
 function route(url) {
+    // Fragment-only links keep the current page; PHP has no browser base URI
+    // and preserves the fragment rather than inventing a path for it.
+    if (url.startsWith('#')) return url;
+
     try {
         const parsed = new URL(url, document.baseURI);
 

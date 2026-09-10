@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Estat del Servidor",
+        "ip": "IP: {address}",
+        "load": "Càrrega mitjana: {one} / {five} / {fifteen} en {cpus} CPU",
+        "memory": "Memòria: {available} de {total} lliures",
+        "disk": "Disc: {free} de {total} lliures a {path}",
+        "database": "Base de dades: {running} consultes en curs, {connected} connexions, {lockWaits} esperes de bloqueig, activa des de fa {uptime}",
+        "longQueries": "Consultes en curs des de fa més de cinc segons: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Estat",
+        "unavailable": "No s’ha pogut obtenir l’estat"
+    },
+    "AdminDashboard": {
+        "members": "Membres",
+        "posts": "Publicacions",
+        "federation": "Federació",
+        "uploads": "Pujades",
+        "notifications": "Notificacions en directe",
+        "trending": "Tendències",
+        "backups": "Còpies de seguretat",
+        "moderation": "Moderació",
+        "running": "En funcionament",
+        "stopped": "Aturat",
+        "scheduled": "Programat",
+        "none": "Cap",
+        "lastRun": "Darrera actualització: {time}",
+        "lastBackup": "Fitxers de còpia de seguretat: {time}",
+        "reports": "Denúncies obertes: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 vot",

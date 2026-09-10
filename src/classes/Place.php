@@ -301,6 +301,10 @@ SELECT COUNT(*) AS `total`
             $written += self::writeBatch($batch);
         }
 
+        self::$nearestByPoint = [];
+        PostLocation::invalidatePlaces();
+        PostLocation::resolvePending();
+
         return $written;
     }
 

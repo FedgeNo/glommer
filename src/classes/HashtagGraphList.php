@@ -12,8 +12,8 @@ declare(strict_types=1);
  * to rotate/zoom, which would trap the page's scroll on a phone.
  *
  * The nodes are read from the materialized PopularHashtags table (never
- * aggregated at read time); the co-occurrence edges between them are cheap to
- * derive live, bounded to the handful of nodes shown, and ride on the section's
+ * aggregated at read time); their co-occurrence edges are stored alongside
+ * them in PopularHashtagEdges and ride on the section's
  * data-edges attribute (JSON) so they survive DOMDocument's escaping and the
  * browser hands them back intact via dataset. hashtagId is carried on each node
  * only so the edges index against node order.
@@ -61,11 +61,17 @@ SELECT `hashtagId`, `slug`, `title`, `postCount`
 
     /**
      * Recomputes the all-time most-used tags (by count of the top-level,
-     * non-banned posts that carry them) into PopularHashtags. Every kept tag is
-     * stamped with the same computedAt; anything that fell out of the set is
-     * deleted after, so a reader never sees a momentarily-empty table.
+     * non-banned posts that carry them) and their co-occurrence edges. Both
+     * tables are replaced in one transaction, retaining the previous graph
+     * until its replacement commits.
      */
     public static function recompute(): void
+    {
+        DB::transaction(static fn () => self::rebuild());
+    }
+
+    /** Publish the nodes and their connections as one complete generation. */
+    private static function rebuild(): void
     {
         $not_banned = 0;
         $stored = self::STORED;
@@ -83,6 +89,11 @@ SELECT `Hashtags`.`hashtagId`, `Hashtags`.`slug`, `Hashtags`.`title`, COUNT(*) A
 ', 'HashtagNode', 'ii', $not_banned, $stored);
 
         $computed_at = date('Y-m-d H:i:s');
+        $edges = self::countEdges(array_map(static fn (HashtagNode $node): int => (int) $node -> hashtagId, $rows));
+
+        // The transaction keeps the previous generation visible until commit;
+        // the FK cascade removes its edges, including pairs now at zero.
+        DB::run('DELETE FROM `PopularHashtags`');
 
         foreach ($rows as $row) {
             DB::run('
@@ -92,20 +103,37 @@ INSERT INTO `PopularHashtags` (`hashtagId`, `slug`, `title`, `postCount`, `compu
 ', 'issis', $row -> hashtagId, $row -> slug, $row -> title, $row -> postCount, $computed_at);
         }
 
-        DB::run('
-DELETE
-    FROM `PopularHashtags`
-    WHERE `computedAt` < ?
-', 's', $computed_at);
+        foreach ($edges as $edge) {
+            DB::run('
+INSERT INTO `PopularHashtagEdges` (`aId`, `bId`, `weight`)
+    VALUES (?, ?, ?)
+', 'iii', $edge -> aId, $edge -> bId, $edge -> weight);
+        }
 
         Settings::set(self::LAST_RUN_SETTING, $computed_at);
     }
 
+    /** @param int[] $ids @return object[] */
+    private static function countEdges(array $ids): array
+    {
+        if (count($ids) < 2) {
+            return [];
+        }
+
+        $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+
+        return DB::rows('
+SELECT `a`.`hashtagId` AS `aId`, `b`.`hashtagId` AS `bId`, COUNT(*) AS `weight`
+    FROM `PostHashtags` `a`
+    JOIN `PostHashtags` `b` ON `b`.`postId` = `a`.`postId` AND `a`.`hashtagId` < `b`.`hashtagId`
+    WHERE `a`.`hashtagId` IN (' . $placeholders . ') AND `b`.`hashtagId` IN (' . $placeholders . ')
+    GROUP BY `a`.`hashtagId`, `b`.`hashtagId`
+', 'stdClass', str_repeat('i', count($ids) * 2), ...$ids, ...$ids);
+    }
+
     /**
-     * The co-occurrence edges among the given nodes: how many top-level posts
-     * each pair shares, from PostHashtags. Bounded to the node set on both ends
-     * (a handful of tags), so the self-join stays cheap. Edge endpoints are
-     * indices into $nodes.
+     * Stored co-occurrence counts among the given nodes. Edge endpoints in the
+     * browser payload are indices into $nodes, rather than database IDs.
      *
      * @param HashtagNode[] $nodes
      * @return array<int, array{a: int, b: int, weight: int}>
@@ -129,11 +157,9 @@ DELETE
         $bound = array_merge($ids, $ids);
 
         $edge_stmt = DB::run('
-SELECT `a`.`hashtagId` AS `aId`, `b`.`hashtagId` AS `bId`, COUNT(*) AS `weight`
-    FROM `PostHashtags` `a`
-    JOIN `PostHashtags` `b` ON `b`.`postId` = `a`.`postId` AND `a`.`hashtagId` < `b`.`hashtagId`
-    WHERE `a`.`hashtagId` IN (' . $placeholders . ') AND `b`.`hashtagId` IN (' . $placeholders . ')
-    GROUP BY `a`.`hashtagId`, `b`.`hashtagId`
+SELECT `aId`, `bId`, `weight`
+    FROM `PopularHashtagEdges`
+    WHERE `aId` IN (' . $placeholders . ') AND `bId` IN (' . $placeholders . ')
 ', str_repeat('i', count($bound)), ...$bound);
         $edge_result = mysqli_stmt_get_result($edge_stmt);
 

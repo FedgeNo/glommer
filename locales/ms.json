@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Kesihatan Pelayan",
+        "ip": "IP: {address}",
+        "load": "Purata beban: {one} / {five} / {fifteen} pada {cpus} CPU",
+        "memory": "Memori: {available} daripada {total} kosong",
+        "disk": "Cakera: {free} daripada {total} kosong di {path}",
+        "database": "Pangkalan data: {running} pertanyaan sedang berjalan, {connected} sambungan, {lockWaits} menunggu kunci, aktif {uptime}",
+        "longQueries": "Pertanyaan yang berjalan melebihi lima saat: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Tidak dapat mendapatkan status"
+    },
+    "AdminDashboard": {
+        "members": "Ahli",
+        "posts": "Siaran",
+        "federation": "Persekutuan",
+        "uploads": "Muat naik",
+        "notifications": "Pemberitahuan langsung",
+        "trending": "Sohor kini",
+        "backups": "Sandaran",
+        "moderation": "Moderasi",
+        "running": "Berjalan",
+        "stopped": "Dihentikan",
+        "scheduled": "Dijadualkan",
+        "none": "Tiada",
+        "lastRun": "Kemas kini terakhir: {time}",
+        "lastBackup": "Fail sandaran: {time}",
+        "reports": "Laporan terbuka: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "other": "{count} undi"

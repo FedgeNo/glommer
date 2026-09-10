@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Tình Trạng Máy Chủ",
+        "ip": "IP: {address}",
+        "load": "Tải trung bình: {one} / {five} / {fifteen} trên {cpus} CPU",
+        "memory": "Bộ nhớ: trống {available} trong {total}",
+        "disk": "Đĩa: trống {free} trong {total} tại {path}",
+        "database": "Cơ sở dữ liệu: {running} truy vấn đang chạy, {connected} kết nối, {lockWaits} lượt chờ khóa, đã chạy {uptime}",
+        "longQueries": "Truy vấn chạy lâu hơn năm giây: {count}",
+        "longQuery": "{seconds} giây: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Trạng Thái",
+        "unavailable": "Không thể báo cáo"
+    },
+    "AdminDashboard": {
+        "members": "Thành viên",
+        "posts": "Bài viết",
+        "federation": "Liên hợp",
+        "uploads": "Tải lên",
+        "notifications": "Thông báo trực tiếp",
+        "trending": "Xu hướng",
+        "backups": "Bản sao lưu",
+        "moderation": "Kiểm duyệt",
+        "running": "Đang chạy",
+        "stopped": "Đã dừng",
+        "scheduled": "Đã lên lịch",
+        "none": "Không có",
+        "lastRun": "Làm mới lần cuối: {time}",
+        "lastBackup": "Tệp sao lưu: {time}",
+        "reports": "Báo cáo chưa xử lý: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "other": "{count} phiếu bầu"

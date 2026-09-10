@@ -92,7 +92,7 @@ SELECT *
         ];
     }
 
-    private static function tallyFor(int $option_id): int
+    private function tallyFor(int $option_id): int
     {
         $row = DB::row('
 SELECT COUNT(*) AS `total`
@@ -100,7 +100,13 @@ SELECT COUNT(*) AS `total`
     WHERE `pollOptionId` = ?
 ', 'PostCountData', 'i', $option_id);
 
-        return $row === null ? 0 : (int) $row -> total;
+        $option = DB::row('SELECT `localVoteCount`, `pollId` FROM `PollOptions` WHERE `pollOptionId` = ?', 'PollOption', 'i', $option_id);
+        $this -> assertSame((int) $row -> total, $option -> localVoteCount);
+        $voters = DB::row('SELECT COUNT(DISTINCT `userId`) AS `total` FROM `PollVotes` WHERE `pollId` = ?', 'stdClass', 'i', $option -> pollId);
+        $poll = DB::row('SELECT `localVoterCount` FROM `Polls` WHERE `pollId` = ?', 'Poll', 'i', $option -> pollId);
+        $this -> assertSame((int) $voters -> total, $poll -> localVoterCount);
+
+        return $option -> localVoteCount;
     }
 
     /** @return FediverseDeliveryData[] */

@@ -348,6 +348,11 @@ $detected_language = LanguageDetector::of($description_value);
 // rolled-back assembly signals nothing.
 mysqli_begin_transaction(DB::connection());
 
+// Locks the parent before the reply's FK does. A failed insert rolls this back.
+if ($parent_id !== null) {
+    Post::adjustCounts($parent_id, replies: 1);
+}
+
 DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `quotedPostId`, `detectedLanguage`)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -357,10 +362,7 @@ $post_id = (int) mysqli_insert_id(DB::connection());
 // Coordinates live in their own postId-keyed table, so only a post that
 // actually has a location costs a row.
 if ($latitude !== null && $longitude !== null) {
-    DB::run('
-INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
-    VALUES (?, ?, ?)
-', 'idd', $post_id, $latitude, $longitude);
+    PostLocation::save($post_id, $latitude, $longitude);
 }
 
 Hashtag::indexPost($post_id, $description_ops);
@@ -443,6 +445,7 @@ $post -> linkURL = $link_url_value;
 $post -> createdAt = date('Y-m-d H:i:s');
 $post -> latitude = $latitude;
 $post -> longitude = $longitude;
+$post -> placeLabel = $latitude === null ? null : (PostLocation::forPosts([$post_id])[$post_id]['placeLabel'] ?? null);
 $post -> sensitive = $sensitive;
 $post -> contentWarning = $content_warning;
 $post -> quotedPostId = $quoted_post_id;
@@ -469,4 +472,4 @@ if ($parent_id !== null) {
 // that follows them.
 FediversePublisher::published($post, $current_user);
 
-JSONResponse::success($post -> toPayload(0, 0, false, false)) -> send();
+JSONResponse::success($post -> toPayload(false, false)) -> send();

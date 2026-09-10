@@ -47,4 +47,32 @@ class Backup
 
         return false;
     }
+
+    /** Metadata only: never read the database dump or scan the uploads tree. */
+    public static function archiveStatus(?string $root = null): array
+    {
+        $root ??= self::rootDir();
+
+        if (!is_dir($root) || !is_readable($root)) {
+            return ['readable' => false, 'time' => null];
+        }
+
+        $latest = null;
+
+        foreach (glob($root . '/*', GLOB_ONLYDIR) ?: [] as $directory) {
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', basename($directory))) {
+                continue;
+            }
+
+            $dump = $directory . '/database.sql.gz';
+            $uploads = $directory . '/uploads.tar.gz';
+
+            if (is_file($dump) && is_file($uploads) && @filesize($dump) > 0 && @filesize($uploads) > 0) {
+                $modified = max((int) @filemtime($dump), (int) @filemtime($uploads));
+                $latest = max($latest ?? 0, $modified);
+            }
+        }
+
+        return ['readable' => true, 'time' => $latest];
+    }
 }

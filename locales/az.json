@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serverin Vəziyyəti",
+        "ip": "IP: {address}",
+        "load": "Orta yük: {cpus} CPU üzrə {one} / {five} / {fifteen}",
+        "memory": "Yaddaş: cəmi {total}, boş {available}",
+        "disk": "Disk: {path} üzrə cəmi {total}, boş {free}",
+        "database": "Verilənlər bazası: {running} işləyən sorğu, {connected} bağlantı, {lockWaits} kilid gözləməsi, {uptime} müddətdir açıq",
+        "longQueries": "Beş saniyədən çox işləyən sorğular: {count}",
+        "longQuery": "{seconds}san: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Vəziyyət",
+        "unavailable": "Hesabat verilə bilmədi"
+    },
+    "AdminDashboard": {
+        "members": "Üzvlər",
+        "posts": "Paylaşımlar",
+        "federation": "Federasiya",
+        "uploads": "Yükləmələr",
+        "notifications": "Canlı bildirişlər",
+        "trending": "Trenddə",
+        "backups": "Ehtiyat nüsxələr",
+        "moderation": "Moderasiya",
+        "running": "İşləyir",
+        "stopped": "Dayandırılıb",
+        "scheduled": "Planlaşdırılıb",
+        "none": "Yoxdur",
+        "lastRun": "Son yenilənmə: {time}",
+        "lastBackup": "Ehtiyat nüsxə faylları: {time}",
+        "reports": "Açıq şikayətlər: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 səs",

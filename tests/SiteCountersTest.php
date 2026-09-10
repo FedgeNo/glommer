@@ -131,4 +131,15 @@ INSERT INTO `Posts` (`userId`, `description`, `createdAt`)
             $this -> assertTrue(str_contains($markup, $label), 'missing: ' . $label);
         }
     }
+
+    public function testFastDashboardCountsOnlyTheDeliveryQueues(): void
+    {
+        $complete = SiteCounters::counts();
+        $fast = SiteCounters::counts(false);
+        $this -> assertNull($fast -> members);
+        $this -> assertNull($fast -> posts);
+        $this -> assertNull($fast -> postedThisWeek);
+        $this -> assertSame($complete -> deliveriesQueued, $fast -> deliveriesQueued);
+        $this -> assertSame($complete -> deliveriesFailing, $fast -> deliveriesFailing);
+    }
 }

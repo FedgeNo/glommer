@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Stanje Strežnika",
+        "ip": "IP: {address}",
+        "load": "Povprečna obremenitev: {one} / {five} / {fifteen} na {cpus} CPU",
+        "memory": "Pomnilnik: prosto {available} od {total}",
+        "disk": "Disk: prosto {free} od {total} na {path}",
+        "database": "Zbirka podatkov: poizvedbe v teku: {running}; povezave: {connected}; čakanja na zaklep: {lockWaits}; čas delovanja: {uptime}",
+        "longQueries": "Poizvedbe, ki tečejo dlje kot pet sekund: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stanje",
+        "unavailable": "Stanja ni bilo mogoče pridobiti"
+    },
+    "AdminDashboard": {
+        "members": "Člani",
+        "posts": "Objave",
+        "federation": "Federacija",
+        "uploads": "Nalaganja",
+        "notifications": "Obvestila v živo",
+        "trending": "Trendi",
+        "backups": "Varnostne kopije",
+        "moderation": "Moderiranje",
+        "running": "Deluje",
+        "stopped": "Ustavljeno",
+        "scheduled": "Načrtovano",
+        "none": "Nič",
+        "lastRun": "Zadnja osvežitev: {time}",
+        "lastBackup": "Datoteke varnostne kopije: {time}",
+        "reports": "Odprte prijave: {count}"
+    },
     "AboutPage": {
         "softwareBefore": "To spletno mesto uporablja ",
         "softwareAfter": ", različica {version}",

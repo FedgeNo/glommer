@@ -14,13 +14,15 @@ if (Auth::id() !== 1) {
 }
 
 $page = new Page(['title' => (string) (Strings::for('PageTitle')['adminSettings'] ?? '')]);
+header('Cache-Control: private, no-store');
 
 $words = Strings::for('AdminSettings');
-$page -> addContent(new SettingsSection((string) ($words['services'] ?? ''), new ServicesStatus()));
+$page -> addContent(new AdminDashboard());
+$page -> addContent(new AdminLinks());
 
-// How the site is doing, which is a different question from whether the
-// daemons are up - so it opens and closes on its own.
-$page -> addContent(new SettingsSection((string) ($words['statistics'] ?? ''), new SiteCounters()));
+$services = new SettingsSection((string) ($words['services'] ?? ''), new ServicesStatus());
+$services -> id = 'AdminServices';
+$page -> addContent($services);
 
 // What the moderators have done. Here rather than on Mod Settings on purpose:
 // it is the record of their work, and the person it answers to is the one who
@@ -30,7 +32,9 @@ $page -> addContent(new SettingsSection((string) ($words['moderationLog'] ?? '')
 // Relays are a subscription this server takes out, which is administration
 // rather than moderation - and short enough to read here rather than on a
 // page of its own.
-$page -> addContent(new SettingsSection((string) ($words['relays'] ?? ''), new RelaysSetting()));
+$relays = new SettingsSection((string) ($words['relays'] ?? ''), new RelaysSetting());
+$relays -> id = 'AdminRelays';
+$page -> addContent($relays);
 
 $page -> addContent(new SettingsSection((string) ($words['tests'] ?? ''), new TestSuitePanel()));
 

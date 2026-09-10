@@ -87,12 +87,12 @@ class SiteCounters extends Div
      * apiece: this is a panel somebody opens, not a hot path, but it is also
      * seven round trips that do not need to be.
      */
-    private static function counts(): SiteCountersData
+    public static function counts(bool $include_community = true): SiteCountersData
     {
         $since = date('Y-m-d H:i:s', time() - self::RECENT_DAYS * 86400);
-
-        return DB::row('
-SELECT
+        // The live dashboard reads queues frequently; the larger community
+        // counts are refreshed once a minute, independently of that polling.
+        $community_columns = $include_community ? '
     (SELECT COUNT(*) FROM `Users` WHERE `remoteActorURI` IS NULL) AS `members`,
     (SELECT COUNT(*) FROM `Users` WHERE `remoteActorURI` IS NULL AND `createdAt` >= ?) AS `joinedThisWeek`,
     (SELECT COUNT(DISTINCT `Posts`.`userId`)
@@ -101,8 +101,12 @@ SELECT
         WHERE `Users`.`remoteActorURI` IS NULL AND `Posts`.`createdAt` >= ?) AS `postedThisWeek`,
     (SELECT COUNT(*) FROM `Posts` WHERE `remoteObjectURI` IS NULL) AS `posts`,
     (SELECT COUNT(*) FROM `Posts` WHERE `remoteObjectURI` IS NULL AND `createdAt` >= ?) AS `postsThisWeek`,
+' : '';
+
+        return DB::row('
+SELECT ' . $community_columns . '
     (SELECT COUNT(*) FROM `FediverseDeliveries`) AS `deliveriesQueued`,
     (SELECT COUNT(*) FROM `FediverseDeliveries` WHERE `attempts` > 0) AS `deliveriesFailing`
-', 'SiteCountersData', 'sss', $since, $since, $since) ?? new SiteCountersData();
+', 'SiteCountersData', $include_community ? 'sss' : null, ...($include_community ? [$since, $since, $since] : [])) ?? new SiteCountersData();
     }
 }

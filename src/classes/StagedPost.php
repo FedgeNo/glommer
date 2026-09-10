@@ -165,10 +165,7 @@ INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `link
         $post_id = (int) mysqli_insert_id(DB::connection());
 
         if ($this -> latitude !== null && $this -> longitude !== null) {
-            DB::run('
-INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
-    VALUES (?, ?, ?)
-', 'idd', $post_id, $this -> latitude, $this -> longitude);
+            PostLocation::save($post_id, $this -> latitude, $this -> longitude);
         }
 
         Hashtag::indexPost($post_id, $description_ops);
@@ -185,6 +182,7 @@ INSERT INTO `PostLocations` (`postId`, `latitude`, `longitude`)
         $post -> createdAt = date('Y-m-d H:i:s');
         $post -> latitude = $this -> latitude;
         $post -> longitude = $this -> longitude;
+        $post -> placeLabel = $this -> latitude === null ? null : (PostLocation::forPosts([$post_id])[$post_id]['placeLabel'] ?? null);
         $post -> sensitive = $this -> sensitive;
         $post -> remoteObjectURI = null;
         $post -> author = $author;

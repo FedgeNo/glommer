@@ -80,10 +80,7 @@ SELECT `pollOptionId`
             return;
         }
 
-        DB::run('
-INSERT IGNORE INTO `PollVotes` (`pollId`, `pollOptionId`, `userId`)
-    VALUES (?, ?, ?)
-', 'iii', (int) $poll -> pollId, (int) $option -> pollOptionId, (int) $voter -> userId);
+        Poll::vote((int) $poll -> pollId, (int) $voter -> userId, [(int) $option -> pollOptionId], append: true);
     }
 
     /**

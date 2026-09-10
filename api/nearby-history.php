@@ -44,8 +44,6 @@ $post_payloads = [];
 
 foreach ($page['items'] as $post) {
     $post_payloads[] = $post -> toPayload(
-        (int) $post -> replyCount,
-        (int) $post -> likeCount,
         (bool) $post -> liked,
         (bool) $post -> bookmarked
     );

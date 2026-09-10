@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Stav Servera",
+        "ip": "IP: {address}",
+        "load": "Priemerná záťaž: {one} / {five} / {fifteen} na {cpus} CPU",
+        "memory": "Pamäť: voľné {available} z {total}",
+        "disk": "Disk: voľné {free} z {total} na {path}",
+        "database": "Databáza: bežiace dopyty: {running}; pripojenia: {connected}; čakania na zámok: {lockWaits}; čas prevádzky: {uptime}",
+        "longQueries": "Dopyty bežiace dlhšie ako päť sekúnd: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stav",
+        "unavailable": "Nepodarilo sa zistiť stav"
+    },
+    "AdminDashboard": {
+        "members": "Členovia",
+        "posts": "Príspevky",
+        "federation": "Federácia",
+        "uploads": "Nahrávanie",
+        "notifications": "Živé oznámenia",
+        "trending": "Trendy",
+        "backups": "Zálohy",
+        "moderation": "Moderovanie",
+        "running": "Beží",
+        "stopped": "Zastavené",
+        "scheduled": "Naplánované",
+        "none": "Žiadne",
+        "lastRun": "Posledná aktualizácia: {time}",
+        "lastBackup": "Súbory zálohy: {time}",
+        "reports": "Otvorené hlásenia: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Zadajte svoje používateľské meno alebo e-mail.",
         "givePassword": "Zadajte svoje heslo.",

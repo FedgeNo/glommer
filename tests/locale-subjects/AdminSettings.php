@@ -9,6 +9,9 @@ declare(strict_types=1);
  * @return array<string, callable(): HTMLObject>
  */
 return [
+    ServerHealth::class => static fn (): HTMLObject => new ServerHealth(['readings' => ServerHealth::readings([])]),
+    StatusBoard::class => static fn (): HTMLObject => new StatusBoard(),
+    AdminDashboard::class => static fn (): HTMLObject => new AdminDashboard(['snapshot' => AdminStatus::snapshot(true, [])]),
     MailSettingsForm::class => static fn (): HTMLObject => new MailSettingsForm(),
     MapSettingsForm::class => static fn (): HTMLObject => new MapSettingsForm(),
     GoogleAuthSettingsForm::class => static fn (): HTMLObject => new GoogleAuthSettingsForm(),

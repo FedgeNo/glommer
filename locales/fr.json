@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "État du Serveur",
+        "ip": "IP: {address}",
+        "load": "Charge moyenne : {one} / {five} / {fifteen} sur {cpus} CPU",
+        "memory": "Mémoire : {available} libres sur {total}",
+        "disk": "Disque : {free} libres sur {total} pour {path}",
+        "database": "Base de données : {running} requêtes en cours, {connected} connexions, {lockWaits} attentes de verrou, en ligne depuis {uptime}",
+        "longQueries": "Requêtes en cours depuis plus de cinq secondes : {count}",
+        "longQuery": "{seconds}s : {query}"
+    },
+    "StatusBoard": {
+        "heading": "État",
+        "unavailable": "Impossible d’obtenir l’état"
+    },
+    "AdminDashboard": {
+        "members": "Membres",
+        "posts": "Publications",
+        "federation": "Fédération",
+        "uploads": "Téléversements",
+        "notifications": "Notifications en direct",
+        "trending": "Tendances",
+        "backups": "Sauvegardes",
+        "moderation": "Modération",
+        "running": "En cours d’exécution",
+        "stopped": "Arrêté",
+        "scheduled": "Planifié",
+        "none": "Aucun",
+        "lastRun": "Dernière actualisation : {time}",
+        "lastBackup": "Fichiers de sauvegarde : {time}",
+        "reports": "Signalements ouverts : {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Veuillez indiquer votre nom d’utilisateur ou votre adresse e-mail.",
         "givePassword": "Veuillez indiquer votre mot de passe.",

@@ -59,6 +59,130 @@ import {
 } from '/scripts/HTMLObjects.js';
 
 
+// AdminDashboard.js
+const AdminDashboardModule = (() => {
+class AdminDashboard {
+    static instances = new WeakMap();
+
+    static init() {
+        document.querySelectorAll('.AdminDashboard').forEach(root => {
+            if (AdminDashboard.instances.has(root)) return;
+
+            const controller = new AdminDashboard(root);
+            AdminDashboard.instances.set(root, controller);
+            controller.start();
+        });
+    }
+
+    constructor(root) {
+        this.root = root;
+        this.timer = null;
+        this.request = null;
+        this.running = false;
+        this.lastOverview = Date.now();
+        this.visibility = () => {
+            clearTimeout(this.timer);
+            if (!document.hidden) void this.refresh();
+        };
+        this.pagehide = () => this.stop();
+        this.pageshow = event => { if (event.persisted) this.start(); };
+        this.openSection = event => {
+            const href = event.target.closest('a')?.getAttribute('href');
+            if (href !== '#AdminServices' && href !== '#AdminRelays') return;
+            const section = document.getElementById(href.slice(1));
+            if (section?.tagName === 'DETAILS') section.open = true;
+        };
+        root.addEventListener('click', this.openSection);
+        window.addEventListener('pageshow', this.pageshow);
+    }
+
+    start() {
+        if (this.running) return;
+        this.running = true;
+        document.addEventListener('visibilitychange', this.visibility);
+        window.addEventListener('pagehide', this.pagehide);
+        this.schedule();
+    }
+
+    stop() {
+        this.running = false;
+        clearTimeout(this.timer);
+        this.request?.abort();
+        document.removeEventListener('visibilitychange', this.visibility);
+        window.removeEventListener('pagehide', this.pagehide);
+    }
+
+    schedule() {
+        clearTimeout(this.timer);
+        if (this.running && !document.hidden) this.timer = setTimeout(() => void this.refresh(), 10000);
+    }
+
+    async refresh() {
+        if (!this.root.isConnected) {
+            this.stop();
+            return;
+        }
+        if (!this.running || document.hidden || this.request) return;
+
+        const request = new AbortController();
+        this.request = request;
+        const overview = Date.now() - this.lastOverview >= 60000;
+
+        try {
+            const result = await Api.request('/api/admin-status', { overview }, { signal: request.signal });
+            if (!this.running) return;
+            const snapshot = result.data?.response;
+            const status = this.root.querySelector('[data-refresh-status]');
+
+            if (result.ok && Array.isArray(snapshot?.health) && Array.isArray(snapshot?.tiles)) {
+                this.update(snapshot);
+                if (overview) this.lastOverview = Date.now();
+                if (status) status.textContent = '';
+            } else {
+                if (status) status.textContent = Strings.for('StatusBoard').unavailable ?? '';
+                if (result.status === 401 || result.status === 403) this.stop();
+            }
+        } finally {
+            this.request = null;
+            this.schedule();
+        }
+    }
+
+    update(snapshot) {
+        const states = new Set(['neutral', 'good', 'warning', 'bad', 'unknown']);
+        const health = new Map(Array.from(this.root.querySelectorAll('[data-reading]'), node => [node.dataset.reading, node]));
+        const tiles = new Map(Array.from(this.root.querySelectorAll('[data-tile]'), node => [node.dataset.tile, node]));
+
+        for (const reading of snapshot.health) {
+            const node = health.get(reading?.id);
+            if (!node || typeof reading.text !== 'string' || !states.has(reading.state)) continue;
+            node.textContent = reading.text;
+            node.dataset.state = reading.state;
+        }
+
+        for (const tile of snapshot.tiles) {
+            const node = tiles.get(tile?.id);
+            if (!node || !states.has(tile.state) || !['label', 'value', 'detail'].every(field => typeof tile[field] === 'string')) continue;
+            for (const field of ['label', 'value', 'detail']) {
+                node.querySelector('[data-field="' + field + '"]').textContent = tile[field];
+            }
+            node.dataset.state = tile.state;
+        }
+    }
+
+    destroy() {
+        this.stop();
+        this.root.removeEventListener('click', this.openSection);
+        window.removeEventListener('pageshow', this.pageshow);
+        AdminDashboard.instances.delete(this.root);
+    }
+}
+
+ReadyHandler.add(AdminDashboard.init);
+return { AdminDashboard };
+})();
+export const AdminDashboard = AdminDashboardModule.AdminDashboard;
+
 // Coordinates.js
 const CoordinatesModule = (() => {
 /**

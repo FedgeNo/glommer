@@ -923,12 +923,21 @@ UPDATE `Posts`
         }
 
         $language = self::languageOf($object);
+        $detected_language = LanguageDetector::of((string) $description);
 
         try {
-            DB::run('
+            $post_id = DB::transaction(static function () use ($author, $parent_id, $description, $description_delta, $object_uri, $sensitive, $content_warning, $quoted_post_id, $language, $detected_language): int {
+                if ($parent_id !== null) {
+                    Post::adjustCounts($parent_id, replies: 1);
+                }
+
+                DB::run('
 INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `remoteObjectURI`, `sensitive`, `contentWarning`, `quotedPostId`, `language`, `detectedLanguage`)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'iisssisiss', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $content_warning, $quoted_post_id, $language, LanguageDetector::of((string) $description));
+', 'iisssisiss', $author -> userId, $parent_id, $description, $description_delta, $object_uri, $sensitive, $content_warning, $quoted_post_id, $language, $detected_language);
+
+                return (int) mysqli_insert_id(DB::connection());
+            });
         } catch (\mysqli_sql_exception $exception) {
             // 1062 = the unique remoteObjectURI rejected a post already held.
             // Two relays naming the same post at once is an ordinary race, not
@@ -939,8 +948,6 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
 
             throw $exception;
         }
-
-        $post_id = (int) mysqli_insert_id(DB::connection());
 
         // Its tags belong to this site's tag pages now. The body links them
         // here rather than back to whoever wrote it (see HTMLToDelta), and a

@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "সার্ভারের অবস্থা",
+        "ip": "IP: {address}",
+        "load": "গড় লোড: {cpus}টি CPU-তে {one} / {five} / {fifteen}",
+        "memory": "মেমরি: {total}-এর মধ্যে {available} খালি",
+        "disk": "ডিস্ক: {path}-এ {total}-এর মধ্যে {free} খালি",
+        "database": "ডাটাবেস: {running}টি চলমান কোয়েরি, {connected}টি সংযোগ, {lockWaits}টি লকের জন্য অপেক্ষা, {uptime} ধরে চালু",
+        "longQueries": "পাঁচ সেকেন্ডের বেশি সময় ধরে চলা কোয়েরি: {count}",
+        "longQuery": "{seconds} সেকেন্ড: {query}"
+    },
+    "StatusBoard": {
+        "heading": "অবস্থা",
+        "unavailable": "অবস্থা জানানো যায়নি"
+    },
+    "AdminDashboard": {
+        "members": "সদস্য",
+        "posts": "পোস্ট",
+        "federation": "ফেডারেশন",
+        "uploads": "আপলোড",
+        "notifications": "তাৎক্ষণিক বিজ্ঞপ্তি",
+        "trending": "জনপ্রিয়",
+        "backups": "ব্যাকআপ",
+        "moderation": "মডারেশন",
+        "running": "চলছে",
+        "stopped": "বন্ধ",
+        "scheduled": "নির্ধারিত",
+        "none": "নেই",
+        "lastRun": "সর্বশেষ হালনাগাদ: {time}",
+        "lastBackup": "ব্যাকআপ ফাইল: {time}",
+        "reports": "অমীমাংসিত রিপোর্ট: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "{count}টি ভোট",

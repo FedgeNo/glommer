@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serverio Būklė",
+        "ip": "IP: {address}",
+        "load": "Apkrova: {one} / {five} / {fifteen} su {cpus} CPU",
+        "memory": "Atmintis: laisva {available} iš {total}",
+        "disk": "Diskas: laisva {free} iš {total} kelyje {path}",
+        "database": "Duomenų bazė: vykdomų užklausų: {running}, ryšių: {connected}, užraktų laukimų: {lockWaits}, veikia {uptime}",
+        "longQueries": "Užklausos, vykdomos ilgiau nei penkias sekundes: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Būsena",
+        "unavailable": "Nepavyko gauti būsenos"
+    },
+    "AdminDashboard": {
+        "members": "Nariai",
+        "posts": "Įrašai",
+        "federation": "Federacija",
+        "uploads": "Įkėlimai",
+        "notifications": "Pranešimai realiuoju laiku",
+        "trending": "Tendencijos",
+        "backups": "Atsarginės kopijos",
+        "moderation": "Moderavimas",
+        "running": "Veikia",
+        "stopped": "Sustabdyta",
+        "scheduled": "Suplanuota",
+        "none": "Nėra",
+        "lastRun": "Paskutinis atnaujinimas: {time}",
+        "lastBackup": "Atsarginės kopijos failai: {time}",
+        "reports": "Atviri pranešimai: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Įveskite naudotojo vardą arba el. paštą.",
         "givePassword": "Įveskite slaptažodį.",

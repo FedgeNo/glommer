@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "حالة الخادم",
+        "ip": "IP: {address}",
+        "load": "متوسط الحمل: {one} / {five} / {fifteen} على {cpus} معالجات",
+        "memory": "الذاكرة: {available} متاحة من {total}",
+        "disk": "القرص: {free} متاحة من {total} على {path}",
+        "database": "قاعدة البيانات: {running} استعلامات قيد التنفيذ، {connected} اتصالات، {lockWaits} انتظارات قفل، تعمل منذ {uptime}",
+        "longQueries": "استعلامات تعمل منذ أكثر من خمس ثوانٍ: {count}",
+        "longQuery": "{seconds}ث: {query}"
+    },
+    "StatusBoard": {
+        "heading": "الحالة",
+        "unavailable": "تعذر الإبلاغ"
+    },
+    "AdminDashboard": {
+        "members": "الأعضاء",
+        "posts": "المنشورات",
+        "federation": "الاتحاد",
+        "uploads": "التحميلات",
+        "notifications": "الإشعارات المباشرة",
+        "trending": "الرائج",
+        "backups": "النسخ الاحتياطية",
+        "moderation": "الإشراف",
+        "running": "قيد التشغيل",
+        "stopped": "متوقف",
+        "scheduled": "مجدول",
+        "none": "لا يوجد",
+        "lastRun": "آخر تحديث: {time}",
+        "lastBackup": "ملفات النسخ الاحتياطي: {time}",
+        "reports": "البلاغات المفتوحة: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "يرجى إدخال اسم المستخدم أو البريد الإلكتروني.",
         "givePassword": "يرجى إدخال كلمة المرور.",

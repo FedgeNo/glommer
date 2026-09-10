@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serverzustand",
+        "ip": "IP: {address}",
+        "load": "Durchschnittliche Systemlast: {one} / {five} / {fifteen} auf {cpus} CPUs",
+        "memory": "Arbeitsspeicher: {available} von {total} frei",
+        "disk": "Festplatte: {free} von {total} frei auf {path}",
+        "database": "Datenbank: {running} laufende Abfragen, {connected} Verbindungen, {lockWaits} Wartevorgänge auf Sperren, läuft seit {uptime}",
+        "longQueries": "Abfragen, die länger als fünf Sekunden laufen: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Status konnte nicht ermittelt werden"
+    },
+    "AdminDashboard": {
+        "members": "Mitglieder",
+        "posts": "Beiträge",
+        "federation": "Föderation",
+        "uploads": "Uploads",
+        "notifications": "Live-Benachrichtigungen",
+        "trending": "Trends",
+        "backups": "Sicherungen",
+        "moderation": "Moderation",
+        "running": "Läuft",
+        "stopped": "Gestoppt",
+        "scheduled": "Geplant",
+        "none": "Keine",
+        "lastRun": "Letzte Aktualisierung: {time}",
+        "lastBackup": "Sicherungsdateien: {time}",
+        "reports": "Offene Meldungen: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 Stimme",

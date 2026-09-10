@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Сервердин Абалы",
+        "ip": "IP: {address}",
+        "load": "Орточо жүктөм: {cpus} CPUда {one} / {five} / {fifteen}",
+        "memory": "Эстутум: {total} ичинен {available} бош",
+        "disk": "Диск: {path} боюнча {total} ичинен {free} бош",
+        "database": "Маалымат базасы: {running} сурам аткарылууда, {connected} байланыш, {lockWaits} кулпу күтүү, иштеген убактысы: {uptime}",
+        "longQueries": "Беш секунддан узак аткарылып жаткан сурамдар: {count}",
+        "longQuery": "{seconds}с: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Абал",
+        "unavailable": "Абалын аныктоо мүмкүн болгон жок"
+    },
+    "AdminDashboard": {
+        "members": "Мүчөлөр",
+        "posts": "Посттор",
+        "federation": "Федерация",
+        "uploads": "Жүктөөлөр",
+        "notifications": "Түз билдирмелер",
+        "trending": "Популярдуу",
+        "backups": "Камдык көчүрмөлөр",
+        "moderation": "Модерация",
+        "running": "Иштеп жатат",
+        "stopped": "Токтотулган",
+        "scheduled": "Пландалган",
+        "none": "Жок",
+        "lastRun": "Акыркы жаңыртуу: {time}",
+        "lastBackup": "Камдык көчүрмө файлдары: {time}",
+        "reports": "Ачык арыздар: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 добуш",

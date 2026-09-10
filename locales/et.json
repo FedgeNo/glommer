@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serveri Seisund",
+        "ip": "IP: {address}",
+        "load": "Koormus: {one} / {five} / {fifteen} {cpus} protsessoril",
+        "memory": "Mälu: {available} / {total} vaba",
+        "disk": "Ketas: {free} / {total} vaba asukohas {path}",
+        "database": "Andmebaas: {running} käimasolevat päringut, {connected} ühendust, {lockWaits} lukuootust, töötab {uptime}",
+        "longQueries": "Üle viie sekundi kestnud päringud: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Olek",
+        "unavailable": "Olekut ei õnnestunud tuvastada"
+    },
+    "AdminDashboard": {
+        "members": "Liikmed",
+        "posts": "Postitused",
+        "federation": "Föderatsioon",
+        "uploads": "Üleslaadimised",
+        "notifications": "Reaalajateavitused",
+        "trending": "Populaarne",
+        "backups": "Varukoopiad",
+        "moderation": "Modereerimine",
+        "running": "Töötab",
+        "stopped": "Peatatud",
+        "scheduled": "Ajastatud",
+        "none": "Puudub",
+        "lastRun": "Viimane värskendus: {time}",
+        "lastBackup": "Varukoopiafailid: {time}",
+        "reports": "Avatud teated: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Palun sisesta oma kasutajanimi või e-posti aadress.",
         "givePassword": "Palun sisesta oma parool.",

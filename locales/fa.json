@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "سلامت سرور",
+        "ip": "IP: {address}",
+        "load": "میانگین بار: {one} / {five} / {fifteen} روی {cpus} پردازنده",
+        "memory": "حافظه: {available} از {total} آزاد",
+        "disk": "دیسک: {free} از {total} آزاد در {path}",
+        "database": "پایگاه داده: {running} پرس‌وجوی در حال اجرا، {connected} اتصال، {lockWaits} انتظار قفل، روشن از {uptime} پیش",
+        "longQueries": "پرس‌وجوهایی که بیش از پنج ثانیه در حال اجرا هستند: {count}",
+        "longQuery": "{seconds}ث: {query}"
+    },
+    "StatusBoard": {
+        "heading": "وضعیت",
+        "unavailable": "دریافت وضعیت ممکن نشد"
+    },
+    "AdminDashboard": {
+        "members": "اعضا",
+        "posts": "پست‌ها",
+        "federation": "فدراسیون",
+        "uploads": "بارگذاری‌ها",
+        "notifications": "اعلان‌های زنده",
+        "trending": "پرطرفدارها",
+        "backups": "پشتیبان‌ها",
+        "moderation": "مدیریت محتوا",
+        "running": "در حال اجرا",
+        "stopped": "متوقف",
+        "scheduled": "زمان‌بندی‌شده",
+        "none": "هیچ‌کدام",
+        "lastRun": "آخرین به‌روزرسانی: {time}",
+        "lastBackup": "فایل‌های پشتیبان: {time}",
+        "reports": "گزارش‌های باز: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "{count} رأی",

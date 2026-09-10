@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Serverens Tilstand",
+        "ip": "IP: {address}",
+        "load": "Gennemsnitlig belastning: {one} / {five} / {fifteen} på {cpus} CPU’er",
+        "memory": "Hukommelse: {available} af {total} ledig",
+        "disk": "Disk: {free} af {total} ledig på {path}",
+        "database": "Database: {running} kørende forespørgsler, {connected} forbindelser, {lockWaits} forespørgsler venter på låse, kørt i {uptime}",
+        "longQueries": "Forespørgsler, der har kørt længere end fem sekunder: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Status kunne ikke hentes"
+    },
+    "AdminDashboard": {
+        "members": "Medlemmer",
+        "posts": "Opslag",
+        "federation": "Føderation",
+        "uploads": "Uploads",
+        "notifications": "Livenotifikationer",
+        "trending": "Trends",
+        "backups": "Sikkerhedskopier",
+        "moderation": "Moderation",
+        "running": "Kører",
+        "stopped": "Stoppet",
+        "scheduled": "Planlagt",
+        "none": "Ingen",
+        "lastRun": "Seneste opdatering: {time}",
+        "lastBackup": "Backupfiler: {time}",
+        "reports": "Åbne anmeldelser: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 stemme",

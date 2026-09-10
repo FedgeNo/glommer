@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "สถานะเซิร์ฟเวอร์",
+        "ip": "IP: {address}",
+        "load": "โหลดเฉลี่ย: {one} / {five} / {fifteen} บน {cpus} CPU",
+        "memory": "หน่วยความจำ: ว่าง {available} จาก {total}",
+        "disk": "ดิสก์: ว่าง {free} จาก {total} ที่ {path}",
+        "database": "ฐานข้อมูล: คิวรีกำลังรัน {running} รายการ, การเชื่อมต่อ {connected} รายการ, รอล็อก {lockWaits} รายการ, ทำงานมาแล้ว {uptime}",
+        "longQueries": "คิวรีที่รันนานกว่าห้าวินาที: {count}",
+        "longQuery": "{seconds} วินาที: {query}"
+    },
+    "StatusBoard": {
+        "heading": "สถานะ",
+        "unavailable": "ไม่สามารถรายงานได้"
+    },
+    "AdminDashboard": {
+        "members": "สมาชิก",
+        "posts": "โพสต์",
+        "federation": "สหพันธ์",
+        "uploads": "การอัปโหลด",
+        "notifications": "การแจ้งเตือนแบบสด",
+        "trending": "กำลังนิยม",
+        "backups": "ข้อมูลสำรอง",
+        "moderation": "การกลั่นกรอง",
+        "running": "กำลังทำงาน",
+        "stopped": "หยุดแล้ว",
+        "scheduled": "กำหนดเวลาแล้ว",
+        "none": "ไม่มี",
+        "lastRun": "รีเฟรชล่าสุด: {time}",
+        "lastBackup": "ไฟล์สำรองข้อมูล: {time}",
+        "reports": "รายงานที่ยังไม่ปิด: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "other": "{count} คะแนนเสียง"

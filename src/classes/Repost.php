@@ -31,41 +31,63 @@ SELECT `postId`, `userId`
             return false;
         }
 
-        DB::run('
-INSERT INTO `Announces` (`postId`, `userId`, `activityURI`)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE `activityURI` = VALUES(`activityURI`)
-', 'iis', $post_id, $user_id, self::activityURIFor($user_id, $post_id));
+        self::record($user_id, $post_id, self::activityURIFor($user_id, $post_id));
 
         Timeline::fanOutRepost($user_id, $post_id);
 
         return true;
     }
 
+    /** Store a local repost or inbound boost, counting only a new record. */
+    public static function record(int $user_id, int $post_id, string $activity_uri): void
+    {
+        DB::transaction(static function () use ($user_id, $post_id, $activity_uri): void {
+            if (Post::lockForUpdate($post_id) === null) {
+                return;
+            }
+
+            $insert = DB::run('
+INSERT INTO `Announces` (`postId`, `userId`, `activityURI`)
+    VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE `activityURI` = VALUES(`activityURI`)
+', 'iis', $post_id, $user_id, $activity_uri);
+
+            if (mysqli_stmt_affected_rows($insert) === 1) {
+                Post::adjustCounts($post_id, reposts: 1);
+            }
+        });
+    }
+
     public static function remove(int $user_id, int $post_id): void
     {
-        DB::run('
+        DB::transaction(static function () use ($user_id, $post_id): void {
+            if (Post::lockForUpdate($post_id) === null) {
+                return;
+            }
+
+            $delete = DB::run('
 DELETE FROM `Announces`
     WHERE `postId` = ? AND `userId` = ?
 ', 'ii', $post_id, $user_id);
+
+            if (mysqli_stmt_affected_rows($delete) === 1) {
+                Post::adjustCounts($post_id, reposts: -1);
+            }
+        });
 
         Timeline::removeRepost($user_id, $post_id);
     }
 
     /**
-     * Which of these posts this member has reposted, and how many times each
-     * has been passed on in total (local reposts and remote boosts share the
-     * Announces table, so one count covers both).
-     *
-     * Two queries for a page rather than two per post: a feed renders twenty
-     * cards, and asking per card is forty round trips for one screen.
+     * Which of these posts this member has reposted, in one query for a page.
+     * Totals live on Posts; the records answer who has reposted each one.
      *
      * @param int[] $post_ids
-     * @return array<int, array{reposted: bool, count: int}> keyed by postId
+     * @return array<int, true> keyed by postId
      */
-    public static function stateForPosts(array $post_ids, ?int $user_id): array
+    public static function repostedForPosts(array $post_ids, ?int $user_id): array
     {
-        if ($post_ids === []) {
+        if ($post_ids === [] || $user_id === null) {
             return [];
         }
 
@@ -74,27 +96,6 @@ DELETE FROM `Announces`
 
         $state = [];
 
-        foreach ($post_ids as $post_id) {
-            $state[(int) $post_id] = ['reposted' => false, 'count' => 0];
-        }
-
-        $counts = mysqli_stmt_get_result(DB::run('
-SELECT `postId`, COUNT(*) AS `announceCount`
-    FROM `Announces`
-    WHERE `postId` IN (' . $placeholders . ')
-    GROUP BY `postId`
-', $types, ...$post_ids));
-
-        while ($row = mysqli_fetch_assoc($counts)) {
-            $state[(int) $row['postId']]['count'] = (int) $row['announceCount'];
-        }
-
-        // Nobody signed in has reposted anything, so the second query is the
-        // one thing here that depends on who is looking.
-        if ($user_id === null) {
-            return $state;
-        }
-
         $mine = mysqli_stmt_get_result(DB::run('
 SELECT `postId`
     FROM `Announces`
@@ -102,7 +103,7 @@ SELECT `postId`
 ', 'i' . $types, $user_id, ...$post_ids));
 
         while ($row = mysqli_fetch_assoc($mine)) {
-            $state[(int) $row['postId']]['reposted'] = true;
+            $state[(int) $row['postId']] = true;
         }
 
         return $state;

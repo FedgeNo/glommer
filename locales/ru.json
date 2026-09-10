@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Состояние Сервера",
+        "ip": "IP: {address}",
+        "load": "Средняя нагрузка: {one} / {five} / {fifteen} на {cpus} ЦП",
+        "memory": "Память: свободно {available} из {total}",
+        "disk": "Диск: свободно {free} из {total} на {path}",
+        "database": "База данных: выполняющихся запросов: {running}; подключений: {connected}; ожиданий блокировки: {lockWaits}; время работы: {uptime}",
+        "longQueries": "Запросы, выполняющиеся дольше пяти секунд: {count}",
+        "longQuery": "{seconds}с: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Состояние",
+        "unavailable": "Не удалось получить сведения"
+    },
+    "AdminDashboard": {
+        "members": "Участники",
+        "posts": "Публикации",
+        "federation": "Федерация",
+        "uploads": "Загрузки",
+        "notifications": "Уведомления в реальном времени",
+        "trending": "Популярное",
+        "backups": "Резервные копии",
+        "moderation": "Модерация",
+        "running": "Работает",
+        "stopped": "Остановлено",
+        "scheduled": "Запланировано",
+        "none": "Нет",
+        "lastRun": "Последнее обновление: {time}",
+        "lastBackup": "Файлы резервной копии: {time}",
+        "reports": "Открытые жалобы: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "{count} голос",

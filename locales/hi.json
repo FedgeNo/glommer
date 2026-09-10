@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "सर्वर की स्थिति",
+        "ip": "IP: {address}",
+        "load": "लोड औसत: {cpus} CPU पर {one} / {five} / {fifteen}",
+        "memory": "मेमोरी: {total} में से {available} खाली",
+        "disk": "डिस्क: {path} पर {total} में से {free} खाली",
+        "database": "डेटाबेस: {running} चल रही क्वेरी, {connected} कनेक्शन, {lockWaits} लॉक प्रतीक्षा, {uptime} से चालू",
+        "longQueries": "पाँच सेकंड से अधिक समय से चल रही क्वेरी: {count}",
+        "longQuery": "{seconds} सेकंड: {query}"
+    },
+    "StatusBoard": {
+        "heading": "स्थिति",
+        "unavailable": "स्थिति प्राप्त नहीं हो सकी"
+    },
+    "AdminDashboard": {
+        "members": "सदस्य",
+        "posts": "पोस्ट",
+        "federation": "फ़ेडरेशन",
+        "uploads": "अपलोड",
+        "notifications": "लाइव सूचनाएँ",
+        "trending": "रुझान",
+        "backups": "बैकअप",
+        "moderation": "मॉडरेशन",
+        "running": "चल रहा है",
+        "stopped": "रुका हुआ",
+        "scheduled": "निर्धारित",
+        "none": "कोई नहीं",
+        "lastRun": "अंतिम अपडेट: {time}",
+        "lastBackup": "बैकअप फ़ाइलें: {time}",
+        "reports": "खुली रिपोर्ट: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "{count} वोट",

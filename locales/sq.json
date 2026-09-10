@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Gjendja e Serverit",
+        "ip": "IP: {address}",
+        "load": "Ngarkesa mesatare: {one} / {five} / {fifteen} në {cpus} CPU",
+        "memory": "Kujtesa: {available} nga {total} e lirë",
+        "disk": "Disku: {free} nga {total} i lirë në {path}",
+        "database": "Baza e të dhënave — kërkesa në ekzekutim: {running}; lidhje: {connected}; pritje për kyçje: {lockWaits}; aktive prej {uptime}",
+        "longQueries": "Kërkesa që ekzekutohen më shumë se pesë sekonda: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Gjendja",
+        "unavailable": "Gjendja nuk mund të raportohej"
+    },
+    "AdminDashboard": {
+        "members": "Anëtarë",
+        "posts": "Postime",
+        "federation": "Federata",
+        "uploads": "Ngarkime",
+        "notifications": "Njoftime të drejtpërdrejta",
+        "trending": "Në trend",
+        "backups": "Kopje rezervë",
+        "moderation": "Moderim",
+        "running": "Në punë",
+        "stopped": "Ndaluar",
+        "scheduled": "Planifikuar",
+        "none": "Asnjë",
+        "lastRun": "Rifreskimi i fundit: {time}",
+        "lastBackup": "Skedarë rezervë: {time}",
+        "reports": "Raportime të hapura: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 votë",

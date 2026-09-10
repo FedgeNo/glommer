@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "תקינות השרת",
+        "ip": "IP: {address}",
+        "load": "עומס ממוצע: {one} / {five} / {fifteen} על {cpus} מעבדים",
+        "memory": "זיכרון: {available} פנויים מתוך {total}",
+        "disk": "דיסק: {free} פנויים מתוך {total} ב-{path}",
+        "database": "מסד נתונים: {running} שאילתות רצות, {connected} חיבורים, {lockWaits} המתנות לנעילה, פעיל {uptime}",
+        "longQueries": "שאילתות שרצות יותר מחמש שניות: {count}",
+        "longQuery": "{seconds} שניות: {query}"
+    },
+    "StatusBoard": {
+        "heading": "מצב",
+        "unavailable": "לא ניתן היה לקבל את המצב"
+    },
+    "AdminDashboard": {
+        "members": "חברים",
+        "posts": "פוסטים",
+        "federation": "פדרציה",
+        "uploads": "העלאות",
+        "notifications": "התראות בזמן אמת",
+        "trending": "מגמות",
+        "backups": "גיבויים",
+        "moderation": "ניהול תוכן",
+        "running": "פועל",
+        "stopped": "נעצר",
+        "scheduled": "מתוזמן",
+        "none": "אין",
+        "lastRun": "רענון אחרון: {time}",
+        "lastBackup": "קובצי גיבוי: {time}",
+        "reports": "דיווחים פתוחים: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "יש לספק שם משתמש או דוא״ל.",
         "givePassword": "יש לספק סיסמה.",

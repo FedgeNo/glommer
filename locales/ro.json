@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Starea Serverului",
+        "ip": "IP: {address}",
+        "load": "Încărcare medie: {one} / {five} / {fifteen} pe {cpus} CPU",
+        "memory": "Memorie: {available} din {total} liberi",
+        "disk": "Disc: {free} din {total} liberi pe {path}",
+        "database": "Bază de date: interogări în curs: {running}; conexiuni: {connected}; așteptări pentru blocări: {lockWaits}; timp de funcționare: {uptime}",
+        "longQueries": "Interogări care rulează de peste cinci secunde: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Stare",
+        "unavailable": "Nu s-a putut obține starea"
+    },
+    "AdminDashboard": {
+        "members": "Membri",
+        "posts": "Postări",
+        "federation": "Federație",
+        "uploads": "Încărcări",
+        "notifications": "Notificări în timp real",
+        "trending": "Tendințe",
+        "backups": "Copii de siguranță",
+        "moderation": "Moderare",
+        "running": "În funcțiune",
+        "stopped": "Oprit",
+        "scheduled": "Programat",
+        "none": "Niciunul",
+        "lastRun": "Ultima actualizare: {time}",
+        "lastBackup": "Fișiere de rezervă: {time}",
+        "reports": "Raportări deschise: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 vot",

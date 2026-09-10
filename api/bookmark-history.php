@@ -36,8 +36,6 @@ $post_payloads = [];
 
 foreach ($page['items'] as $post) {
     $post_payloads[] = $post -> toPayload(
-        (int) $post -> replyCount,
-        (int) $post -> likeCount,
         (bool) $post -> liked,
         // Every post here is by definition bookmarked - this is the bookmarks list.
         true

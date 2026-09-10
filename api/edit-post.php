@@ -174,9 +174,8 @@ Mention::notify(Mention::reindexPost($post_id, $description_ops), $current_user 
 // Re-fetch rather than hand-assemble the row: createdAt, parentId, and
 // keywords (just rewritten by reindexPost()) all need to reflect the true
 // current DB state, not values this script would otherwise have to
-// duplicate/guess at. No engagement counts: an edit changes only text/title/
-// link, so the client swaps just the post's content and leaves the live
-// action bar - counts and all - untouched.
+// duplicate/guess at. The stored engagement totals arrive with the row too;
+// the client swaps just the post's content and keeps its live action bar.
 $updated_post = DB::row('
 SELECT *
     FROM `Posts`
@@ -187,4 +186,4 @@ $post -> author = $current_user;
 
 FediversePublisher::updated($post, $current_user);
 
-JSONResponse::success($post -> toPayload(0, 0, false, false)) -> send();
+JSONResponse::success($post -> toPayload(false, false)) -> send();

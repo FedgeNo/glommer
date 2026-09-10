@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Palvelimen Tila",
+        "ip": "IP: {address}",
+        "load": "Kuorma: {one} / {five} / {fifteen}, {cpus} suoritinta",
+        "memory": "Muisti: {available} / {total} vapaana",
+        "disk": "Levy: {free} / {total} vapaana kohteessa {path}",
+        "database": "Tietokanta: {running} kyselyä käynnissä, {connected} yhteyttä, {lockWaits} lukko-odotusta, käynnissä {uptime}",
+        "longQueries": "Yli viisi sekuntia kestäneitä kyselyitä: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Tila",
+        "unavailable": "Tilaa ei voitu selvittää"
+    },
+    "AdminDashboard": {
+        "members": "Jäsenet",
+        "posts": "Julkaisut",
+        "federation": "Federaatio",
+        "uploads": "Lataukset",
+        "notifications": "Reaaliaikaiset ilmoitukset",
+        "trending": "Trendit",
+        "backups": "Varmuuskopiot",
+        "moderation": "Moderointi",
+        "running": "Käynnissä",
+        "stopped": "Pysäytetty",
+        "scheduled": "Ajastettu",
+        "none": "Ei mitään",
+        "lastRun": "Viimeisin päivitys: {time}",
+        "lastBackup": "Varmuuskopiotiedostot: {time}",
+        "reports": "Avoimet ilmoitukset: {count}"
+    },
     "PollOptionVotes": {
         "votes": {
             "one": "1 ääni",

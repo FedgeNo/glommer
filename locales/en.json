@@ -1,4 +1,35 @@
 {
+    "ServerHealth": {
+        "heading": "Server Health",
+        "ip": "IP: {address}",
+        "load": "Load average: {one} / {five} / {fifteen} on {cpus} CPUs",
+        "memory": "Memory: {available} of {total} free",
+        "disk": "Disk: {free} of {total} free on {path}",
+        "database": "Database: {running} queries running, {connected} connections, {lockWaits} lock waits, up {uptime}",
+        "longQueries": "Queries running longer than five seconds: {count}",
+        "longQuery": "{seconds}s: {query}"
+    },
+    "StatusBoard": {
+        "heading": "Status",
+        "unavailable": "Could not report"
+    },
+    "AdminDashboard": {
+        "members": "Members",
+        "posts": "Posts",
+        "federation": "Federation",
+        "uploads": "Uploads",
+        "notifications": "Live notifications",
+        "trending": "Trending",
+        "backups": "Backups",
+        "moderation": "Moderation",
+        "running": "Running",
+        "stopped": "Stopped",
+        "scheduled": "Scheduled",
+        "none": "None",
+        "lastRun": "Last refresh: {time}",
+        "lastBackup": "Backup files: {time}",
+        "reports": "Open reports: {count}"
+    },
     "JSONResponse": {
         "giveUsernameOrEmail": "Please give your username or email.",
         "givePassword": "Please give your password.",

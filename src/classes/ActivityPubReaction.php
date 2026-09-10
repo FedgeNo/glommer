@@ -30,12 +30,7 @@ class ActivityPubReaction
             return;
         }
 
-        // INSERT IGNORE, because a server re-sending a Like it already sent is
-        // normal - that is how they recover after losing state.
-        DB::run('
-INSERT IGNORE INTO `Likes` (`postId`, `userId`)
-    VALUES (?, ?)
-', 'ii', $post_id, (int) $actor -> userId);
+        Like::create((int) $actor -> userId, $post_id);
 
         FediverseNotice::aboutPost($post_id, $actor, 'like');
     }
@@ -48,10 +43,7 @@ INSERT IGNORE INTO `Likes` (`postId`, `userId`)
             return;
         }
 
-        DB::run('
-DELETE FROM `Likes`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $post_id, (int) $actor -> userId);
+        Like::remove((int) $actor -> userId, $post_id);
     }
 
     /** Someone out there boosted a post here. */
@@ -63,11 +55,7 @@ DELETE FROM `Likes`
             return;
         }
 
-        DB::run('
-INSERT INTO `Announces` (`postId`, `userId`, `activityURI`)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE `activityURI` = VALUES(`activityURI`)
-', 'iis', $post_id, (int) $actor -> userId, $activity_uri);
+        Repost::record((int) $actor -> userId, $post_id, $activity_uri);
 
         FediverseNotice::aboutPost($post_id, $actor, 'repost');
     }
@@ -80,22 +68,19 @@ INSERT INTO `Announces` (`postId`, `userId`, `activityURI`)
             return;
         }
 
-        DB::run('
-DELETE FROM `Announces`
-    WHERE `postId` = ? AND `userId` = ?
-', 'ii', $post_id, (int) $actor -> userId);
+        Repost::remove((int) $actor -> userId, $post_id);
     }
 
-    /** How many times a post has been boosted elsewhere. */
+    /** Local reposts and remote boosts share the stored total. */
     public static function announceCount(int $post_id): int
     {
         $row = DB::row('
-SELECT COUNT(*) AS `total`
-    FROM `Announces`
+SELECT `repostCount`
+    FROM `Posts`
     WHERE `postId` = ?
-', 'PostCountData', 'i', $post_id);
+', 'Post', 'i', $post_id);
 
-        return $row === null ? 0 : (int) $row -> total;
+        return $row?-> repostCount ?? 0;
     }
 
     /**

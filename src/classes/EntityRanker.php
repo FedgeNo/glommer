@@ -28,10 +28,9 @@ declare(strict_types=1);
  * precedent) rather than at read time - trending is read-often and
  * expensive-to-derive, and it's fine being minutes-stale. refreshIfStale() has
  * a lottery fallback (matches the codebase's lottery-sweep instinct elsewhere
- * - RateLimiter's pruning, LinkPreviewFetcher's staged-image sweep) that kicks
- * a synchronous recompute when the data is stale AND the timer apparently
- * isn't installed, so this degrades to "stale but self-healing" instead of
- * silently going dark.
+ * - RateLimiter's pruning, LinkPreviewFetcher's staged-image sweep) that
+ * rescores cached entities and fresh hashtags when the data is stale.
+ * Only background and installer calls run named-entity extraction.
  */
 class EntityRanker
 {
@@ -88,7 +87,7 @@ class EntityRanker
     public static function refreshIfStale(): void
     {
         if (self::isStale() && mt_rand(1, self::RECOMPUTE_LOTTERY_ODDS) === 1) {
-            self::recompute();
+            self::recompute(false);
         }
     }
 
@@ -105,11 +104,6 @@ class EntityRanker
         return (time() - strtotime($newest)) > $stale_seconds;
     }
 
-    /**
-     * Pulls the window, extracts and scores entities. Every qualifying entity
-     * is stamped with the same $computed_at for this run; older rows remain as
-     * the bounded popularity catalog used by the type pages.
-     */
     /**
      * The recent window of top-level posts the extractor reads: just the
      * deltas and authors it and the per-user counting need, not a display
@@ -157,47 +151,32 @@ SELECT STRAIGHT_JOIN `Posts`.*
 ', 'Post', 'i' . str_repeat('s', count($automated)) . 'i', $not_banned, ...[...$automated, self::WINDOW_SIZE]);
     }
 
-    /**
-     * Writes down what each post turned out to be written in.
-     *
-     * A by-product of extraction rather than a job of its own: the extractor
-     * has to read the language to pick a model, and doing it again anywhere
-     * else would be a second subprocess over the same words. Only where the
-     * answer changed, so a recompute over a window that is mostly the same
-     * posts writes almost nothing.
-     *
-     * @param Post[] $rows
-     * @param array<int, ?string> $languages by the same index
-     */
-    private static function recordDetectedLanguages(array $rows, array $languages): void
+    /** Only scheduled/CLI callers extract; a stale page can rescore cached results. */
+    public static function recompute(bool $extract_missing = true): void
     {
-        foreach ($rows as $i => $row) {
-            $detected = $languages[$i] ?? null;
+        $lock = 'entities:' . substr(hash('sha256', (string) Config::get('database')), 0, 48);
+        $acquired = DB::row('SELECT GET_LOCK(?, 0) AS `acquired`', 'stdClass', 's', $lock);
 
-            if ($detected === ($row -> detectedLanguage ?? null)) {
-                continue;
-            }
+        // A page serves the stored rankings while a background pass owns the
+        // work. Never wait for its model startup, or run another copy of it.
+        if ((int) $acquired -> acquired !== 1) {
+            return;
+        }
 
-            DB::run('
-UPDATE `Posts`
-    SET `detectedLanguage` = ?
-    WHERE `postId` = ?
-', 'si', $detected, (int) $row -> postId);
+        try {
+            self::rebuild($extract_missing);
+        } finally {
+            DB::run('SELECT RELEASE_LOCK(?)', 's', $lock);
         }
     }
 
-    public static function recompute(): void
+    private static function rebuild(bool $extract_missing): void
     {
         $rows = self::corpus();
 
         $banned = self::bannedKeys();
 
-        $entities_by_row = EntityExtractor::extractBatch(array_map(
-            static fn (Post $row): ?string => $row -> descriptionDelta,
-            $rows
-        ));
-
-        self::recordDetectedLanguages($rows, EntityExtractor::detectedLanguages());
+        $entities_by_row = PostEntityCache::forPosts($rows, $extract_missing);
 
         // The high-water mark of what popularity has already been told about.
         // Anything above it is new since the last run and counts once; anything
@@ -256,7 +235,7 @@ UPDATE `Posts`
 
                 $stats[$key]['postCount']++;
 
-                if ((int) $row -> postId > $counted_through) {
+                if ($extract_missing && (int) $row -> postId > $counted_through) {
                     $stats[$key]['freshCount']++;
                 }
 
@@ -264,7 +243,23 @@ UPDATE `Posts`
             }
         }
 
+        DB::transaction(static fn () => self::publish($stats, $now, $highest_seen, $extract_missing));
+    }
+
+    /** Publish the rescored window together, after any slow extraction finishes. */
+    private static function publish(array $stats, int $now, int $highest_seen, bool $extract_missing): void
+    {
         $computed_at = date('Y-m-d H:i:s', $now);
+
+        // Cached passes can finish within the same second. Withdraw the old
+        // generation's matching stamp before replacing it, so a disappeared
+        // topic cannot remain current just because the clock has not ticked.
+        // Readers retain the previous window until this transaction commits.
+        DB::run('
+UPDATE `Entities`
+    SET `computedAt` = DATE_SUB(`computedAt`, INTERVAL 1 SECOND)
+    WHERE `computedAt` = ?
+', 's', $computed_at);
 
         foreach ($stats as $entity) {
             $user_count = count($entity['userWeights']);
@@ -293,10 +288,13 @@ INSERT INTO `Entities` (`type`, `slug`, `title`, `score`, `postCount`, `userCoun
 ', 'sssdiiis', $entity['type'], $slug, $entity['value'], $entity['score'], $entity['postCount'], $user_count, $entity['freshCount'], $computed_at);
         }
 
-        // Stamped before the prune, so a run that dies partway leaves posts
-        // uncounted rather than counted twice - popularity that reads low is a
-        // wrong ordering, one that reads high is a number nothing can correct.
-        Settings::set(self::COUNTED_THROUGH_SETTING, (string) $highest_seen);
+        // The high-water mark commits with the totals, so a retry cannot
+        // count a partially published run twice.
+        // A page's hashtag fallback must not mark new posts as fully extracted
+        // before the background pass has a chance to count their named entities.
+        if ($extract_missing) {
+            Settings::set(self::COUNTED_THROUGH_SETTING, (string) $highest_seen);
+        }
 
         self::prune($computed_at);
 

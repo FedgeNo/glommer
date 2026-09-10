@@ -167,14 +167,16 @@ SELECT COALESCE(MAX(`messageId`), 0) AS `newestId`
      * Marks everything received so far as seen. Opening the conversations list
      * is enough - seeing that a thread has something new in it is the whole
      * job of the dot, and having to open every thread to clear it would make
-     * it nag about messages already known about.
+     * it nag about messages already known about. Message-only notifications
+     * are acknowledged at the same time.
      */
     public static function markSeen(int $user_id): void
     {
-        $none = 0;
+        DB::transaction(static function () use ($user_id): void {
+            $none = 0;
 
-        // Same single-dive MAX as newestReceivedId(), off the same index.
-        DB::run('
+            // Same single-dive MAX as newestReceivedId(), off the same index.
+            DB::run('
 UPDATE `Users`
     SET `lastMessageId` = (
         SELECT COALESCE(MAX(`messageId`), ?)
@@ -183,6 +185,13 @@ UPDATE `Users`
     )
     WHERE `userId` = ?
 ', 'iii', $none, $user_id, $user_id);
+
+            Notification::markMessagesSeen($user_id);
+        });
+
+        // The page has already loaded Auth::user(); its navigation must read
+        // the updated counters, including MessageDot's per-User cached answer.
+        Auth::clearUserCache();
     }
 
     /**

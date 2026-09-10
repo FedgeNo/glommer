@@ -374,4 +374,30 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'iii', $no_notifications_fallback, $user_id, $user_id);
     }
+
+    /**
+     * Opening Messages also acknowledges its notifications when they are the
+     * only unseen kind. A single cursor cannot skip an unread like or reply,
+     * so leave it in place if any other notification still needs attention.
+     * Keep the check in the update so it cannot clear a newer unrelated alert.
+     */
+    public static function markMessagesSeen(int $user_id): void
+    {
+        DB::run('
+UPDATE `Users`
+    SET `lastNotificationId` = GREATEST(`lastNotificationId`, (
+        SELECT COALESCE(MAX(`notificationId`), 0)
+            FROM `Notifications`
+            WHERE `userId` = ?
+    ))
+    WHERE `userId` = ?
+        AND NOT EXISTS (
+            SELECT 1
+                FROM `Notifications`
+                WHERE `userId` = ?
+                    AND `notificationId` > `Users`.`lastNotificationId`
+                    AND `type` <> ?
+        )
+', 'iiis', $user_id, $user_id, $user_id, 'message');
+    }
 }

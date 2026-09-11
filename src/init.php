@@ -87,7 +87,11 @@ $stateful_request = !defined('IS_STATELESS_REQUEST');
 // to crawlers and remote servers. Their entry points opt out before loading
 // this bootstrap; ordinary pages and API requests remain stateful.
 if ($stateful_request) {
+    Cookie::clearLegacy();
+    session_name(Cookie::name('PHPSESSID'));
     session_set_cookie_params([
+        'path' => '/',
+        'domain' => '',
         'httponly' => true,
         'samesite' => 'Lax',
         'secure' => ServerURL::isHTTPS(),
@@ -96,7 +100,7 @@ if ($stateful_request) {
 
     // Set the CSRF token as a readable cookie for JavaScript.
     setcookie(
-        'CSRF-TOKEN',
+        Cookie::name('CSRF-TOKEN'),
         CSRF::token(),
         CSRF::cookieOptions()
     );
@@ -118,11 +122,11 @@ try {
 // (via the shutdown function) the rarer fatal that isn't one, like hitting
 // memory_limit - anything already mid-way through streaming a real response
 // is left alone rather than being clobbered.
-$send_server_error = function (): void {
+$send_server_error = function (int $status_code = 500): void {
     if (defined('IS_API_REQUEST')) {
-        JSONResponse::localizedError('serverError', 500) -> send();
+        JSONResponse::localizedError('serverError', $status_code) -> send();
     } else {
-        ErrorDocument::send(500, 'Something Went Wrong', 'An unexpected error occurred. Please try again, and let us know if it keeps happening.');
+        ErrorDocument::send($status_code, 'Something Went Wrong', 'An unexpected error occurred. Please try again, and let us know if it keeps happening.');
     }
 };
 
@@ -148,6 +152,13 @@ set_exception_handler(function (\Throwable $exception) use ($send_server_error, 
     // real response) should be logged, not answered with a second, corrupting
     // "response" appended onto whatever's already been sent.
     if (headers_sent()) {
+        return;
+    }
+
+    if ($exception instanceof RateLimitLockException) {
+        header('Retry-After: 1');
+        $send_server_error(503);
+
         return;
     }
 

@@ -12,5 +12,8 @@ export class TestCase {
  * exercising code that reads ClientConfig.
  */
 export function write_client_config(config) {
-    document.cookie = 'APP-CONFIG=' + encodeURIComponent(JSON.stringify(config));
+    const secure = window.location.protocol === 'https:';
+    const name = secure ? '__Host-APP-CONFIG' : 'APP-CONFIG';
+    document.cookie = name + '=' + encodeURIComponent(JSON.stringify(config))
+        + '; Path=/' + (secure ? '; Secure' : '');
 }

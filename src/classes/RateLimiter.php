@@ -70,13 +70,16 @@ DELETE
         $lock_name = self::lockName($rate_key);
         $timeout_seconds = 5;
 
-        // Fail open: if the lock can't be taken within the timeout, proceed
-        // anyway rather than block a real user - a rare lost race under heavy
-        // contention beats locking people out.
+        // A timeout must stop the caller before its protected check or write.
+        // The current holder may still be processing an unrecorded attempt.
         $stmt = DB::run('
 SELECT GET_LOCK(?, ?)
 ', 'si', $lock_name, $timeout_seconds);
-        mysqli_stmt_get_result($stmt);
+        $acquired = mysqli_fetch_row(mysqli_stmt_get_result($stmt))[0];
+
+        if ((int) $acquired !== 1) {
+            throw new RateLimitLockException('Could not acquire a rate-limit lock within five seconds.');
+        }
     }
 
     public static function releaseLock(string $rate_key): void
@@ -84,7 +87,7 @@ SELECT GET_LOCK(?, ?)
         $lock_name = self::lockName($rate_key);
 
         // RELEASE_LOCK on a lock this connection doesn't hold is a harmless
-        // no-op, so callers that skipped the check (and never acquired) are fine.
+        // no-op, so cleanup after an already released lock is safe.
         $stmt = DB::run('
 SELECT RELEASE_LOCK(?)
 ', 's', $lock_name);

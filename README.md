@@ -687,6 +687,13 @@ as a tombstone until its original expiry, so either reuse of that selector or a
 known selector with the wrong validator means a copy is in circulation, and
 every token on that account is revoked.
 
+**Cookie scope** is enforced with `__Host-` names for the session, remember-me,
+CSRF, and client-configuration cookies on HTTPS. Each is `Secure`, uses
+`Path=/`, and omits `Domain`; session and remember-me cookies also remain
+`HttpOnly`. Upgrading from unprefixed cookie names requires users to sign in
+again. The old names are expired and are not accepted on HTTPS. The initial
+HTTP setup wizard uses unprefixed cookies until TLS is available.
+
 **CSRF** is checked in one place, `init.php`, on every POST. Three endpoints are
 exempt because they cannot carry a token and were never meant to: the
 ActivityPub inbox proves itself by HTTP signature, one-click unsubscribe by

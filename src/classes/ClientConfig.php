@@ -56,12 +56,12 @@ class ClientConfig
         $json = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         setcookie(
-            'APP-CONFIG',
+            Cookie::name('APP-CONFIG'),
             $json,
             [
                 'expires'  => 0,               // session cookie
                 'path'     => '/',
-                'secure'   => true,
+                'secure'   => ServerURL::isHTTPS(),
                 'httponly' => false,
                 'samesite' => 'Strict'
             ]

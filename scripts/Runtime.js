@@ -110,17 +110,23 @@ Element.prototype.insertBeforeWithSpace = function (newNode, refNode) {
 
 // Cookie.js
 /**
- * Static helper for reading a single cookie.
+ * Reads application cookies by their base names, matching PHP's Cookie.
  *
  *  Cookie.get('CSRF-TOKEN') → token string or null
  */
 export class Cookie {
+    static name(name) {
+        return window.location.protocol === 'https:' ? '__Host-' + name : name;
+    }
+
     /**
-     * Read a cookie value by name. Returns null if the cookie is not set.
+     * Read a cookie by its base name. HTTPS accepts only the __Host- name.
+     * Returns null if the cookie is not set.
      * @param {string} name
      * @returns {string|null}
      */
     static get(name) {
+        name = this.name(name);
         const match = document.cookie.match(
             new RegExp(
                 '(?:^|; )' +

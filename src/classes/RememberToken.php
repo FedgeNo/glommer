@@ -89,7 +89,7 @@ INSERT INTO `RememberTokens` (`userId`, `selector`, `validatorHash`, `expiresAt`
      */
     public static function loginFromCookie(): void
     {
-        $cookie = $_COOKIE[self::COOKIE_NAME] ?? null;
+        $cookie = Cookie::get(self::COOKIE_NAME);
 
         if (!is_string($cookie) || !str_contains($cookie, ':')) {
             return;
@@ -151,7 +151,7 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`, `consumedAt`
      */
     public static function forget(): void
     {
-        $cookie = $_COOKIE[self::COOKIE_NAME] ?? null;
+        $cookie = Cookie::get(self::COOKIE_NAME);
 
         if (is_string($cookie) && str_contains($cookie, ':')) {
             [$selector] = explode(':', $cookie, 2);
@@ -186,7 +186,7 @@ DELETE
      */
     public static function currentSelector(): ?string
     {
-        $cookie = $_COOKIE[self::COOKIE_NAME] ?? null;
+        $cookie = Cookie::get(self::COOKIE_NAME);
 
         if (!is_string($cookie) || !str_contains($cookie, ':')) {
             return null;
@@ -257,7 +257,8 @@ DELETE
 
     private static function setCookie(string $value, int $expires): void
     {
-        setcookie(self::COOKIE_NAME, $value, [
+        $cookie_name = Cookie::name(self::COOKIE_NAME);
+        setcookie($cookie_name, $value, [
             'expires' => $expires,
             'path' => '/',
             'httponly' => true,
@@ -267,12 +268,13 @@ DELETE
 
         // Keep this request's view of the cookie consistent with what the
         // browser will hold after the response (matters after a rotation).
-        $_COOKIE[self::COOKIE_NAME] = $value;
+        $_COOKIE[$cookie_name] = $value;
     }
 
     private static function clearCookie(): void
     {
-        setcookie(self::COOKIE_NAME, '', [
+        $cookie_name = Cookie::name(self::COOKIE_NAME);
+        setcookie($cookie_name, '', [
             'expires' => time() - 3600,
             'path' => '/',
             'httponly' => true,
@@ -280,6 +282,6 @@ DELETE
             'secure' => ServerURL::isHTTPS(),
         ]);
 
-        unset($_COOKIE[self::COOKIE_NAME]);
+        unset($_COOKIE[$cookie_name]);
     }
 }

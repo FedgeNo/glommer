@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-// Puts back what bin/backup.php took: the database and the uploads tree, from
+// Restores the database from
 // one timestamped run under the backup root.
 //
 //   php bin/restore.php                 # what it would do, and nothing else
@@ -14,9 +14,9 @@ declare(strict_types=1);
 // there is no argument that reaches them from here.
 //
 // Destructive by definition. The dump drops and recreates every table it
-// holds, so anything written since the backup is gone; the uploads tree is
-// moved aside rather than deleted, because a mistaken restore should be
-// survivable and 300MB of somebody's pictures is not worth being brave with.
+// holds, so anything written since the backup is gone. Media is not backed
+// up and this command never modifies the uploads tree. Recover configuration
+// separately with the off-server private key when needed (see README).
 
 if (PHP_SAPI !== 'cli') {
     exit(1);
@@ -33,14 +33,17 @@ spl_autoload_register(function (string $class): void {
 // Standalone helpers have no class name for the autoloader to find them by.
 require __DIR__ . '/../src/functions.php';
 
-$project_root = dirname(__DIR__);
+umask(0077);
 $backup_root = Backup::rootDir();
 $confirmed = (string) getenv('GLOMMER_RESTORE_CONFIRMED') === '1';
 
-/** Every completed run, oldest first. */
+/** Database-bearing runs, oldest first; old runs do not need a media archive. */
 $runs = array_values(array_filter(
     array_map('basename', glob($backup_root . '/*', GLOB_ONLYDIR) ?: []),
     static fn (string $name): bool => preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', $name) === 1
+        && !is_link($backup_root . '/' . $name)
+        && is_file($backup_root . '/' . $name . '/database.sql.gz')
+        && filesize($backup_root . '/' . $name . '/database.sql.gz') > 0
 ));
 
 sort($runs);
@@ -61,9 +64,8 @@ if (!in_array($requested, $runs, true)) {
 
 $run_dir = $backup_root . '/' . $requested;
 $dump_path = $run_dir . '/database.sql.gz';
-$uploads_path = $run_dir . '/uploads.tar.gz';
 
-foreach ([$dump_path, $uploads_path] as $archive) {
+foreach ([$dump_path] as $archive) {
     if (!is_file($archive) || filesize($archive) === 0) {
         fwrite(STDERR, 'Incomplete backup run - ' . $archive . " is missing or empty.\n");
         exit(1);
@@ -75,27 +77,18 @@ $database = (string) Config::get('database');
 echo "Restore\n";
 echo '  from run:  ' . $requested . "\n";
 echo '  database:  ' . $database . ' on ' . Config::get('host') . "\n";
-echo '  uploads:   ' . $project_root . "/uploads\n";
 echo '  dump:      ' . number_format((float) filesize($dump_path)) . " bytes\n";
-echo '  archive:   ' . number_format((float) filesize($uploads_path)) . " bytes\n\n";
+echo "  media:     not included; existing uploads are left in place\n\n";
 
 if (!$confirmed) {
     echo "Nothing has been changed.\n";
-    echo "This replaces every table in the dump and moves the uploads tree aside.\n";
+    echo "This replaces every table in the dump. Stop application and worker writes before restoring.\n";
     echo "Re-run with GLOMMER_RESTORE_CONFIRMED=1 to go ahead.\n";
 
     exit(0);
 }
 
 // ---------- Database ----------
-
-// Validate both compressed inputs before replacing any tables. This catches
-// a corrupt media archive while the database still matches the live uploads.
-exec(sprintf('tar -tzf %s >/dev/null 2>&1', escapeshellarg($uploads_path)), $archive_output, $archive_exit);
-if ($archive_exit !== 0) {
-    fwrite(STDERR, "The uploads archive is unreadable; nothing has been restored.\n");
-    exit(1);
-}
 
 // The app account is least-privilege and cannot drop a table, which is the
 // first thing the dump does.
@@ -147,57 +140,13 @@ $load_stderr = is_file($stderr_path) ? trim((string) file_get_contents($stderr_p
 @unlink($plain_dump);
 
 if ($load_exit !== 0) {
-    fwrite(STDERR, "Loading the dump failed (exit code $load_exit):\n" . $load_stderr . "\n");
+    fwrite(STDERR, "Loading the dump failed (exit code $load_exit):\n" . $load_stderr . "\nThe database may be partially replaced; no rollback was performed.\n");
     exit(1);
 }
 
 @unlink($stderr_path);
 
 echo "Database restored.\n";
-
-// ---------- Uploads ----------
-
-$uploads_dir = $project_root . '/uploads';
-$moved_aside = null;
-
-if (is_dir($uploads_dir)) {
-    // Moved rather than deleted: a restore onto the wrong install should be
-    // survivable, and this is the only copy of anything not in the archive.
-    $moved_aside = $uploads_dir . '.before-restore-' . date('Y-m-d_His');
-
-    if (!rename($uploads_dir, $moved_aside)) {
-        fwrite(STDERR, 'Could not move the existing uploads tree aside.' . "\n");
-        exit(1);
-    }
-}
-
-exec(sprintf(
-    'tar -xzf %s -C %s 2>&1',
-    escapeshellarg($uploads_path),
-    escapeshellarg($project_root)
-), $tar_output, $tar_exit);
-
-if ($tar_exit !== 0) {
-    fwrite(STDERR, "Extracting the uploads archive failed:\n" . implode("\n", $tar_output) . "\n");
-
-    if ($moved_aside !== null) {
-        if (@rename($moved_aside, $uploads_dir)) {
-            fwrite(STDERR, "The previous uploads tree has been put back.\n");
-        } else {
-            fwrite(STDERR, 'Could not put the previous uploads tree back. It remains at ' . $moved_aside
-                . "; the database has already been restored and the uploads directory may be incomplete.\n");
-        }
-    }
-
-    exit(1);
-}
-
-// The web server writes here, so it has to own it however the archive was
-// made or whoever ran this.
-$web_user = trim((string) shell_exec('id -u apache >/dev/null 2>&1 && echo apache || echo www-data'));
-exec(sprintf('chown -R %s:%s %s 2>&1', escapeshellarg($web_user), escapeshellarg($web_user), escapeshellarg($uploads_dir)));
-
-echo "Uploads restored.\n";
 
 // ---------- What came back ----------
 
@@ -211,10 +160,6 @@ echo "\nRestored to version " . ($version ?? 'unknown') . ".\n";
 // itself refuses to run on until the installer catches it up.
 if ($version !== $code_version) {
     echo 'This code is ' . $code_version . " - run bin/install.php to bring the database up to it.\n";
-}
-
-if ($moved_aside !== null) {
-    echo 'The uploads tree that was here is at ' . $moved_aside . " - remove it once you are satisfied.\n";
 }
 
 /**

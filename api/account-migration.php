@@ -14,8 +14,7 @@ Auth::requireLogin();
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['alsoKnownAs' => 'text', 'movedTo' => 'text']);
 
 // The aliases first: they are only a permission, and saving them has to work
 // even when the move itself is refused - moving IN to this account depends on

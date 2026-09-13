@@ -10,8 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'identifier' => 'text',
+    'password' => 'text',
+    'captchaToken' => 'text',
+    'recaptchaToken' => 'text',
+    'rememberMe' => 'boolean',
+]);
 
 $rate_key = 'login:' . (ServerURL::clientIP() ?? 'unknown');
 

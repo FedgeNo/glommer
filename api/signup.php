@@ -14,8 +14,15 @@ if (SetupClaim::required() && !SetupClaim::authorized()) {
     JSONResponse::error('The server operator must authorize setup before registration.', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'username' => 'text',
+    'email' => 'text',
+    'password' => 'text',
+    'displayName' => 'text',
+    'description' => 'text',
+    'captchaToken' => 'text',
+    'rememberMe' => 'boolean',
+]);
 
 $username = User::normaliseUsername((string) ($payload['username'] ?? ''));
 $email = trim((string) ($payload['email'] ?? ''));

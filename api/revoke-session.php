@@ -14,8 +14,7 @@ if (!Auth::check()) {
     JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['tokenId' => 'integer']);
 $token_id = (int) ($payload['tokenId'] ?? 0);
 
 if ($token_id === 0) {

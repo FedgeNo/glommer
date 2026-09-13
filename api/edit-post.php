@@ -18,8 +18,15 @@ $current_user = Auth::user();
 
 // PostEditor.js sends a JSON body, not form-encoded - $_POST is empty for
 // this request, same as api/delete.php.
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'postId' => 'integer',
+    'title' => 'text',
+    'description' => 'text',
+    'linkURL' => 'text',
+    'sensitive' => 'boolean',
+    'contentWarning' => 'text',
+    'altTexts' => 'text-map',
+]);
 
 $post_id = (int) ($payload['postId'] ?? 0);
 

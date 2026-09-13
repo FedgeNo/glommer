@@ -14,8 +14,12 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'turnstileSiteKey' => 'text',
+    'turnstileSecretKey' => 'text',
+    'recaptchaSiteKey' => 'text',
+    'recaptchaSecretKey' => 'text',
+]);
 
 $site_key = trim((string) ($payload['turnstileSiteKey'] ?? ''));
 $secret_key = trim((string) ($payload['turnstileSecretKey'] ?? ''));

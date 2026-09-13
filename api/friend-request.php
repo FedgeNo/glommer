@@ -26,8 +26,7 @@ if (RateLimiter::tooManyAttempts($friend_request_rate_key, 60, 600)) {
 
 RateLimiter::recordAttempt($friend_request_rate_key);
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['userId' => 'integer']);
 $target_user_id = (int) ($payload['userId'] ?? 0);
 
 if ($target_user_id === $current_user -> userId) {

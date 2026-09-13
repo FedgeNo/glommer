@@ -14,8 +14,7 @@ if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['entityType' => 'text', 'entityValue' => 'text']);
 $entity_type = trim((string) ($payload['entityType'] ?? ''));
 $entity_value = trim((string) ($payload['entityValue'] ?? ''));
 

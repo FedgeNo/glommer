@@ -14,8 +14,15 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'mailFromAddress' => 'text',
+    'mailFromName' => 'text',
+    'smtpHost' => 'text',
+    'smtpPort' => 'text',
+    'smtpUsername' => 'text',
+    'smtpPassword' => 'text',
+    'smtpEncryption' => 'text',
+]);
 
 $mail_from_address = trim((string) ($payload['mailFromAddress'] ?? ''));
 $mail_from_name = trim((string) ($payload['mailFromName'] ?? ''));

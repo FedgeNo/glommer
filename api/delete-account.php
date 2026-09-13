@@ -23,8 +23,7 @@ if ((int) $current_user -> userId === 1) {
     JSONResponse::localizedError('thisAccountCanTBeDeleted', 422) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['currentPassword' => 'text']);
 $current_password = (string) ($payload['currentPassword'] ?? '');
 
 // Throttle current-password guessing here too - see change-password.php. Same

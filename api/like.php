@@ -26,8 +26,7 @@ if (RateLimiter::tooManyAttempts($like_rate_key, 120, 600)) {
 
 RateLimiter::recordAttempt($like_rate_key);
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['itemId' => 'integer']);
 $post_id = (int) ($payload['itemId'] ?? 0);
 
 $owner = DB::row('

@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['title' => 'text', 'description' => 'text']);
 
 // Control characters render as nothing and cannot be written to XML at all,
 // so a display name carrying one would break the feeds these appear in.

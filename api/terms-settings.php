@@ -14,8 +14,7 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['termsText' => 'text']);
 
 Settings::set(SiteInfo::TERMS_SETTING, trim((string) ($payload[SiteInfo::TERMS_SETTING] ?? '')));
 

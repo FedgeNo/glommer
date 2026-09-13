@@ -16,8 +16,7 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['userId' => 'integer', 'isMod' => 'boolean']);
 $user_id = (int) ($payload['userId'] ?? 0);
 $is_mod = (bool) ($payload['isMod'] ?? false);
 

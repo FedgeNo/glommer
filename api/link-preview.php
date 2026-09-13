@@ -24,8 +24,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 15, 60)) {
 
 RateLimiter::recordAttempt($rate_key);
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['url' => 'text']);
 $url = trim((string) ($payload['url'] ?? ''));
 
 if ($url === '' || strlen($url) > 255 || !preg_match('/^https?:\/\//i', $url)) {

@@ -14,8 +14,7 @@ if (!Auth::check()) {
     JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['forGood' => 'boolean']);
 
 // Only an explicit yes puts the welcome away for good. Closing it without
 // ticking the box is the browser's business alone and reaches no further than

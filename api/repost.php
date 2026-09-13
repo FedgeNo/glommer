@@ -24,8 +24,7 @@ if (RateLimiter::tooManyAttempts($repost_rate_key, 60, 600)) {
 
 RateLimiter::recordAttempt($repost_rate_key);
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['postId' => 'integer']);
 
 $post_id = (int) ($payload['postId'] ?? 0);
 

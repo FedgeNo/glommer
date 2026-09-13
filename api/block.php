@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['userId' => 'integer']);
 $target_user_id = (int) ($payload['userId'] ?? 0);
 
 if ($target_user_id === $current_user -> userId) {

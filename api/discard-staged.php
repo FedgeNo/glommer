@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 Auth::requireLogin();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read(['stagedPostId' => 'integer']);
 
 // Scoped to the owner inside the DELETE itself - someone else's id is simply
 // not matched, same as it not existing.

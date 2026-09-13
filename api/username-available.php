@@ -8,8 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['username' => 'text']);
 
 // The same normalisation sign-up applies, so this answers for the name that
 // would actually be stored rather than for what was typed.

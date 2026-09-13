@@ -16,8 +16,12 @@ if (Auth::id() !== 1) {
     JSONResponse::localizedError('forbidden', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'openRouterAPIKey' => 'text',
+    'clearOpenRouterAPIKey' => 'boolean',
+    'openRouterModel' => 'text',
+    'openRouterNeverSpend' => 'boolean',
+]);
 
 $api_key = trim((string) ($payload['openRouterAPIKey'] ?? ''));
 

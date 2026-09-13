@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['emailDigests' => 'boolean']);
 
 // Read as a plain yes or no: anything that is not an explicit true stops the
 // mail, which is the safe direction for a setting about sending someone email.

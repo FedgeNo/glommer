@@ -11,7 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 Auth::requireLogin();
 
 $current_user = Auth::user();
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read([
+    'title' => 'text',
+    'description' => 'text',
+    'linkURL' => 'text',
+    'sensitive' => 'boolean',
+    'contentWarning' => 'text',
+    'latitude' => 'optional-number',
+    'longitude' => 'optional-number',
+    'publishAtEpoch' => 'optional-number',
+]);
 
 if (!is_array($payload)) {
     JSONResponse::localizedError('malformedRequest', 422) -> send();

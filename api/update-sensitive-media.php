@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['showSensitiveMedia' => 'boolean']);
 
 // Read as a plain yes or no rather than trusted as given: anything that is not
 // an explicit true leaves the cover in place, which is the safe direction for a

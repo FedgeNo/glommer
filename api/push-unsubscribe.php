@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 Auth::requireLogin();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read(['endpoint' => 'text', 'subscriptionId' => 'integer']);
 
 $payload = is_array($payload) ? $payload : [];
 $endpoint = is_string($payload['endpoint'] ?? null) ? trim($payload['endpoint']) : '';

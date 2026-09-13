@@ -14,8 +14,7 @@ if (Auth::id() !== 1) {
     JSONResponse::localizedError('forbidden', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['mapTileURL' => 'text', 'mapTileAPIKey' => 'text', 'mapTileAttribution' => 'text']);
 
 Settings::set(MapTiles::URL_SETTING, trim((string) ($payload['mapTileURL'] ?? '')));
 Settings::set(MapTiles::KEY_SETTING, trim((string) ($payload['mapTileAPIKey'] ?? '')));

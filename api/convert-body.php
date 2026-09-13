@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 Auth::requireLogin();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read(['body' => 'text', 'to' => 'text']);
 
 if (!is_array($payload)) {
     JSONResponse::localizedError('aBodyIsRequired', 422) -> send();

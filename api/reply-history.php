@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['parentId' => 'integer', 'offset' => 'integer']);
 
 // Public, like the thread it pages: a permalink shows its replies to anyone.
 // Paced per client for the same reason map-posts and nearby-history are - a

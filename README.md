@@ -584,9 +584,32 @@ venv needs `httpd_sys_content_t`, and its compiled `.so` files need
 
 ## 9. Backups
 
-`bin/backup.php` writes what a restore needs that git doesn't hold: a gzipped
-`mysqldump` and a tarball of `uploads/`, into a timestamped directory, pruning
-older runs.
+`bin/backup.php` writes `database.sql.gz` and `recovery.json.gpg` into a
+timestamped directory, pruning older runs. **Media is not backed up.** The
+recovery bundle contains `.env` and its effective configuration values,
+including current and retained ActivityPub encryption keys. These keys are
+required to recover encrypted federation signing identities and verify old
+message-franking records. A completed run requires both nonempty files.
+
+Install GnuPG and the standard `timeout` command on the backup host. Create a
+dedicated encryption key on a separate, trusted recovery machine:
+
+```sh
+gpg --quick-generate-key 'Glommer backup recovery' rsa4096 encr 0
+gpg --armor --output recovery-public.asc --export 'Glommer backup recovery'
+gpg --armor --output recovery-private.asc --export-secret-keys 'Glommer backup recovery'
+```
+
+Protect the exported private key and its passphrase, and keep an independent
+copy off the production server. Install **only `recovery-public.asc`** in the
+backup root, readable by the backup service account, or set
+`BACKUP_RECIPIENT_FILE` to its absolute path. GnuPG's
+[`--recipient-file`](https://www.gnupg.org/documentation/manuals/gnupg26/gpg.1.html)
+uses that public key without requiring a private key or a personal keyring on
+the server. The script feeds configuration directly into encryption; it never
+writes a plaintext configuration backup. Missing/invalid keys fail the run.
+Configure the recipient before the installer's first backup. Keep key rotation
+and configuration changes outside the backup window.
 
 ```
 php bin/backup.php                 # defaults: ../glommer-backups, keep 3 days
@@ -623,13 +646,14 @@ systemctl --user enable --now glommer-backup.timer
 loginctl enable-linger "$USER"
 ```
 
-**Restore**: `bin/restore.php` puts a run back - the database and the uploads
-tree together.
+**Restore**: `bin/restore.php` restores the database and leaves existing uploads
+in place. It also accepts older database archives after their media archives
+have been removed. Lost/deleted media cannot be recovered from these backups.
 
 ```
 php bin/restore.php                                   # what it would do, and nothing else
 php bin/restore.php 2026-08-08_085356                 # ditto, for a named run
-GLOMMER_RESTORE_CONFIRMED=1 sudo php bin/restore.php  # go ahead, newest run
+sudo env GLOMMER_RESTORE_CONFIRMED=1 php bin/restore.php # go ahead, newest database run
 ```
 
 Without the confirmation it only reports; nothing is changed. A run is named,
@@ -638,11 +662,28 @@ backup root - so no argument reaches another server's backups. Run it as root
 (or set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD`): the dump drops and recreates
 every table, which the least-privilege runtime account cannot do.
 
-The uploads tree is moved to `uploads.before-restore-<timestamp>` rather than
-deleted, so a restore onto the wrong install is survivable; remove it once
-you're satisfied. If the backup predates the code, the database comes back a
-version behind and the site holds a maintenance page until `bin/install.php`
-catches it up.
+Stop application and worker writes before importing. The script validates
+decompression before loading SQL, but imports directly into the configured
+database: an interrupted/failed SQL import can leave partially replaced tables
+and does not roll back automatically. If the backup predates the code, the site
+holds a maintenance page until `bin/install.php` brings the database up to date.
+
+If configuration was lost, recover it first on the trusted recovery machine:
+
+```sh
+gpg --import recovery-private.asc
+umask 077
+gpg --output recovery.json --decrypt recovery.json.gpg
+```
+
+The JSON's `environmentFile` holds the original `.env`; `effectiveEnvironment`
+records values actually used, including overrides and retained encryption keys.
+Restore those values to a protected `.env` on the replacement installation,
+adjusting host-specific paths/addresses and database access as needed. Preserve
+encryption keys exactly; do not replace them with freshly generated values.
+Transfer recovered configuration through a secure administrative channel and
+remove the decrypted working file afterward. The private recovery key stays
+off production. Restoring the database does not overwrite `.env` automatically.
 
 **Rehearse it.** A backup nobody has restored is not known to be a backup.
 Restore on a development machine, from that machine's own backup - never

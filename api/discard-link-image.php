@@ -14,8 +14,7 @@ if (!Auth::check()) {
     JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['seed' => 'text']);
 $seed = (string) ($payload['seed'] ?? '');
 
 // The name carries who staged the file, so this refuses one belonging to

@@ -13,8 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // No login required. Somebody signed out is exactly who the prompt asks, and
 // their answer is kept for as long as their session lasts; a member's is
 // written to their row as well, so it follows them to the next browser.
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['locale' => 'text']);
 
 // Checked against the languages this installation actually has, which is the
 // same list the selector is built from - so nothing can be chosen that has no

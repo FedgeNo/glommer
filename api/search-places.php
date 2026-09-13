@@ -20,7 +20,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 60, 60)) {
 
 RateLimiter::recordAttempt($rate_key);
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read(['q' => 'text']);
 
 $places = [];
 

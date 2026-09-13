@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['pollId' => 'integer', 'optionIds' => 'integer-list']);
 $poll_id = (int) ($payload['pollId'] ?? 0);
 $option_ids = is_array($payload['optionIds'] ?? null) ? $payload['optionIds'] : [];
 

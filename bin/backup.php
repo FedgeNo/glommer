@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-// Backs up everything a restore needs and git doesn't hold: the database
-// (mysqldump, gzipped) and the uploads tree (tar.gz, originals included).
+// Backs up the database (mysqldump, gzipped) and encrypted recovery secrets.
+// Media is deliberately not backed up.
 // Each run writes a timestamped directory under the backup root and prunes
 // runs older than the retention window. Intended to run nightly from a
-// systemd user timer - see README's "Backups" section.
+// systemd timer - see README's "Backups" section.
 //
 //   BACKUP_DIR       backup root (default: <parent of project>/glommer-backups)
 //   BACKUP_KEEP_DAYS retention in days (default: 3)
+//   BACKUP_RECIPIENT_FILE armored public recovery key (see README)
 
 if (PHP_SAPI !== 'cli') {
     exit(1);
@@ -25,6 +26,8 @@ spl_autoload_register(function (string $class): void {
 
 // Standalone helpers have no class name for the autoloader to find them by.
 require __DIR__ . '/../src/functions.php';
+
+umask(0077);
 
 $project_root = dirname(__DIR__);
 $backup_root = Backup::rootDir();
@@ -49,12 +52,29 @@ if ($real_backup_root === $real_project_root || str_starts_with($real_backup_roo
     exit(1);
 }
 
+$lock = fopen($backup_root . '/.backup.lock', 'c');
+if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
+    fwrite(STDERR, "Another backup is already running or the lock is unavailable.\n");
+    exit(1);
+}
+
 $run_dir = $backup_root . '/' . date('Y-m-d_His');
 
 if (!mkdir($run_dir, 0700)) {
     fwrite(STDERR, 'Could not create ' . $run_dir . "\n");
     exit(1);
 }
+
+// Refuse incomplete recovery before starting the database dump. No plaintext
+// configuration is written to disk; only the public recipient key lives here.
+try {
+    BackupRecovery::encrypt(BackupRecovery::configuration(), BackupRecovery::recipientFile(),
+        $run_dir . '/' . BackupRecovery::FILENAME);
+} catch (\Throwable $exception) {
+    fwrite(STDERR, $exception -> getMessage() . "\n");
+    exit(1);
+}
+echo BackupRecovery::FILENAME . ": encrypted recovery configuration saved\n";
 
 // ---------- Database ----------
 
@@ -66,7 +86,7 @@ if (!mkdir($run_dir, 0700)) {
 // against a deliberately wrong password: exec() returned 0 while mysqldump's
 // stderr held "Access denied". Dumping to a file first makes mysqldump's own
 // exit code the one actually checked.
-$dump_raw_path = $run_dir . '/database.sql';
+$dump_raw_path = $run_dir . '/database.partial.sql';
 $dump_stderr_path = $run_dir . '/mysqldump.stderr';
 
 // The password travels via MYSQL_PWD so it never appears in the process list.
@@ -106,10 +126,18 @@ if (!$dump_ok) {
 // Compressed as a separate step (not piped) for the same exit-code-accuracy
 // reason. gzip replaces the raw file with database.sql.gz in place.
 exec('gzip -f ' . escapeshellarg($dump_raw_path), $gzip_output, $gzip_exit);
-$dump_path = $dump_raw_path . '.gz';
+$compressed_path = $dump_raw_path . '.gz';
 
-if ($gzip_exit !== 0 || !is_file($dump_path)) {
+if ($gzip_exit !== 0 || !is_file($compressed_path) || filesize($compressed_path) === 0) {
     fwrite(STDERR, "Compressing the database dump failed:\n" . implode("\n", $gzip_output) . "\n");
+    exit(1);
+}
+
+// Publish the completion filename only after both stages succeeded. A killed
+// gzip must not turn a partial archive into a completed dashboard backup.
+$dump_path = $run_dir . '/database.sql.gz';
+if (!rename($compressed_path, $dump_path)) {
+    fwrite(STDERR, "Could not finalize the database archive.\n");
     exit(1);
 }
 
@@ -121,23 +149,6 @@ if ($dump_stderr === '') {
 
 echo 'database.sql.gz: ' . number_format((float) filesize($dump_path)) . " bytes\n";
 
-// ---------- Uploads ----------
-
-$uploads_path = $run_dir . '/uploads.tar.gz';
-
-exec(sprintf(
-    'tar -czf %s -C %s uploads 2>&1',
-    escapeshellarg($uploads_path),
-    escapeshellarg($project_root)
-), $tar_output, $tar_exit);
-
-if ($tar_exit !== 0) {
-    fwrite(STDERR, "Uploads archive failed:\n" . implode("\n", $tar_output) . "\n");
-    exit(1);
-}
-
-echo 'uploads.tar.gz: ' . number_format((float) filesize($uploads_path)) . " bytes\n";
-
 // ---------- Retention ----------
 
 $cutoff = time() - $keep_days * 86400;
@@ -146,7 +157,7 @@ $pruned = 0;
 foreach (glob($backup_root . '/*', GLOB_ONLYDIR) as $old_dir) {
     // Only touch directories matching our own timestamp naming - never
     // delete something else that happens to live in the backup root.
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', basename($old_dir))) {
+    if (is_link($old_dir) || !preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', basename($old_dir))) {
         continue;
     }
 

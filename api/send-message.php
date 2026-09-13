@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['recipientId' => 'integer', 'body' => 'text', 'envelope' => 'text']);
 $recipient_id = (int) ($payload['recipientId'] ?? 0);
 $body = trim((string) ($payload['body'] ?? ''));
 $envelope = null;

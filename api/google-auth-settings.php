@@ -14,8 +14,7 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['googleAuthClientId' => 'text', 'googleAuthSecret' => 'text']);
 
 $client_id = trim((string) ($payload['googleAuthClientId'] ?? ''));
 $secret = trim((string) ($payload['googleAuthSecret'] ?? ''));

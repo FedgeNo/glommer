@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 Auth::requireLogin();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read(['stagedPostId' => 'integer']);
 $staged = StagedPost::load((int) ($payload['stagedPostId'] ?? 0));
 
 if ($staged === null || (int) $staged -> userId !== Auth::id()) {

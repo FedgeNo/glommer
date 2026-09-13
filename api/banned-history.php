@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['offset' => 'integer']);
 
 if (!Auth::check() || !Auth::canModerate()) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();

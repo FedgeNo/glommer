@@ -39,8 +39,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
     JSONResponse::localizedError('tooManyAttemptsPleaseTryAgainLater', 429) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['code' => 'text']);
 $code = $payload['code'] ?? '';
 
 if (!is_string($code)) {

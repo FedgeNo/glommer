@@ -18,8 +18,7 @@ if (!Auth::check()) {
     JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['type' => 'text', 'slug' => 'text']);
 
 $type = strtolower(trim((string) ($payload['type'] ?? '')));
 $slug = mb_strtolower(trim((string) ($payload['slug'] ?? '')));

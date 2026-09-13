@@ -14,7 +14,7 @@ if (Auth::id() !== 1) {
     JSONResponse::localizedError('forbidden', 403) -> send();
 }
 
-$data = json_decode((string) file_get_contents('php://input'), true);
+$data = APIRequest::read(['overview' => 'boolean']);
 
 if (session_status() === PHP_SESSION_ACTIVE) {
     session_write_close();

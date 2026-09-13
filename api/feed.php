@@ -10,8 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'feedType' => 'text',
+    'offset' => 'integer',
+    'userId' => 'integer',
+    'tag' => 'text',
+    'cursor' => ['postId' => 'integer', 'sortAt' => 'text'],
+]);
 
 $feed_type = (string) ($payload['feedType'] ?? 'global');
 // How many posts the client already shows - the next page starts there.

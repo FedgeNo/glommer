@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['otherUserId' => 'integer', 'type' => 'text', 'signal' => 'json']);
 
 $other_user_id = (int) ($payload['otherUserId'] ?? 0);
 $type = (string) ($payload['type'] ?? '');

@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['theme' => 'text']);
 $theme = (string) ($payload['theme'] ?? '');
 
 // Asked of the same list that builds the menu, rather than a copy of it - two

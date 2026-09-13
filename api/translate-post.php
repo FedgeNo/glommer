@@ -16,8 +16,7 @@ if (!Translator::canTranslate()) {
     JSONResponse::localizedError('translationIsNotAvailableOnThisServer', 503) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['postId' => 'integer', 'language' => 'text']);
 
 $post_id = (int) ($payload['postId'] ?? 0);
 $language = PostTranslation::normalizeOfferedLanguage((string) ($payload['language'] ?? ''));

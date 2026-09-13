@@ -14,7 +14,7 @@ if (!WebPushKeys::isConfigured()) {
     JSONResponse::localizedError('pushIsNotConfiguredOnThisServer', 503) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
+$payload = APIRequest::read(['endpoint' => 'text', 'p256dh' => 'text', 'auth' => 'text']);
 
 $payload = is_array($payload) ? $payload : [];
 $endpoint = is_string($payload['endpoint'] ?? null) ? trim($payload['endpoint']) : '';

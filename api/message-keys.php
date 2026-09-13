@@ -16,8 +16,11 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'publicKey' => ['kty' => 'text', 'crv' => 'text', 'x' => 'text', 'y' => 'text'],
+    'wrappedPrivateKey' => ['salt' => 'text', 'iterations' => 'integer', 'iv' => 'text', 'ciphertext' => 'text'],
+    'password' => 'text',
+]);
 $public_key = is_array($payload['publicKey'] ?? null) ? $payload['publicKey'] : [];
 $wrapped = is_array($payload['wrappedPrivateKey'] ?? null) ? $payload['wrappedPrivateKey'] : [];
 

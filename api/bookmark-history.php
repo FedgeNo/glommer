@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['offset' => 'integer']);
 
 // Private list - unlike feed.php (which serves public feeds and only
 // gates the 'friends' feedType), every request here is the viewer's own data.

@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['listType' => 'text', 'userId' => 'integer', 'offset' => 'integer']);
 
 // Paced per client, like every other list a signed-out visitor can page. A page
 // here loads a row of accounts and builds each one's card, so it costs more

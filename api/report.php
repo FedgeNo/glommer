@@ -16,8 +16,12 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read([
+    'targetType' => 'text',
+    'targetId' => 'integer',
+    'reason' => 'text',
+    'revealedKey' => 'text',
+]);
 $target_type = (string) ($payload['targetType'] ?? '');
 $target_id = (int) ($payload['targetId'] ?? 0);
 $reason = trim((string) ($payload['reason'] ?? ''));

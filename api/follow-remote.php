@@ -20,8 +20,7 @@ if (RateLimiter::tooManyAttempts($rate_key, 20, 3600)) {
     JSONResponse::localizedError('tooManyFollowRequestsPleaseWaitABitAndTryAgain', 429) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['handles' => 'text']);
 $raw = (string) ($payload['handles'] ?? '');
 
 if (strlen($raw) > 8192) {

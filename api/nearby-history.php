@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['latitude' => 'optional-number', 'longitude' => 'optional-number', 'offset' => 'integer']);
 
 // Public, like the feed it pages: the posts are the same public ones, just
 // selected by proximity. Paced per client because each call ranks every located

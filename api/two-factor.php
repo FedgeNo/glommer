@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['action' => 'text', 'currentPassword' => 'text']);
 $action = (string) ($payload['action'] ?? '');
 $current_password = (string) ($payload['currentPassword'] ?? '');
 

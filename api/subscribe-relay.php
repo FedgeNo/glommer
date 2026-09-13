@@ -16,8 +16,7 @@ if (!Auth::check() || Auth::id() !== 1) {
     JSONResponse::localizedError('notAuthorized', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['actorURI' => 'text', 'followObject' => 'text']);
 $actor_uri = trim((string) ($payload['actorURI'] ?? ''));
 $follow_object = (string) ($payload['followObject'] ?? Relay::FOLLOW_PUBLIC);
 

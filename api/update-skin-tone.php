@@ -16,8 +16,7 @@ if (!Auth::check()) {
 
 $current_user = Auth::user();
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['skinTone' => 'text']);
 $skin_tone = (string) ($payload['skinTone'] ?? '');
 
 // emoji-picker-element's skin tones are exactly 0 (default) through 5 -

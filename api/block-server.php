@@ -16,8 +16,7 @@ if (!Auth::canModerate()) {
     JSONResponse::localizedError('notAllowed', 403) -> send();
 }
 
-$payload = json_decode((string) file_get_contents('php://input'), true);
-$payload = is_array($payload) ? $payload : [];
+$payload = APIRequest::read(['domain' => 'text', 'reason' => 'text']);
 
 $domain = trim((string) ($payload['domain'] ?? ''));
 $reason = trim((string) ($payload['reason'] ?? ''));

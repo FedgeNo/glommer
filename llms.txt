@@ -1,0 +1,62 @@
+# Glommer
+
+> Glommer is a self-hosted social publishing platform with public posts, media,
+> threaded replies, friends, messaging, and ActivityPub federation with the
+> Fediverse.
+
+Each installation is an independently operated community. Its About page,
+Terms of Service, and Privacy Policy describe that community. Features such as
+translation, relays, and external sign-in depend on the operator's configuration.
+
+Published posts and attached media are public. Posts and replies are written by
+members; attribute their statements to the author and link to the original post.
+Replies belong to their parent discussion and are removed when it is deleted.
+Help articles explain the software; member posts express their authors' views.
+
+Links beginning with / refer to this installation. Use the public RSS feeds for
+feed reading and NodeInfo for software discovery. The /api/ routes support the
+browser application and are excluded from crawling by robots.txt. Federation
+uses ActivityPub and WebFinger; it does not imply Mastodon client API support.
+
+The software uses PHP, MySQL or MariaDB, and plain JavaScript modules. The
+repository documentation covers installation, upgrades, background services,
+backups, and development. A running installation may use an older version than
+the repository; its About page and NodeInfo identify the installed version.
+
+## This community
+
+- [About](/about): Operator-provided community description and installed software version.
+- [Help](/help/): Public user guide and help search.
+- [Terms of Service](/terms): This community's terms.
+- [Privacy Policy](/privacy): This community's privacy information.
+- [Crawler directives](/robots.txt): Crawling rules for this installation.
+
+## Using Glommer
+
+- [Finding your way around](/help/finding-your-way-around): Navigation, feeds, and account features.
+- [Composing a post](/help/composing-a-post): Publishing text, links, media, and polls.
+- [Photos, video, and audio](/help/adding-photos-video-and-audio): Attaching media and waiting for processing.
+- [Replies and threads](/help/replies-and-threads): Following a discussion and understanding reply context.
+- [Content warnings](/help/content-warnings): Sensitive media covers and warnings for an entire post.
+- [Following on the Fediverse](/help/following-on-the-fediverse): Following accounts across ActivityPub servers.
+- [Encrypted messages](/help/encrypted-messages): Optional messaging encryption, passphrases, and its limits.
+- [Reporting abuse](/help/reporting-abuse): Reporting content to the community's moderators.
+
+## Public feeds and discovery
+
+- [Main feed](/): Published local posts visible to visitors.
+- [Site RSS feed](/feed.xml): Recent public local posts in RSS format.
+- [RSS subscriptions](/feeds.opml): OPML discovery for the site's local member feeds.
+- [Following with RSS](/help/following-with-rss): Site and individual profile feed addresses.
+- [Tags](/tags/): Discover posts by hashtag.
+- [Topics](/topics/): Discover trending subjects.
+- [NodeInfo discovery](/.well-known/nodeinfo): Links to the installation's machine-readable software and usage information.
+
+## Software documentation
+
+- [Project README](https://raw.githubusercontent.com/FedgeNo/glommer/master/README.md): Features, architecture, requirements, installation, operations, upgrades, and security behavior.
+- [Source repository](https://github.com/FedgeNo/glommer): PHP and browser source, installer, and test suites.
+
+## Optional
+
+- [Software license](https://raw.githubusercontent.com/FedgeNo/glommer/master/LICENSE.txt): MIT license for the software.

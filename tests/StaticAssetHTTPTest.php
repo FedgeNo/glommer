@@ -27,6 +27,7 @@ class StaticAssetHTTPTest extends TestCase
             '/sw.js' => ['sw.js', ['application/javascript', 'text/javascript']],
             '/favicon.ico' => ['favicon.ico', ['image/vnd.microsoft.icon', 'image/x-icon']],
             '/robots.txt' => ['robots.txt', ['text/plain']],
+            '/llms.txt' => ['llms.txt', ['text/plain']],
         ];
 
         foreach ($assets as $url_path => [$file_path, $types]) {

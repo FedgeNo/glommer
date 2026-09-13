@@ -5,11 +5,11 @@ declare(strict_types=1);
 /**
  * The queue of posts this server has been told about and has yet to read.
  *
- * Two things put one here, and both are an address rather than a post. A relay
- * forwards what other servers published; and a reply arrives whose parent this
- * server has never seen, which is a thread to go and read the rest of.
+ * Relays forward addresses of posts published by other servers. These are
+ * hints to read public content. Authenticated Create deliveries, including
+ * replies needing thread context, retain their signed envelopes in InboxFetch.
  *
- * Either way the reading cannot happen where the address arrived. Two signed
+ * The reading cannot happen where the address arrived. Two signed
  * fetches at five seconds each, redirects allowed, is tens of seconds of a PHP
  * worker held on somebody else's server; at the rate the inbox already permits,
  * that is enough concurrent workers to exhaust the pool and stop the site
@@ -53,9 +53,8 @@ class RelayFetch
      * the same post is one thing to fetch, and the unique key is what settles
      * which of them got there first.
      *
-     * A null relay is a post nobody relayed - a reply whose thread this server
-     * needs to read before it can place it. It is fetched the same way and
-     * simply belongs to no firehose.
+     * A null relay is a public object hint belonging to no firehose. It carries
+     * no authenticated delivery context and is not a substitute for InboxFetch.
      */
     public static function enqueue(string $object_uri, ?int $relay_id): void
     {

@@ -83,6 +83,26 @@ SELECT COUNT(*) AS `total`
         $this -> assertSame(1, self::likeCount($post_id));
     }
 
+    public function testBlocksPreventInboundLikesBoostsAndFollowsInEitherDirection(): void
+    {
+        foreach ([false, true] as $reverse) {
+            $author = self::localUser();
+            $them = self::remoteUser();
+            $id = self::post((int) $author -> userId);
+            $uri = ServerURL::absolute('/users/' . $author -> slug . '/' . $id);
+            Block::create((int) ($reverse ? $them : $author) -> userId, (int) ($reverse ? $author : $them) -> userId);
+            ActivityPubReaction::liked($uri, $them);
+            ActivityPubReaction::announced($uri, $them, $them -> remoteActorURI . '/boost');
+            ActivityPubInbox::process([
+                'type' => 'Follow', 'id' => $them -> remoteActorURI . '/follow',
+                'object' => ActivityPubActor::uriFor($author),
+            ], $them -> remoteActorURI);
+            $this -> assertSame(0, $this -> likeCount($id));
+            $this -> assertSame(0, ActivityPubReaction::announceCount($id));
+            $this -> assertNull(DB::row('SELECT * FROM `FediverseFollowers` WHERE `localUserId` = ?', 'stdClass', 'i', $author -> userId));
+        }
+    }
+
     public function testAnUndoTakesTheLikeBack(): void
     {
         $author = self::localUser();

@@ -90,6 +90,15 @@ class ActivityPubResponse
         exit;
     }
 
+    public static function badRequest(): never
+    {
+        self::discardAnonymousSession();
+
+        http_response_code(400);
+
+        exit;
+    }
+
     public static function notFound(): never
     {
         self::discardAnonymousSession();

@@ -22,6 +22,30 @@ async function withFetch(fake, body) {
 export default {
     suite: 'Api',
     tests: {
+        async 'cancellation during response parsing is silent and discards a late success'() {
+            const controller = new AbortController();
+            const { result, said } = await withFetch(
+                async () => ({ ok: true, json: async () => {
+                    controller.abort();
+                    return { response: { saved: true } };
+                } }),
+                () => Api.post('/api/test', {}, { signal: controller.signal })
+            );
+            TestCase.assertNull(result);
+            TestCase.assertEquals(0, said.length);
+        },
+        async 'already cancelled work never reaches fetch'() {
+            const controller = new AbortController();
+            controller.abort();
+            let calls = 0;
+            const { result, said } = await withFetch(
+                async () => { calls++; },
+                () => Api.post('/api/test', {}, { signal: controller.signal })
+            );
+            TestCase.assertNull(result);
+            TestCase.assertEquals(0, calls);
+            TestCase.assertEquals(0, said.length);
+        },
         async 'post() returns response on success'() {
             const orig = globalThis.fetch;
             globalThis.fetch = async () => ({

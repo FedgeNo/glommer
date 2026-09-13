@@ -41,6 +41,19 @@ SELECT `passwordHash`
         $this -> assertTrue(password_verify('the first password', $this -> passwordHashOf($user_id)));
     }
 
+    public function testALoginRehashCannotOverwriteANewerPassword(): void
+    {
+        $user_id = self::createUser();
+        DB::run('UPDATE `Users` SET `passwordHash` = ? WHERE `userId` = ?', 'si', self::cheapHash('old password'), $user_id);
+        $stale = User::load($user_id);
+        DB::run('UPDATE `Users` SET `passwordHash` = ? WHERE `userId` = ?', 'si', self::cheapHash('new password'), $user_id);
+
+        $rehash = new \ReflectionMethod(Auth::class, 'rehashIfNeeded');
+        $this -> assertFalse($rehash -> invoke(null, $stale, 'old password'));
+        $this -> assertTrue(User::load($user_id) -> verifyPassword('new password'));
+        $this -> assertFalse(User::load($user_id) -> verifyPassword('old password'));
+    }
+
     /**
      * The race the claim exists for: two requests holding one token. Whichever
      * is second must be refused, or the password that stands is the one set by
@@ -63,6 +76,103 @@ SELECT `passwordHash`
     public function testAResetTokenThatWasNeverIssuedIsRefused(): void
     {
         $this -> assertFalse(PasswordReset::consume(bin2hex(random_bytes(32)), 'nice try'));
+    }
+
+    public function testAResetInvalidatesAllOtherResetLinks(): void
+    {
+        $id = self::createUser();
+        $first = $this -> resetToken($id);
+        $second = $this -> resetToken($id);
+        $this -> assertTrue(PasswordReset::consume($first, 'replacement password'));
+        $this -> assertNull(PasswordReset::verify($second));
+        $this -> assertFalse(PasswordReset::consume($second, 'old link password'));
+    }
+
+    public function testChangingEmailInvalidatesLinksAndRejectsStaleIssuance(): void
+    {
+        $id = self::createUser();
+        $user = User::load($id);
+        $create = new \ReflectionMethod(EmailVerification::class, 'create');
+        $verification = $create -> invoke(null, $id, $user -> email);
+        $reset = $this -> resetToken($id);
+
+        $this -> assertTrue($user -> changeEmail('changed-' . bin2hex(random_bytes(6)) . '@example.test'));
+        $this -> assertNull(EmailVerification::verify($verification));
+        $this -> assertNull(PasswordReset::verify($reset));
+        $this -> assertNull($create -> invoke(null, $id, $user -> email));
+        $this -> assertNull((new \ReflectionMethod(PasswordReset::class, 'create')) -> invoke(null, $id, $user -> email));
+        $this -> assertFalse((new \ReflectionMethod(EmailVerification::class, 'markVerified')) -> invoke(null, $id, $user -> email));
+        $this -> assertSame(0, User::load($id) -> verified);
+
+        $fresh = $create -> invoke(null, $id, User::load($id) -> email);
+        $this -> assertSame($id, EmailVerification::verify($fresh));
+        $this -> assertNull(EmailVerification::verify($fresh));
+    }
+
+    public function testRecoveryInvalidatesResetLinksFromTheReplacedAddress(): void
+    {
+        $id = self::createUser();
+        $original = $this -> emailOf($id);
+        $this -> assertTrue(User::load($id) -> changeEmail('recovery-' . bin2hex(random_bytes(6)) . '@example.test'));
+        $reset = $this -> resetToken($id);
+        $this -> assertTrue(EmailChangeRevert::consume($this -> revertToken($id, $original)));
+        $this -> assertNull(PasswordReset::verify($reset));
+    }
+
+    public function testARevokedFirstFactorCannotCompleteTwoFactorLogin(): void
+    {
+        $session = $_SESSION ?? [];
+        try {
+            $id = self::createUser();
+            Auth::beginTwoFactor(User::load($id), true, false);
+            $this -> assertSame($id, Auth::pendingTwoFactorUser() -> userId);
+            User::bumpSessionVersion($id);
+            $this -> assertNull(Auth::pendingTwoFactorUser());
+            $this -> assertFalse(isset($_SESSION['pending2FAUserId']));
+            Auth::beginTwoFactor(User::load($id), false, true);
+            $this -> assertSame($id, Auth::pendingTwoFactorUser() -> userId);
+            Auth::clearPendingTwoFactor();
+        } finally {
+            $_SESSION = $session;
+        }
+    }
+
+    public function testPasswordChangeAndGoogleRecoveryRollBackOnRevocationFailure(): void
+    {
+        $id = self::createUser();
+        $user = User::load($id);
+        $hash = $this -> passwordHashOf($id);
+        $reset = $this -> resetToken($id);
+        mysqli_query(DB::connection(), '
+CREATE TRIGGER `AccountRecoveryFailRevocation` BEFORE UPDATE ON `Users` FOR EACH ROW
+BEGIN
+    IF NEW.`sessionVersion` <> OLD.`sessionVersion` THEN
+        SIGNAL SQLSTATE \'45000\' SET MESSAGE_TEXT = \'forced revocation failure\';
+    END IF;
+END');
+        try {
+            foreach ([
+                fn () => $user -> changePassword(self::cheapHash('replacement')),
+                fn () => GoogleAuth::resolveUser((string) $user -> email, null),
+            ] as $change) {
+                try {
+                    $change();
+                    $this -> assertTrue(false, 'the injected failure must escape');
+                } catch (\mysqli_sql_exception $exception) {
+                    $this -> assertTrue(str_contains($exception -> getMessage(), 'forced revocation failure'));
+                }
+                $this -> assertSame($hash, $this -> passwordHashOf($id));
+                $this -> assertSame($user -> sessionVersion, User::load($id) -> sessionVersion);
+                $this -> assertSame(0, User::load($id) -> verified);
+                $this -> assertSame($id, PasswordReset::verify($reset));
+            }
+        } finally {
+            mysqli_query(DB::connection(), 'DROP TRIGGER `AccountRecoveryFailRevocation`');
+        }
+
+        $this -> assertNotNull($user -> changePassword(self::cheapHash('replacement')));
+        $this -> assertNull(PasswordReset::verify($reset));
+        $this -> assertNull($user -> changePassword(self::cheapHash('stale replacement')));
     }
 
     /** Spending the token also ends whatever the old password was signed into. */

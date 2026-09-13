@@ -1,5 +1,5 @@
 import { TestCase } from './TestCase.js';
-import { Dialog } from '../../scripts/HTMLObjects.js';
+import { Dialog, MessageCrypto } from '../../scripts/HTMLObjects.js';
 import { RememberedDevice } from '../../scripts/Controllers.js';
 import { LogoutEverywherePanel } from '../../scripts/Controllers.js';
 
@@ -58,6 +58,34 @@ const settle = () => new Promise(resolve => setTimeout(resolve, 0));
 export default {
     suite: 'Revoking a session',
     tests: {
+        async 'signing out clears message keys only after the server accepts it'() {
+            for (const ok of [false, true]) {
+                await withFetch(ok, async () => {
+                    const panel = document.createElement('div');
+                    panel.className = 'LogoutEverywherePanel';
+                    const button = document.createElement('button');
+                    button.className = 'LogoutEverywhereButton';
+                    panel.append(button);
+                    document.body.append(panel);
+                    MessageCrypto.storeUnlocked({ d: 'cached private key' });
+                    MessageCrypto.setThreadKey({ active: true });
+                    try {
+                        LogoutEverywherePanel.init();
+                        button.click();
+                        await settle();
+                        await settle();
+                        await settle();
+                        if (ok) {
+                            TestCase.assertNull(MessageCrypto.loadUnlocked());
+                            TestCase.assertNull(MessageCrypto.threadKey());
+                        } else {
+                            TestCase.assertNotNull(MessageCrypto.loadUnlocked());
+                            TestCase.assertNotNull(MessageCrypto.threadKey());
+                        }
+                    } finally { panel.remove(); MessageCrypto.clearUnlocked(); }
+                });
+            }
+        },
         async 'a device whose revocation failed is still shown'() {
             await withFetch(false, async (posted) => {
                 const { card, button } = deviceCard();

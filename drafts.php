@@ -41,6 +41,8 @@ $composer -> attributes['data-staged-post-id'] = (string) $draft -> stagedPostId
 $composer -> attributes['data-title'] = (string) ($draft -> title ?? '');
 $composer -> attributes['data-description-delta'] = (string) ($draft -> descriptionDelta ?? '');
 $composer -> attributes['data-link-url'] = (string) ($draft -> linkURL ?? '');
+$composer -> attributes['data-sensitive'] = (string) $draft -> sensitive;
+$composer -> attributes['data-content-warning'] = (string) ($draft -> contentWarning ?? '');
 
 if ($draft -> publishAt !== null) {
     $composer -> attributes['data-publish-at-epoch'] = (string) strtotime((string) $draft -> publishAt);

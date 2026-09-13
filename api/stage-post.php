@@ -33,10 +33,24 @@ if ((int) $existing -> total >= 50) {
 // No files and no poll here: media publishes immediately (the staging queue
 // on disk is not this table), and a poll's clock starts when readers can
 // vote, which is publish time - scheduling one is a contradiction.
+foreach (['title', 'description', 'linkURL', 'contentWarning'] as $field) {
+    if (isset($payload[$field]) && !is_string($payload[$field])) {
+        JSONResponse::localizedError('malformedRequest', 422) -> send();
+    }
+}
+
+foreach (['latitude', 'longitude', 'publishAtEpoch'] as $field) {
+    if (isset($payload[$field]) && $payload[$field] !== ''
+        && (!is_numeric($payload[$field]) || !is_finite((float) $payload[$field]))) {
+        JSONResponse::localizedError('malformedRequest', 422) -> send();
+    }
+}
+
 $title = ControlCharacters::strip(mb_substr(trim((string) ($payload['title'] ?? '')), 0, 255));
 $description_raw = (string) ($payload['description'] ?? '');
 $link_url = trim((string) ($payload['linkURL'] ?? ''));
 $sensitive = ($payload['sensitive'] ?? false) === true ? 1 : 0;
+$content_warning = $sensitive === 1 ? mb_substr(trim($payload['contentWarning'] ?? ''), 0, 255) : '';
 
 $description_value = null;
 $description_delta_value = null;
@@ -119,7 +133,8 @@ $staged_post_id = StagedPost::stage(
     $latitude,
     $longitude,
     $sensitive,
-    $publish_at_value
+    $publish_at_value,
+    $content_warning !== '' ? $content_warning : null
 );
 
 JSONResponse::success([

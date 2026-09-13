@@ -31,6 +31,7 @@ import {
     Div,
     EmojiRenderer,
     Entity,
+    FormForm,
     HTMLObject,
     Image,
     Linkifier,
@@ -57,6 +58,13 @@ import {
     render_formulas,
     render_math,
 } from '/scripts/HTMLObjects.js';
+
+// These endpoints render the next page themselves instead of returning JSON.
+ReadyHandler.add(() => {
+    for (const name of ['SetupForm', 'EmailVerifyForm', 'EmailRevertForm', 'EmailDigestResubscribeForm']) {
+        FormForm.attach(name, FormForm.submitPage);
+    }
+});
 
 
 // AdminDashboard.js
@@ -902,6 +910,8 @@ class Composer extends PostFields {
 
         if (this.titleInput) this.titleInput.value = draft.title || '';
         if (this.linkInput) this.linkInput.value = draft.linkUrl || '';
+        if (this.sensitiveInput) this.sensitiveInput.checked = draft.sensitive === '1';
+        if (this.warningInput) this.warningInput.value = draft.contentWarning || '';
 
         if (draft.descriptionDelta) {
             try {
@@ -939,7 +949,12 @@ class Composer extends PostFields {
         // clock now says - including nothing, which turns a scheduled post
         // back into a plain draft.
         this.draftButton.addEventListener('click', () => {
-            this.#stagePost(this.#editingDraft() ? this.#scheduledEpoch() : null);
+            FormForm.run(this.#form, (form, { signal }) =>
+                this.#stagePost(this.#editingDraft() ? this.#scheduledEpoch() : null, signal),
+            { submitter: this.draftButton }).catch(error => {
+                console.error('Saving draft failed', error);
+                Toast.show(Strings.for('Api').genericError || '');
+            });
         });
 
         // The Schedule button only reveals or hides the clock - reading
@@ -1017,6 +1032,11 @@ class Composer extends PostFields {
      */
     #syncSubmitState() {
         if (!this.submitButton) return;
+        if (FormForm.isPending(this.#form)) {
+            this.submitButton.disabled = true;
+            if (this.draftButton) this.draftButton.disabled = true;
+            return;
+        }
 
         const has_anything = this.#formHasContent() || this.#attachments.length > 0;
 
@@ -1062,80 +1082,85 @@ class Composer extends PostFields {
         this.#syncFields();
     }
 
+    /** Rich text and attached files are part of the draft, outside native form values. */
+    #draftUnchanged(signal) {
+        const completion = FormForm.completion(this.#form, signal);
+        // DescriptionInput is the transport copy we update during submission.
+        // Compare Quill's actual content instead, including edits during conversion.
+        const fields = () => [...this.#form.querySelectorAll('input:not(.DescriptionInput), textarea, select')];
+        const count = fields().length;
+        const body = JSON.stringify(this.#quill.getContents());
+        const attachments = [...this.#attachments];
+        return () => fields().length === count && completion.unchanged(fields())
+            && JSON.stringify(this.#quill.getContents()) === body
+            && attachments.length === this.#attachments.length
+            && attachments.every((entry, index) => entry === this.#attachments[index]);
+    }
+
     /**
      * Saves what is written as a draft (no epoch) or a scheduled post - the
      * text/link path only, which #syncFields guarantees by hiding these
      * controls whenever files or a poll are in play.
      */
-    async #stagePost(publish_at_epoch) {
+    async #stagePost(publish_at_epoch, signal) {
         if (!this.#quill) return;
+        const unchanged = this.#draftUnchanged(signal);
 
         // Nothing written is nothing to stage - said here, so an empty
         // composer can't appear to succeed at anything.
-        if (this.#quill.getText().trim() === ''
+        if ((this.markdownMode ? this.markdownInput.value : this.#quill.getText()).trim() === ''
             && (this.titleInput?.value.trim() ?? '') === ''
             && (this.linkInput?.value.trim() ?? '') === '') {
             Toast.show(Strings.for('ComposerClient').writeFirst || '');
             return;
         }
 
-        // Whichever button set this going - Save Draft on a fresh composer,
-        // the submit button on one holding a draft already.
-        if (this.draftButton) Working.start(this.draftButton);
-        if (this.submitButton) Working.start(this.submitButton);
-        Working.start(this.scheduleButton);
+        const staged = {
+            title: this.titleInput?.value ?? '',
+            description: JSON.stringify(this.#quill.getContents()),
+            linkURL: this.linkInput?.value ?? '',
+            latitude: this.latitudeInput?.value ?? '',
+            longitude: this.longitudeInput?.value ?? '',
+            sensitive: this.sensitiveInput?.checked ?? false,
+            contentWarning: this.warningInput?.value ?? '',
+            publishAtEpoch: publish_at_epoch,
+        };
 
-        try {
-            const staged = {
-                title: this.titleInput?.value ?? '',
-                description: JSON.stringify(this.#quill.getContents()),
-                linkURL: this.linkInput?.value ?? '',
-                latitude: this.latitudeInput?.value ?? '',
-                longitude: this.longitudeInput?.value ?? '',
-                sensitive: false,
-                publishAtEpoch: publish_at_epoch,
-            };
-
-            if (this.#editingDraft()) {
-                staged.stagedPostId = Number(this.#form.dataset.stagedPostId);
-            }
-
-            const result = await Api.post(
-                this.#editingDraft() ? '/api/update-staged' : '/api/stage-post',
-                staged,
-                { form: this.#form }
-            );
-
-            if (!result) return;
-
-            // Editing happened on a page of its own, so there is nowhere to
-            // stay: the list it came from is where the saved draft now is.
-            if (this.#editingDraft()) {
-                window.location.href = ClientConfig.siteURL() + '/drafts';
-
-                return;
-            }
-
-            const words = Strings.for('ComposerClient');
-            Toast.show(publish_at_epoch === null ? words.savedDraft || '' : words.scheduledDraft || '');
-
-            this.#form.reset();
-            this.#quill.setText('');
-            this.#resetSchedule();
-            if (this.locationButton) this.#setLocation(null, null);
-            this.#syncFields();
-        } finally {
-            if (this.draftButton) Working.stop(this.draftButton);
-            // Hands the submit button back before the rule below decides
-            // whether it should be usable: syncSubmitState sets .disabled
-            // straight, so leaving this out would clear the disabling and
-            // leave the button pulsing at nothing.
-            Working.stop(this.submitButton);
-            // Re-imposes the content rule: after a successful save the form
-            // is empty again, and an empty form offers no live Save Draft.
-            this.#syncSubmitState();
-            Working.stop(this.scheduleButton);
+        if (this.markdownMode) {
+            const delta = await Composer.#converted(this.markdownInput.value, 'delta', signal);
+            if (delta === null || signal?.aborted) return;
+            staged.description = delta;
         }
+
+        if (this.#editingDraft()) {
+            staged.stagedPostId = Number(this.#form.dataset.stagedPostId);
+        }
+
+        const result = await Api.post(
+            this.#editingDraft() ? '/api/update-staged' : '/api/stage-post',
+            staged,
+            { form: this.#form, signal }
+        );
+
+        if (!result) return;
+
+        // Editing happened on a page of its own, so there is nowhere to
+        // stay: the list it came from is where the saved draft now is.
+        if (this.#editingDraft() && unchanged()) {
+            window.location.href = ClientConfig.siteURL() + '/drafts';
+
+            return;
+        }
+
+        const words = Strings.for('ComposerClient');
+        Toast.show(publish_at_epoch === null ? words.savedDraft || '' : words.scheduledDraft || '');
+
+        if (!unchanged()) return;
+        this.#form.reset();
+        this.#quill.setText('');
+        this.#resetSchedule();
+        if (this.locationButton) this.#setLocation(null, null);
+        this.#syncFields();
     }
 
     #createQuill() {
@@ -1561,19 +1586,18 @@ class Composer extends PostFields {
     }
 
     #bindSubmit() {
-        this.#form.addEventListener('submit', (event) => {
-            event.preventDefault();
-
+        FormForm.attach(this.#form, (form, { signal }) => {
             // A form submits on Enter whether or not it still has a button to
             // do it with, and posting is not what this page is for: it would
             // write a second post and leave the draft where it was. Saving is.
             if (this.#editingDraft()) {
-                this.#stagePost(this.#scheduledEpoch());
-
-                return;
+                return this.#stagePost(this.#scheduledEpoch(), signal);
             }
 
-            this.#submit();
+            return this.#submit(signal);
+        }, {
+            controls: () => [this.draftButton, this.scheduleButton, this.markdownButton].filter(Boolean),
+            settled: () => this.#syncSubmitState(),
         });
     }
 
@@ -1583,8 +1607,8 @@ class Composer extends PostFields {
      * means one thing on this site: the same pair that reads an inbound
      * Fediverse post reads a member's markdown.
      */
-    static async #converted(body, to) {
-        const result = await Api.post('/api/convert-body', { body, to });
+    static async #converted(body, to, signal) {
+        const result = await Api.post('/api/convert-body', { body, to }, { signal });
 
         return result ? result.body : null;
     }
@@ -1669,127 +1693,123 @@ class Composer extends PostFields {
         this.#syncSubmitState();
     }
 
-    async #submit() {
+    async #submit(signal) {
         if (!this.#quill) return;
+        const unchanged = this.#draftUnchanged(signal);
 
-        // A picked publish time turns the submit into a scheduling - the
-        // button already says "Schedule" when this path is live.
         const scheduled_epoch = this.#scheduledEpoch();
-
         if (scheduled_epoch !== null) {
             if (scheduled_epoch * 1000 <= Date.now() + 60000) {
                 Toast.show(Strings.for('ComposerClient').futurePublish || '');
                 return;
             }
-
-            this.#stagePost(scheduled_epoch);
-            return;
+            return this.#stagePost(scheduled_epoch, signal);
         }
 
-        // Whichever mode is showing is the one the post comes from, and the
-        // form only ever carries a delta - so a markdown body is converted
-        // here rather than the endpoints learning a second format.
+        // The endpoint takes a Delta regardless of the active writing mode.
         if (this.markdownMode) {
-            const delta = await Composer.#converted(this.markdownInput.value, 'delta');
-
-            if (delta === null) {
-                return;
-            }
-
+            const delta = await Composer.#converted(this.markdownInput.value, 'delta', signal);
+            if (delta === null) return;
             this.descriptionInput.value = delta;
         } else {
             this.descriptionInput.value = JSON.stringify(this.#quill.getContents());
         }
 
-        Working.start(this.submitButton);
+        signal.throwIfAborted();
+        const xhr = new XMLHttpRequest();
+        const abort = () => xhr.abort();
         this.progressBar.value = 0;
         this.progressBar.classList.add('Active');
 
-        const xhr = new XMLHttpRequest();
-        xhr.upload.addEventListener('progress', (e) => {
-            if (e.lengthComputable) {
-                this.progressBar.max = e.total;
-                this.progressBar.value = e.loaded;
-            }
-        });
-
-        xhr.addEventListener('loadend', () => {
-            Working.stop(this.submitButton);
-            this.progressBar.classList.remove('Active');
-            this.progressBar.value = 0;
-
-            const getErrorMsg = (responseText) => {
-                try {
-                    const data = JSON.parse(responseText);
-                    return data.error || null;
-                } catch (_) {
-                    return null;
+        try {
+            xhr.upload.addEventListener('progress', event => {
+                if (event.lengthComputable && !signal.aborted) {
+                    this.progressBar.max = event.total;
+                    this.progressBar.value = event.loaded;
                 }
-            };
+            });
 
-            if (xhr.status < 200 || xhr.status >= 300) {
-                const msg = getErrorMsg(xhr.responseText) || Strings.for('ComposerClient').submitFailed || '';
-                Toast.show(msg);
-                return;
+            // Files and alt texts have the same positional pairing the server
+            // reads. The file input itself is kept empty by the picker.
+            const formData = new FormData(this.#form);
+            for (const entry of this.#attachments) {
+                formData.append('files[]', entry.file);
+                formData.append('altTexts[]', entry.altInput?.value.trim() ?? '');
             }
 
-            let data;
+            // Await the upload itself, so Enter cannot send another post while
+            // XHR is still transferring or waiting for the server's response.
+            await new Promise((resolve, reject) => {
+                xhr.addEventListener('loadend', resolve, { once: true });
+                signal.addEventListener('abort', abort, { once: true });
+                try {
+                    xhr.open('POST', ClientConfig.siteURL() + '/api/create-post');
+                    xhr.setRequestHeader('X-CSRF-Token', Cookie.get('CSRF-TOKEN'));
+                    xhr.send(formData);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+            signal.throwIfAborted();
+
+            let data = null;
             try {
                 data = JSON.parse(xhr.responseText);
-            } catch (error) {
-                console.error('Composer: invalid JSON response', xhr.responseText);
+            } catch (_) {}
+
+            if (xhr.status < 200 || xhr.status >= 300) {
+                if (!data?.fields || !FormErrors.show(this.#form, data.fields)) {
+                    Toast.show(data?.error || Strings.for('ComposerClient').submitFailed || '');
+                }
+                return;
+            }
+            if (!data?.response) {
                 Toast.show(Strings.for('ComposerClient').genericError || '');
                 return;
             }
-
-            this.#onSubmitSuccess(data);
-        });
-
-        xhr.open('POST', ClientConfig.siteURL() + '/api/create-post');
-        xhr.setRequestHeader('X-CSRF-Token', Cookie.get('CSRF-TOKEN'));
-
-        // The files live in #attachments, not in the (always empty) file
-        // input, so they are appended here - files[] and altTexts[] in the
-        // same order, one alt entry per file, which is exactly the positional
-        // pairing the server reads them back by.
-        const formData = new FormData(this.#form);
-
-        for (const entry of this.#attachments) {
-            formData.append('files[]', entry.file);
-            formData.append('altTexts[]', entry.altInput?.value.trim() ?? '');
+            FormErrors.clear(this.#form);
+            this.#onSubmitSuccess(data, unchanged(), {
+                latitude: formData.get('latitude') ?? '',
+                longitude: formData.get('longitude') ?? '',
+            });
+        } finally {
+            signal.removeEventListener('abort', abort);
+            // An aborted upload can finish after a replacement submission.
+            if (!signal.aborted || !FormForm.isPending(this.#form)) {
+                this.progressBar.classList.remove('Active');
+                this.progressBar.value = 0;
+            }
         }
-
-        xhr.send(formData);
     }
 
-    #onSubmitSuccess(data) {
+    #onSubmitSuccess(data, resetDraft, { latitude, longitude }) {
         // A quote page has no feed to drop the new post into - the finished
         // quote's own page is the natural place to land.
-        if (this.#form.dataset.quotedPostId && data.response.postId) {
+        if (resetDraft && this.#form.dataset.quotedPostId && data.response.postId) {
             window.location.href = ClientConfig.siteURL() + '/users/'
                 + ClientConfig.get('currentUserUsername') + '/' + data.response.postId;
             return;
         }
 
-        // Read before reset() blanks the hidden inputs - the map listens for
-        // this to drop a permanent pin where the post just landed.
-        const latitude = this.latitudeInput ? this.latitudeInput.value : '';
-        const longitude = this.longitudeInput ? this.longitudeInput.value : '';
+        // A composer is one compound draft: its text, files, poll and location
+        // must stay together if anything changed while this post was sending.
+        if (resetDraft) {
+            this.#form.reset();
+            this.#quill.setText('');
+            this.#closePoll();
+            this.#clearAttachments();
+            this.#syncFields();
 
-        this.#form.reset();
-        this.#quill.setText('');
-        this.#closePoll();
-        this.#clearAttachments();
-        this.#syncFields();
-
-        if (this.removeFilesButton) this.removeFilesButton.style.display = 'none';
-        if (this.locationButton) this.#setLocation(null, null);
-        if (this.linkImagePreview) {
-            this.linkImagePreview.style.display = 'none';
-            this.linkImageThumb.src = '';
+            if (this.removeFilesButton) this.removeFilesButton.style.display = 'none';
+            if (this.locationButton) this.#setLocation(null, null);
+            if (this.linkImagePreview) {
+                this.linkImagePreview.style.display = 'none';
+                this.linkImageThumb.src = '';
+            }
+            if (this.linkInput) delete this.linkInput._lastFetchedUrl;
         }
-        if (this.linkInput) delete this.linkInput._lastFetchedUrl;
 
+        // The map pin belongs to the coordinates sent, even if the draft moved.
         this.#form.dispatchEvent(new CustomEvent('composer:posted', {
             bubbles: true,
             detail: { post: data.response, latitude, longitude },
@@ -1885,8 +1905,8 @@ class PostEditor extends PostFields {
 
         post.style.display = 'none';
 
-        const form = document.createElement('form');
-        form.className = 'Form PostEditForm';
+        const form = new FormForm().toDOM();
+        form.classList.add('PostEditForm');
 
         const fields = document.createElement('fieldset');
 
@@ -2015,28 +2035,24 @@ class PostEditor extends PostFields {
             editor.instance.setContents(delta);
         } catch (_) {}
 
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            this.#save();
-        });
-
+        FormForm.attach(form, (form, context) => this.#save(form, context));
         this.#form = form;
     }
 
     #cancel() {
+        FormForm.cancel(this.#form);
         this.#postElement.style.display = '';
         this.#form.remove();
         this.#form = null;
         this.#quillEditor = null;
     }
 
-    async #save() {
+    async #save(form, { signal }) {
         const quill = this.#quillEditor.instance;
         const descriptionInput = this.#form.querySelector('.DescriptionInput');
         descriptionInput.value = JSON.stringify(quill.getContents());
-
-        const saveButton = this.#form.querySelector('button[type="submit"]');
-        Working.start(saveButton);
+        const body = descriptionInput.value;
+        const completion = FormForm.completion(form, signal);
 
         // The form goes too, so a refusal about the link or the title is
         // written under that box rather than thrown at the corner of the
@@ -2051,20 +2067,14 @@ class PostEditor extends PostFields {
             sensitive: this.#form.querySelector('[name="sensitive"]')?.checked ?? false,
             contentWarning: this.#form.querySelector('[name="contentWarning"]')?.value ?? '',
             altTexts: Object.fromEntries(this.#altInputs.map(({ itemId, input }) => [itemId, input.value.trim()])),
-        }, { form: this.#form });
+        }, { form, signal });
 
-        // Not given back on success: the card is swapped out whole and the
-        // button goes with it.
-        if (!result) {
-            Working.stop(saveButton);
+        if (!result || signal.aborted) return;
 
-            return;
-        }
-
-        this.#onSaveSuccess(result);
+        this.#onSaveSuccess(result, completion.unchanged() && JSON.stringify(quill.getContents()) === body);
     }
 
-    #onSaveSuccess(result) {
+    #onSaveSuccess(result, closeEditor) {
         if (!this.#postElement.classList.contains('Post')) return;
 
         const newContent = Post.fromData(result).postElement();
@@ -2077,7 +2087,7 @@ class PostEditor extends PostFields {
         this.#postElement.dataset.hasMedia = result.items.length > 0 && !result.linkURL ? '1' : '';
         this.#postElement.dataset.sensitive = result.sensitive ? '1' : '';
 
-        this.#postElement.style.display = '';
+        if (closeEditor) this.#postElement.style.display = '';
         render_math(newContent);
 
         // Emoji rendering if available – safe, non‑blocking. Toggled, not just
@@ -2089,9 +2099,11 @@ class PostEditor extends PostFields {
             this.#postElement.classList.toggle('emoji-only', postBody !== null && EmojiRenderer.isEmojiOnly(postBody));
         }).catch(() => {});
 
-        this.#form.remove();
-        this.#form = null;
-        this.#quillEditor = null;
+        if (closeEditor) {
+            this.#form.remove();
+            this.#form = null;
+            this.#quillEditor = null;
+        }
 
         Toast.show(Strings.for('PostEditor').saved || '');
     }
@@ -2113,27 +2125,17 @@ const AccountDeleteFormModule = (() => {
  */
 class AccountDeleteForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.AccountDeleteForm');
-            if (!form) return;
-            event.preventDefault();
-
+        FormForm.attach('AccountDeleteForm', async (form, { signal }) => {
             if (!await Dialog.confirm(Strings.for('ClientStatus').deleteAccount || '')) return;
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+            const data = await Api.post('/api/delete-account', {
+                currentPassword: form.querySelector('[name="currentPassword"]').value,
+            }, { form, signal });
 
-            try {
-                const data = await Api.post('/api/delete-account', {
-                    currentPassword: form.querySelector('[name="currentPassword"]').value,
-                }, { form });
+            if (!data) return;
 
-                if (!data) return;
-
-                window.location = ClientConfig.siteURL() + '/';
-            } finally {
-                Working.stop(submit_button);
-            }
+            MessageCrypto.clearUnlocked();
+            window.location = ClientConfig.siteURL() + '/';
         });
     }
 }
@@ -2156,13 +2158,7 @@ const AccountMigrationFormModule = (() => {
  */
 class AccountMigrationForm {
     static init() {
-        const form = document.querySelector('.AccountMigrationForm');
-
-        if (!form) return;
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
+        FormForm.attach('AccountMigrationForm', async (form, { signal }) => {
             const movedTo = form.querySelector('[name="movedTo"]').value.trim();
             const alsoKnownAs = form.querySelector('[name="alsoKnownAs"]').value;
 
@@ -2170,26 +2166,17 @@ class AccountMigrationForm {
                 return;
             }
 
-            const submit = form.querySelector('button[type="submit"]');
-            Working.start(submit);
+            const result = await Api.post('/api/account-migration', { movedTo, alsoKnownAs }, { form, signal });
 
-            try {
-                const result = await Api.post('/api/account-migration', { movedTo, alsoKnownAs });
+            if (!result) return;
 
-                if (!result) return;
-
-                const words = Strings.for('ClientStatus');
-                Toast.show(result.moved ? words.followersNotified || '' : words.saved || '');
-            } finally {
-                Working.stop(submit);
-            }
+            const words = Strings.for('ClientStatus');
+            Toast.show(result.moved ? words.followersNotified || '' : words.saved || '');
         });
     }
 }
 
 async function confirmMove(destination) {
-    const { Dialog } = await import('/scripts/HTMLObjects.js');
-
     return Dialog.confirm(
         `Move this account to ${destination}? Your followers will be asked to follow you there, and your posts stay here - they cannot be taken along.`
     );
@@ -2205,27 +2192,16 @@ export const AccountMigrationForm = AccountMigrationFormModule.AccountMigrationF
 const AvatarUploadFormModule = (() => {
 class AvatarUploadForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.AvatarUploadForm');
-            if (!form) return;
-            event.preventDefault();
+        FormForm.attach('AvatarUploadForm', async (form, { signal }) => {
+            const data = await Api.post('/api/upload-avatar', new FormData(form), { form, signal });
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+            if (!data) return;
 
-            try {
-                const data = await Api.post('/api/upload-avatar', new FormData(form), { form });
-
-                if (!data) return;
-
-                const avatar = document.createElement('img');
-                avatar.className = 'Avatar';
-                avatar.alt = Strings.for('ClientStatus').avatarAlt || '';
-                avatar.src = data.image;
-                form.closest('.User').querySelector('.UserLink .Avatar').replaceWith(avatar);
-            } finally {
-                Working.stop(submit_button);
-            }
+            const avatar = document.createElement('img');
+            avatar.className = 'Avatar';
+            avatar.alt = Strings.for('ClientStatus').avatarAlt || '';
+            avatar.src = data.image;
+            form.closest('.User').querySelector('.UserLink .Avatar').replaceWith(avatar);
         });
     }
 }
@@ -2248,15 +2224,7 @@ const BlockedServerCardModule = (() => {
  */
 class BlockedServerCard {
     static init() {
-        const form = document.querySelector('.ServerBlockForm');
-
-        if (form) {
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
-                BlockedServerCard.#block(form);
-            });
-        }
-
+        FormForm.attach('ServerBlockForm', (form, context) => BlockedServerCard.#block(form, context));
         document.addEventListener('click', (event) => {
             const button = event.target.closest('.ServerUnblockButton');
 
@@ -2266,7 +2234,7 @@ class BlockedServerCard {
         });
     }
 
-    static async #block(form) {
+    static async #block(form, { signal, clear }) {
         const domain = form.querySelector('[name="domain"]').value.trim();
         const reason = form.querySelector('[name="reason"]').value.trim();
 
@@ -2278,29 +2246,21 @@ class BlockedServerCard {
 
         if (!confirmed) return;
 
-        const submit = form.querySelector('button[type="submit"]');
-        Working.start(submit);
+        const result = await Api.post('/api/block-server', { domain, reason }, { form, signal });
 
-        try {
-            const result = await Api.post('/api/block-server', { domain, reason });
+        if (!result) return;
 
-            if (!result) return;
+        // The new row joins the list in place - the same card the server
+        // renders for one. The cascade the confirmation warned about
+        // (severed follows, dropped deliveries) has no rendering on this
+        // page, so the list is the whole picture here.
+        const list = list_in(document.querySelector('.BlockedServersSetting'), 'BlockedServerList');
 
-            // The new row joins the list in place - the same card the server
-            // renders for one. The cascade the confirmation warned about
-            // (severed follows, dropped deliveries) has no rendering on this
-            // page, so the list is the whole picture here.
-            const list = list_in(document.querySelector('.BlockedServersSetting'), 'BlockedServerList');
-
-            if (list) {
-                list.prepend(list_item(BlockedServerCard.#card(result.domain, reason)));
-            }
-
-            form.querySelector('[name="domain"]').value = '';
-            form.querySelector('[name="reason"]').value = '';
-        } finally {
-            Working.stop(submit);
+        if (list) {
+            list.prepend(list_item(BlockedServerCard.#card(result.domain, reason)));
         }
+
+        clear([form.querySelector('[name="domain"]'), form.querySelector('[name="reason"]')]);
     }
 
     static #card(domain, reason) {
@@ -2385,19 +2345,13 @@ export const BlockedServerCard = BlockedServerCardModule.BlockedServerCard;
 const BotProtectionSettingsFormModule = (() => {
 class BotProtectionSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.BotProtectionSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('BotProtectionSettingsForm', async (form, { signal }) => {
             const data = await Api.post('/api/turnstile-settings', {
                 turnstileSiteKey: form.querySelector('[name="turnstileSiteKey"]').value,
                 turnstileSecretKey: form.querySelector('[name="turnstileSecretKey"]').value,
                 recaptchaSiteKey: form.querySelector('[name="recaptchaSiteKey"]').value,
                 recaptchaSecretKey: form.querySelector('[name="recaptchaSecretKey"]').value,
-            });
-            Working.stop(submit_button);
+            }, { form, signal });
             if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
@@ -2702,31 +2656,20 @@ const EmailChangeFormModule = (() => {
  */
 class EmailChangeForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.EmailChangeForm');
-            if (!form) return;
-            event.preventDefault();
+        FormForm.attach('EmailChangeForm', async (form, { signal }) => {
+            const data = await Api.post('/api/change-email', {
+                newEmail: form.querySelector('[name="newEmail"]').value,
+                currentPassword: form.querySelector('[name="currentPassword"]').value,
+            }, { form, signal });
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+            if (!data) return;
 
-            try {
-                const data = await Api.post('/api/change-email', {
-                    newEmail: form.querySelector('[name="newEmail"]').value,
-                    currentPassword: form.querySelector('[name="currentPassword"]').value,
-                }, { form });
-
-                if (!data) return;
-
-                if (!data.changed) {
-                    Toast.show(Strings.for('ClientStatus').emailUnchanged || '');
-                    return;
-                }
-
-                window.location = ClientConfig.siteURL() + '/check-inbox';
-            } finally {
-                Working.stop(submit_button);
+            if (!data.changed) {
+                Toast.show(Strings.for('ClientStatus').emailUnchanged || '');
+                return;
             }
+
+            window.location = ClientConfig.siteURL() + '/check-inbox';
         });
     }
 }
@@ -2772,15 +2715,9 @@ const EmailDigestSettingsFormModule = (() => {
  */
 class EmailDigestSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.EmailDigestSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('EmailDigestSettingsForm', async (form, { signal }) => {
             const field = form.querySelector('textarea');
-            const data = await Api.post('/api/email-digest-settings', { [field.name]: field.value });
-            Working.stop(submit_button);
+            const data = await Api.post('/api/email-digest-settings', { [field.name]: field.value }, { form, signal });
             if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
@@ -2946,64 +2883,45 @@ class EncryptedMessagesSetting {
     }
 
     static init() {
-        document.addEventListener('submit', (event) => {
-            const setup_form = event.target.closest('.MessageKeySetupForm');
-            if (setup_form) {
-                event.preventDefault();
-                EncryptedMessagesSetting.#setup(setup_form);
-                return;
-            }
-
-            const passphrase_form = event.target.closest('.MessageKeyPassphraseForm');
-            if (passphrase_form) {
-                event.preventDefault();
-                EncryptedMessagesSetting.#changePassphrase(passphrase_form);
-            }
-        });
+        FormForm.attach('MessageKeySetupForm', (form, context) => EncryptedMessagesSetting.#setup(form, context));
+        FormForm.attach('MessageKeyPassphraseForm', (form, context) => EncryptedMessagesSetting.#changePassphrase(form, context));
     }
 
     /** Creates a keypair (or replaces one - the reset variant) and stores it wrapped. */
-    static async #setup(form) {
+    static async #setup(form, { signal, reset }) {
         const passphrase = form.querySelector('[name="passphrase"]').value;
         const account_password = form.querySelector('[name="setupAccountPassword"]').value;
 
         if (!EncryptedMessagesSetting.#acceptable(passphrase, form.querySelector('[name="passphraseConfirm"]').value, account_password)) return;
 
-        const submit_button = form.querySelector('button[type="submit"]');
-        Working.start(submit_button);
+        const pair = await MessageCrypto.generateKeypair();
+        const wrapped = await MessageCrypto.wrapPrivateKey(pair.privateKey, passphrase);
 
-        try {
-            const pair = await MessageCrypto.generateKeypair();
-            const wrapped = await MessageCrypto.wrapPrivateKey(pair.privateKey, passphrase);
+        const result = await Api.post('/api/message-keys', {
+            publicKey: pair.publicKey,
+            wrappedPrivateKey: wrapped,
+            password: account_password,
+        }, { form, signal });
+        if (result === null) return;
 
-            const result = await Api.post('/api/message-keys', {
-                publicKey: pair.publicKey,
-                wrappedPrivateKey: wrapped,
-                password: account_password,
-            }, { form });
-            if (result === null) return;
+        EncryptedMessagesSetting.#keys = { publicKey: pair.publicKey, wrappedPrivateKey: wrapped };
 
-            EncryptedMessagesSetting.#keys = { publicKey: pair.publicKey, wrappedPrivateKey: wrapped };
+        // The tab that just made the key is already unlocked with it.
+        MessageCrypto.storeUnlocked(pair.privateKey);
 
-            // The tab that just made the key is already unlocked with it.
-            MessageCrypto.storeUnlocked(pair.privateKey);
-
-            // The same form serves first-time setup and the reset an enabled
-            // account offers; only the former changes the section's shape.
-            if (form.closest('.EncryptedMessagesSetting').querySelector('.MessageKeyPassphraseForm') !== null) {
-                Toast.show(Strings.for('EncryptedMessagesClient').newKeys || '');
-                form.reset();
-            } else {
-                EncryptedMessagesSetting.#showEnabled(form);
-                Toast.show(Strings.for('EncryptedMessagesClient').enabled || '');
-            }
-        } finally {
-            Working.stop(submit_button);
+        // The same form serves first-time setup and the reset an enabled
+        // account offers; only the former changes the section's shape.
+        if (form.closest('.EncryptedMessagesSetting').querySelector('.MessageKeyPassphraseForm') !== null) {
+            Toast.show(Strings.for('EncryptedMessagesClient').newKeys || '');
+            reset();
+        } else {
+            EncryptedMessagesSetting.#showEnabled(form);
+            Toast.show(Strings.for('EncryptedMessagesClient').enabled || '');
         }
     }
 
     /** Same key, new wrapping: unwrap under the old passphrase, rewrap under the new. */
-    static async #changePassphrase(form) {
+    static async #changePassphrase(form, { signal, reset }) {
         const new_passphrase = form.querySelector('[name="newPassphrase"]').value;
         const account_password = form.querySelector('[name="rewrapAccountPassword"]').value;
 
@@ -3011,32 +2929,26 @@ class EncryptedMessagesSetting {
 
         const keys = EncryptedMessagesSetting.#keys ?? EncryptedMessagesSetting.#storedKeys(form);
         const private_jwk = await MessageCrypto.unwrapPrivateKey(keys.wrappedPrivateKey, form.querySelector('[name="currentPassphrase"]').value);
+        signal.throwIfAborted();
 
         if (private_jwk === null) {
             Toast.show(Strings.for('EncryptedMessagesClient').wrongPassphrase || '');
             return;
         }
 
-        const submit_button = form.querySelector('button[type="submit"]');
-        Working.start(submit_button);
+        const wrapped = await MessageCrypto.wrapPrivateKey(private_jwk, new_passphrase);
 
-        try {
-            const wrapped = await MessageCrypto.wrapPrivateKey(private_jwk, new_passphrase);
+        const result = await Api.post('/api/message-keys', {
+            publicKey: keys.publicKey,
+            wrappedPrivateKey: wrapped,
+            password: account_password,
+        }, { form, signal });
+        if (result === null) return;
 
-            const result = await Api.post('/api/message-keys', {
-                publicKey: keys.publicKey,
-                wrappedPrivateKey: wrapped,
-                password: account_password,
-            }, { form });
-            if (result === null) return;
+        EncryptedMessagesSetting.#keys = { publicKey: keys.publicKey, wrappedPrivateKey: wrapped };
 
-            EncryptedMessagesSetting.#keys = { publicKey: keys.publicKey, wrappedPrivateKey: wrapped };
-
-            Toast.show(Strings.for('EncryptedMessagesClient').passphraseChanged || '');
-            form.reset();
-        } finally {
-            Working.stop(submit_button);
-        }
+        Toast.show(Strings.for('EncryptedMessagesClient').passphraseChanged || '');
+        reset();
     }
 
     /**
@@ -3060,7 +2972,7 @@ class EncryptedMessagesSetting {
         // MessageKeyPassphraseForm's own labels - not sourced from Strings
         // here because that class isn't converted, so there is nothing yet
         // to read them from.
-        const passphrase_form = document.createElement('form');
+        const passphrase_form = new FormForm().toDOM();
         passphrase_form.className = 'Form MessageKeyPassphraseForm';
         passphrase_form.appendWithSpace(input_field('currentPassphrase', passphrase_words.currentPassphraseLabel || '', 'current-password'));
         passphrase_form.appendWithSpace(input_field('newPassphrase', passphrase_words.newPassphraseLabel || '', 'new-password'));
@@ -3069,7 +2981,7 @@ class EncryptedMessagesSetting {
         passphrase_form.appendWithSpace(submit_button(passphrase_words.submit || ''));
         section.appendWithSpace(passphrase_form);
 
-        const reset_form = document.createElement('form');
+        const reset_form = new FormForm().toDOM();
         reset_form.className = 'Form MessageKeySetupForm';
 
         const warning = document.createElement('p');
@@ -3231,11 +3143,7 @@ export const EntityModerator = EntityModeratorModule.EntityModerator;
 const FaviconSettingsFormModule = (() => {
 class FaviconSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.FaviconSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-
+        FormForm.attach('FaviconSettingsForm', async (form, { signal }) => {
             const file_input = form.querySelector('input[type="file"][name="favicon"]');
 
             if (!file_input.files.length) {
@@ -3244,22 +3152,15 @@ class FaviconSettingsForm {
                 return;
             }
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
-
             const body = new FormData();
             body.append('favicon', file_input.files[0]);
 
-            try {
-                const data = await Api.post('/api/favicon-settings', body, { form });
+            const data = await Api.post('/api/favicon-settings', body, { form, signal });
 
-                if (!data) return;
+            if (!data) return;
 
-                Toast.show(Strings.for('ClientStatus').faviconSaved || '');
-                form.querySelector('.FaviconPreview').src = ClientConfig.siteURL() + '/uploads/site/favicon.png?' + Date.now();
-            } finally {
-                Working.stop(submit_button);
-            }
+            Toast.show(Strings.for('ClientStatus').faviconSaved || '');
+            form.querySelector('.FaviconPreview').src = ClientConfig.siteURL() + '/uploads/site/favicon.png?' + Date.now();
         });
     }
 }
@@ -3274,11 +3175,7 @@ export const FaviconSettingsForm = FaviconSettingsFormModule.FaviconSettingsForm
 const FrontPageImageSettingsFormModule = (() => {
 class FrontPageImageSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.FrontPageImageSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-
+        FormForm.attach('FrontPageImageSettingsForm', async (form, { signal }) => {
             const file_input = form.querySelector('input[type="file"][name="frontPageImage"]');
 
             if (!file_input.files.length) {
@@ -3287,29 +3184,22 @@ class FrontPageImageSettingsForm {
                 return;
             }
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
-
             const body = new FormData();
             body.append('frontPageImage', file_input.files[0]);
 
-            try {
-                const data = await Api.post('/api/front-page-image', body, { form });
+            const data = await Api.post('/api/front-page-image', body, { form, signal });
 
-                if (!data) return;
+            if (!data) return;
 
-                Toast.show(Strings.for('ClientStatus').settingsSaved || '');
+            Toast.show(Strings.for('ClientStatus').settingsSaved || '');
 
-                // First upload has no preview element yet; a reload-free page
-                // gets one the next time the form renders, and the cache-bust
-                // keeps an existing one honest.
-                const preview = form.querySelector('.FrontPageImagePreview');
+            // First upload has no preview element yet; a reload-free page
+            // gets one the next time the form renders, and the cache-bust
+            // keeps an existing one honest.
+            const preview = form.querySelector('.FrontPageImagePreview');
 
-                if (preview) {
-                    preview.src = data.url + '?' + Date.now();
-                }
-            } finally {
-                Working.stop(submit_button);
+            if (preview) {
+                preview.src = data.url + '?' + Date.now();
             }
         });
     }
@@ -3325,17 +3215,11 @@ export const FrontPageImageSettingsForm = FrontPageImageSettingsFormModule.Front
 const GoogleAuthSettingsFormModule = (() => {
 class GoogleAuthSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.GoogleAuthSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('GoogleAuthSettingsForm', async (form, { signal }) => {
             const data = await Api.post('/api/google-auth-settings', {
                 googleAuthClientId: form.querySelector('[name="googleAuthClientId"]').value,
                 googleAuthSecret: form.querySelector('[name="googleAuthSecret"]').value,
-            });
-            Working.stop(submit_button);
+            }, { form, signal });
             if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
@@ -4444,14 +4328,7 @@ class LoginForm {
     static #recaptchaLoading = null;
 
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.LoginForm');
-            if (!form) return;
-            event.preventDefault();
-
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
-
+        FormForm.attach('LoginForm', async (form, { signal }) => {
             const captcha_input = form.querySelector('[name="cf-turnstile-response"]');
             const recaptcha_token = form.recaptchaWidgetId !== undefined && window.grecaptcha
                 ? window.grecaptcha.getResponse(form.recaptchaWidgetId)
@@ -4463,17 +4340,15 @@ class LoginForm {
                 rememberMe: form.querySelector('[name="rememberMe"]').checked,
                 captchaToken: captcha_input ? captcha_input.value : null,
                 recaptchaToken: recaptcha_token || null,
-            }, { form });
+            }, { form, signal });
 
             if (!data) {
-                LoginForm.#resetRecaptcha(form);
-                Working.stop(submit_button);
+                if (!signal.aborted) LoginForm.#resetRecaptcha(form);
                 return;
             }
 
             if (data.recaptchaRequired) {
-                LoginForm.#showRecaptcha(form, data.recaptchaSiteKey);
-                Working.stop(submit_button);
+                await LoginForm.#showRecaptcha(form, data.recaptchaSiteKey, signal);
                 return;
             }
 
@@ -4511,7 +4386,7 @@ class LoginForm {
         return LoginForm.#recaptchaLoading;
     }
 
-    static async #showRecaptcha(form, site_key) {
+    static async #showRecaptcha(form, site_key, signal) {
         if (form.recaptchaWidgetId !== undefined) {
             window.grecaptcha.reset(form.recaptchaWidgetId);
             return;
@@ -4530,9 +4405,10 @@ class LoginForm {
 
         try {
             await LoginForm.#loadRecaptchaApi();
+            if (signal.aborted) return;
             form.recaptchaWidgetId = window.grecaptcha.render(container, { sitekey: site_key });
         } catch (error) {
-            Toast.show(Strings.for('LoginClient').verificationFailed || '');
+            if (!signal.aborted) Toast.show(Strings.for('LoginClient').verificationFailed || '');
         }
     }
 
@@ -4589,6 +4465,7 @@ class LogoutEverywherePanel {
                 return;
             }
 
+            MessageCrypto.clearUnlocked();
             button.textContent = Strings.for('ClientStatus').done || '';
             window.location.href = '/';
         });
@@ -4605,22 +4482,10 @@ export const LogoutEverywherePanel = LogoutEverywherePanelModule.LogoutEverywher
 const LogoutFormModule = (() => {
 class LogoutForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.LogoutForm');
-            if (!form) return;
-            event.preventDefault();
+        FormForm.attach('LogoutForm', async (form, { signal }) => {
+            if (await Api.post('/api/logout', new FormData(form), { form, signal }) === null) return;
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
-
-            // Left working on the way out: the page is about to be replaced,
-            // and a button springing back first reads as a press that failed.
-            if (await Api.post('/api/logout', new FormData(form)) === null) {
-                Working.stop(submit_button);
-
-                return;
-            }
-
+            MessageCrypto.clearUnlocked();
             window.location = ClientConfig.siteURL() + '/';
         });
     }
@@ -4637,12 +4502,7 @@ const MailSettingsFormModule = (() => {
 // MailSettingsForm.js
 class MailSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.MailSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('MailSettingsForm', async (form, { signal }) => {
             const data = await Api.post('/api/mail-settings', {
                 mailFromAddress: form.querySelector('[name="mailFromAddress"]').value,
                 mailFromName: form.querySelector('[name="mailFromName"]').value,
@@ -4651,8 +4511,7 @@ class MailSettingsForm {
                 smtpUsername: form.querySelector('[name="smtpUsername"]').value,
                 smtpPassword: form.querySelector('[name="smtpPassword"]').value,
                 smtpEncryption: form.querySelector('[name="smtpEncryption"]').value,
-            }, { form });
-            Working.stop(submit_button);
+            }, { form, signal });
             if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
@@ -4865,30 +4724,12 @@ export const MapScrubber = MapScrubberModule.MapScrubber;
 const MapSettingsFormModule = (() => {
 class MapSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.MapSettingsForm');
-
-            if (!form) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const submit_button = form.querySelector('button[type="submit"]');
-
-            if (submit_button) {
-                Working.start(submit_button);
-            }
-
+        FormForm.attach('MapSettingsForm', async (form, { signal }) => {
             const data = await Api.post('/api/map-settings', {
                 mapTileURL: form.querySelector('[name="mapTileURL"]').value,
                 mapTileAPIKey: form.querySelector('[name="mapTileAPIKey"]').value,
                 mapTileAttribution: form.querySelector('[name="mapTileAttribution"]').value,
-            });
-
-            if (submit_button) {
-                Working.stop(submit_button);
-            }
+            }, { form, signal });
 
             if (data !== null) {
                 Toast.show(Strings.for('ClientStatus').mapSaved || '');
@@ -4970,12 +4811,7 @@ class MessageComposer {
         });
 
         // --- AJAX submit ---
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.MessageComposer');
-            if (!form) return;
-            event.preventDefault();
-
-            const submit_button = form.querySelector('button[type="submit"]');
+        FormForm.attach('MessageComposer', async (form, { signal, clear }) => {
             const body_input = form.querySelector('[name="body"]');
             const recipient_id = form.querySelector('[name="recipientId"]').value;
 
@@ -5001,25 +4837,19 @@ class MessageComposer {
                 payload.body = body_input.value;
             }
 
-            Working.start(submit_button);
+            const result = await Api.post('/api/send-message', payload, { form, signal });
 
-            try {
-                const result = await Api.post('/api/send-message', payload, { form });
+            if (result === null) return;
 
-                if (result === null) return;
+            const list = list_in(document.querySelector('main'), 'MessageList');
 
-                const list = list_in(document.querySelector('main'), 'MessageList');
+            const message = Message.fromData(result);
+            const element = message.toElement();
+            RelativeTime.refresh(element);
+            list.appendWithSpace(list_item(element));
 
-                const message = Message.fromData(result);
-                const element = message.toElement();
-                RelativeTime.refresh(element);
-                list.appendWithSpace(list_item(element));
-
-                body_input.value = '';
-                window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
-            } finally {
-                Working.stop(submit_button);
-            }
+            clear([body_input]);
+            window.scrollTo({ top: document.body.scrollHeight, left: 0, behavior: 'instant' });
         });
     }
 }
@@ -5247,18 +5077,11 @@ class MessageUnlockForm {
     static init() {
         const stored = MessageCrypto.loadUnlocked();
 
-        if (stored !== null) {
-            MessageUnlockForm.#activate(stored);
-        }
-
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.MessageUnlockForm');
-            if (!form) return;
-            event.preventDefault();
-
+        FormForm.attach('MessageUnlockForm', async (form, { signal, clear }) => {
             const passphrase_input = form.querySelector('[name="messagePassphrase"]');
             const wrapped = JSON.parse(form.dataset.wrappedPrivateKey);
             const private_jwk = await MessageCrypto.unwrapPrivateKey(wrapped, passphrase_input.value);
+            signal.throwIfAborted();
 
             if (private_jwk === null) {
                 Toast.show(Strings.for('ClientStatus').unlockFailed || '');
@@ -5267,18 +5090,30 @@ class MessageUnlockForm {
             }
 
             MessageCrypto.storeUnlocked(private_jwk);
-            passphrase_input.value = '';
-            await MessageUnlockForm.#activate(private_jwk);
+            clear([passphrase_input]);
+            await MessageUnlockForm.#activate(form, private_jwk, signal);
         });
+
+        const form = document.querySelector('.MessageUnlockForm');
+        if (stored !== null && form) {
+            FormForm.run(form, (form, { signal }) => MessageUnlockForm.#activate(form, stored, signal),
+                { submitter: null }).catch(error => console.error('Unlocking messages failed', error));
+        }
     }
 
-    static async #activate(private_jwk) {
-        const form = document.querySelector('.MessageUnlockForm');
-        if (form === null) return;
-
+    static async #activate(form, private_jwk, signal) {
         try {
-            MessageCrypto.setThreadKey(await MessageCrypto.conversationKey(private_jwk, JSON.parse(form.dataset.otherPublicKey)));
-        } catch {
+            const own = JSON.parse(form.dataset.ownPublicKey);
+            if (own.kty !== private_jwk.kty || own.crv !== private_jwk.crv
+                || own.x !== private_jwk.x || own.y !== private_jwk.y) {
+                MessageCrypto.clearUnlocked();
+                return;
+            }
+            const key = await MessageCrypto.conversationKey(private_jwk, JSON.parse(form.dataset.otherPublicKey));
+            signal.throwIfAborted();
+            MessageCrypto.setThreadKey(key);
+        } catch (error) {
+            if (signal.aborted) throw error;
             // A stored key that doesn't parse as a P-256 key (say, after a
             // reset in another tab) just leaves the thread locked - the form
             // stays up and a fresh passphrase replaces it.
@@ -5288,9 +5123,8 @@ class MessageUnlockForm {
 
         document.querySelectorAll('.MessageUnlockForm').forEach((form) => { form.hidden = true; });
 
-        document.querySelectorAll('.Message[data-cipher-envelope]').forEach((article) => {
-            Message.decryptInto(article);
-        });
+        await Promise.all([...document.querySelectorAll('.Message[data-cipher-envelope]')]
+            .map(article => Message.decryptInto(article)));
     }
 }
 
@@ -5520,31 +5354,13 @@ export const NotificationTestPanel = NotificationTestPanelModule.NotificationTes
 const OpenRouterSettingsFormModule = (() => {
 class OpenRouterSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.OpenRouterSettingsForm');
-
-            if (!form) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const submit_button = form.querySelector('button[type="submit"]');
-
-            if (submit_button) {
-                Working.start(submit_button);
-            }
-
+        FormForm.attach('OpenRouterSettingsForm', async (form, { signal }) => {
             const data = await Api.post('/api/openrouter-settings', {
                 openRouterAPIKey: form.querySelector('[name="openRouterAPIKey"]').value,
                 openRouterModel: form.querySelector('[name="openRouterModel"]').value,
                 openRouterNeverSpend: form.querySelector('[name="openRouterNeverSpend"]').checked,
                 clearOpenRouterAPIKey: form.querySelector('[name="clearOpenRouterAPIKey"]')?.checked ?? false,
-            });
-
-            if (submit_button) {
-                Working.stop(submit_button);
-            }
+            }, { form, signal });
 
             if (data !== null) {
                 Toast.show(Strings.for('ClientStatus').openRouterSaved || '');
@@ -5570,28 +5386,17 @@ const PasswordChangeFormModule = (() => {
  */
 class PasswordChangeForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.PasswordChangeForm');
-            if (!form) return;
-            event.preventDefault();
+        FormForm.attach('PasswordChangeForm', async (form, { signal, reset }) => {
+            const data = await Api.post('/api/change-password', {
+                currentPassword: form.querySelector('[name="currentPassword"]').value,
+                newPassword: form.querySelector('[name="newPassword"]').value,
+                confirmPassword: form.querySelector('[name="confirmPassword"]').value,
+            }, { form, signal });
 
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+            if (!data) return;
 
-            try {
-                const data = await Api.post('/api/change-password', {
-                    currentPassword: form.querySelector('[name="currentPassword"]').value,
-                    newPassword: form.querySelector('[name="newPassword"]').value,
-                    confirmPassword: form.querySelector('[name="confirmPassword"]').value,
-                }, { form });
-
-                if (!data) return;
-
-                form.reset();
-                Toast.show(Strings.for('ClientStatus').passwordChanged || '');
-            } finally {
-                Working.stop(submit_button);
-            }
+            reset();
+            Toast.show(Strings.for('ClientStatus').passwordChanged || '');
         });
     }
 }
@@ -5606,27 +5411,18 @@ export const PasswordChangeForm = PasswordChangeFormModule.PasswordChangeForm;
 const PasswordResetFormModule = (() => {
 class PasswordResetForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.PasswordResetForm');
-            if (!form) return;
-            event.preventDefault();
-
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
-
+        FormForm.attach('PasswordResetForm', async (form, { signal }) => {
             const data = await Api.post('/api/reset-password', {
                 token: form.querySelector('[name="token"]').value,
                 newPassword: form.querySelector('[name="newPassword"]').value,
                 confirmPassword: form.querySelector('[name="confirmPassword"]').value,
-            }, { form });
+            }, { form, signal });
 
             if (!data) {
-                Working.stop(submit_button);
                 return;
             }
 
             if (!data.reset) {
-                Working.stop(submit_button);
                 Toast.show(Strings.for('ClientStatus').passwordUnchanged || '');
                 return;
             }
@@ -5654,19 +5450,10 @@ export const PasswordResetForm = PasswordResetFormModule.PasswordResetForm;
 const PasswordResetRequestFormModule = (() => {
 class PasswordResetRequestForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.PasswordResetRequestForm');
-            if (!form) return;
-            event.preventDefault();
-
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
-
+        FormForm.attach('PasswordResetRequestForm', async (form, { signal }) => {
             const data = await Api.post('/api/forgot-password', {
                 email: form.querySelector('[name="email"]').value,
-            });
-
-            Working.stop(submit_button);
+            }, { form, signal });
 
             if (!data) return;
 
@@ -6296,13 +6083,7 @@ const RelayCardModule = (() => {
  */
 class RelayCard {
     static init() {
-        document.addEventListener('submit', (event) => {
-            const form = event.target.closest('.RelaySubscribeForm');
-            if (!form) return;
-            event.preventDefault();
-            RelayCard.#subscribe(form);
-        });
-
+        FormForm.attach('RelaySubscribeForm', (form, context) => RelayCard.#subscribe(form, context));
         document.addEventListener('click', (event) => {
             const button = event.target.closest('.RelayUnsubscribeButton');
             if (!button) return;
@@ -6310,7 +6091,7 @@ class RelayCard {
         });
     }
 
-    static async #subscribe(form) {
+    static async #subscribe(form, { signal, clear }) {
         const actor_uri = form.querySelector('[name="actorURI"]').value.trim();
         const follow_object = form.querySelector('[name="followObject"]').value;
 
@@ -6322,24 +6103,17 @@ class RelayCard {
 
         if (!confirmed) return;
 
-        const submit = form.querySelector('button[type="submit"]');
-        Working.start(submit);
+        const result = await Api.post('/api/subscribe-relay', { actorURI: actor_uri, followObject: follow_object }, { form, signal });
 
-        try {
-            const result = await Api.post('/api/subscribe-relay', { actorURI: actor_uri, followObject: follow_object });
+        if (!result) return;
 
-            if (!result) return;
+        const list = list_in(document.querySelector('.RelaysSetting'), 'RelayList');
 
-            const list = list_in(document.querySelector('.RelaysSetting'), 'RelayList');
-
-            if (list) {
-                list.prepend(list_item(RelayCard.#card(result.actorURI)));
-            }
-
-            form.querySelector('[name="actorURI"]').value = '';
-        } finally {
-            Working.stop(submit);
+        if (list) {
+            list.prepend(list_item(RelayCard.#card(result.actorURI)));
         }
+
+        clear([form.querySelector('[name="actorURI"]')]);
     }
 
     static async #unsubscribe(button) {
@@ -6469,16 +6243,10 @@ const RemoteFollowsFormModule = (() => {
 // RemoteFollowsForm.js
 class RemoteFollowsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.RemoteFollowsForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('RemoteFollowsForm', async (form, { signal, clear }) => {
             const data = await Api.post('/api/follow-remote', {
                 handles: form.querySelector('[name="handles"]').value,
-            }, { form });
-            Working.stop(submit_button);
+            }, { form, signal });
             if (!data) return;
             const results = data.results || [];
             const unprocessed = data.unprocessed || [];
@@ -6526,7 +6294,7 @@ class RemoteFollowsForm {
             }
 
             if (failed.length === 0 && unprocessed.length === 0) {
-                form.querySelector('[name="handles"]').value = '';
+                clear([form.querySelector('[name="handles"]')]);
             }
         });
     }
@@ -7040,12 +6808,7 @@ const SignupFormModule = (() => {
 // SignupForm.js
 class SignupForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.SignupForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('SignupForm', async (form, { signal }) => {
             const captcha_input = form.querySelector('[name="cf-turnstile-response"]');
             const data = await Api.post('/api/signup', {
                 username: form.querySelector('[name="username"]').value,
@@ -7055,9 +6818,8 @@ class SignupForm {
                 password: form.querySelector('[name="password"]').value,
                 rememberMe: form.querySelector('[name="rememberMe"]').checked,
                 captchaToken: captcha_input ? captcha_input.value : null,
-            }, { form });
+            }, { form, signal });
             if (!data) {
-                Working.stop(submit_button);
                 return;
             }
             window.location = ClientConfig.siteURL() + (data.verified ? '/' : '/check-inbox');
@@ -7075,17 +6837,11 @@ export const SignupForm = SignupFormModule.SignupForm;
 const SiteInfoSettingsFormModule = (() => {
 class SiteInfoSettingsForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.SiteInfoSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('SiteInfoSettingsForm', async (form, { signal }) => {
             const field = form.querySelector('textarea');
             const field_name = field.name;
             const path = '/api/' + field_name.replace(/Text$/, '') + '-settings';
-            const data = await Api.post(path, { [field_name]: field.value });
-            Working.stop(submit_button);
+            const data = await Api.post(path, { [field_name]: field.value }, { form, signal });
             if (data) Toast.show(Strings.for('ClientStatus').settingsSaved || '');
         });
     }
@@ -7489,17 +7245,11 @@ const TwoFactorFormModule = (() => {
 // TwoFactorForm.js
 class TwoFactorForm {
     static init() {
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.TwoFactorForm');
-            if (!form) return;
-            event.preventDefault();
-            const submit_button = form.querySelector('button[type="submit"]');
-            Working.start(submit_button);
+        FormForm.attach('TwoFactorForm', async (form, { signal }) => {
             const data = await Api.post('/api/verify-2fa', {
                 code: form.querySelector('[name="code"]').value,
-            }, { form });
+            }, { form, signal });
             if (!data) {
-                Working.stop(submit_button);
                 return;
             }
             window.location = ClientConfig.siteURL() + '/';
@@ -7523,11 +7273,7 @@ class TwoFactorSettingsForm {
         const words = Strings.for('TwoFactorSettingsForm');
         const pick = (entry, state) => (entry || {})[state] || '';
 
-        document.addEventListener('submit', async (event) => {
-            const form = event.target.closest('.TwoFactorSettingsForm');
-            if (!form) return;
-            event.preventDefault();
-
+        FormForm.attach('TwoFactorSettingsForm', async (form, { signal, submitter, clear }) => {
             const existing_error = form.querySelector('.Error');
             if (existing_error) existing_error.remove();
 
@@ -7535,30 +7281,27 @@ class TwoFactorSettingsForm {
             // and the recovery-code regenerate), so the clicked one decides
             // the action.
             const toggle_button = form.querySelector('button[type="submit"]');
-            const submit_button = event.submitter && event.submitter.dataset.action
-                ? event.submitter
+            const submit_button = submitter && submitter.dataset.action
+                ? submitter
                 : toggle_button;
             const password_input = form.querySelector('[name="currentPassword"]');
-            Working.start(submit_button);
 
             const data = await Api.post('/api/two-factor', {
                 action: submit_button.dataset.action,
                 currentPassword: password_input.value,
-            }, { form });
+            }, { form, signal });
 
             if (!data) {
-                Working.stop(submit_button);
                 return;
             }
 
-            password_input.value = '';
+            clear([password_input]);
 
             if (data.recoveryCodes) {
                 TwoFactorSettingsForm.#showRecoveryCodes(form, data.recoveryCodes, words);
             }
 
             if (submit_button.dataset.action === 'regenerate-recovery') {
-                Working.stop(submit_button);
                 Toast.show(pick(words.toast, 'regenerated'));
                 return;
             }
@@ -7586,8 +7329,6 @@ class TwoFactorSettingsForm {
                 const codes_block = form.querySelector('.RecoveryCodes');
                 if (codes_block) codes_block.remove();
             }
-
-            Working.stop(submit_button);
 
             Toast.show(pick(words.toast, state));
         });
@@ -7735,6 +7476,9 @@ class VideoCall {
     static #list = null;
     static #composer = null;
     static #presenceTimer = null;
+    static #beating = false;
+    static #presenceInFlight = false;
+    static #leaving = false;
 
     /** Set once a data-channel probe has actually connected these two browsers. */
     static #pathProven = false;
@@ -7765,13 +7509,19 @@ class VideoCall {
         // Leaving ends any call outright, and drops the heartbeat so the other
         // side stops being offered a call to someone who has gone.
         window.addEventListener('pagehide', () => {
+            VideoCall.#leaving = true;
+            VideoCall.#stopBeating();
             VideoCall.#hangUp(false);
             VideoCall.#endProbe();
             VideoCall.#post('/api/chat-presence', { otherUserId: VideoCall.#otherUserId, leaving: true });
         });
 
-        VideoCall.#beat();
-        VideoCall.#presenceTimer = setInterval(() => VideoCall.#beat(), VideoCall.#PRESENCE_INTERVAL_MS);
+        window.addEventListener('pageshow', () => {
+            VideoCall.#leaving = false;
+            VideoCall.#startBeating();
+        });
+
+        VideoCall.#startBeating();
     }
 
     // ----------------------------------------------------------------
@@ -7779,22 +7529,29 @@ class VideoCall {
     // ----------------------------------------------------------------
 
     static async #beat() {
-        const result = await VideoCall.#post('/api/chat-presence', { otherUserId: VideoCall.#otherUserId });
+        if (!VideoCall.#beating || VideoCall.#presenceInFlight) return;
+        VideoCall.#presenceTimer = null;
+        VideoCall.#presenceInFlight = true;
 
-        if (result === null) {
-            return;
-        }
+        try {
+            const result = await VideoCall.#post('/api/chat-presence', { otherUserId: VideoCall.#otherUserId });
+            if (!VideoCall.#beating || result === null) return;
 
-        if (!result.otherUserPresent) {
-            VideoCall.#showCallButton(false);
+            if (!result.otherUserPresent) {
+                VideoCall.#showCallButton(false);
+                return;
+            }
 
-            return;
-        }
-
-        if (VideoCall.#pathProven) {
-            VideoCall.#showCallButton(true);
-        } else if (VideoCall.#probe === null && VideoCall.#initiates()) {
-            VideoCall.#openProbe();
+            if (VideoCall.#pathProven) {
+                VideoCall.#showCallButton(true);
+            } else if (VideoCall.#probe === null && VideoCall.#initiates()) {
+                VideoCall.#openProbe();
+            }
+        } finally {
+            VideoCall.#presenceInFlight = false;
+            if (VideoCall.#beating) {
+                VideoCall.#presenceTimer = setTimeout(() => VideoCall.#beat(), VideoCall.#PRESENCE_INTERVAL_MS);
+            }
         }
     }
 
@@ -8179,15 +7936,17 @@ class VideoCall {
     }
 
     static #stopBeating() {
-        clearInterval(VideoCall.#presenceTimer);
+        VideoCall.#beating = false;
+        clearTimeout(VideoCall.#presenceTimer);
         VideoCall.#presenceTimer = null;
     }
 
     static #startBeating() {
-        if (VideoCall.#presenceTimer === null) {
-            VideoCall.#beat();
-            VideoCall.#presenceTimer = setInterval(() => VideoCall.#beat(), VideoCall.#PRESENCE_INTERVAL_MS);
-        }
+        if (VideoCall.#beating || VideoCall.#leaving) return;
+        VideoCall.#beating = true;
+        // A stopped loop's pending request schedules the next beat when it
+        // completes, so restarting cannot overlap that request.
+        VideoCall.#beat();
     }
 
     /**

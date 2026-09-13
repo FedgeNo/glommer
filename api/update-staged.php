@@ -16,6 +16,19 @@ if (!is_array($payload)) {
     JSONResponse::localizedError('malformedRequest', 422) -> send();
 }
 
+foreach (['title', 'description', 'linkURL', 'contentWarning'] as $field) {
+    if (isset($payload[$field]) && !is_string($payload[$field])) {
+        JSONResponse::localizedError('malformedRequest', 422) -> send();
+    }
+}
+
+foreach (['stagedPostId', 'latitude', 'longitude', 'publishAtEpoch'] as $field) {
+    if (isset($payload[$field]) && $payload[$field] !== ''
+        && (!is_numeric($payload[$field]) || !is_finite((float) $payload[$field]))) {
+        JSONResponse::localizedError('malformedRequest', 422) -> send();
+    }
+}
+
 $staged = StagedPost::load((int) ($payload['stagedPostId'] ?? 0));
 
 if ($staged === null || (int) $staged -> userId !== Auth::id()) {
@@ -26,6 +39,8 @@ if ($staged === null || (int) $staged -> userId !== Auth::id()) {
 $title = ControlCharacters::strip(mb_substr(trim((string) ($payload['title'] ?? '')), 0, 255));
 $description_raw = (string) ($payload['description'] ?? '');
 $link_url = trim((string) ($payload['linkURL'] ?? ''));
+$sensitive = ($payload['sensitive'] ?? false) === true ? 1 : 0;
+$content_warning = $sensitive === 1 ? mb_substr(trim($payload['contentWarning'] ?? ''), 0, 255) : '';
 
 $description_value = null;
 $description_delta_value = null;
@@ -105,10 +120,16 @@ StagedPost::update(
     $link_url_value,
     $latitude,
     $longitude,
-    $publish_at_value
+    $publish_at_value,
+    $sensitive,
+    $content_warning !== '' ? $content_warning : null
 );
 
 $updated = StagedPost::load((int) $staged -> stagedPostId);
+
+if ($updated === null) {
+    JSONResponse::localizedError('notFound', 404) -> send();
+}
 
 JSONResponse::success([
     'stagedPostId' => (int) $updated -> stagedPostId,
@@ -118,6 +139,8 @@ JSONResponse::success([
     'linkURL' => $updated -> linkURL,
     'latitude' => $updated -> latitude,
     'longitude' => $updated -> longitude,
+    'sensitive' => $updated -> sensitive,
+    'contentWarning' => $updated -> contentWarning,
     'publishAt' => $updated -> publishAt,
     'publishAtEpoch' => $updated -> publishAt !== null ? strtotime($updated -> publishAt) : null,
 ]) -> send();

@@ -32,9 +32,9 @@ class ActivityPubPollVote
     {
         return is_string($object['name'] ?? null)
             && $object['name'] !== ''
-            && is_string($object['inReplyTo'] ?? null)
-            && $object['inReplyTo'] !== ''
-            && trim((string) ($object['content'] ?? '')) === '';
+            && ActivityStreams::reference($object['inReplyTo'] ?? null) !== null
+            && is_string($object['content'] ?? '')
+            && trim($object['content'] ?? '') === '';
     }
 
     /**
@@ -49,7 +49,8 @@ class ActivityPubPollVote
      */
     public static function received(array $object, User $voter): void
     {
-        $post_id = ActivityPubNote::localPostIdFor((string) $object['inReplyTo']);
+        $target = ActivityStreams::reference($object['inReplyTo'] ?? null);
+        $post_id = $target === null ? null : ActivityPubNote::localPostIdFor($target);
 
         if ($post_id === null || $voter -> userId === null) {
             return;

@@ -43,7 +43,7 @@ class RemoteActorFields
                 break;
             }
 
-            if (!is_array($attachment) || ($attachment['type'] ?? null) !== 'PropertyValue') {
+            if (!is_array($attachment) || ActivityStreams::type($attachment['type'] ?? null, ['PropertyValue']) === null) {
                 continue;
             }
 

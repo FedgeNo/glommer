@@ -1,9 +1,8 @@
 /.env
 /uploads/**
 !/uploads/.htaccess
-/claude/
+/agents/
 /.claude/
-/CLAUDE.md
 /AGENTS.md
 node_modules/
 

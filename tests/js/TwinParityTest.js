@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 import { TestCase } from './TestCase.js';
 import { canonical_lines, first_difference } from './DOMCanonicalForm.js';
-import { ClientConfig } from '../../scripts/Runtime.js';
+import { ClientConfig, Cookie } from '../../scripts/Runtime.js';
 import * as HTMLObjectExports from '../../scripts/HTMLObjects.js';
 
 const project_root = resolve(import.meta.dirname, '../..');
@@ -120,7 +120,16 @@ for (const [name, server_case] of server_cases) {
 
         TestCase.assertNotNull(Twin, `no browser twin registered for ${server_case.class}`);
 
-        const rendered = canonical_lines(render(buildTwin(server_case.class, server_case.payload)));
+        const token = Cookie.get('CSRF-TOKEN');
+        let rendered;
+        try {
+            if (server_case.class === 'FormForm') document.cookie = 'CSRF-TOKEN=twin-parity-csrf; Path=/';
+            rendered = canonical_lines(render(buildTwin(server_case.class, server_case.payload)));
+        } finally {
+            if (server_case.class === 'FormForm') {
+                document.cookie = 'CSRF-TOKEN=' + (token ?? '') + '; Path=/' + (token === null ? '; Max-Age=0' : '');
+            }
+        }
         const difference = first_difference(server_case.canonical, rendered);
 
         TestCase.assertNull(difference, `${name}: the browser twin diverged from PHP - ${difference}`);

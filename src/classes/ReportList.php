@@ -21,7 +21,7 @@ class ReportList extends ItemList
         return DB::rows('
 SELECT `r`.*, `u`.`slug` AS `reporterUsername`
     FROM `Reports` `r`
-    JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
+    LEFT JOIN `Users` `u` ON `u`.`userId` = `r`.`reporterId`
     ORDER BY `r`.`reportId` DESC
     LIMIT ? OFFSET ?
 ', Report::class, 'ii', static::PAGE_SIZE + 1, $this -> offset);

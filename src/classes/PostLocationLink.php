@@ -27,8 +27,8 @@ class PostLocationLink extends Anchor
     {
         parent::__construct();
 
-        $this -> latitude = $latitude;
-        $this -> longitude = $longitude;
+        $this -> latitude = PostLocation::forViewer($latitude);
+        $this -> longitude = PostLocation::forViewer($longitude);
         $this -> placeLabel = $place_label;
     }
 
@@ -51,8 +51,8 @@ class PostLocationLink extends Anchor
 
     /**
      * Trimmed to four decimals - about eleven metres, enough to place a post
-     * without printing a wall of digits. The link itself carries the exact
-     * position, so nothing is lost from what the feed centres on.
+     * without printing a wall of digits. Anonymous readers get the map's
+     * rounded position in both the label and the link.
      */
     private function coordinates(string $between): string
     {

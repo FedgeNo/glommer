@@ -119,7 +119,7 @@ class RemoteMentions
         $found = [];
 
         foreach ($tags as $tag) {
-            if (!is_array($tag) || ($tag['type'] ?? null) !== 'Mention') {
+            if (!is_array($tag) || ActivityStreams::type($tag['type'] ?? null, ['Mention']) === null) {
                 continue;
             }
 

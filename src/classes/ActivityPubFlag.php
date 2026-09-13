@@ -31,7 +31,7 @@ class ActivityPubFlag
     {
         $reason = is_string($activity['content'] ?? null) ? trim($activity['content']) : '';
         $objects = $activity['object'] ?? null;
-        $objects = is_array($objects) && !isset($objects['id']) ? $objects : [$objects];
+        $objects = is_array($objects) && array_is_list($objects) ? $objects : [$objects];
 
         // Attributed to the reporting account so a moderator can see which
         // server is complaining, and can ban it if the complaints are the
@@ -45,7 +45,7 @@ class ActivityPubFlag
         // A remote server can name several things in one report. Capped so a
         // hostile one cannot fill the queue from a single delivery.
         foreach (array_slice($objects, 0, 20) as $object) {
-            $uri = is_string($object) ? $object : (is_array($object) ? ($object['id'] ?? null) : null);
+            $uri = ActivityStreams::reference($object);
 
             if (!is_string($uri) || $uri === '') {
                 continue;

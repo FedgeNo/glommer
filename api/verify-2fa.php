@@ -22,11 +22,13 @@ if (Auth::check()) {
 // state, NOT a logged-in one (Auth::check() is still false here). No pending
 // user means there's nothing to verify (direct hit, or an expired/cleared
 // session).
-$user_id = $_SESSION['pending2FAUserId'] ?? null;
+$user = Auth::pendingTwoFactorUser();
 
-if (!is_int($user_id)) {
+if ($user === null) {
     JSONResponse::localizedError('noLoginInProgressPleaseStartAgain', 401) -> send();
 }
+
+$user_id = (int) $user -> userId;
 
 // Rate-limit code guesses per account, on top of TwoFactor's own per-code
 // attempt cap - stops someone from restarting login repeatedly to farm fresh
@@ -39,7 +41,13 @@ if (RateLimiter::tooManyAttempts($rate_key, 10, 900)) {
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
-$code = trim((string) ($payload['code'] ?? ''));
+$code = $payload['code'] ?? '';
+
+if (!is_string($code)) {
+    JSONResponse::localizedError('malformedRequest', 422) -> send();
+}
+
+$code = trim($code);
 
 if ($code === '') {
     JSONResponse::fieldError('code', JSONResponse::localized('enterEmailedCode')) -> send();
@@ -54,11 +62,9 @@ if (!TwoFactor::verifyCode($user_id, $code) && !TwoFactor::verifyRecoveryCode($u
     JSONResponse::fieldError('code', JSONResponse::localized('incorrectOrExpiredCode')) -> send();
 }
 
-$user = User::load($user_id);
+$user = Auth::pendingTwoFactorUser();
 
-if ($user === null || $user -> banned) {
-    unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
-
+if ($user === null) {
     JSONResponse::localizedError('thisAccountCanNoLongerLogIn', 403) -> send();
 }
 
@@ -66,7 +72,7 @@ $remember_me = ($_SESSION['pending2FARememberMe'] ?? false) === true;
 
 // The pending flags must go before Auth::login() regenerates the session,
 // so a completed 2FA can never be replayed against the same pending state.
-unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
+Auth::clearPendingTwoFactor();
 
 Auth::login($user);
 LoginFingerprint::record((int) $user -> userId);

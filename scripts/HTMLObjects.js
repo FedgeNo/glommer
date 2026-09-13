@@ -1,6 +1,7 @@
 import {
     Api,
     ClientConfig,
+    Cookie,
     DOMUtils,
     DateFormat,
     ReadyHandler,
@@ -209,6 +210,215 @@ export class HTMLObject {
         }
 
         return null;
+    }
+}
+
+/** Shared submission lifecycle for server-rendered and browser-built forms. */
+export class FormForm extends HTMLObject {
+    static tagName = 'form';
+    static className = 'Form';
+    static properties = { method: 'POST', action: null, enctype: null, onSubmit: null };
+
+    static #classes = new Map();
+    static #forms = new WeakMap();
+    static #pending = new WeakMap();
+    static #listening = false;
+
+    /** Register once by CSS identity, or override the handler for one form. */
+    static attach(target, handler, options = {}) {
+        if (typeof handler !== 'function') throw new TypeError('Expected a form submission handler.');
+
+        if (typeof target === 'string') {
+            if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(target)) throw new TypeError('Expected a form class name.');
+            FormForm.#classes.set(target, { handler, options });
+        } else {
+            FormForm.#forms.set(target, { handler, options });
+        }
+
+        if (FormForm.#listening) return;
+        FormForm.#listening = true;
+        document.addEventListener('submit', event => {
+            const form = event.target;
+            if (event.defaultPrevented || !FormForm.#binding(form)) return;
+            event.preventDefault();
+            // Event dispatch cannot await a promise. Report unexpected failures
+            // here; run() still rejects for callers that handle their own errors.
+            FormForm.submit(form, event.submitter).catch(error => {
+                console.error('Form submission failed', error);
+                Toast.show(Strings.for('Api').genericError || '');
+            });
+        });
+    }
+
+    static #binding(form) {
+        if (form?.tagName !== 'FORM') return null;
+        return FormForm.#forms.get(form)
+            ?? [...form.classList].map(name => FormForm.#classes.get(name)).find(Boolean);
+    }
+
+    static async submit(form, submitter) {
+        const binding = FormForm.#binding(form);
+        if (binding) return FormForm.run(form, binding.handler, { submitter: submitter ?? undefined });
+    }
+
+    static isPending(form) {
+        return FormForm.#pending.has(form);
+    }
+
+    static cancel(form) {
+        FormForm.#pending.get(form)?.abort();
+    }
+
+    /** Capture before sending; completion may only clear values that were submitted. */
+    static completion(form, signal = null) {
+        const fields = () => [...form.elements].filter(control => ['INPUT', 'TEXTAREA', 'SELECT'].includes(control.tagName));
+        const state = control => {
+            if (control.type === 'file') return [...control.files];
+            if (control.tagName === 'SELECT') return [...control.options].flatMap(option => [option.value, option.selected]);
+            return [control.value, control.checked];
+        };
+        const snapshots = new Map(fields().map(control => [control, state(control)]));
+        const matches = control => {
+            const before = snapshots.get(control);
+            const after = state(control);
+            return before !== undefined && before.length === after.length
+                && before.every((value, index) => value === after[index]);
+        };
+        const unchanged = (controls = null) => {
+            const current = controls === null ? fields() : [...controls];
+            return !signal?.aborted && (controls !== null || current.length === snapshots.size)
+                && current.every(matches);
+        };
+        const apply = (controls, clear) => {
+            if (signal?.aborted) return;
+            const current = fields();
+            const eligible = [...controls].filter(control => {
+                if (!matches(control) || ['submit', 'button', 'reset', 'hidden', 'image'].includes(control.type)) return false;
+                // Resetting an unchanged radio can otherwise uncheck a newer
+                // selection in the same group.
+                return control.type !== 'radio' || current.filter(other => other.type === 'radio' && other.name === control.name).every(matches);
+            });
+            for (const control of eligible) {
+                if (control.tagName === 'SELECT') {
+                    for (const option of control.options) option.selected = clear ? false : option.defaultSelected;
+                    if (clear) control.selectedIndex = -1;
+                    else if (!control.multiple && control.selectedIndex < 0) control.selectedIndex = 0;
+                } else if (['checkbox', 'radio'].includes(control.type)) {
+                    control.checked = clear ? false : control.defaultChecked;
+                } else {
+                    control.value = clear || control.type === 'file' ? '' : control.defaultValue;
+                }
+            }
+            // Notify dependent UI and release Firefox's autofill styling only
+            // after all eligible fields have reached their completed values.
+            for (const control of eligible) {
+                control.dispatchEvent(new window.Event('input', { bubbles: true }));
+            }
+        };
+        return {
+            unchanged,
+            reset: (controls = fields()) => apply(controls, false),
+            clear: (controls = fields()) => apply(controls, true),
+        };
+    }
+
+    /** Native POST pages stay pending through navigation, including a Back restoration. */
+    static async submitPage(form, { signal, submitter }) {
+        const view = form.ownerDocument.defaultView;
+        // Working disables submit controls. Carry the clicked button's value
+        // explicitly because native submit() does not include a submitter.
+        const value = submitter?.name ? document.createElement('input') : null;
+        if (value) {
+            value.type = 'hidden';
+            value.name = submitter.name;
+            value.value = submitter.value;
+            form.append(value);
+        }
+        let restored;
+        try {
+            await new Promise((resolve, reject) => {
+                restored = resolve;
+                view.addEventListener('pageshow', restored, { once: true });
+                signal.addEventListener('abort', restored, { once: true });
+                try {
+                    signal.throwIfAborted();
+                    view.HTMLFormElement.prototype.submit.call(form);
+                } catch (error) { reject(error); }
+            });
+        } finally {
+            view.removeEventListener('pageshow', restored);
+            signal.removeEventListener('abort', restored);
+            value?.remove();
+        }
+    }
+
+    /**
+     * Alternate actions use the same per-form guard as submission. Handlers
+     * must await all their work and pass signal to cancellable operations.
+     * settled runs after controls are restored, for content-dependent states.
+     */
+    static async run(form, handler, options = {}) {
+        if (FormForm.isPending(form)) return;
+        options = { ...FormForm.#binding(form)?.options, ...options };
+        const buttons = [...form.elements].filter(control => control.type === 'submit' || control.type === 'image');
+        const submitter = options.submitter === undefined ? buttons[0] : options.submitter;
+        const controls = new Set([...buttons, ...(options.controls?.(form) ?? [])]);
+        if (submitter) controls.add(submitter);
+        const disabled = new Map([...controls].map(control => [control, control.hasAttribute('disabled')]));
+        const busy = form.getAttribute('aria-busy');
+        const buttonBusy = submitter?.getAttribute('aria-busy') ?? null;
+        const buttonWorking = submitter?.classList.contains('Working') ?? false;
+        const controller = new AbortController();
+        const { signal } = controller;
+        FormForm.#pending.set(form, controller);
+
+        const finish = () => {
+            // Cancellation releases immediately. A late completion must never
+            // release a subsequent submission or restore its controls.
+            if (FormForm.#pending.get(form) !== controller) return;
+            Working.stop(submitter);
+            disabled.forEach((value, control) => control.toggleAttribute('disabled', value));
+            if (submitter) {
+                submitter.classList.toggle('Working', buttonWorking);
+                if (buttonBusy === null) submitter.removeAttribute('aria-busy');
+                else submitter.setAttribute('aria-busy', buttonBusy);
+            }
+            if (busy === null) form.removeAttribute('aria-busy');
+            else form.setAttribute('aria-busy', busy);
+            FormForm.#pending.delete(form);
+            options.settled?.(form);
+        };
+
+        signal.addEventListener('abort', finish, { once: true });
+        try {
+            form.setAttribute('aria-busy', 'true');
+            disabled.forEach((value, control) => control.setAttribute('disabled', ''));
+            Working.start(submitter);
+            return await handler(form, { signal, submitter, ...FormForm.completion(form, signal) });
+        } catch (error) {
+            if (!signal.aborted) throw error;
+        } finally {
+            signal.removeEventListener('abort', finish);
+            finish();
+        }
+    }
+
+    toDOM() {
+        const method = this.method?.toUpperCase() ?? null;
+        if (method !== null && !['GET', 'POST'].includes(method)) throw new Error('Invalid form method: ' + this.method);
+        if (method !== null) this.attributes.method = method;
+        if (this.action !== null) this.attributes.action = this.action;
+        if (this.enctype !== null) this.attributes.enctype = this.enctype;
+        if (method === 'POST') {
+            const token = document.createElement('input');
+            token.type = 'hidden';
+            token.name = 'CSRFToken';
+            token.value = Cookie.get('CSRF-TOKEN') ?? '';
+            this.addContent(token);
+        }
+        const form = super.toDOM();
+        if (this.onSubmit) FormForm.attach(form, this.onSubmit);
+        return form;
     }
 }
 
@@ -3319,8 +3529,9 @@ class Post {
             const location_link = document.createElement('a');
             location_link.className = 'PostLocationLink';
             location_link.href = ClientConfig.siteURL() + '/map?lat=' + encodeURIComponent(this.latitude) + '&lng=' + encodeURIComponent(this.longitude);
-            location_link.title = Strings.for('PostClient').mapTitle || '';
-            location_link.textContent = this.placeLabel || (this.latitude.toFixed(4) + ', ' + this.longitude.toFixed(4));
+            const locationWords = Strings.for('PostLocationLink');
+            location_link.title = locationWords.title || '';
+            location_link.textContent = this.placeLabel || (this.latitude.toFixed(4) + (locationWords.between || '') + this.longitude.toFixed(4));
             meta.appendWithSpace(location_link);
         }
 
@@ -3654,11 +3865,14 @@ class Post {
             byline.textContent = (this.quotedPost.authorTitle || this.quotedPost.slug) + ' · @' + this.quotedPost.slug;
             quoted.appendWithSpace(byline);
 
+            const quotedWarning = (this.quotedPost.contentWarning || '').trim();
+            const quotedBody = quotedWarning === '' ? quoted : Post.contentWarningGate(quotedWarning);
+
             if (this.quotedPost.title) {
                 const title = document.createElement('p');
                 title.className = 'QuotedPostTitle';
                 title.textContent = this.quotedPost.title;
-                quoted.appendWithSpace(title);
+                quotedBody.appendWithSpace(title);
             }
 
             if (this.quotedPost.description) {
@@ -3667,7 +3881,11 @@ class Post {
                     this.quotedPost.description,
                     ClientConfig.get('quotedPostMaxLength')
                 );
-                quoted.appendWithSpace(body);
+                quotedBody.appendWithSpace(body);
+            }
+
+            if (quotedBody !== quoted) {
+                quoted.appendWithSpace(quotedBody);
             }
 
             const link = document.createElement('a');
@@ -4256,17 +4474,34 @@ class MessageCrypto {
     // and the database, not against the page itself. ---
 
     static storeUnlocked(private_jwk) {
-        sessionStorage.setItem('messagePrivateKey', JSON.stringify(private_jwk));
+        const userId = ClientConfig.get('currentUserId');
+        MessageCrypto.clearUnlocked();
+        if (userId === null) return;
+        try {
+            sessionStorage.setItem('messagePrivateKey', JSON.stringify({ userId, privateKey: private_jwk }));
+        } catch (_) {
+            // Storage may be disabled; this page can still unlock in memory.
+        }
     }
 
     static loadUnlocked() {
-        const stored = sessionStorage.getItem('messagePrivateKey');
-
-        return stored === null ? null : JSON.parse(stored);
+        try {
+            const stored = JSON.parse(sessionStorage.getItem('messagePrivateKey'));
+            const userId = ClientConfig.get('currentUserId');
+            if (userId !== null && stored?.userId === userId && stored.privateKey) {
+                return stored.privateKey;
+            }
+        } catch (_) {
+            // An old or damaged cache is replaced by the next unlock.
+        }
+        MessageCrypto.clearUnlocked();
+        return null;
     }
 
     static clearUnlocked() {
-        sessionStorage.removeItem('messagePrivateKey');
+        try { sessionStorage.removeItem('messagePrivateKey'); } catch (_) {}
+        MessageCrypto.#threadKey = null;
+        MessageCrypto.#envelopes.clear();
     }
 
     static async #passphraseKey(passphrase, salt, iterations, usage) {
@@ -4665,10 +4900,14 @@ class Report {
             words.summary.before.replace('{type}', type_label).replace('{id}', this.targetId)
         ));
 
-        const reporter_link = document.createElement('a');
-        reporter_link.href = ClientConfig.siteURL() + '/users/' + this.reporterUsername + '/';
-        reporter_link.textContent = this.reporterUsername;
-        summary.appendWithSpace(reporter_link);
+        if (this.reporterUsername !== null) {
+            const reporter_link = document.createElement('a');
+            reporter_link.href = ClientConfig.siteURL() + '/users/' + this.reporterUsername + '/';
+            reporter_link.textContent = this.reporterUsername;
+            summary.appendWithSpace(reporter_link);
+        } else {
+            summary.appendWithSpace(document.createTextNode(Strings.for('BlockedServerCard').deletedAccount || ''));
+        }
         summary.appendWithSpace(document.createTextNode(words.summary.after));
         details.appendWithSpace(summary);
 
@@ -4693,7 +4932,7 @@ class Report {
         // The admin (userId 1) can't be banned, so no Ban Reporter when the
         // admin filed the report. (The reported user is never the admin - the
         // report API rejects reports about admin content.)
-        if (Number(this.reporterId) !== 1) {
+        if (Number(this.reporterId) !== 1 && this.reporterUsername !== null) {
             actions.appendWithSpace(this.banButton(this.reporterId, words.banReporterLabel));
         }
 

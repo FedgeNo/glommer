@@ -35,32 +35,31 @@ if ($report -> type !== 'post') {
     JSONResponse::localizedError('onlyAPostCarriesMediaToClassify', 422) -> send();
 }
 
-Post::classify((int) $report -> targetId, true);
+$classified = ReportManager::resolve($report_id, 'classifyReportedContent', static function (ReportData $report): void {
+    Post::classify((int) $report -> targetId, true);
 
-// Followers elsewhere are holding the same post and rendering it unmarked, so
-// the classification has to reach them too. Sent as the author, since it is
-// their object that changed; a no-op for a post that came from another server,
-// where the flag is theirs to set and ours only to honour.
-$author = FediversePublisher::authorOf((int) $report -> targetId);
+    // Queue the author's update in the same transaction as the classification.
+    // Delivery remains the worker's job after commit.
+    $author = FediversePublisher::authorOf((int) $report -> targetId);
 
-if ($author !== null) {
-    $row = DB::row('
+    if ($author !== null) {
+        $row = DB::row('
 SELECT *
     FROM `Posts`
     WHERE `postId` = ?
 ', 'Post', 'i', (int) $report -> targetId);
 
-    if ($row !== null) {
-        $post = Post::fromRowWithItems($row);
-        $post -> author = $author;
+        if ($row !== null) {
+            $post = Post::fromRowWithItems($row);
+            $post -> author = $author;
 
-        FediversePublisher::updated($post, $author);
+            FediversePublisher::updated($post, $author);
+        }
     }
+});
+
+if (!$classified) {
+    JSONResponse::localizedError('reportNotFound', 404) -> send();
 }
-
-// The moderator has acted on it, so it leaves the queue - same as a deletion.
-ReportManager::delete($report_id);
-
-ModerationAction::log('classifyReportedContent', null, $report -> type, (int) $report -> targetId, $report_id);
 
 JSONResponse::success(['classified' => true]) -> send();

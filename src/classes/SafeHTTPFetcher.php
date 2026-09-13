@@ -44,7 +44,7 @@ class SafeHTTPFetcher
     ];
 
     /**
-     * @return array{body: string, contentType: ?string}|null
+     * @return array{body: string, contentType: ?string, url: string, urls: string[]}|null
      */
     public static function get(string $url, int $max_bytes): ?array
     {
@@ -76,7 +76,7 @@ class SafeHTTPFetcher
      *
      * @param string[] $headers
      * @param null|callable(string): string[] $per_request
-     * @return array{body: string, contentType: ?string}|null
+     * @return array{body: string, contentType: ?string, url: string, urls: string[]}|null
      */
     public static function getJSON(string $url, array $headers, int $max_bytes, ?callable $per_request = null): ?array
     {
@@ -91,7 +91,7 @@ class SafeHTTPFetcher
      * fails closed instead.
      *
      * @param string[] $headers
-     * @return array{body: string, contentType: ?string}|null
+     * @return array{body: string, contentType: ?string, url: string, urls: string[]}|null
      */
     public static function postJSON(string $url, string $body, array $headers, int $max_bytes): ?array
     {
@@ -126,7 +126,7 @@ class SafeHTTPFetcher
      * @param array<int, mixed> $extra_options
      * @param null|callable(string, string): bool $sink
      * @param null|callable(string): string[] $per_request headers built for this exact URL, rebuilt on every hop
-     * @return array{body: string, contentType: ?string}|null
+     * @return array{body: string, contentType: ?string, url: string, urls: string[]}|null
      */
     private static function sendRequest(string $method, string $url, array $headers, ?string $body, int $max_bytes, int $redirects_left, array $extra_options = [], ?callable $sink = null, ?callable $per_request = null): ?array
     {
@@ -268,7 +268,13 @@ class SafeHTTPFetcher
                 return null;
             }
 
-            return self::sendRequest($method, $redirect_url, $headers, $body, $max_bytes, $redirects_left - 1, $extra_options, $sink, $per_request);
+            $response = self::sendRequest($method, $redirect_url, $headers, $body, $max_bytes, $redirects_left - 1, $extra_options, $sink, $per_request);
+
+            if ($response !== null) {
+                array_unshift($response['urls'], $url);
+            }
+
+            return $response;
         }
 
         if ($status < 200 || $status >= 300) {
@@ -286,6 +292,9 @@ class SafeHTTPFetcher
         return [
             'body' => (string) $response_body,
             'contentType' => $content_type !== false ? $content_type : null,
+            // Only successful, individually validated hops enter this chain.
+            'url' => $url,
+            'urls' => [$url],
         ];
     }
 

@@ -203,10 +203,41 @@ try {
     $case_folded = $request($base . '/.well-known/webfinger?resource=' . rawurlencode('acct:' . $username . '@' . strtoupper($authority)), 'GET', 'application/jrd+json');
     $check($case_folded['status'] === 200, 'WebFinger matches hostnames case-insensitively');
 
-    foreach (['', 'not-an-acct-uri', 'acct:' . $username . '@example.invalid', 'acct:' . $unknown . '@' . $authority] as $index => $resource) {
-        $invalid = $request($base . '/.well-known/webfinger?resource=' . rawurlencode($resource), 'GET', 'application/jrd+json');
-        $check($invalid['status'] === 404, 'WebFinger rejects invalid or unknown resource #' . ($index + 1));
-        $check($hasNoCookies($invalid), 'rejected WebFinger resource #' . ($index + 1) . ' is stateless');
+    $malformed_queries = [
+        'missing resource' => '',
+        'bare resource' => '?resource',
+        'empty resource' => '?resource=',
+        'array resource' => '?resource%5B%5D=' . rawurlencode('acct:' . $username . '@' . $authority),
+    ];
+
+    foreach ([
+        'relative resource' => 'not-an-acct-uri',
+        'resource containing whitespace' => 'acct:user name@' . $authority,
+        'resource containing a control character' => "acct:user\nname@" . $authority,
+        'invalid percent escape' => 'acct:user%ZZ@' . $authority,
+        'missing account name' => 'acct:@' . $authority,
+        'missing account host' => 'acct:' . $username . '@',
+        'missing account separator' => 'acct:' . $username,
+        'extra account separator' => 'acct:user@name@' . $authority,
+    ] as $name => $resource) {
+        $malformed_queries[$name] = '?resource=' . rawurlencode($resource);
+    }
+
+    foreach ($malformed_queries as $name => $query) {
+        $invalid = $request($base . '/.well-known/webfinger' . $query, 'GET', 'application/jrd+json');
+        $check($invalid['status'] === 400, 'WebFinger returns 400 for ' . $name);
+        $check($hasNoCookies($invalid), 'WebFinger rejection for ' . $name . ' is stateless');
+    }
+
+    foreach ([
+        'foreign account' => 'acct:' . $username . '@example.invalid',
+        'unknown local account' => 'acct:' . $unknown . '@' . $authority,
+        'unknown HTTPS URI' => 'https://example.invalid/profile',
+        'unknown mailto URI' => 'mailto:unknown@example.invalid',
+    ] as $name => $resource) {
+        $missing = $request($base . '/.well-known/webfinger?resource=' . rawurlencode($resource), 'GET', 'application/jrd+json');
+        $check($missing['status'] === 404, 'WebFinger returns 404 for ' . $name);
+        $check($hasNoCookies($missing), 'WebFinger rejection for ' . $name . ' is stateless');
     }
 
     $webfinger_post = $request($webfinger_url, 'POST', 'application/jrd+json');

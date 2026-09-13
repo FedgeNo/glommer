@@ -135,10 +135,8 @@ if (!GoogleAuth::isEnabled()) {
                         Notification::warnAdminMailerFailed((int) $user -> userId);
                     }
 
-                    $_SESSION['pending2FAUserId'] = (int) $user -> userId;
                     // A Google sign-in implies "keep me signed in".
-                    $_SESSION['pending2FARememberMe'] = true;
-                    $_SESSION['pending2FAEmailFailed'] = $email_failed;
+                    Auth::beginTwoFactor($user, true, $email_failed);
 
                     header('Location: ' . ServerURL::absolute('/login'));
                     exit;

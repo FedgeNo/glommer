@@ -216,7 +216,13 @@ if (ActivityPubReplay::seenBefore($signature_header)) {
 $activity = json_decode($body, true);
 
 if (is_array($activity)) {
-    ActivityPubInbox::process($activity, $actor_uri);
+    try {
+        ActivityPubInbox::process($activity, $actor_uri);
+    } catch (\Throwable $exception) {
+        ActivityPubReplay::forget($signature_header);
+
+        throw $exception;
+    }
 }
 
 http_response_code(202);

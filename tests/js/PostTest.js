@@ -119,6 +119,22 @@ export default {
             TestCase.assertNull(post_element().querySelector('details.ContentWarning'));
             TestCase.assertNull(post_element({ contentWarning: '   ' }).querySelector('details.ContentWarning'));
         },
+        'a quote preserves the original warning without covering its byline'() {
+            const quotedPost = { postId: 99, slug: 'writer', authorTitle: 'Writer',
+                title: 'The ending', description: 'Hidden spoiler', contentWarning: 'Spoilers' };
+            const quoted = post_element({ quotedPost }).querySelector('.QuotedPost');
+            const gate = quoted.querySelector('details.ContentWarning');
+            TestCase.assertNotNull(gate);
+            TestCase.assertFalse(gate.open);
+            TestCase.assertEquals('Spoilers', gate.firstElementChild.textContent);
+            TestCase.assertTrue(gate.textContent.includes('The ending'));
+            TestCase.assertTrue(gate.textContent.includes('Hidden spoiler'));
+            TestCase.assertNull(gate.querySelector('.QuotedPostByline'));
+            TestCase.assertNotNull(quoted.querySelector('.QuotedPostLink'));
+
+            quotedPost.contentWarning = '   ';
+            TestCase.assertNull(post_element({ quotedPost }).querySelector('.QuotedPost details'));
+        },
         'a remote attachment describes itself'() {
             // The server prefers the sender's per-attachment alt text over the
             // post-level fallback; FeedItem.php does the same.

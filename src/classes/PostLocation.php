@@ -15,6 +15,12 @@ class PostLocation
     public ?int $placeId = null;
     public int $placeResolved = 0;
 
+    /** Match the map's existing anonymous precision in every browser view. */
+    public static function forViewer(?float $coordinate): ?float
+    {
+        return $coordinate === null || Auth::check() ? $coordinate : round($coordinate, 2);
+    }
+
     /** Resolve the name once, in the same transaction that saves the post. */
     public static function save(int $post_id, float $latitude, float $longitude): void
     {

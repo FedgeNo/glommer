@@ -101,6 +101,7 @@ class ThreadContext extends Div
         }
 
         $placeholders = implode(', ', array_fill(0, count($reply_ids), '?'));
+        $visibility = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL AND `Users`.`remoteActorURI` IS NULL';
 
         // Every ancestor of every reply on the page, tagged with the reply it
         // was reached from, then narrowed to the two that are wanted: the one
@@ -116,11 +117,12 @@ WITH RECURSIVE `Ancestry` AS (
         JOIN `Ancestry` ON `Ancestry`.`parentId` = `Posts`.`postId`
         WHERE `Ancestry`.`depth` < ' . self::MAX_DEPTH . '
 )
-SELECT `Ancestry`.`origin`, `Ancestry`.`depth`, `Posts`.`postId`, `Posts`.`parentId`, `Posts`.`title`, `Posts`.`description`, `Users`.`slug`
+SELECT `Ancestry`.`origin`, `Ancestry`.`depth`, `Posts`.`postId`, `Posts`.`parentId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`contentWarning`, `Users`.`slug`
     FROM `Ancestry`
     JOIN `Posts` ON `Posts`.`postId` = `Ancestry`.`postId`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
     WHERE `Ancestry`.`depth` > 0 AND (`Ancestry`.`depth` = 1 OR `Posts`.`parentId` IS NULL)
+        AND `Users`.`banned` = 0 ' . $visibility . '
 ', 'ThreadContextData', str_repeat('i', count($reply_ids)), ...$reply_ids);
 
         $contexts = [];
@@ -155,6 +157,12 @@ SELECT `Ancestry`.`origin`, `Ancestry`.`depth`, `Posts`.`postId`, `Posts`.`paren
      */
     private static function labelFor(object $row): ?string
     {
+        $warning = trim((string) ($row -> contentWarning ?? ''));
+
+        if ($warning !== '') {
+            return $warning;
+        }
+
         if ($row -> title !== null && trim((string) $row -> title) !== '') {
             return trim((string) $row -> title);
         }

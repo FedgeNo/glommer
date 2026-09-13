@@ -69,4 +69,18 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `remoteActorURI`)
 
         $this -> assertFalse(RetiredUsername::isRetired(''));
     }
+
+    public function testGoogleGeneratedNamesRespectRetiredAndInstanceNames(): void
+    {
+        $retired = 'retired' . bin2hex(random_bytes(4));
+        RetiredUsername::retire($retired);
+        $generate = new \ReflectionMethod(GoogleAuth::class, 'generateUsername');
+
+        foreach ([$retired, ActivityPubActor::instanceUsername()] as $reserved) {
+            $generated = $generate -> invoke(null, $reserved . '@example.test', null);
+            $this -> assertFalse(RetiredUsername::isRetired($generated));
+            $this -> assertFalse(ActivityPubActor::isInstanceUsername($generated));
+            $this -> assertFalse($generated === $reserved);
+        }
+    }
 }

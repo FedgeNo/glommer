@@ -19,7 +19,9 @@ $payload = is_array($payload) ? $payload : [];
 // Checked against the languages this installation actually has, which is the
 // same list the selector is built from - so nothing can be chosen that has no
 // words behind it.
-if (!Strings::choose((string) ($payload['locale'] ?? ''))) {
+$locale = $payload['locale'] ?? '';
+
+if (!is_string($locale) || !Strings::choose($locale)) {
     JSONResponse::localizedError('thatIsNotALanguageThisSiteHas', 422) -> send();
 }
 

@@ -14,7 +14,7 @@ class ActivityPubInbox
 {
     public static function process(array $activity, string $signed_actor_uri): void
     {
-        match ($activity['type'] ?? null) {
+        match (ActivityStreams::type($activity['type'] ?? null, ['Accept', 'Reject', 'Create', 'Update', 'Delete', 'Follow', 'Undo', 'Like', 'Announce', 'Flag', 'Block', 'Move', 'Add', 'Remove'])) {
             'Accept' => self::handleAccept($activity, $signed_actor_uri),
             'Reject' => self::handleReject($activity, $signed_actor_uri),
             'Create' => self::handleCreate($activity, $signed_actor_uri),
@@ -53,7 +53,7 @@ class ActivityPubInbox
     {
         $actor = User::byRemoteActorURI($actor_uri);
         $object_uri = self::objectURI($activity['object'] ?? null);
-        $target = $activity['target'] ?? null;
+        $target = self::objectURI($activity['target'] ?? null);
 
         if ($actor === null || $object_uri === null || !is_string($target)) {
             return;
@@ -233,7 +233,7 @@ class ActivityPubInbox
             return false;
         }
 
-        if (!in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
+        if (ActivityStreams::type($object['type'] ?? null, ['Note', 'Question']) === null) {
             return true;
         }
 
@@ -242,9 +242,21 @@ class ActivityPubInbox
         // a URI whose server hands back a post claiming to be by an account
         // somewhere else entirely.
         $id = is_string($object['id'] ?? null) ? $object['id'] : '';
-        $attributed_to = $object['attributedTo'] ?? null;
+        $attributed_to = self::objectURI($object['attributedTo'] ?? null);
 
-        if ($id !== $object_uri || !is_string($attributed_to) || !RemoteActor::sameHost($attributed_to, $object_uri)) {
+        if (!self::isStorableObjectURI($id) || $attributed_to === null || !RemoteActor::sameHost($attributed_to, $id)
+            || RemoteObjectTombstone::isTombstoned($id) || RemoteServer::isBlockedURL($id)
+            || ActivityPubMessage::isDirect($object, [])) {
+            return true;
+        }
+
+        $existing = self::postIdForRemoteObject($id);
+
+        if ($existing !== null) {
+            if ($relay_id !== null) {
+                Relay::recordPost($existing, $relay_id);
+            }
+
             return true;
         }
 
@@ -252,10 +264,14 @@ class ActivityPubInbox
         // go and get it: up the thread until it reaches a post already held or
         // one that started a conversation. A reply whose thread cannot be
         // completed is given up on rather than filed with no context.
-        $in_reply_to = $object['inReplyTo'] ?? null;
+        $in_reply_to = self::objectURI($object['inReplyTo'] ?? null);
         $parent_id = null;
 
-        if (is_string($in_reply_to) && $in_reply_to !== '') {
+        if (!empty($object['inReplyTo']) && $in_reply_to === null) {
+            return true;
+        }
+
+        if ($in_reply_to !== null) {
             $parent_id = self::completeThread($in_reply_to);
 
             if ($parent_id === null) {
@@ -269,7 +285,7 @@ class ActivityPubInbox
             return true;
         }
 
-        $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
+        $post_id = self::storeNote($object, $id, $author, $parent_id);
 
         if ($post_id === null) {
             return true;
@@ -330,24 +346,36 @@ class ActivityPubInbox
 
         $object = ActivityPubFetch::object($object_uri);
 
-        if ($object === null || !in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
+        if ($object === null || ActivityStreams::type($object['type'] ?? null, ['Note', 'Question']) === null) {
             return null;
         }
 
         // The same rule every inbound object passes: the document has to be
         // the one asked for, and attributed to somebody on its own host.
         $id = is_string($object['id'] ?? null) ? $object['id'] : '';
-        $attributed_to = $object['attributedTo'] ?? null;
+        $attributed_to = self::objectURI($object['attributedTo'] ?? null);
 
-        if ($id !== $object_uri || !is_string($attributed_to) || !RemoteActor::sameHost($attributed_to, $object_uri)) {
+        if (!self::isStorableObjectURI($id) || $attributed_to === null || !RemoteActor::sameHost($attributed_to, $id)
+            || RemoteObjectTombstone::isTombstoned($id) || RemoteServer::isBlockedURL($id)
+            || ActivityPubMessage::isDirect($object, [])) {
             return null;
         }
 
+        $held = self::postIdForRemoteObject($id);
+
+        if ($held !== null) {
+            return $held;
+        }
+
         // Up first, so this post has its own place before it becomes one.
-        $in_reply_to = $object['inReplyTo'] ?? null;
+        $in_reply_to = self::objectURI($object['inReplyTo'] ?? null);
         $parent_id = null;
 
-        if (is_string($in_reply_to) && $in_reply_to !== '') {
+        if (!empty($object['inReplyTo']) && $in_reply_to === null) {
+            return null;
+        }
+
+        if ($in_reply_to !== null) {
             $parent_id = self::completeThread($in_reply_to, $depth + 1);
 
             if ($parent_id === null) {
@@ -361,25 +389,17 @@ class ActivityPubInbox
             return null;
         }
 
-        $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
+        $post_id = self::storeNote($object, $id, $author, $parent_id);
 
         // Nobody here asked for these - they are context for a reply somebody
         // did - so they fill the thread out without also filling feeds.
         return $post_id;
     }
 
-    /** An object reference is either the URI itself or a document carrying its id. */
+    /** A URI, an embedded object's id, or a Link's href. */
     private static function objectURI(mixed $object): ?string
     {
-        if (is_string($object) && $object !== '') {
-            return $object;
-        }
-
-        if (is_array($object) && is_string($object['id'] ?? null) && $object['id'] !== '') {
-            return $object['id'];
-        }
-
-        return null;
+        return ActivityStreams::reference($object);
     }
 
     /**
@@ -396,7 +416,7 @@ class ActivityPubInbox
     private static function handleFollow(array $activity, string $actor_uri): void
     {
         $object = $activity['object'] ?? null;
-        $target_uri = is_string($object) ? $object : (is_array($object) ? ($object['id'] ?? null) : null);
+        $target_uri = self::objectURI($object);
         $follow_activity_id = $activity['id'] ?? null;
 
         if (!is_string($target_uri) || !is_string($follow_activity_id) || $follow_activity_id === '') {
@@ -415,6 +435,10 @@ class ActivityPubInbox
         $follower = User::byRemoteActorURI($actor_uri);
 
         if ($follower === null || !is_string($follower -> remoteActorInboxURL) || $follower -> remoteActorInboxURL === '') {
+            return;
+        }
+
+        if (Block::exists((int) $follower -> userId, (int) $target -> userId)) {
             return;
         }
 
@@ -456,7 +480,9 @@ class ActivityPubInbox
         }
 
         // Lifting a block, which lets the two see each other again.
-        if (($object['type'] ?? null) === 'Block') {
+        $type = ActivityStreams::type($object['type'] ?? null, ['Block', 'Like', 'Announce', 'Follow']);
+
+        if ($type === 'Block') {
             $target = self::objectURI($object['object'] ?? null);
             $blocker = User::byRemoteActorURI($actor_uri);
 
@@ -468,12 +494,12 @@ class ActivityPubInbox
         }
 
         // Withdrawing a reaction, which is the row simply going away again.
-        if (in_array($object['type'] ?? null, ['Like', 'Announce'], true)) {
+        if (in_array($type, ['Like', 'Announce'], true)) {
             $target = self::objectURI($object['object'] ?? null);
             $actor = User::byRemoteActorURI($actor_uri);
 
             if ($target !== null && $actor !== null) {
-                if ($object['type'] === 'Like') {
+                if ($type === 'Like') {
                     ActivityPubReaction::unliked($target, $actor);
                 } else {
                     ActivityPubReaction::unannounced($target, $actor);
@@ -483,12 +509,11 @@ class ActivityPubInbox
             return;
         }
 
-        if (($object['type'] ?? null) !== 'Follow') {
+        if ($type !== 'Follow') {
             return;
         }
 
-        $target_uri = $object['object'] ?? null;
-        $target_uri = is_string($target_uri) ? $target_uri : (is_array($target_uri) ? ($target_uri['id'] ?? null) : null);
+        $target_uri = self::objectURI($object['object'] ?? null);
 
         if (!is_string($target_uri)) {
             return;
@@ -582,7 +607,7 @@ DELETE
     private static function answeredRelay(array $activity, string $actor_uri): ?Relay
     {
         $object = $activity['object'] ?? null;
-        $follow_activity_id = is_array($object) ? ($object['id'] ?? null) : $object;
+        $follow_activity_id = self::objectURI($object);
 
         if (!is_string($follow_activity_id) || $follow_activity_id === '') {
             return null;
@@ -594,7 +619,7 @@ DELETE
     private static function answeredFollow(array $activity, string $actor_uri): ?RemoteFollow
     {
         $object = $activity['object'] ?? null;
-        $follow_activity_id = is_array($object) ? ($object['id'] ?? null) : $object;
+        $follow_activity_id = self::objectURI($object);
 
         if (!is_string($follow_activity_id) || $follow_activity_id === '') {
             return null;
@@ -607,7 +632,7 @@ SELECT `remoteFollowId`
 ', 'RemoteFollow', 'ss', $actor_uri, $follow_activity_id);
     }
 
-    private static function handleCreate(array $activity, string $actor_uri): void
+    private static function handleCreate(array $activity, string $actor_uri, bool $worker = false): bool
     {
         $object = $activity['object'] ?? null;
 
@@ -630,24 +655,32 @@ SELECT `remoteFollowId`
                 self::relayedPost($relayed_uri, $actor_uri);
             }
 
-            return;
+            return true;
         }
 
-        if (!is_array($object)) {
-            return;
+        // A referenced Create keeps its signed envelope, particularly its
+        // audience. Treating it as a relay fetch would lose DM and vote routing.
+        if (is_string($object) || (is_array($object) && (array_key_exists('href', $object)
+            || ActivityStreams::type($object['type'] ?? null, ['Link']) !== null))) {
+            $uri = self::objectURI($object);
+
+            if ($uri !== null && self::isStorableObjectURI($uri)
+                && RemoteActor::sameHost($uri, $actor_uri)
+                && !RemoteServer::isBlockedURL($uri) && !RemoteObjectTombstone::isTombstoned($uri)) {
+                InboxFetch::enqueue($activity, $actor_uri, $uri);
+            }
+
+            return true;
         }
 
-        // A post carrying a poll arrives as a Question rather than a Note -
-        // there is no separate poll object in ActivityPub, the type simply
-        // changes - so it is ingested as the post it is.
-        if (($object['type'] ?? null) === 'Question') {
-            self::ingestNote($object, $actor_uri);
-
-            return;
+        if (!is_array($object) || !ActivityStreams::attributedTo($object, $actor_uri)) {
+            return true;
         }
 
-        if (($object['type'] ?? null) !== 'Note') {
-            return;
+        $type = ActivityStreams::type($object['type'] ?? null, ['Note', 'Question']);
+
+        if ($type === null) {
+            return true;
         }
 
         // A vote is a Note with a name, no content and an inReplyTo pointing at
@@ -655,14 +688,14 @@ SELECT `remoteFollowId`
         // the reply path a vote is indistinguishable from a reply, and taking
         // it as one would file an empty post in the thread for every answer
         // anybody gave.
-        if (ActivityPubPollVote::isVote($object)) {
+        if ($type === 'Note' && ActivityPubPollVote::isVote($object)) {
             $voter = User::byRemoteActorURI($actor_uri);
 
             if ($voter !== null && $voter -> banned !== 1) {
                 ActivityPubPollVote::received($object, $voter);
             }
 
-            return;
+            return true;
         }
 
         // A Note addressed to one member here and to nobody public is a direct
@@ -676,10 +709,59 @@ SELECT `remoteFollowId`
                 ActivityPubMessage::received($object, $activity, $sender);
             }
 
-            return;
+            return true;
         }
 
-        self::ingestNote($object, $actor_uri);
+        return self::ingestNote($object, $actor_uri, $activity, $worker);
+    }
+
+    /** Complete a previously authenticated delivery in the federation worker. */
+    public static function fetchCreate(array $activity, string $actor_uri): bool
+    {
+        if (ActivityStreams::type($activity['type'] ?? null, ['Create']) === null
+            || RemoteServer::isBlockedURL($actor_uri) || Relay::isSubscribed($actor_uri)) {
+            return true;
+        }
+
+        $author = User::byRemoteActorURI($actor_uri);
+        $object = $activity['object'] ?? null;
+        $uri = self::objectURI($object);
+
+        if ($author === null || $author -> banned === 1 || $uri === null
+            || !self::isStorableObjectURI($uri) || !RemoteActor::sameHost($uri, $actor_uri)
+            || RemoteServer::isBlockedURL($uri) || RemoteObjectTombstone::isTombstoned($uri)) {
+            return true;
+        }
+
+        if (!is_array($object) || array_key_exists('href', $object)
+            || ActivityStreams::type($object['type'] ?? null, ['Link']) !== null) {
+            $object = ActivityPubFetch::object($uri);
+
+            if ($object === null) {
+                return false;
+            }
+
+            // A fetched document must explicitly name the authenticated author;
+            // absence is only permitted for an object embedded in their signature.
+            if (!isset($object['attributedTo']) || !ActivityStreams::attributedTo($object, $actor_uri)) {
+                return true;
+            }
+        }
+
+        $id = $object['id'] ?? null;
+
+        if (!is_string($id) || !self::isStorableObjectURI($id) || !RemoteActor::sameHost($id, $actor_uri)
+            || RemoteServer::isBlockedURL($id) || RemoteObjectTombstone::isTombstoned($id)) {
+            return true;
+        }
+
+        if (ActivityStreams::type($object['type'] ?? null, ['Note', 'Question']) === null) {
+            return true;
+        }
+
+        $activity['object'] = $object;
+
+        return self::handleCreate($activity, $actor_uri, true);
     }
 
     /** The actor types ActivityPub defines - any of them can carry a signing key. */
@@ -697,7 +779,7 @@ SELECT `remoteFollowId`
         // matters, their signing key did. What this server holds is stale
         // either way, so it goes back and reads the actor again. Only ever for
         // the account that signed the delivery: a server may update its own.
-        if (in_array($object['type'] ?? null, self::ACTOR_TYPES, true)) {
+        if (ActivityStreams::type($object['type'] ?? null, self::ACTOR_TYPES) !== null) {
             if (($object['id'] ?? null) === $actor_uri) {
                 RemoteActor::refresh($actor_uri);
             }
@@ -709,7 +791,7 @@ SELECT `remoteFollowId`
         // how a poll's running totals arrive - the origin re-sends the whole
         // object every time somebody answers, since ActivityPub has no way to
         // send just a number.
-        if (!in_array($object['type'] ?? null, ['Note', 'Question'], true)) {
+        if (ActivityStreams::type($object['type'] ?? null, ['Note', 'Question']) === null) {
             return;
         }
 
@@ -759,11 +841,13 @@ UPDATE `Posts`
     private static function handleDelete(array $activity, string $actor_uri): void
     {
         $object = $activity['object'] ?? null;
-        $object_uri = is_array($object) ? ($object['id'] ?? null) : $object;
+        $object_uri = self::objectURI($object);
 
         if (!is_string($object_uri) || $object_uri === '') {
             return;
         }
+
+        InboxFetch::cancel($actor_uri, $object_uri);
 
         $author = User::byRemoteActorURI($actor_uri);
 
@@ -788,12 +872,12 @@ UPDATE `Posts`
         Post::delete((int) $post -> postId);
     }
 
-    private static function ingestNote(array $object, string $actor_uri): void
+    private static function ingestNote(array $object, string $actor_uri, array $activity, bool $worker): bool
     {
         $object_uri = $object['id'] ?? null;
 
         if (!is_string($object_uri) || !self::isStorableObjectURI($object_uri) || RemoteObjectTombstone::isTombstoned($object_uri)) {
-            return;
+            return true;
         }
 
         // The note's id has to belong to the server that signed for it. A
@@ -804,11 +888,11 @@ UPDATE `Posts`
         // and block the real note from ever being ingested, while every reply
         // and Like naming that URI resolved to the impostor's copy instead.
         if (!RemoteActor::sameHost($object_uri, $actor_uri)) {
-            return;
+            return true;
         }
 
         if (self::postIdForRemoteObject($object_uri) !== null) {
-            return;
+            return true;
         }
 
         // A note that names a different author than the account that signed
@@ -817,26 +901,28 @@ UPDATE `Posts`
         // is unique, permanently block the real note from ever arriving.
         // Only enforced when it's actually stated - some servers leave it off
         // the embedded object, and the signer is the right attribution then.
-        $attributed_to = $object['attributedTo'] ?? null;
-
-        if (is_string($attributed_to) && $attributed_to !== '' && $attributed_to !== $actor_uri) {
-            return;
+        if (!ActivityStreams::attributedTo($object, $actor_uri)) {
+            return true;
         }
 
         $author = User::byRemoteActorURI($actor_uri);
 
         if ($author === null || $author -> banned === 1) {
-            return;
+            return true;
         }
 
         $parent_id = null;
-        $in_reply_to = $object['inReplyTo'] ?? null;
+        $in_reply_to = self::objectURI($object['inReplyTo'] ?? null);
 
-        if (is_string($in_reply_to) && $in_reply_to !== '') {
+        if (!empty($object['inReplyTo']) && $in_reply_to === null) {
+            return true;
+        }
+
+        if ($in_reply_to !== null) {
             // Local-aware, because the commonest reply of all is somebody out
             // there answering a post of ours, and that inReplyTo names our own
             // permalink rather than any remote object.
-            $parent_id = self::localPostIdFor($in_reply_to);
+            $parent_id = $worker ? self::completeThread($in_reply_to) : self::localPostIdFor($in_reply_to);
 
             // A reply to a post this server has never seen. Reading the thread
             // is what keeps a member from being left with the branch addressed
@@ -845,16 +931,20 @@ UPDATE `Posts`
             // inbox has a delivery waiting on it. The worker picks this same
             // reply up and completes it (see completeThread).
             if ($parent_id === null) {
-                RelayFetch::enqueue($object_uri, null);
+                if ($worker) {
+                    return false;
+                }
 
-                return;
+                InboxFetch::enqueue($activity, $actor_uri, $object_uri);
+
+                return true;
             }
         }
 
         $post_id = self::storeNote($object, $object_uri, $author, $parent_id);
 
         if ($post_id === null) {
-            return;
+            return true;
         }
 
         // Told about the same way a reply from a member here would be. Without
@@ -878,6 +968,8 @@ UPDATE `Posts`
         if ($parent_id === null) {
             Timeline::fanOutRemotePost($actor_uri, $post_id);
         }
+
+        return true;
     }
 
     /**
@@ -895,6 +987,10 @@ UPDATE `Posts`
      */
     private static function storeNote(array $object, string $object_uri, User $author, ?int $parent_id = null): ?int
     {
+        if ($parent_id !== null && Block::preventsInteractionWithPost((int) $author -> userId, $parent_id)) {
+            return null;
+        }
+
         // What the sender says its own shortcodes mean. Recorded before the
         // post, so the body renders with them from the first view.
         CustomEmoji::learnFrom(is_array($object['tag'] ?? null) ? $object['tag'] : [], $object_uri);
@@ -916,7 +1012,7 @@ UPDATE `Posts`
         // plain words, the same as a quote whose target was deleted. Never a
         // fetch: a quote is not an invitation to go crawling.
         $quoted_post_id = null;
-        $quoted_uri = $object['quoteUrl'] ?? $object['_misskey_quote'] ?? null;
+        $quoted_uri = self::objectURI($object['quoteUrl'] ?? $object['_misskey_quote'] ?? null);
 
         if (is_string($quoted_uri) && $quoted_uri !== '') {
             $quoted_post_id = self::localPostIdFor($quoted_uri);
@@ -961,7 +1057,7 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
         // fetched later: the post is already here, and a poll that appeared
         // some time after the post it belongs to would read as a different
         // thing arriving.
-        if (($object['type'] ?? null) === 'Question') {
+        if (ActivityStreams::type($object['type'] ?? null, ['Note', 'Question']) === 'Question') {
             Poll::fromQuestion($post_id, $object);
         }
 
@@ -1033,7 +1129,7 @@ INSERT INTO `Posts` (`userId`, `parentId`, `description`, `descriptionDelta`, `r
 
     private static function itemTypeForObjectType(mixed $type): ?string
     {
-        return match ($type) {
+        return match (ActivityStreams::type($type, ['Image', 'Video', 'Audio'])) {
             'Image' => 'ImageItem',
             'Video' => 'VideoItem',
             'Audio' => 'AudioItem',

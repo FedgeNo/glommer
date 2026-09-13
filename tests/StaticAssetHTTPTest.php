@@ -58,7 +58,7 @@ class StaticAssetHTTPTest extends TestCase
 
     public function testRepositoryFilesOutsideThePublicAssetListStayPrivate(): void
     {
-        foreach (['/README.md', '/package-lock.json', '/src/classes/Page.php', '/tests/TestCase.php', '/claude/README.md'] as $url_path) {
+        foreach (['/README.md', '/package-lock.json', '/src/classes/Page.php', '/tests/TestCase.php', '/agents/README.md'] as $url_path) {
             $response = $this -> request($url_path);
 
             $this -> assertTrue(

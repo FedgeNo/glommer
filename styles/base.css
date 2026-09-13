@@ -119,6 +119,13 @@ select {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* Browser autofill highlights need dark text even in themes with light ink. */
+input:is(:autofill, :-webkit-autofill) {
+    color: #000;
+    -webkit-text-fill-color: #000;
+    caret-color: #000;
+}
+
 textarea {
     border-radius: var(--radius-ctl);
 }
@@ -216,4 +223,3 @@ code {
     unicode-bidi: isolate;
     text-align: start;
 }
-

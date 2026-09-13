@@ -107,6 +107,65 @@ class User extends Div implements \JsonSerializable
         $this -> passwordHash = $hash;
     }
 
+    /** A login may upgrade only the credential it actually verified. */
+    public function rehashPassword(string $hash): bool
+    {
+        $updated = DB::run('
+UPDATE `Users`
+    SET `passwordHash` = ?
+    WHERE `userId` = ? AND `passwordHash` = ?
+', 'sis', $hash, $this -> userId, $this -> passwordHash);
+
+        if (mysqli_stmt_affected_rows($updated) !== 1) {
+            return false;
+        }
+
+        $this -> passwordHash = $hash;
+
+        return true;
+    }
+
+    /** Change the verified credential and revoke its dependants atomically. */
+    public function changePassword(string $hash): ?int
+    {
+        return DB::transaction(function () use ($hash): ?int {
+            $updated = DB::run('
+UPDATE `Users` SET `passwordHash` = ?
+    WHERE `userId` = ? AND `passwordHash` = ? AND `sessionVersion` = ?
+', 'sisi', $hash, $this -> userId, $this -> passwordHash, $this -> sessionVersion);
+
+            if (mysqli_stmt_affected_rows($updated) !== 1) {
+                return null;
+            }
+
+            $version = self::bumpSessionVersion((int) $this -> userId);
+            RememberToken::purgeForUser((int) $this -> userId);
+            PasswordReset::purgeForUser((int) $this -> userId);
+
+            return $version;
+        });
+    }
+
+    /** Old-address links cannot survive the address transition. */
+    public function changeEmail(string $email): bool
+    {
+        return DB::transaction(function () use ($email): bool {
+            $updated = DB::run('
+UPDATE `Users` SET `email` = ?, `verified` = 0
+    WHERE `userId` = ? AND `email` = ? AND `passwordHash` = ? AND `sessionVersion` = ?
+', 'sissi', $email, $this -> userId, $this -> email, $this -> passwordHash, $this -> sessionVersion);
+
+            if (mysqli_stmt_affected_rows($updated) !== 1) {
+                return false;
+            }
+
+            EmailVerification::purgeForUser((int) $this -> userId);
+            PasswordReset::purgeForUser((int) $this -> userId);
+
+            return true;
+        });
+    }
+
     /**
      * What a User is when it's encoded as JSON. Named explicitly rather than
      * left to json_encode's default, which would publish every public property
@@ -313,6 +372,17 @@ class User extends Div implements \JsonSerializable
     public static function load(int $user_id): ?static
     {
         return static::loadMany([$user_id])[$user_id] ?? null;
+    }
+
+    /** Call inside a transaction before changing account recovery state. */
+    public static function loadForUpdate(int $user_id): ?static
+    {
+        return DB::row('
+SELECT *
+    FROM `Users`
+    WHERE `userId` = ?
+    FOR UPDATE
+', static::class, 'i', $user_id);
     }
 
     /**
@@ -701,6 +771,17 @@ DELETE
         // while they can still identify the surviving posts they belong to.
         Poll::removeVotesForUser($user_id);
         Post::removeReplyCountsFor($all_post_ids);
+
+        // The friendship rows will cascade away with this account. Subtract
+        // each direction while those rows can still identify the survivor.
+        foreach ([['requesterId', 'addresseeId'], ['addresseeId', 'requesterId']] as [$own_column, $friend_column]) {
+            DB::run('
+UPDATE `Users` `u`
+    JOIN `Friendships` `f` ON `f`.`' . $friend_column . '` = `u`.`userId`
+    SET `u`.`friendCount` = GREATEST(0, CAST(`u`.`friendCount` AS SIGNED) - 1)
+    WHERE `f`.`' . $own_column . '` = ? AND `f`.`status` = ?
+', 'is', $user_id, 'accepted');
+        }
 
         DB::run('
 UPDATE `Posts` `p`

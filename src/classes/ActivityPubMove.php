@@ -130,10 +130,10 @@ UPDATE `Users`
     public static function received(array $activity, User $mover): void
     {
         $target = $activity['target'] ?? null;
-        $target = is_string($target) ? $target : (is_array($target) ? ($target['id'] ?? null) : null);
+        $target = ActivityStreams::reference($target);
 
         $object = $activity['object'] ?? null;
-        $object = is_string($object) ? $object : (is_array($object) ? ($object['id'] ?? null) : null);
+        $object = ActivityStreams::reference($object);
 
         if (!is_string($target) || $mover -> remoteActorURI === null) {
             return;

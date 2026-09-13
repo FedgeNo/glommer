@@ -43,6 +43,25 @@ SELECT *
         $this -> assertSame('words', $quoted -> description);
     }
 
+    public function testAQuoteKeepsTheSourceWarningAroundItsTitleAndBody(): void
+    {
+        $quoted_id = $this -> post(self::createUser());
+        DB::run('UPDATE `Posts` SET `title` = ?, `contentWarning` = ? WHERE `postId` = ?',
+            'ssi', 'The ending', 'Spoilers', $quoted_id);
+        $quoted = $this -> hydrated($this -> post(self::createUser(), $quoted_id)) -> quotedPost;
+
+        $this -> assertSame('Spoilers', $quoted -> toPayloadArray()['contentWarning']);
+        $element = $quoted -> toDOM();
+        $xpath = new \DOMXPath($element -> ownerDocument);
+        $gate = $xpath -> query('.//details[contains(@class, "ContentWarning")]', $element) -> item(0);
+        $this -> assertNotNull($gate);
+        $this -> assertFalse($gate -> hasAttribute('open'));
+        $this -> assertSame('Spoilers', $gate -> firstElementChild -> textContent);
+        $this -> assertTrue(str_contains($gate -> textContent, 'The ending'));
+        $this -> assertTrue(str_contains($gate -> textContent, 'words'));
+        $this -> assertSame(0, $xpath -> query('.//*[contains(@class, "QuotedPostByline")]', $gate) -> length);
+    }
+
     /**
      * Two posts quoting the same one are two embeds to draw, and drawing an
      * HTMLObject is a one-shot act. Handed the same instance twice, the second

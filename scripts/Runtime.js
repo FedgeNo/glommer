@@ -792,9 +792,8 @@ export class Toast {
  * as a press that did not land. So a control that is working throbs while it
  * does, and says the same thing to assistive tech as aria-busy.
  *
- * Paired calls rather than a wrapper, because the callers already have the
- * try/finally that guarantees the second one: whatever goes wrong in between,
- * a button must never be left disabled and pulsing forever.
+ * FormForm owns these calls for submissions. Standalone button actions pair
+ * them with try/finally so failures always give the control back.
  */
 export class Working {
     /** Stops a second press, and shows that the first one landed. */
@@ -852,6 +851,7 @@ export class Api {
         let response;
 
         try {
+            signal?.throwIfAborted();
             // FormData goes as it is. Encoding it as JSON would throw the
             // files away, and setting a Content-Type would override the
             // multipart boundary the browser generates - which is the one
@@ -870,7 +870,7 @@ export class Api {
                 keepalive,
             });
         } catch (error) {
-            const aborted = error.name === 'AbortError';
+            const aborted = signal?.aborted || error.name === 'AbortError';
 
             return {
                 ok: false,
@@ -888,6 +888,11 @@ export class Api {
         } catch (_) {
             // Not JSON, which for this server means something went wrong
             // upstream of the endpoint - reported below as a plain failure.
+        }
+
+        // Cancellation can arrive while the response body is being read.
+        if (signal?.aborted) {
+            return { ok: false, status: 0, data: null, error: null, aborted: true };
         }
 
         return {

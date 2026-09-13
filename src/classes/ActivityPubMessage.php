@@ -205,25 +205,7 @@ class ActivityPubMessage
      */
     private static function addressList(mixed $value): array
     {
-        if (is_string($value)) {
-            return [$value];
-        }
-
-        if (!is_array($value)) {
-            return [];
-        }
-
-        $addresses = [];
-
-        foreach ($value as $entry) {
-            if (is_string($entry)) {
-                $addresses[] = $entry;
-            } elseif (is_array($entry) && is_string($entry['id'] ?? null)) {
-                $addresses[] = $entry['id'];
-            }
-        }
-
-        return $addresses;
+        return ActivityStreams::references($value);
     }
 
     /** A server re-sending a message it already sent must not duplicate it. */

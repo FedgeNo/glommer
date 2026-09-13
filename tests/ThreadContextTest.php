@@ -140,4 +140,17 @@ SELECT *
 
         $this -> assertSame('a post with no title but plenty to say', $context -> parentLabel);
     }
+
+    public function testAWarnedParentUsesTheWarningInsteadOfItsTitleOrBody(): void
+    {
+        foreach ([null, 'The hidden ending'] as $title) {
+            $parent = self::post(self::createUser(), null, $title, 'Hidden spoiler text');
+            DB::run('UPDATE `Posts` SET `contentWarning` = ? WHERE `postId` = ?', 'si', 'Spoilers', $parent);
+            $reply = self::post(self::createUser(), $parent, null, 'A reply');
+            $context = ThreadContext::forPosts([self::load($reply)])[$reply];
+
+            $this -> assertSame('Spoilers', $context -> parentLabel);
+            $this -> assertSame('Spoilers', $context -> toPayloadArray()['parentLabel']);
+        }
+    }
 }

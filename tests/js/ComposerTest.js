@@ -1,5 +1,6 @@
 import { TestCase, write_client_config } from './TestCase.js';
-import { ToggleButton } from '../../scripts/HTMLObjects.js';
+import { FormForm, ToggleButton } from '../../scripts/HTMLObjects.js';
+import { Api } from '../../scripts/Runtime.js';
 import { Composer } from '../../scripts/Controllers.js';
 
 /**
@@ -8,7 +9,7 @@ import { Composer } from '../../scripts/Controllers.js';
  * post is being written rather than at submit time, so choosing one takes the
  * other two away.
  */
-function mounted() {
+function mounted(data = {}) {
     // Composer.mount reads the real ClientConfig, which reads this block, and
     // bails out entirely when there is no signed-in user to compose as.
     write_client_config({
@@ -20,6 +21,7 @@ function mounted() {
 
     const form = document.createElement('form');
     form.className = 'Card Composer PostComposer';
+    Object.assign(form.dataset, data);
     document.body.appendChild(form);
     Composer.mount(form);
 
@@ -49,9 +51,235 @@ function pick(composer, files) {
     Object.defineProperty(composer.file, 'files', { value: [], configurable: true });
 }
 
+function fakeUploads() {
+    const originalXHR = globalThis.XMLHttpRequest, originalFormData = globalThis.FormData;
+    const uploads = [];
+    globalThis.FormData = window.FormData;
+    globalThis.XMLHttpRequest = class extends window.EventTarget {
+        upload = new window.EventTarget();
+        constructor() { super(); uploads.push(this); }
+        open(method, url) { this.method = method; this.url = url; }
+        setRequestHeader() {}
+        send(body) { this.body = body; }
+        abort() { this.aborted = true; this.finish(0, null); }
+        finish(status, data) {
+            this.status = status;
+            this.responseText = JSON.stringify(data);
+            this.dispatchEvent(new window.Event('loadend'));
+        }
+    };
+    return { uploads, restore: () => {
+        globalThis.XMLHttpRequest = originalXHR;
+        globalThis.FormData = originalFormData;
+    } };
+}
+
 export default {
     suite: 'Composer',
     tests: {
+        async 'saving Markdown captures the active editor and warning settings without clearing later edits'() {
+            const composer = mounted();
+            const original = Api.post;
+            const markdown = composer.form.querySelector('.MarkdownInput');
+            Composer.getInstance(composer.form).markdownMode = true;
+            markdown.value = 'Submitted **Markdown**';
+            composer.sensitiveBox.checked = true;
+            composer.warning.value = 'Spoilers';
+            markdown.dispatchEvent(new window.Event('input'));
+            let convert, staged;
+            Api.post = (path, body) => {
+                if (path === '/api/convert-body') {
+                    TestCase.assertEquals('Submitted **Markdown**', body.body);
+                    return new Promise(resolve => { convert = resolve; });
+                }
+                TestCase.assertEquals('/api/stage-post', path);
+                staged = body;
+                return Promise.resolve({ stagedPostId: 1 });
+            };
+            try {
+                composer.form.querySelector('.ComposerDraftButton').click();
+                TestCase.assertNotNull(convert, 'Markdown-only content must reach conversion');
+                markdown.value = 'Later text';
+                composer.warning.value = 'Later warning';
+                convert({ body: '{"ops":[{"insert":"Submitted Markdown"}]}' });
+                await new Promise(resolve => setTimeout(resolve, 0));
+                TestCase.assertEquals('{"ops":[{"insert":"Submitted Markdown"}]}', staged.description);
+                TestCase.assertTrue(staged.sensitive);
+                TestCase.assertEquals('Spoilers', staged.contentWarning);
+                TestCase.assertEquals('Later text', markdown.value);
+                TestCase.assertEquals('Later warning', composer.warning.value);
+            } finally { FormForm.cancel(composer.form); Api.post = original; composer.remove(); }
+        },
+        'opening a saved draft restores its sensitivity and warning'() {
+            const composer = mounted({ stagedPostId: '10', title: 'Saved draft', sensitive: '1', contentWarning: 'Saved warning' });
+            try {
+                TestCase.assertTrue(composer.sensitiveBox.checked);
+                TestCase.assertEquals('Saved warning', composer.warning.value);
+                TestCase.assertFalse(hidden(composer.warning));
+            } finally { composer.remove(); }
+        },
+        async 'rich text typed during an upload survives its successful response'() {
+            const original = globalThis.Quill;
+            let quill;
+            globalThis.Quill = class extends original {
+                body = { ops: [{ insert: 'Submitted body\n' }] };
+                constructor(...args) { super(...args); quill = this; }
+                getContents() { return this.body; }
+                getText() { return this.body.ops.map(op => op.insert).join(''); }
+                setText(text) { this.body = { ops: [{ insert: text }] }; }
+            };
+            const composer = mounted();
+            const fake = fakeUploads();
+            try {
+                const pending = FormForm.submit(composer.form);
+                quill.body = { ops: [{ insert: 'New unsaved rich text\n' }] };
+                fake.uploads[0].finish(200, { response: { processing: true } });
+                await pending;
+                TestCase.assertEquals('New unsaved rich text\n', quill.getText());
+                TestCase.assertFalse(composer.form.querySelector('[type="submit"]').disabled);
+            } finally { FormForm.cancel(composer.form); fake.restore(); composer.remove(); globalThis.Quill = original; }
+        },
+        async 'markdown written during conversion survives and the map uses submitted coordinates'() {
+            const composer = mounted();
+            const fake = fakeUploads();
+            const original = Api.post;
+            const markdown = composer.form.querySelector('.MarkdownInput');
+            Composer.getInstance(composer.form).markdownMode = true;
+            markdown.value = 'Submitted markdown';
+            const latitude = composer.form.querySelector('[name="latitude"]');
+            const longitude = composer.form.querySelector('[name="longitude"]');
+            latitude.value = '10';
+            longitude.value = '20';
+            let convert, posted;
+            Api.post = () => new Promise(resolve => { convert = resolve; });
+            composer.form.addEventListener('composer:posted', event => { posted = event.detail; });
+            try {
+                const pending = FormForm.submit(composer.form);
+                markdown.value = 'New unsaved markdown';
+                convert({ body: '{"ops":[{"insert":"Submitted markdown"}]}' });
+                await new Promise(resolve => setTimeout(resolve, 0));
+                latitude.value = '30';
+                longitude.value = '40';
+                fake.uploads[0].finish(200, { response: { processing: true } });
+                await pending;
+                TestCase.assertEquals('New unsaved markdown', markdown.value);
+                TestCase.assertEquals('10', posted.latitude);
+                TestCase.assertEquals('20', posted.longitude);
+                TestCase.assertEquals('30', latitude.value);
+            } finally { convert?.(null); FormForm.cancel(composer.form); fake.restore(); Api.post = original; composer.remove(); }
+        },
+        async 'a successful upload preserves writing and attachments added while it was pending'() {
+            const composer = mounted();
+            const fake = fakeUploads();
+            const title = composer.form.querySelector('[name="title"]');
+            title.value = 'Submitted title';
+            pick(composer, [imageFile('sent.png')]);
+            let posted = 0;
+            composer.form.addEventListener('composer:posted', () => { posted++; });
+            try {
+                const pending = FormForm.submit(composer.form);
+                title.value = 'New unsaved title';
+                pick(composer, [imageFile('next.png')]);
+                fake.uploads[0].finish(200, { response: { processing: true } });
+                await pending;
+                TestCase.assertEquals('New unsaved title', title.value);
+                TestCase.assertEquals(2, composer.form.querySelectorAll('.ComposerAttachment').length);
+                TestCase.assertEquals(1, posted, 'the completed post still reaches listeners');
+                TestCase.assertFalse(composer.form.querySelector('[type="submit"]').disabled);
+            } finally { FormForm.cancel(composer.form); fake.restore(); composer.remove(); }
+        },
+        async 'saving a draft preserves a newer draft written during the request'() {
+            const composer = mounted();
+            const original = Api.post;
+            const title = composer.form.querySelector('[name="title"]');
+            title.value = 'Submitted draft';
+            title.dispatchEvent(new window.Event('input'));
+            let finish;
+            Api.post = () => new Promise(resolve => { finish = resolve; });
+            try {
+                composer.form.querySelector('.ComposerDraftButton').click();
+                title.value = 'New draft';
+                finish({ stagedPostId: 1 });
+                await new Promise(resolve => setTimeout(resolve, 0));
+                TestCase.assertEquals('New draft', title.value);
+                TestCase.assertFalse(composer.form.querySelector('.ComposerDraftButton').disabled);
+            } finally { finish?.(null); Api.post = original; composer.remove(); }
+        },
+        async 'upload stays guarded until XHR completes and successful reset disables empty submission'() {
+            const composer = mounted();
+            const fake = fakeUploads();
+            const button = composer.form.querySelector('[type="submit"]');
+            let posted = 0;
+            composer.form.addEventListener('composer:posted', () => { posted++; });
+            pick(composer, [imageFile('cat.png')]);
+            try {
+                const first = FormForm.submit(composer.form);
+                await FormForm.submit(composer.form);
+                TestCase.assertEquals(1, fake.uploads.length);
+                TestCase.assertTrue(FormForm.isPending(composer.form));
+                TestCase.assertTrue(button.disabled && button.classList.contains('Working'));
+                TestCase.assertEquals('cat.png', fake.uploads[0].body.get('files[]').name);
+                TestCase.assertEquals(1, fake.uploads[0].body.getAll('altTexts[]').length);
+                fake.uploads[0].upload.dispatchEvent(new window.ProgressEvent('progress', { lengthComputable: true, loaded: 4, total: 10 }));
+                TestCase.assertEquals(4, composer.form.querySelector('progress').value);
+                composer.form.querySelector('[name="title"]').dispatchEvent(new window.Event('input'));
+                TestCase.assertTrue(button.disabled, 'editing cannot unlock a pending submission');
+                fake.uploads[0].finish(500, { error: 'Upload failed' });
+                await first;
+                TestCase.assertFalse(FormForm.isPending(composer.form));
+                TestCase.assertFalse(button.disabled, 'content remains for retry');
+                TestCase.assertFalse(composer.form.querySelector('progress').classList.contains('Active'));
+                const retry = FormForm.submit(composer.form);
+                fake.uploads[1].finish(200, { response: { processing: true } });
+                await retry;
+                TestCase.assertEquals(1, posted);
+                TestCase.assertTrue(button.disabled, 'the successful reset leaves an empty composer');
+                TestCase.assertFalse(button.classList.contains('Working'));
+            } finally { FormForm.cancel(composer.form); fake.restore(); composer.remove(); }
+        },
+        async 'cancelling an upload cannot clear a replacement uploads progress or pending state'() {
+            const composer = mounted();
+            const fake = fakeUploads();
+            pick(composer, [imageFile('cat.png')]);
+            try {
+                const first = FormForm.submit(composer.form);
+                FormForm.cancel(composer.form);
+                TestCase.assertTrue(fake.uploads[0].aborted);
+                const second = FormForm.submit(composer.form);
+                await first;
+                TestCase.assertTrue(FormForm.isPending(composer.form));
+                TestCase.assertTrue(composer.form.querySelector('progress').classList.contains('Active'));
+                fake.uploads[1].finish(500, { error: 'Retry later' });
+                await second;
+                TestCase.assertFalse(FormForm.isPending(composer.form));
+            } finally { FormForm.cancel(composer.form); fake.restore(); composer.remove(); }
+        },
+        async 'Save Draft and Enter share one guard through the staged-post request'() {
+            const composer = mounted();
+            const original = Api.post;
+            const title = composer.form.querySelector('[name="title"]');
+            title.value = 'A draft';
+            title.dispatchEvent(new window.Event('input'));
+            let finish, calls = 0;
+            Api.post = async (path, payload) => {
+                TestCase.assertEquals('/api/stage-post', path);
+                TestCase.assertNull(payload.publishAtEpoch);
+                calls++;
+                return new Promise(resolve => { finish = resolve; });
+            };
+            try {
+                composer.form.querySelector('.ComposerDraftButton').click();
+                await FormForm.submit(composer.form);
+                TestCase.assertEquals(1, calls);
+                TestCase.assertTrue(FormForm.isPending(composer.form));
+                TestCase.assertTrue(composer.form.querySelector('.ComposerScheduleButton').disabled);
+                finish({ stagedPostId: 1 });
+                await new Promise(resolve => setTimeout(resolve, 0));
+                TestCase.assertFalse(FormForm.isPending(composer.form));
+                TestCase.assertTrue(composer.form.querySelector('[type="submit"]').disabled);
+                TestCase.assertTrue(composer.form.querySelector('.ComposerDraftButton').disabled);
+            } finally { finish?.(null); Api.post = original; composer.remove(); }
+        },
         'the writing area explains itself and points at the plain-text way'() {
             const composer = mounted();
 

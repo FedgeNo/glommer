@@ -40,12 +40,14 @@ if ($target -> remoteActorURI !== null) {
 
 $is_mod_value = $is_mod ? 1 : 0;
 
-DB::run('
+DB::transaction(static function () use ($is_mod_value, $is_mod, $user_id): void {
+    DB::run('
 UPDATE `Users`
     SET `isMod` = ?
     WHERE `userId` = ?
 ', 'ii', $is_mod_value, $user_id);
 
-ModerationAction::log($is_mod ? 'setMod' : 'unsetMod', $user_id);
+    ModerationAction::log($is_mod ? 'setMod' : 'unsetMod', $user_id);
+});
 
 JSONResponse::success(['isMod' => $is_mod]) -> send();

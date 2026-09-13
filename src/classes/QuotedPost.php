@@ -22,6 +22,7 @@ class QuotedPost extends Div
     public ?int $userId = null;
     public ?string $title = null;
     public ?string $description = null;
+    public ?string $contentWarning = null;
     public ?string $slug = null;
     public ?string $authorTitle = null;
     public ?string $createdAt = null;
@@ -51,13 +52,14 @@ class QuotedPost extends Div
 
         $placeholders = implode(', ', array_fill(0, count($wanting), '?'));
         $not_banned = 0;
+        $visibility = Auth::check() ? '' : ' AND `Posts`.`remoteObjectURI` IS NULL AND `Users`.`remoteActorURI` IS NULL';
 
         $rows = DB::rows('
-SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`createdAt`,
+SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description`, `Posts`.`contentWarning`, `Posts`.`createdAt`,
     `Users`.`slug`, `Users`.`title` AS `authorTitle`
     FROM `Posts`
     JOIN `Users` ON `Users`.`userId` = `Posts`.`userId`
-    WHERE `Posts`.`postId` IN (' . $placeholders . ') AND `Users`.`banned` = ?
+    WHERE `Posts`.`postId` IN (' . $placeholders . ') AND `Users`.`banned` = ? ' . $visibility . '
 ', self::class, str_repeat('i', count($wanting)) . 'i', ...[...array_values($wanting), $not_banned]);
 
         $by_quoted_id = [];
@@ -88,14 +90,21 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
         $byline -> class = 'QuotedPostByline';
         $this -> contents[] = $byline;
 
+        $warning = trim((string) $this -> contentWarning);
+        $body = $warning === '' ? $this : new ContentWarning($warning);
+
         if ((string) $this -> title !== '') {
             $title = new Paragraph((string) $this -> title);
             $title -> class = 'QuotedPostTitle';
-            $this -> contents[] = $title;
+            $body -> contents[] = $title;
         }
 
         if ((string) $this -> description !== '') {
-            $this -> contents[] = new Paragraph(truncate((string) $this -> description, self::DESCRIPTION_MAX_LENGTH));
+            $body -> contents[] = new Paragraph(truncate((string) $this -> description, self::DESCRIPTION_MAX_LENGTH));
+        }
+
+        if ($body !== $this) {
+            $this -> contents[] = $body;
         }
 
         $link = new Anchor(
@@ -122,6 +131,7 @@ SELECT `Posts`.`postId`, `Posts`.`userId`, `Posts`.`title`, `Posts`.`description
             'postId' => (int) $this -> postId,
             'title' => $this -> title,
             'description' => $this -> description,
+            'contentWarning' => $this -> contentWarning,
             'slug' => $this -> slug,
             'authorTitle' => $this -> authorTitle,
         ];

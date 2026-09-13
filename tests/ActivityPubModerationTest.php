@@ -315,16 +315,17 @@ SELECT `postId`
         $this -> assertNull(self::postIdForRemoteObject($object_uri));
 
         $queued = mysqli_stmt_get_result(DB::run('
-SELECT `relayId`
-    FROM `RelayFetches`
+SELECT `inboxFetchId`, `actorURI`, `activity`
+    FROM `InboxFetches`
     WHERE `objectURI` = ?
 ', 's', $object_uri));
 
         $row = mysqli_fetch_assoc($queued);
 
         $this -> assertNotNull($row, 'the reply should be queued for the worker to complete');
-        // No relay named it - this one is a thread to finish reading.
-        $this -> assertNull($row['relayId']);
+        $this -> assertSame($actor_uri, $row['actorURI']);
+        $this -> assertSame($object_uri, json_decode($row['activity'], true)['object']['id']);
+        InboxFetch::done((int) $row['inboxFetchId']);
     }
 
     public function testAReplyToAKnownRemotePostThreadsCorrectly(): void

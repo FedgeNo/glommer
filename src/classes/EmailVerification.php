@@ -24,7 +24,11 @@ class EmailVerification
      */
     public static function sendFor(User $user): bool
     {
-        $token = self::create((int) $user -> userId);
+        $token = self::create((int) $user -> userId, (string) $user -> email);
+
+        if ($token === null) {
+            return false;
+        }
 
         $verify_url = ServerURL::absolute('/verify-email?token=' . $token);
 
@@ -64,7 +68,7 @@ class EmailVerification
             // Rather than leaving the user permanently stuck behind the
             // verification gate with no way to ever receive the link that
             // would clear it, verify them directly instead.
-            self::markVerified((int) $user -> userId);
+            $verified = self::markVerified((int) $user -> userId, (string) $user -> email);
 
             // Let the admin know the mailer is down so they can fix it
             // (throttled, so a flood of failures doesn't pile up). A
@@ -74,7 +78,7 @@ class EmailVerification
             // delivery in general isn't working, whatever the exact cause).
             Notification::warnAdminMailerFailed((int) $user -> userId);
 
-            return true;
+            return $verified;
         }
 
         return false;
@@ -96,29 +100,54 @@ SELECT `userId`
 
         $user_id = (int) $verification -> userId;
 
-        self::markVerified($user_id);
+        return DB::transaction(static function () use ($user_id, $token_hash): ?int {
+            $user = User::loadForUpdate($user_id);
 
+            if ($user === null) {
+                return null;
+            }
+
+            $current = DB::row('
+SELECT `userId`
+    FROM `EmailVerifications`
+    WHERE `userId` = ? AND `tokenHash` = ? AND `expiresAt` > NOW()
+    FOR UPDATE
+', 'EmailVerificationData', 'is', $user_id, $token_hash);
+
+            if ($current === null) {
+                return null;
+            }
+
+            self::markVerified($user_id, (string) $user -> email);
+            self::purgeForUser($user_id);
+
+            return $user_id;
+        });
+    }
+
+    public static function purgeForUser(int $user_id): void
+    {
         DB::run('
 DELETE
     FROM `EmailVerifications`
-    WHERE `tokenHash` = ?
-', 's', $token_hash);
-
-        return $user_id;
+    WHERE `userId` = ?
+', 'i', $user_id);
     }
 
-    private static function markVerified(int $user_id): void
+    private static function markVerified(int $user_id, string $expected_email): bool
     {
         $verified = 1;
 
-        DB::run('
+        $updated = DB::run('
 UPDATE `Users`
     SET `verified` = ?
-    WHERE `userId` = ?
-', 'ii', $verified, $user_id);
+    WHERE `userId` = ? AND `email` = ?
+', 'iis', $verified, $user_id, $expected_email);
+
+        return mysqli_stmt_affected_rows($updated) === 1;
     }
 
-    private static function create(int $user_id): string
+    private static function create(int $user_id, ?string $expected_email = null): ?string
     {
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
@@ -129,11 +158,19 @@ DELETE
     WHERE `expiresAt` <= NOW()
 ');
 
-        DB::run('
+        return DB::transaction(static function () use ($user_id, $expected_email, $token, $token_hash): ?string {
+            $user = User::loadForUpdate($user_id);
+
+            if ($user === null || ($expected_email !== null && strcasecmp((string) $user -> email, $expected_email) !== 0)) {
+                return null;
+            }
+
+            DB::run('
 INSERT INTO `EmailVerifications` (`userId`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, NOW() + INTERVAL ? HOUR)
 ', 'isi', $user_id, $token_hash, self::EXPIRY_HOURS);
 
-        return $token;
+            return $token;
+        });
     }
 }

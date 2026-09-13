@@ -89,6 +89,14 @@ if (!$confirmed) {
 
 // ---------- Database ----------
 
+// Validate both compressed inputs before replacing any tables. This catches
+// a corrupt media archive while the database still matches the live uploads.
+exec(sprintf('tar -tzf %s >/dev/null 2>&1', escapeshellarg($uploads_path)), $archive_output, $archive_exit);
+if ($archive_exit !== 0) {
+    fwrite(STDERR, "The uploads archive is unreadable; nothing has been restored.\n");
+    exit(1);
+}
+
 // The app account is least-privilege and cannot drop a table, which is the
 // first thing the dump does.
 [$admin_user, $admin_password, $over_socket] = restore_admin_credentials();
@@ -173,8 +181,12 @@ if ($tar_exit !== 0) {
     fwrite(STDERR, "Extracting the uploads archive failed:\n" . implode("\n", $tar_output) . "\n");
 
     if ($moved_aside !== null) {
-        rename($moved_aside, $uploads_dir);
-        fwrite(STDERR, "The previous uploads tree has been put back.\n");
+        if (@rename($moved_aside, $uploads_dir)) {
+            fwrite(STDERR, "The previous uploads tree has been put back.\n");
+        } else {
+            fwrite(STDERR, 'Could not put the previous uploads tree back. It remains at ' . $moved_aside
+                . "; the database has already been restored and the uploads directory may be incomplete.\n");
+        }
     }
 
     exit(1);

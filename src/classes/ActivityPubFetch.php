@@ -26,9 +26,9 @@ class ActivityPubFetch
 
     /**
      * @param string[] $accept
-     * @return array{body: string, headers: array<string, string>}|null
+     * @return array{body: string, contentType: ?string, url: string, urls: string[]}|null
      */
-    public static function getJSON(string $url, array $accept = ['Accept: application/activity+json'], int $max_bytes = self::MAX_RESPONSE_BYTES): ?array
+    public static function getJSON(string $url, array $accept = [ActivityStreams::ACCEPT], int $max_bytes = self::MAX_RESPONSE_BYTES): ?array
     {
         // Signed per hop rather than once for the URL asked about. A redirect
         // is a different request and the signature covers the target, so one
@@ -49,13 +49,22 @@ class ActivityPubFetch
     {
         $response = self::getJSON($object_uri);
 
-        if ($response === null) {
+        if ($response === null || !ActivityStreams::isMediaType($response['contentType'] ?? null)) {
             return null;
         }
 
         $object = json_decode($response['body'], true);
 
-        return is_array($object) ? $object : null;
+        // The document may retain the original id across a redirect, or use
+        // an id at one of the validated hops. A claimed id anywhere else is
+        // not authenticated by this fetch, even on the same host.
+        if (!is_array($object) || array_is_list($object)
+            || !is_string($object['id'] ?? null)
+            || !in_array($object['id'], $response['urls'] ?? [$object_uri], true)) {
+            return null;
+        }
+
+        return $object;
     }
 
     /**

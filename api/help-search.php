@@ -14,7 +14,13 @@ $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
 // Public, like the rest of the Help section - no login required.
-$query = trim((string) ($payload['q'] ?? ''));
+$query = $payload['q'] ?? '';
+
+if (!is_string($query)) {
+    JSONResponse::localizedError('malformedRequest', 422) -> send();
+}
+
+$query = trim($query);
 
 // Empty query is the browse view: every article, in category order, which
 // HelpSearch.js groups under category headings. A real query returns ranked matches.

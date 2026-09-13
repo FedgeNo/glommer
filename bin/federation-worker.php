@@ -71,6 +71,31 @@ $authors = [];
 $swept_at = 0;
 
 while ($running) {
+    // Keep the verified sender and audience when reading a linked Create or
+    // completing its thread. Claim just before each read so a slow thread does
+    // not consume the leases of the activities waiting behind it.
+    for ($i = 0; $running && $i < InboxFetch::BATCH_SIZE; $i++) {
+        $fetch = InboxFetch::claim();
+
+        if ($fetch === null) {
+            break;
+        }
+
+        try {
+            $activity = json_decode((string) $fetch -> activity, true, 512, JSON_THROW_ON_ERROR);
+            $finished = ActivityPubInbox::fetchCreate($activity, (string) $fetch -> actorURI);
+        } catch (\Throwable $exception) {
+            error_log('Deferred ActivityPub delivery ' . $fetch -> inboxFetchId . ' failed: ' . $exception -> getMessage());
+            $finished = false;
+        }
+
+        if ($finished) {
+            InboxFetch::done((int) $fetch -> inboxFetchId);
+        } else {
+            InboxFetch::failed((int) $fetch -> inboxFetchId, (int) $fetch -> attempts);
+        }
+    }
+
     // Posts a relay named, read here rather than in the inbox request that
     // heard about them: fetching one means waiting on somebody else's server,
     // and doing that under the inbox would hold PHP workers until the pool ran

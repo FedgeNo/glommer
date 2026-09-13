@@ -273,6 +273,27 @@ DELETE
     }
 
     /**
+     * Resolve a report with its database-only decision and audit record.
+     * The callback must not start a nested transaction or perform external I/O.
+     */
+    public static function resolve(int $report_id, string $action, callable $decide): bool
+    {
+        return DB::transaction(static function () use ($report_id, $action, $decide): bool {
+            $report = DB::row('SELECT `type`, `targetId` FROM `Reports` WHERE `reportId` = ? FOR UPDATE',
+                'ReportData', 'i', $report_id);
+            if ($report === null) {
+                return false;
+            }
+
+            $decide($report);
+            self::delete($report_id);
+            ModerationAction::log($action, null, $report -> type, (int) $report -> targetId, $report_id);
+
+            return true;
+        });
+    }
+
+    /**
      * The userId a report target resolves to, or null if $target_type is
      * unrecognized or $target_id doesn't actually exist - api/report.php
      * relies on that null to reject reports filed against nonexistent ids.

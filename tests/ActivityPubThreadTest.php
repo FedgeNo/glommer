@@ -85,6 +85,20 @@ SELECT `postId`, `parentId`
 ', 'Post', 's', $object_uri);
     }
 
+    public function testABlockedRemoteAuthorCannotCreateAReply(): void
+    {
+        foreach ([false, true] as $reverse) {
+            $author = self::localUser();
+            $remote = self::shadowUser('https://remote.test/actors/' . bin2hex(random_bytes(6)));
+            $parent = self::post((int) $author -> userId);
+            Block::create((int) ($reverse ? $remote : $author) -> userId, (int) ($reverse ? $author : $remote) -> userId);
+            $uri = self::deliverReply($remote -> remoteActorURI, ServerURL::absolute('/users/' . $author -> slug . '/' . $parent));
+            $this -> assertNull(self::stored($uri));
+            $post = DB::row('SELECT `replyCount` FROM `Posts` WHERE `postId` = ?', 'Post', 'i', $parent);
+            $this -> assertSame(0, $post -> replyCount);
+        }
+    }
+
     /**
      * Somebody out on the Fediverse answering a post of ours. Their reply names
      * our permalink, which is not a remoteObjectURI and never will be.
@@ -123,10 +137,10 @@ SELECT `postId`, `parentId`
         );
 
         $queued = DB::row('
-SELECT `relayFetchId`
-    FROM `RelayFetches`
+SELECT `inboxFetchId`
+    FROM `InboxFetches`
     WHERE `objectURI` = ?
-', 'RelayFetch', 's', $reply_uri);
+', 'InboxFetch', 's', $reply_uri);
 
         $this -> assertNull($queued, 'a parent already in hand needs no round trip to read');
     }
@@ -160,12 +174,13 @@ SELECT `relayFetchId`
         $this -> assertNull(self::stored($reply_uri), 'nothing is filed until its parent is');
 
         $queued = DB::row('
-SELECT `relayFetchId`
-    FROM `RelayFetches`
+SELECT `inboxFetchId`
+    FROM `InboxFetches`
     WHERE `objectURI` = ?
-', 'RelayFetch', 's', $reply_uri);
+', 'InboxFetch', 's', $reply_uri);
 
         $this -> assertNotNull($queued);
+        InboxFetch::done((int) $queued -> inboxFetchId);
     }
 
     /**

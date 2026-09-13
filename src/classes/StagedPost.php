@@ -27,6 +27,7 @@ class StagedPost
     public ?float $latitude = null;
     public ?float $longitude = null;
     public int $sensitive = 0;
+    public ?string $contentWarning = null;
     public ?string $publishAt = null;
     public ?string $createdAt = null;
 
@@ -59,12 +60,13 @@ SELECT *
         ?float $latitude,
         ?float $longitude,
         int $sensitive,
-        ?string $publish_at
+        ?string $publish_at,
+        ?string $content_warning = null
     ): int {
         DB::run('
-INSERT INTO `StagedPosts` (`userId`, `title`, `description`, `descriptionDelta`, `linkURL`, `latitude`, `longitude`, `sensitive`, `publishAt`)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-', 'issssddis', $user_id, $title, $description, $description_delta, $link_url, $latitude, $longitude, $sensitive, $publish_at);
+INSERT INTO `StagedPosts` (`userId`, `title`, `description`, `descriptionDelta`, `linkURL`, `latitude`, `longitude`, `sensitive`, `publishAt`, `contentWarning`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+', 'issssddiss', $user_id, $title, $description, $description_delta, $link_url, $latitude, $longitude, $sensitive, $publish_at, $content_warning);
 
         return (int) mysqli_insert_id(DB::connection());
     }
@@ -83,13 +85,15 @@ INSERT INTO `StagedPosts` (`userId`, `title`, `description`, `descriptionDelta`,
         ?string $link_url,
         ?float $latitude,
         ?float $longitude,
-        ?string $publish_at
+        ?string $publish_at,
+        int $sensitive = 0,
+        ?string $content_warning = null
     ): void {
         DB::run('
 UPDATE `StagedPosts`
-    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `latitude` = ?, `longitude` = ?, `publishAt` = ?
+    SET `title` = ?, `description` = ?, `descriptionDelta` = ?, `linkURL` = ?, `latitude` = ?, `longitude` = ?, `publishAt` = ?, `sensitive` = ?, `contentWarning` = ?
     WHERE `stagedPostId` = ? AND `userId` = ?
-', 'ssssddsii', $title, $description, $description_delta, $link_url, $latitude, $longitude, $publish_at, $staged_post_id, $user_id);
+', 'ssssddsisii', $title, $description, $description_delta, $link_url, $latitude, $longitude, $publish_at, $sensitive, $content_warning, $staged_post_id, $user_id);
     }
 
     /** Deletes without publishing. Only ever the owner's to call. */
@@ -123,16 +127,44 @@ SELECT *
     }
 
     /**
-     * Becomes a real post, now. The row is deleted FIRST - a crash after that
-     * loses one staged post, where deleting after could publish it twice
-     * (once per worker pass), and a duplicate publish is the worse failure:
-     * it federates.
+     * Claim the current draft and assemble its post and delivery queue in one
+     * transaction. A failed publish leaves the draft available to try again.
      *
      * $notify_author only when the clock published it - someone was elsewhere
      * and should hear. A publish-now click needs no notification that the
      * button they just pressed worked.
      */
     public function publish(bool $notify_author = false): ?int
+    {
+        $result = DB::transaction(function () use ($notify_author): ?array {
+            $current = DB::row('
+SELECT * FROM `StagedPosts`
+    WHERE `stagedPostId` = ?
+        AND (? = 0 OR (`publishAt` IS NOT NULL AND `publishAt` <= NOW()))
+    FOR UPDATE
+', self::class, 'ii', $this -> stagedPostId, (int) $notify_author);
+
+            return $current ?-> publishLocked();
+        });
+
+        if ($result === null) {
+            return null;
+        }
+
+        [$post_id, $user_id, $mentions, $excessive_mentions] = $result;
+        Mention::notify($mentions, $user_id, $post_id);
+
+        Mention::reportExcessive($post_id, $excessive_mentions);
+
+        if ($notify_author) {
+            Notification::create($user_id, $user_id, 'scheduledPostLive', $post_id, true);
+        }
+
+        return $post_id;
+    }
+
+    /** Called only with this draft's row locked inside publish(). */
+    private function publishLocked(): ?array
     {
         $author = User::load((int) $this -> userId);
 
@@ -159,9 +191,9 @@ DELETE
             : [];
 
         DB::run('
-INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `detectedLanguage`)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-', 'issssis', $this -> userId, $this -> title, $this -> description, $this -> descriptionDelta, $this -> linkURL, $this -> sensitive, LanguageDetector::of((string) $this -> description));
+INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `linkURL`, `sensitive`, `contentWarning`, `detectedLanguage`)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+', 'issssiss', $this -> userId, $this -> title, $this -> description, $this -> descriptionDelta, $this -> linkURL, $this -> sensitive, $this -> contentWarning, LanguageDetector::of((string) $this -> description));
         $post_id = (int) mysqli_insert_id(DB::connection());
 
         if ($this -> latitude !== null && $this -> longitude !== null) {
@@ -169,7 +201,7 @@ INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `link
         }
 
         Hashtag::indexPost($post_id, $description_ops);
-        Mention::notify(Mention::indexPost($post_id, $description_ops), (int) $this -> userId, $post_id);
+        $mentions = Mention::indexPost($post_id, $description_ops, false);
         Timeline::fanOutPost((int) $this -> userId, $post_id);
 
         $post = new Post();
@@ -184,15 +216,12 @@ INSERT INTO `Posts` (`userId`, `title`, `description`, `descriptionDelta`, `link
         $post -> longitude = $this -> longitude;
         $post -> placeLabel = $this -> latitude === null ? null : (PostLocation::forPosts([$post_id])[$post_id]['placeLabel'] ?? null);
         $post -> sensitive = $this -> sensitive;
+        $post -> contentWarning = $this -> contentWarning;
         $post -> remoteObjectURI = null;
         $post -> author = $author;
 
         FediversePublisher::published($post, $author);
 
-        if ($notify_author) {
-            Notification::create((int) $this -> userId, (int) $this -> userId, 'scheduledPostLive', $post_id, true);
-        }
-
-        return $post_id;
+        return [$post_id, (int) $this -> userId, $mentions, count(Delta::mentions($description_ops))];
     }
 }

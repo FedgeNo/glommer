@@ -43,12 +43,14 @@ if ($target -> banned) {
 
 $banned = 1;
 
-DB::run('
+DB::transaction(static function () use ($banned, $reason, $user_id): void {
+    DB::run('
 UPDATE `Users`
     SET `banned` = ?, `banReason` = ?
     WHERE `userId` = ?
 ', 'isi', $banned, $reason, $user_id);
 
-ModerationAction::log('ban', $user_id);
+    ModerationAction::log('ban', $user_id);
+});
 
 JSONResponse::success(['banned' => true]) -> send();

@@ -376,7 +376,7 @@ SELECT `TABLE_NAME`
         for ($i = 0; $i < $count; $i++) {
             $statement = $statements[$i];
 
-            if (preg_match('/^ALTER TABLE `(\w+)` MODIFY COLUMN `(\w+)` (\S+(?: unsigned)?)(?: NOT NULL)?(?: DEFAULT (\S+))?/', $statement, $column_match)) {
+            if (preg_match('/^ALTER TABLE `(\w+)` MODIFY COLUMN `(\w+)` (\S+(?: unsigned)?)(?: NOT NULL)?(?: DEFAULT (\S+))?/', rtrim($statement, "; \t\r\n"), $column_match)) {
                 [, $table, $column, $target_type] = $column_match;
                 // Only present for a statement that names one (e.g. a bare
                 // type change like the int(11)->unsigned migrations above
@@ -394,7 +394,14 @@ SELECT `TABLE_NAME`
 
                 if (!$needs_migration && $target_default !== null) {
                     $current_default = self::columnDefault($table, $column);
-                    $needs_migration = $current_default === null || strcasecmp(trim($current_default, '\''), trim($target_default, '\'')) !== 0;
+                    // MySQL returns PHP null for SQL NULL; MariaDB can return
+                    // the SQL token instead. Neither is a missing column (the
+                    // type check above already established that it exists).
+                    $target_is_null = strcasecmp($target_default, 'NULL') === 0;
+                    $current_is_null = $current_default === null || strcasecmp($current_default, 'NULL') === 0;
+                    $needs_migration = $target_is_null
+                        ? !$current_is_null
+                        : $current_is_null || trim($current_default, '\'') !== trim($target_default, '\'');
                 }
 
                 if ($needs_migration) {

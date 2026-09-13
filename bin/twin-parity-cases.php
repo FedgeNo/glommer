@@ -29,7 +29,7 @@ spl_autoload_register(static function (string $class): void {
 require __DIR__ . '/../src/functions.php';
 
 Strings::useLocale('en');
-$_SESSION = [];
+$_SESSION = ['CSRFToken' => 'twin-parity-csrf'];
 
 if (isset($argv[2]) && ctype_digit($argv[2])) {
     $_SESSION['userId'] = (int) $argv[2];
@@ -243,6 +243,35 @@ class TwinParityPoll extends Poll
  * }>
  */
 $definitions = [
+    'FormForm POST with upload attributes' => [
+        'class' => FormForm::class,
+        'build' => static fn (): HTMLObject => parityPrimitive(
+            new FormForm(['method' => 'post', 'action' => '/upload', 'enctype' => 'multipart/form-data']),
+            ['data-kind' => 'form'],
+            ['Form content']
+        ),
+        'payload' => static fn (): array => [
+            'properties' => ['method' => 'post', 'action' => '/upload', 'enctype' => 'multipart/form-data'],
+            'className' => 'ParityState',
+            'attributes' => ['data-kind' => 'form'],
+            'content' => ['Form content'],
+        ],
+    ],
+    'FormForm defaults' => [
+        'class' => FormForm::class,
+        'build' => static fn (): HTMLObject => new FormForm(),
+        'payload' => static fn (): array => ['properties' => []],
+    ],
+    'FormForm GET without token' => [
+        'class' => FormForm::class,
+        'build' => static fn (): HTMLObject => new FormForm(['method' => 'GET']),
+        'payload' => static fn (): array => ['properties' => ['method' => 'GET']],
+    ],
+    'FormForm omitted method' => [
+        'class' => FormForm::class,
+        'build' => static fn (): HTMLObject => new FormForm(['method' => null]),
+        'payload' => static fn (): array => ['properties' => ['method' => null]],
+    ],
     'Anchor' => [
         'class' => Anchor::class,
         'build' => static fn (): HTMLObject => parityPrimitive(
@@ -430,6 +459,17 @@ $definitions = [
         'build' => static fn (): HTMLObject => parityPost(),
         'payload' => static fn (Post $post): array => $post -> toPayload(false, false),
     ],
+    'PostWithLocation' => [
+        'class' => Post::class,
+        'build' => static function (): HTMLObject {
+            $post = parityPost();
+            $post -> latitude = 49.1234567;
+            $post -> longitude = -123.7654321;
+
+            return $post;
+        },
+        'payload' => static fn (Post $post): array => $post -> toPayload(false, false),
+    ],
     'PostWithEngagement' => [
         'class' => Post::class,
         'build' => static function (): HTMLObject {
@@ -437,6 +477,31 @@ $definitions = [
             $post -> replyCount = 12;
             $post -> likeCount = 34;
             $post -> repostCount = 56;
+
+            return $post;
+        },
+        'payload' => static fn (Post $post): array => $post -> toPayload(false, false),
+    ],
+    'PostWithWarnedQuote' => [
+        'class' => Post::class,
+        'build' => static function (): HTMLObject {
+            $post = parityPost();
+            $post -> quotedPost = new QuotedPost([
+                'postId' => 88, 'slug' => 'writer', 'authorTitle' => 'Writer',
+                'title' => 'The ending', 'description' => 'Hidden spoiler', 'contentWarning' => 'Spoilers',
+            ]);
+
+            return $post;
+        },
+        'payload' => static fn (Post $post): array => $post -> toPayload(false, false),
+    ],
+    'PostWithUnwarnedQuote' => [
+        'class' => Post::class,
+        'build' => static function (): HTMLObject {
+            $post = parityPost();
+            $post -> quotedPost = new QuotedPost([
+                'postId' => 89, 'slug' => 'writer', 'description' => 'Ordinary quotation',
+            ]);
 
             return $post;
         },
@@ -464,6 +529,16 @@ $definitions = [
             OtherUser::payloadFor($user, null),
             ['friendshipId' => $user -> friendshipId]
         ),
+    ],
+    'ReportWithoutReporter' => [
+        'class' => Report::class,
+        'build' => static function (): HTMLObject {
+            $report = parityReport();
+            $report -> reporterUsername = null;
+
+            return $report;
+        },
+        'payload' => static fn (Report $report): array => $report -> toPayload(),
     ],
     'Report' => [
         'class' => Report::class,

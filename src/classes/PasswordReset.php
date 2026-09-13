@@ -34,7 +34,11 @@ class PasswordReset
 
     public static function sendFor(User $user): void
     {
-        $token = self::create((int) $user -> userId);
+        $token = self::create((int) $user -> userId, (string) $user -> email);
+
+        if ($token === null) {
+            return;
+        }
 
         $reset_url = ServerURL::absolute('/reset-password?token=' . $token);
 
@@ -91,11 +95,17 @@ SELECT `userId`
     public static function consume(string $token, string $new_password): bool
     {
         $hash = password_hash($new_password, PASSWORD_DEFAULT);
+        $user_id = self::verify($token);
 
-        return DB::transaction(static function () use ($token, $hash): bool {
-            $user_id = self::claim($token);
+        if ($user_id === null) {
+            return false;
+        }
 
-            if ($user_id === null) {
+        return DB::transaction(static function () use ($token, $hash, $user_id): bool {
+            // Account changes, issuance and consumption use the same row lock.
+            // Claim again after waiting: a competing reset may have spent all
+            // of this account's links while this request waited.
+            if (User::loadForUpdate($user_id) === null || self::claim($token) !== $user_id) {
                 return false;
             }
 
@@ -109,6 +119,7 @@ UPDATE `Users`
             // whoever prompted the reset may not be the only one logged in.
             User::bumpSessionVersion($user_id);
             RememberToken::purgeForUser($user_id);
+            self::purgeForUser($user_id);
 
             return true;
         });
@@ -134,6 +145,7 @@ UPDATE `Users`
 SELECT `userId`
     FROM `PasswordResets`
     WHERE `tokenHash` = ? AND `expiresAt` > NOW()
+    FOR UPDATE
 ', 'PasswordResetData', 's', $token_hash);
 
         if ($reset === null) {
@@ -155,7 +167,12 @@ DELETE
         return mysqli_stmt_affected_rows($deleted) === 1 ? (int) $reset -> userId : null;
     }
 
-    private static function create(int $user_id): string
+    public static function purgeForUser(int $user_id): void
+    {
+        DB::run('DELETE FROM `PasswordResets` WHERE `userId` = ?', 'i', $user_id);
+    }
+
+    private static function create(int $user_id, ?string $expected_email = null): ?string
     {
         $token = bin2hex(random_bytes(32));
         $token_hash = hash('sha256', $token);
@@ -166,11 +183,19 @@ DELETE
     WHERE `expiresAt` <= NOW()
 ');
 
-        DB::run('
+        return DB::transaction(static function () use ($user_id, $expected_email, $token, $token_hash): ?string {
+            $user = User::loadForUpdate($user_id);
+
+            if ($user === null || ($expected_email !== null && strcasecmp((string) $user -> email, $expected_email) !== 0)) {
+                return null;
+            }
+
+            DB::run('
 INSERT INTO `PasswordResets` (`userId`, `tokenHash`, `expiresAt`)
     VALUES (?, ?, NOW() + INTERVAL ? HOUR)
 ', 'isi', $user_id, $token_hash, self::EXPIRY_HOURS);
 
-        return $token;
+            return $token;
+        });
     }
 }

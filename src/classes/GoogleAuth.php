@@ -197,20 +197,42 @@ SELECT *
                 $unusable_hash = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
                 $verified = 1;
 
-                DB::run('
+                [$resolved, $replaced] = DB::transaction(static function () use ($existing_id, $unusable_hash, $verified, $email): array {
+                    $current = User::loadForUpdate($existing_id);
+
+                    if ($current === null || strcasecmp((string) $current -> email, $email) !== 0) {
+                        return [null, false];
+                    }
+
+                    if ($current -> verified) {
+                        return [$current, false];
+                    }
+
+                    DB::run('
 UPDATE `Users`
     SET `passwordHash` = ?, `verified` = ?
     WHERE `userId` = ?
 ', 'sii', $unusable_hash, $verified, $existing_id);
 
-                $existing -> setPasswordHash($unusable_hash);
-                $existing -> verified = $verified;
-                $existing -> sessionVersion = User::bumpSessionVersion($existing_id);
-                RememberToken::purgeForUser($existing_id);
+                    $version = User::bumpSessionVersion($existing_id);
+                    RememberToken::purgeForUser($existing_id);
+                    PasswordReset::purgeForUser($existing_id);
+                    EmailVerification::purgeForUser($existing_id);
+
+                    $current -> setPasswordHash($unusable_hash);
+                    $current -> verified = $verified;
+                    $current -> sessionVersion = $version;
+
+                    return [$current, true];
+                });
 
                 // Tell them their old password is gone (the account is its own
                 // actor - a system notification with no other user involved).
-                Notification::create($existing_id, $existing_id, 'passwordRemovedGoogle', null, true);
+                if ($replaced) {
+                    Notification::create($existing_id, $existing_id, 'passwordRemovedGoogle', null, true);
+                }
+
+                return $resolved;
             }
 
             return $existing;
@@ -279,13 +301,15 @@ SELECT 1
 ', 's', $candidate);
             mysqli_stmt_store_result($stmt);
 
-            if (mysqli_stmt_num_rows($stmt) === 0) {
+            if (mysqli_stmt_num_rows($stmt) === 0
+                && !RetiredUsername::isRetired($candidate)
+                && !ActivityPubActor::isInstanceUsername($candidate)) {
                 return $candidate;
             }
 
             $candidate = substr($base, 0, User::MAX_USERNAME_LENGTH - 6) . random_int(1000, 999999);
         }
 
-        return substr($base, 0, User::MAX_USERNAME_LENGTH - 12) . bin2hex(random_bytes(6));
+        throw new \RuntimeException('Could not allocate an available username.');
     }
 }

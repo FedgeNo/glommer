@@ -44,7 +44,7 @@ class Mention
 
         if (count($usernames) > self::MAX_MENTIONS) {
             if ($auto_report) {
-                ReportManager::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . count($usernames) . ')');
+                self::reportExcessive($post_id, count($usernames));
             }
 
             return [];
@@ -73,7 +73,7 @@ class Mention
 
         if (count($usernames) > self::MAX_MENTIONS) {
             if ($auto_report) {
-                ReportManager::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . count($usernames) . ')');
+                self::reportExcessive($post_id, count($usernames));
             }
 
             self::clear($post_id);
@@ -88,6 +88,14 @@ class Mention
         self::attach($post_id, $user_ids);
 
         return array_values(array_diff($user_ids, $existing_user_ids));
+    }
+
+    /** A transactional publisher defers this moderation notification until commit. */
+    public static function reportExcessive(int $post_id, int $count): void
+    {
+        if ($count > self::MAX_MENTIONS) {
+            ReportManager::create(self::SYSTEM_REPORTER_ID, 'post', $post_id, 'Automatic: excessive mentions (' . $count . ')');
+        }
     }
 
     /**

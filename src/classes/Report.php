@@ -55,7 +55,11 @@ class Report extends Article
             [$type_label, (string) $this -> targetId],
             (string) ($summary_words['before'] ?? '')
         );
-        $summary -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
+        if ($this -> reporterUsername !== null) {
+            $summary -> addContent(new Anchor(ServerURL::absolute('/users/' . $this -> reporterUsername . '/'), $this -> reporterUsername));
+        } else {
+            $summary -> contents[] = (string) (Strings::for('BlockedServerCard')['deletedAccount'] ?? '');
+        }
         $summary -> contents[] = (string) ($summary_words['after'] ?? '');
         $details -> addContent($summary);
 
@@ -83,7 +87,7 @@ class Report extends Article
         // needs no such guard.)
         $actions = new ReportActions();
 
-        if ($this -> reporterId !== 1) {
+        if ($this -> reporterId !== 1 && $this -> reporterUsername !== null) {
             $actions -> addContent(new UserBanButton($this -> reporterId, (string) ($words['banReporterLabel'] ?? '')));
         }
 

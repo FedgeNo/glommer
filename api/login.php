@@ -127,9 +127,7 @@ if (TwoFactor::isEnabled($user)) {
         Notification::warnAdminMailerFailed((int) $user -> userId);
     }
 
-    $_SESSION['pending2FAUserId'] = (int) $user -> userId;
-    $_SESSION['pending2FARememberMe'] = $remember_me;
-    $_SESSION['pending2FAEmailFailed'] = $email_failed;
+    Auth::beginTwoFactor($user, $remember_me, $email_failed);
 
     JSONResponse::success(['twoFactorRequired' => true]) -> send();
 }

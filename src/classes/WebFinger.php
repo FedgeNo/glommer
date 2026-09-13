@@ -23,7 +23,7 @@ class WebFinger
 
         $response = SafeHTTPFetcher::getJSON($url, ['Accept: application/jrd+json, application/json'], self::MAX_RESPONSE_BYTES);
 
-        if ($response === null) {
+        if ($response === null || !in_array(strtolower(trim(explode(';', (string) ($response['contentType'] ?? ''), 2)[0])), ['application/jrd+json', 'application/json'], true)) {
             return null;
         }
 
@@ -42,7 +42,7 @@ class WebFinger
             $type = $link['type'] ?? null;
             $href = $link['href'] ?? null;
 
-            if ($rel !== 'self' || !in_array($type, ['application/activity+json', 'application/ld+json'], true) || !is_string($href) || $href === '') {
+            if ($rel !== 'self' || !ActivityStreams::isMediaType($type) || !is_string($href) || $href === '') {
                 continue;
             }
 

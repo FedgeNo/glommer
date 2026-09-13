@@ -17,12 +17,30 @@ ActivityPubResponse::requireMethod(['GET']);
 // itself rather than as any member. Its handle comes from the configured site
 // title, so nothing here is named after one particular deployment.
 $host = ActivityPubActor::canonicalHost();
-$resource = is_string($_GET['resource'] ?? null) ? $_GET['resource'] : '';
+$resource = $_GET['resource'] ?? null;
+
+// RFC 7033 section 4.2 distinguishes a missing or malformed resource (400)
+// from a valid URI this server knows nothing about (404). Check the absolute
+// URI syntax before looking up an account; PHP has already decoded the query.
+if (
+    !is_string($resource)
+    || !preg_match('/\A[a-z][a-z0-9+.-]*:(?:[a-z0-9:\/?#\[\]@!$&\'()*+,;=._~-]|%[0-9a-f]{2})*\z/i', $resource)
+) {
+    ActivityPubResponse::badRequest();
+}
+
+if (stripos($resource, 'acct:') !== 0) {
+    ActivityPubResponse::notFound();
+}
+
+if (!preg_match('/\Aacct:([^@\/?#:]+)@([^@\/?#]+)\z/i', $resource, $matches)) {
+    ActivityPubResponse::badRequest();
+}
 
 // The host half is compared case-insensitively: it is a hostname, so a caller
 // that normalises it differently is asking for the same account, not a missing
 // one.
-if (!preg_match('/\Aacct:([^@]+)@(.+)\z/i', $resource, $matches) || strcasecmp($matches[2], $host) !== 0) {
+if (strcasecmp($matches[2], $host) !== 0) {
     ActivityPubResponse::notFound();
 }
 

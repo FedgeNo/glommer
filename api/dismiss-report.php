@@ -22,20 +22,13 @@ if ($report_id === 0) {
     JSONResponse::localizedError('invalidReport', 422) -> send();
 }
 
-// Load the report before deleting it so the audit log records what was
-// dismissed, not just an id that no longer resolves to anything.
-$report = ReportManager::find($report_id);
+// The flag, queue transition and audit record either all commit or all retry.
+$dismissed = ReportManager::resolve($report_id, 'dismissReport', static function (ReportData $report): void {
+    ReportManager::markContentDismissed((string) $report -> type, (int) $report -> targetId);
+});
 
-if ($report === null) {
+if (!$dismissed) {
     JSONResponse::localizedError('reportNotFound', 404) -> send();
 }
-
-// Flag the content so it can't just be reported again the moment the report
-// leaves the queue (posts/messages only - a user has no such flag).
-ReportManager::markContentDismissed((string) $report -> type, (int) $report -> targetId);
-
-ReportManager::delete($report_id);
-
-ModerationAction::log('dismissReport', null, $report -> type, (int) $report -> targetId, $report_id);
 
 JSONResponse::success(['dismissed' => true]) -> send();

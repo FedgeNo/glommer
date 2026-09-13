@@ -33,6 +33,35 @@ class ActivityPubReplay
      */
     public static function seenBefore(string $signature_header): bool
     {
+        $hash = self::hash($signature_header);
+
+        try {
+            DB::run('
+INSERT INTO `ActivityPubReplays` (`signatureHash`)
+    VALUES (?)
+', 's', $hash);
+        } catch (\mysqli_sql_exception $exception) {
+            // 1062 = the primary key rejected a signature already recorded.
+            if ($exception -> getCode() === 1062) {
+                return true;
+            }
+
+            throw $exception;
+        }
+
+        self::sweep();
+
+        return false;
+    }
+
+    /** A failed delivery must be retryable, including a full deferred queue. */
+    public static function forget(string $signature_header): void
+    {
+        DB::run('DELETE FROM `ActivityPubReplays` WHERE `signatureHash` = ?', 's', self::hash($signature_header));
+    }
+
+    private static function hash(string $signature_header): string
+    {
         $signature = HTTPSignature::parseSignatureHeader($signature_header);
 
         // Verification has already parsed and accepted this header before the
@@ -50,26 +79,7 @@ class ActivityPubReplay
                 'signature' => $signature['signature'],
             ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 
-        $hash = hash('sha256', $identity);
-
-        try {
-            DB::run('
-INSERT INTO `ActivityPubReplays` (`signatureHash`)
-    VALUES (?)
-', 's', $hash);
-        } catch (\mysqli_sql_exception $exception) {
-            // 1062 = the primary key rejected a signature already recorded,
-            // which is exactly the thing being detected.
-            if ($exception -> getCode() === 1062) {
-                return true;
-            }
-
-            throw $exception;
-        }
-
-        self::sweep();
-
-        return false;
+        return hash('sha256', $identity);
     }
 
     /**

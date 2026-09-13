@@ -9,8 +9,6 @@ declare(strict_types=1);
  */
 class RemoteActor
 {
-    private const MAX_RESPONSE_BYTES = 262144;
-
     /** Users.remoteActorURI is varchar(255) - a longer id can't be stored, so it's refused rather than silently cut. */
     private const MAX_ACTOR_URI_LENGTH = 255;
 
@@ -46,13 +44,7 @@ class RemoteActor
         // Signed: an instance in secure mode will not hand over an actor to an
         // unsigned request at all, and the failure looks exactly like the
         // account not existing.
-        $response = ActivityPubFetch::getJSON($actor_uri, ['Accept: application/activity+json'], self::MAX_RESPONSE_BYTES);
-
-        if ($response === null) {
-            return null;
-        }
-
-        $data = json_decode($response['body'], true);
+        $data = ActivityPubFetch::object($actor_uri);
 
         if (
             !is_array($data)
@@ -63,7 +55,7 @@ class RemoteActor
             return null;
         }
 
-        $id = is_string($data['id'] ?? null) && $data['id'] !== '' ? $data['id'] : $actor_uri;
+        $id = $data['id'];
 
         // The document's self-declared id decides which account this key gets
         // stored against, so a server is only allowed to speak for its own
@@ -119,7 +111,7 @@ class RemoteActor
             'iconURL' => self::iconURL($icon_url),
             'summary' => self::summaryText($data['summary'] ?? null),
             'fields' => RemoteActorFields::fromAttachments($data['attachment'] ?? null),
-            'actorType' => is_string($data['type'] ?? null) ? mb_substr($data['type'], 0, 20) : null,
+            'actorType' => ActivityStreams::type($data['type'] ?? null, ['Person', 'Service', 'Application', 'Group', 'Organization']),
         ];
     }
 

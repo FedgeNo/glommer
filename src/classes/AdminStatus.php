@@ -30,7 +30,7 @@ class AdminStatus
             'delivered' => Statistic::since(Statistic::DELIVERED, self::DAYS),
             'undeliverable' => Statistic::since(Statistic::UNDELIVERABLE, self::DAYS),
         ]);
-        $waiting = $read('pendingReads', static fn (): int => RelayFetch::pendingCount());
+        $waiting = $read('pendingReads', static fn (): int => RelayFetch::pendingCount() + InboxFetch::pendingCount());
         $uploads = $read('uploads', static fn (): array => UploadBatch::queueDepth());
         $trending = $read('trending', static fn (): string => EntityRanker::lastRun());
         $reports = $read('reports', static fn (): int => (int) DB::row('SELECT COUNT(*) AS `total` FROM `Reports`', 'PostCountData') -> total);

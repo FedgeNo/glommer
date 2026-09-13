@@ -130,7 +130,20 @@ SELECT `userId`, `previousEmail`
         // the account reads as its owner's again while whoever changed it is
         // still signed in, and the revert link that would have fixed that has
         // been spent.
-        return DB::transaction(static fn (): bool => self::restore($user_id, (string) $revert -> previousEmail));
+        return DB::transaction(static function () use ($user_id, $token_hash): bool {
+            if (User::loadForUpdate($user_id) === null) {
+                return false;
+            }
+
+            $current = DB::row('
+SELECT `previousEmail`
+    FROM `EmailChangeReverts`
+    WHERE `userId` = ? AND `tokenHash` = ? AND `expiresAt` > NOW()
+    FOR UPDATE
+', 'EmailChangeRevertData', 'is', $user_id, $token_hash);
+
+            return $current !== null && self::restore($user_id, (string) $current -> previousEmail);
+        });
     }
 
     private static function restore(int $user_id, string $previous_email): bool
@@ -164,6 +177,7 @@ UPDATE `Users`
         // suspicious enough to warrant it.
         User::bumpSessionVersion($user_id);
         RememberToken::purgeForUser($user_id);
+        PasswordReset::purgeForUser($user_id);
 
         // Any pending verification for the abandoned new address is moot -
         // and any other pending revert token for this user (e.g. from a rapid

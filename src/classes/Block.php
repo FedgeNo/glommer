@@ -9,6 +9,14 @@ class Block
     public ?int $blockedId = null;
     public ?string $createdAt = null;
 
+    /** The same author/actor block check used by the local interaction APIs. */
+    public static function preventsInteractionWithPost(int $user_id, int $post_id): bool
+    {
+        $post = DB::row('SELECT `userId` FROM `Posts` WHERE `postId` = ?', 'Post', 'i', $post_id);
+
+        return $post === null || self::exists($user_id, (int) $post -> userId);
+    }
+
     /**
      * True if either user has blocked the other.
      */

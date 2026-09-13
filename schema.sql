@@ -631,7 +631,8 @@ CREATE TABLE `Reports` (
   `snapshot` longtext DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`reportId`),
-  UNIQUE KEY `reporter_target` (`reporterId`,`type`,`targetId`)
+  UNIQUE KEY `reporter_target` (`reporterId`,`type`,`targetId`),
+  KEY `type_targetId` (`type`,`targetId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `EmailVerifications` (
@@ -773,6 +774,25 @@ CREATE TABLE `RelayFetches` (
   UNIQUE KEY `objectURI` (`objectURI`),
   KEY `nextAttemptAt_relayFetchId` (`nextAttemptAt`,`relayFetchId`),
   CONSTRAINT `fk_relayfetches_relay` FOREIGN KEY (`relayId`) REFERENCES `Relays` (`relayId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Verified Create deliveries whose linked object or reply context needs a
+-- worker fetch. Preserve the signature's actor and complete original audience;
+-- relay hints must never replace an authenticated delivery's context.
+CREATE TABLE `InboxFetches` (
+  `inboxFetchId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `activityHash` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `actorURI` varchar(255) NOT NULL,
+  `objectURI` varchar(255) NOT NULL,
+  `activity` mediumtext NOT NULL,
+  `attempts` int(10) unsigned NOT NULL DEFAULT 0,
+  `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `claimedUntil` datetime DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`inboxFetchId`),
+  UNIQUE KEY `activityHash` (`activityHash`),
+  KEY `nextAttemptAt_inboxFetchId` (`nextAttemptAt`,`inboxFetchId`),
+  KEY `actorURI_objectURI` (`actorURI`,`objectURI`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Which posts arrived through a relay rather than through anybody here
@@ -1135,6 +1155,7 @@ CREATE TABLE `StagedPosts` (
   `longitude` decimal(10,7) DEFAULT NULL,
   `sensitive` tinyint(1) NOT NULL DEFAULT 0,
   `publishAt` datetime DEFAULT NULL,
+  `contentWarning` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`stagedPostId`),
   KEY `userId_stagedPostId` (`userId`,`stagedPostId`),

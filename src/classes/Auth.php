@@ -43,7 +43,9 @@ SELECT *
         // current PASSWORD_DEFAULT. A no-op today (still bcrypt); the standard
         // migration hook for whenever PHP's default moves on or the cost is
         // raised. Covers both callers - login and the banned-vs-wrong check.
-        self::rehashIfNeeded($user, $password);
+        if (!self::rehashIfNeeded($user, $password)) {
+            return null;
+        }
 
         return $user;
     }
@@ -71,26 +73,52 @@ SELECT `userId`
      * Called only on a successful credential check (the sole moment the
      * plaintext is available). Best-effort: a rehash/update failure is swallowed
      * so it can never block an otherwise-valid sign-in - the old hash still
-     * verifies, and the next login just tries again.
+     * verifies, and the next login just tries again. A competing credential
+     * change is different: it invalidates this credential check.
      */
-    private static function rehashIfNeeded(User $user, string $password): void
+    private static function rehashIfNeeded(User $user, string $password): bool
     {
         if (!$user -> passwordNeedsRehash()) {
-            return;
+            return true;
         }
 
         $new_hash = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            DB::run('
-UPDATE `Users`
-    SET `passwordHash` = ?
-    WHERE `userId` = ?
-', 'si', $new_hash, $user -> userId);
-            $user -> setPasswordHash($new_hash);
+            return $user -> rehashPassword($new_hash);
         } catch (\mysqli_sql_exception $exception) {
             // Old hash still verifies; leave it and retry on the next sign-in.
+            return true;
         }
+    }
+
+    public static function beginTwoFactor(User $user, bool $remember_me, bool $email_failed): void
+    {
+        $_SESSION['pending2FAUserId'] = (int) $user -> userId;
+        $_SESSION['pending2FASessionVersion'] = $user -> sessionVersion;
+        $_SESSION['pending2FARememberMe'] = $remember_me;
+        $_SESSION['pending2FAEmailFailed'] = $email_failed;
+    }
+
+    /** The first factor belongs to the credential generation that proved it. */
+    public static function pendingTwoFactorUser(): ?User
+    {
+        $id = $_SESSION['pending2FAUserId'] ?? null;
+        $version = $_SESSION['pending2FASessionVersion'] ?? null;
+        $user = is_int($id) && is_int($version) ? User::load($id) : null;
+
+        if ($user === null || $user -> banned || $user -> sessionVersion !== $version) {
+            self::clearPendingTwoFactor();
+            return null;
+        }
+
+        return $user;
+    }
+
+    public static function clearPendingTwoFactor(): void
+    {
+        unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FASessionVersion'],
+            $_SESSION['pending2FARememberMe'], $_SESSION['pending2FAEmailFailed']);
     }
 
     public static function login(User $user): void
@@ -102,7 +130,7 @@ UPDATE `Users`
         // (session data survives session_regenerate_id, so an abandoned
         // password-step login left behind pending2FAUserId that a later,
         // different login here would otherwise inherit).
-        unset($_SESSION['pending2FAUserId'], $_SESSION['pending2FARememberMe']);
+        self::clearPendingTwoFactor();
 
         $_SESSION['userId'] = $user -> userId;
 

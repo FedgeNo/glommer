@@ -1,5 +1,6 @@
 import { TestCase } from './TestCase.js';
 import { MessageCrypto } from '../../scripts/HTMLObjects.js';
+import { ClientConfig } from '../../scripts/Runtime.js';
 
 function from_base64(text) {
     return Uint8Array.from(atob(text), (character) => character.charCodeAt(0));
@@ -8,6 +9,31 @@ function from_base64(text) {
 export default {
     suite: 'MessageCrypto',
     tests: {
+        'the unlocked cache belongs to one account and rejects legacy or damaged data'() {
+            // ClientConfig is cached for a page's lifetime. Change the page
+            // identity here without pretending that editing its cookie reloads it.
+            const original = ClientConfig.get;
+            let userId = 11;
+            ClientConfig.get = key => key === 'currentUserId' ? userId : original.call(ClientConfig, key);
+            try {
+                const key = { kty: 'EC', d: 'private value' };
+                MessageCrypto.storeUnlocked(key);
+                TestCase.assertEquals(key.d, MessageCrypto.loadUnlocked().d);
+                userId = 12;
+                TestCase.assertNull(MessageCrypto.loadUnlocked());
+                TestCase.assertNull(sessionStorage.getItem('messagePrivateKey'));
+                sessionStorage.setItem('messagePrivateKey', JSON.stringify(key));
+                TestCase.assertNull(MessageCrypto.loadUnlocked());
+                sessionStorage.setItem('messagePrivateKey', '{invalid');
+                TestCase.assertNull(MessageCrypto.loadUnlocked());
+                MessageCrypto.storeUnlocked(key);
+                userId = null;
+                TestCase.assertNull(MessageCrypto.loadUnlocked());
+                MessageCrypto.setThreadKey({ old: true });
+                MessageCrypto.clearUnlocked();
+                TestCase.assertNull(MessageCrypto.threadKey());
+            } finally { MessageCrypto.clearUnlocked(); ClientConfig.get = original; }
+        },
         async 'a wrapped private key unwraps with the right passphrase and refuses the wrong one'() {
             const pair = await MessageCrypto.generateKeypair();
             const wrapped = await MessageCrypto.wrapPrivateKey(pair.privateKey, 'correct horse');

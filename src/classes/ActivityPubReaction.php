@@ -30,6 +30,10 @@ class ActivityPubReaction
             return;
         }
 
+        if (Block::preventsInteractionWithPost((int) $actor -> userId, $post_id)) {
+            return;
+        }
+
         Like::create((int) $actor -> userId, $post_id);
 
         FediverseNotice::aboutPost($post_id, $actor, 'like');
@@ -52,6 +56,10 @@ class ActivityPubReaction
         $post_id = ActivityPubNote::localPostIdFor($object_uri);
 
         if ($post_id === null || $actor -> userId === null || (int) $actor -> banned === 1) {
+            return;
+        }
+
+        if (Block::preventsInteractionWithPost((int) $actor -> userId, $post_id)) {
             return;
         }
 

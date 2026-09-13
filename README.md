@@ -192,6 +192,18 @@ band).
   `HTMLObject` subclass that builds its own DOM via `toDOM()`; the client
   mirrors each one in JavaScript and rebuilds it from the JSON payload, so the
   server never ships HTML fragments over AJAX.
+- **Browser forms** - `FormForm` in `scripts/HTMLObjects.js` owns delegated
+  submission, one pending operation per form, busy indicators, cancellation,
+  and restoring controls. Controllers register with `FormForm.attach()`;
+  alternate actions such as saving a draft use `FormForm.run()` with the same
+  guard. Handlers await all work and pass their cancellation signal to `Api`
+  or the composer's progress-reporting XHR. Setup and email confirmations use
+  `FormForm.submitPage()` to retain native POST navigation and recover their
+  controls when returning with Back. Browser-built forms default to POST and
+  include the CSRF token, matching the PHP base. Completion clears or resets
+  only unchanged submitted fields. Composers preserve the whole draft when
+  newer text, files or other edits arrive while sending; inline editors stay
+  open for those newer edits.
 - **Database** - MySQL/MariaDB via `mysqli`, prepared statements only. The app
   runs as a least-privilege account (`SELECT/INSERT/UPDATE/DELETE` only);
   schema changes are done by a separate admin account, only when needed.
@@ -203,7 +215,8 @@ band).
   subprocess, then publishing the post and notifying the author.
 - **Federation worker** (`bin/federation-worker.php`) - drains the outbound
   ActivityPub delivery queue, signing each activity as the member it's from;
-  also fetches posts a subscribed relay has named, delivers Web Push
+  also fetches posts a subscribed relay has named, completes linked inbound
+  Create objects and missing reply context, delivers Web Push
   notifications, and sends the trickle of email digests (§10).
 - **Trending recompute** (`bin/compute-trending.php`) - periodically rescores
   the trending table; runs on a systemd timer (§7) with a read-path self-heal

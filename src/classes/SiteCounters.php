@@ -27,7 +27,7 @@ class SiteCounters extends Div
     {
         $words = Strings::for(self::class);
         $counts = self::counts();
-        $waiting_to_read = RelayFetch::pendingCount();
+        $waiting_to_read = RelayFetch::pendingCount() + InboxFetch::pendingCount();
 
         $this -> addLine(str_replace(
             ['{count}', '{joined}', '{days}'],

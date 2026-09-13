@@ -86,14 +86,10 @@ $previous_email = (string) $current_user -> email;
 
 // The new address is unverified until its owner proves it - the account drops
 // back behind the verification gate until then.
-$unverified = 0;
-
 try {
-    DB::run('
-UPDATE `Users`
-    SET `email` = ?, `verified` = ?
-    WHERE `userId` = ?
-', 'sii', $new_email, $unverified, $current_user -> userId);
+    if (!$current_user -> changeEmail($new_email)) {
+        JSONResponse::localizedError('thisAccountCanNoLongerLogIn', 403) -> send();
+    }
 } catch (\mysqli_sql_exception $exception) {
     // The uniqueness check above has a TOCTOU gap: another account (or
     // another request from this same account) can claim this exact email

@@ -44,12 +44,31 @@ $respond = static function (bool $healthy): void {
 $cache_file = __DIR__ . '/uploads/.health.json';
 $cache_ttl_seconds = 60;
 
-if (is_file($cache_file) && (time() - (int) filemtime($cache_file)) < $cache_ttl_seconds) {
-    $cached = json_decode((string) @file_get_contents($cache_file), true);
+$read_cache = static function () use ($cache_file, $cache_ttl_seconds): ?bool {
+    clearstatcache(true, $cache_file);
+    if (is_file($cache_file) && (time() - (int) filemtime($cache_file)) < $cache_ttl_seconds) {
+        $cached = json_decode((string) @file_get_contents($cache_file), true);
 
-    if (is_array($cached) && isset($cached['healthy'])) {
-        $respond((bool) $cached['healthy']);
+        if (is_array($cached) && isset($cached['healthy'])) {
+            return (bool) $cached['healthy'];
+        }
     }
+    return null;
+};
+
+if (($cached = $read_cache()) !== null) {
+    $respond($cached);
+}
+
+// Only the lock holder refreshes an expired verdict. Waiting readers check
+// again after acquiring the lock, so they reuse that completed refresh.
+$refresh_lock = @fopen(__DIR__ . '/uploads/.health.lock', 'c');
+if ($refresh_lock === false || !flock($refresh_lock, LOCK_EX)) {
+    $respond(false);
+}
+
+if (($cached = $read_cache()) !== null) {
+    $respond($cached);
 }
 
 $healthy = true;

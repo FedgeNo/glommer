@@ -29,7 +29,6 @@ RateLimiter::recordAttempt($rate_key);
 // requests. Two decimal places is a bit over a kilometre: enough to place a
 // post in a town, not enough to place it at a door.
 $exact_locations = Auth::check();
-$rounding = 2;
 $rows = new MapPostList($exact_locations) -> items;
 
 $posts = [];
@@ -37,8 +36,8 @@ $posts = [];
 foreach ($rows as $row) {
     $posts[] = [
         'postId' => (int) $row -> postId,
-        'latitude' => $exact_locations ? (float) $row -> latitude : round((float) $row -> latitude, $rounding),
-        'longitude' => $exact_locations ? (float) $row -> longitude : round((float) $row -> longitude, $rounding),
+        'latitude' => PostLocation::forViewer((float) $row -> latitude),
+        'longitude' => PostLocation::forViewer((float) $row -> longitude),
         'title' => $row -> title,
         // Drives the time scrubber, which replays the map from the first
         // located post to now.

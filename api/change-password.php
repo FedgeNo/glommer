@@ -61,17 +61,16 @@ if ($refused !== []) {
 
 $hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-DB::run('
-UPDATE `Users`
-    SET `passwordHash` = ?
-    WHERE `userId` = ?
-', 'si', $hash, $current_user -> userId);
+$new_version = $current_user -> changePassword($hash);
+
+if ($new_version === null) {
+    JSONResponse::localizedError('thisAccountCanNoLongerLogIn', 403) -> send();
+}
 
 // The old password's sessions and remember-me tokens die with it - any other
 // browser (or thief) holding one gets logged out. This session proved the
 // current password, so it adopts the new version and stays.
-$_SESSION['sessionVersion'] = User::bumpSessionVersion((int) $current_user -> userId);
-RememberToken::purgeForUser((int) $current_user -> userId);
+$_SESSION['sessionVersion'] = $new_version;
 Auth::clearUserCache();
 
 JSONResponse::success(['changed' => true]) -> send();

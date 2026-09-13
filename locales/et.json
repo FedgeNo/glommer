@@ -319,6 +319,7 @@
         "ariaLabel": "Muuda profiili"
     },
     "PushNotificationSetting": {
+        "limits": "Kuni 10 brauserit konto kohta ja 10 uut registreerimist päevas. Limiidi täitumisel eemalda allpool vana brauser enne uue lisamist.",
         "explanation": "Saa selles seadmes teavitusi ka siis, kui sait pole avatud. Valik kehtib brauseripõhiselt—lülita see sisse igas brauseris, kus soovid teavitusi saada.",
         "label": {
             "off": "Luba selles seadmes",

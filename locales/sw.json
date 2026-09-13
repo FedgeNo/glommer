@@ -128,6 +128,7 @@
         "ariaLabel": "Hariri Wasifu"
     },
     "PushNotificationSetting": {
+        "limits": "Hadi vivinjari 10 kwa akaunti na usajili mpya 10 kwa siku. Kikomo kikifikiwa, ondoa kivinjari cha zamani hapa chini kabla ya kuongeza kingine.",
         "explanation": "Pata arifa kwenye kifaa hiki hata tovuti ikiwa haijafunguliwa. Hili ni chaguo la kila kivinjari - liwashe popote unapotaka kufikiwa.",
         "label": {
             "off": "Washa kwenye Kifaa Hiki",

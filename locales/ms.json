@@ -127,6 +127,7 @@
         "ariaLabel": "Sunting profil"
     },
     "PushNotificationSetting": {
+        "limits": "Sehingga 10 pelayar bagi setiap akaun dan 10 pendaftaran baharu sehari. Apabila penuh, buang pelayar lama di bawah sebelum menambah pelayar lain.",
         "explanation": "Terima pemberitahuan pada peranti ini walaupun laman tidak dibuka. Pilihan ini berasingan bagi setiap pelayar — hidupkannya di mana-mana anda mahu dihubungi.",
         "label": {
             "off": "Dayakan pada peranti ini",

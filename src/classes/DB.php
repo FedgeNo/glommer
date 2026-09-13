@@ -172,7 +172,14 @@ SET `time_zone` = ?
         return $result;
     }
 
-    /** Best-effort external notifications, after the owning transaction succeeds. */
+    public static function requireTransaction(): void
+    {
+        if (self::$afterCommit === null) {
+            throw new \LogicException('This operation requires a database transaction.');
+        }
+    }
+
+    /** Best-effort external effects, after the owning transaction succeeds. */
     public static function afterCommit(callable $callback): void
     {
         if (self::$afterCommit !== null) {

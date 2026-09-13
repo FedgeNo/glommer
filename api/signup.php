@@ -10,6 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     JSONResponse::localizedError('methodNotAllowed', 405) -> send();
 }
 
+if (SetupClaim::required() && !SetupClaim::authorized()) {
+    JSONResponse::error('The server operator must authorize setup before registration.', 403) -> send();
+}
+
 $payload = json_decode((string) file_get_contents('php://input'), true);
 $payload = is_array($payload) ? $payload : [];
 
@@ -105,10 +109,13 @@ $description_value = $description !== '' ? $description : null;
 $unverified = 0;
 
 try {
-    DB::run('
-INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `verified`)
-    VALUES (?, ?, ?, ?, ?, ?)
-', 'sssssi', $username, $email, $hash, $display_name, $description_value, $unverified);
+    $new_user_id = SetupClaim::register(static function (bool $administrator) use ($username, $email, $hash, $display_name, $description_value, $unverified): int {
+        DB::run('
+INSERT INTO `Users` (`userId`, `slug`, `email`, `passwordHash`, `title`, `description`, `verified`)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+', 'isssssi', $administrator ? 1 : null, $username, $email, $hash, $display_name, $description_value, $unverified);
+        return (int) mysqli_insert_id(DB::connection());
+    });
 } catch (\mysqli_sql_exception $exception) {
     // The check above has a TOCTOU gap: another signup can claim this name or
     // this address in between. `slug` and `email` are both UNIQUE, so the
@@ -122,8 +129,6 @@ INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `description`, `v
 
     JSONResponse::fieldError('username', JSONResponse::localized('usernameOrEmailTaken')) -> send();
 }
-
-$new_user_id = (int) mysqli_insert_id(DB::connection());
 
 $user = new User();
 $user -> userId = $new_user_id;

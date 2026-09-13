@@ -471,6 +471,7 @@
         "ariaLabel": "Modifier le profil"
     },
     "PushNotificationSetting": {
+        "limits": "Jusqu'à 10 navigateurs par compte et 10 nouvelles inscriptions par jour. Si la limite est atteinte, supprimez un ancien navigateur ci-dessous avant d'en ajouter un autre.",
         "explanation": "Recevez des notifications sur cet appareil même lorsque le site n'est pas ouvert. C'est un choix propre à chaque navigateur - activez-le partout où vous voulez être joignable.",
         "label": {
             "off": "Activer sur cet appareil",

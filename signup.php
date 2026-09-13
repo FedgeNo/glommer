@@ -9,6 +9,10 @@ if (Auth::check()) {
     exit;
 }
 
+if (SetupClaim::required()) {
+    SetupClaim::gate();
+}
+
 $page = new Page(['title' => (string) (Strings::for('PageTitle')['signup'] ?? '')]);
 
 if (GoogleAuth::isEnabled()) {

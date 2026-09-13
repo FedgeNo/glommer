@@ -130,6 +130,7 @@
         "ariaLabel": "Upravit profil"
     },
     "PushNotificationSetting": {
+        "limits": "Nejvýše 10 prohlížečů na účet a 10 nových registrací denně. Při dosažení limitu níže odeberte starý prohlížeč, než přidáte další.",
         "explanation": "Dostávejte oznámení na tomto zařízení, i když web není otevřený. Volba platí pro každý prohlížeč zvlášť – zapněte ji všude, kde chcete být k zastižení.",
         "label": {
             "off": "Zapnout na tomto zařízení",

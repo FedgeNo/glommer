@@ -1,4 +1,5 @@
 /.env
+/.setup-claim
 /uploads/**
 !/uploads/.htaccess
 /agents/

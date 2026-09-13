@@ -128,6 +128,7 @@
         "ariaLabel": "Redigera profil"
     },
     "PushNotificationSetting": {
+        "limits": "Upp till 10 webbläsare per konto och 10 nya registreringar per dag. När gränsen är nådd, ta bort en gammal webbläsare nedan innan du lägger till en ny.",
         "explanation": "Få aviseringar på den här enheten även när webbplatsen inte är öppen. Valet gäller per webbläsare – aktivera det överallt där du vill kunna nås.",
         "label": {
             "off": "Aktivera på den här enheten",

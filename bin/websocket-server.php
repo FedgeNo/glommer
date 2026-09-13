@@ -225,6 +225,12 @@ function register_connection($socket, string $kind): int
 {
     global $connections;
 
+    $ip = WebSocketAdmission::peerIP((string) stream_socket_get_name($socket, true));
+    if (!WebSocketAdmission::allows($connections, $kind, $ip)) {
+        fclose($socket);
+        return -1;
+    }
+
     stream_set_blocking($socket, false);
     $id = (int) $socket;
 
@@ -233,6 +239,7 @@ function register_connection($socket, string $kind): int
     $connections[$id] = [
         'socket' => $socket,
         'kind' => $kind,
+        'peerIP' => $ip,
         'handshakeDone' => false,
         'tlsReady' => $kind !== 'client' || !ws_uses_tls(),
         'recvBuffer' => '',
@@ -395,6 +402,12 @@ function authenticate_client(int $id, string $message): void
     }
 
     $user_id = $lease['userId'];
+    if (count($connections_by_user[$user_id] ?? []) >= WebSocketAdmission::limit('WS_MAX_CONNECTIONS_PER_ACCOUNT', 20)) {
+        // Refuse only this new connection. Existing sessions are never evicted.
+        $connections[$id]['sendBuffer'] .= ws_encode_close_frame(1013);
+        $connections[$id]['closeAfterFlush'] = true;
+        return;
+    }
     attach_user($id, $user_id);
 
     log_line('Client connected: user ' . $user_id . ' (connection ' . count($connections_by_user[$user_id] ?? []) . ')');

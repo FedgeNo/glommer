@@ -698,6 +698,7 @@
         "ariaLabel": "Redaguoti profilį"
     },
     "PushNotificationSetting": {
+        "limits": "Iki 10 naršyklių vienai paskyrai ir 10 naujų registracijų per dieną. Pasiekę ribą, prieš pridėdami kitą naršyklę pašalinkite senąją žemiau.",
         "explanation": "Gaukite pranešimus šiame įrenginyje net tada, kai svetainė neatidaryta. Šis pasirinkimas taikomas kiekvienai naršyklei atskirai – įjunkite visur, kur norite gauti pranešimus.",
         "label": {
             "off": "Įjungti šiame įrenginyje",

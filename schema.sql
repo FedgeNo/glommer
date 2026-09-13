@@ -1,15 +1,9 @@
 -- Glommer database schema.
 --
--- The database name is configurable (DB_DATABASE in .env, defaults to
--- "glommer") - substitute whatever you've actually set it to below.
--- `php bin/install.php` runs this automatically given DB_ADMIN_USERNAME/
--- DB_ADMIN_PASSWORD; to do it manually instead (the app's own DB user is
--- intentionally least-privilege and typically lacks ALTER/CREATE, so this
--- needs to be run as a user that has them, e.g.):
---   mysql -u root -p glommer < schema.sql
--- or, if the database itself doesn't exist yet:
---   mysql -u root -p -e "CREATE DATABASE glommer CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
---   mysql -u root -p glommer < schema.sql
+-- Apply fresh tables, idempotent migrations and backfills through
+-- `sudo php bin/install.php`, using the configured DB_DATABASE. The runtime
+-- account deliberately lacks schema privileges. Do not substitute ad hoc DDL
+-- or a raw SQL import for the installer's coordinated upgrade path.
 
 CREATE TABLE `Users` (
   `userId` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -392,6 +386,15 @@ CREATE TABLE `TrendingHashtags` (
   `computedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`hashtagId`),
   KEY `postCount` (`postCount`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- No FK: these receipts must survive deletion of the post and its attachments.
+CREATE TABLE `MediaDeletions` (
+  `itemId` int(10) unsigned NOT NULL,
+  `type` varchar(64) NOT NULL,
+  `nextAttemptAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`itemId`),
+  KEY `nextAttemptAt_itemId` (`nextAttemptAt`,`itemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `FeedItems` (
@@ -1034,6 +1037,23 @@ CREATE TABLE `Statistics` (
   KEY `day` (`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `ActorDiscoveryFailures` (
+  `actorHash` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `expiresAt` datetime NOT NULL,
+  PRIMARY KEY (`actorHash`),
+  KEY `expiresAt` (`expiresAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `SetupState` (
+  `setupId` tinyint unsigned NOT NULL,
+  `completed` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`setupId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Preserve an established administrator on upgrade; never reopen a completed claim.
+INSERT IGNORE INTO `SetupState` (`setupId`, `completed`)
+    SELECT 1, EXISTS(SELECT 1 FROM `Users` WHERE `userId` = 1 AND `remoteActorURI` IS NULL);
+
 CREATE TABLE `Settings` (
   `name` varchar(64) NOT NULL,
   `value` text DEFAULT NULL,
@@ -1152,12 +1172,34 @@ CREATE TABLE `PushSubscriptions` (
   `endpoint` varchar(500) NOT NULL,
   `p256dh` varchar(255) NOT NULL,
   `auth` varchar(64) NOT NULL,
+  `userAgent` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`pushSubscriptionId`),
   UNIQUE KEY `endpoint` (`endpoint`),
   KEY `userId` (`userId`),
   CONSTRAINT `fk_pushsubscriptions_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Issuance history survives unsubscribe/replacement, so removal cannot reset
+-- the rolling daily registration allowance. subscriptionId deliberately has no FK.
+CREATE TABLE `PushRegistrations` (
+  `registrationId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userId` int(10) unsigned NOT NULL,
+  `subscriptionId` int(10) unsigned NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`registrationId`),
+  KEY `userId_createdAt` (`userId`,`createdAt`),
+  KEY `subscriptionId_userId` (`subscriptionId`,`userId`),
+  KEY `createdAt` (`createdAt`),
+  CONSTRAINT `fk_pushregistrations_user` FOREIGN KEY (`userId`) REFERENCES `Users` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `PushRegistrations` (`userId`, `subscriptionId`, `createdAt`)
+    SELECT `p`.`userId`, `p`.`pushSubscriptionId`, `p`.`createdAt`
+        FROM `PushSubscriptions` `p`
+        WHERE `p`.`createdAt` > NOW() - INTERVAL 1 DAY
+            AND NOT EXISTS (SELECT 1 FROM `PushRegistrations` `r`
+                WHERE `r`.`subscriptionId` = `p`.`pushSubscriptionId` AND `r`.`userId` = `p`.`userId`);
 
 -- Pushes waiting to be sent, drained by the federation worker - a request
 -- that creates a notification must never wait on a push service across the

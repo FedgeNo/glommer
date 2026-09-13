@@ -540,6 +540,7 @@
         "ariaLabel": "Editatu profila"
     },
     "PushNotificationSetting": {
+        "limits": "Gehienez 10 arakatzaile kontu bakoitzeko eta 10 erregistro berri egunean. Muga beteta badago, kendu behean arakatzaile zahar bat beste bat gehitu aurretik.",
         "explanation": "Jaso jakinarazpenak gailu honetan gunea irekita ez dagoenean ere. Aukera hau arakatzaile bakoitzerako da—aktibatu jakinarazpenak jaso nahi dituzun guztietan.",
         "label": {
             "off": "Aktibatu gailu honetan",

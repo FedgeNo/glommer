@@ -239,36 +239,45 @@ INSERT INTO `Conversations` (`userId`, `partnerId`, `lastMessageId`)
      */
     public static function delete(int $message_id): void
     {
+        DB::transaction(static fn () => self::deleteInTransaction($message_id));
+    }
+
+    /** The caller owns the transaction, including both conversation pointers. */
+    public static function deleteInTransaction(int $message_id): void
+    {
+        DB::requireTransaction();
         $message = DB::row('SELECT `senderId`, `recipientId` FROM `Messages` WHERE `messageId` = ?', self::class, 'i', $message_id);
 
         if ($message === null) {
             return;
         }
 
-        DB::transaction(static function () use ($message_id, $message): void {
-            $sender_id = (int) $message -> senderId;
-            $recipient_id = (int) $message -> recipientId;
-            self::lockParticipants($sender_id, $recipient_id);
+        $sender_id = (int) $message -> senderId;
+        $recipient_id = (int) $message -> recipientId;
+        self::lockParticipants($sender_id, $recipient_id);
 
-            DB::run('
+        DB::run('
 DELETE
     FROM `Messages`
     WHERE `messageId` = ?
 ', 'i', $message_id);
 
-            // Deleting a last message cascades its two summary rows. Restore
-            // them from the two covering indexes while new sends are locked.
+        // Deleting a last message cascades its two summary rows. Use current
+        // locking reads: the caller may have established a repeatable-read
+        // snapshot before another send committed and we locked the users.
+        $latest_id = 0;
+        foreach ([[$sender_id, $recipient_id], [$recipient_id, $sender_id]] as [$from, $to]) {
             $latest = DB::row('
-SELECT GREATEST(
-    COALESCE((SELECT MAX(`messageId`) FROM `Messages` WHERE `senderId` = ? AND `recipientId` = ?), 0),
-    COALESCE((SELECT MAX(`messageId`) FROM `Messages` WHERE `senderId` = ? AND `recipientId` = ?), 0)
-) AS `messageId`
-', self::class, 'iiii', $sender_id, $recipient_id, $recipient_id, $sender_id);
+SELECT `messageId` FROM `Messages`
+    WHERE `senderId` = ? AND `recipientId` = ?
+    ORDER BY `messageId` DESC LIMIT 1 FOR UPDATE
+', self::class, 'ii', $from, $to);
+            $latest_id = max($latest_id, (int) ($latest -> messageId ?? 0));
+        }
 
-            if ($latest -> messageId > 0) {
-                self::recordConversation($sender_id, $recipient_id, $latest -> messageId);
-            }
-        });
+        if ($latest_id > 0) {
+            self::recordConversation($sender_id, $recipient_id, $latest_id);
+        }
     }
 
 }

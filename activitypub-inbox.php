@@ -118,7 +118,14 @@ if (RemoteServer::isBlockedURL($actor_uri)) {
 // and RemoteActor::fetch refuses a document whose id belongs to another host -
 // so a server can still only ever speak for its own accounts, and cannot
 // overwrite the cached key of an account already known here.
-$signer = RemoteActor::ensureKnown($actor_uri);
+$discovery_deadline = hrtime(true) / 1e9 + ActorDiscovery::DEADLINE_SECONDS;
+try {
+    $signer = ActorDiscovery::resolve($actor_uri, ServerURL::clientIP() ?? 'unknown', $discovery_deadline);
+} catch (ActorDiscoveryBusy $exception) {
+    header('Retry-After: 60');
+    http_response_code(503);
+    exit;
+}
 
 if ($signer === null || $signer -> remoteActorPublicKeyPem === null) {
     http_response_code(401);
@@ -177,17 +184,17 @@ $verified = HTTPSignature::verify('POST', $path, $received_headers, $signature_h
 // one bad signature, as many times as the inbox limiter allows. One attempt per
 // actor per window costs a rotation at most a few minutes of delay.
 if (!$verified) {
-    $refresh_key = 'activitypub-key-refresh:' . $actor_uri;
+    try {
+        $refreshed = ActorDiscovery::resolve($actor_uri, ServerURL::clientIP() ?? 'unknown', $discovery_deadline, true);
+    } catch (ActorDiscoveryBusy $exception) {
+        header('Retry-After: 60');
+        http_response_code(503);
+        exit;
+    }
 
-    if (!RateLimiter::tooManyAttempts($refresh_key, 1, 300)) {
-        RateLimiter::recordAttempt($refresh_key);
-
-        $refreshed = RemoteActor::refresh($actor_uri);
-
-        if ($refreshed !== null && is_string($refreshed -> remoteActorPublicKeyPem) && $refreshed -> remoteActorPublicKeyPem !== $signer -> remoteActorPublicKeyPem) {
-            $signer = $refreshed;
-            $verified = HTTPSignature::verify('POST', $path, $received_headers, $signature_header, $signer -> remoteActorPublicKeyPem);
-        }
+    if ($refreshed !== null && is_string($refreshed -> remoteActorPublicKeyPem) && $refreshed -> remoteActorPublicKeyPem !== $signer -> remoteActorPublicKeyPem) {
+        $signer = $refreshed;
+        $verified = HTTPSignature::verify('POST', $path, $received_headers, $signature_header, $signer -> remoteActorPublicKeyPem);
     }
 }
 

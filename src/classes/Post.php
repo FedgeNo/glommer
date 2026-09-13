@@ -631,15 +631,19 @@ UPDATE `Posts` `parent`
 
     public static function delete(int $post_id): void
     {
-        $doomed_items = DB::transaction(static fn (): array => self::deleteRecords($post_id));
+        DB::transaction(static fn () => self::deleteInTransaction($post_id));
+    }
 
-        // Only remove files once the rows and their counter changes commit.
-        foreach ($doomed_items as $item) {
-            UploadProcessor::deleteForItem((int) $item -> itemId, (string) $item -> type);
+    /** The caller owns the transaction; media cleanup is durable and post-commit. */
+    public static function deleteInTransaction(int $post_id): void
+    {
+        DB::requireTransaction();
+        foreach (self::deleteRecords($post_id) as $item) {
+            MediaDeletion::enqueue((int) $item -> itemId, (string) $item -> type);
         }
     }
 
-    /** @return FeedItem[] media to remove after the transaction commits */
+    /** @return object[] media identities to remove after the transaction commits */
     private static function deleteRecords(int $post_id): array
     {
         if (self::lockForUpdate($post_id) === null) {
@@ -671,21 +675,21 @@ SELECT `postId`
             }
         }
 
-        $doomed_items = [];
-
-        foreach (FeedItem::itemsForPosts($all_post_ids) as $post_items) {
-            foreach ($post_items as $item) {
-                $doomed_items[] = $item;
-            }
-        }
+        // The owner's transaction may already have an older read snapshot.
+        // These current reads must include attachments/replies committed before
+        // we acquired the subtree locks, even if that snapshot cannot see them.
+        $post_id_placeholders = implode(', ', array_fill(0, count($all_post_ids), '?'));
+        $doomed_items = DB::rows('
+SELECT `itemId`, `type` FROM `FeedItems`
+    WHERE `postId` IN (' . $post_id_placeholders . ')
+    ORDER BY `postId`, `itemId` FOR UPDATE
+', \stdClass::class, str_repeat('i', count($all_post_ids)), ...$all_post_ids);
 
         // Notifications.postId carries no FK (it's a loose, per-type
         // reference - not every notification type even uses it - not a
         // strict single-table FK candidate), so nothing cascades these on
         // its own. Without this, a reply/like/postReady notification for a
         // deleted post would point at a 404'ing permalink forever.
-        $post_id_placeholders = implode(', ', array_fill(0, count($all_post_ids), '?'));
-
         DB::run('
 DELETE
     FROM `Notifications`
@@ -701,6 +705,7 @@ DELETE
 SELECT `remoteObjectURI`
     FROM `Posts`
     WHERE `postId` IN (' . $post_id_placeholders . ') AND `remoteObjectURI` IS NOT NULL
+    FOR UPDATE
 ', str_repeat('i', count($all_post_ids)), ...$all_post_ids);
         $remote_object_uris_result = mysqli_stmt_get_result($remote_object_uris_stmt);
 

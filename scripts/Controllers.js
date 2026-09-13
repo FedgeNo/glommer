@@ -61,7 +61,7 @@ import {
 
 // These endpoints render the next page themselves instead of returning JSON.
 ReadyHandler.add(() => {
-    for (const name of ['SetupForm', 'EmailVerifyForm', 'EmailRevertForm', 'EmailDigestResubscribeForm']) {
+    for (const name of ['SetupForm', 'SetupClaimForm', 'EmailVerifyForm', 'EmailRevertForm', 'EmailDigestResubscribeForm']) {
         FormForm.attach(name, FormForm.submitPage);
     }
 });
@@ -5973,51 +5973,87 @@ class PushNotificationSetting {
     static async init() {
         const button = document.querySelector('.PushSubscribeButton');
         if (!button) return;
-
-        // Read from the same table PushNotificationSetting.php renders from,
-        // so every label the script sets afterward is in whatever language a
-        // reload would show, not always English.
+        const form = button.closest('form');
         const words = Strings.for('PushNotificationSetting');
+        const supported = 'serviceWorker' in navigator && 'PushManager' in window;
+        button.disabled = true;
+        const registration = supported ? await navigator.serviceWorker.getRegistration() : null;
+        let subscription = registration ? await registration.pushManager.getSubscription() : null;
+        const reflect = data => {
+            if (!data) return;
+            PushNotificationSetting.#render(form, data.subscriptions);
+            PushNotificationSetting.#reflect(button, words, data.subscribed);
+            if (!supported) button.textContent = words.unsupported || '';
+        };
+        reflect(await Api.post('/api/push-subscriptions', { endpoint: subscription?.endpoint ?? '' }, { quiet: true }));
+        button.disabled = !supported;
 
-        // A browser without service workers or push simply can't offer this.
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            // Nothing to wait for - this browser will never offer it.
-            button.disabled = true;
-            button.textContent = words.unsupported || '';
-            return;
-        }
-
-        const registration = await navigator.serviceWorker.ready;
-        const existing = await registration.pushManager.getSubscription();
-
-        PushNotificationSetting.#reflect(button, words, existing !== null);
-
-        button.addEventListener('click', async () => {
-            Working.start(button);
-
-            try {
-                const subscription = await registration.pushManager.getSubscription();
-
-                if (subscription) {
-                    await PushNotificationSetting.#disable(subscription);
-                    PushNotificationSetting.#reflect(button, words, false);
-                } else {
-                    const made = await PushNotificationSetting.#enable(registration);
-                    PushNotificationSetting.#reflect(button, words, made);
+        FormForm.attach(form, async (currentForm, { signal, submitter }) => {
+            const options = { form: currentForm, signal };
+            if (submitter?.dataset.subscriptionId) {
+                const result = await Api.post('/api/push-unsubscribe', {
+                    subscriptionId: Number(submitter.dataset.subscriptionId),
+                    endpoint: subscription?.endpoint ?? '',
+                }, options);
+                if (!result || signal.aborted) return;
+                reflect(result);
+                if (submitter.dataset.current === 'true' && subscription) {
+                    try {
+                        if (await subscription.unsubscribe()) subscription = null;
+                    } catch (_) { /* Server registration is already removed. */ }
                 }
-            } finally {
-                Working.stop(button);
+                return;
+            }
+            if (!supported) return;
+            const active = registration ?? await navigator.serviceWorker.ready;
+            if (signal.aborted) return;
+            subscription = await active.pushManager.getSubscription();
+            if (signal.aborted) return;
+            if (subscription && button.dataset.subscribed === 'true') {
+                const result = await Api.post('/api/push-unsubscribe', { endpoint: subscription.endpoint }, options);
+                if (!result || signal.aborted) return;
+                reflect(result);
+                try {
+                    if (await subscription.unsubscribe()) subscription = null;
+                } catch (_) { /* Server registration is already removed. */ }
+            } else {
+                const result = await PushNotificationSetting.#enable(active, options);
+                if (signal.aborted) return;
+                subscription = await active.pushManager.getSubscription();
+                if (!signal.aborted && result) reflect(result);
             }
         });
     }
 
+    static #render(form, subscriptions) {
+        const list = form.querySelector('.PushSubscriptionList');
+        if (!list) return;
+        const rows = (subscriptions ?? []).map(subscription => {
+            const row = document.createElement('div');
+            row.className = 'PushSubscription';
+            const label = document.createElement('p');
+            label.textContent = subscription.label + ' · ';
+            label.append(new RelativeTime(subscription.createdAt).toDOM());
+            const remove = document.createElement('button');
+            remove.type = 'submit';
+            remove.className = 'Button SubmitButton PushSubscriptionRemoveButton';
+            remove.dataset.subscriptionId = String(subscription.id);
+            remove.dataset.current = String(subscription.current);
+            remove.textContent = Strings.for('RememberedDeviceRevokeButton').name || '';
+            row.append(label, remove);
+            return row;
+        });
+        list.replaceChildren(...rows);
+    }
+
     static #reflect(button, words, subscribed) {
+        button.dataset.subscribed = String(Boolean(subscribed));
         button.textContent = (words.label || {})[subscribed ? 'on' : 'off'] || '';
         button.classList.toggle('Removing', subscribed);
     }
 
-    static async #enable(registration) {
-        if (Notification.permission === 'denied') {
+    static async #enable(registration, options) {
+        if (window.Notification?.permission === 'denied') {
             Toast.show(Strings.for('ClientStatus').notificationsBlocked || '');
             return false;
         }
@@ -6029,6 +6065,8 @@ class PushNotificationSetting {
         }
 
         let subscription;
+        const existing = await registration.pushManager.getSubscription();
+        if (options.signal.aborted) return null;
         try {
             subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
@@ -6039,28 +6077,28 @@ class PushNotificationSetting {
             return false;
         }
 
+        if (options.signal.aborted) {
+            if (!existing) await subscription.unsubscribe();
+            return null;
+        }
+
         const json = subscription.toJSON();
         const result = await Api.post('/api/push-subscribe', {
             endpoint: subscription.endpoint,
             p256dh: json.keys.p256dh,
             auth: json.keys.auth,
-        });
+        }, options);
 
         if (!result) {
             // The server wouldn't record it, so don't leave the browser
             // holding a subscription nothing will ever send to.
-            await subscription.unsubscribe();
+            if (!existing && !options.signal.aborted) await subscription.unsubscribe();
             return false;
         }
 
+        if (options.signal.aborted) return null;
         Toast.show(Strings.for('ClientStatus').notificationsOn || '');
-        return true;
-    }
-
-    static async #disable(subscription) {
-        await Api.post('/api/push-unsubscribe', { endpoint: subscription.endpoint });
-        await subscription.unsubscribe();
-        Toast.show(Strings.for('ClientStatus').notificationsOff || '');
+        return result;
     }
 }
 
@@ -8262,10 +8300,11 @@ class WebSocketManager {
     constructor() {
         this.socket = null;
         this.reconnectAttempts = 0;
-        this.maxReconnectAttempts = 3;
         this.reconnectDelay = 10000;
         this.token = null;
         this.reconnecting = false;
+        this.connecting = false;
+        this.reconnectTimer = null;
         this.renewalTimer = null;
         this.renewalController = null;
         // The page's own title, kept so the unread marker can be put in front of
@@ -8302,82 +8341,98 @@ class WebSocketManager {
     }
 
     async connect() {
-        // Quiet: this reconnects on its own schedule and can fail a dozen
-        // times while a laptop is asleep. A dozen toasts about a socket
-        // nobody asked about is worse than the socket being down.
-        const token = await Api.post('/api/ws-token', undefined, { quiet: true });
+        if (this.connecting || this.socket?.readyState === WebSocket.OPEN
+            || this.socket?.readyState === WebSocket.CONNECTING) return;
+        this.connecting = true;
+        clearTimeout(this.reconnectTimer);
+        this.reconnectTimer = null;
+        this.reconnecting = false;
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        try {
+            // Quiet: this reconnects on its own schedule and can fail a dozen
+            // times while a laptop is asleep. A dozen toasts about a socket
+            // nobody asked about is worse than the socket being down.
+            const token = await Api.post('/api/ws-token', undefined, { quiet: true, signal: controller.signal });
 
-        if (token === null) {
-            console.error('WebSocket token fetch failed');
-            this.scheduleReconnect();
+            if (!token?.token || controller.signal.aborted) {
+                console.error('WebSocket token fetch failed');
+                this.scheduleReconnect();
 
-            return;
-        }
-
-        this.token = token.token;
-
-        // Nothing in the address. A handshake is a GET and this API will not
-        // set headers, so a token here could only ride in the URL - which is
-        // the one part of a request that gets written down along the way. It
-        // goes as the first message instead, inside the same encrypted channel
-        // as everything after it, and the server tells nobody anything until
-        // it has read one.
-        const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/`);
-        this.socket = socket;
-
-        socket.addEventListener('open', () => {
-            socket.send(token.token);
-            this.reconnectAttempts = 0;
-            this.scheduleRenewal(socket);
-
-            const statusLine = document.querySelector('.WebSocketClientStatus');
-            if (statusLine) {
-                this.showStatus(statusLine);
-            }
-        });
-
-        socket.addEventListener('message', (event) => {
-            let data;
-            try {
-                data = JSON.parse(event.data);
-            } catch (e) {
                 return;
             }
 
-            if (data.event === 'notification') {
-                this.handleNotification(data.notification);
-            } else if (data.event === 'message') {
-                document.dispatchEvent(new CustomEvent('ws:message', { detail: data.message }));
+            this.token = token.token;
 
-                // Somewhere other than the conversations list, where opening
-                // the page is what clears the mark - marking it read from
-                // under the reader while they are elsewhere would lose it.
-                if (!window.location.pathname.startsWith('/messages')) {
-                    document.querySelectorAll('.MessageDot, .NavAlertDot').forEach(dot => dot.classList.add('Active'));
+            // Nothing in the address. A handshake is a GET and this API will not
+            // set headers, so a token here could only ride in the URL - which is
+            // the one part of a request that gets written down along the way. It
+            // goes as the first message instead, inside the same encrypted channel
+            // as everything after it, and the server tells nobody anything until
+            // it has read one.
+            const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            const socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/`);
+            this.socket = socket;
+
+            socket.addEventListener('open', () => {
+                if (this.socket !== socket) return;
+                socket.send(token.token);
+                this.scheduleRenewal(socket);
+
+                const statusLine = document.querySelector('.WebSocketClientStatus');
+                if (statusLine) {
+                    this.showStatus(statusLine);
                 }
-            } else if (data.event === 'call') {
-                document.dispatchEvent(new CustomEvent('ws:call', { detail: data.call }));
-            }
-        });
+            });
 
-        socket.addEventListener('close', () => {
-            if (this.socket !== socket) return;
-            clearTimeout(this.renewalTimer);
-            this.renewalTimer = null;
-            this.renewalController?.abort();
-            // Only on a real change of state. Saying it on page load instead
-            // would replace the line the server rendered - in the reader's own
-            // language - with this one, before anything had happened.
-            const statusLine = document.querySelector('.WebSocketClientStatus');
+            socket.addEventListener('message', (event) => {
+                if (this.socket !== socket) return;
+                let data;
+                try {
+                    data = JSON.parse(event.data);
+                } catch (e) {
+                    return;
+                }
 
-            if (statusLine) {
-                this.showStatus(statusLine);
-            }
+                if (data.event === 'notification') {
+                    this.handleNotification(data.notification);
+                } else if (data.event === 'message') {
+                    document.dispatchEvent(new CustomEvent('ws:message', { detail: data.message }));
 
+                    // Somewhere other than the conversations list, where opening
+                    // the page is what clears the mark - marking it read from
+                    // under the reader while they are elsewhere would lose it.
+                    if (!window.location.pathname.startsWith('/messages')) {
+                        document.querySelectorAll('.MessageDot, .NavAlertDot').forEach(dot => dot.classList.add('Active'));
+                    }
+                } else if (data.event === 'call') {
+                    document.dispatchEvent(new CustomEvent('ws:call', { detail: data.call }));
+                }
+            });
+
+            socket.addEventListener('close', () => {
+                if (this.socket !== socket) return;
+                clearTimeout(this.renewalTimer);
+                this.renewalTimer = null;
+                this.renewalController?.abort();
+                // Only on a real change of state. Saying it on page load instead
+                // would replace the line the server rendered - in the reader's own
+                // language - with this one, before anything had happened.
+                const statusLine = document.querySelector('.WebSocketClientStatus');
+
+                if (statusLine) {
+                    this.showStatus(statusLine);
+                }
+
+                this.scheduleReconnect();
+            });
+            socket.addEventListener('error', () => socket.close());
+        } catch (error) {
             this.scheduleReconnect();
-        });
-        socket.addEventListener('error', () => socket.close());
+        } finally {
+            clearTimeout(timeout);
+            this.connecting = false;
+        }
     }
 
     scheduleRenewal(socket) {
@@ -8400,6 +8455,9 @@ class WebSocketManager {
                 }
 
                 socket.send(response.token);
+                // An open handshake alone does not prove admission. A connection
+                // surviving to renewal can reset the capacity retry backoff.
+                this.reconnectAttempts = 0;
             } catch (error) {
                 socket.close();
             } finally {
@@ -8416,16 +8474,13 @@ class WebSocketManager {
         if (this.reconnecting) return;
         this.reconnecting = true;
 
-        if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            Toast.show(Strings.for('MiscellaneousClient').reloadError || '');
-            return;
-        }
-
-        this.reconnectAttempts += 1;
-        setTimeout(() => {
+        const delay = Math.min(300000, this.reconnectDelay * 2 ** Math.min(this.reconnectAttempts, 5));
+        this.reconnectAttempts = Math.min(this.reconnectAttempts + 1, 6);
+        this.reconnectTimer = setTimeout(() => {
+            this.reconnectTimer = null;
             this.reconnecting = false;
             this.connect();
-        }, this.reconnectDelay);
+        }, Math.min(300000, Math.round(delay * (0.75 + Math.random() * 0.5))));
     }
 
     handleNotification(notificationData) {

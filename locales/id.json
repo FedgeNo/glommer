@@ -127,6 +127,7 @@
         "ariaLabel": "Edit profil"
     },
     "PushNotificationSetting": {
+        "limits": "Maksimal 10 peramban per akun dan 10 pendaftaran baru per hari. Jika sudah penuh, hapus peramban lama di bawah sebelum menambahkan yang lain.",
         "explanation": "Terima notifikasi di perangkat ini meskipun situs tidak dibuka. Pilihan ini berlaku per peramban—aktifkan di setiap tempat Anda ingin dihubungi.",
         "label": {
             "off": "Aktifkan di perangkat ini",

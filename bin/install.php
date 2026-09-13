@@ -4344,6 +4344,21 @@ function install_certificate_into_nginx(string $host, string $cert, string $key)
 // packages, and cert relocation for the steps that follow.
 offer_root_reexec();
 
+// This command is also usable before .env exists, to unlock the browser wizard.
+if (in_array('--setup-code', $_SERVER['argv'] ?? [], true)) {
+    if (is_file(__DIR__ . '/../.env') && !SetupClaim::required()) {
+        fail('This installation already has an administrator. Setup cannot be reopened.');
+    }
+    $web = web_server_account();
+    $owner = $web['user'] ?? env_file_owner();
+    if ($owner === null) {
+        fail('Could not identify the PHP web-server account. Start the web server before issuing a setup code.');
+    }
+    echo 'Single-use setup code (valid for 24 hours): ' . SetupClaim::issue($owner) . "\n";
+    echo "Enter it in the setup or signup page. A replacement invalidates every earlier setup code and browser grant.\n";
+    exit;
+}
+
 // A root/sudo install writes .env 0600, owned by the web server's own account
 // (see Installer::envContents()'s call site below) - so a LATER run by some
 // other unprivileged user (declining the sudo offer above, or non-interactive)
@@ -5494,8 +5509,17 @@ echo "Next steps:\n";
 // tell the admin to do here for that case, and an .env that already existed
 // never touched WS_SECRET in this run either. Restating "restart it" as a
 // blanket next step was always stale by the time anyone reached this point.
-echo '  1. ' . wrap('Visit ' . Config::get('siteURL') . ' and sign up - the first account created becomes
-the site\'s administrator.', 5) . "\n";
+if (SetupClaim::required()) {
+    $web = web_server_account();
+    $owner = $web['user'] ?? env_file_owner();
+    if ($owner === null) {
+        fail('Could not identify the PHP account for the setup claim file.');
+    }
+    echo 'Single-use setup code (valid for 24 hours): ' . SetupClaim::issue($owner) . "\n";
+    echo '  1. Visit ' . Config::get('siteURL') . "/signup, enter this code, and create the administrator in that browser.\n";
+} else {
+    echo '  1. Visit ' . Config::get('siteURL') . ". Administrator setup is already complete.\n";
+}
 
 // Anything deferred at the environment gate (a fresh install couldn't back up a
 // database that didn't exist yet, nor stand up its daemons) was skipped, not

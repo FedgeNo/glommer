@@ -31,28 +31,12 @@ if ($report === null) {
     JSONResponse::localizedError('reportNotFound', 404) -> send();
 }
 
-if ($report -> type === 'post') {
-    // A moderator's deletion federates the same as the author's own: the post
-    // is equally gone either way, and followers elsewhere are holding the same
-    // copy. Read before the row, while the URI can still be built, and sent as
-    // the author since it is their object being withdrawn.
-    $object_uri = FediversePublisher::objectURIFor((int) $report -> targetId);
-    $author = FediversePublisher::authorOf((int) $report -> targetId);
-
-    Post::delete((int) $report -> targetId);
-
-    if ($object_uri !== null && $author !== null) {
-        FediversePublisher::deleted($object_uri, $author);
-    }
-} elseif ($report -> type === 'message') {
-    Message::delete((int) $report -> targetId);
-} else {
+if (!in_array($report -> type, ['post', 'message'], true)) {
     JSONResponse::localizedError('thatReportHasNoDeletableContent', 422) -> send();
 }
 
-// Removing the content resolves the report, so clear it from the queue too.
-ReportManager::delete($report_id);
-
-ModerationAction::log('deleteReportedContent', null, $report -> type, (int) $report -> targetId, $report_id);
+if (!ReportManager::deleteContent($report_id)) {
+    JSONResponse::localizedError('reportNotFound', 404) -> send();
+}
 
 JSONResponse::success(['deleted' => true]) -> send();

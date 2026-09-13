@@ -293,6 +293,27 @@ DELETE
         });
     }
 
+    /** Delete only the locked report's target, with its audit and outbound work. */
+    public static function deleteContent(int $report_id): bool
+    {
+        return self::resolve($report_id, 'deleteReportedContent', static function (ReportData $report): void {
+            $target_id = (int) $report -> targetId;
+            if ($report -> type === 'post') {
+                Post::lockForUpdate($target_id);
+                $uri = FediversePublisher::objectURIFor($target_id);
+                $author = FediversePublisher::authorOf($target_id);
+                Post::deleteInTransaction($target_id);
+                if ($uri !== null && $author !== null) {
+                    FediversePublisher::deleted($uri, $author);
+                }
+            } elseif ($report -> type === 'message') {
+                Message::deleteInTransaction($target_id);
+            } else {
+                throw new \InvalidArgumentException('That report has no deletable content.');
+            }
+        });
+    }
+
     /**
      * The userId a report target resolves to, or null if $target_type is
      * unrecognized or $target_id doesn't actually exist - api/report.php

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * and Controllers.js's PushNotificationSetting wires it. Absent entirely when the server
  * has no VAPID keypair, since there is nothing to subscribe to.
  */
-class PushNotificationSetting extends Div
+class PushNotificationSetting extends FormForm
 {
     public ?string $class = 'PushNotificationSetting';
 
@@ -19,14 +19,17 @@ class PushNotificationSetting extends Div
         $words = Strings::for(self::class);
 
         $this -> addContent(new Paragraph((string) ($words['explanation'] ?? '')));
+        $this -> addContent(new Paragraph((string) ($words['limits'] ?? '')));
 
-        $button = new ButtonButton();
+        $button = new SubmitButton((string) ($words['label']['off'] ?? ''));
         $button -> class = 'PushSubscribeButton';
         // The real label and disabled state are set by the script once it has
         // read the browser's actual subscription; this is the pre-JS resting
         // text, and what a no-JS visitor is left with.
-        $button -> contents[] = (string) ($words['label']['off'] ?? '');
         $this -> addContent($button);
+        $list = new Div();
+        $list -> class = 'PushSubscriptionList';
+        $this -> addContent($list);
 
         return parent::toDOM();
     }

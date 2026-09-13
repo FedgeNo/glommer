@@ -337,6 +337,9 @@ SELECT `remoteActorURI`
      */
     public static function upsert(array $actor): void
     {
+        if (SetupClaim::required()) {
+            throw new \RuntimeException('Federation is unavailable until the operator claims this installation.');
+        }
         $existing = User::byRemoteActorURI($actor['id']);
 
         $display_name = $actor['name'] !== '' ? $actor['name'] : $actor['preferredUsername'];

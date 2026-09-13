@@ -128,6 +128,7 @@
         "ariaLabel": "Profili redaktə edin"
     },
     "PushNotificationSetting": {
+        "limits": "Hər hesab üçün ən çox 10 brauzer və gündə 10 yeni qeydiyyat mümkündür. Limitə çatdıqda yenisini əlavə etməzdən əvvəl aşağıdan köhnə brauzeri silin.",
         "explanation": "Sayt açıq olmasa belə bu cihazda bildirişlər alın. Bu, hər brauzer üçün seçimdir - onu əldə etmək istədiyiniz yerdə yandırın.",
         "label": {
             "off": "Bu Cihazda Aktivləşdirin",

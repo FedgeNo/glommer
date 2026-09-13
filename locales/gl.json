@@ -128,6 +128,7 @@
         "ariaLabel": "Editar o perfil"
     },
     "PushNotificationSetting": {
+        "limits": "Ata 10 navegadores por conta e 10 rexistros novos ao día. Se chegas ao límite, elimina un navegador antigo abaixo antes de engadir outro.",
         "explanation": "Recibe notificacións neste dispositivo mesmo cando o sitio non estea aberto. Esta opción é propia de cada navegador; actívaa onde queiras recibilas.",
         "label": {
             "off": "Activar neste dispositivo",

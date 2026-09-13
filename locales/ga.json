@@ -131,6 +131,7 @@
         "ariaLabel": "Cuir an phróifíl in eagar"
     },
     "PushNotificationSetting": {
+        "limits": "Suas le 10 mbrabhsálaí in aghaidh an chuntais agus 10 gclárú nua sa lá. Nuair atá an teorainn bainte amach, bain seanbhrabhsálaí thíos sula gcuireann tú ceann eile leis.",
         "explanation": "Faigh fógraí ar an ngléas seo fiú nuair nach bhfuil an suíomh oscailte. Is rogha ar leith do gach brabhsálaí é—cuir ar siúl é i ngach áit ar mhaith leat fógraí a fháil.",
         "label": {
             "off": "Cumasaigh ar an ngléas seo",

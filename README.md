@@ -32,7 +32,7 @@ trending NER environment, §9 for backups.
 ## 1. What Glommer is
 
 A small, single-server social network you run yourself. One instance is one
-community: the first person to sign up becomes its administrator (§11), and
+community: the operator claims the administrator account during setup (§11), and
 everyone else joins from there. There is no multi-tenancy, no cloud service,
 and no external runtime dependencies to install with a package manager beyond
 PHP, a database, `ffmpeg` (for media), and - optionally - Python/spaCy for the
@@ -224,6 +224,13 @@ band).
   It remains server-side in the protected `.env`. Deploy the PHP, browser, and
   daemon changes together and restart the daemon and both background workers;
   old open pages need reloading to use lease renewal.
+  Admission defaults to 500 public connections, 20 authenticated connections
+  per account, and 50 pending authentications globally with at most 10 per IP.
+  A separate pool of 64 internal connections remains available for pushes and
+  revocation. Only excess new connections are refused; existing ones are never
+  evicted to make room. The `WS_MAX_*` values in `.env.example` configure these
+  limits. Browser retries use one completion-scheduled timeout, exponential
+  backoff and jitter, up to five minutes between attempts.
 - **Upload worker** (`bin/upload-worker.php`) - drains a disk-backed queue of
   staged video/audio uploads, transcoding each with `ffmpeg` in an OS-sandboxed
   subprocess, then publishing the post and notifying the author.
@@ -231,7 +238,8 @@ band).
   ActivityPub delivery queue, signing each activity as the member it's from;
   also fetches posts a subscribed relay has named, completes linked inbound
   Create objects and missing reply context, delivers Web Push
-  notifications, and sends the trickle of email digests (§10).
+  notifications, retries committed post-media cleanup, and sends the trickle
+  of email digests (§10).
 - **Trending recompute** (`bin/compute-trending.php`) - periodically rescores
   the trending table; runs on a systemd timer (§7) with a read-path self-heal
   as a fallback.
@@ -302,8 +310,8 @@ band).
 
 ## 5. Installation
 
-There are two equivalent guided installers - a web setup wizard and an
-interactive CLI - plus a fully manual path. All three end in the same place: a
+There are two guided installers - a web setup wizard and an
+interactive CLI - plus manual configuration followed by the installer. All end in the same place: a
 provisioned database, a least-privilege runtime account, and a populated
 schema.
 
@@ -318,17 +326,29 @@ Without root it falls back to user-level services and prints manual steps.
 1. Copy the project to your web root and make it writable by the web-server
    user (the success page reminds you to restore permissions afterward).
 2. Start the WebSocket server (§7) - it runs fine with no `.env` yet.
-3. Visit the site. With no `.env`, you get a setup page: it reports any missing
+3. Run `sudo php bin/install.php --setup-code` on the server. Visit the site
+   over HTTPS and enter the single-use code. With no `.env`, the authorized
+   browser gets a setup page: it reports any missing
    prerequisite (fix and reload), then a form for the site URL/title/mail-from,
    database admin credentials, and optional WebSocket TLS paths.
 4. Submit. It proves HTTPS is live, that `ServerName`/`UseCanonicalName` block
    Host-header spoofing, generates a WebSocket TLS cert with mkcert if needed,
    and provisions the database.
 5. Follow the success checklist: restore permissions, restart the WebSocket
-   server, and sign up - the first account becomes the administrator (§11).
+   server, and open `/signup` in that same browser to create the administrator
+   (§11). Other browsers cannot register before this claim is complete.
 
 The setup page only appears while `.env` is absent; afterward a DB outage shows
 a maintenance page instead, so it never invites re-installation.
+
+Codes expire after 24 hours and are exchanged once for a grant bound to the
+claiming browser session, also valid for 24 hours. The protected `.setup-claim`
+file contains hashes, never the code or browser grant in plaintext. Completing
+administrator registration consumes the grant with the database transaction.
+If the browser session is lost, `sudo php bin/install.php --setup-code` issues
+a replacement and invalidates all earlier codes and grants. It cannot reopen
+setup on a claimed installation. Google signup and remote actor creation also
+respect this gate.
 
 ### Interactive CLI
 
@@ -346,6 +366,9 @@ schema work; set `DB_ADMIN_USERNAME`/`DB_ADMIN_PASSWORD` to run
 non-interactively. Re-running on a healthy install changes nothing, and is the
 recommended first step after every upgrade (§12).
 
+On an unclaimed installation, the completed installer prints the single-use
+code needed at `/signup`. Ordinary upgrades preserve the existing administrator.
+
 ### Manual
 
 1. Copy `.env.example` to `.env` and fill in `SITE_URL`, `SITE_TITLE`, and the
@@ -354,11 +377,12 @@ recommended first step after every upgrade (§12).
    instead (step 5 prompts for the "from" address the first time it's unset
    anywhere).
 2. As a DB admin account, create the database (`utf8mb4`/`utf8mb4_unicode_ci`),
-   load `schema.sql`, then create the runtime account with only
+   then create the runtime account with only
    `SELECT, INSERT, UPDATE, DELETE` on it.
 3. Ensure `uploads/` is writable by the web-server user.
-4. Start the WebSocket server, upload worker, and federation worker (§7).
-5. `php bin/install.php` to verify/repair, then sign up.
+4. Run `sudo php bin/install.php` to install the schema, migrations and
+   services (§7). Schema changes and backfills always go through this installer.
+5. Enter its setup code at `/signup` and create the administrator.
 
 ### Choose `SITE_URL` once and keep it
 
@@ -661,8 +685,9 @@ which is exactly why the relay approach is recommended.
 
 ## 11. Administration
 
-The **first account created on a fresh install is the administrator** - this is
-structural, not a convention: the admin is always `userId` 1. Admin-only
+The **operator-authorized first account is the administrator**. The installer
+code protects this claim; registration assigns it `userId` 1 even if an earlier
+failed insert consumed an auto-increment value. Admin-only
 actions (appointing/revoking moderators, editing admin settings, Google/Turnstile
 config) are theirs alone; general moderators can work the reports queue, ban
 users, ban trending entities, and defederate whole domains from the
@@ -681,6 +706,20 @@ come from the two nonempty archive files; they do not verify that a restore
 will succeed. Detailed service checks and settings remain in the panels below.
 The status API uses the same primary-admin restriction and CSRF protection as
 the settings page. It reports a count of long queries, never their SQL text.
+
+Deleting reported content commits the content deletion, stored counts, report
+resolution, moderation log and any federation Delete queue entries together.
+Public media cleanup runs after commit and retries from `MediaDeletions` if
+the request is interrupted or a file cannot be removed. Private forensic
+originals retain their existing preservation policy.
+
+Browser push allows ten subscriptions per account and ten new registrations
+in a rolling 24-hour window. Existing subscriptions can refresh without using
+that allowance. Settings lists destinations for explicit removal; none are
+automatically evicted for age or inactivity. Removing one does not reset the
+daily allowance. Existing subscriptions above the cap are preserved on upgrade,
+with up to 100 shown at a time for removal. A shared browser changing accounts
+discards notifications queued for the previous owner of that destination.
 
 **Relays** (Admin Settings, admin only) subscribe this server to a shared
 firehose. Weigh it before subscribing: the volume is whatever the servers on
@@ -740,12 +779,22 @@ CSRF, and client-configuration cookies on HTTPS. Each is `Secure`, uses
 `Path=/`, and omits `Domain`; session and remember-me cookies also remain
 `HttpOnly`. Upgrading from unprefixed cookie names requires users to sign in
 again. The old names are expired and are not accepted on HTTPS. The initial
-HTTP setup wizard uses unprefixed cookies until TLS is available.
+HTTP requests use unprefixed cookies before installation, but entering a setup
+code and configuring the site require HTTPS.
 
 **CSRF** is checked in one place, `init.php`, on every POST. Three endpoints are
 exempt because they cannot carry a token and were never meant to: the
 ActivityPub inbox proves itself by HTTP signature, one-click unsubscribe by
 the RFC 8058 body token, and the bounded CSP-report endpoint is rate-limited.
+
+**Federation key discovery** remains synchronous but is separately bounded
+before an incoming signature is trusted. At most four discoveries run at once,
+with thirty new lookups per source IP per minute. Simultaneous requests for one
+actor are coalesced through a nonblocking lock; failures cool down for one
+minute. A short-lived PHP child holds the locks under a 20-second wall-clock
+deadline covering DNS, redirects and fetching, shared with any key refresh in
+that authentication attempt. Capacity refusals and timeouts return HTTP 503
+with `Retry-After: 60`; no activity is accepted before signature verification.
 
 **Cross-site scripting** has no route in through content. The browser code
 never assigns `innerHTML` - every node is built with `createElement` and

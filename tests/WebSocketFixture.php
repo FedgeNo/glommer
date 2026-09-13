@@ -13,7 +13,7 @@ class WebSocketFixture
     private int $port;
     private int $pushPort;
 
-    public function __construct()
+    public function __construct(array $limits = [])
     {
         Env::get('WS_SECRET');
         $listeners = [stream_socket_server('tcp://127.0.0.1:0'), stream_socket_server('tcp://127.0.0.1:0')];
@@ -22,7 +22,7 @@ class WebSocketFixture
         foreach ($listeners as $listener) fclose($listener);
 
         foreach (['WS_SECRET' => self::SECRET, 'WS_HOST' => '127.0.0.1', 'WS_PORT' => (string) $this -> port,
-            'WS_PUSH_PORT' => (string) $this -> pushPort, 'WS_TLS_CERT' => '', 'WS_TLS_KEY' => '', 'WATCHDOG_USEC' => '0'] as $name => $value) {
+            'WS_PUSH_PORT' => (string) $this -> pushPort, 'WS_TLS_CERT' => '', 'WS_TLS_KEY' => '', 'WATCHDOG_USEC' => '0'] + $limits as $name => $value) {
             $this -> environment[$name] = getenv($name);
             putenv($name . '=' . $value);
         }
@@ -47,9 +47,7 @@ class WebSocketFixture
 
     public function connect(string $token)
     {
-        $socket = stream_socket_client('tcp://127.0.0.1:' . $this -> port, $code, $error, 2);
-        $this -> sockets[] = $socket;
-        stream_set_timeout($socket, 2);
+        $socket = $this -> pending();
         fwrite($socket, "GET / HTTP/1.1\r\nHost: localhost\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: "
             . base64_encode(random_bytes(16)) . "\r\nSec-WebSocket-Version: 13\r\n\r\n");
         $headers = '';
@@ -60,6 +58,14 @@ class WebSocketFixture
         }
         if (!str_starts_with($headers, 'HTTP/1.1 101')) throw new \RuntimeException('WebSocket handshake refused.');
         $this -> text($socket, $token);
+        return $socket;
+    }
+
+    public function pending()
+    {
+        $socket = stream_socket_client('tcp://127.0.0.1:' . $this -> port, $code, $error, 2);
+        $this -> sockets[] = $socket;
+        stream_set_timeout($socket, 2);
         return $socket;
     }
 

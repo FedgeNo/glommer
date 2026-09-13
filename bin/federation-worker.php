@@ -124,6 +124,14 @@ while ($running) {
         RelayFetch::failed((int) $fetch -> relayFetchId, (int) $fetch -> attempts);
     }
 
+    try {
+        MediaDeletion::drain();
+        ActorDiscovery::prune();
+        PushSubscription::prune();
+    } catch (\Throwable $exception) {
+        error_log('Media cleanup pass failed: ' . $exception -> getMessage());
+    }
+
     // Web Pushes ride this worker too - short, independent HTTP calls, same
     // "never from a request" rule as everything else here. Guarded so a push
     // service having a bad day costs one pass, never the worker.

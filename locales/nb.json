@@ -525,6 +525,7 @@
         "ariaLabel": "Rediger profil"
     },
     "PushNotificationSetting": {
+        "limits": "Opptil 10 nettlesere per konto og 10 nye registreringer om dagen. Når grensen er nådd, fjern en gammel nettleser nedenfor før du legger til en ny.",
         "explanation": "Motta varsler på denne enheten selv når nettstedet ikke er åpent. Valget gjelder hver nettleser for seg – slå det på overalt der du vil nås.",
         "label": {
             "off": "Aktiver på denne enheten",

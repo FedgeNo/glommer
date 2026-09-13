@@ -735,6 +735,7 @@
         "ariaLabel": "Profiel bewerken"
     },
     "PushNotificationSetting": {
+        "limits": "Maximaal 10 browsers per account en 10 nieuwe registraties per dag. Verwijder bij het bereiken van de limiet hieronder een oude browser voordat je een andere toevoegt.",
         "explanation": "Ontvang meldingen op dit apparaat, ook als de site niet open staat. Dit is een keuze per browser - zet het aan overal waar je bereikbaar wilt zijn.",
         "label": {
             "off": "Inschakelen op dit apparaat",

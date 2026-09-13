@@ -127,6 +127,7 @@
         "ariaLabel": "Chỉnh sửa hồ sơ"
     },
     "PushNotificationSetting": {
+        "limits": "Tối đa 10 trình duyệt cho mỗi tài khoản và 10 lượt đăng ký mới mỗi ngày. Khi đạt giới hạn, hãy xóa một trình duyệt cũ bên dưới trước khi thêm trình duyệt khác.",
         "explanation": "Nhận thông báo trên thiết bị này ngay cả khi trang web không mở. Đây là lựa chọn riêng cho từng trình duyệt - hãy bật ở bất cứ nơi nào bạn muốn được liên hệ.",
         "label": {
             "off": "Bật trên thiết bị này",

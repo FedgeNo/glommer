@@ -128,6 +128,7 @@
         "ariaLabel": "Ndrysho profilin"
     },
     "PushNotificationSetting": {
+        "limits": "Deri në 10 shfletues për llogari dhe 10 regjistrime të reja në ditë. Kur të arrini kufirin, hiqni një shfletues të vjetër më poshtë përpara se të shtoni një tjetër.",
         "explanation": "Merrni njoftime në këtë pajisje edhe kur sajti nuk është i hapur. Kjo zgjedhje bëhet për secilin shfletues - aktivizojeni kudo ku dëshironi të merrni njoftime.",
         "label": {
             "off": "Aktivizoje në këtë pajisje",

@@ -694,6 +694,7 @@
         "ariaLabel": "Edit Profile"
     },
     "PushNotificationSetting": {
+        "limits": "Up to 10 browsers per account and 10 new registrations per day. Remove an old browser below before adding another when full.",
         "explanation": "Get notifications on this device even when the site isn't open. This is a per-browser choice - turn it on wherever you want to be reached.",
         "label": {
             "off": "Enable on This Device",

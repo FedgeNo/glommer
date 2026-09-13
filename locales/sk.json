@@ -739,6 +739,7 @@
         "ariaLabel": "Upraviť profil"
     },
     "PushNotificationSetting": {
+        "limits": "Najviac 10 prehliadačov na účet a 10 nových registrácií denne. Po dosiahnutí limitu nižšie odstráňte starý prehliadač, než pridáte ďalší.",
         "explanation": "Dostávajte oznámenia na tomto zariadení, aj keď stránka nie je otvorená. Toto nastavenie platí pre každý prehliadač zvlášť - zapnite ho všade, kde chcete dostávať oznámenia.",
         "label": {
             "off": "Povoliť na tomto zariadení",

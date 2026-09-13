@@ -163,6 +163,9 @@ class GoogleAuth
      */
     public static function resolveUser(string $email, ?string $name): ?User
     {
+        if (SetupClaim::required() && !SetupClaim::authorized()) {
+            return null;
+        }
         // The address remains one indivisible claim from the reservation check
         // through account creation, matching password signup and email change.
         $rate_key = EmailChangeRevert::addressLock($email);
@@ -252,13 +255,16 @@ UPDATE `Users`
         $display_name = $name !== null && trim($name) !== '' ? mb_substr(trim($name), 0, 100) : null;
         $verified = 1;
 
-        DB::run('
-INSERT INTO `Users` (`slug`, `email`, `passwordHash`, `title`, `verified`)
-    VALUES (?, ?, ?, ?, ?)
-', 'ssssi', $username, $email, $hash, $display_name, $verified);
+        $new_user_id = SetupClaim::register(static function (bool $administrator) use ($username, $email, $hash, $display_name, $verified): int {
+            DB::run('
+INSERT INTO `Users` (`userId`, `slug`, `email`, `passwordHash`, `title`, `verified`)
+    VALUES (?, ?, ?, ?, ?, ?)
+', 'issssi', $administrator ? 1 : null, $username, $email, $hash, $display_name, $verified);
+            return (int) mysqli_insert_id(DB::connection());
+        });
 
         $user = new User();
-        $user -> userId = (int) mysqli_insert_id(DB::connection());
+        $user -> userId = $new_user_id;
         $user -> slug = $username;
         $user -> email = $email;
         $user -> title = $display_name;

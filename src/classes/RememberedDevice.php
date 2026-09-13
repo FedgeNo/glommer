@@ -69,7 +69,7 @@ class RememberedDevice extends Div
      *
      * @param array<string, mixed> $words
      */
-    private static function describe(?string $user_agent, array $words): string
+    public static function describe(?string $user_agent, array $words): string
     {
         if ($user_agent === null || $user_agent === '') {
             return (string) ($words['unknownDevice'] ?? '');

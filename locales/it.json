@@ -129,6 +129,7 @@
         "ariaLabel": "Modifica profilo"
     },
     "PushNotificationSetting": {
+        "limits": "Fino a 10 browser per account e 10 nuove registrazioni al giorno. Se raggiungi il limite, rimuovi un vecchio browser qui sotto prima di aggiungerne un altro.",
         "explanation": "Ricevi notifiche su questo dispositivo anche quando il sito non è aperto. È una scelta specifica per ogni browser: attivala ovunque tu voglia essere raggiungibile.",
         "label": {
             "off": "Attiva su questo dispositivo",

@@ -128,6 +128,7 @@
         "ariaLabel": "Profil szerkesztése"
     },
     "PushNotificationSetting": {
+        "limits": "Fiókonként legfeljebb 10 böngésző és naponta 10 új regisztráció engedélyezett. Ha elérted a korlátot, új böngésző hozzáadása előtt távolíts el egy régit alább.",
         "explanation": "Értesítések fogadása ezen az eszközön akkor is, ha a webhely nincs megnyitva. Ez böngészőnként külön beállítás – kapcsold be mindenhol, ahol értesítéseket szeretnél kapni.",
         "label": {
             "off": "Bekapcsolás ezen az eszközön",

@@ -128,6 +128,7 @@
         "ariaLabel": "Redakti profilon"
     },
     "PushNotificationSetting": {
+        "limits": "Ĝis 10 retumiloj por konto kaj 10 novaj registradoj tage. Kiam la limo estas atingita, forigu malnovan retumilon sube antaŭ ol aldoni alian.",
         "explanation": "Ricevu sciigojn en ĉi tiu aparato eĉ kiam la retejo ne estas malfermita. Tio estas elekto por ĉiu retumilo — ŝaltu ĝin kie ajn vi volas esti atingebla.",
         "label": {
             "off": "Ŝalti en ĉi tiu aparato",

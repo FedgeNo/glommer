@@ -16,9 +16,10 @@ if (!WebPushKeys::isConfigured()) {
 
 $payload = json_decode((string) file_get_contents('php://input'), true);
 
-$endpoint = trim((string) ($payload['endpoint'] ?? ''));
-$p256dh = trim((string) ($payload['p256dh'] ?? ''));
-$auth = trim((string) ($payload['auth'] ?? ''));
+$payload = is_array($payload) ? $payload : [];
+$endpoint = is_string($payload['endpoint'] ?? null) ? trim($payload['endpoint']) : '';
+$p256dh = is_string($payload['p256dh'] ?? null) ? trim($payload['p256dh']) : '';
+$auth = is_string($payload['auth'] ?? null) ? trim($payload['auth']) : '';
 
 // The endpoint is a URL the push service minted; the keys are what the
 // browser generated for this subscription. Shapes checked here, cryptography
@@ -29,13 +30,15 @@ if (!str_starts_with($endpoint, 'https://') || strlen($endpoint) > 500
     JSONResponse::localizedError('malformedSubscription', 422) -> send();
 }
 
-// A browser resubscribing (or a second member on a shared browser) replaces
-// the endpoint's row - the push service treats the endpoint as one channel,
-// and whoever subscribed last is who it belongs to.
-DB::run('
-INSERT INTO `PushSubscriptions` (`userId`, `endpoint`, `p256dh`, `auth`)
-    VALUES (?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE `userId` = VALUES(`userId`), `p256dh` = VALUES(`p256dh`), `auth` = VALUES(`auth`)
-', 'isss', (int) Auth::id(), $endpoint, $p256dh, $auth);
-
-JSONResponse::success(['subscribed' => true]) -> send();
+$status = PushSubscription::subscribe((int) Auth::id(), $endpoint, $p256dh, $auth, $_SERVER['HTTP_USER_AGENT'] ?? null);
+if ($status === 'full') {
+    JSONResponse::error((string) (Strings::for('PushNotificationSetting')['limits'] ?? ''), 409) -> send();
+}
+if ($status === 'limited') {
+    header('Retry-After: 86400');
+    JSONResponse::localizedError('tooManyRequestsPleaseTryAgainLater', 429) -> send();
+}
+if ($status !== 'subscribed') {
+    JSONResponse::localizedError('notAuthorized', 403) -> send();
+}
+JSONResponse::success(PushSubscription::status((int) Auth::id(), $endpoint)) -> send();

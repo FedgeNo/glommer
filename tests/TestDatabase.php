@@ -89,6 +89,10 @@ final class TestDatabase
         putenv('WS_PUSH_PORT=0');
         Config::reload();
 
+        // Ordinary fixtures represent an installed community. SetupClaimTest
+        // explicitly restores the unclaimed state when testing first-run gates.
+        DB::run('INSERT INTO `SetupState` (`setupId`, `completed`) VALUES (1, 1)');
+
         return true;
     }
 

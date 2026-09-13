@@ -128,6 +128,7 @@
         "ariaLabel": "Rediger profil"
     },
     "PushNotificationSetting": {
+        "limits": "Op til 10 browsere pr. konto og 10 nye registreringer om dagen. Når grænsen er nået, skal du fjerne en gammel browser nedenfor, før du tilføjer en ny.",
         "explanation": "Få notifikationer på denne enhed, selv når webstedet ikke er åbent. Valget gælder for hver browser for sig — slå det til alle de steder, hvor du vil modtage notifikationer.",
         "label": {
             "off": "Aktiver på denne enhed",

@@ -128,6 +128,7 @@
         "ariaLabel": "Muokkaa profiilia"
     },
     "PushNotificationSetting": {
+        "limits": "Enintään 10 selainta tiliä kohti ja 10 uutta rekisteröintiä päivässä. Jos raja on täynnä, poista vanha selain alta ennen uuden lisäämistä.",
         "explanation": "Saat ilmoituksia tälle laitteelle myös silloin, kun sivusto ei ole avoinna. Asetus on selainkohtainen — ota se käyttöön kaikissa selaimissa, joissa haluat saada ilmoituksia.",
         "label": {
             "off": "Ota käyttöön tällä laitteella",

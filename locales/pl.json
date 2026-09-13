@@ -130,6 +130,7 @@
         "ariaLabel": "Edytuj profil"
     },
     "PushNotificationSetting": {
+        "limits": "Do 10 przeglądarek na konto i 10 nowych rejestracji dziennie. Po osiągnięciu limitu usuń poniżej starą przeglądarkę, zanim dodasz kolejną.",
         "explanation": "Otrzymuj powiadomienia na tym urządzeniu, nawet gdy witryna nie jest otwarta. To ustawienie dotyczy każdej przeglądarki z osobna - włącz je wszędzie tam, gdzie chcesz je otrzymywać.",
         "label": {
             "off": "Włącz na tym urządzeniu",

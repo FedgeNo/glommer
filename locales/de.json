@@ -128,6 +128,7 @@
         "ariaLabel": "Profil bearbeiten"
     },
     "PushNotificationSetting": {
+        "limits": "Bis zu 10 Browser pro Konto und 10 neue Registrierungen pro Tag. Entferne bei erreichtem Limit unten einen alten Browser, bevor du einen weiteren hinzufügst.",
         "explanation": "Erhalte Benachrichtigungen auf diesem Gerät, auch wenn die Seite nicht geöffnet ist. Das ist eine Einstellung pro Browser - aktiviere sie überall, wo du erreichbar sein willst.",
         "label": {
             "off": "Auf diesem Gerät aktivieren",

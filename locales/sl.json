@@ -773,6 +773,7 @@
         "ariaLabel": "Uredi profil"
     },
     "PushNotificationSetting": {
+        "limits": "Do 10 brskalnikov na račun in 10 novih registracij na dan. Ko dosežete omejitev, spodaj odstranite star brskalnik, preden dodate drugega.",
         "explanation": "Prejemajte obvestila v tej napravi, tudi ko spletno mesto ni odprto. Ta izbira velja za vsak brskalnik posebej - vklopite jo povsod, kjer želite biti dosegljivi.",
         "label": {
             "off": "Omogoči v tej napravi",

@@ -129,6 +129,7 @@
         "ariaLabel": "Rediģēt profilu"
     },
     "PushNotificationSetting": {
+        "limits": "Līdz 10 pārlūkprogrammām vienam kontam un 10 jaunām reģistrācijām dienā. Sasniedzot ierobežojumu, pirms citas pievienošanas noņemiet vecu pārlūkprogrammu zemāk.",
         "explanation": "Saņemiet paziņojumus šajā ierīcē arī tad, kad vietne nav atvērta. Šī izvēle attiecas uz katru pārlūkprogrammu atsevišķi — ieslēdziet to visur, kur vēlaties saņemt paziņojumus.",
         "label": {
             "off": "Ieslēgt šajā ierīcē",

@@ -128,6 +128,7 @@
         "ariaLabel": "I-edit ang profile"
     },
     "PushNotificationSetting": {
+        "limits": "Hanggang 10 browser bawat account at 10 bagong pagpaparehistro bawat araw. Kapag puno na, mag-alis muna ng lumang browser sa ibaba bago magdagdag ng isa pa.",
         "explanation": "Tumanggap ng mga notification sa device na ito kahit hindi bukas ang site. Hiwalay ang pagpili sa bawat browser — i-on ito saanman mo gustong makatanggap.",
         "label": {
             "off": "I-enable sa device na ito",

@@ -129,6 +129,7 @@
         "ariaLabel": "Editează profilul"
     },
     "PushNotificationSetting": {
+        "limits": "Până la 10 browsere per cont și 10 înregistrări noi pe zi. Când atingi limita, elimină un browser vechi de mai jos înainte de a adăuga altul.",
         "explanation": "Primește notificări pe acest dispozitiv chiar și când site-ul nu este deschis. Alegerea se face pentru fiecare browser – activeaz-o oriunde dorești să fii contactat.",
         "label": {
             "off": "Activează pe acest dispozitiv",

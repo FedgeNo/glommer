@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class RateLimiter
 {
-    public static function tooManyAttempts(string $rate_key, int $max_attempts, int $window_seconds): bool
+    public static function tooManyAttempts(string $rate_key, int $max_attempts, int $window_seconds, int $lock_timeout_seconds = 5): bool
     {
         // Serialize the check-then-record window per key. Without this, two
         // concurrent requests can both read a count below the limit before
@@ -12,7 +12,7 @@ class RateLimiter
         // held across into recordAttempt() (which releases it) so the count and
         // the insert that follows it are one atomic step. On the blocked path
         // below - where no record follows - it's released before returning.
-        self::acquireLock($rate_key);
+        self::acquireLock($rate_key, $lock_timeout_seconds);
 
         $stmt = DB::run('
 SELECT COUNT(*) AS `count`
@@ -65,10 +65,9 @@ DELETE
      * api/send-message.php, which needs the check and the insert atomic but
      * has nothing to "record" separately.
      */
-    public static function acquireLock(string $rate_key): void
+    public static function acquireLock(string $rate_key, int $timeout_seconds = 5): void
     {
         $lock_name = self::lockName($rate_key);
-        $timeout_seconds = 5;
 
         // A timeout must stop the caller before its protected check or write.
         // The current holder may still be processing an unrecorded attempt.
@@ -78,7 +77,7 @@ SELECT GET_LOCK(?, ?)
         $acquired = mysqli_fetch_row(mysqli_stmt_get_result($stmt))[0];
 
         if ((int) $acquired !== 1) {
-            throw new RateLimitLockException('Could not acquire a rate-limit lock within five seconds.');
+            throw new RateLimitLockException('Could not acquire a rate-limit lock within the deadline.');
         }
     }
 

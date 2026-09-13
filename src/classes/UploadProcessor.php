@@ -362,13 +362,16 @@ class UploadProcessor
      * when its post is deleted, ending public access to the media. The private
      * original is deliberately kept as the forensic record (see below).
      */
-    public static function deleteForItem(int $item_id, string $item_type): void
+    public static function deleteForItem(int $item_id, string $item_type): bool
     {
         $paths = self::outputPaths($item_id, $item_type, null);
+        $deleted = true;
 
         foreach (['display', 'thumbnail'] as $key) {
-            if ($paths[$key] !== null && is_file($paths[$key])) {
-                unlink($paths[$key]);
+            if ($paths[$key] !== null && (file_exists($paths[$key]) || is_link($paths[$key]))) {
+                if (!@unlink($paths[$key])) {
+                    $deleted = false;
+                }
             }
         }
 
@@ -376,6 +379,7 @@ class UploadProcessor
         // but the private original under uploads/private/originals is kept: a
         // report's snapshot records the attachment ids, and the originals are
         // the forensic record a moderator recovers deleted media from.
+        return $deleted;
     }
 
     /**

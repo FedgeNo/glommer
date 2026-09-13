@@ -19,33 +19,14 @@ class Backup
 
     /**
      * Whether at least one backup run has actually completed successfully -
-     * both archives present and non-empty in some timestamped run directory.
+     * database and encrypted recovery bundle present and non-empty in some timestamped run directory.
      * A functional check (like the WebSocket reachability check), not just
      * "is BACKUP_DIR set" - proves the mechanism actually works, not merely
      * that it's configured.
      */
     public static function hasCompletedRun(): bool
     {
-        $root = self::rootDir();
-
-        if (!is_dir($root)) {
-            return false;
-        }
-
-        foreach (glob($root . '/*', GLOB_ONLYDIR) ?: [] as $run_dir) {
-            if (!preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', basename($run_dir))) {
-                continue;
-            }
-
-            $database_dump = $run_dir . '/database.sql.gz';
-            $uploads_archive = $run_dir . '/uploads.tar.gz';
-
-            if (is_file($database_dump) && filesize($database_dump) > 0 && is_file($uploads_archive) && filesize($uploads_archive) > 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return self::archiveStatus()['time'] !== null;
     }
 
     /** Metadata only: never read the database dump or scan the uploads tree. */
@@ -60,15 +41,15 @@ class Backup
         $latest = null;
 
         foreach (glob($root . '/*', GLOB_ONLYDIR) ?: [] as $directory) {
-            if (!preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', basename($directory))) {
+            if (is_link($directory) || !preg_match('/^\d{4}-\d{2}-\d{2}_\d{6}$/', basename($directory))) {
                 continue;
             }
 
             $dump = $directory . '/database.sql.gz';
-            $uploads = $directory . '/uploads.tar.gz';
+            $recovery = $directory . '/' . BackupRecovery::FILENAME;
 
-            if (is_file($dump) && is_file($uploads) && @filesize($dump) > 0 && @filesize($uploads) > 0) {
-                $modified = max((int) @filemtime($dump), (int) @filemtime($uploads));
+            if (is_file($dump) && is_file($recovery) && @filesize($dump) > 0 && @filesize($recovery) > 0) {
+                $modified = max((int) @filemtime($dump), (int) @filemtime($recovery));
                 $latest = max($latest ?? 0, $modified);
             }
         }

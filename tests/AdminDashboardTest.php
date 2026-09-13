@@ -145,7 +145,7 @@ class AdminDashboardTest extends TestCase
         $this -> assertSame(array_fill_keys(array_keys($states), null), ServiceStatus::parse(''));
     }
 
-    public function testBackupStatusRequiresBothNonemptyArchiveFiles(): void
+    public function testBackupStatusRequiresDatabaseAndEncryptedRecovery(): void
     {
         $root = sys_get_temp_dir() . '/glommer-dashboard-' . bin2hex(random_bytes(6));
         mkdir($root);
@@ -157,16 +157,16 @@ class AdminDashboardTest extends TestCase
                 mkdir($root . '/' . $name);
                 file_put_contents($root . '/' . $name . '/database.sql.gz', 'fixture');
             }
-            file_put_contents($root . '/' . $directories[0] . '/uploads.tar.gz', 'fixture');
+            file_put_contents($root . '/' . $directories[0] . '/recovery.json.gpg', 'fixture');
             touch($root . '/' . $directories[0] . '/database.sql.gz', 1000);
-            touch($root . '/' . $directories[0] . '/uploads.tar.gz', 1001);
-            file_put_contents($root . '/' . $directories[2] . '/uploads.tar.gz', '');
-            file_put_contents($root . '/unrelated/uploads.tar.gz', 'fixture');
+            touch($root . '/' . $directories[0] . '/recovery.json.gpg', 1001);
+            file_put_contents($root . '/' . $directories[2] . '/recovery.json.gpg', '');
+            file_put_contents($root . '/unrelated/recovery.json.gpg', 'fixture');
             clearstatcache();
             $this -> assertSame(['readable' => true, 'time' => 1001], Backup::archiveStatus($root));
-            file_put_contents($root . '/' . $directories[1] . '/uploads.tar.gz', 'fixture');
+            file_put_contents($root . '/' . $directories[1] . '/recovery.json.gpg', 'fixture');
             touch($root . '/' . $directories[1] . '/database.sql.gz', 2000);
-            touch($root . '/' . $directories[1] . '/uploads.tar.gz', 2001);
+            touch($root . '/' . $directories[1] . '/recovery.json.gpg', 2001);
             clearstatcache();
             $this -> assertSame(['readable' => true, 'time' => 2001], Backup::archiveStatus($root));
         } finally {

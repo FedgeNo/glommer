@@ -10,9 +10,8 @@ declare(strict_types=1);
  * database. Two listeners multiplexed in one stream_select() loop:
  *
  *   - the public WebSocket port browsers connect to (WSPort), authenticated
- *     via a short-lived WSToken passed as a query string parameter (the
- *     standard approach for browser WebSocket auth, since the browser
- *     WebSocket API can't set custom headers on the handshake)
+ *     via a short-lived WSToken sent in its first text frame and renewed
+ *     before expiry. PHP checks credentials; this daemon only checks signatures.
  *   - a loopback-only "push" port (WSPushPort) that api/*.php scripts
  *     (running in a normal Apache/PHP-FPM request) connect to briefly to
  *     say "deliver this JSON payload to this userId's open connection(s)"
@@ -174,6 +173,7 @@ if ($watchdog_interval > 0) {
  *     recvBuffer: string,
  *     sendBuffer: string,
  *     userId: ?int,
+ *     lease: ?array,
  *     fragOpcode: ?int,
  *     fragBuffer: string,
  *     connectedAt: float,
@@ -185,6 +185,7 @@ $connections = [];
 
 /** @var array<int, int[]> userId => list of connection ids (a user can have several tabs open) */
 $connections_by_user = [];
+$revocations = new WSRevocation();
 
 // Hard per-connection buffer caps - without these, a client could declare a
 // multi-gigabyte frame length (or stream bytes without ever completing a
@@ -194,7 +195,8 @@ $connections_by_user = [];
 // browser clients only ever send the handshake and control frames, and push
 // payloads are single notification/message JSON lines.
 const MAX_CLIENT_BUFFER_BYTES = 65536;
-const MAX_PUSH_BUFFER_BYTES = 262144;
+// Includes base64 overhead for a signed envelope around the previous 256 KiB payload budget.
+const MAX_PUSH_BUFFER_BYTES = 350000;
 const MAX_SEND_BUFFER_BYTES = 1048576;
 
 // A client that never finishes its WebSocket handshake (or a TCP connection
@@ -236,6 +238,7 @@ function register_connection($socket, string $kind): int
         'recvBuffer' => '',
         'sendBuffer' => '',
         'userId' => null,
+        'lease' => null,
         'fragOpcode' => null,
         'fragBuffer' => '',
         'connectedAt' => $now,
@@ -261,9 +264,10 @@ function register_connection($socket, string $kind): int
  */
 function reap_stale_connections(): void
 {
-    global $connections;
+    global $connections, $revocations;
 
     $now = microtime(true);
+    $revocations -> prune();
 
     foreach ($connections as $id => $connection) {
         if ($connection['kind'] === 'push') {
@@ -291,6 +295,11 @@ function reap_stale_connections(): void
                 drop_connection($id);
             }
 
+            continue;
+        }
+
+        if (!$revocations -> allows($connection['lease'])) {
+            drop_connection($id);
             continue;
         }
 
@@ -350,8 +359,7 @@ function attach_user(int $id, int $user_id): void
 }
 
 /**
- * Reads a client's first message as its token and, if it holds up, gives the
- * connection its identity.
+ * Authenticates the first lease or renews one without changing socket identity.
  *
  * A connection that says anything else first is dropped rather than left open
  * to try again: the token is signed and either verifies or does not, so a
@@ -360,17 +368,33 @@ function attach_user(int $id, int $user_id): void
  */
 function authenticate_client(int $id, string $message): void
 {
-    global $connections, $connections_by_user, $ws_secret;
+    global $connections, $connections_by_user, $ws_secret, $revocations;
 
-    $user_id = WSToken::verify(trim($message), $ws_secret);
+    $lease = WSToken::verify($message, $ws_secret);
+    $previous = $connections[$id]['lease'];
 
-    if ($user_id === null) {
+    if ($lease === null || !$revocations -> allows($lease)
+        || ($previous !== null && (
+            !$revocations -> allows($previous)
+            || $previous['userId'] !== $lease['userId']
+            || $previous['sessionId'] !== $lease['sessionId']
+            || $previous['deviceId'] !== $lease['deviceId']
+            || $previous['version'] !== $lease['version']
+            || $lease['expiresAt'] < $previous['expiresAt']
+        ))) {
         log_line('Client failed authentication (connection ' . $id . ')');
         drop_connection($id);
 
         return;
     }
 
+    $connections[$id]['lease'] = $lease;
+
+    if ($previous !== null) {
+        return;
+    }
+
+    $user_id = $lease['userId'];
     attach_user($id, $user_id);
 
     log_line('Client connected: user ' . $user_id . ' (connection ' . count($connections_by_user[$user_id] ?? []) . ')');
@@ -584,7 +608,7 @@ function try_complete_handshake(int $id): bool
 
 function handle_push_request(int $id): void
 {
-    global $connections, $connections_by_user, $ws_secret;
+    global $connections, $connections_by_user, $ws_secret, $revocations;
 
     $newline_pos = strpos($connections[$id]['recvBuffer'], "\n");
 
@@ -597,6 +621,23 @@ function handle_push_request(int $id): void
     // further bytes on this connection re-process it from the top, delivering
     // the same payload again.
     $connections[$id]['recvBuffer'] = substr($connections[$id]['recvBuffer'], $newline_pos + 1);
+
+    // Only a purpose-signed envelope on this internal listener can revoke.
+    // A browser token and an ordinary payload are never control authority.
+    $revoked_user = $revocations -> accept($line, is_string($ws_secret) ? $ws_secret : null);
+
+    if ($revoked_user !== null) {
+        foreach ($connections_by_user[$revoked_user] ?? [] as $client_id) {
+            if (!$revocations -> allows($connections[$client_id]['lease'])) {
+                drop_connection($client_id);
+            }
+        }
+
+        $connections[$id]['sendBuffer'] .= "{\"accepted\":true}\n";
+        $connections[$id]['closeAfterFlush'] = true;
+        return;
+    }
+
     $request = WebSocketPushRequest::fromJSON($line, is_string($ws_secret) ? $ws_secret : null);
 
     $delivered = 0;
@@ -617,6 +658,11 @@ function handle_push_request(int $id): void
 
         foreach ($connections_by_user[$target_user_id] ?? [] as $client_id) {
             if (($connections[$client_id]['kind'] ?? null) !== 'client') {
+                continue;
+            }
+
+            if (!$revocations -> allows($connections[$client_id]['lease'])) {
+                drop_connection($client_id);
                 continue;
             }
 
@@ -655,6 +701,10 @@ function handle_client_frames(int $id): void
     $connections[$id]['recvBuffer'] = $result['buffer'];
 
     foreach ($result['frames'] as $frame) {
+        if (!isset($connections[$id])) {
+            return;
+        }
+
         switch ($frame['opcode']) {
             case 0x8: // close
                 $connections[$id]['sendBuffer'] .= ws_encode_close_frame();
@@ -682,20 +732,28 @@ function handle_client_frames(int $id): void
 
             case 0x1: // text
             case 0x2: // binary
+                if ($connections[$id]['fragOpcode'] !== null || $frame['opcode'] !== 0x1) {
+                    drop_connection($id);
+                    return;
+                }
+
                 if (!$frame['fin']) {
                     $connections[$id]['fragOpcode'] = $frame['opcode'];
                     $connections[$id]['fragBuffer'] = $frame['payload'];
+                    break;
                 }
-                // The first message a client sends is its token. After that
-                // this is a push-only channel from the app's point of view, so
-                // anything further is discarded.
-                if ($connections[$id]['userId'] === null) {
-                    authenticate_client($id, $frame['payload']);
-                }
+
+                // A first authentication or renewal can only affect this socket.
+                authenticate_client($id, $frame['payload']);
 
                 break;
 
             case 0x0: // continuation
+                if ($connections[$id]['fragOpcode'] === null) {
+                    drop_connection($id);
+                    return;
+                }
+
                 $connections[$id]['fragBuffer'] .= $frame['payload'];
 
                 // fragBuffer accumulates across many separate frames, so the
@@ -707,8 +765,10 @@ function handle_client_frames(int $id): void
                 }
 
                 if ($frame['fin']) {
+                    $message = $connections[$id]['fragBuffer'];
                     $connections[$id]['fragOpcode'] = null;
                     $connections[$id]['fragBuffer'] = '';
+                    authenticate_client($id, $message);
                 }
 
                 break;
@@ -738,7 +798,7 @@ while (true) {
     }
 
     $except = null;
-    $changed = stream_select($read, $write, $except, 5);
+    $changed = stream_select($read, $write, $except, 1);
 
     if ($changed === false) {
         continue;
@@ -828,6 +888,13 @@ while (true) {
         $id = (int) $socket;
 
         if (!isset($connections[$id]) || $connections[$id]['sendBuffer'] === '') {
+            continue;
+        }
+
+        // Check again before writing queued data: a lease can expire or be
+        // revoked after the select/read pass populated the write list.
+        if ($connections[$id]['userId'] !== null && !$revocations -> allows($connections[$id]['lease'])) {
+            drop_connection($id);
             continue;
         }
 

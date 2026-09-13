@@ -7,6 +7,7 @@ class DB
     private static ?\mysqli $connection = null;
     private static ?\mysqli $adminConnection = null;
     private static bool $adminConnectionAttempted = false;
+    private static ?array $afterCommit = null;
 
     public static function connection(): \mysqli
     {
@@ -144,19 +145,48 @@ SET `time_zone` = ?
     {
         $connection = self::connection();
 
+        if (self::$afterCommit !== null) {
+            throw new \LogicException('Database transactions cannot be nested.');
+        }
+
         mysqli_begin_transaction($connection);
+        self::$afterCommit = [];
 
         try {
             $result = $work();
+            mysqli_commit($connection);
         } catch (\Throwable $exception) {
+            self::$afterCommit = null;
             mysqli_rollback($connection);
 
             throw $exception;
         }
 
-        mysqli_commit($connection);
+        $callbacks = self::$afterCommit;
+        self::$afterCommit = null;
+
+        foreach ($callbacks as $callback) {
+            self::afterCommit($callback);
+        }
 
         return $result;
+    }
+
+    /** Best-effort external notifications, after the owning transaction succeeds. */
+    public static function afterCommit(callable $callback): void
+    {
+        if (self::$afterCommit !== null) {
+            self::$afterCommit[] = $callback;
+            return;
+        }
+
+        try {
+            $callback();
+        } catch (\Throwable $exception) {
+            // Expiring leases cover an unavailable control transport. A failed
+            // notification must not report a committed credential change as failed.
+            error_log('Post-commit notification failed.');
+        }
     }
 
     public static function run(string $sql, ?string $types = null, mixed ...$params): \mysqli_stmt

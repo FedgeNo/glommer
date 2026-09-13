@@ -123,7 +123,9 @@ SELECT `userId`
 
     public static function login(User $user): void
     {
+        WebSocketAuthentication::revokeCurrent();
         session_regenerate_id(true);
+        unset($_SESSION['wsSessionId'], $_SESSION['wsRememberSelector']);
 
         // Any half-finished 2FA login is now moot - drop its pending state so
         // it can't outlive an unrelated completed login in the same session
@@ -148,6 +150,7 @@ SELECT `userId`
 
     public static function logout(): void
     {
+        WebSocketAuthentication::revokeCurrent();
         $_SESSION = [];
         session_regenerate_id(true);
         self::clearUserCache();

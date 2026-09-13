@@ -84,6 +84,9 @@ final class TestDatabase
         putenv('DB_USERNAME=root');
         putenv('DB_PASSWORD=');
         putenv('DB_DATABASE=' . $test_db);
+        // Synthetic account IDs must never push notifications or revocations
+        // into the installed site's daemon. Protocol tests use their own ports.
+        putenv('WS_PUSH_PORT=0');
         Config::reload();
 
         return true;

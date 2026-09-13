@@ -50,6 +50,7 @@ UPDATE `Users`
     WHERE `userId` = ?
 ', 'isi', $banned, $reason, $user_id);
 
+    User::bumpSessionVersion($user_id);
     ModerationAction::log('ban', $user_id);
 });
 

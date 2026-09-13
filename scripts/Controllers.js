@@ -8266,6 +8266,8 @@ class WebSocketManager {
         this.reconnectDelay = 10000;
         this.token = null;
         this.reconnecting = false;
+        this.renewalTimer = null;
+        this.renewalController = null;
         // The page's own title, kept so the unread marker can be put in front of
         // it and taken back off. Remembered here rather than parked on the
         // <title> element, since it's this manager's bookkeeping.
@@ -8321,11 +8323,13 @@ class WebSocketManager {
         // as everything after it, and the server tells nobody anything until
         // it has read one.
         const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        this.socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/`);
+        const socket = new WebSocket(`${scheme}://${window.location.hostname}:${ClientConfig.wsPort()}/`);
+        this.socket = socket;
 
-        this.socket.addEventListener('open', () => {
-            this.socket.send(this.token);
+        socket.addEventListener('open', () => {
+            socket.send(token.token);
             this.reconnectAttempts = 0;
+            this.scheduleRenewal(socket);
 
             const statusLine = document.querySelector('.WebSocketClientStatus');
             if (statusLine) {
@@ -8333,7 +8337,7 @@ class WebSocketManager {
             }
         });
 
-        this.socket.addEventListener('message', (event) => {
+        socket.addEventListener('message', (event) => {
             let data;
             try {
                 data = JSON.parse(event.data);
@@ -8357,7 +8361,11 @@ class WebSocketManager {
             }
         });
 
-        this.socket.addEventListener('close', () => {
+        socket.addEventListener('close', () => {
+            if (this.socket !== socket) return;
+            clearTimeout(this.renewalTimer);
+            this.renewalTimer = null;
+            this.renewalController?.abort();
             // Only on a real change of state. Saying it on page load instead
             // would replace the line the server rendered - in the reader's own
             // language - with this one, before anything had happened.
@@ -8369,7 +8377,39 @@ class WebSocketManager {
 
             this.scheduleReconnect();
         });
-        this.socket.addEventListener('error', () => this.socket?.close());
+        socket.addEventListener('error', () => socket.close());
+    }
+
+    scheduleRenewal(socket) {
+        clearTimeout(this.renewalTimer);
+        this.renewalTimer = setTimeout(async () => {
+            this.renewalTimer = null;
+
+            if (this.socket !== socket || socket.readyState !== WebSocket.OPEN) return;
+
+            const controller = new AbortController();
+            this.renewalController = controller;
+
+            try {
+                const response = await Api.post('/api/ws-token', undefined, { quiet: true, signal: controller.signal });
+
+                if (this.socket !== socket || socket.readyState !== WebSocket.OPEN) return;
+                if (!response?.token) {
+                    socket.close();
+                    return;
+                }
+
+                socket.send(response.token);
+            } catch (error) {
+                socket.close();
+            } finally {
+                if (this.renewalController === controller) this.renewalController = null;
+                // Completion-scheduled: slow requests never create another renewal.
+                if (this.socket === socket && socket.readyState === WebSocket.OPEN) {
+                    this.scheduleRenewal(socket);
+                }
+            }
+        }, 15000);
     }
 
     scheduleReconnect() {

@@ -935,10 +935,11 @@ class EnvironmentChecker
 
         stream_set_timeout($socket, 3);
 
-        $token = WSToken::issue(0);
         $key = base64_encode(random_bytes(16));
 
-        fwrite($socket, 'GET /?token=' . $token . " HTTP/1.1\r\nHost: 127.0.0.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " . $key . "\r\nSec-WebSocket-Version: 13\r\n\r\n");
+        // A transport probe has no account identity and receives no user data.
+        // Authentication/renewal/control are exercised by the isolated protocol tests.
+        fwrite($socket, "GET / HTTP/1.1\r\nHost: 127.0.0.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " . $key . "\r\nSec-WebSocket-Version: 13\r\n\r\n");
 
         $response = fread($socket, 1024);
         $expected_accept = base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));

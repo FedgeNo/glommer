@@ -612,6 +612,10 @@ SELECT `sessionVersion`
     WHERE `userId` = ?
 ', 'User', 'i', $user_id);
 
+        if ($user !== null) {
+            WebSocketPusher::revoke($user_id, 'version', $user -> sessionVersion);
+        }
+
         return $user ?-> sessionVersion ?? 0;
     }
 
@@ -695,6 +699,7 @@ SELECT `slug`, `remoteActorURI`
 
         if ($account !== null && $account -> remoteActorURI === null) {
             RetiredUsername::retire((string) $account -> slug);
+            self::bumpSessionVersion($user_id);
         }
 
         // Every post this user authored, plus (via the parentId cascade)

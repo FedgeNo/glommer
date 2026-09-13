@@ -209,7 +209,17 @@ band).
   schema changes are done by a separate admin account, only when needed.
 - **WebSocket daemon** (`bin/websocket-server.php`) - a hand-rolled RFC 6455
   server (no libraries) that powers live notifications and messaging. Holds no
-  database connection.
+  database connection. PHP issues signed, session-bound 30-second connection
+  leases; browsers renew them with completion-scheduled requests every 15
+  seconds. Credential revocation sends a separately signed, replay-protected
+  disconnect command through the loopback control listener after database
+  commit. The daemon enforces expiry even if that command is missed, and
+  never accepts control commands from public WebSocket frames or message
+  payloads. Ordinary pushes also use a separate signature purpose and replay
+  protection; the signing secret is never transmitted over the internal socket.
+  It remains server-side in the protected `.env`. Deploy the PHP, browser, and
+  daemon changes together and restart the daemon and both background workers;
+  old open pages need reloading to use lease renewal.
 - **Upload worker** (`bin/upload-worker.php`) - drains a disk-backed queue of
   staged video/audio uploads, transcoding each with `ffmpeg` in an OS-sandboxed
   subprocess, then publishing the post and notifying the author.

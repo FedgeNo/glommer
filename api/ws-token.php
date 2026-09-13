@@ -14,4 +14,10 @@ if (!Auth::check()) {
     JSONResponse::localizedError('notLoggedIn', 401) -> send();
 }
 
-JSONResponse::success(['token' => WSToken::issue((int) Auth::id())]) -> send();
+$token = WebSocketAuthentication::token();
+
+if ($token === '') {
+    JSONResponse::localizedError('notLoggedIn', 401) -> send();
+}
+
+JSONResponse::success(['token' => $token]) -> send();

@@ -39,6 +39,7 @@ class RememberToken
     public static function issue(int $user_id, ?string $carried_created_at = null): void
     {
         $cookie = self::create($user_id, $carried_created_at);
+        $_SESSION['wsRememberSelector'] = explode(':', $cookie, 2)[0];
 
         self::sweepExpired();
         self::setCookie($cookie, time() + self::TTL_DAYS * 86400);
@@ -140,6 +141,7 @@ SELECT `tokenId`, `userId`, `validatorHash`, `createdAt`, `consumedAt`
         }
 
         Auth::login($user);
+        $_SESSION['wsRememberSelector'] = explode(':', $replacement, 2)[0];
         LoginFingerprint::record((int) $user -> userId);
         self::sweepExpired();
         self::setCookie($replacement, time() + self::TTL_DAYS * 86400);
@@ -173,11 +175,27 @@ DELETE
      */
     public static function purgeForUser(int $user_id): void
     {
+        $devices = DB::rows('
+SELECT `selector` FROM `RememberTokens` WHERE `userId` = ?
+', 'RememberTokenData', 'i', $user_id);
+
         DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `userId` = ?
 ', 'i', $user_id);
+
+        foreach ($devices as $device) {
+            WebSocketPusher::revoke($user_id, 'device', WebSocketAuthentication::deviceId((string) $device -> selector));
+        }
+
+        DB::afterCommit(static function () use ($user_id): void {
+            if (Auth::id() === $user_id) {
+                // A password change may keep the initiating PHP session alive.
+                // Its next lease uses that session, not the removed cookie.
+                unset($_SESSION['wsRememberSelector']);
+            }
+        });
     }
 
     /**
@@ -197,6 +215,24 @@ DELETE
         return $selector;
     }
 
+    /** Bind an existing PHP session only after proving the cookie, not just its selector. */
+    public static function authenticatedSelector(int $user_id): ?string
+    {
+        $cookie = Cookie::get(self::COOKIE_NAME);
+
+        if (!is_string($cookie) || !preg_match('/\A([0-9a-f]{24}):([0-9a-f]{64})\z/D', $cookie, $parts)) {
+            return null;
+        }
+
+        $token = DB::row('
+SELECT `validatorHash`
+    FROM `RememberTokens`
+    WHERE `selector` = ? AND `userId` = ? AND `consumedAt` IS NULL AND `expiresAt` > NOW()
+', 'RememberTokenData', 'si', $parts[1], $user_id);
+
+        return $token !== null && hash_equals((string) $token -> validatorHash, hash('sha256', $parts[2])) ? $parts[1] : null;
+    }
+
     /**
      * Revokes one specific device, scoped to $user_id so a user can only ever
      * revoke their own tokens (not just any tokenId they guess). Returns
@@ -204,13 +240,27 @@ DELETE
      */
     public static function revoke(int $token_id, int $user_id): bool
     {
-        $stmt = DB::run('
+        return DB::transaction(static function () use ($token_id, $user_id): bool {
+            $token = DB::row('
+SELECT `selector`
+    FROM `RememberTokens`
+    WHERE `tokenId` = ? AND `userId` = ?
+    FOR UPDATE
+', 'RememberTokenData', 'ii', $token_id, $user_id);
+
+            if ($token === null) {
+                return false;
+            }
+
+            DB::run('
 DELETE
     FROM `RememberTokens`
     WHERE `tokenId` = ? AND `userId` = ?
 ', 'ii', $token_id, $user_id);
 
-        return mysqli_stmt_affected_rows($stmt) > 0;
+            WebSocketPusher::revoke($user_id, 'device', WebSocketAuthentication::deviceId((string) $token -> selector));
+            return true;
+        });
     }
 
     private static function deleteToken(int $token_id): void
